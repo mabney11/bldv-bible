@@ -1,0 +1,146 @@
+/* Parallel reader — glossed source (Paleo or any script) beside the English
+   translation, word-links highlighting on hover. Theme variables (--bg, --text,
+   --gold, …) come from the app's global stylesheet; only paleo-sizing tokens are
+   declared locally. */
+.pl-root {
+  --paleo-size: 30px; --sub-size: 11px;
+  --word-margin: 0 8px 16px 8px; --word-gap: 4px; --sub-maxw: 200px;
+  min-height: 100vh; background: var(--bg); color: var(--text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ── Toolbar ───────────────────────────────────────────────────────────────*/
+.pl-top-bar { position: sticky; top: 0; z-index: 80; background: var(--bg2); border-bottom: 1px solid var(--border); padding: 8px 14px; }
+.pl-row1 { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.pl-row2 { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.pl-logo { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 7px; border: 1px solid var(--border2); background: var(--bg3); text-decoration: none; color: var(--text3); flex-shrink: 0; }
+.pl-title { font-size: 16px; font-weight: 700; color: var(--gold); margin: 0 4px 0 0; flex-shrink: 0; }
+.pl-nav-group { display: flex; gap: 8px; flex: 1; min-width: 0; flex-wrap: wrap; }
+.pl-top-bar select { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); padding: 7px 6px; border-radius: 6px; font-size: 13px; cursor: pointer; min-width: 0; }
+.pl-top-bar select:focus { outline: none; border-color: var(--blue); }
+.pl-lang { font-weight: 600; }
+.pl-status { font-size: 12px; color: var(--text3); margin-left: auto; white-space: nowrap; }
+.pl-txt-btn { font-size: 13px; color: var(--text2); background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 6px 10px; cursor: pointer; text-decoration: none; }
+.pl-txt-btn:hover { background: var(--bg4); color: var(--text); }
+.pl-icon-btn { width: 34px; height: 34px; border-radius: 7px; border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); cursor: pointer; font-size: 14px; }
+.pl-settings { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 8px; padding: 8px 10px; background: var(--bg3); border: 1px solid var(--border2); border-radius: 7px; font-size: 13px; color: var(--text2); }
+.pl-settings label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+/* Gloss mode chips — mirrors the Reader's .rd-gloss-chip so the two views look
+   like one product. Sits inside the existing settings panel. */
+.pl-gloss-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pl-gloss-label { color: var(--text3); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+.pl-gloss-chips { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.pl-gloss-chip { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  padding: 4px 9px; border: 1px solid var(--border2); border-radius: 6px; background: var(--bg2);
+  color: var(--text2); cursor: pointer; font: inherit; font-size: 12px; line-height: 1.25; }
+.pl-gloss-chip:hover { background: var(--bg4); color: var(--text); }
+.pl-gloss-chip.sel { border-color: var(--gold); color: var(--gold); background: color-mix(in srgb, var(--gold) 12%, transparent); }
+.pl-gloss-name { font-weight: 600; }
+.pl-gloss-note { font-size: 11px; opacity: .7; font-style: italic; }
+
+/* ── Main / heading ────────────────────────────────────────────────────────*/
+.pl-main { position: relative; padding: 14px 18px 48px; max-width: 1200px; margin: 0 auto; }
+.pl-head-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.pl-ref-title { flex: 1; min-width: 0; font-size: 20px; font-weight: 700; color: var(--gold); }
+.pl-legend { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; padding: 10px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px; }
+.pl-legend .leg { font-size: 12px; padding: 2px 8px; border-radius: 5px; border: 1px solid currentColor; color: var(--mc, var(--text2)); }
+.pl-legend .leg-note { color: var(--teal); font-style: italic; font-size: 12px; }
+
+/* ── Side navigation (desktop) ─────────────────────────────────────────────*/
+.pl-side-nav { position: fixed; top: 50%; transform: translateY(-50%); width: 40px; height: 64px; border: 1px solid var(--border2); background: color-mix(in srgb, var(--bg3) 80%, transparent); color: var(--text2); border-radius: 10px; cursor: pointer; font-size: 16px; z-index: 60; }
+.pl-side-nav:hover { background: var(--bg4); color: var(--text); }
+.pl-side-nav.prev { left: 6px; } .pl-side-nav.next { right: 6px; }
+
+/* ── Verse layout ──────────────────────────────────────────────────────────*/
+.par-verse { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.par-verse-ref { font-size: 12px; font-weight: 900; color: var(--text3); background: var(--bg4); border-radius: 12px; padding: 2px 8px; display: inline-flex; margin-bottom: 10px; cursor: pointer; transition: opacity .15s; }
+.par-verse-ref:hover { opacity: .75; }
+.par-verse-ref.active-v { background: var(--teal); color: #000; }
+.par-cols { display: grid; grid-template-columns: 1fr 1px 1fr; align-items: start; }
+.par-col-en { padding-right: 20px; min-width: 0; }
+.par-col-sep { background: var(--border); align-self: stretch; }
+.par-col-heb { padding-left: 20px; background: var(--bg); min-width: 0; overflow: hidden; }
+.en-verse-text { font-size: 18px; line-height: 1.9; }
+.no-translation { color: var(--text4); font-size: 20px; }
+
+.en-w { display: inline; padding: 1px 2px; border-radius: 3px; transition: background .12s, color .12s; cursor: default; }
+.en-w.lnk { cursor: pointer; }
+.en-w.hl { background: color-mix(in srgb, var(--gold) 28%, transparent) !important; color: var(--gold2) !important; }
+
+/* ── Word blocks (glossed) ─────────────────────────────────────────────────*/
+.heb-col-wrap { display: flex; flex-wrap: wrap; direction: rtl; align-items: flex-start; }
+.par-unaligned { direction: ltr; font-size: 12px; color: var(--text4); font-style: italic; padding: 6px 2px; line-height: 1.5; }
+.word-block { display: inline-flex; flex-direction: column; align-items: center; vertical-align: top; margin: var(--word-margin); gap: var(--word-gap); cursor: default; }
+.word-block.lnk { cursor: pointer; }
+.paleo { position: relative; font-family: 'Segoe UI Historic', 'Segoe UI', sans-serif; font-size: var(--paleo-size); line-height: 1; direction: rtl; display: flex; align-items: flex-end; min-height: calc(var(--paleo-size) * 1.1); padding: 4px 6px; border-radius: 8px; background: var(--bg3); white-space: nowrap; overflow: visible; }
+.visible-text { display: flex; align-items: flex-end; white-space: nowrap; flex-wrap: nowrap; }
+.clickable-comp { cursor: pointer; position: relative; display: inline-block; padding: 4px 1px; letter-spacing: -.02em; color: var(--mc, var(--text)); transition: opacity .15s; }
+.clickable-comp:hover { opacity: .72; }
+.clickable-comp::after {
+  content: "Copied!"; position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+  background: var(--teal); color: #000; font-size: 11px; padding: 3px 8px; border-radius: 4px;
+  opacity: 0; pointer-events: none; transition: opacity .2s, top .2s; white-space: nowrap; direction: ltr; z-index: 10;
+}
+.clickable-comp.copied::after { opacity: 1; top: -36px; }
+.clickable-comp.hl { background: color-mix(in srgb, var(--gold) 30%, transparent); border-radius: 4px; }
+.w { font-size: var(--sub-size); direction: ltr; line-height: 1.4; text-align: center; max-width: var(--sub-maxw, 200px); font-weight: 400; white-space: normal; overflow-wrap: break-word; }
+.w-translit { font-weight: 700; white-space: nowrap; display: block; }
+.w span { color: var(--mc, var(--text2)); }
+.w .root { --mc: var(--text2); }
+.w .brk { color: var(--text4) !important; }
+
+/* Non-Hebrew source words */
+.src-block .paleo.src-word { direction: inherit; }
+.src-block .src-word .visible-text { font-family: 'Segoe UI', serif; }
+.src-block .clickable-comp { font-size: 22px; }
+.src-block.lnk .clickable-comp { text-decoration: underline; text-decoration-color: var(--border3); text-underline-offset: 3px; }
+.src-block .w .root { font-size: var(--sub-size); color: var(--text3); }
+
+/* ── Part-of-speech colour tokens (root stem, modifiers, prefixes, stems,
+   pronominal suffixes, nominal endings) — identical to the Hebrew viewer. ──*/
+.root { --mc: var(--text); }
+.brk { color: var(--text4); }
+.mod-conj{--mc:#b87ec0;}.mod-prep{--mc:#c8b840;}.mod-art{--mc:#38c8a0;}
+.mod-nega{--mc:#e84040;}.mod-advb{--mc:#60b8e8;}.mod-intj{--mc:#e8982a;}
+.mod-inrg{--mc:#c09878;}.mod-prde{--mc:#88b878;}.mod-prps{--mc:#a888c8;}
+.mod-prin{--mc:#c08888;}.mod-nmpr{--mc:#d4a010;}.mod-pref-unk{--mc:#888;}
+.mod-suff-unk{--mc:#888;}
+.pfm-3ms{--mc:#e8784a;}.pfm-2or3f{--mc:#d888b8;}.pfm-1cs{--mc:#70b8e8;}
+.pfm-1cp{--mc:#4898d0;}.pfm-ptcp{--mc:#c8985a;}
+.vbs-hif{--mc:#f0902a;}.vbs-nif{--mc:#68c068;}.vbs-hit{--mc:#78d0a0;}
+.prs-1cs{--mc:#70c8f8;}.prs-1cp{--mc:#4898e0;}.prs-2ms{--mc:#90d870;}
+.prs-2mp{--mc:#68c048;}.prs-2fp{--mc:#50a830;}.prs-3ms{--mc:#e8d048;}
+.prs-3fs{--mc:#f0889a;}.prs-3mp{--mc:#c87840;}.prs-3fp{--mc:#c84848;}
+.nme-h{--mc:#d898c8;}.nme-f{--mc:#e8a8c8;}.nme-j{--mc:#a8c898;}
+.nme-jm{--mc:#88b878;}.nme-wt{--mc:#68a858;}.nme-wtj{--mc:#58a848;}
+.nme-nh{--mc:#78c878;}.uvf-dir{--mc:#70b8e8;}.uvf-conn{--mc:#5898d0;}
+
+[data-theme="light"] .root{--mc:#1a1612;}
+[data-theme="light"] .mod-conj{--mc:#6600aa;}[data-theme="light"] .mod-prep{--mc:#005500;}
+[data-theme="light"] .mod-art{--mc:#006688;}[data-theme="light"] .mod-nega{--mc:#cc0000;}
+[data-theme="light"] .mod-advb{--mc:#004488;}[data-theme="light"] .mod-nmpr{--mc:#775500;}
+[data-theme="light"] .pfm-3ms{--mc:#992200;}[data-theme="light"] .pfm-2or3f{--mc:#880055;}
+[data-theme="light"] .pfm-1cs{--mc:#003388;}[data-theme="light"] .vbs-hif{--mc:#884800;}
+[data-theme="light"] .vbs-nif{--mc:#006600;}[data-theme="light"] .vbs-hit{--mc:#007744;}
+[data-theme="light"] .prs-3ms{--mc:#776600;}[data-theme="light"] .prs-3fs{--mc:#990044;}
+[data-theme="light"] .nme-h{--mc:#770055;}[data-theme="light"] .nme-jm{--mc:#1a3800;}
+
+/* ── Per-line / single-verse modes ─────────────────────────────────────────*/
+.pl-root.verse-per-line .par-verse { display: block; }
+.pl-root.single-verse .par-cols { grid-template-columns: 1fr 1px 1fr; }
+/* ── Mobile ────────────────────────────────────────────────────────────────*/
+@media (max-width: 760px) {
+  .pl-root { --paleo-size: 26px; }
+  .pl-nav-group { width: 100%; }
+  .pl-nav-group select { flex: 1 1 40%; }
+  .pl-side-nav { display: none; }                 /* swipe handles prev/next */
+  .par-cols { grid-template-columns: 1fr; gap: 10px; }
+  /* single-verse must ALSO stack on mobile — the desktop rule above forces a
+     3-col grid whose narrow columns let wide paleo blocks overlap the English. */
+  .pl-root.single-verse .par-cols { grid-template-columns: 1fr; }
+  .par-col-sep { display: none; }
+  .par-col-en { padding-right: 0; padding-bottom: 8px; border-bottom: 1px dashed var(--border); }
+  .par-col-heb { padding-left: 0; padding-top: 8px; }
+  .pl-main { padding: 12px 12px 40px; }
+  .pl-status { display: none; }
+}

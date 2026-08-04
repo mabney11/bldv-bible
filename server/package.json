@@ -1,0 +1,17 @@
+{
+  "name": "paleo-studio-server",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:cluster": "node cluster.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.10.0",
+    "express": "^4.22.2"
+  },
+  "allowScripts": {
+    "better-sqlite3@12.10.0": true
+  }
+}

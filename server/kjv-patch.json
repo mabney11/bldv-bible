@@ -1,0 +1,40 @@
+{
+  "_comment": "Targeted KJV backfill for the exact gaps find-nt-gaps.mjs found: WEB verses that are empty (or, for Romans 16:26-27, don't exist as rows at all) because WEB's translators omitted or relocated them. Text is KJV (Textus Receptus based, public domain), fetched and hand-checked against biblegateway.com/kjv on 2026-08-01. Applied by apply-kjv-patch.mjs, which records provenance in a new kjv_patch_notes table rather than silently overwriting anything as if it were WEB's own wording.",
+  "patches": [
+    {
+      "code": "LUK", "canon_id": 42, "chapter": 17, "verse": 36,
+      "text": "Two men shall be in the field; the one shall be taken, and the other left.",
+      "note": "Absent from WEB (and from the critical Greek text it mostly follows) — a harmonization to Matthew 24:40 found in the Western/Byzantine tradition. KJV, Textus Receptus."
+    },
+    {
+      "code": "ACT", "canon_id": 44, "chapter": 8, "verse": 37,
+      "text": "And Philip said, If thou believest with all thine heart, thou mayest. And he answered and said, I believe that Jesus Christ is the Son of God.",
+      "note": "Absent from the earliest manuscripts (P45, P74, Sinaiticus, Vaticanus, Alexandrinus); earliest witness is 6th-century Codex E. KJV, Textus Receptus."
+    },
+    {
+      "code": "ACT", "canon_id": 44, "chapter": 15, "verse": 34,
+      "text": "Notwithstanding it pleased Silas to abide there still.",
+      "note": "Absent from the oldest manuscripts and the Revised Version tradition WEB follows. KJV, Textus Receptus."
+    },
+    {
+      "code": "ACT", "canon_id": 44, "chapter": 24, "verse": 7,
+      "text": "But the chief captain Lysias came upon us, and with great violence took him away out of our hands,",
+      "note": "Part of a longer Western-text reading of Tertullus's speech, absent from the shorter text WEB follows. KJV, Textus Receptus."
+    },
+    {
+      "code": "ROM", "canon_id": 45, "chapter": 16, "verse": 25,
+      "text": "Now to him that is of power to stablish you according to my gospel, and the preaching of Jesus Christ, according to the revelation of the mystery, which was kept secret since the world began,",
+      "note": "WEB places this doxology at Romans 14:24-26 instead, leaving 16:25-27 blank. KJV, Textus Receptus, majority placement."
+    },
+    {
+      "code": "ROM", "canon_id": 45, "chapter": 16, "verse": 26,
+      "text": "But now is made manifest, and by the scriptures of the prophets, according to the commandment of the everlasting God, made known to all nations for the obedience of faith:",
+      "note": "See 16:25 — WEB has no row at all here (relocated to 14:25). KJV, Textus Receptus, majority placement."
+    },
+    {
+      "code": "ROM", "canon_id": 45, "chapter": 16, "verse": 27,
+      "text": "To God only wise, be glory through Jesus Christ for ever. Amen.",
+      "note": "See 16:25 — WEB has no row at all here (relocated to 14:26). KJV, Textus Receptus, majority placement."
+    }
+  ]
+}

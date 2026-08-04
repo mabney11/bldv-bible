@@ -1,0 +1,13 @@
+# verified aliases: variant not in OT, target present in word-map.
+
+Jechonias   -> Jehoiachin
+Jeremias    -> Jeremiah
+Jeremy      -> Jeremiah
+Joacim      -> Jehoiakim
+Josedec     -> Jehozadak
+Eliseus     -> Elisha
+Esay        -> Isaiah
+Naasson     -> Nahshon
+Aminadab    -> Amminadab
+Abia        -> Abijah
+Achaz       -> Ahaz

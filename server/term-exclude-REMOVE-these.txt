@@ -1,0 +1,28 @@
+# term-exclude.txt — DELETE THESE LINES
+#
+# These came from the FIRST version of term-exclude-additions.txt, where I wrongly
+# grouped content words with grammar words. They are why "the way", "come/came",
+# "made" and "things" render as plain English. Deleting them restores the glosses;
+# term-forms.txt then decides which Hebrew each one gets.
+#
+# On Windows: open term-exclude.txt and remove the lines below, or run
+#   node -e "const f='term-exclude.txt',fs=require('fs');const drop=new Set('way ways thing things time times come came coming go going went make makes made take takes took'.split(' '));fs.writeFileSync(f+'.bak',fs.readFileSync(f));fs.writeFileSync(f,fs.readFileSync(f,'utf8').split(/\r?\n/).filter(l=>!drop.has(l.trim().toLowerCase())).join('\n'));console.log('cleaned, .bak kept')"
+
+way
+ways
+thing
+things
+time
+times
+come
+came
+coming
+go
+going
+went
+make
+makes
+made
+take
+takes
+took

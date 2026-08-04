@@ -1,0 +1,24 @@
+# name-forms.txt — manual pins for the English->transliteration NAME map,
+# read by render-corpus.mjs and layered ON TOP of word-map.json's auto-derived
+# `names` map (same pattern as term-forms.txt for TERM). Survives every
+# word-map.json regeneration (apply-web-strongs.mjs overwrites that file
+# wholesale on every run; this file does not).
+#
+# Use this when a name is legitimately ambiguous corpus-wide (2+ real OT
+# spellings, so apply-web-strongs.mjs correctly excludes it from `names` to
+# avoid guessing) but you still want ONE specific spelling for the untagged
+# NT/Apocrypha corpus specifically (which has no per-verse OT tag to
+# disambiguate by itself).
+#
+# format: <english word, lowercase><TAB><pinned transliteration>  # H<strongs>
+#
+# salmon: ancestor of Boaz (Matthew 1:4-5, Luke 3:32, Ruth 4:20-21) — word-map
+# marks "salmon" ambiguous (2 different OT-attested Hebrew spellings), so
+# without this pin the NT occurrences fall back to whatever was frozen in
+# text_src at the time --init-src first ran, which happened to be "Shalamah" —
+# colliding with Solomon (H8010, also legitimately "Shalamah"). Pin Salmon to
+# H8012's own root spelling so the two are never rendered identically again.
+# Only affects the untagged NT/Apocrypha corpus (render-corpus.mjs); Ruth
+# 4:20-21 in the tagged OT renders independently from its own real per-verse
+# Strong's tag via apply-web-strongs.mjs and is unaffected by this pin.
+salmon	Shalamawan	# H8012

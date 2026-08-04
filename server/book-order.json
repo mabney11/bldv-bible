@@ -1,0 +1,653 @@
+{
+  "_README": "Master book order for ALL languages. Only 'id' (canon_id) is read; reorder lines to set the sequence — every language's book dropdown and prev/next flow follow this. A language simply skips ids it doesn't have. Pseudepigrapha now carry canon_ids too (run assign-canon-ids.py first), so canon and non-canon order together here with no distinction. You can hand-edit this file directly, or use the /book-manager admin screen (drag to reorder, toggle a work in or out of the list) — both write this same file; server.js hot-reloads it (fs.watchFile), no restart needed.",
+  "order": [
+    {
+      "id": 1,
+      "name": "Genesis"
+    },
+    {
+      "id": 2,
+      "name": "Exodus"
+    },
+    {
+      "id": 3,
+      "name": "Leviticus"
+    },
+    {
+      "id": 4,
+      "name": "Numbers"
+    },
+    {
+      "id": 5,
+      "name": "Deuteronomy"
+    },
+    {
+      "id": 68,
+      "name": "Jubilees"
+    },
+    {
+      "id": 100,
+      "name": "Jasher"
+    },
+    {
+      "id": 216,
+      "name": "Book of Melchizedek"
+    },
+    {
+      "id": 101,
+      "name": "1 Adam and Eve"
+    },
+    {
+      "id": 102,
+      "name": "2 Adam and Eve"
+    },
+    {
+      "id": 6,
+      "name": "Joshua"
+    },
+    {
+      "id": 7,
+      "name": "Judges"
+    },
+    {
+      "id": 8,
+      "name": "Ruth"
+    },
+    {
+      "id": 9,
+      "name": "1 Samuel"
+    },
+    {
+      "id": 10,
+      "name": "2 Samuel"
+    },
+    {
+      "id": 11,
+      "name": "1 Kings"
+    },
+    {
+      "id": 12,
+      "name": "2 Kings"
+    },
+    {
+      "id": 13,
+      "name": "1 Chronicles"
+    },
+    {
+      "id": 14,
+      "name": "2 Chronicles"
+    },
+    {
+      "id": 84,
+      "name": "Prayer of Manasseh"
+    },
+    {
+      "id": 15,
+      "name": "Ezra"
+    },
+    {
+      "id": 16,
+      "name": "Nehemiah"
+    },
+    {
+      "id": 81,
+      "name": "1 Esdras"
+    },
+    {
+      "id": 139,
+      "name": "4 Ezra (2 Esdras)"
+    },
+    {
+      "id": 72,
+      "name": "Tobit"
+    },
+    {
+      "id": 73,
+      "name": "Judith"
+    },
+    {
+      "id": 17,
+      "name": "Esther"
+    },
+    {
+      "id": 154,
+      "name": "Greek Esther"
+    },
+    {
+      "id": 18,
+      "name": "Job"
+    },
+    {
+      "id": 19,
+      "name": "Psalms"
+    },
+    {
+      "id": 85,
+      "name": "Psalm 151"
+    },
+    {
+      "id": 86,
+      "name": "Psalm 154"
+    },
+    {
+      "id": 83,
+      "name": "Psalms of Solomon"
+    },
+    {
+      "id": 135,
+      "name": "Odes of Solomon"
+    },
+    {
+      "id": 20,
+      "name": "Proverbs"
+    },
+    {
+      "id": 21,
+      "name": "Ecclesiastes"
+    },
+    {
+      "id": 22,
+      "name": "Song of Songs"
+    },
+    {
+      "id": 71,
+      "name": "Wisdom"
+    },
+    {
+      "id": 70,
+      "name": "Sirach"
+    },
+    {
+      "id": 23,
+      "name": "Isaiah"
+    },
+    {
+      "id": 122,
+      "name": "Ascension of Isaiah"
+    },
+    {
+      "id": 24,
+      "name": "Jeremiah"
+    },
+    {
+      "id": 25,
+      "name": "Lamentations"
+    },
+    {
+      "id": 75,
+      "name": "Letter of Jeremiah"
+    },
+    {
+      "id": 74,
+      "name": "Baruch"
+    },
+    {
+      "id": 138,
+      "name": "2 Baruch"
+    },
+    {
+      "id": 137,
+      "name": "3 Baruch"
+    },
+    {
+      "id": 89,
+      "name": "4 Baruch"
+    },
+    {
+      "id": 26,
+      "name": "Ezekiel"
+    },
+    {
+      "id": 27,
+      "name": "Daniel"
+    },
+    {
+      "id": 79,
+      "name": "Susanna"
+    },
+    {
+      "id": 80,
+      "name": "Bel and the Dragon"
+    },
+    {
+      "id": 28,
+      "name": "Hosea"
+    },
+    {
+      "id": 29,
+      "name": "Joel"
+    },
+    {
+      "id": 30,
+      "name": "Amos"
+    },
+    {
+      "id": 31,
+      "name": "Obadiah"
+    },
+    {
+      "id": 32,
+      "name": "Jonah"
+    },
+    {
+      "id": 33,
+      "name": "Micah"
+    },
+    {
+      "id": 34,
+      "name": "Nahum"
+    },
+    {
+      "id": 35,
+      "name": "Habakkuk"
+    },
+    {
+      "id": 36,
+      "name": "Zephaniah"
+    },
+    {
+      "id": 37,
+      "name": "Haggai"
+    },
+    {
+      "id": 38,
+      "name": "Zechariah"
+    },
+    {
+      "id": 39,
+      "name": "Malachi"
+    },
+    {
+      "id": 143,
+      "name": "1 Meqabyan"
+    },
+    {
+      "id": 87,
+      "name": "2 Meqabyan"
+    },
+    {
+      "id": 88,
+      "name": "3 Meqabyan"
+    },
+    {
+      "id": 69,
+      "name": "1 Maccabees"
+    },
+    {
+      "id": 76,
+      "name": "2 Maccabees"
+    },
+    {
+      "id": 77,
+      "name": "3 Maccabees"
+    },
+    {
+      "id": 78,
+      "name": "4 Maccabees"
+    },
+    {
+      "id": 67,
+      "name": "1 Enoch"
+    },
+    {
+      "id": 136,
+      "name": "2 Enoch"
+    },
+    {
+      "id": 103,
+      "name": "Testament of Reuben"
+    },
+    {
+      "id": 104,
+      "name": "Testament of Simeon"
+    },
+    {
+      "id": 105,
+      "name": "Testament of Levi"
+    },
+    {
+      "id": 106,
+      "name": "Testament of Judah"
+    },
+    {
+      "id": 107,
+      "name": "Testament of Issachar"
+    },
+    {
+      "id": 108,
+      "name": "Testament of Zebulun"
+    },
+    {
+      "id": 109,
+      "name": "Testament of Dan"
+    },
+    {
+      "id": 110,
+      "name": "Testament of Naphtali"
+    },
+    {
+      "id": 111,
+      "name": "Testament of Gad"
+    },
+    {
+      "id": 112,
+      "name": "Testament of Asher"
+    },
+    {
+      "id": 113,
+      "name": "Testament of Joseph"
+    },
+    {
+      "id": 114,
+      "name": "Testament of Benjamin"
+    },
+    {
+      "id": 116,
+      "name": "Testament of Abraham"
+    },
+    {
+      "id": 117,
+      "name": "Testament of Isaac"
+    },
+    {
+      "id": 118,
+      "name": "Testament of Jacob"
+    },
+    {
+      "id": 119,
+      "name": "Testament of Job"
+    },
+    {
+      "id": 120,
+      "name": "Testament of Solomon"
+    },
+    {
+      "id": 144,
+      "name": "Testament of Kohath"
+    },
+    {
+      "id": 115,
+      "name": "Joseph and Asenath"
+    },
+    {
+      "id": 121,
+      "name": "Apocalypse of Abraham"
+    },
+    {
+      "id": 124,
+      "name": "Apocalypse of Sedrach"
+    },
+    {
+      "id": 123,
+      "name": "Apocalypse of Elijah"
+    },
+    {
+      "id": 126,
+      "name": "Assumption of Moses"
+    },
+    {
+      "id": 127,
+      "name": "Ladder of Jacob"
+    },
+    {
+      "id": 128,
+      "name": "Lives of the Prophets"
+    },
+    {
+      "id": 129,
+      "name": "Jannes and Jambres"
+    },
+    {
+      "id": 130,
+      "name": "History of the Rechabites"
+    },
+    {
+      "id": 131,
+      "name": "Book of Giants"
+    },
+    {
+      "id": 132,
+      "name": "Genesis Apocryphon"
+    },
+    {
+      "id": 133,
+      "name": "Wisdom of Ahikar"
+    },
+    {
+      "id": 134,
+      "name": "Words of Gad the Seer"
+    },
+    {
+      "id": 145,
+      "name": "Book of Nathan the Prophet"
+    },
+    {
+      "id": 146,
+      "name": "Apocryphon of Joshua"
+    },
+    {
+      "id": 147,
+      "name": "Balaam Inscription"
+    },
+    {
+      "id": 148,
+      "name": "Words of Azariah"
+    },
+    {
+      "id": 140,
+      "name": "Songs of the Sabbath Sacrifice"
+    },
+    {
+      "id": 141,
+      "name": "Five Psalms of David"
+    },
+    {
+      "id": 142,
+      "name": "Visions of Amram"
+    },
+    {
+      "id": 82,
+      "name": "Odes"
+    },
+    {
+      "id": 90,
+      "name": "Apocalypse of Ezra"
+    },
+    {
+      "id": 40,
+      "name": "Matthew"
+    },
+    {
+      "id": 41,
+      "name": "Mark"
+    },
+    {
+      "id": 42,
+      "name": "Luke"
+    },
+    {
+      "id": 43,
+      "name": "John"
+    },
+    {
+      "id": 200,
+      "name": "Gospel of Thomas"
+    },
+    {
+      "id": 201,
+      "name": "Gospel of Philip"
+    },
+    {
+      "id": 44,
+      "name": "Acts"
+    },
+    {
+      "id": 45,
+      "name": "Romans"
+    },
+    {
+      "id": 46,
+      "name": "1 Corinthians"
+    },
+    {
+      "id": 47,
+      "name": "2 Corinthians"
+    },
+    {
+      "id": 48,
+      "name": "Galatians"
+    },
+    {
+      "id": 49,
+      "name": "Ephesians"
+    },
+    {
+      "id": 50,
+      "name": "Philippians"
+    },
+    {
+      "id": 51,
+      "name": "Colossians"
+    },
+    {
+      "id": 52,
+      "name": "1 Thessalonians"
+    },
+    {
+      "id": 53,
+      "name": "2 Thessalonians"
+    },
+    {
+      "id": 54,
+      "name": "1 Timothy"
+    },
+    {
+      "id": 55,
+      "name": "2 Timothy"
+    },
+    {
+      "id": 56,
+      "name": "Titus"
+    },
+    {
+      "id": 57,
+      "name": "Philemon"
+    },
+    {
+      "id": 58,
+      "name": "Hebrews"
+    },
+    {
+      "id": 59,
+      "name": "James"
+    },
+    {
+      "id": 60,
+      "name": "1 Peter"
+    },
+    {
+      "id": 61,
+      "name": "2 Peter"
+    },
+    {
+      "id": 62,
+      "name": "1 John"
+    },
+    {
+      "id": 63,
+      "name": "2 John"
+    },
+    {
+      "id": 64,
+      "name": "3 John"
+    },
+    {
+      "id": 65,
+      "name": "Jude"
+    },
+    {
+      "id": 66,
+      "name": "Revelation"
+    },
+    {
+      "id": 125,
+      "name": "Apocalypse of Peter"
+    },
+    {
+      "id": 149,
+      "name": "Gospel of Nicodemus"
+    },
+    {
+      "id": 150,
+      "name": "Epistle of Barnabas"
+    },
+    {
+      "id": 151,
+      "name": "Shepherd of Hermas I"
+    },
+    {
+      "id": 152,
+      "name": "Shepherd of Hermas II"
+    },
+    {
+      "id": 153,
+      "name": "Shepherd of Hermas III"
+    },
+    {
+      "id": 206,
+      "name": "Acts of Paul and Thecla"
+    },
+    {
+      "id": 207,
+      "name": "Third Corinthians"
+    },
+    {
+      "id": 208,
+      "name": "Secret Book of John"
+    },
+    {
+      "id": 202,
+      "name": "Pistis Sophia I"
+    },
+    {
+      "id": 203,
+      "name": "Pistis Sophia II"
+    },
+    {
+      "id": 204,
+      "name": "Pistis Sophia III"
+    },
+    {
+      "id": 205,
+      "name": "Pistis Sophia IV"
+    },
+    {
+      "id": 209,
+      "name": "Gospel of Peter"
+    },
+    {
+      "id": 210,
+      "name": "Acts of Barnabas"
+    },
+    {
+      "id": 211,
+      "name": "Melchizedek"
+    },
+    {
+      "id": 212,
+      "name": "Treatise on Melchizedek"
+    },
+    {
+      "id": 213,
+      "name": "Salam to Melchizedek"
+    },
+    {
+      "id": 214,
+      "name": "Homilies of Cyril on Melchizedek"
+    },
+    {
+      "id": 215,
+      "name": "Story of Melchizedek"
+    }
+  ]
+}

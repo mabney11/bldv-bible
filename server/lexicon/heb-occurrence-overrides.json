@@ -1,0 +1,4 @@
+{
+  "_README": "Occurrence-specific Strong's overrides for the HEB (extra) edition, keyed by 'book_id|chapter|verse|token_ordinal' -> forced Strong's number. Use this ONLY for true homographs where the SAME bare spelling is genuinely attested for more than one word (visible as ambiguous:1 on the token_surfaces row) and frequency alone picks the wrong one for a SPECIFIC occurrence — never as a blanket 'this spelling always means X' rule, which belongs in surface-strongs-overrides.json instead (BHS-only). Read by build-surface-index.js and passed to heb-align.js's buildHebSurfaces as occurrenceOverrides.",
+  "58|1|13|6": "H3225"
+}

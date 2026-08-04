@@ -1,0 +1,100 @@
+build-align-links — learn English<->Strongs from the OT, align the NT
+baseline: 23,145 verses from ./web-strongs.jsonl
+  gloss-pair density: 6% of sampled verses
+English verses: 52,619
+OT verses (the training set): 22,904 from the baseline, 0 from text_src, 134 from rendered text
+training verses (English + tagged Hebrew): 23,038
+translation table: 8,595 Strong's numbers
+  EM iteration 1/12 — mean change 2.63e-3
+  EM iteration 2/12 — mean change 1.70e-3
+  EM iteration 3/12 — mean change 1.21e-3
+  EM iteration 4/12 — mean change 7.79e-4
+  EM iteration 5/12 — mean change 4.90e-4
+  EM iteration 6/12 — mean change 3.28e-4
+  EM iteration 7/12 — mean change 2.34e-4
+  EM iteration 8/12 — mean change 1.74e-4
+  EM iteration 9/12 — mean change 1.35e-4
+  EM iteration 10/12 — mean change 1.07e-4
+  EM iteration 11/12 — mean change 8.72e-5
+  EM iteration 12/12 — mean change 7.24e-5
+
+────────────────────────────────────────────────────────────────────────────
+WHAT IT LEARNED — top English for a few Strong's numbers
+────────────────────────────────────────────────────────────────────────────
+  H3205  beget         and 0.091  father 0.065  bore 0.064  born 0.055  a 0.052  she 0.050
+  H1     father        father 0.207  fathers 0.130  his 0.083  your 0.062  to 0.058  of 0.053
+  H1121  son           of 0.209  the 0.159  children 0.119  son 0.109  sons 0.053  and 0.027
+  H559   say           said 0.262  saying 0.076  to 0.070  i 0.067  you 0.047  me 0.043
+  H8085  hear          heard 0.144  hear 0.125  you 0.087  listen 0.080  to 0.066  and 0.060
+  H1697  word          the 0.146  word 0.136  of 0.120  words 0.112  to 0.044  thing 0.040
+
+
+H3205 is the test: "became" / "father" scoring high means the model learned
+the idiom kjv_def cannot express. If instead you see OUR OWN transliterations
+(yalad, ab, ban, amar, shamai, dabar) near the top, it is training on rendered
+output rather than the original translation — check that text_src is populated.
+
+NT verses with Hebrew: 7,955
+
+────────────────────────────────────────────────────────────────────────────
+ALIGNMENT RESULT
+────────────────────────────────────────────────────────────────────────────
+Hebrew tokens in NT verses that also have English: 81,818
+links generated                                  : 45,898
+  covering more than one English word            : 3,887
+tokens now aligned                               : 45,898 (56.1%)
+
+────────────────────────────────────────────────────────────────────────────
+WHERE THE UNALIGNED TOKENS ARE
+────────────────────────────────────────────────────────────────────────────
+unaligned tokens: 35,920
+
+  count    strongs   best English the model knows for it
+  ----------------------------------------------------------------
+  1762     H834      which 0.12  that 0.07  the 0.06
+  1285     H430      god 0.30  new 0.03  your 0.03
+  1092     H1961     be 0.12  it 0.08  that 0.05
+  1052     H3588     for 0.20  because 0.03  new 0.03
+  696      H853      the 0.20  and 0.17  of 0.08
+  681      H559      said 0.26  saying 0.08  to 0.07
+  678      H3808     not 0.19  shall 0.07  but 0.05
+  635      H1931     he 0.08  is 0.08  that 0.05
+  567      H376      man 0.20  men 0.14  a 0.07
+  511      H4899     anointed 0.21  - 0.05  against 0.04
+  509      H5921     the 0.13  on 0.12  and 0.08
+  325      H113      lord 0.28  my 0.24  master 0.09
+  324      H6440     before 0.24  the 0.08  and 0.08
+  307      H369      no 0.16  there 0.14  is 0.13
+  298      H1697     the 0.15  word 0.14  of 0.12
+  287      H7200     see 0.11  saw 0.10  seen 0.04
+  285      H413      to 0.37  the 0.13  and 0.08
+  279      H3027     hand 0.26  the 0.11  of 0.11
+  267      H935      and 0.13  to 0.11  come 0.11
+  261      H5769     forever 0.08  new 0.06  bible 0.02
+
+Read this as three groups:
+  • particles with no English counterpart (H853 direct-object marker, and
+    the like) — correctly unaligned, and no threshold will change that
+  • "(never seen in the OT)" — NT-only vocabulary; the model cannot align
+    what it has no training example of
+  • content words with a sensible top English — these are the real misses,
+    and lowering --min-prob (currently 0.04) will pick them up
+
+────────────────────────────────────────────────────────────────────────────
+REVIEW — first 12 multi-word spans
+────────────────────────────────────────────────────────────────────────────
+Read these before applying. A wrong span here becomes a wrong gloss everywhere.
+  40:1:2  H251    ord 10  "his brothers"
+  40:1:4  H5992   ord 3  "became the"
+  40:1:11  H251    ord 4  "his brothers"
+  40:1:18  H517    ord 7  "his mother"
+  40:1:20  H3372   ord 13  "be afraid"
+  40:1:20  H834    ord 20  "that which"
+  40:1:21  H1931   ord 1  "is he"
+  40:1:22  H1961   ord 1  "that it"
+  40:2:1  H935    ord 10  "came to"
+  40:2:2  H346    ord 1  "where is"
+  40:2:3  H5973   ord 9  "with him"
+  40:2:5  H559    ord 1  "said to"
+
+[preview] nothing written. Re-run with --apply to insert into translation_links.

@@ -1,0 +1,186 @@
+probe-term-gaps — what render-corpus leaves as plain English, and what your
+own OT data says it should become.
+word-map: names 2197, peoples 102, terms 429, termsDominant 328, termsAmbiguous 0
+divine phrases + theonyms: 24
+verses scanned: 7958
+
+────────────────────────────────────────────────────────────────────────────
+WORDS render-corpus LEAVES AS PLAIN ENGLISH (>= 3 occurrences)
+────────────────────────────────────────────────────────────────────────────
+  count  word              verdict     proposed / note
+  ------------------------------------------------------------------------
+  737    things            absent      not in the OT map — authoring, not lookup
+  467    therefore         absent      not in the OT map — authoring, not lookup
+  443    don’t             absent      not in the OT map — authoring, not lookup
+  382    know              absent      not in the OT map — authoring, not lookup
+  300    men               absent      not in the OT map — authoring, not lookup
+  292    many              absent      not in the OT map — authoring, not lookup
+  292    even              absent      not in the OT map — authoring, not lookup
+  268    away              absent      not in the OT map — authoring, not lookup
+  267    made              absent      not in the OT map — authoring, not lookup
+  266    tell              absent      not in the OT map — authoring, not lookup
+  253    yashawai          absent      not in the OT map — authoring, not lookup
+  249    didn’t            absent      not in the OT map — authoring, not lookup
+  248    saw               absent      not in the OT map — authoring, not lookup
+  244    disciples         absent      not in the OT map — authoring, not lookup
+  242    let               absent      not in the OT map — authoring, not lookup
+  239    heard             absent      not in the OT map — authoring, not lookup
+  232    great             absent      not in the OT map — authoring, not lookup
+  232    see               absent      not in the OT map — authoring, not lookup
+  219    called            absent      not in the OT map — authoring, not lookup
+  216    another           absent      not in the OT map — authoring, not lookup
+  214    himself           absent      not in the OT map — authoring, not lookup
+  210    answered          absent      not in the OT map — authoring, not lookup
+  209    among             absent      not in the OT map — authoring, not lookup
+  207    like              absent      not in the OT map — authoring, not lookup
+  201    give              absent      not in the OT map — authoring, not lookup
+  199    sent              absent      not in the OT map — authoring, not lookup
+  167    given             absent      not in the OT map — authoring, not lookup
+  165    children          absent      not in the OT map — authoring, not lookup
+  162    every             absent      not in the OT map — authoring, not lookup
+  161    behold            absent      not in the OT map — authoring, not lookup
+  154    took              absent      not in the OT map — authoring, not lookup
+  151    doesn’t           absent      not in the OT map — authoring, not lookup
+  151    flesh             absent      not in the OT map — authoring, not lookup
+  150    time              absent      not in the OT map — authoring, not lookup
+  149    according         absent      not in the OT map — authoring, not lookup
+  146    gave              absent      not in the OT map — authoring, not lookup
+  144    city              absent      not in the OT map — authoring, not lookup
+  141    body              absent      not in the OT map — authoring, not lookup
+  134    together          absent      not in the OT map — authoring, not lookup
+  130    written           absent      not in the OT map — authoring, not lookup
+  130    grace             absent      not in the OT map — authoring, not lookup
+  128    found             absent      not in the OT map — authoring, not lookup
+  128    make              absent      not in the OT map — authoring, not lookup
+  125    asked             absent      not in the OT map — authoring, not lookup
+  125    receive           absent      not in the OT map — authoring, not lookup
+  123    hear              absent      not in the OT map — authoring, not lookup
+  123    speak             absent      not in the OT map — authoring, not lookup
+  122    yet               absent      not in the OT map — authoring, not lookup
+  118    multitude         absent      not in the OT map — authoring, not lookup
+  115    brought           absent      not in the OT map — authoring, not lookup
+  114    coming            absent      not in the OT map — authoring, not lookup
+  112    comes             absent      not in the OT map — authoring, not lookup
+  112    much              absent      not in the OT map — authoring, not lookup
+  111    eat               absent      not in the OT map — authoring, not lookup
+  110    concerning        absent      not in the OT map — authoring, not lookup
+  108    immediately       absent      not in the OT map — authoring, not lookup
+  107    nothing           absent      not in the OT map — authoring, not lookup
+  106    received          absent      not in the OT map — authoring, not lookup
+  105    spoke             absent      not in the OT map — authoring, not lookup
+  103    place             absent      not in the OT map — authoring, not lookup
+  102    take              absent      not in the OT map — authoring, not lookup
+  101    anyone            absent      not in the OT map — authoring, not lookup
+  99     without           absent      not in the OT map — authoring, not lookup
+  96     told              absent      not in the OT map — authoring, not lookup
+  94     whoever           absent      not in the OT map — authoring, not lookup
+  93     themselves        absent      not in the OT map — authoring, not lookup
+  92     haqadash          absent      not in the OT map — authoring, not lookup
+  92     neither           absent      not in the OT map — authoring, not lookup
+  91     certainly         absent      not in the OT map — authoring, not lookup
+  91     little            absent      not in the OT map — authoring, not lookup
+  90     became            absent      not in the OT map — authoring, not lookup
+  89     left              absent      not in the OT map — authoring, not lookup
+  89     certain           absent      not in the OT map — authoring, not lookup
+  87     become            absent      not in the OT map — authoring, not lookup
+  87     sat               absent      not in the OT map — authoring, not lookup
+  87     seen              absent      not in the OT map — authoring, not lookup
+  86     feet              absent      not in the OT map — authoring, not lookup
+  85     fell              absent      not in the OT map — authoring, not lookup
+  85     hour              absent      not in the OT map — authoring, not lookup
+  83     set               absent      not in the OT map — authoring, not lookup
+
+────────────────────────────────────────────────────────────────────────────
+CAPITALISED WORDS THE NAME PASS DID NOT KNOW
+────────────────────────────────────────────────────────────────────────────
+These are probably names. Greek-derived NT names have no OT form and need a
+name-strongs.txt pin or an authored spelling; ones with an OT equivalent should
+resolve once aliased (e.g. Jechoniah -> H3204 Yakanayah).
+
+  count  word
+  ----------------------------------------
+  1149   Alahayam
+  701    Yashawai
+  651    Adanay
+  543    Mashayach
+  164    Jews
+  162    Alahayam’s
+  149    Shaawal
+  141    Yarawashalam
+  128    Kayapaa
+  108    Yawachanan
+  96     News
+  91     Rawach
+  86     Pharisees
+  80     Yahawadah
+  74     Yasharaal
+  73     Mashah
+  65     Abaraham
+  65     Galayal
+  57     Dan
+  56     Yaiqab
+  55     Behold
+  53     Shamaiwan
+  51     Dawad
+  43     Marayam
+  39     Don’t
+  37     Hawaradawas
+  34     Teacher
+  30     Payalatawas
+  30     Scripture
+  29     Matzarayam
+  27     Alayahaw
+  27     Lamb
+  26     Macedonia
+  25     Yawasap
+  23     Natzarath
+  22     Yashawai’
+  22     Savior
+  22     Baranab
+  21     Take
+  21     Scriptures
+  21     Payalayapawas
+  21     Yahawaday
+  21     Tayamawathayawas
+  20     Qayasar
+  20     Adanay’s
+  19     Yes
+  19     Asia
+  19     Antioch
+  18     Yatzachaq
+  18     Yashaiyahaw
+  17     Caesarea
+  17     Ephesus
+  16     Alaizar
+  16     Kaparanachawam
+  16     Mashayach’s
+  16     Damashaq
+  15     Baptizer
+  15     Yaradan
+  15     Mount
+  15     Rabbi
+  15     Greek
+  14     Let
+  14     Father’s
+  14     Yawanah
+  13     I’m
+  13     Blessed
+  13     Titus
+  12     Sadducees
+  12     Zebedee
+  12     Whoever
+  12     Gehenna
+  12     Tzar
+  12     Tzayadawan
+  12     Bayathainayah
+  12     Magdalene
+  12     Master
+  12     Silas
+  11     Babal
+  11     Get
+  11     Aram
+
+────────────────────────────────────────────────────────────────────────────
+READY TO PASTE — term-forms.txt
+────────────────────────────────────────────────────────────────────────────
+# (nothing proposed: no gap word had an unambiguous OT form)

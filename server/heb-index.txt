@@ -1,0 +1,25 @@
+tables: books, verses, meta, tokens_bhs, tokens_nt
+  tokens_bhs: 490,052 rows [source_id,ref_key,book_id,chapter,verse,token_ordinal,word_raw,word_modern,lemma,root,pos,morph,strongs]
+  tokens_nt: 109,768 rows [source_id,book_id,chapter,verse,token_ordinal,word_raw,lemma,root,pos,morph,strongs,match_kind,confidence]
+
+aligning HEB Old Testament against BHS …
+  OT verses with BHS tokens: 23,147 · of those, count-matched: 53
+  pairs — same-form 155,437 · positional 321 · elimination 9
+  total aligned pairs: 155,767 · distinct HEB forms: 12,757
+
+re-tagging canon 40-66 · 7,956 verses
+
+=== RESOLUTION ===
+tokens    : 109,768
+  aligned            60,844  55.4%
+  aligned-variant    35,518  32.4%
+  unresolved          8,196  7.5%
+  bhs-variant         3,157  2.9%
+  bhs-surface         2,053  1.9%
+RESOLVED  : 101,572 (92.5%)
+
+of those, 39,371 were resolved ONLY because of the HEB-OT alignment
+(the BHS surface index alone had never seen those exact forms)
+low-confidence rows (<0.6): 5,769
+
+[dry run] nothing written.

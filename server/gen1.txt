@@ -1,0 +1,48 @@
+probe-tokens-source — book 1 chapter 1, asking for source=BHS
+index: C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\paleo-studio\server\surface-index.db
+schema: source=YES  per-occurrence strongs=YES  pos/morph=YES
+  BHS: 422,017 occurrences across 39 books
+  HEB: 389,463 occurrences across 66 books
+
+── WHAT THE FAST PATH RETURNS ───────────────────────────────────────────
+  source-blind (shipped server.js): 1,646 rows
+  source-filtered (patched):        662 rows
+  rows whose surface row is from the OTHER edition: 550
+  rows belonging to an edition you did not ask for: 644
+  token slots served more than one row: 558 of 702
+
+  Examples of a cross-edition pairing (occurrence ↔ surface row):
+    v1.2 𐤓𐤀𐤔𐤉𐤕  occ=BHS served by surf=HEB H7225
+        𐤓𐤀𐤔𐤉𐤕[root]
+    v1.2 𐤁𐤓𐤀  occ=HEB served by surf=BHS H1254
+        𐤁𐤓𐤀[root]
+    v1.3 𐤁𐤓𐤀  occ=BHS served by surf=HEB H1254
+        𐤁𐤓𐤀[root]
+    v1.3 𐤀𐤋𐤄𐤉𐤌  occ=HEB served by surf=BHS H430
+        𐤀𐤋𐤄𐤉𐤌[root]
+    v1.4 𐤀𐤋𐤄𐤉𐤌  occ=BHS served by surf=HEB H430
+        𐤀𐤋𐤄𐤉𐤌[root]
+    v1.4 𐤀𐤕  occ=HEB served by surf=BHS H853
+        𐤀𐤕[root]
+    v1.5 𐤀𐤕  occ=BHS served by surf=HEB H853
+        𐤀𐤕[root]
+    v1.7 𐤔𐤌𐤉𐤌  occ=BHS served by surf=HEB H8064
+        𐤔𐤌𐤉𐤌[root]
+    v1.9 𐤀𐤕  occ=BHS served by surf=HEB H853
+        𐤀𐤕[root]
+    v1.11 𐤀𐤓𐤑  occ=BHS served by surf=HEB H776
+        𐤀𐤓𐤑[root]
+    v2.2 𐤄𐤉𐤕𐤄  occ=HEB served by surf=BHS H1961
+        𐤄𐤉𐤕𐤄[root]
+    v2.3 𐤀𐤓𐤑  occ=BHS served by surf=HEB H776
+        𐤀𐤓𐤑[root]
+
+── INTEGRITY GUARDS (each one sends the WHOLE chapter to the live parser) 
+  homograph surfaces present in this chapter: 314  e.g. 𐤁𐤓𐤀 𐤀𐤕 𐤔𐤌𐤉𐤌 𐤀𐤓𐤑 𐤇𐤔𐤊 𐤏𐤋
+  baked SN vs tokens_bhs SN — disagreements: 0
+  ⇒ guard does not fire on this chapter.
+  rows whose first component letter ≠ word_raw's first letter: 0
+
+── VERDICT ──────────────────────────────────────────────────────────────
+  The source-blind query is serving this chapter wrong. The patched
+  server.js (source filter + t.source = o.source on the join) fixes it.

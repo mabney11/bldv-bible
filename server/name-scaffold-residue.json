@@ -1,0 +1,107 @@
+[
+ {
+  "word": "Abel",
+  "kind": "name",
+  "bestSN": "H65",
+  "p": 0.184,
+  "why": "low confidence (p 0.18)"
+ },
+ {
+  "word": "Beth",
+  "kind": "name",
+  "bestSN": "H1053",
+  "p": 0.182,
+  "why": "low confidence (p 0.18)"
+ },
+ {
+  "word": "Arabah",
+  "kind": "name",
+  "bestSN": "H3383",
+  "p": 0.132,
+  "why": "low confidence (p 0.13)"
+ },
+ {
+  "word": "image",
+  "kind": "term",
+  "bestSN": "H6459",
+  "p": 0.178,
+  "why": "low confidence (p 0.18)"
+ },
+ {
+  "word": "work",
+  "kind": "term",
+  "bestSN": "H6213",
+  "p": 0.194,
+  "why": "low confidence (p 0.19)"
+ },
+ {
+  "word": "labor",
+  "kind": "term",
+  "bestSN": "H1961",
+  "p": 0.128,
+  "why": "low confidence (p 0.13)"
+ },
+ {
+  "word": "offering",
+  "kind": "term",
+  "bestSN": "H5930",
+  "p": 0.188,
+  "why": "low confidence (p 0.19)"
+ },
+ {
+  "word": "curse",
+  "kind": "term",
+  "bestSN": "H7045",
+  "p": 0.172,
+  "why": "low confidence (p 0.17)"
+ },
+ {
+  "word": "fear",
+  "kind": "term",
+  "bestSN": "H3372",
+  "p": 0.194,
+  "why": "low confidence (p 0.19)"
+ },
+ {
+  "word": "might",
+  "kind": "term",
+  "bestSN": "H853",
+  "p": 0.161,
+  "why": "low confidence (p 0.16)"
+ },
+ {
+  "word": "oath",
+  "kind": "term",
+  "bestSN": "H853",
+  "p": 0.199,
+  "why": "low confidence (p 0.20)"
+ },
+ {
+  "word": "staff",
+  "kind": "term",
+  "bestSN": "H7626",
+  "p": 0.142,
+  "why": "low confidence (p 0.14)"
+ },
+ {
+  "word": "mercy",
+  "kind": "term",
+  "bestSN": "H3727",
+  "p": 0.16,
+  "why": "low confidence (p 0.16)"
+ },
+ {
+  "word": "path",
+  "kind": "term",
+  "bestSN": "H734",
+  "p": 0.191,
+  "why": "low confidence (p 0.19)"
+ },
+ {
+  "word": "precept",
+  "kind": "term",
+  "bestSN": "H3605",
+  "p": 0.14,
+  "why": "low confidence (p 0.14)"
+ }
+]

@@ -1,0 +1,292 @@
+/* Sources page — multi-source corpus viewer */
+
+.src-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.src-main {
+  flex: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 14px 16px 80px;
+  box-sizing: border-box;
+}
+
+/* ── Source / book / chapter / verse pickers row ───────────────────────── */
+.src-pickers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+  align-items: center;
+}
+.src-pickers label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text2);
+  font-size: 13px;
+}
+.src-pickers select {
+  background: var(--bg2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 14px;
+  min-width: 80px;
+  max-width: 240px;
+}
+.src-pickers select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* ── View mode tabs ────────────────────────────────────────────────────── */
+.src-mode-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.src-mode-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text2);
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.1s, border-color 0.1s;
+}
+.src-mode-btn:hover { color: var(--text); }
+.src-mode-btn.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+/* ── Verse / chapter content card ──────────────────────────────────────── */
+.src-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.src-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.src-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gold);
+  margin: 0;
+}
+.src-card-sub {
+  font-size: 12px;
+  color: var(--text3);
+}
+.src-card-text {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--text);
+  /* Greek and Ge'ez render LTR; allow natural wrapping */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+.src-card-text.script-Ethiopic { font-family: 'Noto Sans Ethiopic', 'Abyssinica SIL', serif; font-size: 20px; }
+.src-card-text.script-Greek    { font-family: 'GFS Didot', 'New Athena Unicode', serif; font-size: 19px; }
+
+/* Chapter view — verses listed */
+.src-chapter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.src-chapter-verse {
+  padding: 8px 10px;
+  border-radius: 6px;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.src-chapter-verse:hover { background: var(--bg3); }
+.src-chapter-verse-num {
+  color: var(--text3);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 28px;
+}
+.src-chapter-verse-link {
+  color: inherit;
+  text-decoration: none;
+}
+.src-chapter-verse-link:hover { color: var(--gold); }
+
+/* ── Prev/Next navigation ──────────────────────────────────────────────── */
+.src-navrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+.src-nav-btn {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 48%;
+}
+.src-nav-btn:hover { background: var(--bg3); border-color: var(--accent); }
+.src-nav-btn:disabled, .src-nav-btn[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.src-nav-btn-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  color: var(--text3);
+  text-align: left;
+}
+.src-nav-btn-label strong {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+}
+.src-nav-btn-prev .src-nav-btn-label { text-align: left; }
+.src-nav-btn-next .src-nav-btn-label { text-align: right; }
+
+/* ── Cross-source switcher ─────────────────────────────────────────────── */
+.src-also {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text3);
+}
+.src-also-label { color: var(--text3); }
+.src-also-pill {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.src-also-pill:hover { background: var(--bg3); border-color: var(--gold); }
+.src-also-pill.active {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+}
+
+/* ── Parallel view ─────────────────────────────────────────────────────── */
+.src-parallel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.src-parallel-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.src-parallel-header {
+  font-size: 12px;
+  color: var(--text3);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.src-parallel-header .src-parallel-name {
+  font-weight: 600;
+  color: var(--gold);
+}
+.src-parallel-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+/* ── Doc list (literature_doc sources) ─────────────────────────────────── */
+.src-doclist {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.src-doclist-item {
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  text-decoration: none;
+  color: inherit;
+  gap: 10px;
+}
+.src-doclist-item:hover { background: var(--bg3); }
+.src-doclist-id {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+}
+.src-doclist-count {
+  color: var(--text3);
+  font-size: 11px;
+}
+
+/* ── State messages ────────────────────────────────────────────────────── */
+.src-state {
+  padding: 24px;
+  text-align: center;
+  color: var(--text3);
+  font-size: 14px;
+}
+.src-error {
+  color: var(--red);
+  background: rgba(220, 60, 60, 0.08);
+  border: 1px solid rgba(220, 60, 60, 0.3);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+/* ── Mobile tweaks ─────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .src-main { padding: 10px 10px 80px; }
+  .src-pickers { gap: 6px; }
+  .src-pickers select { font-size: 13px; padding: 5px 6px; }
+  .src-card-text { font-size: 16px; }
+  .src-card-text.script-Ethiopic { font-size: 18px; }
+  .src-card-text.script-Greek { font-size: 17px; }
+  .src-nav-btn { padding: 6px 10px; font-size: 12px; }
+}

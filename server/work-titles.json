@@ -1,0 +1,5 @@
+{
+  "_README": "Map a work to a custom display name. Key is \"SOURCE:code\" (e.g. \"GRC:tlg0018.tlg001.1st1K-grc1\") or just \"code\". Edit freely — the server hot-reloads this and the name shows everywhere (Works page, Docs, reader). These examples can be changed or removed.",
+  "GRC:tlg0018.tlg001.1st1K-grc1": "Philo — On the Creation of the World",
+  "GRC:tlg0526.tlg001.1st1K-grc1": "Josephus — Jewish War"
+}

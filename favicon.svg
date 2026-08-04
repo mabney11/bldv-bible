@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Lion of Judah">
+  <title>Lion of Judah</title>
+  <!--
+    Favicon: a crowned lion, front-facing, gold on the app's dark ground.
+    Built for the TAB, not for a poster — everything is heavy, closed and
+    high-contrast so it survives being drawn 16px wide:
+      • solid dark rounded tile so it reads against light OR dark browser chrome
+      • the mane is a single ring of chunky spikes, not fine strands
+      • the crown sits ON the mane and breaks the circle, which is what makes
+        the silhouette identifiable when the details vanish
+      • eyes/nose are large and few — at 16px they become the whole face
+  -->
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#F4CE7A"/>
+      <stop offset="0.55" stop-color="#E0A83C"/>
+      <stop offset="1"   stop-color="#B67C21"/>
+    </linearGradient>
+    <linearGradient id="goldBright" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE6A8"/>
+      <stop offset="1" stop-color="#E8B44A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ground tile -->
+  <rect width="64" height="64" rx="14" fill="#17120C"/>
+
+  <!-- ── crown ─────────────────────────────────────────────────────────────
+       Three points + a banded base. Drawn first so the mane overlaps its
+       underside and the two read as one object. -->
+  <g>
+    <path d="M18 15.5 L22.5 9.5 L27 15 L32 7.5 L37 15 L41.5 9.5 L46 15.5 L44.5 20.5 L19.5 20.5 Z"
+          fill="url(#goldBright)"/>
+    <rect x="18.5" y="20" width="27" height="4.6" rx="2.1" fill="url(#gold)"/>
+    <circle cx="22.5" cy="8.4" r="1.9" fill="#FFF0C4"/>
+    <circle cx="32"   cy="6.4" r="2.2" fill="#FFF0C4"/>
+    <circle cx="41.5" cy="8.4" r="1.9" fill="#FFF0C4"/>
+    <!-- jewel on the band -->
+    <circle cx="32" cy="22.3" r="1.5" fill="#8E2F2F"/>
+  </g>
+
+  <!-- ── mane ──────────────────────────────────────────────────────────────
+       A spiked ring. Chunky triangles around a disc: at small sizes the
+       spikes blur into a soft halo, which still reads as a lion. -->
+  <g fill="url(#gold)">
+    <path d="M32 24
+             L38.5 25.2 L44 23 L46.6 28.4 L52 30.5 L49.4 36 L52 41.5 L46.6 43.6 L44 49
+             L38.5 46.8 L32 48 L25.5 46.8 L20 49 L17.4 43.6 L12 41.5 L14.6 36 L12 30.5
+             L17.4 28.4 L20 23 L25.5 25.2 Z"/>
+    <circle cx="32" cy="36" r="14.2"/>
+  </g>
+
+  <!-- ── face ──────────────────────────────────────────────────────────────
+       Inset disc a shade lighter, so the muzzle separates from the mane. -->
+  <circle cx="32" cy="36.4" r="10.6" fill="#2A1F13"/>
+  <circle cx="32" cy="36.4" r="10.6" fill="none" stroke="#7A5418" stroke-width="0.8"/>
+
+  <!-- ears -->
+  <circle cx="23.2" cy="29.6" r="2.7" fill="url(#gold)"/>
+  <circle cx="40.8" cy="29.6" r="2.7" fill="url(#gold)"/>
+
+  <!-- brow ridge: one stroke that gives the lion its stern set -->
+  <path d="M24.6 32.4 Q32 29.6 39.4 32.4" fill="none" stroke="#C9963A" stroke-width="1.6" stroke-linecap="round"/>
+
+  <!-- eyes — large, few, high contrast -->
+  <circle cx="27.6" cy="35.4" r="2.25" fill="#FFE6A8"/>
+  <circle cx="36.4" cy="35.4" r="2.25" fill="#FFE6A8"/>
+  <circle cx="27.9" cy="35.6" r="1.15" fill="#17120C"/>
+  <circle cx="36.7" cy="35.6" r="1.15" fill="#17120C"/>
+
+  <!-- muzzle: nose triangle + mouth, kept bold -->
+  <path d="M32 39.2 L34.7 41.5 Q32 43.4 29.3 41.5 Z" fill="#E8B44A"/>
+  <path d="M32 43.2 L32 44.8" stroke="#E8B44A" stroke-width="1.3" stroke-linecap="round"/>
+  <path d="M32 44.8 Q28.8 47.2 26.4 44.4" fill="none" stroke="#E8B44A" stroke-width="1.3" stroke-linecap="round"/>
+  <path d="M32 44.8 Q35.2 47.2 37.6 44.4" fill="none" stroke="#E8B44A" stroke-width="1.3" stroke-linecap="round"/>
+</svg>

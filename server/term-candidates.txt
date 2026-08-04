@@ -1,0 +1,1034 @@
+build-term-candidates — English -> Strong's (kjv_def) -> your own rendered translit
+strongs dictionary: 8,674 entries (strongs-hebrew-expanded.json)
+Strong's numbers with a rendered translit: 8,638
+English words reachable through kjv_def: 6,913
+verses scanned: 7,958   ungl0ssed word types: 5,336
+
+──────────────────────────────────────────────────────────────────────────────
+PROPOSED PINS — 1824 words (showing 500)
+──────────────────────────────────────────────────────────────────────────────
+Each form below is a spelling your pipeline already renders for that Strong's.
+sense=0 means the word is that entry's FIRST kjv_def sense (most confident);
+a high sense number means it was a secondary gloss — check those first.
+
+  corpus  word            translit        strongs  OT      sense  via       kjv_def
+  --------------------------------------------------------------------------------------------------------
+  1116    said            Naam            H5002    376     0                (hath) said, saith., way, righteousness, people, mercy
+  738     things          Mayashara       H4339    19      5                agreement, aright, that are equal, equity, (things tha
+  515     came            Pagai           H6293    46      0      come      come (betwixt), cause to entreat, fall (upon), make in
+  474     therefore       Lahan           H3861    8       3                but, except, save, therefore, wherefore.
+  465     come            Pagai           H6293    46      0                come (betwixt), cause to entreat, fall (upon), make in
+  408     saying          Amara           H561     49      2                answer, [idiom] appointed unto him, saying, speech, wo
+  383     know            Yawadaina       H3046    47      1                certify, know, make known, teach.
+  320     let             Shabath         H7673    71      1                (cause to, let, make to) cease, celebrate, cause (make
+  311     men             Matham          H4974    4       0                men (by reading H4962 (מַת)), soundness.
+  295     even            Haa             H1888    2       0                even, lo.
+  292     many            Rababaha        H7233    16      0                many, million, [idiom] multiply, ten thousand.
+  274     tell            Amar            H560     71      4                command, declare, say, speak, tell.
+  267     made            Chatzab         H2672    25      6                cut, dig, divide, grave, hew (out, -er), made, mason.
+  248     saw             Mashawar        H4883    1       0                saw.
+  244     disciples       Lamawada        H3928    6       1      disciple  accustomed, disciple, learned, taught, used.
+  239     heard           Shamai          H8086    9       0      hear      hear, obey.
+  239     see             Raah            H7202    1       0                see.
+  235     great           Kabad           H3515    39      0                (so) great, grievous, hard(-ened), (too) heavy(-ier), 
+  221     another         Achaya          H251     630     0                another, brother(-ly); kindred, like, other. Compare a
+  219     called          Asharaw         H833     16      0      call      (call, be) bless(-ed, happy), go, guide, lead, relieve
+  219     say             Malal           H4448    5       0                say, speak, utter.
+  216     behold          Hanah           H2009    842     0                behold, lo, see.
+  214     himself         Gapa            H1610    4       1                [phrase] highest places, himself.
+  210     answered        Amar            H559     5308    0      answer    answer, appoint, avouch, bid, boast self, call, certif
+  209     give            Yahab           H3052    28      1                deliver, give, lay, [phrase] prolong, pay, yield.
+  209     among           Thawaka         H8432    418     0                among(-st), [idiom] between, half, [idiom] (there-, wh
+  207     like            Hamah           H1992    561     1                it, like, [idiom] (how, so) many (soever, more as) the
+  200     sent            Shalach         H7972    14      1      send      put, send.
+  170     children        Tapa            H2945    42      0                (little) children (ones), families.
+  168     jews            Yahawadaya      H3064    75      0      jew       Jew.
+  167     given           Yahab           H3052    28      1      give      deliver, give, lay, [phrase] prolong, pay, yield.
+  167     every           Nashaya         H802     781     2                (adulter) ess, each, every, female, [idiom] many, [phr
+  154     took            Thamak          H8551    21      0      take      (take, up-) hold (up), maintain, retain, stay (up).
+  151     flesh           Bashar          H1321    3       0                flesh.
+  150     time            Danah           H1836    58      0                (afore-) time, [phrase] after this manner, here (-afte
+  150     according       Mana            H4481    109     0                according, after, [phrase] because, [phrase] before, b
+  146     gave            Yahab           H3052    28      1      give      deliver, give, lay, [phrase] prolong, pay, yield.
+  145     city            Shairaya        H8179    374     0                city, door, gate, port ([idiom] -er).
+  142     body            Bashara         H1320    270     0                body, (fat, lean) flesh(-ed), kin, (man-) kind, [phras
+  135     make            Badal           H914     42      0                (make, put) difference, divide (asunder), (make) separ
+  134     together        Pagasha         H6298    14      1                meet (with, together).
+  130     written         Kathab          H3790    8       0      write     write(-ten).
+  130     grace           Chan            H2580    69      1                favour, grace(-ious), pleasant, precious, (well-) favo
+  128     found           Asham           H816     35      6                [idiom] certainly, be(-come, made) desolate, destroy, 
+  127     receive         Qabalawan       H6902    3       0                receive, take.
+  126     hear            Shamai          H8086    9       0                hear, obey.
+  125     asked           Baqash          H1245    225     0      ask       ask, beg, beseech, desire, enquire, get, make inquisit
+  125     yet             Idan            H5728    2       0                yet.
+  123     take            Thamak          H8551    21      0                (take, up-) hold (up), maintain, retain, stay (up).
+  123     speak           Inaha           H6032    31      1                answer, speak.
+  121     news            Shamawaih       H8052    27      4                bruit, doctrine, fame, mentioned, news, report, rumor,
+  118     multitude       Amawan          H528     2       0                multitude, populous.
+  115     brought         Sabab           H5437    157     0      bring     bring, cast, fetch, lead, make, walk, [idiom] whirl, [
+  114     coming          Mawabawaa       H4126    2       0                coming.
+  112     comes           Pagai           H6293    46      0      come      come (betwixt), cause to entreat, fall (upon), make in
+  112     much            Marabah         H4767    1       0                much.
+  111     concerning      Awadawath       H182     11      1                (be-) cause, concerning, sake.
+  111     eat             Lacham          H3898    177     1                devour, eat, [idiom] ever, fight(-ing), overcome, prev
+  109     nothing         Balayamah       H1099    2       0                nothing.
+  107     place           Sabayaba        H5439    335     0                (place, round) about, circuit, compass, on every side.
+  106     received        Qabalawan       H6902    3       0      receive   receive, take.
+  105     spoke           Chasharaya      H2840    1       0                spoke.
+  103     says            Malal           H4448    5       0      say       say, speak, utter.
+  99      without         Chayatzawanah   H2435    25      3                outer, outward, utter, without.
+  97      neither         Al              H408     724     1                nay, neither, [phrase] never, no, nor, not, nothing (w
+  96      told            Amar            H560     71      4      tell      command, declare, say, speak, tell.
+  92      certainly       Akan            H403     18      1                but, certainly, nevertheless, surely, truly, verily.
+  91      little          Zaiyar          H2191    5       0                little.
+  90      became          Hawaa           H1934    71      1      become    be, become, [phrase] behold, [phrase] came (to pass), 
+  89      left            Shamaawalay     H8042    9       0                left.
+  89      certain         Kawan           H3559    219     0                certain(-ty), confirm, direct, faithfulness, fashion, 
+  87      become          Hawaa           H1934    71      1                be, become, [phrase] behold, [phrase] came (to pass), 
+  87      sat             Dagar           H1716    2       1      sit       gather, sit.
+  87      blessed         Asharaya        H835     45      0                blessed, happy.
+  87      seen            Yatab           H3190    112     33               be accepted, amend, use aright, benefit, be (make) bet
+  86      feet            Ragalay         H7273    12      0      foot      (on) foot(-man).
+  85      fell            Napal           H5307    434     15               be accepted, cast (down, self, (lots), out), cease, di
+  85      hour            Shaih           H8160    5       0                hour.
+  83      set             Gabal           H1379    5       1                be border, set (bounds about).
+  82      enter           Nachath         H5181    10      2                be broken, (cause to) come down, enter, go down, press
+  81      right           Yamanay         H3233    31      0                (on the) right (hand).
+  81      entered         Nachath         H5181    10      2      enter     be broken, (cause to) come down, enter, go down, press
+  81      known           Yawadaina       H3046    47      1      know      certify, know, make known, teach.
+  80      well            Baara           H875     37      1                pit, well.
+  79      indeed          Amanam          H551     9       0                indeed, no doubt, surely, (it is, of a) true(-ly, -th)
+  78      chief           Abaya           H1       1213    0                chief, (fore-) father(-less), [idiom] patrimony, princ
+  78      high            Ilay            H5943    10      0                (most) high.
+  78      revealed        Galahaa         H1541    9       2      reveal    bring over, carry away, reveal.
+  77      live            Chayay          H2425    20      0                live, save life.
+  76      hope            Machasaha       H4268    20      0                hope, (place of) refuge, shelter, trust.
+  75      whole           Shalama         H8003    28      7                full, just, made ready, peaceable, perfect(-ed), quiet
+  75      believed        Ayaman          H540     3       0      believe   believe, faithful, sure.
+  74      spoken          Inaha           H6032    31      1      speak     answer, speak.
+  74      stood           Imada           H5977    6       1                place, ([phrase] where) stood, upright.
+  73      bring           Sabab           H5437    157     0                bring, cast, fetch, lead, make, walk, [idiom] whirl, [
+  73      began           Chalal          H2490    142     0      begin     begin ([idiom] men began), defile, [idiom] break, defi
+  73      going           Maigal          H4570    16      0                going, path, trench, way(-side).
+  72      fruit           Thabawaahatha   H8393    42      0                fruit, gain, increase, revenue.
+  72      desire          Chamadahatha    H2532    18      0                desire, goodly, pleasant, precious.
+  72      raised          Zawaqap         H2210    2       0      raise     raise (up).
+  72      living          Chay            H2417    7       2                life, that liveth, living.
+  71      able            Yada            H3027    1617    0                ([phrase] be) able, [idiom] about, [phrase] armholes, 
+  71      toward          Nagad           H5049    1       0                toward.
+  71      sake            Dabarahath      H1701    2       1                intent, sake.
+  71      ask             Baqash          H1245    225     0                ask, beg, beseech, desire, enquire, get, make inquisit
+  70      authority       Thaqap          H8633    3       0                authority, power, strength.
+  70      eternal         Iwalama         H5769    438     4                alway(-s), ancient (time), any more, continuance, eter
+  69      righteous       Tzadayaqa       H6662    206     2                just, lawful, righteous (man).
+  68      child           Bana            H1123    11      0                child, son, young.
+  67      cast            Shapak          H8210    115     0                cast (up), gush out, pour (out), shed(-der, out), slip
+  67      stand           Qawayam         H6966    35      5                appoint, establish, make, raise up self, (a-) rise (up
+  67      others          Achawatha       H269     114     0      other     (an-) other, sister, together.
+  67      full            Shalama         H8003    28      0                full, just, made ready, peaceable, perfect(-ed), quiet
+  67      walk            Mahalak         H1981    3       0                walk.
+  67      laid            Shamamah        H8077    58      0                (laid, [idiom] most) desolate(-ion), waste.
+  66      beloved         Dawada          H1730    61      0                (well-) beloved, father's brother, love, uncle.
+  66      followed        Ishah           H6213    2629    27     follow    accomplish, advance, appoint, apt, be at, become, bear
+  66      teaching        Alap            H502     4       1      teach     learn, teach, utter.
+  65      near            Qarab           H7126    283     2                (cause to) approach, (cause to) bring (forth, near), (
+  64      though          Han             H2005    317     3                behold, if, lo, though.
+  63      seeing          Paqach          H6493    2       0                seeing, wise.
+  63      drink           Shakaraw        H7937    19      0                (be filled with) drink (abundantly), (be, make) drunk(
+  63      sky             Shachaq         H7834    21      3                cloud, small dust, heaven, sky.
+  63      thing           Thawaibaha      H8441    117     1                abominable (custom, thing), abomination.
+  62      scribes         Sapar           H5613    6       0      scribe    scribe.
+  62      joy             Mashawash       H4885    17      0                joy, mirth, rejoice.
+  62      send            Shalach         H7972    14      1                put, send.
+  61      elders          Shayabay        H7868    5       0      elder     elder.
+  60      filled          Shabai          H7648    8       0      fill      fill, full(-ness), satisfying, be satisfied.
+  60      keep            Atzalathay      H680     5       0                keep, reserve, straiten, take.
+  60      saints          Qadawasha       H6918    118     1      saint     holy (One), saint.
+  59      delivered       Malat           H4422    95      0      deliver   deliver (self), escape, lay, leap out, let alone, let 
+  59      multitudes      Amawan          H528     2       0      multitude multitude, populous.
+  59      want            Chasar          H2639    2       1                poverty, want.
+  59      still           Damamah         H1827    3       2                calm, silence, still.
+  57      years           Shanahayan      H8140    7       0      year      year.
+  57      opened          Paqach          H6491    20      0      open      open.
+  57      cause           Dayan           H1779    20      0                cause, judgement, plea, strife.
+  57      pray            Matzalaa        H6739    2       0                pray.
+  57      knowing         Yawadaina       H3046    47      1      know      certify, know, make known, teach.
+  57      sight           Chazawatha      H2379    2       0                sight.
+  56      seek            Chaqar          H2713    27      2                find out, (make) search (out), seek (out), sound, try.
+  56      worthy          Adayara         H117     27      9                excellent, famous, gallant, glorious, goodly, lordly, 
+  56      rejoice         Ilaz            H5937    16      1                be joyful, rejoice, triumph.
+  56      died            Gawai           H1478    24      0      die       die, be dead, give up the ghost, perish.
+  55      fulfilled       Sawapath        H5487    2       1      fulfill   consume, fulfill.
+  55      new             Thayarawasha    H8492    38      0                (new, sweet) wine.
+  55      end             Qatzatha        H7117    8       0                end, part, [idiom] some.
+  55      always          Iwalama         H5769    438     0      alway     alway(-s), ancient (time), any more, continuance, eter
+  54      killed          Zabach          H2076    134     0      kill      kill, offer, (do) sacrifice, slay., people, houses
+  54      think           Sabar           H5452    1       0                think.
+  54      show            Chawah          H2331    6       0                show.
+  54      follow          Ishah           H6213    2629    27               accomplish, advance, appoint, apt, be at, become, bear
+  54      cried           Ranahatha       H7440    33      0      cry       cry, gladness, joy, proclamation, rejoicing, shouting,
+  54      times           Shabaithayam    H7659    6       1                seven(-fold, times).
+  54      write           Kathab          H3790    8       0                write(-ten).
+  53      born            Yalayaday       H3211    13      0                (home-) born, child, son.
+  53      afraid          Yaraa           H3373    54      0                afraid, fear (-ful).
+  53      long            Mathay          H4970    43      0                long, when.
+  53      taken           Thamak          H8551    21      0      take      (take, up-) hold (up), maintain, retain, stay (up).
+  53      blind           Iwar            H5786    5       0                blind, put out. See also H5895 (עַיִר).
+  53      saved           Yashacha        H3445    1       1      save      casting down., save
+  53      standing        Maimad          H4613    1       0                standing.
+  52      kill            Zabach          H2076    134     0                kill, offer, (do) sacrifice, slay., people, houses
+  51      need            Tzaraka         H6878    1       0                need.
+  51      last            Acharayatha     H319     61      0                (last, latter) end (time), hinder (utter) -most, lengt
+  51      except          Lawalaa         H3884    14      0                except, had not, if (...not), unless, were it not that
+  51      find            Hashathakachath H7912    18      0                find.
+  51      teacher         Lawayatza       H3887    27      7                ambassador, have in derision, interpreter, make a mock
+  51      beginning       Az              H227     141     0                beginning, for, from, hitherto, now, of old, once, sin
+  50      back            Shakama         H7926    21      0                back, [idiom] consent, portion, shoulder.
+  50      tree            Ayalan          H363     6       0                tree.
+  50      lord            Adanaya         H136     445     0                (my) Lord.
+  50      gathered        Qawah           H6960    49      0      gather    gather (together), look, patiently, tarry, wait (for, 
+  49      healed          Rapaaha         H7499    3       0      heal      heal(-ed), medicine.
+  49      true            Tzadaa          H6656    1       0                true.
+  48      old             Yashan          H3462    21      0                old (store), remain long, (make to) sleep.
+  47      unless          Awalay          H194     45      3                if so be, may be, peradventure, unless.
+  46      get             Rakash          H7408    5       1                gather, get.
+  46      sick            Chalaya         H2483    24      2                disease, grief, (is) sick(-ness).
+  46      woe             Ay              H337     2       0                woe.
+  46      feast           Chaga           H2282    62      0                (solemn) feast (day), sacrifice, solemnity.
+  45      named           Shama           H8034    864     2                [phrase] base, (in-) fame(-ous), named(-d), renown, re
+  45      speaking        Inaha           H6032    31      1      speak     answer, speak.
+  45      sit             Dagar           H1716    2       1                gather, sit.
+  45      greater         Kabad           H3515    39      0      great     (so) great, grievous, hard(-ened), (too) heavy(-ier), 
+  45      present         Shay            H7862    3       0                present.
+  44      sheep           Tzanaa          H6792    2       0                sheep.
+  44      looking         Chazawa         H2376    12      0      look      look, vision.
+  44      whether         Han             H2006    18      2                (that) if, or, whether.
+  44      free            Nadayaba        H5081    29      0                free, liberal (things), noble, prince, willing (hearte
+  43      call            Asharaw         H833     16      0                (call, be) bless(-ed, happy), go, guide, lead, relieve
+  43      ought           Maawamah        H3972    32      2                fault, [phrase] no(-ught), ought, somewhat, any (no-)t
+  43      loved           Ahabahatha      H160     40      0      love      love., righteousness
+  42      country         Maqawama        H4725    401     0                country, [idiom] home, [idiom] open, place, room, spac
+  42      kept            Atzalathay      H680     5       0      keep      keep, reserve, straiten, take.
+  42      myself          Anay            H589     874     3                I, (as for) me, mine, myself, we, [idiom] which, [idio
+  42      preached        Bashar          H1319    24      1      preach    messenger, preach, publish, shew forth, (bear, bring, 
+  42      testify         Iwad            H5749    44      10               admonish, charge, earnestly, lift up, protest, call (t
+  42      promise         Awamar          H562     6       0                promise, speech, thing, word.
+  41      food            Maakala         H3978    30      0                food, fruit, (bake-)meat(-s), victual.
+  41      women           Nashayana       H5389    1       0                women.
+  41      thanks          Mahawadaa       H3029    2       0      thank     (give) thank(-s).
+  41      tomb            Gadayash        H1430    4       1                shock (stack) (of corn), tomb.
+  40      book            Sapar           H5609    5       0                book, roll.
+  40      part            Nathachaya      H5409    13      0                part, piece.
+  39      wise            Chakayamay      H2445    14      0                wise.
+  39      understand      Shamai          H8085    1159    29               [idiom] attentively, call (gather) together, [idiom] c
+  39      hold            Qabal           H6901    13      1                choose, (take) hold, receive, (under-) take.
+  39      rich            Ishayar         H6223    23      0                rich (man).
+  38      prison          Sahar           H5470    8       0                prison.
+  38      speaks          Inaha           H6032    31      1      speak     answer, speak.
+  37      young           Bachawaraya     H970     46      0                (choice) young (man), chosen, [idiom] hole.
+  37      led             Iwaparath       H5777    9       0      lead      lead.
+  37      already         Kabar           H3528    9       0                already, (seeing that which), now.
+  37      lay             Shakab          H7901    208     2                [idiom] at all, cast down, (lover-)lay (self) (down), 
+  37      far             Rachayaqayan    H7352    1       0                far.
+  37      bound           Asayaraya       H615     12      0                (those which are) bound, prisoner.
+  37      doing           Mailalaya       H4611    41      0                doing, endeavour, invention, work.
+  37      loud            Iza             H5797    92      1                boldness, loud, might, power, strength, strong.
+  37      ourselves       Anachanaw       H587     119     0                ourselves, us, we.
+  37      beast           Bahamahatha     H929     190     0                beast, cattle.
+  36      bear            Yawalad         H3205    497     0                bear, beget, birth(-day), born, (make to) bring forth 
+  36      taught          Lamawada        H3928    6       3                accustomed, disciple, learned, taught, used.
+  36      judged          Palayala        H6414    3       0      judge     judge.
+  36      begged          Baqash          H1245    225     1      beg       ask, beg, beseech, desire, enquire, get, make inquisit
+  36      fellow          Raiyaha         H7474    10      0                fellow, love.
+  36      remains         Sharadaw        H8277    1       0      remain    remain.
+  35      devil           Shaiyar         H8163    59      0                devil, goat, hairy, kid, rough, satyr.
+  35      preach          Bashar          H1319    24      1                messenger, preach, publish, shew forth, (bear, bring, 
+  35      poor            Masakan         H4542    4       0                poor (man).
+  35      teach           Alap            H502     4       1                learn, teach, utter.
+  35      receives        Qabalawan       H6902    3       0      receive   receive, take.
+  35      look            Chazawa         H2376    12      0                look, vision.
+  35      better          Yatharawan      H3504    10      0                better, excellency(-leth), profit(-able).
+  35      circumcision    Mawalaha        H4139    1       0                circumcision.
+  34      exceedingly     Rab             H7227    461     6                (in) abound(-undance, -ant, -antly), captain, elder, e
+  34      glorified       Hadarath        H1922    3       0      glorify   glorify, honour.
+  34      suffer          Raib            H7456    13      3                (suffer to) famish, (be, have, suffer, suffer to) hung
+  34      none            Bal             H1077    71      3                lest, neither, no, none (that...), not (any), nothing.
+  34      stayed          Mashain         H4937    5       0      stay      stay.
+  34      lives           Chayah          H2421    262     15               keep (leave, make) alive, [idiom] certainly, give (pro
+  34      remain          Sharadaw        H8277    1       0                remain.
+  34      lamb            Kabasha         H3532    107     0                lamb, sheep.
+  33      remember        Zakar           H2142    232     7                [idiom] burn (incense), [idiom] earnestly, be male, (m
+  33      leave           Shaar           H7604    133     0                leave, (be) left, let, remain, remnant, reserve, the r
+  33      deliver         Malat           H4422    95      0                deliver (self), escape, lay, leap out, let alone, let 
+  33      door            Pathacha        H6607    164     0                door, entering (in), entrance (-ry), gate, opening, pl
+  33      knew            Yawadaina       H3046    47      1      know      certify, know, make known, teach.
+  33      sitting         Mawashaba       H4186    44      6                assembly, dwell in, dwelling(-place), wherein (that) d
+  33      chosen          Bachawaraya     H970     46      1                (choice) young (man), chosen, [idiom] hole.
+  33      parable         Mashal          H4912    39      2                byword, like, parable, proverb.
+  33      middle          Thayakawanah    H8484    11      0                middle(-most), midst.
+  33      looked          Chazawa         H2376    12      0      look      look, vision.
+  33      longer          Iwad            H5750    488     8                again, [idiom] all life long, at all, besides, but, el
+  32      happened        Anah            H579     4       2      happen    befall, deliver, happen, seek a quarrel.
+  32      sought          Chaqar          H2713    27      2      seek      find out, (make) search (out), seek (out), sound, try.
+  32      means           Machashabaha    H4284    56      5                cunning (work), curious work, device(-sed), imaginatio
+  32      sound           Qal             H7032    7       0                sound, voice.
+  32      next            Achara          H312     166     2                (an-) other man, following, next, strange.
+  32      dwell           Dawaaray        H1753    7       0                dwell.
+  32      listen          Shamai          H8085    1159    16               [idiom] attentively, call (gather) together, [idiom] c
+  32      prepared        Chalatz         H2502    44      8                arm (self), (go, ready) armed ([idiom] man, soldier), 
+  31      false           Shawaa          H7723    53      0                false(-ly), lie, lying, vain, vanity.
+  31      side            Tzada           H6654    33      0                (be-) side.
+  31      passed          Chalapawan      H2499    4       0      pass      pass.
+  31      disciple        Lamawada        H3928    6       1                accustomed, disciple, learned, taught, used.
+  31      cup             Kawasa          H3563    33      0                cup, (small) owl. Compare H3599 (כִּיס).
+  31      returned        Thayabawan      H8421    8       2      return    answer, restore, return (an answer).
+  31      boast           Halal           H1984    165     0                (make) boast (self), celebrate, commend, (deal, make),
+  30      lived           Chayay          H2425    20      0      live      live, save life.
+  30      clothing        Makasaha        H4374    4       0                clothing, to cover, that which covereth.
+  30      cut             Chatzab         H2672    25      0                cut, dig, divide, grave, hew (out, -er), made, mason.
+  30      throw           Ramah           H7411    13      5                beguile, betray, (bow-) man, carry, deceive, throw.
+  30      ate             Lacham          H3898    177     1      eat       devour, eat, [idiom] ever, fight(-ing), overcome, prev
+  30      weak            Amalal          H536     1       0                weak.
+  30      since           Az              H227     141     7                beginning, for, from, hitherto, now, of old, once, sin
+  30      scripture       Kathab          H3791    16      1                register, scripture, writing.
+  29      fall            Napal           H5308    11      0                fall (down), have occasion.
+  29      perfect         Kalalaw         H3634    2       0                (make) perfect.
+  29      else            Ayan            H369     788     0                else, except, fail, (father-) less, be gone, in(-curab
+  29      knows           Yawadaina       H3046    47      1      know      certify, know, make known, teach.
+  29      kind            Zanay           H2178    4       0                kind.
+  29      ears            Malayalaha      H4425    1       0      ear       ear.
+  29      turned          Dawar           H1754    3       1      turn      ball, turn, round about.
+  29      likewise        Zaath           H2063    604     3                hereby (-in, -with), it, likewise, the one (other, sam
+  29      answer          Amar            H559     5308    0                answer, appoint, avouch, bid, boast self, call, certif
+  29      service         Sharad          H8278    4       0                service.
+  28      stay            Mashain         H4937    5       0                stay.
+  28      reward          Mashakaratha    H4909    4       0                reward, wages.
+  28      lest            Bal             H1077    71      0                lest, neither, no, none (that...), not (any), nothing.
+  28      stumble         Pawayaq         H6328    2       0                stumble, move.
+  28      forgive         Salach          H5545    46      0                forgive, pardon, spare.
+  28      fish            Daag            H1709    19      0                fish.
+  28      often           Rab             H7227    461     24               (in) abound(-undance, -ant, -antly), captain, elder, e
+  28      money           Kasapa          H3701    403     0                money, price, silver(-ling)., servant
+  28      master          Adawanaya       H113     328     1                lord, master, owner. Compare also names beginning with
+  28      gives           Yahab           H3052    28      1      give      deliver, give, lay, [phrase] prolong, pay, yield.
+  28      lawful          Tzadayaqa       H6662    206     1                just, lawful, righteous (man).
+  28      open            Paqach          H6491    20      0                open.
+  28      watch           Ashamarahath    H821     7       0                watch.
+  28      alive           Chaya           H2416    500     1                [phrase] age, alive, appetite, (wild) beast, company, 
+  28      appointed       Chaqa           H2706    127     0                appointed, bound, commandment, convenient, custom, dec
+  28      testified       Iwad            H5749    44      10     testify   admonish, charge, earnestly, lift up, protest, call (t
+  27      hidden          Sathamaw        H5640    14      1                closed up, hidden, secret, shut out (up), stop.
+  27      pass            Chalapawan      H2499    4       0                pass.
+  27      tax             Irak            H6186    76      17               put (set) (the battle, self) in array, compare, direct
+  27      vain            Habala          H1892    73      1                [idiom] altogether, vain, vanity.
+  27      hearing         Mashamai        H4926    1       0                hearing.
+  27      table           Shalachana      H7979    71      0                table.
+  27      prayer          Thapalahatha    H8605    77      0                prayer.
+  26      preaching       Qarayaah        H7150    1       0                preaching.
+  26      ready           Ithawada        H6259    1       0                ready.
+  26      pure            Naqaa           H5343    1       0                pure.
+  26      council         Ragamahatha     H7277    1       0                council.
+  26      white           Labana          H3836    29      0                white.
+  26      desires         Chamadahatha    H2532    18      0      desire    desire, goodly, pleasant, precious.
+  26      field           Chalaqahatha    H2513    29      0                field, flattering(-ry), ground, parcel, part, piece of
+  26      foolish         Pathaya         H6612    19      0                foolish, simple(-icity, one).
+  26      soldiers        Tzabaa          H6635    485     6                appointed time, ([phrase]) army, ([phrase]) battle, co
+  26      sold            Machayar        H4242    15      3                gain, hire, price, sold, worth.
+  26      strong          Chasan          H2634    2       0                strong.
+  26      riches          Chasan          H2633    5       0                riches, strength, treasure.
+  26      person          Adam            H120     552     6                [idiom] another, [phrase] hypocrite, [phrase] common s
+  26      prayed          Matzalaa        H6739    2       0      pray      pray.
+  26      rose            Chabatzalath    H2261    2       0                rose.
+  26      wrote           Kathab          H3790    8       0      write     write(-ten).
+  26      presence        Nagada          H5048    150     6                about, (over) against, [idiom] aloof, [idiom] far (off
+  25      gold            Zahaba          H2091    389     0                gold(-en), fair weather.
+  25      touched         Nagai           H5060    150     13     touch     beat, ([idiom] be able to) bring (down), cast, come (n
+  25      marveled        Thamahaw        H8539    9       2      marvel    be amazed, be astonished, marvel(-lously), wonder.
+  25      obey            Shamai          H8086    9       1                hear, obey.
+  25      read            Qaraa           H7123    11      2                call, cry, read.
+  25      age             Yawamaya        H3117    2303    0                age, [phrase] always, [phrase] chronicals, continually
+  25      broken          Chath           H2844    5       0                broken, dismayed, dread, fear.
+  25      reason          Thabawana       H8394    42      1                discretion, reason, skilfulness, understanding, wisdom
+  25      witnesses       Ida             H5707    70      0      witness   witness.
+  25      ship            Anayaha         H591     31      0                ship(-men).
+  24      gather          Qawah           H6960    49      0                gather (together), look, patiently, tarry, wait (for, 
+  24      served          Palachawan      H6399    10      1      serve     minister, serve.
+  24      heavenly        Shamayan        H8065    38      0      heaven    heaven.
+  24      household       Ibadah          H5657    2       0                household, store of servants.
+  24      beg             Baqash          H1245    225     1                ask, beg, beseech, desire, enquire, get, make inquisit
+  23      troubled        Sair            H5590    7       2                be (toss with) tempest(-uous), be sore, troubled, come
+  23      worshiped       Sagad           H5457    12      0      worship   worship.
+  23      crying          Shawaihatha     H7775    11      0                crying.
+  23      repentance      Nacham          H5164    1       0                repentance.
+  23      letter          Agaratha        H107     10      0                letter.
+  23      friends         Raih            H7463    4       0      friend    friend.
+  23      risen           Zarach          H2224    18      1      rise      arise, rise (up), as soon as it is up.
+  23      foundation      Adanaya         H134     57      0                foundation, socket.
+  23      threw           Ramah           H7411    13      5      throw     beguile, betray, (bow-) man, carry, deceive, throw.
+  23      counted         Sapar           H5608    161     1      count     commune, (ac-) count; declare, number, [phrase] penkni
+  23      vineyard        Karamaya        H3754    92      1                vines, (increase of the) vineyard(-s), vintage. See al
+  23      greatly         Kabad           H3515    39      0      great     (so) great, grievous, hard(-ened), (too) heavy(-ier), 
+  23      lusts           Sharayarawath   H8307    10      1      lust      imagination, lust.
+  23      languages       Lashan          H3961    7       0      language  language.
+  23      tribe           Shabatay        H7625    1       0                tribe.
+  23      war             Lacham          H3901    1       0                war.
+  22      governor        Saganay         H5460    5       0                governor.
+  22      weeping         Bakay           H1065    28      2                overflowing, [idiom] sore, (continual) weeping, wept.
+  22      walking         Mahalak         H1981    3       0      walk      walk.
+  22      quickly         Maharah         H4120    20      1                hastily, quickly, shortly, soon, make (with) speed(-il
+  22      adultery        Naawapa         H5004    2       0                adultery.
+  22      giving          Yahab           H3052    28      1      give      deliver, give, lay, [phrase] prolong, pay, yield.
+  22      consider        Shakayal        H7919    63      0                consider, expert, instruct, prosper, (deal) prudent(-l
+  22      measure         Madad           H4058    51      0                measure, mete, stretch self.
+  22      within          Chayaqa         H2436    37      4                bosom, bottom, lap, midst, within.
+  22      calling         Maqaraa         H4744    23      1                assembly, calling, convocation, reading.
+  22      amazed          Bahal           H926     37      1                be (make) affrighted (afraid, amazed, dismayed, rash),
+  22      truly           Akan            H403     18      4                but, certainly, nevertheless, surely, truly, verily.
+  22      help            Izara           H5826    81      0                help, succour.
+  22      build           Banah           H1129    375     0                (begin to) build(-er), obtain children, make, repair, 
+  22      release         Shamatah        H8059    5       0                release.
+  22      happen          Anah            H579     4       2                befall, deliver, happen, seek a quarrel.
+  22      making          Badal           H914     42      0      make      (make, put) difference, divide (asunder), (make) separ
+  22      determined      Chathak         H2852    1       0      determine determine.
+  21      birth           Thawaladaha     H8435    39      0                birth, generations.
+  21      hungry          Raib            H7457    20      1                hunger bitten, hungry.
+  21      glorify         Hadarath        H1922    3       0                glorify, honour.
+  21      commit          Pail            H6466    56      0                commit, (evil-) do(-er), make(-r), ordain, work(-er).
+  21      deeds           Gamawalah       H1578    3       0      deed      deed, recompense, such a reward.
+  21      pieces          Palach          H6400    6       0      piece     piece.
+  21      built           Banah           H1129    375     0      build     (begin to) build(-er), obtain children, make, repair, 
+  21      beat            Ka              H5221    500     0                beat, cast forth, clap, give (wounds), [idiom] go forw
+  21      cities          Shairaya        H8179    374     0      city      city, door, gate, port ([idiom] -er).
+  21      compassion      Rachamaya       H7356    44      1                bowels, compassion, damsel, tender love, (great, tende
+  21      deny            Manai           H4513    29      0                deny, keep (back), refrain, restrain, withhold.
+  21      stumbling       Nagap           H5063    7       1                plague, stumbling.
+  21      continue        Achar           H309     16      0                continue, defer, delay, hinder, be late (slack), stay 
+  21      pay             Shaqal          H8254    22      0                pay, receive(-r), spend, [idiom] throughly, weigh.
+  21      scriptures      Kathab          H3791    16      1      scripture register, scripture, writing.
+  21      speech          Hamawalah       H1999    2       0                speech, tumult.
+  21      fallen          Napal           H5308    11      0      fall      fall (down), have occasion.
+  21      gain            Machayar        H4242    15      0                gain, hire, price, sold, worth.
+  21      thus            Kan             H3652    8       0                thus.
+  21      number          Manaay          H4483    5       0                number, ordain, set.
+  21      witness         Ida             H5707    70      0                witness.
+  20      region          Napaha          H5299    4       2                border, coast, region, sieve.
+  20      hair            Shaira          H8181    28      0                hair(-y), [idiom] rough.
+  20      raise           Zawaqap         H2210    2       0                raise (up).
+  20      beyond          Ibar            H5675    14      0                beyond, this side.
+  20      praying         Matzalaa        H6739    2       0      pray      pray.
+  20      destruction     Mahawamah       H4103    12      0                destruction, discomfiture, trouble, tumult, vexation, 
+  20      evening         Irab            H6150    3       1                be darkened, (toward) evening.
+  20      order           Sadara          H5468    1       0                order.
+  20      silver          Kasap           H3702    13      1                money, silver.
+  20      ear             Malayalaha      H4425    1       0                ear.
+  20      apart           Bada            H905     202     1                alone, apart, bar, besides, branch, by self, of each a
+  20      places          Shamamaw        H8074    85      9                make amazed, be astonied, (be an) astonish(-ment), (be
+  20      seeking         Chaqar          H2713    27      2      seek      find out, (make) search (out), seek (out), sound, try.
+  20      poured          Tzawaq          H6694    3       1      pour      be molten, pour.
+  20      ran             Rawar           H7325    1       0      run       run.
+  20      commanding      Amar            H560     71      0      command   command, declare, say, speak, tell.
+  20      comfort         Nacham          H5162    108     0                comfort (self), ease (one's self), repent(-er,-ing, se
+  19      willing         Nadayaba        H5081    29      4                free, liberal (things), noble, prince, willing (hearte
+  19      officer         Shataraya       H7860    25      0                officer, overseer, ruler.
+  19      clothed         Makarabal       H3736    1       0                clothed.
+  19      hears           Shamai          H8086    9       0      hear      hear, obey.
+  19      finished        Kalaa           H3607    18      0      finish    finish, forbid, keep (back), refrain, restrain, retain
+  19      heal            Rapaaha         H7499    3       0                heal(-ed), medicine.
+  19      lying           Kadabah         H3538    1       0                lying.
+  19      rebuked         Charapahatha    H2781    73      0      rebuke    rebuke, reproach(-fully), shame.
+  19      prepare         Zamanathawan    H2164    1       0                prepare.
+  19      divided         Palayagah       H6386    1       0                divided.
+  19      takes           Thamak          H8551    21      0      take      (take, up-) hold (up), maintain, retain, stay (up).
+  19      small           Matzair         H4705    5       1                little one (while), small.
+  19      cloud           Inana           H6051    87      0                cloud(-y).
+  19      wrong           Iwathahatha     H5792    1       0                wrong.
+  19      prayers         Thapalahatha    H8605    77      0      prayer    prayer.
+  19      suffered        Raib            H7456    13      3      suffer    (suffer to) famish, (be, have, suffer, suffer to) hung
+  19      taking          Maqach          H4727    1       0                taking.
+  19      carried         Nahala          H5095    10      0      carry     carry, feed, guide, lead (gently, on).
+  19      bondage         Ibadawatha      H5659    3       0                bondage.
+  18      offered         Tharawamaha     H8641    76      3                gift, heave offering (shoulder), oblation, offered(-in
+  18      lost            Abadah          H9       4       0                lost.
+  18      offer           Zabacha         H2077    162     0                offer(-ing), sacrifice.
+  18      committed       Hayah           H1961    3560    4                beacon, [idiom] altogether, be(-come), accomplished, c
+  18      makes           Badal           H914     42      0      make      (make, put) difference, divide (asunder), (make) separ
+  18      hypocrites      Chanap          H2611    13      0      hypocrite hypocrite(-ical)., man
+  18      fast            Tzawam          H6685    26      0                fast(-ing).
+  18      bridegroom      Chathan         H2860    20      0                bridegroom, husband, son in law.
+  18      along           Daraka          H1870    706     0                along, away, because of, [phrase] by, conversation, cu
+  18      linen           Bad             H906     23      0                linen.
+  18      please          Shapar          H8232    3       1                be acceptable, please, [phrase] think good.
+  18      weep            Damai           H1830    2       1                [idiom] sore, weep.
+  18      year            Shanahayan      H8140    7       0                year.
+  18      obtained        Pawaq           H6329    7       4      obtain    afford, draw out, further, get, obtain.
+  18      boldness        Iza             H5797    92      0                boldness, loud, might, power, strength, strong.
+  18      boasting        Halal           H1984    165     0      boast     (make) boast (self), celebrate, commend, (deal, make),
+  17      shepherd        Raih            H7462    164     13               [idiom] break, companion, keep company with, devour, e
+  17      root            Sharasha        H8330    3       0                root.
+  17      behind          Acharaya        H310     715     7                after (that, -ward), again, at, away from, back (from,
+  17      glad            Shamachaw       H8056    20      0                (be) glad, joyful, (making) merry((-hearted), -ily), r
+  17      sees            Raah            H7202    1       0      see       see.
+  17      room            Qana            H7064    13      1                nest, room.
+  17      beware          Irayamaw        H6191    5       1                [idiom] very, beware, take crafty (counsel), be pruden
+  17      produces        Qarab           H7126    283     12     produce   (cause to) approach, (cause to) bring (forth, near), (
+  17      worse           Rai             H7451    664     30               adversity, affliction, bad, calamity, [phrase] displea
+  17      journey         Masaiya         H4550    12      0                journey(-ing).
+  17      village         Parawazaya      H6521    3       0                village.
+  17      eating          Akala           H400     44      0                eating, food, meal(-time), meat, prey, victuals.
+  17      condemned       Rashayai        H7561    35      0      condemn   condemn, make trouble, vex, be (commit, deal, depart, 
+  17      garments        Madaha          H4060    55      0      garment   garment, measure(-ing, meteyard, piece, size, (great) 
+  17      passing         Chalapawan      H2499    4       0      pass      pass.
+  17      respect         Mashaa          H4856    1       0                respect.
+  17      invited         Qaraa           H7121    734     9      invite    bewray (self), that are bidden, call (for, forth, self
+  17      sinned          Chataah         H2401    8       0      sin       sin (offering).
+  17      persuaded       Sawayatha       H5496    18      2      persuade  entice, move, persuade, provoke, remove, set on, stir 
+  17      eats            Lacham          H3898    177     1      eat       devour, eat, [idiom] ever, fight(-ing), overcome, prev
+  17      affliction      Iyana           H5869    887     0                affliction, outward appearance, [phrase] before, [phra
+  17      past            Raashawanah     H7223    182     8                ancestor, (that were) before(-time), beginning, eldest
+  17      stands          Qawayam         H6966    35      5      stand     appoint, establish, make, raise up self, (a-) rise (up
+  17      worked          Mapailawath     H4659    3       0      work      work.
+  17      lifted          Bawaa           H935     2568    42     lift      abide, apply, attain, [idiom] be, befall, [phrase] bes
+  17      wait            Araba           H696     1       0                wait.
+  17      pleasure        Raiwath         H7470    2       0                pleasure, will.
+  17      lie             Thaana          H8383    1       0                lie.
+  17      language        Lashan          H3961    7       0                language.
+  17      idols           Tharapayam      H8655    15      0                idols(-atry), images, teraphim.
+  17      creatures       Napasha         H5315    754     5      creature  any, appetite, beast, body, breath, creature, [idiom] 
+  16      least           Qatana          H6996    101     0                least, less(-er), little (one), small(-est, one, quant
+  16      flee            Natzaa          H5323    1       0                flee.
+  16      pleased         Shapar          H8232    3       1      please    be acceptable, please, [phrase] think good.
+  16      report          Shama           H8034    864     4                [phrase] base, (in-) fame(-ous), named(-d), renown, re
+  16      treasure        Ganazay         H1596    3       0                treasure.
+  16      birds           Iwap            H5775    71      0      bird      bird, that flieth, flying, fowl.
+  16      seeks           Chaqar          H2713    27      2      seek      find out, (make) search (out), seek (out), sound, try.
+  16      thorns          Shayath         H7898    7       0                thorns.
+  16      asleep          Yashan          H3463    7       0                asleep, (one out of) sleep(-eth, -ing), slept.
+  16      touch           Nagai           H5060    150     13               beat, ([idiom] be able to) bring (down), cast, come (n
+  16      moved           Gaishaw         H1607    9       0      move      move, shake, toss, trouble.
+  16      friend          Raih            H7463    4       0                friend.
+  16      parables        Mashal          H4912    39      2      parable   byword, like, parable, proverb.
+  16      grew            Gadal           H1432    4       1                great, grew.
+  16      bought          Maqanah         H4736    15      0                (he that is) bought, possession, piece, purchase.
+  16      contrary        Qaray           H7147    7       0                contrary.
+  16      draw            Shalap          H8025    25      0                draw (off), grow up, pluck off.
+  16      profit          Yatharawan      H3504    10      2                better, excellency(-leth), profit(-able).
+  16      joined          Yachad          H3161    3       0      join      join, unite.
+
+──────────────────────────────────────────────────────────────────────────────
+NOT REACHABLE FROM kjv_def — these need authoring
+──────────────────────────────────────────────────────────────────────────────
+  alahayam(1339)  adanay(674)  mashayach(561)  don’t(482)  went(305)  didn’t(253)  kayapaa(167)  doesn’t(152)  yawachanan(133)  immediately(108)  whoever(106)  anyone(104)  themselves(93)  haqadash(92)  pharisees(88)  yourselves(78)  whatever(78)  yes(73)  everyone(72)  around(66)  can’t(59)  baptized(58)  apostles(56)  payalatawas(56)  anything(55)  honor(55)  demons(54)  yourself(52)  isn’t(51)  boat(46)  hawaradawas(44)  synagogue(44)  greet(43)  wouldn’t(42)  won’t(42)  rather(42)  resurrection(42)  sexual(38)  today(38)  gone(38)  outside(38)  everything(37)  crucified(37)  something(35)  payalayapawas(34)  however(33)  immorality(31)  justified(31)  someone(31)  members(30)  aren’t(30)  thrown(30)  cross(29)  qayasar(29)  conscience(29)  spiritual(28)  baranab(27)  perseverance(26)  macedonia(26)  synagogues(25)
+
+Reachable but that Strong's has never been rendered, so there is no attested
+spelling to copy — authoring too:
+  mightier->H8623(3)
+
+──────────────────────────────────────────────────────────────────────────────
+READY TO PASTE — term-forms.txt
+──────────────────────────────────────────────────────────────────────────────
+# Generated by build-term-candidates from Strong's kjv_def, with the translit
+# taken from surface-index.db (a spelling this corpus already renders).
+# REVIEW HIGH sense NUMBERS FIRST — those came from a secondary KJV gloss.
+# Delete any line you disagree with; term-forms.txt is read directly, so a
+# change takes effect on the next `node render-all.mjs --surface`, with no
+# OT rebuild.
+said            Naam              # H5002 · 1116x in NT · 376x OT · sense 0
+things          Mayashara         # H4339 · 738x in NT · 19x OT · sense 5  alt: Raasha/H7218 Palaa/H6381
+came            Pagai             # H6293 · 515x in NT · 46x OT · sense 0 · via "come"  alt: Athah/H858 Mataa/H4291
+therefore       Lahan             # H3861 · 474x in NT · 8x OT · sense 3  alt: Day/H1768 Zaath/H2063
+come            Pagai             # H6293 · 465x in NT · 46x OT · sense 0  alt: Athah/H858 Mataa/H4291
+saying          Amara             # H561 · 408x in NT · 49x OT · sense 2  alt: Dabara/H1697
+know            Yawadaina         # H3046 · 383x in NT · 47x OT · sense 1  alt: Daitha/H1847 Nakar/H5234
+let             Shabath           # H7673 · 320x in NT · 71x OT · sense 1  alt: Shaar/H7604 Shaqaha/H8248
+men             Matham            # H4974 · 311x in NT · 4x OT · sense 0  alt: Ima/H5971 Mathaya/H4962
+even            Haa               # H1888 · 295x in NT · 2x OT · sense 0  alt: Raq/H7535 Ak/H389
+many            Rababaha          # H7233 · 292x in NT · 16x OT · sense 0  alt: Hamawana/H1995 Shagayaa/H7690
+tell            Amar              # H560 · 274x in NT · 71x OT · sense 4  alt: Manah/H4487 Thakan/H8505
+made            Chatzab           # H2672 · 267x in NT · 25x OT · sense 6
+saw             Mashawar          # H4883 · 248x in NT · 1x OT · sense 0  alt: Magarah/H4050 Garawara/H1641
+disciples       Lamawada          # H3928 · 244x in NT · 6x OT · sense 1 · via "disciple"
+heard           Shamai            # H8086 · 239x in NT · 9x OT · sense 0 · via "hear"  alt: Qashayab/H7181 Shamai/H8088
+see             Raah              # H7202 · 239x in NT · 1x OT · sense 0  alt: Shazapatha/H7805 Hanah/H2009
+great           Kabad             # H3515 · 235x in NT · 39x OT · sense 0  alt: Labayaa/H3833 Rabarabayan/H7260
+another         Achaya            # H251 · 221x in NT · 630x OT · sense 0  alt: Anawash/H582 Imayatha/H5997
+called          Asharaw           # H833 · 219x in NT · 16x OT · sense 0 · via "call"  alt: Qaraa/H7123 Zaiq/H2199
+say             Malal             # H4448 · 219x in NT · 5x OT · sense 0  alt: Malal/H4449 Naamaw/H5001
+behold          Hanah             # H2009 · 216x in NT · 842x OT · sense 0  alt: Han/H2005 Shayar/H7891
+himself         Gapa              # H1610 · 214x in NT · 4x OT · sense 1  alt: Yada/H3027
+answered        Amar              # H559 · 210x in NT · 5308x OT · sense 0 · via "answer"  alt: Dabar/H1696 Amara/H561
+give            Yahab             # H3052 · 209x in NT · 28x OT · sense 1  alt: Shawamath/H7761 Yanaq/H3243
+among           Thawaka           # H8432 · 209x in NT · 418x OT · sense 0  alt: Bayana/H996 Bayan/H997
+like            Hamah             # H1992 · 207x in NT · 561x OT · sense 1  alt: Mashal/H4912 Mashala/H4915
+sent            Shalach           # H7972 · 200x in NT · 14x OT · sense 1 · via "send"  alt: Nawayap/H5130 Shawab/H7725
+children        Tapa              # H2945 · 170x in NT · 42x OT · sense 0
+jews            Yahawadaya        # H3064 · 168x in NT · 75x OT · sense 0 · via "jew"  alt: Yahawadaayan/H3062
+given           Yahab             # H3052 · 167x in NT · 28x OT · sense 1 · via "give"  alt: Shawamath/H7761 Yanaq/H3243
+every           Nashaya           # H802 · 167x in NT · 781x OT · sense 2  alt: Kal/H3606 Ayanashaya/H376
+took            Thamak            # H8551 · 154x in NT · 21x OT · sense 0 · via "take"  alt: Sharash/H8327 Gawazaha/H1491
+flesh           Bashar            # H1321 · 151x in NT · 3x OT · sense 0  alt: Tabachah/H2878 Shaara/H7607
+time            Danah             # H1836 · 150x in NT · 58x OT · sense 0  alt: Idan/H5732 Manaha/H4489
+according       Mana              # H4481 · 150x in NT · 109x OT · sense 0
+gave            Yahab             # H3052 · 146x in NT · 28x OT · sense 1 · via "give"  alt: Shawamath/H7761 Yanaq/H3243
+city            Shairaya          # H8179 · 145x in NT · 374x OT · sense 0  alt: Qarayah/H7151 Qarayaa/H7149
+body            Bashara           # H1320 · 142x in NT · 270x OT · sense 0  alt: Itzama/H6106 Nabalahatha/H5038
+make            Badal             # H914 · 135x in NT · 42x OT · sense 0  alt: Palas/H6424 Mapashar/H6590
+together        Pagasha           # H6298 · 134x in NT · 14x OT · sense 1  alt: Achawatha/H269 Chadah/H2298
+written         Kathab            # H3790 · 130x in NT · 8x OT · sense 0 · via "write"  alt: Rasham/H7560
+grace           Chan              # H2580 · 130x in NT · 69x OT · sense 1  alt: Thachanahatha/H8467
+found           Asham             # H816 · 128x in NT · 35x OT · sense 6
+receive         Qabalawan         # H6902 · 127x in NT · 3x OT · sense 0  alt: Shaqal/H8254 Qabal/H6901
+hear            Shamai            # H8086 · 126x in NT · 9x OT · sense 0  alt: Qashayab/H7181 Shamai/H8088
+asked           Baqash            # H1245 · 125x in NT · 225x OT · sense 0 · via "ask"  alt: Darasha/H1875 Baia/H1156
+yet             Idan              # H5728 · 125x in NT · 2x OT · sense 0  alt: Baram/H1297 Ap/H637
+take            Thamak            # H8551 · 123x in NT · 21x OT · sense 0  alt: Sharash/H8327 Gawazaha/H1491
+speak           Inaha             # H6032 · 123x in NT · 31x OT · sense 1  alt: Malal/H4448 Malal/H4449
+news            Shamawaih         # H8052 · 121x in NT · 27x OT · sense 4
+multitude       Amawan            # H528 · 118x in NT · 2x OT · sense 0  alt: Amawan/H527 Sak/H5519
+brought         Sabab             # H5437 · 115x in NT · 157x OT · sense 0 · via "bring"  alt: Yawabal/H2986 Tzaid/H6805
+coming          Mawabawaa         # H4126 · 114x in NT · 2x OT · sense 0
+comes           Pagai             # H6293 · 112x in NT · 46x OT · sense 0 · via "come"  alt: Athah/H858 Mataa/H4291
+much            Marabah           # H4767 · 112x in NT · 1x OT · sense 0  alt: Shagayaa/H7690 Kabayar/H3524
+concerning      Awadawath         # H182 · 111x in NT · 11x OT · sense 1  alt: Tzad/H6655 Ila/H5922
+eat             Lacham            # H3898 · 111x in NT · 177x OT · sense 1  alt: Barahawath/H1262 Akalah/H402
+nothing         Balayamah         # H1099 · 109x in NT · 2x OT · sense 0  alt: Thahaw/H8414 Bal/H1077
+place           Sabayaba          # H5439 · 107x in NT · 335x OT · sense 0  alt: Imada/H5977 Shabath/H7675
+received        Qabalawan         # H6902 · 106x in NT · 3x OT · sense 0 · via "receive"  alt: Shaqal/H8254 Qabal/H6901
+spoke           Chasharaya        # H2840 · 105x in NT · 1x OT · sense 0
+says            Malal             # H4448 · 103x in NT · 5x OT · sense 0 · via "say"  alt: Malal/H4449 Naamaw/H5001
+without         Chayatzawanah     # H2435 · 99x in NT · 25x OT · sense 3  alt: Balaidaya/H1107 Laa/H3809
+neither         Al                # H408 · 97x in NT · 724x OT · sense 1  alt: Laa/H3809 Bal/H1077
+told            Amar              # H560 · 96x in NT · 71x OT · sense 4 · via "tell"  alt: Manah/H4487 Thakan/H8505
+certainly       Akan              # H403 · 92x in NT · 18x OT · sense 1  alt: Ak/H389 Kay/H3588
+little          Zaiyar            # H2191 · 91x in NT · 5x OT · sense 0  alt: Zaiyarah/H2192 Matzaiyarah/H4704
+became          Hawaa             # H1934 · 90x in NT · 71x OT · sense 1 · via "become"  alt: Naawah/H4998 Arayak/H748
+left            Shamaawalay       # H8042 · 89x in NT · 9x OT · sense 0  alt: Shaar/H7604 Sharayada/H8300
+certain         Kawan             # H3559 · 89x in NT · 219x OT · sense 0  alt: Gabar/H1400 Yatzayab/H3330
+become          Hawaa             # H1934 · 87x in NT · 71x OT · sense 1  alt: Naawah/H4998 Arayak/H748
+sat             Dagar             # H1716 · 87x in NT · 2x OT · sense 1 · via "sit"  alt: Yathab/H3488 Rabatz/H7257
+blessed         Asharaya          # H835 · 87x in NT · 45x OT · sense 0
+seen            Yatab             # H3190 · 87x in NT · 112x OT · sense 33
+feet            Ragalay           # H7273 · 86x in NT · 12x OT · sense 0 · via "foot"  alt: Ragala/H7271 Qarasala/H7166
+fell            Napal             # H5307 · 85x in NT · 434x OT · sense 15
+hour            Shaih             # H8160 · 85x in NT · 5x OT · sense 0
+set             Gabal             # H1379 · 83x in NT · 5x OT · sense 1  alt: Yathab/H3488 Mashabatzayam/H7660
+enter           Nachath           # H5181 · 82x in NT · 10x OT · sense 2  alt: Halak/H1980 Ibar/H5674
+right           Yamanay           # H3233 · 81x in NT · 31x OT · sense 0  alt: Yamayanay/H3227 Nakacha/H5228
+entered         Nachath           # H5181 · 81x in NT · 10x OT · sense 2 · via "enter"  alt: Halak/H1980 Ibar/H5674
+known           Yawadaina         # H3046 · 81x in NT · 47x OT · sense 1 · via "know"  alt: Daitha/H1847 Nakar/H5234
+well            Baara             # H875 · 80x in NT · 37x OT · sense 1  alt: Maiyana/H4599 Maqawara/H4726
+indeed          Amanam            # H551 · 79x in NT · 9x OT · sense 0  alt: Amanah/H546 Abal/H61
+chief           Abaya             # H1 · 78x in NT · 1213x OT · sense 0  alt: Raasha/H7217 Sharaya/H8269
+high            Ilay              # H5943 · 78x in NT · 10x OT · sense 0  alt: Gabah/H1362 Gabanana/H1386
+revealed        Galahaa           # H1541 · 78x in NT · 9x OT · sense 2 · via "reveal"  alt: Galah/H1540
+live            Chayay            # H2425 · 77x in NT · 20x OT · sense 0  alt: Chayaay/H2418 Thaqawahatha/H8615
+hope            Machasaha         # H4268 · 76x in NT · 20x OT · sense 0  alt: Shabaraw/H7663 Thawachalath/H8431
+whole           Shalama           # H8003 · 75x in NT · 28x OT · sense 7  alt: Thamayam/H8549 Kal/H3606
+believed        Ayaman            # H540 · 75x in NT · 3x OT · sense 0 · via "believe"  alt: Aman/H539
+spoken          Inaha             # H6032 · 74x in NT · 31x OT · sense 1 · via "speak"  alt: Malal/H4448 Malal/H4449
+stood           Imada             # H5977 · 74x in NT · 6x OT · sense 1
+bring           Sabab             # H5437 · 73x in NT · 157x OT · sense 0  alt: Yawabal/H2986 Tzaid/H6805
+began           Chalal            # H2490 · 73x in NT · 142x OT · sense 0 · via "begin"  alt: Thachalah/H8462 Masharaa/H8271
+going           Maigal            # H4570 · 73x in NT · 16x OT · sense 0  alt: Ashara/H838 Matzaidaya/H4703
+fruit           Thabawaahatha     # H8393 · 72x in NT · 42x OT · sense 0  alt: Yabawala/H2981 Malaah/H4395
+desire          Chamadahatha      # H2532 · 72x in NT · 18x OT · sense 0  alt: Shaap/H7602 Awahatha/H185
+raised          Zawaqap           # H2210 · 72x in NT · 2x OT · sense 0 · via "raise"  alt: Iwar/H5782 Qawam/H6965
+living          Chay              # H2417 · 72x in NT · 7x OT · sense 2
+able            Yada              # H3027 · 71x in NT · 1617x OT · sense 0  alt: Chayala/H2428 Day/H1767
+toward          Nagad             # H5049 · 71x in NT · 1x OT · sense 0  alt: Atzala/H681 Mawaal/H4136
+sake            Dabarahath        # H1701 · 71x in NT · 2x OT · sense 1  alt: L/H7945 Awadawath/H182
+ask             Baqash            # H1245 · 71x in NT · 225x OT · sense 0  alt: Darasha/H1875 Baia/H1156
+authority       Thaqap            # H8633 · 70x in NT · 3x OT · sense 0
+eternal         Iwalama           # H5769 · 70x in NT · 438x OT · sense 4  alt: Qadam/H6924
+righteous       Tzadayaqa         # H6662 · 69x in NT · 206x OT · sense 2  alt: Tzadaq/H6663
+child           Bana              # H1123 · 68x in NT · 11x OT · sense 0  alt: Nair/H5290 Walad/H2056
+cast            Shapak            # H8210 · 67x in NT · 115x OT · sense 0  alt: Yawadah/H3034 Yatzaq/H3332
+stand           Qawayam           # H6966 · 67x in NT · 35x OT · sense 5  alt: Qarab/H7126 Nagashaw/H5066
+others          Achawatha         # H269 · 67x in NT · 114x OT · sense 0 · via "other"  alt: Acharay/H317 Acharan/H321
+full            Shalama           # H8003 · 67x in NT · 28x OT · sense 0  alt: Tham/H8537 Shabai/H7649
+walk            Mahalak           # H1981 · 67x in NT · 3x OT · sense 0  alt: Mahalaka/H4109 Halayakaha/H1979
+laid            Shamamah          # H8077 · 67x in NT · 58x OT · sense 0
+beloved         Dawada            # H1730 · 66x in NT · 61x OT · sense 0  alt: Machamada/H4261 Yadayada/H3039
+followed        Ishah             # H6213 · 66x in NT · 2629x OT · sense 27 · via "follow"
+teaching        Alap              # H502 · 66x in NT · 4x OT · sense 1 · via "teach"  alt: Zahayar/H2094 Yawadaina/H3046
+near            Qarab             # H7126 · 65x in NT · 283x OT · sense 2  alt: Atzala/H681 Nagashaw/H5066
+though          Han               # H2005 · 64x in NT · 317x OT · sense 3  alt: Lawaa/H3863 Kal/H3606
+seeing          Paqach            # H6493 · 63x in NT · 2x OT · sense 0  alt: Day/H1768 Am/H518
+drink           Shakaraw          # H7937 · 63x in NT · 19x OT · sense 0  alt: Ashathayaw/H8355 Sabaa/H5435
+sky             Shachaq           # H7834 · 63x in NT · 21x OT · sense 3
+thing           Thawaibaha        # H8441 · 63x in NT · 117x OT · sense 1  alt: Thahapakaha/H8419 Pagawal/H6292
+scribes         Sapar             # H5613 · 62x in NT · 6x OT · sense 0 · via "scribe"  alt: Sapar/H5608
+joy             Mashawash         # H4885 · 62x in NT · 17x OT · sense 0  alt: Gayalah/H1525 Chadawah/H2305
+send            Shalach           # H7972 · 62x in NT · 14x OT · sense 1  alt: Nawayap/H5130 Shawab/H7725
+elders          Shayabay          # H7868 · 61x in NT · 5x OT · sense 0 · via "elder"  alt: Gadawala/H1419 Zaqanaya/H2205
+filled          Shabai            # H7648 · 60x in NT · 8x OT · sense 0 · via "fill"  alt: Hathamalay/H4391 Malaa/H4393
+keep            Atzalathay        # H680 · 60x in NT · 5x OT · sense 0  alt: Natarath/H5202 Mashamaratha/H4931
+saints          Qadawasha         # H6918 · 60x in NT · 118x OT · sense 1 · via "saint"  alt: Qadayash/H6922 Chasayada/H2623
+delivered       Malat             # H4422 · 59x in NT · 95x OT · sense 0 · via "deliver"  alt: Yahab/H3052 Patzah/H6475
+multitudes      Amawan            # H528 · 59x in NT · 2x OT · sense 0 · via "multitude"  alt: Amawan/H527 Sak/H5519
+want            Chasar            # H2639 · 59x in NT · 2x OT · sense 1  alt: Chasar/H2638 Machasawara/H4270
+still           Damamah           # H1827 · 59x in NT · 3x OT · sense 2  alt: Chashahaw/H2814 Hasah/H2013
+years           Shanahayan        # H8140 · 57x in NT · 7x OT · sense 0 · via "year"  alt: Shanawathaya/H8141 Yawamaya/H3117
+opened          Paqach            # H6491 · 57x in NT · 20x OT · sense 0 · via "open"  alt: Patawaray/H6358 Pashaq/H6589
+cause           Dayan             # H1779 · 57x in NT · 20x OT · sense 0  alt: Awadawath/H182 Batalaa/H989
+pray            Matzalaa          # H6739 · 57x in NT · 2x OT · sense 0  alt: Ithar/H6279 Baia/H1156
+knowing         Yawadaina         # H3046 · 57x in NT · 47x OT · sense 1 · via "know"  alt: Daitha/H1847 Nakar/H5234
+sight           Chazawatha        # H2379 · 57x in NT · 2x OT · sense 0  alt: Nagada/H5048 Maraahaya/H4758
+seek            Chaqar            # H2713 · 56x in NT · 27x OT · sense 2  alt: Qaraahatha/H7125 Chapar/H2658
+worthy          Adayara           # H117 · 56x in NT · 27x OT · sense 9  alt: Chayala/H2428 Bana/H1121
+rejoice         Ilaz              # H5937 · 56x in NT · 16x OT · sense 1  alt: Ilatz/H5970 Ilayazah/H5947
+died            Gawai             # H1478 · 56x in NT · 24x OT · sense 0 · via "die"  alt: Thamawathah/H8546 Mawatha/H4194
+fulfilled       Sawapath          # H5487 · 55x in NT · 2x OT · sense 1 · via "fulfill"  alt: Batzai/H1214 Ishah/H6213
+new             Thayarawasha      # H8492 · 55x in NT · 38x OT · sense 0  alt: Tarayah/H2961 Chadath/H2323
+end             Qatzatha          # H7117 · 55x in NT · 8x OT · sense 0  alt: Sawap/H5491 Thakalayath/H8503
+always          Iwalama           # H5769 · 55x in NT · 438x OT · sense 0 · via "alway"  alt: Thamayad/H8548 Natzach/H5331
+killed          Zabach            # H2076 · 54x in NT · 134x OT · sense 0 · via "kill"  alt: Chalalaya/H2491 Shachat/H7819
+think           Sabar             # H5452 · 54x in NT · 1x OT · sense 0  alt: Ishayath/H6246 Shair/H8176
+show            Chawah            # H2331 · 54x in NT · 6x OT · sense 0
+follow          Ishah             # H6213 · 54x in NT · 2629x OT · sense 27
+cried           Ranahatha         # H7440 · 54x in NT · 33x OT · sense 0 · via "cry"  alt: Tzaiqahatha/H6818 Zaiqatha/H2201
+times           Shabaithayam      # H7659 · 54x in NT · 6x OT · sense 1  alt: Yada/H3027
+write           Kathab            # H3790 · 54x in NT · 8x OT · sense 0  alt: Rasham/H7560
+born            Yalayaday         # H3211 · 53x in NT · 13x OT · sense 0  alt: Yalawada/H3209 Mawaladatha/H4138
+afraid          Yaraa             # H3373 · 53x in NT · 54x OT · sense 0  alt: Charad/H2730 Yagawar/H3016
+long            Mathay            # H4970 · 53x in NT · 43x OT · sense 0  alt: Chakah/H2442 Arakah/H752
+taken           Thamak            # H8551 · 53x in NT · 21x OT · sense 0 · via "take"  alt: Sharash/H8327 Gawazaha/H1491
+blind           Iwar              # H5786 · 53x in NT · 5x OT · sense 0  alt: Iwarawan/H5788 Ilam/H5956
+saved           Yashacha          # H3445 · 53x in NT · 1x OT · sense 1 · via "save"  alt: Balaidaya/H1107 Lahan/H3861
+standing        Maimad            # H4613 · 53x in NT · 1x OT · sense 0  alt: Imadahatha/H5979 Agam/H98
+kill            Zabach            # H2076 · 52x in NT · 134x OT · sense 0  alt: Chalalaya/H2491 Shachat/H7819
+need            Tzaraka           # H6878 · 51x in NT · 1x OT · sense 0  alt: Machasawara/H4270
+last            Acharayatha       # H319 · 51x in NT · 61x OT · sense 0  alt: Iqaba/H6119 Acharawanah/H314
+except          Lawalaa           # H3884 · 51x in NT · 14x OT · sense 0  alt: Ayan/H369 Lahan/H3861
+find            Hashathakachath   # H7912 · 51x in NT · 18x OT · sense 0  alt: Chanana/H2603 Racham/H7355
+teacher         Lawayatza         # H3887 · 51x in NT · 27x OT · sense 7
+beginning       Az                # H227 · 51x in NT · 141x OT · sense 0  alt: Raashayatha/H7225 Raashahathaya/H7221
+back            Shakama           # H7926 · 50x in NT · 21x OT · sense 0  alt: Halaah/H1973 Gaba/H1354
+tree            Ayalan            # H363 · 50x in NT · 6x OT · sense 0  alt: Gapana/H1612 Shaqamaha/H8256
+lord            Adanaya           # H136 · 50x in NT · 445x OT · sense 0  alt: Adawanaya/H113 Saranaya/H5633
+gathered        Qawah             # H6960 · 50x in NT · 49x OT · sense 0 · via "gather"  alt: Laqataw/H3950 Kanas/H3664
+healed          Rapaaha           # H7499 · 49x in NT · 3x OT · sense 0 · via "heal"  alt: Rapaa/H7495
+true            Tzadaa            # H6656 · 49x in NT · 1x OT · sense 0  alt: Yatzayab/H3330 Kan/H3651
+old             Yashan            # H3462 · 48x in NT · 21x OT · sense 0  alt: Hayashanah/H3465 Zaqanahatha/H2209
+unless          Awalay            # H194 · 47x in NT · 45x OT · sense 3  alt: Lawalaa/H3884
+get             Rakash            # H7408 · 46x in NT · 5x OT · sense 1  alt: Nasai/H5265 Nawadaw/H5110
+sick            Chalaya           # H2483 · 46x in NT · 24x OT · sense 2  alt: Anash/H605 Thachalawaaya/H8463
+woe             Ay                # H337 · 46x in NT · 2x OT · sense 0  alt: Alalay/H480 Awayah/H190
+feast           Chaga             # H2282 · 46x in NT · 62x OT · sense 0  alt: Lacham/H3900 Maiwag/H4580
+named           Shama             # H8034 · 45x in NT · 864x OT · sense 2
+speaking        Inaha             # H6032 · 45x in NT · 31x OT · sense 1 · via "speak"  alt: Malal/H4448 Malal/H4449
+sit             Dagar             # H1716 · 45x in NT · 2x OT · sense 1  alt: Yathab/H3488 Rabatz/H7257
+greater         Kabad             # H3515 · 45x in NT · 39x OT · sense 0 · via "great"  alt: Labayaa/H3833 Rabarabayan/H7260
+present         Shay              # H7862 · 45x in NT · 3x OT · sense 0  alt: Thashawarah/H8670 Magadanaha/H4030
+sheep           Tzanaa            # H6792 · 44x in NT · 2x OT · sense 0  alt: Kabasha/H3532 Rachal/H7353
+looking         Chazawa           # H2376 · 44x in NT · 12x OT · sense 0 · via "look"  alt: Shagayach/H7688 Chazah/H2372
+whether         Han               # H2006 · 44x in NT · 18x OT · sense 2  alt: Ay/H335 Bayana/H996
+free            Nadayaba          # H5081 · 44x in NT · 29x OT · sense 0  alt: Chapashay/H2670 Patayara/H6359
+call            Asharaw           # H833 · 43x in NT · 16x OT · sense 0  alt: Qaraa/H7123 Zaiq/H2199
+ought           Maawamah          # H3972 · 43x in NT · 32x OT · sense 2  alt: Kala/H3605
+loved           Ahabahatha        # H160 · 43x in NT · 40x OT · sense 0 · via "love"  alt: Ahaba/H158 Ahaba/H159
+country         Maqawama          # H4725 · 42x in NT · 401x OT · sense 0  alt: Shadaha/H7704 Adamahatha/H127
+kept            Atzalathay        # H680 · 42x in NT · 5x OT · sense 0 · via "keep"  alt: Natarath/H5202 Mashamaratha/H4931
+myself          Anay              # H589 · 42x in NT · 874x OT · sense 3
+preached        Bashar            # H1319 · 42x in NT · 24x OT · sense 1 · via "preach"  alt: Bashar/H1319 Qaraa/H7121
+testify         Iwad              # H5749 · 42x in NT · 44x OT · sense 10  alt: Inaha/H6030
+promise         Awamar            # H562 · 42x in NT · 6x OT · sense 0  alt: Dabar/H1696 Amar/H559
+food            Maakala           # H3978 · 41x in NT · 30x OT · sense 0  alt: Bawal/H944 Makalath/H4361
+women           Nashayana         # H5389 · 41x in NT · 1x OT · sense 0
+thanks          Mahawadaa         # H3029 · 41x in NT · 2x OT · sense 0 · via "thank"  alt: Baraka/H1288
+tomb            Gadayash          # H1430 · 41x in NT · 4x OT · sense 1
+book            Sapar             # H5609 · 40x in NT · 5x OT · sense 0  alt: Sapara/H5612 Dabara/H1697
+part            Nathachaya        # H5409 · 40x in NT · 13x OT · sense 0  alt: Bathara/H1335 Gazara/H1506
+wise            Chakayamay        # H2445 · 39x in NT · 14x OT · sense 0  alt: Paqach/H6493 Chakamaya/H2450
+understand      Shamai            # H8085 · 39x in NT · 1159x OT · sense 29  alt: Yadai/H3045
+hold            Qabal             # H6901 · 39x in NT · 13x OT · sense 1  alt: Matzawada/H4685 Tzarayach/H6877
+rich            Ishayar           # H6223 · 39x in NT · 23x OT · sense 0  alt: Shawai/H7771
+prison          Sahar             # H5470 · 38x in NT · 8x OT · sense 0  alt: Masagar/H4525 Mahapakath/H4115
+speaks          Inaha             # H6032 · 38x in NT · 31x OT · sense 1 · via "speak"  alt: Malal/H4448 Malal/H4449
+young           Bachawaraya       # H970 · 37x in NT · 46x OT · sense 0  alt: Aparacha/H667 Gawazal/H1469
+led             Iwaparath         # H5777 · 37x in NT · 9x OT · sense 0 · via "lead"  alt: Yawabal/H2986 Sabab/H5437
+already         Kabar             # H3528 · 37x in NT · 9x OT · sense 0
+lay             Shakab            # H7901 · 37x in NT · 208x OT · sense 2  alt: Malat/H4422 Nawach/H5117
+far             Rachayaqayan      # H7352 · 37x in NT · 1x OT · sense 0  alt: Maad/H3966
+bound           Asayaraya         # H615 · 37x in NT · 12x OT · sense 0  alt: Pathayala/H6616 Gabawala/H1366
+doing           Mailalaya         # H4611 · 37x in NT · 41x OT · sense 0  alt: Ilayalawathaya/H5949
+loud            Iza               # H5797 · 37x in NT · 92x OT · sense 1  alt: Chazaq/H2389 Shamai/H8088
+ourselves       Anachanaw         # H587 · 37x in NT · 119x OT · sense 0
+beast           Bahamahatha       # H929 · 37x in NT · 190x OT · sense 0  alt: Chayawaath/H2423 Baiyara/H1165
+bear            Yawalad           # H3205 · 36x in NT · 497x OT · sense 0  alt: Chawal/H2342 Zarai/H2232
+taught          Lamawada          # H3928 · 36x in NT · 6x OT · sense 3
+judged          Palayala          # H6414 · 36x in NT · 3x OT · sense 0 · via "judge"  alt: Adaragazaray/H148 Dayan/H1781
+begged          Baqash            # H1245 · 36x in NT · 225x OT · sense 1 · via "beg"  alt: Shaal/H7592
+fellow          Raiyaha           # H7474 · 36x in NT · 10x OT · sense 0  alt: Chabara/H2270 Imayatha/H5997
+remains         Sharadaw          # H8277 · 36x in NT · 1x OT · sense 0 · via "remain"  alt: Shaqad/H8245 Sharayada/H8300
+devil           Shaiyar           # H8163 · 35x in NT · 59x OT · sense 0  alt: Shada/H7700
+preach          Bashar            # H1319 · 35x in NT · 24x OT · sense 1  alt: Bashar/H1319 Qaraa/H7121
+poor            Masakan           # H4542 · 35x in NT · 4x OT · sense 0  alt: Chalakaayam/H2489 Inahayan/H6033
+teach           Alap              # H502 · 35x in NT · 4x OT · sense 1  alt: Zahayar/H2094 Yawadaina/H3046
+receives        Qabalawan         # H6902 · 35x in NT · 3x OT · sense 0 · via "receive"  alt: Shaqal/H8254 Qabal/H6901
+look            Chazawa           # H2376 · 35x in NT · 12x OT · sense 0  alt: Shagayach/H7688 Chazah/H2372
+better          Yatharawan        # H3504 · 35x in NT · 10x OT · sense 0  alt: Yawathar/H3148 Tawaba/H2896
+circumcision    Mawalaha          # H4139 · 35x in NT · 1x OT · sense 0
+exceedingly     Rab               # H7227 · 34x in NT · 461x OT · sense 6
+glorified       Hadarath          # H1922 · 34x in NT · 3x OT · sense 0 · via "glorify"  alt: Paar/H6286 Kabad/H3513
+suffer          Raib              # H7456 · 34x in NT · 13x OT · sense 3  alt: Katharaw/H3803 Yanayacha/H3240
+none            Bal               # H1077 · 34x in NT · 71x OT · sense 3  alt: Balay/H1097 Apas/H657
+stayed          Mashain           # H4937 · 34x in NT · 5x OT · sense 0 · via "stay"  alt: Hagah/H1898 Iganah/H5702
+lives           Chayah            # H2421 · 34x in NT · 262x OT · sense 15
+remain          Sharadaw          # H8277 · 34x in NT · 1x OT · sense 0  alt: Shaqad/H8245 Sharayada/H8300
+lamb            Kabasha           # H3532 · 34x in NT · 107x OT · sense 0  alt: Kashab/H3775 Kabashaha/H3535
+remember        Zakar             # H2142 · 33x in NT · 232x OT · sense 7  alt: Paqad/H6485
+leave           Shaar             # H7604 · 33x in NT · 133x OT · sense 0  alt: Mashabaq/H7662 Yawathar/H3498
+deliver         Malat             # H4422 · 33x in NT · 95x OT · sense 0  alt: Yahab/H3052 Patzah/H6475
+door            Pathacha          # H6607 · 33x in NT · 164x OT · sense 0  alt: Dalatha/H1817 Mazawazaha/H4201
+knew            Yawadaina         # H3046 · 33x in NT · 47x OT · sense 1 · via "know"  alt: Daitha/H1847 Nakar/H5234
+sitting         Mawashaba         # H4186 · 33x in NT · 44x OT · sense 6
+chosen          Bachawaraya       # H970 · 33x in NT · 46x OT · sense 1  alt: Mabachawar/H4005 Barar/H1305
+parable         Mashal            # H4912 · 33x in NT · 39x OT · sense 2
+middle          Thayakawanah      # H8484 · 33x in NT · 11x OT · sense 0  alt: Tabawar/H2872 Chatzaya/H2677
+looked          Chazawa           # H2376 · 33x in NT · 12x OT · sense 0 · via "look"  alt: Shagayach/H7688 Chazah/H2372
+longer          Iwad              # H5750 · 33x in NT · 488x OT · sense 8
+happened        Anah              # H579 · 32x in NT · 4x OT · sense 2 · via "happen"  alt: Qaraa/H7122 Nagai/H5060
+sought          Chaqar            # H2713 · 32x in NT · 27x OT · sense 2 · via "seek"  alt: Qaraahatha/H7125 Chapar/H2658
+means           Machashabaha      # H4284 · 32x in NT · 56x OT · sense 5  alt: Yada/H3027
+sound           Qal               # H7032 · 32x in NT · 7x OT · sense 0  alt: Thaqai/H8629 Machatzatzarayam/H2690
+next            Achara            # H312 · 32x in NT · 166x OT · sense 2  alt: Mashanaha/H4932 Qarawaba/H7138
+dwell           Dawaaray          # H1753 · 32x in NT · 7x OT · sense 0  alt: Yathab/H3488 Dawar/H1752
+listen          Shamai            # H8085 · 32x in NT · 1159x OT · sense 16
+prepared        Chalatz           # H2502 · 32x in NT · 44x OT · sense 8
+false           Shawaa            # H7723 · 31x in NT · 53x OT · sense 0  alt: Kazab/H3577 Awana/H205
+side            Tzada             # H6654 · 31x in NT · 33x OT · sense 0  alt: Halaz/H1975 Shatar/H7859
+passed          Chalapawan        # H2499 · 31x in NT · 4x OT · sense 0 · via "pass"  alt: Idaayaw/H5709 Gadal/H1431
+disciple        Lamawada          # H3928 · 31x in NT · 6x OT · sense 1
+cup             Kawasa            # H3563 · 31x in NT · 33x OT · sense 0  alt: Gabayai/H1375 Kayas/H3599
+returned        Thayabawan        # H8421 · 31x in NT · 8x OT · sense 2 · via "return"  alt: Thashawabaha/H8666 Shanah/H8138
+boast           Halal             # H1984 · 31x in NT · 165x OT · sense 0  alt: Gadal/H1431 Kabad/H3513
+lived           Chayay            # H2425 · 30x in NT · 20x OT · sense 0 · via "live"  alt: Chayaay/H2418 Thaqawahatha/H8615
+clothing        Makasaha          # H4374 · 30x in NT · 4x OT · sense 0  alt: Thalabashath/H8516 Labawasha/H3830
+cut             Chatzab           # H2672 · 30x in NT · 25x OT · sense 0  alt: Nathacha/H5408 Shawar/H7787
+throw           Ramah             # H7411 · 30x in NT · 13x OT · sense 5  alt: Shalak/H7993
+ate             Lacham            # H3898 · 30x in NT · 177x OT · sense 1 · via "eat"  alt: Barahawath/H1262 Akalah/H402
+weak            Amalal            # H536 · 30x in NT · 1x OT · sense 0  alt: Chalash/H2523 Rak/H7390
+since           Az                # H227 · 30x in NT · 141x OT · sense 7  alt: Day/H1767 Iwad/H5750
+scripture       Kathab            # H3791 · 30x in NT · 16x OT · sense 1
+fall            Napal             # H5308 · 29x in NT · 11x OT · sense 0  alt: Nagar/H5064 Labat/H3832
+perfect         Kalalaw           # H3634 · 29x in NT · 2x OT · sense 0  alt: Gamayar/H1585 Tham/H8535
+else            Ayan              # H369 · 29x in NT · 788x OT · sense 0  alt: Iwad/H5750 Kay/H3588
+knows           Yawadaina         # H3046 · 29x in NT · 47x OT · sense 1 · via "know"  alt: Daitha/H1847 Nakar/H5234
+kind            Zanay             # H2178 · 29x in NT · 4x OT · sense 0  alt: Mashapachaha/H4940 Bashara/H1320
+ears            Malayalaha        # H4425 · 29x in NT · 1x OT · sense 0 · via "ear"  alt: Abayab/H24 Shabalath/H7641
+turned          Dawar             # H1754 · 29x in NT · 3x OT · sense 1 · via "turn"  alt: Shatah/H7847 Thawaray/H8447
+likewise        Zaath             # H2063 · 29x in NT · 604x OT · sense 3  alt: Yachad/H3162 Gam/H1571
+answer          Amar              # H559 · 29x in NT · 5308x OT · sense 0  alt: Dabar/H1696 Amara/H561
+service         Sharad            # H8278 · 29x in NT · 4x OT · sense 0  alt: Palachan/H6402 Ibayadahath/H5673
+stay            Mashain           # H4937 · 28x in NT · 5x OT · sense 0  alt: Hagah/H1898 Iganah/H5702
+reward          Mashakaratha      # H4909 · 28x in NT · 4x OT · sense 0  alt: Nabazabah/H5023 Shakar/H7938
+lest            Bal               # H1077 · 28x in NT · 71x OT · sense 0  alt: Balathay/H1115
+stumble         Pawayaq           # H6328 · 28x in NT · 2x OT · sense 0  alt: Shamataw/H8058 Nagap/H5062
+forgive         Salach            # H5545 · 28x in NT · 46x OT · sense 0  alt: Kapar/H3722 Nashaa/H5375
+fish            Daag              # H1709 · 28x in NT · 19x OT · sense 0  alt: Dagah/H1710 Dawagah/H1729
+often           Rab               # H7227 · 28x in NT · 461x OT · sense 24
+money           Kasapa            # H3701 · 28x in NT · 403x OT · sense 0  alt: Kasap/H3702
+master          Adawanaya         # H113 · 28x in NT · 328x OT · sense 1  alt: Rab/H7229 Sharaya/H8269
+gives           Yahab             # H3052 · 28x in NT · 28x OT · sense 1 · via "give"  alt: Shawamath/H7761 Yanaq/H3243
+lawful          Tzadayaqa         # H6662 · 28x in NT · 206x OT · sense 1
+open            Paqach            # H6491 · 28x in NT · 20x OT · sense 0  alt: Patawaray/H6358 Pashaq/H6589
+watch           Ashamarahath      # H821 · 28x in NT · 7x OT · sense 0  alt: Shamarah/H8108 Qawayatz/H6974
+alive           Chaya             # H2416 · 28x in NT · 500x OT · sense 1
+appointed       Chaqa             # H2706 · 28x in NT · 127x OT · sense 0  alt: Chaqaha/H2708 Natzab/H5324
+testified       Iwad              # H5749 · 28x in NT · 44x OT · sense 10 · via "testify"  alt: Inaha/H6030
+hidden          Sathamaw          # H5640 · 27x in NT · 14x OT · sense 1  alt: Palaa/H6381
+pass            Chalapawan        # H2499 · 27x in NT · 4x OT · sense 0  alt: Idaayaw/H5709 Gadal/H1431
+tax             Irak              # H6186 · 27x in NT · 76x OT · sense 17
+vain            Habala            # H1892 · 27x in NT · 73x OT · sense 1  alt: Nabawab/H5014 Rayaq/H7385
+hearing         Mashamai          # H4926 · 27x in NT · 1x OT · sense 0  alt: Qashab/H7182 Azana/H241
+table           Shalachana        # H7979 · 27x in NT · 71x OT · sense 0  alt: Lawachath/H3871
+prayer          Thapalahatha      # H8605 · 27x in NT · 77x OT · sense 0  alt: Shayachah/H7881 Shayacha/H7879
+preaching       Qarayaah          # H7150 · 26x in NT · 1x OT · sense 0
+ready           Ithawada          # H6259 · 26x in NT · 1x OT · sense 0  alt: Ithayadayan/H6263 Chawash/H2363
+pure            Naqaa             # H5343 · 26x in NT · 1x OT · sense 0  alt: Zak/H2134 Darawar/H1865
+council         Ragamahatha       # H7277 · 26x in NT · 1x OT · sense 0
+white           Labana            # H3836 · 26x in NT · 29x OT · sense 0  alt: Chawar/H2353 Chawar/H2358
+desires         Chamadahatha      # H2532 · 26x in NT · 18x OT · sense 0 · via "desire"  alt: Shaap/H7602 Awahatha/H185
+field           Chalaqahatha      # H2513 · 26x in NT · 29x OT · sense 0  alt: Bar/H1251 Yagaba/H3010
+foolish         Pathaya           # H6612 · 26x in NT · 19x OT · sense 0  alt: Awalay/H196 Kasayalawath/H3687
+soldiers        Tzabaa            # H6635 · 26x in NT · 485x OT · sense 6
+sold            Machayar          # H4242 · 26x in NT · 15x OT · sense 3
+strong          Chasan            # H2634 · 26x in NT · 2x OT · sense 0  alt: Chasayan/H2626 Itzamawathaya/H6110
+riches          Chasan            # H2633 · 26x in NT · 5x OT · sense 0  alt: Nakasa/H5233 Ishar/H6239
+person          Adam              # H120 · 26x in NT · 552x OT · sense 6  alt: Anawash/H582 Bailaya/H1167
+prayed          Matzalaa          # H6739 · 26x in NT · 2x OT · sense 0 · via "pray"  alt: Ithar/H6279 Baia/H1156
+rose            Chabatzalath      # H2261 · 26x in NT · 2x OT · sense 0
+wrote           Kathab            # H3790 · 26x in NT · 8x OT · sense 0 · via "write"  alt: Rasham/H7560
+presence        Nagada            # H5048 · 26x in NT · 150x OT · sense 6  alt: Qadamaya/H6925 Iyana/H5869
+gold            Zahaba            # H2091 · 25x in NT · 389x OT · sense 0  alt: Dahab/H1722 Batzar/H1222
+touched         Nagai             # H5060 · 25x in NT · 150x OT · sense 13 · via "touch"
+marveled        Thamahaw          # H8539 · 25x in NT · 9x OT · sense 2 · via "marvel"
+obey            Shamai            # H8086 · 25x in NT · 9x OT · sense 1  alt: Mashamaitha/H4928 Shamai/H8085
+read            Qaraa             # H7123 · 25x in NT · 11x OT · sense 2  alt: Qaraa/H7121
+age             Yawamaya          # H3117 · 25x in NT · 2303x OT · sense 0  alt: Dawar/H1755 Chalad/H2465
+broken          Chath             # H2844 · 25x in NT · 5x OT · sense 0  alt: Nakaah/H5218 Kaah/H3512
+reason          Thabawana         # H8394 · 25x in NT · 42x OT · sense 1  alt: Manadai/H4486 Chashabawan/H2808
+witnesses       Ida               # H5707 · 25x in NT · 70x OT · sense 0 · via "witness"  alt: Idawath/H5715 Shamai/H8085
+ship            Anayaha           # H591 · 25x in NT · 31x OT · sense 0  alt: Tzaya/H6716 Sapayanah/H5600
+gather          Qawah             # H6960 · 24x in NT · 49x OT · sense 0  alt: Laqataw/H3950 Kanas/H3664
+served          Palachawan        # H6399 · 24x in NT · 10x OT · sense 1 · via "serve"  alt: Ishah/H6213
+heavenly        Shamayan          # H8065 · 24x in NT · 38x OT · sense 0 · via "heaven"  alt: Galagal/H1534 Irayapaya/H6183
+household       Ibadah            # H5657 · 24x in NT · 2x OT · sense 0
+beg             Baqash            # H1245 · 24x in NT · 225x OT · sense 1  alt: Shaal/H7592
+troubled        Sair              # H5590 · 23x in NT · 7x OT · sense 2
+worshiped       Sagad             # H5457 · 23x in NT · 12x OT · sense 0 · via "worship"  alt: Itzabaw/H6087 Shathachawah/H7812
+crying          Shawaihatha       # H7775 · 23x in NT · 11x OT · sense 0  alt: Thashaaha/H8663 Shawai/H7771
+repentance      Nacham            # H5164 · 23x in NT · 1x OT · sense 0
+letter          Agaratha          # H107 · 23x in NT · 10x OT · sense 0  alt: Agaraah/H104 Nashathawan/H5407
+friends         Raih              # H7463 · 23x in NT · 4x OT · sense 0 · via "friend"  alt: Marai/H4828 Alawap/H441
+risen           Zarach            # H2224 · 23x in NT · 18x OT · sense 1 · via "rise"  alt: Qawayam/H6966 Ilah/H5927
+foundation      Adanaya           # H134 · 23x in NT · 57x OT · sense 0  alt: Makawan/H4349 Mawasadaha/H4146
+threw           Ramah             # H7411 · 23x in NT · 13x OT · sense 5 · via "throw"  alt: Shalak/H7993
+counted         Sapar             # H5608 · 23x in NT · 161x OT · sense 1 · via "count"  alt: Manah/H4487 Chashab/H2803
+vineyard        Karamaya          # H3754 · 23x in NT · 92x OT · sense 1
+greatly         Kabad             # H3515 · 23x in NT · 39x OT · sense 0 · via "great"  alt: Labayaa/H3833 Rabarabayan/H7260
+lusts           Sharayarawath     # H8307 · 23x in NT · 10x OT · sense 1 · via "lust"  alt: Awah/H183 Thaawah/H8378
+languages       Lashan            # H3961 · 23x in NT · 7x OT · sense 0 · via "language"  alt: Lashawana/H3956 Shapahatha/H8193
+tribe           Shabatay          # H7625 · 23x in NT · 1x OT · sense 0  alt: Mataha/H4294 Shabataya/H7626
+war             Lacham            # H3901 · 23x in NT · 1x OT · sense 0  alt: Qabala/H6904 Qarab/H7129
+governor        Saganay           # H5460 · 22x in NT · 5x OT · sense 0  alt: Shalayat/H7989 Paqayada/H6496
+weeping         Bakay             # H1065 · 22x in NT · 28x OT · sense 2
+walking         Mahalak           # H1981 · 22x in NT · 3x OT · sense 0 · via "walk"  alt: Mahalaka/H4109 Halayakaha/H1979
+quickly         Maharah           # H4120 · 22x in NT · 20x OT · sense 1  alt: Mahar/H4118 Maad/H3966
+adultery        Naawapa           # H5004 · 22x in NT · 2x OT · sense 0  alt: Naapawapaya/H5005
+giving          Yahab             # H3052 · 22x in NT · 28x OT · sense 1 · via "give"  alt: Shawamath/H7761 Yanaq/H3243
+consider        Shakayal          # H7919 · 22x in NT · 63x OT · sense 0  alt: Zamam/H2161 Pasagaw/H6448
+measure         Madad             # H4058 · 22x in NT · 51x OT · sense 0  alt: Saah/H5429 Mashawarah/H4884
+within          Chayaqa           # H2436 · 22x in NT · 37x OT · sense 4  alt: Baida/H1157 Id/H5705
+calling         Maqaraa           # H4744 · 22x in NT · 23x OT · sense 1
+amazed          Bahal             # H926 · 22x in NT · 37x OT · sense 1
+truly           Akan              # H403 · 22x in NT · 18x OT · sense 4  alt: Awalam/H199 Amawanahatha/H530
+help            Izara             # H5826 · 22x in NT · 81x OT · sense 0  alt: Izara/H5828 Qaraahatha/H7125
+build           Banah             # H1129 · 22x in NT · 375x OT · sense 0  alt: Banaa/H1124 Shawab/H7725
+release         Shamatah          # H8059 · 22x in NT · 5x OT · sense 0  alt: Hanachah/H2010 Shamataw/H8058
+happen          Anah              # H579 · 22x in NT · 4x OT · sense 2  alt: Qaraa/H7122 Nagai/H5060
+making          Badal             # H914 · 22x in NT · 42x OT · sense 0 · via "make"  alt: Palas/H6424 Mapashar/H6590
+determined      Chathak           # H2852 · 22x in NT · 1x OT · sense 0 · via "determine"  alt: Kalah/H3615 Charatz/H2782
+birth           Thawaladaha       # H8435 · 21x in NT · 39x OT · sense 0  alt: Makawarahatha/H4351 Mashabar/H4866
+hungry          Raib              # H7457 · 21x in NT · 20x OT · sense 1
+glorify         Hadarath          # H1922 · 21x in NT · 3x OT · sense 0  alt: Paar/H6286 Kabad/H3513
+commit          Pail              # H6466 · 21x in NT · 56x OT · sense 0  alt: Galal/H1556 Masaraw/H4560
+deeds           Gamawalah         # H1578 · 21x in NT · 3x OT · sense 0 · via "deed"  alt: Paila/H6467 Ilayalawathaya/H5949
+pieces          Palach            # H6400 · 21x in NT · 6x OT · sense 0 · via "piece"  alt: Qarai/H7168 Hadamayan/H1917
+built           Banah             # H1129 · 21x in NT · 375x OT · sense 0 · via "build"  alt: Banaa/H1124 Shawab/H7725
+beat            Ka                # H5221 · 21x in NT · 500x OT · sense 0  alt: Nagai/H5060 Nagap/H5062
+cities          Shairaya          # H8179 · 21x in NT · 374x OT · sense 0 · via "city"  alt: Qarayah/H7151 Qarayaa/H7149
+compassion      Rachamaya         # H7356 · 21x in NT · 44x OT · sense 1
+deny            Manai             # H4513 · 21x in NT · 29x OT · sense 0  alt: Kachash/H3584
+stumbling       Nagap             # H5063 · 21x in NT · 7x OT · sense 1
+continue        Achar             # H309 · 21x in NT · 16x OT · sense 0  alt: Yashab/H3427 Shakan/H7931
+pay             Shaqal            # H8254 · 21x in NT · 22x OT · sense 0  alt: Makara/H4377 Yahab/H3052
+scriptures      Kathab            # H3791 · 21x in NT · 16x OT · sense 1 · via "scripture"
+speech          Hamawalah         # H1999 · 21x in NT · 2x OT · sense 0  alt: Amarahatha/H565 Chayadaha/H2420
+fallen          Napal             # H5308 · 21x in NT · 11x OT · sense 0 · via "fall"  alt: Nagar/H5064 Labat/H3832
+gain            Machayar          # H4242 · 21x in NT · 15x OT · sense 0  alt: Zabanayan/H2084 Thabawaahatha/H8393
+thus            Kan               # H3652 · 21x in NT · 8x OT · sense 0  alt: Kanamaa/H3660 Kakah/H3602
+number          Manaay            # H4483 · 21x in NT · 5x OT · sense 0  alt: Makasahath/H4373 Manay/H4507
+witness         Ida               # H5707 · 21x in NT · 70x OT · sense 0  alt: Idawath/H5715 Shamai/H8085
+region          Napaha            # H5299 · 20x in NT · 4x OT · sense 2  alt: Chabalaya/H2256
+hair            Shaira            # H8181 · 20x in NT · 28x OT · sense 0  alt: Dalaha/H1803 Shairah/H8185
+raise           Zawaqap           # H2210 · 20x in NT · 2x OT · sense 0  alt: Iwar/H5782 Qawam/H6965
+beyond          Ibar              # H5675 · 20x in NT · 14x OT · sense 0  alt: Ibar/H5676 Halaah/H1973
+praying         Matzalaa          # H6739 · 20x in NT · 2x OT · sense 0 · via "pray"  alt: Ithar/H6279 Baia/H1156
+destruction     Mahawamah         # H4103 · 20x in NT · 12x OT · sense 0  alt: Machathah/H4288 Abadawan/H11
+evening         Irab              # H6150 · 20x in NT · 3x OT · sense 1  alt: Irabaha/H6160
+order           Sadara            # H5468 · 20x in NT · 1x OT · sense 0  alt: Iraka/H6187 Dabarahatha/H1700
+silver          Kasap             # H3702 · 20x in NT · 13x OT · sense 1  alt: Kasapa/H3701
+ear             Malayalaha        # H4425 · 20x in NT · 1x OT · sense 0  alt: Abayab/H24 Shabalath/H7641
+apart           Bada              # H905 · 20x in NT · 202x OT · sense 1
+places          Shamamaw          # H8074 · 20x in NT · 85x OT · sense 9
+seeking         Chaqar            # H2713 · 20x in NT · 27x OT · sense 2 · via "seek"  alt: Qaraahatha/H7125 Chapar/H2658
+poured          Tzawaq            # H6694 · 20x in NT · 3x OT · sense 1 · via "pour"  alt: Shapak/H8210 Nasak/H5258
+ran             Rawar             # H7325 · 20x in NT · 1x OT · sense 0 · via "run"  alt: Ratzawaa/H7519 Shatap/H7857
+commanding      Amar              # H560 · 20x in NT · 71x OT · sense 0 · via "command"  alt: Dabar/H1696 Paha/H6310
+comfort         Nacham            # H5162 · 20x in NT · 108x OT · sense 0  alt: Saida/H5582 Thanachawamaya/H8575
+willing         Nadayaba          # H5081 · 19x in NT · 29x OT · sense 4  alt: Nadabaha/H5071 Chapatz/H2655
+officer         Shataraya         # H7860 · 19x in NT · 25x OT · sense 0  alt: Natzayaba/H5333 Natzab/H5324
+clothed         Makarabal         # H3736 · 19x in NT · 1x OT · sense 0
+hears           Shamai            # H8086 · 19x in NT · 9x OT · sense 0 · via "hear"  alt: Qashayab/H7181 Shamai/H8088
+finished        Kalaa             # H3607 · 19x in NT · 18x OT · sense 0 · via "finish"  alt: Ashakalalaw/H3635 Shayatzayaa/H3319
+heal            Rapaaha           # H7499 · 19x in NT · 3x OT · sense 0  alt: Rapaa/H7495
+lying           Kadabah           # H3538 · 19x in NT · 1x OT · sense 0  alt: Kachasha/H3586 Shawaa/H7723
+rebuked         Charapahatha      # H2781 · 19x in NT · 73x OT · sense 0 · via "rebuke"  alt: Gairahatha/H1606 Magairath/H4045
+prepare         Zamanathawan      # H2164 · 19x in NT · 1x OT · sense 0  alt: Karaha/H3739 Manah/H4487
+divided         Palayagah         # H6386 · 19x in NT · 1x OT · sense 0
+takes           Thamak            # H8551 · 19x in NT · 21x OT · sense 0 · via "take"  alt: Sharash/H8327 Gawazaha/H1491
+small           Matzair           # H4705 · 19x in NT · 5x OT · sense 1  alt: Tzaiyawaraya/H6810 Qatzar/H7116
+cloud           Inana             # H6051 · 19x in NT · 87x OT · sense 0  alt: Shachaq/H7834 Inanay/H6050
+wrong           Iwathahatha       # H5792 · 19x in NT · 1x OT · sense 0  alt: Maiqal/H6127 Sarah/H5627
+prayers         Thapalahatha      # H8605 · 19x in NT · 77x OT · sense 0 · via "prayer"  alt: Shayachah/H7881 Shayacha/H7879
+suffered        Raib              # H7456 · 19x in NT · 13x OT · sense 3 · via "suffer"  alt: Katharaw/H3803 Yanayacha/H3240
+taking          Maqach            # H4727 · 19x in NT · 1x OT · sense 0
+carried         Nahala            # H5095 · 19x in NT · 10x OT · sense 0 · via "carry"  alt: Nachath/H5182 Rakab/H7392
+bondage         Ibadawatha        # H5659 · 19x in NT · 3x OT · sense 0  alt: Ibadahatha/H5656
+offered         Tharawamaha       # H8641 · 18x in NT · 76x OT · sense 3
+lost            Abadah            # H9 · 18x in NT · 4x OT · sense 0
+offer           Zabacha           # H2077 · 18x in NT · 162x OT · sense 0  alt: Dabachayan/H1684 Nasakah/H5260
+committed       Hayah             # H1961 · 18x in NT · 3560x OT · sense 4
+makes           Badal             # H914 · 18x in NT · 42x OT · sense 0 · via "make"  alt: Palas/H6424 Mapashar/H6590
+hypocrites      Chanap            # H2611 · 18x in NT · 13x OT · sense 0 · via "hypocrite"
+fast            Tzawam            # H6685 · 18x in NT · 26x OT · sense 0  alt: Asaparanaa/H629 Asara/H631
+bridegroom      Chathan           # H2860 · 18x in NT · 20x OT · sense 0
+along           Daraka            # H1870 · 18x in NT · 706x OT · sense 0  alt: Halak/H1980 Halak/H1980
+linen           Bad               # H906 · 18x in NT · 23x OT · sense 0  alt: Pashathaha/H6593
+please          Shapar            # H8232 · 18x in NT · 3x OT · sense 1  alt: Yawaal/H2974 Chapatz/H2655
+weep            Damai             # H1830 · 18x in NT · 2x OT · sense 1  alt: Bakah/H1058
+year            Shanahayan        # H8140 · 18x in NT · 7x OT · sense 0  alt: Shanawathaya/H8141 Yawamaya/H3117
+obtained        Pawaq             # H6329 · 18x in NT · 7x OT · sense 4 · via "obtain"  alt: Racham/H7355 Nashaa/H5375
+boldness        Iza               # H5797 · 18x in NT · 92x OT · sense 0
+boasting        Halal             # H1984 · 18x in NT · 165x OT · sense 0 · via "boast"  alt: Gadal/H1431 Kabad/H3513
+shepherd        Raih              # H7462 · 17x in NT · 164x OT · sense 13
+root            Sharasha          # H8330 · 17x in NT · 3x OT · sense 0  alt: Nasacha/H5255 Sharasha/H8328
+behind          Acharaya          # H310 · 17x in NT · 715x OT · sense 7
+glad            Shamachaw         # H8056 · 17x in NT · 20x OT · sense 0  alt: Tawaba/H2896
+sees            Raah              # H7202 · 17x in NT · 1x OT · sense 0 · via "see"  alt: Shazapatha/H7805 Hanah/H2009
+room            Qana              # H7064 · 17x in NT · 13x OT · sense 1  alt: Maqawama/H4725 Thachathaya/H8478
+beware          Irayamaw          # H6191 · 17x in NT · 5x OT · sense 1
+produces        Qarab             # H7126 · 17x in NT · 283x OT · sense 12 · via "produce"
+worse           Rai               # H7451 · 17x in NT · 664x OT · sense 30
+journey         Masaiya           # H4550 · 17x in NT · 12x OT · sense 0  alt: Mahalaka/H4109 Daraka/H1870
+village         Parawazaya        # H6521 · 17x in NT · 3x OT · sense 0  alt: Parazawan/H6520 Paraza/H6518
+eating          Akala             # H400 · 17x in NT · 44x OT · sense 0
+condemned       Rashayai          # H7561 · 17x in NT · 35x OT · sense 0 · via "condemn"  alt: Inash/H6064
+garments        Madaha            # H4060 · 17x in NT · 55x OT · sense 0 · via "garment"  alt: Adarath/H155 Labawasha/H3831
+passing         Chalapawan        # H2499 · 17x in NT · 4x OT · sense 0 · via "pass"  alt: Idaayaw/H5709 Gadal/H1431
+respect         Mashaa            # H4856 · 17x in NT · 1x OT · sense 0  alt: Nakar/H5234 Panah/H6437
+invited         Qaraa             # H7121 · 17x in NT · 734x OT · sense 9 · via "invite"
+sinned          Chataah           # H2401 · 17x in NT · 8x OT · sense 0 · via "sin"  alt: Sayan/H5512 Chataya/H2408
+persuaded       Sawayatha         # H5496 · 17x in NT · 18x OT · sense 2 · via "persuade"  alt: Pathah/H6601
+eats            Lacham            # H3898 · 17x in NT · 177x OT · sense 1 · via "eat"  alt: Barahawath/H1262 Akalah/H402
+affliction      Iyana             # H5869 · 17x in NT · 887x OT · sense 0  alt: Awana/H205 Shabara/H7667
+past            Raashawanah       # H7223 · 17x in NT · 182x OT · sense 8  alt: Ayan/H369
+stands          Qawayam           # H6966 · 17x in NT · 35x OT · sense 5 · via "stand"  alt: Qarab/H7126 Nagashaw/H5066
+worked          Mapailawath       # H4659 · 17x in NT · 3x OT · sense 0 · via "work"  alt: Maibadaya/H4566 Maibada/H4567
+lifted          Bawaa             # H935 · 17x in NT · 2568x OT · sense 42 · via "lift"
+wait            Araba             # H696 · 17x in NT · 1x OT · sense 0  alt: Chakah/H2442 Shabaraw/H7663
+pleasure        Raiwath           # H7470 · 17x in NT · 2x OT · sense 0  alt: Shaishai/H8191 Chashaqa/H2837
+lie             Thaana            # H8383 · 17x in NT · 1x OT · sense 0  alt: Shawaa/H7723 Shain/H8172
+language        Lashan            # H3961 · 17x in NT · 7x OT · sense 0  alt: Lashawana/H3956 Shapahatha/H8193
+idols           Tharapayam        # H8655 · 17x in NT · 15x OT · sense 0
+creatures       Napasha           # H5315 · 17x in NT · 754x OT · sense 5 · via "creature"
+least           Qatana            # H6996 · 16x in NT · 101x OT · sense 0  alt: Tzaiyawaraya/H6810
+flee            Natzaa            # H5323 · 16x in NT · 1x OT · sense 0  alt: Nawadaw/H5110 Barach/H1272
+pleased         Shapar            # H8232 · 16x in NT · 3x OT · sense 1 · via "please"  alt: Yawaal/H2974 Chapatz/H2655
+report          Shama             # H8034 · 16x in NT · 864x OT · sense 4  alt: Shamai/H8088 Shamawaih/H8052
+treasure        Ganazay           # H1596 · 16x in NT · 3x OT · sense 0  alt: Makamanay/H4362 Shapawanay/H8226
+birds           Iwap              # H5775 · 16x in NT · 71x OT · sense 0 · via "bird"  alt: Tzapawar/H6833 Iyat/H5861
+seeks           Chaqar            # H2713 · 16x in NT · 27x OT · sense 2 · via "seek"  alt: Qaraahatha/H7125 Chapar/H2658
+thorns          Shayath           # H7898 · 16x in NT · 7x OT · sense 0
+asleep          Yashan            # H3463 · 16x in NT · 7x OT · sense 0
+touch           Nagai             # H5060 · 16x in NT · 150x OT · sense 13
+moved           Gaishaw           # H1607 · 16x in NT · 9x OT · sense 0 · via "move"  alt: Paim/H6470 Zawai/H2111
+friend          Raih              # H7463 · 16x in NT · 4x OT · sense 0  alt: Marai/H4828 Alawap/H441
+parables        Mashal            # H4912 · 16x in NT · 39x OT · sense 2 · via "parable"
+grew            Gadal             # H1432 · 16x in NT · 4x OT · sense 1
+bought          Maqanah           # H4736 · 16x in NT · 15x OT · sense 0
+contrary        Qaray             # H7147 · 16x in NT · 7x OT · sense 0  alt: Hapak/H2016
+draw            Shalap            # H8025 · 16x in NT · 25x OT · sense 0  alt: Dalah/H1802 Sachabawa/H5498
+profit          Yatharawan        # H3504 · 16x in NT · 10x OT · sense 2  alt: Mawathar/H4195 Batzai/H1215
+joined          Yachad            # H3161 · 16x in NT · 3x OT · sense 0 · via "join"  alt: Chawayataw/H2338 Qatara/H7000

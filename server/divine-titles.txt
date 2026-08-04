@@ -1,0 +1,19 @@
+# divine-titles.txt — divine words. Transliterated, BARE, never glossed.
+#
+# Format:  <word>  <allowed Strong's...>     (first is the fallback)
+#
+# ONLY genuine standalone divine words. "Most" and "High" are NOT here: alone they
+# are ordinary English ("most certainly", "the high priest"), and listing them turned
+# "Most certainly I tell you" into "Ilayawan certainly I tell you". "Most High" as a
+# title is handled as a PHRASE in divine-phrases.txt instead.
+
+God        H430 H410 H433 H426
+god        H430 H410 H433
+gods       H430 H410
+LORD       H3068 H3069
+Yahweh     H3068 H3069
+Yah        H3050
+Jehovah    H3068
+Lord       H136 H113
+lord       H113 H136
+Almighty   H7706

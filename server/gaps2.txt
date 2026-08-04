@@ -1,0 +1,106 @@
+
+────────────────────────────────────────────────────────────────────────────
+GLOSS GAPS — baked components that render as bare paleo
+────────────────────────────────────────────────────────────────────────────
+A component whose translation is empty or just its own letters found no lexicon
+entry. The bake carries the Strong's regardless; only the English is missing.
+
+READ THE COVERAGE TABLE FIRST. BHS rows and HEB rows are glossed by the SAME
+parseToken chain against the SAME lexicon files, so their coverage should match.
+  • both low   -> lexicon data gap; predates the HEB bake, shows in the OT too
+  • HEB lower  -> the whole-word composition lost something; that one is mine
+
+  source   components   glossed   by occurrence-weight
+  ----------------------------------------------------
+  BHS      37146        30.0%     76.9%
+  HEB      96305        57.9%     76.2%
+
+  By component class (glossed / total):
+    HEB|root                 19768 / 54266    36.4%
+    BHS|root                 10408 / 33461    31.1%
+    HEB|mod-conj             15511 / 15562    99.7%
+    HEB|mod-prep             13664 / 14134    96.7%
+    HEB|mod-nmpr               866 / 5638     15.4%
+    HEB|mod-art               4479 / 4729     94.7%
+    BHS|mod-nmpr               544 / 3151     17.3%
+    HEB|mod-inrg               794 / 857      92.6%
+    HEB|mod-nega               238 / 334      71.3%
+    HEB|mod-advb               128 / 274      46.7%
+    BHS|mod-prep               113 / 239      47.3%
+    HEB|mod-prde               142 / 201      70.6%
+    HEB|mod-intj                93 / 174      53.4%
+    HEB|mod-prps               101 / 127      79.5%
+
+
+────────────────────────────────────────────────────────────────────────────
+RANKED GAPS
+────────────────────────────────────────────────────────────────────────────
+distinct un-glossed components : 14154
+component instances (double-counted across a word's parts, and per head SN): 370,222
+
+row_strongs is the WORD's head Strong's, not necessarily this component's —
+a multi-part word has one head, so look the component up by its paleo, not the SN.
+
+  paleo            row_sn    css          hits   example word
+  ------------------------------------------------------------------
+  𐤀𐤋            H408     root         5453   𐤀𐤋
+  𐤀𐤋            H413     root         4867   𐤀𐤋
+  𐤀𐤉𐤋          H352     root         4637   𐤅𐤀𐤉𐤋
+  𐤀𐤋            H411     root         4420   𐤄𐤀𐤋
+  𐤀𐤋            H3808    root         4378   𐤀𐤋
+  𐤀𐤋𐤕𐤔𐤇𐤕    H516     root         4378   𐤀𐤋
+  𐤀𐤋            H409     root         4378   𐤀𐤋
+  𐤊              H3606    mod-conj     3192   𐤊𐤋
+  𐤋              H3606    mod-conj     3192   𐤊𐤋
+  𐤏𐤃            H5707    root         3118   𐤋𐤏𐤃
+  𐤉𐤋𐤊          H3212    root         2546   𐤕𐤋𐤊
+  𐤏𐤃            H5704    mod-advb     2483   𐤏𐤃
+  𐤏𐤃            H5706    root         2429   𐤏𐤃
+  𐤃𐤉            H1768    mod-prep     2126   𐤃𐤉
+  𐤌𐤄            H4101    mod-inrg     1987   𐤋𐤌𐤄
+  𐤓𐤁            H7227    root         1790   𐤓𐤁
+  𐤏𐤉𐤓          H5892    root         1781   𐤏𐤉𐤓
+  𐤀𐤕𐤄          H858     root         1762   𐤀𐤕𐤄
+  𐤏𐤌            H5973    mod-prep     1597   𐤏𐤌𐤄
+  𐤏𐤃            H5703    root         1492   𐤅𐤏𐤃
+  𐤌𐤍            H4478    mod-inrg     1488   𐤌𐤍
+  𐤋𐤅            H3863    mod-conj     1482   𐤋𐤅
+  𐤋𐤁            H3820    root         1455   𐤋𐤁𐤅
+  𐤀𐤉𐤍          H369     mod-nega     1426   𐤀𐤉𐤍
+  𐤀𐤍𐤉          H590     root         1426   𐤅𐤀𐤍𐤉
+  𐤏𐤌𐤃          H5975    root         1369   𐤏𐤌𐤃
+  𐤐𐤕𐤇          H6605    root         1303   𐤅𐤉𐤐𐤕𐤇
+  𐤓𐤏𐤄          H7462    root         1253   𐤓𐤏𐤄
+  𐤐𐤄            H6310    root         1249   𐤐𐤉𐤄
+  𐤎𐤐𐤓          H5608    root         1232   𐤅𐤎𐤐𐤓
+  𐤋𐤊            H9005    root         1138   𐤋𐤊
+  𐤀𐤕𐤄          H857     root         1130   𐤅𐤀𐤕𐤄
+  𐤏𐤕            H6256    root         1104   𐤋𐤏𐤕
+  𐤓𐤏            H7451    root         1051   𐤅𐤓𐤏
+  𐤏𐤉𐤍𐤉        H5869    root         1036   𐤏𐤉𐤍𐤉𐤊𐤌
+  𐤏𐤌            H5972    root         1020   𐤅𐤏𐤌𐤄
+  𐤑𐤅𐤄          H6680    root         985    𐤅𐤉𐤑𐤅
+  𐤌𐤔𐤐𐤈        H4941    root         953    𐤅𐤌𐤔𐤐𐤈
+  𐤌𐤍            H4479    mod-inrg     952    𐤌𐤍
+  𐤔𐤌𐤏𐤅        H8085    root         951    𐤅𐤉𐤔𐤌𐤏𐤅
+  𐤔𐤄            H7716    root         895    𐤄𐤔𐤄
+  𐤓𐤏𐤄          H7451    root         884    𐤄𐤓𐤏𐤄
+  𐤉𐤔𐤅𐤏        H3442    mod-nmpr     883    𐤋𐤉𐤔𐤅𐤏
+  𐤄𐤍            H2005    mod-prde     852    𐤄𐤍
+  𐤌𐤑𐤀          H4672    root         809    𐤌𐤑𐤀
+  𐤋𐤇𐤌          H3899    root         787    𐤋𐤇𐤌
+  𐤀𐤋𐤐          H506     root         784    𐤀𐤋𐤐
+  𐤌𐤍𐤄          H4487    root         770    𐤉𐤌𐤍𐤄
+  𐤌𐤃𐤁𐤓        H4057    root         755    𐤄𐤌𐤃𐤁𐤓
+  𐤃𐤌            H1818    root         736    𐤃𐤌𐤅
+  𐤋𐤇𐤌          H3898    root         724    𐤅𐤍𐤋𐤇𐤌
+  𐤓𐤉𐤁          H7378    root         721    𐤅𐤉𐤓𐤁
+  𐤌𐤍            H4481    mod-conj     714    𐤌𐤍
+  𐤊𐤎𐤐          H3701    root         713    𐤁𐤊𐤎𐤐
+  𐤃𐤉            H1767    root         712    𐤃𐤉𐤌
+  𐤋𐤌𐤏𐤍        H4616    mod-prep     708    𐤋𐤌𐤏𐤍
+  𐤌𐤆𐤁𐤇        H4196    root         701    𐤌𐤆𐤁𐤇
+  𐤀𐤃𐤌          H122     root         699    𐤄𐤀𐤃𐤌
+  𐤃𐤅𐤃          H1730    root         699    𐤃𐤃
+  𐤀𐤅𐤕          H853     mod-prep     688    𐤀𐤅𐤕𐤊
+  … and 14094 more

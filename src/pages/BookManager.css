@@ -1,0 +1,88 @@
+.bm-page {
+  min-height: 100vh;
+  background: var(--bg, #0e0e0f);
+  color: var(--text, #e8e6e0);
+  padding: 20px 24px 60px;
+}
+
+.bm-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+.bm-top h1 { font-size: 20px; margin: 0; }
+.bm-back { color: inherit; text-decoration: none; font-size: 20px; }
+.bm-busy { color: var(--text3, #72706a); font-size: 13px; }
+
+.bm-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 16px;
+}
+@media (max-width: 760px) {
+  .bm-cols { grid-template-columns: 1fr; }
+}
+
+.bm-col h2 { font-size: 15px; margin: 0 0 4px; color: var(--gold, #e8aa55); }
+.bm-hint { font-size: 12px; color: var(--text3, #72706a); margin: 0 0 10px; }
+
+.bm-filter {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: var(--bg2, #16161a);
+  border: 1px solid var(--border, #2c2c35);
+  border-radius: 6px;
+  color: inherit;
+  font-size: 13px;
+}
+
+.bm-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.bm-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg2, #16161a);
+  border: 1px solid var(--border, #2c2c35);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+.bm-draggable { cursor: grab; }
+.bm-draggable:active { cursor: grabbing; }
+
+.bm-drag-handle { color: var(--text4, #484640); }
+.bm-row-name { flex: 1; }
+.bm-row-meta { color: var(--text3, #72706a); font-size: 11px; white-space: nowrap; }
+
+.bm-add, .bm-remove {
+  background: var(--bg3, #1e1e24);
+  border: 1px solid var(--border2, #38383f);
+  color: inherit;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.bm-add:hover  { border-color: var(--green, #4cca7a); color: var(--green, #4cca7a); }
+.bm-remove:hover { border-color: var(--red, #e05555); color: var(--red, #e05555); }
+.bm-add:disabled, .bm-remove:disabled { opacity: 0.5; cursor: default; }
+
+.bm-error {
+  grid-column: 1 / -1;
+  color: var(--red, #e05555);
+  font-size: 13px;
+}

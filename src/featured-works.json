@@ -1,0 +1,8 @@
+{
+  "_README": "Your curated, quick-access works. List identifiers as \"SOURCE:doc_id\" (the same code shown in the Works Library). These pin to a Featured strip at the top of the Works Library; everything else collapses under 'All works' with a toggle. Edit freely and rebuild. (Note: writings promoted to books via assign-canon-ids.py — Jasher, the Testaments, etc. — now live in the book dropdown, not here.)",
+  "featured": [
+    "GRC:tlg1271.tlg001.1st1K-grc1",
+    "GRC:tlg1311.tlg001.1st1K-grc1",
+    "GRC:tlg1216.tlg001.1st1K-grc1"
+  ]
+}

@@ -1,0 +1,43 @@
+# Fly.io app config. Rename `app` before first deploy (fly.io requires a
+# globally-unique name) — either edit it here or let `fly launch` generate
+# one and rewrite this file for you.
+#
+# ADMIN_KEY is NOT set here — it's a secret. Set it once with:
+#   fly secrets set ADMIN_KEY='a long random password'
+app = "paleo-studio"
+primary_region = "iad"
+
+[build]
+
+[env]
+  READ_ONLY = "1"
+  NODE_ENV = "production"
+  PORT = "3000"
+
+# Persistent disk for the SQLite databases. Data here survives deploys and
+# machine restarts — the entrypoint symlinks these files into server/ at
+# boot. Because a volume can't be shared across machines, Fly automatically
+# keeps this app to a single machine (no built-in replication between
+# volumes) — expected and fine for a single-admin instance.
+[[mounts]]
+  source = "paleo_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+  [[http_service.checks]]
+    interval = "15s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "2gb"

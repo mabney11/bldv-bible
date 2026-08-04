@@ -1,0 +1,87 @@
+probe-gloss-source — which file could supply each missing gloss
+index=./surface-index.db  lex=./lexicon
+files found:
+  lexicon.json                     lexicon\lexicon.json
+  homographs.json                  lexicon\homographs.json
+  definitions.json                 lexicon\definitions.json
+  word-map.json                    word-map.json
+  name-map-expanded.json           name-map-expanded.json
+  strongs-hebrew.json              strongs-hebrew.json
+  strongs-hebrew-expanded.json     strongs-hebrew-expanded.json
+  strongs-roots.json               lexicon\strongs-roots.json
+  coptic-lexicon.json              lexicon\coptic-lexicon.json
+  geez-lexicon.json                lexicon\geez-lexicon.json
+  greek-lexicon.json               lexicon\greek-lexicon.json
+  hebrew-extra-lexicon.json        lexicon\hebrew-extra-lexicon.json
+  latin-lexicon.json               lexicon\latin-lexicon.json
+  syriac-lexicon.json              lexicon\syriac-lexicon.json
+
+Anything above that build-surface-index.js does NOT load is a wiring candidate.
+It loads only: lexicon.json, homographs.json, definitions.json, strongs-roots.json,
+surface-strongs-overrides.json.
+
+────────────────────────────────────────────────────────────────────────────
+CHECKING THE TOP 400 GAPS AGAINST EVERY DATA FILE
+────────────────────────────────────────────────────────────────────────────
+
+  count   would have been supplied by
+  ------------------------------------------------------------
+  339     strongs-hebrew-expanded.json
+  48      homographs.json:by-paleo
+  8       hebrew-extra-lexicon.json
+  4       NOWHERE — genuinely unauthored
+  1       homographs.json:by-strongs
+
+WHAT THIS MEANS
+  Anything but "NOWHERE" is a WIRING problem: the English already exists, in a
+  file build-surface-index.js does not consult. Fix = feed that file into the
+  gloss chain (or merge it into lexicon.json), then rebuild. No authoring.
+  "NOWHERE" is the genuine curation backlog.
+
+  source=BHS  -> pre-existing; the same gap shows in the OT, nothing to do with
+                the HEB bake. source=HEB only -> introduced by the whole-word path.
+  a ~ after the SN means the component carried no sn of its own and the row's
+  numbers were used instead, so that row is a candidate, not a certainty.
+
+homographs.json:by-paleo:
+  𐤀𐤋 (root, H409, 51146 hits, in 𐤀𐤋, source=BHS+HEB)
+  𐤋 (mod-conj, H3606~, 44806 hits, in 𐤋, source=BHS+HEB)
+  𐤏𐤌 (mod-prep, H5973, 34735 hits, in 𐤏𐤌, source=BHS+HEB)
+  𐤏𐤃 (root, H5707, 19450 hits, in 𐤏𐤃, source=BHS+HEB)
+  𐤏𐤌 (root, H5972, 9174 hits, in 𐤏𐤌, source=BHS+HEB)
+  𐤃𐤅𐤃 (root, H1730, 6635 hits, in 𐤃𐤃, source=BHS+HEB)
+  𐤓𐤏 (root, H7451, 6244 hits, in 𐤓𐤏, source=BHS+HEB)
+  𐤀𐤕𐤄 (root, H857, 5869 hits, in 𐤀𐤕𐤄, source=BHS+HEB)
+  𐤀𐤅𐤕 (mod-prep, H853, 5826 hits, in 𐤀𐤅𐤕, source=BHS+HEB)
+  𐤔𐤁𐤏 (root, H7651, 5713 hits, in 𐤀𐤔𐤁𐤏, source=BHS+HEB)
+
+NOWHERE — genuinely unauthored:
+  𐤅 (mod-prep, no SN~, 50992 hits, in 𐤅, source=BHS)
+  𐤌 (mod-prep, no SN~, 19504 hits, in 𐤌, source=BHS+HEB)
+  𐤊 (mod-prep, no SN~, 8958 hits, in 𐤊, source=BHS+HEB)
+  𐤋𐤊 (root, no SN~, 1278 hits, in 𐤋𐤊, source=BHS+HEB)
+
+strongs-hebrew-expanded.json:
+  𐤀𐤉𐤋 (root, H354, 16474 hits, in 𐤀𐤉𐤋, source=BHS+HEB)
+  𐤏𐤉𐤓 (root, H5892, 10270 hits, in 𐤏𐤉𐤓, source=BHS+HEB)
+  𐤀𐤋𐤕𐤔𐤇𐤕 (root, H516, 9908 hits, in 𐤀𐤋, source=BHS+HEB)
+  𐤋𐤁 (root, H3820, 8396 hits, in 𐤋𐤁, source=BHS+HEB)
+  𐤏𐤉𐤍𐤉 (root, H5869, 7892 hits, in 𐤏𐤉𐤍𐤉, source=BHS+HEB)
+  𐤓𐤁 (root, H7230, 7740 hits, in 𐤓𐤁, source=BHS+HEB)
+  𐤓𐤏𐤄 (root, H7451, 7523 hits, in 𐤀𐤓𐤏, source=BHS+HEB)
+  𐤋𐤇𐤌 (root, H3899, 7119 hits, in 𐤀𐤋𐤇𐤌, source=BHS+HEB)
+  𐤌𐤍𐤔𐤄 (mod-nmpr, H4519, 7115 hits, in 𐤌, source=BHS+HEB)
+  𐤌 (mod-conj, H72~, 6395 hits, in 𐤌, source=BHS+HEB)
+
+hebrew-extra-lexicon.json:
+  𐤎𐤐𐤓 (root, H5608, 5382 hits, in 𐤀𐤎𐤐𐤓, source=BHS+HEB)
+  𐤌𐤍 (root, H4482, 4304 hits, in 𐤌𐤍, source=BHS+HEB)
+  𐤌𐤍 (mod-inrg, H4479, 3302 hits, in 𐤌𐤍, source=BHS+HEB)
+  𐤌𐤍 (mod-conj, H4481~, 1594 hits, in 𐤌𐤍, source=BHS+HEB)
+  𐤌𐤍 (mod-prin, H4479, 999 hits, in 𐤌𐤍, source=BHS+HEB)
+  𐤉𐤔𐤅𐤏 (mod-nmpr, H3442, 985 hits, in 𐤉𐤔𐤅𐤏, source=BHS+HEB)
+  𐤌𐤍 (mod-prde, H4479, 885 hits, in 𐤌𐤍, source=BHS+HEB)
+  𐤎𐤐𐤓 (mod-nmpr, H7158, 595 hits, in 𐤎𐤐𐤓, source=BHS+HEB)
+
+homographs.json:by-strongs:
+  𐤔 (mod-prep, H1571/H6965~, 1114 hits, in 𐤔, source=BHS+HEB)

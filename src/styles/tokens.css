@@ -1,0 +1,71 @@
+/* tokens.css — single source of truth for theme variables.
+   Both dark and light themes share the same set of CSS custom properties so
+   any component can use, e.g., var(--bg2) and have it adapt automatically. */
+
+:root {
+  /* Dark theme (default) */
+  --bg:     #0e0e0f;
+  --bg2:    #16161a;
+  --bg3:    #1e1e24;
+  --bg4:    #28282f;
+  --border: #2c2c35;
+  --border2:#38383f;
+  --border3:#555;
+
+  --text:   #e8e6e0;
+  --text2:  #b8b4ac;
+  --text3:  #72706a;
+  --text4:  #484640;
+
+  --gold:   #e8aa55;
+  --gold2:  #f5c070;
+  --blue:   #4a9eff;
+  --blue2:  #2a7edf;
+  --teal:   #3ecfb0;
+  --red:    #e05555;
+  --green:  #4cca7a;
+  --amber:  #e8aa55;
+  --pink:   #f472b6;
+  --purple: #a78bfa;
+
+  /* Sizes (font sliders override these in inline style) */
+  --paleo-size: 38px;
+  --sub-size:   14px;
+  --en-text-size: 16px;
+  --word-margin:  0 14px 32px 14px;
+  --word-gap:     8px;
+  --block-pad:    8px 10px 6px;
+  --block-radius: 8px;
+  --sub-maxw:     220px;
+
+  /* Mobile-tuned safe-area-friendly insets, useful on iOS Safari. */
+  --safe-top:    env(safe-area-inset-top,    0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Paleo font face — Segoe UI Historic is the most common system font with
+     paleo-hebrew unicode coverage; falls back through the same chain in case. */
+  --paleo-font: 'Segoe UI Historic','Segoe UI',sans-serif;
+}
+
+html[data-theme="light"] {
+  --bg:     #f8f6f1;
+  --bg2:    #f0ece3;
+  --bg3:    #e8e2d8;
+  --bg4:    #ddd8cc;
+  --border: #ccc8bc;
+  --border2:#bab4a8;
+  --border3:#9a9488;
+
+  --text:   #1e1a12;
+  --text2:  #4a4640;
+  --text3:  #8a8680;
+  --text4:  #b8b4ae;
+
+  --gold:   #9a6010;
+  --gold2:  #7a4800;
+  --blue:   #1862b8;
+  --blue2:  #0d4a98;
+  --teal:   #0a7a60;
+  --red:    #c03030;
+  --green:  #1a7a40;
+}

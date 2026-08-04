@@ -1,0 +1,27 @@
+# surface-forms.txt — the ONLY Strong's numbers that render from the verse's actual
+# written form instead of the root.
+#
+# By default every word renders from its ROOT (strongs-roots.json), so the root
+# shines and the English around it carries the grammar — "the", "his", "and". That is
+# the sane default: pulling in every inflection would bury the root and duplicate
+# what the English already says.
+#
+# A few words are worth the exception, where singular and plural are different words
+# in practice:
+#
+#   H1471   goy    𐤂𐤅𐤉    -> Gaway      a nation
+#           goyim  𐤂𐤅𐤉𐤌  -> Gawayam    the nations / heathen / gentiles
+#
+# The definite article (𐤄, "ha-") is STRIPPED from the surface form here, because the
+# English already prints "the" — "the Hagawayam" would read "the the nations". This
+# is not the same as removing a letter from a root: the article is a proclitic the
+# translation renders separately, and the root itself is untouched.
+#
+# Add a Strong's number to opt it in. One per line.
+
+H1471
+
+# NOTE: H1 (ab) is deliberately NOT here. Unlike goy/goyim (two clean forms), ab
+# inflects heavily — abay (construct), abathay, abawathay, abawath — so surface forms
+# fragment it into six spellings, none dominant. father/fathers are PINNED instead
+# (term-strongs.txt) to the two forms actually wanted.

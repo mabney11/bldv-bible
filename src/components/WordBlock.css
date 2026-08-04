@@ -1,0 +1,195 @@
+/* WordBlock.css — visual styling for the word-block component */
+
+.word-block {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: top;
+  margin: var(--word-margin);
+  gap: var(--word-gap);
+}
+
+.paleo {
+  position: relative;
+  font-family: var(--paleo-font);
+  font-size: var(--paleo-size);
+  line-height: 1;
+  direction: rtl;
+  display: flex;
+  align-items: flex-end;
+  min-height: calc(var(--paleo-size) * 1.1);
+}
+
+.search-text {
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  pointer-events: none;
+}
+
+.visible-text {
+  display: flex;
+  align-items: flex-end;
+}
+
+.clickable-comp {
+  cursor: pointer;
+  display: inline-block;
+  padding: 4px 1px;
+  border-radius: 4px;
+  transition: opacity 0.15s;
+  position: relative;
+  letter-spacing: -0.02em;
+}
+.clickable-comp:hover { opacity: 0.72; }
+.clickable-comp::after {
+  content: "Copied!";
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--teal);
+  color: #000;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, top 0.2s;
+  white-space: nowrap;
+  direction: ltr;
+  z-index: 10;
+}
+.clickable-comp.copied::after { opacity: 1; top: -36px; }
+.clickable-comp.hl {
+  background: var(--gold) !important;
+  color: #111 !important;
+  border-radius: 4px;
+  outline: 1px solid var(--gold2);
+}
+
+.w {
+  font-size: var(--sub-size);
+  direction: ltr;
+  line-height: 1.5;
+  text-align: center;
+  max-width: var(--sub-maxw);
+  font-weight: 400;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+.w-translit { font-weight: 700; white-space: nowrap; display: block; }
+
+.copy-word-btn {
+  margin-left: 6px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  font-size: 11px;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  align-self: flex-start;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.copy-word-btn:hover { color: var(--gold); border-color: var(--gold); }
+.copy-word-btn.copied { color: var(--green); border-color: var(--green); }
+
+.strongs-badge {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 10px;
+  margin-top: -2px;
+}
+.sn-link {
+  font-family: monospace;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--mc, var(--blue)) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mc, var(--blue)) 30%, transparent);
+  color: var(--mc, var(--blue));
+  transition: background 0.12s;
+}
+.sn-link:hover { background: color-mix(in srgb, var(--mc, var(--blue)) 22%, transparent); }
+.surf-badge-link {
+  font-family: monospace;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(62,207,176,0.08);
+  border: 1px solid rgba(62,207,176,0.25);
+  color: var(--teal);
+}
+.surf-badge-link:hover { background: rgba(62,207,176,0.18); }
+
+.search-match .paleo {
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  border-radius: 6px;
+}
+
+/* Mobile: tighter spacing, content-driven width */
+@media (max-width: 700px) {
+  .word-block {
+    margin: 0 5px 14px 5px;
+    flex: 0 0 auto;
+    min-width: 56px;
+    max-width: none;
+  }
+  .paleo {
+    font-size: var(--paleo-size);
+    min-height: calc(var(--paleo-size) * 1.1);
+    padding: 2px 4px;
+    width: auto;
+    justify-content: center;
+  }
+  .w {
+    font-size: var(--sub-size);
+    max-width: var(--sub-maxw);
+    white-space: normal;
+    overflow-wrap: break-word;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .w-translit { white-space: nowrap; display: block; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NO WORD CARDS — kill the grey box behind every word.
+   A rule in the deployed (unshared) CSS paints a card behind .paleo using
+   var(--bg3)/var(--block-pad)/var(--block-radius). The readers must show glyphs
+   directly on the page, so strip the ENTIRE card (background + padding + rounding
+   + border) for the Hebrew reader (.word-block) and every MultiViewer script
+   (.multi-word-block / .mwb-* ). The `body` prefix + double class keeps these at
+   a specificity that beats a bare `.paleo{…}` or `.mwb-ethiopic .paleo{…}` rule
+   whatever the file-load order. Only genuine highlight states survive.
+   ═══════════════════════════════════════════════════════════════════════════ */
+body .word-block .paleo,
+body .multi-word-block .paleo,
+body .paleo.mwb-paleo,
+body .mwb-ethiopic .paleo,
+body .mwb-greek .paleo,
+body .mwb-hebrew .paleo,
+body .word-block .visible-text,
+body .multi-word-block .visible-text {
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+/* Re-assert (with higher priority, placed last) the ONLY backgrounds a word may
+   show — active app highlight states. These win because they are more specific
+   than the reset above and appear after it. */
+body .word-block.search-match .paleo,
+body .multi-word-block.search-match .paleo {
+  background: color-mix(in srgb, var(--gold) 12%, transparent) !important;
+  border-radius: 6px !important;
+}
+body .clickable-comp.hl {
+  background: var(--gold) !important;
+  color: #111 !important;
+  border-radius: 4px !important;
+}

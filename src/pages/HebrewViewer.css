@@ -1,0 +1,385 @@
+/* HebrewViewer.css */
+
+.hv-page { min-height: 100vh; background: var(--bg); color: var(--text); }
+
+/* ── Verse bar (sticky below toolbar in verse mode) ──────────────────────── */
+.hv-verse-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 12px 24px;
+}
+.hv-verse-ref { font-size: 15px; font-weight: 600; color: var(--gold); }
+.hv-back-btn {
+  font-size: 12px;
+  padding: 7px 14px;
+  border-radius: 5px;
+  border: 1px solid var(--border3);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  margin-left: auto;
+  min-height: 36px;
+}
+.hv-back-btn:hover { background: var(--bg3); color: var(--text); }
+
+/* ── Options row ─────────────────────────────────────────────────────────── */
+.hv-options-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 24px 0;
+  flex-wrap: wrap;
+}
+.hv-top-chapter-btn {
+  font-size: 12px;
+  color: var(--text3);
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  padding: 7px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-left: auto;
+  min-height: 32px;
+}
+.hv-top-chapter-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+/* ── Legend ──────────────────────────────────────────────────────────────── */
+.hv-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 5px 16px;
+  margin: 14px 24px 22px;
+  padding: 14px 18px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* ── Reader ──────────────────────────────────────────────────────────────── */
+.hv-reader-wrap {
+  position: relative;
+  /* Horizontal padding is relative and floored above the 44px fixed SideNav
+     arrows (+ breathing room) so word blocks and the prev/next buttons never
+     clip into each other on any viewport. Shared by HebrewViewer + MultiViewer. */
+  padding: 14px clamp(56px, 6vw, 96px) 80px;
+}
+.hv-output {
+  display: block;
+  text-align: right;
+  direction: rtl;
+  padding: 4px 8px;
+}
+
+.hv-ref-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 18px;
+  padding: 0 8px;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  direction: ltr;
+  flex-wrap: wrap;
+}
+.hv-ref-title span {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text3);
+}
+
+/* The verse-wrapper sits in the RTL output but its inline-flex children
+   already arrange themselves correctly. */
+.hv-verse-wrapper { display: contents; }
+.hv-verse-wrapper.block-mode {
+  display: block;
+  margin-bottom: 28px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hv-verse-marker {
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 900;
+  color: #111;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 14px;
+  padding: 3px 9px;
+  margin: 0 6px 24px 4px;
+  align-items: center;
+  vertical-align: middle;
+  direction: ltr;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+  transform: translate(-6px, 18px);
+  min-height: 24px;
+}
+html[data-theme="light"] .hv-verse-marker { color: #fff; background: #1a1612; }
+.hv-verse-marker:hover { opacity: 0.78; }
+.hv-verse-marker.verse-mode-active { background: var(--teal); color: #000; }
+.hv-verse-wrapper.highlighted .hv-verse-marker { background: var(--teal); color: #000; }
+.hv-verse-wrapper.highlighted {
+  outline: 2px solid color-mix(in srgb, var(--teal) 35%, transparent);
+  outline-offset: 6px;
+  border-radius: 6px;
+}
+
+/* ── Token viewer textarea ───────────────────────────────────────────────── */
+.hv-token-viewer-wrap {
+  margin: 24px 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hv-token-viewer-toggle {
+  font-size: 11px;
+  color: var(--text3);
+  background: transparent;
+  border: 1px dashed var(--border2);
+  border-radius: 5px;
+  padding: 6px 12px;
+  cursor: pointer;
+  align-self: flex-start;
+  font-family: monospace;
+  transition: all 0.15s;
+}
+.hv-token-viewer-toggle:hover     { color: var(--text); border-color: var(--border3); }
+.hv-token-viewer-toggle.open      { color: var(--blue); border-color: var(--blue); border-style: solid; }
+.hv-token-viewer {
+  width: 100%;
+  min-height: 160px;
+  max-height: 360px;
+  background: var(--bg2);
+  color: var(--text2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 12px;
+  /* Plain `monospace` has no Paleo-Hebrew/Phoenician glyph coverage, so word_raw
+     values (𐤄𐤉𐤄𐤅𐤃𐤉𐤌 etc.) fell back to whatever the OS substitutes and rendered as
+     mojibake here even though the underlying data was correct. Same paleo-aware
+     stack the rest of the app uses, monospace kept as the fallback for the plain
+     ASCII field names/numbers around it. */
+  font-family: var(--paleo-font, 'Segoe UI Historic', 'Noto Sans Phoenician'), monospace;
+  font-size: 11px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ── Presentation mode ───────────────────────────────────────────────────── */
+body.present {
+  --paleo-size: 62px;
+  --sub-size: 16px;
+  --word-margin: 0 22px 52px 22px;
+}
+body.present .hv-verse-bar,
+body.present .hv-options-row,
+body.present .hv-search-section,
+body.present .hv-token-viewer-wrap { display: none !important; }
+body.present .hv-legend { position: fixed; top: 0; left: 0; right: 60px; z-index: 88; max-height: 50vh; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border-radius: 0 0 10px 0; }
+body.present .hv-ref-title { font-size: 36px; margin-bottom: 32px; }
+
+.hv-present-exit {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 102;
+  background: rgba(80,80,90,0.85);
+  border: 1px solid rgba(200,200,210,0.3);
+  color: #eee;
+  font-size: 16px;
+  font-weight: 700;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hv-present-exit:hover { background: rgba(110,110,120,0.95); }
+
+/* ── Search section ──────────────────────────────────────────────────────── */
+.hv-search-section {
+  margin: 12px 24px 20px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.hv-search-top {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.hv-search-top input {
+  flex: 1;
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  padding: 9px 13px;
+  border-radius: 6px;
+  font-size: 20px;
+  direction: rtl;
+  font-family: var(--paleo-font);
+  min-height: 40px;
+}
+.hv-search-top input:focus { outline: none; border-color: var(--blue); }
+.hv-search-clear, .hv-search-close {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  padding: 9px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  min-height: 40px;
+}
+.hv-search-clear:hover, .hv-search-close:hover { color: var(--text); border-color: var(--border3); }
+.hv-search-btn {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 40px;
+}
+.hv-search-btn:hover { background: var(--blue2); }
+.hv-search-btn:disabled { opacity: 0.6; cursor: progress; }
+
+.hv-paleo-kbd-wrap {
+  display: inline-flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: stretch;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+}
+.hv-paleo-kbd-delete {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  width: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.hv-paleo-kbd-delete:hover { color: var(--red); border-color: var(--red); }
+.hv-paleo-kbd {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  direction: rtl;
+}
+.hv-kbd-row {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: center;
+  direction: rtl;
+}
+.hv-kbd-key {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 22px;
+  font-family: var(--paleo-font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.1s;
+}
+.hv-kbd-key:hover  { background: var(--bg4); border-color: var(--border3); color: var(--text); }
+.hv-kbd-key:active { background: var(--blue); color: #fff; }
+
+.hv-search-mode-toggle {
+  display: flex;
+  gap: 0;
+  margin: 12px 0 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  width: fit-content;
+}
+.mode-btn {
+  background: var(--bg3);
+  border: none;
+  color: var(--text3);
+  padding: 8px 18px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.15s;
+  min-height: 36px;
+}
+.mode-btn:first-child { border-right: 1px solid var(--border2); }
+.mode-btn.active      { background: var(--blue); color: #fff; }
+.mode-btn:hover:not(.active) { background: var(--bg4); color: var(--text2); }
+
+.hv-search-results { margin-top: 14px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.hv-results-count  { font-size: 12px; color: var(--text3); }
+.hv-result-item {
+  display: inline-flex;
+  padding: 8px 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text2);
+  transition: all 0.12s;
+  text-align: left;
+  min-height: 36px;
+}
+.hv-result-item:hover { background: var(--bg4); color: var(--text); border-color: var(--border3); }
+.hv-result-ref        { color: var(--gold); font-weight: 600; }
+
+.hv-load-more-btn {
+  margin-top: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text3);
+  padding: 8px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  min-height: 36px;
+}
+.hv-load-more-btn:hover { border-color: var(--border3); color: var(--text2); }
+
+.hv-search-err { color: var(--red); padding: 8px 4px; font-size: 13px; }
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .hv-verse-bar       { margin: 0; border-radius: 0; padding: 10px 12px; }
+  .hv-reader-wrap     { padding: 10px clamp(10px, 4vw, 24px) 80px; }
+  .hv-output          { padding: 4px; }
+  .hv-ref-title       { font-size: 18px; padding: 0 4px; }
+  .hv-options-row     { padding: 8px 8px 0; }
+  .hv-search-section  { margin: 8px 4px; padding: 14px; }
+  .hv-legend          { margin: 8px 4px; padding: 12px; }
+}

@@ -1,0 +1,4862 @@
+{
+ "learned": [
+  {
+   "word": "Yahweh",
+   "strongs": "H3068",
+   "evidence": 760,
+   "verses": 5790,
+   "paleo": "𐤉𐤄𐤅𐤄"
+  },
+  {
+   "word": "Yahweh",
+   "strongs": "H3069",
+   "evidence": 308,
+   "verses": 5790,
+   "paleo": "𐤉𐤄𐤅𐤄"
+  },
+  {
+   "word": "offspring",
+   "strongs": "H2233",
+   "evidence": 101,
+   "verses": 144,
+   "paleo": "𐤆𐤓𐤏"
+  },
+  {
+   "word": "righteousness",
+   "strongs": "H6666",
+   "evidence": 50,
+   "verses": 205,
+   "paleo": "𐤑𐤃𐤒𐤄"
+  },
+  {
+   "word": "name",
+   "strongs": "H8034",
+   "evidence": 27,
+   "verses": 127,
+   "paleo": "𐤔𐤌"
+  },
+  {
+   "word": "lamp",
+   "strongs": "H4501",
+   "evidence": 20,
+   "verses": 26,
+   "paleo": "𐤌𐤍𐤅𐤓𐤄"
+  },
+  {
+   "word": "Yah",
+   "strongs": "H3050",
+   "evidence": 14,
+   "verses": 41,
+   "paleo": "𐤉𐤄"
+  },
+  {
+   "word": "kingdom",
+   "strongs": "H4410",
+   "evidence": 13,
+   "verses": 33,
+   "paleo": "𐤌𐤋𐤅𐤊𐤄"
+  },
+  {
+   "word": "covenant",
+   "strongs": "H5715",
+   "evidence": 12,
+   "verses": 41,
+   "paleo": "𐤏𐤃𐤅𐤕"
+  },
+  {
+   "word": "veil",
+   "strongs": "H6532",
+   "evidence": 10,
+   "verses": 21,
+   "paleo": "𐤐𐤓𐤊𐤕"
+  },
+  {
+   "word": "faithfulness",
+   "strongs": "H530",
+   "evidence": 10,
+   "verses": 29,
+   "paleo": "𐤀𐤌𐤅𐤍𐤄"
+  },
+  {
+   "word": "Yahweh",
+   "strongs": "H3087",
+   "evidence": 9,
+   "verses": 5790,
+   "paleo": "𐤉𐤄𐤅𐤑𐤃𐤒"
+  },
+  {
+   "word": "righteousness",
+   "strongs": "H6664",
+   "evidence": 7,
+   "verses": 205,
+   "paleo": "𐤑𐤃𐤒"
+  },
+  {
+   "word": "slave",
+   "strongs": "H5650",
+   "evidence": 7,
+   "verses": 16,
+   "paleo": "𐤏𐤁𐤃"
+  },
+  {
+   "word": "labor",
+   "strongs": "H3018",
+   "evidence": 6,
+   "verses": 64,
+   "paleo": "𐤉𐤂𐤉𐤏"
+  },
+  {
+   "word": "Sheol",
+   "strongs": "H7585",
+   "evidence": 6,
+   "verses": 65,
+   "paleo": "𐤔𐤀𐤅𐤋"
+  },
+  {
+   "word": "statutes",
+   "strongs": "H5713",
+   "evidence": 6,
+   "verses": 14,
+   "paleo": "𐤏𐤃𐤄"
+  },
+  {
+   "word": "Jehozadak",
+   "strongs": "H3087",
+   "evidence": 6,
+   "verses": 7,
+   "paleo": "𐤉𐤄𐤅𐤑𐤃𐤒"
+  },
+  {
+   "word": "possessions",
+   "strongs": "H7399",
+   "evidence": 5,
+   "verses": 15,
+   "paleo": "𐤓𐤊𐤅𐤔"
+  },
+  {
+   "word": "labor",
+   "strongs": "H5999",
+   "evidence": 5,
+   "verses": 64,
+   "paleo": "𐤏𐤌𐤋"
+  },
+  {
+   "word": "rest",
+   "strongs": "H3247",
+   "evidence": 5,
+   "verses": 27,
+   "paleo": "𐤉𐤎𐤅𐤃"
+  },
+  {
+   "word": "Ochran",
+   "strongs": "H5918",
+   "evidence": 5,
+   "verses": 5,
+   "paleo": "𐤏𐤊𐤓𐤍"
+  },
+  {
+   "word": "faithfulness",
+   "strongs": "H571",
+   "evidence": 5,
+   "verses": 29,
+   "paleo": "𐤀𐤌𐤕"
+  },
+  {
+   "word": "Lebanon",
+   "strongs": "H8010",
+   "evidence": 5,
+   "verses": 9,
+   "paleo": "𐤔𐤋𐤌𐤄"
+  },
+  {
+   "word": "Sepharvaim",
+   "strongs": "H5617",
+   "evidence": 5,
+   "verses": 6,
+   "paleo": "𐤎𐤐𐤓𐤅𐤉𐤌"
+  },
+  {
+   "word": "day",
+   "strongs": "H1961",
+   "evidence": 4,
+   "verses": 83,
+   "paleo": "𐤄𐤉𐤄"
+  },
+  {
+   "word": "judge",
+   "strongs": "H1777",
+   "evidence": 4,
+   "verses": 16,
+   "paleo": "𐤃𐤉𐤍"
+  },
+  {
+   "word": "servant",
+   "strongs": "H519",
+   "evidence": 4,
+   "verses": 32,
+   "paleo": "𐤀𐤌𐤄"
+  },
+  {
+   "word": "slaves",
+   "strongs": "H5650",
+   "evidence": 4,
+   "verses": 14,
+   "paleo": "𐤏𐤁𐤃"
+  },
+  {
+   "word": "abomination",
+   "strongs": "H8251",
+   "evidence": 4,
+   "verses": 12,
+   "paleo": "𐤔𐤒𐤅𐤑"
+  },
+  {
+   "word": "bread",
+   "strongs": "H2455",
+   "evidence": 4,
+   "verses": 17,
+   "paleo": "𐤇𐤋"
+  },
+  {
+   "word": "possession",
+   "strongs": "H5459",
+   "evidence": 4,
+   "verses": 8,
+   "paleo": "𐤎𐤂𐤋𐤄"
+  },
+  {
+   "word": "Jubilee",
+   "strongs": "H272",
+   "evidence": 4,
+   "verses": 16,
+   "paleo": "𐤀𐤇𐤆𐤄"
+  },
+  {
+   "word": "Jubilee",
+   "strongs": "H6187",
+   "evidence": 4,
+   "verses": 16,
+   "paleo": "𐤏𐤓𐤊"
+  },
+  {
+   "word": "king",
+   "strongs": "H7626",
+   "evidence": 4,
+   "verses": 38,
+   "paleo": "𐤔𐤁𐤈"
+  },
+  {
+   "word": "Michmash",
+   "strongs": "H4363",
+   "evidence": 4,
+   "verses": 9,
+   "paleo": "𐤌𐤊𐤌𐤎"
+  },
+  {
+   "word": "glory",
+   "strongs": "H6643",
+   "evidence": 4,
+   "verses": 12,
+   "paleo": "𐤑𐤁𐤉"
+  },
+  {
+   "word": "Yahweh",
+   "strongs": "H4714",
+   "evidence": 3,
+   "verses": 5790,
+   "paleo": "𐤌𐤑𐤓𐤉𐤌"
+  },
+  {
+   "word": "Yahweh",
+   "strongs": "H1732",
+   "evidence": 3,
+   "verses": 5790,
+   "paleo": "𐤃𐤅𐤃"
+  },
+  {
+   "word": "man",
+   "strongs": "H483",
+   "evidence": 3,
+   "verses": 73,
+   "paleo": "𐤀𐤋𐤌"
+  },
+  {
+   "word": "day",
+   "strongs": "H7621",
+   "evidence": 3,
+   "verses": 83,
+   "paleo": "𐤔𐤁𐤅𐤏𐤄"
+  },
+  {
+   "word": "day",
+   "strongs": "H702",
+   "evidence": 3,
+   "verses": 83,
+   "paleo": "𐤀𐤓𐤁𐤏"
+  },
+  {
+   "word": "day",
+   "strongs": "H6240",
+   "evidence": 3,
+   "verses": 83,
+   "paleo": "𐤏𐤔𐤓"
+  },
+  {
+   "word": "might",
+   "strongs": "H8467",
+   "evidence": 3,
+   "verses": 142,
+   "paleo": "𐤕𐤇𐤍𐤄"
+  },
+  {
+   "word": "might",
+   "strongs": "H8362",
+   "evidence": 3,
+   "verses": 142,
+   "paleo": "𐤔𐤕𐤋"
+  },
+  {
+   "word": "way",
+   "strongs": "H5002",
+   "evidence": 3,
+   "verses": 62,
+   "paleo": "𐤍𐤀𐤌"
+  },
+  {
+   "word": "servants",
+   "strongs": "H8334",
+   "evidence": 3,
+   "verses": 31,
+   "paleo": "𐤔𐤓𐤕"
+  },
+  {
+   "word": "Hanoch",
+   "strongs": "H2585",
+   "evidence": 3,
+   "verses": 3,
+   "paleo": "𐤇𐤍𐤅𐤊"
+  },
+  {
+   "word": "anointed",
+   "strongs": "H4886",
+   "evidence": 3,
+   "verses": 41,
+   "paleo": "𐤌𐤔𐤇"
+  },
+  {
+   "word": "lands",
+   "strongs": "H2712",
+   "evidence": 3,
+   "verses": 80,
+   "paleo": "𐤇𐤒𐤒"
+  },
+  {
+   "word": "Saul",
+   "strongs": "H3068",
+   "evidence": 3,
+   "verses": 19,
+   "paleo": "𐤉𐤄𐤅𐤄"
+  },
+  {
+   "word": "Elhanan",
+   "strongs": "H445",
+   "evidence": 3,
+   "verses": 3,
+   "paleo": "𐤀𐤋𐤇𐤍𐤍"
+  },
+  {
+   "word": "Rahab",
+   "strongs": "H7293",
+   "evidence": 3,
+   "verses": 3,
+   "paleo": "𐤓𐤄𐤁"
+  },
+  {
+   "word": "Name",
+   "strongs": "H8034",
+   "evidence": 3,
+   "verses": 4,
+   "paleo": "𐤔𐤌"
+  },
+  {
+   "word": "Hanamel",
+   "strongs": "H2601",
+   "evidence": 3,
+   "verses": 4,
+   "paleo": "𐤇𐤍𐤌𐤀𐤋"
+  },
+  {
+   "word": "Daniel",
+   "strongs": "H6540",
+   "evidence": 3,
+   "verses": 13,
+   "paleo": "𐤐𐤓𐤎"
+  },
+  {
+   "word": "likeness",
+   "strongs": "H1823",
+   "evidence": 2,
+   "verses": 22,
+   "paleo": "𐤃𐤌𐤅𐤕"
+  },
+  {
+   "word": "Yahweh",
+   "strongs": "H8010",
+   "evidence": 2,
+   "verses": 5790,
+   "paleo": "𐤔𐤋𐤌𐤄"
+  },
+  {
+   "word": "Yahweh",
+   "strongs": "H3050",
+   "evidence": 2,
+   "verses": 5790,
+   "paleo": "𐤉𐤄"
+  },
+  {
+   "word": "Yahweh",
+   "strongs": "H2601",
+   "evidence": 2,
+   "verses": 5790,
+   "paleo": "𐤇𐤍𐤌𐤀𐤋"
+  },
+  {
+   "word": "Yahweh",
+   "strongs": "H1008",
+   "evidence": 2,
+   "verses": 5790,
+   "paleo": "𐤁𐤉𐤕𐤀𐤋"
+  },
+  {
+   "word": "name",
+   "strongs": "H6996",
+   "evidence": 2,
+   "verses": 127,
+   "paleo": "𐤒𐤈𐤍"
+  },
+  {
+   "word": "name",
+   "strongs": "H2233",
+   "evidence": 2,
+   "verses": 127,
+   "paleo": "𐤆𐤓𐤏"
+  },
+  {
+   "word": "name",
+   "strongs": "H3427",
+   "evidence": 2,
+   "verses": 127,
+   "paleo": "𐤉𐤔𐤁"
+  },
+  {
+   "word": "name",
+   "strongs": "H3206",
+   "evidence": 2,
+   "verses": 127,
+   "paleo": "𐤉𐤋𐤃"
+  },
+  {
+   "word": "man",
+   "strongs": "H1116",
+   "evidence": 2,
+   "verses": 73,
+   "paleo": "𐤁𐤌𐤄"
+  },
+  {
+   "word": "man",
+   "strongs": "H2611",
+   "evidence": 2,
+   "verses": 73,
+   "paleo": "𐤇𐤍𐤐"
+  },
+  {
+   "word": "Methushael",
+   "strongs": "H4967",
+   "evidence": 2,
+   "verses": 2,
+   "paleo": "𐤌𐤕𐤅𐤔𐤀𐤋"
+  },
+  {
+   "word": "righteousness",
+   "strongs": "H4427",
+   "evidence": 2,
+   "verses": 205,
+   "paleo": "𐤌𐤋𐤊"
+  },
+  {
+   "word": "righteousness",
+   "strongs": "H160",
+   "evidence": 2,
+   "verses": 205,
+   "paleo": "𐤀𐤄𐤁𐤄"
+  },
+  {
+   "word": "righteousness",
+   "strongs": "H1777",
+   "evidence": 2,
+   "verses": 205,
+   "paleo": "𐤃𐤉𐤍"
+  },
+  {
+   "word": "righteousness",
+   "strongs": "H3068",
+   "evidence": 2,
+   "verses": 205,
+   "paleo": "𐤉𐤄𐤅𐤄"
+  },
+  {
+   "word": "righteousness",
+   "strongs": "H5002",
+   "evidence": 2,
+   "verses": 205,
+   "paleo": "𐤍𐤀𐤌"
+  },
+  {
+   "word": "day",
+   "strongs": "H6218",
+   "evidence": 2,
+   "verses": 83,
+   "paleo": "𐤏𐤔𐤅𐤓"
+  },
+  {
+   "word": "day",
+   "strongs": "H705",
+   "evidence": 2,
+   "verses": 83,
+   "paleo": "𐤀𐤓𐤁𐤏𐤉𐤌"
+  },
+  {
+   "word": "day",
+   "strongs": "H1129",
+   "evidence": 2,
+   "verses": 83,
+   "paleo": "𐤁𐤍𐤄"
+  },
+  {
+   "word": "day",
+   "strongs": "H3069",
+   "evidence": 2,
+   "verses": 83,
+   "paleo": "𐤉𐤄𐤅𐤄"
+  },
+  {
+   "word": "people",
+   "strongs": "H2076",
+   "evidence": 2,
+   "verses": 70,
+   "paleo": "𐤆𐤁𐤇"
+  },
+  {
+   "word": "people",
+   "strongs": "H5002",
+   "evidence": 2,
+   "verses": 70,
+   "paleo": "𐤍𐤀𐤌"
+  },
+  {
+   "word": "might",
+   "strongs": "H2805",
+   "evidence": 2,
+   "verses": 142,
+   "paleo": "𐤇𐤔𐤁"
+  },
+  {
+   "word": "might",
+   "strongs": "H7936",
+   "evidence": 2,
+   "verses": 142,
+   "paleo": "𐤔𐤊𐤓"
+  },
+  {
+   "word": "way",
+   "strongs": "H7223",
+   "evidence": 2,
+   "verses": 62,
+   "paleo": "𐤓𐤀𐤔𐤅𐤍"
+  },
+  {
+   "word": "way",
+   "strongs": "H7381",
+   "evidence": 2,
+   "verses": 62,
+   "paleo": "𐤓𐤉𐤇"
+  },
+  {
+   "word": "way",
+   "strongs": "H1961",
+   "evidence": 2,
+   "verses": 62,
+   "paleo": "𐤄𐤉𐤄"
+  },
+  {
+   "word": "way",
+   "strongs": "H2183",
+   "evidence": 2,
+   "verses": 62,
+   "paleo": "𐤆𐤍𐤅𐤍"
+  },
+  {
+   "word": "Phicol",
+   "strongs": "H6369",
+   "evidence": 2,
+   "verses": 3,
+   "paleo": "𐤐𐤉𐤊𐤋"
+  },
+  {
+   "word": "Kiriath",
+   "strongs": "H5318",
+   "evidence": 2,
+   "verses": 37,
+   "paleo": "𐤍𐤐𐤕𐤅𐤇"
+  },
+  {
+   "word": "good",
+   "strongs": "H7451",
+   "evidence": 2,
+   "verses": 24,
+   "paleo": "𐤓𐤏"
+  },
+  {
+   "word": "anointed",
+   "strongs": "H6942",
+   "evidence": 2,
+   "verses": 41,
+   "paleo": "𐤒𐤃𐤔"
+  },
+  {
+   "word": "army",
+   "strongs": "H366",
+   "evidence": 2,
+   "verses": 16,
+   "paleo": "𐤀𐤉𐤌"
+  },
+  {
+   "word": "servant",
+   "strongs": "H3701",
+   "evidence": 2,
+   "verses": 32,
+   "paleo": "𐤊𐤎𐤐"
+  },
+  {
+   "word": "Jordan",
+   "strongs": "H3643",
+   "evidence": 2,
+   "verses": 12,
+   "paleo": "𐤊𐤌𐤄𐤌"
+  },
+  {
+   "word": "hand",
+   "strongs": "H6240",
+   "evidence": 2,
+   "verses": 46,
+   "paleo": "𐤏𐤔𐤓"
+  },
+  {
+   "word": "sea",
+   "strongs": "H8476",
+   "evidence": 2,
+   "verses": 10,
+   "paleo": "𐤕𐤇𐤔"
+  },
+  {
+   "word": "face",
+   "strongs": "H5000",
+   "evidence": 2,
+   "verses": 22,
+   "paleo": "𐤍𐤀𐤅𐤄"
+  },
+  {
+   "word": "Israel",
+   "strongs": "H52",
+   "evidence": 2,
+   "verses": 49,
+   "paleo": "𐤀𐤁𐤉𐤔𐤉"
+  },
+  {
+   "word": "Israel",
+   "strongs": "H3069",
+   "evidence": 2,
+   "verses": 49,
+   "paleo": "𐤉𐤄𐤅𐤄"
+  },
+  {
+   "word": "gift",
+   "strongs": "H1293",
+   "evidence": 2,
+   "verses": 7,
+   "paleo": "𐤁𐤓𐤊𐤄"
+  },
+  {
+   "word": "peace",
+   "strongs": "H1293",
+   "evidence": 2,
+   "verses": 17,
+   "paleo": "𐤁𐤓𐤊𐤄"
+  },
+  {
+   "word": "Sheol",
+   "strongs": "H11",
+   "evidence": 2,
+   "verses": 65,
+   "paleo": "𐤀𐤁𐤃𐤅𐤍"
+  },
+  {
+   "word": "houses",
+   "strongs": "H2076",
+   "evidence": 2,
+   "verses": 15,
+   "paleo": "𐤆𐤁𐤇"
+  },
+  {
+   "word": "heart",
+   "strongs": "H7626",
+   "evidence": 2,
+   "verses": 42,
+   "paleo": "𐤔𐤁𐤈"
+  },
+  {
+   "word": "heart",
+   "strongs": "H3629",
+   "evidence": 2,
+   "verses": 42,
+   "paleo": "𐤊𐤋𐤉𐤄"
+  },
+  {
+   "word": "heart",
+   "strongs": "H3823",
+   "evidence": 2,
+   "verses": 42,
+   "paleo": "𐤋𐤁𐤁"
+  },
+  {
+   "word": "Pharaoh",
+   "strongs": "H3068",
+   "evidence": 2,
+   "verses": 8,
+   "paleo": "𐤉𐤄𐤅𐤄"
+  },
+  {
+   "word": "house",
+   "strongs": "H1116",
+   "evidence": 2,
+   "verses": 52,
+   "paleo": "𐤁𐤌𐤄"
+  },
+  {
+   "word": "house",
+   "strongs": "H1661",
+   "evidence": 2,
+   "verses": 52,
+   "paleo": "𐤂𐤕"
+  },
+  {
+   "word": "earth",
+   "strongs": "H517",
+   "evidence": 2,
+   "verses": 23,
+   "paleo": "𐤀𐤌"
+  },
+  {
+   "word": "abomination",
+   "strongs": "H6292",
+   "evidence": 2,
+   "verses": 12,
+   "paleo": "𐤐𐤂𐤅𐤋"
+  },
+  {
+   "word": "stone",
+   "strongs": "H5909",
+   "evidence": 2,
+   "verses": 22,
+   "paleo": "𐤏𐤊𐤁𐤓"
+  },
+  {
+   "word": "bread",
+   "strongs": "H4635",
+   "evidence": 2,
+   "verses": 17,
+   "paleo": "𐤌𐤏𐤓𐤊𐤕"
+  },
+  {
+   "word": "guilt",
+   "strongs": "H802",
+   "evidence": 2,
+   "verses": 12,
+   "paleo": "𐤀𐤔𐤄"
+  },
+  {
+   "word": "fire",
+   "strongs": "H4219",
+   "evidence": 2,
+   "verses": 30,
+   "paleo": "𐤌𐤆𐤓𐤒"
+  },
+  {
+   "word": "fire",
+   "strongs": "H2022",
+   "evidence": 2,
+   "verses": 30,
+   "paleo": "𐤄𐤓"
+  },
+  {
+   "word": "covenant",
+   "strongs": "H8584",
+   "evidence": 2,
+   "verses": 41,
+   "paleo": "𐤕𐤏𐤅𐤃𐤄"
+  },
+  {
+   "word": "offering",
+   "strongs": "H899",
+   "evidence": 2,
+   "verses": 28,
+   "paleo": "𐤁𐤂𐤃"
+  },
+  {
+   "word": "offering",
+   "strongs": "H6588",
+   "evidence": 2,
+   "verses": 28,
+   "paleo": "𐤐𐤔𐤏"
+  },
+  {
+   "word": "offering",
+   "strongs": "H8251",
+   "evidence": 2,
+   "verses": 28,
+   "paleo": "𐤔𐤒𐤅𐤑"
+  },
+  {
+   "word": "holy",
+   "strongs": "H1661",
+   "evidence": 2,
+   "verses": 22,
+   "paleo": "𐤂𐤕"
+  },
+  {
+   "word": "path",
+   "strongs": "H1870",
+   "evidence": 2,
+   "verses": 15,
+   "paleo": "𐤃𐤓𐤊"
+  },
+  {
+   "word": "statutes",
+   "strongs": "H5715",
+   "evidence": 2,
+   "verses": 14,
+   "paleo": "𐤏𐤃𐤅𐤕"
+  },
+  {
+   "word": "Perez",
+   "strongs": "H3068",
+   "evidence": 2,
+   "verses": 4,
+   "paleo": "𐤉𐤄𐤅𐤄"
+  },
+  {
+   "word": "lands",
+   "strongs": "H1705",
+   "evidence": 2,
+   "verses": 80,
+   "paleo": "𐤃𐤁𐤓𐤕"
+  },
+  {
+   "word": "love",
+   "strongs": "H2617",
+   "evidence": 2,
+   "verses": 9,
+   "paleo": "𐤇𐤎𐤃"
+  },
+  {
+   "word": "stones",
+   "strongs": "H4676",
+   "evidence": 2,
+   "verses": 8,
+   "paleo": "𐤌𐤑𐤁𐤄"
+  },
+  {
+   "word": "mercy",
+   "strongs": "H5002",
+   "evidence": 2,
+   "verses": 10,
+   "paleo": "𐤍𐤀𐤌"
+  },
+  {
+   "word": "Levitical",
+   "strongs": "H3069",
+   "evidence": 2,
+   "verses": 11,
+   "paleo": "𐤉𐤄𐤅𐤄"
+  },
+  {
+   "word": "abominations",
+   "strongs": "H8251",
+   "evidence": 2,
+   "verses": 13,
+   "paleo": "𐤔𐤒𐤅𐤑"
+  },
+  {
+   "word": "Meribah",
+   "strongs": "H4808",
+   "evidence": 2,
+   "verses": 3,
+   "paleo": "𐤌𐤓𐤉𐤁𐤄"
+  },
+  {
+   "word": "Nephtoah",
+   "strongs": "H5318",
+   "evidence": 2,
+   "verses": 2,
+   "paleo": "𐤍𐤐𐤕𐤅𐤇"
+  },
+  {
+   "word": "save",
+   "strongs": "H3445",
+   "evidence": 2,
+   "verses": 4,
+   "paleo": "𐤉𐤔𐤇"
+  },
+  {
+   "word": "Micah",
+   "strongs": "H4319",
+   "evidence": 2,
+   "verses": 2,
+   "paleo": "𐤌𐤉𐤊𐤄𐤅"
+  },
+  {
+   "word": "David",
+   "strongs": "H3068",
+   "evidence": 2,
+   "verses": 29,
+   "paleo": "𐤉𐤄𐤅𐤄"
+  },
+  {
+   "word": "Zadok",
+   "strongs": "H43",
+   "evidence": 2,
+   "verses": 7,
+   "paleo": "𐤀𐤁𐤉𐤎𐤐"
+  },
+  {
+   "word": "Judah",
+   "strongs": "H1661",
+   "evidence": 2,
+   "verses": 23,
+   "paleo": "𐤂𐤕"
+  },
+  {
+   "word": "Hilkiah",
+   "strongs": "H2059",
+   "evidence": 2,
+   "verses": 30,
+   "paleo": "𐤅𐤔𐤍𐤉"
+  },
+  {
+   "word": "Bukki",
+   "strongs": "H3845",
+   "evidence": 2,
+   "verses": 2,
+   "paleo": "𐤋𐤁𐤍𐤉"
+  },
+  {
+   "word": "Zerahiah",
+   "strongs": "H2979",
+   "evidence": 2,
+   "verses": 3,
+   "paleo": "𐤉𐤀𐤕𐤓𐤉"
+  },
+  {
+   "word": "Amariah",
+   "strongs": "H6955",
+   "evidence": 2,
+   "verses": 6,
+   "paleo": "𐤒𐤄𐤕"
+  },
+  {
+   "word": "Elkanah",
+   "strongs": "H867",
+   "evidence": 2,
+   "verses": 7,
+   "paleo": "𐤀𐤕𐤍𐤉"
+  },
+  {
+   "word": "faces",
+   "strongs": "H3132",
+   "evidence": 2,
+   "verses": 4,
+   "paleo": "𐤉𐤅𐤏𐤀𐤋𐤄"
+  },
+  {
+   "word": "Kue",
+   "strongs": "H4723",
+   "evidence": 2,
+   "verses": 2,
+   "paleo": "𐤌𐤒𐤅𐤄"
+  },
+  {
+   "word": "Michmas",
+   "strongs": "H4363",
+   "evidence": 2,
+   "verses": 2,
+   "paleo": "𐤌𐤊𐤌𐤎"
+  },
+  {
+   "word": "Hathach",
+   "strongs": "H2047",
+   "evidence": 2,
+   "verses": 3,
+   "paleo": "𐤄𐤕𐤊"
+  },
+  {
+   "word": "spirits",
+   "strongs": "H7496",
+   "evidence": 2,
+   "verses": 8,
+   "paleo": "𐤓𐤐𐤀"
+  },
+  {
+   "word": "Abaddon",
+   "strongs": "H11",
+   "evidence": 2,
+   "verses": 3,
+   "paleo": "𐤀𐤁𐤃𐤅𐤍"
+  },
+  {
+   "word": "Rosh",
+   "strongs": "H3069",
+   "evidence": 2,
+   "verses": 3,
+   "paleo": "𐤉𐤄𐤅𐤄"
+  },
+  {
+   "word": "prophets",
+   "strongs": "H168",
+   "evidence": 2,
+   "verses": 2,
+   "paleo": "𐤀𐤄𐤋"
+  }
+ ],
+ "stillOpen": [
+  {
+   "word": "Adam",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nephilim",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "unclean",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Naphtuhim",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Arpachshad",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Goiim",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hazazon",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Abram",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "land",
+   "verses": 63,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Moabites",
+   "verses": 12,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Tahash",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Laban",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "death",
+   "verses": 10,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "spirit",
+   "verses": 15,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Basemath",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "blessing",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jacob",
+   "verses": 11,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mizpah",
+   "verses": 44,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "angels",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mahanaim",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "messengers",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Esau",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Seir",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Edom",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Abraham",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "kindnesses",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "truth",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "staff",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "fear",
+   "verses": 7,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "hands",
+   "verses": 12,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jabbok",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "bless",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Peniel",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "life",
+   "verses": 9,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Elohe",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bacuth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Heman",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Horites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "mind",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Potiphar",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zaphenath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Paneah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "woman",
+   "verses": 19,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Puvah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Iob",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Joseph",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "breath",
+   "verses": 9,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "wonders",
+   "verses": 11,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Moses",
+   "verses": 12,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "names",
+   "verses": 12,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "serve",
+   "verses": 9,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "plague",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "river",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Aaron",
+   "verses": 17,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "rod",
+   "verses": 15,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "waters",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Egypt",
+   "verses": 15,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "sacrifice",
+   "verses": 10,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "word",
+   "verses": 14,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "water",
+   "verses": 14,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Goshen",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "sign",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "eyes",
+   "verses": 15,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "days",
+   "verses": 15,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "wilderness",
+   "verses": 11,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Israelites",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "minds",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "darkness",
+   "verses": 15,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "oath",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "sacrifices",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "sword",
+   "verses": 18,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "curse",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "justice",
+   "verses": 8,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "offerings",
+   "verses": 14,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "YAHWEH",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bezalel",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "ground",
+   "verses": 11,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "commandments",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "sins",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "priest",
+   "verses": 11,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "atonement",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "law",
+   "verses": 13,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "altar",
+   "verses": 12,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Fire",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "oil",
+   "verses": 15,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "memorial",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Tent",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Meeting",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "sin",
+   "verses": 11,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "statute",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "commandment",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "priests",
+   "verses": 10,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "jubilee",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "altars",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shimeites",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "redemption",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "seeds",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nahbi",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "rods",
+   "verses": 7,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Levi",
+   "verses": 7,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "princes",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "prince",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Testimony",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "tabernacle",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Iyeabarim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Suphah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Kain",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zerahites",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Perezites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zebulunites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Machirites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Iezerites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Helekites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shechemites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shuthelahites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Becherites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Imnites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ishvites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Berites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "vows",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "vow",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "soul",
+   "verses": 12,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "mouth",
+   "verses": 18,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "iniquity",
+   "verses": 9,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Havvoth",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Haggidgad",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Abronah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Iye",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Iyim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Diblathaim",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Suf",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Salecah",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Maacathites",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "image",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "prophet",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "wonder",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "words",
+   "verses": 16,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "voice",
+   "verses": 20,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "evil",
+   "verses": 18,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "eye",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "assembly",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ammonite",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Moabite",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Balaam",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Beor",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Pethor",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mesopotamia",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Edomite",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Egyptian",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "clean",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "light",
+   "verses": 8,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "loves",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Moab",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Horeb",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "signs",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "wine",
+   "verses": 14,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Sihon",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Heshbon",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bashan",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "inheritance",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Reubenites",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gadites",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Manassites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Isaac",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "nations",
+   "verses": 12,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "curses",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "plagues",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Sodom",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gomorrah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Admah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zeboiim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "holiness",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "strength",
+   "verses": 9,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zarethan",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Babylonian",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "goods",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zedek",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jashar",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Maim",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Lassharon",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Avvim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Maacath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zereth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Haram",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Pelet",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Biziothiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bozkath",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Chitlish",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jutah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Emek",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Marcaboth",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hepher",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ethkazin",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Iphtah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shion",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ebez",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shahazumah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zaanannim",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ithlah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Eshterah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hammothdor",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Acco",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Asheroth",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Rishathaim",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ehud",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "tent",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Amalekites",
+   "verses": 13,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jerub",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zererah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Heres",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Meonenim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Elberith",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Abelcheramim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zebulunite",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "angel",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mahaneh",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hakkore",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Israelite",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Maareh",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Geba",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Benjamites",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jabesh",
+   "verses": 24,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Naomi",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ephrathah",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ramathaim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zophim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Notwithstanding",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Eli",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shemesh",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Kar",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Benjamin",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zeror",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Becorath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Benjamite",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Matrites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Meholathite",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Secu",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nob",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ahimelech",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Doeg",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Goliath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Philistine",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Elah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "ephod",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Achish",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gath",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ramah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hammahlekoth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Philistines",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "righteous",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Caleb",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Girzites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "adversary",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Racal",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Borashan",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ishbosheth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nacon",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "ministers",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ammihur",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Tekoa",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Merhak",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "sanctuary",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Absalom",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Abiathar",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Amasa",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Joab",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gilgal",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gera",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bahurim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ziba",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jerusalem",
+   "verses": 20,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Abishai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zeruiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shimei",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "adversaries",
+   "verses": 8,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gileadite",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Rogelim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "grave",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Chimham",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Barzillai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "minister",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zela",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Basshebeth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Tahchemonite",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Dodai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shammah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ariel",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Anathothite",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ararite",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Maacathite",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shunammite",
+   "verses": 8,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hanan",
+   "verses": 12,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hiram",
+   "verses": 9,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Tyre",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "throne",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Sidonians",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Solomon",
+   "verses": 8,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "wisdom",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "King",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Adoniram",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "mountains",
+   "verses": 7,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "work",
+   "verses": 21,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gebalites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zobah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zeredah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "worship",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "images",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hadad",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ben",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ahab",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Asa",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Tarshish",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ophir",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ezion",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Geber",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ahaziah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Samaria",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jeroboam",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nebat",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Baal",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Serve",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Elishah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jehu",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "foot",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Carites",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zibiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Beersheba",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jehoiada",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jehoash",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hazael",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Syria",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jehoshaphat",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jehoram",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Joash",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Millo",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Silla",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jozacar",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shimeath",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jehozabad",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shomer",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Amaziah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Tiphsah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Succoth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Benoth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shaphan",
+   "verses": 28,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Micaiah",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nathan",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Melech",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Necoh",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jehoiachin",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Diphath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Rodanim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Raama",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Dishan",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Canaanitess",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ashhur",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jahdai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jothan",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Machbena",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gibea",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Menuhoth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Manahathites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Sucathites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shenazzar",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Elioenai",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hazzelelponi",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ahuzzam",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Haahashtari",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Izhar",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shuhah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nahash",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Recah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Harashim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gederah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Joshibiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jeshohaiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jesimiel",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Janai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jacan",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Kohath",
+   "verses": 7,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hebron",
+   "verses": 7,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Uzziel",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Miriam",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Abihu",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Eleazar",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ithamar",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Phinehas",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Abishua",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Uzzi",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Meraioth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ahitub",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ahimaaz",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Azariah",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Johanan",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shallum",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Seraiah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nebuchadnezzar",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Merari",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gershom",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Amram",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mushi",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jahath",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zimmah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Iddo",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zerah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jeatherai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ebiasaph",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Assir",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Uriel",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Uzziah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shaul",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ahimoth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nahath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jeroham",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Samuel",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Joel",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Abijah",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Libni",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Uzzah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Haggiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Asaiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "ark",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Kohathites",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Eliel",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Toah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zuph",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mahath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Amasai",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zephaniah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Tahath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Korah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Asaph",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Berechiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shimea",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Michael",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Baaseiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Malchijah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ethni",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Adaiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ethan",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Kishi",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Abdi",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Malluch",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hashabiah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Amzi",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bani",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shemer",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mahli",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jephunneh",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jattir",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Eshtemoa",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Debir",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Beth",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Allemeth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Anathoth",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Manasseh",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Issachar",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Asher",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Naphtali",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gad",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zebulun",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Levites",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Simeon",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ephraim",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ibsam",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ahishahar",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Rakem",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hammolecheth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ishhod",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Eleadah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Birzaith",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Pispa",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Rizia",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shemed",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ishpah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hizki",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Izliah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zillethai",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zecher",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shimeah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hassenuah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Pashhur",
+   "verses": 13,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ahaz",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Eliahba",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shagee",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hagri",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mezobaite",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jahaziel",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jozabad",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gederathite",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jerimoth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shemariah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Haruphite",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Isshiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Azarel",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Joezer",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jashobeam",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Korahites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Joelah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zebadiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gedor",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "shield",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Obadiah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Eliab",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jeremiah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Elzabad",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Machbannai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Spirit",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ziklag",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jediael",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Elihu",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "understanding",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Danites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Cun",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Happizzez",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Pethahiah",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jehezkel",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Beno",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Asharelah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Izri",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Eliehoenai",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shallecheth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shelomoth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jaziz",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hagrite",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "People",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Huram",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Sabbaths",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "ordinance",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "heaven",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "heavens",
+   "verses": 7,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Dan",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Joppa",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Asherah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "shields",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ethiopian",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zephathah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mareshah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ethiopians",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gerar",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Rama",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Beracah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Dodavahu",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jechiliah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jeuel",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jehuel",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hozai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Tokhath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "blood",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Neco",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Reelaiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Temah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hassophereth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hazzebaim",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Harsha",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Apharsathchites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shushanchites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Dehaites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Media",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "judgment",
+   "verses": 11,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jahzeiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Izziah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Isshijah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shimeon",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Cheluhi",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hacaliah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Chislev",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Susa",
+   "verses": 21,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hammeah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hananel",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hashabneiah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Haccherem",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shelah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hammiphkad",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jews",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Tobiah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Sanballat",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Arabians",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ammonites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ashdodites",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "swords",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hobaiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hashbaddanah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hodiah",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zedekiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shebaniah",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Meremoth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ginnethon",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Baruch",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mijamin",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bilgai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shemaiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jeshua",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Azaniah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Binnui",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Henadad",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Kadmiel",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Kelita",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Pelaiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Rehob",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Sherebiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Beninu",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Pahathmoab",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Elam",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zattu",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Azgad",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bebai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bigvai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Adin",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hezekiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Azzur",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hashum",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bezai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nobai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Meshullam",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hezir",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jaddua",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Anaiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hananiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hasshub",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Pilha",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shobek",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hashabnah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Maaseiah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Anan",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Harim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Baanah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "temple",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "peoples",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "knowledge",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "ordinances",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Sabbath",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shilonite",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Amashsai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ahzai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Haggedolim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mica",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Meconah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ginnethoi",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Unno",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Malluchi",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jewish",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Vaizatha",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "kindness",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Man",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "ways",
+   "verses": 8,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "judges",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "laws",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "mountain",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Keziah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "reigns",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "salvation",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "gifts",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "hearts",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "princess",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "rests",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "fires",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "reign",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Righteousness",
+   "verses": 9,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Love",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Massah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "graves",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Negev",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jaar",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "crowns",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "power",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "labors",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "messenger",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "wind",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "create",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Creator",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "praise",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bathrabbim",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Damascus",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Carmel",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hash",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Galilee",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "nation",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Midian",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Prince",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Armies",
+   "verses": 11,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Rezin",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Syrians",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Aiath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Laishah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Zion",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bayith",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Eglath",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Shelishiyah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Memphis",
+   "verses": 6,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Glory",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "seed",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "works",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "testimony",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Aramaic",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "voices",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "paths",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Beulah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "iniquities",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Baals",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "glories",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Harsith",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Mahseiah",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hebrewess",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Rechabites",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Habazziniah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Geruth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Malcam",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Lebkamai",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Aviv",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "remnant",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "fears",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "sanctuaries",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "prophesy",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Babylon",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Rabbah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ammon",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "oaths",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "transgressions",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "crown",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Helbon",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Seveneh",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hamon",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Meriboth",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Meribath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Meshach",
+   "verses": 15,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Peace",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Chaldeans",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Belteshazzar",
+   "verses": 5,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Darius",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Medes",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Persians",
+   "verses": 3,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "mouths",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Cyrus",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Persian",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Greece",
+   "verses": 4,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Achor",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jezreel",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "blessings",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Aven",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Assyria",
+   "verses": 2,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bethel",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "tents",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Gilead",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Aram",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Sidon",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Philistia",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "temples",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Eden",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Harmon",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Hamath",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "seas",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "pit",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Salvation",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Jonah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Ophrah",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Bethlehem",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nimrod",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "rivers",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Nineveh",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Libya",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "winds",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  },
+  {
+   "word": "Land",
+   "verses": 1,
+   "why": "never the sole part-of-speech-legal leftover in >=2 verses"
+  }
+ ]
+}

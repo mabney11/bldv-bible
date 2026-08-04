@@ -1,0 +1,15 @@
+ENG NT verses with empty text: 5
+
+=== GENUINE GAPS (ENG empty, GNT has content) — 0 ===
+These are the only candidates for a KJV patch. Every other empty ENG row
+either has no GNT counterpart either (verse legitimately absent from this
+versification) or is empty in both, so there is nothing to patch it with.
+
+
+=== ENG-empty rows with NO GNT counterpart (5) ===
+Not gaps — nothing to compare against, so not flagged for patching.
+  LUK 17:36
+  ACT 8:37
+  ACT 15:34
+  ACT 24:7
+  ROM 16:25

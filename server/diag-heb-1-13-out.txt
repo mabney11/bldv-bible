@@ -1,0 +1,94 @@
+=== RAW VERSE TEXT (as stored) ===
+𐤅𐤀𐤋 𐤌𐤉 𐤌𐤍 𐤄𐤌𐤋𐤀𐤊𐤉𐤌 𐤀𐤌𐤓 𐤌𐤏𐤅𐤋𐤌 𐤔𐤁 𐤋𐤉𐤌𐤉𐤍𐤉 𐤏𐤃 𐤀𐤔𐤉𐤕 𐤀𐤉𐤁𐤉𐤊 𐤄𐤃𐤌 𐤋𐤓𐤂𐤋𐤉𐤊
+
+=== text_paleo column ===
+𐤅𐤀𐤋𐤌𐤉 𐤌𐤍𐤄𐤌𐤋𐤀𐤊𐤉𐤌 𐤀𐤌𐤓 𐤌𐤏𐤅𐤋𐤌 𐤔𐤁 𐤋𐤉𐤌𐤉𐤍𐤉 𐤏𐤃𐤀𐤔𐤉𐤕 𐤀𐤉𐤁𐤉𐤊 𐤄𐤃𐤌 𐤋𐤓𐤂𐤋𐤉𐤊
+
+=== SPLIT WORDS (index: raw paleo, codepoint-by-codepoint) ===
+0: 𐤅𐤀𐤋𐤌𐤉   [U+10905 U+10900 U+1090B U+1090C U+10909]
+1: 𐤌𐤍𐤄𐤌𐤋𐤀𐤊𐤉𐤌   [U+1090C U+1090D U+10904 U+1090C U+1090B U+10900 U+1090A U+10909 U+1090C]
+2: 𐤀𐤌𐤓   [U+10900 U+1090C U+10913]
+3: 𐤌𐤏𐤅𐤋𐤌   [U+1090C U+1090F U+10905 U+1090B U+1090C]
+4: 𐤔𐤁   [U+10914 U+10901]
+5: 𐤋𐤉𐤌𐤉𐤍𐤉   [U+1090B U+10909 U+1090C U+10909 U+1090D U+10909]
+6: 𐤏𐤃𐤀𐤔𐤉𐤕   [U+1090F U+10903 U+10900 U+10914 U+10909 U+10915]
+7: 𐤀𐤉𐤁𐤉𐤊   [U+10900 U+10909 U+10901 U+10909 U+1090A]
+8: 𐤄𐤃𐤌   [U+10904 U+10903 U+1090C]
+9: 𐤋𐤓𐤂𐤋𐤉𐤊   [U+1090B U+10913 U+10902 U+1090B U+10909 U+1090A]
+
+=== surface_occurrences for book_id=58 chapter=1 verse=13 (source=HEB) ===
+ord 1: word_raw="𐤅𐤀𐤋𐤌𐤉" sn=H197 pos=subs morph=sp=subs|pdp=subs|gn=m|nu=pl|st=c|prs=absent|uvf=absent|nme=JM
+   codepoints: [U+10905 U+10900 U+1090B U+1090C U+10909]
+   tier=exact ambiguous=0 count=undefined
+   root_paleo: 𐤀𐤅𐤋𐤌   rendered_paleo: 𐤅𐤀𐤅𐤋𐤌𐤉
+   comp[0]: paleo="𐤅" css=mod-conj translit="W" translation="And" 
+   comp[1]: paleo="𐤀𐤅𐤋𐤌" css=root translit="Awalama" translation="𐤀𐤅𐤋𐤌" 
+   comp[2]: paleo="𐤉" css=nme-j translit="y" translation="[Of/My]" 
+   -- all readings on record for this exact word_raw (0) --
+ord 2: word_raw="𐤌𐤍𐤄𐤌𐤋𐤀𐤊𐤉𐤌" sn=H4397 pos=subs morph=sp=subs|pdp=subs|gn=m|nu=pl|st=a|prs=absent|uvf=absent|nme=JM
+   codepoints: [U+1090C U+1090D U+10904 U+1090C U+1090B U+10900 U+1090A U+10909 U+1090C]
+   tier=particle ambiguous=1 count=undefined
+   root_paleo: 𐤌𐤋𐤀𐤊   rendered_paleo: 𐤌𐤍𐤄𐤌𐤋𐤀𐤊𐤉𐤌
+   comp[0]: paleo="𐤌𐤍" css=mod-prep translit="Man" translation="from" 
+   comp[1]: paleo="𐤄" css=mod-art translit="H" translation="The" 
+   comp[2]: paleo="𐤌𐤋𐤀𐤊" css=root translit="Malaaka" translation="angel / messenger of Yah" 
+   comp[3]: paleo="𐤉𐤌" css=nme-jm translit="yam" translation="[Plural (masc)]" 
+   -- all readings on record for this exact word_raw (0) --
+ord 3: word_raw="𐤀𐤌𐤓" sn=H559 pos=verb morph=sp=verb|pdp=verb|vs=qal|vt=perf|ps=p3|gn=m|nu=sg|prs=absent|pfm=absent|vbs=absent|uvf=absent|nme=absent
+   codepoints: [U+10900 U+1090C U+10913]
+   tier=exact ambiguous=0 count=undefined
+   root_paleo: 𐤀𐤌𐤓   rendered_paleo: 𐤀𐤀𐤌𐤓
+   comp[0]: paleo="𐤀" css=pfm-1cs translit="A" translation="[I]" 
+   comp[1]: paleo="𐤀𐤌𐤓" css=root translit="Amar" translation="say/speak" 
+   -- all readings on record for this exact word_raw (0) --
+ord 4: word_raw="𐤌𐤏𐤅𐤋𐤌" sn=H5769 pos=subs morph=sp=subs|pdp=subs|gn=m|nu=sg|st=a|prs=absent|uvf=absent
+   codepoints: [U+1090C U+1090F U+10905 U+1090B U+1090C]
+   tier=exact ambiguous=0 count=undefined
+   root_paleo: 𐤏𐤅𐤋𐤌   rendered_paleo: 𐤌𐤏𐤅𐤋𐤌
+   comp[0]: paleo="𐤌" css=mod-prep translit="M" translation="from" 
+   comp[1]: paleo="𐤏𐤅𐤋𐤌" css=root translit="Iwalam" translation="eternity" 
+   -- all readings on record for this exact word_raw (0) --
+ord 5: word_raw="𐤔𐤁" sn=H7725 pos=verb morph=sp=verb|pdp=verb|vs=qal|vt=perf|ps=p3|gn=m|nu=sg|prs=absent|pfm=absent|vbs=absent|uvf=absent|nme=absent
+   codepoints: [U+10914 U+10901]
+   tier=exact ambiguous=0 count=undefined
+   root_paleo: 𐤔𐤅𐤁   rendered_paleo: 𐤔𐤅𐤁
+   comp[0]: paleo="𐤔𐤅𐤁" css=root translit="Shawab" translation="turn back/return/repent" 
+   -- all readings on record for this exact word_raw (0) --
+ord 6: word_raw="𐤋𐤉𐤌𐤉𐤍𐤉" sn=H1145 pos=adjv morph=sp=adjv|pdp=adjv|gn=m|nu=sg|st=a|prs=absent|uvf=absent
+   codepoints: [U+1090B U+10909 U+1090C U+10909 U+1090D U+10909]
+   tier=proclitic ambiguous=1 count=undefined
+   root_paleo: 𐤉𐤌𐤉𐤍𐤉   rendered_paleo: 𐤋𐤁𐤍𐤉𐤌𐤉𐤍𐤉
+   comp[0]: paleo="𐤋" css=mod-prep translit="L" translation="to" 
+   comp[1]: paleo="𐤁𐤍𐤉𐤌𐤉𐤍𐤉" css=root translit="Banayamayanay" translation="𐤉𐤌𐤉𐤍𐤉" 
+   -- all readings on record for this exact word_raw (0) --
+ord 7: word_raw="𐤏𐤃𐤀𐤔𐤉𐤕" sn=H7896 pos=verb morph=sp=verb|pdp=verb|vs=qal|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent
+   codepoints: [U+1090F U+10903 U+10900 U+10914 U+10909 U+10915]
+   tier=adjacent ambiguous=1 count=undefined
+   root_paleo: 𐤔𐤉𐤕   rendered_paleo: 𐤏𐤃𐤀𐤔𐤉𐤕
+   comp[0]: paleo="𐤏𐤃" css=mod-prep translit="Id" translation="as far as" 
+   comp[1]: paleo="𐤀" css=pfm-1cs translit="A" translation="[I]" 
+   comp[2]: paleo="𐤔𐤉𐤕" css=root translit="Shayath" translation="put / appoint / make" 
+   -- all readings on record for this exact word_raw (0) --
+ord 8: word_raw="𐤀𐤉𐤁𐤉𐤊" sn=H341 pos=verb morph=sp=verb|pdp=verb|vs=qal|vt=ptca|gn=m|nu=pl|st=c|prs=2ms|pfm=absent|vbs=absent|uvf=absent|nme=absent
+   codepoints: [U+10900 U+10909 U+10901 U+10909 U+1090A]
+   tier=reconstructed ambiguous=0 count=undefined
+   root_paleo: 𐤀𐤉𐤁   rendered_paleo: 𐤀𐤉𐤁𐤉𐤊
+   comp[0]: paleo="𐤀𐤉𐤁" css=root translit="Ayaba" translation="enemy" 
+   comp[1]: paleo="𐤉" css=nme-j translit="ya" translation="[Of/My]" 
+   comp[2]: paleo="𐤊" css=prs-2fs translit="k" translation="[Your]" (reconstructed, attested)
+   -- all readings on record for this exact word_raw (0) --
+ord 9: word_raw="𐤄𐤃𐤌" sn=H1818 pos=subs morph=sp=subs|pdp=subs|gn=m|nu=sg|st=a|prs=absent|uvf=absent
+   codepoints: [U+10904 U+10903 U+1090C]
+   tier=exact ambiguous=1 count=undefined
+   root_paleo: 𐤃𐤌   rendered_paleo: 𐤄𐤃𐤌
+   comp[0]: paleo="𐤄" css=mod-art translit="H" translation="The" 
+   comp[1]: paleo="𐤃𐤌" css=root translit="Dam" translation="𐤃𐤌" 
+   -- all readings on record for this exact word_raw (0) --
+ord 10: word_raw="𐤋𐤓𐤂𐤋𐤉𐤊" sn=H7272 pos=subs morph=sp=subs|pdp=subs|gn=f|nu=du|st=c|prs=absent|uvf=absent
+   codepoints: [U+1090B U+10913 U+10902 U+1090B U+10909 U+1090A]
+   tier=reconstructed ambiguous=0 count=undefined
+   root_paleo: 𐤓𐤂𐤋   rendered_paleo: 𐤋𐤓𐤂𐤋𐤉𐤊
+   comp[0]: paleo="𐤋" css=mod-prep translit="L" translation="to" 
+   comp[1]: paleo="𐤓𐤂𐤋𐤉" css=root translit="Ragalaya" translation="feet / foot" 
+   comp[2]: paleo="𐤊" css=prs-2ms translit="k" translation="[Your]" (reconstructed, attested)
+   -- all readings on record for this exact word_raw (0) --

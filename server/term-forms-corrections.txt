@@ -1,0 +1,42 @@
+# term-forms-corrections.txt — replaces the wrong pins found proofreading
+# Apocalypse of Abraham 3. Append to term-forms.txt (later lines win, so these
+# override anything earlier), or edit the offending lines in place.
+#
+# All values are LOWERCASE. render-corpus emits a pin verbatim for a lowercase
+# source word (L169) and only capitalises when the source word is capitalised and
+# listed in term-caps.txt. Capitalised pins are why "And I Amar (said)" shouted.
+#
+# Every form here is transliterated MECHANICALLY from the Strong's lemma with
+# your CHAR_MAP — medial form for each letter, final form for the last. Verified
+# against 15 words your own render already produced (Darak, Lab, Raash, Aban,
+# Nahar, Chakamah, Shamai, Ishah, Palal, Qawam, Napal, Hayakal, Chamash, Izar,
+# Amar), all exact.
+
+# ── the two you called out ─────────────────────────────────────────────────
+said        amar        # H559 amar ~5300x. Was Naam (H5001 na'am ~150x), which is
+say         amar        # the PROPHETIC "utter" — picked because Strong's kjv_def
+says        amar        # lists are alphabetical and "said" happens to lead H5001's
+saying      amar        # short entry while "say" sits late in H559's long one.
+prayer      palal       # H6419 palal. tephillah (H8605) is the literal noun and
+prayers     palal       # derives FROM palal — this is the root, your call.
+
+# ── wrong sense, same defect ───────────────────────────────────────────────
+come        bawaa       # H935 bo. Was Pagai (H6293 paga = meet/encounter/reach).
+came        bawaa
+coming      bawaa
+set         shayam      # H7760 sim. Was Gabal (H1379 = set a BORDER).
+able        yakal       # H3201 yakol. Was Yada (H3045 = know) — and it collided
+                        # with "neither" to produce "Yada (able)-Al (neither)".
+broken      shabar      # H7665 shabar, the ordinary "break". Was Chath (H2865
+break       shabar      # chathath = shatter/dismay), which is a stronger word.
+breaks      shabar
+made        ishah       # H6213 asah. "Chatzab" (H2672) is "hewn" — correct for
+make        ishah       # stone in verse 6, wrong as a blanket pin for "made".
+makes       ishah
+doing       ishah       # was Mailalaya (H4611 maalal = "doings", a noun)
+does        ishah
+did         ishah
+
+# ── restore what my over-broad exclude list removed ────────────────────────
+way         darak       # H1870 derek — you had this and wanted it kept
+ways        darak

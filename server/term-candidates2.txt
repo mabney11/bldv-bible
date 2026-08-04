@@ -1,0 +1,1066 @@
+build-term-candidates — English -> Strong's (kjv_def) -> your own rendered translit
+strongs dictionary: 8,674 entries (strongs-hebrew-expanded.json)
+Strong's numbers with a rendered translit: 8,638
+English words reachable through kjv_def: 6,913
+verses scanned: 7,958   ungl0ssed word types: 4,784
+
+──────────────────────────────────────────────────────────────────────────────
+PROPOSED PINS — 1318 words (showing 500)
+──────────────────────────────────────────────────────────────────────────────
+Forms are transliterated MECHANICALLY from each entry's Hebrew lemma using
+your CHAR_MAP (medial for every letter, final for the last), so a number that
+has never been rendered still gets a correct spelling.
+Ranked by OT frequency. `sense` is where the word sits in that entry's kjv_def,
+shown for information only — those lists are ALPHABETICAL, so a low number means
+nothing about importance. Check the low-OT-frequency rows first: those are where
+a rare homonym can still win by default.
+
+  corpus  word            translit        strongs  OT      sense  via       kjv_def
+  --------------------------------------------------------------------------------------------------------
+  16      fig             Thaan           H8384    39      0                fig (tree).
+  16      rejected        Chadal          H2310    3       2                he that forbeareth, frail, rejected.
+  16      destroyed       Dabar           H1696    1142    6      destroy   answer, appoint, bid, command, commune, declare, destr
+  16      matter          Dabar           H1697    1442    36               act, advice, affair, answer, [idiom] any such (thing),
+  16      unrighteousness Iwal            H5766    53      3                iniquity, perverseness, unjust(-ly), unrighteousness(-
+  16      officers        Rab             H7227    461     23     officer   (in) abound(-undance, -ant, -antly), captain, elder, e
+  16      washed          Rachatz         H7364    72      1      wash      bathe (self), wash (self).
+  16      bringing        Yalak           H3212    1044    3      bring     [idiom] again, away, bear, bring, carry (away), come (
+  16      working         Thawashayah     H8454    11      4                enterprise, that which (thing as it) is, substance, (s
+  16      months          Chadash         H2320    283     0      month     month(-ly), new moon.
+  16      bonds           Mawasar         H4148    50      0      bond      bond, chastening(-eth), chastisement, check, correctio
+  16      confidence      Batach          H983     42      3                assurance, boldly, (without) care(-less), confidence, 
+  15      secret          Sathar          H5641    81      4                be absent, keep close, conceal, hide (self), (keep) se
+  15      shut            Itzar           H6113    46      12               [idiom] be able, close up, detain, fast, keep (self cl
+  15      daily           Yawam           H3117    2303    4                age, [phrase] always, [phrase] chronicals, continually
+  15      despise         Qalal           H7043    82      4                abate, make bright, bring into contempt, (ac-) curse, 
+  15      fruits          Kach            H3581    126     4                ability, able, chameleon, force, fruits, might, power(
+  15      asking          Rabah           H7235    230     27     ask       (bring in) abundance ([idiom] -antly), [phrase] archer
+  15      thoughts        Dabar           H1697    1442    70     thought   act, advice, affair, answer, [idiom] any such (thing),
+  15      garment         Bagad           H899     217     3                apparel, cloth(-es, ing), garment, lap, rag, raiment, 
+  15      betrayed        Ramah           H7411    13      1      betray    beguile, betray, (bow-) man, carry, deceive, throw.
+  15      proclaim        Shamai          H8085    1159    21               [idiom] attentively, call (gather) together, [idiom] c
+  15      exalted         Mathanashaa     H4984    2       0                exalted.
+  15      thank           Barak           H1288    330     13               [idiom] abundantly, [idiom] altogether, [idiom] at all
+  15      perceive        Raah            H7200    1305    24               advise self, appear, approve, behold, [idiom] certainl
+  15      burned          Ilah            H5927    889     5      burn      arise (up), (cause to) ascend up, at once, break (the 
+  15      morning         Baqar           H1242    214     2                ([phrase]) day, early, morning, morrow.
+  15      wives           Ashah           H802     781     8      wife      (adulter) ess, each, every, female, [idiom] many, [phr
+  15      mount           Har             H2022    547     1                hill (country), mount(-ain), [idiom] promotion., fire
+  15      sits            Rabatz          H7257    30      7      sit       crouch (down), fall down, make a fold, lay, (cause to,
+  15      denied          Manai           H4513    29      0      deny      deny, keep (back), refrain, restrain, withhold.
+  15      prisoner        Asayar          H615     12      1                (those which are) bound, prisoner.
+  15      bodies          Napash          H5315    754     3      body      any, appetite, beast, body, breath, creature, [idiom] 
+  15      tongue          Lashawan        H3956    117     5                [phrase] babbler, bay, [phrase] evil speaker, language
+  15      proclaimed      Shamai          H8085    1159    21     proclaim  [idiom] attentively, call (gather) together, [idiom] c
+  15      home            Bayath          H1004    2054    8                court, daughter, door, [phrase] dungeon, family, [phra
+  15      shame           Charapah        H2781    73      2                rebuke, reproach(-fully), shame.
+  15      precious        Tawab           H2896    564     27               beautiful, best, better, bountiful, cheerful, at ease,
+  15      circumcised     Shawab          H7725    1056    2      circumcise((break, build, circumcise, dig, do anything, do evil,
+  15      purpose         Dabar           H1697    1442    48               act, advice, affair, answer, [idiom] any such (thing),
+  15      mark            Raah            H7200    1305    21               advise self, appear, approve, behold, [idiom] certainl
+  14      thought         Dabar           H1697    1442    70               act, advice, affair, answer, [idiom] any such (thing),
+  14      learned         Lamawad         H3928    6       2                accustomed, disciple, learned, taught, used.
+  14      rejoiced        Shawab          H7725    1056    11     rejoice   ((break, build, circumcise, dig, do anything, do evil,
+  14      tempted         Nasah           H5254    36      3      tempt     adventure, assay, prove, tempt, try.
+  14      possessed       Qanah           H7069    85      5      possess   attain, buy(-er), teach to keep cattle, get, provoke t
+  14      persecuted      Maradap         H4783    1       0                persecuted.
+  14      asks            Rabah           H7235    230     27     ask       (bring in) abundance ([idiom] -antly), [phrase] archer
+  14      temptation      Masah           H4531    5       0                temptation, trial.
+  14      sow             Shalach         H7971    847     27               [idiom] any wise, appoint, bring (on the way), cast (a
+  14      reap            Qatzar          H7114    49      7                [idiom] at all, cut down, much discouraged, grieve, ha
+  14      clothes         Shalamah        H8008    16      0                clothes, garment, raiment.
+  14      gate            Shair           H8179    374     2                city, door, gate, port ([idiom] -er).
+  14      astonished      Daham           H1724    1       0                astonished.
+  14      fled            Barach          H1272    65      3      flee      chase (away); drive away, fain, flee (away), put to fl
+  14      learn           Lamad           H3925    86      4                (un-) accustomed, [idiom] diligently, expert, instruct
+  14      confess         Yadah           H3034    114     1                cast (out), (make) confess(-ion), praise, shoot, (give
+  14      accuse          Lashan          H3960    2       0                accuse, slander.
+  14      branches        Ban             H1121    4931    9      branch    [phrase] afflicted, age, (Ahoh-) (Ammon-) (Hachmon-) (
+  14      promised        Amar            H559     5308    22     promise   answer, appoint, avouch, bid, boast self, call, certif
+  14      walked          Yalak           H3212    1044    28     walk      [idiom] again, away, bear, bring, carry (away), come (
+  14      reasoned        Dabar           H1697    1442    51     reason    act, advice, affair, answer, [idiom] any such (thing),
+  14      parts           Yad             H3027    1617    40               ([phrase] be) able, [idiom] about, [phrase] armholes, 
+  14      gates           Shair           H8179    374     2      gate      city, door, gate, port ([idiom] -er).
+  14      womb            Batan           H990     72      4                belly, body, [phrase] as they be born, [phrase] within
+  14      season          Yawam           H3117    2303    24               age, [phrase] always, [phrase] chronicals, continually
+  14      perceived       Raah            H7200    1305    24     perceive  advise self, appear, approve, behold, [idiom] certainl
+  14      lead            Bawaa           H935     2568    41               abide, apply, attain, [idiom] be, befall, [phrase] bes
+  14      naked           Irawam          H6174    16      0                naked.
+  14      held            Ishah           H6213    2629    37     hold      accomplish, advance, appoint, apt, be at, become, bear
+  14      guard           Rawatz          H7323    103     3                break down, divide speedily, footman, guard, bring has
+  14      silent          Dawamayah       H1747    4       1                silence, silent, waiteth.
+  14      vision          Maraah          H4758    104     15               [idiom] apparently, appearance(-reth), [idiom] as soon
+  14      acceptable      Bachar          H977     170     0                acceptable, appoint, choose (choice), excellent, join,
+  14      seal            Chatham         H2856    27      2                make an end, mark, seal (up), stop.
+  14      sorrow          Rai             H7451    664     24               adversity, affliction, bad, calamity, [phrase] displea
+  13      angry           Kais            H3708    25      1                anger, angry, grief, indignation, provocation, provoki
+  13      comforted       Nacham          H5162    108     0      comfort   comfort (self), ease (one's self), repent(-er,-ing, se
+  13      carry           Bawaa           H935     2568    11               abide, apply, attain, [idiom] be, befall, [phrase] bes
+  13      casting         Mawatzaq        H4165    3       0                casting, hardness.
+  13      lust            Napash          H5315    754     16               any, appetite, beast, body, breath, creature, [idiom] 
+  13      careful         Chashach        H2818    2       0                careful, have need of.
+  13      masters         Rab             H7227    461     17     master    (in) abound(-undance, -ant, -antly), captain, elder, e
+  13      grow            Yatzaa          H3318    1068    32               [idiom] after, appear, [idiom] assuredly, bear out, [i
+  13      rock            Tzawar          H6697    77      2                edge, [idiom] (mighty) God (one), rock, [idiom] sharp,
+  13      tombs           Gadayash        H1430    4       1      tomb      shock (stack) (of corn), tomb.
+  13      turning         Maqatzawai      H4740    12      1                corner, turning.
+  13      spread          Yatzaa          H3318    1068    45               [idiom] after, appear, [idiom] assuredly, bear out, [i
+  13      harvest         Qatzayar        H7105    54      2                bough, branch, harvest (man).
+  13      dust            Ipar            H6083    110     1                ashes, dust, earth, ground, morter, powder, rubbish.
+  13      hated           Shanayaa        H8146    1       0                hated.
+  13      lose            Asap            H622     202     10               assemble, bring, consume, destroy, felch, gather (in, 
+  13      lame            Pasach          H6455    13      0                lame.
+  13      occasion        Matzaa          H4672    455     10               [phrase] be able, befall, being, catch, [idiom] certai
+  13      shaken          Nadap           H5086    9       3                drive (away, to and fro), thrust down, shaken, tossed 
+  13      abundance       Rabah           H7235    230     0                (bring in) abundance ([idiom] -antly), [phrase] archer
+  13      oppression      Shad            H7701    25      2                desolation, destruction, oppression, robbery, spoil(-e
+  13      buy             Laqach          H3947    966     2                accept, bring, buy, carry away, drawn, fetch, get, inf
+  13      doctrine        Mawasar         H4148    50      6                bond, chastening(-eth), chastisement, check, correctio
+  13      wanted          Paqad           H6485    303     31     want      appoint, [idiom] at all, avenge, bestow, (appoint to h
+  13      greatest        Ishah           H6213    2629    35     great     accomplish, advance, appoint, apt, be at, become, bear
+  13      dies            Napal           H5307    434     5      die       be accepted, cast (down, self, (lots), out), cease, di
+  13      seat            Yashab          H3427    1082    17               (make to) abide(-ing), continue, (cause to, make to) d
+  13      best            Tawab           H2896    564     1                beautiful, best, better, bountiful, cheerful, at ease,
+  13      serving         Ishah           H6213    2629    60     serve     accomplish, advance, appoint, apt, be at, become, bear
+  13      harm            Rai             H7451    664     12               adversity, affliction, bad, calamity, [phrase] displea
+  13      care            Dabar           H1697    1442    8                act, advice, affair, answer, [idiom] any such (thing),
+  13      chains          Azaqayam        H246     2       0                chains.
+  13      declared        Amar            H559     5308    13     declare   answer, appoint, avouch, bid, boast self, call, certif
+  13      widow           Alamanah        H490     56      1                desolate house (palace), widow.
+  13      created         Baraa           H1254    54      1      create    choose, create (creator), cut down, dispatch, do, make
+  13      desiring        Napash          H5315    754     7      desire    any, appetite, beast, body, breath, creature, [idiom] 
+  13      sailed          Nas             H5251    20      2      sail      banner, pole, sail, (en-) sign, standard.
+  13      workers         Charash         H2790    72      20     worker    [idiom] altogether, cease, conceal, be deaf, devise, e
+  13      putting         Ishah           H6213    2629    57     put       accomplish, advance, appoint, apt, be at, become, bear
+  13      overcome        Yakal           H3201    193     7                be able, any at all (ways), attain, can (away with, (-
+  13      reported        Amar            H559     5308    24     report    answer, appoint, avouch, bid, boast self, call, certif
+  13      jealousy        Qanaah          H7068    43      1                envy(-ied), jealousy, [idiom] sake, zeal.
+  13      sail            Nas             H5251    20      2                banner, pole, sail, (en-) sign, standard.
+  13      defense         Matzawad        H4686    23      1                castle, defense, fort(-ress), (strong) hold, be hunted
+  13      deceived        Shagag          H7683    4       1                [idiom] also for that, deceived, err, go astray, sin i
+  13      promises        Amar            H559     5308    22     promise   answer, appoint, avouch, bid, boast self, call, certif
+  13      dragon          Thanayan        H8577    26      0                dragon, sea-monster, serpent, whale.
+  12      warned          Zahar           H2094    22      3      warn      admonish, shine, teach, (give) warn(-ing).
+  12      wheat           Dagan           H1715    40      1                corn (floor), wheat.
+  12      showed          Chawah          H2331    6       0      show      show.
+  12      kinds           Mashapachah     H4940    303     1      kind      family, kind(-red).
+  12      murder          Harag           H2026    167     3                destroy, out of hand, kill, murder(-er), put to (death
+  12      steal           Ganab           H1589    40      3                carry away, [idiom] indeed, secretly bring, steal (awa
+  12      dressed         Ishah           H6213    2629    18     dress     accomplish, advance, appoint, apt, be at, become, bear
+  12      grass           Ishab           H6212    33      0                grass, herb.
+  12      tomorrow        Machar          H4279    52      1                time to come, tomorrow.
+  12      cleansed        Chataa          H2398    238     1      cleanse   bear the blame, cleanse, commit (sin), by fault, harm 
+  12      skins           Bashar          H1320    270     7      skin      body, (fat, lean) flesh(-ed), kin, (man-) kind, [phras
+  12      freely          Nadabah         H5071    26      1                free(-will) offering, freely, plentiful, voluntary(-il
+  12      enough          Kal             H3605    5413    3                (in) all (manner, (ye)), altogether, any (manner), eno
+  12      falls           Hayah           H1961    3560    11     fall      beacon, [idiom] altogether, be(-come), accomplished, c
+  12      withered        Tzanam          H6798    1       0                withered.
+  12      account         Masapar         H4557    134     1                [phrase] abundance, account, [idiom] all, [idiom] few,
+  12      condemn         Rashai          H7561    35      0                condemn, make trouble, vex, be (commit, deal, depart, 
+  12      fine            Tawab           H2896    564     8                beautiful, best, better, bountiful, cheerful, at ease,
+  12      powers          Yad             H3027    1617    42     power     ([phrase] be) able, [idiom] about, [phrase] armholes, 
+  12      feared          Iratz           H6206    15      2                be affrighted (afraid, dread, feared, terrified), brea
+  12      talking         Malah           H4405    38      6                [phrase] answer, by-word, matter, any thing (what) to 
+  12      strangers       Gawar           H1481    98      10     stranger  abide, assemble, be afraid, dwell, fear, gather (toget
+  12      talents         Kakar           H3603    68      4      talent    loaf, morsel, piece, plain, talent.
+  12      marry           Nashaa          H5375    651     30               accept, advance, arise, (able to, (armor), suffer to) 
+  12      lack            Paqad           H6485    303     14               appoint, [idiom] at all, avenge, bestow, (appoint to h
+  12      early           Baqar           H1242    214     1                ([phrase]) day, early, morning, morrow.
+  12      front           Panayam         H6440    2127    22               [phrase] accept, a-(be-) fore(-time), against, anger, 
+  12      press           Paratz          H6555    49      15               [idiom] abroad, (make a) breach, break (away, down, -e
+  12      seize           Laqach          H3947    966     13               accept, bring, buy, carry away, drawn, fetch, get, inf
+  12      calls           Amar            H559     5308    5      call      answer, appoint, avouch, bid, boast self, call, certif
+  12      forward         Halak           H1980    504     12               (all) along, apace, behave (self), come, (on) continua
+  12      thief           Ganab           H1590    17      0                thief.
+  12      thirsty         Iyap            H5889    17      1                faint, thirsty, weary.
+  12      deceit          Shaqar          H8267    113     1                without a cause, deceit(-ful), false(-hood, -ly), feig
+  12      ointment        Shaman          H8081    193     4                anointing, [idiom] fat (things), [idiom] fruitful, oil
+  12      betray          Ramah           H7411    13      1                beguile, betray, (bow-) man, carry, deceive, throw.
+  12      tried           Bachan          H976     1       0                tried.
+  12      seized          Laqach          H3947    966     13     seize     accept, bring, buy, carry away, drawn, fetch, get, inf
+  12      custom          Darak           H1870    706     5                along, away, because of, [phrase] by, conversation, cu
+  12      teachers        Lawatz          H3887    27      7      teacher   ambassador, have in derision, interpreter, make a mock
+  12      widows          Alamanah        H490     56      1      widow     desolate house (palace), widow.
+  12      caught          Matzaa          H4672    455     3      catch     [phrase] be able, befall, being, catch, [idiom] certai
+  12      building        Banayan         H1146    7       0                building.
+  12      declare         Amar            H559     5308    13               answer, appoint, avouch, bid, boast self, call, certif
+  12      overcomes       Yakal           H3201    193     7      overcome  be able, any at all (ways), attain, can (away with, (-
+  12      count           Nathan          H5414    2011    16               add, apply, appoint, ascribe, assign, [idiom] avenge, 
+  12      letters         Sapar           H5612    186     4      letter    bill, book, evidence, [idiom] learn(-ed) (-ing), lette
+  12      sealed          Chatham         H2856    27      2      seal      make an end, mark, seal (up), stop.
+  12      ministry        Yad             H3027    1617    34               ([phrase] be) able, [idiom] about, [phrase] armholes, 
+  12      creature        Napash          H5315    754     5                any, appetite, beast, body, breath, creature, [idiom] 
+  12      ungodly         Rashai          H7563    262     2                [phrase] condemned, guilty, ungodly, wicked (man), tha
+  12      fleshly         Shaar           H7607    16      1      flesh     body, flesh, food, (near) kin(-sman, -swoman), near (n
+  12      rule            Malak           H4427    348     8                consult, [idiom] indeed, be (make, set a, set up) king
+  12      blameless       Naqay           H5355    43      0                blameless, clean, clear, exempted, free, guiltless, in
+  12      endure          Panayam         H6440    2127    12               [phrase] accept, a-(be-) fore(-time), against, anger, 
+  11      virgin          Bathawalah      H1330    50      1                maid, virgin.
+  11      trees           Itzah           H6097    1       0                trees.
+  11      persecute       Dalaq           H1814    9       4                burning, chase, inflame, kindle, persecute(-or), pursu
+  11      causes          Hayah           H1961    3560    7      cause     beacon, [idiom] altogether, be(-come), accomplished, c
+  11      puts            Ishah           H6213    2629    57     put       accomplish, advance, appoint, apt, be at, become, bear
+  11      openly          Iyanayam        H5879    3       1                Enaim, openly (Genesis 38:21).
+  11      fasting         Tawath          H2908    1       0                fasting.
+  11      wash            Rachatz         H7364    72      1                bathe (self), wash (self).
+  11      finds           Chanan          H2603    78      3      find      beseech, [idiom] fair, (be, find, shew) favour(-able),
+  11      leads           Bawaa           H935     2568    41     lead      abide, apply, attain, [idiom] be, befall, [phrase] bes
+  11      stretched       Parad           H6504    26      7      stretch   disperse, divide, be out of joint, part, scatter (abro
+  11      meet            Ban             H1121    4931    28               [phrase] afflicted, age, (Ahoh-) (Ammon-) (Hachmon-) (
+  11      villages        Bath            H1323    587     8      village   apple (of the eye), branch, company, daughter, [idiom]
+  11      scattered       Parash          H6566    67      3      scatter   break, chop in pieces, lay open, scatter, spread (abro
+  11      reed            Qanah           H7070    62      5                balance, bone, branch, calamus, cane, reed, [idiom] sp
+  11      humble          Inah            H6031    83      10               abase self, afflict(-ion, self), answer (by mistake fo
+  11      burden          Mashaa          H4853    65      0                burden, carry away, prophecy, [idiom] they set, song, 
+  11      desired         Napash          H5315    754     7      desire    any, appetite, beast, body, breath, creature, [idiom] 
+  11      price           Kasap           H3701    403     1                money, price, silver(-ling)., servant
+  11      quiet           Nawach          H5117    67      4                cease, be confederate, lay, let down, (be) quiet, rema
+  11      stirred         Ikar            H5916    14      1      stir      trouble, stir.
+  11      question        Dabar           H1697    1442    49               act, advice, affair, answer, [idiom] any such (thing),
+  11      entering        Pathach         H6607    164     1                door, entering (in), entrance (-ry), gate, opening, pl
+  11      married         Nashaa          H5375    651     30     marry     accept, advance, arise, (able to, (armor), suffer to) 
+  11      kiss            Nashaq          H5401    35      2                armed (men), rule, kiss, that touched.
+  11      remembered      Paqad           H6485    303     26     remember  appoint, [idiom] at all, avenge, bestow, (appoint to h
+  11      blasphemed      Barak           H1288    330     3      blaspheme [idiom] abundantly, [idiom] altogether, [idiom] at all
+  11      form            Mashapat        H4941    421     11               [phrase] adversary, ceremony, charge, [idiom] crime, c
+  11      laying          Ilah            H5927    889     23     lay       arise (up), (cause to) ascend up, at once, break (the 
+  11      sacrificed      Manachah        H4503    211     4      sacrifice gift, oblation, (meat) offering, present, sacrifice.
+  11      continued       Yashab          H3427    1082    1      continue  (make to) abide(-ing), continue, (cause to, make to) d
+  11      charge          Amar            H559     5308    8                answer, appoint, avouch, bid, boast self, call, certif
+  11      soon            Mait            H4592    101     8                almost (some, very) few(-er, -est), lightly, little (w
+  11      complete        Thamayam        H8549    91      1                without blemish, complete, full, perfect, sincerely (-
+  11      establish       Yashab          H3427    1082    6                (make to) abide(-ing), continue, (cause to, make to) d
+  11      testifies       Inah            H6030    329     14     testify   give account, afflict (by mistake for H6031 (עָנָה)), 
+  11      keeps           Ishah           H6213    2629    41     keep      accomplish, advance, appoint, apt, be at, become, bear
+  11      especially      Maad            H3966    300     1                diligently, especially, exceeding(-ly), far, fast, goo
+  11      run             Bawaa           H935     2568    47               abide, apply, attain, [idiom] be, befall, [phrase] bes
+  11      accounted       Masapar         H4557    134     1      account   [phrase] abundance, account, [idiom] all, [idiom] few,
+  10      mocked          Shachawaq       H7814    15      3                derision, laughter(-ed to scorn, -ing), mocked, sport.
+  10      mourning        Abal            H60      24      0                mourning.
+  10      withdrew        Sarar           H5637    17      6                [idiom] away, backsliding, rebellious, revolter(-ing),
+  10      diseases        Chalay          H2483    24      0      disease   disease, grief, (is) sick(-ness).
+  10      reproach        Chasad          H2617    247     8                favour, good deed(-liness, -ness), kindly, (loving-) k
+  10      salt            Malach          H4417    28      0                salt(-pit).
+  10      accomplished    Hayah           H1961    3560    3                beacon, [idiom] altogether, be(-come), accomplished, c
+  10      commits         Ishah           H6213    2629    13     commit    accomplish, advance, appoint, apt, be at, become, bear
+  10      rain            Matar           H4306    38      0                rain.
+  10      trumpet         Shawapar        H7782    72      1                cornet, trumpet.
+  10      use             Amar            H559     5308    36               answer, appoint, avouch, bid, boast self, call, certif
+  10      trespasses      Chataa          H2398    238     15     trespass  bear the blame, cleanse, commit (sin), by fault, harm 
+  10      teeth           Shan            H8127    55      4      tooth     crag, [idiom] forefront, ivory, [idiom] sharp, tooth.
+  10      bed             Mashakab        H4904    46      0                bed(-chamber), couch, lieth (lying) with.
+  10      cheer           Tawab           H2895    24      1                be (do) better, cheer, be (do, seem) good, (make) good
+  10      sleeping        Shakab          H7901    208     9      sleep     [idiom] at all, cast down, (lover-)lay (self) (down), 
+  10      reveal          Galah           H1540    186     16               [phrase] advertise, appear, bewray, bring, (carry, lea
+  10      blasphemy       Naatzah         H5007    5       0                blasphemy.
+  10      drew            Pathach         H6605    144     2      draw      appear, break forth, draw (out), let go free, (en-) gr
+  10      grieved         Charah          H2734    90      5      grieve    be angry, burn, be displeased, [idiom] earnestly, fret
+  10      buried          Qabar           H6912    133     1      bury      [idiom] in any wise, bury(-ier).
+  10      deserted        Mashapat        H4941    421     5      desert    [phrase] adversary, ceremony, charge, [idiom] crime, c
+  10      baskets         Sal             H5536    15      0      basket    basket.
+  10      defile          Qadash          H6942    173     4                appoint, bid, consecrate, dedicate, defile, hallow, (b
+  10      wages           Chanam          H2600    32      1                without a cause (cost, wages), causeless, to cost noth
+  10      olives          Shaman          H8081    193     5      olive     anointing, [idiom] fat (things), [idiom] fruitful, oil
+  10      robbers         Shadad          H7703    57      3      robber    dead, destroy(-er), oppress, robber, spoil(-er), [idio
+  10      perfected       Arawakah        H724     6       2                health, made up, perfected.
+  10      believing       Aman            H539     108     2      believe   hence, assurance, believe, bring up, establish, [phras
+  10      escape          Yatzaa          H3318    1068    18               [idiom] after, appear, [idiom] assuredly, bear out, [i
+  10      suffering       Nathan          H5414    2011    65     suffer    add, apply, appoint, ascribe, assign, [idiom] avenge, 
+  10      hard            Kabad           H3515    39      2                (so) great, grievous, hard(-ened), (too) heavy(-ier), 
+  10      cursed          Barak           H1288    330     6      curse     [idiom] abundantly, [idiom] altogether, [idiom] at all
+  10      flock           Tzaan           H6629    274     1                (small) cattle, flock ([phrase] -s), lamb ([phrase] -s
+  10      accused         Lashan          H3960    2       0      accuse    accuse, slander.
+  10      earthquake      Raish           H7494    17      2                commotion, confused noise, earthquake, fierceness, qua
+  10      further         Nashaa          H5375    651     19               accept, advance, arise, (able to, (armor), suffer to) 
+  10      tears           Damaih          H1832    23      0                tears.
+  10      wish            Pah             H6310    497     28               accord(-ing as, -ing to), after, appointment, assent, 
+  10      soldier         Chalatz         H2502    44      3                arm (self), (go, ready) armed ([idiom] man, soldier), 
+  10      race            Arach           H734     59      2                manner, path, race, rank, traveller, troop, (by-, high
+  10      suddenly        Ragai           H7281    22      3                instant, moment, space, suddenly.
+  10      boldly          Batach          H983     42      1                assurance, boldly, (without) care(-less), confidence, 
+  10      excellent       Raash           H7218    599     10               band, beginning, captain, chapiter, chief(-est place, 
+  10      waiting         Shamar          H8104    468     13     wait      beward, be circumspect, take heed (to self), keep(-er,
+  10      freed           Naqay           H5355    43      4      free      blameless, clean, clear, exempted, free, guiltless, in
+  10      becoming        Ishah           H6213    2629    5      become    accomplish, advance, appoint, apt, be at, become, bear
+  10      company         Raash           H7218    599     7                band, beginning, captain, chapiter, chief(-est place, 
+  10      earnestly       Yatab           H3190    112     11               be accepted, amend, use aright, benefit, be (make) bet
+  10      dwelling        Mashakan        H4908    139     1                dwelleth, dwelling (place), habitation, tabernacle, te
+  10      burning         Ash             H784     376     0                burning, fiery, fire, flaming, hot.
+  10      younger         Ban             H1121    4931    47     young     [phrase] afflicted, age, (Ahoh-) (Ammon-) (Hachmon-) (
+  10      unrighteous     Awan            H205     79      10               affliction, evil, false, idol, iniquity, mischief, mou
+  10      short           Qarawab         H7138    78      10               allied, approach, at hand, [phrase] any of kin, kinsfo
+  10      following       Achar           H312     166     1                (an-) other man, following, next, strange.
+  10      testifying      Inah            H6030    329     14     testify   give account, afflict (by mistake for H6031 (עָנָה)), 
+  10      approved        Raah            H7200    1305    2      approve   advise self, appear, approve, behold, [idiom] certainl
+  10      humility        Inawah          H6038    4       1                gentleness, humility, meekness.
+  10      dwells          Imad            H5975    524     6      dwell     abide (behind), appoint, arise, cease, confirm, contin
+  10      firm            Imad            H5975    524     28               abide (behind), appoint, arise, cease, confirm, contin
+  9       secretly        Lat             H3909    6       2                enchantment, privily, secretly, softly.
+  9       firstborn       Bakawar         H1060    118     1                eldest (son), firstborn(-ling).
+  9       wild            Paraa           H6501    10      0                wild (ass).
+  9       produce         Qarab           H7126    283     12               (cause to) approach, (cause to) bring (forth, near), (
+  9       fulfill         Ishah           H6213    2629    28               accomplish, advance, appoint, apt, be at, become, bear
+  9       mourn           Bakah           H1058    116     5                [idiom] at all, bewail, complain, make lamentation, [i
+  9       merciful        Chasad          H2617    247     5                favour, good deed(-liness, -ness), kindly, (loving-) k
+  9       footstool       Kabash          H3534    1       0                footstool.
+  9       remove          Ibar            H5674    555     53               alienate, alter, [idiom] at all, beyond, bring (over, 
+  9       borders         Yad             H3027    1617    7      border    ([phrase] be) able, [idiom] about, [phrase] armholes, 
+  9       abroad          Halak           H1980    504     15               (all) along, apace, behave (self), come, (on) continua
+  9       hid             Masathar        H4564    1       0                hid.
+  9       perceiving      Raah            H7200    1305    24     perceive  advise self, appear, approve, behold, [idiom] certainl
+  9       bind            Asar            H631     71      0                bind, fast, gird, harness, hold, keep, make ready, ord
+  9       brings          Yalak           H3212    1044    3      bring     [idiom] again, away, bear, bring, carry (away), come (
+  9       becomes         Ishah           H6213    2629    5      become    accomplish, advance, appoint, apt, be at, become, bear
+  9       cares           Dabar           H1697    1442    8      care      act, advice, affair, answer, [idiom] any such (thing),
+  9       bears           Ishah           H6213    2629    6      bear      accomplish, advance, appoint, apt, be at, become, bear
+  9       sows            Shalach         H7971    847     27     sow       [idiom] any wise, appoint, bring (on the way), cast (a
+  9       ceased          Shawab          H7725    1056    24     cease     ((break, build, circumcise, dig, do anything, do evil,
+  9       appearance      Maraah          H4758    104     1                [idiom] apparently, appearance(-reth), [idiom] as soon
+  9       released        Shamat          H8058    9       2      release   discontinue, overthrow, release, let rest, shake, stum
+  9       changed         Shawam          H7760    582     6      change    [idiom] any wise, appoint, bring, call (a name), care,
+  9       listens         Shamai          H8085    1159    16     listen    [idiom] attentively, call (gather) together, [idiom] c
+  9       tribes          Matah           H4294    252     2      tribe     rod, staff, tribe.
+  9       telling         Masapar         H4557    134     7                [phrase] abundance, account, [idiom] all, [idiom] few,
+  9       leaves          Ipay            H6074    3       0                leaves.
+  9       questions       Dabar           H1697    1442    49     question  act, advice, affair, answer, [idiom] any such (thing),
+  9       observe         Ishah           H6213    2629    46               accomplish, advance, appoint, apt, be at, become, bear
+  9       hypocrisy       Chanap          H2612    1       0                hypocrisy.
+  9       multiplied      Rab             H7227    461     22     multiply  (in) abound(-undance, -ant, -antly), captain, elder, e
+  9       darkened        Chashak         H2821    18      2      darken    be black, be (make) dark, darken, cause darkness, be d
+  9       doors           Bayath          H1004    2054    2      door      court, daughter, door, [phrase] dungeon, family, [phra
+  9       trouble         Rai             H7451    664     25               adversity, affliction, bad, calamity, [phrase] displea
+  9       sorrowful       Qashah          H7186    36      11               churlish, cruel, grievous, hard((-hearted), thing), he
+  9       vine            Gapan           H1612    55      0                vine, tree.
+  9       wept            Bakay           H1065    28      3                overflowing, [idiom] sore, (continual) weeping, wept.
+  9       wants           Paqad           H6485    303     31     want      appoint, [idiom] at all, avenge, bestow, (appoint to h
+  9       watching        Tzapayah        H6836    1       0                watching.
+  9       wrapped         Lawat           H3874    3       1      wrap      cast, wrap.
+  9       week            Shabawai        H7620    20      1                seven, week.
+  9       trembling       Charadah        H2731    9       4                care, [idiom] exceedingly, fear, quaking, trembling.
+  9       defiled         Tamaa           H2931    88      0                defiled, [phrase] infamous, polluted(-tion), unclean.
+  9       holding         Ishah           H6213    2629    37     hold      accomplish, advance, appoint, apt, be at, become, bear
+  9       foolishness     Sakalawath      H5531    7       1                folly, foolishness.
+  9       share           Macharashath    H4282    1       0                share.
+  9       drank           Mashathah       H4960    46      1                banquet, drank, drink, feast((-ed), -ing).
+  9       purple          Aragaman        H713     38      0                purple.
+  9       granted         Ishah           H6213    2629    34     grant     accomplish, advance, appoint, apt, be at, become, bear
+  9       talked          Amar            H559     5308    31     talk      answer, appoint, avouch, bid, boast self, call, certif
+  9       thinks          Dabar           H1696    1142    19     think     answer, appoint, bid, command, commune, declare, destr
+  9       stopped         Kabad           H3513    115     28     stop      abounding with, more grievously afflict, boast, be cha
+  9       needy           Inay            H6041    76      3                afflicted, humble, lowly, needy, poor.
+  9       spare           Nashaa          H5375    651     40               accept, advance, arise, (able to, (armor), suffer to) 
+  9       deed            Dabar           H1697    1442    20               act, advice, affair, answer, [idiom] any such (thing),
+  9       pleasing        Yatab           H3190    112     18     please    be accepted, amend, use aright, benefit, be (make) bet
+  9       dishonor        Irawah          H6173    1       0                dishonor.
+  9       sakes           Dabar           H1697    1442    55     sake      act, advice, affair, answer, [idiom] any such (thing),
+  9       listened        Shamai          H8085    1159    16     listen    [idiom] attentively, call (gather) together, [idiom] c
+  9       vessel          Kalay           H3627    325     17               armour(-bearer), artillery, bag, carriage, [phrase] fu
+  9       wall            Chawamah        H2346    133     0                wall, walled.
+  9       island          Ay              H339     36      2                country, isle, island.
+  9       loss            Chataa          H2398    238     5                bear the blame, cleanse, commit (sin), by fault, harm 
+  9       error           Shagagah        H7684    19      0                error, ignorance, at unawares; unwittingly.
+  9       strife          Rayab           H7379    61      7                [phrase] adversary, cause, chiding, contend(-tion), co
+  9       endured         Panayam         H6440    2127    12     endure    [phrase] accept, a-(be-) fore(-time), against, anger, 
+  9       patient         Arak            H750     15      2                long(-suffering, -winged), patient, slow (to anger).
+  9       thanksgiving    Hayadah         H1960    1       0                thanksgiving.
+  9       godly           Chasayad        H2623    32      0                godly (man), good, holy (one), merciful, saint, (un-) 
+  8       diligently      Maad            H3966    300     0                diligently, especially, exceeding(-ly), far, fast, goo
+  8       male            Zakar           H2145    82      1                [idiom] him, male, man(child, -kind).
+  8       cleanse         Chataa          H2398    238     1                bear the blame, cleanse, commit (sin), by fault, harm 
+  8       leaving         Nathan          H5414    2011    36     leave     add, apply, appoint, ascribe, assign, [idiom] avenge, 
+  8       shadow          Tzalal          H6752    4       0                shadow.
+  8       net             Charam          H2764    38      6                (ac-) curse(-d, -d thing), dedicated thing, things whi
+  8       shine           Halal           H1984    165     16               (make) boast (self), celebrate, commend, (deal, make),
+  8       reconciled      Kapar           H3722    103     10     reconcile appease, make (an atonement, cleanse, disannul, forgiv
+  8       divorce         Karayathawath   H3748    4       0                divorce(-ment).
+  8       marries         Nashaa          H5375    651     30     marry     accept, advance, arise, (able to, (armor), suffer to) 
+  8       dogs            Kalab           H3611    32      0      dog       dog.
+  8       corrupt         Chabal          H2254    27      3                [idiom] at all, band, bring forth, (deal) corrupt(-ly)
+  8       fever           Qadachath       H6920    2       1                burning ague, fever.
+  8       covered         Tzab            H6632    3       0                covered, litter, tortoise.
+  8       herd            Baqar           H1241    183     6                beeve, bull ([phrase] -ock), [phrase] calf, [phrase] c
+  8       piece           Kakar           H3603    68      2                loaf, morsel, piece, plain, talent.
+  8       brass           Nachashath      H5178    140     1                brasen, brass, chain, copper, fetter (of brass), filth
+  8       endures         Panayam         H6440    2127    12     endure    [phrase] accept, a-(be-) fore(-time), against, anger, 
+  8       cold            Tzanah          H6793    22      1                buckler, cold, hook, shield, target.
+  8       drinking        Shathayah       H8360    1       0                drinking.
+  8       idle            Rapah           H7503    46      8                abate, cease, consume, draw (toward evening), fail, (b
+  8       south           Yam             H3220    396     1                sea ([idiom] -faring man, (-shore)), south, west (-ern
+  8       empty           Panah           H6437    135     7                appear, at (even-) tide, behold, cast out, come on, [i
+  8       sowed           Shalach         H7971    847     27     sow       [idiom] any wise, appoint, bring (on the way), cast (a
+  8       air             Shamayam        H8064    421     0                air, [idiom] astrologer, heaven(-s).
+  8       separate        Palaa           H6381    71      14               accomplish, (arise...too, be too) hard, hidden, things
+  8       otherwise       Laa             H3808    5186    15               [idiom] before, [phrase] or else, ere, [phrase] except
+  8       void            Chasar          H2638    19      4                destitute, fail, lack, have need, void, want.
+  8       taste           Taim            H2942    24      5                [phrase] chancellor, [phrase] command, commandment, de
+  8       boy             Nair            H5288    239     1                babe, boy, child, damsel (from the margin), lad, serva
+  8       staying         Yad             H3027    1617    48     stay      ([phrase] be) able, [idiom] about, [phrase] armholes, 
+  8       hired           Shakar          H7939    28      0      hire      hire, price, reward(-ed), wages, worth.
+  8       colt            Ban             H1121    4931    15               [phrase] afflicted, age, (Ahoh-) (Ammon-) (Hachmon-) (
+  8       needs           Halak           H1980    504     29               (all) along, apace, behave (self), come, (on) continua
+  8       armies          Tzabaa          H6635    485     1      army      appointed time, ([phrase]) army, ([phrase]) battle, co
+  8       finger          Atzabai         H676     31      0                finger, toe.
+  8       matters         Dabar           H1697    1442    36     matter    act, advice, affair, answer, [idiom] any such (thing),
+  8       desolate        Charab          H2717    42      1                decay, (be) desolate, destroy(-er), (be) dry (up), sla
+  8       winter          Charap          H2779    7       1                cold, winter (-house), youth.
+  8       clouds          Nashayaa        H5387    134     2      cloud     captain, chief, cloud, governor, prince, ruler, vapour
+  8       watched         Shamar          H8104    468     14     watch     beward, be circumspect, take heed (to self), keep(-er,
+  8       visit           Paqad           H6485    303     30               appoint, [idiom] at all, avenge, bestow, (appoint to h
+  8       envy            Qanaah          H7068    43      0                envy(-ied), jealousy, [idiom] sake, zeal.
+  8       large           Rachab          H7342    21      1                broad, large, at liberty, proud, wide.
+  8       drinks          Mashathah       H4960    46      2      drink     banquet, drank, drink, feast((-ed), -ing).
+  8       pressed         Paratz          H6555    49      15     press     [idiom] abroad, (make a) breach, break (away, down, -e
+  8       blaspheme       Barak           H1288    330     3                [idiom] abundantly, [idiom] altogether, [idiom] at all
+  8       sickle          Charamash       H2770    2       0                sickle.
+  8       grows           Yatzaa          H3318    1068    32     grow      [idiom] after, appear, [idiom] assuredly, bear out, [i
+  8       gladly          Tawab           H2896    564     9      glad      beautiful, best, better, bountiful, cheerful, at ease,
+  8       eaten           Lacham          H3898    177     1      eat       devour, eat, [idiom] ever, fight(-ing), overcome, prev
+  8       falling         Dachay          H1762    2       0                falling.
+  8       used            Lamawad         H3928    6       4                accustomed, disciple, learned, taught, used.
+  8       course          Machalaqath     H4256    42      1                company, course, division, portion. See also H5555 (סֶ
+  8       incense         Qatar           H6999    116     2                burn (incense, sacrifice) (upon), (altar for) incense,
+  8       sure            Shamar          H8104    468     12               beward, be circumspect, take heed (to self), keep(-er,
+  8       leading         Bawaa           H935     2568    41     lead      abide, apply, attain, [idiom] be, befall, [phrase] bes
+  8       deep            Thahawam        H8415    36      0                deep (place), depth.
+  8       strange         Achar           H312     166     3                (an-) other man, following, next, strange.
+  8       traveled        Thalaah         H8513    4       1      travel    travail, travel, trouble.
+  8       perished        Ibar            H5674    555     48     perish    alienate, alter, [idiom] at all, beyond, bring (over, 
+  8       disappointed    Parar           H6565    50      7      disappoint[idiom] any ways, break (asunder), cast off, cause to 
+  8       rejoicing       Tharawaih       H8643    36      6                alarm, blow(-ing) (of, the) (trumpets), joy, jubile, l
+  8       elder           Gadawal         H1419    527     1                [phrase] aloud, elder(-est), [phrase] exceeding(-ly), 
+  8       liar            Shaqar          H8267    113     5                without a cause, deceit(-ful), false(-hood, -ly), feig
+  8       gods            Yahawah         H3069    306     0      god       God., yahweh, day, israel, levitical, rosh
+  8       caused          Hayah           H1961    3560    7      cause     beacon, [idiom] altogether, be(-come), accomplished, c
+  8       bearing         Ishah           H6213    2629    6      bear      accomplish, advance, appoint, apt, be at, become, bear
+  8       strengthened    Qawam           H6965    628     30     strengthenabide, accomplish, [idiom] be clearer, confirm, contin
+  8       sharp           Charawatz       H2742    18      4                decision, diligent, (fine) gold, pointed things, sharp
+  8       escaped         Yatzaa          H3318    1068    18     escape    [idiom] after, appear, [idiom] assuredly, bear out, [i
+  8       teaches         Dabar           H1696    1142    17     teach     answer, appoint, bid, command, commune, declare, destr
+  8       dominion        Yad             H3027    1617    18               ([phrase] be) able, [idiom] about, [phrase] armholes, 
+  8       gentleness      Inah            H6031    83      9                abase self, afflict(-ion, self), answer (by mistake fo
+  8       prostitute      Chalal          H2490    142     12               begin ([idiom] men began), defile, [idiom] break, defi
+  8       thunders        Qawal           H6963    506     14     thunder   [phrase] aloud, bleating, crackling, cry ([phrase] out
+  8       sounded         Shamai          H8085    1159    26     sound     [idiom] attentively, call (gather) together, [idiom] c
+  7       conceived       Chashab         H2803    124     1      conceive  (make) account (of), conceive, consider, count, cunnin
+  7       east            Mawatzaa        H4161    27      3                brought out, bud, that which came out, east, going for
+  7       lies            Kachash         H3585    6       1                leanness, lies, lying.
+  7       hindered        Shawab          H7725    1056    40     hinder    ((break, build, circumcise, dig, do anything, do evil,
+  7       proceeds        Yatzaa          H3318    1068    38     proceed   [idiom] after, appear, [idiom] assuredly, bear out, [i
+  7       healing         Marapaa         H4832    16      1                (in-)cure(-able), healing(-lth), remedy, sound, wholes
+  7       afflicted       Tzar            H6862    110     1                adversary, afflicted(-tion), anguish, close, distress,
+  7       obtain          Nashaa          H5375    651     33               accept, advance, arise, (able to, (armor), suffer to) 
+  7       agree           Yaid            H3259    29      0                agree,(maxke an) appoint(-ment, a time), assemble (sel
+  7       streets         Chawatz         H2351    164     7      street    abroad, field, forth, highway, more, out(-side, -ward)
+  7       value           Irak            H6186    76      18               put (set) (the battle, self) in array, compare, direct
+  7       clothe          Kasah           H3680    152     2                clad self, close, clothe, conceal, cover (self), (flee
+  7       sufficient      Day             H1767    39      9                able, according to, after (ability), among, as (oft as
+  7       pearls          Gabayash        H1378    1       0      pearl     pearl.
+  7       tear            Shabar          H7665    148     11               break (down, off, in pieces, up), broken (-hearted), b
+  7       serpent         Nachash         H5175    31      0                serpent.
+  7       storm           Sair            H5591    24      0                storm(-y), tempest, whirlwind.
+  7       office          Ibadah          H5656    145     6                act, bondage, [phrase] bondservant, effect, labour, mi
+  7       girl            Yaladah         H3207    3       1                damsel, girl.
+  7       prophesied      Nabaa           H5012    114     0      prophesy  prophesy(-ing), make self a prophet.
+  7       ago             Qadamah         H6928    2       1                afore(-time), ago.
+  7       lift            Bawaa           H935     2568    42               abide, apply, attain, [idiom] be, befall, [phrase] bes
+  7       stretch         Parad           H6504    26      7                disperse, divide, be out of joint, part, scatter (abro
+  7       belly           Batan           H990     72      0                belly, body, [phrase] as they be born, [phrase] within
+  7       state           Panayam         H6440    2127    53               [phrase] accept, a-(be-) fore(-time), against, anger, 
+  7       understood      Shamai          H8085    1159    29     understand[idiom] attentively, call (gather) together, [idiom] c
+  7       guide           Yaitz           H3289    79      8                advertise, take advise, advise (well), consult, (give,
+  7       proceed         Yatzaa          H3318    1068    38               [idiom] after, appear, [idiom] assuredly, bear out, [i
+  7       red             Sawap           H5488    28      1                flag, Red (sea), weed. Compare H5489 (סוּף).
+  7       rebuke          Charapah        H2781    73      0                rebuke, reproach(-fully), shame.
+  7       gained          Thabawaah       H8393    42      1      gain      fruit, gain, increase, revenue.
+  7       due             Dabar           H1697    1442    22               act, advice, affair, answer, [idiom] any such (thing),
+  7       forbid          Chalayalah      H2486    21      1                be far, ([idiom] God) forbid.
+  7       sell            Shabar          H7666    21      1                buy, sell.
+  7       heat            Chamah          H2534    124     5                anger, bottles, hot displeasure, furious(-ly, -ry), he
+  7       seats           Yashab          H3427    1082    17     seat      (make to) abide(-ing), continue, (cause to, make to) d
+  7       planted         Natai           H5193    58      1      plant     fastened, plant(-er).
+  7       stoned          Tzawar          H6697    77      4      stone     edge, [idiom] (mighty) God (one), rock, [idiom] sharp,
+  7       taxes           Irak            H6186    76      17     tax       put (set) (the battle, self) in array, compare, direct
+  7       devour          Lacham          H3898    177     0                devour, eat, [idiom] ever, fight(-ing), overcome, prev
+  7       fill            Malaa           H4390    250     6                accomplish, confirm, [phrase] consecrate, be at an end
+  7       vessels         Kalay           H3627    325     17     vessel    armour(-bearer), artillery, bag, carriage, [phrase] fu
+  7       stranger        Gawar           H1481    98      10               abide, assemble, be afraid, dwell, fear, gather (toget
+  7       feed            Shawab          H7725    1056    6                ((break, build, circumcise, dig, do anything, do evil,
+  7       court           Bayath          H1004    2054    0                court, daughter, door, [phrase] dungeon, family, [phra
+  7       strike          Nathan          H5414    2011    63               add, apply, appoint, ascribe, assign, [idiom] avenge, 
+  7       hail            Barad           H1259    29      0                hail(stones).
+  7       mixed           Irab            H6154    15      2                Arabia, mingled people, mixed (multitude), woof.
+  7       accusation      Shatanah        H7855    1       0                accusation.
+  7       rolled          Magalah         H4039    21      0      roll      roll, volume.
+  7       preparation     Kawan           H3559    219     14               certain(-ty), confirm, direct, faithfulness, fashion, 
+  7       reasoning       Thawakachah     H8433    28      3                argument, [idiom] chastened, correction, reasoning, re
+  7       accept          Laqach          H3947    966     0                accept, bring, buy, carry away, drawn, fetch, get, inf
+  7       point           Tzaparan        H6856    2       1                nail, point.
+  7       fearing         Gawar           H1481    98      4      fear      abide, assemble, be afraid, dwell, fear, gather (toget
+  7       swore           Alah            H422     6       2      swear     adjure, curse, swear.
+  7       half            Thawak          H8432    418     2                among(-st), [idiom] between, half, [idiom] (there-, wh
+  7       refuse          Izab            H5800    215     7                commit self, fail, forsake, fortify, help, leave (dest
+  7       hardened        Chazaq          H2388    290     17     harden    aid, amend, [idiom] calker, catch, cleave, confirm, be
+  7       trust           Aman            H539     108     13               hence, assurance, believe, bring up, establish, [phras
+  7       grant           Ishah           H6213    2629    34               accomplish, advance, appoint, apt, be at, become, bear
+  7       common          Chal            H2455    7       0                common, profane (place), unholy., bread
+  7       beaten          Makah           H4347    48      0                beaten, blow, plague, slaughter, smote, [idiom] sore, 
+  7       upper           Ilayawan        H5945    53      3                (Most, on) high(-er, -est), upper(-most).
+  7       seemed          Maraah          H4758    104     12     seem      [idiom] apparently, appearance(-reth), [idiom] as soon
+  7       division        Machalaqath     H4256    42      2                company, course, division, portion. See also H5555 (סֶ
+  7       sayings         Dabar           H1697    1442    56     saying    act, advice, affair, answer, [idiom] any such (thing),
+  7       shepherds       Raih            H7462    164     13     shepherd  [idiom] break, companion, keep company with, devour, e
+  7       terrified       Iratz           H6206    15      3                be affrighted (afraid, dread, feared, terrified), brea
+  7       begin           Chalal          H2490    142     0                begin ([idiom] men began), defile, [idiom] break, defi
+  7       added           Nathan          H5414    2011    0      add       add, apply, appoint, ascribe, assign, [idiom] avenge, 
+  7       famine          Raib            H7458    101     1                dearth, famine, [phrase] famished, hunger.
+  7       breaking        Shabar          H7667    44      2                affliction, breach, breaking, broken(-footed, -handed)
+  7       finding         Chanan          H2603    78      3      find      beseech, [idiom] fair, (be, find, shew) favour(-able),
+  7       drunken         Sabaa           H5435    4       1                drink, drunken, wine.
+  7       stripes         Nakah           H5221    500     17               beat, cast forth, clap, give (wounds), [idiom] go forw
+
+──────────────────────────────────────────────────────────────────────────────
+TRANSLIT DISAGREEMENTS — mechanical vs what the index already renders
+──────────────────────────────────────────────────────────────────────────────
+Both should be identical: the scheme is positional and deterministic. A row
+here means the rendered form came from something other than a plain lemma
+(a construct form, a defective spelling, or a pin), so check before pasting.
+  H8384    mechanical=Thaan            indexed=Thaanatha
+  H2026    mechanical=Harag            indexed=Haraga
+  H8074    mechanical=Shamam           indexed=Shamamaw
+  H7321    mechanical=Rawai            indexed=Rawayaiw
+  H3238    mechanical=Yanah            indexed=Yawanah
+  H5362    mechanical=Naqap            indexed=Naqapaw
+  H3807    mechanical=Kathath          indexed=Kathathaw
+  H6789    mechanical=Tzamath          indexed=Tzamayatha
+  H2000    mechanical=Hamam            indexed=Hamama
+  H7722    mechanical=Shawaa           indexed=Shawaah
+  H7       mechanical=Abad             indexed=Awabad
+  H2255    mechanical=Chabal           indexed=Chabalah
+  H6979    mechanical=Qawar            indexed=Qawayar
+  H1949    mechanical=Hawam            indexed=Yamah
+  H1641    mechanical=Garar            indexed=Garawara
+  H5255    mechanical=Nasach           indexed=Nasacha
+  H5642    mechanical=Sathar           indexed=Masatharath
+  H2718    mechanical=Charab           indexed=Charabath
+  H1697    mechanical=Dabar            indexed=Dabara
+  H1419    mechanical=Gadawal          indexed=Gadawala
+  H2656    mechanical=Chapatz          indexed=Chapatza
+  H4405    mechanical=Malah            indexed=Malahaya
+  H4406    mechanical=Malah            indexed=Malahay
+  H5766    mechanical=Iwal             indexed=Iwalath
+  H7860    mechanical=Shatar           indexed=Shataraya
+
+──────────────────────────────────────────────────────────────────────────────
+NOT REACHABLE FROM kjv_def — these need authoring
+──────────────────────────────────────────────────────────────────────────────
+  alahayam(1339)  adanay(674)  mashayach(561)  don’t(482)  didn’t(253)  kayapaa(167)  doesn’t(152)  yawachanan(133)  immediately(108)  anyone(104)  haqadash(92)  pharisees(88)  yes(73)  everyone(72)  can’t(59)  baptized(58)  apostles(56)  payalatawas(56)  honor(55)  demons(54)  isn’t(51)  boat(46)  hawaradawas(44)  synagogue(44)  greet(43)  wouldn’t(42)  won’t(42)  resurrection(42)  sexual(38)  today(38)  crucified(37)  payalayapawas(34)  immorality(31)  justified(31)  members(30)  aren’t(30)  thrown(30)  cross(29)  qayasar(29)  conscience(29)  spiritual(28)  baranab(27)  perseverance(26)  macedonia(26)  synagogues(25)  forgiven(25)  loaves(24)  tayamawathayawas(24)  natzarath(23)  yours(23)  goes(23)  demon(23)  yashawai’(23)  savior(23)  behalf(23)  baptism(22)  allow(22)  wasn’t(22)  mystery(22)  yashaiyahaw(21)
+
+──────────────────────────────────────────────────────────────────────────────
+READY TO PASTE — term-forms.txt
+──────────────────────────────────────────────────────────────────────────────
+# Generated by build-term-candidates from Strong's kjv_def, with the translit
+# taken from surface-index.db (a spelling this corpus already renders).
+# REVIEW HIGH sense NUMBERS FIRST — those came from a secondary KJV gloss.
+# Delete any line you disagree with; term-forms.txt is read directly, so a
+# change takes effect on the next `node render-all.mjs --surface`, with no
+# OT rebuild.
+fig             Thaan             # H8384 · 16x in NT · 39x OT · sense 0
+rejected        Chadal            # H2310 · 16x in NT · 3x OT · sense 2
+destroyed       Dabar             # H1696 · 16x in NT · 1142x OT · sense 6 · via "destroy"  alt: Mawath/H4191 Karath/H3772
+matter          Dabar             # H1697 · 16x in NT · 1442x OT · sense 36  alt: Gadawal/H1419 Chapatz/H2656
+unrighteousness Iwal              # H5766 · 16x in NT · 53x OT · sense 3
+officers        Rab               # H7227 · 16x in NT · 461x OT · sense 23 · via "officer"  alt: Paqad/H6485 Natzab/H5324
+washed          Rachatz           # H7364 · 16x in NT · 72x OT · sense 1 · via "wash"  alt: Kabas/H3526 Shatap/H7857
+bringing        Yalak             # H3212 · 16x in NT · 1044x OT · sense 3 · via "bring"  alt: Laqach/H3947 Ilah/H5927
+working         Thawashayah       # H8454 · 16x in NT · 11x OT · sense 4
+months          Chadash           # H2320 · 16x in NT · 283x OT · sense 0 · via "month"  alt: Yarach/H3391 Yarach/H3393
+bonds           Mawasar           # H4148 · 16x in NT · 50x OT · sense 0 · via "bond"  alt: Asar/H632 Mawasar/H4147
+confidence      Batach            # H983 · 16x in NT · 42x OT · sense 3  alt: Mabatach/H4009 Kasal/H3689
+secret          Sathar            # H5641 · 15x in NT · 81x OT · sense 4  alt: Ilam/H5956 Sawad/H5475
+shut            Itzar             # H6113 · 15x in NT · 46x OT · sense 12  alt: Itzam/H6105 Shaii/H8173
+daily           Yawam             # H3117 · 15x in NT · 2303x OT · sense 4  alt: Thamayad/H8548 Yawamam/H3119
+despise         Qalal             # H7043 · 15x in NT · 82x OT · sense 4  alt: Maas/H3988 Bazah/H959
+fruits          Kach              # H3581 · 15x in NT · 126x OT · sense 4
+asking          Rabah             # H7235 · 15x in NT · 230x OT · sense 27 · via "ask"  alt: Baqash/H1245 Darash/H1875
+thoughts        Dabar             # H1697 · 15x in NT · 1442x OT · sense 70 · via "thought"  alt: Qarab/H7130 Machashabah/H4284
+garment         Bagad             # H899 · 15x in NT · 217x OT · sense 3  alt: Madah/H4060 Labawash/H3830
+betrayed        Ramah             # H7411 · 15x in NT · 13x OT · sense 1 · via "betray"
+proclaim        Shamai            # H8085 · 15x in NT · 1159x OT · sense 21  alt: Qaraa/H7121 Qadash/H6942
+exalted         Mathanashaa       # H4984 · 15x in NT · 2x OT · sense 0
+thank           Barak             # H1288 · 15x in NT · 330x OT · sense 13  alt: Yadaa/H3029
+perceive        Raah              # H7200 · 15x in NT · 1305x OT · sense 24  alt: Shamai/H8085 Yadai/H3045
+burned          Ilah              # H5927 · 15x in NT · 889x OT · sense 5 · via "burn"  alt: Nashaa/H5375 Bair/H1197
+morning         Baqar             # H1242 · 15x in NT · 214x OT · sense 2  alt: Awar/H216 Shakam/H7925
+wives           Ashah             # H802 · 15x in NT · 781x OT · sense 8 · via "wife"  alt: Shagal/H7695
+mount           Har               # H2022 · 15x in NT · 547x OT · sense 1  alt: Harar/H2042 Salalah/H5550
+sits            Rabatz            # H7257 · 15x in NT · 30x OT · sense 7 · via "sit"  alt: Yathab/H3488 Dagar/H1716
+denied          Manai             # H4513 · 15x in NT · 29x OT · sense 0 · via "deny"  alt: Kachash/H3584
+prisoner        Asayar            # H615 · 15x in NT · 12x OT · sense 1  alt: Asayar/H616
+bodies          Napash            # H5315 · 15x in NT · 754x OT · sense 3 · via "body"  alt: Bashar/H1320 Itzam/H6106
+tongue          Lashawan          # H3956 · 15x in NT · 117x OT · sense 5
+proclaimed      Shamai            # H8085 · 15x in NT · 1159x OT · sense 21 · via "proclaim"  alt: Qaraa/H7121 Qadash/H6942
+home            Bayath            # H1004 · 15x in NT · 2054x OT · sense 8  alt: Shawab/H7725 Ahal/H168
+shame           Charapah          # H2781 · 15x in NT · 73x OT · sense 2  alt: Yabash/H3001 Irawah/H6172
+precious        Tawab             # H2896 · 15x in NT · 564x OT · sense 27  alt: Chan/H2580 Yaqar/H3368
+circumcised     Shawab            # H7725 · 15x in NT · 1056x OT · sense 2 · via "circumcise"  alt: Mawal/H4135 Namal/H5243
+purpose         Dabar             # H1697 · 15x in NT · 1442x OT · sense 48  alt: Mah/H4100 Shawam/H7760
+mark            Raah              # H7200 · 15x in NT · 1305x OT · sense 21  alt: Yadai/H3045 Shawam/H7760
+thought         Dabar             # H1697 · 14x in NT · 1442x OT · sense 70  alt: Qarab/H7130 Machashabah/H4284
+learned         Lamawad           # H3928 · 14x in NT · 6x OT · sense 2
+rejoiced        Shawab            # H7725 · 14x in NT · 1056x OT · sense 11 · via "rejoice"  alt: Shamachah/H8057 Gayal/H1523
+tempted         Nasah             # H5254 · 14x in NT · 36x OT · sense 3 · via "tempt"  alt: Bachan/H974
+possessed       Qanah             # H7069 · 14x in NT · 85x OT · sense 5 · via "possess"  alt: Chasan/H2631
+persecuted      Maradap           # H4783 · 14x in NT · 1x OT · sense 0
+asks            Rabah             # H7235 · 14x in NT · 230x OT · sense 27 · via "ask"  alt: Baqash/H1245 Darash/H1875
+temptation      Masah             # H4531 · 14x in NT · 5x OT · sense 0
+sow             Shalach           # H7971 · 14x in NT · 847x OT · sense 27
+reap            Qatzar            # H7114 · 14x in NT · 49x OT · sense 7
+clothes         Shalamah          # H8008 · 14x in NT · 16x OT · sense 0  alt: Mad/H4055 Galawam/H1545
+gate            Shair             # H8179 · 14x in NT · 374x OT · sense 2  alt: Pathach/H6607 Dalath/H1817
+astonished      Daham             # H1724 · 14x in NT · 1x OT · sense 0
+fled            Barach            # H1272 · 14x in NT · 65x OT · sense 3 · via "flee"  alt: Nawad/H5110 Natzaa/H5323
+learn           Lamad             # H3925 · 14x in NT · 86x OT · sense 4  alt: Alap/H502
+confess         Yadah             # H3034 · 14x in NT · 114x OT · sense 1
+accuse          Lashan            # H3960 · 14x in NT · 2x OT · sense 0
+branches        Ban               # H1121 · 14x in NT · 4931x OT · sense 9 · via "branch"  alt: Bath/H1323 Bad/H905
+promised        Amar              # H559 · 14x in NT · 5308x OT · sense 22 · via "promise"  alt: Dabar/H1697 Dabar/H1696
+walked          Yalak             # H3212 · 14x in NT · 1044x OT · sense 28 · via "walk"  alt: Sabab/H5437 Darak/H1869
+reasoned        Dabar             # H1697 · 14x in NT · 1442x OT · sense 51 · via "reason"  alt: Shapat/H8199 Yakach/H3198
+parts           Yad               # H3027 · 14x in NT · 1617x OT · sense 40  alt: Shalash/H8027
+gates           Shair             # H8179 · 14x in NT · 374x OT · sense 2 · via "gate"  alt: Pathach/H6607 Dalath/H1817
+womb            Batan             # H990 · 14x in NT · 72x OT · sense 4  alt: Racham/H7356 Maih/H4578
+season          Yawam             # H3117 · 14x in NT · 2303x OT · sense 24  alt: Ith/H6256 Zaman/H2166
+perceived       Raah              # H7200 · 14x in NT · 1305x OT · sense 24 · via "perceive"  alt: Shamai/H8085 Yadai/H3045
+lead            Bawaa             # H935 · 14x in NT · 2568x OT · sense 41  alt: Yalak/H3212 Halak/H1980
+naked           Irawam            # H6174 · 14x in NT · 16x OT · sense 0  alt: Parai/H6544 Iyaram/H5903
+held            Ishah             # H6213 · 14x in NT · 2629x OT · sense 37 · via "hold"  alt: Qawam/H6965 Shawam/H7760
+guard           Rawatz            # H7323 · 14x in NT · 103x OT · sense 3  alt: Tabach/H2876 Mashamar/H4929
+silent          Dawamayah         # H1747 · 14x in NT · 4x OT · sense 1  alt: Dawamam/H1748
+vision          Maraah            # H4758 · 14x in NT · 104x OT · sense 15  alt: Chazawan/H2377 Chazaw/H2376
+acceptable      Bachar            # H977 · 14x in NT · 170x OT · sense 0  alt: Chapatz/H2656
+seal            Chatham           # H2856 · 14x in NT · 27x OT · sense 2  alt: Chawatham/H2368 Chatham/H2857
+sorrow          Rai               # H7451 · 14x in NT · 664x OT · sense 24  alt: Chalal/H2490 Tzar/H6862
+angry           Kais              # H3708 · 13x in NT · 25x OT · sense 1  alt: Zaim/H2195 Zaim/H2194
+comforted       Nacham            # H5162 · 13x in NT · 108x OT · sense 0 · via "comfort"  alt: Said/H5582 Thanachawam/H8575
+carry           Bawaa             # H935 · 13x in NT · 2568x OT · sense 11  alt: Yalak/H3212 Nashaa/H5375
+casting         Mawatzaq          # H4165 · 13x in NT · 3x OT · sense 0
+lust            Napash            # H5315 · 13x in NT · 754x OT · sense 16  alt: Chamad/H2530 Awah/H183
+careful         Chashach          # H2818 · 13x in NT · 2x OT · sense 0
+masters         Rab               # H7227 · 13x in NT · 461x OT · sense 17 · via "master"  alt: Shar/H8269 Adawan/H113
+grow            Yatzaa            # H3318 · 13x in NT · 1068x OT · sense 32  alt: Yalak/H3212 Halak/H1980
+rock            Tzawar            # H6697 · 13x in NT · 77x OT · sense 2  alt: Salai/H5553 Maiwaz/H4581
+tombs           Gadayash          # H1430 · 13x in NT · 4x OT · sense 1 · via "tomb"
+turning         Maqatzawai        # H4740 · 13x in NT · 12x OT · sense 1  alt: Mawasabah/H4142
+spread          Yatzaa            # H3318 · 13x in NT · 1068x OT · sense 45  alt: Yalak/H3212 Shalach/H7971
+harvest         Qatzayar          # H7105 · 13x in NT · 54x OT · sense 2
+dust            Ipar              # H6083 · 13x in NT · 110x OT · sense 1  alt: Abaq/H80
+hated           Shanayaa          # H8146 · 13x in NT · 1x OT · sense 0
+lose            Asap              # H622 · 13x in NT · 202x OT · sense 10  alt: Abad/H6 Shachath/H7843
+lame            Pasach            # H6455 · 13x in NT · 13x OT · sense 0  alt: Nakah/H5223
+occasion        Matzaa            # H4672 · 13x in NT · 455x OT · sense 10  alt: Ilayalah/H5949 Ilah/H5931
+shaken          Nadap             # H5086 · 13x in NT · 9x OT · sense 3
+abundance       Rabah             # H7235 · 13x in NT · 230x OT · sense 0  alt: Rab/H7230 Hamawan/H1995
+oppression      Shad              # H7701 · 13x in NT · 25x OT · sense 2  alt: Ishaq/H6233 Lachatz/H3906
+buy             Laqach            # H3947 · 13x in NT · 966x OT · sense 2  alt: Qanah/H7069 Shabar/H7666
+doctrine        Mawasar           # H4148 · 13x in NT · 50x OT · sense 6  alt: Shamawaih/H8052 Laqach/H3948
+wanted          Paqad             # H6485 · 13x in NT · 303x OT · sense 31 · via "want"  alt: Chadal/H2308 Apas/H657
+greatest        Ishah             # H6213 · 13x in NT · 2629x OT · sense 35 · via "great"  alt: Ayash/H376 Maad/H3966
+dies            Napal             # H5307 · 13x in NT · 434x OT · sense 5 · via "die"  alt: Mawath/H4194 Gawai/H1478
+seat            Yashab            # H3427 · 13x in NT · 1082x OT · sense 17  alt: Kasaa/H3678 Mawashab/H4186
+best            Tawab             # H2896 · 13x in NT · 564x OT · sense 1  alt: Mayatab/H4315 Pazaz/H6338
+serving         Ishah             # H6213 · 13x in NT · 2629x OT · sense 60 · via "serve"  alt: Palach/H6399
+harm            Rai               # H7451 · 13x in NT · 664x OT · sense 12
+care            Dabar             # H1697 · 13x in NT · 1442x OT · sense 8  alt: Shawam/H7760 Batach/H983
+chains          Azaqayam          # H246 · 13x in NT · 2x OT · sense 0
+declared        Amar              # H559 · 13x in NT · 5308x OT · sense 13 · via "declare"  alt: Shamai/H8085 Dabar/H1696
+widow           Alamanah          # H490 · 13x in NT · 56x OT · sense 1  alt: Alamanawath/H491
+created         Baraa             # H1254 · 13x in NT · 54x OT · sense 1 · via "create"
+desiring        Napash            # H5315 · 13x in NT · 754x OT · sense 7 · via "desire"  alt: Nashaa/H5375 Baqash/H1245
+sailed          Nas               # H5251 · 13x in NT · 20x OT · sense 2 · via "sail"
+workers         Charash           # H2790 · 13x in NT · 72x OT · sense 20 · via "worker"  alt: Charash/H2796
+putting         Ishah             # H6213 · 13x in NT · 2629x OT · sense 57 · via "put"  alt: Bawaa/H935 Nathan/H5414
+overcome        Yakal             # H3201 · 13x in NT · 193x OT · sense 7  alt: Lacham/H3898 Halam/H1986
+reported        Amar              # H559 · 13x in NT · 5308x OT · sense 24 · via "report"  alt: Dabar/H1697 Shamai/H8085
+jealousy        Qanaah            # H7068 · 13x in NT · 43x OT · sense 1
+sail            Nas               # H5251 · 13x in NT · 20x OT · sense 2
+defense         Matzawad          # H4686 · 13x in NT · 23x OT · sense 1  alt: Matzawar/H4693
+deceived        Shagag            # H7683 · 13x in NT · 4x OT · sense 1
+promises        Amar              # H559 · 13x in NT · 5308x OT · sense 22 · via "promise"  alt: Dabar/H1697 Dabar/H1696
+dragon          Thanayan          # H8577 · 13x in NT · 26x OT · sense 0  alt: Thanah/H8568 Than/H8565
+warned          Zahar             # H2094 · 12x in NT · 22x OT · sense 3 · via "warn"
+wheat           Dagan             # H1715 · 12x in NT · 40x OT · sense 1  alt: Chatah/H2406 Bar/H1250
+showed          Chawah            # H2331 · 12x in NT · 6x OT · sense 0 · via "show"
+kinds           Mashapachah       # H4940 · 12x in NT · 303x OT · sense 1 · via "kind"  alt: Bashar/H1320 Zan/H2178
+murder          Harag             # H2026 · 12x in NT · 167x OT · sense 3  alt: Ratzach/H7523
+steal           Ganab             # H1589 · 12x in NT · 40x OT · sense 3
+dressed         Ishah             # H6213 · 12x in NT · 2629x OT · sense 18 · via "dress"  alt: Ibad/H5647 Yatab/H3190
+grass           Ishab             # H6212 · 12x in NT · 33x OT · sense 0  alt: Chatzayar/H2682 Dashaa/H1877
+tomorrow        Machar            # H4279 · 12x in NT · 52x OT · sense 1
+cleansed        Chataa            # H2398 · 12x in NT · 238x OT · sense 1 · via "cleanse"  alt: Kapar/H3722 Tahar/H2891
+skins           Bashar            # H1320 · 12x in NT · 270x OT · sense 7 · via "skin"  alt: Iwar/H5785 Galad/H1539
+freely          Nadabah           # H5071 · 12x in NT · 26x OT · sense 1
+enough          Kal               # H3605 · 12x in NT · 5413x OT · sense 3  alt: Rab/H7227 Day/H1767
+falls           Hayah             # H1961 · 12x in NT · 3560x OT · sense 11 · via "fall"  alt: Yatzaa/H3318 Ilah/H5927
+withered        Tzanam            # H6798 · 12x in NT · 1x OT · sense 0
+account         Masapar           # H4557 · 12x in NT · 134x OT · sense 1  alt: Chashab/H2803 Paqadah/H6486
+condemn         Rashai            # H7561 · 12x in NT · 35x OT · sense 0  alt: Inash/H6064
+fine            Tawab             # H2896 · 12x in NT · 564x OT · sense 8  alt: Tzarap/H6884 Katham/H3800
+powers          Yad               # H3027 · 12x in NT · 1617x OT · sense 42 · via "power"  alt: Al/H410 Chayal/H2428
+feared          Iratz             # H6206 · 12x in NT · 15x OT · sense 2
+talking         Malah             # H4405 · 12x in NT · 38x OT · sense 6
+strangers       Gawar             # H1481 · 12x in NT · 98x OT · sense 10 · via "stranger"  alt: Gar/H1616 Thawashab/H8453
+talents         Kakar             # H3603 · 12x in NT · 68x OT · sense 4 · via "talent"  alt: Kakar/H3604
+marry           Nashaa            # H5375 · 12x in NT · 651x OT · sense 30  alt: Yabam/H2992
+lack            Paqad             # H6485 · 12x in NT · 303x OT · sense 14  alt: Rawash/H7326 Chasar/H2637
+early           Baqar             # H1242 · 12x in NT · 214x OT · sense 1  alt: Shachar/H7837
+front           Panayam           # H6440 · 12x in NT · 2127x OT · sense 22  alt: Mawal/H4136
+press           Paratz            # H6555 · 12x in NT · 49x OT · sense 15  alt: Tzawaq/H6693 Patzar/H6484
+seize           Laqach            # H3947 · 12x in NT · 966x OT · sense 13  alt: Chazaq/H2388
+calls           Amar              # H559 · 12x in NT · 5308x OT · sense 5 · via "call"  alt: Bawaa/H935 Shawab/H7725
+forward         Halak             # H1980 · 12x in NT · 504x OT · sense 12  alt: Halak/H1980 Nasai/H5265
+thief           Ganab             # H1590 · 12x in NT · 17x OT · sense 0
+thirsty         Iyap              # H5889 · 12x in NT · 17x OT · sense 1
+deceit          Shaqar            # H8267 · 12x in NT · 113x OT · sense 1  alt: Tharamah/H8649 Thak/H8496
+ointment        Shaman            # H8081 · 12x in NT · 193x OT · sense 4  alt: Mashachah/H4888 Maraqachath/H4842
+betray          Ramah             # H7411 · 12x in NT · 13x OT · sense 1
+tried           Bachan            # H976 · 12x in NT · 1x OT · sense 0
+seized          Laqach            # H3947 · 12x in NT · 966x OT · sense 13 · via "seize"  alt: Chazaq/H2388
+custom          Darak             # H1870 · 12x in NT · 706x OT · sense 5  alt: Mashapat/H4941 Chaq/H2706
+teachers        Lawatz            # H3887 · 12x in NT · 27x OT · sense 7 · via "teacher"
+widows          Alamanah          # H490 · 12x in NT · 56x OT · sense 1 · via "widow"  alt: Alamanawath/H491
+caught          Matzaa            # H4672 · 12x in NT · 455x OT · sense 3 · via "catch"  alt: Chazaq/H2388 Lakad/H3920
+building        Banayan           # H1146 · 12x in NT · 7x OT · sense 0  alt: Banayah/H1140 Banayan/H1147
+declare         Amar              # H559 · 12x in NT · 5308x OT · sense 13  alt: Shamai/H8085 Dabar/H1696
+overcomes       Yakal             # H3201 · 12x in NT · 193x OT · sense 7 · via "overcome"  alt: Lacham/H3898 Halam/H1986
+count           Nathan            # H5414 · 12x in NT · 2011x OT · sense 16  alt: Paqad/H6485 Sapar/H5608
+letters         Sapar             # H5612 · 12x in NT · 186x OT · sense 4 · via "letter"  alt: Agarath/H107 Pathagam/H6600
+sealed          Chatham           # H2856 · 12x in NT · 27x OT · sense 2 · via "seal"  alt: Chawatham/H2368 Chatham/H2857
+ministry        Yad               # H3027 · 12x in NT · 1617x OT · sense 34
+creature        Napash            # H5315 · 12x in NT · 754x OT · sense 5
+ungodly         Rashai            # H7563 · 12x in NT · 262x OT · sense 2  alt: Balayail/H1100 Iwayal/H5760
+fleshly         Shaar             # H7607 · 12x in NT · 16x OT · sense 1 · via "flesh"  alt: Bashar/H1321 Tabachah/H2878
+rule            Malak             # H4427 · 12x in NT · 348x OT · sense 8  alt: Shapat/H8199 Nashaq/H5401
+blameless       Naqay             # H5355 · 12x in NT · 43x OT · sense 0
+endure          Panayam           # H6440 · 12x in NT · 2127x OT · sense 12  alt: Yashab/H3427 Qawam/H6965
+virgin          Bathawalah        # H1330 · 11x in NT · 50x OT · sense 1  alt: Ilamah/H5959
+trees           Itzah             # H6097 · 11x in NT · 1x OT · sense 0
+persecute       Dalaq             # H1814 · 11x in NT · 9x OT · sense 4
+causes          Hayah             # H1961 · 11x in NT · 3560x OT · sense 7 · via "cause"  alt: Bawaa/H935 Nathan/H5414
+puts            Ishah             # H6213 · 11x in NT · 2629x OT · sense 57 · via "put"  alt: Bawaa/H935 Nathan/H5414
+openly          Iyanayam          # H5879 · 11x in NT · 3x OT · sense 1
+fasting         Tawath            # H2908 · 11x in NT · 1x OT · sense 0
+wash            Rachatz           # H7364 · 11x in NT · 72x OT · sense 1  alt: Kabas/H3526 Shatap/H7857
+finds           Chanan            # H2603 · 11x in NT · 78x OT · sense 3 · via "find"  alt: Racham/H7355 Shakach/H7912
+leads           Bawaa             # H935 · 11x in NT · 2568x OT · sense 41 · via "lead"  alt: Yalak/H3212 Halak/H1980
+stretched       Parad             # H6504 · 11x in NT · 26x OT · sense 7 · via "stretch"  alt: Raqai/H7554
+meet            Ban               # H1121 · 11x in NT · 4931x OT · sense 28  alt: Raah/H7200 Matzaa/H4672
+villages        Bath              # H1323 · 11x in NT · 587x OT · sense 8 · via "village"  alt: Chatzar/H2691 Kapar/H3724
+scattered       Parash            # H6566 · 11x in NT · 67x OT · sense 3 · via "scatter"  alt: Pawatz/H6327 Paratz/H6555
+reed            Qanah             # H7070 · 11x in NT · 62x OT · sense 5
+humble          Inah              # H6031 · 11x in NT · 83x OT · sense 10  alt: Inay/H6041 Kanai/H3665
+burden          Mashaa            # H4853 · 11x in NT · 65x OT · sense 0  alt: Mashaath/H4864 Imas/H6006
+desired         Napash            # H5315 · 11x in NT · 754x OT · sense 7 · via "desire"  alt: Nashaa/H5375 Baqash/H1245
+price           Kasap             # H3701 · 11x in NT · 403x OT · sense 1  alt: Irak/H6187 Shakar/H7939
+quiet           Nawach            # H5117 · 11x in NT · 67x OT · sense 4  alt: Shalam/H8003 Manawachah/H4496
+stirred         Ikar              # H5916 · 11x in NT · 14x OT · sense 1 · via "stir"  alt: Thashaah/H8663
+question        Dabar             # H1697 · 11x in NT · 1442x OT · sense 49  alt: Darash/H1875
+entering        Pathach           # H6607 · 11x in NT · 164x OT · sense 1  alt: Mabawaa/H3996
+married         Nashaa            # H5375 · 11x in NT · 651x OT · sense 30 · via "marry"  alt: Yabam/H2992
+kiss            Nashaq            # H5401 · 11x in NT · 35x OT · sense 2  alt: Nashayaqah/H5390
+remembered      Paqad             # H6485 · 11x in NT · 303x OT · sense 26 · via "remember"  alt: Zakar/H2142
+blasphemed      Barak             # H1288 · 11x in NT · 330x OT · sense 3 · via "blaspheme"  alt: Charap/H2778 Naatz/H5006
+form            Mashapat          # H4941 · 11x in NT · 421x OT · sense 11  alt: Maraah/H4758 Yatzar/H3335
+laying          Ilah              # H5927 · 11x in NT · 889x OT · sense 23 · via "lay"  alt: Shalach/H7971 Nashaa/H5375
+sacrificed      Manachah          # H4503 · 11x in NT · 211x OT · sense 4 · via "sacrifice"  alt: Zabach/H2077 Zabach/H2076
+continued       Yashab            # H3427 · 11x in NT · 1082x OT · sense 1 · via "continue"  alt: Qawam/H6965 Imad/H5975
+charge          Amar              # H559 · 11x in NT · 5308x OT · sense 8  alt: Nathan/H5414 Yad/H3027
+soon            Mait              # H4592 · 11x in NT · 101x OT · sense 8  alt: Maharah/H4120 Mahar/H4118
+complete        Thamayam          # H8549 · 11x in NT · 91x OT · sense 1
+establish       Yashab            # H3427 · 11x in NT · 1082x OT · sense 6  alt: Imad/H5975 Aman/H539
+testifies       Inah              # H6030 · 11x in NT · 329x OT · sense 14 · via "testify"  alt: Iwad/H5749
+keeps           Ishah             # H6213 · 11x in NT · 2629x OT · sense 41 · via "keep"  alt: Ibad/H5647 Zakar/H2142
+especially      Maad              # H3966 · 11x in NT · 300x OT · sense 1
+run             Bawaa             # H935 · 11x in NT · 2568x OT · sense 47  alt: Halak/H1980 Pagai/H6293
+accounted       Masapar           # H4557 · 11x in NT · 134x OT · sense 1 · via "account"  alt: Chashab/H2803 Paqadah/H6486
+mocked          Shachawaq         # H7814 · 10x in NT · 15x OT · sense 3
+mourning        Abal              # H60 · 10x in NT · 24x OT · sense 0  alt: Masapad/H4553 Lawayathan/H3882
+withdrew        Sarar             # H5637 · 10x in NT · 17x OT · sense 6
+diseases        Chalay            # H2483 · 10x in NT · 24x OT · sense 0 · via "disease"  alt: Machalah/H4245 Thachalawaa/H8463
+reproach        Chasad            # H2617 · 10x in NT · 247x OT · sense 8  alt: Charapah/H2781 Charap/H2778
+salt            Malach            # H4417 · 10x in NT · 28x OT · sense 0  alt: Malach/H4414 Malach/H4416
+accomplished    Hayah             # H1961 · 10x in NT · 3560x OT · sense 3
+commits         Ishah             # H6213 · 10x in NT · 2629x OT · sense 13 · via "commit"  alt: Nathan/H5414 Shawam/H7760
+rain            Matar             # H4306 · 10x in NT · 38x OT · sense 0  alt: Gasham/H1653 Matar/H4305
+trumpet         Shawapar          # H7782 · 10x in NT · 72x OT · sense 1  alt: Chatzatzarah/H2689 Yawabal/H3104
+use             Amar              # H559 · 10x in NT · 5308x OT · sense 36  alt: Ishah/H6213 Dabar/H1696
+trespasses      Chataa            # H2398 · 10x in NT · 238x OT · sense 15 · via "trespass"  alt: Pashai/H6588 Asham/H817
+teeth           Shan              # H8127 · 10x in NT · 55x OT · sense 4 · via "tooth"  alt: Shan/H8128 Payapayah/H6374
+bed             Mashakab          # H4904 · 10x in NT · 46x OT · sense 0  alt: Matah/H4296 Irash/H6210
+cheer           Tawab             # H2895 · 10x in NT · 24x OT · sense 1
+sleeping        Shakab            # H7901 · 10x in NT · 208x OT · sense 9 · via "sleep"  alt: Shanah/H8142 Yashan/H3462
+reveal          Galah             # H1540 · 10x in NT · 186x OT · sense 16  alt: Galah/H1541
+blasphemy       Naatzah           # H5007 · 10x in NT · 5x OT · sense 0
+drew            Pathach           # H6605 · 10x in NT · 144x OT · sense 2 · via "draw"  alt: Nagash/H5066 Darak/H1869
+grieved         Charah            # H2734 · 10x in NT · 90x OT · sense 5 · via "grieve"  alt: Chawal/H2342 Qatzar/H7114
+buried          Qabar             # H6912 · 10x in NT · 133x OT · sense 1 · via "bury"
+deserted        Mashapat          # H4941 · 10x in NT · 421x OT · sense 5 · via "desert"  alt: Madabar/H4057 Irabah/H6160
+baskets         Sal               # H5536 · 10x in NT · 15x OT · sense 0 · via "basket"  alt: Dawad/H1731 Dawaday/H1736
+defile          Qadash            # H6942 · 10x in NT · 173x OT · sense 4  alt: Tamaa/H2930 Chalal/H2490
+wages           Chanam            # H2600 · 10x in NT · 32x OT · sense 1  alt: Shakar/H7939 Pailah/H6468
+olives          Shaman            # H8081 · 10x in NT · 193x OT · sense 5 · via "olive"
+robbers         Shadad            # H7703 · 10x in NT · 57x OT · sense 3 · via "robber"  alt: Parayatz/H6530 Tzamayam/H6782
+perfected       Arawakah          # H724 · 10x in NT · 6x OT · sense 2
+believing       Aman              # H539 · 10x in NT · 108x OT · sense 2 · via "believe"  alt: Aman/H540
+escape          Yatzaa            # H3318 · 10x in NT · 1068x OT · sense 18  alt: Ibar/H5674 Natzal/H5337
+suffering       Nathan            # H5414 · 10x in NT · 2011x OT · sense 65 · via "suffer"  alt: Yakal/H3201 Yanach/H3240
+hard            Kabad             # H3515 · 10x in NT · 39x OT · sense 2  alt: Qashah/H7186 Ayathan/H386
+cursed          Barak             # H1288 · 10x in NT · 330x OT · sense 6 · via "curse"  alt: Qalal/H7043 Alah/H423
+flock           Tzaan             # H6629 · 10x in NT · 274x OT · sense 1  alt: Maqanah/H4735 Idar/H5739
+accused         Lashan            # H3960 · 10x in NT · 2x OT · sense 0 · via "accuse"
+earthquake      Raish             # H7494 · 10x in NT · 17x OT · sense 2
+further         Nashaa            # H5375 · 10x in NT · 651x OT · sense 19  alt: Iwad/H5750 Pawaq/H6329
+tears           Damaih            # H1832 · 10x in NT · 23x OT · sense 0
+wish            Pah               # H6310 · 10x in NT · 497x OT · sense 28  alt: Shaal/H7592 Chapatz/H2655
+soldier         Chalatz           # H2502 · 10x in NT · 44x OT · sense 3
+race            Arach             # H734 · 10x in NT · 59x OT · sense 2  alt: Marawatz/H4793
+suddenly        Ragai             # H7281 · 10x in NT · 22x OT · sense 3  alt: Mahar/H4118 Pathai/H6621
+boldly          Batach            # H983 · 10x in NT · 42x OT · sense 1
+excellent       Raash             # H7218 · 10x in NT · 599x OT · sense 10  alt: Bachar/H977 Rab/H7230
+waiting         Shamar            # H8104 · 10x in NT · 468x OT · sense 13 · via "wait"  alt: Yachal/H3176 Damam/H1826
+freed           Naqay             # H5355 · 10x in NT · 43x OT · sense 4 · via "free"  alt: Chanam/H2600 Nadayab/H5081
+becoming        Ishah             # H6213 · 10x in NT · 2629x OT · sense 5 · via "become"  alt: Malaa/H4390 Hawaa/H1934
+company         Raash             # H7218 · 10x in NT · 599x OT · sense 7  alt: Bath/H1323 Chay/H2416
+earnestly       Yatab             # H3190 · 10x in NT · 112x OT · sense 11  alt: Iwad/H5749
+dwelling        Mashakan          # H4908 · 10x in NT · 139x OT · sense 1  alt: Mawashab/H4186 Nawah/H5116
+burning         Ash               # H784 · 10x in NT · 376x OT · sense 0  alt: Sharapah/H8316 Dalaq/H1814
+younger         Ban               # H1121 · 10x in NT · 4931x OT · sense 47 · via "young"  alt: Yalad/H3205 Nair/H5288
+unrighteous     Awan              # H205 · 10x in NT · 79x OT · sense 10  alt: Chamas/H2555 Iwal/H5767
+short           Qarawab           # H7138 · 10x in NT · 78x OT · sense 10
+following       Achar             # H312 · 10x in NT · 166x OT · sense 1  alt: Acharawan/H314
+testifying      Inah              # H6030 · 10x in NT · 329x OT · sense 14 · via "testify"  alt: Iwad/H5749
+approved        Raah              # H7200 · 10x in NT · 1305x OT · sense 2 · via "approve"  alt: Ratzah/H7521
+humility        Inawah            # H6038 · 10x in NT · 4x OT · sense 1
+dwells          Imad              # H5975 · 10x in NT · 524x OT · sense 6 · via "dwell"  alt: Chanah/H2583 Gawar/H1481
+firm            Imad              # H5975 · 10x in NT · 524x OT · sense 28  alt: Kawan/H3559 Barayaa/H1277
+secretly        Lat               # H3909 · 9x in NT · 6x OT · sense 2  alt: Charash/H2791
+firstborn       Bakawar           # H1060 · 9x in NT · 118x OT · sense 1  alt: Bakawarah/H1062 Bakayarah/H1067
+wild            Paraa             # H6501 · 9x in NT · 10x OT · sense 0
+produce         Qarab             # H7126 · 9x in NT · 283x OT · sense 12
+fulfill         Ishah             # H6213 · 9x in NT · 2629x OT · sense 28  alt: Batzai/H1214 Sawap/H5487
+mourn           Bakah             # H1058 · 9x in NT · 116x OT · sense 5  alt: Qatzar/H7114 Abal/H56
+merciful        Chasad            # H2617 · 9x in NT · 247x OT · sense 5  alt: Chanan/H2603 Chasayad/H2623
+footstool       Kabash            # H3534 · 9x in NT · 1x OT · sense 0
+remove          Ibar              # H5674 · 9x in NT · 555x OT · sense 53  alt: Sawar/H5493 Galah/H1540
+borders         Yad               # H3027 · 9x in NT · 1617x OT · sense 7 · via "border"  alt: Gabawal/H1366 Shapah/H8193
+abroad          Halak             # H1980 · 9x in NT · 504x OT · sense 15  alt: Chawatz/H2351
+hid             Masathar          # H4564 · 9x in NT · 1x OT · sense 0  alt: Tzapayan/H6840
+perceiving      Raah              # H7200 · 9x in NT · 1305x OT · sense 24 · via "perceive"  alt: Shamai/H8085 Yadai/H3045
+bind            Asar              # H631 · 9x in NT · 71x OT · sense 0  alt: Tzarar/H6887 Qashar/H7194
+brings          Yalak             # H3212 · 9x in NT · 1044x OT · sense 3 · via "bring"  alt: Laqach/H3947 Ilah/H5927
+becomes         Ishah             # H6213 · 9x in NT · 2629x OT · sense 5 · via "become"  alt: Malaa/H4390 Hawaa/H1934
+cares           Dabar             # H1697 · 9x in NT · 1442x OT · sense 8 · via "care"  alt: Shawam/H7760 Batach/H983
+bears           Ishah             # H6213 · 9x in NT · 2629x OT · sense 6 · via "bear"  alt: Yalak/H3212 Yalad/H3205
+sows            Shalach           # H7971 · 9x in NT · 847x OT · sense 27 · via "sow"
+ceased          Shawab            # H7725 · 9x in NT · 1056x OT · sense 24 · via "cease"  alt: Imad/H5975 Napal/H5307
+appearance      Maraah            # H4758 · 9x in NT · 104x OT · sense 1
+released        Shamat            # H8058 · 9x in NT · 9x OT · sense 2 · via "release"  alt: Shamatah/H8059 Hanachah/H2010
+changed         Shawam            # H7760 · 9x in NT · 582x OT · sense 6 · via "change"  alt: Sabab/H5437 Hapak/H2015
+listens         Shamai            # H8085 · 9x in NT · 1159x OT · sense 16 · via "listen"
+tribes          Matah             # H4294 · 9x in NT · 252x OT · sense 2 · via "tribe"  alt: Shabat/H7626 Shabat/H7625
+telling         Masapar           # H4557 · 9x in NT · 134x OT · sense 7
+leaves          Ipay              # H6074 · 9x in NT · 3x OT · sense 0
+questions       Dabar             # H1697 · 9x in NT · 1442x OT · sense 49 · via "question"  alt: Darash/H1875
+observe         Ishah             # H6213 · 9x in NT · 2629x OT · sense 46  alt: Shamar/H8104 Natzar/H5341
+hypocrisy       Chanap            # H2612 · 9x in NT · 1x OT · sense 0
+multiplied      Rab               # H7227 · 9x in NT · 461x OT · sense 22 · via "multiply"  alt: Rabah/H7235 Hamawan/H1995
+darkened        Chashak           # H2821 · 9x in NT · 18x OT · sense 2 · via "darken"  alt: Kahah/H3543
+doors           Bayath            # H1004 · 9x in NT · 2054x OT · sense 2 · via "door"  alt: Shair/H8179 Pathach/H6607
+trouble         Rai               # H7451 · 9x in NT · 664x OT · sense 25  alt: Tzar/H6862 Tzarah/H6869
+sorrowful       Qashah            # H7186 · 9x in NT · 36x OT · sense 11  alt: Yagah/H3013 Kaab/H3510
+vine            Gapan             # H1612 · 9x in NT · 55x OT · sense 0  alt: Zamawarah/H2156
+wept            Bakay             # H1065 · 9x in NT · 28x OT · sense 3
+wants           Paqad             # H6485 · 9x in NT · 303x OT · sense 31 · via "want"  alt: Chadal/H2308 Apas/H657
+watching        Tzapayah          # H6836 · 9x in NT · 1x OT · sense 0
+wrapped         Lawat             # H3874 · 9x in NT · 3x OT · sense 1 · via "wrap"  alt: Sabak/H5440
+week            Shabawai          # H7620 · 9x in NT · 20x OT · sense 1
+trembling       Charadah          # H2731 · 9x in NT · 9x OT · sense 4  alt: Raid/H7461 Charad/H2730
+defiled         Tamaa             # H2931 · 9x in NT · 88x OT · sense 0
+holding         Ishah             # H6213 · 9x in NT · 2629x OT · sense 37 · via "hold"  alt: Qawam/H6965 Shawam/H7760
+foolishness     Sakalawath        # H5531 · 9x in NT · 7x OT · sense 1
+share           Macharashath      # H4282 · 9x in NT · 1x OT · sense 0
+drank           Mashathah         # H4960 · 9x in NT · 46x OT · sense 1
+purple          Aragaman          # H713 · 9x in NT · 38x OT · sense 0  alt: Aragawan/H711 Aragawan/H710
+granted         Ishah             # H6213 · 9x in NT · 2629x OT · sense 34 · via "grant"  alt: Bawaa/H935 Nathan/H5414
+talked          Amar              # H559 · 9x in NT · 5308x OT · sense 31 · via "talk"  alt: Dabar/H1697 Dabar/H1696
+thinks          Dabar             # H1696 · 9x in NT · 1142x OT · sense 19 · via "think"  alt: Bayan/H995 Chashab/H2803
+stopped         Kabad             # H3513 · 9x in NT · 115x OT · sense 28 · via "stop"  alt: Sagar/H5462 Thapash/H8610
+needy           Inay              # H6041 · 9x in NT · 76x OT · sense 3  alt: Abayawan/H34 Dal/H1800
+spare           Nashaa            # H5375 · 9x in NT · 651x OT · sense 40  alt: Salach/H5545 Chamal/H2550
+deed            Dabar             # H1697 · 9x in NT · 1442x OT · sense 20  alt: Maishah/H4639 Pail/H6467
+pleasing        Yatab             # H3190 · 9x in NT · 112x OT · sense 18 · via "please"  alt: Yaal/H2974 Chapatz/H2655
+dishonor        Irawah            # H6173 · 9x in NT · 1x OT · sense 0
+sakes           Dabar             # H1697 · 9x in NT · 1442x OT · sense 55 · via "sake"  alt: Awadawath/H182 Dabarah/H1701
+listened        Shamai            # H8085 · 9x in NT · 1159x OT · sense 16 · via "listen"
+vessel          Kalay             # H3627 · 9x in NT · 325x OT · sense 17  alt: Nabal/H5035 Maan/H3984
+wall            Chawamah          # H2346 · 9x in NT · 133x OT · sense 0  alt: Shawar/H7794 Qayar/H7023
+island          Ay                # H339 · 9x in NT · 36x OT · sense 2  alt: Ay/H336
+loss            Chataa            # H2398 · 9x in NT · 238x OT · sense 5
+error           Shagagah          # H7684 · 9x in NT · 19x OT · sense 0  alt: Shalaw/H7960 Thawaih/H8442
+strife          Rayab             # H7379 · 9x in NT · 61x OT · sense 7  alt: Dayan/H1779 Marayabah/H4808
+endured         Panayam           # H6440 · 9x in NT · 2127x OT · sense 12 · via "endure"  alt: Yashab/H3427 Qawam/H6965
+patient         Arak              # H750 · 9x in NT · 15x OT · sense 2
+thanksgiving    Hayadah           # H1960 · 9x in NT · 1x OT · sense 0
+godly           Chasayad          # H2623 · 9x in NT · 32x OT · sense 0  alt: Chasayad/H2623
+diligently      Maad              # H3966 · 8x in NT · 300x OT · sense 0  alt: Bayan/H995 Adarazadaa/H149
+male            Zakar             # H2145 · 8x in NT · 82x OT · sense 1
+cleanse         Chataa            # H2398 · 8x in NT · 238x OT · sense 1  alt: Kapar/H3722 Tahar/H2891
+leaving         Nathan            # H5414 · 8x in NT · 2011x OT · sense 36 · via "leave"  alt: Shalach/H7971 Shawam/H7760
+shadow          Tzalal            # H6752 · 8x in NT · 4x OT · sense 0
+net             Charam            # H2764 · 8x in NT · 38x OT · sense 6  alt: Matzawad/H4686 Rashath/H7568
+shine           Halal             # H1984 · 8x in NT · 165x OT · sense 16  alt: Awar/H215 Zahar/H2094
+reconciled      Kapar             # H3722 · 8x in NT · 103x OT · sense 10 · via "reconcile"
+divorce         Karayathawath     # H3748 · 8x in NT · 4x OT · sense 0
+marries         Nashaa            # H5375 · 8x in NT · 651x OT · sense 30 · via "marry"  alt: Yabam/H2992
+dogs            Kalab             # H3611 · 8x in NT · 32x OT · sense 0 · via "dog"
+corrupt         Chabal            # H2254 · 8x in NT · 27x OT · sense 3  alt: Gair/H1605 Chanap/H2610
+fever           Qadachath         # H6920 · 8x in NT · 2x OT · sense 1
+covered         Tzab              # H6632 · 8x in NT · 3x OT · sense 0
+herd            Baqar             # H1241 · 8x in NT · 183x OT · sense 6  alt: Maqanah/H4735 Idar/H5739
+piece           Kakar             # H3603 · 8x in NT · 68x OT · sense 2  alt: Madah/H4060 Maqanah/H4736
+brass           Nachashath        # H5178 · 8x in NT · 140x OT · sense 1  alt: Nachawashah/H5154 Nachash/H5174
+endures         Panayam           # H6440 · 8x in NT · 2127x OT · sense 12 · via "endure"  alt: Yashab/H3427 Qawam/H6965
+cold            Tzanah            # H6793 · 8x in NT · 22x OT · sense 1  alt: Charap/H2779 Qarah/H7135
+drinking        Shathayah         # H8360 · 8x in NT · 1x OT · sense 0
+idle            Rapah             # H7503 · 8x in NT · 46x OT · sense 8  alt: Ramayah/H7423
+south           Yam               # H3220 · 8x in NT · 396x OT · sense 1  alt: Madabar/H4057 Yamayan/H3225
+empty           Panah             # H6437 · 8x in NT · 135x OT · sense 7  alt: Rawaq/H7324 Rayaqam/H7387
+sowed           Shalach           # H7971 · 8x in NT · 847x OT · sense 27 · via "sow"
+air             Shamayam          # H8064 · 8x in NT · 421x OT · sense 0  alt: Rawach/H7307
+separate        Palaa             # H6381 · 8x in NT · 71x OT · sense 14  alt: Parad/H6504 Nazayar/H5139
+otherwise       Laa               # H3808 · 8x in NT · 5186x OT · sense 15  alt: Aw/H176
+void            Chasar            # H2638 · 8x in NT · 19x OT · sense 4  alt: Rayaqam/H7387 Bahaw/H922
+taste           Taim              # H2942 · 8x in NT · 24x OT · sense 5  alt: Chak/H2441 Taim/H2940
+boy             Nair              # H5288 · 8x in NT · 239x OT · sense 1  alt: Yalad/H3206
+staying         Yad               # H3027 · 8x in NT · 1617x OT · sense 48 · via "stay"  alt: Imad/H5975 Shakab/H7901
+hired           Shakar            # H7939 · 8x in NT · 28x OT · sense 0 · via "hire"  alt: Shakar/H7936 Machayar/H4242
+colt            Ban               # H1121 · 8x in NT · 4931x OT · sense 15  alt: Iyar/H5895
+needs           Halak             # H1980 · 8x in NT · 504x OT · sense 29
+armies          Tzabaa            # H6635 · 8x in NT · 485x OT · sense 1 · via "army"  alt: Chayal/H2428 Machanah/H4264
+finger          Atzabai           # H676 · 8x in NT · 31x OT · sense 0  alt: Atzabai/H677
+matters         Dabar             # H1697 · 8x in NT · 1442x OT · sense 36 · via "matter"  alt: Gadawal/H1419 Chapatz/H2656
+desolate        Charab            # H2717 · 8x in NT · 42x OT · sense 1  alt: Shamah/H8047 Kachad/H3582
+winter          Charap            # H2779 · 8x in NT · 7x OT · sense 1  alt: Sathaw/H5638
+clouds          Nashayaa          # H5387 · 8x in NT · 134x OT · sense 2 · via "cloud"  alt: Inan/H6051 Ib/H5645
+watched         Shamar            # H8104 · 8x in NT · 468x OT · sense 14 · via "watch"  alt: Mashamarath/H4931 Tzapah/H6822
+visit           Paqad             # H6485 · 8x in NT · 303x OT · sense 30
+envy            Qanaah            # H7068 · 8x in NT · 43x OT · sense 0  alt: Qanaa/H7065
+large           Rachab            # H7342 · 8x in NT · 21x OT · sense 1  alt: Rawach/H7304
+drinks          Mashathah         # H4960 · 8x in NT · 46x OT · sense 2 · via "drink"  alt: Shakar/H7937 Mashaqah/H4945
+pressed         Paratz            # H6555 · 8x in NT · 49x OT · sense 15 · via "press"  alt: Tzawaq/H6693 Patzar/H6484
+blaspheme       Barak             # H1288 · 8x in NT · 330x OT · sense 3  alt: Charap/H2778 Naatz/H5006
+sickle          Charamash         # H2770 · 8x in NT · 2x OT · sense 0  alt: Magal/H4038
+grows           Yatzaa            # H3318 · 8x in NT · 1068x OT · sense 32 · via "grow"  alt: Yalak/H3212 Halak/H1980
+gladly          Tawab             # H2896 · 8x in NT · 564x OT · sense 9 · via "glad"  alt: Shamach/H8056
+eaten           Lacham            # H3898 · 8x in NT · 177x OT · sense 1 · via "eat"  alt: Bair/H1197 Akalah/H402
+falling         Dachay            # H1762 · 8x in NT · 2x OT · sense 0
+used            Lamawad           # H3928 · 8x in NT · 6x OT · sense 4
+course          Machalaqath       # H4256 · 8x in NT · 42x OT · sense 1  alt: Masalah/H4546 Mawatzaa/H4161
+incense         Qatar             # H6999 · 8x in NT · 116x OT · sense 2  alt: Qatarath/H7004 Labawanah/H3828
+sure            Shamar            # H8104 · 8x in NT · 468x OT · sense 12  alt: Amath/H571 Batach/H982
+leading         Bawaa             # H935 · 8x in NT · 2568x OT · sense 41 · via "lead"  alt: Yalak/H3212 Halak/H1980
+deep            Thahawam          # H8415 · 8x in NT · 36x OT · sense 0  alt: Sharash/H8328 Imaq/H6013
+strange         Achar             # H312 · 8x in NT · 166x OT · sense 3  alt: Nakar/H5236 Imaq/H6012
+traveled        Thalaah           # H8513 · 8x in NT · 4x OT · sense 1 · via "travel"
+perished        Ibar              # H5674 · 8x in NT · 555x OT · sense 48 · via "perish"  alt: Napal/H5307 Karath/H3772
+disappointed    Parar             # H6565 · 8x in NT · 50x OT · sense 7 · via "disappoint"
+rejoicing       Tharawaih         # H8643 · 8x in NT · 36x OT · sense 6  alt: Ranah/H7440 Shashawan/H8342
+elder           Gadawal           # H1419 · 8x in NT · 527x OT · sense 1  alt: Rab/H7227 Zaqan/H2205
+liar            Shaqar            # H8267 · 8x in NT · 113x OT · sense 5  alt: Kazab/H3577 Bad/H907
+gods            Yahawah           # H3069 · 8x in NT · 306x OT · sense 0 · via "god"  alt: Al/H410 Alah/H426
+caused          Hayah             # H1961 · 8x in NT · 3560x OT · sense 7 · via "cause"  alt: Bawaa/H935 Nathan/H5414
+bearing         Ishah             # H6213 · 8x in NT · 2629x OT · sense 6 · via "bear"  alt: Yalak/H3212 Yalad/H3205
+strengthened    Qawam             # H6965 · 8x in NT · 628x OT · sense 30 · via "strengthen"  alt: Chazaq/H2388 Amatz/H553
+sharp           Charawatz         # H2742 · 8x in NT · 18x OT · sense 4  alt: Shanan/H8150 Latash/H3913
+escaped         Yatzaa            # H3318 · 8x in NT · 1068x OT · sense 18 · via "escape"  alt: Ibar/H5674 Natzal/H5337
+teaches         Dabar             # H1696 · 8x in NT · 1142x OT · sense 17 · via "teach"  alt: Yadai/H3045 Bayan/H995
+dominion        Yad               # H3027 · 8x in NT · 1617x OT · sense 18  alt: Mamashalah/H4475 Shalatan/H7985
+gentleness      Inah              # H6031 · 8x in NT · 83x OT · sense 9  alt: Inawah/H6038 Inawah/H6037
+prostitute      Chalal            # H2490 · 8x in NT · 142x OT · sense 12
+thunders        Qawal             # H6963 · 8x in NT · 506x OT · sense 14 · via "thunder"  alt: Raim/H7481 Raim/H7482
+sounded         Shamai            # H8085 · 8x in NT · 1159x OT · sense 26 · via "sound"  alt: Qawal/H6963 Pah/H6310
+conceived       Chashab           # H2803 · 7x in NT · 124x OT · sense 1 · via "conceive"  alt: Harah/H2029 Harah/H2030
+east            Mawatzaa          # H4161 · 7x in NT · 27x OT · sense 3  alt: Qadamawanay/H6931 Qadamah/H6926
+lies            Kachash           # H3585 · 7x in NT · 6x OT · sense 1
+hindered        Shawab            # H7725 · 7x in NT · 1056x OT · sense 40 · via "hinder"  alt: Chashak/H2820 Achar/H309
+proceeds        Yatzaa            # H3318 · 7x in NT · 1068x OT · sense 38 · via "proceed"  alt: Yasap/H3254
+healing         Marapaa           # H4832 · 7x in NT · 16x OT · sense 1  alt: Thailah/H8585 Kahah/H3545
+afflicted       Tzar              # H6862 · 7x in NT · 110x OT · sense 1  alt: Inay/H6041 Inay/H6040
+obtain          Nashaa            # H5375 · 7x in NT · 651x OT · sense 33  alt: Racham/H7355 Pawaq/H6329
+agree           Yaid              # H3259 · 7x in NT · 29x OT · sense 0
+streets         Chawatz           # H2351 · 7x in NT · 164x OT · sense 7 · via "street"  alt: Shawaq/H7784
+value           Irak              # H6186 · 7x in NT · 76x OT · sense 18  alt: Salah/H5541
+clothe          Kasah             # H3680 · 7x in NT · 152x OT · sense 2  alt: Labash/H3847 Labash/H3848
+sufficient      Day               # H1767 · 7x in NT · 39x OT · sense 9
+pearls          Gabayash          # H1378 · 7x in NT · 1x OT · sense 0 · via "pearl"
+tear            Shabar            # H7665 · 7x in NT · 148x OT · sense 11  alt: Qarai/H7167 Baqai/H1234
+serpent         Nachash           # H5175 · 7x in NT · 31x OT · sense 0  alt: Thanayan/H8577 Zachal/H2119
+storm           Sair              # H5591 · 7x in NT · 24x OT · sense 0  alt: Sawapah/H5492 Shawaa/H7722
+office          Ibadah            # H5656 · 7x in NT · 145x OT · sense 6  alt: Mashamarath/H4931 Paqadah/H6486
+girl            Yaladah           # H3207 · 7x in NT · 3x OT · sense 1
+prophesied      Nabaa             # H5012 · 7x in NT · 114x OT · sense 0 · via "prophesy"  alt: Chazah/H2372 Natap/H5197
+ago             Qadamah           # H6928 · 7x in NT · 2x OT · sense 1
+lift            Bawaa             # H935 · 7x in NT · 2568x OT · sense 42
+stretch         Parad             # H6504 · 7x in NT · 26x OT · sense 7  alt: Raqai/H7554
+belly           Batan             # H990 · 7x in NT · 72x OT · sense 0  alt: Maih/H4578 Gachawan/H1512
+state           Panayam           # H6440 · 7x in NT · 2127x OT · sense 53  alt: Yad/H3027 Kan/H3651
+understood      Shamai            # H8085 · 7x in NT · 1159x OT · sense 29 · via "understand"  alt: Yadai/H3045
+guide           Yaitz             # H3289 · 7x in NT · 79x OT · sense 8  alt: Alawap/H441 Darak/H1869
+proceed         Yatzaa            # H3318 · 7x in NT · 1068x OT · sense 38  alt: Yasap/H3254
+red             Sawap             # H5488 · 7x in NT · 28x OT · sense 1  alt: Adam/H122 Adamanay/H132
+rebuke          Charapah          # H2781 · 7x in NT · 73x OT · sense 0  alt: Rayab/H7378 Yakach/H3198
+gained          Thabawaah         # H8393 · 7x in NT · 42x OT · sense 1 · via "gain"  alt: Batzai/H1215 Batzai/H1214
+due             Dabar             # H1697 · 7x in NT · 1442x OT · sense 22  alt: Mashapat/H4941 Chaq/H2706
+forbid          Chalayalah        # H2486 · 7x in NT · 21x OT · sense 1  alt: Kalaa/H3607
+sell            Shabar            # H7666 · 7x in NT · 21x OT · sense 1
+heat            Chamah            # H2534 · 7x in NT · 124x OT · sense 5  alt: Bair/H1197 Charab/H2721
+seats           Yashab            # H3427 · 7x in NT · 1082x OT · sense 17 · via "seat"  alt: Kasaa/H3678 Mawashab/H4186
+planted         Natai             # H5193 · 7x in NT · 58x OT · sense 1 · via "plant"  alt: Shathal/H8362 Shalach/H7973
+stoned          Tzawar            # H6697 · 7x in NT · 77x OT · sense 4 · via "stone"  alt: Salai/H5553 Ragam/H7275
+taxes           Irak              # H6186 · 7x in NT · 76x OT · sense 17 · via "tax"
+devour          Lacham            # H3898 · 7x in NT · 177x OT · sense 0  alt: Raih/H7462 Balai/H1104
+fill            Malaa             # H4390 · 7x in NT · 250x OT · sense 6  alt: Malaa/H4393 Itah/H5844
+vessels         Kalay             # H3627 · 7x in NT · 325x OT · sense 17 · via "vessel"  alt: Nabal/H5035 Maan/H3984
+stranger        Gawar             # H1481 · 7x in NT · 98x OT · sense 10  alt: Gar/H1616 Thawashab/H8453
+feed            Shawab            # H7725 · 7x in NT · 1056x OT · sense 6  alt: Akal/H398 Raih/H7462
+court           Bayath            # H1004 · 7x in NT · 2054x OT · sense 0  alt: Iyar/H5892 Chatzar/H2691
+strike          Nathan            # H5414 · 7x in NT · 2011x OT · sense 63  alt: Nakah/H5221 Nagai/H5060
+hail            Barad             # H1259 · 7x in NT · 29x OT · sense 0  alt: Barad/H1258
+mixed           Irab              # H6154 · 7x in NT · 15x OT · sense 2  alt: Mahal/H4107
+accusation      Shatanah          # H7855 · 7x in NT · 1x OT · sense 0
+rolled          Magalah           # H4039 · 7x in NT · 21x OT · sense 0 · via "roll"  alt: Sapar/H5609 Galayawan/H1549
+preparation     Kawan             # H3559 · 7x in NT · 219x OT · sense 14  alt: Mairak/H4633
+reasoning       Thawakachah       # H8433 · 7x in NT · 28x OT · sense 3
+accept          Laqach            # H3947 · 7x in NT · 966x OT · sense 0  alt: Nashaa/H5375 Ratzah/H7521
+point           Tzaparan          # H6856 · 7x in NT · 2x OT · sense 1  alt: Abachah/H19
+fearing         Gawar             # H1481 · 7x in NT · 98x OT · sense 4 · via "fear"  alt: Chawal/H2342 Yaraa/H3373
+swore           Alah              # H422 · 7x in NT · 6x OT · sense 2 · via "swear"
+half            Thawak            # H8432 · 7x in NT · 418x OT · sense 2  alt: Chatzay/H2677 Machatzayath/H4276
+refuse          Izab              # H5800 · 7x in NT · 215x OT · sense 7  alt: Maas/H3988 Maan/H3985
+hardened        Chazaq            # H2388 · 7x in NT · 290x OT · sense 17 · via "harden"  alt: Kabad/H3513 Amatz/H553
+trust           Aman              # H539 · 7x in NT · 108x OT · sense 13  alt: Chawal/H2342 Yachal/H3176
+grant           Ishah             # H6213 · 7x in NT · 2629x OT · sense 34  alt: Bawaa/H935 Nathan/H5414
+common          Chal              # H2455 · 7x in NT · 7x OT · sense 0
+beaten          Makah             # H4347 · 7x in NT · 48x OT · sense 0  alt: Kathayath/H3795
+upper           Ilayawan          # H5945 · 7x in NT · 53x OT · sense 3  alt: Ilay/H5942
+seemed          Maraah            # H4758 · 7x in NT · 104x OT · sense 12 · via "seem"  alt: Qashah/H7185
+division        Machalaqath       # H4256 · 7x in NT · 42x OT · sense 2  alt: Padawath/H6304 Palagah/H6391
+sayings         Dabar             # H1697 · 7x in NT · 1442x OT · sense 56 · via "saying"  alt: Amar/H561
+shepherds       Raih              # H7462 · 7x in NT · 164x OT · sense 13 · via "shepherd"
+terrified       Iratz             # H6206 · 7x in NT · 15x OT · sense 3
+begin           Chalal            # H2490 · 7x in NT · 142x OT · sense 0  alt: Thachalah/H8462 Yaal/H2974
+added           Nathan            # H5414 · 7x in NT · 2011x OT · sense 0 · via "add"  alt: Yasap/H3254 Sapah/H5595
+famine          Raib              # H7458 · 7x in NT · 101x OT · sense 1  alt: Raibawan/H7459 Kapan/H3720
+breaking        Shabar            # H7667 · 7x in NT · 44x OT · sense 2  alt: Shabarawan/H7670
+finding         Chanan            # H2603 · 7x in NT · 78x OT · sense 3 · via "find"  alt: Racham/H7355 Shakach/H7912
+drunken         Sabaa             # H5435 · 7x in NT · 4x OT · sense 1  alt: Shakarawan/H7943
+stripes         Nakah             # H5221 · 7x in NT · 500x OT · sense 17

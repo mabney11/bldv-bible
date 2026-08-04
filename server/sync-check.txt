@@ -1,0 +1,37 @@
+sync-heb-tokens — CHECK (nothing will be written)
+corpus: C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\server\corpus.db
+index:  C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\server\surface-index.db
+
+  index BHS: 490,052 occurrences / 39 books
+  index HEB: 567,958 occurrences / 78 books
+
+  tokens_nt: 583,152 rows
+  columns:   book_id, chapter, verse, token_ordinal, word_raw, pos, morph, strongs, source_id, code
+
+── WHAT CHANGES ─────────────────────────────────────────────────────────
+  rows:   tokens_nt 583,152  ->  projection 567,958
+  verses: in both 36,885, only in tokens_nt 0, only in the index 0
+  of the shared verses, 29,783 (80.7%) tokenize identically
+  where they do, Strong's agree on 375,604 and DISAGREE on 77,197 (17.0%)
+
+  Disagreements (the index value is the one the reader already shows):
+    1:1:1.5 𐤄𐤔𐤌𐤉𐤌  tokens_nt=H8033  index=H8064
+    1:1:2.14 𐤄𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
+    1:1:5.11 𐤁𐤒𐤓  tokens_nt=H1241  index=H1242
+    1:1:6.6 𐤄𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
+    1:1:6.8 𐤌𐤁𐤃𐤉𐤋  tokens_nt=H913  index=H914
+    1:1:6.11 𐤋𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
+    1:1:7.7 𐤄𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
+    1:1:7.12 𐤄𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
+    1:1:8.4 𐤔𐤌𐤉𐤌  tokens_nt=H8033  index=H8064
+    1:1:8.8 𐤁𐤒𐤓  tokens_nt=H1241  index=H1242
+    1:1:8.10 𐤔𐤍𐤉  tokens_nt=H8147  index=H8145
+    1:1:9.4 𐤄𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
+
+── TRANSLATION LINKS ────────────────────────────────────────────────────
+  23,357 links total, 0 bound to HEB.
+  None point at tokens_nt ordinals, so reprojecting cannot break any of them.
+
+── NOTHING WAS WRITTEN ──────────────────────────────────────────────────
+  Re-run with --apply to rebuild tokens_nt as a projection of the index.
+  The current table will be RENAMED, not dropped.

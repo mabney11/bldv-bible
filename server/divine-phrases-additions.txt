@@ -1,0 +1,36 @@
+# ADDITIONS for divine-phrases.txt — append these to your existing file.
+#
+# Format:  <English phrase> => <rendering>      (rendered BARE, no gloss)
+# Matched case-sensitively, longest phrase first, by BOTH the OT engine
+# (apply-web-strongs) and the untagged/NT engine (render-corpus), so one line
+# here fixes Matthew, Genesis and Jasher at once.
+
+# ── Holy Spirit ─────────────────────────────────────────────────────────────
+# Matthew 1:18/1:20 read "conceived by the Holy Spirit". Both words are ordinary
+# English here, so neither engine touched them. As a divine phrase it renders
+# bare, giving "conceived by Rawach HaQadash".
+# The definite forms are listed separately and FIRST because the table is matched
+# longest-first — otherwise "the Holy Spirit" would match the shorter key and
+# leave a stray "the" in front of a name that already carries its article (Ha-).
+the Holy Spirit => Rawach HaQadash
+The Holy Spirit => Rawach HaQadash
+the Holy Ghost => Rawach HaQadash
+The Holy Ghost => Rawach HaQadash
+Holy Spirit => Rawach HaQadash
+Holy Ghost => Rawach HaQadash
+
+# The same phrase in its OT sense (Psalm 51:11, Isaiah 63:10-11).
+your Holy Spirit => Rawach QadashaKa
+his Holy Spirit => Rawach QadashaW
+
+# ── related constructs that would otherwise stay English ────────────────────
+# Left commented: each changes a lot of verses and the spelling is YOUR call.
+# Uncomment the ones you want.
+# Spirit of God => Rawach Alahayam
+# Spirit of the Lord => Rawach Yahawah
+# the Spirit of Yahweh => Rawach Yahawah
+# Word of God => Dabar Alahayam
+# Son of Man => Ban HaAdam
+# Son of God => Ban Alahayam
+# Kingdom of Heaven => Malakawath HaShamayam
+# Kingdom of God => Malakawath Alahayam

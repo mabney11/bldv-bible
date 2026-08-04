@@ -1,0 +1,54 @@
+probe-gloss-source — which file could supply each missing gloss
+index=./surface-index.db  lex=./lexicon
+files found: lexicon.json, homographs.json, definitions.json, strongs-roots.json
+files NOT found (checked anyway, may live elsewhere): word-map.json, strongs-hebrew-expanded.json
+
+Other files present in the lexicon dir:
+  coptic-lexicon.json  cross-lang-equivalents.json  geez-lexicon.json  greek-lexicon.json  hebrew-extra-lexicon.json  hebrew-extra-lexicon.json.bak  latin-lexicon.json  syriac-lexicon.json
+
+────────────────────────────────────────────────────────────────────────────
+CHECKING THE TOP 40 GAPS (class mod-nmpr) AGAINST EVERY DATA FILE
+────────────────────────────────────────────────────────────────────────────
+
+  count   would have been supplied by
+  ------------------------------------------------------------
+  23      NOWHERE — genuinely unauthored
+  12      homographs.json:by-strongs
+  5       homographs.json:by-paleo
+
+WHAT THIS MEANS
+  Anything but "NOWHERE" is a WIRING problem: the English already exists, in a
+  file build-surface-index.js does not consult. Fix = feed that file into the
+  gloss chain (or merge it into lexicon.json), then rebuild. No authoring.
+  "NOWHERE" is the genuine curation backlog.
+
+homographs.json:by-strongs:
+  𐤌𐤍𐤔𐤄 (mod-nmpr, H4519/H9000, 7115 hits, in 𐤌)
+  𐤔𐤋𐤌𐤄 (mod-nmpr, H8009/H8010, 1201 hits, in 𐤔𐤋𐤌𐤄)
+  𐤁𐤁𐤋 (mod-nmpr, H894/H895, 1129 hits, in 𐤁𐤁𐤋)
+  𐤉𐤔𐤅𐤏 (mod-nmpr, H3442/H3443, 985 hits, in 𐤉𐤔𐤅𐤏)
+  𐤉𐤏𐤒𐤁 (mod-nmpr, H3290/H9000, 759 hits, in 𐤉𐤏𐤒𐤁)
+  𐤀𐤄𐤓𐤅𐤍 (mod-nmpr, H175/H9005, 699 hits, in 𐤀𐤄𐤓𐤍)
+  𐤃𐤅𐤉𐤃 (mod-nmpr, H1732/H9005, 573 hits, in 𐤃𐤅𐤉𐤃)
+  𐤀𐤓𐤌 (mod-nmpr, H6307/H758, 572 hits, in 𐤀𐤓𐤌)
+  𐤐𐤓𐤏𐤄 (mod-nmpr, H6547/H9000, 554 hits, in 𐤐𐤓𐤏𐤄)
+  𐤂𐤋𐤏𐤃 (mod-nmpr, H1567/H1568, 483 hits, in 𐤂𐤋𐤏𐤃)
+
+NOWHERE — genuinely unauthored:
+  𐤏𐤉𐤓 (mod-nmpr, H5892/H5893, 1674 hits, in 𐤏𐤉𐤓)
+  𐤀𐤇𐤉 (mod-nmpr, H277/H278, 1526 hits, in 𐤀𐤇𐤉)
+  𐤌𐤉𐤆𐤄𐤁 (mod-nmpr, H4314, 1032 hits, in 𐤌𐤉)
+  𐤔𐤓𐤉 (mod-nmpr, H8297/H8298, 846 hits, in 𐤔𐤓𐤉)
+  𐤀𐤁𐤉 (mod-nmpr, H21, 842 hits, in 𐤀𐤁𐤉)
+  𐤀𐤁𐤉𐤄𐤏𐤆𐤓𐤉 (mod-nmpr, H33, 842 hits, in 𐤀𐤁𐤉)
+  𐤀𐤁𐤉𐤏𐤋𐤁𐤅𐤍 (mod-nmpr, H45, 842 hits, in 𐤀𐤁𐤉)
+  𐤏𐤉𐤓𐤍𐤇𐤔 (mod-nmpr, H5904, 837 hits, in 𐤏𐤉𐤓)
+  𐤍𐤀 (mod-nmpr, H4996/H9000, 824 hits, in 𐤍𐤀)
+  𐤋𐤁 (mod-nmpr, H3820, 815 hits, in 𐤋𐤁)
+
+homographs.json:by-paleo:
+  𐤔𐤌𐤏 (mod-nmpr, H8087/H8090, 1482 hits, in 𐤔𐤌𐤏)
+  𐤏𐤁𐤓 (mod-nmpr, H5675/H5677, 855 hits, in 𐤏𐤁𐤓)
+  𐤔𐤋𐤇 (mod-nmpr, H7974/H7975, 800 hits, in 𐤔𐤋𐤇)
+  𐤇𐤓𐤁 (mod-nmpr, H2722/H9003, 783 hits, in 𐤇𐤓𐤁)
+  𐤎𐤐𐤓 (mod-nmpr, H5611/H7158, 595 hits, in 𐤎𐤐𐤓)

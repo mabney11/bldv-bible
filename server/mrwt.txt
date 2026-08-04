@@ -1,0 +1,28 @@
+
+────────────────────────────────────────────────────────────────────────────
+TRACE  𐤌𐤓𐤅𐤕
+────────────────────────────────────────────────────────────────────────────
+Baked rows (4):
+  source=BHS  strongs=H4784  pos=verb  morph=sp=verb|pdp=verb|vs=hif|vt=infc|prs=abse
+    tier=exact  ambiguous=0
+    root=𐤌𐤓𐤄  rendered=𐤌𐤓𐤄𐤅𐤕  all_strongs=["H4784"]
+    components: 𐤌𐤓𐤄𐤅𐤕[root] 𐤌𐤓𐤄
+  source=BHS  strongs=H4796  pos=nmpr  morph=sp=nmpr|pdp=nmpr|prs=absent|uvf=absent
+    tier=exact  ambiguous=0
+    root=𐤌𐤓𐤅𐤕  rendered=𐤌𐤓𐤅𐤕  all_strongs=["H4796"]
+    components: 𐤌𐤓𐤅𐤕[mod-nmpr] 𐤌𐤓𐤅𐤕
+  source=HEB  strongs=H4796  pos=nmpr  morph=sp=nmpr|pdp=nmpr|prs=absent|uvf=absent
+    tier=exact  ambiguous=0
+    root=𐤌𐤓𐤅𐤕  rendered=𐤌𐤓𐤅𐤕  all_strongs=["H4796"]
+    components: 𐤌𐤓𐤅𐤕[mod-nmpr] 𐤌𐤓𐤅𐤕
+  source=HEB  strongs=H7327  pos=nmpr  morph=sp=nmpr|pdp=nmpr|prs=absent|uvf=absent
+    tier=proclitic  ambiguous=0
+    root=𐤓𐤅𐤕  rendered=𐤌𐤓𐤅𐤕  all_strongs=["H4519","H7327"]
+    components: 𐤌[mod-nmpr] 𐤌𐤍𐤔𐤄  +  𐤓𐤅𐤕[mod-nmpr] 𐤓𐤅𐤕
+
+OT occurrences of this form: 1   ·   NT occurrences: 1
+
+The BHS tokens at the OT locations that BUILT this form — this is where the
+head Strong's comes from. If the run below is not this word, alignment is at fault:
+  canon 33 1:12 (BHS verse 12, offset 0) ord 5
+    BHS: 𐤊𐤉/H3588/conj  ־/-/punct  𐤇𐤋𐤄/H2342/verb  𐤋/H9005/prep  𐤈𐤅𐤁/H2896/adjv  𐤉𐤅𐤔𐤁𐤕/H3427/verb  𐤌𐤓𐤅𐤕/H4796/nmpr  𐤊𐤉/H3588/conj  ־/-/punct  𐤉𐤓𐤃/H3381/verb  𐤓𐤏/H7451/adjv  𐤌/H9006/prep  𐤀𐤕/H854/prep  𐤉𐤄𐤅𐤄/H3068/nmpr  𐤋/H9005/prep  𐤔𐤏𐤓/H8179/subs  𐤉𐤓𐤅𐤔𐤋𐤌/H3389/nmpr  ׃/-/punct

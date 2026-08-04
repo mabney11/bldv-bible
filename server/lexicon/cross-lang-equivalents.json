@@ -1,0 +1,227 @@
+{
+  "_doc": [
+    "cross-lang-equivalents.json — manually-curated equivalences across the four sources.",
+    "",
+    "Format: { entries: { '<key>': { ...fields }, ... } }",
+    "",
+    "Each entry MAY have (use whichever fields fit):",
+    "  hebrew_lemma:   Hebrew lemma (modern script) — e.g. 'יהושע'",
+    "  hebrew_paleo:   Paleo-Hebrew rendering — e.g. '𐤉𐤄𐤅𐤔𐤏'",
+    "  greek_lemma:    Greek lemma (LXX/GNT, accents preserved) — e.g. 'Ἰησοῦς'",
+    "  greek_surface:  Greek surface form (also accepted)",
+    "  geez_lemma:     Ge'ez lemma (Ethiopic script) — e.g. 'ኢየሱስ'",
+    "  canonical_eng:  Your preferred English rendering — e.g. 'Yahawashai'",
+    "  aliases:        Array of alternate spellings/forms to also resolve to this entry",
+    "  notes:          Free-form linguistic / etymological notes",
+    "  refs:           Array of representative verse refs — e.g. ['LXX|6|1|1', 'GNT|40|1|1']",
+    "",
+    "Keys can be any identifier (we recommend lowercase canonical English or a romanized lemma).",
+    "The server's /api/cross-lang-equivalents endpoint accepts ?word=<anything> and resolves by",
+    "checking the entry key first, then scanning all field values + aliases.",
+    "",
+    "When the UI shows a token in any source, it queries this map. If found, it offers a",
+    "one-click link to the equivalent token in other sources.",
+    ""
+  ],
+  "entries": {
+    "iesous": {
+      "canonical_eng": "Yahawashai",
+      "hebrew_lemma":  "יהושע",
+      "hebrew_paleo":  "𐤉𐤄𐤅𐤔𐤏",
+      "greek_lemma":   "Ἰησοῦς",
+      "geez_lemma":    "ኢየሱስ",
+      "aliases":       ["Iesous", "Jesus", "Joshua", "Yeshua"],
+      "notes":         "Greek transliteration of Hebrew יהושע / יֵשׁוּעַ (short form). Used in LXX for Joshua son of Nun and in GNT for the New Testament figure.",
+      "refs":          ["LXX|6|1|1", "GNT|40|1|1"]
+    },
+    "kyrios": {
+      "canonical_eng": "Adonay",
+      "hebrew_lemma":  "אדני",
+      "hebrew_paleo":  "𐤀𐤃𐤍𐤉",
+      "greek_lemma":   "κύριος",
+      "geez_lemma":    "እግዚእ",
+      "aliases":       ["Kyrios", "Lord"],
+      "notes":         "Greek κύριος is the LXX's standard rendering of יהוה (the Tetragrammaton) and אדני. In Ge'ez, እግዚእ is the corresponding term.",
+      "refs":          ["LXX|1|2|4"]
+    },
+    "theos": {
+      "canonical_eng": "Alahayam",
+      "hebrew_lemma":  "אלהים",
+      "hebrew_paleo":  "𐤀𐤋𐤄𐤉𐤌",
+      "greek_lemma":   "θεός",
+      "geez_lemma":    "እግዚአብሔር",
+      "aliases":       ["Theos", "God", "Elohim"],
+      "notes":         "Greek θεός renders Hebrew אלהים in LXX. Ge'ez እግዚአብሔር is a compound (Lord-of-the-region) commonly translated 'God'."
+    },
+    "ierousalem": {
+      "canonical_eng": "Yarushalam",
+      "hebrew_lemma":  "ירושלם",
+      "hebrew_paleo":  "𐤉𐤓𐤅𐤔𐤋𐤌",
+      "greek_lemma":   "Ἰερουσαλήμ",
+      "geez_lemma":    "ኢየሩሳሌም",
+      "aliases":       ["Ierousalem", "Hierusalem", "Jerusalem"],
+      "notes":         "LXX uses both Ἰερουσαλήμ (transliteration) and Ἱεροσόλυμα (Hellenized form)."
+    },
+    "moses": {
+      "canonical_eng": "Mashah",
+      "hebrew_lemma":  "משה",
+      "hebrew_paleo":  "𐤌𐤔𐤄",
+      "greek_lemma":   "Μωϋσῆς",
+      "geez_lemma":    "ሙሴ",
+      "aliases":       ["Moses", "Mōusēs", "Moshe"]
+    },
+    "abraham": {
+      "canonical_eng": "Abaraham",
+      "hebrew_lemma":  "אברהם",
+      "hebrew_paleo":  "𐤀𐤁𐤓𐤄𐤌",
+      "greek_lemma":   "Ἀβραάμ",
+      "geez_lemma":    "አብርሃም",
+      "aliases":       ["Abraham", "Abram"]
+    },
+    "david": {
+      "canonical_eng": "Dawad",
+      "hebrew_lemma":  "דוד",
+      "hebrew_paleo":  "𐤃𐤅𐤃",
+      "greek_lemma":   "Δαυίδ",
+      "geez_lemma":    "ዳዊት",
+      "aliases":       ["David", "Davidos"]
+    },
+    "israel": {
+      "canonical_eng": "Yashar-Al",
+      "hebrew_lemma":  "ישראל",
+      "hebrew_paleo":  "𐤉𐤔𐤓𐤀𐤋",
+      "greek_lemma":   "Ἰσραήλ",
+      "geez_lemma":    "እስራኤል",
+      "aliases":       ["Israel", "Israēl"]
+    },
+    "adam": {
+      "canonical_eng": "Adam",
+      "hebrew_lemma":  "אדם",
+      "hebrew_paleo":  "𐤀𐤃𐤌",
+      "greek_lemma":   "Ἀδάμ",
+      "geez_lemma":    "አዳም",
+      "aliases":       ["Adam"]
+    },
+    "noah": {
+      "canonical_eng": "Nawah",
+      "hebrew_lemma":  "נח",
+      "hebrew_paleo":  "𐤍𐤇",
+      "greek_lemma":   "Νῶε",
+      "geez_lemma":    "ኖኅ",
+      "aliases":       ["Noah", "Noe", "Nōe"]
+    },
+    "jacob": {
+      "canonical_eng": "Yaqab",
+      "hebrew_lemma":  "יעקב",
+      "hebrew_paleo":  "𐤉𐤏𐤒𐤁",
+      "greek_lemma":   "Ἰακώβ",
+      "geez_lemma":    "ያዕቆብ",
+      "aliases":       ["Jacob", "Iakob"]
+    },
+    "isaac": {
+      "canonical_eng": "Yatzaq",
+      "hebrew_lemma":  "יצחק",
+      "hebrew_paleo":  "𐤉𐤑𐤇𐤒",
+      "greek_lemma":   "Ἰσαάκ",
+      "geez_lemma":    "ይስሐቅ",
+      "aliases":       ["Isaac", "Yitzhak"]
+    },
+    "egypt": {
+      "canonical_eng": "Matzaram",
+      "hebrew_lemma":  "מצרים",
+      "hebrew_paleo":  "𐤌𐤑𐤓𐤉𐤌",
+      "greek_lemma":   "Αἴγυπτος",
+      "geez_lemma":    "ግብጽ",
+      "aliases":       ["Egypt", "Mitzrayim", "Aigyptos"]
+    },
+    "babylon": {
+      "canonical_eng": "Babal",
+      "hebrew_lemma":  "בבל",
+      "hebrew_paleo":  "𐤁𐤁𐤋",
+      "greek_lemma":   "Βαβυλών",
+      "geez_lemma":    "ባቢሎን",
+      "aliases":       ["Babylon", "Bavel"]
+    },
+    "satan": {
+      "canonical_eng": "the Adversary",
+      "hebrew_lemma":  "שטן",
+      "hebrew_paleo":  "𐤔𐤈𐤍",
+      "greek_lemma":   "σατανᾶς",
+      "geez_lemma":    "ሰይጣን",
+      "aliases":       ["Satan", "Satanas"]
+    },
+    "messiah": {
+      "canonical_eng": "Mashayach",
+      "hebrew_lemma":  "משיח",
+      "hebrew_paleo":  "𐤌𐤔𐤉𐤇",
+      "greek_lemma":   "Χριστός",
+      "geez_lemma":    "ክርስቶስ",
+      "aliases":       ["Christos", "Christ", "Mashiach", "Anointed"]
+    },
+    "spirit": {
+      "canonical_eng": "Spirit/Wind",
+      "hebrew_lemma":  "רוח",
+      "hebrew_paleo":  "𐤓𐤅𐤇",
+      "greek_lemma":   "πνεῦμα",
+      "geez_lemma":    "መንፈስ",
+      "aliases":       ["Pneuma", "Ruach"],
+      "notes":         "Hebrew רוח and Greek πνεῦμα both span wind/breath/spirit; LXX consistently renders רוח as πνεῦμα."
+    },
+    "covenant": {
+      "canonical_eng": "Covenant",
+      "hebrew_lemma":  "ברית",
+      "hebrew_paleo":  "𐤁𐤓𐤉𐤕",
+      "greek_lemma":   "διαθήκη",
+      "geez_lemma":    "ኪዳን",
+      "aliases":       ["Berith", "Diatheke"]
+    },
+    "law": {
+      "canonical_eng": "Tawarah",
+      "hebrew_lemma":  "תורה",
+      "hebrew_paleo":  "𐤕𐤅𐤓𐤄",
+      "greek_lemma":   "νόμος",
+      "geez_lemma":    "ሕግ",
+      "aliases":       ["Torah", "Nomos"]
+    },
+    "prophet": {
+      "canonical_eng": "Prophet",
+      "hebrew_lemma":  "נביא",
+      "hebrew_paleo":  "𐤍𐤁𐤉𐤀",
+      "greek_lemma":   "προφήτης",
+      "geez_lemma":    "ነቢይ",
+      "aliases":       ["Navi", "Prophetes"]
+    },
+    "house": {
+      "canonical_eng": "House",
+      "hebrew_lemma":  "בית",
+      "hebrew_paleo":  "𐤁𐤉𐤕",
+      "greek_lemma":   "οἶκος",
+      "geez_lemma":    "ቤት",
+      "aliases":       ["Bayith", "Oikos", "Bēt"]
+    },
+    "son": {
+      "canonical_eng": "Son",
+      "hebrew_lemma":  "בן",
+      "hebrew_paleo":  "𐤁𐤍",
+      "greek_lemma":   "υἱός",
+      "geez_lemma":    "ወልድ",
+      "aliases":       ["Ben", "Huios"]
+    },
+    "earth": {
+      "canonical_eng": "Aratz",
+      "hebrew_lemma":  "ארץ",
+      "hebrew_paleo":  "𐤀𐤓𐤑",
+      "greek_lemma":   "γῆ",
+      "geez_lemma":    "ምድር",
+      "aliases":       ["Erets", "Ge", "Mədər"]
+    },
+    "heaven": {
+      "canonical_eng": "Shamayam",
+      "hebrew_lemma":  "שמים",
+      "hebrew_paleo":  "𐤔𐤌𐤉𐤌",
+      "greek_lemma":   "οὐρανός",
+      "geez_lemma":    "ሰማይ",
+      "aliases":       ["Shamayim", "Ouranos"]
+    }
+  }
+}

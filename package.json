@@ -1,0 +1,26 @@
+{
+  "name": "paleo-studio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node server/build-headings.mjs || true",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fontsource/alegreya": "^5.2.8",
+    "@fontsource/atkinson-hyperlegible": "^5.2.8",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/lexend": "^5.2.11",
+    "@fontsource/opendyslexic": "^5.2.5",
+    "@fontsource/ysabeau": "^5.2.8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "~4.3.1",
+    "vite": "~5.4.8"
+  }
+}

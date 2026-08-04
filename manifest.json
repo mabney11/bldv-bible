@@ -1,0 +1,122 @@
+[
+ {
+  "corpus": "GEZ",
+  "category": "deuterocanon",
+  "source": "betmas",
+  "license": "CC BY-NC-SA 4.0 (PD text)",
+  "works": 6,
+  "records": 2919
+ },
+ {
+  "corpus": "GEZ",
+  "category": "ethiopic-literary",
+  "source": "betmas",
+  "license": "CC BY-NC-SA 4.0 (PD text)",
+  "works": 3780,
+  "records": 30510
+ },
+ {
+  "corpus": "GEZ",
+  "category": "pseudepigrapha",
+  "source": "betmas",
+  "license": "CC BY-NC-SA 4.0 (PD text)",
+  "works": 7,
+  "records": 5468
+ },
+ {
+  "corpus": "GEZ",
+  "category": "scripture",
+  "source": "betmas",
+  "license": "CC BY-NC-SA 4.0 (PD text)",
+  "works": 65,
+  "records": 31991
+ },
+ {
+  "corpus": "GNT",
+  "category": "scripture",
+  "source": "byz-pd",
+  "license": "Public Domain",
+  "works": 29,
+  "records": 7968
+ },
+ {
+  "corpus": "GRC",
+  "category": "apostolic-fathers",
+  "source": "f1k",
+  "license": "CC BY-SA 4.0",
+  "works": 11,
+  "records": 2672
+ },
+ {
+  "corpus": "GRC",
+  "category": "classical",
+  "source": "f1k",
+  "license": "CC BY-SA 4.0",
+  "works": 1010,
+  "records": 287903
+ },
+ {
+  "corpus": "GRC",
+  "category": "patristic",
+  "source": "f1k",
+  "license": "CC BY-SA 4.0",
+  "works": 40,
+  "records": 23985
+ },
+ {
+  "corpus": "GRC",
+  "category": "pseudepigrapha",
+  "source": "f1k",
+  "license": "CC BY-SA 4.0",
+  "works": 4,
+  "records": 6086
+ },
+ {
+  "corpus": "GRC",
+  "category": "scripture",
+  "source": "f1k",
+  "license": "CC BY-SA 4.0",
+  "works": 58,
+  "records": 42007
+ },
+ {
+  "corpus": "LAT",
+  "category": "classical",
+  "source": "perseus-lat",
+  "license": "CC BY-SA 4.0 (Perseus; PD text)",
+  "works": 336,
+  "records": 283206
+ },
+ {
+  "corpus": "LAT",
+  "category": "patristic",
+  "source": "patristic-lat",
+  "license": "CC BY-SA 4.0 (CSEL; PD text)",
+  "works": 271,
+  "records": 97613
+ },
+ {
+  "corpus": "LXX",
+  "category": "deuterocanon",
+  "source": "swete-pd",
+  "license": "Public Domain",
+  "works": 18,
+  "records": 6077
+ },
+ {
+  "corpus": "LXX",
+  "category": "pseudepigrapha",
+  "source": "swete-pd",
+  "license": "Public Domain",
+  "works": 3,
+  "records": 815
+ },
+ {
+  "corpus": "LXX",
+  "category": "scripture",
+  "source": "swete-pd",
+  "license": "Public Domain",
+  "works": 39,
+  "records": 22955
+ }
+]

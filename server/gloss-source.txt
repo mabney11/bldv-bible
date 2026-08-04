@@ -1,0 +1,59 @@
+probe-gloss-source — which file could supply each missing gloss
+index=./surface-index.db  lex=./lexicon
+files found: lexicon.json, homographs.json, definitions.json, strongs-roots.json
+files NOT found (checked anyway, may live elsewhere): word-map.json, strongs-hebrew-expanded.json
+
+Other files present in the lexicon dir:
+  coptic-lexicon.json  cross-lang-equivalents.json  geez-lexicon.json  greek-lexicon.json  hebrew-extra-lexicon.json  hebrew-extra-lexicon.json.bak  latin-lexicon.json  syriac-lexicon.json
+
+────────────────────────────────────────────────────────────────────────────
+CHECKING THE TOP 400 GAPS AGAINST EVERY DATA FILE
+────────────────────────────────────────────────────────────────────────────
+
+  count   would have been supplied by
+  ------------------------------------------------------------
+  208     homographs.json:by-strongs
+  137     NOWHERE — genuinely unauthored
+  55      homographs.json:by-paleo
+
+WHAT THIS MEANS
+  Anything but "NOWHERE" is a WIRING problem: the English already exists, in a
+  file build-surface-index.js does not consult. Fix = feed that file into the
+  gloss chain (or merge it into lexicon.json), then rebuild. No authoring.
+  "NOWHERE" is the genuine curation backlog.
+
+homographs.json:by-paleo:
+  𐤀𐤋 (root, H3808/H408, 51146 hits, in 𐤀𐤋)
+  𐤋 (mod-conj, H3606/H9005, 44806 hits, in 𐤋)
+  𐤏𐤌 (mod-prep, H5973/H5974, 34735 hits, in 𐤏𐤌)
+  𐤏𐤃 (root, H5707/H5703, 19450 hits, in 𐤏𐤃)
+  𐤏𐤌 (root, H5972/H9000, 9174 hits, in 𐤏𐤌)
+  𐤃𐤅𐤃 (root, H1730/H1731, 6635 hits, in 𐤃𐤃)
+  𐤓𐤏 (root, H7451/H7452, 6244 hits, in 𐤓𐤏)
+  𐤀𐤕𐤄 (root, H857/H858, 5869 hits, in 𐤀𐤕𐤄)
+  𐤀𐤅𐤕 (mod-prep, H853/H854, 5826 hits, in 𐤀𐤅𐤕)
+  𐤔𐤁𐤏 (root, H7646/H7651, 5713 hits, in 𐤀𐤔𐤁𐤏)
+
+NOWHERE — genuinely unauthored:
+  𐤅 (mod-prep, H9000, 50992 hits, in 𐤅)
+  𐤌 (mod-prep, H9006/H9000, 19504 hits, in 𐤌)
+  𐤀𐤋𐤕𐤔𐤇𐤕 (root, H516, 9908 hits, in 𐤀𐤋)
+  𐤊 (mod-prep, H9004, 8958 hits, in 𐤊)
+  𐤌 (mod-conj, H9006/H72, 6395 hits, in 𐤌)
+  𐤌 (mod-inrg, H9006/H4972, 6394 hits, in 𐤌)
+  𐤊 (mod-conj, H9004/H3606, 6167 hits, in 𐤊)
+  𐤉𐤋𐤊 (root, H3212/H9000, 4518 hits, in 𐤀𐤋𐤊)
+  𐤃𐤉 (root, H1768/H1767, 3716 hits, in 𐤃𐤉)
+  𐤏𐤌𐤃 (mod-prep, H5978/H5973, 3167 hits, in 𐤏𐤌)
+
+homographs.json:by-strongs:
+  𐤀𐤉𐤋 (root, H352/H353, 16474 hits, in 𐤀𐤉𐤋)
+  𐤏𐤉𐤓 (root, H5892/H5894, 10270 hits, in 𐤏𐤉𐤓)
+  𐤋𐤁 (root, H3820/H3821, 8396 hits, in 𐤋𐤁)
+  𐤏𐤉𐤍𐤉 (root, H5870/H5869, 7892 hits, in 𐤏𐤉𐤍𐤉)
+  𐤓𐤁 (root, H7227/H7229, 7740 hits, in 𐤓𐤁)
+  𐤓𐤏𐤄 (root, H7462/H7451, 7523 hits, in 𐤀𐤓𐤏)
+  𐤋𐤇𐤌 (root, H3898/H3900, 7119 hits, in 𐤀𐤋𐤇𐤌)
+  𐤌𐤍𐤔𐤄 (mod-nmpr, H4519/H9000, 7115 hits, in 𐤌)
+  𐤐𐤕𐤇 (root, H6605/H6607, 5620 hits, in 𐤀𐤐𐤕𐤇)
+  𐤊𐤎𐤐 (root, H3701/H3702, 5519 hits, in 𐤊𐤎𐤐)

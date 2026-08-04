@@ -1,0 +1,222 @@
+/* TopBar.css */
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: calc(8px + var(--safe-top)) 14px 8px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.top-bar.bar-hidden {
+  transform: translateY(-110%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.top-bar-row1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.top-bar-row2 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  width: 100%;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 2px;
+}
+
+.logo-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  font-size: 13px;
+  color: var(--text3);
+  flex-shrink: 0;
+}
+.logo-btn:hover { border-color: var(--border3); color: var(--text2); }
+
+.bar-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.icon-btn:hover  { background: var(--bg4); color: var(--text); }
+.icon-btn.active { border-color: var(--gold); color: var(--gold); background: color-mix(in srgb, var(--gold) 8%, var(--bg3)); }
+
+.txt-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  padding: 7px 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+  transition: all 0.15s;
+  min-height: 36px;
+}
+.txt-btn:hover { background: var(--bg4); color: var(--text); }
+
+/* Cross-source link styling. Used on the Hebrew Viewer toolbar
+   LXX/GNT/Ge'ez buttons. Light-blue accent with bolder font so they stand
+   out as the primary cross-corpus navigation, matching the prominent
+   source switcher in the MultiViewer. */
+.txt-btn.rd-srclink {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: transparent;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.txt-btn.rd-srclink:hover {
+  background: color-mix(in srgb, var(--blue) 12%, transparent);
+  color: var(--blue);
+}
+
+/* ── Status pill ─────────────────────────────────────────────────────────── */
+.status {
+  font-size: 11px;
+  color: var(--text3);
+  padding: 0 6px;
+  white-space: nowrap;
+}
+
+/* ── Selects (book / chapter / verse) ────────────────────────────────────── */
+.nav-group {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  max-width: 680px;
+  align-items: flex-end;
+}
+/* Book names can be long ("Songs of the Sabbath Sacrifice") — give book the most room. */
+.nav-group .nav-sel-wrap:first-child { flex: 2.2; }
+.nav-sel-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.nav-sel-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding-left: 2px;
+  white-space: nowrap;
+}
+.top-bar select {
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  padding: 7px 6px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  width: 100%;
+  /* Larger tap target on touch */
+  min-height: 36px;
+}
+.top-bar select:focus { outline: none; border-color: var(--blue); }
+
+/* ── Mobile: stack rows ──────────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .top-bar { padding: calc(6px + var(--safe-top)) 8px 6px; }
+  .top-bar-row1 {
+    width: 100%;
+  }
+  .top-bar-row2 {
+    width: 100%;
+    border-top: 1px solid var(--border);
+    padding-top: 6px;
+    margin-top: -2px;
+    margin-top: 2px;
+  }
+  .bar-title { display: none; }
+  /* Larger tap targets */
+  .icon-btn { width: 40px; height: 40px; font-size: 18px; }
+  .txt-btn  { font-size: 13px; padding: 8px 14px; min-height: 40px; }
+}
+
+@media (min-width: 701px) {
+  /* Two stacked rows: book/chapter/verse on line 1, all controls wrap on line 2. */
+  .top-bar-row1 { width: 100%; }
+  .top-bar-row2 { width: 100%; }
+}
+
+/* ── Hebrew source chooser (hover dropdown on the "Hebrew" button) ──────────
+   Lets the reader pick between BHS (flagship, full morphology) and Hebrew
+   (Extra) (corpus-Hebrew: deuterocanon/pseudepigrapha) for the same verse,
+   since both can exist for one location. */
+.heblang-wrap { position: relative; display: inline-flex; }
+.heblang-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  display: none;
+  flex-direction: column;
+  min-width: 168px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  padding: 4px;
+  z-index: 90;
+}
+.heblang-wrap:hover .heblang-menu,
+.heblang-wrap:focus-within .heblang-menu { display: flex; }
+.heblang-opt {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  color: var(--text2);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.heblang-opt:hover    { background: var(--bg3); color: var(--text); }
+.heblang-opt.current  { color: var(--blue); font-weight: 700; }
+.heblang-opt.disabled { opacity: 0.4; pointer-events: none; cursor: default; }

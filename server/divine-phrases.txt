@@ -1,0 +1,48 @@
+# divine-phrases.txt — multi-word divine titles. Matched ONLY as the whole phrase,
+# so the individual words stay ordinary English everywhere else.
+#
+#   "Most High"        -> Ilayawan        (H5945 elyon)
+#   "LORD of Hosts"    -> Yahawah Tzabaawath
+#
+# Format:  <english phrase>  =>  <transliteration>
+# The Paleo/translit still comes from the roots; this only fixes WHICH words form
+# the title. One phrase per line.
+
+Most High        => Ilayawan
+the Most High    => the Ilayawan
+LORD of Hosts    => Yahawah Tzabaawath
+Lord of Hosts    => Adanay Tzabaawath
+
+# ── merged from divine-phrases-additions.txt ────────────────────────────────
+# These were written but never appended, so render-corpus never saw them —
+# it reads ./divine-phrases.txt only. THEO keys are sorted longest-first and
+# THEO_RE is case-sensitive, which is why the definite forms are listed first
+# and each capitalisation is spelled out.
+
+# ── Holy Spirit ─────────────────────────────────────────────────────────────
+# Matthew 1:18/1:20 read "conceived by the Holy Spirit". Both words are ordinary
+# English there, so neither engine touched them. As a divine phrase this renders
+# BARE, giving "conceived by Rawach HaQadash".
+the Holy Spirit  => Rawach HaQadash
+The Holy Spirit  => Rawach HaQadash
+the Holy Ghost   => Rawach HaQadash
+The Holy Ghost   => Rawach HaQadash
+Holy Spirit      => Rawach HaQadash
+Holy Ghost       => Rawach HaQadash
+
+# The same phrase in its OT sense (Psalm 51:11, Isaiah 63:10-11).
+your Holy Spirit => Rawach QadashaKa
+his Holy Spirit  => Rawach QadashaW
+
+# ── related constructs, still YOUR call ─────────────────────────────────────
+# Each changes a lot of verses and the spelling is a decision, not a lookup.
+# Uncomment the ones you want; they will apply to Matthew, Genesis and Jasher
+# at once because both engines read this file.
+# Spirit of God        => Rawach Alahayam
+# Spirit of the Lord   => Rawach Yahawah
+# the Spirit of Yahweh => Rawach Yahawah
+# Word of God          => Dabar Alahayam
+# Son of Man           => Ban HaAdam
+# Son of God           => Ban Alahayam
+# Kingdom of Heaven    => Malakawath HaShamayam
+# Kingdom of God       => Malakawath Alahayam

@@ -1,0 +1,179 @@
+/* morphColors.css — the full BHS morphology color system.
+ * Every clickable-comp and translit/translation span uses one of these classes.
+ * --mc = main text color, --mb = background tint (used in show-morph-bg mode).
+ *
+ * The system goes:
+ *   .root             — neutral body color
+ *   .mod-*            — prefix-like modifiers (conjunction, article, preposition, etc.)
+ *   .pfm-* / .vbs-*   — verbal prefix marker / stem marker
+ *   .prs-* / .vbe-*   — pronominal suffix / verbal ending
+ *   .nme-* / .uvf-*   — nominal ending / unclassified-final
+ *   .brk              — bracket/punctuation glyphs in translit text
+ *
+ * Plus a parallel set under `[data-alt="1"]` that alternates colors when two
+ * same-side modifiers stack (so adjacent prefixes don't look like one).
+ *
+ * The light-theme overrides at the bottom invert just the tones needed for
+ * legibility on a cream background.
+ */
+
+/* Base: every comp shows its morphology COLOR via --mc (always on). The old
+ * show-morph-bg mode also painted a --mb tint behind every morpheme, which read
+ * as a standalone dark box around multi-morpheme words. Removed: words are never
+ * boxed by default — only genuine highlight states (search-match, .hl hover
+ * correspondence) draw a box. (--mb values remain below as documentation.) */
+.clickable-comp { --mc: var(--text); --mb: transparent; color: var(--mc); }
+
+.w span         { color: var(--mc, var(--text2)); }
+.w .root        { --mc: var(--text2); }
+.w .brk         { color: var(--text4) !important; }
+.brk            { color: var(--text4); }
+
+/* ── Root + prefix-like modifiers ─────────────────────────────────────────── */
+.root           { --mc: var(--text); --mb: transparent; }
+.mod-conj       { --mc: #b87ec0; --mb: #6a2070; }
+.mod-prep       { --mc: #c8b840; --mb: #706000; }
+.mod-art        { --mc: #38c8a0; --mb: #006848; }
+.mod-nega       { --mc: #e84040; --mb: #801010; }
+.mod-advb       { --mc: #60b8e8; --mb: #105888; }
+.mod-intj       { --mc: #e8982a; --mb: #804000; }
+.mod-inrg       { --mc: #c09878; --mb: #604830; }
+.mod-prde       { --mc: #88b878; --mb: #284818; }
+.mod-prps       { --mc: #a888c8; --mb: #483060; }
+.mod-prin       { --mc: #c08888; --mb: #603030; }
+.mod-nmpr       { --mc: #d4a010; --mb: #705000; }
+.mod-pref-unk   { --mc: #888; --mb: #333; }
+.mod-suff-unk   { --mc: #888; --mb: #333; }
+
+/* ── Verbal prefix markers — who performs ────────────────────────────────── */
+.pfm-3ms        { --mc: #e8784a; --mb: #802818; }
+.pfm-2or3f      { --mc: #d888b8; --mb: #703060; }
+.pfm-1cs        { --mc: #70b8e8; --mb: #185880; }
+.pfm-1cp        { --mc: #4898d0; --mb: #104870; }
+.pfm-ptcp       { --mc: #c8985a; --mb: #684818; }
+
+/* ── Verbal stem markers — how the action is shaped ──────────────────────── */
+.vbs-hif        { --mc: #f0902a; --mb: #784000; }
+.vbs-nif        { --mc: #68c068; --mb: #185818; }
+.vbs-hit        { --mc: #78d0a0; --mb: #186040; }
+
+/* ── Pronominal suffixes ──────────────────────────────────────────────────── */
+.prs-1cs        { --mc: #70c8f8; --mb: #185878; }
+.prs-1cp        { --mc: #4898e0; --mb: #104870; }
+.prs-2ms        { --mc: #90d870; --mb: #286010; }
+.prs-2mp        { --mc: #68c048; --mb: #185000; }
+.prs-2fp        { --mc: #50a830; --mb: #104000; }
+.prs-3ms        { --mc: #e8d048; --mb: #706000; }
+.prs-3fs        { --mc: #f0889a; --mb: #803040; }
+.prs-3mp        { --mc: #c87840; --mb: #683010; }
+.prs-3fp        { --mc: #b87038; --mb: #5a2c08; }
+
+/* ── Verbal endings — agreement with subject ─────────────────────────────── */
+.vbe-1cs        { --mc: #70c8f8; --mb: #185878; }
+.vbe-1cp        { --mc: #4898e0; --mb: #104870; }
+.vbe-2or3f      { --mc: #d888b8; --mb: #703060; }
+.vbe-2mp        { --mc: #90c870; --mb: #286010; }
+.vbe-2fp        { --mc: #68b050; --mb: #184800; }
+.vbe-3ms        { --mc: #e8784a; --mb: #802818; }
+.vbe-3fs        { --mc: #f0889a; --mb: #803040; }
+.vbe-3mp        { --mc: #d89050; --mb: #6a3c10; }
+.vbe-3fp        { --mc: #c07840; --mb: #5a2c08; }
+
+/* ── Nominal endings ──────────────────────────────────────────────────────── */
+.nme-h          { --mc: #d898c8; --mb: #683060; }
+.nme-f          { --mc: #e8a8c8; --mb: #784058; }
+.nme-j          { --mc: #a8c898; --mb: #305820; }
+.nme-jm         { --mc: #88b878; --mb: #204810; }
+.nme-wt         { --mc: #68a858; --mb: #103800; }
+.nme-wtj        { --mc: #50a840; --mb: #083800; }
+.nme-nh         { --mc: #98d898; --mb: #204820; }
+
+/* ── Directional / unmarked final ─────────────────────────────────────────── */
+.uvf-dir        { --mc: #98c8e8; --mb: #185068; }
+.uvf-conn       { --mc: #78a8c0; --mb: #103848; }
+
+/* ── Alternating same-side modifiers (data-alt="1") ──────────────────────── */
+[data-alt="1"].mod-conj  { --mc: #d8a8f0; --mb: #4a006a; }
+[data-alt="1"].mod-prep  { --mc: #f0e060; --mb: #585000; }
+[data-alt="1"].mod-art   { --mc: #50f0d0; --mb: #005840; }
+[data-alt="1"].mod-nega  { --mc: #ff8080; --mb: #600000; }
+[data-alt="1"].mod-advb  { --mc: #90d8ff; --mb: #003868; }
+[data-alt="1"].mod-nmpr  { --mc: #f8c838; --mb: #504000; }
+[data-alt="1"].pfm-3ms   { --mc: #ffaa80; --mb: #601800; }
+[data-alt="1"].pfm-2or3f { --mc: #f8c8e0; --mb: #581840; }
+[data-alt="1"].pfm-1cs   { --mc: #b0d8ff; --mb: #003868; }
+[data-alt="1"].pfm-1cp   { --mc: #90c8f8; --mb: #003060; }
+[data-alt="1"].pfm-ptcp  { --mc: #e8c888; --mb: #503800; }
+[data-alt="1"].vbs-hif   { --mc: #ffc060; --mb: #583000; }
+[data-alt="1"].vbs-nif   { --mc: #a0f0a0; --mb: #004800; }
+[data-alt="1"].vbs-hit   { --mc: #b8ffd8; --mb: #005030; }
+[data-alt="1"].prs-1cs   { --mc: #b0eeff; --mb: #003858; }
+[data-alt="1"].prs-1cp   { --mc: #90c8ff; --mb: #003060; }
+[data-alt="1"].prs-2ms   { --mc: #c8ffa0; --mb: #1a5000; }
+[data-alt="1"].prs-2mp   { --mc: #a8f078; --mb: #104000; }
+[data-alt="1"].prs-3ms   { --mc: #fff890; --mb: #585000; }
+[data-alt="1"].prs-3fs   { --mc: #ffb8c8; --mb: #601828; }
+[data-alt="1"].prs-3mp   { --mc: #f0c090; --mb: #502800; }
+[data-alt="1"].prs-3fp   { --mc: #e0b080; --mb: #481c00; }
+[data-alt="1"].nme-h     { --mc: #f8c8f0; --mb: #501840; }
+[data-alt="1"].nme-f     { --mc: #ffd8e8; --mb: #602030; }
+[data-alt="1"].nme-j     { --mc: #d8f8c0; --mb: #204800; }
+[data-alt="1"].nme-jm    { --mc: #c0e8a8; --mb: #183800; }
+[data-alt="1"].nme-wt    { --mc: #a8d890; --mb: #0c2800; }
+[data-alt="1"].nme-wtj   { --mc: #90d078; --mb: #082000; }
+[data-alt="1"].nme-nh    { --mc: #c8ffc8; --mb: #103810; }
+[data-alt="1"].vbe-1cs   { --mc: #b0eeff; --mb: #003858; }
+[data-alt="1"].vbe-1cp   { --mc: #90c8ff; --mb: #003060; }
+[data-alt="1"].vbe-2or3f { --mc: #f8c8e0; --mb: #581840; }
+[data-alt="1"].vbe-2mp   { --mc: #c8f0a0; --mb: #1a5000; }
+[data-alt="1"].vbe-3mp   { --mc: #f0c888; --mb: #502800; }
+[data-alt="1"].vbe-3fp   { --mc: #e0b078; --mb: #481c00; }
+
+/* ── Light-theme overrides ────────────────────────────────────────────────── */
+html[data-theme="light"] .root        { --mc: #1a1612; }
+html[data-theme="light"] .mod-conj    { --mc: #6600aa; --mb: #e0c8ff; }
+html[data-theme="light"] .mod-prep    { --mc: #005500; --mb: #c0eec0; }
+html[data-theme="light"] .mod-art     { --mc: #006688; --mb: #b8e8f8; }
+html[data-theme="light"] .mod-nega    { --mc: #cc0000; --mb: #ffc8c8; }
+html[data-theme="light"] .mod-advb    { --mc: #004488; --mb: #c0d8ff; }
+html[data-theme="light"] .mod-intj    { --mc: #884400; --mb: #ffd8a0; }
+html[data-theme="light"] .mod-inrg    { --mc: #555500; --mb: #eeee90; }
+html[data-theme="light"] .mod-prde    { --mc: #005522; --mb: #a8eec8; }
+html[data-theme="light"] .mod-prps    { --mc: #550066; --mb: #eec0ff; }
+html[data-theme="light"] .mod-prin    { --mc: #663300; --mb: #f8d8b8; }
+html[data-theme="light"] .mod-nmpr    { --mc: #775500; --mb: #ffee98; }
+html[data-theme="light"] .pfm-3ms     { --mc: #992200; --mb: #ffd0b0; }
+html[data-theme="light"] .pfm-2or3f   { --mc: #880055; --mb: #ffb8e8; }
+html[data-theme="light"] .pfm-1cs     { --mc: #003388; --mb: #b8d0ff; }
+html[data-theme="light"] .pfm-1cp     { --mc: #002266; --mb: #a8c0ff; }
+html[data-theme="light"] .pfm-ptcp    { --mc: #664400; --mb: #fce0a8; }
+html[data-theme="light"] .vbs-hif     { --mc: #884800; --mb: #ffd080; }
+html[data-theme="light"] .vbs-nif     { --mc: #006600; --mb: #b0eeb0; }
+html[data-theme="light"] .vbs-hit     { --mc: #007744; --mb: #98eec8; }
+html[data-theme="light"] .prs-1cs     { --mc: #003388; --mb: #b8d0ff; }
+html[data-theme="light"] .prs-1cp     { --mc: #002266; --mb: #a8c0ff; }
+html[data-theme="light"] .prs-2ms     { --mc: #226600; --mb: #c0eea0; }
+html[data-theme="light"] .prs-2mp     { --mc: #1a5500; --mb: #b0e890; }
+html[data-theme="light"] .prs-2fp     { --mc: #114400; --mb: #a0e080; }
+html[data-theme="light"] .prs-3ms     { --mc: #776600; --mb: #ffee88; }
+html[data-theme="light"] .prs-3fs     { --mc: #990044; --mb: #ffb0cc; }
+html[data-theme="light"] .prs-3mp     { --mc: #7a3800; --mb: #f8c898; }
+html[data-theme="light"] .prs-3fp     { --mc: #662800; --mb: #f0b888; }
+html[data-theme="light"] .vbe-1cs     { --mc: #003388; --mb: #b8d0ff; }
+html[data-theme="light"] .vbe-1cp     { --mc: #002266; --mb: #a8c0ff; }
+html[data-theme="light"] .vbe-2or3f   { --mc: #880055; --mb: #ffb8e8; }
+html[data-theme="light"] .vbe-2mp     { --mc: #226600; --mb: #c0eea0; }
+html[data-theme="light"] .vbe-2fp     { --mc: #1a5500; --mb: #b0e890; }
+html[data-theme="light"] .vbe-3ms     { --mc: #992200; --mb: #ffd0b0; }
+html[data-theme="light"] .vbe-3fs     { --mc: #990044; --mb: #ffb0cc; }
+html[data-theme="light"] .vbe-3mp     { --mc: #7a3800; --mb: #f8c898; }
+html[data-theme="light"] .vbe-3fp     { --mc: #662800; --mb: #f0b888; }
+html[data-theme="light"] .nme-h       { --mc: #770055; --mb: #ffb8e0; }
+html[data-theme="light"] .nme-f       { --mc: #880044; --mb: #ffb0cc; }
+html[data-theme="light"] .nme-j       { --mc: #224400; --mb: #c0e8a0; }
+html[data-theme="light"] .nme-jm      { --mc: #1a3800; --mb: #b0e088; }
+html[data-theme="light"] .nme-wt      { --mc: #113000; --mb: #a0d878; }
+html[data-theme="light"] .nme-wtj     { --mc: #0a2800; --mb: #90d068; }
+html[data-theme="light"] .nme-nh      { --mc: #005500; --mb: #b8eeb8; }
+html[data-theme="light"] .uvf-dir     { --mc: #004466; --mb: #b0daf0; }
+html[data-theme="light"] .uvf-conn    { --mc: #003355; --mb: #a0cae8; }

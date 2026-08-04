@@ -1,0 +1,23 @@
+# term-forms-additions-2.txt — append to term-forms.txt
+# Transliterated mechanically from each lemma with your CHAR_MAP. Lowercase, as
+# render-corpus uses a pin verbatim for a lowercase source word.
+
+# you flagged this one directly — it is not filler
+ass         chamawar      # H2543 chamor
+asses       chamawar      # H2543
+donkey      chamawar      # H2543
+donkeys     chamawar      # H2543
+
+# restore these after deleting them from term-exclude.txt
+way         darak         # H1870 derek
+ways        darak         # H1870
+come        bawaa         # H935 bo
+came        bawaa         # H935
+coming      bawaa         # H935
+
+# Apocalypse of Abraham 5 vocabulary, all non-filler and currently plain
+wood        itz           # H6086 ets
+fire        ash           # H784 esh
+food        akal          # H400 okel
+wine        yayan         # H3196 yayin
+anger       ap            # H639 aph

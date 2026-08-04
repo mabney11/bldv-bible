@@ -1,0 +1,364 @@
+/* MultiViewer.css — Greek / Ge'ez reader.
+   Re-uses Hebrew Viewer chrome classes (.hv-page, .hv-reader-wrap, .hv-output,
+   .hv-verse-bar, .hv-ref-title, etc.) so the look matches. The only Greek/
+   Ge'ez-specific blocks are: .rd-verse-wrap (verse row), .rd-verse-num
+   (verse marker), .rd-verse-blocks (flex row of MultiWordBlocks),
+   .rd-side-nav arrows, .rd-display-panel. */
+
+/* The reader reuses the Hebrew .hv-page chrome, which is RTL. Greek and Ge'ez
+   are LTR, so force direction here: this anchors the verse number on the left,
+   packs word blocks from the left, and keeps the witness tag trailing on the
+   right — "verses start where they start". */
+.rd { direction: ltr; }
+/* The top-bar is UI chrome, not scripture: keep it LTR and identical in every
+   source. Without this, rd-rtl (Hebrew, Syriac) mirrors the whole toolbar — the
+   theme toggle jumps to the far side and row1 (title/selects) reverses — so the
+   bar appeared to "change" when switching into an RTL language. The verse body
+   below still flips RTL via the .rd-rtl rules at the bottom of this file. */
+.rd .top-bar { direction: ltr; }
+.rd .hv-output,
+.rd .hv-ref-title,
+.rd .hv-verse-bar { direction: ltr; text-align: left; }
+
+/* Verse row — verse number on the left, blocks flowing on the right.
+   Mirrors HebrewViewer's .hv-verse-wrapper layout. */
+.rd-verse-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--line, var(--border));
+  flex-wrap: wrap;
+  direction: ltr;
+  justify-content: flex-start;
+  /* Skip layout/paint for off-screen verse rows. Big single-chapter literary
+     manuscripts (hundreds of verses in one chapter) used to lay out and paint
+     every row up front, which is most of the felt "sluggishness" once the
+     fetch is fast. The browser now only renders rows near the viewport.
+     contain-intrinsic-size keeps the scrollbar honest for un-rendered rows. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 88px;
+}
+.rd-verse-wrap:last-child { border-bottom: none; }
+
+.rd-verse-num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s;
+}
+.rd-verse-num:hover { background: var(--gold); color: #111; }
+
+/* Wrapper for the row of word blocks */
+.rd-verse-blocks {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 6px;
+  align-items: flex-start;
+  direction: ltr;
+  min-width: 0;
+}
+
+/* Per-block — override Hebrew WordBlock RTL defaults for Greek/Ge'ez */
+.multi-word-block {
+  align-items: center;
+  text-align: center;
+}
+.multi-word-block .paleo {
+  direction: ltr;
+  cursor: pointer;
+  user-select: text;
+}
+.mwb-greek .paleo {
+  font-family: 'Cardo', 'GFS Didot', 'Times New Roman', serif;
+  font-size: var(--paleo-size, 32px);
+}
+.mwb-ethiopic .paleo {
+  font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif;
+  font-size: calc(var(--paleo-size, 32px) * 0.95);
+}
+/* Square Hebrew (Hebrew-extra) is converted to Paleo glyphs in MultiWordBlock,
+   so it uses the Paleo font and reads RTL like the flagship Hebrew reader. */
+.mwb-hebrew .paleo {
+  font-family: var(--paleo-font);
+  font-size: var(--paleo-size, 32px);
+  direction: rtl;
+}
+.multi-word-block .paleo:hover { opacity: 0.85; }
+
+.multi-word-block .w {
+  font-size: var(--sub-size, 12px);
+  direction: ltr;
+  line-height: 1.5;
+  font-weight: 400;
+  max-width: var(--sub-maxw, 160px);
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+.multi-word-block .w-translit {
+  font-weight: 700;
+  font-style: italic;
+  display: inline;
+  white-space: nowrap;
+}
+.multi-word-block .w .brk  { color: var(--text4); }
+.multi-word-block .w .root { color: var(--text); }
+
+/* Status text in TopBar */
+.status {
+  font-size: 12px;
+  color: var(--text4);
+  padding: 0 8px;
+  align-self: center;
+}
+
+/* Doc-id witness label for Ge'ez non-biblical texts */
+.rd-doc-id, .rd-doc-tag {
+  font-size: 10px;
+  color: var(--text4);
+  margin-left: 8px;
+  background: var(--bg3);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+/* Literary-manuscript toolbar indicator — replaces the Book/Chapter selects
+   when an open doc has no canonical book axis, so the toolbar can't falsely
+   read "Genesis / Chapter 1". */
+.rd-doc-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.rd-doc-toolbar .rd-doc-id {
+  margin-left: 0;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--text2);
+  background: var(--bg3);
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
+/* Side-nav arrow buttons (match Hebrew Viewer SideNav) */
+.rd-side-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 60px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s;
+}
+.rd-side-nav-prev  { left: 0;  border-radius: 0 6px 6px 0; }
+.rd-side-nav-next  { right: 0; border-radius: 6px 0 0 6px; }
+.rd-side-nav:hover { background: var(--gold); color: #111; }
+
+/* Display panel */
+.rd-display-panel {
+  position: fixed;
+  top: 80px;
+  right: 16px;
+  width: 280px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  z-index: 50;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rd-display-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+.rd-display-header button {
+  background: transparent;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  font-size: 14px;
+}
+.rd-display-header button:hover { color: var(--text); }
+.rd-slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rd-slider-row label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text3);
+}
+.rd-slider-row input[type=range] { width: 100%; }
+.rd-display-hint {
+  font-size: 11px;
+  color: var(--text4);
+  font-style: italic;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+/* Presentation mode — hide chrome, larger text */
+.rd.present-mode .rd-side-nav { opacity: 0.3; }
+.rd.present-mode .rd-side-nav:hover { opacity: 1; }
+.rd.present-mode .rd-display-panel { display: none; }
+
+/* States */
+.rd-state {
+  padding: 20px;
+  text-align: center;
+  color: var(--text3);
+  font-size: 14px;
+}
+.rd-err { color: var(--red, #e07070); }
+
+/* Doc picker modal — browse all manuscripts in the source */
+.rd-modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.rd-doc-picker {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  width: min(560px, 100%);
+  max-height: 85vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  overflow: hidden;
+}
+.rd-doc-picker-header {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.rd-doc-picker-header input {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  color: var(--text);
+  padding: 8px 12px;
+  font-size: 13px;
+}
+.rd-doc-picker-header button {
+  background: transparent;
+  border: none;
+  color: var(--text3);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 8px;
+}
+.rd-doc-picker-body {
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 0;
+}
+.rd-doc-section {
+  padding: 8px 14px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text4);
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.rd-doc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 14px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  font-size: 13px;
+  transition: background 0.08s;
+}
+.rd-doc-row:hover { background: var(--bg2); }
+.rd-doc-row.active { background: color-mix(in srgb, var(--blue) 18%, transparent); color: var(--text); }
+.rd-doc-row .rd-doc-id { font-family: monospace; font-size: 12px; color: var(--text); }
+.rd-doc-row .rd-doc-meta { font-size: 11px; color: var(--text4); }
+
+/* Doc picker — group section counts + canonical badge */
+.rd-doc-section-count {
+  margin-left: 8px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text4);
+  font-size: 10px;
+}
+.rd-doc-canon-badge {
+  margin-left: 8px;
+  background: color-mix(in srgb, var(--blue) 22%, transparent);
+  color: var(--blue);
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+/* ── Mobile: drop the side-nav arrows (they overlapped the text on narrow
+   screens) and rely on swipe (left = next, right = prev), matching the
+   Hebrew mobile reader. Also tighten word-block spacing for small viewports. */
+@media (max-width: 768px) {
+  .rd-side-nav { display: none; }
+  .rd-verse-blocks { gap: 6px 5px; }
+  .rd-verse-wrap { padding: 12px 2px; gap: 8px; }
+}
+
+/* ── RTL sources (Hebrew, Syriac) ─────────────────────────────────────────
+   MultiViewer defaults to LTR for Greek/Ge'ez/Latin/Coptic. When the source is
+   right-to-left, flip the reading direction so words flow right→left and the
+   verse marker sits on the right — matching the Hebrew Viewer. The book title
+   stays LTR (it's an English/transliterated label). */
+.rd-rtl { direction: rtl; }
+.rd-rtl .hv-output,
+.rd-rtl .hv-verse-bar { direction: rtl; text-align: right; }
+.rd-rtl .hv-ref-title { direction: ltr; }
+.rd-rtl .rd-verse-wrap   { direction: rtl; justify-content: flex-start; }
+.rd-rtl .rd-verse-blocks { direction: rtl; }
+/* word blocks keep their own internal layout; only the flow direction changes */
+.rd-rtl .multi-word-block .paleo,
+.rd-rtl .multi-word-block .w { direction: rtl; }

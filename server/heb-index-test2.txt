@@ -1,0 +1,35 @@
+tables: books, verses, meta, tokens_bhs, tokens_nt_pre_sync_20260723, tokens_nt_pre_sync_20260724, tokens_nt, tokens_nt_new
+  tokens_bhs: 490,052 rows [source_id,ref_key,book_id,chapter,verse,token_ordinal,word_raw,word_modern,lemma,root,pos,morph,strongs]
+  tokens_nt_pre_sync_20260723: 416,564 rows [source_id,book_id,chapter,verse,token_ordinal,word_raw,lemma,root,pos,morph,strongs,match_kind,confidence]
+  tokens_nt_pre_sync_20260724: 401,901 rows [book_id,chapter,verse,token_ordinal,word_raw,pos,morph,strongs,source_id]
+  tokens_nt: 583,152 rows [book_id,chapter,verse,token_ordinal,word_raw,pos,morph,strongs,source_id]
+  tokens_nt_new: 0 rows [book_id,chapter,verse,token_ordinal,word_raw,pos,morph,strongs,source_id]
+
+aligning HEB Old Testament against BHS …
+  OT verses with BHS tokens: 23,147 · of those, count-matched: 53
+  pairs — same-form 155,437 · positional 321 · elimination 9
+  total aligned pairs: 155,767 · distinct HEB forms: 12,757
+
+re-tagging canon 40-100 · 13,672 verses
+
+=== RESOLUTION ===
+tokens    : 276,356
+  bhs-variant       145,363  52.6%
+  aligned           111,014  40.2%
+  unresolved         14,031  5.1%
+  aligned-variant     2,965  1.1%
+  bhs-surface         2,862  1.0%
+  self-variant          121  0.0%
+RESOLVED  : 262,325 (94.9%)
+
+of those, 3,402 were resolved ONLY because of the HEB-OT alignment
+(the BHS surface index alone had never seen those exact forms)
+121 more were resolved ONLY because the same form (or a stripped
+variant of it) occurred elsewhere in THIS corpus and resolved there (self-aligned/self-variant)
+
+rows carrying MORPH (these decompose into prefix/root/suffix): 113,876 (41.2%)
+Only exact-surface matches carry morph — a variant match stripped a prefix, so
+the stripped form's morph would describe a different word and is deliberately dropped.
+low-confidence rows (<0.6): 15,077
+
+[dry run] nothing written.

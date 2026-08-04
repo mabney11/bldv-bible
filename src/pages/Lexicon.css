@@ -1,0 +1,404 @@
+/* Lexicon.css
+ *
+ * Layout: full-viewport grid with sticky topbar + tabs + flex panel.
+ * The list-wrap is position:relative so anchor.offsetTop reads correctly
+ * (this is the fix for the back-jump snap bug).
+ */
+
+.lex-page {
+  --sidebar-w: 46px;
+  --topbar-h:  46px;
+  --tabbar-h:  42px;
+  --search-h:  48px;
+  --glyph-btn: 18px;
+  --glyph-anchor: 22px;
+  /* --glyph-word is set on :root by the glyph-size slider */
+  --glyph-gap: -3px;
+
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ── TOP BAR ────────────────────────────────────────────────────────────── */
+.lex-topbar {
+  flex-shrink: 0;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.lex-topbar-left  { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.lex-topbar-right { display: flex; align-items: center; gap: 6px; }
+.nav-divider      { width: 1px; height: 22px; background: var(--border2); flex-shrink: 0; }
+.lex-page-title   { font-size: 15px; font-weight: 700; color: var(--text); }
+
+/* ── LANGUAGE BAR (above tabbar) ────────────────────────────────────────── */
+.lex-langbar {
+  flex-shrink: 0;
+  display: flex;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  gap: 0;
+}
+.lex-langtab {
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text4);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.lex-langtab:hover  { color: var(--text2); background: var(--bg2); }
+.lex-langtab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── TAB BAR ────────────────────────────────────────────────────────────── */
+.lex-tabbar {
+  flex-shrink: 0;
+  height: var(--tabbar-h);
+  display: flex;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.lex-tabbar::-webkit-scrollbar { display: none; }
+.lex-tab {
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text3);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  min-height: 42px;
+}
+.lex-tab:hover         { color: var(--text2); }
+.lex-tab.active        { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── MAIN PANEL ─────────────────────────────────────────────────────────── */
+.lex-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── LETTER SIDEBAR ─────────────────────────────────────────────────────── */
+.lex-sidebar {
+  flex-shrink: 0;
+  width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 0 0;
+  gap: 1px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.lex-sidebar::-webkit-scrollbar { width: 3px; }
+.lex-sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.lex-letter-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s;
+  color: var(--text3);
+  font-family: var(--paleo-font);
+  font-size: 16px;
+}
+.lex-letter-btn svg    { display: block; }
+.lex-letter-btn:hover  {
+  background: var(--bg3);
+  color: var(--gold);
+  border-color: var(--border2);
+}
+.lex-letter-btn.active {
+  background: color-mix(in srgb, var(--gold) 13%, transparent);
+  color: var(--gold);
+  border-color: color-mix(in srgb, var(--gold) 40%, transparent);
+}
+.lex-letter-btn:disabled {
+  opacity: 0.18;
+  cursor: default;
+  pointer-events: none;
+}
+
+.lex-sidebar-spacer { flex: 1; min-height: 6px; }
+
+.lex-back-top {
+  flex-shrink: 0;
+  width: 34px;
+  height: 28px;
+  margin: 2px 0 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text3);
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s;
+}
+.lex-back-top:hover {
+  background: var(--bg4);
+  color: var(--gold);
+  border-color: var(--border3);
+}
+
+/* ── RIGHT COLUMN ───────────────────────────────────────────────────────── */
+.lex-rightcol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.lex-search {
+  flex-shrink: 0;
+  height: var(--search-h);
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.lex-search input {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+  min-height: 36px;
+}
+.lex-search input:focus { border-color: var(--blue); }
+.lex-search input::placeholder { color: var(--text4); }
+.lex-search-clear {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.lex-search-clear:hover { color: var(--text); border-color: var(--border3); }
+
+/* ── LIST: the scrollable container.
+   position:relative is the KEY to the snap-fix — it makes offsetTop measure
+   from the top of THIS element, regardless of any sticky descendants. */
+.lex-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  position: relative;
+}
+.lex-list::-webkit-scrollbar { width: 5px; }
+.lex-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── ANCHORS (sticky letter headers within the scroll list) ────────────── */
+.lex-anchor {
+  padding: 4px 14px 3px;
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--gold);
+  font-family: var(--paleo-font);
+  font-size: 20px;
+}
+.lex-anchor svg { display: block; }
+
+/* ── WORD ROWS ──────────────────────────────────────────────────────────── */
+.lex-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+  /* Native virtualization: the browser skips layout and paint for rows that
+     aren't in the viewport. With 24k+ rows on the "All Surfaces" tab this
+     turns a multi-second first-paint into milliseconds. contain-intrinsic-size
+     gives the browser a height estimate so the scroll bar sizes correctly
+     before each row is measured. The value matches the typical computed
+     height (translit row + def row + meta row + paddings ≈ 90px). */
+  content-visibility: auto;
+  contain-intrinsic-size: 0 90px;
+}
+.lex-row:hover { background: var(--bg3); }
+
+/* Paleo cell:
+   paleoToSVG renders chars L→R (first char = leftmost SVG).
+   Hebrew reads R→L (first char must appear rightmost).
+   flex-direction:row-reverse flips visual order without touching content. */
+.lex-row-paleo {
+  flex-shrink: 0;
+  min-width: 70px;
+  color: var(--gold);
+  line-height: 1.2;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: var(--glyph-gap);
+}
+.lex-row-paleo svg { display: block !important; flex-shrink: 0; }
+.lex-row-paleo .pg-fallback {
+  /* Unicode fallback for letters with no SVG body — rely on font's RTL */
+  font-family: var(--paleo-font);
+  font-size: 22px;
+  direction: rtl;
+  unicode-bidi: bidi-override;
+}
+
+.lex-row-body { flex: 1; min-width: 0; }
+.lex-row-tl   { font-size: 13px; font-weight: 700; color: var(--text2); line-height: 1.3; }
+.lex-row-def  { font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.55; }
+.lex-row-pos  { font-size: 10px; color: var(--text4); margin-top: 2px; font-style: italic; }
+.lex-row-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 6px;
+}
+.lex-count {
+  font-size: 10px;
+  color: var(--text4);
+}
+.lex-sn {
+  font-size: 10px;
+  font-family: monospace;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(74,158,255,0.1);
+  color: var(--blue);
+  border: 1px solid rgba(74,158,255,0.2);
+}
+.lex-link {
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: rgba(62,207,176,0.08);
+  color: var(--teal);
+  border: 1px solid rgba(62,207,176,0.2);
+  text-decoration: none;
+  transition: background 0.12s;
+  white-space: nowrap;
+}
+.lex-link:hover { background: rgba(62,207,176,0.18); }
+
+.lex-state-msg {
+  text-align: center;
+  color: var(--text3);
+  font-size: 14px;
+  padding: 52px 16px;
+}
+
+/* ── MOBILE ─────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .lex-page {
+    --sidebar-w: 44px;
+    --topbar-h: 44px;
+    --tabbar-h: 40px;
+    --glyph-btn: 16px;
+  }
+  .lex-letter-btn { width: 34px; height: 34px; }
+  .lex-tab        { padding: 0 11px; font-size: 12px; }
+  .lex-page-title { font-size: 13px; }
+  .lex-row-paleo  { min-width: 56px; }
+  .lex-row-tl     { font-size: 12px; }
+  .lex-row-def    { font-size: 10px; }
+  .lex-row        { padding: 10px 12px; gap: 10px; }
+  .lex-row-meta   { gap: 5px; }
+}
+
+/* ── Non-Hebrew language rendering ───────────────────────────────────── */
+/* The .lex-row-paleo cell is reused for Greek/Ge'ez, just with plain text
+   rather than the SVG paleo glyphs. We use serif fonts that render the
+   scripts properly. */
+.lex-row-greek {
+  font-family: 'Cardo', 'GFS Didot', 'Times New Roman', serif;
+  font-size: calc(var(--glyph-word) * 0.85);
+  line-height: 1.1;
+  color: var(--text);
+  text-align: left;
+}
+.lex-row-geez {
+  font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif;
+  font-size: calc(var(--glyph-word) * 0.85);
+  line-height: 1.1;
+  color: var(--text);
+  text-align: left;
+}
+
+/* Letter rail buttons rendering plain text instead of SVG */
+.lex-letter-btn-greek, .lex-letter-btn-geez {
+  font-size: 16px;
+  text-align: center;
+  padding: 4px 0;
+}
+.lex-letter-btn-greek { font-family: 'Cardo', 'GFS Didot', serif; }
+.lex-letter-btn-geez  { font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', serif; }
+
+/* Anchor letters between sections */
+.lex-anchor-greek, .lex-anchor-geez {
+  font-size: 28px;
+  color: var(--gold);
+  padding: 12px 14px 6px;
+  text-align: left;
+}
+.lex-anchor-greek { font-family: 'Cardo', 'GFS Didot', serif; }
+.lex-anchor-geez  { font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', serif; }
+
+/* Heuristic root tag — used on Greek/Ge'ez Surfaces tab to show the root
+   that surface belongs to, since "view surface ↗" isn't wired up yet. */
+.lex-row-meta .lex-root-tag {
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--text4);
+  background: var(--bg3);
+  padding: 1px 5px;
+  border-radius: 3px;
+}

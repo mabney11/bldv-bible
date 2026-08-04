@@ -1,0 +1,37 @@
+probe-term-gaps — what render-corpus leaves as plain English, and what your
+own OT data says it should become.
+word-map: names 2197, peoples 102, terms 429, termsDominant 328, termsAmbiguous 0
+divine phrases + theonyms: 24
+verses scanned: 25
+
+────────────────────────────────────────────────────────────────────────────
+WORDS render-corpus LEAVES AS PLAIN ENGLISH (>= 3 occurrences)
+────────────────────────────────────────────────────────────────────────────
+  count  word              verdict     proposed / note
+  ------------------------------------------------------------------------
+  39     became            absent      not in the OT map — authoring, not lookup
+  4      birth             absent      not in the OT map — authoring, not lookup
+  3      exile             absent      not in the OT map — authoring, not lookup
+  3      fourteen          absent      not in the OT map — authoring, not lookup
+
+────────────────────────────────────────────────────────────────────────────
+CAPITALISED WORDS THE NAME PASS DID NOT KNOW
+────────────────────────────────────────────────────────────────────────────
+These are probably names. Greek-derived NT names have no OT form and need a
+name-strongs.txt pin or an authored spelling; ones with an OT equivalent should
+resolve once aliased (e.g. Jechoniah -> H3204 Yakanayah).
+
+  count  word
+  ----------------------------------------
+  5      Yashawai
+  5      Dawad
+  4      Mashayach
+  4      Babal
+  3      Yawasap
+  3      Marayam
+  3      Adanay
+
+────────────────────────────────────────────────────────────────────────────
+READY TO PASTE — term-forms.txt
+────────────────────────────────────────────────────────────────────────────
+# (nothing proposed: no gap word had an unambiguous OT form)

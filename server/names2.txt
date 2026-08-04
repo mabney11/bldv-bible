@@ -1,0 +1,64 @@
+probe-gloss-source — which file could supply each missing gloss
+index=./surface-index.db  lex=./lexicon
+files found:
+  lexicon.json                     lexicon\lexicon.json
+  homographs.json                  lexicon\homographs.json
+  definitions.json                 lexicon\definitions.json
+  word-map.json                    word-map.json
+  name-map-expanded.json           name-map-expanded.json
+  strongs-hebrew.json              strongs-hebrew.json
+  strongs-hebrew-expanded.json     strongs-hebrew-expanded.json
+  strongs-roots.json               lexicon\strongs-roots.json
+  coptic-lexicon.json              lexicon\coptic-lexicon.json
+  geez-lexicon.json                lexicon\geez-lexicon.json
+  greek-lexicon.json               lexicon\greek-lexicon.json
+  hebrew-extra-lexicon.json        lexicon\hebrew-extra-lexicon.json
+  latin-lexicon.json               lexicon\latin-lexicon.json
+  syriac-lexicon.json              lexicon\syriac-lexicon.json
+
+Anything above that build-surface-index.js does NOT load is a wiring candidate.
+It loads only: lexicon.json, homographs.json, definitions.json, strongs-roots.json,
+surface-strongs-overrides.json.
+
+────────────────────────────────────────────────────────────────────────────
+CHECKING THE TOP 40 GAPS (class mod-nmpr) AGAINST EVERY DATA FILE
+────────────────────────────────────────────────────────────────────────────
+
+  count   would have been supplied by
+  ------------------------------------------------------------
+  34      strongs-hebrew-expanded.json
+  4       homographs.json:by-paleo
+  2       hebrew-extra-lexicon.json
+
+WHAT THIS MEANS
+  Anything but "NOWHERE" is a WIRING problem: the English already exists, in a
+  file build-surface-index.js does not consult. Fix = feed that file into the
+  gloss chain (or merge it into lexicon.json), then rebuild. No authoring.
+  "NOWHERE" is the genuine curation backlog.
+
+  source=BHS  -> pre-existing; the same gap shows in the OT, nothing to do with
+                the HEB bake. source=HEB only -> introduced by the whole-word path.
+  a ~ after the SN means the component carried no sn of its own and the row's
+  numbers were used instead, so that row is a candidate, not a certainty.
+
+strongs-hebrew-expanded.json:
+  𐤌𐤍𐤔𐤄 (mod-nmpr, H4519, 7115 hits, in 𐤌, source=BHS+HEB)
+  𐤏𐤉𐤓 (mod-nmpr, H5893, 1674 hits, in 𐤏𐤉𐤓, source=BHS+HEB)
+  𐤀𐤇𐤉 (mod-nmpr, H277, 1526 hits, in 𐤀𐤇𐤉, source=BHS+HEB)
+  𐤔𐤋𐤌𐤄 (mod-nmpr, H8010, 1201 hits, in 𐤔𐤋𐤌𐤄, source=BHS+HEB)
+  𐤁𐤁𐤋 (mod-nmpr, H894, 1129 hits, in 𐤁𐤁𐤋, source=BHS+HEB)
+  𐤌𐤉𐤆𐤄𐤁 (mod-nmpr, H4314, 1032 hits, in 𐤌𐤉, source=BHS+HEB)
+  𐤔𐤓𐤉 (mod-nmpr, H8298, 846 hits, in 𐤔𐤓𐤉, source=BHS+HEB)
+  𐤀𐤁𐤉 (mod-nmpr, H21, 842 hits, in 𐤀𐤁𐤉, source=BHS+HEB)
+  𐤀𐤁𐤉𐤄𐤏𐤆𐤓𐤉 (mod-nmpr, H33, 842 hits, in 𐤀𐤁𐤉, source=BHS+HEB)
+  𐤀𐤁𐤉𐤏𐤋𐤁𐤅𐤍 (mod-nmpr, H45, 842 hits, in 𐤀𐤁𐤉, source=BHS+HEB)
+
+homographs.json:by-paleo:
+  𐤔𐤌𐤏 (mod-nmpr, H8091, 1482 hits, in 𐤔𐤌𐤏, source=BHS+HEB)
+  𐤏𐤁𐤓 (mod-nmpr, H5677, 855 hits, in 𐤏𐤁𐤓, source=BHS+HEB)
+  𐤔𐤋𐤇 (mod-nmpr, H7975, 800 hits, in 𐤔𐤋𐤇, source=BHS+HEB)
+  𐤇𐤓𐤁 (mod-nmpr, H2722, 783 hits, in 𐤇𐤓𐤁, source=BHS+HEB)
+
+hebrew-extra-lexicon.json:
+  𐤉𐤔𐤅𐤏 (mod-nmpr, H3442, 985 hits, in 𐤉𐤔𐤅𐤏, source=BHS+HEB)
+  𐤎𐤐𐤓 (mod-nmpr, H7158, 595 hits, in 𐤎𐤐𐤓, source=BHS+HEB)

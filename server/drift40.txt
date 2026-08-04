@@ -1,0 +1,22 @@
+probe-ordinal-drift — canon 40-40, tokens_nt vs baked HEB rows
+index: C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\paleo-studio\server\surface-index.db
+
+── VERSE ALIGNMENT ──────────────────────────────────────────────────────
+  verses in both:                 1,071
+  same token COUNT:               123  11.5%
+  word-for-word identical:        123  11.5%
+  relatable by a constant shift:  0  0.0%
+  neither:                        948  88.5%
+
+── WHAT THAT DOES TO THE STRONG'S NUMBERS ───────────────────────────────
+  ordinals compared (both sides tagged): 10,011
+  disagree at the SAME ordinal:          6,536  65.3%
+  still disagree after the shift:        5,756  57.5%
+
+  ⇒ Shifting does NOT rescue them — these look like genuinely wrong pairs,
+    i.e. the passes-2-and-3 hypothesis in the handoff brief.
+
+── NOTE ─────────────────────────────────────────────────────────────────
+  Anything that joins these two tables on (verse, token_ordinal) inherits
+  this: /api/tokens' homograph guard, /api/raw, and the Studio's per-verse
+  Hebrew (txVerseQuery reads tokens_nt for canon 40-66).

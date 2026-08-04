@@ -1,0 +1,9 @@
+# name-strongs.txt — manually assign a name spelling to its OT Strong's number.
+# The Hebrew/transliteration is pulled from that Strong's root, so this stays purely
+# Strong's-driven: you are identifying WHICH attested name an apocryphal spelling is,
+# not inventing letters.
+#
+# Format:  Name -> H####   (or just the number)
+# Highest priority — overrides the auto word-map and the aliases.
+
+Zorobabel   -> H2216

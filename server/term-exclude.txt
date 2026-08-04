@@ -1,0 +1,287 @@
+# term-exclude.txt — terms NOT carried to the NT. One word per line.
+#
+# CARDINALS ABOVE TEN. You want one..ten (and first..tenth) to shine, but larger
+# counts — "five thousand", "a hundred sheep" — read better as digits in English.
+# So only 11+ are excluded here; 1-10 and the ordinals stay.
+eleven
+twelve
+thirteen
+fourteen
+fifteen
+sixteen
+seventeen
+eighteen
+nineteen
+twenty
+thirty
+forty
+fifty
+fifties
+sixty
+seventy
+eighty
+ninety
+hundred
+hundreds
+thousand
+thousands
+million
+twenty's
+forty's
+
+# MISCARRIED — OT Strong's is a different sense than the English word here.
+level        # H5183 = rest/quiet, not the adjective "level"
+# term-exclude-additions.txt — append to term-exclude.txt
+#
+# From proofreading Apocalypse of Abraham 3. A term pin fires on EVERY occurrence
+# of a word, so a grammatical word that happens to appear in some entry's kjv_def
+# becomes Hebrew everywhere it is used — including in the sense the Hebrew does
+# not carry. Each line below produced a visible error in that chapter.
+#
+# The pattern: English function words are ambiguous in ways the Hebrew is not.
+# "still" meaning "yet" is not damam "be silent". "since" meaning "because" is not
+# az "then". Neither engine can tell those apart, and neither should try.
+
+# ── adverbs of time/degree that collide with content words ─────────────────
+still            # rendered Damamah (damam = be silent/motionless); here it means "yet"
+yet
+already
+rather           # "is it not rather fitting" — not a content word
+quite
+indeed
+verily
+surely
+almost
+
+# ── conjunctions read as content words ─────────────────────────────────────
+since            # rendered Az (az = "then", temporal); here it is causal "because"
+thus             # rendered Kan; ken is fine but this is grammar, not content
+therefore
+wherefore
+however
+though
+although
+unless
+whether
+neither          # rendered Al, and produced the mangled "Yada (able)-Al (neither)"
+either
+
+# ── prepositions/adverbs of place ──────────────────────────────────────────
+within           # rendered Chayaqa (cheyq = bosom) — a body part, not a preposition
+without          # rendered Chayatzawanah; "without a head" is privative, not spatial
+among
+besides
+toward
+throughout
+together
+apart
+
+# ── reflexives and indefinites ─────────────────────────────────────────────
+myself           # rendered Anay (ani = "I")
+yourself
+himself          # rendered Gapa
+herself
+itself
+ourselves
+themselves
+another          # rendered Achaya — grammar; "other" is not a content noun here
+other
+others
+else
+something
+anything
+nothing
+everything
+
+# ── modal / auxiliary senses ───────────────────────────────────────────────
+able             # rendered Yada (yada = "know", not yakol "be able")
+unable
+let
+get
+got
+
+# ── very high-frequency light verbs and nouns ──────────────────────────────
+# Not wrong exactly, but they fire thousands of times and flatten distinct Hebrew
+# verbs into one form. Pin them only if you have decided which Hebrew you want.
+thing
+things
+way
+ways
+time
+times
+come
+came
+go
+went
+make
+made
+take
+took
+# term-exclude-additions.txt — append to term-exclude.txt
+#
+# From proofreading Apocalypse of Abraham 3. A term pin fires on EVERY occurrence
+# of a word, so a grammatical word that happens to appear in some entry's kjv_def
+# becomes Hebrew everywhere it is used — including in the sense the Hebrew does
+# not carry. Each line below produced a visible error in that chapter.
+#
+# The pattern: English function words are ambiguous in ways the Hebrew is not.
+# "still" meaning "yet" is not damam "be silent". "since" meaning "because" is not
+# az "then". Neither engine can tell those apart, and neither should try.
+
+# ── adverbs of time/degree that collide with content words ─────────────────
+still            # rendered Damamah (damam = be silent/motionless); here it means "yet"
+yet
+already
+rather           # "is it not rather fitting" — not a content word
+quite
+indeed
+verily
+surely
+almost
+
+# ── conjunctions read as content words ─────────────────────────────────────
+since            # rendered Az (az = "then", temporal); here it is causal "because"
+thus             # rendered Kan; ken is fine but this is grammar, not content
+therefore
+wherefore
+however
+though
+although
+unless
+whether
+neither          # rendered Al, and produced the mangled "Yada (able)-Al (neither)"
+either
+
+# ── prepositions/adverbs of place ──────────────────────────────────────────
+within           # rendered Chayaqa (cheyq = bosom) — a body part, not a preposition
+without          # rendered Chayatzawanah; "without a head" is privative, not spatial
+among
+besides
+toward
+throughout
+together
+apart
+
+# ── reflexives and indefinites ─────────────────────────────────────────────
+myself           # rendered Anay (ani = "I")
+yourself
+himself          # rendered Gapa
+herself
+itself
+ourselves
+themselves
+another          # rendered Achaya — grammar; "other" is not a content noun here
+other
+others
+else
+something
+anything
+nothing
+everything
+
+# ── modal / auxiliary senses ───────────────────────────────────────────────
+able             # rendered Yada (yada = "know", not yakol "be able")
+unable
+let
+get
+got
+
+# NOTE — CONTENT WORDS ARE DELIBERATELY NOT LISTED HERE.
+# An earlier version of this file also excluded thing/way/time/come/go/make/take.
+# That was wrong: it silently removed darak (way) from the render, which fieldy
+# had and wanted. Those words are CONTENT — they get a correct pin, not an
+# exclusion. Only grammar belongs in this file: words whose English sense the
+# Hebrew simply does not carry.
+# term-exclude-additions.txt — append to term-exclude.txt
+#
+# FORMAT WARNING: render-corpus.mjs L115 reads this file as
+#     .map(l => l.trim().toLowerCase()).filter(l => l && !l.startsWith('#'))
+# It does NOT strip inline comments, so "level   # note" becomes the exclusion
+# key "level   # note" and matches nothing. Comments must be on their OWN line.
+# (term-forms.txt is different — it splits on whitespace and takes the first two
+# fields, so trailing comments are fine there.)
+#
+# From proofreading Apocalypse of Abraham 3. A term pin fires on EVERY occurrence
+# of a word, so a grammatical word that happens to appear in some entry's kjv_def
+# becomes Hebrew everywhere it is used — including in the sense the Hebrew does
+# not carry. Each line below produced a visible error in that chapter.
+#
+# The pattern: English function words are ambiguous in ways the Hebrew is not.
+# "still" meaning "yet" is not damam "be silent". "since" meaning "because" is not
+# az "then". Neither engine can tell those apart, and neither should try.
+
+# ── adverbs of time/degree that collide with content words ─────────────────
+# rendered Damamah (damam = be silent/motionless); here it means "yet"
+still
+yet
+already
+# "is it not rather fitting" — not a content word
+rather
+quite
+indeed
+verily
+surely
+almost
+
+# ── conjunctions read as content words ─────────────────────────────────────
+# rendered Az (az = "then", temporal); here it is causal "because"
+since
+# rendered Kan; ken is fine but this is grammar, not content
+thus
+therefore
+wherefore
+however
+though
+although
+unless
+whether
+# rendered Al, and produced the mangled "Yada (able)-Al (neither)"
+neither
+either
+
+# ── prepositions/adverbs of place ──────────────────────────────────────────
+# rendered Chayaqa (cheyq = bosom) — a body part, not a preposition
+within
+# rendered Chayatzawanah; "without a head" is privative, not spatial
+without
+among
+besides
+toward
+throughout
+together
+apart
+
+# ── reflexives and indefinites ─────────────────────────────────────────────
+# rendered Anay (ani = "I")
+myself
+yourself
+# rendered Gapa
+himself
+herself
+itself
+ourselves
+themselves
+# rendered Achaya — grammar; "other" is not a content noun here
+another
+other
+others
+else
+something
+anything
+nothing
+everything
+
+# ── modal / auxiliary senses ───────────────────────────────────────────────
+# rendered Yada (yada = "know", not yakol "be able")
+able
+unable
+let
+get
+got
+
+# NOTE — CONTENT WORDS ARE DELIBERATELY NOT LISTED HERE.
+# An earlier version of this file also excluded thing/way/time/come/go/make/take.
+# That was wrong: it silently removed darak (way) from the render, which fieldy
+# had and wanted. Those words are CONTENT — they get a correct pin, not an
+# exclusion. Only grammar belongs in this file: words whose English sense the
+# Hebrew simply does not carry.

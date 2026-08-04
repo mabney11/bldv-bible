@@ -1,0 +1,14 @@
+{
+  "_note": "Page-image scan editions of original-language texts, read in-app via the Internet Archive BookReader. Add entries freely: each needs an `archive_id` (the slug from its archive.org/details/<id> URL); the viewer embeds archive.org/embed/<archive_id>. `maps_to` (canon_id or corpus:code) is optional and lets a work link to its scan.",
+  "scans": [
+    { "slug": "armenian-ot-zohrab-1", "title": "Old Testament, vol. 1 (Genesis–Ruth)", "language": "Classical Armenian (grabar)", "edition": "Zohrab Bible, Venice 1805", "archive_id": "OldTestamentInClassicalArmenian", "kind": "original" },
+    { "slug": "armenian-ot-zohrab-3", "title": "Old Testament, vol. 3 (Psalms–Ezekiel)", "language": "Classical Armenian (grabar)", "edition": "Zohrab Bible, Venice 1805", "archive_id": "OldTestamentInClassicalArmenian-3", "kind": "original" },
+    { "slug": "armenian-nt-zohrab", "title": "New Testament", "language": "Classical Armenian (grabar)", "edition": "Zohrab Bible, Venice 1805", "archive_id": "NewTestamentInClassicalArmenian", "kind": "original" },
+    { "slug": "armenian-bible-full", "title": "Bible (full)", "language": "Armenian", "edition": "Armenian Bible", "archive_id": "armenian_bible", "kind": "original" },
+
+    { "slug": "testaments-12p-greek-charles", "title": "Testaments of the Twelve Patriarchs", "language": "Greek", "edition": "R.H. Charles, The Greek Versions of the Testaments of the Twelve Patriarchs, Oxford 1908", "archive_id": "greekversionste00chargoog", "kind": "original", "maps_to": "ENG:TESTAMENT_OF_REUBEN" },
+    { "slug": "joseph-asenath-greek-batiffol", "title": "Joseph and Aseneth (Greek & Latin)", "language": "Greek / Latin", "edition": "P. Batiffol, Studia Patristica, Paris 1889–90", "archive_id": "joseph-and-aseneth-greek-and-latin-texts-batiffol-studia-patristica-1889-90", "kind": "original", "maps_to": "ENG:JOSEPH_AND_ASENATH" },
+
+    { "slug": "jasher-sefer-hayashar", "title": "Sefer ha-Yashar / Book of Jasher", "language": "Hebrew / English", "edition": "M.M. Noah ed., faithfully translated from the original Hebrew, 1840", "archive_id": "cu31924088174754", "kind": "original", "maps_to": "HEB:YASHAR" }
+  ]
+}

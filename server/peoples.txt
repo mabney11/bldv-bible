@@ -1,0 +1,118 @@
+# peoples.txt — names that render WITH the known English name as a gloss:
+#     Amaray (Amorite) · Yasharaal (Israel) · Qayanay (Kenite)
+#
+# Everything else that is a name renders BARE: Abaram, Mashah, Dawad.
+#
+# This is a curated list, not something derived from tags. The tags were unreliable
+# anyway — OSHB calls Kenite, Rephaim and Israel "nmpr" (like a personal name) but
+# Kenizzite and Hittite "adjv", so half the nation lists came out bare. The set of
+# peoples in scripture is finite and known, so it belongs here where you can see it.
+#
+# Singular is enough — plurals are generated (Amorite -> Amorites, Rephaim stays).
+# One name per line. Lines starting with # are ignored.
+# The Strong's number and the Paleo come from the text, as always; this file only
+# decides WHICH names carry an English gloss.
+
+# ── the Canaanite nations ────────────────────────────────────────────────────
+Amorite
+Canaanite
+Hittite
+Perizzite
+Jebusite
+Hivite
+Girgashite
+Kenite
+Kenizzite
+Kadmonite
+Rephaim
+Anakim
+Emim
+Zuzim
+Zamzummim
+Horite
+Avvim
+Caphtorim
+Philistine
+Geshurite
+Maacathite
+Sidonian
+Gibeonite
+
+# ── Israel and its tribes ────────────────────────────────────────────────────
+Israel
+Israelite
+Hebrew
+Judah
+Judahite
+Levite
+Reubenite
+Simeonite
+Gadite
+Danite
+Naphtalite
+Asherite
+Issacharite
+Zebulunite
+Benjamite
+Ephraimite
+Manassite
+Jew
+
+# ── the surrounding nations ──────────────────────────────────────────────────
+Edomite
+Moabite
+Ammonite
+Midianite
+Amalekite
+Ishmaelite
+Egyptian
+Ethiopian
+Cushite
+Assyrian
+Babylonian
+Chaldean
+Aramean
+Syrian
+Elamite
+Median
+Persian
+Greek
+Kittim
+Ludim
+Lubim
+Sabean
+Hagrite
+Ituraean
+Nabatean
+Samaritan
+Shechemite
+Zidonian
+Tyrian
+Arabian
+Kenizzite
+Calebite
+Jerahmeelite
+Korahite
+Merarite
+Gershonite
+Kohathite
+Aaronite
+Nethinim
+Rechabite
+Shilonite
+Gileadite
+Gittite
+Cherethite
+Pelethite
+Beerothite
+Netophathite
+Anathothite
+Zorathite
+Eshtaolite
+Zarhite
+Hachmonite
+Ahohite
+Harodite
+Paltite
+Tekoite
+Mehunim

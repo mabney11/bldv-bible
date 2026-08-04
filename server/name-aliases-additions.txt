@@ -1,0 +1,51 @@
+# ADDITIONS for name-aliases.txt — append these to your existing file.
+#
+# Format:  <variant> -> <canonical>
+# The variant is resolved to the canonical spelling BEFORE the name map is
+# consulted, so the NT gets whatever rendering the OT already produced. That is
+# the right mechanism for your question "no J in hebrew — what was his name in
+# the OT": don't invent a transliteration, point the NT spelling at the OT one
+# and let the existing pipeline render it.
+#
+# Matthew's genealogy comes through Greek, so the same person is spelled one way
+# in Kings/Chronicles and another in Matthew. These lines reunite them.
+
+# ── attested in the OT (safe: the OT rendering already exists) ──────────────
+Jechoniah -> Jeconiah        # H3204 Yekonyah — 1 Chr 3:16, Jer 24:1; also Coniah / Jehoiachin
+Jechonias -> Jeconiah
+Coniah -> Jeconiah
+Jehoiachin -> Jeconiah
+Abiud -> Abihud              # H31 — 1 Chr 8:3
+Matthan -> Mattan            # H4977 — 2 Kgs 11:18, Jer 38:1
+Matthat -> Mattan
+Naasson -> Nahshon           # H5177 (Matthew's Nachashawan already resolves; alias kept for the Greek form)
+Salmon -> Salma              # H8007 — 1 Chr 2:11
+Booz -> Boaz
+Obed -> Obed
+Jesse -> Jesse
+Zerubbabel -> Zerubbabel
+Salathiel -> Shealtiel       # H7597
+Rahab -> Rahab
+Thamar -> Tamar
+Phares -> Perez
+Esrom -> Hezron
+Aram -> Ram
+Aminadab -> Amminadab
+Ozias -> Uzziah              # Greek form of H5818
+Joatham -> Jotham
+Achaz -> Ahaz
+Ezekias -> Hezekiah
+Manasses -> Manasseh
+Amon -> Amon
+Josias -> Josiah
+Roboam -> Rehoboam
+Abia -> Abijah
+Asaph -> Asa
+
+# ── NOT attested in the OT — deliberately NOT aliased ───────────────────────
+# Azor, Achim and Eliud appear ONLY in Matthew's post-exilic genealogy. There is
+# no OT verse to cross-reference, so any Hebrew form would be a back-formation
+# from the Greek, not a recovered name. That is your call, not the pipeline's.
+# If you want them rendered, add YOUR chosen spelling to name-map.json instead —
+# e.g. Azor -> Azawar, Achim -> Yakayam (cf. H3199 Jachin), Eliud -> Alayahawad.
+# Left out here on purpose so nothing invented slips into the text silently.

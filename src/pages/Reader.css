@@ -1,0 +1,1049 @@
+/* ── Self-hosted reading faces without an @fontsource package ────────────────
+   Cochineal, Antykwa Toruńska, Coelacanth and Kierkegaard are TeX/OSP faces that
+   are not published on npm, so they are loaded from /fonts/ instead. Drop the
+   .woff2 files at the paths below (public/fonts/) and the typeface picker lights
+   them up. Until a file exists the browser simply skips it and the stack falls
+   back to Alegreya, so a missing font can never break the reader.
+   font-display:swap keeps text visible while a face loads. */
+@font-face {
+  font-family: 'Cochineal';
+  /* CTAN ships the regular cut as "Roman", not "Regular" — matches the file
+     actually downloaded from the Cochineal package. */
+  src: url('/fonts/Cochineal-Roman.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Cochineal';
+  src: url('/fonts/Cochineal-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Antykwa Torunska';
+  src: url('/fonts/AntykwaTorunska-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Antykwa Torunska';
+  src: url('/fonts/AntykwaTorunska-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  /* The Fuzzypeg/Coelacanth build script names the regular cut of each optical
+     size "<Family>-" (trailing dash, empty weight token) — matches the files
+     actually produced, not a guessed "-Regular". */
+  font-family: 'Coelacanth Pearl';
+  src: url('/fonts/CoelacanthPearl-.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Coelacanth Display';
+  src: url('/fonts/CoelacanthDisplay-.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Coelacanth Display';
+  src: url('/fonts/CoelacanthDisplay-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Coelacanth';
+  src: url('/fonts/Coelacanth-.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Coelacanth';
+  src: url('/fonts/Coelacanth-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  /* jrgdrs/Kierkegaard ships the Text-optical-size cut as "KierkegaardText-
+     Regular" — matches the file actually downloaded. */
+  font-family: 'Kierkegaard';
+  src: url('/fonts/KierkegaardText-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Reader — the pretty reading surface. Two themes, scoped to .reader-root so
+   the reader has its own warm identity regardless of the app's chrome:
+     • Night     (default / app dark)  — warm near-black, paper-white ink
+     • Parchment (app light theme)     — aged paper, ink-brown, ochre-gold
+   Everything derives from the tokens below. Body face is an old-style book
+   serif for genuine long-form reading; the app's gold carries through as the
+   accent so the reader still feels part of the whole.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.reader-root {
+  --pr-bg:        #14110c;
+  --pr-bg-raise:  #1c1811;
+  --pr-ink:       #ece4d4;
+  --pr-ink-soft:  #b6ac97;
+  --pr-faint:     #857b67;
+  --pr-accent:    #d7a54c;
+  --pr-accent-dim:#a67f38;
+  --pr-rule:      #2c2519;
+  --pr-flash:     rgba(215,165,76,0.16);
+  --pr-mark:      rgba(215,165,76,0.22);
+  /* THE READING FACE. Set inline by Reader.jsx from the persisted choice; this
+     declaration is only the fallback if the inline value is ever missing. The old
+     Palatino/Times-family serif is gone — the default is now Lexend, which is
+     drawn for reading proficiency rather than book-page atmosphere. */
+  --pr-reading: 'Lexend', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Kept so the chapter numeral can still take a display face if you ever want
+     one; nothing in the reading column uses it now. */
+  --pr-serif: var(--pr-reading);
+  --pr-measure: 46rem;
+
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--pr-bg);
+  color: var(--pr-ink);
+  font-family: var(--pr-reading);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── per-face optical corrections ──────────────────────────────────────────
+   Each face has its own vertical rhythm; a single line-height suits none of
+   them. These are applied via data-typeface on .reader-root, so the choice of
+   face carries its own spacing rather than needing a second control.
+   OpenDyslexic is the important one: its heavy baseline weighting makes lines
+   collide at the default leading, and the whole point of the face is defeated
+   if the text sets too tight. */
+.reader-root[data-typeface="opendyslexic"] .rd-body {
+  line-height: 2.05;
+  letter-spacing: .012em;
+  word-spacing: .06em;
+}
+.reader-root[data-typeface="atkinson"] .rd-body { line-height: 1.86; }
+.reader-root[data-typeface="lexend"]   .rd-body { line-height: 1.84; letter-spacing: 0; }
+.reader-root[data-typeface="verdana"]  .rd-body { line-height: 1.80; }
+.reader-root[data-typeface="inter"]    .rd-body { line-height: 1.82; }
+/* OpenDyslexic has no true small-caps/oldstyle and runs large for its em —
+   pull the giant chapter numeral back so it doesn't overpower the page. */
+.reader-root[data-typeface="opendyslexic"] .rd-chapter-num { font-size: clamp(64px, 19vw, 108px); }
+
+[data-theme="light"] .reader-root {
+  --pr-bg:        #efe4cc;
+  --pr-bg-raise:  #e7dabd;
+  --pr-ink:       #2b2117;
+  --pr-ink-soft:  #5d5240;
+  --pr-faint:     #8a7d62;
+  --pr-accent:    #9a6a1e;
+  --pr-accent-dim:#b48a3c;
+  --pr-rule:      #d8c8a4;
+  --pr-flash:     rgba(154,106,30,0.13);
+  --pr-mark:      rgba(198,146,32,0.30);
+}
+
+/* A very quiet paper grain / vignette — the only decoration, and it earns its
+   place by making the surface read as a physical page rather than a screen. */
+.reader-root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--pr-accent) 5%, transparent), transparent 60%),
+    radial-gradient(100% 60% at 50% 115%, color-mix(in srgb, #000 22%, transparent), transparent 55%);
+}
+[data-theme="light"] .reader-root::before {
+  background:
+    radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--pr-accent) 8%, transparent), transparent 60%),
+    radial-gradient(120% 70% at 50% 120%, color-mix(in srgb, #6b4e1f 12%, transparent), transparent 55%);
+}
+
+/* ── top bar ──────────────────────────────────────────────────────────────── */
+/* The bar sits ABOVE the click-catching scrim (.rd-scrim-menu, z 30) so the Aa
+   and switch menus inside it stay interactive — otherwise the scrim paints over
+   the menus and every tap just closes them. */
+.rd-bar {
+  position: relative;
+  z-index: 40;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px 8px;
+  background: color-mix(in srgb, var(--pr-bg) 86%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--pr-rule);
+}
+
+.rd-bar-btn {
+  flex: 0 0 auto;
+  height: 38px;
+  min-width: 38px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--pr-ink-soft);
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color .15s, background .15s, border-color .15s;
+}
+.rd-bar-btn:hover { color: var(--pr-ink); background: var(--pr-bg-raise); }
+.rd-bar-btn.on    { color: var(--pr-accent); border-color: color-mix(in srgb, var(--pr-accent) 40%, transparent); }
+.rd-home { font-size: 18px; color: var(--pr-accent); }
+.rd-aa { font-weight: 600; letter-spacing: -.01em; }
+.rd-aa-sm { font-size: .72em; }
+
+.rd-ref {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: var(--pr-ink);
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.rd-ref:hover { background: var(--pr-bg-raise); border-color: var(--pr-rule); }
+.rd-ref-txt {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rd-ref-caret { color: var(--pr-faint); font-size: 11px; }
+
+.rd-bar-right { flex: 0 0 auto; display: inline-flex; gap: 6px; }
+
+/* ── bar menus (switch / Aa) ──────────────────────────────────────────────── */
+/* The Aa panel (Script/Glosses/Verse Selection/Typeface/Theme…) is tall
+   enough that on a phone it used to run off the bottom of the screen with no
+   way to reach anything below the fold — the panel had no height limit or
+   scroll of its own, it just extended past the viewport. max-height caps it
+   to whatever room is actually below the top bar (accounting for the status
+   bar / notch and the bottom gesture-bar safe areas), and overflow-y makes
+   the rest reachable by scrolling the panel itself rather than the page
+   underneath it.
+   `100vh` on mobile Chrome/Safari measures the viewport as if the address
+   bar / bottom nav bar were hidden, even while they're actually on screen —
+   so a max-height sized against plain vh still let the last row sit BEHIND
+   that bar (the "bottom is getting cropped" report). `100dvh` is the dynamic
+   viewport unit that tracks the bar's actual current state; declared second
+   so browsers that understand it use it and older ones fall back to the vh
+   line above. The offset is also bumped up and padding-bottom added so the
+   last row always clears the bar with visible room to spare, not just
+   exactly at its edge. */
+.rd-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 12px;
+  z-index: 40;
+  min-width: 210px;
+  max-height: calc(100vh - 110px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  max-height: calc(100dvh - 110px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  background: var(--pr-bg-raise);
+  border: 1px solid var(--pr-rule);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px rgba(0,0,0,.4);
+  padding: 8px;
+  /* Extra bottom breathing room, on top of the max-height budget above, so
+     the last row clears the bottom nav bar with visible margin instead of
+     landing flush against — or behind — its edge. */
+  padding-bottom: 24px;
+  animation: rd-pop .16s ease;
+}
+@keyframes rd-pop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+.rd-menu-head, .rd-aa-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--pr-faint);
+  font-family: system-ui, sans-serif;
+}
+.rd-menu-head { padding: 4px 8px 8px; }
+
+.rd-menu-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  text-decoration: none;
+  color: var(--pr-ink);
+  transition: background .12s;
+}
+.rd-menu-item:hover { background: color-mix(in srgb, var(--pr-accent) 12%, transparent); }
+.rd-menu-item-label { font-size: 15px; }
+.rd-menu-item-hint  { font-size: 12px; color: var(--pr-faint); font-family: system-ui, sans-serif; }
+
+.rd-menu-aa { min-width: 300px; max-width: min(360px, calc(100vw - 24px)); }
+.rd-aa-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px; }
+.rd-aa-row + .rd-aa-row { border-top: 1px solid var(--pr-rule); }
+.rd-aa-size { display: inline-flex; align-items: center; gap: 4px; }
+.rd-aa-step {
+  height: 34px; min-width: 40px; padding: 0 10px;
+  background: var(--pr-bg); color: var(--pr-ink);
+  border: 1px solid var(--pr-rule); border-radius: 8px;
+  font-family: var(--pr-serif); cursor: pointer;
+}
+.rd-aa-step:disabled { opacity: .4; cursor: default; }
+.rd-aa-step:not(:disabled):hover { border-color: var(--pr-accent); color: var(--pr-accent); }
+.rd-aa-val { min-width: 26px; text-align: center; font-size: 14px; color: var(--pr-ink-soft); font-family: system-ui, sans-serif; }
+
+/* The typeface row stacks: label above a 2-up grid of previews. */
+.rd-aa-row-col { flex-direction: column; align-items: stretch; gap: 8px; }
+.rd-aa-fonts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  max-height: 46vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+/* Each chip previews ITSELF — the label is set in the font it selects, so the
+   choice is made by looking rather than by reading a name. */
+.rd-font-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 10px;
+  text-align: left;
+  background: var(--pr-bg);
+  color: var(--pr-ink);
+  border: 1px solid var(--pr-rule);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+}
+.rd-font-chip:hover { border-color: var(--pr-accent); }
+.rd-font-chip.sel {
+  border-color: var(--pr-accent);
+  box-shadow: 0 0 0 1px var(--pr-accent) inset;
+  background: color-mix(in srgb, var(--pr-accent) 12%, transparent);
+}
+.rd-font-name { font-size: 15px; line-height: 1.25; }
+/* The note stays in the UI face so it never becomes unreadable in the face
+   being previewed (OpenDyslexic at 11px is illegible). */
+.rd-font-note {
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--pr-faint);
+}
+
+/* Gloss display mode — Both / Hebrew only / English only. Same chip language as the
+   typeface picker; the note previews what a verse will look like in that mode. */
+.rd-aa-gloss {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.rd-gloss-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 10px;
+  text-align: left;
+  background: var(--pr-bg);
+  color: var(--pr-ink);
+  border: 1px solid var(--pr-rule);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+}
+.rd-gloss-chip:hover { border-color: var(--pr-accent); }
+.rd-gloss-chip.sel {
+  border-color: var(--pr-accent);
+  box-shadow: 0 0 0 1px var(--pr-accent) inset;
+  background: color-mix(in srgb, var(--pr-accent) 12%, transparent);
+}
+.rd-gloss-name { font-size: 14px; line-height: 1.25; }
+.rd-gloss-note {
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--pr-faint);
+  font-style: italic;
+}
+@media (max-width: 420px) {
+  .rd-aa-gloss { grid-template-columns: 1fr; }
+}
+/* Two-option variant — the gloss toggle for either non-English script (All
+   Hebrew/With glosses, or All Ge'ez/With glosses) has only two chips, so a
+   3-up grid would leave an empty cell. The Script toggle itself now has three
+   options (English/Hebrew/Ge'ez) and uses the default 3-up grid above. */
+.rd-aa-gloss.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+/* ── Transliterated-source reading mode (Hebrew or Ge'ez word order) ────────
+   `.rd-heb` is applied for EITHER non-English script, not just Hebrew — the
+   class name is a holdover from when Hebrew was the only one, kept to avoid
+   an unnecessary rename. For Hebrew, morphology classes (.mod-conj, .pfm-3ms,
+   .root, …) come from the same token stream + morphColors.css the Parallel
+   viewer uses, so every colored morpheme here means the same thing it means
+   there. Ge'ez has no such per-morpheme breakdown (its tokens aren't
+   Strong's-tagged), so its `.hw-word`/`.hwc-gloss` text simply never carries
+   a morphology class and renders in the plain ink color — `.hw` is the
+   bridge either way: the morphology classes only ever set the `--mc` custom
+   property (so they can be reused on differently-shaped elements across the
+   app), and this is what turns that into an actual text color for a bare
+   inline span, falling back to `inherit` when there's no `--mc` to read.
+   Bracket/paren punctuation deliberately does NOT get `.hw` — `.brk` already
+   sets its own dim color directly and must not be overridden by `.hw`'s
+   fallback. */
+.rd-heb .hw { color: var(--mc, inherit); }
+
+/* The word you're reading — every component (root, prefix, suffix) shares the
+   SAME weight and size, so "Ba" + "Raashayath" reads as one uniform word
+   instead of a bold root stitched to a lighter prefix. Only the color (--mc)
+   varies, by morphology class. Used in both "All Hebrew" prose and the
+   "With glosses" cells below. */
+.rd-heb .hw-word { font-weight: 600; font-size: 1em; }
+
+/* ── "With glosses" — one cell per word (renderHebrewWordCells) ─────────────
+   Laid out like the Hebrew Viewer's WordBlock: transliteration on top, gloss
+   directly underneath — but LEFT-TO-RIGHT (word 1 → word N, no RTL flip) and
+   inline-flex rather than a fixed grid, so cells wrap exactly like words in
+   running text. This is what actually solves "which gloss goes with which
+   word": vertical position does it, not tiny parenthetical text crammed into
+   the same line as five other words. */
+/* `width: min-content` ties the cell's width to whichever line actually
+   needs more room: min-content sizing takes the largest of each child's own
+   minimum width, .hwc-word is nowrap (unbreakable) so its minimum IS its full
+   rendered width, and .hwc-gloss wraps normally so its minimum is its widest
+   UNBREAKABLE WORD (not the whole gloss). Most of the time the transliterated
+   word is the wider of the two and the cell hugs it, with the gloss wrapping
+   underneath. But when a gloss word ("righteous", "messenger") is longer than
+   a short Hebrew word above it ("Ak", "Ash"), min-content sizing widens the
+   cell just enough to fit that whole gloss word on one line instead of
+   fracturing it — which is exactly what CSS's overflow-wrap:anywhere/
+   word-break:break-word were preventing before (they collapse a wrappable
+   box's intrinsic minimum size down to ~1 character, so the cell never saw a
+   reason to widen and the gloss broke mid-word instead). Removed below; see
+   .hwc-gloss. Slash-separated alternatives ("righteous/just/fair") are
+   space-normalized at render time (spaceGloss() in Reader.jsx) so each
+   alternative is its own wrappable word instead of one unbreakable run. */
+.rd-heb .hwc {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: top;
+  width: min-content;
+  min-width: 3.4em;      /* floor: a 1-2 letter word (Wa, Ba) still gets a readable column */
+  /* Bottom margin here is only the gap between WRAPPED LINES WITHIN one verse —
+     kept tight. The gap BETWEEN verses is a single controlled value on
+     .rd-verse itself (see .rd-heb-glossed below), so the two never compound
+     into the oversized gaps a per-cell margin alone would produce. */
+  margin: 0 .6em .4em 0;
+}
+.rd-heb .hwc-word { white-space: nowrap; text-align: center; }
+/* The gloss — clearly secondary to the word above it (smaller, unbolded, a
+   plain system sans instead of the reading face) but still a comfortable
+   reading size, not a caption you have to squint at. It wraps within the
+   word's own width (never sideways) and centers under it, so which gloss
+   belongs to which word is read off position, at a glance, every time. */
+.rd-heb .hwc-gloss {
+  display: block;
+  min-height: 1.3em;   /* reserves the line even when a cell has no gloss text (see Reader.jsx) */
+  margin-top: .22em;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: .78em;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--pr-accent-dim);   /* gold — clearly a different voice from the word above it */
+  white-space: normal;
+  /* Plain word-boundary wrapping — NOT overflow-wrap:anywhere/word-break:
+     break-word. Those break at ANY character, which also makes an element's
+     intrinsic minimum width collapse to ~1 character, so the cell (sized via
+     width:min-content above) never widened for a long gloss word — it just
+     fractured mid-word instead ("righteous" -> "righteou" / "s"). Plain
+     wrapping only breaks at real word boundaries, so a whole gloss word's
+     width correctly participates in the cell's min-content sizing. */
+  overflow-wrap: break-word;   /* last-resort only: a single "word" wider than the whole viewport */
+  letter-spacing: .003em;
+}
+.rd-heb .hwc-gloss .hw { font-weight: 400; }
+.rd-heb .hwc-gloss .brk { font-size: 1em; }
+
+/* Fallback content when a word has NO curated gloss at all: instead of a
+   dead blank cell (which is what made the grid look inconsistent — some
+   cells taller, some just empty air), show the word's OWN source script —
+   its Hebrew paleo spelling, or the raw Ge'ez text — so every cell still has
+   something to look at, and it's honest about what's actually known (the
+   word itself) rather than empty space standing in for missing data. */
+.rd-heb .hwc-gloss .hw-src-fallback {
+  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  unicode-bidi: embed;
+  font-size: 1.1em;
+}
+.rd-heb .hwc-gloss .hw-geez-fallback {
+  font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif;
+  font-size: 1.05em;
+}
+
+/* Divine names/titles (El, Elohim, YHWH, Adonai, Shaddai, Elyon, …) — flagged
+   systematically by Strong's number (see divinePaleo() in Reader.jsx), not
+   hand-picked per occurrence, so EVERY instance gets its paleo spelling
+   prefixed inside the gloss no matter what epithet the curated translation
+   uses that day: "(𐤉𐤄𐤅𐤄 Yahawah (Alahay of Yasharaal))". Set in the brighter
+   accent (not the dimmer gloss gold) and bold, so the divine name reads as
+   its own signal rather than blending into the rest of the gloss. */
+.rd-heb .hwc-gloss .hw-divine {
+  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  unicode-bidi: embed;
+  color: var(--pr-accent);
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
+/* A maqaf-joined pair ("Kal-Iwalah") is typographically ONE unit — the dash
+   ending the first cell means "glued to what's next." display:inline-flex
+   (default flex-wrap: nowrap) keeps the two cells from ever splitting across
+   a line break — the pair moves to the next line together or not at all —
+   and the tightened gap between them reads as one joined unit rather than
+   two ordinary words. */
+.rd-heb .hwc-maqaf-pair {
+  display: inline-flex;
+  align-items: flex-start;
+  vertical-align: top;
+  margin: 0 .6em .4em 0;
+}
+.rd-heb .hwc-maqaf-pair .hwc { margin: 0; }
+.rd-heb .hwc-maqaf-pair .hwc:first-child { margin-right: .14em; }
+
+/* ── "With glosses" — one verse, one flush-left line ─────────────────────────
+   Only in glossed mode: each verse becomes its own block instead of running
+   on from the previous one. Word-block cells have no natural "end of
+   sentence" the eye can use the way plain prose does, so letting verses share
+   a line (like English/"All Hebrew" prose does) read as one verse starting
+   indented, mid-row, wherever the last one happened to wrap to. A block per
+   verse guarantees every verse starts flush against the left margin, and puts
+   inter-verse spacing in ONE place instead of it compounding with the
+   per-row wrap margin above. "All Hebrew" and English keep the old
+   continuous-prose flow — this only applies here. */
+.rd-heb-glossed .rd-verse {
+  display: block;
+  margin-bottom: 1em;
+}
+.rd-heb-glossed .rd-verse:last-child { margin-bottom: 0; }
+
+.rd-aa-themes { display: inline-flex; gap: 6px; }
+.rd-theme-chip {
+  padding: 7px 12px; border-radius: 8px; cursor: pointer;
+  font-size: 13px; font-family: system-ui, sans-serif;
+  border: 1px solid var(--pr-rule);
+}
+.rd-theme-chip.parchment { background: #efe4cc; color: #2b2117; }
+.rd-theme-chip.night     { background: #14110c; color: #ece4d4; }
+.rd-theme-chip.sel { border-color: var(--pr-accent); box-shadow: 0 0 0 1px var(--pr-accent) inset; }
+
+.rd-scrim-menu { position: fixed; inset: 0; z-index: 30; background: transparent; }
+/* ── reading surface ──────────────────────────────────────────────────────── */
+.rd-scroll {
+  position: relative;
+  z-index: 10;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  /* Hard containment: whatever the text does, it never gets to push the
+     reading pane wider than the viewport (a long unbroken run — a URL, a
+     stray non-breaking space, anything a manual edit might introduce — used
+     to run clean off the edge with no way to scroll to it). .rd-body's own
+     overflow-wrap below is the fix for READABILITY; this is the backstop
+     that guarantees it, even for content this page has never seen before. */
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+.rd-page {
+  width: 100%;
+  max-width: var(--pr-measure);
+  margin: 0 auto;
+  padding: 28px clamp(20px, 6vw, 48px) calc(64px + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+}
+
+.rd-chapter { animation: rd-fade .5s ease both; }
+@keyframes rd-fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.rd-chapter-head {
+  text-align: center;
+  margin: 4px 0 28px;
+}
+.rd-book-name {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: .32em;
+  color: var(--pr-accent);
+  padding-left: .32em; /* balance the tracking */
+}
+.rd-chapter-num {
+  font-size: clamp(84px, 26vw, 148px);
+  line-height: .86;
+  font-weight: 500;
+  color: var(--pr-ink);
+  margin-top: 2px;
+}
+.rd-section-heading {
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--pr-ink-soft);
+  margin-top: 10px;
+  opacity: .8;
+}
+.rd-chapter-head::after {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 1px;
+  margin: 18px auto 0;
+  background: color-mix(in srgb, var(--pr-accent) 55%, transparent);
+}
+
+.rd-body {
+  line-height: 1.78;
+  color: var(--pr-ink);
+  letter-spacing: .002em;
+  text-align: left;
+  hanging-punctuation: first;
+  /* The reading column must never let a run of text push past its own
+     bounds, no matter what's in the verse — a manually-typed translation
+     may carry non-breaking spaces or other content ordinary word-wrapping
+     can't break on. Normal spaces still wrap at the word boundary exactly as
+     before; this only kicks in as the LAST resort, exactly like the existing
+     .hwc-gloss rule uses for the same reason. */
+  overflow-wrap: break-word;
+}
+.rd-vnum {
+  font-family: system-ui, sans-serif;
+  font-size: .74em;
+  font-weight: 600;
+  color: var(--pr-accent);
+  vertical-align: .42em;
+  line-height: 0;
+  margin: 0 .3em 0 .12em;
+  padding: 0 .15em;
+  letter-spacing: 0;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: color .12s, background .12s;
+}
+.rd-vnum:hover { color: var(--pr-ink); background: color-mix(in srgb, var(--pr-accent) 16%, transparent); }
+.rd-verse:first-child .rd-vnum { margin-left: 0; }
+
+/* Glues the verse number to the FIRST piece of ITS OWN verse (see
+   splitFirstToken in Reader.jsx) so a line never breaks between the number
+   and its word — the number would otherwise strand at the end of the
+   PREVIOUS line while its own verse starts fresh on the next. Everything
+   after the first piece (.rd-vtext) still wraps normally. */
+.rd-vnum-glue { white-space: nowrap; }
+
+/* Transliterated Hebrew/Aramaic root — the head word of a "root (gloss)" pair
+   (e.g. "Mashayach" in "Mashayach (Christ)"). Coloured with the reading accent and
+   lifted slightly in weight so the root stands out from its English gloss and the
+   surrounding prose, in both "Both" and "Hebrew only" gloss modes. */
+.rd-root {
+  color: var(--pr-accent-dim);
+  font-weight: 600;
+}
+
+/* Sticky highlight — a highlighter stroke that clones across wrapped lines.
+   Applies to BOTH .rd-vfirst (the verse's first word, glued to the number
+   inside .rd-vnum-glue so a line never breaks between them) and .rd-vtext
+   (everything after it) — otherwise the verse's own first word silently sat
+   outside the highlight, in every script (English, Hebrew, Ge'ez alike),
+   since .rd-vnum-glue lived outside .rd-vtext. */
+.rd-verse.marked .rd-vtext,
+.rd-verse.marked .rd-vfirst {
+  background: var(--pr-mark);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: .08em .02em;
+  border-radius: 2px;
+}
+.rd-verse.marked .rd-vnum { color: var(--pr-ink); }
+
+/* Verse highlight when arrived via ?verse= */
+.rd-flash {
+  background: var(--pr-flash);
+  box-shadow: 0 0 0 .28em var(--pr-flash);
+  border-radius: 3px;
+  transition: background 1.2s ease, box-shadow 1.2s ease;
+}
+
+/* ── Embedded scripture quotation (Pistis Sophia et al.) ─────────────────────
+   A quoted OT passage mid-paragraph, keeping ITS OWN verse numbers (see
+   splitScriptureQuote/renderScriptureQuote in Reader.jsx). Set apart from the
+   surrounding narrative the way a printed page sets off a block quotation:
+   indented, a quiet left rule, and a slightly smaller italic size — enough to
+   read as "this is a citation" without breaking the page's own type rhythm. */
+.rd-squote {
+  margin: .9em 0;
+  padding: .15em 0 .15em 1.1em;
+  border-left: 2px solid color-mix(in srgb, var(--pr-accent) 45%, transparent);
+  font-style: italic;
+  font-size: .96em;
+  color: var(--pr-ink-soft);
+}
+.rd-squote-line { margin: 0 0 .5em; }
+.rd-squote-line:last-child { margin-bottom: 0; }
+
+/* A citation-linked quote (server/public/scripture-citations.json) is a real
+   link to the canonical passage — signal that on hover without making it
+   look like an ordinary inline text link the rest of the time. */
+.rd-squote-link {
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 0 6px 6px 0;
+  transition: background .15s, border-color .15s;
+}
+.rd-squote-link:hover,
+.rd-squote-link:focus-visible {
+  background: color-mix(in srgb, var(--pr-accent) 8%, transparent);
+  border-left-color: var(--pr-accent);
+}
+.rd-squote-ref {
+  display: block;
+  margin-top: .5em;
+  font-style: normal;
+  font-family: system-ui, sans-serif;
+  font-size: .7em;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--pr-faint);
+}
+.rd-squote-link:hover .rd-squote-ref,
+.rd-squote-link:focus-visible .rd-squote-ref {
+  color: var(--pr-accent);
+}
+.rd-squote-num {
+  font-family: system-ui, sans-serif;
+  font-style: normal;
+  font-size: .72em;
+  font-weight: 600;
+  color: var(--pr-accent-dim);
+  vertical-align: .42em;
+  line-height: 0;
+  margin-right: .35em;
+}
+
+.rd-state {
+  padding: 60px 8px;
+  text-align: center;
+  color: var(--pr-ink-soft);
+  font-size: 17px;
+}
+.rd-state-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--pr-accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--pr-accent) 45%, transparent);
+}
+
+/* ── chapter foot ─────────────────────────────────────────────────────────── */
+.rd-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 40px;
+  padding-top: 22px;
+  border-top: 1px solid var(--pr-rule);
+}
+.rd-foot-btn {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  background: transparent;
+  color: var(--pr-ink-soft);
+  border: 1px solid var(--pr-rule);
+  border-radius: 9px;
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.rd-foot-btn:not(:disabled):hover { color: var(--pr-accent); border-color: var(--pr-accent); }
+.rd-foot-btn:disabled { opacity: .35; cursor: default; }
+.rd-foot-ref {
+  flex: 1 1 auto;
+  text-align: center;
+  background: none;
+  border: none;
+  color: var(--pr-faint);
+  font-family: var(--pr-serif);
+  font-size: 15px;
+  cursor: pointer;
+}
+.rd-foot-ref:hover { color: var(--pr-ink); }
+
+/* ── passage picker (bottom sheet on mobile, panel on desktop) ────────────── */
+.rd-sheet-wrap { position: fixed; inset: 0; z-index: 60; }
+.rd-scrim { position: absolute; inset: 0; background: rgba(0,0,0,.5); }
+
+.rd-sheet {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--pr-bg-raise);
+  border-top: 1px solid var(--pr-rule);
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -18px 50px rgba(0,0,0,.45);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  animation: rd-slideup .24s ease;
+}
+@keyframes rd-slideup { from { transform: translateY(100%); } to { transform: none; } }
+.rd-sheet-grip {
+  width: 40px; height: 4px; border-radius: 2px;
+  background: var(--pr-rule);
+  margin: 9px auto 4px;
+}
+.rd-sheet-head { display: flex; align-items: center; gap: 8px; padding: 6px 14px 10px; }
+.rd-sheet-search {
+  flex: 1 1 auto;
+  height: 40px;
+  padding: 0 14px;
+  background: var(--pr-bg);
+  border: 1px solid var(--pr-rule);
+  border-radius: 10px;
+  color: var(--pr-ink);
+  font-family: system-ui, sans-serif;
+  font-size: 15px;
+}
+.rd-sheet-search::placeholder { color: var(--pr-faint); }
+.rd-sheet-close {
+  height: 40px; width: 40px;
+  background: var(--pr-bg); color: var(--pr-ink-soft);
+  border: 1px solid var(--pr-rule); border-radius: 10px; cursor: pointer;
+}
+
+.rd-sheet-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  overflow: hidden;
+  border-top: 1px solid var(--pr-rule);
+  min-height: 0;
+}
+.rd-sheet-col { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px; }
+.rd-col-books { border-right: 1px solid var(--pr-rule); }
+
+.rd-book-row {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  background: transparent; border: none; border-radius: 8px;
+  color: var(--pr-ink); text-align: left; cursor: pointer;
+  font-family: var(--pr-serif); font-size: 15px;
+}
+.rd-book-row:hover { background: color-mix(in srgb, var(--pr-accent) 10%, transparent); }
+.rd-book-row.sel { background: color-mix(in srgb, var(--pr-accent) 16%, transparent); }
+.rd-book-row.cur .rd-book-label { color: var(--pr-accent); }
+.rd-book-idx {
+  flex: 0 0 auto; min-width: 22px;
+  font-family: system-ui, sans-serif; font-size: 11px;
+  color: var(--pr-faint); text-align: right;
+}
+.rd-book-label { flex: 1 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.rd-sheet-sub {
+  font-family: system-ui, sans-serif;
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--pr-faint);
+  padding: 8px 4px 6px;
+}
+.rd-section-group + .rd-section-group { margin-top: 14px; }
+.rd-section-title {
+  font-family: system-ui, sans-serif;
+  font-size: 11px; font-weight: 600; letter-spacing: .02em;
+  color: var(--pr-ink-soft);
+  padding: 2px 4px 6px;
+}
+.rd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 6px;
+}
+.rd-grid-verses { grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); }
+.rd-grid-cell {
+  height: 42px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--pr-bg);
+  border: 1px solid var(--pr-rule);
+  border-radius: 8px;
+  color: var(--pr-ink-soft);
+  font-family: system-ui, sans-serif; font-size: 14px;
+  cursor: pointer;
+  transition: color .12s, border-color .12s, background .12s;
+}
+.rd-grid-cell:hover { color: var(--pr-accent); border-color: var(--pr-accent); }
+.rd-grid-cell.cur { background: var(--pr-accent); border-color: var(--pr-accent); color: #14110c; font-weight: 600; }
+.rd-sheet-empty { padding: 20px 8px; color: var(--pr-faint); font-family: system-ui, sans-serif; font-size: 14px; }
+
+/* ── desktop: picker becomes a centered panel, wider measure ──────────────── */
+@media (min-width: 720px) {
+  .rd-sheet {
+    left: 50%; right: auto; bottom: auto; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 560px; max-height: 76vh;
+    border: 1px solid var(--pr-rule);
+    border-radius: 16px;
+    animation: rd-pop .18s ease;
+  }
+  .rd-sheet-grip { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rd-chapter, .rd-menu, .rd-sheet { animation: none; }
+  .rd-scroll { scroll-behavior: auto; }
+}
+
+/* ── Chapter headings: superscriptions and acrostic stanza letters ──────────
+   Neither is verse text, so neither sits inside .rd-body's prose flow. They break
+   the column deliberately — a reader should never mistake "A Psalm of David" for
+   verse 1, which is exactly the confusion the old ingest baked into the data. */
+
+.rd-super {
+  margin: 0 0 1.4em;
+  padding: 0 0 1em;
+  border-bottom: 1px solid var(--border, rgba(255,255,255,.08));
+  text-align: center;
+}
+.rd-super-paleo {
+  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  font-size: 1.35em;
+  line-height: 1.6;
+  direction: rtl;
+  color: var(--gold, #c8a557);
+  margin-bottom: .35em;
+}
+.rd-super-translit {
+  font-size: .82em;
+  font-style: italic;
+  letter-spacing: .02em;
+  color: var(--text3, #8a8175);
+}
+
+/* Acrostic stanza letter — Psalm 119's 22 stanzas, Lamentations, Proverbs 31.
+   `display: block` inside the prose flow forces the stanza break the poem intends.
+   Two lines, both flush right: the big stanza glyph sits directly above its own
+   name-row, and the name-row is right-aligned so the paleo spelling's FIRST
+   letter — Aleph in 𐤀𐤋𐤐 — lands at the right edge, i.e. exactly where a
+   right-to-left reader starts. */
+.rd-acrostic {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: .12em;
+  margin: 1.8em 0 .8em;
+  padding-bottom: .3em;
+  border-bottom: 1px solid var(--border, rgba(255,255,255,.06));
+}
+.rd-acrostic:first-child { margin-top: 0; }
+.rd-acrostic-glyph {
+  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  font-size: 2.75em;
+  line-height: 1;
+  color: var(--gold, #c8a557);
+}
+.rd-acrostic-name {
+  font-size: .78em;
+  font-style: italic;
+  letter-spacing: .06em;
+  text-transform: none;
+  color: var(--text3, #8a8175);
+}
+.rd-acrostic-spelled {
+  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  font-style: normal;
+  font-size: 1.3em;
+  letter-spacing: .02em;
+  color: var(--gold, #c8a557);
+}
+
+@media (max-width: 700px) {
+  .rd-super { margin-bottom: 1.1em; }
+  .rd-super-paleo { font-size: 1.2em; }
+  .rd-acrostic { margin: 1.4em 0 .6em; }
+  .rd-acrostic-glyph { font-size: 2.3em; }
+}
+
+/* ── Untranslated book state ─────────────────────────────────────────────── */
+.rd-state-untranslated {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  padding: 3rem 2rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.rd-state-icon {
+  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  font-size: 2.8rem;
+  color: var(--gold, #c8a557);
+  line-height: 1;
+  margin-bottom: .25rem;
+}
+.rd-state-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text1, #e8dfc8);
+  margin: 0;
+}
+.rd-state-sub {
+  font-size: .85rem;
+  line-height: 1.6;
+  color: var(--text3, #8a8175);
+  margin: 0;
+}
+.rd-state-actions {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  width: 100%;
+  margin-top: .5rem;
+}
+.rd-state-btn {
+  display: block;
+  padding: .65rem 1.2rem;
+  border-radius: 6px;
+  font-size: .9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity .15s;
+}
+.rd-state-btn:hover { opacity: .85; }
+.rd-state-btn-primary {
+  background: var(--gold, #c8a557);
+  color: #0e0e0f;
+}
+.rd-state-btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border, rgba(255,255,255,.12));
+  color: var(--text2, #c8bfad);
+}
+
+@media (min-width: 480px) {
+  .rd-state-actions { flex-direction: row; justify-content: center; }
+  .rd-state-btn { display: inline-block; }
+}

@@ -1,0 +1,29 @@
+# term-strongs.txt — pin an English term to a specific Strong's, overriding the
+# lexicon's gloss lookup. Use when a term is AMBIGUOUS (resolves to several roots in
+# the OT) or resolved to the wrong one, so it would otherwise be dropped or miscarry.
+#
+# Format:  <english term>  <Strong's>
+# The Paleo/translit still comes from strongs-roots.json for that number.
+
+# glory: 11 roots in the OT, kabawad (H3519) dominant at 154 of ~220
+glory       H3519
+glories     H3519
+
+# wife / woman: ishah (H802) is the word, dominant at 205
+wife        H802
+wives       H802
+
+# these commonly fracture across roots; pin to the dominant / intended one.
+# Verify each against your run's ambiguous list and adjust the number if needed.
+dream       H2472
+dreams      H2472
+sleep       H8142
+command     H6680
+commanded   H6680
+commandment H4687
+depart      H5493
+departed    H5493
+arise       H6965
+arose       H6965
+appear      H7200
+appeared    H7200

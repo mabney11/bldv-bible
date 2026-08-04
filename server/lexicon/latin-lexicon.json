@@ -1,0 +1,9 @@
+{
+  "_doc": "Your curated Latin glosses. Flat map of surface form (as it appears in the text, accents/length-marks kept, punctuation stripped) -> gloss. Hot-reloads on save. Latin has no lemma layer yet, so key by surface form; Greek NT is keyed by lemma instead. Keys starting with _ are ignored.",
+  "Haec": "these things",
+  "verba": "words",
+  "locutus": "spoke, having spoken",
+  "Moyses": "Moses",
+  "omnem": "all, every",
+  "Israel": "Israel"
+}

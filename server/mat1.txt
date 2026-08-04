@@ -1,0 +1,63 @@
+probe-tokens-source — book 40 chapter 1, asking for source=HEB
+index: C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\paleo-studio\server\surface-index.db
+schema: source=YES  per-occurrence strongs=YES  pos/morph=YES
+  BHS: 422,017 occurrences across 39 books
+  HEB: 389,463 occurrences across 66 books
+
+── WHAT THE FAST PATH RETURNS ───────────────────────────────────────────
+  source-blind (shipped server.js): 376 rows
+  source-filtered (patched):        262 rows
+  rows whose surface row is from the OTHER edition: 114
+  rows belonging to an edition you did not ask for: 0
+  token slots served more than one row: 114 of 262
+
+  Examples of a cross-edition pairing (occurrence ↔ surface row):
+    v1.1 𐤎𐤐𐤓  occ=HEB served by surf=BHS H5612
+        𐤎𐤐𐤓[root]
+    v1.2 𐤕𐤅𐤋𐤃𐤕  occ=HEB served by surf=BHS H8435
+        𐤕𐤅𐤋𐤃𐤄[root] + 𐤕[nme-wt]
+    v1.3 𐤉𐤔𐤅𐤏  occ=HEB served by surf=BHS H3442
+        𐤉𐤔𐤅𐤏[mod-nmpr]
+    v2.1 𐤀𐤁𐤓𐤄𐤌  occ=HEB served by surf=BHS H85
+        𐤀𐤁𐤓𐤄𐤌[mod-nmpr]
+    v2.2 𐤄𐤅𐤋𐤉𐤃  occ=HEB served by surf=BHS H3205
+        𐤄[vbs-hif] + 𐤉𐤅𐤋𐤉𐤃[root]
+    v2.5 𐤄𐤅𐤋𐤉𐤃  occ=HEB served by surf=BHS H3205
+        𐤄[vbs-hif] + 𐤉𐤅𐤋𐤉𐤃[root]
+    v2.8 𐤄𐤅𐤋𐤉𐤃  occ=HEB served by surf=BHS H3205
+        𐤄[vbs-hif] + 𐤉𐤅𐤋𐤉𐤃[root]
+    v3.2 𐤄𐤅𐤋𐤉𐤃  occ=HEB served by surf=BHS H3205
+        𐤄[vbs-hif] + 𐤉𐤅𐤋𐤉𐤃[root]
+    v3.5 𐤆𐤓𐤇  occ=HEB served by surf=BHS H2226
+        𐤆𐤓𐤇[mod-nmpr]
+    v3.8 𐤄𐤅𐤋𐤉𐤃  occ=HEB served by surf=BHS H3205
+        𐤄[vbs-hif] + 𐤉𐤅𐤋𐤉𐤃[root]
+    v3.11 𐤄𐤅𐤋𐤉𐤃  occ=HEB served by surf=BHS H3205
+        𐤄[vbs-hif] + 𐤉𐤅𐤋𐤉𐤃[root]
+    v4.2 𐤄𐤅𐤋𐤉𐤃  occ=HEB served by surf=BHS H3205
+        𐤄[vbs-hif] + 𐤉𐤅𐤋𐤉𐤃[root]
+
+── INTEGRITY GUARDS (each one sends the WHOLE chapter to the live parser) 
+  homograph surfaces present in this chapter: 58  e.g. 𐤎𐤐𐤓 𐤉𐤔𐤅𐤏 𐤆𐤓𐤇 𐤌𐤓𐤅𐤕 𐤂𐤋𐤅𐤕 𐤁𐤁𐤋
+  baked SN vs tokens_nt SN — disagreements: 34
+  ⇒ the shipped guard FIRES: this chapter is live-parsed from tokens_nt,
+    which for HEB means untagged rows — no prefix decomposition, and the
+    inferred SN goes straight onto the badge.
+      v3.5 𐤆𐤓𐤇  baked=H2226  tokens_nt=H5315
+      v5.8 𐤌𐤓𐤅𐤕  baked=H4796  tokens_nt=H853
+      v11.6 𐤂𐤋𐤅𐤕  baked=H1546  tokens_nt=H283
+      v11.7 𐤁𐤁𐤋  baked=H894  tokens_nt=H6
+      v13.9 𐤀𐤕  baked=H853  tokens_nt=H471
+      v13.10 𐤏𐤆𐤅𐤓  baked=H5809  tokens_nt=H3205
+      v16.4 𐤁𐤏𐤋  baked=H1167  tokens_nt=H3130
+      v16.5 𐤌𐤓𐤉𐤌  baked=H4813  tokens_nt=H1167
+      v16.6 𐤀𐤔𐤓  baked=H834  tokens_nt=H4813
+      v16.9 𐤉𐤔𐤅𐤏  baked=H3442  tokens_nt=H3205
+      v17.5 𐤀𐤓𐤁𐤏𐤄  baked=H702  tokens_nt=H85
+      v17.6 𐤏𐤔𐤓  baked=H6240  tokens_nt=H5704
+  rows whose first component letter ≠ word_raw's first letter: 6  e.g. 𐤀𐤕𐤉𐤅𐤕𐤌 𐤅𐤔𐤀𐤋𐤕𐤉𐤀𐤋 𐤅𐤀𐤋𐤉𐤒𐤉𐤌 𐤅𐤏𐤆𐤅𐤓 𐤅𐤄𐤋𐤃𐤕
+  ⇒ the "surface-index drift" guard FIRES: whole chapter live-parsed.
+
+── VERDICT ──────────────────────────────────────────────────────────────
+  The source-blind query is serving this chapter wrong. The patched
+  server.js (source filter + t.source = o.source on the join) fixes it.

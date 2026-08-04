@@ -1,0 +1,8 @@
+{
+  "_README": "Named sections spanning a chapter RANGE within a single book — for books made of multiple originally-distinct parts combined into one continuously-chaptered book (e.g. Book of Melchizedek's History of the Vase / Salem's Story / History of the Universe, combined 2026-08-01 per fieldy's request to have ONE dropdown entry). Keyed by canon_id (string, since JSON object keys are always strings) -> array of {from, title}, sorted ascending by 'from'. 'from' is the first book-level chapter number of that section (inclusive); a section runs until the next entry's 'from' (or the end of the book, for the last entry). Read by GET /api/book-sections?book=<canon_id> in server.js (hot-reloaded via fs.watchFile, same pattern as book-order.json/lexicon.json — no restart needed after editing this file, though the reader itself is a React build, see the frontend rebuild note in server.js's route comment). A book with no entry here just has no section dividers — this is opt-in, not required for every book.",
+  "216": [
+    { "from": 1,  "title": "The History of the Vase (written by Abraham)" },
+    { "from": 12, "title": "Salem's Story (written by Abraham)" },
+    { "from": 26, "title": "The History of the Universe (written by Melchizedek)" }
+  ]
+}

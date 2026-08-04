@@ -1,0 +1,235 @@
+.landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 60px 24px calc(60px + var(--safe-bottom));
+}
+
+.landing-logo-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.landing-logo-mark {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-logo-glyph {
+  font-family: var(--paleo-font);
+  font-size: 42px;
+  color: var(--gold);
+  letter-spacing: -2px;
+}
+
+.landing-title {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text3);
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+.landing-title span {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.landing-cta {
+  background: var(--blue2);
+  color: #fff;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 7px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background 0.15s, transform 0.1s;
+  display: inline-block;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+}
+.landing-cta:hover  { background: var(--blue); }
+.landing-cta:active { transform: scale(0.98); }
+
+/* ── Primary "Read" entry — the average-reader path ───────────────────────── */
+.landing-read-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  padding: 18px 40px;
+  border-radius: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  max-width: 460px;
+  width: 100%;
+}
+.landing-read-cta:hover {
+  background: color-mix(in srgb, var(--text) 6%, var(--bg2));
+  border-color: var(--text3);
+}
+.landing-read-cta:active { transform: scale(0.99); }
+.landing-read-cta-label {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+.landing-read-cta-sub {
+  font-size: 12.5px;
+  color: var(--text3);
+  text-align: center;
+}
+
+.landing-sec-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.landing-sec-link {
+  font-size: 13px;
+  color: var(--text3);
+  padding: 11px 18px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  letter-spacing: 0.03em;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+}
+.landing-sec-link:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 6%, transparent);
+}
+
+.landing-sub {
+  font-size: 13px;
+  color: var(--text4);
+  text-align: center;
+  line-height: 1.7;
+}
+.landing-sub strong { color: var(--text3); font-weight: 600; }
+
+/* ── Subtitle under the title ─────────────────────────────────────────── */
+.landing-subtitle {
+  font-size: 13px;
+  color: var(--text4);
+  letter-spacing: 0.03em;
+  margin-top: -4px;
+}
+
+/* ── Source switcher: LXX / GNT / GEZ entry cards ─────────────────────── */
+.landing-sources {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 720px;
+}
+.landing-sources-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text4);
+}
+.landing-sources-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+.landing-source-card {
+  flex: 1 1 200px;
+  max-width: 240px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+.landing-source-card:hover {
+  border-color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 8%, var(--bg2));
+}
+.landing-source-card:active { transform: scale(0.98); }
+.landing-source-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+}
+.landing-source-name {
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 600;
+}
+.landing-source-sub {
+  font-size: 11px;
+  color: var(--text4);
+}
+
+/* ── Per-language lexicon row ─────────────────────────────────────────── */
+.landing-lex-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.landing-lex-label {
+  color: var(--text4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  margin-right: 4px;
+}
+.landing-lex-link {
+  color: var(--text3);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--text4);
+  padding-bottom: 1px;
+  transition: color 0.1s, border-bottom-color 0.1s;
+}
+.landing-lex-link:hover {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+.landing-lex-dot { color: var(--text4); }
+
+@media (max-width: 500px) {
+  .landing { gap: 28px; padding: 40px 16px calc(40px + var(--safe-bottom)); }
+  .landing-title    { font-size: 18px; }
+  .landing-cta      { font-size: 14px; padding: 14px 28px; width: 100%; justify-content: center; }
+  .landing-sec-links { flex-direction: column; align-items: stretch; width: 100%; max-width: 360px; }
+  .landing-sec-link { justify-content: center; font-size: 14px; padding: 14px 18px; }
+  .landing-logo-mark { width: 90px; height: 90px; }
+  .landing-logo-glyph { font-size: 32px; }
+  .landing-sources-row { flex-direction: column; align-items: stretch; }
+  .landing-source-card { max-width: none; }
+}

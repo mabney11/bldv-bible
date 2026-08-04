@@ -1,0 +1,20 @@
+# gloss-overrides.txt — override the ENGLISH GLOSS for a given Strong's number.
+#
+# The transliteration always comes from the Hebrew. This file only changes the
+# English shown in the parentheses, for cases where the translator's word choice
+# hides a distinction the Hebrew makes.
+#
+#   Psalm 119 uses BOTH dabar (H1697) and imrah (H565), and WEB renders both as
+#   "word" — so the reader saw "dabar (word)" and "amarah (word)" and had no way to
+#   tell them apart. imrah is an utterance, a spoken saying. Glossing it "sayings"
+#   removes the collision without touching the Hebrew.
+#
+# Format:  H<number>  <gloss>
+# Lines starting with # are ignored.
+
+H565    sayings
+H3004   dry land
+H5769   forever
+H7200   see
+H7725   turn back / repent
+H8451   instruction

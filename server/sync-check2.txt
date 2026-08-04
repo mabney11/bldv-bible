@@ -1,0 +1,43 @@
+sync-heb-tokens — CHECK (nothing will be written)
+corpus: C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\paleo-studio\server\corpus.db
+index:  C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\paleo-studio\server\surface-index.db
+
+  index BHS: 422,017 occurrences / 39 books
+  index HEB: 401,901 occurrences / 66 books
+
+  tokens_nt: 416,564 rows
+  columns:   source_id, book_id, chapter, verse, token_ordinal, word_raw, lemma, root, pos, morph, strongs, match_kind, confidence
+
+── WHAT CHANGES ─────────────────────────────────────────────────────────
+  rows:   tokens_nt 416,564  ->  projection 401,901
+  verses: in both 31,169, only in tokens_nt 0, only in the index 0
+  of the shared verses, 24,563 (78.8%) tokenize identically
+  where they do, Strong's agree on 248,224 and DISAGREE on 61,562 (19.9%)
+
+  Disagreements (the index value is the one the reader already shows):
+    1:1:1.6 𐤅𐤀𐤕  tokens_nt=H5315  index=H853
+    1:1:1.7 𐤄𐤀𐤓𐤑  tokens_nt=H6030  index=H776
+    1:1:2.1 𐤅𐤄𐤀𐤓𐤑  tokens_nt=H6030  index=H776
+    1:1:4.1 𐤅𐤉𐤓𐤀  tokens_nt=H3372  index=H7200
+    1:1:5.11 𐤁𐤒𐤓  tokens_nt=H1241  index=H1242
+    1:1:6.5 𐤁𐤕𐤅𐤊  tokens_nt=H5921  index=H8432
+    1:1:7.14 𐤌𐤏𐤋  tokens_nt=H4604  index=H5921
+    1:1:8.8 𐤁𐤒𐤓  tokens_nt=H1241  index=H1242
+    1:1:8.10 𐤔𐤍𐤉  tokens_nt=H8147  index=H8145
+    1:1:9.11 𐤄𐤉𐤁𐤔𐤄  tokens_nt=H3001  index=H3004
+    1:1:10.3 𐤋𐤉𐤁𐤔𐤄  tokens_nt=H3001  index=H3004
+    1:1:10.8 𐤉𐤌𐤉𐤌  tokens_nt=H3117  index=H3220
+
+── TRANSLATION LINKS ────────────────────────────────────────────────────
+  16,437 links total, 16 bound to HEB.
+  already correct: 11   remappable: 0   NEEDS ATTENTION: 5
+    link 62 @ 43:1:1: "𐤄𐤉𐤄" occurs 3x in the new cut — ambiguous
+    link 63 @ 43:1:1: "𐤄𐤃𐤁𐤓" occurs 2x in the new cut — ambiguous
+    link 65 @ 43:1:1: "𐤄𐤉𐤄" occurs 3x in the new cut — ambiguous
+    link 69 @ 43:1:1: "𐤄𐤉𐤄" occurs 3x in the new cut — ambiguous
+    link 70 @ 43:1:1: "𐤄𐤃𐤁𐤓" occurs 2x in the new cut — ambiguous
+  Those are left EXACTLY as they are — relink them by hand in the Studio.
+
+── NOTHING WAS WRITTEN ──────────────────────────────────────────────────
+  Re-run with --apply to rebuild tokens_nt as a projection of the index.
+  The current table will be RENAMED, not dropped.

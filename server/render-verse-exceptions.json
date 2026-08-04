@@ -1,0 +1,10 @@
+{
+  "_comment": "Verse-scoped literal-phrase protection for render-corpus.mjs (loaded by render-verse-exceptions.mjs). Each entry names an exact substring that must pass through every render pass completely unchanged, in one specific verse. Use 'ref' = canon_id:chapter:verse, matching the verses table's raw TEXT chapter/verse columns (see the samples logged by render-corpus.mjs). This exists so a fixed false positive can never come back on a baseline reset -- render-all.mjs re-renders NT+Apocrypha from the read-only text_src snapshot every time, which silently undoes any direct edit to corpus.db.",
+  "exceptions": [
+    {
+      "ref": "121:5:4",
+      "phrase": "GOD BARISAT",
+      "reason": "Apocalypse of Abraham 5:4 -- the idol's carved name is styled in caps in the source translation ('on his forehead was written: GOD BARISAT'). This is epigraphic styling, not a reference to YHWH. The blanket theonym rule 'GOD' -> 'Yahawah' (from name-map-expanded.json, applied by render-corpus.mjs step 3) was turning it into 'Yahawah BARISAT' on every render. Every other occurrence of Barisat in Apoc. Ab. 5-6 is lowercase ('god Barisat') and is unaffected -- only this one verse needs protecting."
+    }
+  ]
+}
