@@ -43,11 +43,22 @@ import BookManager   from './pages/BookManager.jsx';
  */
 
 // Root at `/` — a bare visit (no query params) lands on the Landing page.
-// Any query params (deep links like /?source=lxx) still go straight to the reader,
-// so existing shared links keep working.
+// Any *meaningful* query params (deep links like /?source=lxx) still go
+// straight to the reader, so existing shared links keep working.
+//
+// Tracking params (utm_*, fbclid, gclid, igshid, ...) are ignored when
+// making this decision — an Instagram bio link like
+// bldbible.com/?utm_source=ig&fbclid=... has no real reader params, but
+// isn't "empty" either, so it was wrongly falling through to the reader
+// instead of landing on /landing. fieldy, 2026-08-05.
+const IGNORED_PARAM_PREFIXES = ['utm_'];
+const IGNORED_PARAMS = new Set(['fbclid', 'gclid', 'gbraid', 'wbraid', 'igshid', 'ig_mid', 'mc_cid', 'mc_eid', 'ref']);
 function RootDispatcher() {
   const [sp] = useSearchParams();
-  if ([...sp.keys()].length === 0) return <Navigate to="/landing" replace />;
+  const meaningfulKeys = [...sp.keys()].filter(
+    k => !IGNORED_PARAMS.has(k) && !IGNORED_PARAM_PREFIXES.some(p => k.startsWith(p))
+  );
+  if (meaningfulKeys.length === 0) return <Navigate to="/landing" replace />;
   return <ReaderDispatcher />;
 }
 
