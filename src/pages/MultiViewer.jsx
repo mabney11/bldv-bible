@@ -212,7 +212,10 @@ export default function MultiViewer() {
       const foreign = !here;
       const cand = HEBREW_OT(mb.id) ? ['BHS', ...mb.sources] : mb.sources;
       const primary = foreign ? pickSource(cand) : source;
-      const name = BOOK_NAMES[mb.id] || here?.name || `Book ${mb.id}`;
+      // See the identical fix in HebrewViewer.jsx's dropdownBooks — mb.name is
+      // the server-resolved title (/api/book-order's canonName()), and needs
+      // to win over here?.name, which only exists for books THIS source has.
+      const name = mb.name || BOOK_NAMES[mb.id] || here?.name || `Book ${mb.id}`;
       return {
         book_id: mb.id, seq: i + 1,
         first_chapter: here?.first_chapter ?? 1,

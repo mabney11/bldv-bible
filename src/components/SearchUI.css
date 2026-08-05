@@ -236,6 +236,21 @@
 }
 .search-script-tab:hover:not(.active) { background: var(--bg4); color: var(--text2); }
 .search-script-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.search-script-tab.small { padding: 5px 12px; font-size: 11px; font-weight: 500; }
+
+.search-kbd-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.search-detect-hint {
+  font-size: 11px;
+  color: var(--text3);
+  margin: -8px 0 12px;
+  font-style: italic;
+}
 
 /* ── Source toggle chips ─────────────────────────────────────────────── */
 .search-source-toggles {

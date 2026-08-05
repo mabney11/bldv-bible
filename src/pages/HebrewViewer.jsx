@@ -211,7 +211,14 @@ export default function HebrewViewer() {
       const here = hvBookMeta[mb.id];
       const foreign = !here;
       const primary = foreign ? hvPickSource(mb.sources) : 'BHS';
-      const name = BOOK_NAMES[mb.id] || here?.name || `Book ${mb.id}`;
+      // mb.name is the server-resolved title from /api/book-order (canonName()
+      // there already does real-title lookup across every source, falling back
+      // to "Book N" only when truly nothing better exists anywhere). here?.name
+      // only covers books present in THIS source, so a cross-language-only
+      // work (no BHS text at all) always missed it and showed its number
+      // instead of its title — even though mb.name had the real name the
+      // whole time (idToSlug just above already uses it correctly).
+      const name = mb.name || BOOK_NAMES[mb.id] || here?.name || `Book ${mb.id}`;
       return {
         book_id: mb.id, seq: i + 1,
         first_chapter: here?.first_chapter ?? 1,

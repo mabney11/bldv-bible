@@ -2,84 +2,151 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { BOOK_NAMES } from '../lib/books.js';
 import { SCRIPTS, getScript } from '../lib/keyboards.js';
-import { apiSearch, apiConcordanceSurface } from '../lib/api.js';
+import detectScriptRaw from '../lib/scripts.js';
+import { transliterate } from '../lib/translit.js';
+import { apiSearch, apiConcordanceSurface, apiSurfaceList, apiSurfaceExplorerVerses } from '../lib/api.js';
 import '../components/SearchUI.css';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// /search — standalone, multi-script, multi-source results page.
+// /search — ONE box. Paste or type in any script, hit Search, and this page
+// figures out what you gave it and where to look — no script picker to get
+// right first. The script buttons below the box are purely an input aid
+// (an on-screen keyboard for scripts you can't type natively) — they insert
+// characters into the same box and never restrict what gets searched.
 //
-// URL is the single source of truth: ?script=&q=&mode=&src=
-//   script  — which keyboard/alphabet is active (paleo, geez, syriac, greek,
-//             latin, coptic — see keyboards.js). Determines which corpora
-//             are even searchable, since a query typed in one script is a
-//             different string than the same word in another script.
-//   q       — the query, in that script's native characters.
-//   mode    — exact|chrono, only meaningful for the Paleo/BHS engine (the
-//             other engines are always exact-surface-match).
-//   src     — comma list of enabled corpus codes for the active script.
-//             Omitted = every source for that script is on (the default).
+// How detection works: the submitted query's dominant Unicode script decides
+// which engine(s) run (see detectQueryScript below). A Latin-alphabet query
+// with no native script in it runs two things at once, since it's ambiguous
+// which the user meant: 1) an actual Latin (Vulgate) search, and 2) a
+// transliteration lookup against the Hebrew paleo corpus — typing "Yabanaal"
+// finds the verse even though the corpus itself is stored as paleo glyphs,
+// by transliterating every known surface form once (client-side, cached for
+// the session) and matching against that.
 //
-// Because all of that lives in the URL, the back button steps through
-// actual search history (including toggle/script changes that used push
-// navigation), and every search is a shareable link.
-//
-// Two search engines feed this page (see keyboards.js for why):
-//   'legacy'      /api/search — ranked/substring/chronological, Hebrew
-//                 paleo (BHS) only. Existing Phase-1 behavior, unchanged.
-//   'concordance' /api/concordance/surface — exact normalized surface-form
-//                 match, already spans Greek (LXX+GNT+GRC pooled), Latin,
-//                 Ge'ez, Syriac, Coptic, and the Hebrew "extra" edition.
-//                 This backend already existed; this page is what wires a
-//                 UI to it. One fetch per script is enough even when a
-//                 script pools multiple corpora (Greek) — the corpus
-//                 toggles below just filter which of the *already fetched*
-//                 occurrences are shown, so flipping a toggle never
-//                 re-hits the server.
+// URL: ?q=&mode=&src=
+//   q     — the query, whatever script it's in.
+//   mode  — exact|chrono, only used when the detected script is Paleo (BHS).
+//   src   — comma list of enabled corpus codes for the detected script's
+//           sources. Omitted = all on. Recomputed against whichever script
+//           gets detected for the current q, so it never dangles.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const CONC_LIMIT = 500; // server's hard cap (see /api/concordance/surface)
+const CONC_LIMIT = 500;          // server's hard cap on /api/concordance/surface
+const SURFACE_PAGE = 50000;      // server's hard cap on /api/surface-explorer/list
+const TRANSLIT_FANOUT = 8;       // cap how many distinct surfaces one lookup expands to
 
-// Module-scoped caches — survive this component unmounting (e.g. navigating
-// to a verse and back) for the life of the tab.
-const legacyCache = new Map();       // key: `${mode}::${q}`            -> /api/search response
-const concCache   = new Map();       // key: `${anchorCorpus}::${q}`    -> /api/concordance/surface response
-const lkey = (mode, q) => `${mode}::${q}`;
-const ckey = (corpus, q) => `${corpus}::${q}`;
+// Phoenician/Paleo isn't in scripts.js's detectScript (same special-case
+// translit.js needs) — catch it first, then defer to the shared detector.
+const SCRIPT_ID_MAP = { ethiopic: 'geez', syriac: 'syriac', greek: 'greek', coptic: 'coptic', latin: 'latin' };
+function detectQueryScript(text) {
+  const s = String(text || '').trim();
+  if (!s) return null;
+  if (/[\u{10900}-\u{1091F}]/u.test(s)) return 'paleo';
+  const { script } = detectScriptRaw(s);
+  // Scripts we don't have a search engine for yet (square Hebrew, Arabic,
+  // Cyrillic, Armenian, Georgian, ...) fall back to the Latin path, which is
+  // harmless — the concordance LAT search and the translit lookup will both
+  // just come back empty rather than erroring.
+  return SCRIPT_ID_MAP[script] || 'latin';
+}
+const isRtlScript = id => id === 'paleo' || id === 'syriac';
+
+// ── Module-scoped caches — survive this component unmounting, live for the
+// tab's lifetime. Toggling source chips re-filters these, never refetches.
+const legacyCache = new Map();   // `${mode}::${q}`         -> /api/search response
+const concCache   = new Map();   // `${anchorCorpus}::${q}` -> /api/concordance/surface response
+const translitCache = new Map(); // lowercased q            -> { matches, rows }
+let surfaceListPromise = null;   // the full BHS+HEB surface index, fetched once
+let translitIndexPromise = null; // Map<lowercaseTranslit, surfaceEntry[]>, built once
+
+async function fetchAllSurfaces() {
+  if (surfaceListPromise) return surfaceListPromise;
+  surfaceListPromise = (async () => {
+    let all = [];
+    let offset = 0;
+    for (;;) {
+      const d = await apiSurfaceList({ offset, limit: SURFACE_PAGE });
+      all = all.concat(d.surfaces || []);
+      if (!d.surfaces?.length || all.length >= d.total) break;
+      offset = all.length;
+    }
+    return all;
+  })();
+  return surfaceListPromise;
+}
+async function getTranslitIndex() {
+  if (translitIndexPromise) return translitIndexPromise;
+  translitIndexPromise = (async () => {
+    const surfaces = await fetchAllSurfaces();
+    const idx = new Map();
+    for (const s of surfaces) {
+      const t = transliterate(s.surface, { script: 'paleo-hebrew', capitalize: false });
+      if (!t) continue;
+      if (!idx.has(t)) idx.set(t, []);
+      idx.get(t).push(s);
+    }
+    return idx;
+  })();
+  return translitIndexPromise;
+}
+async function runTranslitLookup(query) {
+  const key = query.toLowerCase();
+  if (translitCache.has(key)) return translitCache.get(key);
+  const idx = await getTranslitIndex();
+  const matched = (idx.get(key) || []).slice().sort((a, b) => (b.count || 0) - (a.count || 0));
+  const top = matched.slice(0, TRANSLIT_FANOUT);
+  const pages = await Promise.all(
+    top.map(m => apiSurfaceExplorerVerses({ word: m.surface, limit: 50 }).catch(() => ({ verses: [] })))
+  );
+  const rows = [];
+  top.forEach((m, i) => {
+    for (const v of (pages[i].verses || [])) rows.push({ ...v, matchedSurface: m.surface, matchedStrongs: m.strongs });
+  });
+  const truncated = matched.length > top.length;
+  const result = { matchCount: matched.length, truncated, rows };
+  translitCache.set(key, result);
+  return result;
+}
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const urlScript = getScript(searchParams.get('script') || 'paleo').id;
-  const scriptDef = getScript(urlScript);
   const urlQ      = searchParams.get('q') || '';
   const urlMode   = searchParams.get('mode') === 'chrono' ? 'chrono' : 'exact';
   const urlSrcRaw = searchParams.get('src');
-  const enabledCorpora = useMemo(() => (
-    urlSrcRaw ? new Set(urlSrcRaw.split(',').filter(Boolean)) : new Set(scriptDef.sources.map(s => s.corpus))
-  ), [urlSrcRaw, scriptDef]);
 
-  // Composer state — separate from the URL so typing doesn't navigate on
-  // every keystroke; re-synced when the URL changes out from under us
-  // (back/forward, or switching script tabs).
+  const detectedId = useMemo(() => detectQueryScript(urlQ), [urlQ]);
+  const scriptDef   = detectedId ? getScript(detectedId) : null;
+  const enabledCorpora = useMemo(() => {
+    if (!scriptDef) return new Set();
+    return urlSrcRaw ? new Set(urlSrcRaw.split(',').filter(Boolean)) : new Set(scriptDef.sources.map(s => s.corpus));
+  }, [urlSrcRaw, scriptDef]);
+
+  // Composer state, separate from the URL so typing doesn't navigate.
   const [qInput, setQInput] = useState(urlQ);
   const [mode, setMode] = useState(urlMode);
-  useEffect(() => { setQInput(urlQ); setMode(urlMode); }, [urlQ, urlMode, urlScript]);
+  useEffect(() => { setQInput(urlQ); setMode(urlMode); }, [urlQ, urlMode]);
   const inputRef = useRef(null);
+  const typedScript = useMemo(() => detectQueryScript(qInput), [qInput]);   // live, for RTL + the "typing in" hint
 
-  const legacySource = scriptDef.sources.find(s => s.engine === 'legacy');
-  const concSources   = scriptDef.sources.filter(s => s.engine === 'concordance');
-  const concAnchor    = concSources[0]?.corpus || null; // any member resolves the whole pooled group server-side
+  // On-screen keyboard: purely a manual input aid, independent of search/
+  // detection. Closed by default; clicking a script button opens its grid.
+  const [kbdOpen, setKbdOpen] = useState(null);
 
-  // ── Legacy (BHS) fetch ─────────────────────────────────────────────────
-  const [legacyData, setLegacyData] = useState(() => legacyCache.get(lkey(urlMode, urlQ)) || null);
+  const legacySource = scriptDef?.sources.find(s => s.engine === 'legacy') || null;
+  const concSources   = scriptDef?.sources.filter(s => s.engine === 'concordance') || [];
+  const concAnchor    = concSources[0]?.corpus || null;
+
+  // ── Legacy (BHS) ─────────────────────────────────────────────────────
+  const [legacyData, setLegacyData] = useState(() => legacyCache.get(`${urlMode}::${urlQ}`) || null);
   const [legacyBusy, setLegacyBusy] = useState(false);
   const [legacyErr, setLegacyErr]   = useState(null);
   const legacyActive = !!legacySource && enabledCorpora.has(legacySource.corpus) && !!urlQ;
 
   useEffect(() => {
     if (!legacyActive) { setLegacyData(null); return; }
-    const key = lkey(urlMode, urlQ);
+    const key = `${urlMode}::${urlQ}`;
     const cached = legacyCache.get(key);
     if (cached) { setLegacyData(cached); setLegacyErr(null); return; }
     let cancelled = false;
@@ -97,24 +164,21 @@ export default function Search() {
     try {
       const more = await apiSearch(urlQ, legacyData.results.length, urlMode);
       const merged = { ...more, results: [...legacyData.results, ...more.results] };
-      legacyCache.set(lkey(urlMode, urlQ), merged);
+      legacyCache.set(`${urlMode}::${urlQ}`, merged);
       setLegacyData(merged);
     } catch (e) { setLegacyErr(e.message); }
     finally { setLegacyBusy(false); }
   }, [legacyData, legacyBusy, urlQ, urlMode]);
 
-  // ── Concordance fetch (one call covers the whole pooled group) ─────────
-  const [concData, setConcData] = useState(() => concAnchor ? concCache.get(ckey(concAnchor, urlQ)) || null : null);
+  // ── Concordance (exact match, possibly pooled) ──────────────────────
+  const [concData, setConcData] = useState(() => concAnchor ? concCache.get(`${concAnchor}::${urlQ}`) || null : null);
   const [concBusy, setConcBusy] = useState(false);
   const [concErr, setConcErr]   = useState(null);
-  // Gate on at least one concordance source being toggled on — otherwise a
-  // script whose only concordance source was switched off would still fire
-  // a fetch just to filter every result back out client-side.
   const concActive = !!concAnchor && !!urlQ && concSources.some(s => enabledCorpora.has(s.corpus));
 
   useEffect(() => {
     if (!concActive) { setConcData(null); return; }
-    const key = ckey(concAnchor, urlQ);
+    const key = `${concAnchor}::${urlQ}`;
     const cached = concCache.get(key);
     if (cached) { setConcData(cached); setConcErr(null); return; }
     let cancelled = false;
@@ -126,7 +190,6 @@ export default function Search() {
     return () => { cancelled = true; };
   }, [concActive, concAnchor, urlQ]);
 
-  // Client-side filter by toggle state — never triggers a refetch.
   const concOccurrences = useMemo(() => {
     if (!concData) return [];
     return concData.occurrences.filter(o => enabledCorpora.has(o.corpus));
@@ -136,40 +199,49 @@ export default function Search() {
     return (concData.by_corpus || []).filter(b => enabledCorpora.has(b.corpus)).reduce((s, b) => s + b.n, 0);
   }, [concData, enabledCorpora]);
 
+  // ── Transliteration lookup (Latin query -> Hebrew paleo names/words) ───
+  const translitActive = detectedId === 'latin' && !!urlQ;
+  const [translitResult, setTranslitResult] = useState(() => translitCache.get(urlQ.toLowerCase()) || null);
+  const [translitBusy, setTranslitBusy] = useState(false);
+  const [translitErr, setTranslitErr]   = useState(null);
+
+  useEffect(() => {
+    if (!translitActive) { setTranslitResult(null); return; }
+    const key = urlQ.toLowerCase();
+    const cached = translitCache.get(key);
+    if (cached) { setTranslitResult(cached); setTranslitErr(null); return; }
+    let cancelled = false;
+    setTranslitBusy(true); setTranslitErr(null);
+    runTranslitLookup(urlQ)
+      .then(r => { if (!cancelled) setTranslitResult(r); })
+      .catch(e => { if (!cancelled) setTranslitErr(e.message); })
+      .finally(() => { if (!cancelled) setTranslitBusy(false); });
+    return () => { cancelled = true; };
+  }, [translitActive, urlQ]);
+
   // ── Actions ──────────────────────────────────────────────────────────
   const runSearch = () => {
     const query = qInput.trim();
     if (!query) return;
-    const p = { script: urlScript, q: query, mode };
-    if (urlSrcRaw) p.src = urlSrcRaw;
-    setSearchParams(p);   // pushes a new history entry — this is "back steps through searches"
-  };
-
-  const switchScript = id => {
-    if (id === urlScript) return;
-    setQInput('');
-    setSearchParams({ script: id });
+    setSearchParams({ q: query, mode });   // fresh script gets (re)detected from q itself
   };
 
   const toggleSource = corpus => {
+    if (!scriptDef) return;
     const next = new Set(enabledCorpora);
     next.has(corpus) ? next.delete(corpus) : next.add(corpus);
     const all = scriptDef.sources.every(s => next.has(s.corpus));
-    const p = { script: urlScript };
-    if (urlQ) { p.q = urlQ; p.mode = mode; }
+    const p = { q: urlQ, mode };
     if (!all) p.src = [...next].join(',');
-    setSearchParams(p, { replace: true });   // filtering, not navigating — don't spam history
+    setSearchParams(p, { replace: true });   // filtering, not navigating
   };
 
   const appendChar = ch => { setQInput(prev => prev + ch); inputRef.current?.focus(); };
   const backspace  = () => setQInput(prev => [...prev].slice(0, -1).join(''));
 
-  const goToLegacyHit = (r, sourceParam) => {
-    const p = new URLSearchParams({ book: String(r.book_id), chapter: String(r.chapter), verse: String(r.verse) });
-    if (sourceParam) p.set('source', sourceParam);
-    if (urlQ) p.set('hl', urlQ);
-    navigate(`/?${p}`);
-  };
+  const legacyHitHref = r => `/?book=${r.book_id}&chapter=${r.chapter}&verse=${r.verse}`;
+  const goToLegacyHit = r => navigate(`${legacyHitHref(r)}${urlQ ? `&hl=${encodeURIComponent(urlQ)}` : ''}`);
+
   const concHitHref = o => {
     const p = new URLSearchParams({ source: o.source, chapter: String(o.ch) });
     if (o.book_id != null) p.set('book', String(o.book_id));
@@ -179,9 +251,14 @@ export default function Search() {
   };
   const goToConcHit = o => navigate(concHitHref(o));
 
-  const busy = legacyBusy || concBusy;
-  const anyErr = legacyErr || concErr;
-  const hasAnyData = (legacyActive && legacyData) || (concActive && concData);
+  // Highlight the real paleo surface, not the Latin query the user typed —
+  // the reader's highlighter matches against paleo text, so passing the
+  // original Latin query would just never light anything up.
+  const translitHitHref = v => `/?book=${v.book_id}&chapter=${v.chapter}&verse=${v.verse}`;
+  const goToTranslitHit = v => navigate(`${translitHitHref(v)}&hl=${encodeURIComponent(v.matchedSurface)}`);
+
+  const busy = legacyBusy || concBusy || translitBusy;
+  const anyErr = legacyErr || concErr || translitErr;
 
   return (
     <div className="search-page">
@@ -191,70 +268,71 @@ export default function Search() {
       </div>
 
       <div className="search-page-body">
-        {/* Script tabs */}
-        <div className="search-script-tabs" role="tablist">
-          {SCRIPTS.map(s => (
-            <button
-              key={s.id}
-              className={`search-script-tab ${s.id === urlScript ? 'active' : ''}`}
-              onClick={() => switchScript(s.id)}
-              role="tab" aria-selected={s.id === urlScript}
-            >{s.label}</button>
-          ))}
-        </div>
-
         <section className="hv-search-section" aria-label="Search">
           <div className="hv-search-top">
             <input
               ref={inputRef}
               type="text"
               value={qInput}
-              dir={scriptDef.dir}
-              style={{ direction: scriptDef.dir, fontFamily: scriptDef.id === 'paleo' ? undefined : 'inherit' }}
+              dir={isRtlScript(typedScript) ? 'rtl' : 'ltr'}
+              style={{ direction: isRtlScript(typedScript) ? 'rtl' : 'ltr', fontFamily: 'inherit' }}
               onChange={e => setQInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') runSearch(); }}
-              placeholder={`type, paste, or click letters below…`}
+              placeholder="type or paste a word in any language…"
               autoComplete="off"
-              aria-label={`${scriptDef.label} search query`}
+              aria-label="Search query"
             />
             <button className="hv-search-clear" onClick={() => setQInput('')} title="Clear" aria-label="Clear">✕</button>
             <button className="hv-search-btn" onClick={runSearch} disabled={busy}>Search</button>
           </div>
 
-          <div className="hv-paleo-kbd-wrap">
-            <button className="hv-paleo-kbd-delete" onClick={backspace} aria-label="Backspace">⌦</button>
-            <div className="hv-paleo-kbd" style={{ direction: scriptDef.dir }}>
-              {scriptDef.rows.map((row, ri) => (
-                <div className="hv-kbd-row" key={ri} style={{ direction: scriptDef.dir }}>
-                  {row.map(ch => (
-                    <button
-                      key={ch}
-                      className="hv-kbd-key"
-                      style={scriptDef.id === 'paleo' ? undefined : { fontFamily: 'inherit' }}
-                      onClick={() => appendChar(ch)}
-                    >{ch}</button>
-                  ))}
-                </div>
-              ))}
-            </div>
+          {qInput.trim() && (
+            <div className="search-detect-hint">Typing in: {getScript(typedScript).label}</div>
+          )}
+
+          {/* Keyboard helper — purely an input aid, never restricts the search */}
+          <div className="search-kbd-tabs" role="tablist">
+            {SCRIPTS.map(s => (
+              <button
+                key={s.id}
+                className={`search-script-tab small ${kbdOpen === s.id ? 'active' : ''}`}
+                onClick={() => setKbdOpen(o => (o === s.id ? null : s.id))}
+                role="tab" aria-selected={kbdOpen === s.id}
+              >{s.label} keyboard</button>
+            ))}
           </div>
+
+          {kbdOpen && (
+            <div className="hv-paleo-kbd-wrap">
+              <button className="hv-paleo-kbd-delete" onClick={backspace} aria-label="Backspace">⌦</button>
+              <div className="hv-paleo-kbd" style={{ direction: getScript(kbdOpen).dir }}>
+                {getScript(kbdOpen).rows.map((row, ri) => (
+                  <div className="hv-kbd-row" key={ri} style={{ direction: getScript(kbdOpen).dir }}>
+                    {row.map(ch => (
+                      <button key={ch} className="hv-kbd-key" style={{ fontFamily: 'inherit' }} onClick={() => appendChar(ch)}>{ch}</button>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {legacySource && (
             <div className="hv-search-mode-toggle" role="tablist">
               <button
                 className={`mode-btn ${mode === 'exact' ? 'active' : ''}`}
-                onClick={() => { setMode('exact'); if (qInput.trim()) setSearchParams({ script: urlScript, q: qInput.trim(), mode: 'exact', ...(urlSrcRaw ? { src: urlSrcRaw } : {}) }); }}
+                onClick={() => { setMode('exact'); if (urlQ) setSearchParams({ q: urlQ, mode: 'exact', ...(urlSrcRaw ? { src: urlSrcRaw } : {}) }); }}
                 role="tab" aria-selected={mode === 'exact'}
               >Exact / Ranked</button>
               <button
                 className={`mode-btn ${mode === 'chrono' ? 'active' : ''}`}
-                onClick={() => { setMode('chrono'); if (qInput.trim()) setSearchParams({ script: urlScript, q: qInput.trim(), mode: 'chrono', ...(urlSrcRaw ? { src: urlSrcRaw } : {}) }); }}
+                onClick={() => { setMode('chrono'); if (urlQ) setSearchParams({ q: urlQ, mode: 'chrono', ...(urlSrcRaw ? { src: urlSrcRaw } : {}) }); }}
                 role="tab" aria-selected={mode === 'chrono'}
               >Chronological</button>
             </div>
           )}
 
-          {scriptDef.sources.length > 1 && (
+          {scriptDef && scriptDef.sources.length > 1 && (
             <div className="search-source-toggles">
               {scriptDef.sources.map(s => (
                 <button
@@ -271,12 +349,14 @@ export default function Search() {
         {anyErr && <div className="hv-search-err">⚠ {anyErr}</div>}
 
         {!urlQ && !anyErr && (
-          <div className="search-page-empty">Type, paste, or click a {scriptDef.label} word above, then hit Search.</div>
+          <div className="search-page-empty">Type or paste a word above in any script — Paleo Hebrew, Ge'ez, Syriac, Greek, Latin, Coptic, or an English name — then hit Search.</div>
         )}
 
-        {urlQ && busy && !hasAnyData && <div className="search-page-empty">Searching…</div>}
+        {urlQ && busy && !legacyData && !concData && !translitResult && (
+          <div className="search-page-empty">Searching…</div>
+        )}
 
-        {/* Legacy (BHS) results block */}
+        {/* Legacy (BHS) results */}
         {legacyActive && legacyData && (
           <div className="hv-search-results">
             <div className="hv-results-count">
@@ -285,12 +365,7 @@ export default function Search() {
                 : `${legacyData.total || legacyData.results.length} verses${urlMode === 'chrono' ? ' · chronological' : ' · ranked'}`}
             </div>
             {legacyData.results.map((r, i) => (
-              <a
-                key={i}
-                className="hv-result-item"
-                href={`/?book=${r.book_id}&chapter=${r.chapter}&verse=${r.verse}`}
-                onClick={e => { e.preventDefault(); goToLegacyHit(r); }}
-              >
+              <a key={i} className="hv-result-item" href={legacyHitHref(r)} onClick={e => { e.preventDefault(); goToLegacyHit(r); }}>
                 <span className="hv-result-ref">{BOOK_NAMES[r.book_id] || `Book ${r.book_id}`} {r.chapter}:{r.verse}</span>
               </a>
             ))}
@@ -302,29 +377,43 @@ export default function Search() {
           </div>
         )}
 
-        {/* Concordance (exact-match, possibly pooled) results block */}
+        {/* Concordance (exact-match native-script) results */}
         {concActive && concData && (
           <div className="hv-search-results">
             <div className="hv-results-count">
-              {concSources.length > 1 ? 'Greek' : concSources[0]?.label}: {concShownTotal === 0
-                ? (concData.count > 0
-                    ? `0 shown — every match is in a source toggled off above`
-                    : `no results for "${urlQ}"`)
+              {concSources.length > 1 ? scriptDef.label : concSources[0]?.label}: {concShownTotal === 0
+                ? (concData.count > 0 ? `0 shown — every match is in a source toggled off above` : `no results for "${urlQ}"`)
                 : `${concShownTotal.toLocaleString()} occurrence${concShownTotal !== 1 ? 's' : ''}${concData.count > CONC_LIMIT ? ` (showing first ${CONC_LIMIT})` : ''}`}
             </div>
             {concOccurrences.map((o, i) => (
-              <a
-                key={`${o.corpus}-${o.code || o.canon_id}-${o.ch}-${o.v}-${i}`}
-                className="hv-result-item"
-                href={concHitHref(o)}
-                onClick={e => { e.preventDefault(); goToConcHit(o); }}
-              >
-                <span className="hv-result-ref">
-                  {o.title || BOOK_NAMES[o.canon_id] || o.code} {o.ch}:{o.v}
-                </span>
+              <a key={`${o.corpus}-${o.code || o.canon_id}-${o.ch}-${o.v}-${i}`} className="hv-result-item" href={concHitHref(o)} onClick={e => { e.preventDefault(); goToConcHit(o); }}>
+                <span className="hv-result-ref">{o.title || BOOK_NAMES[o.canon_id] || o.code} {o.ch}:{o.v}</span>
                 {concSources.length > 1 && <span className="hv-result-badge">{o.corpus}</span>}
               </a>
             ))}
+          </div>
+        )}
+
+        {/* Transliteration lookup (Latin query -> Hebrew paleo) */}
+        {translitActive && translitResult && (
+          <div className="hv-search-results">
+            <div className="hv-results-count">
+              Hebrew (by name / transliteration): {translitResult.rows.length === 0
+                ? `no Hebrew word transliterates to "${urlQ}"`
+                : `${translitResult.rows.length.toLocaleString()} verse${translitResult.rows.length !== 1 ? 's' : ''} across ${translitResult.matchCount} matching form${translitResult.matchCount !== 1 ? 's' : ''}${translitResult.truncated ? ` (showing first ${TRANSLIT_FANOUT} forms)` : ''}`}
+            </div>
+            {translitResult.rows.map((v, i) => (
+              <a key={`${v.book_id}-${v.chapter}-${v.verse}-${i}`} className="hv-result-item" href={translitHitHref(v)} onClick={e => { e.preventDefault(); goToTranslitHit(v); }}>
+                <span className="hv-result-ref">{v.book_name || BOOK_NAMES[v.book_id] || `Book ${v.book_id}`} {v.chapter}:{v.verse}</span>
+                <span className="hv-result-badge">{v.matchedSurface}</span>
+              </a>
+            ))}
+          </div>
+        )}
+
+        {detectedId === 'latin' && concActive && concData && concShownTotal === 0 && translitResult && translitResult.rows.length === 0 && urlQ && (
+          <div className="search-page-empty">
+            No match in the Latin text or as a Hebrew name/transliteration. If you meant a different script, paste the word in its native characters, or use a keyboard above.
           </div>
         )}
       </div>
