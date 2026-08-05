@@ -16,6 +16,7 @@ import Works         from './pages/Works.jsx';
 import Reader        from './pages/Reader.jsx';
 import AdminLogin    from './pages/AdminLogin.jsx';
 import BookManager   from './pages/BookManager.jsx';
+import Search        from './pages/Search.jsx';
 
 /**
  * URL mapping. The reader and lexicon are unified across all corpora —
@@ -125,6 +126,7 @@ export default function App() {
         <Route path="/lexicon"        element={<Lexicon />} />
         <Route path="/translate"      element={<Translate />} />
         <Route path="/share"          element={<Share />} />
+        <Route path="/search"         element={<Search />} />
         <Route path="/roots"          element={<Root />} />
         <Route path="/root"           element={<Root />} />
         <Route path="/surfaces"       element={<Root mode="surface" />} />

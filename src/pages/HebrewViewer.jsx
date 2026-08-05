@@ -7,7 +7,8 @@ import { useSwipeNav } from '../hooks/useSwipeNav.js';
 import { BOOK_NAMES, PALEO_LETTERS } from '../lib/books.js';
 import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
 import { formatTokenRowDescriptive } from '../lib/tokenLabels.js';
-import { apiBooks, apiTokens, apiRaw, apiSearch, apiBookOrder } from '../lib/api.js';
+import { apiBooks, apiTokens, apiRaw, apiBookOrder } from '../lib/api.js';
+import { PALEO_KBD_ROWS } from '../lib/keyboards.js';
 import TopBar from '../components/TopBar.jsx';
 import BookChapterVerseSelects from '../components/BookChapterVerseSelects.jsx';
 import DisplayPanel from '../components/DisplayPanel.jsx';
@@ -15,6 +16,7 @@ import SideNav from '../components/SideNav.jsx';
 import WordBlock from '../components/WordBlock.jsx';
 import TranslitGuide from '../components/TranslitGuide.jsx';
 import { useToast } from '../components/Toast.jsx';
+import '../components/SearchUI.css';
 
 // Cross-language switching shared with MultiViewer: a book the Hebrew reader
 // lacks (NT, pseudepigrapha, …) opens in the first of these that has it.
@@ -22,14 +24,6 @@ const HV_SOURCE_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'LXX', 'LAT', 'COP', 'GR
 const HV_PILL_LABEL = { BHS:'Hebrew', HEB:'Heb·extra', GEZ:"Ge'ez", SYR:'Syriac', LXX:'Greek', LAT:'Latin', COP:'Coptic', ENG:'English' };
 const hvPickSource = (sources=[]) => HV_SOURCE_PRIORITY.find(s => sources.includes(s)) || sources[0] || null;
 import './HebrewViewer.css';
-
-const PALEO_KBD_ROWS = [
-  ['𐤀','𐤁','𐤂','𐤃','𐤄','𐤅'],
-  ['𐤆','𐤇','𐤈'],
-  ['𐤉','𐤊','𐤋','𐤌','𐤍'],
-  ['𐤎','𐤏','𐤐','𐤑','𐤒'],
-  ['𐤓','𐤔','𐤕'],
-];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MAIN PAGE
@@ -97,7 +91,12 @@ export default function HebrewViewer() {
   const [tokens, setTokens] = useState([]);
   const [rawRows, setRawRows] = useState([]);
   const [status, setStatus] = useState('Loading…');
-  const [activeSearchQ, setActiveSearchQ] = useState('');
+  // Seeded from ?hl= when this page was reached by clicking a hit on the
+  // /search results page (see Search.jsx) — highlights the matched term on
+  // arrival. Only read once on mount: setUrl() below replaces the whole
+  // query string on every in-viewer navigation, so hl naturally drops off
+  // once the user moves away from the verse they searched for.
+  const [activeSearchQ, setActiveSearchQ] = useState(() => searchParams.get('hl') || '');
 
   // `booksSettled`, not `books.length`: on a FAILED /api/books the list stays
   // empty forever, and gating on emptiness would hang the reader on a blank
@@ -467,15 +466,7 @@ export default function HebrewViewer() {
 
       {legendOpen && <ViewerLegend />}
 
-      {searchOpen && (
-        <SearchSection
-          onClose={() => setSearchOpen(false)}
-          onNavigateTo={(b, c, v, q) => {
-            setActiveSearchQ(q || '');
-            setUrl(b, c, v);
-          }}
-        />
-      )}
+      {searchOpen && <SearchSection onClose={() => setSearchOpen(false)} />}
 
       <div className="hv-reader-wrap" ref={outputRef}>
         <div className="hv-output">
@@ -621,35 +612,25 @@ function SliderRow({ label, storageKey, cssVar, min, max, def }) {
   );
 }
 
-// ── Search section (collapsible panel) ──────────────────────────────────────
-function SearchSection({ onClose, onNavigateTo }) {
+// ── Search composer (collapsible panel) ─────────────────────────────────────
+// Quick-entry only — no longer fetches or renders results itself. Submitting
+// navigates to the standalone /search results page (Search.jsx), which owns
+// the query in the URL so results survive the back button. Kept here as a
+// fast on-ramp: click the paleo keyboard, hit Search, land on /search.
+function SearchSection({ onClose }) {
+  const navigate = useNavigate();
   const [q, setQ] = useState('');
   const [mode, setMode] = useState('exact');
-  const [results, setResults] = useState(null);
-  const [offset, setOffset] = useState(0);
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState(null);
   const inputRef = useRef(null);
 
   useEffect(() => { inputRef.current?.focus(); }, []);
 
-  const doSearch = useCallback(async (off) => {
+  const runSearch = () => {
     const query = q.trim();
     if (!query) return;
-    setBusy(true); setErr(null);
-    if (off === 0) setOffset(0);
-    try {
-      const data = await apiSearch(query, off, mode);
-      setResults(prev => {
-        if (off === 0) return data;
-        return {
-          ...data,
-          results: [...(prev?.results || []), ...(data.results || [])],
-        };
-      });
-    } catch (e) { setErr(e.message); }
-    finally { setBusy(false); }
-  }, [q, mode]);
+    navigate(`/search?q=${encodeURIComponent(query)}&mode=${mode}`);
+    onClose();
+  };
 
   const appendChar = ch => {
     setQ(prev => prev + ch);
@@ -665,18 +646,18 @@ function SearchSection({ onClose, onNavigateTo }) {
           type="text"
           value={q}
           onChange={e => setQ(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter') doSearch(0); }}
+          onKeyDown={e => { if (e.key === 'Enter') runSearch(); }}
           placeholder="𐤀𐤁𐤂 type or click letters below…"
           autoComplete="off"
           aria-label="Paleo Hebrew search query"
         />
         <button
           className="hv-search-clear"
-          onClick={() => { setQ(''); setResults(null); }}
+          onClick={() => setQ('')}
           title="Clear"
           aria-label="Clear"
         >✕</button>
-        <button className="hv-search-btn" onClick={() => doSearch(0)} disabled={busy}>
+        <button className="hv-search-btn" onClick={runSearch}>
           Search
         </button>
         <button className="hv-search-close" onClick={onClose} aria-label="Close">✕</button>
@@ -696,48 +677,15 @@ function SearchSection({ onClose, onNavigateTo }) {
       <div className="hv-search-mode-toggle" role="tablist">
         <button
           className={`mode-btn ${mode === 'exact' ? 'active' : ''}`}
-          onClick={() => { setMode('exact'); if (q.trim()) doSearch(0); }}
+          onClick={() => setMode('exact')}
           role="tab" aria-selected={mode === 'exact'}
         >Exact / Ranked</button>
         <button
           className={`mode-btn ${mode === 'chrono' ? 'active' : ''}`}
-          onClick={() => { setMode('chrono'); if (q.trim()) doSearch(0); }}
+          onClick={() => setMode('chrono')}
           role="tab" aria-selected={mode === 'chrono'}
         >Chronological</button>
       </div>
-      {err && <div className="hv-search-err">⚠ {err}</div>}
-      {results && (
-        <div className="hv-search-results">
-          <div className="hv-results-count">
-            {(results.total ?? results.results.length) === 0
-              ? `No results for "${q}"`
-              : `${results.total || results.results.length} verses — showing 1–${results.results.length} for "${q}"${mode === 'chrono' ? ' · chronological' : ' · ranked'}`}
-          </div>
-          {results.results.map((r, i) => (
-            <button
-              key={i}
-              className="hv-result-item"
-              onClick={() => {
-                onNavigateTo(r.book_id, r.chapter, r.verse, q.trim());
-                onClose();
-              }}
-            >
-              <span className="hv-result-ref">{BOOK_NAMES[r.book_id] || `Book ${r.book_id}`} {r.chapter}:{r.verse}</span>
-            </button>
-          ))}
-          {results.hasMore && (
-            <button
-              className="hv-load-more-btn"
-              onClick={() => {
-                const next = offset + 50;
-                setOffset(next);
-                doSearch(next);
-              }}
-              disabled={busy}
-            >Load more…</button>
-          )}
-        </div>
-      )}
     </section>
   );
 }
