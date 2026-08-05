@@ -205,3 +205,54 @@ edit is lost.
 4. The site being unreachable but the container running usually means
    Caddy, not the app — check `sudo systemctl status caddy` and `sudo
    journalctl -u caddy --no-pager -n 50`
+
+## 7. Custom "site is down" page
+
+`error-pages/down.html` in the repo is a small styled page (matches the
+app's dark theme + logo mark) that Caddy shows instead of a raw browser
+error whenever it can't reach the app container — e.g. mid-deploy, or if
+`docker` crashes. It auto-retries every 20s and has a manual "Try again"
+button.
+
+**One-time setup on the server**, so Caddy can serve it even when the app
+itself is completely down (it has to be a plain file on disk, not
+something the app serves, since the app being down is exactly the case
+this covers):
+
+```bash
+sudo mkdir -p /var/www/error-pages
+sudo cp ~/paleo-studio/error-pages/down.html /var/www/error-pages/down.html
+sudo chown -R caddy:caddy /var/www/error-pages
+```
+
+Then edit `/etc/caddy/Caddyfile` — add a `handle_errors` block inside your
+existing `bldbible.com { ... }` site block, alongside the `reverse_proxy`:
+
+```
+bldbible.com {
+    reverse_proxy localhost:3000
+
+    handle_errors {
+        @failed expression `{err.status_code} >= 500`
+        rewrite @failed /down.html
+        root * /var/www/error-pages
+        file_server
+    }
+}
+```
+
+Reload Caddy to pick it up:
+
+```bash
+sudo systemctl reload caddy
+```
+
+**Keeping it in sync:** if you ever edit `error-pages/down.html` in the
+repo, it won't update on the server automatically (it's outside the
+Docker image on purpose). Re-run the two lines above (`cp` + `chown`)
+after a `git pull` to push the new version live — no Caddy reload needed
+for a file-only change.
+
+**Test it** by temporarily stopping the container: `docker stop paleo`,
+reload the site in your browser, then `docker start paleo` when you're
+done.
