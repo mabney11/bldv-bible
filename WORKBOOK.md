@@ -60,11 +60,18 @@ docker run -d \
   -e NODE_ENV=production \
   paleo-studio
 echo "==> Waiting for app to boot..."
-sleep 10
-if curl -sf http://localhost:3000/health > /dev/null; then
+ok=0
+for i in $(seq 1 20); do
+  if curl -sf http://localhost:3000/health > /dev/null; then
+    ok=1
+    break
+  fi
+  sleep 2
+done
+if [ "$ok" = "1" ]; then
   echo "==> Deploy OK"
 else
-  echo "==> Health check failed — run: docker logs paleo --tail 50"
+  echo "==> Health check failed after 40s — run: docker logs paleo --tail 50"
 fi
 EOF
 chmod +x ~/deploy.sh

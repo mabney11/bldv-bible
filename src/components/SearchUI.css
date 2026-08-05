@@ -152,7 +152,18 @@
   text-decoration: none;
 }
 .hv-result-item:hover { background: var(--bg4); color: var(--text); border-color: var(--border3); }
+.hv-result-item        { gap: 8px; }
 .hv-result-ref        { color: var(--gold); font-weight: 600; }
+.hv-result-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text3);
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
 
 .hv-load-more-btn {
   margin-top: 6px;
@@ -204,3 +215,45 @@
   font-size: 14px;
   padding: 20px 4px;
 }
+
+/* ── Script tabs ─────────────────────────────────────────────────────── */
+.search-script-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.search-script-tab {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  padding: 7px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.search-script-tab:hover:not(.active) { background: var(--bg4); color: var(--text2); }
+.search-script-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+/* ── Source toggle chips ─────────────────────────────────────────────── */
+.search-source-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+.search-src-chip {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.15s;
+}
+.search-src-chip:hover  { border-color: var(--border3); color: var(--text2); }
+.search-src-chip.active { background: var(--bg4); color: var(--text); border-color: var(--border3); }
+.search-src-chip.active::before { content: '✓ '; }
