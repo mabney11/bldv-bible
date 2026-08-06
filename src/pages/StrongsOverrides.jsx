@@ -37,7 +37,9 @@ export default function StrongsOverrides() {
   const [err, setErr]         = useState(null);
 
   const [editing, setEditing] = useState(null); // the token object being edited
+  const [formMode, setFormMode] = useState('single'); // 'single' | 'compound'
   const [formSN, setFormSN]   = useState('');
+  const [formParts, setFormParts] = useState([{ paleo: '', strongs: '', gloss: '' }, { paleo: '', strongs: '', gloss: '' }]);
   const [formNote, setFormNote] = useState('');
 
   const [overrides, setOverrides] = useState([]);
@@ -118,22 +120,38 @@ export default function StrongsOverrides() {
 
   const startEdit = tok => {
     setEditing(tok);
+    setFormMode('single');
     setFormSN(tok.strongs || '');
+    setFormParts([{ paleo: '', strongs: '', gloss: '' }, { paleo: '', strongs: '', gloss: '' }]);
     setFormNote('');
   };
 
+  const updatePart = (i, field, value) => {
+    setFormParts(parts => parts.map((p, pi) => pi === i ? { ...p, [field]: value } : p));
+  };
+  const addPart = () => setFormParts(parts => [...parts, { paleo: '', strongs: '', gloss: '' }]);
+  const removePart = i => setFormParts(parts => parts.filter((_, pi) => pi !== i));
+
   const saveOverride = async () => {
-    if (!editing || !formSN.trim()) { toast('Enter a Strong\'s #', 'err'); return; }
+    if (!editing) return;
+    const payload = {
+      book_id: verseData.book_id,
+      chapter: verseData.chapter,
+      verse: verseData.verse,
+      token_ordinal: editing.token_ordinal,
+      word_raw: editing.word_raw,
+      note: formNote.trim(),
+    };
+    if (formMode === 'compound') {
+      const cleanParts = formParts.filter(p => p.paleo.trim() && p.strongs.trim());
+      if (cleanParts.length < 2) { toast('Enter at least two parts (paleo + Strong\'s #)', 'err'); return; }
+      payload.parts = cleanParts.map(p => ({ paleo: p.paleo.trim(), strongs: p.strongs.trim(), gloss: p.gloss.trim() }));
+    } else {
+      if (!formSN.trim()) { toast('Enter a Strong\'s #', 'err'); return; }
+      payload.strongs = formSN.trim();
+    }
     try {
-      await apiAdminSaveStrongsOverride({
-        book_id: verseData.book_id,
-        chapter: verseData.chapter,
-        verse: verseData.verse,
-        token_ordinal: editing.token_ordinal,
-        strongs: formSN.trim(),
-        word_raw: editing.word_raw,
-        note: formNote.trim(),
-      });
+      await apiAdminSaveStrongsOverride(payload);
       toast('Saved — indexes rebuilt', 'ok');
       setEditing(null);
       reloadVerse();
@@ -238,11 +256,59 @@ export default function StrongsOverrides() {
                   Editing token #{editing.token_ordinal}: <span className="so-token-paleo">{editing.word_raw}</span>
                   {' '}(currently {editing.strongs || 'no SN'})
                 </div>
+
+                <div className="so-mode-toggle" role="tablist">
+                  <button
+                    className={`so-mode-btn ${formMode === 'single' ? 'active' : ''}`}
+                    onClick={() => setFormMode('single')} role="tab" aria-selected={formMode === 'single'}
+                  >One corrected/new #</button>
+                  <button
+                    className={`so-mode-btn ${formMode === 'compound' ? 'active' : ''}`}
+                    onClick={() => setFormMode('compound')} role="tab" aria-selected={formMode === 'compound'}
+                  >Split into two known #s</button>
+                </div>
+
+                {formMode === 'single' ? (
+                  <div className="so-edit-row">
+                    <input
+                      type="text" placeholder="New Strong's # (e.g. H2995a)"
+                      value={formSN} onChange={e => setFormSN(e.target.value)}
+                    />
+                  </div>
+                ) : (
+                  <div className="so-parts">
+                    <p className="so-edit-hint">
+                      For a real compound (e.g. <code>{editing.word_raw}</code> = a "son" root + an
+                      "El/God" root fused into one word) — split the paleo characters between the
+                      parts below, each with its own real Strong's #. The word's tag becomes both
+                      numbers joined (e.g. <code>H1121＋H410</code>), the app's existing convention
+                      for a two-root compound — every root/surface search already understands it.
+                    </p>
+                    {formParts.map((p, i) => (
+                      <div className="so-part-row" key={i}>
+                        <input
+                          type="text" placeholder="Paleo slice (e.g. 𐤁𐤍)"
+                          value={p.paleo} onChange={e => updatePart(i, 'paleo', e.target.value)}
+                          className="so-part-paleo"
+                        />
+                        <input
+                          type="text" placeholder="Strong's # (e.g. H1121)"
+                          value={p.strongs} onChange={e => updatePart(i, 'strongs', e.target.value)}
+                        />
+                        <input
+                          type="text" placeholder="Gloss (optional)"
+                          value={p.gloss} onChange={e => updatePart(i, 'gloss', e.target.value)}
+                        />
+                        {formParts.length > 2 && (
+                          <button className="so-part-del" onClick={() => removePart(i)} aria-label="Remove part">✕</button>
+                        )}
+                      </div>
+                    ))}
+                    <button className="so-cancel-btn" onClick={addPart}>+ Add part</button>
+                  </div>
+                )}
+
                 <div className="so-edit-row">
-                  <input
-                    type="text" placeholder="New Strong's # (e.g. H2995a)"
-                    value={formSN} onChange={e => setFormSN(e.target.value)}
-                  />
                   <input
                     type="text" placeholder="Note (optional — why)"
                     value={formNote} onChange={e => setFormNote(e.target.value)}
@@ -250,11 +316,13 @@ export default function StrongsOverrides() {
                   <button className="so-save-btn" onClick={saveOverride}>Save override</button>
                   <button className="so-cancel-btn" onClick={() => setEditing(null)}>Cancel</button>
                 </div>
-                <p className="so-edit-hint">
-                  A brand-new code like <code>H2995a</code> creates a distinct root entry
-                  (Root Explorer, search) separate from <code>{editing.strongs || 'the original'}</code> —
-                  same spelling, deliberately different sense, only at this one verse.
-                </p>
+                {formMode === 'single' && (
+                  <p className="so-edit-hint">
+                    A brand-new code like <code>H2995a</code> creates a distinct root entry
+                    (Root Explorer, search) separate from <code>{editing.strongs || 'the original'}</code> —
+                    same spelling, deliberately different sense, only at this one verse.
+                  </p>
+                )}
               </div>
             )}
           </div>
@@ -267,7 +335,11 @@ export default function StrongsOverrides() {
             <div className="so-list-row" key={o.key}>
               <span className="so-list-ref">{o.book_name} {o.chapter}:{o.verse} #{o.token_ordinal}</span>
               <span className="so-list-word">{o.word_raw}</span>
-              <span className="so-list-sn">{o.strongs}</span>
+              <span className="so-list-sn">
+                {o.parts
+                  ? o.parts.map((p, i) => `${p.paleo} ${p.strongs}`).join(' + ')
+                  : o.strongs}
+              </span>
               <span className="so-list-note">{o.note}</span>
               <button className="so-list-del" onClick={() => removeOverride(o.key)} aria-label="Remove">✕</button>
             </div>

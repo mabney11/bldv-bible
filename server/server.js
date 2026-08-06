@@ -3001,9 +3001,46 @@ function applyLocOverrideToSurfRow(row, locationOverrides, book_id, chapter) {
         try {
             const comps = JSON.parse(row.components);
             if (Array.isArray(comps) && comps.length) {
-                const root = comps.find(c => c && c.css === 'root') || comps[comps.length - 1];
+                const rootIdx = comps.findIndex(c => c && c.css === 'root');
+                const idx = rootIdx >= 0 ? rootIdx : comps.length - 1;
+                const root = comps[idx];
                 if (root) {
-                    root.sn = String(ov.strongs).replace(/^H+/i, '');
+                    if (Array.isArray(ov.parts) && ov.parts.length) {
+                        // A genuine compound: two (or more) real, independently-
+                        // meaningful roots fused into one written word — a Ben-X/
+                        // X-el theophoric name is two morphemes, not one blended
+                        // lexeme, so it gets one 'root' component PER part rather
+                        // than a single component carrying a joined SN string.
+                        // Each part rides the existing per-component rendering
+                        // (badge, live re-gloss lookup by paleo+sn) unchanged.
+                        const newParts = ov.parts.filter(p => p && p.paleo).map(p => ({
+                            ...root,
+                            paleo: p.paleo,
+                            sn: String(p.strongs || '').replace(/^H+/i, ''),
+                            css: 'root',
+                            translit: '',
+                            translation: p.gloss || root.translation,
+                        }));
+                        if (newParts.length) comps.splice(idx, 1, ...newParts);
+                    } else {
+                        root.sn = String(ov.strongs).replace(/^H+/i, '');
+                        // build-surface-index.js's baked `paleo` is deliberately NOT
+                        // always the literal corpus word_raw — for a real elided root
+                        // (I-nun/I-yod verbs etc.) it restores the FULL canonical
+                        // spelling from strongs-roots.json[oldSN], on purpose (see its
+                        // "ADDITIVE-ONLY RULE" section). That's correct when the old
+                        // SN really is this word's root. It's exactly WRONG when the
+                        // old SN was a mistagged/reused number (a homograph
+                        // collision) — the "canonical restoration" then paints on
+                        // letters (e.g. a leading Yod) that were never in this
+                        // occurrence's text at all. An override existing at all
+                        // means "the old SN doesn't apply here", so canonical-root
+                        // restoration from it shouldn't either — fall back to the
+                        // literal corpus spelling, which the admin editor captured
+                        // as ov.word_raw when the override was created.
+                        if (ov.word_raw) root.paleo = ov.word_raw;
+                    }
+                    try { transliterateBlock(comps); } catch { /* keep baked translit if this fails */ }
                     row.components = JSON.stringify(comps);
                 }
             }
@@ -3012,14 +3049,23 @@ function applyLocOverrideToSurfRow(row, locationOverrides, book_id, chapter) {
     return row;
 }
 
+// True if `strongsValue` names `wantSN` — either directly, or as one atomic
+// half of a compound tag ("H1121＋H410", two real independently-meaningful
+// roots fused into one written word — a Ben-X/X-el theophoric name). A plain
+// string-equality check would miss the second half of any compound override.
+function _strongsHasAtomic(strongsValue, wantSN) {
+    const want = navNormSN(wantSN);
+    return String(strongsValue || '').split('＋').map(navNormSN).includes(want);
+}
+
 // Reverse lookup: every override entry that targets a given Strong's # (used
 // to pull in occurrences a raw "WHERE strongs=?" query can never find on its
-// own, since a synthetic SN like H2995a never appears as a real column value).
+// own, since a synthetic SN like H2995a — or either half of a compound like
+// H1121＋H410 — never appears as a real column value).
 function locOverridesTargeting(locationOverrides, sn) {
-    const want = navNormSN(sn);
     const out = [];
     for (const [key, ov] of Object.entries(locationOverrides || {})) {
-        if (!ov || !ov.strongs || navNormSN(ov.strongs) !== want) continue;
+        if (!ov || !ov.strongs || !_strongsHasAtomic(ov.strongs, sn)) continue;
         const [book_id, chapter, verse, token_ordinal] = key.split(':').map(Number);
         out.push({ book_id, chapter, verse, token_ordinal, word_raw: ov.word_raw || '' });
     }
@@ -3187,7 +3233,7 @@ function hebOccForSN(sn, book = null) {
         const wantSN = navNormSN(sn);
         rows = rows.filter(r => {
             const ov = locationOverrides[locOverrideKey(r.book_id, r.chapter, r.verse, r.token_ordinal)];
-            return !ov || navNormSN(ov.strongs) === wantSN;
+            return !ov || _strongsHasAtomic(ov.strongs, wantSN);
         });
         const existing = new Set(rows.map(r => locOverrideKey(r.book_id, r.chapter, r.verse, r.token_ordinal)));
         for (const add of locOverridesTargeting(locationOverrides, wantSN)) {
@@ -3265,11 +3311,20 @@ function _buildNavIndexesUncached() {
         hebSeen++;
         const locOv = locationOverrides[locOverrideKey(r.book_id, r.chapter, r.verse, r.token_ordinal)];
         if (locOv && locOv.strongs) r.strongs = locOv.strongs;
-        const sn = navNormSN(String(r.strongs || '').split('＋')[0]);
-        const snNum = parseInt(String(sn).replace(/\D/g, ''), 10) || 0;
-        const usable = sn && snNum > 0 && snNum < 9000;
-
-        if (usable) {
+        // Compound tags ("H1121＋H410" — two real, independently-meaningful
+        // roots fused into one written word, e.g. a Ben-X/X-el theophoric
+        // name) credit EVERY atomic number, same as the BHS-side snRows loop
+        // just above. Previously only the FIRST atomic was ever indexed here,
+        // so the second half of any HEB compound tag was invisible to the
+        // Root Explorer and root-based search no matter how it got tagged —
+        // not just for location overrides, a latent gap for any compound-
+        // tagged HEB word.
+        const atomics = String(r.strongs || '').split('＋').map(navNormSN).filter(s => s && s !== 'H');
+        const usableAtomics = atomics.filter(sn => {
+            const n = parseInt(String(sn).replace(/\D/g, ''), 10) || 0;
+            return n > 0 && n < 9000;
+        });
+        for (const sn of usableAtomics) {
             let e = bySn.get(sn);
             // A Strong's seen ONLY in the NT gets its display form from the HEB
             // spelling; one already seen in the OT keeps the OT form, since
@@ -3285,7 +3340,7 @@ function _buildNavIndexesUncached() {
         if (!se) { se = { surface, count: 0, byBook: new Map(), snCnt: new Map() }; hebSurf.set(surface, se); }
         se.count++;
         se.byBook.set(r.book_id, (se.byBook.get(r.book_id) || 0) + 1);
-        if (usable) se.snCnt.set(sn, (se.snCnt.get(sn) || 0) + 1);
+        for (const sn of usableAtomics) se.snCnt.set(sn, (se.snCnt.get(sn) || 0) + 1);
     }
 
     // Guarantee every location-override target resolves as a root, even a
@@ -3298,10 +3353,15 @@ function _buildNavIndexesUncached() {
     // findWordOccurrences/hebOccForSN (fixed independently, above/below).
     for (const ov of Object.values(locationOverrides || {})) {
         if (!ov || !ov.strongs) continue;
-        const sn = navNormSN(ov.strongs);
-        if (!bySn.has(sn)) bySn.set(sn, { sn, count: 0, bestSurface: ov.word_raw || '', bestCnt: 0 });
-        const e = bySn.get(sn);
-        if (e.count === 0) { e.count = 1; e.bestCnt = 1; if (!e.bestSurface) e.bestSurface = ov.word_raw || ''; }
+        // Compound overrides ("H1121＋H410") need a root entry for EACH atomic
+        // half, not one garbled entry for the joined string.
+        for (const snRaw of String(ov.strongs).split('＋')) {
+            const sn = navNormSN(snRaw);
+            if (!sn || sn === 'H') continue;
+            if (!bySn.has(sn)) bySn.set(sn, { sn, count: 0, bestSurface: ov.word_raw || '', bestCnt: 0 });
+            const e = bySn.get(sn);
+            if (e.count === 0) { e.count = 1; e.bestCnt = 1; if (!e.bestSurface) e.bestSurface = ov.word_raw || ''; }
+        }
     }
 
     _rootNavIndex = [...bySn.values()].map(e => {
@@ -6625,6 +6685,7 @@ app.get('/api/admin/strongs-overrides', (req, res) => {
             key, book_id, chapter, verse, token_ordinal,
             book_name: BOOK_NAMES[book_id] || `Book ${book_id}`,
             strongs: ov.strongs, word_raw: ov.word_raw || '', note: ov.note || '',
+            parts: Array.isArray(ov.parts) ? ov.parts : null,
         };
     }).sort((a, b) => a.book_id - b.book_id || a.chapter - b.chapter || a.verse - b.verse || a.token_ordinal - b.token_ordinal);
     res.json({ overrides: list });
@@ -6653,19 +6714,35 @@ function _applyLocOverrideChangeNow() {
 }
 
 // POST /api/admin/strongs-override — create or update one override.
-// Body: { book_id, chapter, verse, token_ordinal, strongs, word_raw, note }
+// Body: { book_id, chapter, verse, token_ordinal, word_raw, note, ...either:
+//   strongs: "H2995a"          — single corrected/synthetic SN, OR
+//   parts: [{paleo,strongs,gloss}, ...] — a genuine compound (two+ REAL,
+//     independently-meaningful roots fused into one written word, e.g. Ben
+//     H1121 + El H410). strongs is auto-derived as the parts' SNs joined
+//     with the app's existing compound-tag separator ("＋"), so every OTHER
+//     place that already understands compound tags (nav index, root/surface
+//     search, findWordOccurrences/hebOccForSN) picks both halves up for
+//     free — see _strongsHasAtomic. }
 app.post('/api/admin/strongs-override', express.json({ limit: '64kb' }), (req, res) => {
     try {
-        const { book_id, chapter, verse, token_ordinal, strongs, word_raw, note } = req.body || {};
-        if (!book_id || !chapter || !verse || token_ordinal == null || !String(strongs || '').trim()) {
-            return res.status(400).json({ error: 'book_id, chapter, verse, token_ordinal, strongs are required' });
+        const { book_id, chapter, verse, token_ordinal, strongs, parts, word_raw, note } = req.body || {};
+        const cleanParts = Array.isArray(parts)
+            ? parts.filter(p => p && String(p.paleo || '').trim() && String(p.strongs || '').trim())
+                   .map(p => ({ paleo: String(p.paleo).trim(), strongs: String(p.strongs).trim(), gloss: (p.gloss || '').trim() }))
+            : null;
+        const derivedStrongs = cleanParts && cleanParts.length
+            ? cleanParts.map(p => p.strongs).join('＋')
+            : String(strongs || '').trim();
+        if (!book_id || !chapter || !verse || token_ordinal == null || !derivedStrongs) {
+            return res.status(400).json({ error: 'book_id, chapter, verse, token_ordinal, and strongs (or parts) are required' });
         }
         const key = locOverrideKey(book_id, chapter, verse, token_ordinal);
         const raw = _readLocOverridesRaw();
         raw[key] = {
-            strongs: String(strongs).trim(),
+            strongs: derivedStrongs,
             word_raw: word_raw || '',
             note: note || '',
+            ...(cleanParts && cleanParts.length ? { parts: cleanParts } : {}),
         };
         _writeLocOverridesRaw(raw);
         _applyLocOverrideChangeNow();
