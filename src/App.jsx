@@ -17,6 +17,7 @@ import Reader        from './pages/Reader.jsx';
 import AdminLogin    from './pages/AdminLogin.jsx';
 import BookManager   from './pages/BookManager.jsx';
 import Search        from './pages/Search.jsx';
+import StrongsOverrides from './pages/StrongsOverrides.jsx';
 
 /**
  * URL mapping. The reader and lexicon are unified across all corpora —
@@ -133,6 +134,7 @@ export default function App() {
         <Route path="/concordance"   element={<Concordance />} />
         <Route path="/cheatsheet"     element={<Cheatsheet />} />
         <Route path="/glyph-editor"   element={<GlyphEditor />} />
+        <Route path="/admin/strongs-overrides" element={<StrongsOverrides />} />
         <Route path="/read"           element={<ReadRedirect />} />
         <Route path="/lexicon-source" element={<LexiconSourceRedirect />} />
         <Route path="*" element={<Navigate to="/landing" replace />} />

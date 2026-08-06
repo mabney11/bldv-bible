@@ -269,6 +269,16 @@ export const apiSaveGlyphs   = (payload) =>
     body: JSON.stringify(payload),
   });
 
+// Location-keyed Strong's # overrides (one exact book/chapter/verse/token,
+// not a whole spelling) — see strongs-location-overrides.json / the
+// applyLocOverride* functions in server.js for why this exists separately
+// from the surface-level lexicon overrides above.
+export const apiAdminVerseTokens = (book, chapter, verse) =>
+  jsonFetch(`/api/admin/verse-tokens?book=${book}&chapter=${chapter}&verse=${verse}`);
+export const apiAdminListStrongsOverrides = () => jsonFetch('/api/admin/strongs-overrides');
+export const apiAdminSaveStrongsOverride = (payload) => apiPost('/api/admin/strongs-override', payload);
+export const apiAdminDeleteStrongsOverride = (key) => apiDelete(`/api/admin/strongs-override?key=${encodeURIComponent(key)}`);
+
 // Generic — used by Translate to save a verse.
 export async function apiPost(path, body) {
   const r = await fetch(path, {

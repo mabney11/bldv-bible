@@ -256,3 +256,64 @@ for a file-only change.
 **Test it** by temporarily stopping the container: `docker stop paleo`,
 reload the site in your browser, then `docker start paleo` when you're
 done.
+
+## 8. Lexicon hot-fixes — no redeploy needed
+
+Good news: the server already has live-reload built in for every lexicon
+file. You do **not** need `~/deploy.sh` (git pull + rebuild + swap
+container) just to fix a gloss or a Strong's-number typo. There are two
+tiers, depending on which file:
+
+**Tier A — instant, no action needed at all.** `greek-lexicon.json`,
+`geez-lexicon.json`, `latin-lexicon.json`, `syriac-lexicon.json`,
+`coptic-lexicon.json`, `hebrew-extra-lexicon.json` (the per-language
+curated gloss files) are re-read from disk automatically the next time
+anyone requests a word in that language — the server checks the file's
+timestamp on every lookup, no caching lag, no trigger required.
+
+**Tier B — auto-reloads within ~1 second of the file changing.**
+`lexicon.json`, `homographs.json`, `surface-strongs-overrides.json` (the
+files that drive root/surface search indexing) are watched by a file
+watcher in the running server. Any write to one of them rebuilds the
+search indexes automatically, debounced 300ms. You can also force it
+immediately (skip the debounce, or confirm a watch-triggered rebuild
+actually fired) by hitting:
+
+```bash
+curl -X POST http://localhost:3000/admin/rebuild-indexes
+curl http://localhost:3000/admin/index-status   # check it landed
+```
+
+**So the fast hot-fix workflow is:**
+
+```powershell
+# on your machine — edit the file locally first so it's the same edit
+# that eventually goes to git
+scp -i C:\Users\fieldy\.ssh\lightsail-paleo.pem `
+    path\to\lexicon\lexicon.json ubuntu@3.18.117.171:/tmp/lexicon.json
+```
+
+```bash
+# on the server — copy it INTO the running container (no restart)
+docker cp /tmp/lexicon.json paleo:/app/server/lexicon/lexicon.json
+curl -X POST http://localhost:3000/admin/rebuild-indexes   # Tier B files only
+```
+
+Reload the site — the fix is live, no rebuild, no downtime.
+
+**The catch (same one as §4):** `docker cp` writes into the *running
+container's* filesystem, which is not on the persistent volume and not in
+git. The next `~/deploy.sh` rebuilds the image from git and silently
+reverts your hot-fix. So immediately after confirming the fix looks right
+in production, commit the same file change on your machine and push:
+
+```powershell
+cd C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio
+git add server/lexicon/lexicon.json
+git commit -m "Fix <whatever> in lexicon.json"
+git push
+```
+
+You don't have to `~/deploy.sh` right away since the hot-fix already made
+it live — just don't let the repo drift for long, and always push before
+your *next* real deploy or the fix gets rolled back.

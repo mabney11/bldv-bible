@@ -4,7 +4,7 @@ import { BOOK_NAMES } from '../lib/books.js';
 import { SCRIPTS, getScript } from '../lib/keyboards.js';
 import detectScriptRaw from '../lib/scripts.js';
 import { transliterate } from '../lib/translit.js';
-import { apiSearch, apiConcordanceSurface, apiSurfaceList, apiSurfaceExplorerVerses } from '../lib/api.js';
+import { apiSearch, apiConcordanceSurface, apiSurfaceList, apiSurfaceExplorerVerses, apiRootVerses } from '../lib/api.js';
 import '../components/SearchUI.css';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -33,7 +33,9 @@ import '../components/SearchUI.css';
 
 const CONC_LIMIT = 500;          // server's hard cap on /api/concordance/surface
 const SURFACE_PAGE = 50000;      // server's hard cap on /api/surface-explorer/list
-const TRANSLIT_FANOUT = 8;       // cap how many distinct surfaces one lookup expands to
+const TRANSLIT_FANOUT = 8;       // cap how many EXACT-match surfaces one lookup expands to
+const ROOT_FANOUT = 3;           // cap how many distinct roots (Strong's #s) get expanded
+const ROOT_VERSE_LIMIT = 50;     // cap verses pulled per expanded root
 
 // Phoenician/Paleo isn't in scripts.js's detectScript (same special-case
 // translit.js needs) — catch it first, then defer to the shared detector.
@@ -89,6 +91,17 @@ async function getTranslitIndex() {
   })();
   return translitIndexPromise;
 }
+// Exact-transliteration match only finds the ONE literal spelling a user
+// typed — it won't find that same word with a proclitic prefix folded on
+// (e.g. "yabanaal" won't find "WaYabanaal", the same word plus "and"), and
+// it won't cross from an OT (BHS) spelling to an unrelated-looking NT (HEB)
+// spelling of the same root. The Root Explorer (/roots?sn=) already solves
+// both of those — it groups every surface form + every corpus by Strong's
+// number. So: use the exact match(es) to find WHICH root(s) the query means,
+// then pull each root's full verse list the same way /roots does, and merge
+// that in behind the exact hits (which still keep their precise highlight
+// word). This is what makes "yabanaal" surface Joshua 19:33's "WaYabanaal"
+// too, not just Joshua 15:11's bare form.
 async function runTranslitLookup(query) {
   const key = query.toLowerCase();
   if (translitCache.has(key)) return translitCache.get(key);
@@ -99,11 +112,40 @@ async function runTranslitLookup(query) {
     top.map(m => apiSurfaceExplorerVerses({ word: m.surface, limit: 50 }).catch(() => ({ verses: [] })))
   );
   const rows = [];
+  const seenVerse = new Set(); // `${book_id}:${chapter}:${verse}` — dedupe against root expansion below
   top.forEach((m, i) => {
-    for (const v of (pages[i].verses || [])) rows.push({ ...v, matchedSurface: m.surface, matchedStrongs: m.strongs });
+    for (const v of (pages[i].verses || [])) {
+      seenVerse.add(`${v.book_id}:${v.chapter}:${v.verse}`);
+      rows.push({ ...v, matchedSurface: m.surface, matchedStrongs: m.strongs });
+    }
   });
+
+  // Expand to the full root for each distinct Strong's # the exact match(es)
+  // resolved to — same data the Root Explorer page shows, so it picks up
+  // prefixed/inflected forms and any other-corpus (e.g. NT) reuse of the root.
+  const roots = [...new Set(top.map(m => m.strongs).filter(Boolean))].slice(0, ROOT_FANOUT);
+  let rootExpanded = false;
+  if (roots.length) {
+    rootExpanded = true;
+    const rootPages = await Promise.all(
+      roots.map(sn => apiRootVerses({ sn, limit: ROOT_VERSE_LIMIT }).catch(() => ({ verses: [] })))
+    );
+    roots.forEach((sn, i) => {
+      for (const v of (rootPages[i].verses || [])) {
+        const vk = `${v.book_id}:${v.chapter}:${v.verse}`;
+        if (seenVerse.has(vk)) continue; // already have this verse via an exact-surface hit above
+        seenVerse.add(vk);
+        // No single precise highlight word for a root-expansion hit (the
+        // verse's actual surface may differ from what was typed) — badge
+        // shows the Strong's # instead, and the link skips &hl=.
+        rows.push({ ...v, matchedSurface: null, matchedStrongs: sn });
+      }
+    });
+  }
+  rows.sort((a, b) => a.book_id - b.book_id || a.chapter - b.chapter || a.verse - b.verse);
+
   const truncated = matched.length > top.length;
-  const result = { matchCount: matched.length, truncated, rows };
+  const result = { matchCount: matched.length, rootExpanded, truncated, rows };
   translitCache.set(key, result);
   return result;
 }
@@ -255,7 +297,9 @@ export default function Search() {
   // the reader's highlighter matches against paleo text, so passing the
   // original Latin query would just never light anything up.
   const translitHitHref = v => `/?book=${v.book_id}&chapter=${v.chapter}&verse=${v.verse}`;
-  const goToTranslitHit = v => navigate(`${translitHitHref(v)}&hl=${encodeURIComponent(v.matchedSurface)}`);
+  const goToTranslitHit = v => navigate(
+    v.matchedSurface ? `${translitHitHref(v)}&hl=${encodeURIComponent(v.matchedSurface)}` : translitHitHref(v)
+  );
 
   const busy = legacyBusy || concBusy || translitBusy;
   const anyErr = legacyErr || concErr || translitErr;
@@ -394,18 +438,20 @@ export default function Search() {
           </div>
         )}
 
-        {/* Transliteration lookup (Latin query -> Hebrew paleo) */}
+        {/* Transliteration lookup (Latin query -> Hebrew paleo, expanded to the
+            full root so prefixed/inflected forms and other-corpus reuse of
+            the same root show up too — not just the literal spelling typed). */}
         {translitActive && translitResult && (
           <div className="hv-search-results">
             <div className="hv-results-count">
               Hebrew (by name / transliteration): {translitResult.rows.length === 0
                 ? `no Hebrew word transliterates to "${urlQ}"`
-                : `${translitResult.rows.length.toLocaleString()} verse${translitResult.rows.length !== 1 ? 's' : ''} across ${translitResult.matchCount} matching form${translitResult.matchCount !== 1 ? 's' : ''}${translitResult.truncated ? ` (showing first ${TRANSLIT_FANOUT} forms)` : ''}`}
+                : `${translitResult.rows.length.toLocaleString()} verse${translitResult.rows.length !== 1 ? 's' : ''} across ${translitResult.matchCount} matching form${translitResult.matchCount !== 1 ? 's' : ''}${translitResult.truncated ? ` (showing first ${TRANSLIT_FANOUT} forms)` : ''}${translitResult.rootExpanded ? ' + related forms of the same root' : ''}`}
             </div>
             {translitResult.rows.map((v, i) => (
               <a key={`${v.book_id}-${v.chapter}-${v.verse}-${i}`} className="hv-result-item" href={translitHitHref(v)} onClick={e => { e.preventDefault(); goToTranslitHit(v); }}>
                 <span className="hv-result-ref">{v.book_name || BOOK_NAMES[v.book_id] || `Book ${v.book_id}`} {v.chapter}:{v.verse}</span>
-                <span className="hv-result-badge">{v.matchedSurface}</span>
+                <span className="hv-result-badge">{v.matchedSurface || v.matchedStrongs}</span>
               </a>
             ))}
           </div>
