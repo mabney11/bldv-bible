@@ -6583,15 +6583,32 @@ app.get('/api/admin/verse-tokens', (req, res) => {
             return res.status(400).json({ error: 'book, chapter, verse query params are required' });
         }
         const { lexicon, homographs, surfaceOverrides } = loadLexicons();
-        const blocks = bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOverrides);
-        const tokens = [];
-        for (const b of blocks) {
-            const gloss = (b.components || []).map(c => c && c.translation).filter(Boolean).join(' ');
-            for (const st of (b.sourceTokens || [])) {
-                tokens.push({ token_ordinal: st.token_ordinal, word_raw: st.word_raw, strongs: st.strongs || '', gloss });
-            }
-        }
-        res.json({ book_id, chapter, verse, book_name: BOOK_NAMES[book_id] || `Book ${book_id}`, is_heb: navHebBooks().has(book_id), tokens });
+        const rawBlocks = bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOverrides);
+        // Grouped BY READER WORD, not flattened — a single displayed reader
+        // word (e.g. "WaYaAmar" or, per fieldy's actual question, "Yabanaal")
+        // can be folded from MULTIPLE raw source tokens (a proclitic/
+        // preformative morpheme + the content root, each its own DB row with
+        // its own token_ordinal). A flat list of every source token loses
+        // that grouping and makes it look like a piece is "missing" when
+        // it's really sitting in a sibling token of the SAME reader word.
+        // Surfacing the group lets the admin see the whole fused word (as
+        // rendered in the reader) and still target the exact morpheme's
+        // token_ordinal underneath it for the override.
+        const blocks = rawBlocks.map(b => {
+            const sourceTokens = (b.sourceTokens || []).map(st => ({
+                token_ordinal: st.token_ordinal,
+                word_raw: st.word_raw,
+                strongs: st.strongs || '',
+                pos: st.pos || '',
+            }));
+            return {
+                surface: sourceTokens.map(st => st.word_raw).join(''),
+                block_strongs: b.strongs || '',
+                gloss: (b.components || []).map(c => c && c.translation).filter(Boolean).join(' '),
+                sourceTokens,
+            };
+        });
+        res.json({ book_id, chapter, verse, book_name: BOOK_NAMES[book_id] || `Book ${book_id}`, is_heb: navHebBooks().has(book_id), blocks });
     } catch (err) {
         console.error('/api/admin/verse-tokens failed:', err);
         res.status(500).json({ error: err.message });

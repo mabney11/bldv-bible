@@ -201,20 +201,34 @@ export default function StrongsOverrides() {
               {verseData.book_name} {verseData.chapter}:{verseData.verse}
               {verseData.is_heb && <span className="so-badge">HEB edition</span>}
             </div>
-            {verseData.tokens.length === 0 && <div className="so-empty">No tokens found for this verse.</div>}
-            <div className="so-tokens">
-              {verseData.tokens.map(t => (
-                <button
-                  key={t.token_ordinal}
-                  className={`so-token ${editing?.token_ordinal === t.token_ordinal ? 'active' : ''}`}
-                  onClick={() => startEdit(t)}
-                  title={t.gloss || ''}
-                >
-                  <span className="so-token-paleo">{t.word_raw}</span>
-                  <span className="so-token-sub">
-                    {t.strongs || '—'}{t.gloss ? ` · ${t.gloss}` : ''}
-                  </span>
-                </button>
+            {verseData.blocks.length === 0 && <div className="so-empty">No tokens found for this verse.</div>}
+            {/* Grouped by READER WORD — a word you see fused in the reader (e.g.
+                "Yabanaal") can be built from more than one raw source token (a
+                prefix/preformative morpheme plus the content root, each its own
+                token_ordinal). Multi-piece words show their pieces side by side
+                inside one card so nothing looks "missing" — click the SPECIFIC
+                piece you mean; the override targets that piece's exact token. */}
+            <div className="so-blocks">
+              {verseData.blocks.map((b, bi) => (
+                <div className="so-block" key={bi}>
+                  <div className="so-block-surface">{b.surface}</div>
+                  <div className="so-block-pieces">
+                    {b.sourceTokens.map(t => (
+                      <button
+                        key={t.token_ordinal}
+                        className={`so-token ${editing?.token_ordinal === t.token_ordinal ? 'active' : ''}`}
+                        onClick={() => startEdit(t)}
+                        title={b.gloss || ''}
+                      >
+                        <span className="so-token-paleo">{t.word_raw}</span>
+                        <span className="so-token-sub">
+                          {t.strongs || '—'}{t.pos ? ` · ${t.pos}` : ''}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                  {b.gloss && <div className="so-block-gloss">{b.gloss}</div>}
+                </div>
               ))}
             </div>
 
