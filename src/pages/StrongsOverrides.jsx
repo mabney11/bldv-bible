@@ -1,30 +1,37 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getAdminStatus } from '../lib/localOverlay.js';
 import { useToast } from '../components/Toast.jsx';
+import BookChapterVerseSelects from '../components/BookChapterVerseSelects.jsx';
+import '../components/TopBar.css'; // .nav-group/.nav-sel-wrap layout, reused here
 import {
+  apiBooks, apiTokens,
   apiAdminVerseTokens, apiAdminListStrongsOverrides,
   apiAdminSaveStrongsOverride, apiAdminDeleteStrongsOverride,
 } from '../lib/api.js';
 import './StrongsOverrides.css';
 
-// /admin/strongs-overrides — browse to a verse, see its tokens with their
-// CURRENT effective Strong's # (already reflecting any override in place),
-// click one, and pin a corrected or brand-new synthetic Strong's # (e.g.
-// H2995a) to that ONE exact occurrence. This is the location-keyed override
-// system (book_id:chapter:verse:token_ordinal) — distinct from the older
-// surface-strongs-overrides.json, which is keyed by bare spelling and can
-// only fill a blank SN, never override one that's already set. See
-// server.js's applyLocOverride*/locOverridesTargeting for how this gets
-// read back in everywhere it matters (the reader, root/surface search, the
-// translit search's root expansion).
+// /admin/strongs-overrides — browse to a verse by NAME (book/chapter/verse
+// dropdowns, same component the reader uses — nobody should have to know a
+// book id), see its tokens with their CURRENT effective Strong's # (already
+// reflecting any override in place), click one, and pin a corrected or
+// brand-new synthetic Strong's # (e.g. H2995a) to that ONE exact occurrence.
+// This is the location-keyed override system (book_id:chapter:verse:
+// token_ordinal) — distinct from the older surface-strongs-overrides.json,
+// which is keyed by bare spelling and can only fill a blank SN, never
+// override one that's already set. See server.js's applyLocOverride*/
+// locOverridesTargeting for how this gets read back in everywhere it
+// matters (the reader, root/surface search, the translit search's root
+// expansion).
 export default function StrongsOverrides() {
   const toast = useToast();
   const [isAdmin, setIsAdmin] = useState(null); // null = checking
 
-  const [book, setBook]       = useState('');
-  const [chapter, setChapter] = useState('');
-  const [verse, setVerse]     = useState('');
+  const [books, setBooks] = useState([]);
+  const [book, setBook]       = useState(null);
+  const [chapter, setChapter] = useState(null);
+  const [verse, setVerse]     = useState(null);
+  const [chapterTokens, setChapterTokens] = useState([]);
   const [verseData, setVerseData] = useState(null);
   const [busy, setBusy]       = useState(false);
   const [err, setErr]         = useState(null);
@@ -48,16 +55,60 @@ export default function StrongsOverrides() {
 
   useEffect(() => { if (isAdmin) loadOverrides(); }, [isAdmin, loadOverrides]);
 
-  const loadVerse = e => {
-    e?.preventDefault?.();
-    const b = parseInt(book, 10), c = parseInt(chapter, 10), v = parseInt(verse, 10);
-    if (!b || !c || !v) { setErr('Enter a book #, chapter, and verse.'); return; }
-    setBusy(true); setErr(null); setVerseData(null); setEditing(null);
-    apiAdminVerseTokens(b, c, v)
+  // Book list — same source (and same book set: BHS OT + HEB NT) the reader
+  // uses, so every book in this dropdown is one /api/admin/verse-tokens can
+  // actually resolve.
+  useEffect(() => {
+    if (!isAdmin) return;
+    apiBooks().then(list => {
+      setBooks(list || []);
+      if (list?.length && book == null) {
+        setBook(list[0].book_id);
+        setChapter(list[0].first_chapter);
+      }
+    }).catch(e => toast(e.message, 'err'));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin]);
+
+  // Chapter changes (or book changes) → fetch that chapter's tokens just to
+  // learn which verse numbers exist, for the verse dropdown. Same technique
+  // HebrewViewer uses for its own book/chapter/verse selects.
+  useEffect(() => {
+    if (book == null || chapter == null) return;
+    let cancelled = false;
+    apiTokens(book, chapter).then(tokens => {
+      if (cancelled) return;
+      setChapterTokens(Array.isArray(tokens) ? tokens : []);
+    }).catch(() => { if (!cancelled) setChapterTokens([]); });
+    return () => { cancelled = true; };
+  }, [book, chapter]);
+
+  const verseNums = useMemo(
+    () => [...new Set(chapterTokens.map(t => t.verse))].sort((a, b) => a - b),
+    [chapterTokens]
+  );
+
+  const onPickBook = id => {
+    const meta = books.find(b => b.book_id === id);
+    setBook(id);
+    setChapter(meta ? meta.first_chapter : 1);
+    setVerse(null);
+    setVerseData(null);
+    setEditing(null);
+  };
+  const onPickChapter = c => { setChapter(c); setVerse(null); setVerseData(null); setEditing(null); };
+  const onPickVerse = v => {
+    setVerse(v);
+    setEditing(null);
+    if (!v) { setVerseData(null); return; }
+    setBusy(true); setErr(null); setVerseData(null);
+    apiAdminVerseTokens(book, chapter, v)
       .then(d => setVerseData(d))
       .catch(e => setErr(e.message))
       .finally(() => setBusy(false));
   };
+
+  const reloadVerse = () => { if (verse) onPickVerse(verse); };
 
   const startEdit = tok => {
     setEditing(tok);
@@ -79,7 +130,7 @@ export default function StrongsOverrides() {
       });
       toast('Saved — indexes rebuilt', 'ok');
       setEditing(null);
-      loadVerse();
+      reloadVerse();
       loadOverrides();
     } catch (e) {
       toast(e.message, 'err');
@@ -91,7 +142,7 @@ export default function StrongsOverrides() {
       await apiAdminDeleteStrongsOverride(key);
       toast('Removed', 'ok');
       loadOverrides();
-      if (verseData) loadVerse();
+      reloadVerse();
     } catch (e) {
       toast(e.message, 'err');
     }
@@ -118,17 +169,24 @@ export default function StrongsOverrides() {
         <p className="so-intro">
           Pin a corrected or new synthetic Strong's # (e.g. <code>H2995a</code>) to
           one exact occurrence — book/chapter/verse/token — without touching every
-          other occurrence of the same spelling. Look up the verse, click a token,
+          other occurrence of the same spelling. Pick the verse, click a token,
           set its #. Takes effect immediately, everywhere: the reader, root/surface
           search, and root-expanded transliteration search.
         </p>
 
-        <form className="so-lookup" onSubmit={loadVerse}>
-          <input type="number" placeholder="Book #" value={book} onChange={e => setBook(e.target.value)} />
-          <input type="number" placeholder="Chapter" value={chapter} onChange={e => setChapter(e.target.value)} />
-          <input type="number" placeholder="Verse" value={verse} onChange={e => setVerse(e.target.value)} />
-          <button type="submit" disabled={busy}>{busy ? 'Loading…' : 'Look up'}</button>
-        </form>
+        <div className="so-lookup">
+          <BookChapterVerseSelects
+            books={books}
+            book={book}
+            chapter={chapter}
+            verse={verse}
+            verses={verseNums}
+            onBook={onPickBook}
+            onChapter={onPickChapter}
+            onVerse={onPickVerse}
+          />
+          {busy && <span className="so-loading">Loading…</span>}
+        </div>
         {err && <div className="so-err">⚠ {err}</div>}
 
         {verseData && (

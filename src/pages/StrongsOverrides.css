@@ -39,32 +39,26 @@
 
 .so-lookup {
   display: flex;
-  gap: 8px;
+  align-items: flex-end;
+  gap: 10px;
   margin-bottom: 10px;
 }
-.so-lookup input {
-  width: 100px;
+/* BookChapterVerseSelects renders plain <select>s scoped to .top-bar
+   elsewhere in the app — restyle them here so they match this page. */
+.so-lookup .nav-group { max-width: none; }
+.so-lookup select {
   background: var(--bg3);
   color: var(--text);
   border: 1px solid var(--border2);
   padding: 9px 12px;
   border-radius: 6px;
   font-size: 14px;
-  min-height: 40px;
-}
-.so-lookup button {
-  background: var(--blue2);
-  color: #fff;
-  border: none;
-  padding: 9px 20px;
-  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
+  width: 100%;
   min-height: 40px;
 }
-.so-lookup button:hover { background: var(--blue); }
-.so-lookup button:disabled { opacity: 0.6; cursor: progress; }
+.so-lookup select:focus { outline: none; border-color: var(--blue); }
+.so-loading { font-size: 12px; color: var(--text3); white-space: nowrap; padding-bottom: 10px; }
 
 .so-err { color: var(--red); font-size: 13px; padding: 6px 2px 14px; }
 .so-empty { color: var(--text3); font-size: 13px; padding: 8px 2px; }
