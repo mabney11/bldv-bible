@@ -221,8 +221,16 @@ export default function HebrewViewer() {
       const name = mb.name || BOOK_NAMES[mb.id] || here?.name || `Book ${mb.id}`;
       return {
         book_id: mb.id, seq: i + 1,
-        first_chapter: here?.first_chapter ?? 1,
-        last_chapter:  here?.last_chapter  ?? 1,
+        // here (BHS-only) is authoritative for OT books, including its
+        // versification/DISPLAY_LAST_CHAPTER overrides — keep preferring it
+        // when present. For books BHS doesn't have (every NT/HEB-only book),
+        // this used to fall straight to 1, which is wrong: /api/book-order's
+        // mb.first/mb.last already carry the correct range, computed across
+        // ALL sources (corpus.db's unified `verses` table, keyed by
+        // canon_id) — just wasn't being read. That's what made every
+        // foreign book's chapter dropdown show only "Chapter 1".
+        first_chapter: here?.first_chapter ?? mb.first ?? 1,
+        last_chapter:  here?.last_chapter  ?? mb.last  ?? 1,
         name,
         label: name,
         foreign, sources: mb.sources, primary,

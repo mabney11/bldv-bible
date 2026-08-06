@@ -2474,7 +2474,19 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 }
                 return missing;
             })();
-            const _canonTrusted = _canonMissing <= 2;
+            // Real elision (I-nun/I-yod assimilation, a weak-verb letter substitution)
+            // is a VERB MORPHOLOGY phenomenon — Hebrew proper names don't "elide" a
+            // letter the way conjugated roots do; a name is either spelled in full or
+            // it's a different name/word. Tolerating up to 2 missing letters for a
+            // pos='nmpr' (proper noun) token is what let an UNRELATED Strong's #'s
+            // canonical spelling get silently painted onto a name that never had
+            // those letters — e.g. H2995 Yabneel's leading Yod ending up "restored"
+            // onto an unrelated proper-name token that happens to reuse H2995. Proper
+            // names get NO tolerance: only an exact letter-for-order match (every
+            // canonical letter actually present, in order) earns the restoration.
+            // Verbs/nouns/etc. keep the up-to-2 tolerance this was designed for.
+            // Kept in sync with build-surface-index.js.
+            const _canonTrusted = pos === 'nmpr' ? _canonMissing === 0 : _canonMissing <= 2;
             // A COMPOUND-NAME half (Ben-Gever H1127: surface "Ben" = 2 letters,
             // lemma "Ben-Gever" = 5) and a genuine SAME-WORD spelling variant
             // (Mowcadah/foundation H4146: surface 5 letters, lemma 5 letters, just a

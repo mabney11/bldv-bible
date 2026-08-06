@@ -543,7 +543,10 @@ function parseToken(wordRaw, pos, morph, strongs) {
             }
             return missing;
         })();
-        const _canonTrusted = _canonMissing <= 2;
+        // Proper names don't elide letters the way conjugated verb roots do —
+        // no tolerance for pos='nmpr'. Kept in sync with build-surface-index.js
+        // and server.js's parseHebrewData.
+        const _canonTrusted = pos === 'nmpr' ? _canonMissing === 0 : _canonMissing <= 2;
         // A COMPOUND-NAME half (Ben-Gever H1127: surface "Ben" = 2 letters, lemma
         // "Ben-Gever" = 5) and a genuine SAME-WORD spelling variant (Mowcadah/
         // foundation H4146: surface 5 letters, lemma 5 letters, just a weak Yod->Vav

@@ -218,8 +218,11 @@ export default function MultiViewer() {
       const name = mb.name || BOOK_NAMES[mb.id] || here?.name || `Book ${mb.id}`;
       return {
         book_id: mb.id, seq: i + 1,
-        first_chapter: here?.first_chapter ?? 1,
-        last_chapter:  here?.last_chapter  ?? 1,
+        // See the identical fix in HebrewViewer.jsx's dropdownBooks — mb.first/
+        // mb.last (from /api/book-order, computed across ALL sources) must win
+        // over a bare 1 for books this language's own list (`here`) lacks.
+        first_chapter: here?.first_chapter ?? mb.first ?? 1,
+        last_chapter:  here?.last_chapter  ?? mb.last  ?? 1,
         name,
         label: name,
         foreign, sources: mb.sources, primary,
