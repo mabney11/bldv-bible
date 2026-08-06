@@ -5,7 +5,7 @@ import { useToast } from '../components/Toast.jsx';
 import BookChapterVerseSelects from '../components/BookChapterVerseSelects.jsx';
 import '../components/TopBar.css'; // .nav-group/.nav-sel-wrap layout, reused here
 import {
-  apiBooks, apiTokens,
+  apiBookOrder, apiTokens,
   apiAdminVerseTokens, apiAdminListStrongsOverrides,
   apiAdminSaveStrongsOverride, apiAdminDeleteStrongsOverride,
 } from '../lib/api.js';
@@ -55,16 +55,22 @@ export default function StrongsOverrides() {
 
   useEffect(() => { if (isAdmin) loadOverrides(); }, [isAdmin, loadOverrides]);
 
-  // Book list — same source (and same book set: BHS OT + HEB NT) the reader
-  // uses, so every book in this dropdown is one /api/admin/verse-tokens can
-  // actually resolve.
+  // Book list — /api/books is BHS (OT) only, which is why the dropdown was
+  // missing the whole NT. /api/book-order is the cross-source list (every
+  // book, tagged with which source(s) carry it); filter to BHS + HEB, the
+  // only two sources this Strong's-#-override system covers (LXX/GNT/GEZ/
+  // etc. use the separate normalized-surface concordance system instead,
+  // with no Strong's # at all to override).
   useEffect(() => {
     if (!isAdmin) return;
-    apiBooks().then(list => {
-      setBooks(list || []);
-      if (list?.length && book == null) {
-        setBook(list[0].book_id);
-        setChapter(list[0].first_chapter);
+    apiBookOrder().then(list => {
+      const covered = (list || [])
+        .filter(b => (b.sources || []).some(s => s === 'BHS' || s === 'HEB'))
+        .map(b => ({ book_id: b.id, label: b.name, first_chapter: b.first, last_chapter: b.last }));
+      setBooks(covered);
+      if (covered.length && book == null) {
+        setBook(covered[0].book_id);
+        setChapter(covered[0].first_chapter);
       }
     }).catch(e => toast(e.message, 'err'));
     // eslint-disable-next-line react-hooks/exhaustive-deps
