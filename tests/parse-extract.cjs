@@ -1569,7 +1569,13 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 // (mutated radical, mater) WITHOUT the suffix; the suffix is a chip.
                 const rzMerged = mergeRootDisplay([...rootZone], [..._canonicalRoot]);
                 const rzFirst  = [...rootZone][0];
-                if (rzMerged) {
+                // NMPR GUARD (kept in sync with build-surface-index.js / server.js).
+                // Same-first-letter = same name/orthographic variant (Asshur
+                // plene/defective); first-letter mismatch = different word reusing
+                // the SN (Yabneel vs Ban-Al) — mirrors trueRoot's own test above.
+                if (pos === 'nmpr' && canonFirst !== rzFirst) {
+                    rootDisplay = MUTATED_ROOTS[rootZone] || rootZone;
+                } else if (rzMerged) {
                     rootDisplay = rzMerged;
                 } else if (!rzFirst || _canonTrusted || _lengthTrusted) {
                     rootDisplay = _canonicalRoot;

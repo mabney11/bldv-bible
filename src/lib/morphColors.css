@@ -44,6 +44,13 @@
 .mod-nmpr       { --mc: #d4a010; --mb: #705000; }
 .mod-pref-unk   { --mc: #888; --mb: #333; }
 .mod-suff-unk   { --mc: #888; --mb: #333; }
+/* Construct-state noun standing in front of another noun ("son OF ___",
+ * "Ben-Elohim" / "Ben-Al") — a genuine grammatical relationship, not a
+ * blended lexeme, so it gets its own color distinct from every mod-* above
+ * rather than sharing .root with the noun it modifies. Magenta: nothing
+ * else in this palette sits near it (closest neighbors are mod-prps
+ * lavender and prs-3fs's softer pink). */
+.mod-cstr       { --mc: #e050d0; --mb: #700060; }
 
 /* ── Verbal prefix markers — who performs ────────────────────────────────── */
 .pfm-3ms        { --mc: #e8784a; --mb: #802818; }
@@ -142,6 +149,7 @@ html[data-theme="light"] .mod-prde    { --mc: #005522; --mb: #a8eec8; }
 html[data-theme="light"] .mod-prps    { --mc: #550066; --mb: #eec0ff; }
 html[data-theme="light"] .mod-prin    { --mc: #663300; --mb: #f8d8b8; }
 html[data-theme="light"] .mod-nmpr    { --mc: #775500; --mb: #ffee98; }
+html[data-theme="light"] .mod-cstr    { --mc: #9900aa; --mb: #f0c0f0; }
 html[data-theme="light"] .pfm-3ms     { --mc: #992200; --mb: #ffd0b0; }
 html[data-theme="light"] .pfm-2or3f   { --mc: #880055; --mb: #ffb8e8; }
 html[data-theme="light"] .pfm-1cs     { --mc: #003388; --mb: #b8d0ff; }

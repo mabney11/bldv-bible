@@ -2551,7 +2551,21 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 // (mutated radical, mater) WITHOUT the suffix; the suffix is a chip.
                 const rzMerged = mergeRootDisplay([...rootZone], [..._canonicalRoot]);
                 const rzFirst  = [...rootZone][0];
-                if (rzMerged) {
+                // NMPR GUARD (kept in sync with build-surface-index.js). FIRST CUT
+                // (wrong): reject whenever pos==='nmpr' && any canonical letter is
+                // missing — broke H804 Asshur (𐤀𐤔𐤅𐤓) vs its own defective
+                // spelling 𐤀𐤔𐤓 (no internal Waw), a genuine plene/defective
+                // spelling of the SAME name, both starting with Aleph. trueRoot
+                // above already has the right test: canonFirst === dispFirst
+                // admits the canonical root regardless of _canonTrusted, because
+                // same-first-letter means "same name, orthographic variant" —
+                // only a first-letter MISMATCH (Yabneel's Yod vs this word's Bet)
+                // means "different word reusing the SN". Mirror that test here so
+                // trueRoot and rootDisplay can never disagree (enforced by the
+                // no-eliding startup gate).
+                if (pos === 'nmpr' && canonFirst !== rzFirst) {
+                    rootDisplay = MUTATED_ROOTS[rootZone] || rootZone;
+                } else if (rzMerged) {
                     rootDisplay = rzMerged;
                 } else if (!rzFirst || _canonTrusted || _lengthTrusted) {
                     rootDisplay = _canonicalRoot;
@@ -3025,14 +3039,55 @@ function applyLocOverrideToSurfRow(row, locationOverrides, book_id, chapter) {
                         // than a single component carrying a joined SN string.
                         // Each part rides the existing per-component rendering
                         // (badge, live re-gloss lookup by paleo+sn) unchanged.
-                        const newParts = ov.parts.filter(p => p && p.paleo).map(p => ({
+                        // p.css lets a part declare its grammatical role —
+                        // 'mod-cstr' for a construct-state noun standing in
+                        // front of another noun ("Ben-Elohim" = son OF God:
+                        // Elohim is the head, Ben modifies it, same shape as
+                        // any other prefix+root word), 'mod-art'/'mod-prep' for
+                        // a fused article/preposition — defaulting to 'root' for
+                        // a plain two-independent-roots compound. Brackets are
+                        // NOT added here: computeWordParts (WordBlock.jsx)
+                        // already routes anything whose css isn't 'root' into
+                        // the bracketed modifier group and wraps it in real `[`/
+                        // `]` HTML spans — adding literal brackets to the string
+                        // here would just get stripped back out by its
+                        // `.replace(/[\[\]]/g,'')` and re-added, so passing the
+                        // bare gloss through unchanged is correct, not lazy.
+                        const builtParts = ov.parts.filter(p => p && p.paleo).map(p => ({
                             ...root,
                             paleo: p.paleo,
                             sn: String(p.strongs || '').replace(/^H+/i, ''),
-                            css: 'root',
+                            css: p.css || 'root',
                             translit: '',
                             translation: p.gloss || root.translation,
                         }));
+                        // MAQAF-JOIN consecutive REAL ('root'-css) parts only —
+                        // not before/after a grammatical part. Without this,
+                        // transliterateBlock (below) sees all parts as ONE
+                        // unbroken segment and concatenates their transliterations
+                        // with no separator (𐤁𐤍 + 𐤀𐤋 → "BanAl") — wrong on two
+                        // counts: it reads as a single lexeme, not two morphemes,
+                        // and it hides exactly the distinction this override
+                        // exists to make visible. A dash belongs between two
+                        // WORDS (Ben-Elohim), not between a grammatical prefix
+                        // and the word it attaches to ("Le-Ben" would be wrong —
+                        // "the-Ben" reads as one prefixed word, same as anywhere
+                        // else in the app). The maqaf mark is the app's own
+                        // existing word-joiner mechanism (𐤌𐤋𐤊𐤉𐤁𐤀𐤃𐤍-𐤈𐤑𐤃𐤒 /
+                        // Malakay-Tzadaq already renders this way) — WordBlock.jsx
+                        // detects isMaqaf and gives each half its own glyphs,
+                        // translit, gloss, AND badge, so H1121/H410 each show
+                        // their own Strong's chip instead of one merged badge.
+                        // Reused here as-is, not reinvented.
+                        const newParts = [];
+                        builtParts.forEach((p, i) => {
+                            const prev = builtParts[i - 1];
+                            if (i > 0 && prev.css === 'root' && p.css === 'root') newParts.push({
+                                paleo: '־', translit: '-', translation: '',
+                                css: 'maqaf', isMark: true, isMaqaf: true,
+                            });
+                            newParts.push(p);
+                        });
                         if (newParts.length) comps.splice(idx, 1, ...newParts);
                     } else {
                         root.sn = String(ov.strongs).replace(/^H+/i, '');

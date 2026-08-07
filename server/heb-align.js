@@ -64,7 +64,22 @@ function splitWords(text) {
 }
 const matresKey = s => (s || '').replace(/[𐤉𐤅]/g, '');
 function matresEquivalent(a, b) {
-    if (!a || !b || a[0] !== b[0]) return false;
+    if (!a || !b) return false;
+    // Paleo letters live in the SMP (Supplementary Multilingual Plane) and are
+    // all packed into ONE narrow Unicode block, so every paleo letter shares
+    // the identical UTF-16 HIGH surrogate — plain string indexing (a[0]) only
+    // ever sees that shared high surrogate, never the letter itself. a[0] ===
+    // b[0] was therefore true for EVERY pair of paleo letters, no matter how
+    // different they actually were, silently disabling the "must start with
+    // the same letter" guard entirely. [...a][0] iterates by codepoint (each
+    // full surrogate pair as one element), the same discipline this file
+    // already uses everywhere else paleo length/indexing matters (see the
+    // f.length===1 comment above). This is what let 𐤉𐤁𐤍𐤀𐤋 (Yabneel, starts
+    // with Yod) register as a "plene" spelling variant of 𐤁𐤍𐤀𐤋 (starts with
+    // Bet, an unrelated word this edition reuses H2995 for) — stripping
+    // Yabneel's leading Yod as a matres vowel letter happens to leave exactly
+    // that word's spelling, and the broken first-letter check let it through.
+    if ([...a][0] !== [...b][0]) return false;
     if (Math.abs([...a].length - [...b].length) > 2) return false;
     const ka = matresKey(a);
     return ka === matresKey(b) && [...ka].length >= 3;

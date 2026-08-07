@@ -654,7 +654,13 @@ function parseToken(wordRaw, pos, morph, strongs) {
             // (`_canonLen >= _rootZoneLen && canonFirst === rzFirst`), so the
             // lemma could be corrected while the displayed word still showed the
             // clipped surface form. One rule, both.
-            if (rzMerged) {
+            // NMPR GUARD (kept in sync with build-surface-index.js / server.js).
+            // Same-first-letter = same name/orthographic variant (Asshur
+            // plene/defective); first-letter mismatch = different word reusing
+            // the SN (Yabneel vs Ban-Al) — mirrors trueRoot's own test above.
+            if (pos === 'nmpr' && canonFirst !== rzFirst) {
+                rootDisplay = MUTATED_ROOTS[rootZone] || rootZone;
+            } else if (rzMerged) {
                 // mergeRootDisplay already returns canonical + surface additions,
                 // which is additive by construction — prefer it when it fires.
                 rootDisplay = rzMerged;

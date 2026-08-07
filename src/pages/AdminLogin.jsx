@@ -73,8 +73,16 @@ export default function AdminLogin() {
       )}
 
       {status && status.configured && status.isAdmin && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
           <p>✓ You're logged in as admin. Writes on this server go straight through, same as running it locally.</p>
+          <div style={{
+            display: 'flex', flexDirection: 'column', gap: 8, width: 260,
+            padding: 16, borderRadius: 8, border: '1px solid #333', background: 'rgba(255,255,255,0.03)',
+          }}>
+            <span style={{ fontSize: 12, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Admin tools</span>
+            <Link to="/admin/strongs-overrides" style={{ color: 'inherit' }}>Strong's # overrides</Link>
+            <Link to="/book-manager" style={{ color: 'inherit' }}>Book manager</Link>
+          </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <Link to="/landing" style={{ color: 'inherit' }}>← Back to the app</Link>
             <button onClick={logout} style={{ cursor: 'pointer' }}>Log out</button>

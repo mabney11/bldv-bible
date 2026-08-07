@@ -833,7 +833,27 @@ function parseToken(wordRaw, pos, morph, strongs) {
             // (`_canonLen >= _rootZoneLen && canonFirst === rzFirst`), so the
             // lemma could be corrected while the displayed word still showed the
             // clipped surface form. One rule, both.
-            if (rzMerged) {
+            // NMPR GUARD, applies before mergeRootDisplay/_lengthTrusted: both of
+            // those are pure letter-insertion heuristics with no concept of part
+            // of speech, so neither respected the pos==='nmpr' exactness rule
+            // above — mergeRootDisplay fires whenever the surface's letters are
+            // an in-order subsequence of the canonical root's and happily
+            // reinserts ANY missing letter regardless of _canonTrusted.
+            //
+            // FIRST CUT (wrong): reject whenever pos==='nmpr' && any letter is
+            // missing. That broke H804 Asshur (𐤀𐤔𐤅𐤓, canonical) vs its own
+            // defective spelling 𐤀𐤔𐤓 (no internal Waw) — a genuine plene/
+            // defective spelling of the SAME name, both starting with Aleph.
+            // trueRoot above already had the right test for this and used it:
+            // canonFirst === dispFirst admits the canonical root regardless of
+            // _canonTrusted, because same-first-letter means "same name,
+            // orthographic variant" — only a first-letter MISMATCH (Yabneel's
+            // Yod vs this word's Bet) means "different word reusing the SN".
+            // Mirror that exact test here so trueRoot and rootDisplay can never
+            // disagree (the no-eliding startup gate enforces this invariant).
+            if (pos === 'nmpr' && canonFirst !== rzFirst) {
+                rootDisplay = MUTATED_ROOTS[rootZone] || rootZone;
+            } else if (rzMerged) {
                 // mergeRootDisplay already returns canonical + surface additions,
                 // which is additive by construction — prefer it when it fires.
                 rootDisplay = rzMerged;

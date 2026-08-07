@@ -10,7 +10,7 @@ const SUFFIX_PREFIXES = ['nme-', 'prs-', 'vbe-', 'mod-suff-unk'];
 const PREFIX_FULL = [
   'mod-conj','mod-prep','mod-art','mod-nega','mod-advb',
   'mod-intj','mod-inrg','mod-prde','mod-prps','mod-prin','mod-nmpr',
-  'mod-pref-unk',
+  'mod-pref-unk','mod-cstr',
 ];
 const PREFIX_STARTS = ['pfm-','vbs-'];
 
