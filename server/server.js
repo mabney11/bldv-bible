@@ -3061,30 +3061,41 @@ function applyLocOverrideToSurfRow(row, locationOverrides, book_id, chapter) {
                             translit: '',
                             translation: p.gloss || root.translation,
                         }));
-                        // MAQAF-JOIN consecutive REAL ('root'-css) parts only —
-                        // not before/after a grammatical part. Without this,
+                        // MAQAF-JOIN after any 'mod-cstr' part, and between two
+                        // consecutive 'root' parts — not before/after a plain
+                        // grammatical part (article/preposition). Without this,
                         // transliterateBlock (below) sees all parts as ONE
                         // unbroken segment and concatenates their transliterations
                         // with no separator (𐤁𐤍 + 𐤀𐤋 → "BanAl") — wrong on two
                         // counts: it reads as a single lexeme, not two morphemes,
                         // and it hides exactly the distinction this override
                         // exists to make visible. A dash belongs between two
-                        // WORDS (Ben-Elohim), not between a grammatical prefix
-                        // and the word it attaches to ("Le-Ben" would be wrong —
-                        // "the-Ben" reads as one prefixed word, same as anywhere
-                        // else in the app). The maqaf mark is the app's own
-                        // existing word-joiner mechanism (𐤌𐤋𐤊𐤉𐤁𐤀𐤃𐤍-𐤈𐤑𐤃𐤒 /
-                        // Malakay-Tzadaq already renders this way) — WordBlock.jsx
-                        // detects isMaqaf and gives each half its own glyphs,
-                        // translit, gloss, AND badge, so H1121/H410 each show
-                        // their own Strong's chip instead of one merged badge.
-                        // Reused here as-is, not reinvented.
+                        // WORDS — 'mod-cstr' marks a construct-state noun that IS
+                        // an independent word ("son OF ___"), so it gets a dash
+                        // before whatever follows it (Ben-Elohim, Ben-HaElohim).
+                        // A plain grammatical prefix ('mod-art'/'mod-prep') does
+                        // NOT get its own dash ("Le-Ben" would be wrong — "the-Ben"
+                        // reads as one prefixed word, same as anywhere else in the
+                        // app), so "Ha" stays fused onto what follows it.
+                        //
+                        // Deliberately NOT setting isMaqaf (only isMark + css:
+                        // 'maqaf') — isMaqaf is WordBlock.jsx's trigger for the
+                        // full maqaf-CHIP layout (Malakay-Tzadaq: two independent
+                        // side-by-side WordBlocks, each with its own title/gloss/
+                        // badge). That flat two-block look is exactly what got
+                        // rejected for this compound ("I dont want sidebyside grey
+                        // words") in favor of ONE block whose gloss shows the head
+                        // noun with a bracketed, colored construct modifier. A
+                        // plain isMark component still renders as a visible dash
+                        // character on the glyph + translit lines (computeWordParts'
+                        // generic isMark branch) without forking the layout.
                         const newParts = [];
                         builtParts.forEach((p, i) => {
                             const prev = builtParts[i - 1];
-                            if (i > 0 && prev.css === 'root' && p.css === 'root') newParts.push({
+                            const joins = prev && (prev.css === 'mod-cstr' || (prev.css === 'root' && p.css === 'root'));
+                            if (i > 0 && joins) newParts.push({
                                 paleo: '־', translit: '-', translation: '',
-                                css: 'maqaf', isMark: true, isMaqaf: true,
+                                css: 'maqaf', isMark: true,
                             });
                             newParts.push(p);
                         });
