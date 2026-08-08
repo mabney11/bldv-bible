@@ -3060,6 +3060,17 @@ function applyLocOverrideToSurfRow(row, locationOverrides, book_id, chapter) {
                             css: p.css || 'root',
                             translit: '',
                             translation: p.gloss || root.translation,
+                            // trueRoot/lemmaTranslit describe the ORIGINAL fused
+                            // word (e.g. "Banaal", the whole pre-split surface) —
+                            // spread in via ...root, they leaked onto EVERY part,
+                            // so the head noun's gloss showed a stale, dash-less
+                            // "Banaal →" hint that no longer matches this part's
+                            // own (correctly dashed) transliteration. Each part's
+                            // spelling+gloss is now fully explicit via p.paleo/
+                            // p.gloss, so the hint is both redundant and wrong —
+                            // drop it rather than let it disagree with the title.
+                            trueRoot: undefined,
+                            lemmaTranslit: undefined,
                         }));
                         // MAQAF-JOIN after any 'mod-cstr' part, and between two
                         // consecutive 'root' parts — not before/after a plain
