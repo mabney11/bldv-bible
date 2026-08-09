@@ -82,6 +82,7 @@ export default function AdminLogin() {
             <span style={{ fontSize: 12, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Admin tools</span>
             <Link to="/admin/strongs-overrides" style={{ color: 'inherit' }}>Strong's # overrides</Link>
             <Link to="/book-manager" style={{ color: 'inherit' }}>Book manager</Link>
+            <Link to="/gloss-studio" style={{ color: 'inherit' }}>Gloss Studio</Link>
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <Link to="/landing" style={{ color: 'inherit' }}>← Back to the app</Link>

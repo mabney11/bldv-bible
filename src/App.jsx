@@ -18,6 +18,7 @@ import AdminLogin    from './pages/AdminLogin.jsx';
 import BookManager   from './pages/BookManager.jsx';
 import Search        from './pages/Search.jsx';
 import StrongsOverrides from './pages/StrongsOverrides.jsx';
+import GlossStudio      from './pages/GlossStudio.jsx';
 
 /**
  * URL mapping. The reader and lexicon are unified across all corpora —
@@ -135,6 +136,7 @@ export default function App() {
         <Route path="/cheatsheet"     element={<Cheatsheet />} />
         <Route path="/glyph-editor"   element={<GlyphEditor />} />
         <Route path="/admin/strongs-overrides" element={<StrongsOverrides />} />
+        <Route path="/gloss-studio"   element={<GlossStudio />} />
         <Route path="/read"           element={<ReadRedirect />} />
         <Route path="/lexicon-source" element={<LexiconSourceRedirect />} />
         <Route path="*" element={<Navigate to="/landing" replace />} />
