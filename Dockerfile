@@ -9,6 +9,14 @@ RUN npm ci
 
 COPY index.html vite.config.js favicon.svg ./
 COPY src ./src
+# Vite's static-passthrough dir (self-hosted fonts referenced as absolute
+# /fonts/*.woff2 URLs in Reader.css — never imported, so Vite can't bundle
+# them; it just copies public/ verbatim into the output root). This was
+# missing, so every deploy silently shipped without public/fonts/ at all —
+# the CSS @font-face rules pointed at a path that never existed in the
+# image, and every custom typeface (Cochineal, Antykwa Toruńska, Coelacanth,
+# Kierkegaard) fell back to the browser default with no visible error.
+COPY public ./public
 # vite.config.js has build.outDir set to 'server/public', so this writes
 # the built bundle straight there — there is no dist/ folder in this repo.
 RUN npm run build

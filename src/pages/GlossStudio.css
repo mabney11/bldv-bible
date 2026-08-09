@@ -189,11 +189,15 @@
   margin-bottom: 12px;
 }
 .gs-verse-ref {
+  display: block;
   font-size: 13px;
   font-weight: 700;
   color: var(--gold);
   margin-bottom: 10px;
+  text-decoration: none;
+  width: fit-content;
 }
+.gs-verse-ref:hover { text-decoration: underline; }
 .gs-verse-words {
   display: flex;
   flex-wrap: wrap;

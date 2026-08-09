@@ -233,7 +233,12 @@ export default function GlossStudio() {
                 {versesBusy && <div className="gs-loading">Loading verses…</div>}
                 {!versesBusy && rootVerses.verses.map((v, vi) => (
                   <div key={vi} className="gs-verse-card">
-                    <div className="gs-verse-ref">{v.book_name} {v.chapter}:{v.verse}</div>
+                    <Link
+                      className="gs-verse-ref"
+                      to={`/parallel?book=${v.book_id}&chapter=${v.chapter}&verse=${v.verse}`}
+                      target="_blank" rel="noreferrer"
+                      title="Open this verse in Parallel"
+                    >{v.book_name} {v.chapter}:{v.verse}</Link>
                     <div className="gs-verse-words">
                       {v.words.map((w, wi) => (
                         <GlossWordBlock key={wi} word={w} />
