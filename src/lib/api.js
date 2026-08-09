@@ -279,17 +279,17 @@ export const apiAdminListStrongsOverrides = () => jsonFetch('/api/admin/strongs-
 export const apiAdminSaveStrongsOverride = (payload) => apiPost('/api/admin/strongs-override', payload);
 export const apiAdminDeleteStrongsOverride = (key) => apiDelete(`/api/admin/strongs-override?key=${encodeURIComponent(key)}`);
 
-// Gloss Studio — curation dashboard. All three reads recompute live off the
+// Gloss Studio — curation dashboard. All reads recompute live off the
 // current lexicon.json + surface index; see server.js's getGlossCoverage().
-export const apiGlossMissing = (offset = 0, limit = 50) =>
-  jsonFetch(`/api/admin/gloss-studio/missing?offset=${offset}&limit=${limit}`);
-export const apiGlossCoverage = (book, chapter) => {
-  const qs = new URLSearchParams();
-  if (book != null) qs.set('book', book);
-  if (chapter != null) qs.set('chapter', chapter);
-  const s = qs.toString();
-  return jsonFetch(`/api/admin/gloss-studio/coverage${s ? `?${s}` : ''}`);
-};
+// apiGlossCoverage fetches the WHOLE books->chapters->verses tree in one
+// call (not a drill-down) — fetch once, cache client-side, navigate for
+// free; call again only to explicitly re-sync with the server.
+export const apiGlossMissing = (offset = 0, limit = 50, source = 'BHS') =>
+  jsonFetch(`/api/admin/gloss-studio/missing?offset=${offset}&limit=${limit}&source=${source}`);
+export const apiGlossCoverage = (source = 'BHS') =>
+  jsonFetch(`/api/admin/gloss-studio/coverage?source=${source}`);
+export const apiGlossVerse = (book, chapter, verse) =>
+  jsonFetch(`/api/admin/gloss-studio/verse?book=${book}&chapter=${chapter}&verse=${verse}`);
 export const apiGlossRootVerses = (root, offset = 0, limit = 20) =>
   jsonFetch(`/api/admin/gloss-studio/root-verses?root=${encodeURIComponent(root)}&offset=${offset}&limit=${limit}`);
 

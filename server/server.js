@@ -5439,15 +5439,25 @@ const SURFACE_INFO = surfDb.prepare(`
 // reflects real reading volume, not vocabulary size. A root counts as
 // "glossed" iff it has a lexicon.json entry (the same lookup the reader and
 // /api/root-explorer/root use), nothing fuzzier.
+//
+// SOURCE-FILTERED. surface_occurrences carries BOTH the BHS (Masoretic) and
+// HEB (this project's Hebraized edition, which also spans the OT) rows for
+// the SAME verse — the first version of this query had no source filter at
+// all, so Genesis 1:1 silently summed BOTH editions' token counts into one
+// "16/18" figure that matched neither edition on its own and disagreed with
+// what the BHS reader actually shows. Bound to one edition at a time now,
+// same as every other single-edition endpoint in this file (SRC_BHS_ONLY).
 const GLOSS_COVERAGE_ROWS = surfDb.prepare(`
     SELECT o.book_id, o.chapter, o.verse, t.root_paleo
     FROM   surface_occurrences o
     JOIN   token_surfaces      t ON t.word_raw = o.word_raw ${OCC_SN_JOIN} ${SRC_JOIN}
-    WHERE  t.root_paleo IS NOT NULL AND t.root_paleo != ''
+    WHERE  t.root_paleo IS NOT NULL AND t.root_paleo != ''${SURF_HAS_SOURCE ? '\n      AND o.source = ?' : ''}
 `);
+function glossCoverageRowsFor(source) {
+    return SURF_HAS_SOURCE ? GLOSS_COVERAGE_ROWS.all(source) : GLOSS_COVERAGE_ROWS.all();
+}
 
-let _glossCoverageCache = null;
-let _glossCoverageStamp = '';
+const _glossCoverageCache = new Map();   // source -> { books, roots, stamp }
 
 // Both surface-index.db content (which words exist, at all) and lexicon.json
 // content (which of them are glossed) affect the answer — rebuild if either
@@ -5460,14 +5470,16 @@ function _glossStudioStampKey() {
     return `${a}|${b}`;
 }
 
-function getGlossCoverage() {
+function getGlossCoverage(source) {
+    const src = source === 'HEB' ? 'HEB' : 'BHS';
     const stamp = _glossStudioStampKey();
-    if (_glossCoverageCache && _glossCoverageStamp === stamp) return _glossCoverageCache;
+    const cached = _glossCoverageCache.get(src);
+    if (cached && cached.stamp === stamp) return cached;
 
     const { lexicon } = loadLexicons();
-    const rows = GLOSS_COVERAGE_ROWS.all();
+    const rows = glossCoverageRowsFor(src);
 
-    // book_id -> { total, glossed, chapters: Map(chapter -> { total, glossed, verses: Map(verse -> {total, glossed}) }) }
+    // book_id -> { total, glossed, chapters: Map(chapter -> { total, glossed, verses: Map(verse -> {total, glossed, missing: Set<root_paleo>}) }) }
     const books = new Map();
     // root_paleo -> { occ, glossed } — drives the missing-words list
     const roots = new Map();
@@ -5484,72 +5496,66 @@ function getGlossCoverage() {
         ch.total++; if (glossed) ch.glossed++;
 
         let vs = ch.verses.get(r.verse);
-        if (!vs) { vs = { total: 0, glossed: 0 }; ch.verses.set(r.verse, vs); }
-        vs.total++; if (glossed) vs.glossed++;
+        if (!vs) { vs = { total: 0, glossed: 0, missing: new Set() }; ch.verses.set(r.verse, vs); }
+        vs.total++;
+        if (glossed) vs.glossed++; else vs.missing.add(r.root_paleo);
 
         let rt = roots.get(r.root_paleo);
         if (!rt) { rt = { occ: 0, glossed }; roots.set(r.root_paleo, rt); }
         rt.occ++;
     }
 
-    _glossCoverageCache = { books, roots };
-    _glossCoverageStamp = stamp;
-    return _glossCoverageCache;
+    const result = { books, roots, stamp };
+    _glossCoverageCache.set(src, result);
+    return result;
 }
 
 const _glossPct = (glossed, total) => total ? Math.round((glossed / total) * 1000) / 10 : 0;
 
-// GET /api/admin/gloss-studio/coverage[?book=N[&chapter=N]]
-// No params     -> per-book rollup (top level of the coverage tree).
-// book only     -> per-chapter rollup for that book.
-// book+chapter  -> per-verse rollup for that chapter (the "2/5 (40%)" view).
+// GET /api/admin/gloss-studio/coverage[?source=BHS|HEB]
+// The WHOLE books -> chapters -> verses tree in one response (not a
+// drill-down API) — computed once server-side, cached until lexicon.json or
+// surface-index.db actually change, sent whole so the client fetches ONCE
+// and does all book/chapter/verse navigation against the in-memory tree
+// with zero further round-trips. Each verse also carries `missing`: the
+// actual root_paleo forms still needing an entry (not just a fraction), so
+// you can see what's short of 100% without opening a second panel.
 app.get('/api/admin/gloss-studio/coverage', (req, res) => {
     try {
-        const { books } = getGlossCoverage();
-        const bookId  = req.query.book    ? parseInt(req.query.book, 10)    : null;
-        const chapter = req.query.chapter ? parseInt(req.query.chapter, 10) : null;
-
-        if (bookId == null) {
-            const rows = [...books.entries()].map(([id, bk]) => ({
-                book_id: id, name: BOOK_NAMES[id] || `Book ${id}`,
-                total: bk.total, glossed: bk.glossed, pct: _glossPct(bk.glossed, bk.total),
-            })).sort((a, b) => a.book_id - b.book_id);
-            return res.json({ level: 'book', rows });
-        }
-        const bk = books.get(bookId);
-        if (!bk) return res.status(404).json({ error: 'no data for this book', book_id: bookId });
-
-        if (chapter == null) {
-            const rows = [...bk.chapters.entries()].map(([ch, c]) => ({
-                chapter: ch, total: c.total, glossed: c.glossed, pct: _glossPct(c.glossed, c.total),
-            })).sort((a, b) => a.chapter - b.chapter);
-            return res.json({ level: 'chapter', book_id: bookId, name: BOOK_NAMES[bookId] || `Book ${bookId}`, rows });
-        }
-        const ch = bk.chapters.get(chapter);
-        if (!ch) return res.status(404).json({ error: 'no data for this chapter', book_id: bookId, chapter });
-        const rows = [...ch.verses.entries()].map(([v, s]) => ({
-            verse: v, total: s.total, glossed: s.glossed, pct: _glossPct(s.glossed, s.total),
-        })).sort((a, b) => a.verse - b.verse);
-        res.json({ level: 'verse', book_id: bookId, chapter, name: BOOK_NAMES[bookId] || `Book ${bookId}`, rows });
+        const source = (req.query.source || 'BHS').toUpperCase() === 'HEB' ? 'HEB' : 'BHS';
+        const { books } = getGlossCoverage(source);
+        const out = [...books.entries()].map(([book_id, bk]) => ({
+            book_id, name: BOOK_NAMES[book_id] || `Book ${book_id}`,
+            total: bk.total, glossed: bk.glossed, pct: _glossPct(bk.glossed, bk.total),
+            chapters: [...bk.chapters.entries()].map(([chapter, c]) => ({
+                chapter, total: c.total, glossed: c.glossed, pct: _glossPct(c.glossed, c.total),
+                verses: [...c.verses.entries()].map(([verse, v]) => ({
+                    verse, total: v.total, glossed: v.glossed, pct: _glossPct(v.glossed, v.total),
+                    missing: [...v.missing],
+                })).sort((a, b) => a.verse - b.verse),
+            })).sort((a, b) => a.chapter - b.chapter),
+        })).sort((a, b) => a.book_id - b.book_id);
+        res.json({ source, books: out });
     } catch (err) {
         console.error('/api/admin/gloss-studio/coverage failed:', err);
         res.status(500).json({ error: err.message });
     }
 });
 
-// GET /api/admin/gloss-studio/missing?offset=0&limit=50
+// GET /api/admin/gloss-studio/missing?offset=0&limit=50&source=BHS|HEB
 // Roots with NO lexicon.json entry, sorted by occurrence count (desc) — the
 // highest-value gaps first. Add the entry, reload, it's gone from this list.
 app.get('/api/admin/gloss-studio/missing', (req, res) => {
     try {
-        const { roots } = getGlossCoverage();
+        const source = (req.query.source || 'BHS').toUpperCase() === 'HEB' ? 'HEB' : 'BHS';
+        const { roots } = getGlossCoverage(source);
         const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
         const limit  = Math.min(500, Math.max(1, parseInt(req.query.limit, 10) || 50));
         const all = [...roots.entries()]
             .filter(([, r]) => !r.glossed)
             .map(([root_paleo, r]) => ({ root_paleo, occ: r.occ }))
             .sort((a, b) => b.occ - a.occ);
-        res.json({ total: all.length, offset, limit, rows: all.slice(offset, offset + limit) });
+        res.json({ source, total: all.length, offset, limit, rows: all.slice(offset, offset + limit) });
     } catch (err) {
         console.error('/api/admin/gloss-studio/missing failed:', err);
         res.status(500).json({ error: err.message });
@@ -7730,6 +7736,41 @@ function bhsVersePage(hitRows, lexicon, homographs, surfaceOverrides) {
     }
     return out;
 }
+
+// GET /api/admin/gloss-studio/verse?book=&chapter=&verse=
+// One arbitrary verse — full token breakdown + English reference line, same
+// shape as one entry of /root-verses. Powers the browse pane's right-hand
+// detail view when you click a verse in the book/chapter tree rather than
+// arriving via the missing-words list.
+app.get('/api/admin/gloss-studio/verse', (req, res) => {
+    try {
+        const book_id = parseInt(req.query.book, 10);
+        const chapter = parseInt(req.query.chapter, 10);
+        const verse   = parseInt(req.query.verse, 10);
+        if (!book_id || !chapter || !verse) return res.status(400).json({ error: 'book, chapter, verse required' });
+
+        const { lexicon, homographs, surfaceOverrides } = loadLexicons();
+        const words = bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOverrides);
+
+        let saved = null;
+        try { saved = translationDb.stmts.getVerse.get(book_id, chapter, verse); } catch { /* translation.db may be empty */ }
+        const savedText = (saved?.text && saved.text.trim()) ? saved.text : '';
+        const isUntouchedDraft = !!saved && saved.status === 'none'
+            && saved.source_origin === 'web-passthrough'
+            && saved.original_text != null && saved.text === saved.original_text;
+        const isUserOverride = !!savedText && !isUntouchedDraft;
+        const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(book_id, chapter, verse));
+
+        res.json({
+            book_id, book_name: BOOK_NAMES[book_id] || `Book ${book_id}`,
+            chapter, verse, words,
+            english: { text: englishText, is_baseline: !isUserOverride && !!englishText },
+        });
+    } catch (err) {
+        console.error('/api/admin/gloss-studio/verse failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 // GET /api/admin/gloss-studio/root-verses?root=<paleo>&offset=0&limit=20
 // Every verse this root occurs in — full token breakdown (same word-block
