@@ -395,12 +395,26 @@ function buildHebSurfaces(o) {
         ORDER BY token_ordinal
     `);
     const tokCache = new Map();
-    const bhsTokens = (canon, ch, v) => {
+    // rawBhsTokens caches the UNFILTERED per-verse token list (marks included);
+    // bhsTokens derives its filtered view from the same cache so alignment's
+    // input is byte-for-byte what it always was. Marks (maqaf, sof-pasuq,
+    // paseq …) toPaleo() to '' — they're punctuation, not letters — so the old
+    // single-step `.filter(t => t.paleo)` dropped them before alignment ever
+    // ran, and nothing downstream ever got a chance to re-add them: they don't
+    // exist in `tk`, so they never appear in any matched word's `.run`, so
+    // composeWord() never sees them, so no occurrence row is ever written for
+    // them in the HEB edition. Confirmed against production data (Genesis 1:8
+    // וַיְהִי־עֶרֶב): the raw tokens_bhs row for the maqaf is real (token_ordinal
+    // 9, pos=punct), but HEB's /api/tokens response for that verse has no mark
+    // anywhere. rawBhsTokens gives the interleave logic below something to
+    // recover them from.
+    const rawBhsTokens = (canon, ch, v) => {
         const k = `${canon}|${ch}|${v}`;
         if (!tokCache.has(k)) tokCache.set(k, BHS.all(canon, ch, v)
-            .map(t => ({ ...t, paleo: toPaleo(t.word_raw) })).filter(t => t.paleo));
+            .map(t => ({ ...t, paleo: toPaleo(t.word_raw) })));
         return tokCache.get(k);
     };
+    const bhsTokens = (canon, ch, v) => rawBhsTokens(canon, ch, v).filter(t => t.paleo);
     const wordsOf = (row) => {
         const a = hasPaleoCol ? splitWords(row.text_paleo) : [];
         return a.length ? a : splitWords(row.text);
@@ -491,9 +505,33 @@ function buildHebSurfaces(o) {
 
         for (const row of verses) {
             const tk = bhsTokens(canon, row.chapter, row.verse + chosen);
+            const rawTk = rawBhsTokens(canon, row.chapter, row.verse + chosen);   // includes punct
             const hw = wordsOf(row);
             const aligned = tk.length ? alignVerse(hw, tk, window) : hw.map(w => ({ word: w, ok: false, tier: 'unaligned' }));
             const seqWords = [];
+            // Marks recovery: walk rawTk's punctuation in its true token_ordinal
+            // order, interleaved with each aligned word's OWN consumed range
+            // (r.run's tokens carry their real token_ordinal even though `tk`
+            // itself is a filtered, differently-indexed array). `ord` is a
+            // SEPARATE sequential counter for the row.token_ordinal actually
+            // written to occurrences — decoupled from `i`, which keeps indexing
+            // `aligned`/`hw` exactly as before, so seqWords/stats/FORMS/SEQ
+            // below are entirely unaffected by marks being interleaved.
+            let rawCursor = 0;
+            let ord = 1;
+            const emitMarksBefore = (ordExclusive) => {
+                while (rawCursor < rawTk.length && rawTk[rawCursor].token_ordinal < ordExclusive) {
+                    const rt = rawTk[rawCursor];
+                    if (rt.pos === 'punct' && rt.word_raw) {
+                        occurrences.push({
+                            source: corpus, word_raw: rt.word_raw, strongs: '', pos: 'punct', morph: '',
+                            book_id: canon, chapter: row.chapter, verse: row.verse,
+                            token_ordinal: ord++,
+                        });
+                    }
+                    rawCursor++;
+                }
+            };
             for (let i = 0; i < aligned.length; i++) {
                 const r = aligned[i];
                 stats.ot_words++;
@@ -503,25 +541,37 @@ function buildHebSurfaces(o) {
                     if (stats.unaligned_samples.length < 200)
                         stats.unaligned_samples.push({ canon_id: canon, chapter: row.chapter, verse: row.verse, word: r.word });
                     // Untagged, but present — the verse keeps all its words.
+                    // No `.run` for an unaligned word, so we can't pin exactly
+                    // where it sits in rawTk — any marks around it surface at
+                    // the next aligned word's emitMarksBefore (or verse end)
+                    // instead. Not lost, just not perfectly interleaved here.
                     const uc = unresolvedComp(r.word);
                     record(r.word, uc, 'unaligned', false);
                     occurrences.push({
                         source: corpus, word_raw: r.word, strongs: '', pos: '', morph: '',
                         book_id: canon, chapter: row.chapter, verse: row.verse,
-                        token_ordinal: i + 1,
+                        token_ordinal: ord++,
                     });
                     continue;
                 }
                 stats.ot_aligned++; bump(r.tier);
                 seqWords.push(r.word);
+                const minOrd = Math.min(...r.run.map(t => t.token_ordinal));
+                emitMarksBefore(minOrd);   // a mark strictly before this word's own run (rare — verse-initial)
                 const comp = composeWord(r.run, parseToken);
                 const { rec } = record(r.word, comp, r.tier, false);
                 occurrences.push({
                     source: corpus, word_raw: r.word, strongs: comp.strongs,
                     pos: comp.pos, morph: comp.morph,
                     book_id: canon, chapter: row.chapter, verse: row.verse,
-                    token_ordinal: i + 1,
+                    token_ordinal: ord++,
                 });
+                // Skip rawCursor past this word's OWN consumed (real, non-mark)
+                // tokens without re-emitting them — only a mark strictly AFTER
+                // this run and before the next word's run should surface, via
+                // the next emitMarksBefore call (or the trailing one below).
+                const maxOrd = Math.max(...r.run.map(t => t.token_ordinal));
+                while (rawCursor < rawTk.length && rawTk[rawCursor].token_ordinal <= maxOrd) rawCursor++;
                 const snSig = comp.all_strongs.join('+') || comp.strongs || '-';
                 if (!FORMS.has(r.word)) FORMS.set(r.word, new Map());
                 const b = FORMS.get(r.word);
@@ -529,6 +579,7 @@ function buildHebSurfaces(o) {
                 b.get(snSig).count++;
                 void rec;
             }
+            emitMarksBefore(Infinity);   // trailing marks — sof-pasuq at verse end, etc.
             // adjacency: concatenations of 2-3 CONSECUTIVE aligned words. Requiring
             // the parts to occur NEXT TO EACH OTHER is far stronger than requiring
             // each part to exist somewhere, which happily splits 𐤊𐤋𐤂𐤅𐤐𐤊 into three.
