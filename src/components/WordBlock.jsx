@@ -220,6 +220,25 @@ export default function WordBlock({
       if (c.isMaqaf) { segs.push([]); dividers.push(c.paleo || '-'); continue; }
       segs[segs.length - 1].push(c);
     }
+    // A maqaf with nothing on one side (most commonly TRAILING — the word's
+    // last component IS the mark, e.g. וַיְהִי־ continuing into a SEPARATE
+    // next word/token this components array doesn't even contain) is not a
+    // two-word compound baked into one word's data — it's an ordinary word
+    // with a typographic mark tacked on. Splitting it produces an empty
+    // phantom "half" AND misassigns sourceTokens positionally below (src[i]
+    // against segs[i] assumes exactly one source token per segment, which
+    // breaks the moment a real segment itself spans more than one raw token
+    // — e.g. a conjunction + root pair). Confirmed against production data:
+    // Genesis 1:8's וַיְהִי־ (H1961) showed its Strong's badge as H9000 (the
+    // conjunction's own SN) instead, because segs[0] (conj+pfm+root, 3
+    // comps) got matched against sourceTokens[0] alone (the bare conj)
+    // while sourceTokens[1] (the real H1961 root) got orphaned onto the
+    // empty phantom second segment instead of showing under its own glyphs.
+    // Only treat this as a genuine compound chip when EVERY segment has
+    // real content on both sides of the mark — otherwise fall through to
+    // the normal (non-split) render below, which already handles isMark
+    // components correctly (dimmed glyph, never given a gloss chip).
+    if (segs.some(s => s.length === 0)) return null;
     return { segs, dividers };
   }, [wordObj]);
 
