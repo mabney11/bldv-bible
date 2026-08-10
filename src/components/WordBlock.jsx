@@ -86,7 +86,7 @@ export function computeWordParts(wordObj) {
     // NOT part of the copyable/searchable paleo (purePaleo), and non-clickable in
     // glyphHtml below. Still emitted on the glyph + translit lines so they're visible.
     if (comp.isMark) {
-      out.compDescs.push({ css: comp.css || 'punct-mark', paleo: comp.paleo, altAttr: null, ordinal: null, isMark: true });
+      out.compDescs.push({ css: comp.css || 'punct-mark', paleo: comp.paleo, altAttr: null, ordinal: null, isMark: true, isMaqaf: !!comp.isMaqaf });
       // The maqaf glyph itself already renders on the paleo line above (dimmed,
       // via compDescs). The server sets translit:'-' on it purely as an admin/
       // Gloss Studio placeholder — echoing that onto the Latin transliteration
@@ -187,7 +187,16 @@ export default function WordBlock({
       // and no data-paleo, so the copy/hover handler skips it and it never reaches the
       // clipboard or the search-text. Rendered dimmed, the same way as the maqaf dash.
       if (c.isMark) {
-        return `<span class="${c.css || 'punct-mark'} paleo-mark" aria-hidden="true" style="user-select:none;pointer-events:none;align-self:center;color:var(--text4);padding:0 0.12em;">${escapeHtml(c.paleo)}</span>`;
+        // A trailing maqaf joins THIS word to a separate next WordBlock (not
+        // baked into this one) — give it real breathing room and top-align it
+        // with the letters, so it reads as a divider sitting BETWEEN the two
+        // words (matching the fused maqaf-chip's divider look) instead of a
+        // dash glued onto the end of this word's own glyphs. Other marks
+        // (sof-pasuq, paseq) keep the tighter, purely-decorative spacing.
+        const markStyle = c.isMaqaf
+          ? 'user-select:none;pointer-events:none;align-self:flex-start;color:var(--text4);padding:0 0.3em;'
+          : 'user-select:none;pointer-events:none;align-self:center;color:var(--text4);padding:0 0.12em;';
+        return `<span class="${c.css || 'punct-mark'} paleo-mark" aria-hidden="true" style="${markStyle}">${escapeHtml(c.paleo)}</span>`;
       }
       // Punctuation / non-Paleo marks carry no glyph — show the mark itself as
       // text (smaller, dimmed) so sof-pasuq, maqaf and the : stops stay visible.
