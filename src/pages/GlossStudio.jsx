@@ -62,11 +62,20 @@ function GlossWordBlock({ word, missingSet }) {
     <div className={`gs-word ${isMissing ? 'missing' : ''}`}>
       <div className="gs-word-glyphs">
         {comps.map((c, i) => (
-          <span key={i} className={`gs-glyph ${c.css || 'root'}`}>{c.paleo}</span>
+          <span key={i} className={`gs-glyph ${c.css || 'root'} ${c.isMark ? 'mark' : ''}`}>{c.paleo}</span>
         ))}
       </div>
       <div className="gs-word-gloss">
         {comps.map((c, i) => {
+          // Mark tokens (maqaf ־, sof-pasuq ׃, paseq ׀ …) are typographic
+          // joiners, not grammar — WordBlock.jsx renders them as a plain
+          // dimmed glyph in the word itself and never gives them a gloss
+          // chip. This component skipped that check, so an empty
+          // translation fell back to translit "-" and got wrapped in
+          // brackets like a real particle, producing a stray "[-]" glued
+          // next to its neighbor's chip. Marks carry nothing to gloss;
+          // they're already shown (dimmed) in the glyphs row above.
+          if (c.isMark) return null;
           const text = (c.translation || c.translit || '').replace(/[[\]]/g, '');
           if (!text) return null;
           return (
