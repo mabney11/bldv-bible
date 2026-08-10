@@ -1426,9 +1426,25 @@ if (WITH_HEB) {
 src.close();
 
 // ── Write output DB ───────────────────────────────────────────────────────────
+// Deleting OUT_DB alone isn't enough: a long-running server process holding
+// the OLD file open in WAL mode leaves -wal/-shm sidecars sitting at this
+// same path. They survive the unlink above (different filenames), and when
+// we immediately recreate a fresh file here and switch it into WAL mode
+// (below), SQLite finds those stale sidecars, tries to reconcile them against
+// the brand-new (incompatible) database, and throws SQLITE_IOERR_SHORT_READ
+// before a single table gets written. Confirmed in production: this exact
+// crash, right after "Deleted old surface-index.db", left a 4KB stub file on
+// the volume and no working DB until the sidecars were cleared too.
 if (fs.existsSync(OUT_DB)) {
     fs.unlinkSync(OUT_DB);
     console.log(`Deleted old ${path.basename(OUT_DB)}`);
+}
+for (const suffix of ['-wal', '-shm', '-journal']) {
+    const sidecar = OUT_DB + suffix;
+    if (fs.existsSync(sidecar)) {
+        fs.unlinkSync(sidecar);
+        console.log(`Deleted stale ${path.basename(sidecar)}`);
+    }
 }
 
 console.log(`\nWriting ${path.basename(OUT_DB)}…`);
