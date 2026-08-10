@@ -94,6 +94,10 @@ function RootWordBlock({ token, isHit }) {
 
     prefixIdx = 0; suffixIdx = 0; rootSeen = false;
     const tlHTML = comps.map((c, i) => {
+      // Mark tokens (maqaf ־, sof-pasuq ׃, paseq …) carry no real transliteration
+      // to show here — their glyph already renders on the line above. Mirrors
+      // components/WordBlock.jsx's isMark skip; this page duplicates that logic.
+      if (c.isMark) return '';
       const tl = c.translit || '';
       let altIdx = 0;
       if (c.css !== 'root' && !isSuffix(c.css) && i < rootIdx) altIdx = prefixIdx++;
@@ -106,7 +110,7 @@ function RootWordBlock({ token, isHit }) {
     const cleanTrans = (rootComp ? (rootComp.translation || '') : '').replace(/^\[|\]$/g, '');
 
     let p2 = 0, s2 = 0, rs2 = false;
-    const modLabels = comps.filter(c => c.css !== 'root').map(c => {
+    const modLabels = comps.filter(c => c.css !== 'root' && !c.isMark).map(c => {
       const lbl = (c.translation || '').replace(/^\[|\]$/g, '');
       if (!lbl) return '';
       let ai = 0;

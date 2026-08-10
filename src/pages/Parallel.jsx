@@ -222,6 +222,12 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
     // rule as components/WordBlock.jsx, so a name reads (𐤉𐤔𐤅𐤏) here too.
     const hasRootComp = comps.some(c => c && c.css === 'root');
     comps.forEach((c, i) => {
+      // Mark tokens (maqaf ־, sof-pasuq ׃, paseq …) carry no real gloss — the
+      // server sets their `translation` field to the mark character itself,
+      // which otherwise slips through as a bogus extra modifier chip (e.g.
+      // "[and-He/It-־]"). Mirrors components/WordBlock.jsx's isMark skip;
+      // this page duplicates that logic instead of reusing WordBlock.
+      if (c.isMark) return;
       const clean = (c.translation || '').replace(/[[\]]/g, '');
       // isPlaceholderGloss is IMPORTED, not re-implemented: the redundancy rule
       // (gloss === transliteration) must never hide the paleo placeholder that
@@ -270,7 +276,7 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
       {showSub ? (
         <div className="w">
           <span className="w-translit">
-            {comps.map((c, i) => <span key={i} className={c.css}>{c.translit}</span>)}
+            {comps.map((c, i) => c.isMark ? null : <span key={i} className={c.css}>{c.translit}</span>)}
           </span>
           {(rootTrans || mods.length) ? (
             <>{' '}<span className="brk">(</span>

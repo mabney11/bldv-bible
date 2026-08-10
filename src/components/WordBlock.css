@@ -100,7 +100,17 @@
   border-radius: 4px;
   align-self: flex-start;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+  /* Hidden until the reader's mouse is actually near this word — a whole
+     verse of always-visible copy icons is visual noise. Shows on hover of
+     the word block itself (not just the button), and stays visible while
+     "copied" so the checkmark confirmation is never hidden mid-flash. */
+  opacity: 0;
+}
+.word-block:hover .copy-word-btn,
+.copy-word-btn:focus-visible,
+.copy-word-btn.copied {
+  opacity: 1;
 }
 .copy-word-btn:hover { color: var(--gold); border-color: var(--gold); }
 .copy-word-btn.copied { color: var(--green); border-color: var(--green); }
