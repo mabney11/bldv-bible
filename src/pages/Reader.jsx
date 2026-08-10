@@ -823,7 +823,7 @@ export default function Reader() {
   // verse 10 and 11" actually stays lit once you arrive rather than fading
   // after the scroll animation like a single-verse deep link does.
   useEffect(() => {
-    if (!verse || !verseEnd || verseEnd < verse) return;
+    if (verse == null || !verseEnd || verseEnd < verse) return;
     const keys = [];
     for (let v = verse; v <= verseEnd; v++) keys.push(markKey(v));
     setMarks(prev => new Set([...prev, ...keys]));
@@ -833,7 +833,7 @@ export default function Reader() {
   const scrollRef = useRef(null);
   useEffect(() => {
     if (loading) return;
-    if (verse) {
+    if (verse != null) {
       const el = document.getElementById(`rv-${verse}`);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -862,7 +862,7 @@ export default function Reader() {
       const p = new URLSearchParams(prev);
       p.set('book', bookToParam(b, idToSlug));
       p.set('chapter', String(c));
-      if (v) p.set('verse', String(v)); else p.delete('verse');
+      if (v != null) p.set('verse', String(v)); else p.delete('verse');
       return p;
     });
   }, [idToSlug, setSp]);
@@ -926,7 +926,7 @@ export default function Reader() {
   const filteredBooks = booksOrdered.filter(m =>
     !bookQuery.trim() || (m.name || '').toLowerCase().includes(bookQuery.trim().toLowerCase()));
 
-  const loc = `book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse ? `&verse=${verse}` : ''}`;
+  const loc = `book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`;
   const readers = [
     { label: 'Paleo Reader',   to: `/?${loc}`,          hint: 'Paleo-Hebrew, glossed' },
     { label: 'Parallel',       to: `/parallel?${loc}`,  hint: 'English beside the source' },
@@ -963,7 +963,7 @@ export default function Reader() {
     }
   };
 
-  const refLabel = `${chapterBookName} ${chapter}${verse ? `:${verse}` : ''}`;
+  const refLabel = `${chapterBookName} ${chapter}${verse != null ? `:${verse}` : ''}`;
   // Either non-English script shares the same two-way gloss toggle and the
   // same "own block per verse in glossed mode" layout rule below.
   const isForeignScript = script !== 'english';
@@ -986,6 +986,26 @@ export default function Reader() {
     if (!isForeignScript) return verses.map(v => v.verse);
     return Object.keys(srcWordsByVerse || {}).map(Number).sort((a, b) => a - b);
   }, [isForeignScript, verses, srcWordsByVerse]);
+
+  // Verse 0 is a superscription/title ("A Psalm of David"), not verse 1 — see
+  // the headings note below. It used to fall through the ordinary per-verse
+  // loop and render glued directly onto verse 1 ("0 · 1 In the beginning…"),
+  // with a bare middot standing in for its own untranslated text. Pull its
+  // text out here so the title block (below, alongside the Paleo heading)
+  // can show it on its own line, and the main loop can skip vnum 0 entirely.
+  const verse0Text = useMemo(() => {
+    if (!renderVerseNums.includes(0)) return null;
+    if (script === 'hebrew' || script === 'geez') {
+      const words = srcWordsByVerse ? srcWordsByVerse[0] : null;
+      if (!words?.length) return null;
+      if (hebGlossMode === 'glossed') {
+        return script === 'hebrew' ? renderHebrewWordCells(words) : renderPlainWordCells(words);
+      }
+      return script === 'hebrew' ? renderHebrewProseNodes(words) : renderPlainProseNodes(words);
+    }
+    const raw = sanitizeText((versesByNum[0]?.text || '').trim());
+    return raw ? renderVerseNodes(raw, glossMode) : null;
+  }, [renderVerseNums, script, srcWordsByVerse, hebGlossMode, versesByNum, glossMode]);
 
   return (
     <div className="reader-root" data-typeface={typeface}
@@ -1166,15 +1186,24 @@ export default function Reader() {
                   <div className="rd-section-heading">{sectionTitleFor(chapter)}</div>
                 )}
               </header>
-              {/* superscription — a title, not verse 1 */}
-              {chapHead?.super && (
-                <div className="rd-super">
-                  <div className="rd-super-paleo">{chapHead.super.paleo}</div>
-                  <div className="rd-super-translit">{chapHead.super.translit}</div>
+              {/* superscription — a title, not verse 1. Folds together the
+                  BHS-derived Paleo heading (when build-headings.mjs has one)
+                  and the verse-0 translation itself (once someone's entered
+                  it in the Studio), so a Psalm's title always reads as a
+                  title on its own line — never glued onto verse 1. */}
+              {(chapHead?.super || verse0Text) && (
+                <div className="rd-super" id={renderVerseNums.includes(0) ? 'rv-0' : undefined}>
+                  {chapHead?.super && (
+                    <>
+                      <div className="rd-super-paleo">{chapHead.super.paleo}</div>
+                      <div className="rd-super-translit">{chapHead.super.translit}</div>
+                    </>
+                  )}
+                  {verse0Text && <div className="rd-super-en">{verse0Text}</div>}
                 </div>
               )}
               <div className={`rd-body ${isForeignScript ? 'rd-heb' : ''} ${isForeignScript && hebGlossMode === 'glossed' ? 'rd-heb-glossed' : ''}`} style={{ fontSize: `${fontPx}px` }}>
-                {renderVerseNums.map((vnum) => {
+                {renderVerseNums.filter(vnum => vnum !== 0).map((vnum) => {
                   const verseSrcWords = srcWordsByVerse ? srcWordsByVerse[vnum] : null;
                   const text = script === 'hebrew'
                     ? (verseSrcWords?.length

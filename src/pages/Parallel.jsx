@@ -394,7 +394,10 @@ export default function Parallel() {
   const [book, setBook] = useState(() => (/^\d+$/.test(initialBookRef.current || '') ? +initialBookRef.current : 1));
   const [bookResolved, setBookResolved] = useState(!bookIsSlug);   // slug URLs wait for the map
   const [chapter, setChapter] = useState(() => +searchParams.get('chapter') || 1);
-  const [verse, setVerse] = useState(() => +searchParams.get('verse') || null); // null = chapter mode
+  const [verse, setVerse] = useState(() => {
+    const raw = searchParams.get('verse');
+    return raw != null && raw !== '' ? +raw : null;
+  }); // null = chapter mode
   const [lang, setLang] = useState(() => searchParams.get('lang') || 'BHS');
   const [tokensEmpty, setTokensEmpty] = useState(false);
   // What the loader ACTUALLY fetched — token stream or plain text. The renderer
@@ -535,7 +538,7 @@ export default function Parallel() {
   useEffect(() => {
     if (!bookResolved) return;
     const p = { book: bookToParam(book, idToSlug), chapter: String(chapter) };
-    if (verse) p.verse = String(verse);
+    if (verse != null) p.verse = String(verse);
     if (lang && lang !== 'BHS') p.lang = lang;
     setSearchParams(p, { replace: true });
   }, [book, chapter, verse, lang, idToSlug, setSearchParams, bookResolved]);
@@ -793,7 +796,7 @@ export default function Parallel() {
   // the source, the reader defaults to BHS — which blanks for a book that has no
   // Masoretic Hebrew (e.g. a NT verse shown in Heb·extra). Carrying lang keeps
   // Heb·extra on Heb·extra; BHS stays on the (source-less) BHS reader.
-  const hebHref = `/?${lang && lang !== 'BHS' ? `source=${encodeURIComponent(lang)}&` : ''}book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse ? `&verse=${verse}` : ''}`;
+  const hebHref = `/?${lang && lang !== 'BHS' ? `source=${encodeURIComponent(lang)}&` : ''}book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`;
 
   return (
     <div className={`pl-root ${perLine ? 'verse-per-line' : ''} ${verse != null ? 'single-verse' : ''}`}>
@@ -824,9 +827,9 @@ export default function Parallel() {
         </div>
         <div className="pl-row2">
           <Link className="pl-txt-btn" to={hebHref}>{(READER_NAME[lang] || 'Hebrew')} Viewer →</Link>
-          <Link className="pl-txt-btn" to={`/bible?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse ? `&verse=${verse}` : ''}`}
+          <Link className="pl-txt-btn" to={`/bible?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}
                 title="Open this passage in the Reader — flowing prose, no Strong's">📗 Reader →</Link>
-          <Link className="pl-txt-btn" to={`/translate?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse ? `&verse=${verse}` : ''}`}>✎ Studio</Link>
+          <Link className="pl-txt-btn" to={`/translate?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}>✎ Studio</Link>
           <button className="pl-icon-btn" onClick={toggleTheme} title="Toggle theme">{theme === 'light' ? '☾' : '☀'}</button>
           <button className="pl-icon-btn" onClick={() => setSettingsOpen(o => !o)} title="Display options">⚙</button>
         </div>

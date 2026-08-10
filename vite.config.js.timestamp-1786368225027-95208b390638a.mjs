@@ -1,0 +1,29 @@
+// vite.config.js
+import { defineConfig } from "file:///sessions/eloquent-fervent-johnson/mnt/paleo-studio/node_modules/vite/dist/node/index.js";
+import react from "file:///sessions/eloquent-fervent-johnson/mnt/paleo-studio/node_modules/@vitejs/plugin-react/dist/index.mjs";
+var API_HOST = process.env.PALEO_API_HOST || "http://localhost:8080";
+var vite_config_default = defineConfig({
+  plugins: [react()],
+  server: {
+    port: 5173,
+    proxy: {
+      "/api": { target: API_HOST, changeOrigin: true },
+      "/lexicon": { target: API_HOST, changeOrigin: true },
+      "/admin": { target: API_HOST, changeOrigin: true }
+    }
+  },
+  build: {
+    // Output directly into where the server statically serves from. Without
+    // this, the build lands in ./dist and you have to manually copy it to
+    // server/public/ — easy to forget, and stale asset hashes hang around
+    // when you do remember. `emptyOutDir: true` wipes the directory each
+    // build so old hashes can't 404 the new index.html.
+    outDir: "server/public",
+    emptyOutDir: true,
+    sourcemap: false
+  }
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcuanMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCIvc2Vzc2lvbnMvZWxvcXVlbnQtZmVydmVudC1qb2huc29uL21udC9wYWxlby1zdHVkaW9cIjtjb25zdCBfX3ZpdGVfaW5qZWN0ZWRfb3JpZ2luYWxfZmlsZW5hbWUgPSBcIi9zZXNzaW9ucy9lbG9xdWVudC1mZXJ2ZW50LWpvaG5zb24vbW50L3BhbGVvLXN0dWRpby92aXRlLmNvbmZpZy5qc1wiO2NvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9pbXBvcnRfbWV0YV91cmwgPSBcImZpbGU6Ly8vc2Vzc2lvbnMvZWxvcXVlbnQtZmVydmVudC1qb2huc29uL21udC9wYWxlby1zdHVkaW8vdml0ZS5jb25maWcuanNcIjtpbXBvcnQgeyBkZWZpbmVDb25maWcgfSBmcm9tICd2aXRlJztcbmltcG9ydCByZWFjdCBmcm9tICdAdml0ZWpzL3BsdWdpbi1yZWFjdCc7XG5cbi8vIEJhY2tlbmQgQVBJIGhvc3QgXHUyMDE0IGNoYW5nZSBoZXJlIGlmIHlvdXIgUGFsZW8tSGVicmV3IHNlcnZlciBydW5zIGVsc2V3aGVyZS5cbmNvbnN0IEFQSV9IT1NUID0gcHJvY2Vzcy5lbnYuUEFMRU9fQVBJX0hPU1QgfHwgJ2h0dHA6Ly9sb2NhbGhvc3Q6ODA4MCc7XG5cbmV4cG9ydCBkZWZhdWx0IGRlZmluZUNvbmZpZyh7XG4gIHBsdWdpbnM6IFtyZWFjdCgpXSxcbiAgc2VydmVyOiB7XG4gICAgcG9ydDogNTE3MyxcbiAgICBwcm94eToge1xuICAgICAgJy9hcGknOiAgICAgIHsgdGFyZ2V0OiBBUElfSE9TVCwgY2hhbmdlT3JpZ2luOiB0cnVlIH0sXG4gICAgICAnL2xleGljb24nOiAgeyB0YXJnZXQ6IEFQSV9IT1NULCBjaGFuZ2VPcmlnaW46IHRydWUgfSxcbiAgICAgICcvYWRtaW4nOiAgICB7IHRhcmdldDogQVBJX0hPU1QsIGNoYW5nZU9yaWdpbjogdHJ1ZSB9LFxuICAgIH0sXG4gIH0sXG4gIGJ1aWxkOiB7XG4gICAgLy8gT3V0cHV0IGRpcmVjdGx5IGludG8gd2hlcmUgdGhlIHNlcnZlciBzdGF0aWNhbGx5IHNlcnZlcyBmcm9tLiBXaXRob3V0XG4gICAgLy8gdGhpcywgdGhlIGJ1aWxkIGxhbmRzIGluIC4vZGlzdCBhbmQgeW91IGhhdmUgdG8gbWFudWFsbHkgY29weSBpdCB0b1xuICAgIC8vIHNlcnZlci9wdWJsaWMvIFx1MjAxNCBlYXN5IHRvIGZvcmdldCwgYW5kIHN0YWxlIGFzc2V0IGhhc2hlcyBoYW5nIGFyb3VuZFxuICAgIC8vIHdoZW4geW91IGRvIHJlbWVtYmVyLiBgZW1wdHlPdXREaXI6IHRydWVgIHdpcGVzIHRoZSBkaXJlY3RvcnkgZWFjaFxuICAgIC8vIGJ1aWxkIHNvIG9sZCBoYXNoZXMgY2FuJ3QgNDA0IHRoZSBuZXcgaW5kZXguaHRtbC5cbiAgICBvdXREaXI6ICdzZXJ2ZXIvcHVibGljJyxcbiAgICBlbXB0eU91dERpcjogdHJ1ZSxcbiAgICBzb3VyY2VtYXA6IGZhbHNlLFxuICB9LFxufSk7XG4iXSwKICAibWFwcGluZ3MiOiAiO0FBQTJVLFNBQVMsb0JBQW9CO0FBQ3hXLE9BQU8sV0FBVztBQUdsQixJQUFNLFdBQVcsUUFBUSxJQUFJLGtCQUFrQjtBQUUvQyxJQUFPLHNCQUFRLGFBQWE7QUFBQSxFQUMxQixTQUFTLENBQUMsTUFBTSxDQUFDO0FBQUEsRUFDakIsUUFBUTtBQUFBLElBQ04sTUFBTTtBQUFBLElBQ04sT0FBTztBQUFBLE1BQ0wsUUFBYSxFQUFFLFFBQVEsVUFBVSxjQUFjLEtBQUs7QUFBQSxNQUNwRCxZQUFhLEVBQUUsUUFBUSxVQUFVLGNBQWMsS0FBSztBQUFBLE1BQ3BELFVBQWEsRUFBRSxRQUFRLFVBQVUsY0FBYyxLQUFLO0FBQUEsSUFDdEQ7QUFBQSxFQUNGO0FBQUEsRUFDQSxPQUFPO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBLElBTUwsUUFBUTtBQUFBLElBQ1IsYUFBYTtBQUFBLElBQ2IsV0FBVztBQUFBLEVBQ2I7QUFDRixDQUFDOyIsCiAgIm5hbWVzIjogW10KfQo=

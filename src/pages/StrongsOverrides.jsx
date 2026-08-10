@@ -108,7 +108,7 @@ export default function StrongsOverrides() {
   const onPickVerse = v => {
     setVerse(v);
     setEditing(null);
-    if (!v) { setVerseData(null); return; }
+    if (v == null) { setVerseData(null); return; }
     setBusy(true); setErr(null); setVerseData(null);
     apiAdminVerseTokens(book, chapter, v)
       .then(d => setVerseData(d))
@@ -116,7 +116,7 @@ export default function StrongsOverrides() {
       .finally(() => setBusy(false));
   };
 
-  const reloadVerse = () => { if (verse) onPickVerse(verse); };
+  const reloadVerse = () => { if (verse != null) onPickVerse(verse); };
 
   const startEdit = tok => {
     setEditing(tok);

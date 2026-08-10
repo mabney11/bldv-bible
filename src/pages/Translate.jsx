@@ -121,7 +121,10 @@ export default function Translate() {
   const [masterBooks, setMasterBooks] = useState([]);
   const [activeBook, setActiveBook] = useState(() => +searchParams.get('book') || null);
   const [activeChapter, setActiveChapter] = useState(() => +searchParams.get('chapter') || null);
-  const [activeVerse, setActiveVerse] = useState(() => +searchParams.get('verse') || null);
+  const [activeVerse, setActiveVerse] = useState(() => {
+    const raw = searchParams.get('verse');
+    return raw != null && raw !== '' ? +raw : null;
+  });
   const [openChapterMap, setOpenChapterMap] = useState({}); // { "bookId:chapter": verseListData }
   const [verseData, setVerseData] = useState(null); // { status, text, rich_text, links, tokens }
   const [saveState, setSaveState] = useState('idle'); // idle | saving | saved | error
@@ -185,7 +188,7 @@ export default function Translate() {
     const p = {};
     if (b) p.book = bookToParam(b, idToSlug);
     if (c) p.chapter = String(c);
-    if (v) p.verse = String(v);
+    if (v != null) p.verse = String(v);
     setSearchParams(p, { replace: true });
   }, [setSearchParams, idToSlug]);
 
@@ -304,7 +307,7 @@ export default function Translate() {
 
   // Languages that actually contain the current verse — drives the picker.
   useEffect(() => {
-    if (!activeBook || !activeChapter || !activeVerse) return;
+    if (!activeBook || !activeChapter || activeVerse == null) return;
     let cancelled = false;
     fetch(`/api/translate/languages?book=${activeBook}&chapter=${activeChapter}&verse=${activeVerse}`)
       .then(r => r.json())
@@ -340,9 +343,11 @@ export default function Translate() {
     if (hydratedRef.current) return;
     if (!progress) return;                                  // need the book/chapter data first
     const bp = searchParams.get('book');
-    const c  = +searchParams.get('chapter') || null;
-    const v  = +searchParams.get('verse')   || null;
-    if (!bp && !c && !v) { hydratedRef.current = true; return; }   // nothing to open — stop trying
+    const cRaw = searchParams.get('chapter');
+    const vRaw = searchParams.get('verse');
+    const c  = cRaw != null && cRaw !== '' ? +cRaw : null;
+    const v  = vRaw != null && vRaw !== '' ? +vRaw : null;
+    if (!bp && !c && v == null) { hydratedRef.current = true; return; }   // nothing to open — stop trying
     // A slug needs the slug map; a number doesn't. Wait (don't lock) until resolvable.
     const isSlug = !!bp && !/^\d+$/.test(bp);
     if (isSlug && !Object.keys(slugToId).length) return;    // retry when the slug map fills
@@ -350,7 +355,7 @@ export default function Translate() {
     if (!b) return;                                         // unresolved yet — retry on next change
     hydratedRef.current = true;                             // commit only now that b is real
     setActiveBook(b);
-    if (c && v)  openChapter(b, c).then(() => loadVerse(b, c, v));
+    if (c && v != null)  openChapter(b, c).then(() => loadVerse(b, c, v));
     else if (c)  openChapter(b, c);
   }, [progress, slugToId, searchParams, openChapter, loadVerse]);
 
@@ -444,7 +449,7 @@ export default function Translate() {
     if (!confirm('Discard ALL your local edits in this browser (translations, links, and any uploaded lexicon) and go back to what\'s published? This cannot be undone.')) return;
     await resetAllLocal();
     setHasLocalEdits(false);
-    if (activeBook && activeChapter && activeVerse) await loadVerse(activeBook, activeChapter, activeVerse, lang);
+    if (activeBook && activeChapter && activeVerse != null) await loadVerse(activeBook, activeChapter, activeVerse, lang);
     toast('Local edits discarded — showing the published version', 'ok');
   }, [activeBook, activeChapter, activeVerse, lang, loadVerse, toast]);
 
@@ -624,7 +629,7 @@ export default function Translate() {
     if (nextLang === lang) return;
     setLang(nextLang);
     setSelEn(new Set()); setSelHeb(new Set());
-    if (activeBook && activeChapter && activeVerse) loadVerse(activeBook, activeChapter, activeVerse, nextLang);
+    if (activeBook && activeChapter && activeVerse != null) loadVerse(activeBook, activeChapter, activeVerse, nextLang);
   }, [lang, activeBook, activeChapter, activeVerse, loadVerse]);
 
   const deleteLink = useCallback(async (linkId) => {
@@ -725,11 +730,11 @@ export default function Translate() {
         {activeBook && activeChapter && (
           <button className="tr-txt-btn" onClick={openChapterView}>📖 Chapter</button>
         )}
-        {activeBook && activeChapter && activeVerse && (
+        {activeBook && activeChapter && activeVerse != null && (
           <Link to={`/parallel?book=${bookToParam(activeBook, idToSlug)}&chapter=${activeChapter}&verse=${activeVerse}`}
                 className="tr-txt-btn">Parallel →</Link>
         )}
-        {activeBook && activeChapter && activeVerse && (
+        {activeBook && activeChapter && activeVerse != null && (
           <Link to={`/bible?book=${bookToParam(activeBook, idToSlug)}&chapter=${activeChapter}&verse=${activeVerse}`}
                 className="tr-txt-btn" title="Open this passage in the Reader — flowing prose, no Strong's">📗 Reader →</Link>
         )}
@@ -746,7 +751,7 @@ export default function Translate() {
             <span className="tr-mobile-ctx-icon">{navCollapsed ? '☰' : '✕'}</span>
             <span className="tr-mobile-ctx-label">
               {activeBookData?.name || 'Choose a book'}
-              {activeChapter ? ` ${activeChapter}` : ''}{activeVerse ? `:${activeVerse}` : ''}
+              {activeChapter ? ` ${activeChapter}` : ''}{activeVerse != null ? `:${activeVerse}` : ''}
             </span>
             <span className="tr-mobile-ctx-hint">{navCollapsed ? 'Browse' : 'Hide'}</span>
           </button>

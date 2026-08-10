@@ -940,6 +940,21 @@
   letter-spacing: .02em;
   color: var(--text3, #8a8175);
 }
+/* The verse-0 translation itself, once entered in the Studio. Sits under the
+   Paleo heading (or alone, if this book/chapter has no BHS heading data) —
+   still centered and set off by the same rule, but in the reading typeface
+   rather than the Paleo/translit ones above it, so it reads as prose. */
+.rd-super-en {
+  font-size: 1.02em;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text2, var(--text));
+  margin-top: .6em;
+}
+.rd-super-paleo + .rd-super-en,
+.rd-super-translit + .rd-super-en {
+  margin-top: .8em;
+}
 
 /* Acrostic stanza letter — Psalm 119's 22 stanzas, Lamentations, Proverbs 31.
    `display: block` inside the prose flow forces the stanza break the poem intends.

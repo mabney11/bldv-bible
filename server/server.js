@@ -6963,7 +6963,7 @@ app.get('/api/admin/verse-tokens', (req, res) => {
         const book_id = parseInt(req.query.book, 10);
         const chapter = parseInt(req.query.chapter, 10);
         const verse   = parseInt(req.query.verse, 10);
-        if (!book_id || !chapter || !verse) {
+        if (!book_id || !chapter || !Number.isInteger(verse)) {
             return res.status(400).json({ error: 'book, chapter, verse query params are required' });
         }
         const { lexicon, homographs, surfaceOverrides } = loadLexicons();
@@ -7057,7 +7057,7 @@ app.post('/api/admin/strongs-override', express.json({ limit: '64kb' }), (req, r
         const derivedStrongs = cleanParts && cleanParts.length
             ? cleanParts.map(p => p.strongs).join('＋')
             : String(strongs || '').trim();
-        if (!book_id || !chapter || !verse || token_ordinal == null || !derivedStrongs) {
+        if (!book_id || !chapter || !Number.isInteger(verse) || token_ordinal == null || !derivedStrongs) {
             return res.status(400).json({ error: 'book_id, chapter, verse, token_ordinal, and strongs (or parts) are required' });
         }
         const key = locOverrideKey(book_id, chapter, verse, token_ordinal);
@@ -7847,7 +7847,7 @@ app.get('/api/admin/gloss-studio/verse', (req, res) => {
         const book_id = parseInt(req.query.book, 10);
         const chapter = parseInt(req.query.chapter, 10);
         const verse   = parseInt(req.query.verse, 10);
-        if (!book_id || !chapter || !verse) return res.status(400).json({ error: 'book, chapter, verse required' });
+        if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book, chapter, verse required' });
         const source = req.query.source === 'HEB' ? 'HEB' : undefined;
 
         const { lexicon, homographs, surfaceOverrides } = loadLexicons();
@@ -8520,7 +8520,7 @@ app.get('/api/translate/verse', (req, res) => {
         const chapter = parseInt(req.query.chapter, 10);
         const verse   = parseInt(req.query.verse, 10);
         const lang    = (req.query.lang || 'BHS').toString();   // source language to link against
-        if (!bookId || !chapter || !verse) return res.status(400).json({ error: 'book, chapter, verse required' });
+        if (!bookId || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book, chapter, verse required' });
 
         const saved = translationDb.stmts.getVerse.get(bookId, chapter, verse);
         // BHS tokens kept for the existing Hebrew flow; for other languages the
@@ -8587,7 +8587,7 @@ app.get('/api/translate/verse', (req, res) => {
 app.put('/api/translate/verse', (req, res) => {
     try {
         const { book_id, chapter, verse, status, text, rich_text } = req.body;
-        if (!book_id || !chapter || !verse) return res.status(400).json({ error: 'book_id, chapter, verse required' });
+        if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book_id, chapter, verse required' });
         const validStatuses = ['none', 'in_progress', 'done'];
         const st = validStatuses.includes(status) ? status : 'in_progress';
         translationDb.stmts.upsertVerse.run(book_id, chapter, verse, st, text || '', rich_text || '');
@@ -8602,7 +8602,7 @@ app.put('/api/translate/verse', (req, res) => {
 app.post('/api/translate/link', (req, res) => {
     try {
         const { book_id, chapter, verse, lang, english_phrase, english_indices, token_ordinals, component_hint, color_index, sort_order } = req.body;
-        if (!book_id || !chapter || !verse) return res.status(400).json({ error: 'book_id, chapter, verse required' });
+        if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book_id, chapter, verse required' });
         const result = translationDb.stmts.insertLink.run(
             book_id, chapter, verse, (lang || 'BHS').toString(),
             english_phrase || '',
@@ -8631,14 +8631,14 @@ app.put('/api/translate/link/:id', (req, res) => {
         // is what made "add another word to an existing link" fail while creating
         // a new link worked. Fill them in from the row when absent, and only
         // reject when the row genuinely is not there.
-        if (!book_id || !chapter || !verse) {
+        if (!book_id || !chapter || !Number.isInteger(verse)) {
             const row = translationDb.tdb
                 .prepare('SELECT book_id, chapter, verse FROM translation_links WHERE id = ?')
                 .get(id);
             if (!row) return res.status(404).json({ error: `no link ${id}` });
             book_id = book_id || row.book_id;
             chapter = chapter || row.chapter;
-            verse   = verse   || row.verse;
+            verse   = Number.isInteger(verse) ? verse : row.verse;
         }
         const info = translationDb.stmts.updateLink.run(
             english_phrase || '',
@@ -8730,7 +8730,7 @@ app.get('/api/translate/languages', (req, res) => {
 app.post('/api/translate/import-original', (req, res) => {
     try {
         const { book_id, chapter, verse, source } = req.body;
-        if (!book_id || !chapter || !verse) return res.status(400).json({ error: 'book_id, chapter, verse required' });
+        if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book_id, chapter, verse required' });
         const src = resolveSource(source || 'ENG');
         if (!src || !src.handle) return res.status(404).json({ error: 'source not available' });
         const row = src.handle.prepare(`SELECT text FROM verses WHERE book_id=? AND chapter=? AND verse=? LIMIT 1`).get(book_id, chapter, verse);
@@ -8749,7 +8749,7 @@ app.post('/api/translate/import-original', (req, res) => {
 app.post('/api/translate/revert', (req, res) => {
     try {
         const { book_id, chapter, verse } = req.body;
-        if (!book_id || !chapter || !verse) return res.status(400).json({ error: 'book_id, chapter, verse required' });
+        if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book_id, chapter, verse required' });
         const r = translationDb.stmts.revertVerse.run(book_id, chapter, verse);
         if (!r.changes) return res.status(404).json({ error: 'no original snapshot to revert to' });
         const saved = translationDb.stmts.getVerse.get(book_id, chapter, verse);
@@ -8778,7 +8778,7 @@ app.get('/api/parallel/languages', (req, res) => {
         const book = parseInt(req.query.book, 10);
         const ch   = parseInt(req.query.chapter, 10);
         const v    = parseInt(req.query.verse, 10);
-        if (!book || !ch || !v) return res.status(400).json({ error: 'book, chapter, verse required' });
+        if (!book || !ch || !Number.isInteger(v)) return res.status(400).json({ error: 'book, chapter, verse required' });
         const eng = translationDb.stmts.getVerse.get(book, ch, v);
         const hasEnglish = !!((eng && eng.text && eng.text.trim()) || englishBaseline(book, ch, v));
         const rows = translationDb.tdb.prepare(`
@@ -8807,7 +8807,7 @@ app.get('/api/parallel/verse', (req, res) => {
         const ch   = parseInt(req.query.chapter, 10);
         const v    = parseInt(req.query.verse, 10);
         const lang = (req.query.lang || 'BHS').toString();
-        if (!book || !ch || !v) return res.status(400).json({ error: 'book, chapter, verse required' });
+        if (!book || !ch || !Number.isInteger(v)) return res.status(400).json({ error: 'book, chapter, verse required' });
 
         const saved = translationDb.stmts.getVerse.get(book, ch, v);
         // Reading in /parallel shows your English for EVERY verse, touched or not.

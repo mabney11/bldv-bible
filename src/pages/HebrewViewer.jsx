@@ -151,7 +151,7 @@ export default function HebrewViewer() {
     if (!bookReady || curForeign !== true || !foreignEmpty) return;
     const dest = curPrimary || 'HEB';
     const p = new URLSearchParams({ source: dest, book: bookToParam(book, idToSlug), chapter: String(chapter) });
-    if (verse) p.set('verse', String(verse));
+    if (verse != null) p.set('verse', String(verse));
     navigate(`/?${p}`, { replace: true });
   }, [bookReady, curForeign, foreignEmpty, curPrimary, book, chapter, verse, idToSlug, navigate]);
 
@@ -320,7 +320,7 @@ export default function HebrewViewer() {
 
   // ── grouped tokens for rendering ─────────────────────────────────────────
   const grouped = useMemo(() => {
-    const rows = verse ? tokens.filter(w => w.verse === verse) : tokens;
+    const rows = verse != null ? tokens.filter(w => w.verse === verse) : tokens;
     const byVerse = {};
     rows.forEach(w => { (byVerse[w.verse] ||= []).push(w); });
     return Object.keys(byVerse).map(v => +v).sort((a, b) => a - b)
@@ -335,7 +335,7 @@ export default function HebrewViewer() {
   // no parser-derived data. Filters to the current verse when one is selected,
   // otherwise shows the whole chapter.
   const tokenViewerText = useMemo(() => {
-    const rows = verse ? rawRows.filter(r => r.verse === verse) : rawRows;
+    const rows = verse != null ? rawRows.filter(r => r.verse === verse) : rawRows;
     return rows.map(formatTokenRowDescriptive).join('\n');
   }, [rawRows, verse]);
 
@@ -355,11 +355,11 @@ export default function HebrewViewer() {
           <>
             <Link
               className="txt-btn"
-              to={`/parallel?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse ? `&verse=${verse}` : ''}`}
+              to={`/parallel?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}
             >📖 Parallel</Link>
             <Link
               className="txt-btn"
-              to={`/bible?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse ? `&verse=${verse}` : ''}`}
+              to={`/bible?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}
               title="Open this passage in the Reader — flowing prose, no Strong's"
             >📗 Reader</Link>
             {/* Fixed-order language switcher — identical order to MultiViewer so
@@ -381,7 +381,7 @@ export default function HebrewViewer() {
                   <Link
                     className="txt-btn rd-srclink"
                     aria-current="true"
-                    to={`/?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse ? `&verse=${verse}` : ''}`}
+                    to={`/?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}
                     style={{ background: 'var(--blue)', color: '#fff', borderColor: 'var(--blue)', cursor: 'pointer' }}
                     title="Showing Hebrew (Extra) — click to swap to BHS"
                   >Heb Extra ⇄ BHS</Link>
@@ -389,7 +389,7 @@ export default function HebrewViewer() {
                   <Link
                     className="txt-btn rd-srclink"
                     aria-current="true"
-                    to={`/?source=HEB&book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse ? `&verse=${verse}` : ''}`}
+                    to={`/?source=HEB&book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}
                     style={{ background: 'var(--blue)', color: '#fff', borderColor: 'var(--blue)', cursor: 'pointer' }}
                     title="Showing BHS — click to swap to Hebrew (Extra)"
                   >BHS ⇄ Heb Extra</Link>
@@ -417,7 +417,7 @@ export default function HebrewViewer() {
                   <Link
                     key={key}
                     className="txt-btn rd-srclink"
-                    to={`/?source=${key}&book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse ? `&verse=${verse}` : ''}`}
+                    to={`/?source=${key}&book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}
                     title={title}
                   >{label}</Link>
                 ) : (
