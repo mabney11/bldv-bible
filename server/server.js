@@ -5377,21 +5377,35 @@ const ROOT_BY_BOOK = surfDb.prepare(`
 // Per-root verse occurrences, paginated. Used to drive the BibleHub-style
 // verse-list panel. Returns book/chapter/verse + the matching token_ordinal
 // so the UI can highlight the exact token in its verse.
-const ROOT_VERSES = surfDb.prepare(`
+// Gloss Studio's "root-verses" drill-down, source-aware. 'HEB' is a flat
+// single-source rule (fine to filter/paginate in SQL). 'BHS' means "this
+// book's NATURAL edition" — a mix of BHS rows for canonical books and HEB
+// rows for everything else (same rule getGlossCoverage() uses) — that mix
+// can't be expressed as one o.source bind, so the BHS path fetches every
+// row for the root (unbounded LIMIT is safe here: it's ONE root, not the
+// whole corpus) and filters/paginates in JS instead.
+const ROOT_VERSES_ALL = surfDb.prepare(`
+    SELECT o.book_id, o.chapter, o.verse, o.token_ordinal, o.word_raw, o.source, t.strongs
+    FROM   surface_occurrences o
+    JOIN   token_surfaces      t ON t.word_raw = o.word_raw ${OCC_SN_JOIN} ${SRC_JOIN}
+    WHERE  t.root_paleo = ?
+    ORDER BY o.book_id, o.chapter, o.verse, o.token_ordinal
+`);
+const ROOT_VERSES_HEB = surfDb.prepare(`
     SELECT o.book_id, o.chapter, o.verse, o.token_ordinal, o.word_raw, t.strongs
     FROM   surface_occurrences o
     JOIN   token_surfaces      t ON t.word_raw = o.word_raw ${OCC_SN_JOIN} ${SRC_JOIN}
     WHERE  t.root_paleo = ?
-      AND  (? IS NULL OR o.book_id = ?)
+      AND  o.source = 'HEB'
     ORDER BY o.book_id, o.chapter, o.verse, o.token_ordinal
     LIMIT ? OFFSET ?
 `);
-const ROOT_VERSES_COUNT = surfDb.prepare(`
+const ROOT_VERSES_HEB_COUNT = surfDb.prepare(`
     SELECT COUNT(*) AS n
     FROM   surface_occurrences o
     JOIN   token_surfaces      t ON t.word_raw = o.word_raw ${OCC_SN_JOIN} ${SRC_JOIN}
     WHERE  t.root_paleo = ?
-      AND  (? IS NULL OR o.book_id = ?)
+      AND  o.source = 'HEB'
 `);
 
 // Per-surface (exact word_raw match) — used by the Surfaces page.
@@ -5522,28 +5536,27 @@ function getGlossCoverage() {
     const isGlossed = (root_paleo, pos, strongs) =>
         gsIsGlossed(root_paleo, pos, strongs, lexicon, homographs, hebExtra);
 
+    // Two independently selectable views, built in ONE pass over the rows:
+    //   'BHS' — the Masoretic text for the 39 canonical books, HEB for
+    //           everything BHS doesn't cover (Jubilees, Jasher, NT, etc.).
+    //           This is "the received text as this app renders it" — same
+    //           natural-edition rule navHebBooks() and the reader use.
+    //   'HEB' — this project's OWN edition for every one of the 78 books it
+    //           covers, INCLUDING the 39 canonical ones. A canonical book's
+    //           HEB tokens can be genuinely different WORDS than its BHS
+    //           tokens (this is a Hebraized re-translation, not a copy), so
+    //           it needs its own, separately-audited coverage — the whole
+    //           point of letting the user pick a source here.
     // book_id -> { total, glossed, chapters: Map(chapter -> { total, glossed, verses: Map(verse -> {total, glossed, missing: Set<root_paleo>}) }) }
-    const books = new Map();
     // root_paleo -> { occ, glossed } — drives the missing-words list
-    const roots = new Map();
+    const trees = {
+        BHS: { books: new Map(), roots: new Map() },
+        HEB: { books: new Map(), roots: new Map() },
+    };
 
-    // .iterate(), NOT .all(). BHS+HEB combined is upwards of a million
-    // occurrence rows — .all() materializes every one of them into a single
-    // JS array before any reduction happens, which is exactly what crashed
-    // production ("Statement::JS_all" in the OOM stack trace, heap limit hit
-    // during a blue-green boot already under a tight startup memory cap).
-    // .iterate() streams rows one at a time straight from SQLite, so peak
-    // memory is just the aggregated Maps below, never a second full copy of
-    // the raw row set sitting alongside them.
-    for (const r of GLOSS_COVERAGE_ROWS.iterate()) {
-        // Keep only this book's NATURAL edition — see the query comment above.
-        const natural = bhsBooks.has(r.book_id) ? 'BHS' : 'HEB';
-        if (r.source !== natural) continue;
-
-        const glossed = isGlossed(r.root_paleo, r.pos, r.strongs);
-
-        let bk = books.get(r.book_id);
-        if (!bk) { bk = { total: 0, glossed: 0, chapters: new Map() }; books.set(r.book_id, bk); }
+    const bump = (tree, r, glossed) => {
+        let bk = tree.books.get(r.book_id);
+        if (!bk) { bk = { total: 0, glossed: 0, chapters: new Map() }; tree.books.set(r.book_id, bk); }
         bk.total++; if (glossed) bk.glossed++;
 
         let ch = bk.chapters.get(r.chapter);
@@ -5555,17 +5568,37 @@ function getGlossCoverage() {
         vs.total++;
         if (glossed) vs.glossed++; else vs.missing.add(r.root_paleo);
 
-        let rt = roots.get(r.root_paleo);
-        if (!rt) { rt = { occ: 0, glossed }; roots.set(r.root_paleo, rt); }
+        let rt = tree.roots.get(r.root_paleo);
+        if (!rt) { rt = { occ: 0, glossed }; tree.roots.set(r.root_paleo, rt); }
         rt.occ++;
         // A root can show glossed=true from one occurrence and false from
         // another only if isGlossed's inputs (pos) legitimately differ across
         // occurrences (rare); once ANY occurrence resolves it, don't let a
         // later miss re-flag it — favors "not actually missing" over noise.
         if (glossed) rt.glossed = true;
+    };
+
+    // .iterate(), NOT .all(). BHS+HEB combined is upwards of a million
+    // occurrence rows — .all() materializes every one of them into a single
+    // JS array before any reduction happens, which is exactly what crashed
+    // production ("Statement::JS_all" in the OOM stack trace, heap limit hit
+    // during a blue-green boot already under a tight startup memory cap).
+    // .iterate() streams rows one at a time straight from SQLite, so peak
+    // memory is just the aggregated Maps below, never a second full copy of
+    // the raw row set sitting alongside them.
+    for (const r of GLOSS_COVERAGE_ROWS.iterate()) {
+        const glossed = isGlossed(r.root_paleo, r.pos, r.strongs);
+
+        // BHS view: this book's natural edition only.
+        const natural = bhsBooks.has(r.book_id) ? 'BHS' : 'HEB';
+        if (r.source === natural) bump(trees.BHS, r, glossed);
+
+        // HEB view: every book HEB itself has tokens for, via ITS OWN tokens
+        // (independent of whichever edition is "natural" for that book).
+        if (r.source === 'HEB') bump(trees.HEB, r, glossed);
     }
 
-    _glossCoverageCache = { books, roots, stamp };
+    _glossCoverageCache = { trees, stamp };
     return _glossCoverageCache;
 }
 
@@ -5583,7 +5616,8 @@ const _glossPct = (glossed, total) => total ? Math.round((glossed / total) * 100
 // the actual root_paleo forms still needing an entry (not just a fraction).
 app.get('/api/admin/gloss-studio/coverage', (req, res) => {
     try {
-        const { books } = getGlossCoverage();
+        const source = req.query.source === 'HEB' ? 'HEB' : 'BHS';
+        const { books } = getGlossCoverage().trees[source];
         const out = [...books.entries()].map(([book_id, bk]) => ({
             book_id, name: BOOK_NAMES[book_id] || `Book ${book_id}`,
             total: bk.total, glossed: bk.glossed, pct: _glossPct(bk.glossed, bk.total),
@@ -5608,7 +5642,8 @@ app.get('/api/admin/gloss-studio/coverage', (req, res) => {
 // gaps first. Add the entry, reload, it's gone from this list.
 app.get('/api/admin/gloss-studio/missing', (req, res) => {
     try {
-        const { roots } = getGlossCoverage();
+        const source = req.query.source === 'HEB' ? 'HEB' : 'BHS';
+        const { roots } = getGlossCoverage().trees[source];
         const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
         const limit  = Math.min(500, Math.max(1, parseInt(req.query.limit, 10) || 50));
         const all = [...roots.entries()]
@@ -7711,12 +7746,17 @@ function getRootsList() {
 // unchanged. parseHebrewData splits on REAL tab/newline (see rowsToLines), so we
 // must join with real "\t"/"\n" — joining with the escaped 2-char strings made
 // every line unsplittable and returned zero blocks ("No token breakdown").
-function bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOverrides) {
+function bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOverrides, forceSource) {
     const { locationOverrides } = loadLexicons();
     // A verse in a book BHS does not cover has no tokens_bhs rows to parse. Render
     // it from the SAME baked HEB rows /api/tokens serves, so the roots page and
     // the reader can never show a verse two different ways.
-    if (navHebBooks().has(book_id)) {
+    // forceSource='HEB' additionally opts INTO this same HEB-rendering path
+    // for a book BHS *does* cover — this project's HEB edition is its own
+    // Hebraized re-translation, not a copy of the Masoretic text, so a
+    // canonical book's HEB tokens can be genuinely different words. Gloss
+    // Studio uses this to let the words be audited separately per edition.
+    if (forceSource === 'HEB' || navHebBooks().has(book_id)) {
         try {
             let rows = surfRowsFor(book_id, chapter, 'HEB').filter(r => r.verse === verse);
             if (locationOverrides && Object.keys(locationOverrides).length) {
@@ -7763,7 +7803,7 @@ function bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOver
 
 // Group a page of tokens_bhs hit rows into rendered verses (word blocks +
 // user translation). Shared by the root & surface verse endpoints.
-function bhsVersePage(hitRows, lexicon, homographs, surfaceOverrides) {
+function bhsVersePage(hitRows, lexicon, homographs, surfaceOverrides, forceSource) {
     const byVerse = new Map();
     for (const h of hitRows) {
         const k = `${h.book_id}:${h.chapter}:${h.verse}`;
@@ -7772,7 +7812,7 @@ function bhsVersePage(hitRows, lexicon, homographs, surfaceOverrides) {
     }
     const out = [];
     for (const v of byVerse.values()) {
-        const words = bhsVerseWords(v.book_id, v.chapter, v.verse, lexicon, homographs, surfaceOverrides);
+        const words = bhsVerseWords(v.book_id, v.chapter, v.verse, lexicon, homographs, surfaceOverrides, forceSource);
         let translation = null;
         try {
             // translationDb is { tdb, stmts } — `.prepare` on the wrapper is
@@ -7808,9 +7848,10 @@ app.get('/api/admin/gloss-studio/verse', (req, res) => {
         const chapter = parseInt(req.query.chapter, 10);
         const verse   = parseInt(req.query.verse, 10);
         if (!book_id || !chapter || !verse) return res.status(400).json({ error: 'book, chapter, verse required' });
+        const source = req.query.source === 'HEB' ? 'HEB' : undefined;
 
         const { lexicon, homographs, surfaceOverrides } = loadLexicons();
-        const words = bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOverrides);
+        const words = bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOverrides, source);
 
         let saved = null;
         try { saved = translationDb.stmts.getVerse.get(book_id, chapter, verse); } catch { /* translation.db may be empty */ }
@@ -7845,12 +7886,24 @@ app.get('/api/admin/gloss-studio/root-verses', (req, res) => {
         if (!root) return res.status(400).json({ error: 'root param required' });
         const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
         const limit  = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+        const source = req.query.source === 'HEB' ? 'HEB' : 'BHS';
 
-        const total   = ROOT_VERSES_COUNT.get(root, null, null).n;
-        const hitRows = ROOT_VERSES.all(root, null, null, limit, offset);
+        let total, hitRows;
+        if (source === 'HEB') {
+            total   = ROOT_VERSES_HEB_COUNT.get(root).n;
+            hitRows = ROOT_VERSES_HEB.all(root, limit, offset);
+        } else {
+            // "BHS" view = this book's natural edition (mixed sources) —
+            // filter/paginate in JS; see ROOT_VERSES_ALL's comment above.
+            const bhsBooks = SURF_SOURCE_BOOKS.get('BHS') || new Set();
+            const natural = ROOT_VERSES_ALL.all(root)
+                .filter(r => r.source === (bhsBooks.has(r.book_id) ? 'BHS' : 'HEB'));
+            total = natural.length;
+            hitRows = natural.slice(offset, offset + limit);
+        }
 
         const { lexicon, homographs, surfaceOverrides } = loadLexicons();
-        const verses = bhsVersePage(hitRows, lexicon, homographs, surfaceOverrides);
+        const verses = bhsVersePage(hitRows, lexicon, homographs, surfaceOverrides, source === 'HEB' ? 'HEB' : undefined);
 
         for (const v of verses) {
             let saved = null;

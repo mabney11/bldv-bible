@@ -287,14 +287,18 @@ export const apiAdminDeleteStrongsOverride = (key) => apiDelete(`/api/admin/stro
 // needed here. apiGlossCoverage fetches the WHOLE books->chapters->verses
 // tree in one call (not a drill-down) — fetch once, cache client-side,
 // navigate for free; call again only to explicitly re-sync with the server.
-export const apiGlossMissing = (offset = 0, limit = 50) =>
-  jsonFetch(`/api/admin/gloss-studio/missing?offset=${offset}&limit=${limit}`);
-export const apiGlossCoverage = () =>
-  jsonFetch('/api/admin/gloss-studio/coverage');
-export const apiGlossVerse = (book, chapter, verse) =>
-  jsonFetch(`/api/admin/gloss-studio/verse?book=${book}&chapter=${chapter}&verse=${verse}`);
-export const apiGlossRootVerses = (root, offset = 0, limit = 20) =>
-  jsonFetch(`/api/admin/gloss-studio/root-verses?root=${encodeURIComponent(root)}&offset=${offset}&limit=${limit}`);
+// source: 'BHS' (this book's natural edition — Masoretic for the 39
+// canonical books, HEB for everything else) or 'HEB' (this project's OWN
+// edition for every book it covers, including the canonical ones — its
+// tokens for a canonical book can be different words than BHS's).
+export const apiGlossMissing = (offset = 0, limit = 50, source = 'BHS') =>
+  jsonFetch(`/api/admin/gloss-studio/missing?offset=${offset}&limit=${limit}&source=${source}`);
+export const apiGlossCoverage = (source = 'BHS') =>
+  jsonFetch(`/api/admin/gloss-studio/coverage?source=${source}`);
+export const apiGlossVerse = (book, chapter, verse, source = 'BHS') =>
+  jsonFetch(`/api/admin/gloss-studio/verse?book=${book}&chapter=${chapter}&verse=${verse}&source=${source}`);
+export const apiGlossRootVerses = (root, offset = 0, limit = 20, source = 'BHS') =>
+  jsonFetch(`/api/admin/gloss-studio/root-verses?root=${encodeURIComponent(root)}&offset=${offset}&limit=${limit}&source=${source}`);
 
 // Generic — used by Translate to save a verse.
 export async function apiPost(path, body) {

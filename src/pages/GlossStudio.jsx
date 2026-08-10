@@ -119,12 +119,19 @@ export default function GlossStudio() {
   const [lang, setLang] = useState('heb');
   const [mode, setMode] = useState('browse');         // 'browse' | 'missing'
 
+  // Which edition's OWN tokens to audit. 'BHS' = this book's natural edition
+  // (Masoretic for the 39 canonical books, HEB for everything else — same as
+  // the reader). 'HEB' = this project's own Hebraized edition for every book
+  // it covers, INCLUDING the canonical ones — a canonical book's HEB tokens
+  // can be genuinely different words than its BHS tokens, so it needs its
+  // own, separately-audited coverage rather than being hidden behind BHS.
+  const [source, setSource] = useState('BHS');
+
   useEffect(() => { getAdminStatus().then(s => setIsAdmin(!!s.isAdmin)); }, []);
 
-  // ── Browse: the full tree, fetched once ─────────────────────────────────
+  // ── Browse: the full tree, fetched once per source ──────────────────────
   // Covers every book with Hebrew material (BHS's canonical OT + everything
-  // HEB-only: NT, Jubilees, Jasher, Book of Melchizedek, etc) — server.js
-  // picks each book's natural edition, so there's no source toggle here.
+  // HEB-only: NT, Jubilees, Jasher, Book of Melchizedek, etc).
   const [tree, setTree] = useState(null);             // { books: [...] }
   const [treeBusy, setTreeBusy] = useState(false);
   const [activeBook, setActiveBook] = useState(null);  // book_id
@@ -135,13 +142,20 @@ export default function GlossStudio() {
 
   const loadTree = useCallback(() => {
     setTreeBusy(true);
-    apiGlossCoverage()
+    apiGlossCoverage(source)
       .then(d => setTree(d))
       .catch(e => toast(e.message, 'err'))
       .finally(() => setTreeBusy(false));
-  }, [toast]);
+  }, [toast, source]);
 
   useEffect(() => { if (isAdmin && lang === 'heb') loadTree(); }, [isAdmin, lang, loadTree]);
+
+  // Switching editions changes what each book/chapter/verse even IS — clear
+  // the drill-down state so a stale BHS verse card doesn't linger under HEB.
+  useEffect(() => {
+    setActiveBook(null); setOpenChapter(null);
+    setActiveVerseKey(null); setVerseDetail(null);
+  }, [source]);
 
   const activeBookData = useMemo(
     () => tree?.books.find(b => b.book_id === activeBook) || null,
@@ -153,7 +167,7 @@ export default function GlossStudio() {
     setActiveVerseKey(key);
     setVerseDetail(null);
     setVerseBusy(true);
-    apiGlossVerse(book_id, chapter, verse)
+    apiGlossVerse(book_id, chapter, verse, source)
       .then(d => setVerseDetail({ ...d, missingSet: new Set(missing || []) }))
       .catch(e => toast(e.message, 'err'))
       .finally(() => setVerseBusy(false));
@@ -166,11 +180,11 @@ export default function GlossStudio() {
 
   const loadMissing = useCallback((offset) => {
     setMissingBusy(true);
-    apiGlossMissing(offset, MISSING_PAGE)
+    apiGlossMissing(offset, MISSING_PAGE, source)
       .then(d => { setMissing(d); setMissingOffset(offset); })
       .catch(e => toast(e.message, 'err'))
       .finally(() => setMissingBusy(false));
-  }, [toast]);
+  }, [toast, source]);
 
   useEffect(() => { if (isAdmin && lang === 'heb' && mode === 'missing') loadMissing(0); }, [isAdmin, lang, mode, loadMissing]);
 
@@ -181,14 +195,22 @@ export default function GlossStudio() {
 
   const loadRootVerses = useCallback((root, offset) => {
     setVersesBusy(true);
-    apiGlossRootVerses(root, offset, VERSES_PAGE)
+    apiGlossRootVerses(root, offset, VERSES_PAGE, source)
       .then(d => { setRootVerses(d); setVersesOffset(offset); })
       .catch(e => toast(e.message, 'err'))
       .finally(() => setVersesBusy(false));
-  }, [toast]);
+  }, [toast, source]);
 
   const pickRoot = (root) => { setSelectedRoot(root); loadRootVerses(root, 0); };
   const closeRoot = () => { setSelectedRoot(null); setRootVerses({ verses: [], total: 0 }); };
+
+  // Source switch invalidates the missing-words list + any open root drill-
+  // down too — same reasoning as the tree effect above.
+  useEffect(() => {
+    closeRoot();
+    if (isAdmin && lang === 'heb' && mode === 'missing') loadMissing(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [source]);
 
   if (isAdmin === null) return <div className="page-stub"><p>Checking admin status…</p></div>;
   if (!isAdmin) {
@@ -214,6 +236,11 @@ export default function GlossStudio() {
         <button className="gs-txt-btn" onClick={() => (mode === 'browse' ? loadTree() : loadMissing(missingOffset))} title="Re-fetch from the server">
           ↻ Re-sync
         </button>
+
+        <div className="gs-source-toggle" title="Which edition's own tokens to audit">
+          <button className={`gs-src-btn ${source === 'BHS' ? 'active' : ''}`} onClick={() => setSource('BHS')}>BHS</button>
+          <button className={`gs-src-btn ${source === 'HEB' ? 'active' : ''}`} onClick={() => setSource('HEB')}>HEB (extra)</button>
+        </div>
 
         <span className="gs-spacer" />
         <div className="gs-langs">
