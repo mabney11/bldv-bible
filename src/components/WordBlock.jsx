@@ -21,6 +21,19 @@ const PALEO_ONLY_RE = /^[\u{10900}-\u{1091F}\s]+$/u;
 export const isPlaceholderGloss = (comp, clean) =>
   comp.gloss_src === 'none' || (!!clean && PALEO_ONLY_RE.test(clean));
 
+// True when this word's own components end in a maqaf mark — i.e. it's
+// typographically joined to the NEXT word/token in the verse (a separate
+// WordBlock, not baked into this one's components). Callers that lay out
+// consecutive WordBlocks (HebrewViewer, Parallel, …) use this to tighten the
+// margin between the two so a maqaf-joined pair reads visually connected,
+// the way a real fused compound chip does.
+export const hasTrailingMaqaf = wordObj => {
+  const comps = wordObj && wordObj.components;
+  if (!comps || !comps.length) return false;
+  const last = comps[comps.length - 1];
+  return !!(last && last.isMaqaf);
+};
+
 const isSuffix = css => SUFFIX_PREFIXES.some(p => css && css.startsWith(p));
 const isPrefix = css =>
   (css && PREFIX_FULL.includes(css)) ||
@@ -74,7 +87,12 @@ export function computeWordParts(wordObj) {
     // glyphHtml below. Still emitted on the glyph + translit lines so they're visible.
     if (comp.isMark) {
       out.compDescs.push({ css: comp.css || 'punct-mark', paleo: comp.paleo, altAttr: null, ordinal: null, isMark: true });
-      out.transliterations.push({ css: comp.css || 'punct-mark', text: comp.translit || '', altAttr: null });
+      // The maqaf glyph itself already renders on the paleo line above (dimmed,
+      // via compDescs). The server sets translit:'-' on it purely as an admin/
+      // Gloss Studio placeholder — echoing that onto the Latin transliteration
+      // line here would tack a literal "-" onto the end of the previous word's
+      // reading (e.g. "WaYaHayah-"), which is a typographic mark leaking into
+      // English text, not something a reader should see twice.
       return;
     }
     out.purePaleo += comp.paleo;
