@@ -5512,7 +5512,6 @@ function getGlossCoverage() {
 
     const { lexicon, homographs, hebExtra } = loadLexicons();
     const bhsBooks = SURF_SOURCE_BOOKS.get('BHS') || new Set();
-    const rows = GLOSS_COVERAGE_ROWS.all();
 
     // "Glossed" = covered by one of the three curated sources — lexicon.json,
     // homographs.json, hebrew-extra-lexicon.json — checked with the SAME
@@ -5528,7 +5527,15 @@ function getGlossCoverage() {
     // root_paleo -> { occ, glossed } — drives the missing-words list
     const roots = new Map();
 
-    for (const r of rows) {
+    // .iterate(), NOT .all(). BHS+HEB combined is upwards of a million
+    // occurrence rows — .all() materializes every one of them into a single
+    // JS array before any reduction happens, which is exactly what crashed
+    // production ("Statement::JS_all" in the OOM stack trace, heap limit hit
+    // during a blue-green boot already under a tight startup memory cap).
+    // .iterate() streams rows one at a time straight from SQLite, so peak
+    // memory is just the aggregated Maps below, never a second full copy of
+    // the raw row set sitting alongside them.
+    for (const r of GLOSS_COVERAGE_ROWS.iterate()) {
         // Keep only this book's NATURAL edition — see the query comment above.
         const natural = bhsBooks.has(r.book_id) ? 'BHS' : 'HEB';
         if (r.source !== natural) continue;
