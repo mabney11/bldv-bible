@@ -5436,48 +5436,92 @@ const SURFACE_INFO = surfDb.prepare(`
 // behaviour everywhere else in this server.
 
 // One row per SURFACE OCCURRENCE (not per distinct word) — so % glossed
-// reflects real reading volume, not vocabulary size. A root counts as
-// "glossed" iff it has a lexicon.json entry (the same lookup the reader and
-// /api/root-explorer/root use), nothing fuzzier.
+// reflects real reading volume, not vocabulary size.
 //
-// SOURCE-FILTERED. surface_occurrences carries BOTH the BHS (Masoretic) and
-// HEB (this project's Hebraized edition, which also spans the OT) rows for
-// the SAME verse — the first version of this query had no source filter at
-// all, so Genesis 1:1 silently summed BOTH editions' token counts into one
-// "16/18" figure that matched neither edition on its own and disagreed with
-// what the BHS reader actually shows. Bound to one edition at a time now,
-// same as every other single-edition endpoint in this file (SRC_BHS_ONLY).
+// UNFILTERED BY SOURCE ON PURPOSE. surface_occurrences carries BOTH the BHS
+// (Masoretic) and HEB (this project's Hebraized edition — which ALSO spans
+// the OT, plus the NT and extra-canonical works like Jubilees/Jasher/Book of
+// Melchizedek that BHS never covers) rows for the same OT verse. Filtering
+// to one edition made the count match neither (a hardcoded "BHS-only"
+// default silently hid Jubilees/Jasher entirely — the exact books
+// Translation Studio's sidebar shows). Instead: fetch both editions, then in
+// getGlossCoverage keep ONLY each book's NATURAL edition (BHS if BHS covers
+// it, else HEB) — the same "whatever BHS covers is BHS's, the remainder is
+// HEB's" rule navHebBooks() already uses. Counts each occurrence exactly
+// once, and surfaces every book with Hebrew material, not just the 39
+// canonical OT ones.
 const GLOSS_COVERAGE_ROWS = surfDb.prepare(`
-    SELECT o.book_id, o.chapter, o.verse, t.root_paleo
+    SELECT o.book_id, o.chapter, o.verse, o.source, t.root_paleo, t.pos, t.strongs
     FROM   surface_occurrences o
     JOIN   token_surfaces      t ON t.word_raw = o.word_raw ${OCC_SN_JOIN} ${SRC_JOIN}
-    WHERE  t.root_paleo IS NOT NULL AND t.root_paleo != ''${SURF_HAS_SOURCE ? '\n      AND o.source = ?' : ''}
+    WHERE  t.root_paleo IS NOT NULL AND t.root_paleo != ''
 `);
-function glossCoverageRowsFor(source) {
-    return SURF_HAS_SOURCE ? GLOSS_COVERAGE_ROWS.all(source) : GLOSS_COVERAGE_ROWS.all();
-}
 
-const _glossCoverageCache = new Map();   // source -> { books, roots, stamp }
+let _glossCoverageCache = null;   // { books, roots, stamp }
 
-// Both surface-index.db content (which words exist, at all) and lexicon.json
-// content (which of them are glossed) affect the answer — rebuild if either
-// changes, same two-file dependency the reader's live re-gloss pass already
-// tracks.
+// surface-index.db content (which words exist, at all) and all THREE curated
+// gloss sources (lexicon.json, homographs.json, hebrew-extra-lexicon.json)
+// affect the answer — rebuild if any of the four changes. Previously only
+// lexicon.json's mtime was tracked, so editing homographs.json or
+// hebrew-extra-lexicon.json silently served a stale coverage tree.
 function _glossStudioStampKey() {
-    let a = 0, b = 0;
+    let a = 0, b = 0, c = 0, d = 0;
     try { a = fs.statSync(path.join(__dirname, 'surface-index.db')).mtimeMs; } catch { /* missing is fine, stamp 0 */ }
     try { b = fs.statSync(path.join(__dirname, 'lexicon', 'lexicon.json')).mtimeMs; } catch { /* same */ }
-    return `${a}|${b}`;
+    try { c = fs.statSync(path.join(__dirname, 'lexicon', 'homographs.json')).mtimeMs; } catch { /* same */ }
+    try { d = fs.statSync(path.join(__dirname, 'lexicon', 'hebrew-extra-lexicon.json')).mtimeMs; } catch { /* same */ }
+    return `${a}|${b}|${c}|${d}`;
 }
 
-function getGlossCoverage(source) {
-    const src = source === 'HEB' ? 'HEB' : 'BHS';
-    const stamp = _glossStudioStampKey();
-    const cached = _glossCoverageCache.get(src);
-    if (cached && cached.stamp === stamp) return cached;
+// Mirrors reGlossOne's (server.js, ~line 5661) live re-gloss priority chain
+// EXACTLY, minus the final GRAMMAR_MAP fallback: Gloss Studio exists to track
+// what's covered by the user's OWN curated sources — lexicon.json,
+// homographs.json, hebrew-extra-lexicon.json — not the hardcoded built-in
+// particle table. A word that only resolves via GRAMMAR_MAP renders fine in
+// the reader but still counts as "missing" here, which is intentional: it's
+// exactly the kind of entry the user wants surfaced so they can curate it by
+// hand instead of leaning on the fallback.
+//   candidates (in order): `${paleo}_H<sn>`, `${paleo}_<posLong>`, bare paleo
+//   POS_STRICT (inrg): homograph candidates ONLY — no bare/lexicon fallback,
+//   because the bare paleo answers a DIFFERENT part of speech (𐤄 bare =
+//   article "The", not the interrogative).
+const GS_POS_LONG = { prep: 'preposition', conj: 'conjunction', art: 'article', nega: 'negative', inrg: 'interrogative' };
+const GS_POS_STRICT = new Set(['inrg']);
 
-    const { lexicon } = loadLexicons();
-    const rows = glossCoverageRowsFor(src);
+function gsIsGlossed(root_paleo, pos, strongs, lexicon, homographs, hebExtra) {
+    const candidates = [];
+    const ownSn = strongs ? 'H' + String(strongs).replace(/^H+/, '') : null;
+    if (ownSn) candidates.push(`${root_paleo}_${ownSn}`);
+    const posLong = GS_POS_LONG[pos];
+    if (posLong) candidates.push(`${root_paleo}_${posLong}`);
+
+    if (GS_POS_STRICT.has(pos)) {
+        return candidates.some(k => !!homographs[k]);
+    }
+
+    candidates.push(root_paleo);
+    if (candidates.some(k => !!homographs[k])) return true;
+    if (lexicon[root_paleo]) return true;
+    if (hebExtra[root_paleo]) return true;
+    return false;
+}
+
+function getGlossCoverage() {
+    const stamp = _glossStudioStampKey();
+    if (_glossCoverageCache && _glossCoverageCache.stamp === stamp) return _glossCoverageCache;
+
+    const { lexicon, homographs, hebExtra } = loadLexicons();
+    const bhsBooks = SURF_SOURCE_BOOKS.get('BHS') || new Set();
+    const rows = GLOSS_COVERAGE_ROWS.all();
+
+    // "Glossed" = covered by one of the three curated sources — lexicon.json,
+    // homographs.json, hebrew-extra-lexicon.json — checked with the SAME
+    // priority chain the reader's live re-gloss pass uses (gsIsGlossed,
+    // mirroring reGlossOne). GRAMMAR_MAP is deliberately excluded: it's a
+    // hardcoded fallback, not something the user curated, and this report
+    // exists to find what still needs a real, hand-written entry.
+    const isGlossed = (root_paleo, pos, strongs) =>
+        gsIsGlossed(root_paleo, pos, strongs, lexicon, homographs, hebExtra);
 
     // book_id -> { total, glossed, chapters: Map(chapter -> { total, glossed, verses: Map(verse -> {total, glossed, missing: Set<root_paleo>}) }) }
     const books = new Map();
@@ -5485,7 +5529,11 @@ function getGlossCoverage(source) {
     const roots = new Map();
 
     for (const r of rows) {
-        const glossed = !!lexicon[r.root_paleo];
+        // Keep only this book's NATURAL edition — see the query comment above.
+        const natural = bhsBooks.has(r.book_id) ? 'BHS' : 'HEB';
+        if (r.source !== natural) continue;
+
+        const glossed = isGlossed(r.root_paleo, r.pos, r.strongs);
 
         let bk = books.get(r.book_id);
         if (!bk) { bk = { total: 0, glossed: 0, chapters: new Map() }; books.set(r.book_id, bk); }
@@ -5503,27 +5551,32 @@ function getGlossCoverage(source) {
         let rt = roots.get(r.root_paleo);
         if (!rt) { rt = { occ: 0, glossed }; roots.set(r.root_paleo, rt); }
         rt.occ++;
+        // A root can show glossed=true from one occurrence and false from
+        // another only if isGlossed's inputs (pos) legitimately differ across
+        // occurrences (rare); once ANY occurrence resolves it, don't let a
+        // later miss re-flag it — favors "not actually missing" over noise.
+        if (glossed) rt.glossed = true;
     }
 
-    const result = { books, roots, stamp };
-    _glossCoverageCache.set(src, result);
-    return result;
+    _glossCoverageCache = { books, roots, stamp };
+    return _glossCoverageCache;
 }
 
 const _glossPct = (glossed, total) => total ? Math.round((glossed / total) * 1000) / 10 : 0;
 
-// GET /api/admin/gloss-studio/coverage[?source=BHS|HEB]
+// GET /api/admin/gloss-studio/coverage
 // The WHOLE books -> chapters -> verses tree in one response (not a
 // drill-down API) — computed once server-side, cached until lexicon.json or
 // surface-index.db actually change, sent whole so the client fetches ONCE
 // and does all book/chapter/verse navigation against the in-memory tree
-// with zero further round-trips. Each verse also carries `missing`: the
-// actual root_paleo forms still needing an entry (not just a fraction), so
-// you can see what's short of 100% without opening a second panel.
+// with zero further round-trips. Covers every book with Hebrew material
+// (BHS's 39 + everything HEB-only: NT, Jubilees, Jasher, Book of
+// Melchizedek, etc — same set Translation Studio's sidebar shows), each
+// counted from its own natural edition. Each verse also carries `missing`:
+// the actual root_paleo forms still needing an entry (not just a fraction).
 app.get('/api/admin/gloss-studio/coverage', (req, res) => {
     try {
-        const source = (req.query.source || 'BHS').toUpperCase() === 'HEB' ? 'HEB' : 'BHS';
-        const { books } = getGlossCoverage(source);
+        const { books } = getGlossCoverage();
         const out = [...books.entries()].map(([book_id, bk]) => ({
             book_id, name: BOOK_NAMES[book_id] || `Book ${book_id}`,
             total: bk.total, glossed: bk.glossed, pct: _glossPct(bk.glossed, bk.total),
@@ -5535,27 +5588,27 @@ app.get('/api/admin/gloss-studio/coverage', (req, res) => {
                 })).sort((a, b) => a.verse - b.verse),
             })).sort((a, b) => a.chapter - b.chapter),
         })).sort((a, b) => a.book_id - b.book_id);
-        res.json({ source, books: out });
+        res.json({ books: out });
     } catch (err) {
         console.error('/api/admin/gloss-studio/coverage failed:', err);
         res.status(500).json({ error: err.message });
     }
 });
 
-// GET /api/admin/gloss-studio/missing?offset=0&limit=50&source=BHS|HEB
-// Roots with NO lexicon.json entry, sorted by occurrence count (desc) — the
-// highest-value gaps first. Add the entry, reload, it's gone from this list.
+// GET /api/admin/gloss-studio/missing?offset=0&limit=50
+// Roots with NO real gloss anywhere (lexicon.json, hebrew-extra-lexicon.json,
+// or GRAMMAR_MAP), sorted by occurrence count (desc) — the highest-value
+// gaps first. Add the entry, reload, it's gone from this list.
 app.get('/api/admin/gloss-studio/missing', (req, res) => {
     try {
-        const source = (req.query.source || 'BHS').toUpperCase() === 'HEB' ? 'HEB' : 'BHS';
-        const { roots } = getGlossCoverage(source);
+        const { roots } = getGlossCoverage();
         const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
         const limit  = Math.min(500, Math.max(1, parseInt(req.query.limit, 10) || 50));
         const all = [...roots.entries()]
             .filter(([, r]) => !r.glossed)
             .map(([root_paleo, r]) => ({ root_paleo, occ: r.occ }))
             .sort((a, b) => b.occ - a.occ);
-        res.json({ source, total: all.length, offset, limit, rows: all.slice(offset, offset + limit) });
+        res.json({ total: all.length, offset, limit, rows: all.slice(offset, offset + limit) });
     } catch (err) {
         console.error('/api/admin/gloss-studio/missing failed:', err);
         res.status(500).json({ error: err.message });

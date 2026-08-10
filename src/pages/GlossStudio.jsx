@@ -14,7 +14,7 @@ import './GlossStudio.css';
 // READS the current file, so it always reflects your latest edits with no
 // separate report to regenerate.
 //
-// The whole books->chapters->verses tree is fetched ONCE per source
+// The whole books->chapters->verses tree is fetched ONCE
 // (server.js's /api/admin/gloss-studio/coverage — not a drill-down API,
 // the full tree in one response) and cached in state; every book/chapter/
 // verse click after that is free, in-memory navigation. Use "↻ Re-sync"
@@ -117,13 +117,15 @@ export default function GlossStudio() {
   const toast = useToast();
   const [isAdmin, setIsAdmin] = useState(null);
   const [lang, setLang] = useState('heb');
-  const [source, setSource] = useState('BHS');       // 'BHS' | 'HEB'
   const [mode, setMode] = useState('browse');         // 'browse' | 'missing'
 
   useEffect(() => { getAdminStatus().then(s => setIsAdmin(!!s.isAdmin)); }, []);
 
-  // ── Browse: the full tree, fetched once per source ─────────────────────
-  const [tree, setTree] = useState(null);             // { source, books: [...] }
+  // ── Browse: the full tree, fetched once ─────────────────────────────────
+  // Covers every book with Hebrew material (BHS's canonical OT + everything
+  // HEB-only: NT, Jubilees, Jasher, Book of Melchizedek, etc) — server.js
+  // picks each book's natural edition, so there's no source toggle here.
+  const [tree, setTree] = useState(null);             // { books: [...] }
   const [treeBusy, setTreeBusy] = useState(false);
   const [activeBook, setActiveBook] = useState(null);  // book_id
   const [openChapter, setOpenChapter] = useState(null);
@@ -131,15 +133,15 @@ export default function GlossStudio() {
   const [verseDetail, setVerseDetail] = useState(null);
   const [verseBusy, setVerseBusy] = useState(false);
 
-  const loadTree = useCallback((src) => {
+  const loadTree = useCallback(() => {
     setTreeBusy(true);
-    apiGlossCoverage(src)
+    apiGlossCoverage()
       .then(d => setTree(d))
       .catch(e => toast(e.message, 'err'))
       .finally(() => setTreeBusy(false));
   }, [toast]);
 
-  useEffect(() => { if (isAdmin && lang === 'heb') loadTree(source); }, [isAdmin, lang, source, loadTree]);
+  useEffect(() => { if (isAdmin && lang === 'heb') loadTree(); }, [isAdmin, lang, loadTree]);
 
   const activeBookData = useMemo(
     () => tree?.books.find(b => b.book_id === activeBook) || null,
@@ -162,15 +164,15 @@ export default function GlossStudio() {
   const [missingOffset, setMissingOffset] = useState(0);
   const [missingBusy, setMissingBusy] = useState(false);
 
-  const loadMissing = useCallback((offset, src) => {
+  const loadMissing = useCallback((offset) => {
     setMissingBusy(true);
-    apiGlossMissing(offset, MISSING_PAGE, src)
+    apiGlossMissing(offset, MISSING_PAGE)
       .then(d => { setMissing(d); setMissingOffset(offset); })
       .catch(e => toast(e.message, 'err'))
       .finally(() => setMissingBusy(false));
   }, [toast]);
 
-  useEffect(() => { if (isAdmin && lang === 'heb' && mode === 'missing') loadMissing(0, source); }, [isAdmin, lang, mode, source, loadMissing]);
+  useEffect(() => { if (isAdmin && lang === 'heb' && mode === 'missing') loadMissing(0); }, [isAdmin, lang, mode, loadMissing]);
 
   const [selectedRoot, setSelectedRoot] = useState(null);
   const [rootVerses, setRootVerses] = useState({ verses: [], total: 0 });
@@ -209,12 +211,7 @@ export default function GlossStudio() {
           <button className={`gs-mode-btn ${mode === 'missing' ? 'active' : ''}`} onClick={() => setMode('missing')}>Missing Words</button>
         </div>
 
-        <div className="gs-source-toggle">
-          <button className={`gs-src-btn ${source === 'BHS' ? 'active' : ''}`} onClick={() => setSource('BHS')}>BHS</button>
-          <button className={`gs-src-btn ${source === 'HEB' ? 'active' : ''}`} onClick={() => setSource('HEB')}>HEB</button>
-        </div>
-
-        <button className="gs-txt-btn" onClick={() => (mode === 'browse' ? loadTree(source) : loadMissing(missingOffset, source))} title="Re-fetch from the server">
+        <button className="gs-txt-btn" onClick={() => (mode === 'browse' ? loadTree() : loadMissing(missingOffset))} title="Re-fetch from the server">
           ↻ Re-sync
         </button>
 
@@ -307,14 +304,17 @@ export default function GlossStudio() {
       {mode === 'missing' && (
         <div className="gs-body">
           <p className="gs-intro">
-            Roots with no <code>lexicon.json</code> entry, ranked by how many times they actually
-            occur in the {source} text — the highest-value gaps first. Add a real entry and it drops
-            off this list on the next re-sync; nothing here writes anything for you.
+            Roots with no curated gloss in any of the three sources (<code>lexicon.json</code>,{' '}
+            <code>homographs.json</code>, <code>hebrew-extra-lexicon.json</code>), ranked by how many
+            times they actually occur — the highest-value gaps first. A built-in grammar fallback may
+            still render fine in the reader but shows up here anyway, since it isn't a curated entry.
+            Add a real entry and it drops off this list on the next re-sync; nothing here writes
+            anything for you.
           </p>
 
           {missingBusy && <div className="gs-loading">Loading…</div>}
           {!missingBusy && missing.rows.length === 0 && (
-            <div className="gs-empty">Nothing missing — every root in {source} has a lexicon.json entry. 🎉</div>
+            <div className="gs-empty">Nothing missing — every root in the corpus has a real gloss. 🎉</div>
           )}
           {!missingBusy && missing.rows.length > 0 && (
             <>
@@ -330,9 +330,9 @@ export default function GlossStudio() {
                 ))}
               </div>
               <div className="gs-pager">
-                <button disabled={missingOffset === 0} onClick={() => loadMissing(Math.max(0, missingOffset - MISSING_PAGE), source)}>← Prev</button>
+                <button disabled={missingOffset === 0} onClick={() => loadMissing(Math.max(0, missingOffset - MISSING_PAGE))}>← Prev</button>
                 <span>{missingOffset + 1}–{Math.min(missingOffset + MISSING_PAGE, missing.total)} of {missing.total.toLocaleString()}</span>
-                <button disabled={missingOffset + MISSING_PAGE >= missing.total} onClick={() => loadMissing(missingOffset + MISSING_PAGE, source)}>Next →</button>
+                <button disabled={missingOffset + MISSING_PAGE >= missing.total} onClick={() => loadMissing(missingOffset + MISSING_PAGE)}>Next →</button>
               </div>
             </>
           )}

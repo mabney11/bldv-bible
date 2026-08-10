@@ -281,13 +281,16 @@ export const apiAdminDeleteStrongsOverride = (key) => apiDelete(`/api/admin/stro
 
 // Gloss Studio — curation dashboard. All reads recompute live off the
 // current lexicon.json + surface index; see server.js's getGlossCoverage().
-// apiGlossCoverage fetches the WHOLE books->chapters->verses tree in one
-// call (not a drill-down) — fetch once, cache client-side, navigate for
-// free; call again only to explicitly re-sync with the server.
-export const apiGlossMissing = (offset = 0, limit = 50, source = 'BHS') =>
-  jsonFetch(`/api/admin/gloss-studio/missing?offset=${offset}&limit=${limit}&source=${source}`);
-export const apiGlossCoverage = (source = 'BHS') =>
-  jsonFetch(`/api/admin/gloss-studio/coverage?source=${source}`);
+// Both cover EVERY book with Hebrew material (BHS's 39 canonical OT books
+// plus everything HEB-only: NT, Jubilees, Jasher, Book of Melchizedek, etc),
+// each counted from its own natural edition server-side — no source param
+// needed here. apiGlossCoverage fetches the WHOLE books->chapters->verses
+// tree in one call (not a drill-down) — fetch once, cache client-side,
+// navigate for free; call again only to explicitly re-sync with the server.
+export const apiGlossMissing = (offset = 0, limit = 50) =>
+  jsonFetch(`/api/admin/gloss-studio/missing?offset=${offset}&limit=${limit}`);
+export const apiGlossCoverage = () =>
+  jsonFetch('/api/admin/gloss-studio/coverage');
 export const apiGlossVerse = (book, chapter, verse) =>
   jsonFetch(`/api/admin/gloss-studio/verse?book=${book}&chapter=${chapter}&verse=${verse}`);
 export const apiGlossRootVerses = (root, offset = 0, limit = 20) =>
