@@ -534,8 +534,9 @@
   align-self: flex-start;
   color: var(--text3);
   font-weight: 700;
+  font-size: 1.6em;
   line-height: 1;
-  margin: 0 .22em;
+  margin: 0 .12em;
 }
 
 /* ── "With glosses" — one verse, one flush-left line ─────────────────────────

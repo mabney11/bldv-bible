@@ -215,6 +215,85 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
     ? word.components
     : [{ paleo: word.word_raw || '', css: 'root', token_ordinal: word.token_ordinal }];
 
+  // A maqaf baked WITHIN this single word's own components (a two-part
+  // construct chain sharing one token, e.g. Genesis 1:11's עַל־הָאָרֶץ, "Il" +
+  // maqaf + "HaAratz") is NOT the same bug as a maqaf trailing off to a
+  // wholly separate next word (that case is handled by the standalone
+  // divider VerseRow inserts between word-blocks, below). Left alone here,
+  // computeParts-equivalent logic just flattens BOTH halves into one
+  // unbroken transliteration ("IlHaAratz") with nothing to show a maqaf ever
+  // existed between them. Mirrors components/WordBlock.jsx's own
+  // maqafSplit: split on every isMaqaf component, and only treat it as a
+  // genuine compound when EVERY resulting half has real (non-mark) content —
+  // a maqaf with nothing on one side is an ordinary trailing mark and falls
+  // through to the normal (non-split) render below.
+  let maqafHalves = null;
+  if (comps.some(c => c.isMaqaf)) {
+    const segs = [[]];
+    for (const c of comps) {
+      if (c.isMaqaf) { segs.push([]); continue; }
+      segs[segs.length - 1].push(c);
+    }
+    if (!segs.some(s => s.length === 0)) maqafHalves = segs;
+  }
+  if (maqafHalves) {
+    return (
+      <div className={`word-block maqaf-chip ${linked ? 'lnk' : ''}`} onMouseEnter={enter} onMouseLeave={leave}
+           style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '2px' }}>
+        {maqafHalves.flatMap((seg, hi) => {
+          const els = [];
+          if (hi > 0) {
+            els.push(<span key={`d${hi}`} className="par-maqaf-divider" aria-hidden="true">-</span>);
+          }
+          // Recurse — each half is rendered by this SAME function, reusing
+          // every existing glyph/translit/gloss code path unchanged instead
+          // of a second copy of it. blockLinks/onHoverLink are intentionally
+          // empty here: the OUTER chip div (above) already fires the
+          // English<->Hebrew hover-link for the combined word; per-glyph
+          // highlight (hoveredOrds) still works inside the recursive call
+          // regardless, since that reads token_ordinal directly off comps.
+          els.push(
+            <WordBlock key={`h${hi}`}
+                       word={{ token_ordinal: seg[0]?.token_ordinal ?? word.token_ordinal, components: seg }}
+                       showSub={showSub} rich={rich} isPaleoScript={isPaleoScript} dir={dir}
+                       hoveredOrds={hoveredOrds} onHoverLink={() => {}} blockLinks={[]} />
+          );
+          return els;
+        })}
+        {/* One badge for the WHOLE compound (not one per half) — the fetched
+            word already carries word_raw/strongs for the combined form, and
+            splitting that accurately per half would need per-token surf/SN
+            data this page doesn't fetch. Matches components/WordBlock.jsx's
+            own coreStrongs badge, which is likewise shown once at the end. */}
+        {showSub && (word.word_raw || word.strongs) && (
+          <div className="strongs-badge" style={{ alignSelf: 'flex-start', marginTop: '4px' }}>
+            <span className="surf-sn-group" style={{ display: 'inline-flex', gap: '3px', alignItems: 'center' }}>
+              {word.word_raw && (
+                <a className="surf-badge-link"
+                   href={`/surfaces?${new URLSearchParams({ word: word.word_raw })}`}
+                   title={`Browse surface ${word.word_raw}`}
+                   onClick={(e) => e.stopPropagation()}>surf</a>
+              )}
+              {word.strongs && (
+                isVirtualSN(word.strongs) ? (
+                  <span className="sn-link root sn-virtual"
+                        title="Grammar/virtual code — no root entry"
+                        style={{ opacity: 0.6, cursor: 'default' }}
+                        onClick={(e) => e.stopPropagation()}>{fmtSN(word.strongs)}</span>
+                ) : (
+                  <a className="sn-link root"
+                     href={`/roots?sn=${fmtSN(word.strongs)}`}
+                     title={`Explore root ${fmtSN(word.strongs)}`}
+                     onClick={(e) => e.stopPropagation()}>{fmtSN(word.strongs)}</a>
+                )
+              )}
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // Sub-line glosses: root gloss + bracketed modifier glosses (mirrors reference).
   let rootTrans = null; const mods = [];
   if (showSub) {

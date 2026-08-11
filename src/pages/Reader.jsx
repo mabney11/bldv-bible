@@ -342,7 +342,32 @@ function renderHebrewProseNodes(words) {
 // across a line break — the dash stranded at the end of one line, its partner
 // starting the next. Those two cells are grouped into one `.hwc-maqaf-pair`
 // (display:inline-flex, so it can never wrap internally) instead.
-const endsWithMaqaf = (word) => (word?.components || []).some(c => c && c.isMaqaf);
+const endsWithMaqaf = (word) => {
+  const comps = word?.components || [];
+  const last = comps[comps.length - 1];
+  return !!(last && last.isMaqaf);
+};
+
+// A maqaf baked WITHIN this single word's own components — a two-part
+// construct chain sharing one token, e.g. Genesis 1:11's עַל־הָאָרֶץ ("Il" +
+// maqaf + "HaAratz") — is a DIFFERENT case from endsWithMaqaf above (a maqaf
+// trailing off to a wholly separate next word/token). Left undetected, the
+// two halves fell through to computeWordParts() unsplit and rendered as one
+// unbroken run ("IlHaAratz") with no sign a maqaf ever separated them.
+// Mirrors components/WordBlock.jsx's own maqafSplit exactly: split on every
+// isMaqaf component, and only treat it as a genuine compound when EVERY
+// resulting half has real (non-mark) content — a maqaf with nothing on one
+// side is an ordinary trailing mark, not a baked-in compound.
+const internalMaqafSplit = (word) => {
+  const comps = word?.components || [];
+  if (!comps.some(c => c && c.isMaqaf)) return null;
+  const segs = [[]];
+  for (const c of comps) {
+    if (c && c.isMaqaf) { segs.push([]); continue; }
+    segs[segs.length - 1].push(c);
+  }
+  return segs.some(s => s.length === 0) ? null : segs;
+};
 
 // Divine names/titles — surfaced systematically by Strong's number, not
 // hand-picked per word, so every occurrence gets its paleo spelling
@@ -429,6 +454,24 @@ function renderHebrewWordCells(words) {
   const out = [];
   for (let i = 0; i < list.length; i++) {
     const word = list[i];
+
+    const split = internalMaqafSplit(word);
+    if (split) {
+      const cells = split.map(seg => buildCell({ components: seg })).filter(Boolean);
+      if (cells.length >= 2) {
+        out.push(
+          <span className="hwc-maqaf-pair" key={key++}>
+            {cells.flatMap((c, ci) => ci > 0
+              ? [<span key={`d${ci}`} className="hwc-maqaf-dash" aria-hidden="true">-</span>, c]
+              : [c])}
+          </span>
+        );
+        continue;
+      }
+      // Fell through (e.g. a half produced no transliterations at all) —
+      // treat it as an ordinary word below rather than dropping it silently.
+    }
+
     const cell = buildCell(word);
     if (!cell) continue;
     if (endsWithMaqaf(word) && i + 1 < list.length) {
