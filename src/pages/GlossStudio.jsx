@@ -6,6 +6,7 @@ import {
   apiGlossMissing, apiGlossCoverage, apiGlossRootVerses, apiGlossVerse, apiGlossVerseStatus,
 } from '../lib/api.js';
 import MultiWordBlock from '../components/MultiWordBlock.jsx';
+import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import './GlossStudio.css';
 
 // /gloss-studio — 100%-curated-by-you lexicon dashboard, laid out like
@@ -344,6 +345,21 @@ export default function GlossStudio() {
     [tree, activeBook]
   );
 
+  // ── browser tab ────────────────────────────────────────────────────────────
+  // Feature first ("Gloss Studio | Genesis 1:2") so every open tab for this
+  // tool groups/sorts together — see hooks/usePageTitle.js. Prefers the open
+  // verse's own book_name/chapter/verse (verseDetail, keyed on the language
+  // actually being audited) over the tree's activeBookData, since the two
+  // can genuinely disagree once a language switch is in flight; falls back to
+  // whatever's known (book + open chapter, or just the book) when no verse is
+  // open yet, same "show what you can" rule usePageTitle expects everywhere.
+  usePageTitle(
+    verseDetail
+      ? formatRef(verseDetail.book_name, verseDetail.chapter, verseDetail.verse)
+      : formatRef(activeBookData?.name, openChapter, null),
+    'Gloss Studio'
+  );
+
   // From the per-verse fetch itself (verseDetail.missing, added server-side
   // from that LANGUAGE's own coverage tree) rather than `tree` — `tree` is
   // now the cross-language aggregate and no longer carries a per-language
@@ -455,6 +471,18 @@ export default function GlossStudio() {
           </div>
         )}
         <span className="gs-spacer" />
+        {/* Translation Studio takes either a slug or a plain numeric book id
+            (resolveBookParam in lib/bookSlug.js resolves both — "numbers
+            still resolve too, so every existing ?book=43 link keeps
+            working"), so activeVerseKey's own numeric book_id passes
+            straight through with no slug lookup needed here. */}
+        {activeVerseKey && (
+          <Link
+            to={`/translate?book=${activeVerseKey.split(':')[0]}&chapter=${activeVerseKey.split(':')[1]}&verse=${activeVerseKey.split(':')[2]}`}
+            className="gs-txt-btn"
+            title="Open this verse in Translation Studio"
+          >📝 Translation Studio →</Link>
+        )}
       </header>
 
       {mode === 'browse' && (

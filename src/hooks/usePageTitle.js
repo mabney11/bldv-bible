@@ -1,17 +1,19 @@
 /**
  * usePageTitle — one place that decides what the browser TAB says.
  *
- * The tab is the only label you have when a dozen of them are open and each one is
- * 24px wide, so the rule here is: the MOST specific thing first, the surface last.
+ * Feature first, reference after (changed 2026-08-11, fieldy: "put the
+ * feature first and then details"):
  *
- *     Deuteronomy 6 — Paleo Studio
- *     Deuteronomy 6:4 — Parallel
- *     1 Adam and Eve 1:12 — Studio
- *     Apocalypse of Abraham 1 · not translated — Paleo Studio
+ *     Paleo Studio | Deuteronomy 6
+ *     Parallel | Deuteronomy 6:4
+ *     Translation Studio | 1 Adam and Eve 1:12
+ *     Paleo Studio | Apocalypse of Abraham 1 · not translated
  *
- * Put the reference first and the app name last: a narrow tab truncates from the
- * RIGHT, so "Deuteronomy 6 — Pale…" still tells you where you are, while
- * "Paleo Studio — Deut…" does not.
+ * This reverses an earlier reference-first convention (kept the surface name
+ * readable even when a narrow tab truncates the tail) in favor of every tab
+ * for the same tool sorting/grouping together in a crowded tab strip — the
+ * tradeoff being accepted here: on a very narrow tab, the reference can
+ * truncate away and leave only the surface name visible.
  *
  * Usage:
  *   usePageTitle(bookName && `${bookName} ${chapter}`, 'Parallel');
@@ -34,15 +36,16 @@ export function formatRef(bookName, chapter, verse) {
 
 /**
  * @param {string} ref      the reference, e.g. "Deuteronomy 6:4" (falsy while loading)
- * @param {string} surface  which reader/tool this is: 'Parallel', 'Studio', 'Hebrew Viewer'…
- *                          Omit (or pass APP_NAME) for the plain reader.
+ * @param {string} surface  which reader/tool this is: 'Parallel', 'Translation Studio',
+ *                          'Gloss Studio', 'Reader'… Omit (or pass APP_NAME) for the
+ *                          plain reader.
  * @param {string} [note]   optional state shown after a middot: 'not translated', 'unsaved'…
  */
 export function usePageTitle(ref, surface, note) {
   useEffect(() => {
-    const tail = surface && surface !== APP_NAME ? surface : APP_NAME;
-    const head = [ref, note].filter(Boolean).join(' · ');
-    const title = head ? `${head} — ${tail}` : tail;
+    const head = surface && surface !== APP_NAME ? surface : APP_NAME;
+    const tail = [ref, note].filter(Boolean).join(' · ');
+    const title = tail ? `${head} | ${tail}` : head;
     document.title = title;
     // No cleanup that resets the title: the next page sets its own on mount, and
     // resetting here would flash the bare app name during every navigation.

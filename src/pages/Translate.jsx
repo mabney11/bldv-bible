@@ -198,11 +198,11 @@ export default function Translate() {
   const activeBookData = books.find(b => b.book_id === activeBook);
 
   // ── browser tab ────────────────────────────────────────────────────────────
-  // The Studio never named itself, so several open tabs were indistinguishable.
-  // Reference first ("1 Adam and Eve 1:12 — Studio") so a narrow tab still reads.
+  // Feature first ("Translation Studio | 1 Adam and Eve 1:12") so every open
+  // tab for this tool groups/sorts together — see hooks/usePageTitle.js.
   usePageTitle(
     formatRef(activeBookData?.name || (activeBook ? BOOK_NAMES[activeBook] : ''), activeChapter, activeVerse),
-    'Studio'
+    'Translation Studio'
   );
 
   const selectBook = useCallback(async (bookId) => {
@@ -749,6 +749,13 @@ export default function Translate() {
         {activeBook && activeChapter && activeVerse != null && (
           <Link to={`/bible?book=${bookToParam(activeBook, idToSlug)}&chapter=${activeChapter}&verse=${activeVerse}`}
                 className="tr-txt-btn" title="Open this passage in the Reader — flowing prose, no Strong's">📗 Reader →</Link>
+        )}
+        {/* Gloss Studio takes a plain numeric book id (its own URL scheme,
+            see GlossStudio.jsx — it never adopted the slug convention
+            Parallel/Reader use), not bookToParam's slug. */}
+        {activeBook && activeChapter && activeVerse != null && (
+          <Link to={`/gloss-studio?book=${activeBook}&chapter=${activeChapter}&verse=${activeVerse}`}
+                className="tr-txt-btn" title="Open this verse in Gloss Studio">📚 Gloss Studio →</Link>
         )}
         <button className="tr-icon-btn" onClick={toggleTheme} title="Toggle theme">
           {theme === 'dark' ? '☀' : '☾'}

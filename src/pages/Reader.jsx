@@ -636,12 +636,13 @@ export default function Reader() {
   );
 
   // ── browser tab ────────────────────────────────────────────────────────────
-  // Reference first, surface last: a narrow tab truncates from the right, so
-  // "Deuteronomy 6 — Pale…" still says where you are. An empty chapter is flagged
-  // in the tab too, so a book that isn't translated is obvious without opening it.
+  // Feature first ("Reader | Genesis 1") so every open tab for this tool
+  // groups/sorts together — see hooks/usePageTitle.js. An empty chapter is
+  // flagged in the tab too, so a book that isn't translated is obvious
+  // without opening it.
   usePageTitle(
     bookReady && meta ? formatRef(chapterBookName, chapter, verse) : '',
-    undefined,
+    'Reader',
     (!loading && verses.length === 0) ? 'not translated' : undefined
   );
 
