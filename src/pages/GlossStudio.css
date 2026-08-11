@@ -51,36 +51,42 @@
 }
 @keyframes gs-pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-/* ── PER-VERSE LANGUAGE CHOICE (shown in the editor pane once a verse is
-   picked — the choice comes AFTER verse selection, not before, and each
-   button is colored by THAT VERSE's own glossed/total so gaps across
-   languages are visible at a glance: green = 100%, amber = partial,
-   red = 0%, dim = no data for this verse in that language). ────────────── */
-.gs-verse-lang-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-.gs-verse-lang-btn {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
-  min-width: 84px;
-  padding: 8px 14px; border-radius: 8px;
-  background: var(--bg3); border: 1px solid var(--border2); color: var(--text2);
-  cursor: pointer; transition: all 0.12s;
+/* ── LANGUAGE COLUMN (fourth pane in Browse once a verse is picked; also
+   the language switcher in Missing Words) — same look as the book/chapter
+   panes, not pills. Each row is colored by THAT VERSE's own glossed/total
+   (verseStatus): green = 100%, amber = partial, red = 0%, dim = no data —
+   so gaps across languages are visible before committing to editing one. */
+.gs-lang-col {
+  width: 170px; flex-shrink: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  background: var(--bg2);
 }
-.gs-verse-lang-btn:hover { border-color: var(--border3); }
-.gs-verse-lang-btn.active { box-shadow: 0 0 0 2px var(--blue2) inset; }
-.gs-verse-lang-name { font-size: 12px; font-weight: 600; }
-.gs-verse-lang-pct { font-size: 11px; opacity: 0.85; }
-.gs-verse-lang-btn.done {
-  background: color-mix(in srgb, var(--green, #3aa96a) 22%, var(--bg3));
-  border-color: var(--green, #3aa96a); color: var(--green, #3aa96a);
+.gs-lang-col-item {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%;
+  padding: 9px 14px;
+  background: transparent; border: none; border-bottom: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  cursor: pointer; text-align: left; transition: background 0.12s;
+  color: var(--text2); font-size: 12px;
 }
-.gs-verse-lang-btn.partial {
-  background: color-mix(in srgb, var(--amber, var(--gold)) 20%, var(--bg3));
-  border-color: var(--amber, var(--gold)); color: var(--amber, var(--gold));
-}
-.gs-verse-lang-btn.none {
-  background: color-mix(in srgb, var(--red, #c0392b) 20%, var(--bg3));
-  border-color: var(--red, #c0392b); color: var(--red, #c0392b);
-}
-.gs-verse-lang-btn.na { opacity: 0.45; }
+.gs-lang-col-item:hover { background: var(--bg3); }
+.gs-lang-col-item.active { background: color-mix(in srgb, var(--blue2) 16%, var(--bg2)); border-left-color: var(--blue2); }
+.gs-lang-col-name { flex: 1; }
+.gs-lang-col-pct { font-size: 11px; color: var(--text3); font-family: monospace; }
+.gs-lang-col-item.done    { border-left-color: var(--green, #3aa96a); }
+.gs-lang-col-item.done .gs-lang-col-pct    { color: var(--green, #3aa96a); }
+.gs-lang-col-item.partial { border-left-color: var(--amber, var(--gold)); }
+.gs-lang-col-item.partial .gs-lang-col-pct { color: var(--amber, var(--gold)); }
+.gs-lang-col-item.none    { border-left-color: var(--red, #c0392b); }
+.gs-lang-col-item.none .gs-lang-col-pct    { color: var(--red, #c0392b); }
+.gs-lang-col-item.na      { opacity: 0.45; }
+/* active + status both apply (active is the currently-open language) — let
+   the status color win on the left border, active keeps its background. */
+.gs-lang-col-item.active.done    { border-left-color: var(--green, #3aa96a); }
+.gs-lang-col-item.active.partial { border-left-color: var(--amber, var(--gold)); }
+.gs-lang-col-item.active.none    { border-left-color: var(--red, #c0392b); }
 
 /* ── BROWSE: three-pane body (mirrors Translation Studio's tr-shell) ────── */
 .gs-browse-body { flex: 1; display: flex; overflow: hidden; min-height: 0; }
@@ -163,7 +169,8 @@
 }
 .gs-big-glyph { font-family: var(--paleo-font); font-size: 64px; opacity: 0.15; color: var(--gold); }
 
-/* ── MISSING WORDS mode (flat body, no three-pane) ───────────────────────── */
+/* ── MISSING WORDS mode (language column + flat body) ────────────────────── */
+.gs-missing-body { flex: 1; display: flex; overflow: hidden; min-height: 0; }
 .gs-body { flex: 1; overflow-y: auto; max-width: 900px; margin: 0 auto; width: 100%; padding: 20px 20px 60px; }
 .gs-intro { font-size: 13px; color: var(--text3); line-height: 1.6; margin: 0 0 18px; }
 .gs-intro code {
@@ -234,13 +241,22 @@
 }
 .gs-word-sn { font-size: 9px; color: var(--blue2); text-decoration: none; border: 1px solid var(--border2); border-radius: 4px; padding: 1px 5px; }
 .gs-word-sn:hover { text-decoration: underline; }
-.gs-verse-eng { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text3); line-height: 1.5; }
+.gs-verse-eng {
+  margin-top: 16px; padding: 14px 18px;
+  background: var(--bg3); border-left: 3px solid var(--gold); border-radius: 6px;
+  font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.6;
+}
+.gs-verse-eng-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--gold); margin-bottom: 6px;
+}
 
 @media (max-width: 900px) {
   .gs-book-pane, .gs-chapter-pane { width: 160px; }
+  .gs-lang-col { width: 140px; }
 }
 @media (max-width: 640px) {
-  .gs-browse-body { flex-direction: column; }
-  .gs-book-pane, .gs-chapter-pane { width: 100%; max-height: 30vh; border-right: none; border-bottom: 1px solid var(--border); }
+  .gs-browse-body, .gs-missing-body { flex-direction: column; }
+  .gs-book-pane, .gs-chapter-pane, .gs-lang-col { width: 100%; max-height: 30vh; border-right: none; border-bottom: 1px solid var(--border); }
   .gs-missing-row { flex-wrap: wrap; }
 }

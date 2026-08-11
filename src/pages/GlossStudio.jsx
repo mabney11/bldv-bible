@@ -135,11 +135,42 @@ function VerseDetailCard({ v, missingSet, genericSource, dir = 'rtl' }) {
       </div>
       {v.english?.text && (
         <div className="gs-verse-eng">
+          <div className="gs-verse-eng-label">English</div>
           {v.english.text}
           {v.english.is_baseline && <span className="gs-badge">baseline</span>}
         </div>
       )}
     </div>
+  );
+}
+
+// Vertical language column — a fourth pane (mirrors the book/chapter panes'
+// look, not pill buttons), shown to the right of Chapters once a verse is
+// picked. Colored per-item by THAT verse's own glossed/total (verseStatus),
+// so gaps across languages are visible before committing to editing one:
+// green = 100%, amber = partial, red = 0%, dim = no data. Also reused
+// (with verseStatus=null, so every item just shows '—') as the language
+// switcher in Missing Words mode, which has no single verse to color by.
+function LangColumn({ langs, activeLang, verseStatus, onSelect }) {
+  return (
+    <aside className="gs-lang-col">
+      <div className="gs-pane-header">Languages</div>
+      {langs.map(l => {
+        const st = verseStatus?.langs?.find(x => x.id === l.id);
+        const statusClass = !st || !st.available ? 'na' : st.pct === 100 ? 'done' : st.pct > 0 ? 'partial' : 'none';
+        return (
+          <button
+            key={l.id}
+            className={`gs-lang-col-item ${statusClass} ${activeLang === l.id ? 'active' : ''}`}
+            onClick={() => onSelect(l.id)}
+            title={st && st.available ? `${st.glossed}/${st.total} glossed` : 'no per-verse data'}
+          >
+            <span className="gs-lang-col-name">{l.label}</span>
+            <span className="gs-lang-col-pct">{st && st.available ? `${st.pct}%` : '—'}</span>
+          </button>
+        );
+      })}
+    </aside>
   );
 }
 
@@ -397,33 +428,13 @@ export default function GlossStudio() {
             </div>
           </aside>
 
+          {activeVerseKey && (
+            // Fourth pane, appears only once a verse is picked — the
+            // language CHOICE comes AFTER verse selection, not before.
+            <LangColumn langs={LANGS} activeLang={lang} verseStatus={verseStatus} onSelect={setLang} />
+          )}
+
           <main className="gs-editor-pane">
-            {activeVerseKey && (
-              // The language CHOICE, made after the verse is picked, not
-              // before — each button is colored by THIS verse's own
-              // glossed/total (verseStatus), so "which languages still need
-              // Genesis 1:1" is visible before you commit to editing one.
-              // Doubles as the seed of a cross-language completeness metric
-              // per verse (not just per-language) — today it's a display of
-              // the six individual numbers, not yet averaged into one score.
-              <div className="gs-verse-lang-row">
-                {LANGS.map(l => {
-                  const st = verseStatus?.langs?.find(x => x.id === l.id);
-                  const statusClass = !st || !st.available ? 'na' : st.pct === 100 ? 'done' : st.pct > 0 ? 'partial' : 'none';
-                  return (
-                    <button
-                      key={l.id}
-                      className={`gs-verse-lang-btn ${statusClass} ${lang === l.id ? 'active' : ''}`}
-                      onClick={() => setLang(l.id)}
-                      title={st && st.available ? `${st.glossed}/${st.total} glossed` : 'no data for this verse'}
-                    >
-                      <span className="gs-verse-lang-name">{l.label}</span>
-                      <span className="gs-verse-lang-pct">{st && st.available ? `${st.pct}%` : '—'}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
             {!activeVerseKey ? (
               <div className="gs-editor-empty">
                 <div className="gs-big-glyph">𐤀𐤁𐤂</div>
@@ -439,7 +450,9 @@ export default function GlossStudio() {
       )}
 
       {mode === 'missing' && (
-        <div className="gs-body">
+        <div className="gs-missing-body">
+          <LangColumn langs={LANGS} activeLang={lang} verseStatus={null} onSelect={setLang} />
+          <div className="gs-body">
           <p className="gs-intro">
             Roots with no curated gloss in any of the three sources (<code>lexicon.json</code>,{' '}
             <code>homographs.json</code>, <code>hebrew-extra-lexicon.json</code>), ranked by how many
@@ -490,6 +503,7 @@ export default function GlossStudio() {
               </div>
             </div>
           )}
+          </div>
         </div>
       )}
     </div>
