@@ -47,6 +47,16 @@ function tokenTrans(t) {
   }).filter(Boolean).join(' · ');
 }
 
+// Full transliterated word — every component's own translit, concatenated in
+// order (prefix + root + suffix), same additive-only/no-eliding rule as the
+// rest of the app: this must never be shorter than "prefix + root + suffix"
+// letters just because a component lacks a translation. Used for the PALEO
+// SOURCE panel so it reads as an actual word ("LaAsap"), not just glyphs.
+function tokenWordText(t) {
+  if (!t.components?.length) return t.word_raw || '';
+  return t.components.map(c => c.translit || '').join('') || t.word_raw || '';
+}
+
 function dedupeLinks(links) {
   const seen = new Map();
   for (const l of links) {
@@ -1347,19 +1357,22 @@ function ChvVerseBlock({ vd, layout }) {
 // ─── Paleo word-block for the source panel ──────────────────────────────────
 function PaleoBlock({ token }) {
   const comps = token.components?.length ? token.components : [{ paleo: token.word_raw || '', css: 'root', translation: '' }];
+  const word = tokenWordText(token);
+  const gloss = tokenTrans(token);
   return (
-    <div className="tr-word-block">
-      <div className="tr-word-glyph-row">
+    <span className="tr-word-block">
+      <span className="tr-word-glyph-row">
         {comps.map((c, i) => (
           <span key={i} className={`tr-glyph-part ${c.css}`} style={{ color: partColor(c.css) }}
-                dangerouslySetInnerHTML={{ __html: paleoToSVG(c.paleo, '24px') }} />
+                dangerouslySetInnerHTML={{ __html: paleoToSVG(c.paleo, '22px') }} />
         ))}
-      </div>
-      <div className="tr-word-trans-row">
-        {comps.map(c => c.translation).filter(Boolean).join(' · ')}
-      </div>
-      {token.strongs && <div className="tr-word-strongs">{token.strongs}</div>}
-    </div>
+      </span>
+      <span className="tr-word-text-row">
+        {word}
+        {gloss && <span className="tr-word-gloss">({gloss})</span>}
+      </span>
+      {token.strongs && <span className="tr-word-strongs">{token.strongs}</span>}
+    </span>
   );
 }
 

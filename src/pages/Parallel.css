@@ -63,6 +63,18 @@
 .en-verse-text { font-size: 18px; line-height: 1.9; }
 .no-translation { color: var(--text4); font-size: 20px; }
 
+/* Verse 0 (chapter title/superscription — see Reader.jsx's matching treatment).
+   Its English is normally one short line while its source column is a handful
+   of tall, stacked word-blocks (glyph + translit + gloss + Strong's); under the
+   grid's usual top-alignment that short line just sits pinned to the row's top
+   edge while the row's real height is set by the taller source column, so it
+   visually reads as lined up with whatever comes AFTER (verse 1) instead of its
+   own Hebrew. Center both columns for this one row so the title always matches
+   its own source words regardless of which side is taller, and set the English
+   off as an actual title rather than a verse translation. */
+.par-verse-title .par-cols { align-items: center; }
+.par-verse-title .en-verse-text { font-style: italic; text-align: center; }
+
 .en-w { display: inline; padding: 1px 2px; border-radius: 3px; transition: background .12s, color .12s; cursor: default; }
 .en-w.lnk { cursor: pointer; }
 .en-w.hl { background: color-mix(in srgb, var(--gold) 28%, transparent) !important; color: var(--gold2) !important; }

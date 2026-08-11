@@ -380,19 +380,23 @@
   background: var(--bg2); border: 1px solid var(--border);
   border-radius: 10px; padding: 14px 18px; margin-bottom: 18px;
 }
-.tr-paleo-tokens { display: flex; flex-wrap: wrap; gap: 10px; direction: rtl; }
+/* Reads as connected prose (word, then its gloss in parens right after —
+   "LaAsap(for)" — same shape as the Hebrew Reader's glossed word-cell view)
+   rather than a grid of bordered chip cards, while keeping the paleo glyphs
+   as a light decorative row above each word since this panel's whole point
+   is showing the paleo source text. */
+.tr-paleo-tokens { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px 3px; direction: rtl; }
 .tr-word-block {
-  display: inline-flex; flex-direction: column; align-items: center; gap: 3px;
-  padding: 7px 9px 6px;
-  border-radius: 8px; border: 1px solid var(--border);
-  background: var(--bg3); direction: ltr;
+  display: inline-flex; flex-direction: column; align-items: center; gap: 2px;
+  direction: ltr;
 }
-.tr-word-glyph-row { display: flex; flex-direction: row; direction: rtl; }
+.tr-word-glyph-row { display: flex; flex-direction: row; direction: rtl; gap: 1px; }
 .tr-glyph-part { line-height: 1; letter-spacing: -1px; }
-.tr-word-trans-row {
-  font-size: 10px; color: var(--text3);
-  text-align: center; max-width: 120px; line-height: 1.3;
+.tr-word-text-row {
+  font-size: 13px; color: var(--text1, var(--text)); font-weight: 600;
+  white-space: nowrap; line-height: 1.4;
 }
+.tr-word-gloss { font-size: 11px; font-weight: 400; color: var(--text3); margin-left: 1px; }
 .tr-word-strongs { font-size: 9px; color: var(--text4); font-family: monospace; }
 
 /* Translation section (rich-text) */

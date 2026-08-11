@@ -327,6 +327,16 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
 
 // ─── One verse: English | source ─────────────────────────────────────────────
 function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, onRefClick, hovered, setHovered, unaligned, glossMode }) {
+  // Verse 0 is a chapter title/superscription, not a real verse (see Reader.jsx's
+  // matching treatment) — its English is typically one short line while its source
+  // column is a handful of tall, stacked word-blocks (glyph + translit + gloss +
+  // Strong's). With the grid's normal `align-items: start`, that short single line
+  // sits pinned to the TOP of a row whose height is dictated by the taller source
+  // column, so it visually reads as lined up with whatever comes AFTER it (the
+  // start of verse 1) rather than with its own source words. Centering just this
+  // row's columns keeps the title vertically matched to its own Hebrew, regardless
+  // of which side is taller.
+  const isTitle = v === 0;
   const links = tx?.links || [];
   const hoveredOrds = useMemo(() => {
     const s = new Set();
@@ -341,7 +351,7 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
   const enTokens = useMemo(() => glossTokens(enWords, glossMode), [tx?.text, glossMode]);
 
   return (
-    <div className="par-verse" data-verse={v}>
+    <div className={`par-verse ${isTitle ? 'par-verse-title' : ''}`} data-verse={v}>
       <div className={`par-verse-ref ${isActive ? 'active-v' : ''}`} title={`View verse ${v}`}
            onClick={() => onRefClick(v)}>{v}</div>
       <div className="par-cols">
