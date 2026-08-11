@@ -50,8 +50,34 @@ function locate(name, start = HERE, maxUp = 4) {
 }
 const booksPath = locate('books.js');
 if (!booksPath) die('books.js not found');
-const { translit, LETTER_NAMES } = await import(pathToFileURL(booksPath).href);
+const { translit, LETTER_NAMES, CHAR_MAP } = await import(pathToFileURL(booksPath).href);
 if (typeof translit !== 'function') die('books.js has no translit()');
+if (!CHAR_MAP) die('books.js has no CHAR_MAP');
+
+// Transliterate several raw-paleo PIECES (a fused prefix particle + its root,
+// e.g. ['𐤋', '𐤀𐤎𐤐']) as one word, the way every other Hebrew word in the app
+// reads — no space, one capital per morpheme boundary (WaYaHayah, HaYarahay),
+// not just the word's overall first letter. Reuses books.js's own CHAR_MAP so
+// letter selection (medial vs. final form) is IDENTICAL to calling translit()
+// on the whole joined string — translit() itself can't be called per piece,
+// because a lone piece is both its own first AND last character, so it wrongly
+// picks the "fin" (final) form for a letter that is really medial in the fused
+// word (𐤋 alone -> "L"; 𐤋 as a real prefix -> "La"). Only the capitalization
+// point moves; which letter-form is picked stays exactly translit()'s own rule.
+function translitFused(pieces) {
+  const chars = pieces.flatMap(p => [...p]);
+  const boundaries = new Set();
+  let idx = 0;
+  for (const p of pieces) { boundaries.add(idx); idx += [...p].length; }
+  let t = '';
+  for (let i = 0; i < chars.length; i++) {
+    const c = CHAR_MAP[chars[i]];
+    let piece = c ? (i === chars.length - 1 ? c.fin : c.med) : chars[i];
+    if (boundaries.has(i)) piece = piece.charAt(0).toUpperCase() + piece.slice(1);
+    t += piece;
+  }
+  return t;
+}
 // LETTER_NAMES is the curated paleo-glyph -> name table books.js already exports
 // (Alap, Bayath, Gamal, ...) and is what the rest of the app uses for letter names.
 // Re-deriving a name here via translit(spelled-out-letter) used to produce a SECOND,
@@ -174,19 +200,58 @@ if (existsSync(webStrongsPath)) {
 try {
   const { default: Database } = await import('better-sqlite3');
   const db = new Database(join(HERE, 'corpus.db'), { readonly: true });
-  const rows = db.prepare(`SELECT book_id, chapter, word_raw FROM tokens_bhs
+  const rows = db.prepare(`SELECT book_id, chapter, word_raw, pos, morph FROM tokens_bhs
       WHERE verse = 0 AND pos <> 'punct' ORDER BY book_id, chapter, token_ordinal`).all();
   db.close();
+
+  // A standalone prefix particle (a bare prep/conj/art token with no affix
+  // already baked onto its OWN morph — same test server.js's isParticle()/
+  // parseHebrewData use everywhere else a verse renders) must be glued onto
+  // the NEXT token with no space, e.g. "ל" (for) + "אסף" (Asaph) -> one word,
+  // "LaAsap". This used to translit() and space-join every raw token
+  // independently, which is why Psalm 83's title showed "L Asap" as two
+  // separate words while the identical tokens fuse correctly in every other
+  // reader/viewer/parallel surface. Mirrors server.js's HAS_AFFIX/isParticle
+  // exactly — keep the two in sync if either changes.
+  const HAS_AFFIX = /\b(?:prs|pfm|vbs|nme|vbe|uvf)=(?!absent\b|none\b)/;
+  const isParticle = (pos, morph, wordRaw) => {
+    if (pos === 'inrg' && wordRaw === '𐤄') return true;      // interrogative he
+    if (pos !== 'prep' && pos !== 'conj' && pos !== 'art') return false;
+    return !HAS_AFFIX.test(morph || '');                      // affix -> whole word already
+  };
+
   const acc = new Map();
   for (const t of rows) {
     const k = `${t.book_id}:${t.chapter}`;
     if (!acc.has(k)) acc.set(k, []);
-    acc.get(k).push(t.word_raw);
+    acc.get(k).push(t);
   }
-  for (const [k, words] of acc) {
+  for (const [k, tokens] of acc) {
+    // Each entry in `groups` is one VISUAL word: the raw paleo pieces (prefix
+    // particle(s) + the root token) that get fused with no space between them.
+    // translit() is called per PIECE, not once on the pre-joined paleo — it
+    // capitalizes the first letter of whatever it's given, and the app's
+    // convention for a fused word is one capital per morpheme boundary
+    // (WaYaHayah, HaYarahay, ...), not just the word's very first letter. If
+    // paleo were joined first, translit() would only capitalize its overall
+    // first letter, producing "Laasap" instead of the expected "LaAsap".
+    const groups = [];
+    let pending = [];
+    for (const t of tokens) {
+      if (isParticle(t.pos, t.morph, t.word_raw)) {
+        pending.push(t.word_raw);    // ride along, fused onto whatever comes next
+        continue;
+      }
+      pending.push(t.word_raw);
+      groups.push(pending);
+      pending = [];
+    }
+    // A particle with nothing left to fuse onto (superscription ends on it) —
+    // keep it visible rather than silently dropping it.
+    if (pending.length) groups.push(pending);
     (out[k] ||= {}).super = {
-      paleo: words.join(' '),
-      translit: words.map(w => translit(w)).join(' '),
+      paleo: groups.map(g => g.join('')).join(' '),
+      translit: groups.map(g => translitFused(g)).join(' '),
     };
   }
   console.log(`superscriptions: ${acc.size} chapters`);

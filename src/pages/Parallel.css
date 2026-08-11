@@ -81,6 +81,21 @@
 
 /* ── Word blocks (glossed) ─────────────────────────────────────────────────*/
 .heb-col-wrap { display: flex; flex-wrap: wrap; direction: rtl; align-items: flex-start; }
+/* Maqaf divider — a real flex sibling BETWEEN two word-blocks (see
+   VerseRow's words.flatMap in Parallel.jsx), matching components/
+   WordBlock.jsx's .maqaf-divider-standalone (used by the Hebrew Viewer) so a
+   typographically-joined pair reads the same across both pages. Sits at
+   glyph height, dimmed — it's a connector, not content. */
+.par-maqaf-divider {
+  display: inline-flex;
+  align-self: flex-start;
+  font-size: var(--paleo-size);
+  line-height: 1;
+  color: var(--text4);
+  padding-top: 4px;
+  margin: 0 1px;
+  user-select: none;
+}
 .par-unaligned { direction: ltr; font-size: 12px; color: var(--text4); font-style: italic; padding: 6px 2px; line-height: 1.5; }
 .word-block { display: inline-flex; flex-direction: column; align-items: center; vertical-align: top; margin: var(--word-margin); gap: var(--word-gap); cursor: default; }
 .word-block.lnk { cursor: pointer; }

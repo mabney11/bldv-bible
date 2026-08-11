@@ -434,7 +434,19 @@ function renderHebrewWordCells(words) {
     if (endsWithMaqaf(word) && i + 1 < list.length) {
       const nextCell = buildCell(list[i + 1]);
       i++;   // the next word is consumed into this pair
-      out.push(<span className="hwc-maqaf-pair" key={key++}>{cell}{nextCell}</span>);
+      // The maqaf itself (e.g. Genesis 1:8's way'hi-erev) is real punctuation
+      // computeWordParts() deliberately pulls OUT of the word's own glyph/
+      // translit row (see its `trailingMark` comment — an inline mark there
+      // would drag the real letters off-center from their gloss line below).
+      // That's correct for the glyph row, but this cell format has no OTHER
+      // place the connector gets drawn, so without it the pair just reads as
+      // two unrelated words with a plain space — the coupling the Hebrew
+      // itself shows is silently lost. Render it explicitly here instead.
+      out.push(
+        <span className="hwc-maqaf-pair" key={key++}>
+          {cell}<span className="hwc-maqaf-dash" aria-hidden="true">-</span>{nextCell}
+        </span>
+      );
     } else {
       out.push(cell);
     }

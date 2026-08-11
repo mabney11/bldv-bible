@@ -6,7 +6,7 @@ import { sqToPaleo } from '../lib/sqToPaleo.js';
 import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import './Parallel.css';
-import { isPlaceholderGloss } from '../components/WordBlock.jsx';
+import { isPlaceholderGloss, hasTrailingMaqaf } from '../components/WordBlock.jsx';
 import { getAdminStatus, getLocalVersesForChapter, mergeChapterVersesWithLocal } from '../lib/localOverlay.js';
 
 // A component whose text carries no Paleo-Hebrew letter (U+10900–U+1091F) has no
@@ -250,6 +250,15 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
           {comps.map((c, i) => {
             const ord = c.token_ordinal != null ? c.token_ordinal : word.token_ordinal;
             const hl = hoveredOrds.has(ord);
+            // A trailing maqaf (־) never draws inline in this word's own glyph
+            // row — it gets a real standalone divider between this
+            // word-block and the next instead (see VerseRow below). Other
+            // marks (sof-pasuq ׃, paseq …) keep their previous inline
+            // treatment below — only the maqaf's placement was the reported
+            // bug. Previously a maqaf rendered inline here, flush against
+            // THIS word's own edge — which is what actually made it read as
+            // glued to one word instead of sitting between both.
+            if (c.isMark && c.isMaqaf) return null;
             // Punctuation / non-Paleo marks (sof-pasuq ׃, maqaf ־, the : stops)
             // carry no Paleo glyph — render the mark itself as text, the way the
             // Ge'ez reader shows ፡ / ። inline, instead of a blank block.
@@ -276,6 +285,16 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
       {showSub ? (
         <div className="w">
           <span className="w-translit">
+            {/* Mark tokens (maqaf ־, sof-pasuq ׃, paseq …) never get their own
+                translit span here — a maqaf specifically is rendered as its
+                own SIBLING between this word-block and the next one (see
+                VerseRow below), not embedded inside this block's own
+                (centered, width-capped) translit line. Embedding it here
+                first put the dash flush against THIS word's own right edge,
+                with the real gap to the next word-block landing entirely
+                AFTER it — reading as glued to one word instead of sitting
+                between both, exactly the "at the end of one" bug reported
+                against this page. */}
             {comps.map((c, i) => c.isMark ? null : <span key={i} className={c.css}>{c.translit}</span>)}
           </span>
           {(rootTrans || mods.length) ? (
@@ -377,16 +396,29 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
           <div className="heb-col-wrap" dir={dir} style={{ direction: dir }}>
             {unaligned && words.length === 0 ? (
               <div className="par-unaligned">Source text isn’t verse-aligned here — showing English only.</div>
-            ) : words.map((wordObj) => {
+            ) : words.flatMap((wordObj) => {
               const compOrds = wordObj.components?.length
                 ? wordObj.components.map(c => c.token_ordinal != null ? c.token_ordinal : wordObj.token_ordinal)
                 : [wordObj.token_ordinal];
               const blockLinks = links.filter(l => (l.token_ordinals || []).some(o => compOrds.includes(o)));
-              return (
+              const els = [
                 <WordBlock key={wordObj.token_ordinal} word={wordObj} showSub={showSub} rich={rich}
                            isPaleoScript={isPaleoScript}
                            dir={dir} hoveredOrds={hoveredOrds} onHoverLink={onHoverLink} blockLinks={blockLinks} />
-              );
+              ];
+              // A trailing maqaf (־) couples this word to the NEXT one — a real
+              // flex sibling BETWEEN the two word-blocks, not a glyph inside
+              // either one's own (centered, width-capped) box. Rendering it as
+              // its own flex item is what makes it land visibly in the gap
+              // between blocks instead of glued to one side of it. Only for
+              // `rich` (tokenised) sources — the plain (!rich) branch has no
+              // `components` to carry a mark in the first place.
+              if (rich && hasTrailingMaqaf(wordObj)) {
+                els.push(
+                  <span key={`${wordObj.token_ordinal}-mq`} className="par-maqaf-divider" aria-hidden="true">-</span>
+                );
+              }
+              return els;
             })}
           </div>
         </div>

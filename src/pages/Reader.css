@@ -521,7 +521,22 @@
   margin: 0 .6em .4em 0;
 }
 .rd-heb .hwc-maqaf-pair .hwc { margin: 0; }
-.rd-heb .hwc-maqaf-pair .hwc:first-child { margin-right: .14em; }
+/* The connector itself — computeWordParts() pulls the maqaf out of the word's
+   own glyph/translit row on purpose (see WordBlock.jsx's trailingMark
+   comment), but this cell format has nowhere else to show it, so without this
+   the pair silently loses the coupling the Hebrew itself marks. Sits at the
+   word row's height, not stretched down across the gloss line below it.
+   Margin (not padding) on BOTH sides, set here directly rather than relying
+   on a neighboring cell's own margin — that left one side of the dash with
+   no guaranteed gap and it visually glued to whichever word sat on that
+   side. */
+.rd-heb .hwc-maqaf-dash {
+  align-self: flex-start;
+  color: var(--text3);
+  font-weight: 700;
+  line-height: 1;
+  margin: 0 .22em;
+}
 
 /* ── "With glosses" — one verse, one flush-left line ─────────────────────────
    Only in glossed mode: each verse becomes its own block instead of running
