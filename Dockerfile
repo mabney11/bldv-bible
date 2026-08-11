@@ -53,9 +53,18 @@ COPY --from=frontend-build /app/server/public ./public
 # writing ANY file (not even an empty placeholder), and /headings.json 404s
 # for the life of the container — entrypoint.sh treats that as a non-fatal
 # warning, so the app boots normally and the missing headings go unnoticed
-# until someone reads a Psalm. Dropped in flat (not preserving src/lib/) since
-# build-headings.mjs's locate() just needs the file findable by name.
-COPY --from=frontend-build /app/src/lib/books.js ./books.js
+# until someone reads a Psalm. locate() just needs the file findable by name,
+# so it doesn't need src/lib/'s directory structure preserved — BUT it does
+# need its own package.json declaring "type":"module" alongside it: books.js
+# uses `export const`/`export function` (fine in the real repo, where the
+# PROJECT ROOT package.json says "type":"module" and locate() climbs up to
+# find it), while server/package.json — the nearest one in this image — says
+# "type":"commonjs", so without this Node parses the copied file as CommonJS
+# and dies on the first `export` with a SyntaxError. Isolate it in its own
+# subfolder rather than flipping server/package.json's type, which the rest
+# of the CommonJS server code relies on staying as-is.
+COPY --from=frontend-build /app/src/lib/books.js ./vendor/books.js
+RUN printf '{"type":"module"}\n' > ./vendor/package.json
 
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
