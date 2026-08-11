@@ -28,15 +28,17 @@
 }
 
 /* Any other trailing mark (sof-pasuq, paseq …) — same "own element, not one
-   more glyph inside the word's box" fix as the maqaf divider above, but
-   quieter: this isn't a divider joining two words, just verse punctuation
-   that shouldn't drag the word's own letters off-center from its gloss. */
+   more glyph inside the word's box" fix as the maqaf divider above, so it
+   stops dragging the word's own letters off-center from its gloss. Same
+   size/colour it always rendered at inline (full paleo size, dimmed via
+   colour only) — this is purely a positioning fix, not a visibility change;
+   the mark itself must stay exactly as visible as before. */
 .trailing-mark-standalone {
   display: inline-flex;
-  vertical-align: middle;
+  vertical-align: top;
   align-self: center;
-  font-size: 0.5em;
-  opacity: 0.75;
+  font-size: var(--paleo-size);
+  line-height: 1;
   color: var(--text4);
   user-select: none;
   pointer-events: none;
