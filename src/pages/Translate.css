@@ -379,25 +379,22 @@
 .tr-paleo-viewer {
   background: var(--bg2); border: 1px solid var(--border);
   border-radius: 10px; padding: 14px 18px; margin-bottom: 18px;
+  /* Same word-block scale Parallel uses (its .pl-root block, Parallel.css) —
+     this panel renders the shared components/WordBlock.jsx component now
+     (see PaleoBlock's removal in Translate.jsx), so matching its size
+     variables is what makes the two pages actually LOOK the same rather
+     than just share a component. Global defaults (styles/tokens.css) are
+     tuned for a full-page reader and would render oversized in this
+     side-panel-width context. */
+  --paleo-size: 30px; --sub-size: 11px;
+  --word-margin: 0 8px 16px 8px; --word-gap: 4px; --sub-maxw: 200px;
 }
-/* Reads as connected prose (word, then its gloss in parens right after —
-   "LaAsap(for)" — same shape as the Hebrew Reader's glossed word-cell view)
-   rather than a grid of bordered chip cards, while keeping the paleo glyphs
-   as a light decorative row above each word since this panel's whole point
-   is showing the paleo source text. */
-.tr-paleo-tokens { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px 3px; direction: rtl; }
-.tr-word-block {
-  display: inline-flex; flex-direction: column; align-items: center; gap: 2px;
-  direction: ltr;
-}
-.tr-word-glyph-row { display: flex; flex-direction: row; direction: rtl; gap: 1px; }
-.tr-glyph-part { line-height: 1; letter-spacing: -1px; }
-.tr-word-text-row {
-  font-size: 13px; color: var(--text1, var(--text)); font-weight: 600;
-  white-space: nowrap; line-height: 1.4;
-}
-.tr-word-gloss { font-size: 11px; font-weight: 400; color: var(--text3); margin-left: 1px; }
-.tr-word-strongs { font-size: 9px; color: var(--text4); font-family: monospace; }
+/* .word-block, .paleo, .w, .strongs-badge etc. below come from the shared
+   components/WordBlock.css (imported globally in main.jsx) — this page adds
+   no bespoke word-chip styling of its own anymore, so it can never visually
+   drift from Parallel/the Hebrew Viewer the way the old prose-style
+   PaleoBlock did. */
+.tr-paleo-tokens { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 3px; direction: rtl; }
 
 /* Translation section (rich-text) */
 .tr-translation-section { margin-bottom: 18px; position: relative; }

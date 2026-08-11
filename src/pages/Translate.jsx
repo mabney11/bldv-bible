@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
 import { useToast } from '../components/Toast.jsx';
+import WordBlock from '../components/WordBlock.jsx';
 import {
   apiTransProgress, apiTransChapter, apiTransVerse,
   apiTransSaveVerse, apiTransLink, apiTransUnlink, apiTransUpdateLink,
@@ -45,16 +46,6 @@ function tokenTrans(t) {
     if (!tr) return null;
     return c.css === 'root' ? tr : `[${tr}]`;
   }).filter(Boolean).join(' · ');
-}
-
-// Full transliterated word — every component's own translit, concatenated in
-// order (prefix + root + suffix), same additive-only/no-eliding rule as the
-// rest of the app: this must never be shorter than "prefix + root + suffix"
-// letters just because a component lacks a translation. Used for the PALEO
-// SOURCE panel so it reads as an actual word ("LaAsap"), not just glyphs.
-function tokenWordText(t) {
-  if (!t.components?.length) return t.word_raw || '';
-  return t.components.map(c => c.translit || '').join('') || t.word_raw || '';
 }
 
 function dedupeLinks(links) {
@@ -282,8 +273,19 @@ export default function Translate() {
         const verseNum = +verse;
         tokens = (data.tokens || []).map(t => {
           const p = parsedByKey[`${verseNum}:${t.token_ordinal}`];
-          if (p?.components?.length) return { ...t, components: p.components, strongs: p.strongs || t.strongs };
-          return t;
+          // sourceTokens/coreStrongs ride along too now (not just
+          // components/strongs) — WordBlock (the shared component now
+          // rendering the Paleo Source panel, same as Parallel/Hebrew
+          // Viewer) needs them to badge each half of a maqaf compound
+          // correctly; without them it silently degrades to one badge for
+          // the whole word instead of one per half.
+          if (p?.components?.length) {
+            return {
+              ...t, verse: verseNum, components: p.components, strongs: p.strongs || t.strongs,
+              sourceTokens: p.sourceTokens, coreStrongs: p.coreStrongs,
+            };
+          }
+          return { ...t, verse: verseNum };
         });
         setSrcTokens(null);
       } else {
@@ -898,7 +900,16 @@ export default function Translate() {
                     <div className="tr-section-label">{isBHS ? 'Paleo Source' : `${langMeta.label || lang} Source`}</div>
                     <div className="tr-paleo-tokens" dir={langMeta.dir}>
                       {isBHS
-                        ? tokens.map(t => <PaleoBlock key={t.token_ordinal} token={t} />)
+                        // Same component Parallel and the Hebrew Viewer render
+                        // with (components/WordBlock.jsx) — not a page-local
+                        // reimplementation — so this panel is guaranteed to
+                        // look and behave identically to both: boxed glyphs,
+                        // translit+gloss underneath, Strong's/surf badges, and
+                        // the maqaf-compound split handling (al-ha'aretz-style
+                        // two-part construct chains) for free.
+                        ? tokens.map(t => (
+                            <WordBlock key={t.token_ordinal} wordObj={t} showSub showCopyBtn showStrongs />
+                          ))
                         : tokens.map(t => (
                             <div key={t.token_ordinal} className="tr-src-block" dir={langMeta.dir}>
                               <span className="tr-src-word">{t.word_raw || '·'}</span>
@@ -1351,28 +1362,6 @@ function ChvVerseBlock({ vd, layout }) {
         </div>
       )}
     </div>
-  );
-}
-
-// ─── Paleo word-block for the source panel ──────────────────────────────────
-function PaleoBlock({ token }) {
-  const comps = token.components?.length ? token.components : [{ paleo: token.word_raw || '', css: 'root', translation: '' }];
-  const word = tokenWordText(token);
-  const gloss = tokenTrans(token);
-  return (
-    <span className="tr-word-block">
-      <span className="tr-word-glyph-row">
-        {comps.map((c, i) => (
-          <span key={i} className={`tr-glyph-part ${c.css}`} style={{ color: partColor(c.css) }}
-                dangerouslySetInnerHTML={{ __html: paleoToSVG(c.paleo, '22px') }} />
-        ))}
-      </span>
-      <span className="tr-word-text-row">
-        {word}
-        {gloss && <span className="tr-word-gloss">({gloss})</span>}
-      </span>
-      {token.strongs && <span className="tr-word-strongs">{token.strongs}</span>}
-    </span>
   );
 }
 
