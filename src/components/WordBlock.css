@@ -9,17 +9,6 @@
   gap: var(--word-gap);
 }
 
-/* A maqaf-joined pair of separate WordBlocks (e.g. וַיְהִי־ and the word after
-   it) should read as visually connected, the way a real fused compound chip
-   does — override just the facing side's margin down to a couple px instead
-   of the normal full word-gap, leaving just enough room for the standalone
-   divider (below) to sit snugly between the two, matching the fused chip's
-   own tight `gap: 2px` between its half-blocks. Logical properties so this
-   holds under both RTL (Hebrew reading order) and LTR (Latin transliteration
-   mode). */
-.word-block.maqaf-lead { margin-inline-end: 2px; }
-.word-block.maqaf-trail { margin-inline-start: 2px; }
-
 /* The trailing maqaf itself: a real sibling element between the two
    word-blocks (see WordBlock.jsx), not a glyph inside either one's own
    column. Matches the fused compound chip's internal .maqaf-divider look

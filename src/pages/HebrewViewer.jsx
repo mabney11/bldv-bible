@@ -13,7 +13,7 @@ import TopBar from '../components/TopBar.jsx';
 import BookChapterVerseSelects from '../components/BookChapterVerseSelects.jsx';
 import DisplayPanel from '../components/DisplayPanel.jsx';
 import SideNav from '../components/SideNav.jsx';
-import WordBlock, { hasTrailingMaqaf } from '../components/WordBlock.jsx';
+import WordBlock from '../components/WordBlock.jsx';
 import TranslitGuide from '../components/TranslitGuide.jsx';
 import { useToast } from '../components/Toast.jsx';
 import '../components/SearchUI.css';
@@ -593,27 +593,16 @@ function VerseGroup({ verse, words, isActive, vplOn, activeSearchQ, onEnterVerse
         title="Go to this verse"
         onClick={() => onEnterVerse(verse)}
       >{verse}</button>
-      {words.map((w, i) => {
-        // A maqaf-terminated word is typographically joined to the NEXT word —
-        // two separate WordBlocks that should read as one connected pair, the
-        // way a real fused compound chip does, instead of sitting the normal
-        // full word-gap apart.
-        const cls = [
-          hasTrailingMaqaf(w) ? 'maqaf-lead' : '',
-          i > 0 && hasTrailingMaqaf(words[i - 1]) ? 'maqaf-trail' : '',
-        ].filter(Boolean).join(' ');
-        return (
-          <WordBlock
-            key={i}
-            wordObj={w}
-            showSub
-            showCopyBtn
-            showStrongs
-            highlightSearch={activeSearchQ}
-            className={cls}
-          />
-        );
-      })}
+      {words.map((w, i) => (
+        <WordBlock
+          key={i}
+          wordObj={w}
+          showSub
+          showCopyBtn
+          showStrongs
+          highlightSearch={activeSearchQ}
+        />
+      ))}
     </div>
   );
 }
