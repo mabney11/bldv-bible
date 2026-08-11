@@ -1,5 +1,50 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Production deployment: AWS Lightsail, NOT Fly.io (added 2026-08-11)
+
+**fly.toml and the Fly-Volume assumptions in entrypoint.sh's comments are stale.** The
+project was migrated off Fly.io to an AWS Lightsail instance — this was hammered out in a
+separate "Fly.io web app deployment" chat and never carried over into this file, which
+caused a real time-waste (2026-08-11: spent a round-trip handing fieldy `fly deploy`
+commands for an app that isn't on Fly anymore). Don't trust fly.toml/Fly-Volume framing
+in code comments at face value — verify against what's below, and if they visibly
+diverge further, fix the comments too.
+
+**Actual deploy flow, confirmed 2026-08-11 by watching a real `~/deploy.sh` run:**
+- Lightsail Ubuntu box, reached via `ssh paleo-lightsail` (an SSH config alias — see
+  `~/.ssh/config` on fieldy's machine; resolves to `ubuntu@<lightsail-ip>`). Holds a
+  `~/paleo-studio` checkout of `https://github.com/mabney11/bldv-bible`, branch `main`.
+- Deploying is `~/deploy.sh` on that box (not a repo file — lives in fieldy's home dir
+  there, not mirrored here). It: `git pull`, `docker build` (this repo's `Dockerfile`,
+  legacy builder, not yet on buildx), then a blue/green swap between two containers
+  named `paleo-a`/`paleo-b` on ports 3000/3001 behind Caddy — builds the new one on the
+  free port, health-checks it, cuts Caddy over, retires the old one. No Fly-specific
+  tooling anywhere in this path.
+- Getting a change live = commit + `git push origin main` from wherever fieldy's GitHub
+  credentials already are (his own dev machine, not necessarily wherever an agent's
+  sandbox is), then `~/deploy.sh` on the Lightsail box.
+- **Not yet confirmed**: how `corpus.db`/`translation.db`/etc. actually persist across
+  Lightsail deploys — fly.toml's `[[mounts]]` Fly-Volume section and entrypoint.sh's
+  `DATA_DIR`-symlink comments describe the OLD Fly mechanism. Something equivalent must
+  exist on Lightsail (the deploy log shows the app coming up healthy with real data), but
+  what it actually is on THIS host — a mounted EBS-backed disk, bind-mounted host
+  directory passed to `docker run`, or something else — hasn't been checked yet. Don't
+  assume the Fly-Volume story still applies; confirm before relying on it.
+
+**Concretely found & fixed this session from this gap:** `Dockerfile`'s runtime stage
+never copied `src/lib/books.js` into the image, so `entrypoint.sh`'s post-boot
+`build-headings.mjs` run (regenerates `headings.json` — Psalm/Habakkuk superscriptions,
+acrostic stanza letters like Psalm 119's Alap/Bayath headers) died on
+`locate('books.js')` failing, silently (entrypoint.sh treats it as a non-fatal warning),
+leaving `/headings.json` 404ing in prod for who knows how long with zero visible error.
+Separately, `Dockerfile`'s frontend-build stage doesn't even copy `server/` before
+running `npm run build`, so build-headings.mjs can't run there either (confirmed via a
+real deploy log: `Error: Cannot find module '/app/server/build-headings.mjs'`) — swallowed
+by the `|| true` in package.json's `build` script, so `npm run build` "succeeds" anyway.
+The real, load-bearing regeneration is entrypoint.sh's at container boot (after the DB is
+available); the frontend-build-stage attempt was already dead code before this fix and
+still is — worth deciding at some point whether to rip it out or make it work for real.
+
 ## Execution environment preference (added 2026-08-01)
 
 Fieldy runs commands directly on his own machine. When the agent's sandboxed shell is

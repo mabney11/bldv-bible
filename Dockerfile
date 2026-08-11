@@ -44,6 +44,19 @@ COPY server/ ./
 # Fresh frontend build wins over anything checked into server/public/.
 COPY --from=frontend-build /app/server/public ./public
 
+# entrypoint.sh re-runs server/build-headings.mjs at container start (once
+# corpus.db is symlinked in from the volume) to regenerate headings.json —
+# acrostic stanza letters (Psalm 119, etc.) and Psalm/Habakkuk superscriptions.
+# That script needs src/lib/books.js for translit()/LETTER_NAMES, which is
+# frontend source and otherwise never present in this runtime stage. Without
+# it, build-headings.mjs's locate('books.js') fails, the script dies before
+# writing ANY file (not even an empty placeholder), and /headings.json 404s
+# for the life of the container — entrypoint.sh treats that as a non-fatal
+# warning, so the app boots normally and the missing headings go unnoticed
+# until someone reads a Psalm. Dropped in flat (not preserving src/lib/) since
+# build-headings.mjs's locate() just needs the file findable by name.
+COPY --from=frontend-build /app/src/lib/books.js ./books.js
+
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
