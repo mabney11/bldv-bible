@@ -24,3 +24,4 @@ server/nav-index.cache.json
 .DS_Store
 .vscode/
 .idea/
+vite.config.js.timestamp-*.mjs
