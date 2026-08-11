@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { getAdminStatus } from '../lib/localOverlay.js';
 import { useToast } from '../components/Toast.jsx';
 import {
@@ -186,9 +186,10 @@ function LangColumn({ langs, activeLang, verseStatus, onSelect }) {
 
 export default function GlossStudio() {
   const toast = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isAdmin, setIsAdmin] = useState(null);
-  const [lang, setLang] = useState('heb');
-  const [mode, setMode] = useState('browse');         // 'browse' | 'missing'
+  const [lang, setLang] = useState(() => searchParams.get('lang') || 'heb');
+  const [mode, setMode] = useState(() => (searchParams.get('mode') === 'missing' ? 'missing' : 'browse'));
 
   // Which edition's OWN tokens to audit. 'BHS' = this book's natural edition
   // (Masoretic for the 39 canonical books, HEB for everything else — same as
@@ -196,7 +197,14 @@ export default function GlossStudio() {
   // it covers, INCLUDING the canonical ones — a canonical book's HEB tokens
   // can be genuinely different words than its BHS tokens, so it needs its
   // own, separately-audited coverage rather than being hidden behind BHS.
-  const [source, setSource] = useState('BHS');
+  // Restored from ?src=HEB on mount (only meaningful when lang=heb) — the
+  // [lang] effect below must NOT clobber this back to 'BHS' on the very
+  // first render, see skipFirstLangEffect.
+  const [source, setSource] = useState(() => {
+    const urlLang = searchParams.get('lang') || 'heb';
+    if (urlLang === 'heb') return searchParams.get('src') === 'HEB' ? 'HEB' : 'BHS';
+    return LANG_SOURCE[urlLang] || 'BHS';
+  });
 
   // For non-Hebrew languages there's only one edition, so `source` just
   // tracks whichever corpus.db source backs the selected language pill
@@ -207,7 +215,15 @@ export default function GlossStudio() {
   // the same canon_id-based book_id scheme (installScopedVerses) — so e.g.
   // Genesis 1:1 stays Genesis 1:1 across Hebrew/Greek/Ge'ez/Latin/Syriac/
   // Coptic, same as the BHS<->HEB toggle already did for Hebrew alone.
-  useEffect(() => { setSource(lang === 'heb' ? 'BHS' : LANG_SOURCE[lang]); }, [lang]);
+  // Skipped on the FIRST run: `source`'s own lazy initializer above already
+  // resolved the correct value (including a URL-restored 'HEB') before this
+  // effect ever runs — without the skip, this would immediately stomp a
+  // restored ?src=HEB back down to 'BHS' on every page refresh.
+  const skipFirstLangEffect = useRef(true);
+  useEffect(() => {
+    if (skipFirstLangEffect.current) { skipFirstLangEffect.current = false; return; }
+    setSource(lang === 'heb' ? 'BHS' : LANG_SOURCE[lang]);
+  }, [lang]);
 
   useEffect(() => { getAdminStatus().then(s => setIsAdmin(!!s.isAdmin)); }, []);
 
@@ -216,11 +232,69 @@ export default function GlossStudio() {
   // HEB-only: NT, Jubilees, Jasher, Book of Melchizedek, etc).
   const [tree, setTree] = useState(null);             // { books: [...] }
   const [treeBusy, setTreeBusy] = useState(false);
-  const [activeBook, setActiveBook] = useState(null);  // book_id
-  const [openChapter, setOpenChapter] = useState(null);
-  const [activeVerseKey, setActiveVerseKey] = useState(null); // "book:chapter:verse"
+  // book/chapter/verse restored from the URL (?book=&chapter=&verse=) so a
+  // refresh — or a shared link — lands back on the exact verse being edited
+  // instead of the empty "pick a book" state. Number.isInteger-safe (verse 0
+  // is a real, meaningful value everywhere else in this app — see the
+  // verse-0 falsy-check fixes elsewhere; `!= null && !== ''` here, never a
+  // bare truthy check).
+  const [activeBook, setActiveBook] = useState(() => {           // book_id
+    const b = searchParams.get('book');
+    return b != null && b !== '' ? +b : null;
+  });
+  const [openChapter, setOpenChapter] = useState(() => {
+    const c = searchParams.get('chapter');
+    return c != null && c !== '' ? +c : null;
+  });
+  const [activeVerseKey, setActiveVerseKey] = useState(() => {   // "book:chapter:verse"
+    const b = searchParams.get('book'), c = searchParams.get('chapter'), v = searchParams.get('verse');
+    return (b != null && b !== '' && c != null && c !== '' && v != null && v !== '')
+      ? `${+b}:${+c}:${+v}` : null;
+  });
   const [verseDetail, setVerseDetail] = useState(null);
   const [verseBusy, setVerseBusy] = useState(false);
+
+  // Restore the verse's actual content on mount if the URL already named one
+  // (refresh / shared link). Every OTHER path into verseDetail is a user
+  // click on a verse row, which calls selectVerse() directly and fetches
+  // immediately — a URL-restored activeVerseKey never passes through that,
+  // so without this the verse list would highlight correctly but the editor
+  // pane would stay stuck on "Pick a book, open a chapter, click a verse."
+  // Mount-only: later verse changes go through selectVerse, later source
+  // changes go through the effect below.
+  useEffect(() => {
+    if (!activeVerseKey) return;
+    const [book_id, chapter, verse] = activeVerseKey.split(':').map(Number);
+    setVerseBusy(true);
+    apiGlossVerse(book_id, chapter, verse, source)
+      .then(d => setVerseDetail(d))
+      .catch(e => toast(e.message, 'err'))
+      .finally(() => setVerseBusy(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Keep the URL in sync with what's actually being browsed/edited — the
+  // whole point being asked for: a refresh should never drop you back to
+  // "pick a book" when you were mid-verse. Book/chapter/verse are always
+  // written together from activeVerseKey when one's open (its embedded
+  // coordinates are the real source of truth once a verse is picked); before
+  // that, activeBook/openChapter alone still capture "which book/chapter I
+  // was browsing." {replace:true} so every click doesn't pile up browser
+  // history entries — same convention Parallel.jsx's own URL sync uses.
+  useEffect(() => {
+    const p = {};
+    if (mode === 'missing') p.mode = 'missing';
+    if (activeVerseKey) {
+      const [b, c, v] = activeVerseKey.split(':');
+      p.book = b; p.chapter = c; p.verse = v;
+    } else {
+      if (activeBook != null) p.book = String(activeBook);
+      if (openChapter != null) p.chapter = String(openChapter);
+    }
+    if (lang !== 'heb') p.lang = lang;
+    if (lang === 'heb' && source === 'HEB') p.src = 'HEB';
+    setSearchParams(p, { replace: true });
+  }, [mode, activeBook, openChapter, activeVerseKey, lang, source, setSearchParams]);
 
   // Cross-language aggregate (source='ALL', the default) — deliberately does
   // NOT depend on `lang`/`source`, so it doesn't refetch or recalculate when
