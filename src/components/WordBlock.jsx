@@ -66,6 +66,13 @@ export function computeWordParts(wordObj) {
     transliterations: [],
     rootTrans: [],
     modTrans: [],
+    // A trailing maqaf (joins this word to a SEPARATE next WordBlock, not baked
+    // into this one) is pulled out of compDescs entirely and reported here
+    // instead. It renders as its own absolutely-positioned divider straddling
+    // the gap between this word-block and the next one — not as one more glyph
+    // inside this word's own flex column, which read as "attached to" this
+    // word rather than "between" the two.
+    trailingMaqaf: null,
   };
   let prefixIdx = 0, suffixIdx = 0, rootSeen = false;
 
@@ -86,13 +93,17 @@ export function computeWordParts(wordObj) {
     // NOT part of the copyable/searchable paleo (purePaleo), and non-clickable in
     // glyphHtml below. Still emitted on the glyph + translit lines so they're visible.
     if (comp.isMark) {
-      out.compDescs.push({ css: comp.css || 'punct-mark', paleo: comp.paleo, altAttr: null, ordinal: null, isMark: true, isMaqaf: !!comp.isMaqaf });
-      // The maqaf glyph itself already renders on the paleo line above (dimmed,
-      // via compDescs). The server sets translit:'-' on it purely as an admin/
-      // Gloss Studio placeholder — echoing that onto the Latin transliteration
-      // line here would tack a literal "-" onto the end of the previous word's
-      // reading (e.g. "WaYaHayah-"), which is a typographic mark leaking into
-      // English text, not something a reader should see twice.
+      if (comp.isMaqaf) {
+        out.trailingMaqaf = comp.paleo;
+        return;
+      }
+      out.compDescs.push({ css: comp.css || 'punct-mark', paleo: comp.paleo, altAttr: null, ordinal: null, isMark: true, isMaqaf: false });
+      // The maqaf glyph itself renders separately (trailingMaqaf, above). The
+      // server sets translit:'-' on marks purely as an admin/Gloss Studio
+      // placeholder — echoing that onto the Latin transliteration line here
+      // would tack a literal "-" onto the end of the previous word's reading
+      // (e.g. "WaYaHayah-"), which is a typographic mark leaking into English
+      // text, not something a reader should see twice.
       return;
     }
     out.purePaleo += comp.paleo;
@@ -187,16 +198,7 @@ export default function WordBlock({
       // and no data-paleo, so the copy/hover handler skips it and it never reaches the
       // clipboard or the search-text. Rendered dimmed, the same way as the maqaf dash.
       if (c.isMark) {
-        // A trailing maqaf joins THIS word to a separate next WordBlock (not
-        // baked into this one) — give it real breathing room and top-align it
-        // with the letters, so it reads as a divider sitting BETWEEN the two
-        // words (matching the fused maqaf-chip's divider look) instead of a
-        // dash glued onto the end of this word's own glyphs. Other marks
-        // (sof-pasuq, paseq) keep the tighter, purely-decorative spacing.
-        const markStyle = c.isMaqaf
-          ? 'user-select:none;pointer-events:none;align-self:flex-start;color:var(--text4);padding:0 0.3em;'
-          : 'user-select:none;pointer-events:none;align-self:center;color:var(--text4);padding:0 0.12em;';
-        return `<span class="${c.css || 'punct-mark'} paleo-mark" aria-hidden="true" style="${markStyle}">${escapeHtml(c.paleo)}</span>`;
+        return `<span class="${c.css || 'punct-mark'} paleo-mark" aria-hidden="true" style="user-select:none;pointer-events:none;align-self:center;color:var(--text4);padding:0 0.12em;">${escapeHtml(c.paleo)}</span>`;
       }
       // Punctuation / non-Paleo marks carry no glyph — show the mark itself as
       // text (smaller, dimmed) so sof-pasuq, maqaf and the : stops stay visible.
@@ -381,6 +383,7 @@ export default function WordBlock({
   }
 
   return (
+    <>
     <div
       className={`word-block ${className} ${hasSearchMatch ? 'search-match' : ''}`}
       data-ordinal={wordObj.token_ordinal}
@@ -480,5 +483,20 @@ export default function WordBlock({
         </div>
       )}
     </div>
+    {/* Trailing maqaf: a genuine sibling flex item sitting in the gap between
+        THIS word-block and the next one — not one more glyph inside this
+        word's own column (which read as attached to it, not between the
+        two). Same visual treatment as the fused compound chip's own internal
+        divider (WordBlock.css .maqaf-divider-standalone). Rendering it here,
+        as a second top-level element from this same component, means every
+        page that lists WordBlocks in a row (HebrewViewer, Reader,
+        MultiViewer, Parallel via its own render, Root) gets it for free —
+        nothing to wire up per page, and the mark can never silently vanish
+        on one of them the way splitting this into a parent-level concern
+        would risk. */}
+    {parts.trailingMaqaf && (
+      <span className="maqaf-divider-standalone" aria-hidden="true">{parts.trailingMaqaf}</span>
+    )}
+    </>
   );
 }
