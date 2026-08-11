@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { getAdminStatus } from '../lib/localOverlay.js';
 import { useToast } from '../components/Toast.jsx';
 import {
-  apiGlossMissing, apiGlossCoverage, apiGlossRootVerses, apiGlossVerse,
+  apiGlossMissing, apiGlossCoverage, apiGlossRootVerses, apiGlossVerse, apiGlossVerseStatus,
 } from '../lib/api.js';
 import MultiWordBlock from '../components/MultiWordBlock.jsx';
 import './GlossStudio.css';
@@ -45,6 +45,12 @@ const LANGS = [
   { id: 'coptic', label: 'Coptic',   enabled: true, source: 'COP' },
 ];
 const LANG_SOURCE = Object.fromEntries(LANGS.map(l => [l.id, l.source]));
+// Script direction is a property of the LANGUAGE, not a Gloss-Studio-wide
+// default — Hebrew and Syriac are RTL (Aramaic-family abjads), Greek/Ge'ez/
+// Latin/Coptic are LTR. The verse-word grid's dir attribute follows this
+// instead of a hardcoded `direction: rtl` that only ever made sense for
+// Hebrew (see the 2026-08-10 report: Ge'ez was rendering right-to-left).
+const LANG_DIR = { heb: 'rtl', greek: 'ltr', geez: 'ltr', latin: 'ltr', syriac: 'rtl', coptic: 'ltr' };
 
 const MISSING_PAGE = 50;
 const VERSES_PAGE = 10;
@@ -111,7 +117,7 @@ function GlossWordBlock({ word, missingSet }) {
 // GlossWordBlock, rather than reimplementing script detection/transliteration
 // here. No root/lemma coverage tracking for these languages by design — see
 // GLOSS_STUDIO_MULTILANG_PLAN.md.
-function VerseDetailCard({ v, missingSet, genericSource }) {
+function VerseDetailCard({ v, missingSet, genericSource, dir = 'rtl' }) {
   return (
     <div className="gs-verse-card">
       <Link
@@ -120,7 +126,7 @@ function VerseDetailCard({ v, missingSet, genericSource }) {
         target="_blank" rel="noreferrer"
         title="Open this verse in Parallel"
       >{v.book_name} {v.chapter}:{v.verse}</Link>
-      <div className="gs-verse-words">
+      <div className="gs-verse-words" dir={dir}>
         {v.words.map((w, wi) => (
           genericSource
             ? <MultiWordBlock key={wi} token={w} source={genericSource} />
@@ -241,6 +247,21 @@ export default function GlossStudio() {
       .finally(() => setVerseBusy(false));
   };
 
+  // Per-language glossed/total for whichever verse is open, shown as a badge
+  // next to each language in the vertical pane — so you can see at a glance
+  // which languages still need this verse without clicking through all six.
+  // Keyed on activeVerseKey alone (not `source`), so it doesn't refetch on
+  // every language switch — the coordinates are what matter here, and it's
+  // the same book/chapter/verse across languages (canon_id-based book_id).
+  const [verseStatus, setVerseStatus] = useState(null);
+  useEffect(() => {
+    if (!activeVerseKey) { setVerseStatus(null); return; }
+    const [book_id, chapter, verse] = activeVerseKey.split(':').map(Number);
+    apiGlossVerseStatus(book_id, chapter, verse)
+      .then(d => setVerseStatus(d))
+      .catch(() => setVerseStatus(null));
+  }, [activeVerseKey]);
+
   // ── Missing Words: flat occurrence-ranked list ──────────────────────────
   const [missing, setMissing] = useState({ rows: [], total: 0 });
   const [missingOffset, setMissingOffset] = useState(0);
@@ -316,19 +337,32 @@ export default function GlossStudio() {
             <button className={`gs-src-btn ${source === 'HEB' ? 'active' : ''}`} onClick={() => setSource('HEB')}>HEB (extra)</button>
           </div>
         )}
-
         <span className="gs-spacer" />
-        <div className="gs-langs">
-          {LANGS.map(l => (
-            <button
-              key={l.id}
-              className={`gs-lang-btn ${lang === l.id ? 'active' : ''}`}
-              onClick={() => setLang(l.id)}
-            >{l.label}</button>
-          ))}
-        </div>
       </header>
 
+      <div className="gs-main">
+        <aside className="gs-lang-pane">
+          <div className="gs-pane-header">Languages</div>
+          {LANGS.map(l => {
+            const st = verseStatus?.langs?.find(x => x.id === l.id);
+            const statusClass = !st || !st.available ? 'na' : st.pct === 100 ? 'done' : st.pct > 0 ? 'partial' : 'none';
+            return (
+              <button
+                key={l.id}
+                className={`gs-lang-item ${lang === l.id ? 'active' : ''}`}
+                onClick={() => setLang(l.id)}
+                title={st && st.available ? `${st.glossed}/${st.total} glossed for this verse` : 'Pick a verse to see status'}
+              >
+                <span className="gs-lang-name">{l.label}</span>
+                {verseStatus && (
+                  <span className={`gs-lang-status ${statusClass}`}>{st && st.available ? `${st.glossed}/${st.total}` : '—'}</span>
+                )}
+              </button>
+            );
+          })}
+        </aside>
+
+        <div className="gs-main-content">
       {mode === 'browse' && (
         <div className="gs-browse-body">
           <aside className="gs-book-pane">
@@ -395,7 +429,7 @@ export default function GlossStudio() {
             ) : verseBusy ? (
               <div className="gs-loading">Loading verse…</div>
             ) : verseDetail ? (
-              <VerseDetailCard v={verseDetail} missingSet={activeVerseMissing} genericSource={genericSource} />
+              <VerseDetailCard v={verseDetail} missingSet={activeVerseMissing} genericSource={genericSource} dir={LANG_DIR[lang]} />
             ) : null}
           </main>
         </div>
@@ -421,7 +455,7 @@ export default function GlossStudio() {
               <div className="gs-missing-list">
                 {missing.rows.map(r => (
                   <div key={r.root_paleo} className="gs-missing-row">
-                    <span className="gs-missing-paleo">{r.root_paleo}</span>
+                    <span className={lang === 'heb' ? 'gs-missing-paleo' : 'gs-missing-generic'} dir={LANG_DIR[lang]}>{r.root_paleo}</span>
                     <span className="gs-missing-occ">{r.occ.toLocaleString()} occurrences</span>
                     <button className="gs-view-btn" onClick={() => pickRoot(r.root_paleo)}>
                       {selectedRoot === r.root_paleo ? 'Viewing verses ▾' : 'View verses'}
@@ -440,11 +474,11 @@ export default function GlossStudio() {
           {selectedRoot && (
             <div className="gs-verses-panel">
               <div className="gs-verses-header">
-                <span>Verses using <span className="gs-missing-paleo">{selectedRoot}</span></span>
+                <span>Verses using <span className={lang === 'heb' ? 'gs-missing-paleo' : 'gs-missing-generic'} dir={LANG_DIR[lang]}>{selectedRoot}</span></span>
                 <button className="gs-close-btn" onClick={closeRoot}>✕ Close</button>
               </div>
               {versesBusy && <div className="gs-loading">Loading verses…</div>}
-              {!versesBusy && rootVerses.verses.map((v, vi) => <VerseDetailCard key={vi} v={v} missingSet={null} genericSource={genericSource} />)}
+              {!versesBusy && rootVerses.verses.map((v, vi) => <VerseDetailCard key={vi} v={v} missingSet={null} genericSource={genericSource} dir={LANG_DIR[lang]} />)}
               {!versesBusy && rootVerses.verses.length === 0 && <div className="gs-empty">No verses found.</div>}
               <div className="gs-pager">
                 <button disabled={versesOffset === 0} onClick={() => loadRootVerses(selectedRoot, Math.max(0, versesOffset - VERSES_PAGE))}>← Prev</button>
@@ -455,6 +489,8 @@ export default function GlossStudio() {
           )}
         </div>
       )}
+        </div>
+      </div>
     </div>
   );
 }

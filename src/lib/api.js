@@ -299,6 +299,10 @@ export const apiGlossVerse = (book, chapter, verse, source = 'BHS') =>
   jsonFetch(`/api/admin/gloss-studio/verse?book=${book}&chapter=${chapter}&verse=${verse}&source=${source}`);
 export const apiGlossRootVerses = (root, offset = 0, limit = 20, source = 'BHS') =>
   jsonFetch(`/api/admin/gloss-studio/root-verses?root=${encodeURIComponent(root)}&offset=${offset}&limit=${limit}&source=${source}`);
+// Per-language glossed/total for ONE verse, across every language at once —
+// powers the vertical language pane's per-verse status badges.
+export const apiGlossVerseStatus = (book, chapter, verse) =>
+  jsonFetch(`/api/admin/gloss-studio/verse-status?book=${book}&chapter=${chapter}&verse=${verse}`);
 
 // Generic — used by Translate to save a verse.
 export async function apiPost(path, body) {

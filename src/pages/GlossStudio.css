@@ -45,23 +45,41 @@
 }
 .gs-txt-btn:hover { color: var(--text); border-color: var(--border3); }
 
-.gs-langs { display: flex; gap: 6px; flex-wrap: wrap; }
-.gs-lang-btn {
-  background: var(--bg3); border: 1px solid var(--border2); color: var(--text3);
-  padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;
-  display: flex; align-items: center; gap: 6px;
-}
-.gs-lang-btn.active { background: var(--blue2); color: #fff; border-color: var(--blue2); }
-.gs-lang-btn.disabled { cursor: not-allowed; opacity: 0.5; }
-.gs-soon {
-  font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em;
-  background: var(--bg4); color: var(--text4); border-radius: 3px; padding: 1px 5px;
-}
 .gs-busy-dot {
   display: inline-block; width: 6px; height: 6px; border-radius: 50%;
   background: var(--gold); margin-left: 6px; animation: gs-pulse 1s infinite;
 }
 @keyframes gs-pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+/* ── LANGUAGE PANE (vertical, persists across Browse/Missing Words) ─────── */
+.gs-main { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+.gs-main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+
+.gs-lang-pane {
+  width: 150px; flex-shrink: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  background: var(--bg2);
+  display: flex; flex-direction: column;
+}
+.gs-lang-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%;
+  padding: 9px 14px;
+  background: transparent; border: none; border-bottom: 1px solid var(--border);
+  color: var(--text3); cursor: pointer; text-align: left; font-size: 12px; transition: background 0.12s;
+}
+.gs-lang-item:hover { background: var(--bg3); }
+.gs-lang-item.active { background: var(--blue2); color: #fff; }
+.gs-lang-name { flex: 1; }
+.gs-lang-status {
+  font-size: 10px; font-family: monospace; padding: 1px 6px; border-radius: 4px;
+  background: var(--bg4); color: var(--text3); flex-shrink: 0;
+}
+.gs-lang-status.done    { background: color-mix(in srgb, var(--green, #3aa96a) 25%, transparent); color: var(--green, #3aa96a); }
+.gs-lang-status.partial { background: color-mix(in srgb, var(--amber, var(--gold)) 25%, transparent); color: var(--amber, var(--gold)); }
+.gs-lang-status.none    { background: color-mix(in srgb, var(--red, #c0392b) 20%, transparent); color: var(--red, #c0392b); }
+.gs-lang-status.na      { opacity: 0.4; }
 
 /* ── BROWSE: three-pane body (mirrors Translation Studio's tr-shell) ────── */
 .gs-browse-body { flex: 1; display: flex; overflow: hidden; min-height: 0; }
@@ -162,6 +180,11 @@
 .gs-missing-list { display: flex; flex-direction: column; }
 .gs-missing-row { display: flex; align-items: center; gap: 14px; padding: 10px 4px; border-bottom: 1px solid var(--border); }
 .gs-missing-paleo { font-family: var(--paleo-font); font-size: 20px; direction: rtl; color: var(--text); min-width: 90px; }
+/* Non-Hebrew languages: the same slot holds a plain surface-form string in
+   that language's own script, not a paleo root — no paleo font, and
+   direction follows the SCRIPT (set via the dir attribute in JSX), not a
+   hardcoded rtl. See the 2026-08-10 "languages should inform direction" note. */
+.gs-missing-generic { font-size: 16px; color: var(--text); min-width: 90px; }
 .gs-missing-occ { font-size: 12px; color: var(--text3); flex: 1; }
 .gs-view-btn {
   background: transparent; border: 1px solid var(--border2); color: var(--blue2);
@@ -192,7 +215,10 @@
   margin-bottom: 10px; text-decoration: none; width: fit-content;
 }
 .gs-verse-ref:hover { text-decoration: underline; }
-.gs-verse-words { display: flex; flex-wrap: wrap; gap: 10px; direction: rtl; }
+/* No hardcoded direction here — Hebrew/Syriac are RTL, Greek/Ge'ez/Latin/
+   Coptic are LTR. The dir attribute is set per-language in JSX (LANG_DIR)
+   so the word ORDER follows the actual script, not a Hebrew-only default. */
+.gs-verse-words { display: flex; flex-wrap: wrap; gap: 10px; }
 .gs-word {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
@@ -211,8 +237,12 @@
 
 @media (max-width: 900px) {
   .gs-book-pane, .gs-chapter-pane { width: 160px; }
+  .gs-lang-pane { width: 120px; }
 }
 @media (max-width: 640px) {
+  .gs-main { flex-direction: column; }
+  .gs-lang-pane { width: 100%; max-height: 12vh; flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid var(--border); }
+  .gs-lang-item { width: auto; flex: 1 1 auto; border-bottom: none; border-right: 1px solid var(--border); }
   .gs-browse-body { flex-direction: column; }
   .gs-book-pane, .gs-chapter-pane { width: 100%; max-height: 30vh; border-right: none; border-bottom: 1px solid var(--border); }
   .gs-missing-row { flex-wrap: wrap; }

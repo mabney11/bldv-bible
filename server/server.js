@@ -5735,6 +5735,44 @@ app.get('/api/admin/gloss-studio/coverage', (req, res) => {
     }
 });
 
+// GET /api/admin/gloss-studio/verse-status?book=&chapter=&verse=
+// Per-language glossed/total for ONE verse, across EVERY language Gloss
+// Studio supports at once — powers the vertical language pane's per-verse
+// badges ("which languages are lacking this verse") without the user
+// clicking through each pill one at a time. Cheap: every language's
+// coverage tree is already computed and cached (getGlossCoverage() /
+// computeGenericCoverage()); this just looks up one book/chapter/verse in
+// each, it doesn't recompute anything.
+const GS_LANG_LIST = [
+    { id: 'heb',    label: 'Hebrew',  kind: 'heb' },
+    { id: 'greek',  label: 'Greek',   kind: 'LXX' },
+    { id: 'geez',   label: "Ge'ez",   kind: 'GEZ' },
+    { id: 'latin',  label: 'Latin',   kind: 'LAT' },
+    { id: 'syriac', label: 'Syriac',  kind: 'SYR' },
+    { id: 'coptic', label: 'Coptic',  kind: 'COP' },
+];
+function _verseStatusFor(kind, book_id, chapter, verse) {
+    // Hebrew's cross-language summary uses BHS (this book's natural
+    // edition) — same "what a reader sees" view the Hebrew pill defaults to.
+    const books = kind === 'heb' ? getGlossCoverage().trees.BHS.books : computeGenericCoverage(kind).books;
+    const vs = books.get(book_id)?.chapters.get(chapter)?.verses.get(verse);
+    if (!vs) return { total: 0, glossed: 0, pct: 0, available: false };
+    return { total: vs.total, glossed: vs.glossed, pct: _glossPct(vs.glossed, vs.total), available: true };
+}
+app.get('/api/admin/gloss-studio/verse-status', (req, res) => {
+    try {
+        const book_id = parseInt(req.query.book, 10);
+        const chapter = parseInt(req.query.chapter, 10);
+        const verse   = parseInt(req.query.verse, 10);
+        if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book, chapter, verse required' });
+        const langs = GS_LANG_LIST.map(l => ({ id: l.id, label: l.label, ..._verseStatusFor(l.kind, book_id, chapter, verse) }));
+        res.json({ book_id, chapter, verse, langs });
+    } catch (err) {
+        console.error('/api/admin/gloss-studio/verse-status failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // GET /api/admin/gloss-studio/missing?offset=0&limit=50
 // Roots with NO real gloss anywhere (lexicon.json, hebrew-extra-lexicon.json,
 // or GRAMMAR_MAP), sorted by occurrence count (desc) — the highest-value
