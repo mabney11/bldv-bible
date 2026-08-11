@@ -410,8 +410,27 @@ export default function WordBlock({
       </div>
       {showSub && (
         <div className="w">
+          {/* Click to copy the PLAIN transliteration (no color/weight from
+              the part-of-speech spans) — same clipboard mechanism and
+              "Copied!" tooltip as the paleo glyphs' own copy button above,
+              just for the word people actually want to paste into an
+              English translation. Selecting this styled text by hand and
+              pasting it into a rich-text field carries its computed
+              formatting along (bold, per-part colors), landing as visibly
+              mismatched text at the destination — this bypasses that
+              entirely by writing a plain string straight to the clipboard. */}
           <span
-            className="w-translit"
+            className="w-translit clickable-comp"
+            title="Click to copy transliteration"
+            onClick={ev => {
+              const text = parts.transliterations.map(t => t.text).join('');
+              if (!text) return;
+              try {
+                navigator.clipboard.writeText(text);
+                ev.currentTarget.classList.add('copied');
+                setTimeout(() => ev.currentTarget.classList.remove('copied'), 1500);
+              } catch (e) { /* ignore */ }
+            }}
             dangerouslySetInnerHTML={{ __html: translitHtml }}
           />
           {translationHtml && (

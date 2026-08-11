@@ -983,6 +983,22 @@ export default function Translate() {
                           document.execCommand(e.shiftKey ? 'outdent' : 'indent');
                         }
                       }}
+                      onPaste={e => {
+                        // Always paste as plain text, matching whatever's
+                        // already typed here — regardless of source. Without
+                        // this, anything copied with its OWN styling (a
+                        // transliteration's bold/colored spans from the Paleo
+                        // Source panel above, a snippet from Word, a colored
+                        // span from another site) drops in carrying that
+                        // formatting, landing visibly mismatched next to
+                        // plain surrounding text. The browser's default paste
+                        // reads the clipboard's rich-HTML flavor; reading its
+                        // text/plain flavor and inserting THAT instead is
+                        // what "match destination formatting" actually means.
+                        e.preventDefault();
+                        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+                        document.execCommand('insertText', false, text);
+                      }}
                     />
                     <div className="tr-save-row">
                       <button className="tr-save-btn" onClick={() => saveVerse()} disabled={saveState === 'saving'}>

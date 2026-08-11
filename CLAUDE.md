@@ -23,13 +23,28 @@ diverge further, fix the comments too.
 - Getting a change live = commit + `git push origin main` from wherever fieldy's GitHub
   credentials already are (his own dev machine, not necessarily wherever an agent's
   sandbox is), then `~/deploy.sh` on the Lightsail box.
-- **Not yet confirmed**: how `corpus.db`/`translation.db`/etc. actually persist across
-  Lightsail deploys — fly.toml's `[[mounts]]` Fly-Volume section and entrypoint.sh's
-  `DATA_DIR`-symlink comments describe the OLD Fly mechanism. Something equivalent must
-  exist on Lightsail (the deploy log shows the app coming up healthy with real data), but
-  what it actually is on THIS host — a mounted EBS-backed disk, bind-mounted host
-  directory passed to `docker run`, or something else — hasn't been checked yet. Don't
-  assume the Fly-Volume story still applies; confirm before relying on it.
+- **DB persistence, confirmed 2026-08-11 from `deploy-blue-green.sh` (checked into this
+  repo — this IS what `~/deploy.sh` on the box runs):** `docker run ... -v
+  /mnt/paleo-data:/data ...` — a plain bind mount from a host directory into every
+  container, `paleo-a` and `paleo-b` alike. `entrypoint.sh` symlinks `corpus.db`,
+  `translation.db`, `bible.db`, `concordance.db`, `surface-index.db`, `morph-grc.db` out of
+  `$DATA_DIR` (defaults to `/data`) into `/app/server/` at boot. Because it's a bind mount
+  (not a copy baked into the image), anything written to `translation.db` — every
+  Translation Studio save (`PUT /api/translate/verse`, `POST`/`PUT /api/translate/link`,
+  all via `translationDb.stmts`, i.e. real SQLite writes) — lands on
+  `/mnt/paleo-data/translation.db` on the HOST, independent of which container is
+  currently running. A redeploy rebuilds the image and swaps containers, but the new
+  container mounts the same host directory and sees the same file. **So: yes, Translation
+  Studio edits persist across deploys**, no manual step needed — don't confuse this with
+  the DIFFERENT admin-panel case below.
+- **Admin-panel writes are NOT the same as Translation Studio writes — do not conflate
+  them.** `/admin` actions like promoting/demoting canon books or saving baked glyphs write
+  to plain files INSIDE the container's own filesystem (`book-order.json` and similar) —
+  NOT on the `/data` volume, NOT in git. Per WORKBOOK.md section 4: those changes vanish on
+  the next `~/deploy.sh` (fresh image, fresh container) unless manually pulled out with
+  `docker cp` and committed to git first. Translation Studio's own verse text and links are
+  safe (see above, they're real DB writes on the mounted volume) — this caveat is
+  specifically about the OTHER admin-panel file-based edits.
 
 **Concretely found & fixed this session from this gap:** `Dockerfile`'s runtime stage
 never copied `src/lib/books.js` into the image, so `entrypoint.sh`'s post-boot
