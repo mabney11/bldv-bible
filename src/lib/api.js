@@ -293,7 +293,13 @@ export const apiAdminDeleteStrongsOverride = (key) => apiDelete(`/api/admin/stro
 // tokens for a canonical book can be different words than BHS's).
 export const apiGlossMissing = (offset = 0, limit = 50, source = 'BHS') =>
   jsonFetch(`/api/admin/gloss-studio/missing?offset=${offset}&limit=${limit}&source=${source}`);
-export const apiGlossCoverage = (source = 'BHS') =>
+// source='ALL' (the default) is the cross-language aggregate that drives the
+// Books/Chapters panes — glossed/total summed across every language, capped
+// at 99% unless Translation Studio also has the verse marked 'done'. This
+// does NOT change when the active language changes; only a specific
+// language id (e.g. 'LXX'/'GEZ'/'BHS'/'HEB') asks for that one language's
+// own tree instead.
+export const apiGlossCoverage = (source = 'ALL') =>
   jsonFetch(`/api/admin/gloss-studio/coverage?source=${source}`);
 export const apiGlossVerse = (book, chapter, verse, source = 'BHS') =>
   jsonFetch(`/api/admin/gloss-studio/verse?book=${book}&chapter=${chapter}&verse=${verse}&source=${source}`);

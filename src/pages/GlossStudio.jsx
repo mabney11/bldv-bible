@@ -126,6 +126,23 @@ function VerseDetailCard({ v, missingSet, genericSource, dir = 'rtl' }) {
         target="_blank" rel="noreferrer"
         title="Open this verse in Parallel"
       >{v.book_name} {v.chapter}:{v.verse}</Link>
+      {/* English FIRST, words below — so cycling through languages in the
+          LangColumn keeps the English reference pinned in the same spot
+          instead of it jumping around as the word grid's height changes. */}
+      {v.english?.text && (
+        <div className="gs-verse-eng">
+          <div className="gs-verse-eng-label">
+            English
+            <span className={`gs-ts-status gs-ts-status-${v.english.status || 'none'}`}>
+              {v.english.status === 'done' ? 'Done in Translation Studio'
+                : v.english.status === 'in_progress' ? 'In progress in Translation Studio'
+                : 'Not started in Translation Studio'}
+            </span>
+          </div>
+          {v.english.text}
+          {v.english.is_baseline && <span className="gs-badge">baseline</span>}
+        </div>
+      )}
       <div className="gs-verse-words" dir={dir}>
         {v.words.map((w, wi) => (
           genericSource
@@ -133,13 +150,6 @@ function VerseDetailCard({ v, missingSet, genericSource, dir = 'rtl' }) {
             : <GlossWordBlock key={wi} word={w} missingSet={missingSet} />
         ))}
       </div>
-      {v.english?.text && (
-        <div className="gs-verse-eng">
-          <div className="gs-verse-eng-label">English</div>
-          {v.english.text}
-          {v.english.is_baseline && <span className="gs-badge">baseline</span>}
-        </div>
-      )}
     </div>
   );
 }
@@ -212,13 +222,19 @@ export default function GlossStudio() {
   const [verseDetail, setVerseDetail] = useState(null);
   const [verseBusy, setVerseBusy] = useState(false);
 
+  // Cross-language aggregate (source='ALL', the default) — deliberately does
+  // NOT depend on `lang`/`source`, so it doesn't refetch or recalculate when
+  // the active language changes (fieldy: "I dont expect the higher layers
+  // to be recalculated per language change"). Only Re-sync or mount reload
+  // it; the per-language colored highlights (LangColumn) are where a single
+  // language's own status belongs instead.
   const loadTree = useCallback(() => {
     setTreeBusy(true);
-    apiGlossCoverage(source)
+    apiGlossCoverage()
       .then(d => setTree(d))
       .catch(e => toast(e.message, 'err'))
       .finally(() => setTreeBusy(false));
-  }, [toast, source]);
+  }, [toast]);
 
   useEffect(() => { if (isAdmin) loadTree(); }, [isAdmin, loadTree]);
 
@@ -231,10 +247,10 @@ export default function GlossStudio() {
   // SAME verse under the new source instead of blanking the view — that's
   // the whole point of the toggle: cross-referencing BHS vs HEB wording for
   // one verse without re-navigating from scratch. Book/chapter selection is
-  // left alone too; the book/chapter tree already re-fetches on its own via
-  // loadTree's `source` dependency above. If the open book doesn't exist
-  // under the new source, activeBookData/activeVerseMissing just come back
-  // empty once the new tree lands — no special-casing needed here.
+  // left alone too — the book/chapter tree is the cross-language aggregate
+  // now (see loadTree above) and doesn't change with the active language at
+  // all. If the newly-active language has no data for this book/verse,
+  // verseDetail.words just comes back empty — no special-casing needed here.
   const skipFirstSourceEffect = useRef(true);
   useEffect(() => {
     if (skipFirstSourceEffect.current) { skipFirstSourceEffect.current = false; return; }
@@ -254,18 +270,14 @@ export default function GlossStudio() {
     [tree, activeBook]
   );
 
-  // Derived from the tree + whichever verse is open, rather than snapshotted
-  // onto verseDetail at click time — so it recomputes automatically whenever
-  // either changes (including a source switch's tree reload below), instead
-  // of needing its own re-fetch/reset plumbing.
-  const activeVerseMissing = useMemo(() => {
-    if (!tree || !activeVerseKey) return new Set();
-    const [book_id, chapter, verse] = activeVerseKey.split(':').map(Number);
-    const bk = tree.books.find(b => b.book_id === book_id);
-    const ch = bk?.chapters.find(c => c.chapter === chapter);
-    const vs = ch?.verses.find(v => v.verse === verse);
-    return new Set(vs?.missing || []);
-  }, [tree, activeVerseKey]);
+  // From the per-verse fetch itself (verseDetail.missing, added server-side
+  // from that LANGUAGE's own coverage tree) rather than `tree` — `tree` is
+  // now the cross-language aggregate and no longer carries a per-language
+  // missing list. Only meaningful for Hebrew's GlossWordBlock rendering.
+  const activeVerseMissing = useMemo(
+    () => new Set(verseDetail?.missing || []),
+    [verseDetail]
+  );
 
   const selectVerse = (book_id, chapter, verse) => {
     const key = `${book_id}:${chapter}:${verse}`;
@@ -417,6 +429,7 @@ export default function GlossStudio() {
                               <span className="gs-verse-num">{v.verse}</span>
                               <span className={`gs-status-dot ${statusClass}`} />
                               <span className="gs-verse-preview">{v.glossed}/{v.total} ({v.pct}%)</span>
+                              {v.done && <span className="gs-verse-done" title="Marked done in Translation Studio">✓</span>}
                             </button>
                           );
                         })}

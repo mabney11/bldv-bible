@@ -241,15 +241,28 @@
 }
 .gs-word-sn { font-size: 9px; color: var(--blue2); text-decoration: none; border: 1px solid var(--border2); border-radius: 4px; padding: 1px 5px; }
 .gs-word-sn:hover { text-decoration: underline; }
+/* English sits ABOVE the word grid (not below) so it stays in the same spot
+   while cycling through languages in the LangColumn — only the word grid
+   below it changes height/content. */
 .gs-verse-eng {
-  margin-top: 16px; padding: 14px 18px;
+  margin-bottom: 16px; padding: 14px 18px;
   background: var(--bg3); border-left: 3px solid var(--gold); border-radius: 6px;
   font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.6;
 }
 .gs-verse-eng-label {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
   font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--gold); margin-bottom: 6px;
 }
+.gs-ts-status {
+  font-size: 10px; font-weight: 700; text-transform: none; letter-spacing: 0;
+  padding: 2px 8px; border-radius: 10px;
+}
+.gs-ts-status-done        { background: color-mix(in srgb, var(--green, #3aa96a) 25%, transparent); color: var(--green, #3aa96a); }
+.gs-ts-status-in_progress { background: color-mix(in srgb, var(--amber, var(--gold)) 22%, transparent); color: var(--amber, var(--gold)); }
+.gs-ts-status-none        { background: var(--bg4); color: var(--text3); }
+
+.gs-verse-done { font-size: 11px; color: var(--green, #3aa96a); font-weight: 700; margin-left: 2px; }
 
 @media (max-width: 900px) {
   .gs-book-pane, .gs-chapter-pane { width: 160px; }

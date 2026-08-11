@@ -5619,6 +5619,18 @@ const _glossPct = (glossed, total) => total ? Math.round((glossed / total) * 100
 // (book_id/canon_id NOT NULL); doc-only literary works aren't in this tree.
 const GENERIC_GS_SOURCES = { LXX: 'greek', GEZ: 'ethiopic', LAT: 'latin', SYR: 'syriac', COP: 'coptic' };
 
+// Every language Gloss Studio knows about, Hebrew included — the one list
+// both the per-verse status endpoint and the cross-language aggregate below
+// iterate, so adding a language means updating this in one place.
+const GS_LANG_LIST = [
+    { id: 'heb',    label: 'Hebrew',  kind: 'heb' },
+    { id: 'greek',  label: 'Greek',   kind: 'LXX' },
+    { id: 'geez',   label: "Ge'ez",   kind: 'GEZ' },
+    { id: 'latin',  label: 'Latin',   kind: 'LAT' },
+    { id: 'syriac', label: 'Syriac',  kind: 'SYR' },
+    { id: 'coptic', label: 'Coptic',  kind: 'COP' },
+];
+
 const _genericCoverageCache = {};   // source id -> { stamp, tree: { books, words } }
 
 function _genericStampKey(srcId) {
@@ -5697,6 +5709,81 @@ function genericVerseWords(srcId, book_id, chapter, verse) {
     return tokens;
 }
 
+// ── GLOSS STUDIO — CROSS-LANGUAGE AGGREGATE (drives the Books/Chapters
+// panes) ─────────────────────────────────────────────────────────────────
+// fieldy, 2026-08-11: "I dont expect the higher layers to be recalculated
+// per language change... the verse percentages should be the overall
+// glossage of it across all languages." So the Books/Chapters/verse-row
+// percentages are ONE number — lexical glossed/total summed across every
+// language's own coverage tree for that verse — computed independently of
+// whichever language is active in the LangColumn (that's what the
+// per-language colored highlights are for instead). A verse only reaches
+// 100% if EVERY language's tokens are glossed AND Translation Studio has
+// the verse marked 'done' — "99% for all lexical glosses for all languages
+// but no done flag" — otherwise a fully-glossed-but-unreviewed verse would
+// look indistinguishable from a genuinely finished one.
+let _aggregateCoverageCache = null;   // { stamp, tree: { books } }
+
+function _aggregateStampKey() {
+    const parts = GS_LANG_LIST.map(l => l.kind === 'heb' ? _glossStudioStampKey() : _genericStampKey(l.kind));
+    try { parts.push(fs.statSync(path.join(__dirname, 'translation.db')).mtimeMs); } catch { parts.push(0); }
+    return parts.join('|');
+}
+
+function computeAggregateCoverage() {
+    const stamp = _aggregateStampKey();
+    if (_aggregateCoverageCache && _aggregateCoverageCache.stamp === stamp) return _aggregateCoverageCache.tree;
+
+    // book_id -> chapter -> verse -> { total, glossed } — raw lexical sums
+    // across every language, before the 'done' adjustment.
+    const acc = new Map();
+    const bump = (book_id, chapter, verse, total, glossed) => {
+        let bk = acc.get(book_id); if (!bk) { bk = new Map(); acc.set(book_id, bk); }
+        let ch = bk.get(chapter); if (!ch) { ch = new Map(); bk.set(chapter, ch); }
+        let vs = ch.get(verse); if (!vs) { vs = { total: 0, glossed: 0 }; ch.set(verse, vs); }
+        vs.total += total; vs.glossed += glossed;
+    };
+    for (const l of GS_LANG_LIST) {
+        const books = l.kind === 'heb' ? getGlossCoverage().trees.BHS.books : computeGenericCoverage(l.kind).books;
+        for (const [book_id, bk] of books) {
+            for (const [chapter, ch] of bk.chapters) {
+                for (const [verse, vs] of ch.verses) bump(book_id, chapter, verse, vs.total, vs.glossed);
+            }
+        }
+    }
+
+    // Translation Studio's 'done' status, per verse — the extra requirement
+    // for 100% on top of full lexical coverage.
+    const doneSet = new Set();
+    try {
+        for (const r of translationDb.stmts.allProgress.all()) {
+            if (r.status === 'done') doneSet.add(`${r.book_id}:${r.chapter}:${r.verse}`);
+        }
+    } catch { /* translation.db may be empty */ }
+
+    const books = new Map();
+    for (const [book_id, bk] of acc) {
+        const bkOut = { total: 0, glossed: 0, chapters: new Map() };
+        books.set(book_id, bkOut);
+        for (const [chapter, ch] of bk) {
+            const chOut = { total: 0, glossed: 0, verses: new Map() };
+            bkOut.chapters.set(chapter, chOut);
+            for (const [verse, vs] of ch) {
+                const done = doneSet.has(`${book_id}:${chapter}:${verse}`);
+                let pct = _glossPct(vs.glossed, vs.total);
+                if (pct === 100 && !done) pct = 99;   // fully glossed lexically, not yet signed off
+                chOut.verses.set(verse, { total: vs.total, glossed: vs.glossed, pct, missing: [], done });
+                chOut.total += vs.total; chOut.glossed += vs.glossed;
+            }
+            bkOut.total += chOut.total; bkOut.glossed += chOut.glossed;
+        }
+    }
+
+    const tree = { books };
+    _aggregateCoverageCache = { stamp, tree };
+    return tree;
+}
+
 // GET /api/admin/gloss-studio/coverage
 // The WHOLE books -> chapters -> verses tree in one response (not a
 // drill-down API) — computed once server-side, cached until lexicon.json or
@@ -5714,7 +5801,12 @@ function _renderCoverageBooks(books) {
         chapters: [...bk.chapters.entries()].map(([chapter, c]) => ({
             chapter, total: c.total, glossed: c.glossed, pct: _glossPct(c.glossed, c.total),
             verses: [...c.verses.entries()].map(([verse, v]) => ({
-                verse, total: v.total, glossed: v.glossed, pct: _glossPct(v.glossed, v.total),
+                verse, total: v.total, glossed: v.glossed,
+                // Aggregate tree pre-computes pct itself (folds in the
+                // Translation Studio 'done' cap) — use it as-is when
+                // present rather than recomputing and losing that cap.
+                pct: v.pct !== undefined ? v.pct : _glossPct(v.glossed, v.total),
+                done: !!v.done,
                 missing: [...v.missing],
             })).sort((a, b) => a.verse - b.verse),
         })).sort((a, b) => a.chapter - b.chapter),
@@ -5722,7 +5814,11 @@ function _renderCoverageBooks(books) {
 }
 app.get('/api/admin/gloss-studio/coverage', (req, res) => {
     try {
-        const source = req.query.source || 'BHS';
+        const source = req.query.source || 'ALL';
+        if (source === 'ALL') {
+            const { books } = computeAggregateCoverage();
+            return res.json({ books: _renderCoverageBooks(books) });
+        }
         if (GENERIC_GS_SOURCES[source]) {
             const { books } = computeGenericCoverage(source);
             return res.json({ books: _renderCoverageBooks(books) });
@@ -5743,14 +5839,6 @@ app.get('/api/admin/gloss-studio/coverage', (req, res) => {
 // coverage tree is already computed and cached (getGlossCoverage() /
 // computeGenericCoverage()); this just looks up one book/chapter/verse in
 // each, it doesn't recompute anything.
-const GS_LANG_LIST = [
-    { id: 'heb',    label: 'Hebrew',  kind: 'heb' },
-    { id: 'greek',  label: 'Greek',   kind: 'LXX' },
-    { id: 'geez',   label: "Ge'ez",   kind: 'GEZ' },
-    { id: 'latin',  label: 'Latin',   kind: 'LAT' },
-    { id: 'syriac', label: 'Syriac',  kind: 'SYR' },
-    { id: 'coptic', label: 'Coptic',  kind: 'COP' },
-];
 function _verseStatusFor(kind, book_id, chapter, verse) {
     // Hebrew's cross-language summary uses BHS (this book's natural
     // edition) — same "what a reader sees" view the Hebrew pill defaults to.
@@ -7989,12 +8077,21 @@ app.get('/api/admin/gloss-studio/verse', (req, res) => {
         if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book, chapter, verse required' });
         const source = req.query.source || '';
 
-        let words;
+        // Which words in THIS verse, in THIS language, still lack a curated
+        // gloss — read straight off that language's already-cached coverage
+        // tree (cheap, no recompute) rather than deriving it from `words`
+        // client-side. Only meaningful for Hebrew's paleo-chip rendering
+        // (GlossWordBlock's missingSet prop); MultiWordBlock shows "not
+        // glossed" directly per-token and doesn't need this.
+        let words, missing = [];
         if (GENERIC_GS_SOURCES[source]) {
             words = genericVerseWords(source, book_id, chapter, verse) || [];
         } else {
             const { lexicon, homographs, surfaceOverrides } = loadLexicons();
             words = bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOverrides, source === 'HEB' ? 'HEB' : undefined);
+            const hebTree = getGlossCoverage().trees[source === 'HEB' ? 'HEB' : 'BHS'];
+            missing = hebTree.books.get(book_id)?.chapters.get(chapter)?.verses.get(verse)?.missing || [];
+            missing = [...missing];
         }
 
         let saved = null;
@@ -8008,8 +8105,14 @@ app.get('/api/admin/gloss-studio/verse', (req, res) => {
 
         res.json({
             book_id, book_name: BOOK_NAMES[book_id] || `Book ${book_id}`,
-            chapter, verse, words,
-            english: { text: englishText, is_baseline: !isUserOverride && !!englishText },
+            chapter, verse, words, missing,
+            english: {
+                text: englishText, is_baseline: !isUserOverride && !!englishText,
+                // Translation Studio's own status for this verse — 'done' is
+                // the extra requirement (beyond full lexical glossing, every
+                // language) for the aggregate coverage tree's 100%.
+                status: saved?.status || 'none',
+            },
         });
     } catch (err) {
         console.error('/api/admin/gloss-studio/verse failed:', err);
