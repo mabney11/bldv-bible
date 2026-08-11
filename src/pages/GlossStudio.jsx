@@ -340,29 +340,6 @@ export default function GlossStudio() {
         <span className="gs-spacer" />
       </header>
 
-      <div className="gs-main">
-        <aside className="gs-lang-pane">
-          <div className="gs-pane-header">Languages</div>
-          {LANGS.map(l => {
-            const st = verseStatus?.langs?.find(x => x.id === l.id);
-            const statusClass = !st || !st.available ? 'na' : st.pct === 100 ? 'done' : st.pct > 0 ? 'partial' : 'none';
-            return (
-              <button
-                key={l.id}
-                className={`gs-lang-item ${lang === l.id ? 'active' : ''}`}
-                onClick={() => setLang(l.id)}
-                title={st && st.available ? `${st.glossed}/${st.total} glossed for this verse` : 'Pick a verse to see status'}
-              >
-                <span className="gs-lang-name">{l.label}</span>
-                {verseStatus && (
-                  <span className={`gs-lang-status ${statusClass}`}>{st && st.available ? `${st.glossed}/${st.total}` : '—'}</span>
-                )}
-              </button>
-            );
-          })}
-        </aside>
-
-        <div className="gs-main-content">
       {mode === 'browse' && (
         <div className="gs-browse-body">
           <aside className="gs-book-pane">
@@ -421,6 +398,32 @@ export default function GlossStudio() {
           </aside>
 
           <main className="gs-editor-pane">
+            {activeVerseKey && (
+              // The language CHOICE, made after the verse is picked, not
+              // before — each button is colored by THIS verse's own
+              // glossed/total (verseStatus), so "which languages still need
+              // Genesis 1:1" is visible before you commit to editing one.
+              // Doubles as the seed of a cross-language completeness metric
+              // per verse (not just per-language) — today it's a display of
+              // the six individual numbers, not yet averaged into one score.
+              <div className="gs-verse-lang-row">
+                {LANGS.map(l => {
+                  const st = verseStatus?.langs?.find(x => x.id === l.id);
+                  const statusClass = !st || !st.available ? 'na' : st.pct === 100 ? 'done' : st.pct > 0 ? 'partial' : 'none';
+                  return (
+                    <button
+                      key={l.id}
+                      className={`gs-verse-lang-btn ${statusClass} ${lang === l.id ? 'active' : ''}`}
+                      onClick={() => setLang(l.id)}
+                      title={st && st.available ? `${st.glossed}/${st.total} glossed` : 'no data for this verse'}
+                    >
+                      <span className="gs-verse-lang-name">{l.label}</span>
+                      <span className="gs-verse-lang-pct">{st && st.available ? `${st.pct}%` : '—'}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
             {!activeVerseKey ? (
               <div className="gs-editor-empty">
                 <div className="gs-big-glyph">𐤀𐤁𐤂</div>
@@ -489,8 +492,6 @@ export default function GlossStudio() {
           )}
         </div>
       )}
-        </div>
-      </div>
     </div>
   );
 }
