@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { getAdminStatus } from '../lib/localOverlay.js';
 import { useToast } from '../components/Toast.jsx';
 import {
   apiGlossMissing, apiGlossCoverage, apiGlossRootVerses, apiGlossVerse,
 } from '../lib/api.js';
+import MultiWordBlock from '../components/MultiWordBlock.jsx';
 import './GlossStudio.css';
 
 // /gloss-studio — 100%-curated-by-you lexicon dashboard, laid out like
@@ -28,17 +29,22 @@ import './GlossStudio.css';
 //     lexicon.json entry, ranked by occurrence (the highest-value gaps
 //     first) — for when you want to work by frequency instead of by book.
 //
-// Hebrew only for now — Greek/Ge'ez/Latin/Syriac/Coptic need their own
-// tokenized word-index built first (server.js SOURCES[...].has_tokens is
-// false for all five today); those pills are stubbed "soon".
+// Greek/Ge'ez/Latin/Syriac/Coptic reuse the SAME generic tokenizer +
+// lexicon/<lang>-lexicon.json overlay the live reader already renders these
+// scripts with (server.js splitTextToTokens/_lookupGloss) — raw surface-form
+// tokens, "glossed" = has a curated entry for that exact surface, no Strong's
+// numbers or root-based coverage tracking the way Hebrew's does. See
+// GLOSS_STUDIO_MULTILANG_PLAN.md for why that's deliberately NOT the full
+// Hebrew root/lemma pipeline.
 const LANGS = [
-  { id: 'heb', label: 'Hebrew', enabled: true },
-  { id: 'greek', label: 'Greek', enabled: false },
-  { id: 'geez', label: "Ge'ez", enabled: false },
-  { id: 'latin', label: 'Latin', enabled: false },
-  { id: 'syriac', label: 'Syriac', enabled: false },
-  { id: 'coptic', label: 'Coptic', enabled: false },
+  { id: 'heb',    label: 'Hebrew',   enabled: true, source: null },
+  { id: 'greek',  label: 'Greek',    enabled: true, source: 'LXX' },
+  { id: 'geez',   label: "Ge'ez",    enabled: true, source: 'GEZ' },
+  { id: 'latin',  label: 'Latin',    enabled: true, source: 'LAT' },
+  { id: 'syriac', label: 'Syriac',   enabled: true, source: 'SYR' },
+  { id: 'coptic', label: 'Coptic',   enabled: true, source: 'COP' },
 ];
+const LANG_SOURCE = Object.fromEntries(LANGS.map(l => [l.id, l.source]));
 
 const MISSING_PAGE = 50;
 const VERSES_PAGE = 10;
@@ -98,7 +104,14 @@ function GlossWordBlock({ word, missingSet }) {
 // where the tree already knows which roots in THIS verse are ungloosed;
 // Missing Words already filters to occurrences of one known-missing root,
 // so every card there is implicitly about that root.
-function VerseDetailCard({ v, missingSet }) {
+// `genericSource` set (e.g. 'LXX'/'GEZ'/'LAT'/'SYR'/'COP') means these words
+// are plain reader tokens (word/transliteration/gloss), not Hebrew paleo
+// component chips — render with the SAME MultiWordBlock the live reader uses
+// for these scripts (src/components/MultiWordBlock.jsx) instead of
+// GlossWordBlock, rather than reimplementing script detection/transliteration
+// here. No root/lemma coverage tracking for these languages by design — see
+// GLOSS_STUDIO_MULTILANG_PLAN.md.
+function VerseDetailCard({ v, missingSet, genericSource }) {
   return (
     <div className="gs-verse-card">
       <Link
@@ -109,7 +122,9 @@ function VerseDetailCard({ v, missingSet }) {
       >{v.book_name} {v.chapter}:{v.verse}</Link>
       <div className="gs-verse-words">
         {v.words.map((w, wi) => (
-          <GlossWordBlock key={wi} word={w} missingSet={missingSet} />
+          genericSource
+            ? <MultiWordBlock key={wi} token={w} source={genericSource} />
+            : <GlossWordBlock key={wi} word={w} missingSet={missingSet} />
         ))}
       </div>
       {v.english?.text && (
@@ -136,6 +151,17 @@ export default function GlossStudio() {
   // own, separately-audited coverage rather than being hidden behind BHS.
   const [source, setSource] = useState('BHS');
 
+  // For non-Hebrew languages there's only one edition, so `source` just
+  // tracks whichever corpus.db source backs the selected language pill
+  // ('LXX'/'GEZ'/'LAT'/'SYR'/'COP') — every apiGloss* call already takes
+  // `source` as a plain pass-through string, so no other plumbing below
+  // needs to know about `lang` at all. Switching pills keeps the same
+  // book/chapter/verse coordinates too, since every corpus.db source shares
+  // the same canon_id-based book_id scheme (installScopedVerses) — so e.g.
+  // Genesis 1:1 stays Genesis 1:1 across Hebrew/Greek/Ge'ez/Latin/Syriac/
+  // Coptic, same as the BHS<->HEB toggle already did for Hebrew alone.
+  useEffect(() => { setSource(lang === 'heb' ? 'BHS' : LANG_SOURCE[lang]); }, [lang]);
+
   useEffect(() => { getAdminStatus().then(s => setIsAdmin(!!s.isAdmin)); }, []);
 
   // ── Browse: the full tree, fetched once per source ──────────────────────
@@ -157,13 +183,33 @@ export default function GlossStudio() {
       .finally(() => setTreeBusy(false));
   }, [toast, source]);
 
-  useEffect(() => { if (isAdmin && lang === 'heb') loadTree(); }, [isAdmin, lang, loadTree]);
+  useEffect(() => { if (isAdmin) loadTree(); }, [isAdmin, loadTree]);
 
-  // Switching editions changes what each book/chapter/verse even IS — clear
-  // the drill-down state so a stale BHS verse card doesn't linger under HEB.
+  // Switching editions changes what a book/chapter/verse's Hebrew tokens
+  // literally ARE, but the book/chapter/verse COORDINATES stay the same
+  // across sources — surface-index.db's HEB rows are versification-aligned
+  // to BHS at build time (heb_offsets in build-surface-index.js), and
+  // /api/admin/gloss-studio/verse takes that alignment as given, doing a
+  // plain book/chapter/verse lookup regardless of source. So re-fetch the
+  // SAME verse under the new source instead of blanking the view — that's
+  // the whole point of the toggle: cross-referencing BHS vs HEB wording for
+  // one verse without re-navigating from scratch. Book/chapter selection is
+  // left alone too; the book/chapter tree already re-fetches on its own via
+  // loadTree's `source` dependency above. If the open book doesn't exist
+  // under the new source, activeBookData/activeVerseMissing just come back
+  // empty once the new tree lands — no special-casing needed here.
+  const skipFirstSourceEffect = useRef(true);
   useEffect(() => {
-    setActiveBook(null); setOpenChapter(null);
-    setActiveVerseKey(null); setVerseDetail(null);
+    if (skipFirstSourceEffect.current) { skipFirstSourceEffect.current = false; return; }
+    if (!activeVerseKey) return;
+    const [book_id, chapter, verse] = activeVerseKey.split(':').map(Number);
+    setVerseDetail(null);
+    setVerseBusy(true);
+    apiGlossVerse(book_id, chapter, verse, source)
+      .then(d => setVerseDetail(d))
+      .catch(e => toast(e.message, 'err'))
+      .finally(() => setVerseBusy(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [source]);
 
   const activeBookData = useMemo(
@@ -171,13 +217,26 @@ export default function GlossStudio() {
     [tree, activeBook]
   );
 
-  const selectVerse = (book_id, chapter, verse, missing) => {
+  // Derived from the tree + whichever verse is open, rather than snapshotted
+  // onto verseDetail at click time — so it recomputes automatically whenever
+  // either changes (including a source switch's tree reload below), instead
+  // of needing its own re-fetch/reset plumbing.
+  const activeVerseMissing = useMemo(() => {
+    if (!tree || !activeVerseKey) return new Set();
+    const [book_id, chapter, verse] = activeVerseKey.split(':').map(Number);
+    const bk = tree.books.find(b => b.book_id === book_id);
+    const ch = bk?.chapters.find(c => c.chapter === chapter);
+    const vs = ch?.verses.find(v => v.verse === verse);
+    return new Set(vs?.missing || []);
+  }, [tree, activeVerseKey]);
+
+  const selectVerse = (book_id, chapter, verse) => {
     const key = `${book_id}:${chapter}:${verse}`;
     setActiveVerseKey(key);
     setVerseDetail(null);
     setVerseBusy(true);
     apiGlossVerse(book_id, chapter, verse, source)
-      .then(d => setVerseDetail({ ...d, missingSet: new Set(missing || []) }))
+      .then(d => setVerseDetail(d))
       .catch(e => toast(e.message, 'err'))
       .finally(() => setVerseBusy(false));
   };
@@ -195,7 +254,7 @@ export default function GlossStudio() {
       .finally(() => setMissingBusy(false));
   }, [toast, source]);
 
-  useEffect(() => { if (isAdmin && lang === 'heb' && mode === 'missing') loadMissing(0); }, [isAdmin, lang, mode, loadMissing]);
+  useEffect(() => { if (isAdmin && mode === 'missing') loadMissing(0); }, [isAdmin, mode, loadMissing]);
 
   const [selectedRoot, setSelectedRoot] = useState(null);
   const [rootVerses, setRootVerses] = useState({ verses: [], total: 0 });
@@ -213,11 +272,16 @@ export default function GlossStudio() {
   const pickRoot = (root) => { setSelectedRoot(root); loadRootVerses(root, 0); };
   const closeRoot = () => { setSelectedRoot(null); setRootVerses({ verses: [], total: 0 }); };
 
+  // Non-null (the corpus.db source id) whenever the active language isn't
+  // Hebrew — tells VerseDetailCard to render words with MultiWordBlock
+  // (plain reader tokens) instead of GlossWordBlock (paleo component chips).
+  const genericSource = lang === 'heb' ? null : source;
+
   // Source switch invalidates the missing-words list + any open root drill-
   // down too — same reasoning as the tree effect above.
   useEffect(() => {
     closeRoot();
-    if (isAdmin && lang === 'heb' && mode === 'missing') loadMissing(0);
+    if (isAdmin && mode === 'missing') loadMissing(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [source]);
 
@@ -246,21 +310,21 @@ export default function GlossStudio() {
           ↻ Re-sync
         </button>
 
-        <div className="gs-source-toggle" title="Which edition's own tokens to audit">
-          <button className={`gs-src-btn ${source === 'BHS' ? 'active' : ''}`} onClick={() => setSource('BHS')}>BHS</button>
-          <button className={`gs-src-btn ${source === 'HEB' ? 'active' : ''}`} onClick={() => setSource('HEB')}>HEB (extra)</button>
-        </div>
+        {lang === 'heb' && (
+          <div className="gs-source-toggle" title="Which edition's own tokens to audit">
+            <button className={`gs-src-btn ${source === 'BHS' ? 'active' : ''}`} onClick={() => setSource('BHS')}>BHS</button>
+            <button className={`gs-src-btn ${source === 'HEB' ? 'active' : ''}`} onClick={() => setSource('HEB')}>HEB (extra)</button>
+          </div>
+        )}
 
         <span className="gs-spacer" />
         <div className="gs-langs">
           {LANGS.map(l => (
             <button
               key={l.id}
-              className={`gs-lang-btn ${lang === l.id ? 'active' : ''} ${!l.enabled ? 'disabled' : ''}`}
-              disabled={!l.enabled}
-              title={l.enabled ? '' : 'Needs a tokenized word index first — coming soon'}
-              onClick={() => l.enabled && setLang(l.id)}
-            >{l.label}{!l.enabled && <span className="gs-soon">soon</span>}</button>
+              className={`gs-lang-btn ${lang === l.id ? 'active' : ''}`}
+              onClick={() => setLang(l.id)}
+            >{l.label}</button>
           ))}
         </div>
       </header>
@@ -306,7 +370,7 @@ export default function GlossStudio() {
                             <button
                               key={v.verse}
                               className={`gs-verse-row ${activeVerseKey === key ? 'active' : ''}`}
-                              onClick={() => selectVerse(activeBook, ch.chapter, v.verse, v.missing)}
+                              onClick={() => selectVerse(activeBook, ch.chapter, v.verse)}
                             >
                               <span className="gs-verse-num">{v.verse}</span>
                               <span className={`gs-status-dot ${statusClass}`} />
@@ -331,7 +395,7 @@ export default function GlossStudio() {
             ) : verseBusy ? (
               <div className="gs-loading">Loading verse…</div>
             ) : verseDetail ? (
-              <VerseDetailCard v={verseDetail} missingSet={verseDetail.missingSet} />
+              <VerseDetailCard v={verseDetail} missingSet={activeVerseMissing} genericSource={genericSource} />
             ) : null}
           </main>
         </div>
@@ -380,7 +444,7 @@ export default function GlossStudio() {
                 <button className="gs-close-btn" onClick={closeRoot}>✕ Close</button>
               </div>
               {versesBusy && <div className="gs-loading">Loading verses…</div>}
-              {!versesBusy && rootVerses.verses.map((v, vi) => <VerseDetailCard key={vi} v={v} missingSet={null} />)}
+              {!versesBusy && rootVerses.verses.map((v, vi) => <VerseDetailCard key={vi} v={v} missingSet={null} genericSource={genericSource} />)}
               {!versesBusy && rootVerses.verses.length === 0 && <div className="gs-empty">No verses found.</div>}
               <div className="gs-pager">
                 <button disabled={versesOffset === 0} onClick={() => loadRootVerses(selectedRoot, Math.max(0, versesOffset - VERSES_PAGE))}>← Prev</button>

@@ -5604,6 +5604,99 @@ function getGlossCoverage() {
 
 const _glossPct = (glossed, total) => total ? Math.round((glossed / total) * 1000) / 10 : 0;
 
+// ── GLOSS STUDIO — NON-HEBREW LANGUAGES ─────────────────────────────────────
+// Deliberately NOT the Hebrew root/lemma pipeline (see
+// GLOSS_STUDIO_MULTILANG_PLAN.md for why that's a much larger, separate
+// undertaking). This reuses exactly what the live reader already does for
+// these sources — splitTextToTokens() + _lookupGloss(script, key), the same
+// generic tokenizer/gloss-overlay every /?source=SYR /?source=LXX etc. page
+// already renders with — and just aggregates it into the same books ->
+// chapters -> verses tree shape the Hebrew coverage endpoints use, so the
+// existing browse UI needs no restructuring. "Glossed" = has a
+// lexicon/<lang>-lexicon.json entry for this exact surface form. No Strong's
+// numbers, no root compounding — fieldy: "just raw tokens... don't worry
+// about the numbers, just enable the feature." Canonical books only
+// (book_id/canon_id NOT NULL); doc-only literary works aren't in this tree.
+const GENERIC_GS_SOURCES = { LXX: 'greek', GEZ: 'ethiopic', LAT: 'latin', SYR: 'syriac', COP: 'coptic' };
+
+const _genericCoverageCache = {};   // source id -> { stamp, tree: { books, words } }
+
+function _genericStampKey(srcId) {
+    let a = 0, b = 0;
+    try { a = fs.statSync(CORPUS_DB).mtimeMs; } catch { /* missing is fine, stamp 0 */ }
+    try { const f = _glossFileFor(GENERIC_GS_SOURCES[srcId]); if (f) b = fs.statSync(f).mtimeMs; } catch { /* same */ }
+    return `${a}|${b}`;
+}
+
+function computeGenericCoverage(srcId) {
+    const stamp = _genericStampKey(srcId);
+    const cached = _genericCoverageCache[srcId];
+    if (cached && cached.stamp === stamp) return cached.tree;
+
+    const src = SOURCES[srcId];
+    const script = GENERIC_GS_SOURCES[srcId];
+    const books = new Map();   // book_id -> { total, glossed, chapters: Map(chapter -> {...}) }
+    const words = new Map();   // gloss_key -> { occ, glossed, verses: [{book_id,chapter,verse}] }
+
+    if (src && src.available && src.handle) {
+        const rows = src.handle.prepare(
+            `SELECT book_id, chapter, verse, text FROM verses WHERE book_id IS NOT NULL ORDER BY book_id, chapter, verse`
+        ).all();
+        for (const r of rows) {
+            const rawTokens = splitTextToTokens(r.text, script);
+            // Match the reader's exact call shape (unfiltered tokens, so `ord`
+            // stays aligned to morph-grc.db's own per-verse word index) before
+            // dropping punctuation for counting purposes.
+            if (srcId === 'LXX' && rawTokens.length) _attachGrcToVerse(r.book_id, r.chapter, r.verse, rawTokens);
+            const tokens = rawTokens.filter(t => !t.is_punct);
+            if (!tokens.length) continue;
+
+            let bk = books.get(r.book_id);
+            if (!bk) { bk = { total: 0, glossed: 0, chapters: new Map() }; books.set(r.book_id, bk); }
+            let ch = bk.chapters.get(r.chapter);
+            if (!ch) { ch = { total: 0, glossed: 0, verses: new Map() }; bk.chapters.set(r.chapter, ch); }
+            const vs = { total: 0, glossed: 0, missing: [] };
+
+            for (const t of tokens) {
+                const key = t.gloss_key || t.word_norm || t.word;
+                const glossed = !!t.gloss;
+                bk.total++; ch.total++; vs.total++;
+                if (glossed) { bk.glossed++; ch.glossed++; vs.glossed++; }
+                else vs.missing.push(key);
+
+                let w = words.get(key);
+                if (!w) { w = { occ: 0, glossed: false, verses: [] }; words.set(key, w); }
+                w.occ++;
+                if (glossed) w.glossed = true;
+                w.verses.push({ book_id: r.book_id, chapter: r.chapter, verse: r.verse });
+            }
+            ch.verses.set(r.verse, vs);
+        }
+    }
+
+    const tree = { books, words };
+    _genericCoverageCache[srcId] = { stamp, tree };
+    return tree;
+}
+
+// Same {book_id, book_name, chapter, verse, words, english} shape the Hebrew
+// verse endpoint returns, but `words` are plain reader tokens (word,
+// transliteration, gloss, gloss_key, and lemma/strongs when the Greek morph
+// DB has a hit) rather than paleo component chips — the frontend picks the
+// right renderer per language.
+function genericVerseWords(srcId, book_id, chapter, verse) {
+    const src = SOURCES[srcId];
+    const script = GENERIC_GS_SOURCES[srcId];
+    if (!src || !src.available || !src.handle) return null;
+    const row = src.handle.prepare(
+        `SELECT text FROM verses WHERE book_id=? AND chapter=? AND verse=?`
+    ).get(book_id, chapter, verse);
+    if (!row) return null;
+    const tokens = splitTextToTokens(row.text, script);
+    if (srcId === 'LXX') _attachGrcToVerse(book_id, chapter, verse, tokens);
+    return tokens;
+}
+
 // GET /api/admin/gloss-studio/coverage
 // The WHOLE books -> chapters -> verses tree in one response (not a
 // drill-down API) — computed once server-side, cached until lexicon.json or
@@ -5614,22 +5707,28 @@ const _glossPct = (glossed, total) => total ? Math.round((glossed / total) * 100
 // Melchizedek, etc — same set Translation Studio's sidebar shows), each
 // counted from its own natural edition. Each verse also carries `missing`:
 // the actual root_paleo forms still needing an entry (not just a fraction).
+function _renderCoverageBooks(books) {
+    return [...books.entries()].map(([book_id, bk]) => ({
+        book_id, name: BOOK_NAMES[book_id] || `Book ${book_id}`,
+        total: bk.total, glossed: bk.glossed, pct: _glossPct(bk.glossed, bk.total),
+        chapters: [...bk.chapters.entries()].map(([chapter, c]) => ({
+            chapter, total: c.total, glossed: c.glossed, pct: _glossPct(c.glossed, c.total),
+            verses: [...c.verses.entries()].map(([verse, v]) => ({
+                verse, total: v.total, glossed: v.glossed, pct: _glossPct(v.glossed, v.total),
+                missing: [...v.missing],
+            })).sort((a, b) => a.verse - b.verse),
+        })).sort((a, b) => a.chapter - b.chapter),
+    })).sort((a, b) => a.book_id - b.book_id);
+}
 app.get('/api/admin/gloss-studio/coverage', (req, res) => {
     try {
-        const source = req.query.source === 'HEB' ? 'HEB' : 'BHS';
-        const { books } = getGlossCoverage().trees[source];
-        const out = [...books.entries()].map(([book_id, bk]) => ({
-            book_id, name: BOOK_NAMES[book_id] || `Book ${book_id}`,
-            total: bk.total, glossed: bk.glossed, pct: _glossPct(bk.glossed, bk.total),
-            chapters: [...bk.chapters.entries()].map(([chapter, c]) => ({
-                chapter, total: c.total, glossed: c.glossed, pct: _glossPct(c.glossed, c.total),
-                verses: [...c.verses.entries()].map(([verse, v]) => ({
-                    verse, total: v.total, glossed: v.glossed, pct: _glossPct(v.glossed, v.total),
-                    missing: [...v.missing],
-                })).sort((a, b) => a.verse - b.verse),
-            })).sort((a, b) => a.chapter - b.chapter),
-        })).sort((a, b) => a.book_id - b.book_id);
-        res.json({ books: out });
+        const source = req.query.source || 'BHS';
+        if (GENERIC_GS_SOURCES[source]) {
+            const { books } = computeGenericCoverage(source);
+            return res.json({ books: _renderCoverageBooks(books) });
+        }
+        const { books } = getGlossCoverage().trees[source === 'HEB' ? 'HEB' : 'BHS'];
+        res.json({ books: _renderCoverageBooks(books) });
     } catch (err) {
         console.error('/api/admin/gloss-studio/coverage failed:', err);
         res.status(500).json({ error: err.message });
@@ -5642,8 +5741,10 @@ app.get('/api/admin/gloss-studio/coverage', (req, res) => {
 // gaps first. Add the entry, reload, it's gone from this list.
 app.get('/api/admin/gloss-studio/missing', (req, res) => {
     try {
-        const source = req.query.source === 'HEB' ? 'HEB' : 'BHS';
-        const { roots } = getGlossCoverage().trees[source];
+        const source = req.query.source || 'BHS';
+        const roots = GENERIC_GS_SOURCES[source]
+            ? computeGenericCoverage(source).words
+            : getGlossCoverage().trees[source === 'HEB' ? 'HEB' : 'BHS'].roots;
         const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
         const limit  = Math.min(500, Math.max(1, parseInt(req.query.limit, 10) || 50));
         const all = [...roots.entries()]
@@ -7848,10 +7949,15 @@ app.get('/api/admin/gloss-studio/verse', (req, res) => {
         const chapter = parseInt(req.query.chapter, 10);
         const verse   = parseInt(req.query.verse, 10);
         if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book, chapter, verse required' });
-        const source = req.query.source === 'HEB' ? 'HEB' : undefined;
+        const source = req.query.source || '';
 
-        const { lexicon, homographs, surfaceOverrides } = loadLexicons();
-        const words = bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOverrides, source);
+        let words;
+        if (GENERIC_GS_SOURCES[source]) {
+            words = genericVerseWords(source, book_id, chapter, verse) || [];
+        } else {
+            const { lexicon, homographs, surfaceOverrides } = loadLexicons();
+            words = bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOverrides, source === 'HEB' ? 'HEB' : undefined);
+        }
 
         let saved = null;
         try { saved = translationDb.stmts.getVerse.get(book_id, chapter, verse); } catch { /* translation.db may be empty */ }
@@ -7886,8 +7992,38 @@ app.get('/api/admin/gloss-studio/root-verses', (req, res) => {
         if (!root) return res.status(400).json({ error: 'root param required' });
         const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
         const limit  = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
-        const source = req.query.source === 'HEB' ? 'HEB' : 'BHS';
 
+        if (GENERIC_GS_SOURCES[req.query.source]) {
+            const srcId = req.query.source;
+            const w = computeGenericCoverage(srcId).words.get(root);
+            const occurrences = w ? w.verses : [];
+            const total = occurrences.length;
+            const page = occurrences.slice(offset, offset + limit);
+            const seen = new Set();
+            const verses = [];
+            for (const o of page) {
+                const k = `${o.book_id}:${o.chapter}:${o.verse}`;
+                if (seen.has(k)) continue;
+                seen.add(k);
+                const words = genericVerseWords(srcId, o.book_id, o.chapter, o.verse) || [];
+                let saved = null;
+                try { saved = translationDb.stmts.getVerse.get(o.book_id, o.chapter, o.verse); } catch { /* translation.db may be empty */ }
+                const savedText = (saved?.text && saved.text.trim()) ? saved.text : '';
+                const isUntouchedDraft = !!saved && saved.status === 'none'
+                    && saved.source_origin === 'web-passthrough'
+                    && saved.original_text != null && saved.text === saved.original_text;
+                const isUserOverride = !!savedText && !isUntouchedDraft;
+                const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(o.book_id, o.chapter, o.verse));
+                verses.push({
+                    book_id: o.book_id, book_name: BOOK_NAMES[o.book_id] || `Book ${o.book_id}`,
+                    chapter: o.chapter, verse: o.verse, words,
+                    english: { text: englishText, is_baseline: !isUserOverride && !!englishText },
+                });
+            }
+            return res.json({ root, total, offset, limit, verses });
+        }
+
+        const source = req.query.source === 'HEB' ? 'HEB' : 'BHS';
         let total, hitRows;
         if (source === 'HEB') {
             total   = ROOT_VERSES_HEB_COUNT.get(root).n;
