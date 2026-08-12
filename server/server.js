@@ -9596,23 +9596,26 @@ server.keepAliveTimeout = 65 * 1000;  // > typical LB idle timeout
 server.headersTimeout   = 70 * 1000;  // must be > keepAliveTimeout
 server.requestTimeout   = 30 * 1000;  // any single request > 30s is wedged
 
-// Warm the Gloss Studio coverage caches once, right after boot — background
-// (setImmediate, AFTER listen so it never delays the health check that gates
-// the blue/green swap), not on-demand. Without this, the very first
-// /gloss-studio visit after a fresh deploy would still pay the full-corpus
-// rebuild cost synchronously (no cache yet — the stale-while-revalidate path
-// above only helps once SOME cache exists). Every request after this finishes
-// gets a warm cache immediately, same as every request after any other
-// mtime-triggered background rebuild.
-setImmediate(() => {
-    try {
-        getGlossCoverage();
-        computeAggregateCoverage();   // also warms every generic-language tree it depends on
-        console.log('[gloss-studio] coverage caches warmed at boot');
-    } catch (e) {
-        console.warn('[gloss-studio] coverage cache warm-up failed:', e.message);
-    }
-});
+// NOTE, 2026-08-11: a boot-time warm-up of the Gloss Studio coverage caches
+// (getGlossCoverage() + computeAggregateCoverage(), via setImmediate right
+// here) was tried and REVERTED the same day — this app runs cluster.js with
+// one worker PER CPU CORE, each independently require()-ing server.js and
+// each independently hitting app.listen(), so a warm-up here runs in EVERY
+// worker AT ONCE: a full iterate() over the whole Hebrew corpus (~1M rows)
+// plus tokenizing every verse of all six languages (Latin alone is 416,628
+// verses) simultaneously, on every core, right at boot. That's exactly the
+// OOM shape CLAUDE.md already warns about elsewhere in this file ("crashed
+// production... heap limit hit during a blue-green boot already under a
+// tight startup memory cap") — confirmed for real: the first deploy after
+// adding this failed paleo-b's health check, docker logs showing a worker
+// SIGKILLed ~50s into boot (no exit code — the OOM-kill signature). The
+// stale-while-revalidate caches above don't need this: the first REAL
+// request for Gloss Studio after a restart pays the rebuild cost once, in
+// whichever single worker happens to receive it — an admin-only page nobody
+// hits in the first seconds after a deploy anyway. Do not re-add a boot-time
+// warm-up without first gating it to run in exactly one process (e.g.
+// cluster.isPrimary, or a dedicated one-shot script), never inside the
+// worker path every core executes.
 
 // Graceful shutdown.  Pass DB handles so they get closed cleanly on SIGTERM.
 production.installShutdown(server, [db, surfDb, translationDb]);
