@@ -5471,6 +5471,18 @@ const GLOSS_COVERAGE_ROWS = surfDb.prepare(`
     WHERE  t.root_paleo IS NOT NULL AND t.root_paleo != ''
 `);
 
+// Same join, scoped to ONE verse — powers _verseMissingDirect below, which
+// exists so opening a single verse in Gloss Studio never has to touch the
+// whole-corpus GLOSS_COVERAGE_ROWS scan (up to ~1M rows) just to find out
+// which of THIS verse's handful of words lack a curated gloss.
+const GLOSS_VERSE_ROWS = surfDb.prepare(`
+    SELECT t.root_paleo, t.pos, t.strongs
+    FROM   surface_occurrences o
+    JOIN   token_surfaces      t ON t.word_raw = o.word_raw ${OCC_SN_JOIN} ${SRC_JOIN}
+    WHERE  t.root_paleo IS NOT NULL AND t.root_paleo != ''
+      AND  o.book_id = ? AND o.chapter = ? AND o.verse = ? AND o.source = ?
+`);
+
 let _glossCoverageCache = null;   // { books, roots, stamp }
 
 // surface-index.db content (which words exist, at all) and all THREE curated
@@ -5520,10 +5532,25 @@ function gsIsGlossed(root_paleo, pos, strongs, lexicon, homographs, hebExtra) {
     return false;
 }
 
-function getGlossCoverage() {
-    const stamp = _glossStudioStampKey();
-    if (_glossCoverageCache && _glossCoverageCache.stamp === stamp) return _glossCoverageCache;
+// Missing-gloss roots for ONE verse, computed directly from that verse's own
+// rows via GLOSS_VERSE_ROWS — NOT from the whole-corpus coverage tree.
+// O(words in this verse), always current against whatever's on disk right
+// now (loadLexicons()' own in-memory cache is busted by the file watcher on
+// every save, so this never lags). `source` here is the NATURAL-edition
+// source id (see the /verse route below for how that's picked) — same rule
+// _buildGlossCoverageTrees uses to decide BHS vs HEB per book.
+function _verseMissingDirect(book_id, chapter, verse, source, lexicon, homographs, hebExtra) {
+    const rows = GLOSS_VERSE_ROWS.all(book_id, chapter, verse, source);
+    const out = [];
+    for (const r of rows) {
+        if (!gsIsGlossed(r.root_paleo, r.pos, r.strongs, lexicon, homographs, hebExtra)) out.push(r.root_paleo);
+    }
+    return out;
+}
 
+let _glossCoverageRecomputing = false;
+
+function _buildGlossCoverageTrees() {
     const { lexicon, homographs, hebExtra } = loadLexicons();
     const bhsBooks = SURF_SOURCE_BOOKS.get('BHS') || new Set();
 
@@ -5598,7 +5625,45 @@ function getGlossCoverage() {
         if (r.source === 'HEB') bump(trees.HEB, r, glossed);
     }
 
-    _glossCoverageCache = { trees, stamp };
+    return trees;
+}
+
+// Stale-while-revalidate. This tree used to be rebuilt SYNCHRONOUSLY, inline,
+// on the very next request whenever lexicon.json's mtime had ticked since the
+// last build — including a single verse's own /gloss-studio/verse fetch,
+// which briefly depended on this function too (see that route's own comment:
+// it no longer does). fieldy, 2026-08-11, watching Gloss Studio hang on
+// "Loading verse…" for a plain verse open: "most important to get the
+// referenced verse/token data and less important for the %s to be accurate
+// in real time... the books and chapters are not going to change so why does
+// it take so long for them to load?" So: once a tree exists, ALWAYS return it
+// immediately — even if the underlying files have changed since — and kick a
+// rebuild off in the background (setImmediate, guarded so only one rebuild
+// runs at a time) so the NEXT request picks up fresh numbers instead of the
+// CURRENT one paying full rebuild latency (a full iterate() over every
+// Hebrew occurrence in the corpus, up to ~1M rows). Only the very first call
+// after server boot (no cache yet) computes synchronously — unavoidable
+// once, not on every lexicon.json save — and even that is pre-warmed at boot
+// (see the setImmediate warm-up right after app.listen()) so it's normally
+// already done before an admin ever opens the page.
+function getGlossCoverage() {
+    const stamp = _glossStudioStampKey();
+    if (_glossCoverageCache) {
+        if (_glossCoverageCache.stamp !== stamp && !_glossCoverageRecomputing) {
+            _glossCoverageRecomputing = true;
+            setImmediate(() => {
+                try {
+                    _glossCoverageCache = { trees: _buildGlossCoverageTrees(), stamp };
+                } catch (e) {
+                    console.error('[gloss-studio] background coverage rebuild failed:', e);
+                } finally {
+                    _glossCoverageRecomputing = false;
+                }
+            });
+        }
+        return _glossCoverageCache;
+    }
+    _glossCoverageCache = { trees: _buildGlossCoverageTrees(), stamp };
     return _glossCoverageCache;
 }
 
@@ -5640,11 +5705,9 @@ function _genericStampKey(srcId) {
     return `${a}|${b}`;
 }
 
-function computeGenericCoverage(srcId) {
-    const stamp = _genericStampKey(srcId);
-    const cached = _genericCoverageCache[srcId];
-    if (cached && cached.stamp === stamp) return cached.tree;
+const _genericRecomputing = new Set();
 
+function _buildGenericCoverageTree(srcId) {
     const src = SOURCES[srcId];
     const script = GENERIC_GS_SOURCES[srcId];
     const books = new Map();   // book_id -> { total, glossed, chapters: Map(chapter -> {...}) }
@@ -5686,7 +5749,33 @@ function computeGenericCoverage(srcId) {
         }
     }
 
-    const tree = { books, words };
+    return { books, words };
+}
+
+// Same stale-while-revalidate treatment as getGlossCoverage() above, keyed
+// per source id (Greek/Ge'ez/Latin/Syriac/Coptic each rebuild independently,
+// guarded by their own entry in _genericRecomputing) so re-tokenizing one
+// language's whole corpus never blocks a request for a different one, or for
+// Hebrew.
+function computeGenericCoverage(srcId) {
+    const stamp = _genericStampKey(srcId);
+    const cached = _genericCoverageCache[srcId];
+    if (cached) {
+        if (cached.stamp !== stamp && !_genericRecomputing.has(srcId)) {
+            _genericRecomputing.add(srcId);
+            setImmediate(() => {
+                try {
+                    _genericCoverageCache[srcId] = { stamp, tree: _buildGenericCoverageTree(srcId) };
+                } catch (e) {
+                    console.error(`[gloss-studio] background ${srcId} coverage rebuild failed:`, e);
+                } finally {
+                    _genericRecomputing.delete(srcId);
+                }
+            });
+        }
+        return cached.tree;
+    }
+    const tree = _buildGenericCoverageTree(srcId);
     _genericCoverageCache[srcId] = { stamp, tree };
     return tree;
 }
@@ -5730,10 +5819,9 @@ function _aggregateStampKey() {
     return parts.join('|');
 }
 
-function computeAggregateCoverage() {
-    const stamp = _aggregateStampKey();
-    if (_aggregateCoverageCache && _aggregateCoverageCache.stamp === stamp) return _aggregateCoverageCache.tree;
+let _aggregateRecomputing = false;
 
+function _buildAggregateCoverageTree() {
     // book_id -> chapter -> verse -> { total, glossed } — raw lexical sums
     // across every language, before the 'done' adjustment.
     const acc = new Map();
@@ -5779,9 +5867,36 @@ function computeAggregateCoverage() {
         }
     }
 
-    const tree = { books };
-    _aggregateCoverageCache = { stamp, tree };
-    return tree;
+    return { books };
+}
+
+// Same stale-while-revalidate treatment as getGlossCoverage()/
+// computeGenericCoverage() above — this one is the most expensive of the
+// three (it loops over BOTH of them, for all six languages), so it's the one
+// most worth never blocking a request on. Note it will often serve a tree
+// built from sub-caches that are THEMSELVES still catching up in the
+// background — that's fine, eventually consistent on the next request after
+// each finishes, and matches "less important for the %s to be accurate in
+// real time" exactly.
+function computeAggregateCoverage() {
+    const stamp = _aggregateStampKey();
+    if (_aggregateCoverageCache) {
+        if (_aggregateCoverageCache.stamp !== stamp && !_aggregateRecomputing) {
+            _aggregateRecomputing = true;
+            setImmediate(() => {
+                try {
+                    _aggregateCoverageCache = { stamp, tree: _buildAggregateCoverageTree() };
+                } catch (e) {
+                    console.error('[gloss-studio] background aggregate coverage rebuild failed:', e);
+                } finally {
+                    _aggregateRecomputing = false;
+                }
+            });
+        }
+        return _aggregateCoverageCache.tree;
+    }
+    _aggregateCoverageCache = { stamp, tree: _buildAggregateCoverageTree() };
+    return _aggregateCoverageCache.tree;
 }
 
 // GET /api/admin/gloss-studio/coverage
@@ -8087,11 +8202,18 @@ app.get('/api/admin/gloss-studio/verse', (req, res) => {
         if (GENERIC_GS_SOURCES[source]) {
             words = genericVerseWords(source, book_id, chapter, verse) || [];
         } else {
-            const { lexicon, homographs, surfaceOverrides } = loadLexicons();
+            const { lexicon, homographs, hebExtra, surfaceOverrides } = loadLexicons();
             words = bhsVerseWords(book_id, chapter, verse, lexicon, homographs, surfaceOverrides, source === 'HEB' ? 'HEB' : undefined);
-            const hebTree = getGlossCoverage().trees[source === 'HEB' ? 'HEB' : 'BHS'];
-            missing = hebTree.books.get(book_id)?.chapters.get(chapter)?.verses.get(verse)?.missing || [];
-            missing = [...missing];
+            // Deliberately NOT getGlossCoverage() — that's the whole-corpus
+            // tree, expensive to rebuild and now allowed to serve stale (see
+            // its own comment). A single verse's missing list only needs
+            // this verse's own rows, computed fresh every time regardless of
+            // that tree's state. 'HEB' source picks HEB's own tokens for
+            // this book; otherwise this book's natural edition (BHS if BHS
+            // covers it, else HEB) — same rule the tree itself uses.
+            const bhsBooks = SURF_SOURCE_BOOKS.get('BHS') || new Set();
+            const naturalSource = source === 'HEB' ? 'HEB' : (bhsBooks.has(book_id) ? 'BHS' : 'HEB');
+            missing = _verseMissingDirect(book_id, chapter, verse, naturalSource, lexicon, homographs, hebExtra);
         }
 
         let saved = null;
@@ -9473,6 +9595,24 @@ const server = app.listen(PORT, () => {
 server.keepAliveTimeout = 65 * 1000;  // > typical LB idle timeout
 server.headersTimeout   = 70 * 1000;  // must be > keepAliveTimeout
 server.requestTimeout   = 30 * 1000;  // any single request > 30s is wedged
+
+// Warm the Gloss Studio coverage caches once, right after boot — background
+// (setImmediate, AFTER listen so it never delays the health check that gates
+// the blue/green swap), not on-demand. Without this, the very first
+// /gloss-studio visit after a fresh deploy would still pay the full-corpus
+// rebuild cost synchronously (no cache yet — the stale-while-revalidate path
+// above only helps once SOME cache exists). Every request after this finishes
+// gets a warm cache immediately, same as every request after any other
+// mtime-triggered background rebuild.
+setImmediate(() => {
+    try {
+        getGlossCoverage();
+        computeAggregateCoverage();   // also warms every generic-language tree it depends on
+        console.log('[gloss-studio] coverage caches warmed at boot');
+    } catch (e) {
+        console.warn('[gloss-studio] coverage cache warm-up failed:', e.message);
+    }
+});
 
 // Graceful shutdown.  Pass DB handles so they get closed cleanly on SIGTERM.
 production.installShutdown(server, [db, surfDb, translationDb]);
