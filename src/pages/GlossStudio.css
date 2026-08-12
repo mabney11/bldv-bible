@@ -232,7 +232,19 @@
   background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
   padding: 8px 10px; min-width: 56px;
 }
-.gs-word.missing { border-color: var(--red, #c0392b); box-shadow: 0 0 0 1px var(--red, #c0392b) inset; }
+/* Was just a 1px border-color swap — indistinguishable from the ordinary
+   border at a glance across a whole verse of boxes. Background tint + a
+   thicker border makes a missing word visible without having to scan for
+   color differences one box at a time; the explicit ⚠ text flag (below,
+   gs-word-missing-flag) is the unambiguous signal on top of that. */
+.gs-word.missing {
+  border: 2px solid var(--red, #c0392b);
+  background: color-mix(in srgb, var(--red, #c0392b) 14%, var(--bg));
+}
+.gs-word-missing-flag {
+  font-size: 9px; font-weight: 700; color: var(--red, #c0392b);
+  letter-spacing: .02em; text-transform: uppercase; text-align: center;
+}
 .gs-word-glyphs { font-family: var(--paleo-font); font-size: 18px; direction: rtl; display: flex; }
 .gs-glyph.mark { opacity: 0.4; font-size: 0.8em; }
 .gs-word-gloss {

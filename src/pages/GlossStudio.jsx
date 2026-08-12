@@ -73,6 +73,19 @@ function GlossWordBlock({ word, missingSet }) {
   const isMissing = missingSet && comps.some(c => c.css === 'root' && missingSet.has(c.paleo));
   return (
     <div className={`gs-word ${isMissing ? 'missing' : ''}`}>
+      {/* A 1px border-color swap was too easy to miss scanning a whole verse
+          of tightly-packed boxes (fieldy: "I dont want to have to test each
+          word to see which one is missing") — this word's ROOT renders fine
+          on screen either way (the built-in grammar fallback covers it), so
+          color alone was the only signal something was wrong. An explicit
+          text flag, same "— not glossed —" convention MultiWordBlock already
+          uses for non-Hebrew languages, doesn't depend on the reader
+          noticing a border at all. */}
+      {isMissing && (
+        <div className="gs-word-missing-flag" title="No curated entry in lexicon.json / homographs.json / hebrew-extra-lexicon.json — currently shown via the built-in grammar fallback only">
+          ⚠ no lex entry
+        </div>
+      )}
       <div className="gs-word-glyphs">
         {comps.map((c, i) => (
           <span key={i} className={`gs-glyph ${c.css || 'root'} ${c.isMark ? 'mark' : ''}`}>{c.paleo}</span>
