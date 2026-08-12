@@ -61,12 +61,25 @@ docker rm -f "$NEW" 2>/dev/null || true
 # steady-state usage. Watch `docker stats` during the next deploy attempt to
 # see real numbers and retune if $NEW is hitting this ceiling and failing to
 # boot because of it rather than because of an actual bug.
+#
+# RETUNED 2026-08-12: 1000m/1000m turned out to be right at the edge — a real
+# deploy failed with a worker SIGKILLed ~55s into boot (cluster.js spawns one
+# worker PER CPU CORE regardless of the --cpus=1 boot-time throttle above, so
+# TWO full workers, each independently opening corpus.db/concordance.db/
+# surface-index.db and building the ~8,600-root nav index, were squeezed into
+# 1000MB with no swap of their own at all). The host got a swap-size increase
+# (2G -> 6G) the same day for an unrelated reason and has plenty of headroom
+# now, so $NEW gets a little swap of its own this time too (300MB) instead of
+# none — softens a transient spike into slowness rather than a hard kill,
+# while still capping total memory+swap well short of the host's full 6GB so
+# $OLD + OS + Caddy + sshd still have room during the overlap. Watch `docker
+# stats` on the next attempt and retune again if this is still too tight.
 docker run -d \
   --name "$NEW" \
   --restart unless-stopped \
   --cpus="1" \
-  --memory="1000m" \
-  --memory-swap="1000m" \
+  --memory="1400m" \
+  --memory-swap="1700m" \
   -p "$NEW_PORT:3000" \
   -v /mnt/paleo-data:/data \
   --env-file .env \
