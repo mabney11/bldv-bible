@@ -5483,6 +5483,82 @@ const GLOSS_VERSE_ROWS = surfDb.prepare(`
       AND  o.book_id = ? AND o.chapter = ? AND o.verse = ? AND o.source = ?
 `);
 
+// Same join as GLOSS_COVERAGE_ROWS, but GROUP BY collapses it to one row per
+// (book, chapter, verse) INSIDE SQLite before anything crosses into JS — a
+// few tens of thousands of rows instead of up to ~1M. This is what makes
+// book/chapter/verse NAVIGATION independent of the expensive per-token
+// glossed-status pass entirely: it doesn't need to know whether any word is
+// glossed, just that a verse exists and how many root-bearing words it has.
+// fieldy, 2026-08-11, staring at a blank Books pane on refresh: "the books
+// and chapters are not going to change so why does it take so long to
+// load?" — this query is the answer: it only touches surface-index.db
+// (via getGlossStructure's own stamp key below), never lexicon.json, so
+// editing lexicon.json while curating never invalidates it.
+const GLOSS_STRUCTURE_ROWS = surfDb.prepare(`
+    SELECT o.book_id, o.chapter, o.verse, COUNT(*) AS total
+    FROM   surface_occurrences o
+    JOIN   token_surfaces      t ON t.word_raw = o.word_raw ${OCC_SN_JOIN} ${SRC_JOIN}
+    WHERE  t.root_paleo IS NOT NULL AND t.root_paleo != '' AND o.source = ?
+    GROUP BY o.book_id, o.chapter, o.verse
+`);
+
+let _glossStructureCache = null;   // { trees: {BHS,HEB}, stamp }
+let _glossStructureRecomputing = false;
+
+// Only surface-index.db's own mtime — deliberately NOT lexicon.json/
+// homographs.json/hebrew-extra-lexicon.json (contrast _glossStudioStampKey
+// below, which tracks all four). Which verses exist, and how many
+// root-bearing words each has, doesn't change when a gloss is curated —
+// only surface-index.db being REBUILT (a real redeploy) changes it. This is
+// what makes the structure cache effectively permanent during normal
+// operation instead of thrashing on every lexicon.json save.
+function _glossStructureStampKey() {
+    try { return String(fs.statSync(path.join(__dirname, 'surface-index.db')).mtimeMs); } catch { return '0'; }
+}
+
+function _buildGlossStructureTrees() {
+    const bhsBooks = SURF_SOURCE_BOOKS.get('BHS') || new Set();
+    // book_id -> chapter -> verse -> total
+    const trees = { BHS: new Map(), HEB: new Map() };
+    const bump = (tree, book_id, chapter, verse, total) => {
+        let bk = tree.get(book_id); if (!bk) { bk = new Map(); tree.set(book_id, bk); }
+        let ch = bk.get(chapter); if (!ch) { ch = new Map(); bk.set(chapter, ch); }
+        ch.set(verse, total);
+    };
+    for (const source of ['BHS', 'HEB']) {
+        for (const r of GLOSS_STRUCTURE_ROWS.all(source)) {
+            if (source === 'HEB') bump(trees.HEB, r.book_id, r.chapter, r.verse, r.total);
+            const natural = bhsBooks.has(r.book_id) ? 'BHS' : 'HEB';
+            if (source === natural) bump(trees.BHS, r.book_id, r.chapter, r.verse, r.total);
+        }
+    }
+    return trees;
+}
+
+// Same stale-while-revalidate shape as the coverage caches below, but since
+// the stamp key never changes during normal curation (see above), this is,
+// in practice, computed once per server process and then served forever.
+function getGlossStructure() {
+    const stamp = _glossStructureStampKey();
+    if (_glossStructureCache) {
+        if (_glossStructureCache.stamp !== stamp && !_glossStructureRecomputing) {
+            _glossStructureRecomputing = true;
+            setImmediate(() => {
+                try {
+                    _glossStructureCache = { trees: _buildGlossStructureTrees(), stamp };
+                } catch (e) {
+                    console.error('[gloss-studio] background structure rebuild failed:', e);
+                } finally {
+                    _glossStructureRecomputing = false;
+                }
+            });
+        }
+        return _glossStructureCache;
+    }
+    _glossStructureCache = { trees: _buildGlossStructureTrees(), stamp };
+    return _glossStructureCache;
+}
+
 let _glossCoverageCache = null;   // { books, roots, stamp }
 
 // surface-index.db content (which words exist, at all) and all THREE curated
@@ -5942,6 +6018,42 @@ app.get('/api/admin/gloss-studio/coverage', (req, res) => {
         res.json({ books: _renderCoverageBooks(books) });
     } catch (err) {
         console.error('/api/admin/gloss-studio/coverage failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /api/admin/gloss-studio/structure
+// Book/chapter/verse NAVIGATION ONLY — book names, chapter numbers, verse
+// numbers, and a total root-bearing-word count per verse. NO glossed count,
+// NO pct, NO missing list. Built from getGlossStructure(), which is cheap
+// (SQL-side GROUP BY, tens of thousands of rows crossing into JS instead of
+// up to ~1M) and independent of lexicon.json (see its own stamp key) — so
+// unlike /coverage, this never blocks on a lexicon-edit-triggered rebuild.
+// The client fetches this FIRST and renders the Books/Chapters pane
+// immediately; /coverage loads separately afterward and fills percentages
+// in without blocking navigation. Same 'BHS'/'HEB' source convention as
+// every other Gloss Studio endpoint — 'BHS' (default) is the widest view
+// (this book's natural edition, so every book Gloss Studio covers appears).
+app.get('/api/admin/gloss-studio/structure', (req, res) => {
+    try {
+        const source = req.query.source === 'HEB' ? 'HEB' : 'BHS';
+        const { trees } = getGlossStructure();
+        const bookTree = trees[source];
+        const books = [...bookTree.entries()].map(([book_id, bk]) => {
+            let total = 0;
+            const chapters = [...bk.entries()].map(([chapter, ch]) => {
+                let chTotal = 0;
+                const verses = [...ch.entries()]
+                    .map(([verse, vTotal]) => { chTotal += vTotal; return { verse, total: vTotal }; })
+                    .sort((a, b) => a.verse - b.verse);
+                total += chTotal;
+                return { chapter, total: chTotal, verses };
+            }).sort((a, b) => a.chapter - b.chapter);
+            return { book_id, name: BOOK_NAMES[book_id] || `Book ${book_id}`, total, chapters };
+        }).sort((a, b) => a.book_id - b.book_id);
+        res.json({ books });
+    } catch (err) {
+        console.error('/api/admin/gloss-studio/structure failed:', err);
         res.status(500).json({ error: err.message });
     }
 });

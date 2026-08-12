@@ -301,6 +301,14 @@ export const apiGlossMissing = (offset = 0, limit = 50, source = 'BHS') =>
 // own tree instead.
 export const apiGlossCoverage = (source = 'ALL') =>
   jsonFetch(`/api/admin/gloss-studio/coverage?source=${source}`);
+// Book/chapter/verse NAVIGATION only (names + verse numbers + a total word
+// count) — no glossed/pct/missing. Cheap and effectively static (doesn't
+// change when lexicon.json is edited, only when surface-index.db itself is
+// rebuilt), so the client fetches this FIRST to render the Books/Chapters
+// pane instantly, then apiGlossCoverage() separately to fill percentages in
+// once that (much more expensive, cross-language) computation resolves.
+export const apiGlossStructure = (source = 'BHS') =>
+  jsonFetch(`/api/admin/gloss-studio/structure?source=${source}`);
 export const apiGlossVerse = (book, chapter, verse, source = 'BHS') =>
   jsonFetch(`/api/admin/gloss-studio/verse?book=${book}&chapter=${chapter}&verse=${verse}&source=${source}`);
 export const apiGlossRootVerses = (root, offset = 0, limit = 20, source = 'BHS') =>

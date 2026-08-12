@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { getAdminStatus } from '../lib/localOverlay.js';
 import { useToast } from '../components/Toast.jsx';
 import {
-  apiGlossMissing, apiGlossCoverage, apiGlossRootVerses, apiGlossVerse, apiGlossVerseStatus,
+  apiGlossMissing, apiGlossCoverage, apiGlossStructure, apiGlossRootVerses, apiGlossVerse, apiGlossVerseStatus,
 } from '../lib/api.js';
 import MultiWordBlock from '../components/MultiWordBlock.jsx';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
@@ -316,10 +316,38 @@ export default function GlossStudio() {
   // to be recalculated per language change"). Only Re-sync or mount reload
   // it; the per-language colored highlights (LangColumn) are where a single
   // language's own status belongs instead.
+  // Structure (book names + chapter/verse numbers + a total word count, no
+  // percentages) loads first and is cheap/near-instant — it never touches
+  // lexicon.json, only surface-index.db (see server.js's getGlossStructure).
+  // It renders the Books/Chapters pane immediately with real navigation.
+  // The actual coverage % (cross-language, expensive — up to a few seconds
+  // on a cold cache) is fetched separately right after and REPLACES the
+  // tree once it resolves, filling in glossed/pct/missing/done. Never
+  // blocks navigation on it. fieldy, 2026-08-11: "the books and chapters
+  // are not going to change so why does it take so long to load... most
+  // important to get the referenced verse/token data and less important
+  // for the %s to be accurate in real time."
   const loadTree = useCallback(() => {
     setTreeBusy(true);
+    let coverageArrived = false;   // guards against the (slower) structure
+                                    // response landing AFTER coverage and
+                                    // clobbering real numbers with placeholders
+    apiGlossStructure()
+      .then(structure => {
+        if (coverageArrived) return;
+        setTree({
+          books: structure.books.map(b => ({
+            ...b, glossed: undefined, pct: undefined,
+            chapters: b.chapters.map(ch => ({
+              ...ch, glossed: undefined, pct: undefined,
+              verses: ch.verses.map(v => ({ ...v, glossed: undefined, pct: undefined, missing: [], done: false })),
+            })),
+          })),
+        });
+      })
+      .catch(e => toast(e.message, 'err'));
     apiGlossCoverage()
-      .then(d => setTree(d))
+      .then(d => { coverageArrived = true; setTree(d); })
       .catch(e => toast(e.message, 'err'))
       .finally(() => setTreeBusy(false));
   }, [toast]);
@@ -507,8 +535,8 @@ export default function GlossStudio() {
                 className={`gs-book-item ${activeBook === b.book_id ? 'active' : ''}`}
                 onClick={() => { setActiveBook(b.book_id); setOpenChapter(null); }}>
                 <span className="gs-book-name">{b.name}</span>
-                <span className="gs-mini-bar"><span className={`gs-mini-fill ${b.pct === 100 ? 'done' : b.pct > 0 ? 'mixed' : ''}`} style={{ width: `${b.pct}%` }} /></span>
-                <span className="gs-book-pct">{b.pct}%</span>
+                <span className="gs-mini-bar"><span className={`gs-mini-fill ${b.pct === 100 ? 'done' : b.pct > 0 ? 'mixed' : ''}`} style={{ width: `${b.pct ?? 0}%` }} /></span>
+                <span className="gs-book-pct">{b.pct != null ? `${b.pct}%` : '…'}</span>
               </button>
             ))}
           </aside>
@@ -517,7 +545,11 @@ export default function GlossStudio() {
             <div className="gs-pane-header">
               <div className="gs-chapter-title">{activeBookData?.name || '—'}</div>
               {activeBookData && (
-                <div className="gs-chapter-progress">{activeBookData.glossed}/{activeBookData.total} glossed ({activeBookData.pct}%)</div>
+                <div className="gs-chapter-progress">
+                  {activeBookData.pct != null
+                    ? `${activeBookData.glossed}/${activeBookData.total} glossed (${activeBookData.pct}%)`
+                    : `${activeBookData.total} words`}
+                </div>
               )}
             </div>
             <div className="gs-chapter-list">
@@ -528,13 +560,18 @@ export default function GlossStudio() {
                     <button className={`gs-chapter-header ${isOpen ? 'open' : ''}`} onClick={() => setOpenChapter(isOpen ? null : ch.chapter)}>
                       <span className="gs-chevron">{isOpen ? '▾' : '▸'}</span>
                       <span className="gs-chapter-label">Ch {ch.chapter}</span>
-                      <span className="gs-chapter-stat">{ch.glossed}/{ch.total} · {ch.pct}%</span>
+                      <span className="gs-chapter-stat">{ch.pct != null ? `${ch.glossed}/${ch.total} · ${ch.pct}%` : `${ch.total} words`}</span>
                     </button>
                     {isOpen && (
                       <div className="gs-verse-list">
                         {ch.verses.map(v => {
                           const key = `${activeBook}:${ch.chapter}:${v.verse}`;
-                          const statusClass = v.pct === 100 ? 'done' : v.pct > 0 ? 'partial' : 'none';
+                          // pct == null means the (near-instant) structure
+                          // response is showing but the real coverage %
+                          // hasn't landed yet — render the neutral 'none'
+                          // dot rather than inventing a fourth status color
+                          // for what's a purely transient loading state.
+                          const statusClass = v.pct == null ? 'none' : v.pct === 100 ? 'done' : v.pct > 0 ? 'partial' : 'none';
                           return (
                             <button
                               key={v.verse}
@@ -543,7 +580,7 @@ export default function GlossStudio() {
                             >
                               <span className="gs-verse-num">{v.verse}</span>
                               <span className={`gs-status-dot ${statusClass}`} />
-                              <span className="gs-verse-preview">{v.glossed}/{v.total} ({v.pct}%)</span>
+                              <span className="gs-verse-preview">{v.pct != null ? `${v.glossed}/${v.total} (${v.pct}%)` : `${v.total} words`}</span>
                               {v.done && <span className="gs-verse-done" title="Marked done in Translation Studio">✓</span>}
                             </button>
                           );
