@@ -111,6 +111,15 @@ export const apiTransVerse = async (book, ch, v) => {
 export const apiTransSaveVerse = (payload) => jsonFetch('/api/translate/verse', {
   method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
 });
+// Revision history — every prior version of a verse, newest first, captured
+// automatically server-side on each save (see server.js's saveVerseWithHistory).
+export const apiTransHistory = (book, chapter, verse) =>
+  jsonFetch(`/api/translate/history?book=${book}&chapter=${chapter}&verse=${verse}`);
+export const apiTransRevertToHistory = (book_id, chapter, verse, history_id) => jsonFetch('/api/translate/history/revert', {
+  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ book_id, chapter, verse, history_id }),
+});
+export const apiTransDeleteHistory = (history_id, book, chapter, verse) =>
+  jsonFetch(`/api/translate/history/${history_id}?book=${book}&chapter=${chapter}&verse=${verse}`, { method: 'DELETE' });
 export const apiTransLink = (payload) => jsonFetch('/api/translate/link', {
   method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
 });

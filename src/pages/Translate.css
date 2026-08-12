@@ -469,6 +469,45 @@
 .tr-save-btn:hover:not(:disabled) { background: var(--blue); }
 .tr-save-btn:disabled { opacity: 0.6; cursor: progress; }
 
+.tr-history-btn {
+  background: var(--bg3); color: var(--text2);
+  border: 1px solid var(--border2); padding: 7px 14px;
+  border-radius: 7px; font-size: 12px; font-weight: 600;
+  cursor: pointer;
+}
+.tr-history-btn:hover { background: var(--bg4); color: var(--text1); }
+
+.tr-history-panel {
+  margin-top: 10px; padding: 10px 12px;
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px;
+  max-height: 360px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.tr-history-loading, .tr-history-empty { font-size: 12px; color: var(--text3); padding: 4px 0; }
+.tr-history-item {
+  padding: 8px 10px; background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 6px;
+}
+.tr-history-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.tr-history-time { font-size: 11px; color: var(--text3); }
+.tr-history-status {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em;
+  padding: 1px 6px; border-radius: 4px; background: var(--bg4); color: var(--text3);
+}
+.tr-history-status-done        { background: color-mix(in srgb, var(--green, #3aa96a) 20%, var(--bg4)); color: var(--green, #3aa96a); }
+.tr-history-status-in_progress { background: color-mix(in srgb, var(--gold) 20%, var(--bg4)); color: var(--gold); }
+.tr-history-restore {
+  margin-left: auto; background: none; border: 1px solid var(--border2); color: var(--text2);
+  font-size: 11px; padding: 3px 10px; border-radius: 5px; cursor: pointer;
+}
+.tr-history-restore:hover { background: var(--bg4); color: var(--text1); border-color: var(--blue2, var(--blue)); }
+.tr-history-delete {
+  background: none; border: 1px solid var(--border2); color: var(--text3);
+  font-size: 12px; padding: 3px 8px; border-radius: 5px; cursor: pointer;
+}
+.tr-history-delete:hover { background: var(--bg4); color: var(--red, #c0392b); border-color: var(--red, #c0392b); }
+.tr-history-text { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
 /* Linker */
 .tr-linker-section {
   border: 1px solid var(--border);

@@ -6,11 +6,12 @@ import { useToast } from '../components/Toast.jsx';
 import WordBlock from '../components/WordBlock.jsx';
 import {
   apiTransProgress, apiTransChapter, apiTransVerse,
-  apiTransSaveVerse, apiTransLink, apiTransUnlink, apiTransUpdateLink,
+  apiTransSaveVerse, apiTransHistory, apiTransRevertToHistory, apiTransDeleteHistory,
+  apiTransLink, apiTransUnlink, apiTransUpdateLink,
   apiTokens, apiBookOrder,
 } from '../lib/api.js';
 import {
-  getAdminStatus, mergeVerseWithLocal, getLocalVerse, saveLocalVerse, resetLocalVerse,
+  getAdminStatus, refreshAdminStatus, mergeVerseWithLocal, getLocalVerse, saveLocalVerse, resetLocalVerse,
   getLocalLinks, addLocalLink, deleteLocalLink, setLocalLinksOverride, resetLocalLinksOverride,
   resetAllLocal, hasAnyLocalOverrides,
 } from '../lib/localOverlay.js';
@@ -129,6 +130,13 @@ export default function Translate() {
   const [openChapterMap, setOpenChapterMap] = useState({}); // { "bookId:chapter": verseListData }
   const [verseData, setVerseData] = useState(null); // { status, text, rich_text, links, tokens }
   const [saveState, setSaveState] = useState('idle'); // idle | saving | saved | error
+  // Revision history panel — every prior version of the CURRENT verse,
+  // fetched on demand (not preloaded with every verse — most verses are
+  // never opened for history, so this stays a click-triggered fetch like
+  // the rest of Studio's on-demand panels).
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [historyList, setHistoryList] = useState([]);
+  const [historyBusy, setHistoryBusy] = useState(false);
   // Mobile only: collapse the Books + Chapter pickers so the editor gets the
   // screen. State (activeBook/chapter/verse) is untouched, so Save still targets
   // the right verse whether the pickers are showing or not.
@@ -408,15 +416,33 @@ export default function Translate() {
     const text = plainTmp.textContent || '';
     const status = overrides.status ?? verseData.status;
     try {
-      const { isAdmin: admin } = await getAdminStatus();
+      // getAdminStatus() is cached for the life of the TAB and never re-checks
+      // itself — if the server-side session expired since the tab was opened,
+      // this cached value silently stays 'false' forever, and every save from
+      // then on falls into the local-only branch below with IDENTICAL "Saved"
+      // feedback as a real server save. fieldy, 2026-08-12: a real edit sat in
+      // IndexedDB for hours looking saved while the server's row was untouched,
+      // discovered only by querying translation.db directly. Force one fresh
+      // check against the server before ever trusting a cached "not admin" —
+      // covers the common case (session actually still valid, cache just
+      // hadn't been told) without a full page reload.
+      let { isAdmin: admin } = await getAdminStatus();
+      if (!admin) {
+        ({ isAdmin: admin } = await refreshAdminStatus());
+      }
       if (admin) {
         await apiTransSaveVerse({ book_id: activeBook, chapter: activeChapter, verse: activeVerse, status, text, rich_text });
       } else {
-        // Local-only: never reaches the server. Persisted in THIS browser only.
-        // No lang here — the translation is shared across editions, same as
-        // the server's own (book_id, chapter, verse) primary key.
+        // Genuinely not an admin in this browser, even after a fresh check.
+        // Local-only: never reaches the server. Persisted in THIS browser
+        // only. No lang here — the translation is shared across editions,
+        // same as the server's own (book_id, chapter, verse) primary key.
+        // This MUST be loud (long-lived, unmistakable toast) — a silent
+        // fallback that looks identical to a real save is exactly what
+        // caused the incident above.
         await saveLocalVerse(activeBook, activeChapter, activeVerse, { text, rich_text, status });
         setHasLocalEdits(true);
+        toast('⚠ NOT saved to the server — you are not logged in as admin in this tab. Saved locally in THIS browser only and will not be visible anywhere else.', 'err', 9000);
       }
       setSaveState('saved');
       setTimeout(() => setSaveState('idle'), 1400);
@@ -436,6 +462,65 @@ export default function Translate() {
       toast('Save failed: ' + e.message, 'err');
     }
   }, [verseData, activeBook, activeChapter, activeVerse, toast]);
+
+  // ── REVISION HISTORY ─────────────────────────────────────────────────────
+  // Server-side saveVerseWithHistory snapshots the PRIOR version of a verse
+  // automatically on every save (see server.js) — this panel just lists and
+  // reverts to those snapshots. fieldy, 2026-08-12: "Keeping track of past
+  // versions in the UI that I can revert to would solve a lot of problems."
+  const toggleHistory = useCallback(async () => {
+    if (historyOpen) { setHistoryOpen(false); return; }
+    if (activeBook == null || activeChapter == null || activeVerse == null) return;
+    setHistoryOpen(true);
+    setHistoryBusy(true);
+    try {
+      const d = await apiTransHistory(activeBook, activeChapter, activeVerse);
+      setHistoryList(d.versions || []);
+    } catch (e) {
+      toast('Could not load history: ' + e.message, 'err');
+      setHistoryList([]);
+    } finally {
+      setHistoryBusy(false);
+    }
+  }, [historyOpen, activeBook, activeChapter, activeVerse, toast]);
+
+  // Reverting is itself just another save (see the server route's own
+  // comment) — it snapshots whatever it's replacing too, so this can never
+  // destroy a version. Re-fetches history afterward so the panel reflects
+  // the new timeline (the version you just reverted FROM is now itself in
+  // the list) instead of showing stale entries.
+  const revertToHistoryVersion = useCallback(async (historyId) => {
+    if (activeBook == null || activeChapter == null || activeVerse == null) return;
+    try {
+      await apiTransRevertToHistory(activeBook, activeChapter, activeVerse, historyId);
+      await loadVerse(activeBook, activeChapter, activeVerse, lang);
+      const d = await apiTransHistory(activeBook, activeChapter, activeVerse);
+      setHistoryList(d.versions || []);
+      toast('Reverted to that version', 'ok');
+    } catch (e) {
+      toast('Revert failed: ' + e.message, 'err');
+    }
+  }, [activeBook, activeChapter, activeVerse, lang, loadVerse, toast]);
+
+  // Unlike revert, this is genuinely destructive — no snapshot taken first —
+  // so confirm before calling the server. fieldy, 2026-08-12: "id also like
+  // the ability to delete."
+  const deleteHistoryVersion = useCallback(async (historyId) => {
+    if (activeBook == null || activeChapter == null || activeVerse == null) return;
+    if (!confirm('Permanently delete this past version? This cannot be undone.')) return;
+    try {
+      await apiTransDeleteHistory(historyId, activeBook, activeChapter, activeVerse);
+      setHistoryList(list => list.filter(v => v.id !== historyId));
+      toast('Version deleted', 'ok');
+    } catch (e) {
+      toast('Delete failed: ' + e.message, 'err');
+    }
+  }, [activeBook, activeChapter, activeVerse, toast]);
+
+  // Close the panel (don't refetch) whenever the open verse changes — a
+  // stale history list from the PREVIOUS verse must never be shown attached
+  // to a different one.
+  useEffect(() => { setHistoryOpen(false); setHistoryList([]); }, [activeBook, activeChapter, activeVerse]);
 
   // Discard this browser's local edit for the CURRENT verse (text + status) and
   // reload straight from the server's published version. Local link overrides
@@ -1011,7 +1096,30 @@ export default function Translate() {
                       <button className="tr-save-btn" onClick={() => saveVerse()} disabled={saveState === 'saving'}>
                         {saveState === 'saving' ? 'Saving…' : 'Save'}
                       </button>
+                      <button className="tr-history-btn" onClick={toggleHistory} title="View and revert to past versions of this verse">
+                        {historyOpen ? 'History ▾' : 'History ▸'}
+                      </button>
                     </div>
+
+                    {historyOpen && (
+                      <div className="tr-history-panel">
+                        {historyBusy && <div className="tr-history-loading">Loading history…</div>}
+                        {!historyBusy && historyList.length === 0 && (
+                          <div className="tr-history-empty">No past versions yet — history is recorded starting from your next save.</div>
+                        )}
+                        {!historyBusy && historyList.map(v => (
+                          <div key={v.id} className="tr-history-item">
+                            <div className="tr-history-meta">
+                              <span className="tr-history-time">{v.saved_at}</span>
+                              <span className={`tr-history-status tr-history-status-${v.status || 'none'}`}>{v.status || 'none'}</span>
+                              <button className="tr-history-restore" onClick={() => revertToHistoryVersion(v.id)}>Restore this version</button>
+                              <button className="tr-history-delete" onClick={() => deleteHistoryVersion(v.id)} title="Permanently delete this version">🗑</button>
+                            </div>
+                            <div className="tr-history-text">{v.text || <em>(empty)</em>}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </section>
 
                   {/* Linker grid */}

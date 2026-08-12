@@ -614,6 +614,27 @@ const translationDb = (() => {
         );
         CREATE INDEX IF NOT EXISTS idx_translations_book   ON translations(book_id);
         CREATE INDEX IF NOT EXISTS idx_translations_status ON translations(status);
+        -- Revision history — one row per PRIOR version of a verse, written
+        -- right before that version gets overwritten (see saveVerseWithHistory
+        -- below). Every save so far has overwritten \`translations\` in place
+        -- with no trail at all; fieldy, 2026-08-12, after a real edit briefly
+        -- looked lost: "Keeping track of past versions in the UI that I can
+        -- revert to would solve a lot of problems." saved_at is the prior
+        -- version's OWN updated_at (when IT was written), not "now" — so
+        -- entries read as a real timeline of what the verse actually was at
+        -- each point, not a log of overwrite events.
+        CREATE TABLE IF NOT EXISTS translation_history (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            book_id    INTEGER NOT NULL,
+            chapter    INTEGER NOT NULL,
+            verse      INTEGER NOT NULL,
+            status     TEXT,
+            text       TEXT,
+            rich_text  TEXT,
+            saved_at   TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_translation_history_verse
+            ON translation_history(book_id, chapter, verse, saved_at DESC, id DESC);
     `);
 
     // Migrations: add columns if upgrading from older schema (existing rows kept).
@@ -694,9 +715,45 @@ const translationDb = (() => {
             SET english_phrase=?, english_indices=?, token_ordinals=?, component_hint=?, color_index=?, sort_order=?
             WHERE id=? AND book_id=? AND chapter=? AND verse=?
         `),
+        insertHistory: tdb.prepare(`
+            INSERT INTO translation_history(book_id, chapter, verse, status, text, rich_text, saved_at)
+            VALUES(?,?,?,?,?,?,?)
+        `),
+        // Newest first — the UI lists past versions most-recent-on-top.
+        verseHistory: tdb.prepare(`
+            SELECT id, status, text, rich_text, saved_at FROM translation_history
+            WHERE book_id=? AND chapter=? AND verse=?
+            ORDER BY saved_at DESC, id DESC
+        `),
+        historyEntry: tdb.prepare(`
+            SELECT * FROM translation_history WHERE id=? AND book_id=? AND chapter=? AND verse=?
+        `),
+        deleteHistoryEntry: tdb.prepare(`
+            DELETE FROM translation_history WHERE id=? AND book_id=? AND chapter=? AND verse=?
+        `),
     };
 
-    return { tdb, stmts };
+    // Every save goes through here instead of calling stmts.upsertVerse
+    // directly: if a row already exists AND the incoming value actually
+    // differs from what's there (skip no-op re-saves — clicking Save twice
+    // without changing anything shouldn't spam the history list), snapshot
+    // the CURRENT row into translation_history BEFORE overwriting it. A
+    // revert (see the /api/translate/history/revert route) calls this SAME
+    // function with a past version's values, so reverting is itself just
+    // another save — it also snapshots whatever it's replacing, meaning
+    // reverting can never destroy anything either; the timeline only grows.
+    function saveVerseWithHistory(book_id, chapter, verse, status, text, rich_text) {
+        const run = tdb.transaction(() => {
+            const existing = stmts.getVerse.get(book_id, chapter, verse);
+            if (existing && (existing.text !== text || existing.status !== status || existing.rich_text !== rich_text)) {
+                stmts.insertHistory.run(book_id, chapter, verse, existing.status, existing.text, existing.rich_text, existing.updated_at);
+            }
+            stmts.upsertVerse.run(book_id, chapter, verse, status, text, rich_text);
+        });
+        run();
+    }
+
+    return { tdb, stmts, saveVerseWithHistory };
 })();
 
 // --- VERSIFICATION MAP ---
@@ -9101,10 +9158,72 @@ app.put('/api/translate/verse', (req, res) => {
         if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book_id, chapter, verse required' });
         const validStatuses = ['none', 'in_progress', 'done'];
         const st = validStatuses.includes(status) ? status : 'in_progress';
-        translationDb.stmts.upsertVerse.run(book_id, chapter, verse, st, text || '', rich_text || '');
+        translationDb.saveVerseWithHistory(book_id, chapter, verse, st, text || '', rich_text || '');
         res.json({ ok: true, book_id, chapter, verse, status: st });
     } catch(err) {
         console.error('PUT /api/translate/verse failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /api/translate/history?book=&chapter=&verse=
+// Every PRIOR version of a verse, newest first, captured automatically by
+// saveVerseWithHistory (see translationDb above) right before each overwrite.
+app.get('/api/translate/history', (req, res) => {
+    try {
+        const book_id = parseInt(req.query.book, 10);
+        const chapter = parseInt(req.query.chapter, 10);
+        const verse   = parseInt(req.query.verse, 10);
+        if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book, chapter, verse required' });
+        const versions = translationDb.stmts.verseHistory.all(book_id, chapter, verse);
+        res.json({ book_id, chapter, verse, versions });
+    } catch (err) {
+        console.error('GET /api/translate/history failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /api/translate/history/revert  { book_id, chapter, verse, history_id }
+// Restores a past version as the CURRENT one. This is itself just another
+// save (goes through saveVerseWithHistory), so it snapshots whatever it's
+// replacing too — reverting can never destroy a version, the timeline only
+// ever grows. 404s if history_id doesn't belong to this exact verse, so a
+// stale/tampered id can't restore the wrong verse's text into this one.
+app.post('/api/translate/history/revert', express.json(), (req, res) => {
+    try {
+        const { book_id, chapter, verse, history_id } = req.body || {};
+        if (!book_id || !chapter || !Number.isInteger(verse) || !history_id) {
+            return res.status(400).json({ error: 'book_id, chapter, verse, history_id required' });
+        }
+        const entry = translationDb.stmts.historyEntry.get(history_id, book_id, chapter, verse);
+        if (!entry) return res.status(404).json({ error: 'history entry not found for this verse' });
+        translationDb.saveVerseWithHistory(book_id, chapter, verse, entry.status || 'none', entry.text || '', entry.rich_text || '');
+        res.json({ ok: true, book_id, chapter, verse, status: entry.status || 'none', text: entry.text || '', rich_text: entry.rich_text || '' });
+    } catch (err) {
+        console.error('POST /api/translate/history/revert failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// DELETE /api/translate/history/:id?book=&chapter=&verse=
+// Removes ONE past version permanently — unlike revert, this is genuinely
+// destructive (no snapshot taken first), so the client should confirm with
+// the user before calling this. Scoped to the exact verse via the query
+// params (same WHERE-clause discipline as deleteLink above) so a stale/
+// tampered id can't delete a different verse's history entry.
+app.delete('/api/translate/history/:id', (req, res) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        const book_id = parseInt(req.query.book, 10);
+        const chapter = parseInt(req.query.chapter, 10);
+        const verse   = parseInt(req.query.verse, 10);
+        if (!id || !book_id || !chapter || !Number.isInteger(verse)) {
+            return res.status(400).json({ error: 'id, book, chapter, verse required' });
+        }
+        const result = translationDb.stmts.deleteHistoryEntry.run(id, book_id, chapter, verse);
+        res.json({ ok: true, deleted: result.changes > 0 });
+    } catch (err) {
+        console.error('DELETE /api/translate/history failed:', err);
         res.status(500).json({ error: err.message });
     }
 });
