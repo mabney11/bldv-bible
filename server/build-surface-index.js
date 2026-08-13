@@ -1630,14 +1630,14 @@ if (hebResult) {
 out.exec('ANALYZE; PRAGMA optimize;');
 out.close();
 
-// Restore the symlink OUT_DB -> outTarget so the running server (which opened
-// it at boot via the /app/server path) and any future `docker exec` against
-// this same container still find it where they expect — see the NORMALIZE
-// comment above for why this matters.
-if (relinkAfter) {
-    fs.symlinkSync(outTarget, OUT_DB);
-    console.log(`  Re-linked ${path.basename(OUT_DB)} -> ${outTarget}`);
-}
+// NOTE: no re-link needed here. Only outTarget (the symlink's REAL target,
+// e.g. /data/surface-index.db) was ever deleted/recreated above — OUT_DB
+// itself (the symlink at /app/server/surface-index.db) was never touched, so
+// it never broke; it was pointing at outTarget's PATH the whole time, and
+// that path now has the freshly-written file. An earlier version of this
+// tried to unconditionally recreate the symlink here too and crashed with
+// EEXIST, because it was already there and valid.
+void relinkAfter;
 
 // ── Summary ────────────────────────────────────────────────────────────────────
 const statsSurf = fs.statSync(outTarget);
