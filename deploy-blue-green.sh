@@ -88,13 +88,21 @@ docker run -d \
 
 echo "==> Waiting for $NEW to pass its own health check..."
 ok=0
-for i in $(seq 1 60); do
+# RETUNED 2026-08-13: was 60 tries * 2s sleep = ~2m. A real deploy hit the exact
+# failure this was designed to avoid — $NEW recovered from a boot-time worker
+# SIGKILL (cluster.js respawn-with-backoff) and was confirmed healthy/stable
+# moments after the script gave up (curl against /health succeeded immediately
+# once checked by hand) — the container was fine, the window was just too
+# short for a rocky-but-recoverable boot. 150 tries * 2s sleep = ~5m gives a
+# slow-but-recovering boot enough runway without changing anything else about
+# the fail-fast behavior below.
+for i in $(seq 1 150); do
   # --max-time bounds EACH probe. Without it, a container that's up but too
   # CPU-starved to respond makes curl hang indefinitely on a single try —
-  # the whole 60-try/2-minute retry budget never gets spent, it just gets
-  # stuck on try #1. This is what actually happened during testing: the loop
-  # looked "frozen" on the first status line for minutes past its intended
-  # 2-minute ceiling, when what was really needed was to fail fast and retry.
+  # the whole retry budget never gets spent, it just gets stuck on try #1.
+  # This is what actually happened during testing: the loop looked "frozen"
+  # on the first status line for minutes past its intended ceiling, when what
+  # was really needed was to fail fast and retry.
   if curl -sf --max-time 5 "http://localhost:$NEW_PORT/health" > /dev/null; then
     ok=1
     break
@@ -103,7 +111,7 @@ for i in $(seq 1 60); do
 done
 
 if [ "$ok" != "1" ]; then
-  echo "==> $NEW FAILED health check after 2m — NOT touching $OLD. Site is still served by $OLD."
+  echo "==> $NEW FAILED health check after 5m — NOT touching $OLD. Site is still served by $OLD."
   echo "==> Check what went wrong: docker logs $NEW --tail 80"
   echo "==> ($NEW is left running so you can inspect it. Clean up with: docker rm -f $NEW)"
   exit 1
