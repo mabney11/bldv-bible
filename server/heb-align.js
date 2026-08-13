@@ -523,9 +523,25 @@ function buildHebSurfaces(o) {
                 while (rawCursor < rawTk.length && rawTk[rawCursor].token_ordinal < ordExclusive) {
                     const rt = rawTk[rawCursor];
                     if (rt.pos === 'punct' && rt.word_raw) {
+                        // NORMALIZE to BHS verse numbering (2026-08-13): `chosen` is the
+                        // per-chapter offset that made this HEB row's words match BHS's
+                        // tokens at row.verse + chosen (see the offset search above,
+                        // aligned_rate scored against exactly this same shift). Storing
+                        // the RAW row.verse here, unshifted, was the bug: it left every
+                        // occurrence numbered in the HEB edition's own convention (Psalm
+                        // superscription = verse 1) while translation.db/corpus.db ENG are
+                        // aligned to BHS's convention (superscription = verse 0 in chapters
+                        // that have one) — a title-bearing chapter would then serve, at any
+                        // given verse number, HEB's actual verse N paired against
+                        // BHS-aligned English for verse N, one real line apart. Found via
+                        // Psalm 83:6 ("Adawam"/Edom) showing correct English against the
+                        // WRONG Hebrew tokens (BHS's real verse 5) under the HEB source
+                        // specifically — BHS itself, and English, were already fine; only
+                        // HEB's stored verse was never corrected by the offset computed to
+                        // fix exactly this.
                         occurrences.push({
                             source: corpus, word_raw: rt.word_raw, strongs: '', pos: 'punct', morph: '',
-                            book_id: canon, chapter: row.chapter, verse: row.verse,
+                            book_id: canon, chapter: row.chapter, verse: row.verse + chosen,
                             token_ordinal: ord++,
                         });
                     }
@@ -547,9 +563,11 @@ function buildHebSurfaces(o) {
                     // instead. Not lost, just not perfectly interleaved here.
                     const uc = unresolvedComp(r.word);
                     record(r.word, uc, 'unaligned', false);
+                    // verse + chosen: see the NORMALIZE comment above emitMarksBefore's
+                    // occurrences.push a few dozen lines up — same offset, same reason.
                     occurrences.push({
                         source: corpus, word_raw: r.word, strongs: '', pos: '', morph: '',
-                        book_id: canon, chapter: row.chapter, verse: row.verse,
+                        book_id: canon, chapter: row.chapter, verse: row.verse + chosen,
                         token_ordinal: ord++,
                     });
                     continue;
@@ -560,10 +578,12 @@ function buildHebSurfaces(o) {
                 emitMarksBefore(minOrd);   // a mark strictly before this word's own run (rare — verse-initial)
                 const comp = composeWord(r.run, parseToken);
                 const { rec } = record(r.word, comp, r.tier, false);
+                // verse + chosen: see the NORMALIZE comment above emitMarksBefore's
+                // occurrences.push near the top of this loop — same offset, same reason.
                 occurrences.push({
                     source: corpus, word_raw: r.word, strongs: comp.strongs,
                     pos: comp.pos, morph: comp.morph,
-                    book_id: canon, chapter: row.chapter, verse: row.verse,
+                    book_id: canon, chapter: row.chapter, verse: row.verse + chosen,
                     token_ordinal: ord++,
                 });
                 // Skip rawCursor past this word's OWN consumed (real, non-mark)
