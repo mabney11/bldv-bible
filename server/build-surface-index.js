@@ -1435,20 +1435,50 @@ src.close();
 // before a single table gets written. Confirmed in production: this exact
 // crash, right after "Deleted old surface-index.db", left a 4KB stub file on
 // the volume and no working DB until the sidecars were cleared too.
-if (fs.existsSync(OUT_DB)) {
-    fs.unlinkSync(OUT_DB);
-    console.log(`Deleted old ${path.basename(OUT_DB)}`);
+// RESOLVE THE REAL WRITE TARGET (2026-08-13): in production, OUT_DB
+// (/app/server/surface-index.db) is a SYMLINK entrypoint.sh points at
+// $DATA_DIR/surface-index.db on the persistent bind-mounted volume — the same
+// mechanism that keeps corpus.db/translation.db alive across deploys (see
+// CLAUDE.md's DB-persistence section). fs.unlinkSync on a symlink path removes
+// the LINK ITSELF, not what it points to. The delete-then-recreate below used
+// to run directly against OUT_DB: it deleted the symlink (leaving the real,
+// persistent file on /data completely untouched and un-updated) and then
+// `new Database(OUT_DB)` silently created a brand-new file in the CONTAINER'S
+// OWN ephemeral layer instead. The build would report success and even read
+// back correctly for the rest of that same container's life — but the next
+// deploy replaces the container, entrypoint.sh re-symlinks OUT_DB to the
+// still-stale /data copy, and every real change this script ever made is
+// gone with no error anywhere. Confirmed: this is why a from-scratch,
+// verified-correct rebuild (fixing HEB's Psalm-title verse-offset bug)
+// disappeared after nothing more than the normal blue/green container swap.
+// Fix: resolve the symlink FIRST and write through to whatever it actually
+// points at, then re-create the symlink afterward so the server (and the
+// next `docker exec`) keep finding it at the path they expect.
+let outTarget = OUT_DB;
+let relinkAfter = false;
+try {
+    const real = fs.realpathSync(OUT_DB);
+    if (real !== path.resolve(OUT_DB)) {
+        outTarget = real;
+        relinkAfter = true;
+        console.log(`  ${path.basename(OUT_DB)} is a symlink -> ${real}; writing through to the real file`);
+    }
+} catch { /* doesn't exist yet (first-ever build on a fresh volume) — OUT_DB itself is fine */ }
+
+if (fs.existsSync(outTarget)) {
+    fs.unlinkSync(outTarget);
+    console.log(`Deleted old ${path.basename(outTarget)}`);
 }
 for (const suffix of ['-wal', '-shm', '-journal']) {
-    const sidecar = OUT_DB + suffix;
+    const sidecar = outTarget + suffix;
     if (fs.existsSync(sidecar)) {
         fs.unlinkSync(sidecar);
         console.log(`Deleted stale ${path.basename(sidecar)}`);
     }
 }
 
-console.log(`\nWriting ${path.basename(OUT_DB)}…`);
-const out = new Database(OUT_DB);
+console.log(`\nWriting ${path.basename(outTarget)}…`);
+const out = new Database(outTarget);
 
 out.exec(`
     PRAGMA journal_mode = WAL;
@@ -1600,8 +1630,17 @@ if (hebResult) {
 out.exec('ANALYZE; PRAGMA optimize;');
 out.close();
 
+// Restore the symlink OUT_DB -> outTarget so the running server (which opened
+// it at boot via the /app/server path) and any future `docker exec` against
+// this same container still find it where they expect — see the NORMALIZE
+// comment above for why this matters.
+if (relinkAfter) {
+    fs.symlinkSync(outTarget, OUT_DB);
+    console.log(`  Re-linked ${path.basename(OUT_DB)} -> ${outTarget}`);
+}
+
 // ── Summary ────────────────────────────────────────────────────────────────────
-const statsSurf = fs.statSync(OUT_DB);
+const statsSurf = fs.statSync(outTarget);
 console.log(`\n✓ surface-index.db written`);
 console.log(`  Size: ${(statsSurf.size / 1024 / 1024).toFixed(1)} MB`);
 console.log(`  Surfaces: ${surfaceMap.size.toLocaleString()}`);

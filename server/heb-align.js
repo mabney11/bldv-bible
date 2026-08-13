@@ -503,19 +503,6 @@ function buildHebSurfaces(o) {
         audit.push({ canon_id: canon, chapter: verses[0].chapter, offset: chosen,
                      aligned_rate: +chosenRate.toFixed(4), pinned: pinned ? 1 : 0 });
 
-        // TEMP DEBUG 2026-08-13 — remove after diagnosing Psalm 83. Prints the
-        // exact runtime values feeding the verse-shift and exits immediately,
-        // before the (slow) NT phase, so this is a fast, throwaway check.
-        if (canon === 19 && verses[0].chapter === 83) {
-            console.log('[DEBUG-83] canon=', canon, 'chapter=', verses[0].chapter,
-                         'chosen=', chosen, typeof chosen, 'chosenRate=', chosenRate);
-            for (const row of verses) {
-                console.log('[DEBUG-83] row.verse=', row.verse, typeof row.verse,
-                             ' row.verse+chosen=', row.verse + chosen);
-            }
-            process.exit(0);
-        }
-
         for (const row of verses) {
             const tk = bhsTokens(canon, row.chapter, row.verse + chosen);
             const rawTk = rawBhsTokens(canon, row.chapter, row.verse + chosen);   // includes punct
