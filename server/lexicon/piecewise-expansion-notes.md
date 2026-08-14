@@ -50,3 +50,30 @@ circumstantial-looking forms for one verb is unusual. Possible explanations (tex
 variant, an edition-specific spelling, an ingestion/OCR artifact) are all speculative;
 none confirmed. Left as an empty scaffold entry rather than inventing a gloss — needs a
 real look at this edition's source/apparatus before it's added.
+
+**Style correction, 2026-08-11:** initial Coptic entries carried explanatory
+parentheticals/commentary ("was manifest (negated by ebol an pe: not) — thahaw
+(formless)", "it was coming — marachapath (hovered)"). Fieldy: "the coptic seems to
+have a lot of filler... lets shoot for simple entries that flow when reading." Reworked
+to short slash-style glosses matching his own hand-edit of `ⲛⲉϥⲟⲩⲟⲛϩ` ("became thahaw /
+formless"): `ⲉⲃⲟⲗ` "out / forth", `ⲇⲉ` "and / but", `ⲡⲉ` "is / was", `ⲉϥⲛⲏⲩ`
+"marachapath / hovered", `ϩⲓϫⲛⲙⲙⲟⲟⲩ` "over the Mayam (waters)", `ϩⲓϫⲙⲡⲛⲟⲩⲛ` "over the
+depths", `ⲛⲉⲩⲛⲟⲩⲕⲁⲕⲉ` "chashak / darkness". Apply this brevity standard to all future
+entries across every language — no explanatory asides, no em-dash commentary.
+
+**New convention, 2026-08-11:** a token added purely for grammar/flow with no
+independent counterpart in the English translation gets a bare `"—"` gloss (fieldy's
+own example: Greek `ὁ`). No Gen 1:2 token in any of the four languages below needed
+this — all had a real corresponding English word — but apply it going forward whenever
+one shows up.
+
+## 2026-08-11 — Genesis 1:2, Ge'ez
+
+Source: `node server/dump-verse-tokens.js 1 1 2` (Ge'ez token list). 4 of 12 tokens were
+already glossed (`ወምድርሰ` "and the aratz / earth", `ኢታስተርኢ` "thahaw / was formless",
+`ማይ` "water (archaic)", `እግዚአብሔር` "Yahawah Alahayam"). Added the remaining 7 unique
+surface forms, aligned against the same English as Latin/Syriac/Coptic above: `ወኢኮነት`
+"and was not", `ድሉተ` "bahaw / void", `ወጽልመት` "and chashak / darkness", `መልዕልተ` "over"
+(appears twice in the verse's token list — one lexicon entry covers both occurrences),
+`ቀላይ` "the depths", `ወመንፈሰ` "and the rawach / spirit of", `ይጼልል` "marachapath /
+hovered". Genesis 1:2 is now fully glossed across all 12 unique Ge'ez surface forms.
