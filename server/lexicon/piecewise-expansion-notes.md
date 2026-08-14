@@ -111,3 +111,44 @@ neighboring token (idiom components, doubled grammatical marking), give the
 content-bearing token the real gloss and the remaining piece(s) `"—"` — don't split one
 concept's words into misleading fragments, and don't swap which word "means" what across
 token boundaries.
+
+## 2026-08-14 — Genesis 1:3, all five languages
+
+English (live, via `/api/source/ENG/verse?book=1&chapter=1&verse=3`, NOT the static
+baseline — confirmed the two differ, same as Gen 1:2): "And Alahayam amar (spoke), 'hayah
+(be) awar (light)' and hayah (became) awar (light)." Four content words recur throughout:
+Alahayam (God), amar (said/spoke), hayah (be/become — the same root covers both the
+jussive "let there be" and the resulting "it became"), awar (light).
+
+Source tokens fetched via `node server/dump-verse-tokens.js 1 1 3`. Every language here
+fuses "and" + "said/became" into a single verb-initial token (waw/‑que consecutive) —
+same pattern as Gen 1:2's Coptic/Ge'ez "and X" compounds, not a new phenomenon:
+
+**Latin**: `Dixitque` "and amar / spoke" (dixit + enclitic ‑que "and"), `Deus` (existing,
+Alahayam), `Fiat` "hayah / let it be", `lux` "awar / light", `Et` "and" (capitalized
+verse-initial form — a separate lexicon key from lowercase `et`, case is NOT folded),
+`facta`+`est` — the periphrastic passive "was made." Content lives in the participle
+`facta` ("hayah / became"); `est` is the bare auxiliary "is/was" copula with nothing of
+its own beyond what `facta` already carries, so `"—"` per the bare-grammar-word rule.
+
+**Syriac**: filled 4 remaining empty scaffolds — `ܘܐܡ̣ܪ` "and amar / spoke", `ܢܗܘܐ`
+"hayah / let it be", `ܢܘܗܪܐ` "awar / light", `ܘܗܘ̣ܐ` "and hayah / became". `ܐܠܗܐ`
+(bare "God") was already glossed "Alahayam" from earlier work.
+
+**Coptic**: this edition's Gen 1:3 is one condensed clause, not two — `ϣⲱⲡⲉ` ("became")
+appears once at the end with no second explicit "light" repeated after it, unlike the
+English's own doubled "awar (light)." Not a mismatch, just this edition's own economy
+(same caveat class as Gen 1:2's Syriac verse-initial omission). Filled: `ⲁⲩⲱ` "and",
+`ⲡⲉϫⲁϥ` "amar / said", `ⲛϭⲓⲡⲛⲟⲩⲧⲉ` "Alahayam (God)" (the whole fused surface —
+`ⲛϭⲓ` is a postposed-subject marker with no separate content once merged into one
+token), `ϫⲉⲙⲁⲣⲉⲩⲟⲩⲉⲓⲛ` "hayah (be) awar (light)" (a three-morpheme fusion — recitative
+`ϫⲉ` + causative jussive `ⲙⲁⲣⲉ` + the noun "light" — all packed into one surface token,
+so one combined gloss rather than three fragments), `ϣⲱⲡⲉ` "hayah / became".
+
+**Ge'ez**: `ወይቤ` "and amar / spoke" (new — distinct surface from the already-glossed
+bare `ይቤ` "he said"), `ለይኩን` "hayah / let it be", `ወኮነ` "and hayah / became". Also
+tightened the pre-existing `ብርሃን` entry from bare "light" to "awar / light" to match
+this session's Translit-first convention.
+
+**Greek**: `καὶ` "and", `Γενηθήτω` "hayah / let it be", `φῶς` "awar / light" — `εἶπεν`,
+`θεός`, `ἐγένετο` were already curated from earlier work and left as-is.
