@@ -432,6 +432,22 @@ export default function Translate() {
       }
       if (admin) {
         await apiTransSaveVerse({ book_id: activeBook, chapter: activeChapter, verse: activeVerse, status, text, rich_text });
+        // saveVerseWithHistory (server.js) just snapshotted the PRIOR version
+        // into translation_history as a side effect of this save — but the
+        // History panel only ever fetches on open (toggleHistory below), so
+        // a save made while the panel is ALREADY open left it showing a
+        // stale list with no sign the new version was recorded. Fieldy,
+        // 2026-08-14: edited a verse with History open and the edit "is not
+        // showing in the history" — the server-side row was written fine,
+        // this was purely the panel never re-fetching after a save. Refresh
+        // it in place whenever it's open so the just-created entry appears
+        // immediately, same list the user is already looking at.
+        if (historyOpen) {
+          try {
+            const d = await apiTransHistory(activeBook, activeChapter, activeVerse);
+            setHistoryList(d.versions || []);
+          } catch { /* non-fatal — history panel just stays stale until reopened */ }
+        }
       } else {
         // Genuinely not an admin in this browser, even after a fresh check.
         // Local-only: never reaches the server. Persisted in THIS browser
@@ -461,7 +477,7 @@ export default function Translate() {
       setSaveState('error');
       toast('Save failed: ' + e.message, 'err');
     }
-  }, [verseData, activeBook, activeChapter, activeVerse, toast]);
+  }, [verseData, activeBook, activeChapter, activeVerse, toast, historyOpen]);
 
   // ── REVISION HISTORY ─────────────────────────────────────────────────────
   // Server-side saveVerseWithHistory snapshots the PRIOR version of a verse
