@@ -23,6 +23,18 @@ diverge further, fix the comments too.
 - Getting a change live = commit + `git push origin main` from wherever fieldy's GitHub
   credentials already are (his own dev machine, not necessarily wherever an agent's
   sandbox is), then `~/deploy.sh` on the Lightsail box.
+- **`~/deploy.sh` used to be a plain file, not a symlink — this caused a real bug, fixed
+  2026-08-14.** Because `~/deploy.sh` lives outside the `~/paleo-studio` git checkout,
+  `git pull` (the first step deploy.sh itself runs) never updated it. `deploy-blue-green.sh`
+  in the repo was retuned 2026-08-13 (health-check retry budget: 60 tries*2s=~2m ->
+  150 tries*2s=~5m, see the RETUNED comment in that file for why), but a real deploy on
+  2026-08-14 still failed at ~2m — `~/deploy.sh` was a stale manual copy predating that
+  fix. **Fixed by replacing `~/deploy.sh` with a symlink to `~/paleo-studio/deploy-blue-green.sh`**,
+  so every future edit to the repo file takes effect on the box the moment `git pull`
+  runs, with no separate manual copy step to forget. If `~/deploy.sh` is ever NOT a
+  symlink again (e.g. someone recreates it by hand), assume it can silently drift out of
+  date the same way — check `ls -la ~/deploy.sh` before trusting its behavior matches
+  what's in this repo.
 - **DB persistence, confirmed 2026-08-11 from `deploy-blue-green.sh` (checked into this
   repo — this IS what `~/deploy.sh` on the box runs):** `docker run ... -v
   /mnt/paleo-data:/data ...` — a plain bind mount from a host directory into every

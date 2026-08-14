@@ -6,6 +6,7 @@ import {
   apiGlossMissing, apiGlossCoverage, apiGlossStructure, apiGlossRootVerses, apiGlossVerse, apiGlossVerseStatus,
 } from '../lib/api.js';
 import MultiWordBlock from '../components/MultiWordBlock.jsx';
+import WordBlock from '../components/WordBlock.jsx';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import './GlossStudio.css';
 
@@ -56,20 +57,19 @@ const LANG_DIR = { heb: 'rtl', greek: 'ltr', geez: 'ltr', latin: 'ltr', syriac: 
 const MISSING_PAGE = 50;
 const VERSES_PAGE = 10;
 
-// A minimal, read-only word renderer — deliberately NOT the reader's
-// <WordBlock>, which carries a lot of interactive machinery (hover-linking,
-// search highlighting, maqaf-chip splitting, copy buttons) built around the
-// live-reader's exact data contract. Root.jsx and StrongsOverrides.jsx both
-// hit this same tradeoff and each wrote their own lightweight renderer
-// rather than reusing WordBlock here. Colors come from the SAME global
-// morphColors.css classes WordBlock itself uses (comp.css applied
-// directly). `missingSet` (root_paleo strings still lacking a lexicon.json
-// entry, from the coverage tree) flags the word with a highlighted border
-// when one of its components is the actual gap — the "which word" the
-// numbers alone don't show.
+// Reuse the SAME <WordBlock> the live Hebrew reader (HebrewViewer/Parallel)
+// renders every word with, instead of a bespoke chip renderer — Gloss
+// Studio's Hebrew view used to look nothing like the reader (small
+// disconnected glyph/gloss boxes, no transliteration line) while every OTHER
+// language already matched the reader exactly via MultiWordBlock (see
+// below). Fieldy, 2026-08-14: "lets make the view of this look like my
+// reader like the other languages." `missingSet` (root_paleo strings still
+// lacking a lexicon.json entry, from the coverage tree) still flags the word
+// with a highlighted border + explicit text flag when one of its components
+// is the actual gap — WordBlock itself has no concept of "missing," so that
+// stays a Gloss-Studio-only wrapper around it, same as before.
 function GlossWordBlock({ word, missingSet }) {
   const comps = word.components || [];
-  const sn = word.strongs ? 'H' + String(word.strongs).replace(/^H+/i, '') : '';
   const isMissing = missingSet && comps.some(c => c.css === 'root' && missingSet.has(c.paleo));
   return (
     <div className={`gs-word ${isMissing ? 'missing' : ''}`}>
@@ -86,34 +86,7 @@ function GlossWordBlock({ word, missingSet }) {
           ⚠ no lex entry
         </div>
       )}
-      <div className="gs-word-glyphs">
-        {comps.map((c, i) => (
-          <span key={i} className={`gs-glyph ${c.css || 'root'} ${c.isMark ? 'mark' : ''}`}>{c.paleo}</span>
-        ))}
-      </div>
-      <div className="gs-word-gloss">
-        {comps.map((c, i) => {
-          // Mark tokens (maqaf ־, sof-pasuq ׃, paseq ׀ …) are typographic
-          // joiners, not grammar — WordBlock.jsx renders them as a plain
-          // dimmed glyph in the word itself and never gives them a gloss
-          // chip. This component skipped that check, so an empty
-          // translation fell back to translit "-" and got wrapped in
-          // brackets like a real particle, producing a stray "[-]" glued
-          // next to its neighbor's chip. Marks carry nothing to gloss;
-          // they're already shown (dimmed) in the glyphs row above.
-          if (c.isMark) return null;
-          const text = (c.translation || c.translit || '').replace(/[[\]]/g, '');
-          if (!text) return null;
-          return (
-            <span key={i} className={`gs-gloss-part ${c.css || 'root'}`}>
-              {c.css === 'root' ? text : `[${text}]`}
-            </span>
-          );
-        })}
-      </div>
-      {sn && !/^H9/.test(sn) && (
-        <a className="gs-word-sn" href={`/roots?sn=${sn}`} target="_blank" rel="noreferrer">{sn}</a>
-      )}
+      <WordBlock wordObj={word} />
     </div>
   );
 }
