@@ -65,7 +65,7 @@ const TYPEFACES = [
   { id: 'ysabeau',     label: 'Ysabeau',     note: 'Humanist, even rhythm',      stack: "'Ysabeau', system-ui, sans-serif" },
   { id: 'opendyslexic',label: 'OpenDyslexic',note: 'Weighted letterforms',       stack: "'OpenDyslexic', system-ui, sans-serif" },
 ];
-const TYPEFACE_DEFAULT = 'alegreya';
+const TYPEFACE_DEFAULT = 'opendyslexic';
 const TYPEFACE_KEY = 'reader-typeface';
 
 // ── Gloss display mode ───────────────────────────────────────────────────────
@@ -125,7 +125,7 @@ const MARK_MODES = [
   { id: 'multi',  label: 'Multi',  note: 'each tap adds a highlight' },
   { id: 'single', label: 'Single', note: 'only the last tap stays lit' },
 ];
-const MARK_MODE_DEFAULT = 'multi';
+const MARK_MODE_DEFAULT = 'single';
 const MARK_MODE_KEY = 'reader-mark-mode';
 // Traditional Ancient Hebrew pictographic sense of each root letter — shown next to
 // the acrostic stanza heading (Psalm 119, 25, 34, 37, 111, 112, 145, Lamentations
