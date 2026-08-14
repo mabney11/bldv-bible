@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-curated on purpose. This app is a client-rendered reader with
+  thousands of possible book/chapter/word URLs (every verse, every
+  concordance entry) — trying to enumerate all of them here is what produced
+  a huge number of thin/duplicate/broken URLs getting crawled and indexed
+  instead of the real entry points. This sitemap lists only the pages worth
+  Google prioritizing; the reader itself is still fully crawlable by
+  following links from these pages (see robots.txt for what's excluded).
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://www.bldbible.com/landing</loc></url>
+  <url><loc>https://www.bldbible.com/bible?book=1&amp;chapter=1</loc></url>
+  <url><loc>https://www.bldbible.com/?book=1&amp;chapter=1</loc></url>
+  <url><loc>https://www.bldbible.com/?source=LXX&amp;book=1&amp;chapter=1&amp;verse=1</loc></url>
+  <url><loc>https://www.bldbible.com/?source=GEZ&amp;book=1&amp;chapter=1&amp;verse=1</loc></url>
+  <url><loc>https://www.bldbible.com/?source=LAT&amp;book=1&amp;chapter=1&amp;verse=1</loc></url>
+  <url><loc>https://www.bldbible.com/parallel?book=1&amp;chapter=1</loc></url>
+  <url><loc>https://www.bldbible.com/translate?book=1&amp;chapter=1&amp;verse=1</loc></url>
+  <url><loc>https://www.bldbible.com/works</loc></url>
+  <url><loc>https://www.bldbible.com/lexicon-page</loc></url>
+  <url><loc>https://www.bldbible.com/lexicon-page?lang=hebrew</loc></url>
+  <url><loc>https://www.bldbible.com/lexicon-page?lang=greek</loc></url>
+  <url><loc>https://www.bldbible.com/lexicon-page?lang=geez</loc></url>
+  <url><loc>https://www.bldbible.com/cheatsheet</loc></url>
+  <url><loc>https://www.bldbible.com/roots</loc></url>
+  <url><loc>https://www.bldbible.com/search</loc></url>
+  <url><loc>https://www.bldbible.com/share</loc></url>
+</urlset>

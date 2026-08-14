@@ -99,6 +99,31 @@ export default function Concordance() {
 
   const qkey = `${corpus}|${lemma || ''}|${word || ''}`;
 
+  // A "bad corpus" / unsupported-corpus error means this URL has nothing to
+  // show (and never will — e.g. concordance?corpus=ENG, which concordance.db
+  // has no data for). Tell search engines not to index it instead of letting
+  // them keep a broken, half-"Loading…" page in the results — this is exactly
+  // the state that was showing up in Google for bldbible.com. The tag is
+  // added/removed with the error itself, not left behind on navigation.
+  useEffect(() => {
+    if (!err) return;
+    const meta = document.createElement('meta');
+    meta.name = 'robots';
+    meta.content = 'noindex';
+    document.head.appendChild(meta);
+    return () => { document.head.removeChild(meta); };
+  }, [err]);
+
+  // Friendlier copy for the handful of error strings the API actually sends
+  // (see server.js's /api/concordance/* routes). Anything unrecognized falls
+  // back to the raw message so real bugs are still visible/debuggable.
+  const friendlyError = (e) => {
+    if (e === 'bad corpus') return `No concordance is available for "${corpus}" — it isn't one of the indexed languages.`;
+    if (e === 'word required' || e === 'lemma required') return 'No word was given to look up.';
+    if (/^concordance\.db/.test(e || '')) return 'The concordance index isn’t built yet — try again later.';
+    return e;
+  };
+
   const nameOf = (o) =>
     o.title || (o.canon_id != null ? (BOOK_NAMES[o.canon_id] || `Book ${o.canon_id}`) : (o.doc_id || o.code));
   const srcOf = (o) => o.source || READER_SRC[o.corpus] || readerSrc;
@@ -247,8 +272,18 @@ export default function Concordance() {
         </div>
       </header>
 
-      {err && <div className="root-err">⚠ {err}</div>}
-
+      {err ? (
+        // A real, final state — not a stray "Loading…" left over from a request
+        // that already failed. This is what a dead /concordance link (e.g. an
+        // English word, which has no concordance data) now shows instead of
+        // silently sitting on "Loading…" forever.
+        <div className="root-err" style={{ margin: '40px auto', maxWidth: 480, textAlign: 'center' }}>
+          ⚠ {friendlyError(err)}
+          <div style={{ marginTop: 14 }}>
+            <Link to="/landing" className="conc2-btn" style={{ textDecoration: 'none' }}>‹ back to home</Link>
+          </div>
+        </div>
+      ) : (
       <div className="conc2-body">
         {/* ── LEFT: filters + hit scrollbox ─────────────────────────────── */}
         <aside className="conc2-side">
@@ -371,6 +406,7 @@ export default function Concordance() {
           )}
         </main>
       </div>
+      )}
     </div>
   );
 }

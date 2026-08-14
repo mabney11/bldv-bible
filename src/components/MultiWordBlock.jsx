@@ -25,6 +25,16 @@ import { transliterate } from '../lib/translit.js';
 // Reader source to open occurrences in, per corpus.
 const READER_SRC = { GNT: 'LXX', LXX: 'LXX', GRC: 'LXX', GEZ: 'GEZ', LAT: 'LAT' };
 
+// Corpora concordance.db actually has tokens for (must match server.js's
+// _CONC_GROUP keys exactly). English ('ENG') is a reader/viewer source only —
+// build-concordance.py never indexes it — so it is deliberately absent here.
+// Linking a "surf"/lemma badge for a corpus outside this set 404s nowhere in
+// the UI to catch it: /api/concordance/* 400s "bad corpus" and the
+// Concordance page is left showing a stuck "Loading…" forever. Those dead
+// links were also getting crawled and indexed by Google as broken pages, so
+// this list is load-bearing for SEO, not just UX. 2026-08-14, fieldy.
+const CONC_SUPPORTED = new Set(['HEB', 'LXX', 'GNT', 'GRC', 'LAT', 'GEZ', 'SYR', 'COP']);
+
 export default function MultiWordBlock({ token, source }) {
   // Standalone sentence punctuation (። etc.) emitted by the tokenizer as its own
   // token: render a quiet thought-boundary mark instead of a word block, so the
@@ -86,6 +96,7 @@ export default function MultiWordBlock({ token, source }) {
                : (source === 'LXX' || source === 'GNT' || source === 'GRC')
                    ? (hasMorph ? 'GNT' : 'LXX')
                : source;
+  const hasConcordance = CONC_SUPPORTED.has(corpus);
   const base = `/concordance?corpus=${corpus}&source=${encodeURIComponent(source)}`;
 
   const copy = (e) => {
@@ -142,14 +153,16 @@ export default function MultiWordBlock({ token, source }) {
           <span style={{ display: 'block', opacity: 0.3, fontStyle: 'italic' }}>— not glossed —</span>
         )}
 
-        <span className="strongs-badge" style={{ marginTop: '4px', display: 'flex', gap: '4px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <a className="surf-badge-link" href={`${base}&word=${encodeURIComponent(token.word)}`} title="Surface concordance"
-             style={{ fontSize: '10px', fontFamily: 'monospace', padding: '1px 5px', borderRadius: '3px', border: '1px solid rgba(62,207,176,0.35)', background: 'rgba(62,207,176,0.08)', color: 'var(--teal, #3ecfb0)', textDecoration: 'none' }}>surf</a>
-          {hasMorph && (
-            <a className="sn-link root" href={`${base}&lemma=${encodeURIComponent(token.lemma)}`} title="Lemma concordance"
-               style={{ fontSize: '10px', fontFamily: 'monospace', padding: '1px 5px', borderRadius: '3px', border: '1px solid rgba(74,158,255,0.3)', background: 'rgba(74,158,255,0.1)', color: 'var(--blue, #4a9eff)', textDecoration: 'none' }}>{token.strongs || 'lemma'}</a>
-          )}
-        </span>
+        {hasConcordance && (
+          <span className="strongs-badge" style={{ marginTop: '4px', display: 'flex', gap: '4px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a className="surf-badge-link" href={`${base}&word=${encodeURIComponent(token.word)}`} title="Surface concordance"
+               style={{ fontSize: '10px', fontFamily: 'monospace', padding: '1px 5px', borderRadius: '3px', border: '1px solid rgba(62,207,176,0.35)', background: 'rgba(62,207,176,0.08)', color: 'var(--teal, #3ecfb0)', textDecoration: 'none' }}>surf</a>
+            {hasMorph && (
+              <a className="sn-link root" href={`${base}&lemma=${encodeURIComponent(token.lemma)}`} title="Lemma concordance"
+                 style={{ fontSize: '10px', fontFamily: 'monospace', padding: '1px 5px', borderRadius: '3px', border: '1px solid rgba(74,158,255,0.3)', background: 'rgba(74,158,255,0.1)', color: 'var(--blue, #4a9eff)', textDecoration: 'none' }}>{token.strongs || 'lemma'}</a>
+            )}
+          </span>
+        )}
       </div>
     </div>
   );

@@ -1,24 +1,52 @@
-import { Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
+import { useEffect, lazy, Suspense } from 'react';
+import { Routes, Route, Navigate, useSearchParams, useLocation } from 'react-router-dom';
 import { ToastProvider } from './components/Toast.jsx';
 
-import Landing       from './pages/Landing.jsx';
-import HebrewViewer  from './pages/HebrewViewer.jsx';
-import Parallel      from './pages/Parallel.jsx';
-import Lexicon       from './pages/Lexicon.jsx';
-import Translate     from './pages/Translate.jsx';
-import Share         from './pages/Share.jsx';
-import Root          from './pages/Root.jsx';
-import Cheatsheet    from './pages/Cheatsheet.jsx';
-import GlyphEditor   from './pages/GlyphEditor.jsx';
-import MultiViewer   from './pages/MultiViewer.jsx';
-import Concordance   from './pages/Concordance.jsx';
-import Works         from './pages/Works.jsx';
-import Reader        from './pages/Reader.jsx';
-import AdminLogin    from './pages/AdminLogin.jsx';
-import BookManager   from './pages/BookManager.jsx';
-import Search        from './pages/Search.jsx';
-import StrongsOverrides from './pages/StrongsOverrides.jsx';
-import GlossStudio      from './pages/GlossStudio.jsx';
+// Landing stays a static import: it's small (a few KB), it's the entry point
+// most visits land on, and the prerender snapshot (server/prerender.js)
+// already ships its real HTML up front — lazy-loading it would only add a
+// pointless extra network round trip for the most common case.
+import Landing from './pages/Landing.jsx';
+
+// Everything else is lazy. Before this, App.jsx statically imported every
+// page — Translate.jsx (88K), Reader.jsx (76K), CheatsheetLong.js (76K),
+// Parallel.jsx (56K), MultiViewer.jsx (48K), Share.jsx (44K), Root.jsx (40K),
+// Lexicon/HebrewViewer/GlossStudio (~36K each), GlyphEditor (28K) — so a
+// visit to ANY single page downloaded the code for all of them: one 549KB
+// (170KB gzipped) chunk regardless of which tool you actually opened. Vite/
+// Rollup code-splits each dynamic import() into its own chunk automatically,
+// so a Hebrew-reader visit no longer pays for Translate/Share/GlyphEditor/
+// admin tooling it never uses. This changes ONLY how/when the code is
+// downloaded — no component's behavior changes.
+const HebrewViewer     = lazy(() => import('./pages/HebrewViewer.jsx'));
+const Parallel         = lazy(() => import('./pages/Parallel.jsx'));
+const Lexicon          = lazy(() => import('./pages/Lexicon.jsx'));
+const Translate        = lazy(() => import('./pages/Translate.jsx'));
+const Share            = lazy(() => import('./pages/Share.jsx'));
+const Root             = lazy(() => import('./pages/Root.jsx'));
+const Cheatsheet       = lazy(() => import('./pages/Cheatsheet.jsx'));
+const GlyphEditor      = lazy(() => import('./pages/GlyphEditor.jsx'));
+const MultiViewer      = lazy(() => import('./pages/MultiViewer.jsx'));
+const Concordance      = lazy(() => import('./pages/Concordance.jsx'));
+const Works            = lazy(() => import('./pages/Works.jsx'));
+const Reader           = lazy(() => import('./pages/Reader.jsx'));
+const AdminLogin       = lazy(() => import('./pages/AdminLogin.jsx'));
+const BookManager      = lazy(() => import('./pages/BookManager.jsx'));
+const Search           = lazy(() => import('./pages/Search.jsx'));
+const StrongsOverrides = lazy(() => import('./pages/StrongsOverrides.jsx'));
+const GlossStudio      = lazy(() => import('./pages/GlossStudio.jsx'));
+
+// Shown for the brief moment a lazy page chunk is downloading (near-instant
+// on repeat visits/navigations once a chunk is cached). Deliberately quiet —
+// no layout-shifting spinner — since most transitions are fast enough that
+// this never becomes visible at all.
+function RouteFallback() {
+  return (
+    <div style={{ minHeight: '40vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text3)', fontSize: 14 }}>
+      Loading…
+    </div>
+  );
+}
 
 /**
  * URL mapping. The reader and lexicon are unified across all corpora —
@@ -113,9 +141,35 @@ function LexiconSourceRedirect() {
   return <Navigate to={`/lexicon-page?${out.toString()}`} replace />;
 }
 
+// Keeps <link rel="canonical"> (see index.html) pointed at the CURRENT
+// route on every navigation. The SPA shell only ships one static index.html
+// (no SSR), so without this every route would share whatever canonical URL
+// happened to be hardcoded in the HTML — telling search engines that pages
+// like /works or /translate are really just /landing, and should be dropped
+// from the index in its favor. Self-referencing instead keeps every real
+// page indexable on its own URL. Tracking params (utm_*, fbclid, ...) are
+// stripped so a shared link with tracking junk on it doesn't get treated as
+// a distinct canonical URL from the clean version.
+function SelfCanonical() {
+  const location = useLocation();
+  useEffect(() => {
+    const link = document.getElementById('canonical-link');
+    if (!link) return;
+    const params = new URLSearchParams(location.search);
+    for (const key of [...params.keys()]) {
+      if (key.startsWith('utm_') || IGNORED_PARAMS.has(key)) params.delete(key);
+    }
+    const qs = params.toString();
+    link.href = `${window.location.origin}${location.pathname}${qs ? '?' + qs : ''}`;
+  }, [location.pathname, location.search]);
+  return null;
+}
+
 export default function App() {
   return (
     <ToastProvider>
+      <SelfCanonical />
+      <Suspense fallback={<RouteFallback />}>
       <Routes>
         <Route path="/"               element={<RootDispatcher />} />
         <Route path="/landing"        element={<Landing />} />
@@ -141,6 +195,7 @@ export default function App() {
         <Route path="/lexicon-source" element={<LexiconSourceRedirect />} />
         <Route path="*" element={<Navigate to="/landing" replace />} />
       </Routes>
+      </Suspense>
     </ToastProvider>
   );
 }

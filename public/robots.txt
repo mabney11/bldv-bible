@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Internal admin/editing tools — not content, shouldn't be indexed.
+Disallow: /admin-login
+Disallow: /admin/
+Disallow: /book-manager
+Disallow: /glyph-editor
+Disallow: /gloss-studio
+
+# JSON endpoints — nothing here is a page.
+Disallow: /api/
+
+Sitemap: https://www.bldbible.com/sitemap.xml

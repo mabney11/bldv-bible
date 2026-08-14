@@ -235,6 +235,38 @@ const PORT = parseInt(process.env.PORT, 10) || 3000;
 // so this file can stay focused on routes.
 production.install(app, { gzip: { threshold: 1024, level: 4 } });
 
+// ── PRERENDERING (SEO) ───────────────────────────────────────────────────────
+// Serves real, page-specific HTML (title/description/content already filled
+// in) for a small, curated, bounded list of evergreen URLs — the same list
+// as public/sitemap.xml. See server/prerender.js for the full rationale.
+//
+// Placed here, before express.static's default "/" -> index.html behavior
+// and before every named route below, so it gets first look at every GET
+// request. For any path NOT on the curated list (the overwhelming majority
+// of traffic — every /api/* call, every asset, every deep reader/
+// concordance URL) renderSnapshot resolves to null immediately and this
+// calls next() straight away, so nothing else in this file changes
+// behavior. Deliberately excludes /roots — that path's real handler below
+// has its own redirect-to-first-root logic that must keep running.
+const { renderSnapshot } = require('./prerender.js');
+const INDEX_HTML_PATH = path.join(__dirname, 'public', 'index.html');
+app.use(async (req, res, next) => {
+    if (req.method !== 'GET') return next();
+    try {
+        const url = new URL(req.originalUrl, 'http://internal');
+        const html = await renderSnapshot(url.pathname, url.searchParams, PORT, INDEX_HTML_PATH);
+        if (!html) return next();
+        // no-cache like spaShell/index.html below: the snapshot embeds the
+        // current build's hashed asset filenames, so a stale cached copy
+        // would point at assets a later deploy has already removed.
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.type('html').send(html);
+    } catch (e) {
+        console.warn('[prerender] snapshot failed, falling back to the plain SPA shell:', e.message);
+        next();
+    }
+});
+
 // --- DB CONNECTIONS (opened once at startup, stay open) ---
 // Read-only handles for the corpus + surface index.  PRAGMA tuning here is
 // load-bearing: mmap_size lets SQLite map up to 256 MB of the DB file into
