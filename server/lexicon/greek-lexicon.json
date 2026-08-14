@@ -77,10 +77,10 @@
   "ἔστιν": "he is (pres)",
   "ἔχει": "he has",
   "ἡ": "the (fem nom)",
-  "ἡμέρα": "day",
+  "ἡμέρα": "yawam / day",
   "ἡμέραν": "day (acc)",
   "ἦν": "became",
-  "ἰακώβ": "Jacob",
+  "ἰακώβ": "Yaiqab / Jacob",
   "ἰερουσαλήμ": "Jerusalem",
   "ἰησοῦς": "Jesus / Joshua",
   "ἰσαάκ": "Isaac",
@@ -93,5 +93,6 @@
   "ἐπάνω" : "over", 
   "ἀβύσσου" : "the depths",
   "ἐπεφέρετο" : "marachapath / hovered",
-  "ὕδατος" : "mayam / waters"
+  "ὕδατος" : "mayam / waters",
+  "Δαυείδ" : "Dawad / David"
 }
