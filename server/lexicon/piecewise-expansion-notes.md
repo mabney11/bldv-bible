@@ -72,8 +72,42 @@ one shows up.
 Source: `node server/dump-verse-tokens.js 1 1 2` (Ge'ez token list). 4 of 12 tokens were
 already glossed (`ወምድርሰ` "and the aratz / earth", `ኢታስተርኢ` "thahaw / was formless",
 `ማይ` "water (archaic)", `እግዚአብሔር` "Yahawah Alahayam"). Added the remaining 7 unique
-surface forms, aligned against the same English as Latin/Syriac/Coptic above: `ወኢኮነት`
-"and was not", `ድሉተ` "bahaw / void", `ወጽልመት` "and chashak / darkness", `መልዕልተ` "over"
-(appears twice in the verse's token list — one lexicon entry covers both occurrences),
-`ቀላይ` "the depths", `ወመንፈሰ` "and the rawach / spirit of", `ይጼልል` "marachapath /
-hovered". Genesis 1:2 is now fully glossed across all 12 unique Ge'ez surface forms.
+surface forms, aligned against the same English as Latin/Syriac/Coptic above: `ድሉተ`
+"bahaw / void", `ወጽልመት` "and chashak / darkness", `መልዕልተ` "over" (appears twice in the
+verse's token list — one lexicon entry covers both occurrences), `ቀላይ` "the depths",
+`ወመንፈሰ` "and the rawach / spirit of", `ይጼልል` "marachapath / hovered". Genesis 1:2 is
+now fully glossed across all 12 unique Ge'ez surface forms.
+
+**Correction, 2026-08-14:** `ወኢኮነት` was first glossed "and was not" — fieldy flagged
+that this introduces a concept the English translation doesn't have ("gez has 'and was
+not' 'void' but english does not"). Grammatically it's real (ወ "and" + ኢ "not" + ኮነት
+"was/became, 3fs"), but it's a negated auxiliary that pairs with the following `ድሉተ` to
+express "void" as a two-word negated construction — Ge'ez idiom, not an extra idea.
+Since the "void" content lives entirely in `ድሉተ`, `ወኢኮነት` carries no independent
+counterpart of its own in the English and was switched to `"—"` per the bare-grammar-word
+convention above, rather than spelling out a negation the English side never shows.
+
+**Correction, 2026-08-14 — Coptic and Greek, same verse.** Same issue as the Ge'ez fix
+above, two more places: fieldy flagged that Coptic's `ⲉⲃⲟⲗ`/`ⲁⲛ`/`ⲡⲉ` ("out/forth" /
+"not" / "is/was") don't make sense as standalone glosses reading in sequence. All three
+are the trailing pieces of the `ⲛⲉϥⲟⲩⲟⲛϩ ⲉⲃⲟⲗ ⲁⲛ ⲡⲉ` idiom ("was not manifest" =
+formless) — `ⲛⲉϥⲟⲩⲟⲛϩ` alone already carries the full "became thahaw / formless" gloss,
+so `ⲉⲃⲟⲗ`/`ⲁⲛ`/`ⲡⲉ` (completive particle / negation particle / copula) add no further
+independent content. Switched all three to `"—"`.
+
+Separately, fieldy asked whether it's OK to adjust Greek `ἡ`/`δέ` — reading in token
+order they show "the" then "and", when natural English is "and the." Rather than
+swapping which word says "and" and which says "the" (that would misattribute meaning
+neither token actually carries), fixed the real inconsistency: `ἡ` is just the feminine
+nominative form of the definite article already glossed `"—"` under `ὁ` — it had been
+left as "the (fem nom)" instead of matching. Set `ἡ` to `"—"` too, so the visible
+sequence naturally reads "— and Ge(arth)" i.e. just "and earth," no swap needed. `δέ`
+stays "but / and" — postpositive particles normally sort second in Greek word order but
+translate first in English; that's expected interlinear behavior, not a bug, and
+resolves itself here now that the article contributes nothing to read around.
+
+**General rule going forward:** when a token's content is already fully carried by a
+neighboring token (idiom components, doubled grammatical marking), give the
+content-bearing token the real gloss and the remaining piece(s) `"—"` — don't split one
+concept's words into misleading fragments, and don't swap which word "means" what across
+token boundaries.
