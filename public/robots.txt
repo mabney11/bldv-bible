@@ -12,3 +12,4 @@ Disallow: /gloss-studio
 Disallow: /api/
 
 Sitemap: https://www.bldbible.com/sitemap.xml
+Sitemap: https://www.bldbible.com/sitemap-roots.xml

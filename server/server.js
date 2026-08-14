@@ -1054,9 +1054,20 @@ app.get('/landing',        spaShell);
 app.get('/share',          spaShell);
 app.get('/cheatsheet',     spaShell);
 app.get('/glyph-editor',   spaShell);
-app.get('/root',           spaShell);
-app.get('/roots',          spaShell);
-app.get('/surfaces',       spaShell);
+// NOTE: /root, /roots and /surfaces are deliberately NOT registered here.
+// Each has its own more specific handler further down (search "ROOT /
+// SURFACE EXPLORER ROUTES") that 302-redirects a bare visit to the
+// alphabetically-first root/surface (or the /roots equivalent, for /root's
+// legacy-alias case) instead of just serving the shell. Registering a
+// spaShell catch-all here for these three would have shadowed those
+// handlers completely — Express runs the FIRST matching app.get() for a
+// path and never reaches the second — which is exactly what was happening
+// until 2026-08-14: bare /roots and /surfaces silently served the shell
+// with no redirect at all, and /root never redirected to /roots either.
+// Found while investigating why Google indexed a generic /roots snapshot
+// instead of any specific root entry. The later handlers still call
+// res.sendFile(index.html) for the non-redirect case, so hard-refresh
+// keeps working exactly as it did before — nothing here regresses.
 app.get('/parallel',       spaShell);
 app.get('/translate',      spaShell);
 app.get('/read',           spaShell);   // legacy → redirect handled by React
@@ -8659,6 +8670,33 @@ app.get('/api/root-explorer/list', production.cache(60), (req, res) => {
     } catch (err) {
         console.error('/api/root-explorer/list failed:', err);
         res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /sitemap-roots.xml — one <url> per Hebrew root (~8,600+ entries as of
+// 2026-08-14). public/sitemap.xml is hand-curated on purpose (see its own
+// comment) and deliberately excludes the long tail of individual root pages
+// — but that meant Google had literally no way to discover a specific page
+// like /roots?sn=H2995 except by accident (following an internal link on a
+// page that happened to already be crawled). This is generated at request
+// time rather than baked into public/ because, like every other DB-backed
+// route here, the word data doesn't exist until the container's /data
+// volume is mounted at startup — it isn't available at Docker build time.
+// Cached the same way the JSON endpoints above are; the root list only
+// changes on deploy. Referenced from robots.txt as a second Sitemap: line
+// alongside the curated one — Search Console also lets both be submitted
+// directly, which is how these got registered for bldbible.com.
+app.get('/sitemap-roots.xml', production.cache(3600), (req, res) => {
+    try {
+        const urls = getRootNavIndex()
+            .map(e => `  <url><loc>https://www.bldbible.com/roots?sn=${encodeURIComponent(e.sn)}</loc></url>`)
+            .join('\n');
+        res.type('application/xml').send(
+            `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`
+        );
+    } catch (err) {
+        console.error('/sitemap-roots.xml failed:', err);
+        res.status(500).send('');
     }
 });
 

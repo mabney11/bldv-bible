@@ -23,11 +23,20 @@
  * only). 2026-08-14 (later same day): generalized the reader/parallel/
  * translate routes to any real book+chapter, and added the Greek/Ge'ez/
  * Latin reader — this is a real page-load-time win for actual traffic
- * (people don't only ever read Genesis 1), not just a crawler nicety. Still
- * deliberately NOT covering the true long tail (every concordance entry,
- * every lexicon word) — that's what produced a flood of thin/broken indexed
- * pages in the first place (see the "bad corpus" fix); a wrong/missing
- * canonical-book validation there would repeat that mistake. Anything not
+ * (people don't only ever read Genesis 1), not just a crawler nicety.
+ * 2026-08-14 (later still): added the Hebrew root explorer (/roots?sn=X,
+ * ~8,600+ real Strong's-number entries, each with its own real title/
+ * gloss/occurrence content) after a search for a real word ("yabanaal")
+ * surfaced a generic /lexicon-page and an unrelated root instead of the
+ * actual entry — there was no per-page content OR title to distinguish one
+ * root from another. Deliberately still NOT covering the true unbounded
+ * long tail (every concordance entry, every surface/inflected word form) —
+ * that's what produced a flood of thin/broken indexed pages in the first
+ * place (see the "bad corpus" fix); a wrong/missing canonical-identity
+ * validation there would repeat that mistake. The root explorer is exempt
+ * from that concern because its identity space is exact and bounded (every
+ * `sn` comes straight from getRootNavIndex(), the same source the sitemap
+ * is generated from — nothing free-text or guessable). Anything not
  * matched by ROUTES below falls through to the ordinary SPA shell, exactly
  * as before this file existed.
  */
@@ -246,6 +255,45 @@ const ROUTES = {
       };
     },
   }],
+
+  // A single Hebrew root/Strong's-number entry, e.g. /roots?sn=H2995
+  // (Yaban-Al). 2026-08-14: added after "yabanaal" searches surfaced a
+  // generic /lexicon-page and an unrelated root's snapshot instead of this
+  // exact entry — Google had no real content OR title for any specific root
+  // page to rank, and no way to discover one directly (see
+  // sitemap-roots.xml in server.js). Backed by /api/root-explorer/root,
+  // the same endpoint the real client-side page calls, so this can never
+  // drift out of sync with what a real visitor sees.
+  '/roots': [{
+    match: (q) => !!(q.get('sn') || q.get('root')),
+    build: async (q, port) => {
+      const sn = q.get('sn');
+      const root = q.get('root');
+      const qs = sn ? `sn=${encodeURIComponent(sn)}` : `root=${encodeURIComponent(root)}`;
+      const d = await fetchJSON(port, `/api/root-explorer/root?${qs}`);
+      const name = d.lemmaTranslit || d.root;
+      const gloss = d.lexicon || null;
+      const total = d.total || 0;
+      const occursText = `${total.toLocaleString()} time${total === 1 ? '' : 's'}`;
+
+      const surfaceItems = (d.surfaces || []).slice(0, 20)
+        .map((s) => `<li>${escapeHtml(s.word_raw)} — ${s.occ.toLocaleString()} occurrence${s.occ === 1 ? '' : 's'}</li>`)
+        .join('\n        ');
+      const bookItems = (d.by_book || []).slice(0, 15)
+        .map((b) => `<li>${escapeHtml(b.name)} — ${b.occ.toLocaleString()}</li>`)
+        .join('\n        ');
+
+      const title = `${name}${d.sn ? ` (${d.sn})` : ''} | ${APP_TITLE}`;
+      const description = `${name}${d.sn ? ` (Strong's ${d.sn})` : ''}${gloss ? ` — ${gloss}` : ''}. Occurs ${occursText} in Scripture. Paleo-Hebrew root explorer with verse-by-verse occurrences.`;
+      const body = `<h1>${escapeHtml(name)}${d.sn ? ` — Strong's ${escapeHtml(d.sn)}` : ''}</h1>
+      ${gloss ? `<p>${escapeHtml(gloss)}</p>` : ''}
+      <p>Occurs ${occursText} in Scripture.</p>
+      ${surfaceItems ? `<h2>Surface forms</h2>\n      <ul>\n        ${surfaceItems}\n      </ul>` : ''}
+      ${bookItems ? `<h2>By book</h2>\n      <ul>\n        ${bookItems}\n      </ul>` : ''}${NAV_LINKS}`;
+
+      return { title, description, body };
+    },
+  }],
 };
 
 // Simple, static, description-only pages — no per-request DB fetch, just a
@@ -263,12 +311,16 @@ const STATIC_PAGES = {
     description: 'A quick-reference guide to the grammatical tags and token fields used throughout the reader.',
     heading: 'Token Cheatsheet',
   },
-  // NOTE: deliberately no '/roots' entry, even though it's in sitemap.xml.
-  // server.js's real /roots handler redirects bare /roots (no sn/root param)
-  // to the alphabetically-first root, AND serves real per-root content for
-  // /roots?root=X — a prerender snapshot here (registered before that
-  // handler runs) would swallow BOTH behaviors behind one generic static
-  // page. Google still indexes it fine by following the existing redirect.
+  // NOTE: deliberately no '/roots' entry HERE — it has its own real,
+  // per-entry ROUTES handler above instead (see "A single Hebrew root..."),
+  // since every /roots?sn=X is a genuinely different page. A STATIC_PAGES
+  // entry matches ANY query string (`match: () => true`), which would wrongly
+  // swallow a bare /roots visit (no sn/root param) too — that case needs to
+  // fall through to server.js's real handler, which 302-redirects it to the
+  // alphabetically-first root (see the "ROOT / SURFACE EXPLORER ROUTES"
+  // comment in server.js — until 2026-08-14 that redirect was dead code,
+  // shadowed by an earlier duplicate route registration; fixed alongside
+  // this change).
   '/search': {
     title: `Search | ${APP_TITLE}`,
     description: "Search across Hebrew, Greek, Latin and Ge'ez scripture and literary works.",

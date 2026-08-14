@@ -4,6 +4,7 @@ import { useTheme } from '../hooks/useTheme.js';
 import { usePaleoMode } from '../hooks/usePaleoMode.js';
 import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
+import usePageTitle from '../hooks/usePageTitle.js';
 import { BOOK_NAMES, translit } from '../lib/books.js';
 import { paleoToSVG, getPaleoMode } from '../lib/paleoGlyphs.js';
 import {
@@ -503,6 +504,22 @@ export default function Root({ mode = 'root' }) {
         ? `${detail.lemmaTranslit || translit(detail.root)} — ${(detail.total || 0).toLocaleString()} occurrences`
         : `${translit(detail.surface)} — ${(detail.total || 0).toLocaleString()} occurrences`)
     : (detailErr ? 'Error' : 'Loading…');
+
+  // Real per-entry <title>/<meta description> — see usePageTitle.js for why.
+  // Skipped while `detail` is still loading (null args leave the previous
+  // page's title alone rather than flashing a "Loading…" title).
+  const occursText = (n) => `${(n || 0).toLocaleString()} time${n === 1 ? '' : 's'}`;
+  const pageTitle = detail && (
+    detail.kind === 'root'
+      ? `${detail.lemmaTranslit || translit(detail.root)} (${detail.sn}) — Paleo-Hebrew Translation Studio`
+      : `${translit(detail.surface)}${detail.strongs ? ` (${detail.strongs})` : ''} — Paleo-Hebrew Translation Studio`
+  );
+  const pageDescription = detail && (
+    detail.kind === 'root'
+      ? `${detail.lemmaTranslit || translit(detail.root)} (Strong's ${detail.sn})${detail.lexicon ? ` — ${detail.lexicon}` : ''}. Occurs ${occursText(detail.total)} in Scripture. Paleo-Hebrew root explorer with verse-by-verse occurrences.`
+      : `${translit(detail.surface)}${detail.strongs ? ` — Strong's ${detail.strongs}` : ''}, a surface form of the root ${translit(detail.root)}. Occurs ${occursText(detail.total)} in Scripture.`
+  );
+  usePageTitle(pageTitle, pageDescription);
 
   return (
     <div className="root-page">
