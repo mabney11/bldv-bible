@@ -21,7 +21,7 @@ export default function Landing() {
           <div className="landing-logo-glyph">𐤀𐤁</div>
         </div>
         <h1 className="landing-title">
-          Paleo-Hebrew <span>Translation Studio</span>
+          Blood-Line Descendant Bible<br /><span>Study Tool</span>
         </h1>
         <div className="landing-subtitle">
           Hebrew · Greek · Latin · Ge&#39;ez — scriptures, plus a library of works

@@ -1,13 +1,50 @@
 import { useState, useEffect, useRef, useCallback, useMemo, Component } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
+import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
 import { sqToPaleo } from '../lib/sqToPaleo.js';
 import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
+import { TYPEFACES } from '../lib/typefaces.js';
+// Same reading typefaces the novel Reader offers (see ../lib/typefaces.js) —
+// pulled in here 2026-08-15 so the English column can look like the Reader
+// instead of the plain system-UI stack it used to render in. Self-hosted,
+// same as Reader.jsx, so it works offline/behind ngrok with no Google CDN
+// request. The four TeX/OSP faces (Cochineal, Antykwa, Coelacanth,
+// Kierkegaard) have no @fontsource package and fall back to Alegreya until
+// their .woff2 files are dropped in /fonts/ — see Reader.jsx's own note.
+import '@fontsource/alegreya/400.css';
+import '@fontsource/alegreya/700.css';
+import '@fontsource/ysabeau/400.css';
+import '@fontsource/ysabeau/600.css';
+import '@fontsource/opendyslexic/400.css';
+import '@fontsource/opendyslexic/700.css';
 import './Parallel.css';
 import { isPlaceholderGloss, hasTrailingMaqaf } from '../components/WordBlock.jsx';
 import { getAdminStatus, getLocalVersesForChapter, mergeChapterVersesWithLocal } from '../lib/localOverlay.js';
+
+// ── English column: text size + typeface (persisted) ───────────────────────
+// Own keys, deliberately NOT shared with Reader.jsx's 'reader-font'/
+// 'reader-typeface' — this page's English column sits in a dense two-column
+// layout next to the Hebrew side, not a full-width reading page, so it gets
+// its own independent size range/default rather than inheriting whatever a
+// reader has their (much wider) novel Reader set to. The typeface CATALOG is
+// shared (../lib/typefaces.js); the DEFAULT is not — OpenDyslexic here,
+// Alegreya there, per the reader's 2026-08-15 request.
+const PAR_FONT_MIN = 12, PAR_FONT_MAX = 32, PAR_FONT_DEFAULT = 18;
+const PAR_TYPEFACE_DEFAULT = 'opendyslexic';
+const PAR_TYPEFACE_KEY = 'par-en-typeface';
+// Hebrew column: reuses the SAME --paleo-size/--sub-size CSS custom
+// properties the Root/Surface Explorer and Hebrew Viewer already use (see
+// useLocalStorageNumber's cssVar param), but under Parallel-specific
+// localStorage keys — so adjusting Hebrew glyph size here never changes
+// what those other pages default to (and vice versa), even though the CSS
+// variable name is shared. Defaults match this page's existing hardcoded
+// Parallel.css values (30px / 11px) so shipping this changes nothing for a
+// reader who never opens the new size controls.
+const PAR_PALEO_MIN = 16, PAR_PALEO_MAX = 60;
+const PAR_SUB_MIN = 8, PAR_SUB_MAX = 22;
 
 // A component whose text carries no Paleo-Hebrew letter (U+10900–U+1091F) has no
 // glyph in the Paleo script — it's punctuation or a literal mark (sof-pasuq ׃,
@@ -20,7 +57,7 @@ const hasPaleo = (s) => PALEO_LETTER_RE.test(s || '');
 // here, so its label names that reader. Greek folds LXX/GNT/GRC together.
 const READER_NAME = {
   BHS: 'Hebrew', HEB: 'Hebrew', GEZ: "Ge'ez", SYR: 'Syriac',
-  LXX: 'Greek', GRC: 'Greek', GNT: 'Greek',
+  COP: 'Coptic', LXX: 'Greek', GRC: 'Greek', GNT: 'Greek',
   LAT: 'Latin', ENG: 'English',
 };
 
@@ -63,7 +100,7 @@ const dirForScript = (s) => (RTL_SCRIPTS.has(s) ? 'rtl' : 'ltr');
 // Language hierarchy — when the chosen language has no text for a book, fall
 // back down this list (Hebrew first). BHS = the glossed Paleo OT; HEB = the
 // wider Hebrew source (NT, deuterocanon, works) that BHS/tokens_bhs doesn't hold.
-const LANG_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'LXX', 'GNT', 'GRC', 'LAT'];
+const LANG_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'COP', 'LXX', 'GNT', 'GRC', 'LAT'];
 
 const parseJ = (v, fb) => Array.isArray(v) ? v : (() => { try { return JSON.parse(v); } catch { return fb; } })();
 
@@ -584,6 +621,47 @@ export default function Parallel() {
   const [legendOpen, setLegendOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
+  // ── English text size (persisted) — same stepper pattern as Reader.jsx's
+  // fontPx, just a narrower range/default suited to this page's two-column
+  // layout (see PAR_FONT_MIN/MAX/DEFAULT above).
+  const [fontPx, setFontPx] = useState(() => {
+    const v = parseInt(localStorage.getItem('par-en-size') || '', 10);
+    return (v >= PAR_FONT_MIN && v <= PAR_FONT_MAX) ? v : PAR_FONT_DEFAULT;
+  });
+  useEffect(() => { localStorage.setItem('par-en-size', String(fontPx)); }, [fontPx]);
+
+  // ── English typeface (persisted) — same validate-against-catalogue pattern
+  // as Reader.jsx's typeface state; see PAR_TYPEFACE_KEY/DEFAULT above for
+  // why this page uses its own key instead of Reader's.
+  const [typeface, setTypeface] = useState(() => {
+    try {
+      const saved = localStorage.getItem(PAR_TYPEFACE_KEY);
+      return TYPEFACES.some(f => f.id === saved) ? saved : PAR_TYPEFACE_DEFAULT;
+    } catch { return PAR_TYPEFACE_DEFAULT; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem(PAR_TYPEFACE_KEY, typeface); } catch { /* non-fatal */ }
+  }, [typeface]);
+  const typefaceStack = useMemo(
+    () => (TYPEFACES.find(f => f.id === typeface) || TYPEFACES[0]).stack,
+    [typeface]
+  );
+
+  // ── Hebrew glyph size (persisted) — reuses the app-wide --paleo-size/
+  // --sub-size CSS vars (see useLocalStorageNumber's doc comment) under
+  // page-scoped keys. The hook writes its value straight onto :root, which
+  // would otherwise permanently shadow this page's old
+  // `@media (max-width: 760px) { .pl-root { --paleo-size: 26px } }` rule
+  // (an inline :root style always wins over a stylesheet rule, media query
+  // or not) — so the FIRST-EVER default (nothing saved yet) is computed
+  // from the viewport once here, to preserve the smaller mobile default a
+  // reader who never opens the size stepper still gets. Once a reader
+  // actually picks a size, that's what sticks regardless of viewport.
+  const [paleoSize, setPaleoSize] = useLocalStorageNumber(
+    'par-paleo-size', window.innerWidth <= 760 ? 26 : 30, '--paleo-size'
+  );
+  const [subSize, setSubSize] = useLocalStorageNumber('par-sub-size', 11, '--sub-size');
+
   const srcMeta = sources.find(s => s.id === lang) || { id: lang, label: lang, script: 'paleo-hebrew' };
   const dir = dirForScript(srcMeta.script);
   // Does THIS language carry a Strong's-tagged token stream for THIS book?
@@ -926,7 +1004,8 @@ export default function Parallel() {
   const hebHref = `/?${lang && lang !== 'BHS' ? `source=${encodeURIComponent(lang)}&` : ''}book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`;
 
   return (
-    <div className={`pl-root ${perLine ? 'verse-per-line' : ''} ${verse != null ? 'single-verse' : ''}`}>
+    <div className={`pl-root ${perLine ? 'verse-per-line' : ''} ${verse != null ? 'single-verse' : ''}`}
+         style={{ '--par-en-size': `${fontPx}px`, '--par-en-font': typefaceStack }}>
       <div className="pl-top-bar">
         <div className="pl-row1">
           <Link to="/landing" className="pl-logo" title="Home" aria-label="Home">𐤀𐤁</Link>
@@ -963,6 +1042,44 @@ export default function Parallel() {
         {settingsOpen && (
           <div className="pl-settings">
             <label><input type="checkbox" checked={perLine} onChange={e => setPerLine(e.target.checked)} /> One verse per line</label>
+            <div className="pl-gloss-row">
+              <span className="pl-gloss-label">Text size</span>
+              <div className="pl-size-stepper">
+                <button type="button" className="pl-size-btn" disabled={fontPx <= PAR_FONT_MIN}
+                        onClick={() => setFontPx(v => Math.max(PAR_FONT_MIN, v - 1))} aria-label="Smaller English text">A−</button>
+                <span className="pl-size-val">{fontPx}</span>
+                <button type="button" className="pl-size-btn" disabled={fontPx >= PAR_FONT_MAX}
+                        onClick={() => setFontPx(v => Math.min(PAR_FONT_MAX, v + 1))} aria-label="Larger English text">A+</button>
+              </div>
+            </div>
+            <div className="pl-gloss-row">
+              <span className="pl-gloss-label">Hebrew size</span>
+              <div className="pl-size-stepper">
+                <button type="button" className="pl-size-btn" disabled={paleoSize <= PAR_PALEO_MIN}
+                        onClick={() => { setPaleoSize(Math.max(PAR_PALEO_MIN, paleoSize - 2)); setSubSize(Math.max(PAR_SUB_MIN, subSize - 1)); }}
+                        aria-label="Smaller Hebrew text">𐤀−</button>
+                <span className="pl-size-val">{paleoSize}</span>
+                <button type="button" className="pl-size-btn" disabled={paleoSize >= PAR_PALEO_MAX}
+                        onClick={() => { setPaleoSize(Math.min(PAR_PALEO_MAX, paleoSize + 2)); setSubSize(Math.min(PAR_SUB_MAX, subSize + 1)); }}
+                        aria-label="Larger Hebrew text">𐤀+</button>
+              </div>
+            </div>
+            <div className="pl-gloss-row">
+              <span className="pl-gloss-label">English typeface</span>
+              <div className="pl-gloss-chips">
+                {TYPEFACES.map(f => (
+                  <button key={f.id} type="button"
+                          className={`pl-gloss-chip ${typeface === f.id ? 'sel' : ''}`}
+                          style={{ fontFamily: f.stack }}
+                          onClick={() => setTypeface(f.id)}
+                          aria-pressed={typeface === f.id}
+                          title={f.note}>
+                    <span className="pl-gloss-name">{f.label}</span>
+                    <span className="pl-gloss-note">{f.note}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="pl-gloss-row">
               <span className="pl-gloss-label">Glosses</span>
               <div className="pl-gloss-chips">

@@ -5,10 +5,10 @@
  * Feature first, reference after (changed 2026-08-11, fieldy: "put the
  * feature first and then details"):
  *
- *     Paleo Studio | Deuteronomy 6
+ *     Blood-Line Descendant Bible Study Tool | Deuteronomy 6
  *     Parallel | Deuteronomy 6:4
  *     Translation Studio | 1 Adam and Eve 1:12
- *     Paleo Studio | Apocalypse of Abraham 1 · not translated
+ *     Blood-Line Descendant Bible Study Tool | Apocalypse of Abraham 1 · not translated
  *
  * This reverses an earlier reference-first convention (kept the surface name
  * readable even when a narrow tab truncates the tail) in favor of every tab
@@ -31,7 +31,9 @@
  */
 import { useEffect } from 'react';
 
-export const APP_NAME = 'Paleo Studio';
+// 2026-08-15: rebranded from "Paleo Studio" (née "Paleo-Hebrew Translation
+// Studio") — same rationale as index.html/prerender.js's title strings.
+export const APP_NAME = 'Blood-Line Descendant Bible Study Tool';
 
 /** Build a reference string: "Genesis 1", "Genesis 1:5", "Genesis" */
 export function formatRef(bookName, chapter, verse) {

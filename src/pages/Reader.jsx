@@ -6,6 +6,7 @@ import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.j
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { computeWordParts } from '../components/WordBlock.jsx';
 import { transliterate } from '../lib/translit.js';
+import { TYPEFACES } from '../lib/typefaces.js';
 // Same morphology color system Parallel/HebrewViewer use (.mod-conj, .pfm-3ms,
 // .root, …) — imported here so the Hebrew reading mode below colors each
 // transliterated morpheme identically to the rest of the app.
@@ -46,26 +47,11 @@ const FONT_MIN = 5, FONT_MAX = 32, FONT_DEFAULT = 20;
 // ── Reading typefaces ────────────────────────────────────────────────────────
 // Chosen for legibility rather than flavour. `id` is what we persist, so never
 // rename one — add a new entry instead, or a saved preference silently falls back.
-//   • lexend     — designed to reduce visual stress; the default.
-//   • atkinson   — Braille Institute; letterforms deliberately disambiguated
-//                  (I / l / 1, O / 0) for low vision.
-//   • opendyslexic — weighted bottoms resist letter-flipping.
-//   • inter      — neutral, very even rhythm at small sizes.
-//   • verdana / tahoma / arial — system faces, wide apertures, zero load cost.
-//   • georgia    — the one serif kept, for readers who want one.
-// `tweak` carries per-face optical corrections (see [data-typeface] in Reader.css).
-const TYPEFACES = [
-  { id: 'alegreya',    label: 'Alegreya',    note: 'Warm literary serif',        stack: "'Alegreya', Georgia, serif" },
-  { id: 'cochineal',   label: 'Cochineal',   note: 'Book serif, Crimson lineage',stack: "'Cochineal', 'Alegreya', Georgia, serif" },
-  { id: 'antykwa',     label: 'Antykwa Toruńska', note: 'Polish book face',      stack: "'Antykwa Torunska', 'Alegreya', Georgia, serif" },
-  { id: 'coelacanth-standard', label: 'Coelacanth', note: 'Standard optical size', stack: "'Coelacanth', 'Alegreya', Georgia, serif" },
-  { id: 'coelacanth',  label: 'Coelacanth Pearl', note: 'Old-style, text size',  stack: "'Coelacanth Pearl', 'Coelacanth', 'Alegreya', Georgia, serif" },
-  { id: 'coelacanth-display', label: 'Coelacanth Display', note: 'Larger optical size', stack: "'Coelacanth Display', 'Coelacanth', 'Alegreya', Georgia, serif" },
-  { id: 'kierkegaard', label: 'Kierkegaard', note: 'Calligraphic',               stack: "'Kierkegaard', 'Alegreya', Georgia, serif" },
-  { id: 'ysabeau',     label: 'Ysabeau',     note: 'Humanist, even rhythm',      stack: "'Ysabeau', system-ui, sans-serif" },
-  { id: 'opendyslexic',label: 'OpenDyslexic',note: 'Weighted letterforms',       stack: "'OpenDyslexic', system-ui, sans-serif" },
-];
-const TYPEFACE_DEFAULT = 'opendyslexic';
+// Catalog itself lives in ../lib/typefaces.js (2026-08-15 extraction) so
+// Parallel.jsx's English column can offer the exact same set of faces
+// without a second hand-maintained copy — see that file's own comment for
+// the per-face notes.
+const TYPEFACE_DEFAULT = 'alegreya';
 const TYPEFACE_KEY = 'reader-typeface';
 
 // ── Gloss display mode ───────────────────────────────────────────────────────
@@ -125,7 +111,7 @@ const MARK_MODES = [
   { id: 'multi',  label: 'Multi',  note: 'each tap adds a highlight' },
   { id: 'single', label: 'Single', note: 'only the last tap stays lit' },
 ];
-const MARK_MODE_DEFAULT = 'single';
+const MARK_MODE_DEFAULT = 'multi';
 const MARK_MODE_KEY = 'reader-mark-mode';
 // Traditional Ancient Hebrew pictographic sense of each root letter — shown next to
 // the acrostic stanza heading (Psalm 119, 25, 34, 37, 111, 112, 145, Lamentations

@@ -461,13 +461,7 @@ const SOURCES = {
     GEZ: { id: 'GEZ', label: "Ge'ez (BETMAS)",   script: 'ethiopic', has_tokens: false, corpora: ['GEZ'] },
     LAT: { id: 'LAT', label: 'Latin (Vulgate)',  script: 'latin',    has_tokens: false, corpora: ['LAT'] },
     SYR: { id: 'SYR', label: 'Syriac (Peshitta)',script: 'syriac',   has_tokens: false, corpora: ['SYR'] },
-    // Coptic (Sahidic) dropped 2026-08-15: corpus.db's COP rows were ~2.8%
-    // literal "..." placeholders overall, concentrated as high as 51.6% in
-    // some books (Nahum) — real gaps in the ingested source, not a display
-    // bug. Confirmed every book with COP text also has at least one other
-    // original-language corpus (Latin/Syriac/Ge'ez/Greek/Hebrew), so nothing
-    // is exclusively Coptic — safe to fully remove rather than patch around
-    // permanent holes in production. See piecewise-expansion-notes.md.
+    COP: { id: 'COP', label: 'Coptic (Sahidic)', script: 'coptic',   has_tokens: false, corpora: ['COP'] },
     // Hebrew apocrypha / pseudepigrapha you ingested into corpus.db (Jasher, Aristeas,
     // Megillat Antiochus, …). BHS stays the paleo/morphology reader off bible.db; this
     // surfaces the corpus.db Hebrew material BHS can't see.
@@ -4105,7 +4099,7 @@ app.get('/api/source/:src/verse', production.cache(60), (req, res) => {
     // e.g. Matthew=40), and NULL for doc-only works. Selecting `canon_id`
     // directly crashed every canonical (non-doc) query on this route with
     // "no such column: canon_id" for every corpus.db source (GEZ, LXX, LAT,
-    // SYR, HEB, GRC), not just ENG. Reverted to using `row.book_id`.
+    // SYR, COP, HEB, GRC), not just ENG. Reverted to using `row.book_id`.
     if (src.id === 'ENG' && row.book_id != null) {
         try {
             const t = translationDb.stmts.getVerse.get(row.book_id, ch, v);
@@ -4473,7 +4467,7 @@ app.get('/api/source/:src/chapter', production.cache(60), (req, res) => {
     // `canon_id AS book_id`, so `verses[0].book_id` already IS canon_id (NULL
     // for doc-only works). Selecting `canon_id` directly crashed every
     // canonical chapter query on this route ("no such column: canon_id") for
-    // every corpus.db source — GEZ, LXX, LAT, SYR, HEB, GRC — not just
+    // every corpus.db source — GEZ, LXX, LAT, SYR, COP, HEB, GRC — not just
     // ENG. Reverted to using the row's own book_id.
     if (src.id === 'ENG' && !byDoc && verses.length) {
         try {
@@ -4568,13 +4562,13 @@ const _CONC_NORM = {HEB:_normHeb,LXX:_normGrk,GNT:_normGrk,GRC:_normGrk,LAT:_nor
 // Corpora that share a script/orthography are searched as ONE pool, so a Greek
 // word opened from the NT also returns its Septuagint (OT) and Greek-literature
 // (works) occurrences. Greek = LXX + GNT + GRC; the rest stand alone (a Syriac
-// word and a Latin word are not the same even though both default to the same norm).
+// and a Coptic word are not the same even though both default to the Latin norm).
 const _CONC_GROUP = {
     HEB:['HEB'],
     LXX:['LXX','GNT','GRC'], GNT:['LXX','GNT','GRC'], GRC:['LXX','GNT','GRC'],
-    LAT:['LAT'], GEZ:['GEZ'], SYR:['SYR'],
+    LAT:['LAT'], GEZ:['GEZ'], SYR:['SYR'], COP:['COP'],
 };
-const _CONC_CORP = new Set(Object.keys(_CONC_GROUP));   // now incl. SYR
+const _CONC_CORP = new Set(Object.keys(_CONC_GROUP));   // now incl. SYR, COP
 function _concNorm(corpus,w){ return (_CONC_NORM[corpus]||_normLat)(w); }
 function _concGroup(corpus){ return _CONC_GROUP[corpus] || [corpus]; }
 function _ph(a){ return a.map(()=>'?').join(','); }
@@ -4583,7 +4577,7 @@ function _ph(a){ return a.map(()=>'?').join(','); }
 // Scriptures' source (its scoped view spans both corpora); GRC works read out
 // of GRC. The reader opens canonical rows by book_id and literary works by
 // doc_id (which, for a work, is exactly the concordance `code`).
-const _CONC_READ_SRC = { HEB:'HEB', LXX:'LXX', GNT:'LXX', GRC:'GRC', LAT:'LAT', GEZ:'GEZ', SYR:'SYR' };
+const _CONC_READ_SRC = { HEB:'HEB', LXX:'LXX', GNT:'LXX', GRC:'GRC', LAT:'LAT', GEZ:'GEZ', SYR:'SYR', COP:'COP' };
 function _concSrcObj(corpus){
     const sid = _CONC_READ_SRC[corpus] || corpus;
     return SOURCES[sid] || getSource(corpus) || null;
@@ -5113,6 +5107,7 @@ const _glossCache = {
     ethiopic:       { mtime: 0, entries: null },
     latin:          { mtime: 0, entries: null },
     syriac:         { mtime: 0, entries: null },
+    coptic:         { mtime: 0, entries: null },
     'paleo-hebrew': { mtime: 0, entries: null },   // corpus-Hebrew (HEB), distinct from BHS
 };
 function _glossFileFor(script) {
@@ -5120,6 +5115,7 @@ function _glossFileFor(script) {
     if (script === 'ethiopic')     return path.join(__dirname, 'lexicon', 'geez-lexicon.json');
     if (script === 'latin')        return path.join(__dirname, 'lexicon', 'latin-lexicon.json');
     if (script === 'syriac')       return path.join(__dirname, 'lexicon', 'syriac-lexicon.json');
+    if (script === 'coptic')       return path.join(__dirname, 'lexicon', 'coptic-lexicon.json');
     if (script === 'paleo-hebrew') return path.join(__dirname, 'lexicon', 'hebrew-extra-lexicon.json');
     return null;
 }
@@ -5862,7 +5858,7 @@ const _glossPct = (glossed, total) => total ? Math.round((glossed / total) * 100
 // numbers, no root compounding — fieldy: "just raw tokens... don't worry
 // about the numbers, just enable the feature." Canonical books only
 // (book_id/canon_id NOT NULL); doc-only literary works aren't in this tree.
-const GENERIC_GS_SOURCES = { LXX: 'greek', GEZ: 'ethiopic', LAT: 'latin', SYR: 'syriac' };
+const GENERIC_GS_SOURCES = { LXX: 'greek', GEZ: 'ethiopic', LAT: 'latin', SYR: 'syriac', COP: 'coptic' };
 
 // Every language Gloss Studio knows about, Hebrew included — the one list
 // both the per-verse status endpoint and the cross-language aggregate below
@@ -5873,6 +5869,7 @@ const GS_LANG_LIST = [
     { id: 'geez',   label: "Ge'ez",   kind: 'GEZ' },
     { id: 'latin',  label: 'Latin',   kind: 'LAT' },
     { id: 'syriac', label: 'Syriac',  kind: 'SYR' },
+    { id: 'coptic', label: 'Coptic',  kind: 'COP' },
 ];
 
 const _genericCoverageCache = {};   // source id -> { stamp, tree: { books, words } }
@@ -5932,7 +5929,7 @@ function _buildGenericCoverageTree(srcId) {
 }
 
 // Same stale-while-revalidate treatment as getGlossCoverage() above, keyed
-// per source id (Greek/Ge'ez/Latin/Syriac each rebuild independently,
+// per source id (Greek/Ge'ez/Latin/Syriac/Coptic each rebuild independently,
 // guarded by their own entry in _genericRecomputing) so re-tokenizing one
 // language's whole corpus never blocks a request for a different one, or for
 // Hebrew.
@@ -8699,6 +8696,44 @@ app.get('/sitemap-roots.xml', production.cache(3600), (req, res) => {
         );
     } catch (err) {
         console.error('/sitemap-roots.xml failed:', err);
+        res.status(500).send('');
+    }
+});
+
+// GET /sitemap-chapters.xml — one <url> per real book+chapter, for BOTH
+// /bible (Novel English reader) and /parallel (English-Hebrew parallel).
+// 2026-08-15: added after a search for "bldbible numbers 35 33" surfaced an
+// unrelated concordance entry (a Coptic word that happens to appear in a
+// verse containing "35") instead of the actual Numbers 35 chapter pages —
+// Google had no way to discover /bible?book=4&chapter=35 or
+// /parallel?book=4&chapter=35 directly, only by crawling links from an
+// already-indexed page. Both routes are already prerendered with real
+// per-chapter title/description (see prerender.js's englishChapterRoute) —
+// what was missing was sitemap DISCOVERY, not content.
+//
+// Uses the already-computed BOOKS constant (see "Preload the book list once
+// at startup" above) rather than prerender.js's MAX_CHAPTER=150 ceiling —
+// BOOKS is the real per-book first/last chapter range straight from
+// tokens_bhs (with DISPLAY_LAST_CHAPTER's English-versification overrides
+// already applied), which is the exact same data /bible and /parallel are
+// backed by. Deliberately does NOT enumerate every source language, verse,
+// or concordance entry — same "bounded, real identity space only" rule as
+// sitemap-roots.xml, to avoid repeating the thin/broken-URL flood this app
+// already fixed once (see the "bad corpus" fix).
+app.get('/sitemap-chapters.xml', production.cache(3600), (req, res) => {
+    try {
+        const urls = [];
+        for (const b of BOOKS) {
+            for (let ch = b.first_chapter; ch <= b.last_chapter; ch++) {
+                urls.push(`  <url><loc>https://www.bldbible.com/bible?book=${b.book_id}&amp;chapter=${ch}</loc></url>`);
+                urls.push(`  <url><loc>https://www.bldbible.com/parallel?book=${b.book_id}&amp;chapter=${ch}</loc></url>`);
+            }
+        }
+        res.type('application/xml').send(
+            `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`
+        );
+    } catch (err) {
+        console.error('/sitemap-chapters.xml failed:', err);
         res.status(500).send('');
     }
 });

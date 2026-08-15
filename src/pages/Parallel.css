@@ -4,6 +4,10 @@
    declared locally. */
 .pl-root {
   --paleo-size: 30px; --sub-size: 11px;
+  /* English column text — size/typeface set inline from React state
+     (fontPx/typefaceStack, 2026-08-15); these are just the pre-JS/no-JS
+     fallback so the column never renders unstyled. */
+  --par-en-size: 18px; --par-en-font: inherit;
   --word-margin: 0 8px 16px 8px; --word-gap: 4px; --sub-maxw: 200px;
   min-height: 100vh; background: var(--bg); color: var(--text);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -37,6 +41,14 @@
 .pl-gloss-chip.sel { border-color: var(--gold); color: var(--gold); background: color-mix(in srgb, var(--gold) 12%, transparent); }
 .pl-gloss-name { font-weight: 600; }
 .pl-gloss-note { font-size: 11px; opacity: .7; font-style: italic; }
+/* Text-size steppers (English + Hebrew) — mirrors the Reader's .rd-aa-size
+   A−/A+ control, added 2026-08-15 alongside the typeface picker above. */
+.pl-size-stepper { display: inline-flex; align-items: center; gap: 8px; }
+.pl-size-btn { min-width: 30px; padding: 4px 8px; border: 1px solid var(--border2); border-radius: 6px;
+  background: var(--bg2); color: var(--text2); cursor: pointer; font: inherit; font-size: 12px; font-weight: 700; }
+.pl-size-btn:hover:not(:disabled) { background: var(--bg4); color: var(--text); }
+.pl-size-btn:disabled { opacity: .4; cursor: default; }
+.pl-size-val { min-width: 20px; text-align: center; font-size: 12px; color: var(--text2); }
 
 /* ── Main / heading ────────────────────────────────────────────────────────*/
 .pl-main { position: relative; padding: 14px 18px 48px; max-width: 1200px; margin: 0 auto; }
@@ -60,7 +72,7 @@
 .par-col-en { padding-right: 20px; min-width: 0; }
 .par-col-sep { background: var(--border); align-self: stretch; }
 .par-col-heb { padding-left: 20px; background: var(--bg); min-width: 0; overflow: hidden; }
-.en-verse-text { font-size: 18px; line-height: 1.9; }
+.en-verse-text { font-size: var(--par-en-size, 18px); font-family: var(--par-en-font, inherit); line-height: 1.9; }
 .no-translation { color: var(--text4); font-size: 20px; }
 
 /* Verse 0 (chapter title/superscription — see Reader.jsx's matching treatment).

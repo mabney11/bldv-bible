@@ -35,6 +35,34 @@ diverge further, fix the comments too.
   symlink again (e.g. someone recreates it by hand), assume it can silently drift out of
   date the same way — check `ls -la ~/deploy.sh` before trusting its behavior matches
   what's in this repo.
+- **One-off data-maintenance commands against production (e.g. a `better-sqlite3`
+  script touching `corpus.db`) go through `pexec`, not a hand-built `docker exec
+  <name> ...`.** `pexec` is an existing helper on the Lightsail box (fieldy's own —
+  not yet inspected its actual definition/location, e.g. `~/.bashrc` alias or a
+  script, so don't assume details about it beyond usage) that already resolves
+  whichever container is currently live and runs the command inside it. Correct
+  form, confirmed by fieldy 2026-08-15:
+  ```
+  pexec node -e "
+  const Database = require('better-sqlite3');
+  const db = new Database('corpus.db', { readonly: true });
+  ...
+  "
+  ```
+  i.e. just `pexec <command>`, no container name, no `docker exec` at all — and the
+  script addresses `corpus.db` with a plain relative path (`pexec` apparently runs
+  with the right working directory already).
+  **Why this matters — real failure, found the same day:** there IS no fixed "the
+  live container name" to hardcode either — `deploy-blue-green.sh` swaps which of
+  `paleo-a`/`paleo-b` is live on every deploy (whichever port was idle becomes the
+  new live one, the old one is `docker rm`'d). A hand-built `docker exec paleo-a
+  ...` command 404'd with "No such container: paleo-a" the first time this was
+  tried, because `paleo-b` happened to be the one actually up. `pexec` exists
+  specifically so this class of command doesn't need to know or guess the live
+  name at all — use it instead of reconstructing the docker-exec/container-name
+  dance by hand. (If `pexec` is ever unavailable for some reason, the fallback is
+  `docker ps --format '{{.Names}}'` to find the one actually running, then target
+  that name explicitly — never assume `paleo-a`.)
 - **DB persistence, confirmed 2026-08-11 from `deploy-blue-green.sh` (checked into this
   repo — this IS what `~/deploy.sh` on the box runs):** `docker run ... -v
   /mnt/paleo-data:/data ...` — a plain bind mount from a host directory into every

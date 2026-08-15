@@ -45,7 +45,9 @@ const fs = require('fs');
 const http = require('http');
 
 const SITE = 'https://www.bldbible.com';
-const APP_TITLE = 'Paleo-Hebrew Translation Studio';
+// 2026-08-15: rebranded from "Paleo-Hebrew Translation Studio" — see
+// index.html and src/hooks/usePageTitle.js's APP_NAME for the same change.
+const APP_TITLE = 'Blood-Line Descendant Bible Study Tool';
 const APP_DESC = "Read Hebrew, Greek, Latin, Ge'ez and Syriac scripture word by word with Strong's numbers, a concordance, root and lexicon tools, and a Hebrew-backed English Bible translation.";
 
 // Canonical 66-book table — mirrors server.js's TX_BOOK_NAMES exactly (kept
@@ -328,7 +330,7 @@ const STATIC_PAGES = {
   },
   '/share': {
     title: `Share & Export | ${APP_TITLE}`,
-    description: 'Export and share verses, word studies and translations from the Paleo-Hebrew Translation Studio.',
+    description: `Export and share verses, word studies and translations from the ${APP_TITLE}.`,
     heading: 'Share & Export',
   },
 };
