@@ -476,6 +476,17 @@ export default function Translate() {
             setHistoryList(d.versions || []);
           } catch { /* non-fatal — history panel just stays stale until reopened */ }
         }
+        // A real, hard-to-miss confirmation that the PUT actually landed —
+        // previously the ONLY signal was the small "✓ Saved" badge next to
+        // the verse reference up top, easy to miss if you're looking at the
+        // editor or the History panel instead. 2026-08-16, fieldy: "this
+        // doesn't actually save unless..." — traced live against the
+        // production site and the PUT/persistence itself checked out fine
+        // (fired, returned 200, survived a reload) on a plain single click,
+        // so the missing piece looks like feedback, not persistence. A toast
+        // here closes that ambiguity regardless of what the underlying cause
+        // turns out to be.
+        toast('Saved', 'ok');
       } else {
         // Genuinely not an admin in this browser, even after a fresh check.
         // Local-only: never reaches the server. Persisted in THIS browser
