@@ -44,6 +44,22 @@ import './Reader.css';
 // Verdana) run large for their em, so a floor of 15 was effectively ~17.
 const FONT_MIN = 5, FONT_MAX = 32, FONT_DEFAULT = 20;
 
+// ── Reading column width ("Margins") ───────────────────────────────────────
+// Controls .rd-page's max-width (--pr-measure — see Reader.css), i.e. how
+// long a line of text gets before it wraps. Framed to the reader as
+// "Margins +/-" (2026-08-19 request: "I want to be able to make lines as
+// long or as short as I want, still adjust to the screen") since a narrower
+// measure reads as more whitespace down the sides on a big screen, even
+// though what's actually being set is the column's own width, not padding.
+// It's still screen-adaptive at either end: .rd-page is width:100% first,
+// max-width second, so on a phone this cap never even engages — the column
+// is already narrower than MEASURE_MIN would allow. MEASURE_MAX (90rem) is
+// generous on purpose; there's no correctness reason to stop someone from
+// reading at a very wide measure if that's what they want, only a
+// conventional-typography one, and this control exists specifically to let
+// the reader override that convention.
+const MEASURE_MIN = 28, MEASURE_MAX = 90, MEASURE_STEP = 2, MEASURE_DEFAULT = 46;
+
 // ── Reading typefaces ────────────────────────────────────────────────────────
 // Chosen for legibility rather than flavour. `id` is what we persist, so never
 // rename one — add a new entry instead, or a saved preference silently falls back.
@@ -868,6 +884,13 @@ export default function Reader() {
   });
   useEffect(() => { localStorage.setItem('reader-font', String(fontPx)); }, [fontPx]);
 
+  // ── reading column width / "Margins" (persisted) ───────────────────────────
+  const [measureRem, setMeasureRem] = useState(() => {
+    const v = parseInt(localStorage.getItem('reader-measure') || '', 10);
+    return (v >= MEASURE_MIN && v <= MEASURE_MAX) ? v : MEASURE_DEFAULT;
+  });
+  useEffect(() => { localStorage.setItem('reader-measure', String(measureRem)); }, [measureRem]);
+
   // ── typeface (persisted) ───────────────────────────────────────────────────
   // Sticky by design: once chosen it survives reloads, chapter changes and
   // navigation, and only ever changes when the reader picks a different face.
@@ -1388,7 +1411,7 @@ export default function Reader() {
 
   return (
     <div className="reader-root" data-typeface={typeface}
-         style={{ '--reader-size': `${fontPx}px`, '--pr-reading': typefaceStack }}>
+         style={{ '--reader-size': `${fontPx}px`, '--pr-reading': typefaceStack, '--pr-measure': `${measureRem}rem` }}>
       {/* ── top bar ─────────────────────────────────────────────────────────── */}
       <header className="rd-bar">
         <Link to="/landing" className="rd-bar-btn rd-home" title="Home" aria-label="Home">𐤀𐤁</Link>
@@ -1427,6 +1450,23 @@ export default function Reader() {
                 <span className="rd-aa-val">{fontPx}</span>
                 <button className="rd-aa-step" disabled={fontPx >= FONT_MAX}
                         onClick={() => setFontPx(v => Math.min(FONT_MAX, v + 1))} aria-label="Larger">A+</button>
+              </div>
+            </div>
+            <div className="rd-aa-row">
+              <span className="rd-aa-label">Margins</span>
+              <div className="rd-aa-size">
+                {/* "+" reads as MORE margin (shorter lines), matching the
+                    row's own label — which means it has to DECREASE
+                    measureRem (the column's max-width). Shown value is the
+                    margin level, not the raw measure, so it counts up with
+                    "+" the same intuitive way Text size's number does. */}
+                <button className="rd-aa-step" disabled={measureRem >= MEASURE_MAX}
+                        onClick={() => setMeasureRem(v => Math.min(MEASURE_MAX, v + MEASURE_STEP))}
+                        aria-label="Less margin, longer lines" title="Less margin, longer lines">−</button>
+                <span className="rd-aa-val">{Math.round((MEASURE_MAX - measureRem) / MEASURE_STEP)}</span>
+                <button className="rd-aa-step" disabled={measureRem <= MEASURE_MIN}
+                        onClick={() => setMeasureRem(v => Math.max(MEASURE_MIN, v - MEASURE_STEP))}
+                        aria-label="More margin, shorter lines" title="More margin, shorter lines">+</button>
               </div>
             </div>
             <div className="rd-aa-row rd-aa-row-col">
@@ -1640,6 +1680,22 @@ export default function Reader() {
                   // renderQuoteTree), so this applies uniformly.
                   const lastNode = Array.isArray(text) ? text[text.length - 1] : text;
                   const endsInQuoteBlock = !!lastNode?.props?.className?.includes('rd-quote-block');
+                  // 2026-08-19: .rd-verse itself is now display:block (see
+                  // Reader.css) — "lets start verses on new lines" — so
+                  // EVERY verse gets its own line, not just quoted ones
+                  // (plain narrative used to share a line the way ordinary
+                  // prose does; Genesis 1:5 starting mid-line was the
+                  // report). Its default bottom margin gives normal
+                  // paragraph spacing between verses. But when a verse's
+                  // last content is a STILL-OPEN quote continuing into the
+                  // next verse (rd-quote-cont-end — same signal the quote
+                  // margin-zeroing above uses), that margin has to be zero
+                  // too, or it reopens exactly the "break in the vertical
+                  // bar" gap that fix just closed — the quote-block's own
+                  // margin was zeroed, but the verse WRAPPING it still had
+                  // its normal paragraph margin, which alone is enough to
+                  // separate the border into visible segments again.
+                  const endsInQuoteCont = !!lastNode?.props?.className?.includes('rd-quote-cont-end');
                   return (
                     <Fragment key={vnum}>
                     {acro && (
@@ -1657,7 +1713,7 @@ export default function Reader() {
                         </span>
                       </div>
                     )}
-                    <span className={`rd-verse ${on ? 'marked' : ''}`} id={`rv-${vnum}`}>
+                    <span className={`rd-verse ${on ? 'marked' : ''} ${endsInQuoteCont ? 'rd-verse-cont-after' : ''}`} id={`rv-${vnum}`}>
                       {/* Invisible, zero-size — exists purely so the effect
                           above can measure exactly where this verse begins
                           (even mid-line, even inside an indented quote block)

@@ -660,6 +660,25 @@
      .hwc-gloss rule uses for the same reason. */
   overflow-wrap: break-word;
 }
+/* 2026-08-19: every verse is now its own block/paragraph — "lets start
+   verses on new lines" — rather than only quoted verses breaking onto
+   their own line while plain narrative ran on (Genesis 1:5 starting
+   mid-line, right after v4's text, was the report). margin-bottom only
+   (no margin-top) is the deliberate "owl selector" convention: adjoining
+   verses collapse to a single gap sized by whichever one wants it, instead
+   of two half-gaps that would need to sum correctly on their own.
+   .rd-verse-cont-after (Reader.jsx: this verse's last content is a
+   STILL-OPEN quote continuing into the next verse, rd-quote-cont-end)
+   zeroes that margin — otherwise the paragraph gap alone would reopen the
+   exact "break in the vertical bar" seam the quote-block margin-zeroing
+   above was built to close; a verse boundary mid-quotation needs to read
+   as one unbroken block, not a new paragraph. */
+.rd-verse {
+  display: block;
+  margin: 0 0 .6em;
+}
+.rd-verse:last-child { margin-bottom: 0; }
+.rd-verse.rd-verse-cont-after { margin-bottom: 0; }
 /* Invisible, zero-footprint marker (Reader.jsx: `ref={el => vAnchorRefs...}`)
    sitting as the very first thing inside each verse — its only job is to be
    measured (getBoundingClientRect) so the matching gutter number below knows
