@@ -42,6 +42,35 @@
   margin: 0 0 36px;
 }
 
+/* "individual verses need to have links to the rest of the app" — this
+   verse's own Parallel/Hebrew/Translation Studio destinations (see
+   VersePage.jsx's parallelHref/hebrewHref/translateHref), each carrying
+   this exact book+chapter+verse the same way Reader.jsx's own switch menu
+   does. Pulled up flush against .vp-text (negative top margin claws back
+   its 36px) rather than getting its own big gap — this reads as "more ways
+   to open THIS", not a new content section the way "Word by word" below
+   (with its own top rule) does. */
+.vp-views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: -20px 0 32px;
+}
+.vp-view-link {
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--pr-ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--pr-ink-soft) 40%, transparent);
+  padding-bottom: 1px;
+  transition: color .15s, border-color .15s;
+}
+.vp-view-link:hover,
+.vp-view-link:focus-visible {
+  color: var(--pr-accent);
+  border-color: var(--pr-accent);
+}
+
 .vp-subhead {
   font-family: system-ui, sans-serif;
   font-size: 12px;
@@ -52,6 +81,24 @@
   margin: 0 0 12px;
   padding-top: 18px;
   border-top: 1px solid var(--pr-rule);
+}
+
+/* Hebrew Viewer word-by-word — renders the shared components/WordBlock.jsx,
+   the exact glyph/translit/gloss/Strong's chip HebrewViewer.jsx itself uses
+   (see VersePage.jsx's hebrewWords). No scoped --paleo-size/--word-* overrides
+   here on purpose: this is a full page, not a side panel, so it keeps the
+   global styles/tokens.css defaults HebrewViewer's own full-page reader uses
+   (Translate.css/Parallel.css only shrink these for their cramped side-panel
+   context — see the comment there). .word-block is itself inline-flex, so a
+   plain rtl flex-wrap row is all that's needed to lay a verse's words out
+   right-to-left, same shape as Translate.css's .tr-paleo-tokens. */
+.vp-hebrew-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 4px 3px;
+  direction: rtl;
 }
 
 .vp-words {

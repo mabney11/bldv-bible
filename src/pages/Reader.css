@@ -702,6 +702,22 @@
   width: 0;
   height: 0;
   overflow: hidden;
+  /* 2026-08-19: "verse numbers should not offset [...] if I change the text
+     size after[wards] the offset happens" — a verse that opens directly on
+     a block-level quote (no narrative lead-in) puts .rd-vanchor as the ONLY
+     in-flow content before that block. Even zero-sized, an inline-block
+     still establishes a line box sized by the current font's line-height —
+     an empty line still takes up a full line's height purely from
+     inherited font metrics, a well-known CSS quirk. That phantom line was
+     small enough to be invisible at the default font size, but it scales
+     WITH font size, so bumping Text size up made a real, growing gap
+     appear between a verse's number (still correctly measuring the
+     anchor's own position) and its actual text, sitting below that phantom
+     line. font-size/line-height:0 here removes the anchor's own
+     contribution to that strut, so the anchor sits flush against the block
+     that follows it at any text size. */
+  font-size: 0;
+  line-height: 0;
 }
 .rd-vnum {
   font-family: system-ui, sans-serif;
@@ -861,6 +877,21 @@
 .rd-quote-cont-start { margin-top: 0; }
 .rd-quote-cont-end { margin-bottom: 0; }
 
+/* 2026-08-19: a verse with NO bare narrative text — every top-level node is
+   a quote block (Reader.jsx: allQuoteBlock) — gets .rd-vtext-block instead.
+   .rd-vtext otherwise stays display:inline on purpose (needed below, for
+   box-decoration-break:clone to paint the sticky highlight per WRAPPED
+   LINE on ordinary narrative), but an inline box whose ONLY child is a
+   block-level element still reserves one phantom line of height at its own
+   font-size/line-height — invisible at the default text size, but it grew
+   into a real, visible gap between a verse's number and its text as soon
+   as Text size went up ("verse numbers should not offset [...] if I change
+   the text size afterwards the offset happens"). Safe to switch these
+   specific verses to display:block: there's no bare inline text left for
+   the clone-highlight trick to apply to — the quote block already paints
+   its own highlight, right below. */
+.rd-vtext-block { display: block; }
+
 /* Sticky highlight — a highlighter stroke that clones across wrapped lines. */
 .rd-verse.marked .rd-vtext {
   background: var(--pr-mark);
@@ -869,14 +900,44 @@
   padding: .08em .02em;
   border-radius: 2px;
 }
+/* 2026-08-19: "the gold highlight is too close to hebrew words, lets make
+   all highlights the brown that has the checkmark" — a verse whose ENTIRE
+   content is a quote block (.rd-vtext-block, allQuoteBlock in Reader.jsx —
+   e.g. Luke 21:28) has .rd-vtext sitting exactly on top of its one
+   .rd-quote-block child, both marked at once, so this SAME translucent
+   --pr-mark got painted TWICE in the same spot — once here, once by the
+   rule below. Two stacked passes of a same-hue translucent color composite
+   toward the pure highlight color (less of the dark page behind it showing
+   through), reading as a noticeably brighter/more saturated gold — close
+   enough to the gold used for Hebrew root words (.rd-root) to visually
+   clash, flagged directly against a verse like Luke 21:29's inner quote
+   (single-painted, by the rule below only, since that verse ALSO has bare
+   narrative before it so vtext isn't .rd-vtext-block there) which reads as
+   the muted brown that's wanted everywhere. Suppressed here so only the
+   quote-block rule below ever paints for these verses — one pass, one
+   consistent color, regardless of whether a verse is bare narrative, a
+   single quote, or entirely one quote block. */
+.rd-verse.marked .rd-vtext.rd-vtext-block {
+  background: none;
+}
 /* .rd-quote-block is display:block, so it forms its OWN box rather than
    being one of .rd-vtext's own inline fragments — the background above
    never paints it, which is why marking a verse whose content sits partly
    or (verses 24-25 style) ENTIRELY inside a quote block left it looking
    unhighlighted ("When selecting a verse, I want the verse to highlight.
    The quote should highlight."). Painted here directly instead, keyed off
-   the same .marked state on the ancestor .rd-verse. */
-.rd-verse.marked .rd-quote-block {
+   the same .marked state on the ancestor .rd-verse.
+   2026-08-19: scoped to .rd-quote-d1 specifically, not every .rd-quote-block
+   — a NESTED quote (depth 2+, Matthew 5:33's "'You shall not make false
+   vows...'" style) is always rendered INSIDE its own verse's depth-1 quote
+   wrapper (sliceQuoteTree never emits a depth≥2 node without its depth-1
+   ancestor alongside it), so painting every depth would double-paint the
+   overlap — same --pr-mark composited twice in the same spot reads
+   brighter/more gold (see the .rd-vtext-block comment above), which is
+   exactly the clash this whole fix is for. The depth-1 box's background
+   already covers the full rendered height behind any nested children, so
+   painting only it gives full, single-layer coverage either way. */
+.rd-verse.marked .rd-quote-d1 {
   background: var(--pr-mark);
   border-radius: 2px;
 }

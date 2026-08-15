@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
-import { apiTransProgress, apiTransVerse } from '../lib/api.js';
+import { apiTransProgress, apiTransVerse, apiTokens } from '../lib/api.js';
 import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
+import WordBlock from '../components/WordBlock.jsx';
 import './Reader.css';
 import './VersePage.css';
 
@@ -70,6 +71,28 @@ export default function VersePage() {
 
   const verseRef = addressValid ? formatRef(bookName, chapter, verse) : '';
   usePageTitle(verseRef ? `${verseRef} | Reader` : '');
+
+  // ── Hebrew Viewer word-by-word — "the hebrew viewew wordblocks for the
+  // 'word by word'": fetch the SAME token data HebrewViewer.jsx renders
+  // (apiTokens, decomposed components[] with glyphs/translit/gloss), not the
+  // flat translation-alignment tokens apiTransVerse returns, then filter down
+  // to this one verse and hand each word to the shared WordBlock component so
+  // this looks exactly like the Hebrew Viewer's own verse row. Fetched at the
+  // chapter grain (apiTokens has no per-verse endpoint — same call
+  // HebrewViewer itself makes), filtered client-side to `verse`.
+  const [chapterTokens, setChapterTokens] = useState([]);
+  useEffect(() => {
+    if (!addressValid) { setChapterTokens([]); return; }
+    let cancelled = false;
+    apiTokens(bookId, chapter)
+      .then(t => { if (!cancelled) setChapterTokens(Array.isArray(t) ? t : []); })
+      .catch(() => { if (!cancelled) setChapterTokens([]); });
+    return () => { cancelled = true; };
+  }, [addressValid, bookId, chapter]);
+  const hebrewWords = useMemo(
+    () => chapterTokens.filter(t => t.verse === verse),
+    [chapterTokens, verse]
+  );
 
   // ── verse-to-verse navigation, rolling across chapter/book boundaries ──────
   const go = useCallback((b, c, v) => {
@@ -139,6 +162,18 @@ export default function VersePage() {
 
   const wordItems = (verseData?.tokens || []).filter(t => t && t.word_raw);
   const chapterHref = addressValid ? `/bible?book=${bookToParam(bookId, idToSlug)}&chapter=${chapter}&verse=${verse}` : '/bible';
+  // ── links out to the rest of the app for THIS verse ─────────────────────
+  // "individual verses need to have links to the rest of the app" — Reader's
+  // own switch menu already sends `?book=&chapter=&verse=` to these same
+  // three destinations (see readers[] in Reader.jsx), so reusing that query
+  // shape here lands each one on this exact verse, not just the chapter.
+  // /?... (no source param) is Reader's own "Paleo Reader" entry — App.jsx's
+  // RootDispatcher defaults an unset `source` to 'hebrew', so this is the
+  // same HebrewViewer destination the rest of the app calls "Hebrew".
+  const locQuery = addressValid ? `book=${bookToParam(bookId, idToSlug)}&chapter=${chapter}&verse=${verse}` : '';
+  const parallelHref = addressValid ? `/parallel?${locQuery}` : '/parallel';
+  const hebrewHref = addressValid ? `/?${locQuery}` : '/';
+  const translateHref = addressValid ? `/translate?${locQuery}` : '/translate';
 
   return (
     <div className="reader-root vp-root">
@@ -173,7 +208,21 @@ export default function VersePage() {
               <div className="rd-book-name">{bookName}</div>
               <h1 className="vp-heading">{chapter}:{verse}</h1>
               <p className="vp-text">{verseData.text}</p>
-              {wordItems.length > 0 && (
+              <nav className="vp-views" aria-label={`Open ${verseRef} in`}>
+                <Link className="vp-view-link" to={parallelHref}>Parallel</Link>
+                <Link className="vp-view-link" to={hebrewHref}>Hebrew</Link>
+                <Link className="vp-view-link" to={translateHref}>Translation Studio</Link>
+              </nav>
+              {hebrewWords.length > 0 ? (
+                <>
+                  <h2 className="vp-subhead">Word by word</h2>
+                  <div className="vp-hebrew-row">
+                    {hebrewWords.map((w, i) => (
+                      <WordBlock key={i} wordObj={w} showSub showCopyBtn showStrongs />
+                    ))}
+                  </div>
+                </>
+              ) : wordItems.length > 0 && (
                 <>
                   <h2 className="vp-subhead">Word by word</h2>
                   <ul className="vp-words">

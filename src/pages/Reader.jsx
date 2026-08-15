@@ -1696,6 +1696,35 @@ export default function Reader() {
                   // its normal paragraph margin, which alone is enough to
                   // separate the border into visible segments again.
                   const endsInQuoteCont = !!lastNode?.props?.className?.includes('rd-quote-cont-end');
+                  // 2026-08-19: "verse numbers should not offset [...] if I
+                  // change the text size after[wards] the offset happens" —
+                  // a verse whose ENTIRE content is a block quote (nothing
+                  // narrative before it, like Luke 21:32) puts .rd-vtext
+                  // (still display:inline, needed so box-decoration-break:
+                  // clone can paint the sticky highlight per WRAPPED LINE
+                  // for ordinary narrative verses) in a browser-quirk
+                  // position: an inline box whose only child is a
+                  // block-level element still reserves one phantom line of
+                  // height at ITS OWN font-size/line-height, even though it
+                  // has no actual inline content of its own to show there.
+                  // That phantom line is what the verse number badge was
+                  // measuring against (rd-vanchor sits right before it) —
+                  // invisible at the default font size, but it scales
+                  // linearly with Text size, so a bigger font opened a
+                  // real, growing gap between the number and its text.
+                  // Scoped narrowly to verses with NO bare narrative text at
+                  // all (every top-level node is a quote block) — a block
+                  // container doesn't need this anonymous-inline-wrapper
+                  // trick for a block child, so switching JUST these
+                  // verses' vtext to display:block removes the phantom line
+                  // outright, and it's safe here specifically because
+                  // there's no inline text left for the clone-highlight
+                  // trick to apply to in the first place (the quote block
+                  // itself already gets its own highlight — see
+                  // .rd-verse.marked .rd-quote-block in Reader.css).
+                  const nodeList = Array.isArray(text) ? text : (text ? [text] : []);
+                  const allQuoteBlock = nodeList.length > 0 &&
+                    nodeList.every(n => n && typeof n === 'object' && n.props?.className?.includes('rd-quote-block'));
                   return (
                     <Fragment key={vnum}>
                     {acro && (
@@ -1720,7 +1749,7 @@ export default function Reader() {
                           and place its gutter number badge at that same
                           vertical position. See vAnchorRefs above. */}
                       <span className="rd-vanchor" ref={el => { vAnchorRefs.current[vnum] = el; }} />
-                      <span className="rd-vtext">{text}</span>{!endsInQuoteBlock && ' '}
+                      <span className={`rd-vtext ${allQuoteBlock ? 'rd-vtext-block' : ''}`}>{text}</span>{!endsInQuoteBlock && ' '}
                     </span>
                     </Fragment>
                   );
