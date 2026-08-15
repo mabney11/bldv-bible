@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback, Fragment } from 'react';
+import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, Fragment } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { apiBookOrder, apiTransChapter, apiTokens, apiSourceChapter, apiSourceVerse, apiBookSections } from '../lib/api.js';
@@ -178,25 +178,45 @@ function renderVerseNodes(t, mode, keyPrefix = '') {
 // "Let there be light.") — distinct from the embedded-scripture-quote system
 // below (renderScriptureQuote), which sets apart a whole QUOTED PASSAGE with
 // its own numbered lines. 2026-08-16: originally just made the mark
-// CHARACTERS bigger and colored; 2026-08-16 (later, per direct feedback —
-// "not a fan of the quotes") reworked to grey out the whole quoted SPAN
-// (marks and the words between them) instead, dimmer than the surrounding
-// ink so a quotation visibly recedes, with deeper nesting stepping to a
-// lighter shade each level in. Double/curly quote characters only — a
-// generic single-quote scan would light up on every contraction and
-// possessive ("don't", "Alaph's") instead of actual speech.
+// CHARACTERS bigger and colored; later, per direct feedback ("not a fan of
+// the quotes") reworked to grey out the whole quoted SPAN; later still
+// ("lets undo the grey scale and instead handle quotes with newlines and
+// indentation") reworked AGAIN — a quotation is now its own block, indented
+// further than its parent for each level of nesting (see the hand-drawn
+// sketch this was built from: "Said" -> an indented block, with a further-
+// indented nested-quote block inside it), instead of a color difference.
+// Double/curly quote characters only — a generic single-quote scan would
+// light up on every contraction and possessive ("don't", "Alaph's") instead
+// of actual speech.
 //
 // True nesting needs a real stack, not just "pair by position": curly
 // U+201C/U+201D are directionally unambiguous (open always pushes, close
 // always pops), but a straight " is the SAME glyph both ways, so a straight
 // mark toggles whatever straight-quote level is currently on top of the
-// stack — open if none is, close if one is. Depth for coloring is just the
-// stack's size when a quote node is opened, so a straight-quote run nested
-// inside a curly pair still reports the right (deeper) shade. A level still
-// open when the verse's text runs out never got a matching close in this
-// verse's own data — flagged `rd-quote-unclosed` instead of a depth shade,
-// same signal as before for the data bug the user flagged ("this quote
-// doesn't end I'm certain"), just carried over into the new design.
+// stack — open if none is, close if one is. Depth (which indent step it
+// gets, see .rd-quote-d1..d4 in Reader.css) is just the stack's size when a
+// quote node is opened, so a straight-quote run nested inside a curly pair
+// still reports the right (deeper) indent. A level still open when the
+// chapter's text runs out never got a matching close in the data — flagged
+// `rd-quote-unclosed` on top of its normal depth indent, same signal as
+// before for the data bug the user flagged ("this quote doesn't end I'm
+// certain"), just carried over into the new design.
+//
+// 2026-08-17, Luke 21:10-28: a single long discourse re-opens “ at the start
+// of several verses (10, 19, 20) with NO closing mark in between, then
+// finally closes once at v28 — the classic English typesetting convention
+// for a quotation spanning several paragraphs, where EVERY paragraph gets
+// its own opening mark but only the LAST one closes. Treated naively as
+// nesting, that reads as 3 levels deep and never-closing (the earlier levels
+// have nothing left to close them) — the user flagged this directly:
+// "there doesnt seem to be any nested quotes here." A “ that opens while the
+// CURRENT innermost level is ALREADY curly is exactly this pattern, not a
+// genuine quote-within-a-quote (real nesting in this corpus switches mark
+// style, curly outer / single ‘ ’ inner — see v8's "saying, ‘I am he,’" —
+// which stays invisible to this parser entirely; PLAIN_QUOTE_RE only matches
+// [""“”]). So: a repeated “ over an already-open curly level is absorbed as
+// plain text — visible, but it doesn't start a new block or deepen the
+// indent — leaving the ORIGINAL opener as the one v28's ” actually closes.
 // Every node (text or quote) is stamped with its [start, end) offset in
 // `raw` — not needed for a single isolated verse, but essential once a quote
 // can SPAN MULTIPLE VERSES (see sliceQuoteTree below): the caller runs this
@@ -231,8 +251,14 @@ function parseQuoteMarks(raw) {
       entry.node.markClose = ch;
       entry.node.end = at + ch.length;
       containerStack.pop();
+    } else if (ch === '“' && top && top.style === 'curly') {
+      // Redundant reopen (see comment above) — leave the mark itself as
+      // plain text (don't advance `last` past it) and don't touch the
+      // stack, so the mark that eventually closes is still the ORIGINAL
+      // opener, not this one.
+      return;
     } else {
-      const node = { type: 'quote', depth: openStack.length + 1, markOpen: ch, markClose: '', children: [], start: at, end: raw.length };
+      const node = { type: 'quote', depth: openStack.length + 1, style, markOpen: ch, markClose: '', children: [], start: at, end: raw.length };
       containerStack[containerStack.length - 1].children.push(node);
       openStack.push({ style, node });
       containerStack.push(node);
@@ -251,8 +277,8 @@ function parseQuoteMarks(raw) {
 // renders here with no leading mark — the real one already appeared where it
 // belongs; likewise a still-unresolved quote continuing into a LATER verse
 // renders with no trailing mark here. Depth/unclosed status (resolved with
-// full chapter context) always carries over, so the grey shade — or the
-// unclosed warning color — stays consistent across every verse a quote
+// full chapter context) always carries over, so the indent step — and the
+// unclosed warning border — stays consistent across every verse a quote
 // touches, even though each verse gets its own separate <span>.
 function sliceQuoteTree(nodes, start, end) {
   const out = [];
@@ -269,6 +295,7 @@ function sliceQuoteTree(nodes, start, end) {
     out.push({
       type: 'quote',
       depth: n.depth,
+      style: n.style,
       unclosed: n.unclosed,
       markOpen: keepOpen ? n.markOpen : '',
       markClose: keepClose ? n.markClose : '',
@@ -278,37 +305,40 @@ function sliceQuoteTree(nodes, start, end) {
   return out;
 }
 
-// Real quote-mark usage in this corpus isn't disciplined enough for straight
-// " pairing to stay reliable once it's allowed to run across a whole
-// chapter: a straight mark is indistinguishable open-vs-close, so the NEXT
-// stray one anywhere later — verses away, on a completely unrelated
-// quotation — gets misread as closing whatever's still open, silently
-// merging two unrelated quotes into one giant span. And a mark that
-// genuinely never closes propagates "still open" through every verse for
-// the REST of the chapter, since nothing downstream can tell it to stop.
-// 2026-08-16, fieldy, live on Luke 21: verses 27–37 — most of a whole
-// screenful — rendered as one solid "unclosed" red block over one stray
-// mark near verse 20-something.
+// A straight " is the SAME glyph both directions, so once pairing is allowed
+// to run across a whole chapter, one genuinely-unclosed straight mark makes
+// the NEXT stray straight mark anywhere later — verses away, on a wholly
+// unrelated quotation — misread as ITS close, silently merging two unrelated
+// quotes into one giant span. Curly “ ” marks don't have this problem: “ only
+// ever opens and ” only ever closes the innermost open curly level, so a
+// curly quote that runs long, or even genuinely never closes (the source
+// text just doesn't have a closing mark), still pairs correctly however far
+// it runs — nothing downstream can be mismatched by it. So only STRAIGHT
+// quote spans get capped/dissolved here; curly ones are trusted at any
+// length. (2026-08-16, fieldy: Luke 21:8-36 is one continuous curly-quoted
+// Olivet Discourse, ~4100 characters and never explicitly closed in this
+// translation's own text — a real span, not mis-paired data. An earlier
+// version of this cap applied to curly too and silently dissolved that whole
+// discourse back to plain narrative text, which is what the user was
+// flagging as "quotes not properly considered.")
 //
-// Cap how far any single quote node — closed or not — is allowed to run
-// before we stop trusting the pairing. A legitimate quote, even a real
-// multi-verse one like Genesis 1:9, stays within a few verses; anything
-// drastically longer is almost certainly mis-paired data, not one actual
-// quotation. Past the cap: an unclosed node keeps ONLY its dangling open
-// mark flagged (still findable) while everything after it renders as
-// ordinary text instead of dragging the rest of the chapter down with it; a
-// CLOSED-but-overlong node (the "two unrelated quotes merged" case) just
-// unwraps entirely — both of its marks render as plain characters, no
-// color at all, since the pairing itself is the thing not to be trusted.
+// Cap how far a STRAIGHT quote node — closed or not — is allowed to run
+// before we stop trusting its pairing. Past the cap: an unclosed node keeps
+// ONLY its dangling open mark flagged (still findable) while everything
+// after it renders as ordinary text instead of dragging the rest of the
+// chapter down with it; a CLOSED-but-overlong node (the "two unrelated
+// quotes merged" case) just unwraps entirely — both of its marks render as
+// plain characters, no quote styling at all, since the pairing itself is the
+// thing not to be trusted.
 const MAX_QUOTE_CHARS = 600;
 function dissolveOverlongQuotes(nodes) {
   const out = [];
   for (const n of nodes) {
     if (n.type === 'text') { out.push(n); continue; }
     const children = dissolveOverlongQuotes(n.children);
-    if ((n.end - n.start) > MAX_QUOTE_CHARS) {
+    if (n.style === 'straight' && (n.end - n.start) > MAX_QUOTE_CHARS) {
       if (n.unclosed && n.markOpen) {
-        out.push({ type: 'quote', depth: 1, unclosed: true, markOpen: n.markOpen, markClose: '', children: [],
+        out.push({ type: 'quote', depth: 1, style: n.style, unclosed: true, markOpen: n.markOpen, markClose: '', children: [],
                    start: n.start, end: n.start + n.markOpen.length });
       } else if (n.markOpen) {
         out.push({ type: 'text', text: n.markOpen, start: n.start, end: n.start + n.markOpen.length });
@@ -323,9 +353,26 @@ function dissolveOverlongQuotes(nodes) {
 }
 
 // Turns the tree above into React nodes — text leaves still get the usual
-// GLOSS_RE treatment (renderVerseNodes), quote nodes become a <span> whose
-// depth (or unclosed state) picks its color, wrapping its own open/close
-// marks and its children (which may themselves be nested quote spans).
+// GLOSS_RE treatment (renderVerseNodes), quote nodes become a block-level
+// <span> (display:block in CSS — see .rd-quote-block in Reader.css) that
+// breaks onto its own line and indents further the deeper it's nested (depth
+// picks .rd-quote-d1..d4, each a further left-margin step), wrapping its own
+// open/close marks and its children (which may themselves be nested quote
+// blocks, indented one step further still). unclosed status is layered on
+// TOP of the depth class (not instead of it) so a still-open quote keeps its
+// normal indentation and just gains a warning-colored left border alongside
+// it, rather than losing its place in the nesting.
+//
+// A quote spanning several verses (sliceQuoteTree) renders as one SEPARATE
+// block <span> per verse it touches — each verse still needs its own DOM
+// node — but each of those still belongs to the SAME quotation, and the
+// user flagged the visible seam between them ("if its continued in the
+// quote it shouldnt break the block"). A slice with no markOpen didn't
+// start the quote here (it's a continuation from an earlier verse) — drop
+// its top margin. A slice with no markClose doesn't end the quote here (it
+// continues into a later verse, or is genuinely unclosed) — drop its bottom
+// margin. Two touching continuation slices then abut with zero gap between
+// them, their borders lining up into what reads as one unbroken block.
 function renderQuoteTree(nodes, mode, keyPrefix) {
   const out = [];
   nodes.forEach((n, i) => {
@@ -338,7 +385,11 @@ function renderQuoteTree(nodes, mode, keyPrefix) {
     if (n.markOpen) inner.push(n.markOpen);
     inner.push(...renderQuoteTree(n.children, mode, `${keyPrefix}q${i}-`));
     if (n.markClose) inner.push(n.markClose);
-    const cls = n.unclosed ? 'rd-quote rd-quote-unclosed' : `rd-quote rd-quote-d${Math.min(n.depth, 4)}`;
+    const cls = ['rd-quote', 'rd-quote-block', `rd-quote-d${Math.min(n.depth, 4)}`,
+                 n.unclosed ? 'rd-quote-unclosed' : '',
+                 n.markOpen ? '' : 'rd-quote-cont-start',
+                 n.markClose ? '' : 'rd-quote-cont-end']
+      .filter(Boolean).join(' ');
     out.push(
       <span className={cls} key={`${keyPrefix}q${i}`}
             title={n.unclosed ? "This quotation doesn't appear to close in this verse" : undefined}>
@@ -443,55 +494,6 @@ function renderScriptureQuote(q, mode, key, citation, idToSlug) {
 }
 
 const idOf = m => m.id ?? m.book_id ?? m.canon_id;
-
-// Splits a verse's rendered content into "its first word/token" and "the rest",
-// so the verse number can be glued (via CSS white-space:nowrap, see .rd-vnum-glue
-// in Reader.css) to the piece it actually numbers instead of the browser being
-// free to break the line right after the number and leave it dangling at the
-// end of the PREVIOUS verse's line. Handles all three shapes `text` can be:
-// a node array (renderVerseNodes/renderHebrewProseNodes/renderHebrewWordCells),
-// a plain string (English-only gloss mode collapses to one string), or the '·'
-// empty-verse placeholder.
-function splitFirstToken(t) {
-  if (Array.isArray(t)) {
-    if (!t.length) return { first: null, rest: [] };
-    const [head, ...tail] = t;
-    // A leading STRING element (the shape renderVerseNodes produces for
-    // English prose: text is only split at gloss-pair MATCHES, not per word)
-    // can be many words long whenever the verse's first gloss pair sits well
-    // into the sentence — e.g. "And Alahayam called the light … Evening came
-    // and morning came — " was ALL one array element ahead of the one match,
-    // "achad (one)". Gluing that whole run into the nowrap number span (see
-    // .rd-vnum-glue below) ran the entire sentence off the edge of the page
-    // with no wrap opportunity at all. Only that chunk's own FIRST WORD may
-    // be glued to the verse number; the remainder of the chunk goes back
-    // in front of the tail so it flows and wraps normally like everything
-    // else. A non-string head (a Hebrew word-cell node, one cell per array
-    // element) already IS a single token — glue it whole, as before.
-    if (typeof head === 'string') {
-      const m = head.match(/^(\S*)(\s*)([\s\S]*)$/);
-      const restOfHead = m ? m[2] + m[3] : '';
-      return { first: m ? m[1] : head, rest: restOfHead ? [restOfHead, ...tail] : tail };
-    }
-    // A .rd-quote span (renderQuoteTree) can run to many words — an entire
-    // greyed-out quotation, occasionally an unclosed one running to the end
-    // of the verse — unlike .rd-root (always one short transliterated word),
-    // gluing it whole would be exactly the overflow bug the string-head case
-    // above already exists to prevent. When a verse happens to open directly
-    // on a quote mark, skip gluing altogether: nothing rides along with the
-    // number, and the quote (still first in `tail`) just flows normally.
-    if (head?.props?.className?.includes('rd-quote')) {
-      return { first: null, rest: t };
-    }
-    return { first: head, rest: tail };
-  }
-  if (typeof t === 'string') {
-    const m = t.match(/^(\S*)(\s*)([\s\S]*)$/);
-    if (m) return { first: m[1], rest: m[2] + m[3] };
-    return { first: t, rest: '' };
-  }
-  return { first: t, rest: null };
-}
 
 // "All Hebrew" — flowing prose, no gloss. Reuses computeWordParts (the exact
 // per-component breakdown Parallel/WordBlock use) so every morpheme's color
@@ -1227,6 +1229,48 @@ export default function Reader() {
     return Object.keys(srcWordsByVerse || {}).map(Number).sort((a, b) => a - b);
   }, [isForeignScript, verses, srcWordsByVerse]);
 
+  // Verse numbers live in a fixed left gutter (see .rd-vnum-wrap in
+  // Reader.css — position:absolute, left:0) instead of inline in the running
+  // text — the previous inline-number design ("glued" to each verse's first
+  // word via splitFirstToken/.rd-vnum-glue) forced a visible line break
+  // wherever a number landed, which broke a quote block that continues
+  // across a verse boundary right in the middle ("numbers shouldnt float...
+  // if its continued in the quote it shouldnt break the block"). Each verse
+  // now renders an invisible zero-size anchor (.rd-vanchor, see the render
+  // below) as the very first thing inside it — wherever that anchor's own
+  // text line ends up after wrapping (including deep inside an indented
+  // quote block), its number badge is positioned in the gutter at that same
+  // vertical offset, per the user's own description: "'2' would be under
+  // 1... and to the left of 'putting'" (i.e. lined up with whichever line
+  // verse 2 actually starts on, not glued inline into that line).
+  // Recomputed via measurement (not pure CSS) because the containing block
+  // for an element positioned relative to a DISTANT ancestor can't
+  // automatically track an inline anchor's line position — this mirrors the
+  // sidenote/margin-note technique used by many typographic reading UIs.
+  const bodyRef = useRef(null);
+  const vAnchorRefs = useRef({});
+  const [vnumTops, setVnumTops] = useState({});
+  useLayoutEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+    const measure = () => {
+      const bodyTop = body.getBoundingClientRect().top;
+      const next = {};
+      Object.entries(vAnchorRefs.current).forEach(([vnum, el]) => {
+        if (!el) return;
+        next[vnum] = el.getBoundingClientRect().top - bodyTop;
+      });
+      setVnumTops(next);
+    };
+    measure();
+    // Width changes (window resize, sidebar/theme-panel open/close) reflow
+    // wrapped lines and shift every anchor below the change — re-measure on
+    // any such resize, not just on our own explicit dependencies below.
+    const ro = new ResizeObserver(measure);
+    ro.observe(body);
+    return () => ro.disconnect();
+  }, [chapKey, glossMode, hebGlossMode, script, fontPx, typeface, renderVerseNums]);
+
   // Chapter-wide plain-quote scan (English only — Hebrew/Ge'ez never run
   // through the plain-quote system at all). Concatenates every rendered
   // verse's narrative text IN ORDER and parses quote marks across the WHOLE
@@ -1474,7 +1518,7 @@ export default function Reader() {
                   {verse0Text && <div className="rd-super-en">{verse0Text}</div>}
                 </div>
               )}
-              <div className={`rd-body ${isForeignScript ? 'rd-heb' : ''} ${isForeignScript && hebGlossMode === 'glossed' ? 'rd-heb-glossed' : ''}`} style={{ fontSize: `${fontPx}px` }}>
+              <div ref={bodyRef} className={`rd-body ${isForeignScript ? 'rd-heb' : ''} ${isForeignScript && hebGlossMode === 'glossed' ? 'rd-heb-glossed' : ''}`} style={{ fontSize: `${fontPx}px` }}>
                 {renderVerseNums.filter(vnum => vnum !== 0).map((vnum) => {
                   const verseSrcWords = srcWordsByVerse ? srcWordsByVerse[vnum] : null;
                   const text = script === 'hebrew'
@@ -1516,11 +1560,21 @@ export default function Reader() {
                       })();
                   const on = marks.has(markKey(vnum));
                   const acro = chapHead?.acrostics?.[vnum];
-                  // Glue the verse number to the FIRST piece of its own text (see
-                  // splitFirstToken above) so a tight line never breaks right after
-                  // the number, stranding it at the end of the previous line while
-                  // its own verse starts fresh on the next.
-                  const { first: vFirst, rest: vRest } = splitFirstToken(text);
+                  // A trailing space normally separates this verse's own
+                  // text from the next verse's, since neither side supplies
+                  // one on its own (e.g. "...treasury." + "He raah" would
+                  // otherwise run together as "treasury.He raah"). But when
+                  // a verse's rendered content ENDS in a block-level quote
+                  // (.rd-quote-block — see Reader.css), that trailing space
+                  // becomes its own stray line: a lone inline text node
+                  // sitting right after a block child forces its own
+                  // anonymous line box, showing up as an unwanted blank line
+                  // between two quote-block chunks that are otherwise
+                  // touching seamlessly (rd-quote-cont-start/-end above).
+                  // The block break itself already separates the verses
+                  // visually, so skip the extra space in that case.
+                  const lastNode = Array.isArray(text) ? text[text.length - 1] : text;
+                  const endsInQuoteBlock = !!lastNode?.props?.className?.includes('rd-quote');
                   return (
                     <Fragment key={vnum}>
                     {acro && (
@@ -1539,30 +1593,44 @@ export default function Reader() {
                       </div>
                     )}
                     <span className={`rd-verse ${on ? 'marked' : ''}`} id={`rv-${vnum}`}>
-                      <span className="rd-vnum-glue">
-                        <span className="rd-vnum-wrap">
-                          <sup className="rd-vnum" role="button" tabIndex={0}
-                               title={on ? `Clear highlight on verse ${vnum}` : `Highlight verse ${vnum}`}
-                               onClick={() => toggleMark(vnum)}
-                               onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMark(vnum); } }}>
-                            {vnum}
-                          </sup>
-                          {/* Hover/focus-revealed link to this verse's own clean
-                              URL (/:bookSlug/:chapter/:verse — VersePage.jsx).
-                              stopPropagation so a click doesn't also bubble up
-                              into anything listening on the verse number. */}
-                          <Link className="rd-vnum-goto"
-                                to={`/${bookToParam(book, idToSlug)}/${chapter}/${vnum}`}
-                                onClick={e => e.stopPropagation()}
-                                title={`Open ${chapterBookName} ${chapter}:${vnum} on its own page`}>
-                            Go to verse
-                          </Link>
-                        </span>
-                        <span className="rd-vfirst">{vFirst}</span>
-                      </span>
-                      <span className="rd-vtext">{vRest}</span>{' '}
+                      {/* Invisible, zero-size — exists purely so the effect
+                          above can measure exactly where this verse begins
+                          (even mid-line, even inside an indented quote block)
+                          and place its gutter number badge at that same
+                          vertical position. See vAnchorRefs above. */}
+                      <span className="rd-vanchor" ref={el => { vAnchorRefs.current[vnum] = el; }} />
+                      <span className="rd-vtext">{text}</span>{!endsInQuoteBlock && ' '}
                     </span>
                     </Fragment>
+                  );
+                })}
+                {/* Verse-number gutter — rendered as a separate absolutely-
+                    positioned layer (see .rd-vnum-wrap in Reader.css:
+                    position:absolute, left:0) rather than inline in the text
+                    above, so a number never interrupts a quote block or forces
+                    a line break; each badge's `top` comes from vnumTops
+                    (measured against its verse's own .rd-vanchor). */}
+                {renderVerseNums.filter(vnum => vnum !== 0 && vnumTops[vnum] != null).map((vnum) => {
+                  const on = marks.has(markKey(vnum));
+                  return (
+                    <span className={`rd-vnum-wrap ${on ? 'marked' : ''}`} key={`g${vnum}`} style={{ top: `${vnumTops[vnum]}px` }}>
+                      <sup className="rd-vnum" role="button" tabIndex={0}
+                           title={on ? `Clear highlight on verse ${vnum}` : `Highlight verse ${vnum}`}
+                           onClick={() => toggleMark(vnum)}
+                           onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMark(vnum); } }}>
+                        {vnum}
+                      </sup>
+                      {/* Hover/focus-revealed link to this verse's own clean
+                          URL (/:bookSlug/:chapter/:verse — VersePage.jsx).
+                          stopPropagation so a click doesn't also bubble up
+                          into anything listening on the verse number. */}
+                      <Link className="rd-vnum-goto"
+                            to={`/${bookToParam(book, idToSlug)}/${chapter}/${vnum}`}
+                            onClick={e => e.stopPropagation()}
+                            title={`Open ${chapterBookName} ${chapter}:${vnum} on its own page`}>
+                        Go to verse
+                      </Link>
+                    </span>
                   );
                 })}
               </div>

@@ -641,6 +641,12 @@
 }
 
 .rd-body {
+  /* Positioned so the gutter number badges below (.rd-vnum-wrap,
+     position:absolute) place themselves relative to THIS box, not some
+     more-distant ancestor — and padding-left reserves the gutter's own
+     column so running text never sits underneath a number. */
+  position: relative;
+  padding-left: 2.5em;
   line-height: 1.78;
   color: var(--pr-ink);
   letter-spacing: .002em;
@@ -654,33 +660,60 @@
      .hwc-gloss rule uses for the same reason. */
   overflow-wrap: break-word;
 }
+/* Invisible, zero-footprint marker (Reader.jsx: `ref={el => vAnchorRefs...}`)
+   sitting as the very first thing inside each verse — its only job is to be
+   measured (getBoundingClientRect) so the matching gutter number below knows
+   which line to sit on, however that verse's text actually wraps.
+   position:absolute (not just width/height:0) is load-bearing here, not
+   decorative: a verse that opens directly on a quote block sits right next
+   to ANOTHER verse's own quote block (the still-open continuation from the
+   verse before it — see rd-quote-cont-start/-end above). Any actual inline
+   box sitting between two block-level boxes — even one sized to nothing —
+   still forces its own anonymous line box there, and that anonymous box's
+   height comes from the surrounding line-height "strut," not from the
+   anchor's own (zero) size. The result was a full blank line reopening the
+   exact seam rd-quote-cont-start/-end were built to close. position:absolute
+   pulls the anchor out of normal flow entirely, so it can no longer force
+   that anonymous line — its measured position (getBoundingClientRect) still
+   lands at its normal static position, right where the verse begins,
+   confirmed empirically against every anchor in a multi-quote chapter. */
+.rd-vanchor {
+  position: absolute;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
 .rd-vnum {
   font-family: system-ui, sans-serif;
-  font-size: .92em;
+  font-size: .82em;
   font-weight: 700;
   color: var(--pr-vnum);
-  vertical-align: .42em;
-  line-height: 0;
-  margin: 0 .3em 0 .12em;
-  padding: 0 .15em;
+  line-height: 1.78; /* matches .rd-body's own line-height so the digit sits centered on the text line it marks */
+  padding: 0 .2em;
   letter-spacing: 0;
   cursor: pointer;
   border-radius: 3px;
   transition: color .12s, background .12s;
 }
 .rd-vnum:hover { color: var(--pr-ink); background: color-mix(in srgb, var(--pr-vnum) 20%, transparent); }
-.rd-verse:first-child .rd-vnum { margin-left: 0; }
 
-/* "Go to verse" hover popup — wraps just the number (NOT .rd-vfirst, the
-   verse's first word) so it appears only when hovering the number itself, not
-   the whole glued unit. Links to the clean per-verse page (VersePage.jsx,
-   /:bookSlug/:chapter/:verse) — a dedicated, navigable address for that one
-   verse, distinct from clicking the number itself (which toggles the
-   highlight, unchanged). :focus-within keeps this reachable by keyboard: tab
-   to the verse number and the popup appears, tab again to reach the link. */
+/* Verse number gutter. Each .rd-vnum-wrap is one verse's number badge,
+   position:absolute against .rd-body (left:0, a fixed column) with its
+   `top` set inline in Reader.jsx from vnumTops — the measured vertical
+   position of that verse's own .rd-vanchor. Pulling numbers fully out of
+   the running text (rather than gluing them inline, the previous design)
+   means a number never forces a line break or interrupts a quote block
+   that continues across the verse boundary it sits on — "numbers shouldnt
+   float... if its continued in the quote it shouldnt break the block."
+   width+text-align right-aligns 1-3 digit numbers against the same edge.
+   "Go to verse" hover popup unchanged — :focus-within still reaches it by
+   keyboard, tab to the number then tab again for the link. */
 .rd-vnum-wrap {
-  position: relative;
-  display: inline-block;
+  position: absolute;
+  left: 0;
+  width: 2.1em;
+  text-align: right;
 }
 .rd-vnum-goto {
   position: absolute;
@@ -712,12 +745,6 @@
   transform: translateX(-50%) translateY(0);
 }
 
-/* Glues the verse number to the FIRST piece of ITS OWN verse (see
-   splitFirstToken in Reader.jsx) so a line never breaks between the number
-   and its word — the number would otherwise strand at the end of the
-   PREVIOUS line while its own verse starts fresh on the next. Everything
-   after the first piece (.rd-vtext) still wraps normally. */
-.rd-vnum-glue { white-space: nowrap; }
 
 /* Transliterated Hebrew/Aramaic root — the head word of a "root (gloss)" pair
    (e.g. "Mashayach" in "Mashayach (Christ)"). Coloured with the reading accent and
@@ -729,46 +756,66 @@
 }
 
 /* Plain in-verse quotation marks (parseQuoteMarks/renderQuoteTree in
-   Reader.jsx) — the whole quoted span (marks AND the words between them)
-   is greyed relative to the surrounding ink, so a quotation visibly recedes
-   and its start/end are unambiguous. 2026-08-16: replaced an earlier design
-   that only colored the mark characters ("not a fan of the quotes") — this
-   dims the full span instead. Each color mixes the reading ink DOWN toward
-   transparent (not toward a fixed grey hex) so it still reads correctly in
-   both themes: dimmer than night's pale ink, dimmer than parchment's dark
-   ink, same relative effect either way. Deeper nesting steps to a lighter
-   shade per level (d1 outermost → d4), so a quote-within-a-quote is still
-   visually legible as "more deeply nested," not just uniformly grey.
-   A level still open when the verse's own text runs out never got a
-   matching close in this verse's data — flagged rd-quote-unclosed (a
-   warning color + wavy underline) instead of a depth shade, surfacing that
-   data issue directly on the page rather than silently graying it out. */
-.rd-quote-d1 { color: color-mix(in srgb, var(--pr-ink) 72%, transparent); }
-.rd-quote-d2 { color: color-mix(in srgb, var(--pr-ink) 56%, transparent); }
-.rd-quote-d3 { color: color-mix(in srgb, var(--pr-ink) 42%, transparent); }
-.rd-quote-d4 { color: color-mix(in srgb, var(--pr-ink) 30%, transparent); }
+   Reader.jsx). 2026-08-16: originally colored just the mark characters, then
+   greyed the whole span; per direct feedback ("lets undo the grey scale and
+   instead handle quotes with newlines and indentation") replaced again — a
+   quotation is now its own BLOCK. .rd-quote-block is display:block on what's
+   still an inline <span> nested inside running prose; browsers give a block-
+   level box its own line(s) regardless of what inline tag it's wearing, so
+   this breaks the quote out of the sentence and onto its own line(s) without
+   any surrounding markup changes. Each nesting level (.rd-quote-d1 outermost
+   → d4) adds its own left margin on top of its own ancestor's — a quote
+   nested inside a quote lands visibly further right, exactly the "newly
+   quoted things are indented further than their parent level" sketch this
+   was built from. Only the outermost level (d1) bumps font-size — deeper
+   levels reset it back to 1em so nested quotes don't compound larger and
+   larger — giving quoted speech in general a slightly bigger read than the
+   surrounding narrative, per the user's own suggestion.
+   A quote still open when the chapter's own text runs out never got a
+   matching close in this data — flagged rd-quote-unclosed, layered on TOP of
+   its normal depth indent (not replacing it) as a warning-colored left
+   border + faint tint. Deliberately gentle even across a long span: a whole
+   multi-verse discourse can be legitimately unclosed in the source text (see
+   the MAX_QUOTE_CHARS comment in Reader.jsx), so this must read as "worth a
+   look," not as a wall of errors the way solid red text once did. */
+.rd-quote-block {
+  display: block;
+  margin: .45em 0;
+  padding-left: .7em;
+  border-left: 3px solid var(--pr-rule);
+  font-size: 1.06em;
+}
+.rd-quote-d1 { margin-left: .9em; }
+.rd-quote-d2 { margin-left: 1.5em; font-size: 1em; }
+.rd-quote-d3 { margin-left: 2.1em; font-size: 1em; }
+.rd-quote-d4 { margin-left: 2.7em; font-size: 1em; }
 .rd-quote-unclosed {
-  color: #e0654f;
-  text-decoration: underline wavy #e0654f;
-  text-underline-offset: 3px;
+  border-left-color: #e0654f;
+  background: color-mix(in srgb, #e0654f 6%, transparent);
   cursor: help;
 }
+/* A quote slice that continues a quotation FROM an earlier verse (no markOpen
+   here — Reader.jsx's renderQuoteTree) or that continues INTO a later verse
+   (no markClose here) drops the corresponding margin, so two adjacent
+   per-verse slices of the same still-open quotation abut with no gap and
+   their borders line up into what reads as one unbroken block instead of
+   two separate ones with a visible seam between them. */
+.rd-quote-cont-start { margin-top: 0; }
+.rd-quote-cont-end { margin-bottom: 0; }
 
-/* Sticky highlight — a highlighter stroke that clones across wrapped lines.
-   Applies to BOTH .rd-vfirst (the verse's first word, glued to the number
-   inside .rd-vnum-glue so a line never breaks between them) and .rd-vtext
-   (everything after it) — otherwise the verse's own first word silently sat
-   outside the highlight, in every script (English, Hebrew, Ge'ez alike),
-   since .rd-vnum-glue lived outside .rd-vtext. */
-.rd-verse.marked .rd-vtext,
-.rd-verse.marked .rd-vfirst {
+/* Sticky highlight — a highlighter stroke that clones across wrapped lines. */
+.rd-verse.marked .rd-vtext {
   background: var(--pr-mark);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   padding: .08em .02em;
   border-radius: 2px;
 }
-.rd-verse.marked .rd-vnum { color: var(--pr-ink); }
+/* The number badge itself lives OUTSIDE .rd-verse now (it's in the separate
+   gutter layer — see .rd-vnum-wrap above), so it can't be reached with a
+   .rd-verse.marked descendant selector; Reader.jsx adds .marked to the
+   badge's own wrapper directly instead. */
+.rd-vnum-wrap.marked .rd-vnum { color: var(--pr-ink); }
 
 /* Verse highlight when arrived via ?verse= */
 .rd-flash {
