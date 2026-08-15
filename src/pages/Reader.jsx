@@ -177,71 +177,107 @@ function renderVerseNodes(t, mode, keyPrefix = '') {
 // ── Plain in-verse quotation marks (ordinary dialogue, e.g. Yahu said,
 // "Let there be light.") — distinct from the embedded-scripture-quote system
 // below (renderScriptureQuote), which sets apart a whole QUOTED PASSAGE with
-// its own numbered lines. This is about the quotation marks THEMSELVES: make
-// them bigger and colored so a reader can see at a glance exactly where a
-// quotation opens and where it closes — 2026-08-16 request. Wrapping only the
-// mark CHARACTER, never the text between two marks, deliberately sidesteps
-// splitFirstToken's "never glue a multi-word span to the verse number"
-// concern (see its comment above) — a single wrapped character is always
-// safe to glue, exactly like an ordinary letter would be.
+// its own numbered lines. 2026-08-16: originally just made the mark
+// CHARACTERS bigger and colored; 2026-08-16 (later, per direct feedback —
+// "not a fan of the quotes") reworked to grey out the whole quoted SPAN
+// (marks and the words between them) instead, dimmer than the surrounding
+// ink so a quotation visibly recedes, with deeper nesting stepping to a
+// lighter shade each level in. Double/curly quote characters only — a
+// generic single-quote scan would light up on every contraction and
+// possessive ("don't", "Alaph's") instead of actual speech.
 //
-// Marks are paired by POSITION within the verse — 1st = open, 2nd = close,
-// 3rd = open, and so on. An ODD total means some quotation opened but never
-// closed in this verse's own text; that dangling mark gets `rd-quote-
-// unclosed` (a warning color) instead of the normal open styling. That's a
-// direct answer to the user's own suspicion ("this quote doesn't end I'm
-// certain") — it surfaces the same class of data issue for ANY verse that
-// has it, not just the one they happened to be reading. Double quotes only
-// (straight and curly): a generic single-quote scan would light up on every
-// contraction and possessive ("don't", "Alaph's") instead of actual speech.
+// True nesting needs a real stack, not just "pair by position": curly
+// U+201C/U+201D are directionally unambiguous (open always pushes, close
+// always pops), but a straight " is the SAME glyph both ways, so a straight
+// mark toggles whatever straight-quote level is currently on top of the
+// stack — open if none is, close if one is. Depth for coloring is just the
+// stack's size when a quote node is opened, so a straight-quote run nested
+// inside a curly pair still reports the right (deeper) shade. A level still
+// open when the verse's text runs out never got a matching close in this
+// verse's own data — flagged `rd-quote-unclosed` instead of a depth shade,
+// same signal as before for the data bug the user flagged ("this quote
+// doesn't end I'm certain"), just carried over into the new design.
 const PLAIN_QUOTE_RE = /["“”]/g;
-function wrapPlainQuoteMarks(raw) {
-  if (!raw) return [raw];
+function parseQuoteMarks(raw) {
+  if (!raw) return [{ type: 'text', text: raw }];
   PLAIN_QUOTE_RE.lastIndex = 0;
-  const idxs = [];
+  const marks = [];
   let m;
-  while ((m = PLAIN_QUOTE_RE.exec(raw))) idxs.push(m.index);
-  if (!idxs.length) return [raw];
-  const pieces = [];
+  while ((m = PLAIN_QUOTE_RE.exec(raw))) marks.push({ at: m.index, ch: m[0] });
+  if (!marks.length) return [{ type: 'text', text: raw }];
+
+  const root = { children: [] };
+  const containerStack = [root];   // top = node whose .children we're appending to
+  const openStack = [];            // parallel stack of { style: 'curly'|'straight', node }
   let last = 0;
-  idxs.forEach((at, i) => {
-    if (at > last) pieces.push(raw.slice(last, at));
-    const isOpenSlot = i % 2 === 0;
-    const dangling = isOpenSlot && i === idxs.length - 1;
-    const cls = dangling ? 'rd-quote-mark rd-quote-unclosed' : `rd-quote-mark ${isOpenSlot ? 'rd-quote-open' : 'rd-quote-close'}`;
-    pieces.push(
-      <span className={cls} key={`qm-${at}`}
-            title={dangling ? "This quotation doesn't appear to close in this verse" : undefined}>
-        {raw[at]}
-      </span>
-    );
-    last = at + 1;
+  const flush = (end) => {
+    if (end > last) containerStack[containerStack.length - 1].children.push({ type: 'text', text: raw.slice(last, end) });
+    last = end;
+  };
+  marks.forEach(({ at, ch }) => {
+    flush(at);
+    const style = ch === '"' ? 'straight' : 'curly';
+    const top = openStack[openStack.length - 1];
+    const closes = ch === '”' ? (top && top.style === 'curly')
+                 : ch === '"'      ? (top && top.style === 'straight')
+                 : false; // U+201C ("“") is always an opener, never a close
+    if (closes) {
+      openStack.pop();
+      containerStack.pop();
+    } else {
+      const node = { type: 'quote', depth: openStack.length + 1, markOpen: ch, markClose: '', children: [] };
+      containerStack[containerStack.length - 1].children.push(node);
+      openStack.push({ style, node });
+      containerStack.push(node);
+    }
+    last = at + ch.length;
   });
-  if (last < raw.length) pieces.push(raw.slice(last));
-  return pieces;
+  flush(raw.length);
+  openStack.forEach(({ node }) => { node.unclosed = true; });
+  return root.children;
 }
 
-// Combines the quote-mark wrapping above with the existing GLOSS_RE handling
-// in renderVerseNodes — quote marks are found in the RAW string first (so
+// Turns the tree above into React nodes — text leaves still get the usual
+// GLOSS_RE treatment (renderVerseNodes), quote nodes become a <span> whose
+// depth (or unclosed state) picks its color, wrapping its own open/close
+// marks and its children (which may themselves be nested quote spans).
+function renderQuoteTree(nodes, mode, keyPrefix) {
+  const out = [];
+  nodes.forEach((n, i) => {
+    if (n.type === 'text') {
+      const rendered = renderVerseNodes(n.text, mode, `${keyPrefix}t${i}-`);
+      if (Array.isArray(rendered)) out.push(...rendered); else out.push(rendered);
+      return;
+    }
+    const inner = [];
+    if (n.markOpen) inner.push(n.markOpen);
+    inner.push(...renderQuoteTree(n.children, mode, `${keyPrefix}q${i}-`));
+    if (n.markClose) inner.push(n.markClose);
+    const cls = n.unclosed ? 'rd-quote rd-quote-unclosed' : `rd-quote rd-quote-d${Math.min(n.depth, 4)}`;
+    out.push(
+      <span className={cls} key={`${keyPrefix}q${i}`}
+            title={n.unclosed ? "This quotation doesn't appear to close in this verse" : undefined}>
+        {inner}
+      </span>
+    );
+  });
+  return out;
+}
+
+// Combines the parser/renderer above with the existing GLOSS_RE handling in
+// renderVerseNodes — quote marks are found in the RAW string first (so
 // they're never accidentally matched inside a "root (gloss)" pair), then
-// each plain-text piece between/around them still gets full gloss-mode
-// treatment exactly as before.
+// each plain-text leaf still gets full gloss-mode treatment exactly as
+// before.
 function renderVerseNodesWithQuotes(t, mode) {
   if (!t) return t;
   if (mode === 'gloss') {
     // gloss mode collapses to a plain string (applyGlossMode) — still worth
     // marking quotes in it, just with nothing left for GLOSS_RE to do.
-    const wrapped = wrapPlainQuoteMarks(applyGlossMode(t, mode));
-    return (wrapped.length === 1 && typeof wrapped[0] === 'string') ? wrapped[0] : wrapped;
+    const rendered = renderQuoteTree(parseQuoteMarks(applyGlossMode(t, mode)), mode, 'g');
+    return (rendered.length === 1 && typeof rendered[0] === 'string') ? rendered[0] : rendered;
   }
-  const pieces = wrapPlainQuoteMarks(t);
-  const out = [];
-  pieces.forEach((p, i) => {
-    if (typeof p !== 'string') { out.push(p); return; }
-    const nodes = renderVerseNodes(p, mode, `f${i}-`);
-    if (Array.isArray(nodes)) out.push(...nodes); else out.push(nodes);
-  });
-  return out;
+  return renderQuoteTree(parseQuoteMarks(t), mode, 'q');
 }
 // ── Embedded scripture quotations (Pistis Sophia and similar apocryphal/
 // Gnostic works) ─────────────────────────────────────────────────────────
@@ -351,6 +387,16 @@ function splitFirstToken(t) {
       const m = head.match(/^(\S*)(\s*)([\s\S]*)$/);
       const restOfHead = m ? m[2] + m[3] : '';
       return { first: m ? m[1] : head, rest: restOfHead ? [restOfHead, ...tail] : tail };
+    }
+    // A .rd-quote span (renderQuoteTree) can run to many words — an entire
+    // greyed-out quotation, occasionally an unclosed one running to the end
+    // of the verse — unlike .rd-root (always one short transliterated word),
+    // gluing it whole would be exactly the overflow bug the string-head case
+    // above already exists to prevent. When a verse happens to open directly
+    // on a quote mark, skip gluing altogether: nothing rides along with the
+    // number, and the quote (still first in `tail`) just flows normally.
+    if (head?.props?.className?.includes('rd-quote')) {
+      return { first: null, rest: t };
     }
     return { first: head, rest: tail };
   }

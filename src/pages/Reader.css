@@ -728,17 +728,25 @@
   font-weight: 600;
 }
 
-/* Plain in-verse quotation marks (renderVerseNodesWithQuotes/wrapPlainQuoteMarks
-   in Reader.jsx) — bigger, colored marks so a quotation's start and end are
-   obvious at a glance, without touching the quoted text itself. A mark left
-   dangling (odd count in a verse — the underlying text opens a quotation it
-   never closes) gets its own warning color + a wavy underline instead, so
-   that data issue is visible right on the page. */
-.rd-quote-mark {
-  font-weight: 700;
-  font-size: 1.18em;
-  color: var(--pr-vnum);
-}
+/* Plain in-verse quotation marks (parseQuoteMarks/renderQuoteTree in
+   Reader.jsx) — the whole quoted span (marks AND the words between them)
+   is greyed relative to the surrounding ink, so a quotation visibly recedes
+   and its start/end are unambiguous. 2026-08-16: replaced an earlier design
+   that only colored the mark characters ("not a fan of the quotes") — this
+   dims the full span instead. Each color mixes the reading ink DOWN toward
+   transparent (not toward a fixed grey hex) so it still reads correctly in
+   both themes: dimmer than night's pale ink, dimmer than parchment's dark
+   ink, same relative effect either way. Deeper nesting steps to a lighter
+   shade per level (d1 outermost → d4), so a quote-within-a-quote is still
+   visually legible as "more deeply nested," not just uniformly grey.
+   A level still open when the verse's own text runs out never got a
+   matching close in this verse's data — flagged rd-quote-unclosed (a
+   warning color + wavy underline) instead of a depth shade, surfacing that
+   data issue directly on the page rather than silently graying it out. */
+.rd-quote-d1 { color: color-mix(in srgb, var(--pr-ink) 72%, transparent); }
+.rd-quote-d2 { color: color-mix(in srgb, var(--pr-ink) 56%, transparent); }
+.rd-quote-d3 { color: color-mix(in srgb, var(--pr-ink) 42%, transparent); }
+.rd-quote-d4 { color: color-mix(in srgb, var(--pr-ink) 30%, transparent); }
 .rd-quote-unclosed {
   color: #e0654f;
   text-decoration: underline wavy #e0654f;
