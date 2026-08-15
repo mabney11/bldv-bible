@@ -1,10 +1,39 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
-import { apiTransProgress, apiTransVerse, apiTokens, apiRootVerses, apiSurfaceExplorerVerses } from '../lib/api.js';
+import { apiTransProgress, apiTransVerse, apiTokens, apiRootList, apiRootVerses, apiSurfaceExplorerVerses } from '../lib/api.js';
 import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
-import { WordRow, fmtSN, computeWordParts } from '../components/WordBlock.jsx';
+import { WordRow, computeWordParts } from '../components/WordBlock.jsx';
+
+// "I know that the first usage of 𐤀𐤌𐤍 is Genesis 15:6 but this is suggesting
+// a homograph. This is a word that all strongs #s for it mean the same
+// thing. Lets do the first usage of the letters and focus less on which
+// strongs # was chosen." — server.js's root-explorer index is keyed by
+// (root letters, Strong's #) PAIRS, not by root letters alone: the same
+// spelling can carry more than one Strong's number (verb stems, homograph
+// splits, …), and /api/root-explorer/verses?sn=X only searches occurrences
+// of that ONE number. Querying a single SN was finding the first verse for
+// whichever number happened to get chosen, not the letters themselves.
+// Fixed by aggregating: list every index entry whose root TEXT matches
+// exactly (apiRootList's own `q` is a substring filter, so re-filter for an
+// exact match client-side), fetch each of those numbers' own first
+// occurrence, then take whichever comes canonically earliest. No backend
+// change needed — this composes entirely from the existing Root-explorer
+// endpoints the Root page itself already calls.
+async function firstRootLetterOccurrence(rootPaleo) {
+  const list = await apiRootList(rootPaleo).catch(() => null);
+  const sns = [...new Set((list?.roots || [])
+    .filter(r => r.root === rootPaleo)
+    .map(r => r.sn))];
+  if (!sns.length) return { verses: [] };
+  const hits = await Promise.all(sns.map(sn =>
+    apiRootVerses({ sn, offset: 0, limit: 1 }).then(d => d?.verses?.[0] || null).catch(() => null)
+  ));
+  const valid = hits.filter(Boolean)
+    .sort((a, b) => a.book_id - b.book_id || a.chapter - b.chapter || a.verse - b.verse);
+  return { verses: valid.slice(0, 1) };
+}
 import './Reader.css';
 import './VersePage.css';
 
@@ -97,15 +126,15 @@ export default function VersePage() {
   // ── "root|lex_word|definition|modifications|strongs #s|link to the first
   // verse the root appears in|first surface appearance" — the two link
   // columns need a lookup per word: the first (canonically earliest) verse
-  // this word's ROOT appears in at all, and separately the first verse this
-  // exact SURFACE FORM (with its own prefixes/suffixes) appears in. Both
-  // come from the same root/surface-explorer endpoints the Root/Surfaces
-  // pages use, asked for just page 1 of 1 result — offset 0/limit 1 — since
-  // both endpoints return occurrences pre-sorted book/chapter/verse
-  // ascending (server.js's findWordOccurrences), so the first result IS the
-  // first occurrence. Keyed by `root:H776` / `surf:<paleo>` and accumulated
-  // across verse navigations rather than reset per verse, so re-visiting a
-  // root/surface already looked up costs nothing.
+  // this word's ROOT LETTERS appear in at all (see firstRootLetterOccurrence
+  // above — deliberately NOT scoped to one Strong's number), and separately
+  // the first verse this exact SURFACE FORM (with its own prefixes/suffixes)
+  // appears in. Both endpoints return occurrences pre-sorted book/chapter/
+  // verse ascending (server.js's findWordOccurrences), so taking result[0]
+  // (after firstRootLetterOccurrence's own cross-SN re-sort) is the first
+  // occurrence. Keyed by `root:<paleo letters>` / `surf:<paleo>` and
+  // accumulated across verse navigations rather than reset per verse, so
+  // re-visiting a root/surface already looked up costs nothing.
   const [firstOcc, setFirstOcc] = useState({});
   useEffect(() => {
     if (!hebrewWords.length) return;
@@ -116,17 +145,24 @@ export default function VersePage() {
     // this same loop, since firstOcc doesn't update until the batch resolves.
     const queued = new Set();
     for (const w of hebrewWords) {
-      const sn = fmtSN(w.strongs);
-      if (sn && !(`root:${sn}` in firstOcc) && !queued.has(`root:${sn}`)) {
-        queued.add(`root:${sn}`);
-        jobs.push({ key: `root:${sn}`, fn: () => apiRootVerses({ sn, offset: 0, limit: 1 }) });
+      const parts = computeWordParts(w);
+      // The root component's own bare letters when this word actually has a
+      // distinct root+affixes shape; for a word that IS its own root (a bare
+      // particle like "Laa"/NOT, classed as a modifier since there's no
+      // separate root component at all) fall back to the word's full letters
+      // — there's nothing else to search by, and that full form already IS
+      // just those letters with nothing attached.
+      const rootPaleo = parts.rootTrans[0]?.paleo || parts.purePaleo || null;
+      if (rootPaleo && !(`root:${rootPaleo}` in firstOcc) && !queued.has(`root:${rootPaleo}`)) {
+        queued.add(`root:${rootPaleo}`);
+        jobs.push({ key: `root:${rootPaleo}`, fn: () => firstRootLetterOccurrence(rootPaleo) });
       }
       // word_raw isn't set on a plain per-verse token object (only on the
       // sourceTokens[] a maqaf-compound carries) — the surface index's own
       // key is the paleo-only text computeWordParts already derives as
       // purePaleo (same string WordRow's own glyph cell renders), so use
       // that instead of assuming word_raw is always present.
-      const surf = w.word_raw || computeWordParts(w).purePaleo;
+      const surf = w.word_raw || parts.purePaleo;
       if (surf && !(`surf:${surf}` in firstOcc) && !queued.has(`surf:${surf}`)) {
         queued.add(`surf:${surf}`);
         jobs.push({ key: `surf:${surf}`, fn: () => apiSurfaceExplorerVerses({ word: surf, offset: 0, limit: 1 }) });
@@ -293,11 +329,12 @@ export default function VersePage() {
                       </thead>
                       <tbody>
                         {hebrewWords.map((w, i) => {
-                          const sn = fmtSN(w.strongs);
-                          const surf = w.word_raw || computeWordParts(w).purePaleo;
+                          const parts = computeWordParts(w);
+                          const rootPaleo = parts.rootTrans[0]?.paleo || parts.purePaleo || null;
+                          const surf = w.word_raw || parts.purePaleo;
                           return (
                             <WordRow key={i} wordObj={w}>
-                              <td className="wr-cell wr-first">{renderFirstHit(sn && `root:${sn}`)}</td>
+                              <td className="wr-cell wr-first">{renderFirstHit(rootPaleo && `root:${rootPaleo}`)}</td>
                               <td className="wr-cell wr-first">{renderFirstHit(surf && `surf:${surf}`)}</td>
                             </WordRow>
                           );

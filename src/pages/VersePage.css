@@ -130,9 +130,25 @@
 .vp-wordtable tbody tr:last-child td.wr-cell {
   border-bottom: none;
 }
+/* "lets make hebrew land on its own line and not span multiple lines" — the
+   Word column's glyph row was breaking onto a second line inside its cell.
+   table-layout:auto sizes columns off each cell's own preferred width, and
+   without an explicit nowrap that pass can still land on a width narrower
+   than the glyph row's natural (unwrapped) size, which visually wrapped it
+   even though .wr-glyphs is itself flex-wrap:nowrap. Forcing nowrap on the
+   cell (and being explicit about flex-wrap, belt-and-suspenders) makes the
+   column claim its full natural width instead — the table as a whole
+   overflows into .vp-wordtable-wrap's horizontal scroll if needed, rather
+   than any single word's glyphs ever breaking mid-row. */
+.wr-word,
+.wr-lex {
+  white-space: nowrap;
+}
 .wr-glyphs {
   direction: rtl;
   display: inline-flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
   align-items: flex-end;
   font-family: var(--paleo-font);
   font-size: var(--paleo-size);
