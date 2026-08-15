@@ -33,7 +33,7 @@ const READER_SRC = { GNT: 'LXX', LXX: 'LXX', GRC: 'LXX', GEZ: 'GEZ', LAT: 'LAT' 
 // Concordance page is left showing a stuck "Loading…" forever. Those dead
 // links were also getting crawled and indexed by Google as broken pages, so
 // this list is load-bearing for SEO, not just UX. 2026-08-14, fieldy.
-const CONC_SUPPORTED = new Set(['HEB', 'LXX', 'GNT', 'GRC', 'LAT', 'GEZ', 'SYR', 'COP']);
+const CONC_SUPPORTED = new Set(['HEB', 'LXX', 'GNT', 'GRC', 'LAT', 'GEZ', 'SYR']);
 
 export default function MultiWordBlock({ token, source }) {
   // Standalone sentence punctuation (። etc.) emitted by the tokenizer as its own

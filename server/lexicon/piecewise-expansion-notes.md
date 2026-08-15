@@ -1,4 +1,22 @@
-# Lexicon piecewise-expansion notes (latin/syriac/coptic/geez-lexicon.json)
+# Lexicon piecewise-expansion notes (latin/syriac/geez-lexicon.json)
+
+## Coptic dropped 2026-08-15 — see "why" below before reusing any Coptic notes
+
+`server/lexicon/coptic-lexicon.json` was deleted and Coptic (COP) was fully removed as a
+language/source across the app (server.js's SOURCES/GENERIC_GS_SOURCES/GS_LANG_LIST, the
+reader, Parallel, Gloss Studio, Concordance, Search, the on-screen keyboard). Cause:
+`corpus.db`'s COP rows were checked and found to be ~2.8% literal `"..."` placeholder text
+corpus-wide, concentrated as high as 51.6% in some books (Nahum 16/31, Zechariah 60/145,
+Daniel 40/111, Judith 20/63, Ezekiel 228/1067) — real gaps in the ingested Sahidic source,
+not a rendering bug (confirmed directly against `corpus.db`, not inferred from the app).
+Before dropping, confirmed every one of the 73 books with any COP text also has at least
+one other original-language corpus (Latin/Syriac/Ge'ez/Greek/Hebrew) covering it — nothing
+in the app was Coptic-exclusive, so removal loses no unique work, only the Sahidic-specific
+rendering of works available elsewhere too. Fieldy, in production: "im in prod now, I need
+the data or i scrap the entire language" → "lets drop it" → "full purge" (app-wide removal
++ delete every COP row from corpus.db + delete coptic-lexicon.json, not just hide it).
+The Gen 1:2–1:3 Coptic entries logged below are kept as a historical record of the
+piecewise-expansion methodology, not as live data — they no longer back anything running.
 
 Provenance for entries added by aligning a verse's already-Hebrew-transliterated English
 (from `english-baseline.jsonl` + Gloss Studio's live gloss overlay) against that verse's
@@ -11,8 +29,9 @@ retyped from a screenshot, never guessed from memory of the source text. Workflo
 2. Claude aligns each token to its corresponding piece of the English, verifying the verse
    actually lines up (token count vs. expected phrase count) before proposing anything —
    a mismatch is a reason to stop and flag it, not force a mapping.
-3. Entries go straight into `lexicon/{latin,syriac,coptic,geez}-lexicon.json`, in the same
-   `Translit (gloss)` shorthand already used throughout (e.g. `"Aratz (earth)"`).
+3. Entries go straight into `lexicon/{latin,syriac,geez}-lexicon.json` (Coptic dropped, see
+   above), in the same `Translit (gloss)` shorthand already used throughout (e.g.
+   `"Aratz (earth)"`).
 
 Same disclosure as `geez-lexicon-notes.md`: this is alignment against the app's OWN
 translation, cross-checked with each language's actual attested grammar where the mapping
@@ -152,3 +171,47 @@ this session's Translit-first convention.
 
 **Greek**: `καὶ` "and", `Γενηθήτω` "hayah / let it be", `φῶς` "awar / light" — `εἶπεν`,
 `θεός`, `ἐγένετο` were already curated from earlier work and left as-is.
+
+## 2026-08-15 — Genesis 1:4, Latin/Syriac/Ge'ez/Greek (Coptic has no text this verse)
+
+English (live): "Alahayam raah (saw) the entirety of the awar (light); kay (surely) it
+was tawab (good / proper) function. And Alahayam badal (divided) bayan (between) the
+awar (light) bayan (between) the chashak (darkness)." Five new content words this verse:
+raah (saw), kay (that/surely), tawab (good), badal (divided), bayan (between).
+
+**Coptic**: `dump-verse-tokens.js` returned an empty token list — no COP row exists for
+Genesis 1:4 in `corpus.db` at all, not a gloss gap. Flagging rather than skipping
+silently: worth checking later whether this is a real lacuna in the ingested Sahidic
+source or a gap in ingestion, but out of scope for a lexicon-gloss pass — nothing to
+align against.
+
+**Latin**: `vidit` "raah / saw", `lucem` "awar / light" (accusative — separate key from
+nominative `lux`), `quod` "kay / that", `esset` "—" (bare subjunctive copula in the
+"quod esset bona" clause — same bare-auxiliary treatment as `est` in v3; `bona` alone
+carries "good"), `bona` "tawab / good", `divisit` "badal / divided", `a` "bayan /
+between", `tenebris` "chashak / darkness". Note: Latin's `divisit lucem a tenebris`
+uses ONE preposition ("light FROM darkness"), where English's Hebraized idiom doubles
+"bayan...bayan" ("between the light, between the darkness") — glossed `a` as the closest
+match (bayan/between) rather than forcing a second, nonexistent token to carry it.
+
+**Syriac**: filled 6 scaffolds — `ܘܚ̣ܙܐ` "and raah / saw", `ܠܢܘܗܪܐ` "awar / light"
+(object-marked form, separate key from bare `ܢܘܗܪܐ`), `ܕܫܦܝܪ` "kay (that) tawab (good)"
+(relative ܕ + shapir fused into one token, both concepts kept), `ܘܦ̣ܪܫ` "and badal /
+divided", `ܒܝܬ` "bayan / between" (Syriac's single preposition covers what English
+doubles, same economy as Latin's `a` above), `ܠܚܫܘܟܐ` "chashak / darkness".
+
+**Ge'ez**: `ወርእዮ` "and raah / saw", `ለብርሃን` "awar / light" (object-marked, separate key
+from bare `ብርሃን`), `ሠናይ` "tawab / good" (`ከመ` "that/so that/as" was already curated and
+left as-is — already covers "kay"), `ወፈለጠ` "and badal / divided", `ማእከለ` "bayan /
+between", `ወማእከለ` "and bayan / between" (separate key, ወ-prefixed second occurrence),
+`ጽልመት` "chashak / darkness" (bare form — distinct from the already-glossed ወ-prefixed
+`ወጽልመት` from Gen 1:2).
+
+**Greek**: `ἴδεν` "raah / saw", `τὸ` "—" (neuter article — same bare-grammar treatment
+as `ὁ`/`ἡ`), `ὅτι` "kay / that", `καλόν` "tawab / good", `διεχώρισεν` "badal / divided",
+`ἀνὰ` "—" (half of the fixed idiom `ἀνὰ μέσον` "between" — all content lives in `μέσον`,
+same idiom-piece rule as Coptic's `ⲉⲃⲟⲗ`/`ⲁⲛ`/`ⲡⲉ`), `μέσον` "bayan / between", `φωτὸς`
+"awar / light" (genitive, separate key from nominative `φῶς`), `σκότους` "chashak /
+darkness" (genitive, separate key from nominative `σκότος`). `θεὸς` (grave accent) needed
+no new entry — `_canonKey`'s Greek grave→acute normalization already resolves it to the
+existing `θεός` entry automatically.

@@ -20,8 +20,8 @@ import '../components/SearchUI.css';
 
 // Cross-language switching shared with MultiViewer: a book the Hebrew reader
 // lacks (NT, pseudepigrapha, …) opens in the first of these that has it.
-const HV_SOURCE_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'LXX', 'LAT', 'COP', 'GRC', 'ENG'];
-const HV_PILL_LABEL = { BHS:'Hebrew', HEB:'Heb·extra', GEZ:"Ge'ez", SYR:'Syriac', LXX:'Greek', LAT:'Latin', COP:'Coptic', ENG:'English' };
+const HV_SOURCE_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'LXX', 'LAT', 'GRC', 'ENG'];
+const HV_PILL_LABEL = { BHS:'Hebrew', HEB:'Heb·extra', GEZ:"Ge'ez", SYR:'Syriac', LXX:'Greek', LAT:'Latin', ENG:'English' };
 const hvPickSource = (sources=[]) => HV_SOURCE_PRIORITY.find(s => sources.includes(s)) || sources[0] || null;
 import './HebrewViewer.css';
 
@@ -405,7 +405,6 @@ export default function HebrewViewer() {
               {[
                 { key: 'GEZ', label: "Ge'ez",   title: "Open this verse in the Ge'ez Bible" },
                 { key: 'SYR', label: 'Syriac',  title: 'Open this verse in the Syriac Peshitta' },
-                { key: 'COP', label: 'Coptic',  title: 'Open this verse in the Coptic (Sahidic)' },
                 { key: 'LXX', label: 'Greek',   title: 'Open this verse in the Septuagint' },
                 { key: 'LAT', label: 'Latin',   title: 'Open this verse in the Latin Vulgate' },
                 { key: 'ENG', label: 'English', title: 'Open this verse in English' },

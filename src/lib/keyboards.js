@@ -14,10 +14,9 @@
 //                    Hebrew paleo search. Existing Phase-1 behavior.
 //   'concordance' — /api/concordance/surface?corpus=X: exact normalized
 //                    surface-form match, already spans every other corpus
-//                    (Greek NT+LXX+works pooled, Latin, Ge'ez, Syriac,
-//                    Coptic). See server.js's "Universal concordance"
-//                    section — this already existed; Search.jsx just wires
-//                    the frontend to it.
+//                    (Greek NT+LXX+works pooled, Latin, Ge'ez, Syriac). See
+//                    server.js's "Universal concordance" section — this
+//                    already existed; Search.jsx just wires the frontend to it.
 
 const PALEO_KBD_ROWS = [
   ['𐤀', '𐤁', '𐤂', '𐤃', '𐤄', '𐤅'],
@@ -75,21 +74,6 @@ const LATIN_KBD_ROWS = [
   LATIN_LOWER.slice(0, 9), LATIN_LOWER.slice(9, 18), LATIN_LOWER.slice(18),
 ];
 
-// ── Coptic (Bohairic, U+2C80 block) — 25 Greek-derived core letters. The
-// handful of Demotic-derived extra letters (shai, fai, khai, hori, gangia,
-// shima) live in a different Unicode block (Greek and Coptic, U+03E2+) and
-// aren't included yet — same "add later, don't guess now" approach as Ge'ez.
-const COPTIC_CODEPOINTS = [
-  0x2C81, 0x2C83, 0x2C85, 0x2C87, 0x2C89, 0x2C8B, 0x2C8D, 0x2C8F,
-  0x2C91, 0x2C93, 0x2C95, 0x2C97, 0x2C99, 0x2C9B, 0x2C9D, 0x2C9F,
-  0x2CA1, 0x2CA3, 0x2CA5, 0x2CA7, 0x2CA9, 0x2CAB, 0x2CAD, 0x2CAF, 0x2CB1,
-];
-const COPTIC_KBD_ROWS = [
-  COPTIC_CODEPOINTS.slice(0, 9).map(c => String.fromCodePoint(c)),
-  COPTIC_CODEPOINTS.slice(9, 18).map(c => String.fromCodePoint(c)),
-  COPTIC_CODEPOINTS.slice(18).map(c => String.fromCodePoint(c)),
-];
-
 // ── Script → source(s) map ──────────────────────────────────────────────
 // `sources` is what the toggle row (Search.jsx) renders. A script with one
 // source shows no toggles at all (nothing to toggle); Greek's three pooled
@@ -121,10 +105,6 @@ export const SCRIPTS = [
   {
     id: 'latin', label: 'Latin', dir: 'ltr', rows: LATIN_KBD_ROWS,
     sources: [{ corpus: 'LAT', label: 'Latin (Vulgate)', engine: 'concordance' }],
-  },
-  {
-    id: 'coptic', label: 'Coptic', dir: 'ltr', rows: COPTIC_KBD_ROWS,
-    sources: [{ corpus: 'COP', label: 'Coptic', engine: 'concordance' }],
   },
 ];
 

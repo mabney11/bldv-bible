@@ -1,12 +1,12 @@
 /* scripts.css — fonts + direction for every script the reader supports.
  *
- * Pulls Noto faces from Google Fonts so Syriac / Coptic / Armenian / Georgian /
+ * Pulls Noto faces from Google Fonts so Syriac / Armenian / Georgian /
  * Ethiopic / Arabic / Hebrew render in-browser even when the user's OS has no
  * font for them (otherwise: tofu boxes). Local faces named in scripts.js take
  * precedence; these are the safety net. Import this once (e.g. in main.jsx:
  *   import './styles/scripts.css').
  */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Syriac:wght@400;700&family=Noto+Sans+Coptic&family=Noto+Serif+Armenian:wght@400;600&family=Noto+Serif+Georgian:wght@400;600&family=Noto+Sans+Ethiopic:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&family=Noto+Serif+Hebrew:wght@400;600&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Syriac:wght@400;700&family=Noto+Serif+Armenian:wght@400;600&family=Noto+Serif+Georgian:wght@400;600&family=Noto+Sans+Ethiopic:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&family=Noto+Serif+Hebrew:wght@400;600&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap');
 
 /* Right-to-left scripts: container lays words out RTL; each word stays LTR-safe
    via the unicode-bidi isolate so embedded numerals/Latin don't scramble. */
@@ -19,5 +19,4 @@
 [data-script='syriac']      { font-feature-settings: 'calt' 1, 'liga' 1; }
 [data-script='arabic']      { font-feature-settings: 'calt' 1, 'liga' 1; }
 [data-script='ethiopic']    { line-height: 1.45; }
-[data-script='coptic']      { line-height: 1.4; }
 [data-script='cyrillic']    { font-feature-settings: 'liga' 1; }     /* Slavonic ligatures/titlo */

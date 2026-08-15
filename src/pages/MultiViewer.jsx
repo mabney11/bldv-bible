@@ -38,7 +38,7 @@ import './MultiViewer.css';
 // the ONLY Hebrew-script source in this list; the render branch below special-cases
 // it (WordBlock + apiDocTokens) rather than the generic MultiWordBlock path every
 // other source here uses.
-const MULTI_SOURCES = ['LXX', 'GEZ', 'LAT', 'GRC', 'SYR', 'COP', 'ENG', 'HEB'];
+const MULTI_SOURCES = ['LXX', 'GEZ', 'LAT', 'GRC', 'SYR', 'ENG', 'HEB'];
 
 // Ge'ez punctuation folding. The tokenizer can emit a wordspace (፡) or section
 // mark (። …) as its own standalone token, which then floats between word blocks
@@ -83,7 +83,6 @@ const SWITCHER = [
   { key: 'HEB', label: 'Hebrew'  },
   { key: 'GEZ', label: "Ge'ez"   },
   { key: 'SYR', label: 'Syriac'  },
-  { key: 'COP', label: 'Coptic'  },
   { key: 'LXX', label: 'Greek'   },
   { key: 'LAT', label: 'Latin'   },
   { key: 'ENG', label: 'English' },
@@ -92,10 +91,10 @@ const SWITCHER = [
 // these that has it.
 // Hebrew is the anchor — every other tradition is a translation that points back
 // to it, so it always wins. Order: Hebrew (BHS, then the corpus.db Hebrew for
-// apocrypha) → Ge'ez → Syriac → Greek → Latin → Coptic; Greek-literature and
-// English are last-resort fallbacks only.
-const SOURCE_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'LXX', 'LAT', 'COP', 'GRC', 'ENG'];
-const PILL_LABEL = { BHS:'Hebrew', HEB:'Heb·extra', GEZ:"Ge'ez", SYR:'Syriac', LXX:'Greek', LAT:'Latin', COP:'Coptic', ENG:'English' };
+// apocrypha) → Ge'ez → Syriac → Greek → Latin; Greek-literature and English
+// are last-resort fallbacks only.
+const SOURCE_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'LXX', 'LAT', 'GRC', 'ENG'];
+const PILL_LABEL = { BHS:'Hebrew', HEB:'Heb·extra', GEZ:"Ge'ez", SYR:'Syriac', LXX:'Greek', LAT:'Latin', ENG:'English' };
 // BHS (bible.db) holds the Hebrew OT canon = canon_ids 1–39; it isn't a corpus.db
 // source, so inject it as an available Hebrew witness for those books.
 const HEBREW_OT = (id) => id >= 1 && id <= 39;
@@ -105,7 +104,6 @@ const SOURCE_LABELS = {
   LAT: 'Latin (Vulgate)',
   GRC: 'Greek Literature',
   SYR: 'Syriac (Peshitta)',
-  COP: 'Coptic (Sahidic)',
   ENG: 'English',
   HEB: 'Hebrew (extra)',
 };

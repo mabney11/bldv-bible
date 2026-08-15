@@ -39,7 +39,7 @@ const ROOT_VERSE_LIMIT = 50;     // cap verses pulled per expanded root
 
 // Phoenician/Paleo isn't in scripts.js's detectScript (same special-case
 // translit.js needs) — catch it first, then defer to the shared detector.
-const SCRIPT_ID_MAP = { ethiopic: 'geez', syriac: 'syriac', greek: 'greek', coptic: 'coptic', latin: 'latin' };
+const SCRIPT_ID_MAP = { ethiopic: 'geez', syriac: 'syriac', greek: 'greek', latin: 'latin' };
 function detectQueryScript(text) {
   const s = String(text || '').trim();
   if (!s) return null;
@@ -393,7 +393,7 @@ export default function Search() {
         {anyErr && <div className="hv-search-err">⚠ {anyErr}</div>}
 
         {!urlQ && !anyErr && (
-          <div className="search-page-empty">Type or paste a word above in any script — Paleo Hebrew, Ge'ez, Syriac, Greek, Latin, Coptic, or an English name — then hit Search.</div>
+          <div className="search-page-empty">Type or paste a word above in any script — Paleo Hebrew, Ge'ez, Syriac, Greek, Latin, or an English name — then hit Search.</div>
         )}
 
         {urlQ && busy && !legacyData && !concData && !translitResult && (

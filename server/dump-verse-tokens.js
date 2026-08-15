@@ -6,7 +6,8 @@
  * Built for the Gloss Studio lexicon-expansion workflow: Claude aligns each
  * token to the corresponding piece of the (already-Hebrew-transliterated)
  * English translation and proposes a gloss, the same "Translit (gloss)"
- * shorthand already used in lexicon/{geez,latin,syriac,coptic}-lexicon.json.
+ * shorthand already used in lexicon/{geez,latin,syriac}-lexicon.json. (Coptic
+ * dropped 2026-08-15 — see piecewise-expansion-notes.md.)
  * This script only does the fetching — no guessing, no memory-of-the-text —
  * so every token handed to Claude is verified straight from this app's own
  * corpus, never assumed. Copy the tokens (and the English from Gloss
@@ -59,7 +60,6 @@ function tokenize(text) {
 const LANGS = [
     { id: 'LAT', label: 'Latin (Vulgate)',   corpora: ['LAT'] },
     { id: 'SYR', label: 'Syriac (Peshitta)', corpora: ['SYR'] },
-    { id: 'COP', label: 'Coptic (Sahidic)',  corpora: ['COP'] },
     { id: 'GEZ', label: "Ge'ez (BETMAS)",    corpora: ['GEZ'] },
     { id: 'GRC', label: 'Greek',             corpora: ['LXX', 'GNT'] },
 ];

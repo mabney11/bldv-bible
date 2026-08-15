@@ -349,7 +349,7 @@
 }
 
 /* ── RTL sources (Hebrew, Syriac) ─────────────────────────────────────────
-   MultiViewer defaults to LTR for Greek/Ge'ez/Latin/Coptic. When the source is
+   MultiViewer defaults to LTR for Greek/Ge'ez/Latin. When the source is
    right-to-left, flip the reading direction so words flow right→left and the
    verse marker sits on the right — matching the Hebrew Viewer. The book title
    stays LTR (it's an English/transliterated label). */

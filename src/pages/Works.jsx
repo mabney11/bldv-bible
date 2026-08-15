@@ -7,7 +7,7 @@ import './Works.css';
 const SOURCE_LABELS = {
   LXX: 'Greek Scriptures', GNT: 'Greek NT', GEZ: "Ge'ez",
   LAT: 'Latin', GRC: 'Greek Literature', BHS: 'Hebrew',
-  SYR: 'Syriac', COP: 'Coptic', ENG: 'English',
+  SYR: 'Syriac', ENG: 'English',
 };
 const FEATURED = new Set(featuredManifest.featured || []);
 

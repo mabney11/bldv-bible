@@ -223,9 +223,9 @@
   margin-bottom: 10px; text-decoration: none; width: fit-content;
 }
 .gs-verse-ref:hover { text-decoration: underline; }
-/* No hardcoded direction here — Hebrew/Syriac are RTL, Greek/Ge'ez/Latin/
-   Coptic are LTR. The dir attribute is set per-language in JSX (LANG_DIR)
-   so the word ORDER follows the actual script, not a Hebrew-only default. */
+/* No hardcoded direction here — Hebrew/Syriac are RTL, Greek/Ge'ez/Latin
+   are LTR. The dir attribute is set per-language in JSX (LANG_DIR) so the
+   word ORDER follows the actual script, not a Hebrew-only default. */
 /* Word grid — Hebrew uses the reader's own <WordBlock> (WordBlock.css),
    non-Hebrew languages use <MultiWordBlock> (MultiViewer's own styling);
    this wrapper only adds layout + the missing-lex-entry highlight on top,
