@@ -197,21 +197,26 @@ function renderVerseNodes(t, mode, keyPrefix = '') {
 // verse's own data — flagged `rd-quote-unclosed` instead of a depth shade,
 // same signal as before for the data bug the user flagged ("this quote
 // doesn't end I'm certain"), just carried over into the new design.
+// Every node (text or quote) is stamped with its [start, end) offset in
+// `raw` — not needed for a single isolated verse, but essential once a quote
+// can SPAN MULTIPLE VERSES (see sliceQuoteTree below): the caller runs this
+// ONCE over a whole chapter's concatenated text, then cuts the result back
+// apart at each verse's own boundary.
 const PLAIN_QUOTE_RE = /["“”]/g;
 function parseQuoteMarks(raw) {
-  if (!raw) return [{ type: 'text', text: raw }];
+  if (!raw) return [{ type: 'text', text: raw, start: 0, end: 0 }];
   PLAIN_QUOTE_RE.lastIndex = 0;
   const marks = [];
   let m;
   while ((m = PLAIN_QUOTE_RE.exec(raw))) marks.push({ at: m.index, ch: m[0] });
-  if (!marks.length) return [{ type: 'text', text: raw }];
+  if (!marks.length) return [{ type: 'text', text: raw, start: 0, end: raw.length }];
 
   const root = { children: [] };
   const containerStack = [root];   // top = node whose .children we're appending to
   const openStack = [];            // parallel stack of { style: 'curly'|'straight', node }
   let last = 0;
   const flush = (end) => {
-    if (end > last) containerStack[containerStack.length - 1].children.push({ type: 'text', text: raw.slice(last, end) });
+    if (end > last) containerStack[containerStack.length - 1].children.push({ type: 'text', text: raw.slice(last, end), start: last, end });
     last = end;
   };
   marks.forEach(({ at, ch }) => {
@@ -222,10 +227,12 @@ function parseQuoteMarks(raw) {
                  : ch === '"'      ? (top && top.style === 'straight')
                  : false; // U+201C ("“") is always an opener, never a close
     if (closes) {
-      openStack.pop();
+      const entry = openStack.pop();
+      entry.node.markClose = ch;
+      entry.node.end = at + ch.length;
       containerStack.pop();
     } else {
-      const node = { type: 'quote', depth: openStack.length + 1, markOpen: ch, markClose: '', children: [] };
+      const node = { type: 'quote', depth: openStack.length + 1, markOpen: ch, markClose: '', children: [], start: at, end: raw.length };
       containerStack[containerStack.length - 1].children.push(node);
       openStack.push({ style, node });
       containerStack.push(node);
@@ -233,8 +240,42 @@ function parseQuoteMarks(raw) {
     last = at + ch.length;
   });
   flush(raw.length);
-  openStack.forEach(({ node }) => { node.unclosed = true; });
+  openStack.forEach(({ node }) => { node.unclosed = true; node.end = raw.length; });
   return root.children;
+}
+
+// Cuts a parseQuoteMarks() tree down to just the portion covering
+// [start, end) of the original raw string it was built from — how a
+// chapter-wide quote scan gets split back into one render per verse. A quote
+// node that opened in an EARLIER verse (its own markOpen sits before `start`)
+// renders here with no leading mark — the real one already appeared where it
+// belongs; likewise a still-unresolved quote continuing into a LATER verse
+// renders with no trailing mark here. Depth/unclosed status (resolved with
+// full chapter context) always carries over, so the grey shade — or the
+// unclosed warning color — stays consistent across every verse a quote
+// touches, even though each verse gets its own separate <span>.
+function sliceQuoteTree(nodes, start, end) {
+  const out = [];
+  for (const n of nodes) {
+    if (n.end <= start || n.start >= end) continue; // no overlap with this slice
+    if (n.type === 'text') {
+      const s = Math.max(n.start, start), e = Math.min(n.end, end);
+      if (e > s) out.push({ type: 'text', text: n.text.slice(s - n.start, e - n.start) });
+      continue;
+    }
+    const children = sliceQuoteTree(n.children, start, end);
+    const keepOpen  = n.start >= start && n.start < end;
+    const keepClose = !!n.markClose && n.end > start && n.end <= end;
+    out.push({
+      type: 'quote',
+      depth: n.depth,
+      unclosed: n.unclosed,
+      markOpen: keepOpen ? n.markOpen : '',
+      markClose: keepClose ? n.markClose : '',
+      children,
+    });
+  }
+  return out;
 }
 
 // Turns the tree above into React nodes — text leaves still get the usual
@@ -1142,6 +1183,38 @@ export default function Reader() {
     return Object.keys(srcWordsByVerse || {}).map(Number).sort((a, b) => a - b);
   }, [isForeignScript, verses, srcWordsByVerse]);
 
+  // Chapter-wide plain-quote scan (English only — Hebrew/Ge'ez never run
+  // through the plain-quote system at all). Concatenates every rendered
+  // verse's narrative text IN ORDER and parses quote marks across the WHOLE
+  // thing once, so a quote that opens in one verse and doesn't close until a
+  // later one (e.g. Genesis 1:9's "Let the waters…") is still recognized as
+  // ONE continuous quotation — per-verse parsing had no way to see past its
+  // own verse's boundary, so the far side of a multi-verse quote had no
+  // opening mark to pair against and silently rendered as plain text.
+  // A verse with an embedded scripture quotation (splitScriptureQuote)
+  // contributes only its own before/after narrative — the embedded block's
+  // marks are a wholly different system (its own numbered lines) and must
+  // never be folded into this scan.
+  const chapterQuoteInfo = useMemo(() => {
+    if (isForeignScript) return null;
+    let acc = '';
+    const ranges = {};
+    renderVerseNums.forEach(vnum => {
+      if (vnum === 0) return; // superscription is rendered separately (verse0Text)
+      const raw = sanitizeText((versesByNum[vnum]?.text || '').trim());
+      if (!raw) { ranges[vnum] = { start: acc.length, end: acc.length, embedded: null }; return; }
+      const q = splitScriptureQuote(raw);
+      const contribute = q ? `${q.before || ''} ${q.after || ''}` : raw;
+      const start = acc.length;
+      acc += contribute;
+      ranges[vnum] = q
+        ? { start, end: acc.length, embedded: { beforeLen: (q.before || '').length } }
+        : { start, end: acc.length, embedded: null };
+      acc += ' ';
+    });
+    return { tree: parseQuoteMarks(acc), ranges };
+  }, [isForeignScript, renderVerseNums, versesByNum]);
+
   // Verse 0 is a superscription/title ("A Psalm of David"), not verse 1 — see
   // the headings note below. It used to fall through the ordinary per-verse
   // loop and render glued directly onto verse 1 ("0 · 1 In the beginning…"),
@@ -1371,19 +1444,30 @@ export default function Reader() {
                     : (() => {
                         const raw = sanitizeText((versesByNum[vnum]?.text || '').trim());
                         if (!raw) return '·';
+                        // Slice this verse's own portion out of the CHAPTER-wide
+                        // quote scan (chapterQuoteInfo, above) instead of parsing
+                        // this verse's text in isolation — that's what lets a
+                        // quote spanning several verses stay one continuous
+                        // quotation instead of losing its far side.
+                        const range = chapterQuoteInfo?.ranges[vnum];
                         const q = splitScriptureQuote(raw);
-                        if (!q) return renderVerseNodesWithQuotes(raw, glossMode);
-                        // English-only gloss mode stays a plain string for the
-                        // surrounding prose (see renderVerseNodes/applyGlossMode) —
-                        // the quote block itself is always React nodes, so the
-                        // overall verse becomes a small mixed array either way.
-                        const before = q.before ? renderVerseNodesWithQuotes(q.before, glossMode) : null;
-                        const after  = q.after  ? renderVerseNodesWithQuotes(q.after,  glossMode) : null;
+                        if (!range) return renderVerseNodesWithQuotes(raw, glossMode); // defensive fallback
+                        if (!q) {
+                          const sliced = sliceQuoteTree(chapterQuoteInfo.tree, range.start, range.end);
+                          return renderQuoteTree(sliced, glossMode, `v${vnum}-`);
+                        }
+                        const beforeEnd = range.start + (range.embedded?.beforeLen || 0);
+                        const before = q.before
+                          ? renderQuoteTree(sliceQuoteTree(chapterQuoteInfo.tree, range.start, beforeEnd), glossMode, `v${vnum}b-`)
+                          : null;
+                        const after = q.after
+                          ? renderQuoteTree(sliceQuoteTree(chapterQuoteInfo.tree, beforeEnd + 1, range.end), glossMode, `v${vnum}a-`)
+                          : null;
                         const citation = citations[`${book}:${chapter}:${vnum}`] || null;
                         const out = [];
-                        if (before != null) out.push(...(Array.isArray(before) ? before : [before]));
+                        if (before) out.push(...before);
                         out.push(renderScriptureQuote(q, glossMode, 'sq', citation, idToSlug));
-                        if (after != null) out.push(...(Array.isArray(after) ? after : [after]));
+                        if (after) out.push(...after);
                         return out;
                       })();
                   const on = marks.has(markKey(vnum));
