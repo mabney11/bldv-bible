@@ -778,22 +778,61 @@
    multi-verse discourse can be legitimately unclosed in the source text (see
    the MAX_QUOTE_CHARS comment in Reader.jsx), so this must read as "worth a
    look," not as a wall of errors the way solid red text once did. */
+/* 2026-08-18: an inline (non-block) treatment for the outer quote was tried
+   here — so a whole continuously-open discourse like Matthew 5's Sermon on
+   the Mount could flow as ordinary paragraph prose instead of one verse per
+   line — but reverted per direct feedback: "verses starting on its own line
+   is fine I think it makes things more readable." Every depth is display:
+   block again, own line(s), same as the original design below.
+   The bar itself is a plain border-left on .rd-quote-d1 (outermost level
+   only — "I like the vertical bars for the main big quote only, the inner
+   tabs dont need the bar"). What WAS actually broken — "the bar should be
+   solid through all of matthew 5 but it broke between 33/34" — is the
+   .rd-quote-cont-start/-end margin trick just below: two adjacent per-verse
+   slices of the same still-open quote now abut with zero gap, so their
+   border-lefts touch and read as one unbroken line down the page. */
+/* Nested quote (depth 2+, an actual quote-within-the-quote — Matthew 5:33's
+   "'You shall not make false vows...'", the 'Yes'/'No' in 5:37) keeps the
+   original block treatment: its own line(s), indented one step further than
+   its parent, no bar of its own ("the inner tabs dont need the bar"). */
 .rd-quote-block {
   display: block;
   margin: .45em 0;
-  padding-left: .7em;
-  border-left: 3px solid var(--pr-rule);
+}
+/* 2026-08-19: the cont-start/-end margin trick above fixes the gap BETWEEN
+   two sibling verse slices (33/34 style), but a second, different gap
+   showed up right after a NESTED quote closes inside a verse — "a split in
+   vertical bar between v21 and v22 ... it seems to be after a inner quotes
+   that the outer line breaks." Root cause: a depth-2 quote's own top/bottom
+   margin (.45em, from .rd-quote-block above — it isn't a cont-start/-end
+   slice, it opens and closes within its one verse) collapses straight
+   THROUGH its depth-1 parent's border box in standard CSS, since a
+   border-left alone doesn't stop margin collapse (only top/bottom
+   border/padding do) — so the child's bottom margin was landing OUTSIDE
+   the parent's own visible border, right where the next verse's slice
+   begins, reading as a break in the bar. display: flow-root gives the
+   depth-1 box its own block formatting context, which contains all of its
+   descendants' margins instead of letting them escape — the border now
+   wraps the full rendered height, nested quotes included, with nothing
+   able to poke a gap in it. */
+.rd-quote-d1 {
+  display: flow-root;
   font-size: 1.06em;
+  border-left: 3px solid color-mix(in srgb, var(--pr-ink-soft) 68%, transparent);
+  padding-left: .75em;
 }
-.rd-quote-d1 { margin-left: .9em; }
-.rd-quote-d2 { margin-left: 1.5em; font-size: 1em; }
-.rd-quote-d3 { margin-left: 2.1em; font-size: 1em; }
-.rd-quote-d4 { margin-left: 2.7em; font-size: 1em; }
-.rd-quote-unclosed {
-  border-left-color: #e0654f;
-  background: color-mix(in srgb, #e0654f 6%, transparent);
-  cursor: help;
-}
+.rd-quote-d2 { margin-left: 1.5em; }
+.rd-quote-d3 { margin-left: 2.1em; }
+.rd-quote-d4 { margin-left: 2.7em; }
+/* .rd-quote-unclosed used to get a red/amber border+background here — removed
+   2026-08-18 (direct feedback: "its fine to have it unclosed but there is no
+   error so it shouldnt highlight red"). Reader.jsx no longer adds the class
+   at all now, so this rule would be dead even if left in; not kept as a
+   no-op to avoid the confusion of styling that looks wired up but never
+   fires. See renderQuoteTree's comment for why "still open at chapter end"
+   isn't actually an error — a discourse that legitimately continues into
+   the next chapter looks exactly the same as this, since quote-tracking
+   resets at every chapter boundary. */
 /* A quote slice that continues a quotation FROM an earlier verse (no markOpen
    here — Reader.jsx's renderQuoteTree) or that continues INTO a later verse
    (no markClose here) drops the corresponding margin, so two adjacent
@@ -809,6 +848,17 @@
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   padding: .08em .02em;
+  border-radius: 2px;
+}
+/* .rd-quote-block is display:block, so it forms its OWN box rather than
+   being one of .rd-vtext's own inline fragments — the background above
+   never paints it, which is why marking a verse whose content sits partly
+   or (verses 24-25 style) ENTIRELY inside a quote block left it looking
+   unhighlighted ("When selecting a verse, I want the verse to highlight.
+   The quote should highlight."). Painted here directly instead, keyed off
+   the same .marked state on the ancestor .rd-verse. */
+.rd-verse.marked .rd-quote-block {
+  background: var(--pr-mark);
   border-radius: 2px;
 }
 /* The number badge itself lives OUTSIDE .rd-verse now (it's in the separate

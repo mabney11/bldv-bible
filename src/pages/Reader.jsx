@@ -185,22 +185,42 @@ function renderVerseNodes(t, mode, keyPrefix = '') {
 // further than its parent for each level of nesting (see the hand-drawn
 // sketch this was built from: "Said" -> an indented block, with a further-
 // indented nested-quote block inside it), instead of a color difference.
-// Double/curly quote characters only — a generic single-quote scan would
-// light up on every contraction and possessive ("don't", "Alaph's") instead
-// of actual speech.
+// Double AND single curly quotes, plus straight ". 2026-08-18: originally
+// single quotes were left out entirely — "a generic single-quote scan would
+// light up on every contraction and possessive ('don't', 'Alaph's') instead
+// of actual speech" — but the user asked directly for real quote-within-a-
+// quote nesting (Matthew 5:33/38's "'You shall not make false vows...'"
+// inside the outer discourse quote, each 'Yes'/'No' in v37) to render with
+// its OWN deeper indent, the same block treatment the outer quote already
+// gets. So single curly ‘ ’ are tracked too now, as their own nesting style
+// ('curly1', vs. the outer double quote's 'curly2') — the contraction/
+// possessive collision is handled with a narrow heuristic instead of being
+// avoided altogether: isApostrophe() below skips a ’ that's immediately
+// followed by a letter ("can’t", "y’all", mid-word every time), since a
+// genuine CLOSING quote mark is essentially never followed immediately by
+// another letter with no space — prose doesn't run "...vows,’she said" with
+// no gap. A ’ that survives the check but still doesn't match an open
+// curly1 level (a plural possessive like "elders’ teaching", or just
+// mismatched source data) falls through as inert punctuation rather than
+// forcing a wrong close — see the "stray closer" branch below.
 //
 // True nesting needs a real stack, not just "pair by position": curly
-// U+201C/U+201D are directionally unambiguous (open always pushes, close
-// always pops), but a straight " is the SAME glyph both ways, so a straight
-// mark toggles whatever straight-quote level is currently on top of the
-// stack — open if none is, close if one is. Depth (which indent step it
-// gets, see .rd-quote-d1..d4 in Reader.css) is just the stack's size when a
-// quote node is opened, so a straight-quote run nested inside a curly pair
-// still reports the right (deeper) indent. A level still open when the
-// chapter's text runs out never got a matching close in the data — flagged
-// `rd-quote-unclosed` on top of its normal depth indent, same signal as
-// before for the data bug the user flagged ("this quote doesn't end I'm
-// certain"), just carried over into the new design.
+// U+201C/U+201D and U+2018/U+2019 are directionally unambiguous (open always
+// pushes, close always pops — modulo the apostrophe check above), but a
+// straight " is the SAME glyph both ways, so a straight mark toggles
+// whatever straight-quote level is currently on top of the stack — open if
+// none is, close if one is. Depth (which indent step it gets, see
+// .rd-quote-d1..d4 in Reader.css) is just the stack's size when a quote node
+// is opened, so a single-quote nested inside a double-quote pair reports the
+// next indent step deeper, and text AFTER that nested quote closes drops
+// back to the outer quote's own indent — it's still that node's child, not
+// back out at the chapter's top level. A level still open when the
+// chapter's text runs out never got a matching close in the data — no
+// longer flagged as an error (see renderQuoteTree below): a real multi-
+// chapter discourse (e.g. Matthew 5-7's Sermon on the Mount) legitimately
+// never closes within any ONE chapter, since quote state resets at chapter
+// boundaries — that's expected, not a data bug, so it no longer gets the red
+// "unclosed" treatment it used to.
 //
 // 2026-08-17, Luke 21:10-28: a single long discourse re-opens “ at the start
 // of several verses (10, 19, 20) with NO closing mark in between, then
@@ -210,59 +230,82 @@ function renderVerseNodes(t, mode, keyPrefix = '') {
 // nesting, that reads as 3 levels deep and never-closing (the earlier levels
 // have nothing left to close them) — the user flagged this directly:
 // "there doesnt seem to be any nested quotes here." A “ that opens while the
-// CURRENT innermost level is ALREADY curly is exactly this pattern, not a
-// genuine quote-within-a-quote (real nesting in this corpus switches mark
-// style, curly outer / single ‘ ’ inner — see v8's "saying, ‘I am he,’" —
-// which stays invisible to this parser entirely; PLAIN_QUOTE_RE only matches
-// [""“”]). So: a repeated “ over an already-open curly level is absorbed as
-// plain text — visible, but it doesn't start a new block or deepen the
-// indent — leaving the ORIGINAL opener as the one v28's ” actually closes.
+// CURRENT innermost level is ALREADY curly2 is exactly this pattern, not a
+// genuine quote-within-a-quote — absorbed as plain text, visible but not
+// starting a new block, leaving the ORIGINAL opener as the one that
+// eventually closes. (2026-08-18: the user has since had these redundant
+// reopens stripped from the corpus directly — see the Luke 21 / Matthew 5
+// cleanup — so this absorption is now a safety net for the rest of the
+// corpus rather than the primary fix, but stays in place since new redundant
+// reopens are still legal English typesetting, just not what this reader
+// wants to show.) The same absorption applies to a redundant ‘ reopen over
+// an already-open curly1 level, for consistency, though it's a rarer pattern
+// since single-quoted spans are usually short and don't cross verses.
 // Every node (text or quote) is stamped with its [start, end) offset in
 // `raw` — not needed for a single isolated verse, but essential once a quote
 // can SPAN MULTIPLE VERSES (see sliceQuoteTree below): the caller runs this
 // ONCE over a whole chapter's concatenated text, then cuts the result back
 // apart at each verse's own boundary.
-const PLAIN_QUOTE_RE = /["“”]/g;
+const PLAIN_QUOTE_RE = /["“”‘’]/g;
+const OPEN_STYLE  = { '“': 'curly2', '‘': 'curly1' };
+const CLOSE_STYLE = { '”': 'curly2', '’': 'curly1' };
+// See the big comment above: a ’ immediately followed by a letter is read as
+// mid-word (can’t, y’all, elders’teaching-with-no-space — vanishingly rare)
+// rather than a closing single-quote mark.
+function isApostrophe(raw, at) {
+  const next = raw[at + 1];
+  return !!next && /[A-Za-z]/.test(next);
+}
 function parseQuoteMarks(raw) {
   if (!raw) return [{ type: 'text', text: raw, start: 0, end: 0 }];
   PLAIN_QUOTE_RE.lastIndex = 0;
   const marks = [];
   let m;
-  while ((m = PLAIN_QUOTE_RE.exec(raw))) marks.push({ at: m.index, ch: m[0] });
+  while ((m = PLAIN_QUOTE_RE.exec(raw))) {
+    if (m[0] === '’' && isApostrophe(raw, m.index)) continue; // contraction/possessive, not a close
+    marks.push({ at: m.index, ch: m[0] });
+  }
   if (!marks.length) return [{ type: 'text', text: raw, start: 0, end: raw.length }];
 
   const root = { children: [] };
   const containerStack = [root];   // top = node whose .children we're appending to
-  const openStack = [];            // parallel stack of { style: 'curly'|'straight', node }
+  const openStack = [];            // parallel stack of { style: 'curly2'|'curly1'|'straight', node }
   let last = 0;
   const flush = (end) => {
     if (end > last) containerStack[containerStack.length - 1].children.push({ type: 'text', text: raw.slice(last, end), start: last, end });
     last = end;
   };
   marks.forEach(({ at, ch }) => {
-    flush(at);
-    const style = ch === '"' ? 'straight' : 'curly';
     const top = openStack[openStack.length - 1];
-    const closes = ch === '”' ? (top && top.style === 'curly')
-                 : ch === '"'      ? (top && top.style === 'straight')
-                 : false; // U+201C ("“") is always an opener, never a close
+    const closes = ch === '"' ? (top && top.style === 'straight')
+                 : CLOSE_STYLE[ch] ? (top && top.style === CLOSE_STYLE[ch])
+                 : false; // “ and ‘ are always openers, never a close
     if (closes) {
+      flush(at);
       const entry = openStack.pop();
       entry.node.markClose = ch;
       entry.node.end = at + ch.length;
       containerStack.pop();
-    } else if (ch === '“' && top && top.style === 'curly') {
-      // Redundant reopen (see comment above) — leave the mark itself as
-      // plain text (don't advance `last` past it) and don't touch the
-      // stack, so the mark that eventually closes is still the ORIGINAL
-      // opener, not this one.
+      last = at + ch.length;
       return;
-    } else {
-      const node = { type: 'quote', depth: openStack.length + 1, style, markOpen: ch, markClose: '', children: [], start: at, end: raw.length };
-      containerStack[containerStack.length - 1].children.push(node);
-      openStack.push({ style, node });
-      containerStack.push(node);
     }
+    if (CLOSE_STYLE[ch]) {
+      // A closer glyph (” or ’) with no matching open of that style — leave
+      // it as inert plain text rather than force a wrong pairing (see the
+      // possessive-apostrophe note above). Don't advance `last`, so it just
+      // rides along in the next flush().
+      return;
+    }
+    const style = ch === '"' ? 'straight' : OPEN_STYLE[ch];
+    if (style !== 'straight' && top && top.style === style) {
+      // Redundant reopen (see comment above) — absorbed as plain text.
+      return;
+    }
+    flush(at);
+    const node = { type: 'quote', depth: openStack.length + 1, style, markOpen: ch, markClose: '', children: [], start: at, end: raw.length };
+    containerStack[containerStack.length - 1].children.push(node);
+    openStack.push({ style, node });
+    containerStack.push(node);
     last = at + ch.length;
   });
   flush(raw.length);
@@ -385,14 +428,34 @@ function renderQuoteTree(nodes, mode, keyPrefix) {
     if (n.markOpen) inner.push(n.markOpen);
     inner.push(...renderQuoteTree(n.children, mode, `${keyPrefix}q${i}-`));
     if (n.markClose) inner.push(n.markClose);
+    // n.unclosed no longer gets its own class/red styling here (2026-08-18,
+    // direct feedback: "its fine to have it unclosed but there is no error
+    // so it shouldnt highlight red") — a quote can legitimately still be
+    // open at the end of a chapter (a discourse that continues into the
+    // next chapter, where quote-tracking starts over) with nothing actually
+    // wrong, and the red warning border/tooltip was flagging that as if it
+    // were a data bug. The flag is still computed (kept on the node, unused
+    // here) in case a future, more targeted signal wants it — e.g. only for
+    // a straight-quote span, where a genuine stray mark is more likely.
+    //
+    // 2026-08-18: tried making the outer (depth 1) quote inline so a
+    // whole-chapter discourse (Matthew 5's Sermon on the Mount) would read
+    // as flowing prose instead of one verse per line. Reverted per direct
+    // feedback: "verses starting on its own line is fine I think it makes
+    // things more readable." Every quote depth stays block, own line, per
+    // the earlier standing behavior. The REAL bug the user was flagging
+    // ("the bar should be solid through all of matthew 5 but it broke
+    // between 33/34") is the margin gap between two separate block <span>s
+    // that are both part of the same still-open quote — fixed below via
+    // rd-quote-cont-start/-end, which drop the touching margin so
+    // consecutive continuation slices abut with zero gap and their left
+    // borders line up into one unbroken line (see Reader.css).
     const cls = ['rd-quote', 'rd-quote-block', `rd-quote-d${Math.min(n.depth, 4)}`,
-                 n.unclosed ? 'rd-quote-unclosed' : '',
                  n.markOpen ? '' : 'rd-quote-cont-start',
                  n.markClose ? '' : 'rd-quote-cont-end']
       .filter(Boolean).join(' ');
     out.push(
-      <span className={cls} key={`${keyPrefix}q${i}`}
-            title={n.unclosed ? "This quotation doesn't appear to close in this verse" : undefined}>
+      <span className={cls} key={`${keyPrefix}q${i}`}>
         {inner}
       </span>
     );
@@ -1564,17 +1627,19 @@ export default function Reader() {
                   // text from the next verse's, since neither side supplies
                   // one on its own (e.g. "...treasury." + "He raah" would
                   // otherwise run together as "treasury.He raah"). But when
-                  // a verse's rendered content ENDS in a block-level quote
-                  // (.rd-quote-block — see Reader.css), that trailing space
-                  // becomes its own stray line: a lone inline text node
-                  // sitting right after a block child forces its own
+                  // a verse's rendered content ENDS in a block-level NESTED
+                  // quote (.rd-quote-block — see Reader.css), that trailing
+                  // space becomes its own stray line: a lone inline text
+                  // node sitting right after a block child forces its own
                   // anonymous line box, showing up as an unwanted blank line
                   // between two quote-block chunks that are otherwise
                   // touching seamlessly (rd-quote-cont-start/-end above).
                   // The block break itself already separates the verses
-                  // visually, so skip the extra space in that case.
+                  // visually, so skip the extra space in that case. Every
+                  // quote depth is block again (2026-08-18 revert, see
+                  // renderQuoteTree), so this applies uniformly.
                   const lastNode = Array.isArray(text) ? text[text.length - 1] : text;
-                  const endsInQuoteBlock = !!lastNode?.props?.className?.includes('rd-quote');
+                  const endsInQuoteBlock = !!lastNode?.props?.className?.includes('rd-quote-block');
                   return (
                     <Fragment key={vnum}>
                     {acro && (
