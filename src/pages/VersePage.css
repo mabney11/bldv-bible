@@ -1,0 +1,88 @@
+/* ── Verse Page — the single-verse view at /:bookSlug/:chapter/:verse ───────
+   Built on top of Reader.css's .reader-root shell (imported by VersePage.jsx),
+   so it shares the same night/parchment theming and CSS custom properties
+   (--pr-ink, --pr-accent, --pr-bg-raise, --pr-rule, --pr-measure) as the
+   regular Reader — these rules only add what Reader.css doesn't already
+   provide: the verse heading, body text and word-by-word list. */
+
+/* The top-bar ref label here is a static heading, not the tappable
+   book/chapter/verse picker button Reader.jsx uses — drop the pointer
+   affordances .rd-ref normally carries (hover background, cursor). */
+.vp-ref-static {
+  cursor: default;
+  pointer-events: none;
+}
+.vp-chapter-link {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.vp-page {
+  display: flex;
+  justify-content: center;
+}
+.vp-verse {
+  width: 100%;
+  max-width: 38rem;
+  animation: rd-fade .4s ease both;
+}
+
+.vp-heading {
+  font-size: clamp(40px, 12vw, 64px);
+  line-height: 1;
+  font-weight: 500;
+  color: var(--pr-ink);
+  margin: 2px 0 22px;
+}
+
+.vp-text {
+  font-size: 1.35em;
+  line-height: 1.7;
+  color: var(--pr-ink);
+  margin: 0 0 36px;
+}
+
+.vp-subhead {
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--pr-ink-soft);
+  margin: 0 0 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--pr-rule);
+}
+
+.vp-words {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+.vp-word {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--pr-rule);
+  border-radius: 8px;
+  background: var(--pr-bg-raise);
+}
+.vp-word-raw {
+  font-size: 1em;
+  color: var(--pr-ink);
+}
+.vp-word-strongs {
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--pr-accent-dim);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--pr-accent-dim) 60%, transparent);
+}
+.vp-word-strongs:hover {
+  color: var(--pr-accent);
+  border-bottom-color: var(--pr-accent);
+}

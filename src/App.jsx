@@ -35,6 +35,7 @@ const BookManager      = lazy(() => import('./pages/BookManager.jsx'));
 const Search           = lazy(() => import('./pages/Search.jsx'));
 const StrongsOverrides = lazy(() => import('./pages/StrongsOverrides.jsx'));
 const GlossStudio      = lazy(() => import('./pages/GlossStudio.jsx'));
+const VersePage        = lazy(() => import('./pages/VersePage.jsx'));
 
 // Shown for the brief moment a lazy page chunk is downloading (near-instant
 // on repeat visits/navigations once a chunk is cached). Deliberately quiet —
@@ -266,6 +267,12 @@ export default function App() {
         <Route path="/gloss-studio"   element={<GlossStudio />} />
         <Route path="/read"           element={<ReadRedirect />} />
         <Route path="/lexicon-source" element={<LexiconSourceRedirect />} />
+        {/* Clean per-verse URL — /genesis/1/1 — exposing the verse-level content
+            that server/prerender.js's englishVerseRoute already builds for /bible?
+            verse= links, as a real navigable page (see VersePage.jsx). Three path
+            segments never collide with any of the single/double-segment named
+            routes above, so this is safe to keep last, right before the catch-all. */}
+        <Route path="/:bookSlug/:chapter/:verse" element={<VersePage />} />
         <Route path="*" element={<Navigate to="/landing" replace />} />
       </Routes>
       </Suspense>

@@ -83,6 +83,12 @@
   --pr-rule:      #2c2519;
   --pr-flash:     rgba(215,165,76,0.16);
   --pr-mark:      rgba(215,165,76,0.22);
+  /* Verse-number color — deliberately its own token, distinct from --pr-accent
+     (the gold used everywhere else), per 2026-08-16 request: verse numbers get
+     their own light-blue identity so they read as a distinct, clickable kind
+     of thing rather than blending into the gold accents used for chapter
+     numerals, rules, etc. */
+  --pr-vnum:      #6fb3e6;
   /* THE READING FACE. Set inline by Reader.jsx from the persisted choice; this
      declaration is only the fallback if the inline value is ever missing. The old
      Palatino/Times-family serif is gone — the default is now Lexend, which is
@@ -134,6 +140,9 @@
   --pr-rule:      #d8c8a4;
   --pr-flash:     rgba(154,106,30,0.13);
   --pr-mark:      rgba(198,146,32,0.30);
+  /* Deeper/darker blue than the night value above — the light value needs more
+     saturation to hold contrast against the parchment background. */
+  --pr-vnum:      #2f6fa8;
 }
 
 /* A very quiet paper grain / vignette — the only decoration, and it earns its
@@ -647,9 +656,9 @@
 }
 .rd-vnum {
   font-family: system-ui, sans-serif;
-  font-size: .74em;
-  font-weight: 600;
-  color: var(--pr-accent);
+  font-size: .92em;
+  font-weight: 700;
+  color: var(--pr-vnum);
   vertical-align: .42em;
   line-height: 0;
   margin: 0 .3em 0 .12em;
@@ -659,8 +668,49 @@
   border-radius: 3px;
   transition: color .12s, background .12s;
 }
-.rd-vnum:hover { color: var(--pr-ink); background: color-mix(in srgb, var(--pr-accent) 16%, transparent); }
+.rd-vnum:hover { color: var(--pr-ink); background: color-mix(in srgb, var(--pr-vnum) 20%, transparent); }
 .rd-verse:first-child .rd-vnum { margin-left: 0; }
+
+/* "Go to verse" hover popup — wraps just the number (NOT .rd-vfirst, the
+   verse's first word) so it appears only when hovering the number itself, not
+   the whole glued unit. Links to the clean per-verse page (VersePage.jsx,
+   /:bookSlug/:chapter/:verse) — a dedicated, navigable address for that one
+   verse, distinct from clicking the number itself (which toggles the
+   highlight, unchanged). :focus-within keeps this reachable by keyboard: tab
+   to the verse number and the popup appears, tab again to reach the link. */
+.rd-vnum-wrap {
+  position: relative;
+  display: inline-block;
+}
+.rd-vnum-goto {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(3px);
+  white-space: nowrap;
+  background: var(--pr-bg-raise);
+  color: var(--pr-vnum);
+  border: 1px solid var(--pr-rule);
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+  text-decoration: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .12s ease, transform .12s ease;
+  z-index: 6;
+  box-shadow: 0 4px 14px rgba(0,0,0,.25);
+}
+.rd-vnum-goto:hover,
+.rd-vnum-goto:focus-visible { color: var(--pr-ink); border-color: var(--pr-vnum); }
+.rd-vnum-wrap:hover .rd-vnum-goto,
+.rd-vnum-wrap:focus-within .rd-vnum-goto {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
 
 /* Glues the verse number to the FIRST piece of ITS OWN verse (see
    splitFirstToken in Reader.jsx) so a line never breaks between the number
@@ -676,6 +726,24 @@
 .rd-root {
   color: var(--pr-accent-dim);
   font-weight: 600;
+}
+
+/* Plain in-verse quotation marks (renderVerseNodesWithQuotes/wrapPlainQuoteMarks
+   in Reader.jsx) — bigger, colored marks so a quotation's start and end are
+   obvious at a glance, without touching the quoted text itself. A mark left
+   dangling (odd count in a verse — the underlying text opens a quotation it
+   never closes) gets its own warning color + a wavy underline instead, so
+   that data issue is visible right on the page. */
+.rd-quote-mark {
+  font-weight: 700;
+  font-size: 1.18em;
+  color: var(--pr-vnum);
+}
+.rd-quote-unclosed {
+  color: #e0654f;
+  text-decoration: underline wavy #e0654f;
+  text-underline-offset: 3px;
+  cursor: help;
 }
 
 /* Sticky highlight — a highlighter stroke that clones across wrapped lines.

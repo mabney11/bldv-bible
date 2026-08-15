@@ -223,9 +223,15 @@ export default function Translate() {
     if (!openChapterMap[key]) {
       try {
         const data = await apiTransChapter(bookId, chapter);
-        setOpenChapterMap(m => ({ ...m, [key]: data.verses || [] }));
-      } catch (e) { toast('Chapter load failed: ' + e.message, 'err'); }
+        const verses = data.verses || [];
+        setOpenChapterMap(m => ({ ...m, [key]: verses }));
+        return verses;   // handed back to callers (e.g. the hydration effect) that
+                          // need to know the chapter's verse list right away —
+                          // openChapterMap itself won't reflect this until the next
+                          // render, too late for a .then() chained off this call.
+      } catch (e) { toast('Chapter load failed: ' + e.message, 'err'); return []; }
     }
+    return openChapterMap[key];
   }, [setUrl, openChapterMap, toast]);
 
   // ── LOAD VERSE ────────────────────────────────────────────────────────────
@@ -373,11 +379,35 @@ export default function Translate() {
     if (!b) return;                                         // unresolved yet — retry on next change
     hydratedRef.current = true;                             // commit only now that b is real
     setActiveBook(b);
-    if (c && v != null)  openChapter(b, c).then(() => loadVerse(b, c, v));
-    else if (c)  openChapter(b, c);
+    if (c && v != null) {
+      openChapter(b, c).then(() => loadVerse(b, c, v));
+    } else if (c) {
+      // Handed off from Reader/Parallel with a chapter but no specific verse
+      // (e.g. its own chapter-level nav, or a book/chapter link). Previously
+      // this only opened the chapter's verse list in the sidebar and left the
+      // editor pane empty — the user landed on a blank screen and had to pick
+      // a verse manually. Default to the chapter's first verse instead, same
+      // as Reader does when it lands on a chapter with no ?verse=.
+      openChapter(b, c).then(verses => {
+        const firstVerse = verses && verses.length ? verses[0].verse : 1;
+        loadVerse(b, c, firstVerse);
+      });
+    }
   }, [progress, slugToId, searchParams, openChapter, loadVerse]);
 
   // ── EDITOR ────────────────────────────────────────────────────────────────
+  // Scrolls the active chapter's header into view in the left sidebar whenever
+  // it changes — without this, opening (say) Psalm 91 via a deep link lands you
+  // on the right verse in the editor while the chapter list, still scrolled to
+  // the top, silently shows Ch 1. `block: 'nearest'` only moves the sidebar's
+  // own scroll position, never the page.
+  const activeChapterHeaderRef = useRef(null);
+  useEffect(() => {
+    if (activeChapterHeaderRef.current) {
+      activeChapterHeaderRef.current.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, [activeBook, activeChapter]);
+
   const editorRef = useRef(null);
   // When verse data arrives, set editor HTML once and focus it so the user can
   // start typing immediately. We sync manually instead of using React-controlled
@@ -913,6 +943,7 @@ export default function Translate() {
               return (
                 <div key={ch.chapter} className="tr-chapter-group">
                   <button
+                    ref={ch.chapter === activeChapter ? activeChapterHeaderRef : null}
                     className={`tr-chapter-header ${isOpen ? 'open' : ''}`}
                     onClick={() => isOpen ? setActiveChapter(null) : openChapter(activeBook, ch.chapter)}>
                     <span className="tr-chevron">▶</span>

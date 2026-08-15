@@ -156,7 +156,7 @@ const applyGlossMode = (t, mode) => (!t || mode === 'both') ? t
 // string so the transliterated Hebrew/Aramaic root can be wrapped in its own span
 // (.rd-root) and stand out from the English gloss beside it. 'gloss' mode has no root
 // left on screen, so it stays a plain string — nothing to highlight.
-function renderVerseNodes(t, mode) {
+function renderVerseNodes(t, mode, keyPrefix = '') {
   if (!t) return t;
   if (mode === 'gloss') return applyGlossMode(t, mode);
   const nodes = [];
@@ -165,13 +165,83 @@ function renderVerseNodes(t, mode) {
   while ((m = GLOSS_RE.exec(t))) {
     const [full, heb, quote, gloss] = m;
     if (m.index > last) nodes.push(t.slice(last, m.index));
-    nodes.push(<span className="rd-root" key={key++}>{heb}</span>);
+    nodes.push(<span className="rd-root" key={`${keyPrefix}${key++}`}>{heb}</span>);
     if (quote) nodes.push(quote);
     if (mode === 'both' && gloss.trim()) nodes.push(` (${gloss.trim()})`);
     last = m.index + full.length;
   }
   nodes.push(t.slice(last));
   return nodes;
+}
+
+// ── Plain in-verse quotation marks (ordinary dialogue, e.g. Yahu said,
+// "Let there be light.") — distinct from the embedded-scripture-quote system
+// below (renderScriptureQuote), which sets apart a whole QUOTED PASSAGE with
+// its own numbered lines. This is about the quotation marks THEMSELVES: make
+// them bigger and colored so a reader can see at a glance exactly where a
+// quotation opens and where it closes — 2026-08-16 request. Wrapping only the
+// mark CHARACTER, never the text between two marks, deliberately sidesteps
+// splitFirstToken's "never glue a multi-word span to the verse number"
+// concern (see its comment above) — a single wrapped character is always
+// safe to glue, exactly like an ordinary letter would be.
+//
+// Marks are paired by POSITION within the verse — 1st = open, 2nd = close,
+// 3rd = open, and so on. An ODD total means some quotation opened but never
+// closed in this verse's own text; that dangling mark gets `rd-quote-
+// unclosed` (a warning color) instead of the normal open styling. That's a
+// direct answer to the user's own suspicion ("this quote doesn't end I'm
+// certain") — it surfaces the same class of data issue for ANY verse that
+// has it, not just the one they happened to be reading. Double quotes only
+// (straight and curly): a generic single-quote scan would light up on every
+// contraction and possessive ("don't", "Alaph's") instead of actual speech.
+const PLAIN_QUOTE_RE = /["“”]/g;
+function wrapPlainQuoteMarks(raw) {
+  if (!raw) return [raw];
+  PLAIN_QUOTE_RE.lastIndex = 0;
+  const idxs = [];
+  let m;
+  while ((m = PLAIN_QUOTE_RE.exec(raw))) idxs.push(m.index);
+  if (!idxs.length) return [raw];
+  const pieces = [];
+  let last = 0;
+  idxs.forEach((at, i) => {
+    if (at > last) pieces.push(raw.slice(last, at));
+    const isOpenSlot = i % 2 === 0;
+    const dangling = isOpenSlot && i === idxs.length - 1;
+    const cls = dangling ? 'rd-quote-mark rd-quote-unclosed' : `rd-quote-mark ${isOpenSlot ? 'rd-quote-open' : 'rd-quote-close'}`;
+    pieces.push(
+      <span className={cls} key={`qm-${at}`}
+            title={dangling ? "This quotation doesn't appear to close in this verse" : undefined}>
+        {raw[at]}
+      </span>
+    );
+    last = at + 1;
+  });
+  if (last < raw.length) pieces.push(raw.slice(last));
+  return pieces;
+}
+
+// Combines the quote-mark wrapping above with the existing GLOSS_RE handling
+// in renderVerseNodes — quote marks are found in the RAW string first (so
+// they're never accidentally matched inside a "root (gloss)" pair), then
+// each plain-text piece between/around them still gets full gloss-mode
+// treatment exactly as before.
+function renderVerseNodesWithQuotes(t, mode) {
+  if (!t) return t;
+  if (mode === 'gloss') {
+    // gloss mode collapses to a plain string (applyGlossMode) — still worth
+    // marking quotes in it, just with nothing left for GLOSS_RE to do.
+    const wrapped = wrapPlainQuoteMarks(applyGlossMode(t, mode));
+    return (wrapped.length === 1 && typeof wrapped[0] === 'string') ? wrapped[0] : wrapped;
+  }
+  const pieces = wrapPlainQuoteMarks(t);
+  const out = [];
+  pieces.forEach((p, i) => {
+    if (typeof p !== 'string') { out.push(p); return; }
+    const nodes = renderVerseNodes(p, mode, `f${i}-`);
+    if (Array.isArray(nodes)) out.push(...nodes); else out.push(nodes);
+  });
+  return out;
 }
 // ── Embedded scripture quotations (Pistis Sophia and similar apocryphal/
 // Gnostic works) ─────────────────────────────────────────────────────────
@@ -1043,7 +1113,7 @@ export default function Reader() {
       return script === 'hebrew' ? renderHebrewProseNodes(words) : renderPlainProseNodes(words);
     }
     const raw = sanitizeText((versesByNum[0]?.text || '').trim());
-    return raw ? renderVerseNodes(raw, glossMode) : null;
+    return raw ? renderVerseNodesWithQuotes(raw, glossMode) : null;
   }, [renderVerseNums, script, srcWordsByVerse, hebGlossMode, versesByNum, glossMode]);
 
   return (
@@ -1256,13 +1326,13 @@ export default function Reader() {
                         const raw = sanitizeText((versesByNum[vnum]?.text || '').trim());
                         if (!raw) return '·';
                         const q = splitScriptureQuote(raw);
-                        if (!q) return renderVerseNodes(raw, glossMode);
+                        if (!q) return renderVerseNodesWithQuotes(raw, glossMode);
                         // English-only gloss mode stays a plain string for the
                         // surrounding prose (see renderVerseNodes/applyGlossMode) —
                         // the quote block itself is always React nodes, so the
                         // overall verse becomes a small mixed array either way.
-                        const before = q.before ? renderVerseNodes(q.before, glossMode) : null;
-                        const after  = q.after  ? renderVerseNodes(q.after,  glossMode) : null;
+                        const before = q.before ? renderVerseNodesWithQuotes(q.before, glossMode) : null;
+                        const after  = q.after  ? renderVerseNodesWithQuotes(q.after,  glossMode) : null;
                         const citation = citations[`${book}:${chapter}:${vnum}`] || null;
                         const out = [];
                         if (before != null) out.push(...(Array.isArray(before) ? before : [before]));
@@ -1296,12 +1366,24 @@ export default function Reader() {
                     )}
                     <span className={`rd-verse ${on ? 'marked' : ''}`} id={`rv-${vnum}`}>
                       <span className="rd-vnum-glue">
-                        <sup className="rd-vnum" role="button" tabIndex={0}
-                             title={on ? `Clear highlight on verse ${vnum}` : `Highlight verse ${vnum}`}
-                             onClick={() => toggleMark(vnum)}
-                             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMark(vnum); } }}>
-                          {vnum}
-                        </sup>
+                        <span className="rd-vnum-wrap">
+                          <sup className="rd-vnum" role="button" tabIndex={0}
+                               title={on ? `Clear highlight on verse ${vnum}` : `Highlight verse ${vnum}`}
+                               onClick={() => toggleMark(vnum)}
+                               onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMark(vnum); } }}>
+                            {vnum}
+                          </sup>
+                          {/* Hover/focus-revealed link to this verse's own clean
+                              URL (/:bookSlug/:chapter/:verse — VersePage.jsx).
+                              stopPropagation so a click doesn't also bubble up
+                              into anything listening on the verse number. */}
+                          <Link className="rd-vnum-goto"
+                                to={`/${bookToParam(book, idToSlug)}/${chapter}/${vnum}`}
+                                onClick={e => e.stopPropagation()}
+                                title={`Open ${chapterBookName} ${chapter}:${vnum} on its own page`}>
+                            Go to verse
+                          </Link>
+                        </span>
                         <span className="rd-vfirst">{vFirst}</span>
                       </span>
                       <span className="rd-vtext">{vRest}</span>{' '}
