@@ -9,6 +9,7 @@ import {
   apiAdminVerseTokens, apiAdminListStrongsOverrides,
   apiAdminSaveStrongsOverride, apiAdminDeleteStrongsOverride,
 } from '../lib/api.js';
+import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import './StrongsOverrides.css';
 
 // /admin/strongs-overrides — browse to a verse by NAME (book/chapter/verse
@@ -24,6 +25,7 @@ import './StrongsOverrides.css';
 // matters (the reader, root/surface search, the translit search's root
 // expansion).
 export default function StrongsOverrides() {
+  usePageTitle(pageTitle('Strong’s Overrides'));
   const toast = useToast();
   const [isAdmin, setIsAdmin] = useState(null); // null = checking
 

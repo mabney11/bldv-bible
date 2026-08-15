@@ -31,7 +31,7 @@ import './GlossStudio.css';
 //     lexicon.json entry, ranked by occurrence (the highest-value gaps
 //     first) — for when you want to work by frequency instead of by book.
 //
-// Greek/Ge'ez/Latin/Syriac reuse the SAME generic tokenizer +
+// Greek/Ge'ez/Latin/Syriac/Coptic reuse the SAME generic tokenizer +
 // lexicon/<lang>-lexicon.json overlay the live reader already renders these
 // scripts with (server.js splitTextToTokens/_lookupGloss) — raw surface-form
 // tokens, "glossed" = has a curated entry for that exact surface, no Strong's
@@ -44,14 +44,15 @@ const LANGS = [
   { id: 'geez',   label: "Ge'ez",    enabled: true, source: 'GEZ' },
   { id: 'latin',  label: 'Latin',    enabled: true, source: 'LAT' },
   { id: 'syriac', label: 'Syriac',   enabled: true, source: 'SYR' },
+  { id: 'coptic', label: 'Coptic',   enabled: true, source: 'COP' },
 ];
 const LANG_SOURCE = Object.fromEntries(LANGS.map(l => [l.id, l.source]));
 // Script direction is a property of the LANGUAGE, not a Gloss-Studio-wide
 // default — Hebrew and Syriac are RTL (Aramaic-family abjads), Greek/Ge'ez/
-// Latin are LTR. The verse-word grid's dir attribute follows this instead of
-// a hardcoded `direction: rtl` that only ever made sense for Hebrew (see the
-// 2026-08-10 report: Ge'ez was rendering right-to-left).
-const LANG_DIR = { heb: 'rtl', greek: 'ltr', geez: 'ltr', latin: 'ltr', syriac: 'rtl' };
+// Latin/Coptic are LTR. The verse-word grid's dir attribute follows this
+// instead of a hardcoded `direction: rtl` that only ever made sense for
+// Hebrew (see the 2026-08-10 report: Ge'ez was rendering right-to-left).
+const LANG_DIR = { heb: 'rtl', greek: 'ltr', geez: 'ltr', latin: 'ltr', syriac: 'rtl', coptic: 'ltr' };
 
 const MISSING_PAGE = 50;
 const VERSES_PAGE = 10;
@@ -96,7 +97,7 @@ function GlossWordBlock({ word, missingSet }) {
 // where the tree already knows which roots in THIS verse are ungloosed;
 // Missing Words already filters to occurrences of one known-missing root,
 // so every card there is implicitly about that root.
-// `genericSource` set (e.g. 'LXX'/'GEZ'/'LAT'/'SYR') means these words
+// `genericSource` set (e.g. 'LXX'/'GEZ'/'LAT'/'SYR'/'COP') means these words
 // are plain reader tokens (word/transliteration/gloss), not Hebrew paleo
 // component chips — render with the SAME MultiWordBlock the live reader uses
 // for these scripts (src/components/MultiWordBlock.jsx) instead of
@@ -194,13 +195,13 @@ export default function GlossStudio() {
 
   // For non-Hebrew languages there's only one edition, so `source` just
   // tracks whichever corpus.db source backs the selected language pill
-  // ('LXX'/'GEZ'/'LAT'/'SYR') — every apiGloss* call already takes
+  // ('LXX'/'GEZ'/'LAT'/'SYR'/'COP') — every apiGloss* call already takes
   // `source` as a plain pass-through string, so no other plumbing below
   // needs to know about `lang` at all. Switching pills keeps the same
   // book/chapter/verse coordinates too, since every corpus.db source shares
   // the same canon_id-based book_id scheme (installScopedVerses) — so e.g.
-  // Genesis 1:1 stays Genesis 1:1 across Hebrew/Greek/Ge'ez/Latin/Syriac,
-  // same as the BHS<->HEB toggle already did for Hebrew alone.
+  // Genesis 1:1 stays Genesis 1:1 across Hebrew/Greek/Ge'ez/Latin/Syriac/
+  // Coptic, same as the BHS<->HEB toggle already did for Hebrew alone.
   // Skipped on the FIRST run: `source`'s own lazy initializer above already
   // resolved the correct value (including a URL-restored 'HEB') before this
   // effect ever runs — without the skip, this would immediately stomp a
@@ -359,19 +360,17 @@ export default function GlossStudio() {
   );
 
   // ── browser tab ────────────────────────────────────────────────────────────
-  // Feature first ("Gloss Studio | Genesis 1:2") so every open tab for this
-  // tool groups/sorts together — see hooks/usePageTitle.js. Prefers the open
-  // verse's own book_name/chapter/verse (verseDetail, keyed on the language
-  // actually being audited) over the tree's activeBookData, since the two
-  // can genuinely disagree once a language switch is in flight; falls back to
-  // whatever's known (book + open chapter, or just the book) when no verse is
-  // open yet, same "show what you can" rule usePageTitle expects everywhere.
-  usePageTitle(
-    verseDetail
-      ? formatRef(verseDetail.book_name, verseDetail.chapter, verseDetail.verse)
-      : formatRef(activeBookData?.name, openChapter, null),
-    'Gloss Studio'
-  );
+  // Reference first ("Genesis 1:2 | Gloss Studio", 2026-08-15 — see
+  // hooks/usePageTitle.js), matching Translation Studio's convention.
+  // Prefers the open verse's own book_name/chapter/verse (verseDetail, keyed
+  // on the language actually being audited) over the tree's activeBookData,
+  // since the two can genuinely disagree once a language switch is in
+  // flight; falls back to whatever's known (book + open chapter, or just
+  // the book) when no verse is open yet.
+  const glossRef = verseDetail
+    ? formatRef(verseDetail.book_name, verseDetail.chapter, verseDetail.verse)
+    : formatRef(activeBookData?.name, openChapter, null);
+  usePageTitle(glossRef ? `${glossRef} | Gloss Studio` : '');
 
   // From the per-verse fetch itself (verseDetail.missing, added server-side
   // from that LANGUAGE's own coverage tree) rather than `tree` — `tree` is

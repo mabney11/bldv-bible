@@ -4,7 +4,7 @@ import { useTheme } from '../hooks/useTheme.js';
 import { usePaleoMode } from '../hooks/usePaleoMode.js';
 import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
-import { usePageTitle } from '../hooks/usePageTitle.js';
+import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { BOOK_NAMES, translit } from '../lib/books.js';
 import { paleoToSVG, getPaleoMode } from '../lib/paleoGlyphs.js';
 import {
@@ -321,16 +321,27 @@ export default function Root({ mode = 'root' }) {
     return () => { cancelled = true; };
   }, [filterText, viewerMode, allList, listLoaded]);
 
+  // Bug fix (2026-08-15): this only ever matched the raw paleo/Hebrew string
+  // (r.root / s.surface) or the Strong's label — but the sidebar itself
+  // displays the TRANSLITERATED Latin form (si-tl, e.g. "Abadan") right next
+  // to the paleo glyphs (si-paleo), and that's what a reader naturally types
+  // into "Filter roots…"/"Filter surfaces…". Typing "abad" (or any Latin
+  // text at all) could never match anything, since it was compared against
+  // non-Latin script. Now checks the transliteration too, case-insensitively.
   const filteredList = useMemo(() => {
     if (!filterText) return allList;
     const f = filterText.trim();
+    const fLower = f.toLowerCase();
     if (viewerMode === 'surface') {
       return allList.filter(s =>
-        s.surface.includes(f) || (s.strongs || '').includes(f.toUpperCase())
+        s.surface.includes(f) ||
+        translit(s.surface).toLowerCase().includes(fLower) ||
+        (s.strongs || '').includes(f.toUpperCase())
       );
     }
     return allList.filter(r =>
       r.root.includes(f) ||
+      translit(r.root).toLowerCase().includes(fLower) ||
       (r.strongs_label || '').toUpperCase().includes(f.toUpperCase())
     );
   }, [allList, filterText, viewerMode]);
@@ -505,23 +516,26 @@ export default function Root({ mode = 'root' }) {
         : `${translit(detail.surface)} — ${(detail.total || 0).toLocaleString()} occurrences`)
     : (detailErr ? 'Error' : 'Loading…');
 
-  // Real per-entry browser-tab title + <meta description>, following the
-  // same "Surface | Reference" convention as Reader/Parallel/Translate (see
-  // hooks/usePageTitle.js) — e.g. "Root Explorer | Yaban-Al (H2995)". Falsy
-  // `ref` while `detail` hasn't loaded yet falls back to the surface alone,
-  // same as every other caller of this hook.
+  // Real per-entry browser-tab title + <meta description> (2026-08-15 —
+  // see hooks/usePageTitle.js): "<Strong's#>: <transliteration> (<paleo>) :
+  // <gloss> | BLD Bible", e.g. "H1: Ab (𐤀𐤁) : father | BLD Bible" — falls
+  // back to a generic "Root/Surface Explorer | BLD Bible" while `detail`
+  // hasn't loaded yet (or on error), same as every other page's fallback.
   const occursText = (n) => `${(n || 0).toLocaleString()} time${n === 1 ? '' : 's'}`;
-  const entryRef = detail && (
+  const entryDetailText = detail && (
     detail.kind === 'root'
-      ? `${detail.lemmaTranslit || translit(detail.root)}${detail.sn ? ` (${detail.sn})` : ''}`
-      : `${translit(detail.surface)}${detail.strongs ? ` (${detail.strongs})` : ''}`
+      ? `${detail.sn ? `${detail.sn}: ` : ''}${detail.lemmaTranslit || translit(detail.root)} (${detail.root}) : ${detail.lexicon || `${occursText(detail.total)} in Scripture`}`
+      : `${detail.strongs ? `${detail.strongs}: ` : ''}${translit(detail.surface)} (${detail.surface}) : surface of ${translit(detail.root)}`
   );
   const pageDescription = detail && (
     detail.kind === 'root'
       ? `${detail.lemmaTranslit || translit(detail.root)} (Strong's ${detail.sn})${detail.lexicon ? ` — ${detail.lexicon}` : ''}. Occurs ${occursText(detail.total)} in Scripture. Paleo-Hebrew root explorer with verse-by-verse occurrences.`
       : `${translit(detail.surface)}${detail.strongs ? ` — Strong's ${detail.strongs}` : ''}, a surface form of the root ${translit(detail.root)}. Occurs ${occursText(detail.total)} in Scripture.`
   );
-  usePageTitle(entryRef, viewerMode === 'surface' ? 'Surface Explorer' : 'Root Explorer', undefined, pageDescription);
+  usePageTitle(
+    pageTitle(entryDetailText || (viewerMode === 'surface' ? 'Surface Explorer' : 'Root Explorer')),
+    pageDescription
+  );
 
   return (
     <div className="root-page">

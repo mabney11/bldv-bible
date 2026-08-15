@@ -45,9 +45,15 @@ const fs = require('fs');
 const http = require('http');
 
 const SITE = 'https://www.bldbible.com';
-// 2026-08-15: rebranded from "Paleo-Hebrew Translation Studio" — see
-// index.html and src/hooks/usePageTitle.js's APP_NAME for the same change.
-const APP_TITLE = 'Blood-Line Descendant Bible Study Tool';
+// 2026-08-15: "BLD Bible" is the primary brand everywhere now — mirrors
+// src/hooks/usePageTitle.js's BRAND constant, so every snapshot's title uses
+// exactly the same suffix the client sets on hydration (no title flash/
+// mismatch). The older, longer "Blood-Line Descendant Bible Study Tool" name
+// (itself a 2026-08-15 rebrand from "Paleo-Hebrew Translation Studio")
+// survives only as index.html's JSON-LD alternateName, for search
+// disambiguation — it is no longer used in any title or heading.
+const BRAND = 'BLD Bible';
+const LANDING_TITLE = `${BRAND}: Online Bible Study Tool`;
 const APP_DESC = "Read Hebrew, Greek, Latin, Ge'ez and Syriac scripture word by word with Strong's numbers, a concordance, root and lexicon tools, and a Hebrew-backed English Bible translation.";
 
 // Canonical 66-book table — mirrors server.js's TX_BOOK_NAMES exactly (kept
@@ -81,11 +87,24 @@ function validChapter(v) {
   const n = parseInt(v, 10);
   return Number.isInteger(n) && n >= 1 && n <= MAX_CHAPTER ? n : null;
 }
+// Separate from validChapter/MAX_CHAPTER: Psalm 119 alone has 176 verses,
+// past MAX_CHAPTER's 150-chapter cap — a verse number this validates is only
+// ever used cosmetically (appended to a title), not as a DB lookup key like
+// book/chapter are, so a generous upper bound is fine.
+function validVerseNum(v) {
+  const n = parseInt(v, 10);
+  return Number.isInteger(n) && n >= 1 && n <= 200 ? n : null;
+}
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
   }[c]));
+}
+
+function truncate(s, n) {
+  const str = String(s ?? '').trim();
+  return str.length <= n ? str : `${str.slice(0, n - 1).trimEnd()}…`;
 }
 
 // Loopback call to this same server's own /api/* — by the time any inbound
@@ -139,7 +158,20 @@ const NAV_LINKS = `
 // A book+chapter reader page backed by /api/translate/chapter (English —
 // used identically by /bible, /parallel and /translate; those three pages
 // show the same underlying chapter text in different tools around it).
-function englishChapterRoute(labelSuffix, titleSuffix, description) {
+//
+// `path` (the route's own pathname, e.g. '/bible') is used ONLY to build
+// canonicalPath below — see that field's comment.
+//
+// `tabLabel` matches the exact suffix each client page's own usePageTitle
+// call sets for its chapter-level (no verse selected) title — Reader.jsx
+// ("Reader"), Parallel.jsx ("Parallel"), Translate.jsx ("Translation
+// Studio") — so "Genesis 1 | Reader" is what both the crawler snapshot and
+// the hydrated client agree on. None of these three routes' snapshots fetch
+// per-verse data, so (unlike sourceChapterRoute below) there's no verse
+// number or text preview to add even when the URL has one — matches the
+// canonicalPath collapse just below, which already treats every ?verse=N
+// variant of a chapter as the same page.
+function englishChapterRoute(path, labelSuffix, tabLabel, description) {
   return {
     match: (q) => validBook(q.get('book')) && validChapter(q.get('chapter')),
     build: async (q, port) => {
@@ -150,9 +182,96 @@ function englishChapterRoute(labelSuffix, titleSuffix, description) {
       const heading = `${name} ${chapter} — ${labelSuffix}`;
       const body = versesArticle(heading, data.verses);
       return {
-        title: `${name} ${chapter}${titleSuffix} | ${APP_TITLE}`,
+        title: `${name} ${chapter} | ${tabLabel}`,
         description: description(name, chapter),
         body: (body || `<h1>${escapeHtml(heading)}</h1>`) + NAV_LINKS,
+        // 2026-08-15: a `site:bldbible.com john 6 15` search was surfacing
+        // inconsistent, stale-looking titles because every ?verse=N (and
+        // ?lang=, ?source=, ...) variant of the SAME chapter was getting
+        // its own self-referencing canonical — this build() only ever
+        // reads `book`/`chapter` off the query (see above), so a request
+        // for .../6?verse=13 renders byte-for-byte the same snapshot as
+        // .../6 with no verse at all. Google was indexing each variant it
+        // happened to crawl as a distinct near-duplicate URL, with
+        // whichever title got cached for THAT variant surfacing at
+        // unpredictable times — hence "Reader | John 6:13" showing up for
+        // a query about verse 15. Collapsing the canonical to book+chapter
+        // (matching sitemap-chapters.xml, which only ever lists that
+        // granularity) tells Google to consolidate every variant's
+        // ranking signal onto the one URL that's actually in the sitemap.
+        // src/App.jsx's SelfCanonical strips `verse` the same way for
+        // these same three routes once React mounts, so the client-side
+        // canonical (which runs after prerender's and would otherwise
+        // silently re-introduce verse) agrees with this.
+        canonicalPath: `${path}?book=${book}&chapter=${chapter}`,
+      };
+    },
+  };
+}
+
+// A single English-reader VERSE page — /bible ONLY, for now. 2026-08-15:
+// "I want my entire corpus indexable and easily searchable like the other
+// bible tools" (e.g. BibleHub, which indexes one real page per verse). This
+// is phase 1 of that: the flagship "read one verse, see its own Hebrew word
+// by word" page. /parallel and /translate deliberately do NOT get this
+// treatment yet — their prerendered body is identical no matter what
+// ?verse= says (see englishChapterRoute's canonical-collapse comment right
+// above), so giving them their own verse-level canonical would be exactly
+// the thin/duplicate-URL mistake the "bad corpus" fix and that canonical
+// collapse both existed to clean up. This route's body genuinely differs
+// per verse — real translation text plus that verse's actual Hebrew tokens
+// off /api/translate/verse — which is what makes a self-referencing
+// per-verse canonical honest here and nowhere else (yet).
+//
+// Deliberately a SEPARATE, self-contained route rather than a branch inside
+// englishChapterRoute, so that function's already-working canonical-collapse
+// logic stays completely untouched. Tried FIRST in ROUTES['/bible'] (array
+// order = match priority) — see below — so a real ?verse= gets this page;
+// anything else falls through to the plain chapter route.
+//
+// "Real" is checked against ACTUAL fetched data, not just numeric range: an
+// out-of-range or never-translated verse (empty `text`) falls back to
+// building the exact same chapter snapshot englishChapterRoute would, so a
+// content-less URL never gets indexed under its own canonical.
+function englishVerseRoute() {
+  const chapterFallback = englishChapterRoute(
+    '/bible', 'Novel English Bible', 'Reader',
+    (name, ch) => `${name} chapter ${ch} in the Novel English Bible — a clean English translation with Hebrew-backed names and places.`,
+  );
+  return {
+    match: (q) => validBook(q.get('book')) && validChapter(q.get('chapter')) && !!validVerseNum(q.get('verse')),
+    build: async (q, port) => {
+      const book = validBook(q.get('book'));
+      const chapter = validChapter(q.get('chapter'));
+      const verse = validVerseNum(q.get('verse'));
+      const name = BOOK_NAMES[book];
+
+      let data = null;
+      try {
+        data = await fetchJSON(port, `/api/translate/verse?book=${book}&chapter=${chapter}&verse=${verse}`);
+      } catch { /* falls through to the chapter snapshot below */ }
+
+      if (!data || !data.text) return chapterFallback.build(q, port);
+
+      const heading = `${name} ${chapter}:${verse}`;
+      // data.tokens: { word_raw, strongs, ... }[] straight off tokens_bhs/
+      // tokens_nt (see /api/translate/verse's txVerseQuery in server.js) —
+      // the same Hebrew word data the reader itself would show for this verse.
+      const wordItems = (data.tokens || [])
+        .filter((t) => t && t.word_raw)
+        .map((t) => `<li>${escapeHtml(t.word_raw)}${t.strongs ? ` — <a href="/roots?sn=${encodeURIComponent(t.strongs)}">${escapeHtml(t.strongs)}</a>` : ''}</li>`)
+        .join('\n        ');
+
+      return {
+        title: `${heading} | Reader`,
+        description: `${heading} — ${truncate(data.text, 140)}`,
+        body: `<h1>${escapeHtml(heading)}</h1>
+      <p>${escapeHtml(data.text)}</p>
+      ${wordItems ? `<h2>Hebrew, word by word</h2>\n      <ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
+        // Self-referencing on purpose — NOT collapsed to book+chapter, unlike
+        // englishChapterRoute — see this function's header comment for why a
+        // verse-level identity is legitimate here.
+        canonicalPath: `/bible?book=${book}&chapter=${chapter}&verse=${verse}`,
       };
     },
   };
@@ -161,20 +280,38 @@ function englishChapterRoute(labelSuffix, titleSuffix, description) {
 // A book+chapter reader page backed by /api/source/:src/chapter (Greek
 // Septuagint/NT, Ge'ez, Latin Vulgate — sources with flat verse text, unlike
 // Hebrew's tokenized glyph data; see the '/' route's comment below).
-function sourceChapterRoute(src, label) {
+//
+// `tabLabel` matches MultiViewer.jsx's SOURCE_LABELS entry for this source
+// exactly (client: "<book> <ch>[:<verse>] | <tabLabel>[ | <preview>]") —
+// `label` stays the fuller human-readable name used in this snapshot's own
+// heading/description prose, which is free to differ. public/sitemap.xml's
+// curated entries for this route always include `&verse=1` (see
+// canonicalPath's comment below), so the title includes the verse number
+// too when present, matching what a real visit to that exact URL shows —
+// just without the word-by-word preview text, since this route only ever
+// fetches flat per-verse text (no gloss data) and adding a second fetch
+// just for the title isn't worth it for a component the crawler never runs.
+function sourceChapterRoute(src, label, tabLabel) {
   return {
     match: (q) => q.get('source') === src && validBook(q.get('book')) && validChapter(q.get('chapter')),
     build: async (q, port) => {
       const book = validBook(q.get('book'));
       const chapter = validChapter(q.get('chapter'));
       const name = BOOK_NAMES[book];
+      const verse = validVerseNum(q.get('verse'));
       const data = await fetchJSON(port, `/api/source/${src}/chapter?book=${book}&chapter=${chapter}`);
       const heading = `${name} ${chapter} — ${label}`;
       const body = versesArticle(heading, data.verses);
       return {
-        title: `${name} ${chapter} | ${label} — ${APP_TITLE}`,
+        title: `${name} ${chapter}${verse ? `:${verse}` : ''} | ${tabLabel}`,
         description: `${name} chapter ${chapter} in the ${label}.`,
         body: (body || `<h1>${escapeHtml(heading)}</h1>`) + NAV_LINKS,
+        // Deliberately NOT collapsing ?verse= here the way
+        // englishChapterRoute does below — public/sitemap.xml's curated
+        // entries for this route intentionally include `&verse=1` (the
+        // opening-verse convention for these source landing links), so
+        // stripping it would make this page's own canonical disagree with
+        // the URL the sitemap tells Google to index.
       };
     },
   };
@@ -189,25 +326,33 @@ const ROUTES = {
   '/landing': [{
     match: () => true,
     build: async () => ({
-      title: `${APP_TITLE} — BLD Bible`,
+      // Matches Landing.jsx's own usePageTitle call exactly — see that
+      // file's comment for why this isn't the generic pageTitle() suffix.
+      title: LANDING_TITLE,
       description: APP_DESC,
-      body: `<h1>${escapeHtml(APP_TITLE)}</h1>
+      // Mirrors the hero on Landing.jsx: "BLD Bible" (the h1) / "Online
+      // Bible Study Tool" (the subheading span) — a real <h2>, not a <span>,
+      // since this snapshot has no CSS to style a span as a subheading.
+      body: `<h1>${escapeHtml(BRAND)}</h1>
+      <h2>Online Bible Study Tool</h2>
       <p>Hebrew · Greek · Latin · Ge'ez — scriptures, plus a library of works.</p>${NAV_LINKS}`,
     }),
   }],
 
-  '/bible': [englishChapterRoute(
-    'Novel English Bible', '',
+  // englishVerseRoute (a real ?verse=) is tried BEFORE the plain chapter
+  // route — see its own comment for why only /bible gets this treatment.
+  '/bible': [englishVerseRoute(), englishChapterRoute(
+    '/bible', 'Novel English Bible', 'Reader',
     (name, ch) => `${name} chapter ${ch} in the Novel English Bible — a clean English translation with Hebrew-backed names and places.`,
   )],
 
   '/parallel': [englishChapterRoute(
-    'English–Hebrew Parallel', ' Parallel',
+    '/parallel', 'English–Hebrew Parallel', 'Parallel',
     (name, ch) => `Read ${name} ${ch} in English and Hebrew side by side, verse by verse.`,
   )],
 
   '/translate': [englishChapterRoute(
-    'Translation Studio', ' | Translation Studio',
+    '/translate', 'Translation Studio', 'Translation Studio',
     (name, ch) => `Translate ${name} ${ch} verse by verse, linked back to the original Hebrew.`,
   )],
 
@@ -216,9 +361,10 @@ const ROUTES = {
   // Order matters — the Hebrew (no-source) candidate must be checked with
   // !q.get('source') so it doesn't swallow the source-specific requests.
   '/': [
-    sourceChapterRoute('LXX', 'Greek Septuagint & New Testament'),
-    sourceChapterRoute('GEZ', "Ge'ez Bible"),
-    sourceChapterRoute('LAT', 'Latin Vulgate'),
+    // tabLabel args match MultiViewer.jsx's SOURCE_LABELS exactly (LXX/GEZ/LAT).
+    sourceChapterRoute('LXX', 'Greek Septuagint & New Testament', 'Greek Scriptures'),
+    sourceChapterRoute('GEZ', "Ge'ez Bible", "Ge'ez (BETMAS)"),
+    sourceChapterRoute('LAT', 'Latin Vulgate', 'Latin (Vulgate)'),
     {
       // Default Hebrew reader (the Landing page's primary CTA). Its
       // readable text lives in tokenized Paleo-Hebrew glyph data
@@ -232,8 +378,13 @@ const ROUTES = {
         const book = validBook(q.get('book'));
         const chapter = validChapter(q.get('chapter'));
         const name = BOOK_NAMES[book];
+        // Matches HebrewViewer.jsx's title exactly: "<book> <ch>[:<verse>] |
+        // Hebrew[ | <preview>]" — no preview here since this route doesn't
+        // fetch the tokenized glyph data a preview would need (see the
+        // comment on this route's `match`/`build` above).
+        const verse = validVerseNum(q.get('verse'));
         return {
-          title: `${name} ${chapter} — Hebrew Reader | ${APP_TITLE}`,
+          title: `${name} ${chapter}${verse ? `:${verse}` : ''} | Hebrew`,
           description: `${name} chapter ${chapter} in the original Paleo-Hebrew, word by word, with roots, Strong's numbers and glosses.`,
           body: `<h1>${escapeHtml(name)} ${chapter} — Hebrew Reader</h1>
       <p>${escapeHtml(name)} ${chapter}, in the original Paleo-Hebrew script, word by word.</p>${NAV_LINKS}`,
@@ -251,7 +402,9 @@ const ROUTES = {
         .map((w) => `<li>${escapeHtml(w.title)}${w.category ? ` — <em>${escapeHtml(w.category)}</em>` : ''}</li>`)
         .join('\n        ');
       return {
-        title: `Works Library | ${APP_TITLE}`,
+        // Matches Works.jsx's usePageTitle(pageTitle('Works')) exactly —
+        // NOT "Works Library" (the descriptive prose below still says that).
+        title: `Works | ${BRAND}`,
         description: "A library of literary works across Hebrew, Greek, Latin and Ge'ez — scrolls, apocrypha and more, alongside the canonical scriptures.",
         body: `<h1>Works Library</h1>${items ? `\n      <ul>\n        ${items}\n      </ul>` : ''}${NAV_LINKS}`,
       };
@@ -285,7 +438,12 @@ const ROUTES = {
         .map((b) => `<li>${escapeHtml(b.name)} — ${b.occ.toLocaleString()}</li>`)
         .join('\n        ');
 
-      const title = `${name}${d.sn ? ` (${d.sn})` : ''} | ${APP_TITLE}`;
+      // Matches Root.jsx's entryDetailText exactly (client:
+      // "<sn>: <lemma> (<root>) : <gloss-or-occurs> | BLD Bible") — see that
+      // file's `occursText`/`entryDetailText` consts, which this mirrors
+      // field-for-field off the same /api/root-explorer/root response.
+      const entryDetailText = `${d.sn ? `${d.sn}: ` : ''}${name} (${d.root}) : ${gloss || `${occursText} in Scripture`}`;
+      const title = `${entryDetailText} | ${BRAND}`;
       const description = `${name}${d.sn ? ` (Strong's ${d.sn})` : ''}${gloss ? ` — ${gloss}` : ''}. Occurs ${occursText} in Scripture. Paleo-Hebrew root explorer with verse-by-verse occurrences.`;
       const body = `<h1>${escapeHtml(name)}${d.sn ? ` — Strong's ${escapeHtml(d.sn)}` : ''}</h1>
       ${gloss ? `<p>${escapeHtml(gloss)}</p>` : ''}
@@ -304,12 +462,12 @@ const ROUTES = {
 // all match, since `match` ignores query params for these.
 const STATIC_PAGES = {
   '/lexicon-page': {
-    title: `Lexicon | ${APP_TITLE}`,
+    title: `Lexicon | ${BRAND}`,
     description: "Look up any Hebrew, Greek or Ge'ez word — roots, surface forms, Strong's numbers and glosses.",
     heading: 'Lexicon',
   },
   '/cheatsheet': {
-    title: `Token Cheatsheet | ${APP_TITLE}`,
+    title: `Token Cheatsheet | ${BRAND}`,
     description: 'A quick-reference guide to the grammatical tags and token fields used throughout the reader.',
     heading: 'Token Cheatsheet',
   },
@@ -324,13 +482,13 @@ const STATIC_PAGES = {
   // shadowed by an earlier duplicate route registration; fixed alongside
   // this change).
   '/search': {
-    title: `Search | ${APP_TITLE}`,
+    title: `Search | ${BRAND}`,
     description: "Search across Hebrew, Greek, Latin and Ge'ez scripture and literary works.",
     heading: 'Search',
   },
   '/share': {
-    title: `Share & Export | ${APP_TITLE}`,
-    description: `Export and share verses, word studies and translations from the ${APP_TITLE}.`,
+    title: `Share & Export | ${BRAND}`,
+    description: `Export and share verses, word studies and translations from ${BRAND}.`,
     heading: 'Share & Export',
   },
 };
@@ -418,8 +576,12 @@ async function renderSnapshot(pathname, query, port, indexHtmlPath) {
   if (cached !== undefined) return cached;
 
   loadShell(indexHtmlPath);
-  const { title, description, body } = await route.build(query, port);
-  const html = render({ title, description, canonicalPath: cacheKey, body });
+  const { title, description, body, canonicalPath } = await route.build(query, port);
+  // A route may name its own canonical (see englishChapterRoute's
+  // canonicalPath — collapses ?verse=/&lang=/etc. variants onto the
+  // book+chapter URL that's actually in the sitemap). Falls back to this
+  // exact request's own URL, same as before, for every route that doesn't.
+  const html = render({ title, description, canonicalPath: canonicalPath || cacheKey, body });
 
   cacheSet(cacheKey, html);
   return html;

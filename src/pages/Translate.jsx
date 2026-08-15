@@ -206,12 +206,10 @@ export default function Translate() {
   const activeBookData = books.find(b => b.book_id === activeBook);
 
   // ── browser tab ────────────────────────────────────────────────────────────
-  // Feature first ("Translation Studio | 1 Adam and Eve 1:12") so every open
-  // tab for this tool groups/sorts together — see hooks/usePageTitle.js.
-  usePageTitle(
-    formatRef(activeBookData?.name || (activeBook ? BOOK_NAMES[activeBook] : ''), activeChapter, activeVerse),
-    'Translation Studio'
-  );
+  // Reference first ("Genesis 1:1 | Translation Studio", 2026-08-15 — see
+  // hooks/usePageTitle.js).
+  const translateRef = formatRef(activeBookData?.name || (activeBook ? BOOK_NAMES[activeBook] : ''), activeChapter, activeVerse);
+  usePageTitle(translateRef ? `${translateRef} | Translation Studio` : '');
 
   const selectBook = useCallback(async (bookId) => {
     setActiveBook(bookId);

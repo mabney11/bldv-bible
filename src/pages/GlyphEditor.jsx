@@ -6,6 +6,7 @@ import {
   getPaleoMode, setRenderMode, getPaleoConfig, setPaleoConfig,
   paleoToSVG, subscribe,
 } from '../lib/paleoGlyphs.js';
+import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import './GlyphEditor.css';
 
 const LETTERS = [
@@ -79,6 +80,7 @@ function strokesToSvgPaths(strokes) {
 }
 
 export default function GlyphEditor() {
+  usePageTitle(pageTitle('Glyph Editor'));
   const { theme, toggle: toggleTheme } = useTheme();
   const toast = useToast();
   const [mode, setMode] = useState(() => getPaleoMode());

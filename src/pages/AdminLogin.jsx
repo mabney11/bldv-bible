@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { refreshAdminStatus } from '../lib/localOverlay.js';
+import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 
 /**
  * AdminLogin — the one page that proves you're the admin.
@@ -15,6 +16,7 @@ import { refreshAdminStatus } from '../lib/localOverlay.js';
  * Not linked prominently anywhere — bookmark this URL (/admin-login).
  */
 export default function AdminLogin() {
+  usePageTitle(pageTitle('Admin Login'));
   const [status, setStatus] = useState(null); // { isAdmin, configured } | null
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);

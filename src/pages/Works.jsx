@@ -2,12 +2,13 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiWorks } from '../lib/api.js';
 import featuredManifest from '../featured-works.json';
+import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import './Works.css';
 
 const SOURCE_LABELS = {
   LXX: 'Greek Scriptures', GNT: 'Greek NT', GEZ: "Ge'ez",
   LAT: 'Latin', GRC: 'Greek Literature', BHS: 'Hebrew',
-  SYR: 'Syriac', ENG: 'English',
+  SYR: 'Syriac', COP: 'Coptic', ENG: 'English',
 };
 const FEATURED = new Set(featuredManifest.featured || []);
 
@@ -17,6 +18,7 @@ const FEATURED = new Set(featuredManifest.featured || []);
  * list; the full list collapses behind a toggle so your picks aren't buried.
  */
 export default function Works() {
+  usePageTitle(pageTitle('Works'));
   const navigate = useNavigate();
   const [works, setWorks]     = useState([]);
   const [loading, setLoading] = useState(true);

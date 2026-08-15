@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { usePageTitle } from '../hooks/usePageTitle.js';
 import './Landing.css';
 
 /**
@@ -14,6 +15,10 @@ import './Landing.css';
  *   5. Per-language lexicon row — every source has its own surface lexicon.
  */
 export default function Landing() {
+  // Own convention, not the generic pageTitle() "<Page> | BLD Bible" suffix —
+  // matches server/prerender.js's /landing snapshot exactly (see LANDING_TITLE
+  // there) so there's no title flash on hydration.
+  usePageTitle('BLD Bible: Online Bible Study Tool');
   return (
     <div className="landing">
       <div className="landing-logo-area">
@@ -21,7 +26,7 @@ export default function Landing() {
           <div className="landing-logo-glyph">𐤀𐤁</div>
         </div>
         <h1 className="landing-title">
-          Blood-Line Descendant Bible<br /><span>Study Tool</span>
+          BLD Bible<br /><span>Online Bible Study Tool</span>
         </h1>
         <div className="landing-subtitle">
           Hebrew · Greek · Latin · Ge&#39;ez — scriptures, plus a library of works

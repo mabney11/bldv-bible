@@ -5,7 +5,8 @@ import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
 import { sqToPaleo } from '../lib/sqToPaleo.js';
 import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
-import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
+import { usePageTitle } from '../hooks/usePageTitle.js';
+import { truncateTitle, versePreviewTranslit } from '../lib/versePreview.js';
 import { TYPEFACES } from '../lib/typefaces.js';
 // Same reading typefaces the novel Reader offers (see ../lib/typefaces.js) —
 // pulled in here 2026-08-15 so the English column can look like the Reader
@@ -732,12 +733,6 @@ export default function Parallel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [books, book, sources, bookResolved]);
 
-  // Descriptive browser-tab title: "<Book> <ch>:<vs> — Parallel".
-  usePageTitle(
-    formatRef((books.find(b => b.book_id === book) || {}).name || BOOK_NAMES[book] || `Book ${book}`, chapter, verse),
-    'Parallel'
-  );
-
   // URL sync — held until the slug is resolved so it can't rewrite ?book=john to
   // a stale ?book=1 before resolution (the refresh-to-Genesis race).
   useEffect(() => {
@@ -997,6 +992,22 @@ export default function Parallel() {
   const visibleVerses = verse != null ? verseNums.filter(v => v === verse) : verseNums;
   const curBookName = (books.find(b => b.book_id === book) || {}).name || BOOK_NAMES[book] || `Book ${book}`;
   const refTitle = `${curBookName} ${chapter}${verse != null ? ':' + verse : ''}`;
+
+  // ── browser tab title ──────────────────────────────────────────────────
+  // Chapter view: "<book> <ch> | Parallel". Single-verse view appends a
+  // short preview of THIS verse's English and transliterated source text
+  // (see ../lib/versePreview.js) — matches BibleHub-style tabs, at the
+  // reader's request, so a tab is identifiable/searchable on its own
+  // instead of a dozen indistinguishable "Parallel" tabs.
+  const titlePreviewParts = [refTitle, 'Parallel'];
+  if (verse != null) {
+    const enPreview = truncateTitle((translations[verse]?.text || '').trim(), 60);
+    const srcPreview = truncateTitle(versePreviewTranslit(wordsByVerse[verse]), 60);
+    if (enPreview) titlePreviewParts.push(enPreview);
+    if (srcPreview) titlePreviewParts.push(srcPreview);
+  }
+  usePageTitle(titlePreviewParts.join(' | '));
+
   // Open the reader at this verse in the SAME source we're viewing here. Without
   // the source, the reader defaults to BHS — which blanks for a book that has no
   // Masoretic Hebrew (e.g. a NT verse shown in Heb·extra). Carrying lang keeps

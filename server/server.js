@@ -8738,6 +8738,65 @@ app.get('/sitemap-chapters.xml', production.cache(3600), (req, res) => {
     }
 });
 
+// GET /sitemap-verses.xml — one <url> per real (book, chapter, verse), for
+// /bible (Novel English Bible reader) ONLY. Phase 1 of full-corpus
+// verse-level indexability (2026-08-15 request: "I want my entire corpus
+// indexable and easily searchable like the other bible tools" — e.g.
+// BibleHub, which indexes one page per verse). ~31,000 canonical verses —
+// comfortably under Google's 50,000-URL-per-sitemap-file cap, so this is a
+// single file for now; if/when other readers (Hebrew, Greek, Latin, Ge'ez)
+// or the Works Library get the same treatment, this will need sharding into
+// sitemap-verses-N.xml + a <sitemapindex>, the same way any site with
+// 100k+ URLs has to.
+//
+// Deliberately does NOT cover /parallel or /translate — those two routes'
+// prerendered BODY doesn't actually change per ?verse= (see
+// englishChapterRoute's canonical-collapse comment in prerender.js: they
+// show the whole chapter regardless), so a verse-level sitemap entry for
+// them would be exactly the "thin/duplicate URL" mistake the bad-corpus fix
+// and the canonical-collapse fix both existed to clean up. /bible's new
+// englishVerseRoute (prerender.js) is the first route whose content is
+// genuinely different per verse — that verse's own translation text plus
+// its actual Hebrew tokens — which is what makes a self-referencing
+// per-verse canonical honest there.
+//
+// Reuses the EXACT verse-listing query /api/translate/chapter already runs
+// (tokens_bhs, with the English-baseline fallback for non-Hebrew-backed
+// books) instead of a new one, so "what counts as a real verse" can never
+// drift between this sitemap and the page it's advertising.
+const VERSE_LIST_BHS = db.prepare(`SELECT DISTINCT verse FROM tokens_bhs WHERE book_id=? AND chapter=? ORDER BY verse`);
+app.get('/sitemap-verses.xml', production.cache(3600), (req, res) => {
+    try {
+        const urls = [];
+        for (const b of BOOKS) {
+            for (let ch = b.first_chapter; ch <= b.last_chapter; ch++) {
+                let verseRows = VERSE_LIST_BHS.all(b.book_id, ch);
+                if (!verseRows.length) {
+                    // Non-Hebrew-backed book/chapter (e.g. an NT book with no
+                    // tokens_bhs rows) — same English-baseline fallback
+                    // /api/translate/chapter uses, so the sitemap still lists
+                    // every verse the reader itself would actually show.
+                    try {
+                        verseRows = db.prepare(`
+                            SELECT DISTINCT ord_v AS verse FROM verses
+                            WHERE corpus='ENG' AND canon_id=? AND ord_c=? ORDER BY ord_v
+                        `).all(b.book_id, ch);
+                    } catch { /* ENG baseline not loaded */ }
+                }
+                for (const v of verseRows) {
+                    urls.push(`  <url><loc>https://www.bldbible.com/bible?book=${b.book_id}&amp;chapter=${ch}&amp;verse=${v.verse}</loc></url>`);
+                }
+            }
+        }
+        res.type('application/xml').send(
+            `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`
+        );
+    } catch (err) {
+        console.error('/sitemap-verses.xml failed:', err);
+        res.status(500).send('');
+    }
+});
+
 // Resolve a root request (?sn=H8064 preferred, ?root=<paleo> legacy) to its
 // index position. Strong's number is the exact identity; the Paleo string is a
 // best-effort fallback for old bookmarks (first entry with that form).

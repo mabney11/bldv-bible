@@ -4,6 +4,7 @@ import { apiConcordanceLemma, apiConcordanceSurface, apiSourceVerse } from '../l
 import { BOOK_NAMES } from '../lib/books.js';
 import detectScript from '../lib/scripts.js';
 import MultiWordBlock from '../components/MultiWordBlock.jsx';
+import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import './Root.css';
 
 /**
@@ -20,10 +21,11 @@ import './Root.css';
 const DEFAULT_LIMIT = 100;   // hits fetched on first load
 const PAGE = 200;            // how many more "Show more" pulls in
 
-const READER_SRC = { GNT:'LXX', LXX:'LXX', GRC:'GRC', GEZ:'GEZ', LAT:'LAT', SYR:'SYR', ENG:'ENG', HEB:'HEB' };
+const READER_SRC = { GNT:'LXX', LXX:'LXX', GRC:'GRC', GEZ:'GEZ', LAT:'LAT', SYR:'SYR', COP:'COP', ENG:'ENG', HEB:'HEB' };
 const FONT = (corpus) =>
   corpus === 'GEZ' ? "'Abyssinica SIL','Noto Sans Ethiopic',serif"
   : corpus === 'SYR' ? "'Noto Sans Syriac','Estrangelo Edessa',serif"
+  : corpus === 'COP' ? "'Noto Sans Coptic','Antinoou',serif"
   : corpus === 'LAT' ? "'Cardo','Times New Roman',serif"
   : "'Cardo','GFS Didot',serif";
 
@@ -86,6 +88,8 @@ export default function Concordance() {
   const lemma = sp.get('lemma');
   const word = sp.get('word');
   const readerSrc = sp.get('source') || READER_SRC[corpus] || 'LXX';
+
+  usePageTitle(pageTitle(`Concordance${(lemma || word) ? `: ${lemma || word}` : ''}`));
 
   const [d, setD] = useState(null);
   const [err, setErr] = useState(null);

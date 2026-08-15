@@ -6,6 +6,7 @@ import { paleoToSVG } from '../lib/paleoGlyphs.js';
 import {
   apiBooks, apiTransChapter, apiTransVerse,
 } from '../lib/api.js';
+import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import './Share.css';
 
 const FONT_OPTIONS = [
@@ -43,6 +44,7 @@ const PALEO_ROWS = [
 // SHARE PAGE
 // ─────────────────────────────────────────────────────────────────────────────
 export default function Share() {
+  usePageTitle(pageTitle('Share & Export'));
   const { theme, toggle: toggleTheme } = useTheme();
   const toast = useToast();
 

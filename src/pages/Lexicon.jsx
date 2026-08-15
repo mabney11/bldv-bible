@@ -5,6 +5,7 @@ import { usePaleoMode } from '../hooks/usePaleoMode.js';
 import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { PALEO_LETTERS, translit, paleoSortKey, LETTER_NAMES } from '../lib/books.js';
+import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { paleoWordFlex, paleoCharNoMargin } from '../lib/paleoGlyphs.js';
 import {
   apiLexicon, apiHomographs, apiDefinitions,
@@ -311,6 +312,7 @@ function AnchorHeader({ letter, lang }) {
 // MAIN PAGE
 // ─────────────────────────────────────────────────────────────────────────────
 export default function Lexicon() {
+  usePageTitle(pageTitle('Lexicon'));
   const { theme, toggle: toggleTheme } = useTheme();
   const { mode: paleoMode, toggle: togglePaleoMode } = usePaleoMode();
   const [glyphSize] = useLocalStorageNumber('lex-glyph-size', 28, '--glyph-word');
@@ -483,6 +485,19 @@ export default function Lexicon() {
   // correct target scroll position, regardless of which letter we're
   // jumping from or to.
   const listRef = useRef(null);
+  // 2026-08-15: `behavior: 'smooth'` here was hanging the tab for 20-30+
+  // seconds on a real jump (reproduced via Claude in Chrome) — this list is
+  // NOT virtualized (loadSurfaces alone pulls up to 30k entries into plain
+  // DOM nodes, see its own comment above), so a smooth scroll asks the
+  // browser to paint every intermediate frame of a multi-thousand-node
+  // layout instead of one jump. That's what read as "doesn't scroll up for
+  // earlier letters" — a backward jump from near the bottom is often a
+  // longer distance than whatever forward jump happened to be tried first,
+  // so it was more likely to run long enough to look completely stuck
+  // rather than just slow. `offsetTop` itself was already correct (see the
+  // FIX note above); only the animation was the problem. Instant scroll
+  // sidesteps the per-frame repaint cost entirely — a real fix for large
+  // lists is virtualizing .lex-list, which is a bigger change than this.
   const jumpToLetter = useCallback(letter => {
     setActiveLetter(letter);
     const list = listRef.current;
@@ -491,11 +506,11 @@ export default function Lexicon() {
     if (!anchor) return;
     // offsetTop is relative to the nearest positioned ancestor. The list
     // container has position:relative for exactly this reason.
-    list.scrollTo({ top: anchor.offsetTop, behavior: 'smooth' });
+    list.scrollTo({ top: anchor.offsetTop, behavior: 'auto' });
   }, []);
 
   const scrollToTop = useCallback(() => {
-    listRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    listRef.current?.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
 
   // ── update the active letter automatically as user scrolls ────────────────

@@ -5,6 +5,7 @@ import { TOKEN_FIELD_LABELS, TOKEN_VALUE_LABELS } from '../lib/tokenLabels.js';
 import { apiRebuildIndexes } from '../lib/api.js';
 import { useToast } from '../components/Toast.jsx';
 import { CHEATSHEET_LONG_HTML } from './CheatsheetLong.js';
+import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import './Cheatsheet.css';
 import './CheatsheetLong.css';
 
@@ -54,6 +55,7 @@ const NAV = [
 ];
 
 export default function Cheatsheet() {
+  usePageTitle(pageTitle('Token Cheatsheet'));
   const { theme, toggle: toggleTheme } = useTheme();
   const toast = useToast();
   const [q, setQ] = useState('');

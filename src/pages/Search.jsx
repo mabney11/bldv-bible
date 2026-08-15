@@ -5,6 +5,7 @@ import { SCRIPTS, getScript } from '../lib/keyboards.js';
 import detectScriptRaw from '../lib/scripts.js';
 import { transliterate } from '../lib/translit.js';
 import { apiSearch, apiConcordanceSurface, apiSurfaceList, apiSurfaceExplorerVerses, apiRootVerses } from '../lib/api.js';
+import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import '../components/SearchUI.css';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -39,7 +40,7 @@ const ROOT_VERSE_LIMIT = 50;     // cap verses pulled per expanded root
 
 // Phoenician/Paleo isn't in scripts.js's detectScript (same special-case
 // translit.js needs) — catch it first, then defer to the shared detector.
-const SCRIPT_ID_MAP = { ethiopic: 'geez', syriac: 'syriac', greek: 'greek', latin: 'latin' };
+const SCRIPT_ID_MAP = { ethiopic: 'geez', syriac: 'syriac', greek: 'greek', coptic: 'coptic', latin: 'latin' };
 function detectQueryScript(text) {
   const s = String(text || '').trim();
   if (!s) return null;
@@ -157,6 +158,8 @@ export default function Search() {
   const urlQ      = searchParams.get('q') || '';
   const urlMode   = searchParams.get('mode') === 'chrono' ? 'chrono' : 'exact';
   const urlSrcRaw = searchParams.get('src');
+
+  usePageTitle(pageTitle(urlQ ? `“${urlQ}” search` : 'Search'));
 
   const detectedId = useMemo(() => detectQueryScript(urlQ), [urlQ]);
   const scriptDef   = detectedId ? getScript(detectedId) : null;
@@ -393,7 +396,7 @@ export default function Search() {
         {anyErr && <div className="hv-search-err">⚠ {anyErr}</div>}
 
         {!urlQ && !anyErr && (
-          <div className="search-page-empty">Type or paste a word above in any script — Paleo Hebrew, Ge'ez, Syriac, Greek, Latin, or an English name — then hit Search.</div>
+          <div className="search-page-empty">Type or paste a word above in any script — Paleo Hebrew, Ge'ez, Syriac, Greek, Latin, Coptic, or an English name — then hit Search.</div>
         )}
 
         {urlQ && busy && !legacyData && !concData && !translitResult && (

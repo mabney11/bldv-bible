@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { getAdminStatus } from '../lib/localOverlay.js';
+import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import './BookManager.css';
 
 /**
@@ -21,6 +22,7 @@ import './BookManager.css';
  * Requires being logged in as admin (see AdminLogin.jsx) whenever ADMIN_KEY is set.
  */
 export default function BookManager() {
+  usePageTitle(pageTitle('Book Manager'));
   const [status, setStatus] = useState(null);
   const [promoted, setPromoted] = useState([]);
   const [works, setWorks] = useState([]);

@@ -34,15 +34,21 @@
 }
 
 .landing-title {
-  font-size: 22px;
-  font-weight: 400;
-  color: var(--text3);
-  letter-spacing: 0.04em;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.02em;
   text-align: center;
+  line-height: 1.35;
 }
 .landing-title span {
-  color: var(--gold);
-  font-weight: 600;
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .landing-cta {
@@ -224,7 +230,8 @@
 
 @media (max-width: 500px) {
   .landing { gap: 28px; padding: 40px 16px calc(40px + var(--safe-bottom)); }
-  .landing-title    { font-size: 18px; }
+  .landing-title    { font-size: 26px; }
+  .landing-title span { font-size: 12px; }
   .landing-cta      { font-size: 14px; padding: 14px 28px; width: 100%; justify-content: center; }
   .landing-sec-links { flex-direction: column; align-items: stretch; width: 100%; max-width: 360px; }
   .landing-sec-link { justify-content: center; font-size: 14px; padding: 14px 18px; }

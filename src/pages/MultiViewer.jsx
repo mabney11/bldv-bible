@@ -14,6 +14,8 @@ import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { BOOK_NAMES } from '../lib/books.js';
 import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
+import { usePageTitle } from '../hooks/usePageTitle.js';
+import { truncateTitle, versePreviewMultiTokens } from '../lib/versePreview.js';
 import {
   apiSourceBooks, apiSourceDocs, apiSourceVerse, apiSourceChapter, apiSourceChapters,
   apiBookOrder, apiDocTokens,
@@ -38,7 +40,7 @@ import './MultiViewer.css';
 // the ONLY Hebrew-script source in this list; the render branch below special-cases
 // it (WordBlock + apiDocTokens) rather than the generic MultiWordBlock path every
 // other source here uses.
-const MULTI_SOURCES = ['LXX', 'GEZ', 'LAT', 'GRC', 'SYR', 'ENG', 'HEB'];
+const MULTI_SOURCES = ['LXX', 'GEZ', 'LAT', 'GRC', 'SYR', 'COP', 'ENG', 'HEB'];
 
 // Ge'ez punctuation folding. The tokenizer can emit a wordspace (፡) or section
 // mark (። …) as its own standalone token, which then floats between word blocks
@@ -83,6 +85,7 @@ const SWITCHER = [
   { key: 'HEB', label: 'Hebrew'  },
   { key: 'GEZ', label: "Ge'ez"   },
   { key: 'SYR', label: 'Syriac'  },
+  { key: 'COP', label: 'Coptic'  },
   { key: 'LXX', label: 'Greek'   },
   { key: 'LAT', label: 'Latin'   },
   { key: 'ENG', label: 'English' },
@@ -91,10 +94,10 @@ const SWITCHER = [
 // these that has it.
 // Hebrew is the anchor — every other tradition is a translation that points back
 // to it, so it always wins. Order: Hebrew (BHS, then the corpus.db Hebrew for
-// apocrypha) → Ge'ez → Syriac → Greek → Latin; Greek-literature and English
-// are last-resort fallbacks only.
-const SOURCE_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'LXX', 'LAT', 'GRC', 'ENG'];
-const PILL_LABEL = { BHS:'Hebrew', HEB:'Heb·extra', GEZ:"Ge'ez", SYR:'Syriac', LXX:'Greek', LAT:'Latin', ENG:'English' };
+// apocrypha) → Ge'ez → Syriac → Greek → Latin → Coptic; Greek-literature and
+// English are last-resort fallbacks only.
+const SOURCE_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'LXX', 'LAT', 'COP', 'GRC', 'ENG'];
+const PILL_LABEL = { BHS:'Hebrew', HEB:'Heb·extra', GEZ:"Ge'ez", SYR:'Syriac', LXX:'Greek', LAT:'Latin', COP:'Coptic', ENG:'English' };
 // BHS (bible.db) holds the Hebrew OT canon = canon_ids 1–39; it isn't a corpus.db
 // source, so inject it as an available Hebrew witness for those books.
 const HEBREW_OT = (id) => id >= 1 && id <= 39;
@@ -104,6 +107,7 @@ const SOURCE_LABELS = {
   LAT: 'Latin (Vulgate)',
   GRC: 'Greek Literature',
   SYR: 'Syriac (Peshitta)',
+  COP: 'Coptic (Sahidic)',
   ENG: 'English',
   HEB: 'Hebrew (extra)',
 };
@@ -490,6 +494,18 @@ export default function MultiViewer() {
     ? (docTitle || bookName || doc)
     : (bookName || `Book ${book}`);
   const titleLabel = usingDoc ? `${sourceLabel} · ${docTitle || doc}` : sourceLabel;
+
+  // ── browser tab title (2026-08-15) ─────────────────────────────────────
+  // "<book> <ch>:<v> | <language> | <text preview>" — same convention as
+  // HebrewViewer.jsx (the other half of this reader family), with a live
+  // preview of the verse's word+gloss (see ../lib/versePreview.js) once a
+  // single verse is selected, matching BibleHub-style tabs.
+  const mvTitleParts = [`${headingLabel} ${presentedChapter}${verse != null ? ':' + verse : ''}`, sourceLabel];
+  if (mode === 'verse' && verseData?.tokens) {
+    const preview = truncateTitle(versePreviewMultiTokens(verseData.tokens), 70);
+    if (preview) mvTitleParts.push(preview);
+  }
+  usePageTitle(mvTitleParts.join(' | '));
 
   // ── Canonical cross-source target. Switching sources can only carry a
   // *canonical* (book, chapter[, verse]) location — a doc id is meaningless in

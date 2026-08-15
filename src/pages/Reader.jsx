@@ -622,15 +622,12 @@ export default function Reader() {
   );
 
   // ── browser tab ────────────────────────────────────────────────────────────
-  // Feature first ("Reader | Genesis 1") so every open tab for this tool
-  // groups/sorts together — see hooks/usePageTitle.js. An empty chapter is
-  // flagged in the tab too, so a book that isn't translated is obvious
-  // without opening it.
-  usePageTitle(
-    bookReady && meta ? formatRef(chapterBookName, chapter, verse) : '',
-    'Reader',
-    (!loading && verses.length === 0) ? 'not translated' : undefined
-  );
+  // Reference first ("Genesis 1 | Reader", 2026-08-15 — see
+  // hooks/usePageTitle.js). An empty chapter is flagged in the tab too, so a
+  // book that isn't translated is obvious without opening it.
+  const readerRef = bookReady && meta ? formatRef(chapterBookName, chapter, verse) : '';
+  const readerNote = (!loading && verses.length === 0) ? ' · not translated' : '';
+  usePageTitle(readerRef ? `${readerRef}${readerNote} | Reader` : '');
 
   // ── gloss display mode (persisted) ─────────────────────────────────────────
   // both | hebrew | gloss. Validated the same way as the typeface, so a stale value

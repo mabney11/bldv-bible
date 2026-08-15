@@ -6,6 +6,8 @@ import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { useSwipeNav } from '../hooks/useSwipeNav.js';
 import { BOOK_NAMES, PALEO_LETTERS } from '../lib/books.js';
 import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
+import { usePageTitle } from '../hooks/usePageTitle.js';
+import { truncateTitle, versePreviewWithGloss } from '../lib/versePreview.js';
 import { formatTokenRowDescriptive } from '../lib/tokenLabels.js';
 import { apiBooks, apiTokens, apiRaw, apiBookOrder } from '../lib/api.js';
 import { PALEO_KBD_ROWS } from '../lib/keyboards.js';
@@ -20,8 +22,8 @@ import '../components/SearchUI.css';
 
 // Cross-language switching shared with MultiViewer: a book the Hebrew reader
 // lacks (NT, pseudepigrapha, …) opens in the first of these that has it.
-const HV_SOURCE_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'LXX', 'LAT', 'GRC', 'ENG'];
-const HV_PILL_LABEL = { BHS:'Hebrew', HEB:'Heb·extra', GEZ:"Ge'ez", SYR:'Syriac', LXX:'Greek', LAT:'Latin', ENG:'English' };
+const HV_SOURCE_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'LXX', 'LAT', 'COP', 'GRC', 'ENG'];
+const HV_PILL_LABEL = { BHS:'Hebrew', HEB:'Heb·extra', GEZ:"Ge'ez", SYR:'Syriac', LXX:'Greek', LAT:'Latin', COP:'Coptic', ENG:'English' };
 const hvPickSource = (sources=[]) => HV_SOURCE_PRIORITY.find(s => sources.includes(s)) || sources[0] || null;
 import './HebrewViewer.css';
 
@@ -340,11 +342,18 @@ export default function HebrewViewer() {
   }, [rawRows, verse]);
 
   const bookName = (dropdownBooks.find(b => b.book_id === book)?.name) || BOOK_NAMES[book] || `Book ${book}`;
-  // Own the browser-tab title (with verse in verse view) so it doesn't inherit a
-  // stale title from another reader.
-  useEffect(() => {
-    document.title = `${bookName} ${chapter}${verse != null ? ':' + verse : ''} — Hebrew Viewer`;
-  }, [bookName, chapter, verse]);
+  // ── browser tab title (2026-08-15) ─────────────────────────────────────
+  // "<book> <ch>:<v> | <language> | <text preview>" — same convention as
+  // MultiViewer.jsx (the other half of this reader family), with a live
+  // preview of the verse's transliteration+gloss (see ../lib/versePreview.js)
+  // once a single verse is selected, matching BibleHub-style tabs.
+  const hvLangLabel = HV_PILL_LABEL[srcParam] || 'Hebrew';
+  const hvTitleParts = [`${bookName} ${chapter}${verse != null ? ':' + verse : ''}`, hvLangLabel];
+  if (verse != null) {
+    const versePreview = truncateTitle(versePreviewWithGloss(grouped.find(g => g.verse === verse)?.words), 70);
+    if (versePreview) hvTitleParts.push(versePreview);
+  }
+  usePageTitle(hvTitleParts.join(' | '));
 
   return (
     <div className="hv-page">
@@ -405,6 +414,7 @@ export default function HebrewViewer() {
               {[
                 { key: 'GEZ', label: "Ge'ez",   title: "Open this verse in the Ge'ez Bible" },
                 { key: 'SYR', label: 'Syriac',  title: 'Open this verse in the Syriac Peshitta' },
+                { key: 'COP', label: 'Coptic',  title: 'Open this verse in the Coptic (Sahidic)' },
                 { key: 'LXX', label: 'Greek',   title: 'Open this verse in the Septuagint' },
                 { key: 'LAT', label: 'Latin',   title: 'Open this verse in the Latin Vulgate' },
                 { key: 'ENG', label: 'English', title: 'Open this verse in English' },
