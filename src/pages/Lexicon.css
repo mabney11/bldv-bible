@@ -249,6 +249,23 @@
 }
 .lex-anchor svg { display: block; }
 
+/* 2026-08-16: jumpToLetter (Lexicon.jsx) needs each anchor's real, static
+   scroll-list position to compute where to jump — but reading `offsetTop`
+   on a `position: sticky` element that's currently part of the "stuck"
+   stack returns its CURRENT stuck (on-screen) position, not its static
+   layout position, in this browser. Confirmed live: with several anchors
+   scrolled past, Alap/Bet/Gimel's anchors all reported the SAME offsetTop
+   (matching the current scrollTop) even though their real positions are
+   thousands of pixels apart — which is exactly why jumping to an EARLIER
+   letter did nothing (its "position" read back as wherever the list
+   already was) while forward jumps happened to look fine. jumpToLetter
+   toggles this class onto every anchor for one synchronous layout read
+   (position: static, unstuck, real layout position) then removes it, so
+   the measurement is always correct regardless of scroll direction.
+   `!important` beats the plain `.lex-anchor` rule above regardless of
+   source order. */
+.lex-anchor.lex-unstick { position: static !important; }
+
 /* ── WORD ROWS ──────────────────────────────────────────────────────────── */
 .lex-row {
   display: flex;

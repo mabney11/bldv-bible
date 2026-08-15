@@ -490,23 +490,40 @@ export default function Lexicon() {
   // NOT virtualized (loadSurfaces alone pulls up to 30k entries into plain
   // DOM nodes, see its own comment above), so a smooth scroll asks the
   // browser to paint every intermediate frame of a multi-thousand-node
-  // layout instead of one jump. That's what read as "doesn't scroll up for
-  // earlier letters" — a backward jump from near the bottom is often a
-  // longer distance than whatever forward jump happened to be tried first,
-  // so it was more likely to run long enough to look completely stuck
-  // rather than just slow. `offsetTop` itself was already correct (see the
-  // FIX note above); only the animation was the problem. Instant scroll
-  // sidesteps the per-frame repaint cost entirely — a real fix for large
-  // lists is virtualizing .lex-list, which is a bigger change than this.
+  // layout instead of one jump. Instant scroll sidesteps the per-frame
+  // repaint cost entirely — a real fix for large lists is virtualizing
+  // .lex-list, which is a bigger change than this.
+  //
+  // 2026-08-16: that wasn't the whole bug — going back UP to an earlier
+  // letter still landed on the wrong spot (or didn't move at all) even with
+  // instant scroll. Root cause, confirmed live in Chrome: `.lex-anchor` is
+  // `position: sticky`, and reading `offsetTop` on a sticky element that's
+  // currently part of the "stuck" stack returns its CURRENT on-screen
+  // (stuck) position, not its real static position in the list — in one
+  // reproduction, Alap/Bet/Gimel's anchors ALL reported the same offsetTop
+  // (matching whatever scrollTop already was) despite being thousands of
+  // pixels apart in the real layout. That's exactly the "stays at Gimel"
+  // symptom: Bet's anchor read back as "already here." Forward jumps mostly
+  // happened to look fine because the target anchor usually hadn't been
+  // stuck yet. Fix: briefly force every anchor to `position: static` (see
+  // .lex-unstick in Lexicon.css) for the one offsetTop read, so the
+  // measurement is always the real static position regardless of which
+  // anchor the browser currently has stuck — then restore stickiness before
+  // scrolling.
   const jumpToLetter = useCallback(letter => {
     setActiveLetter(letter);
     const list = listRef.current;
     if (!list) return;
+    const anchors = list.querySelectorAll('.lex-anchor');
+    anchors.forEach(a => a.classList.add('lex-unstick'));
+    void list.offsetHeight; // force a synchronous layout flush before reading offsetTop
     const anchor = list.querySelector(`#lex-anchor-${letter}`);
-    if (!anchor) return;
+    const target = anchor ? anchor.offsetTop : null;
+    anchors.forEach(a => a.classList.remove('lex-unstick'));
+    if (target == null) return;
     // offsetTop is relative to the nearest positioned ancestor. The list
     // container has position:relative for exactly this reason.
-    list.scrollTo({ top: anchor.offsetTop, behavior: 'auto' });
+    list.scrollTo({ top: target, behavior: 'auto' });
   }, []);
 
   const scrollToTop = useCallback(() => {
