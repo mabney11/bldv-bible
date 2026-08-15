@@ -46,15 +46,18 @@
    verse's own Parallel/Hebrew/Translation Studio destinations (see
    VersePage.jsx's parallelHref/hebrewHref/translateHref), each carrying
    this exact book+chapter+verse the same way Reader.jsx's own switch menu
-   does. Pulled up flush against .vp-text (negative top margin claws back
-   its 36px) rather than getting its own big gap — this reads as "more ways
-   to open THIS", not a new content section the way "Word by word" below
-   (with its own top rule) does. */
+   does. "lets get the links out of view of the vers info though, lets put
+   them at the bottom after the word by word table" — sits last in the page
+   now, after the word-by-word breakdown, with its own top rule matching
+   .vp-subhead's so it still reads as a distinct "go elsewhere" section
+   rather than trailing off the table with no visual break. */
 .vp-views {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 14px;
-  margin: -20px 0 32px;
+  margin: 28px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--pr-rule);
 }
 .vp-view-link {
   font-family: system-ui, sans-serif;
@@ -83,22 +86,97 @@
   border-top: 1px solid var(--pr-rule);
 }
 
-/* Hebrew Viewer word-by-word — renders the shared components/WordBlock.jsx,
-   the exact glyph/translit/gloss/Strong's chip HebrewViewer.jsx itself uses
-   (see VersePage.jsx's hebrewWords). No scoped --paleo-size/--word-* overrides
-   here on purpose: this is a full page, not a side panel, so it keeps the
-   global styles/tokens.css defaults HebrewViewer's own full-page reader uses
-   (Translate.css/Parallel.css only shrink these for their cramped side-panel
-   context — see the comment there). .word-block is itself inline-flex, so a
-   plain rtl flex-wrap row is all that's needed to lay a verse's words out
-   right-to-left, same shape as Translate.css's .tr-paleo-tokens. */
-.vp-hebrew-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: flex-end;
-  gap: 4px 3px;
+/* Hebrew word-by-word breakdown table — one row per word (components/
+   WordBlock.jsx's exported WordRow; see VersePage.jsx's hebrewWords).
+   "the shape of the hebrew out looks wonky, lets have the word by word each
+   in its own row" — WordBlock's own wrapping-card grid (what this replaced)
+   is built for a whole chapter; for a single verse's handful of words it
+   wrapped unevenly. A table reads top-to-bottom instead, one word per line:
+   Word | Root | Definition | Modifications | Strong's # | First root verse |
+   First surface verse (the last two are VersePage's own <td>s, passed as
+   WordRow's children — see renderFirstHit there).
+   Scoped --paleo-size smaller than the full-page HebrewViewer's default
+   (styles/tokens.css's 38px): a table cell needs a compact glyph, not a
+   showcase one — same reasoning Translate.css/Parallel.css give for their
+   own side-panel-scoped shrink. */
+.vp-wordtable-wrap {
+  --paleo-size: 26px;
+  overflow-x: auto;
+  margin: 0 0 4px;
+}
+.vp-wordtable {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+}
+.vp-wordtable thead th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--pr-ink-soft);
+  padding: 0 12px 8px 0;
+  border-bottom: 1px solid var(--pr-rule);
+  white-space: nowrap;
+}
+.vp-wordtable td.wr-cell {
+  padding: 12px 12px 12px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--pr-rule) 55%, transparent);
+  vertical-align: top;
+}
+.vp-wordtable tbody tr:last-child td.wr-cell {
+  border-bottom: none;
+}
+.wr-glyphs {
   direction: rtl;
+  display: inline-flex;
+  align-items: flex-end;
+  font-family: var(--paleo-font);
+  font-size: var(--paleo-size);
+  line-height: 1;
+}
+.wr-lex .wr-glyphs {
+  font-size: calc(var(--paleo-size) * .62);
+  opacity: .92;
+}
+.wr-def {
+  color: var(--pr-ink);
+  min-width: 100px;
+}
+.wr-mods {
+  min-width: 150px;
+}
+.wr-mod {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 10px 4px 0;
+  font-size: 12px;
+  color: var(--pr-ink-soft);
+}
+.wr-mod-glyph {
+  font-size: 15px;
+  line-height: 1;
+}
+.wr-mod-none,
+.wr-first-none,
+.wr-first-loading {
+  color: var(--pr-ink-soft);
+  opacity: .55;
+}
+.wr-first a {
+  font-size: 12px;
+  color: var(--pr-accent-dim);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--pr-accent-dim) 60%, transparent);
+  white-space: nowrap;
+}
+.wr-first a:hover {
+  color: var(--pr-accent);
+  border-bottom-color: var(--pr-accent);
 }
 
 .vp-words {

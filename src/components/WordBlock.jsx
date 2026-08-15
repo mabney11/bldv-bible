@@ -39,6 +39,35 @@ const isPrefix = css =>
   (css && PREFIX_FULL.includes(css)) ||
   PREFIX_STARTS.some(p => css && css.startsWith(p));
 
+// Strong's-number formatting/classification — module-level (not tied to any
+// component instance) so both WordBlock and WordRow below can call them.
+export const fmtSN = s => (s ? 'H' + String(s).replace(/^H+/i, '') : null);
+// H9000+ are virtual/grammar codes (connectors, prepositions, articles) that
+// were never given root-explorer entries — see the root-index builder's
+// `snNum >= 9000` skip. Badge still shows the code for reference, but it
+// isn't a link since /roots?sn=H9xxx 404s.
+export const isVirtualSN = s => {
+  const n = parseInt(String(s).replace(/^H/i, ''), 10);
+  return !isNaN(n) && n >= 9000;
+};
+
+// One component → one clickable glyph span (SVG for an actual Paleo letter,
+// dimmed text for a non-Paleo mark/punctuation). Shared by WordBlock's own
+// glyph row and WordRow's compact per-word-row rendering below, so the two
+// can never visually drift apart from rendering the same compDescs shape two
+// different ways.
+function compDescsToHtml(compDescs) {
+  return compDescs.map(c => {
+    const altAttr = c.altAttr ? ` data-alt="${c.altAttr}"` : '';
+    const ord = c.ordinal != null ? ` data-ordinal="${c.ordinal}"` : '';
+    if (!hasPaleo(c.paleo)) {
+      return `<span class="${c.css} clickable-comp paleo-punct"${altAttr}${ord} data-paleo="${escapeHtml(c.paleo)}" style="display:inline-flex;align-items:center;font-size:0.5em;opacity:0.75;padding:0 0.12em;">${escapeHtml(c.paleo)}</span>`;
+    }
+    const inner = paleoToSVG(c.paleo);
+    return `<span class="${c.css} clickable-comp"${altAttr}${ord} data-paleo="${escapeHtml(c.paleo)}" style="display:inline-flex;align-items:flex-end;">${inner}</span>`;
+  }).join('');
+}
+
 // A component whose text carries no Paleo-Hebrew letter (U+10900–U+1091F) has no
 // glyph in the Paleo script — it's punctuation or a literal mark (sof-pasuq ׃,
 // maqaf ־, the : stops). Render the mark itself as text, the way the Ge'ez
@@ -145,9 +174,16 @@ export function computeWordParts(wordObj) {
                    comp.lemmaTranslit.toLowerCase() !== (comp.translit || '').toLowerCase()) {
           lemmaPrefixHtml = `<span style="color:#888;font-size:.9em;font-style:italic">${comp.lemmaTranslit} &rarr; </span>`;
         }
-        out.rootTrans.push({ lemmaPrefixHtml, clean });
+        // paleo: the root component's own glyph text (undecorated — no
+        // lemmaPrefixHtml) — added for VersePage's WordRow table, which needs
+        // to render the bare root glyph in its own "Lex Word" column
+        // separately from the full inflected word WordBlock's .paleo shows.
+        out.rootTrans.push({ lemmaPrefixHtml, clean, paleo: comp.paleo });
       } else {
-        out.modTrans.push({ css: comp.css, clean, altAttr });
+        // paleo here too, same reason — WordRow's "Modifications" column
+        // pairs each prefix/suffix's own glyph with its gloss (e.g. "𐤅 and"),
+        // which modTrans alone (translated gloss only) can't supply.
+        out.modTrans.push({ css: comp.css, clean, altAttr, paleo: comp.paleo });
       }
     }
   });
@@ -185,22 +221,10 @@ export default function WordBlock({
 
   // Render each glyph component as its own span containing paleoToSVG output.
   // The span keeps its css class + data-ordinal so the Parallel hover system
-  // and copy-on-click both work.
-  const glyphHtml = useMemo(() => {
-    return parts.compDescs.map(c => {
-      const altAttr = c.altAttr ? ` data-alt="${c.altAttr}"` : '';
-      const ord = c.ordinal != null ? ` data-ordinal="${c.ordinal}"` : '';
-      // Mark tokens (maqaf, sof-pasuq, paseq …) never reach compDescs — they're
-      // pulled out to trailingMark and rendered separately (see below).
-      // Punctuation / non-Paleo marks carry no glyph — show the mark itself as
-      // text (smaller, dimmed) so sof-pasuq, maqaf and the : stops stay visible.
-      if (!hasPaleo(c.paleo)) {
-        return `<span class="${c.css} clickable-comp paleo-punct"${altAttr}${ord} data-paleo="${escapeHtml(c.paleo)}" style="display:inline-flex;align-items:center;font-size:0.5em;opacity:0.75;padding:0 0.12em;">${escapeHtml(c.paleo)}</span>`;
-      }
-      const inner = paleoToSVG(c.paleo);
-      return `<span class="${c.css} clickable-comp"${altAttr}${ord} data-paleo="${escapeHtml(c.paleo)}" style="display:inline-flex;align-items:flex-end;">${inner}</span>`;
-    }).join('');
-  }, [parts, mode]);
+  // and copy-on-click both work. Mark tokens (maqaf, sof-pasuq, paseq …)
+  // never reach compDescs — they're pulled out to trailingMark and rendered
+  // separately (see below).
+  const glyphHtml = useMemo(() => compDescsToHtml(parts.compDescs), [parts, mode]);
 
   // The transliteration line is a sequence of colored spans
   const translitHtml = useMemo(() => {
@@ -265,15 +289,8 @@ export default function WordBlock({
 
   // Strong's badge: per-component SN links + surface link
   const surfaceForm = wordObj.word_raw || parts.purePaleo;
-  const _fmtSN = s => (s ? 'H' + String(s).replace(/^H+/i, '') : null);
-  // H9000+ are virtual/grammar codes (connectors, prepositions, articles — see
-  // server.js's "ADMIN AUTH" — no, see the root-index builder's `snNum >= 9000`
-  // skip) that were never given root-explorer entries. Badge still shows the
-  // code for reference, but it isn't a link since /roots?sn=H9xxx 404s.
-  const _isVirtualSN = s => {
-    const n = parseInt(String(s).replace(/^H/i, ''), 10);
-    return !isNaN(n) && n >= 9000;
-  };
+  const _fmtSN = fmtSN;
+  const _isVirtualSN = isVirtualSN;
   // One badge group per maqaf-half: each carries its own surface (surf link) + root
   // Strong's, so a joined chip (BaYawam-Apaw) shows BOTH words standing alone. A normal
   // word yields a single group (its whole written surface + its root).
@@ -515,5 +532,72 @@ export default function WordBlock({
       >{parts.trailingMark.paleo}</span>
     )}
     </>
+  );
+}
+
+/**
+ * WordRow — one <tr> per word for VersePage's word-by-word breakdown table:
+ * full-word glyphs | bare root glyph | gloss | prefix/suffix breakdown |
+ * Strong's # badge, plus whatever trailing <td>s the caller passes as
+ * `children` (VersePage supplies the "first root occurrence" / "first
+ * surface occurrence" cells there, since those need react-router <Link>s and
+ * API data this component has no business owning).
+ *
+ * "individual verses ... the shape of the hebrew out looks wonky, lets have
+ * the word by word each in its own row" — WordBlock's own layout is a
+ * wrapping card grid, built for a whole chapter's worth of words; for a
+ * single verse's handful of words that wraps unevenly and is hard to scan.
+ * This is a plain table row instead: one word per line, top to bottom.
+ * Reuses computeWordParts (same as WordBlock above) so a row can never show
+ * different data than WordBlock itself would for the same word — and reuses
+ * compDescsToHtml for the full-word glyph cell so the glyphs render
+ * identically too.
+ */
+export function WordRow({ wordObj, children }) {
+  const parts = useMemo(() => computeWordParts(wordObj), [wordObj]);
+  const wordGlyphHtml = useMemo(() => compDescsToHtml(parts.compDescs), [parts]);
+  // The bare root's own glyph(s) — undecorated (no lemma-arrow prefix),
+  // paired with its gloss in the Definition cell. A two-word compound (rare)
+  // yields more than one rootTrans entry; concatenate rather than pick one.
+  const rootGlyphHtml = useMemo(
+    () => parts.rootTrans
+      .map(r => (hasPaleo(r.paleo) ? paleoToSVG(r.paleo) : escapeHtml(r.paleo || '')))
+      .join(''),
+    [parts]
+  );
+  const definition = parts.rootTrans.map(r => r.clean).filter(Boolean).join('; ');
+  const sn = fmtSN(wordObj.strongs);
+
+  return (
+    <tr className="word-row" data-ordinal={wordObj.token_ordinal} data-verse={wordObj.verse}>
+      <td className="wr-cell wr-word">
+        <span className="wr-glyphs" dangerouslySetInnerHTML={{ __html: wordGlyphHtml }} />
+      </td>
+      <td className="wr-cell wr-lex">
+        <span className="wr-glyphs wr-glyphs-sm root" dangerouslySetInnerHTML={{ __html: rootGlyphHtml }} />
+      </td>
+      <td className="wr-cell wr-def">{definition || '—'}</td>
+      <td className="wr-cell wr-mods">
+        {parts.modTrans.length ? parts.modTrans.map((m, i) => (
+          <span key={i} className={`wr-mod ${m.css}`}>
+            <span
+              className="wr-mod-glyph"
+              dangerouslySetInnerHTML={{ __html: hasPaleo(m.paleo) ? paleoToSVG(m.paleo) : escapeHtml(m.paleo || '') }}
+            />
+            <span className="wr-mod-gloss">{m.clean}</span>
+          </span>
+        )) : <span className="wr-mod-none">—</span>}
+      </td>
+      <td className="wr-cell wr-sn">
+        {sn && (
+          isVirtualSN(wordObj.strongs) ? (
+            <span className="sn-link root sn-virtual" title="Grammar/virtual code — no root entry" style={{ opacity: 0.6, cursor: 'default' }}>{sn}</span>
+          ) : (
+            <a className="sn-link root" href={`/roots?sn=${sn}`} title={`Explore root ${sn}`}>{sn}</a>
+          )
+        )}
+      </td>
+      {children}
+    </tr>
   );
 }

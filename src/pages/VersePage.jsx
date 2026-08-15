@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
-import { apiTransProgress, apiTransVerse, apiTokens } from '../lib/api.js';
+import { apiTransProgress, apiTransVerse, apiTokens, apiRootVerses, apiSurfaceExplorerVerses } from '../lib/api.js';
 import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
-import WordBlock from '../components/WordBlock.jsx';
+import { WordRow, fmtSN, computeWordParts } from '../components/WordBlock.jsx';
 import './Reader.css';
 import './VersePage.css';
 
@@ -93,6 +93,73 @@ export default function VersePage() {
     () => chapterTokens.filter(t => t.verse === verse),
     [chapterTokens, verse]
   );
+
+  // ── "root|lex_word|definition|modifications|strongs #s|link to the first
+  // verse the root appears in|first surface appearance" — the two link
+  // columns need a lookup per word: the first (canonically earliest) verse
+  // this word's ROOT appears in at all, and separately the first verse this
+  // exact SURFACE FORM (with its own prefixes/suffixes) appears in. Both
+  // come from the same root/surface-explorer endpoints the Root/Surfaces
+  // pages use, asked for just page 1 of 1 result — offset 0/limit 1 — since
+  // both endpoints return occurrences pre-sorted book/chapter/verse
+  // ascending (server.js's findWordOccurrences), so the first result IS the
+  // first occurrence. Keyed by `root:H776` / `surf:<paleo>` and accumulated
+  // across verse navigations rather than reset per verse, so re-visiting a
+  // root/surface already looked up costs nothing.
+  const [firstOcc, setFirstOcc] = useState({});
+  useEffect(() => {
+    if (!hebrewWords.length) return;
+    const jobs = [];
+    // A repeated word within the same verse (e.g. Luke 21:33's "pass away…
+    // pass away") must only be queued once — `key in firstOcc` alone only
+    // guards against a PREVIOUS effect run's results, not a duplicate within
+    // this same loop, since firstOcc doesn't update until the batch resolves.
+    const queued = new Set();
+    for (const w of hebrewWords) {
+      const sn = fmtSN(w.strongs);
+      if (sn && !(`root:${sn}` in firstOcc) && !queued.has(`root:${sn}`)) {
+        queued.add(`root:${sn}`);
+        jobs.push({ key: `root:${sn}`, fn: () => apiRootVerses({ sn, offset: 0, limit: 1 }) });
+      }
+      // word_raw isn't set on a plain per-verse token object (only on the
+      // sourceTokens[] a maqaf-compound carries) — the surface index's own
+      // key is the paleo-only text computeWordParts already derives as
+      // purePaleo (same string WordRow's own glyph cell renders), so use
+      // that instead of assuming word_raw is always present.
+      const surf = w.word_raw || computeWordParts(w).purePaleo;
+      if (surf && !(`surf:${surf}` in firstOcc) && !queued.has(`surf:${surf}`)) {
+        queued.add(`surf:${surf}`);
+        jobs.push({ key: `surf:${surf}`, fn: () => apiSurfaceExplorerVerses({ word: surf, offset: 0, limit: 1 }) });
+      }
+    }
+    if (!jobs.length) return;
+    let cancelled = false;
+    Promise.all(jobs.map(j => j.fn().then(d => [j.key, d?.verses?.[0] || null]).catch(() => [j.key, null])))
+      .then(results => {
+        if (cancelled) return;
+        setFirstOcc(prev => {
+          const next = { ...prev };
+          for (const [key, val] of results) next[key] = val;
+          return next;
+        });
+      });
+    return () => { cancelled = true; };
+  }, [hebrewWords]);
+
+  // Renders a first-occurrence table cell: "…" while the lookup is still in
+  // flight (key not yet in firstOcc at all), an em dash if the lookup came
+  // back with nothing, otherwise a link to that verse's own VersePage.
+  const renderFirstHit = (lookupKey) => {
+    if (!lookupKey) return <span className="wr-first-none">—</span>;
+    if (!(lookupKey in firstOcc)) return <span className="wr-first-loading">…</span>;
+    const hit = firstOcc[lookupKey];
+    if (!hit) return <span className="wr-first-none">—</span>;
+    return (
+      <Link to={`/${bookToParam(hit.book_id, idToSlug)}/${hit.chapter}/${hit.verse}`}>
+        {hit.book_name} {hit.chapter}:{hit.verse}
+      </Link>
+    );
+  };
 
   // ── verse-to-verse navigation, rolling across chapter/book boundaries ──────
   const go = useCallback((b, c, v) => {
@@ -208,18 +275,35 @@ export default function VersePage() {
               <div className="rd-book-name">{bookName}</div>
               <h1 className="vp-heading">{chapter}:{verse}</h1>
               <p className="vp-text">{verseData.text}</p>
-              <nav className="vp-views" aria-label={`Open ${verseRef} in`}>
-                <Link className="vp-view-link" to={parallelHref}>Parallel</Link>
-                <Link className="vp-view-link" to={hebrewHref}>Hebrew</Link>
-                <Link className="vp-view-link" to={translateHref}>Translation Studio</Link>
-              </nav>
               {hebrewWords.length > 0 ? (
                 <>
                   <h2 className="vp-subhead">Word by word</h2>
-                  <div className="vp-hebrew-row">
-                    {hebrewWords.map((w, i) => (
-                      <WordBlock key={i} wordObj={w} showSub showCopyBtn showStrongs />
-                    ))}
+                  <div className="vp-wordtable-wrap">
+                    <table className="vp-wordtable">
+                      <thead>
+                        <tr>
+                          <th>Word</th>
+                          <th>Root</th>
+                          <th>Definition</th>
+                          <th>Modifications</th>
+                          <th>Strong's #</th>
+                          <th>First root verse</th>
+                          <th>First surface verse</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {hebrewWords.map((w, i) => {
+                          const sn = fmtSN(w.strongs);
+                          const surf = w.word_raw || computeWordParts(w).purePaleo;
+                          return (
+                            <WordRow key={i} wordObj={w}>
+                              <td className="wr-cell wr-first">{renderFirstHit(sn && `root:${sn}`)}</td>
+                              <td className="wr-cell wr-first">{renderFirstHit(surf && `surf:${surf}`)}</td>
+                            </WordRow>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 </>
               ) : wordItems.length > 0 && (
@@ -239,6 +323,16 @@ export default function VersePage() {
                   </ul>
                 </>
               )}
+              {/* "lets get the links out of view of the vers info though, lets
+                  put them at the bottom after the word by word table" — was
+                  right under vp-text; moved below the breakdown table so the
+                  verse + its word-by-word data reads as one block before any
+                  "go elsewhere" affordance. */}
+              <nav className="vp-views" aria-label={`Open ${verseRef} in`}>
+                <Link className="vp-view-link" to={parallelHref}>Parallel</Link>
+                <Link className="vp-view-link" to={hebrewHref}>Hebrew</Link>
+                <Link className="vp-view-link" to={translateHref}>Translation Studio</Link>
+              </nav>
             </div>
           )}
         </article>
