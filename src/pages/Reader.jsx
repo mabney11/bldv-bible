@@ -278,6 +278,50 @@ function sliceQuoteTree(nodes, start, end) {
   return out;
 }
 
+// Real quote-mark usage in this corpus isn't disciplined enough for straight
+// " pairing to stay reliable once it's allowed to run across a whole
+// chapter: a straight mark is indistinguishable open-vs-close, so the NEXT
+// stray one anywhere later — verses away, on a completely unrelated
+// quotation — gets misread as closing whatever's still open, silently
+// merging two unrelated quotes into one giant span. And a mark that
+// genuinely never closes propagates "still open" through every verse for
+// the REST of the chapter, since nothing downstream can tell it to stop.
+// 2026-08-16, fieldy, live on Luke 21: verses 27–37 — most of a whole
+// screenful — rendered as one solid "unclosed" red block over one stray
+// mark near verse 20-something.
+//
+// Cap how far any single quote node — closed or not — is allowed to run
+// before we stop trusting the pairing. A legitimate quote, even a real
+// multi-verse one like Genesis 1:9, stays within a few verses; anything
+// drastically longer is almost certainly mis-paired data, not one actual
+// quotation. Past the cap: an unclosed node keeps ONLY its dangling open
+// mark flagged (still findable) while everything after it renders as
+// ordinary text instead of dragging the rest of the chapter down with it; a
+// CLOSED-but-overlong node (the "two unrelated quotes merged" case) just
+// unwraps entirely — both of its marks render as plain characters, no
+// color at all, since the pairing itself is the thing not to be trusted.
+const MAX_QUOTE_CHARS = 600;
+function dissolveOverlongQuotes(nodes) {
+  const out = [];
+  for (const n of nodes) {
+    if (n.type === 'text') { out.push(n); continue; }
+    const children = dissolveOverlongQuotes(n.children);
+    if ((n.end - n.start) > MAX_QUOTE_CHARS) {
+      if (n.unclosed && n.markOpen) {
+        out.push({ type: 'quote', depth: 1, unclosed: true, markOpen: n.markOpen, markClose: '', children: [],
+                   start: n.start, end: n.start + n.markOpen.length });
+      } else if (n.markOpen) {
+        out.push({ type: 'text', text: n.markOpen, start: n.start, end: n.start + n.markOpen.length });
+      }
+      out.push(...children);
+      if (n.markClose) out.push({ type: 'text', text: n.markClose, start: n.end - n.markClose.length, end: n.end });
+      continue;
+    }
+    out.push({ ...n, children });
+  }
+  return out;
+}
+
 // Turns the tree above into React nodes — text leaves still get the usual
 // GLOSS_RE treatment (renderVerseNodes), quote nodes become a <span> whose
 // depth (or unclosed state) picks its color, wrapping its own open/close
@@ -1212,7 +1256,7 @@ export default function Reader() {
         : { start, end: acc.length, embedded: null };
       acc += ' ';
     });
-    return { tree: parseQuoteMarks(acc), ranges };
+    return { tree: dissolveOverlongQuotes(parseQuoteMarks(acc)), ranges };
   }, [isForeignScript, renderVerseNums, versesByNum]);
 
   // Verse 0 is a superscription/title ("A Psalm of David"), not verse 1 — see
