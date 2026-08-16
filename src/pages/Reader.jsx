@@ -7,6 +7,30 @@ import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { computeWordParts } from '../components/WordBlock.jsx';
 import { transliterate } from '../lib/translit.js';
 import { TYPEFACES } from '../lib/typefaces.js';
+// "I should see my custom waw and dalath" — the inline paleo spellings below
+// (divine-title prefix, no-gloss fallback, chapter superscription) used to be
+// rendered as plain Unicode text, styled with a system Phoenician-block font
+// ('Segoe UI Historic' / 'Noto Sans Phoenician' in Reader.css). That's a
+// DIFFERENT letterform set than the app's own hand-drawn glyphs — the real
+// custom shapes only exist as user-editable SVG strokes (paleoGlyphs.js,
+// GlyphEditor), the same renderer WordBlock/Parallel already use for every
+// OTHER paleo glyph on the site. Wiring these three spots to paleoToSVG (via
+// dangerouslySetInnerHTML, same pattern as WordBlock.jsx) makes them match.
+import { paleoToSVG } from '../lib/paleoGlyphs.js';
+import { usePaleoMode } from '../hooks/usePaleoMode.js';
+
+// Mirrors WordBlock.jsx's own hasPaleo guard: only route real Paleo-Hebrew
+// letters (U+10900–U+1091F) through the custom SVG renderer — anything else
+// (stray non-paleo content in a .paleo field) stays plain, escaped text.
+const READER_PALEO_RE = /[\u{10900}-\u{1091F}]/u;
+const readerHasPaleo = s => READER_PALEO_RE.test(s || '');
+function ReaderPaleoText({ text, className, dir, block }) {
+  if (!text) return null;
+  const Tag = block ? 'div' : 'span';
+  return readerHasPaleo(text)
+    ? <Tag className={className} dir={dir} dangerouslySetInnerHTML={{ __html: paleoToSVG(text) }} />
+    : <Tag className={className} dir={dir}>{text}</Tag>;
+}
 // Same morphology color system Parallel/HebrewViewer use (.mod-conj, .pfm-3ms,
 // .root, …) — imported here so the Hebrew reading mode below colors each
 // transliterated morpheme identically to the rest of the app.
@@ -693,7 +717,7 @@ function renderHebrewWordCells(words) {
           {(hasGloss || divine) ? (
             <>
               <span className="brk">(</span>
-              {divine && <span className="hw-divine" dir="rtl">{divine}</span>}
+              {divine && <ReaderPaleoText text={divine} className="hw-divine" dir="rtl" />}
               {divine && hasGloss && ' '}
               {parts.rootTrans.map((r, ri) => <span key={`r${ri}`} className="hw root">{spaceGloss(r.clean)}</span>)}
               {parts.modTrans.length > 0 && (
@@ -712,7 +736,7 @@ function renderHebrewWordCells(words) {
               <span className="brk">)</span>
             </>
           ) : (
-            <span className="hw-src-fallback" dir="rtl">{parts.purePaleo}</span>
+            <ReaderPaleoText text={parts.purePaleo} className="hw-src-fallback" dir="rtl" />
  )}
         </span>
       </span>
@@ -821,6 +845,14 @@ function renderPlainWordCells(words) {
 export default function Reader() {
   const [sp, setSp] = useSearchParams();
   const { theme, toggle: toggleTheme } = useTheme();
+  // Not read directly below — renderHebrewWordCells()/the superscription JSX
+  // call paleoToSVG() straight from module state, so this component doesn't
+  // need the mode VALUE. It needs the SUBSCRIPTION: usePaleoMode() re-renders
+  // this component whenever the user toggles desktop/mobile mode or saves an
+  // edited glyph in GlyphEditor, which is what makes the custom-glyph inline
+  // paleo spellings above actually pick up a live edit instead of only
+  // showing it after a full page reload — same mechanism WordBlock.jsx uses.
+  usePaleoMode();
 
   // ── books / slug map ───────────────────────────────────────────────────────
   const [masterBooks, setMasterBooks] = useState([]);
@@ -1614,7 +1646,7 @@ export default function Reader() {
                 <div className="rd-super" id={renderVerseNums.includes(0) ? 'rv-0' : undefined}>
                   {chapHead?.super && (
                     <>
-                      <div className="rd-super-paleo">{chapHead.super.paleo}</div>
+                      <ReaderPaleoText text={chapHead.super.paleo} className="rd-super-paleo" dir="rtl" block />
                       <div className="rd-super-translit">{chapHead.super.translit}</div>
                     </>
                   )}
