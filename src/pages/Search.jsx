@@ -40,16 +40,18 @@ const ROOT_VERSE_LIMIT = 50;     // cap verses pulled per expanded root
 
 // Phoenician/Paleo isn't in scripts.js's detectScript (same special-case
 // translit.js needs) — catch it first, then defer to the shared detector.
-const SCRIPT_ID_MAP = { ethiopic: 'geez', syriac: 'syriac', greek: 'greek', coptic: 'coptic', latin: 'latin' };
+const SCRIPT_ID_MAP = { ethiopic: 'geez', syriac: 'syriac', greek: 'greek', latin: 'latin' };
 function detectQueryScript(text) {
   const s = String(text || '').trim();
   if (!s) return null;
   if (/[\u{10900}-\u{1091F}]/u.test(s)) return 'paleo';
   const { script } = detectScriptRaw(s);
-  // Scripts we don't have a search engine for yet (square Hebrew, Arabic,
-  // Cyrillic, Armenian, Georgian, ...) fall back to the Latin path, which is
-  // harmless — the concordance LAT search and the translit lookup will both
-  // just come back empty rather than erroring.
+  // Scripts we don't have a search engine for (square Hebrew, Arabic,
+  // Cyrillic, Armenian, Georgian, Coptic, ...) fall back to the Latin path,
+  // which is harmless — the concordance LAT search and the translit lookup
+  // will both just come back empty rather than erroring. Coptic itself was
+  // purged as an active search language (no Coptic corpus text exists), so
+  // it's deliberately left out of the map here and falls back the same way.
   return SCRIPT_ID_MAP[script] || 'latin';
 }
 const isRtlScript = id => id === 'paleo' || id === 'syriac';
@@ -396,7 +398,7 @@ export default function Search() {
         {anyErr && <div className="hv-search-err">⚠ {anyErr}</div>}
 
         {!urlQ && !anyErr && (
-          <div className="search-page-empty">Type or paste a word above in any script — Paleo Hebrew, Ge'ez, Syriac, Greek, Latin, Coptic, or an English name — then hit Search.</div>
+          <div className="search-page-empty">Type or paste a word above in any script — Paleo Hebrew, Ge'ez, Syriac, Greek, Latin, or an English name — then hit Search.</div>
         )}
 
         {urlQ && busy && !legacyData && !concData && !translitResult && (

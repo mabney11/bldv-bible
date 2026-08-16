@@ -169,7 +169,7 @@ function ReaderDispatcher() {
   if ((source === 'hebrew' || source === '' || source === 'bhs' || source === 'heb') && !hasDoc) {
     return <HebrewViewer />;
   }
-  // LXX, GNT, GEZ, LAT, GRC, SYR, COP, and now HEB-with-doc — text-only sources
+  // LXX, GNT, GEZ, LAT, GRC, SYR, and now HEB-with-doc — text-only sources
   // with no token stream.
   return <MultiViewer />;
 }

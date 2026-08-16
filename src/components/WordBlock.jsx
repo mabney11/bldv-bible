@@ -220,14 +220,29 @@ export function computeWordParts(wordObj) {
       (!clean || clean.toLowerCase() === (comp.translit || '').toLowerCase()) &&
       !isPlaceholderGloss(comp, clean);
 
+    // A proper noun is the HEAD of its block, not a modifier of something
+    // else — so when no root-class component exists, the name takes the root
+    // slot and reads `(𐤉𐤔𐤅𐤏)` rather than `([𐤉𐤔𐤅𐤏])`. Same one-root-per-block
+    // rule the server applies when it demotes fused particles; mod-nmpr keeps
+    // its class (and its colour) either way. isSoloComp generalizes this to
+    // any standalone particle/adverb/pronoun/etc. — see isSoloComp above.
+    // Computed unconditionally (not just inside !suppress) so headRaw below
+    // can still be captured for a word like Alahayam (H430): its gloss is
+    // dropped as redundant-with-transliteration (suppress === true), which
+    // used to mean NEITHER rootTrans NOR modTrans ever got this component —
+    // WordRow's Root column had nothing to show at all. "lets have a root
+    // for alahayam".
+    const headsBlock = comp.css === 'root' || (!hasRootComp && (comp.css === 'mod-nmpr' || isSoloComp));
+    if (headsBlock && !out.headRaw) {
+      // Bare paleo + transliteration for the head component, independent of
+      // whether its gloss got suppressed as redundant clutter above — this is
+      // WordRow's last-resort fallback for the Root cell (see WordRow below)
+      // so a word whose root has no separate gloss text still shows its root
+      // glyph instead of going blank.
+      out.headRaw = { paleo: comp.paleo, translit: comp.translit || '' };
+    }
+
     if (!suppress) {
-      // A proper noun is the HEAD of its block, not a modifier of something
-      // else — so when no root-class component exists, the name takes the root
-      // slot and reads `(𐤉𐤔𐤅𐤏)` rather than `([𐤉𐤔𐤅𐤏])`. Same one-root-per-block
-      // rule the server applies when it demotes fused particles; mod-nmpr keeps
-      // its class (and its colour) either way. isSoloComp generalizes this to
-      // any standalone particle/adverb/pronoun/etc. — see isSoloComp above.
-      const headsBlock = comp.css === 'root' || (!hasRootComp && (comp.css === 'mod-nmpr' || isSoloComp));
       if (headsBlock) {
         // The root glyph itself already shows comp.paleo, which the SERVER has
         // resolved to the TRUE ROOT (root_paleo) — it shines through regardless
@@ -636,12 +651,17 @@ export function WordRow({ wordObj, children }) {
   // The bare root's own glyph(s) — undecorated (no lemma-arrow prefix),
   // paired with its gloss in the Definition cell. A two-word compound (rare)
   // yields more than one rootTrans entry; concatenate rather than pick one.
-  const rootGlyphHtml = useMemo(
-    () => (hasRoot ? parts.rootTrans : parts.modTrans)
-      .map(r => (hasPaleo(r.paleo) ? paleoToSVG(r.paleo) : escapeHtml(r.paleo || '')))
-      .join(''),
-    [parts, hasRoot]
-  );
+  // Alahayam (H430) has neither: its one component IS the root, but its
+  // gloss is suppressed as redundant-with-transliteration, so it never made
+  // it into rootTrans OR modTrans — parts.headRaw (always captured for the
+  // head component, suppressed gloss or not) is the last-resort fallback so
+  // the Root cell still shows the root glyph instead of going blank.
+  const rootGlyphHtml = useMemo(() => {
+    const list = hasRoot ? parts.rootTrans
+      : parts.modTrans.length ? parts.modTrans
+      : (parts.headRaw ? [parts.headRaw] : []);
+    return list.map(r => (hasPaleo(r.paleo) ? paleoToSVG(r.paleo) : escapeHtml(r.paleo || ''))).join('');
+  }, [parts, hasRoot]);
   const definition = hasRoot
     ? parts.rootTrans.map(r => r.clean).filter(Boolean).join('; ')
     : parts.modTrans.map(m => m.clean).filter(Boolean).join(' ');

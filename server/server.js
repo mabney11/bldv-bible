@@ -461,7 +461,11 @@ const SOURCES = {
     GEZ: { id: 'GEZ', label: "Ge'ez (BETMAS)",   script: 'ethiopic', has_tokens: false, corpora: ['GEZ'] },
     LAT: { id: 'LAT', label: 'Latin (Vulgate)',  script: 'latin',    has_tokens: false, corpora: ['LAT'] },
     SYR: { id: 'SYR', label: 'Syriac (Peshitta)',script: 'syriac',   has_tokens: false, corpora: ['SYR'] },
-    COP: { id: 'COP', label: 'Coptic (Sahidic)', script: 'coptic',   has_tokens: false, corpora: ['COP'] },
+    // Coptic (Sahidic) was removed — no Coptic verse text was ever ingested
+    // into corpus.db (permanent 0 verses / 0% coverage everywhere it was
+    // listed), so it was purged as dead weight rather than left as a
+    // perpetually-empty option. "coptic is still causing issues when it
+    // should be purged."
     // Hebrew apocrypha / pseudepigrapha you ingested into corpus.db (Jasher, Aristeas,
     // Megillat Antiochus, …). BHS stays the paleo/morphology reader off bible.db; this
     // surfaces the corpus.db Hebrew material BHS can't see.
@@ -4256,7 +4260,7 @@ app.get('/api/source/:src/verse', production.cache(60), (req, res) => {
     // e.g. Matthew=40), and NULL for doc-only works. Selecting `canon_id`
     // directly crashed every canonical (non-doc) query on this route with
     // "no such column: canon_id" for every corpus.db source (GEZ, LXX, LAT,
-    // SYR, COP, HEB, GRC), not just ENG. Reverted to using `row.book_id`.
+    // SYR, HEB, GRC), not just ENG. Reverted to using `row.book_id`.
     if (src.id === 'ENG' && row.book_id != null) {
         try {
             const t = translationDb.stmts.getVerse.get(row.book_id, ch, v);
@@ -4624,7 +4628,7 @@ app.get('/api/source/:src/chapter', production.cache(60), (req, res) => {
     // `canon_id AS book_id`, so `verses[0].book_id` already IS canon_id (NULL
     // for doc-only works). Selecting `canon_id` directly crashed every
     // canonical chapter query on this route ("no such column: canon_id") for
-    // every corpus.db source — GEZ, LXX, LAT, SYR, COP, HEB, GRC — not just
+    // every corpus.db source — GEZ, LXX, LAT, SYR, HEB, GRC — not just
     // ENG. Reverted to using the row's own book_id.
     if (src.id === 'ENG' && !byDoc && verses.length) {
         try {
@@ -4718,14 +4722,13 @@ const _CONC_NORM = {HEB:_normHeb,LXX:_normGrk,GNT:_normGrk,GRC:_normGrk,LAT:_nor
 
 // Corpora that share a script/orthography are searched as ONE pool, so a Greek
 // word opened from the NT also returns its Septuagint (OT) and Greek-literature
-// (works) occurrences. Greek = LXX + GNT + GRC; the rest stand alone (a Syriac
-// and a Coptic word are not the same even though both default to the Latin norm).
+// (works) occurrences. Greek = LXX + GNT + GRC; the rest stand alone.
 const _CONC_GROUP = {
     HEB:['HEB'],
     LXX:['LXX','GNT','GRC'], GNT:['LXX','GNT','GRC'], GRC:['LXX','GNT','GRC'],
-    LAT:['LAT'], GEZ:['GEZ'], SYR:['SYR'], COP:['COP'],
+    LAT:['LAT'], GEZ:['GEZ'], SYR:['SYR'],
 };
-const _CONC_CORP = new Set(Object.keys(_CONC_GROUP));   // now incl. SYR, COP
+const _CONC_CORP = new Set(Object.keys(_CONC_GROUP));   // incl. SYR
 function _concNorm(corpus,w){ return (_CONC_NORM[corpus]||_normLat)(w); }
 function _concGroup(corpus){ return _CONC_GROUP[corpus] || [corpus]; }
 function _ph(a){ return a.map(()=>'?').join(','); }
@@ -4734,7 +4737,7 @@ function _ph(a){ return a.map(()=>'?').join(','); }
 // Scriptures' source (its scoped view spans both corpora); GRC works read out
 // of GRC. The reader opens canonical rows by book_id and literary works by
 // doc_id (which, for a work, is exactly the concordance `code`).
-const _CONC_READ_SRC = { HEB:'HEB', LXX:'LXX', GNT:'LXX', GRC:'GRC', LAT:'LAT', GEZ:'GEZ', SYR:'SYR', COP:'COP' };
+const _CONC_READ_SRC = { HEB:'HEB', LXX:'LXX', GNT:'LXX', GRC:'GRC', LAT:'LAT', GEZ:'GEZ', SYR:'SYR' };
 function _concSrcObj(corpus){
     const sid = _CONC_READ_SRC[corpus] || corpus;
     return SOURCES[sid] || getSource(corpus) || null;
@@ -5264,7 +5267,6 @@ const _glossCache = {
     ethiopic:       { mtime: 0, entries: null },
     latin:          { mtime: 0, entries: null },
     syriac:         { mtime: 0, entries: null },
-    coptic:         { mtime: 0, entries: null },
     'paleo-hebrew': { mtime: 0, entries: null },   // corpus-Hebrew (HEB), distinct from BHS
 };
 function _glossFileFor(script) {
@@ -5272,7 +5274,6 @@ function _glossFileFor(script) {
     if (script === 'ethiopic')     return path.join(__dirname, 'lexicon', 'geez-lexicon.json');
     if (script === 'latin')        return path.join(__dirname, 'lexicon', 'latin-lexicon.json');
     if (script === 'syriac')       return path.join(__dirname, 'lexicon', 'syriac-lexicon.json');
-    if (script === 'coptic')       return path.join(__dirname, 'lexicon', 'coptic-lexicon.json');
     if (script === 'paleo-hebrew') return path.join(__dirname, 'lexicon', 'hebrew-extra-lexicon.json');
     return null;
 }
@@ -6015,18 +6016,20 @@ const _glossPct = (glossed, total) => total ? Math.round((glossed / total) * 100
 // numbers, no root compounding — fieldy: "just raw tokens... don't worry
 // about the numbers, just enable the feature." Canonical books only
 // (book_id/canon_id NOT NULL); doc-only literary works aren't in this tree.
-const GENERIC_GS_SOURCES = { LXX: 'greek', GEZ: 'ethiopic', LAT: 'latin', SYR: 'syriac', COP: 'coptic' };
+const GENERIC_GS_SOURCES = { LXX: 'greek', GEZ: 'ethiopic', LAT: 'latin', SYR: 'syriac' };
 
 // Every language Gloss Studio knows about, Hebrew included — the one list
 // both the per-verse status endpoint and the cross-language aggregate below
-// iterate, so adding a language means updating this in one place.
+// iterate, so adding a language means updating this in one place. Coptic was
+// removed — no Coptic verse text was ever ingested into corpus.db, so it sat
+// at a permanent 0% with nothing to gloss ("coptic is still causing issues
+// when it should be purged").
 const GS_LANG_LIST = [
     { id: 'heb',    label: 'Hebrew',  kind: 'heb' },
     { id: 'greek',  label: 'Greek',   kind: 'LXX' },
     { id: 'geez',   label: "Ge'ez",   kind: 'GEZ' },
     { id: 'latin',  label: 'Latin',   kind: 'LAT' },
     { id: 'syriac', label: 'Syriac',  kind: 'SYR' },
-    { id: 'coptic', label: 'Coptic',  kind: 'COP' },
 ];
 
 const _genericCoverageCache = {};   // source id -> { stamp, tree: { books, words } }

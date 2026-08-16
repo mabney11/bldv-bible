@@ -14,9 +14,10 @@
 //                    Hebrew paleo search. Existing Phase-1 behavior.
 //   'concordance' — /api/concordance/surface?corpus=X: exact normalized
 //                    surface-form match, already spans every other corpus
-//                    (Greek NT+LXX+works pooled, Latin, Ge'ez, Syriac). See
-//                    server.js's "Universal concordance" section — this
-//                    already existed; Search.jsx just wires the frontend to it.
+//                    (Greek NT+LXX+works pooled, Latin, Ge'ez, Syriac,
+//                    Coptic). See server.js's "Universal concordance"
+//                    section — this already existed; Search.jsx just wires
+//                    the frontend to it.
 
 const PALEO_KBD_ROWS = [
   ['𐤀', '𐤁', '𐤂', '𐤃', '𐤄', '𐤅'],
@@ -73,6 +74,11 @@ const LATIN_LOWER = 'abcdefghijklmnopqrstuvwxyz'.split('');
 const LATIN_KBD_ROWS = [
   LATIN_LOWER.slice(0, 9), LATIN_LOWER.slice(9, 18), LATIN_LOWER.slice(18),
 ];
+
+// Coptic was removed — no Coptic verse text was ever ingested into
+// corpus.db, so /api/concordance/surface?corpus=COP now 400s ("bad corpus")
+// instead of quietly returning nothing. "coptic is still causing issues
+// when it should be purged."
 
 // ── Script → source(s) map ──────────────────────────────────────────────
 // `sources` is what the toggle row (Search.jsx) renders. A script with one

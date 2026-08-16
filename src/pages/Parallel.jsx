@@ -58,7 +58,7 @@ const hasPaleo = (s) => PALEO_LETTER_RE.test(s || '');
 // here, so its label names that reader. Greek folds LXX/GNT/GRC together.
 const READER_NAME = {
   BHS: 'Hebrew', HEB: 'Hebrew', GEZ: "Ge'ez", SYR: 'Syriac',
-  COP: 'Coptic', LXX: 'Greek', GRC: 'Greek', GNT: 'Greek',
+  LXX: 'Greek', GRC: 'Greek', GNT: 'Greek',
   LAT: 'Latin', ENG: 'English',
 };
 
@@ -101,7 +101,7 @@ const dirForScript = (s) => (RTL_SCRIPTS.has(s) ? 'rtl' : 'ltr');
 // Language hierarchy — when the chosen language has no text for a book, fall
 // back down this list (Hebrew first). BHS = the glossed Paleo OT; HEB = the
 // wider Hebrew source (NT, deuterocanon, works) that BHS/tokens_bhs doesn't hold.
-const LANG_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'COP', 'LXX', 'GNT', 'GRC', 'LAT'];
+const LANG_PRIORITY = ['BHS', 'HEB', 'GEZ', 'SYR', 'LXX', 'GNT', 'GRC', 'LAT'];
 
 const parseJ = (v, fb) => Array.isArray(v) ? v : (() => { try { return JSON.parse(v); } catch { return fb; } })();
 
