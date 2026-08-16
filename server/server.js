@@ -7013,10 +7013,65 @@ const TIER2B_SQL =
     ' ORDER BY book_id, chapter, verse';
 const SEARCH_TIER2B = db.prepare(TIER2B_SQL);
 
+// ── PHRASE SEARCH ────────────────────────────────────────────────────────
+// "𐤉𐤄𐤅𐤄 𐤉𐤅𐤌" (Yahawah Yawam, "day of Yahawah") is real text — Isaiah 13:9
+// has it — but every tier above only ever matches WITHIN one token's
+// word_raw. A maqaf-joined or space-separated compound genuinely spans TWO
+// adjacent token rows in tokens_bhs (the maqaf itself is its own punct
+// token, not glued onto either neighbor's word_raw — see parseHebrewData's
+// isMark handling above), so a query string containing a space/dash/maqaf
+// can never equal, prefix, suffix, or substring-match any single word_raw:
+// the underlying data simply never concatenates the two words into one
+// field. That's the normalization mismatch, not a missing-data bug.
+//
+// Fix: detect a query that splits into 2+ Paleo "words" and search for the
+// terms as an ADJACENT TOKEN SEQUENCE in the same verse instead of trying
+// to substring-match the joined string. A gap of up to PHRASE_GAP ordinals
+// between consecutive terms tolerates one intervening mark token (a maqaf
+// sitting between two content words, itself its own token_ordinal) without
+// the caller needing to know whether one is actually there.
+// Whitespace, ASCII hyphen-minus, the U+2010-U+2015 dash block (hyphen,
+// non-breaking hyphen, figure/en/em dash, horizontal bar - however a pasted
+// source rendered its dash), and the actual Hebrew maqaf U+05BE. Built from
+// a \u-escaped source string (new RegExp) rather than a regex literal with
+// raw glyphs in it, so this stays byte-for-byte unambiguous regardless of
+// how an editor/terminal displays the literal dash characters.
+const PHRASE_SPLIT_RE = new RegExp('[\\s\\x2D\\u2010-\\u2015\\u05BE]+');
+const PALEO_WORD_RE = /^[\u{10900}-\u{1091F}]+$/u;
+function splitPhraseTerms(q) {
+    const parts = q.split(PHRASE_SPLIT_RE).map(s => s.trim()).filter(Boolean);
+    if (parts.length < 2 || !parts.every(p => PALEO_WORD_RE.test(p))) return null;
+    return parts;
+}
+
+const PHRASE_GAP = 2;
+const _phraseStmtCache = new Map();
+function getPhraseStmt(termCount) {
+    let stmt = _phraseStmtCache.get(termCount);
+    if (stmt) return stmt;
+    const aliases = Array.from({ length: termCount }, (_, i) => `t${i}`);
+    const joins = aliases.slice(1).map((a, i) => {
+        const prev = aliases[i];
+        return `JOIN tokens_bhs ${a} ON ${a}.book_id=${prev}.book_id AND ${a}.chapter=${prev}.chapter ` +
+               `AND ${a}.verse=${prev}.verse AND ${a}.token_ordinal > ${prev}.token_ordinal ` +
+               `AND ${a}.token_ordinal <= ${prev}.token_ordinal + ${PHRASE_GAP}`;
+    }).join(' ');
+    const wheres = aliases.map(a => `${a}.word_raw = ?`).join(' AND ');
+    stmt = db.prepare(
+        `SELECT DISTINCT t0.book_id, t0.chapter, t0.verse FROM tokens_bhs t0 ${joins} WHERE ${wheres} ` +
+        `ORDER BY t0.book_id, t0.chapter, t0.verse`
+    );
+    _phraseStmtCache.set(termCount, stmt);
+    return stmt;
+}
+
 function getChronoResults(q) {
     const cacheKey = 'chrono:' + q;
     if (searchCache.has(cacheKey)) return searchCache.get(cacheKey);
-    const results = SEARCH_CHRONO.all('%' + q + '%');
+    const phraseTerms = splitPhraseTerms(q);
+    const results = phraseTerms
+        ? getPhraseStmt(phraseTerms.length).all(...phraseTerms)
+        : SEARCH_CHRONO.all('%' + q + '%');
     if (searchCache.size >= CACHE_MAX) searchCache.delete(searchCache.keys().next().value);
     searchCache.set(cacheKey, results);
     return results;
@@ -7033,6 +7088,17 @@ function getFullResults(q) {
             if (!seen.has(key)) { seen.add(key); results.push(r); }
         }
     };
+
+    // A multi-word phrase query never matches the single-token tiers below —
+    // see PHRASE SEARCH above — so it gets its own dedicated path and
+    // returns immediately rather than also (fruitlessly) running tiers 1-3.
+    const phraseTerms = splitPhraseTerms(q);
+    if (phraseTerms) {
+        addRows(getPhraseStmt(phraseTerms.length).all(...phraseTerms));
+        if (searchCache.size >= CACHE_MAX) searchCache.delete(searchCache.keys().next().value);
+        searchCache.set(q, results);
+        return results;
+    }
 
     // Tier 1 — exact: the whole token IS the query (bare root, no affixes)
     addRows(SEARCH_EXACT.all(q));
