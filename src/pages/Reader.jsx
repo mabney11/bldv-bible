@@ -185,11 +185,18 @@ const MAQAF_RE = /\s*\u05BE\s*/g;
 // level too, so the line wraps at an actual word boundary instead of an
 // arbitrary mid-word point).
 const ODD_SPACE_RE = /[\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000\uFEFF]/g;
-const sanitizeText = (s) => (s || '').replace(MAQAF_RE, '.').replace(ODD_SPACE_RE, ' ');
+export const sanitizeText = (s) => (s || '').replace(MAQAF_RE, '.').replace(ODD_SPACE_RE, ' ');
 
 // A transliterated head word followed by its parenthetical gloss. Accents allowed;
 // nested parens deliberately excluded so an ordinary "(see note)" aside is left alone.
-const GLOSS_RE = /([A-Za-z\u00C0-\u024F][A-Za-z\u00C0-\u024F'\u2019-]*)([\u2018\u2019\u201C\u201D"']*)\s+\(([^()]*)\)/g;
+// The head word is normally a Latin transliteration ("raashayath"), but "I included
+// paleo hebrew and attempted to gloss it ... I expect it to be gold" — a curated
+// translation can also embed the actual untranslatable Paleo-Hebrew letters directly
+// (e.g. a bare 𐤀 standing in for the Hebrew direct-object marker) with its own
+// "(gloss)" right after, same as any transliterated word — so the head-word class
+// also accepts U+10900–U+1091F. Needs the `u` flag for that code-point range; every
+// other escape in this pattern is a plain 4-hex \uXXXX, unaffected by `u` mode.
+const GLOSS_RE = /([A-Za-z\u00C0-\u024F\u{10900}-\u{1091F}][A-Za-z\u00C0-\u024F\u{10900}-\u{1091F}'\u2019-]*)([\u2018\u2019\u201C\u201D"']*)\s+\(([^()]*)\)/gu;
 const applyGlossMode = (t, mode) => (!t || mode === 'both') ? t
   : t.replace(GLOSS_RE, (_m, heb, quote, gloss) => (mode === 'hebrew' ? heb + quote : (gloss.trim() || heb)));
 // Same "term (gloss)" pairs as applyGlossMode, but returns React nodes instead of a
@@ -205,7 +212,16 @@ function renderVerseNodes(t, mode, keyPrefix = '') {
   while ((m = GLOSS_RE.exec(t))) {
     const [full, heb, quote, gloss] = m;
     if (m.index > last) nodes.push(t.slice(last, m.index));
-    nodes.push(<span className="rd-root" key={`${keyPrefix}${key++}`}>{heb}</span>);
+    // A head word that's actually Paleo-Hebrew letters (see GLOSS_RE above) gets
+    // the same custom-SVG glyph treatment as everywhere else on the site — "the
+    // letters show fine but I expect it to be gold" was about color, but a bare
+    // Unicode fallback glyph here would be the exact system-font mismatch already
+    // fixed for the divine-title/no-gloss spots above, so route it the same way.
+    nodes.push(
+      readerHasPaleo(heb)
+        ? <span className="rd-root" key={`${keyPrefix}${key++}`} dangerouslySetInnerHTML={{ __html: paleoToSVG(heb) }} />
+        : <span className="rd-root" key={`${keyPrefix}${key++}`}>{heb}</span>
+    );
     if (quote) nodes.push(quote);
     if (mode === 'both' && gloss.trim()) nodes.push(` (${gloss.trim()})`);
     last = m.index + full.length;
@@ -508,7 +524,17 @@ function renderQuoteTree(nodes, mode, keyPrefix) {
 // they're never accidentally matched inside a "root (gloss)" pair), then
 // each plain-text leaf still gets full gloss-mode treatment exactly as
 // before.
-function renderVerseNodesWithQuotes(t, mode) {
+// Exported so VersePage.jsx's single-verse quote paragraph can reuse the
+// SAME "root (gloss)" + quote-nesting rendering the chapter Reader uses —
+// "the novel reader shows non-glossed hebrew just fine but the others show
+// the empty parens" — VersePage used to just dump verseData.text as plain
+// text, so a word with an empty curated gloss ("Alahayam ()") rendered its
+// literal dangling parens instead of the clean "Alahayam" this same function
+// already produces for Reader.jsx (see renderVerseNodes below: an empty
+// gloss.trim() is simply never appended), and the root word never got its
+// .rd-root gold styling either. VersePage.jsx imports Reader.css already, so
+// .rd-root/.rd-quote-* resolve identically once this is wired in.
+export function renderVerseNodesWithQuotes(t, mode) {
   if (!t) return t;
   if (mode === 'gloss') {
     // gloss mode collapses to a plain string (applyGlossMode) — still worth

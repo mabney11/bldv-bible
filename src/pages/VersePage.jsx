@@ -5,6 +5,10 @@ import { apiTransProgress, apiTransVerse, apiTokens, apiRootFirstByLetters } fro
 import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { WordRow, computeWordParts } from '../components/WordBlock.jsx';
+// Reuse Reader.jsx's own "root (gloss)" + quote-nesting prose renderer for
+// the verse-text paragraph below, instead of dumping verseData.text as a
+// plain string — see renderVerseNodesWithQuotes's own comment in Reader.jsx.
+import { renderVerseNodesWithQuotes, sanitizeText } from './Reader.jsx';
 import './Reader.css';
 import './VersePage.css';
 
@@ -270,7 +274,7 @@ export default function VersePage() {
             <div className="vp-verse">
               <div className="rd-book-name">{bookName}</div>
               <h1 className="vp-heading">{chapter}:{verse}</h1>
-              <p className="vp-text">{verseData.text}</p>
+              <p className="vp-text">{renderVerseNodesWithQuotes(sanitizeText(verseData.text), 'both')}</p>
               {hebrewWords.length > 0 ? (
                 <>
                   <h2 className="vp-subhead">Word by word</h2>

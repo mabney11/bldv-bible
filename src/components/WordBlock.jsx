@@ -623,16 +623,28 @@ export default function WordBlock({
 export function WordRow({ wordObj, children }) {
   const parts = useMemo(() => computeWordParts(wordObj), [wordObj]);
   const wordGlyphHtml = useMemo(() => compDescsToHtml(parts.compDescs), [parts]);
+  // "if there is no root, the modifications should become the root and the
+  // definition be their combined meanings" — AlaYaw (H413, "to/toward" + Of/My
+  // + His) has no root-class component at all, only prefix/suffix particles
+  // (parts.rootTrans is empty, same !hasRootComp case computeWordParts
+  // documents elsewhere) — the Root/Definition cells used to just go blank
+  // ("—") for words like this, even though the word obviously HAS meaning;
+  // it just carries that meaning entirely in its modifications rather than a
+  // separate lexical root. Promote parts.modTrans into both cells whenever
+  // there's no true root, instead of leaving them empty.
+  const hasRoot = parts.rootTrans.length > 0;
   // The bare root's own glyph(s) — undecorated (no lemma-arrow prefix),
   // paired with its gloss in the Definition cell. A two-word compound (rare)
   // yields more than one rootTrans entry; concatenate rather than pick one.
   const rootGlyphHtml = useMemo(
-    () => parts.rootTrans
+    () => (hasRoot ? parts.rootTrans : parts.modTrans)
       .map(r => (hasPaleo(r.paleo) ? paleoToSVG(r.paleo) : escapeHtml(r.paleo || '')))
       .join(''),
-    [parts]
+    [parts, hasRoot]
   );
-  const definition = parts.rootTrans.map(r => r.clean).filter(Boolean).join('; ');
+  const definition = hasRoot
+    ? parts.rootTrans.map(r => r.clean).filter(Boolean).join('; ')
+    : parts.modTrans.map(m => m.clean).filter(Boolean).join(' ');
   // "lets include modifications in the transliteration, basically what I have
   // in the transliterated version, YaDabar with colors" — the FULL word's
   // transliteration (every component: prefixes, root, suffixes), not just
