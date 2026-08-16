@@ -3063,6 +3063,8 @@ function scheduleRebuild(changedFile) {
         _rootByValue  = null;
         _surfByValue  = null;
         _rootBySN     = null;
+        _firstByRootLettersCache.clear();
+        _firstBySurfaceCache.clear();
         try {
             buildNavIndexes();
             _lastRebuildAt = new Date();
@@ -3279,6 +3281,17 @@ let _rootByValue    = null;   // Map<root  → index in _rootNavIndex>
 let _surfByValue    = null;   // Map<surface → index in _surfNavIndex>
 let _rootBySN       = null;   // Map<'H26' → index in _rootNavIndex>
 let _wordBySn       = null;   // Map<'H776' → [indices in _surfNavIndex]> (root's surface forms)
+// "the time to calculate first verse location is not acceptable. This is
+// something that should be known in the concordance" — VersePage's
+// word-by-word table needs, per word, the canonically-earliest verse its
+// ROOT LETTERS appear in at all (across every Strong's number that shares
+// that spelling — see the /api/root-explorer/first-by-letters route below).
+// Computed once per distinct root text and kept for the life of the
+// process — same lifetime as _rootNavIndex itself, so it's cleared at every
+// spot that resets _rootNavIndex (a lexicon hot-reload or /admin rebuild
+// changes the underlying data those numbers are computed from).
+let _firstByRootLettersCache = new Map();   // Map<root paleo → {book_id,book_name,chapter,verse} | null>
+let _firstBySurfaceCache     = new Map();   // Map<surface paleo → {book_id,book_name,chapter,verse} | null>, same reasoning/lifetime
 
 // Proclitic prefixes (conjunction/article/inseparable prepositions) that fold
 // onto the following content morpheme when reconstructing orthographic words.
@@ -7470,6 +7483,8 @@ app.post('/admin/rebuild-indexes', (req, res) => {
     _rootByValue  = null;
     _surfByValue  = null;
     _rootBySN     = null;
+    _firstByRootLettersCache.clear();
+    _firstBySurfaceCache.clear();
     try {
         buildNavIndexes();
         _lastRebuildAt = new Date();
@@ -7588,6 +7603,8 @@ function _applyLocOverrideChangeNow() {
     _lexiconCache = null;
     _rootNavIndex = null; _surfNavIndex = null;
     _rootByValue = null; _surfByValue = null; _rootBySN = null; _wordBySn = null;
+    _firstByRootLettersCache.clear();
+    _firstBySurfaceCache.clear();
     buildNavIndexes();
 }
 
@@ -8882,6 +8899,69 @@ app.get('/api/root-explorer/verses', production.cache(60), (req, res) => {
     }
 });
 
+// GET /api/root-explorer/first-by-letters?roots=<paleo1>,<paleo2>,...
+// Batched "first canonical occurrence of these exact root LETTERS" lookup —
+// see VersePage.jsx's word-by-word table. Deliberately NOT scoped to one
+// Strong's number: getRootNavIndex() is keyed by (root letters, Strong's #)
+// PAIRS, so the same spelling can carry more than one number (verb-stem /
+// homograph splits) — searching only one number found the first verse for
+// whichever number got asked for, not the letters themselves ("I know that
+// the first usage of 𐤀𐤌𐤍 is Genesis 15:6 but this is suggesting a homograph
+// ... all strongs #s for it mean the same thing"). This aggregates every
+// number sharing the exact spelling and returns whichever comes canonically
+// earliest — one request for the whole verse's worth of words, not one
+// round trip per word.
+// "the time to calculate first verse location is not acceptable. This is
+// something that should be known in the concordance" — cached in-memory per
+// distinct root text for the life of the process (_firstByRootLettersCache,
+// cleared alongside _rootNavIndex at every lexicon hot-reload / admin
+// rebuild — see those call sites above). The first request for a given root
+// still does the real scan; every later request for that root, from ANY
+// verse, returns instantly instead of re-deriving it.
+app.get('/api/root-explorer/first-by-letters', production.cache(3600), (req, res) => {
+    try {
+        const raw = String(req.query.roots || '').trim();
+        if (!raw) return res.status(400).json({ error: 'roots param required (comma-separated paleo root text)' });
+        const roots = [...new Set(raw.split(',').map(s => s.trim()).filter(Boolean))].slice(0, 50);
+        const index = getRootNavIndex();
+        const results = {};
+        for (const rootPaleo of roots) {
+            if (_firstByRootLettersCache.has(rootPaleo)) {
+                results[rootPaleo] = _firstByRootLettersCache.get(rootPaleo);
+                continue;
+            }
+            // Every index entry whose LETTERS match exactly, regardless of
+            // which Strong's number it's filed under.
+            const sns = [...new Set(index.filter(e => e.root === rootPaleo).map(e => e.sn))];
+            let best = null;
+            for (const sn of sns) {
+                // findWordOccurrences' own BHS-side result is already sorted
+                // book/chapter/verse ascending, but a SN with ONLY HEB-edition
+                // occurrences (appended separately, unsorted relative to BHS)
+                // wouldn't be — scan the whole list per SN rather than
+                // trusting occ[0], since this only runs once per root, ever.
+                const occ = findWordOccurrences(sn, w => w.sn === sn, null);
+                for (const o of occ) {
+                    if (!best || o.book_id < best.book_id ||
+                        (o.book_id === best.book_id && o.chapter < best.chapter) ||
+                        (o.book_id === best.book_id && o.chapter === best.chapter && o.verse < best.verse)) {
+                        best = o;
+                    }
+                }
+            }
+            const hit = best
+                ? { book_id: best.book_id, book_name: BOOK_NAMES[best.book_id] || `Book ${best.book_id}`, chapter: best.chapter, verse: best.verse }
+                : null;
+            _firstByRootLettersCache.set(rootPaleo, hit);
+            results[rootPaleo] = hit;
+        }
+        res.json({ results });
+    } catch (err) {
+        console.error('/api/root-explorer/first-by-letters failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ── SURFACE EXPLORER ENDPOINTS ──────────────────────────────────────────────
 // Same shape as the root explorer but for one specific surface form. Powers
 // the Surfaces page (the second tab of /lexicon-page and the /surfaces route).
@@ -9043,6 +9123,56 @@ app.get('/api/surface-explorer/verses', production.cache(60), (req, res) => {
         res.json({ total, offset, limit, verses, hasMore: offset + limit < total });
     } catch (err) {
         console.error('/api/surface-explorer/verses failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /api/surface-explorer/first-by-word?words=<paleo1>,<paleo2>,...
+// Batched sibling of /api/root-explorer/first-by-letters, same reasoning:
+// one request for every distinct surface form a verse's word-by-word table
+// needs instead of one round trip per word, backed by the same kind of
+// process-lifetime cache (_firstBySurfaceCache) so a form already looked up
+// — from ANY verse — answers instantly. Unlike the root version this stays
+// scoped to the ONE Strong's number getSurfIndexByValue resolves to
+// (buildSurfacesList() deliberately keeps same-spelling/different-Strongs
+// surfaces as separate entries — "user explicitly requested separate
+// entries" — so there's no homograph-collapsing question here the way there
+// was for root letters).
+app.get('/api/surface-explorer/first-by-word', production.cache(3600), (req, res) => {
+    try {
+        const raw = String(req.query.words || '').trim();
+        if (!raw) return res.status(400).json({ error: 'words param required (comma-separated paleo surface text)' });
+        const words = [...new Set(raw.split(',').map(s => s.trim()).filter(Boolean))].slice(0, 50);
+        const surfIndex = getSurfNavIndex();
+        const results = {};
+        for (const word of words) {
+            if (_firstBySurfaceCache.has(word)) {
+                results[word] = _firstBySurfaceCache.get(word);
+                continue;
+            }
+            const idx = getSurfIndexByValue(word);
+            let hit = null;
+            if (idx >= 0) {
+                const sn = surfIndex[idx].sn;
+                const occ = findWordOccurrences(sn, w => w.surface === word, null);
+                let best = null;
+                for (const o of occ) {
+                    if (!best || o.book_id < best.book_id ||
+                        (o.book_id === best.book_id && o.chapter < best.chapter) ||
+                        (o.book_id === best.book_id && o.chapter === best.chapter && o.verse < best.verse)) {
+                        best = o;
+                    }
+                }
+                if (best) {
+                    hit = { book_id: best.book_id, book_name: BOOK_NAMES[best.book_id] || `Book ${best.book_id}`, chapter: best.chapter, verse: best.verse };
+                }
+            }
+            _firstBySurfaceCache.set(word, hit);
+            results[word] = hit;
+        }
+        res.json({ results });
+    } catch (err) {
+        console.error('/api/surface-explorer/first-by-word failed:', err);
         res.status(500).json({ error: err.message });
     }
 });

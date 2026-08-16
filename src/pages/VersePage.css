@@ -92,21 +92,40 @@
    in its own row" — WordBlock's own wrapping-card grid (what this replaced)
    is built for a whole chapter; for a single verse's handful of words it
    wrapped unevenly. A table reads top-to-bottom instead, one word per line:
-   Word | Root | Definition | Modifications | Strong's # | First root verse |
-   First surface verse (the last two are VersePage's own <td>s, passed as
+   Word | Root | Transliteration | Definition | Modifications | Strong's # |
+   Root first appearance (the last is VersePage's own <td>, passed as
    WordRow's children — see renderFirstHit there).
    Scoped --paleo-size smaller than the full-page HebrewViewer's default
    (styles/tokens.css's 38px): a table cell needs a compact glyph, not a
    showcase one — same reasoning Translate.css/Parallel.css give for their
-   own side-panel-scoped shrink. */
+   own side-panel-scoped shrink.
+   "I want all columns visible on my desktop view, there is no reason I have
+   to scroll horizontally" — seven columns don't fit inside .vp-verse's 38rem
+   reading measure (that width is right for prose, not a data table), so
+   this breaks the table OUT of that measure and re-centers it against the
+   viewport instead: `left:50%` shifts it half of its (narrower) parent's
+   width, then `transform:translateX(-50%)` pulls it back half of ITS OWN
+   (wider) width — net effect, it lands centered on the viewport regardless
+   of .vp-verse's width, same as any "full-bleed section inside a narrow
+   column" layout. Safe here because .vp-verse sits inside .vp-page, a flex
+   container with justify-content:center (so .vp-verse's center already
+   coincides with the viewport's center), and the only ancestor with
+   overflow-x:hidden is .rd-scroll (Reader.css), which spans the full
+   viewport width — so min(94vw, …) below never gets clipped by it.
+   Below the 820px breakpoint there usually isn't 900px of viewport to give,
+   so the table switches to stacked label/value cards instead (see the media
+   query at the bottom of this file) — this rule only takes over above that. */
 .vp-wordtable-wrap {
   --paleo-size: 26px;
-  overflow-x: auto;
+  width: min(94vw, 900px);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
   margin: 0 0 4px;
+  overflow-x: auto; /* safety net only — not expected to trigger at this width */
 }
 .vp-wordtable {
   width: 100%;
-  min-width: 640px;
   border-collapse: collapse;
   font-family: system-ui, sans-serif;
   font-size: 13px;
@@ -158,6 +177,23 @@
   font-size: calc(var(--paleo-size) * .62);
   opacity: .92;
 }
+/* "there should be a transliteration column before the definition" — the
+   word's full romanized reading (e.g. "HaDawar"), sitting between the Root
+   glyph and its Definition gloss. Italic, matching how translit reads
+   elsewhere in the app (WordBlock's own .w-translit line).
+   "include modifications in the transliteration... YaDabar with colors" —
+   .wr-translit-inner span colors each component the same way WordBlock's
+   own `.w span` rule does (morphColors.css sets --mc per css class; this
+   rule reads it back as `color`), just scoped to this cell instead of
+   requiring WordBlock's whole `.w` wrapper (font-size/direction/max-width
+   baggage this table cell doesn't want). */
+.wr-translit {
+  font-style: italic;
+  white-space: nowrap;
+}
+.wr-translit-inner span {
+  color: var(--mc, var(--text2));
+}
 .wr-def {
   color: var(--pr-ink);
   min-width: 100px;
@@ -165,15 +201,35 @@
 .wr-mods {
   min-width: 150px;
 }
+/* "𐤋 is associated with 'for'" — color, not just adjacency, ties a
+   modifier's glyph+gloss to its matching Transliteration syllable: no flat
+   color override here, so var(--mc), set by the morphology class (mod-prep,
+   prs-2mp, etc.) also on this element, shows through — same mechanism as
+   .wr-translit-inner span above. */
 .wr-mod {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   margin: 0 10px 4px 0;
   font-size: 12px;
-  color: var(--pr-ink-soft);
+  color: var(--mc, var(--pr-ink-soft));
 }
+/* "the table shows mem-kaf rtl but it should be kaf-mem rtl" — a modifier
+   glyph can be more than one paleo letter (the "your, plural" suffix 𐤊𐤌 is
+   Kaf+Mem, stored/transliterated Kaf-first — see WordBlock.jsx's translit
+   data). Unlike .wr-glyphs (Word/Root columns), this span rendered
+   paleoToSVG's output with no direction/flex wrapping at all, so its two
+   SVGs sat in plain left-to-right DOM order — Kaf on the left, Mem on the
+   right, which reads right-to-left as "Mem, Kaf" instead of Hebrew's actual
+   "Kaf, Mem". Same direction:rtl + inline-flex fix as .wr-glyphs: with
+   direction:rtl a flex row's first child (Kaf, first in paleo/translit
+   order) goes to the RIGHT instead of the left, giving the correct
+   right-to-left reading order for every multi-letter modifier, not just
+   this one. */
 .wr-mod-glyph {
+  display: inline-flex;
+  direction: rtl;
+  align-items: flex-end;
   font-size: 15px;
   line-height: 1;
 }
@@ -226,4 +282,72 @@
 .vp-word-strongs:hover {
   color: var(--pr-accent);
   border-bottom-color: var(--pr-accent);
+}
+
+/* "make it look good for mobile, make any necessary changes" — below 820px
+   there usually isn't 900px of viewport for .vp-wordtable-wrap's breakout
+   table (seven columns, several of them variable-length text, just don't
+   compress into a phone screen without turning into unreadable slivers).
+   Standard responsive-table technique instead: the table stops being a
+   table — thead disappears, each <tr> becomes its own bordered card, and
+   each <td> becomes a label/value stack using its own data-label attribute
+   (set in WordBlock.jsx's WordRow and VersePage.jsx's own extra <td>) as a
+   CSS-generated heading via content:attr(). No horizontal table-column
+   math to fit into a narrow screen — every card is just as wide as the
+   screen allows, and long values (Modifications, Root first appearance)
+   wrap normally like any other paragraph text. */
+@media (max-width: 820px) {
+  .vp-wordtable-wrap {
+    width: 100%;
+    position: static;
+    left: auto;
+    transform: none;
+    overflow-x: visible;
+  }
+  .vp-wordtable,
+  .vp-wordtable thead,
+  .vp-wordtable tbody,
+  .vp-wordtable tr,
+  .vp-wordtable td.wr-cell {
+    display: block;
+    width: auto;
+  }
+  .vp-wordtable thead {
+    display: none;
+  }
+  .vp-wordtable tr.word-row {
+    margin: 0 0 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--pr-rule);
+    border-radius: 10px;
+    background: var(--pr-bg-raise);
+  }
+  .vp-wordtable tr.word-row:last-child {
+    margin-bottom: 0;
+  }
+  .vp-wordtable td.wr-cell {
+    padding: 7px 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--pr-rule) 55%, transparent);
+  }
+  .vp-wordtable tr.word-row td.wr-cell:last-child {
+    border-bottom: none;
+  }
+  .vp-wordtable td.wr-cell::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--pr-ink-soft);
+    margin-bottom: 4px;
+  }
+  /* The nowrap-for-column-fit rule only makes sense inside an actual table
+     column; here each card is full-width, so let long values wrap like
+     normal text instead of forcing this whole page wider than the phone. */
+  .wr-word,
+  .wr-lex,
+  .wr-translit {
+    white-space: normal;
+  }
 }

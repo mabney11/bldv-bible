@@ -68,6 +68,34 @@ function compDescsToHtml(compDescs) {
   }).join('');
 }
 
+// Shared with WordRow's Transliteration column (see below) — one colored span
+// per component, e.g. "<span class=mod-conj>Ha</span><span class=root>Dawar</span>"
+// for "HaDawar". Relies on the SAME morphColors.css mechanism WordBlock's own
+// .w-translit line uses: each span's css class (mod-conj, root, prs-2mp, …)
+// sets the --mc custom property, and an ancestor rule picks that up as the
+// element's `color`. WordBlock supplies that ancestor via `.w span`; WordRow
+// supplies its own narrower `.wr-translit-inner span` rule instead, since a
+// table cell doesn't want `.w`'s font-size/direction/max-width baggage.
+// opts.capitalizeEach: WordRow-only — "LaKam should capitalize the K since
+// it is a different word". The source translit data itself is lowercase for
+// bound suffixes (prs-2mp's own translit is "kam", not "Kam" — confirmed via
+// the raw /api/tokens component data), which reads fine in HebrewViewer's
+// own .w-translit line where each morpheme is ALSO set off by its own color.
+// WordRow's Transliteration cell already carries that same per-component
+// color, but concatenated tightly with no color legend nearby, a second
+// (lowercase) morpheme boundary reads as one run-on word rather than two —
+// capitalizing each component's first letter gives a second, color-blind-
+// safe cue to the same boundary. Scoped to WordRow only (via this opt) so
+// WordBlock's own established translit line elsewhere is untouched.
+function transliterationsToHtml(transliterations, opts = {}) {
+  return transliterations.map(t => {
+    const altAttr = t.altAttr ? ` data-alt="${t.altAttr}"` : '';
+    let text = t.text;
+    if (opts.capitalizeEach && text) text = text.charAt(0).toUpperCase() + text.slice(1);
+    return `<span class="${t.css}"${altAttr}>${escapeHtml(text)}</span>`;
+  }).join('');
+}
+
 // A component whose text carries no Paleo-Hebrew letter (U+10900–U+1091F) has no
 // glyph in the Paleo script — it's punctuation or a literal mark (sof-pasuq ׃,
 // maqaf ־, the : stops). Render the mark itself as text, the way the Ge'ez
@@ -121,6 +149,20 @@ export function computeWordParts(wordObj) {
   // content word is a proper noun does not — the server classes proper nouns
   // mod-nmpr — and the name should still head it.
   const hasRootComp = comps.some(c => c && c.css === 'root');
+  // "I should see 'believe / have faith' in the second column, right next to
+  // 𐤀𐤌𐤍" — a standalone word whose ONE component is tagged with a
+  // PREFIX_FULL/SUFFIX_PREFIXES class (mod-advb, mod-nega, mod-prps, …) was
+  // always being treated as a modifier with nothing to modify, because those
+  // classes exist to mark grammatical particles PREFIXED/SUFFIXED onto a
+  // following/preceding root — e.g. veha- (conjunction+article) glued onto a
+  // noun. But H543 "Aman" ("believe/have faith", POS advb) here isn't a
+  // prefix attached to anything; it's the WHOLE word, tagged advb only
+  // because of how it functions in this sentence. Same root cause the
+  // existing mod-nmpr special case below already carves out for standalone
+  // proper nouns — extended here to ANY class, but scoped tightly (single
+  // real component, i.e. nothing else in the word for it to conceivably be
+  // modifying) so a genuine multi-component prefix chain is never affected.
+  const isSoloComp = comps.filter(c => c && !c.isMark).length === 1;
 
   comps.forEach(comp => {
     // Mark tokens (maqaf ־, sof-pasuq ׃, paseq ׀ …): never part of the
@@ -158,8 +200,9 @@ export function computeWordParts(wordObj) {
       // else — so when no root-class component exists, the name takes the root
       // slot and reads `(𐤉𐤔𐤅𐤏)` rather than `([𐤉𐤔𐤅𐤏])`. Same one-root-per-block
       // rule the server applies when it demotes fused particles; mod-nmpr keeps
-      // its class (and its colour) either way.
-      const headsBlock = comp.css === 'root' || (!hasRootComp && comp.css === 'mod-nmpr');
+      // its class (and its colour) either way. isSoloComp generalizes this to
+      // any standalone particle/adverb/pronoun/etc. — see isSoloComp above.
+      const headsBlock = comp.css === 'root' || (!hasRootComp && (comp.css === 'mod-nmpr' || isSoloComp));
       if (headsBlock) {
         // The root glyph itself already shows comp.paleo, which the SERVER has
         // resolved to the TRUE ROOT (root_paleo) — it shines through regardless
@@ -178,7 +221,11 @@ export function computeWordParts(wordObj) {
         // lemmaPrefixHtml) — added for VersePage's WordRow table, which needs
         // to render the bare root glyph in its own "Lex Word" column
         // separately from the full inflected word WordBlock's .paleo shows.
-        out.rootTrans.push({ lemmaPrefixHtml, clean, paleo: comp.paleo });
+        // translit: the root component's own transliteration text (e.g.
+        // "aman") — added for WordRow's "Transliteration" column, which sits
+        // between Root and Definition ("i forgot, there should be a
+        // transliteration column before the definition").
+        out.rootTrans.push({ lemmaPrefixHtml, clean, paleo: comp.paleo, translit: comp.translit || '' });
       } else {
         // paleo here too, same reason — WordRow's "Modifications" column
         // pairs each prefix/suffix's own glyph with its gloss (e.g. "𐤅 and"),
@@ -227,12 +274,7 @@ export default function WordBlock({
   const glyphHtml = useMemo(() => compDescsToHtml(parts.compDescs), [parts, mode]);
 
   // The transliteration line is a sequence of colored spans
-  const translitHtml = useMemo(() => {
-    return parts.transliterations.map(t => {
-      const altAttr = t.altAttr ? ` data-alt="${t.altAttr}"` : '';
-      return `<span class="${t.css}"${altAttr}>${t.text}</span>`;
-    }).join('');
-  }, [parts]);
+  const translitHtml = useMemo(() => transliterationsToHtml(parts.transliterations), [parts]);
 
   // Translation: (rootTrans... [mod1-mod2-...])
   const translationHtml = useMemo(() => {
@@ -566,18 +608,44 @@ export function WordRow({ wordObj, children }) {
     [parts]
   );
   const definition = parts.rootTrans.map(r => r.clean).filter(Boolean).join('; ');
+  // "lets include modifications in the transliteration, basically what I have
+  // in the transliterated version, YaDabar with colors" — the FULL word's
+  // transliteration (every component: prefixes, root, suffixes), not just
+  // the root's, colored per-component the same way HebrewViewer's own
+  // .w-translit line is (see transliterationsToHtml above).
+  const hasTranslit = parts.transliterations.some(t => t.text);
+  const translitHtml = useMemo(
+    () => transliterationsToHtml(parts.transliterations, { capitalizeEach: true }),
+    [parts]
+  );
   const sn = fmtSN(wordObj.strongs);
 
+  // data-label on every <td>: read by VersePage.css's narrow-viewport media
+  // query, which turns this <tr> into a stacked label/value card instead of
+  // a table row ("make it look good for mobile, make any necessary
+  // changes") — content: attr(data-label) supplies the label text without
+  // duplicating it as visible DOM text on wide viewports.
   return (
     <tr className="word-row" data-ordinal={wordObj.token_ordinal} data-verse={wordObj.verse}>
-      <td className="wr-cell wr-word">
+      <td className="wr-cell wr-word" data-label="Word">
         <span className="wr-glyphs" dangerouslySetInnerHTML={{ __html: wordGlyphHtml }} />
       </td>
-      <td className="wr-cell wr-lex">
+      <td className="wr-cell wr-lex" data-label="Root">
         <span className="wr-glyphs wr-glyphs-sm root" dangerouslySetInnerHTML={{ __html: rootGlyphHtml }} />
       </td>
-      <td className="wr-cell wr-def">{definition || '—'}</td>
-      <td className="wr-cell wr-mods">
+      <td className="wr-cell wr-translit" data-label="Transliteration">
+        {hasTranslit
+          ? <span className="wr-translit-inner" dangerouslySetInnerHTML={{ __html: translitHtml }} />
+          : '—'}
+      </td>
+      <td className="wr-cell wr-def" data-label="Definition">{definition || '—'}</td>
+      <td className="wr-cell wr-mods" data-label="Modifications">
+        {/* "modifications should be associated, I want to know 𐤋 is
+            associated with 'for'" — wr-mod now carries the component's own
+            css class (mod-prep, prs-2mp, …) with NO flat color override, so
+            var(--mc) (set by that class, same morphColors.css mechanism as
+            the Transliteration column above) colors glyph + gloss together —
+            the same color that syllable gets in Transliteration. */}
         {parts.modTrans.length ? parts.modTrans.map((m, i) => (
           <span key={i} className={`wr-mod ${m.css}`}>
             <span
@@ -588,7 +656,7 @@ export function WordRow({ wordObj, children }) {
           </span>
         )) : <span className="wr-mod-none">—</span>}
       </td>
-      <td className="wr-cell wr-sn">
+      <td className="wr-cell wr-sn" data-label="Strong's #">
         {sn && (
           isVirtualSN(wordObj.strongs) ? (
             <span className="sn-link root sn-virtual" title="Grammar/virtual code — no root entry" style={{ opacity: 0.6, cursor: 'default' }}>{sn}</span>

@@ -242,6 +242,16 @@ export const apiRootVerses   = ({ sn, root, book, offset = 0, limit = 25 }) => {
   if (book != null) p.set('book', String(book));
   return jsonFetch(`/api/root-explorer/verses?${p}`);
 };
+// Batched "first canonical occurrence of these root LETTERS" lookup (see
+// VersePage.jsx's word-by-word table) — one request for every distinct root
+// a verse needs, aggregated server-side across every Strong's number that
+// shares the exact spelling (so it isn't scoped to whichever number a
+// particular occurrence happened to carry) and cached process-lifetime on
+// the server, so this is fast even the first time a given root is asked
+// for and instant every time after. Returns { results: { <paleo>:
+// {book_id,book_name,chapter,verse} | null } }.
+export const apiRootFirstByLetters = (roots) =>
+  jsonFetch(`/api/root-explorer/first-by-letters?roots=${encodeURIComponent(roots.join(','))}`);
 export const apiSurfaceList  = ({ q = '', offset = 0, limit = 200 } = {}) => {
   const p = new URLSearchParams({ offset: String(offset), limit: String(limit) });
   if (q) p.set('q', q);
@@ -257,6 +267,10 @@ export const apiSurfaceExplorerVerses = ({ word, book, offset = 0, limit = 25 })
   if (book != null) p.set('book', String(book));
   return jsonFetch(`/api/surface-explorer/verses?${p}`);
 };
+// Batched sibling of apiRootFirstByLetters, same shape/caching, for exact
+// surface forms (see VersePage.jsx's word-by-word table).
+export const apiSurfaceFirstByWord = (words) =>
+  jsonFetch(`/api/surface-explorer/first-by-word?words=${encodeURIComponent(words.join(','))}`);
 
 // ── Legacy root-explorer (kept for back-compat — not used by new Root.jsx) ──
 export const apiRootByStrongs = (sn)             => jsonFetch(`/api/root/by-strongs?sn=${encodeURIComponent(sn)}`);
