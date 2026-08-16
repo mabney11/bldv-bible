@@ -129,6 +129,14 @@ export default function Translate() {
   });
   const [openChapterMap, setOpenChapterMap] = useState({}); // { "bookId:chapter": verseListData }
   const [verseData, setVerseData] = useState(null); // { status, text, rich_text, links, tokens }
+  // Bumped every time loadVerse() lands a fresh fetch from the server (see its
+  // setVerseData call below). Reset-to-published / Pull latest / a language
+  // switch can all reload the SAME book/chapter/verse — the editor-sync effect
+  // below used to key only on verse identity, so those reloads never re-synced
+  // the contentEditable DOM and the user's local edit stayed on screen until a
+  // manual page refresh. loadSeq gives that effect a signal that fires on every
+  // real reload, not just a change of verse.
+  const [loadSeq, setLoadSeq] = useState(0);
   const [saveState, setSaveState] = useState('idle'); // idle | saving | saved | error
   // Revision history panel — every prior version of the CURRENT verse,
   // fetched on demand (not preloaded with every verse — most verses are
@@ -326,6 +334,7 @@ export default function Translate() {
         return l;
       }));
       setVerseData({ ...data, tokens, links, localLinks: localLinks != null });
+      setLoadSeq(s => s + 1);
     } catch (e) { toast('Verse load failed: ' + e.message, 'err'); }
   }, [setUrl, toast, lang]);
 
@@ -412,6 +421,14 @@ export default function Translate() {
   // When verse data arrives, set editor HTML once and focus it so the user can
   // start typing immediately. We sync manually instead of using React-controlled
   // contenteditable because the latter erases the caret on every keystroke.
+  //
+  // loadSeq (not just verse identity) is in the deps below: reset-to-published,
+  // pull-latest, and a language switch all call loadVerse() for the SAME
+  // book/chapter/verse, so verse-identity alone never changed and this effect
+  // never re-ran — the contentEditable div kept showing whatever the user had
+  // typed/pasted, and only a full page refresh (a fresh mount) actually cleared
+  // it. loadSeq bumps on every real reload from the server, verse identity or
+  // not, so "Reset to published" now updates the editor immediately.
   useEffect(() => {
     if (verseData && editorRef.current) {
       editorRef.current.innerHTML = verseData.rich_text || verseData.text || '';
@@ -428,9 +445,10 @@ export default function Translate() {
       }
     }
     // mode is intentionally NOT in deps — we don't want to refocus on a mode flip
-    // mid-edit. Refocus only happens when the verse identity changes.
+    // mid-edit. Refocus only happens when the verse identity changes or a fresh
+    // load (loadSeq) lands.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [verseData?.book_id, verseData?.chapter, verseData?.verse]);
+  }, [verseData?.book_id, verseData?.chapter, verseData?.verse, loadSeq]);
 
   // ── SAVE ──────────────────────────────────────────────────────────────────
   const saveVerse = useCallback(async (overrides = {}) => {

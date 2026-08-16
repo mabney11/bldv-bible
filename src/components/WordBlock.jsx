@@ -96,12 +96,19 @@ function transliterationsToHtml(transliterations, opts = {}) {
   // text get a dash BETWEEN them — an empty/blank component (no translit,
   // e.g. an unmarked mark-adjacent slot) contributes nothing and must not
   // leave a stray leading/trailing/doubled "-".
+  //
+  // "i dont want the dashes if there is not a genuine symbol" — a dash marks
+  // a seam between two REAL written Paleo-Hebrew letters. A component whose
+  // text has no actual glyph behind it (hasGlyph: false — synthetic/blank,
+  // not a real U+10900–U+1091F letter) isn't a genuine morpheme boundary, so
+  // no dash renders on either side of it.
   const withText = transliterations.filter(t => t && t.text);
   return withText.map((t, i) => {
     const altAttr = t.altAttr ? ` data-alt="${t.altAttr}"` : '';
     let text = t.text;
     if (opts.capitalizeEach && text) text = text.charAt(0).toUpperCase() + text.slice(1);
-    const dash = i > 0 ? '<span class="wr-translit-dash">-</span>' : '';
+    const prev = withText[i - 1];
+    const dash = (i > 0 && t.hasGlyph && prev && prev.hasGlyph) ? '<span class="wr-translit-dash">-</span>' : '';
     return `${dash}<span class="${t.css}"${altAttr}>${escapeHtml(text)}</span>`;
   }).join('');
 }
@@ -204,7 +211,7 @@ export function computeWordParts(wordObj) {
 
     const ordinal = comp.token_ordinal != null ? comp.token_ordinal : wordObj.token_ordinal;
     out.compDescs.push({ css: comp.css, paleo: comp.paleo, altAttr, ordinal });
-    out.transliterations.push({ css: comp.css, text: comp.translit || '', altAttr });
+    out.transliterations.push({ css: comp.css, text: comp.translit || '', altAttr, hasGlyph: hasPaleo(comp.paleo) });
 
     const clean = (comp.translation || '').replace(/[\[\]]/g, '');
     // The redundancy rule (gloss === transliteration) is what hides proper

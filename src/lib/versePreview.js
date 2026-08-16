@@ -55,23 +55,27 @@ export function versePreviewMultiTokens(tokens) {
 }
 
 /**
- * Transliteration WITH gloss — "WaMalakay (king [and])" — for the Hebrew/
- * multi-language viewers, which have no separate English segment of their
- * own, so the gloss is what makes the preview meaningful on its own.
+ * Transliteration WITH gloss — "WaYaNabat (and-he/it)" — for the Hebrew
+ * viewer's tab title, which has no separate English segment of its own, so
+ * the gloss is what makes the preview meaningful on its own.
+ *
+ * One combined word per token (every component's translit concatenated,
+ * tight-run — no separator, same as a plain transliteration reads) followed
+ * by AT MOST one trailing parenthetical listing every component that HAS a
+ * gloss, dash-joined. "Wa (and) Ya (he/it)" — a separate parenthetical per
+ * component — reads as disconnected fragments instead of the one word it
+ * actually is; concatenating the translit and folding every gloss into one
+ * dash-joined list fixes that.
  */
 export function versePreviewWithGloss(words) {
   if (!words || !words.length) return '';
   return words
     .map(w => {
-      const comps = w.components?.length ? w.components : (w.translit ? [w] : []);
-      return comps
-        .map(c => {
-          const tl = c.translit || '';
-          const gloss = c.translation || c.gloss || '';
-          return gloss ? `${tl} (${gloss})` : tl;
-        })
-        .filter(Boolean)
-        .join(' ');
+      const comps = (w.components?.length ? w.components : (w.translit ? [w] : [])).filter(c => !c.isMark);
+      const tl = comps.map(c => c.translit || '').join('');
+      if (!tl) return '';
+      const glosses = comps.map(c => c.translation || c.gloss || '').filter(Boolean);
+      return glosses.length ? `${tl} (${glosses.join('-')})` : tl;
     })
     .filter(Boolean)
     .join(' ');

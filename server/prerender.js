@@ -39,6 +39,28 @@
  * is generated from — nothing free-text or guessable). Anything not
  * matched by ROUTES below falls through to the ordinary SPA shell, exactly
  * as before this file existed.
+ *
+ * 2026-08-15: /bible's verse route (englishVerseRoute) shipped as phase 1 of
+ * "I want my entire corpus indexable and easily searchable like the other
+ * bible tools" — a real per-verse page (translation text + that verse's
+ * Hebrew tokens), not just a chapter snapshot with ?verse= collapsed away.
+ * 2026-08-16 (phases 2 and 3): extended that same genuine-per-verse-body
+ * treatment to /parallel, /translate (parallelVerseRoute/translateVerseRoute
+ * — their body used to be identical for every verse in a chapter, which is
+ * exactly why they were skipped in phase 1), the default "/" reader covering
+ * BOTH Hebrew OT and Greek NT off one endpoint (hebrewVerseRoute — the
+ * earlier version of this comment called the risk of reconstructing that
+ * route's body "getting it subtly wrong"; a plain transliteration word list
+ * turned out to carry none of that risk, since it's real text rather than a
+ * glyph-shape reconstruction), and the Greek/Ge'ez/Latin source readers
+ * (sourceChapterRoute's own new verseRoute). Also added slug resolution
+ * (normalizeBookParam/ensureSlugMap): every route above validates `book` as
+ * numeric-only, but real URLs use human-readable slugs (?book=luke, not just
+ * ?book=42) — found via a real report asking to index
+ * "https://www.bldbible.com/?book=luke&chapter=21&verse=1" — so without this
+ * fix, slug URLs (the ones actually linked from the site's own nav) were
+ * silently falling through to the bare SPA shell no matter how complete
+ * ROUTES was otherwise.
  */
 
 const fs = require('fs');
@@ -129,6 +151,68 @@ function fetchJSON(port, path) {
   });
 }
 
+// ── BOOK SLUG RESOLUTION (2026-08-16) ────────────────────────────────────────
+// Real URLs use human-readable slugs (?book=luke, ?book=psalms), not just raw
+// canon_id numbers — see src/lib/bookSlug.js, which every reader page already
+// resolves a slug through before it ever queries an API. Every route below
+// validates `book` via validBook() (numeric-only, matching corpus.db's actual
+// key). Without this step, a slug URL — including ones the site's own nav
+// links, sitemap entries, or a real visitor/crawler actually use — would
+// silently fail validBook() and fall through to the bare SPA shell, no matter
+// how much of ROUTES is otherwise correct. Found via a real report: "so
+// https://www.bldbible.com/?book=luke&chapter=21&verse=1 should be indexed" —
+// that URL's `book=luke` is a slug, not a number.
+//
+// Mirrors buildBookSlugs()/resolveBookParam() in src/lib/bookSlug.js exactly
+// (same slugify rule, same "lower canon_id wins the clean slug" collision
+// rule) so a book resolves to the identical slug here as it does client-side —
+// duplicated rather than imported since this module is CommonJS and that one
+// is ESM (same reasoning as BOOK_NAMES above).
+function slugify(s) {
+  return String(s == null ? '' : s)
+    .toLowerCase()
+    .replace(/['".,:;!?()[\]]/g, '')
+    .replace(/&/g, 'and')
+    .replace(/[_\s]+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+let _slugToId = null;   // cached for the life of the process — book order rarely changes; see loadShell's identical once-per-process reasoning
+async function ensureSlugMap(port) {
+  if (_slugToId) return _slugToId;
+  try {
+    const list = await fetchJSON(port, '/api/book-order');
+    const map = {};
+    const used = {};
+    for (const e of [...list].filter((x) => x && x.id != null).sort((a, b) => a.id - b.id)) {
+      const base = slugify(e.name) || `book-${e.id}`;
+      let slug = base, n = 1;
+      while (used[slug] != null && used[slug] !== e.id) { n += 1; slug = `${base}-${n}`; }
+      used[slug] = e.id;
+      map[slug] = e.id;
+    }
+    _slugToId = map;
+  } catch {
+    _slugToId = {};   // fetch failed — fall back to numeric-only, same behavior as before this existed
+  }
+  return _slugToId;
+}
+// Resolves a URLSearchParams' `book` value IN PLACE to a canonical numeric id
+// string, when it's a slug. Numeric values pass through untouched. Must run
+// BEFORE any route's match()/build() sees `query` (see renderSnapshot below),
+// so every existing validBook() check downstream keeps working unchanged, and
+// a slug URL and its numeric equivalent share the exact same cache entry —
+// consolidating them is correct for SEO too, the same reason englishChapterRoute
+// already collapses ?verse= variants onto one canonical.
+async function normalizeBookParam(query, port) {
+  const raw = query.get('book');
+  if (!raw || /^\d+$/.test(raw)) return;
+  const map = await ensureSlugMap(port);
+  const id = map[raw.toLowerCase()];
+  if (id != null) query.set('book', String(id));
+}
+
 function versesArticle(heading, verses) {
   const items = (verses || [])
     .filter((v) => v && v.text)
@@ -209,19 +293,22 @@ function englishChapterRoute(path, labelSuffix, tabLabel, description) {
   };
 }
 
-// A single English-reader VERSE page — /bible ONLY, for now. 2026-08-15:
-// "I want my entire corpus indexable and easily searchable like the other
-// bible tools" (e.g. BibleHub, which indexes one real page per verse). This
-// is phase 1 of that: the flagship "read one verse, see its own Hebrew word
-// by word" page. /parallel and /translate deliberately do NOT get this
-// treatment yet — their prerendered body is identical no matter what
-// ?verse= says (see englishChapterRoute's canonical-collapse comment right
-// above), so giving them their own verse-level canonical would be exactly
-// the thin/duplicate-URL mistake the "bad corpus" fix and that canonical
-// collapse both existed to clean up. This route's body genuinely differs
-// per verse — real translation text plus that verse's actual Hebrew tokens
-// off /api/translate/verse — which is what makes a self-referencing
-// per-verse canonical honest here and nowhere else (yet).
+// A single English-reader VERSE page. 2026-08-15: "I want my entire corpus
+// indexable and easily searchable like the other bible tools" (e.g.
+// BibleHub, which indexes one real page per verse). This is phase 1 of that
+// three-phase project: the flagship "read one verse, see its own Hebrew word
+// by word" page. This route's body genuinely differs per verse — real
+// translation text plus that verse's actual Hebrew tokens off
+// /api/translate/verse — which is what makes a self-referencing per-verse
+// canonical honest here.
+//
+// 2026-08-16: phases 2 and 3 (parallelVerseRoute/translateVerseRoute below,
+// and hebrewVerseRoute + sourceChapterRoute's own verse route further down)
+// extend this same genuine-per-verse-body treatment to /parallel,
+// /translate, the default "/" reader (Hebrew OT + Greek NT together, one
+// endpoint), and the Greek/Ge'ez/Latin source readers — closing the gap this
+// comment used to describe ("/parallel and /translate deliberately do NOT
+// get this treatment yet... nowhere else (yet)").
 //
 // Deliberately a SEPARATE, self-contained route rather than a branch inside
 // englishChapterRoute, so that function's already-working canonical-collapse
@@ -277,6 +364,155 @@ function englishVerseRoute() {
   };
 }
 
+// ── VERSE PREVIEW HELPERS (mirror src/lib/versePreview.js) ──────────────────
+// Same reasoning as slugify/BOOK_NAMES above: this module is CommonJS, that
+// one's ESM, so small stateless helpers are duplicated here rather than
+// imported. Keep in sync with versePreview.js if that file's logic changes —
+// the whole point is a prerendered title matching the client's hydrated
+// title exactly (no title-flash mismatch), the same rule every route here
+// follows. Unlike the client versions, these have no `translit(word_raw)`
+// fallback for a token with no `components` (that fallback needs books.js's
+// own translit(), a client-only ESM import) — acceptable here since real
+// BHS/NT/HEB tokens always carry components, and a prerendered preview
+// missing an occasional edge-case word degrades gracefully (still real text,
+// just slightly less complete), unlike the client which must always show
+// something.
+function translitPreview(words) {
+  if (!words || !words.length) return '';
+  return words
+    .map((w) => (w.components?.length
+      ? w.components.filter((c) => !c.isMark).map((c) => c.translit).filter(Boolean).join('')
+      : ''))
+    .filter(Boolean)
+    .join(' ');
+}
+function translitGlossPreview(words) {
+  if (!words || !words.length) return '';
+  return words
+    .map((w) => {
+      const comps = (w.components?.length ? w.components : []).filter((c) => !c.isMark);
+      const tl = comps.map((c) => c.translit || '').join('');
+      if (!tl) return '';
+      const glosses = comps.map((c) => c.translation || c.gloss || '').filter(Boolean);
+      return glosses.length ? `${tl} (${glosses.join('-')})` : tl;
+    })
+    .filter(Boolean)
+    .join(' ');
+}
+function multiTokensPreview(tokens) {
+  if (!tokens || !tokens.length) return '';
+  return tokens
+    .filter((t) => !t.is_punct)
+    .map((t) => (t.gloss ? `${t.word} (${t.gloss})` : t.word))
+    .filter(Boolean)
+    .join(' ');
+}
+
+// A single Parallel VERSE page — phase 2 of the indexability project (see
+// englishVerseRoute above for phase 1). Its prerendered body used to be
+// identical no matter what ?verse= said; this makes it genuinely differ per
+// verse by pulling that verse's own BHS tokens (/api/tokens) alongside its
+// English text (/api/translate/verse) — real content a per-verse canonical
+// can honestly claim, same reasoning as englishVerseRoute above.
+//
+// Title matches Parallel.jsx's titlePreviewParts exactly: "<ref> | Parallel
+// | <English preview> | <source transliteration preview>" — see
+// hooks/usePageTitle.js's documented convention and versePreviewTranslit
+// (mirrored above as translitPreview).
+function parallelVerseRoute() {
+  const chapterFallback = englishChapterRoute(
+    '/parallel', 'English–Hebrew Parallel', 'Parallel',
+    (name, ch) => `Read ${name} ${ch} in English and Hebrew side by side, verse by verse.`,
+  );
+  return {
+    match: (q) => validBook(q.get('book')) && validChapter(q.get('chapter')) && !!validVerseNum(q.get('verse')),
+    build: async (q, port) => {
+      const book = validBook(q.get('book'));
+      const chapter = validChapter(q.get('chapter'));
+      const verse = validVerseNum(q.get('verse'));
+      const name = BOOK_NAMES[book];
+
+      let txData = null, tokens = [];
+      try {
+        [txData, tokens] = await Promise.all([
+          fetchJSON(port, `/api/translate/verse?book=${book}&chapter=${chapter}&verse=${verse}`),
+          fetchJSON(port, `/api/tokens?book=${book}&chapter=${chapter}`).catch(() => []),
+        ]);
+      } catch { /* falls through to the chapter snapshot below */ }
+
+      const verseWords = Array.isArray(tokens) ? tokens.filter((t) => t && t.verse === verse) : [];
+      const enText = (txData && txData.text) || '';
+      if (!enText && !verseWords.length) return chapterFallback.build(q, port);
+
+      const heading = `${name} ${chapter}:${verse}`;
+      const srcPreview = translitPreview(verseWords);
+      const wordItems = verseWords
+        .filter((w) => w && w.components?.length)
+        .map((w) => {
+          const label = w.components.filter((c) => !c.isMark).map((c) => c.translit).filter(Boolean).join('');
+          return `<li>${escapeHtml(label)}${w.strongs ? ` — <a href="/roots?sn=${encodeURIComponent(w.strongs)}">${escapeHtml(w.strongs)}</a>` : ''}</li>`;
+        })
+        .join('\n        ');
+
+      return {
+        title: [heading, 'Parallel', truncate(enText, 60), truncate(srcPreview, 60)].filter(Boolean).join(' | '),
+        description: `Read ${heading} in English and Hebrew side by side.${enText ? ` ${truncate(enText, 140)}` : ''}`,
+        body: `<h1>${escapeHtml(heading)}</h1>
+      ${enText ? `<p>${escapeHtml(enText)}</p>` : ''}
+      ${wordItems ? `<h2>Hebrew, word by word</h2>\n      <ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
+        canonicalPath: `/parallel?book=${book}&chapter=${chapter}&verse=${verse}`,
+      };
+    },
+  };
+}
+
+// A single Translation Studio VERSE page — phase 2, same reasoning as
+// parallelVerseRoute above. Body shows this verse's actual translation
+// (status + text) plus its Hebrew tokens, matching what a real visit shows.
+// Title matches Translate.jsx's own convention exactly: "<ref> | Translation
+// Studio" (formatRef already includes the verse number when present — see
+// hooks/usePageTitle.js's documented convention) — no live preview segment,
+// since Translate.jsx's own usePageTitle call doesn't build one either.
+function translateVerseRoute() {
+  const chapterFallback = englishChapterRoute(
+    '/translate', 'Translation Studio', 'Translation Studio',
+    (name, ch) => `Translate ${name} ${ch} verse by verse, linked back to the original Hebrew.`,
+  );
+  return {
+    match: (q) => validBook(q.get('book')) && validChapter(q.get('chapter')) && !!validVerseNum(q.get('verse')),
+    build: async (q, port) => {
+      const book = validBook(q.get('book'));
+      const chapter = validChapter(q.get('chapter'));
+      const verse = validVerseNum(q.get('verse'));
+      const name = BOOK_NAMES[book];
+
+      let data = null;
+      try {
+        data = await fetchJSON(port, `/api/translate/verse?book=${book}&chapter=${chapter}&verse=${verse}`);
+      } catch { /* falls through to the chapter snapshot below */ }
+
+      if (!data || !data.text) return chapterFallback.build(q, port);
+
+      const heading = `${name} ${chapter}:${verse}`;
+      const wordItems = (data.tokens || [])
+        .filter((t) => t && t.word_raw)
+        .map((t) => `<li>${escapeHtml(t.word_raw)}${t.strongs ? ` — <a href="/roots?sn=${encodeURIComponent(t.strongs)}">${escapeHtml(t.strongs)}</a>` : ''}</li>`)
+        .join('\n        ');
+      const statusLabel = data.status === 'done' ? 'Complete' : data.status === 'in_progress' ? 'In progress' : 'Draft';
+
+      return {
+        title: `${heading} | Translation Studio`,
+        description: `Translate ${heading} verse by verse, linked back to the original Hebrew. ${truncate(data.text, 120)}`,
+        body: `<h1>${escapeHtml(heading)} — Translation Studio</h1>
+      <p><em>${escapeHtml(statusLabel)}</em></p>
+      <p>${escapeHtml(data.text)}</p>
+      ${wordItems ? `<h2>Hebrew, word by word</h2>\n      <ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
+        canonicalPath: `/translate?book=${book}&chapter=${chapter}&verse=${verse}`,
+      };
+    },
+  };
+}
+
 // A book+chapter reader page backed by /api/source/:src/chapter (Greek
 // Septuagint/NT, Ge'ez, Latin Vulgate — sources with flat verse text, unlike
 // Hebrew's tokenized glyph data; see the '/' route's comment below).
@@ -291,8 +527,21 @@ function englishVerseRoute() {
 // just without the word-by-word preview text, since this route only ever
 // fetches flat per-verse text (no gloss data) and adding a second fetch
 // just for the title isn't worth it for a component the crawler never runs.
+//
+// Returns [verseRoute, chapterRoute] — 2026-08-16, phase 3 of the
+// indexability project (see englishVerseRoute/parallelVerseRoute/
+// translateVerseRoute above for phases 1-2). verseRoute is backed by
+// /api/source/:src/verse (the same call MultiViewer.jsx's own verse mode
+// makes), so its body genuinely differs per verse — real flat verse text
+// plus a translit(+gloss) preview off that verse's own tokens, the same data
+// MultiViewer's tab title already previews via versePreviewMultiTokens
+// (mirrored above as multiTokensPreview). Falls back to chapterRoute (this
+// function's original, unchanged behavior) when a requested verse has no
+// real data, so a content-less URL never gets indexed under its own
+// canonical — same "real data check, not just numeric range" rule every
+// other verse route here follows.
 function sourceChapterRoute(src, label, tabLabel) {
-  return {
+  const chapterRoute = {
     match: (q) => q.get('source') === src && validBook(q.get('book')) && validChapter(q.get('chapter')),
     build: async (q, port) => {
       const book = validBook(q.get('book'));
@@ -312,6 +561,103 @@ function sourceChapterRoute(src, label, tabLabel) {
         // opening-verse convention for these source landing links), so
         // stripping it would make this page's own canonical disagree with
         // the URL the sitemap tells Google to index.
+      };
+    },
+  };
+  const verseRoute = {
+    match: (q) => q.get('source') === src && validBook(q.get('book')) && validChapter(q.get('chapter')) && !!validVerseNum(q.get('verse')),
+    build: async (q, port) => {
+      const book = validBook(q.get('book'));
+      const chapter = validChapter(q.get('chapter'));
+      const verse = validVerseNum(q.get('verse'));
+      const name = BOOK_NAMES[book];
+
+      let data = null;
+      try { data = await fetchJSON(port, `/api/source/${src}/verse?book=${book}&chapter=${chapter}&verse=${verse}`); }
+      catch { /* falls through to the chapter snapshot below */ }
+
+      if (!data || !data.text) return chapterRoute.build(q, port);
+
+      const heading = `${name} ${chapter}:${verse}`;
+      const preview = multiTokensPreview(data.tokens);
+
+      return {
+        title: [heading, tabLabel, truncate(preview, 70)].filter(Boolean).join(' | '),
+        description: `${heading} in the ${label}.${data.text ? ` ${truncate(data.text, 140)}` : ''}`,
+        body: `<h1>${escapeHtml(heading)} — ${escapeHtml(label)}</h1>
+      <p>${escapeHtml(data.text)}</p>${NAV_LINKS}`,
+        canonicalPath: `/?source=${src}&book=${book}&chapter=${chapter}&verse=${verse}`,
+      };
+    },
+  };
+  return [verseRoute, chapterRoute];
+}
+
+// A single default-reader ("/", no ?source=) VERSE page — phase 3, same
+// reasoning as sourceChapterRoute's verseRoute above. This is the ORIGINAL
+// Hebrew/Greek-NT tokenized reader (HebrewViewer.jsx) — the "/" route's
+// chapter-only candidate below was deliberately left without verse-level
+// treatment because "reconstructing real body text from [tokenized
+// Paleo-Hebrew glyph data] risks getting it subtly wrong". That risk was
+// about rendering actual GLYPH SHAPES; a plain transliteration word list —
+// the same data + the same extraction versePreviewWithGloss already uses for
+// this exact page's own tab title (mirrored above as translitGlossPreview)
+// — carries none of that risk, since it's real text, not a glyph
+// reconstruction. /api/tokens already unifies OT (tokens_bhs) and NT
+// (tokens_nt) under one endpoint by book_id — see server.js's
+// inBhsMeta/inNtTokens branch — so this single route covers the whole
+// corpus, not just the Hebrew OT: "I want raw readers too... so
+// https://www.bldbible.com/?book=luke&chapter=21&verse=1 should be indexed"
+// (Luke is NT; /api/tokens serves it from tokens_nt automatically).
+// Title matches HebrewViewer.jsx's hvTitleParts exactly: "<ref> | Hebrew |
+// <translit+gloss preview>".
+function hebrewVerseRoute() {
+  const chapterFallback = {
+    match: () => true,
+    build: async (q) => {
+      const book = validBook(q.get('book'));
+      const chapter = validChapter(q.get('chapter'));
+      const name = BOOK_NAMES[book];
+      const verse = validVerseNum(q.get('verse'));
+      return {
+        title: `${name} ${chapter}${verse ? `:${verse}` : ''} | Hebrew`,
+        description: `${name} chapter ${chapter} in the original Paleo-Hebrew, word by word, with roots, Strong's numbers and glosses.`,
+        body: `<h1>${escapeHtml(name)} ${chapter} — Hebrew Reader</h1>
+      <p>${escapeHtml(name)} ${chapter}, in the original Paleo-Hebrew script, word by word.</p>${NAV_LINKS}`,
+      };
+    },
+  };
+  return {
+    match: (q) => validBook(q.get('book')) && validChapter(q.get('chapter')) && !q.get('source') && !!validVerseNum(q.get('verse')),
+    build: async (q, port) => {
+      const book = validBook(q.get('book'));
+      const chapter = validChapter(q.get('chapter'));
+      const verse = validVerseNum(q.get('verse'));
+      const name = BOOK_NAMES[book];
+
+      let tokens = null;
+      try { tokens = await fetchJSON(port, `/api/tokens?book=${book}&chapter=${chapter}`); }
+      catch { /* falls through to the chapter snapshot below */ }
+
+      const verseWords = Array.isArray(tokens) ? tokens.filter((t) => t && t.verse === verse) : [];
+      if (!verseWords.length) return chapterFallback.build(q, port);
+
+      const heading = `${name} ${chapter}:${verse}`;
+      const preview = translitGlossPreview(verseWords);
+      const wordItems = verseWords
+        .filter((w) => w && w.components?.length)
+        .map((w) => {
+          const label = w.components.filter((c) => !c.isMark).map((c) => c.translit).filter(Boolean).join('');
+          return `<li>${escapeHtml(label)}${w.strongs ? ` — <a href="/roots?sn=${encodeURIComponent(w.strongs)}">${escapeHtml(w.strongs)}</a>` : ''}</li>`;
+        })
+        .join('\n        ');
+
+      return {
+        title: [heading, 'Hebrew', truncate(preview, 70)].filter(Boolean).join(' | '),
+        description: `${heading} in the original Paleo-Hebrew, word by word, with roots, Strong's numbers and glosses.${preview ? ` ${truncate(preview, 140)}` : ''}`,
+        body: `<h1>${escapeHtml(heading)} — Hebrew Reader</h1>
+      ${wordItems ? `<ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
+        canonicalPath: `/?book=${book}&chapter=${chapter}&verse=${verse}`,
       };
     },
   };
@@ -339,40 +685,41 @@ const ROUTES = {
     }),
   }],
 
-  // englishVerseRoute (a real ?verse=) is tried BEFORE the plain chapter
-  // route — see its own comment for why only /bible gets this treatment.
+  // Verse routes (a real ?verse=) are tried BEFORE their plain chapter
+  // fallback — see each verse route's own comment for why.
   '/bible': [englishVerseRoute(), englishChapterRoute(
     '/bible', 'Novel English Bible', 'Reader',
     (name, ch) => `${name} chapter ${ch} in the Novel English Bible — a clean English translation with Hebrew-backed names and places.`,
   )],
 
-  '/parallel': [englishChapterRoute(
+  '/parallel': [parallelVerseRoute(), englishChapterRoute(
     '/parallel', 'English–Hebrew Parallel', 'Parallel',
     (name, ch) => `Read ${name} ${ch} in English and Hebrew side by side, verse by verse.`,
   )],
 
-  '/translate': [englishChapterRoute(
+  '/translate': [translateVerseRoute(), englishChapterRoute(
     '/translate', 'Translation Studio', 'Translation Studio',
     (name, ch) => `Translate ${name} ${ch} verse by verse, linked back to the original Hebrew.`,
   )],
 
-  // "/" serves three different things depending on ?source=: the default
-  // Hebrew reader (no source param), or one of the flat-text sources below.
-  // Order matters — the Hebrew (no-source) candidate must be checked with
-  // !q.get('source') so it doesn't swallow the source-specific requests.
+  // "/" serves several different things depending on ?source=: the default
+  // Hebrew+NT reader (no source param), or one of the flat-text sources
+  // below. Order matters — the default-reader candidates must be checked
+  // with !q.get('source') so they don't swallow the source-specific
+  // requests; each verse candidate is tried before its own chapter fallback,
+  // same rule as /bible/parallel/translate above.
   '/': [
     // tabLabel args match MultiViewer.jsx's SOURCE_LABELS exactly (LXX/GEZ/LAT).
-    sourceChapterRoute('LXX', 'Greek Septuagint & New Testament', 'Greek Scriptures'),
-    sourceChapterRoute('GEZ', "Ge'ez Bible", "Ge'ez (BETMAS)"),
-    sourceChapterRoute('LAT', 'Latin Vulgate', 'Latin (Vulgate)'),
+    // sourceChapterRoute returns [verseRoute, chapterRoute] — spread both in.
+    ...sourceChapterRoute('LXX', 'Greek Septuagint & New Testament', 'Greek Scriptures'),
+    ...sourceChapterRoute('GEZ', "Ge'ez Bible", "Ge'ez (BETMAS)"),
+    ...sourceChapterRoute('LAT', 'Latin Vulgate', 'Latin (Vulgate)'),
+    hebrewVerseRoute(),
     {
-      // Default Hebrew reader (the Landing page's primary CTA). Its
-      // readable text lives in tokenized Paleo-Hebrew glyph data
-      // (/api/tokens), not flat verse rows like the sources above —
-      // reconstructing real body text from that here risks getting it
-      // subtly wrong, which would be worse for SEO than omitting it.
-      // Title + description are still real and book/chapter-specific,
-      // which is most of the win anyway.
+      // Default Hebrew+NT reader's plain chapter fallback (the Landing
+      // page's primary CTA, and what hebrewVerseRoute above falls back to
+      // for a verse with no real token data). Title + description are still
+      // real and book/chapter-specific even without a per-verse preview.
       match: (q) => validBook(q.get('book')) && validChapter(q.get('chapter')) && !q.get('source'),
       build: async (q) => {
         const book = validBook(q.get('book'));
@@ -380,8 +727,8 @@ const ROUTES = {
         const name = BOOK_NAMES[book];
         // Matches HebrewViewer.jsx's title exactly: "<book> <ch>[:<verse>] |
         // Hebrew[ | <preview>]" — no preview here since this route doesn't
-        // fetch the tokenized glyph data a preview would need (see the
-        // comment on this route's `match`/`build` above).
+        // fetch the tokenized data a preview would need (hebrewVerseRoute
+        // above handles the real-?verse= case with one).
         const verse = validVerseNum(q.get('verse'));
         return {
           title: `${name} ${chapter}${verse ? `:${verse}` : ''} | Hebrew`,
@@ -567,6 +914,9 @@ function render({ title, description, canonicalPath, body }) {
 async function renderSnapshot(pathname, query, port, indexHtmlPath) {
   const candidates = ROUTES[pathname];
   if (!candidates) return null;
+  // Resolve a slug `book` param (e.g. ?book=luke) to its numeric id BEFORE any
+  // route's match()/build() ever sees `query` — see normalizeBookParam above.
+  if (query.has('book')) await normalizeBookParam(query, port);
   const route = candidates.find((r) => r.match(query));
   if (!route) return null;
 
