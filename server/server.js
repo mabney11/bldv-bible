@@ -3063,7 +3063,7 @@ function scheduleRebuild(changedFile) {
         _rootByValue  = null;
         _surfByValue  = null;
         _rootBySN     = null;
-        _firstByRootLettersCache.clear();
+        _firstAppearanceByRoot = null;   // rebuilt fresh inside buildNavIndexes() below
         _firstBySurfaceCache.clear();
         try {
             buildNavIndexes();
@@ -3286,12 +3286,33 @@ let _wordBySn       = null;   // Map<'H776' → [indices in _surfNavIndex]> (roo
 // word-by-word table needs, per word, the canonically-earliest verse its
 // ROOT LETTERS appear in at all (across every Strong's number that shares
 // that spelling — see the /api/root-explorer/first-by-letters route below).
-// Computed once per distinct root text and kept for the life of the
-// process — same lifetime as _rootNavIndex itself, so it's cleared at every
-// spot that resets _rootNavIndex (a lexicon hot-reload or /admin rebuild
-// changes the underlying data those numbers are computed from).
-let _firstByRootLettersCache = new Map();   // Map<root paleo → {book_id,book_name,chapter,verse} | null>
-let _firstBySurfaceCache     = new Map();   // Map<surface paleo → {book_id,book_name,chapter,verse} | null>, same reasoning/lifetime
+// "this is not an analysis project, all of this data is static. It should
+// be in an indexed database" — was a per-request live scan backed by a Map
+// that only warmed up AFTER being asked (and was wiped by every deploy
+// restart, so production kept re-paying the multi-second cost). Replaced
+// with a Map computed ONCE for every root in _buildNavIndexesUncached()
+// (see the "FIRST APPEARANCE INDEX" section there) and persisted in the
+// SAME on-disk cache as _rootNavIndex/_surfNavIndex — a normal deploy (code
+// changed, corpus/lexicon did not) loads it from disk instantly instead of
+// recomputing anything, exactly like the root/surface indexes already did.
+// Null until buildNavIndexes() runs; the route below treats a miss as "no
+// data yet" the same as "root has no recorded occurrence".
+let _firstAppearanceByRoot   = null;   // Map<root paleo → {book_id,chapter,verse}>
+let _firstBySurfaceCache     = new Map();   // Map<surface paleo → {book_id,book_name,chapter,verse} | null> — unused by the UI since "the First surface can be removed" (2026-08-16), left in place because /api/surface-explorer/first-by-word still serves it and nothing asked for that endpoint's removal.
+
+// Chronological ordering + "keep the earliest" helper shared by both the HEB
+// and BHS first-occurrence passes below, and by the later per-root
+// aggregation over them. Plain (book_id, chapter, verse) comparison — same
+// ordering /api/root-explorer/first-by-letters always used.
+function _locBefore(a, b) {
+    return a.book_id !== b.book_id ? a.book_id < b.book_id
+         : a.chapter !== b.chapter ? a.chapter < b.chapter
+         : a.verse < b.verse;
+}
+function _recordFirst(map, key, loc) {
+    const cur = map.get(key);
+    if (!cur || _locBefore(loc, cur)) map.set(key, loc);
+}
 
 // Proclitic prefixes (conjunction/article/inseparable prepositions) that fold
 // onto the following content morpheme when reconstructing orthographic words.
@@ -3313,7 +3334,11 @@ function _navCacheStamp() {
     // changes (not just its inputs), so a stale on-disk cache can't shadow it.
     // BUMPED for the HEB merge: an on-disk cache written by the OT-only build
     // would otherwise shadow it and the roots page would look unchanged.
-    const NAV_BUILD_VERSION = 'wordsurf-v4-heb';   // roots by Strong's #, word-level surfaces, both editions
+    // BUMPED again for the first-appearance index (2026-08-16): a cache
+    // written before that field existed has no `firstAppearance` payload —
+    // without this bump it would still look "current" (same corpus/lexicon
+    // mtimes) and _firstAppearanceByRoot would silently stay null forever.
+    const NAV_BUILD_VERSION = 'wordsurf-v5-firstapp';   // roots by Strong's #, word-level surfaces, both editions, root first-appearance index
     const inputs = [
         path.join(__dirname, 'corpus.db'),             // tokens_bhs — the text the index is built from
         path.join(__dirname, 'surface-index.db'),      // the HEB half of the nav index
@@ -3344,6 +3369,9 @@ function _saveNavCache() {
             stamp: _navCacheStamp(),
             root: _rootNavIndex,
             surf: _surfNavIndex,
+            // Map isn't JSON-serializable directly — plain object round-trips
+            // through Object.fromEntries/Object.entries below.
+            firstAppearance: Object.fromEntries(_firstAppearanceByRoot || new Map()),
         };
         // Write atomically so a crashed write can't leave a half-file
         const tmp = NAV_CACHE_PATH + '.tmp';
@@ -3465,7 +3493,8 @@ function buildNavIndexes() {
             if (!_wordBySn.has(e.sn)) _wordBySn.set(e.sn, []);
             _wordBySn.get(e.sn).push(idx);
         });
-        console.log(`[nav-cache] hit: ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces (saved ~1s)`);
+        _firstAppearanceByRoot = new Map(Object.entries(cached.firstAppearance || {}));
+        console.log(`[nav-cache] hit: ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces, ${_firstAppearanceByRoot.size} first-appearances (saved ~1s)`);
         return;
     }
     return _buildNavIndexesUncached();
@@ -3504,6 +3533,18 @@ function _buildNavIndexesUncached() {
         }
     }
 
+    // ── FIRST APPEARANCE INDEX (per Strong's number, both editions) ─────────
+    // "this is not an analysis project, all of this data is static. It
+    // should be in an indexed database" — the earliest (book_id, chapter,
+    // verse) each atomic Strong's number is ever seen, across BOTH editions.
+    // Filled in here (HEB, below) and again during the `allRows` pass further
+    // down (BHS) — no extra queries for either: both loops already walk every
+    // row for their own purposes, this just records a location alongside.
+    // Aggregated up to the ROOT level (every homograph SN sharing one root's
+    // exact spelling) once both passes are done — see _firstAppearanceByRoot
+    // near the end of this function.
+    const firstBySn = new Map();   // 'H5674' -> {book_id,chapter,verse}
+
     // ── HEB EDITION, SAME MAPS ──────────────────────────────────────────────
     // One streamed pass fills the root counts here and stages the surface counts
     // for the section below, so the whole-corpus numbers come from one read.
@@ -3526,6 +3567,13 @@ function _buildNavIndexesUncached() {
             const n = parseInt(String(sn).replace(/\D/g, ''), 10) || 0;
             return n > 0 && n < 9000;
         });
+        // hebNavIterate() is not ordered by location (it's a plain join over
+        // surface_occurrences), so this must compare-and-keep-earliest rather
+        // than trust stream order — unlike the BHS pass below, which can rely
+        // on its query's own ORDER BY.
+        for (const sn of usableAtomics) {
+            _recordFirst(firstBySn, sn, { book_id: r.book_id, chapter: r.chapter, verse: r.verse });
+        }
         for (const sn of usableAtomics) {
             let e = bySn.get(sn);
             // A Strong's seen ONLY in the NT gets its display form from the HEB
@@ -3565,6 +3613,23 @@ function _buildNavIndexesUncached() {
             if (e.count === 0) { e.count = 1; e.bestCnt = 1; if (!e.bestSurface) e.bestSurface = ov.word_raw || ''; }
         }
     }
+    // Same guarantee for the first-appearance index: a synthetic SN's only
+    // location record comes from the override key itself (book_id/chapter/
+    // verse aren't stored on the value, only encoded in the key — see
+    // locOverridesTargeting above), so without this an override-only SN
+    // would have no firstBySn entry at all and its root would silently fall
+    // back to whatever ITS other homographs' earliest is (or "—" if it has
+    // none).
+    for (const [key, ov] of Object.entries(locationOverrides || {})) {
+        if (!ov || !ov.strongs) continue;
+        const [book_id, chapter, verse] = key.split(':').map(Number);
+        if (!Number.isFinite(book_id) || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
+        for (const snRaw of String(ov.strongs).split('＋')) {
+            const sn = navNormSN(snRaw);
+            if (!sn || sn === 'H') continue;
+            _recordFirst(firstBySn, sn, { book_id, chapter, verse });
+        }
+    }
 
     _rootNavIndex = [...bySn.values()].map(e => {
         // Canonical lemma Paleo if we have it; otherwise the commonest surface.
@@ -3596,6 +3661,19 @@ function _buildNavIndexesUncached() {
         WHERE word_raw IS NOT NULL AND word_raw != ''
         ORDER BY book_id, chapter, verse, token_ordinal
     `).all();
+
+    // BHS half of the first-appearance index (see firstBySn above) — reuses
+    // this SAME already-fetched, already-ascending-ordered array rather than
+    // issuing a second query. Raw `strongs` column values, same as the
+    // snRows aggregate above — no fold/match validation, which is what makes
+    // this a single O(n) pass instead of one query per Strong's number.
+    for (const r of allRows) {
+        if (!r.strongs) continue;
+        const atomics = String(r.strongs).split('＋').map(navNormSN).filter(s => s && s !== 'H');
+        for (const sn of atomics) {
+            _recordFirst(firstBySn, sn, { book_id: r.book_id, chapter: r.chapter, verse: r.verse });
+        }
+    }
 
     const bySurface = new Map();   // surface → { surface, count, byBook:Map, snCnt:Map }
     let i = 0;
@@ -3659,7 +3737,25 @@ function _buildNavIndexesUncached() {
         _wordBySn.get(e.sn).push(idx);
     });
 
-    console.log(`Nav indexes built: ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces`);
+    // ── 3. FIRST APPEARANCE, AGGREGATED UP FROM SN TO ROOT ───────────────────
+    // "I know that the first usage of 𐤀𐤌𐤍 is Genesis 15:6 but this is
+    // suggesting a homograph. This is a word that all strongs #s for it mean
+    // the same thing" — a root can be filed under several Strong's numbers
+    // (verb-stem/homograph splits); the answer VersePage wants is the
+    // earliest location among ALL of them, keyed by the root's exact
+    // spelling, not by whichever one number a given occurrence happens to
+    // carry. _rootNavIndex (just built above) already has exactly one entry
+    // per (root, sn) pair, so a single pass over it — looking up each entry's
+    // own sn in firstBySn and keeping the earliest per root — reproduces the
+    // old live endpoint's cross-SN aggregation exactly, just once for every
+    // root instead of once per request per root.
+    _firstAppearanceByRoot = new Map();   // root paleo -> {book_id,chapter,verse}
+    for (const e of _rootNavIndex) {
+        const loc = firstBySn.get(e.sn);
+        if (loc) _recordFirst(_firstAppearanceByRoot, e.root, loc);
+    }
+
+    console.log(`Nav indexes built: ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces, ${_firstAppearanceByRoot.size} first-appearances`);
     // Persist to disk so the next process start can skip the rebuild.
     _saveNavCache();
 }
@@ -7063,6 +7159,8 @@ function getRootIndexBySN(sn) {
 }
 function getRootIndexByValue(root) { return _rootByValue?.get(root) ?? -1; }
 function getSurfIndexByValue(surf) { return _surfByValue?.get(surf)  ?? -1; }
+// O(1) — see the "FIRST APPEARANCE INDEX" build step in buildNavIndexes().
+function getFirstAppearanceByRoot(root) { return _firstAppearanceByRoot?.get(root) || null; }
 
 app.get('/api/nav/roots', (req, res) => {
     try {
@@ -7483,7 +7581,7 @@ app.post('/admin/rebuild-indexes', (req, res) => {
     _rootByValue  = null;
     _surfByValue  = null;
     _rootBySN     = null;
-    _firstByRootLettersCache.clear();
+    _firstAppearanceByRoot = null;   // rebuilt fresh inside buildNavIndexes() below
     _firstBySurfaceCache.clear();
     try {
         buildNavIndexes();
@@ -7603,7 +7701,7 @@ function _applyLocOverrideChangeNow() {
     _lexiconCache = null;
     _rootNavIndex = null; _surfNavIndex = null;
     _rootByValue = null; _surfByValue = null; _rootBySN = null; _wordBySn = null;
-    _firstByRootLettersCache.clear();
+    _firstAppearanceByRoot = null;   // rebuilt fresh inside buildNavIndexes() below
     _firstBySurfaceCache.clear();
     buildNavIndexes();
 }
@@ -8907,53 +9005,31 @@ app.get('/api/root-explorer/verses', production.cache(60), (req, res) => {
 // homograph splits) — searching only one number found the first verse for
 // whichever number got asked for, not the letters themselves ("I know that
 // the first usage of 𐤀𐤌𐤍 is Genesis 15:6 but this is suggesting a homograph
-// ... all strongs #s for it mean the same thing"). This aggregates every
-// number sharing the exact spelling and returns whichever comes canonically
-// earliest — one request for the whole verse's worth of words, not one
-// round trip per word.
-// "the time to calculate first verse location is not acceptable. This is
-// something that should be known in the concordance" — cached in-memory per
-// distinct root text for the life of the process (_firstByRootLettersCache,
-// cleared alongside _rootNavIndex at every lexicon hot-reload / admin
-// rebuild — see those call sites above). The first request for a given root
-// still does the real scan; every later request for that root, from ANY
-// verse, returns instantly instead of re-deriving it.
+// ... all strongs #s for it mean the same thing"). getFirstAppearanceByRoot()
+// already aggregated every number sharing the exact spelling at build time —
+// see buildNavIndexes()'s "FIRST APPEARANCE, AGGREGATED UP FROM SN TO ROOT"
+// step — so this route is just a Map lookup per requested root now.
+// "this is not an analysis project, all of this data is static. It should
+// be in an indexed database" — this used to compute the answer live on a
+// cache MISS (a per-Strong's-number SQL query plus a full occurrence scan,
+// repeated for every root not already warmed in an in-memory Map that a
+// deploy restart wiped clean). Now there is no miss case at all: every root
+// in the Bible already has its answer sitting in _firstAppearanceByRoot,
+// built once in buildNavIndexes() and reloaded from the on-disk nav-index
+// cache (nav-index.cache.json) on every subsequent server start — a normal
+// deploy (code changed, corpus/lexicon did not) never recomputes anything
+// here, it just loads the file.
 app.get('/api/root-explorer/first-by-letters', production.cache(3600), (req, res) => {
     try {
         const raw = String(req.query.roots || '').trim();
         if (!raw) return res.status(400).json({ error: 'roots param required (comma-separated paleo root text)' });
         const roots = [...new Set(raw.split(',').map(s => s.trim()).filter(Boolean))].slice(0, 50);
-        const index = getRootNavIndex();
         const results = {};
         for (const rootPaleo of roots) {
-            if (_firstByRootLettersCache.has(rootPaleo)) {
-                results[rootPaleo] = _firstByRootLettersCache.get(rootPaleo);
-                continue;
-            }
-            // Every index entry whose LETTERS match exactly, regardless of
-            // which Strong's number it's filed under.
-            const sns = [...new Set(index.filter(e => e.root === rootPaleo).map(e => e.sn))];
-            let best = null;
-            for (const sn of sns) {
-                // findWordOccurrences' own BHS-side result is already sorted
-                // book/chapter/verse ascending, but a SN with ONLY HEB-edition
-                // occurrences (appended separately, unsorted relative to BHS)
-                // wouldn't be — scan the whole list per SN rather than
-                // trusting occ[0], since this only runs once per root, ever.
-                const occ = findWordOccurrences(sn, w => w.sn === sn, null);
-                for (const o of occ) {
-                    if (!best || o.book_id < best.book_id ||
-                        (o.book_id === best.book_id && o.chapter < best.chapter) ||
-                        (o.book_id === best.book_id && o.chapter === best.chapter && o.verse < best.verse)) {
-                        best = o;
-                    }
-                }
-            }
-            const hit = best
-                ? { book_id: best.book_id, book_name: BOOK_NAMES[best.book_id] || `Book ${best.book_id}`, chapter: best.chapter, verse: best.verse }
+            const loc = getFirstAppearanceByRoot(rootPaleo);
+            results[rootPaleo] = loc
+                ? { book_id: loc.book_id, book_name: BOOK_NAMES[loc.book_id] || `Book ${loc.book_id}`, chapter: loc.chapter, verse: loc.verse }
                 : null;
-            _firstByRootLettersCache.set(rootPaleo, hit);
-            results[rootPaleo] = hit;
         }
         res.json({ results });
     } catch (err) {

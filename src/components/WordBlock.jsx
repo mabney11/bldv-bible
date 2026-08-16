@@ -115,6 +115,10 @@ const escapeHtml = s => String(s || '')
  *   transliterations[]: { css, text, altAttr }
  *   rootTrans[]:   { lemmaPrefixHtml, clean }   — translated root parts
  *   modTrans[]:    { css, clean, altAttr }      — translated modifier parts
+ *   hasRootComp:   bool — true if any component is css==='root' (see WordRow's
+ *                  Transliteration column, which capitalizes every component
+ *                  only when this is false — a word built entirely from
+ *                  prefix/suffix particles with no lexical root of its own)
  */
 export function computeWordParts(wordObj) {
   const out = {
@@ -147,8 +151,15 @@ export function computeWordParts(wordObj) {
 
   // Does this block have a root-class component at all? A block whose only
   // content word is a proper noun does not — the server classes proper nouns
-  // mod-nmpr — and the name should still head it.
+  // mod-nmpr — and the name should still head it. Exposed on `out` (below)
+  // for WordRow's Transliteration column: "these words are a prefix and
+  // suffix with no root, I want to treat them both as roots" (Lakam, for +
+  // your) "but YaIbaraW should not be YaIbaraw" (Ibar HAS a real root, so
+  // its bound suffix stays lowercase like everywhere else) — the rule is
+  // exactly hasRootComp: false means capitalize every component, true means
+  // don't.
   const hasRootComp = comps.some(c => c && c.css === 'root');
+  out.hasRootComp = hasRootComp;
   // "I should see 'believe / have faith' in the second column, right next to
   // 𐤀𐤌𐤍" — a standalone word whose ONE component is tagged with a
   // PREFIX_FULL/SUFFIX_PREFIXES class (mod-advb, mod-nega, mod-prps, …) was
@@ -614,8 +625,16 @@ export function WordRow({ wordObj, children }) {
   // the root's, colored per-component the same way HebrewViewer's own
   // .w-translit line is (see transliterationsToHtml above).
   const hasTranslit = parts.transliterations.some(t => t.text);
+  // "we don't need to capitalize suffixes, but LaKam I want is a special
+  // circumstance, these words are a prefix and suffix with no root, I want
+  // to treat them both as roots... YaIbaraW should not be YaIbaraw" — force
+  // capitalization ONLY when the word has no root component at all (Lakam:
+  // mod-prep + prs-2mp, nothing else). A word with a real root (Ibar, Dawar,
+  // …) already gets correct casing straight from the data — prefixes and
+  // roots come pre-capitalized, bound suffixes come lowercase — so it's left
+  // alone here.
   const translitHtml = useMemo(
-    () => transliterationsToHtml(parts.transliterations, { capitalizeEach: true }),
+    () => transliterationsToHtml(parts.transliterations, { capitalizeEach: !parts.hasRootComp }),
     [parts]
   );
   const sn = fmtSN(wordObj.strongs);

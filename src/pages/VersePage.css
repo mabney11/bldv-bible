@@ -122,7 +122,16 @@
   left: 50%;
   transform: translateX(-50%);
   margin: 0 0 4px;
-  overflow-x: auto; /* safety net only — not expected to trigger at this width */
+  /* "add a border around the table" — on the wrap rather than the <table>
+     itself, so the border also frames the padding around the edges and (in
+     the mobile media query below) still reads as one enclosing card around
+     the whole stack of per-word cards, not just a line under the header
+     row. overflow:auto (not hidden) keeps the horizontal-scroll safety net
+     while still clipping content to the rounded corners. */
+  padding: 4px 16px;
+  border: 1px solid var(--pr-rule);
+  border-radius: 10px;
+  overflow: auto;
 }
 .vp-wordtable {
   width: 100%;
