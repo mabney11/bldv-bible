@@ -88,11 +88,21 @@ function compDescsToHtml(compDescs) {
 // safe cue to the same boundary. Scoped to WordRow only (via this opt) so
 // WordBlock's own established translit line elsewhere is untouched.
 function transliterationsToHtml(transliterations, opts = {}) {
-  return transliterations.map(t => {
+  // "there should be dashes wherever they are in hebrew" — a compound word's
+  // transliteration reads as one run-on word without a visible seam between
+  // its morphemes (Il + Kapayam -> "IlKapayam"), even with per-component
+  // color. A literal hyphen between components (Il-Kapayam, Pan-ThaNagap)
+  // makes the boundary explicit regardless of color. Only entries with real
+  // text get a dash BETWEEN them — an empty/blank component (no translit,
+  // e.g. an unmarked mark-adjacent slot) contributes nothing and must not
+  // leave a stray leading/trailing/doubled "-".
+  const withText = transliterations.filter(t => t && t.text);
+  return withText.map((t, i) => {
     const altAttr = t.altAttr ? ` data-alt="${t.altAttr}"` : '';
     let text = t.text;
     if (opts.capitalizeEach && text) text = text.charAt(0).toUpperCase() + text.slice(1);
-    return `<span class="${t.css}"${altAttr}>${escapeHtml(text)}</span>`;
+    const dash = i > 0 ? '<span class="wr-translit-dash">-</span>' : '';
+    return `${dash}<span class="${t.css}"${altAttr}>${escapeHtml(text)}</span>`;
   }).join('');
 }
 

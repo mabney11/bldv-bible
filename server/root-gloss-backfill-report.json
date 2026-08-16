@@ -1,0 +1,29 @@
+{
+  "mode": "dry-run",
+  "passACount": 3,
+  "passBCount": 1,
+  "changeLog": [
+    {
+      "book_id": 19,
+      "chapter": 91,
+      "verse": 2,
+      "before": "I will amar (spoke) of Yahawah, \"He is my machasah (refuge) and my matzawad (fortress); my Alahayam, in whom I batach (trust).",
+      "after": "I will amar (spoke) of Yahawah (Alahay of Yasharaal), \"He is my machasah (refuge) and my matzawad (fortress); my Alahayam (Alahayam), in whom I batach (trust).",
+      "notes": [
+        "PASS A: inserted \"(Alahay of Yasharaal)\" after \"Yahawah\"",
+        "PASS A: inserted \"(Alahayam)\" after \"Alahayam\""
+      ]
+    },
+    {
+      "book_id": 19,
+      "chapter": 91,
+      "verse": 9,
+      "before": "Because you have made Yahweh your refuge, and the Ilayawan your dwelling place,",
+      "after": "Because you have made Yahawah your refuge, and the Ilayawan (Most High) your dwelling place,",
+      "notes": [
+        "PASS A: inserted \"(Most High)\" after \"Ilayawan\"",
+        "PASS B: name-map substitution applied"
+      ]
+    }
+  ]
+}

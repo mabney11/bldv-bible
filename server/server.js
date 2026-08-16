@@ -3338,7 +3338,21 @@ function _navCacheStamp() {
     // written before that field existed has no `firstAppearance` payload —
     // without this bump it would still look "current" (same corpus/lexicon
     // mtimes) and _firstAppearanceByRoot would silently stay null forever.
-    const NAV_BUILD_VERSION = 'wordsurf-v5-firstapp';   // roots by Strong's #, word-level surfaces, both editions, root first-appearance index
+    // BUMPED again (2026-08-16b) for per-SN surface breakdowns (`by_sn`): a
+    // real bug report — H3353 Yaqawash's root-explorer page showed Hosea in
+    // its "by book" tally with 0 actual occurrences findable there. Root
+    // cause: _surfNavIndex aggregated count/by_book PER SPELLING, picked one
+    // "dominant" Strong's number to represent the whole entry, then exposed
+    // the FULL pooled numbers (every homograph SN sharing that spelling)
+    // under that one dominant SN. A spelling shared with a different SN's
+    // occurrence in Hosea leaked into H3353's totals even though that
+    // occurrence isn't H3353 at all. `by_sn` now carries a real per-SN
+    // (count, by_book) breakdown so a query for one specific SN sees only
+    // that SN's own occurrences. A cache written before this field existed
+    // would otherwise look "current" and every root-explorer page would
+    // keep showing pooled (potentially wrong) numbers until the next
+    // unrelated cache invalidation.
+    const NAV_BUILD_VERSION = 'wordsurf-v6-sn-scoped-surfaces';   // roots by Strong's #, word-level surfaces (now per-SN scoped), both editions, root first-appearance index
     const inputs = [
         path.join(__dirname, 'corpus.db'),             // tokens_bhs — the text the index is built from
         path.join(__dirname, 'surface-index.db'),      // the HEB half of the nav index
@@ -3587,10 +3601,19 @@ function _buildNavIndexesUncached() {
         const surface = _paleoOnly(r.word_raw);
         if (!surface) continue;
         let se = hebSurf.get(surface);
-        if (!se) { se = { surface, count: 0, byBook: new Map(), snCnt: new Map() }; hebSurf.set(surface, se); }
+        if (!se) { se = { surface, count: 0, byBook: new Map(), snCnt: new Map(), snByBook: new Map() }; hebSurf.set(surface, se); }
         se.count++;
         se.byBook.set(r.book_id, (se.byBook.get(r.book_id) || 0) + 1);
-        for (const sn of usableAtomics) se.snCnt.set(sn, (se.snCnt.get(sn) || 0) + 1);
+        // snByBook: same per-book tally as byBook above, but scoped per Strong's
+        // number — see the NAV_BUILD_VERSION comment on why this exists (a
+        // spelling shared by more than one SN must not leak one SN's book
+        // counts into another's root-explorer page).
+        for (const sn of usableAtomics) {
+            se.snCnt.set(sn, (se.snCnt.get(sn) || 0) + 1);
+            let snBook = se.snByBook.get(sn);
+            if (!snBook) { snBook = new Map(); se.snByBook.set(sn, snBook); }
+            snBook.set(r.book_id, (snBook.get(r.book_id) || 0) + 1);
+        }
     }
 
     // Guarantee every location-override target resolves as a root, even a
@@ -3688,10 +3711,13 @@ function _buildNavIndexesUncached() {
         for (const w of foldRowsToWords(verseRows)) {
             if (paleoCharCount(w.surface) < 1) continue;
             let e = bySurface.get(w.surface);
-            if (!e) { e = { surface: w.surface, count: 0, byBook: new Map(), snCnt: new Map() }; bySurface.set(w.surface, e); }
+            if (!e) { e = { surface: w.surface, count: 0, byBook: new Map(), snCnt: new Map(), snByBook: new Map() }; bySurface.set(w.surface, e); }
             e.count++;
             e.byBook.set(bk, (e.byBook.get(bk) || 0) + 1);
             e.snCnt.set(w.sn, (e.snCnt.get(w.sn) || 0) + 1);
+            let snBook = e.snByBook.get(w.sn);
+            if (!snBook) { snBook = new Map(); e.snByBook.set(w.sn, snBook); }
+            snBook.set(bk, (snBook.get(bk) || 0) + 1);
         }
         i = j;
     }
@@ -3702,10 +3728,15 @@ function _buildNavIndexesUncached() {
     // under it, not two half-answers.
     for (const h of hebSurf.values()) {
         let e = bySurface.get(h.surface);
-        if (!e) { e = { surface: h.surface, count: 0, byBook: new Map(), snCnt: new Map() }; bySurface.set(h.surface, e); }
+        if (!e) { e = { surface: h.surface, count: 0, byBook: new Map(), snCnt: new Map(), snByBook: new Map() }; bySurface.set(h.surface, e); }
         e.count += h.count;
         for (const [b, n] of h.byBook)  e.byBook.set(b, (e.byBook.get(b) || 0) + n);
         for (const [sn, n] of h.snCnt)  e.snCnt.set(sn, (e.snCnt.get(sn) || 0) + n);
+        for (const [sn, bookMap] of h.snByBook) {
+            let eb = e.snByBook.get(sn);
+            if (!eb) { eb = new Map(); e.snByBook.set(sn, eb); }
+            for (const [b, n] of bookMap) eb.set(b, (eb.get(b) || 0) + n);
+        }
     }
     if (hebSeen) console.log(`[nav] HEB edition: ${hebSeen.toLocaleString()} occurrences across ${navHebBooks().size} books BHS does not cover`);
 
@@ -3716,10 +3747,27 @@ function _buildNavIndexesUncached() {
         const by_book = [...e.byBook.entries()]
             .map(([book_id, occ]) => ({ book_id, occ }))
             .sort((a, b) => b.occ - a.occ || a.book_id - b.book_id);
+        // Per-SN breakdown — see the NAV_BUILD_VERSION comment above buildNavIndexes
+        // for why this exists: `count`/`by_book` above are pooled across EVERY SN
+        // that shares this exact spelling (a real homograph, or a mis-tagged
+        // occurrence). A caller asking about ONE specific SN (the root-explorer
+        // page) must read its own slice here, not the pooled totals, or a book
+        // where only a DIFFERENT SN's occurrence of this spelling happened shows
+        // up as a false hit under this SN.
+        const by_sn = {};
+        for (const [sn, bookMap] of e.snByBook) {
+            by_sn[sn] = {
+                count: e.snCnt.get(sn) || 0,
+                by_book: [...bookMap.entries()]
+                    .map(([book_id, occ]) => ({ book_id, occ }))
+                    .sort((a, b) => b.occ - a.occ || a.book_id - b.book_id),
+            };
+        }
         return {
             surface: e.surface,
             paleo:   e.surface,
             sn:      bestSn,
+            by_sn,
             root:    getCanonicalRoot(bestSn, e.surface) || e.surface,
             count:   e.count,
             by_book,
@@ -8936,14 +8984,27 @@ app.get('/api/root-explorer/root', production.cache(60), (req, res) => {
 
         // Surface forms = the orthographic words whose root is this Strong's
         // number, from the word-level index. Per-word counts, no prefix morphemes.
+        //
+        // IMPORTANT: read each word's SN-SCOPED slice (w.by_sn[entry.sn]), not
+        // its pooled w.count/w.by_book. A spelling can be shared by more than
+        // one Strong's number (a real homograph, or a mis-tagged occurrence
+        // elsewhere) — getSurfacesForSN(entry.sn) returns that surface entry
+        // whenever entry.sn happens to be its DOMINANT tag, but the pooled
+        // fields include every OTHER SN's occurrences of that same spelling
+        // too. Reading w.by_sn[entry.sn] instead scopes strictly to what this
+        // root actually accounts for, fixing a real report: H3353 Yaqawash's
+        // page showed a Hosea occurrence in "by book" with zero verses to
+        // show for it, because that particular spelling also occurs in Hosea
+        // under a different SN, and the pooled tally didn't distinguish them.
         const wordForms = getSurfacesForSN(entry.sn);
         const surfaces = wordForms
-            .map(w => ({ word_raw: w.surface, strongs: entry.sn, pos: '', occ: w.count }))
+            .map(w => ({ word_raw: w.surface, strongs: entry.sn, pos: '', occ: (w.by_sn?.[entry.sn]?.count) ?? w.count }))
             .sort((a, b) => b.occ - a.occ);
-        const total = wordForms.reduce((s, w) => s + (w.count || 0), 0);
+        const total = surfaces.reduce((s, w) => s + (w.occ || 0), 0);
         const byBookMap = new Map();
         for (const w of wordForms) {
-            for (const bb of (w.by_book || [])) byBookMap.set(bb.book_id, (byBookMap.get(bb.book_id) || 0) + bb.occ);
+            const scopedByBook = w.by_sn?.[entry.sn]?.by_book ?? w.by_book ?? [];
+            for (const bb of scopedByBook) byBookMap.set(bb.book_id, (byBookMap.get(bb.book_id) || 0) + bb.occ);
         }
         const by_book = [...byBookMap.entries()]
             .map(([book_id, occ]) => ({ book_id, name: BOOK_NAMES[book_id] || `Book ${book_id}`, occ }))
