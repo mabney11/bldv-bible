@@ -88,29 +88,25 @@ function compDescsToHtml(compDescs) {
 // safe cue to the same boundary. Scoped to WordRow only (via this opt) so
 // WordBlock's own established translit line elsewhere is untouched.
 function transliterationsToHtml(transliterations, opts = {}) {
-  // "there should be dashes wherever they are in hebrew" — a compound word's
-  // transliteration reads as one run-on word without a visible seam between
-  // its morphemes, even with per-component color. A dash between components
-  // makes the boundary explicit.
-  //
-  // "i dont want the dashes if there is not a genuine symbol" / "you took my
-  // 'remove dashes' too far, I said only when they dont exist in the
-  // underlying data" — a dash marks a seam between two REAL written
-  // Paleo-Hebrew letters (or a real underlying mark, e.g. maqaf ־/sof-pasuq
-  // ׃, which already render via trailingMark, not this function). A
-  // component whose text has no actual glyph behind it (hasGlyph: false —
-  // synthetic/blank, not a real U+10900–U+1091F letter) isn't a genuine
-  // boundary from the underlying data, so no dash renders on either side of
-  // it — but a dash DOES render between two components that both carry a
-  // real glyph, restored after an earlier pass removed dashes altogether.
-  const withText = transliterations.filter(t => t && t.text);
-  return withText.map((t, i) => {
+  // A dash-between-components format ("Il-Kapayam") was tried, narrowed to
+  // only "genuine symbol" boundaries, fully removed, then partly restored —
+  // several rounds this session. Settled for good, on two pieces of concrete
+  // evidence rather than wording alone: (1) Parallel.jsx's OWN word renderer
+  // (its local WordBlock, not this shared one) never inserted a dash and was
+  // called out as the reference to match — "/parallel seems to handle
+  // everything as expected, the other reader needs to catch up"; (2) the
+  // click-to-copy handler on this same translit line (below, .w-translit)
+  // already writes the plain undashed concatenation to the clipboard — "the
+  // copy has what I expect ... I want what I copy to be seen, not
+  // Wa-Atha-Ha-Aratz". Displaying a dash the copy never had was the
+  // inconsistency; removing it here makes the on-screen text match both the
+  // copy value and Parallel's own rendering. Real underlying marks (maqaf ־,
+  // sof-pasuq ׃) are unaffected — those render via trailingMark, not here.
+  return transliterations.filter(t => t && t.text).map(t => {
     const altAttr = t.altAttr ? ` data-alt="${t.altAttr}"` : '';
     let text = t.text;
     if (opts.capitalizeEach && text) text = text.charAt(0).toUpperCase() + text.slice(1);
-    const prev = withText[i - 1];
-    const dash = (i > 0 && t.hasGlyph && prev && prev.hasGlyph) ? '<span class="wr-translit-dash">-</span>' : '';
-    return `${dash}<span class="${t.css}"${altAttr}>${escapeHtml(text)}</span>`;
+    return `<span class="${t.css}"${altAttr}>${escapeHtml(text)}</span>`;
   }).join('');
 }
 
@@ -212,7 +208,7 @@ export function computeWordParts(wordObj) {
 
     const ordinal = comp.token_ordinal != null ? comp.token_ordinal : wordObj.token_ordinal;
     out.compDescs.push({ css: comp.css, paleo: comp.paleo, altAttr, ordinal });
-    out.transliterations.push({ css: comp.css, text: comp.translit || '', altAttr, hasGlyph: hasPaleo(comp.paleo) });
+    out.transliterations.push({ css: comp.css, text: comp.translit || '', altAttr });
 
     const clean = (comp.translation || '').replace(/[\[\]]/g, '');
     // The redundancy rule (gloss === transliteration) is what hides proper
