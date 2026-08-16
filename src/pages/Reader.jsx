@@ -219,7 +219,7 @@ function renderVerseNodes(t, mode, keyPrefix = '') {
     // fixed for the divine-title/no-gloss spots above, so route it the same way.
     nodes.push(
       readerHasPaleo(heb)
-        ? <span className="rd-root" key={`${keyPrefix}${key++}`} dangerouslySetInnerHTML={{ __html: paleoToSVG(heb) }} />
+        ? <span className="rd-root" dir="rtl" key={`${keyPrefix}${key++}`} dangerouslySetInnerHTML={{ __html: paleoToSVG(heb) }} />
         : <span className="rd-root" key={`${keyPrefix}${key++}`}>{heb}</span>
     );
     if (quote) nodes.push(quote);
