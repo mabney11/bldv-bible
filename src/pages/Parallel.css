@@ -154,8 +154,22 @@
 .par-mwb-wrap.lnk .multi-word-block .visible-text {
   color: var(--gold, #c8a557);
 }
-.par-mwb-wrap.hl .multi-word-block .visible-text {
-  background: color-mix(in srgb, var(--gold) 30%, transparent); border-radius: 4px;
+/* 2026-08-17: this never actually painted anything — components/WordBlock.css
+   has a global `body .multi-word-block .visible-text { background:
+   transparent !important; ... }` reset (kills the "grey card behind every
+   glyph" look) that beats a plain, non-important rule regardless of
+   selector specificity. That same file's own convention for surviving the
+   reset is right below its reset block: prefix with `body`, mark
+   `!important`, and place a MORE specific selector — `body .clickable-comp.hl`
+   is the existing example, but that targets `.hl` sitting directly ON the
+   glyph span, whereas Parallel puts `.hl` on the `.par-mwb-wrap` ANCESTOR
+   (so the click-to-link hover state doesn't fight MultiWordBlock's own
+   markup) — so it needs its own re-assert, not just the existing one.
+   Confirmed via computed-style inspection on production: the class WAS
+   present on hover, `background-color` was still transparent. */
+body .par-mwb-wrap.hl .multi-word-block .visible-text {
+  background: color-mix(in srgb, var(--gold) 30%, transparent) !important;
+  border-radius: 4px !important;
 }
 /* MultiWordBlock shows THREE lines for a morphologically-tagged word (Greek
    NT, etc.): the word, its own transliteration, AND its dictionary lemma

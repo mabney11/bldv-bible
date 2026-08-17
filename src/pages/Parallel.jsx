@@ -633,11 +633,20 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
                 // english hebrew glosses like the novel reader, the other
                 // language... can remain grey."
                 const isRoot = glossOwner[idx] === idx;
+                // The trailing space used to live INSIDE the span (`{text}{' '}`),
+                // so a highlighted/linked word's background/underline box
+                // stretched to cover that space too — visibly oversized next to
+                // its neighbor (fieldy, 2026-08-17: strip highlights to content).
+                // Rendering it as a sibling text node after the span keeps the
+                // same whitespace between words with no box around it.
                 return (
-                  <span key={idx} className={`en-w ${isRoot ? 'en-root' : ''} ${link ? 'lnk' : ''} ${enIsHl(ownerIdx) ? 'hl' : ''}`}
-                        onMouseEnter={() => link && setHovered({ verse: v, links: [link] })}
-                        onMouseLeave={() => link && setHovered(null)}>
-                    {text}{' '}
+                  <span key={idx}>
+                    <span className={`en-w ${isRoot ? 'en-root' : ''} ${link ? 'lnk' : ''} ${enIsHl(ownerIdx) ? 'hl' : ''}`}
+                          onMouseEnter={() => link && setHovered({ verse: v, links: [link] })}
+                          onMouseLeave={() => link && setHovered(null)}>
+                      {text}
+                    </span>
+                    {' '}
                   </span>
                 );
               })}

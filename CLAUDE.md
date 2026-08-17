@@ -1,5 +1,32 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## `components/WordBlock.css`'s `!important` card-reset beats any new highlight rule that doesn't also use `!important` (added 2026-08-17)
+
+`WordBlock.css` has a `body .word-block .visible-text, body .multi-word-block
+.visible-text { background: transparent !important; padding: 0 !important; ... }`
+block (search "NO WORD CARDS") that strips the grey card background EVERY
+`.paleo`/`.visible-text` element would otherwise get from a bare `.paleo{…}`
+rule, across every reader page. Its own comment says the fix for a NEW
+highlight state that needs to survive it is to add a MORE specific selector,
+ALSO marked `!important`, placed after it — and shows the pattern with `body
+.clickable-comp.hl`. That existing exception only covers `.hl` sitting
+directly on the glyph span itself. **A new page that puts `.hl` (or `.lnk`,
+or any state class) on an ANCESTOR wrapper instead — as Parallel.jsx's
+`.par-mwb-wrap.hl` does, so the click-to-link hover doesn't fight
+MultiWordBlock's own internal markup — needs its OWN `body`-prefixed,
+`!important` re-assert rule.** A plain, non-important rule (even with high
+class-selector specificity) silently loses to the reset regardless of
+specificity math, because `!important` always wins over non-important
+regardless of selector weight. Found 2026-08-17: Parallel.css's `.par-mwb-wrap.hl
+.multi-word-block .visible-text { background: color-mix(...) }` (no
+`!important`) had the class correctly toggling on hover (confirmed via
+`getComputedStyle` + `element.className` inspection) but painted nothing —
+`background-color` computed to fully transparent every time. Any FUTURE
+background/border/padding/box-shadow treatment added to `.paleo`/
+`.visible-text`/`.multi-word-block` anywhere in the app needs the same
+`body`-prefix + `!important` treatment or it will look identical: class
+present, state correct, nothing visibly different on screen.
+
 ## Non-Hebrew lexicon entries must embed the Hebrew-root translit, or Auto-Link silently no-ops (added 2026-08-17)
 
 **Rule, fieldy verbatim: "hebrew roots should be cast into other language lexicons for

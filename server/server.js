@@ -4196,6 +4196,15 @@ app.get('/api/sources', production.cache(3600), (req, res) => {
         book_count:    s.book_count    ?? null,
         book_range:    s.book_range    ?? null,
         surface_count: s.surface_count ?? null,
+        // Found 2026-08-17: this mapping never included `worksOnly`, so every
+        // client-side `!s.worksOnly` check (Parallel.jsx's source-language
+        // filter, meant to hide GRC/"Greek Literature" — a literary-works-only
+        // corpus with no Bible verse content — from the per-verse language
+        // picker) always read `undefined`, i.e. always passed, i.e. never
+        // actually filtered anything. Fieldy: "greek lit is also available to
+        // select but it has no content, there is no reason for those to exist
+        // in the dropdown if the language isnt available for the verse."
+        worksOnly:     !!s.worksOnly,
     }));
     res.json(out);
 });
