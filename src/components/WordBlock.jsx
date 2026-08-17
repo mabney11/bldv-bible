@@ -265,7 +265,7 @@ export function computeWordParts(wordObj) {
         // "aman") — added for WordRow's "Transliteration" column, which sits
         // between Root and Definition ("i forgot, there should be a
         // transliteration column before the definition").
-        out.rootTrans.push({ lemmaPrefixHtml, clean, paleo: comp.paleo, translit: comp.translit || '' });
+        out.rootTrans.push({ lemmaPrefixHtml, clean, paleo: comp.paleo, trueRoot: comp.true_root || null, translit: comp.translit || '' });
       } else {
         // paleo here too, same reason — WordRow's "Modifications" column
         // pairs each prefix/suffix's own glyph with its gloss (e.g. "𐤅 and"),

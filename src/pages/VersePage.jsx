@@ -124,13 +124,18 @@ export default function VersePage() {
     const roots = new Set();
     for (const w of hebrewWords) {
       const parts = computeWordParts(w);
-      // The root component's own bare letters when this word actually has a
-      // distinct root+affixes shape; for a word that IS its own root (a bare
-      // particle like "Laa"/NOT, classed as a modifier since there's no
-      // separate root component at all) fall back to the word's full letters
-      // — there's nothing else to search by, and that full form already IS
-      // just those letters with nothing attached.
-      const rootPaleo = parts.rootTrans[0]?.paleo || parts.purePaleo || null;
+      // The CANONICAL root letters (server's true_root, e.g. 𐤉𐤔𐤏), not the
+      // reader-facing display root — the display root keeps surface matres/
+      // restored radicals baked in (e.g. 𐤉𐤅𐤔𐤉𐤏 for a hifil form of H3467),
+      // and _firstAppearanceByRoot on the server is keyed by the exact
+      // canonical spelling from strongs-roots.json. Looking up a display
+      // variant that includes those extra letters never matches an index
+      // entry, so the cell silently rendered "—" for any word whose root
+      // picked up a mater or restored radical. Falls back to the display
+      // paleo (then the word's own full letters) only when the server sent
+      // no true_root at all, so a word with no separate root component still
+      // has something to search by.
+      const rootPaleo = parts.rootTrans[0]?.trueRoot || parts.rootTrans[0]?.paleo || parts.purePaleo || null;
       if (rootPaleo && !(`root:${rootPaleo}` in firstOcc)) roots.add(rootPaleo);
     }
     if (!roots.size) return;
@@ -294,7 +299,11 @@ export default function VersePage() {
                       <tbody>
                         {hebrewWords.map((w, i) => {
                           const parts = computeWordParts(w);
-                          const rootPaleo = parts.rootTrans[0]?.paleo || parts.purePaleo || null;
+                          // Keep in sync with the lookup-batching effect above:
+                          // must use the same canonical trueRoot key that was
+                          // requested, or this row's lookupKey never matches
+                          // what firstOcc was actually populated with.
+                          const rootPaleo = parts.rootTrans[0]?.trueRoot || parts.rootTrans[0]?.paleo || parts.purePaleo || null;
                           return (
                             <WordRow key={i} wordObj={w}>
                               <td className="wr-cell wr-first" data-label="Root first appearance">{renderFirstHit(rootPaleo && `root:${rootPaleo}`)}</td>
