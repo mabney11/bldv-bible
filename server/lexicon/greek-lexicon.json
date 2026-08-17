@@ -78,7 +78,7 @@
   "ἔχει": "he has",
   "ἡ": "—",
   "ἡμέρα": "yawam / day",
-  "ἡμέραν": "day (acc)",
+  "ἡμέραν": "yawam / day",
   "ἦν": "became",
   "ἰακώβ": "Yaiqab / Jacob",
   "ἰερουσαλήμ": "Jerusalem",
@@ -108,5 +108,11 @@
   "ἀνὰ": "—",
   "μέσον": "bayan / between",
   "φωτὸς": "awar / light",
-  "σκότους": "chashak / darkness"
+  "σκότους": "chashak / darkness",
+
+  "ἐκάλεσεν": "qaraa / called",
+  "νύκτα": "Layalah / night",
+  "ἑσπέρα": "irab / evening",
+  "πρωί": "baqar / morning",
+  "μία": "achad / one"
 }

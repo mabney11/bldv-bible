@@ -215,3 +215,40 @@ same idiom-piece rule as Coptic's `ⲉⲃⲟⲗ`/`ⲁⲛ`/`ⲡⲉ`), `μέσον
 darkness" (genitive, separate key from nominative `σκότος`). `θεὸς` (grave accent) needed
 no new entry — `_canonKey`'s Greek grave→acute normalization already resolves it to the
 existing `θεός` entry automatically.
+
+## 2026-08-15 — Genesis 1:5, Latin/Syriac/Ge'ez/Greek
+
+English (from Gloss Studio's browse pane): "And Alahayam () qaraa (called) the awar
+(light) 'Yawam (Day),' and the chashak (darkness) He qaraa (called) 'Layalah (Night).'
+Hayah (came) irab (evening) and hayah (came) baqar (morning) — yawam (day) achad (one)."
+Four new content words: qaraa (called), Layalah (night), irab (evening), baqar
+(morning), achad (one) — Yawam (day)/chashak (darkness)/hayah (became) already curated.
+
+**Latin**: `Appellavitque` "and qaraa / called" (appellavit + enclitic -que, same
+pattern as v3's `Dixitque`), `Diem` "Yawam / day" (accusative), `tenebras` "chashak /
+darkness" (accusative — separate key from v4's ablative `tenebris`), `Noctem` "Layalah
+/ night", `factumque` "and hayah / became", `vespere` "irab / evening", `mane` "baqar /
+morning", `dies` "Yawam / day" (nominative, separate key from `Diem`), `unus` "achad /
+one".
+
+**Syriac**: filled 9 scaffolds — `ܘܩ̣ܪܐ` "and qaraa / called", `ܩ̣ܪܐ` "qaraa / called"
+(bare, no waw — separate key), `ܐܝܡܡܐ` "Yawam / day" and `ܝܘܡܐ` "Yawam / day" (two
+distinct Syriac day-words in this one verse — "Day" as a proper name vs. "day" as a
+count unit — both map to the same transliterated concept), `ܘܠܚܫܘܟܐ` "and chashak /
+darkness" (waw-prefixed, separate key from v4's `ܠܚܫܘܟܐ`), `ܠܠܝܐ` "Layalah / night",
+`ܪܡܫܐ` "irab / evening", `ܨܦܪܐ` "baqar / morning", `ܚܕ` "achad / one". Also filled
+`ܘܗܘܐ` (no combining dot — a distinct Unicode string from v3's `ܘܗܘ̣ܐ`, same meaning)
+"and hayah / became".
+
+**Ge'ez**: `ወሰመዮ` "and qaraa / called", `ዕለተ` and `መዓልተ` both "Yawam / day" (two
+distinct Ge'ez day-words in one verse, same pattern as Syriac above), `ወለጽልመት` "and
+chashak / darkness" (separate key from `ጽልመት`/`ወጽልመት`), `ሌሊተ` "Layalah / night",
+`ወጸብሐ` "and baqar / morning" (from the root "to dawn"), `፩` "achad / one" (Ge'ez
+numeral digit, U+1369).
+
+**Greek**: `ἐκάλεσεν` "qaraa / called", `νύκτα` "Layalah / night", `ἑσπέρα` "irab /
+evening", `πρωί` "baqar / morning", `μία` "achad / one". Also tightened pre-existing
+`ἡμέραν` from "day (acc)" to "yawam / day" to match `ἡμέρα`'s own style and the
+session's Translit-first convention.
+
+Coptic step skipped entirely — dropped from the app 2026-08-15, see the section above.

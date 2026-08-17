@@ -5851,7 +5851,16 @@ const GS_POS_STRICT = new Set(['inrg']);
 function gsIsGlossed(root_paleo, pos, strongs, lexicon, homographs, hebExtra) {
     const candidates = [];
     const ownSn = strongs ? 'H' + String(strongs).replace(/^H+/, '') : null;
-    if (ownSn) candidates.push(`${root_paleo}_${ownSn}`);
+    // Bare "H<num>" (no root prefix) is a real, checked tier — parseHebrewData's
+    // own "Tier 0" lookup (buildKeys/snKeys above) matches homographs[snNorm]
+    // directly, e.g. homographs.json's "H3915": "night". gsIsGlossed used to only
+    // check the ROOT-prefixed form (`${root_paleo}_H3915`), so a word glossed
+    // entirely through a bare-SN entry rendered correctly in the word block but
+    // still got flagged "NO LEX ENTRY" here — the two lookups had drifted out of
+    // sync. Fieldy, 2026-08-15, on Genesis 1:5's Layalah/H3915: "shouldnt be
+    // treated as non-lexed." Add the bare SN as its own candidate so this tier
+    // is checked here too.
+    if (ownSn) candidates.push(`${root_paleo}_${ownSn}`, ownSn);
     const posLong = GS_POS_LONG[pos];
     if (posLong) candidates.push(`${root_paleo}_${posLong}`);
 
