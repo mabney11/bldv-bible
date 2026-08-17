@@ -382,6 +382,13 @@
   text-transform: none; cursor: pointer;
 }
 .tr-autolink-btn:hover { filter: brightness(1.08); }
+.tr-clearall-btn {
+  background: transparent; color: var(--red, #e05a5a); border: 1px solid var(--red, #e05a5a);
+  padding: 3px 9px; border-radius: 6px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0;
+  text-transform: none; cursor: pointer;
+}
+.tr-clearall-btn:hover { background: color-mix(in srgb, var(--red, #e05a5a) 15%, transparent); }
 
 /* Paleo viewer */
 .tr-paleo-viewer {

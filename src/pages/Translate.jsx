@@ -12,7 +12,7 @@ import {
 } from '../lib/api.js';
 import {
   getAdminStatus, refreshAdminStatus, mergeVerseWithLocal, getLocalVerse, saveLocalVerse, resetLocalVerse,
-  getLocalLinks, addLocalLink, deleteLocalLink, setLocalLinksOverride, resetLocalLinksOverride,
+  getLocalLinks, addLocalLink, deleteLocalLink, clearLocalLinks, setLocalLinksOverride, resetLocalLinksOverride,
   resetAllLocal, hasAnyLocalOverrides,
 } from '../lib/localOverlay.js';
 import { BOOK_NAMES } from '../lib/books.js';
@@ -917,6 +917,32 @@ export default function Translate() {
     } catch (e) { toast('Delete failed: ' + e.message, 'err'); }
   }, [activeBook, activeChapter, activeVerse, tokenSource, links, loadVerse, toast]);
 
+  // Bulk "Clear All" for this verse's Word Links — a quick way to wipe out a
+  // batch of Auto-Link mismatches (or start a verse's links over) without
+  // clicking every individual ✕. Fieldy, 2026-08-16: "I need a way to quickly
+  // remove all links." One confirm covering the whole batch, not one per link.
+  const deleteAllLinks = useCallback(async () => {
+    if (!links.length) return;
+    if (!confirm(`Delete all ${links.length} link${links.length === 1 ? '' : 's'} for this verse?`)) return;
+    try {
+      const { isAdmin: admin } = await getAdminStatus();
+      if (admin) {
+        await Promise.all(links.map(l =>
+          apiTransUnlink({ id: l.id, book_id: activeBook, chapter: activeChapter, verse: activeVerse })
+        ));
+      } else {
+        // One write instead of N — clearLocalLinks sets the whole local
+        // override straight to [], same mechanism deleteLink's single-id
+        // path uses per-link, just without the intermediate read/filter
+        // steps that would otherwise happen N times in a row.
+        await clearLocalLinks(activeBook, activeChapter, activeVerse, tokenSource);
+        setHasLocalEdits(true);
+      }
+      await loadVerse(activeBook, activeChapter, activeVerse);
+      toast(`Deleted ${links.length} link${links.length === 1 ? '' : 's'}`, 'ok');
+    } catch (e) { toast('Delete all failed: ' + e.message, 'err'); }
+  }, [links, activeBook, activeChapter, activeVerse, tokenSource, loadVerse, toast]);
+
   // ── CHAPTER VIEW (read-only overlay) ──────────────────────────────────────
   // Fetches the whole chapter at once and renders each translated verse with
   // English + Paleo side-by-side. Useful for proofreading a chapter end-to-end
@@ -1459,7 +1485,16 @@ export default function Translate() {
                       {/* Existing links */}
                       {links.length > 0 && (
                         <div className="tr-links-list">
-                          <div className="tr-section-label">Established links ({links.length})</div>
+                          <div className="tr-section-label">
+                            Established links ({links.length})
+                            <button
+                              type="button"
+                              className="tr-clearall-btn"
+                              onClick={deleteAllLinks}
+                              title="Delete every link for this verse">
+                              Clear All
+                            </button>
+                          </div>
                           {links.map(l => {
                             const color = lColorForTokens(l, tokens);
                             const isHl  = hoveredLinkId === l.id;
