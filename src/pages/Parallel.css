@@ -96,6 +96,17 @@
    gloss word, not the Greek/Ge'ez/etc. text beside it. */
 .en-w.en-root { color: var(--gold, #c8a557); font-weight: 600; }
 .en-w.hl { background: color-mix(in srgb, var(--gold) 28%, transparent) !important; color: var(--gold2) !important; }
+/* "Missing in this translation" — see Parallel.jsx's sourceCandidateSet /
+   isMissing. A dotted underline (not a background, so it doesn't visually
+   compete with .hl's hover wash) in a dim red — distinct from .en-root's
+   gold, which means "this pair IS present", not "may be absent". Hover for
+   the `title` tooltip explaining what it means. Fieldy, 2026-08-17: "I
+   would like to flag and display that information in the reader." */
+.en-w.en-missing {
+  text-decoration: underline dotted color-mix(in srgb, var(--red, #e05d5d) 65%, transparent);
+  text-underline-offset: 3px;
+  cursor: help;
+}
 
 /* ── Word blocks (glossed) ─────────────────────────────────────────────────*/
 .heb-col-wrap { display: flex; flex-wrap: wrap; direction: rtl; align-items: flex-start; }
@@ -144,16 +155,23 @@
    see MultiViewer.css's note on why the gold accent belongs on the English
    side (.en-root in this file) instead. */
 .par-mwb-wrap { display: contents; }
-/* 2026-08-17: this used to be an underline on every linked source word
-   ("whats up with the underlined words? I dont want that") — swapped for
-   the same persistent gold treatment the English side gets from .en-root,
-   so a linked pair reads as "these match" via color on BOTH sides instead
-   of an underline on one and color on the other. .hl (live hover) stays a
-   background wash so a hovered pair still stands out over the resting
-   gold state. */
-.par-mwb-wrap.lnk .multi-word-block .visible-text {
-  color: var(--gold, #c8a557);
-}
+/* 2026-08-17, second correction on this exact spot: fieldy — "the source
+   side should not be gold. they should be the regular color. The source
+   only highlights, unless the tokens have info for it (ie bhs styled
+   tokens only)." So NO persistent color treatment for a linked non-Hebrew
+   word — it stays whatever plain color MultiWordBlock always gives it.
+   Gold is reserved for: (a) the English side's .en-root (translit-head of
+   a "raashayath (beginning)" pair — that's an English-text-only signal,
+   independent of links), and (b) .hl below, the LIVE hover wash, which is
+   genuinely temporary and goes away on mouseleave. `.lnk` is kept as a
+   class (still drives cursor:pointer via `.word-block.lnk` / a future
+   need) but intentionally carries no color rule anymore — this is the
+   THIRD state this exact selector has been through this session
+   (underline -> persistent gold -> nothing); see CLAUDE.md's WordBlock.css
+   !important note for why a naive background/color rule here silently
+   does nothing anyway unless body-prefixed + !important, same trap that
+   bit the .hl rule below. */
+.par-mwb-wrap.lnk { cursor: pointer; }
 /* 2026-08-17: this never actually painted anything — components/WordBlock.css
    has a global `body .multi-word-block .visible-text { background:
    transparent !important; ... }` reset (kills the "grey card behind every

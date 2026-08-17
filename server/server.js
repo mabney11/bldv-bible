@@ -9547,9 +9547,36 @@ app.get('/api/translate/chapter', (req, res) => {
         const linksByVerse = {};
         for (const l of linkRows) (linksByVerse[l.verse] ||= []).push(l);
 
-        const verseRows = db.prepare(`
+        // Malachi ch4 (MT ch3:19-24), Joel's English 2:28-32/ch3 split, and any
+        // future book in VERSIFICATION_MAP need the SAME actual_chapter/
+        // verse_offset resolution /api/tokens already applies before it queries
+        // tokens_bhs — this endpoint used to query tokens_bhs with the DISPLAY
+        // chapter directly, so a book whose English chapter doesn't exist
+        // in the Masoretic text (Malachi 4 is MT 3:19-24, there IS no MT
+        // Malachi 4) silently returned zero verse rows here while the Reader/
+        // Parallel page (via /api/tokens, which DOES resolve) rendered it
+        // correctly. Found 2026-08-17: Translation Studio showed Malachi 4 as
+        // completely empty — no verses, nothing to translate against — while
+        // /api/tokens and the Reader had the real content the whole time.
+        // Only meaningful for books BOOK_META covers (the BHS/Masoretic set);
+        // NT-only chapters have no entry in VERSIFICATION_MAP and resolve to
+        // themselves unchanged either way.
+        const { actual_chapter: _actCh, verse_offset: _vOff } = BOOK_META[bookId]
+            ? resolveChapter(bookId, chapter)
+            : { actual_chapter: chapter, verse_offset: 0 };
+        // Same filter+shift /api/raw already uses for this exact map: a
+        // "donor" chapter (Malachi ch3 holding both its own 18 verses AND the
+        // 6 that display as ch4) must have the borrowed tail EXCLUDED, not
+        // just shifted — shifting alone would hand ch4's request verses
+        // -17..0 for its own real 1-18, and ch3's own request would (harmlessly,
+        // matching /api/tokens' own existing behavior) still see the borrowed
+        // 19-24 past its real end — that overshoot is accepted/pre-existing,
+        // not something this fix needs to additionally correct.
+        let verseRows = db.prepare(`
             SELECT DISTINCT verse FROM tokens_bhs WHERE book_id=? AND chapter=? ORDER BY verse
-        `).all(bookId, chapter);
+        `).all(bookId, _actCh);
+        if (_vOff > 0) verseRows = verseRows.filter(r => r.verse > _vOff);
+        verseRows = verseRows.map(r => ({ verse: r.verse - _vOff }));
         // Non-Hebrew books (no tokens_bhs): take the verse list from the English
         // baseline so the chapter still opens and every verse is listed.
         if (!verseRows.length) {
@@ -9617,7 +9644,16 @@ app.get('/api/translate/verse', (req, res) => {
         // all languages + reading direction). Links, however, are per-language here.
         // Same table the reader would use for this book (OT: tokens_bhs,
         // canon 40-66: tokens_nt) — see txVerseQuery.
-        const tokens = txVerseQuery(bookId).all(bookId, chapter, verse);
+        // Same resolveChapter() fix as /api/translate/chapter just above: `verse`
+        // here is the DISPLAY verse (translation.db, saved links, and the URL bar
+        // all agree on display numbering) but tokens_bhs is stored under the
+        // Masoretic chapter/verse — for a book with a VERSIFICATION_MAP entry
+        // (Malachi 4 = MT 3:19-24) those are NOT the same number, and querying
+        // tokens_bhs with the display verse directly returns nothing.
+        const { actual_chapter: _vChap, verse_offset: _vOff2 } = BOOK_META[bookId]
+            ? resolveChapter(bookId, chapter)
+            : { actual_chapter: chapter, verse_offset: 0 };
+        const tokens = txVerseQuery(bookId).all(bookId, _vChap, verse + _vOff2);
         // WHICH EDITION THOSE TOKENS ACTUALLY CAME FROM. txVerseQuery picks by
         // BOOK ID, not by `lang` — an NT book always reads tokens_nt however the
         // Studio's language picker is set. So the picker said 'BHS' (its default)

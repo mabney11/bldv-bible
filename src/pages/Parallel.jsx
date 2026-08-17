@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
+import { transliterate } from '../lib/translit.js';
 import { sqToPaleo } from '../lib/sqToPaleo.js';
 import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
 import { usePageTitle } from '../hooks/usePageTitle.js';
@@ -188,6 +189,58 @@ const GLOSS_KEY = 'reader-gloss-mode';
 // A parenthetical may span several whitespace-separated tokens ("(spirit / wind)"),
 // so the closing token is scanned for rather than assumed to be the next one.
 const GLOSS_TRAIL = /[.,;:!?'"\u2019\u201d)]+$/;
+
+// \u2500\u2500\u2500 "Missing in this translation" flag \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// Fieldy, 2026-08-17, after finding Latin Genesis 1:5 genuinely has no word
+// for "Alahayam" (the Vulgate leaves the subject implied from v4 \u2014 not a
+// bug): "I would like to flag and display that information in the reader...
+// a word for `Alahayam` is missing from this translation." Duplicated from
+// Translate.jsx's identically-named helpers (same convention as
+// glossOwnerMap/glossTokens above \u2014 this page doesn't share link-processing
+// logic with the Studio by import) so this page can independently ask "does
+// ANY word in this language's own verse text carry a lexicon gloss that
+// transliterates to this English root word", the same question Auto-Link
+// itself answers when deciding whether to create a link.
+const AL_LEX_LEAD_STRIP = /^(and|the|to|of|in|for|so|that|he|it|they)\s+/i;
+function cleanEnWordAL(w) { return String(w || '').replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, ''); }
+function cleanAutoLinkWordAL(raw) {
+  const s = String(raw || '');
+  if (PALEO_LETTER_RE.test(s)) {
+    const glyphsOnly = s.replace(/[^\u{10900}-\u{1091F}]/gu, '');
+    return transliterate(glyphsOnly, { script: 'paleo-hebrew' }).toLowerCase();
+  }
+  return cleanEnWordAL(s).toLowerCase();
+}
+function lexTranslitCandidatesAL(val) {
+  if (!val || val === '\u2014') return [];
+  const s = String(val);
+  const slashIdx = s.indexOf('/');
+  const dashIdx = s.indexOf(' - ');
+  const cut = slashIdx >= 0 && dashIdx >= 0 ? Math.min(slashIdx, dashIdx) : Math.max(slashIdx, dashIdx);
+  let left = (cut >= 0 ? s.slice(0, cut) : s).trim();
+  let prev;
+  do { prev = left; left = left.replace(AL_LEX_LEAD_STRIP, '').trim(); } while (left !== prev);
+  if (!left) return [];
+  const words = left.split(/\s+/).filter(Boolean);
+  if (!words.length) return [];
+  return [...new Set([words.join('').toLowerCase(), words[words.length - 1].toLowerCase()])].filter(Boolean);
+}
+// Every transliteration string this language's OWN verse tokens could
+// possibly be auto-linked against, from their own lexicon `.gloss` values.
+// Only meaningful for the generic (!rich) MultiWordBlock languages \u2014 BHS's
+// Strong's-tagged tokens are a completely different, already-comprehensive
+// system (per-component translit, not a flat lexicon gloss), and flagging
+// "missing" there would just be noise on top of a system that already
+// covers virtually every word.
+function sourceCandidateSet(words) {
+  const set = new Set();
+  for (const w of words || []) {
+    if (w?.is_punct) continue;
+    for (const c of lexTranslitCandidatesAL(w?.gloss)) set.add(c);
+  }
+  return set;
+}
+
 function glossTokens(words, mode) {
   const out = words.map((w, idx) => ({ idx, text: w, hide: false }));
   for (let i = 1; i < out.length; i++) {
@@ -608,6 +661,10 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
   // just the translit word's index still lights up its trailing "(gloss)" too,
   // and hovering the gloss itself now triggers the same link as its head word.
   const glossOwner = useMemo(() => glossOwnerMap(enWords), [tx?.text]);
+  // "Missing in this translation" — see sourceCandidateSet's header comment.
+  // null (not an empty Set) for BHS/rich languages, which turns the flag off
+  // entirely below rather than flagging every word against zero candidates.
+  const srcCandidates = useMemo(() => (rich ? null : sourceCandidateSet(words)), [words, rich]);
 
   return (
     <div className={`par-verse ${isTitle ? 'par-verse-title' : ''}`} data-verse={v}>
@@ -633,6 +690,18 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
                 // english hebrew glosses like the novel reader, the other
                 // language... can remain grey."
                 const isRoot = glossOwner[idx] === idx;
+                // Flag a translit-head word as "missing in this translation"
+                // when nothing in THIS language's own verse text carries a
+                // lexicon gloss transliterating to it — i.e. the same check
+                // Auto-Link itself would make, surfaced instead of silently
+                // producing zero matches. Fieldy, 2026-08-17, after learning
+                // Latin Genesis 1:5 genuinely has no word for "Alahayam":
+                // "I would like to flag and display that information in the
+                // reader... a word for `Alahayam` is missing from this
+                // translation." Only for translit-head words with no
+                // existing link — a plain word ("the", "and") or one that's
+                // already linked has nothing to flag.
+                const isMissing = isRoot && !link && srcCandidates && !srcCandidates.has(cleanAutoLinkWordAL(text));
                 // The trailing space used to live INSIDE the span (`{text}{' '}`),
                 // so a highlighted/linked word's background/underline box
                 // stretched to cover that space too — visibly oversized next to
@@ -641,7 +710,8 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
                 // same whitespace between words with no box around it.
                 return (
                   <span key={idx}>
-                    <span className={`en-w ${isRoot ? 'en-root' : ''} ${link ? 'lnk' : ''} ${enIsHl(ownerIdx) ? 'hl' : ''}`}
+                    <span className={`en-w ${isRoot ? 'en-root' : ''} ${link ? 'lnk' : ''} ${enIsHl(ownerIdx) ? 'hl' : ''} ${isMissing ? 'en-missing' : ''}`}
+                          title={isMissing ? `No matching word found in this translation for "${text.replace(GLOSS_TRAIL, '')}" — may be genuinely absent from this edition, or just not linked yet` : undefined}
                           onMouseEnter={() => link && setHovered({ verse: v, links: [link] })}
                           onMouseLeave={() => link && setHovered(null)}>
                       {text}

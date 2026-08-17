@@ -224,6 +224,24 @@ function resolveBody(ch) {
 // MAIN PUBLIC RENDERERS
 // ──────────────────────────────────────────────────────────────────────────────
 
+// A custom hand-drawn glyph renders as an <svg aria-hidden="true"> of <path>
+// strokes — no text node anywhere in it. That's correct for sighted users (the
+// art IS the letter) but it means the real Unicode character never appears in
+// the DOM as text whenever a custom body exists: screen readers get nothing
+// (aria-hidden), and — the bigger miss — neither does Google. Confirmed via a
+// live AI Overview + search result for a genuine Paleo phrase from Malachi 4:2
+// ("Tzedaqah Shemesh"): bldbible.com didn't appear at all, despite being (per
+// the user) the only site with this exact rendering — "no other site has text
+// like it so there is no reason for other sites to have a higher ranking."
+// Googlebot executes JS and indexes the post-render DOM, so this isn't a
+// server/prerender-only problem — every client hydration re-render hits it
+// too. SR_ONLY appends the real character as a normal (non-aria-hidden) text
+// node, visually clipped to nothing via the standard accessibility "visually
+// hidden" technique (inline, so it works regardless of which page's CSS is
+// loaded) — screen readers and crawlers both see the real letter; sighted
+// users still see only the custom art.
+const SR_ONLY = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
+
 /**
  * paleoToSVG: original drop-in. Iterates code points, emits per-char inline-SVG
  * with the per-char margin/transform config applied. Unicode fallback if no
@@ -250,7 +268,7 @@ export function paleoToSVG(paleo, size) {
       if (sx !== 1 || sy !== 1 || txV !== 0 || tyV !== 0) {
         svgBody = `<g transform="translate(${20+txV},${24+tyV}) scale(${sx},${sy}) translate(-20,-24)">${body}</g>`;
       }
-      out += `<svg class="pg pg-custom" viewBox="${VB}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:inline-block;vertical-align:bottom;overflow:visible;flex-shrink:0;margin-left:${ml}px;margin-right:${mr}px">${svgBody}</svg>`;
+      out += `<svg class="pg pg-custom" viewBox="${VB}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:inline-block;vertical-align:bottom;overflow:visible;flex-shrink:0;margin-left:${ml}px;margin-right:${mr}px">${svgBody}</svg><span style="${SR_ONLY}">${ch}</span>`;
     } else {
       out += `<span style="display:inline-block;margin-inline:${cfg.unicode || 0}px">${ch}</span>`;
     }
@@ -273,7 +291,8 @@ export function paleoCharNoMargin(ch, size) {
     // Fallback to plain unicode; lexicon CSS handles direction.
     return `<span class="pg-fallback">${ch}</span>`;
   }
-  return `<svg class="pg" viewBox="${VB}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:inline-block;vertical-align:bottom;overflow:visible;flex-shrink:0">${body}</svg>`;
+  // Real-text fallback for screen readers/crawlers — see SR_ONLY above.
+  return `<svg class="pg" viewBox="${VB}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:inline-block;vertical-align:bottom;overflow:visible;flex-shrink:0">${body}</svg><span style="${SR_ONLY}">${ch}</span>`;
 }
 
 /**

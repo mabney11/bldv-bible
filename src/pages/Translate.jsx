@@ -1273,7 +1273,16 @@ export default function Translate() {
           <button className="tr-txt-btn" onClick={openChapterView}>📖 Chapter</button>
         )}
         {activeBook && activeChapter && activeVerse != null && (
-          <Link to={`/parallel?book=${bookToParam(activeBook, idToSlug)}&chapter=${activeChapter}&verse=${activeVerse}`}
+          // Carry the Studio's currently-selected source language through, so
+          // "Parallel →" opens showing the SAME language you were just
+          // looking at instead of resetting to Hebrew (BHS) every time.
+          // Fieldy, 2026-08-17: "I was in tstudio... looking at 'latin'...
+          // when I navigate to 'parallel'... I should be seeing latin
+          // source. I had to navigate there myself." `lang` here is already
+          // the same source-id vocabulary Parallel's own picker uses (both
+          // ultimately come from the same SOURCES config), so no translation
+          // needed — just pass it straight through.
+          <Link to={`/parallel?book=${bookToParam(activeBook, idToSlug)}&chapter=${activeChapter}&verse=${activeVerse}${lang ? `&lang=${encodeURIComponent(lang)}` : ''}`}
                 className="tr-txt-btn">Parallel →</Link>
         )}
         {activeBook && activeChapter && activeVerse != null && (
