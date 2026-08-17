@@ -49,6 +49,19 @@ function tokenTrans(t) {
   }).filter(Boolean).join(' · ');
 }
 
+// Auto-Link helpers — see the autoLinkVerse callback inside the component for
+// the actual matching logic and why exact-string transliteration matching is
+// reliable here. Common English words are never proposed as a match target
+// (they'd never legitimately equal a Hebrew root's transliteration, but this
+// is a cheap extra guard rather than relying on that alone).
+const AUTO_LINK_STOP = new Set([
+  'a','an','the','and','or','but','of','to','at','in','on','by','for','with',
+  'from','into','unto','upon','over','under','is','am','are','was','were',
+  'be','been','being','he','him','his','she','her','it','its','they','them',
+  'their','you','your','we','us','our','i','me','my',
+]);
+const cleanEnWord = (w) => String(w || '').replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, '');
+
 function dedupeLinks(links) {
   const seen = new Map();
   for (const l of links) {
@@ -793,6 +806,92 @@ export default function Translate() {
     } catch (e) { toast('Link failed: ' + e.message, 'err'); }
   }, [selEn, selHeb, enWords, activeBook, activeChapter, activeVerse, tokenSource, tokens, links, loadVerse, toast]);
 
+  // ── AUTO-LINK ────────────────────────────────────────────────────────────
+  // Match an English gloss word against a Hebrew token by transliteration —
+  // but a gloss can legitimately be written either way: the bare root ("ach
+  // (brothers)") or the fuller inflected surface the token itself carries
+  // ("achayam (brothers)", root+suffix, no eliding — same reconstruction the
+  // chip/word-block view already shows). Fieldy, 2026-08-15, after the first
+  // cut only matched the bare root: "it should allow variants... I want
+  // achayam for brothers instead of ach (brothers), the tokens have achayam."
+  // So each token offers TWO candidate strings — root-only and the full
+  // word (every non-mark component concatenated, in order) — and either is
+  // accepted. A match against the FULL word becomes a whole-token link (the
+  // gloss accounted for the whole surface, suffix included); a match against
+  // just the ROOT becomes a component-level link, same as before, leaving
+  // any prefix (mod-conj "and", mod-prep "for", ...) for a separate manual
+  // link. Already-linked English words and Hebrew tokens are skipped, so
+  // re-running this is always safe.
+  const autoLinkVerse = useCallback(async () => {
+    if (!isBHS) { toast('Auto-link currently only supports the Hebrew (BHS) edition', 'err'); return; }
+    if (!tokens.length || !enWords.length) return;
+
+    const usedEn  = new Set(links.flatMap(l => l.english_indices || []));
+    const usedOrd = new Set(links.flatMap(l => l.token_ordinals  || []));
+
+    const candidates = [];
+    for (const t of tokens) {
+      if (usedOrd.has(t.token_ordinal)) continue;
+      const comps = t.components || [];
+      const root = comps.find(c => c.css === 'root') || comps.find(c => c.css === 'mod-nmpr');
+      if (!root) continue;
+      const rootTranslit = String(root.translit || '').trim();
+      if (!rootTranslit) continue;
+      const fullTranslit = comps.filter(c => !c.isMark).map(c => c.translit || '').join('').trim();
+      const compIdx = comps.length > 1 ? comps.indexOf(root) : -1;
+      candidates.push({
+        ordinal: t.token_ordinal, compIdx, used: false,
+        rootTranslit: rootTranslit.toLowerCase(),
+        fullTranslit: fullTranslit.toLowerCase(),
+      });
+    }
+
+    const matches = [];
+    for (let i = 0; i < enWords.length; i++) {
+      if (usedEn.has(i)) continue;
+      const clean = cleanEnWord(enWords[i]).toLowerCase();
+      if (!clean || AUTO_LINK_STOP.has(clean)) continue;
+      // Prefer a FULL-word match (whole-token link) over a root-only match —
+      // it's the more specific pairing when both happen to be possible
+      // (only when the word has no other components, where they're equal).
+      const full = candidates.find(c => !c.used && c.fullTranslit === clean);
+      if (full) { full.used = true; matches.push({ enIdx: i, ordinal: full.ordinal, compIdx: -1 }); continue; }
+      const root = candidates.find(c => !c.used && c.rootTranslit === clean);
+      if (!root) continue;
+      root.used = true;
+      matches.push({ enIdx: i, ordinal: root.ordinal, compIdx: root.compIdx });
+    }
+
+    if (!matches.length) {
+      toast('No new transliteration matches — everything matchable is already linked', 'ok');
+      return;
+    }
+
+    const { isAdmin: admin } = await getAdminStatus();
+    const errors = [];
+    let created = 0;
+    for (const m of matches) {
+      const tok = tokens.find(t => t.token_ordinal === m.ordinal);
+      const comp = m.compIdx >= 0 ? tok?.components?.[m.compIdx] : null;
+      const component_hint = comp ? `${m.compIdx}:${comp.css}` : '';
+      const payload = {
+        book_id: activeBook, chapter: activeChapter, verse: activeVerse,
+        lang: tokenSource,
+        english_phrase: enWords[m.enIdx], english_indices: [m.enIdx],
+        token_ordinals: [m.ordinal], component_hint,
+        color_index: 0, sort_order: links.length + created,
+      };
+      try {
+        if (admin) await apiTransLink(payload);
+        else { await addLocalLink(activeBook, activeChapter, activeVerse, tokenSource, payload, links); setHasLocalEdits(true); }
+        created++;
+      } catch (e) { errors.push(e.message); }
+    }
+    await loadVerse(activeBook, activeChapter, activeVerse);
+    if (errors.length) toast(`Auto-linked ${created}, ${errors.length} failed (${errors[0]})`, 'err');
+    else toast(`Auto-linked ${created} word${created === 1 ? '' : 's'} by transliteration match — spot-check before trusting`, 'ok');
+  }, [isBHS, tokens, enWords, links, activeBook, activeChapter, activeVerse, tokenSource, loadVerse, toast]);
+
   // Switch the source language we're linking against and reload that language's
   // tokens + its own link set. The English translation is untouched.
   const changeLang = useCallback((nextLang) => {
@@ -1224,7 +1323,19 @@ export default function Translate() {
                         }
                       }}
                     >
-                      <div className="tr-section-label">Word Links</div>
+                      <div className="tr-section-label">
+                        Word Links
+                        {isBHS && (
+                          <button
+                            type="button"
+                            className="tr-autolink-btn"
+                            onClick={autoLinkVerse}
+                            title="Match every unlinked English gloss word against the Hebrew root it transliterates, and link them automatically. Safe to re-run — already-linked words are skipped. Spot-check the result afterward."
+                          >
+                            🔗 Auto-Link
+                          </button>
+                        )}
+                      </div>
                       <div className="tr-linker-grid">
                         {/* English column (LTR) */}
                         <div className="tr-en-tokens">
