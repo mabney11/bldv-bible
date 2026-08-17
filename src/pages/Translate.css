@@ -382,7 +382,7 @@
   text-transform: none; cursor: pointer;
 }
 .tr-autolink-btn:hover { filter: brightness(1.08); }
-.tr-section-label-btns { display: flex; align-items: center; gap: 6px; }
+.tr-section-label-btns { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .tr-syncall-btn { background: var(--blue, #4a90d9); color: #071420; }
 .tr-clearall-btn {
   background: transparent; color: var(--red, #e05a5a); border: 1px solid var(--red, #e05a5a);

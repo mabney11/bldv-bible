@@ -1136,6 +1136,41 @@ export default function Translate() {
     } catch (e) { toast('Delete all failed: ' + e.message, 'err'); }
   }, [links, activeBook, activeChapter, activeVerse, tokenSource, loadVerse, toast]);
 
+  // Same idea as deleteAllLinks, but for EVERY language this verse has, not
+  // just the one on screen — the clear-side counterpart to Sync All /
+  // syncAllLinks below. Fieldy, 2026-08-16, after Auto-Link needed a few
+  // retries to get Greek right: "I need a 'link this language' 'clear this
+  // language' 'link all languages' 'clear all languages' button... I was
+  // expecting to be able to purge all links and retry." Each language gets
+  // its own independent fetch (fetchLangTokensAndLinks), same reasoning as
+  // syncAllLinks: this component's `links` state only ever holds ONE
+  // language at a time.
+  const clearAllLanguagesLinks = useCallback(async () => {
+    if (!activeBook || !activeChapter || activeVerse == null || !langs.length) return;
+    if (!confirm(`Delete ALL links in EVERY language (${langs.length}) for this verse?`)) return;
+    let totalDeleted = 0;
+    const issues = [];
+    for (const l of langs) {
+      try {
+        const { links: lk, admin } = await fetchLangTokensAndLinks(activeBook, activeChapter, activeVerse, l.id);
+        if (!lk.length) continue;
+        if (admin) {
+          await Promise.all(lk.map(link =>
+            apiTransUnlink({ id: link.id, book_id: activeBook, chapter: activeChapter, verse: activeVerse })
+          ));
+        } else {
+          await clearLocalLinks(activeBook, activeChapter, activeVerse, l.id);
+          setHasLocalEdits(true);
+        }
+        totalDeleted += lk.length;
+      } catch (e) { issues.push(`${l.label || l.id}: ${e.message}`); }
+    }
+    await loadVerse(activeBook, activeChapter, activeVerse);
+    if (!totalDeleted && !issues.length) { toast('No links to clear in any language', 'ok'); return; }
+    if (issues.length) toast(`Cleared ${totalDeleted} across ${langs.length} languages, ${issues.length} issue(s) (${issues[0]})`, 'err');
+    else toast(`Cleared ${totalDeleted} link${totalDeleted === 1 ? '' : 's'} across ${langs.length} languages`, 'ok');
+  }, [langs, activeBook, activeChapter, activeVerse, loadVerse, toast]);
+
   // ── CHAPTER VIEW (read-only overlay) ──────────────────────────────────────
   // Fetches the whole chapter at once and renders each translated verse with
   // English + Paleo side-by-side. Useful for proofreading a chapter end-to-end
@@ -1553,7 +1588,7 @@ export default function Translate() {
                               ? "Match every unlinked English gloss word against the Hebrew root it transliterates, and link them automatically. Safe to re-run — already-linked words are skipped. Spot-check the result afterward."
                               : `Match every unlinked English gloss word against this edition's own lexicon transliteration, and link them automatically. Safe to re-run — already-linked words are skipped. Spot-check the result afterward.`}
                           >
-                            🔗 Auto-Link
+                            🔗 Link This Language
                           </button>
                           <button
                             type="button"
@@ -1561,7 +1596,23 @@ export default function Translate() {
                             onClick={syncAllLinks}
                             title="Run Auto-Link across every language this verse has, not just the one currently selected."
                           >
-                            ⇄ Sync All
+                            ⇄ Link All Languages
+                          </button>
+                          <button
+                            type="button"
+                            className="tr-clearall-btn"
+                            onClick={deleteAllLinks}
+                            title="Delete every link for this verse in the CURRENTLY SELECTED language only."
+                          >
+                            Clear This Language
+                          </button>
+                          <button
+                            type="button"
+                            className="tr-clearall-btn"
+                            onClick={clearAllLanguagesLinks}
+                            title="Delete every link for this verse in EVERY language — useful before a fresh Link All Languages retry."
+                          >
+                            Clear All Languages
                           </button>
                         </span>
                       </div>
@@ -1690,13 +1741,6 @@ export default function Translate() {
                         <div className="tr-links-list">
                           <div className="tr-section-label">
                             Established links ({links.length})
-                            <button
-                              type="button"
-                              className="tr-clearall-btn"
-                              onClick={deleteAllLinks}
-                              title="Delete every link for this verse">
-                              Clear All
-                            </button>
                           </div>
                           {links.map(l => {
                             const color = lColorForTokens(l, tokens);

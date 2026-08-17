@@ -624,8 +624,17 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
                 // unit — hovering or linking either highlights both.
                 const ownerIdx = glossOwner[idx] ?? idx;
                 const link = links.find(l => (l.english_indices || []).includes(ownerIdx));
+                // A word that OWNS a following "(gloss)" — i.e. is itself the
+                // transliteration half of a "raashayath (beginning)" pair —
+                // reads in the gold accent, same signal Reader.css's
+                // .rd-root gives the identical pairing in the novel reader.
+                // Fieldy, 2026-08-16, correcting an earlier miss that colored
+                // the ORIGINAL-language column instead: "I want color for my
+                // english hebrew glosses like the novel reader, the other
+                // language... can remain grey."
+                const isRoot = glossOwner[idx] === idx;
                 return (
-                  <span key={idx} className={`en-w ${link ? 'lnk' : ''} ${enIsHl(ownerIdx) ? 'hl' : ''}`}
+                  <span key={idx} className={`en-w ${isRoot ? 'en-root' : ''} ${link ? 'lnk' : ''} ${enIsHl(ownerIdx) ? 'hl' : ''}`}
                         onMouseEnter={() => link && setHovered({ verse: v, links: [link] })}
                         onMouseLeave={() => link && setHovered(null)}>
                     {text}{' '}

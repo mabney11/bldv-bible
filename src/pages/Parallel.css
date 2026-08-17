@@ -89,6 +89,12 @@
 
 .en-w { display: inline; padding: 1px 2px; border-radius: 3px; transition: background .12s, color .12s; cursor: default; }
 .en-w.lnk { cursor: pointer; }
+/* The transliteration half of a "raashayath (beginning)" pair — same gold
+   accent Reader.css's .rd-root gives the identical pairing in the novel
+   reader. 2026-08-16: this used to live on the ORIGINAL-language word block
+   instead (reverted, see MultiViewer.css) — the gold belongs on the English
+   gloss word, not the Greek/Ge'ez/etc. text beside it. */
+.en-w.en-root { color: var(--gold, #c8a557); font-weight: 600; }
 .en-w.hl { background: color-mix(in srgb, var(--gold) 28%, transparent) !important; color: var(--gold2) !important; }
 
 /* ── Word blocks (glossed) ─────────────────────────────────────────────────*/
@@ -134,9 +140,9 @@
    adds no extra layout — it exists purely to attach this page's own hover-
    link interactivity (.lnk/.hl, driven by Word Links data) on top of a
    component this page doesn't own, via descendant selectors into its
-   markup. MultiWordBlock's own gold/dim "is this glossed" coloring lives in
-   MultiViewer.css (the shared home for every .multi-word-block/.mwb-* rule)
-   so it looks identical everywhere that component renders. */
+   markup. Deliberately does NOT touch MultiWordBlock's own text color —
+   see MultiViewer.css's note on why the gold accent belongs on the English
+   side (.en-root in this file) instead. */
 .par-mwb-wrap { display: contents; }
 .par-mwb-wrap.lnk .multi-word-block .visible-text {
   text-decoration: underline; text-decoration-color: var(--border3); text-underline-offset: 3px;
@@ -144,6 +150,15 @@
 .par-mwb-wrap.hl .multi-word-block .visible-text {
   background: color-mix(in srgb, var(--gold) 30%, transparent); border-radius: 4px;
 }
+/* MultiWordBlock shows THREE lines for a morphologically-tagged word (Greek
+   NT, etc.): the word, its own transliteration, AND its dictionary lemma
+   (.w-translit.root, e.g. "ἐν" under "ΕΝ"/"En"). That third line reads as a
+   confusing second transliteration next to this page's own English
+   translit(gloss) column. Fieldy, 2026-08-16: "I dont want 2
+   translterations so ΕΝ and En but not ἐν." Scoped to THIS page only — the
+   real MultiViewer reader still shows the lemma, this just hides it where
+   it duplicates what the English column already gives. */
+.par-mwb-wrap .multi-word-block .w-translit { display: none; }
 
 /* ── Part-of-speech colour tokens (root stem, modifiers, prefixes, stems,
    pronominal suffixes, nominal endings) ─────────────────────────────────
