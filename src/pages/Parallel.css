@@ -128,12 +128,22 @@
 .w .root { --mc: var(--text2); }
 .w .brk { color: var(--text4) !important; }
 
-/* Non-Hebrew source words */
-.src-block .paleo.src-word { direction: inherit; }
-.src-block .src-word .visible-text { font-family: 'Segoe UI', serif; }
-.src-block .clickable-comp { font-size: 22px; }
-.src-block.lnk .clickable-comp { text-decoration: underline; text-decoration-color: var(--border3); text-underline-offset: 3px; }
-.src-block .w .root { font-size: var(--sub-size); color: var(--text3); }
+/* Non-Hebrew source words — rendered by the shared <MultiWordBlock> (see
+   Parallel.jsx's WordBlock !rich branch), not a bespoke block of this page's
+   own. `.par-mwb-wrap` carries no box of its own (display:contents) so it
+   adds no extra layout — it exists purely to attach this page's own hover-
+   link interactivity (.lnk/.hl, driven by Word Links data) on top of a
+   component this page doesn't own, via descendant selectors into its
+   markup. MultiWordBlock's own gold/dim "is this glossed" coloring lives in
+   MultiViewer.css (the shared home for every .multi-word-block/.mwb-* rule)
+   so it looks identical everywhere that component renders. */
+.par-mwb-wrap { display: contents; }
+.par-mwb-wrap.lnk .multi-word-block .visible-text {
+  text-decoration: underline; text-decoration-color: var(--border3); text-underline-offset: 3px;
+}
+.par-mwb-wrap.hl .multi-word-block .visible-text {
+  background: color-mix(in srgb, var(--gold) 30%, transparent); border-radius: 4px;
+}
 
 /* ── Part-of-speech colour tokens (root stem, modifiers, prefixes, stems,
    pronominal suffixes, nominal endings) ─────────────────────────────────

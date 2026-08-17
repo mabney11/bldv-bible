@@ -35,6 +35,21 @@ import '@fontsource/opendyslexic/700.css';
 import '../lib/morphColors.css';
 import './Parallel.css';
 import { isPlaceholderGloss, hasTrailingMaqaf } from '../components/WordBlock.jsx';
+// The SAME component the novel reader (MultiViewer.jsx) and Gloss Studio use
+// for every non-Hebrew script (Ge'ez/Greek/Latin/Syriac/…) — this page used
+// to render those with a bespoke glyph+gloss-only block that never showed a
+// transliteration line at all and had no "this word has a real gloss" color
+// treatment. Fieldy, 2026-08-16: "transliterations have slipped from the
+// parallel view... i think multiwordblock is what we use" / "the colors
+// have disappeared, glossed words should be golden like the novel reader."
+import MultiWordBlock from '../components/MultiWordBlock.jsx';
+// MultiWordBlock's own styling (font per script, glyph/translit/gloss
+// layout, and the gold-vs-dim "is this glossed" treatment added alongside
+// this page's own MultiWordBlock adoption) lives in MultiViewer.css, the
+// same file the novel reader itself already relies on for these classes —
+// importing it here instead of re-declaring any of it is what keeps this
+// page looking IDENTICAL to the reader rather than a re-approximation.
+import './MultiViewer.css';
 import { getAdminStatus, getLocalVersesForChapter, mergeChapterVersesWithLocal } from '../lib/localOverlay.js';
 
 // ── English column: text size + typeface (persisted) ───────────────────────
@@ -65,6 +80,39 @@ const PAR_SUB_MIN = 8, PAR_SUB_MAX = 22;
 // Ge'ez reader renders ፡ / ። inline, instead of dropping it to a blank block.
 const PALEO_LETTER_RE = /[\u{10900}-\u{1091F}]/u;
 const hasPaleo = (s) => PALEO_LETTER_RE.test(s || '');
+
+// Ge'ez word-separator/sentence-mark tokens (፡ ። ፣ ፤ ፥ ፦ ፧ ፨) arrive as their
+// OWN standalone tokens from the tokenizer — folded onto the PRECEDING real
+// word's `trailMark` instead of rendered as their own block, exactly mirroring
+// MultiViewer.jsx's foldGeezPunct/_geezRank (duplicated here deliberately,
+// same convention as every other small link/render helper this page already
+// keeps its own copy of rather than importing across pages). Only Ge'ez emits
+// is_punct tokens today, so this is a no-op for every other script.
+const _geezRank = (m) => {
+  const c = (m || '').codePointAt(0) || 0;
+  if (c >= 0x1362 && c <= 0x1368) return 2;   // ። ፣ ፤ ፥ ፦ ፧ ፨  (section / sentence)
+  if (c === 0x1361) return 1;                 // ፡  (wordspace)
+  return 0;
+};
+function foldGeezPunct(tokens) {
+  if (!Array.isArray(tokens)) return tokens;
+  const out = [];
+  for (const t of tokens) {
+    if (t && t.is_punct) {
+      const mark = t.punct || '';
+      for (let j = out.length - 1; j >= 0; j--) {
+        if (!out[j].is_punct) {
+          const prev = out[j].trailMark || '';
+          out[j] = { ...out[j], trailMark: _geezRank(mark) >= _geezRank(prev) ? mark : prev };
+          break;
+        }
+      }
+      continue;
+    }
+    out.push(t);
+  }
+  return out;
+}
 
 // The "… Viewer →" button opens the reader for whichever source is selected
 // here, so its label names that reader. Greek folds LXX/GNT/GRC together.
@@ -294,36 +342,28 @@ const isVirtualSN = sn => {
 // `isBHS`, a language-name test, which sent HEB — which HAS that token stream —
 // down the plain surface+gloss path, so the same Hebrew read fully decomposed in
 // one pane and as bare glyphs in the other. Ask the capability, not the name.
-function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHoverLink, blockLinks }) {
+function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHoverLink, blockLinks, lang }) {
   const linked = blockLinks.length > 0;
   const enter = () => linked && onHoverLink(blockLinks);
   const leave = () => linked && onHoverLink(null);
 
   if (!rich) {
-    const gloss = (word.gloss || '').replace(/[[\]]/g, '');
+    // The SAME renderer the novel reader (MultiViewer.jsx) and Gloss Studio
+    // use for every non-Hebrew script — glyph, transliteration (computed
+    // client-side from the raw word via lib/translit.js, script-detected so
+    // Ge'ez/Greek/Latin/Syriac/Hebrew-extra square script all need zero
+    // per-language code here), gloss, and gold-vs-dim coloring for whether
+    // this word actually has a curated gloss. This page used to carry its
+    // OWN bespoke glyph+gloss-only block with no transliteration line and no
+    // color treatment at all — see the import comment above for the ask
+    // this replaced it for. `word` already carries every field
+    // MultiWordBlock reads (word/word_norm/gloss_key/gloss/is_punct/punct/
+    // trailMark/lemma/strongs) — see the src.push sites in loadChapter.
     const hl = hoveredOrds.has(word.token_ordinal);
-    const surface = word.word || '';
-    // Hebrew-script sources (extra-Hebrew) render as paleo glyphs — same as BHS —
-    // by converting the stored square Hebrew to paleo, so no font/extension is
-    // needed. Non-Hebrew RTL scripts (Syriac, etc.) keep their own script.
-    const paleo = isPaleoScript ? safeSq(surface) : '';
-    const svg = isPaleoScript && paleo ? safeSVG(paleo) : '';
     return (
-      <div className={`word-block src-block ${linked ? 'lnk' : ''}`} dir={dir}
+      <div className={`par-mwb-wrap ${linked ? 'lnk' : ''} ${hl ? 'hl' : ''}`}
            onMouseEnter={enter} onMouseLeave={leave}>
-        <div className="paleo src-word" dir={dir}>
-          {svg
-            ? <span className={`visible-text clickable-comp ${hl ? 'hl' : ''}`}
-                    data-paleo={paleo} title={`Copy ${paleo}`}
-                    onClick={(e) => { e.stopPropagation(); copyOnClick(e.currentTarget, paleo); }}
-                    dangerouslySetInnerHTML={{ __html: svg }} />
-            : <span className={`visible-text clickable-comp ${hl ? 'hl' : ''}`}
-                    title={surface ? `Copy "${surface}"` : ''}
-                    onClick={(e) => { e.stopPropagation(); copyOnClick(e.currentTarget, (isPaleoScript ? paleo : surface) || ''); }}>
-                {(isPaleoScript ? paleo : surface) || '·'}
-              </span>}
-        </div>
-        {showSub && gloss ? <div className="w"><span className="root">{gloss}</span></div> : null}
+        <MultiWordBlock token={word} source={lang} />
       </div>
     );
   }
@@ -541,7 +581,7 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
 }
 
 // ─── One verse: English | source ─────────────────────────────────────────────
-function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, onRefClick, hovered, setHovered, unaligned, glossMode }) {
+function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, onRefClick, hovered, setHovered, unaligned, glossMode, lang }) {
   // Verse 0 is a chapter title/superscription, not a real verse (see Reader.jsx's
   // matching treatment) — its English is typically one short line while its source
   // column is a handful of tall, stacked word-blocks (glyph + translit + gloss +
@@ -607,7 +647,7 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
               const blockLinks = links.filter(l => (l.token_ordinals || []).some(o => compOrds.includes(o)));
               const els = [
                 <WordBlock key={wordObj.token_ordinal} word={wordObj} showSub={showSub} rich={rich}
-                           isPaleoScript={isPaleoScript}
+                           isPaleoScript={isPaleoScript} lang={lang}
                            dir={dir} hoveredOrds={hoveredOrds} onHoverLink={onHoverLink} blockLinks={blockLinks} />
               ];
               // A trailing maqaf (־) couples this word to the NEXT one — a real
@@ -857,8 +897,12 @@ export default function Parallel() {
       // rendering plain: langHasTokens() asks `sources` for strongs_tokens, and
       // this map was rebuilding each source with only id/label/script, so the
       // answer was always undefined -> false.
+      // ENG is excluded here deliberately — this page pairs the reading English
+      // against an ORIGINAL-language source; offering English as that source
+      // too produces a pointless English<->English comparison. Fieldy,
+      // 2026-08-16: "there need not be a parallel english <> english choice."
       const opts = [{ id: 'BHS', label: 'Hebrew (BHS)', script: 'paleo-hebrew' }]
-        .concat((ss || []).filter(s => s.id !== 'BHS' && s.available && !s.worksOnly)
+        .concat((ss || []).filter(s => s.id !== 'BHS' && s.id !== 'ENG' && s.available && !s.worksOnly)
                           .map(s => ({ id: s.id, label: s.label || s.id, script: s.script,
                                        strongs_tokens: !!s.strongs_tokens,
                                        token_books: s.token_books || null })));
@@ -937,10 +981,15 @@ export default function Parallel() {
         const verses = Array.isArray(chapData?.verses) ? chapData.verses : [];
         src = [];
         if (verses.some(v => Array.isArray(v.tokens))) {
-          // Fast path: tokens are already in the chapter payload.
+          // Fast path: tokens are already in the chapter payload. Spread `t`
+          // FIRST so every field /api/source/:src/verse|chapter returns rides
+          // along (word_norm, gloss_key, is_punct, punct, lemma, strongs,
+          // …) — MultiWordBlock (the shared non-Hebrew word renderer, see
+          // the WordBlock !rich branch below) reads several of these that a
+          // narrower {token_ordinal, word, gloss} pick used to drop.
           verses.forEach(v =>
             (v.tokens || []).forEach((t, i) => src.push({
-              verse: v.verse, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '', _src: true,
+              ...t, verse: v.verse, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '', _src: true,
             }))
           );
         } else {
@@ -951,7 +1000,7 @@ export default function Parallel() {
             fetch(`/api/source/${encodeURIComponent(l)}/verse?book=${b}&chapter=${c}&verse=${vn}`)
               .then(r => r.ok ? r.json() : { tokens: [] }).catch(() => ({ tokens: [] }))
               .then(sv => (sv.tokens || []).forEach((t, i) => src.push({
-                verse: vn, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '', _src: true,
+                ...t, verse: vn, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '', _src: true,
               })))
           ));
         }
@@ -1043,8 +1092,15 @@ export default function Parallel() {
   }, [words, translations]);
   const verseCount = verseNums.length ? Math.max(...verseNums) : 0;
   const wordsByVerse = useMemo(() => {
-    const m = {}; words.forEach(w => (m[w.verse] || (m[w.verse] = [])).push(w)); return m;
-  }, [words]);
+    const m = {}; words.forEach(w => (m[w.verse] || (m[w.verse] = [])).push(w));
+    // Ge'ez word-separator/sentence-mark tokens arrive standalone — fold each
+    // verse's onto its preceding real word (foldGeezPunct above), same as the
+    // novel reader (MultiViewer.jsx) already does before handing tokens to
+    // MultiWordBlock. Only GEZ ever emits is_punct tokens, so this is a no-op
+    // for every other language.
+    if (lang === 'GEZ') for (const v of Object.keys(m)) m[v] = foldGeezPunct(m[v]);
+    return m;
+  }, [words, lang]);
 
   const meta = bookMeta.current[book] || { first: 1, last: chapter };
 
@@ -1225,7 +1281,7 @@ export default function Parallel() {
               <VerseRow key={v} v={v} words={wordsByVerse[v] || []} tx={translations[v]}
                         showSub={showSub} rich={rich} isPaleoScript={srcMeta.script === 'paleo-hebrew'} dir={dir}
                         isActive={verse === v} onRefClick={setVerse} unaligned={unaligned.has(v)}
-                        hovered={hovered} setHovered={setHovered} glossMode={glossMode} />
+                        hovered={hovered} setHovered={setHovered} glossMode={glossMode} lang={lang} />
             ))}
           </VerseErrorBoundary>
         </div>

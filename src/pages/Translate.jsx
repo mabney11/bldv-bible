@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
+import { transliterate } from '../lib/translit.js';
 import { useToast } from '../components/Toast.jsx';
 import WordBlock from '../components/WordBlock.jsx';
 import {
@@ -62,6 +63,26 @@ const AUTO_LINK_STOP = new Set([
 ]);
 const cleanEnWord = (w) => String(w || '').replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, '');
 
+// An untranslatable grammatical marker (the Hebrew direct-object particle
+// 𐤀𐤕/"eth" is the recurring example — it has no independent English word at
+// all) reads in the "Novel English" text as its own raw Paleo glyphs inline,
+// not a Latin word — cleanEnWord strips that to nothing (no A-Za-z content
+// survives), so it could never match any candidate, including another
+// language's own word for the very same particle (e.g. Syriac's lexicon
+// entry "ath / the entirety of"). Fieldy, 2026-08-16: "𐤀𐤕 did not match how
+// I expect, it should also match the syriac." Transliterating it first (the
+// same paleo->Latin transliterate() every reader already uses) gives a
+// comparable string instead of an empty one.
+const PALEO_LETTER_RE = /[\u{10900}-\u{1091F}]/u;
+function cleanAutoLinkWord(raw) {
+  const s = String(raw || '');
+  if (PALEO_LETTER_RE.test(s)) {
+    const glyphsOnly = s.replace(/[^\u{10900}-\u{1091F}]/gu, '');
+    return transliterate(glyphsOnly, { script: 'paleo-hebrew' }).toLowerCase();
+  }
+  return cleanEnWord(s).toLowerCase();
+}
+
 // Non-Hebrew source lexicons (server/lexicon/{latin,syriac,geez,greek,
 // hebrew-extra}-lexicon.json) store each word's value as
 // "[connector ]TRANSLIT[ /gloss]" — e.g. "and raah / saw", "Yawam / day" —
@@ -70,18 +91,31 @@ const cleanEnWord = (w) => String(w || '').replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, '
 // from /api/source/:src/verse (server.js's _lookupGloss), so no extra fetch
 // is needed to auto-link these editions. Since the app's "Novel English"
 // reading-text convention is always "TRANSLIT (gloss)" (CLAUDE.md's Two
-// Display Surfaces section), the transliteration segment — before the "/",
-// with a leading connector word stripped — is exactly the English word to
-// match. Fieldy, 2026-08-16: "since the other languages use hebrew lexicon
-// words in their values, the other language linking should be trivial too
-// raa (saw) -> ወርእዮ." A value of "—" or with no real transliteration segment
-// (a plain English editorial note like "Egypt" or "legal expert...") yields
-// no candidates — there's nothing reliable to match against the app's own
-// transliterated reading text for those.
+// Display Surfaces section), the transliteration segment — before the
+// separator, with a leading connector word stripped — is exactly the
+// English word to match. Fieldy, 2026-08-16: "since the other languages use
+// hebrew lexicon words in their values, the other language linking should
+// be trivial too raa (saw) -> ወርእዮ." A value of "—" or with no real
+// transliteration segment (a plain English editorial note like "Egypt" or
+// "legal expert...") yields no candidates — there's nothing reliable to
+// match against the app's own transliterated reading text for those.
+//
+// TWO separator conventions exist in these files: entries added this session
+// use "TRANSLIT / gloss" (a slash); older entries — e.g. Genesis 1:1's Greek,
+// "ΑΡΧΗ": "Raashayath - beginning" — use "TRANSLIT - gloss" (a dash). A
+// slash-only split left every dash-style entry's WHOLE string as the
+// "translit", so the candidate ended up being its own trailing gloss word
+// ("beginning") instead of the real transliteration ("Raashayath") — Auto-
+// Link found zero matches on Genesis 1:1's Greek because of exactly this.
+// Split on whichever separator appears first so both conventions resolve.
 const LEX_LEAD_STRIP = /^(and|the|to|of|in|for|so|that|he|it|they)\s+/i;
 function lexTranslitCandidates(val) {
   if (!val || val === '—') return [];
-  let left = String(val).split('/')[0].trim();
+  const s = String(val);
+  const slashIdx = s.indexOf('/');
+  const dashIdx = s.indexOf(' - ');
+  const cut = slashIdx >= 0 && dashIdx >= 0 ? Math.min(slashIdx, dashIdx) : Math.max(slashIdx, dashIdx);
+  let left = (cut >= 0 ? s.slice(0, cut) : s).trim();
   let prev;
   do { prev = left; left = left.replace(LEX_LEAD_STRIP, '').trim(); } while (left !== prev);
   if (!left) return [];
@@ -133,7 +167,7 @@ function matchAutoLinkCandidates(candidates, enWords, usedEn) {
   const matches = [];
   for (let i = 0; i < enWords.length; i++) {
     if (usedEn.has(i)) continue;
-    const clean = cleanEnWord(enWords[i]).toLowerCase();
+    const clean = cleanAutoLinkWord(enWords[i]);
     if (!clean || AUTO_LINK_STOP.has(clean)) continue;
     let hit = null, hitVariant = null;
     for (const c of candidates) {

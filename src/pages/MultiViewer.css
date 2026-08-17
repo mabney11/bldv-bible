@@ -97,6 +97,18 @@
 }
 .multi-word-block .paleo:hover { opacity: 0.85; }
 
+/* A word with a real curated gloss reads in the gold accent — the same
+   "this is a recognized word" signal the novel English reader already gives
+   transliterated Hebrew roots (.rd-root in Reader.css). A word with NO gloss
+   (.mwb-unglossed, set by MultiWordBlock itself whenever token.gloss is
+   falsy) stays dimmed instead, so how much of a passage is actually glossed
+   is visible at a glance rather than every word reading identically plain.
+   Fieldy, 2026-08-16: "glossed words should be golden like the novel
+   reader." Lives here (not per-page) since every consumer of
+   <MultiWordBlock> — this reader, Gloss Studio, Parallel — should agree. */
+.multi-word-block:not(.mwb-unglossed) .visible-text { color: var(--gold, #c8a557); }
+.multi-word-block.mwb-unglossed .visible-text { opacity: 0.55; }
+
 .multi-word-block .w {
   font-size: var(--sub-size, 12px);
   direction: ltr;
