@@ -227,14 +227,42 @@ function dedupeLinks(links) {
   return out;
 }
 
-function findPhraseIndices(phrase, words) {
+// `avoid`, if given, is a Set of word-indices already claimed by an earlier
+// link's resolved span — the search skips any candidate span overlapping it,
+// so a SECOND link sharing the same phrase text finds the phrase's SECOND
+// occurrence instead of colliding on the first. See resolvePhraseLinks below,
+// which is what actually orders and feeds these calls. Mirrors the identical
+// fix in Translate.jsx (deliberately duplicated — this page doesn't share
+// link-processing logic with the Studio by import, same convention as
+// glossOwnerMap/glossTokens above).
+function findPhraseIndices(phrase, words, avoid) {
   const ph = phrase.trim().split(/\s+/);
   const clean = w => w.replace(/[,.!?;:]+$/, '').toLowerCase();
   for (let i = 0; i <= words.length - ph.length; i++) {
+    if (avoid && avoid.size && Array.from({ length: ph.length }, (_, k) => i + k).some(idx => avoid.has(idx))) continue;
     if (words.slice(i, i + ph.length).map(clean).join(' ') === ph.map(clean).join(' '))
       return Array.from({ length: ph.length }, (_, k) => i + k);
   }
   return [];
+}
+
+// Resolves every link's english_indices in place, walked in the SOURCE
+// tokens' own reading order (token_ordinals[0] ascending) so two links that
+// share identical phrase text — the same word linked twice, once per
+// occurrence — claim successive occurrences instead of both colliding on the
+// first. Fieldy, 2026-08-16: "the order matters... assume my usage will be
+// in the order of the words themselves." Mutates and returns the same array.
+function resolvePhraseLinks(links, enWords) {
+  const claimed = new Set();
+  for (const l of links) if (l.english_indices?.length) l.english_indices.forEach(i => claimed.add(i));
+  const needsPhrase = links
+    .filter(l => !l.english_indices?.length && l.english_phrase)
+    .sort((a, b) => (a.token_ordinals?.[0] ?? 0) - (b.token_ordinals?.[0] ?? 0));
+  for (const l of needsPhrase) {
+    l.english_indices = findPhraseIndices(l.english_phrase, enWords, claimed);
+    l.english_indices.forEach(i => claimed.add(i));
+  }
+  return links;
 }
 
 // Click-to-copy — same mechanism as HebrewViewer's WordBlock / MultiWordBlock:
@@ -932,12 +960,12 @@ export default function Parallel() {
 
       const tmap = {};
       const translated = (txData.verses || []).filter(vs => vs.text?.trim());
-      const buildLinks = (rawLinks, enWords) => dedupeLinks(rawLinks || []).map(lk => {
-        const link = { ...lk, token_ordinals: parseJ(lk.token_ordinals, []), english_indices: parseJ(lk.english_indices, []) };
-        if (!link.english_indices.length && link.english_phrase)
-          link.english_indices = findPhraseIndices(link.english_phrase, enWords);
-        return link;
-      });
+      const buildLinks = (rawLinks, enWords) => resolvePhraseLinks(
+        dedupeLinks(rawLinks || []).map(lk => ({
+          ...lk, token_ordinals: parseJ(lk.token_ordinals, []), english_indices: parseJ(lk.english_indices, []),
+        })),
+        enWords
+      );
 
       if (translated.some(vs => Array.isArray(vs.links))) {
         // Newer server: links ride along on the chapter payload.

@@ -62,6 +62,171 @@ const AUTO_LINK_STOP = new Set([
 ]);
 const cleanEnWord = (w) => String(w || '').replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, '');
 
+// Non-Hebrew source lexicons (server/lexicon/{latin,syriac,geez,greek,
+// hebrew-extra}-lexicon.json) store each word's value as
+// "[connector ]TRANSLIT[ /gloss]" — e.g. "and raah / saw", "Yawam / day" —
+// literally the same lexicon this session's piecewise-expansion workflow
+// writes by hand. It already rides along as each token's own `.gloss` field
+// from /api/source/:src/verse (server.js's _lookupGloss), so no extra fetch
+// is needed to auto-link these editions. Since the app's "Novel English"
+// reading-text convention is always "TRANSLIT (gloss)" (CLAUDE.md's Two
+// Display Surfaces section), the transliteration segment — before the "/",
+// with a leading connector word stripped — is exactly the English word to
+// match. Fieldy, 2026-08-16: "since the other languages use hebrew lexicon
+// words in their values, the other language linking should be trivial too
+// raa (saw) -> ወርእዮ." A value of "—" or with no real transliteration segment
+// (a plain English editorial note like "Egypt" or "legal expert...") yields
+// no candidates — there's nothing reliable to match against the app's own
+// transliterated reading text for those.
+const LEX_LEAD_STRIP = /^(and|the|to|of|in|for|so|that|he|it|they)\s+/i;
+function lexTranslitCandidates(val) {
+  if (!val || val === '—') return [];
+  let left = String(val).split('/')[0].trim();
+  let prev;
+  do { prev = left; left = left.replace(LEX_LEAD_STRIP, '').trim(); } while (left !== prev);
+  if (!left) return [];
+  const words = left.split(/\s+/).filter(Boolean);
+  if (!words.length) return [];
+  return [...new Set([words.join('').toLowerCase(), words[words.length - 1].toLowerCase()])].filter(Boolean);
+}
+
+// One candidate per still-unlinked token, offering every transliteration
+// string that would legitimately identify it. Hebrew (BHS) offers the FULL
+// reconstructed word (root+suffix, no eliding) ahead of the bare root — see
+// the "allow variants" fix below — so "achayam" and "ach" both work. Every
+// other language offers whatever lexTranslitCandidates pulls from its own
+// token's `.gloss` (the lexicon value). `compIdx` on a variant says what a
+// match against it should link: -1 for the whole token, a real index for
+// just that Hebrew component (leaving the rest for a separate manual link).
+function buildAutoLinkCandidates(isBHSLang, tokens, usedOrd) {
+  const out = [];
+  for (const t of tokens) {
+    if (usedOrd.has(t.token_ordinal)) continue;
+    const variants = [];
+    if (isBHSLang) {
+      const comps = t.components || [];
+      const root = comps.find(c => c.css === 'root') || comps.find(c => c.css === 'mod-nmpr');
+      if (!root) continue;
+      const rootTranslit = String(root.translit || '').trim().toLowerCase();
+      if (!rootTranslit) continue;
+      const fullTranslit = comps.filter(c => !c.isMark).map(c => c.translit || '').join('').trim().toLowerCase();
+      const compIdx = comps.length > 1 ? comps.indexOf(root) : -1;
+      if (fullTranslit && fullTranslit !== rootTranslit) variants.push({ text: fullTranslit, compIdx: -1 });
+      variants.push({ text: rootTranslit, compIdx });
+    } else {
+      for (const text of lexTranslitCandidates(t.gloss)) variants.push({ text, compIdx: -1 });
+    }
+    if (variants.length) out.push({ ordinal: t.token_ordinal, used: false, variants });
+  }
+  return out;
+}
+
+// Walks the English words IN ORDER and greedily pairs each against the
+// first still-unused candidate whose transliteration matches — which is
+// what makes a word used TWICE in one verse ("qaraa" called twice in
+// Genesis 1:5) pair the first occurrence with the first (lowest-ordinal,
+// i.e. earliest-read) source token and the second occurrence with the
+// second, instead of both colliding on whichever token happened to be
+// found first. Fieldy, 2026-08-16: "the order matters... assume my usage
+// will be in the order of the words themselves."
+function matchAutoLinkCandidates(candidates, enWords, usedEn) {
+  const matches = [];
+  for (let i = 0; i < enWords.length; i++) {
+    if (usedEn.has(i)) continue;
+    const clean = cleanEnWord(enWords[i]).toLowerCase();
+    if (!clean || AUTO_LINK_STOP.has(clean)) continue;
+    let hit = null, hitVariant = null;
+    for (const c of candidates) {
+      if (c.used) continue;
+      const v = c.variants.find(vv => vv.text === clean);
+      if (v) { hit = c; hitVariant = v; break; }
+    }
+    if (!hit) continue;
+    hit.used = true;
+    matches.push({ enIdx: i, ordinal: hit.ordinal, compIdx: hitVariant.compIdx });
+  }
+  return matches;
+}
+
+// Computes matches for ONE language/verse and writes whatever new links it
+// finds (admin: straight to the server; non-admin: this browser's local
+// overlay). Deliberately takes `admin` as a parameter rather than looking it
+// up itself — Sync All already resolves it once per language via
+// fetchLangTokensAndLinks, and re-checking here would just be a second round
+// trip for the same answer. No React state read here at all, so this is
+// equally safe to call for the CURRENTLY displayed language (reusing its
+// already-loaded tokens/links/enWords) or for every OTHER language in turn.
+async function runAutoLinkForVerse(bookId, chapter, verse, langId, tokens, links, enWords, admin) {
+  if (!tokens?.length || !enWords?.length) return { created: 0, matched: 0, errors: [] };
+  const usedEn  = new Set(links.flatMap(l => l.english_indices || []));
+  const usedOrd = new Set(links.flatMap(l => l.token_ordinals  || []));
+  const candidates = buildAutoLinkCandidates(langId === 'BHS', tokens, usedOrd);
+  const matches = matchAutoLinkCandidates(candidates, enWords, usedEn);
+  if (!matches.length) return { created: 0, matched: 0, errors: [] };
+
+  const errors = [];
+  let created = 0;
+  for (const m of matches) {
+    const tok = tokens.find(t => t.token_ordinal === m.ordinal);
+    const comp = m.compIdx >= 0 ? tok?.components?.[m.compIdx] : null;
+    const component_hint = comp ? `${m.compIdx}:${comp.css}` : '';
+    const payload = {
+      book_id: bookId, chapter, verse, lang: langId,
+      english_phrase: enWords[m.enIdx], english_indices: [m.enIdx],
+      token_ordinals: [m.ordinal], component_hint,
+      color_index: 0, sort_order: links.length + created,
+    };
+    try {
+      if (admin) await apiTransLink(payload);
+      else await addLocalLink(bookId, chapter, verse, langId, payload, links);
+      created++;
+    } catch (e) { errors.push(e.message); }
+  }
+  return { created, matched: matches.length, errors };
+}
+
+// Independent fetch of ONE language's tokens + resolved links for a verse —
+// mirrors loadVerse's own fetch logic (deliberately duplicated: loadVerse
+// writes to this component's React state, and Sync All needs to walk N
+// languages in a tight loop without racing that state — see the comment on
+// runAutoLinkForVerse). Includes the same local-overlay handling as
+// loadVerse so a non-admin's own earlier local edits are respected/extended,
+// not silently overwritten.
+async function fetchLangTokensAndLinks(bookId, chapter, verse, langId) {
+  let data = await fetch(`/api/translate/verse?book=${bookId}&chapter=${chapter}&verse=${verse}&lang=${encodeURIComponent(langId)}`)
+    .then(r => r.json());
+  const effective = data.token_source || langId;
+  const { isAdmin: admin } = await getAdminStatus();
+  let localLinksOverride = null;
+  if (!admin) {
+    const [localVerse, ll] = await Promise.all([
+      getLocalVerse(bookId, chapter, verse),
+      getLocalLinks(bookId, chapter, verse, effective),
+    ]);
+    if (localVerse) data = mergeVerseWithLocal(data, localVerse);
+    localLinksOverride = ll;
+  }
+  let tokens;
+  if (langId === 'BHS') {
+    const parsedTokens = await apiTokens(bookId, chapter).catch(() => []);
+    const parsedByKey = {};
+    for (const pt of parsedTokens || []) {
+      if (pt.verse != null && pt.token_ordinal != null) parsedByKey[`${pt.verse}:${pt.token_ordinal}`] = pt;
+    }
+    tokens = (data.tokens || []).map(t => {
+      const p = parsedByKey[`${+verse}:${t.token_ordinal}`];
+      return p?.components?.length ? { ...t, components: p.components, strongs: p.strongs || t.strongs } : t;
+    });
+  } else {
+    const sv = await fetch(`/api/source/${encodeURIComponent(langId)}/verse?book=${bookId}&chapter=${chapter}&verse=${verse}`)
+      .then(r => r.ok ? r.json() : { tokens: [] }).catch(() => ({ tokens: [] }));
+    tokens = (sv.tokens || []).map((t, i) => ({ token_ordinal: t.ord ?? (i + 1), word_raw: t.word ?? '', gloss: t.gloss || '' }));
+  }
+  const enWords = (data.text || '').trim().split(/\s+/).filter(Boolean);
+  const links = dedupeLinks(resolvePhraseLinks(hydrateLinks(localLinksOverride != null ? localLinksOverride : (data.links || [])), enWords));
+  return { tokens, links, enWords, tokenSource: effective, admin };
+}
+
 function dedupeLinks(links) {
   const seen = new Map();
   for (const l of links) {
@@ -79,14 +244,45 @@ function hydrateLinks(rawLinks) {
   }));
 }
 
-function findPhraseIndices(phrase, words) {
+// `avoid`, if given, is a Set of word-indices already claimed by an earlier
+// link's resolved span — the search skips any candidate span overlapping it,
+// so a SECOND link sharing the same phrase text finds the phrase's SECOND
+// occurrence instead of colliding on the first. See resolvePhraseLinks below,
+// which is what actually orders and feeds these calls.
+function findPhraseIndices(phrase, words, avoid) {
   const ph = phrase.trim().split(/\s+/);
   const clean = w => w.replace(/[,\.!?;:()]+/g, '').toLowerCase();
   for (let i = 0; i <= words.length - ph.length; i++) {
+    if (avoid && avoid.size && Array.from({ length: ph.length }, (_, k) => i + k).some(idx => avoid.has(idx))) continue;
     if (words.slice(i, i + ph.length).map(clean).join(' ') === ph.map(clean).join(' '))
       return Array.from({ length: ph.length }, (_, k) => i + k);
   }
   return [];
+}
+
+// Resolves every link's english_indices in place: links that already carry
+// their own explicit english_indices are trusted and their spans reserved;
+// links that only have english_phrase text (older/imported data, or an
+// auto-link whose payload didn't set indices) get resolved via
+// findPhraseIndices, walked in the SOURCE tokens' own reading order
+// (token_ordinals[0] ascending) so that when the SAME phrase legitimately
+// appears twice — "qaraa" linked once to each of its two occurrences in
+// Genesis 1:5 — the link pointing at the earlier source token claims the
+// phrase's first occurrence and the link pointing at the later source token
+// claims the second, rather than both colliding on the first. Fieldy,
+// 2026-08-16: "the order matters... assume my usage will be in the order of
+// the words themselves." Mutates and returns the same array.
+function resolvePhraseLinks(links, enWords) {
+  const claimed = new Set();
+  for (const l of links) if (l.english_indices?.length) l.english_indices.forEach(i => claimed.add(i));
+  const needsPhrase = links
+    .filter(l => !l.english_indices?.length && l.english_phrase)
+    .sort((a, b) => (a.token_ordinals?.[0] ?? 0) - (b.token_ordinals?.[0] ?? 0));
+  for (const l of needsPhrase) {
+    l.english_indices = findPhraseIndices(l.english_phrase, enWords, claimed);
+    l.english_indices.forEach(i => claimed.add(i));
+  }
+  return links;
 }
 
 // Link color resolution mirrors the original: derive the color from the
@@ -340,12 +536,9 @@ export default function Translate() {
       const enWords = (data.text || '').trim().split(/\s+/).filter(Boolean);
       // localLinks is null unless a non-admin has a local override for this verse's
       // links; when set (even to []), it replaces the server's link list entirely.
-      const links = dedupeLinks(hydrateLinks(localLinks != null ? localLinks : (data.links || [])).map(l => {
-        if (!l.english_indices?.length && l.english_phrase) {
-          l.english_indices = findPhraseIndices(l.english_phrase, enWords);
-        }
-        return l;
-      }));
+      const links = dedupeLinks(
+        resolvePhraseLinks(hydrateLinks(localLinks != null ? localLinks : (data.links || [])), enWords)
+      );
       setVerseData({ ...data, tokens, links, localLinks: localLinks != null });
       setLoadSeq(s => s + 1);
     } catch (e) { toast('Verse load failed: ' + e.message, 'err'); }
@@ -807,90 +1000,56 @@ export default function Translate() {
   }, [selEn, selHeb, enWords, activeBook, activeChapter, activeVerse, tokenSource, tokens, links, loadVerse, toast]);
 
   // ── AUTO-LINK ────────────────────────────────────────────────────────────
-  // Match an English gloss word against a Hebrew token by transliteration —
-  // but a gloss can legitimately be written either way: the bare root ("ach
-  // (brothers)") or the fuller inflected surface the token itself carries
-  // ("achayam (brothers)", root+suffix, no eliding — same reconstruction the
-  // chip/word-block view already shows). Fieldy, 2026-08-15, after the first
-  // cut only matched the bare root: "it should allow variants... I want
-  // achayam for brothers instead of ach (brothers), the tokens have achayam."
-  // So each token offers TWO candidate strings — root-only and the full
-  // word (every non-mark component concatenated, in order) — and either is
-  // accepted. A match against the FULL word becomes a whole-token link (the
-  // gloss accounted for the whole surface, suffix included); a match against
-  // just the ROOT becomes a component-level link, same as before, leaving
-  // any prefix (mod-conj "and", mod-prep "for", ...) for a separate manual
-  // link. Already-linked English words and Hebrew tokens are skipped, so
-  // re-running this is always safe.
+  // Runs runAutoLinkForVerse (module-level, above) against THIS component's
+  // already-loaded tokens/links/enWords for the currently selected edition —
+  // Hebrew or any other source, both are handled by the same shared matcher
+  // now (see buildAutoLinkCandidates: Hebrew reads token.components, every
+  // other language reads token.gloss, i.e. its lexicon value). Fieldy,
+  // 2026-08-16: "since the other languages use hebrew lexicon words in their
+  // values, the other language linking should be trivial too."
   const autoLinkVerse = useCallback(async () => {
-    if (!isBHS) { toast('Auto-link currently only supports the Hebrew (BHS) edition', 'err'); return; }
-    if (!tokens.length || !enWords.length) return;
-
-    const usedEn  = new Set(links.flatMap(l => l.english_indices || []));
-    const usedOrd = new Set(links.flatMap(l => l.token_ordinals  || []));
-
-    const candidates = [];
-    for (const t of tokens) {
-      if (usedOrd.has(t.token_ordinal)) continue;
-      const comps = t.components || [];
-      const root = comps.find(c => c.css === 'root') || comps.find(c => c.css === 'mod-nmpr');
-      if (!root) continue;
-      const rootTranslit = String(root.translit || '').trim();
-      if (!rootTranslit) continue;
-      const fullTranslit = comps.filter(c => !c.isMark).map(c => c.translit || '').join('').trim();
-      const compIdx = comps.length > 1 ? comps.indexOf(root) : -1;
-      candidates.push({
-        ordinal: t.token_ordinal, compIdx, used: false,
-        rootTranslit: rootTranslit.toLowerCase(),
-        fullTranslit: fullTranslit.toLowerCase(),
-      });
-    }
-
-    const matches = [];
-    for (let i = 0; i < enWords.length; i++) {
-      if (usedEn.has(i)) continue;
-      const clean = cleanEnWord(enWords[i]).toLowerCase();
-      if (!clean || AUTO_LINK_STOP.has(clean)) continue;
-      // Prefer a FULL-word match (whole-token link) over a root-only match —
-      // it's the more specific pairing when both happen to be possible
-      // (only when the word has no other components, where they're equal).
-      const full = candidates.find(c => !c.used && c.fullTranslit === clean);
-      if (full) { full.used = true; matches.push({ enIdx: i, ordinal: full.ordinal, compIdx: -1 }); continue; }
-      const root = candidates.find(c => !c.used && c.rootTranslit === clean);
-      if (!root) continue;
-      root.used = true;
-      matches.push({ enIdx: i, ordinal: root.ordinal, compIdx: root.compIdx });
-    }
-
-    if (!matches.length) {
-      toast('No new transliteration matches — everything matchable is already linked', 'ok');
-      return;
-    }
-
     const { isAdmin: admin } = await getAdminStatus();
-    const errors = [];
-    let created = 0;
-    for (const m of matches) {
-      const tok = tokens.find(t => t.token_ordinal === m.ordinal);
-      const comp = m.compIdx >= 0 ? tok?.components?.[m.compIdx] : null;
-      const component_hint = comp ? `${m.compIdx}:${comp.css}` : '';
-      const payload = {
-        book_id: activeBook, chapter: activeChapter, verse: activeVerse,
-        lang: tokenSource,
-        english_phrase: enWords[m.enIdx], english_indices: [m.enIdx],
-        token_ordinals: [m.ordinal], component_hint,
-        color_index: 0, sort_order: links.length + created,
-      };
-      try {
-        if (admin) await apiTransLink(payload);
-        else { await addLocalLink(activeBook, activeChapter, activeVerse, tokenSource, payload, links); setHasLocalEdits(true); }
-        created++;
-      } catch (e) { errors.push(e.message); }
-    }
+    const { created, matched, errors } = await runAutoLinkForVerse(
+      activeBook, activeChapter, activeVerse, tokenSource, tokens, links, enWords, admin
+    );
+    if (!matched) { toast('No new transliteration matches — everything matchable is already linked', 'ok'); return; }
+    if (!admin && created > 0) setHasLocalEdits(true);
     await loadVerse(activeBook, activeChapter, activeVerse);
     if (errors.length) toast(`Auto-linked ${created}, ${errors.length} failed (${errors[0]})`, 'err');
     else toast(`Auto-linked ${created} word${created === 1 ? '' : 's'} by transliteration match — spot-check before trusting`, 'ok');
-  }, [isBHS, tokens, enWords, links, activeBook, activeChapter, activeVerse, tokenSource, loadVerse, toast]);
+  }, [tokens, enWords, links, activeBook, activeChapter, activeVerse, tokenSource, loadVerse, toast]);
+
+  // ── SYNC ALL ─────────────────────────────────────────────────────────────
+  // Runs Auto-Link across EVERY language this verse has (the same `langs`
+  // list the language picker offers), not just whichever one is currently
+  // selected — one click instead of switching languages and clicking
+  // Auto-Link N times. Fieldy, 2026-08-16: "i dont mind going through each
+  // language and syncing but im confident we can do a sync all with how
+  // bulletproof the matches have been so far." Each language gets its own
+  // independent fetch (fetchLangTokensAndLinks) rather than reusing this
+  // component's `tokens`/`links` state, because that state only ever holds
+  // ONE language at a time and switching it mid-loop would race React's
+  // async state updates (see that function's header comment).
+  const syncAllLinks = useCallback(async () => {
+    if (!activeBook || !activeChapter || activeVerse == null || !langs.length) return;
+    if (!confirm(`Run Auto-Link across all ${langs.length} language${langs.length === 1 ? '' : 's'} for this verse?`)) return;
+    let totalCreated = 0;
+    const issues = [];
+    for (const l of langs) {
+      try {
+        const { tokens: t, links: lk, enWords: ew, admin } =
+          await fetchLangTokensAndLinks(activeBook, activeChapter, activeVerse, l.id);
+        const { created, errors } = await runAutoLinkForVerse(activeBook, activeChapter, activeVerse, l.id, t, lk, ew, admin);
+        totalCreated += created;
+        if (!admin && created > 0) setHasLocalEdits(true);
+        if (errors.length) issues.push(`${l.label || l.id}: ${errors[0]}`);
+      } catch (e) { issues.push(`${l.label || l.id}: ${e.message}`); }
+    }
+    await loadVerse(activeBook, activeChapter, activeVerse);
+    if (!totalCreated && !issues.length) toast('No new matches in any language — everything matchable is already linked', 'ok');
+    else if (issues.length) toast(`Synced ${totalCreated} across ${langs.length} languages, ${issues.length} issue(s) (${issues[0]})`, 'err');
+    else toast(`Synced ${totalCreated} link${totalCreated === 1 ? '' : 's'} across ${langs.length} languages — spot-check before trusting`, 'ok');
+  }, [langs, activeBook, activeChapter, activeVerse, loadVerse, toast]);
 
   // Switch the source language we're linking against and reload that language's
   // tokens + its own link set. The English translation is untouched.
@@ -1351,16 +1510,26 @@ export default function Translate() {
                     >
                       <div className="tr-section-label">
                         Word Links
-                        {isBHS && (
+                        <span className="tr-section-label-btns">
                           <button
                             type="button"
                             className="tr-autolink-btn"
                             onClick={autoLinkVerse}
-                            title="Match every unlinked English gloss word against the Hebrew root it transliterates, and link them automatically. Safe to re-run — already-linked words are skipped. Spot-check the result afterward."
+                            title={isBHS
+                              ? "Match every unlinked English gloss word against the Hebrew root it transliterates, and link them automatically. Safe to re-run — already-linked words are skipped. Spot-check the result afterward."
+                              : `Match every unlinked English gloss word against this edition's own lexicon transliteration, and link them automatically. Safe to re-run — already-linked words are skipped. Spot-check the result afterward.`}
                           >
                             🔗 Auto-Link
                           </button>
-                        )}
+                          <button
+                            type="button"
+                            className="tr-autolink-btn tr-syncall-btn"
+                            onClick={syncAllLinks}
+                            title="Run Auto-Link across every language this verse has, not just the one currently selected."
+                          >
+                            ⇄ Sync All
+                          </button>
+                        </span>
                       </div>
                       <div className="tr-linker-grid">
                         {/* English column (LTR) */}
