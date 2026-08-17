@@ -1042,16 +1042,30 @@ export default function Translate() {
   // 2026-08-16: "since the other languages use hebrew lexicon words in their
   // values, the other language linking should be trivial too."
   const autoLinkVerse = useCallback(async () => {
+    // Must key off `lang` (the SELECTED source language — GEZ, GRC, LAT, SYR,
+    // BHS, whatever the dropdown currently shows), never `tokenSource`. Those
+    // are different things: `tokenSource` is what /api/translate/verse always
+    // reports for the HEBREW paleo/Established-Links panel (BHS for OT books,
+    // HEB for NT — see server.js's tokenSource comment), constant regardless
+    // of the language picker. Passing it here as `langId` used to force
+    // buildAutoLinkCandidates's `isBHSLang` branch TRUE for every language —
+    // so a non-Hebrew verse's tokens (which carry `.gloss`, not `.components`)
+    // hit `comps.find(c => c.css === 'root')` on tokens with no `components`
+    // at all, found nothing, and silently produced zero candidates every
+    // time. Found 2026-08-17 chasing "Link This Language did nothing for
+    // Ge'ez" even after the lexicon carried a correct Raashayath/Aratz
+    // translit — Sync All (syncAllLinks below) never had this bug, since it
+    // already passes each loop's own `l.id`, not the shared tokenSource.
     const { isAdmin: admin } = await getAdminStatus();
     const { created, matched, errors } = await runAutoLinkForVerse(
-      activeBook, activeChapter, activeVerse, tokenSource, tokens, links, enWords, admin
+      activeBook, activeChapter, activeVerse, lang, tokens, links, enWords, admin
     );
     if (!matched) { toast('No new transliteration matches — everything matchable is already linked', 'ok'); return; }
     if (!admin && created > 0) setHasLocalEdits(true);
     await loadVerse(activeBook, activeChapter, activeVerse);
     if (errors.length) toast(`Auto-linked ${created}, ${errors.length} failed (${errors[0]})`, 'err');
     else toast(`Auto-linked ${created} word${created === 1 ? '' : 's'} by transliteration match — spot-check before trusting`, 'ok');
-  }, [tokens, enWords, links, activeBook, activeChapter, activeVerse, tokenSource, loadVerse, toast]);
+  }, [tokens, enWords, links, activeBook, activeChapter, activeVerse, lang, loadVerse, toast]);
 
   // ── SYNC ALL ─────────────────────────────────────────────────────────────
   // Runs Auto-Link across EVERY language this verse has (the same `langs`
@@ -1103,12 +1117,17 @@ export default function Translate() {
       } else {
         // Seeds the local override from whatever's currently on screen (server's
         // list, or this browser's own earlier local edits) minus the deleted link.
-        await deleteLocalLink(activeBook, activeChapter, activeVerse, tokenSource, linkId, links);
+        // Keyed by `lang` (the selected source language), not `tokenSource` —
+        // same mixup as autoLinkVerse above; tokenSource is constant (BHS/HEB)
+        // regardless of which language's links are on screen, so this used to
+        // write every non-admin delete into the BHS local-overlay bucket no
+        // matter which language you were actually clearing.
+        await deleteLocalLink(activeBook, activeChapter, activeVerse, lang, linkId, links);
         setHasLocalEdits(true);
       }
       await loadVerse(activeBook, activeChapter, activeVerse);
     } catch (e) { toast('Delete failed: ' + e.message, 'err'); }
-  }, [activeBook, activeChapter, activeVerse, tokenSource, links, loadVerse, toast]);
+  }, [activeBook, activeChapter, activeVerse, lang, links, loadVerse, toast]);
 
   // Bulk "Clear All" for this verse's Word Links — a quick way to wipe out a
   // batch of Auto-Link mismatches (or start a verse's links over) without
@@ -1128,13 +1147,13 @@ export default function Translate() {
         // override straight to [], same mechanism deleteLink's single-id
         // path uses per-link, just without the intermediate read/filter
         // steps that would otherwise happen N times in a row.
-        await clearLocalLinks(activeBook, activeChapter, activeVerse, tokenSource);
+        await clearLocalLinks(activeBook, activeChapter, activeVerse, lang);
         setHasLocalEdits(true);
       }
       await loadVerse(activeBook, activeChapter, activeVerse);
       toast(`Deleted ${links.length} link${links.length === 1 ? '' : 's'}`, 'ok');
     } catch (e) { toast('Delete all failed: ' + e.message, 'err'); }
-  }, [links, activeBook, activeChapter, activeVerse, tokenSource, loadVerse, toast]);
+  }, [links, activeBook, activeChapter, activeVerse, lang, loadVerse, toast]);
 
   // Same idea as deleteAllLinks, but for EVERY language this verse has, not
   // just the one on screen — the clear-side counterpart to Sync All /
