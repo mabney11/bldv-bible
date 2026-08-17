@@ -15,3 +15,4 @@ Sitemap: https://www.bldbible.com/sitemap.xml
 Sitemap: https://www.bldbible.com/sitemap-roots.xml
 Sitemap: https://www.bldbible.com/sitemap-chapters.xml
 Sitemap: https://www.bldbible.com/sitemap-verses.xml
+Sitemap: https://www.bldbible.com/sitemap-verse-pages.xml

@@ -61,6 +61,13 @@
  * fix, slug URLs (the ones actually linked from the site's own nav) were
  * silently falling through to the bare SPA shell no matter how complete
  * ROUTES was otherwise.
+ *
+ * 2026-08-17: added the clean per-verse path route (/:bookSlug/:chapter/
+ * :verse, e.g. /genesis/1/1 — VersePage.jsx) — see the "CLEAN VERSE-URL PATH
+ * ROUTE" section below. Unlike everything above, this isn't an entry in
+ * ROUTES (which only does exact-pathname lookups); renderSnapshot() pattern-
+ * matches it separately, since the identity space is "any real book +
+ * chapter + verse", not a fixed list of pathnames.
  */
 
 const fs = require('fs');
@@ -663,6 +670,120 @@ function hebrewVerseRoute() {
   };
 }
 
+// ── CLEAN VERSE-URL PATH ROUTE (/:bookSlug/:chapter/:verse) ────────────────
+// 2026-08-17: VersePage.jsx's own header comment flagged this gap directly:
+// "this page is intentionally a client-only route, not (yet) prerendered...
+// If that's wanted later, prerender.js's ROUTES dispatch would need a
+// pattern-matched entry for /:bookSlug/:chapter/:verse alongside the
+// existing exact-pathname routes." That's what this section adds — every
+// route above is keyed by an EXACT pathname in ROUTES (e.g. '/bible'), which
+// can't represent "any of tens of thousands of /genesis/1/1-style paths";
+// this one is pattern-matched instead, in renderSnapshot() below.
+//
+// IMPORTANT: the slug here resolves against /api/translate/progress's OWN
+// book list — NOT /api/book-order, which every OTHER route above uses (see
+// ensureSlugMap/normalizeBookParam). This is deliberate: VersePage.jsx
+// itself (src/pages/VersePage.jsx, ~line 45) builds ITS slug map from
+// apiTransProgress()'s `books`, not apiBookOrder() like Reader.jsx/
+// Parallel.jsx/Translate.jsx do — a snapshot built off book-order could
+// therefore resolve a slug differently than the real hydrated page does for
+// the exact same URL. Two separate slug sources already coexist in this app
+// pre-dating this change (worth eventually unifying — flagged, not fixed,
+// here); this route mirrors the one the page it's snapshotting actually
+// uses, so crawler and hydrated client always agree.
+const VERSE_PATH_RE = /^\/([a-z0-9-]+)\/(\d{1,3})\/(\d{1,3})$/;
+
+let _progressSlugMaps = null; // { slugToId, idToSlug, idToName }
+async function ensureProgressSlugMaps(port) {
+  if (_progressSlugMaps) return _progressSlugMaps;
+  try {
+    const data = await fetchJSON(port, '/api/translate/progress');
+    const list = (data && data.books) || [];
+    const slugToId = {}, idToSlug = {}, idToName = {}, used = {};
+    // Same sort-by-id + collision rule as src/lib/bookSlug.js's
+    // buildBookSlugs (duplicated here — CommonJS vs ESM, same reasoning as
+    // every other small duplicated helper in this file).
+    for (const e of [...list].filter((x) => x && x.book_id != null).sort((a, b) => a.book_id - b.book_id)) {
+      const id = e.book_id;
+      const base = slugify(e.name) || `book-${id}`;
+      let slug = base, n = 1;
+      while (used[slug] != null && used[slug] !== id) { n += 1; slug = `${base}-${n}`; }
+      used[slug] = id;
+      if (idToSlug[id] == null) idToSlug[id] = slug;
+      slugToId[slug] = id;
+      idToName[id] = e.name;
+    }
+    _progressSlugMaps = { slugToId, idToSlug, idToName };
+  } catch {
+    _progressSlugMaps = { slugToId: {}, idToSlug: {}, idToName: {} };
+  }
+  return _progressSlugMaps;
+}
+
+// Resolves a /:bookSlug/... path segment — slug OR numeric id, mirroring
+// resolveBookParam's "numbers pass through" rule — to { id, canonicalSlug,
+// name }, or null if it doesn't resolve to any real, translatable book.
+async function resolveVersePathBook(raw, port) {
+  const maps = await ensureProgressSlugMaps(port);
+  let id = null;
+  if (/^\d+$/.test(raw)) id = parseInt(raw, 10);
+  else id = maps.slugToId[String(raw).toLowerCase()] ?? null;
+  if (id == null || !maps.idToName[id]) return null;
+  return { id, canonicalSlug: maps.idToSlug[id] || String(id), name: maps.idToName[id] };
+}
+
+// Builds one clean verse-URL snapshot. Mirrors englishVerseRoute's shape
+// (same /api/translate/verse call, same word+Strong's-number list body)
+// rather than trying to reproduce VersePage.jsx's own richer word-by-word
+// table (root/translit/definition/modifications columns via
+// computeWordParts) — that logic is React-component-shaped and client-only;
+// a simpler real word+Strong's list degrades gracefully for a crawler the
+// same way every other route's preview here does (see translitPreview's own
+// comment on this exact tradeoff).
+async function buildVersePathSnapshot(match, port) {
+  const [, slugRaw, chapterRaw, verseRaw] = match;
+  const resolved = await resolveVersePathBook(slugRaw, port);
+  const chapter = validChapter(chapterRaw);
+  const verse = validVerseNum(verseRaw);
+  // No snapshot for a bogus address — matches VersePage.jsx's own "That
+  // verse address isn't recognized" state, same as every other route's
+  // invalid-input case here (falls through to the plain SPA shell).
+  if (!resolved || !chapter || !verse) return null;
+  const { id: book, canonicalSlug, name } = resolved;
+  const heading = `${name} ${chapter}:${verse}`;
+  const canonicalPath = `/${canonicalSlug}/${chapter}/${verse}`;
+
+  let data = null;
+  try { data = await fetchJSON(port, `/api/translate/verse?book=${book}&chapter=${chapter}&verse=${verse}`); }
+  catch { /* no text yet — falls through to the "doesn't have text yet" snapshot below, matching VersePage.jsx's own rd-state for this exact case (see the screenshot that prompted this section: /malachi/4/2 before the versification fix deployed) */ }
+
+  if (!data || !data.text) {
+    const chapterHref = `/bible?book=${encodeURIComponent(canonicalSlug)}&chapter=${chapter}&verse=${verse}`;
+    return {
+      title: `${heading} | Reader`,
+      description: `${heading} doesn't have English text yet in ${BRAND}.`,
+      body: `<h1>${escapeHtml(heading)}</h1>
+      <p>${escapeHtml(heading)} doesn't have English text yet.</p>
+      <p><a href="${chapterHref}">Open the chapter in the Reader →</a></p>${NAV_LINKS}`,
+      canonicalPath,
+    };
+  }
+
+  const wordItems = (data.tokens || [])
+    .filter((t) => t && t.word_raw)
+    .map((t) => `<li>${escapeHtml(t.word_raw)}${t.strongs ? ` — <a href="/roots?sn=${encodeURIComponent(t.strongs)}">${escapeHtml(t.strongs)}</a>` : ''}</li>`)
+    .join('\n        ');
+
+  return {
+    title: `${heading} | Reader`,
+    description: `${heading} — ${truncate(data.text, 140)}`,
+    body: `<h1>${escapeHtml(heading)}</h1>
+      <p>${escapeHtml(data.text)}</p>
+      ${wordItems ? `<h2>Hebrew, word by word</h2>\n      <ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
+    canonicalPath,
+  };
+}
+
 // pathname (req.path, no query string) -> ARRAY of { match(query), build }
 // candidates, tried in order (first match wins) — needed because "/" now
 // serves several different snapshots depending on ?source=. Query variations
@@ -913,28 +1034,54 @@ function render({ title, description, canonicalPath, body }) {
  */
 async function renderSnapshot(pathname, query, port, indexHtmlPath) {
   const candidates = ROUTES[pathname];
-  if (!candidates) return null;
-  // Resolve a slug `book` param (e.g. ?book=luke) to its numeric id BEFORE any
-  // route's match()/build() ever sees `query` — see normalizeBookParam above.
-  if (query.has('book')) await normalizeBookParam(query, port);
-  const route = candidates.find((r) => r.match(query));
-  if (!route) return null;
+  if (candidates) {
+    // Resolve a slug `book` param (e.g. ?book=luke) to its numeric id BEFORE any
+    // route's match()/build() ever sees `query` — see normalizeBookParam above.
+    if (query.has('book')) await normalizeBookParam(query, port);
+    const route = candidates.find((r) => r.match(query));
+    if (route) {
+      const qs = query.toString();
+      const cacheKey = pathname + (qs ? '?' + qs : '');
+      const cached = cacheGet(cacheKey);
+      if (cached !== undefined) return cached;
 
-  const qs = query.toString();
-  const cacheKey = pathname + (qs ? '?' + qs : '');
-  const cached = cacheGet(cacheKey);
-  if (cached !== undefined) return cached;
+      loadShell(indexHtmlPath);
+      const { title, description, body, canonicalPath } = await route.build(query, port);
+      // A route may name its own canonical (see englishChapterRoute's
+      // canonicalPath — collapses ?verse=/&lang=/etc. variants onto the
+      // book+chapter URL that's actually in the sitemap). Falls back to this
+      // exact request's own URL, same as before, for every route that doesn't.
+      const html = render({ title, description, canonicalPath: canonicalPath || cacheKey, body });
 
-  loadShell(indexHtmlPath);
-  const { title, description, body, canonicalPath } = await route.build(query, port);
-  // A route may name its own canonical (see englishChapterRoute's
-  // canonicalPath — collapses ?verse=/&lang=/etc. variants onto the
-  // book+chapter URL that's actually in the sitemap). Falls back to this
-  // exact request's own URL, same as before, for every route that doesn't.
-  const html = render({ title, description, canonicalPath: canonicalPath || cacheKey, body });
+      cacheSet(cacheKey, html);
+      return html;
+    }
+  }
 
-  cacheSet(cacheKey, html);
-  return html;
+  // /:bookSlug/:chapter/:verse — VersePage.jsx's clean verse URL (e.g.
+  // /genesis/1/1). Pattern-matched rather than an exact ROUTES[pathname]
+  // lookup, since every book/chapter/verse combination is its own distinct
+  // path — see VERSE_PATH_RE's own comment above for the full rationale.
+  // Tried only after the exact-pathname ROUTES lookup above finds nothing,
+  // so it can never shadow any named route.
+  const verseMatch = VERSE_PATH_RE.exec(pathname);
+  if (verseMatch) {
+    const cacheKey = pathname; // no query string affects this page's content
+    const cached = cacheGet(cacheKey);
+    if (cached !== undefined) return cached;
+
+    loadShell(indexHtmlPath);
+    const built = await buildVersePathSnapshot(verseMatch, port);
+    // Invalid book/chapter/verse — falls through to the plain SPA shell,
+    // same as VersePage.jsx's own "address not recognized" state.
+    if (!built) return null;
+    const html = render(built);
+
+    cacheSet(cacheKey, html);
+    return html;
+  }
+
+  return null;
 }
 
 module.exports = { renderSnapshot, ROUTES, MAX_CACHE_ENTRIES };

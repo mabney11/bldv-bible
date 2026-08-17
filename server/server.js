@@ -9047,6 +9047,78 @@ app.get('/sitemap-verses.xml', production.cache(3600), (req, res) => {
     }
 });
 
+// GET /sitemap-verse-pages.xml — one <url> per real (book, chapter, verse)
+// for the CLEAN path-based verse page (/:bookSlug/:chapter/:verse,
+// VersePage.jsx), alongside sitemap-verses.xml's /bible?book=..&chapter=..
+// &verse=.. query-string equivalent for the same verse. 2026-08-17: a
+// research pass found this route "isn't prerendered or in any sitemap —
+// only reachable by a crawler following internal links and running JS,"
+// even though server/prerender.js now snapshots it (see that file's "CLEAN
+// VERSE-URL PATH ROUTE" section, added alongside this route) — prerendering
+// alone doesn't help DISCOVERY, same lesson sitemap-chapters.xml/
+// sitemap-verses.xml already document for their own routes.
+//
+// Deliberately a SEPARATE file rather than appending a second <url> per
+// verse into sitemap-verses.xml: that file already sits close to its own
+// documented ~31,000-URL, single-sitemap-file scope for the SAME verse set
+// (see its comment above) — doubling it in place would blow past Google's
+// 50,000-URL-per-sitemap cap the moment both URL forms share one file.
+//
+// SLUG, not book_id, in the URL — this loop is scoped to BOOKS (tokens_bhs,
+// book_id 1-39), the exact same OT-only scope sitemap-chapters.xml/
+// sitemap-verses.xml already use — NT/apocrypha/pseudepigrapha verse-level
+// sitemap coverage is a separate, pre-existing gap, not introduced or fixed
+// here. No collision-suffix handling is needed for the slug: bookSlug.js's
+// collision rule always lets the LOWER canon_id keep the clean slug, and
+// every id in this 1-39 range is the lowest possible canon_id in the whole
+// app (nothing is ever promoted below 1) — so none of these 39 books can
+// ever be the LOSING side of a same-name collision, no matter what higher-id
+// book or work elsewhere in the corpus might slugify to the same string.
+// sitemapSlugify mirrors src/lib/bookSlug.js's slugify() exactly (its own
+// small copy — same "duplicate a stateless helper across module boundaries"
+// convention prerender.js already uses throughout this codebase).
+function sitemapSlugify(s) {
+    return String(s == null ? '' : s)
+        .toLowerCase()
+        .replace(/['".,:;!?()[\]]/g, '')
+        .replace(/&/g, 'and')
+        .replace(/[_\s]+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+}
+app.get('/sitemap-verse-pages.xml', production.cache(3600), (req, res) => {
+    try {
+        const urls = [];
+        for (const b of BOOKS) {
+            const slug = sitemapSlugify(canonName(b.book_id)) || `book-${b.book_id}`;
+            for (let ch = b.first_chapter; ch <= b.last_chapter; ch++) {
+                let verseRows = VERSE_LIST_BHS.all(b.book_id, ch);
+                if (!verseRows.length) {
+                    // Non-Hebrew-backed book/chapter — same English-baseline
+                    // fallback sitemap-verses.xml uses above, so this lists
+                    // exactly the verses the clean-URL page would actually show.
+                    try {
+                        verseRows = db.prepare(`
+                            SELECT DISTINCT ord_v AS verse FROM verses
+                            WHERE corpus='ENG' AND canon_id=? AND ord_c=? ORDER BY ord_v
+                        `).all(b.book_id, ch);
+                    } catch { /* ENG baseline not loaded */ }
+                }
+                for (const v of verseRows) {
+                    urls.push(`  <url><loc>https://www.bldbible.com/${slug}/${ch}/${v.verse}</loc></url>`);
+                }
+            }
+        }
+        res.type('application/xml').send(
+            `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`
+        );
+    } catch (err) {
+        console.error('/sitemap-verse-pages.xml failed:', err);
+        res.status(500).send('');
+    }
+});
+
 // Resolve a root request (?sn=H8064 preferred, ?root=<paleo> legacy) to its
 // index position. Strong's number is the exact identity; the Paleo string is a
 // best-effort fallback for old bookmarks (first entry with that form).
