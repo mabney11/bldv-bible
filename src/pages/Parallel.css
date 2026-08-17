@@ -144,8 +144,15 @@
    see MultiViewer.css's note on why the gold accent belongs on the English
    side (.en-root in this file) instead. */
 .par-mwb-wrap { display: contents; }
+/* 2026-08-17: this used to be an underline on every linked source word
+   ("whats up with the underlined words? I dont want that") — swapped for
+   the same persistent gold treatment the English side gets from .en-root,
+   so a linked pair reads as "these match" via color on BOTH sides instead
+   of an underline on one and color on the other. .hl (live hover) stays a
+   background wash so a hovered pair still stands out over the resting
+   gold state. */
 .par-mwb-wrap.lnk .multi-word-block .visible-text {
-  text-decoration: underline; text-decoration-color: var(--border3); text-underline-offset: 3px;
+  color: var(--gold, #c8a557);
 }
 .par-mwb-wrap.hl .multi-word-block .visible-text {
   background: color-mix(in srgb, var(--gold) 30%, transparent); border-radius: 4px;

@@ -1,5 +1,56 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Non-Hebrew lexicon entries must embed the Hebrew-root translit, or Auto-Link silently no-ops (added 2026-08-17)
+
+**Rule, fieldy verbatim: "hebrew roots should be cast into other language lexicons for
+matching."** Every `server/lexicon/{latin,syriac,geez,greek,hebrew-extra}-lexicon.json`
+entry is a flat `{word: value}` map, and `value` does double duty — it's BOTH the literal
+gloss text shown under the word in the Reader/Parallel/Studio views AND the only source
+Auto-Link (`lexTranslitCandidates` in `src/pages/Translate.jsx`/`Parallel.jsx`) has to
+find a Hebrew-cognate transliteration to match against the English column's
+`translit (gloss)` pairs. If `value` is just a plain English gloss with no Hebrew
+transliteration in it (e.g. `"in the beginning"`), Auto-Link has NOTHING to match against
+that word ever — not a bug that throws, just a silent zero-match, indistinguishable from
+"this word genuinely has no English counterpart" unless you go looking.
+
+**Do not confuse this with the automatic per-word transliteration line.** Every word block
+(`MultiWordBlock.jsx`'s `.mwb-translit`) already shows an auto-computed phonetic
+transliteration of the word in ITS OWN script (Ge'ez ወምድረ → "Wamdra", Syriac ܒܪܫܝܬ →
+"Barashayath") via `transliterate()` in `src/lib/translit.js` — this happens for every
+word for free and needs no lexicon change. That is NOT the same string Auto-Link needs.
+Auto-Link needs the word's Hebrew COGNATE's translit (Aratz, Raashayath, Shamayam, Alahayam,
+etc.) — the same transliteration the English column already renders — which only a human
+curating the lexicon can supply; nothing in this codebase can derive it automatically from
+the word's own spelling.
+
+**Convention (already used for most correctly-linking entries):** put the Hebrew-cognate
+translit FIRST, then a separator (`/` or ` - `, either is parsed — see
+`lexTranslitCandidates`), then the plain English gloss, e.g. `"Raashayath / in the
+beginning"`, `"Aratz / earth"`, `"Baraa - created"`. The whole string still displays as-is
+to readers, so this is not a display regression — `"Shamayam / heavens"` already reads
+fine as prose gloss AND gives Auto-Link "shamayam" to match against the English word
+"Shamayam" in `"the Shamayam (Heavens)"`.
+
+**Found and fixed 2026-08-17 (Genesis 1:1, surfaced by live testing across Ge'ez/Syriac/
+Latin/Greek Parallel views):** `geez-lexicon.json`'s `"በቀዳሚ": "in the beginning"`,
+`"ወምድረ": "and the earth"`, and `"ምድር": "earth / land"`, plus `syriac-lexicon.json`'s
+`"ܒܪܫܝܬ": "in the beginning"` — all plain English, all silently unmatchable — while their
+sibling entries in the SAME files (`"ወምድርሰ": "and the aratz / earth"`, `"ገብረ": "baraa -
+created"`) already had it right. Latin's `terram`/`principio` and Greek's `ΑΡΧΗ`/`γῆν`
+already carried the translit for this verse and matched fine — this is exactly why the
+Greek/Latin side of Genesis 1:1 partially worked while Ge'ez/Syriac didn't: it's a
+per-entry data gap, not a code path difference between languages.
+
+**Known outstanding gap, not yet audited:** `geez-lexicon.json` (likely `latin-lexicon.json`/
+`syriac-lexicon.json`/`greek-lexicon.json` too) has hundreds of entries beyond Genesis 1
+— mostly prose from other books/homilies — that are plain English glosses with NO embedded
+Hebrew-root translit at all. Auto-Link will silently zero-match every one of those words
+until someone goes through and adds the cognate translit, the same way this session did for
+the four Genesis 1:1 entries above. Treat "Auto-Link found 0 matches" or "this word never
+lights up gold" as a lexicon-data question first, not a code bug — check whether the
+word's lexicon `value` actually contains the matching Hebrew translit before assuming
+anything in `Translate.jsx`/`Parallel.jsx`/`server.js` is broken.
+
 ## Production deployment: AWS Lightsail, NOT Fly.io (added 2026-08-11)
 
 **fly.toml and the Fly-Volume assumptions in entrypoint.sh's comments are stale.** The
