@@ -35,6 +35,7 @@ const BookManager      = lazy(() => import('./pages/BookManager.jsx'));
 const Search           = lazy(() => import('./pages/Search.jsx'));
 const StrongsOverrides = lazy(() => import('./pages/StrongsOverrides.jsx'));
 const GlossStudio      = lazy(() => import('./pages/GlossStudio.jsx'));
+const LexiconAdmin     = lazy(() => import('./pages/LexiconAdmin.jsx'));
 const VersePage        = lazy(() => import('./pages/VersePage.jsx'));
 
 // Shown for the brief moment a lazy page chunk is downloading (near-instant
@@ -265,6 +266,7 @@ export default function App() {
         <Route path="/glyph-editor"   element={<GlyphEditor />} />
         <Route path="/admin/strongs-overrides" element={<StrongsOverrides />} />
         <Route path="/gloss-studio"   element={<GlossStudio />} />
+        <Route path="/admin/lexicon"  element={<LexiconAdmin />} />
         <Route path="/read"           element={<ReadRedirect />} />
         <Route path="/lexicon-source" element={<LexiconSourceRedirect />} />
         {/* Clean per-verse URL — /genesis/1/1 — exposing the verse-level content

@@ -20,6 +20,10 @@ server/public/
 # Caches
 server/nav-index.cache.json
 
+# Lexicon Admin backups — timestamped snapshots taken automatically on every
+# save (see server.js's Lexicon Admin section); local safety net, not source.
+server/lexicon/.backups/
+
 # OS / editor
 .DS_Store
 .vscode/

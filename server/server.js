@@ -3093,6 +3093,193 @@ const LEXICON_DIR = path.join(__dirname, 'lexicon');
     }
 });
 
+// ─── LEXICON ADMIN: raw-file mirror editor ─────────────────────────────────
+// Backs /admin/lexicon — a blunt, format-agnostic mirror of every file
+// directly inside server/lexicon/: list them, GET one's exact raw text, POST
+// new raw text back. No parsing/re-serializing (byte-for-byte overwrite), so
+// this works identically for lexicon.json, homographs.json, any per-language
+// lexicon (greek-/geez-/latin-/syriac-lexicon.json), or the .md curation
+// notes — whatever's in the folder shows up with no code change on either
+// side. All routes live under /api/admin/*, so the existing ADMIN_KEY guard
+// registered above (`app.use('/api/admin', guard)`) already protects them.
+//
+// SAFETY (fieldy: "even wiping all the text from this page and hitting save
+// should not remove the saved data from my server completely"): every save
+// snapshots the file's CURRENT on-disk content to a timestamped backup
+// BEFORE writing the new content — unconditionally, including a save that
+// empties the file. Restoring a backup does the same thing in reverse
+// (backs up the current live content first), so nothing here is ever a
+// one-way door. Backups live in lexicon/.backups/<filename>/<timestamp>.bak,
+// pruned to the most recent LEX_BACKUP_KEEP per file so this can't grow
+// forever against the two large corpus lexicons (hebrew-extra/syriac, both
+// 1.4-1.7MB).
+const LEX_BACKUP_DIR  = path.join(LEXICON_DIR, '.backups');
+const LEX_BACKUP_KEEP = 40;
+
+function _lexSafeName(name) {
+    // Plain filename only — no path traversal, no escaping LEXICON_DIR.
+    if (typeof name !== 'string' || !name) return null;
+    if (name.includes('/') || name.includes('\\') || name.includes('..')) return null;
+    return name;
+}
+function _lexFilePath(name) {
+    const safe = _lexSafeName(name);
+    if (!safe) return null;
+    const full = path.join(LEXICON_DIR, safe);
+    if (path.dirname(full) !== LEXICON_DIR) return null;   // belt & suspenders
+    return full;
+}
+// Cache invalidation covering every module-level cache that reads out of
+// server/lexicon/ but isn't already busted by scheduleRebuild's own list
+// (lexicon.json/homographs.json/the two override files) — namely the whole-
+// file _lexiconCache (also covers hebrew-extra-lexicon.json) and
+// _strongsRootsCache (strongs-roots.json), neither of which the fs.watch
+// block above listens to. The per-language curated lexicons (greek/geez/
+// latin/syriac) and cross-lang-equivalents.json need no help here — they
+// already re-read off disk keyed by mtime / on every request.
+function _lexBustCaches(fullPath) {
+    _lexiconCache = null;
+    _strongsRootsCache = null;
+    scheduleRebuild(fullPath);
+}
+function _lexSnapshotBackup(name, currentContent) {
+    const dir = path.join(LEX_BACKUP_DIR, name);
+    fs.mkdirSync(dir, { recursive: true });
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const backupPath = path.join(dir, `${stamp}.bak`);
+    fs.writeFileSync(backupPath, currentContent, 'utf8');
+    const kept = fs.readdirSync(dir).filter(f => f.endsWith('.bak')).sort();
+    while (kept.length > LEX_BACKUP_KEEP) {
+        const old = kept.shift();
+        try { fs.unlinkSync(path.join(dir, old)); } catch (e) { /* best effort */ }
+    }
+    return path.basename(backupPath);
+}
+
+// GET /api/admin/lexicon-files -> { files: [{name, size, mtime}] } — every
+// regular, non-dotfile file directly inside server/lexicon/ (the .backups
+// subfolder itself is a directory, so it's naturally excluded).
+app.get('/api/admin/lexicon-files', (req, res) => {
+    try {
+        const names = fs.readdirSync(LEXICON_DIR, { withFileTypes: true })
+            .filter(d => d.isFile() && !d.name.startsWith('.'))
+            .map(d => d.name)
+            .sort((a, b) => a.localeCompare(b));
+        const files = names.map(name => {
+            const st = fs.statSync(path.join(LEXICON_DIR, name));
+            return { name, size: st.size, mtime: st.mtimeMs };
+        });
+        res.json({ files });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/admin/lexicon-file?name=lexicon.json -> { name, content, size, mtime }
+app.get('/api/admin/lexicon-file', (req, res) => {
+    const full = _lexFilePath(req.query.name);
+    if (!full) return res.status(400).json({ error: 'invalid file name' });
+    if (!fs.existsSync(full)) return res.status(404).json({ error: 'not found' });
+    try {
+        const st = fs.statSync(full);
+        const content = fs.readFileSync(full, 'utf8');
+        res.json({ name: path.basename(full), content, size: st.size, mtime: st.mtimeMs });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/admin/lexicon-file/backups?name=X -> { backups: [{file, mtime, size}] }, newest first
+app.get('/api/admin/lexicon-file/backups', (req, res) => {
+    const safe = _lexSafeName(req.query.name);
+    if (!safe) return res.status(400).json({ error: 'invalid file name' });
+    try {
+        const dir = path.join(LEX_BACKUP_DIR, safe);
+        if (!fs.existsSync(dir)) return res.json({ backups: [] });
+        const backups = fs.readdirSync(dir)
+            .filter(f => f.endsWith('.bak'))
+            .map(f => {
+                const st = fs.statSync(path.join(dir, f));
+                return { file: f, mtime: st.mtimeMs, size: st.size };
+            })
+            .sort((a, b) => b.mtime - a.mtime);
+        res.json({ backups });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/admin/lexicon-file/backup-content?name=X&file=Y.bak -> { content }
+app.get('/api/admin/lexicon-file/backup-content', (req, res) => {
+    const safe    = _lexSafeName(req.query.name);
+    const bfile   = _lexSafeName(req.query.file);
+    if (!safe || !bfile || !bfile.endsWith('.bak')) return res.status(400).json({ error: 'invalid name/file' });
+    const backupDir  = path.join(LEX_BACKUP_DIR, safe);
+    const backupPath = path.join(backupDir, bfile);
+    if (path.dirname(backupPath) !== backupDir) return res.status(400).json({ error: 'invalid path' });
+    if (!fs.existsSync(backupPath)) return res.status(404).json({ error: 'not found' });
+    try {
+        res.json({ content: fs.readFileSync(backupPath, 'utf8') });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/admin/lexicon-file { name, content } -> backs up the file's
+// CURRENT on-disk content (if it exists), then overwrites it with `content`
+// verbatim — byte for byte, no JSON re-serialization, so this also works
+// for the .md note files. Creates the file if it doesn't exist yet (lets
+// this page double as "add a new lexicon" for a future language). Live in
+// the running app within ~300ms via _lexBustCaches.
+app.post('/api/admin/lexicon-file', express.json({ limit: '16mb' }), (req, res) => {
+    const { name, content } = req.body || {};
+    const full = _lexFilePath(name);
+    if (!full) return res.status(400).json({ error: 'invalid file name' });
+    if (typeof content !== 'string') return res.status(400).json({ error: 'content must be a string' });
+    try {
+        let backup = null;
+        if (fs.existsSync(full)) {
+            const current = fs.readFileSync(full, 'utf8');
+            backup = _lexSnapshotBackup(path.basename(full), current);
+        }
+        const tmp = full + '.tmp';
+        fs.writeFileSync(tmp, content, 'utf8');
+        fs.renameSync(tmp, full);
+        _lexBustCaches(full);
+        res.json({ ok: true, backup, size: Buffer.byteLength(content, 'utf8') });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/admin/lexicon-file/restore { name, file } -> makes a backup's
+// content the file's live content again. Backs up whatever's CURRENTLY live
+// first (same guarantee as a normal save), so restoring is itself undoable.
+app.post('/api/admin/lexicon-file/restore', express.json(), (req, res) => {
+    const { name, file } = req.body || {};
+    const full = _lexFilePath(name);
+    const safeBackup = _lexSafeName(file);
+    if (!full || !safeBackup || !safeBackup.endsWith('.bak')) return res.status(400).json({ error: 'invalid name/file' });
+    const backupDir  = path.join(LEX_BACKUP_DIR, path.basename(full));
+    const backupPath = path.join(backupDir, safeBackup);
+    if (path.dirname(backupPath) !== backupDir) return res.status(400).json({ error: 'invalid path' });
+    if (!fs.existsSync(backupPath)) return res.status(404).json({ error: 'backup not found' });
+    try {
+        const restoredContent = fs.readFileSync(backupPath, 'utf8');
+        if (fs.existsSync(full)) {
+            const current = fs.readFileSync(full, 'utf8');
+            _lexSnapshotBackup(path.basename(full), current);
+        }
+        const tmp = full + '.tmp';
+        fs.writeFileSync(tmp, restoredContent, 'utf8');
+        fs.renameSync(tmp, full);
+        _lexBustCaches(full);
+        res.json({ ok: true, content: restoredContent });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // ── LOCATION-KEYED STRONG'S OVERRIDES — helpers ─────────────────────────────
 // One occurrence, identified by book_id:chapter:verse:token_ordinal, can carry
 // a different Strong's # than the corpus/bake assigned it. Applied at every

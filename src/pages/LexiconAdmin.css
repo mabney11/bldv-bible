@@ -1,0 +1,176 @@
+.la-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+}
+.la-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.la-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text2);
+}
+.la-spacer { flex: 1; }
+.la-meta {
+  font-size: 11px;
+  color: var(--text3);
+  white-space: nowrap;
+}
+.la-dirty-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 14%, var(--bg3));
+  border: 1px solid var(--amber);
+  border-radius: 4px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+.la-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.la-select {
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  min-height: 40px;
+  max-width: 360px;
+  flex: 1 1 260px;
+}
+.la-select:focus { outline: none; border-color: var(--blue); }
+.la-charcount { font-size: 11px; color: var(--text3); white-space: nowrap; }
+.la-save-btn {
+  background: var(--blue2);
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 40px;
+  white-space: nowrap;
+}
+.la-save-btn:hover:not(:disabled) { background: var(--blue); }
+.la-save-btn:disabled { opacity: 0.4; cursor: default; }
+.la-toolbar .txt-btn:disabled { opacity: 0.4; cursor: default; }
+
+.la-newfile-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  flex-wrap: wrap;
+}
+.la-newfile-row input {
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  min-height: 36px;
+  min-width: 240px;
+}
+.la-hint { font-size: 11px; color: var(--text4); }
+
+.la-json-warn {
+  font-size: 12px;
+  color: var(--red);
+  background: color-mix(in srgb, var(--red) 10%, var(--bg));
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+}
+
+.la-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+.la-editor {
+  flex: 1;
+  min-height: 0;
+  resize: none;
+  background: var(--bg);
+  color: var(--text);
+  border: none;
+  padding: 16px 20px;
+  font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  tab-size: 2;
+}
+.la-editor:focus { outline: none; }
+.la-editor:disabled { opacity: 0.5; }
+
+.la-backups {
+  width: 340px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  background: var(--bg2);
+  padding: 16px;
+  overflow-y: auto;
+}
+.la-backups-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text2);
+  margin-bottom: 6px;
+  word-break: break-all;
+}
+.la-empty { color: var(--text3); font-size: 12px; padding: 8px 0; }
+.la-backup-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.la-backup-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg3);
+}
+.la-backup-time { font-size: 11px; color: var(--text2); flex: 1 1 auto; }
+.la-backup-size { font-size: 10px; color: var(--text3); }
+.la-backup-row .txt-btn { padding: 5px 10px; font-size: 11px; min-height: 28px; }
+
+.la-preview {
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+.la-editor-readonly {
+  height: 320px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 10px;
+}
+
+@media (max-width: 800px) {
+  .la-body { flex-direction: column; }
+  .la-backups { width: auto; border-left: none; border-top: 1px solid var(--border); }
+}

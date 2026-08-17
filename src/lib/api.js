@@ -299,6 +299,23 @@ export const apiSaveGlyphs   = (payload) =>
 export const apiAdminVerseTokens = (book, chapter, verse) =>
   jsonFetch(`/api/admin/verse-tokens?book=${book}&chapter=${chapter}&verse=${verse}`);
 export const apiAdminListStrongsOverrides = () => jsonFetch('/api/admin/strongs-overrides');
+
+// Lexicon Admin — raw-file mirror editor for everything in server/lexicon/.
+// See server.js's "Lexicon Admin: raw-file mirror editor" section: every
+// save snapshots the file's previous content to a timestamped backup FIRST,
+// so restoreLexiconBackup can always undo a save (including one that wiped
+// the file down to nothing).
+export const apiAdminListLexiconFiles = () => jsonFetch('/api/admin/lexicon-files');
+export const apiAdminGetLexiconFile = (name) =>
+  jsonFetch(`/api/admin/lexicon-file?name=${encodeURIComponent(name)}`);
+export const apiAdminSaveLexiconFile = (name, content) =>
+  apiPost('/api/admin/lexicon-file', { name, content });
+export const apiAdminListLexiconBackups = (name) =>
+  jsonFetch(`/api/admin/lexicon-file/backups?name=${encodeURIComponent(name)}`);
+export const apiAdminGetLexiconBackup = (name, file) =>
+  jsonFetch(`/api/admin/lexicon-file/backup-content?name=${encodeURIComponent(name)}&file=${encodeURIComponent(file)}`);
+export const apiAdminRestoreLexiconBackup = (name, file) =>
+  apiPost('/api/admin/lexicon-file/restore', { name, file });
 export const apiAdminSaveStrongsOverride = (payload) => apiPost('/api/admin/strongs-override', payload);
 export const apiAdminDeleteStrongsOverride = (key) => apiDelete(`/api/admin/strongs-override?key=${encodeURIComponent(key)}`);
 
