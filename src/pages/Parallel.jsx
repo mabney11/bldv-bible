@@ -21,6 +21,18 @@ import '@fontsource/ysabeau/400.css';
 import '@fontsource/ysabeau/600.css';
 import '@fontsource/opendyslexic/400.css';
 import '@fontsource/opendyslexic/700.css';
+// The shared morphology color system — .root/.mod-conj/.pfm-3ms/.vbe-3ms/etc.,
+// same file Reader.jsx and components/WordBlock.jsx import. Parallel used to
+// carry its own hand-duplicated copy of this palette in Parallel.css, and that
+// copy had quietly drifted incomplete (the ENTIRE .vbe-* verbal-ending family
+// and .mod-cstr were missing, plus every [data-alt="1"] alternating variant) —
+// so any word using one of those morphology classes rendered in plain
+// foreground color here while the exact same word showed its real color in
+// the novel Reader. Fieldy, 2026-08-16: "I want to keep the colors from the
+// novel reader in the parallel reader." Importing the ONE canonical file (as
+// every other reader already does) instead of a second copy is what actually
+// keeps them identical, not just similar-looking today.
+import '../lib/morphColors.css';
 import './Parallel.css';
 import { isPlaceholderGloss, hasTrailingMaqaf } from '../components/WordBlock.jsx';
 import { getAdminStatus, getLocalVersesForChapter, mergeChapterVersesWithLocal } from '../lib/localOverlay.js';
@@ -130,7 +142,6 @@ const GLOSS_KEY = 'reader-gloss-mode';
 const GLOSS_TRAIL = /[.,;:!?'"\u2019\u201d)]+$/;
 function glossTokens(words, mode) {
   const out = words.map((w, idx) => ({ idx, text: w, hide: false }));
-  if (mode === 'both') return out;
   for (let i = 1; i < out.length; i++) {
     if (!out[i].text.startsWith('(')) continue;
     let j = i;
@@ -147,7 +158,19 @@ function glossTokens(words, mode) {
     const joined = out.slice(i, j + 1).map(t => t.text).join(' ');
     const inner  = joined.replace(/^\(/, '').replace(/\)[^)]*$/, '').trim();
     const tail   = (joined.match(/\)([.,;:!?'"\u2019\u201d]*)$/) || ['', ''])[1];
-    if (mode === 'gloss' && inner) {
+    // An empty parenthetical — "()" with nothing (or only whitespace) inside,
+    // e.g. a component whose translation came back blank — carries no
+    // information in ANY mode, 'both' included. Hide it unconditionally so a
+    // reader never sees a bare "()" hanging off a word ("Alahayam ()").
+    // Fieldy, 2026-08-16: "Empty glosses shouldn't have parens in this view."
+    if (!inner) {
+      if (tail) head.text = head.text + tail;
+      for (let k = i; k <= j; k++) out[k].hide = true;
+      i = j;
+      continue;
+    }
+    if (mode === 'both') continue;   // non-empty gloss, 'both' mode: leave fully visible
+    if (mode === 'gloss') {
       const headTrail = (head.text.match(/[.,;:!?'"\u2019\u201d]+$/) || [''])[0];
       head.text = inner + (headTrail || tail);
     } else if (tail) {
@@ -157,6 +180,34 @@ function glossTokens(words, mode) {
     i = j;
   }
   return out;
+}
+
+// Maps every word index to the index of its "head" — the transliteration word
+// a following "(gloss)" parenthetical belongs to (a head maps to itself; a
+// gloss-parenthetical's tokens map to their head; anything else is absent).
+// Mirrors glossTokens' own parenthetical-detection rules (deliberately
+// duplicated — see that function's header comment on why this page doesn't
+// share logic with the Reader by import). Used so hovering EITHER half of a
+// "raashayath (beginning)" pair — or the Hebrew word-block that links to
+// it — highlights both halves together, instead of only whichever single
+// index a link happened to be recorded against. Fieldy, 2026-08-16: "I want
+// the gloss highlighted as well so raashayath (beginning)."
+function glossOwnerMap(words) {
+  const owner = {};
+  for (let i = 1; i < words.length; i++) {
+    if (!words[i].startsWith('(')) continue;
+    let j = i;
+    while (j < words.length && !words[j].includes(')')) j++;
+    if (j >= words.length) break;
+    const headIdx = i - 1;
+    if (owner[headIdx] !== undefined) { i = j; continue; }   // head already claimed
+    const headBare = words[headIdx].replace(GLOSS_TRAIL, '');
+    if (!/[A-Za-z\u00C0-\u024F]$/.test(headBare)) { i = j; continue; }
+    owner[headIdx] = headIdx;
+    for (let k = i; k <= j; k++) owner[k] = headIdx;
+    i = j;
+  }
+  return owner;
 }
 
 // Keep the most-recent link per unique token-set that carries english_indices.
@@ -485,6 +536,10 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
   const enWords = (tx?.text || '').trim().split(/\s+/).filter(Boolean);
   // display list keeps each word's ORIGINAL index so english_indices still resolve
   const enTokens = useMemo(() => glossTokens(enWords, glossMode), [tx?.text, glossMode]);
+  // idx -> its group's head idx (see glossOwnerMap) — a link recorded against
+  // just the translit word's index still lights up its trailing "(gloss)" too,
+  // and hovering the gloss itself now triggers the same link as its head word.
+  const glossOwner = useMemo(() => glossOwnerMap(enWords), [tx?.text]);
 
   return (
     <div className={`par-verse ${isTitle ? 'par-verse-title' : ''}`} data-verse={v}>
@@ -496,9 +551,13 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
             <div className="en-verse-text">
               {enTokens.map(({ idx, text, hide }) => {
                 if (hide) return null;
-                const link = links.find(l => (l.english_indices || []).includes(idx));
+                // Route through the group's head index so a linked translit
+                // word and its own trailing "(gloss)" parenthetical act as one
+                // unit — hovering or linking either highlights both.
+                const ownerIdx = glossOwner[idx] ?? idx;
+                const link = links.find(l => (l.english_indices || []).includes(ownerIdx));
                 return (
-                  <span key={idx} className={`en-w ${link ? 'lnk' : ''} ${enIsHl(idx) ? 'hl' : ''}`}
+                  <span key={idx} className={`en-w ${link ? 'lnk' : ''} ${enIsHl(ownerIdx) ? 'hl' : ''}`}
                         onMouseEnter={() => link && setHovered({ verse: v, links: [link] })}
                         onMouseLeave={() => link && setHovered(null)}>
                     {text}{' '}
