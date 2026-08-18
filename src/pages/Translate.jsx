@@ -17,7 +17,7 @@ import {
   resetAllLocal, hasAnyLocalOverrides,
 } from '../lib/localOverlay.js';
 import { BOOK_NAMES } from '../lib/books.js';
-import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
+import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import './Translate.css';
 
@@ -1282,7 +1282,7 @@ export default function Translate() {
           // the same source-id vocabulary Parallel's own picker uses (both
           // ultimately come from the same SOURCES config), so no translation
           // needed — just pass it straight through.
-          <Link to={`/parallel?book=${bookToParam(activeBook, idToSlug)}&chapter=${activeChapter}&verse=${activeVerse}${lang ? `&lang=${encodeURIComponent(lang)}` : ''}`}
+          <Link to={parallelHref(activeBook, idToSlug, activeChapter, activeVerse, lang)}
                 className="tr-txt-btn">Parallel →</Link>
         )}
         {activeBook && activeChapter && activeVerse != null && (

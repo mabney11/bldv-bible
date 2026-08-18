@@ -4,6 +4,7 @@ import { useTheme } from '../hooks/useTheme.js';
 import { usePaleoMode } from '../hooks/usePaleoMode.js';
 import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
+import { useSwipeNav } from '../hooks/useSwipeNav.js';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { BOOK_NAMES, translit } from '../lib/books.js';
 import { paleoToSVG, getPaleoMode } from '../lib/paleoGlyphs.js';
@@ -470,8 +471,15 @@ export default function Root({ mode = 'root' }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detail, activeBook]);
 
-  // ── Mobile sidebar ─────────────────────────────────────────────────────────
+  // ── Mobile sidebar (off-canvas drawer) ─────────────────────────────────────
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // ── Desktop sidebar (collapsible column, remembered across visits) ─────────
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try { return localStorage.getItem('root-sidebar-collapsed') === '1'; } catch { return false; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem('root-sidebar-collapsed', sidebarCollapsed ? '1' : '0'); } catch { /* ignore */ }
+  }, [sidebarCollapsed]);
   const sidebarScrollRef = useRef(null);
 
   // Scroll selected item into view when detail changes
@@ -498,6 +506,12 @@ export default function Root({ mode = 'root' }) {
       setSearchParams({ sn: detail.next.sn });
     }
   };
+  // Left/Right arrow keys + touch swipe move between adjacent roots/surfaces,
+  // same prev/next relationship as the ◄ ► buttons above. Off while the
+  // mobile drawer is open (a swipe there should work the drawer, not the
+  // page underneath) or while the filter input has focus (useSwipeNav
+  // already guards typing elements for the keyboard half of this).
+  useSwipeNav(goPrev, goNext, { enabled: !sidebarOpen });
 
   // Build href for a list item — separate Surface mode (preserves SN) from Root mode
   const itemHref = (item) => {
@@ -542,9 +556,12 @@ export default function Root({ mode = 'root' }) {
       <header className="root-topbar">
         <div className="root-topbar-row1">
           <Link to="/landing" className="logo-btn">𐤀𐤁</Link>
-          {isMobile && (
-            <button className="icon-btn" onClick={() => setSidebarOpen(o => !o)} aria-label="Toggle sidebar">☰</button>
-          )}
+          <button
+            className="icon-btn"
+            onClick={() => isMobile ? setSidebarOpen(o => !o) : setSidebarCollapsed(c => !c)}
+            aria-label={isMobile ? 'Toggle sidebar' : (sidebarCollapsed ? 'Show root list' : 'Hide root list')}
+            aria-pressed={isMobile ? sidebarOpen : sidebarCollapsed}
+          >☰</button>
           <div className="nav-divider" />
           {detail?.kind === 'root' && (detail.strongs || []).length > 0 && (
             <span className="root-top-sn">{(detail.strongs || []).join(', ')}</span>
@@ -600,7 +617,7 @@ export default function Root({ mode = 'root' }) {
 
       {detailErr && <div className="root-err">⚠ {detailErr}</div>}
 
-      <div className="root-body">
+      <div className={`root-body ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
         {/* Sidebar: list of all roots/surfaces with filter */}
         <aside className={`root-sidebar ${sidebarOpen ? 'mobile-open' : ''}`}>
           <div className="sidebar-controls">

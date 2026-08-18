@@ -64,7 +64,7 @@ export default function Landing() {
       </nav>
 
       <nav className="landing-sec-links" aria-label="Tools">
-        <Link to="/parallel?book=1&chapter=1" className="landing-sec-link">
+        <Link to="/parallel/1/1" className="landing-sec-link">
           <span aria-hidden="true">📖</span> English–Hebrew Parallel
         </Link>
         <Link to="/translate?book=1&chapter=1&verse=1" className="landing-sec-link">

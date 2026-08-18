@@ -13,7 +13,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { BOOK_NAMES } from '../lib/books.js';
-import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
+import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { truncateTitle, versePreviewMultiTokens } from '../lib/versePreview.js';
 import {
@@ -515,6 +515,7 @@ export default function MultiViewer() {
   const xChapter     = canonBook != null ? presentedChapter : 1;
   const xVerse       = (canonBook != null && verse != null) ? verse : null;
   const xQuery       = `book=${bookToParam(xBook, idToSlug)}&chapter=${xChapter}${xVerse != null ? `&verse=${xVerse}` : ''}`;
+  const xParallelPath = parallelHref(xBook, idToSlug, xChapter, xVerse);
 
   return (
     <div
@@ -535,7 +536,7 @@ export default function MultiViewer() {
           >
             <Link
               className="txt-btn"
-              to={`/parallel?${xQuery}`}
+              to={xParallelPath}
               title="Open the Hebrew–English parallel view at this location"
             >📖 Parallel</Link>
             <Link

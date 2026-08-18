@@ -2,7 +2,7 @@ import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, Fra
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { apiBookOrder, apiTransChapter, apiTokens, apiSourceChapter, apiSourceVerse, apiBookSections } from '../lib/api.js';
-import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
+import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { computeWordParts } from '../components/WordBlock.jsx';
 import { transliterate } from '../lib/translit.js';
@@ -1313,9 +1313,10 @@ export default function Reader() {
     !bookQuery.trim() || (m.name || '').toLowerCase().includes(bookQuery.trim().toLowerCase()));
 
   const loc = `book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`;
+  const parallelPath = parallelHref(book, idToSlug, chapter, verse);
   const readers = [
     { label: 'Paleo Reader',   to: `/?${loc}`,          hint: 'Paleo-Hebrew, glossed' },
-    { label: 'Parallel',       to: `/parallel?${loc}`,  hint: 'English beside the source' },
+    { label: 'Parallel',       to: parallelPath,        hint: 'English beside the source' },
     { label: 'Translation Studio', to: `/translate?${loc}`, hint: 'Edit the English' },
   ];
 
@@ -1631,7 +1632,7 @@ export default function Reader() {
                     <button className="rd-state-btn rd-state-btn-primary" onClick={() => setScript('english')}>
                       Read in English
                     </button>
-                    <Link className="rd-state-btn rd-state-btn-secondary" to={`/parallel?${loc}`}>
+                    <Link className="rd-state-btn rd-state-btn-secondary" to={parallelPath}>
                       Open in Parallel Viewer →
                     </Link>
                   </div>
@@ -1644,7 +1645,7 @@ export default function Reader() {
                     the Parallel Viewer does have, or start a translation in the Studio.
                   </p>
                   <div className="rd-state-actions">
-                    <Link className="rd-state-btn rd-state-btn-primary" to={`/parallel?${loc}`}>
+                    <Link className="rd-state-btn rd-state-btn-primary" to={parallelPath}>
                       Open in Parallel Viewer →
                     </Link>
                     <Link className="rd-state-btn rd-state-btn-secondary" to={`/translate?${loc}`}>

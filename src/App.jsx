@@ -111,7 +111,14 @@ class ChunkErrorBoundary extends Component {
  *                   → MultiViewer.
  *   /landing      → Landing
  *   /works        → Works Library (filterable list of all literary works)
- *   /parallel     → Parallel
+ *   /parallel     → Parallel. Clean path form: /parallel/<bookSlug>/<chapter>
+ *                   or /parallel/<bookSlug>/<chapter>-<verse> (e.g.
+ *                   /parallel/deuteronomy/13-3), mirroring the reference
+ *                   interlinear sites this view is modeled on. The bare
+ *                   /parallel?book=&chapter=&verse= query form still works —
+ *                   ParallelDispatcher redirects it to the new path — so
+ *                   every existing bookmark/share link keeps landing on the
+ *                   right page.
  *   /translate    → Translation Studio
  *   /share        → Share & Export
  *   /lexicon-page → Lexicon Explorer (multi-language: ?lang=hebrew|greek|geez)
@@ -193,6 +200,35 @@ function LexiconSourceRedirect() {
   return <Navigate to={`/lexicon-page?${out.toString()}`} replace />;
 }
 
+// 2026-08-18: /parallel/deuteronomy/13-3 replaces /parallel?book=deuteronomy&
+// chapter=13&verse=3 as the URL Parallel.jsx itself now writes to the address
+// bar (see that file's own "URL sync" effect) — same reasoning as VersePage's
+// /genesis/1/1. Every EXISTING link/bookmark still uses the old query form
+// though, so `/parallel` can't just always render <Parallel/> directly
+// anymore: if book/chapter/verse legacy params are present, redirect to the
+// equivalent new path. `?book=` is passed through UNRESOLVED (numeric id or
+// slug, whichever the old link happened to carry) — no need to resolve it
+// here, since Parallel.jsx's own mount-time logic already accepts either
+// form in this exact path position (see its initialBookRef/bookIsSlug
+// handling) and self-corrects the address bar to the real slug once its
+// book list loads, same as it always has. A genuinely bare /parallel visit
+// (no legacy params, or only ?lang=) renders Parallel directly, unchanged.
+// Any OTHER query params (utm_*, etc.) are carried through onto the new URL
+// rather than dropped.
+function ParallelDispatcher() {
+  const [sp] = useSearchParams();
+  const hasLegacyLoc = sp.has('book') || sp.has('chapter') || sp.has('verse');
+  if (!hasLegacyLoc) return <Parallel />;
+  const bookParam = sp.get('book') || '1';
+  const chapterParam = sp.get('chapter') || '1';
+  const verseParam = sp.get('verse');
+  const path = `/parallel/${bookParam}/${chapterParam}${verseParam ? `-${verseParam}` : ''}`;
+  const rest = new URLSearchParams(sp);
+  rest.delete('book'); rest.delete('chapter'); rest.delete('verse');
+  const qs = rest.toString();
+  return <Navigate to={qs ? `${path}?${qs}` : path} replace />;
+}
+
 // Keeps <link rel="canonical"> (see index.html) pointed at the CURRENT
 // route on every navigation. The SPA shell only ships one static index.html
 // (no SSR), so without this every route would share whatever canonical URL
@@ -251,7 +287,15 @@ export default function App() {
         <Route path="/admin-login"    element={<AdminLogin />} />
         <Route path="/book-manager"   element={<BookManager />} />
         <Route path="/works"          element={<Works />} />
-        <Route path="/parallel"       element={<Parallel />} />
+        <Route path="/parallel"       element={<ParallelDispatcher />} />
+        {/* Clean path form — /parallel/deuteronomy/13-3 (or /parallel/deuteronomy/13
+            for a bare chapter, no verse). Ranks above the generic
+            /:bookSlug/:chapter/:verse catch-all below since "parallel" is a
+            literal first segment there, not a dynamic one — react-router
+            ranks static segments over dynamic, so there's no ordering
+            requirement here, but both are kept together for readability. */}
+        <Route path="/parallel/:bookSlug/:chapterVerse" element={<Parallel />} />
+        <Route path="/parallel/:bookSlug" element={<Parallel />} />
         <Route path="/bible"          element={<Reader />} />
         <Route path="/lexicon-page"   element={<Lexicon />} />
         <Route path="/lexicon"        element={<Lexicon />} />

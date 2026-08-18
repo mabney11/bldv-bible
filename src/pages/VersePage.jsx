@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { apiTransProgress, apiTransVerse, apiTokens, apiRootFirstByLetters } from '../lib/api.js';
-import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
+import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { WordRow, computeWordParts } from '../components/WordBlock.jsx';
 // Reuse Reader.jsx's own "root (gloss)" + quote-nesting prose renderer for
@@ -243,7 +243,7 @@ export default function VersePage() {
   // RootDispatcher defaults an unset `source` to 'hebrew', so this is the
   // same HebrewViewer destination the rest of the app calls "Hebrew".
   const locQuery = addressValid ? `book=${bookToParam(bookId, idToSlug)}&chapter=${chapter}&verse=${verse}` : '';
-  const parallelHref = addressValid ? `/parallel?${locQuery}` : '/parallel';
+  const parallelPath = addressValid ? parallelHref(bookId, idToSlug, chapter, verse) : '/parallel';
   const hebrewHref = addressValid ? `/?${locQuery}` : '/';
   const translateHref = addressValid ? `/translate?${locQuery}` : '/translate';
 
@@ -337,7 +337,7 @@ export default function VersePage() {
                   verse + its word-by-word data reads as one block before any
                   "go elsewhere" affordance. */}
               <nav className="vp-views" aria-label={`Open ${verseRef} in`}>
-                <Link className="vp-view-link" to={parallelHref}>Parallel</Link>
+                <Link className="vp-view-link" to={parallelPath}>Parallel</Link>
                 <Link className="vp-view-link" to={hebrewHref}>Hebrew</Link>
                 <Link className="vp-view-link" to={translateHref}>Translation Studio</Link>
               </nav>

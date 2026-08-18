@@ -58,10 +58,12 @@
 .root-err { padding: 16px 24px; color: var(--red); }
 
 /* BODY */
-.root-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 272px 1fr; overflow: hidden; }
+.root-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 272px 1fr; overflow: hidden; transition: grid-template-columns 0.2s ease; }
+.root-body.sidebar-collapsed { grid-template-columns: 0px 1fr; }
+.root-body.sidebar-collapsed .root-sidebar { border-right: none; }
 
 /* SIDEBAR */
-.root-sidebar { background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; }
+.root-sidebar { background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; overflow-x: hidden; min-width: 0; display: flex; flex-direction: column; }
 .root-entry-header { padding: 16px; border-bottom: 1px solid var(--border); }
 .root-entry-paleo { font-family: var(--paleo-font); font-size: 42px; color: var(--gold); line-height: 1; margin-bottom: 4px; }
 .root-entry-tl    { font-size: 14px; font-weight: 700; color: var(--text2); }

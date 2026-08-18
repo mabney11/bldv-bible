@@ -34,6 +34,12 @@
  *
  * USAGE
  *   node verify-no-eliding.js              exits 1 and prints every violation if any exist
+ *   node verify-no-eliding.js [dbPath]      point at a specific surface-index.db instead of
+ *                                           the one next to this script (added so
+ *                                           deploy-blue-green.sh's DATA GATES can run this
+ *                                           against /data/surface-index.db on the live volume,
+ *                                           same pattern as verify-versification.mjs's dbPath
+ *                                           argument — see that file's header)
  *   node verify-no-eliding.js --list N     cap the printed list to N (default: all)
  *   node verify-no-eliding.js --quiet      suppress the per-violation lines, just the count
  */
@@ -157,13 +163,16 @@ function printReport(result, { list = Infinity, quiet = false } = {}) {
     console.error('  two never disagree, then rebuild surface-index.db.');
 }
 
-// Standalone CLI usage: node verify-no-eliding.js [--list N] [--quiet]
+// Standalone CLI usage: node verify-no-eliding.js [dbPath] [--list N] [--quiet]
 if (require.main === module) {
     const args = process.argv.slice(2);
     const listIdx = args.indexOf('--list');
     const list = listIdx >= 0 ? Number(args[listIdx + 1]) : Infinity;
     const quiet = args.includes('--quiet');
-    const result = runGate();
+    // First non-flag arg that isn't the numeric value --list consumed = dbPath override.
+    const consumed = new Set(listIdx >= 0 ? [listIdx, listIdx + 1] : []);
+    const dbPath = args.find((a, i) => !consumed.has(i) && !a.startsWith('--'));
+    const result = runGate(dbPath ? { dbPath } : undefined);
     printReport(result, { list, quiet });
     process.exit(result.ok ? 0 : 1);
 }

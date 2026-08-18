@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef, useCallback, useMemo, Component } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
 import { transliterate } from '../lib/translit.js';
 import { sqToPaleo } from '../lib/sqToPaleo.js';
-import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
+import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { truncateTitle, versePreviewTranslit } from '../lib/versePreview.js';
 import { TYPEFACES } from '../lib/typefaces.js';
@@ -760,21 +760,39 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
 }
 
 export default function Parallel() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  // Path params from the clean-URL routes (/parallel/:bookSlug/:chapterVerse
+  // and /parallel/:bookSlug — see App.jsx). Both are undefined when mounted
+  // on the bare /parallel route (ParallelDispatcher already resolved any
+  // legacy ?book=&chapter=&verse= into a redirect before Parallel ever
+  // mounts on THAT path, so searchParams below is only a defensive fallback
+  // for the bare-route case, not a second live source of truth).
+  const pathParams = useParams();
+  const navigate = useNavigate();
   const { theme, toggle: toggleTheme } = useTheme();
 
   const [books, setBooks] = useState([]);
   const bookMeta = useRef({});
   const bhsBooks = useRef(new Set());   // ids that actually have Hebrew (BHS) tokens
-  // Capture the ORIGINAL ?book once. The URL-sync effect rewrites it to a slug,
-  // so slug resolution must read this ref, not the live (rewritten) URL — that
-  // race was what dropped a refresh back to Genesis.
-  const initialBookRef = useRef(searchParams.get('book'));
+  // chapterVerse is "13" (chapter only) or "13-3" (chapter-verse) — see
+  // bookSlug.js's parallelHref, the only place this app WRITES that shape;
+  // this is its exact inverse.
+  const chapterVerseMatch = /^(\d+)(?:-(\d+))?$/.exec(pathParams.chapterVerse || '');
+  // Capture the ORIGINAL book identifier once (path segment first, ?book=
+  // only as the bare-route fallback described above). The URL-sync effect
+  // rewrites it to a slug, so slug resolution must read this ref, not the
+  // live (rewritten) URL — that race was what dropped a refresh back to
+  // Genesis.
+  const initialBookRef = useRef(pathParams.bookSlug ?? searchParams.get('book'));
   const bookIsSlug = !!initialBookRef.current && !/^\d+$/.test(initialBookRef.current);
   const [book, setBook] = useState(() => (/^\d+$/.test(initialBookRef.current || '') ? +initialBookRef.current : 1));
   const [bookResolved, setBookResolved] = useState(!bookIsSlug);   // slug URLs wait for the map
-  const [chapter, setChapter] = useState(() => +searchParams.get('chapter') || 1);
+  const [chapter, setChapter] = useState(() => {
+    if (chapterVerseMatch) return +chapterVerseMatch[1];
+    return +searchParams.get('chapter') || 1;
+  });
   const [verse, setVerse] = useState(() => {
+    if (chapterVerseMatch) return chapterVerseMatch[2] != null ? +chapterVerseMatch[2] : null;
     const raw = searchParams.get('verse');
     return raw != null && raw !== '' ? +raw : null;
   }); // null = chapter mode
@@ -948,15 +966,17 @@ export default function Parallel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [books, book, sources, bookResolved]);
 
-  // URL sync — held until the slug is resolved so it can't rewrite ?book=john to
-  // a stale ?book=1 before resolution (the refresh-to-Genesis race).
+  // URL sync — held until the slug is resolved so it can't rewrite /parallel/john
+  // to a stale /parallel/1 before resolution (the refresh-to-Genesis race).
+  // Writes the clean path form (/parallel/<slug>/<chapter>[-<verse>]) via
+  // navigate() instead of rewriting query params — see bookSlug.js's
+  // parallelHref, the single shared builder every page that links INTO
+  // Parallel also uses, so the address bar and every internal link always
+  // agree on the same URL shape.
   useEffect(() => {
     if (!bookResolved) return;
-    const p = { book: bookToParam(book, idToSlug), chapter: String(chapter) };
-    if (verse != null) p.verse = String(verse);
-    if (lang && lang !== 'BHS') p.lang = lang;
-    setSearchParams(p, { replace: true });
-  }, [book, chapter, verse, lang, idToSlug, setSearchParams, bookResolved]);
+    navigate(parallelHref(book, idToSlug, chapter, verse, lang), { replace: true });
+  }, [book, chapter, verse, lang, idToSlug, navigate, bookResolved]);
 
   useEffect(() => { localStorage.setItem('par-vpl', perLine ? '1' : '0'); }, [perLine]);
 

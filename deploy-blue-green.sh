@@ -53,6 +53,25 @@ echo "==> Verifying data on $PALEO_DATA_DIR (inside the freshly built image)..."
 docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-versification.mjs /data/corpus.db
 docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-verse-completeness.mjs /data/corpus.db /data/translation.db
 
+# 2026-08-18: fieldy compared bldbible.com/parallel's Deuteronomy 13:3 against an
+# external interlinear and found misaligned Hebrew — "I thought that's what the
+# aligner scripts did but there are clearly major lapses." verify-no-eliding.js
+# already ran as a BOOT-TIME self-check inside server.js (see the comment at the
+# top of this file, "the no-eliding gate") — but only AFTER $NEW was already
+# started, so a violation meant waiting out the full ~5-minute health-check retry
+# loop below before the deploy was known to have failed, with no direct error
+# message unless someone thought to run `docker logs $NEW`. Explicit pre-checks
+# here fail in seconds with a clear message, same as the two gates above, and
+# never even start a container against known-bad data — the boot-time check stays
+# as a second line of defense, this doesn't replace it. verify-parallel-alignment.mjs
+# is a NEW check (no gate of any kind existed for this before today): it confirms
+# every word's stored prefix/root/suffix chip breakdown still reassembles to the
+# exact word shown in the Parallel/Reader views, which is the specific class of
+# drift the Deuteronomy 13:3 comparison surfaced. See both scripts' headers for
+# what they do and don't check.
+docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-no-eliding.js /data/surface-index.db
+docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-parallel-alignment.mjs /data/surface-index.db
+
 # Figure out what's currently live. Handles the one-time migration from the
 # old single-container ("paleo") setup too — treat it as if it were paleo-a.
 if docker ps --format '{{.Names}}' | grep -q '^paleo-b$'; then

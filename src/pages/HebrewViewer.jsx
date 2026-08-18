@@ -5,7 +5,7 @@ import { usePaleoMode } from '../hooks/usePaleoMode.js';
 import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { useSwipeNav } from '../hooks/useSwipeNav.js';
 import { BOOK_NAMES, PALEO_LETTERS } from '../lib/books.js';
-import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
+import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { truncateTitle, versePreviewWithGloss } from '../lib/versePreview.js';
 import { formatTokenRowDescriptive } from '../lib/tokenLabels.js';
@@ -364,7 +364,7 @@ export default function HebrewViewer() {
           <>
             <Link
               className="txt-btn"
-              to={`/parallel?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}
+              to={parallelHref(book, idToSlug, chapter, verse)}
             >📖 Parallel</Link>
             <Link
               className="txt-btn"

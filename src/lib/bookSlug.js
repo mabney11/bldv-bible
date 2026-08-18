@@ -53,3 +53,20 @@ export function bookToParam(id, idToSlug) {
   const s = idToSlug ? idToSlug[id] : null;
   return s || String(id);
 }
+
+// canon_id + chapter (+ optional verse, optional non-default source lang) →
+// the Parallel view's clean path URL: /parallel/<slug>/<chapter> or
+// /parallel/<slug>/<chapter>-<verse> (chapter and verse joined by a hyphen
+// in one path segment, matching the reference interlinear sites this app's
+// Parallel view is modeled on — e.g. biblehub.com/interlinear/deuteronomy/
+// 13-3.htm), with ?lang= appended only when it isn't the BHS default.
+// Shared by every page that links INTO Parallel (Reader, HebrewViewer,
+// MultiViewer, Translate, VersePage, Landing) and by Parallel.jsx itself
+// when it rewrites its own address bar to match its current book/chapter/
+// verse/lang, so all of them always agree on the exact same URL shape.
+export function parallelHref(id, idToSlug, chapter, verse, lang) {
+  let path = `/parallel/${bookToParam(id, idToSlug)}/${chapter}`;
+  if (verse != null) path += `-${verse}`;
+  if (lang && lang !== 'BHS') path += `?lang=${encodeURIComponent(lang)}`;
+  return path;
+}

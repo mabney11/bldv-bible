@@ -186,11 +186,13 @@ function slugify(s) {
     .replace(/^-|-$/g, '');
 }
 let _slugToId = null;   // cached for the life of the process — book order rarely changes; see loadShell's identical once-per-process reasoning
+let _idToSlug = null;   // reverse of _slugToId, built alongside it — see resolveParallelPathBook below
 async function ensureSlugMap(port) {
   if (_slugToId) return _slugToId;
   try {
     const list = await fetchJSON(port, '/api/book-order');
     const map = {};
+    const rev = {};
     const used = {};
     for (const e of [...list].filter((x) => x && x.id != null).sort((a, b) => a.id - b.id)) {
       const base = slugify(e.name) || `book-${e.id}`;
@@ -198,10 +200,13 @@ async function ensureSlugMap(port) {
       while (used[slug] != null && used[slug] !== e.id) { n += 1; slug = `${base}-${n}`; }
       used[slug] = e.id;
       map[slug] = e.id;
+      if (rev[e.id] == null) rev[e.id] = slug;
     }
     _slugToId = map;
+    _idToSlug = rev;
   } catch {
     _slugToId = {};   // fetch failed — fall back to numeric-only, same behavior as before this existed
+    _idToSlug = {};
   }
   return _slugToId;
 }
@@ -784,6 +789,104 @@ async function buildVersePathSnapshot(match, port) {
   };
 }
 
+// ── CLEAN PARALLEL-VIEW PATH ROUTE (/parallel/:bookSlug/:chapterVerse) ─────
+// 2026-08-18: fieldy wants Parallel's own URLs to look like
+// /parallel/deuteronomy/13-3 (chapter and verse joined by a hyphen in one
+// path segment, mirroring biblehub.com/interlinear/deuteronomy/13-3.htm) —
+// see src/lib/bookSlug.js's parallelHref, which is what src/pages/Parallel.jsx
+// itself now writes to the address bar, and what every in-app link into
+// Parallel now points at. Same pattern-matched-after-ROUTES approach as
+// VERSE_PATH_RE/buildVersePathSnapshot above, but resolves the slug against
+// THIS module's own book-order-based ensureSlugMap (not
+// ensureProgressSlugMaps) — Parallel.jsx builds its own slug map from
+// /api/book-order, the same source every other route in this file already
+// resolves against; VersePage.jsx is the one deliberate exception (see that
+// route's own comment for why).
+//
+// DELIBERATELY ADDITIVE, NOT A CANONICAL SWAP: the existing '/parallel'
+// ROUTES entry (parallelVerseRoute/englishChapterRoute above) still owns the
+// query-string URL's own self-referencing canonical, and public/sitemap.xml /
+// sitemap-chapters.xml still list that query-string form — none of that
+// changes here. This just means a crawler or link-unfurl hitting the NEW path
+// URL (which src/App.jsx's ParallelDispatcher sends real browsers to, and
+// which every in-app link now generates) gets real content instead of a bare
+// shell too, with an honest self-referencing canonical of its own. Fully
+// consolidating canonical/sitemap signal onto the path form — the way
+// VERSE_PATH_RE's own canonical works for VersePage — is a separate,
+// deliberate decision for later, not made here.
+const PARALLEL_PATH_RE = /^\/parallel\/([a-z0-9-]+)(?:\/(\d{1,3})(?:-(\d{1,3}))?)?$/;
+
+async function resolveParallelPathBook(raw, port) {
+  await ensureSlugMap(port);   // populates both _slugToId and _idToSlug together
+  let id = null;
+  if (/^\d+$/.test(raw)) id = parseInt(raw, 10);
+  else id = _slugToId[String(raw).toLowerCase()] ?? null;
+  if (id == null || !BOOK_NAMES[id]) return null;
+  return { id, canonicalSlug: _idToSlug[id] || String(id), name: BOOK_NAMES[id] };
+}
+
+// Mirrors parallelVerseRoute()'s content exactly (same /api/translate/verse +
+// /api/tokens calls, same title/description shape — see that function's own
+// comments for the full rationale) fed from path segments instead of
+// ?book=&chapter=&verse=, falling back to a chapter-only snapshot (mirrors
+// englishChapterRoute's own body-building, book+chapter only) when the path
+// has no chapter/verse segment at all (bare /parallel/deuteronomy, chapter
+// defaults to 1 — matching Parallel.jsx's own default) or no verse segment
+// (/parallel/deuteronomy/13).
+async function buildParallelPathSnapshot(match, port) {
+  const [, slugRaw, chapterRaw, verseRaw] = match;
+  const resolved = await resolveParallelPathBook(slugRaw, port);
+  const chapter = validChapter(chapterRaw || '1');
+  if (!resolved || !chapter) return null;
+  const { id: book, canonicalSlug, name } = resolved;
+  const verse = verseRaw ? validVerseNum(verseRaw) : null;
+
+  const buildChapterSnapshot = async () => {
+    const data = await fetchJSON(port, `/api/translate/chapter?book=${book}&chapter=${chapter}&lang=BHS`);
+    const heading = `${name} ${chapter} — English–Hebrew Parallel`;
+    const body = versesArticle(heading, data.verses);
+    return {
+      title: `${name} ${chapter} | Parallel`,
+      description: `Read ${name} ${chapter} in English and Hebrew side by side, verse by verse.`,
+      body: (body || `<h1>${escapeHtml(heading)}</h1>`) + NAV_LINKS,
+      canonicalPath: `/parallel/${canonicalSlug}/${chapter}`,
+    };
+  };
+
+  if (!verse) return buildChapterSnapshot();
+
+  let txData = null, tokens = [];
+  try {
+    [txData, tokens] = await Promise.all([
+      fetchJSON(port, `/api/translate/verse?book=${book}&chapter=${chapter}&verse=${verse}`),
+      fetchJSON(port, `/api/tokens?book=${book}&chapter=${chapter}`).catch(() => []),
+    ]);
+  } catch { /* falls through to the chapter snapshot below */ }
+
+  const verseWords = Array.isArray(tokens) ? tokens.filter((t) => t && t.verse === verse) : [];
+  const enText = (txData && txData.text) || '';
+  if (!enText && !verseWords.length) return buildChapterSnapshot();
+
+  const heading = `${name} ${chapter}:${verse}`;
+  const srcPreview = translitPreview(verseWords);
+  const wordItems = verseWords
+    .filter((w) => w && w.components?.length)
+    .map((w) => {
+      const label = w.components.filter((c) => !c.isMark).map((c) => c.translit).filter(Boolean).join('');
+      return `<li>${escapeHtml(label)}${w.strongs ? ` — <a href="/roots?sn=${encodeURIComponent(w.strongs)}">${escapeHtml(w.strongs)}</a>` : ''}</li>`;
+    })
+    .join('\n        ');
+
+  return {
+    title: [heading, 'Parallel', truncate(enText, 60), truncate(srcPreview, 60)].filter(Boolean).join(' | '),
+    description: `Read ${heading} in English and Hebrew side by side.${enText ? ` ${truncate(enText, 140)}` : ''}`,
+    body: `<h1>${escapeHtml(heading)}</h1>
+      ${enText ? `<p>${escapeHtml(enText)}</p>` : ''}
+      ${wordItems ? `<h2>Hebrew, word by word</h2>\n      <ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
+    canonicalPath: `/parallel/${canonicalSlug}/${chapter}-${verse}`,
+  };
+}
+
 // pathname (req.path, no query string) -> ARRAY of { match(query), build }
 // candidates, tried in order (first match wins) — needed because "/" now
 // serves several different snapshots depending on ?source=. Query variations
@@ -1074,6 +1177,28 @@ async function renderSnapshot(pathname, query, port, indexHtmlPath) {
     const built = await buildVersePathSnapshot(verseMatch, port);
     // Invalid book/chapter/verse — falls through to the plain SPA shell,
     // same as VersePage.jsx's own "address not recognized" state.
+    if (!built) return null;
+    const html = render(built);
+
+    cacheSet(cacheKey, html);
+    return html;
+  }
+
+  // /parallel/:bookSlug/:chapterVerse (and /parallel/:bookSlug) — Parallel's
+  // own clean-URL form, e.g. /parallel/deuteronomy/13-3. Same pattern-matched
+  // treatment as VERSE_PATH_RE above, tried after it (order between the two
+  // doesn't matter — see PARALLEL_PATH_RE's own comment for why they can
+  // never both match the same pathname) and after the exact-pathname ROUTES
+  // lookup, so it can never shadow any named route either.
+  const parallelMatch = PARALLEL_PATH_RE.exec(pathname);
+  if (parallelMatch) {
+    const cacheKey = pathname; // no query string affects this page's content
+    const cached = cacheGet(cacheKey);
+    if (cached !== undefined) return cached;
+
+    loadShell(indexHtmlPath);
+    const built = await buildParallelPathSnapshot(parallelMatch, port);
+    // Invalid book/chapter/verse — falls through to the plain SPA shell.
     if (!built) return null;
     const html = render(built);
 
