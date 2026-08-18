@@ -19,6 +19,9 @@ cd ~/paleo-studio
 echo "==> Pulling latest code..."
 git pull
 
+echo "==> Building image..."
+docker build -t paleo-studio .
+
 # ── DATA GATES — run against the LIVE volume, before touching anything ──────
 # corpus.db / translation.db / bible.db are NOT baked into the image (see
 # .dockerignore) — they live on the host volume mounted at /data inside the
@@ -30,15 +33,25 @@ git pull
 # blank/mislabeled in prod without a failed deploy ever flagging it (see the
 # 2026-08-18 fix to load-english-baseline.js's alignChapter()).
 #
+# BUG FOUND 2026-08-18, same day this gate was added: it originally ran these
+# two scripts directly on the HOST, before `docker build`. That crashed here
+# — this host's system Node (confirmed v12.22.9) is far older than
+# better-sqlite3 requires (20.x+), so neither verify script can even start
+# outside a container; the app itself only works because its Docker image
+# carries its own modern Node. Moved to run AFTER the build, via `docker run`
+# against the image that was just built, which has a working Node + native
+# binary already. This doesn't weaken the "never touch live containers with
+# bad data" guarantee the original ordering was going for — building an
+# image has no effect on what's actually serving traffic; only starting or
+# swapping a container does, and that still only happens below, after both
+# gates pass.
+#
 # PALEO_DATA_DIR: adjust if the volume isn't mounted at /mnt/paleo-data on
 # this host — same path the `-v` flag below binds into the container as /data.
 PALEO_DATA_DIR="${PALEO_DATA_DIR:-/mnt/paleo-data}"
-echo "==> Verifying data on $PALEO_DATA_DIR before build..."
-node server/verify-versification.mjs "$PALEO_DATA_DIR/corpus.db"
-node server/verify-verse-completeness.mjs "$PALEO_DATA_DIR/corpus.db" "$PALEO_DATA_DIR/translation.db"
-
-echo "==> Building image..."
-docker build -t paleo-studio .
+echo "==> Verifying data on $PALEO_DATA_DIR (inside the freshly built image)..."
+docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-versification.mjs /data/corpus.db
+docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-verse-completeness.mjs /data/corpus.db /data/translation.db
 
 # Figure out what's currently live. Handles the one-time migration from the
 # old single-container ("paleo") setup too — treat it as if it were paleo-a.

@@ -112,7 +112,9 @@ for (const ln of fs.readFileSync(JSONL_PATH,'utf8').split(/\r?\n/)) {
   if (!ln) continue;
   let o; try { o = JSON.parse(ln); } catch { continue; }
   const c = CODE2CANON[o.code]; if (!c) continue;
-  ((web[c] ||= {})[o.chapter] ||= {})[o.verse] = String(o.text || '');
+  if (!web[c]) web[c] = {};                          // Node <15 compat: no ||= on this box
+  if (!web[c][o.chapter]) web[c][o.chapter] = {};
+  web[c][o.chapter][o.verse] = String(o.text || '');
 }
 if (!Object.keys(web).length) die('no baseline rows parsed');
 
@@ -280,7 +282,7 @@ for (const [canonStr, chaptersRaw] of Object.entries(web)) {
   if (hebBooks.has(canon)) {                          // align to MT grid
     hebBooksN++;
     const chapters = remapChapters(canon, chaptersRaw);
-    const grid = {}; for (const r of mtGridStmt.all(canon)) { const c = Number(r.chapter); (grid[c] ||= new Set()).add(Number(r.verse)); }
+    const grid = {}; for (const r of mtGridStmt.all(canon)) { const c = Number(r.chapter); if (!grid[c]) grid[c] = new Set(); grid[c].add(Number(r.verse)); }
     for (const ch of Object.keys(grid).map(Number)) {
       const mtVs = [...grid[ch]].sort((a,b)=>a-b), webCh = chapters[ch] || {};
       if (Object.keys(webCh).length && mtVs.length !== Object.keys(webCh).length) offsetChapters++;
