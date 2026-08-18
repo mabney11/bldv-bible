@@ -18,6 +18,25 @@ set -e
 cd ~/paleo-studio
 echo "==> Pulling latest code..."
 git pull
+
+# ── DATA GATES — run against the LIVE volume, before touching anything ──────
+# corpus.db / translation.db / bible.db are NOT baked into the image (see
+# .dockerignore) — they live on the host volume mounted at /data inside the
+# container (paleo-data below). A code deploy can't fix bad data and a data
+# fix (a re-ingest, a rebuild of load-english-baseline.js's output, etc.)
+# doesn't go through this script at all today — so nothing was ever gating
+# "does the data on disk actually render every verse" before traffic moved.
+# That gap is exactly how 100 chapters / 181 verses across the Bible went
+# blank/mislabeled in prod without a failed deploy ever flagging it (see the
+# 2026-08-18 fix to load-english-baseline.js's alignChapter()).
+#
+# PALEO_DATA_DIR: adjust if the volume isn't mounted at /mnt/paleo-data on
+# this host — same path the `-v` flag below binds into the container as /data.
+PALEO_DATA_DIR="${PALEO_DATA_DIR:-/mnt/paleo-data}"
+echo "==> Verifying data on $PALEO_DATA_DIR before build..."
+node server/verify-versification.mjs "$PALEO_DATA_DIR/corpus.db"
+node server/verify-verse-completeness.mjs "$PALEO_DATA_DIR/corpus.db" "$PALEO_DATA_DIR/translation.db"
+
 echo "==> Building image..."
 docker build -t paleo-studio .
 

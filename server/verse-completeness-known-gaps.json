@@ -1,0 +1,10 @@
+{
+  "_comment": "Verses genuinely absent from the WEB source ingestion (english-baseline.jsonl) as of the date below — not a rendering bug, a real gap pending re-fetch (see fetch-missing-books.mjs / fetch-web-strongs.mjs). Verse 0 (MT superscription slots) is never listed here — it is unconditionally exempt, see file header. Regenerate with: node verify-verse-completeness.mjs --write-allowlist",
+  "generated": "2026-08-18T03:09:01.994Z",
+  "count": 3,
+  "gaps": [
+    "4:25:19",
+    "11:22:54",
+    "13:12:41"
+  ]
+}

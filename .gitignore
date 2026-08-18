@@ -12,6 +12,8 @@ server/public/
 *.db-wal
 *.db-shm
 *.db.bak
+*.db.bak.*
+server/_backups/
 
 # Secrets
 .env
@@ -23,6 +25,12 @@ server/nav-index.cache.json
 # Lexicon Admin backups — timestamped snapshots taken automatically on every
 # save (see server.js's Lexicon Admin section); local safety net, not source.
 server/lexicon/.backups/
+
+# FUSE artifacts — leftover ".fuse_hiddenXXXXXXXX" files from a mounted
+# folder holding a deleted-but-open file handle. Harmless junk, never source
+# (2026-08-18: 9 of these got committed by mistake — see git log — because
+# this pattern wasn't ignored yet).
+.fuse_hidden*
 
 # OS / editor
 .DS_Store
