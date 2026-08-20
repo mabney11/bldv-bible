@@ -1193,12 +1193,15 @@ export default function Parallel() {
   // Versification cross-reference note (added 2026-08-18, fieldy comparing this
   // page's Deuteronomy 13:3 against biblehub.com's interlinear and finding the
   // CONTENT disagreed — a genuine Hebrew-vs-English chapter/verse numbering
-  // divergence, not a bug: BHS numbering is this site's display authority (see
-  // server.js's VERSIFICATION_DIFFERENCES header comment), so rather than
-  // silently leaving a reader confused when cross-checking against an
-  // English-convention tool, show the correspondence directly. BHS-only concept
-  // (Greek/Ge'ez/Latin/Syriac editions don't have this Hebrew/English split), and
-  // purely informational — never changes book/chapter/verse state.
+  // divergence, not a bug. FLIPPED 2026-08-20: display authority moved from
+  // BHS/Masoretic to English/KJV-tradition numbering (fieldy: "I want my app to
+  // line up with what everyone will line up with in their bible"), so `verse`/
+  // `chapter` are now the English-authoritative numbers and this note shows the
+  // Hebrew/BHS equivalent as a courtesy for anyone cross-referencing a
+  // BHS-numbered source — the same information as before, opposite direction.
+  // BHS-only concept (Greek/Ge'ez/Latin/Syriac editions don't have this
+  // Hebrew/English split), and purely informational — never changes
+  // book/chapter/verse state.
   const [versificationRanges, setVersificationRanges] = useState([]);
   useEffect(() => {
     if (lang !== 'BHS' || !bookResolved) { setVersificationRanges([]); return; }
@@ -1209,20 +1212,22 @@ export default function Parallel() {
       .catch(() => { if (!cancelled) setVersificationRanges([]); });
     return () => { cancelled = true; };
   }, [lang, book, chapter, bookResolved]);
-  // The single range covering the CURRENTLY SELECTED verse, when one is
-  // selected — a chapter can have more than one range (e.g. Numbers 17 splits
-  // across two English chapters), so this picks the one that actually applies
-  // to what's on screen rather than showing the whole chapter's breakdown.
+  // The single range covering the CURRENTLY SELECTED (English) verse, when one
+  // is selected — a chapter can have more than one range (e.g. English Numbers
+  // 16 draws from two BHS chapters), so this picks the one that actually
+  // applies to what's on screen rather than showing the whole chapter's
+  // breakdown. Response shape from /api/versification-note is now
+  // {engStart, engEnd, hebChapter, hebStart} — see server.js's ENG_TO_HEB_NOTE.
   const versificationNote = useMemo(() => {
     if (verse == null || !versificationRanges.length) return null;
-    const r = versificationRanges.find(r => verse >= r.heb[0] && verse <= r.heb[1]);
+    const r = versificationRanges.find(r => verse >= r.engStart && verse <= r.engEnd);
     if (!r) return null;
     // Each range covers the SAME number of verses on both sides (a versification
     // split renumbers, it never adds/removes verses), so the correspondence
-    // within a range is a simple linear offset — verse 3 in a heb:[2,19]/eng:[1,18]
-    // range is (3 - 2 + 1) = eng verse 2, not "somewhere in 1-18".
-    const engVerse = verse - r.heb[0] + r.eng[0];
-    return `Versification note: English Bibles number this verse ${r.engChapter}:${engVerse}.`;
+    // within a range is a simple linear offset — verse 2 in an engStart:1/
+    // hebStart:2 range is (2 - 1 + 2) = heb verse 3, not "somewhere in 2-19".
+    const hebVerse = verse - r.engStart + r.hebStart;
+    return `Versification note: Hebrew (BHS) numbers this verse ${r.hebChapter}:${hebVerse}.`;
   }, [verse, versificationRanges]);
 
   // Verse list = union of source-token verses and English-baseline verses, so

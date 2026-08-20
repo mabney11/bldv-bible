@@ -865,11 +865,15 @@ try {
 // Deliberately chapter-scoped, not per-verse, so the response is small/cacheable
 // and the client does the trivial "which range contains my current verse" lookup
 // itself (a chapter can have more than one range — see e.g. Numbers 17).
+// `chapter` here is the DISPLAY (now English-authoritative) chapter number —
+// flipped 2026-08-20 alongside the display-authority reversal below. Returns
+// the Hebrew/BHS-equivalent segments for chapters assembled from more than
+// one BHS chapter (empty for the overwhelming majority, which need no note).
 app.get('/api/versification-note', production.cache(3600), (req, res) => {
     const bookId  = parseInt(req.query.book, 10);
     const chapter = parseInt(req.query.chapter, 10);
     if (!bookId || !chapter) return res.status(400).json({ error: 'book and chapter required' });
-    res.json(VERSIFICATION_DIFFERENCES[`${bookId}:${chapter}`] || []);
+    res.json(ENG_TO_HEB_NOTE[bookId]?.[chapter] || []);
 });
 
 // Preload the book list once at startup (stable data, never changes)
@@ -887,6 +891,123 @@ const BOOKS = BOOKS_RAW.map(b => {
     BOOK_META[b.book_id] = { first: b.first_chapter, last };
     return { ...b, last_chapter: last };
 });
+
+// --- ENGLISH-CHAPTER SEGMENT RESOLUTION (added 2026-08-20) ---------------
+//
+// fieldy, after living with the BHS-authoritative "versification note" for a
+// day: "I want my app to line up with what everyone will line up with in
+// their bible. My Deuteronomy 12 has 31 verses instead of 32." Display
+// authority flips from BHS/Masoretic to English/KJV-tradition numbering for
+// the ~23 non-Psalms OT books catalogued in versification-differences.json.
+// Malachi (39) and Joel (29) already display English numbers via
+// VERSIFICATION_MAP/resolveChapter() above — untouched by this block.
+//
+// resolveChapter() only expresses "one display chapter = one BHS chapter +
+// a constant verse offset." That's not enough here: an English chapter is
+// often assembled from the TAIL of one BHS chapter plus the HEAD of the
+// next (English Numbers 16 = BHS Numbers 16 in full + BHS Numbers 17:1-15).
+// So each English chapter resolves to an ORDERED LIST of segments, each
+// naming which BHS (chapter, verse-range) supplies which English
+// verse-range. A chapter with no divergence gets exactly one identity
+// segment — the direct superset of resolveChapter()'s default case.
+//
+// The segment data is built once here from versification-differences.json
+// (already spot-checked live) plus BHS's REAL per-chapter verse counts
+// (queried below) — no guessing. Between any two divergent chapters, BHS
+// and English resync to identity, which is why the source table only needs
+// an entry at the chapters that actually shift.
+let ENG_CHAPTER_SEGMENTS = {};   // bookId -> { engChapter: [ {hebChapter, hebStart, hebEnd, engStart} ... ] }
+let ENG_TO_HEB_NOTE = {};        // bookId -> { engChapter: [ {engStart, engEnd, hebChapter, hebStart} ... ] } — chapters with >1 segment only
+(function buildEnglishVersificationSegments() {
+    const affectedBooks = new Set(
+        Object.keys(VERSIFICATION_DIFFERENCES).map(k => parseInt(k.split(':')[0], 10))
+    );
+    for (const bookId of affectedBooks) {
+        const meta = BOOK_META[bookId];
+        if (!meta) continue;   // book not present in this build's tokens_bhs
+        const counts = {};
+        for (const row of db.prepare(
+            `SELECT chapter, MAX(verse) AS maxV FROM tokens_bhs WHERE book_id=? GROUP BY chapter`
+        ).all(bookId)) {
+            counts[row.chapter] = row.maxV;
+        }
+        const segMap = {};
+        for (let heb = meta.first; heb <= meta.last; heb++) {
+            const entries = VERSIFICATION_DIFFERENCES[`${bookId}:${heb}`];
+            if (entries && entries.length) {
+                for (const seg of entries) {
+                    (segMap[seg.engChapter] ||= []).push({
+                        hebChapter: heb, hebStart: seg.heb[0], hebEnd: seg.heb[1], engStart: seg.eng[0],
+                    });
+                }
+            } else {
+                const maxV = counts[heb] || 0;
+                if (!maxV) continue;   // chapter absent from this build's tokens_bhs — nothing to map
+                (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: 1, hebEnd: maxV, engStart: 1 });
+            }
+        }
+        for (const eng of Object.keys(segMap)) segMap[eng].sort((a, b) => a.engStart - b.engStart);
+        ENG_CHAPTER_SEGMENTS[bookId] = segMap;
+
+        // Note table: only chapters genuinely assembled from >1 segment need a
+        // Hebrew-equivalent courtesy note; a single-segment chapter has nothing
+        // to say (its English and BHS chapter numbers already agree).
+        const notes = {};
+        for (const eng of Object.keys(segMap)) {
+            const segs = segMap[eng];
+            if (segs.length < 2) continue;
+            let cursor = 1;
+            notes[eng] = segs.map(s => {
+                const span = s.hebEnd - s.hebStart;   // inclusive-range length minus 1
+                const engEnd = cursor + span;
+                const note = { engStart: cursor, engEnd, hebChapter: s.hebChapter, hebStart: s.hebStart };
+                cursor = engEnd + 1;
+                return note;
+            });
+        }
+        ENG_TO_HEB_NOTE[bookId] = notes;
+    }
+})();
+
+// Resolve a DISPLAY (English-authoritative) chapter to the ordered list of
+// BHS segments that compose it. Every book/chapter without a divergence
+// entry — the overwhelming majority — falls back to the single identity
+// segment, matching today's default resolveChapter() behavior exactly.
+function resolveEnglishChapter(bookId, engChapter) {
+    // Malachi (39) / Joel (29) stay on the older, narrower VERSIFICATION_MAP path —
+    // checked FIRST so every caller of resolveEnglishChapter (not just the two
+    // translate/* routes that used to hand-check this) gets their existing
+    // behavior for granted. Convert its single actual_chapter/verse_offset pair
+    // into the equivalent one-segment list: verse_offset+1 is the first BHS verse
+    // that belongs to this display chapter (resolveChapter's old rule was "filter
+    // to verses > verse_offset, then renumber verse -= verse_offset").
+    const mapEntry = VERSIFICATION_MAP[`${bookId}:${engChapter}`];
+    if (mapEntry) {
+        return [{ hebChapter: mapEntry.actual_chapter, hebStart: mapEntry.verse_offset + 1, hebEnd: Infinity, engStart: 1 }];
+    }
+    const segs = ENG_CHAPTER_SEGMENTS[bookId]?.[engChapter];
+    if (segs && segs.length) return segs;
+    return [{ hebChapter: engChapter, hebStart: 1, hebEnd: Infinity, engStart: 1 }];
+}
+
+// Single-verse counterpart of resolveEnglishChapter — which segment does this
+// DISPLAY (English-authoritative) verse fall in, and what BHS (chapter, verse)
+// does it actually live at. Used by /api/translate/verse, which needs one verse
+// at a time rather than a whole chapter's rows.
+function resolveEnglishVerse(bookId, engChapter, engVerse) {
+    const segments = resolveEnglishChapter(bookId, engChapter);
+    for (const seg of segments) {
+        const segEnd = seg.engStart + (seg.hebEnd - seg.hebStart);   // Infinity for identity segments
+        if (engVerse >= seg.engStart && engVerse <= segEnd) {
+            return { hebChapter: seg.hebChapter, hebVerse: seg.hebStart + (engVerse - seg.engStart) };
+        }
+    }
+    // Past every known segment (e.g. an overshoot request) — fall back to the last
+    // segment's chapter with the same offset, matching /api/tokens' documented
+    // "accepted overshoot" behavior for donor chapters rather than 404ing.
+    const last = segments[segments.length - 1];
+    return { hebChapter: last.hebChapter, hebVerse: last.hebStart + (engVerse - last.engStart) };
+}
 
 // Hebrew Bible (Old Testament) book names by 1-indexed book_id. Used wherever
 // the response needs a human-readable book label (Root explorer by-book list,
@@ -7032,36 +7153,46 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
             return res.status(404).json({ error: `Book ${bookId} not found` });
         }
 
-        // resolveChapter applies BHS versification offsets, which only exist for books in
-        // BOOK_META. For NT-only books the chapter is already canonical — pass it through
-        // rather than mapping it through a table that has no entry for this book.
-        const { actual_chapter, verse_offset } = inBhsMeta
-            ? resolveChapter(bookId, chapter)
-            : { actual_chapter: chapter, verse_offset: 0 };
+        // resolveEnglishChapter applies BHS/English versification segments, which only
+        // exist for books in BOOK_META. For NT-only books the chapter is already
+        // canonical — pass it through as a single identity segment rather than mapping
+        // it through a table that has no entry for this book.
+        const segments = inBhsMeta
+            ? resolveEnglishChapter(bookId, chapter)
+            : [{ hebChapter: chapter, hebStart: 1, hebEnd: Infinity, engStart: 1 }];
         // The edition this request is about. Everything below — the fast path,
         // the integrity guards, and the live-parse fallback — must agree on it.
         const surfSource = surfaceSourceFor(bookId, req.query.source);
-        let rows = surfRowsFor(bookId, actual_chapter, surfSource);
-        // Location-keyed Strong's overrides — patched in before anything below
-        // reads row.strongs or row.components, on ACTUAL-chapter verse numbers
-        // (matches how they're keyed), same reasoning as the homograph guard.
-        {
-            const { locationOverrides } = loadLexicons();
-            if (locationOverrides && Object.keys(locationOverrides).length) {
-                rows = rows.map(r => applyLocOverrideToSurfRow({ ...r }, locationOverrides, bookId, actual_chapter));
+        // Merge each segment's rows at the RAW ROW level, before any parsing/grouping/
+        // homograph logic runs — that logic already operates on a flat rows array keyed
+        // by .verse/.token_ordinal, not by chapter, so once the merge below produces one
+        // correctly-renumbered array everything downstream needs no further changes.
+        // Location overrides are applied per-segment, on each row's ORIGINAL (BHS)
+        // verse/chapter — that's how they're keyed — before the segment's rows are
+        // renumbered into the merged, English-chapter verse space.
+        const { locationOverrides } = loadLexicons();
+        const hasLocOverrides = locationOverrides && Object.keys(locationOverrides).length;
+        let rows = [];
+        for (const seg of segments) {
+            let segRows = surfRowsFor(bookId, seg.hebChapter, surfSource)
+                .filter(r => r.verse >= seg.hebStart && r.verse <= seg.hebEnd);
+            if (hasLocOverrides) {
+                segRows = segRows.map(r => applyLocOverrideToSurfRow({ ...r }, locationOverrides, bookId, seg.hebChapter));
             }
+            for (const r of segRows) rows.push({ ...r, verse: seg.engStart + (r.verse - seg.hebStart) });
         }
+        rows.sort((a, b) => a.verse - b.verse || a.token_ordinal - b.token_ordinal);
 
         // ── HOMOGRAPH GUARD (authoritative per-occurrence SN) ──────────────
-        // Computed here on ACTUAL-chapter verse numbers, before the verse_offset
-        // renumber below, so it aligns with tokens_bhs. A chapter can only be
-        // mis-served if it contains a flagged homograph surface, so we skip the
-        // corpus.db read entirely otherwise (in-memory Set.has only). When it
-        // does, we pull the authoritative per-occurrence SN from tokens_bhs and
-        // compare it to the baked surface SN; any disagreement means the fast
-        // path would render the wrong root/badge for that occurrence (the exact
-        // reader-vs-roots-page split), so we defer the whole chapter to the live
-        // parser, which resolves the true root from the per-token OSHB SN.
+        // Built per-segment from tokens_bhs on each segment's own ORIGINAL (BHS) verse
+        // numbers, then renumbered into the same merged verse space as `rows` so the two
+        // line up. A chapter can only be mis-served if it contains a flagged homograph
+        // surface, so we skip the corpus.db read entirely otherwise (in-memory Set.has
+        // only). When it does, we pull the authoritative per-occurrence SN from
+        // tokens_bhs and compare it to the baked surface SN; any disagreement means the
+        // fast path would render the wrong root/badge for that occurrence (the exact
+        // reader-vs-roots-page split), so we defer the whole chapter to the live parser,
+        // which resolves the true root from the per-token OSHB SN.
         //
         // BHS ONLY. The check compares the baked SN against an AUTHORITATIVE
         // per-occurrence tag, and only tokens_bhs has one: tokens_nt's SNs are
@@ -7075,9 +7206,13 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
         const normH = s => 'H' + String(s).replace(/^H+/, '');
         let homographDrift = false;
         if (surfSource !== 'HEB' && rows.some(r => r.word_raw && HOMOGRAPH_SURFACES.has(r.word_raw))) {
-            const authSN = new Map();   // "verse\u0000ordinal" -> normalized H#
-            for (const t of tokenQueryFor(bookId, req.query.source).all(bookId, actual_chapter)) {
-                if (t.strongs) authSN.set(`${t.verse}\u0000${t.token_ordinal}`, normH(t.strongs));
+            const authSN = new Map();   // "engVerse\u0000ordinal" -> normalized H#
+            for (const seg of segments) {
+                for (const t of tokenQueryFor(bookId, req.query.source).all(bookId, seg.hebChapter)) {
+                    if (t.verse < seg.hebStart || t.verse > seg.hebEnd || !t.strongs) continue;
+                    const engVerse = seg.engStart + (t.verse - seg.hebStart);
+                    authSN.set(`${engVerse}\u0000${t.token_ordinal}`, normH(t.strongs));
+                }
             }
             homographDrift = rows.some(r => {
                 if (!r.word_raw || !HOMOGRAPH_SURFACES.has(r.word_raw)) return false;
@@ -7088,13 +7223,19 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
             });
         }
 
-        // verse_offset > 0 → display chapter is a tail slice of a larger actual
-        // chapter.  Filter to verses above the offset and renumber from 1.
-        if (verse_offset > 0) {
-            rows = rows
-                .filter(r => r.verse > verse_offset)
-                .map(r => ({ ...r, verse: r.verse - verse_offset }));
-        }
+        // Shared by both live-parse fallbacks below: gathers + renumbers raw
+        // tokens_bhs/tokens_nt rows across every segment, same merge rule as `rows`.
+        const mergedBibleRows = () => {
+            const merged = [];
+            for (const seg of segments) {
+                const segRows = tokenQueryFor(bookId, req.query.source).all(bookId, seg.hebChapter)
+                    .filter(r => r.verse >= seg.hebStart && r.verse <= seg.hebEnd)
+                    .map(r => ({ ...r, verse: seg.engStart + (r.verse - seg.hebStart) }));
+                merged.push(...segRows);
+            }
+            merged.sort((a, b) => a.verse - b.verse || a.token_ordinal - b.token_ordinal);
+            return merged;
+        };
 
         if (rows.length === 0) {
             // Cache miss — fall back to live parsing.  Should only happen if
@@ -7102,13 +7243,10 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
             console.warn(`[tokens] surface-index miss for book=${bookId} chapter=${chapter}` +
                          `${surfSource ? ` source=${surfSource}` : ''}; falling back to live parse` +
                          `${surfSource === 'HEB' ? ' (HEB not baked for this book — rebuild with --heb)' : ''}`);
-            const bibleRows = tokenQueryFor(bookId, req.query.source).all(bookId, actual_chapter);
-            if (bibleRows.length === 0) {
+            const mappedRows = mergedBibleRows();
+            if (mappedRows.length === 0) {
                 return res.status(404).json({ error: `No tokens found for book ${bookId} chapter ${chapter}` });
             }
-            const mappedRows = verse_offset > 0
-                ? bibleRows.filter(r => r.verse > verse_offset).map(r => ({ ...r, verse: r.verse - verse_offset }))
-                : bibleRows;
             const rawText = rowsToLines(mappedRows);
             const { lexicon, homographs, surfaceOverrides } = loadLexicons();
             return res.json(parseHebrewData(rawText, lexicon, homographs, surfaceOverrides));
@@ -7181,10 +7319,7 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
                          : hasOverride   ? 'surface-strongs-overrides active for chapter'
                          :                 'homograph SN disagrees with authoritative tokens_bhs';
             console.warn(`[tokens] ${reason} for book=${bookId} chapter=${chapter}; falling back to live parse for correctness`);
-            const bibleRows = tokenQueryFor(bookId, req.query.source).all(bookId, actual_chapter);
-            const mappedRows = verse_offset > 0
-                ? bibleRows.filter(r => r.verse > verse_offset).map(r => ({ ...r, verse: r.verse - verse_offset }))
-                : bibleRows;
+            const mappedRows = mergedBibleRows();
             const rawText = rowsToLines(mappedRows);
             return res.json(parseHebrewData(rawText, lexicon, homographs, surfaceOverrides));
         }
@@ -7211,11 +7346,21 @@ app.get('/api/raw', production.cache(60), (req, res) => {
         const bookId  = parseInt(req.query.book,    10);
         const chapter = parseInt(req.query.chapter, 10);
         if (!bookId || !chapter) return res.status(400).json({ error: 'book and chapter required' });
-        const { actual_chapter, verse_offset } = resolveChapter(bookId, chapter);
-        const rows = tokenQueryFor(bookId, req.query.source).all(bookId, actual_chapter);
-        const mapped = verse_offset > 0
-            ? rows.filter(r => r.verse > verse_offset).map(r => ({ ...r, verse: r.verse - verse_offset }))
-            : rows;
+        // Same English-authoritative segment resolution /api/tokens uses — an English
+        // chapter can be assembled from more than one BHS chapter (see
+        // resolveEnglishChapter above), so this merges + renumbers per segment instead
+        // of the old single actual_chapter/verse_offset pair.
+        const segments = BOOK_META[bookId]
+            ? resolveEnglishChapter(bookId, chapter)
+            : [{ hebChapter: chapter, hebStart: 1, hebEnd: Infinity, engStart: 1 }];
+        const mapped = [];
+        for (const seg of segments) {
+            const segRows = tokenQueryFor(bookId, req.query.source).all(bookId, seg.hebChapter)
+                .filter(r => r.verse >= seg.hebStart && r.verse <= seg.hebEnd)
+                .map(r => ({ ...r, verse: seg.engStart + (r.verse - seg.hebStart) }));
+            mapped.push(...segRows);
+        }
+        mapped.sort((a, b) => a.verse - b.verse || a.token_ordinal - b.token_ordinal);
         res.json(mapped);
     } catch(e) {
         console.error(e);
@@ -9851,36 +9996,29 @@ app.get('/api/translate/chapter', (req, res) => {
         const linksByVerse = {};
         for (const l of linkRows) (linksByVerse[l.verse] ||= []).push(l);
 
-        // Malachi ch4 (MT ch3:19-24), Joel's English 2:28-32/ch3 split, and any
-        // future book in VERSIFICATION_MAP need the SAME actual_chapter/
-        // verse_offset resolution /api/tokens already applies before it queries
-        // tokens_bhs — this endpoint used to query tokens_bhs with the DISPLAY
-        // chapter directly, so a book whose English chapter doesn't exist
-        // in the Masoretic text (Malachi 4 is MT 3:19-24, there IS no MT
-        // Malachi 4) silently returned zero verse rows here while the Reader/
-        // Parallel page (via /api/tokens, which DOES resolve) rendered it
-        // correctly. Found 2026-08-17: Translation Studio showed Malachi 4 as
-        // completely empty — no verses, nothing to translate against — while
-        // /api/tokens and the Reader had the real content the whole time.
-        // Only meaningful for books BOOK_META covers (the BHS/Masoretic set);
-        // NT-only chapters have no entry in VERSIFICATION_MAP and resolve to
-        // themselves unchanged either way.
-        const { actual_chapter: _actCh, verse_offset: _vOff } = BOOK_META[bookId]
-            ? resolveChapter(bookId, chapter)
-            : { actual_chapter: chapter, verse_offset: 0 };
-        // Same filter+shift /api/raw already uses for this exact map: a
-        // "donor" chapter (Malachi ch3 holding both its own 18 verses AND the
-        // 6 that display as ch4) must have the borrowed tail EXCLUDED, not
-        // just shifted — shifting alone would hand ch4's request verses
-        // -17..0 for its own real 1-18, and ch3's own request would (harmlessly,
-        // matching /api/tokens' own existing behavior) still see the borrowed
-        // 19-24 past its real end — that overshoot is accepted/pre-existing,
-        // not something this fix needs to additionally correct.
-        let verseRows = db.prepare(`
-            SELECT DISTINCT verse FROM tokens_bhs WHERE book_id=? AND chapter=? ORDER BY verse
-        `).all(bookId, _actCh);
-        if (_vOff > 0) verseRows = verseRows.filter(r => r.verse > _vOff);
-        verseRows = verseRows.map(r => ({ verse: r.verse - _vOff }));
+        // resolveEnglishChapter covers BOTH Malachi ch4 (MT ch3:19-24)/Joel's
+        // English 2:28-32/ch3 split (via its internal VERSIFICATION_MAP check) AND
+        // the ~23 books in versification-differences.json where an English chapter
+        // can be assembled from more than one BHS chapter (e.g. Malachi 4, or
+        // Deuteronomy 12 which now needs BHS 13:1 tacked on as its 32nd verse) — a
+        // single caller-visible per-segment merge handles every case, rather than
+        // this route hand-checking VERSIFICATION_MAP itself. Only meaningful for
+        // books BOOK_META covers (the BHS/Masoretic set); NT-only chapters have no
+        // entry either way and resolve to themselves unchanged. Found 2026-08-17
+        // (Malachi 4 blank in Translation Studio) and generalized 2026-08-20 for
+        // the English-versification-authority flip.
+        let verseRows = [];
+        if (BOOK_META[bookId]) {
+            for (const seg of resolveEnglishChapter(bookId, chapter)) {
+                const segRows = db.prepare(
+                    `SELECT DISTINCT verse FROM tokens_bhs WHERE book_id=? AND chapter=? ORDER BY verse`
+                ).all(bookId, seg.hebChapter)
+                    .filter(r => r.verse >= seg.hebStart && r.verse <= seg.hebEnd)
+                    .map(r => ({ verse: seg.engStart + (r.verse - seg.hebStart) }));
+                verseRows.push(...segRows);
+            }
+            verseRows.sort((a, b) => a.verse - b.verse);
+        }
         // Non-Hebrew books (no tokens_bhs): take the verse list from the English
         // baseline so the chapter still opens and every verse is listed.
         if (!verseRows.length) {
@@ -9948,16 +10086,18 @@ app.get('/api/translate/verse', (req, res) => {
         // all languages + reading direction). Links, however, are per-language here.
         // Same table the reader would use for this book (OT: tokens_bhs,
         // canon 40-66: tokens_nt) — see txVerseQuery.
-        // Same resolveChapter() fix as /api/translate/chapter just above: `verse`
-        // here is the DISPLAY verse (translation.db, saved links, and the URL bar
-        // all agree on display numbering) but tokens_bhs is stored under the
-        // Masoretic chapter/verse — for a book with a VERSIFICATION_MAP entry
-        // (Malachi 4 = MT 3:19-24) those are NOT the same number, and querying
-        // tokens_bhs with the display verse directly returns nothing.
-        const { actual_chapter: _vChap, verse_offset: _vOff2 } = BOOK_META[bookId]
-            ? resolveChapter(bookId, chapter)
-            : { actual_chapter: chapter, verse_offset: 0 };
-        const tokens = txVerseQuery(bookId).all(bookId, _vChap, verse + _vOff2);
+        // resolveEnglishVerse (built on resolveEnglishChapter, which covers Malachi/
+        // Joel's VERSIFICATION_MAP case internally too — see its own comment) fixes
+        // the same mismatch /api/translate/chapter just above does: `verse` here is
+        // the DISPLAY verse (translation.db, saved links, and the URL bar all agree
+        // on display numbering) but tokens_bhs is stored under the Masoretic
+        // chapter/verse — those are NOT always the same number, and querying
+        // tokens_bhs with the display verse directly can return nothing or the
+        // wrong verse.
+        const { hebChapter: _vChap, hebVerse: _vTokenVerse } = BOOK_META[bookId]
+            ? resolveEnglishVerse(bookId, chapter, verse)
+            : { hebChapter: chapter, hebVerse: verse };
+        const tokens = txVerseQuery(bookId).all(bookId, _vChap, _vTokenVerse);
         // WHICH EDITION THOSE TOKENS ACTUALLY CAME FROM. txVerseQuery picks by
         // BOOK ID, not by `lang` — an NT book always reads tokens_nt however the
         // Studio's language picker is set. So the picker said 'BHS' (its default)

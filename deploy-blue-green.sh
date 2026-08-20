@@ -72,6 +72,20 @@ docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-verse-comple
 docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-no-eliding.js /data/surface-index.db
 docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-parallel-alignment.mjs /data/surface-index.db
 
+# 2026-08-20: fieldy, after the BHS-authoritative versification note shipped:
+# "I want my app to line up with what everyone will line up with in their
+# bible. My Deuteronomy 12 has 31 verses instead of 32." Display authority for
+# the ~23 non-Psalms OT books in versification-differences.json flipped from
+# BHS/Masoretic to English/KJV-tradition numbering — server.js now ASSEMBLES
+# some English chapters from two adjacent BHS chapters
+# (resolveEnglishChapter/ENG_CHAPTER_SEGMENTS), real reflow logic rather than
+# a lookup table, so a bad verse-range boundary could silently duplicate,
+# drop, or misnumber verses site-wide. verify-english-versification.mjs checks
+# that resolution is internally consistent (gap-free, non-duplicated, full
+# BHS coverage) for every affected book before traffic swaps — see its header
+# for exactly what it does and doesn't check.
+docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-english-versification.mjs /data/corpus.db
+
 # Figure out what's currently live. Handles the one-time migration from the
 # old single-container ("paleo") setup too — treat it as if it were paleo-a.
 if docker ps --format '{{.Names}}' | grep -q '^paleo-b$'; then
