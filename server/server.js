@@ -827,6 +827,51 @@ function resolveChapter(bookId, displayChapter) {
     return { actual_chapter: displayChapter, verse_offset: 0 };
 }
 
+// --- VERSIFICATION DIFFERENCE NOTES (added 2026-08-18, fieldy comparing
+// bldbible.com/parallel/deuteronomy/13-3 against biblehub.com's interlinear
+// for the same reference and finding the CONTENT disagreed — not a rendering
+// bug, a genuine Hebrew-vs-English chapter/verse numbering divergence for a
+// stretch of Deuteronomy 13. Decision: BHS/Masoretic numbering stays the
+// site's single display authority (matches what tokens_bhs actually stores,
+// and what every book except Malachi/Joel above already does) — this data
+// is PURELY INFORMATIONAL, surfaced via /api/versification-note so the
+// client can show "English Bibles number this X" next to an affected verse,
+// rather than silently leaving a reader confused when cross-checking
+// against an English-convention tool. Does NOT feed resolveChapter() or
+// change any display/query behavior — additive only.
+//
+// Covers ~23 non-Psalms OT books with a known, standard Hebrew/English
+// divergence (source: matthewbarron.org's versification comparison,
+// following the standard scholarly/SWORD-project convention). Malachi (39)
+// and Joel (29) are deliberately absent — VERSIFICATION_MAP/
+// DISPLAY_LAST_CHAPTER above already remap THEIR display to English
+// numbers directly, so there's no divergence left to note for those two.
+// Psalms (19) are deliberately absent — the offset there is systematic
+// (most psalm titles count as verse 1 in Hebrew) and needs verification
+// against which superscriptions THIS corpus's own tokens_bhs actually
+// stores as verse 1 before any mapping could be trusted; not guessed at
+// here, left as known future work. See versification-differences.json's
+// own header comment for the full rationale and scope notes.
+let VERSIFICATION_DIFFERENCES = {};
+try {
+    const vdPath = path.join(__dirname, 'versification-differences.json');
+    VERSIFICATION_DIFFERENCES = JSON.parse(fs.readFileSync(vdPath, 'utf8')).differences || {};
+} catch (e) {
+    console.warn('versification-differences.json not loaded (versification notes will be disabled):', e.message);
+}
+
+// GET /api/versification-note?book=&chapter=  ->  the raw range array for that
+// Hebrew chapter (or [] if this chapter has no known Hebrew/English divergence).
+// Deliberately chapter-scoped, not per-verse, so the response is small/cacheable
+// and the client does the trivial "which range contains my current verse" lookup
+// itself (a chapter can have more than one range — see e.g. Numbers 17).
+app.get('/api/versification-note', production.cache(3600), (req, res) => {
+    const bookId  = parseInt(req.query.book, 10);
+    const chapter = parseInt(req.query.chapter, 10);
+    if (!bookId || !chapter) return res.status(400).json({ error: 'book and chapter required' });
+    res.json(VERSIFICATION_DIFFERENCES[`${bookId}:${chapter}`] || []);
+});
+
 // Preload the book list once at startup (stable data, never changes)
 const BOOKS_RAW = db.prepare(`
     SELECT book_id, MIN(chapter) AS first_chapter, MAX(chapter) AS last_chapter

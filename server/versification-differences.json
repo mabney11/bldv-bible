@@ -1,0 +1,160 @@
+{
+  "_comment": "Known Hebrew (BHS/Masoretic) vs. English (KJV-tradition) chapter/verse numbering divergences, for the OT (canon_id 1-39). Keyed by \"canon_id:hebChapter\" — canon_id here means Scheme A per CLAUDE.md's 'book_id means two different things' note (stable 1-39 for OT, Genesis=1..Malachi=39), the SAME numbering tokens_bhs.book_id, resolveChapter()'s bookId, and VERSIFICATION_MAP already use — NOT the site's interspersed book-menu position numbers. Each entry is a list of verse-range correspondences for that Hebrew chapter; a single Hebrew chapter can span parts of two different English chapters (e.g. Numbers 17). Malachi (39) and Joel (29) are intentionally excluded — they're already special-cased in server.js's VERSIFICATION_MAP/DISPLAY_LAST_CHAPTER to DISPLAY English chapter numbers directly, so there's no divergence left to note about for those two. Psalms (19) are intentionally excluded — the offset there is systematic (most psalm titles count as verse 1 in Hebrew) and needs verification against which superscriptions this corpus's own tokens_bhs actually stores as verse 1 before any mapping can be trusted; flagged as follow-up work, not guessed at here. Source: standard, well-established Hebrew/English versification-difference table (matthewbarron.org's versification comparison, following the standard scholarly/SWORD-project convention). Spot-checked live against bldbible.com vs. biblehub.com for Deuteronomy 13 (2026-08-18) before this file was written; a few more entries should be spot-checked the same way before this is fully trusted (see verify step in the implementation).",
+  "differences": {
+    "1:32": [
+      { "heb": [1, 1], "engChapter": 31, "eng": [55, 55] },
+      { "heb": [2, 33], "engChapter": 32, "eng": [1, 32] }
+    ],
+    "2:7": [
+      { "heb": [26, 29], "engChapter": 8, "eng": [1, 4] }
+    ],
+    "2:8": [
+      { "heb": [1, 28], "engChapter": 8, "eng": [5, 32] }
+    ],
+    "2:21": [
+      { "heb": [37, 37], "engChapter": 22, "eng": [1, 1] }
+    ],
+    "2:22": [
+      { "heb": [1, 30], "engChapter": 22, "eng": [2, 31] }
+    ],
+    "3:5": [
+      { "heb": [20, 26], "engChapter": 6, "eng": [1, 7] }
+    ],
+    "3:6": [
+      { "heb": [1, 23], "engChapter": 6, "eng": [8, 30] }
+    ],
+    "4:17": [
+      { "heb": [1, 15], "engChapter": 16, "eng": [36, 50] },
+      { "heb": [16, 28], "engChapter": 17, "eng": [1, 13] }
+    ],
+    "4:30": [
+      { "heb": [1, 1], "engChapter": 29, "eng": [40, 40] },
+      { "heb": [2, 17], "engChapter": 30, "eng": [1, 16] }
+    ],
+    "5:13": [
+      { "heb": [1, 1], "engChapter": 12, "eng": [32, 32] },
+      { "heb": [2, 19], "engChapter": 13, "eng": [1, 18] }
+    ],
+    "5:23": [
+      { "heb": [1, 1], "engChapter": 22, "eng": [30, 30] },
+      { "heb": [2, 26], "engChapter": 23, "eng": [1, 25] }
+    ],
+    "5:28": [
+      { "heb": [69, 69], "engChapter": 29, "eng": [1, 1] }
+    ],
+    "5:29": [
+      { "heb": [1, 28], "engChapter": 29, "eng": [2, 29] }
+    ],
+    "9:21": [
+      { "heb": [2, 16], "engChapter": 21, "eng": [1, 15] }
+    ],
+    "9:24": [
+      { "heb": [2, 23], "engChapter": 24, "eng": [1, 22] }
+    ],
+    "10:19": [
+      { "heb": [1, 1], "engChapter": 18, "eng": [33, 33] },
+      { "heb": [2, 44], "engChapter": 19, "eng": [1, 43] }
+    ],
+    "12:12": [
+      { "heb": [1, 1], "engChapter": 11, "eng": [21, 21] },
+      { "heb": [2, 22], "engChapter": 12, "eng": [1, 21] }
+    ],
+    "13:5": [
+      { "heb": [27, 41], "engChapter": 6, "eng": [1, 15] }
+    ],
+    "13:6": [
+      { "heb": [1, 66], "engChapter": 6, "eng": [16, 81] }
+    ],
+    "14:1": [
+      { "heb": [18, 18], "engChapter": 2, "eng": [1, 1] }
+    ],
+    "14:2": [
+      { "heb": [1, 17], "engChapter": 2, "eng": [2, 18] }
+    ],
+    "14:13": [
+      { "heb": [23, 23], "engChapter": 14, "eng": [1, 1] }
+    ],
+    "14:14": [
+      { "heb": [1, 14], "engChapter": 14, "eng": [2, 15] }
+    ],
+    "16:3": [
+      { "heb": [33, 38], "engChapter": 4, "eng": [1, 6] }
+    ],
+    "16:4": [
+      { "heb": [1, 17], "engChapter": 4, "eng": [7, 23] }
+    ],
+    "16:10": [
+      { "heb": [1, 1], "engChapter": 9, "eng": [38, 38] },
+      { "heb": [2, 40], "engChapter": 10, "eng": [1, 39] }
+    ],
+    "18:40": [
+      { "heb": [25, 32], "engChapter": 41, "eng": [1, 8] }
+    ],
+    "18:41": [
+      { "heb": [1, 26], "engChapter": 41, "eng": [9, 34] }
+    ],
+    "22:7": [
+      { "heb": [1, 1], "engChapter": 6, "eng": [13, 13] },
+      { "heb": [2, 14], "engChapter": 7, "eng": [1, 13] }
+    ],
+    "23:8": [
+      { "heb": [23, 23], "engChapter": 9, "eng": [1, 1] }
+    ],
+    "23:9": [
+      { "heb": [1, 20], "engChapter": 9, "eng": [2, 21] }
+    ],
+    "23:64": [
+      { "heb": [1, 11], "engChapter": 64, "eng": [2, 12] }
+    ],
+    "24:8": [
+      { "heb": [23, 23], "engChapter": 9, "eng": [1, 1] }
+    ],
+    "24:9": [
+      { "heb": [1, 25], "engChapter": 9, "eng": [2, 26] }
+    ],
+    "26:21": [
+      { "heb": [1, 5], "engChapter": 20, "eng": [45, 49] },
+      { "heb": [6, 37], "engChapter": 21, "eng": [1, 32] }
+    ],
+    "27:3": [
+      { "heb": [31, 33], "engChapter": 4, "eng": [1, 3] }
+    ],
+    "27:4": [
+      { "heb": [1, 34], "engChapter": 4, "eng": [4, 37] }
+    ],
+    "27:6": [
+      { "heb": [1, 1], "engChapter": 5, "eng": [31, 31] },
+      { "heb": [2, 29], "engChapter": 6, "eng": [1, 28] }
+    ],
+    "28:2": [
+      { "heb": [1, 2], "engChapter": 1, "eng": [10, 11] },
+      { "heb": [3, 25], "engChapter": 2, "eng": [1, 23] }
+    ],
+    "28:12": [
+      { "heb": [1, 1], "engChapter": 11, "eng": [12, 12] },
+      { "heb": [2, 15], "engChapter": 12, "eng": [1, 14] }
+    ],
+    "28:14": [
+      { "heb": [1, 1], "engChapter": 13, "eng": [16, 16] },
+      { "heb": [2, 10], "engChapter": 14, "eng": [1, 9] }
+    ],
+    "32:2": [
+      { "heb": [1, 1], "engChapter": 1, "eng": [17, 17] },
+      { "heb": [2, 11], "engChapter": 2, "eng": [1, 10] }
+    ],
+    "33:4": [
+      { "heb": [14, 14], "engChapter": 5, "eng": [1, 1] }
+    ],
+    "33:5": [
+      { "heb": [1, 14], "engChapter": 5, "eng": [2, 15] }
+    ],
+    "34:2": [
+      { "heb": [1, 1], "engChapter": 1, "eng": [15, 15] },
+      { "heb": [2, 14], "engChapter": 2, "eng": [1, 13] }
+    ],
+    "38:2": [
+      { "heb": [1, 4], "engChapter": 1, "eng": [18, 21] },
+      { "heb": [5, 17], "engChapter": 2, "eng": [1, 13] }
+    ]
+  }
+}

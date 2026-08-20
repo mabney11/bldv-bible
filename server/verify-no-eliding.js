@@ -42,11 +42,30 @@
  *                                           argument — see that file's header)
  *   node verify-no-eliding.js --list N     cap the printed list to N (default: all)
  *   node verify-no-eliding.js --quiet      suppress the per-violation lines, just the count
+ *   node verify-no-eliding.js --force      bypass the skip-if-unchanged cache (see below) and re-scan
+ *
+ * SKIP-IF-UNCHANGED CACHE (same reasoning/mechanism as verify-parallel-
+ * alignment.mjs's — see that file's header for the full rationale): the CLI
+ * entry point below fingerprints dbPath's (size, mtimeMs) plus a content hash
+ * of strongs-roots.json (the other input that can change the outcome) after a
+ * clean pass, and writes it to a small cache file. That cache file lives next
+ * to dbPath — NOT next to this script — because this CLI runs as `docker run
+ * --rm ... node verify-no-eliding.js /data/surface-index.db`, a throwaway
+ * container destroyed the instant it exits; a cache written inside the image
+ * would never survive to the next deploy. dbPath sits on $PALEO_DATA_DIR, the
+ * persistent host volume that does survive. strongs-roots.json, by contrast,
+ * IS part of the image/repo, so its mtime resets on every `docker build` even
+ * when unchanged — hence a content hash, not mtime, for that one. The next
+ * CLI run skips the full table scan entirely if both fingerprints still
+ * match. This only wraps the CLI path — runGate() itself (used by server.js's
+ * boot-time self-check and by tests) is unchanged and always does a real,
+ * full scan.
  */
 'use strict';
 
 const path = require('path');
 const fs   = require('fs');
+const crypto = require('crypto');
 
 function loadJSON(p) { return JSON.parse(fs.readFileSync(p, 'utf8')); }
 
@@ -163,17 +182,59 @@ function printReport(result, { list = Infinity, quiet = false } = {}) {
     console.error('  two never disagree, then rebuild surface-index.db.');
 }
 
-// Standalone CLI usage: node verify-no-eliding.js [dbPath] [--list N] [--quiet]
+function statFP(p) {
+    try { const s = fs.statSync(p); return { size: s.size, mtimeMs: s.mtimeMs }; }
+    catch { return null; }
+}
+function hashFP(p) {
+    try { return crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex'); }
+    catch { return null; }
+}
+
+// Standalone CLI usage: node verify-no-eliding.js [dbPath] [--list N] [--quiet] [--force]
 if (require.main === module) {
     const args = process.argv.slice(2);
     const listIdx = args.indexOf('--list');
     const list = listIdx >= 0 ? Number(args[listIdx + 1]) : Infinity;
     const quiet = args.includes('--quiet');
+    const force = args.includes('--force');
     // First non-flag arg that isn't the numeric value --list consumed = dbPath override.
     const consumed = new Set(listIdx >= 0 ? [listIdx, listIdx + 1] : []);
-    const dbPath = args.find((a, i) => !consumed.has(i) && !a.startsWith('--'));
-    const result = runGate(dbPath ? { dbPath } : undefined);
+    const dbPath = args.find((a, i) => !consumed.has(i) && !a.startsWith('--')) || path.join(__dirname, 'surface-index.db');
+    // Same rootsPath resolution runGate() uses internally — duplicated here (not
+    // exported by runGate) purely so the fingerprint can hash the exact file that
+    // will actually be read, same "worth the small duplication" call as this
+    // codebase makes elsewhere for logic that has to run in two places.
+    const lexDir = path.join(__dirname, 'lexicon');
+    const rootsPath = [path.join(lexDir, 'strongs-roots.json'), path.join(__dirname, 'strongs-roots.json')]
+        .find(fs.existsSync);
+    // Cache lives next to dbPath (the persistent data volume) — NOT next to
+    // __dirname (inside the ephemeral `docker run --rm` image) — see the
+    // SKIP-IF-UNCHANGED CACHE header comment above for why.
+    const CACHE_PATH = path.join(path.dirname(dbPath), '.no-eliding-verify-cache.json');
+    const fingerprint = () => ({ dbPath, db: statFP(dbPath), rootsHash: rootsPath ? hashFP(rootsPath) : null });
+
+    if (!force) {
+        let cache = null;
+        try { cache = loadJSON(CACHE_PATH); } catch { /* no cache yet */ }
+        if (cache && cache.ok && JSON.stringify(cache.fingerprint) === JSON.stringify(fingerprint())) {
+            console.log(`[no-eliding gate] SKIPPED — ${dbPath} and strongs-roots.json are byte-identical to ` +
+                `the last verified-clean pass (${cache.verifiedAt}); no recompute needed. Use --force to re-scan anyway.`);
+            process.exit(0);
+        }
+    }
+
+    const result = runGate({ dbPath });
     printReport(result, { list, quiet });
+    if (result.ok && !result.skipped) {
+        try {
+            fs.writeFileSync(CACHE_PATH, JSON.stringify({
+                ok: true,
+                verifiedAt: new Date().toISOString(),
+                fingerprint: fingerprint(),
+            }, null, 2) + '\n');
+        } catch { /* cache write is an optimization, never fatal */ }
+    }
     process.exit(result.ok ? 0 : 1);
 }
 

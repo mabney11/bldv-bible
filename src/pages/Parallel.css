@@ -58,6 +58,10 @@
 .pl-legend .leg { font-size: 12px; padding: 2px 8px; border-radius: 5px; border: 1px solid currentColor; color: var(--mc, var(--text2)); }
 .pl-legend .leg-note { color: var(--teal); font-style: italic; font-size: 12px; }
 
+/* Hebrew/English versification cross-reference note — subtle, informational,
+   never changes navigation state. See Parallel.jsx's versificationNote. */
+.pl-versification-note { color: var(--teal); font-style: italic; font-size: 12px; margin-bottom: 10px; }
+
 /* ── Side navigation (desktop) ─────────────────────────────────────────────*/
 .pl-side-nav { position: fixed; top: 50%; transform: translateY(-50%); width: 40px; height: 64px; border: 1px solid var(--border2); background: color-mix(in srgb, var(--bg3) 80%, transparent); color: var(--text2); border-radius: 10px; cursor: pointer; font-size: 16px; z-index: 60; }
 .pl-side-nav:hover { background: var(--bg4); color: var(--text); }

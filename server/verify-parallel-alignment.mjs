@@ -70,8 +70,9 @@
  *     a separate tool from this gate, not this script.
  *
  * USAGE:
- *   node verify-parallel-alignment.mjs [dbPath] [--write-allowlist]
- * (exit 0 = pass, exit 1 = fail, prints every NEW violation.) Wired into
+ *   node verify-parallel-alignment.mjs [dbPath] [--write-allowlist] [--force]
+ * (exit 0 = pass, exit 1 = fail, prints every NEW violation. --force bypasses
+ * the skip-if-unchanged cache described below.) Wired into
  * deploy-blue-green.sh's DATA GATES, run against /data/surface-index.db on
  * the live volume BEFORE swapping traffic — same spirit, same place as the
  * existing verify-versification.mjs / verify-verse-completeness.mjs /
@@ -86,22 +87,89 @@
  * it finds, fix what you can, then snapshot whatever's left:
  *     node verify-parallel-alignment.mjs --write-allowlist
  * A normal run only fails on keys NOT in that snapshot.
+ *
+ * SKIP-IF-UNCHANGED CACHE (fieldy, 2026-08-18, "I dont want wasted
+ * performance so recomputing should be minimized"): surface-index.db sits
+ * on the persistent data volume and a plain code deploy usually doesn't
+ * touch it at all — most deploys are re-verifying the exact bytes the
+ * PREVIOUS deploy already verified clean. Re-parsing every row's
+ * `components` JSON and re-joining every string on every single deploy is
+ * real, avoidable I/O + CPU on a table that can run into the hundreds of
+ * thousands of rows. So: after a run finds zero NEW violations, this
+ * script fingerprints the exact inputs that could change the outcome —
+ * dbPath's (size, mtimeMs) and the allowlist file's (size, mtimeMs) — and
+ * writes that fingerprint to a small cache file. The NEXT run stats those
+ * same two files first; if both fingerprints are byte-for-byte identical,
+ * NOTHING about the inputs could have changed since the last verified-good
+ * pass, so it prints a SKIPPED line and exits 0 without touching the
+ * database at all. Any real change — a rebuild, a patch script writing new
+ * rows, hand-editing the allowlist — changes at least one mtime/size and
+ * forces a full, honest re-scan. `--force` bypasses the cache for manual
+ * debugging. This trades a negligible risk (a same-size same-mtime
+ * in-place byte-level corruption within one deploy's time window, which no
+ * filesystem this deploys to has ever produced) for skipping a full-table
+ * scan on the common case, without weakening the 100%-coverage guarantee
+ * on any deploy that could actually have changed something.
+ *
+ * CACHE FILE PLACEMENT — this matters and is easy to get wrong: this script
+ * runs as `docker run --rm ... node verify-parallel-alignment.mjs
+ * /data/surface-index.db` — a throwaway container that's destroyed the
+ * instant it exits. A cache file written next to THIS SCRIPT (inside the
+ * image) would vanish with that container and never be seen again; every
+ * deploy would "miss" and silently do a full scan anyway, defeating the
+ * whole point. So the cache lives next to dbPath instead — on
+ * $PALEO_DATA_DIR, the persistent host volume that survives every deploy
+ * (see deploy-blue-green.sh) — not next to __dirname. Relatedly: the
+ * allowlist file DOES live in the image (it's checked into git on purpose,
+ * see ALLOWLIST RATCHET above), which means its mtime gets reset to
+ * image-build time on every single `docker build`, even when its content is
+ * byte-identical — so mtime can't be used to detect allowlist changes here.
+ * The fingerprint hashes the allowlist's actual bytes instead.
  */
 import Database from 'better-sqlite3';
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
 const WRITE_ALLOWLIST = args.includes('--write-allowlist');
+const FORCE = args.includes('--force');
 const positional = args.filter(a => !a.startsWith('--'));
 const dbPath = positional[0] || path.join(__dirname, 'surface-index.db');
 const ALLOWLIST_PATH = path.join(__dirname, 'parallel-alignment-known-gaps.json');
+// Next to dbPath (on the persistent data volume), NOT next to __dirname (inside
+// the ephemeral --rm image) — see CACHE FILE PLACEMENT above.
+const CACHE_PATH = path.join(path.dirname(dbPath), '.parallel-alignment-verify-cache.json');
 
 if (!fs.existsSync(dbPath)) {
   console.log(`[parallel-alignment gate] SKIPPED — ${dbPath} not found, nothing to gate yet`);
   process.exit(0);
+}
+
+function fingerprint() {
+  const statFP = (p) => {
+    try { const s = fs.statSync(p); return { size: s.size, mtimeMs: s.mtimeMs }; }
+    catch { return null; }
+  };
+  const hashFP = (p) => {
+    try { return crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex'); }
+    catch { return null; }
+  };
+  return { dbPath, db: statFP(dbPath), allowlistHash: hashFP(ALLOWLIST_PATH) };
+}
+const fpEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+if (!WRITE_ALLOWLIST && !FORCE) {
+  let cache = null;
+  try { cache = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8')); } catch { /* no cache yet */ }
+  if (cache && cache.ok && fpEqual(cache.fingerprint, fingerprint())) {
+    console.log(`verify-parallel-alignment: SKIPPED — ${dbPath} and ${path.basename(ALLOWLIST_PATH)} are ` +
+      `byte-identical to the last verified-clean pass (${cache.verifiedAt}); no recompute needed. ` +
+      `Use --force to re-scan anyway.`);
+    process.exit(0);
+  }
 }
 
 const db = new Database(dbPath, { readonly: true });
@@ -193,5 +261,12 @@ if (fresh.length) {
   process.exit(1);
 } else {
   console.log('✓ verify-parallel-alignment: no new alignment drift.');
+  try {
+    fs.writeFileSync(CACHE_PATH, JSON.stringify({
+      ok: true,
+      verifiedAt: new Date().toISOString(),
+      fingerprint: fingerprint(),
+    }, null, 2) + '\n');
+  } catch { /* cache write is an optimization, never fatal */ }
   process.exit(0);
 }

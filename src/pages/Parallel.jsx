@@ -1190,6 +1190,41 @@ export default function Parallel() {
     if (bookResolved && capsReady) loadChapter(book, chapter, lang);
   }, [book, chapter, lang, loadChapter, bookResolved, capsReady]);
 
+  // Versification cross-reference note (added 2026-08-18, fieldy comparing this
+  // page's Deuteronomy 13:3 against biblehub.com's interlinear and finding the
+  // CONTENT disagreed — a genuine Hebrew-vs-English chapter/verse numbering
+  // divergence, not a bug: BHS numbering is this site's display authority (see
+  // server.js's VERSIFICATION_DIFFERENCES header comment), so rather than
+  // silently leaving a reader confused when cross-checking against an
+  // English-convention tool, show the correspondence directly. BHS-only concept
+  // (Greek/Ge'ez/Latin/Syriac editions don't have this Hebrew/English split), and
+  // purely informational — never changes book/chapter/verse state.
+  const [versificationRanges, setVersificationRanges] = useState([]);
+  useEffect(() => {
+    if (lang !== 'BHS' || !bookResolved) { setVersificationRanges([]); return; }
+    let cancelled = false;
+    fetch(`/api/versification-note?book=${book}&chapter=${chapter}`)
+      .then(r => r.ok ? r.json() : [])
+      .then(ranges => { if (!cancelled) setVersificationRanges(Array.isArray(ranges) ? ranges : []); })
+      .catch(() => { if (!cancelled) setVersificationRanges([]); });
+    return () => { cancelled = true; };
+  }, [lang, book, chapter, bookResolved]);
+  // The single range covering the CURRENTLY SELECTED verse, when one is
+  // selected — a chapter can have more than one range (e.g. Numbers 17 splits
+  // across two English chapters), so this picks the one that actually applies
+  // to what's on screen rather than showing the whole chapter's breakdown.
+  const versificationNote = useMemo(() => {
+    if (verse == null || !versificationRanges.length) return null;
+    const r = versificationRanges.find(r => verse >= r.heb[0] && verse <= r.heb[1]);
+    if (!r) return null;
+    // Each range covers the SAME number of verses on both sides (a versification
+    // split renumbers, it never adds/removes verses), so the correspondence
+    // within a range is a simple linear offset — verse 3 in a heb:[2,19]/eng:[1,18]
+    // range is (3 - 2 + 1) = eng verse 2, not "somewhere in 1-18".
+    const engVerse = verse - r.heb[0] + r.eng[0];
+    return `Versification note: English Bibles number this verse ${r.engChapter}:${engVerse}.`;
+  }, [verse, versificationRanges]);
+
   // Verse list = union of source-token verses and English-baseline verses, so
   // the English column always renders even when the chosen source carries no
   // tokens for this book (e.g. BHS on Prayer of Manasseh) — no blank screen.
@@ -1367,6 +1402,10 @@ export default function Parallel() {
           {verse != null && <button className="pl-txt-btn" onClick={() => setVerse(null)}>↑ Full chapter</button>}
           <button className="pl-txt-btn" onClick={() => setLegendOpen(o => !o)}>Legend ▾</button>
         </div>
+
+        {versificationNote && (
+          <div className="pl-versification-note">{versificationNote}</div>
+        )}
 
         {legendOpen && (
           <div className="pl-legend">
