@@ -167,11 +167,6 @@ for (const m of withData) {
     console.log(`  book=${m.bookId} ${m.oldChapter}:${m.oldVerse} -> ${m.newChapter}:${m.newVerse} (${bits.join(', ')})`);
 }
 
-if (DRY_RUN) {
-    console.log('\nDry run only — nothing written. Review the moves above, then re-run without --dry-run to apply.');
-    process.exit(0);
-}
-
 if (!withData.length) {
     console.log('\nNothing to migrate — no translation work exists yet in these chapters.');
     if (!DRY_RUN) {
@@ -351,6 +346,11 @@ const run = tdb.transaction((items, mergePlanItems, placeholderItems) => {
         // action 'keep-dest': source already deleted above, destination's own row is untouched.
     }
 });
+if (DRY_RUN) {
+    console.log('\nDry run only — nothing written. Review the moves above, then re-run without --dry-run to apply.');
+    process.exit(0);
+}
+
 run(withData, mergePlan, placeholderOverwrites);
 
 console.log(`\n✓ Migrated ${withData.length} verse's saved data to its new English-authoritative chapter:verse key.`);
