@@ -86,7 +86,15 @@ if (!FORCE) {
 }
 
 // ── BUILD THE FLAT MOVE LIST ────────────────────────────────────────────────
-const moves = []; // { bookId, oldChapter, oldVerse, newChapter, newVerse }
+// A segment marked "merge": true (currently only 1 Samuel 21's heb 20:42/21:1
+// case — see versification-differences.json's header comment) targets a
+// destination that's EXPECTED to already hold a different verse's own,
+// never-moved data. Every other segment targets a destination that's either
+// empty or is itself vacated by another move in this same batch (the
+// "chain" case handled below) — those are NOT merges, just ordinary
+// boundary shifts, and must still be treated as a hard collision if their
+// destination is unexpectedly occupied by something unrelated.
+const moves = []; // { bookId, oldChapter, oldVerse, newChapter, newVerse, merge }
 for (const key of Object.keys(VERSIFICATION_DIFFERENCES)) {
     const [bookIdStr, hebChapterStr] = key.split(':');
     const bookId = parseInt(bookIdStr, 10);
@@ -95,10 +103,11 @@ for (const key of Object.keys(VERSIFICATION_DIFFERENCES)) {
         const [hebStart, hebEnd] = seg.heb;
         const engChapter = seg.engChapter;
         const engStart = seg.eng[0];
+        const merge = !!seg.merge;
         for (let v = hebStart; v <= hebEnd; v++) {
             const newVerse = engStart + (v - hebStart);
             if (hebChapter === engChapter && v === newVerse) continue; // no-op, shouldn't occur but stay safe
-            moves.push({ bookId, oldChapter: hebChapter, oldVerse: v, newChapter: engChapter, newVerse });
+            moves.push({ bookId, oldChapter: hebChapter, oldVerse: v, newChapter: engChapter, newVerse, merge });
         }
     }
 }
@@ -187,17 +196,44 @@ if (!withData.length) {
 // pre-existing data this migration doesn't know about. So: only the OLD
 // keys of moves that actually carry translation data will be vacated —
 // build that set, and only flag a destination as a real collision if it's
-// occupied AND not itself one of those soon-to-be-vacated keys.
+// occupied AND not itself one of those soon-to-be-vacated keys. This
+// includes merge-move sources too (NOT just ordinary moves) — a merge move's
+// OLD key is always deleted regardless of which resolution wins (see the
+// apply step below), so anything chaining into that address is just as safe
+// as chaining into an ordinary move's vacated address. Confirmed necessary
+// by testing: 1 Samuel 21's heb21:2->eng21:1 chains directly into heb21:1's
+// own address, and heb21:1 is itself the merge move's source.
+// A destination occupied by an UNTOUCHED baseline placeholder (status='none',
+// and its text is still exactly the frozen original_text snapshot — nobody
+// ever edited it) is not "genuine pre-existing data this migration doesn't
+// know about" — it's the same load-english-baseline.js/import-original
+// scaffolding that seeds a row for essentially every verse in the corpus,
+// sitting at an address that happens to coincide with a move's destination.
+// Confirmed via diagnose-remigration.mjs against production data (2026-08-21):
+// 750 of 752 "still has old-key data" verses were exactly this — both the old
+// AND new key held a matching, unedited placeholder from the SAME original
+// 2026-08-18 baseline-seed timestamp, nothing a live translator ever touched.
+// Overwriting a placeholder with the real (moved) data loses nothing; this is
+// the same "dest is untouched baseline -> overwrite" rule the merge-resolution
+// step below already applies, just extended to ordinary (non-merge) moves.
 const vacatedKeys = new Set(
     withData.filter(m => m.translation).map(m => `${m.bookId}:${m.oldChapter}:${m.oldVerse}`)
 );
+const isUntouchedPlaceholder = (row) =>
+    !!row && row.status === 'none' && row.original_text != null && row.text === row.original_text;
 const realCollisions = [];
+const placeholderOverwrites = []; // { ...m, existing } — destination has only an untouched placeholder, safe to clear and overwrite
 for (const m of withData) {
-    if (!m.translation) continue;   // nothing being inserted at this destination, nothing to check
+    if (!m.translation || m.merge) continue;   // merges are resolved separately below, not here
     const destKey = `${m.bookId}:${m.newChapter}:${m.newVerse}`;
     if (vacatedKeys.has(destKey)) continue;   // will be emptied by another move's delete — safe
     const existing = getTranslation.get(m.bookId, m.newChapter, m.newVerse);
-    if (existing) realCollisions.push({ ...m, existing });
+    if (!existing) continue;
+    if (isUntouchedPlaceholder(existing)) {
+        placeholderOverwrites.push({ ...m, existing });
+    } else {
+        realCollisions.push({ ...m, existing });
+    }
 }
 if (realCollisions.length) {
     console.error(`${realCollisions.length} destination(s) already hold saved translation data that this ` +
@@ -207,6 +243,58 @@ if (realCollisions.length) {
                        `(would receive data moving from ${c.oldChapter}:${c.oldVerse})`);
     }
     process.exit(1);
+}
+if (placeholderOverwrites.length) {
+    console.log(`\n${placeholderOverwrites.length} destination(s) hold only an untouched baseline placeholder — ` +
+                 `will be cleared and overwritten with the moved data:`);
+    for (const p of placeholderOverwrites.slice(0, 20)) {
+        console.log(`  book=${p.bookId} ${p.newChapter}:${p.newVerse} (placeholder from ${p.existing.updated_at}, ` +
+                     `receiving data moving from ${p.oldChapter}:${p.oldVerse})`);
+    }
+    if (placeholderOverwrites.length > 20) console.log(`  ...and ${placeholderOverwrites.length - 20} more.`);
+}
+
+// ── MERGE RESOLUTION (segments flagged "merge": true) ───────────────────────
+// A merge move's destination is EXPECTED to already hold a different verse's
+// own data (that verse never moves — see versification-differences.json's
+// header comment for the 1 Samuel 21 case this exists for). Two real rows
+// can't occupy one primary key, so decide, per merge move, which side's data
+// survives:
+//   - source is untouched baseline (status 'none') and dest has anything  → keep dest, discard source. No real work lost.
+//   - dest is untouched baseline (status 'none') and source has anything  → dest was never real work either; overwrite dest with source.
+//   - both sides are 'none', or dest doesn't exist yet                    → trivial, either resolution is fine, prefer keeping dest if present.
+//   - BOTH sides are real (non-'none') work                               → genuinely ambiguous, cannot safely auto-pick. Abort for manual review.
+const mergeMoves = withData.filter(m => m.merge && m.translation);
+const mergePlan = [];   // { m, action: 'keep-dest' | 'overwrite-dest' | 'insert' }
+const mergeAmbiguous = [];
+for (const m of mergeMoves) {
+    const dest = getTranslation.get(m.bookId, m.newChapter, m.newVerse);
+    if (!dest) {
+        mergePlan.push({ m, action: 'insert' });
+    } else if (m.translation.status !== 'none' && dest.status !== 'none') {
+        mergeAmbiguous.push({ m, dest });
+    } else if (dest.status === 'none') {
+        mergePlan.push({ m, action: 'overwrite-dest' });
+    } else {
+        mergePlan.push({ m, action: 'keep-dest' });
+    }
+}
+if (mergeAmbiguous.length) {
+    console.error(`${mergeAmbiguous.length} merge destination(s) have REAL saved work on BOTH sides of the merge — ` +
+                   `cannot safely auto-resolve which one wins. Aborting before any write. Investigate manually:`);
+    for (const c of mergeAmbiguous) {
+        console.error(`  book=${c.m.bookId}: source ${c.m.oldChapter}:${c.m.oldVerse} (status=${c.m.translation.status}) ` +
+                       `vs destination ${c.m.newChapter}:${c.m.newVerse} (status=${c.dest.status}) — both non-'none'.`);
+    }
+    process.exit(1);
+}
+if (mergePlan.length) {
+    console.log(`\n${mergePlan.length} merge move(s) resolved:`);
+    for (const p of mergePlan) {
+        const m = p.m;
+        console.log(`  book=${m.bookId} ${m.oldChapter}:${m.oldVerse} -> ${m.newChapter}:${m.newVerse}: ${p.action} ` +
+                     `(source status=${m.translation.status})`);
+    }
 }
 
 const deleteTranslation = tdb.prepare(`DELETE FROM translations WHERE book_id=? AND chapter=? AND verse=?`);
@@ -222,13 +310,27 @@ const updateHistory = tdb.prepare(`UPDATE translation_history SET chapter=?, ver
 // what actually makes the "chain" case above safe regardless of which order
 // `withData` happens to iterate in — by the time any INSERT runs, every key
 // that's a source ANYWHERE in this batch is already empty, so an INSERT can
-// only ever fail on a genuine, already-ruled-out collision.
-const run = tdb.transaction((items) => {
+// only ever fail on a genuine, already-ruled-out collision. Merge moves with
+// action 'overwrite-dest' need one extra explicit delete of the destination
+// row first, since that destination is a different verse that never moves
+// through the normal source-deletion path. Ordinary moves whose destination
+// held only an untouched baseline placeholder (placeholderOverwrites, see
+// the collision-check above) need that exact same extra delete — their
+// destination isn't reached by the source-deletion loop either, since it's
+// never anyone's old key in this batch.
+const run = tdb.transaction((items, mergePlanItems, placeholderItems) => {
     for (const m of items) {
-        if (m.translation) deleteTranslation.run(m.bookId, m.oldChapter, m.oldVerse);
+        if (m.translation && !m.merge) deleteTranslation.run(m.bookId, m.oldChapter, m.oldVerse);
+    }
+    for (const p of mergePlanItems) {
+        if (p.action === 'overwrite-dest') deleteTranslation.run(p.m.bookId, p.m.newChapter, p.m.newVerse);
+        deleteTranslation.run(p.m.bookId, p.m.oldChapter, p.m.oldVerse); // source is always vacated, regardless of action
+    }
+    for (const p of placeholderItems) {
+        deleteTranslation.run(p.bookId, p.newChapter, p.newVerse);
     }
     for (const m of items) {
-        if (m.translation) {
+        if (m.translation && !m.merge) {
             insertTranslation.run(
                 m.bookId, m.newChapter, m.newVerse,
                 m.translation.status, m.translation.text, m.translation.rich_text,
@@ -238,8 +340,18 @@ const run = tdb.transaction((items) => {
         for (const l of m.links)   updateLinks.run(m.newChapter, m.newVerse, l.id);
         for (const h of m.history) updateHistory.run(m.newChapter, m.newVerse, h.id);
     }
+    for (const p of mergePlanItems) {
+        if (p.action === 'insert' || p.action === 'overwrite-dest') {
+            insertTranslation.run(
+                p.m.bookId, p.m.newChapter, p.m.newVerse,
+                p.m.translation.status, p.m.translation.text, p.m.translation.rich_text,
+                p.m.translation.source_origin, p.m.translation.original_text, p.m.translation.updated_at
+            );
+        }
+        // action 'keep-dest': source already deleted above, destination's own row is untouched.
+    }
 });
-run(withData);
+run(withData, mergePlan, placeholderOverwrites);
 
 console.log(`\n✓ Migrated ${withData.length} verse's saved data to its new English-authoritative chapter:verse key.`);
 try {
