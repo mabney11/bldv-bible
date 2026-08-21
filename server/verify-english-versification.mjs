@@ -142,16 +142,44 @@ try {
     // ── Rebuild the segment table — KEEP IN SYNC WITH server.js's
     // buildEnglishVersificationSegments ────────────────────────────────────
     const segMap = {}; // engChapter -> [{hebChapter, hebStart, hebEnd, engStart}]
+    // Verses that are the SOURCE of a "merge": true segment (currently only 1
+    // Samuel 21's heb 20:42/21:1 — see versification-differences.json and
+    // server.js's buildEnglishVersificationSegments) are deliberately left
+    // unclaimed here, matching server.js's real behavior — CHECK 2 below treats
+    // membership in this set as an expected 0, not a DROPPED error.
+    const mergeSources = new Set();
     for (let heb = range.first; heb <= range.last; heb++) {
       const entries = VERSIFICATION_DIFFERENCES[`${bookId}:${heb}`];
+      const maxV = counts[heb] || 0;
       if (entries && entries.length) {
+        // `covered` = every explicit heb range for this chapter, merge included —
+        // used only to find verses this chapter's entry never mentioned at all, so
+        // they get an implicit identity segment (KEEP IN SYNC WITH server.js).
+        const covered = [];
         for (const seg of entries) {
+          covered.push([seg.heb[0], seg.heb[1]]);
+          if (seg.merge) {
+            for (let v = seg.heb[0]; v <= seg.heb[1]; v++) mergeSources.add(`${heb}:${v}`);
+            continue;
+          }
           (segMap[seg.engChapter] ||= []).push({
             hebChapter: heb, hebStart: seg.heb[0], hebEnd: seg.heb[1], engStart: seg.eng[0],
           });
         }
+        if (maxV) {
+          covered.sort((a, b) => a[0] - b[0]);
+          let cursor = 1;
+          for (const [s, e] of covered) {
+            if (s > cursor) {
+              (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: cursor, hebEnd: s - 1, engStart: cursor });
+            }
+            cursor = Math.max(cursor, e + 1);
+          }
+          if (cursor <= maxV) {
+            (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: cursor, hebEnd: maxV, engStart: cursor });
+          }
+        }
       } else {
-        const maxV = counts[heb] || 0;
         if (!maxV) continue;
         (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: 1, hebEnd: maxV, engStart: 1 });
       }
@@ -192,6 +220,13 @@ try {
         versesChecked++;
         const k = `${heb}:${v}`;
         const claimed = claimCount.get(k) || 0;
+        if (mergeSources.has(k)) {
+          if (claimed !== 0) {
+            failures.push(`book=${bookId} BHS ${heb}:${v}: merge-source verse unexpectedly claimed by ` +
+              `${claimed} segment(s) (expected 0 — see "merge" handling)`);
+          }
+          continue;
+        }
         if (claimed !== 1) {
           failures.push(`book=${bookId} BHS ${heb}:${v}: claimed by ${claimed} English segment(s), expected ` +
             `exactly 1 (${claimed === 0 ? 'DROPPED — this verse would vanish from the site' : 'DUPLICATED'})`);

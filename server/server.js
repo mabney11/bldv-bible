@@ -934,14 +934,64 @@ let ENG_TO_HEB_NOTE = {};        // bookId -> { engChapter: [ {engStart, engEnd,
         const segMap = {};
         for (let heb = meta.first; heb <= meta.last; heb++) {
             const entries = VERSIFICATION_DIFFERENCES[`${bookId}:${heb}`];
+            const maxV = counts[heb] || 0;
             if (entries && entries.length) {
+                // `covered` tracks EVERY explicit heb-verse range named for this
+                // chapter, merge segments included — used below to find verses in
+                // this chapter that were never mentioned at all, so they can get an
+                // implicit identity segment. Before this fix, a chapter with a
+                // PARTIAL entry (e.g. Exodus 7 only lists its tail, verses 26-29,
+                // spilling into chapter 8) silently dropped every verse the JSON
+                // didn't explicitly name (Exodus 7:1-25 here) — those verses never
+                // got ANY segment and vanished from the English-chapter view
+                // entirely. versification-differences.json is deliberately written
+                // to only list WHERE divergence happens, not full chapter spans
+                // (see its header comment), so this gap-fill is required, not
+                // optional. Caught by verify-english-versification.mjs's "claimed by
+                // 0 English segment(s)" errors before this ever reached production.
+                const covered = [];
                 for (const seg of entries) {
+                    covered.push([seg.heb[0], seg.heb[1]]);
+                    // "merge": true (currently only 1 Samuel 21's heb 20:42/21:1 —
+                    // see versification-differences.json's header comment) means
+                    // this segment's destination verse is EXPECTED to already be
+                    // produced by another segment (here, chapter 20's own identity
+                    // segment already covers engStart 42). This builder's row-merge
+                    // logic (below, in /api/tokens etc.) sorts merged rows by
+                    // (verse, token_ordinal) — since token_ordinal restarts at 0 per
+                    // BHS verse, two segments sharing one destination verse would
+                    // have their words interleaved by matching ordinal position
+                    // instead of one verse's words following the other's. Fixing
+                    // that needs a segment-aware tiebreaker verified against real
+                    // data, not done yet — so for now, skip merge segments here
+                    // entirely. translation.db's prose/gloss data is still migrated
+                    // correctly for this verse (migrate-versification-translations.mjs
+                    // has its own merge handling); only the live raw-token interlinear
+                    // view is affected, and skipping just preserves ITS existing
+                    // behavior (Hebrew 21:1 stays unaddressed via English routing,
+                    // same as before this file gained this entry — not a regression).
+                    // Still pushed to `covered` above so the identity gap-fill below
+                    // does NOT also claim heb21:1 for eng21:1 — it already has an
+                    // (unimplemented-here) destination via the merge.
+                    if (seg.merge) continue;
                     (segMap[seg.engChapter] ||= []).push({
                         hebChapter: heb, hebStart: seg.heb[0], hebEnd: seg.heb[1], engStart: seg.eng[0],
                     });
                 }
+                if (maxV) {
+                    covered.sort((a, b) => a[0] - b[0]);
+                    let cursor = 1;
+                    for (const [s, e] of covered) {
+                        if (s > cursor) {
+                            (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: cursor, hebEnd: s - 1, engStart: cursor });
+                        }
+                        cursor = Math.max(cursor, e + 1);
+                    }
+                    if (cursor <= maxV) {
+                        (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: cursor, hebEnd: maxV, engStart: cursor });
+                    }
+                }
             } else {
-                const maxV = counts[heb] || 0;
                 if (!maxV) continue;   // chapter absent from this build's tokens_bhs — nothing to map
                 (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: 1, hebEnd: maxV, engStart: 1 });
             }

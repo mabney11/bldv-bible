@@ -1,5 +1,5 @@
 {
-  "_comment": "Known Hebrew (BHS/Masoretic) vs. English (KJV-tradition) chapter/verse numbering divergences, for the OT (canon_id 1-39). Keyed by \"canon_id:hebChapter\" — canon_id here means Scheme A per CLAUDE.md's 'book_id means two different things' note (stable 1-39 for OT, Genesis=1..Malachi=39), the SAME numbering tokens_bhs.book_id, resolveChapter()'s bookId, and VERSIFICATION_MAP already use — NOT the site's interspersed book-menu position numbers. Each entry is a list of verse-range correspondences for that Hebrew chapter; a single Hebrew chapter can span parts of two different English chapters (e.g. Numbers 17). Malachi (39) and Joel (29) are intentionally excluded — they're already special-cased in server.js's VERSIFICATION_MAP/DISPLAY_LAST_CHAPTER to DISPLAY English chapter numbers directly, so there's no divergence left to note about for those two. Psalms (19) are intentionally excluded — the offset there is systematic (most psalm titles count as verse 1 in Hebrew) and needs verification against which superscriptions this corpus's own tokens_bhs actually stores as verse 1 before any mapping can be trusted; flagged as follow-up work, not guessed at here. Source: standard, well-established Hebrew/English versification-difference table (matthewbarron.org's versification comparison, following the standard scholarly/SWORD-project convention). Spot-checked live against bldbible.com vs. biblehub.com for Deuteronomy 13 (2026-08-18) before this file was written; a few more entries should be spot-checked the same way before this is fully trusted (see verify step in the implementation).",
+  "_comment": "Known Hebrew (BHS/Masoretic) vs. English (KJV-tradition) chapter/verse numbering divergences, for the OT (canon_id 1-39). Keyed by \"canon_id:hebChapter\" — canon_id here means Scheme A per CLAUDE.md's 'book_id means two different things' note (stable 1-39 for OT, Genesis=1..Malachi=39), the SAME numbering tokens_bhs.book_id, resolveChapter()'s bookId, and VERSIFICATION_MAP already use — NOT the site's interspersed book-menu position numbers. Each entry is a list of verse-range correspondences for that Hebrew chapter; a single Hebrew chapter can span parts of two different English chapters (e.g. Numbers 17). Malachi (39) and Joel (29) are intentionally excluded — they're already special-cased in server.js's VERSIFICATION_MAP/DISPLAY_LAST_CHAPTER to DISPLAY English chapter numbers directly, so there's no divergence left to note about for those two. Psalms (19) are intentionally excluded — the offset there is systematic (most psalm titles count as verse 1 in Hebrew) and needs verification against which superscriptions this corpus's own tokens_bhs actually stores as verse 1 before any mapping can be trusted; flagged as follow-up work, not guessed at here. Source: standard, well-established Hebrew/English versification-difference table (matthewbarron.org's versification comparison, following the standard scholarly/SWORD-project convention). Spot-checked live against bldbible.com vs. biblehub.com for Deuteronomy 13 (2026-08-18) before this file was written; a few more entries should be spot-checked the same way before this is fully trusted (see verify step in the implementation). SPECIAL CASE — 1 Samuel 21 (\"9:21\"): unlike every other entry, this is NOT a clean 1-for-1 renumber. Per matthewbarron.org, Hebrew 20:42 and Hebrew 21:1 are two distinct Hebrew verses that English tradition folds into ONE English verse, 20:42 (\"1Sa 20:42 (last clause)\" = Hebrew 21:1). The heb[1,1]->eng20:[42,42] segment is flagged \"merge\": true so consuming code knows this destination is EXPECTED to already be occupied by Hebrew 20:42's own (unmoved) data — migrate-versification-translations.mjs has explicit merge-resolution logic for this flag (keep whichever side has real, non-baseline content; abort for manual review if both sides do). Confirmed 2026-08-20 against matthewbarron.org directly (not just spot-checked) after the migration script's collision guard caught this and \"9:24\" as genuine gaps in an earlier version of this file — 9:24 was a simple missing boundary segment (Hebrew 24:1 = English 23:29, no merge), fixed the same way as every other multi-segment entry.",
   "differences": {
     "1:32": [
       { "heb": [1, 1], "engChapter": 31, "eng": [55, 55] },
@@ -46,9 +46,11 @@
       { "heb": [1, 28], "engChapter": 29, "eng": [2, 29] }
     ],
     "9:21": [
+      { "heb": [1, 1], "engChapter": 20, "eng": [42, 42], "merge": true },
       { "heb": [2, 16], "engChapter": 21, "eng": [1, 15] }
     ],
     "9:24": [
+      { "heb": [1, 1], "engChapter": 23, "eng": [29, 29] },
       { "heb": [2, 23], "engChapter": 24, "eng": [1, 22] }
     ],
     "10:19": [
@@ -102,6 +104,9 @@
     ],
     "23:9": [
       { "heb": [1, 20], "engChapter": 9, "eng": [2, 21] }
+    ],
+    "23:63": [
+      { "heb": [19, 19], "engChapter": 64, "eng": [1, 1] }
     ],
     "23:64": [
       { "heb": [1, 11], "engChapter": 64, "eng": [2, 12] }
