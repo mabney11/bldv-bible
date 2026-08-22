@@ -203,7 +203,7 @@
   "esau": "Ishaw",
   "esau's": "Ishaw",
   "jacob": "Yaiqab",
-  "edom": "Adam",
+  "edom": "Adawam",
   "isaac's": "Yatzachaq",
   "esek": "Ishaq",
   "sitnah": "Shatanah",
@@ -2217,7 +2217,7 @@
   "moabite": "Mawaabay",
   "ammonite": "Imawanay",
   "philistine": "Palashathay",
-  "edomite": "Adamay",
+  "edomite": "Adawamay",
   "jerahmeelites": "Yarachamaalay",
   "israelites": "Yasharaal",
   "beerothite": "Baarathay",
@@ -2270,14 +2270,6 @@
  "terms": {
   "heavens": "shamayam",
   "earth": "aratz",
-  "grace": "chan",
-  "righteous": "tzadayaq",
-  "sprout": "tzamach",
-  "sprouted": "tzamach",
-  "sprang": "tzamach",
-  "springs": "tzamach",
-  "mystery": "raz",
-  "mysteries": "raz",
   "darkness": "chashak",
   "spirit": "rawach",
   "waters": "mayam",
@@ -2324,17 +2316,17 @@
   "commanded": "tzawah",
   "die": "mawath",
   "names": "sham",
-  "woman": "ashah",
+  "woman": "ayashah",
   "father": "ab",
   "mother": "am",
-  "wife": "ashah",
+  "wife": "ayashah",
   "ashamed": "bawash",
   "eyes": "iyan",
   "husband": "ayash",
   "voice": "qawal",
   "offspring": "tzaatzaa",
   "head": "raash",
-  "wife's": "ashah",
+  "wife's": "ayashah",
   "face": "panayam",
   "bread": "lacham",
   "return": "shawab",
@@ -2359,7 +2351,7 @@
   "thirty": "shalawashayam",
   "eight": "shamanah",
   "sons": "ban",
-  "daughters": "bath",
+  "daughters": "banath",
   "nine": "thashai",
   "five": "chamash",
   "twelve": "shanayam",
@@ -2408,7 +2400,7 @@
   "kingdom": "mamalakah",
   "mountain": "har",
   "burn": "qatar",
-  "daughter": "bath",
+  "daughter": "banath",
   "son's": "ban",
   "house": "bayath",
   "nation": "gaway",
@@ -2511,7 +2503,7 @@
   "pit": "bawar",
   "sheol": "shaawal",
   "staff": "matah",
-  "woman's": "ashah",
+  "woman's": "ayashah",
   "wrath": "chamah",
   "perish": "abad",
   "throne": "kasaa",
@@ -2536,8 +2528,6 @@
   "ruler's": "chaqaq",
   "path": "arach",
   "salvation": "yashawaih",
-  "saviour": "mawashai",
-  "savior": "mawashai",
   "blessings": "barakah",
   "crown": "itarah",
   "river's": "yaar",
@@ -2614,7 +2604,7 @@
   "transgressions": "pashai",
   "iniquities": "iwan",
   "burns": "bair",
-  "daughter's": "bath",
+  "daughter's": "banath",
   "abominations": "thawaibah",
   "slave": "ibad",
   "family": "mashapachah",
@@ -2687,7 +2677,7 @@
   "heart's": "napash",
   "precepts": "paqawad",
   "transgression": "pashai",
-  "princess": "bath",
+  "princess": "banath",
   "create": "baraa",
   "confound": "palag",
   "level": "nachath",
@@ -2875,8 +2865,8 @@
    "Yaiyash×2"
   ],
   "edomites": [
-   "Adam×7",
-   "Adamay×4"
+   "Adawam×7",
+   "Adawamay×4"
   ],
   "dishon": [
    "Dayashawan×6",
@@ -3408,7 +3398,7 @@
   ],
   "one": [
    "ayash×73",
-   "ashah×7",
+   "ayashah×7",
    "napash×5",
    "kapathar×4",
    "halak×3",
@@ -3766,7 +3756,7 @@
    "nakaray×2",
    "harah×2",
    "ibaray×1",
-   "bath×1",
+   "banath×1",
    "chawatz×1",
    "bathawalah×1",
    "chalah×1",
@@ -3775,7 +3765,7 @@
   ],
   "mother": [
    "batan×2",
-   "ashah×1"
+   "ayashah×1"
   ],
   "ashamed": [
    "kalam×12",
@@ -3984,7 +3974,7 @@
    "chanah×2"
   ],
   "sister": [
-   "bath×1"
+   "banath×1"
   ],
   "seven": [
    "shabaithayam×4",
@@ -4372,7 +4362,7 @@
    "gath×2",
    "zabach×1",
    "alamanah×1",
-   "ashah×1",
+   "ayashah×1",
    "shawab×1",
    "yalak×1",
    "qadam×1",
@@ -5235,7 +5225,7 @@
    "palayalay×1"
   ],
   "eye": [
-   "bath×1"
+   "banath×1"
   ],
   "destroys": [
    "abad×4",
@@ -5672,7 +5662,7 @@
   "stone": "aban (80% of 127)",
   "commanded": "tzawah (98% of 345)",
   "die": "mawath (96% of 242)",
-  "woman": "ashah (89% of 227)",
+  "woman": "ayashah (89% of 227)",
   "mother": "am (98% of 140)",
   "ashamed": "bawash (61% of 44)",
   "eyes": "iyan (99% of 436)",
@@ -5700,7 +5690,7 @@
   "seven": "shabai (97% of 357)",
   "hundred": "maah (99% of 543)",
   "sons": "ban (100% of 1062)",
-  "daughters": "bath (99% of 236)",
+  "daughters": "banath (99% of 236)",
   "twelve": "shanayam (87% of 105)",
   "forty": "arabaiyam (98% of 126)",
   "ten": "ishar (92% of 181)",
@@ -5741,7 +5731,7 @@
   "kingdom": "mamalakah (36% of 163)",
   "mountain": "har (97% of 175)",
   "burn": "qatar (45% of 122)",
-  "daughter": "bath (99% of 272)",
+  "daughter": "banath (99% of 272)",
   "son's": "ban (91% of 22)",
   "house": "bayath (99% of 1695)",
   "nation": "gaway (96% of 126)",
@@ -5939,7 +5929,7 @@
   "counsels": "mawaitzah (67% of 6)",
   "heart's": "napash (33% of 3)",
   "precepts": "paqawad (92% of 26)",
-  "princess": "bath (50% of 2)",
+  "princess": "banath (50% of 2)",
   "create": "baraa (90% of 10)",
   "level": "nachath (50% of 2)",
   "crowns": "itarah (50% of 6)",

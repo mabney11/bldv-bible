@@ -599,6 +599,21 @@ const missingRoot = new Map();
 const unglossedWords = new Map();   // english word -> times it stayed English (no head word)
 const out = [];
 
+// QUOTE BACKFILL (added 2026-08-22, see CLAUDE.md "H802..." era entry for the
+// investigation this came out of). web-strongs.jsonl is scraped from an
+// interlinear page, not the clean WEB text — a plain-English speech-verb like
+// "saying," or "said," regularly reaches this file with NO opening quote mark
+// even though the reported speech that follows it is a direct quotation
+// (confirmed: 178 of 1,674 said/saying/answered/... constructs across the OT,
+// e.g. Numbers 36:6 "saying, Let them be married..." Judges 2:3 "...I also
+// said, I will not drive them out... snare to you.\"" — that one already HAD
+// its closing quote, just not the matching open). Evidence-gated, same as
+// every other rule in this file: only fires when the very next non-space
+// character is a capital letter with NO quote mark already there (so this
+// never double-inserts, and never touches the common indirect-speech case —
+// "he said, however, that..." — which continues in lowercase).
+const SPEECH_VERBS_RE = /\b(said|saying|answered|answering|cried out|cried|spoke|speaking|commanded|swore|sware|declared|asked|asking|prayed|replied),(\s+)(?!["'‘’“”])([A-Z])/g;
+
 for (const r of rows) {
   let changed = false;
   const pieces = [];
@@ -806,14 +821,27 @@ for (const r of rows) {
   // touched, so a gloss in parentheses — "(praise)" — is never affected.
   vtext = vtext
     .replace(/^(\s*["'\u201c\u2018(\[]?\s*)([a-z])/, (_m, lead, c) => lead + c.toUpperCase())
-    .replace(/([.!?][)\]"'\u201d\u2019]*\s+["'\u201c\u2018(\[]?\s*)([a-z])/g, (_m, lead, c) => lead + c.toUpperCase());
+    .replace(/([.!?][)\]"'\u201d\u2019]*\s+["'\u201c\u2018(\[]?\s*)([a-z])/g, (_m, lead, c) => lead + c.toUpperCase())
+    // Backfill a missing opening quote before direct speech \u2014 see SPEECH_VERBS_RE above.
+    .replace(SPEECH_VERBS_RE, (_m, verb, ws, cap) => `${verb},${ws}"${cap}`);
   out.push({ code: r.code, chapter: r.chapter, verse: r.verse,
              text: vtext.replace(/__PIECES__/,'')  // no-op placeholder
                      .split('\u0000').join('')
                      .replace(/[\r\n]+/g,' ')          // segments can carry a line break
                      .replace(/\s+/g,' ')
                      .replace(/\s+([,.;:!?\u2019\u201D])/g,'$1')
-                     .replace(/\s*"\s*$/,'')            // stray trailing quote from the page
+                     // NOTE: this used to also .replace(/\s*"\s*$/,'') here ("stray
+                     // trailing quote from the page"). Removed 2026-08-22 — it was
+                     // deleting the LEGITIMATE closing quote off every verse whose
+                     // direct speech ends exactly at the verse boundary, which in
+                     // Biblical dialogue is extremely common: measured at 2,465
+                     // verses across 38 of the 39 OT books (nearly the whole OT)
+                     // silently losing their closing quotation mark this way. See
+                     // CLAUDE.md for the investigation (Genesis 2:16-18 was the
+                     // verse that surfaced it). If a genuine scraping artifact is
+                     // ever found again, fix it at the source (web-strongs.jsonl /
+                     // fetch-web-strongs.mjs) or gate the strip on real evidence —
+                     // never blanket-strip every verse-final quote mark again.
                      .trim() });
 }
 

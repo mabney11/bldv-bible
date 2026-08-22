@@ -1,5 +1,270 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Follow-up sweep for the H802 bug shape — "daughter" should be "Banath," and where the additive-derivation rule does/doesn't apply (added 2026-08-22)
+
+fieldy, on H1323 (בַּת "daughter"): "no, daughter should be 'banath' -- this is the issue im
+pointing out. Derived from deserves more weight in allowing spellings." Correct — and it
+sharpened the rule from the H802 fix above into something mechanical: **when Strong's own
+`derivation` field states, without a hedge word ("perhaps," "probably," "a form for"), that word
+X is "feminine of H###" / "masculine of H###", give X an ADDITIVE root = root(H###) + the fem/
+masc suffix letter it actually ends in — even where that diverges from a bare read of the plain
+Masoretic consonants.** Applied a scan for this across `strongs-hebrew-expanded.json`'s 347
+"feminine/masculine of H###" pairs (same method as the H802 find), cross-checked against
+`strongs-roots.json`. Four were clean, direct citations with a collision-free additive root —
+applied:
+- H1323 (בַּת, daughter — "from H1129 בָּנָה (as feminine of H1121 בֵּן)"): root(H1121) "Ban" +
+  Tav -> 𐤁𐤍𐤕 = **Banath**. (H1129 "banah," to build, is already root 𐤁𐤍𐤄 "Banah" — Ban/
+  Banah/Banath are now a consistent family.) `lexicon.json`'s old shared `𐤁𐤕` entry ("daughter")
+  was wrongly serving H1324/H1325 too (a completely unrelated word, "a bath," the liquid
+  measure) — split: `𐤁𐤕` now "bath / liquid measure" (H1324/H1325 only), new key `𐤁𐤍𐤕`
+  "daughter" (H1323 only).
+- H4246 (מְחֹלָה, "a dance," feminine of H4234 מָחוֹל) -> `𐤌𐤇𐤅𐤋𐤄` = Machawalah. Gloss "dance"
+  added to `hebrew-extra-lexicon.json` (a blank placeholder for this exact key already existed
+  there).
+- H6110 (עַצֻּמָה, "a bulwark," feminine of H6099 עָצוּם) -> `𐤏𐤑𐤅𐤌𐤄` = Itzawamah. Gloss
+  "bulwark / argument" added to `hebrew-extra-lexicon.json` (same — pre-seeded blank key).
+- H8011 (שִׁלֻּמָה, "retribution," feminine of H7966 שִׁלּוּם) -> `𐤔𐤋𐤅𐤌𐤄` = Shalawamah. This
+  one had a LIVE bug like H801's: its old root `𐤔𐤋𐤌𐤄` was shared with the Solomon/Shalamah
+  cluster (H8008-H8010), so H8011 ("retribution") was showing the gloss "Shalamah/(Solomon) -
+  Patriarch." New key `𐤔𐤋𐤅𐤌𐤄` in `hebrew-extra-lexicon.json` — "retribution / recompense."
+
+Two candidates from the same scan were EXCLUDED from the additive-root treatment, on purpose —
+noting why so this isn't re-litigated later:
+- **H424 (אֵלָה, "oak/strong tree," feminine of H352 אַיִל "ram")** — building the additive root
+  (root(H352) 𐤀𐤉𐤋 + He = 𐤀𐤉𐤋𐤄, "Ayalah") collides with H355 (אַיָּלָה, "a doe/female deer" —
+  itself genuinely "feminine of H354," a real, different ram-word), which already legitimately
+  owns `𐤀𐤉𐤋𐤄`/"Ayalah". Respelling H424 the same way would make "oak" and "doe" the same word —
+  a worse bug than the one being fixed. H424 keeps its shared root `𐤀𐤋𐤄` ("Alah") and gets a
+  homograph-only fix instead (see below).
+- **H6285 (פֵּאָה, "corner/quarter/side," feminine of H6311 פֹּה "here")** — mechanically
+  appending He to root(H6311) `𐤐𐤄` produces `𐤐𐤄𐤄` (doubled He, "Pahah") — not a real
+  spelling, and H6285's current root `𐤐𐤀𐤄` already correctly and distinctly matches its own
+  Masoretic consonants (Peh-Aleph-He), unlike H1323/H4246/H6110/H8011's roots, which were
+  demonstrably TOO SHORT relative to their actual derivation. Left untouched. (It does share
+  `𐤐𐤀𐤄` with H6284, "to puff/blow away" — both currently ungloseed, so no live bug today; noted
+  as a latent case, not fixed.)
+
+Three more from the scan were excluded because Strong's itself hedges the derivation (**"perhaps
+... by permutation ..."**, **"probably feminine of"**, **"a form for the feminine of"**) rather
+than stating it as fact — the additive-derivation rule is only being applied where Strong's
+asserts the relationship directly, per the four cases above. Not touched, no live gloss bug
+today either way: H1940/H1941 (Hodijah, a name — "a form for the feminine of H3064" יְהוּדִי),
+H8071/H8072 (שִׂמְלָה "garment" — "perhaps by permutation for the feminine of H5566" סֶמֶל,
+which doesn't even start with the same letter), H8284/H8280-8283/H8285 (שָׁרָה cluster —
+"probably feminine of H7791" שׁוּר).
+
+**Separately, the true-homograph clusters this scan surfaced** (same root, genuinely unrelated
+meanings, no derivation citation to reconstruct from — fixed via the existing per-SN
+`homographs.json` mechanism instead of a root change, following the precedent that was already
+there for `𐤀𐤋𐤄_H428`):
+- `𐤀𐤋𐤄` ("Alah") cluster: added `_H421` bewail/lament, `_H422` swear/adjure, `_H423`
+  curse/oath, `_H424` oak/terebinth, `_H425` Elah (name), `_H426` God (Aramaic), `_H427`
+  oak/terebinth, `_H429` these. (`_H428` "these" already existed.) Before this, H421-H427 were
+  all showing the bare-root gloss "these" — same bug shape as H801/H802, just a bigger cluster.
+- `𐤔𐤋𐤌𐤄` ("Shalamah") cluster: added `_H8008` dress/garment, `_H8009` Salmah (name). H8010
+  keeps showing "Shalamah/(Solomon) - Patriarch" off the bare `lexicon.json` entry, which is
+  correct and unchanged. Before this, H8008 and H8009 were also showing "Shalamah/(Solomon) -
+  Patriarch."
+
+Verified end-to-end (translit + effective gloss per SN, in order: homograph SN-key > lexicon.json
+bare > hebrew-extra bare) for every SN touched in both rounds — H1121/H1323/H1324/H1325,
+H4234/H4246, H6099/H6110, H7966/H8008/H8009/H8010/H8011, H421-429, H352/H354/H355, H800/H801/H802
+— each now resolves to its own distinct, correct gloss with no residual collisions.
+
+**Files touched this round:** `server/lexicon/strongs-roots.json` (4 root respells),
+`server/lexicon/lexicon.json` (daughter/bath split), `server/lexicon/hebrew-extra-lexicon.json`
+(3 new/filled glosses), `server/lexicon/homographs.json` (10 new per-SN entries). Same as the
+H802 fix, these are source-data-only changes — needs the full bake pipeline
+(`apply-web-strongs.mjs` -> `load-english-baseline.js` -> `render-all.mjs --surface` ->
+`verify-no-eliding.js`, then restart) before it reaches the Reader/Parallel/Studio; `lexicon.json`
+and `homographs.json` are hot-reloaded live (~300ms), `hebrew-extra-lexicon.json` and
+`strongs-roots.json` are not, so at minimum a server restart is required either way.
+
+**Not done: a full sweep of every "derived from H###" / "contracted for H###" / "denominative
+from H###" note** (thousands of them) — most SHOULD legitimately share a root with their parent
+(that's ordinary Hebrew word-family morphology, not a bug), so a blanket scan would be mostly
+noise. The "feminine/masculine of H###" signal was narrow and reliable specifically because
+grammatical-gender pairs are where Biblical Hebrew spelling most often diverges in ways this
+app's root-collapsing can miscompute (ish/ishah, ben/bat). If fieldy wants a similar pass over a
+different derivation-note pattern, it should get the same per-case verification (collision check
++ hedge-language check) done here, not a mechanical find-replace.
+
+## OT English quotation marks: a single regex was stripping the closing quote off ~2,465 verses (added 2026-08-22)
+
+**The ask:** corpus-wide English quotation consistency — "who said what," with the Reader's
+existing nested-quote indentation actually showing up. Genesis 2:16-18 (Yah's speech to Adam)
+was the reported example: no quote marks anywhere, even though verse 18 is a textbook direct
+quotation ("It is not good that the man should be alone...").
+
+**Important, checked first: the Reader-side feature already exists and is mature.** `src/pages/
+Reader.jsx` (`parseQuoteMarks`, `sliceQuoteTree`, `dissolveOverlongQuotes`, `renderQuoteTree`,
+~line 305-546) already parses quote characters out of the raw verse text, tracks nesting depth
+across a whole chapter (so a quote opened in one verse and closed three verses later still
+renders as one block), and renders each depth as its own indented `<span class="rd-quote-d1..4">`
+(`Reader.css` ~line 833-940 has the full depth/margin/highlight styling, including the
+`!important`-safe overrides the WordBlock.css section of this file warns about). None of that
+needed to be built — Genesis 1:9's multi-verse "Let the waters..." quote is even cited in the
+Reader.jsx comments as a working example. **This was entirely a data problem**: the OT English
+baseline verse text itself had almost no quote marks in it, so the parser had nothing to find.
+
+**Root cause #1 (the big one) — `server/apply-web-strongs.mjs`'s final text-cleanup chain ended
+with `.replace(/\s*"\s*$/,'')`, commented "stray trailing quote from the page".** This
+unconditionally deletes a `"` if it's the LAST character of a verse's assembled text — which is
+exactly where a huge fraction of Biblical direct speech ends, since dialogue very often closes
+right at the verse boundary. Measured directly against `web-strongs.jsonl` (the actual input this
+script reads): **2,465 verses across 38 of the 39 OT books** end in a quote mark that this one
+line was silently deleting on every rebuild. Genesis 2:17 ("...you will surely die.\"") and 2:18
+("...I will make him a helper suitable for him.\"") are both this exact bug. No evidence was ever
+left for why this line existed (squashed "Initial commit" repo, no prior blame to check) and no
+comment anywhere names a real scraping artifact it was protecting against — given the measured
+harm and zero found benefit, **removed outright**, replaced with a comment explaining why, should
+anyone be tempted to re-add a blanket strip like it later.
+
+**Root cause #2 (smaller, still systemic) — `web-strongs.jsonl` itself (scraped from an
+interlinear/study-bible page, not the clean WEB text) is regularly missing the OPENING quote
+mark before direct speech**, even though the corresponding close is present later. Measured: 178
+of 1,674 `said,`/`saying,`/`answered,`/`spoke,`/`commanded,`/etc. constructs across the OT are
+followed immediately by a capitalized word with NO quote mark — e.g. Numbers 36:6 ("saying, Let
+them be married...") and Judges 2:3 (which already HAD its closing quote — "...snare to you.\"" —
+just not the matching open). Fixed with a new evidence-gated regex, `SPEECH_VERBS_RE` (defined
+just above the main verse loop in `apply-web-strongs.mjs`, applied in the same place the old
+strip used to run): only fires when the very next non-space character after the comma is a
+capital letter with **no** quote mark already there, so it can never double-insert and never
+touches the common indirect-speech case ("he said, however, that...").
+
+**Verified before handoff, without touching the DB:** wrote a standalone reproduction of just the
+quote-handling half of the regex chain (no Strong's/OSHB lookup needed — word-level Hebrew
+substitution doesn't add or remove quote characters, so this is a valid way to test quote
+correctness in isolation) and ran it against `web-strongs.jsonl` directly. Genesis 2 and 3, Exodus
+3, 1 Samuel 3, Job 1, and Judges 2 all came out correctly quoted and correctly nested (Exodus
+3:14-18 in particular has a genuine THREE-level nest — outer "you shall tell..." containing 'Yahweh
+has sent me...' containing "I have surely visited you..." — and it renders exactly right).
+
+**Known residual gap, NOT fixed here, flagged for manual review:** `web-strongs.jsonl` has a small
+number of verses with a genuinely MISPLACED quote mark (not missing — misplaced), where a stray
+`"` sits right before a narrator tag ("He said," / "They said,") with nothing legitimate to its
+left to close. Genesis 45:4 is the clean example: "...They came near. \"He said, I am Joseph,
+your brother..." — that opening `"` has no reason to be there (the previous sentence is plain
+narration, not dialogue), and with fix #2 above it now collides with the newly-inserted real
+opening quote right after "He said,", producing a double-open. This is NOT something either fix
+above can safely auto-correct — it requires knowing the mark is spurious, not just missing, which
+a local regex can't distinguish from the very common and completely correct "...?\" He said,
+\"..." exchange pattern (verified: a naive "quote directly before a narrator tag" detector flags
+~250 instances, and all but a literal handful of them are normal, correctly-formed dialogue
+exchanges). A proper sequential quote-depth scan (mirroring Reader.jsx's own `parseQuoteMarks`,
+run chapter-wide) narrowed real candidates down to single digits (Genesis 45, Numbers 20, 1 Samuel
+10, 2 Samuel 12, 1 Kings 18 ×2, 2 Kings 2) — small enough for a human pass, not safe to blanket-fix
+by pattern. The Reader's own `MAX_QUOTE_CHARS` dissolve-on-overlong safety net (straight-quote
+spans only, see the big comment above it in Reader.jsx) already limits how far any one of these
+can visually cascade, so nothing breaks catastrophically in the meantime.
+
+**NT (Matthew–Revelation) needed none of this.** `server/english-nt-baseline.jsonl` is loaded
+verbatim (see the "Two display surfaces" section below on why NT bypasses this whole script) and
+already carries correct, fully-nested curly quotes straight from source — spot-checked John 4:7-15
+(the woman at the well) and it was already exactly right, including a correctly nested `'Give me a
+drink,'` inside the surrounding `"..."`. Deuterocanon/pseudepigrapha/Nag Hammadi texts were not
+audited this pass (different, much messier per-source ingestion — see the "Ingestion checklist"
+section below) — out of scope for this fix, flagged here so it isn't assumed covered.
+
+**Still needs, in order, before this is live anywhere** — same blocker as the H802 fix directly
+below: **this session's sandbox has the identical broken/mismatched `better-sqlite3` native
+binding reached through the desktop bridge** (`invalid ELF header` on `server/node_modules/
+better-sqlite3/build/Release/better_sqlite3.node`), and `apply-web-strongs.mjs` needs a real DB
+connection for its OSHB reconciliation step — so per the "Execution environment preference" rule,
+nothing DB-touching was run. The code change itself (`server/apply-web-strongs.mjs`) is done and
+was verified standalone as described above. fieldy needs to run, in order, on his own machine:
+```
+node apply-web-strongs.mjs
+node load-english-baseline.js --reset-baseline
+node render-all.mjs --surface
+node verify-no-eliding.js
+```
+then restart the server. Three small scratch verification scripts were left in `server/`
+(`test-quote-fix.mjs`, `scan-double-straight.mjs`, `scan-double-straight2.mjs`) — safe to delete,
+kept only because this sandbox can't `rm` inside the mounted folder; not part of the pipeline.
+
+## H802 no longer shares its root with H800/H801 — "Ashah" now means fire, never woman (added 2026-08-22)
+
+**fieldy's call, and it matches Strong's own derivation field:** `strongs-hebrew-expanded.json`'s
+own entry for H802 already says `"derivation": "feminine of H376 (איש) or H582..."` — the dictionary has always known H802 (אשה, "woman/wife") is the feminine of H376 (איש, "man/ish"), the app's own root data just never reflected it. `𐤀𐤔` ("Ash", Aleph-Shin, "fire") is a real 2-letter root (see H784 אש, "fire") but has nothing to do with "woman" — the ה that follows it in the old root does not turn "fire" into "woman" by itself. fieldy: "the word derives from 376 and should be ayashah... 'ash' is a strong 2 letter root and the 'hey suffix does not make sense to modify it to woman... by fire is the official use of אשה."
+
+**What was actually wrong, found 2026-08-22:** `server/lexicon/strongs-roots.json` had **H800
+("fire", correctly "the same as" a fire-word), H801 ("offering...by fire"), and H802 ("woman")
+all three pointing at the identical root 𐤀𐤔𐤄** (Ash+He, translit "Ashah").
+Because the "Two display surfaces" rule (see below in this file) makes the READING-TEXT surface
+always `translit(ROOTS[sn])` with zero suffix reconstruction, every H802 occurrence anywhere in
+the corpus rendered as bare "Ashah" — identical to H800/H801, no distinction at all. Worse, because
+`server/lexicon/lexicon.json`'s gloss lookup is keyed by the PALEO ROOT STRING, not by Strong's
+number (confirmed: `reGlossOne` in `server.js` checks `lexicon[paleo]` before ever looking at the
+SN), all three shared the ONE gloss entry `"𐤀𐤔𐤄": "wife / individual
+woman"` — which is why the Leviticus 23:13 Parallel screenshot that started this shows H801
+("an offering made by fire") mislabeled with the chip gloss "wife / individual woman". H801 was
+never wrong in the DB tagging; it was borrowing H802's gloss because they collided on root spelling.
+
+**Fix: give H802 its own, distinct root, derived additively (never subtracted) from H376 +
+the feminine ה** — exactly the "additive-only" pattern already used for H8010 Shelomoh/Solomon
+(root `𐤁𐤓𐤐𐤄`, i.e. the full name spelled out as the "root" so the bare
+reading-text surface renders the whole word with no suffix layer needed). Concretely:
+- `server/lexicon/strongs-roots.json`: `"H802"` changed from `𐤀𐤔𐤄` to
+  `𐤀𐤉𐤔𐤄` (H376's `𐤀𐤉𐤔` "Ayash" + ה)—
+  confirmed via `translit()` this renders **Ayashah**, not "Ashah". H800 and H801 keep the old
+  root `𐤀𐤔𐤄` ("Ashah") — unchanged, and now unambiguous since H802 no longer
+  shares it.
+- `server/lexicon/lexicon.json`: the old shared entry `"𐤀𐤔𐤄": "wife /
+  individual woman"` was split in two — that key now reads `"fire / offering made by fire"`
+  (correct for H800/H801), and a NEW key `"𐤀𐤉𐤔𐤄": "wife / individual
+  woman"` carries the meaning forward for H802 alone.
+- Nothing else referenced the old shared root string (checked `homographs.json`,
+  `strongs-location-overrides.json`, `heb-occurrence-overrides.json`, `MUTATED_ROOTS` in both
+  `server.js`/`build-surface-index.js`, and the hardcoded paleo-string literals across
+  `server.js`/`apply-web-strongs.mjs`/`render-corpus.mjs` — zero hits besides the two files above),
+  and `𐤀𐤉𐤔𐤄` collided with no other Strong's number in
+  `strongs-roots.json` before this change, so this is a clean, isolated repoint.
+
+**Still needs, in order, before this is live anywhere** (per the "translation.db can silently
+freeze" rule elsewhere in this file — editing the JSON alone is not enough for the baked Reader/
+Parallel/Studio prose):
+```
+node apply-web-strongs.mjs
+node load-english-baseline.js
+node render-all.mjs --surface
+node verify-no-eliding.js
+```
+then restart the server. **The live Parallel/Hebrew-Viewer chip view (the screenshot's own
+source) is served straight off `server.js`'s in-memory `_strongsRootsCache` and `lexicon.json`
+via `loadLexicons()`** — `lexicon.json` IS hot-reloaded (it's in the `fs.watch` list at
+`server.js` ~line 3302) so that half updates itself within ~300ms of the file write with no
+restart, but `strongs-roots.json` is **not** on that watch list (`_strongsRootsCache` is loaded
+once at startup only — see the comment at `server.js` ~line 3352) — so a plain server restart
+is required at minimum even before the full bake above, or the chip view will show the new
+gloss next to the OLD "Ashah" transliteration until restarted.
+
+**Not run yet from this session** — this session's sandbox has a broken/mismatched
+`better-sqlite3` native binding when reached through the desktop bridge (`invalid ELF header`
+on `server/node_modules/better-sqlite3/build/Release/better_sqlite3.node`; `corpus.db
+unavailable — lemma forms only`), so per the "Execution environment preference" rule below,
+the pipeline commands above were handed to fieldy to run on his own machine rather than risk
+writing degraded output through a broken binding. (One such degraded run of
+`apply-web-strongs.mjs` briefly overwrote `server/english-baseline.jsonl` with lemma-only,
+corpus.db-less output before this was caught — reverted immediately via
+`git show HEAD:server/english-baseline.jsonl > server/english-baseline.jsonl`, confirmed clean
+by `git status`. No pipeline stage past that point was ever run, so `translation.db`/`corpus.db`
+were never touched.)
+
+**Known adjacent gaps, not addressed by this fix, flagged for later:**
+- `server/term-forms.txt` line 60 pins `every -> nashay # H802` — this is the irregular
+  suppletive plural (נָשִׁים nashim / construct נְשֵׁי neshei, completely different
+  consonants, Nun-Shin-Yod(-Mem)) that Hebrew uses for "women" instead of a regular plural of
+  אִשָׁה. It is untouched by this change (different root entirely, keyed by its own spelling,
+  not by H802's `strongs-roots.json` entry) and was already correct before this fix — noted only
+  so a future reader doesn't assume this pin needs updating too.
+- The chip/component breakdown (`MUTATED_ROOTS`, `mergeRootDisplay`) has no entry handling the
+  same נשים irregular-plural surface form mapping back to H802's root at all (checked — no
+  hollow-root or mutation entry for it in either `server.js` or `build-surface-index.js`). Not
+  something this fix introduced or was asked to address, but worth knowing if "women" (plural)
+  chip breakdowns still look wrong after the pipeline rerun above — that would be this
+  pre-existing gap, not a regression from the H802 root change.
+
 ## `components/WordBlock.css`'s `!important` card-reset beats any new highlight rule that doesn't also use `!important` (added 2026-08-17)
 
 `WordBlock.css` has a `body .word-block .visible-text, body .multi-word-block
