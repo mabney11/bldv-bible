@@ -302,12 +302,13 @@ function renderVerseNodes(t, mode, keyPrefix = '') {
 // can SPAN MULTIPLE VERSES (see sliceQuoteTree below): the caller runs this
 // ONCE over a whole chapter's concatenated text, then cuts the result back
 // apart at each verse's own boundary.
-const PLAIN_QUOTE_RE = /["“”‘’]/g;
+const PLAIN_QUOTE_RE = /["'“”‘’]/g;
 const OPEN_STYLE  = { '“': 'curly2', '‘': 'curly1' };
 const CLOSE_STYLE = { '”': 'curly2', '’': 'curly1' };
 // See the big comment above: a ’ immediately followed by a letter is read as
 // mid-word (can’t, y’all, elders’teaching-with-no-space — vanishingly rare)
-// rather than a closing single-quote mark.
+// rather than a closing single-quote mark. Same test applies to a plain
+// straight ' below.
 function isApostrophe(raw, at) {
   const next = raw[at + 1];
   return !!next && /[A-Za-z]/.test(next);
@@ -318,7 +319,7 @@ function parseQuoteMarks(raw) {
   const marks = [];
   let m;
   while ((m = PLAIN_QUOTE_RE.exec(raw))) {
-    if (m[0] === '’' && isApostrophe(raw, m.index)) continue; // contraction/possessive, not a close
+    if ((m[0] === '’' || m[0] === "'") && isApostrophe(raw, m.index)) continue; // contraction/possessive, not a close
     marks.push({ at: m.index, ch: m[0] });
   }
   if (!marks.length) return [{ type: 'text', text: raw, start: 0, end: raw.length }];
@@ -333,6 +334,31 @@ function parseQuoteMarks(raw) {
   };
   marks.forEach(({ at, ch }) => {
     const top = openStack[openStack.length - 1];
+    // A bare straight ' (added 2026-08-23) is NEVER treated as an opener — it's
+    // far too common as an ordinary apostrophe/possessive for that to be safe,
+    // and unlike " a lone ' has no dedicated role of its own. The ONLY thing
+    // it's allowed to do is CLOSE an already-open curly1 ‘...’ span: the
+    // web-strongs.jsonl source that builds the OT baseline regularly opens a
+    // nested quote with a real curly ‘ but closes it with a plain ' instead of
+    // ’ — an artifact of the interlinear scrape (english-web-raw.jsonl, the
+    // clean WEB source this app also carries, has the correctly-paired curly
+    // close in the same spot). Left unhandled, that mismatched pair never
+    // closes, so the parser stays "inside the quote" for the rest of the
+    // chapter — the ' and every verse after it render as one runaway nested
+    // quote block (Genesis 2:23 and 3:1, fieldy screenshot 2026-08-23, was the
+    // report). Every other role — opener, or closer of anything but an open
+    // curly1 — falls through untouched, exactly as before this case existed.
+    if (ch === "'") {
+      if (top && top.style === 'curly1') {
+        flush(at);
+        const entry = openStack.pop();
+        entry.node.markClose = ch;
+        entry.node.end = at + ch.length;
+        containerStack.pop();
+        last = at + ch.length;
+      }
+      return;
+    }
     const closes = ch === '"' ? (top && top.style === 'straight')
                  : CLOSE_STYLE[ch] ? (top && top.style === CLOSE_STYLE[ch])
                  : false; // “ and ‘ are always openers, never a close

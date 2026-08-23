@@ -1,93 +1,49 @@
 # CLAUDE.md — project rules for paleo-studio
 
-## Follow-up sweep for the H802 bug shape — "daughter" should be "Banath," and where the additive-derivation rule does/doesn't apply (added 2026-08-22)
+## Reader.jsx's quote parser never closed a curly ‘ opened-single-quote if the source closed it with a straight ' — one runaway nested block per occurrence (added 2026-08-23)
 
-fieldy, on H1323 (בַּת "daughter"): "no, daughter should be 'banath' -- this is the issue im
-pointing out. Derived from deserves more weight in allowing spellings." Correct — and it
-sharpened the rule from the H802 fix above into something mechanical: **when Strong's own
-`derivation` field states, without a hedge word ("perhaps," "probably," "a form for"), that word
-X is "feminine of H###" / "masculine of H###", give X an ADDITIVE root = root(H###) + the fem/
-masc suffix letter it actually ends in — even where that diverges from a bare read of the plain
-Masoretic consonants.** Applied a scan for this across `strongs-hebrew-expanded.json`'s 347
-"feminine/masculine of H###" pairs (same method as the H802 find), cross-checked against
-`strongs-roots.json`. Four were clean, direct citations with a collision-free additive root —
-applied:
-- H1323 (בַּת, daughter — "from H1129 בָּנָה (as feminine of H1121 בֵּן)"): root(H1121) "Ban" +
-  Tav -> 𐤁𐤍𐤕 = **Banath**. (H1129 "banah," to build, is already root 𐤁𐤍𐤄 "Banah" — Ban/
-  Banah/Banath are now a consistent family.) `lexicon.json`'s old shared `𐤁𐤕` entry ("daughter")
-  was wrongly serving H1324/H1325 too (a completely unrelated word, "a bath," the liquid
-  measure) — split: `𐤁𐤕` now "bath / liquid measure" (H1324/H1325 only), new key `𐤁𐤍𐤕`
-  "daughter" (H1323 only).
-- H4246 (מְחֹלָה, "a dance," feminine of H4234 מָחוֹל) -> `𐤌𐤇𐤅𐤋𐤄` = Machawalah. Gloss "dance"
-  added to `hebrew-extra-lexicon.json` (a blank placeholder for this exact key already existed
-  there).
-- H6110 (עַצֻּמָה, "a bulwark," feminine of H6099 עָצוּם) -> `𐤏𐤑𐤅𐤌𐤄` = Itzawamah. Gloss
-  "bulwark / argument" added to `hebrew-extra-lexicon.json` (same — pre-seeded blank key).
-- H8011 (שִׁלֻּמָה, "retribution," feminine of H7966 שִׁלּוּם) -> `𐤔𐤋𐤅𐤌𐤄` = Shalawamah. This
-  one had a LIVE bug like H801's: its old root `𐤔𐤋𐤌𐤄` was shared with the Solomon/Shalamah
-  cluster (H8008-H8010), so H8011 ("retribution") was showing the gloss "Shalamah/(Solomon) -
-  Patriarch." New key `𐤔𐤋𐤅𐤌𐤄` in `hebrew-extra-lexicon.json` — "retribution / recompense."
+**Follow-on to the entry directly below this one** — after the OT re-render, fieldy screenshotted
+Genesis 2 and 3 live: verse 23's quote correctly opened and closed in the DATA (verified directly
+against the regenerated `english-baseline.jsonl`: `"zaath (this) is...out of ayash (husband...)."`
+— clean pair, both straight `"`), but verses 24 and 25 still rendered indented as if still inside
+a quotation, and the closing `"` rendered stranded alone on its own line. Chapter 3 showed the
+same shape one verse earlier.
 
-Two candidates from the same scan were EXCLUDED from the additive-root treatment, on purpose —
-noting why so this isn't re-litigated later:
-- **H424 (אֵלָה, "oak/strong tree," feminine of H352 אַיִל "ram")** — building the additive root
-  (root(H352) 𐤀𐤉𐤋 + He = 𐤀𐤉𐤋𐤄, "Ayalah") collides with H355 (אַיָּלָה, "a doe/female deer" —
-  itself genuinely "feminine of H354," a real, different ram-word), which already legitimately
-  owns `𐤀𐤉𐤋𐤄`/"Ayalah". Respelling H424 the same way would make "oak" and "doe" the same word —
-  a worse bug than the one being fixed. H424 keeps its shared root `𐤀𐤋𐤄` ("Alah") and gets a
-  homograph-only fix instead (see below).
-- **H6285 (פֵּאָה, "corner/quarter/side," feminine of H6311 פֹּה "here")** — mechanically
-  appending He to root(H6311) `𐤐𐤄` produces `𐤐𐤄𐤄` (doubled He, "Pahah") — not a real
-  spelling, and H6285's current root `𐤐𐤀𐤄` already correctly and distinctly matches its own
-  Masoretic consonants (Peh-Aleph-He), unlike H1323/H4246/H6110/H8011's roots, which were
-  demonstrably TOO SHORT relative to their actual derivation. Left untouched. (It does share
-  `𐤐𐤀𐤄` with H6284, "to puff/blow away" — both currently ungloseed, so no live bug today; noted
-  as a latent case, not fixed.)
+**Root cause was in `src/pages/Reader.jsx`'s `parseQuoteMarks`, not the data.** `PLAIN_QUOTE_RE`
+only ever matched `" “ ” ‘ ’` — a plain straight `'` was completely invisible to the parser, never
+even considered as a candidate mark. Genesis 2:23's actual text has a NESTED single quote that
+**opens with a real curly `‘`** ("She will be called `‘ayashah...,") **but closes with a plain
+`'`** instead of a curly `’` — confirmed as a scrape artifact of `web-strongs.jsonl` specifically:
+`english-web-raw.jsonl` (the clean WEB source) has the correctly-paired curly close in the exact
+same spot. Since the parser couldn't see that `'` at all, the curly1 node it opened NEVER closed —
+it just silently absorbed everything after it, including the verse's own OUTER closing `"` right
+next to it (which then got misread as a brand-new unclosed straight-quote OPEN, since the parser's
+`top` was still the never-closed curly1 node, not the straight one). Both of those bogus
+still-open nodes then swallowed verse 24, verse 25, and everything else in the chapter after them
+as their "content" — exactly the runaway-indent symptom in the screenshot. This is a data-format
+mismatch the parser's own straight-quote design didn't anticipate: the big comment above
+`dissolveOverlongQuotes` already explains at length why STRAIGHT quotes get capped/dissolved but
+curly ones are trusted at any length — this bug is the flip side of that same fragility, just
+triggered by a curly *open* meeting a straight *close* instead of two straight quotes drifting out
+of sync.
 
-Three more from the scan were excluded because Strong's itself hedges the derivation (**"perhaps
-... by permutation ..."**, **"probably feminine of"**, **"a form for the feminine of"**) rather
-than stating it as fact — the additive-derivation rule is only being applied where Strong's
-asserts the relationship directly, per the four cases above. Not touched, no live gloss bug
-today either way: H1940/H1941 (Hodijah, a name — "a form for the feminine of H3064" יְהוּדִי),
-H8071/H8072 (שִׂמְלָה "garment" — "perhaps by permutation for the feminine of H5566" סֶמֶל,
-which doesn't even start with the same letter), H8284/H8280-8283/H8285 (שָׁרָה cluster —
-"probably feminine of H7791" שׁוּר).
+**Fix:** `PLAIN_QUOTE_RE` now also matches a bare `'`, but it is deliberately never allowed to be
+an OPENER (far too common as an ordinary apostrophe/possessive — Jacob's, wife's, don't — for that
+to be safe) and never closes anything except a currently-open `curly1` (‘) node specifically. Every
+other position a `'` appears in — no curly1 open, or already closed — falls through exactly as
+before this change (inert, rendered as plain text), so this is additive: nothing that rendered
+correctly before can regress from it. Verified standalone (extracted just `parseQuoteMarks` into a
+throwaway Node script, no JSX/build tooling needed) against the live Genesis 2:22-25 and 3:1-3 text
+pulled straight from the regenerated `english-baseline.jsonl` — both nested quotes now close inside
+their own verse, and verses 24/25 (Genesis 2) and verse 2 (Genesis 3) render as plain, unindented
+narrative the way they should. Full-file syntax verified with `esbuild` (no `--loader` flag needed
+for a `.jsx` extension) since `node --check` can't parse JSX.
 
-**Separately, the true-homograph clusters this scan surfaced** (same root, genuinely unrelated
-meanings, no derivation citation to reconstruct from — fixed via the existing per-SN
-`homographs.json` mechanism instead of a root change, following the precedent that was already
-there for `𐤀𐤋𐤄_H428`):
-- `𐤀𐤋𐤄` ("Alah") cluster: added `_H421` bewail/lament, `_H422` swear/adjure, `_H423`
-  curse/oath, `_H424` oak/terebinth, `_H425` Elah (name), `_H426` God (Aramaic), `_H427`
-  oak/terebinth, `_H429` these. (`_H428` "these" already existed.) Before this, H421-H427 were
-  all showing the bare-root gloss "these" — same bug shape as H801/H802, just a bigger cluster.
-- `𐤔𐤋𐤌𐤄` ("Shalamah") cluster: added `_H8008` dress/garment, `_H8009` Salmah (name). H8010
-  keeps showing "Shalamah/(Solomon) - Patriarch" off the bare `lexicon.json` entry, which is
-  correct and unchanged. Before this, H8008 and H8009 were also showing "Shalamah/(Solomon) -
-  Patriarch."
-
-Verified end-to-end (translit + effective gloss per SN, in order: homograph SN-key > lexicon.json
-bare > hebrew-extra bare) for every SN touched in both rounds — H1121/H1323/H1324/H1325,
-H4234/H4246, H6099/H6110, H7966/H8008/H8009/H8010/H8011, H421-429, H352/H354/H355, H800/H801/H802
-— each now resolves to its own distinct, correct gloss with no residual collisions.
-
-**Files touched this round:** `server/lexicon/strongs-roots.json` (4 root respells),
-`server/lexicon/lexicon.json` (daughter/bath split), `server/lexicon/hebrew-extra-lexicon.json`
-(3 new/filled glosses), `server/lexicon/homographs.json` (10 new per-SN entries). Same as the
-H802 fix, these are source-data-only changes — needs the full bake pipeline
-(`apply-web-strongs.mjs` -> `load-english-baseline.js` -> `render-all.mjs --surface` ->
-`verify-no-eliding.js`, then restart) before it reaches the Reader/Parallel/Studio; `lexicon.json`
-and `homographs.json` are hot-reloaded live (~300ms), `hebrew-extra-lexicon.json` and
-`strongs-roots.json` are not, so at minimum a server restart is required either way.
-
-**Not done: a full sweep of every "derived from H###" / "contracted for H###" / "denominative
-from H###" note** (thousands of them) — most SHOULD legitimately share a root with their parent
-(that's ordinary Hebrew word-family morphology, not a bug), so a blanket scan would be mostly
-noise. The "feminine/masculine of H###" signal was narrow and reliable specifically because
-grammatical-gender pairs are where Biblical Hebrew spelling most often diverges in ways this
-app's root-collapsing can miscompute (ish/ishah, ben/bat). If fieldy wants a similar pass over a
-different derivation-note pattern, it should get the same per-case verification (collision check
-+ hedge-language check) done here, not a mechanical find-replace.
+**Not yet re-verified live** — this was fixed and pushed to `src/pages/Reader.jsx` without a
+browser in this loop; fieldy needs to reload the Reader (no pipeline rerun needed, this is a
+front-end-only fix — the data was already correct) and re-check Genesis 2 and 3 look right now,
+plus spot-check a few more chapters where a nested ‘…’ appears, since `web-strongs.jsonl`'s
+curly-open/straight-close pattern is not unique to Genesis.
 
 ## OT English quotation marks: a single regex was stripping the closing quote off ~2,465 verses (added 2026-08-22)
 
