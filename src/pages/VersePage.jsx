@@ -4,13 +4,25 @@ import { useTheme } from '../hooks/useTheme.js';
 import { apiTransProgress, apiTransVerse, apiTokens, apiRootFirstByLetters } from '../lib/api.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
-import { WordRow, computeWordParts } from '../components/WordBlock.jsx';
+import WordBlock, { WordRow, computeWordParts } from '../components/WordBlock.jsx';
+import { TYPEFACES } from '../lib/typefaces.js';
 // Reuse Reader.jsx's own "root (gloss)" + quote-nesting prose renderer for
 // the verse-text paragraph below, instead of dumping verseData.text as a
 // plain string — see renderVerseNodesWithQuotes's own comment in Reader.jsx.
 import { renderVerseNodesWithQuotes, sanitizeText } from './Reader.jsx';
 import './Reader.css';
 import './VersePage.css';
+
+// Same key + default Reader.jsx persists its own typeface choice under —
+// "lets persist the font between the reader and the single scripture page":
+// this page previously never read that choice at all, so it always rendered
+// Reader.css's hardcoded fallback (Lexend) regardless of what was picked in
+// the Reader. Reading the SAME localStorage key here (rather than a
+// page-scoped one, which is typefaces.js's normal per-page convention — see
+// that file's own comment) is deliberate: the whole point is that these two
+// pages now agree.
+const TYPEFACE_DEFAULT = 'alegreya';
+const TYPEFACE_KEY = 'reader-typeface';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VERSE PAGE — the clean, path-based single-verse view: /genesis/1/1.
@@ -34,6 +46,18 @@ export default function VersePage() {
   const { bookSlug, chapter: chapterParam, verse: verseParam } = useParams();
   const navigate = useNavigate();
   useTheme(); // applies data-theme on <html>; the value itself isn't needed here
+
+  // ── reading typeface (persisted, shared with the Reader) ────────────────
+  const [typeface] = useState(() => {
+    try {
+      const saved = localStorage.getItem(TYPEFACE_KEY);
+      return TYPEFACES.some(f => f.id === saved) ? saved : TYPEFACE_DEFAULT;
+    } catch { return TYPEFACE_DEFAULT; }   // private mode / storage disabled
+  });
+  const typefaceStack = useMemo(
+    () => (TYPEFACES.find(f => f.id === typeface) || TYPEFACES[0]).stack,
+    [typeface]
+  );
 
   const [progress, setProgress] = useState(null);
   useEffect(() => {
@@ -96,6 +120,22 @@ export default function VersePage() {
   const hebrewWords = useMemo(
     () => chapterTokens.filter(t => t.verse === verse),
     [chapterTokens, verse]
+  );
+
+  // ── Paleo translation view: word cards (glyph + transliteration + gloss,
+  // same WordBlock HebrewViewer renders each word as) and a plaintext
+  // sentence form (just the transliteration string, word by word) — same
+  // hebrewWords data the word-by-word table above already fetched, just two
+  // more ways to read it. Collapsible, mirroring HebrewViewer's own
+  // "descriptive raw tokens" toggle (closed by default, plain toggle button).
+  const [paleoOpen, setPaleoOpen] = useState(false);
+  const [paleoMode, setPaleoMode] = useState('cards'); // 'cards' | 'sentence'
+  const paleoSentence = useMemo(
+    () => hebrewWords
+      .map(w => computeWordParts(w).transliterations.map(t => t.text).join(''))
+      .filter(Boolean)
+      .join(' '),
+    [hebrewWords]
   );
 
   // ── "root|lex_word|definition|modifications|strongs #s|link to the first
@@ -248,7 +288,7 @@ export default function VersePage() {
   const translateHref = addressValid ? `/translate?${locQuery}` : '/translate';
 
   return (
-    <div className="reader-root vp-root">
+    <div className="reader-root vp-root" data-typeface={typeface} style={{ '--pr-reading': typefaceStack }}>
       <header className="rd-bar">
         <Link to="/landing" className="rd-bar-btn rd-home" title="Home" aria-label="Home">𐤀𐤁</Link>
         <div className="rd-ref vp-ref-static">
@@ -312,6 +352,43 @@ export default function VersePage() {
                         })}
                       </tbody>
                     </table>
+                  </div>
+
+                  <div className="vp-paleo-wrap">
+                    <button
+                      className={`vp-paleo-toggle ${paleoOpen ? 'open' : ''}`}
+                      onClick={() => setPaleoOpen(o => !o)}
+                    >{ } paleo translation</button>
+                    {paleoOpen && (
+                      <div className="vp-paleo-body">
+                        <div className="vp-paleo-tabs" role="tablist">
+                          <button
+                            className={`vp-paleo-tab ${paleoMode === 'cards' ? 'active' : ''}`}
+                            onClick={() => setPaleoMode('cards')}
+                            role="tab" aria-selected={paleoMode === 'cards'}
+                          >Word cards</button>
+                          <button
+                            className={`vp-paleo-tab ${paleoMode === 'sentence' ? 'active' : ''}`}
+                            onClick={() => setPaleoMode('sentence')}
+                            role="tab" aria-selected={paleoMode === 'sentence'}
+                          >Plaintext sentence</button>
+                        </div>
+                        {paleoMode === 'cards' ? (
+                          <div className="vp-paleo-cards">
+                            {hebrewWords.map((w, i) => (
+                              <WordBlock key={i} wordObj={w} showSub showStrongs={false} showCopyBtn={false} />
+                            ))}
+                          </div>
+                        ) : (
+                          <textarea
+                            className="vp-paleo-sentence"
+                            value={paleoSentence}
+                            readOnly
+                            spellCheck={false}
+                          />
+                        )}
+                      </div>
+                    )}
                   </div>
                 </>
               ) : wordItems.length > 0 && (

@@ -106,27 +106,62 @@ async function getTranslitIndex() {
 // word). This is what makes "yabanaal" surface Joshua 19:33's "WaYabanaal"
 // too, not just Joshua 15:11's bare form.
 async function runTranslitLookup(query) {
-  const key = query.toLowerCase();
+  const key = query.toLowerCase().trim();
   if (translitCache.has(key)) return translitCache.get(key);
   const idx = await getTranslitIndex();
-  const matched = (idx.get(key) || []).slice().sort((a, b) => (b.count || 0) - (a.count || 0));
-  const top = matched.slice(0, TRANSLIT_FANOUT);
+
+  // A typed query is very often more than one word ("Shamash Tzadaqah") — no
+  // single surface form's transliteration will ever equal a whole multi-word
+  // phrase (the index is built one Hebrew WORD at a time), so looking the
+  // whole string up as one key — the old behavior — always came back empty
+  // for anything but a lone word, even when every individual word in the
+  // query is genuinely in the corpus (confirmed: Malachi 4:2 contains both
+  // "Shamash" and "Tzadaqah", but searching "Shamash Tzadaqah" together hit
+  // nothing). Resolve each distinct word separately instead, then merge —
+  // a verse containing every typed word ranks above one containing only some
+  // of them.
+  const words = [...new Set(key.split(/\s+/).filter(Boolean))];
+  if (!words.length) {
+    const empty = { matchCount: 0, rootExpanded: false, truncated: false, rows: [] };
+    translitCache.set(key, empty);
+    return empty;
+  }
+
+  // Cap fan-out PER WORD (not across the whole query) so a word with many
+  // homograph spellings can't crowd out another word's forms entirely.
+  const perWordMatched = words.map(w => (idx.get(w) || []).slice().sort((a, b) => (b.count || 0) - (a.count || 0)));
+  const matchCount = perWordMatched.reduce((s, m) => s + m.length, 0);
+  const perWordTop = perWordMatched.map(m => m.slice(0, TRANSLIT_FANOUT));
+  const truncated = perWordMatched.some((m, i) => m.length > perWordTop[i].length);
+
+  // Flat list of surfaces to look up verses for, each remembering which typed
+  // word it came from so verse rows can be credited back to it below.
+  const top = perWordTop.flatMap((matches, wi) => matches.map(m => ({ ...m, _queryWord: words[wi] })));
   const pages = await Promise.all(
     top.map(m => apiSurfaceExplorerVerses({ word: m.surface, limit: 50 }).catch(() => ({ verses: [] })))
   );
-  const rows = [];
-  const seenVerse = new Set(); // `${book_id}:${chapter}:${verse}` — dedupe against root expansion below
+
+  // Merge into one row per verse — `matchedWords` collects every DISTINCT
+  // typed word this verse actually contains, so a verse hitting more of the
+  // query (e.g. both "shamash" and "tzadaqah") outranks one hitting only one.
+  const byVerse = new Map(); // `${book_id}:${chapter}:${verse}` -> row
   top.forEach((m, i) => {
     for (const v of (pages[i].verses || [])) {
-      seenVerse.add(`${v.book_id}:${v.chapter}:${v.verse}`);
-      rows.push({ ...v, matchedSurface: m.surface, matchedStrongs: m.strongs });
+      const vk = `${v.book_id}:${v.chapter}:${v.verse}`;
+      let entry = byVerse.get(vk);
+      if (!entry) {
+        entry = { ...v, matchedSurface: m.surface, matchedStrongs: m.strongs, matchedWords: new Set() };
+        byVerse.set(vk, entry);
+      }
+      entry.matchedWords.add(m._queryWord);
     }
   });
 
-  // Expand to the full root for each distinct Strong's # the exact match(es)
-  // resolved to — same data the Root Explorer page shows, so it picks up
-  // prefixed/inflected forms and any other-corpus (e.g. NT) reuse of the root.
-  const roots = [...new Set(top.map(m => m.strongs).filter(Boolean))].slice(0, ROOT_FANOUT);
+  // Expand to the full root for each distinct Strong's # any word's exact
+  // match(es) resolved to — same data the Root Explorer page shows, so it
+  // picks up prefixed/inflected forms and any other-corpus (e.g. NT) reuse of
+  // the root, for EVERY typed word, not just the first.
+  const roots = [...new Set(top.map(m => m.strongs).filter(Boolean))].slice(0, ROOT_FANOUT * words.length);
   let rootExpanded = false;
   if (roots.length) {
     rootExpanded = true;
@@ -136,19 +171,23 @@ async function runTranslitLookup(query) {
     roots.forEach((sn, i) => {
       for (const v of (rootPages[i].verses || [])) {
         const vk = `${v.book_id}:${v.chapter}:${v.verse}`;
-        if (seenVerse.has(vk)) continue; // already have this verse via an exact-surface hit above
-        seenVerse.add(vk);
+        if (byVerse.has(vk)) continue; // already have this verse via an exact-surface hit above
         // No single precise highlight word for a root-expansion hit (the
         // verse's actual surface may differ from what was typed) — badge
         // shows the Strong's # instead, and the link skips &hl=.
-        rows.push({ ...v, matchedSurface: null, matchedStrongs: sn });
+        byVerse.set(vk, { ...v, matchedSurface: null, matchedStrongs: sn, matchedWords: new Set() });
       }
     });
   }
-  rows.sort((a, b) => a.book_id - b.book_id || a.chapter - b.chapter || a.verse - b.verse);
 
-  const truncated = matched.length > top.length;
-  const result = { matchCount: matched.length, rootExpanded, truncated, rows };
+  const rows = [...byVerse.values()]
+    .map(r => ({ ...r, matchedWordCount: r.matchedWords.size }))
+    .sort((a, b) =>
+      b.matchedWordCount - a.matchedWordCount ||
+      a.book_id - b.book_id || a.chapter - b.chapter || a.verse - b.verse
+    );
+
+  const result = { matchCount, rootExpanded, truncated, rows, queryWords: words };
   translitCache.set(key, result);
   return result;
 }
@@ -456,7 +495,11 @@ export default function Search() {
             {translitResult.rows.map((v, i) => (
               <a key={`${v.book_id}-${v.chapter}-${v.verse}-${i}`} className="hv-result-item" href={translitHitHref(v)} onClick={e => { e.preventDefault(); goToTranslitHit(v); }}>
                 <span className="hv-result-ref">{v.book_name || BOOK_NAMES[v.book_id] || `Book ${v.book_id}`} {v.chapter}:{v.verse}</span>
-                <span className="hv-result-badge">{v.matchedSurface || v.matchedStrongs}</span>
+                <span className="hv-result-badge">
+                  {v.matchedWordCount > 1
+                    ? `${v.matchedWordCount} of ${translitResult.queryWords.length} words matched`
+                    : (v.matchedSurface || v.matchedStrongs)}
+                </span>
               </a>
             ))}
           </div>
