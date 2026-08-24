@@ -1,5 +1,296 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Every H378a surface form now shows the canonical Yod, not just the root header — new `raw_root` splice mechanism (added 2026-08-24)
+
+Follow-up to the two sections directly below (same day). Once those shipped,
+`/roots?sn=H378a` correctly showed real occurrence counts, real by-book tallies, and
+a working per-book drill-down — but the 106 entries in "SURFACE FORMS" still showed
+the literal ATTESTED spelling (no Yod), while the page's own header showed the
+reconstructed canonical root (with Yod). fieldy: "I want the occurrences of the
+other surfaces to have the yod as well. Treat this word as the source of truth
+despite its usage."
+
+**Why this was showing the attested spelling at all.** This is intentional,
+existing behavior working as designed — just not what's wanted for a
+deliberately-reconstructed root. The reading-text prose and the word-by-word
+component breakdown (Reader, VersePage, Parallel) already substitute the canonical
+root at render time — that's the existing "Two display surfaces" rule elsewhere in
+this doc. But the Root Explorer's Surface Forms list, and the underlying nav-index
+`_surfNavIndex`/`bySurface` build it's sourced from (`foldRowsToWords()` in
+server.js, plus its HEB-edition twin in `buildNavIndexes()`), work directly off
+each token's raw `word_raw` — the literal written word, by design, so that a
+surface is "the actual written word" for every OTHER (non-reconstructed) root in
+the corpus, which is the correct default. H378a is the first root where that
+default and the desired behavior diverge.
+
+**New mechanism, general-purpose (not H378a-specific code):**
+- `strongs-renumber.json` entries gained an optional `raw_root` field — the OLD,
+  actually-attested root spelling that the new canonical root (`strongs-roots.json
+  [to]`) is replacing. Set for H802: `raw_root: "𐤀𐤔𐤄"` (confirmed by diffing
+  against H800/H801, which still carry this exact 3-codepoint spelling unchanged —
+  H378a's canonical root is that same string with one Yod, U+10909, inserted after
+  the Aleph). Omitting `raw_root` on a future renumber entry opts out of this
+  entirely — a pure relabeling with no root respelling involved leaves surfaces
+  untouched, which is the right default for most renumbers.
+- New helper `canonicalizeRootSurface(rawPaleo, sn, snRenumber)` in server.js: if
+  `rawPaleo` starts with a `raw_root` whose renumber entry targets `sn`, swap that
+  LEADING SPAN for the canonical root and keep everything after it (a suffix, a
+  construct-state ending, whatever) exactly as attested. Deliberately a plain
+  leading-substring swap, not a real morphological re-parse — see the code comment
+  for why (can't test against every real form in this sandbox, so a missed splice
+  is the acceptable failure mode, not a wrong one).
+- Applied at the ONE place both the nav-index build and every occurrence-lookup
+  path share: `foldRowsToWords()`'s content-morpheme row (BHS), and the equivalent
+  single-row HEB paths in `buildNavIndexes()`'s `hebSurf` loop and
+  `findWordOccurrences()`'s two HEB branches. Because `foldRowsToWords` is the same
+  function `buildNavIndexes()` (nav index) AND `findWordOccurrences()` (occurrence
+  lookups, incl. `/api/surface-explorer/surface`'s `w.surface === word` match) both
+  call, canonicalizing it in ONE place keeps every consumer self-consistent — no
+  separate reverse-lookup needed the way the SN-aliasing fix below required, since
+  both sides of every surface-string comparison are now built the same way.
+- `NAV_BUILD_VERSION` bumped to `wordsurf-v8-canonical-surfaces` to force a
+  disk-cache rebuild (a cache built before this existed has surfaces baked with the
+  old spelling).
+
+**Scope check — what this does NOT touch:** `Search.jsx`'s `/api/search` route
+queries `tokens_bhs.word_raw` directly via SQL, never through `_surfNavIndex`, so
+literal-text search is unaffected either way. `getCanonicalRoot()` / the root
+header / reading-text prose / word-table breakdown were already correct before
+this and are unchanged.
+
+**Not run or tested this session** — same standing constraint (broken
+`better-sqlite3` binding). `node --check` only. After restarting with all three
+fixes from today: confirm the Surface Forms list under H378a visibly contains the
+Yod in every entry, that clicking one drills into real verses (not "not in text"),
+and — importantly — spot-check a construct-state form if the text has one (e.g.
+"wife of X") to see whether the leading-substring match missed it (expected,
+documented limitation) rather than mangling it (would be a real bug to report
+back).
+
+## H378a's own Root Explorer page: occurrence drill-down returned "0 of 0 hits" — raw SQL was still searching for the old H802 tag (fixed 2026-08-24)
+
+Follow-up to the `/api/tokens` fix directly below. Once that shipped, `/roots?sn=H378a`
+correctly showed the header (Ayashah, 1,612 occurrences, right prev/next neighbours)
+and correct-looking per-book counts (Genesis 151, Jasher 319, etc.) — but clicking
+into any book ("BY BOOK — TAP TO FILTER") returned "0 of 0 hits" / "No occurrences
+found" for every one of them. fieldy: "I see 378a, this happens when I click on the
+number, the surface forms are off, and the matches within books dont hit."
+
+**Root cause — a second, different flavor of the same class of bug.** The header/
+by-book COUNTS come from the in-memory nav index (`buildNavIndexes()`'s
+`_surfNavIndex`/`_wordBySn`), which the renumber fix from below already reaches — so
+those numbers were right. But clicking a book calls `GET /api/root-explorer/verses`,
+which calls `findWordOccurrences(entry.sn, ...)`, which builds a **raw SQL** query
+(`strongWhere`) binding `entry.sn` — now `"H378a"` — directly against
+`tokens_bhs.strongs`. That column is never physically rewritten by a renumber; it
+still only ever contains `"H802"`. So the query legitimately matched zero rows.
+Same story one level down in `hebOccForSN` (the token_surfaces/HEB-edition
+equivalent), used for the HEB books BHS doesn't cover.
+
+**Fix, in `server/server.js`:**
+- New helper `rawSnAliasesFor(sn, snRenumber)`, the reverse of `applySnRenumber` —
+  given a (possibly-new) SN, returns every OLD SN whose `snRenumber` entry points to
+  it, plus the SN itself unchanged. For the overwhelmingly common case (a number
+  that was never renumbered) this is just `[sn]` — zero behavior change.
+- `findWordOccurrences()` now builds its `strongWhere` clause from
+  `rawSnAliasesFor(sn, snRenumber)` instead of the bare requested `sn` — so a
+  request for H378a searches tokens_bhs for H802 (what's actually stored), and the
+  ALREADY-renumbered row data downstream (`applyLocOverridesToRawRows` still runs
+  on every matched row) is what gets compared against `entry.sn` in the caller's
+  `match()` predicate, so the equality check (`w.sn === entry.sn`, both now
+  `"H378a"`) still holds.
+- `hebOccForSN()` does the same: loops over every alias, queries
+  `token_surfaces.strongs` for each, and merges/dedupes the results by
+  book/chapter/verse/token_ordinal (normally one alias, one query, no behavior
+  change).
+
+**Re: "the surface forms are off"** — I could not reproduce or disprove this one
+directly (same broken-`better-sqlite3`-binding constraint as everything else this
+session), so treat this as a hypothesis, not a confirmed second bug. The SURFACE
+FORMS list under a root entry shows the word's actual ATTESTED spelling as written
+in the text (`word_raw` — a real Masoretic consonantal form), not the reconstructed
+canonical root shown in the page header. H378a's canonical root was deliberately
+respelled to `𐤀𐤉𐤔𐤄` (Ayashah, WITH a Yod) per the H802→H378a reasoning below — but
+the actual Biblical Hebrew consonantal text for "wife/woman" essentially never
+carries that Yod (the standard spelling is the 3-letter `𐤀𐤔𐤄`, doubled Shin). If
+that's what's being seen, every surface form listed will visually look like it's
+"missing" the header's Yod — which is the expected, deliberate consequence of the
+root reconstruction, not a data bug. Please check, after restarting with the fix
+above: do the 106 listed surface forms actually belong to wife/woman occurrences
+(click through a couple — same book/verse coordinates the by-book counts now
+correctly resolve to), or are they showing spellings that don't belong to this word
+at all? The former is expected-but-worth-a-UI-note; the latter would be a real,
+different bug I haven't found yet and would need to dig into `getSurfacesForSN`/
+`_wordBySn` construction specifically.
+
+**Not run or tested this session** — same standing constraint. `node --check`
+only, on both the local edit and the copy pushed to the device. Verify after
+restart: `/roots?sn=H378a` → click Genesis in "BY BOOK" → should show 151 real
+verse cards, not "No occurrences found"; same for at least one more book in the
+list to be sure it's not a Genesis-specific coincidence.
+
+## The H378a renumber wasn't reaching the reader/Parallel STRONGS# link — `/api/tokens` never called the renumber helper (fixed 2026-08-23)
+
+Follow-up to the H802 -> H378a renumber below. fieldy reported the STRONGS# badge in
+the word-by-word table (e.g. `/genesis/2/24`) was still reading `H802` and still
+linking to `/roots?sn=H802` — which now correctly 410s, but that's a dead end for a
+reader clicking through from the text. Ask was: "build front end, i expect the numer
+i can click on to point to the new permanent number."
+
+**There is no frontend renumber logic to build.** Every `<a>`/`<Link>` in the app
+that points at `/roots?sn=...` (VersePage.jsx, Reader.jsx via WordBlock.jsx,
+Parallel.jsx, Root.jsx itself) just echoes back whatever SN string the API handed
+it — `t.strongs`, `word.strongs`, `g.strongs`, `l.sn`, etc. There's no separate
+place on the client where "H802" gets typed in or looked up. So the fix has to be
+100% server-side: make sure every API response that carries a token's Strong's
+number has already run it through `applySnRenumber` before it goes out. Once that's
+true, every link in every one of those components is correct for free.
+
+**The actual gap:** the renumber helper (`applySnRenumber`, wired into
+`applyLocOverridesToRawRows` / `applyLocOverrideToSurfRow` per the section below)
+was reachable from `buildNavIndexes()` (root explorer) and `bhsVerseWords()` (roots
+page verse breakdown) — but NOT from `GET /api/tokens`, which is the actual endpoint
+`apiTokens()` in `src/lib/api.js` hits, and which `VersePage.jsx`, `Reader.jsx`,
+`HebrewViewer.jsx`, and `Parallel.jsx` *all* call for their word-by-word data. That
+route's fast path (the one serving ~99.9% of requests, per its own comment) only
+called `applyLocOverrideToSurfRow` when `hasLocOverrides` was true — i.e. only when
+`strongs-location-overrides.json` had at least one entry. Since the H802 fix used
+the separate blanket-alias file (`strongs-renumber.json`), not a location override,
+that gate never opened, so the renumber never ran on this path. The two live-parse
+fallback branches in the same route (empty-surface-index-cache and
+drift/override/homograph-detected) had the same gap in a different shape: they
+build raw text lines straight from `tokenQueryFor(...)` rows and hand them to
+`parseHebrewData`, without ever calling `applyLocOverridesToRawRows` on those rows
+first — so a live-parsed chapter would carry the old SN even though the fast-path
+render (for a chapter without that drift) wouldn't.
+
+**Fix, all in `server/server.js`'s `GET /api/tokens` handler:**
+- `hasLocOverrides` gate → now `hasLocOverrides || hasSnRenumber`, where
+  `hasSnRenumber = snRenumber && Object.keys(snRenumber).length`. The fast path now
+  runs `applyLocOverrideToSurfRow` (which already applies the renumber
+  unconditionally, see below) whenever a renumber table exists, not only when a
+  location override does.
+- Both live-parse fallback branches now call
+  `applyLocOverridesToRawRows(mappedRows, {}, bookId, chapter)` on the merged raw
+  rows before `rowsToLines(...)` — empty `{}` for `locationOverrides` deliberately,
+  since these fallbacks never applied per-occurrence overrides before either and
+  that's not this fix's job; only the renumber pass is new here.
+
+Not touched: `/api/raw` (raw pipe-delimited token viewer, not used to render any
+`/roots?sn=` link anywhere in the app) and `/api/root-explorer/*` /
+`/api/surface-explorer/*` (already correct — they're built from
+`buildNavIndexes()`, which was already patched in the section below).
+
+**Not run or tested this session** — same constraint as the H378a work below: this
+sandbox's `better-sqlite3` binding is broken here (`invalid ELF header`), so I could
+only `node --check` the file, not exercise `/api/tokens` against a live server.
+fieldy, after restarting the server (a route-logic change like this needs a full
+process restart, not just the lexicon hot-reload), please check:
+- `/genesis/2/24` (or any verse with the old Ayashah word) — the STRONGS# badge
+  should read `H378a`, not `H802`, and clicking it should land on `/roots?sn=H378a`
+  with no 410.
+- Same for `/genesis/2/23` in the Parallel viewer and in HebrewViewer.
+- `/roots?sn=H802` directly typed into the address bar should still 410 with the
+  moved payload — that tombstone path is unaffected by this change.
+
+## H802 renumbered to H378a, with a tombstone at the old number — data move + code, not just data (added 2026-08-22)
+
+fieldy confirmed bldbible.com IS this app (renamed paleo-studio) and scoped this precisely: "Just
+tombstone and API" — no new numeric-browse UI, just make the old number redirect/explain itself
+and make the display number correct everywhere the app already shows one. Verified live against
+production with Claude in Chrome before and after writing any code (see below) — this is not a
+blind change.
+
+**What was verified live, before touching code:** `/roots?sn=H377` on bldbible.com confirmed the
+root explorer sorts **alphabetically by root spelling** ("roots, Hebrew-alphabetical" — visible in
+the page itself), NOT by ascending Strong's number — fieldy: "the strongs #s are supposed to be
+alphabetical by default... starting at H377 the next word is the next lexically ordered word."
+That means the H802 root fix from earlier today (repointing it to derive from H376/Ayash instead
+of colliding with H800/H801's fire-root) was, by itself, already enough to fix WHERE the word
+shows up in that alphabetical list — no separate browse-ordering feature needed, which simplified
+this from what I'd originally scoped as "build a new sequential-by-number browse mode." Confirmed
+live at `/roots?sn=H802` (bldbible.com had already been redeployed with the earlier root fix by
+this point): the sidebar showed H376 Ayash, H377 Ayash, H378 Ayashabashath, **H802 Ayashah** —
+already sitting exactly between H378 and H379 (Ayashahawad), purely from the alphabetical sort.
+fieldy's "378a" placement (from the H802-move session earlier today) is exactly right, confirmed
+by what the live app already does, not a guess.
+
+Also discovered live: the Reader's own word-by-word table ("STRONGS #" column, linking to
+"Explore root H###" -> `/roots?sn=H###`) was STILL showing the old pre-fix data ("Ashah — fire /
+offering made by fire") even though `/roots?sn=H802` itself showed the corrected "Ayashah — wife /
+individual woman." That's `_strongsRootsCache` (strongs-roots.json) not being hot-reloaded — see
+the earlier H802 entry in this file — production had the new FILES but hadn't been restarted yet.
+Not something to fix in code; just confirms (again) that a restart is load-bearing here, not
+optional.
+
+**What "renumbered to H378a" actually means, mechanically:** the raw per-token Strong's number in
+`tokens_bhs`/the HEB-edition surface index stays `H802` — that's ground-truth ingested data from
+the source Hebrew morphology, ~1,614 occurrences corpus-wide, not something to rewrite in place.
+Instead, added a new, small **blanket alias registry**, `server/lexicon/strongs-renumber.json`
+(`{"H802": {"to": "H378a", "reason": "...", "date": "..."}}`), loaded via `loadLexicons()` in
+`server.js` and applied by a new `applySnRenumber(sn, snRenumber)` helper. This is deliberately a
+DIFFERENT mechanism from `strongs-location-overrides.json`: that file is for a handful of
+individual mis-tagged OCCURRENCES (keyed by book:chapter:verse:token_ordinal, a real homograph
+split at one specific spot); `strongs-renumber.json` is for renumbering a WHOLE Strong's number,
+uniformly, everywhere — using the per-occurrence file for this would have meant generating ~1,614
+individual entries for something that's actually a single, uniform fact ("H802 is now H378a"),
+bloating a file meant to stay small and surgical. Also: this session's device-bridge sandbox can't
+open `corpus.db` here (`better-sqlite3`'s native binding gives "invalid ELF header" through this
+bridge, confirmed again this session), so a script that had to enumerate 1,614 individual
+occurrences couldn't have been run or checked from here anyway — the blanket-alias design avoids
+needing that enumeration at all, which matters given the sandbox limitation, not just for tidiness.
+
+**Where the alias gets applied** (server.js): `applyLocOverridesToRawRows` and
+`applyLocOverrideToSurfRow` — already the documented "every choke point that reads a token's
+strongs value for display" for the reader/Parallel/Hebrew-Viewer live rendering — now apply
+`applySnRenumber` unconditionally, before their existing per-occurrence override logic, so H802
+displays as H378a (badge + `/roots?sn=` link) wherever a word's Strong's # is shown outside the
+Root Explorer. Inside `buildNavIndexes()` (the Root Explorer's own index — `/api/root-explorer/*`,
+`/sitemap-roots.xml`), the SAME alias is applied directly in the three raw-SN-reading loops that
+don't go through those two shared functions: the BHS `snRows`/`bySn` loop, the HEB
+`hebNavIterate()` loop, and the BHS `allRows` first-appearance loop. Net effect: after a rebuild,
+`_rootNavIndex` has NO entry at all under `H802` any more — every occurrence folds into `H378a`
+from the moment the index is built, so the Root Explorer, its sidebar list, and its sitemap all
+just show H378a natively, with no separate patch needed in any of those three.
+
+**The nav-index disk cache (`nav-index.cache.json`) would have silently shadowed all of this** —
+its staleness check (`_navCacheStamp()`) hashes a fixed list of input file mtimes plus a
+`NAV_BUILD_VERSION` string, and `strongs-renumber.json` wasn't in that list. Added it to the input
+list AND bumped `NAV_BUILD_VERSION` (`wordsurf-v6-sn-scoped-surfaces` ->
+`wordsurf-v7-sn-renumber`), per this file's own established rule: bump the version whenever
+buildNavIndexes' LOGIC changes, not just when an input changes — this is a logic change (three new
+call sites), and belt-and-suspenders with the input-list addition means a stale cache genuinely
+cannot survive this deploy.
+
+**The tombstone** (fieldy: "someone scanning 801->802->803 should allow a landing on 802 with a
+message for my changing the strongs number and location of it"): `GET /api/root-explorer/root`
+now checks `strongs-renumber.json` for the requested `?sn=` BEFORE calling `resolveRootIdx` (which
+would otherwise just 404 it, since H802 has no nav-index entry any more after the change above).
+A renumbered old number returns HTTP 410 Gone with `{ moved: true, from: "H802", to: "H378a",
+reason, date }` instead of the normal root payload or a bare 404. This is the "just tombstone and
+API" fieldy asked for — the FRONTEND (Root.jsx) doesn't yet render anything special for a 410 with
+this shape; it'll show whatever its generic error-state does today. Rendering an actual "this
+number moved, here's why, click through to H378a" UI is a follow-up if fieldy wants it — out of
+scope for this pass on purpose.
+
+**strongs-roots.json**: added `"H378a": "𐤀𐤉𐤔𐤄"` alongside the existing `"H802": "𐤀𐤉𐤔𐤄"` (same
+value, both keys) — H802 has to stay mapped correctly too, because `apply-web-strongs.mjs` (the
+Reader's baked-English-prose pipeline) reads the raw `tokens_bhs.strongs` value directly and knows
+nothing about `strongs-renumber.json` — it never got wired into that offline path, only the live
+server. That's deliberate for this pass, not an oversight: the baked Reader prose already renders
+correctly as "Ayashah" today (from the H802 entry, done earlier this session) with no dependency
+on the renumbering feature at all.
+
+**Not run or tested this session** — same limitation as the earlier H802 fix: this device-bridge
+sandbox's `better-sqlite3` binding can't open `corpus.db` here, so none of this was exercised
+against a running server. `node --check` passed on the edited `server.js` (syntax only). Please
+run the usual pipeline (`apply-web-strongs.mjs` -> `load-english-baseline.js` -> `render-all.mjs
+--surface` -> `verify-no-eliding.js`), restart the server, and specifically check: `/roots?sn=H802`
+should now return a 410 with the moved payload (or whatever the frontend shows for that status);
+`/roots?sn=H378a` should show the Ayashah entry with correct prev/next neighbours (H378
+Ayashabashath / H379 Ayashahawad); and the Reader/Parallel word-by-word table's STRONGS# badge for
+any Ayashah occurrence (e.g. Genesis 2:23) should read H378a and link to `/roots?sn=H378a`.
+
 ## Reader.jsx's quote parser never closed a curly ‘ opened-single-quote if the source closed it with a straight ' — one runaway nested block per occurrence (added 2026-08-23)
 
 **Follow-on to the entry directly below this one** — after the OT re-render, fieldy screenshotted

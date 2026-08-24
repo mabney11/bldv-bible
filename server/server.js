@@ -3222,9 +3222,34 @@ function loadLexicons() {
     // not, so a live-parsed chapter silently lost those glosses. Same file, same
     // answer, both paths.
     const hebExtraPath  = path.join(__dirname, 'lexicon', 'hebrew-extra-lexicon.json');
+    // Whole-SN renumbering (fieldy, 2026-08-22 — the H802/Ayashah move). Unlike
+    // locationOverrides above (one specific occurrence, keyed by book:chapter:
+    // verse:token_ordinal), this is a BLANKET alias: every occurrence tagged
+    // with the OLD Strong's # everywhere in the corpus displays under the NEW
+    // one instead — no per-occurrence enumeration needed. For when a whole
+    // number was flat wrong (H802 shared its root with H800/H801 "fire" and
+    // has been repointed to derive from H376 "ish"/man — see CLAUDE.md), not
+    // for splitting a handful of individual mis-tagged occurrences (that's
+    // still strongs-location-overrides.json's job).
+    // Format: { "H802": { "to": "H378a", "reason": "...", "date": "..." } }
+    const renumberPath = path.join(__dirname, 'lexicon', 'strongs-renumber.json');
     const lexicon    = fs.existsSync(lexiconPath)    ? JSON.parse(fs.readFileSync(lexiconPath,    'utf8')) : {};
     const homographs = fs.existsSync(homographPath)  ? JSON.parse(fs.readFileSync(homographPath,  'utf8')) : {};
     const hebExtra   = fs.existsSync(hebExtraPath)   ? JSON.parse(fs.readFileSync(hebExtraPath,   'utf8')) : {};
+    let snRenumber = {};
+    if (fs.existsSync(renumberPath)) {
+        try {
+            const raw = JSON.parse(fs.readFileSync(renumberPath, 'utf8'));
+            for (const [k, v] of Object.entries(raw)) {
+                if (k.startsWith('_')) continue;
+                if (v && typeof v === 'object' && typeof v.to === 'string' && v.to) {
+                    snRenumber['H' + k.replace(/^H+/, '')] = v;
+                }
+            }
+        } catch (e) {
+            console.warn(`[sn-renumber] Failed to parse ${renumberPath}: ${e.message}`);
+        }
+    }
     let surfaceOverrides = {};
     if (fs.existsSync(overridePath)) {
         try {
@@ -3256,8 +3281,85 @@ function loadLexicons() {
             console.warn(`[location-overrides] Failed to parse ${locOverridePath}: ${e.message}`);
         }
     }
-    _lexiconCache = { lexicon, homographs, hebExtra, surfaceOverrides, locationOverrides };
+    _lexiconCache = { lexicon, homographs, hebExtra, surfaceOverrides, locationOverrides, snRenumber };
     return _lexiconCache;
+}
+
+// Blanket whole-SN alias — see the snRenumber load in loadLexicons() above.
+// Normalizes first (accepts 'H802', '802', 'h802') so callers can pass a raw
+// DB value straight through. Returns the SAME string unchanged when there's
+// no entry (the overwhelmingly common case), so this is safe to call on
+// every row without a hot-path cost.
+function applySnRenumber(sn, snRenumber) {
+    if (!sn || !snRenumber) return sn;
+    const norm = 'H' + String(sn).replace(/^H+/, '');
+    const r = snRenumber[norm];
+    return r && r.to ? r.to : sn;
+}
+
+// Reverse of applySnRenumber. The DB is never rewritten by a renumber — only
+// the display-layer relabeling above changes what's SHOWN — so any code that
+// binds a Strong's number straight into a raw SQL query (findWordOccurrences,
+// hebOccForSN) must search for the OLD number(s), not the new one, or a
+// renumbered root's own occurrence list comes back empty even though its
+// header/by-book counts (built from the already-renumbered in-memory nav
+// index, not a fresh query) look correct. Concretely: H378a's page showed
+// the right 1,612-occurrence total and by-book tallies, but clicking through
+// to Genesis's 151 occurrences returned "0 of 0 hits" — the verse-list query
+// was searching tokens_bhs/token_surfaces for the literal string "H378a",
+// which no row has ever contained; only "H802" is physically stored there
+// (added 2026-08-24). Returns [sn] unchanged when sn was never a renumber
+// target — the overwhelmingly common case, and also correct for a caller
+// that already passes an OLD number in (aliasing is symmetric-safe since a
+// number is never both a renumber source and a target).
+function rawSnAliasesFor(sn, snRenumber) {
+    const norm = 'H' + String(sn || '').replace(/^H+/, '');
+    const aliases = [norm];
+    if (snRenumber) {
+        for (const [oldSn, entry] of Object.entries(snRenumber)) {
+            if (entry && entry.to && ('H' + String(entry.to).replace(/^H+/, '')) === norm) {
+                aliases.push(oldSn);
+            }
+        }
+    }
+    return aliases;
+}
+
+// A renumber entry can carry an optional `raw_root` — the OLD, actually-
+// attested root spelling that the reconstructed canonical root (in
+// strongs-roots.json) is replacing. When present, ANY content-morpheme's raw
+// paleo text that STARTS WITH `raw_root` gets that leading span swapped for
+// the canonical root, leaving everything after it — a suffix, a construct-
+// state ending, whatever — exactly as attested. This is what makes the
+// canonicalized spelling show up in every occurrence's surface form, not
+// just the root's own header entry.
+//
+// fieldy, 2026-08-24 (re: H378a's Surface Forms list still reading like the
+// old attested spelling): "I want the occurrences of the other surfaces to
+// have the yod as well. Treat this word as the source of truth despite its
+// usage." The reconstructed root is authoritative for every display surface
+// built from this SN, not just strongs-roots.json's single entry.
+//
+// Deliberately a plain leading-substring swap, not a real morphological
+// re-parse: a row whose raw text does NOT start with `raw_root` (e.g. a
+// construct form whose final letter has already mutated in the text) is
+// left unchanged rather than guessed at. A missed substitution just leaves
+// that one surface as it was before this feature existed; a wrong one would
+// fabricate a spelling nobody asked for — and this sandbox's broken DB
+// binding means I can't test this against real forms to know which
+// occurrences would hit that edge case, so the safer failure mode wins.
+function canonicalizeRootSurface(rawPaleo, sn, snRenumber) {
+    if (!rawPaleo || !sn || !snRenumber) return rawPaleo;
+    const normSn = 'H' + String(sn).replace(/^H+/, '');
+    for (const entry of Object.values(snRenumber)) {
+        if (!entry || !entry.to || !entry.raw_root) continue;
+        if (('H' + String(entry.to).replace(/^H+/, '')) !== normSn) continue;
+        if (rawPaleo.startsWith(entry.raw_root)) {
+            const canonical = getCanonicalRoot(normSn, entry.raw_root) || entry.raw_root;
+            return canonical + rawPaleo.slice(entry.raw_root.length);
+        }
+    }
+    return rawPaleo;
 }
 
 // ── HOT RELOAD — watch lexicon files and rebuild indexes automatically ────
@@ -3299,7 +3401,7 @@ function scheduleRebuild(changedFile) {
 
 // Watch both lexicon files
 const LEXICON_DIR = path.join(__dirname, 'lexicon');
-['lexicon.json', 'homographs.json', 'surface-strongs-overrides.json', 'strongs-location-overrides.json'].forEach(file => {
+['lexicon.json', 'homographs.json', 'surface-strongs-overrides.json', 'strongs-location-overrides.json', 'strongs-renumber.json'].forEach(file => {
     const filePath = path.join(LEXICON_DIR, file);
     if (fs.existsSync(filePath)) {
         fs.watch(filePath, (eventType) => {
@@ -3511,6 +3613,14 @@ function locOverrideKey(book_id, chapter, verse, token_ordinal) {
 // necessarily carry their own book_id/chapter/verse — pass whichever of those
 // aren't present on the row itself as fixed params. Mutates rows in place.
 function applyLocOverridesToRawRows(rows, locationOverrides, book_id, chapter, verse) {
+    // Blanket whole-SN renumber first (e.g. every raw H802 -> H378a) — see
+    // applySnRenumber/snRenumber in loadLexicons(). Runs even when there are
+    // no per-occurrence locationOverrides at all, so it can't be skipped by
+    // the early return below.
+    const { snRenumber } = loadLexicons();
+    if (snRenumber && Object.keys(snRenumber).length) {
+        for (const r of rows) if (r.strongs) r.strongs = applySnRenumber(r.strongs, snRenumber);
+    }
     if (!locationOverrides || !Object.keys(locationOverrides).length) return rows;
     for (const r of rows) {
         const bk = book_id != null ? book_id : r.book_id;
@@ -3528,6 +3638,32 @@ function applyLocOverridesToRawRows(rows, locationOverrides, book_id, chapter, v
 // (see groupSurfaceTokens' reGlossOne). A plain row.strongs patch alone would
 // leave the visible badge and gloss lookup untouched, so patch both.
 function applyLocOverrideToSurfRow(row, locationOverrides, book_id, chapter) {
+    // Blanket whole-SN renumber (see applyLocOverridesToRawRows above for
+    // why this runs unconditionally, before any locationOverrides check).
+    // Deliberately isolated in its own try/catch and kept to the SIMPLE
+    // one-sn-to-another substitution (mirrors the plain `root.sn = ...`
+    // branch further down in this function) — it does not attempt the
+    // compound/parts-splitting a real location override can do, because a
+    // whole-corpus renumber is always a like-for-like relabel, never a
+    // "split one written word into two morphemes" case.
+    const { snRenumber } = loadLexicons();
+    if (snRenumber && Object.keys(snRenumber).length && row.strongs) {
+        const renamed = applySnRenumber(row.strongs, snRenumber);
+        if (renamed !== row.strongs) {
+            row.strongs = renamed;
+            if (row.components) {
+                try {
+                    const comps = JSON.parse(row.components);
+                    if (Array.isArray(comps) && comps.length) {
+                        const rootIdx = comps.findIndex(c => c && c.css === 'root');
+                        const idx = rootIdx >= 0 ? rootIdx : comps.length - 1;
+                        if (comps[idx]) comps[idx].sn = renamed.replace(/^H+/i, '');
+                        row.components = JSON.stringify(comps);
+                    }
+                } catch { /* leave components untouched if malformed */ }
+            }
+        }
+    }
     if (!locationOverrides || !Object.keys(locationOverrides).length) return row;
     const ov = locationOverrides[locOverrideKey(book_id, chapter, row.verse, row.token_ordinal)];
     if (!ov || !ov.strongs) return row;
@@ -3759,7 +3895,22 @@ function _navCacheStamp() {
     // would otherwise look "current" and every root-explorer page would
     // keep showing pooled (potentially wrong) numbers until the next
     // unrelated cache invalidation.
-    const NAV_BUILD_VERSION = 'wordsurf-v6-sn-scoped-surfaces';   // roots by Strong's #, word-level surfaces (now per-SN scoped), both editions, root first-appearance index
+    // BUMPED again (2026-08-22) for whole-SN renumbering (strongs-renumber.json,
+    // the H802->H378a move): buildNavIndexes' snRows/hebNavIterate loops now
+    // apply applySnRenumber to every atomic SN before it's folded into bySn —
+    // a cache built before this existed would keep showing the old number
+    // forever, since its mtime stamp never depended on the new file.
+    // BUMPED again (2026-08-24) for canonical-root surface splicing
+    // (canonicalizeRootSurface / a renumber entry's optional `raw_root`):
+    // foldRowsToWords and the HEB surface loop now rebuild a content
+    // morpheme's displayed spelling from the canonical root instead of the
+    // literal attested text whenever one applies — fieldy: "I want the
+    // occurrences of the other surfaces to have the yod as well." A cache
+    // built before this existed has surfaces baked with the old (attested,
+    // Yod-less) spelling and strongs-renumber.json's mtime bump alone
+    // wouldn't be a strong enough signal on its own to explain why — this
+    // makes the reason explicit in the version tag itself.
+    const NAV_BUILD_VERSION = 'wordsurf-v8-canonical-surfaces';   // roots by Strong's #, word-level surfaces (now per-SN scoped, canonical-root spliced), both editions, root first-appearance index, whole-SN renumbering
     const inputs = [
         path.join(__dirname, 'corpus.db'),             // tokens_bhs — the text the index is built from
         path.join(__dirname, 'surface-index.db'),      // the HEB half of the nav index
@@ -3768,6 +3919,7 @@ function _navCacheStamp() {
         path.join(__dirname, 'lexicon', 'strongs-roots.json'),
         path.join(__dirname, 'lexicon', 'surface-strongs-overrides.json'),
         path.join(__dirname, 'lexicon', 'strongs-location-overrides.json'),
+        path.join(__dirname, 'lexicon', 'strongs-renumber.json'),
     ];
     return NAV_BUILD_VERSION + '|' + inputs.map(p => {
         try { return `${path.basename(p)}=${fs.statSync(p).mtimeMs}`; }
@@ -3873,13 +4025,29 @@ function hebOccForSN(sn, book = null) {
             ORDER BY o.book_id, o.chapter, o.verse, o.token_ordinal
         `);
     }
-    let rows = _hebOccStmt.all(...books, navNormSN(sn));
+    // Query under every RAW alias of `sn` (see rawSnAliasesFor) — a blanket
+    // whole-SN renumber relabels the DISPLAYED number but never rewrites
+    // token_surfaces itself, so a request for the new number must still
+    // search for whatever old number is physically stored there. Ordinarily
+    // this is just [sn] and the loop runs once, unchanged from before.
+    const { locationOverrides, snRenumber } = loadLexicons();
+    const aliases = rawSnAliasesFor(sn, snRenumber);
+    let rows = [];
+    const seenKeys = new Set();
+    for (const alias of aliases) {
+        for (const r of _hebOccStmt.all(...books, navNormSN(alias))) {
+            const key = locOverrideKey(r.book_id, r.chapter, r.verse, r.token_ordinal);
+            if (seenKeys.has(key)) continue;
+            seenKeys.add(key);
+            rows.push(r);
+        }
+    }
+    rows.sort((a, b) => a.book_id - b.book_id || a.chapter - b.chapter || a.verse - b.verse || a.token_ordinal - b.token_ordinal);
     // Reconcile with location overrides: a raw "WHERE strongs=?" query only
     // ever finds what the DB itself tags, so (a) drop any row whose exact
     // location has been overridden AWAY from the requested sn, and (b) pull
     // in any location overridden TO this sn that the DB tags differently (or
     // that's a synthetic SN the DB never contains at all, e.g. H2995a).
-    const { locationOverrides } = loadLexicons();
     if (locationOverrides && Object.keys(locationOverrides).length) {
         const wantSN = navNormSN(sn);
         rows = rows.filter(r => {
@@ -3922,7 +4090,7 @@ function buildNavIndexes() {
 }
 
 function _buildNavIndexesUncached() {
-    const { lexicon, homographs, surfaceOverrides, locationOverrides } = loadLexicons();
+    const { lexicon, homographs, surfaceOverrides, locationOverrides, snRenumber } = loadLexicons();
 
     // ── 1. ROOTS = STRONG'S NUMBERS (BibleHub model) ──────────────────────────
     // Every distinct Strong's number in the text is its own root entry, exactly
@@ -3943,7 +4111,10 @@ function _buildNavIndexesUncached() {
 
     const bySn = new Map();  // 'H8064' → { sn, count, bestSurface, bestCnt }
     for (const r of snRows) {
-        const atomics = String(r.strongs).split('＋').map(navNormSN).filter(s => s && s !== 'H');
+        // Whole-SN renumber BEFORE the atomic split — a renumbered SN is
+        // never a compound tag itself (see snRenumber's format), so applying
+        // it pre-split just relabels the whole string when it matches.
+        const atomics = String(applySnRenumber(r.strongs, snRenumber)).split('＋').map(navNormSN).filter(s => s && s !== 'H');
         for (const sn of atomics) {
             const snNum = parseInt(sn.replace(/\D/g, ''), 10) || 0;
             if (snNum >= 9000 || snNum === 0) continue;     // skip grammar/virtual codes
@@ -3973,6 +4144,10 @@ function _buildNavIndexesUncached() {
     let hebSeen = 0;
     for (const r of hebNavIterate()) {
         hebSeen++;
+        // Whole-SN renumber first, same ordering as applyLocOverridesToRawRows/
+        // applyLocOverrideToSurfRow — a per-occurrence location override (below)
+        // is more specific and still wins if both somehow target the same token.
+        if (r.strongs) r.strongs = applySnRenumber(r.strongs, snRenumber);
         const locOv = locationOverrides[locOverrideKey(r.book_id, r.chapter, r.verse, r.token_ordinal)];
         if (locOv && locOv.strongs) r.strongs = locOv.strongs;
         // Compound tags ("H1121＋H410" — two real, independently-meaningful
@@ -4005,7 +4180,10 @@ function _buildNavIndexesUncached() {
             e.count += 1;
         }
 
-        const surface = _paleoOnly(r.word_raw);
+        // Canonical-root splice (see canonicalizeRootSurface) — HEB rows are
+        // already whole words (no separate proclitic rows to skip), so the
+        // row's own primary SN is the one to splice by.
+        const surface = canonicalizeRootSurface(_paleoOnly(r.word_raw), usableAtomics[0], snRenumber);
         if (!surface) continue;
         let se = hebSurf.get(surface);
         if (!se) { se = { surface, count: 0, byBook: new Map(), snCnt: new Map(), snByBook: new Map() }; hebSurf.set(surface, se); }
@@ -4099,7 +4277,7 @@ function _buildNavIndexesUncached() {
     // this a single O(n) pass instead of one query per Strong's number.
     for (const r of allRows) {
         if (!r.strongs) continue;
-        const atomics = String(r.strongs).split('＋').map(navNormSN).filter(s => s && s !== 'H');
+        const atomics = String(applySnRenumber(r.strongs, snRenumber)).split('＋').map(navNormSN).filter(s => s && s !== 'H');
         for (const sn of atomics) {
             _recordFirst(firstBySn, sn, { book_id: r.book_id, chapter: r.chapter, verse: r.verse });
         }
@@ -7220,13 +7398,25 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
         // Location overrides are applied per-segment, on each row's ORIGINAL (BHS)
         // verse/chapter — that's how they're keyed — before the segment's rows are
         // renumbered into the merged, English-chapter verse space.
-        const { locationOverrides } = loadLexicons();
+        const { locationOverrides, snRenumber } = loadLexicons();
         const hasLocOverrides = locationOverrides && Object.keys(locationOverrides).length;
+        // A blanket whole-SN renumber (e.g. H802 -> H378a) must relabel every
+        // occurrence, not just the ones that also happen to carry a per-
+        // occurrence location override — this fast path is what /api/tokens
+        // serves ~99.9% of requests through (see the comment on `rows` above),
+        // so it has to run applyLocOverrideToSurfRow whenever EITHER mechanism
+        // is active, not just locationOverrides. Without this, the Reader/
+        // VersePage/Parallel STRONGS# badge — and the link it renders, since
+        // every `<a href="/roots?sn=...">` in the frontend just echoes back
+        // whatever SN the API handed it — kept showing/linking the old,
+        // now-tombstoned number even after the renumber was wired up
+        // everywhere else the token ever touches (added 2026-08-23).
+        const hasSnRenumber = snRenumber && Object.keys(snRenumber).length;
         let rows = [];
         for (const seg of segments) {
             let segRows = surfRowsFor(bookId, seg.hebChapter, surfSource)
                 .filter(r => r.verse >= seg.hebStart && r.verse <= seg.hebEnd);
-            if (hasLocOverrides) {
+            if (hasLocOverrides || hasSnRenumber) {
                 segRows = segRows.map(r => applyLocOverrideToSurfRow({ ...r }, locationOverrides, bookId, seg.hebChapter));
             }
             for (const r of segRows) rows.push({ ...r, verse: seg.engStart + (r.verse - seg.hebStart) });
@@ -7297,6 +7487,13 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
             if (mappedRows.length === 0) {
                 return res.status(404).json({ error: `No tokens found for book ${bookId} chapter ${chapter}` });
             }
+            // Blanket renumber first (see hasSnRenumber note above) — mappedRows
+            // is raw tokens_bhs/tokens_nt shaped, same as the roots-page live
+            // parser (bhsVerseWords) uses, so reuse its helper here too. Passing
+            // {} for locationOverrides keeps this fallback's existing scope (it
+            // never applied per-occurrence overrides before); only the
+            // unconditional renumber pass is new.
+            applyLocOverridesToRawRows(mappedRows, {}, bookId, chapter);
             const rawText = rowsToLines(mappedRows);
             const { lexicon, homographs, surfaceOverrides } = loadLexicons();
             return res.json(parseHebrewData(rawText, lexicon, homographs, surfaceOverrides));
@@ -7370,6 +7567,7 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
                          :                 'homograph SN disagrees with authoritative tokens_bhs';
             console.warn(`[tokens] ${reason} for book=${bookId} chapter=${chapter}; falling back to live parse for correctness`);
             const mappedRows = mergedBibleRows();
+            applyLocOverridesToRawRows(mappedRows, {}, bookId, chapter);
             const rawText = rowsToLines(mappedRows);
             return res.json(parseHebrewData(rawText, lexicon, homographs, surfaceOverrides));
         }
@@ -9241,14 +9439,24 @@ function foldRowsToWords(rows) {
     let pending = [];
     const close = () => {
         if (!pending.length) return;
-        const surface = pending.map(p => _paleoOnly(p.word_raw)).join('');
-        // Root SN = the last non-proclitic (content) morpheme's Strong's number.
-        let snRaw = null;
+        // Root SN = the last non-proclitic (content) morpheme's Strong's number —
+        // and that SAME row is the one whose raw text may need the canonical-root
+        // splice below, so find it once and reuse the index for both.
+        let contentIdx = -1;
         for (let i = pending.length - 1; i >= 0; i--) {
-            if (!WORD_FOLD_POS.has((pending[i].pos || '').trim())) { snRaw = pending[i].strongs; break; }
+            if (!WORD_FOLD_POS.has((pending[i].pos || '').trim())) { contentIdx = i; break; }
         }
-        if (snRaw == null) snRaw = pending[pending.length - 1].strongs;
+        if (contentIdx < 0) contentIdx = pending.length - 1;
+        const snRaw = pending[contentIdx].strongs;
         const sn = snRaw ? navNormSN(String(snRaw).split('＋')[0]) : '';
+        // Canonical-root splice (see canonicalizeRootSurface) — only the content
+        // morpheme is eligible; proclitic prefix rows are real attested prefixes,
+        // not part of what a whole-SN renumber's `raw_root` ever targets.
+        const { snRenumber } = loadLexicons();
+        const surface = pending.map((p, i) => {
+            const raw = _paleoOnly(p.word_raw);
+            return i === contentIdx ? canonicalizeRootSurface(raw, sn, snRenumber) : raw;
+        }).join('');
         if (surface) out.push({ surface, sn, ords: pending.map(p => p.token_ordinal) });
         pending = [];
     };
@@ -9265,7 +9473,14 @@ function foldRowsToWords(rows) {
 // every matching word necessarily lives in one of those. Returns occurrences in
 // reading order: [{ book_id, chapter, verse, ords:[…] }].
 function findWordOccurrences(sn, match, book = null) {
-    const sw = strongWhere([String(sn || '').replace(/^H+/, '')]);
+    // Query under every RAW alias of `sn` (see rawSnAliasesFor) — tokens_bhs
+    // is never rewritten by a blanket renumber, so a request for a renumbered
+    // root's new number (e.g. H378a) has to search for whatever old number
+    // (H802) is actually stored, or this returns zero verses no matter how
+    // many real occurrences the root has (added 2026-08-24).
+    const { snRenumber } = loadLexicons();
+    const aliases = rawSnAliasesFor(sn, snRenumber).map(s => s.replace(/^H+/, ''));
+    const sw = strongWhere(aliases);
     if (!sw) return [];
     const vWhere = sw.where + (book != null ? ' AND book_id = ?' : '');
     const vParams = book != null ? [...sw.params, book] : sw.params;
@@ -9292,7 +9507,7 @@ function findWordOccurrences(sn, match, book = null) {
     // `source` rides along so a caller can label attested vs inferred without
     // re-deriving where the row came from.
     for (const r of hebOccForSN(sn, book)) {
-        const w = { surface: _paleoOnly(r.word_raw), sn: navNormSN(sn), ords: [r.token_ordinal] };
+        const w = { surface: canonicalizeRootSurface(_paleoOnly(r.word_raw), sn, snRenumber), sn: navNormSN(sn), ords: [r.token_ordinal] };
         if (match(w)) {
             occ.push({ book_id: r.book_id, chapter: r.chapter, verse: r.verse,
                        ords: [r.token_ordinal], source: 'HEB' });
@@ -9307,7 +9522,7 @@ function findWordOccurrences(sn, match, book = null) {
         if (navHebBooks().has(add.book_id)) continue;
         const key = locOverrideKey(add.book_id, add.chapter, add.verse, add.token_ordinal);
         if (existingKeys.has(key)) continue;
-        const w = { surface: _paleoOnly(add.word_raw), sn: navNormSN(sn), ords: [add.token_ordinal] };
+        const w = { surface: canonicalizeRootSurface(_paleoOnly(add.word_raw), sn, snRenumber), sn: navNormSN(sn), ords: [add.token_ordinal] };
         if (match(w)) {
             occ.push({ book_id: add.book_id, chapter: add.chapter, verse: add.verse, ords: [add.token_ordinal] });
             existingKeys.add(key);
@@ -9564,6 +9779,30 @@ function resolveRootIdx(req) {
 // neighbours for alphabetical navigation.
 app.get('/api/root-explorer/root', production.cache(60), (req, res) => {
     try {
+        // Tombstone for a whole-corpus-renumbered SN (see strongs-renumber.json /
+        // applySnRenumber). buildNavIndexes() now relabels every occurrence of
+        // an old number like H802 to its new one (H378a) as the index is built,
+        // so _rootNavIndex/_rootBySN has NO entry under the old number any more
+        // — resolveRootIdx would just 404 it, same as a typo. Someone landing on
+        // an old bookmark/link/sitemap URL for H802 deserves an explanation and
+        // a pointer to where it went, not a plain 404. Checked BEFORE
+        // resolveRootIdx so this fires regardless of whether the new number has
+        // finished propagating through the nav index.
+        const rawSn = (req.query.sn || '').trim();
+        if (rawSn) {
+            const { snRenumber } = loadLexicons();
+            const normSn = 'H' + rawSn.replace(/^H+/, '');
+            const moved = snRenumber && snRenumber[normSn];
+            if (moved && moved.to) {
+                return res.status(410).json({
+                    moved: true,
+                    from: normSn,
+                    to: moved.to,
+                    reason: moved.reason || null,
+                    date: moved.date || null,
+                });
+            }
+        }
         const { index, idx } = resolveRootIdx(req);
         if (idx < 0) return res.status(404).json({ error: 'root not found', sn: req.query.sn || null, root: req.query.root || null });
         const entry = index[idx];

@@ -1,12 +1,12 @@
 {
   "ok": true,
-  "verifiedAt": "2026-08-22T16:38:20.361Z",
+  "verifiedAt": "2026-08-23T23:40:46.906Z",
   "fingerprint": {
     "dbPath": "C:\\Users\\fieldy\\dev\\projects\\the-scriptures-app\\paleo-studio\\server\\surface-index.db",
     "db": {
       "size": 398610432,
       "mtimeMs": 1786111586597.5493
     },
-    "rootsHash": "0e92fbfd2c31c8fa084ceac52996408e5d7a49e747a372787a9c8132f3887558"
+    "rootsHash": "505e0e5ca9dc21f9ccaef6424c029dc94f01b311d1c0291fffaef1fd45c16d10"
   }
 }
