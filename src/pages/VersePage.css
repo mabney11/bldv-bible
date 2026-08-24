@@ -203,6 +203,12 @@
 .wr-translit-inner span {
   color: var(--mc, var(--text2));
 }
+/* Punctuation marks (maqaf, sof-pasuq, …) — included inline now (see
+   computeWordParts' includeMarks option) but shouldn't read as another
+   colored morpheme; dim them the same way .vp-text-hebrew does. */
+.wr-translit-inner span.mark {
+  opacity: .55;
+}
 .wr-def {
   color: var(--pr-ink);
   min-width: 100px;
@@ -305,12 +311,53 @@
    math to fit into a narrow screen — every card is just as wide as the
    screen allows, and long values (Modifications, Root first appearance)
    wrap normally like any other paragraph text. */
-/* ── Paleo translation view — word cards + plaintext sentence ────────────
-   Collapsible, mirroring HebrewViewer.css's own .hv-token-viewer-toggle/
-   .hv-token-viewer "descriptive raw tokens" pattern (closed by default,
-   dashed outline button that fills solid + goes blue when open) so this
-   reads as the same kind of "raw/alternate view" affordance, just for the
-   paleo transliteration instead of the debug token dump. */
+/* ── English/Hebrew toggle over the main verse text ───────────────────────
+   Same visual language as .vp-paleo-tabs used to be (now removed) — a small
+   two-way pill switch sitting right above .vp-text, so "the actual
+   translation" can BE the colored paleo transliteration instead of a
+   separate buried view. */
+.vp-text-mode-toggle {
+  display: flex;
+  gap: 0;
+  margin: 0 0 14px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--pr-rule);
+  width: fit-content;
+}
+.vp-text-mode-btn {
+  background: var(--pr-bg-raise);
+  border: none;
+  color: var(--pr-ink-soft);
+  padding: 6px 16px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: system-ui, sans-serif;
+  transition: all 0.15s;
+}
+.vp-text-mode-btn:first-child        { border-right: 1px solid var(--pr-rule); }
+.vp-text-mode-btn.active             { background: var(--pr-accent); color: #fff; }
+.vp-text-mode-btn:hover:not(.active) { color: var(--pr-ink); }
+
+/* The colored transliteration itself, standing in for English prose in
+   .vp-text — italic like every other translit line in the app (WordBlock's
+   own .w-translit, WordRow's .wr-translit), per-component colored via the
+   SAME morphColors.css mechanism (span classes set --mc; this rule reads it
+   back), and a dimmed, unstyled color for punctuation marks (maqaf,
+   sof-pasuq, …) which carry no --mc of their own. */
+.vp-text-hebrew {
+  font-style: italic;
+  direction: ltr;
+  unicode-bidi: embed;
+}
+.vp-text-hebrew span { color: var(--mc, var(--pr-ink)); }
+.vp-text-hebrew span.mark { opacity: .55; font-style: normal; }
+
+/* ── Raw transliteration text — collapsible, mirroring HebrewViewer.css's
+   own .hv-token-viewer-toggle/.hv-token-viewer "descriptive raw tokens"
+   pattern (closed by default, dashed outline button that fills solid + goes
+   accent-colored when open): the same plain, copyable dump, just built from
+   the paleo transliteration instead of the debug token format. */
 .vp-paleo-wrap {
   margin: 24px 0 0;
   display: flex;
@@ -332,46 +379,6 @@
 .vp-paleo-toggle:hover { color: var(--pr-ink); border-color: var(--pr-accent-dim); }
 .vp-paleo-toggle.open  { color: var(--pr-accent); border-color: var(--pr-accent); border-style: solid; }
 
-.vp-paleo-body {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.vp-paleo-tabs {
-  display: flex;
-  gap: 0;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid var(--pr-rule);
-  width: fit-content;
-}
-.vp-paleo-tab {
-  background: var(--pr-bg-raise);
-  border: none;
-  color: var(--pr-ink-soft);
-  padding: 7px 16px;
-  cursor: pointer;
-  font-size: 12px;
-  font-family: system-ui, sans-serif;
-  transition: all 0.15s;
-}
-.vp-paleo-tab:first-child      { border-right: 1px solid var(--pr-rule); }
-.vp-paleo-tab.active           { background: var(--pr-accent); color: #fff; }
-.vp-paleo-tab:hover:not(.active) { color: var(--pr-ink); }
-
-/* Word cards: reuses WordBlock.jsx's own .word-block styling (imported
-   globally, see main.jsx) — this is just the wrapping flex row, same as
-   HebrewViewer's .hv-verse-wrapper gives it there. */
-.vp-paleo-cards {
-  --paleo-size: 34px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 4px 2px;
-}
-
-/* Plaintext sentence — read-only, matching .hv-token-viewer's look so it
-   reads as the same "raw text you can select/copy" affordance. */
 .vp-paleo-sentence {
   width: 100%;
   min-height: 90px;

@@ -4,7 +4,7 @@ import { useTheme } from '../hooks/useTheme.js';
 import { apiTransProgress, apiTransVerse, apiTokens, apiRootFirstByLetters } from '../lib/api.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
-import WordBlock, { WordRow, computeWordParts } from '../components/WordBlock.jsx';
+import { WordRow, computeWordParts, transliterationsToHtml } from '../components/WordBlock.jsx';
 import { TYPEFACES } from '../lib/typefaces.js';
 // Reuse Reader.jsx's own "root (gloss)" + quote-nesting prose renderer for
 // the verse-text paragraph below, instead of dumping verseData.text as a
@@ -122,21 +122,49 @@ export default function VersePage() {
     [chapterTokens, verse]
   );
 
-  // ── Paleo translation view: word cards (glyph + transliteration + gloss,
-  // same WordBlock HebrewViewer renders each word as) and a plaintext
-  // sentence form (just the transliteration string, word by word) — same
-  // hebrewWords data the word-by-word table above already fetched, just two
-  // more ways to read it. Collapsible, mirroring HebrewViewer's own
-  // "descriptive raw tokens" toggle (closed by default, plain toggle button).
-  const [paleoOpen, setPaleoOpen] = useState(false);
-  const [paleoMode, setPaleoMode] = useState('cards'); // 'cards' | 'sentence'
-  const paleoSentence = useMemo(
-    () => hebrewWords
-      .map(w => computeWordParts(w).transliterations.map(t => t.text).join(''))
-      .filter(Boolean)
-      .join(' '),
+  // ── Paleo translation — the verse's own transliteration, word by word,
+  // WITH punctuation ("the maqaf between Il and Panayam should be in the
+  // word-by-word, the paleo translation, and the raw text" — computeWordParts'
+  // { includeMarks: true } opt is exactly for this; see its own comment).
+  // Computed once per word, shared by both the colored inline sentence (the
+  // English/Hebrew toggle below) and the plain-text "raw text" box, so the
+  // two can never drift apart from independently re-deriving the same data.
+  const hebrewWordPartsMarked = useMemo(
+    () => hebrewWords.map(w => computeWordParts(w, { includeMarks: true })),
     [hebrewWords]
   );
+  // Plain string, e.g. "AthaHaShamayam WaAthaHaAratz ׃" — for copy/paste and
+  // the collapsible raw-text box below the word-by-word table.
+  const paleoSentence = useMemo(
+    () => hebrewWordPartsMarked
+      .map(p => p.transliterations.map(t => t.text).join(''))
+      .filter(Boolean)
+      .join(' '),
+    [hebrewWordPartsMarked]
+  );
+  // Same sentence, but as HTML with the SAME per-component coloring every
+  // other transliteration line in the app uses (transliterationsToHtml —
+  // shared with WordRow's own Transliteration column) — this is what backs
+  // the "Hebrew" mode of the English/Hebrew toggle over the main verse text.
+  const paleoSentenceHtml = useMemo(
+    () => hebrewWordPartsMarked
+      .map(p => transliterationsToHtml(p.transliterations))
+      .filter(Boolean)
+      .join(' '),
+    [hebrewWordPartsMarked]
+  );
+
+  // English/Hebrew toggle for the main verse-text display. Falls back to
+  // English if navigation lands on a verse with no Hebrew data while still
+  // set to 'hebrew' (the toggle itself only renders when there IS data, but
+  // the mode is remembered across verse navigation, so this guards against
+  // showing a blank Hebrew pane on a verse that has none).
+  const [textMode, setTextMode] = useState('english'); // 'english' | 'hebrew'
+  const showHebrewText = textMode === 'hebrew' && hebrewWords.length > 0;
+
+  // Collapsible raw-text box (plain, copyable) below the word-by-word table —
+  // mirrors HebrewViewer's own "descriptive raw tokens" toggle UX.
+  const [rawTextOpen, setRawTextOpen] = useState(false);
 
   // ── "root|lex_word|definition|modifications|strongs #s|link to the first
   // verse the root appears in" — "The 'First surface' can be removed" (the
@@ -319,7 +347,25 @@ export default function VersePage() {
             <div className="vp-verse">
               <div className="rd-book-name">{bookName}</div>
               <h1 className="vp-heading">{chapter}:{verse}</h1>
-              <p className="vp-text">{renderVerseNodesWithQuotes(sanitizeText(verseData.text), 'both')}</p>
+              {hebrewWords.length > 0 && (
+                <div className="vp-text-mode-toggle" role="tablist">
+                  <button
+                    className={`vp-text-mode-btn ${textMode === 'english' ? 'active' : ''}`}
+                    onClick={() => setTextMode('english')}
+                    role="tab" aria-selected={textMode === 'english'}
+                  >English</button>
+                  <button
+                    className={`vp-text-mode-btn ${textMode === 'hebrew' ? 'active' : ''}`}
+                    onClick={() => setTextMode('hebrew')}
+                    role="tab" aria-selected={textMode === 'hebrew'}
+                  >Hebrew</button>
+                </div>
+              )}
+              <p className="vp-text">
+                {showHebrewText
+                  ? <span className="vp-text-hebrew" dangerouslySetInnerHTML={{ __html: paleoSentenceHtml }} />
+                  : renderVerseNodesWithQuotes(sanitizeText(verseData.text), 'both')}
+              </p>
               {hebrewWords.length > 0 ? (
                 <>
                   <h2 className="vp-subhead">Word by word</h2>
@@ -356,38 +402,16 @@ export default function VersePage() {
 
                   <div className="vp-paleo-wrap">
                     <button
-                      className={`vp-paleo-toggle ${paleoOpen ? 'open' : ''}`}
-                      onClick={() => setPaleoOpen(o => !o)}
-                    >{ } paleo translation</button>
-                    {paleoOpen && (
-                      <div className="vp-paleo-body">
-                        <div className="vp-paleo-tabs" role="tablist">
-                          <button
-                            className={`vp-paleo-tab ${paleoMode === 'cards' ? 'active' : ''}`}
-                            onClick={() => setPaleoMode('cards')}
-                            role="tab" aria-selected={paleoMode === 'cards'}
-                          >Word cards</button>
-                          <button
-                            className={`vp-paleo-tab ${paleoMode === 'sentence' ? 'active' : ''}`}
-                            onClick={() => setPaleoMode('sentence')}
-                            role="tab" aria-selected={paleoMode === 'sentence'}
-                          >Plaintext sentence</button>
-                        </div>
-                        {paleoMode === 'cards' ? (
-                          <div className="vp-paleo-cards">
-                            {hebrewWords.map((w, i) => (
-                              <WordBlock key={i} wordObj={w} showSub showStrongs={false} showCopyBtn={false} />
-                            ))}
-                          </div>
-                        ) : (
-                          <textarea
-                            className="vp-paleo-sentence"
-                            value={paleoSentence}
-                            readOnly
-                            spellCheck={false}
-                          />
-                        )}
-                      </div>
+                      className={`vp-paleo-toggle ${rawTextOpen ? 'open' : ''}`}
+                      onClick={() => setRawTextOpen(o => !o)}
+                    >{ } raw transliteration text</button>
+                    {rawTextOpen && (
+                      <textarea
+                        className="vp-paleo-sentence"
+                        value={paleoSentence}
+                        readOnly
+                        spellCheck={false}
+                      />
                     )}
                   </div>
                 </>

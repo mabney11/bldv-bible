@@ -87,7 +87,11 @@ function compDescsToHtml(compDescs) {
 // capitalizing each component's first letter gives a second, color-blind-
 // safe cue to the same boundary. Scoped to WordRow only (via this opt) so
 // WordBlock's own established translit line elsewhere is untouched.
-function transliterationsToHtml(transliterations, opts = {}) {
+// Exported: VersePage's colored "paleo translation" sentence (the whole
+// verse's transliteration, not just one word) reuses this directly, so it
+// gets the exact same per-component coloring as every other translit line
+// in the app rather than a second hand-rolled copy.
+export function transliterationsToHtml(transliterations, opts = {}) {
   // A dash-between-components format ("Il-Kapayam") was tried, narrowed to
   // only "genuine symbol" boundaries, fully removed, then partly restored —
   // several rounds this session. Settled for good, on two pieces of concrete
@@ -133,8 +137,26 @@ const escapeHtml = s => String(s || '')
  *                  Transliteration column, which capitalizes every component
  *                  only when this is false — a word built entirely from
  *                  prefix/suffix particles with no lexical root of its own)
+ *
+ * opts.includeMarks: by default a mark component (maqaf ־, sof-pasuq ׃, paseq
+ * ׀ …) is pulled OUT of compDescs/transliterations entirely and reported only
+ * via `trailingMark` (see below) — right for WordBlock's own default
+ * rendering, which gives a mark its own sibling element (so a maqaf can sit
+ * BETWEEN two separate WordBlocks, or a maqaf-joined compound can render as
+ * two half-blocks via maqafSplit). WordRow's word-by-word table has no such
+ * per-half split, and a plain joined transliteration sentence (VersePage's
+ * "paleo translation") has no separate elements at all to hang a sibling
+ * off of — for both, the mark needs to show up INLINE, in place, or it just
+ * silently vanishes ("the maqaf between Il and Panayam should be in the
+ * word-by-word, the paleo translation, and the raw text"). Pass
+ * { includeMarks: true } to keep it in compDescs (rendered the same
+ * dimmed-punctuation way compDescsToHtml already renders any non-Paleo
+ * mark) and in transliterations (as its own literal-character entry) —
+ * `trailingMark` is still populated either way, unaffected, so existing
+ * (non-opted-in) callers keep their exact prior behavior.
  */
-export function computeWordParts(wordObj) {
+export function computeWordParts(wordObj, opts = {}) {
+  const includeMarks = !!opts.includeMarks;
   const out = {
     purePaleo: '',
     compDescs: [],
@@ -196,6 +218,16 @@ export function computeWordParts(wordObj) {
     // Still visible; just rendered as its own element outside the glyph row.
     if (comp.isMark) {
       out.trailingMark = { paleo: comp.paleo, isMaqaf: !!comp.isMaqaf };
+      if (includeMarks) {
+        const ordinal = comp.token_ordinal != null ? comp.token_ordinal : wordObj.token_ordinal;
+        out.compDescs.push({ css: 'mark', paleo: comp.paleo, altAttr: null, ordinal });
+        // A MAQAF joins two words into one reading unit, so it's fused with
+        // no surrounding space (Il־Panayam); any other mark (sof-pasuq,
+        // paseq, …) ends a clause/verse instead, so it reads as its own
+        // trailing token — a literal leading space, matching how "the
+        // paleo reader" already spaces it ("...Aratz ׃").
+        out.transliterations.push({ css: 'mark', text: (comp.isMaqaf ? '' : ' ') + comp.paleo });
+      }
       return;
     }
     out.purePaleo += comp.paleo;
@@ -636,7 +668,11 @@ export default function WordBlock({
  * identically too.
  */
 export function WordRow({ wordObj, children }) {
-  const parts = useMemo(() => computeWordParts(wordObj), [wordObj]);
+  // includeMarks: true — a table has no per-half maqafSplit rendering the
+  // way WordBlock's own card view does, so a mark needs to show up inline
+  // in the Word/Transliteration cells or it's simply invisible here. See
+  // computeWordParts's own comment for the full reasoning.
+  const parts = useMemo(() => computeWordParts(wordObj, { includeMarks: true }), [wordObj]);
   const wordGlyphHtml = useMemo(() => compDescsToHtml(parts.compDescs), [parts]);
   // "if there is no root, the modifications should become the root and the
   // definition be their combined meanings" — AlaYaw (H413, "to/toward" + Of/My
