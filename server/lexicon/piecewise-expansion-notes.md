@@ -472,3 +472,90 @@ distinct key from `𐤄𐤌𐤉𐤌`/HaMayam), `𐤋𐤌𐤉𐤌` "LaMayam / to 
 
 Genesis 1:1-6 is now fully curated for Hebrew (extra), matching the other four
 languages' coverage.
+
+## 2026-08-25 — Genesis 1:7, Latin/Syriac/Ge'ez/Greek/Hebrew (extra)
+
+English (fieldy's own hand translation, pulled from PROD's `translation.db` directly —
+same "prod, not dev" standard as v6's correction): "And so ishah (made) Alahayam ()
+𐤀𐤕 (the entirety of) the raqayai (firmament), and badal (separated) bayan (between)
+the mayam (water) ashar (that) is from thachath (under) the raqayai (firmament) and
+bayan (between) the mayam (waters) ashar (that) are from il (above) the raqayai
+(firmament) — WaYaHayah (and this came to pass) Kan (for sure)." Tokens fetched via
+`node dump-verse-tokens.js 1 1 7`, all five languages including HEB.
+
+**Edition divergence, confirmed not just flagged this time.** V6's note predicted that
+Greek/Ge'ez, having already tacked their "and it was so" tail onto the END of v6
+(`καὶ ἐγένετο οὕτως` / `ወኮነ ከማሁ`, a LXX/Ge'ez-vs-Masoretic versification difference —
+that clause belongs to v7 in the Hebrew/Latin/Syriac numbering), would NOT repeat it
+here. Confirmed: v7's Greek/Ge'ez token lists have no `οὕτως`/`ከማሁ` this time, while
+Latin/Syriac/Hebrew (extra) — which follow the Masoretic placement — all DO carry
+their own "thus/so" word in v7 (`ita`/`ܗܟܢܐ`/`𐤊𐤍`, all new this verse, all glossed
+`kan / for sure` matching fieldy's own `Kan (for sure)`).
+
+**Reuse note — Greek's `ἐποίησεν`/`ἦν`.** V7 needs "made" and "was/were", and the
+Greek text reuses the same `ἐποίησεν` ("Baraa - created", from v1) and `ἦν` ("became",
+from v2) already curated for different English words in earlier verses — a real
+language-economy mismatch (Greek doesn't lexically distinguish "created" from "made"
+the way fieldy's English's `baraa`/`ishah` split does), not a mistake to fix. Left both
+keys unchanged rather than overwriting v1/v2's meaning to chase this verse's nuance;
+same principle as v6's `ἐγένετο`/`ወኮነ` reuse.
+
+**Bare-grammar `"—"` calls, Latin `his` / Syriac `ܡܢ`.** Latin's `ab his, quæ erant
+super firmamentum` ("from these, which were above...") and Syriac's mirroring `ܡܢ`
+("from") both carry no independent word in fieldy's English — the English's own
+`bayan (between)`/`il (above)` already cover the whole sense, same as v3/v4's bare
+`est`/`esset`. Kept as `"—"`, not stretched into a translit that isn't really there.
+
+**Latin**: `Et`/`Deus`/`firmamentum`/`aquas`/`erant`/`ab`/`super`/`est` all already
+curated, reused unchanged (`firmamentum` covers both the object of `fecit` and the
+`super firmamentum` occurrence — same accusative surface form). New: `fecit`
+"ishah / made", `divisitque` "and badal / separated", `quæ` "ashar / that" (covers
+both relative-clause occurrences, same surface form), `sub` "thachath / under",
+`firmamento` "Raqayai / firmament" (ablative — separate key from the existing
+accusative `firmamentum`, same case-variant convention as `aquas`/`aquarum`/`aquis`),
+`his` "—" (see above), `factum` "hayah / came to pass", `ita` "kan / for sure".
+
+**Syriac**: `ܐܪܩܝܥܐ` (Raqayai/firmament) and `ܦܪܫ̇` (mabadayal/the separation) both
+already curated from v6, reused unchanged. `ܘܗܘ̣ܐ` — checked byte-for-byte against
+the combining-mark form already curated in v3 (`"and hayah / became"`) — is an exact
+match, reused unchanged, no new key needed. New: `ܘܥܒ̣ܕ` "and ishah / made", `ܕܠܬܚܬ`
+"thachath / under", `ܡܢ` "—" (see above), `ܘܒܝܬ` "and bayan / between", `ܕܠܥܠ`
+"il / above", `ܗܟܢܐ` "kan / for sure".
+
+**Ge'ez**: `ጠፈር` (Raqayai/firmament) and `ይፍልጥ` (mabadayal/the separation) already
+curated from v6, reused unchanged, along with `ማይ`/`ማእከለ`. New: `ወገብረ` "and ishah /
+made" (distinct key from the unrelated pre-existing `ገብረ` "baraa - created" — fieldy's
+own word choice for this verse is `ishah`, not `baraa`, so this is its own key/gloss
+rather than a reuse), `ጠፈረ` "Raqayai / firmament" (accusative/oblique — separate key
+from the bare `ጠፈር`, same case-variant convention as everywhere else in this file),
+`ዘታሕተ` "thachath / under" (relative pronoun `ዘ` fused onto `under`, one combined
+gloss, same treatment as this file's other fused-prefix tokens), `ዘመልዕልተ`
+"il / above" (same fused-relative pattern).
+
+**Greek**: `καὶ`/`ἐποίησεν`/`ὁ`/`θεὸς`/`τὸ`/`στερέωμα`/`διεχώρισεν`/`ἀνὰ`/`μέσον`/
+`τοῦ`/`ὕδατος`/`ἦν`/`τοῦ`/`ἐπάνω`/`τοῦ` all already curated, reused unchanged (see
+the `ἐποίησεν`/`ἦν` economy note above). New: `ὃ` "ashar / that", `ὑποκάτω`
+"thachath / under", `στερεώματος` "Raqayai / firmament" (genitive — separate key from
+the existing nominative/accusative `στερέωμα`).
+
+**Hebrew (extra)**: Masoretic Gen 1:7 is 17 words (וַיַּעַשׂ אֱלֹהִים אֶת הָרָקִיעַ
+וַיַּבְדֵּל בֵּין הַמַּיִם אֲשֶׁר מִתַּחַת לָרָקִיעַ וּבֵין הַמַּיִם אֲשֶׁר מֵעַל
+לָרָקִיעַ וַיְהִי כֵן) and this verse's corpus tokens match it 1:1, no textual
+variant. Ten already curated, reused unchanged: `𐤀𐤋𐤄𐤉𐤌` (Alahayam), `𐤀𐤕` (AthaHa),
+`𐤅𐤉𐤁𐤃𐤋` (and He Badal / divided — same key as v4), `𐤁𐤉𐤍` (Bayan / between — same
+key as v4/v6), `𐤄𐤌𐤉𐤌` (HaMayam / the waters — same key as v2/v6, appears twice this
+verse), `𐤅𐤉𐤄𐤉` (Hayah / and it came to pass — same key as v3/v5/v6). New: `𐤅𐤉𐤏𐤔`
+"and He Ishah / made" (same vayyiqtol subject-spelled-out treatment as `𐤅𐤉𐤀𐤌𐤓`/
+`𐤅𐤉𐤓𐤀`/`𐤅𐤉𐤁𐤃𐤋`), `𐤄𐤓𐤒𐤉𐤏` "HaRaqayai / the firmament" (ה־ article fused, distinct
+key from v6's bare `𐤓𐤒𐤉𐤏`), `𐤀𐤔𐤓` "Ashar / that" (covers both occurrences, same
+surface form), `𐤌𐤕𐤇𐤕` "MiThachath / from under" (מ־ "from" prefix fused, matching
+this file's own established fused-prefix convention, e.g. v6's `𐤁𐤕𐤅𐤊`/`𐤋𐤌𐤉𐤌`),
+`𐤋𐤓𐤒𐤉𐤏` "LaRaqayai / to the firmament" (ל־ prefix fused, covers both occurrences),
+`𐤌𐤏𐤋` "MeIl / above" (מ־ "from" + `il`, matching the same shared `il` root used for
+this concept in Latin/Syriac/Ge'ez this verse — fieldy's own English spelling, not a
+literal transliteration of Hebrew על), `𐤊𐤍` "Kan / for sure" (matches fieldy's own
+`Kan (for sure)` exactly).
+
+Genesis 1:7 is now fully curated across all five languages. Confirms the v6 divergence
+note's prediction (Greek/Ge'ez's "thus" tail lands in v6, not v7) rather than just
+asserting it.
