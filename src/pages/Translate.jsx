@@ -24,6 +24,42 @@ import './Translate.css';
 // Util — JSON-parse-with-fallback
 const parseJ = (v, fb) => Array.isArray(v) ? v : (() => { try { return JSON.parse(v); } catch { return fb; } })();
 
+// Transliterated proper/divine names that never get a natural English gloss
+// (Alahayam "God", Yahawah "the LORD/YHWH") but still take the trailing
+// "(...)" every other content word gets under the reading-text convention
+// ("TRANSLIT (gloss)") — left empty for these by convention. Add more names
+// here as they come up.
+const AUTO_GLOSS_WORDS = ['Alahayam', 'Yahawah'];
+// Keystrokes that end a word while typing prose — space and the punctuation
+// that commonly follows a word mid-sentence or at a clause/sentence end.
+const AUTO_GLOSS_BOUNDARY_KEYS = new Set([' ', ',', '.', ';', ':', '?', '!']);
+
+// Fires from the translation editor's onKeyDown. If the word just finished
+// (the run of letters immediately before the caret) is one of
+// AUTO_GLOSS_WORDS and isn't already followed by a "(", inserts an empty
+// "()" before the boundary character the user just typed — e.g. typing
+// "Alahayam" then a space yields "Alahayam () " instead of "Alahayam ".
+// Uses execCommand('insertText'), same as the toolbar buttons above, so it
+// stays in the browser's native undo stack instead of hand-editing the DOM.
+function maybeAutoInsertGlossParens(e) {
+  if (!AUTO_GLOSS_BOUNDARY_KEYS.has(e.key)) return;
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount || !sel.isCollapsed) return;
+  const range = sel.getRangeAt(0);
+  const node = range.startContainer;
+  if (node.nodeType !== Node.TEXT_NODE) return;
+  const before = node.textContent.slice(0, range.startOffset);
+  const word = before.match(/([A-Za-z]+)$/)?.[1];
+  if (!word || !AUTO_GLOSS_WORDS.includes(word)) return;
+  // Already glossed (editing mid-sentence, e.g. caret placed back inside an
+  // already-complete "Alahayam ()") — don't double up.
+  if (/^\s*\(/.test(node.textContent.slice(range.startOffset))) return;
+  e.preventDefault();
+  // " ()" + the boundary char that was just typed — a space stays a space
+  // ("Alahayam () "), punctuation hugs the closing paren ("Yahawah ().").
+  document.execCommand('insertText', false, ` ()${e.key === ' ' ? ' ' : e.key}`);
+}
+
 // Token css class → CSS variable color
 const PART_VAR = {
   root: '--c-root', conj: '--c-conj', art: '--c-art', prep: '--c-prep',
@@ -1528,7 +1564,11 @@ export default function Translate() {
                         if (e.key === 'Tab') {
                           e.preventDefault();
                           document.execCommand(e.shiftKey ? 'outdent' : 'indent');
+                          return;
                         }
+                        // Alahayam / Yahawah → auto-insert the empty "()"
+                        // gloss placeholder as soon as the word is finished.
+                        maybeAutoInsertGlossParens(e);
                       }}
                       onPaste={e => {
                         // Always paste as plain text, matching whatever's
