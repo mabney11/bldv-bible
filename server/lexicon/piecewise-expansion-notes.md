@@ -559,3 +559,83 @@ literal transliteration of Hebrew על), `𐤊𐤍` "Kan / for sure" (matches fi
 Genesis 1:7 is now fully curated across all five languages. Confirms the v6 divergence
 note's prediction (Greek/Ge'ez's "thus" tail lands in v6, not v7) rather than just
 asserting it.
+
+## 2026-08-25 — Hebrew (extra) correction: `𐤅𐤉𐤄𐤉` was the wrong key, real surface is `𐤅𐤉𐤄𐤉𐤄`
+
+Same day as the Auto-Link matching fixes above (see project memory for the full
+Auto-Link story) — while diagnosing why v7's Auto-Link still couldn't match fieldy's
+`WaYaHayah (and this came to pass)` against this file's stored `Hayah / and it came to
+pass`, fieldy pointed out the real problem wasn't just the matching algorithm: **the key
+itself was wrong.** `𐤅𐤉𐤄𐤉` (4 Paleo letters: vav-yod-heh-yod) is a *defective*-spelling
+form; the actual corpus surface — what fieldy calls "the fully expressed surface" — is
+`𐤅𐤉𐤄𐤉𐤄` (5 letters: vav-yod-heh-yod-heh, an extra final heh). Confirmed against the
+scaffold before touching anything: `𐤅𐤉𐤄𐤉𐤄` already existed as a real (empty, uncurated)
+key in `hebrew-extra-lexicon.json`'s ~56k-key vocabulary scaffold — i.e. it's a genuine
+corpus surface form, not something invented for this fix.
+
+This key was first curated back in the Gen 1:3 pass (`"and He Amar / said"`'s neighbor,
+`"Hayah / let it be"`'s sibling `𐤅𐤉𐤄𐤉` → `"Hayah / and it came to pass"`) and then
+carried forward as "already curated, reused unchanged" through v5, v6, and v7 without
+ever being re-checked letter-by-letter against each new verse's freshly pasted tokens —
+a real gap in the "never guess, always verify real tokens" discipline this file
+otherwise holds to: once a key is trusted as "already curated," later verses stopped
+double-checking its actual glyphs. Practical implication: since `_lookupGloss` keys on
+the token's own exact normalized surface form, the live app was very likely never
+actually finding a gloss for this word at all in v3/v5/v6/v7 — the curated entry sat
+under a key nothing ever looked up.
+
+**Fix:** `𐤅𐤉𐤄𐤉` reverted to an empty scaffold entry (it's not the real corpus form);
+`𐤅𐤉𐤄𐤉𐤄` now carries `"WaYaHayah / and it came to pass"` — fieldy's own fuller
+transliteration, matching the fuller spelling. Only this one key was touched; the rest
+of the file was NOT audited for the same defective/plene-spelling pattern — flagging
+that as an open question rather than guessing at other entries from memory the same way
+this mistake happened in the first place.
+
+## 2026-08-25 — `fix-heb-extra-surfaces.js`: generalizing the WaYaHayah fix beyond the lexicon
+
+The lexicon-key fix above only changes what gloss `_lookupGloss` finds; it doesn't touch
+what glyphs actually render in Parallel/Translate/wherever HEB source tokens are shown —
+those come from corpus.db's own stored HEB verse text (`verses` table, `corpus='HEB'`),
+tokenized at request time by `splitTextToTokens`. Fieldy asked for `𐤅𐤉𐤄𐤉𐤄` to actually
+*display*, not just gloss-match, and specifically ruled out doing this from memory:
+"the bhs tokens exist, changing the words to be the corresponding full surfaces should
+be straight forward." Scope agreed via AskUserQuestion: **Genesis 1 only, for now.**
+
+`server/fix-heb-extra-surfaces.js` (delivered to fieldy to run, since device_bash was
+down all session) does the cross-reference: for each Genesis 1 verse it pulls HEB's own
+whitespace tokens straight off corpus.db (same STOPS-strip regex as `dump-verse-tokens.js`
+and server.js's `splitTextToTokens`), and pulls BHS's real per-word surfaces from the
+running app's own `/api/tokens?book=1&chapter=1` — deliberately reusing the app's
+existing proclitic-fusion/maqaf-join logic (`groupSurfaceTokens`/`parseHebrewData`'s
+`sourceTokens[].word_raw`, concatenated per word) rather than reimplementing that
+folding logic independently, so "the full surface" always means exactly what the app
+itself already computes. Two real per-token corpora cross-checked against each other,
+nothing typed from memory.
+
+A HEB/BHS pair at the same verse+word-position is only proposed as an auto-fix when
+BHS is strictly longer, every character of HEB's spelling appears in BHS's spelling in
+the same order (a true subsequence — dropped matres lectionis, not a different word),
+and the gap is at most 2 letters — the same judgment fieldy made by hand for
+`𐤅𐤉𐤄𐤉`→`𐤅𐤉𐤄𐤉𐤄`, generalized. Anything that doesn't clear that bar, or any verse where
+HEB's and BHS's word counts don't match (alignment can't be trusted), is reported as
+"needs human review" / "skipped" and never auto-applied. Default mode is dry-run
+(report only); `--apply` takes an online SQLite backup of corpus.db, runs
+`PRAGMA integrity_check` on a fresh connection to that backup before writing anything,
+writes via a single transaction (replacing only the exact whitespace-delimited token,
+never a blind substring replace), then re-runs `integrity_check` on the live db before
+declaring success. LOCAL corpus.db only — prod needs this run separately later, same as
+the translation.db backfill precedent.
+
+**Caught before shipping:** the first draft's subsequence-match logic used plain string
+`.length`/`[i]` indexing, which operates on UTF-16 code units. Every Paleo-Hebrew glyph
+(U+10900 block) is a surrogate pair (2 code units), so that draft silently returned
+`false` for the exact `𐤅𐤉𐤄𐤉`→`𐤅𐤉𐤄𐤉𐤄` case it was built to catch — an 8-vs-10-code-unit
+comparison that never lines up letter-for-letter. Caught by a standalone smoke test
+before delivery (not just reasoned through), fixed by switching to `Array.from()`
+(codepoint-aware) for every length/index in that function, re-verified against 8 cases
+including the real WaYaHayah pair, an identical-string no-op, a too-large gap, a
+non-subsequence same-length pair, and a mid-word (not just trailing) dropped letter.
+
+**Status:** delivered to fieldy, not yet run. Pending: fieldy runs it (dry-run first),
+pastes the report back; review the proposed fixes and the "needs review" list together
+before any `--apply`.

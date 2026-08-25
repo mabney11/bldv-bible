@@ -211,6 +211,21 @@ function cleanAutoLinkWordAL(raw) {
   }
   return cleanEnWordAL(s).toLowerCase();
 }
+// Mirrors Translate.jsx's identically-named CAMEL_SEGMENT_RE/lastCamelSegment
+// (deliberately duplicated \u2014 this page doesn't share link-processing logic
+// with the Studio by import, same convention as glossOwnerMap/glossTokens
+// above). Hebrew-extra's own fused-prefix convention ("HaRaqayai",
+// "MiThachath", "MeIl"...) bakes a grammar prefix onto its root as one
+// CamelCase word, but fieldy's English spells that prefix as its own plain
+// word ("the raqayai", "from thachath") \u2014 so the bare ROOT (the final
+// CamelCase segment) needs to be a candidate too, or Auto-Link's "missing"
+// underline flags these as unmatched even though the concept IS curated.
+const AL_CAMEL_SEGMENT_RE = /^[A-Z][a-z]*(?:[A-Z][a-z]*)+$/;
+function lastCamelSegmentAL(word) {
+  if (!AL_CAMEL_SEGMENT_RE.test(word)) return null;
+  const segs = word.split(/(?=[A-Z])/);
+  return segs[segs.length - 1] || null;
+}
 function lexTranslitCandidatesAL(val) {
   if (!val || val === '\u2014') return [];
   const s = String(val);
@@ -218,12 +233,45 @@ function lexTranslitCandidatesAL(val) {
   const dashIdx = s.indexOf(' - ');
   const cut = slashIdx >= 0 && dashIdx >= 0 ? Math.min(slashIdx, dashIdx) : Math.max(slashIdx, dashIdx);
   let left = (cut >= 0 ? s.slice(0, cut) : s).trim();
+  // Older no-separator entries store the gloss as a trailing parenthetical
+  // instead \u2014 "Mayam (waters)" \u2014 see Translate.jsx's lexTranslitCandidates
+  // for the full note; same fix, same reason, mirrored here.
+  left = left.replace(/\s*\(.*$/, '').trim();
   let prev;
   do { prev = left; left = left.replace(AL_LEX_LEAD_STRIP, '').trim(); } while (left !== prev);
   if (!left) return [];
   const words = left.split(/\s+/).filter(Boolean);
   if (!words.length) return [];
-  return [...new Set([words.join('').toLowerCase(), words[words.length - 1].toLowerCase()])].filter(Boolean);
+  const out = new Set([words.join('').toLowerCase(), words[words.length - 1].toLowerCase()]);
+  for (const w of words) {
+    const root = lastCamelSegmentAL(w);
+    if (root) out.add(root.toLowerCase());
+  }
+  return [...out].filter(Boolean);
+}
+
+// Mirrors Translate.jsx's identically-named translitMatches/
+// FUZZY_TRANSLIT_MIN_LEN (deliberately duplicated, same reason as everywhere
+// else on this page). A word is a match if the SHORTER of the two translit
+// strings is a suffix of the longer one — handles fieldy's own
+// transliteration spelling for the same root differing by a Hebrew prefix
+// morpheme between one verse's English and another's stored lexicon value
+// (e.g. lexicon "hayah" vs. English "WaYaHayah"), in either direction.
+const FUZZY_TRANSLIT_MIN_LEN_AL = 4;
+function translitMatchesAL(a, b) {
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const shorter = a.length <= b.length ? a : b;
+  const longer = a.length <= b.length ? b : a;
+  return shorter.length >= FUZZY_TRANSLIT_MIN_LEN_AL && longer.endsWith(shorter);
+}
+// srcCandidates is a Set of exact candidate strings (sourceCandidateSet
+// above) — Set.has() alone only catches exact matches, so this walks it
+// with the fuzzy suffix comparison instead of a plain membership test.
+function candidateSetHasFuzzyAL(set, word) {
+  if (!set || !word) return false;
+  for (const c of set) { if (translitMatchesAL(c, word)) return true; }
+  return false;
 }
 // Every transliteration string this language's OWN verse tokens could
 // possibly be auto-linked against, from their own lexicon `.gloss` values.
@@ -701,7 +749,7 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
                 // translation." Only for translit-head words with no
                 // existing link — a plain word ("the", "and") or one that's
                 // already linked has nothing to flag.
-                const isMissing = isRoot && !link && srcCandidates && !srcCandidates.has(cleanAutoLinkWordAL(text));
+                const isMissing = isRoot && !link && srcCandidates && !candidateSetHasFuzzyAL(srcCandidates, cleanAutoLinkWordAL(text));
                 // The trailing space used to live INSIDE the span (`{text}{' '}`),
                 // so a highlighted/linked word's background/underline box
                 // stretched to cover that space too — visibly oversized next to

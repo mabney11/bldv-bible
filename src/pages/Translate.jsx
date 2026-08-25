@@ -145,6 +145,25 @@ function cleanAutoLinkWord(raw) {
 // Link found zero matches on Genesis 1:1's Greek because of exactly this.
 // Split on whichever separator appears first so both conventions resolve.
 const LEX_LEAD_STRIP = /^(and|the|to|of|in|for|so|that|he|it|they)\s+/i;
+// A single fused-morpheme translit word — hebrew-extra-lexicon.json's own
+// house style for a Hebrew grammatical prefix baked onto its root as one
+// CamelCase word, e.g. "HaRaqayai" (Ha- "the" + Raqayai), "LaRaqayai" (La-
+// "to" + Raqayai), "MiThachath" (Mi- "from" + Thachath), "MeIl" (Me- "from"
+// + Il) — see piecewise-expansion-notes.md's Hebrew (extra) sections. The
+// app's "Novel English" reading text spells that prefix out as its own
+// separate plain-English word ("the raqayai", "to the raqayai", "from
+// thachath") rather than repeating it fused onto the transliteration, so
+// Auto-Link needs the bare ROOT as an extra candidate or these silently
+// never match — the root is always written last in this convention, so
+// splitting on every internal capital and keeping the final segment finds
+// it. Fieldy, 2026-08-25, Gen 1:7: "Heb extra isnt matching on mayam,
+// raqayai, thachath... make the links match the transliterated words."
+const CAMEL_SEGMENT_RE = /^[A-Z][a-z]*(?:[A-Z][a-z]*)+$/;
+function lastCamelSegment(word) {
+  if (!CAMEL_SEGMENT_RE.test(word)) return null;
+  const segs = word.split(/(?=[A-Z])/);
+  return segs[segs.length - 1] || null;
+}
 function lexTranslitCandidates(val) {
   if (!val || val === '—') return [];
   const s = String(val);
@@ -152,12 +171,58 @@ function lexTranslitCandidates(val) {
   const dashIdx = s.indexOf(' - ');
   const cut = slashIdx >= 0 && dashIdx >= 0 ? Math.min(slashIdx, dashIdx) : Math.max(slashIdx, dashIdx);
   let left = (cut >= 0 ? s.slice(0, cut) : s).trim();
+  // Some older entries carry NEITHER a "/" nor a " - " separator at all —
+  // the gloss is just a trailing parenthetical instead, e.g. "Mayam
+  // (waters)", "Aratz (earth)" (predates this session's "translit / gloss"
+  // convention). Left alone, `left` above is the WHOLE "Word (gloss)"
+  // string, and splitting it on whitespace put the still-bracketed
+  // "(waters)" through as the "last word" candidate — which can never equal
+  // the plain "water"/"waters" fieldy actually writes in the translation, so
+  // these entries silently never auto-linked. Strip any trailing
+  // parenthetical the same way regardless of which format produced `left`.
+  // Fieldy, 2026-08-25: "if a lexicon gloss has the word I use in my
+  // translation it should be linked with the word, not happening for mayam."
+  left = left.replace(/\s*\(.*$/, '').trim();
   let prev;
   do { prev = left; left = left.replace(LEX_LEAD_STRIP, '').trim(); } while (left !== prev);
   if (!left) return [];
   const words = left.split(/\s+/).filter(Boolean);
   if (!words.length) return [];
-  return [...new Set([words.join('').toLowerCase(), words[words.length - 1].toLowerCase()])].filter(Boolean);
+  const out = new Set([words.join('').toLowerCase(), words[words.length - 1].toLowerCase()]);
+  for (const w of words) {
+    const root = lastCamelSegment(w);
+    if (root) out.add(root.toLowerCase());
+  }
+  return [...out].filter(Boolean);
+}
+
+// Fuzzy fallback layered on top of the exact-candidate match below. The
+// CamelCase-root extraction above already handles a lexicon-side compound
+// ("HaRaqayai") matching a bare-root English word ("raqayai"), but fieldy's
+// OWN transliteration spelling for the same underlying root sometimes
+// differs between occurrences the other way — e.g. an older lexicon entry
+// spelled just "hayah" while a later verse's English instead writes the
+// fuller "WaYaHayah (and this came to pass)". Since every Hebrew prefix
+// morpheme in this app's own convention attaches to the FRONT of the root
+// (the root is always the tail — same rule lastCamelSegment relies on),
+// treat two translit strings as the same word whenever the SHORTER one is a
+// suffix of the longer one, checked in EITHER direction (lexicon-longer or
+// English-longer). Fieldy, 2026-08-25: "I want it to work both ways...
+// I want the transliterated words on this (translation) side to link with
+// the same word as the transliteration on the source side" — the gloss
+// text in parens is explicitly NOT part of the match, only the
+// transliteration is, which is already all `clean`/candidate strings ever
+// carry. A minimum length on the shorter string is a second guard against a
+// short grammar fragment coincidentally ending some unrelated longer word —
+// AUTO_LINK_STOP/LEX_LEAD_STRIP already remove most of those before this is
+// ever reached.
+const FUZZY_TRANSLIT_MIN_LEN = 4;
+function translitMatches(a, b) {
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const shorter = a.length <= b.length ? a : b;
+  const longer = a.length <= b.length ? b : a;
+  return shorter.length >= FUZZY_TRANSLIT_MIN_LEN && longer.endsWith(shorter);
 }
 
 // One candidate per still-unlinked token, offering every transliteration
@@ -208,7 +273,7 @@ function matchAutoLinkCandidates(candidates, enWords, usedEn) {
     let hit = null, hitVariant = null;
     for (const c of candidates) {
       if (c.used) continue;
-      const v = c.variants.find(vv => vv.text === clean);
+      const v = c.variants.find(vv => translitMatches(vv.text, clean));
       if (v) { hit = c; hitVariant = v; break; }
     }
     if (!hit) continue;
