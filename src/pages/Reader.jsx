@@ -302,7 +302,7 @@ function renderVerseNodes(t, mode, keyPrefix = '') {
 // can SPAN MULTIPLE VERSES (see sliceQuoteTree below): the caller runs this
 // ONCE over a whole chapter's concatenated text, then cuts the result back
 // apart at each verse's own boundary.
-const PLAIN_QUOTE_RE = /["'“”‘’]/g;
+const PLAIN_QUOTE_RE = /["'“”‘’<>]/g;
 const OPEN_STYLE  = { '“': 'curly2', '‘': 'curly1' };
 const CLOSE_STYLE = { '”': 'curly2', '’': 'curly1' };
 // See the big comment above: a ’ immediately followed by a letter is read as
@@ -334,6 +334,40 @@ function parseQuoteMarks(raw) {
   };
   marks.forEach(({ at, ch }) => {
     const top = openStack[openStack.length - 1];
+    // Explicit <...> quote markers (2026-08-25, fieldy: a manual, unambiguous
+    // way to mark a quotation the character-based scan below doesn't catch —
+    // e.g. Exodus 3:7-10, a multi-verse discourse with no quote glyphs in the
+    // source text at all, so PLAIN_QUOTE_RE had nothing to find; or a long
+    // STRAIGHT-quote span that dissolveOverlongQuotes strips past
+    // MAX_QUOTE_CHARS, see below). '<' always opens, '>' only ever closes an
+    // open '<' — total directional certainty, unlike a straight " or a
+    // possessive '/'’, so no heuristics needed and no length cap applies
+    // (dissolveOverlongQuotes only targets style 'straight'). Pushed onto the
+    // SAME depth stack as the real-quote-character scan, so '<<...>>' nests
+    // exactly like a real quote-within-a-quote — and can even nest inside or
+    // around a real curly/straight quote — for free. Rendered as real
+    // typographic marks (renderQuoteTree below), alternating double/single by
+    // depth; the angle brackets themselves never reach the page.
+    if (ch === '<' || ch === '>') {
+      if (ch === '<') {
+        flush(at);
+        const node = { type: 'quote', depth: openStack.length + 1, style: 'bracket', markOpen: ch, markClose: '', children: [], start: at, end: raw.length };
+        containerStack[containerStack.length - 1].children.push(node);
+        openStack.push({ style: 'bracket', node });
+        containerStack.push(node);
+        last = at + ch.length;
+      } else if (top && top.style === 'bracket') {
+        flush(at);
+        const entry = openStack.pop();
+        entry.node.markClose = ch;
+        entry.node.end = at + ch.length;
+        containerStack.pop();
+        last = at + ch.length;
+      }
+      // A stray '>' with no open '<' falls through as inert text, same as an
+      // unmatched real closer below — don't advance `last`.
+      return;
+    }
     // A bare straight ' (added 2026-08-23) is NEVER treated as an opener — it's
     // far too common as an ordinary apostrophe/possessive for that to be safe,
     // and unlike " a lone ' has no dedicated role of its own. The ONLY thing
@@ -498,6 +532,13 @@ function dissolveOverlongQuotes(nodes) {
 // continues into a later verse, or is genuinely unclosed) — drop its bottom
 // margin. Two touching continuation slices then abut with zero gap between
 // them, their borders lining up into what reads as one unbroken block.
+// Display glyphs for a bracket-marked node (angle brackets never reach the
+// page) — alternates double/single by nesting depth, the standard nested-
+// quote typographic convention: depth 1,3,5.. -> “ ”, depth 2,4,6.. -> ‘ ’.
+const BRACKET_GLYPHS = [['\u201C', '\u201D'], ['\u2018', '\u2019']];
+function bracketGlyph(depth, close) {
+  return BRACKET_GLYPHS[(depth - 1) % 2][close ? 1 : 0];
+}
 function renderQuoteTree(nodes, mode, keyPrefix) {
   const out = [];
   nodes.forEach((n, i) => {
@@ -507,9 +548,11 @@ function renderQuoteTree(nodes, mode, keyPrefix) {
       return;
     }
     const inner = [];
-    if (n.markOpen) inner.push(n.markOpen);
+    const openGlyph  = n.markOpen  ? (n.style === 'bracket' ? bracketGlyph(n.depth, false) : n.markOpen)  : '';
+    const closeGlyph = n.markClose ? (n.style === 'bracket' ? bracketGlyph(n.depth, true)  : n.markClose) : '';
+    if (openGlyph) inner.push(openGlyph);
     inner.push(...renderQuoteTree(n.children, mode, `${keyPrefix}q${i}-`));
-    if (n.markClose) inner.push(n.markClose);
+    if (closeGlyph) inner.push(closeGlyph);
     // n.unclosed no longer gets its own class/red styling here (2026-08-18,
     // direct feedback: "its fine to have it unclosed but there is no error
     // so it shouldnt highlight red") — a quote can legitimately still be
