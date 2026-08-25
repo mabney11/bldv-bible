@@ -1,13 +1,18 @@
 #!/usr/bin/env node
 /**
  * dump-verse-tokens.js — prints the raw token list for ONE verse, in every
- * non-Hebrew language, straight off corpus.db.
+ * "generic" (non-BHS) language/edition, straight off corpus.db. This now
+ * includes corpus-Hebrew (HEB, "Hebrew (extra)") as of 2026-08-25 — a
+ * separate Hebrew edition read through the same generic tokenize+lookup path
+ * as Latin/Syriac/Ge'ez/Greek, NOT through BHS's own Strong's/root pipeline.
+ * BHS itself is still out of scope here — it has no plain verses.text row to
+ * tokenize this way, it's read through its own richer per-morpheme pipeline.
  *
  * Built for the Gloss Studio lexicon-expansion workflow: Claude aligns each
  * token to the corresponding piece of the (already-Hebrew-transliterated)
  * English translation and proposes a gloss, the same "Translit (gloss)"
- * shorthand already used in lexicon/{geez,latin,syriac}-lexicon.json. (Coptic
- * dropped 2026-08-15 — see piecewise-expansion-notes.md.)
+ * shorthand already used in lexicon/{geez,latin,syriac,hebrew-extra}-lexicon.json.
+ * (Coptic dropped 2026-08-15 — see piecewise-expansion-notes.md.)
  * This script only does the fetching — no guessing, no memory-of-the-text —
  * so every token handed to Claude is verified straight from this app's own
  * corpus, never assumed. Copy the tokens (and the English from Gloss
@@ -62,6 +67,17 @@ const LANGS = [
     { id: 'SYR', label: 'Syriac (Peshitta)', corpora: ['SYR'] },
     { id: 'GEZ', label: "Ge'ez (BETMAS)",    corpora: ['GEZ'] },
     { id: 'GRC', label: 'Greek',             corpora: ['LXX', 'GNT'] },
+    // Corpus-Hebrew (HEB) — server.js's SOURCES.HEB, "Hebrew (extra)". A
+    // separate, unsegmented Hebrew edition read through the same generic
+    // splitTextToTokens()+_lookupGloss() path as the four above (NOT through
+    // BHS's own Strong's/root-tokenized pipeline — that's why HEB's gloss
+    // coverage previously looked inconsistent with BHS's). Added 2026-08-25
+    // so HEB can be curated with the same "Translit (gloss)" piecewise
+    // workflow, compound-phrase style, matching Latin/Syriac/Ge'ez/Greek.
+    // Whatever script this corpus row is actually stored in (square vs.
+    // paleo Hebrew), convert to Paleo before writing a lexicon key — the
+    // app's Hebrew lexicons are Paleo-only, see server.js's _squareToPaleo.
+    { id: 'HEB', label: 'Hebrew (extra)',    corpora: ['HEB'] },
 ];
 
 const stmt = db.prepare(`SELECT text FROM verses WHERE corpus=? AND canon_id=? AND ord_c=? AND ord_v=?`);

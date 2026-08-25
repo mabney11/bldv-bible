@@ -411,7 +411,13 @@
    no bespoke word-chip styling of its own anymore, so it can never visually
    drift from Parallel/the Hebrew Viewer the way the old prose-style
    PaleoBlock did. */
-.tr-paleo-tokens { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 3px; direction: rtl; }
+/* No hardcoded direction here — this wrapper is shared by every source
+   language's top token strip (BHS/HEB via the paleo path, GRC/GEZ/LAT/SYR via
+   the generic .tr-src-block path). Direction must follow the per-language
+   dir={langMeta.dir} attribute set on this element and its children (rtl for
+   Hebrew/Syriac, ltr for Greek/Ge'ez/Latin) — hardcoding rtl here forced every
+   language's flex layout order backwards regardless of its real direction. */
+.tr-paleo-tokens { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 3px; }
 
 /* Translation section (rich-text) */
 .tr-translation-section { margin-bottom: 18px; position: relative; }

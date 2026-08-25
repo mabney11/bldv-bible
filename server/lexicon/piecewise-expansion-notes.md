@@ -270,16 +270,36 @@ dump-verse-tokens.js 1 1 6` himself on his own machine and pasted the raw output
 sourced by fieldy's hand instead of this agent's own tool call. Flagging so a future
 session doesn't assume this agent regained shell access.
 
-**New pattern this verse — periphrastic "let it be [participle]" auxiliary, same rule
-as `est`/`esset`.** V6's second clause ("and mabadayal...") is built in Latin, Greek,
+**Correction, same day — the English text this pass first aligned against was already
+stale.** fieldy later pulled the actual v6 English straight from PROD's `translation.db`
+(explicit instruction: prod, not dev, is the source of truth) and it reads "...and
+**hayah (came to pass)** mabadayal (the separation) bayan (between) mayam..." — an extra
+`hayah (came to pass)` clause this agent's first pass never saw (it worked from the
+Gloss Studio screenshot text, captured before fieldy's own further edit to the verse,
+and "cause separation" vs. the real "the separation" wording). This matters because the
+first pass treated Greek `ἔστω`/Syriac `ܘܢܗܘܐ` as bare periphrastic auxiliaries (`"—"`,
+content fully absorbed by the following participle) — reasonable given the text it had,
+but wrong once the real English shows that clause DOES have its own independent English
+word. Both are now corrected below (`ἔστω`/`ܘܢܗܘܐ` → `hayah / came to pass`); every
+`mabadayal / cause separation` in this verse was also retextured to `mabadayal / the
+separation` to match prod's actual wording exactly. General lesson: prefer pulling the
+English straight from `translation.db` over trusting a screenshot or an in-session copy
+that might predate a later hand-edit — same "never guess, always verify" standard this
+file already holds tokens to, just as true for the English side of the alignment.
+
+**Pattern this verse — periphrastic "let it be [participle]" auxiliary, corrected.**
+V6's second clause ("and hayah (came to pass) mabadayal...") is built in Latin, Greek,
 and Syriac alike as [jussive "be"] + [present participle "dividing"], not a single
 finite verb the way Latin's `dividat` (its OWN v6 rendering, see below) or v4's
-`divisit`/`badal` were. Applying the same rule already used for Latin `est`/`esset`
-(bare periphrastic copula → `"—"`, all content on the participle): the auxiliary
-(Greek `ἔστω`, Syriac `ܘܢܗܘܐ`) gets `"—"`, the participle (Greek `διαχωρίζον`, Syriac
-`ܦܪܫ̇`) carries `mabadayal / cause separation`. Latin doesn't need this split — its own
-v6 uses the single finite subjunctive `dividat`, not a periphrastic, so it gets the
-full gloss directly, same as `divisit` did in v4.
+`divisit`/`badal` were — but UNLIKE Latin `est`/`esset` in v3/v4 (still correctly bare
+`"—"`, since that English never named the copula separately), this clause's auxiliary
+DOES have its own independent English word (`hayah (came to pass)`), so it gets a real
+gloss rather than `"—"`: Greek `ἔστω` → `hayah / came to pass`, Syriac `ܘܢܗܘܐ` → `hayah
+/ came to pass`; the participle carries the other half, Greek `διαχωρίζον` / Syriac
+`ܦܪܫ̇` → `mabadayal / the separation`. Latin doesn't need this split — its own v6 uses
+the single finite subjunctive `dividat`, which fuses both concepts into one word (same
+as `Dixitque` fusing "and"+"said" in v3), so it gets the combined gloss directly, same
+as `divisit` did in v4.
 
 **Edition divergence, flagged not silently absorbed:** the Greek (LXX) and Ge'ez texts
 both tack a "consummation formula" onto the end of v6 — `καὶ ἐγένετο οὕτως` / `ወኮነ
@@ -301,7 +321,7 @@ one `Dixitque` enclitic form the way v3 did — two separate tokens here, same m
 "Raqayai / firmament", `in` "in" (bare — no Hebrew root of its own in the English
 here, same treatment as v2's `super` "over"), `medio` "thawak / midst", `aquarum`
 "Mayam (waters)" (genitive — separate key from the existing accusative `aquas` and the
-new ablative `aquis` below), `dividat` "mabadayal / cause separation" (single finite
+new ablative `aquis` below), `dividat` "mabadayal / the separation" (single finite
 verb, no periphrastic split needed — see above), `ab` "bayan / between" (stands in for
 the Hebraized doubled "bayan...bayan" idiom with one preposition, same pattern as v4's
 `a` — note `ab`/`a` are the same Latin word, before-consonant vs before-vowel spelling,
@@ -313,8 +333,8 @@ file alongside `aquas`/`aquarum`).
 scaffolds: `ܐܪܩܝܥܐ` "Raqayai / firmament", `ܒܡܨܥܬ` "in thawak / midst" (the `ܒ`-prefix
 "in" is fused into this one token, unlike Latin/Greek where it's a separate word — so
 the whole compound gets one combined gloss, same rule as any other fused-prefix
-token in this file), `ܘܢܗܘܐ` "—" (periphrastic auxiliary, see above), `ܦܪܫ̇`
-"mabadayal / cause separation" (the participle, see above), `ܠܡ̈ܝܐ` "Mayam (waters)"
+token in this file), `ܘܢܗܘܐ` "hayah / came to pass" (periphrastic auxiliary, see
+above), `ܦܪܫ̇` "mabadayal / the separation" (the participle, see above), `ܠܡ̈ܝܐ` "Mayam (waters)"
 (ܠ-prefixed "to the waters" — actually the clearest cross-language confirmation this
 verse: Syriac's own `ܒܝܬ...ܠ` structure ("between water, to water") is exactly what
 the English's own "bayan (between) mayam...to mayam" already mirrors). `ܡ̈ܝܐ` and
@@ -327,15 +347,128 @@ variant — Ge'ez's own `ማእከለ...ማእከለ` doubled construction genui
 "in the midst of" and "between X and Y" as one continuous idiom spanning the verse,
 so this is the same kind of this-language's-own-economy case already documented
 above for Latin/Coptic, not a real gap. New: `ጠፈር` "Raqayai / firmament", `ይፍልጥ`
-"mabadayal / cause separation" (cognate root to the already-curated `ወፈለጠ`/`badal`
-from v4-5, jussive form here), `ከማሁ` "thus / so" (the "and it was so" tail, see
-edition-divergence note above).
+"mabadayal / the separation" (cognate root to the already-curated `ወፈለጠ`/`badal`
+from v4-5, jussive form here — single fused verb like Latin's `dividat`, no periphrastic
+split needed), `ከማሁ` "thus / so" (the "and it was so" tail, see edition-divergence
+note above).
 
 **Greek**: `Καὶ`/`εἶπεν`/`ὁ`/`θεός`/`Γενηθήτω`/`ἐν`/`τοῦ`/`ὕδατος`/`ἀνὰ`/`μέσον`/
 `ἐγένετο` all already curated, reused unchanged (all three `ὕδατος` occurrences in
 this verse are the same genitive-singular surface form as the existing key). New:
 `στερέωμα` "Raqayai / firmament", `μέσῳ` "thawak / midst" (dative — separate key from
 the existing accusative `μέσον`, and a different sense besides: "in the midst of" here
-vs. "between" in the `ἀνὰ μέσον` idiom), `ἔστω` "—" and `διαχωρίζον` "mabadayal /
-cause separation" (periphrastic split, see above), `οὕτως` "thus / so" (edition-tail,
-see above).
+vs. "between" in the `ἀνὰ μέσον` idiom), `ἔστω` "hayah / came to pass" and
+`διαχωρίζον` "mabadayal / the separation" (periphrastic split, see above), `οὕτως`
+"thus / so" (edition-tail, see above).
+
+## 2026-08-25 — Hebrew (extra), added as a FIFTH piecewise-expansion language
+
+`server.js`'s `SOURCES.HEB` ("Hebrew (extra)") is a separate, unsegmented Hebrew
+corpus edition, read through the exact same generic `splitTextToTokens()`+
+`_lookupGloss('paleo-hebrew', word)` path as Latin/Syriac/Ge'ez/Greek — i.e. it only
+checks `hebrew-extra-lexicon.json` (a flat curated overlay), with NO connection to
+BHS's own Strong's/root/homograph pipeline. fieldy flagged the resulting gloss
+coverage in Translation Studio's Word Links panel as inconsistent (some HEB tokens
+showed a translit+gloss, most didn't) and asked for it to be treated like a fifth
+piecewise-expansion language rather than wired to fall back onto BHS's system —
+**compound-phrase style, matching Syriac**, not BHS's granular root/prefix/suffix
+decomposition. His own example: `𐤅𐤉𐤀𐤌𐤓` (vayomer, "and-he-said") → `"and he amar /
+said"`, one whole-token gloss, not split into waw/yod-prefix/root pieces.
+
+**House style already established in the file, discovered rather than invented:**
+`hebrew-extra-lexicon.json` already had a handful of real entries scattered through
+its ~56k-key scaffold (mostly empty strings) from earlier, undocumented work —
+`"𐤀𐤋𐤄𐤉𐤌": "Alahayam / God"`, `"𐤅𐤉𐤄𐤉": "Hayah / and it came to pass"`, `"𐤅𐤉𐤒𐤓𐤀":
+"Qaraa / and He called"`, `"𐤒𐤓𐤀": "Qaraa / called"`, `"𐤋𐤀𐤅𐤓": "Awar / for the
+light"`, `"𐤅𐤋𐤇𐤔𐤊": "Chashak / and for the darkness"`, `"𐤋𐤉𐤋𐤄": "Layalah / night"`,
+`"𐤏𐤓𐤁": "Irab / evening"`, `"𐤁𐤒𐤓": "Baqar / morning"`, `"𐤀𐤇𐤃": "Achad / one"` — this
+is Genesis 1:5 in full, already fully curated before this session touched it, which
+explains why the Word Links screenshot that started this showed a MIX of labeled and
+blank chips rather than a uniformly empty verse. Two conventions read directly off
+these real entries, followed rather than reinvented: (1) the translit half is
+**Capitalized** (`Alahayam`, `Qaraa`, `Awar`...) — unlike the other four language
+files, which use lowercase translit (`amar`, `bayan`...); this file's own established
+practice wins for its own entries. (2) a waw-consecutive/vayyiqtol verb (explicit
+imperfect-prefix morpheme, narrative "and X-ed") gets its subject spelled out —
+`"and He called"` when the subject is God, `"and it came to pass"` when impersonal —
+matching fieldy's own `"and he amar / said"` example exactly. Two pre-existing entries
+used an OLDER, incomplete style (bare English, no translit: `"𐤀𐤕": "entirety"`,
+`"𐤁𐤓𐤀𐤔𐤉𐤕": "in the beginning"`) — upgraded both to the dominant Capitalized-Translit
+convention for consistency (`"AthaHa / the entirety of"`, `"Raashayath / in the
+beginning"`), same "Raashayath" spelling already used for this exact word in
+Ge'ez/Latin's own entries.
+
+**Sourcing:** `dump-verse-tokens.js` extended this session (see below) to also dump
+`HEB` tokens for a verse — real tokens off `corpus.db`, already stored in Paleo script
+(no square→paleo conversion needed, unlike what this agent expected going in). fieldy
+also pulled Genesis 1:1-6's English straight from PROD's `translation.db` this session
+(see the Gen 1:6 correction note above) — that prod text is what every verse below was
+aligned against, not the locally-cached copies this file had from earlier sessions.
+
+**Genesis 1:1** ("In the raashayath (beginning), Alahayam () baraa (created) 𐤀𐤕 (the
+entirety of) the Shamayam (Heavens) and 𐤀𐤕 (the entirety of) the Aratz (Earth)."):
+tokens `𐤁𐤓𐤀𐤔𐤉𐤕`/`𐤁𐤓𐤀`/`𐤀𐤋𐤄𐤉𐤌`/`𐤀𐤕`/`𐤄𐤔𐤌𐤉𐤌`/`𐤅𐤀𐤕`/`𐤄𐤀𐤓𐤑`. `𐤀𐤋𐤄𐤉𐤌` already curated
+(Alahayam), reused. Note the English literally embeds the bare Paleo glyphs `𐤀𐤕` as
+its own gloss parenthetical ("𐤀𐤕 (the entirety of)") rather than a phonetic
+transliteration — this app's convention for the untranslatable definite-object marker
+everywhere else is the transliteration "AthaHa" (see Greek `τήν`/`τόν`: "AthaHa - the
+entirety of"), so `𐤀𐤕`/`𐤅𐤀𐤕` got that same transliteration rather than a
+self-referential Paleo-to-Paleo "gloss." New/upgraded: `𐤁𐤓𐤀𐤔𐤉𐤕` "Raashayath / in the
+beginning" (upgrade), `𐤁𐤓𐤀` "Baraa / created", `𐤀𐤕` "AthaHa / the entirety of"
+(upgrade), `𐤄𐤔𐤌𐤉𐤌` "HaShamayam / the heavens", `𐤅𐤀𐤕` "and AthaHa / the entirety of",
+`𐤄𐤀𐤓𐤑` "HaAratz / the earth".
+
+**Genesis 1:2:** tokens `𐤅𐤄𐤀𐤓𐤑`/`𐤄𐤉𐤕𐤄`/`𐤕𐤄𐤅`/`𐤅𐤁𐤄𐤅`/`𐤅𐤇𐤔𐤊`/`𐤏𐤋`/`𐤐𐤍𐤉`/`𐤕𐤄𐤅𐤌`/
+`𐤅𐤓𐤅𐤇`/`𐤀𐤋𐤄𐤉𐤌`/`𐤌𐤓𐤇𐤐𐤕`/`𐤏𐤋`/`𐤐𐤍𐤉`/`𐤄𐤌𐤉𐤌` — this Hebrew vocabulary is the most
+direct 1:1 match to the English of any of the five languages, since the English reading
+text's own transliterated words ARE these Hebrew roots. `𐤀𐤋𐤄𐤉𐤌` reused. `𐤏𐤋`/`𐤐𐤍𐤉`
+each appear twice, one entry each covers both. New: `𐤅𐤄𐤀𐤓𐤑` "and HaAratz / the
+earth", `𐤄𐤉𐤕𐤄` "Hayathah / became" (matches the English's own "hayathah (became)"
+exactly), `𐤕𐤄𐤅` "Thahaw / formless", `𐤅𐤁𐤄𐤅` "and Bahaw / void", `𐤅𐤇𐤔𐤊` "and Chashak
+/ darkness", `𐤏𐤋` "over" (bare functional word, no translit content of its own — same
+treatment as "over"/"in" in the other four languages), `𐤐𐤍𐤉` "Panayam / face", `𐤕𐤄𐤅𐤌`
+"Thahawam / the depths", `𐤅𐤓𐤅𐤇` "and Rawach / spirit", `𐤌𐤓𐤇𐤐𐤕` "Marachapath /
+hovered", `𐤄𐤌𐤉𐤌` "HaMayam / the waters".
+
+**Genesis 1:3:** tokens `𐤅𐤉𐤀𐤌𐤓`/`𐤀𐤋𐤄𐤉𐤌`/`𐤉𐤄𐤉`/`𐤀𐤅𐤓`/`𐤅𐤉𐤄𐤉`/`𐤀𐤅𐤓`. `𐤀𐤋𐤄𐤉𐤌` reused;
+`𐤅𐤉𐤄𐤉` and the second `𐤀𐤅𐤓` were ALREADY curated (`"Hayah / and it came to pass"`,
+reusing the first `𐤀𐤅𐤓` entry below) — left unchanged. New: `𐤅𐤉𐤀𐤌𐤓` "and He Amar /
+said" (fieldy's own example token, applied verbatim), `𐤉𐤄𐤉` "Hayah / let it be"
+(distinct key/sense from `𐤅𐤉𐤄𐤉`'s "and it came to pass" — same root, different form:
+jussive vs. waw-consecutive), `𐤀𐤅𐤓` "Awar / light".
+
+**Genesis 1:4:** tokens `𐤅𐤉𐤓𐤀`/`𐤀𐤋𐤄𐤉𐤌`/`𐤀𐤕`/`𐤄𐤀𐤅𐤓`/`𐤊𐤉`/`𐤈𐤅𐤁`/`𐤅𐤉𐤁𐤃𐤋`/`𐤀𐤋𐤄𐤉𐤌`/
+`𐤁𐤉𐤍`/`𐤄𐤀𐤅𐤓`/`𐤅𐤁𐤉𐤍`/`𐤄𐤇𐤔𐤊`. `𐤀𐤋𐤄𐤉𐤌` and `𐤀𐤕` reused (from v1); `𐤄𐤀𐤅𐤓`/`𐤁𐤉𐤍` each
+appear twice, one entry each. New: `𐤅𐤉𐤓𐤀` "and He Raah / saw" (same
+subject-spelled-out treatment as `𐤅𐤉𐤀𐤌𐤓`), `𐤄𐤀𐤅𐤓` "HaAwar / the light" (distinct key
+from v3's bare `𐤀𐤅𐤓`), `𐤊𐤉` "Kay / that", `𐤈𐤅𐤁` "Tawab / good", `𐤅𐤉𐤁𐤃𐤋` "and He
+Badal / divided", `𐤁𐤉𐤍` "Bayan / between", `𐤅𐤁𐤉𐤍` "and Bayan / between", `𐤄𐤇𐤔𐤊`
+"HaChashak / the darkness".
+
+**Genesis 1:5:** tokens `𐤅𐤉𐤒𐤓𐤀`/`𐤀𐤋𐤄𐤉𐤌`/`𐤋𐤀𐤅𐤓`/`𐤉𐤅𐤌`/`𐤅𐤋𐤇𐤔𐤊`/`𐤒𐤓𐤀`/`𐤋𐤉𐤋𐤄`/`𐤅𐤉𐤄𐤉`/
+`𐤏𐤓𐤁`/`𐤅𐤉𐤄𐤉`/`𐤁𐤒𐤓`/`𐤉𐤅𐤌`/`𐤀𐤇𐤃` — as noted above, every one of these was ALREADY
+curated before this session (the pre-existing entries this whole section discovered).
+No new entries needed; verified all thirteen tokens resolve, none left as a stray
+empty scaffold.
+
+**Genesis 1:6:** tokens `𐤅𐤉𐤀𐤌𐤓`/`𐤀𐤋𐤄𐤉𐤌`/`𐤉𐤄𐤉`/`𐤓𐤒𐤉𐤏`/`𐤁𐤕𐤅𐤊`/`𐤄𐤌𐤉𐤌`/`𐤅𐤉𐤄𐤉`/
+`𐤌𐤁𐤃𐤉𐤋`/`𐤁𐤉𐤍`/`𐤌𐤉𐤌`/`𐤋𐤌𐤉𐤌` — 11 tokens, matching the Masoretic text's own 11 words
+exactly (וַיֹּאמֶר אֱלֹהִים יְהִי רָקִיעַ בְּתוֹךְ הַמָּיִם וִיהִי מַבְדִּיל בֵּין מַיִם
+לָמָיִם), no textual variant. Five already curated and reused unchanged: `𐤅𐤉𐤀𐤌𐤓`
+(same key as v3's "and He Amar / said"), `𐤀𐤋𐤄𐤉𐤌` (Alahayam), `𐤉𐤄𐤉` (same key as v3's
+"Hayah / let it be"), `𐤄𐤌𐤉𐤌` (same key as v2's "HaMayam / the waters"), `𐤅𐤉𐤄𐤉` (same
+key as v3/v5's "Hayah / and it came to pass") — five of this verse's eleven words are
+literally the same surface forms already glossed for earlier verses, the strongest
+concordance-style payoff yet of curating this file by real surface form rather than
+per-verse. New: `𐤓𐤒𐤉𐤏` "Raqayai / firmament", `𐤁𐤕𐤅𐤊` "in Thawak / midst" (ב+תוך
+fused into one token, same combined-gloss treatment as Syriac's `ܒܡܨܥܬ` for this exact
+concept), `𐤌𐤁𐤃𐤉𐤋` "Mabadayal / the separation" (hiphil participle "dividing" — this
+Hebrew word IS the literal source of the English gloss's own "mabadayal," about as
+direct a confirmation of the mapping as this project gets), `𐤁𐤉𐤍` reused ("Bayan /
+between", already curated from v4), `𐤌𐤉𐤌` "Mayam / waters" (bare, no ה־ article —
+distinct key from `𐤄𐤌𐤉𐤌`/HaMayam), `𐤋𐤌𐤉𐤌` "LaMayam / to the waters" (ל־ "to" prefix
+— matches the English's own "to mayam (waters)" ending, and confirms the same
+ל-prefix "to X" pattern already used for Syriac's `ܠܡ̈ܝܐ` in this verse).
+
+Genesis 1:1-6 is now fully curated for Hebrew (extra), matching the other four
+languages' coverage.
