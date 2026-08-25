@@ -38,12 +38,11 @@ param(
 )
 
 # ── Fill these in once ──────────────────────────────────────────────────────
-# Whatever you type after "ssh " to connect right now (no quotes needed here) —
-# e.g. "ubuntu@52.1.2.3". If you normally add a key with -i, put ONLY the
-# "-i C:\path\to\your-key.pem" part in $SshKeyArgs below; leave it as @() if
-# a plain `ssh ubuntu@<ip>` with no -i flag already works for you.
-$RemoteHost    = "ubuntu@<static-ip>"
-$SshKeyArgs    = @()   # e.g. @('-i', 'C:\Users\fieldy\.ssh\your-key.pem')
+# fieldy connects via the "paleo-lightsail" alias in ~/.ssh/config, which
+# already carries the HostName/User/IdentityFile — so scp just needs the
+# alias itself, no separate key flag needed.
+$RemoteHost    = "paleo-lightsail"
+$SshKeyArgs    = @()
 $RemoteDataDir = "/mnt/paleo-data"
 # ─────────────────────────────────────────────────────────────────────────────
 

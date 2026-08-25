@@ -252,3 +252,90 @@ evening", `πρωί` "baqar / morning", `μία` "achad / one". Also tightened p
 session's Translit-first convention.
 
 Coptic step skipped entirely — dropped from the app 2026-08-15, see the section above.
+
+## 2026-08-25 — Genesis 1:6, Latin/Syriac/Ge'ez/Greek
+
+English (fieldy's own hand translation in Gloss Studio, replacing the prior machine
+draft): "And amar (said) Alahayam (), 'Hayah (come into existence) Raqayai (firmament)
+in the thawak (midst) of the mayam (waters), and mabadayal (cause separation) bayan
+(between) mayam (the waters) to mayam (waters).'" Four new content words: Raqayai
+(firmament), thawak (midst), mabadayal (cause/separate) — amar/Alahayam/Hayah/bayan/
+mayam already curated from v1-v5.
+
+**Sourcing note, this session only:** `device_bash` (the tool this agent normally runs
+`node dump-verse-tokens.js` through) was down all session, same standing gotcha as
+prior sessions — see the project's device_bash-reliability note. fieldy ran `node
+dump-verse-tokens.js 1 1 6` himself on his own machine and pasted the raw output back
+— still real tokens off `corpus.db`, not retyped from memory or a screenshot, just
+sourced by fieldy's hand instead of this agent's own tool call. Flagging so a future
+session doesn't assume this agent regained shell access.
+
+**New pattern this verse — periphrastic "let it be [participle]" auxiliary, same rule
+as `est`/`esset`.** V6's second clause ("and mabadayal...") is built in Latin, Greek,
+and Syriac alike as [jussive "be"] + [present participle "dividing"], not a single
+finite verb the way Latin's `dividat` (its OWN v6 rendering, see below) or v4's
+`divisit`/`badal` were. Applying the same rule already used for Latin `est`/`esset`
+(bare periphrastic copula → `"—"`, all content on the participle): the auxiliary
+(Greek `ἔστω`, Syriac `ܘܢܗܘܐ`) gets `"—"`, the participle (Greek `διαχωρίζον`, Syriac
+`ܦܪܫ̇`) carries `mabadayal / cause separation`. Latin doesn't need this split — its own
+v6 uses the single finite subjunctive `dividat`, not a periphrastic, so it gets the
+full gloss directly, same as `divisit` did in v4.
+
+**Edition divergence, flagged not silently absorbed:** the Greek (LXX) and Ge'ez texts
+both tack a "consummation formula" onto the end of v6 — `καὶ ἐγένετο οὕτως` / `ወኮነ
+ከማሁ` ("and it was so") — that has no counterpart anywhere in this app's own v6
+English (which follows the Masoretic Hebrew, where that clause belongs to v7, not v6).
+Latin and Syriac's v6 tokens end cleanly at "waters" with no such tail. `ἐγένετο`/
+`ወኮነ` already existed as curated keys (`hayah / it became`) and needed no change —
+genuinely the same word, reused correctly in both contexts. The NEW words specific to
+this tail (`οὕτως`, `ከማሁ`, both "thus/so") have no Hebrew root to transliterate
+against at all, so per the "flag rather than guess" standard they got a plain English
+gloss with no Translit prefix, same treatment as any other edition-only addition
+(cf. Gen 1:2's flagged, unglossed Coptic `ⲉϥⲛⲁ`) — except here the meaning is not in
+doubt (well-attested LXX/Ge'ez-vs-MT divergence at this verse), so a gloss was
+confidently given rather than left as an empty scaffold entry.
+
+**Latin**: `Dixit` "amar / said" + `quoque` "and" (this edition doesn't fuse them into
+one `Dixitque` enclitic form the way v3 did — two separate tokens here, same meaning),
+`Deus`/`Fiat`/`et`/`aquas` all already curated, reused unchanged. `firmamentum`
+"Raqayai / firmament", `in` "in" (bare — no Hebrew root of its own in the English
+here, same treatment as v2's `super` "over"), `medio` "thawak / midst", `aquarum`
+"Mayam (waters)" (genitive — separate key from the existing accusative `aquas` and the
+new ablative `aquis` below), `dividat` "mabadayal / cause separation" (single finite
+verb, no periphrastic split needed — see above), `ab` "bayan / between" (stands in for
+the Hebraized doubled "bayan...bayan" idiom with one preposition, same pattern as v4's
+`a` — note `ab`/`a` are the same Latin word, before-consonant vs before-vowel spelling,
+kept as separate surface-form keys per this file's existing convention), `aquis`
+"Mayam (waters)" (ablative, third distinct case-form key for "waters" now in this
+file alongside `aquas`/`aquarum`).
+
+**Syriac**: `ܘܐܡ̣ܪ`/`ܐܠܗܐ`/`ܢܗܘܐ` already curated, reused unchanged. Filled 5 empty
+scaffolds: `ܐܪܩܝܥܐ` "Raqayai / firmament", `ܒܡܨܥܬ` "in thawak / midst" (the `ܒ`-prefix
+"in" is fused into this one token, unlike Latin/Greek where it's a separate word — so
+the whole compound gets one combined gloss, same rule as any other fused-prefix
+token in this file), `ܘܢܗܘܐ` "—" (periphrastic auxiliary, see above), `ܦܪܫ̇`
+"mabadayal / cause separation" (the participle, see above), `ܠܡ̈ܝܐ` "Mayam (waters)"
+(ܠ-prefixed "to the waters" — actually the clearest cross-language confirmation this
+verse: Syriac's own `ܒܝܬ...ܠ` structure ("between water, to water") is exactly what
+the English's own "bayan (between) mayam...to mayam" already mirrors). `ܡ̈ܝܐ` and
+`ܒܝܬ` were already curated from earlier verses, reused unchanged.
+
+**Ge'ez**: `ወይቤ`/`እግዚአብሔር`/`ለይኩን`/`ማይ`/`ከመ`/`ወኮነ` all already curated, reused
+unchanged. `ማእከለ` (appears twice, bare, no `ወ`-prefix on either occurrence this verse)
+kept its existing `bayan / between` gloss rather than adding a `thawak/midst`-specific
+variant — Ge'ez's own `ማእከለ...ማእከለ` doubled construction genuinely covers both
+"in the midst of" and "between X and Y" as one continuous idiom spanning the verse,
+so this is the same kind of this-language's-own-economy case already documented
+above for Latin/Coptic, not a real gap. New: `ጠፈር` "Raqayai / firmament", `ይፍልጥ`
+"mabadayal / cause separation" (cognate root to the already-curated `ወፈለጠ`/`badal`
+from v4-5, jussive form here), `ከማሁ` "thus / so" (the "and it was so" tail, see
+edition-divergence note above).
+
+**Greek**: `Καὶ`/`εἶπεν`/`ὁ`/`θεός`/`Γενηθήτω`/`ἐν`/`τοῦ`/`ὕδατος`/`ἀνὰ`/`μέσον`/
+`ἐγένετο` all already curated, reused unchanged (all three `ὕδατος` occurrences in
+this verse are the same genitive-singular surface form as the existing key). New:
+`στερέωμα` "Raqayai / firmament", `μέσῳ` "thawak / midst" (dative — separate key from
+the existing accusative `μέσον`, and a different sense besides: "in the midst of" here
+vs. "between" in the `ἀνὰ μέσον` idiom), `ἔστω` "—" and `διαχωρίζον` "mabadayal /
+cause separation" (periphrastic split, see above), `οὕτως` "thus / so" (edition-tail,
+see above).
