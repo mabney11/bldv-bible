@@ -76,30 +76,86 @@ ASHAH_PAT = re.compile(r'\b(Ayashah|ayashah|Ashah|ashah)\s*\(([^)]*)\)')
 BATH_PAT  = re.compile(r'\b(Bath|bath)\s*\(([^)]*)\)')
 
 
+NUN = '\U0001090D'
+
+
 def resolve_ashah(strongs, cap):
+    """Returns (new_word, new_gloss, partial). partial is always False here —
+    Strong's number alone fully disambiguates H801/H802, no suffix concerns."""
     if strongs == 'H802':
-        return ('Ayashah' if cap else 'ayashah', 'woman / wife')
+        return ('Ayashah' if cap else 'ayashah', 'woman / wife', False)
     else:  # H801
-        return ('Ashah' if cap else 'ashah', 'fire / offering made by fire')
+        return ('Ashah' if cap else 'ashah', 'fire / offering made by fire', False)
 
 
 def resolve_bath(word_raw, morph, strongs, cap):
-    """Returns (new_word, new_gloss) or None if this specific token can't be
-    safely auto-resolved (plural noun + pronominal suffix: word_raw doesn't
-    carry the suffix's own consonants in this dataset, so we'd be guessing)."""
+    """Returns (new_word, new_gloss, partial).
+
+    2026-08-26 rewrite: fieldy flagged that Exodus 2:1/2:5 etc. still showed
+    "bath (bath / liquid measure)" for real "daughter" occurrences even
+    after the first --apply run. Root cause (confirmed by reading server.js):
+    the Reader/Translate-Studio API's resolveChapterVerseTexts() runs any
+    verse that has never been manually re-saved in Translate Studio (an
+    "untouched draft") through applyLiveGloss(), which rewrites EVERY
+    "word (...)" parenthetical using a reverse index built from
+    lexicon/lexicon.json, keyed by translit(word_raw).toLowerCase() — with
+    ZERO awareness of Strong's number. lexicon.json has exactly ONE entry
+    for the bare defective spelling 𐤁𐤕 ("bath / liquid measure"), because
+    that's the same 2-letter consonantal spelling BOTH senses share. So
+    ANY verse where we left the word as bare "Bath"/"bath" — even with a
+    correct "(daughter)" gloss — gets silently overwritten back to
+    "(bath / liquid measure)" by the live-gloss overlay the next time an
+    untouched-draft verse is served. This is exactly why some verses
+    "reverted" after the first apply and others (already resolved with a
+    genuinely different word, like ayashah) didn't.
+
+    Fix: NEVER leave the daughter sense (H1323) as bare "Bath"/"bath" —
+    always use fieldy's "banath" convention (extends "ban"/son + the "-ath"
+    feminine suffix, restoring the historical nun that Hebrew's own
+    orthography assimilates away only in the singular). This gives H1323 a
+    translit key ("banath"/"banawath"/etc.) that's DISTINCT from H1324's
+    "bath" key, so applyLiveGloss's reverse-index lookup no longer collides
+    — confirmed lexicon.json already independently has a 𐤁𐤍𐤕 ("banath")
+    entry glossed "daughter", so this isn't a new invention, it lines up
+    with an existing (previously unused) lexicon entry.
+
+    Real Hebrew plural "daughters" (בָּנוֹת) genuinely keeps the nun in its
+    own attested spelling (word_raw already contains it, e.g. 𐤁𐤍𐤅𐤕) — no
+    synthesis needed there, mechanical translit of the real word_raw is
+    both historically accurate AND collision-safe already.
+
+    A pronominal suffix's own consonants still aren't in word_raw (same
+    limitation as before) — for those we NOW still apply the safe
+    "banath"/"banawath"-family STEM (collision-safe, sense-safe) rather
+    than leaving the dangerous bare "bath", but flag partial=True since the
+    suffix ending itself ("-akam", "-oh", etc.) isn't reconstructed. This
+    is strictly better than the old behavior (which left suffixed cases
+    completely untouched, exposed to the same live-gloss collision) even
+    though it's still not the FULL fix fieldy hand-typed for Exodus 3:22
+    ("Banathayakam") — that still needs a real prs-code→suffix table to
+    fully automate, and stays a manual/optional follow-up.
+    """
     if strongs == 'H1324':
-        return ('Bath' if cap else 'bath', 'bath / liquid measure')
+        return ('Bath' if cap else 'bath', 'bath / liquid measure', False)
     nu = morph_num(morph)
     prs = morph_prs(morph)
-    if nu == 'pl' and (prs is None or prs == 'absent'):
-        return (translit_word(word_raw, capitalize=cap), 'daughters')
+    has_suffix = prs not in (None, 'absent')
     if nu == 'pl':
-        return None  # plural + suffix — needs review, can't safely reconstruct
-    return ('Bath' if cap else 'bath', 'daughter')
+        # real word_raw already carries the historical nun for plural
+        word = translit_word(word_raw, capitalize=cap)
+        return (word, 'daughters', has_suffix)
+    # singular: word_raw is the bare defective spelling (no nun in real
+    # Hebrew orthography) — synthesize the "banath" stem by inserting nun
+    # right after the first letter (bet), per fieldy's explicit convention
+    synth_raw = word_raw[:1] + NUN + word_raw[1:]
+    word = translit_word(synth_raw, capitalize=cap)
+    return (word, 'daughter', has_suffix)
 
 
 def classify_verse(ccur, b, c, v, text, pattern, strongs_pair, resolver):
-    """Shared logic for both ashah and bath. resolver(row, cap) -> (word,gloss) or None.
+    """Shared logic for both ashah and bath. resolver(row, cap) -> (word, gloss, partial).
+    (partial=True means: sense-correct and collision-safe, but a pronominal
+    suffix ending couldn't be reconstructed — still worth a manual look.)
     Returns (resolved_list_or_None, matches, bhs_rows, distinct_strongs)."""
     ms = list(pattern.finditer(text))
     if not ms:
@@ -113,20 +169,30 @@ def classify_verse(ccur, b, c, v, text, pattern, strongs_pair, resolver):
     if len(bhs) == len(ms):
         resolved = [resolver(row, m.group(1)[0].isupper()) for m, row in zip(ms, bhs)]
         return resolved, ms, bhs, distinct_strongs
-    # count mismatch: only safe if every present token resolves identically
+    # count mismatch: only safe if every present token resolves to the SAME
+    # (word, gloss) — partial flags may differ (e.g. one occurrence has a
+    # suffix and another doesn't) without blocking the uniform apply; if any
+    # of them needed the partial flag, the whole uniform application is
+    # marked partial too, so the verse still gets a review flag.
     per_tok = [resolver(row, True) for row in bhs]
-    if bhs and all(x is not None and x == per_tok[0] for x in per_tok):
-        only = per_tok[0]
-        resolved = [(only[0] if m.group(1)[0].isupper() else only[0][0].lower() + only[0][1:], only[1])
+    if bhs and all(x is not None and x[:2] == per_tok[0][:2] for x in per_tok):
+        only_word, only_gloss = per_tok[0][0], per_tok[0][1]
+        any_partial = any(x[2] for x in per_tok)
+        resolved = [(only_word if m.group(1)[0].isupper() else only_word[0].lower() + only_word[1:],
+                     only_gloss, any_partial)
                     for m in ms]
         return resolved, ms, bhs, distinct_strongs
     return None, ms, bhs, distinct_strongs
 
 
 def build_fixed_text(text, matches, resolved):
-    """Applies (word,gloss) replacements to text. Returns (new_text, changed,
-    shift_records) where shift_records is a list of (old_word_start_index,
-    old_word_count, new_word_count) in left-to-right order, for later
+    """Applies (word, gloss, partial) replacements to text. The partial flag
+    doesn't affect whether/how a replacement is applied — a partial fix
+    (sense-correct + collision-safe stem, suffix ending not reconstructed)
+    is still applied; partial only drives the review-flag reporting in
+    compute_verse_fix. Returns (new_text, changed, shift_records) where
+    shift_records is a list of (old_word_start_index, old_word_count,
+    new_word_count) in left-to-right order, for later
     translation_links.english_indices remapping. Word indices follow the
     app's own convention: text.split() (whitespace-delimited, matches JS
     .trim().split(/\\s+/) closely enough for this purpose)."""
@@ -137,7 +203,7 @@ def build_fixed_text(text, matches, resolved):
     for m, r in zip(matches, resolved):
         if r is None:
             continue
-        new_word, new_gloss = r
+        new_word, new_gloss, _partial = r
         old_word, old_gloss = m.group(1), m.group(2)
         if old_word == new_word and old_gloss.strip() == new_gloss:
             continue
@@ -190,8 +256,8 @@ def compute_verse_fix(ccur, b, c, v, text):
         if a_resolved is None:
             review.append({'kind': 'ashah', 'n_matches': len(a_ms), 'n_bhs': len(a_bhs),
                             'bhs_strongs': sorted(a_distinct)})
-        elif any(r is None for r in a_resolved):
-            n_unresolved = sum(1 for r in a_resolved if r is None)
+        elif any(r is None or r[2] for r in a_resolved):
+            n_unresolved = sum(1 for r in a_resolved if r is None or r[2])
             review.append({'kind': 'ashah', 'partial': True, 'n_matches': len(a_ms),
                             'n_unresolved': n_unresolved, 'n_bhs': len(a_bhs),
                             'bhs_strongs': sorted(a_distinct)})
@@ -199,8 +265,12 @@ def compute_verse_fix(ccur, b, c, v, text):
         if b_resolved is None:
             review.append({'kind': 'bath', 'n_matches': len(b_ms), 'n_bhs': len(b_bhs),
                             'bhs_strongs': sorted(b_distinct)})
-        elif any(r is None for r in b_resolved):
-            n_unresolved = sum(1 for r in b_resolved if r is None)
+        elif any(r is None or r[2] for r in b_resolved):
+            # r[2] ("partial") now covers the common case: a suffix ending
+            # wasn't reconstructed, but the word/gloss WAS still safely
+            # fixed (never left as bare "Bath" — see resolve_bath's
+            # docstring on the applyLiveGloss collision this avoids).
+            n_unresolved = sum(1 for r in b_resolved if r is None or r[2])
             review.append({'kind': 'bath', 'partial': True, 'n_matches': len(b_ms),
                             'n_unresolved': n_unresolved, 'n_bhs': len(b_bhs),
                             'bhs_strongs': sorted(b_distinct)})
