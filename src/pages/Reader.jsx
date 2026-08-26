@@ -1,7 +1,7 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, Fragment } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
-import { apiBookOrder, apiTransChapter, apiTokens, apiSourceChapter, apiSourceVerse, apiBookSections } from '../lib/api.js';
+import { apiBookOrder, apiTransChapter, apiTransBookText, apiTokens, apiSourceChapter, apiSourceVerse, apiBookSections } from '../lib/api.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { computeWordParts } from '../components/WordBlock.jsx';
@@ -313,7 +313,35 @@ function isApostrophe(raw, at) {
   const next = raw[at + 1];
   return !!next && /[A-Za-z]/.test(next);
 }
-function parseQuoteMarks(raw) {
+// `boundaries` (added 2026-08-26, cross-chapter <...> quotes): sorted offsets
+// where one chapter's contribution ends and the next begins, when `raw` is a
+// BOOK-WIDE concatenation rather than a single chapter (see Reader.jsx's
+// bookQuoteScan below). At each boundary crossed, every currently-open
+// REAL-quote-character span (any style but 'bracket') is force-closed right
+// there — same "unclosed, no error" treatment a chapter's own end already
+// gives an unresolved quote (see the big comment above), just applied mid-
+// string instead of only at the very end — because real quote chars are
+// deliberately chapter-scoped (a discourse like the Sermon on the Mount, or
+// a curly quote that simply never closes in the source, should NOT merge
+// Matthew 5 into Matthew 6). An explicit '<' bracket quote is the opposite
+// by design: it exists specifically so fieldy can mark a span that DOES
+// cross a chapter boundary, so it's left untouched here and keeps
+// accumulating children from the next chapter's text. Edge case, deliberately
+// not specially handled: a bracket quote nested INSIDE a still-open real
+// quote at the exact boundary gets swept closed along with its parent —
+// closing "every open entry from the first non-bracket one on, inward out"
+// rather than trying to selectively rescue a bracket buried under a real
+// quote that itself has to end here. In practice the outer wrapper for
+// anything meant to cross a chapter is always the bracket (that's the whole
+// point of it), so this only bites a contrived reverse-nesting no real
+// translation would produce. With boundaries=[] (every other caller —
+// VersePage.jsx's single verse, the gloss-mode branch below) this is a
+// total no-op and behavior is unchanged from before boundaries existed.
+// parseQuoteMarks/sliceQuoteTree/dissolveOverlongQuotes/renderQuoteTree are
+// exported (2026-08-26) so Translate.jsx can build its own live quote-nesting
+// preview while editing — same primitives Reader.jsx itself uses below, so
+// the preview matches the real page exactly rather than approximating it.
+export function parseQuoteMarks(raw, boundaries) {
   if (!raw) return [{ type: 'text', text: raw, start: 0, end: 0 }];
   PLAIN_QUOTE_RE.lastIndex = 0;
   const marks = [];
@@ -322,17 +350,39 @@ function parseQuoteMarks(raw) {
     if ((m[0] === '’' || m[0] === "'") && isApostrophe(raw, m.index)) continue; // contraction/possessive, not a close
     marks.push({ at: m.index, ch: m[0] });
   }
-  if (!marks.length) return [{ type: 'text', text: raw, start: 0, end: raw.length }];
+  const bounds = boundaries && boundaries.length ? boundaries : null;
+  if (!marks.length && !bounds) return [{ type: 'text', text: raw, start: 0, end: raw.length }];
 
   const root = { children: [] };
   const containerStack = [root];   // top = node whose .children we're appending to
-  const openStack = [];            // parallel stack of { style: 'curly2'|'curly1'|'straight', node }
+  const openStack = [];            // parallel stack of { style: 'curly2'|'curly1'|'straight'|'bracket', node }
   let last = 0;
   const flush = (end) => {
     if (end > last) containerStack[containerStack.length - 1].children.push({ type: 'text', text: raw.slice(last, end), start: last, end });
     last = end;
   };
+  // Force-closes every open non-bracket entry at `pos`, innermost first,
+  // stopping as soon as (and including) the first one found from the top —
+  // see the boundaries doc comment above for what this does with a bracket
+  // buried underneath one.
+  let bi = 0;
+  const closeNonBracketsAt = (pos) => {
+    let cut = -1;
+    for (let i = 0; i < openStack.length; i++) {
+      if (openStack[i].style !== 'bracket') { cut = i; break; }
+    }
+    if (cut === -1) return; // every currently-open entry is a bracket — none reset here
+    flush(pos);
+    for (let i = openStack.length - 1; i >= cut; i--) {
+      const entry = openStack.pop();
+      entry.node.unclosed = true;
+      entry.node.end = pos;
+      containerStack.pop();
+    }
+    last = pos;
+  };
   marks.forEach(({ at, ch }) => {
+    if (bounds) { while (bi < bounds.length && bounds[bi] <= at) { closeNonBracketsAt(bounds[bi]); bi++; } }
     const top = openStack[openStack.length - 1];
     // Explicit <...> quote markers (2026-08-25, fieldy: a manual, unambiguous
     // way to mark a quotation the character-based scan below doesn't catch —
@@ -424,6 +474,7 @@ function parseQuoteMarks(raw) {
     containerStack.push(node);
     last = at + ch.length;
   });
+  if (bounds) { while (bi < bounds.length) { closeNonBracketsAt(bounds[bi]); bi++; } }
   flush(raw.length);
   openStack.forEach(({ node }) => { node.unclosed = true; node.end = raw.length; });
   return root.children;
@@ -439,7 +490,7 @@ function parseQuoteMarks(raw) {
 // full chapter context) always carries over, so the indent step — and the
 // unclosed warning border — stays consistent across every verse a quote
 // touches, even though each verse gets its own separate <span>.
-function sliceQuoteTree(nodes, start, end) {
+export function sliceQuoteTree(nodes, start, end) {
   const out = [];
   for (const n of nodes) {
     if (n.end <= start || n.start >= end) continue; // no overlap with this slice
@@ -490,7 +541,7 @@ function sliceQuoteTree(nodes, start, end) {
 // plain characters, no quote styling at all, since the pairing itself is the
 // thing not to be trusted.
 const MAX_QUOTE_CHARS = 600;
-function dissolveOverlongQuotes(nodes) {
+export function dissolveOverlongQuotes(nodes) {
   const out = [];
   for (const n of nodes) {
     if (n.type === 'text') { out.push(n); continue; }
@@ -539,7 +590,7 @@ const BRACKET_GLYPHS = [['\u201C', '\u201D'], ['\u2018', '\u2019']];
 function bracketGlyph(depth, close) {
   return BRACKET_GLYPHS[(depth - 1) % 2][close ? 1 : 0];
 }
-function renderQuoteTree(nodes, mode, keyPrefix) {
+export function renderQuoteTree(nodes, mode, keyPrefix) {
   const out = [];
   nodes.forEach((n, i) => {
     if (n.type === 'text') {
@@ -1003,6 +1054,24 @@ export default function Reader() {
       .catch(() => { if (cancelled) return; setVerses([]); setLoading(false); });
     return () => { cancelled = true; };
   }, [book, chapter, bookReady]);
+
+  // Whole-book English text, fetched once per BOOK (not per chapter — chapter
+  // navigation within the same book reuses this) — feeds the cross-chapter
+  // <...> quote scan below (bookQuoteScan). Best-effort: on failure this
+  // just falls back to single-chapter quote scanning (the boundaries array
+  // ends up empty), never blocks the chapter itself from rendering.
+  const [bookText, setBookText] = useState(null);
+  useEffect(() => {
+    // Fetched regardless of the active script (Hebrew/Ge'ez toggle lives
+    // further down as `script`/`isForeignScript`) — cheap, and simplest to
+    // just not consume it below when the plain-quote system doesn't apply.
+    if (!bookReady) return;
+    let cancelled = false;
+    apiTransBookText(book)
+      .then(d => { if (!cancelled) setBookText(d && d.chapters ? d : null); })
+      .catch(() => { if (!cancelled) setBookText(null); });
+    return () => { cancelled = true; };
+  }, [book, bookReady]);
 
   // ── font size (persisted) ──────────────────────────────────────────────────
   const [fontPx, setFontPx] = useState(() => {
@@ -1485,7 +1554,8 @@ export default function Reader() {
     return () => ro.disconnect();
   }, [chapKey, glossMode, hebGlossMode, script, fontPx, typeface, renderVerseNums]);
 
-  // Chapter-wide plain-quote scan (English only — Hebrew/Ge'ez never run
+  // Chapter-wide (as of 2026-08-26, BOOK-wide for the bracket system —
+  // see below) plain-quote scan (English only — Hebrew/Ge'ez never run
   // through the plain-quote system at all). Concatenates every rendered
   // verse's narrative text IN ORDER and parses quote marks across the WHOLE
   // thing once, so a quote that opens in one verse and doesn't close until a
@@ -1497,25 +1567,64 @@ export default function Reader() {
   // contributes only its own before/after narrative — the embedded block's
   // marks are a wholly different system (its own numbered lines) and must
   // never be folded into this scan.
-  const chapterQuoteInfo = useMemo(() => {
+  //
+  // Widened from chapter-only to BOOK-wide 2026-08-26, fieldy: "I want
+  // quotes that happen to span across chapters to work with this [the <...>
+  // system]." The concatenation now runs across every chapter of the book
+  // (bookText, fetched once per book above), with a boundary offset recorded
+  // after each chapter's own contribution; parseQuoteMarks force-closes any
+  // still-open REAL quote character at each boundary it crosses (chapter-
+  // scoped, exactly as before) while a '<' bracket quote sails through
+  // untouched (see parseQuoteMarks' own boundaries comment). The chapter
+  // ACTUALLY being displayed always uses `versesByNum` (this component's own
+  // live, locally-overridden fetch) rather than bookText's copy of that same
+  // chapter, so what's rendered is never at the mercy of bookText being
+  // slightly stale — bookText only supplies the NEIGHBORING chapters, purely
+  // to resolve carry-in/carry-out bracket state correctly. `ranges` below
+  // still only covers the ACTIVE chapter's verses (that's all the render
+  // loop needs), just expressed in book-wide tree offsets now instead of
+  // chapter-wide ones — sliceQuoteTree doesn't care either way, it only
+  // ever worked in raw offsets.
+  const bookQuoteScan = useMemo(() => {
     if (isForeignScript) return null;
+    const chapters = (bookText?.chapters?.length)
+      ? bookText.chapters.slice().sort((a, b) => a.chapter - b.chapter)
+      : [{ chapter, verses: [] }]; // bookText not loaded yet (or failed) — fall back to just the active chapter
     let acc = '';
     const ranges = {};
-    renderVerseNums.forEach(vnum => {
-      if (vnum === 0) return; // superscription is rendered separately (verse0Text)
-      const raw = sanitizeText((versesByNum[vnum]?.text || '').trim());
-      if (!raw) { ranges[vnum] = { start: acc.length, end: acc.length, embedded: null }; return; }
-      const q = splitScriptureQuote(raw);
-      const contribute = q ? `${q.before || ''} ${q.after || ''}` : raw;
-      const start = acc.length;
-      acc += contribute;
-      ranges[vnum] = q
-        ? { start, end: acc.length, embedded: { beforeLen: (q.before || '').length } }
-        : { start, end: acc.length, embedded: null };
-      acc += ' ';
+    const boundaries = [];
+    let sawActiveChapter = false;
+    chapters.forEach(ch => {
+      const isActive = ch.chapter === chapter;
+      if (isActive) sawActiveChapter = true;
+      const chVerses = isActive
+        ? renderVerseNums.filter(v => v !== 0).map(v => ({ verse: v, text: versesByNum[v]?.text || '' }))
+        : (ch.verses || []);
+      chVerses.forEach(v => {
+        const raw = sanitizeText((v.text || '').trim());
+        if (!raw) { if (isActive) ranges[v.verse] = { start: acc.length, end: acc.length, embedded: null }; return; }
+        const q = isActive ? splitScriptureQuote(raw) : null; // embedded-citation splitting only matters for what we render
+        const contribute = q ? `${q.before || ''} ${q.after || ''}` : raw;
+        const start = acc.length;
+        acc += contribute;
+        if (isActive) {
+          ranges[v.verse] = q
+            ? { start, end: acc.length, embedded: { beforeLen: (q.before || '').length } }
+            : { start, end: acc.length, embedded: null };
+        }
+        acc += ' ';
+      });
+      acc += ' '; // separator between chapters, mirrors the per-verse one above
+      // Boundary = offset where the NEXT chapter's contribution begins,
+      // captured in this same pass (not a second walk over the data) so it
+      // can never drift out of sync with `acc`/`ranges` above. A trailing
+      // boundary after the very last chapter is harmless — parseQuoteMarks
+      // just sweeps an empty stack there, same as reaching end-of-string.
+      boundaries.push(acc.length);
     });
-    return { tree: dissolveOverlongQuotes(parseQuoteMarks(acc)), ranges };
-  }, [isForeignScript, renderVerseNums, versesByNum]);
+    if (!sawActiveChapter) return null; // active chapter not in bookText's list yet — defensive fallback below handles it
+    return { tree: dissolveOverlongQuotes(parseQuoteMarks(acc, boundaries)), ranges };
+  }, [isForeignScript, bookText, chapter, renderVerseNums, versesByNum]);
 
   // Verse 0 is a superscription/title ("A Psalm of David"), not verse 1 — see
   // the headings note below. It used to fall through the ordinary per-verse
@@ -1764,23 +1873,23 @@ export default function Reader() {
                         const raw = sanitizeText((versesByNum[vnum]?.text || '').trim());
                         if (!raw) return '·';
                         // Slice this verse's own portion out of the CHAPTER-wide
-                        // quote scan (chapterQuoteInfo, above) instead of parsing
+                        // quote scan (bookQuoteScan, above) instead of parsing
                         // this verse's text in isolation — that's what lets a
                         // quote spanning several verses stay one continuous
                         // quotation instead of losing its far side.
-                        const range = chapterQuoteInfo?.ranges[vnum];
+                        const range = bookQuoteScan?.ranges[vnum];
                         const q = splitScriptureQuote(raw);
                         if (!range) return renderVerseNodesWithQuotes(raw, glossMode); // defensive fallback
                         if (!q) {
-                          const sliced = sliceQuoteTree(chapterQuoteInfo.tree, range.start, range.end);
+                          const sliced = sliceQuoteTree(bookQuoteScan.tree, range.start, range.end);
                           return renderQuoteTree(sliced, glossMode, `v${vnum}-`);
                         }
                         const beforeEnd = range.start + (range.embedded?.beforeLen || 0);
                         const before = q.before
-                          ? renderQuoteTree(sliceQuoteTree(chapterQuoteInfo.tree, range.start, beforeEnd), glossMode, `v${vnum}b-`)
+                          ? renderQuoteTree(sliceQuoteTree(bookQuoteScan.tree, range.start, beforeEnd), glossMode, `v${vnum}b-`)
                           : null;
                         const after = q.after
-                          ? renderQuoteTree(sliceQuoteTree(chapterQuoteInfo.tree, beforeEnd + 1, range.end), glossMode, `v${vnum}a-`)
+                          ? renderQuoteTree(sliceQuoteTree(bookQuoteScan.tree, beforeEnd + 1, range.end), glossMode, `v${vnum}a-`)
                           : null;
                         const citation = citations[`${book}:${chapter}:${vnum}`] || null;
                         const out = [];

@@ -91,6 +91,17 @@ export const apiTransChapter = async (book, ch) => {
   const localOverrides = await getLocalVersesForChapter(book, ch).catch(() => []);
   return { ...data, verses: mergeChapterVersesWithLocal(data.verses, localOverrides) };
 };
+// Whole-book English text (no links/status, no local-override merge — this
+// is a background aid for cross-chapter quote scanning, not a rendering
+// source in its own right) — see server/server.js's /api/translate/book for
+// why: an explicit <...> quote marker can now span a chapter boundary, and
+// resolving that needs every chapter's text in one pass. Reader.jsx fetches
+// this once per book (not per chapter) and splices in the actively-viewed
+// chapter's own (locally-overridden) verses over this response's copy of
+// that chapter before scanning, so what's actually rendered always wins;
+// this data only supplies the NEIGHBORING chapters' text.
+export const apiTransBookText = async (book) =>
+  jsonFetch(`/api/translate/book?book=${book}`).catch(() => ({ book_id: book, chapters: [] }));
 // Named sections spanning a chapter range within one book (e.g. Book of
 // Melchizedek's 3 originally-separate parts) — empty array for a book with none,
 // which is the normal case; this is an opt-in per-book feature.

@@ -6,11 +6,19 @@ import { transliterate } from '../lib/translit.js';
 import { useToast } from '../components/Toast.jsx';
 import WordBlock from '../components/WordBlock.jsx';
 import {
-  apiTransProgress, apiTransChapter, apiTransVerse,
+  apiTransProgress, apiTransChapter, apiTransVerse, apiTransBookText,
   apiTransSaveVerse, apiTransHistory, apiTransRevertToHistory, apiTransDeleteHistory,
   apiTransLink, apiTransUnlink, apiTransUpdateLink,
   apiTokens, apiBookOrder,
 } from '../lib/api.js';
+// Reuse Reader.jsx's own quote-marking engine for the live "quote preview"
+// panel below (2026-08-26, fieldy: "I would like to see a preview of my
+// active quote... I dont have to save it before confirming the quotes line
+// up how I want") — same functions Reader.jsx renders the real page with,
+// so the preview matches exactly instead of approximating it. Also pulls in
+// Reader.css so the .rd-quote-* classes these produce actually render.
+import { sanitizeText, parseQuoteMarks, dissolveOverlongQuotes, sliceQuoteTree, renderQuoteTree } from './Reader.jsx';
+import './Reader.css';
 import {
   getAdminStatus, refreshAdminStatus, mergeVerseWithLocal, getLocalVerse, saveLocalVerse, resetLocalVerse,
   getLocalLinks, addLocalLink, deleteLocalLink, clearLocalLinks, setLocalLinksOverride, resetLocalLinksOverride,
@@ -759,6 +767,29 @@ export default function Translate() {
   }, [activeBook, activeChapter]);
 
   const editorRef = useRef(null);
+
+  // ── live quote preview ──────────────────────────────────────────────────
+  // Whole-book English text, fetched once per BOOK (mirrors Reader.jsx's own
+  // bookQuoteScan fetch exactly, including the cross-chapter carry it feeds)
+  // — gives the preview below real book-wide context instead of just
+  // guessing at the current verse in isolation. Best-effort: on failure the
+  // preview below just falls back to the active verse alone.
+  const [bookTextForPreview, setBookTextForPreview] = useState(null);
+  useEffect(() => {
+    if (!activeBook) { setBookTextForPreview(null); return; }
+    let cancelled = false;
+    apiTransBookText(activeBook)
+      .then(d => { if (!cancelled) setBookTextForPreview(d && d.chapters ? d : null); })
+      .catch(() => { if (!cancelled) setBookTextForPreview(null); });
+    return () => { cancelled = true; };
+  }, [activeBook]);
+
+  // The editor is deliberately NOT React-controlled (see the comment just
+  // below) so the preview can't just read `verseData.text` while typing —
+  // this mirrors it via onInput (added to the editor's JSX below) instead,
+  // read-only, never written back into the DOM.
+  const [livePreviewText, setLivePreviewText] = useState('');
+
   // When verse data arrives, set editor HTML once and focus it so the user can
   // start typing immediately. We sync manually instead of using React-controlled
   // contenteditable because the latter erases the caret on every keystroke.
@@ -771,6 +802,7 @@ export default function Translate() {
   // it. loadSeq bumps on every real reload from the server, verse identity or
   // not, so "Reset to published" now updates the editor immediately.
   useEffect(() => {
+    setLivePreviewText(verseData?.text || '');
     if (verseData && editorRef.current) {
       editorRef.current.innerHTML = verseData.rich_text || verseData.text || '';
       // Only autofocus when we're in edit mode — in view mode the user is
@@ -983,6 +1015,52 @@ export default function Translate() {
     el.addEventListener('keydown', onKey);
     return () => el.removeEventListener('keydown', onKey);
   }, [verseData?.book_id, verseData?.chapter, verseData?.verse]);
+
+  // Live quote-nesting preview for the verse being edited — the SAME book-
+  // wide scan Reader.jsx's own bookQuoteScan runs (parseQuoteMarks with
+  // chapter boundaries, so a real quote character still resets per chapter
+  // while an explicit <...> marker survives one, exactly as on the live
+  // page), just built from bookTextForPreview + the active verse's LIVE
+  // unsaved text instead of a fresh server fetch. Every OTHER verse (in this
+  // chapter or any other) uses whatever bookTextForPreview last loaded — the
+  // last SAVED text — since previewing everyone else's unsaved drafts too
+  // isn't the point; only the verse actually being typed needs to be live.
+  // Deliberately skips splitScriptureQuote (the embedded-citation system) —
+  // a different, rarer feature; this preview only needs to get ordinary
+  // quote nesting right, and treating an embedded citation as plain text
+  // here doesn't affect that.
+  const quotePreview = useMemo(() => {
+    if (!activeBook || !activeChapter || !activeVerse) return null;
+    const chapters = (bookTextForPreview?.chapters?.length)
+      ? bookTextForPreview.chapters.slice().sort((a, b) => a.chapter - b.chapter)
+      : [{ chapter: activeChapter, verses: [] }]; // not loaded yet — fall back to the active verse alone
+    let acc = '';
+    const boundaries = [];
+    let activeRange = null;
+    chapters.forEach(ch => {
+      const isActiveChapter = ch.chapter === activeChapter;
+      const chVerses = (ch.verses || []).map(v => v);
+      if (isActiveChapter) {
+        const idx = chVerses.findIndex(v => v.verse === activeVerse);
+        if (idx >= 0) chVerses[idx] = { verse: activeVerse, text: livePreviewText };
+        else { chVerses.push({ verse: activeVerse, text: livePreviewText }); chVerses.sort((a, b) => a.verse - b.verse); }
+      }
+      chVerses.forEach(v => {
+        const raw = sanitizeText((v.text || '').trim());
+        const start = acc.length;
+        if (raw) acc += raw;
+        if (isActiveChapter && v.verse === activeVerse) activeRange = { start, end: acc.length };
+        acc += ' ';
+      });
+      acc += ' ';
+      boundaries.push(acc.length);
+    });
+    if (!activeRange) return null;
+    const tree = dissolveOverlongQuotes(parseQuoteMarks(acc, boundaries));
+    const sliced = sliceQuoteTree(tree, activeRange.start, activeRange.end);
+    const rendered = renderQuoteTree(sliced, 'both', 'qp-');
+    return rendered && rendered.length ? rendered : null;
+  }, [activeBook, activeChapter, activeVerse, bookTextForPreview, livePreviewText]);
 
   const setStatus = useCallback(async (newStatus) => {
     saveVerse({ status: newStatus });
@@ -1651,7 +1729,14 @@ export default function Translate() {
                         const text = (e.clipboardData || window.clipboardData).getData('text/plain');
                         document.execCommand('insertText', false, text);
                       }}
+                      onInput={() => setLivePreviewText(editorRef.current?.textContent || '')}
                     />
+                    {quotePreview && (
+                      <div className="tr-quote-preview">
+                        <div className="tr-quote-preview-label">Quote preview</div>
+                        <div className="rd-body tr-quote-preview-body">{quotePreview}</div>
+                      </div>
+                    )}
                     <div className="tr-save-row">
                       <button className="tr-save-btn" onClick={() => saveVerse()} disabled={saveState === 'saving'}>
                         {saveState === 'saving' ? 'Saving…' : 'Save'}
