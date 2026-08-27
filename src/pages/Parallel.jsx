@@ -414,6 +414,54 @@ function resolvePhraseLinks(links, enWords) {
   return links;
 }
 
+// Heb-extra's rich/grouped token stream (/api/tokens?source=HEB) decomposes each
+// NATIVE whitespace-delimited HEB word (the same words Translate.jsx's Auto-Link
+// stores established links against, via /api/source/HEB/*) into one or more
+// BHS-style morpheme components, and can also FUSE several consecutive native
+// words into one display block (e.g. a maqaf-joined "Ath" + "HaRaqayai" render
+// as one rich block, three components, one Strong's badge). Its own
+// token_ordinal numbering is therefore NOT the native per-word ordinal scheme
+// links are stored against (see the 2026-08-27 hover-mislink postmortem in
+// project memory: hovering "badal" lit up "HaRaqayai" because the two schemes
+// disagree on what ordinal 5 means). fieldy wants to KEEP the rich/Strong's-badge
+// display, so instead of falling back to the plain native-list render (the
+// original narrow fix), this reconciles the two schemes: walk both lists in
+// native-word order, greedily consuming each rich block's own non-mark
+// component glyphs until they reconstruct a native word's raw glyphs
+// (codepoint-safe via Array.from — see fix-heb-extra-surfaces.js's established
+// convention for why plain .length/[i] indexing corrupts Paleo-Hebrew surrogate
+// pairs), and return nativeOrd -> that block's own representative token_ordinal
+// (the same field WordBlock's `compOrds` keys hover-matching off of). Best-effort
+// by design: a spelling mismatch between HEB's own text and BHS's reconstructed
+// word_raw (a known, documented recurring drift in this corpus) just means that
+// one word doesn't get remapped — no highlight for it, same as pre-fix behavior
+// for that one word — it never throws or corrupts anything else in the verse.
+function buildHebNativeOrdMap(nativeWords, richBlocks) {
+  const map = new Map();
+  let ni = 0;
+  for (const block of richBlocks) {
+    const comps = block.components?.length
+      ? block.components
+      : [{ token_ordinal: block.token_ordinal, paleo: block.word_raw || block.word || '', isMark: false }];
+    let ci = 0;
+    while (ci < comps.length) {
+      if (comps[ci].isMark) { ci++; continue; }
+      if (ni >= nativeWords.length) break;
+      const nw = nativeWords[ni];
+      const targetLen = Array.from(nw.word || '').length;
+      let acc = 0;
+      while (ci < comps.length && acc < targetLen) {
+        if (!comps[ci].isMark) acc += Array.from(comps[ci].paleo || '').length;
+        ci++;
+      }
+      map.set(nw.ord, block.token_ordinal);
+      ni++;
+      if (targetLen === 0) break; // a zero-length native word can never satisfy acc<targetLen — bail, don't spin
+    }
+  }
+  return map;
+}
+
 // Click-to-copy — same mechanism as HebrewViewer's WordBlock / MultiWordBlock:
 // copy the Paleo glyphs (or the source-language word) and flash the shared
 // `.copied` → `::after "Copied!"` tooltip. No new copy UI is introduced here.
@@ -1163,6 +1211,39 @@ export default function Parallel() {
         src.sort((a, z) => a.verse - z.verse || a.token_ordinal - z.token_ordinal);
       }
 
+      // Heb-extra's rich stream numbers ordinals differently than the native
+      // list links are stored against (see buildHebNativeOrdMap's comment above).
+      // Reconcile the two ONLY for HEB's rich render — every other language's
+      // token_ordinal scheme already agrees with what its links were built
+      // against, so this fetch/remap is skipped entirely for them.
+      let hebOrdMapsByVerse = null;
+      if (l === 'HEB' && usedTokens) {
+        try {
+          const nativeChap = await fetch(`/api/source/HEB/chapter?book=${b}&chapter=${c}`)
+            .then(r => r.ok ? r.json() : null).catch(() => null);
+          const nativeVerses = Array.isArray(nativeChap?.verses) ? nativeChap.verses : [];
+          hebOrdMapsByVerse = new Map();
+          for (const nv of nativeVerses) {
+            const nativeWords = (nv.tokens || [])
+              .map(t => ({ ord: t.ord, word: t.word || '' }))
+              .sort((a, z) => a.ord - z.ord);
+            const richBlocks = src.filter(w => w.verse === nv.verse).slice()
+              .sort((a, z) => a.token_ordinal - z.token_ordinal);
+            if (nativeWords.length && richBlocks.length) {
+              hebOrdMapsByVerse.set(nv.verse, buildHebNativeOrdMap(nativeWords, richBlocks));
+            }
+          }
+        } catch { /* best-effort — links just won't remap, same as pre-fix behavior */ }
+      }
+      const remapHebOrds = (links, verseNum) => {
+        const ordMap = hebOrdMapsByVerse?.get(verseNum);
+        if (!ordMap) return links;
+        return links.map(lk => ({
+          ...lk,
+          token_ordinals: [...new Set((lk.token_ordinals || []).map(o => ordMap.get(o) ?? o))],
+        }));
+      };
+
       const tmap = {};
       const translated = (txData.verses || []).filter(vs => vs.text?.trim());
       const buildLinks = (rawLinks, enWords) => resolvePhraseLinks(
@@ -1176,7 +1257,7 @@ export default function Parallel() {
         // Newer server: links ride along on the chapter payload.
         translated.forEach(vs => {
           const enWords = (vs.text || '').trim().split(/\s+/).filter(Boolean);
-          tmap[vs.verse] = { text: vs.text, links: buildLinks(vs.links, enWords) };
+          tmap[vs.verse] = { text: vs.text, links: remapHebOrds(buildLinks(vs.links, enWords), vs.verse) };
         });
       } else {
         // Fallback for a server without chapter links: fetch links per verse.
@@ -1185,7 +1266,7 @@ export default function Parallel() {
             .then(r => r.ok ? r.json() : null).catch(() => null)
             .then(d => {
               const enWords = (vs.text || '').trim().split(/\s+/).filter(Boolean);
-              tmap[vs.verse] = { text: vs.text, links: buildLinks(d?.links, enWords) };
+              tmap[vs.verse] = { text: vs.text, links: remapHebOrds(buildLinks(d?.links, enWords), vs.verse) };
             })
         ));
       }
