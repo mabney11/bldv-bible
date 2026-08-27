@@ -608,13 +608,27 @@ export default function Translate() {
       // can pass &lang; the shared English is identical across languages).
       let data = await fetch(`/api/translate/verse?book=${bookId}&chapter=${chapter}&verse=${verse}&lang=${encodeURIComponent(L)}`)
         .then(r => r.json());
-      // WHICH EDITION THESE TOKENS ARE. The server picks the token table by BOOK
-      // ID, not by the language picker — an NT book always reads tokens_nt. So
-      // the picker could say 'BHS' (its default) while the tokens on screen were
-      // HEB, and every link authored on a NT verse was stored as lang='BHS'.
-      // /parallel then asks for lang='HEB' and finds nothing. Record what the
-      // server used instead of re-deriving it here.
-      const effectiveTokenSource = data.token_source || L;
+      // WHICH EDITION THESE TOKENS ARE. `data.token_source` reflects ONLY
+      // txVerseQuery's own table pick (tokens_bhs for every OT book, tokens_nt
+      // for 40-66) — the mechanism the BHS branch below actually reads from.
+      // For an NT book requested as the picker's 'BHS' default, that table is
+      // silently tokens_nt, so trusting `data.token_source` there is exactly
+      // right: every link authored on a NT verse under the stale 'BHS' guess
+      // used to get stored as lang='BHS', and /parallel (asking for lang='HEB')
+      // found nothing.
+      //
+      // That override does NOT apply here when `L` isn't 'BHS' — e.g. Genesis
+      // (an OT book) explicitly requested as HEB (Hebrew-extra) below. The
+      // tokens on screen in that case come entirely from /api/source/HEB/verse
+      // (the `else` branch), never from txVerseQuery, so `data.token_source`
+      // reporting 'BHS' here is just OT's unrelated BHS-table default leaking
+      // through — not a real signal about the HEB edition actually in use.
+      // Blindly trusting it mistagged every new Genesis/HEB link as lang='BHS'
+      // (2026-08-27: "trying to link WaYaHayah... says saved but no link is
+      // established" — Established Links stayed filtered to lang='HEB' and
+      // never showed it). Only let the server override the picker's own
+      // explicit non-BHS choice; never override in the other direction.
+      const effectiveTokenSource = L === 'BHS' ? (data.token_source || L) : L;
       setTokenSource(effectiveTokenSource);
       // Non-admins: overlay this browser's local edits (if any) on top of the
       // server's published verse/links. Admins always see exactly what's
