@@ -450,11 +450,28 @@ function buildHebNativeOrdMap(nativeWords, richBlocks) {
       const nw = nativeWords[ni];
       const targetLen = Array.from(nw.word || '').length;
       let acc = 0;
+      // Record the SPECIFIC component ordinal(s) this native word actually
+      // consumes, not the block's own overall representative ordinal — a
+      // fused block's components carry their own distinct ordinals (e.g. a
+      // block spanning native words 8/9/10 has components ordinal 9, then
+      // two components ordinal 10, then two components ordinal 11), and
+      // WordBlock's per-glyph highlight (`hoveredOrds.has(ord)`, keyed off
+      // each component's OWN ordinal, not the block's) lights up whichever
+      // ordinal we hand it. Mapping every native word in the block to the
+      // block's last-component ordinal made every native word in a fused
+      // block glow the LAST word's own components — e.g. hovering
+      // "thachath" (native word 9, "MiThachath") lit up "LaRaqayai"
+      // (native word 10's components, which happen to share the block's
+      // own token_ordinal) instead of "Ma"/"Thachatha" (ordinal 10).
+      const consumedOrds = new Set();
       while (ci < comps.length && acc < targetLen) {
-        if (!comps[ci].isMark) acc += Array.from(comps[ci].paleo || '').length;
+        if (!comps[ci].isMark) {
+          acc += Array.from(comps[ci].paleo || '').length;
+          consumedOrds.add(comps[ci].token_ordinal != null ? comps[ci].token_ordinal : block.token_ordinal);
+        }
         ci++;
       }
-      map.set(nw.ord, block.token_ordinal);
+      map.set(nw.ord, consumedOrds.size ? [...consumedOrds] : [block.token_ordinal]);
       ni++;
       if (targetLen === 0) break; // a zero-length native word can never satisfy acc<targetLen — bail, don't spin
     }
@@ -1238,9 +1255,12 @@ export default function Parallel() {
       const remapHebOrds = (links, verseNum) => {
         const ordMap = hebOrdMapsByVerse?.get(verseNum);
         if (!ordMap) return links;
+        // ordMap now maps each native ordinal to an ARRAY of rich-block
+        // component ordinals (a fused/decomposed native word can span more
+        // than one), so this expands (flatMap) rather than 1:1 maps.
         return links.map(lk => ({
           ...lk,
-          token_ordinals: [...new Set((lk.token_ordinals || []).map(o => ordMap.get(o) ?? o))],
+          token_ordinals: [...new Set((lk.token_ordinals || []).flatMap(o => ordMap.get(o) ?? [o]))],
         }));
       };
 
