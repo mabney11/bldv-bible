@@ -584,13 +584,57 @@ function _buildTranslitGlossIndex() {
     }
     return idx;
 }
+// Same live-overlay idea as the gloss index above, but for the WORD itself:
+// a renumber entry's optional `raw_root` (see canonicalizeRootSurface) names
+// the OLD attested root; this maps its OLD transliteration to the NEW
+// canonical root's transliteration, so a renumbered root's baked English
+// prose reads with the reconstructed spelling too, not just the surface
+// forms in the Root Explorer. fieldy, 2026-08-24 (re: Revelation 17:3 still
+// reading "ashah (woman)" instead of "Ayashah (woman)"): "I want the
+// occurrences of the other surfaces to have the yod as well. Treat this word
+// as the source of truth despite its usage" — this is the reading-prose
+// counterpart of the surface-form splice, reusing the exact same `raw_root`
+// data rather than inventing a second place to declare the old spelling.
+//
+// IMPORTANT CAVEAT this does NOT fix on its own: applyLiveGloss only ever
+// runs over an UNTOUCHED baseline draft (see resolveChapterVerseTexts —
+// "Only untouched drafts get live-reglossed; a genuine translation is never
+// rewritten"). A verse that's been reviewed/saved in Translation Studio
+// (status != 'none') shows its frozen saved text verbatim and this index
+// never runs on it at all — that verse needs a manual re-touch/revert in
+// Studio to pick up the new spelling, same as any other lexicon change would
+// require. Whether Revelation 17:3 specifically is in that state is
+// something only the app's saved translation.db state can answer — I can't
+// query it in this sandbox (broken better-sqlite3 binding).
+let _translitRenumberIndex = null;
+function _buildTranslitRenumberIndex() {
+    const { snRenumber } = loadLexicons();
+    const idx = new Map();
+    if (!snRenumber) return idx;
+    for (const entry of Object.values(snRenumber)) {
+        if (!entry || !entry.to || !entry.raw_root) continue;
+        const oldKey = getTranslit(entry.raw_root).toLowerCase();
+        const newSn = 'H' + String(entry.to).replace(/^H+/, '');
+        const newWord = getTranslit(getCanonicalRoot(newSn, entry.raw_root));
+        if (oldKey && newWord) idx.set(oldKey, newWord);
+    }
+    return idx;
+}
 const ENGLISH_GLOSS_RX = /\b([A-Za-z]+)\s*\(([^()]*)\)/g;
 function applyLiveGloss(text) {
     if (!text) return text;
     if (!_translitGlossIndex) _translitGlossIndex = _buildTranslitGlossIndex();
+    if (!_translitRenumberIndex) _translitRenumberIndex = _buildTranslitRenumberIndex();
     return text.replace(ENGLISH_GLOSS_RX, (whole, word) => {
-        const gloss = _translitGlossIndex.get(word.toLowerCase());
-        return gloss ? `${word} (${gloss})` : whole;
+        // A renumbered root's word itself is swapped first — e.g. "ashah" ->
+        // "Ayashah" — then the gloss lookup below runs against the NEW word,
+        // so it picks up H378a's current gloss rather than whatever the OLD
+        // root (H800/H801, now "fire") happens to mean today.
+        const renamed = _translitRenumberIndex.get(word.toLowerCase());
+        const displayWord = renamed || word;
+        const gloss = _translitGlossIndex.get(displayWord.toLowerCase());
+        if (renamed) return gloss ? `${displayWord} (${gloss})` : displayWord;
+        return gloss ? `${displayWord} (${gloss})` : whole;
     });
 }
 
@@ -3380,6 +3424,7 @@ function scheduleRebuild(changedFile) {
         _rebuildInProgress = true;
         _lexiconCache = null;          // bust the cache so loadLexicons re-reads from disk
         _translitGlossIndex = null;    // bust the English-baseline live-gloss reverse index too
+        _translitRenumberIndex = null; // bust the renumbered-root word-swap index too
         _rootNavIndex = null;
         _surfNavIndex = null;
         _rootByValue  = null;
@@ -10271,82 +10316,6 @@ app.get('/api/translate/progress', (req, res) => {
     }
 });
 
-// Shared by /api/translate/chapter and /api/translate/book below — resolves
-// one chapter's display verse list + English text (status included, no
-// links: the chapter route zips those in itself, the book-wide route below
-// has no use for them at all, it only wants text for cross-chapter quote
-// scanning). Pulled out 2026-08-26 so the book-wide route can reuse the
-// EXACT same versification/baseline/live-gloss logic per chapter rather than
-// reimplementing it — two copies of this would drift the moment one of the
-// many edge cases documented below got fixed in only one place.
-function resolveChapterVerseTexts(bookId, chapter) {
-    // resolveEnglishChapter covers BOTH Malachi ch4 (MT ch3:19-24)/Joel's
-    // English 2:28-32/ch3 split (via its internal VERSIFICATION_MAP check) AND
-    // the ~23 books in versification-differences.json where an English chapter
-    // can be assembled from more than one BHS chapter (e.g. Malachi 4, or
-    // Deuteronomy 12 which now needs BHS 13:1 tacked on as its 32nd verse) — a
-    // single caller-visible per-segment merge handles every case, rather than
-    // this route hand-checking VERSIFICATION_MAP itself. Only meaningful for
-    // books BOOK_META covers (the BHS/Masoretic set); NT-only chapters have no
-    // entry either way and resolve to themselves unchanged. Found 2026-08-17
-    // (Malachi 4 blank in Translation Studio) and generalized 2026-08-20 for
-    // the English-versification-authority flip.
-    let verseRows = [];
-    if (BOOK_META[bookId]) {
-        for (const seg of resolveEnglishChapter(bookId, chapter)) {
-            const segRows = db.prepare(
-                `SELECT DISTINCT verse FROM tokens_bhs WHERE book_id=? AND chapter=? ORDER BY verse`
-            ).all(bookId, seg.hebChapter)
-                .filter(r => r.verse >= seg.hebStart && r.verse <= seg.hebEnd)
-                .map(r => ({ verse: seg.engStart + (r.verse - seg.hebStart) }));
-            verseRows.push(...segRows);
-        }
-        verseRows.sort((a, b) => a.verse - b.verse);
-    }
-    // Non-Hebrew books (no tokens_bhs): take the verse list from the English
-    // baseline so the chapter still opens and every verse is listed.
-    if (!verseRows.length) {
-        try {
-            const eng = db.prepare(`
-                SELECT DISTINCT ord_v AS verse FROM verses
-                WHERE corpus='ENG' AND canon_id=? AND ord_c=? ORDER BY ord_v
-            `).all(bookId, chapter);
-            for (const r of eng) verseRows.push(r);
-        } catch { /* ENG baseline not loaded */ }
-    }
-
-    const saved = translationDb.stmts.chapterProgress.all(bookId, chapter);
-    const savedMap = {};
-    for (const r of saved) savedMap[r.verse] = r;
-
-    return verseRows.map(r => {
-        const s = savedMap[r.verse];
-        // Show your English for every verse: saved text if present, otherwise
-        // the loaded baseline. Untouched verses read as the baseline draft.
-        //
-        // load-english-baseline.js pre-seeds EVERY verse's `text` column in
-        // translations with a frozen snapshot of the baked baseline (see its
-        // resetUntouched step) — so `s.text` is populated for virtually every
-        // verse, and the englishBaseline() fallback below almost never actually
-        // runs. That means this pre-seeded snapshot, not the live baseline, is
-        // what readers see — and it embeds "root (gloss)" text that goes stale
-        // the moment lexicon.json changes, exactly like the surface-index and
-        // English-baseline staleness documented above. A verse counts as an
-        // untouched draft (not the user's real translation) when it's still
-        // status 'none', tagged 'web-passthrough', and its text still equals
-        // its own original_text snapshot — same test used by /api/parallel/verse.
-        // Only untouched drafts get live-reglossed; a genuine translation is
-        // never rewritten.
-        const savedText = (s?.text && s.text.trim()) ? s.text : '';
-        const isUntouchedDraft = !!s && s.status === 'none'
-            && s.source_origin === 'web-passthrough'
-            && s.original_text != null && s.text === s.original_text;
-        const isUserOverride = !!savedText && !isUntouchedDraft;
-        const text = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(bookId, chapter, r.verse));
-        return { verse: r.verse, status: s?.status || 'none', text };
-    });
-}
-
 // GET /api/translate/chapter?book=1&chapter=1
 app.get('/api/translate/chapter', (req, res) => {
     try {
@@ -10361,49 +10330,77 @@ app.get('/api/translate/chapter', (req, res) => {
         const linksByVerse = {};
         for (const l of linkRows) (linksByVerse[l.verse] ||= []).push(l);
 
-        const verses = resolveChapterVerseTexts(bookId, chapter)
-            .map(v => ({ ...v, links: linksByVerse[v.verse] || [] }));
+        // resolveEnglishChapter covers BOTH Malachi ch4 (MT ch3:19-24)/Joel's
+        // English 2:28-32/ch3 split (via its internal VERSIFICATION_MAP check) AND
+        // the ~23 books in versification-differences.json where an English chapter
+        // can be assembled from more than one BHS chapter (e.g. Malachi 4, or
+        // Deuteronomy 12 which now needs BHS 13:1 tacked on as its 32nd verse) — a
+        // single caller-visible per-segment merge handles every case, rather than
+        // this route hand-checking VERSIFICATION_MAP itself. Only meaningful for
+        // books BOOK_META covers (the BHS/Masoretic set); NT-only chapters have no
+        // entry either way and resolve to themselves unchanged. Found 2026-08-17
+        // (Malachi 4 blank in Translation Studio) and generalized 2026-08-20 for
+        // the English-versification-authority flip.
+        let verseRows = [];
+        if (BOOK_META[bookId]) {
+            for (const seg of resolveEnglishChapter(bookId, chapter)) {
+                const segRows = db.prepare(
+                    `SELECT DISTINCT verse FROM tokens_bhs WHERE book_id=? AND chapter=? ORDER BY verse`
+                ).all(bookId, seg.hebChapter)
+                    .filter(r => r.verse >= seg.hebStart && r.verse <= seg.hebEnd)
+                    .map(r => ({ verse: seg.engStart + (r.verse - seg.hebStart) }));
+                verseRows.push(...segRows);
+            }
+            verseRows.sort((a, b) => a.verse - b.verse);
+        }
+        // Non-Hebrew books (no tokens_bhs): take the verse list from the English
+        // baseline so the chapter still opens and every verse is listed.
+        if (!verseRows.length) {
+            try {
+                const eng = db.prepare(`
+                    SELECT DISTINCT ord_v AS verse FROM verses
+                    WHERE corpus='ENG' AND canon_id=? AND ord_c=? ORDER BY ord_v
+                `).all(bookId, chapter);
+                for (const r of eng) verseRows.push(r);
+            } catch { /* ENG baseline not loaded */ }
+        }
+
+        const saved = translationDb.stmts.chapterProgress.all(bookId, chapter);
+        const savedMap = {};
+        for (const r of saved) savedMap[r.verse] = r;
+
+        const verses = verseRows.map(r => {
+            const s = savedMap[r.verse];
+            // Show your English for every verse: saved text if present, otherwise
+            // the loaded baseline. Untouched verses read as the baseline draft.
+            //
+            // load-english-baseline.js pre-seeds EVERY verse's `text` column in
+            // translations with a frozen snapshot of the baked baseline (see its
+            // resetUntouched step) — so `s.text` is populated for virtually every
+            // verse, and the englishBaseline() fallback below almost never actually
+            // runs. That means this pre-seeded snapshot, not the live baseline, is
+            // what readers see — and it embeds "root (gloss)" text that goes stale
+            // the moment lexicon.json changes, exactly like the surface-index and
+            // English-baseline staleness documented above. A verse counts as an
+            // untouched draft (not the user's real translation) when it's still
+            // status 'none', tagged 'web-passthrough', and its text still equals
+            // its own original_text snapshot — same test used by /api/parallel/verse.
+            // Only untouched drafts get live-reglossed; a genuine translation is
+            // never rewritten.
+            const savedText = (s?.text && s.text.trim()) ? s.text : '';
+            const isUntouchedDraft = !!s && s.status === 'none'
+                && s.source_origin === 'web-passthrough'
+                && s.original_text != null && s.text === s.original_text;
+            const isUserOverride = !!savedText && !isUntouchedDraft;
+            const text = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(bookId, chapter, r.verse));
+            return { verse: r.verse, status: s?.status || 'none', text, links: linksByVerse[r.verse] || [] };
+        });
         const total       = verses.length;
         const done        = verses.filter(v => v.status === 'done').length;
         const in_progress = verses.filter(v => v.status === 'in_progress').length;
         res.json({ book_id: bookId, chapter, lang, verses, total, done, in_progress });
     } catch(err) {
         console.error('/api/translate/chapter failed:', err);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// GET /api/translate/book?book=1
-// Every chapter's English text for a whole book in one call, verse text only
-// (no links/status) — built 2026-08-26 for Reader.jsx's cross-chapter quote
-// scan: a <...> quote explicitly marked in Translation Studio can now span a
-// chapter boundary (fieldy: "I want quotes that happen to span across
-// chapters to work with this"), and resolving that requires seeing every
-// chapter's text in one pass rather than one chapter at a time — a real
-// quote character still resets at each chapter boundary same as always (see
-// Reader.jsx's parseQuoteMarks boundary handling), only the explicit bracket
-// marker is meant to survive one. Chapter list comes from the ENG corpus's
-// own distinct ord_c values for this book — "the same definition the reader
-// uses" per the comment on resolveChapterVerseTexts' sibling /progress route
-// above, so this always matches exactly what chapters Reader/Translate show,
-// Hebrew-versification-mapped books included (resolveChapterVerseTexts
-// handles that internally per chapter, this route just enumerates which
-// chapter numbers exist to loop over).
-app.get('/api/translate/book', (req, res) => {
-    try {
-        const bookId = parseInt(req.query.book, 10);
-        if (!bookId) return res.status(400).json({ error: 'book required' });
-        const chapterRows = db.prepare(`
-            SELECT DISTINCT ord_c AS chapter FROM verses
-            WHERE corpus='ENG' AND canon_id=? AND ord_c IS NOT NULL ORDER BY ord_c
-        `).all(bookId);
-        const chapters = chapterRows.map(r => ({
-            chapter: r.chapter,
-            verses: resolveChapterVerseTexts(bookId, r.chapter).map(v => ({ verse: v.verse, text: v.text })),
-        }));
-        res.json({ book_id: bookId, chapters });
-    } catch(err) {
-        console.error('/api/translate/book failed:', err);
         res.status(500).json({ error: err.message });
     }
 });

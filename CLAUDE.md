@@ -1,5 +1,79 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## "ashah" regression in the Revelation 17:3 reading text — NOT caused by anything today, and only partly fixable from here (found 2026-08-24)
+
+fieldy reported bldbible.com's Revelation 17:3 reading text still showing "an ashah
+(woman)" — old spelling, no Yod — with a screenshot from the normal reading view
+(`/bible?book=...`), not the word-by-word table or Root Explorer this whole day's
+work has been about.
+
+**This is not a regression from anything in this session.** None of today's edits
+(server.js route patches, lexicon files, strongs-renumber.json) touch the reading-
+text rendering path at all. Tracing it down:
+
+- `/bible?book=` reads verse text from `resolveChapterVerseTexts()` ->
+  `translation.db`'s saved `text` column, falling back to `englishBaseline()` ->
+  `applyLiveGloss()` only for an UNTOUCHED baseline draft (status='none', text still
+  equal to its own original_text snapshot). A verse that's been reviewed/saved in
+  Translation Studio is shown VERBATIM, frozen, and is deliberately never rewritten
+  by anything — that's an intentional safety guarantee protecting real translation
+  work (see the "BUG FOUND 2026-07-27" comment in restore-nt-baseline.mjs, which
+  gates its own destructive reseed behind `--force` for the identical reason).
+- Even where live-reglossing DOES run, `applyLiveGloss` (before today) only ever
+  rewrote the GLOSS inside the parentheses — "ashah (**woman**)" -> "ashah
+  (**current lexicon gloss for 'ashah'**)" — never the word "ashah" itself. Proof
+  this session never touched this verse at all: if live-reglossing HAD run against
+  the current lexicon.json, "ashah (woman)" would now read "ashah (fire / offering
+  made by fire)" (H800/H801's new post-split gloss) — it doesn't, so this text is
+  100% untouched by anything from today or from Phase 1.
+- **The deeper finding**: the NT/HEB edition's English baseline
+  (`english-nt-baseline.jsonl`) is a STATIC file with no generator script anywhere
+  in this codebase (`grep -rl "english-nt-baseline.jsonl" *.mjs *.js` finds only
+  READERS: merge-baseline.mjs, render-all.mjs, restore-nt-baseline.mjs,
+  backfill-name-map.js — nothing writes it). Unlike the OT, whose baseline
+  (`apply-web-strongs.mjs` -> `english-baseline.jsonl`) is regenerated from
+  `web-strongs.jsonl` + CURRENT `strongs-roots.json` on every full `render-all.mjs`
+  run, the NT baseline text was produced once (or hand-maintained) and nothing
+  re-derives it from `strongs-roots.json` today. Confirmed empirically:
+  `web-strongs.jsonl`'s `code` field only ever contains OT book codes (GEN...ZEP,
+  zero NT codes) — the OT pipeline literally cannot reach Revelation. This means
+  **even a full `render-all.mjs` run would NOT fix "ashah" in Revelation** — step 2
+  (`merge-baseline.mjs`) pulls the NT portion from that same static file verbatim,
+  root fix or no root fix. This is a real, pre-existing architectural gap between
+  the OT and NT rendering pipelines, not something introduced this session.
+
+**What I fixed, bounded to what's safe from here:** extended `applyLiveGloss`
+(server.js) to also swap the WORD itself for a renumbered root, reusing the SAME
+`raw_root` field the Root Explorer surface-splice reads (see the section below) —
+a new `_translitRenumberIndex` maps the OLD transliteration ("ashah") to the NEW
+canonical root's transliteration ("Ayashah"), checked before the existing
+gloss-only swap, so both the word AND its gloss update together. This is correct
+and safe, but **only reaches verses still in the "untouched draft" state** — the
+exact same limitation `applyLiveGloss` already had for gloss-only swaps, just now
+also covering the word. Whether this fixes Revelation 17:3 specifically depends on
+whether the app's translation.db has that verse marked reviewed/saved (frozen,
+untouched by this) or still an untouched pass-through draft (this fix reaches it) —
+I can't check that from this sandbox (broken DB binding, same as everything else
+today).
+
+**What this does NOT fix, and would need real follow-up work if wanted:**
+- A "genuine translation" verse frozen in translation.db needs a manual re-touch or
+  revert-to-baseline (Translate Studio's existing history/revert feature — see
+  `apiTransRevertToHistory` in `src/lib/api.js`) to pick up ANY lexicon/root change,
+  today's or any prior one. That's existing, intentional behavior, not a gap.
+- The static `english-nt-baseline.jsonl` itself has no code path that regenerates
+  it from `tokens_nt`'s Strong's tags + current `strongs-roots.json` the way the OT
+  baseline does. Building that (an NT-equivalent of `apply-web-strongs.mjs`) is a
+  real, separate project — I did not attempt it: too large a change to make and
+  ship untested in one pass, and I have no way to verify its output against real NT
+  verses in this sandbox.
+
+**Verify after restart:** find an NT/HEB-edition verse containing this word that is
+STILL an untouched draft (not yet reviewed in Translate Studio) and confirm it now
+reads "Ayashah (woman)". If Revelation 17:3 itself is the reviewed/frozen kind,
+that's expected to still read "ashah (woman)" until someone touches it in Studio —
+not evidence this fix failed.
+
 ## Every H378a surface form now shows the canonical Yod, not just the root header — new `raw_root` splice mechanism (added 2026-08-24)
 
 Follow-up to the two sections directly below (same day). Once those shipped,
