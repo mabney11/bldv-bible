@@ -1,5 +1,55 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## The actual "378a is not ashah/fire" bug — the renumber fix patched the badge NUMBER but never the baked ROOT SPELLING (fixed 2026-08-24)
+
+fieldy deployed and re-ran after the section directly below, then reported from
+Revelation 17:4's word-by-word table: the STRONGS# badge correctly read H378a, but
+the ROOT column, DEFINITION ("fire / offering made by fire" — H800/H801's post-
+split gloss, not H378a's), TRANSLITERATION ("WaHaAshah", no Yod), and ROOT FIRST
+APPEARANCE (Exodus 29:18 — the fire root's real first appearance, not Ayashah's)
+all still showed the OLD 3-letter fire root's data. "378a is not ashah/fire.
+whatever changes were made to the OT also needs to be made here [the NT/HEB
+edition]." This is a DIFFERENT bug from the two sections below it (both of which
+were real and are still correctly fixed) — this is the actual reason NT/HEB words
+looked broken, not a missing OT-vs-NT code path.
+
+**Root cause.** `applyLocOverrideToSurfRow`'s renumber-splice block (added earlier
+today) patched `comps[idx].sn` — the root component's number, which is all the
+STRONGS# badge reads — but never touched `comps[idx].paleo`, the baked ROOT
+SPELLING that surface-index.db shipped with. Every OTHER display field is derived
+from `.paleo`, not `.sn`, at render time: `reGlossOne` looks up the definition by
+`paleo` (and `paleo_H<sn>`) in lexicon/homographs; `transliterateBlock` re-
+transliterates from `.paleo` on every render; and the frontend's own root-first-
+appearance lookup (`apiRootFirstByLetters`) is called with whatever paleo string
+the component carries. So the badge got relabeled while everything describing the
+WORD itself kept reading H800/H801's old, unrenumbered root (𐤀𐤔𐤄, "fire") — which,
+after today's Phase 1 split, correctly resolves to fire's OWN new gloss ("fire /
+offering made by fire") rather than raising an error, which is exactly what made
+this look so plausible/silent instead of obviously broken.
+
+This affected BOTH editions equally — it was never OT-vs-NT-specific code, just
+that the OT (BHS) fast path happened to already have a CURRENT `.paleo` baked into
+its surface-index (rebuilt during Phase 1's pipeline run), while the NT/HEB
+edition's surface-index bake is older and still carries the pre-fix root — so the
+exact same bug was invisible on Genesis 2:24 and visible on Revelation 17:4 purely
+by coincidence of which surface-index happened to be fresher, not because the code
+treated them differently.
+
+**Fix**, in the same renumber block in `applyLocOverrideToSurfRow`: after setting
+`comps[idx].sn`, also set `comps[idx].paleo = getCanonicalRoot(renamed, comps[idx].paleo) || comps[idx].paleo`.
+Everything downstream (`reGlossOne`'s definition lookup, `transliterateBlock`'s
+retransliteration, the frontend's first-appearance call) already recomputes fresh
+from `.paleo` on every render — none of those needed their own separate patch,
+this one field feeds all of them. Idempotent for rows that already had the correct
+`.paleo` (e.g. BHS, most of the time) — `getCanonicalRoot` just returns the same
+value back.
+
+**Not run or tested this session** — same standing constraint. `node --check`
+only. Verify after restart: Revelation 17:4's word-by-word table should now show
+root 𐤀𐤉𐤔𐤄, "WaHaAyashah" (or similar, with the Yod), gloss "wife / individual
+woman", and a first-appearance in the Ayashah cluster (not Exodus 29:18) — same
+check for any other NT/HEB occurrence of this word, not just this one verse.
+
 ## "ashah" regression in the Revelation 17:3 reading text — NOT caused by anything today, and only partly fixable from here (found 2026-08-24)
 
 fieldy reported bldbible.com's Revelation 17:3 reading text still showing "an ashah

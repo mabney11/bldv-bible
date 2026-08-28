@@ -3702,7 +3702,28 @@ function applyLocOverrideToSurfRow(row, locationOverrides, book_id, chapter) {
                     if (Array.isArray(comps) && comps.length) {
                         const rootIdx = comps.findIndex(c => c && c.css === 'root');
                         const idx = rootIdx >= 0 ? rootIdx : comps.length - 1;
-                        if (comps[idx]) comps[idx].sn = renamed.replace(/^H+/i, '');
+                        if (comps[idx]) {
+                            comps[idx].sn = renamed.replace(/^H+/i, '');
+                            // BUG FOUND 2026-08-24 (fieldy, re: Revelation 17:4 —
+                            // "378a is not ashah/fire"): patching .sn alone
+                            // relabels the STRONGS# badge but leaves .paleo — the
+                            // baked root SPELLING this surface-index row was built
+                            // with — untouched. Every OTHER display field
+                            // (definition/gloss via reGlossOne, transliteration via
+                            // transliterateBlock, and the frontend's own root-
+                            // first-appearance lookup) is derived from .paleo at
+                            // render time, not from .sn — so the badge said H378a
+                            // while the root column, definition, and translit all
+                            // kept showing H800/H801's OLD 3-letter fire root and
+                            // its "fire / offering made by fire" gloss. Swapping
+                            // .paleo to the canonical root here means every one of
+                            // those downstream, already-live recomputations
+                            // (reGlossOne overwrites .translation fresh whenever
+                            // its paleo has a lexicon entry; transliterateBlock
+                            // recomputes .translit fresh every render) picks up the
+                            // fix for free — no separate patch needed per field.
+                            comps[idx].paleo = getCanonicalRoot(renamed, comps[idx].paleo) || comps[idx].paleo;
+                        }
                         row.components = JSON.stringify(comps);
                     }
                 } catch { /* leave components untouched if malformed */ }
