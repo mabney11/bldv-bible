@@ -1,5 +1,52 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## The REAL reason NT reading text never live-reglosses — "untouched draft" only recognized OT's source_origin tag (fixed 2026-08-24)
+
+Follow-up to the "ashah regression" section below, which I got half right and half
+wrong. After the token-level fix (section above this one) shipped, fieldy confirmed
+the word-by-word table now correctly shows Ayashah — but the READING TEXT still
+said "ashah", and critically: "I never edited these verses in translation studio."
+That directly disproved my "maybe it's a reviewed/frozen genuine translation"
+hypothesis from the section below — fieldy would know, and he's saying it isn't.
+That sent me back to find the REAL cause instead of resting on the earlier guess.
+
+**Root cause.** `resolveChapterVerseTexts()` (and five other call sites — see
+below) decide whether a verse is safe to live-reglossed with a 4-line check:
+status must be 'none', text must still equal its own original_text snapshot, AND
+`source_origin` must be exactly `'web-passthrough'`. That third condition is the
+bug: `'web-passthrough'` is the tag ONLY `load-english-baseline.js` (the OT
+loader) writes. `restore-nt-baseline.mjs` (the NT loader, canon_id 40-66) writes
+`'web-en'`. `reseed-translations.mjs` (Apocrypha/Works Library, canon_id>66)
+writes `'corpus-reseed'`. All three tags mean the identical thing — "auto-
+imported, nobody has ever touched this verse" — but the check only ever
+recognized one of them. So EVERY NT verse (Revelation included) and every
+Apocrypha verse was being treated as `isUserOverride = true` — a frozen, "genuine"
+translation — regardless of whether a human had ever actually saved anything for
+it. This is why it looked exactly like a reviewed/frozen verse (my earlier guess)
+while actually being nothing of the sort.
+
+**Scale of it**: this exact 4-line check was copy-pasted into SIX separate route
+handlers — `/api/translate/chapter` (what fieldy was looking at),
+`/api/translate/verse` (Translation Studio's own editor prefill — meaning a
+translator opening an untouched NT verse to review it was ALSO shown the stale
+word, risking a human approving/saving text that only looked right because it was
+frozen), `/api/parallel/verse`, and three `/api/admin/gloss-studio/*` routes. Every
+one of them had to be fixed, or the same complaint would just resurface on a
+different page.
+
+**Fix**: consolidated into one function, `isUntouchedBaselineDraft(saved)`, right
+after `applyLiveGloss` in server.js, backed by `UNTOUCHED_BASELINE_ORIGINS = new
+Set(['web-passthrough', 'web-en', 'corpus-reseed'])`. All six call sites now call
+this one function instead of repeating the check. A future 4th baseline-loader
+(if one's ever added) only needs to add its tag to this one set, not hunt down six
+copies again.
+
+**Not run or tested this session** — same standing constraint, `node --check`
+only. Verify after restart: Revelation 17:4's reading text (and any other
+untouched NT verse using this word) should now read "Ayashah (woman)", not "ashah
+(woman)" — and Translation Studio's editor, opened on an untouched NT verse,
+should prefill with the live-reglossed text too, not the frozen baseline.
+
 ## The actual "378a is not ashah/fire" bug — the renumber fix patched the badge NUMBER but never the baked ROOT SPELLING (fixed 2026-08-24)
 
 fieldy deployed and re-ran after the section directly below, then reported from

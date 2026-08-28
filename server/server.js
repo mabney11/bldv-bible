@@ -638,6 +638,35 @@ function applyLiveGloss(text) {
     });
 }
 
+// A translation.db row counts as an "untouched baseline draft" — safe to
+// live-reglossed against the current lexicon/roots — when it's still status
+// 'none', its text hasn't diverged from its own original_text snapshot, AND
+// it was auto-imported by one of the baseline-loading scripts rather than
+// typed by hand in Translation Studio. A genuine translation is never
+// rewritten by anything, no matter what lexicon.json or strongs-roots.json
+// says later.
+//
+// BUG FOUND 2026-08-24 (fieldy, re: Revelation 17:4's reading text still
+// saying "ashah" though "I never edited these verses in translation
+// studio"): this check used to test source_origin === 'web-passthrough'
+// ONLY — the tag load-english-baseline.js (OT) writes. restore-nt-
+// baseline.mjs (NT, canon_id 40-66) writes 'web-en', and reseed-
+// translations.mjs (Apocrypha/Works Library, canon_id>66) writes
+// 'corpus-reseed', for the exact same "auto-imported, nobody's touched it"
+// state — neither tag was ever recognized here, so EVERY NT and Apocrypha
+// verse was treated as a genuine, frozen translation regardless of whether a
+// human had ever actually saved anything for it. Six call sites had this
+// exact 4-line check copy-pasted (translate/chapter, translate/verse,
+// parallel/verse, and three gloss-studio admin routes); consolidated to one
+// place so a future 4th baseline-loader only needs to add its tag to the set
+// below, not hunt down every copy.
+const UNTOUCHED_BASELINE_ORIGINS = new Set(['web-passthrough', 'web-en', 'corpus-reseed']);
+function isUntouchedBaselineDraft(saved) {
+    return !!saved && saved.status === 'none'
+        && UNTOUCHED_BASELINE_ORIGINS.has(saved.source_origin)
+        && saved.original_text != null && saved.text === saved.original_text;
+}
+
 
 
 // ── TRANSLATION DB — schema init & prepared statements ───────────────────────
@@ -9372,9 +9401,7 @@ app.get('/api/admin/gloss-studio/verse', (req, res) => {
         let saved = null;
         try { saved = translationDb.stmts.getVerse.get(book_id, chapter, verse); } catch { /* translation.db may be empty */ }
         const savedText = (saved?.text && saved.text.trim()) ? saved.text : '';
-        const isUntouchedDraft = !!saved && saved.status === 'none'
-            && saved.source_origin === 'web-passthrough'
-            && saved.original_text != null && saved.text === saved.original_text;
+        const isUntouchedDraft = isUntouchedBaselineDraft(saved);
         const isUserOverride = !!savedText && !isUntouchedDraft;
         const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(book_id, chapter, verse));
 
@@ -9425,9 +9452,7 @@ app.get('/api/admin/gloss-studio/root-verses', (req, res) => {
                 let saved = null;
                 try { saved = translationDb.stmts.getVerse.get(o.book_id, o.chapter, o.verse); } catch { /* translation.db may be empty */ }
                 const savedText = (saved?.text && saved.text.trim()) ? saved.text : '';
-                const isUntouchedDraft = !!saved && saved.status === 'none'
-                    && saved.source_origin === 'web-passthrough'
-                    && saved.original_text != null && saved.text === saved.original_text;
+                const isUntouchedDraft = isUntouchedBaselineDraft(saved);
                 const isUserOverride = !!savedText && !isUntouchedDraft;
                 const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(o.book_id, o.chapter, o.verse));
                 verses.push({
@@ -9461,9 +9486,7 @@ app.get('/api/admin/gloss-studio/root-verses', (req, res) => {
             let saved = null;
             try { saved = translationDb.stmts.getVerse.get(v.book_id, v.chapter, v.verse); } catch { /* translation.db may be empty */ }
             const savedText = (saved?.text && saved.text.trim()) ? saved.text : '';
-            const isUntouchedDraft = !!saved && saved.status === 'none'
-                && saved.source_origin === 'web-passthrough'
-                && saved.original_text != null && saved.text === saved.original_text;
+            const isUntouchedDraft = isUntouchedBaselineDraft(saved);
             const isUserOverride = !!savedText && !isUntouchedDraft;
             const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(v.book_id, v.chapter, v.verse));
             v.english = { text: englishText, is_baseline: !isUserOverride && !!englishText };
@@ -10404,14 +10427,13 @@ app.get('/api/translate/chapter', (req, res) => {
             // the moment lexicon.json changes, exactly like the surface-index and
             // English-baseline staleness documented above. A verse counts as an
             // untouched draft (not the user's real translation) when it's still
-            // status 'none', tagged 'web-passthrough', and its text still equals
-            // its own original_text snapshot — same test used by /api/parallel/verse.
+            // status 'none', tagged with one of the known auto-import origins
+            // (see isUntouchedBaselineDraft), and its text still equals its own
+            // original_text snapshot — same test used by /api/parallel/verse.
             // Only untouched drafts get live-reglossed; a genuine translation is
             // never rewritten.
             const savedText = (s?.text && s.text.trim()) ? s.text : '';
-            const isUntouchedDraft = !!s && s.status === 'none'
-                && s.source_origin === 'web-passthrough'
-                && s.original_text != null && s.text === s.original_text;
+            const isUntouchedDraft = isUntouchedBaselineDraft(s);
             const isUserOverride = !!savedText && !isUntouchedDraft;
             const text = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(bookId, chapter, r.verse));
             return { verse: r.verse, status: s?.status || 'none', text, links: linksByVerse[r.verse] || [] };
@@ -10481,12 +10503,11 @@ app.get('/api/translate/verse', (req, res) => {
         // resetUntouched step), so the plain `saved?.text || ''` check below used
         // to treat that frozen snapshot as if it were always your own text — same
         // staleness bug as /api/translate/chapter. Distinguish an untouched draft
-        // (still 'none' + 'web-passthrough' + text===original_text) and re-gloss
-        // ONLY that against the current lexicon; a real translation is untouched.
+        // (still 'none' + a known auto-import origin + text===original_text, see
+        // isUntouchedBaselineDraft) and re-gloss ONLY that against the current
+        // lexicon; a real translation is untouched.
         const rawSavedText = saved?.text || '';
-        const isUntouchedDraft = !!saved && saved.status === 'none'
-            && saved.source_origin === 'web-passthrough'
-            && saved.original_text != null && saved.text === saved.original_text;
+        const isUntouchedDraft = isUntouchedBaselineDraft(saved);
         const savedText = (rawSavedText && !isUntouchedDraft) ? rawSavedText : '';
         const baseline  = savedText ? '' : applyLiveGloss(rawSavedText || englishBaseline(bookId, chapter, verse));
         res.json({
@@ -10803,9 +10824,7 @@ app.get('/api/parallel/verse', (req, res) => {
         // at status 'none' with text === the original snapshot; anything else is
         // your override. Either way, no per-verse Save is needed to see the text.
         const savedText = (saved?.text && saved.text.trim()) ? saved.text : '';
-        const isUntouchedDraft = !!saved && saved.status === 'none'
-            && saved.source_origin === 'web-passthrough'
-            && saved.original_text != null && saved.text === saved.original_text;
+        const isUntouchedDraft = isUntouchedBaselineDraft(saved);
         const isUserOverride = !!savedText && !isUntouchedDraft;
         // Same pre-seeded-snapshot staleness as /api/translate/chapter: re-gloss
         // live against the current lexicon unless this is the user's real
