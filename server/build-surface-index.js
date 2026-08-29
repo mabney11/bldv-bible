@@ -427,6 +427,23 @@ function guessSuffixGloss(paleoStr) {
     return null;
 }
 
+// Kept in sync with server.js guessPrefixGloss — reverse-lookup a bare Paleo
+// string that sits BEFORE the true root against the single-letter proclitic
+// tables (article/conjunction/preposition). Those tables are flat char->string
+// maps (unlike nme/prs/vbe/uvf's {paleo,trans,css} objects), so this walks the
+// string letter by letter — proclitics stack (ו+ה, ל+ה, …).
+function guessPrefixGloss(paleoStr) {
+    if (!paleoStr) return null;
+    const glosses = [];
+    let allKnown = true;
+    for (const ch of paleoStr) {
+        const known = GRAMMAR_MAP.art[ch] || GRAMMAR_MAP.conj[ch] || GRAMMAR_MAP.prep[ch];
+        if (known) glosses.push(known); else allKnown = false;
+    }
+    if (!glosses.length) return null;
+    return { trans: glosses.join('-'), css: allKnown ? 'mod-pref-known' : 'mod-pref-unk' };
+}
+
 // Merge a stripped SURFACE root-portion with the CANONICAL root so the full root
 // shines through AND every surface modification is kept — kept in sync with
 // server.js mergeRootDisplay (see there for full docs). Returns the merged Paleo
@@ -896,6 +913,32 @@ function parseToken(wordRaw, pos, morph, strongs) {
             }
         }
 
+        // ── HARDEN: LEADING RESIDUE (mirror of the block above, kept in sync
+        // with server.js) ────────────────────────────────────────────────────
+        // A binyan-pattern preformative (Piel/Pual/Hiphil/Hitpael participle מ,
+        // e.g. מברך mabarak "blessed" H1288 ברך) is baked into the word's
+        // PATTERN, not tracked by a pfm/vbs morph key, so it never goes through
+        // extractPrefix and fuses to the FRONT of rootDisplay instead of the
+        // back. trueRoot is already correct here (the strongs-roots.json
+        // subsequence guard upstream resolves it fine) — only the READER-facing
+        // rootDisplay carried the residue, which then also broke every lexicon
+        // lookup keyed on the clean root. Peel it into its own chip.
+        let leadModObj = null;
+        if (rootDisplay && trueRoot && rootDisplay !== trueRoot && rootDisplay.endsWith(trueRoot)) {
+            const leadExtra = rootDisplay.slice(0, rootDisplay.length - trueRoot.length);
+            if (leadExtra) {
+                const guess = guessPrefixGloss(leadExtra);
+                leadModObj = {
+                    paleo: leadExtra,
+                    translit: '',
+                    translation: guess ? `[${guess.trans}]` : `[${getTranslit(leadExtra)}]`,
+                    css: guess ? (guess.css || 'mod-pref-unk') : 'mod-pref-unk',
+                    bakedSplit: true,  // kept in sync with server.js reGlossOne guard
+                };
+                rootDisplay = trueRoot;
+            }
+        }
+
         const normStrongs = strongs ? 'H' + strongs.replace(/^H+/, '') : '';
         const fpdp = PDP_FULL[pdp] || pdp;
         const fpos = PDP_FULL[pos]  || pos;
@@ -988,6 +1031,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
         components = [
             ...(pfmObj ? [pfmObj] : []),
             ...(vbsObj ? [vbsObj] : []),
+            ...(leadModObj ? [leadModObj] : []),
             rootComp,
             ...(bakedModObj ? [bakedModObj] : []),
             ...(vbeObj ? [vbeObj] : []),

@@ -806,6 +806,28 @@ function guessSuffixGloss(paleoStr) {
     return null;
 }
 
+// Reverse-lookup a bare Paleo string that sits BEFORE the true root (leading
+// residue — see the leading-harden block below) against the single-letter
+// proclitic tables (article/conjunction/preposition). Unlike guessSuffixGloss's
+// tables (nme/prs/vbe/uvf), GRAMMAR_MAP.art/conj/prep are flat char->string
+// maps, not {paleo,trans,css} objects, so this walks paleoStr letter by letter
+// (proclitics stack: ו+ה, ל+ה, …) instead of matching the whole string at once.
+// A binyan preformative that happens to share a letter with a real proclitic
+// (Piel/Pual/Hiphil participle מ, "from") gets that gloss too — an approximation,
+// not a claim the letter IS the preposition, but it beats leaving it fused to
+// the root where it silently defeated every lexicon lookup keyed on the root.
+function guessPrefixGloss(paleoStr) {
+    if (!paleoStr) return null;
+    const glosses = [];
+    let allKnown = true;
+    for (const ch of paleoStr) {
+        const known = GRAMMAR_MAP.art[ch] || GRAMMAR_MAP.conj[ch] || GRAMMAR_MAP.prep[ch];
+        if (known) glosses.push(known); else allKnown = false;
+    }
+    if (!glosses.length) return null;
+    return { trans: glosses.join('-'), css: allKnown ? 'mod-pref-known' : 'mod-pref-unk' };
+}
+
 // ── STRONGS-ROOTS LEXICON ────────────────────────────────────────────────────
 // Maps Strong's H numbers to canonical Paleo-Hebrew root consonants, built from
 // the official Hebrew lemma in strongs-hebrew-dictionary.js via build-strongs-roots.js.
@@ -1501,9 +1523,18 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 }
                 return missing;
             })();
-            // Proper names don't elide letters the way conjugated verb roots do —
-            // no tolerance for pos='nmpr'. Kept in sync with build-surface-index.js
-            // and server.js's parseHebrewData.
+            // Real elision (I-nun/I-yod assimilation, a weak-verb letter substitution)
+            // is a VERB MORPHOLOGY phenomenon — Hebrew proper names don't "elide" a
+            // letter the way conjugated roots do; a name is either spelled in full or
+            // it's a different name/word. Tolerating up to 2 missing letters for a
+            // pos='nmpr' (proper noun) token is what let an UNRELATED Strong's #'s
+            // canonical spelling get silently painted onto a name that never had
+            // those letters — e.g. H2995 Yabneel's leading Yod ending up "restored"
+            // onto an unrelated proper-name token that happens to reuse H2995. Proper
+            // names get NO tolerance: only an exact letter-for-order match (every
+            // canonical letter actually present, in order) earns the restoration.
+            // Verbs/nouns/etc. keep the up-to-2 tolerance this was designed for.
+            // Kept in sync with build-surface-index.js.
             const _canonTrusted = pos === 'nmpr' ? _canonMissing === 0 : _canonMissing <= 2;
             // A COMPOUND-NAME half (Ben-Gever H1127: surface "Ben" = 2 letters,
             // lemma "Ben-Gever" = 5) and a genuine SAME-WORD spelling variant
@@ -1569,10 +1600,18 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 // (mutated radical, mater) WITHOUT the suffix; the suffix is a chip.
                 const rzMerged = mergeRootDisplay([...rootZone], [..._canonicalRoot]);
                 const rzFirst  = [...rootZone][0];
-                // NMPR GUARD (kept in sync with build-surface-index.js / server.js).
-                // Same-first-letter = same name/orthographic variant (Asshur
-                // plene/defective); first-letter mismatch = different word reusing
-                // the SN (Yabneel vs Ban-Al) — mirrors trueRoot's own test above.
+                // NMPR GUARD (kept in sync with build-surface-index.js). FIRST CUT
+                // (wrong): reject whenever pos==='nmpr' && any canonical letter is
+                // missing — broke H804 Asshur (𐤀𐤔𐤅𐤓) vs its own defective
+                // spelling 𐤀𐤔𐤓 (no internal Waw), a genuine plene/defective
+                // spelling of the SAME name, both starting with Aleph. trueRoot
+                // above already has the right test: canonFirst === dispFirst
+                // admits the canonical root regardless of _canonTrusted, because
+                // same-first-letter means "same name, orthographic variant" —
+                // only a first-letter MISMATCH (Yabneel's Yod vs this word's Bet)
+                // means "different word reusing the SN". Mirror that test here so
+                // trueRoot and rootDisplay can never disagree (enforced by the
+                // no-eliding startup gate).
                 if (pos === 'nmpr' && canonFirst !== rzFirst) {
                     rootDisplay = MUTATED_ROOTS[rootZone] || rootZone;
                 } else if (rzMerged) {
@@ -1626,6 +1665,38 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                         translit: '',
                         translation: guess ? `[${guess.trans}]` : `[${getTranslit(bakedExtra)}]`,
                         css: guess ? (guess.css || 'mod-suff-unk') : 'mod-suff-unk',
+                        bakedSplit: true,  // see reGlossOne guard — never re-look-up by bare paleo
+                    };
+                    rootDisplay = trueRoot;
+                }
+            }
+
+            // ── HARDEN: LEADING RESIDUE (mirror of the block above) ─────────────
+            // The trailing case handles un-canonical letters AFTER the root; this
+            // handles them BEFORE it. A binyan-pattern preformative — the participle
+            // מ of Piel/Pual/Hiphil/Hitpael (מְבֹרָךְ mabarak, "blessed", H1288 ברך) —
+            // is baked into the word's PATTERN, not tracked by a pfm/vbs morph key,
+            // so it never goes through extractPrefix above. Left alone, it fused to
+            // the front of rootDisplay: the reader showed all 5 letters (article
+            // he + participle mem + the 3-letter root) as if the root itself were
+            // 5 letters long, and every lexicon lookup keyed on the clean 3-letter
+            // root (ברך) missed, because the key it was actually given was the
+            // unstripped surface. trueRoot/root_paleo are already correct here (the
+            // strongs-roots.json subsequence guard upstream resolves them fine) —
+            // only rootDisplay, the READER-facing string, carried the residue. Peel
+            // it into its own labeled chip instead, exactly like the trailing case:
+            // glossed when it maps to a known proclitic (guessPrefixGloss), flagged
+            // un-guessed rather than silently fused when it doesn't.
+            let leadModObj = null;
+            if (rootDisplay && trueRoot && rootDisplay !== trueRoot && rootDisplay.endsWith(trueRoot)) {
+                const leadExtra = rootDisplay.slice(0, rootDisplay.length - trueRoot.length);
+                if (leadExtra) {
+                    const guess = guessPrefixGloss(leadExtra);
+                    leadModObj = {
+                        paleo: leadExtra,
+                        translit: '',
+                        translation: guess ? `[${guess.trans}]` : `[${getTranslit(leadExtra)}]`,
+                        css: guess ? (guess.css || 'mod-pref-unk') : 'mod-pref-unk',
                         bakedSplit: true,  // see reGlossOne guard — never re-look-up by bare paleo
                     };
                     rootDisplay = trueRoot;
@@ -1817,6 +1888,13 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // We also carry display_root/true_root explicitly so any consumer can
             // render the true root in the root slot without re-deriving it, and
             // surface_form to keep the literal surface available for reference.
+            // Leading-residue chip (article/binyan-preformative fused before the
+            // root — see the leading-harden block above) renders BEFORE the root,
+            // same as any other prefix chip (pfmObj/vbsObj). Maqaf halves render
+            // their own raw displayRoot untrimmed (see below), so this must not
+            // also fire there — it would print the same letters twice.
+            if (leadModObj && !_inMaqafCompound) pendingComponents.push({...leadModObj, token_ordinal: tokenOrdinal});
+
             pendingComponents.push({
                 paleo: _inMaqafCompound ? displayRoot : rootDisplay,  // surface for maqaf halves
                 true_root: trueRoot,        // clean dictionary lemma (grouping / lookups)
@@ -1886,14 +1964,49 @@ function loadLexicons() {
     // pins the correct SN. Generated by scripts/audit-sn-consistency.cjs and
     // curated by the human.
     const overridePath  = path.join(__dirname, 'lexicon', 'surface-strongs-overrides.json');
+    // Location-keyed Strong's # overrides. Unlike surfaceOverrides above (keyed
+    // by bare surface string, fills-blanks-only, applies to EVERY occurrence of
+    // that spelling), this is keyed by the exact occurrence — book:chapter:
+    // verse:token_ordinal — so it can REPLACE an existing SN, and only at that
+    // one token. This is what makes it possible for the same spelling to carry
+    // different Strong's #s in different verses (a real homograph split, e.g.
+    // OT 𐤉𐤁𐤍𐤀𐤋 "Yabneel" the place vs. this app's NT reuse of the same
+    // spelling for "Son"), which a surface-keyed override structurally cannot
+    // express. See applyLocOverride* below for where this gets applied.
+    const locOverridePath = path.join(__dirname, 'lexicon', 'strongs-location-overrides.json');
     // hebrew-extra-lexicon.json is CURATED (it shipped blank; every populated
     // entry was typed by the user). The bake consulted it and this server did
     // not, so a live-parsed chapter silently lost those glosses. Same file, same
     // answer, both paths.
     const hebExtraPath  = path.join(__dirname, 'lexicon', 'hebrew-extra-lexicon.json');
+    // Whole-SN renumbering (fieldy, 2026-08-22 — the H802/Ayashah move). Unlike
+    // locationOverrides above (one specific occurrence, keyed by book:chapter:
+    // verse:token_ordinal), this is a BLANKET alias: every occurrence tagged
+    // with the OLD Strong's # everywhere in the corpus displays under the NEW
+    // one instead — no per-occurrence enumeration needed. For when a whole
+    // number was flat wrong (H802 shared its root with H800/H801 "fire" and
+    // has been repointed to derive from H376 "ish"/man — see CLAUDE.md), not
+    // for splitting a handful of individual mis-tagged occurrences (that's
+    // still strongs-location-overrides.json's job).
+    // Format: { "H802": { "to": "H378a", "reason": "...", "date": "..." } }
+    const renumberPath = path.join(__dirname, 'lexicon', 'strongs-renumber.json');
     const lexicon    = fs.existsSync(lexiconPath)    ? JSON.parse(fs.readFileSync(lexiconPath,    'utf8')) : {};
     const homographs = fs.existsSync(homographPath)  ? JSON.parse(fs.readFileSync(homographPath,  'utf8')) : {};
     const hebExtra   = fs.existsSync(hebExtraPath)   ? JSON.parse(fs.readFileSync(hebExtraPath,   'utf8')) : {};
+    let snRenumber = {};
+    if (fs.existsSync(renumberPath)) {
+        try {
+            const raw = JSON.parse(fs.readFileSync(renumberPath, 'utf8'));
+            for (const [k, v] of Object.entries(raw)) {
+                if (k.startsWith('_')) continue;
+                if (v && typeof v === 'object' && typeof v.to === 'string' && v.to) {
+                    snRenumber['H' + k.replace(/^H+/, '')] = v;
+                }
+            }
+        } catch (e) {
+            console.warn(`[sn-renumber] Failed to parse ${renumberPath}: ${e.message}`);
+        }
+    }
     let surfaceOverrides = {};
     if (fs.existsSync(overridePath)) {
         try {
@@ -1910,7 +2023,22 @@ function loadLexicons() {
             console.warn(`[surface-overrides] Failed to parse ${overridePath}: ${e.message}`);
         }
     }
-    _lexiconCache = { lexicon, homographs, hebExtra, surfaceOverrides };
+    let locationOverrides = {};
+    if (fs.existsSync(locOverridePath)) {
+        try {
+            const raw = JSON.parse(fs.readFileSync(locOverridePath, 'utf8'));
+            for (const [k, v] of Object.entries(raw)) {
+                if (k.startsWith('_')) continue;
+                // key = "book_id:chapter:verse:token_ordinal", value = { strongs, word_raw, note }
+                if (v && typeof v === 'object' && typeof v.strongs === 'string' && v.strongs) {
+                    locationOverrides[k] = v;
+                }
+            }
+        } catch (e) {
+            console.warn(`[location-overrides] Failed to parse ${locOverridePath}: ${e.message}`);
+        }
+    }
+    _lexiconCache = { lexicon, homographs, hebExtra, surfaceOverrides, locationOverrides, snRenumber };
     return _lexiconCache;
 }
 module.exports = { parseHebrewData };

@@ -2172,6 +2172,28 @@ function guessSuffixGloss(paleoStr) {
     return null;
 }
 
+// Reverse-lookup a bare Paleo string that sits BEFORE the true root (leading
+// residue — see the leading-harden block below) against the single-letter
+// proclitic tables (article/conjunction/preposition). Unlike guessSuffixGloss's
+// tables (nme/prs/vbe/uvf), GRAMMAR_MAP.art/conj/prep are flat char->string
+// maps, not {paleo,trans,css} objects, so this walks paleoStr letter by letter
+// (proclitics stack: ו+ה, ל+ה, …) instead of matching the whole string at once.
+// A binyan preformative that happens to share a letter with a real proclitic
+// (Piel/Pual/Hiphil participle מ, "from") gets that gloss too — an approximation,
+// not a claim the letter IS the preposition, but it beats leaving it fused to
+// the root where it silently defeated every lexicon lookup keyed on the root.
+function guessPrefixGloss(paleoStr) {
+    if (!paleoStr) return null;
+    const glosses = [];
+    let allKnown = true;
+    for (const ch of paleoStr) {
+        const known = GRAMMAR_MAP.art[ch] || GRAMMAR_MAP.conj[ch] || GRAMMAR_MAP.prep[ch];
+        if (known) glosses.push(known); else allKnown = false;
+    }
+    if (!glosses.length) return null;
+    return { trans: glosses.join('-'), css: allKnown ? 'mod-pref-known' : 'mod-pref-unk' };
+}
+
 // ── STRONGS-ROOTS LEXICON ────────────────────────────────────────────────────
 // Maps Strong's H numbers to canonical Paleo-Hebrew root consonants, built from
 // the official Hebrew lemma in strongs-hebrew-dictionary.js via build-strongs-roots.js.
@@ -3015,6 +3037,38 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 }
             }
 
+            // ── HARDEN: LEADING RESIDUE (mirror of the block above) ─────────────
+            // The trailing case handles un-canonical letters AFTER the root; this
+            // handles them BEFORE it. A binyan-pattern preformative — the participle
+            // מ of Piel/Pual/Hiphil/Hitpael (מְבֹרָךְ mabarak, "blessed", H1288 ברך) —
+            // is baked into the word's PATTERN, not tracked by a pfm/vbs morph key,
+            // so it never goes through extractPrefix above. Left alone, it fused to
+            // the front of rootDisplay: the reader showed all 5 letters (article
+            // he + participle mem + the 3-letter root) as if the root itself were
+            // 5 letters long, and every lexicon lookup keyed on the clean 3-letter
+            // root (ברך) missed, because the key it was actually given was the
+            // unstripped surface. trueRoot/root_paleo are already correct here (the
+            // strongs-roots.json subsequence guard upstream resolves them fine) —
+            // only rootDisplay, the READER-facing string, carried the residue. Peel
+            // it into its own labeled chip instead, exactly like the trailing case:
+            // glossed when it maps to a known proclitic (guessPrefixGloss), flagged
+            // un-guessed rather than silently fused when it doesn't.
+            let leadModObj = null;
+            if (rootDisplay && trueRoot && rootDisplay !== trueRoot && rootDisplay.endsWith(trueRoot)) {
+                const leadExtra = rootDisplay.slice(0, rootDisplay.length - trueRoot.length);
+                if (leadExtra) {
+                    const guess = guessPrefixGloss(leadExtra);
+                    leadModObj = {
+                        paleo: leadExtra,
+                        translit: '',
+                        translation: guess ? `[${guess.trans}]` : `[${getTranslit(leadExtra)}]`,
+                        css: guess ? (guess.css || 'mod-pref-unk') : 'mod-pref-unk',
+                        bakedSplit: true,  // see reGlossOne guard — never re-look-up by bare paleo
+                    };
+                    rootDisplay = trueRoot;
+                }
+            }
+
             // Expand short DB codes to fully-qualified key segment names.
             // pdp/sp use short codes (verb, subs, adjv, prep, conj, art, prde, prps, prin, nmpr, advb, nega, intj, inrg)
             // vs uses: qal, nif, piel, pual, hif, hof, hit, hsht
@@ -3200,6 +3254,13 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // We also carry display_root/true_root explicitly so any consumer can
             // render the true root in the root slot without re-deriving it, and
             // surface_form to keep the literal surface available for reference.
+            // Leading-residue chip (article/binyan-preformative fused before the
+            // root — see the leading-harden block above) renders BEFORE the root,
+            // same as any other prefix chip (pfmObj/vbsObj). Maqaf halves render
+            // their own raw displayRoot untrimmed (see below), so this must not
+            // also fire there — it would print the same letters twice.
+            if (leadModObj && !_inMaqafCompound) pendingComponents.push({...leadModObj, token_ordinal: tokenOrdinal});
+
             pendingComponents.push({
                 paleo: _inMaqafCompound ? displayRoot : rootDisplay,  // surface for maqaf halves
                 true_root: trueRoot,        // clean dictionary lemma (grouping / lookups)
@@ -4005,7 +4066,19 @@ function _navCacheStamp() {
     // Yod-less) spelling and strongs-renumber.json's mtime bump alone
     // wouldn't be a strong enough signal on its own to explain why — this
     // makes the reason explicit in the version tag itself.
-    const NAV_BUILD_VERSION = 'wordsurf-v8-canonical-surfaces';   // roots by Strong's #, word-level surfaces (now per-SN scoped, canonical-root spliced), both editions, root first-appearance index, whole-SN renumbering
+    // BUMPED again (2026-08-28) for _wordBySn full-SN indexing: by_sn (above)
+    // already carried correct per-SN (count, by_book) breakdowns since v8, but
+    // _wordBySn — the sn -> [surface indices] map getSurfacesForSN() actually
+    // reads — still indexed each surface under ONLY its single DOMINANT sn.
+    // A non-dominant SN sharing a spelling with a more-frequent homograph
+    // (𐤌𐤁𐤓𐤇 Mabarach: H1272 barach "flee" x2 outranks H4015 x1, Ezekiel 17:21)
+    // was therefore never findable via getSurfacesForSN(that SN) at all —
+    // /api/root-explorer/root?sn=H4015 saw an empty surfaces list and reported
+    // "0 occurrences" in the header, while /api/root-explorer/verses (a
+    // separate lookup not gated by _wordBySn) still correctly listed the 1
+    // real hit below it. A cache built before this fix would keep that empty
+    // index and keep showing "0 occurrences" for every such root forever.
+    const NAV_BUILD_VERSION = 'wordsurf-v9-wordbysn-full-sn-index';   // roots by Strong's #, word-level surfaces (now per-SN scoped, canonical-root spliced), both editions, root first-appearance index, whole-SN renumbering, full-SN _wordBySn indexing
     const inputs = [
         path.join(__dirname, 'corpus.db'),             // tokens_bhs — the text the index is built from
         path.join(__dirname, 'surface-index.db'),      // the HEB half of the nav index
@@ -4173,9 +4246,14 @@ function buildNavIndexes() {
         _rootBySN     = new Map(_rootNavIndex.flatMap((e, i) =>
             (e.strongs || []).map(sn => [sn, i])));
         _wordBySn     = new Map();
+        // Index under EVERY SN this surface carries (e.by_sn), not just its
+        // dominant e.sn — see the "0 occurrences" bug note above _buildNavIndexesUncached's
+        // matching block below.
         _surfNavIndex.forEach((e, idx) => {
-            if (!_wordBySn.has(e.sn)) _wordBySn.set(e.sn, []);
-            _wordBySn.get(e.sn).push(idx);
+            for (const sn of (e.by_sn ? Object.keys(e.by_sn) : [e.sn])) {
+                if (!_wordBySn.has(sn)) _wordBySn.set(sn, []);
+                _wordBySn.get(sn).push(idx);
+            }
         });
         _firstAppearanceByRoot = new Map(Object.entries(cached.firstAppearance || {}));
         console.log(`[nav-cache] hit: ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces, ${_firstAppearanceByRoot.size} first-appearances (saved ~1s)`);
@@ -4460,9 +4538,22 @@ function _buildNavIndexesUncached() {
 
     _surfByValue = new Map(_surfNavIndex.map((e, i) => [e.surface, i]));
     _wordBySn    = new Map();   // sn → [indices into _surfNavIndex] for root breakdowns
+    // BUG FIX: a surface must be findable under EVERY Strong's number it
+    // carries (e.by_sn), not only its DOMINANT e.sn. Before this, a homograph
+    // spelling shared by a common root and a rare one (𐤌𐤁𐤓𐤇 Mabarach: H1272
+    // barach "flee" x2 vs H4015 x1, Ezekiel 17:21) indexed the surface only
+    // under H1272 (the winner), so getSurfacesForSN('H4015') returned []
+    // and /api/root-explorer/root?sn=H4015 reported "0 occurrences" in the
+    // header even though e.by_sn['H4015'] already held the correct scoped
+    // count — and even though /api/root-explorer/verses (a separate lookup
+    // that doesn't go through _wordBySn) still correctly listed that 1 real
+    // occurrence below the header, producing the exact 0-vs-"1 of 1 hit"
+    // mismatch reported on that root's page.
     _surfNavIndex.forEach((e, idx) => {
-        if (!_wordBySn.has(e.sn)) _wordBySn.set(e.sn, []);
-        _wordBySn.get(e.sn).push(idx);
+        for (const sn of (e.by_sn ? Object.keys(e.by_sn) : [e.sn])) {
+            if (!_wordBySn.has(sn)) _wordBySn.set(sn, []);
+            _wordBySn.get(sn).push(idx);
+        }
     });
 
     // ── 3. FIRST APPEARANCE, AGGREGATED UP FROM SN TO ROOT ───────────────────
