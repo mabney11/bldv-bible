@@ -9,6 +9,7 @@ import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { truncateTitle, versePreviewTranslit } from '../lib/versePreview.js';
 import { TYPEFACES } from '../lib/typefaces.js';
+import { remapSourceVerseToDisplay } from '../lib/sourceVerseRemap.js';
 // Same reading typefaces the novel Reader offers (see ../lib/typefaces.js) —
 // pulled in here 2026-08-15 so the English column can look like the Reader
 // instead of the plain system-UI stack it used to render in. Self-hosted,
@@ -1196,6 +1197,25 @@ export default function Parallel() {
         }
       }
       const chapData = payload;
+      // The source's /chapter endpoint silently snaps to that source's own
+      // FIRST available chapter when the requested chapter has no rows there
+      // (see its "graceful empty-chapter handling" in server.js) — meant for
+      // a book that simply starts late (e.g. Ge'ez Apocalypse of Ezra has no
+      // chapter 1). That's fine for a single-source reader, which shows the
+      // snapped chapter number honestly. Here it's fatal: it splices an
+      // unrelated chapter's verses in under the CHAPTER/VERSE THE READER
+      // ASKED FOR, and if that other chapter happens to also have a verse N,
+      // it renders as if it were a real translation of verse N. Concretely:
+      // Syriac 4 Ezra/2 Esdras has no chapters 1-2 or 15-16 (the Christian-
+      // only "5 Ezra"/"6 Ezra" additions aren't in the Peshitta) — asking for
+      // chapter 16 snapped silently to chapter 3, and chapter 3 verse 13
+      // "coincidentally" exists too, so 16:13 rendered chapter 3 verse 13
+      // (about the choosing of Abraham) as if it were a Syriac translation of
+      // the English 16:13 (about a bow's arrows). Treat a mismatched chapter
+      // as "this language has no text here", not as real content.
+      if (!usedTokens && chapData && chapData.chapter != null && Number(chapData.chapter) !== Number(c)) {
+        chapData.verses = [];
+      }
       if (usedTokens) {
         src = Array.isArray(chapData) ? chapData : (chapData?.tokens || chapData?.words || chapData?.rows || []);
       } else {
@@ -1209,9 +1229,11 @@ export default function Parallel() {
           // the WordBlock !rich branch below) reads several of these that a
           // narrower {token_ordinal, word, gloss} pick used to drop.
           verses.forEach(v =>
-            (v.tokens || []).forEach((t, i) => src.push({
-              ...t, verse: v.verse, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '', _src: true,
-            }))
+            remapSourceVerseToDisplay(l, b, c, v.verse).forEach(dv =>
+              (v.tokens || []).forEach((t, i) => src.push({
+                ...t, verse: dv, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '', _src: true,
+              }))
+            )
           );
         } else {
           // Fallback for a server whose /chapter omits tokens: fetch per verse.
@@ -1220,9 +1242,11 @@ export default function Parallel() {
           await Promise.all(vList.map(vn =>
             fetch(`/api/source/${encodeURIComponent(l)}/verse?book=${b}&chapter=${c}&verse=${vn}`)
               .then(r => r.ok ? r.json() : { tokens: [] }).catch(() => ({ tokens: [] }))
-              .then(sv => (sv.tokens || []).forEach((t, i) => src.push({
-                ...t, verse: vn, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '', _src: true,
-              })))
+              .then(sv => remapSourceVerseToDisplay(l, b, c, vn).forEach(dv =>
+                (sv.tokens || []).forEach((t, i) => src.push({
+                  ...t, verse: dv, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '', _src: true,
+                }))
+              ))
           ));
         }
         src.sort((a, z) => a.verse - z.verse || a.token_ordinal - z.token_ordinal);

@@ -60,7 +60,7 @@ REGISTRY = {
  137: ("3 Baruch",               [("ENG","3_BARUCH")]),
  # cross-language unifications (same writing, two tongues -> one id)
  138: ("2 Baruch",               [("ENG","2_BARUCH"), ("SYR","APBAR")]),
- 139: ("4 Ezra",                 [("ENG","2_ESDRAS"), ("SYR","4EZRA")]),
+ 139: ("2 Esdras / 4 Ezra",      [("ENG","2_ESDRAS"), ("SYR","4EZRA")]),
  140: ("Songs of the Sabbath Sacrifice",[("ENG","SONGS_OF_THE_SABBATH_SACRIFICE")]),
  141: ("Five Psalms of David",   [("ENG","FIVE_PSALMS_OF_DAVID")]),
  142: ("Visions of Amram",       [("ENG","VISIONS_OF_AMRAM")]),

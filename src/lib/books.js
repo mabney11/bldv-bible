@@ -37,7 +37,7 @@ export const BOOK_NAMES = {
   123:'Apocalypse of Elijah',124:'Apocalypse of Sedrach',125:'Apocalypse of Peter',126:'Assumption of Moses',
   127:'Ladder of Jacob',128:'Lives of the Prophets',129:'Jannes and Jambres',130:'History of the Rechabites',
   131:'Book of Giants',132:'Genesis Apocryphon',133:'Wisdom of Ahikar',134:'Words of Gad the Seer',
-  135:'Odes of Solomon',136:'2 Enoch',137:'3 Baruch',138:'2 Baruch',139:'4 Ezra',
+  135:'Odes of Solomon',136:'2 Enoch',137:'3 Baruch',138:'2 Baruch',139:'2 Esdras / 4 Ezra',
   140:'Songs of the Sabbath Sacrifice',141:'Five Psalms of David',142:'Visions of Amram',143:'1 Meqabyan',
   144:'Testament of Kohath',145:'Book of Nathan the Prophet',146:'Apocryphon of Joshua',
   147:'Balaam Inscription',148:'Words of Azariah',149:'Gospel of Nicodemus',150:'Epistle of Barnabas',

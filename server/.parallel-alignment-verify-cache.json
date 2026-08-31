@@ -1,11 +1,11 @@
 {
   "ok": true,
-  "verifiedAt": "2026-08-31T13:53:08.197Z",
+  "verifiedAt": "2026-08-31T16:14:37.097Z",
   "fingerprint": {
     "dbPath": "surface-index.db",
     "db": {
-      "size": 407277568,
-      "mtimeMs": 1788182713450.1523
+      "size": 407265280,
+      "mtimeMs": 1788192874832.7473
     },
     "allowlistHash": "52d2f616a849791e5017ab3b13114f93ec0b7b775d4488dc0b072642cdfc29b5"
   }
