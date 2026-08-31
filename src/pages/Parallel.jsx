@@ -1180,6 +1180,11 @@ export default function Parallel() {
 
       let src;
       let usedTokens = langHasTokens(l, b);
+      // Set below when the source's /chapter endpoint silently snapped to a
+      // DIFFERENT chapter than the one requested (see the long comment further
+      // down) — every verse in this chapter has no real text in this source,
+      // so every VerseRow should show the "not verse-aligned" message rather
+      // than a wordless blank pane.
       let payload = chap;
       if (usedTokens) {
         const got = Array.isArray(chap) ? chap : (chap?.tokens || chap?.words || chap?.rows || []);
@@ -1213,8 +1218,10 @@ export default function Parallel() {
       // (about the choosing of Abraham) as if it were a Syriac translation of
       // the English 16:13 (about a bow's arrows). Treat a mismatched chapter
       // as "this language has no text here", not as real content.
+      let chapterHasNoSourceText = false;
       if (!usedTokens && chapData && chapData.chapter != null && Number(chapData.chapter) !== Number(c)) {
         chapData.verses = [];
+        chapterHasNoSourceText = true;
       }
       if (usedTokens) {
         src = Array.isArray(chapData) ? chapData : (chapData?.tokens || chapData?.words || chapData?.rows || []);
@@ -1324,6 +1331,15 @@ export default function Parallel() {
       // un-aligned and drop it. Proportionate verses pass through untouched, so
       // normal Hebrew/Greek/Ge'ez/etc. render exactly as before.
       const dropped = new Set();
+      // See chapterHasNoSourceText above: the ratio guard just below only
+      // drops verses it can actually SEE some (disproportionate) source text
+      // for, so it never fires when src is empty outright — mark every
+      // English verse in this chapter as unaligned here instead, so the
+      // reader gets the same "not verse-aligned" message a partial mismatch
+      // would show, not a silent blank pane.
+      if (chapterHasNoSourceText) {
+        translated.forEach(vs => dropped.add(Number(vs.verse)));
+      }
       if (l !== 'BHS' && src.length) {
         const enCount = {};
         for (const vs of (txData.verses || []))
