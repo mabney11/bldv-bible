@@ -924,18 +924,28 @@ function parseToken(wordRaw, pos, morph, strongs) {
         // rootDisplay carried the residue, which then also broke every lexicon
         // lookup keyed on the clean root. Peel it into its own chip.
         let leadModObj = null;
-        if (rootDisplay && trueRoot && rootDisplay !== trueRoot && rootDisplay.endsWith(trueRoot)) {
+        if (rootDisplay && trueRoot && trueRoot.length >= 2 && rootDisplay !== trueRoot && rootDisplay.endsWith(trueRoot)) {
             const leadExtra = rootDisplay.slice(0, rootDisplay.length - trueRoot.length);
             if (leadExtra) {
                 const guess = guessPrefixGloss(leadExtra);
-                leadModObj = {
-                    paleo: leadExtra,
-                    translit: '',
-                    translation: guess ? `[${guess.trans}]` : `[${getTranslit(leadExtra)}]`,
-                    css: guess ? (guess.css || 'mod-pref-unk') : 'mod-pref-unk',
-                    bakedSplit: true,  // kept in sync with server.js reGlossOne guard
-                };
-                rootDisplay = trueRoot;
+                // Only split when EVERY letter in the residue is a recognized
+                // proclitic (guess.css === 'mod-pref-known'). A partial/unknown
+                // guess means leadExtra isn't actually a prefix run -- it's a
+                // coincidental suffix match against a too-short or unrelated
+                // trueRoot (2026-08-30 false-positive regression: bare 1-2
+                // letter fallback roots getting most of the word stripped off
+                // as a bogus "prefix"). Leave rootDisplay untouched instead of
+                // risking corruption.
+                if (guess && guess.css === 'mod-pref-known') {
+                    leadModObj = {
+                        paleo: leadExtra,
+                        translit: '',
+                        translation: `[${guess.trans}]`,
+                        css: guess.css,
+                        bakedSplit: true,  // kept in sync with server.js reGlossOne guard
+                    };
+                    rootDisplay = trueRoot;
+                }
             }
         }
 
