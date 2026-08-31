@@ -106,6 +106,8 @@
 [data-alt="1"].mod-nega  { --mc: #ff8080; --mb: #600000; }
 [data-alt="1"].mod-advb  { --mc: #90d8ff; --mb: #003868; }
 [data-alt="1"].mod-nmpr  { --mc: #f8c838; --mb: #504000; }
+[data-alt="1"].mod-pref-unk { --mc: #c8c8c8; --mb: #555555; }
+[data-alt="1"].mod-suff-unk { --mc: #c8c8c8; --mb: #555555; }
 [data-alt="1"].pfm-3ms   { --mc: #ffaa80; --mb: #601800; }
 [data-alt="1"].pfm-2or3f { --mc: #f8c8e0; --mb: #581840; }
 [data-alt="1"].pfm-1cs   { --mc: #b0d8ff; --mb: #003868; }

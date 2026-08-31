@@ -2184,14 +2184,14 @@ function guessSuffixGloss(paleoStr) {
 // the root where it silently defeated every lexicon lookup keyed on the root.
 function guessPrefixGloss(paleoStr) {
     if (!paleoStr) return null;
-    const glosses = [];
-    let allKnown = true;
+    const parts = [];
     for (const ch of paleoStr) {
-        const known = GRAMMAR_MAP.art[ch] || GRAMMAR_MAP.conj[ch] || GRAMMAR_MAP.prep[ch];
-        if (known) glosses.push(known); else allKnown = false;
+        if (GRAMMAR_MAP.art[ch])       parts.push({ paleo: ch, css: 'mod-art',  trans: GRAMMAR_MAP.art[ch] });
+        else if (GRAMMAR_MAP.conj[ch]) parts.push({ paleo: ch, css: 'mod-conj', trans: GRAMMAR_MAP.conj[ch] });
+        else if (GRAMMAR_MAP.prep[ch]) parts.push({ paleo: ch, css: 'mod-prep', trans: GRAMMAR_MAP.prep[ch] });
+        else return null;  // one unrecognized letter voids the whole run -- see harden block
     }
-    if (!glosses.length) return null;
-    return { trans: glosses.join('-'), css: allKnown ? 'mod-pref-known' : 'mod-pref-unk' };
+    return parts;
 }
 
 // ── STRONGS-ROOTS LEXICON ────────────────────────────────────────────────────
@@ -3053,27 +3053,31 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // it into its own labeled chip instead, exactly like the trailing case:
             // glossed when it maps to a known proclitic (guessPrefixGloss), flagged
             // un-guessed rather than silently fused when it doesn't.
-            let leadModObj = null;
+            let leadModComps = [];
             if (rootDisplay && trueRoot && trueRoot.length >= 2 && rootDisplay !== trueRoot && rootDisplay.endsWith(trueRoot)) {
                 const leadExtra = rootDisplay.slice(0, rootDisplay.length - trueRoot.length);
                 if (leadExtra) {
-                    const guess = guessPrefixGloss(leadExtra);
-                    // Only split when EVERY letter in the residue is a recognized
-                    // proclitic (guess.css === 'mod-pref-known'). A partial/unknown
-                    // guess means leadExtra isn't actually a prefix run -- it's a
+                    // One component PER letter, each tagged with its real class
+                    // (mod-art/mod-conj/mod-prep) instead of one generic blob --
+                    // that's what lets each letter take its own color and lets
+                    // WordBlock.jsx's existing same-side [data-alt="1"] alternation
+                    // do its job when two+ prefixes stack (ה+מ, etc.). null means
+                    // AT LEAST ONE letter in the residue isn't a recognized
+                    // proclitic -- leadExtra isn't actually a prefix run, it's a
                     // coincidental suffix match against a too-short or unrelated
                     // trueRoot (2026-08-30 false-positive regression: bare 1-2
                     // letter fallback roots getting most of the word stripped off
                     // as a bogus "prefix"). Leave rootDisplay untouched instead of
                     // risking corruption.
-                    if (guess && guess.css === 'mod-pref-known') {
-                        leadModObj = {
-                            paleo: leadExtra,
+                    const parts = guessPrefixGloss(leadExtra);
+                    if (parts) {
+                        leadModComps = parts.map(p => ({
+                            paleo: p.paleo,
                             translit: '',
-                            translation: `[${guess.trans}]`,
-                            css: guess.css,
+                            translation: `[${p.trans}]`,
+                            css: p.css,
                             bakedSplit: true,  // see reGlossOne guard -- never re-look-up by bare paleo
-                        };
+                        }));
                         rootDisplay = trueRoot;
                     }
                 }
@@ -3269,7 +3273,9 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // same as any other prefix chip (pfmObj/vbsObj). Maqaf halves render
             // their own raw displayRoot untrimmed (see below), so this must not
             // also fire there — it would print the same letters twice.
-            if (leadModObj && !_inMaqafCompound) pendingComponents.push({...leadModObj, token_ordinal: tokenOrdinal});
+            if (leadModComps.length && !_inMaqafCompound) {
+                for (const lm of leadModComps) pendingComponents.push({...lm, token_ordinal: tokenOrdinal});
+            }
 
             pendingComponents.push({
                 paleo: _inMaqafCompound ? displayRoot : rootDisplay,  // surface for maqaf halves
