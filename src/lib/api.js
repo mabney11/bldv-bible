@@ -152,6 +152,7 @@ export const apiTransClearLinks = ({ book, chapter, verse }) => jsonFetch(
 export const apiLexicon      = ()                => jsonFetch('/lexicon/lexicon.json');
 export const apiHomographs   = ()                => jsonFetch('/lexicon/homographs.json');
 export const apiDefinitions  = ()                => jsonFetch('/lexicon/definitions.json');
+export const apiAutoGlossWords = ()              => jsonFetch('/lexicon/auto-gloss-words.json');
 export const apiNavRoots     = ()                => jsonFetch('/api/nav/roots');
 export const apiNavSurfaces  = ()                => jsonFetch('/api/nav/surfaces');
 
