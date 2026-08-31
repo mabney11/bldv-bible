@@ -13,6 +13,7 @@ server/public/
 *.db-shm
 *.db.bak
 *.db.bak.*
+*.db.*
 server/_backups/
 
 # Secrets

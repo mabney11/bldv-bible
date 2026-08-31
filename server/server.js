@@ -620,7 +620,16 @@ function _buildTranslitRenumberIndex() {
     }
     return idx;
 }
-const ENGLISH_GLOSS_RX = /\b([A-Za-z]+)\s*\(([^()]*)\)/g;
+// Matches one level of nested parens inside the gloss (e.g. baked English
+// text "shamayam (Shamayam/(Heavens))" or the auto-gloss convention's
+// "yah (Yah (contracted form of Yahawah))") so applyLiveGloss below can
+// replace the WHOLE stale parenthetical in one shot, not just up to the
+// first "(" it contains. 2026-08-29, fieldy: "my lexicon is being
+// ignored... but the reader picks up an old (Shamayam/(Heavens))" — traced
+// to this regex's [^()]* never being able to cross the inner "(", so the
+// whole span silently never matched (not a lexicon lookup miss, not the
+// isUntouchedBaselineDraft guard — this verse passed that fine).
+const ENGLISH_GLOSS_RX = /\b([A-Za-z]+)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g;
 function applyLiveGloss(text) {
     if (!text) return text;
     if (!_translitGlossIndex) _translitGlossIndex = _buildTranslitGlossIndex();
