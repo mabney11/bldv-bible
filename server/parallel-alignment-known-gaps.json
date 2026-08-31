@@ -1,0 +1,16 @@
+{
+  "_comment": "Pre-existing parallel-alignment drift accepted as known debt at the time this gate went live, NOT new regressions — see the ALLOWLIST RATCHET note in verify-parallel-alignment.mjs's header. A normal run only fails on keys NOT in this list. Regenerate with: node verify-parallel-alignment.mjs --write-allowlist",
+  "generated": "2026-08-31T13:44:47.737Z",
+  "count": 9,
+  "gaps": [
+    "HEB|𐤀𐤋𐤐𐤅𐤋𐤅𐤎|H6424|verb|sp=verb|pdp=verb|vs=piel|vt=impf|ps=p3|gn=m|nu=sg|prs=absent|pfm=J|vbs=absent|uvf=absent|nme=absent",
+    "HEB|𐤀𐤋𐤕𐤊𐤉𐤍𐤅|H3559|verb|sp=verb|pdp=verb|vs=nif|vt=wayq|ps=p3|gn=f|nu=sg|prs=absent|pfm=T=|vbs=N|uvf=absent|nme=absent",
+    "HEB|𐤀𐤕𐤀𐤁𐤓𐤉|H46|adjv|sp=adjv|pdp=adjv|gn=m|nu=sg|st=c|prs=absent|uvf=absent",
+    "HEB|𐤄𐤅𐤋𐤊𐤉𐤌||prep|sp=prep|pdp=prep|prs=2ms|uvf=absent",
+    "HEB|𐤅𐤁𐤄𐤌||prep|sp=prep|pdp=prep|prs=3fs|uvf=absent",
+    "HEB|𐤅𐤄𐤁𐤊𐤉𐤌||prep|sp=prep|pdp=prep|prs=2fs|uvf=absent",
+    "HEB|𐤅𐤄𐤋𐤊𐤉𐤌||prep|sp=prep|pdp=prep|prs=2ms|uvf=absent",
+    "HEB|𐤊𐤅𐤋𐤊𐤌||prep|sp=prep|pdp=prep|prs=2ms|uvf=absent",
+    "HEB|𐤋𐤔𐤁𐤅𐤉𐤌||prep|sp=prep|pdp=prep|prs=3ms|uvf=absent"
+  ]
+}
