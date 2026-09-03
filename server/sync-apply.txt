@@ -3,38 +3,39 @@ corpus: C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\server\corp
 index:  C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\server\surface-index.db
 
   index BHS: 490,052 occurrences / 39 books
-  index HEB: 567,958 occurrences / 78 books
+  index HEB: 1,120,141 occurrences / 90 books
 
-  tokens_nt: 583,152 rows
-  columns:   book_id, chapter, verse, token_ordinal, word_raw, pos, morph, strongs, source_id, code
+  tokens_nt: 567,436 rows
+  columns:   book_id, chapter, verse, token_ordinal, word_raw, pos, morph, strongs, source_id
 
 ── WHAT CHANGES ─────────────────────────────────────────────────────────
-  rows:   tokens_nt 583,152  ->  projection 567,958
-  verses: in both 36,885, only in tokens_nt 0, only in the index 0
-  of the shared verses, 29,783 (80.7%) tokenize identically
-  where they do, Strong's agree on 375,604 and DISAGREE on 77,197 (17.0%)
+  rows:   tokens_nt 567,436  ->  projection 1,052,106
+  verses: in both 36,823, only in tokens_nt 0, only in the index 15,748
+  of the shared verses, 35,836 (97.3%) tokenize identically
+  where they do, Strong's agree on 538,682 and DISAGREE on 1,671 (0.3%)
 
   Disagreements (the index value is the one the reader already shows):
-    1:1:1.5 𐤄𐤔𐤌𐤉𐤌  tokens_nt=H8033  index=H8064
-    1:1:2.14 𐤄𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
-    1:1:5.11 𐤁𐤒𐤓  tokens_nt=H1241  index=H1242
-    1:1:6.6 𐤄𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
-    1:1:6.8 𐤌𐤁𐤃𐤉𐤋  tokens_nt=H913  index=H914
-    1:1:6.11 𐤋𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
-    1:1:7.7 𐤄𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
-    1:1:7.12 𐤄𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
-    1:1:8.4 𐤔𐤌𐤉𐤌  tokens_nt=H8033  index=H8064
-    1:1:8.8 𐤁𐤒𐤓  tokens_nt=H1241  index=H1242
-    1:1:8.10 𐤔𐤍𐤉  tokens_nt=H8147  index=H8145
-    1:1:9.4 𐤄𐤌𐤉𐤌  tokens_nt=H4310  index=H4325
+    26:16:53.17 𐤅𐤔𐤁𐤉𐤕  tokens_nt=H7628  index=H7622
+    40:1:14.1 𐤅𐤏𐤆𐤅𐤓  tokens_nt=H5826  index=H5809
+    40:2:7.6 𐤅𐤉𐤇𐤒𐤓  tokens_nt=H2714  index=H2713
+    40:3:7.5 𐤅𐤄𐤑𐤃𐤅𐤒𐤉𐤌  tokens_nt=H6662  index=H6659
+    40:3:10.1 𐤅𐤊𐤁𐤓  tokens_nt=H3524  index=H3529
+    40:4:2.8 𐤅𐤉𐤓𐤏𐤁  tokens_nt=H7458  index=H7456
+    40:5:5.2 𐤄𐤏𐤍𐤅𐤉𐤌  tokens_nt=H6030  index=H6035
+    40:6:4.10 𐤉𐤂𐤌𐤋𐤊  tokens_nt=H1581  index=H1580
+    40:6:6.18 𐤉𐤂𐤌𐤋𐤊  tokens_nt=H1581  index=H1580
+    40:6:18.15 𐤉𐤂𐤌𐤋𐤊  tokens_nt=H1581  index=H1580
+    40:6:19.10 𐤅𐤂𐤍𐤁𐤉𐤌  tokens_nt=H1589  index=H1590
+    40:6:20.11 𐤅𐤂𐤍𐤁𐤉𐤌  tokens_nt=H1589  index=H1590
 
 ── TRANSLATION LINKS ────────────────────────────────────────────────────
-  23,357 links total, 0 bound to HEB.
-  None point at tokens_nt ordinals, so reprojecting cannot break any of them.
+  23,452 links total, 3 bound to HEB.
+  already correct: 2   remappable: 1   NEEDS ATTENTION: 0
 
 ── APPLYING ─────────────────────────────────────────────────────────────
-  tokens_nt rebuilt: 567,958 rows projected from the index.
-  previous table kept as tokens_nt_pre_sync_20260801 — delete it yourself once satisfied.
+  tokens_nt rebuilt: 1,052,106 rows projected from the index.
+  previous table kept as tokens_nt_pre_sync_20260902 — delete it yourself once satisfied.
+  1 translation link(s) remapped to the new ordinals.
 
 ── NEXT ─────────────────────────────────────────────────────────────────
   1. Restart the server. tokens_nt and the index now agree BY CONSTRUCTION,
