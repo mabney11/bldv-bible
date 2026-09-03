@@ -198,17 +198,6 @@
     "src": "betmas:LIT1374Bookof"
   },
   {
-    "code": "APEZ",
-    "corpus": "GEZ",
-    "name": "1 Esdras (Ge'ez)",
-    "geez_name": "",
-    "section": "Other",
-    "order": 22,
-    "n_chapters": 10,
-    "verses": 451,
-    "src": "betmas:LIT1376Apocal"
-  },
-  {
     "code": "TOB",
     "corpus": "GEZ",
     "name": "Tobit",

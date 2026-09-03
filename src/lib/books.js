@@ -26,7 +26,6 @@ export const BOOK_NAMES = {
   81:'1 Esdras',         82:'Odes',            83:'Psalms of Solomon',
   84:'Prayer of Manasseh',85:'Psalm 151',      86:'Psalm 154',
   87:'2 Meqabyan',       88:'3 Meqabyan',      89:'4 Baruch',
-  90:"1 Esdras (Ge'ez)",
   // Promoted pseudepigrapha (run assign-canon-ids.py) — cross-language books
   100:'Jasher',101:'1 Adam and Eve',102:'2 Adam and Eve',
   103:'Testament of Reuben',104:'Testament of Simeon',105:'Testament of Levi',106:'Testament of Judah',

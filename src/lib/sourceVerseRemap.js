@@ -1,9 +1,12 @@
 // sourceVerseRemap.js — a handful of books have a source-language edition
-// whose OWN internal verse numbering doesn't match the display (English)
-// numbering it's paired against in Parallel/MultiViewer. Not a bug in this
-// app's data — a genuine textual-history divergence between editions. Today
-// covers exactly one case; more can be added the same way if another
-// book/source pair turns out to need it.
+// whose OWN internal chapter and/or verse numbering doesn't match the display
+// (English) numbering it's paired against in Reader/Parallel/MultiViewer. Not
+// a bug in this app's data — a genuine textual-history divergence between
+// editions. Verse-level divergence (within a matching chapter number) is
+// SOURCE_VERSE_REMAP / remapSourceVerseToDisplay / remapDisplayVerseToSource;
+// whole-chapter divergence is SOURCE_CHAPTER_REMAP / remapDisplayChapterToSource
+// / remapSourceChapterToDisplay, further down this file. More can be added
+// the same way if another book/source pair turns out to need it.
 //
 // canon_id 139 (2 Esdras / 4 Ezra), chapter 7, Syriac (Peshitta): the
 // Peshitta preserves the ~70-verse "Missing Fragment" (Latin/complete
@@ -65,6 +68,68 @@ export const SOURCE_VERSE_REMAP = {
       // synFrom 1-35 intentionally absent -- identity match with English 1-35.
     ],
   },
+
+  // canon_id 81 (1 Esdras), Ge'ez (BETMAS: LIT1376Apocal, formerly its own
+  // standalone canon_id 90 "1 Esdras (Ge'ez)" -- merged into 81 2026-09 to
+  // sit alongside the ENG/HEB/LXX/SYR editions of the same book). This
+  // edition's own chapter numbering has no chapter 1 at all and runs ONE
+  // CHAPTER AHEAD of the other editions for the rest of the book (its ch.2 =
+  // display ch.1, ... its ch.10 = display ch.9) -- see
+  // remapDisplayChapterToSource/remapSourceChapterToDisplay below for that
+  // half of the fix. On top of the chapter offset, most chapters also verse-
+  // align 1:1 once shifted, but two of the nine (native ch.9 and ch.10, i.e.
+  // display ch.8 and ch.9) have real internal split/merge points and one
+  // native-numbering gap each. Every segment below is content-verified,
+  // reading the Ge'ez against the English King-James-Apocrypha-style text
+  // verse by verse (the same rigor as the 2 Enoch / Testament of Job re-keys)
+  // -- see project memory for the full verse-by-verse writeup. Segment keys
+  // here use the DISPLAY chapter number (matching how Reader.jsx/Parallel.jsx
+  // already call remapSourceVerseToDisplay with the display chapter as `c`);
+  // synFrom ranges inside each entry are this edition's own NATIVE verse
+  // numbers for that (now-shifted) chapter.
+
+  // Native ch.3 -> display ch.2. One 2-native-to-1-display merge: native
+  // v.30 ("...the letter was read...began to hinder the builders") and v.31
+  // ("...the building ceased until the second year of Darius") are one
+  // combined English verse (v.30, the chapter's last). v.1-29 are already
+  // identity (no segment needed -- the default passthrough handles them).
+  'GEZ:81:2': {
+    segments: [
+      { synFrom: [30, 31], displayFrom: [30, 30] },
+    ],
+  },
+
+  // Native ch.9 -> display ch.8 (Ezra's genealogy, the king's letter, and the
+  // ~70-entry list of returning families). The most structurally complex
+  // chapter in the book: the offset drifts from 0 up to +3 and back down to
+  // +1 across five separate split/merge/gap points before settling for the
+  // rest of the chapter.
+  'GEZ:81:8': {
+    segments: [
+      // v.1-6 identity (offset 0, no segment needed).
+      { synFrom: [7, 7],   displayFrom: [6, 6] },     // split: native 6 AND 7 both = English v.6
+      { synFrom: [8, 19],  displayFrom: [7, 18] },    // offset -1
+      { synFrom: [20, 20], displayFrom: null },       // native v.20 is an empty/corrupted verse ("።" only) -- no English counterpart
+      { synFrom: [21, 23], displayFrom: [19, 21] },   // offset -2
+      { synFrom: [24, 25], displayFrom: [22, 22] },   // merge: native 24+25 = English v.22 (the tax-exemption clause split across two Ge'ez verses)
+      { synFrom: [26, 41], displayFrom: [23, 38] },   // offset -3
+      { synFrom: [42, 42], displayFrom: [39, 40] },   // native v.42 alone covers English v.39-40 (two genealogy entries compressed into one Ge'ez verse)
+      { synFrom: [43, 44], displayFrom: [41, 42] },   // offset -2
+      { synFrom: [45, 45], displayFrom: [43, 44] },   // native v.45 alone covers English v.43-44 (same pattern as v.42)
+      { synFrom: [46, 97], displayFrom: [45, 96] },   // offset -1, holds to the end of the chapter (native max 97 = English max 96)
+    ],
+  },
+
+  // Native ch.10 -> display ch.9 (the public confession and mass divorce of
+  // foreign wives). Much simpler: v.1-48 are identity, then one inserted
+  // verse with no English counterpart, then a steady -1 offset to the end.
+  'GEZ:81:9': {
+    segments: [
+      // v.1-48 identity (offset 0, no segment needed).
+      { synFrom: [49, 49], displayFrom: null },       // native v.49 restates v.48's close ("taught them the law, and they all listened together") with no distinct English verse of its own
+      { synFrom: [50, 56], displayFrom: [49, 55] },   // offset -1, holds to the end of the chapter (native max 56 = English max 55)
+    ],
+  },
 };
 
 // Given this source's NATIVE verse number for (corpus, canonId, chapter),
@@ -97,3 +162,64 @@ export function remapSourceVerseToDisplay(corpus, canonId, chapter, nativeVerse)
 export function hasSourceVerseRemap(corpus, canonId, chapter) {
   return !!SOURCE_VERSE_REMAP[`${corpus}:${canonId}:${chapter}`];
 }
+
+// The REVERSE of remapSourceVerseToDisplay: given a DISPLAY verse number,
+// return the array of this source's own NATIVE verse number(s) whose content
+// feeds it -- usually exactly one (identity, or a plain offset); more than
+// one when this display verse is fed by a merge (e.g. GEZ:81:8's native
+// v.24+v.25 both feeding English v.22 -- fetch and concatenate both); or a
+// single native verse when a native verse stands for more than one display
+// verse (e.g. GEZ:81:8's native v.42 alone covering English v.39-40 -- either
+// display verse resolves back to that same native v.42). Used by callers that
+// fetch by DISPLAY reference (a reader that only knows "show me verse 22")
+// and need to know what to ask the source's own /verse endpoint for.
+export function remapDisplayVerseToSource(corpus, canonId, chapter, displayVerse) {
+  const def = SOURCE_VERSE_REMAP[`${corpus}:${canonId}:${chapter}`];
+  if (!def) return [displayVerse];
+  for (const seg of def.segments) {
+    if (!seg.displayFrom) continue;   // a gap segment has no display verse to match against
+    const [dLo, dHi] = seg.displayFrom;
+    if (displayVerse < dLo || displayVerse > dHi) continue;
+    const [sLo, sHi] = seg.synFrom;
+    if (sHi - sLo === dHi - dLo) return [sLo + (displayVerse - dLo)];   // plain 1:1 offset
+    const out = [];
+    for (let s = sLo; s <= sHi; s++) out.push(s);                       // every native verse in this range feeds the requested display verse(s)
+    return out;
+  }
+  return [displayVerse];   // remap table exists for this chapter but doesn't mention this display verse — identity fallback
+}
+
+// ── Whole-chapter offsets ───────────────────────────────────────────────────
+// A handful of source editions also number their CHAPTERS differently from
+// the display (English) numbering they're paired against -- distinct from the
+// per-chapter verse remaps above, and checked first: the verse tables above
+// are keyed by DISPLAY chapter, so a caller converts display -> native chapter
+// with remapDisplayChapterToSource before fetching, then still passes the
+// DISPLAY chapter as the `chapter` argument to remapSourceVerseToDisplay /
+// remapDisplayVerseToSource for the verse-level lookup.
+//
+// GEZ:81 (1 Esdras, Ge'ez): this edition has no chapter 1 at all -- its own
+// native numbering starts at chapter 2 and runs one chapter ahead of the
+// other editions for the rest of the book (native ch.2 = display ch.1, ...
+// native ch.10 = display ch.9). Content-verified end to end 2026-09 (see
+// project memory and the SOURCE_VERSE_REMAP entries above for the per-chapter
+// detail); `offset` is native-minus-display.
+export const SOURCE_CHAPTER_REMAP = {
+  'GEZ:81': { offset: 1 },
+};
+
+// Given a DISPLAY chapter number, return this source's own NATIVE chapter
+// number to fetch. Identity when no chapter remap is registered.
+export function remapDisplayChapterToSource(corpus, canonId, displayChapter) {
+  const def = SOURCE_CHAPTER_REMAP[`${corpus}:${canonId}`];
+  return def ? displayChapter + def.offset : displayChapter;
+}
+
+// The reverse: given this source's own NATIVE chapter number, return the
+// DISPLAY chapter number it should be shown under. Identity when no chapter
+// remap is registered.
+export function remapSourceChapterToDisplay(corpus, canonId, nativeChapter) {
+  const def = SOURCE_CHAPTER_REMAP[`${corpus}:${canonId}`];
+  return def ? nativeChapter - def.offset : nativeChapter;
+}
+

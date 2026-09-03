@@ -1177,7 +1177,6 @@ const BOOK_NAMES = {
     81: '1 Esdras',       82: 'Odes',           83: 'Psalms of Solomon',
     84: 'Prayer of Manasseh', 85: 'Psalm 151',  86: 'Psalm 154',
     87: '2 Meqabyan',     88: '3 Meqabyan',     89: '4 Baruch',
-    90: "1 Esdras (Ge'ez)",
     // Promoted pseudepigrapha (assign-canon-ids.py) — cross-language books
     100: 'Jasher',        101: '1 Adam and Eve', 102: '2 Adam and Eve',
     103: 'Testament of Reuben', 104: 'Testament of Simeon', 105: 'Testament of Levi',
@@ -5343,10 +5342,19 @@ app.get('/api/source/:src/chapter', production.cache(60), (req, res) => {
           `).all(book, ch);
 
     // Graceful empty-chapter handling: a few works don't begin at chapter 1
-    // (e.g. the Ge'ez 1 Esdras, canon_id 90, has no chapter 1 — its data starts at
-    // 2). If the requested chapter is empty but the book/doc has content
-    // elsewhere, snap to its first available chapter rather than showing a dead
-    // page. `ch` is reassigned so next/prev and the response all agree.
+    // (e.g. the Ge'ez 1 Esdras, merged 2026-09 into canon_id 81 alongside the
+    // ENG/HEB/LXX/SYR editions, has no native chapter 1 — its own numbering
+    // starts at 2 and runs one chapter ahead of the others throughout, GEZ
+    // ch.N = display ch. N-1; see src/lib/sourceVerseRemap.js for the full
+    // chapter+verse remap Reader.jsx and Parallel.jsx apply when reading it
+    // aligned to the other editions). This route itself still serves NATIVE
+    // GEZ numbering — the snap below is just this endpoint's existing generic
+    // safety net for a book/doc whose data doesn't start at chapter 1, applied
+    // here to raw requests that bypass the display remap (e.g. MultiViewer's
+    // own-numbering view). If the requested chapter is empty but the book/doc
+    // has content elsewhere, snap to its first available chapter rather than
+    // showing a dead page. `ch` is reassigned so next/prev and the response
+    // all agree.
     if (verses.length === 0) {
         const firstRow = byDoc
             ? src.handle.prepare(`SELECT chapter FROM verses WHERE doc_id=?  ORDER BY chapter, verse LIMIT 1`).get(docId)

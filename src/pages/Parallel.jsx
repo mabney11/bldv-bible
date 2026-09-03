@@ -9,7 +9,7 @@ import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { truncateTitle, versePreviewTranslit } from '../lib/versePreview.js';
 import { TYPEFACES } from '../lib/typefaces.js';
-import { remapSourceVerseToDisplay } from '../lib/sourceVerseRemap.js';
+import { remapSourceVerseToDisplay, remapDisplayChapterToSource } from '../lib/sourceVerseRemap.js';
 // Same reading typefaces the novel Reader offers (see ../lib/typefaces.js) —
 // pulled in here 2026-08-15 so the English column can look like the Reader
 // instead of the plain system-UI stack it used to render in. Self-hosted,
@@ -1151,6 +1151,14 @@ export default function Parallel() {
     const seq = ++loadSeq.current;
     const stale = () => seq !== loadSeq.current;
 
+    // GEZ 1 Esdras (book/canon_id 81) numbers its own chapters one ahead of
+    // every other edition (its ch.2 = display ch.1, ... ch.10 = display
+    // ch.9 — see src/lib/sourceVerseRemap.js). Everywhere below that fetches
+    // this source's OWN /chapter or /verse endpoint must ask for the NATIVE
+    // chapter, not the display chapter `c` this component otherwise uses
+    // throughout (the English/translation fetch, the URL, next/prev nav).
+    const nativeChapter = (l === 'GEZ' && b === 81) ? remapDisplayChapterToSource('GEZ', 81, c) : c;
+
     setStatus('Loading…'); setWords([]); setTranslations({}); setUnaligned(new Set()); setHovered(null);
     setTokensEmpty(false); setWordsRich(false);
     try {
@@ -1164,7 +1172,7 @@ export default function Parallel() {
           // OT would be served whichever edition the book range guessed.
           ? fetch(`/api/tokens?book=${b}&chapter=${c}&source=${encodeURIComponent(l)}`)
               .then(r => r.ok ? r.json() : []).catch(() => [])
-          : fetch(`/api/source/${encodeURIComponent(l)}/chapter?book=${b}&chapter=${c}`)
+          : fetch(`/api/source/${encodeURIComponent(l)}/chapter?book=${b}&chapter=${nativeChapter}`)
               .then(r => r.ok ? r.json() : null).catch(() => null),
       ]);
       // Overlay a non-admin's local Translate Studio edits (src/lib/localOverlay.js)
@@ -1219,7 +1227,7 @@ export default function Parallel() {
       // the English 16:13 (about a bow's arrows). Treat a mismatched chapter
       // as "this language has no text here", not as real content.
       let chapterHasNoSourceText = false;
-      if (!usedTokens && chapData && chapData.chapter != null && Number(chapData.chapter) !== Number(c)) {
+      if (!usedTokens && chapData && chapData.chapter != null && Number(chapData.chapter) !== Number(nativeChapter)) {
         chapData.verses = [];
         chapterHasNoSourceText = true;
       }
@@ -1235,19 +1243,33 @@ export default function Parallel() {
           // …) — MultiWordBlock (the shared non-Hebrew word renderer, see
           // the WordBlock !rich branch below) reads several of these that a
           // narrower {token_ordinal, word, gloss} pick used to drop.
+          // Running per-display-verse ordinal offset: when a MERGE feeds one
+          // display verse from more than one native verse (e.g. GEZ:81:8's
+          // native v.24+v.25 both = English v.22 — see sourceVerseRemap.js),
+          // `verses` is already in ascending native order (the server's own
+          // `ORDER BY verse`), so accumulating an offset per display verse
+          // here keeps that native order intact instead of letting both
+          // verses' token_ordinal restart at 1 and interleave on the sort
+          // below. For every other source (no chapter/verse remap
+          // registered) this is a no-op — each verse maps to exactly one
+          // display verse, so the offset for that key is always still 0
+          // when it's used.
+          const dvTokenOffset = {};
           verses.forEach(v =>
-            remapSourceVerseToDisplay(l, b, c, v.verse).forEach(dv =>
+            remapSourceVerseToDisplay(l, b, c, v.verse).forEach(dv => {
+              const base = dvTokenOffset[dv] || 0;
               (v.tokens || []).forEach((t, i) => src.push({
-                ...t, verse: dv, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '', _src: true,
-              }))
-            )
+                ...t, verse: dv, token_ordinal: base + (t.ord ?? (i + 1)), word: t.word ?? '', gloss: t.gloss || '', _src: true,
+              }));
+              dvTokenOffset[dv] = base + (v.tokens || []).length;
+            })
           );
         } else {
           // Fallback for a server whose /chapter omits tokens: fetch per verse.
           const vList = verses.length ? verses.map(x => x.verse)
                       : Array.isArray(chapData?.rows) ? [...new Set(chapData.rows.map(x => x.verse))] : [];
           await Promise.all(vList.map(vn =>
-            fetch(`/api/source/${encodeURIComponent(l)}/verse?book=${b}&chapter=${c}&verse=${vn}`)
+            fetch(`/api/source/${encodeURIComponent(l)}/verse?book=${b}&chapter=${nativeChapter}&verse=${vn}`)
               .then(r => r.ok ? r.json() : { tokens: [] }).catch(() => ({ tokens: [] }))
               .then(sv => remapSourceVerseToDisplay(l, b, c, vn).forEach(dv =>
                 (sv.tokens || []).forEach((t, i) => src.push({

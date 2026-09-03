@@ -2,6 +2,7 @@ import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, Fra
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { apiBookOrder, apiTransChapter, apiTransBookText, apiTokens, apiSourceChapter, apiSourceVerse, apiBookSections } from '../lib/api.js';
+import { remapDisplayChapterToSource, remapSourceVerseToDisplay } from '../lib/sourceVerseRemap.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { computeWordParts } from '../components/WordBlock.jsx';
@@ -1238,20 +1239,43 @@ export default function Reader() {
     let cancelled = false;
     setGzLoading(true);
     setGzTried(false);
-    apiSourceChapter('GEZ', { book }, chapter)
+    // GEZ 1 Esdras (book/canon_id 81) numbers its own chapters one ahead of
+    // every other edition and has a handful of chapters with real internal
+    // verse split/merge points on top of that offset — see
+    // src/lib/sourceVerseRemap.js for the full detail. `nativeChapter` is
+    // what this source's own /chapter endpoint needs; `chapter` stays the
+    // DISPLAY chapter for everything else (state, URL, the English pane).
+    const nativeChapter = (book === 81) ? remapDisplayChapterToSource('GEZ', 81, chapter) : chapter;
+    apiSourceChapter('GEZ', { book }, nativeChapter)
       .then(async (chapData) => {
         const verses = Array.isArray(chapData?.verses) ? chapData.verses : [];
         const out = [];
         if (verses.some(v => Array.isArray(v.tokens))) {
-          verses.forEach(v => (v.tokens || []).forEach((t, i) => out.push({
-            verse: v.verse, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '',
-          })));
+          // Running per-display-verse ordinal offset — same reasoning as
+          // Parallel.jsx's loadChapter: when a merge feeds one display verse
+          // from more than one native verse (e.g. GEZ:81:8's native v.24+v.25
+          // both = English v.22), this keeps their words in native order
+          // instead of letting both restart at ordinal 1 and interleave on
+          // the sort below. A no-op for every book with no chapter/verse
+          // remap registered (offset for that key is always still 0).
+          const dvTokenOffset = {};
+          verses.forEach(v =>
+            remapSourceVerseToDisplay('GEZ', book, chapter, v.verse).forEach(dv => {
+              const base = dvTokenOffset[dv] || 0;
+              (v.tokens || []).forEach((t, i) => out.push({
+                verse: dv, token_ordinal: base + (t.ord ?? (i + 1)), word: t.word ?? '', gloss: t.gloss || '',
+              }));
+              dvTokenOffset[dv] = base + (v.tokens || []).length;
+            })
+          );
         } else if (verses.length) {
           await Promise.all(verses.map(vs =>
-            apiSourceVerse('GEZ', { book }, chapter, vs.verse)
-              .then(sv => (sv?.tokens || []).forEach((t, i) => out.push({
-                verse: vs.verse, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '',
-              })))
+            apiSourceVerse('GEZ', { book }, nativeChapter, vs.verse)
+              .then(sv => remapSourceVerseToDisplay('GEZ', book, chapter, vs.verse).forEach(dv =>
+                (sv?.tokens || []).forEach((t, i) => out.push({
+                  verse: dv, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '',
+                }))
+              ))
               .catch(() => {})
           ));
         }
