@@ -44,6 +44,27 @@ export const SOURCE_VERSE_REMAP = {
       // synFrom 1-35 is intentionally absent — those already match English 1-35 1:1, no remap needed.
     ],
   },
+
+  // canon_id 139, chapter 7, Hebrew (Kahana 1936, "חזון עזרא" / "Vision of
+  // Ezra", his own chapter 5 -- Kahana's chapters run 2 behind the English
+  // display numbering throughout this book [his ch.N = display ch. N+2],
+  // EXCEPT this one chapter, because his source also preserves the complete/
+  // restored 1-140 numbering for the Missing Fragment natively, exactly like
+  // the Syriac above -- content-matched 2026-08-31 at the same boundary the
+  // Syriac note describes (Hebrew v.106 opens "ויען ויאמר ואיככה זה נמצא
+  // לפנים את אברהם מתפלל..." = "...how is it found that Abraham prayed
+  // first..." — the identical English v.36 / Syriac v.106 anchor point).
+  // This ingestion's own Hebrew chapter 5 also stops at v.139 with no v.140
+  // (same merge-of-139/140-into-one-row pattern as the Syriac ingestion),
+  // so the segment shape is identical to the Syriac entry above.
+  'HEB:139:7': {
+    segments: [
+      { synFrom: [36, 105], displayFrom: null },
+      { synFrom: [106, 138], displayFrom: [36, 68] },
+      { synFrom: [139, 139], displayFrom: [69, 70] },
+      // synFrom 1-35 intentionally absent -- identity match with English 1-35.
+    ],
+  },
 };
 
 // Given this source's NATIVE verse number for (corpus, canonId, chapter),
