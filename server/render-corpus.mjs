@@ -436,6 +436,31 @@ function render(text, vgKey) {
   //     after it, so the rest of the pipeline treats its output as untouchable.
   if (vgKey && LINKS.size) text = applyLinks(text, vgKey);
 
+  // 1a. hardcode "X became the father of Y" -> "X yalad (begat) Y", run
+  //     AFTER applyLinks (running it before shifts every later token's index
+  //     in the verse, since applyLinks positions its inserts using ORIGINAL
+  //     word-offsets computed against text_src -- tried that, it corrupted
+  //     unrelated words further along the same verse, e.g. "Yalad (Yatzachaq)"
+  //     appearing on the WRONG name). The Matthew genealogy's translation_link
+  //     data is unreliable for this idiom -- confirmed misaligned in more than
+  //     one shape, e.g. linking yalad's translit to "father" itself and a
+  //     different stray translit to "became" ("Ram imayanadab (became) the
+  //     yalad (father) of Imayanadab"), not just the narrower "attaches to
+  //     'of' instead of the whole phrase" bug first spotted. So rather than
+  //     trying to capture and reuse whatever applyLinks inserted, this matches
+  //     EITHER a bare keyword OR a keyword already wrapped in some "TR (word)"
+  //     gloss for EACH of became/father/of independently, and replaces the
+  //     whole span -- gloss debris included -- with one fixed answer. This
+  //     idiom is fixed Hebrew vocabulary, the same verb (yalad/H3205, Hiphil
+  //     of ילד) every time, not something that needs a live per-verse lookup:
+  //     fieldy's call, 2026-09-02, "you can just hardcode the text, its not
+  //     going to change".
+  {
+    const glossed = w => `(?:[a-z][a-z']*\\s+\\(${w}\\)|${w})`;
+    const idiom = new RegExp(`\\b${glossed('became')}\\s+(?:the\\s+)?${glossed('father')}\\s+${glossed('of')}`, 'gi');
+    text = text.replace(idiom, 'yalad (begat)');
+  }
+
   const vgToks = (VG.on && vgKey) ? (VG.verses.get(vgKey) || null) : null;
   const vgSns = vgToks ? new Set(vgToks.map(t => t.sn)) : null;
   // Words step 5 chose NOT to render because this verse has real Hebrew backing —
