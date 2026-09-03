@@ -1177,7 +1177,7 @@ const BOOK_NAMES = {
     81: '1 Esdras',       82: 'Odes',           83: 'Psalms of Solomon',
     84: 'Prayer of Manasseh', 85: 'Psalm 151',  86: 'Psalm 154',
     87: '2 Meqabyan',     88: '3 Meqabyan',     89: '4 Baruch',
-    90: 'Apocalypse of Ezra',
+    90: "1 Esdras (Ge'ez)",
     // Promoted pseudepigrapha (assign-canon-ids.py) — cross-language books
     100: 'Jasher',        101: '1 Adam and Eve', 102: '2 Adam and Eve',
     103: 'Testament of Reuben', 104: 'Testament of Simeon', 105: 'Testament of Levi',
@@ -5343,7 +5343,7 @@ app.get('/api/source/:src/chapter', production.cache(60), (req, res) => {
           `).all(book, ch);
 
     // Graceful empty-chapter handling: a few works don't begin at chapter 1
-    // (e.g. the Ge'ez Apocalypse of Ezra has no chapter 1 — its data starts at
+    // (e.g. the Ge'ez 1 Esdras, canon_id 90, has no chapter 1 — its data starts at
     // 2). If the requested chapter is empty but the book/doc has content
     // elsewhere, snap to its first available chapter rather than showing a dead
     // page. `ch` is reassigned so next/prev and the response all agree.

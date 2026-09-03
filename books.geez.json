@@ -200,7 +200,7 @@
   {
     "code": "APEZ",
     "corpus": "GEZ",
-    "name": "Apocalypse of Ezra",
+    "name": "1 Esdras (Ge'ez)",
     "geez_name": "",
     "section": "Other",
     "order": 22,
@@ -394,5 +394,16 @@
     "n_chapters": 1,
     "verses": 1,
     "src": "betmas:LIT4032SenkessarS"
+  },
+  {
+    "code": "4EZR_PARTIAL",
+    "corpus": "GEZ",
+    "name": "4 Ezra (Ge'ez, partial: ch. 12-14)",
+    "geez_name": "",
+    "section": "Other",
+    "order": 900,
+    "n_chapters": 3,
+    "verses": 157,
+    "src": "lpettay-mirror:4Ezra_ch12-14 -- Ethiopic manuscript witness to 4 Ezra's later chapters, via a community-maintained mirror of the Beta maṣāḥǝft catalog; chapters 1-11 not present in this source"
   }
 ]
