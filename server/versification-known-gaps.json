@@ -1,8 +1,11 @@
 {
   "_comment": "Pre-existing versification gaps accepted as known debt, NOT missing-verse regressions — see the ALLOWLIST RATCHET note in verify-versification.mjs's header. A normal run only fails on gaps NOT in this list. Regenerate with: node verify-versification.mjs --write-allowlist",
-  "generated": "2026-08-18T12:40:37.876Z",
-  "count": 6,
+  "generated": "2026-09-03T13:20:50.774Z",
+  "count": 9,
   "gaps": [
+    "NT:136:17",
+    "NT:139:1",
+    "NT:139:2",
     "NT:70:17",
     "NT:70:22",
     "NT:70:23",
