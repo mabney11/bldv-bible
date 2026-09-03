@@ -38,3 +38,24 @@ server/lexicon/.backups/
 .vscode/
 .idea/
 vite.config.js.timestamp-*.mjs
+
+# Python bytecode cache — machine/interpreter-specific, never source.
+__pycache__/
+*.pyc
+
+# One-off ingestion payloads and reference/backup artifacts — these are
+# intermediate inputs to a single ingest run (already consumed into
+# corpus.db, which is the real source of truth per the DB rule above), not
+# reusable source. The ingest_*.py SCRIPTS themselves are still committed —
+# only their large generated JSON payloads and scratch backups are excluded.
+server/*_import.json
+server/*_import.part*.json
+server/*_import_AUDIT.json
+server/*_reference.json
+server/*_stale_backup_*.json
+server/kahana_*.pdf
+server/stein_*.pdf
+
+# Stray file from a broken sqlite URI-open attempt (literal filename
+# "corpus.db?immutable=1", not a real corpus.db) — harmless junk, never source.
+server/corpus.db?immutable=1
