@@ -10,7 +10,7 @@
  * Tokens render via MultiWordBlock (same column-style block as Hebrew
  * WordBlock: word on top, translit + gloss below). No hover-cards.
  */
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { BOOK_NAMES } from '../lib/books.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
@@ -336,6 +336,56 @@ export default function MultiViewer() {
     })();
     return () => { cancelled = true; };
   }, [source, doc, book, chapter, verse, mode, usingDoc, bookReady]);
+
+  // ── remember reading position within a chapter, across refresh ─────────────
+  // "im at verse 133 of josephus and refresh the page, im still visually
+  // there instead of being snapped to verse 1" — chapter mode renders the
+  // whole chapter as one continuous scroll with no per-verse URL, so a plain
+  // reload has nothing to say where you were. This tracks the topmost
+  // visible verse as you scroll and jumps straight back to it once the same
+  // chapter's content re-renders, before the browser paints the top-of-page
+  // default. Keyed by exactly what was requested (source + book/doc +
+  // chapter) so switching to a different chapter never inherits this one's
+  // saved position, and a fresh chapter naturally opens at the top.
+  const posKey = usingDoc ? `mv-pos:${source}:d${doc}:${chapter}` : `mv-pos:${source}:b${book}:${chapter}`;
+  const posKeyRef = useRef(posKey);
+  posKeyRef.current = posKey;
+
+  useEffect(() => {
+    if (mode !== 'chapter') return;
+    let raf = null;
+    const onScroll = () => {
+      if (raf != null) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        const els = document.querySelectorAll('[data-verse]');
+        let topVerse = null;
+        // First verse row whose bottom edge is still below the sticky
+        // top bar (~80px) — i.e. the verse currently at/just past the top
+        // of the readable area, not one already scrolled out of view.
+        for (const el of els) {
+          if (el.getBoundingClientRect().bottom > 80) { topVerse = el.getAttribute('data-verse'); break; }
+        }
+        if (topVerse != null) {
+          try { sessionStorage.setItem(posKeyRef.current, topVerse); } catch { /* ignore */ }
+        }
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (raf != null) cancelAnimationFrame(raf);
+    };
+  }, [mode]);
+
+  useLayoutEffect(() => {
+    if (mode !== 'chapter' || !chapterData || !chapterData.verses?.length) return;
+    let saved = null;
+    try { saved = sessionStorage.getItem(posKey); } catch { /* ignore */ }
+    if (!saved || saved === '1') return; // verse 1 needs no scroll — already there
+    const el = document.querySelector(`[data-verse="${CSS.escape(saved)}"]`);
+    if (el) el.scrollIntoView({ block: 'start', behavior: 'auto' });
+  }, [chapterData, mode, posKey]);
 
   // ── rich Hebrew tokens for doc-based works (DSS etc.) ───────────────────────
   // Separate fetch from the chapter/verse load above: apiDocTokens hits
@@ -743,7 +793,7 @@ export default function MultiViewer() {
           {/* Chapter view — full content */}
           {!err && mode === 'chapter' && chapterData && chapterData.verses?.length > 0 && (
             chapterData.verses.map(v => (
-              <div key={v.verse} className="rd-verse-wrap">
+              <div key={v.verse} className="rd-verse-wrap" data-verse={v.verse}>
                 <button
                   className="rd-verse-num"
                   onClick={() => goTo({ b: usingDoc ? null : (presentedBookId ?? book), d: doc, c: presentedChapter, v: v.verse })}

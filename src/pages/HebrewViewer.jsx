@@ -16,6 +16,7 @@ import BookChapterVerseSelects from '../components/BookChapterVerseSelects.jsx';
 import DisplayPanel from '../components/DisplayPanel.jsx';
 import SideNav from '../components/SideNav.jsx';
 import WordBlock from '../components/WordBlock.jsx';
+import BookIcon from '../components/BookIcon.jsx';
 import TranslitGuide from '../components/TranslitGuide.jsx';
 import { useToast } from '../components/Toast.jsx';
 import '../components/SearchUI.css';
@@ -367,10 +368,10 @@ export default function HebrewViewer() {
               to={parallelHref(book, idToSlug, chapter, verse)}
             >📖 Parallel</Link>
             <Link
-              className="txt-btn"
+              className="icon-btn"
               to={`/bible?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}
-              title="Open this passage in the Reader — flowing prose, no Strong's"
-            >📗 Reader</Link>
+              title="Open this chapter as flowing text"
+            ><BookIcon /></Link>
             {/* Fixed-order language switcher — identical order to MultiViewer so
                 the same physical slot is always the same language across both
                 readers. Hebrew is the active reader here: filled blue (white

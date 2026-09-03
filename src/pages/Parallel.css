@@ -26,7 +26,7 @@
 .pl-status { font-size: 12px; color: var(--text3); margin-left: auto; white-space: nowrap; }
 .pl-txt-btn { font-size: 13px; color: var(--text2); background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 6px 10px; cursor: pointer; text-decoration: none; }
 .pl-txt-btn:hover { background: var(--bg4); color: var(--text); }
-.pl-icon-btn { width: 34px; height: 34px; border-radius: 7px; border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); cursor: pointer; font-size: 14px; }
+.pl-icon-btn { width: 34px; height: 34px; border-radius: 7px; border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; text-decoration: none; }
 .pl-settings { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 8px; padding: 8px 10px; background: var(--bg3); border: 1px solid var(--border2); border-radius: 7px; font-size: 13px; color: var(--text2); }
 .pl-settings label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 /* Gloss mode chips — mirrors the Reader's .rd-gloss-chip so the two views look

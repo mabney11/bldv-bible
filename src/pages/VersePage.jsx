@@ -5,6 +5,7 @@ import { apiTransProgress, apiTransVerse, apiTokens, apiRootFirstByLetters } fro
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { WordRow, computeWordParts, transliterationsToHtml } from '../components/WordBlock.jsx';
+import BookIcon from '../components/BookIcon.jsx';
 import { TYPEFACES } from '../lib/typefaces.js';
 // Reuse Reader.jsx's own "root (gloss)" + quote-nesting prose renderer for
 // the verse-text paragraph below, instead of dumping verseData.text as a
@@ -302,25 +303,20 @@ export default function VersePage() {
 
   // ── "Isaiah 33:22" as one copyable unit ─────────────────────────────────
   // .rd-book-name and .vp-heading are two separate block-level elements (kept
-  // that way so the visual style below is untouched), which means a normal
-  // double/triple-click only ever grabs whichever one you clicked — the
-  // browser treats each block as its own paragraph for selection purposes.
-  // Rather than restructure the DOM/CSS (risking the exact layout), we just
-  // fix the two things a user actually cares about: what gets highlighted,
-  // and what lands on the clipboard.
-  const handleRefClick = e => {
-    if (e.detail < 2) return; // leave ordinary single clicks alone
-    const el = e.currentTarget;
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  };
+  // that way so the visual style below is untouched) — a normal double/
+  // triple-click only ever grabs whichever one you clicked, since the
+  // browser treats each block as its own paragraph for selection. Rather
+  // than fight that, this uses the SAME click-to-copy mechanism the word
+  // tokens elsewhere in the app already use (see WordBlock.jsx's
+  // w-translit): one click copies the plain string, a ".copied" class
+  // flashes the familiar "Copied!" tooltip via .clickable-comp's own CSS.
   const handleRefCopy = e => {
     if (!addressValid) return;
-    e.preventDefault();
-    e.clipboardData.setData('text/plain', `${bookName} ${chapter}:${verse}`);
+    try {
+      navigator.clipboard.writeText(`${bookName} ${chapter}:${verse}`);
+      e.currentTarget.classList.add('copied');
+      setTimeout(() => e.currentTarget.classList.remove('copied'), 1500);
+    } catch (err) { /* ignore */ }
   };
 
   const wordItems = (verseData?.tokens || []).filter(t => t && t.word_raw);
@@ -345,8 +341,8 @@ export default function VersePage() {
         <div className="rd-ref vp-ref-static">
           <span className="rd-ref-txt">{addressValid ? verseRef : 'Verse'}</span>
         </div>
-        <Link className="rd-bar-btn vp-chapter-link" to={chapterHref} title="Open the full chapter">
-          Full chapter ⤢
+        <Link className="rd-bar-btn vp-chapter-link" to={chapterHref} title="Open this chapter as flowing text">
+          <BookIcon />
         </Link>
       </header>
 
@@ -368,7 +364,11 @@ export default function VersePage() {
             </div>
           ) : (
             <div className="vp-verse">
-              <div className="vp-ref-block" onClick={handleRefClick} onCopy={handleRefCopy}>
+              <div
+                className="vp-ref-block clickable-comp"
+                onClick={handleRefCopy}
+                title="Click to copy"
+              >
                 <div className="rd-book-name">{bookName}</div>
                 <h1 className="vp-heading">{chapter}:{verse}</h1>
               </div>

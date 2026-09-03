@@ -1365,15 +1365,18 @@ export default function Reader() {
     });
   }, [book, chapter, markMode]);
 
-  // A citation link (?verse=10&verseEnd=11, from renderScriptureQuote) marks
-  // the WHOLE cited range as lit — same persistent highlight as tapping each
-  // verse number — not just a transient flash, so "snap to and highlight
-  // verse 10 and 11" actually stays lit once you arrive rather than fading
-  // after the scroll animation like a single-verse deep link does.
+  // A landing verse (?verse=10, from a citation link, the book-icon link on
+  // VersePage/Hebrew Viewer/Parallel, or a plain deep link) marks it lit —
+  // same persistent highlight as tapping the verse number — not just a
+  // transient flash, so "the verse I was on is selected on entry" actually
+  // stays lit once you arrive rather than fading after the scroll animation.
+  // ?verseEnd=11 (from renderScriptureQuote's range citations) extends this
+  // to light the whole cited range instead of just the first verse.
   useEffect(() => {
-    if (verse == null || !verseEnd || verseEnd < verse) return;
+    if (verse == null) return;
+    const end = (verseEnd && verseEnd >= verse) ? verseEnd : verse;
     const keys = [];
-    for (let v = verse; v <= verseEnd; v++) keys.push(markKey(v));
+    for (let v = verse; v <= end; v++) keys.push(markKey(v));
     setMarks(prev => new Set([...prev, ...keys]));
   }, [book, chapter, verse, verseEnd]);
 

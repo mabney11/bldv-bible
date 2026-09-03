@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo, Component } from 'react';
 import { Link, useSearchParams, useParams, useNavigate } from 'react-router-dom';
+import BookIcon from '../components/BookIcon.jsx';
 import { useTheme } from '../hooks/useTheme.js';
 import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
@@ -1515,6 +1516,7 @@ export default function Parallel() {
   // Masoretic Hebrew (e.g. a NT verse shown in Heb·extra). Carrying lang keeps
   // Heb·extra on Heb·extra; BHS stays on the (source-less) BHS reader.
   const hebHref = `/?${lang && lang !== 'BHS' ? `source=${encodeURIComponent(lang)}&` : ''}book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`;
+  const readerHref = `/bible?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`;
 
   return (
     <div className={`pl-root ${perLine ? 'verse-per-line' : ''} ${verse != null ? 'single-verse' : ''}`}
@@ -1546,8 +1548,9 @@ export default function Parallel() {
         </div>
         <div className="pl-row2">
           <Link className="pl-txt-btn" to={hebHref}>{(READER_NAME[lang] || 'Hebrew')} Viewer →</Link>
-          <Link className="pl-txt-btn" to={`/bible?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}
-                title="Open this passage in the Reader — flowing prose, no Strong's">📗 Reader →</Link>
+          <Link className="pl-icon-btn" to={readerHref} title="Open this chapter as flowing text">
+            <BookIcon />
+          </Link>
           <Link className="pl-txt-btn" to={`/translate?book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}>✎ Studio</Link>
           <button className="pl-icon-btn" onClick={toggleTheme} title="Toggle theme">{theme === 'light' ? '☾' : '☀'}</button>
           <button className="pl-icon-btn" onClick={() => setSettingsOpen(o => !o)} title="Display options">⚙</button>

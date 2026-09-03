@@ -13,9 +13,40 @@
   pointer-events: none;
 }
 .vp-chapter-link {
-  font-size: 13px;
-  white-space: nowrap;
+  /* icon-only now (was a "Full chapter" text link) — the base .rd-bar-btn
+     16px/38px sizing (same as the home glyph button next to it) is right
+     for a single glyph, so no override needed here anymore. */
 }
+
+/* ── click-to-copy reference ("Isaiah 33:22" as one unit) ────────────────
+   Same .clickable-comp / .copied mechanism WordBlock.jsx's word tokens use
+   (see w-translit there) — duplicated here rather than shared, matching how
+   Parallel.css and WordBlock.css each already keep their own copy of it. */
+.clickable-comp {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: opacity .15s;
+}
+.clickable-comp:hover { opacity: .72; }
+.clickable-comp::after {
+  content: "Copied!";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--pr-accent);
+  color: #000;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, top .2s;
+  white-space: nowrap;
+  z-index: 10;
+}
+.clickable-comp.copied::after { opacity: 1; top: -18px; }
 
 .vp-page {
   display: flex;
