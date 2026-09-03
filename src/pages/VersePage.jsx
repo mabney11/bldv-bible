@@ -300,6 +300,29 @@ export default function VersePage() {
     }
   };
 
+  // ── "Isaiah 33:22" as one copyable unit ─────────────────────────────────
+  // .rd-book-name and .vp-heading are two separate block-level elements (kept
+  // that way so the visual style below is untouched), which means a normal
+  // double/triple-click only ever grabs whichever one you clicked — the
+  // browser treats each block as its own paragraph for selection purposes.
+  // Rather than restructure the DOM/CSS (risking the exact layout), we just
+  // fix the two things a user actually cares about: what gets highlighted,
+  // and what lands on the clipboard.
+  const handleRefClick = e => {
+    if (e.detail < 2) return; // leave ordinary single clicks alone
+    const el = e.currentTarget;
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  };
+  const handleRefCopy = e => {
+    if (!addressValid) return;
+    e.preventDefault();
+    e.clipboardData.setData('text/plain', `${bookName} ${chapter}:${verse}`);
+  };
+
   const wordItems = (verseData?.tokens || []).filter(t => t && t.word_raw);
   const chapterHref = addressValid ? `/bible?book=${bookToParam(bookId, idToSlug)}&chapter=${chapter}&verse=${verse}` : '/bible';
   // ── links out to the rest of the app for THIS verse ─────────────────────
@@ -345,8 +368,10 @@ export default function VersePage() {
             </div>
           ) : (
             <div className="vp-verse">
-              <div className="rd-book-name">{bookName}</div>
-              <h1 className="vp-heading">{chapter}:{verse}</h1>
+              <div className="vp-ref-block" onClick={handleRefClick} onCopy={handleRefCopy}>
+                <div className="rd-book-name">{bookName}</div>
+                <h1 className="vp-heading">{chapter}:{verse}</h1>
+              </div>
               {hebrewWords.length > 0 && (
                 <div className="vp-text-mode-toggle" role="tablist">
                   <button
