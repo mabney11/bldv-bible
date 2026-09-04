@@ -76,6 +76,9 @@ export default function Landing() {
         <Link to="/works" className="landing-sec-link">
           <span aria-hidden="true">📚</span> Works Library
         </Link>
+        <Link to="/models" className="landing-sec-link">
+          <span aria-hidden="true">🗺</span> Renderings &amp; Models
+        </Link>
         <Link to="/lexicon-page" className="landing-sec-link">
           <span aria-hidden="true">🔎</span> Lexicon
         </Link>

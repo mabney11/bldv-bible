@@ -37,6 +37,8 @@ const StrongsOverrides = lazy(() => import('./pages/StrongsOverrides.jsx'));
 const GlossStudio      = lazy(() => import('./pages/GlossStudio.jsx'));
 const LexiconAdmin     = lazy(() => import('./pages/LexiconAdmin.jsx'));
 const VersePage        = lazy(() => import('./pages/VersePage.jsx'));
+const Models           = lazy(() => import('./pages/Models.jsx'));
+const HolyLandMap      = lazy(() => import('./pages/HolyLandMap.jsx'));
 
 // Shown for the brief moment a lazy page chunk is downloading (near-instant
 // on repeat visits/navigations once a chunk is cached). Deliberately quiet —
@@ -287,6 +289,8 @@ export default function App() {
         <Route path="/admin-login"    element={<AdminLogin />} />
         <Route path="/book-manager"   element={<BookManager />} />
         <Route path="/works"          element={<Works />} />
+        <Route path="/models"         element={<Models />} />
+        <Route path="/models/holy-land" element={<HolyLandMap />} />
         <Route path="/parallel"       element={<ParallelDispatcher />} />
         {/* Clean path form — /parallel/deuteronomy/13-3 (or /parallel/deuteronomy/13
             for a bare chapter, no verse). Ranks above the generic

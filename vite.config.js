@@ -39,6 +39,9 @@ export default defineConfig({
           if (/node_modules\/(react|react-dom|react-router|react-router-dom|scheduler)\//.test(id)) {
             return 'vendor';
           }
+          // maplibre-gl (~1 MB) is only used by /models/holy-land — keep it in
+          // its own chunk so edits to that page don't re-download the engine.
+          if (/node_modules\/maplibre-gl\//.test(id)) return 'maplibre';
         },
       },
     },

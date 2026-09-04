@@ -245,6 +245,7 @@ const NAV_LINKS = `
         <a href="/parallel?book=1&amp;chapter=1">English–Hebrew Parallel</a> ·
         <a href="/translate?book=1&amp;chapter=1&amp;verse=1">Translation Studio</a> ·
         <a href="/works">Works Library</a> ·
+        <a href="/models">Renderings &amp; Models</a> ·
         <a href="/lexicon-page">Lexicon</a> ·
         <a href="/cheatsheet">Token Cheatsheet</a> ·
         <a href="/roots">Root Explorer</a> ·
