@@ -55,6 +55,25 @@ const BASEMAPS = [
   { id: 'streets',   label: 'Streets',   sub: 'full basemap' },
 ];
 
+// Right-to-left text plugin: without it MapLibre draws Hebrew/Arabic basemap
+// labels letter-by-letter left to right. Loaded lazily (only when a label
+// actually needs it) — and only matters for the "local names" label mode.
+try {
+  if (maplibregl.getRTLTextPluginStatus && maplibregl.getRTLTextPluginStatus() === 'unavailable') {
+    maplibregl.setRTLTextPlugin('https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.js', true);
+  }
+} catch { /* older/newer API shape — labels just render without shaping */ }
+
+// Basemap label modes. "English" rewrites every basemap text-field to the
+// Latin/English name only, so no modern-Hebrew script appears; our own
+// markers carry the paleo + transliteration instead.
+const LABEL_MODES = [
+  { id: 'off',   label: 'Off',     sub: 'only our markers' },
+  { id: 'en',    label: 'English', sub: 'no modern Hebrew' },
+  { id: 'local', label: 'Local',   sub: 'native names too' },
+];
+const EN_TEXT_FIELD = ['coalesce', ['get', 'name:en'], ['get', 'name:latin'], ['get', 'name']];
+
 let _ofmStylePromise = null;
 function loadOfmStyle() {
   if (!_ofmStylePromise) {
@@ -85,6 +104,11 @@ function buildStyle(ofm, mode) {
   if (mode === 'satellite') {
     sources['hl-sat'] = { type: 'raster', tiles: [ESRI_TILES], tileSize: 256, maxzoom: 18, attribution: ESRI_ATTR };
     pre.push({ id: 'hl-sat', type: 'raster', source: 'hl-sat' });
+    // A flat water mask over the imagery. Our allotment polygons are inserted
+    // BENEATH this layer (see applyOverlays), so the sea paints over them and
+    // every border stops at the coast. Only shown while an overlay is on.
+    pre.push({ id: 'water', type: 'fill', source: 'openmaptiles', 'source-layer': 'water', filter: ['!=', ['get', 'brunnel'], 'tunnel'],
+      paint: { 'fill-color': '#0d3554', 'fill-opacity': 0.92 }, layout: { visibility: 'none' } });
   }
   if (mode === 'terrain') {
     // Paint the land ourselves (the background) and let water draw over it.
@@ -148,6 +172,8 @@ export default function HolyLandMap() {
   const [unit, setUnit] = useState(params.get('unit') === 'reeds' ? 'reeds' : 'cubits');
   const [layout, setLayout] = useState(params.get('layout') === 'equal' ? 'equal' : 'anchored');
   const [basemap, setBasemap] = useState('terrain');
+  const [labelMode, setLabelMode] = useState(params.get('labels') === 'local' ? 'local' : params.get('labels') === 'off' ? 'off' : 'en');
+  const ofmRef = useRef(null);                      // the fetched OpenFreeMap style, for original text-fields
   const [exag, setExag] = useState(1.6);
   const [threeD, setThreeD] = useState(true);
   const [panelOpen, setPanelOpen] = useState(() => window.innerWidth > 720);
@@ -224,7 +250,10 @@ export default function HolyLandMap() {
     ensure('hl-ez-bands', { type: 'FeatureCollection', features: ez.bands.map((b) => toFeature(b, { color: TRIBE_COLORS[b.tribe] })) });
     ensure('hl-ez-holy', { type: 'FeatureCollection', features: ez.holy.map((h) => toFeature(h, { color: HOLY_KIND_STYLE[h.kind].color, opacity: HOLY_KIND_STYLE[h.kind].opacity })) });
 
-    const addLayer = (layer) => { if (!map.getLayer(layer.id)) map.addLayer(layer); };
+      // Allotment fills/lines go UNDER the basemap's water layer so the sea
+    // paints over them — borders end at the coast instead of running into it.
+    const waterId = map.getLayer('water') ? 'water' : undefined;
+    const addLayer = (layer, under = true) => { if (!map.getLayer(layer.id)) map.addLayer(layer, under ? waterId : undefined); };
     const selId = sel?.entry?.id || null;
     const fillOpacity = (base) => ['case', ['==', ['get', 'id'], selId || '__none__'], Math.min(base + 0.3, 0.95), base];
 
@@ -236,8 +265,8 @@ export default function HolyLandMap() {
     addLayer({ id: 'hl-holy-line', type: 'line', source: 'hl-ez-holy', paint: { 'line-color': '#1a1208', 'line-width': 1.4 } });
     addLayer({ id: 'hl-joshua-fill', type: 'fill', source: 'hl-joshua', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': fillOpacity(0.42) } });
     addLayer({ id: 'hl-joshua-line', type: 'line', source: 'hl-joshua', paint: { 'line-color': '#1a1208', 'line-width': 1.6, 'line-dasharray': [2, 1] } });
-    addLayer({ id: 'hl-pin-line-casing', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#ffffff', 'line-width': 5, 'line-opacity': 0.7 } });
-    addLayer({ id: 'hl-pin-line', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#e05555', 'line-width': 2.5, 'line-dasharray': [3, 2] } });
+    addLayer({ id: 'hl-pin-line-casing', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#ffffff', 'line-width': 5, 'line-opacity': 0.7 } }, false);
+    addLayer({ id: 'hl-pin-line', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#e05555', 'line-width': 2.5, 'line-dasharray': [3, 2] } }, false);
 
     const vis = (id, on) => map.getLayer(id) && map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none');
     vis('hl-ez-fill', showEzekiel); vis('hl-ez-line', showEzekiel);
@@ -245,6 +274,19 @@ export default function HolyLandMap() {
     vis('hl-joshua-fill', showJoshua); vis('hl-joshua-line', showJoshua);
     map.setPaintProperty('hl-ez-fill', 'fill-opacity', fillOpacity(0.38));
     map.setPaintProperty('hl-joshua-fill', 'fill-opacity', fillOpacity(0.42));
+    // Satellite's water mask only while something needs clipping.
+    if (basemap === 'satellite' && map.getLayer('water')) map.setLayoutProperty('water', 'visibility', (showJoshua || showEzekiel) ? 'visible' : 'none');
+
+    // Basemap labels: off / English-only / local names.
+    const ofm = ofmRef.current;
+    for (const l of map.getStyle().layers) {
+      if (l.type !== 'symbol' || l.source !== 'openmaptiles') continue;
+      map.setLayoutProperty(l.id, 'visibility', labelMode === 'off' ? 'none' : 'visible');
+      if (labelMode === 'off') continue;
+      const orig = ofm?.layers.find((x) => x.id === l.id)?.layout?.['text-field'];
+      if (orig === undefined) continue;
+      map.setLayoutProperty(l.id, 'text-field', labelMode === 'en' ? EN_TEXT_FIELD : orig);
+    }
 
     // ── DOM markers (cities + region labels) — rebuilt wholesale; cheap at this size.
     for (const m of markersRef.current) m.remove();
@@ -325,7 +367,7 @@ export default function HolyLandMap() {
         mk(ringCentroid(h.ring), el);
       }
     }
-  }, [ez, sel, pin, showBiblical, showEzekiel, showJoshua, showModern, showRegions, selectCity, selectRegion]);
+  }, [ez, sel, pin, showBiblical, showEzekiel, showJoshua, showModern, showRegions, basemap, labelMode, selectCity, selectRegion]);
 
   const applyRef = useRef(applyOverlays);
   applyRef.current = applyOverlays;
@@ -337,6 +379,7 @@ export default function HolyLandMap() {
     let cancelled = false;
     loadOfmStyle().then((ofm) => {
       if (cancelled) return;
+      ofmRef.current = ofm;
       map = new maplibregl.Map({
         container: mapEl.current,
         style: buildStyle(ofm, 'terrain'),
@@ -417,9 +460,10 @@ export default function HolyLandMap() {
     if (unit === 'reeds') next.set('unit', 'reeds'); else next.delete('unit');
     if (layout === 'equal') next.set('layout', 'equal'); else next.delete('layout');
     if (pin) next.set('pin', `${pin.lon.toFixed(4)},${pin.lat.toFixed(4)},${pin.label}`); else next.delete('pin');
+    if (labelMode !== 'en') next.set('labels', labelMode); else next.delete('labels');
     if (next.toString() !== params.toString()) setParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showJoshua, showEzekiel, unit, layout, pin]);
+  }, [showJoshua, showEzekiel, unit, layout, pin, labelMode]);
 
   const searchHits = useMemo(() => searchPlaces(sq, 8), [sq]);
   const pickHit = (c) => { setSq(''); setSqOpen(false); selectCity(c, true); };
@@ -550,6 +594,12 @@ export default function HolyLandMap() {
               <div className="hl-seg">
                 {BASEMAPS.map((b) => (
                   <button key={b.id} type="button" className={`hl-seg-b${basemap === b.id ? ' on' : ''}`} onClick={() => setBasemap(b.id)}>{b.label} <small>{b.sub}</small></button>
+                ))}
+              </div>
+              <div className="hl-sub-h">Basemap place names</div>
+              <div className="hl-seg">
+                {LABEL_MODES.map((m) => (
+                  <button key={m.id} type="button" className={`hl-seg-b${labelMode === m.id ? ' on' : ''}`} onClick={() => setLabelMode(m.id)}>{m.label} <small>{m.sub}</small></button>
                 ))}
               </div>
               <label className="hl-row"><input type="checkbox" checked={threeD} onChange={(e) => setThreeD(e.target.checked)} /> 3D terrain (drag with right mouse / two fingers to tilt &amp; rotate)</label>
