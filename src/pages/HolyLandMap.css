@@ -44,6 +44,37 @@
 .hl-btn:hover { border-color: var(--gold); color: var(--gold); }
 .hl-btn-paleo { font-family: var(--paleo-font); color: var(--gold); font-size: 15px; }
 
+/* Top-bar search */
+.hl-searchbox { position: relative; flex: 0 1 380px; min-width: 160px; }
+.hl-searchbox-in { width: 100%; min-height: 34px; padding: 0 12px; border: 1px solid var(--border2); border-radius: 6px; background: var(--bg3); color: var(--text); font-size: 13px; outline: none; }
+.hl-searchbox-in:focus { border-color: var(--gold); }
+.hl-searchbox-dd { position: absolute; top: calc(100% + 4px); left: 0; right: 0; list-style: none; background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px; box-shadow: 0 8px 24px #0006; z-index: 100; overflow: hidden; }
+.hl-hit { display: grid; grid-template-columns: 52px 1fr auto auto; align-items: center; gap: 8px; width: 100%; text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); }
+.hl-hit:hover, .hl-hit.first { background: var(--bg3); }
+.hl-hit-kind { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 5px; border-radius: 4px; text-align: center; border: 1px solid var(--border2); color: var(--text3); }
+.hl-hit-kind.k-biblical { color: var(--gold); border-color: var(--gold); }
+.hl-hit-kind.k-region { color: var(--purple); border-color: var(--purple); }
+.hl-hit-kind.k-modern { color: var(--blue); border-color: var(--blue); }
+.hl-hit-main { font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hl-hit-main em { font-style: normal; color: var(--text3); }
+.hl-hit-paleo { font-family: var(--paleo-font); color: var(--gold); font-size: 14px; }
+.hl-hit-dist { font-size: 11px; color: var(--text3); font-variant-numeric: tabular-nums; }
+
+/* Distance / pin */
+.hl-pinrow { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; padding-top: 8px; border-top: 1px solid var(--border); }
+.hl-dist { display: flex; flex-direction: column; gap: 2px; }
+.hl-dist-k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); }
+.hl-dist b { font-size: 16px; color: var(--gold); font-variant-numeric: tabular-nums; }
+.hl-dist small { font-size: 11.5px; color: var(--text3); }
+.hl-pinbtn { align-self: flex-start; font-size: 12px; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border2); background: var(--bg2); color: var(--text2); text-align: left; }
+.hl-pinbtn:hover { border-color: var(--red); color: var(--text); }
+.hl-pinbtn.on { border-color: var(--red); color: var(--red); }
+.hl-detail-pin { border-color: var(--red); }
+.hl-pin { display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+.hl-pin-icon { font-size: 26px; line-height: 1; filter: drop-shadow(0 1px 2px #0008); }
+.hl-pin-lbl { font-size: 11px; font-weight: 700; color: #1a1208; background: #fffd; padding: 1px 6px; border-radius: 4px; border: 1px solid #e05555; white-space: nowrap; margin-top: -2px; }
+.hl-sw-r { background: var(--purple); transform: rotate(45deg); width: 10px; height: 10px; }
+
 /* ── Body: panel + map ───────────────────────────────────────────────────── */
 .hl-body { flex: 1; min-height: 0; display: flex; position: relative; }
 
@@ -174,6 +205,13 @@
 
 .hl-mk-twin .hl-mk-lbl { top: 8px; left: 6px; }
 
+/* Nations & lands: purple diamonds, always labelled (they're far apart) */
+.hl-mk-r .hl-mk-dot { background: #a78bfa; transform: rotate(45deg); border-radius: 1px; width: 11px; height: 11px; }
+.hl-mk-r .hl-mk-lbl { display: flex; }
+.hl-mk-r .hl-mk-name { color: #3b2a6e; }
+[data-basemap="satellite"] .hl-mk-r .hl-mk-name { color: #d9c8ff; }
+.hl-mk-r:hover .hl-mk-dot, .hl-mk-r.hl-mk-sel .hl-mk-dot { transform: rotate(45deg) scale(1.4); }
+
 /* The Joshua 15:11 key city — always visible, ringed */
 .hl-mk-key .hl-mk-dot { background: #ffd166; width: 14px; height: 14px; left: -7px; top: -7px; border-width: 2px; box-shadow: 0 0 0 3px #e8aa5588, 0 0 14px 4px #ffd16699; animation: hl-pulse 2.2s ease-in-out infinite; }
 .hl-mk-key .hl-mk-lbl { left: 11px; top: -12px; }
@@ -210,6 +248,8 @@
 
 /* ── Mobile ──────────────────────────────────────────────────────────────── */
 @media (max-width: 720px) {
+  .hl-h1 { display: none; }
+  .hl-searchbox { flex: 1; }
   .hl-h1 span { display: none; }
   .hl-back { display: none; }
   .hl-panel { position: absolute; left: 0; right: 0; bottom: 0; top: 40%; width: auto; border-right: none; border-top: 1px solid var(--border); z-index: 4; border-radius: 12px 12px 0 0; }

@@ -15,6 +15,7 @@
  *
  * Route: /models/holy-land   (linked from /models — "Renderings & Models")
  * Deep links: ?city=<id>  ?overlay=joshua|ezekiel|both|none  ?unit=reeds|cubits  ?layout=anchored|equal
+ *             ?pin=<lon>,<lat>[,<label>]  — a dropped pin; every selection then shows its distance from it
  *
  * Map engine: maplibre-gl (npm). Base data comes from public tile servers at
  * runtime — OpenFreeMap vector tiles (streets / clean-terrain modes), Esri
@@ -34,6 +35,7 @@ import {
   HOLY_UNITS, HOLY_LAYOUTS, HOLY_KIND_STYLE, EZEKIEL_ORDER, TRIBE_TRANSLIT, TRIBE_PALEO, tribeDisplayName,
   ezekielAllotment, toFeature, ringCentroid, pointInRing, joshuaTribeAt, ezekielAt,
   squareToPaleo, translitOf,
+  REGIONS, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance,
 } from '../lib/models/holyLand.js';
 import './HolyLandMap.css';
 
@@ -134,6 +136,15 @@ export default function HolyLandMap() {
   const [showEzekiel, setShowEzekiel] = useState(initialOverlay === 'ezekiel' || initialOverlay === 'both');
   const [showBiblical, setShowBiblical] = useState(true);
   const [showModern, setShowModern] = useState(true);
+  const [showRegions, setShowRegions] = useState(true);
+  const [sq, setSq] = useState('');                 // top-bar search text
+  const [sqOpen, setSqOpen] = useState(false);
+  const [pin, setPin] = useState(() => {            // { lon, lat, label }
+    const p = params.get('pin');
+    if (!p) return null;
+    const [lon, lat, ...rest] = p.split(',');
+    return Number.isFinite(+lon) && Number.isFinite(+lat) ? { lon: +lon, lat: +lat, label: rest.join(',') || 'Pin' } : null;
+  });
   const [unit, setUnit] = useState(params.get('unit') === 'reeds' ? 'reeds' : 'cubits');
   const [layout, setLayout] = useState(params.get('layout') === 'equal' ? 'equal' : 'anchored');
   const [basemap, setBasemap] = useState('terrain');
@@ -166,7 +177,11 @@ export default function HolyLandMap() {
     setSel({ kind: 'city', city: c, ...at });
     setPanelOpen(true);
     const map = mapRef.current;
-    if (fly && map) map.flyTo({ center: [c.lon, c.lat], zoom: Math.max(map.getZoom(), 10.5), pitch: threeD ? 55 : 0, duration: 1400, essential: true });
+    if (fly && map) {
+      // Far-off nations get a wide view; cities get a close one.
+      const zoom = c.kind === 'region' ? Math.min(Math.max(map.getZoom(), 5.5), 7) : Math.max(map.getZoom(), 10.5);
+      map.flyTo({ center: [c.lon, c.lat], zoom, pitch: threeD ? 55 : 0, duration: 1400, essential: true });
+    }
     const next = new URLSearchParams(params);
     next.set('city', c.id);
     setParams(next, { replace: true });
@@ -188,6 +203,23 @@ export default function HolyLandMap() {
       const src = map.getSource(id);
       if (src) src.setData(data); else map.addSource(id, { type: 'geojson', data });
     };
+    // Pin → selection line (great-circle, densified so it curves correctly when far).
+    const selPt = sel?.kind === 'city' ? [sel.city.lon, sel.city.lat] : sel?.kind === 'point' ? sel.lonLat : null;
+    const lineFeatures = [];
+    if (pin && selPt && (pin.lon !== selPt[0] || pin.lat !== selPt[1])) {
+      const n = 48, pts = [];
+      const r = Math.PI / 180, a1 = pin.lat * r, o1 = pin.lon * r, a2 = selPt[1] * r, o2 = selPt[0] * r;
+      const d = 2 * Math.asin(Math.sqrt(Math.sin((a2 - a1) / 2) ** 2 + Math.cos(a1) * Math.cos(a2) * Math.sin((o2 - o1) / 2) ** 2)) || 1e-9;
+      for (let i = 0; i <= n; i++) {
+        const f = i / n, A = Math.sin((1 - f) * d) / Math.sin(d), B = Math.sin(f * d) / Math.sin(d);
+        const x = A * Math.cos(a1) * Math.cos(o1) + B * Math.cos(a2) * Math.cos(o2);
+        const y = A * Math.cos(a1) * Math.sin(o1) + B * Math.cos(a2) * Math.sin(o2);
+        const z = A * Math.sin(a1) + B * Math.sin(a2);
+        pts.push([Math.atan2(y, x) / r, Math.atan2(z, Math.sqrt(x * x + y * y)) / r]);
+      }
+      lineFeatures.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: pts } });
+    }
+    ensure('hl-pin-line', { type: 'FeatureCollection', features: lineFeatures });
     ensure('hl-joshua', { type: 'FeatureCollection', features: JOSHUA_TRIBES.map((t) => toFeature(t, { color: TRIBE_COLORS[t.tribe] })) });
     ensure('hl-ez-bands', { type: 'FeatureCollection', features: ez.bands.map((b) => toFeature(b, { color: TRIBE_COLORS[b.tribe] })) });
     ensure('hl-ez-holy', { type: 'FeatureCollection', features: ez.holy.map((h) => toFeature(h, { color: HOLY_KIND_STYLE[h.kind].color, opacity: HOLY_KIND_STYLE[h.kind].opacity })) });
@@ -204,6 +236,8 @@ export default function HolyLandMap() {
     addLayer({ id: 'hl-holy-line', type: 'line', source: 'hl-ez-holy', paint: { 'line-color': '#1a1208', 'line-width': 1.4 } });
     addLayer({ id: 'hl-joshua-fill', type: 'fill', source: 'hl-joshua', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': fillOpacity(0.42) } });
     addLayer({ id: 'hl-joshua-line', type: 'line', source: 'hl-joshua', paint: { 'line-color': '#1a1208', 'line-width': 1.6, 'line-dasharray': [2, 1] } });
+    addLayer({ id: 'hl-pin-line-casing', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#ffffff', 'line-width': 5, 'line-opacity': 0.7 } });
+    addLayer({ id: 'hl-pin-line', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#e05555', 'line-width': 2.5, 'line-dasharray': [3, 2] } });
 
     const vis = (id, on) => map.getLayer(id) && map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none');
     vis('hl-ez-fill', showEzekiel); vis('hl-ez-line', showEzekiel);
@@ -247,6 +281,25 @@ export default function HolyLandMap() {
         mk([c.lon, c.lat], el);
       }
     }
+    if (showRegions) {
+      for (const c of REGIONS) {
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.className = `hl-mk hl-mk-r${c.id === selCityId ? ' hl-mk-sel' : ''}`;
+        el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span><span class="hl-mk-paleo" dir="rtl">${c.paleo}</span><span class="hl-mk-en">${c.name}</span></span>`;
+        el.title = `${c.name} — ${c.translit} — ${c.ref}`;
+        el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
+        mk([c.lon, c.lat], el);
+      }
+    }
+    if (pin) {
+      const el = document.createElement('div');
+      el.className = 'hl-pin';
+      el.innerHTML = `<span class="hl-pin-icon">📍</span><span class="hl-pin-lbl">${pin.label}</span>`;
+      el.title = `Pin: ${pin.label}`;
+      const m = new maplibregl.Marker({ element: el, anchor: 'bottom' }).setLngLat([pin.lon, pin.lat]).addTo(map);
+      markersRef.current.push(m);
+    }
     const regionLabel = (entry, cls, onClick) => {
       const el = document.createElement('button');
       el.type = 'button';
@@ -272,7 +325,7 @@ export default function HolyLandMap() {
         mk(ringCentroid(h.ring), el);
       }
     }
-  }, [ez, sel, showBiblical, showEzekiel, showJoshua, showModern, selectCity, selectRegion]);
+  }, [ez, sel, pin, showBiblical, showEzekiel, showJoshua, showModern, showRegions, selectCity, selectRegion]);
 
   const applyRef = useRef(applyOverlays);
   applyRef.current = applyOverlays;
@@ -291,7 +344,7 @@ export default function HolyLandMap() {
         fitBoundsOptions: { padding: 20 },
         pitch: 50, bearing: -8,
         maxPitch: 75,
-        minZoom: 4, maxZoom: 15,
+        minZoom: 2, maxZoom: 15,
         attributionControl: { compact: true },
         cooperativeGestures: false,
       });
@@ -363,9 +416,16 @@ export default function HolyLandMap() {
     next.set('overlay', showJoshua && showEzekiel ? 'both' : showJoshua ? 'joshua' : showEzekiel ? 'ezekiel' : 'none');
     if (unit === 'reeds') next.set('unit', 'reeds'); else next.delete('unit');
     if (layout === 'equal') next.set('layout', 'equal'); else next.delete('layout');
+    if (pin) next.set('pin', `${pin.lon.toFixed(4)},${pin.lat.toFixed(4)},${pin.label}`); else next.delete('pin');
     if (next.toString() !== params.toString()) setParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showJoshua, showEzekiel, unit, layout]);
+  }, [showJoshua, showEzekiel, unit, layout, pin]);
+
+  const searchHits = useMemo(() => searchPlaces(sq, 8), [sq]);
+  const pickHit = (c) => { setSq(''); setSqOpen(false); selectCity(c, true); };
+  const dropPin = useCallback((lonLat, label) => {
+    setPin({ lon: lonLat[0], lat: lonLat[1], label: label || fmtLonLat(lonLat) });
+  }, []);
 
   // ── Derived lists ──────────────────────────────────────────────────────────
   const filteredBiblical = useMemo(() => {
@@ -375,6 +435,10 @@ export default function HolyLandMap() {
   const filteredModern = useMemo(() => {
     const s = q.trim().toLowerCase();
     return MODERN_CITIES.filter((c) => !s || `${c.name} ${c.country}`.toLowerCase().includes(s));
+  }, [q]);
+  const filteredRegions = useMemo(() => {
+    const s = q.trim().toLowerCase();
+    return REGIONS.filter((c) => !s || `${c.name} ${c.translit} ${c.he} ${c.paleo} ${c.ref}`.toLowerCase().includes(s));
   }, [q]);
 
   // "Peoples" table: every Ezekiel band → the modern cities inside it, by country.
@@ -397,6 +461,32 @@ export default function HolyLandMap() {
         <Link to="/landing" className="hl-logo" title="Home">𐤀𐤁</Link>
         <Link to="/models" className="hl-back" title="Renderings & Models">← Models</Link>
         <h1 className="hl-h1">The Holy Land in 3D <span>Joshua &amp; Ezekiel allotments</span></h1>
+        <div className="hl-searchbox">
+          <input
+            className="hl-searchbox-in"
+            value={sq}
+            onChange={(e) => { setSq(e.target.value); setSqOpen(true); }}
+            onFocus={() => setSqOpen(true)}
+            onBlur={() => setTimeout(() => setSqOpen(false), 150)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && searchHits[0]) pickHit(searchHits[0]); if (e.key === 'Escape') { setSq(''); setSqOpen(false); } }}
+            placeholder="Go to… Greece, Yawan, 𐤉𐤅𐤍, Jabneel, Damascus"
+            aria-label="Search places"
+          />
+          {sqOpen && searchHits.length > 0 && (
+            <ul className="hl-searchbox-dd" role="listbox">
+              {searchHits.map((c, i) => (
+                <li key={c.id}>
+                  <button type="button" className={`hl-hit${i === 0 ? ' first' : ''}`} onMouseDown={(e) => e.preventDefault()} onClick={() => pickHit(c)}>
+                    <span className={`hl-hit-kind k-${c.kind}`}>{c.kind === 'biblical' ? 'Bible' : c.kind === 'region' ? 'Nation' : 'Today'}</span>
+                    <span className="hl-hit-main"><b>{c.translit || c.name}</b>{c.translit && <em> {c.name}</em>}{c.country && <em> · {c.country}</em>}</span>
+                    {c.paleo && <span className="hl-hit-paleo" dir="rtl">{c.paleo}</span>}
+                    {pin && <span className="hl-hit-dist">{fmtDistance(haversineKm([pin.lon, pin.lat], [c.lon, c.lat])).text.split(' · ')[0]}</span>}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         <div className="hl-top-actions">
           <button type="button" className="hl-btn" onClick={() => keyCity && selectCity(keyCity, true)} title="Fly to Jabneel — Joshua 15:11">
             <span className="hl-btn-paleo" dir="rtl">{keyCity?.paleo}</span> {keyCity?.translit}
@@ -415,7 +505,13 @@ export default function HolyLandMap() {
             ))}
           </div>
 
-          {sel && <Detail sel={sel} ez={ez} onClose={() => setSel(null)} onCity={(c) => selectCity(c, true)} onRegion={selectRegion} />}
+          {sel && <Detail sel={sel} ez={ez} pin={pin} onPin={dropPin} onUnpin={() => setPin(null)} onClose={() => setSel(null)} onCity={(c) => selectCity(c, true)} onRegion={selectRegion} />}
+          {pin && !sel && (
+            <div className="hl-detail hl-detail-pin">
+              <div className="hl-detail-name">📍 {pin.label}</div>
+              <div className="hl-detail-ref">Pinned — pick any place and its distance from here is shown. <button type="button" className="hl-link" onClick={() => setPin(null)}>Unpin</button></div>
+            </div>
+          )}
 
           {tab === 'layers' && (
             <div className="hl-sec">
@@ -447,6 +543,7 @@ export default function HolyLandMap() {
               <div className="hl-sec-h">Places</div>
               <label className="hl-row"><input type="checkbox" checked={showBiblical} onChange={(e) => setShowBiblical(e.target.checked)} /> <span className="hl-sw hl-sw-b" /> Biblical cities (Joshua)</label>
               <label className="hl-row"><input type="checkbox" checked={showModern} onChange={(e) => setShowModern(e.target.checked)} /> <span className="hl-sw hl-sw-m" /> Today's cities</label>
+              <label className="hl-row"><input type="checkbox" checked={showRegions} onChange={(e) => setShowRegions(e.target.checked)} /> <span className="hl-sw hl-sw-r" /> Nations &amp; lands beyond (Greece, Egypt, Babylon…)</label>
               <div className="hl-note">City labels appear from zoom 7.5 (now {zoom.toFixed(1)}); Jabneel is always labelled.</div>
 
               <div className="hl-sec-h">Base map</div>
@@ -478,7 +575,19 @@ export default function HolyLandMap() {
                     <button type="button" className={`hl-li${c.id === KEY_CITY ? ' key' : ''}${sel?.city?.id === c.id ? ' on' : ''}`} onClick={() => selectCity(c, true)}>
                       <span className="hl-li-paleo" dir="rtl">{c.paleo}</span>
                       <span className="hl-li-main"><b>{c.translit}</b> <em>{c.name}</em></span>
-                      <span className="hl-li-ref">{c.ref}</span>
+                      <span className="hl-li-ref">{c.ref}{pin ? ` · ${fmtDistance(haversineKm([pin.lon, pin.lat], [c.lon, c.lat])).text}` : ''}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <div className="hl-sec-h">Nations &amp; lands <span className="hl-count">{filteredRegions.length}</span></div>
+              <ul className="hl-list">
+                {filteredRegions.map((c) => (
+                  <li key={c.id}>
+                    <button type="button" className={`hl-li${sel?.city?.id === c.id ? ' on' : ''}`} onClick={() => selectCity(c, true)}>
+                      <span className="hl-li-paleo" dir="rtl">{c.paleo}</span>
+                      <span className="hl-li-main"><b>{c.translit}</b> <em>{c.name}</em></span>
+                      <span className="hl-li-ref">{c.ref}{pin ? ` · ${fmtDistance(haversineKm([pin.lon, pin.lat], [c.lon, c.lat])).text}` : ''}</span>
                     </button>
                   </li>
                 ))}
@@ -555,16 +664,36 @@ function AllotmentLines({ joshua, ezekiel }) {
   );
 }
 
-function Detail({ sel, ez, onClose, onCity, onRegion }) {
+function PinRow({ pin, at, label, onPin, onUnpin }) {
+  const isPin = pin && Math.abs(pin.lon - at[0]) < 1e-6 && Math.abs(pin.lat - at[1]) < 1e-6;
+  const d = pin && !isPin ? fmtDistance(haversineKm([pin.lon, pin.lat], at)) : null;
+  const brg = pin && !isPin ? bearingDeg([pin.lon, pin.lat], at) : null;
+  return (
+    <div className="hl-pinrow">
+      {d && (
+        <div className="hl-dist">
+          <span className="hl-dist-k">From 📍 {pin.label}</span>
+          <b>{d.text}</b>
+          <small>{compass(brg)} ({Math.round(brg)}°) · {d.daysText}</small>
+        </div>
+      )}
+      {isPin
+        ? <button type="button" className="hl-pinbtn on" onClick={onUnpin}>📍 Pinned here · unpin</button>
+        : <button type="button" className="hl-pinbtn" onClick={() => onPin(at, label)}>📍 {pin ? 'Move pin here' : 'Pin here'} — measure distances from this spot</button>}
+    </div>
+  );
+}
+
+function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
   if (sel.kind === 'city') {
     const c = sel.city;
-    const link = c.kind === 'biblical' ? refLink(c.ref) : null;
+    const link = c.kind !== 'modern' ? refLink(c.ref) : null;
     const twinBiblical = c.kind === 'modern' ? BIBLICAL_CITIES.filter((b) => Math.hypot(b.lon - c.lon, b.lat - c.lat) < 0.03) : [];
     const twinModern = c.kind === 'biblical' ? MODERN_CITIES.filter((m) => Math.hypot(m.lon - c.lon, m.lat - c.lat) < 0.03) : [];
     return (
       <div className={`hl-detail${c.id === KEY_CITY ? ' key' : ''}`}>
         <button type="button" className="hl-detail-x" onClick={onClose} aria-label="Close">×</button>
-        {c.kind === 'biblical' ? (
+        {c.kind !== 'modern' ? (
           <>
             <div className="hl-detail-paleo" dir="rtl">{c.paleo}</div>
             <div className="hl-detail-name">{c.translit} <em>{c.name}</em></div>
@@ -582,6 +711,7 @@ function Detail({ sel, ez, onClose, onCity, onRegion }) {
         <AllotmentLines joshua={sel.joshua} ezekiel={sel.ezekiel} />
         {twinModern.length > 0 && <div className="hl-detail-twin">Today: {twinModern.map((m) => <button key={m.id} type="button" className="hl-link" onClick={() => onCity(m)}>{m.name} ({m.country})</button>)}</div>}
         {twinBiblical.length > 0 && <div className="hl-detail-twin">Biblical: {twinBiblical.map((b) => <button key={b.id} type="button" className="hl-link" onClick={() => onCity(b)}>{b.name} {b.paleo}</button>)}</div>}
+        <PinRow pin={pin} at={[c.lon, c.lat]} label={c.translit || c.name} onPin={onPin} onUnpin={onUnpin} />
         <div className="hl-detail-coord">{fmtLonLat([c.lon, c.lat])}</div>
       </div>
     );
@@ -616,6 +746,7 @@ function Detail({ sel, ez, onClose, onCity, onRegion }) {
         {sel.ezekiel?.band && <button type="button" className="hl-link" onClick={() => onRegion('ezekiel', sel.ezekiel.band)}>Open {sel.ezekiel.band.name} (Ezekiel)</button>}
         {sel.ezekiel?.sub && <button type="button" className="hl-link" onClick={() => onRegion('holy', sel.ezekiel.sub)}>Open {sel.ezekiel.sub.name}</button>}
       </div>
+      <PinRow pin={pin} at={sel.lonLat} label={fmtLonLat(sel.lonLat)} onPin={onPin} onUnpin={onUnpin} />
     </div>
   );
 }

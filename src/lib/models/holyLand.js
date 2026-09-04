@@ -429,6 +429,94 @@ export const MODERN_CITIES = [
   M('eilat', 'Eilat', 'Israel', 34.95, 29.56, '≈ 50k', 'Outside the southern border.'),
 ];
 
+// ── Nations & lands beyond the borders (for search + distance) ───────────────
+// Biblical names with their Hebrew spelling; NT-era Greek/Roman places use the
+// Hebrew-NT spelling. Coordinates are a conventional centre (a capital or the
+// best-known site), not a boundary.
+const R = (id, name, he, lon, lat, ref, note = '') => ({ id, name, he, lon, lat, ref, note, kind:'region' });
+export const REGIONS = [
+  R('greece', 'Greece (Javan)', 'יון', 23.73, 37.98, 'Genesis 10:2; Daniel 8:21; Zechariah 9:13', 'Athens shown. Javan, son of Japheth — the Ionians / Greeks.'),
+  R('egypt', 'Egypt (Mizraim)', 'מצרים', 31.23, 30.05, 'Genesis 12:10; Exodus 1', 'Memphis / Cairo shown.'),
+  R('assyria', 'Assyria (Asshur)', 'אשור', 43.26, 35.46, 'Genesis 10:11; 2 Kings 17', 'The city of Asshur on the Tigris.'),
+  R('nineveh', 'Nineveh', 'נינוה', 43.15, 36.36, 'Genesis 10:11; Jonah 1:2', ''),
+  R('babylon', 'Babylon (Babel)', 'בבל', 44.42, 32.54, 'Genesis 11:9; 2 Kings 25', ''),
+  R('ur', 'Ur of the Chaldees', 'אור', 46.10, 30.96, 'Genesis 11:31', ''),
+  R('haran', 'Haran', 'חרן', 39.03, 36.87, 'Genesis 11:31; 12:4', ''),
+  R('ararat', 'Ararat', 'אררט', 44.30, 39.70, 'Genesis 8:4', 'Mount Ararat shown (Urartu).'),
+  R('persia', 'Persia (Paras)', 'פרס', 52.89, 29.93, 'Ezra 1:1; Daniel 8:20', 'Persepolis shown.'),
+  R('media', 'Media (Madai)', 'מדי', 48.51, 34.80, 'Genesis 10:2; Daniel 5:28', 'Ecbatana / Hamadan shown.'),
+  R('elam', 'Elam', 'עילם', 48.25, 32.19, 'Genesis 10:22; Daniel 8:2', 'Shushan / Susa shown.'),
+  R('kittim', 'Kittim (Cyprus)', 'כתים', 33.38, 35.13, 'Genesis 10:4; Numbers 24:24', ''),
+  R('tarshish', 'Tarshish', 'תרשיש', -6.03, 36.85, 'Genesis 10:4; Jonah 1:3', 'Placed at Tartessos in southern Spain — one of several identifications.'),
+  R('cush', 'Cush (Ethiopia)', 'כוש', 33.75, 16.93, 'Genesis 10:6; Isaiah 18:1', 'Meroë shown.'),
+  R('sheba', 'Sheba', 'שבא', 45.33, 15.46, '1 Kings 10:1', 'Marib shown.'),
+  R('put', 'Put (Libya)', 'פוט', 21.86, 32.82, 'Genesis 10:6; Ezekiel 38:5', 'Cyrene shown.'),
+  R('lud', 'Lud (Lydia)', 'לוד', 28.04, 38.49, 'Genesis 10:22; Ezekiel 27:10', 'Sardis shown.'),
+  R('edom', 'Edom', 'אדום', 35.62, 30.73, 'Genesis 36:8; Obadiah', 'Bozrah region.'),
+  R('moab', 'Moab', 'מואב', 35.75, 31.35, 'Genesis 19:37; Ruth 1', ''),
+  R('ammon', 'Ammon', 'עמון', 35.93, 31.95, 'Genesis 19:38; Deuteronomy 2:19', ''),
+  R('philistia', 'Philistia', 'פלשת', 34.60, 31.60, 'Exodus 15:14; Joshua 13:2', ''),
+  R('sinai', 'Mount Sinai', 'סיני', 33.97, 28.54, 'Exodus 19', 'Jebel Musa shown — the traditional site.'),
+  R('arabia', 'Arabia', 'ערב', 37.92, 26.61, '1 Kings 10:15; Galatians 4:25', 'Dedan / al-ʿUla shown.'),
+  R('ophir', 'Ophir', 'אופיר', 44.0, 14.5, '1 Kings 9:28', 'Location unknown — placed in southern Arabia, one of several proposals.'),
+  R('rome', 'Rome', 'רומי', 12.49, 41.89, 'Acts 28:14', 'Hebrew-NT spelling.'),
+  R('athens', 'Athens', 'אתינס', 23.73, 37.98, 'Acts 17:15', 'Hebrew-NT spelling.'),
+  R('corinth', 'Corinth', 'קורנתוס', 22.88, 37.91, 'Acts 18:1', 'Hebrew-NT spelling.'),
+  R('ephesus', 'Ephesus', 'אפסוס', 27.34, 37.94, 'Acts 19:1; Revelation 2:1', 'Hebrew-NT spelling.'),
+  R('antioch', 'Antioch', 'אנטיוכיא', 36.16, 36.20, 'Acts 11:26', 'Hebrew-NT spelling.'),
+  R('patmos', 'Patmos', 'פטמוס', 26.55, 37.31, 'Revelation 1:9', 'Hebrew-NT spelling.'),
+  R('tarsus', 'Tarsus', 'טרסוס', 34.90, 36.92, 'Acts 9:11', 'Hebrew-NT spelling.'),
+  R('alexandria', 'Alexandria', 'אלכסנדריא', 29.92, 31.20, 'Acts 18:24', 'Hebrew-NT spelling.'),
+].map((c) => ({ ...c, paleo: squareToPaleo(c.he), translit: translitOf(c.he) }));
+
+export const ALL_PLACES = [...BIBLICAL_CITIES, ...REGIONS, ...MODERN_CITIES];
+
+// ── Search ───────────────────────────────────────────────────────────────────
+const fold = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u05B0-\u05C7]/g, '');
+/** Search every place by English, transliteration, square Hebrew or paleo. Prefix hits rank first. */
+export function searchPlaces(q, limit = 8) {
+  const s = fold(q).trim();
+  if (!s) return [];
+  const scored = [];
+  for (const p of ALL_PLACES) {
+    const fields = [p.name, p.translit, p.he, p.paleo, p.country, p.ref].filter(Boolean).map(fold);
+    let best = 0;
+    for (const f of fields) {
+      if (f === s) best = Math.max(best, 3);
+      else if (f.startsWith(s) || f.split(/[\s(]+/).some((w) => w.startsWith(s))) best = Math.max(best, 2);
+      else if (f.includes(s)) best = Math.max(best, 1);
+    }
+    if (best) scored.push([best, p]);
+  }
+  const rank = { biblical: 0, region: 1, modern: 2 };
+  scored.sort((a, b) => (b[0] - a[0]) || (rank[a[1].kind] - rank[b[1].kind]) || a[1].name.localeCompare(b[1].name));
+  return scored.slice(0, limit).map(([, p]) => p);
+}
+
+// ── Distance ─────────────────────────────────────────────────────────────────
+const EARTH_KM = 6371.0088;
+export function haversineKm([lon1, lat1], [lon2, lat2]) {
+  const r = Math.PI / 180;
+  const dLat = (lat2 - lat1) * r, dLon = (lon2 - lon1) * r;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin(dLon / 2) ** 2;
+  return 2 * EARTH_KM * Math.asin(Math.sqrt(a));
+}
+export function bearingDeg([lon1, lat1], [lon2, lat2]) {
+  const r = Math.PI / 180;
+  const y = Math.sin((lon2 - lon1) * r) * Math.cos(lat2 * r);
+  const x = Math.cos(lat1 * r) * Math.sin(lat2 * r) - Math.sin(lat1 * r) * Math.cos(lat2 * r) * Math.cos((lon2 - lon1) * r);
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+}
+export function compass(deg) {
+  return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(deg / 22.5) % 16];
+}
+/** A day's journey on foot is reckoned at roughly 30 km / 20 mi. */
+export function fmtDistance(km) {
+  const mi = km * 0.621371;
+  const days = km / 30;
+  return { km, mi, days, text: `${km < 100 ? km.toFixed(1) : Math.round(km).toLocaleString()} km · ${mi < 100 ? mi.toFixed(1) : Math.round(mi).toLocaleString()} mi`, daysText: days < 1 ? `under a day's walk` : `≈ ${days < 10 ? days.toFixed(1) : Math.round(days)} days' journey on foot` };
+}
+
 // ── Geometry helpers ─────────────────────────────────────────────────────────
 export function pointInRing([x, y], ring) {
   let inside = false;
