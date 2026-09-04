@@ -54,9 +54,18 @@ export const TRIBE_COLORS = {
 // Hebrew spellings of the tribes (for the labels' paleo line)
 export const TRIBE_HEBREW = {
   Dan: 'דן', Asher: 'אשר', Naphtali: 'נפתלי', Manasseh: 'מנשה', Ephraim: 'אפרים',
-  Reuben: 'ראובן', Judah: 'יהודה', Benjamin: 'בנימן', Simeon: 'שמעון',
-  Issachar: 'יששכר', Zebulun: 'זבולן', Gad: 'גד', Levi: 'לוי',
+  Reuben: 'ראובן', Judah: 'יהודה', Benjamin: 'בנימין', Simeon: 'שמעון',
+  Issachar: 'יששכר', Zebulun: 'זבולון', Gad: 'גד', Levi: 'לוי',
 };
+
+// The app's own transliteration of each tribe (Ashar, Raawaban, Yahawadah…),
+// derived from the spelling above the same way city names are.
+export const TRIBE_TRANSLIT = Object.fromEntries(Object.entries(TRIBE_HEBREW).map(([k, he]) => [k, translitOf(he)]));
+export const TRIBE_PALEO = Object.fromEntries(Object.entries(TRIBE_HEBREW).map(([k, he]) => [k, squareToPaleo(he)]));
+/** "Manasseh (West)" → "Manashah (West)" — the display name with the tribe transliterated. */
+export function tribeDisplayName(name, tribe) {
+  return tribe && TRIBE_TRANSLIT[tribe] ? String(name).replace(tribe, TRIBE_TRANSLIT[tribe]) : name;
+}
 
 // ── Joshua 13–19 allotments (idealized, [lon,lat]) ───────────────────────────
 // Each entry: name, tribe (for colour), ref, polygon ring (unclosed).

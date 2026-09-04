@@ -185,6 +185,15 @@
 [data-basemap="satellite"] .hl-mk-m .hl-mk-name { color: #bfe0ff; }
 [data-basemap="satellite"] .hl-mk-key .hl-mk-name { color: #ffd166; }
 
+.hl-mk-en { font-size: 10px; color: #4a4033; font-weight: 400; }
+[data-basemap="satellite"] .hl-mk-en { color: #ddd; }
+.hl-rl-en { font-size: 10px; font-weight: 500; text-transform: none; letter-spacing: 0; opacity: 0.8; }
+.hl-legend-i b { font-weight: 600; }
+.hl-legend-i small { color: var(--text3); font-size: 11px; }
+.hl-people-h small { color: var(--text3); font-weight: 400; font-size: 11px; }
+/* Paleo runs are RTL (Phoenician block is bidi class R); dir="rtl" keeps them so inside LTR lines */
+[dir="rtl"] { unicode-bidi: isolate; }
+
 /* Region labels */
 .hl-rl { display: flex; flex-direction: column; align-items: center; line-height: 1.05; cursor: pointer; pointer-events: auto; padding: 2px 6px; border-radius: 6px; border: 1px solid transparent; color: #1a1208; text-shadow: 0 0 4px #fff, 0 0 4px #fff, 0 0 6px #fff; }
 .hl-rl:hover { border-color: #1a120866; background: #fffc; }

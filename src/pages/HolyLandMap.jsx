@@ -31,7 +31,7 @@ import { useTheme } from '../hooks/useTheme.js';
 import { slugify } from '../lib/bookSlug.js';
 import {
   JOSHUA_TRIBES, BIBLICAL_CITIES, MODERN_CITIES, TRIBE_COLORS, TRIBE_HEBREW,
-  HOLY_UNITS, HOLY_LAYOUTS, HOLY_KIND_STYLE, EZEKIEL_ORDER,
+  HOLY_UNITS, HOLY_LAYOUTS, HOLY_KIND_STYLE, EZEKIEL_ORDER, TRIBE_TRANSLIT, TRIBE_PALEO, tribeDisplayName,
   ezekielAllotment, toFeature, ringCentroid, pointInRing, joshuaTribeAt, ezekielAt,
   squareToPaleo, translitOf,
 } from '../lib/models/holyLand.js';
@@ -90,7 +90,7 @@ function buildStyle(ofm, mode) {
     if (bg) bg.paint = { 'background-color': '#d9cfb8' };
     for (const l of layers) {
       if (l['source-layer'] === 'water' && l.type === 'fill') l.paint = { ...(l.paint || {}), 'fill-color': '#7fa7c9', 'fill-opacity': 1 };
-      if (l['source-layer'] === 'waterway') l.paint = { ...(l.paint || {}), 'line-color': '#6d98bd' };
+      if (l['source-layer'] === 'waterway' && l.type === 'line') l.paint = { ...(l.paint || {}), 'line-color': '#6d98bd' };
     }
   }
   // Hillshade under labels / above fills for terrain + streets.
@@ -102,7 +102,9 @@ function buildStyle(ofm, mode) {
     const idx = firstSymbol < 0 ? out.length : firstSymbol;
     out = [...out.slice(0, idx), hill, ...out.slice(idx)];
   }
-  return { ...base, sources, layers: out, terrain: undefined };
+  const style = { ...base, sources, layers: out };
+  delete style.terrain;   // we drive terrain via map.setTerrain(), and an explicit undefined can trip validation
+  return style;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -225,7 +227,7 @@ export default function HolyLandMap() {
         const el = document.createElement('button');
         el.type = 'button';
         el.className = `hl-mk hl-mk-b${c.id === KEY_CITY ? ' hl-mk-key' : ''}${c.id === selCityId ? ' hl-mk-sel' : ''}`;
-        el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.name}</span><span class="hl-mk-paleo">${c.paleo}</span></span>`;
+        el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span><span class="hl-mk-paleo" dir="rtl">${c.paleo}</span><span class="hl-mk-en">${c.name}</span></span>`;
         el.title = `${c.name} — ${c.translit} — ${c.ref}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
         mk([c.lon, c.lat], el);
@@ -250,7 +252,7 @@ export default function HolyLandMap() {
       el.type = 'button';
       el.className = `hl-rl ${cls}`;
       const tribe = entry.tribe;
-      el.innerHTML = `<span class="hl-rl-name">${entry.name}</span>${tribe ? `<span class="hl-rl-paleo">${squareToPaleo(TRIBE_HEBREW[tribe] || '')}</span>` : ''}`;
+      el.innerHTML = `<span class="hl-rl-name">${tribeDisplayName(entry.name, tribe)}</span>${tribe ? `<span class="hl-rl-paleo" dir="rtl">${TRIBE_PALEO[tribe] || ''}</span><span class="hl-rl-en">${entry.name}</span>` : ''}`;
       el.style.setProperty('--c', TRIBE_COLORS[tribe] || '#fff');
       el.addEventListener('click', (e) => { e.stopPropagation(); onClick(); });
       mk(ringCentroid(entry.ring), el);
@@ -397,7 +399,7 @@ export default function HolyLandMap() {
         <h1 className="hl-h1">The Holy Land in 3D <span>Joshua &amp; Ezekiel allotments</span></h1>
         <div className="hl-top-actions">
           <button type="button" className="hl-btn" onClick={() => keyCity && selectCity(keyCity, true)} title="Fly to Jabneel — Joshua 15:11">
-            <span className="hl-btn-paleo">{keyCity?.paleo}</span> Jabneel
+            <span className="hl-btn-paleo" dir="rtl">{keyCity?.paleo}</span> {keyCity?.translit}
           </button>
           <button type="button" className="hl-btn" onClick={goHome} title="Whole land">⌂</button>
           <button type="button" className="hl-btn" onClick={toggleTheme} title="Toggle light/dark">{theme === 'dark' ? '☀' : '☾'}</button>
@@ -459,7 +461,7 @@ export default function HolyLandMap() {
               <div className="hl-sec-h">Tribes</div>
               <div className="hl-legend">
                 {Object.entries(TRIBE_COLORS).map(([t, c]) => (
-                  <span key={t} className="hl-legend-i"><i style={{ background: c }} /> {t} <span className="hl-legend-paleo">{squareToPaleo(TRIBE_HEBREW[t])}</span></span>
+                  <span key={t} className="hl-legend-i"><i style={{ background: c }} /> <b>{TRIBE_TRANSLIT[t]}</b> <small>{t}</small> <span className="hl-legend-paleo" dir="rtl">{TRIBE_PALEO[t]}</span></span>
                 ))}
               </div>
               <div className="hl-note hl-note-warn">Borders are idealized study-map shapes drawn from the landmark lists in Joshua 13–19 and Ezekiel 47–48, not surveyed lines; city dots use the conventional identifications.</div>
@@ -474,8 +476,8 @@ export default function HolyLandMap() {
                 {filteredBiblical.map((c) => (
                   <li key={c.id}>
                     <button type="button" className={`hl-li${c.id === KEY_CITY ? ' key' : ''}${sel?.city?.id === c.id ? ' on' : ''}`} onClick={() => selectCity(c, true)}>
-                      <span className="hl-li-paleo">{c.paleo}</span>
-                      <span className="hl-li-main"><b>{c.name}</b> <em>{c.translit}</em></span>
+                      <span className="hl-li-paleo" dir="rtl">{c.paleo}</span>
+                      <span className="hl-li-main"><b>{c.translit}</b> <em>{c.name}</em></span>
                       <span className="hl-li-ref">{c.ref}</span>
                     </button>
                   </li>
@@ -505,7 +507,7 @@ export default function HolyLandMap() {
                 return (
                   <div key={p.name} className="hl-people">
                     <button type="button" className="hl-people-h" style={{ '--c': TRIBE_COLORS[p.tribe] }} onClick={() => entry && selectRegion('ezekiel', entry)}>
-                      <i /> {p.name} <span className="hl-legend-paleo">{squareToPaleo(TRIBE_HEBREW[p.tribe] || '')}</span>
+                      <i /> {tribeDisplayName(p.name, p.tribe)} {p.tribe !== 'Levi' && <small>{p.name}</small>} <span className="hl-legend-paleo" dir="rtl">{TRIBE_PALEO[p.tribe] || ''}</span>
                     </button>
                     {Object.keys(byCountry).length === 0 && <div className="hl-people-none">No listed city — sparsely settled today.</div>}
                     {Object.entries(byCountry).map(([country, cs]) => (
@@ -539,14 +541,14 @@ function AllotmentLines({ joshua, ezekiel }) {
     <div className="hl-allot">
       <div className="hl-allot-row">
         <span className="hl-allot-k">Joshua</span>
-        {joshua ? <span className="hl-allot-v"><i style={{ background: TRIBE_COLORS[joshua.tribe] }} /> {joshua.name} <small>{joshua.ref}</small></span> : <span className="hl-allot-v dim">outside the listed allotments</span>}
+        {joshua ? <span className="hl-allot-v"><i style={{ background: TRIBE_COLORS[joshua.tribe] }} /> {tribeDisplayName(joshua.name, joshua.tribe)} <small>{joshua.name} · {joshua.ref}</small></span> : <span className="hl-allot-v dim">outside the listed allotments</span>}
       </div>
       <div className="hl-allot-row">
         <span className="hl-allot-k">Ezekiel</span>
         {ezekiel ? (
           ezekiel.sub
             ? <span className="hl-allot-v"><i style={{ background: HOLY_KIND_STYLE[ezekiel.sub.kind].color }} /> {ezekiel.sub.name} <small>{ezekiel.sub.ref}</small></span>
-            : <span className="hl-allot-v"><i style={{ background: TRIBE_COLORS[ezekiel.band.tribe] }} /> {ezekiel.band.name} <small>{ezekiel.band.ref}</small></span>
+            : <span className="hl-allot-v"><i style={{ background: TRIBE_COLORS[ezekiel.band.tribe] }} /> {TRIBE_TRANSLIT[ezekiel.band.tribe]} <small>{ezekiel.band.name} · {ezekiel.band.ref}</small></span>
         ) : <span className="hl-allot-v dim">outside the borders of Ezekiel 47</span>}
       </div>
     </div>
@@ -564,8 +566,8 @@ function Detail({ sel, ez, onClose, onCity, onRegion }) {
         <button type="button" className="hl-detail-x" onClick={onClose} aria-label="Close">×</button>
         {c.kind === 'biblical' ? (
           <>
-            <div className="hl-detail-paleo">{c.paleo}</div>
-            <div className="hl-detail-name">{c.name} <em>{c.translit}</em></div>
+            <div className="hl-detail-paleo" dir="rtl">{c.paleo}</div>
+            <div className="hl-detail-name">{c.translit} <em>{c.name}</em></div>
             <div className="hl-detail-he">{c.he}</div>
             <div className="hl-detail-ref">{link ? <Link to={link}>{c.ref} →</Link> : c.ref}</div>
             {c.note && <p className="hl-detail-note">{c.note}</p>}
@@ -591,7 +593,8 @@ function Detail({ sel, ez, onClose, onCity, onRegion }) {
     return (
       <div className="hl-detail">
         <button type="button" className="hl-detail-x" onClick={onClose} aria-label="Close">×</button>
-        <div className="hl-detail-name"><i className="hl-detail-sw" style={{ background: color }} /> {e.name} {e.tribe && <span className="hl-detail-paleo-inline">{squareToPaleo(TRIBE_HEBREW[e.tribe])}</span>}</div>
+        <div className="hl-detail-name"><i className="hl-detail-sw" style={{ background: color }} /> {tribeDisplayName(e.name, e.tribe)} {e.tribe && <span className="hl-detail-paleo-inline" dir="rtl">{TRIBE_PALEO[e.tribe]}</span>}</div>
+        {e.tribe && <div className="hl-detail-he">{e.name} · {TRIBE_HEBREW[e.tribe]}</div>}
         <div className="hl-detail-ref">{sel.kind === 'joshua' ? 'Joshua allotment' : 'Ezekiel — millennial allotment'} · {link ? <Link to={link}>{e.ref} →</Link> : e.ref}</div>
         {sel.kind === 'holy' && e.kind === 'sanctuary' && <p className="hl-detail-note">500 × 500 with 50 of open land round it (45:2), in the midst of the priests' portion.</p>}
         <div className="hl-detail-sub">Biblical cities inside <span className="hl-count">{sel.cities.biblical.length}</span></div>
