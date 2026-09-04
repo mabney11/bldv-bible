@@ -1087,7 +1087,8 @@ console.log(`strongs dictionary  : ${Object.keys(STRONGS_DICT).length.toLocaleSt
             ((_strongsF.at || _strongsF2.at) ? ` (${_strongsF.at || _strongsF2.at})` : ' \u2014 NOT FOUND'));
 
 console.log(`\nOpening ${BIBLE_DB}…`);
-const src = new Database(BIBLE_DB, { readonly: true });
+const src = new Database(BIBLE_DB); // NOTE: readonly:true blocks locking_mode=EXCLUSIVE from taking effect on this device-bridge mount (see project memory) -- opened writable but this script only ever SELECTs from src
+src.pragma('locking_mode = EXCLUSIVE'); // device-bridge WAL/mmap workaround, see project memory
 
 // Count total tokens for progress (punctuation tokens are not surfaces — skip)
 const { total_tokens } = src.prepare(`SELECT COUNT(*) AS total_tokens FROM tokens_bhs WHERE pos != 'punct'`).get();
@@ -1536,6 +1537,7 @@ for (const suffix of ['-wal', '-shm', '-journal']) {
 
 console.log(`\nWriting ${path.basename(outTarget)}…`);
 const out = new Database(outTarget);
+out.pragma('locking_mode = EXCLUSIVE'); // device-bridge WAL/mmap workaround, see project memory
 
 out.exec(`
     PRAGMA journal_mode = WAL;
@@ -1708,7 +1710,8 @@ console.log(`\nNext: add surface-index.db endpoints to server.js (see below)\n`)
 console.log(`── New server.js endpoints to add ──────────────────────────────────`);
 console.log(`
 // Open the freshly-written index DB for the post-build verification pass
-const surfDb = new Database(path.join(__dirname, 'surface-index.db'), { readonly: true });
+const surfDb = new Database(path.join(__dirname, 'surface-index.db')); // readonly:true removed for the same device-bridge reason as src, above
+surfDb.pragma('locking_mode = EXCLUSIVE'); // device-bridge WAL/mmap workaround, see project memory
 
 // GET /api/surface?word=𐤏𐤋𐤌𐤔𐤌𐤓𐤕𐤉
 // Returns the parsed metadata for one surface: root_paleo, strongs, components, etc.
