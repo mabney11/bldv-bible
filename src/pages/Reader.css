@@ -640,6 +640,71 @@
   background: color-mix(in srgb, var(--pr-accent) 55%, transparent);
 }
 
+/* ── Headings: Part / Section / Chapter title / Pericope ──────────────────────
+   Four nesting levels (see server.js's `headings` table comment for the full
+   scheme). Part and Section render ABOVE .rd-chapter-head, in that order —
+   Part is the bigger, rarer division ("I. THE FIRST PART OF ISAIAH"), Section
+   the finer one within it ("A. Oracles before the Syro-Ephraimite War").
+   .rd-heading-start (the chapter a heading actually begins on) is bold/full
+   opacity; .rd-heading-continued (every later chapter still "inside" it, for
+   orientation when you land mid-range) is the same size but muted — same
+   idea as a running head, without repeating the whole divider treatment. */
+.rd-part-heading {
+  text-align: center;
+  margin: 2.2em 0 1.4em;
+}
+.rd-part-title {
+  font-family: system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--pr-ink);
+}
+.rd-part-subtitle {
+  margin-top: .35em;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--pr-ink-soft);
+}
+.rd-part-heading.rd-heading-continued .rd-part-title { opacity: .55; font-weight: 600; }
+.rd-part-heading + .rd-section-heading { margin-top: -.6em; }
+.rd-section-heading.rd-heading-start { opacity: 1; font-weight: 700; }
+.rd-section-heading.rd-heading-continued { opacity: .6; }
+
+/* Chapter title — one short line per chapter, right under the big number
+   (Gen 1 = "Creation"), KJV chapter-analysis style. */
+.rd-chapter-title {
+  margin-top: 8px;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--pr-ink-soft);
+}
+
+/* Pericope — a granular heading over a verse range, rendered inline right
+   above the verse row it anchors to (same Fragment-sibling slot as
+   .rd-acrostic, which is why the two share a similar bottom-border treatment
+   for visual rhythm, but left-aligned since this is English reading flow). */
+.rd-pericope {
+  margin: 1.6em 0 .5em;
+  padding-bottom: .25em;
+  border-bottom: 1px solid var(--border, rgba(255,255,255,.06));
+}
+.rd-pericope:first-child { margin-top: 0; }
+.rd-pericope-title {
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--pr-ink);
+}
+.rd-pericope-subtitle {
+  margin-top: .2em;
+  font-size: 12.5px;
+  font-style: italic;
+  color: var(--text3, #8a8175);
+}
+
 .rd-body {
   /* Positioned so the gutter number badges below (.rd-vnum-wrap,
      position:absolute) place themselves relative to THIS box, not some

@@ -109,6 +109,24 @@ export const apiBookSections = async (book) => {
   const data = await jsonFetch(`/api/book-sections?book=${book}`).catch(() => ({ sections: [] }));
   return (data && data.sections) || [];
 };
+// Headings — titles, subtitles, section headers. Four nesting levels in one
+// flat list per book: 1=Part (spans many chapters), 2=Section (spans a chapter
+// range, supersedes the old book-sections.json above), 3=Chapter title (one
+// line per chapter), 4=Pericope (a verse-range heading within a chapter). See
+// server.js's `headings` table comment for the full anchor/level scheme.
+// Reader.jsx computes which Part/Section is "in effect" for the chapter on
+// screen from this one list, the same way it used to with apiBookSections.
+export const apiHeadings = async (book) => {
+  const data = await jsonFetch(`/api/headings?book=${book}`).catch(() => ({ headings: [] }));
+  return (data && data.headings) || [];
+};
+export const apiHeadingCreate = (payload) => jsonFetch('/api/headings', {
+  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+});
+export const apiHeadingUpdate = ({ id, ...payload }) => jsonFetch(`/api/headings/${id}`, {
+  method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+});
+export const apiHeadingDelete = (id) => jsonFetch(`/api/headings/${id}`, { method: 'DELETE' });
 export const apiTransVerse = async (book, ch, v) => {
   const data = await jsonFetch(`/api/translate/verse?book=${book}&chapter=${ch}&verse=${v}`).catch(() => null);
   if (!data) return null;

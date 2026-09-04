@@ -697,3 +697,79 @@
 .tr-src-word  { font-size: 19px; line-height: 1.3; color: var(--text); }
 .tr-src-gloss { font-size: 10px; color: var(--text3); max-width: 120px; text-align: center; }
 .tr-heb-chip .tr-src-word { font-size: 17px; }
+
+/* ── Headings: Part / Section / Chapter title / Pericope ─────────────────────
+   Inline editing affordances in the chapter pane (pills next to a chapter's
+   header, "+H" next to a verse row) plus one small floating editor shared by
+   all four levels. See server.js's `headings` table comment for the scheme. */
+.tr-heading-row {
+  display: flex; flex-wrap: wrap; gap: 5px;
+  padding: 6px 14px 6px 22px;
+  background: var(--bg);
+  border-bottom: 1px dashed var(--border2);
+}
+.tr-heading-pill {
+  font-size: 10.5px; padding: 3px 8px; border-radius: 12px;
+  border: 1px solid var(--border2); cursor: pointer;
+  max-width: 220px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.tr-heading-pill.empty {
+  background: transparent; color: var(--text3);
+}
+.tr-heading-pill.empty:hover { background: var(--bg3); color: var(--text2); }
+.tr-heading-pill.has-value {
+  background: color-mix(in srgb, var(--blue2, var(--blue)) 12%, var(--bg3));
+  color: var(--text2); border-color: color-mix(in srgb, var(--blue2, var(--blue)) 35%, var(--border2));
+}
+.tr-heading-pill.has-value:hover { background: color-mix(in srgb, var(--blue2, var(--blue)) 20%, var(--bg3)); }
+
+.tr-verse-row-wrap { display: flex; align-items: stretch; }
+.tr-verse-row-wrap .tr-verse-row { flex: 1; }
+.tr-add-heading-btn {
+  flex-shrink: 0; width: 26px;
+  background: transparent; border: none; color: var(--text3);
+  font-size: 10px; font-weight: 700; cursor: pointer;
+  opacity: 0; transition: opacity .1s;
+}
+.tr-verse-row-wrap:hover .tr-add-heading-btn { opacity: 1; }
+.tr-add-heading-btn:hover { color: var(--blue2, var(--blue)); }
+
+.tr-pericope-pill {
+  display: block; width: 100%; text-align: left;
+  padding: 4px 14px 4px 22px; margin-top: 2px;
+  background: color-mix(in srgb, var(--gold) 8%, var(--bg));
+  border: none; border-left: 2px solid var(--gold);
+  font-size: 11px; font-weight: 600; color: var(--text2);
+  cursor: pointer;
+}
+.tr-pericope-pill:hover { background: color-mix(in srgb, var(--gold) 16%, var(--bg)); }
+
+.tr-heading-editor-backdrop {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(0,0,0,.35);
+  display: flex; align-items: center; justify-content: center;
+}
+.tr-heading-editor {
+  width: min(440px, 92vw);
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: 10px;
+  padding: 18px 20px; box-shadow: 0 12px 40px rgba(0,0,0,.35);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.tr-heading-editor-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.tr-heading-editor-label {
+  display: flex; flex-direction: column; gap: 5px;
+  font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .04em;
+}
+.tr-heading-editor-optional { text-transform: none; font-weight: 400; color: var(--text3); letter-spacing: 0; }
+.tr-heading-editor-input {
+  font-size: 14px; font-weight: 400; text-transform: none; letter-spacing: 0;
+  padding: 8px 10px; border-radius: 6px;
+  background: var(--bg); border: 1px solid var(--border2); color: var(--text);
+}
+.tr-heading-editor-input:focus { outline: none; border-color: var(--blue2, var(--blue)); }
+.tr-heading-editor-actions { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.tr-heading-editor-delete {
+  background: none; border: 1px solid var(--border2); color: var(--red, #c0392b);
+  font-size: 12px; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+}
+.tr-heading-editor-delete:hover { background: color-mix(in srgb, var(--red, #c0392b) 12%, transparent); }

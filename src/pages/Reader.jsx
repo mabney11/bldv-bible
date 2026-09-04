@@ -1,7 +1,7 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, Fragment } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
-import { apiBookOrder, apiTransChapter, apiTransBookText, apiTokens, apiSourceChapter, apiSourceVerse, apiBookSections } from '../lib/api.js';
+import { apiBookOrder, apiTransChapter, apiTransBookText, apiTokens, apiSourceChapter, apiSourceVerse, apiHeadings } from '../lib/api.js';
 import { remapDisplayChapterToSource, remapSourceVerseToDisplay } from '../lib/sourceVerseRemap.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
@@ -1460,20 +1460,51 @@ export default function Reader() {
   // Named sections spanning a chapter range within this book (e.g. Book of
   // Melchizedek's 3 originally-separate parts) — [] for the vast majority of
   // books that don't have any, which is the normal/expected case.
-  const [bookSections, setBookSections] = useState([]);
+  const [headingsList, setHeadingsList] = useState([]);
   useEffect(() => {
     if (!bookReady) return;
     let cancelled = false;
-    apiBookSections(book).then(s => { if (!cancelled) setBookSections(s); });
+    apiHeadings(book).then(h => { if (!cancelled) setHeadingsList(h); });
     return () => { cancelled = true; };
   }, [book, bookReady]);
-  // section title covering chapter c, or null if c is before the first section's
-  // 'from' or this book has no sections at all.
-  const sectionTitleFor = (c) => {
-    let title = null;
-    for (const s of bookSections) { if (s.from <= c) title = s.title; else break; }
-    return title;
+  // Four nesting levels — see server.js's `headings` table comment for the
+  // full scheme: 1=Part (spans many chapters), 2=Section (spans a chapter
+  // range within/without a Part), 3=Chapter title (one line, this chapter
+  // only), 4=Pericope (a verse-range heading within a chapter).
+  const HEADING_LEVEL = { PART: 1, SECTION: 2, CHAPTER: 3, PERICOPE: 4 };
+  // The Part/Section "in effect" for chapter c is whichever heading of that
+  // level has the highest anchor chapter <= c — same one-pass rule
+  // book-sections.json's consumer used before this replaced it.
+  const activeHeadingFor = (level, c) => {
+    let best = null;
+    for (const h of headingsList) {
+      if (h.level !== level || h.chapter > c) continue;
+      if (!best || h.chapter > best.chapter || (h.chapter === best.chapter && h.sort_order >= best.sort_order)) best = h;
+    }
+    return best;
   };
+  const activePart = activeHeadingFor(HEADING_LEVEL.PART, chapter);
+  const activeSection = activeHeadingFor(HEADING_LEVEL.SECTION, chapter);
+  // Section headings (level 2) as {from, title} pairs, chapter-ascending —
+  // the shape the book-jump navigator sheet (below) groups chapters by.
+  const navSections = headingsList
+    .filter(h => h.level === HEADING_LEVEL.SECTION)
+    .map(h => ({ from: h.chapter, title: h.title }))
+    .sort((a, b) => a.from - b.from);
+  // Chapter title: at most one per chapter, shown next to the chapter number.
+  const chapterTitleHeading = headingsList.find(h => h.level === HEADING_LEVEL.CHAPTER && h.chapter === chapter);
+  // Pericopes for the chapter on screen, keyed by their anchor verse so the
+  // verse-body loop can look one up per verse in O(1) as it renders.
+  const pericopesByVerse = (() => {
+    const m = new Map();
+    for (const h of headingsList) {
+      if (h.level !== HEADING_LEVEL.PERICOPE || h.chapter !== chapter) continue;
+      if (!m.has(h.verse)) m.set(h.verse, []);
+      m.get(h.verse).push(h);
+    }
+    for (const arr of m.values()) arr.sort((a, b) => a.sort_order - b.sort_order || a.id - b.id);
+    return m;
+  })();
   const filteredBooks = booksOrdered.filter(m =>
     !bookQuery.trim() || (m.name || '').toLowerCase().includes(bookQuery.trim().toLowerCase()));
 
@@ -1862,11 +1893,24 @@ export default function Reader() {
             </div>
           ) : (
             <div className="rd-chapter" key={chapKey}>
+              {activePart && (
+                <div className={`rd-part-heading ${activePart.chapter === chapter ? 'rd-heading-start' : 'rd-heading-continued'}`}>
+                  <div className="rd-part-title">{activePart.title}</div>
+                  {activePart.chapter === chapter && activePart.subtitle && (
+                    <div className="rd-part-subtitle">{activePart.subtitle}</div>
+                  )}
+                </div>
+              )}
+              {activeSection && (
+                <div className={`rd-section-heading ${activeSection.chapter === chapter ? 'rd-heading-start' : 'rd-heading-continued'}`}>
+                  {activeSection.title}
+                </div>
+              )}
               <header className="rd-chapter-head">
                 <div className="rd-book-name">{chapterBookName}</div>
                 <div className="rd-chapter-num">{chapter}</div>
-                {sectionTitleFor(chapter) && (
-                  <div className="rd-section-heading">{sectionTitleFor(chapter)}</div>
+                {chapterTitleHeading?.title && (
+                  <div className="rd-chapter-title">{chapterTitleHeading.title}</div>
                 )}
               </header>
               {/* superscription — a title, not verse 1. Folds together the
@@ -1989,8 +2033,20 @@ export default function Reader() {
                   const nodeList = Array.isArray(text) ? text : (text ? [text] : []);
                   const allQuoteBlock = nodeList.length > 0 &&
                     nodeList.every(n => n && typeof n === 'object' && n.props?.className?.includes('rd-quote-block'));
+                  // Pericope headings (level 4, see the `headings` table comment in
+                  // server.js) — a granular title over a verse range, anchored at its
+                  // FIRST verse. Rendered inline, right above the verse row it
+                  // anchors to, the same Fragment-sibling pattern as rd-acrostic
+                  // just below (which is why it's computed and placed before it).
+                  const peris = pericopesByVerse.get(vnum);
                   return (
                     <Fragment key={vnum}>
+                    {peris && peris.map((p, pi) => (
+                      <div className="rd-pericope" key={`peri-${p.id ?? pi}`}>
+                        <div className="rd-pericope-title">{p.title}</div>
+                        {p.subtitle && <div className="rd-pericope-subtitle">{p.subtitle}</div>}
+                      </div>
+                    ))}
                     {acro && (
                       <div className="rd-acrostic">
                         <span className="rd-acrostic-glyph">{acro.letter}</span>
@@ -2097,7 +2153,7 @@ export default function Reader() {
               {/* Chapter / verse jumps within the book you're reading. */}
               <div className="rd-sheet-col rd-col-chapters">
                 <div className="rd-sheet-sub">{bookName} — chapters</div>
-                {bookSections.length === 0 ? (
+                {navSections.length === 0 ? (
                   <div className="rd-grid">
                     {curChapters.map(c => (
                       <button key={c}
@@ -2107,12 +2163,12 @@ export default function Reader() {
                     ))}
                   </div>
                 ) : (
-                  // This book has named sections (e.g. Book of Melchizedek's 3
-                  // originally-separate parts) — break the chapter grid into one
-                  // sub-grid per section, with the section's title as a heading,
-                  // instead of one flat run of numbers.
-                  bookSections.map((s, i) => {
-                    const nextFrom = bookSections[i + 1]?.from ?? (lastCh + 1);
+                  // This book has Section headings (level 2 — e.g. Book of
+                  // Melchizedek's 3 originally-separate parts) — break the chapter
+                  // grid into one sub-grid per section, with the section's title
+                  // as a heading, instead of one flat run of numbers.
+                  navSections.map((s, i) => {
+                    const nextFrom = navSections[i + 1]?.from ?? (lastCh + 1);
                     const chaptersInSection = curChapters.filter(c => c >= s.from && c < nextFrom);
                     if (!chaptersInSection.length) return null;
                     return (

@@ -753,7 +753,80 @@ const translationDb = (() => {
         );
         CREATE INDEX IF NOT EXISTS idx_translation_history_verse
             ON translation_history(book_id, chapter, verse, saved_at DESC, id DESC);
+
+        -- Titles/subtitles/section headers — see CLAUDE.md's "titles, subtitles,
+        -- sections" project note for the full design. Four nesting levels, all in
+        -- one table, distinguished by \`level\`:
+        --   1 = Part      — a multi-chapter division (\"I. THE FIRST PART OF ISAIAH\").
+        --   2 = Section   — a chapter-range grouping within (or without) a Part
+        --                   (\"A. ORACLES BEFORE THE SYRO-EPHRAIMITE WAR\"). Supersedes
+        --                   the old book-sections.json (see migrateBookSectionsJson
+        --                   below) — that file is left in place, unused, for reference.
+        --   3 = Chapter title — one short line per chapter (Gen 1 = \"Creation\"),
+        --                   shown next to the chapter number, KJV-chapter-analysis style.
+        --   4 = Pericope  — a granular heading over a specific verse range within a
+        --                   chapter (\"Tamar Deceives Judah\" at Gen 38:13).
+        -- \`chapter\`/\`verse\` are the ANCHOR — the point a heading takes effect at and
+        -- displays above. Levels 1-3 always anchor at verse 1 (a chapter boundary);
+        -- only level 4 anchors mid-chapter. A Part/Section heading stays \"in effect\"
+        -- (shown in the chapter header, and available to the Studio for context) from
+        -- its anchor chapter until the next heading of the same-or-higher level — there
+        -- is no stored end, so closing a Part/Section is just adding the next one.
+        -- end_chapter/end_verse are optional, purely informational (Studio display /
+        -- content-generation bookkeeping) and are never required to compute what's
+        -- "in effect" for rendering. book_id is canon_id, same convention as
+        -- \`translations.book_id\` — see CLAUDE.md's "book_id means two different
+        -- things" section before ever joining this against a corpus.db book_id.
+        CREATE TABLE IF NOT EXISTS headings (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            book_id     INTEGER NOT NULL,
+            level       INTEGER NOT NULL,
+            chapter     INTEGER NOT NULL,
+            verse       INTEGER NOT NULL DEFAULT 1,
+            end_chapter INTEGER,
+            end_verse   INTEGER,
+            title       TEXT    NOT NULL DEFAULT '',
+            subtitle    TEXT    NOT NULL DEFAULT '',
+            sort_order  INTEGER NOT NULL DEFAULT 0,
+            updated_at  TEXT    NOT NULL DEFAULT (datetime('now'))
+        );
+        CREATE INDEX IF NOT EXISTS idx_headings_book
+            ON headings(book_id, chapter, verse, level);
     `);
+
+    // One-time migration: fold the old book-sections.json (hand-maintained, no
+    // editing UI, level-2-only) into the new headings table so nothing curated
+    // there is lost. Idempotent — checks for the exact row before inserting, so
+    // re-running the server (or restoring an older translation.db) never
+    // duplicates these. book-sections.json itself is left in place, untouched,
+    // as a reference/backup; /api/book-sections keeps reading it directly and
+    // is unaffected by this migration either way.
+    try {
+        const bsPath = path.join(__dirname, 'book-sections.json');
+        if (fs.existsSync(bsPath)) {
+            const raw = JSON.parse(fs.readFileSync(bsPath, 'utf8'));
+            const already = tdb.prepare(
+                `SELECT 1 FROM headings WHERE book_id=? AND level=2 AND chapter=? AND title=?`
+            );
+            const ins = tdb.prepare(`
+                INSERT INTO headings(book_id, level, chapter, verse, title, updated_at)
+                VALUES(?, 2, ?, 1, ?, datetime('now'))
+            `);
+            let migrated = 0;
+            for (const [k, v] of Object.entries(raw)) {
+                if (k.startsWith('_') || !Array.isArray(v)) continue;
+                const bookId = parseInt(k, 10);
+                if (!Number.isFinite(bookId)) continue;
+                for (const entry of v) {
+                    if (!entry || !Number.isFinite(entry.from) || !entry.title) continue;
+                    if (already.get(bookId, entry.from, entry.title)) continue;
+                    ins.run(bookId, entry.from, entry.title);
+                    migrated++;
+                }
+            }
+            if (migrated) console.log(`[headings] migrated ${migrated} section(s) from book-sections.json`);
+        }
+    } catch (e) { console.error('[headings] book-sections.json migration failed:', e.message); }
 
     // Migrations: add columns if upgrading from older schema (existing rows kept).
     try { tdb.exec(`ALTER TABLE translation_links ADD COLUMN english_indices TEXT NOT NULL DEFAULT '[]'`); } catch(e) { /* already exists */ }
@@ -849,6 +922,21 @@ const translationDb = (() => {
         deleteHistoryEntry: tdb.prepare(`
             DELETE FROM translation_history WHERE id=? AND book_id=? AND chapter=? AND verse=?
         `),
+        // Headings — see the CREATE TABLE comment above for the level scheme.
+        headingsForBook: tdb.prepare(`
+            SELECT * FROM headings WHERE book_id=? ORDER BY chapter, verse, level, sort_order, id
+        `),
+        insertHeading: tdb.prepare(`
+            INSERT INTO headings(book_id, level, chapter, verse, end_chapter, end_verse, title, subtitle, sort_order, updated_at)
+            VALUES(?,?,?,?,?,?,?,?,?,datetime('now'))
+        `),
+        updateHeading: tdb.prepare(`
+            UPDATE headings
+            SET level=?, chapter=?, verse=?, end_chapter=?, end_verse=?, title=?, subtitle=?, sort_order=?, updated_at=datetime('now')
+            WHERE id=?
+        `),
+        getHeading:    tdb.prepare(`SELECT * FROM headings WHERE id=?`),
+        deleteHeading: tdb.prepare(`DELETE FROM headings WHERE id=?`),
     };
 
     // Every save goes through here instead of calling stmts.upsertVerse
@@ -4687,6 +4775,97 @@ app.get('/api/book-sections', (req, res) => {
     const bookId = parseInt(req.query.book, 10);
     if (!Number.isFinite(bookId)) return res.status(400).json({ error: 'book (canon_id) required' });
     res.json({ sections: BOOK_SECTIONS[String(bookId)] || [] });
+});
+
+// ── Headings: titles, subtitles, section headers ────────────────────────────
+// Four nesting levels stored in translation.db's `headings` table (see that
+// CREATE TABLE's own comment for the full scheme) — Part(1) > Section(2) >
+// Chapter title(3) > Pericope(4). One GET per book returns every heading for
+// it (typically a few dozen rows at most — this is structure, not verse
+// text); the client (Reader.jsx) computes which Part/Section is "in effect"
+// for whatever chapter is on screen, same pattern book-sections.json's
+// consumer already used before this replaced it. book_id here is canon_id,
+// same convention as every other /api/translate* route.
+//
+// Mutating routes are defined here (before the global express.json() further
+// down the file) so they need their OWN express.json() middleware, same as
+// /api/admin/promote and /api/admin/demote just below in the file do for the
+// identical reason.
+const HEADING_LEVELS = new Set([1, 2, 3, 4]);
+function readHeadingBody(body) {
+    const level   = parseInt(body.level, 10);
+    const chapter = parseInt(body.chapter, 10);
+    const verse   = Number.isFinite(parseInt(body.verse, 10)) ? parseInt(body.verse, 10) : 1;
+    const end_chapter = Number.isFinite(parseInt(body.end_chapter, 10)) ? parseInt(body.end_chapter, 10) : null;
+    const end_verse   = Number.isFinite(parseInt(body.end_verse, 10))   ? parseInt(body.end_verse, 10)   : null;
+    const title    = (body.title    || '').toString();
+    const subtitle = (body.subtitle || '').toString();
+    const sort_order = Number.isFinite(parseInt(body.sort_order, 10)) ? parseInt(body.sort_order, 10) : 0;
+    return { level, chapter, verse, end_chapter, end_verse, title, subtitle, sort_order };
+}
+
+app.get('/api/headings', (req, res) => {
+    try {
+        const bookId = parseInt(req.query.book, 10);
+        if (!Number.isFinite(bookId)) return res.status(400).json({ error: 'book (canon_id) required' });
+        const headings = translationDb.stmts.headingsForBook.all(bookId);
+        res.json({ book_id: bookId, headings });
+    } catch (err) {
+        console.error('GET /api/headings failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/headings', express.json(), (req, res) => {
+    try {
+        const bookId = parseInt(req.body.book_id, 10);
+        const h = readHeadingBody(req.body || {});
+        if (!Number.isFinite(bookId) || !HEADING_LEVELS.has(h.level) || !Number.isFinite(h.chapter) || !h.title.trim()) {
+            return res.status(400).json({ error: 'book_id, level (1-4), chapter, and a non-empty title are required' });
+        }
+        const info = translationDb.stmts.insertHeading.run(
+            bookId, h.level, h.chapter, h.verse, h.end_chapter, h.end_verse, h.title, h.subtitle, h.sort_order
+        );
+        const heading = translationDb.stmts.getHeading.get(info.lastInsertRowid);
+        res.json({ ok: true, heading });
+    } catch (err) {
+        console.error('POST /api/headings failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.put('/api/headings/:id', express.json(), (req, res) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        if (!Number.isFinite(id)) return res.status(400).json({ error: 'invalid id' });
+        const existing = translationDb.stmts.getHeading.get(id);
+        if (!existing) return res.status(404).json({ error: 'heading not found' });
+        const h = readHeadingBody(req.body || {});
+        if (!HEADING_LEVELS.has(h.level) || !Number.isFinite(h.chapter) || !h.title.trim()) {
+            return res.status(400).json({ error: 'level (1-4), chapter, and a non-empty title are required' });
+        }
+        translationDb.stmts.updateHeading.run(
+            h.level, h.chapter, h.verse, h.end_chapter, h.end_verse, h.title, h.subtitle, h.sort_order, id
+        );
+        res.json({ ok: true, heading: translationDb.stmts.getHeading.get(id) });
+    } catch (err) {
+        console.error('PUT /api/headings/:id failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete('/api/headings/:id', (req, res) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        if (!Number.isFinite(id)) return res.status(400).json({ error: 'invalid id' });
+        const existing = translationDb.stmts.getHeading.get(id);
+        if (!existing) return res.status(404).json({ error: 'heading not found' });
+        translationDb.stmts.deleteHeading.run(id);
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('DELETE /api/headings/:id failed:', err);
+        res.status(500).json({ error: err.message });
+    }
 });
 // Listed books sort by file position; unlisted books fall after in numeric id order.
 function orderKey(id) {

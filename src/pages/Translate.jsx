@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo, Fragment } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
@@ -10,6 +10,7 @@ import {
   apiTransSaveVerse, apiTransHistory, apiTransRevertToHistory, apiTransDeleteHistory,
   apiTransLink, apiTransUnlink, apiTransUpdateLink,
   apiTokens, apiBookOrder, apiAutoGlossWords,
+  apiHeadings, apiHeadingCreate, apiHeadingUpdate, apiHeadingDelete,
 } from '../lib/api.js';
 // Reuse Reader.jsx's own quote-marking engine for the live "quote preview"
 // panel below (2026-08-26, fieldy: "I would like to see a preview of my
@@ -510,6 +511,68 @@ export default function Translate() {
     return raw != null && raw !== '' ? +raw : null;
   });
   const [openChapterMap, setOpenChapterMap] = useState({}); // { "bookId:chapter": verseListData }
+  // Headings — titles, subtitles, section headers (Part/Section/Chapter
+  // title/Pericope; see server.js's `headings` table comment for the full
+  // scheme). One flat list per book, same shape Reader.jsx consumes — small
+  // enough (structure, not verse text) to just refetch after every edit
+  // rather than patch in place.
+  const [bookHeadings, setBookHeadings] = useState([]);
+  useEffect(() => {
+    if (!activeBook) { setBookHeadings([]); return; }
+    let cancelled = false;
+    apiHeadings(activeBook).then(h => { if (!cancelled) setBookHeadings(h); });
+    return () => { cancelled = true; };
+  }, [activeBook]);
+  const refreshHeadings = useCallback(async () => {
+    if (!activeBook) return;
+    const h = await apiHeadings(activeBook);
+    setBookHeadings(h);
+  }, [activeBook]);
+  // The floating editor's own state: null when closed. `id` is the existing
+  // heading's row id (editing) or null (adding a brand-new one at this anchor).
+  const [headingEditor, setHeadingEditor] = useState(null);
+  const HEADING_LEVEL_LABEL = { 1: 'Part', 2: 'Section', 3: 'Chapter title', 4: 'Pericope' };
+  // Chapter-scoped levels (Part/Section/Chapter title) all anchor at verse 1
+  // of their chapter; a click on one of these pills opens the editor already
+  // pre-filled with whatever's there (or blank, to add one).
+  const openChapterHeadingEditor = (chapterNum, level) => {
+    const existing = bookHeadings.find(h => h.chapter === chapterNum && h.level === level);
+    setHeadingEditor({
+      id: existing?.id ?? null, level, chapter: chapterNum, verse: 1,
+      title: existing?.title ?? '', subtitle: existing?.subtitle ?? '',
+    });
+  };
+  // A Pericope anchors at a specific verse — one click, right from the verse
+  // row, either edits what's already there or starts a new one at that verse.
+  const openVerseHeadingEditor = (chapterNum, verseNum) => {
+    const existing = bookHeadings.find(h => h.level === 4 && h.chapter === chapterNum && h.verse === verseNum);
+    setHeadingEditor({
+      id: existing?.id ?? null, level: 4, chapter: chapterNum, verse: verseNum,
+      title: existing?.title ?? '', subtitle: existing?.subtitle ?? '',
+    });
+  };
+  const saveHeadingEditor = async () => {
+    if (!headingEditor || !activeBook) return;
+    const { id, level, chapter, verse, title, subtitle } = headingEditor;
+    if (!title.trim()) { toast('A heading needs a title.', 'err'); return; }
+    const payload = { book_id: activeBook, level, chapter, verse, title: title.trim(), subtitle: (subtitle || '').trim() };
+    try {
+      if (id) await apiHeadingUpdate({ id, ...payload });
+      else await apiHeadingCreate(payload);
+      await refreshHeadings();
+      setHeadingEditor(null);
+      toast('Heading saved', 'ok');
+    } catch (e) { toast('Heading save failed: ' + e.message, 'err'); }
+  };
+  const deleteHeadingEditor = async () => {
+    if (!headingEditor?.id) { setHeadingEditor(null); return; }
+    try {
+      await apiHeadingDelete(headingEditor.id);
+      await refreshHeadings();
+      setHeadingEditor(null);
+      toast('Heading deleted', 'ok');
+    } catch (e) { toast('Heading delete failed: ' + e.message, 'err'); }
+  };
   const [verseData, setVerseData] = useState(null); // { status, text, rich_text, links, tokens }
   // Bumped every time loadVerse() lands a fresh fetch from the server (see its
   // setVerseData call below). Reset-to-published / Pull latest / a language
@@ -1584,18 +1647,47 @@ export default function Translate() {
                     <span className="tr-chapter-stat">{ch.done}/{ch.total} · {pct}%</span>
                   </button>
                   {isOpen && (
+                    <div className="tr-heading-row">
+                      {[1, 2, 3].map(lvl => {
+                        const h = bookHeadings.find(x => x.chapter === ch.chapter && x.level === lvl);
+                        return (
+                          <button key={lvl}
+                                  className={`tr-heading-pill ${h ? 'has-value' : 'empty'}`}
+                                  onClick={() => openChapterHeadingEditor(ch.chapter, lvl)}
+                                  title={h ? `Edit this chapter's ${HEADING_LEVEL_LABEL[lvl]}` : `Add a ${HEADING_LEVEL_LABEL[lvl]} heading starting at chapter ${ch.chapter}`}>
+                            {HEADING_LEVEL_LABEL[lvl]}{h ? `: ${h.title}` : ' +'}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {isOpen && (
                     <div className="tr-verse-list">
                       {verses.length === 0 ? <div className="tr-loading">Loading…</div> :
-                        verses.map(v => (
-                          <button
-                            key={v.verse}
-                            className={`tr-verse-row ${activeVerse === v.verse ? 'active' : ''}`}
-                            onClick={() => loadVerse(activeBook, ch.chapter, v.verse)}>
-                            <span className="tr-verse-num">{v.verse}</span>
-                            <span className={`tr-status-dot ${v.status || 'none'}`} />
-                            <span className="tr-verse-preview">{v.text ? v.text.slice(0, 34) : '—'}</span>
-                          </button>
-                        ))}
+                        verses.map(v => {
+                          const peri = bookHeadings.find(x => x.level === 4 && x.chapter === ch.chapter && x.verse === v.verse);
+                          return (
+                            <Fragment key={v.verse}>
+                              {peri && (
+                                <button className="tr-pericope-pill" onClick={() => openVerseHeadingEditor(ch.chapter, v.verse)}
+                                        title="Edit this pericope heading">
+                                  📌 {peri.title}
+                                </button>
+                              )}
+                              <div className="tr-verse-row-wrap">
+                                <button
+                                  className={`tr-verse-row ${activeVerse === v.verse ? 'active' : ''}`}
+                                  onClick={() => loadVerse(activeBook, ch.chapter, v.verse)}>
+                                  <span className="tr-verse-num">{v.verse}</span>
+                                  <span className={`tr-status-dot ${v.status || 'none'}`} />
+                                  <span className="tr-verse-preview">{v.text ? v.text.slice(0, 34) : '—'}</span>
+                                </button>
+                                <button className="tr-add-heading-btn" title="Add a pericope heading above this verse"
+                                        onClick={() => openVerseHeadingEditor(ch.chapter, v.verse)}>+H</button>
+                              </div>
+                            </Fragment>
+                          );
+                        })}
                     </div>
                   )}
                 </div>
@@ -2159,6 +2251,56 @@ export default function Translate() {
             <button className="tr-txt-btn" onClick={() => setOvOpen(false)} style={{ alignSelf: 'flex-end' }}>
               Close
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Heading editor — one small floating panel for all four levels (Part/
+          Section/Chapter title/Pericope). Opened from a chapter's heading pill
+          or a verse row's "+H" button (see the chapter pane above); which
+          anchor it's editing is entirely carried in headingEditor's own
+          chapter/verse/level fields, so this one panel covers every case. */}
+      {headingEditor && (
+        <div className="tr-heading-editor-backdrop" onClick={() => setHeadingEditor(null)}>
+          <div className="tr-heading-editor" onClick={e => e.stopPropagation()}>
+            <div className="tr-heading-editor-title">
+              {headingEditor.id ? 'Edit' : 'Add'} {HEADING_LEVEL_LABEL[headingEditor.level]}
+              {' — '}{activeBookData?.name || ''} {headingEditor.chapter}
+              {headingEditor.level === 4 ? `:${headingEditor.verse}` : ''}
+            </div>
+            <label className="tr-heading-editor-label">
+              Title
+              <input
+                autoFocus
+                className="tr-heading-editor-input"
+                value={headingEditor.title}
+                onChange={e => setHeadingEditor(h => ({ ...h, title: e.target.value }))}
+                onKeyDown={e => { if (e.key === 'Enter') saveHeadingEditor(); if (e.key === 'Escape') setHeadingEditor(null); }}
+                placeholder={
+                  headingEditor.level === 1 ? 'e.g. I. THE FIRST PART OF ISAIAH' :
+                  headingEditor.level === 2 ? 'e.g. A. Oracles before the Syro-Ephraimite War' :
+                  headingEditor.level === 3 ? 'e.g. Creation' :
+                  'e.g. Tamar Deceives Judah'
+                }
+              />
+            </label>
+            <label className="tr-heading-editor-label">
+              Subtitle <span className="tr-heading-editor-optional">(optional)</span>
+              <input
+                className="tr-heading-editor-input"
+                value={headingEditor.subtitle}
+                onChange={e => setHeadingEditor(h => ({ ...h, subtitle: e.target.value }))}
+                onKeyDown={e => { if (e.key === 'Enter') saveHeadingEditor(); if (e.key === 'Escape') setHeadingEditor(null); }}
+              />
+            </label>
+            <div className="tr-heading-editor-actions">
+              {headingEditor.id && (
+                <button className="tr-heading-editor-delete" onClick={deleteHeadingEditor}>Delete</button>
+              )}
+              <span className="tr-spacer" />
+              <button className="tr-txt-btn" onClick={() => setHeadingEditor(null)}>Cancel</button>
+              <button className="tr-save-btn" onClick={saveHeadingEditor}>Save</button>
+            </div>
           </div>
         </div>
       )}
