@@ -416,7 +416,7 @@ export default function VersePage() {
                           // what firstOcc was actually populated with.
                           const rootPaleo = parts.rootTrans[0]?.trueRoot || parts.rootTrans[0]?.paleo || parts.purePaleo || null;
                           return (
-                            <WordRow key={i} wordObj={w}>
+                            <WordRow key={i} wordObj={w} snRef={addressValid ? `${bookId}:${chapter}:${verse}` : undefined}>
                               <td className="wr-cell wr-first" data-label="Root first appearance">{renderFirstHit(rootPaleo && `root:${rootPaleo}`)}</td>
                             </WordRow>
                           );
@@ -448,7 +448,7 @@ export default function VersePage() {
                       <li key={i} className="vp-word">
                         <span className="vp-word-raw">{t.word_raw}</span>
                         {t.strongs && (
-                          <Link className="vp-word-strongs" to={`/roots?sn=${encodeURIComponent(t.strongs)}`}>
+                          <Link className="vp-word-strongs" to={`/roots?sn=${encodeURIComponent(t.strongs)}${addressValid ? `&ref=${encodeURIComponent(`${bookId}:${chapter}:${verse}`)}` : ''}`}>
                             {t.strongs}
                           </Link>
                         )}

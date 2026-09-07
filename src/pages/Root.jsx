@@ -218,24 +218,22 @@ function VerseCard({ verse, onVerseClick }) {
 // "I like the card-like details that my word-by-word shows for scripture
 // details and would like the same at the lexicon/root level, instead of
 // seeing a verse as the first thing … the detailed card can be rendered."
-// Same label/value stack as VersePage's word-by-word cards (WORD / ROOT /
-// TRANSLITERATION / DEFINITION / STRONG'S # / ROOT FIRST APPEARANCE), one
-// level up: the subject is the root itself, so the Word/Modifications rows
-// have nothing to say and are dropped, and the Strong's row lists EVERY
-// number filed under these exact letters (`detail.homographs`, from the
-// server) — each row is a link to that number's own page, where this same
-// card sits at the top again with that number active.
+// Same label/value stack as VersePage's word-by-word cards, one level up.
+// Rows, in fieldy's order (2026-09-07 cleanup): Root · Transliteration ·
+// Definition · Root first usage · This context · Other Strong's #s with the
+// same root. Nothing else — per-number counts/definitions/first-hits were
+// dropped on purpose: "the context will be implied with the verses that have
+// the same strongs # at the bottom" (the hit list under the card).
 //
-// Provenance is visible, never papered over: a definition comes only from
-// fieldy's own homographs.json / lexicon.json (server's rootDefinitionForSN);
-// an uncurated number shows the bare root paleo as its placeholder, the same
-// convention as every reader in the app.
+// Definition is curated-only (server's rootDefinitionForSN: homographs.json →
+// lexicon.json → placeholder); an uncurated number shows the bare root paleo,
+// same convention as every reader in the app.
 //
-// Two first appearances, both labelled, because they answer different
-// questions: "these letters, under any number" (what the word-by-word table
-// shows — the pooled _firstAppearanceByRoot) and "this number" — for a
-// clean verb-stem split they coincide; for a real homograph they need not.
-function RootCard({ detail, idToSlug, onPickSn }) {
+// "This context" = the verse the reader came here FROM (?ref=book:ch:v, set
+// by the word-by-word Strong's links) or, failing that, the hit currently
+// open in the centerpiece below — so the card always names the verse whose
+// reading it is summarising.
+function RootCard({ detail, idToSlug, context, onPickSn }) {
   const useSvg = getPaleoMode() === 'mobile';
   const root = detail.root || '';
   const rootGlyph = useMemo(
@@ -244,18 +242,10 @@ function RootCard({ detail, idToSlug, onPickSn }) {
   );
   const verseHref = loc => `/${bookToParam(loc.book_id, idToSlug)}/${loc.chapter}/${loc.verse}`;
   const locLabel  = loc => `${loc.book_name || BOOK_NAMES[loc.book_id] || `Book ${loc.book_id}`} ${loc.chapter}:${loc.verse}`;
-  const sameLoc   = (a, b) => !!a && !!b && a.book_id === b.book_id && a.chapter === b.chapter && a.verse === b.verse;
 
   const def = detail.definition || { text: '', src: 'none' };
-  const homographs = detail.homographs?.length
-    ? detail.homographs
-    : [{ sn: detail.sn, count: detail.total, definition: def, first: detail.first_by_sn }];
-  const byLetters = detail.first_by_letters || null;
-  const bySn      = detail.first_by_sn || null;
-
-  const Definition = ({ d }) => (d && d.text)
-    ? <span className="rc-def-text">{d.text}</span>
-    : <span className="rc-def-placeholder" title="Not yet in your lexicon/homographs — showing the root letters">{root}</span>;
+  const first = detail.first_by_letters || null;
+  const others = (detail.homographs || []).filter(h => h.sn !== detail.sn);
 
   return (
     <section className="rc-card" aria-label="Root summary">
@@ -269,54 +259,36 @@ function RootCard({ detail, idToSlug, onPickSn }) {
       </div>
       <div className="rc-row">
         <div className="rc-label">Definition</div>
-        <div className="rc-value"><Definition d={def} /></div>
-      </div>
-      <div className="rc-row">
-        <div className="rc-label">
-          Strong's #
-          {homographs.length > 1 && <span className="rc-label-note"> — {homographs.length} numbers share these letters</span>}
-        </div>
-        <ul className="rc-sn-list">
-          {homographs.map(h => {
-            const active = h.sn === detail.sn;
-            return (
-              <li key={h.sn} className={`rc-sn-row ${active ? 'active' : ''}`}>
-                <a href={`/roots?sn=${encodeURIComponent(h.sn)}`}
-                   className="rc-sn-chip"
-                   aria-current={active ? 'true' : undefined}
-                   onClick={e => { e.preventDefault(); if (!active) onPickSn(h.sn); }}>{h.sn}</a>
-                <span className="rc-sn-count">{(h.count || 0).toLocaleString()} occ.</span>
-                <span className="rc-sn-def"><Definition d={h.definition} /></span>
-                {h.first && (
-                  <span className="rc-sn-first">first <Link to={verseHref(h.first)}>{locLabel(h.first)}</Link></span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-      <div className="rc-row">
-        <div className="rc-label">Root first appearance</div>
         <div className="rc-value">
-          {byLetters
-            ? <><Link to={verseHref(byLetters)} className="rc-first-link">{locLabel(byLetters)}</Link>
-                <span className="rc-first-note"> — these letters, under any number</span></>
-            : <span className="rc-def-placeholder">—</span>}
-          {bySn && !sameLoc(bySn, byLetters) && (
-            <div className="rc-first-sn">
-              {detail.sn} first: <Link to={verseHref(bySn)}>{locLabel(bySn)}</Link>
-            </div>
-          )}
+          {def.text
+            ? <span className="rc-def-text">{def.text}</span>
+            : <span className="rc-def-placeholder" title="Not yet in your lexicon/homographs — showing the root letters">{root}</span>}
         </div>
       </div>
       <div className="rc-row">
-        <div className="rc-label">Occurrences</div>
+        <div className="rc-label">Root first usage</div>
         <div className="rc-value">
-          {(detail.total || 0).toLocaleString()} as {detail.sn}
-          {detail.by_book?.length ? ` in ${detail.by_book.length} book${detail.by_book.length === 1 ? '' : 's'}` : ''}
-          {detail.surfaces?.length ? ` · ${detail.surfaces.length} surface form${detail.surfaces.length === 1 ? '' : 's'}` : ''}
+          {first ? <Link to={verseHref(first)} className="rc-first-link">{locLabel(first)}</Link> : '—'}
         </div>
       </div>
+      {context && (
+        <div className="rc-row">
+          <div className="rc-label">This context</div>
+          <div className="rc-value"><Link to={verseHref(context)} className="rc-first-link">{locLabel(context)}</Link></div>
+        </div>
+      )}
+      {others.length > 0 && (
+        <div className="rc-row">
+          <div className="rc-label">Other Strong's #s with same root</div>
+          <div className="rc-sn-chips">
+            {others.map(h => (
+              <a key={h.sn} href={`/roots?sn=${encodeURIComponent(h.sn)}`} className="rc-sn-chip"
+                 title={h.definition?.text ? `${h.sn} — ${h.definition.text}` : `${h.sn} — not yet curated`}
+                 onClick={e => { e.preventDefault(); onPickSn(h.sn); }}>{h.sn}</a>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -379,6 +351,13 @@ export default function Root({ mode = 'root' }) {
   const urlRoot = searchParams.get('root') || '';
   const urlWord = searchParams.get('word') || searchParams.get('surface') || '';
   const urlSN   = searchParams.get('sn') || '';
+  // ?ref=bookId:chapter:verse — the verse the reader clicked a Strong's number
+  // in (VersePage's word-by-word links set it). Names the card's "This context".
+  const urlRef  = searchParams.get('ref') || '';
+  const refLoc = useMemo(() => {
+    const m = /^(\d+):(\d+):(\d+)$/.exec(urlRef);
+    return m ? { book_id: +m[1], chapter: +m[2], verse: +m[3] } : null;
+  }, [urlRef]);
   // Legacy: ?sn=H1 on the root page → look up the root's paleo and switch URL
   // to use ?root=<paleo>. The new endpoints are paleo-keyed.
 
@@ -889,7 +868,9 @@ export default function Root({ mode = 'root' }) {
               {/* CENTERPIECE: selected verse as readable scripture, hit accented */}
               <section className="r2-center">
                 {detail.kind === 'root' && (
-                  <RootCard detail={detail} idToSlug={idToSlug} onPickSn={sn => setSearchParams({ sn })} />
+                  <RootCard detail={detail} idToSlug={idToSlug}
+                            context={refLoc || verses[sel] || null}
+                            onPickSn={sn => setSearchParams(refLoc ? { sn, ref: urlRef } : { sn })} />
                 )}
                 {(() => {
                   const cur = verses[sel] || null;

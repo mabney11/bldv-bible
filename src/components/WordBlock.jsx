@@ -667,7 +667,10 @@ export default function WordBlock({
  * compDescsToHtml for the full-word glyph cell so the glyphs render
  * identically too.
  */
-export function WordRow({ wordObj, children }) {
+// snRef: the verse this row is being read in, as "bookId:chapter:verse" —
+// rides along on the Strong's link as ?ref= so the root page's summary card
+// can name it as "This context" (2026-09-07). Optional; omitted = plain link.
+export function WordRow({ wordObj, children, snRef }) {
   // includeMarks: true — a table has no per-half maqafSplit rendering the
   // way WordBlock's own card view does, so a mark needs to show up inline
   // in the Word/Transliteration cells or it's simply invisible here. See
@@ -762,7 +765,7 @@ export function WordRow({ wordObj, children }) {
           isVirtualSN(wordObj.strongs) ? (
             <span className="sn-link root sn-virtual" title="Grammar/virtual code — no root entry" style={{ opacity: 0.6, cursor: 'default' }}>{sn}</span>
           ) : (
-            <a className="sn-link root" href={`/roots?sn=${sn}`} title={`Explore root ${sn}`}>{sn}</a>
+            <a className="sn-link root" href={`/roots?sn=${sn}${snRef ? `&ref=${encodeURIComponent(snRef)}` : ''}`} title={`Explore root ${sn}`}>{sn}</a>
           )
         )}
       </td>
