@@ -393,6 +393,17 @@ function extractPrefix(attributes, attrKey, mapKey, paleoArray) {
         paleoArray.splice(0, charCount);
         return { paleo: matched, translit: '', translation: `[${mapData.trans}]`, css: mapData.css || 'mod-pref' };
     }
+    // PARTICIPLE FALLBACK (kept in sync with server.js parseHebrewData): in a participle the stem
+    // marker is often not written as its own letter — Hifil/Hofal 𐤄 is
+    // REPLACED by the preformative 𐤌 (𐤌𐤔𐤊𐤉𐤋), and the Hitpael 𐤕 assimilates
+    // into a following dental/emphatic (𐤌𐤈𐤄𐤓, 𐤌𐤃𐤁𐤓) or transposes past a
+    // sibilant (𐤌𐤑𐤈𐤃𐤒). The stem is still tagged and still true, so emit the
+    // same empty-paleo chip the sibilant case above already uses rather than
+    // silently dropping the modification. Participles only — non-participle
+    // forms keep their existing behaviour.
+    if (attrKey === 'vbs' && (attributes['vt'] || '').startsWith('ptc')) {
+        return { paleo: '', translit: '', translation: `[${mapData.trans}]`, css: mapData.css || 'mod-pref' };
+    }
     return null;
 }
 
@@ -607,7 +618,30 @@ function parseToken(wordRaw, pos, morph, strongs) {
     } else {
         const paleoArray = [...rawPaleo];
 
+        // ── PARTICIPLE PREFORMATIVE MEM (kept in sync with server.js parseHebrewData) ──────
+        // OSHB never tags the participle's 𐤌 preformative in `pfm` (it is
+        // baked into the binyan PATTERN, so every participle arrives
+        // pfm=absent), yet GRAMMAR_MAP.pfm.M has existed for it all along and
+        // simply never fired. Left alone, 𐤌𐤕𐤍𐤇𐤌 mathnacham (Gen 27:42, Hitpael
+        // ptc of 𐤍𐤇𐤌 H5162) rendered as one bare chip with NO modification
+        // shown, and a Piel participle like 𐤌𐤁𐤓𐤊 fell through to the
+        // leading-residue guess, which labelled its 𐤌 as the preposition
+        // "from". The rule is exact in the corpus: every derived-stem
+        // participle written with an initial 𐤌 has the preformative there;
+        // Qal participles (𐤌𐤔𐤋, 𐤌𐤋𐤊 …) never take one, so their 𐤌 is a
+        // radical. Synthesize pfm='M' on that grammatical ground only, then
+        // let the normal pfm/vbs extraction peel 𐤌 (+ the Hitpael 𐤕 behind it).
+        if (!attributes['pfm'] || attributes['pfm'] === 'absent') {
+            const _vt = attributes['vt'] || '', _vs = attributes['vs'] || '';
+            if (pos === 'verb' && _vt.startsWith('ptc') && _vs && _vs !== 'qal' && _vs !== 'qpas' &&
+                paleoArray.length > 1 && paleoArray[0] === '𐤌') {
+                attributes['pfm'] = 'M';
+            }
+        }
         const pfmObj = extractPrefix(attributes, 'pfm', 'pfm', paleoArray);
+        // A synthesized 𐤌 on a PASSIVE participle (Pual/Hofal, vt=ptcp) is
+        // 'being done', not 'doing' — relabel the chip; colour stays pfm-ptcp.
+        if (pfmObj && attributes['pfm'] === 'M' && attributes['vt'] === 'ptcp') pfmObj.translation = '[Passive]';
         const vbsObj = extractPrefix(attributes, 'vbs', 'vbs', paleoArray);
         let prsObj = extractSuffix(attributes, 'prs', 'prs', paleoArray);
         const uvfObj = extractSuffix(attributes, 'uvf', 'uvf', paleoArray);

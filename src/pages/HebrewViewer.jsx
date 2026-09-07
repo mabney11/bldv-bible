@@ -735,6 +735,7 @@ function ViewerLegend() {
       <LegendDot cls="pfm-2or3f" sample="She" label="She/You (2/3f)" />
       <LegendDot cls="pfm-1cs"  sample="I" label="I (1cs)" />
       <LegendDot cls="pfm-1cp"  sample="We" label="We (1cp)" />
+      <LegendDot cls="pfm-ptcp" sample="𐤌" label="Participle (one who…)" />
 
       <div className="leg-section">Verbal Stems</div>
       <LegendDot cls="vbs-hif" sample="cau" label="Causative (Hifil)" />
