@@ -290,13 +290,20 @@ function RootCard({ detail, idToSlug, context, onPickSn }) {
       {others.length > 0 && (
         <div className="rc-row">
           <div className="rc-label">Other Strong's #s with same root</div>
-          <div className="rc-sn-chips">
+          {/* One line per sibling: its chip and its own first verse — "keep the
+              context we had with the first verse of each strongs #". */}
+          <ul className="rc-sn-list">
             {others.map(h => (
-              <a key={h.sn} href={`/roots?sn=${encodeURIComponent(h.sn)}`} className="rc-sn-chip"
-                 title={h.definition?.text ? `${h.sn} — ${h.definition.text}` : `${h.sn} — not yet curated`}
-                 onClick={e => { e.preventDefault(); onPickSn(h.sn); }}>{h.sn}</a>
+              <li key={h.sn} className="rc-sn-row">
+                <a href={`/roots?sn=${encodeURIComponent(h.sn)}`} className="rc-sn-chip"
+                   title={h.definition?.text ? `${h.sn} — ${h.definition.text}` : `${h.sn} — not yet curated`}
+                   onClick={e => { e.preventDefault(); onPickSn(h.sn); }}>{h.sn}</a>
+                {h.first
+                  ? <span className="rc-sn-first">first <Link to={verseHref(h.first)} className="rc-first-link">{locLabel(h.first)}</Link></span>
+                  : <span className="rc-sn-first">—</span>}
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       )}
     </section>

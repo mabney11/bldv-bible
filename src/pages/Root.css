@@ -295,7 +295,9 @@
    see the underlying paleo of the unglossed root." */
 .rc-def-placeholder { font-family: var(--paleo-font); color: var(--text3); }
 
-.rc-sn-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.rc-sn-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.rc-sn-row  { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.rc-sn-first { font-size: 13px; color: var(--text3); }
 .rc-sn-chip {
   font-family: monospace;
   font-size: 13px;
