@@ -308,3 +308,11 @@
 .hl-lex-sn { font-size: 10.5px; color: var(--text4); margin-left: 4px; border: 1px solid var(--border2); border-radius: 4px; padding: 0 4px; }
 .hl-lex-sn:hover { color: var(--gold); border-color: var(--gold); }
 .hl-chip small { color: var(--text4); font-size: 10px; }
+
+/* Decluttering: hidden labels keep their dot */
+.hl-mk-hide .hl-mk-lbl { display: none !important; }
+.hl-mk-twin .hl-mk-dot { left: 3px; top: 3px; }           /* nudge a twin's dot off the biblical one */
+.hl-mk-twin:hover .hl-mk-lbl { display: flex !important; }
+/* Gold focus: the selected city glows like the selected portion */
+.hl-mk-sel .hl-mk-dot { box-shadow: 0 0 0 4px #e8aa5577, 0 0 18px 8px #e8aa55aa; }
+.hl-mk-sel .hl-mk-name { color: #5a3600; }

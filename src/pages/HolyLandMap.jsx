@@ -213,7 +213,9 @@ export default function HolyLandMap() {
     const map = mapRef.current;
     if (fly && map) {
       // Far-off nations get a wide view; cities get a close one.
-      const zoom = c.kind === 'region' ? Math.min(Math.max(map.getZoom(), 5.5), 7) : Math.max(map.getZoom(), 10.5);
+      // Gentle: come in to a readable scale when far away, never zoom in further when already close.
+      const cur = map.getZoom();
+      const zoom = c.kind === 'region' ? Math.min(Math.max(cur, 5.5), 7) : (cur < 9.5 ? 9.5 : cur);
       map.flyTo({ center: [c.lon, c.lat], zoom, pitch: threeD ? 55 : 0, duration: 1400, essential: true });
     }
     const next = new URLSearchParams(params);
@@ -227,7 +229,8 @@ export default function HolyLandMap() {
     const map = mapRef.current;
     if (!map || opts.fly === false) return;
     const lons = entry.ring.map((p) => p[0]), lats = entry.ring.map((p) => p[1]);
-    map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], { padding: 60, duration: 1200, pitch: threeD ? 45 : 0 });
+    // maxZoom keeps the small holy plots from filling the screen (a portion is the focus, not a wall of colour).
+    map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], { padding: 80, duration: 1200, pitch: threeD ? 45 : 0, maxZoom: kind === 'holy' ? 11 : 9.5 });
   }, [citiesIn, threeD]);
 
   // ── Overlay (re)build — called on every style load and on data changes ─────
@@ -254,6 +257,9 @@ export default function HolyLandMap() {
       lineFeatures.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: pts } });
     }
     ensure('hl-pin-line', { type: 'FeatureCollection', features: lineFeatures });
+    // Gold glow around the selected portion (the app's focus colour).
+    const focusEntry = sel?.entry?.ring ? sel.entry : null;
+    ensure('hl-focus', { type: 'FeatureCollection', features: focusEntry ? [toFeature(focusEntry)] : [] });
     ensure('hl-joshua', { type: 'FeatureCollection', features: JOSHUA_TRIBES.map((t) => toFeature(t, { color: TRIBE_COLORS[t.tribe] })) });
     ensure('hl-ez-bands', { type: 'FeatureCollection', features: ez.bands.map((b) => toFeature(b, { color: TRIBE_COLORS[b.tribe] })) });
     ensure('hl-ez-holy', { type: 'FeatureCollection', features: ez.holy.map((h) => toFeature(h, { color: HOLY_KIND_STYLE[h.kind].color, opacity: HOLY_KIND_STYLE[h.kind].opacity })) });
@@ -273,6 +279,8 @@ export default function HolyLandMap() {
     addLayer({ id: 'hl-holy-line', type: 'line', source: 'hl-ez-holy', paint: { 'line-color': '#1a1208', 'line-width': 1.4 } });
     addLayer({ id: 'hl-joshua-fill', type: 'fill', source: 'hl-joshua', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': fillOpacity(0.42) } });
     addLayer({ id: 'hl-joshua-line', type: 'line', source: 'hl-joshua', paint: { 'line-color': '#1a1208', 'line-width': 1.6, 'line-dasharray': [2, 1] } });
+    addLayer({ id: 'hl-focus-glow', type: 'line', source: 'hl-focus', paint: { 'line-color': '#e8aa55', 'line-width': 22, 'line-blur': 12, 'line-opacity': 0.85 } });
+    addLayer({ id: 'hl-focus-line', type: 'line', source: 'hl-focus', paint: { 'line-color': '#f5c070', 'line-width': 2.5 } });
     addLayer({ id: 'hl-pin-line-casing', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#ffffff', 'line-width': 5, 'line-opacity': 0.7 } }, false);
     addLayer({ id: 'hl-pin-line', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#e05555', 'line-width': 2.5, 'line-dasharray': [3, 2] } }, false);
 
@@ -291,8 +299,9 @@ export default function HolyLandMap() {
     // ── DOM markers (cities + region labels) — rebuilt wholesale; cheap at this size.
     for (const m of markersRef.current) m.remove();
     markersRef.current = [];
-    const mk = (lonLat, el) => {
+    const mk = (lonLat, el, meta) => {
       const m = new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat(lonLat).addTo(map);
+      if (meta) m._hl = meta;
       markersRef.current.push(m);
       return m;
     };
@@ -306,7 +315,7 @@ export default function HolyLandMap() {
         el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span><span class="hl-mk-paleo" dir="rtl">${c.paleo}</span><span class="hl-mk-en">${c.name}</span></span>`;
         el.title = `${c.translit} (${c.name}) — read ${c.ref}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
-        mk([c.lon, c.lat], el);
+        mk([c.lon, c.lat], el, { pri: c.id === KEY_CITY ? 0 : c.id === selCityId ? 1 : 2, w: Math.max(c.translit.length, c.name.length) * 7 + 14 });
       }
     }
     if (showModern) {
@@ -316,11 +325,12 @@ export default function HolyLandMap() {
         // A modern city on top of a biblical one (Yavne on Jabneel, Hebron on
         // Hebron…) gets its label pushed below the dot so the two don't collide.
         const twin = showBiblical && BIBLICAL_CITIES.some((b) => Math.hypot(b.lon - c.lon, b.lat - c.lat) < 0.03);
+        // A twin keeps only its dot (nudged aside); its name lives in the biblical city's card.
         el.className = `hl-mk hl-mk-m${twin ? ' hl-mk-twin' : ''}${c.id === selCityId ? ' hl-mk-sel' : ''}`;
         el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.name}</span></span>`;
         el.title = `${c.name} (${c.country})`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
-        mk([c.lon, c.lat], el);
+        mk([c.lon, c.lat], el, { pri: c.id === selCityId ? 1 : 4, w: c.name.length * 7 + 14, twin });
       }
     }
     if (showRegions) {
@@ -331,9 +341,10 @@ export default function HolyLandMap() {
         el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span><span class="hl-mk-paleo" dir="rtl">${c.paleo}</span><span class="hl-mk-en">${c.name}</span></span>`;
         el.title = `${c.name} — ${c.translit} — ${c.ref}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
-        mk([c.lon, c.lat], el);
+        mk([c.lon, c.lat], el, { pri: c.id === selCityId ? 1 : 3, w: Math.max(c.translit.length, c.name.length) * 7 + 14 });
       }
     }
+    declutterRef.current(map);
     if (pin) {
       const el = document.createElement('div');
       el.className = 'hl-pin';
@@ -383,6 +394,31 @@ export default function HolyLandMap() {
   const applyRef = useRef(applyOverlays);
   applyRef.current = applyOverlays;
 
+  // Label decluttering: at the current view, higher-priority labels win and
+  // any label whose box would overlap one already placed is hidden (the dot
+  // stays). Runs after every rebuild and at the end of every pan/zoom.
+  const declutterRef = useRef(null);
+  declutterRef.current = (map) => {
+    if (!map) return;
+    const z = map.getZoom();
+    const showAll = z >= 7.5;
+    const placed = [];
+    const items = markersRef.current.filter((m) => m._hl).map((m) => ({ m, p: map.project(m.getLngLat()) }))
+      .sort((a, b) => a.m._hl.pri - b.m._hl.pri);
+    for (const { m, p } of items) {
+      const { pri, w, twin } = m._hl;
+      const el = m.getElement();
+      const always = pri <= 1;                // key city + selection always labelled
+      if (twin && !always) { el.classList.add('hl-mk-hide'); continue; }
+      if (!showAll && !always && pri > 2) { el.classList.add('hl-mk-hide'); continue; }
+      const box = { x1: p.x + 6, y1: p.y - 12, x2: p.x + 6 + w, y2: p.y + 22 };
+      const hit = placed.some((b) => box.x1 < b.x2 && box.x2 > b.x1 && box.y1 < b.y2 && box.y2 > b.y1);
+      if (hit && !always) { el.classList.add('hl-mk-hide'); continue; }
+      el.classList.remove('hl-mk-hide');
+      placed.push(box);
+    }
+  };
+
   // ── Map init ───────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!mapEl.current || mapRef.current) return;
@@ -408,6 +444,7 @@ export default function HolyLandMap() {
         applyRef.current(map);
       });
       map.on('zoom', () => setZoom(map.getZoom()));
+      map.on('moveend', () => declutterRef.current(map));
       map.on('click', (e) => {
         const lonLat = [e.lngLat.lng, e.lngLat.lat];
         // The shading itself is the button: a click inside a portion selects
