@@ -30,14 +30,15 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { useTheme } from '../hooks/useTheme.js';
-import { apiTransChapter } from '../lib/api.js';
+import { apiTransChapter, apiSurface, apiLexicon } from '../lib/api.js';
+import { transliterate } from '../lib/translit.js';
 import { parseRefs, readerHref, inRanges } from '../lib/models/refs.js';
 import {
   JOSHUA_TRIBES, BIBLICAL_CITIES, MODERN_CITIES, TRIBE_COLORS, TRIBE_HEBREW,
   HOLY_KIND_STYLE, EZEKIEL_ORDER, EZEKIEL_MEASURES, TRIBE_TRANSLIT, TRIBE_PALEO, tribeDisplayName,
   ezekielAllotment, toFeature, ringCentroid, pointInRing, joshuaTribeAt, ezekielAt,
   squareToPaleo, translitOf,
-  REGIONS, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance,
+  REGIONS, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
 } from '../lib/models/holyLand.js';
 import './HolyLandMap.css';
 
@@ -220,11 +221,11 @@ export default function HolyLandMap() {
     setParams(next, { replace: true });
   }, [describePoint, params, setParams, threeD]);
 
-  const selectRegion = useCallback((kind, entry) => {
-    setSel({ kind, entry, cities: citiesIn(entry.ring) });
+  const selectRegion = useCallback((kind, entry, opts = {}) => {
+    setSel({ kind, entry, cities: citiesIn(entry.ring), at: opts.at || null });
     setPanelOpen(true);
     const map = mapRef.current;
-    if (!map) return;
+    if (!map || opts.fly === false) return;
     const lons = entry.ring.map((p) => p[0]), lats = entry.ring.map((p) => p[1]);
     map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], { padding: 60, duration: 1200, pitch: threeD ? 45 : 0 });
   }, [citiesIn, threeD]);
@@ -372,7 +373,7 @@ export default function HolyLandMap() {
       const el = document.createElement('button');
       el.type = 'button';
       el.className = 'hl-rl hl-rl-holy';
-      el.innerHTML = `<span class="hl-rl-name">Holy Portion →</span><span class="hl-rl-paleo" dir="rtl">${squareToPaleo('תרומה')}</span><span class="hl-rl-en">${translitOf('תרומה')} · the offering · Ezekiel 48:8–22</span>`;
+      el.innerHTML = `<span class="hl-rl-name">${HOLY_WORDS.terumah.tr} →</span><span class="hl-rl-paleo" dir="rtl">${HOLY_WORDS.terumah.paleo}</span><span class="hl-rl-en">the Holy Portion · Ezekiel 48:8–22</span>`;
       el.addEventListener('click', (e) => { e.stopPropagation(); selectRegion('holy', ez.holy.find((h) => h.kind === 'priests')); });
       const m = new maplibregl.Marker({ element: el, anchor: 'right', offset: [-6, 0] }).setLngLat([ez.meta.westLon, (sqTop + sqBot) / 2]).addTo(map);
       markersRef.current.push(m);
@@ -408,11 +409,27 @@ export default function HolyLandMap() {
       });
       map.on('zoom', () => setZoom(map.getZoom()));
       map.on('click', (e) => {
-        const feats = map.queryRenderedFeatures(e.point, { layers: ['hl-holy-fill', 'hl-joshua-fill', 'hl-ez-fill'].filter((id) => map.getLayer(id)) });
         const lonLat = [e.lngLat.lng, e.lngLat.lat];
-        const at = { joshua: joshuaTribeAt(lonLat), ezekiel: ezekielAt(lonLat, ezRef.current) };
-        setSel({ kind: 'point', lonLat, ...at, hit: feats.length ? feats[0].properties : null });
-        setPanelOpen(true);
+        // The shading itself is the button: a click inside a portion selects
+        // that portion (most specific first — a holy sub-plot, then a Joshua
+        // tribe, then an Ezekiel band). Only bare ground gives "This spot".
+        const ez = ezRef.current;
+        const hit = (layer) => map.getLayer(layer) && map.queryRenderedFeatures(e.point, { layers: [layer] })[0]?.properties?.id;
+        const holyId = hit('hl-holy-fill'), joshId = hit('hl-joshua-fill'), ezId = hit('hl-ez-fill');
+        const holy = holyId && ez.holy.find((h) => h.id === holyId);
+        const josh = joshId && JOSHUA_TRIBES.find((t) => t.id === joshId);
+        const band = ezId && ez.bands.find((b) => b.id === ezId);
+        if (holy) selectRegionRef.current('holy', holy, { fly: false, at: lonLat });
+        else if (josh) selectRegionRef.current('joshua', josh, { fly: false, at: lonLat });
+        else if (band) selectRegionRef.current('ezekiel', band, { fly: false, at: lonLat });
+        else {
+          setSel({ kind: 'point', lonLat, joshua: joshuaTribeAt(lonLat), ezekiel: ezekielAt(lonLat, ez) });
+          setPanelOpen(true);
+        }
+      });
+      map.on('mousemove', (e) => {
+        const layers = ['hl-holy-fill', 'hl-joshua-fill', 'hl-ez-fill'].filter((id) => map.getLayer(id));
+        map.getCanvas().style.cursor = layers.length && map.queryRenderedFeatures(e.point, { layers }).length ? 'pointer' : '';
       });
       map.on('error', (ev) => {
         const msg = ev?.error?.message || '';
@@ -427,6 +444,7 @@ export default function HolyLandMap() {
   const threeDRef = useRef(threeD); threeDRef.current = threeD;
   const exagRef = useRef(exag); exagRef.current = exag;
   const ezRef = useRef(ez); ezRef.current = ez;
+  const selectRegionRef = useRef(selectRegion); selectRegionRef.current = selectRegion;
 
   // Re-apply overlays whenever their inputs change.
   useEffect(() => { applyOverlays(mapRef.current); }, [applyOverlays]);
@@ -755,6 +773,51 @@ export function PassageRefs({ refs, autoOpen = false, size = 'md' }) {
   );
 }
 
+// ── Lexical breakdown: Bayath [house] Lacham [bread] ─────────────────────────
+// Each word of the Hebrew name is looked up in the app's own surface index
+// (/api/surface — the same parse the Hebrew Viewer shows: root + affixes with
+// their glosses and Strong's number); words not in the tagged text fall back
+// to server/lexicon/lexicon.json. Nothing is invented here: no entry → "—".
+const _surfCache = new Map();
+let _lexPromise = null;
+function lookupWord(he) {
+  const paleo = squareToPaleo(he);
+  if (!_surfCache.has(paleo)) {
+    _surfCache.set(paleo, apiSurface(paleo).then((d) => ({ paleo, comps: d.components || [], sn: d.strongs, root: d.root_paleo }))
+      .catch(async () => {
+        _lexPromise ||= apiLexicon().catch(() => ({}));
+        const lex = await _lexPromise;
+        return { paleo, comps: lex[paleo] ? [{ paleo, css: 'root', translation: lex[paleo] }] : [], sn: null, root: paleo };
+      }));
+  }
+  return _surfCache.get(paleo);
+}
+function Lexical({ he }) {
+  const [rows, setRows] = useState(null);
+  useEffect(() => {
+    if (!he) return;
+    let live = true;
+    Promise.all(he.split(/\s+/).map(lookupWord)).then((r) => { if (live) setRows(r); });
+    return () => { live = false; };
+  }, [he]);
+  if (!he || !rows) return null;
+  return (
+    <div className="hl-lex">
+      {rows.map((w) => (
+        <span key={w.paleo} className="hl-lex-w">
+          {w.comps.length ? w.comps.map((c, i) => (
+            <span key={i} className={`hl-lex-c ${c.css === 'root' ? 'root' : 'affix'}`}>
+              <b>{c.translit || (c.paleo ? transliterate(c.paleo) : '')}</b>
+              {c.translation && <em>{String(c.translation).replace(/^\[|\]$/g, '')}</em>}
+            </span>
+          )) : <span className="hl-lex-c"><b>{transliterate(w.paleo)}</b><em>—</em></span>}
+          {w.sn && <Link to={`/roots?sn=${w.sn}`} className="hl-lex-sn" title="Explore this root">{w.sn}</Link>}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 // ── Detail card ──────────────────────────────────────────────────────────────
 function AllotmentLines({ joshua, ezekiel }) {
   return (
@@ -808,6 +871,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
             <div className="hl-detail-paleo" dir="rtl">{c.paleo}</div>
             <div className="hl-detail-name">{c.translit} <em>{c.name}</em></div>
             <div className="hl-detail-he">{c.he}</div>
+            <Lexical he={c.he} />
             {c.note && <p className="hl-detail-note">{c.note}</p>}
             <PassageRefs refs={c.ref} autoOpen />
           </>
@@ -820,7 +884,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
         )}
         <AllotmentLines joshua={sel.joshua} ezekiel={sel.ezekiel} />
         {twinModern.length > 0 && <div className="hl-detail-twin">Today: {twinModern.map((m) => <button key={m.id} type="button" className="hl-link" onClick={() => onCity(m)}>{m.name} ({m.country})</button>)}</div>}
-        {twinBiblical.length > 0 && <div className="hl-detail-twin">Biblical: {twinBiblical.map((b) => <button key={b.id} type="button" className="hl-link" onClick={() => onCity(b)}>{b.name} {b.paleo}</button>)}</div>}
+        {twinBiblical.length > 0 && <div className="hl-detail-twin">Biblical: {twinBiblical.map((b) => <button key={b.id} type="button" className="hl-link" onClick={() => onCity(b)}>{b.translit} <span dir="rtl">{b.paleo}</span> ({b.name})</button>)}</div>}
         <PinRow pin={pin} at={[c.lon, c.lat]} label={c.translit || c.name} onPin={onPin} onUnpin={onUnpin} />
         <div className="hl-detail-coord">{fmtLonLat([c.lon, c.lat])}</div>
       </div>
@@ -834,11 +898,14 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
         <button type="button" className="hl-detail-x" onClick={onClose} aria-label="Close">×</button>
         <div className="hl-detail-name"><i className="hl-detail-sw" style={{ background: color }} /> {tribeDisplayName(e.name, e.tribe)} {e.tribe && <span className="hl-detail-paleo-inline" dir="rtl">{TRIBE_PALEO[e.tribe]}</span>}</div>
         {e.tribe && <div className="hl-detail-he">{e.name} · {TRIBE_HEBREW[e.tribe]}</div>}
+        {e.he && <div className="hl-detail-paleo" dir="rtl">{squareToPaleo(e.he)}</div>}
         <div className="hl-detail-ref">{sel.kind === 'joshua' ? 'Joshua allotment' : 'Ezekiel — millennial allotment'}</div>
+        <Lexical he={e.he || (e.tribe ? TRIBE_HEBREW[e.tribe] : null)} />
         <PassageRefs refs={e.ref} autoOpen />
+        {sel.at && <PinRow pin={pin} at={sel.at} label={`${tribeDisplayName(e.name, e.tribe)} (${fmtLonLat(sel.at)})`} onPin={onPin} onUnpin={onUnpin} />}
         {sel.kind === 'holy' && e.kind === 'sanctuary' && <p className="hl-detail-note">500 × 500 with 50 of open land round it (45:2), in the midst of the priests' portion.</p>}
         <div className="hl-detail-sub">Biblical cities inside <span className="hl-count">{sel.cities.biblical.length}</span></div>
-        <div className="hl-chips">{sel.cities.biblical.map((c) => <button key={c.id} type="button" className={`hl-chip${c.id === KEY_CITY ? ' key' : ''}`} onClick={() => onCity(c)}>{c.name} <span>{c.paleo}</span></button>)}{sel.cities.biblical.length === 0 && <span className="dim">none listed</span>}</div>
+        <div className="hl-chips">{sel.cities.biblical.map((c) => <button key={c.id} type="button" className={`hl-chip${c.id === KEY_CITY ? ' key' : ''}`} onClick={() => onCity(c)}>{c.translit} <span>{c.paleo}</span><small> {c.name}</small></button>)}{sel.cities.biblical.length === 0 && <span className="dim">none listed</span>}</div>
         <div className="hl-detail-sub">Today's cities inside <span className="hl-count">{sel.cities.modern.length}</span></div>
         <div className="hl-chips">{sel.cities.modern.map((c) => <button key={c.id} type="button" className="hl-chip m" onClick={() => onCity(c)}>{c.name} <span>{c.country}</span></button>)}{sel.cities.modern.length === 0 && <span className="dim">none listed</span>}</div>
       </div>

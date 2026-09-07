@@ -135,6 +135,21 @@ const CUBIT_M = 0.525;
 const REED_M = 6 * CUBIT_M;
 const JERUSALEM = [35.235, 31.778];
 
+// The words of the holy portion, in the app's own transliteration (never
+// "the LORD"/"YHWH": fieldy's rule — his transliterations and the roots).
+const W = (he) => ({ he, paleo: squareToPaleo(he), tr: translitOf(he) });
+export const HOLY_WORDS = {
+  terumah:   W('תרומה'),    // the offering / holy portion  (48:8)
+  nasi:      W('נשיא'),     // the prince                   (48:21)
+  leviim:    W('לוים'),     // the Levites                  (48:13)
+  kohanim:   W('כהנים'),    // the priests                  (48:10)
+  tzadoq:    W('צדוק'),     // Zadok                        (48:11)
+  ir:        W('עיר'),      // the city                     (48:15)
+  miqdash:   W('מקדש'),     // the sanctuary                (48:10)
+  yhwhShammah: W('יהוה שמה'), // the city's name             (48:35)
+};
+const HW = HOLY_WORDS;
+
 /**
  * The measurements of Ezekiel 45 & 48 and how each one is read on this map.
  * Rendered in the panel so the reader can check every line against the text.
@@ -146,13 +161,13 @@ export const EZEKIEL_MEASURES = [
   { ref: 'Ezekiel 48:8; 45:1', given: 'The offering (terumah): 25,000 in breadth, and in length as one of the tribal parts, from the east side to the west side; "the sanctuary shall be in the midst of it".', read: 'A 25,000-cubit band (≈ 13.1 km / 8.2 mi) between Judah and Benjamin, sea to Jordan.' },
   { ref: 'Ezekiel 48:20', given: '"All the offering shall be 25,000 by 25,000: you shall offer the holy offering foursquare, with the possession of the city."', read: 'The 25,000 × 25,000 square in the middle of that band.' },
   { ref: 'Ezekiel 48:21–22', given: 'The residue is the prince\'s, on one side and on the other of the holy offering, "over against the 25,000 of the offering toward the east border, and westward … toward the west border".', read: 'Prince\'s land from the square out to the sea on the west and to the Jordan on the east. This verse fixes the unit: from the Great Sea to the Jordan is under 80 km, so a square of 25,000 reeds (≈ 79 km) would leave the prince nothing on either side — the 25,000 must be cubits (≈ 13 km), the cubit of 40:5.' },
-  { ref: 'Ezekiel 48:10–12', given: 'The priests (the sons of Zadok): 25,000 long, 10,000 broad; "the sanctuary of the LORD shall be in the midst thereof"; a most holy portion next to the Levites\' border.', read: 'The 10,000-cubit strip with the sanctuary at its centre — the middle strip of the square.' },
+  { ref: 'Ezekiel 48:10–12', given: 'The priests (the sons of Tzadawaq): 25,000 long, 10,000 broad; "the sanctuary of Yahawah shall be in the midst thereof"; a most holy portion next to the Levites\' border.', read: 'The 10,000-cubit strip with the sanctuary at its centre — the middle strip of the square.' },
   { ref: 'Ezekiel 48:13–14; 45:5', given: 'The Levites: 25,000 long, 10,000 broad, "over against the border of the priests".', read: 'The northern 10,000-cubit strip. (Which of the two 10,000 strips lies north is not stated — drawn per the traditional reading.)' },
   { ref: 'Ezekiel 48:15–17; 45:6', given: 'The remaining 5,000 broad × 25,000 long is common land for the city, its dwellings and open land; the city is in the midst, 4,500 on each of its four sides, with 250 of open land round it.', read: 'The southern 5,000-cubit strip: the city 4,500 cubits square (≈ 2.4 km / 1.5 mi) in its centre, 250 cubits of open land on each side.' },
   { ref: 'Ezekiel 48:18–19', given: 'The residue alongside the holy portion, 10,000 eastward and 10,000 westward, yields food for those who serve the city.', read: 'The two 10,000 × 5,000 plots either side of the city ("X").' },
   { ref: 'Ezekiel 45:2; 42:15–20', given: 'For the sanctuary, 500 by 500 square, and 50 cubits of open land round about. The outer wall of the temple house is measured with the reed: 500 reeds on each side.', read: 'The sanctuary drawn 500 reeds (≈ 1.6 km / 1 mi) square, 50 cubits of open land, at the centre of the priests\' strip.' },
   { ref: 'Ezekiel 47:1–8; Zechariah 14:8; Joel 3:18', given: 'Water issues from under the threshold of the house, eastward, goes down into the Arabah (the desert) and into the eastern sea, whose waters are healed. Zechariah: living waters go out from Jerusalem, half toward the former (eastern) sea.', read: 'The sanctuary must sit west of the Dead Sea at its latitude, on the watershed — the map anchors the city on Jerusalem, 31.78°N, and the square on its meridian.' },
-  { ref: 'Ezekiel 48:35', given: '"The name of the city from that day shall be, The LORD is there" — YHWH Shammah.', read: 'The "C" block.' },
+  { ref: 'Ezekiel 48:35', given: '"The name of the city from that day shall be Yahawah Shamah" — יהוה שמה, Yahawah is there.', read: 'The "C" block.' },
 ];
 
 // Cut lines and helpers for the bands (see below) — unchanged geometry code.
@@ -264,15 +279,15 @@ export function ezekielAllotment() {
   const subW = midLon - holyLonDeg * (2500 / 25000), subE = midLon + holyLonDeg * (2500 / 25000);
 
   const holy = [
-    { id:'ez-prince-w', kind:'prince', name:"Prince's portion (west)", ref:'Ezekiel 48:21', ring: bandClipLon(holyTop.cutTop, holyTop.cutBot, -180, sqW) },
-    { id:'ez-prince-e', kind:'prince', name:"Prince's portion (east)", ref:'Ezekiel 48:21', ring: bandClipLon(holyTop.cutTop, holyTop.cutBot, sqE, 180) },
-    { id:'ez-levites',  kind:'levites', name:"Levites' portion", ref:'Ezekiel 48:13–14', ring: rect(sqW, sqE, levitesTop, levitesBot) },
-    { id:'ez-priests',  kind:'priests', name:"Priests' portion (sons of Zadok)", ref:'Ezekiel 48:10–12', ring: rect(sqW, sqE, priestsTop, priestsBot) },
+    { id:'ez-prince-w', kind:'prince', name:`${HW.nasi.tr} (the prince) — west`, he: HW.nasi.he, ref:'Ezekiel 48:21', ring: bandClipLon(holyTop.cutTop, holyTop.cutBot, -180, sqW) },
+    { id:'ez-prince-e', kind:'prince', name:`${HW.nasi.tr} (the prince) — east`, he: HW.nasi.he, ref:'Ezekiel 48:21', ring: bandClipLon(holyTop.cutTop, holyTop.cutBot, sqE, 180) },
+    { id:'ez-levites',  kind:'levites', name:`${HW.leviim.tr} (the Levites)`, he: HW.leviim.he, ref:'Ezekiel 48:13–14', ring: rect(sqW, sqE, levitesTop, levitesBot) },
+    { id:'ez-priests',  kind:'priests', name:`${HW.kohanim.tr} (the priests), sons of ${HW.tzadoq.tr}`, he: HW.kohanim.he, ref:'Ezekiel 48:10–12', ring: rect(sqW, sqE, priestsTop, priestsBot) },
     { id:'ez-food-w',   kind:'food', name:'Food for the city workers (west)', ref:'Ezekiel 48:18–19', ring: rect(sqW, subW, cityTop, cityBot) },
     { id:'ez-food-e',   kind:'food', name:'Food for the city workers (east)', ref:'Ezekiel 48:18–19', ring: rect(subE, sqE, cityTop, cityBot) },
     { id:'ez-suburbs',  kind:'suburbs', name:'Open land round the city', ref:'Ezekiel 48:17', ring: rect(subW, subE, cityTop, cityBot) },
-    { id:'ez-city',     kind:'city', name:'The City — YHWH Shammah, "the LORD is there"', ref:'Ezekiel 48:15–16, 35', ring: rect(cityW, cityE, cityN, cityS) },
-    { id:'ez-sanctuary', kind:'sanctuary', name:'The Sanctuary', ref:'Ezekiel 48:10; 45:2',
+    { id:'ez-city',     kind:'city', name:`${HW.ir.tr} (the city) — ${HW.yhwhShammah.tr}`, he: HW.yhwhShammah.he, ref:'Ezekiel 48:15–16, 35', ring: rect(cityW, cityE, cityN, cityS) },
+    { id:'ez-sanctuary', kind:'sanctuary', name:`${HW.miqdash.tr} (the sanctuary)`, he: HW.miqdash.he, ref:'Ezekiel 48:10; 45:2',
       ring: rect(midLon - sanctSide / 2, midLon + sanctSide / 2, (priestsTop + priestsBot) / 2 + sanctSideLat / 2, (priestsTop + priestsBot) / 2 - sanctSideLat / 2) },
   ];
 

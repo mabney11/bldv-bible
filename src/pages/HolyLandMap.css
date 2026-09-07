@@ -287,18 +287,24 @@
 .hl-verse sup { color: var(--gold); font-size: 10px; margin-right: 5px; font-weight: 700; }
 .hl-measures .hl-refs-sm { margin-bottom: 2px; }
 
-/* Region labels now read as buttons: a pill with a border, lifts on hover */
-.hl-rl { background: #fffb; border: 1px solid #1a120866; border-radius: 8px; padding: 3px 10px; box-shadow: 0 1px 3px #0004; text-shadow: none; transition: transform 0.12s, box-shadow 0.12s; }
-.hl-rl:hover { transform: translateY(-1px); box-shadow: 0 3px 8px #0005; border-color: #1a1208; background: #fff; }
-.hl-rl-name::after { content: ' ›'; opacity: 0.55; }
-.hl-rl-h { padding: 1px 5px; }
-.hl-rl-h .hl-rl-name::after { content: ''; }
-/* City labels: the name is the link */
+/* City labels: pointer + underline on hover only (the whole marker is clickable) */
 .hl-mk-lbl { pointer-events: auto; cursor: pointer; }
-.hl-mk-name { text-decoration: underline dotted #1a120866; text-underline-offset: 2px; }
-.hl-mk:hover .hl-mk-name { text-decoration-color: #1a1208; }
+.hl-mk:hover .hl-mk-name { text-decoration: underline; text-underline-offset: 2px; }
+
 /* keep the S/C/Z box colours above the generic pill background */
 .hl-rl.hl-rl-h-sanctuary { background: #e05555; color: #fff; }
 .hl-rl.hl-rl-h-city { background: #4a9eff; color: #fff; }
 .hl-rl.hl-rl-h-priests { background: #e8aa55; color: #1a1208; }
-.hl-rl.hl-rl-holy { background: #fffd; }
+
+
+/* Lexical breakdown */
+.hl-lex { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; align-items: baseline; }
+.hl-lex-w { display: inline-flex; flex-wrap: wrap; gap: 2px 4px; align-items: baseline; }
+.hl-lex-c b { font-weight: 600; color: var(--text); }
+.hl-lex-c.affix b { color: var(--text2); font-weight: 500; }
+.hl-lex-c em { font-style: normal; color: var(--teal); }
+.hl-lex-c em::before { content: ' ['; color: var(--text4); }
+.hl-lex-c em::after { content: ']'; color: var(--text4); }
+.hl-lex-sn { font-size: 10.5px; color: var(--text4); margin-left: 4px; border: 1px solid var(--border2); border-radius: 4px; padding: 0 4px; }
+.hl-lex-sn:hover { color: var(--gold); border-color: var(--gold); }
+.hl-chip small { color: var(--text4); font-size: 10px; }
