@@ -52,7 +52,10 @@ echo "== 1/7  Checkpointing local ${DB_NAME} (flush WAL) =="
 sqlite3 "$LOCAL_DB" "PRAGMA wal_checkpoint(TRUNCATE);"
 
 echo "== 2/7  Checkpointing prod's ${DB_NAME} (flush WAL) =="
-ssh "$REMOTE_HOST" "sqlite3 $REMOTE_PATH 'PRAGMA wal_checkpoint(TRUNCATE);'"
+# sudo: prod's file may be root-owned (surface-index.db was); non-fatal because
+# the file is replaced outright in step 6 and stale -wal/-shm are removed there.
+ssh "$REMOTE_HOST" "sudo sqlite3 $REMOTE_PATH 'PRAGMA wal_checkpoint(TRUNCATE);'" \
+  || echo "(checkpoint skipped — prod copy not writable / absent; fine, it is being replaced)"
 
 echo "== 3/7  Backing up prod's current ${DB_NAME} =="
 ssh "$REMOTE_HOST" "sudo cp $REMOTE_PATH $REMOTE_BACKUP && ls -la $REMOTE_BACKUP"
