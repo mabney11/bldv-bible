@@ -10349,6 +10349,17 @@ app.get('/api/root-explorer/root', production.cache(60), (req, res) => {
             }))
             .sort((a, b) => a.sn.localeCompare(b.sn, undefined, { numeric: true }));
 
+        // Which number(s) the letters' first usage is actually tagged with —
+        // the pooled map only keeps the location, so recover it from the
+        // per-number firsts that land on that same verse (fieldy: "include
+        // the strongs # of the first usage as well"). Usually one number;
+        // two only when two homographs both debut in the same verse.
+        const firstLoc = fmtLoc(getFirstAppearanceByRoot(entry.root));
+        const sameVerse = (a, b) => !!a && !!b && a.book_id === b.book_id && a.chapter === b.chapter && a.verse === b.verse;
+        const first_by_letters = firstLoc
+            ? { ...firstLoc, sns: homographs.filter(h => sameVerse(h.first, firstLoc)).map(h => h.sn) }
+            : null;
+
         res.json({
             root: entry.root,
             sn: entry.sn,
@@ -10356,7 +10367,7 @@ app.get('/api/root-explorer/root', production.cache(60), (req, res) => {
             lexicon: lexicon[entry.root] || null,
             definition,
             homographs,
-            first_by_letters: fmtLoc(getFirstAppearanceByRoot(entry.root)),
+            first_by_letters,
             first_by_sn: fmtLoc(getFirstAppearanceBySn(entry.sn)),
             strongs: [entry.sn],
             total,

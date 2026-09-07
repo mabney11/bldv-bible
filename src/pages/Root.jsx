@@ -269,6 +269,16 @@ function RootCard({ detail, idToSlug, context, onPickSn }) {
         <div className="rc-label">Root first usage</div>
         <div className="rc-value">
           {first ? <Link to={verseHref(first)} className="rc-first-link">{locLabel(first)}</Link> : '—'}
+          {/* The number that first usage is tagged with — a sibling's chip
+              when it isn't the number on this page. */}
+          {first?.sns?.length > 0 && (
+            <span className="rc-first-sns">
+              {first.sns.map(sn => sn === detail.sn
+                ? <span key={sn} className="rc-sn-chip active">{sn}</span>
+                : <a key={sn} href={`/roots?sn=${encodeURIComponent(sn)}`} className="rc-sn-chip"
+                     onClick={e => { e.preventDefault(); onPickSn(sn); }}>{sn}</a>)}
+            </span>
+          )}
         </div>
       </div>
       {context && (

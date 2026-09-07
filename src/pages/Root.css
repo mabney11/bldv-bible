@@ -307,6 +307,8 @@
   text-decoration: none;
 }
 .rc-sn-chip:hover { border-color: var(--gold); color: var(--gold); }
+.rc-first-sns { display: inline-flex; gap: 6px; margin-left: 10px; vertical-align: 1px; }
+.rc-sn-chip.active { color: var(--gold); border-color: var(--gold); }
 .rc-first-link { color: var(--gold); text-decoration: none; border-bottom: 1px dotted color-mix(in srgb, var(--gold) 60%, transparent); }
 .rc-first-link:hover { border-bottom-style: solid; }
 
