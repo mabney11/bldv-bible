@@ -128,26 +128,34 @@ export const EZEKIEL_ORDER = [
 ];
 
 const KM_PER_DEG_LAT = 111.32;
-const CUBIT_M = 0.525;                 // long cubit, 47:16 "a cubit and a handbreadth" ≈ 0.525 m
-// Where the 25,000-square sits north–south. Ezekiel gives no band widths, so:
-//   anchored — the City (48:15–20, "YHWH is there", 48:35) is placed at
-//              Jerusalem's latitude, the seven northern tribes share what is
-//              left above it and the five southern tribes what is left below —
-//              the conventional study-map layout (and the reference map this
-//              model was built from).
-//   equal    — all twelve tribal bands the same height, the holy portion
-//              simply taking its measured share between Judah and Benjamin.
-export const HOLY_LAYOUTS = {
-  anchored: { label: 'City at Jerusalem', sub: 'reference-map layout' },
-  equal:    { label: 'Equal bands',       sub: 'twelve equal strips' },
-};
+// Units — everything below is derived from these two verses:
+//   40:5  the measuring reed is six cubits long, "by the cubit and an hand breadth"
+//         (the long cubit ≈ 0.525 m), so a reed ≈ 3.15 m.
+const CUBIT_M = 0.525;
+const REED_M = 6 * CUBIT_M;
 const JERUSALEM = [35.235, 31.778];
-const JERUSALEM_LAT = JERUSALEM[1];
 
-export const HOLY_UNITS = {
-  reeds:  { label:'reeds (6 cubits)', km: 25000 * 6 * CUBIT_M / 1000 },   // ≈ 78.8 km
-  cubits: { label:'cubits',          km: 25000 * CUBIT_M / 1000 },       // ≈ 13.1 km
-};
+/**
+ * The measurements of Ezekiel 45 & 48 and how each one is read on this map.
+ * Rendered in the panel so the reader can check every line against the text.
+ * `given` = what the verse states; `read` = how it is applied here.
+ */
+export const EZEKIEL_MEASURES = [
+  { ref: 'Ezekiel 47:15–20', given: 'The border: the Great Sea → Hethlon → Lebo-hamath → Zedad → Berothah → Sibraim → Hazar-enan (north); between Hauran and Damascus along the Jordan to the eastern sea (east); Tamar → Meribath-kadesh → the Brook of Egypt → the Great Sea (south); the Great Sea (west).', read: 'Each landmark is a dot on the map; the border polyline joins them.' },
+  { ref: 'Ezekiel 48:1–7, 23–27', given: 'Dan, Asher, Naphtali, Manasseh, Ephraim, Reuben, Judah — then the offering — then Benjamin, Simeon, Issachar, Zebulun, Gad; each "from the east side unto the west side".', read: 'Twelve bands in that order, every one spanning sea to Jordan. The text gives no band widths: the seven northern tribes share the land north of the offering equally, the five southern share the south.' },
+  { ref: 'Ezekiel 48:8; 45:1', given: 'The offering (terumah): 25,000 in breadth, and in length as one of the tribal parts, from the east side to the west side; "the sanctuary shall be in the midst of it".', read: 'A 25,000-cubit band (≈ 13.1 km / 8.2 mi) between Judah and Benjamin, sea to Jordan.' },
+  { ref: 'Ezekiel 48:20', given: '"All the offering shall be 25,000 by 25,000: you shall offer the holy offering foursquare, with the possession of the city."', read: 'The 25,000 × 25,000 square in the middle of that band.' },
+  { ref: 'Ezekiel 48:21–22', given: 'The residue is the prince\'s, on one side and on the other of the holy offering, "over against the 25,000 of the offering toward the east border, and westward … toward the west border".', read: 'Prince\'s land from the square out to the sea on the west and to the Jordan on the east. This verse fixes the unit: from the Great Sea to the Jordan is under 80 km, so a square of 25,000 reeds (≈ 79 km) would leave the prince nothing on either side — the 25,000 must be cubits (≈ 13 km), the cubit of 40:5.' },
+  { ref: 'Ezekiel 48:10–12', given: 'The priests (the sons of Zadok): 25,000 long, 10,000 broad; "the sanctuary of the LORD shall be in the midst thereof"; a most holy portion next to the Levites\' border.', read: 'The 10,000-cubit strip with the sanctuary at its centre — the middle strip of the square.' },
+  { ref: 'Ezekiel 48:13–14; 45:5', given: 'The Levites: 25,000 long, 10,000 broad, "over against the border of the priests".', read: 'The northern 10,000-cubit strip. (Which of the two 10,000 strips lies north is not stated — drawn per the traditional reading.)' },
+  { ref: 'Ezekiel 48:15–17; 45:6', given: 'The remaining 5,000 broad × 25,000 long is common land for the city, its dwellings and open land; the city is in the midst, 4,500 on each of its four sides, with 250 of open land round it.', read: 'The southern 5,000-cubit strip: the city 4,500 cubits square (≈ 2.4 km / 1.5 mi) in its centre, 250 cubits of open land on each side.' },
+  { ref: 'Ezekiel 48:18–19', given: 'The residue alongside the holy portion, 10,000 eastward and 10,000 westward, yields food for those who serve the city.', read: 'The two 10,000 × 5,000 plots either side of the city ("X").' },
+  { ref: 'Ezekiel 45:2; 42:15–20', given: 'For the sanctuary, 500 by 500 square, and 50 cubits of open land round about. The outer wall of the temple house is measured with the reed: 500 reeds on each side.', read: 'The sanctuary drawn 500 reeds (≈ 1.6 km / 1 mi) square, 50 cubits of open land, at the centre of the priests\' strip.' },
+  { ref: 'Ezekiel 47:1–8; Zechariah 14:8; Joel 3:18', given: 'Water issues from under the threshold of the house, eastward, goes down into the Arabah (the desert) and into the eastern sea, whose waters are healed. Zechariah: living waters go out from Jerusalem, half toward the former (eastern) sea.', read: 'The sanctuary must sit west of the Dead Sea at its latitude, on the watershed — the map anchors the city on Jerusalem, 31.78°N, and the square on its meridian.' },
+  { ref: 'Ezekiel 48:35', given: '"The name of the city from that day shall be, The LORD is there" — YHWH Shammah.', read: 'The "C" block.' },
+];
+
+// Cut lines and helpers for the bands (see below) — unchanged geometry code.
 
 // Point on a lat-monotone (N→S) polyline at a given latitude.
 function lonAtLat(line, lat) {
@@ -193,21 +201,22 @@ function bandClipLon(top, bot, lonMin, lonMax) {
  * @param {'reeds'|'cubits'} unit — how to read the 25,000 × 25,000 holy portion.
  * @returns {{ bands: Array, holy: Array, meta: object }} GeoJSON-ready rings.
  */
-export function ezekielAllotment(unit = 'cubits', layout = 'anchored') {
-  const holyKm = HOLY_UNITS[unit].km;
+/**
+ * Build the Ezekiel 48 layout. One reading only — every number is traced to
+ * its verse in EZEKIEL_MEASURES above.
+ * @returns {{ bands: Array, holy: Array, meta: object }} GeoJSON-ready rings.
+ */
+export function ezekielAllotment() {
+  const holyKm = 25000 * CUBIT_M / 1000;                 // 48:20 — 25,000 cubits square ≈ 13.1 km
   const holyDeg = holyKm / KM_PER_DEG_LAT;
   const latTop = (EZ_NORTH[0][1] + EZ_NORTH[EZ_NORTH.length - 1][1]) / 2;   // ≈ 34.4
   const latBot = (EZ_SOUTH[0][1] + EZ_SOUTH[EZ_SOUTH.length - 1][1]) / 2;   // ≈ 30.95
-  let northDeg, southDeg;
-  if (layout === 'equal') {
-    northDeg = southDeg = (latTop - latBot - holyDeg) / 12;
-  } else {
-    // City strip is the southern 5,000 of the square → its centre sits 22,500
-    // down from the top; anchor that centre on Jerusalem.
-    const hTopAnch = JERUSALEM_LAT + holyDeg * (22500 / 25000);
-    northDeg = (latTop - hTopAnch) / 7;
-    southDeg = (hTopAnch - holyDeg - latBot) / 5;
-  }
+  // City strip is the southern 5,000 of the square, so its centre is 22,500
+  // down from the top; that centre is anchored on Jerusalem (47:1–8; Zech 14:8).
+  const hTopAnch = JERUSALEM[1] + holyDeg * (22500 / 25000);
+  const northDeg = (latTop - hTopAnch) / 7;               // 48:1–7 — seven tribes north of the offering
+  const southDeg = (hTopAnch - holyDeg - latBot) / 5;     // 48:23–27 — five tribes south of it
+  const unit = 'cubits', layout = 'anchored';
 
   const bands = [];
   let lat = latTop;
@@ -232,7 +241,7 @@ export function ezekielAllotment(unit = 'cubits', layout = 'anchored') {
   const westLon = lonAtLat(EZ_WEST, hMid), eastLon = lonAtLat(EZ_EAST, hMid);
   // E–W: centred between the coast and the Jordan (equal layout), or on
   // Jerusalem itself (anchored) — clamped so the square never leaves the land.
-  let sqW = (layout === 'equal' ? (westLon + eastLon) / 2 : JERUSALEM[0]) - holyLonDeg / 2;
+  let sqW = JERUSALEM[0] - holyLonDeg / 2;                // centred on Jerusalem's meridian
   sqW = Math.max(westLon, Math.min(sqW, eastLon - holyLonDeg));
   const sqE = sqW + holyLonDeg;
   const rect = (x1, x2, y1, y2) => [[x1, y1], [x2, y1], [x2, y2], [x1, y2]];
@@ -245,8 +254,9 @@ export function ezekielAllotment(unit = 'cubits', layout = 'anchored') {
   // Sanctuary "in the midst" of the priests' portion (48:10); the city 4,500
   // square in the middle of the 5,000 strip with 250 of open land round it
   // (48:15–17); the 10,000 on either side of it feed the city's workers (48:18).
-  const sanctSide = holyLonDeg * (500 / 25000);           // 45:2 — 500 × 500
-  const sanctSideLat = holyDeg * (500 / 25000);
+  const sanctKm = 500 * REED_M / 1000;                    // 45:2 with 42:20 — 500 reeds square ≈ 1.6 km
+  const sanctSide = sanctKm / kmPerDegLon;
+  const sanctSideLat = sanctKm / KM_PER_DEG_LAT;
   const midLon = (sqW + sqE) / 2;
   const cityW = midLon - holyLonDeg * (2250 / 25000), cityE = midLon + holyLonDeg * (2250 / 25000);
   const cityMidLat = (cityTop + cityBot) / 2;
@@ -261,14 +271,14 @@ export function ezekielAllotment(unit = 'cubits', layout = 'anchored') {
     { id:'ez-food-w',   kind:'food', name:'Food for the city workers (west)', ref:'Ezekiel 48:18–19', ring: rect(sqW, subW, cityTop, cityBot) },
     { id:'ez-food-e',   kind:'food', name:'Food for the city workers (east)', ref:'Ezekiel 48:18–19', ring: rect(subE, sqE, cityTop, cityBot) },
     { id:'ez-suburbs',  kind:'suburbs', name:'Open land round the city', ref:'Ezekiel 48:17', ring: rect(subW, subE, cityTop, cityBot) },
-    { id:'ez-city',     kind:'city', name:'The City — "YHWH is there"', ref:'Ezekiel 48:15–16, 35', ring: rect(cityW, cityE, cityN, cityS) },
+    { id:'ez-city',     kind:'city', name:'The City — YHWH Shammah, "the LORD is there"', ref:'Ezekiel 48:15–16, 35', ring: rect(cityW, cityE, cityN, cityS) },
     { id:'ez-sanctuary', kind:'sanctuary', name:'The Sanctuary', ref:'Ezekiel 48:10; 45:2',
       ring: rect(midLon - sanctSide / 2, midLon + sanctSide / 2, (priestsTop + priestsBot) / 2 + sanctSideLat / 2, (priestsTop + priestsBot) / 2 - sanctSideLat / 2) },
   ];
 
   return {
     bands, holy,
-    meta: { unit, layout, holyKm, northKm: northDeg * KM_PER_DEG_LAT, southKm: southDeg * KM_PER_DEG_LAT, latTop, latBot, sanctuary: [midLon, (priestsTop + priestsBot) / 2], city: [midLon, cityMidLat] },
+    meta: { unit, layout, holyKm, sanctKm, cityKm: 4500 * CUBIT_M / 1000, westLon, eastLon, northKm: northDeg * KM_PER_DEG_LAT, southKm: southDeg * KM_PER_DEG_LAT, latTop, latBot, square: [sqW, hTop, sqE, hBot], sanctuary: [midLon, (priestsTop + priestsBot) / 2], city: [midLon, cityMidLat] },
   };
 }
 

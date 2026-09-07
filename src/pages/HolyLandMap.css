@@ -255,3 +255,15 @@
   .hl-panel { position: absolute; left: 0; right: 0; bottom: 0; top: 40%; width: auto; border-right: none; border-top: 1px solid var(--border); z-index: 4; border-radius: 12px 12px 0 0; }
   .hl-map-wrap { position: absolute; inset: 0; }
 }
+
+/* Measurements panel + Holy Portion label */
+.hl-measures { margin-top: 4px; font-size: 12px; }
+.hl-measures summary { cursor: pointer; color: var(--gold); font-size: 12.5px; padding: 4px 0; }
+.hl-measures ol { padding-left: 16px; display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.hl-measures li b { color: var(--text); font-size: 12px; }
+.hl-measure-given { color: var(--text2); line-height: 1.4; margin-top: 2px; }
+.hl-measure-read { color: var(--text3); line-height: 1.4; margin-top: 2px; }
+.hl-inline-note { color: var(--text4); font-size: 11px; }
+.hl-rl-holy { background: #fffc; border: 1px solid #1a1208; padding: 3px 8px; margin-bottom: 6px; }
+.hl-rl-holy .hl-rl-name { font-size: 12px; letter-spacing: 0.08em; }
+.hl-rl-holy .hl-rl-en { font-size: 9.5px; }
