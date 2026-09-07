@@ -250,3 +250,86 @@
 
 /* Verse card translation suffix */
 .verse-translation { color: var(--text3); font-weight: 400; font-size: 12.5px; }
+
+/* ── Root summary card (2026-09-07) ──────────────────────────────────────────
+   The word-by-word card from VersePage (label/value stack, one bordered card,
+   uppercase small-caps labels with a hairline between rows), reused at the
+   root level and sitting ABOVE the verse in the centerpiece. Same rhythm on
+   desktop and phone — it was designed as a card, not as a collapsed table. */
+.rc-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg2);
+  padding: 4px 18px;
+  margin: 0 0 26px;
+  max-width: 720px;
+}
+.rc-row {
+  padding: 12px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+}
+.rc-row:last-child { border-bottom: none; }
+.rc-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+.rc-label-note { font-weight: 400; letter-spacing: .02em; text-transform: none; color: var(--text4); }
+.rc-glyphs {
+  font-family: var(--paleo-font);
+  font-size: 44px;
+  line-height: 1;
+  color: var(--text);
+  display: inline-flex;
+  align-items: flex-end;
+  direction: rtl;
+}
+.rc-glyphs .glyph.root { color: var(--text); }
+.rc-translit { font-size: 20px; font-style: italic; color: var(--text); }
+.rc-value    { font-size: 15px; color: var(--text); line-height: 1.5; }
+.rc-def-text { color: var(--text); }
+/* Uncurated → the root's own letters, dimmed: "non-glossed words … I should
+   see the underlying paleo of the unglossed root." */
+.rc-def-placeholder { font-family: var(--paleo-font); color: var(--text3); }
+
+.rc-sn-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.rc-sn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding: 5px 10px;
+  border-left: 3px solid transparent;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text2);
+}
+.rc-sn-row.active { border-left-color: var(--gold); background: color-mix(in srgb, var(--gold) 9%, transparent); }
+.rc-sn-chip {
+  font-family: monospace;
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  text-decoration: none;
+}
+.rc-sn-chip:hover { border-color: var(--gold); color: var(--gold); }
+.rc-sn-row.active .rc-sn-chip { color: var(--gold); border-color: var(--gold); cursor: default; }
+.rc-sn-count { font-size: 12px; color: var(--text3); font-variant-numeric: tabular-nums; }
+.rc-sn-def   { flex: 1 1 200px; min-width: 0; }
+.rc-sn-first { font-size: 12px; color: var(--text3); white-space: nowrap; }
+.rc-sn-first a, .rc-first-sn a, .rc-first-link { color: var(--gold); text-decoration: none; border-bottom: 1px dotted color-mix(in srgb, var(--gold) 60%, transparent); }
+.rc-sn-first a:hover, .rc-first-sn a:hover, .rc-first-link:hover { border-bottom-style: solid; }
+.rc-first-note { font-size: 12px; color: var(--text3); }
+.rc-first-sn   { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+@media (max-width: 980px) {
+  .rc-card { max-width: none; padding: 2px 14px; margin-bottom: 18px; }
+  .rc-glyphs { font-size: 38px; }
+  .rc-sn-first { white-space: normal; }
+}

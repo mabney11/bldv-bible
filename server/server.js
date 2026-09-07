@@ -71,6 +71,9 @@ try {
 }
 
 const production = require('./production');
+// One curated-gloss rule for the whole app (see gloss-resolver.cjs) — used by
+// the /roots summary card's per-Strong's-number definitions.
+const { createGlossResolver } = require('./gloss-resolver.cjs');
 
 const app = express();
 app.set('trust proxy', 1);  // behind ngrok / a platform proxy: use X-Forwarded-For for req.ip
@@ -3633,6 +3636,7 @@ function scheduleRebuild(changedFile) {
         _surfByValue  = null;
         _rootBySN     = null;
         _firstAppearanceByRoot = null;   // rebuilt fresh inside buildNavIndexes() below
+        _firstAppearanceBySn = null;
         _firstBySurfaceCache.clear();
         try {
             buildNavIndexes();
@@ -4109,6 +4113,14 @@ let _wordBySn       = null;   // Map<'H776' → [indices in _surfNavIndex]> (roo
 // Null until buildNavIndexes() runs; the route below treats a miss as "no
 // data yet" the same as "root has no recorded occurrence".
 let _firstAppearanceByRoot   = null;   // Map<root paleo → {book_id,chapter,verse}>
+// Per-Strong's-number sibling of the map above (2026-09-07, the /roots summary
+// card). The root-level map deliberately pools every number sharing a
+// spelling; the card shows BOTH — where the letters first appear at all, and
+// where THIS number first appears — so a scholar can see when a homograph
+// split's own sense enters the text. Same lifecycle as _firstAppearanceByRoot:
+// built once in _buildNavIndexesUncached (it already had firstBySn as a
+// local), persisted in nav-index.cache.json, nulled wherever that one is.
+let _firstAppearanceBySn     = null;   // Map<'H7307' → {book_id,chapter,verse}>
 let _firstBySurfaceCache     = new Map();   // Map<surface paleo → {book_id,book_name,chapter,verse} | null> — unused by the UI since "the First surface can be removed" (2026-08-16), left in place because /api/surface-explorer/first-by-word still serves it and nothing asked for that endpoint's removal.
 
 // Chronological ordering + "keep the earliest" helper shared by both the HEB
@@ -4190,7 +4202,11 @@ function _navCacheStamp() {
     // separate lookup not gated by _wordBySn) still correctly listed the 1
     // real hit below it. A cache built before this fix would keep that empty
     // index and keep showing "0 occurrences" for every such root forever.
-    const NAV_BUILD_VERSION = 'wordsurf-v9-wordbysn-full-sn-index';   // roots by Strong's #, word-level surfaces (now per-SN scoped, canonical-root spliced), both editions, root first-appearance index, whole-SN renumbering, full-SN _wordBySn indexing
+    // BUMPED again (2026-09-07, v10) for the per-SN first-appearance map
+    // (`firstBySn` payload) the /roots summary card reads — a v9 cache has no
+    // such field and _firstAppearanceBySn would stay empty until the next
+    // unrelated invalidation.
+    const NAV_BUILD_VERSION = 'wordsurf-v10-first-by-sn';   // roots by Strong's #, word-level surfaces (now per-SN scoped, canonical-root spliced), both editions, root first-appearance index, whole-SN renumbering, full-SN _wordBySn indexing
     const inputs = [
         path.join(__dirname, 'corpus.db'),             // tokens_bhs — the text the index is built from
         path.join(__dirname, 'surface-index.db'),      // the HEB half of the nav index
@@ -4225,6 +4241,7 @@ function _saveNavCache() {
             // Map isn't JSON-serializable directly — plain object round-trips
             // through Object.fromEntries/Object.entries below.
             firstAppearance: Object.fromEntries(_firstAppearanceByRoot || new Map()),
+            firstBySn:       Object.fromEntries(_firstAppearanceBySn   || new Map()),
         };
         // Write atomically so a crashed write can't leave a half-file
         const tmp = NAV_CACHE_PATH + '.tmp';
@@ -4368,6 +4385,7 @@ function buildNavIndexes() {
             }
         });
         _firstAppearanceByRoot = new Map(Object.entries(cached.firstAppearance || {}));
+        _firstAppearanceBySn   = new Map(Object.entries(cached.firstBySn || {}));
         console.log(`[nav-cache] hit: ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces, ${_firstAppearanceByRoot.size} first-appearances (saved ~1s)`);
         return;
     }
@@ -4685,6 +4703,7 @@ function _buildNavIndexesUncached() {
         const loc = firstBySn.get(e.sn);
         if (loc) _recordFirst(_firstAppearanceByRoot, e.root, loc);
     }
+    _firstAppearanceBySn = firstBySn;   // keep the per-number answers too (see the /roots summary card)
 
     console.log(`Nav indexes built: ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces, ${_firstAppearanceByRoot.size} first-appearances`);
     // Persist to disk so the next process start can skip the rebuild.
@@ -8319,6 +8338,7 @@ function getRootIndexByValue(root) { return _rootByValue?.get(root) ?? -1; }
 function getSurfIndexByValue(surf) { return _surfByValue?.get(surf)  ?? -1; }
 // O(1) — see the "FIRST APPEARANCE INDEX" build step in buildNavIndexes().
 function getFirstAppearanceByRoot(root) { return _firstAppearanceByRoot?.get(root) || null; }
+function getFirstAppearanceBySn(sn)     { return _firstAppearanceBySn?.get(navNormSN(sn)) || null; }
 
 app.get('/api/nav/roots', (req, res) => {
     try {
@@ -8740,6 +8760,7 @@ app.post('/admin/rebuild-indexes', (req, res) => {
     _surfByValue  = null;
     _rootBySN     = null;
     _firstAppearanceByRoot = null;   // rebuilt fresh inside buildNavIndexes() below
+        _firstAppearanceBySn = null;
     _firstBySurfaceCache.clear();
     try {
         buildNavIndexes();
@@ -8860,6 +8881,7 @@ function _applyLocOverrideChangeNow() {
     _rootNavIndex = null; _surfNavIndex = null;
     _rootByValue = null; _surfByValue = null; _rootBySN = null; _wordBySn = null;
     _firstAppearanceByRoot = null;   // rebuilt fresh inside buildNavIndexes() below
+        _firstAppearanceBySn = null;
     _firstBySurfaceCache.clear();
     buildNavIndexes();
 }
@@ -10215,6 +10237,24 @@ function resolveRootIdx(req) {
 // Returns aggregate info for one Strong's-number root: total occurrences,
 // surfaces breakdown, per-book breakdown, lexicon entry, and prev/next
 // neighbours for alphabetical navigation.
+// Curated-only definition for ONE (root letters, Strong's #) pair — the
+// /roots summary card's Definition row and each homograph chip. Same
+// provenance rule as gloss-resolver.cjs (fieldy: "I want placeholders for
+// data I havent added into my lexicon/homographs"): Strong's-keyed homograph
+// entries first (`<paleo>_H1732` and bare `H1732` are both live key shapes
+// in homographs.json), then the spelling-keyed lexicon/hebrew-extra gloss
+// the letters share, then NOTHING — src:'none', never kjv_def. A sibling
+// number with no Strong's-keyed entry therefore shows the shared lexicon
+// gloss, which is correct when the split is verb-stem-only and visibly
+// wrong (same gloss on every chip) when it isn't — that is the curation
+// frontier, on purpose.
+function rootDefinitionForSN(root, sn) {
+    const { lexicon, homographs, hebExtra } = loadLexicons();
+    const snNorm = navNormSN(sn);
+    const resolve = createGlossResolver({ homographs, lexicon, hebExtra: hebExtra || {} });
+    return resolve({ sn: snNorm, snKeys: [`${root}_${snNorm}`, snNorm], roots: [root] });
+}
+
 app.get('/api/root-explorer/root', production.cache(60), (req, res) => {
     try {
         // Tombstone for a whole-corpus-renumbered SN (see strongs-renumber.json /
@@ -10277,11 +10317,47 @@ app.get('/api/root-explorer/root', production.cache(60), (req, res) => {
         const next = idx + 1 < index.length ? index[idx + 1] : null;
 
         const { lexicon } = loadLexicons();
+
+        // ── Summary card (2026-09-07) ──────────────────────────────────────
+        // "I like the card-like details that my word-by-word shows … and would
+        // like the same at the lexicon/root level … This detailed card should
+        // include strongs numbers that use the same characters but have
+        // different strongs numbers … including the first time those
+        // characters appear together in the bible."
+        // `homographs` = every nav-index entry whose root LETTERS equal this
+        // one's (the index has one entry per (root, sn) pair, so this is a
+        // straight filter) — each with its own count, its own curated
+        // definition (Strong's-keyed homograph entry first, then the shared
+        // lexicon gloss; src says which, 'none' means fieldy hasn't curated
+        // it yet and the client shows the bare paleo placeholder), and its
+        // own first appearance. `first_by_letters` is the pooled answer the
+        // word-by-word table already shows; `first_by_sn` is this number's.
+        const fmtLoc = loc => loc
+            ? { book_id: loc.book_id, book_name: BOOK_NAMES[loc.book_id] || `Book ${loc.book_id}`, chapter: loc.chapter, verse: loc.verse }
+            : null;
+        const definition = rootDefinitionForSN(entry.root, entry.sn);
+        const homographs = index
+            .filter(e => e.root === entry.root)
+            .map(e => ({
+                sn: e.sn,
+                // Same SN-scoped tally as `total` above (not the nav-index
+                // e.count, which is a different pooling) so the active
+                // number's chip agrees with the page header.
+                count: getSurfacesForSN(e.sn).reduce((s, w) => s + ((w.by_sn?.[e.sn]?.count) ?? w.count ?? 0), 0),
+                definition: rootDefinitionForSN(e.root, e.sn),
+                first: fmtLoc(getFirstAppearanceBySn(e.sn)),
+            }))
+            .sort((a, b) => a.sn.localeCompare(b.sn, undefined, { numeric: true }));
+
         res.json({
             root: entry.root,
             sn: entry.sn,
             lemmaTranslit: getTranslit(entry.root),
             lexicon: lexicon[entry.root] || null,
+            definition,
+            homographs,
+            first_by_letters: fmtLoc(getFirstAppearanceByRoot(entry.root)),
+            first_by_sn: fmtLoc(getFirstAppearanceBySn(entry.sn)),
             strongs: [entry.sn],
             total,
             surfaces,

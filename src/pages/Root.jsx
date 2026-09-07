@@ -7,9 +7,10 @@ import { useIsMobile } from '../hooks/useIsMobile.js';
 import { useSwipeNav } from '../hooks/useSwipeNav.js';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { BOOK_NAMES, translit } from '../lib/books.js';
+import { buildBookSlugs, bookToParam } from '../lib/bookSlug.js';
 import { paleoToSVG, getPaleoMode } from '../lib/paleoGlyphs.js';
 import {
-  apiDefinitions,
+  apiDefinitions, apiBookOrder,
   apiRootList,    apiRootDetail,    apiRootVerses,
   apiSurfaceList, apiSurfaceDetail, apiSurfaceExplorerVerses,
 } from '../lib/api.js';
@@ -213,6 +214,113 @@ function VerseCard({ verse, onVerseClick }) {
   );
 }
 
+// ── Root summary card ───────────────────────────────────────────────────────
+// "I like the card-like details that my word-by-word shows for scripture
+// details and would like the same at the lexicon/root level, instead of
+// seeing a verse as the first thing … the detailed card can be rendered."
+// Same label/value stack as VersePage's word-by-word cards (WORD / ROOT /
+// TRANSLITERATION / DEFINITION / STRONG'S # / ROOT FIRST APPEARANCE), one
+// level up: the subject is the root itself, so the Word/Modifications rows
+// have nothing to say and are dropped, and the Strong's row lists EVERY
+// number filed under these exact letters (`detail.homographs`, from the
+// server) — each row is a link to that number's own page, where this same
+// card sits at the top again with that number active.
+//
+// Provenance is visible, never papered over: a definition comes only from
+// fieldy's own homographs.json / lexicon.json (server's rootDefinitionForSN);
+// an uncurated number shows the bare root paleo as its placeholder, the same
+// convention as every reader in the app.
+//
+// Two first appearances, both labelled, because they answer different
+// questions: "these letters, under any number" (what the word-by-word table
+// shows — the pooled _firstAppearanceByRoot) and "this number" — for a
+// clean verb-stem split they coincide; for a real homograph they need not.
+function RootCard({ detail, idToSlug, onPickSn }) {
+  const useSvg = getPaleoMode() === 'mobile';
+  const root = detail.root || '';
+  const rootGlyph = useMemo(
+    () => (useSvg ? paleoToSVG(root, '1em') : `<span class="glyph root">${root}</span>`),
+    [root, useSvg]
+  );
+  const verseHref = loc => `/${bookToParam(loc.book_id, idToSlug)}/${loc.chapter}/${loc.verse}`;
+  const locLabel  = loc => `${loc.book_name || BOOK_NAMES[loc.book_id] || `Book ${loc.book_id}`} ${loc.chapter}:${loc.verse}`;
+  const sameLoc   = (a, b) => !!a && !!b && a.book_id === b.book_id && a.chapter === b.chapter && a.verse === b.verse;
+
+  const def = detail.definition || { text: '', src: 'none' };
+  const homographs = detail.homographs?.length
+    ? detail.homographs
+    : [{ sn: detail.sn, count: detail.total, definition: def, first: detail.first_by_sn }];
+  const byLetters = detail.first_by_letters || null;
+  const bySn      = detail.first_by_sn || null;
+
+  const Definition = ({ d }) => (d && d.text)
+    ? <span className="rc-def-text">{d.text}</span>
+    : <span className="rc-def-placeholder" title="Not yet in your lexicon/homographs — showing the root letters">{root}</span>;
+
+  return (
+    <section className="rc-card" aria-label="Root summary">
+      <div className="rc-row">
+        <div className="rc-label">Root</div>
+        <div className="rc-glyphs" dangerouslySetInnerHTML={{ __html: rootGlyph }} />
+      </div>
+      <div className="rc-row">
+        <div className="rc-label">Transliteration</div>
+        <div className="rc-translit">{detail.lemmaTranslit || translit(root)}</div>
+      </div>
+      <div className="rc-row">
+        <div className="rc-label">Definition</div>
+        <div className="rc-value"><Definition d={def} /></div>
+      </div>
+      <div className="rc-row">
+        <div className="rc-label">
+          Strong's #
+          {homographs.length > 1 && <span className="rc-label-note"> — {homographs.length} numbers share these letters</span>}
+        </div>
+        <ul className="rc-sn-list">
+          {homographs.map(h => {
+            const active = h.sn === detail.sn;
+            return (
+              <li key={h.sn} className={`rc-sn-row ${active ? 'active' : ''}`}>
+                <a href={`/roots?sn=${encodeURIComponent(h.sn)}`}
+                   className="rc-sn-chip"
+                   aria-current={active ? 'true' : undefined}
+                   onClick={e => { e.preventDefault(); if (!active) onPickSn(h.sn); }}>{h.sn}</a>
+                <span className="rc-sn-count">{(h.count || 0).toLocaleString()} occ.</span>
+                <span className="rc-sn-def"><Definition d={h.definition} /></span>
+                {h.first && (
+                  <span className="rc-sn-first">first <Link to={verseHref(h.first)}>{locLabel(h.first)}</Link></span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      <div className="rc-row">
+        <div className="rc-label">Root first appearance</div>
+        <div className="rc-value">
+          {byLetters
+            ? <><Link to={verseHref(byLetters)} className="rc-first-link">{locLabel(byLetters)}</Link>
+                <span className="rc-first-note"> — these letters, under any number</span></>
+            : <span className="rc-def-placeholder">—</span>}
+          {bySn && !sameLoc(bySn, byLetters) && (
+            <div className="rc-first-sn">
+              {detail.sn} first: <Link to={verseHref(bySn)}>{locLabel(bySn)}</Link>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="rc-row">
+        <div className="rc-label">Occurrences</div>
+        <div className="rc-value">
+          {(detail.total || 0).toLocaleString()} as {detail.sn}
+          {detail.by_book?.length ? ` in ${detail.by_book.length} book${detail.by_book.length === 1 ? '' : 's'}` : ''}
+          {detail.surfaces?.length ? ` · ${detail.surfaces.length} surface form${detail.surfaces.length === 1 ? '' : 's'}` : ''}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Two-pane detail layout (matches the concordance): compact hit rail + scripture
 // centerpiece. Self-contained so it doesn't fight Root.css's old stacked layout.
@@ -275,6 +383,14 @@ export default function Root({ mode = 'root' }) {
   // to use ?root=<paleo>. The new endpoints are paleo-keyed.
 
   const [definitions, setDefinitions] = useState({});
+  // Book slugs for the card's verse-page links (/genesis/1/2) — built from
+  // the same /api/book-order list every reader builds them from.
+  const [masterBooks, setMasterBooks] = useState([]);
+  useEffect(() => { apiBookOrder().then(b => setMasterBooks(b || [])).catch(() => setMasterBooks([])); }, []);
+  const { idToSlug } = useMemo(
+    () => buildBookSlugs((masterBooks || []).map(mb => ({ id: mb.id ?? mb.book_id ?? mb.canon_id, name: mb.name }))),
+    [masterBooks]
+  );
   useEffect(() => { apiDefinitions().then(setDefinitions).catch(() => setDefinitions({})); }, []);
 
   // ── Sidebar list (all roots OR all surfaces) ───────────────────────────────
@@ -772,6 +888,9 @@ export default function Root({ mode = 'root' }) {
 
               {/* CENTERPIECE: selected verse as readable scripture, hit accented */}
               <section className="r2-center">
+                {detail.kind === 'root' && (
+                  <RootCard detail={detail} idToSlug={idToSlug} onPickSn={sn => setSearchParams({ sn })} />
+                )}
                 {(() => {
                   const cur = verses[sel] || null;
                   if (!cur) return <div style={{ color: 'var(--text3)', fontSize: 15, paddingTop: 30 }}>{verses.length ? 'Select a hit to read it here.' : 'No occurrences to show.'}</div>;
