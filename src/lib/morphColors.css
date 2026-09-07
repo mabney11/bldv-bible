@@ -51,6 +51,7 @@
  * else in this palette sits near it (closest neighbors are mod-prps
  * lavender and prs-3fs's softer pink). */
 .mod-cstr       { --mc: #e050d0; --mb: #700060; }
+.mod-nom        { --mc: #c8a070; --mb: #5a4020; }   /* noun-forming 𐤌 preformative (maskil, mashchit) */
 
 /* ── Verbal prefix markers — who performs ────────────────────────────────── */
 .pfm-3ms        { --mc: #e8784a; --mb: #802818; }
@@ -80,6 +81,7 @@
 .vbe-1cp        { --mc: #4898e0; --mb: #104870; }
 .vbe-2or3f      { --mc: #d888b8; --mb: #703060; }
 .vbe-2mp        { --mc: #90c870; --mb: #286010; }
+.vbe-2ms        { --mc: #a8d890; --mb: #3a7020; }   /* "You did" — synthesized perfect 2ms (sits between 2mp green and 2or3f pink) */
 .vbe-2fp        { --mc: #68b050; --mb: #184800; }
 .vbe-3ms        { --mc: #e8784a; --mb: #802818; }
 .vbe-3fs        { --mc: #f0889a; --mb: #803040; }
@@ -135,6 +137,8 @@
 [data-alt="1"].vbe-1cp   { --mc: #90c8ff; --mb: #003060; }
 [data-alt="1"].vbe-2or3f { --mc: #f8c8e0; --mb: #581840; }
 [data-alt="1"].vbe-2mp   { --mc: #c8f0a0; --mb: #1a5000; }
+[data-alt="1"].vbe-2ms   { --mc: #d0f0b8; --mb: #2a5010; }
+[data-alt="1"].mod-nom   { --mc: #e8c8a0; --mb: #402808; }
 [data-alt="1"].vbe-3mp   { --mc: #f0c888; --mb: #502800; }
 [data-alt="1"].vbe-3fp   { --mc: #e0b078; --mb: #481c00; }
 
@@ -152,6 +156,7 @@ html[data-theme="light"] .mod-prps    { --mc: #550066; --mb: #eec0ff; }
 html[data-theme="light"] .mod-prin    { --mc: #663300; --mb: #f8d8b8; }
 html[data-theme="light"] .mod-nmpr    { --mc: #775500; --mb: #ffee98; }
 html[data-theme="light"] .mod-cstr    { --mc: #9900aa; --mb: #f0c0f0; }
+html[data-theme="light"] .mod-nom     { --mc: #5a3a10; --mb: #f0dcc0; }
 html[data-theme="light"] .pfm-3ms     { --mc: #992200; --mb: #ffd0b0; }
 html[data-theme="light"] .pfm-2or3f   { --mc: #880055; --mb: #ffb8e8; }
 html[data-theme="light"] .pfm-1cs     { --mc: #003388; --mb: #b8d0ff; }
@@ -173,6 +178,7 @@ html[data-theme="light"] .vbe-1cs     { --mc: #003388; --mb: #b8d0ff; }
 html[data-theme="light"] .vbe-1cp     { --mc: #002266; --mb: #a8c0ff; }
 html[data-theme="light"] .vbe-2or3f   { --mc: #880055; --mb: #ffb8e8; }
 html[data-theme="light"] .vbe-2mp     { --mc: #226600; --mb: #c0eea0; }
+html[data-theme="light"] .vbe-2ms     { --mc: #2d6a10; --mb: #d0f0b8; }
 html[data-theme="light"] .vbe-2fp     { --mc: #1a5500; --mb: #b0e890; }
 html[data-theme="light"] .vbe-3ms     { --mc: #992200; --mb: #ffd0b0; }
 html[data-theme="light"] .vbe-3fs     { --mc: #990044; --mb: #ffb0cc; }
