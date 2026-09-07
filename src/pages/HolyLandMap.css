@@ -267,3 +267,38 @@
 .hl-rl-holy { background: #fffc; border: 1px solid #1a1208; padding: 3px 8px; margin-bottom: 6px; }
 .hl-rl-holy .hl-rl-name { font-size: 12px; letter-spacing: 0.08em; }
 .hl-rl-holy .hl-rl-en { font-size: 9.5px; }
+
+/* ── Scripture references: chips that open the verses inline ─────────────── */
+.hl-refs { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+.hl-refs-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.hl-refchip { display: inline-flex; align-items: center; gap: 5px; padding: 6px 11px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  background: color-mix(in srgb, var(--gold) 16%, var(--bg2)); border: 1px solid var(--gold); color: var(--gold2, var(--gold)); }
+.hl-refchip:hover { background: color-mix(in srgb, var(--gold) 28%, var(--bg2)); }
+.hl-refchip.on { background: var(--gold); color: #1a1208; }
+.hl-refs-sm .hl-refchip { padding: 2px 7px; font-size: 11.5px; font-weight: 600; border-radius: 6px; }
+.hl-refs-sm { margin-top: 0; display: inline-flex; }
+.hl-passage { border: 1px solid var(--border2); border-left: 3px solid var(--gold); border-radius: 8px; padding: 8px 12px; background: var(--bg2); display: flex; flex-direction: column; gap: 6px; }
+.hl-passage-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 12px; }
+.hl-passage-h b { color: var(--text); }
+.hl-passage-open { color: var(--blue); font-size: 12px; white-space: nowrap; }
+.hl-passage-open:hover { text-decoration: underline; }
+.hl-passage-wait { font-size: 12px; color: var(--text4); }
+.hl-verse { font-size: 13.5px; line-height: 1.55; color: var(--text); font-family: var(--reader-font, inherit); }
+.hl-verse sup { color: var(--gold); font-size: 10px; margin-right: 5px; font-weight: 700; }
+.hl-measures .hl-refs-sm { margin-bottom: 2px; }
+
+/* Region labels now read as buttons: a pill with a border, lifts on hover */
+.hl-rl { background: #fffb; border: 1px solid #1a120866; border-radius: 8px; padding: 3px 10px; box-shadow: 0 1px 3px #0004; text-shadow: none; transition: transform 0.12s, box-shadow 0.12s; }
+.hl-rl:hover { transform: translateY(-1px); box-shadow: 0 3px 8px #0005; border-color: #1a1208; background: #fff; }
+.hl-rl-name::after { content: ' ›'; opacity: 0.55; }
+.hl-rl-h { padding: 1px 5px; }
+.hl-rl-h .hl-rl-name::after { content: ''; }
+/* City labels: the name is the link */
+.hl-mk-lbl { pointer-events: auto; cursor: pointer; }
+.hl-mk-name { text-decoration: underline dotted #1a120866; text-underline-offset: 2px; }
+.hl-mk:hover .hl-mk-name { text-decoration-color: #1a1208; }
+/* keep the S/C/Z box colours above the generic pill background */
+.hl-rl.hl-rl-h-sanctuary { background: #e05555; color: #fff; }
+.hl-rl.hl-rl-h-city { background: #4a9eff; color: #fff; }
+.hl-rl.hl-rl-h-priests { background: #e8aa55; color: #1a1208; }
+.hl-rl.hl-rl-holy { background: #fffd; }

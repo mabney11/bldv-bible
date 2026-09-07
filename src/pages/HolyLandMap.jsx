@@ -30,7 +30,8 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { useTheme } from '../hooks/useTheme.js';
-import { slugify } from '../lib/bookSlug.js';
+import { apiTransChapter } from '../lib/api.js';
+import { parseRefs, readerHref, inRanges } from '../lib/models/refs.js';
 import {
   JOSHUA_TRIBES, BIBLICAL_CITIES, MODERN_CITIES, TRIBE_COLORS, TRIBE_HEBREW,
   HOLY_KIND_STYLE, EZEKIEL_ORDER, EZEKIEL_MEASURES, TRIBE_TRANSLIT, TRIBE_PALEO, tribeDisplayName,
@@ -148,12 +149,6 @@ function buildOnlineStyle(ofm) {
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-function refLink(ref) {
-  // "Joshua 15:11" / "2 Chronicles 11:6" → /2-chronicles/11/6 (VersePage route)
-  const m = /^([1-3]?\s?[A-Za-z]+)\s+(\d+):(\d+)/.exec(ref || '');
-  if (!m) return null;
-  return `/${slugify(m[1])}/${m[2]}/${m[3]}`;
-}
 function fmtLonLat([lon, lat]) {
   return `${lat.toFixed(3)}°N ${lon.toFixed(3)}°E`;
 }
@@ -308,7 +303,7 @@ export default function HolyLandMap() {
         el.type = 'button';
         el.className = `hl-mk hl-mk-b${c.id === KEY_CITY ? ' hl-mk-key' : ''}${c.id === selCityId ? ' hl-mk-sel' : ''}`;
         el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span><span class="hl-mk-paleo" dir="rtl">${c.paleo}</span><span class="hl-mk-en">${c.name}</span></span>`;
-        el.title = `${c.name} — ${c.translit} — ${c.ref}`;
+        el.title = `${c.translit} (${c.name}) — read ${c.ref}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
         mk([c.lon, c.lat], el);
       }
@@ -353,6 +348,7 @@ export default function HolyLandMap() {
       const tribe = entry.tribe;
       el.innerHTML = `<span class="hl-rl-name">${tribeDisplayName(entry.name, tribe)}</span>${tribe ? `<span class="hl-rl-paleo" dir="rtl">${TRIBE_PALEO[tribe] || ''}</span><span class="hl-rl-en">${entry.name}</span>` : ''}`;
       el.style.setProperty('--c', TRIBE_COLORS[tribe] || '#fff');
+      el.title = `${entry.name} — cities in this portion and ${entry.ref}`;
       el.addEventListener('click', (e) => { e.stopPropagation(); onClick(); });
       mk(ringCentroid(entry.ring), el);
     };
@@ -590,7 +586,7 @@ export default function HolyLandMap() {
                     <ol>
                       {EZEKIEL_MEASURES.map((m) => (
                         <li key={m.ref}>
-                          <b>{m.ref}</b>
+                          <PassageRefs refs={m.ref} size="sm" />
                           <div className="hl-measure-given">{m.given}</div>
                           <div className="hl-measure-read">→ {m.read}</div>
                         </li>
@@ -705,20 +701,74 @@ export default function HolyLandMap() {
   );
 }
 
+
+// ── Passage chips + inline verse text ────────────────────────────────────────
+// Every reference on the map is a button: click it and the verses themselves
+// appear right here (the app's own Novel English), with a link into the Reader
+// that highlights the whole range (?verse=&verseEnd=). Chapters are cached.
+const _chapterCache = new Map();
+function loadChapter(bookId, chapter) {
+  const k = `${bookId}:${chapter}`;
+  if (!_chapterCache.has(k)) _chapterCache.set(k, apiTransChapter(bookId, chapter).then((d) => d?.verses || []).catch(() => []));
+  return _chapterCache.get(k);
+}
+
+function Passage({ refObj }) {
+  const [verses, setVerses] = useState(null);
+  useEffect(() => {
+    let live = true;
+    setVerses(null);
+    loadChapter(refObj.bookId, refObj.chapter).then((vs) => { if (live) setVerses(vs.filter((v) => inRanges(+v.verse, refObj.ranges))); });
+    return () => { live = false; };
+  }, [refObj]);
+  return (
+    <div className="hl-passage">
+      <div className="hl-passage-h">
+        <b>{refObj.label}</b>
+        <Link to={readerHref(refObj)} className="hl-passage-open">Open in the Reader →</Link>
+      </div>
+      {verses === null && <div className="hl-passage-wait">Loading…</div>}
+      {verses && verses.length === 0 && <div className="hl-passage-wait">No English text for this passage yet.</div>}
+      {verses && verses.map((v) => (
+        <p key={v.verse} className="hl-verse"><sup>{v.verse}</sup>{v.text}</p>
+      ))}
+    </div>
+  );
+}
+
+export function PassageRefs({ refs, autoOpen = false, size = 'md' }) {
+  const parsed = useMemo(() => parseRefs(refs), [refs]);
+  const [open, setOpen] = useState(autoOpen ? 0 : -1);
+  useEffect(() => { setOpen(autoOpen ? 0 : -1); }, [refs, autoOpen]);
+  if (!parsed.length) return refs ? <span className="hl-detail-ref">{refs}</span> : null;
+  return (
+    <div className={`hl-refs hl-refs-${size}`}>
+      <div className="hl-refs-row">
+        {parsed.map((r, i) => (
+          <button key={r.label} type="button" className={`hl-refchip${open === i ? ' on' : ''}`} onClick={() => setOpen(open === i ? -1 : i)} title="Show the verses">
+            <span aria-hidden="true">📖</span> {r.label}
+          </button>
+        ))}
+      </div>
+      {open >= 0 && parsed[open] && <Passage refObj={parsed[open]} />}
+    </div>
+  );
+}
+
 // ── Detail card ──────────────────────────────────────────────────────────────
 function AllotmentLines({ joshua, ezekiel }) {
   return (
     <div className="hl-allot">
       <div className="hl-allot-row">
         <span className="hl-allot-k">Joshua</span>
-        {joshua ? <span className="hl-allot-v"><i style={{ background: TRIBE_COLORS[joshua.tribe] }} /> {tribeDisplayName(joshua.name, joshua.tribe)} <small>{joshua.name} · {joshua.ref}</small></span> : <span className="hl-allot-v dim">outside the listed allotments</span>}
+        {joshua ? <span className="hl-allot-v"><i style={{ background: TRIBE_COLORS[joshua.tribe] }} /> {tribeDisplayName(joshua.name, joshua.tribe)} <small>{joshua.name}</small> <PassageRefs refs={joshua.ref} size="sm" /></span> : <span className="hl-allot-v dim">outside the listed allotments</span>}
       </div>
       <div className="hl-allot-row">
         <span className="hl-allot-k">Ezekiel</span>
         {ezekiel ? (
           ezekiel.sub
-            ? <span className="hl-allot-v"><i style={{ background: HOLY_KIND_STYLE[ezekiel.sub.kind].color }} /> {ezekiel.sub.name} <small>{ezekiel.sub.ref}</small></span>
-            : <span className="hl-allot-v"><i style={{ background: TRIBE_COLORS[ezekiel.band.tribe] }} /> {TRIBE_TRANSLIT[ezekiel.band.tribe]} <small>{ezekiel.band.name} · {ezekiel.band.ref}</small></span>
+            ? <span className="hl-allot-v"><i style={{ background: HOLY_KIND_STYLE[ezekiel.sub.kind].color }} /> {ezekiel.sub.name} <PassageRefs refs={ezekiel.sub.ref} size="sm" /></span>
+            : <span className="hl-allot-v"><i style={{ background: TRIBE_COLORS[ezekiel.band.tribe] }} /> {TRIBE_TRANSLIT[ezekiel.band.tribe]} <small>{ezekiel.band.name}</small> <PassageRefs refs={ezekiel.band.ref} size="sm" /></span>
         ) : <span className="hl-allot-v dim">outside the borders of Ezekiel 47</span>}
       </div>
     </div>
@@ -748,7 +798,6 @@ function PinRow({ pin, at, label, onPin, onUnpin }) {
 function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
   if (sel.kind === 'city') {
     const c = sel.city;
-    const link = c.kind !== 'modern' ? refLink(c.ref) : null;
     const twinBiblical = c.kind === 'modern' ? BIBLICAL_CITIES.filter((b) => Math.hypot(b.lon - c.lon, b.lat - c.lat) < 0.03) : [];
     const twinModern = c.kind === 'biblical' ? MODERN_CITIES.filter((m) => Math.hypot(m.lon - c.lon, m.lat - c.lat) < 0.03) : [];
     return (
@@ -759,8 +808,8 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
             <div className="hl-detail-paleo" dir="rtl">{c.paleo}</div>
             <div className="hl-detail-name">{c.translit} <em>{c.name}</em></div>
             <div className="hl-detail-he">{c.he}</div>
-            <div className="hl-detail-ref">{link ? <Link to={link}>{c.ref} →</Link> : c.ref}</div>
             {c.note && <p className="hl-detail-note">{c.note}</p>}
+            <PassageRefs refs={c.ref} autoOpen />
           </>
         ) : (
           <>
@@ -780,13 +829,13 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
   if (sel.kind === 'joshua' || sel.kind === 'ezekiel' || sel.kind === 'holy') {
     const e = sel.entry;
     const color = sel.kind === 'holy' ? HOLY_KIND_STYLE[e.kind].color : TRIBE_COLORS[e.tribe];
-    const link = refLink(e.ref);
     return (
       <div className="hl-detail">
         <button type="button" className="hl-detail-x" onClick={onClose} aria-label="Close">×</button>
         <div className="hl-detail-name"><i className="hl-detail-sw" style={{ background: color }} /> {tribeDisplayName(e.name, e.tribe)} {e.tribe && <span className="hl-detail-paleo-inline" dir="rtl">{TRIBE_PALEO[e.tribe]}</span>}</div>
         {e.tribe && <div className="hl-detail-he">{e.name} · {TRIBE_HEBREW[e.tribe]}</div>}
-        <div className="hl-detail-ref">{sel.kind === 'joshua' ? 'Joshua allotment' : 'Ezekiel — millennial allotment'} · {link ? <Link to={link}>{e.ref} →</Link> : e.ref}</div>
+        <div className="hl-detail-ref">{sel.kind === 'joshua' ? 'Joshua allotment' : 'Ezekiel — millennial allotment'}</div>
+        <PassageRefs refs={e.ref} autoOpen />
         {sel.kind === 'holy' && e.kind === 'sanctuary' && <p className="hl-detail-note">500 × 500 with 50 of open land round it (45:2), in the midst of the priests' portion.</p>}
         <div className="hl-detail-sub">Biblical cities inside <span className="hl-count">{sel.cities.biblical.length}</span></div>
         <div className="hl-chips">{sel.cities.biblical.map((c) => <button key={c.id} type="button" className={`hl-chip${c.id === KEY_CITY ? ' key' : ''}`} onClick={() => onCity(c)}>{c.name} <span>{c.paleo}</span></button>)}{sel.cities.biblical.length === 0 && <span className="dim">none listed</span>}</div>
