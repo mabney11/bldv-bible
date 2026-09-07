@@ -168,7 +168,7 @@ html[data-theme="light"] .hv-verse-marker { color: #fff; background: #1a1612; }
      mojibake here even though the underlying data was correct. Same paleo-aware
      stack the rest of the app uses, monospace kept as the fallback for the plain
      ASCII field names/numbers around it. */
-  font-family: var(--paleo-font, 'Segoe UI Historic', 'Noto Sans Phoenician'), monospace;
+  font-family: var(--paleo-font, 'BLD Paleo', 'Segoe UI Historic', 'Noto Sans Phoenician'), monospace;
   font-size: 11px;
   resize: vertical;
   line-height: 1.5;

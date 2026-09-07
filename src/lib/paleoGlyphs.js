@@ -5,6 +5,9 @@
  *   - Same SVG viewBox (0 0 40 48), same stroke renderer, same localStorage keys
  *     (paleo_glyphs_desktop / paleo_glyphs_mobile / paleo_glyph_config / paleo_render_mode)
  *     so user-drawn glyphs from the old app carry over.
+ *   - BUT (2026-09-07) no built-in SVG overrides ship any more: waw + dalet live
+ *     in the bundled 'BLD Paleo' web font, so by default every letter is plain
+ *     Unicode text and this module only kicks in for user-drawn glyphs.
  *   - paleoToSVG(text, size?) returns the same HTML strings.
  *
  * What's added (lexicon.html depended on these):
@@ -50,15 +53,17 @@ export function setRenderMode(m) {
 // ──────────────────────────────────────────────────────────────────────────────
 // CONFIG (per-char margins + transforms, both per mode)
 // ──────────────────────────────────────────────────────────────────────────────
+// 2026-09-07: no per-character overrides on either mode. Waw and dalet used to
+// be hand-drawn SVGs on mobile, squeezed into the text run with scaleX 0.7 and
+// -3.5px margins — a hack that never spaced right next to each other (or next
+// to real glyphs like in 𐤉𐤄𐤅𐤃𐤄). Both letters are now cut into the bundled
+// 'BLD Paleo' web font (public/fonts, scripts/build-paleo-font.py) as real
+// glyphs with advance widths, so every platform renders identical letterforms
+// with font-metric spacing. The editor/override machinery below still works
+// for anyone who wants to hand-draw a letter; it just ships empty.
 const SERVER_CFG = {
   desktop: { custom: 0, unicode: 0, chars: {} },
-  mobile:  {
-    custom: 0, unicode: 0,
-    chars: {
-      '𐤅': { scaleX: 0.7, scaleY: 1, translateX: 0, translateY: 0, marginL: -3.5, marginR: -3.5 },
-      '𐤃': { scaleX: 1,   scaleY: 1, translateX: 1, translateY: 0, marginL: -3.5, marginR: -3.5 },
-    },
-  },
+  mobile:  { custom: 0, unicode: 0, chars: {} },
 };
 
 const _cfg = {
@@ -101,23 +106,17 @@ function applyCss() {
 
 // ──────────────────────────────────────────────────────────────────────────────
 // BUILT-IN GLYPH STORES (server-side / hardcoded)
-// Same as paleo-glyphs.js: most are empty strings (Unicode fallback) except the
-// two mobile overrides for 𐤃 and 𐤅.
+// All empty: every letter renders as its real Unicode code point in the
+// 'BLD Paleo' web font. (Mobile used to override 𐤃 and 𐤅 with inline-SVG
+// strokes — see the note above SERVER_CFG for why that's gone.)
 // ──────────────────────────────────────────────────────────────────────────────
-const SG_DESKTOP = {
+const EMPTY_STORE = () => ({
   '𐤀':'', '𐤁':'', '𐤂':'', '𐤃':'', '𐤄':'', '𐤅':'', '𐤆':'', '𐤇':'',
   '𐤈':'', '𐤉':'', '𐤊':'', '𐤋':'', '𐤌':'', '𐤍':'', '𐤎':'', '𐤏':'',
   '𐤐':'', '𐤑':'', '𐤒':'', '𐤓':'', '𐤔':'', '𐤕':'',
-};
-
-const SG_MOBILE = {
-  '𐤀':'', '𐤁':'', '𐤂':'',
-  '𐤃':'<path d="M20.24,11.89 L3.16,34.76" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.00,36.11 L37.00,35.72" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M37.00,35.72 L20.87,13.08" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
-  '𐤄':'',
-  '𐤅':'<path d="M3.00,8.04 L20.03,25.71" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.09,25.71 L37.00,9.44" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.91,25.01 L20.09,39.96" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>',
-  '𐤆':'', '𐤇':'', '𐤈':'', '𐤉':'', '𐤊':'', '𐤋':'', '𐤌':'', '𐤍':'',
-  '𐤎':'', '𐤏':'', '𐤐':'', '𐤑':'', '𐤒':'', '𐤓':'', '𐤔':'', '𐤕':'',
-};
+});
+const SG_DESKTOP = EMPTY_STORE();
+const SG_MOBILE  = EMPTY_STORE();
 
 // ──────────────────────────────────────────────────────────────────────────────
 // USER GLYPH STORE (drawn in the glyph editor)

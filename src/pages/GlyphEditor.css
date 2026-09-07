@@ -67,7 +67,7 @@
   overflow-x: auto;
 }
 .ge-prev-sample {
-  font-family: 'Segoe UI Historic', 'Segoe UI', serif;
+  font-family: var(--paleo-font);
   font-size: 24px; line-height: 1;
   display: inline-flex; align-items: flex-end; direction: rtl;
 }
@@ -87,7 +87,7 @@
 .ge-lcard.ge-done { border-color: var(--green); }
 .ge-lcard svg, .ge-lcard .ge-ucglyph { width: 44px; height: 52px; }
 .ge-ucglyph {
-  font-family: 'Segoe UI Historic', 'Segoe UI', serif;
+  font-family: var(--paleo-font);
   font-size: 32px;
   display: flex; align-items: center; justify-content: center;
   color: var(--text3);

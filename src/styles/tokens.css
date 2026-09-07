@@ -2,6 +2,19 @@
    Both dark and light themes share the same set of CSS custom properties so
    any component can use, e.g., var(--bg2) and have it adapt automatically. */
 
+/* "BLD Paleo" — the ONE Paleo-Hebrew face the whole app renders with, on every
+   platform. Noto Sans Phoenician (OFL) with dalet redrawn as a closed triangle
+   and waw as a clean Y-fork, both cut as real glyphs with proper advance
+   widths so they space naturally beside every other letter. Regenerate with
+   scripts/build-paleo-font.py. unicode-range keeps it from ever touching
+   Latin/Hebrew text that shares an element. */
+@font-face {
+  font-family: 'BLD Paleo';
+  src: url('/fonts/BLDPaleo-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: block;
+  unicode-range: U+10900-1091F;
+}
+
 :root {
   /* Dark theme (default) */
   --bg:     #0e0e0f;
@@ -42,9 +55,10 @@
   --safe-top:    env(safe-area-inset-top,    0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 
-  /* Paleo font face — Segoe UI Historic is the most common system font with
-     paleo-hebrew unicode coverage; falls back through the same chain in case. */
-  --paleo-font: 'Segoe UI Historic','Segoe UI',sans-serif;
+  /* Paleo font face — the bundled 'BLD Paleo' web font (see @font-face above)
+     so mobile and desktop render identical letterforms; the system faces are
+     only a fallback for the instant before the woff2 arrives. */
+  --paleo-font: 'BLD Paleo','Segoe UI Historic','Noto Sans Phoenician','Segoe UI',sans-serif;
 }
 
 html[data-theme="light"] {

@@ -493,7 +493,7 @@
    something to look at, and it's honest about what's actually known (the
    word itself) rather than empty space standing in for missing data. */
 .rd-heb .hwc-gloss .hw-src-fallback {
-  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  font-family: 'BLD Paleo', 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
   unicode-bidi: embed;
   font-size: 1.1em;
 }
@@ -510,7 +510,7 @@
    accent (not the dimmer gloss gold) and bold, so the divine name reads as
    its own signal rather than blending into the rest of the gloss. */
 .rd-heb .hwc-gloss .hw-divine {
-  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  font-family: 'BLD Paleo', 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
   unicode-bidi: embed;
   color: var(--pr-accent);
   font-weight: 700;
@@ -1261,7 +1261,7 @@
   text-align: center;
 }
 .rd-super-paleo {
-  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  font-family: 'BLD Paleo', 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
   font-size: 1.35em;
   line-height: 1.6;
   direction: rtl;
@@ -1308,7 +1308,7 @@
 }
 .rd-acrostic:first-child { margin-top: 0; }
 .rd-acrostic-glyph {
-  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  font-family: 'BLD Paleo', 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
   font-size: 2.75em;
   line-height: 1;
   color: var(--gold, #c8a557);
@@ -1321,7 +1321,7 @@
   color: var(--text3, #8a8175);
 }
 .rd-acrostic-spelled {
-  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  font-family: 'BLD Paleo', 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
   font-style: normal;
   font-size: 1.3em;
   letter-spacing: .02em;
@@ -1347,7 +1347,7 @@
   margin: 0 auto;
 }
 .rd-state-icon {
-  font-family: 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
+  font-family: 'BLD Paleo', 'Segoe UI Historic', 'Noto Sans Phoenician', serif;
   font-size: 2.8rem;
   color: var(--gold, #c8a557);
   line-height: 1;

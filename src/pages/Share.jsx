@@ -10,7 +10,7 @@ import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import './Share.css';
 
 const FONT_OPTIONS = [
-  { value: "'Segoe UI Historic','Segoe UI',serif", label: 'System (Paleo-aware)' },
+  { value: "'BLD Paleo','Segoe UI Historic','Segoe UI',serif", label: 'BLD Paleo (site font)' },
   { value: 'Georgia,serif',                        label: 'Georgia' },
   { value: '"Times New Roman",serif',              label: 'Times' },
   { value: '"Helvetica Neue",sans-serif',          label: 'Helvetica' },
@@ -468,6 +468,10 @@ export default function Share() {
   const exportImage = useCallback(async () => {
     // Render to a fresh canvas — drawing the bg + each text box.
     // We don't use html2canvas because we want bit-exact control + no deps.
+    // Canvas text uses whatever face is loaded at fillText() time — make sure
+    // the bundled Paleo font is, or the export silently falls back to a system
+    // font and its waw/dalet come out different from the live preview.
+    try { await document.fonts.load("16px 'BLD Paleo'", '\u{10905}\u{10903}'); } catch (e) { /* offline / unsupported */ }
     const c = document.createElement('canvas');
     c.width = canvasSize.w; c.height = canvasSize.h;
     const ctx = c.getContext('2d');

@@ -202,7 +202,7 @@
   border-radius: 6px;
   cursor: pointer;
   font-size: 22px;
-  font-family: 'Segoe UI Historic', 'Segoe UI', sans-serif;
+  font-family: var(--paleo-font);
   user-select: none;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;

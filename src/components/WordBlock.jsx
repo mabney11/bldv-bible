@@ -283,7 +283,7 @@ export function computeWordParts(wordObj, opts = {}) {
         // client never derives roots or glosses on its own.
         let lemmaPrefixHtml = '';
         if (comp.trueRoot) {
-          const rs = 'font-style:normal;font-family:"Segoe UI Historic",sans-serif;unicode-bidi:embed;';
+          const rs = 'font-style:normal;font-family:"BLD Paleo","Segoe UI Historic",sans-serif;unicode-bidi:embed;';
           lemmaPrefixHtml = `<span style="color:#888;font-size:.9em;font-style:italic">${comp.lemmaTranslit} (<span dir="rtl" style="${rs}">${comp.trueRoot}</span>) &rarr; </span>`;
         } else if (comp.lemmaTranslit &&
                    comp.lemmaTranslit.toLowerCase() !== (comp.translit || '').toLowerCase()) {

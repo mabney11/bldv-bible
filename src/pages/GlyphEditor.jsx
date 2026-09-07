@@ -165,7 +165,7 @@ export default function GlyphEditor() {
       ctx.globalAlpha = 0.18;
       ctx.fillStyle = '#4a9eff';
       const fontSize = h * 0.82;
-      ctx.font = `${fontSize}px 'Segoe UI Historic','Segoe UI',serif`;
+      ctx.font = `${fontSize}px 'BLD Paleo','Segoe UI Historic','Segoe UI',serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'alphabetic';
       ctx.fillText(curLetter.ch, w/2, h * 0.92);
@@ -195,6 +195,13 @@ export default function GlyphEditor() {
   }, [canvasSize, showRef, curLetter, curStrokes, strokeWidth]);
 
   useEffect(() => { drawCanvas(); }, [drawCanvas]);
+  // The reference letter is drawn with canvas fillText, which uses whatever
+  // face is loaded at that instant — repaint once the bundled Paleo font lands.
+  useEffect(() => {
+    let alive = true;
+    try { document.fonts.load("16px 'BLD Paleo'", '\u{10905}').then(() => { if (alive) drawCanvas(); }); } catch (e) { /* ignore */ }
+    return () => { alive = false; };
+  }, [drawCanvas]);
 
   const onPointerDown = e => {
     e.preventDefault();

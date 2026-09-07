@@ -132,7 +132,7 @@
 .par-unaligned { direction: ltr; font-size: 12px; color: var(--text4); font-style: italic; padding: 6px 2px; line-height: 1.5; }
 .word-block { display: inline-flex; flex-direction: column; align-items: center; vertical-align: top; margin: var(--word-margin); gap: var(--word-gap); cursor: default; }
 .word-block.lnk { cursor: pointer; }
-.paleo { position: relative; font-family: 'Segoe UI Historic', 'Segoe UI', sans-serif; font-size: var(--paleo-size); line-height: 1; direction: rtl; display: flex; align-items: flex-end; min-height: calc(var(--paleo-size) * 1.1); padding: 4px 6px; border-radius: 8px; background: var(--bg3); white-space: nowrap; overflow: visible; }
+.paleo { position: relative; font-family: var(--paleo-font); font-size: var(--paleo-size); line-height: 1; direction: rtl; display: flex; align-items: flex-end; min-height: calc(var(--paleo-size) * 1.1); padding: 4px 6px; border-radius: 8px; background: var(--bg3); white-space: nowrap; overflow: visible; }
 .visible-text { display: flex; align-items: flex-end; white-space: nowrap; flex-wrap: nowrap; }
 .clickable-comp { cursor: pointer; position: relative; display: inline-block; padding: 4px 1px; letter-spacing: -.02em; color: var(--mc, var(--text)); transition: opacity .15s; }
 .clickable-comp:hover { opacity: .72; }
