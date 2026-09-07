@@ -478,6 +478,89 @@ function extractSuffix(attributes, attrKey, mapKey, paleoArray, canon) {
 // consonant-string against every known suffix table so a trailing addition
 // that survives to rootDisplay unclaimed can still get its real grammatical
 // label instead of a bare "unknown" stub.
+// TRAILING-RESIDUE CLASSIFIER (kept in sync between server.js and
+// build-surface-index.js). Letters left after the true root that no tag
+// claimed used to fall through to guessSuffixGloss (a blind table lookup) or a
+// bare "[R]"-style stub. Most of them are regular grammar the tags don't
+// name: the doubled last radical of the Polel/Pilpel stems (𐤌𐤔𐤓𐤓 = 𐤔𐤉𐤓 + 𐤓,
+// 𐤀𐤊𐤋𐤊𐤋 = 𐤊𐤅𐤋 + 𐤊𐤋), the III-he passive participle 𐤅𐤉 (𐤁𐤍𐤅𐤉 "built"), and the
+// Aramaic endings of Daniel/Ezra: determinate 𐤀 "the" (𐤌𐤋𐤊𐤀), 1cs perfect
+// 𐤉𐤕 (𐤁𐤍𐤉𐤕 "I built"), 1cp 𐤍𐤀 (𐤀𐤌𐤓𐤍𐤀 "we said"), plural 𐤄𐤕 (𐤀𐤁𐤄𐤕 "fathers").
+// Each rule is gated on the tag that makes it true; returns null to fall back.
+function classifyResidue(extra, pos, attributes, trueRoot) {
+    if (!extra) return null;
+    const a = attributes || {};
+    const R = [...(trueRoot || '')];
+    const last = R.length ? R[R.length - 1] : '';
+    const DOUBLING = new Set(['poel', 'polel', 'poal', 'polal', 'pilp', 'pilpel', 'htpo', 'hitpolel', 'pulal', 'palel']);
+    if (pos === 'verb' && DOUBLING.has(a.vs) && R.length >= 2 &&
+        (extra === last || extra === R[0] + last || extra === R[R.length - 2] + last))
+        return { trans: 'Doubled (intensive)', css: 'mod-dbl' };
+    if ((pos === 'subs' || pos === 'adjv' || pos === 'nmpr') && extra === last && R.length >= 2)
+        return { trans: 'Doubled', css: 'mod-dbl' };
+    if (pos === 'verb' && a.vt === 'ptcp' && extra === '𐤅𐤉') return { trans: 'Passive', css: 'pfm-ptcp' };
+    if (pos === 'verb' && (a.vt === 'perf' || a.vt === 'weqt') && a.ps === 'p1') {
+        if (a.nu !== 'pl' && extra === '𐤉𐤕') return { trans: 'I did', css: 'vbe-1cs' };
+        if (a.nu === 'pl' && extra === '𐤍𐤀') return { trans: 'We did', css: 'vbe-1cp' };
+    }
+    if (pos === 'verb' && a.vt === 'infc' && extra === '𐤉𐤄') return { trans: 'Infinitive', css: 'nme-h' };
+    if (pos === 'subs' && a.nu === 'pl' && extra === '𐤄𐤕') return { trans: 'Plural of', css: 'nme-wtj' };
+    if ((pos === 'subs' || pos === 'adjv' || pos === 'advb') && extra === '𐤀') return { trans: 'The (Aramaic)', css: 'mod-art' };
+    return null;
+}
+
+// ── FLAT LABELS: ONE LETTER-STRING, ONE MEANING (fieldy, Sep 7 2026) ──────────
+// Kept in sync between server.js and build-surface-index.js.
+// "My basic prefixes and suffixes do not need a big umbrella being able to
+// mean a bunch of things. My corpus can read consistently if it weren't for
+// all-over-the-place modifications that don't justify themselves."
+// The morphology tags still decide WHERE a word splits (that is what keeps the
+// root clean); the LETTERS alone decide what the chip says. Colour (css) keeps
+// the tag detail — 2ms vs 2fs "Your", the feminine tint on 𐤕𐤉 — so nothing is
+// lost, it just isn't spelled out as a different word. Chips with no written
+// letters (∅ Causing / Reflexive / He did) keep their own label.
+const FLAT_PREFIX = {
+    '𐤉': 'He/it', '𐤅𐤉': 'And he/it', '𐤋': 'He/it',          // imperfect prefix (𐤋 = Aramaic)
+    '𐤕': 'She/it', '𐤀': 'I', '𐤍': 'We',                      // 𐤍 includes the Nifal 𐤍 (fieldy: "we will")
+    '𐤄': 'Causing', '𐤄𐤕': 'Reflexive', '𐤀𐤕': 'Reflexive',
+    '𐤌': 'One who',                                            // participle / noun-forming 𐤌
+};
+const FLAT_SUFFIX = {
+    '𐤅': 'His', '𐤄𐤅': 'His', '𐤅𐤍': 'His',
+    '𐤄': 'Hers · feminine', '𐤕𐤄': 'Feminine · hers',
+    '𐤉': 'My/Of', '𐤍𐤉': 'Me',
+    '𐤊': 'Your', '𐤊𐤌': 'Your (pl)', '𐤊𐤍': 'Your (f pl)', '𐤊𐤄': 'Your',
+    '𐤌': 'Their', '𐤄𐤌': 'Their', '𐤍': 'Their (f)', '𐤄𐤍': 'Their (f)',
+    '𐤍𐤅': 'Our', '𐤍𐤀': 'Our', '𐤍𐤄': 'Them (f)',
+    '𐤕𐤌': 'You all / them', '𐤕𐤍': 'You all (f)',
+    '𐤕': 'Feminine', '𐤕𐤉': 'My/Of', '𐤉𐤕': 'Of · feminine', '𐤅𐤕𐤉': 'Plural (f) · of',
+    '𐤉𐤌': 'Plural', '𐤉𐤍': 'Plural', '𐤅𐤕': 'Plural (f)', '𐤄𐤕': 'Plural',
+    '𐤀': 'The (Aramaic)',
+};
+const FLAT_CSS = { '𐤕𐤉': 'nme-f' };   // "-thay can be my/of, marked feminine by colour"
+function applyFlatLabels(comps) {
+    if (!comps || !comps.length) return;
+    // group per source token (server.js carries token_ordinal; the builder gets one token)
+    const groups = new Map();
+    comps.forEach((c, i) => { const k = c.token_ordinal === undefined ? 0 : c.token_ordinal; (groups.get(k) || groups.set(k, []).get(k)).push(i); });
+    for (const idx of groups.values()) {
+        const r = idx.find(i => comps[i] && Object.prototype.hasOwnProperty.call(comps[i], 'lemmaTranslit'));
+        if (r === undefined) continue;
+        for (const i of idx) {
+            const c = comps[i];
+            if (i === r || !c || c.isMark || !c.paleo) continue;
+            if (c.css === 'vbs-hit' || c.css === 'vbs-hif') continue;   // 𐤄 Causing, 𐤄𐤕/𐤕 Reflexive keep their stem label; Nifal 𐤍 reads 'We' (fieldy: "𐤍- prefix → we will")
+            let label;
+            if (c.infixed) label = 'Reflexive';
+            else if (i < r) label = FLAT_PREFIX[c.paleo];
+            else label = FLAT_SUFFIX[c.paleo];
+            if (!label) continue;
+            c.translation = `[${label}]`;
+            if (FLAT_CSS[c.paleo] && i > r) c.css = FLAT_CSS[c.paleo];
+        }
+    }
+}
+
 function guessSuffixGloss(paleoStr) {
     if (!paleoStr) return null;
     for (const mapKey of ['nme', 'prs', 'vbe', 'uvf']) {
@@ -701,7 +784,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
             if (_pcanon && rawPaleo !== _pcanon && [..._pcanon].length >= 2) {
                 if (rawPaleo === _pcanon + '𐤉') {
                     components = [{ paleo: _pcanon, translit: '', translation, css: getCssClass(pos) },
-                                  { paleo: '𐤉', translit: '', translation: '[Of]', css: 'nme-j' }];
+                                  { paleo: '𐤉', translit: '', translation: '[My/Of]', css: 'nme-j' }];
                 } else if (rawPaleo.endsWith(_pcanon) && [...rawPaleo].length === [..._pcanon].length + 1) {
                     const _lead = [...rawPaleo][0];
                     const _g = GRAMMAR_MAP.prep[_lead] ? ['mod-prep', GRAMMAR_MAP.prep[_lead]]
@@ -816,7 +899,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
             (attributes['st'] === 'c' || prsObj) && _canonEarly && !_canonEarly.endsWith('𐤉') &&
             paleoArray.join('') === _canonEarly + '𐤉') {
             paleoArray.pop();
-            nmeObj = { paleo: '𐤉', translit: '', translation: '[Of]', css: 'nme-j' };
+            nmeObj = { paleo: '𐤉', translit: '', translation: '[My/Of]', css: 'nme-j' };
         }
 
         // JM/JM= tagged but spelled with a bare Yod (construct plural "-ei",
@@ -870,6 +953,13 @@ function parseToken(wordRaw, pos, morph, strongs) {
             }
         }
         let vbeObj = extractSuffix(attributes, 'vbe', 'vbe', paleoArray, _canonEarly);
+        // The 3ms perfect (𐤀𐤌𐤓 "he said") adds no letter at all, so it had no chip:
+        // emit an empty one, like the unwritten Hifil 𐤄, so every verb shows its subject.
+        if (!vbeObj && pos === 'verb' && (attributes['vt'] === 'perf' || attributes['vt'] === 'weqt') &&
+            attributes['ps'] === 'p3' && attributes['nu'] !== 'pl' && attributes['gn'] !== 'f' &&
+            (!attributes['prs'] || attributes['prs'] === 'absent')) {
+            vbeObj = { paleo: '', translit: '', translation: '[He did]', css: 'vbe-3ms' };
+        }
 
         // Masculine plural imperative ("Praise!", "Keep!", …) always ends in ־וּ
         // (Waw) — a universal Hebrew inflectional rule, not a per-root guess.
@@ -1114,7 +1204,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
         if (rootDisplay && trueRoot && rootDisplay !== trueRoot && rootDisplay.startsWith(trueRoot)) {
             const bakedExtra = rootDisplay.slice(trueRoot.length);
             if (bakedExtra) {
-                const guess = guessSuffixGloss(bakedExtra);
+                const guess = classifyResidue(bakedExtra, pos, attributes, trueRoot) || guessSuffixGloss(bakedExtra);
                 bakedModObj = {
                     paleo: bakedExtra,
                     translit: '',
@@ -1273,6 +1363,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
         ];
     }
 
+    applyFlatLabels(components);
     transliterateBlock(components);
     const SUFFIX_CSS = ['nme-','prs-','vbe-','mod-suff-unk'];
     for (const comp of components) {
