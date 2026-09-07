@@ -646,13 +646,27 @@ export default function Translate() {
     [masterBooks]
   );
 
+  // book stays NUMERIC here (canon_id), not bookToParam's slug — 2026-09-07.
+  // server/prerender.js's translateVerseRoute self-canonicalizes every
+  // /translate?book=..&chapter=..&verse=.. URL (sitemap-chapters.xml submits
+  // the chapter form the same way) using validBook(), which only ever parses
+  // a plain integer — it doesn't resolve slugs at all. Writing a slug here
+  // meant every /translate visit silently rewrote its own address bar (and,
+  // via SelfCanonical, its <link rel="canonical">) to a `?book=genesis&...`
+  // URL prerender.js's own snapshot builder wouldn't recognize as the same
+  // page — a real "page declares a different canonical" mismatch, not just
+  // a cosmetic one. Unlike Parallel (which has a real clean slug PATH,
+  // /parallel/<slug>/<chapter>, that prerender.js's parallelVerseRoute now
+  // canonicalizes onto), Translate has no clean-path route to redirect to
+  // instead — so the fix is simply: stop rewriting the URL into a form the
+  // server-declared canonical doesn't match.
   const setUrl = useCallback((b, c, v) => {
     const p = {};
-    if (b) p.book = bookToParam(b, idToSlug);
+    if (b) p.book = String(b);
     if (c) p.chapter = String(c);
     if (v != null) p.verse = String(v);
     setSearchParams(p, { replace: true });
-  }, [setSearchParams, idToSlug]);
+  }, [setSearchParams]);
 
   // ── BOOK / CHAPTER PANE ───────────────────────────────────────────────────
   const books = progress?.books || [];

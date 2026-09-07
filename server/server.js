@@ -10153,6 +10153,52 @@ app.get('/sitemap-verse-pages.xml', production.cache(3600), (req, res) => {
     }
 });
 
+// GET /sitemap-parallel-pages.xml — one <url> per real (book, chapter, verse)
+// for the CLEAN Parallel path (/parallel/<slug>/<chapter>-<verse>,
+// PARALLEL_PATH_RE in prerender.js / Parallel.jsx). 2026-09-07: added
+// alongside the fix that makes server/prerender.js's parallelVerseRoute and
+// parallelChapterRoute declare THIS exact URL shape as their own canonical
+// (see that file for the full "Page with redirect" investigation) — a
+// canonical tag alone is enough for Google to go discover the target, but a
+// direct sitemap entry is the same "prerendered, but not in any sitemap,
+// isn't actually discoverable" lesson sitemap-verse-pages.xml already
+// documents for its own route, so this closes that gap for /parallel too
+// rather than leaving the new canonical target to be found by chance.
+//
+// Same OT-only (book_id 1-39, tokens_bhs) scope and same slug source
+// (sitemapSlugify(canonName(...)), no collision-suffix handling needed) as
+// sitemap-verse-pages.xml, for the identical reason given in that route's
+// own comment — this is deliberately the SAME slug computation, so a book's
+// clean-path slug can never disagree between the two sitemaps.
+app.get('/sitemap-parallel-pages.xml', production.cache(3600), (req, res) => {
+    try {
+        const urls = [];
+        for (const b of BOOKS) {
+            const slug = sitemapSlugify(canonName(b.book_id)) || `book-${b.book_id}`;
+            for (let ch = b.first_chapter; ch <= b.last_chapter; ch++) {
+                let verseRows = VERSE_LIST_BHS.all(b.book_id, ch);
+                if (!verseRows.length) {
+                    try {
+                        verseRows = db.prepare(`
+                            SELECT DISTINCT ord_v AS verse FROM verses
+                            WHERE corpus='ENG' AND canon_id=? AND ord_c=? ORDER BY ord_v
+                        `).all(b.book_id, ch);
+                    } catch { /* ENG baseline not loaded */ }
+                }
+                for (const v of verseRows) {
+                    urls.push(`  <url><loc>https://www.bldbible.com/parallel/${slug}/${ch}-${v.verse}</loc></url>`);
+                }
+            }
+        }
+        res.type('application/xml').send(
+            `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`
+        );
+    } catch (err) {
+        console.error('/sitemap-parallel-pages.xml failed:', err);
+        res.status(500).send('');
+    }
+});
+
 // Resolve a root request (?sn=H8064 preferred, ?root=<paleo> legacy) to its
 // index position. Strong's number is the exact identity; the Paleo string is a
 // best-effort fallback for old bookmarks (first entry with that form).

@@ -144,7 +144,20 @@ class ChunkErrorBoundary extends Component {
 // isn't "empty" either, so it was wrongly falling through to the reader
 // instead of landing on /landing. fieldy, 2026-08-05.
 const IGNORED_PARAM_PREFIXES = ['utm_'];
-const IGNORED_PARAMS = new Set(['fbclid', 'gclid', 'gbraid', 'wbraid', 'igshid', 'ig_mid', 'mc_cid', 'mc_eid', 'ref']);
+// 'script' added 2026-09-07: Reader.jsx persists its Hebrew/English script
+// toggle into the URL on mount (?script=hebrew|english) even when the
+// visited URL never had it, then this component's own effect (below) mirrors
+// that mutated location.search straight into <link rel="canonical">. Every
+// /bible verse URL server/prerender.js prerenders and sitemap-verses.xml
+// submits has NO ?script= — englishVerseRoute's canonicalPath never includes
+// it — so once React hydrated and added it, the post-hydration canonical
+// silently disagreed with the URL Google actually crawled/queued from the
+// sitemap (self-canonical minus the extra param it never had), which reads to
+// Google's indexer as "this page declares a different canonical URL" for
+// ~31,000 /bible verse pages. Ignoring it here keeps the hydrated canonical
+// identical to prerender.js's, the same class of fix 'verse' already got for
+// VERSE_AGNOSTIC_ROUTES below.
+const IGNORED_PARAMS = new Set(['fbclid', 'gclid', 'gbraid', 'wbraid', 'igshid', 'ig_mid', 'mc_cid', 'mc_eid', 'ref', 'script']);
 function RootDispatcher() {
   const [sp] = useSearchParams();
   const meaningfulKeys = [...sp.keys()].filter(
@@ -260,7 +273,25 @@ function ParallelDispatcher() {
 // contradict what the crawler snapshot just served for that exact URL,
 // which is the same prerendered-vs-hydrated mismatch this component exists
 // to prevent — just in the opposite direction.
-const VERSE_AGNOSTIC_ROUTES = new Set(['/parallel', '/translate']);
+// 2026-09-07: retired both remaining entries — stale since the phase-2
+// indexability work (2026-08-16) gave /parallel and /translate genuine
+// self-referencing per-verse canonicals in server/prerender.js
+// (parallelVerseRoute/translateVerseRoute), the exact same reason '/bible'
+// was already removed from this set on 2026-08-15 (see the comment block
+// above). Leaving them in meant this effect kept stripping `verse` from the
+// hydrated canonical AFTER prerender.js had already served a real,
+// verse-specific canonical for the same URL — a prerendered-vs-hydrated
+// mismatch, same bug class, just the /bible fix never got mirrored here.
+// Confirmed live for /translate: a fresh /translate?book=1&chapter=1&verse=1
+// hydrated to a canonical of .../translate?book=genesis&chapter=1 (verse
+// gone, book rewritten to a slug prerender.js's validBook() doesn't even
+// accept) — a textbook "page declares a different canonical URL" signal to
+// Google. /parallel's own entry was already unreachable in practice (its
+// page immediately rewrites location.pathname itself, see Parallel.jsx's
+// "URL sync" effect and server/prerender.js's parallelVerseRoute/
+// parallelChapterRoute, which now declare that same clean-path URL as their
+// own canonical) but is removed too since the Set is dead now either way.
+const VERSE_AGNOSTIC_ROUTES = new Set();
 function SelfCanonical() {
   const location = useLocation();
   useEffect(() => {

@@ -1,5 +1,109 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## GSC "Alternate page with proper canonical tag" / "Page with redirect" — the client mutated the URL after hydration and the canonical tag blindly followed it (fixed 2026-09-07)
+
+fieldy got a Search Console email flagging these two NEW reasons blocking pages from being
+indexed, on top of "why doesn't a plain verse search ever surface bldbible.com the way it
+does for other bible sites." Investigated live against production (WebFetch + the browser
+pane, before touching any code) rather than guessing from the source alone.
+
+**What was actually happening, confirmed live, three separate bugs sharing one root cause:**
+this app's crawlability work (see the "indexability project" phases 1-3, 2026-08-15/16/17/18
+entries further down this file) is genuinely solid — `server/prerender.js` snapshots real
+per-verse content, `src/App.jsx`'s `SelfCanonical` keeps `<link rel="canonical">` pointed at
+`location` on every route change, and robots.txt correctly lists all five sitemaps. But in
+three places, something running AFTER hydration silently changed `window.location` (via
+`history`/React Router, not a real HTTP redirect) to a URL that DISAGREED with what
+`prerender.js` had just served and what the relevant sitemap had just submitted — and
+`SelfCanonical` naively mirrored whatever `location` happened to be at that later moment
+into the canonical tag, instead of staying anchored to the URL it was actually loaded at.
+Confirmed each one by opening the live page in a real browser and reading
+`document.getElementById('canonical-link').href` a few seconds after load, compared against
+what `WebFetch`ing the bare URL (no JS) returned:
+
+- **`/parallel?book=..&chapter=..[&verse=..]`** (sitemap-chapters.xml, ~1,454 URLs) — Parallel.jsx's
+  own "URL sync" `useEffect` (added 2026-08-18 alongside the `/parallel/<slug>/<chapter>[-<verse>]`
+  clean-path route) unconditionally calls `navigate(parallelHref(...), {replace:true})` on
+  EVERY load, verse or not. So the prerendered snapshot Google's first crawl sees says "index
+  this URL," then its JS-rendering pass sees the address bar silently jump to a totally
+  different, un-sitemapped URL — textbook "Page with redirect."
+- **`/bible?book=..&chapter=..&verse=..`** (sitemap-verses.xml, ~31,000 URLs) — Reader.jsx
+  persists its Hebrew/English script toggle into the URL on mount (`?script=hebrew|english`)
+  even when the loaded URL never had it, and `SelfCanonical` mirrored that addition straight
+  into the canonical tag — so the hydrated canonical read `...&verse=1&script=english`, a
+  different URL than the one actually crawled/submitted, on every single verse page.
+- **`/translate?book=..&chapter=..&verse=..`** — two independent things compounding: (1)
+  `VERSE_AGNOSTIC_ROUTES` in `src/App.jsx` still listed `/translate` (and `/parallel`),
+  stripping `verse` from the hydrated canonical — stale since the 2026-08-16 phase-2 work gave
+  `translateVerseRoute`/`parallelVerseRoute` their own genuine self-referencing per-verse
+  canonicals (the exact reason `/bible` was already removed from that same Set on 2026-08-15,
+  just never mirrored to the other two). (2) Translate's `setUrl` rewrote the numeric `book`
+  query param to a SLUG (`bookToParam`) on every load — `server/prerender.js`'s `validBook()`
+  only ever parses a plain integer, so `?book=genesis` doesn't even match the route that's
+  supposed to own that canonical. Live-confirmed hydrated canonical:
+  `/translate?book=genesis&chapter=1` for a URL sitemap-chapters.xml submits (and
+  `translateVerseRoute` self-canonicalizes) as `/translate?book=1&chapter=1&verse=1`.
+
+**Separately, a real duplicate-content architecture issue, not a bug exactly:** `sitemap-verses.xml`
+(`/bible?book=..&verse=..`, ~31,000 URLs) and `sitemap-verse-pages.xml` (`/genesis/1/1`, the
+SAME ~31,000 verses) were BOTH submitting a full URL set for identical rendered content
+(confirmed live — byte-identical title/description/body for the same verse under both forms),
+each self-canonicalizing independently since the clean-path route was added
+"deliberately additive, not a canonical swap" (2026-08-18's own comment, explicitly flagging
+"fully consolidating canonical/sitemap signal onto the path form... is a separate, deliberate
+decision for later, not made here"). fieldy's call this session: the clean path is canonical.
+
+**Fix, all four files:**
+- `src/App.jsx`: added `'script'` to `IGNORED_PARAMS` (so `SelfCanonical` never mirrors it into
+  the canonical tag); emptied `VERSE_AGNOSTIC_ROUTES` (both remaining entries retired — see
+  each route's own fix below for why neither is stale anymore).
+- `src/pages/Translate.jsx`: `setUrl` now writes `book` as a plain string of the numeric id,
+  never the slug — matches what `translateVerseRoute`'s `validBook()` actually accepts.
+- `server/prerender.js`: `englishVerseRoute`'s `canonicalPath` now points at the clean
+  `/:bookSlug/:chapter/:verse` path (via `ensureProgressSlugMaps`, the SAME slug source
+  `VersePage.jsx`'s own route already resolves against) instead of self — this is the "clean
+  path is canonical" decision. New `parallelChapterRoute()` (factored out of the inline
+  `englishChapterRoute(...)` call `ROUTES['/parallel']` and `parallelVerseRoute`'s own fallback
+  both used) and `parallelVerseRoute` now both canonicalize onto
+  `/parallel/<slug>/<chapter>[-<verse>]` — the exact URL Parallel.jsx's own client-side redirect
+  already lands on, so prerendered and hydrated states finally agree instead of contradicting
+  each other.
+- `server/server.js`: new `GET /sitemap-parallel-pages.xml`, mirroring `sitemap-verse-pages.xml`
+  exactly (same OT-only scope, same `sitemapSlugify(canonName(...))` slug — no collision risk,
+  same reasoning as that route's own comment) but listing `/parallel/<slug>/<chapter>-<verse>` —
+  the new canonical target needs to be directly discoverable, not just inferable from a
+  canonical tag. `public/robots.txt` gained a matching `Sitemap:` line (`server/public/` is
+  gitignored, regenerated at build/deploy — did not touch it directly).
+
+**Also worth flagging, not fixed this session (out of scope for a canonical/redirect bug fix):**
+`/bible/1/1`'s meta description embeds raw Paleo-Hebrew glyph characters and an empty-gloss
+artifact ("Alahayam ()") straight into the `<meta name="description">` — cosmetic in a search
+snippet, not an indexing blocker, but worth a look separately. And the deeper, non-technical
+part of fieldy's original complaint — a plain `"genesis 1:1"` search not surfacing bldbible.com
+at all, while BibleHub/ESV.org/BibleStudyTools/JW.org/BibleRef dominate that query — is normal
+competitive reality against decades-old, high-authority reference sites for a generic query;
+no code change here moves that needle. The site's OWN transliterated wording ("raashayath"
+for "beginning", "Alahayam" for "God") also means the page's actual text doesn't literally
+contain the phrasing most people search with, which likely holds back relevance matching even
+once these pages get indexed cleanly — a content/wording tradeoff against the whole point of
+the app, not something to auto-fix.
+
+**Not run against a live server this session** (device-bridge sandbox reasons don't apply here —
+this was investigated directly against PRODUCTION via WebFetch + a real browser, not this repo's
+local dev server) — `node --check` (prerender.js, server.js) and `esbuild` (App.jsx,
+Translate.jsx, since `node --check` can't parse JSX) both pass clean, but none of this was
+exercised against a running server/rebuilt frontend. Before calling this actually fixed: `npm
+run build` (or `vite build`) the frontend, restart the Node server, then verify live —
+`/parallel?book=1&chapter=1&verse=1` should hydrate to a canonical of
+`/parallel/genesis/1-1` (matching where it already redirects); `/bible?book=1&chapter=1&verse=1`
+should hydrate to canonical `/genesis/1/1` with NO `?script=`; `/translate?book=1&chapter=1&verse=1`
+should hydrate to canonical `/translate?book=1&chapter=1&verse=1` (numeric, verse intact);
+`https://www.bldbible.com/sitemap-parallel-pages.xml` should return real `<url>` entries. Then
+resubmit `sitemap-parallel-pages.xml` in Search Console (Sitemaps panel) and give Google a few
+days/weeks — none of this makes existing "not indexed" pages jump to indexed instantly, it just
+stops the app from actively contradicting its own sitemaps.
+
+
 ## The REAL reason NT reading text never live-reglosses — "untouched draft" only recognized OT's source_origin tag (fixed 2026-08-24)
 
 Follow-up to the "ashah regression" section below, which I got half right and half

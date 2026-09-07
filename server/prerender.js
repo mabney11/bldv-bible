@@ -362,16 +362,33 @@ function englishVerseRoute() {
         .map((t) => `<li>${escapeHtml(t.word_raw)}${t.strongs ? ` — <a href="/roots?sn=${encodeURIComponent(t.strongs)}">${escapeHtml(t.strongs)}</a>` : ''}</li>`)
         .join('\n        ');
 
+      // Canonicalized onto the CLEAN per-verse path (/:bookSlug/:chapter/:verse,
+      // VersePage.jsx — see the "CLEAN VERSE-URL PATH ROUTE" section below,
+      // buildVersePathSnapshot) instead of self, as of 2026-09-07.
+      // Self-referencing here (the original 2026-08-15 design) meant TWO
+      // full, independently-submitted ~31,000-URL sitemaps
+      // (sitemap-verses.xml's /bible?book=..&verse=.. and
+      // sitemap-verse-pages.xml's /genesis/1/1) each declared themselves
+      // canonical for the exact same rendered content — confirmed live:
+      // both forms render byte-identical title/description/body for the
+      // same verse. Google's own duplicate-content handling has to pick one
+      // side; every /bible?...&verse=.. URL it doesn't pick surfaces in
+      // Search Console as "Alternate page with proper canonical tag" (or
+      // gets silently dropped as a near-duplicate) even though nothing here
+      // was actually wrong with it — it was just competing with its own
+      // twin. Declaring the clean path as canonical (fieldy's call — the
+      // clean path is what real users/links point at) consolidates every
+      // ranking signal onto ONE indexable URL per verse instead of
+      // splitting it across two.
+      const versePathMaps = await ensureProgressSlugMaps(port);
+      const versePathSlug = versePathMaps.idToSlug[book] || String(book);
       return {
         title: `${heading} | Reader`,
         description: `${heading} — ${truncate(data.text, 140)}`,
         body: `<h1>${escapeHtml(heading)}</h1>
       <p>${escapeHtml(data.text)}</p>
       ${wordItems ? `<h2>Hebrew, word by word</h2>\n      <ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
-        // Self-referencing on purpose — NOT collapsed to book+chapter, unlike
-        // englishChapterRoute — see this function's header comment for why a
-        // verse-level identity is legitimate here.
-        canonicalPath: `/bible?book=${book}&chapter=${chapter}&verse=${verse}`,
+        canonicalPath: `/${versePathSlug}/${chapter}/${verse}`,
       };
     },
   };
@@ -432,11 +449,40 @@ function multiTokensPreview(tokens) {
 // | <English preview> | <source transliteration preview>" — see
 // hooks/usePageTitle.js's documented convention and versePreviewTranslit
 // (mirrored above as translitPreview).
-function parallelVerseRoute() {
-  const chapterFallback = englishChapterRoute(
+// /parallel's chapter-level snapshot, canonicalized onto the clean
+// /parallel/<slug>/<chapter> path instead of self — 2026-09-07. Parallel.jsx's
+// own "URL sync" effect (see that file) unconditionally rewrites the address
+// bar to this exact clean-path form via navigate(...,{replace:true}) on
+// EVERY /parallel?book=..&chapter=.. visit, verse or not — it has done this
+// since the clean-path route was added (2026-08-18), but this route's own
+// canonicalPath was never updated to match, so the prerendered snapshot
+// Google's initial crawl sees ("index this URL") disagreed with what its
+// JS-rendering pass would then observe (the address bar silently changing
+// to a completely different URL) — Search Console surfaces exactly that
+// combination as "Page with redirect". Declaring the SAME destination the
+// client already redirects to as this page's own canonical makes the
+// prerendered and hydrated states agree, matching the reasoning
+// parallelVerseRoute below now applies at the verse level.
+function parallelChapterRoute() {
+  const inner = englishChapterRoute(
     '/parallel', 'English–Hebrew Parallel', 'Parallel',
     (name, ch) => `Read ${name} ${ch} in English and Hebrew side by side, verse by verse.`,
   );
+  return {
+    match: inner.match,
+    build: async (q, port) => {
+      const result = await inner.build(q, port);
+      const book = validBook(q.get('book'));
+      const chapter = validChapter(q.get('chapter'));
+      await ensureSlugMap(port);
+      const slug = _idToSlug[book] || String(book);
+      return { ...result, canonicalPath: `/parallel/${slug}/${chapter}` };
+    },
+  };
+}
+
+function parallelVerseRoute() {
+  const chapterFallback = parallelChapterRoute();
   return {
     match: (q) => validBook(q.get('book')) && validChapter(q.get('chapter')) && !!validVerseNum(q.get('verse')),
     build: async (q, port) => {
@@ -467,13 +513,17 @@ function parallelVerseRoute() {
         })
         .join('\n        ');
 
+      await ensureSlugMap(port);
+      const slug = _idToSlug[book] || String(book);
       return {
         title: [heading, 'Parallel', truncate(enText, 60), truncate(srcPreview, 60)].filter(Boolean).join(' | '),
         description: `Read ${heading} in English and Hebrew side by side.${enText ? ` ${truncate(enText, 140)}` : ''}`,
         body: `<h1>${escapeHtml(heading)}</h1>
       ${enText ? `<p>${escapeHtml(enText)}</p>` : ''}
       ${wordItems ? `<h2>Hebrew, word by word</h2>\n      <ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
-        canonicalPath: `/parallel?book=${book}&chapter=${chapter}&verse=${verse}`,
+        // Canonicalized onto the clean path (was self-referencing) —
+        // 2026-09-07, see parallelChapterRoute's comment above for why.
+        canonicalPath: `/parallel/${slug}/${chapter}-${verse}`,
       };
     },
   };
@@ -917,10 +967,7 @@ const ROUTES = {
     (name, ch) => `${name} chapter ${ch} in the Novel English Bible — a clean English translation with Hebrew-backed names and places.`,
   )],
 
-  '/parallel': [parallelVerseRoute(), englishChapterRoute(
-    '/parallel', 'English–Hebrew Parallel', 'Parallel',
-    (name, ch) => `Read ${name} ${ch} in English and Hebrew side by side, verse by verse.`,
-  )],
+  '/parallel': [parallelVerseRoute(), parallelChapterRoute()],
 
   '/translate': [translateVerseRoute(), englishChapterRoute(
     '/translate', 'Translation Studio', 'Translation Studio',
