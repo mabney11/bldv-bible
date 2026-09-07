@@ -219,11 +219,10 @@ function VerseCard({ verse, onVerseClick }) {
 // details and would like the same at the lexicon/root level, instead of
 // seeing a verse as the first thing … the detailed card can be rendered."
 // Same label/value stack as VersePage's word-by-word cards, one level up.
-// Rows, in fieldy's order (2026-09-07 cleanup): Root · Transliteration ·
-// Definition · Root first usage · This context · Other Strong's #s with the
-// same root. Nothing else — per-number counts/definitions/first-hits were
-// dropped on purpose: "the context will be implied with the verses that have
-// the same strongs # at the bottom" (the hit list under the card).
+// Rows, in fieldy's order (2026-09-07): Root · Transliteration · Definition ·
+// Root first usage (+ the number it's tagged with) · This context · Strong's #
+// (every number under these letters — count, curated definition, own first
+// verse; this page's number highlighted) · Occurrences.
 //
 // Definition is curated-only (server's rootDefinitionForSN: homographs.json →
 // lexicon.json → placeholder); an uncurated number shows the bare root paleo,
@@ -245,7 +244,9 @@ function RootCard({ detail, idToSlug, context, onPickSn }) {
 
   const def = detail.definition || { text: '', src: 'none' };
   const first = detail.first_by_letters || null;
-  const others = (detail.homographs || []).filter(h => h.sn !== detail.sn);
+  const homographs = detail.homographs?.length
+    ? detail.homographs
+    : [{ sn: detail.sn, count: detail.total, definition: def, first: detail.first_by_sn }];
 
   return (
     <section className="rc-card" aria-label="Root summary">
@@ -287,25 +288,46 @@ function RootCard({ detail, idToSlug, context, onPickSn }) {
           <div className="rc-value"><Link to={verseHref(context)} className="rc-first-link">{locLabel(context)}</Link></div>
         </div>
       )}
-      {others.length > 0 && (
-        <div className="rc-row">
-          <div className="rc-label">Other Strong's #s with same root</div>
-          {/* One line per sibling: its chip and its own first verse — "keep the
-              context we had with the first verse of each strongs #". */}
-          <ul className="rc-sn-list">
-            {others.map(h => (
-              <li key={h.sn} className="rc-sn-row">
-                <a href={`/roots?sn=${encodeURIComponent(h.sn)}`} className="rc-sn-chip"
-                   title={h.definition?.text ? `${h.sn} — ${h.definition.text}` : `${h.sn} — not yet curated`}
-                   onClick={e => { e.preventDefault(); onPickSn(h.sn); }}>{h.sn}</a>
-                {h.first
-                  ? <span className="rc-sn-first">first <Link to={verseHref(h.first)} className="rc-first-link">{locLabel(h.first)}</Link></span>
-                  : <span className="rc-sn-first">—</span>}
-              </li>
-            ))}
-          </ul>
+      <div className="rc-row">
+        <div className="rc-label">
+          Strong's #
+          {homographs.length > 1 && <span className="rc-label-note"> — {homographs.length} numbers share these letters</span>}
         </div>
-      )}
+        {/* Every number filed under these letters, this page's own included
+            and highlighted — each with its count, its own curated
+            definition and its own first verse ("I want all the data from
+            this screenshot still — just in the order of my current
+            segments"). */}
+        <ul className="rc-sn-list">
+          {homographs.map(h => {
+            const active = h.sn === detail.sn;
+            return (
+              <li key={h.sn} className={`rc-sn-row ${active ? 'active' : ''}`}>
+                <a href={`/roots?sn=${encodeURIComponent(h.sn)}`} className="rc-sn-chip"
+                   aria-current={active ? 'true' : undefined}
+                   onClick={e => { e.preventDefault(); if (!active) onPickSn(h.sn); }}>{h.sn}</a>
+                <span className="rc-sn-count">{(h.count || 0).toLocaleString()} occ.</span>
+                <span className="rc-sn-def">
+                  {h.definition?.text
+                    ? <span className="rc-def-text">{h.definition.text}</span>
+                    : <span className="rc-def-placeholder" title="Not yet in your lexicon/homographs — showing the root letters">{root}</span>}
+                </span>
+                {h.first && (
+                  <span className="rc-sn-first">first <Link to={verseHref(h.first)} className="rc-first-link">{locLabel(h.first)}</Link></span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      <div className="rc-row">
+        <div className="rc-label">Occurrences</div>
+        <div className="rc-value">
+          {(detail.total || 0).toLocaleString()} as {detail.sn}
+          {detail.by_book?.length ? ` in ${detail.by_book.length} book${detail.by_book.length === 1 ? '' : 's'}` : ''}
+          {detail.surfaces?.length ? ` · ${detail.surfaces.length} surface form${detail.surfaces.length === 1 ? '' : 's'}` : ''}
+        </div>
+      </div>
     </section>
   );
 }
