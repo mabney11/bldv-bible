@@ -8,8 +8,14 @@ redrawn to house style:
 
   • 𐤃 dalet — a closed triangle, no trailing tail
   • 𐤅 waw   — a clean capital-Y: straight arms, straight stem
+  • 𐤏 ayin  — a full-height circle
+  • 𐤈 tet   — the same circle with an X running edge to edge
+  • 𐤌 mem / 𐤍 nun — Noto's zigzag heads, tail dropping steeply (M / N ancestry)
 
-Both are drawn as centre-line strokes (≈86 units on the 1000-unit em, matching
+Then EVERY letter is uniformly scaled to span exactly baseline…cap height so
+the alphabet sits on one normalised height.
+
+The redrawn letters are drawn as centre-line strokes (≈86 units on the 1000-unit em, matching
 Noto's main stroke) that are stroked/unioned with shapely and written into the
 glyf table with proper advance widths + sidebearings, which is what makes them
 space naturally next to every other letter. Tweak the coordinates below and
@@ -79,6 +85,48 @@ build(cmap[0x10903], dalet, lsb=49, rsb=49)
 j = (300, 370)
 waw = [stroke([(60, 700), j], W), stroke([(540, 700), j], W-8), stroke([j, (300, -8)], W)]
 build(cmap[0x10905], waw, lsb=30, rsb=30)
+
+# ── Ayin + Tet: one shared full-height circle (normalised — Noto's ayin was a
+#    small high circle while its tet was full-size). Tet adds an X whose arms
+#    run all the way out to the ring ("X-Men" mark). ─────────────────────────
+from shapely.geometry import Point
+CX, CY, R = 360, 360, 360 - W/2          # outer edge spans y 0…720 = cap height
+ring = Point(CX, CY).buffer(R + W/2, resolution=24).difference(Point(CX, CY).buffer(R - W/2, resolution=24))
+build(cmap[0x1090F], [ring], lsb=45, rsb=45)                       # ayin ○
+d = R * math.cos(math.pi/4)
+x_arms = [stroke([(CX-d, CY-d), (CX+d, CY+d)], W-6), stroke([(CX-d, CY+d), (CX+d, CY-d)], W-6)]
+build(cmap[0x10908], [ring] + x_arms, lsb=45, rsb=45)              # tet ⊗
+
+# ── Mem + Nun: the same zigzag "water/snake" heads as Noto, but the tail drops
+#    steeply from the RIGHT end of a 'w' / 'v' head (mostly DOWN, only slightly
+#    right) so the M / N ancestry reads at a glance. 2026-09-08. ─────────────────────────────────────────────────────
+mem = [stroke([(40, 720), (150, 490), (260, 720), (370, 490), (480, 720), (560, 0)], W)]   # 'w' head, stem on the RIGHT
+build(cmap[0x1090C], mem, lsb=40, rsb=40)                          # mem
+nun = [stroke([(40, 720), (150, 500), (260, 720), (340, 0)], W)]                          # 'v' head, stem on the RIGHT
+build(cmap[0x1090D], nun, lsb=40, rsb=40)                          # nun
+
+# ── Normalise heights: every letter is scaled UNIFORMLY (stroke weight and
+#    proportions stay Noto's) so its outline spans exactly baseline…cap height
+#    (0…720). Sidebearings are kept; advance width follows the new outline. ────
+from fontTools.pens.transformPen import TransformPen
+TOP = 720
+for cp in range(0x10900, 0x10916):
+    name = cmap[cp]
+    g = glyf[name]
+    if g.numberOfContours <= 0: continue
+    g.recalcBounds(glyf)
+    h = g.yMax - g.yMin
+    if h < 1: continue
+    k = TOP / h
+    adv, lsb = hmtx[name]
+    rsb = adv - g.xMax
+    pen = TTGlyphPen(None)
+    # scale about the glyph's own origin, then drop it onto the baseline / left bearing
+    tp = TransformPen(pen, (k, 0, 0, k, lsb - g.xMin * k, -g.yMin * k))
+    g.draw(tp, glyf)
+    ng = pen.glyph(); ng.recalcBounds(glyf)
+    glyf[name] = ng
+    hmtx[name] = (round(ng.xMax + rsb), lsb)
 
 # ── Rename family so it never shadows a system Noto ──────────────────────────
 FAMILY = 'BLD Paleo'
