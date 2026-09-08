@@ -1,0 +1,10 @@
+{
+  "_note": "Curated anatomy overrides for /api/strongs (what words build a Strong's number up), keyed by number. Wins over the dictionary's derivation field. parts: [{ sn, gloss? }] in order; meaning: the plain sense of the compound; def: the definition sentence, in the app's own transliteration. Hot-reloaded on change.",
+  "H2216": {
+    "parts": [
+      { "sn": "H2213", "gloss": "crown" },
+      { "sn": "H894", "gloss": "Babylon" }
+    ],
+    "def": "Zarababal, an Israelite born in Babylon"
+  }
+}

@@ -9351,15 +9351,40 @@ function hyphenAllowlist() {
     return _hyphenAllow.data;
 }
 const kjvShort = (kjv) => kjv ? String(kjv).replace(/\[[^\]]*\]\s*/g, '').split(',').slice(0, 3).map(x => x.trim()).filter(Boolean).join(', ') : null;
+// Curated anatomy overrides (server/lexicon/strongs-anatomy.json): fieldy's own
+// reading of what builds a number — e.g. H2216 = Zar (crown, H2213) + Babal,
+// "Zarababal, an Israelite born in Babylon" — wins over the dictionary's
+// derivation. Same hot-reload-by-mtime pattern as the hyphen allowlist.
+const ANATOMY_OVERRIDE_PATH = path.join(__dirname, 'lexicon', 'strongs-anatomy.json');
+let _anatOverride = { mtime: 0, data: {} };
+function anatomyOverrides() {
+    try {
+        const st = fs.statSync(ANATOMY_OVERRIDE_PATH);
+        if (st.mtimeMs !== _anatOverride.mtime) _anatOverride = { mtime: st.mtimeMs, data: JSON.parse(fs.readFileSync(ANATOMY_OVERRIDE_PATH, 'utf8')) };
+    } catch { _anatOverride = { mtime: 0, data: {} }; }
+    return _anatOverride.data;
+}
+// "Zerubbabel, an Israelite" → "Zarababal, an Israelite": the dictionary's
+// definition sentence opens with the KJV name; say it the app's way instead.
+function defInAppSpelling(def, translit) {
+    if (!def || !translit) return def || null;
+    return String(def).replace(/^[A-Z][A-Za-z'\-]*(?=\s*[,;(]|$)/, translit);
+}
 function strongsAnatomy(snRaw) {
     const sn = normSn(snRaw);
     const e = STRONGS_DICT[sn];
     if (!e) return null;
     const self = strongsPart(sn);
     const deriv = String(e.derivation || '');
-    const partSns = [...deriv.matchAll(/H0*(\d+[a-z]?)/g)].map(m => 'H' + m[1]).filter(p => p !== sn);
+    const ov = anatomyOverrides()[sn] || null;
+    const partSns = ov && Array.isArray(ov.parts)
+        ? ov.parts.map(p => normSn(typeof p === 'string' ? p : p.sn))
+        : [...deriv.matchAll(/H0*(\d+[a-z]?)/g)].map(m => 'H' + m[1]).filter(p => p !== sn);
+    const ovGloss = {};
+    if (ov && Array.isArray(ov.parts)) for (const p of ov.parts) if (p && p.sn && p.gloss) ovGloss[normSn(p.sn)] = p.gloss;
     // Drop a component that is just a spelling variant of the name itself (H3389's derivation cites H3390).
-    const parts = partSns.map(strongsPart).filter(p => p.he && p.he.replace(/ /g, '') !== self.he.replace(/ /g, '')).map(p => ({ ...p, kjv: kjvShort(p.kjv) }));
+    const parts = partSns.map(strongsPart).filter(p => p.he && p.he.replace(/ /g, '') !== self.he.replace(/ /g, ''))
+        .map(p => ({ ...p, gloss: ovGloss[p.sn] || p.gloss, kjv: kjvShort(p.kjv) }));
     const fused = splitFusedCompound(self.he, parts.map(p => p.he));
     if (fused) {
         self.he = fused.join(' ');
@@ -9381,8 +9406,9 @@ function strongsAnatomy(snRaw) {
         ...self,
         isCompound: split.paleo.includes('-'),
         derivation: deriv || null,
-        meaning: mm ? mm[1].trim() : null,
-        strongs_def: e.strongs_def || null,
+        meaning: (ov && ov.meaning) || (mm ? mm[1].trim() : null),
+        strongs_def: (ov && ov.def) || defInAppSpelling(e.strongs_def, self.translit),
+        curated: !!ov,
         hyphenated: allowed && split.paleo.includes('-') ? (fused ? 'derivation' : 'lemma') : null,
         split: split.paleo.includes('-') ? split : null,   // the dictionary's split, allowlisted or not
         parts,
