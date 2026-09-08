@@ -307,6 +307,11 @@ export const apiRootByStrongs = (sn)             => jsonFetch(`/api/root/by-stro
 export const apiRootByStrongsVerses = (qs)       => jsonFetch(`/api/root/by-strongs/verses?${qs}`);
 export const apiRoot          = (qs)             => jsonFetch(`/api/root?${qs}`);
 export const apiSurface       = (word)           => jsonFetch(`/api/surface?word=${encodeURIComponent(word)}`);
+// Strong's anatomy: what words build up a number (from the dictionary's
+// derivation field), each part rendered paleo + transliteration + curated
+// gloss, compounds hyphenated (Bayath-Lacham). lookup takes square Hebrew.
+export const apiStrongs       = (sn)             => jsonFetch(`/api/strongs/${encodeURIComponent(sn)}`);
+export const apiStrongsLookup = (he)             => jsonFetch(`/api/strongs/lookup?he=${encodeURIComponent(he)}`);
 export const apiSurfaceVerses = (qs)             => jsonFetch(`/api/surface/verses?${qs}`);
 export const apiSurfaceVersesRendered = (qs)     => jsonFetch(`/api/surface/verses/rendered?${qs}`);
 export const apiNeighborsRoots    = (root)       => jsonFetch(`/api/nav/roots/neighbors?root=${encodeURIComponent(root)}`);

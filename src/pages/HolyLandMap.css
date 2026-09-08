@@ -316,3 +316,15 @@
 /* Gold focus: the selected city glows like the selected portion */
 .hl-mk-sel .hl-mk-dot { box-shadow: 0 0 0 4px #e8aa5577, 0 0 18px 8px #e8aa55aa; }
 .hl-mk-sel .hl-mk-name { color: #5a3600; }
+
+/* Strong's anatomy of a name: H1035 Bayath-Lacham "house of bread" = Bayath [house] H1004 + Lacham [bread] H3899 */
+.hl-lex-anat { flex-direction: column; gap: 6px; }
+.hl-anat { display: flex; flex-direction: column; gap: 4px; }
+.hl-anat-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+.hl-anat-sn { font-size: 12px; font-weight: 700; color: var(--gold); border: 1px solid var(--gold); border-radius: 5px; padding: 1px 7px; }
+.hl-anat-sn:hover { background: var(--gold); color: #1a1208; }
+.hl-anat-h b { font-size: 14px; }
+.hl-anat-paleo { font-family: var(--paleo-font); color: var(--gold); font-size: 14px; }
+.hl-anat-h em { color: var(--text2); font-style: italic; font-size: 12.5px; }
+.hl-anat-parts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px; padding-left: 8px; border-left: 2px solid var(--border2); }
+.hl-anat-plus { color: var(--text4); margin: 0 2px; }

@@ -9257,6 +9257,119 @@ app.delete('/api/admin/strongs-override', (req, res) => {
 
 // GET /api/surface?word=𐤏𐤋𐤌𐤔𐤌𐤓𐤕𐤉
 // Returns parsed metadata for one surface: root_paleo, strongs, components, etc.
+
+// ── Strong's compound anatomy — /api/strongs/:sn and /api/strongs/lookup ────
+// "What underlying words build up this Strong's number?" (fieldy, 2026-09-08).
+// The expanded dictionary's `derivation` field already says so ("from H1004
+// (בַּיִת) and H3899 (לֶחֶם); house of bread;"); this exposes it structurally,
+// with each part rendered the app's way (paleo + transliteration + curated
+// gloss), and the compound itself HYPHENATED — Bayath-Lacham, 𐤁𐤉𐤕-𐤋𐤇𐤌 — so
+// each piece can be enunciated on its own. Nothing here is inferred: no
+// derivation in the dictionary → parts: [].
+const STRONGS_DICT = (() => {
+    const p = ['strongs-hebrew-expanded.json', 'strongs-hebrew.json']
+        .map(f => path.join(__dirname, f)).find(f => fs.existsSync(f));
+    if (!p) return {};
+    try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return {}; }
+})();
+const SQUARE_TO_PALEO = {
+    'א':'𐤀','ב':'𐤁','ג':'𐤂','ד':'𐤃','ה':'𐤄','ו':'𐤅','ז':'𐤆','ח':'𐤇','ט':'𐤈',
+    'י':'𐤉','כ':'𐤊','ך':'𐤊','ל':'𐤋','מ':'𐤌','ם':'𐤌','נ':'𐤍','ן':'𐤍','ס':'𐤎',
+    'ע':'𐤏','פ':'𐤐','ף':'𐤐','צ':'𐤑','ץ':'𐤑','ק':'𐤒','ר':'𐤓','ש':'𐤔','ת':'𐤕',
+};
+// Pointed lemma → consonantal parts (split on space / maqaf), each as square Hebrew.
+function lemmaParts(lemma) {
+    return String(lemma || '')
+        .replace(/־/g, ' ')            // maqaf is a word joiner → split point
+        .replace(/[֑-ׇ׳״͏]/g, '')   // points, accents, geresh, CGJ
+        .split(/[\s\-]+/).map(s => s.trim()).filter(Boolean);
+}
+const squareToPaleoStr = (s) => [...s].map(c => SQUARE_TO_PALEO[c] ?? c).join('');
+const normSn = (sn) => 'H' + String(sn || '').replace(/^H+/i, '');
+// consonantal lemma (parts joined by one space) → [sn, …]
+const STRONGS_BY_CONSONANTS = (() => {
+    const out = {};
+    for (const [sn, e] of Object.entries(STRONGS_DICT)) {
+        const key = lemmaParts(e && e.lemma).join(' ');
+        if (!key) continue;
+        (out[key] ||= []).push(normSn(sn));
+    }
+    return out;
+})();
+function strongsPart(sn) {
+    const e = STRONGS_DICT[sn] || STRONGS_DICT[sn.replace(/^H/, '')];
+    const parts = lemmaParts(e && e.lemma);
+    const paleo = parts.map(squareToPaleoStr).join('-');
+    let gloss = null;
+    try {
+        // SN-aware curated definition first (homographs.json), then the
+        // paleo-keyed lexicon — the latter can't tell H410 (El) from H413 (toward).
+        const d = rootDefinitionForSN(paleo.replace(/-/g, ''), sn);
+        gloss = d && d.text ? d.text : null;
+        if (!gloss) { const { lexicon } = loadLexicons(); gloss = (lexicon && lexicon[paleo.replace(/-/g, '')]) || null; }
+    } catch { /* lexicon unavailable */ }
+    return {
+        sn, lemma: e ? e.lemma : null, he: parts.join(' '), paleo,
+        translit: parts.map(p => getTranslit(squareToPaleoStr(p))).join('-'),
+        xlit: e ? e.xlit : null,
+        gloss,                                             // curated only (lexicon.json / homographs); null if uncurated
+        kjv: e && e.kjv_def ? String(e.kjv_def).replace(/\.$/, '') : null,
+    };
+}
+// A FUSED compound (ישראל, יבנאל, אביעזר — one word, no space/maqaf) is split
+// where the dictionary's derivation says it is built: if the last component's
+// consonants end the word (…אל) or the first component's begin it, hyphenate
+// there — Yashar-Al, Yaban-Al, Abay-Izar. Only ever from the derivation +
+// the spelling itself, never guessed; no match → left whole.
+function splitFusedCompound(he, partHes) {
+    if (!he || he.includes(' ') || partHes.length < 2) return null;
+    const last = partHes[partHes.length - 1], first = partHes[0];
+    // Both pieces must be real words (≥ 2 letters) — never split off a single letter.
+    if (last && last.length >= 2 && he.length - last.length >= 2 && he.endsWith(last)) return [he.slice(0, -last.length), last];
+    if (first && first.length >= 2 && he.length - first.length >= 2 && he.startsWith(first)) return [first, he.slice(first.length)];
+    return null;
+}
+const kjvShort = (kjv) => kjv ? String(kjv).replace(/\[[^\]]*\]\s*/g, '').split(',').slice(0, 3).map(x => x.trim()).filter(Boolean).join(', ') : null;
+function strongsAnatomy(snRaw) {
+    const sn = normSn(snRaw);
+    const e = STRONGS_DICT[sn];
+    if (!e) return null;
+    const self = strongsPart(sn);
+    const deriv = String(e.derivation || '');
+    const partSns = [...deriv.matchAll(/H0*(\d+[a-z]?)/g)].map(m => 'H' + m[1]).filter(p => p !== sn);
+    const parts = partSns.map(strongsPart).map(p => ({ ...p, kjv: kjvShort(p.kjv) }));
+    const fused = splitFusedCompound(self.he, parts.map(p => p.he));
+    if (fused) {
+        self.he = fused.join(' ');
+        self.paleo = fused.map(squareToPaleoStr).join('-');
+        self.translit = fused.map(f => getTranslit(squareToPaleoStr(f))).join('-');
+    }
+    // The plain-English meaning the dictionary gives after the components: "...; house of bread;"
+    const mm = /\)\s*;\s*([^;()]+?)\s*;?\s*$/.exec(deriv);
+    return {
+        ...self,
+        isCompound: self.paleo.includes('-'),
+        derivation: deriv || null,
+        meaning: mm ? mm[1].trim() : null,
+        strongs_def: e.strongs_def || null,
+        hyphenated: self.paleo.includes('-') ? (fused ? 'derivation' : 'lemma') : null,
+        parts,
+    };
+}
+// GET /api/strongs/lookup?he=בית לחם   (square Hebrew, consonantal or pointed)
+app.get('/api/strongs/lookup', production.cache(3600), (req, res) => {
+    const key = lemmaParts(req.query.he || '').join(' ');
+    if (!key) return res.status(400).json({ error: 'he param required' });
+    const sns = STRONGS_BY_CONSONANTS[key] || [];
+    res.json({ he: key, matches: sns.map(strongsAnatomy).filter(Boolean) });
+});
+// GET /api/strongs/H1035
+app.get('/api/strongs/:sn', production.cache(3600), (req, res) => {
+    const a = strongsAnatomy(req.params.sn);
+    if (!a) return res.status(404).json({ error: 'unknown Strong\'s number', sn: req.params.sn });
+    res.json(a);
+});
+
 app.get('/api/surface', (req, res) => {
     try {
         const word = (req.query.word || '').trim();

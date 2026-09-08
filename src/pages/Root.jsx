@@ -13,6 +13,7 @@ import {
   apiDefinitions, apiBookOrder,
   apiRootList,    apiRootDetail,    apiRootVerses,
   apiSurfaceList, apiSurfaceDetail, apiSurfaceExplorerVerses,
+  apiStrongs,
 } from '../lib/api.js';
 import './Root.css';
 
@@ -234,6 +235,15 @@ function VerseCard({ verse, onVerseClick }) {
 // reading it is summarising.
 function RootCard({ detail, idToSlug, context, onPickSn }) {
   const useSvg = getPaleoMode() === 'mobile';
+  // What builds this number up (dictionary derivation, rendered our way):
+  // H1035 = Bayath [house] H1004 + Lacham [bread] H3899 — "house of bread".
+  const [anatomy, setAnatomy] = useState(null);
+  useEffect(() => {
+    let live = true;
+    setAnatomy(null);
+    if (detail?.sn) apiStrongs(detail.sn).then(a => { if (live) setAnatomy(a); }).catch(() => {});
+    return () => { live = false; };
+  }, [detail?.sn]);
   const root = detail.root || '';
   const rootGlyph = useMemo(
     () => (useSvg ? paleoToSVG(root, '1em') : `<span class="glyph root">${root}</span>`),
@@ -256,8 +266,27 @@ function RootCard({ detail, idToSlug, context, onPickSn }) {
       </div>
       <div className="rc-row">
         <div className="rc-label">Transliteration</div>
-        <div className="rc-translit">{detail.lemmaTranslit || translit(root)}</div>
+        <div className="rc-translit">
+          {anatomy?.isCompound ? anatomy.translit : (detail.lemmaTranslit || translit(root))}
+          {anatomy?.isCompound && <span className="rc-compound-paleo" dir="rtl">{anatomy.paleo}</span>}
+        </div>
       </div>
+      {anatomy && (anatomy.parts.length > 0 || anatomy.meaning) && (
+        <div className="rc-row">
+          <div className="rc-label">Built from</div>
+          <div className="rc-value rc-parts">
+            {anatomy.parts.map((p, i) => (
+              <span key={p.sn} className="rc-part">
+                {i > 0 && <span className="rc-part-plus">+</span>}
+                <b>{p.translit}</b>
+                {(p.gloss || p.kjv) && <em className="rc-part-gloss">[{p.gloss || p.kjv}]</em>}
+                <a href={`/roots?sn=${encodeURIComponent(p.sn)}`} className="rc-sn-chip" onClick={e => { e.preventDefault(); onPickSn(p.sn); }}>{p.sn}</a>
+              </span>
+            ))}
+            {anatomy.meaning && <span className="rc-part-meaning">— "{anatomy.meaning}"</span>}
+          </div>
+        </div>
+      )}
       <div className="rc-row">
         <div className="rc-label">Definition</div>
         <div className="rc-value">

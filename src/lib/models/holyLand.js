@@ -30,8 +30,14 @@ const SQ_TO_PALEO = {
 export function squareToPaleo(s) {
   return [...String(s || '')].map((c) => SQ_TO_PALEO[c] ?? c).join('');
 }
+// Compound names are HYPHENATED so each piece can be enunciated on its own:
+// בית לחם → 𐤁𐤉𐤕-𐤋𐤇𐤌 → Bayath-Lacham (fieldy's rule, 2026-09-08). A single
+// word is unchanged.
+export function compoundPaleo(hebrew) {
+  return String(hebrew || '').trim().split(/[\s־-]+/).map(squareToPaleo).join('-');
+}
 export function translitOf(hebrew) {
-  return transliterate(squareToPaleo(hebrew));
+  return String(hebrew || '').trim().split(/[\s־-]+/).map((w) => transliterate(squareToPaleo(w))).join('-');
 }
 
 // ── Tribe palette (shared by both overlays so a tribe keeps its colour) ──────
@@ -137,7 +143,7 @@ const JERUSALEM = [35.235, 31.778];
 
 // The words of the holy portion, in the app's own transliteration (never
 // "the LORD"/"YHWH": fieldy's rule — his transliterations and the roots).
-const W = (he) => ({ he, paleo: squareToPaleo(he), tr: translitOf(he) });
+const W = (he) => ({ he, paleo: compoundPaleo(he), tr: translitOf(he) });
 export const HOLY_WORDS = {
   terumah:   W('תרומה'),    // the offering / holy portion  (48:8)
   nasi:      W('נשיא'),     // the prince                   (48:21)
@@ -394,7 +400,7 @@ export const BIBLICAL_CITIES = [
   B('zedad', 'Zedad', 'צדד', 36.92, 34.31, 'Ezekiel 47:15', ''),
   B('hazar-enan', 'Hazar-enan', 'חצר עינן', 37.24, 34.23, 'Ezekiel 47:17', 'North-east corner of Ezekiel\'s border.'),
   B('hauran', 'Hauran', 'חורן', 36.50, 32.75, 'Ezekiel 47:16, 18', ''),
-].map((c) => ({ ...c, paleo: squareToPaleo(c.he), translit: translitOf(c.he) }));
+].map((c) => ({ ...c, paleo: compoundPaleo(c.he), translit: translitOf(c.he) }));
 
 // ── Modern cities / peoples (approximate populations, for context) ───────────
 const M = (id, name, country, lon, lat, pop, note = '') => ({ id, name, country, lon, lat, pop, note, kind:'modern' });
@@ -492,12 +498,12 @@ export const REGIONS = [
   R('patmos', 'Patmos', 'פטמוס', 26.55, 37.31, 'Revelation 1:9', 'Hebrew-NT spelling.'),
   R('tarsus', 'Tarsus', 'טרסוס', 34.90, 36.92, 'Acts 9:11', 'Hebrew-NT spelling.'),
   R('alexandria', 'Alexandria', 'אלכסנדריא', 29.92, 31.20, 'Acts 18:24', 'Hebrew-NT spelling.'),
-].map((c) => ({ ...c, paleo: squareToPaleo(c.he), translit: translitOf(c.he) }));
+].map((c) => ({ ...c, paleo: compoundPaleo(c.he), translit: translitOf(c.he) }));
 
 export const ALL_PLACES = [...BIBLICAL_CITIES, ...REGIONS, ...MODERN_CITIES];
 
 // ── Search ───────────────────────────────────────────────────────────────────
-const fold = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u05B0-\u05C7]/g, '');
+const fold = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u05B0-\u05C7]/g, '').replace(/-/g, ' ');
 /** Search every place by English, transliteration, square Hebrew or paleo. Prefix hits rank first. */
 export function searchPlaces(q, limit = 8) {
   const s = fold(q).trim();

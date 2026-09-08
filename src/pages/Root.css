@@ -333,3 +333,12 @@
   .rc-glyphs { font-size: 38px; }
   .rc-sn-first { white-space: normal; }
 }
+
+/* "Built from" — the parts of a compound Strong's number */
+.rc-compound-paleo { font-family: var(--paleo-font); color: var(--gold); font-size: 15px; margin-left: 10px; }
+.rc-parts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.rc-part { display: inline-flex; align-items: baseline; gap: 5px; }
+.rc-part b { font-weight: 600; }
+.rc-part-gloss { font-style: normal; color: var(--teal); font-size: 13px; }
+.rc-part-plus { color: var(--text4); }
+.rc-part-meaning { color: var(--text2); font-style: italic; }

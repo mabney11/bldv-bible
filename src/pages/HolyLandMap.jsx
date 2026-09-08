@@ -30,7 +30,7 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { useTheme } from '../hooks/useTheme.js';
-import { apiTransChapter, apiSurface, apiLexicon } from '../lib/api.js';
+import { apiTransChapter, apiSurface, apiLexicon, apiStrongsLookup } from '../lib/api.js';
 import { transliterate } from '../lib/translit.js';
 import { parseRefs, readerHref, inRanges } from '../lib/models/refs.js';
 import {
@@ -829,15 +829,53 @@ function lookupWord(he) {
   }
   return _surfCache.get(paleo);
 }
+const _anatCache = new Map();
+function lookupName(he) {
+  if (!_anatCache.has(he)) _anatCache.set(he, apiStrongsLookup(he).then((d) => d.matches || []).catch(() => []));
+  return _anatCache.get(he);
+}
 function Lexical({ he }) {
   const [rows, setRows] = useState(null);
+  const [anat, setAnat] = useState(null);   // the name's own Strong's number(s) + what builds them
   useEffect(() => {
     if (!he) return;
     let live = true;
+    setRows(null); setAnat(null);
+    lookupName(he).then((m) => { if (live) setAnat(m); });
     Promise.all(he.split(/\s+/).map(lookupWord)).then((r) => { if (live) setRows(r); });
     return () => { live = false; };
   }, [he]);
-  if (!he || !rows) return null;
+  if (!he) return null;
+  // The dictionary knows this name: headline number, hyphenated form, meaning, parts.
+  if (anat && anat.length) {
+    return (
+      <div className="hl-lex hl-lex-anat">
+        {anat.map((a) => (
+          <div key={a.sn} className="hl-anat">
+            <div className="hl-anat-h">
+              <Link to={`/roots?sn=${a.sn}`} className="hl-anat-sn" title="Explore this root">{a.sn}</Link>
+              <b>{a.translit}</b>
+              <span className="hl-anat-paleo" dir="rtl">{a.paleo}</span>
+              {a.meaning && <em>"{a.meaning}"</em>}
+            </div>
+            {a.parts.length > 0 && (
+              <div className="hl-anat-parts">
+                {a.parts.map((p, i) => (
+                  <span key={p.sn} className="hl-lex-c root">
+                    {i > 0 && <span className="hl-anat-plus">+</span>}
+                    <b>{p.translit}</b>
+                    <em>{p.gloss || p.kjv || '—'}</em>
+                    <Link to={`/roots?sn=${p.sn}`} className="hl-lex-sn" title="Explore this root">{p.sn}</Link>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+  if (!rows) return null;
   return (
     <div className="hl-lex">
       {rows.map((w) => (
