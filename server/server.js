@@ -9287,15 +9287,35 @@ function lemmaParts(lemma) {
 const squareToPaleoStr = (s) => [...s].map(c => SQUARE_TO_PALEO[c] ?? c).join('');
 const normSn = (sn) => 'H' + String(sn || '').replace(/^H+/i, '');
 // consonantal lemma (parts joined by one space) → [sn, …]
+// Indexed by the exact consonants AND by a vowel-letter skeleton (internal
+// י/ו dropped per word), so a defective spelling still finds the plene lemma:
+// אהרן → אַהֲרוֹן, יהושע → יְהוֹשׁוּעַ, מגדו → מְגִדּוֹן. Exact hits are returned first.
+const skelWord = (w) => w ? w[0] + w.slice(1).replace(/[יו]/g, '') : w;
+const consKey = (parts) => parts.join(' ');
+const skelKey = (parts) => parts.map(skelWord).join(' ');
 const STRONGS_BY_CONSONANTS = (() => {
     const out = {};
     for (const [sn, e] of Object.entries(STRONGS_DICT)) {
-        const key = lemmaParts(e && e.lemma).join(' ');
-        if (!key) continue;
-        (out[key] ||= []).push(normSn(sn));
+        const parts = lemmaParts(e && e.lemma);
+        if (!parts.length) continue;
+        (out[consKey(parts)] ||= []).push(normSn(sn));
+        const sk = 'skel:' + skelKey(parts);
+        (out[sk] ||= []).push(normSn(sn));
     }
     return out;
 })();
+function strongsByHebrew(he) {
+    const parts = lemmaParts(he);
+    if (!parts.length) return [];
+    const exact = STRONGS_BY_CONSONANTS[consKey(parts)] || [];
+    if (exact.length) return exact;
+    // Skeleton hits ranked by how close the lemma's consonant count is to the
+    // input (חזקיהו → חזקיה H2396 before חזקה H2393), then by number.
+    const want = parts.join('').length;
+    const lemmaLen = (sn) => lemmaParts((STRONGS_DICT[sn] || {}).lemma).join('').length;
+    return [...(STRONGS_BY_CONSONANTS['skel:' + skelKey(parts)] || [])]
+        .sort((a, b) => Math.abs(lemmaLen(a) - want) - Math.abs(lemmaLen(b) - want) || parseInt(a.slice(1), 10) - parseInt(b.slice(1), 10));
+}
 function strongsPart(sn) {
     const e = STRONGS_DICT[sn] || STRONGS_DICT[sn.replace(/^H/, '')];
     const parts = lemmaParts(e && e.lemma);
@@ -9367,8 +9387,10 @@ function anatomyOverrides() {
 // "Zerubbabel, an Israelite" → "Zarababal, an Israelite": the dictionary's
 // definition sentence opens with the KJV name; say it the app's way instead.
 function defInAppSpelling(def, translit) {
-    if (!def || !translit) return def || null;
-    return String(def).replace(/^[A-Z][A-Za-z'\-]*(?=\s*[,;(]|$)/, translit);
+    if (!def) return null;
+    const clean = String(def).replace(/^\{|\}$/g, '').trim();     // some entries are wrapped in {…}
+    if (!translit) return clean;
+    return clean.replace(/^[A-Z][A-Za-z'\-]*(?: or [A-Z][A-Za-z'\-]*)?(?=\s*[,;(]|$)/, translit);
 }
 function strongsAnatomy(snRaw) {
     const sn = normSn(snRaw);
@@ -9418,8 +9440,7 @@ function strongsAnatomy(snRaw) {
 app.get('/api/strongs/lookup', production.cache(3600), (req, res) => {
     const key = lemmaParts(req.query.he || '').join(' ');
     if (!key) return res.status(400).json({ error: 'he param required' });
-    const sns = STRONGS_BY_CONSONANTS[key] || [];
-    res.json({ he: key, matches: sns.map(strongsAnatomy).filter(Boolean) });
+    res.json({ he: key, matches: strongsByHebrew(key).map(strongsAnatomy).filter(Boolean) });
 });
 // GET /api/strongs/H1035
 app.get('/api/strongs/:sn', production.cache(3600), (req, res) => {

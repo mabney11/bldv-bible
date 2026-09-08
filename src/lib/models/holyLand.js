@@ -369,7 +369,7 @@ export const BIBLICAL_CITIES = [
   B('gerizim', 'Mount Gerizim', 'גרזים', 35.27, 32.20, 'Joshua 8:33', ''),
   B('samaria', 'Samaria', 'שמרון', 35.19, 32.28, '1 Kings 16:24', ''),
   B('dor', 'Dor', 'דור', 34.92, 32.62, 'Joshua 12:23', ''),
-  B('megiddo', 'Megiddo', 'מגדו', 35.18, 32.58, 'Joshua 12:21', ''),
+  B('megiddo', 'Megiddo', 'מגדון', 35.18, 32.58, 'Joshua 12:21', ''),
   B('taanach', 'Taanach', 'תענך', 35.22, 32.52, 'Joshua 12:21', ''),
   B('jezreel', 'Jezreel', 'יזרעאל', 35.33, 32.56, 'Joshua 19:18', ''),
   B('shunem', 'Shunem', 'שונם', 35.33, 32.61, 'Joshua 19:18', ''),
