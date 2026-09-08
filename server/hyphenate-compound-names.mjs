@@ -97,14 +97,15 @@ const show = (r) => `  ${r.sn.padEnd(7)} ${r.from.padEnd(22)} → ${r.to.padEnd(
 if (flag('--list')) {
   const all = Object.keys(dict).map(rule).filter(Boolean).sort((a, b) => a.from.localeCompare(b.from));
   console.log(`${all.length} names the dictionary can split (${all.filter((r) => inUse.has(r.from)).length} in use in name-map-expanded.json). Add with --add H####,H####`);
-  for (const r of all) console.log(show(r) + (allow[r.sn] ? '   ✓ allowlisted' : ''));
+  for (const r of all) console.log(show(r) + (allow[r.sn]?.skip ? '   ✗ excluded' : allow[r.sn] ? '   ✓ allowlisted' : ''));
   process.exit(0);
 }
 if (flagVal('--add')) {
   for (const sn of flagVal('--add').split(',')) { const r = rule(sn); if (r) { allow[r.sn] = r; console.log('added' + show(r)); } else console.log(`  ${sn}: no dictionary rule`); }
   saveAllow(); process.exit(0);
 }
-if (flagVal('--remove')) { for (const sn of flagVal('--remove').split(',')) delete allow[normSn(sn)]; saveAllow(); process.exit(0); }
+// --remove keeps a { skip: true } tombstone so --seed-map never re-adds the number.
+if (flagVal('--remove')) { for (const sn of flagVal('--remove').split(',')) allow[normSn(sn)] = { sn: normSn(sn), skip: true }; saveAllow(); process.exit(0); }
 if (flag('--seed-map')) {
   const m = await import('../src/lib/models/holyLand.js');
   const byHe = {}; for (const [sn, e] of Object.entries(dict)) { const k = lemmaParts(e.lemma).join(' '); if (k) (byHe[k] ||= []).push(normSn(sn)); }
@@ -116,8 +117,8 @@ if (flag('--seed-map')) {
 // Preview / apply the allowlist against the name map.
 const APPLY = flag('--apply') || flag('--corpus');
 const used = new Map();
-for (const r of Object.values(allow)) if (inUse.has(r.from)) used.set(r.from, r);
-console.log(`${Object.keys(allow).length} allowlisted numbers; ${used.size} forms present in name-map-expanded.json:`);
+for (const r of Object.values(allow)) if (!r.skip && inUse.has(r.from)) used.set(r.from, r);
+console.log(`${Object.values(allow).filter((r) => !r.skip).length} allowlisted numbers; ${used.size} forms present in name-map-expanded.json:`);
 for (const r of [...used.values()].sort((a, b) => a.from.localeCompare(b.from))) console.log(show(r));
 if (APPLY) {
   for (const sect of ['single', 'phrases', 'theonyms']) for (const [k, v] of Object.entries(nm[sect] || {})) if (used.has(v)) nm[sect][k] = used.get(v).to;

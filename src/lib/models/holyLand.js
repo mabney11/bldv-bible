@@ -25,7 +25,7 @@ import { transliterate } from '../translit.js';
 // shared with the server's /api/strongs so the map, the Root Explorer and the
 // reading text all agree. A name not listed keeps the joined form.
 import hyphenAllow from '../../../server/lexicon/compound-hyphenation.json' with { type: 'json' };
-const HYPHEN_BY_HE = Object.fromEntries(Object.values(hyphenAllow).map((r) => [r.he.replace(/\s+/g, ''), r]));
+const HYPHEN_BY_HE = Object.fromEntries(Object.values(hyphenAllow).filter((r) => r && !r.skip && r.he).map((r) => [r.he.replace(/\s+/g, ''), r]));
 
 // ── Square-script → Paleo-Hebrew (U+10900 block) ─────────────────────────────
 const SQ_TO_PALEO = {

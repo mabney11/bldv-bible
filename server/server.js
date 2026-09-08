@@ -9368,7 +9368,8 @@ function strongsAnatomy(snRaw) {
     }
     // The hyphenated NAME only for allowlisted numbers; otherwise the joined
     // form the rest of the app uses, with the split kept in `split` for reference.
-    const allowed = !!hyphenAllowlist()[sn];
+    const allowEntry = hyphenAllowlist()[sn];
+    const allowed = !!(allowEntry && !allowEntry.skip);
     const split = { he: self.he, paleo: self.paleo, translit: self.translit };
     if (!allowed) {
         const joined = self.he.replace(/ /g, '');
