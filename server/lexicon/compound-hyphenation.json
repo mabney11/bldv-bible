@@ -10,12 +10,7 @@
   },
   "H3389": {
     "sn": "H3389",
-    "he": "ירו שלם",
-    "paleo": "𐤉𐤓𐤅-𐤔𐤋𐤌",
-    "from": "Yarawashalam",
-    "to": "Yaraw-Shalam",
-    "meaning": "founded peaceful",
-    "def": "Jerushalaim or Jerushalem, the capital city of Palestine"
+    "skip": true
   },
   "H884": {
     "sn": "H884",
@@ -37,12 +32,7 @@
   },
   "H7157": {
     "sn": "H7157",
-    "he": "קרית יערים",
-    "paleo": "𐤒𐤓𐤉𐤕-𐤉𐤏𐤓𐤉𐤌",
-    "from": "Qarayathayairayam",
-    "to": "Qarayath-Yairayam",
-    "meaning": "city of forests, or city of towns",
-    "def": "Kirjath-Jearim or Kirjath-Arim, a place in Palestine"
+    "skip": true
   },
   "H1053": {
     "sn": "H1053",
@@ -64,30 +54,15 @@
   },
   "H5872": {
     "sn": "H5872",
-    "he": "עין גדי",
-    "paleo": "𐤏𐤉𐤍-𐤂𐤃𐤉",
-    "from": "Iyanagaday",
-    "to": "Iyan-Gaday",
-    "meaning": "fountain of a kid",
-    "def": "En-Gedi, a place in Palestine"
+    "skip": true
   },
   "H6947": {
     "sn": "H6947",
-    "he": "קדש ברנע",
-    "paleo": "𐤒𐤃𐤔-𐤁𐤓𐤍𐤏",
-    "from": "Qadashabaranai",
-    "to": "Qadash-Baranai",
-    "meaning": null,
-    "def": "Kadesh-Barnea, a place in the Desert"
+    "skip": true
   },
   "H3157": {
     "sn": "H3157",
-    "he": "יזרע אל",
-    "paleo": "𐤉𐤆𐤓𐤏-𐤀𐤋",
-    "from": "Yazaraial",
-    "to": "Yazarai-Al",
-    "meaning": "God will sow",
-    "def": "Jizreel, the name of two places in Palestine and of two Israelites"
+    "skip": true
   },
   "H1052": {
     "sn": "H1052",
@@ -100,39 +75,19 @@
   },
   "H1171": {
     "sn": "H1171",
-    "he": "בעל גד",
-    "paleo": "𐤁𐤏𐤋-𐤂𐤃",
-    "from": "Bailagad",
-    "to": "Bail-Gad",
-    "meaning": "Baal of Fortune",
-    "def": "Baal-Gad, a place in Syria"
+    "skip": true
   },
   "H6439": {
     "sn": "H6439",
-    "he": "פנו אל",
-    "paleo": "𐤐𐤍𐤅-𐤀𐤋",
-    "from": "Panawaal",
-    "to": "Panaw-Al",
-    "meaning": "face of God",
-    "def": "Penuel or Peniel, a place East of Jordan; also (as Penuel) the name of two Israelites"
+    "skip": true
   },
   "H4311": {
     "sn": "H4311",
-    "he": "מי דבא",
-    "paleo": "𐤌𐤉-𐤃𐤁𐤀",
-    "from": "Mayadabaa",
-    "to": "May-Dabaa",
-    "meaning": "water of quiet",
-    "def": "Medeba, a place in Palestine"
+    "skip": true
   },
   "H2704": {
     "sn": "H2704",
-    "he": "חצר עינן",
-    "paleo": "𐤇𐤑𐤓-𐤏𐤉𐤍𐤍",
-    "from": "Chatzaraiyanan",
-    "to": "Chatzar-Iyanan",
-    "meaning": "village of springs",
-    "def": "Chatsar-Enan, a place in Palestine"
+    "skip": true
   },
   "H27": {
     "sn": "H27",
