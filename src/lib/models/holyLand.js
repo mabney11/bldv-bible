@@ -24,7 +24,7 @@ import { transliterate } from '../translit.js';
 // Yashar-Al, Abay-Dan). Maintained by server/hyphenate-compound-names.mjs and
 // shared with the server's /api/strongs so the map, the Root Explorer and the
 // reading text all agree. A name not listed keeps the joined form.
-import hyphenAllow from '../../../server/lexicon/compound-hyphenation.json';
+import hyphenAllow from '../../../server/lexicon/compound-hyphenation.json' with { type: 'json' };
 const HYPHEN_BY_HE = Object.fromEntries(Object.values(hyphenAllow).map((r) => [r.he.replace(/\s+/g, ''), r]));
 
 // ── Square-script → Paleo-Hebrew (U+10900 block) ─────────────────────────────
