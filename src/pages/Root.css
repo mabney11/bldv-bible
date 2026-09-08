@@ -342,3 +342,4 @@
 .rc-part-gloss { font-style: normal; color: var(--teal); font-size: 13px; }
 .rc-part-plus { color: var(--text4); }
 .rc-part-meaning { color: var(--text2); font-style: italic; }
+.rc-part-def { flex-basis: 100%; font-size: 13px; color: var(--text3); }

@@ -284,6 +284,7 @@ function RootCard({ detail, idToSlug, context, onPickSn }) {
               </span>
             ))}
             {anatomy.meaning && <span className="rc-part-meaning">— "{anatomy.meaning}"</span>}
+            {anatomy.strongs_def && <span className="rc-part-def">{anatomy.strongs_def}</span>}
           </div>
         </div>
       )}

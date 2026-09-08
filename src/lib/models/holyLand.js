@@ -20,6 +20,12 @@
  * transliteration here — let the same code path produce it.
  */
 import { transliterate } from '../translit.js';
+// The allowlist of compound names that render hyphenated (Bayath-Lacham,
+// Yashar-Al, Abay-Dan). Maintained by server/hyphenate-compound-names.mjs and
+// shared with the server's /api/strongs so the map, the Root Explorer and the
+// reading text all agree. A name not listed keeps the joined form.
+import hyphenAllow from '../../../server/lexicon/compound-hyphenation.json';
+const HYPHEN_BY_HE = Object.fromEntries(Object.values(hyphenAllow).map((r) => [r.he.replace(/\s+/g, ''), r]));
 
 // ── Square-script → Paleo-Hebrew (U+10900 block) ─────────────────────────────
 const SQ_TO_PALEO = {
@@ -33,11 +39,16 @@ export function squareToPaleo(s) {
 // Compound names are HYPHENATED so each piece can be enunciated on its own:
 // בית לחם → 𐤁𐤉𐤕-𐤋𐤇𐤌 → Bayath-Lacham (fieldy's rule, 2026-09-08). A single
 // word is unchanged.
+const hyphenRule = (hebrew) => HYPHEN_BY_HE[String(hebrew || '').replace(/[\s־-]+/g, '')];
 export function compoundPaleo(hebrew) {
-  return String(hebrew || '').trim().split(/[\s־-]+/).map(squareToPaleo).join('-');
+  const r = hyphenRule(hebrew);
+  if (r) return r.paleo;
+  return squareToPaleo(String(hebrew || '').trim().replace(/[\s־-]+/g, ' '));
 }
 export function translitOf(hebrew) {
-  return String(hebrew || '').trim().split(/[\s־-]+/).map((w) => transliterate(squareToPaleo(w))).join('-');
+  const r = hyphenRule(hebrew);
+  if (r) return r.to;
+  return String(hebrew || '').trim().split(/[\s־-]+/).map((w) => transliterate(squareToPaleo(w))).join(' ');
 }
 
 // ── Tribe palette (shared by both overlays so a tribe keeps its colour) ──────

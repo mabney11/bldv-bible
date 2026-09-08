@@ -9316,18 +9316,39 @@ function strongsPart(sn) {
         kjv: e && e.kjv_def ? String(e.kjv_def).replace(/\.$/, '') : null,
     };
 }
-// A FUSED compound (ישראל, יבנאל, אביעזר — one word, no space/maqaf) is split
-// where the dictionary's derivation says it is built: if the last component's
-// consonants end the word (…אל) or the first component's begin it, hyphenate
-// there — Yashar-Al, Yaban-Al, Abay-Izar. Only ever from the derivation +
-// the spelling itself, never guessed; no match → left whole.
+// A FUSED compound (ישראל, יבנאל, אבידן — one word, no space/maqaf) is split
+// where the dictionary's derivation says it is built: Yashar-Al, Yaban-Al,
+// Abay-Dan. Every split point is scored against the first and last component
+// — exact match best, then a connective yod kept with the head (אבי-דן), then
+// a match ignoring internal vowel letters (דין ~ דן). Only ever from the
+// derivation + the spelling itself, never guessed; no match → left whole.
+// Keep in step with server/hyphenate-compound-names.mjs.
+const skelHe = (s) => s ? s[0] + s.slice(1).replace(/[יו]/g, '') : s;
 function splitFusedCompound(he, partHes) {
     if (!he || he.includes(' ') || partHes.length < 2) return null;
-    const last = partHes[partHes.length - 1], first = partHes[0];
-    // Both pieces must be real words (≥ 2 letters) — never split off a single letter.
-    if (last && last.length >= 2 && he.length - last.length >= 2 && he.endsWith(last)) return [he.slice(0, -last.length), last];
-    if (first && first.length >= 2 && he.length - first.length >= 2 && he.startsWith(first)) return [first, he.slice(first.length)];
-    return null;
+    const first = partHes[0], last = partHes[partHes.length - 1];
+    let best = null;
+    for (let k = 2; k <= he.length - 2; k++) {
+        const head = he.slice(0, k), tail = he.slice(k);
+        const t = tail === last ? 3 : (last && skelHe(tail) === skelHe(last)) ? 2 : 0;
+        const h = head === first ? 3 : head === first + 'י' ? 2.5 : (first && skelHe(head) === skelHe(first)) ? 2 : (first && head.startsWith(first)) ? 1 : 0;
+        if (!t && h < 2) continue;
+        const score = t + h;
+        if (!best || score > best.score) best = { score, split: [head, tail] };
+    }
+    return best ? best.split : null;
+}
+// The allowlist of numbers whose NAME is rendered hyphenated (fieldy chooses;
+// server/hyphenate-compound-names.mjs maintains it). Parts/anatomy show for
+// every number regardless. Re-read when the file changes.
+const HYPHEN_ALLOW_PATH = path.join(__dirname, 'lexicon', 'compound-hyphenation.json');
+let _hyphenAllow = { mtime: 0, data: {} };
+function hyphenAllowlist() {
+    try {
+        const st = fs.statSync(HYPHEN_ALLOW_PATH);
+        if (st.mtimeMs !== _hyphenAllow.mtime) _hyphenAllow = { mtime: st.mtimeMs, data: JSON.parse(fs.readFileSync(HYPHEN_ALLOW_PATH, 'utf8')) };
+    } catch { _hyphenAllow = { mtime: 0, data: {} }; }
+    return _hyphenAllow.data;
 }
 const kjvShort = (kjv) => kjv ? String(kjv).replace(/\[[^\]]*\]\s*/g, '').split(',').slice(0, 3).map(x => x.trim()).filter(Boolean).join(', ') : null;
 function strongsAnatomy(snRaw) {
@@ -9337,22 +9358,32 @@ function strongsAnatomy(snRaw) {
     const self = strongsPart(sn);
     const deriv = String(e.derivation || '');
     const partSns = [...deriv.matchAll(/H0*(\d+[a-z]?)/g)].map(m => 'H' + m[1]).filter(p => p !== sn);
-    const parts = partSns.map(strongsPart).map(p => ({ ...p, kjv: kjvShort(p.kjv) }));
+    // Drop a component that is just a spelling variant of the name itself (H3389's derivation cites H3390).
+    const parts = partSns.map(strongsPart).filter(p => p.he && p.he.replace(/ /g, '') !== self.he.replace(/ /g, '')).map(p => ({ ...p, kjv: kjvShort(p.kjv) }));
     const fused = splitFusedCompound(self.he, parts.map(p => p.he));
     if (fused) {
         self.he = fused.join(' ');
         self.paleo = fused.map(squareToPaleoStr).join('-');
         self.translit = fused.map(f => getTranslit(squareToPaleoStr(f))).join('-');
     }
+    // The hyphenated NAME only for allowlisted numbers; otherwise the joined
+    // form the rest of the app uses, with the split kept in `split` for reference.
+    const allowed = !!hyphenAllowlist()[sn];
+    const split = { he: self.he, paleo: self.paleo, translit: self.translit };
+    if (!allowed) {
+        const joined = self.he.replace(/ /g, '');
+        self.he = joined; self.paleo = squareToPaleoStr(joined); self.translit = getTranslit(squareToPaleoStr(joined));
+    }
     // The plain-English meaning the dictionary gives after the components: "...; house of bread;"
     const mm = /\)\s*;\s*([^;()]+?)\s*;?\s*$/.exec(deriv);
     return {
         ...self,
-        isCompound: self.paleo.includes('-'),
+        isCompound: split.paleo.includes('-'),
         derivation: deriv || null,
         meaning: mm ? mm[1].trim() : null,
         strongs_def: e.strongs_def || null,
-        hyphenated: self.paleo.includes('-') ? (fused ? 'derivation' : 'lemma') : null,
+        hyphenated: allowed && split.paleo.includes('-') ? (fused ? 'derivation' : 'lemma') : null,
+        split: split.paleo.includes('-') ? split : null,   // the dictionary's split, allowlisted or not
         parts,
     };
 }

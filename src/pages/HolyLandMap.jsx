@@ -858,6 +858,7 @@ function Lexical({ he }) {
               <span className="hl-anat-paleo" dir="rtl">{a.paleo}</span>
               {a.meaning && <em>"{a.meaning}"</em>}
             </div>
+            {a.strongs_def && <div className="hl-anat-def">{a.strongs_def}</div>}
             {a.parts.length > 0 && (
               <div className="hl-anat-parts">
                 {a.parts.map((p, i) => (
