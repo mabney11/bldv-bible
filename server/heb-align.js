@@ -711,7 +711,14 @@ function buildHebSurfaces(o) {
                 const parsed = parseToken(row.word_raw, row.pos, row.morph, row.strongs);
                 if (!parsed || !parsed.components || !parsed.components.length) continue;
                 const last = parsed.components[parsed.components.length - 1];
-                if (!last) continue;
+                // The borrowed component must BE the suffix: a real ending chip
+                // (nme/prs/vbe/uvf class) spelling exactly this tail. Without this
+                // gate the most frequent 𐤌-final word is 𐤀𐤋𐤄𐤉𐤌, whose plural ending
+                // is absorbed into its root, so "last component" was the Elohim
+                // ROOT chip — and every NT word split as stem + 𐤌 grew an
+                // "Alahayam" root (𐤌𐤊𐤌𐤌, 𐤔𐤋𐤅𐤉𐤌, 𐤋𐤁𐤋𐤅𐤌 … caught by
+                // verify-parallel-alignment on the 2026-09-07 deploy).
+                if (!last || last.paleo !== tail || !/^(nme|prs|vbe|uvf)-/.test(last.css || '')) continue;
                 SUF_COMPS.set(tail, { component: last, pos: row.pos || '' });
                 break;
             }
