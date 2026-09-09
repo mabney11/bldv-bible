@@ -34,6 +34,12 @@
 // the only place the sequence is defined. --dry prints them so you can eyeball first.
 
 import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+// Every step is a script next to this file and reads corpus.db / *.jsonl relative to
+// itself, so run them FROM server/ whatever directory you launched from
+// (2026-09-09: `node server/render-all.mjs` from the repo root failed at step 1).
+const HERE = path.dirname(fileURLToPath(import.meta.url));
 
 const args    = process.argv.slice(2);
 const DRY     = args.includes('--dry');
@@ -91,7 +97,7 @@ for (const [cmd, cmdArgs, desc] of steps) {
   if (DRY) continue;
   const started = Date.now();
   // shell:true on Windows/MINGW so "node" resolves the same way it does in your terminal
-  const r = spawnSync(cmd, cmdArgs, { stdio: 'inherit', shell: process.platform === 'win32' });
+  const r = spawnSync(cmd, cmdArgs, { stdio: 'inherit', shell: process.platform === 'win32', cwd: HERE });
   if (r.error) { console.error(`\n\u2717 step ${i} could not start: ${r.error.message}`); process.exit(1); }
   if (r.status !== 0) {
     console.error(`\n\u2717 step ${i} failed (exit ${r.status}). Stopping — no later step ran, corpus left as step ${i - 1} left it.`);
