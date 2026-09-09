@@ -29,6 +29,10 @@ import hyphenAllow from '../../../server/lexicon/compound-hyphenation.json' with
 // to the same box as the base map — drawn in purple around a selected nation
 // or city so "where is Greece / which country is Tyre in today" is visible.
 import countriesBase from './countries.json' with { type: 'json' };
+// The bundled coast, lakes and the Jordan (Natural Earth) — the same geometry the base map
+// draws, so a border that the Bible puts ON the Jordan or the Salt Sea follows the water
+// exactly instead of a straight line that wanders across it.
+import levantBase from './levant-base.json' with { type: 'json' };
 const HYPHEN_BY_HE = Object.fromEntries(Object.values(hyphenAllow).filter((r) => r && !r.skip && r.he).map((r) => [r.he.replace(/\s+/g, ''), r]));
 
 // ── Square-script → Paleo-Hebrew (U+10900 block) ─────────────────────────────
@@ -90,6 +94,41 @@ export function tribeDisplayName(name, tribe) {
 
 // ── Joshua 13–19 allotments (idealized, [lon,lat]) ───────────────────────────
 // Each entry: name, tribe (for colour), ref, polygon ring (unclosed).
+// ── The Jordan as the base map draws it (see EZ_EAST below and snapToJordan) ──
+const r3 = (p) => [+p[0].toFixed(3), +p[1].toFixed(3)];
+const JORDAN_PIECES = levantBase.rivers.filter((r) => r.name === 'Jordan').map((r) => r.pts.map(r3));
+const jordanPiece = (n) => JORDAN_PIECES.find((p) => p.length === n) || [];
+const lakeRing = (name, nth = 0) => (levantBase.lakes.filter((l) => l.name === name)[nth]?.ring || []).map(r3);
+const eastShore = (ring0) => {                      // a lake's east shore, north → south
+  const ring = ring0.length && ring0[0][0] === ring0[ring0.length - 1][0] && ring0[0][1] === ring0[ring0.length - 1][1] ? ring0.slice(0, -1) : ring0;
+  let n = 0, so = 0;
+  ring.forEach((p, i) => { if (p[1] > ring[n][1]) n = i; if (p[1] < ring[so][1]) so = i; });
+  const walk = (dir) => { const out = []; for (let i = n; ; i = (i + dir + ring.length) % ring.length) { out.push(ring[i]); if (i === so) break; } return out; };
+  const a = walk(1), b = walk(-1);
+  const mean = (arr) => arr.reduce((t, p) => t + p[0], 0) / arr.length;
+  return mean(a) >= mean(b) ? a : b;
+};
+const UPPER_JORDAN = jordanPiece(22).filter(([, y]) => y <= 33.2);   // from where the border meets it
+export const JORDAN_LINE = [...UPPER_JORDAN, ...eastShore(lakeRing('Sea of Galilee')), ...jordanPiece(100)];
+// A Joshua border that the text puts on the Jordan ("the Jordan was the border", 13:23, 27;
+// 16:7; 18:20…) follows the river: every vertex within ~7 km of it is replaced by the river's
+// own course between the neighbouring vertices' latitudes.
+function snapToJordan(ring) {
+  const river = [...JORDAN_LINE].sort((a, b) => b[1] - a[1]);
+  const lonAt = (lat) => { const seg = river.find((p, i) => i + 1 < river.length && lat <= p[1] && lat >= river[i + 1][1]); if (!seg) return null; const i = river.indexOf(seg), q = river[i + 1]; const t = seg[1] === q[1] ? 0 : (seg[1] - lat) / (seg[1] - q[1]); return seg[0] + (q[0] - seg[0]) * t; };
+  const near = (p) => { const x = lonAt(p[1]); return x !== null && Math.abs(x - p[0]) < 0.075; };
+  const out = [];
+  for (let i = 0; i < ring.length; i++) {
+    const p = ring[i], q = ring[(i + 1) % ring.length];
+    out.push(near(p) ? [lonAt(p[1]), p[1]] : p);
+    if (near(p) && near(q)) {
+      const [top, bot] = p[1] > q[1] ? [p[1], q[1]] : [q[1], p[1]];
+      const mid = river.filter(([, y]) => y < top && y > bot);
+      out.push(...(p[1] > q[1] ? mid : mid.reverse()));
+    }
+  }
+  return out;
+}
 export const JOSHUA_TRIBES = [
   { id:'asher', name:'Asher', tribe:'Asher', ref:'Joshua 19:24–31',
     ring:[[34.95,32.76],[34.98,32.9],[35.07,33.05],[35.12,33.3],[35.2,33.5],[35.45,33.45],[35.45,33.15],[35.32,32.96],[35.15,32.82]] },
@@ -120,7 +159,7 @@ export const JOSHUA_TRIBES = [
     ring:[[35.6,32.46],[35.72,32.52],[35.88,32.35],[36.32,32.5],[36.42,32.9],[36.2,33.3],[35.78,33.3],[35.72,33.3],[35.7,33.15],[35.65,32.85],[35.6,32.7]] },
   { id:'dan-north', name:'Dan (Laish)', tribe:'Dan', ref:'Joshua 19:47',
     ring:[[35.55,33.32],[35.72,33.3],[35.7,33.15],[35.55,33.18]] },
-];
+].map((t) => ({ ...t, ring: snapToJordan(t.ring) }));
 
 // ── Ezekiel 47–48 borders (landmarks, [lon,lat]) ─────────────────────────────
 // West edge = the Great Sea's coast, north → south.
@@ -131,10 +170,17 @@ const EZ_WEST = [
   [35.0,32.93],[34.9,32.83],[34.83,32.5],[34.74,32.2],[34.68,32.05],[34.57,31.8],
   [34.36,31.5],[34.18,31.3],[33.75,31.13],
 ];
-// East edge, north → south: Hazar-enan → Damascus → Hauran → Jordan → Salt Sea → Tamar.
+// East edge, north → south (47:18): Hazar-enan → "from between Hauran and Damascus" →
+// "between Gilead and the land of Israel, the Jordan" → "unto the east sea" → Tamar.
+// The Jordan and the Salt Sea are the border itself, so from the upper Jordan down to the
+// south end of the Salt Sea the line IS the river and the eastern shore, taken from the
+// bundled geometry (the east shore of Chinnereth carries it across the lake).
 const EZ_EAST = [
-  [37.2,34.35],[36.6,33.9],[36.38,33.5],[36.3,33.0],[35.68,32.72],[35.58,32.4],
-  [35.53,32.0],[35.5,31.75],[35.45,31.3],[35.35,30.95],[35.24,30.78],
+  [37.2,34.35],[36.6,33.9],[36.38,33.5],[36.05,33.3],   // Hazar-enan; between Damascus (N) and Hauran (S)
+  ...JORDAN_LINE,                                      // the Jordan, Chinnereth's east shore, the Jordan
+  ...eastShore(lakeRing('Dead Sea', 0)),               // the Salt Sea — its east shore
+  ...eastShore(lakeRing('Dead Sea', 1)),
+  [35.24,30.78],                                       // Tamar
 ];
 // North edge, west → east: sea → Hethlon → Lebo-hamath → Zedad → Hazar-enan (47:15–17).
 const EZ_NORTH = [[35.78,34.45],[36.0,34.45],[36.2,34.2],[36.9,34.3],[37.2,34.35]];
@@ -322,12 +368,41 @@ export function ezekielAllotment() {
 
 // ── Waters, named as the Bible names them (transliteration primary, paleo, then English) ──
 // Only the waters the built-in basemap actually draws; positions are label anchors.
+// Rivers the Bible names that the bundled base map does not draw (conventional courses).
+export const BIBLE_RIVERS = [
+  { id:'brook-of-egypt', pts:[[33.8,31.13],[33.93,30.93],[34.05,30.7],[34.18,30.45],[34.3,30.2],[34.42,30.0]] },      // Wadi el-Arish
+  { id:'arnon',          pts:[[35.555,31.47],[35.66,31.45],[35.78,31.44],[35.9,31.38],[36.02,31.3],[36.15,31.22]] },   // Wadi Mujib
+  { id:'jabbok',         pts:[[35.572,32.19],[35.68,32.2],[35.8,32.24],[35.92,32.23],[36.03,32.17],[36.08,32.07],[35.98,31.98]] }, // Zarqa
+  { id:'kishon',         pts:[[35.03,32.82],[35.05,32.76],[35.09,32.7],[35.16,32.63],[35.24,32.57],[35.3,32.5]] },
+];
+// Every water carries its own verses (history, then what the prophets say of it), like a city.
+// `base` = the name the bundled geometry gives it, so a tap on the water itself finds it.
 export const WATERS = [
-  { id:'great-sea',   ...W('הים הגדול'), en:'the Great Sea',        lon:34.05, lat:32.45, ref:'Numbers 34:6; Joshua 1:4; Ezekiel 47:15, 20', always:true },
-  { id:'salt-sea',    ...W('ים המלח'),   en:'the Salt Sea',         lon:35.47, lat:31.4,  ref:'Genesis 14:3; Numbers 34:3, 12; Joshua 3:16; Ezekiel 47:8–10' },
-  { id:'chinnereth',  ...W('ים כנרת'),   en:'the Sea of Chinnereth', lon:35.59, lat:32.82, ref:'Numbers 34:11; Joshua 13:27' },
-  { id:'jordan',      ...W('ירדן'),      en:'the Jordan',           lon:35.56, lat:32.3,  ref:'Joshua 3:15–17; Ezekiel 47:18' },
-  { id:'jordan-s',    ...W('ירדן'),      en:'the Jordan',           lon:35.53, lat:31.9,  ref:'Joshua 3:15–17; Ezekiel 47:18' },
+  { id:'great-sea',   ...W('הים הגדול'), en:'the Great Sea',         lon:34.05, lat:32.45, always:true, base:'sea',
+    ref:'Genesis 49:13; Numbers 34:6–7; Deuteronomy 11:24; Joshua 1:4; Joshua 9:1; Joshua 15:12, 47; Joshua 23:4; Ezekiel 47:10, 15, 19–20; Ezekiel 48:28',
+    proph:'Isaiah 60:5; Ezekiel 47:10; Zechariah 9:10; Zechariah 14:8' },
+  { id:'salt-sea',    ...W('ים המלח'),   en:'the Salt Sea',          lon:35.47, lat:31.4,  base:'Dead Sea',
+    ref:'Genesis 14:3; Genesis 19:24–28; Numbers 34:3, 12; Deuteronomy 3:17; Joshua 3:16; Joshua 12:3; Joshua 15:2, 5; Joshua 18:19',
+    proph:'Ezekiel 47:8–11; Joel 2:20; Zechariah 14:8' },
+  { id:'chinnereth',  ...W('ים כנרת'),   en:'the Sea of Chinnereth',  lon:35.59, lat:32.82, base:'Sea of Galilee',
+    ref:'Numbers 34:11; Deuteronomy 3:17; Joshua 11:2; Joshua 12:3; Joshua 13:27; Joshua 19:35; 1 Kings 15:20; Matthew 4:18; Luke 5:1; John 6:1',
+    proph:'Isaiah 9:1; Matthew 4:13–16' },
+  { id:'jordan',      ...W('ירדן'),      en:'the Jordan',            lon:35.56, lat:32.3,  base:'Jordan',
+    ref:'Genesis 13:10–11; Genesis 32:10; Numbers 34:12; Deuteronomy 3:27; Joshua 3:14–17; Joshua 4:1–9; Judges 3:28; 2 Samuel 19:15; 2 Kings 2:6–14; 2 Kings 5:10–14; Matthew 3:5–6, 13; Mark 1:9',
+    proph:'Jeremiah 12:5; Jeremiah 49:19; Ezekiel 47:18; Zechariah 11:3' },
+  { id:'jordan-s',    ...W('ירדן'),      en:'the Jordan',            lon:35.53, lat:31.9,  base:'Jordan', twin:'jordan',
+    ref:'Genesis 13:10–11; Genesis 32:10; Numbers 34:12; Deuteronomy 3:27; Joshua 3:14–17; Joshua 4:1–9; Judges 3:28; 2 Samuel 19:15; 2 Kings 2:6–14; 2 Kings 5:10–14; Matthew 3:5–6, 13; Mark 1:9',
+    proph:'Jeremiah 12:5; Jeremiah 49:19; Ezekiel 47:18; Zechariah 11:3' },
+  { id:'brook-of-egypt', ...W('נחל מצרים'), en:'the Brook of Egypt',  lon:34.0,  lat:30.8,  base:'brook-of-egypt',
+    ref:'Genesis 15:18; Numbers 34:5; Joshua 15:4, 47; 1 Kings 8:65; 2 Kings 24:7; 2 Chronicles 7:8',
+    proph:'Isaiah 27:12; Ezekiel 47:19; Ezekiel 48:28' },
+  { id:'arnon',       ...W('ארנון'),     en:'the Arnon',             lon:35.9,  lat:31.36, base:'arnon',
+    ref:'Numbers 21:13–15, 24, 26, 28; Numbers 22:36; Deuteronomy 2:24, 36; Deuteronomy 3:8, 12, 16; Deuteronomy 4:48; Joshua 12:1–2; Joshua 13:9, 16; Judges 11:13–26; 2 Kings 10:33',
+    proph:'Isaiah 16:2; Jeremiah 48:20' },
+  { id:'jabbok',      ...W('יבק'),       en:'the Jabbok',            lon:35.86, lat:32.28, base:'jabbok',
+    ref:'Genesis 32:22–30; Numbers 21:24; Deuteronomy 2:37; Deuteronomy 3:16; Joshua 12:2; Judges 11:13, 22' },
+  { id:'kishon',      ...W('קישון'),     en:'the Kishon',            lon:35.15, lat:32.68, base:'kishon',
+    ref:'Judges 4:7, 13; Judges 5:21; 1 Kings 18:40; Psalms 83:9' },
 ];
 
 export const HOLY_KIND_STYLE = {

@@ -45,7 +45,7 @@ import {
   ezekielAllotment, toFeature, ringCentroid, labelAnchor, pointInRing, joshuaTribeAt, ezekielAt,
   squareToPaleo, translitOf,
   REGIONS, ALL_PLACES, PLACES_AZ, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
-  countryOf, countryFeature, countryName, twinOf, WATERS,
+  countryOf, countryFeature, countryName, twinOf, WATERS, BIBLE_RIVERS,
 } from '../lib/models/holyLand.js';
 
 // Phones and narrow windows: the panel is a bottom sheet, place dots start off
@@ -119,6 +119,34 @@ function levantGeo() {
   return _levantGeo;
 }
 
+// The outline of a water (its shore, or the river's course) for the gold focus.
+function waterGeometry(w) {
+  const g = levantGeo();
+  const feats = [];
+  if (w.base === 'sea') feats.push(...g.land.features.map((f) => ({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: f.geometry.coordinates[0] } })));
+  else {
+    for (const f of g.lakes.features) if (f.properties.name === w.base) feats.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: f.geometry.coordinates[0] } });
+    for (const f of g.rivers.features) if (f.properties.name === w.base) feats.push(f);
+    for (const r of BIBLE_RIVERS) if (r.id === w.base) feats.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: r.pts } });
+  }
+  return feats;
+}
+
+// Which water (if any) a tap on the base map landed on: a lake, a river, the Bible's rivers,
+// or the sea itself. Rivers get a few pixels of tolerance.
+function waterHit(map, pt) {
+  const q = (layers, pad = 0) => {
+    const ls = layers.filter((id) => map.getLayer(id));
+    if (!ls.length) return null;
+    const box = pad ? [[pt.x - pad, pt.y - pad], [pt.x + pad, pt.y + pad]] : pt;
+    return map.queryRenderedFeatures(box, { layers: ls })[0] || null;
+  };
+  const f = q(['hl-lakes']) || q(['hl-rivers', 'hl-bible-rivers'], 6) || q(['water']);
+  if (!f) return null;
+  const base = f.layer.id === 'water' ? 'sea' : f.properties.name;
+  return WATERS.find((w) => w.base === base && !w.twin) || null;
+}
+
 // Runs of shoreline (coast and lakeshore) inside a ring → LineStrings, for the gold border.
 function shoreInside(ring) {
   const g = levantGeo();
@@ -162,6 +190,7 @@ function buildPlainStyle() {
       'hl-sea':    { type: 'geojson', data: g.sea },
       'hl-lakes':  { type: 'geojson', data: g.lakes },
       'hl-rivers': { type: 'geojson', data: g.rivers },
+      'hl-bible-rivers': { type: 'geojson', data: { type: 'FeatureCollection', features: BIBLE_RIVERS.map((r) => ({ type: 'Feature', properties: { name: r.id }, geometry: { type: 'LineString', coordinates: r.pts } })) } },
       ...DEM_SOURCES,
     },
     layers: [
@@ -174,6 +203,7 @@ function buildPlainStyle() {
       { id: 'hl-coast', type: 'line', source: 'hl-land', paint: { 'line-color': '#4f7599', 'line-width': 0.8, 'line-opacity': 0.8 } },
       { id: 'hl-lake-line', type: 'line', source: 'hl-lakes', paint: { 'line-color': '#4f7599', 'line-width': 0.8, 'line-opacity': 0.8 } },
       { id: 'hl-rivers', type: 'line', source: 'hl-rivers', paint: { 'line-color': RIVER, 'line-width': ['interpolate', ['linear'], ['zoom'], 4, 0.6, 9, 1.8] } },
+      { id: 'hl-bible-rivers', type: 'line', source: 'hl-bible-rivers', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': RIVER, 'line-width': ['interpolate', ['linear'], ['zoom'], 4, 0.5, 9, 1.6] } },
     ],
   };
 }
@@ -289,6 +319,17 @@ export default function HolyLandMap() {
     setParams(next, { replace: true });
   }, [describePoint, params, setParams, threeD]);
 
+  // A river or a sea: its card (verses, prophecies, the name's anatomy) and a gold outline.
+  const selectWater = useCallback((w, opts = {}) => {
+    const water = w.twin ? WATERS.find((x) => x.id === w.twin) || w : w;
+    setSel({ kind: 'water', water, at: opts.at || [w.lon, w.lat] });
+    setPanelOpen(true);
+    setGearOpen(false);
+    const map = mapRef.current;
+    if (map && isNarrow()) map.easeTo({ center: opts.at || [w.lon, w.lat], padding: { top: 0, left: 0, right: 0, bottom: sheetPx() }, duration: 500 });
+  }, []);
+  const selectWaterRef = useRef(selectWater); selectWaterRef.current = selectWater;
+
   const selectRegion = useCallback((kind, entry, opts = {}) => {
     setSel({ kind, entry, cities: citiesIn(entry.ring), at: opts.at || null });
     setPanelOpen(true);
@@ -322,7 +363,7 @@ export default function HolyLandMap() {
       if (src) src.setData(data); else map.addSource(id, { type: 'geojson', data });
     };
     // Pin → selection line (great-circle, densified so it curves correctly when far).
-    const selPt = sel?.kind === 'city' ? [sel.city.lon, sel.city.lat] : sel?.kind === 'point' ? sel.lonLat : null;
+    const selPt = sel?.kind === 'city' ? [sel.city.lon, sel.city.lat] : sel?.kind === 'point' ? sel.lonLat : sel?.kind === 'water' ? sel.at : null;
     const lineFeatures = [];
     if (pin && selPt && (pin.lon !== selPt[0] || pin.lat !== selPt[1])) {
       const n = 48, pts = [];
@@ -343,7 +384,7 @@ export default function HolyLandMap() {
     ensure('hl-focus', { type: 'FeatureCollection', features: focusEntry ? [toFeature(focusEntry)] : [] });
     // The portion's border along the water is the SHORE, not the offshore ring: every run of
     // coast / lakeshore vertices that lies inside the selected ring is drawn gold above the water.
-    ensure('hl-focus-shore', { type: 'FeatureCollection', features: focusEntry ? shoreInside(focusEntry.ring) : [] });
+    ensure('hl-focus-shore', { type: 'FeatureCollection', features: focusEntry ? shoreInside(focusEntry.ring) : sel?.kind === 'water' ? waterGeometry(sel.water) : [] });
     // Purple outline of the modern country a selected NATION stands in (Greece, Egypt, Edom → Jordan).
     // Cities get only their gold dot — a whole country lit up around Ashdod read as "what is highlighted?".
     const countryF = sel?.kind === 'city' && sel.city.kind === 'region' ? countryFeature(countryOf(sel.city)) : null;
@@ -509,14 +550,17 @@ export default function HolyLandMap() {
     }
     // Waters named the way the Bible names them (the online basemap has its own names).
     if (!onlineLabels) for (const wtr of WATERS) {
-      const el = document.createElement('div');
-      el.className = `hl-rl hl-rl-w${wtr.always ? ' hl-rl-w-always' : ''}`;
+      const el = document.createElement('button');
+      el.type = 'button';
+      const on = sel?.kind === 'water' && (sel.water.id === wtr.id || sel.water.id === wtr.twin);
+      el.className = `hl-rl hl-rl-w${wtr.always ? ' hl-rl-w-always' : ''}${on ? ' on' : ''}`;
       el.innerHTML = `<span class="hl-rl-name">${wtr.tr}</span><span class="hl-rl-paleo" dir="rtl">${wtr.paleo}</span><span class="hl-rl-en">${wtr.en}</span>`;
-      el.title = `${wtr.en} — ${wtr.ref}`;
+      el.title = `${wtr.en} — ${wtr.ref.split(';')[0]}…`;
+      el.addEventListener('click', (e) => { e.stopPropagation(); selectWater(wtr); });
       mk([wtr.lon, wtr.lat], el);
     }
     fitRegionLabelsRef.current(map);   // the band labels exist only now — size them to their bands
-  }, [ez, sel, pin, showBiblical, showEzekiel, showJoshua, showModern, showRegions, relief, onlineLabels, selectCity, selectRegion]);
+  }, [ez, sel, pin, showBiblical, showEzekiel, showJoshua, showModern, showRegions, relief, onlineLabels, selectCity, selectRegion, selectWater]);
 
   const applyRef = useRef(applyOverlays);
   applyRef.current = applyOverlays;
@@ -629,6 +673,7 @@ export default function HolyLandMap() {
         if (holy) selectRegionRef.current('holy', holy, { at: lonLat });
         else if (josh) selectRegionRef.current('joshua', josh, { at: lonLat });
         else if (band) selectRegionRef.current('ezekiel', band, { at: lonLat });
+        else if (waterHit(map, e.point)) selectWaterRef.current(waterHit(map, e.point), { at: lonLat });
         else {
           setSel({ kind: 'point', lonLat, joshua: joshuaTribeAt(lonLat), ezekiel: ezekielAt(lonLat, ez) });
           setPanelOpen(true);
@@ -1294,6 +1339,23 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
         <div className="hl-chips">{sel.cities.biblical.map((c) => <button key={c.id} type="button" className={`hl-chip${c.id === KEY_CITY ? ' key' : ''}`} onClick={() => onCity(c)}>{c.translit} <span>{c.paleo}</span><small> {c.name}</small></button>)}{sel.cities.biblical.length === 0 && <span className="dim">none listed</span>}</div>
         <div className="hl-detail-sub">Today's cities inside <span className="hl-count">{sel.cities.modern.length}</span></div>
         <div className="hl-chips">{sel.cities.modern.map((c) => <button key={c.id} type="button" className="hl-chip m" onClick={() => onCity(c)}>{c.name} <span>{c.country}</span></button>)}{sel.cities.modern.length === 0 && <span className="dim">none listed</span>}</div>
+      </div>
+    );
+  }
+  if (sel.kind === 'water') {
+    const w = sel.water;
+    return (
+      <div className="hl-detail hl-detail-water">
+        <button type="button" className="hl-detail-x" onClick={onClose} aria-label="Close">×</button>
+        <div className="hl-detail-paleo" dir="rtl">{w.paleo}</div>
+        <div className="hl-detail-name">{w.tr} <em>{w.en}</em></div>
+        <div className="hl-detail-ref">{w.base === 'sea' || w.base === 'Dead Sea' || w.base === 'Sea of Galilee' ? 'Sea' : 'River'}</div>
+        <Lexical he={w.he} />
+        <div className="hl-detail-sub">{w.proph ? 'History' : 'Scripture'}</div>
+        <PassageRefs refs={w.ref} autoOpen />
+        {w.proph && <><div className="hl-detail-sub">Prophecies</div><PassageRefs refs={w.proph} /></>}
+        <PinRow pin={pin} at={sel.at} label={w.tr} onPin={onPin} onUnpin={onUnpin} />
+        <div className="hl-detail-coord">{fmtLonLat(sel.at)}</div>
       </div>
     );
   }

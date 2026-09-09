@@ -264,11 +264,13 @@
 .hl-rl-paleo { font-family: var(--paleo-font); font-size: 13px; color: #4a2f00; }
 .hl-rl-j .hl-rl-name { font-style: italic; text-transform: none; }
 /* waters: quiet blue italics, the paleo and English beneath once zoomed in */
-.hl-rl-w { pointer-events: none; cursor: default; color: #2b4f73; text-shadow: 0 0 3px #d9e8f5, 0 0 3px #d9e8f5, 0 0 5px #d9e8f5; display: none; }
+.hl-rl-w { cursor: pointer; color: #2b4f73; text-shadow: 0 0 3px #d9e8f5, 0 0 3px #d9e8f5, 0 0 5px #d9e8f5; display: none; }
 .hl-rl-w .hl-rl-name { font-size: 11px; font-style: italic; font-weight: 700; letter-spacing: 0.12em; }
 .hl-rl-w .hl-rl-paleo { display: none; font-size: 11px; color: #2b4f73; }
 .hl-rl-w .hl-rl-en { display: none; color: #2b4f73; font-style: italic; }
 .hl-rl-w-always, .hl-z-labels .hl-rl-w { display: flex; }
+.hl-rl-w:hover, .hl-rl-w.on { background: #d9e8f5cc; border-color: #2b4f7366; }
+.hl-rl-w.on .hl-rl-name { color: #b8860b; }
 .hl-z-region .hl-rl-w .hl-rl-name { font-size: 13px; }
 .hl-z-region .hl-rl-w .hl-rl-paleo, .hl-z-region .hl-rl-w .hl-rl-en { display: block; }
 [data-basemap="satellite"] .hl-rl-w, [data-basemap="satellite"] .hl-rl-w .hl-rl-paleo, [data-basemap="satellite"] .hl-rl-w .hl-rl-en { color: #cfe6ff; text-shadow: 0 0 4px #000, 0 0 4px #000; }
