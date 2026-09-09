@@ -49,7 +49,9 @@ export function goldMarkers(text, R) {
   const hits = []; let out = '', last = 0;
   for (let i = 0; i < toks.length; i++) {
     const m = toks[i], w = m[0];
-    if (w === '(') { const prev = toks[i - 1]; stack.push(!!(prev && prev[0] !== '(' && prev[0] !== ')' && /^\S*$/.test(text.slice(prev.index + prev[0].length, m.index).trim()))); continue; }
+    // a gloss frame = "(" with nothing but whitespace between it and the word before it
+    // ("Mashayach (Christ)"); "Mashayach!” (which is…" is an aside — punctuation intervenes
+    if (w === '(') { const prev = toks[i - 1]; stack.push(!!(prev && prev[0] !== '(' && prev[0] !== ')' && text.slice(prev.index + prev[0].length, m.index).trim() === '')); continue; }
     if (w === ')') { stack.pop(); continue; }
     if (!R.gold.has(w)) continue;
     if (stack.length && stack[stack.length - 1]) continue;                  // inside another word's gloss
