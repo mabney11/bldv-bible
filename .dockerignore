@@ -41,3 +41,7 @@ tests
 # prior data work (align-report*.txt, amb*.txt, audit.txt, etc), plus docs.
 *.txt
 *.md
+
+# Per-machine caches of the render pipeline — rebuilt on demand, never shipped.
+server/.surface-index-cache.json
+server/.render-all-timings.json

@@ -59,3 +59,6 @@ server/stein_*.pdf
 # Stray file from a broken sqlite URI-open attempt (literal filename
 # "corpus.db?immutable=1", not a real corpus.db) — harmless junk, never source.
 server/corpus.db?immutable=1
+
+# Per-machine cache of the HEB bake read (render-corpus.mjs) — rebuilt when surface-index.db changes
+server/.surface-index-cache.json

@@ -23,6 +23,7 @@ COPY public ./public
 # and — because `npm run build` ends in `|| true` — the image shipped with a
 # broken/absent bundle instead of failing (2026-09-08 deploy).
 COPY server/lexicon/compound-hyphenation.json ./server/lexicon/
+COPY scripts ./scripts
 # vite.config.js has build.outDir set to 'server/public', so this writes
 # the built bundle straight there — there is no dist/ folder in this repo.
 RUN npm run build

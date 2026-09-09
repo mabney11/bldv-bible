@@ -23,7 +23,7 @@
 //   -> peoples (glossed) -> terms (glossed, case-insensitive; capital carried onto translit
 //   AND gloss so "the Word" -> "the Dabar (Word)"). Theonyms/names render BARE.
 
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { loadVerseExceptions, renderWithExceptions } from './render-verse-exceptions.mjs';
 import { progress } from './progress.mjs';
 
@@ -200,6 +200,52 @@ const COMMON = new Set(['on','in','at','of','to','it','is','he','she','an','or',
 
 console.log(`rules: ${theoKeys.length} theonyms, ${NAME.size} names, ${PEOPLE.size} peoples, ${TERM.size} terms`);
 
+// ================= THE HEB BAKE, READ ONCE AND CACHED ==============================
+// Both passes below (verse-gloss and the link transliterations) need the same thing:
+// every Hebrew token of every verse — (ordinal, Strong's, pos) with the root's
+// transliteration. That used to be TWO reads of surface_occurrences (≈ 1.1 M rows, one of
+// them a DISTINCT+JOIN+ORDER BY that sorts the lot in SQLite's temp store — minutes on
+// Windows), on EVERY run, even when the index had not changed since the last one.
+// Now: one streamed read, written to .surface-index-cache.json, and reused as long as the
+// index (and the roots it transliterates from) are the same files they were.
+const HEB_TOKENS = (() => {
+  const IDX = './surface-index.db';
+  if (!existsSync(IDX)) return null;
+  if (!translitBooksJs) return null;
+  const CACHE = './.surface-index-cache.json';
+  const st = (f) => { const x = statSync(f); return `${x.size}:${Math.round(x.mtimeMs)}`; };
+  const stamp = `v1|${st(IDX)}|${ROOTS_PATH ? st(ROOTS_PATH) : '-'}`;
+  try {
+    if (existsSync(CACHE)) {
+      const c = JSON.parse(readFileSync(CACHE, 'utf8'));
+      if (c.stamp === stamp) { console.log(`HEB bake: ${c.n.toLocaleString()} tokens in ${Object.keys(c.verses).length.toLocaleString()} verses from ${CACHE} (index unchanged — no read)`); return c; }
+    }
+  } catch { /* rebuild below */ }
+  const idx = new Database(IDX, { readonly: true });
+  const hasSource = (() => { try { idx.prepare('SELECT source FROM token_surfaces LIMIT 1').get(); return true; } catch { return false; } })();
+  if (!hasSource) { console.log('HEB bake: surface-index has no `source` column — rebuild with --heb'); idx.close(); return null; }
+  const total = idx.prepare(`SELECT COUNT(*) n FROM surface_occurrences WHERE source = 'HEB'`).get().n;
+  const p = progress('HEB bake: reading the surface index once', total);
+  const verses = {}; let n = 0;
+  const trOf = new Map();   // sn -> translit(root), computed once per Strong's
+  for (const r of idx.prepare(`SELECT book_id, chapter, verse, token_ordinal, strongs, pos FROM surface_occurrences WHERE source = 'HEB'`).iterate()) {
+    p.tick();
+    if (!r.strongs) continue;
+    const sn = 'H' + String(r.strongs).replace(/^H+/i, '');
+    if (!trOf.has(sn)) { const canonical = ROOTS[sn]; trOf.set(sn, canonical ? translitBooksJs(canonical).trim() : ''); }
+    const tr = trOf.get(sn);
+    if (!tr) continue;
+    const key = `${r.book_id}|${r.chapter}|${r.verse}`;
+    (verses[key] ||= []).push([r.token_ordinal, sn, r.pos || '', tr]);
+    n++;
+  }
+  p.done(); idx.close();
+  const out = { stamp, n, verses };
+  try { writeFileSync(CACHE, JSON.stringify(out)); console.log(`HEB bake: cached to ${CACHE} — the next run skips the read unless the index changes`); }
+  catch (e) { console.log(`HEB bake: could not write ${CACHE} (${e.message}) — fine, just no cache`); }
+  return out;
+})();
+
 // ================= VERSE-ALIGNED GLOSSING (step 5b) =================================
 // Term pins are GLOBAL: one transliteration per English word for the whole corpus,
 // chosen from Strong's frequency with no reference to which Hebrew word actually
@@ -255,36 +301,17 @@ if (!NO_VERSE_GLOSS) (() => {
     }
   }
 
-  // that verse's Hebrew: which Strong's numbers are actually present, per token.
-  // The transliteration itself comes from ROOTS/translit above (the bare lemma),
-  // NOT from this token's own baked components — see the note above for why.
-  const idx = new Database(IDX, { readonly: true });
-  const hasSource = (() => { try { idx.prepare('SELECT source FROM token_surfaces LIMIT 1').get(); return true; } catch { return false; } })();
-  if (!hasSource) { console.log('verse-gloss: surface-index has no `source` column — rebuild with --heb'); idx.close(); return; }
+  // that verse's Hebrew: which Strong's numbers are actually present, per token — from
+  // the one cached read of the bake above (the transliteration is the root's, not the
+  // token's own baked components — see the note above for why).
+  if (!HEB_TOKENS) { console.log('verse-gloss: no HEB bake — skipping'); return; }
   let n = 0;
-  // streamed (iterate), not .all(): this is the ≈550 MB surface index — the ticker below
-  // is the only sign of life during the minutes it takes, and the rows never sit in one array
-  const pLoad = progress('verse-gloss: reading the surface index (Hebrew tokens)');
-  for (const r of idx.prepare(`
-      SELECT DISTINCT o.book_id, o.chapter, o.verse, o.token_ordinal, t.strongs
-      FROM surface_occurrences o
-      JOIN token_surfaces t ON t.word_raw = o.word_raw AND t.source = o.source
-           AND t.strongs = o.strongs AND t.pos = o.pos AND t.morph = o.morph
-      WHERE o.source = 'HEB'
-      ORDER BY o.book_id, o.chapter, o.verse, o.token_ordinal`).iterate()) {
-    pLoad.tick();
-    if (!r.strongs || !translit) continue;
-    const sn = 'H' + String(r.strongs).replace(/^H+/i, '');
-    const canonical = ROOTS[sn];
-    if (!canonical) continue;
-    const tr = translit(canonical).trim();
-    if (!tr) continue;
-    const key = `${r.book_id}|${r.chapter}|${r.verse}`;
-    if (!VG.verses.has(key)) VG.verses.set(key, []);
-    VG.verses.get(key).push({ sn, tr });
-    n++;
+  for (const [key, toks] of Object.entries(HEB_TOKENS.verses)) {
+    const list = [];
+    const seen = new Set();
+    for (const [ord, sn, , tr] of toks) { const k = `${ord}|${sn}`; if (seen.has(k)) continue; seen.add(k); list.push({ sn, tr }); n++; }
+    if (list.length) VG.verses.set(key, list);
   }
-  pLoad.done(); idx.close();
   VG.on = VG.verses.size > 0;
   console.log(`verse-gloss: ${VG.verses.size.toLocaleString()} verses of Hebrew, ${n.toLocaleString()} tokens, ` +
               `${VG.english.size.toLocaleString()} English words reachable through kjv_def`);
@@ -353,34 +380,19 @@ if (!NO_VERSE_GLOSS) (() => {
 //     way it already does for the verse-gloss pass.
 const TOK_TR = new Map();     // "canon|ch|v" -> Map(ordinal -> translit)
 if (LINKS.size) (() => {
-  if (!existsSync('./surface-index.db')) return;
+  if (!HEB_TOKENS) return;
   if (!translitBooksJs) { console.log('links: books.js translit() not found — TOK_TR skipped'); return; }
-  const idx = new Database('./surface-index.db', { readonly: true });
-  let pTok = null;
-  try {
-    const totalHeb = idx.prepare(`SELECT COUNT(*) n FROM surface_occurrences WHERE source = 'HEB'`).get().n;
-    pTok = progress('links: reading Hebrew token surfaces', totalHeb);
-    for (const r of idx.prepare(`
-        SELECT o.book_id, o.chapter, o.verse, o.token_ordinal, o.strongs, o.pos
-        FROM surface_occurrences o
-        WHERE o.source = 'HEB'`).iterate()) {
-      pTok.tick();
-      if (r.pos === 'conj' || r.pos === 'art') continue;
-      if (!r.strongs) continue;
-      const sn = 'H' + String(r.strongs).replace(/^H+/i, '');
-      const canonical = ROOTS[sn];
-      if (!canonical) continue;
-      const tr = translitBooksJs(canonical).trim();
+  for (const [key, toks] of Object.entries(HEB_TOKENS.verses)) {
+    for (const [ord, , pos, tr] of toks) {
+      if (pos === 'conj' || pos === 'art') continue;
       // Defence in depth: even if a link points at a conjunction or a bare
       // proclitic, a one-letter transliteration is never a usable gloss.
       // "Shalamah w (became) the father of" is the failure this prevents.
       if (!tr || tr.length < 2) continue;
-      const key = `${r.book_id}|${r.chapter}|${r.verse}`;
       if (!TOK_TR.has(key)) TOK_TR.set(key, new Map());
-      TOK_TR.get(key).set(r.token_ordinal, tr);
+      TOK_TR.get(key).set(ord, tr);
     }
-  } catch (e) { console.log(`links: could not read the HEB bake (${e.message})`); }
-  if (pTok) pTok.done(); idx.close();
+  }
 })();
 
 // The SAME tokenisation build-align-links used, but keeping character offsets so a
