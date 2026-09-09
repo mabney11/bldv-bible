@@ -1,0 +1,288 @@
+=== MODIFICATION AUDIT === distinct combos 37,146, occurrences 422,017
+  240538 OK-exact
+  116507 no-root-comp
+   47809 root-letter-elided
+    6028 no-canonical-root
+    5427 root-mostly-absent(SN?)
+    5363 internal-matres-only
+     164 EXTRA-MIXED
+      78 PARTICLE-UNSPLIT
+      72 EXTRA-INTERNAL
+      19 EXTRA-PREFIX
+       9 EXTRA-SUFFIX
+       3 no-strongs
+
+WORK LIST (letters with no chip): 342 occurrences
+
+=== EXAMPLES ===
+
+# no-root-comp
+  𐤀 |  | art | uvf=absent | x812 @15:4:10 | 
+  𐤁 | H9003 | prep | prs=absent|uvf=absent | x14394 @10:10:10 | 
+  𐤄 |  | art | uvf=absent | x59 @10:15:27 | 
+  𐤄 | H9009 | art | uvf=absent | x23881 @10:10:10 | 
+  𐤄 |  | inrg | uvf=absent | x656 @10:10:3 | 
+  𐤄 | H9009 | inrg | uvf=absent | x90 @10:10:3 | 
+  𐤄 | H9009 | prep | prs=absent|uvf=absent | x3 @10:19:4 | 
+  𐤅 | H9000 | conj | uvf=absent | x50987 @10:10:1 | 
+
+# internal-matres-only
+  𐤀𐤀𐤌𐤉𐤍 | H539 | verb | vs=hif|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=H|uvf=absent|nme=absent | x1 @18:9:16 | lead= inner=𐤉 trail= zone=𐤀𐤌𐤉𐤍 canon=𐤀𐤌𐤍
+  𐤀𐤀𐤓𐤉𐤊 | H748 | verb | vs=hif|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=H|uvf=absent|nme=absent | x2 @18:6:11 | lead= inner=𐤉 trail= zone=𐤀𐤓𐤉𐤊 canon=𐤀𐤓𐤊
+  𐤀𐤁𐤃𐤉𐤋 | H914 | verb | vs=hif|vt=wayq|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=H|uvf=absent|nme=absent | x1 @15:8:24 | lead= inner=𐤉 trail= zone=𐤁𐤃𐤉𐤋 canon=𐤁𐤃𐤋
+  𐤀𐤁𐤅𐤎 | H75 | verb | vs=qal|vt=ptcp|gn=m|nu=sg|st=a|prs=absent|pfm=absent|vbs=absent|uvf=absent|nme=absent | x1 @20:15:17 | lead= inner=𐤅 trail= zone=𐤀𐤁𐤅𐤎 canon=𐤀𐤁𐤎
+  𐤀𐤁𐤅𐤎𐤉𐤌 | H75 | verb | vs=qal|vt=ptcp|gn=m|nu=pl|st=a|prs=absent|pfm=absent|vbs=absent|uvf=absent|nme=absent | x1 @11:5:3 | lead= inner=𐤅 trail= zone=𐤀𐤁𐤅𐤎 canon=𐤀𐤁𐤎
+  𐤀𐤁𐤉𐤍𐤓 | H74 | nmpr | prs=absent|uvf=absent | x1 @9:14:50 | lead= inner=𐤉 trail= zone=𐤀𐤁𐤉𐤍𐤓 canon=𐤀𐤁𐤍𐤓
+  𐤀𐤁𐤋𐤉𐤂𐤄 | H1082 | verb | vs=hif|vt=coho|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=H|uvf=absent|nme=absent | x3 @18:10:20 | lead= inner=𐤉 trail= zone=𐤁𐤋𐤉𐤂 canon=𐤁𐤋𐤂
+  𐤀𐤁𐤓𐤉𐤇 | H1272 | verb | vs=hif|vt=wayq|ps=p1|gn=unknown|nu=sg|prs=3ms|pfm=>|vbs=H|uvf=absent|nme=absent | x1 @16:13:28 | lead= inner=𐤉 trail= zone=𐤁𐤓𐤉𐤇 canon=𐤁𐤓𐤇
+
+# root-letter-elided
+  𐤀𐤀𐤓 | H779 | verb | vs=qal|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x1 @1:12:3 | 𐤀𐤓 vs 𐤀𐤓𐤓
+  𐤀𐤁𐤀 | H935 | verb | vs=hif|vt=wayq|ps=p1|gn=unknown|nu=sg|prs=3mp|pfm=>|vbs=H|uvf=absent|nme=absent | x1 @26:20:10 | 𐤁𐤀 vs 𐤁𐤅𐤀
+  𐤀𐤁𐤀 | H935 | verb | vs=hif|vt=wayq|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=H|uvf=absent|nme=absent | x3 @24:35:4 | 𐤁𐤀 vs 𐤁𐤅𐤀
+  𐤀𐤁𐤀 | H935 | verb | vs=qal|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x4 @11:13:8 | 𐤁𐤀 vs 𐤁𐤅𐤀
+  𐤀𐤁𐤀 | H935 | verb | vs=qal|vt=wayq|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x1 @1:24:42 | 𐤁𐤀 vs 𐤁𐤅𐤀
+  𐤀𐤁𐤀𐤄 | H935 | verb | vs=qal|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x1 @7:15:1 | 𐤁𐤀 vs 𐤁𐤅𐤀
+  𐤀𐤁𐤂𐤉𐤋 | H26 | nmpr | prs=absent|uvf=absent | x1 @9:25:3 | 𐤀𐤁𐤂𐤉𐤋 vs 𐤀𐤁𐤉𐤂𐤉𐤋
+  𐤀𐤁𐤃 | H6 | verb | vs=piel|vt=wayq|ps=p1|gn=unknown|nu=sg|prs=2ms|pfm=>|vbs=absent|uvf=absent|nme=absent | x1 @26:28:16 | 𐤁𐤃 vs 𐤀𐤁𐤃
+
+# root-mostly-absent(SN?)
+  𐤀𐤁𐤉 | H33 | adjv | gn=m|nu=sg|st=a|prs=absent|uvf=absent | x2 @7:6:11 | 𐤀𐤁𐤉 vs 𐤀𐤁𐤉𐤄𐤏𐤆𐤓𐤉
+  𐤀𐤁𐤉 | H33 | nmpr | prs=absent|uvf=absent | x1 @7:8:32 | 𐤀𐤁𐤉 vs 𐤀𐤁𐤉𐤄𐤏𐤆𐤓𐤉
+  𐤀𐤁𐤉 | H45 | nmpr | prs=absent|uvf=absent | x1 @10:23:31 | 𐤀𐤁𐤉 vs 𐤀𐤁𐤉𐤏𐤋𐤁𐤅𐤍
+  𐤀𐤁𐤉 | H935 | verb | vs=hif|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=H|uvf=absent|nme=absent | x2 @11:21:29 | 𐤁𐤉 vs 𐤁𐤅𐤀
+  𐤀𐤁𐤉𐤁 | H8512 | nmpr | prs=absent|uvf=absent | x1 @26:3:15 | 𐤀𐤁𐤉𐤁 vs 𐤕𐤋𐤀𐤁𐤉𐤁
+  𐤀𐤁𐤋 | H62 | nmpr | prs=absent|uvf=absent | x2 @11:15:20 | 𐤀𐤁𐤋 vs 𐤀𐤁𐤋𐤁𐤉𐤕𐤌𐤏𐤊𐤄
+  𐤀𐤁𐤋 | H63 | nmpr | prs=absent|uvf=absent | x1 @4:33:49 | 𐤀𐤁𐤋 vs 𐤀𐤁𐤋𐤄𐤔𐤈𐤉𐤌
+  𐤀𐤁𐤋 | H64 | nmpr | prs=absent|uvf=absent | x1 @7:11:33 | 𐤀𐤁𐤋 vs 𐤀𐤁𐤋𐤊𐤓𐤌𐤉𐤌
+
+# EXTRA-PREFIX
+  𐤀𐤂𐤀𐤋𐤕𐤉 | H1351 | verb | vs=hif|vt=perf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=absent|vbs=H|uvf=absent|nme=absent | x1 @23:63:3 | lead=𐤀 inner= trail= zone=𐤀𐤂𐤀𐤋 canon=𐤂𐤀𐤋
+  𐤀𐤃𐤓𐤔 | H1875 | verb | vs=nif|vt=infa|prs=absent|pfm=absent|vbs=N|uvf=absent|nme=absent | x1 @26:14:3 | lead=𐤀 inner= trail= zone=𐤀𐤃𐤓𐤔 canon=𐤃𐤓𐤔
+  𐤀𐤉𐤔𐤉 | H3448 | nmpr | prs=absent|uvf=absent | x1 @13:2:13 | lead=𐤀 inner= trail= zone=𐤀𐤉𐤔𐤉 canon=𐤉𐤔𐤉
+  𐤀𐤓𐤀𐤄 | H7200 | verb | vs=qal|vt=infc|prs=absent|pfm=absent|vbs=absent|uvf=absent|nme=absent | x1 @4:11:15 | lead=𐤀 inner= trail= zone=𐤀𐤓𐤀𐤄 canon=𐤓𐤀𐤄
+  𐤀𐤔𐤊𐤋𐤋𐤅 | H3635 | verb | vs=hsht|vt=impf|ps=p3|gn=m|nu=pl|prs=absent|pfm=J|vbs=absent|uvf=absent|nme=absent | x1 @15:4:12 | lead=𐤀𐤔 inner= trail= zone=𐤀𐤔𐤊𐤋𐤋 canon=𐤊𐤋𐤋
+  𐤉𐤀𐤔𐤓 | H833 | inrg | uvf=absent | x1 @19:41:2 | lead=𐤉 inner= trail= zone=𐤉𐤀𐤔𐤓 canon=𐤀𐤔𐤓
+  𐤉𐤇𐤆𐤒𐤉𐤄 | H2396 | nmpr | prs=absent|uvf=absent | x3 @15:2:16 | lead=𐤉 inner= trail= zone=𐤉𐤇𐤆𐤒𐤉𐤄 canon=𐤇𐤆𐤒𐤉𐤄
+  𐤉𐤏𐤌𐤃𐤍𐤄 | H5975 | verb | vs=qal|vt=impf|ps=p3|gn=f|nu=pl|prs=absent|pfm=T=|vbs=absent|uvf=absent|nme=absent | x1 @27:8:22 | lead=𐤉 inner= trail= zone=𐤉𐤏𐤌𐤃 canon=𐤏𐤌𐤃
+
+# PARTICLE-UNSPLIT
+  𐤀𐤇𐤓𐤉 | H268 | prep | prs=absent|uvf=absent | x1 @2:26:12 | 𐤀𐤇𐤓𐤉 vs 𐤀𐤇𐤅𐤓
+  𐤁𐤉𐤍𐤅𐤕 | H996 | prep | prs=absent|uvf=absent | x6 @26:10:2 | 𐤁𐤉𐤍𐤅𐤕 vs 𐤁𐤉𐤍
+  𐤁𐤋𐤕 | H1115 | conj | uvf=absent | x1 @9:2:2 | 𐤁𐤋𐤕 vs 𐤁𐤋𐤕𐤉
+  𐤃 | H1768 | prep | prs=absent|uvf=absent | x1 @15:4:9 | 𐤃 vs 𐤃𐤉
+  𐤃𐤍𐤄 | H1836 | conj | uvf=absent | x8 @15:4:16 | 𐤃𐤍𐤄 vs 𐤃𐤍
+  𐤆𐤅𐤋𐤕 | H2108 | prep | prs=absent|uvf=absent | x1 @12:24:14 | 𐤆𐤅𐤋𐤕 vs 𐤆𐤅𐤋𐤄
+  𐤆𐤅𐤋𐤕𐤉 | H2108 | conj | uvf=absent | x1 @6:11:13 | 𐤆𐤅𐤋𐤕𐤉 vs 𐤆𐤅𐤋𐤄
+  𐤆𐤅𐤋𐤕𐤉 | H2108 | prep | prs=absent|uvf=absent | x4 @11:12:20 | 𐤆𐤅𐤋𐤕𐤉 vs 𐤆𐤅𐤋𐤄
+
+# no-canonical-root
+  𐤀𐤉 | H9005 | intj | uvf=absent | x1 @21:4:10 | 𐤀𐤉
+  𐤁 | H9003 | prep | prs=1cp|uvf=absent | x27 @11:5:20 | 𐤁
+  𐤁 | H9003 | prep | prs=1cs|uvf=absent | x147 @10:14:32 | 𐤁
+  𐤁 | H9003 | prep | prs=2fs|uvf=absent | x84 @10:14:10 | 𐤁
+  𐤁 | H9003 | prep | prs=2mp|uvf=absent | x68 @11:11:2 | 𐤁
+  𐤁 | H9003 | prep | prs=2ms|uvf=absent | x87 @10:1:16 | 𐤁
+  𐤁 | H9003 | prep | prs=3fp|uvf=absent | x18 @1:19:29 | 𐤁
+  𐤁 | H9003 | prep | prs=3fs|uvf=absent | x273 @10:12:29 | 𐤁
+
+# EXTRA-INTERNAL
+  𐤀𐤍𐤁 | H4 | subs | gn=m|nu=sg|st=c|prs=3ms|uvf=absent | x3 @27:4:11 | lead= inner=𐤍 trail= zone=𐤀𐤍𐤁 canon=𐤀𐤁
+  𐤀𐤑𐤐𐤑𐤐 | H6850 | verb | vs=pilp|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x1 @23:38:14 | lead= inner=𐤑 trail= zone=𐤑𐤐𐤑𐤐 canon=𐤑𐤐𐤐
+  𐤀𐤔𐤕𐤅𐤌𐤌 | H8074 | verb | vs=htpo|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x1 @23:63:5 | lead= inner=𐤕𐤅 trail= zone=𐤔𐤕𐤅𐤌𐤌 canon=𐤔𐤌𐤌
+  𐤀𐤔𐤕𐤅𐤌𐤌 | H8074 | verb | vs=htpo|vt=wayq|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x1 @27:8:27 | lead= inner=𐤕𐤅 trail= zone=𐤔𐤕𐤅𐤌𐤌 canon=𐤔𐤌𐤌
+  𐤀𐤔𐤕𐤅𐤍𐤍 | H8150 | verb | vs=htpo|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x1 @19:73:21 | lead= inner=𐤕𐤅 trail= zone=𐤔𐤕𐤅𐤍𐤍 canon=𐤔𐤍𐤍
+  𐤀𐤔𐤕𐤏𐤔𐤏 | H8173 | verb | vs=qal|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x2 @19:119:16 | lead= inner=𐤕𐤔 trail= zone=𐤔𐤕𐤏𐤔𐤏 canon=𐤔𐤏𐤏
+  𐤀𐤕𐤍𐤄 | H859 | prps | prs=absent|uvf=absent | x4 @1:31:6 | lead= inner=𐤍 trail= zone=𐤀𐤕𐤍𐤄 canon=𐤀𐤕𐤄
+  𐤁𐤏𐤉𐤍𐤀 | H1156 | verb | vs=qal|vt=perf|ps=p1|gn=unknown|nu=pl|prs=absent|pfm=absent|vbs=absent|uvf=absent|nme=absent | x1 @27:2:23 | lead= inner=𐤉𐤍 trail= zone=𐤁𐤏𐤉𐤍𐤀 canon=𐤁𐤏𐤀
+
+# EXTRA-MIXED
+  𐤀𐤔𐤊𐤉𐤌 | H7925 | verb | vs=hif|vt=infa|prs=absent|pfm=absent|vbs=H|uvf=absent|nme=absent | x1 @24:25:3 | lead=𐤀 inner=𐤉 trail= zone=𐤀𐤔𐤊𐤉𐤌 canon=𐤔𐤊𐤌
+  𐤀𐤔𐤕𐤅𐤋𐤋𐤅 | H7997 | verb | vs=htpo|vt=perf|ps=p3|gn=unknown|nu=pl|prs=absent|pfm=absent|vbs=absent|uvf=absent|nme=absent | x1 @19:76:5 | lead=𐤀 inner=𐤕𐤅 trail= zone=𐤀𐤔𐤕𐤅𐤋𐤋 canon=𐤔𐤋𐤋
+  𐤀𐤔𐤕𐤅𐤌𐤌 | H8075 | verb | vs=qal|vt=perf|ps=p3|gn=m|nu=sg|prs=absent|pfm=absent|vbs=absent|uvf=absent|nme=absent | x1 @27:4:16 | lead=𐤀 inner=𐤕𐤅 trail= zone=𐤀𐤔𐤕𐤅𐤌𐤌 canon=𐤔𐤌𐤌
+  𐤀𐤕𐤒𐤅𐤈𐤈 | H6962 | verb | vs=htpo|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x1 @19:139:21 | lead=𐤕 inner= trail=𐤈 zone=𐤕𐤒𐤅𐤈𐤈 canon=𐤒𐤅𐤈
+  𐤀𐤕𐤒𐤅𐤈𐤈 | H6962 | verb | vs=htpo|vt=wayq|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x1 @19:119:158 | lead=𐤕 inner= trail=𐤈 zone=𐤕𐤒𐤅𐤈𐤈 canon=𐤒𐤅𐤈
+  𐤀𐤕𐤓𐤅𐤏𐤏 | H7321 | verb | vs=htpo|vt=impf|ps=p1|gn=unknown|nu=sg|prs=absent|pfm=>|vbs=absent|uvf=absent|nme=absent | x1 @19:108:9 | lead=𐤕 inner= trail=𐤏 zone=𐤕𐤓𐤅𐤏𐤏 canon=𐤓𐤅𐤏
+  𐤁𐤏𐤃𐤉 | H5704 | prep | prs=1cp|uvf=absent | x1 @30:9:10 | lead=𐤁 inner= trail=𐤉 zone=𐤁𐤏𐤃𐤉 canon=𐤏𐤃
+  𐤄𐤀𐤆𐤍𐤉𐤇𐤅 | H2186 | verb | vs=hif|vt=weqt|ps=p3|gn=unknown|nu=pl|prs=absent|pfm=absent|vbs=H|uvf=absent|nme=absent | x1 @23:19:6 | lead=𐤀 inner=𐤉 trail= zone=𐤀𐤆𐤍𐤉𐤇 canon=𐤆𐤍𐤇
+
+# EXTRA-SUFFIX
+  𐤁𐤉𐤍𐤅𐤕𐤉 | H996 | prep | prs=1cp|uvf=absent | x2 @1:26:28 | lead= inner= trail=𐤅𐤕𐤉 zone=𐤁𐤉𐤍𐤅𐤕𐤉 canon=𐤁𐤉𐤍
+  𐤄𐤆𐤌𐤍𐤕𐤅𐤍 | H2164 | verb | vs=hif|vt=perf|ps=p2|gn=m|nu=pl|prs=absent|pfm=absent|vbs=H|uvf=absent|nme=absent | x1 @27:2:9 | lead= inner= trail=𐤕𐤅𐤍 zone=𐤆𐤌𐤍𐤕𐤅𐤍 canon=𐤆𐤌𐤍
+  𐤄𐤔𐤋𐤊𐤕𐤍𐤄 | H7993 | verb | vs=hif|vt=weqt|ps=p2|gn=f|nu=pl|prs=absent|pfm=absent|vbs=H|uvf=absent|nme=absent | x1 @30:4:3 | lead= inner= trail=𐤕𐤍𐤄 zone=𐤔𐤋𐤊𐤕𐤍𐤄 canon=𐤔𐤋𐤊
+  𐤇𐤌𐤓𐤌𐤓𐤄 | H2560 | verb | vs=qal|vt=perf|ps=p3|gn=f|nu=pl|prs=absent|pfm=absent|vbs=absent|uvf=absent|nme=absent | x1 @18:16:16 | lead= inner= trail=𐤌𐤓𐤄 zone=𐤇𐤌𐤓𐤌𐤓𐤄 canon=𐤇𐤌𐤓
+  𐤑𐤐𐤏𐤅𐤍𐤉 | H6848 | subs | gn=m|nu=sg|st=a|prs=absent|uvf=absent | x2 @23:11:8 | lead= inner= trail=𐤅𐤍𐤉 zone=𐤑𐤐𐤏𐤅𐤍𐤉 canon=𐤑𐤐𐤏
+  𐤔𐤁𐤏𐤕𐤉𐤌 | H7651 | adjv | gn=f|nu=du|st=a|prs=absent|uvf=absent | x1 @10:21:9 | lead= inner= trail=𐤕𐤉𐤌 zone=𐤔𐤁𐤏𐤕𐤉𐤌 canon=𐤔𐤁𐤏
+  𐤔𐤋𐤇𐤕𐤅𐤍 | H7972 | verb | vs=qal|vt=perf|ps=p2|gn=m|nu=pl|prs=absent|pfm=absent|vbs=absent|uvf=absent|nme=absent | x1 @15:4:18 | lead= inner= trail=𐤕𐤅𐤍 zone=𐤔𐤋𐤇𐤕𐤅𐤍 canon=𐤔𐤋𐤇
+
+# no-strongs
+  𐤄 |  | prps | prs=absent|uvf=absent | x1 @7:13:14 | 𐤄
+  𐤄𐤅𐤀 |  | intj | uvf=absent | x1 @15:4:9 | 𐤄𐤅𐤀
+  𐤌𐤍 |  | prep | prs=absent|uvf=absent | x1 @13:9:4 | 𐤌𐤍
+
+=== EXTRA-LETTER PATTERNS (164 cells, worst first) ===
+occ	forms	pattern	examples
+40	1	EXTRA-MIXED nmpr - - - - - - pfm=- vbs=- prs=absent nme=- lead=𐤉 trail=𐤅 inner=	𐤉𐤇𐤆𐤒𐤉𐤄𐤅/H2396@12:20:10
+6	1	EXTRA-INTERNAL nmpr - - - - - - pfm=- vbs=- prs=absent nme=- lead= trail= inner=𐤓	𐤃𐤓𐤌𐤔𐤒/H1834@13:18:5
+5	1	EXTRA-MIXED verb qal perf p3 f sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄 trail= inner=𐤕	𐤄𐤔𐤕𐤊𐤇𐤕/H7912@27:5:11
+5	2	EXTRA-MIXED subs - - - m sg a pfm=- vbs=- prs=absent nme=- lead=𐤌 trail= inner=𐤉	𐤌𐤔𐤇𐤉𐤕/H7843@20:18:9 𐤌𐤔𐤊𐤉𐤋/H7919@19:47:7
+4	1	EXTRA-INTERNAL prps - - - - - - pfm=- vbs=- prs=absent nme=- lead= trail= inner=𐤍	𐤀𐤕𐤍𐤄/H859@1:31:6
+4	1	EXTRA-INTERNAL verb poal impf p3 m sg - pfm=J vbs=absent prs=absent nme=absent lead= trail= inner=𐤈	𐤉𐤑𐤈𐤁𐤏/H6647@27:4:12
+4	1	EXTRA-INTERNAL verb hif ptca - m pl a pfm=absent vbs=H prs=absent nme=absent lead= trail= inner=𐤑	𐤌𐤇𐤑𐤑𐤓𐤉𐤌/H2690@13:15:24
+3	1	EXTRA-INTERNAL subs - - - m sg c pfm=- vbs=- prs=3ms nme=- lead= trail= inner=𐤍	𐤀𐤍𐤁/H4@27:4:11
+3	1	EXTRA-MIXED nmpr - - - - - - pfm=- vbs=- prs=absent nme=- lead=𐤄 trail=𐤌 inner=	𐤄𐤂𐤅𐤉𐤌/H1471@7:4:13
+3	1	EXTRA-MIXED verb qal perf p3 m sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄 trail= inner=𐤕	𐤄𐤔𐤕𐤊𐤇/H7912@15:6:2
+3	1	EXTRA-PREFIX nmpr - - - - - - pfm=- vbs=- prs=absent nme=- lead=𐤉 trail= inner=	𐤉𐤇𐤆𐤒𐤉𐤄/H2396@15:2:16
+3	1	EXTRA-MIXED subs - - - unknown pl a pfm=- vbs=- prs=absent nme=WT lead= trail=𐤉𐤌 inner=𐤅	𐤏𐤁𐤅𐤕𐤉𐤌/H5688@26:31:10
+3	1	EXTRA-INTERNAL verb htpo impf p2 f sg - pfm=T= vbs=absent prs=absent nme=absent lead= trail= inner=𐤕𐤅	𐤕𐤔𐤕𐤅𐤇𐤇𐤉/H7817@19:42:11
+2	2	EXTRA-INTERNAL verb htpo impf p1 unknown sg - pfm=> vbs=absent prs=absent nme=absent lead= trail= inner=𐤕𐤅	𐤀𐤔𐤕𐤅𐤌𐤌/H8074@23:63:5 𐤀𐤔𐤕𐤅𐤍𐤍/H8150@19:73:21
+2	1	EXTRA-INTERNAL verb qal impf p1 unknown sg - pfm=> vbs=absent prs=absent nme=absent lead= trail= inner=𐤕𐤔	𐤀𐤔𐤕𐤏𐤔𐤏/H8173@19:119:16
+2	1	EXTRA-SUFFIX prep - - - - - - pfm=- vbs=- prs=1cp nme=- lead= trail=𐤅𐤕𐤉 inner=	𐤁𐤉𐤍𐤅𐤕𐤉/H996@1:26:28
+2	1	EXTRA-MIXED verb qal infc - - - - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail=𐤄 inner=	𐤄𐤕𐤁𐤄𐤋𐤄/H927@27:2:25
+2	1	EXTRA-MIXED verb htpo impv p2 f sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail=𐤓 inner=	𐤄𐤕𐤏𐤅𐤓𐤓𐤉/H5782@23:51:17
+2	2	EXTRA-INTERNAL verb poal impf p3 m sg - pfm=J vbs=absent prs=absent nme=absent lead= trail= inner=𐤕	𐤉𐤔𐤕𐤅𐤄/H7739@27:3:29 𐤉𐤔𐤕𐤍𐤀/H8133@27:2:9
+2	1	EXTRA-PREFIX verb hit impf p3 m pl - pfm=J vbs=HT prs=absent nme=absent lead=𐤔 trail= inner=	𐤉𐤔𐤕𐤊𐤋𐤋𐤅𐤍/H3635@15:4:13
+2	2	EXTRA-MIXED verb htpo impf p3 m sg - pfm=J vbs=absent prs=absent nme=absent lead=𐤕 trail= inner=𐤅	𐤉𐤕𐤀𐤅𐤍𐤍/H596@25:3:39 𐤉𐤕𐤁𐤅𐤋𐤋/H1101@28:7:8
+2	2	EXTRA-MIXED verb htpo impf p3 m sg - pfm=J vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤍 inner=	𐤉𐤕𐤊𐤅𐤍𐤍/H3559@20:24:3 𐤉𐤕𐤋𐤅𐤍𐤍/H3885@19:91:1
+2	2	EXTRA-MIXED verb qal impf p3 m sg - pfm=J vbs=absent prs=absent nme=absent lead=𐤕 trail= inner=𐤌	𐤉𐤕𐤌𐤄𐤌𐤄/H4102@35:2:3 𐤉𐤕𐤌𐤓𐤌𐤓/H4843@27:11:11
+2	2	EXTRA-MIXED verb qal wayq p3 m sg - pfm=J vbs=absent prs=absent nme=absent lead=𐤕 trail= inner=𐤌	𐤉𐤕𐤌𐤄𐤌𐤄/H4102@1:19:16 𐤉𐤕𐤌𐤓𐤌𐤓/H4843@27:8:7
+2	2	EXTRA-MIXED verb hif ptca - m sg c pfm=absent vbs=H prs=absent nme=absent lead= trail=𐤉 inner=𐤉	𐤌𐤂𐤁𐤉𐤄𐤉/H1361@19:113:5 𐤌𐤔𐤐𐤉𐤋𐤉/H8213@19:113:6
+2	1	EXTRA-MIXED subs - - - f sg c pfm=- vbs=- prs=3ms nme=- lead=𐤌 trail=𐤕 inner=	𐤌𐤉𐤍𐤒𐤕/H3243@12:11:2
+2	1	EXTRA-INTERNAL verb pilp ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤊	𐤌𐤊𐤓𐤊𐤓/H3769@10:6:14
+2	1	EXTRA-INTERNAL subs - - - f sg a pfm=- vbs=- prs=absent nme=- lead= trail= inner=𐤍	𐤌𐤍𐤃𐤄/H4061@15:4:13
+2	2	EXTRA-INTERNAL verb htpo ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤕𐤅	𐤌𐤎𐤕𐤅𐤋𐤋/H5549@2:9:17 𐤌𐤔𐤕𐤅𐤋𐤋/H7997@23:59:15
+2	2	EXTRA-MIXED verb qal ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead=𐤌 trail= inner=𐤉	𐤌𐤔𐤉𐤆𐤁/H7804@27:6:28 𐤌𐤔𐤐𐤉𐤋/H8214@27:5:19
+2	2	EXTRA-INTERNAL verb poal ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤕	𐤌𐤔𐤕𐤃𐤓/H7712@27:6:15 𐤌𐤔𐤕𐤊𐤋/H7920@27:7:8
+2	1	EXTRA-MIXED verb htpo ptca - f sg a pfm=absent vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤎 inner=	𐤌𐤕𐤁𐤅𐤎𐤎𐤕/H947@26:16:22
+2	2	EXTRA-MIXED verb htpo ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤓 inner=	𐤌𐤕𐤂𐤅𐤓𐤓/H1481@11:17:20 𐤌𐤕𐤏𐤅𐤓𐤓/H5782@23:64:6
+2	2	EXTRA-MIXED verb htpo ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead=𐤕 trail= inner=𐤅	𐤌𐤕𐤂𐤅𐤓𐤓/H1641@24:30:23 𐤌𐤕𐤓𐤅𐤍𐤍/H7442@19:78:65
+2	1	EXTRA-MIXED verb htpo ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤋 inner=	𐤌𐤕𐤇𐤅𐤋𐤋/H2342@18:15:20
+2	1	EXTRA-SUFFIX subs - - - m sg a pfm=- vbs=- prs=absent nme=- lead= trail=𐤅𐤍𐤉 inner=	𐤑𐤐𐤏𐤅𐤍𐤉/H6848@23:11:8
+2	1	EXTRA-INTERNAL adjv - - - m sg a pfm=- vbs=- prs=absent nme=- lead= trail= inner=𐤕	𐤑𐤓𐤏𐤕𐤉/H6882@13:2:53
+2	1	EXTRA-INTERNAL verb pilp perf p3 m sg - pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤒	𐤒𐤋𐤒𐤋/H7043@21:10:10
+2	1	EXTRA-MIXED verb qal infc - - - - pfm=absent vbs=absent prs=absent nme=absent lead=𐤔 trail=𐤄 inner=	𐤔𐤊𐤋𐤋𐤄/H3635@15:5:3
+2	1	EXTRA-INTERNAL adjv - - - unknown pl a pfm=- vbs=- prs=absent nme=WT lead= trail= inner=𐤕	𐤕𐤓𐤕𐤉𐤍/H8648@15:4:24
+1	1	EXTRA-PREFIX verb hif perf p1 unknown sg - pfm=absent vbs=H prs=absent nme=absent lead=𐤀 trail= inner=	𐤀𐤂𐤀𐤋𐤕𐤉/H1351@23:63:3
+1	1	EXTRA-PREFIX verb nif infa - - - - pfm=absent vbs=N prs=absent nme=absent lead=𐤀 trail= inner=	𐤀𐤃𐤓𐤔/H1875@26:14:3
+1	1	EXTRA-PREFIX nmpr - - - - - - pfm=- vbs=- prs=absent nme=- lead=𐤀 trail= inner=	𐤀𐤉𐤔𐤉/H3448@13:2:13
+1	1	EXTRA-INTERNAL verb pilp impf p1 unknown sg - pfm=> vbs=absent prs=absent nme=absent lead= trail= inner=𐤑	𐤀𐤑𐤐𐤑𐤐/H6850@23:38:14
+1	1	EXTRA-PREFIX verb qal infc - - - - pfm=absent vbs=absent prs=absent nme=absent lead=𐤀 trail= inner=	𐤀𐤓𐤀𐤄/H7200@4:11:15
+1	1	EXTRA-MIXED verb hif infa - - - - pfm=absent vbs=H prs=absent nme=absent lead=𐤀 trail= inner=𐤉	𐤀𐤔𐤊𐤉𐤌/H7925@24:25:3
+1	1	EXTRA-PREFIX verb hsht impf p3 m pl - pfm=J vbs=absent prs=absent nme=absent lead=𐤀𐤔 trail= inner=	𐤀𐤔𐤊𐤋𐤋𐤅/H3635@15:4:12
+1	1	EXTRA-MIXED verb htpo perf p3 unknown pl - pfm=absent vbs=absent prs=absent nme=absent lead=𐤀 trail= inner=𐤕𐤅	𐤀𐤔𐤕𐤅𐤋𐤋𐤅/H7997@19:76:5
+1	1	EXTRA-INTERNAL verb htpo wayq p1 unknown sg - pfm=> vbs=absent prs=absent nme=absent lead= trail= inner=𐤕𐤅	𐤀𐤔𐤕𐤅𐤌𐤌/H8074@27:8:27
+1	1	EXTRA-MIXED verb qal perf p3 m sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤀 trail= inner=𐤕𐤅	𐤀𐤔𐤕𐤅𐤌𐤌/H8075@27:4:16
+1	1	EXTRA-MIXED verb htpo impf p1 unknown sg - pfm=> vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤈 inner=	𐤀𐤕𐤒𐤅𐤈𐤈/H6962@19:139:21
+1	1	EXTRA-MIXED verb htpo wayq p1 unknown sg - pfm=> vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤈 inner=	𐤀𐤕𐤒𐤅𐤈𐤈/H6962@19:119:158
+1	1	EXTRA-MIXED verb htpo impf p1 unknown sg - pfm=> vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤏 inner=	𐤀𐤕𐤓𐤅𐤏𐤏/H7321@19:108:9
+1	1	EXTRA-MIXED prep - - - - - - pfm=- vbs=- prs=1cp nme=- lead=𐤁 trail=𐤉 inner=	𐤁𐤏𐤃𐤉/H5704@30:9:10
+1	1	EXTRA-INTERNAL verb qal perf p1 unknown pl - pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤉𐤍	𐤁𐤏𐤉𐤍𐤀/H1156@27:2:23
+1	1	EXTRA-INTERNAL verb pilp weqt p1 unknown sg - pfm=absent vbs=absent prs=2ms nme=absent lead= trail= inner=𐤂	𐤂𐤋𐤂𐤋𐤕𐤉/H1556@24:51:25
+1	1	EXTRA-MIXED verb hif weqt p3 unknown pl - pfm=absent vbs=H prs=absent nme=absent lead=𐤀 trail= inner=𐤉	𐤄𐤀𐤆𐤍𐤉𐤇𐤅/H2186@23:19:6
+1	1	EXTRA-SUFFIX verb hif perf p2 m pl - pfm=absent vbs=H prs=absent nme=absent lead= trail=𐤕𐤅𐤍 inner=	𐤄𐤆𐤌𐤍𐤕𐤅𐤍/H2164@27:2:9
+1	1	EXTRA-MIXED nmpr - - - - - - pfm=- vbs=- prs=absent nme=- lead=𐤄 trail=𐤉𐤌 inner=	𐤄𐤇𐤓𐤔𐤉𐤌/H2791@16:11:35
+1	1	EXTRA-MIXED nmpr - - - - - - pfm=- vbs=- prs=absent nme=- lead=𐤄 trail=𐤄 inner=	𐤄𐤉𐤔𐤍𐤄/H3465@16:3:6
+1	1	EXTRA-MIXED verb qal coho p1 unknown sg - pfm=> vbs=absent prs=absent nme=absent lead=𐤄 trail=𐤉 inner=	𐤄𐤊𐤓𐤕𐤉/H3772@33:5:11
+1	1	EXTRA-MIXED verb nif infc - - - - pfm=absent vbs=N prs=3ms nme=absent lead=𐤄 trail=𐤕 inner=	𐤄𐤍𐤁𐤀𐤕/H5012@38:13:4
+1	1	EXTRA-MIXED subs - - - f sg c pfm=- vbs=- prs=absent nme=- lead=𐤄 trail=𐤕 inner=	𐤄𐤍𐤆𐤒𐤕/H5142@15:4:22
+1	1	EXTRA-MIXED verb qal infc - - - - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄 trail= inner=𐤕𐤅	𐤄𐤎𐤕𐤅𐤐𐤐/H5605@19:84:10
+1	1	EXTRA-SUFFIX verb hif weqt p2 f pl - pfm=absent vbs=H prs=absent nme=absent lead= trail=𐤕𐤍𐤄 inner=	𐤄𐤔𐤋𐤊𐤕𐤍𐤄/H7993@30:4:3
+1	1	EXTRA-MIXED verb qal perf p2 m sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄 trail= inner=𐤕	𐤄𐤔𐤕𐤊𐤇𐤕/H7912@27:5:27
+1	1	EXTRA-MIXED verb qal impv p2 m pl - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄 trail= inner=𐤕𐤔	𐤄𐤔𐤕𐤏𐤔𐤏𐤅/H8173@23:29:9
+1	1	EXTRA-MIXED subs - - - f sg a pfm=- vbs=- prs=absent nme=- lead=𐤄𐤕 trail=𐤄 inner=	𐤄𐤕𐤁𐤄𐤋𐤄/H927@27:6:20
+1	1	EXTRA-MIXED verb qal perf p3 unknown pl - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail= inner=𐤂	𐤄𐤕𐤂𐤋𐤂𐤋𐤅/H1556@18:30:14
+1	1	EXTRA-MIXED verb htpo impv p2 m sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail=𐤋 inner=	𐤄𐤕𐤇𐤅𐤋𐤋/H2342@19:37:7
+1	1	EXTRA-MIXED verb qal infc - - - - pfm=absent vbs=absent prs=3mp nme=absent lead=𐤄𐤕 trail= inner=𐤌	𐤄𐤕𐤌𐤄𐤌𐤄/H4102@7:3:26
+1	1	EXTRA-MIXED verb qal infc - - - - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail= inner=𐤌	𐤄𐤕𐤌𐤄𐤌𐤄/H4102@2:12:39
+1	1	EXTRA-INTERNAL verb hit impv p2 m pl - pfm=absent vbs=HT prs=absent nme=absent lead= trail= inner=𐤌	𐤄𐤕𐤌𐤄𐤌𐤄𐤅/H4102@7:19:8
+1	1	EXTRA-MIXED verb qal impv p2 m pl - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail= inner=𐤌	𐤄𐤕𐤌𐤄𐤌𐤄𐤅/H4102@23:29:9
+1	1	EXTRA-MIXED verb qal perf p1 unknown pl - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail= inner=𐤌	𐤄𐤕𐤌𐤄𐤌𐤄𐤍𐤅/H4102@1:43:10
+1	1	EXTRA-MIXED verb qal perf p1 unknown sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail= inner=𐤌	𐤄𐤕𐤌𐤄𐤌𐤄𐤕𐤉/H4102@19:119:60
+1	1	EXTRA-MIXED verb htpo perf p3 f sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail=𐤈 inner=	𐤄𐤕𐤌𐤅𐤈𐤈𐤄/H4131@23:24:19
+1	1	EXTRA-MIXED subs - - - f sg c pfm=- vbs=- prs=absent nme=- lead=𐤄𐤕 trail=𐤅𐤕 inner=	𐤄𐤕𐤍𐤃𐤁𐤅𐤕/H5069@15:7:16
+1	1	EXTRA-MIXED verb htpo weqt p3 f sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail=𐤃 inner=	𐤄𐤕𐤍𐤅𐤃𐤃𐤄/H5110@23:24:20
+1	1	EXTRA-MIXED verb htpo infc - - - - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail=𐤎 inner=	𐤄𐤕𐤍𐤅𐤎𐤎/H5127@19:60:4
+1	1	EXTRA-MIXED verb htpo infc - - - - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail= inner=𐤅	𐤄𐤕𐤏𐤅𐤋𐤋/H5953@19:141:4
+1	1	EXTRA-MIXED verb htpo perf p3 f sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail= inner=𐤅	𐤄𐤕𐤐𐤅𐤓𐤓𐤄/H6565@23:24:19
+1	1	EXTRA-MIXED verb htpo impv p2 m pl - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail= inner=𐤅	𐤄𐤕𐤒𐤅𐤔𐤔𐤅/H7197@36:2:1
+1	1	EXTRA-MIXED verb poal infc - - - - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail=𐤄 inner=	𐤄𐤕𐤒𐤈𐤋𐤄/H6992@27:2:13
+1	1	EXTRA-MIXED verb qal perf p3 unknown pl - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail= inner=𐤒	𐤄𐤕𐤒𐤋𐤒𐤋𐤅/H7043@24:4:24
+1	1	EXTRA-MIXED verb htpo perf p2 m sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail=𐤌 inner=	𐤄𐤕𐤓𐤅𐤌𐤌𐤕/H7313@27:5:23
+1	1	EXTRA-MIXED verb htpo impv p2 f pl - pfm=absent vbs=absent prs=absent nme=absent lead=𐤄𐤕 trail=𐤈 inner=	𐤄𐤕𐤔𐤅𐤈𐤈𐤍𐤄/H7751@24:49:3
+1	1	EXTRA-MIXED verb qal impv p2 f pl - pfm=absent vbs=absent prs=absent nme=absent lead= trail=𐤄 inner=𐤅	𐤇𐤂𐤅𐤓𐤄/H2296@23:32:11
+1	1	EXTRA-SUFFIX verb qal perf p3 f pl - pfm=absent vbs=absent prs=absent nme=absent lead= trail=𐤌𐤓𐤄 inner=	𐤇𐤌𐤓𐤌𐤓𐤄/H2560@18:16:16
+1	1	EXTRA-INTERNAL verb pilp infc - - - - pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤇	𐤇𐤓𐤇𐤓/H2787@20:26:21
+1	1	EXTRA-MIXED nmpr - - - - - - pfm=- vbs=- prs=absent nme=- lead= trail=𐤅 inner=𐤅	𐤉𐤀𐤅𐤔𐤉𐤄𐤅/H2977@24:27:1
+1	1	EXTRA-PREFIX inrg - - - - - - pfm=- vbs=- prs=- nme=- lead=𐤉 trail= inner=	𐤉𐤀𐤔𐤓/H833@19:41:2
+1	1	EXTRA-MIXED verb qal ptca - f sg c pfm=absent vbs=absent prs=absent nme=absent lead= trail=𐤕𐤉 inner=𐤅	𐤉𐤅𐤔𐤁𐤕𐤉/H3427@25:4:21
+1	1	EXTRA-INTERNAL verb pilp impf p3 m sg - pfm=J vbs=absent prs=absent nme=absent lead= trail= inner=𐤎	𐤉𐤎𐤊𐤎𐤊/H5526@23:9:10
+1	1	EXTRA-PREFIX verb qal impf p3 f pl - pfm=T= vbs=absent prs=absent nme=absent lead=𐤉 trail= inner=	𐤉𐤏𐤌𐤃𐤍𐤄/H5975@27:8:22
+1	1	EXTRA-INTERNAL verb pilp wayq p3 m sg - pfm=J vbs=absent prs=1cs nme=absent lead= trail= inner=𐤐	𐤉𐤐𐤓𐤐𐤓/H6565@18:16:12
+1	1	EXTRA-PREFIX verb qal perf p3 m sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤉 trail= inner=	𐤉𐤑𐤁𐤀/H6634@27:4:14
+1	1	EXTRA-MIXED verb qal impf p3 f sg - pfm=T= vbs=absent prs=absent nme=absent lead=𐤉 trail=𐤄 inner=	𐤉𐤒𐤓𐤇𐤄/H7139@3:21:5
+1	1	EXTRA-MIXED verb qal impf p3 m sg - pfm=J vbs=absent prs=2mp nme=absent lead= trail=𐤍 inner=𐤉	𐤉𐤔𐤉𐤆𐤁𐤍/H7804@27:3:15
+1	1	EXTRA-MIXED verb qal impf p3 m sg - pfm=J vbs=absent prs=2ms nme=absent lead= trail=𐤍 inner=𐤉	𐤉𐤔𐤉𐤆𐤁𐤍/H7804@27:6:17
+1	1	EXTRA-INTERNAL verb pilp impf p3 m pl - pfm=J vbs=absent prs=absent nme=absent lead= trail= inner=𐤔	𐤉𐤔𐤏𐤔𐤏𐤅/H8173@19:94:19
+1	1	EXTRA-INTERNAL verb htpo impf p3 m sg - pfm=J vbs=absent prs=absent nme=absent lead= trail= inner=𐤕𐤅	𐤉𐤔𐤕𐤅𐤌𐤌/H8074@19:143:4
+1	1	EXTRA-INTERNAL verb htpo wayq p3 m sg - pfm=J vbs=absent prs=absent nme=absent lead= trail= inner=𐤕𐤅	𐤉𐤔𐤕𐤅𐤌𐤌/H8074@23:59:16
+1	1	EXTRA-INTERNAL verb poal impf p3 m pl - pfm=J vbs=absent prs=absent nme=absent lead= trail= inner=𐤕	𐤉𐤔𐤕𐤌𐤏𐤅𐤍/H8086@27:7:27
+1	1	EXTRA-INTERNAL verb qal impf p3 m pl - pfm=J vbs=absent prs=absent nme=absent lead= trail= inner=𐤕𐤔	𐤉𐤔𐤕𐤒𐤔𐤒𐤅/H8264@34:2:5
+1	1	EXTRA-MIXED verb htpo impf p3 m pl - pfm=J vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤓 inner=	𐤉𐤕𐤂𐤅𐤓𐤓𐤅/H1481@28:7:14
+1	1	EXTRA-MIXED verb htpo impf p3 m pl - pfm=J vbs=absent prs=absent nme=absent lead=𐤕 trail= inner=𐤅	𐤉𐤕𐤄𐤅𐤋𐤋𐤅/H1984@34:2:5
+1	1	EXTRA-MIXED verb htpo impf p3 m sg - pfm=J vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤐 inner=	𐤉𐤕𐤏𐤅𐤐𐤐/H5774@28:9:11
+1	1	EXTRA-MIXED verb htpo impf p3 m sg - pfm=J vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤌 inner=	𐤉𐤕𐤓𐤅𐤌𐤌/H7311@27:11:36
+1	1	EXTRA-MIXED verb htpo impf p3 m pl - pfm=J vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤏 inner=	𐤉𐤕𐤓𐤅𐤏𐤏𐤅/H7321@19:65:13
+1	1	EXTRA-MIXED subs - - - f du c pfm=- vbs=- prs=3ms nme=- lead= trail=𐤉 inner=𐤉	𐤊𐤕𐤉𐤐𐤉/H3802@5:33:12
+1	1	EXTRA-MIXED verb qal ptca - f pl a pfm=absent vbs=absent prs=absent nme=absent lead=𐤌 trail=𐤍 inner=	𐤌𐤂𐤉𐤇𐤍/H1519@27:7:2
+1	1	EXTRA-INTERNAL verb piel ptca - m pl a pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤑	𐤌𐤇𐤑𐤑𐤓𐤉𐤌/H2690@14:5:13
+1	1	EXTRA-MIXED subs - - - f sg a pfm=- vbs=- prs=absent nme=- lead=𐤌 trail=𐤕 inner=	𐤌𐤉𐤍𐤒𐤕/H3243@2:2:7
+1	1	EXTRA-MIXED subs - - - f sg c pfm=- vbs=- prs=absent nme=- lead=𐤌 trail=𐤕 inner=	𐤌𐤉𐤍𐤒𐤕/H3243@1:35:8
+1	1	EXTRA-MIXED verb qal infc - - - - pfm=absent vbs=absent prs=absent nme=absent lead= trail=𐤕 inner=𐤅	𐤌𐤋𐤅𐤀𐤕/H4390@17:1:5
+1	1	EXTRA-MIXED verb poel ptca - m sg c pfm=absent vbs=absent prs=absent nme=absent lead= trail=𐤉 inner=𐤅	𐤌𐤋𐤅𐤔𐤍𐤉/H3960@19:101:5
+1	1	EXTRA-MIXED verb qal ptcp - m pl a pfm=absent vbs=absent prs=absent nme=absent lead=𐤌 trail= inner=𐤅	𐤌𐤎𐤅𐤁𐤋𐤉𐤍/H5446@15:6:3
+1	1	EXTRA-INTERNAL verb pilp ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤑	𐤌𐤑𐤐𐤑𐤐/H6850@23:10:14
+1	1	EXTRA-INTERNAL verb pilp ptca - m pl a pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤑	𐤌𐤑𐤐𐤑𐤐𐤉𐤌/H6850@23:8:19
+1	1	EXTRA-MIXED subs - - - f pl c pfm=- vbs=- prs=absent nme=WT lead=𐤌 trail=𐤉 inner=	𐤌𐤓𐤀𐤔𐤕𐤉/H7226@9:26:12
+1	1	EXTRA-INTERNAL verb poal ptca - m pl a pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤕	𐤌𐤔𐤕𐤁𐤔𐤉𐤍/H7672@27:5:9
+1	1	EXTRA-MIXED verb qal ptcp - f sg a pfm=absent vbs=absent prs=absent nme=absent lead=𐤌𐤕 trail=𐤀 inner=	𐤌𐤕𐤉𐤄𐤁𐤀/H3052@15:6:8
+1	1	EXTRA-MIXED verb qal ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead=𐤌𐤕 trail= inner=𐤋	𐤌𐤕𐤋𐤄𐤋𐤄/H3856@20:26:18
+1	1	EXTRA-INTERNAL verb qal ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤕𐤌𐤌	𐤌𐤕𐤌𐤄𐤌𐤄/H4102@10:15:28
+1	1	EXTRA-MIXED verb htpo ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤃 inner=	𐤌𐤕𐤍𐤅𐤃𐤃/H5110@24:31:18
+1	1	EXTRA-MIXED verb htpo ptca - f pl a pfm=absent vbs=absent prs=absent nme=absent lead=𐤕 trail= inner=𐤅	𐤌𐤕𐤍𐤅𐤎𐤎𐤅𐤕/H5264@38:9:16
+1	1	EXTRA-MIXED verb qal ptca - f sg a pfm=absent vbs=absent prs=absent nme=absent lead=𐤌𐤕 trail=𐤀 inner=	𐤌𐤕𐤏𐤁𐤃𐤀/H5648@15:5:8
+1	1	EXTRA-INTERNAL verb pilp ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤕	𐤌𐤕𐤏𐤕𐤏/H8591@1:27:12
+1	1	EXTRA-MIXED verb qal ptca - m pl a pfm=absent vbs=absent prs=absent nme=absent lead=𐤌 trail= inner=𐤕	𐤌𐤕𐤏𐤕𐤏𐤉𐤌/H8591@14:36:16
+1	1	EXTRA-MIXED verb htpo ptca - m sg c pfm=absent vbs=absent prs=1cs nme=absent lead=𐤕 trail=𐤌 inner=	𐤌𐤕𐤒𐤅𐤌𐤌/H6965@18:27:7
+1	1	EXTRA-MIXED verb htpo ptca - f sg a pfm=absent vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤌 inner=	𐤌𐤕𐤒𐤅𐤌𐤌𐤄/H6965@18:20:27
+1	1	EXTRA-MIXED verb htpo ptca - m pl a pfm=absent vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤌 inner=	𐤌𐤕𐤒𐤅𐤌𐤌𐤉𐤌/H6965@19:17:7
+1	1	EXTRA-MIXED verb htpo ptca - m sg a pfm=absent vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤔 inner=	𐤌𐤕𐤓𐤅𐤔𐤔/H7326@20:13:7
+1	1	EXTRA-PREFIX verb nif ptcp - m sg a pfm=absent vbs=N prs=absent nme=absent lead=𐤀 trail= inner=	𐤍𐤀𐤔𐤀𐤓/H7604@26:9:8
+1	1	EXTRA-PREFIX subs - - - m sg a pfm=- vbs=- prs=absent nme=- lead=𐤍 trail= inner=	𐤍𐤊𐤅𐤍/H3559@18:12:5
+1	1	EXTRA-PREFIX verb qal weqt p3 m sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤍 trail= inner=	𐤍𐤊𐤐𐤓/H3722@5:21:8
+1	1	EXTRA-MIXED verb htpo wayq p1 unknown pl - pfm=N vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤃 inner=	𐤍𐤕𐤏𐤅𐤃𐤃/H5749@19:20:8
+1	1	EXTRA-INTERNAL verb pilp weqt p1 unknown sg - pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤎	𐤎𐤊𐤎𐤊𐤕𐤉/H5526@23:19:2
+1	1	EXTRA-INTERNAL verb pilp impv p2 m sg - pfm=absent vbs=absent prs=3fs nme=absent lead= trail= inner=𐤎	𐤎𐤋𐤎𐤋/H5549@20:4:8
+1	1	EXTRA-PREFIX subs - - - f sg c pfm=- vbs=- prs=absent nme=- lead=𐤏𐤋 trail= inner=	𐤏𐤋𐤌𐤅𐤕/H4192@19:9:0
+1	1	EXTRA-INTERNAL verb pilp infa - - - - pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤏	𐤏𐤓𐤏𐤓/H6209@24:51:58
+1	1	EXTRA-MIXED verb qpas ptcp - f pl a pfm=absent vbs=absent prs=absent nme=absent lead= trail=𐤍 inner=𐤉	𐤐𐤕𐤉𐤇𐤍/H6606@27:6:11
+1	1	EXTRA-MIXED subs - - - unknown pl a pfm=- vbs=- prs=absent nme=WT lead= trail=𐤌 inner=𐤀	𐤑𐤁𐤀𐤉𐤌/H6643@13:12:9
+1	1	EXTRA-SUFFIX adjv - - - f du a pfm=- vbs=- prs=absent nme=- lead= trail=𐤕𐤉𐤌 inner=	𐤔𐤁𐤏𐤕𐤉𐤌/H7651@10:21:9
+1	1	EXTRA-MIXED verb qal infc - - - - pfm=absent vbs=absent prs=1cp nme=absent lead= trail=𐤅𐤕 inner=𐤉	𐤔𐤉𐤆𐤁𐤅𐤕/H7804@27:3:17
+1	1	EXTRA-MIXED verb qal infc - - - - pfm=absent vbs=absent prs=2ms nme=absent lead= trail=𐤅𐤕 inner=𐤉	𐤔𐤉𐤆𐤁𐤅𐤕/H7804@27:6:21
+1	1	EXTRA-MIXED verb qal infc - - - - pfm=absent vbs=absent prs=3ms nme=absent lead= trail=𐤅𐤕 inner=𐤉	𐤔𐤉𐤆𐤁𐤅𐤕/H7804@27:6:15
+1	1	EXTRA-MIXED verb qal perf p3 m sg - pfm=absent vbs=absent prs=absent nme=absent lead=𐤔 trail= inner=𐤉	𐤔𐤉𐤑𐤉𐤀/H3319@15:6:15
+1	1	EXTRA-PREFIX verb qal perf p3 m sg - pfm=absent vbs=absent prs=3ms nme=absent lead=𐤔 trail= inner=	𐤔𐤊𐤋𐤋/H3635@15:5:11
+1	1	EXTRA-PREFIX verb qal perf p3 m pl - pfm=absent vbs=absent prs=absent nme=absent lead=𐤔 trail= inner=	𐤔𐤊𐤋𐤋𐤅/H3635@15:6:14
+1	1	EXTRA-SUFFIX verb qal perf p2 m pl - pfm=absent vbs=absent prs=absent nme=absent lead= trail=𐤕𐤅𐤍 inner=	𐤔𐤋𐤇𐤕𐤅𐤍/H7972@15:4:18
+1	1	EXTRA-INTERNAL verb pilp weqt p3 m sg - pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤔	𐤔𐤏𐤔𐤏/H8173@23:11:8
+1	1	EXTRA-INTERNAL verb pilp perf p1 unknown sg - pfm=absent vbs=absent prs=absent nme=absent lead= trail= inner=𐤔	𐤔𐤏𐤔𐤏𐤕𐤉/H8173@19:119:70
+1	1	EXTRA-INTERNAL verb pilp impf p3 f sg - pfm=T= vbs=absent prs=absent nme=absent lead= trail= inner=𐤑	𐤕𐤑𐤐𐤑𐤐/H6850@23:29:4
+1	1	EXTRA-INTERNAL verb polp impf p2 m pl - pfm=T= vbs=absent prs=absent nme=absent lead= trail= inner=𐤔	𐤕𐤔𐤏𐤔𐤏𐤅/H8173@23:66:12
+1	1	EXTRA-INTERNAL verb qal impf p3 f sg - pfm=T= vbs=absent prs=absent nme=absent lead= trail= inner=𐤕	𐤕𐤔𐤕𐤁𐤒/H7662@27:2:44
+1	1	EXTRA-INTERNAL verb htpo impf p3 f sg - pfm=T= vbs=absent prs=absent nme=absent lead= trail= inner=𐤕𐤅	𐤕𐤔𐤕𐤅𐤇𐤇/H7817@19:42:6
+1	1	EXTRA-MIXED verb htpo impf p2 f sg - pfm=T= vbs=absent prs=absent nme=absent lead=𐤕 trail= inner=𐤅	𐤕𐤕𐤂𐤅𐤃𐤃𐤉/H1413@24:47:5
+1	1	EXTRA-MIXED verb htpo juss p2 m pl - pfm=T= vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤑 inner=	𐤕𐤕𐤋𐤅𐤑𐤑𐤅/H3887@23:28:22
+1	1	EXTRA-MIXED verb htpo impf p3 f sg - pfm=T= vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤂 inner=	𐤕𐤕𐤌𐤅𐤂𐤂/H4127@19:107:26
+1	1	EXTRA-MIXED verb htpo impf p3 f pl - pfm=T= vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤂 inner=	𐤕𐤕𐤌𐤅𐤂𐤂𐤍𐤄/H4127@30:9:13
+1	1	EXTRA-MIXED verb htpo impf p2 m sg - pfm=T= vbs=absent prs=absent nme=absent lead=𐤕 trail=𐤃 inner=	𐤕𐤕𐤍𐤅𐤃𐤃/H5110@24:48:27
+1	1	EXTRA-MIXED verb qal impf p3 f sg - pfm=T= vbs=absent prs=absent nme=absent lead=𐤕 trail= inner=𐤏	𐤕𐤕𐤏𐤓𐤏𐤓/H6209@24:51:58

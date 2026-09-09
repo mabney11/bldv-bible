@@ -1,0 +1,712 @@
+707 splittable names — the rule hyphenates 436, leaves 271 joined.
+
+HYPHENATE (no connective waw, not -yah / -Al):
+  H62     Abalabayathamaikah     → Abal-Bayath-Maikah     𐤀𐤁𐤋-𐤁𐤉𐤕-𐤌𐤏𐤊𐤄  "meadow of Beth-Maakah"
+  H63     Abalahashatayam        → Abal-Hashatayam        𐤀𐤁𐤋-𐤄𐤔𐤈𐤉𐤌
+  H64     Abalakaramayam         → Abal-Karamayam         𐤀𐤁𐤋-𐤊𐤓𐤌𐤉𐤌  "meadow of vineyards"
+  H65     Abalamachawalah        → Abal-Machawalah        𐤀𐤁𐤋-𐤌𐤇𐤅𐤋𐤄
+  H67     Abalamatzarayam        → Abal-Matzarayam        𐤀𐤁𐤋-𐤌𐤑𐤓𐤉𐤌  "meadow of Egypt"
+  H66     Abalamayam             → Abal-Mayam             𐤀𐤁𐤋-𐤌𐤉𐤌  "meadow of water"
+  H72     Abanahaizar            → Aban-Haizar            𐤀𐤁𐤍-𐤄𐤏𐤆𐤓
+  H74     Abanar                 → Ab-Nar                 𐤀𐤁-𐤍𐤓
+  H23     Abayaasap              → Abay-Asap              𐤀𐤁𐤉-𐤀𐤎𐤐
+  H28     Abayadai               → Ab-Yadai               𐤀𐤁-𐤉𐤃𐤏
+  H27     Abayadan               → Abay-Dan               𐤀𐤁𐤉-𐤃𐤍   ✓ allowlisted by hand
+  H25     Abayagabaiwan          → Abay-Gabaiwan          𐤀𐤁𐤉-𐤂𐤁𐤏𐤅𐤍   (not in name map)
+  H26     Abayagayal             → Abay-Gayal             𐤀𐤁𐤉-𐤂𐤉𐤋
+  H33     Abayahaizaray          → Abay-Haizaray          𐤀𐤁𐤉-𐤄𐤏𐤆𐤓𐤉
+  H30     Abayahawaa             → Abay-Hawaa             𐤀𐤁𐤉-𐤄𐤅𐤀
+  H31     Abayahawad             → Abay-Hawad             𐤀𐤁𐤉-𐤄𐤅𐤃
+  H32     Abayahayal             → Ab-Yahayal             𐤀𐤁-𐤉𐤄𐤉𐤋
+  H45     Abayailabawan          → Abay-Ilabawan          𐤀𐤁𐤉-𐤏𐤋𐤁𐤅𐤍
+  H44     Abayaizar              → Abay-Izar              𐤀𐤁𐤉-𐤏𐤆𐤓
+  H38     Abayam                 → Ab-Yam                 𐤀𐤁-𐤉𐤌
+  H40     Abayamalak             → Abay-Malak             𐤀𐤁𐤉-𐤌𐤋𐤊
+  H41     Abayanadab             → Abay-Nadab             𐤀𐤁𐤉-𐤍𐤃𐤁
+  H42     Abayanaim              → Abay-Naim              𐤀𐤁𐤉-𐤍𐤏𐤌
+  H48     Abayaram               → Abay-Ram               𐤀𐤁𐤉-𐤓𐤌
+  H49     Abayashag              → Ab-Yashag              𐤀𐤁-𐤉𐤔𐤂
+  H53     Abayashalawam          → Abay-Shalawam          𐤀𐤁𐤉-𐤔𐤋𐤅𐤌
+  H50     Abayashawai            → Abay-Shawai            𐤀𐤁𐤉-𐤔𐤅𐤏
+  H51     Abayashawar            → Abay-Shawar            𐤀𐤁𐤉-𐤔𐤅𐤓
+  H52     Abayashay              → Abay-Shay              𐤀𐤁𐤉-𐤔𐤉
+  H37     Abayatal               → Abay-Tal               𐤀𐤁𐤉-𐤈𐤋
+  H36     Abayatawab             → Abay-Tawab             𐤀𐤁𐤉-𐤈𐤅𐤁
+  H54     Abayathar              → Ab-Yathar              𐤀𐤁-𐤉𐤕𐤓
+  H256    Achaab                 → Ach-Ab                 𐤀𐤇-𐤀𐤁
+  H257    Achaban                → Ach-Ban                𐤀𐤇-𐤁𐤍
+  H305    Achalay                → Ach-Lay                𐤀𐤇-𐤋𐤉
+  H316    Acharachal             → Achar-Chal             𐤀𐤇𐤓-𐤇𐤋
+  H320    Acharayath             → Achar-Yath             𐤀𐤇𐤓-𐤉𐤕   (not in name map)
+  H279    Achayaam               → Achay-Am               𐤀𐤇𐤉-𐤀𐤌
+  H284    Achayachad             → Achay-Chad             𐤀𐤇𐤉-𐤇𐤃
+  H282    Achayahawad            → Achay-Hawad            𐤀𐤇𐤉-𐤄𐤅𐤃
+  H295    Achayaizar             → Achay-Izar             𐤀𐤇𐤉-𐤏𐤆𐤓  "brother of help"
+  H286    Achayalawad            → Ach-Yalawad            𐤀𐤇-𐤉𐤋𐤅𐤃  "brother of one born"
+  H290    Achayamaitz            → Achay-Maitz            𐤀𐤇𐤉-𐤌𐤏𐤑  "brother of anger"
+  H288    Achayamalak            → Achay-Malak            𐤀𐤇𐤉-𐤌𐤋𐤊
+  H289    Achayaman              → Achay-Man              𐤀𐤇𐤉-𐤌𐤍
+  H287    Achayamawath           → Achay-Mawath           𐤀𐤇𐤉-𐤌𐤅𐤕  "brother of death"
+  H292    Achayanadab            → Achay-Nadab            𐤀𐤇𐤉-𐤍𐤃𐤁  "brother of liberality"
+  H293    Achayanaim             → Achay-Naim             𐤀𐤇𐤉-𐤍𐤏𐤌  "brother of pleasantness"
+  H296    Achayaqam              → Achay-Qam              𐤀𐤇𐤉-𐤒𐤌
+  H299    Achayarai              → Achay-Rai              𐤀𐤇𐤉-𐤓𐤏  "brother of wrong"
+  H297    Achayaram              → Achay-Ram              𐤀𐤇𐤉-𐤓𐤌
+  H294    Achayasamak            → Achay-Samak            𐤀𐤇𐤉-𐤎𐤌𐤊  "brother of support"
+  H300    Achayashachar          → Achay-Shachar          𐤀𐤇𐤉-𐤔𐤇𐤓
+  H301    Achayashar             → Achay-Shar             𐤀𐤇𐤉-𐤔𐤓
+  H285    Achayatawab            → Achay-Tawab            𐤀𐤇𐤉-𐤈𐤅𐤁  "brother of goodness"
+  H302    Achayathapal           → Achay-Thapal           𐤀𐤇𐤉-𐤕𐤐𐤋  "brother of folly"
+  H137    Adanayabazaq           → Adanay-Bazaq           𐤀𐤃𐤍𐤉-𐤁𐤆𐤒  "lord of Bezek"
+  H140    Adanayaqam             → Adanay-Qam             𐤀𐤃𐤍𐤉-𐤒𐤌
+  H141    Adanayaram             → Adanay-Ram             𐤀𐤃𐤍𐤉-𐤓𐤌  "lord of height"
+  H139    Adanayatzadaq          → Adanay-Tzadaq          𐤀𐤃𐤍𐤉-𐤑𐤃𐤒  "lord of justice"
+  H148    Adaragazar             → Adar-Gazar             𐤀𐤃𐤓-𐤂𐤆𐤓   (not in name map)
+  H152    Adaramalak             → Adar-Malak             𐤀𐤃𐤓-𐤌𐤋𐤊
+  H171    Ahalayaab              → Ahalay-Ab              𐤀𐤄𐤋𐤉-𐤀𐤁
+  H173    Ahalayabamah           → Ahalay-Bamah           𐤀𐤄𐤋𐤉-𐤁𐤌𐤄
+  H445    Alachanan              → Al-Chanan              𐤀𐤋-𐤇𐤍𐤍
+  H419    Aladad                 → Al-Dad                 𐤀𐤋-𐤃𐤃  "God has loved"
+  H420    Aladaih                → Al-Daih                𐤀𐤋-𐤃𐤏𐤄  "God of knowledge"
+  H417    Alagabayash            → Al-Gabayash            𐤀𐤋-𐤂𐤁𐤉𐤔   (not in name map)
+  H496    Alaid                  → Al-Id                  𐤀𐤋-𐤏𐤃  "God has testified"
+  H497    Alaidah                → Al-Idah                𐤀𐤋-𐤏𐤃𐤄  "God has decked"
+  H500    Alailaa                → Al-Ilaa                𐤀𐤋-𐤏𐤋𐤀
+  H501    Alaishah               → Al-Ishah               𐤀𐤋-𐤏𐤔𐤄  "God has made"
+  H498    Alaiwazay              → Al-Iwazay              𐤀𐤋-𐤏𐤅𐤆𐤉
+  H499    Alaizar                → Al-Izar                𐤀𐤋-𐤏𐤆𐤓
+  H487    Alamalak               → Al-Malak               𐤀𐤋-𐤌𐤋𐤊
+  H493    Alanaim                → Al-Naim                𐤀𐤋-𐤍𐤏𐤌
+  H494    Alanathan              → Al-Nathan              𐤀𐤋-𐤍𐤕𐤍
+  H508    Alapail                → Al-Pail                𐤀𐤋-𐤐𐤏𐤋
+  H511    Alaqanah               → Al-Qanah               𐤀𐤋-𐤒𐤍𐤄  "God has obtained"
+  H510    Alaqawam               → Al-Qawam               𐤀𐤋-𐤒𐤅𐤌   (not in name map)
+  H515    Alathaqan              → Al-Thaqan              𐤀𐤋-𐤕𐤒𐤍
+  H516    Alathashachath         → Al-Thashachath         𐤀𐤋-𐤕𐤔𐤇𐤕   (not in name map)
+  H513    Alathawalad            → Al-Thawalad            𐤀𐤋-𐤕𐤅𐤋𐤃
+  H439    Alawanabakawath        → Alawan-Bakawath        𐤀𐤋𐤅𐤍-𐤁𐤊𐤅𐤕  "oak of weeping"
+  H446    Alayaab                → Alay-Ab                𐤀𐤋𐤉-𐤀𐤁
+  H448    Alayaathah             → Al-Yaathah             𐤀𐤋-𐤉𐤀𐤕𐤄
+  H455    Alayachabaa            → Alay-Chabaa            𐤀𐤋𐤉-𐤇𐤁𐤀  "God will hide"
+  H456    Alayacharap            → Alay-Charap            𐤀𐤋𐤉-𐤇𐤓𐤐  "God of autumn"
+  H450    Alayadai               → Al-Yadai               𐤀𐤋-𐤉𐤃𐤏
+  H454    Alayahawaiyanay        → Al-Yahawaiyanay        𐤀𐤋-𐤉𐤄𐤅𐤏𐤉𐤍𐤉
+  H463    Alayaim                → Alay-Im                𐤀𐤋𐤉-𐤏𐤌
+  H461    Alayaizar              → Alay-Izar              𐤀𐤋𐤉-𐤏𐤆𐤓  "God of help"
+  H458    Alayamalak             → Alay-Malak             𐤀𐤋𐤉-𐤌𐤋𐤊
+  H465    Alayapal               → Al-Yapal               𐤀𐤋-𐤉𐤐𐤋  "God of judgment"
+  H466    Alayapalahaw           → Alay-Palahaw           𐤀𐤋𐤉-𐤐𐤋𐤄𐤅  "God of his distinction"
+  H467    Alayapalat             → Alay-Palat             𐤀𐤋𐤉-𐤐𐤋𐤈  "God of deliverance"
+  H464    Alayapaz               → Alay-Paz               𐤀𐤋𐤉-𐤐𐤆  "God of gold"
+  H470    Alayaqaa               → Alay-Qaa               𐤀𐤋𐤉-𐤒𐤀  "God of rejection"
+  H471    Alayaqayam             → Alay-Qayam             𐤀𐤋𐤉-𐤒𐤉𐤌  "God of raising"
+  H460    Alayasap               → Al-Yasap               𐤀𐤋-𐤉𐤎𐤐
+  H472    Alayashabai            → Alay-Shabai            𐤀𐤋𐤉-𐤔𐤁𐤏
+  H476    Alayashamai            → Alay-Shamai            𐤀𐤋𐤉-𐤔𐤌𐤏  "God of hearing"
+  H478    Alayashapat            → Alay-Shapat            𐤀𐤋𐤉-𐤔𐤐𐤈  "God of judgment"
+  H474    Alayashawai            → Alay-Shawai            𐤀𐤋𐤉-𐤔𐤅𐤏
+  H475    Alayashayab            → Alay-Shayab            𐤀𐤋𐤉-𐤔𐤉𐤁  "God will restore"
+  H469    Alayatzapan            → Alay-Tzapan            𐤀𐤋𐤉-𐤑𐤐𐤍  "God of treasure"
+  H468    Alayatzawar            → Alay-Tzawar            𐤀𐤋𐤉-𐤑𐤅𐤓
+  H443    Alazabad               → Al-Zabad               𐤀𐤋-𐤆𐤁𐤃  "God has bestowed"
+  H593    Anayaim                → Anay-Im                𐤀𐤍𐤉-𐤏𐤌
+  H658    Apasadamayam           → Apas-Damayam           𐤀𐤐𐤎-𐤃𐤌𐤉𐤌  "boundary of blood-drops"
+  H763    Aramanaharayam         → Aram-Naharayam         𐤀𐤓𐤌-𐤍𐤄𐤓𐤉𐤌
+  H760    Aramatzawabah          → Aram-Tzawabah          𐤀𐤓𐤌-𐤑𐤅𐤁𐤄
+  H634    Asarachadawan          → Asar-Chadawan          𐤀𐤎𐤓-𐤇𐤃𐤅𐤍
+  H792    Ashabail               → Ash-Bail               𐤀𐤔-𐤁𐤏𐤋  "man of Baal"
+  H799    Ashadath               → Ash-Dath               𐤀𐤔-𐤃𐤕   (not in name map)
+  H798    Ashadawathahapasagah   → Ashadawath-Hapasagah   𐤀𐤔𐤃𐤅𐤕-𐤄𐤐𐤎𐤂𐤄
+  H808    Ashayash               → Ash-Yash               𐤀𐤔-𐤉𐤔   (not in name map)
+  H856    Athabail               → Ath-Bail               𐤀𐤕-𐤁𐤏𐤋  "with Baal"
+  H865    Athamawal              → Ath-Mawal              𐤀𐤕-𐤌𐤅𐤋   (not in name map)
+  H192    Awayalamaradak         → Awayal-Maradak         𐤀𐤅𐤉𐤋-𐤌𐤓𐤃𐤊
+  H372    Ayaizar                → Ay-Izar                𐤀𐤉-𐤏𐤆𐤓  "helpless"
+  H350    Ayakabawad             → Ay-Kabawad             𐤀𐤉-𐤊𐤁𐤅𐤃
+  H364    Ayalapaaran            → Ayal-Paaran            𐤀𐤉𐤋-𐤐𐤀𐤓𐤍  "oak of Paran"
+  H358    Ayalawanabayathachanan → Ayalawan-Bayath-Chanan 𐤀𐤉𐤋𐤅𐤍-𐤁𐤉𐤕-𐤇𐤍𐤍
+  H375    Ayapah                 → Ay-Pah                 𐤀𐤉-𐤐𐤄
+  H378    Ayashabashath          → Ayash-Bashath          𐤀𐤉𐤔-𐤁𐤔𐤕  "man of shame"
+  H381    Ayashachayal           → Ayash-Chayal           𐤀𐤉𐤔-𐤇𐤉𐤋  "living man"   (not in name map)
+  H379    Ayashahawad            → Ayash-Hawad            𐤀𐤉𐤔-𐤄𐤅𐤃  "man of renown"
+  H382    Ayashatawab            → Ayash-Tawab            𐤀𐤉𐤔-𐤈𐤅𐤁  "man of Tob"
+  H385    Ayathamar              → Ay-Thamar              𐤀𐤉-𐤕𐤌𐤓  "coast of the palm-tree"
+  H348    Ayazabal               → Ay-Zabal               𐤀𐤉-𐤆𐤁𐤋
+  H242    Azanashaarah           → Azan-Shaarah           𐤀𐤆𐤍-𐤔𐤀𐤓𐤄
+  H243    Azanawathathabawar     → Azanawath-Thabawar     𐤀𐤆𐤍𐤅𐤕-𐤕𐤁𐤅𐤓
+  H879    Baaraalayam            → Baar-Alayam            𐤁𐤀𐤓-𐤀𐤋𐤉𐤌  "well of heroes"
+  H883    Baaralachayaraay       → Baar-Lachay-Raay       𐤁𐤀𐤓-𐤋𐤇𐤉-𐤓𐤀𐤉
+  H884    Baarashabai            → Baar-Shabai            𐤁𐤀𐤓-𐤔𐤁𐤏  "well of an oath"   ✓ allowlisted by hand
+  H885    Baarathabanayayaiqan   → Baarath-Banay-Yaiqan   𐤁𐤀𐤓𐤕-𐤁𐤍𐤉-𐤉𐤏𐤒𐤍
+  H1170   Bailabarayath          → Bail-Barayath          𐤁𐤏𐤋-𐤁𐤓𐤉𐤕
+  H1177   Bailachanan            → Bail-Chanan            𐤁𐤏𐤋-𐤇𐤍𐤍  "possessor of grace"
+  H1179   Bailacharamawan        → Bail-Charamawan        𐤁𐤏𐤋-𐤇𐤓𐤌𐤅𐤍  "possessor of Hermon"
+  H1178   Bailachatzawar         → Bail-Chatzawar         𐤁𐤏𐤋-𐤇𐤑𐤅𐤓  "possessor of a village"
+  H1171   Bailagad               → Bail-Gad               𐤁𐤏𐤋-𐤂𐤃  "Baal of Fortune"   ✗ excluded by hand
+  H1174   Bailahamawan           → Bail-Hamawan           𐤁𐤏𐤋-𐤄𐤌𐤅𐤍  "possessor of a multitude"
+  H1186   Bailamaiwan            → Bail-Maiwan            𐤁𐤏𐤋-𐤌𐤏𐤅𐤍
+  H1187   Bailapaiwar            → Bail-Paiwar            𐤁𐤏𐤋-𐤐𐤏𐤅𐤓  "Baal of Peor"
+  H1188   Bailaparatzayam        → Bail-Paratzayam        𐤁𐤏𐤋-𐤐𐤓𐤑𐤉𐤌  "possessor of breaches"
+  H1190   Bailashalashah         → Bail-Shalashah         𐤁𐤏𐤋-𐤔𐤋𐤔𐤄
+  H1192   Bailathabaar           → Bailath-Baar           𐤁𐤏𐤋𐤕-𐤁𐤀𐤓  "mistress of a well"
+  H1193   Bailathamar            → Bail-Thamar            𐤁𐤏𐤋-𐤕𐤌𐤓
+  H1189   Bailatzapawan          → Bail-Tzapawan          𐤁𐤏𐤋-𐤑𐤐𐤅𐤍  "Baal of winter"
+  H1181   Bailayabamawath        → Bailay-Bamawath        𐤁𐤏𐤋𐤉-𐤁𐤌𐤅𐤕
+  H1182   Bailayadai             → Bail-Yadai             𐤁𐤏𐤋-𐤉𐤃𐤏  "Baal has known"
+  H1184   Bailayayahawadah       → Bailay-Yahawadah       𐤁𐤏𐤋𐤉-𐤉𐤄𐤅𐤃𐤄  "masters of Judah"
+  H1176   Bailazabawab           → Bail-Zabawab           𐤁𐤏𐤋-𐤆𐤁𐤅𐤁
+  H1081   Balaadan               → Bal-Adan               𐤁𐤋-𐤀𐤃𐤍
+  H1107   Balaiday               → Bal-Iday               𐤁𐤋-𐤏𐤃𐤉   (not in name map)
+  H1109   Balaim                 → Bal-Im                 𐤁𐤋-𐤏𐤌
+  H1100   Balayail               → Balay-Il               𐤁𐤋𐤉-𐤏𐤋   (not in name map)
+  H1099   Balayamah              → Balay-Mah              𐤁𐤋𐤉-𐤌𐤄   (not in name map)
+  H1125   Banaabayanadab         → Ban-Abayanadab         𐤁𐤍-𐤀𐤁𐤉𐤍𐤃𐤁   (not in name map)
+  H1126   Banaawanay             → Ban-Awanay             𐤁𐤍-𐤀𐤅𐤍𐤉  "son of my sorrow"
+  H1135   Banachanan             → Ban-Chanan             𐤁𐤍-𐤇𐤍𐤍  "son of Chanan"
+  H1136   Banachasad             → Ban-Chasad             𐤁𐤍-𐤇𐤎𐤃  "son of kindness"   (not in name map)
+  H1133   Banachawar             → Ban-Chawar             𐤁𐤍-𐤇𐤅𐤓  "son of Chur"   (not in name map)
+  H1134   Banachayal             → Ban-Chayal             𐤁𐤍-𐤇𐤉𐤋  "son of might"
+  H1128   Banadaqar              → Ban-Daqar              𐤁𐤍-𐤃𐤒𐤓   (not in name map)
+  H1127   Banagabar              → Ban-Gabar              𐤁𐤍-𐤂𐤁𐤓   (not in name map)
+  H1130   Banahadad              → Ban-Hadad              𐤁𐤍-𐤄𐤃𐤃  "son of Hadad"
+  H1151   Banaimay               → Ban-Imay               𐤁𐤍-𐤏𐤌𐤉
+  H1139   Banayabaraq            → Banay-Baraq            𐤁𐤍𐤉-𐤁𐤓𐤒
+  H1144   Banayamayan            → Ban-Yamayan            𐤁𐤍-𐤉𐤌𐤉𐤍
+  H1145   Banayamayanay          → Ban-Yamayanay          𐤁𐤍-𐤉𐤌𐤉𐤍𐤉   (not in name map)
+  H1142   Banayayaiqan           → Banay-Yaiqan           𐤁𐤍𐤉-𐤉𐤏𐤒𐤍  "sons of Yaakan"
+  H1132   Banazawachath          → Ban-Zawachath          𐤁𐤍-𐤆𐤅𐤇𐤕  "son of Zocheth"
+  H1255   Baraadakabalaadan      → Baraadak-Balaadan      𐤁𐤓𐤀𐤃𐤊-𐤁𐤋𐤀𐤃𐤍
+  H1337   Batharabayam           → Bath-Rabayam           𐤁𐤕-𐤓𐤁𐤉𐤌
+  H1339   Bathashabai            → Bath-Shabai            𐤁𐤕-𐤔𐤁𐤏  "daughter of an oath"
+  H1340   Bathashawai            → Bath-Shawai            𐤁𐤕-𐤔𐤅𐤏
+  H1007   Bayathaawan            → Bayath-Awan            𐤁𐤉𐤕-𐤀𐤅𐤍  "house of vanity"
+  H1010   Bayathabailamaiwan     → Bayath-Bail-Maiwan     𐤁𐤉𐤕-𐤁𐤏𐤋-𐤌𐤏𐤅𐤍
+  H1011   Bayathabaraay          → Bayath-Baraay          𐤁𐤉𐤕-𐤁𐤓𐤀𐤉  "house of a creative one"
+  H1012   Bayathabarah           → Bayath-Barah           𐤁𐤉𐤕-𐤁𐤓𐤄
+  H1031   Bayathachagalah        → Bayath-Chagalah        𐤁𐤉𐤕-𐤇𐤂𐤋𐤄  "house of a partridge"
+  H1032   Bayathachawarawan      → Bayath-Chawarawan      𐤁𐤉𐤕-𐤇𐤅𐤓𐤅𐤍  "house of hollowness"
+  H1015   Bayathadabalathayam    → Bayath-Dabalathayam    𐤁𐤉𐤕-𐤃𐤁𐤋𐤕𐤉𐤌
+  H1016   Bayathadagawan         → Bayath-Dagawan         𐤁𐤉𐤕-𐤃𐤂𐤅𐤍  "house of Dagon"
+  H1013   Bayathagadar           → Bayath-Gadar           𐤁𐤉𐤕-𐤂𐤃𐤓
+  H1014   Bayathagamawal         → Bayath-Gamawal         𐤁𐤉𐤕-𐤂𐤌𐤅𐤋
+  H1017   Bayathahaalay          → Bayath-Haalay          𐤁𐤉𐤕-𐤄𐤀𐤋𐤉   (not in name map)
+  H1018   Bayathahaatzal         → Bayath-Haatzal         𐤁𐤉𐤕-𐤄𐤀𐤑𐤋
+  H1019   Bayathahagalagal       → Bayath-Hagalagal       𐤁𐤉𐤕-𐤄𐤂𐤋𐤂𐤋
+  H1025   Bayathahaimaq          → Bayath-Haimaq          𐤁𐤉𐤕-𐤄𐤏𐤌𐤒
+  H1026   Bayathahairabah        → Bayath-Hairabah        𐤁𐤉𐤕-𐤄𐤏𐤓𐤁𐤄
+  H1021   Bayathahakaram         → Bayath-Hakaram         𐤁𐤉𐤕-𐤄𐤊𐤓𐤌
+  H1022   Bayathahalachamay      → Bayath-Halachamay      𐤁𐤉𐤕-𐤄𐤋𐤇𐤌𐤉   (not in name map)
+  H1023   Bayathahamarachaq      → Bayath-Hamarachaq      𐤁𐤉𐤕-𐤄𐤌𐤓𐤇𐤒
+  H1024   Bayathahamarakabawath  → Bayath-Hamarakabawath  𐤁𐤉𐤕-𐤄𐤌𐤓𐤊𐤁𐤅𐤕
+  H1027   Bayathaharam           → Bayath-Haram           𐤁𐤉𐤕-𐤄𐤓𐤌
+  H1028   Bayathaharan           → Bayath-Haran           𐤁𐤉𐤕-𐤄𐤓𐤍
+  H1030   Bayathahashamashay     → Bayath-Hashamashay     𐤁𐤉𐤕-𐤄𐤔𐤌𐤔𐤉   (not in name map)
+  H1029   Bayathahashatah        → Bayath-Hashatah        𐤁𐤉𐤕-𐤄𐤔𐤈𐤄
+  H1020   Bayathahayashayamawath → Bayath-Hayashayamawath 𐤁𐤉𐤕-𐤄𐤉𐤔𐤉𐤌𐤅𐤕
+  H1040   Bayathaidan            → Bayath-Idan            𐤁𐤉𐤕-𐤏𐤃𐤍  "house of pleasure"
+  H1043   Bayathainath           → Bayath-Inath           𐤁𐤉𐤕-𐤏𐤍𐤕
+  H1042   Bayathainawath         → Bayath-Inawath         𐤁𐤉𐤕-𐤏𐤍𐤅𐤕  "house of replies"
+  H1044   Bayathaiqad            → Bayath-Iqad            𐤁𐤉𐤕-𐤏𐤒𐤃
+  H1045   Bayathaishatharawath   → Bayath-Ishatharawath   𐤁𐤉𐤕-𐤏𐤔𐤕𐤓𐤅𐤕  "house of Ashtoreths"
+  H1041   Bayathaizamawath       → Bayath-Izamawath       𐤁𐤉𐤕-𐤏𐤆𐤌𐤅𐤕
+  H1033   Bayathakar             → Bayath-Kar             𐤁𐤉𐤕-𐤊𐤓  "house of pasture"
+  H1034   Bayathalabaawath       → Bayath-Labaawath       𐤁𐤉𐤕-𐤋𐤁𐤀𐤅𐤕  "house of lionesses"
+  H1035   Bayathalacham          → Bayath-Lacham          𐤁𐤉𐤕-𐤋𐤇𐤌  "house of bread"   ✓ allowlisted by hand
+  H1036   Bayathalaiparah        → Bayath-Laiparah        𐤁𐤉𐤕-𐤋𐤏𐤐𐤓𐤄
+  H1038   Bayathamaikah          → Bayath-Maikah          𐤁𐤉𐤕-𐤌𐤏𐤊𐤄  "house of Maakah"
+  H1037   Bayathamalawaa         → Bayath-Malawaa         𐤁𐤉𐤕-𐤌𐤋𐤅𐤀   (not in name map)
+  H1039   Bayathanamarah         → Bayath-Namarah         𐤁𐤉𐤕-𐤍𐤌𐤓𐤄
+  H1047   Bayathapaiwar          → Bayath-Paiwar          𐤁𐤉𐤕-𐤐𐤏𐤅𐤓  "house of Peor"
+  H1046   Bayathapalat           → Bayath-Palat           𐤁𐤉𐤕-𐤐𐤋𐤈  "house of escape"
+  H1048   Bayathapatzatz         → Bayath-Patzatz         𐤁𐤉𐤕-𐤐𐤑𐤑  "house of dispersion"
+  H1050   Bayatharachawab        → Bayath-Rachawab        𐤁𐤉𐤕-𐤓𐤇𐤅𐤁
+  H1051   Bayatharapaa           → Bayath-Rapaa           𐤁𐤉𐤕-𐤓𐤐𐤀
+  H1052   Bayathashaan           → Bayath-Shaan           𐤁𐤉𐤕-𐤔𐤀𐤍  "house of ease"   ✓ allowlisted by hand
+  H1053   Bayathashamash         → Bayath-Shamash         𐤁𐤉𐤕-𐤔𐤌𐤔   ✓ allowlisted by hand
+  H1054   Bayathathapawach       → Bayath-Thapawach       𐤁𐤉𐤕-𐤕𐤐𐤅𐤇
+  H1049   Bayathatzawar          → Bayath-Tzawar          𐤁𐤉𐤕-𐤑𐤅𐤓
+  H2521   Chalaqathahatzarayam   → Chalaqath-Hatzarayam   𐤇𐤋𐤒𐤕-𐤄𐤑𐤓𐤉𐤌
+  H2576   Chamathadaar           → Chamath-Daar           𐤇𐤌𐤕-𐤃𐤀𐤓  "hot springs of Dor"
+  H2579   Chamatharabah          → Chamath-Rabah          𐤇𐤌𐤕-𐤓𐤁𐤄   (not in name map)
+  H2578   Chamathatzawabah       → Chamath-Tzawabah       𐤇𐤌𐤕-𐤑𐤅𐤁𐤄
+  H2657   Chapatzayabah          → Chapatzay-Bah          𐤇𐤐𐤑𐤉-𐤁𐤄
+  H2735   Charahagadagad         → Char-Hagadagad         𐤇𐤓-𐤄𐤂𐤃𐤂𐤃
+  H2755   Charayayawanayam       → Charay-Yawanayam       𐤇𐤓𐤉-𐤉𐤅𐤍𐤉𐤌  "or perhaps rather the plural of a single word חֲרָאיוֹן, probably a kind of vegetable"   (not in name map)
+  H2806   Chashabadanah          → Chashab-Danah          𐤇𐤔𐤁-𐤃𐤍𐤄  "considerate judge"
+  H2692   Chatzaraadar           → Chatzar-Adar           𐤇𐤑𐤓-𐤀𐤃𐤓
+  H2693   Chatzaragadah          → Chatzar-Gadah          𐤇𐤑𐤓-𐤂𐤃𐤄
+  H2694   Chatzarahathayakawan   → Chatzar-Hathayakawan   𐤇𐤑𐤓-𐤄𐤕𐤉𐤊𐤅𐤍
+  H2704   Chatzaraiyanan         → Chatzar-Iyanan         𐤇𐤑𐤓-𐤏𐤉𐤍𐤍  "village of springs"   ✗ excluded by hand
+  H2703   Chatzaraiyanawan       → Chatzar-Iyanawan       𐤇𐤑𐤓-𐤏𐤉𐤍𐤅𐤍  "village of springs"
+  H2700   Chatzaramawath         → Chatzar-Mawath         𐤇𐤑𐤓-𐤌𐤅𐤕  "village of death"
+  H2701   Chatzarasawasah        → Chatzar-Sawasah        𐤇𐤑𐤓-𐤎𐤅𐤎𐤄  "village of cavalry"
+  H2702   Chatzarasawasayam      → Chatzar-Sawasayam      𐤇𐤑𐤓-𐤎𐤅𐤎𐤉𐤌  "village of horses"
+  H2705   Chatzarashawail        → Chatzar-Shawail        𐤇𐤑𐤓-𐤔𐤅𐤏𐤋
+  H2688   Chatzatzawanathamar    → Chatzatzawan-Thamar    𐤇𐤑𐤑𐤅𐤍-𐤕𐤌𐤓
+  H2675   Chatzawarachadathah    → Chatzawar-Chadathah    𐤇𐤑𐤅𐤓-𐤇𐤃𐤕𐤄
+  H2680   Chatzayahamanachathay  → Chatzay-Hamanachathay  𐤇𐤑𐤉-𐤄𐤌𐤍𐤇𐤕𐤉   (not in name map)
+  H2679   Chatzayahamanachawath  → Chatzay-Hamanachawath  𐤇𐤑𐤉-𐤄𐤌𐤍𐤇𐤅𐤕   (not in name map)
+  H2334   Chawawathayaiyar       → Chawawath-Yaiyar       𐤇𐤅𐤅𐤕-𐤉𐤏𐤉𐤓
+  H1842   Danayain               → Dan-Yain               𐤃𐤍-𐤉𐤏𐤍  "judge of purpose"
+  H1862   Daradai                → Dar-Dai                𐤃𐤓-𐤃𐤏  "pearl of knowledge"
+  H1774   Dayazahab              → Day-Zahab              𐤃𐤉-𐤆𐤄𐤁  "of gold"
+  H1441   Gadainay               → Gadai-Nay              𐤂𐤃𐤏-𐤍𐤉
+  H1533   Galabai                → Gal-Bai                𐤂𐤋-𐤁𐤏  "fountain of ebullition"
+  H1567   Galaid                 → Gal-Id                 𐤂𐤋-𐤏𐤃  "heap of testimony"
+  H1630   Garazayam              → Garaz-Yam              𐤂𐤓𐤆-𐤉𐤌   ✗ excluded by hand
+  H1662   Gathahachapar          → Gath-Hachapar          𐤂𐤕-𐤄𐤇𐤐𐤓
+  H1667   Gatharamawan           → Gath-Ramawan           𐤂𐤕-𐤓𐤌𐤅𐤍
+  H1485   Gawarabail             → Gawar-Bail             𐤂𐤅𐤓-𐤁𐤏𐤋  "dwelling of Baal"
+  H1909   Hadadaizar             → Hadad-Izar             𐤄𐤃𐤃-𐤏𐤆𐤓
+  H1910   Hadadaramawan          → Hadad-Ramawan          𐤄𐤃𐤃-𐤓𐤌𐤅𐤍
+  H1928   Hadaraizar             → Hadar-Izar             𐤄𐤃𐤓-𐤏𐤆𐤓   (not in name map)
+  H1976   Halazah                → Hal-Zah                𐤄𐤋-𐤆𐤄   (not in name map)
+  H1996   Hamawanagawag          → Hamawan-Gawag          𐤄𐤌𐤅𐤍-𐤂𐤅𐤂
+  H5654   Ibadaadawam            → Ibad-Adawam            𐤏𐤁𐤃-𐤀𐤃𐤅𐤌  "worker of Edom"
+  H5663   Ibadamalak             → Ibad-Malak             𐤏𐤁𐤃-𐤌𐤋𐤊  "servant of a king"
+  H5664   Ibadanagaw             → Ibad-Nagaw             𐤏𐤁𐤃-𐤍𐤂𐤅   (not in name map)
+  H5665   Ibadanagawaa           → Ibad-Nagawaa           𐤏𐤁𐤃-𐤍𐤂𐤅𐤀
+  H5963   Ilamanadabalathayamah  → Ilaman-Dabalathayamah  𐤏𐤋𐤌𐤍-𐤃𐤁𐤋𐤕𐤉𐤌𐤄
+  H6008   Imaid                  → Im-Id                  𐤏𐤌-𐤏𐤃  "people of time"
+  H6019   Imaram                 → Im-Ram                 𐤏𐤌-𐤓𐤌  "high people"
+  H5991   Imayachawar            → Imay-Chawar            𐤏𐤌𐤉-𐤇𐤅𐤓  "people of nobility"   (not in name map)
+  H5989   Imayahawad             → Imay-Hawad             𐤏𐤌𐤉-𐤄𐤅𐤃  "people of splendor"
+  H5992   Imayanadab             → Imay-Nadab             𐤏𐤌𐤉-𐤍𐤃𐤁  "people of liberality"
+  H5993   Imayanadayab           → Imay-Nadayab           𐤏𐤌𐤉-𐤍𐤃𐤉𐤁   (not in name map)
+  H5996   Imayashaday            → Imay-Shaday            𐤏𐤌𐤉-𐤔𐤃𐤉
+  H5990   Imayazabad             → Imay-Zabad             𐤏𐤌𐤉-𐤆𐤁𐤃  "people of endowment"
+  H6255   Ishatharathaqaranayam  → Ishatharath-Qaranayam  𐤏𐤔𐤕𐤓𐤕-𐤒𐤓𐤍𐤉𐤌
+  H5853   Itarawathaadar         → Itarawath-Adar         𐤏𐤈𐤓𐤅𐤕-𐤀𐤃𐤓  "crowns of Addar"
+  H5854   Itarawathabayathayawaab → Itarawath-Bayath-Yawaab 𐤏𐤈𐤓𐤅𐤕-𐤁𐤉𐤕-𐤉𐤅𐤀𐤁  "crowns of the house of Joab"
+  H5855   Itarawathashawapan     → Itarawath-Shawapan     𐤏𐤈𐤓𐤅𐤕-𐤔𐤅𐤐𐤍
+  H6278   Ithaqatzayan           → Ith-Qatzayan           𐤏𐤕-𐤒𐤑𐤉𐤍  "time of a judge"
+  H6100   Itzayawanagabar        → Itzayawan-Gabar        𐤏𐤑𐤉𐤅𐤍-𐤂𐤁𐤓  "backbone-like of a man"
+  H5876   Iyanachadah            → Iyan-Chadah            𐤏𐤉𐤍-𐤇𐤃𐤄  "fountain of sharpness"
+  H5878   Iyanacharad            → Iyan-Charad            𐤏𐤉𐤍-𐤇𐤓𐤃  "fountain of trembling"
+  H5877   Iyanachatzawar         → Iyan-Chatzawar         𐤏𐤉𐤍-𐤇𐤑𐤅𐤓  "fountain of a village"
+  H5874   Iyanadaar              → Iyan-Daar              𐤏𐤉𐤍-𐤃𐤀𐤓  "fountain of dwelling"
+  H5872   Iyanagaday             → Iyan-Gaday             𐤏𐤉𐤍-𐤂𐤃𐤉  "fountain of a kid"   ✗ excluded by hand
+  H5873   Iyanaganayam           → Iyan-Ganayam           𐤏𐤉𐤍-𐤂𐤍𐤉𐤌  "fountain of gardens"
+  H5875   Iyanahaqawaraa         → Iyan-Haqawaraa         𐤏𐤉𐤍-𐤄𐤒𐤅𐤓𐤀  "fountain of One calling"
+  H5882   Iyanaigalayam          → Iyan-Igalayam          𐤏𐤉𐤍-𐤏𐤂𐤋𐤉𐤌  "fountain of two calves"
+  H5880   Iyanamashapat          → Iyan-Mashapat          𐤏𐤉𐤍-𐤌𐤔𐤐𐤈  "fountain of judgment"
+  H5883   Iyanaragal             → Iyan-Ragal             𐤏𐤉𐤍-𐤓𐤂𐤋  "fountain of a traveller"
+  H5884   Iyanaramawan           → Iyan-Ramawan           𐤏𐤉𐤍-𐤓𐤌𐤅𐤍  "fountain of a pomegranate"
+  H5885   Iyanashamash           → Iyan-Shamash           𐤏𐤉𐤍-𐤔𐤌𐤔  "fountain of the sun"
+  H5886   Iyanathanayam          → Iyan-Thanayam          𐤏𐤉𐤍-𐤕𐤍𐤉𐤌  "fountain of jackals"
+  H5887   Iyanathapawach         → Iyan-Thapawach         𐤏𐤉𐤍-𐤕𐤐𐤅𐤇  "fountain of an apple-tree"
+  H5898   Iyarahamalach          → Iyar-Hamalach          𐤏𐤉𐤓-𐤄𐤌𐤋𐤇
+  H5899   Iyarahathamarayam      → Iyar-Hathamarayam      𐤏𐤉𐤓-𐤄𐤕𐤌𐤓𐤉𐤌
+  H5904   Iyaranachash           → Iyar-Nachash           𐤏𐤉𐤓-𐤍𐤇𐤔  "city of a serpent"
+  H5905   Iyarashamash           → Iyar-Shamash           𐤏𐤉𐤓-𐤔𐤌𐤔  "city of the sun"
+  H5863   Iyayahaibarayam        → Iyay-Haibarayam        𐤏𐤉𐤉-𐤄𐤏𐤁𐤓𐤉𐤌
+  H5799   Izaazal                → Iz-Azal                𐤏𐤆-𐤀𐤆𐤋   (not in name map)
+  H5802   Izabawaq               → Iz-Bawaq               𐤏𐤆-𐤁𐤅𐤒  "stern depopulator"
+  H5803   Izagad                 → Iz-Gad                 𐤏𐤆-𐤂𐤃  "stern troop"
+  H5820   Izamawath              → Iz-Mawath              𐤏𐤆-𐤌𐤅𐤕  "strong one of death"
+  H5840   Izarayaqam             → Izaray-Qam             𐤏𐤆𐤓𐤉-𐤒𐤌  "help of an enemy"
+  H3609   Kalaab                 → Kal-Ab                 𐤊𐤋-𐤀𐤁
+  H3613   Kalabaaparathah        → Kalab-Aparathah        𐤊𐤋𐤁-𐤀𐤐𐤓𐤕𐤄
+  H3626   Kalachazah             → Kal-Chazah             𐤊𐤋-𐤇𐤆𐤄  "every seer"
+  H3628   Kalayaa                → Kal-Yaa                𐤊𐤋-𐤉𐤀   (not in name map)
+  H3726   Kaparahaimawanay       → Kapar-Haimawanay       𐤊𐤐𐤓-𐤄𐤏𐤌𐤅𐤍𐤉
+  H3696   Kasalathathabar        → Kasalath-Thabar        𐤊𐤎𐤋𐤕-𐤕𐤁𐤓  "flanks of Tabor"
+  H3798   Kathalayash            → Kathal-Yash            𐤊𐤕𐤋-𐤉𐤔  "wall of a man"
+  H3565   Kawaraishan            → Kawar-Ishan            𐤊𐤅𐤓-𐤏𐤔𐤍  "furnace of smoke"
+  H3573   Kawashanarashaithayam  → Kawashan-Rashaithayam  𐤊𐤅𐤔𐤍-𐤓𐤔𐤏𐤕𐤉𐤌  "Cushan of double wickedness"
+  H3810   Laadabar               → Laa-Dabar              𐤋𐤀-𐤃𐤁𐤓  "pastureless"
+  H3818   Laaimay                → Laa-Imay               𐤋𐤀-𐤏𐤌𐤉
+  H3819   Laarachamah            → Laa-Rachamah           𐤋𐤀-𐤓𐤇𐤌𐤄  "not pitied"
+  H4265   Machanahadan           → Machanah-Dan           𐤌𐤇𐤍𐤄-𐤃𐤍  "camp of Dan"
+  H4028   Magadalagad            → Magadal-Gad            𐤌𐤂𐤃𐤋-𐤂𐤃  "tower of Fortune"
+  H4029   Magadalaidar           → Magadal-Idar           𐤌𐤂𐤃𐤋-𐤏𐤃𐤓  "tower of a flock"
+  H4047   Magapayaish            → Magapay-Ish            𐤌𐤂𐤐𐤉-𐤏𐤔
+  H4036   Magawaramasabayab      → Magawar-Masabayab      𐤌𐤂𐤅𐤓-𐤌𐤎𐤁𐤉𐤁   (not in name map)
+  H4122   Maharashalalachashabaz → Mahar-Shalal-Chash-Baz 𐤌𐤄𐤓-𐤔𐤋𐤋-𐤇𐤔-𐤁𐤆
+  H4610   Mailahaiqarabayam      → Mailah-Iqarabayam      𐤌𐤏𐤋𐤄-𐤏𐤒𐤓𐤁𐤉𐤌
+  H4367   Makanadabay            → Mak-Nadabay            𐤌𐤊-𐤍𐤃𐤁𐤉
+  H4443   Malakayaram            → Malakay-Ram            𐤌𐤋𐤊𐤉-𐤓𐤌
+  H4444   Malakayashawai         → Malakay-Shawai         𐤌𐤋𐤊𐤉-𐤔𐤅𐤏  "king of wealth"
+  H4442   Malakayatzadaq         → Malakay-Tzadaq         𐤌𐤋𐤊𐤉-𐤑𐤃𐤒  "king of right"
+  H4509   Manayamayan            → Man-Yamayan            𐤌𐤍-𐤉𐤌𐤉𐤍
+  H4648   Mapayabashath          → Mapay-Bashath          𐤌𐤐𐤉-𐤁𐤔𐤕
+  H4757   Maraadakabalaadan      → Maraadak-Balaadan      𐤌𐤓𐤀𐤃𐤊-𐤁𐤋𐤀𐤃𐤍
+  H4807   Marayababail           → Marayab-Bail           𐤌𐤓𐤉𐤁-𐤁𐤏𐤋
+  H4810   Marayabail             → Maray-Bail             𐤌𐤓𐤉-𐤁𐤏𐤋
+  H4956   Masharapawathamayam    → Masharapawath-Mayam    𐤌𐤔𐤓𐤐𐤅𐤕-𐤌𐤉𐤌  "burnings of water"
+  H4965   Mathagahaamah          → Mathag-Haamah          𐤌𐤕𐤂-𐤄𐤀𐤌𐤄   (not in name map)
+  H4182   Mawarashathagath       → Mawarashath-Gath       𐤌𐤅𐤓𐤔𐤕-𐤂𐤕  "possession of Gath"
+  H4311   Mayadabaa              → May-Dabaa              𐤌𐤉-𐤃𐤁𐤀  "water of quiet"   ✗ excluded by hand
+  H4313   Mayahayaraqawan        → May-Hayaraqawan        𐤌𐤉-𐤄𐤉𐤓𐤒𐤅𐤍
+  H4314   Mayazahab              → May-Zahab              𐤌𐤉-𐤆𐤄𐤁
+  H5041   Nabalat                → Nab-Lat                𐤍𐤁-𐤋𐤈  "foolish secrecy"
+  H5371   Naragalasharaatzar     → Naragal-Sharaatzar     𐤍𐤓𐤂𐤋-𐤔𐤓𐤀𐤑𐤓
+  H5419   Nathanamalak           → Nathan-Malak           𐤍𐤕𐤍-𐤌𐤋𐤊
+  H6355   Pachathamawaab         → Pachath-Mawaab         𐤐𐤇𐤕-𐤌𐤅𐤀𐤁  "pit of Moab"
+  H6301   Padahatzawar           → Padah-Tzawar           𐤐𐤃𐤄-𐤑𐤅𐤓
+  H6380   Pakarathatzabayayam    → Pakarath-Tzabayayam    𐤐𐤊𐤓𐤕-𐤑𐤁𐤉𐤉𐤌  "trap of gazelles"   (not in name map)
+  H6495   Paqachaqawach          → Paqach-Qawach          𐤐𐤒𐤇-𐤒𐤅𐤇   (not in name map)
+  H6548   Paraihachaparai        → Paraih-Chaparai        𐤐𐤓𐤏𐤄-𐤇𐤐𐤓𐤏
+  H6549   Paraihanakah           → Paraih-Nakah           𐤐𐤓𐤏𐤄-𐤍𐤊𐤄
+  H6550   Paraish                → Par-Ish                𐤐𐤓-𐤏𐤔
+  H6574   Parashadan             → Parash-Dan             𐤐𐤓𐤔-𐤃𐤍   (not in name map)
+  H6560   Paratzaizaa            → Paratz-Izaa            𐤐𐤓𐤑-𐤏𐤆𐤀  "break of Uzza"
+  H6450   Pasadamayam            → Pas-Damayam            𐤐𐤎-𐤃𐤌𐤉𐤌
+  H6319   Pawatayaparai          → Pawatay-Parai          𐤐𐤅𐤈𐤉-𐤐𐤓𐤏
+  H6364   Payabasath             → Pay-Basath             𐤐𐤉-𐤁𐤎𐤕
+  H6367   Payahachayarath        → Pay-Hachayarath        𐤐𐤉-𐤄𐤇𐤉𐤓𐤕
+  H6369   Payakal                → Pay-Kal                𐤐𐤉-𐤊𐤋  "mouth of all"
+  H6914   Qabarawathahathaawah   → Qabarawath-Hathaawah   𐤒𐤁𐤓𐤅𐤕-𐤄𐤕𐤀𐤅𐤄
+  H6947   Qadashabaranai         → Qadash-Baranai         𐤒𐤃𐤔-𐤁𐤓𐤍𐤏   ✗ excluded by hand
+  H7163   Qaranahapawak          → Qaran-Hapawak          𐤒𐤓𐤍-𐤄𐤐𐤅𐤊  "horn of cosmetic"
+  H7153   Qarayathaarabai        → Qarayath-Arabai        𐤒𐤓𐤉𐤕-𐤀𐤓𐤁𐤏
+  H7154   Qarayathabail          → Qarayath-Bail          𐤒𐤓𐤉𐤕-𐤁𐤏𐤋  "city of Baal"
+  H7155   Qarayathachatzawath    → Qarayath-Chatzawath    𐤒𐤓𐤉𐤕-𐤇𐤑𐤅𐤕  "city of streets"
+  H7158   Qarayathasanah         → Qarayath-Sanah         𐤒𐤓𐤉𐤕-𐤎𐤍𐤄  "city of branches, or of a book"
+  H7157   Qarayathayairayam      → Qarayath-Yairayam      𐤒𐤓𐤉𐤕-𐤉𐤏𐤓𐤉𐤌  "city of forests, or city of towns"   ✗ excluded by hand
+  H7025   Qayaracharash          → Qayar-Charash          𐤒𐤉𐤓-𐤇𐤓𐤔  "fortress of earthenware"
+  H7248   Rabamag                → Rab-Mag                𐤓𐤁-𐤌𐤂   (not in name map)
+  H7249   Rabasarayas            → Rab-Sarayas            𐤓𐤁-𐤎𐤓𐤉𐤎   (not in name map)
+  H7262   Rabashaqah             → Rab-Shaqah             𐤓𐤁-𐤔𐤒𐤄  "chief butler"
+  H7346   Rachabaim              → Rachab-Im              𐤓𐤇𐤁-𐤏𐤌  "a people has enlarged"
+  H7278   Ragamamalak            → Ragam-Malak            𐤓𐤂𐤌-𐤌𐤋𐤊  "king's heap"
+  H7428   Ramanaparatz           → Raman-Paratz           𐤓𐤌𐤍-𐤐𐤓𐤑  "pomegranate of the breach"
+  H7433   Ramathagalaid          → Ramath-Galaid          𐤓𐤌𐤕-𐤂𐤋𐤏𐤃  "heights of Gilad"
+  H7434   Ramathahamatzapah      → Ramath-Hamatzapah      𐤓𐤌𐤕-𐤄𐤌𐤑𐤐𐤄
+  H7437   Ramathalachay          → Ramath-Lachay          𐤓𐤌𐤕-𐤋𐤇𐤉  "height of a jaw-bone"
+  H7436   Ramathayamatzawapayam  → Ramathayam-Tzawapayam  𐤓𐤌𐤕𐤉𐤌-𐤑𐤅𐤐𐤉𐤌  "double height of watchers"
+  H7320   Rawamamathayaizar      → Rawamamathay-Izar      𐤓𐤅𐤌𐤌𐤕𐤉-𐤏𐤆𐤓  "I have raised up a help"
+  H5524   Sakawathabanawath      → Sakawath-Banawath      𐤎𐤊𐤅𐤕-𐤁𐤍𐤅𐤕
+  H5555   Salaihamachalaqawath   → Salai-Hamachalaqawath  𐤎𐤋𐤏-𐤄𐤌𐤇𐤋𐤒𐤅𐤕
+  H5562   Samagaranabaw          → Samagar-Nabaw          𐤎𐤌𐤂𐤓-𐤍𐤁𐤅
+  H7610   Shaarayashawab         → Shaar-Yashawab         𐤔𐤀𐤓-𐤉𐤔𐤅𐤁  "a remnant will return"
+  H7707   Shadayaawar            → Shaday-Awar            𐤔𐤃𐤉-𐤀𐤅𐤓  "spreader of light"
+  H7915   Shakayan               → Shak-Yan               𐤔𐤊-𐤉𐤍   (not in name map)
+  H8038   Shamaabar              → Sham-Abar              𐤔𐤌-𐤀𐤁𐤓  "name of pinion, i.e. illustrious"
+  H8112   Shamarawanamaraawan    → Shamarawan-Maraawan    𐤔𐤌𐤓𐤅𐤍-𐤌𐤓𐤀𐤅𐤍  "guard of lashing"
+  H8061   Shamayadai             → Sham-Yadai             𐤔𐤌-𐤉𐤃𐤏  "name of knowing"
+  H8134   Shanaab                → Shan-Ab                𐤔𐤍-𐤀𐤁  "a father has turned"
+  H8333   Sharasharah            → Sharash-Rah            𐤔𐤓𐤔-𐤓𐤄   (not in name map)
+  H8370   Shatharabawazanay      → Shathar-Bawazanay      𐤔𐤕𐤓-𐤁𐤅𐤆𐤍𐤉
+  H7741   Shawahaqarayathayam    → Shawah-Qarayathayam    𐤔𐤅𐤄-𐤒𐤓𐤉𐤕𐤉𐤌  "plain of a double city"
+  H7802   Shawashanaidawath      → Shawashan-Idawath      𐤔𐤅𐤔𐤍-𐤏𐤃𐤅𐤕   (not in name map)
+  H7884   Shayachawaralabanath   → Shayachawar-Labanath   𐤔𐤉𐤇𐤅𐤓-𐤋𐤁𐤍𐤕  "darkish whiteness"
+  H2886   Tabaramawan            → Tab-Ramawan            𐤈𐤁-𐤓𐤌𐤅𐤍
+  H8387   Thaanathashalah        → Thaanath-Shalah        𐤕𐤀𐤍𐤕-𐤔𐤋𐤄  "approach of Shiloh"
+  H8483   Thachathayamachadashay → Thachathayam-Chadashay 𐤕𐤇𐤕𐤉𐤌-𐤇𐤃𐤔𐤉
+  H8407   Thagalathapalaasar     → Thagalath-Palaasar     𐤕𐤂𐤋𐤕-𐤐𐤋𐤀𐤎𐤓
+  H8512   Thalaabayab            → Thal-Abayab            𐤕𐤋-𐤀𐤁𐤉𐤁  "mound of green growth"
+  H8521   Thalacharashaa         → Thal-Charashaa         𐤕𐤋-𐤇𐤓𐤔𐤀  "mound of workmanship"
+  H8528   Thalamalach            → Thal-Malach            𐤕𐤋-𐤌𐤋𐤇  "mound of salt"
+  H8556   Thamanathacharas       → Thamanath-Charas       𐤕𐤌𐤍𐤕-𐤇𐤓𐤎
+  H8423   Thawabalaqayan         → Thawabal-Qayan         𐤕𐤅𐤁𐤋-𐤒𐤉𐤍  "offspring of Cain"
+  H6753   Tzalalapawanay         → Tzalal-Pawanay         𐤑𐤋𐤋-𐤐𐤅𐤍𐤉  "shade-facing"   (not in name map)
+  H6759   Tzalamanai             → Tzal-Manai             𐤑𐤋-𐤌𐤍𐤏  "shade has been denied"
+  H6757   Tzalamawath            → Tzal-Mawath            𐤑𐤋-𐤌𐤅𐤕   (not in name map)
+  H6766   Tzalatzach             → Tzal-Tzach             𐤑𐤋-𐤑𐤇  "clear shade"
+  H6847   Tzapanathapainach      → Tzapanath-Painach      𐤑𐤐𐤍𐤕-𐤐𐤏𐤍𐤇
+  H6890   Tzarathahashachar      → Tzarath-Hashachar      𐤑𐤓𐤕-𐤄𐤔𐤇𐤓
+  H6701   Tzawarayashaday        → Tzawaray-Shaday        𐤑𐤅𐤓𐤉-𐤔𐤃𐤉
+  H2991   Yabalaim               → Yabal-Im               𐤉𐤁𐤋-𐤏𐤌  "devouring people"
+  H3026   Yagarashahadawathaa    → Yagar-Shahadawathaa    𐤉𐤂𐤓-𐤔𐤄𐤃𐤅𐤕𐤀  "heap of the testimony"
+  H3071   Yahawahanasay          → Yahawah-Nasay          𐤉𐤄𐤅𐤄-𐤍𐤎𐤉
+  H3073   Yahawahashalawam       → Yahawah-Shalawam       𐤉𐤄𐤅𐤄-𐤔𐤋𐤅𐤌   (not in name map)
+  H3074   Yahawahashamah         → Yahawah-Shamah         𐤉𐤄𐤅𐤄-𐤔𐤌𐤄   (not in name map)
+  H3072   Yahawahatzadaqanaw     → Yahawah-Tzadaqanaw     𐤉𐤄𐤅𐤄-𐤑𐤃𐤒𐤍𐤅   (not in name map)
+  H3070   Yahawahayaraah         → Yahawah-Yaraah         𐤉𐤄𐤅𐤄-𐤉𐤓𐤀𐤄
+  H3078   Yahawayakayan          → Yahaway-Kayan          𐤉𐤄𐤅𐤉-𐤊𐤉𐤍  "Jehovah will establish"
+  H3079   Yahawayaqayam          → Yahaway-Qayam          𐤉𐤄𐤅𐤉-𐤒𐤉𐤌  "Jehovah will raise"
+  H3080   Yahawayarayab          → Yahaway-Rayab          𐤉𐤄𐤅𐤉-𐤓𐤉𐤁  "Jehovah will contend"
+  H3296   Yairayaaragayam        → Yairay-Aragayam        𐤉𐤏𐤓𐤉-𐤀𐤓𐤂𐤉𐤌  "woods of weavers"
+  H3347   Yaqadaim               → Yaqad-Im               𐤉𐤒𐤃-𐤏𐤌
+  H3360   Yaqamaim               → Yaqam-Im               𐤉𐤒𐤌-𐤏𐤌
+  H3361   Yaqamaim               → Yaqam-Im               𐤉𐤒𐤌-𐤏𐤌
+  H3362   Yaqanaim               → Yaqan-Im               𐤉𐤒𐤍-𐤏𐤌
+  H3378   Yarabail               → Yar-Bail               𐤉𐤓-𐤁𐤏𐤋  "Baal will contend"
+  H3379   Yarabaim               → Yarab-Im               𐤉𐤓𐤁-𐤏𐤌
+  H3380   Yarabashath            → Yar-Bashath            𐤉𐤓-𐤁𐤔𐤕
+  H3421   Yaraqaim               → Yaraq-Im               𐤉𐤓𐤒-𐤏𐤌  "people will be poured forth"
+  H3428   Yashabaab              → Yashab-Ab              𐤉𐤔𐤁-𐤀𐤁
+  H3429   Yashababashabath       → Yashab-Bashabath       𐤉𐤔𐤁-𐤁𐤔𐤁𐤕   (not in name map)
+  H3434   Yashabaim              → Yashab-Im              𐤉𐤔𐤁-𐤏𐤌  "people will return"
+  H3436   Yashabaqashah          → Yashab-Qashah          𐤉𐤔𐤁-𐤒𐤔𐤄  "a hard seat"
+  H3433   Yashabayalacham        → Yashabay-Lacham        𐤉𐤔𐤁𐤉-𐤋𐤇𐤌  "returner of bread"
+  H3480   Yasharaalah            → Yashar-Alah            𐤉𐤔𐤓-𐤀𐤋𐤄
+  H3485   Yashashakar            → Yash-Shakar            𐤉𐤔-𐤔𐤊𐤓  "he will bring a reward"
+  H3507   Yatharaim              → Yathar-Im              𐤉𐤕𐤓-𐤏𐤌  "excellence of people"
+  H3128   Yawanathaalamarachaqayam → Yawanath-Alam-Rachaqayam 𐤉𐤅𐤍𐤕-𐤀𐤋𐤌-𐤓𐤇𐤒𐤉𐤌   (not in name map)
+  H3142   Yawashabachasad        → Yawashab-Chasad        𐤉𐤅𐤔𐤁-𐤇𐤎𐤃  "kindness will be returned"
+  H2216   Zarababal              → Zar-Babal              𐤆𐤓-𐤁𐤁𐤋
+
+STAY JOINED:
+  H22     Abayaal                → Abay-Al                𐤀𐤁𐤉-𐤀𐤋   (ends in -Al)
+  H29     Abayah                 → Ab-Yah                 𐤀𐤁-𐤉𐤄   (ends in -yah)
+  H267    Achawamay              → Ach-Wamay              𐤀𐤇-𐤅𐤌𐤉   (waw ties the pieces)
+  H281    Achayah                → Ach-Yah                𐤀𐤇-𐤉𐤄   (ends in -yah)
+  H274    Achazayah              → Achaz-Yah              𐤀𐤇𐤆-𐤉𐤄  "Jah has seized"   (ends in -yah)
+  H110    Adabaal                → Adab-Al                𐤀𐤃𐤁-𐤀𐤋  "disciplined of God"   (ends in -Al)
+  H138    Adanayah               → Adan-Yah               𐤀𐤃𐤍-𐤉𐤄   (ends in -yah)
+  H415    Alaalahayayasharaal    → Al-Alahay-Yasharaal    𐤀𐤋-𐤀𐤋𐤄𐤉-𐤉𐤔𐤓𐤀𐤋  "the mighty god if Jisrael"   (not in name map)   (ends in -Al)
+  H416    Alabayathaal           → Al-Bayath-Al           𐤀𐤋-𐤁𐤉𐤕-𐤀𐤋  "the God of Bethel"   (not in name map)   (ends in -Al)
+  H452    Alayah                 → Al-Yah                 𐤀𐤋-𐤉𐤄  "God of Jehovah"   (ends in -yah)
+  H453    Alayahaw               → Al-Yahaw               𐤀𐤋-𐤉𐤄𐤅  "God of him"   (ends in -yah)
+  H568    Amarayah               → Amar-Yah               𐤀𐤌𐤓-𐤉𐤄   (ends in -yah)
+  H558    Amatzayah              → Amatz-Yah              𐤀𐤌𐤑-𐤉𐤄  "strength of Jah"   (ends in -yah)
+  H739    Arayaal                → Aray-Al                𐤀𐤓𐤉-𐤀𐤋   (ends in -Al)
+  H840    Asharaal               → Ashar-Al               𐤀𐤔𐤓-𐤀𐤋  "right of God"   (ends in -Al)
+  H683    Atzalayahaw            → Atzal-Yahaw            𐤀𐤑𐤋-𐤉𐤄𐤅   (ends in -yah)
+  H177    Awaal                  → Aw-Al                  𐤀𐤅-𐤀𐤋  "wish of God"   (waw ties the pieces)
+  H222    Awarayaal              → Awaray-Al              𐤀𐤅𐤓𐤉-𐤀𐤋  "flame of God"   (ends in -Al)
+  H223    Awarayah               → Awar-Yah               𐤀𐤅𐤓-𐤉𐤄  "flame of Jah"   (ends in -yah)
+  H384    Ayathayaal             → Ayathay-Al             𐤀𐤉𐤕𐤉-𐤀𐤋  "God has arrived"   (ends in -Al)
+  H245    Azanayah               → Azan-Yah               𐤀𐤆𐤍-𐤉𐤄  "heard by Jah"   (ends in -yah)
+  H1183   Bailayah               → Bail-Yah               𐤁𐤏𐤋-𐤉𐤄   (ends in -yah)
+  H1202   Baishayah              → Baish-Yah              𐤁𐤏𐤔-𐤉𐤄   (ends in -yah)
+  H1141   Banayah                → Ban-Yah                𐤁𐤍-𐤉𐤄  "Jah has built"   (ends in -yah)
+  H1229   Baqabaqayah            → Baqabaq-Yah            𐤁𐤒𐤁𐤒-𐤉𐤄   (ends in -yah)
+  H1232   Baqayah                → Baq-Yah                𐤁𐤒-𐤉𐤄  "wasting of Jah"   (ends in -yah)
+  H1256   Baraayah               → Baraa-Yah              𐤁𐤓𐤀-𐤉𐤄  "Jah has created"   (ends in -yah)
+  H1292   Barakaal               → Barak-Al               𐤁𐤓𐤊-𐤀𐤋   (ends in -Al)
+  H1296   Barakayah              → Barak-Yah              𐤁𐤓𐤊-𐤉𐤄   (ends in -yah)
+  H1152   Basawadayah            → Basawad-Yah            𐤁𐤎𐤅𐤃-𐤉𐤄   (ends in -yah)
+  H1328   Bathawaal              → Bathaw-Al              𐤁𐤕𐤅-𐤀𐤋  "destroyed of God"   (waw ties the pieces)
+  H1332   Bathayah               → Bath-Yah               𐤁𐤕-𐤉𐤄   (ends in -yah)
+  H1212   Batzalaal              → Batzal-Al              𐤁𐤑𐤋-𐤀𐤋   (ends in -Al)
+  H1008   Bayathaal              → Bayath-Al              𐤁𐤉𐤕-𐤀𐤋  "house of God"   (ends in -Al)   ✓ allowlisted by hand
+  H1009   Bayathaarabaal         → Bayath-Arabaal         𐤁𐤉𐤕-𐤀𐤓𐤁𐤀𐤋  "house of God's ambush"   (ends in -Al)
+  H964    Bazayawathayah         → Bazayawath-Yah         𐤁𐤆𐤉𐤅𐤕-𐤉𐤄  "contempts of Jah"   (ends in -yah)
+  H2252   Chabayah               → Chab-Yah               𐤇𐤁-𐤉𐤄  "Jah has hidden"   (ends in -yah)
+  H2293   Chagayah               → Chag-Yah               𐤇𐤂-𐤉𐤄  "festival of Jah"   (ends in -yah)
+  H2446   Chakalayah             → Chakal-Yah             𐤇𐤊𐤋-𐤉𐤄  "darkness of Jah"   (ends in -yah)
+  H2518   Chalaqayah             → Chalaq-Yah             𐤇𐤋𐤒-𐤉𐤄  "portion of Jah"   (ends in -yah)
+  H2536   Chamawaal              → Chamaw-Al              𐤇𐤌𐤅-𐤀𐤋  "anger of God"   (waw ties the pieces)
+  H2537   Chamawatal             → Chamaw-Tal             𐤇𐤌𐤅-𐤈𐤋  "father-in-law of dew"   (waw ties the pieces)
+  H2606   Chananaal              → Chanan-Al              𐤇𐤍𐤍-𐤀𐤋  "God has favored"   (ends in -Al)
+  H2608   Chananayah             → Chanan-Yah             𐤇𐤍𐤍-𐤉𐤄  "Jah has favored"   (ends in -yah)
+  H2592   Chanayaal              → Chanay-Al              𐤇𐤍𐤉-𐤀𐤋  "favor of God"   (ends in -Al)
+  H2669   Chapashawath           → Chapash-Wath           𐤇𐤐𐤔-𐤅𐤕   (not in name map)   (waw ties the pieces)
+  H2736   Charahayah             → Charah-Yah             𐤇𐤓𐤄-𐤉𐤄  "fearing Jah"   (ends in -yah)
+  H2619   Chasadayah             → Chasad-Yah             𐤇𐤎𐤃-𐤉𐤄  "Jah has favored"   (ends in -yah)
+  H2813   Chashabanayah          → Chashaban-Yah          𐤇𐤔𐤁𐤍-𐤉𐤄  "thought of Jah"   (ends in -yah)
+  H2811   Chashabayah            → Chashab-Yah            𐤇𐤔𐤁-𐤉𐤄  "Jah has regarded"   (ends in -yah)
+  H2419   Chayaal                → Chay-Al                𐤇𐤉-𐤀𐤋  "living of God"   (ends in -Al)
+  H2371   Chazaal                → Chaz-Al                𐤇𐤆-𐤀𐤋  "God has seen"   (ends in -Al)
+  H2396   Chazaqayah             → Chazaq-Yah             𐤇𐤆𐤒-𐤉𐤄  "strengthened of Jah"   (ends in -yah)
+  H2381   Chazayaal              → Chazay-Al              𐤇𐤆𐤉-𐤀𐤋  "seen of God"   (ends in -Al)
+  H2382   Chazayah               → Chaz-Yah               𐤇𐤆-𐤉𐤄  "Jah has seen"   (ends in -yah)
+  H1845   Daiwaal                → Daiw-Al                𐤃𐤏𐤅-𐤀𐤋  "known of God"   (waw ties the pieces)
+  H1806   Dalayah                → Dal-Yah                𐤃𐤋-𐤉𐤄  "Jah has delivered"   (ends in -yah)
+  H1840   Danayaal               → Danay-Al               𐤃𐤍𐤉-𐤀𐤋  "judge of God"   (ends in -Al)
+  H1735   Dawadawahaw            → Dawad-Wahaw            𐤃𐤅𐤃-𐤅𐤄𐤅  "love of Jah"   (waw ties the pieces)
+  H1345   Gaawaal                → Gaaw-Al                𐤂𐤀𐤅-𐤀𐤋  "majesty of God"   (waw ties the pieces)
+  H1403   Gabarayaal             → Gabaray-Al             𐤂𐤁𐤓𐤉-𐤀𐤋  "man of God"   (ends in -Al)
+  H1512   Gachawan               → Gach-Wan               𐤂𐤇-𐤅𐤍   (not in name map)   (waw ties the pieces)
+  H1436   Gadalayah              → Gadal-Yah              𐤂𐤃𐤋-𐤉𐤄  "Jah has become great"   (ends in -yah)
+  H1427   Gadayaal               → Gaday-Al               𐤂𐤃𐤉-𐤀𐤋  "fortune of God"   (ends in -Al)
+  H1583   Gamalayaal             → Gamalay-Al             𐤂𐤌𐤋𐤉-𐤀𐤋  "reward of God"   (ends in -Al)
+  H1587   Gamarayah              → Gamar-Yah              𐤂𐤌𐤓-𐤉𐤄  "Jah has perfected"   (ends in -yah)
+  H2025   Haraal                 → Har-Al                 𐤄𐤓-𐤀𐤋   (ends in -Al)
+  H1938   Hawadawayah            → Hawadaw-Yah            𐤄𐤅𐤃𐤅-𐤉𐤄  "majesty of Jah"   (waw ties the pieces)
+  H1955   Hawashaiyah            → Hawashai-Yah           𐤄𐤅𐤔𐤏-𐤉𐤄  "Jah has saved"   (ends in -yah)
+  H1953   Hawashamai             → Haw-Shamai             𐤄𐤅-𐤔𐤌𐤏  "Jehovah has heard"   (waw ties the pieces)
+  H5655   Ibadaal                → Ibad-Al                𐤏𐤁𐤃-𐤀𐤋  "serving God"   (ends in -Al)
+  H5661   Ibadayaal              → Ibaday-Al              𐤏𐤁𐤃𐤉-𐤀𐤋  "servant of God"   (ends in -Al)
+  H5662   Ibadayah               → Ibad-Yah               𐤏𐤁𐤃-𐤉𐤄  "serving Jah"   (ends in -yah)
+  H5741   Idarayaal              → Idaray-Al              𐤏𐤃𐤓𐤉-𐤀𐤋  "flock of God"   (ends in -Al)
+  H5717   Idayaal                → Iday-Al                𐤏𐤃𐤉-𐤀𐤋  "ornament of God"   (ends in -Al)
+  H5718   Idayah                 → Id-Yah                 𐤏𐤃-𐤉𐤄  "Jah has adorned"   (ends in -yah)
+  H6007   Imasayah               → Imas-Yah               𐤏𐤌𐤎-𐤉𐤄  "Jah has loaded"   (ends in -yah)
+  H5988   Imayaal                → Imay-Al                𐤏𐤌𐤉-𐤀𐤋  "people of God"   (ends in -Al)
+  H6055   Inanayah               → Inan-Yah               𐤏𐤍𐤍-𐤉𐤄  "Jah has covered"   (ends in -yah)
+  H6070   Inathathayah           → Inathath-Yah           𐤏𐤍𐤕𐤕-𐤉𐤄  "answers of Jah"   (ends in -yah)
+  H6214   Ishahaal               → Ishah-Al               𐤏𐤔𐤄-𐤀𐤋  "God has made"   (ends in -Al)
+  H6221   Ishayaal               → Ishay-Al               𐤏𐤔𐤉-𐤀𐤋  "made of God"   (ends in -Al)
+  H6222   Ishayah                → Ish-Yah                𐤏𐤔-𐤉𐤄  "Jah has made"   (ends in -yah)
+  H6271   Ithalayah              → Ithal-Yah              𐤏𐤕𐤋-𐤉𐤄  "Jah has constrained"   (ends in -yah)
+  H6274   Ithanayaal             → Ithanay-Al             𐤏𐤕𐤍𐤉-𐤀𐤋  "force of God"   (ends in -Al)
+  H6265   Ithayah                → Ith-Yah                𐤏𐤕-𐤉𐤄  "Jah has helped"   (ends in -yah)
+  H5762   Iwayath                → Iw-Yath                𐤏𐤅-𐤉𐤕  "ruin"   (waw ties the pieces)
+  H5832   Izaraal                → Izar-Al                𐤏𐤆𐤓-𐤀𐤋  "God has helped"   (ends in -Al)
+  H5837   Izarayaal              → Izaray-Al              𐤏𐤆𐤓𐤉-𐤀𐤋  "help of God"   (ends in -Al)
+  H5838   Izarayah               → Izar-Yah               𐤏𐤆𐤓-𐤉𐤄  "Jah has helped"   (ends in -yah)
+  H5815   Izayaal                → Izay-Al                𐤏𐤆𐤉-𐤀𐤋  "strengthened of God"   (ends in -Al)
+  H5816   Izayaal                → Izay-Al                𐤏𐤆𐤉-𐤀𐤋  "strength of God"   (ends in -Al)
+  H5818   Izayah                 → Iz-Yah                 𐤏𐤆-𐤉𐤄  "strength of Jah"   (ends in -yah)
+  H5812   Izazayahaw             → Izaz-Yahaw             𐤏𐤆𐤆-𐤉𐤄𐤅  "Jah has strengthened"   (ends in -yah)
+  H3663   Kananayah              → Kanan-Yah              𐤊𐤍𐤍-𐤉𐤄  "Jah has planted"   (ends in -yah)
+  H3562   Kawananayahaw          → Kawanan-Yahaw          𐤊𐤅𐤍𐤍-𐤉𐤄𐤅  "Jah has sustained"   (ends in -yah)
+  H3590   Kayadawad              → Kayad-Wad              𐤊𐤉𐤃-𐤅𐤃   (not in name map)   (waw ties the pieces)
+  H3591   Kayadawan              → Kayad-Wan              𐤊𐤉𐤃-𐤅𐤍   (waw ties the pieces)
+  H3927   Lamawaal               → Lamaw-Al               𐤋𐤌𐤅-𐤀𐤋   (waw ties the pieces)
+  H3884   Lawalaa                → Law-Laa                𐤋𐤅-𐤋𐤀   (not in name map)   (waw ties the pieces)
+  H4271   Machasayah             → Machas-Yah             𐤌𐤇𐤎-𐤉𐤄   (ends in -yah)
+  H4232   Machawayaal            → Machaway-Al            𐤌𐤇𐤅𐤉-𐤀𐤋  "smitten of God"   (ends in -Al)
+  H4027   Magadalaal             → Magadal-Al             𐤌𐤂𐤃𐤋-𐤀𐤋  "tower of God"   (ends in -Al)
+  H4025   Magadayaal             → Magaday-Al             𐤌𐤂𐤃𐤉-𐤀𐤋  "preciousness of God"   (ends in -Al)
+  H4111   Mahalalaal             → Mahalal-Al             𐤌𐤄𐤋𐤋-𐤀𐤋  "praise of God"   (ends in -Al)
+  H4105   Mahayatabaal           → Mahayatab-Al           𐤌𐤄𐤉𐤈𐤁-𐤀𐤋  "bettered of God"   (ends in -Al)
+  H4573   Maidayah               → Maid-Yah               𐤌𐤏𐤃-𐤉𐤄  "ornament of Jah"   (ends in -yah)
+  H4641   Maishayah              → Maish-Yah              𐤌𐤏𐤔-𐤉𐤄  "work of Jah"   (ends in -yah)
+  H4590   Maizayah               → Maiz-Yah               𐤌𐤏𐤆-𐤉𐤄  "rescue of Jah"   (ends in -yah)
+  H4439   Malakayaal             → Malakay-Al             𐤌𐤋𐤊𐤉-𐤀𐤋   (ends in -Al)
+  H4441   Malakayah              → Malak-Yah              𐤌𐤋𐤊-𐤉𐤄   (ends in -yah)
+  H4424   Malatayah              → Malat-Yah              𐤌𐤋𐤈-𐤉𐤄   (ends in -yah)
+  H4737   Maqanayahaw            → Maqan-Yahaw            𐤌𐤒𐤍-𐤉𐤄𐤅  "possession of Jah"   (ends in -yah)
+  H4920   Mashalamayah           → Mashalam-Yah           𐤌𐤔𐤋𐤌-𐤉𐤄  "ally of Jah"   (ends in -yah)
+  H4898   Mashayazabaal          → Mashayazab-Al          𐤌𐤔𐤉𐤆𐤁-𐤀𐤋  "delivered of God"   (ends in -Al)
+  H4983   Mathanayah             → Mathan-Yah             𐤌𐤕𐤍-𐤉𐤄  "gift of Jah"   (ends in -yah)
+  H4993   Mathathayah            → Mathath-Yah            𐤌𐤕𐤕-𐤉𐤄  "gift of Jah"   (ends in -yah)
+  H4967   Mathawashaal           → Mathawash-Al           𐤌𐤕𐤅𐤔-𐤀𐤋   (ends in -Al)
+  H4968   Mathawashalach         → Mathaw-Shalach         𐤌𐤕𐤅-𐤔𐤋𐤇  "man of a dart"   (waw ties the pieces)
+  H4677   Matzabayah             → Matzab-Yah             𐤌𐤑𐤁-𐤉𐤄  "found of Jah"   (ends in -yah)
+  H4153   Mawaidayah             → Mawaid-Yah             𐤌𐤅𐤏𐤃-𐤉𐤄  "assembly of Jah"   (ends in -yah)
+  H4179   Mawarayah              → Mawar-Yah              𐤌𐤅𐤓-𐤉𐤄  "seen of Jah"   (ends in -yah)
+  H4163   Mawatzaah              → Maw-Tzaah              𐤌𐤅-𐤑𐤀𐤄   (not in name map)   (waw ties the pieces)
+  H4317   Mayakaal               → Mayak-Al               𐤌𐤉𐤊-𐤀𐤋   (ends in -Al)
+  H4320   Mayakayah              → Mayak-Yah              𐤌𐤉𐤊-𐤉𐤄   (ends in -yah)
+  H4332   Mayashaal              → May-Shaal              𐤌𐤉-𐤔𐤀𐤋   (ends in -Al)
+  H5160   Nachalayaal            → Nachalay-Al            𐤍𐤇𐤋𐤉-𐤀𐤋  "valley of God"   (ends in -Al)
+  H5166   Nachamayah             → Nacham-Yah             𐤍𐤇𐤌-𐤉𐤄  "consolation of Jah"   (ends in -yah)
+  H5072   Nadabayah              → Nadab-Yah              𐤍𐤃𐤁-𐤉𐤄  "largess of Jah"   (ends in -yah)
+  H5294   Nairayah               → Nair-Yah               𐤍𐤏𐤓-𐤉𐤄  "servant of Jah"   (ends in -yah)
+  H5272   Naiyaal                → Naiy-Al                𐤍𐤏𐤉-𐤀𐤋  "moved of God"   (ends in -Al)
+  H5374   Narayah                → Nar-Yah                𐤍𐤓-𐤉𐤄  "light of Jah"   (ends in -yah)
+  H5417   Nathanaal              → Nathan-Al              𐤍𐤕𐤍-𐤀𐤋  "given of God"   (ends in -Al)
+  H5418   Nathanayah             → Nathan-Yah             𐤍𐤕𐤍-𐤉𐤄  "given of Jah"   (ends in -yah)
+  H5129   Nawaidayah             → Nawaid-Yah             𐤍𐤅𐤏𐤃-𐤉𐤄  "convened of Jah"   (ends in -yah)
+  H6300   Padahaal               → Padah-Al               𐤐𐤃𐤄-𐤀𐤋  "God has ransomed"   (ends in -Al)
+  H6305   Padayah                → Pad-Yah                𐤐𐤃-𐤉𐤄  "Jah has ransomed"   (ends in -yah)
+  H6295   Pagaiyaal              → Pagaiy-Al              𐤐𐤂𐤏𐤉-𐤀𐤋  "accident of God"   (ends in -Al)
+  H6421   Palalayah              → Palal-Yah              𐤐𐤋𐤋-𐤉𐤄  "Jah has judged"   (ends in -yah)
+  H6409   Palatayaal             → Palatay-Al             𐤐𐤋𐤈𐤉-𐤀𐤋  "deliverance of God"   (ends in -Al)
+  H6410   Palatayah              → Palat-Yah              𐤐𐤋𐤈-𐤉𐤄  "Jah has delivered"   (ends in -yah)
+  H6411   Palayah                → Pal-Yah                𐤐𐤋-𐤉𐤄  "Jah has distinguished"   (ends in -yah)
+  H6439   Panawaal               → Panaw-Al               𐤐𐤍𐤅-𐤀𐤋  "face of God"   (waw ties the pieces)   ✗ excluded by hand
+  H6494   Paqachayah             → Paqach-Yah             𐤐𐤒𐤇-𐤉𐤄  "Jah has observed"   (ends in -yah)
+  H6611   Pathachayah            → Pathach-Yah            𐤐𐤕𐤇-𐤉𐤄  "Jah has opened"   (ends in -yah)
+  H6602   Pathawaal              → Pathaw-Al              𐤐𐤕𐤅-𐤀𐤋  "enlarged of God"   (waw ties the pieces)
+  H6909   Qabatzaal              → Qabatz-Al              𐤒𐤁𐤑-𐤀𐤋  "God has gathered"   (ends in -Al)
+  H6934   Qadamayaal             → Qadamay-Al             𐤒𐤃𐤌𐤉-𐤀𐤋  "presence of God"   (ends in -Al)
+  H7055   Qamawaal               → Qamaw-Al               𐤒𐤌𐤅-𐤀𐤋  "raised of God"   (waw ties the pieces)
+  H6964   Qawalayah              → Qawal-Yah              𐤒𐤅𐤋-𐤉𐤄  "voice of Jah"   (ends in -yah)
+  H6978   Qawaqaw                → Qaw-Qaw                𐤒𐤅-𐤒𐤅   (not in name map)   (waw ties the pieces)
+  H6984   Qawashayahaw           → Qawash-Yahaw           𐤒𐤅𐤔-𐤉𐤄𐤅  "entrapped of Jah"   (ends in -yah)
+  H7205   Raawaban               → Raaw-Ban               𐤓𐤀𐤅-𐤁𐤍  "see ye a son"   (waw ties the pieces)
+  H7211   Raayah                 → Raa-Yah                𐤓𐤀-𐤉𐤄  "Jah has seen"   (ends in -yah)
+  H7345   Rachabayah             → Rachab-Yah             𐤓𐤇𐤁-𐤉𐤄  "Jah has enlarged"   (ends in -yah)
+  H7480   Railayah               → Rail-Yah               𐤓𐤏𐤋-𐤉𐤄   (ends in -yah)
+  H7485   Raimayah               → Raim-Yah               𐤓𐤏𐤌-𐤉𐤄  "Jah has shaken"   (ends in -yah)
+  H7467   Raiwaal                → Raiw-Al                𐤓𐤏𐤅-𐤀𐤋  "friend of God"   (waw ties the pieces)
+  H7422   Ramayah                → Ram-Yah                𐤓𐤌-𐤉𐤄  "Jah has raised"   (ends in -yah)
+  H7501   Rapaal                 → Rap-Al                 𐤓𐤐-𐤀𐤋  "God has cured"   (ends in -Al)
+  H7509   Rapayah                → Rap-Yah                𐤓𐤐-𐤉𐤄  "Jah has cured"   (ends in -yah)
+  H5565   Samakayahaw            → Samak-Yahaw            𐤎𐤌𐤊-𐤉𐤄𐤅  "supported of Jah"   (ends in -yah)
+  H7597   Shaalathayaal          → Shaalathay-Al          𐤔𐤀𐤋𐤕𐤉-𐤀𐤋  "I have asked God"   (ends in -Al)
+  H7645   Shabanayah             → Shaban-Yah             𐤔𐤁𐤍-𐤉𐤄   (ends in -yah)
+  H7619   Shabawaal              → Shabaw-Al              𐤔𐤁𐤅-𐤀𐤋   (waw ties the pieces)
+  H7841   Shacharayah            → Shachar-Yah            𐤔𐤇𐤓-𐤉𐤄  "Jah has sought"   (ends in -yah)
+  H8186   Shairawarah            → Shair-Warah            𐤔𐤏𐤓-𐤅𐤓𐤄   (not in name map)   (waw ties the pieces)
+  H8187   Shairayah              → Shair-Yah              𐤔𐤏𐤓-𐤉𐤄  "Jah has stormed"   (ends in -yah)
+  H7935   Shakanayah             → Shakan-Yah             𐤔𐤊𐤍-𐤉𐤄  "Jah has dwelt"   (ends in -yah)
+  H8017   Shalamayaal            → Shalamay-Al            𐤔𐤋𐤌𐤉-𐤀𐤋  "peace of God"   (ends in -Al)
+  H8018   Shalamayah             → Shalam-Yah             𐤔𐤋𐤌-𐤉𐤄  "thankoffering of Jah"   (ends in -yah)
+  H8098   Shamaiyah              → Shamai-Yah             𐤔𐤌𐤏-𐤉𐤄  "Jah has heard"   (ends in -yah)
+  H8114   Shamarayah             → Shamar-Yah             𐤔𐤌𐤓-𐤉𐤄  "Jah has guarded"   (ends in -yah)
+  H8050   Shamawaal              → Shamaw-Al              𐤔𐤌𐤅-𐤀𐤋  "heard of God"   (waw ties the pieces)
+  H8203   Shapatayah             → Shapat-Yah             𐤔𐤐𐤈-𐤉𐤄  "Jah has judged"   (ends in -yah)
+  H8274   Sharabayah             → Sharab-Yah             𐤔𐤓𐤁-𐤉𐤄  "Jah has brought heat"   (ends in -yah)
+  H8287   Sharawachan            → Sharaw-Chan            𐤔𐤓𐤅-𐤇𐤍  "abode of pleasure"   (waw ties the pieces)
+  H8304   Sharayah               → Shar-Yah               𐤔𐤓-𐤉𐤄  "Jah has prevailed"   (ends in -yah)
+  H7803   Shawathalach           → Shaw-Thalach           𐤔𐤅-𐤕𐤋𐤇  "crash of breakage"   (waw ties the pieces)
+  H2870   Tabaal                 → Tab-Al                 𐤈𐤁-𐤀𐤋   (ends in -Al)
+  H2882   Tabalayahaw            → Tabal-Yahaw            𐤈𐤁𐤋-𐤉𐤄𐤅  "Jah has dipped"   (ends in -yah)
+  H2899   Tawabaadanayahaw       → Tawab-Adanayahaw       𐤈𐤅𐤁-𐤀𐤃𐤍𐤉𐤄𐤅   (ends in -yah)
+  H2900   Tawabayah              → Tawab-Yah              𐤈𐤅𐤁-𐤉𐤄  "goodness of Jehovah"   (ends in -yah)
+  H6667   Tzadaqayah             → Tzadaq-Yah             𐤑𐤃𐤒-𐤉𐤄  "right of Jah"   (ends in -yah)
+  H6846   Tzapanayah             → Tzapan-Yah             𐤑𐤐𐤍-𐤉𐤄  "Jah has secreted"   (ends in -yah)
+  H6700   Tzawarayaal            → Tzawaray-Al            𐤑𐤅𐤓𐤉-𐤀𐤋  "rock of God"   (ends in -Al)
+  H2977   Yaashayah              → Yaash-Yah              𐤉𐤀𐤔-𐤉𐤄  "founded of Jah"   (ends in -yah)
+  H2970   Yaazanayah             → Yaazan-Yah             𐤉𐤀𐤆𐤍-𐤉𐤄  "heard of Jah"   (ends in -yah)
+  H2995   Yabanaal               → Yaban-Al               𐤉𐤁𐤍-𐤀𐤋  "built of God"   (ends in -Al)   ✓ allowlisted by hand
+  H2997   Yabanayah              → Yaban-Yah              𐤉𐤁𐤍-𐤉𐤄  "built of Jah"   (ends in -yah)
+  H2998   Yabanayah              → Yaban-Yah              𐤉𐤁𐤍-𐤉𐤄  "building of Jah"   (ends in -yah)
+  H3000   Yabarakayahaw          → Yabarak-Yahaw          𐤉𐤁𐤓𐤊-𐤉𐤄𐤅  "blessed of Jah"   (ends in -yah)
+  H3164   Yachadayaal            → Yachaday-Al            𐤉𐤇𐤃𐤉-𐤀𐤋  "unity of God"   (ends in -Al)
+  H3165   Yachadayahaw           → Yachad-Yahaw           𐤉𐤇𐤃-𐤉𐤄𐤅  "unity of Jah"   (ends in -yah)
+  H3177   Yachalaal              → Yachal-Al              𐤉𐤇𐤋-𐤀𐤋  "expectant of God"   (ends in -Al)
+  H3183   Yachatzaal             → Yachatz-Al             𐤉𐤇𐤑-𐤀𐤋  "God will allot"   (ends in -Al)
+  H3185   Yachatzayaal           → Yachatzay-Al           𐤉𐤇𐤑𐤉-𐤀𐤋  "allotted of God"   (ends in -Al)
+  H3171   Yachayaal              → Yachay-Al              𐤉𐤇𐤉-𐤀𐤋  "God will live"   (ends in -Al)
+  H3174   Yachayah               → Yach-Yah               𐤉𐤇-𐤉𐤄  "Jah will live"   (ends in -yah)
+  H3168   Yachazaqaal            → Yachazaq-Al            𐤉𐤇𐤆𐤒-𐤀𐤋  "God will strengthen"   (ends in -Al)
+  H3169   Yachazaqayah           → Yachazaq-Yah           𐤉𐤇𐤆𐤒-𐤉𐤄  "strengthened of Jah"   (ends in -yah)
+  H3166   Yachazayaal            → Yachazay-Al            𐤉𐤇𐤆𐤉-𐤀𐤋  "beheld of God"   (ends in -Al)
+  H3167   Yachazayah             → Yachaz-Yah             𐤉𐤇𐤆-𐤉𐤄  "Jah will behold"   (ends in -yah)
+  H3048   Yadaiyah               → Yadai-Yah              𐤉𐤃𐤏-𐤉𐤄  "Jah has known"   (ends in -yah)
+  H3041   Yadayadayah            → Yadayad-Yah            𐤉𐤃𐤉𐤃-𐤉𐤄  "beloved of Jah"   (ends in -yah)
+  H3042   Yadayah                → Yad-Yah                𐤉𐤃-𐤉𐤄  "praised of Jah"   (not in name map)   (ends in -yah)
+  H3043   Yadayaial              → Yadayai-Al             𐤉𐤃𐤉𐤏-𐤀𐤋  "knowing God"   (ends in -Al)
+  H3012   Yagadalayahaw          → Yagadal-Yahaw          𐤉𐤂𐤃𐤋-𐤉𐤄𐤅  "magnified of Jah"   (ends in -yah)
+  H3094   Yahalalaal             → Yahalal-Al             𐤉𐤄𐤋𐤋-𐤀𐤋  "praising God"   (ends in -Al)
+  H3059   Yahawaachaz            → Yahaw-Achaz            𐤉𐤄𐤅-𐤀𐤇𐤆  "Jehovah-seized"   (waw ties the pieces)
+  H3060   Yahawaash              → Yahaw-Ash              𐤉𐤄𐤅-𐤀𐤔  "Jehovah-fired"   (waw ties the pieces)
+  H3076   Yahawachanan           → Yahaw-Chanan           𐤉𐤄𐤅-𐤇𐤍𐤍  "Jehovah-favored"   (waw ties the pieces)
+  H3085   Yahawaidah             → Yahaw-Idah             𐤉𐤄𐤅-𐤏𐤃𐤄  "Jehovah-adorned"   (waw ties the pieces)
+  H3086   Yahawaidayan           → Yahaw-Idayan           𐤉𐤄𐤅-𐤏𐤃𐤉𐤍  "Jehovahpleased"   (waw ties the pieces)
+  H3082   Yahawanadab            → Yahaw-Nadab            𐤉𐤄𐤅-𐤍𐤃𐤁  "Jehovah-largessed"   (waw ties the pieces)
+  H3083   Yahawanathan           → Yahaw-Nathan           𐤉𐤄𐤅-𐤍𐤕𐤍  "Jehovah-given"   (waw ties the pieces)
+  H3088   Yahawaram              → Yahaw-Ram              𐤉𐤄𐤅-𐤓𐤌  "Jehovah-raised"   (waw ties the pieces)
+  H3089   Yahawashabai           → Yahaw-Shabai           𐤉𐤄𐤅-𐤔𐤁𐤏  "Jehovah-sworn"   (waw ties the pieces)
+  H3092   Yahawashapat           → Yahaw-Shapat           𐤉𐤄𐤅-𐤔𐤐𐤈  "Jehovah-judged"   (waw ties the pieces)
+  H3087   Yahawatzadaq           → Yahaw-Tzadaq           𐤉𐤄𐤅-𐤑𐤃𐤒  "Jehovah-righted"   (waw ties the pieces)
+  H3077   Yahawayadai            → Yahaw-Yadai            𐤉𐤄𐤅-𐤉𐤃𐤏  "Jehovah-known"   (waw ties the pieces)
+  H3075   Yahawazabad            → Yahaw-Zabad            𐤉𐤄𐤅-𐤆𐤁𐤃  "Jehovah-endowed"   (waw ties the pieces)
+  H3300   Yaishayaal             → Yaishay-Al             𐤉𐤏𐤔𐤉-𐤀𐤋  "made of God"   (ends in -Al)
+  H3262   Yaiwaal                → Yaiw-Al                𐤉𐤏𐤅-𐤀𐤋  "carried away of God"   (waw ties the pieces)
+  H3273   Yaiyaal                → Yaiy-Al                𐤉𐤏𐤉-𐤀𐤋  "carried away of God"   (ends in -Al)
+  H3268   Yaizayaal              → Yaizay-Al              𐤉𐤏𐤆𐤉-𐤀𐤋  "emboldened of God"   (ends in -Al)
+  H3269   Yaizayahaw             → Yaiz-Yahaw             𐤉𐤏𐤆-𐤉𐤄𐤅  "emboldened of Jah"   (ends in -yah)
+  H3203   Yakalayah              → Yakal-Yah              𐤉𐤊𐤋-𐤉𐤄  "Jah will enable"   (ends in -yah)
+  H3204   Yakanayah              → Yakan-Yah              𐤉𐤊𐤍-𐤉𐤄  "Jah will establish"   (ends in -yah)
+  H3223   Yamawaal               → Yamaw-Al               𐤉𐤌𐤅-𐤀𐤋  "day of God"   (waw ties the pieces)
+  H3301   Yapadayah              → Yapad-Yah              𐤉𐤐𐤃-𐤉𐤄  "Jah will liberate"   (ends in -yah)
+  H3304   Yapahapayah            → Yapah-Payah            𐤉𐤐𐤄-𐤐𐤉𐤄   (not in name map)   (ends in -yah)
+  H3317   Yapathachaal           → Yapathach-Al           𐤉𐤐𐤕𐤇-𐤀𐤋  "God will open"   (ends in -Al)
+  H3343   Yaqabatzaal            → Yaqabatz-Al            𐤉𐤒𐤁𐤑-𐤀𐤋  "God will gather"   (ends in -Al)
+  H3359   Yaqamayah              → Yaqam-Yah              𐤉𐤒𐤌-𐤉𐤄  "Jah will rise"   (ends in -yah)
+  H3354   Yaqawathayaal          → Yaqawathay-Al          𐤉𐤒𐤅𐤕𐤉-𐤀𐤋  "obedience of God"   (ends in -Al)
+  H3376   Yaraayayah             → Yaraay-Yah             𐤉𐤓𐤀𐤉-𐤉𐤄  "fearful of Jah"   (ends in -yah)
+  H3396   Yarachamaal            → Yaracham-Al            𐤉𐤓𐤇𐤌-𐤀𐤋  "God will compassionate"   (ends in -Al)
+  H3414   Yaramayah              → Yaram-Yah              𐤉𐤓𐤌-𐤉𐤄  "Jah will rise"   (ends in -yah)
+  H3416   Yarapaal               → Yarap-Al               𐤉𐤓𐤐-𐤀𐤋  "God will heal"   (ends in -Al)
+  H3385   Yarawaal               → Yaraw-Al               𐤉𐤓𐤅-𐤀𐤋  "founded of God"   (waw ties the pieces)
+  H3389   Yarawashalam           → Yaraw-Shalam           𐤉𐤓𐤅-𐤔𐤋𐤌  "founded peaceful"   (waw ties the pieces)   ✗ excluded by hand
+  H3400   Yarayaal               → Yaray-Al               𐤉𐤓𐤉-𐤀𐤋  "thrown of God"   (ends in -Al)
+  H3404   Yarayah                → Yar-Yah                𐤉𐤓-𐤉𐤄  "Jah will throw"   (ends in -yah)
+  H3253   Yasamakayahaw          → Yasamak-Yahaw          𐤉𐤎𐤌𐤊-𐤉𐤄𐤅  "Jah will sustain"   (ends in -yah)
+  H3430   Yashabawabanab         → Yashabaw-Banab         𐤉𐤔𐤁𐤅-𐤁𐤍𐤁   (not in name map)   (waw ties the pieces)
+  H3470   Yashaiyah              → Yashai-Yah             𐤉𐤔𐤏-𐤉𐤄  "Jah has saved"   (ends in -yah)
+  H3458   Yashamaial             → Yashamai-Al            𐤉𐤔𐤌𐤏-𐤀𐤋  "God will hear"   (ends in -Al)
+  H3460   Yashamaiyah            → Yashamai-Yah           𐤉𐤔𐤌𐤏-𐤉𐤄  "Jah will hear"   (ends in -yah)
+  H3478   Yasharaal              → Yashar-Al              𐤉𐤔𐤓-𐤀𐤋  "he will rule as God"   (ends in -Al)   ✓ allowlisted by hand
+  H3439   Yashawachayah          → Yashawach-Yah          𐤉𐤔𐤅𐤇-𐤉𐤄  "Jah will empty"   (ends in -yah)
+  H3449   Yashayah               → Yash-Yah               𐤉𐤔-𐤉𐤄  "Jah will lend"   (ends in -yah)
+  H3450   Yashayamaal            → Yashayam-Al            𐤉𐤔𐤉𐤌-𐤀𐤋  "God will place"   (ends in -Al)
+  H3097   Yawaab                 → Yaw-Ab                 𐤉𐤅-𐤀𐤁  "Jehovah-fathered"   (waw ties the pieces)
+  H3098   Yawaach                → Yaw-Ach                𐤉𐤅-𐤀𐤇  "Jehovahbrothered"   (waw ties the pieces)
+  H3100   Yawaal                 → Yaw-Al                 𐤉𐤅-𐤀𐤋   (waw ties the pieces)
+  H3135   Yawaish                → Yaw-Ish                𐤉𐤅-𐤏𐤔  "Jehovahhastened"   (not in name map)   (waw ties the pieces)
+  H3134   Yawaizar               → Yaw-Izar               𐤉𐤅-𐤏𐤆𐤓   (waw ties the pieces)
+  H3115   Yawakabad              → Yaw-Kabad              𐤉𐤅-𐤊𐤁𐤃  "Jehovah-gloried"   (waw ties the pieces)
+  H3131   Yawasapayah            → Yawasap-Yah            𐤉𐤅𐤎𐤐-𐤉𐤄   (ends in -yah)
+  H3143   Yawashabayah           → Yawashab-Yah           𐤉𐤅𐤔𐤁-𐤉𐤄  "Jehovah will cause to dwell"   (ends in -yah)
+  H3145   Yawashawayah           → Yaw-Shawayah           𐤉𐤅-𐤔𐤅𐤉𐤄  "Jehovah-set"   (waw ties the pieces)
+  H3147   Yawatham               → Yaw-Tham               𐤉𐤅-𐤕𐤌   (waw ties the pieces)
+  H3108   Yawazakar              → Yaw-Zakar              𐤉𐤅-𐤆𐤊𐤓  "Jehovah-remembered"   (waw ties the pieces)
+  H3156   Yazarachayah           → Yazarach-Yah           𐤉𐤆𐤓𐤇-𐤉𐤄  "Jah will shine"   (ends in -yah)
+  H3157   Yazaraial              → Yazarai-Al             𐤉𐤆𐤓𐤏-𐤀𐤋  "God will sow"   (ends in -Al)   ✗ excluded by hand
+  H3150   Yazayah                → Yaz-Yah                𐤉𐤆-𐤉𐤄  "sprinkled of Jah"   (ends in -yah)
+  H2068   Zabadayaal             → Zabaday-Al             𐤆𐤁𐤃𐤉-𐤀𐤋   (ends in -Al)
+  H2069   Zabadayah              → Zabad-Yah              𐤆𐤁𐤃-𐤉𐤄  "Jah has given"   (ends in -yah)
+  H2148   Zakarayah              → Zakar-Yah              𐤆𐤊𐤓-𐤉𐤄  "Jah has remembered"   (ends in -yah)
+  H2228   Zarachayah             → Zarach-Yah             𐤆𐤓𐤇-𐤉𐤄  "Jah has risen"   (ends in -yah)
