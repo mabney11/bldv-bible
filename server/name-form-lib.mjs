@@ -24,15 +24,40 @@ export function loadRules() {
   const bn = rules.bareNames || {};
   const skip = new Set(bn.skip || []);
   const minLen = bn.minLen || 4;
+  // A key that is itself one of the app's transliterations is NOT a KJV name: the map
+  // carries "Yasharaal" → "Yashar-Al" (the joined form → the hyphenated form) so that
+  // re-substitution is idempotent, and hyphenate-compound-names --apply turned those
+  // self-entries from v === k into v !== k. Treating them as bare names rewrote every
+  // "Yasharaal" into "Yashar-Al (Yasharaal)" — a transliteration glossed with itself —
+  // and failed the 2026-09-09 prod deploy with 21,717 hits. Skip any key that is a value
+  // of the map (a rendering, not an English name) or whose value is only its hyphenation.
+  const renderings = new Set(Object.values(single).map((v) => String(v).replace(/-/g, '').toLowerCase()));
+  // …and the joined forms the hyphenation allowlist replaced (Yasharaal → Yashar-Al): those
+  // keys were renderings before the allowlist rewrote their values.
+  try {
+    const allow = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'compound-hyphenation.json'), 'utf8'));
+    for (const r of Object.values(allow)) { if (r && r.from) renderings.add(String(r.from).toLowerCase()); if (r && r.to) renderings.add(String(r.to).replace(/-/g, '').toLowerCase()); }
+  } catch { /* no allowlist — nothing to add */ }
   const bare = new Map();
-  for (const [k, v] of Object.entries(single)) if (k.length >= minLen && /^[A-Z][a-z]+$/.test(k) && v && v !== k && !skip.has(k)) bare.set(k, v);
+  for (const [k, v] of Object.entries(single)) {
+    if (!(k.length >= minLen && /^[A-Z][a-z]+$/.test(k) && v && v !== k && !skip.has(k))) continue;
+    if (renderings.has(k.toLowerCase()) || String(v).replace(/-/g, '').toLowerCase() === k.toLowerCase()) continue;
+    bare.set(k, v);
+  }
   const phrases = new Map();
   for (const [k, v] of Object.entries(nm.phrases || {})) if (/^[A-Z][A-Za-z]+(?:[ -][A-Z][A-Za-z]+)+$/.test(k) && v && !skip.has(k)) phrases.set(k, v);
   // gold headword markers: the reader paints "Word ()" gold — the words that take an empty
   // gloss are server/lexicon/auto-gloss-words.json (520, from the 2026-08-29 migration)
   let gold = new Set();
   try { gold = new Set(JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'auto-gloss-words.json'), 'utf8'))); } catch { /* none */ }
-  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases, gold };
+  // hyphenated form + "(joined form)" pairs from the allowlist, for the self-gloss check
+  let selfGloss = null;
+  try {
+    const allow = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'compound-hyphenation.json'), 'utf8'));
+    const live = Object.values(allow).filter((r) => r && r.to && r.from && !r.skip);
+    if (live.length) selfGloss = new RegExp(`\\b(${Object.values(allow).filter((r) => r && r.to && !r.skip).map((r) => esc(r.to)).join('|')}) \\((?:${Object.values(allow).filter((r) => r && r.from && !r.skip).map((r) => esc(r.from)).join('|')})\\)`, 'g');
+  } catch { /* none */ }
+  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases, gold, selfGloss };
 }
 
 // ── gold markers: "Yahawah" → "Yahawah ()" ─────────────────────────────────────
@@ -139,6 +164,11 @@ export function checkText(text, R) {
   }
   for (const f of R.replace) {
     fixed = fixed.replace(f.re, (m) => { violations.push({ text: m, fix: f.to, why: f.why }); return f.to; });
+  }
+  // A rendering glossed with its own joined spelling — "Yashar-Al (Yasharaal)",
+  // "Bayath-Lacham (Bayathalacham)" — is a transliteration explaining itself: the gloss goes.
+  if (R.selfGloss) {
+    fixed = fixed.replace(R.selfGloss, (m, to) => { violations.push({ text: m, fix: to, why: 'a transliteration glossed with its own joined spelling' }); return to; });
   }
   // Displaced gloss: "Baarashabai (in) Beersheba" — the transliteration landed on the word
   // before the name and the name stayed bare. Put the word back and gloss the name:
