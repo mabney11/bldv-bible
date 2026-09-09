@@ -496,6 +496,9 @@ if (existsSync('./divine-titles.txt'))
     DIVINE.add(w.toLowerCase());
     if (sns.length) DIVINE_SN.set(w.toLowerCase(), sns);   // allowed; first is fallback
   }
+// Only the Name itself (H3068 / H3069) and Yah (H3050) are locked from the term path — the
+// generic titles (H430 elohim, H113 adon) are common nouns too ("gods", "master").
+const DIVINE_SN_ALL = new Set(['H3068', 'H3069', 'H3050']);
 console.log(`divine titles (transliterated bare): ${DIVINE.size}`);
 
 // Multi-word divine titles: "Most High" -> Ilayawan. Applied to the whole phrase
@@ -674,7 +677,12 @@ for (const r of rows) {
       // "did" in "you didn't build" (H1129 banah) is filtered; "do" in "do them"
       // (H6213 asah, kjv_def lists "do") survives and renders ishah (do).
       if (SOFT_HEAD.has(bare.toLowerCase()) && !(g && g.has(normT(bare)))) continue;
-      const isDivine = DIVINE.has(bare.toLowerCase());
+      // "Yahweh's" is Yahweh: the possessive must not push the Name down the TERM path
+      // (191 verses read "yahawah (Alahay of Yasharaal) house"). A divine name renders bare
+      // — Yahawah — and the gold "()" follows it; the possession reads from position, as
+      // "Dawad (David's) bayath (house)" already does for every other name.
+      const divBase = bare.replace(/'s$/i, '');
+      const isDivine = DIVINE.has(divBase.toLowerCase());
       // A NAME is decided by the Strong's tag, not by English casing. If the segment's
       // Strong's is tagged nmpr/adjv in the corpus (NAMEY) and has a root, it is a name
       // and renders from that root. No capitalization or everLower heuristic -- those
@@ -732,7 +740,7 @@ for (const r of rows) {
     // -- and Psalm 110:1 comes out "Yahawah says to my Yahawah" instead of Adanay.
     let useSn = seg.sn;
     if (pick && pick.isDivine) {
-      const allowed = DIVINE_SN.get(pick.bare.toLowerCase());
+      const allowed = DIVINE_SN.get(pick.bare.replace(/'s$/i, '').toLowerCase());
       if (allowed && allowed.length) useSn = allowed.includes(seg.sn) ? seg.sn : allowed[0];
     }
     // OSHB RECONCILIATION + GATE. seg.sn is WEB's OWN alignment tag, not the verse's
@@ -837,6 +845,11 @@ for (const r of rows) {
         if (!isDivine && !BARE_NAMES) return tok.replace(bare, `${tr} (${bare})`);
         return tok.replace(bare, tr);
       }
+      // A divine Strong's whose segment head is NOT the divine word ("restores" tagged
+      // H3068 in Psalm 14:7 — WEB's alignment slipped) must not render as a term: it came
+      // out "yahawah (Alahay of Yashar-Al)" in lowercase, a divine name glossed. Leave the
+      // English word; the Name is never a term.
+      if (DIVINE_SN_ALL.has(useSn)) { hit = true; return tok; }
       terms++;
       // ORDER (fieldy): my lexicon  ->  the ORIGINAL WORD in this verse  ->  KJV last.
       // The KJV sense is a poor gloss for display: openscriptures kjv_def is an
