@@ -377,3 +377,26 @@
 .hl-anat-parts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px; padding-left: 8px; border-left: 2px solid var(--border2); }
 .hl-anat-plus { color: var(--text4); margin: 0 2px; }
 .hl-anat-def { font-size: 12px; color: var(--text3); }
+
+/* ── Twin card: biblical | today, side by side ─────────────────────────────── */
+.hl-twin { border: 1px solid var(--border2); border-radius: 10px; overflow: hidden; margin-top: 4px; }
+.hl-twin-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; padding: 7px 10px; background: var(--bg2); font-size: 12.5px; border-bottom: 1px solid var(--border); }
+.hl-twin-arrow b { color: var(--text); }
+.hl-twin-flag { font-size: 11px; color: var(--text3); padding: 2px 7px; border-radius: 10px; border: 1px solid var(--border2); }
+.hl-twin-flag.warn { color: var(--red); border-color: var(--red); }
+.hl-twin-cols { display: grid; grid-template-columns: 1fr 1fr; }
+.hl-twin-col { text-align: left; padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; border-left: 2px solid var(--border2); background: transparent; color: var(--text); }
+.hl-twin-col:first-child { border-left: none; }
+.hl-twin-col.on { background: color-mix(in srgb, var(--gold) 8%, var(--bg3)); }
+.hl-twin-col:not(.on):hover { background: var(--bg2); }
+.hl-twin-k { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); }
+.hl-twin-col .hl-detail-paleo { font-size: 24px; }
+.hl-twin-name { font-size: 15px; font-weight: 700; }
+.hl-twin-name.m { color: var(--blue); }
+.hl-twin-sub { font-size: 12px; color: var(--text2); }
+.hl-twin-sub.dim { color: var(--text4); font-size: 11.5px; }
+.hl-twin-name-row { padding: 8px 10px; font-size: 12.5px; line-height: 1.45; color: var(--text2); border-top: 1px solid var(--border); background: var(--bg2); }
+.hl-twin-name-row .hl-twin-k { margin-right: 6px; }
+/* a biblical dot that also stands for today's town: ringed blue */
+.hl-mk-dot-twin { box-shadow: 0 0 0 1.5px #fff8, 0 0 0 3.5px #4a9eff; }
+.hl-mk-today { font-size: 10px; color: #12305e; font-weight: 600; }

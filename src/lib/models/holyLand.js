@@ -543,6 +543,51 @@ export const REGIONS = [
   R('alexandria', 'Alexandria', 'אלכסנדריא', 29.92, 31.20, 'Acts 6:9; Acts 18:24; Acts 27:6; Acts 28:11', 'Hebrew-NT spelling.', '', 'EGY'),
 ].map((c) => ({ ...c, paleo: compoundPaleo(c.he), translit: translitOf(c.he) }));
 
+// ── Twins: a biblical city and the town that stands there today ───────────────
+// rel 'same' — one site: the map draws ONE dot (the biblical one; the modern dot is
+//              folded into it) and the card is split biblical | today.
+// rel 'near' — a different foundation a few km away (Tel Ashdod vs the 1956 city,
+//              Shechem vs Neapolis/Nablus): two dots, and both cards say how far
+//              apart they are, so nobody takes them for the same place.
+// name — how the name travelled from the paleo spelling to today's, in one line.
+const T = (modern, rel, name) => ({ modern, rel, name });
+export const TWINS = {
+  'jabneel-judah': T('yavne', 'same', 'Yaban-Al (Joshua 15:11) → Yabanah / Jabneh (2 Chronicles 26:6) → Greek Iamnia → Yavne.'),
+  'beth-shean':    T('beit-shean', 'same', 'Bayath-Shaan → Greek Scythopolis → Arabic Beisan → Beit She\'an: the biblical name restored.'),
+  'bethlehem':     T('bethlehem-modern', 'same', 'Bayath-Lacham → Greek Βηθλεέμ → Bethlehem; Arabic Beit Lahm keeps both words.'),
+  'brook-of-egypt':T('el-arish', 'same', 'Nachal Matzarayam is the wadi (Wadi el-Arish); El-Arish is the town at its mouth.'),
+  'edrei':         T('daraa', 'same', 'Adaraiy → Adraa → Daraa: the consonants ד־ר־ע kept, the opening א dropped.'),
+  'gaza':          T('gaza-city', 'same', 'Izah (עזה) → Greek Γάζα (the ע heard as g) → Gaza.'),
+  'hebron':        T('hebron-modern', 'same', 'Chabarawan → Hebron; Arabic al-Khalil, "the friend", for Abaraham (Isaiah 41:8).'),
+  'rabbah':        T('amman', 'same', 'Rabah (Rabbath-Ammon) → Greek Philadelphia → Amman: the people\'s name, Ammon, outlived the city\'s.'),
+  'ramoth-gilead': T('irbid', 'same', 'Raamath Galaid → Irbid — a conventional identification (Tell er-Rumeith / Irbid), not a certain one.'),
+  'sidon':         T('sidon-modern', 'same', 'Tzayadawan → Greek Σιδών → Sidon; Arabic Saida keeps the root ص־ي־د.'),
+  'acco':          T('acre', 'same', 'Ikaw → Greek Ptolemais → Acre; Hebrew Akko keeps the old name.'),
+  'damascus':      T('damascus-modern', 'same', 'Damashaq → Greek Δαμασκός → Damascus; Arabic Dimashq keeps the consonants.'),
+  'medeba':        T('madaba', 'same', 'Mayadabaa → Madaba: the same consonants מ־ד־ב־א.'),
+  'tyre':          T('tyre-modern', 'same', 'Tzar (צר, "rock") → Greek Τύρος → Tyre; Arabic Sour keeps the ص.'),
+  'beersheba':     T('beersheba-modern', 'same', 'Baar-Shabai → Beersheba / Be\'er Sheva; the ancient tel lies east of the modern centre.'),
+  'jericho':       T('jericho-modern', 'same', 'Yarayachaw → Greek Ἰεριχώ → Jericho; the tel (Tell es-Sultan) is at the modern town\'s northern edge.'),
+  'shechem':       T('nablus', 'near', 'Shakam → Greek Neapolis ("new city", founded AD 72 two km west of the tel) → Arabic Nablus: a different name because it is a different foundation.'),
+  'ashkelon':      T('ashkelon-modern', 'near', 'Ashaqalawan → Greek Ἀσκάλων → Ashkelon; the ancient site is the seaside park, the modern city grew 2 km inland.'),
+  'jerusalem':     T('jerusalem-modern', 'near', 'Yarawashalam → Greek Ἱεροσόλυμα → Jerusalem; the biblical dot is the City of David and the Temple Mount, the modern one the city centre.'),
+  'ashdod':        T('ashdod-modern', 'near', 'Ashadawad → Greek Ἄζωτος (Azotus, Acts 8:40) → Ashdod; Tel Ashdod is 5 km south of the city founded in 1956.'),
+  'joppa':         T('tel-aviv', 'near', 'Yapaw → Greek Ἰόππη → Joppa / Jaffa (Yafo); Tel Aviv grew north of it from 1909.'),
+  'aphek':         T('petah-tikva', 'near', 'Apaq (Tel Afek, later Antipatris) lies 4 km from Petah Tikva\'s centre.'),
+  'arad':          T('arad-modern', 'near', 'Irad → Arad; Tel Arad is 8 km west of the modern town (1962).'),
+};
+const TWIN_OF_MODERN = Object.fromEntries(Object.entries(TWINS).map(([b, t]) => [t.modern, b]));
+/** { biblical, modern, rel, name, km } for either half of a twin pair, else null. */
+export function twinOf(place) {
+  if (!place) return null;
+  const bId = place.kind === 'biblical' ? place.id : place.kind === 'modern' ? TWIN_OF_MODERN[place.id] : null;
+  const t = bId && TWINS[bId];
+  if (!t) return null;
+  const biblical = BIBLICAL_CITIES.find((c) => c.id === bId), modern = MODERN_CITIES.find((c) => c.id === t.modern);
+  if (!biblical || !modern) return null;
+  return { biblical, modern, rel: t.rel, name: t.name, km: haversineKm([biblical.lon, biblical.lat], [modern.lon, modern.lat]) };
+}
+
 export const ALL_PLACES = [...BIBLICAL_CITIES, ...REGIONS, ...MODERN_CITIES];
 /** Every place, A→Z by the name it is shown under (the app's transliteration for biblical names). */
 export const PLACES_AZ = [...ALL_PLACES].sort((a, b) => (a.translit || a.name).localeCompare(b.translit || b.name, 'en', { sensitivity: 'base' }));

@@ -357,6 +357,24 @@ const SN_CLASH = [];              // WEB used a Strong's OSHB does not tag in th
 // carries the grammar. Surface forms are used for the handful of words where the
 // inflection is a different word in practice — goy vs goyim being the case in hand.
 const SURFACE_SN = new Set();
+// PLURALS (fieldy 2026-09-09: "account for plurals — banayam when 'sons'"). When the
+// English word being glossed is plural and OSHB's token for that Strong's in this verse
+// is itself plural (nu=pl / nu=du) with no pronominal suffix, the written plural form
+// renders instead of the bare root: banayam (sons), banay (sons of), dabarayam (words),
+// yamayam (days). Nothing is constructed — only a form that stands in the verse is used.
+// Singular English keeps the root, so ban / dabar / yawam stay consistent everywhere.
+// --no-plurals restores the root-only behaviour.
+const PLURAL_SURF = new Map();          // "canon:ch:v|H####" -> [{ w, pl, suffixed }]
+const PLURALS = !process.argv.includes('--no-plurals');
+const PLURAL_IRREGULAR = new Set(['men', 'women', 'children', 'brethren', 'feet', 'teeth', 'oxen', 'mice', 'geese', 'people', 'peoples', 'sheep', 'cattle', 'kine']);
+const NOT_PLURAL = /(ss|us|is|ous|ness|ess)$/;
+function englishIsPlural(word) {
+  const w = String(word || '').toLowerCase().replace(/[^a-z]/g, '');
+  if (!w) return false;
+  if (PLURAL_IRREGULAR.has(w)) return true;
+  return w.length > 3 && w.endsWith('s') && !NOT_PLURAL.test(w);
+}
+let pluralUsed = 0;
 if (existsSync('./surface-forms.txt'))
   for (const line of readFileSync('./surface-forms.txt','utf8').split(/\r?\n/)) {
     const t = line.trim();
@@ -400,12 +418,16 @@ try {
   // "nations" renders gawayam because that IS the Hebrew standing there. Read, not
   // constructed: no plural endings are invented anywhere in this file.
   const db2 = new Database('./corpus.db', { readonly: true });
-  for (const t of db2.prepare(`SELECT book_id, chapter, verse, strongs, word_raw, token_ordinal
+  for (const t of db2.prepare(`SELECT book_id, chapter, verse, strongs, word_raw, morph, token_ordinal
         FROM tokens_bhs WHERE strongs <> '' AND pos <> 'punct' AND verse > 0
         ORDER BY book_id, chapter, verse, token_ordinal`).all()) {
     const sn = 'H' + String(t.strongs).replace(/^H+/,'');
     const k = `${t.book_id}:${t.chapter}:${t.verse}|${sn}`;
     if (!SURFACE.has(k)) SURFACE.set(k, t.word_raw);      // first occurrence in the verse
+    // Every written form of this Strong's in the verse, with its OSHB number/state/suffix —
+    // the plural rule below picks the plural one when the English word is plural.
+    const m = String(t.morph || '');
+    (PLURAL_SURF.get(k) || PLURAL_SURF.set(k, []).get(k)).push({ w: t.word_raw, pl: /\bnu=(pl|du)\b/.test(m), suffixed: /\bprs=(?!absent)/.test(m) });
     // Which Strong's OSHB actually tags in this verse. This file renders English
     // from the WEB's OWN Strong's tagging (web-strongs.jsonl); the READER renders
     // Hebrew from OSHB (tokens_bhs). Two independent taggings of one verse — and
@@ -743,7 +765,15 @@ for (const r of rows) {
       const { bare, isDivine, isName } = pick;
       if (oshbBlocked) { oshbBlockedCount++; hit = true; return tok; }
       if (!rootPaleo) { missingRoot.set(useSn, (missingRoot.get(useSn)||0)+1); noRoot++; hit = true; return tok; }
-      const tr = translit(rootPaleo);
+      // Plural rule (see PLURAL_SURF): a plural English word takes the plural form that
+      // OSHB writes in this verse for the same Strong's — read, never built.
+      let drawPaleo = rootPaleo, pluralHit = false;
+      if (PLURALS && !isName && !isDivine && englishIsPlural(bare)) {
+        const forms = PLURAL_SURF.get(`${CODE2ID[r.code]}:${r.chapter}:${r.verse}|${useSn}`) || [];
+        const pl = forms.find(f => f.pl && !f.suffixed && f.w && f.w !== rootPaleo);
+        if (pl) { drawPaleo = pl.w; pluralHit = true; pluralUsed++; }
+      }
+      const tr = translit(drawPaleo);
       // CROSS-CHECK against OSHB. If the Strong's this render is using is not one
       // OSHB tags anywhere in this verse, the transliteration printed in the
       // English cannot match the Hebrew block the reader draws from tokens_bhs.
@@ -778,7 +808,10 @@ for (const r of rows) {
       // The word the translator actually chose in THIS verse ("go", "hear", "ordinances")
       // is nearly always better, so KJV now only fires when there is no word at all.
       const curated = GLOSS_SOURCE === 'lexicon' ? tidyGloss(curatedGloss(rootPaleo, useSn)) : '';
-      const gl = GLOSS_OVERRIDE.get(useSn)
+      // A plural form is glossed by the plural English word standing here — banay (sons),
+      // not banay (son): the curated gloss is the singular head-word.
+      const gl = (pluralHit && bare.toLowerCase().replace(/[^a-z\- ]/g, ''))
+              || GLOSS_OVERRIDE.get(useSn)
               || curated
               || bare.toLowerCase()
               || (GLOSS_SOURCE === 'lexicon' ? KJV_SENSE.get(useSn) : '')
@@ -883,6 +916,7 @@ console.log(`Strong's with NO Paleo root (left English, reported): ${noRoot.toLo
 console.log(`blocked by OSHB gate (WEB's headword matched no Strong's OSHB tags in the verse, left English): ${oshbBlockedCount.toLocaleString()}`);
 console.log(`segments with 2+ candidates and no gloss match (left English): ${ambiguous.toLocaleString()}`);
 console.log(`rendered from the verse's SURFACE form rather than the lemma: ${surfaceUsed.toLocaleString()}`);
+console.log(`plural English → the verse's written plural form (banayam, dabarayam…): ${pluralUsed.toLocaleString()}${PLURALS ? '' : ' (off: --no-plurals)'}`);
 if (unglossedWords.size) {
   console.log('\nTOP WORDS STILL LEFT IN ENGLISH (no Strong\'s in their segment glosses them).');
   console.log('Add the ones you want rendered to sacred-terms.txt, or give the root a gloss in');

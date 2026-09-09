@@ -58,7 +58,9 @@ docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-verse-comple
 # an older render and nothing compared live data to the app's own name rules.
 # verify-name-forms.mjs locks the spellings in server/lexicon/name-form-rules.json
 # (Edom is ALWAYS Adawam) and fails the deploy on any mismatch.
-docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-name-forms.mjs /data/corpus.db
+# The READER's text is translation.db, so both DBs are checked. On a failure:
+#   docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db
+docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db
 
 # 2026-08-18: fieldy compared bldbible.com/parallel's Deuteronomy 13:3 against an
 # external interlinear and found misaligned Hebrew — "I thought that's what the

@@ -45,7 +45,7 @@ import {
   ezekielAllotment, toFeature, ringCentroid, pointInRing, joshuaTribeAt, ezekielAt,
   squareToPaleo, translitOf,
   REGIONS, ALL_PLACES, PLACES_AZ, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
-  countryOf, countryFeature, countryName,
+  countryOf, countryFeature, countryName, twinOf,
 } from '../lib/models/holyLand.js';
 
 // Phones and narrow windows: the panel is a bottom sheet, place dots start off
@@ -365,8 +365,12 @@ export default function HolyLandMap() {
         const el = document.createElement('button');
         el.type = 'button';
         el.className = `hl-mk hl-mk-b${c.id === KEY_CITY ? ' hl-mk-key' : ''}${c.id === selCityId ? ' hl-mk-sel' : ''}`;
-        el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span><span class="hl-mk-paleo" dir="rtl">${c.paleo}</span><span class="hl-mk-en">${c.name}</span></span>`;
-        el.title = `${c.translit} (${c.name}) — read ${c.ref}`;
+        // One site, one dot: when today's city stands on the tel (TWINS rel 'same') its name
+        // rides on this marker and its own dot is not drawn — nothing to fumble between.
+        const tw = twinOf(c);
+        const today = showModern && tw && tw.rel === 'same' ? `<span class="hl-mk-today">${tw.modern.name} today</span>` : '';
+        el.innerHTML = `<span class="hl-mk-dot${today ? ' hl-mk-dot-twin' : ''}"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span><span class="hl-mk-paleo" dir="rtl">${c.paleo}</span><span class="hl-mk-en">${c.name}</span>${today}</span>`;
+        el.title = `${c.translit} (${c.name})${tw && tw.rel === 'same' ? ` — ${tw.modern.name} today` : ''} — read ${c.ref}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
         mk([c.lon, c.lat], el, { pri: c.id === KEY_CITY ? 0 : c.id === selCityId ? 1 : 2, w: Math.max(c.translit.length, c.name.length) * 7 + 14 });
       }
@@ -375,15 +379,15 @@ export default function HolyLandMap() {
       for (const c of MODERN_CITIES) {
         const el = document.createElement('button');
         el.type = 'button';
-        // A modern city on top of a biblical one (Yavne on Jabneel, Hebron on
-        // Hebron…) gets its label pushed below the dot so the two don't collide.
-        const twin = showBiblical && BIBLICAL_CITIES.some((b) => Math.hypot(b.lon - c.lon, b.lat - c.lat) < 0.03);
-        // A twin keeps only its dot (nudged aside); its name lives in the biblical city's card.
-        el.className = `hl-mk hl-mk-m${twin ? ' hl-mk-twin' : ''}${c.id === selCityId ? ' hl-mk-sel' : ''}`;
+        // A modern city on the same tel as a biblical one (Yavne on Jabneel, Hebron on
+        // Hebron…) is folded into the biblical marker when both layers are on (see above).
+        const tw = twinOf(c);
+        if (showBiblical && tw && tw.rel === 'same') continue;
+        el.className = `hl-mk hl-mk-m${c.id === selCityId ? ' hl-mk-sel' : ''}`;
         el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.name}</span></span>`;
         el.title = `${c.name} (${c.country})`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
-        mk([c.lon, c.lat], el, { pri: c.id === selCityId ? 1 : 4, w: c.name.length * 7 + 14, twin });
+        mk([c.lon, c.lat], el, { pri: c.id === selCityId ? 1 : 4, w: c.name.length * 7 + 14 });
       }
     }
     if (showRegions) {
@@ -1109,13 +1113,46 @@ function PinRow({ pin, at, label, onPin, onUnpin }) {
   );
 }
 
+// A biblical city and the town on (or near) it, side by side: what the place was, what
+// it is, and what happened to the name in between.
+function TwinCard({ tw, focus, onCity }) {
+  const { biblical: b, modern: m } = tw;
+  const country = countryName(countryOf(b));
+  return (
+    <div className={`hl-twin hl-twin-${tw.rel}`}>
+      <div className="hl-twin-h">
+        <span className="hl-twin-arrow"><b>{b.translit}</b> → <b>{m.name}</b></span>
+        {tw.rel === 'near'
+          ? <span className="hl-twin-flag warn">not the same site — ≈ {tw.km.toFixed(1)} km apart</span>
+          : <span className="hl-twin-flag">one site, two names</span>}
+      </div>
+      <div className="hl-twin-cols">
+        <button type="button" className={`hl-twin-col${focus === 'biblical' ? ' on' : ''}`} onClick={() => focus !== 'biblical' && onCity(b)}>
+          <div className="hl-twin-k">Biblical</div>
+          <div className="hl-detail-paleo" dir="rtl">{b.paleo}</div>
+          <div className="hl-twin-name">{b.translit}</div>
+          <div className="hl-twin-sub">{b.name}</div>
+          <div className="hl-twin-sub dim">{b.ref.split(';')[0]}</div>
+        </button>
+        <button type="button" className={`hl-twin-col${focus === 'modern' ? ' on' : ''}`} onClick={() => focus !== 'modern' && onCity(m)}>
+          <div className="hl-twin-k">Today</div>
+          <div className="hl-twin-name m">{m.name}</div>
+          <div className="hl-twin-sub">{m.country}{country && !country.includes(m.country) ? ` · ${country}` : ''}</div>
+          <div className="hl-twin-sub dim">{m.pop}</div>
+          {m.note && <div className="hl-twin-sub dim">{m.note}</div>}
+        </button>
+      </div>
+      <div className="hl-twin-name-row"><span className="hl-twin-k">The name</span> {tw.name}</div>
+    </div>
+  );
+}
+
 function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
   if (sel.kind === 'city') {
     const c = sel.city;
-    const twinBiblical = c.kind === 'modern' ? BIBLICAL_CITIES.filter((b) => Math.hypot(b.lon - c.lon, b.lat - c.lat) < 0.03) : [];
-    const twinModern = c.kind === 'biblical' ? MODERN_CITIES.filter((m) => Math.hypot(m.lon - c.lon, m.lat - c.lat) < 0.03) : [];
+    const tw = twinOf(c);
     // "Today:" — the modern twin's own label when there is one (Jerusalem: Israel / West Bank), else the country the point falls in.
-    const today = c.kind !== 'modern' ? (twinModern[0]?.country || countryName(countryOf(c))) : null;
+    const today = c.kind !== 'modern' ? ((tw && tw.rel === 'same' ? tw.modern.country : null) || countryName(countryOf(c))) : null;
     return (
       <div className={`hl-detail${c.id === KEY_CITY ? ' key' : ''}`}>
         <button type="button" className="hl-detail-x" onClick={onClose} aria-label="Close">×</button>
@@ -1138,8 +1175,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
           </>
         )}
         <AllotmentLines joshua={sel.joshua} ezekiel={sel.ezekiel} />
-        {twinModern.length > 0 && <div className="hl-detail-twin">Today: {twinModern.map((m) => <button key={m.id} type="button" className="hl-link" onClick={() => onCity(m)}>{m.name} ({m.country})</button>)}</div>}
-        {twinBiblical.length > 0 && <div className="hl-detail-twin">Biblical: {twinBiblical.map((b) => <button key={b.id} type="button" className="hl-link" onClick={() => onCity(b)}>{b.translit} <span dir="rtl">{b.paleo}</span> ({b.name})</button>)}</div>}
+        {tw && <TwinCard tw={tw} focus={c.kind} onCity={onCity} />}
         <PinRow pin={pin} at={[c.lon, c.lat]} label={c.translit || c.name} onPin={onPin} onUnpin={onUnpin} />
         <div className="hl-detail-coord">{fmtLonLat([c.lon, c.lat])}</div>
       </div>

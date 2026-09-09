@@ -1,26 +1,13 @@
 {
-  "_note": "Deploy gate (server/verify-name-forms.mjs): wherever the rendered English shows 'Translit (Name)', the Translit must be one of the allowed forms. fieldy 2026-09-09: Edom is ALWAYS Adawam, never Adam — the regression that reached prod. Add a name per line to lock it; the gate fails the deploy on any mismatch. Gentilics get their own form (Adawamay = Edomites).",
+  "_note": "Name-form rules shared by verify-name-forms.mjs (deploy gate) and fix-name-forms.mjs (repair). Wherever the rendered English shows 'Translit (Name)', the Translit must be one of the allowed forms. fieldy 2026-09-09: Edom is ALWAYS Adawam, never Adam — the regression that reached prod (translation.db's pre-seeded rows were copied from an older render). Add a name per line to lock it. Gentilics get their own form (Adawamay = Edomites). divineAsHuman: a divine head-word (Yahawah / Alahayam / Adanay) glossed with a human or place name is always a mis-render; the repair swaps in name-map-expanded's spelling for that name.",
   "must": {
-    "Edom": [
-      "Adawam"
-    ],
-    "Edomites": [
-      "Adawam",
-      "Adawamay"
-    ],
-    "Idumea": [
-      "Adawam"
-    ]
+    "Edom": ["Adawam"],
+    "Edomites": ["Adawam", "Adawamay"],
+    "Idumea": ["Adawam"]
   },
+  "divineAsHuman": { "heads": ["Yahawah", "Alahayam", "Adanay"], "divineGlosses": ["God", "GOD", "LORD", "Lord", "Adonai", "Master", "Yahawah", "Alahayam", "Adanay", "Jehovah", "Yahweh", "Almighty", "JUDGES", "LORDS"] },
   "forbidden": [
-    {
-      "pattern": "\\bAdam \\((Edom|Edomites|Idumea)\\)",
-      "why": "Edom is Adawam (H123 𐤀𐤃𐤅𐤌); Adam is the man (H121)"
-    },
-    {
-      "pattern": "\\b(Jehovah|the LORD|YHWH)\\b",
-      "why": "the Name is Yahawah (warning only for now: 9 verses in canon 100/123/145/146 still carry YHWH/Jehovah)",
-      "warn": true
-    }
+    { "pattern": "\\bAdam \\((Edom|Edomites|Idumea)\\)", "why": "Edom is Adawam (H123 𐤀𐤃𐤅𐤌); Adam is the man (H121)" },
+    { "pattern": "\\b(Jehovah|the LORD|YHWH)\\b", "why": "the Name is Yahawah (warning only for now: 9 verses in canon 100/123/145/146 still carry YHWH/Jehovah)", "warn": true }
   ]
 }
