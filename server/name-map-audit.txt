@@ -1,0 +1,40 @@
+name-map audit — 6248 spellings; 0 relinked, 16 to confirm, 0 value(s) not equal to translit(root)
+
+FIX (preview — run with --apply): the linked number is not this name; exactly one number carries it
+
+CONFIRM: more than one Hebrew name carries this spelling — the WEB uses one English word for both; pick per context or leave the OT to the Hebrew-driven render
+Jonathan         H3083  "Yahawanathan"  now: Jehonathan, the name of four Israelites
+                       → H3129 "Yawanathan" — Jonathan, the name of ten Israelites
+Job              H347   "Ayawab"  now: Ijob, the patriarch famous for his patience
+                       → H3102 "Yawab" — Job, an Israelite
+Noah             H5146  "Nach"  now: Noach, the patriarch of the flood
+                       → H5270 "Naih" — Noah, an Israelitess
+Joram            H3088  "Yahawaram"  now: Jehoram, the name of a Syrian and of three Israelites
+                       → H3141 "Yawaram" — Joram, the name of three Israelites and one Syrian
+Haran            H2771  "Charan"  now: Charan, the name of a man and also of a place
+                       → H2039 "Haran" — Haran, the name of two men
+Jethro           H3500  "Yathar"  now: Jether, the name of five or six Israelites and of one Midian
+                       → H3503 "Yatharaw" — Jethro, Moses' father-in-law
+Shelah           H7974  "Shalah"  now: Shelach, a postdiluvian patriarch
+                       → H7956 "Shalah" — Shelah, the name of a postdiluvian patriarch and o
+Abel             H1893  "Habal"  now: Hebel, the son of Adam
+                       → H59 "Abal" — Abel, the name of two places in Palestine.
+Jonadab          H3082  "Yahawanadab"  now: Jehonadab, the name of an Israelite and of an Arab
+                       → H3122 "Yawanadab" — Jonadab, the name of an Israelite and of a Rechabi
+Dishon           H1789  "Dayashan"  now: Dishan, an Edomite
+                       → H1787 "Dayashawan" — Dishon, the name of two Edomites
+Ezer             H687   "Izar"  now: Etser, an Idumaean
+                       → H5827 "Izar" — Ezer, the name of two Israelites
+                         H5829 "Izar" — Ezer, the name of four Israelites
+Rahab            H7343  "Rachab"  now: Rachab, a Canaanitess
+                       → H7294 "Rahab" — Rahab (i.e. boaster), an epithet of Egypt
+Shamma           H8092  "Shamaia"  now: Shima, the name of four Israelites
+                       → H8037 "Shamaa" — Shamma, an Israelite
+Chesed           H3777  "Kashad"  now: Kesed, a relative of Abraham
+                       → H2618 "Chasad" — Chesed, an Israelite
+Sirah            H8167  "Shaiyarah"  now: Seirah, a place in Palestine
+                       → H5626 "Sarah" — Sirah, a cistern so-called
+Salmon           H8009  "Shalamawan"  now: Salmah, an Israelite
+                       → H8012 "Shalamawan" — Salmon, an Israelite
+
+VALUE DRIFT: map value ≠ translit(root) — the map must read exactly as the Hebrew

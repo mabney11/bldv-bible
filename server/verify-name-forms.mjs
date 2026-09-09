@@ -27,7 +27,7 @@ import Database from 'better-sqlite3';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadRules, checkText } from './name-form-lib.mjs';
+import { loadRules, checkText, bareNames } from './name-form-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CORPUS_DB = process.argv[2] || path.join(__dirname, 'corpus.db');
@@ -43,8 +43,9 @@ function scan(label, rows) {
   for (const r of rows) {
     if (!r.text) continue;
     n++;
-    const { violations: v } = checkText(r.text, R);
-    for (const x of v) violations.push(`${label} ${r.ref}  "${x.text}"  — ${x.why}`);
+    const c = checkText(r.text, R);
+    for (const x of c.violations) violations.push(`${label} ${r.ref}  "${x.text}"  — ${x.why}`);
+    if ((r.status || 'none') === 'none') for (const x of bareNames(c.fixed, R).hits) violations.push(`${label} ${r.ref}  "${x.text}"  — ${x.why} → ${x.fix}`);
   }
   console.log(`  scanned ${n.toLocaleString()} ${label} verses`);
 }
@@ -52,7 +53,7 @@ const cdb = new Database(CORPUS_DB, { readonly: true });
 scan('corpus', cdb.prepare(`SELECT canon_id||':'||ord_c||':'||ord_v AS ref, text FROM verses WHERE corpus = 'ENG'`).all());
 if (existsSync(TRANS_DB)) {
   const tdb = new Database(TRANS_DB, { readonly: true });
-  scan('translation', tdb.prepare(`SELECT book_id||':'||chapter||':'||verse AS ref, text FROM translations`).all());
+  scan('translation', tdb.prepare(`SELECT book_id||':'||chapter||':'||verse AS ref, status, text FROM translations`).all());
 } else console.log(`  (no translation.db at ${TRANS_DB} — reader rows not checked)`);
 
 if (violations.length) {

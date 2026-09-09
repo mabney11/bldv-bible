@@ -8,6 +8,11 @@
  * the change is auditable and reversible). Replacements are one word for one
  * word, so translation_links' english_indices (word positions) stay valid.
  *
+ * Bare KJV names (a verse never rendered: "when Joseph came") become "Yawasap (Joseph)"
+ * through name-map-expanded.json — on seeded rows only (status 'none'); hand-edited
+ * verses are never touched. translation_links english_indices are shifted for the
+ * token each gloss adds. --no-names skips that pass.
+ *
  * USAGE:  node fix-name-forms.mjs [corpus.db] [translation.db]   (--dry-run to preview)
  * Run it where the DBs live (prod: inside the container against /data), then
  * re-run verify-name-forms.mjs.
@@ -16,11 +21,12 @@ import Database from 'better-sqlite3';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadRules, checkText } from './name-form-lib.mjs';
+import { loadRules, checkText, bareNames, shiftIndices } from './name-form-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const DRY = process.argv.includes('--dry-run');
+const NAMES = !process.argv.includes('--no-names');   // bare KJV names → "Translit (Name)"; --no-names to skip
 const CORPUS_DB = args[0] || path.join(__dirname, 'corpus.db');
 const TRANS_DB = args[1] || path.join(__dirname, 'translation.db');
 const R = loadRules();
@@ -33,11 +39,13 @@ if (existsSync(CORPUS_DB)) {
   let n = 0;
   const tx = db.transaction(() => {
     for (const r of rows) {
-      const { violations, fixed } = checkText(r.text, R);
-      if (!violations.some(v => v.fix) || fixed === r.text) continue;
+      const c = checkText(r.text, R);
+      const b = NAMES ? bareNames(c.fixed, R) : { fixed: c.fixed, hits: [] };
+      const changes = [...c.violations.filter(v => v.fix), ...b.hits];
+      if (!changes.length || b.fixed === r.text) continue;
       n++;
-      if (n <= 12) console.log(`  corpus ${r.canon_id}:${r.ord_c}:${r.ord_v}  ${violations.filter(v => v.fix).map(v => `${v.text} → ${v.fix}`).join('; ')}`);
-      if (upd) upd.run(fixed, r.id);
+      if (n <= 12) console.log(`  corpus ${r.canon_id}:${r.ord_c}:${r.ord_v}  ${changes.map(v => `${v.text} → ${v.fix}`).join('; ')}`);
+      if (upd) upd.run(b.fixed, r.id);
     }
   });
   tx();
@@ -50,22 +58,34 @@ if (existsSync(TRANS_DB)) {
   const rows = db.prepare(`SELECT book_id, chapter, verse, status, text, rich_text FROM translations`).all();
   const upd = DRY ? null : db.prepare(`UPDATE translations SET text = ?, rich_text = ?, updated_at = datetime('now') WHERE book_id = ? AND chapter = ? AND verse = ?`);
   const hist = DRY ? null : db.prepare(`INSERT INTO translation_history (book_id, chapter, verse, status, text, rich_text, saved_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`);
-  let n = 0;
+  const linkSel = db.prepare(`SELECT id, english_indices FROM translation_links WHERE book_id = ? AND chapter = ? AND verse = ?`);
+  const linkUpd = DRY ? null : db.prepare(`UPDATE translation_links SET english_indices = ? WHERE id = ?`);
+  let n = 0, links = 0;
   const tx = db.transaction(() => {
     for (const r of rows) {
       const a = checkText(r.text || '', R);
+      // Bare names only on rows fieldy has not edited by hand (status 'none' = seeded).
+      const ab = NAMES && (r.status || 'none') === 'none' ? bareNames(a.fixed, R) : { fixed: a.fixed, hits: [], shifts: [] };
       const b = checkText(r.rich_text || '', R);
-      if (a.fixed === (r.text || '') && b.fixed === (r.rich_text || '')) continue;
+      const bb = NAMES && (r.status || 'none') === 'none' ? bareNames(b.fixed, R) : { fixed: b.fixed, hits: [], shifts: [] };
+      if (ab.fixed === (r.text || '') && bb.fixed === (r.rich_text || '')) continue;
       n++;
-      if (n <= 12) console.log(`  translation ${r.book_id}:${r.chapter}:${r.verse}  ${a.violations.filter(v => v.fix).map(v => `${v.text} → ${v.fix}`).join('; ')}`);
+      const changes = [...a.violations.filter(v => v.fix), ...ab.hits];
+      if (n <= 12) console.log(`  translation ${r.book_id}:${r.chapter}:${r.verse}  ${changes.map(v => `${v.text} → ${v.fix}`).join('; ')}`);
       if (upd) {
         hist.run(r.book_id, r.chapter, r.verse, r.status, r.text, r.rich_text);   // the state BEFORE this fix
-        upd.run(a.fixed, b.fixed, r.book_id, r.chapter, r.verse);
+        upd.run(ab.fixed, bb.fixed, r.book_id, r.chapter, r.verse);
+      }
+      // A rendered name adds one English token ("(Joseph)"), so every link index past it moves up.
+      if (ab.shifts.length) for (const l of linkSel.all(r.book_id, r.chapter, r.verse)) {
+        let ix; try { ix = JSON.parse(l.english_indices || '[]'); } catch { continue; }
+        const nix = shiftIndices(ix, ab.shifts);
+        if (JSON.stringify(nix) !== JSON.stringify(ix)) { links++; if (linkUpd) linkUpd.run(JSON.stringify(nix), l.id); }
       }
     }
   });
   tx();
-  console.log(`translation.db: ${n} verse(s) ${DRY ? 'would be' : ''} fixed (history rows written)`);
+  console.log(`translation.db: ${n} verse(s) ${DRY ? 'would be' : ''} fixed (history rows written), ${links} link row(s) re-indexed`);
   total += n;
 } else console.log(`(no translation.db at ${TRANS_DB})`);
 console.log(DRY ? `[dry-run] ${total} verse(s) would change — nothing written` : `✓ ${total} verse(s) fixed — now run verify-name-forms.mjs`);

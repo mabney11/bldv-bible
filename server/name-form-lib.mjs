@@ -20,7 +20,56 @@ export function loadRules() {
   // replace: a plain rewrite — YHWH / Jehovah / the LORD → "Yahawah ()". One word for one
   // word plus the "()" marker, which the link tokeniser (/[A-Za-z…'-]+/) does not count.
   const replace = (rules.replace || []).map(f => ({ re: new RegExp(f.pattern, 'g'), to: f.to, why: f.why }));
-  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single };
+  // bare names: KJV spellings → the app's transliteration (translit of the Hebrew root)
+  const bn = rules.bareNames || {};
+  const skip = new Set(bn.skip || []);
+  const minLen = bn.minLen || 4;
+  const bare = new Map();
+  for (const [k, v] of Object.entries(single)) if (k.length >= minLen && /^[A-Z][a-z]+$/.test(k) && v && v !== k && !skip.has(k)) bare.set(k, v);
+  const phrases = new Map();
+  for (const [k, v] of Object.entries(nm.phrases || {})) if (/^[A-Z][A-Za-z]+(?:[ -][A-Z][A-Za-z]+)+$/.test(k) && v && !skip.has(k)) phrases.set(k, v);
+  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases };
+}
+
+// ── bare names ────────────────────────────────────────────────────────────────
+// Walk the verse token by token; outside every parenthesis, a KJV name that is not
+// already the headword of a gloss ("Joseph (" …) becomes "Yawasap (Joseph)". The
+// English word count grows by one per name (the gloss adds a token), so the
+// returned `shifts` are the word indices after which translation_links'
+// english_indices must move up by one — see fix-name-forms.mjs.
+const TOK = /[A-Za-z\u00C0-\u024F'-]+|\(|\)/g;
+export function bareNames(text, R) {
+  if (!text || !R.bare.size) return { fixed: text, hits: [], shifts: [] };
+  const toks = [...text.matchAll(TOK)];
+  const hits = [], shifts = [];
+  let depth = 0, wordIx = -1, out = '', last = 0;
+  for (let i = 0; i < toks.length; i++) {
+    const m = toks[i], w = m[0];
+    if (w === '(') { depth++; continue; }
+    if (w === ')') { depth = Math.max(0, depth - 1); continue; }
+    wordIx++;
+    if (depth) continue;
+    // two-word names first (Beth Shean, Obed Edom): the pair must both be bare
+    const nxt = toks[i + 1];
+    let name = null, to = null, span = 1;
+    if (nxt && /^[A-Za-z]/.test(nxt[0]) && R.phrases.has(`${w} ${nxt[0]}`)) { name = `${w} ${nxt[0]}`; to = R.phrases.get(name); span = 2; }
+    else if (R.bare.has(w)) { name = w; to = R.bare.get(w); }
+    if (!name) continue;
+    const after = toks[i + span];
+    if (after && after[0] === '(') continue;                   // already a headword
+    const end = span === 2 ? nxt.index + nxt[0].length : m.index + w.length;
+    out += text.slice(last, m.index) + `${to} (${name})`;
+    last = end;
+    hits.push({ text: name, fix: `${to} (${name})`, why: 'bare KJV name — never rendered' });
+    shifts.push(wordIx + span - 1);                            // the gloss token lands after this word index
+    if (span === 2) { i++; wordIx++; }
+  }
+  out += text.slice(last);
+  return { fixed: out, hits, shifts };
+}
+/** english_indices (word positions) after inserting one token after each index in `shifts`. */
+export function shiftIndices(indices, shifts) {
+  return indices.map((ix) => ix + shifts.filter((s) => s < ix).length);
 }
 
 /** Which allowed form to use for a wrong one: keep a gentilic ending (-ay) when the list has one. */
@@ -54,6 +103,23 @@ export function checkText(text, R) {
   for (const f of R.replace) {
     fixed = fixed.replace(f.re, (m) => { violations.push({ text: m, fix: f.to, why: f.why }); return f.to; });
   }
+  // Displaced gloss: "Baarashabai (in) Beersheba" — the transliteration landed on the word
+  // before the name and the name stayed bare. Put the word back and gloss the name:
+  // "in Baarashabai (Beersheba)".
+  fixed = fixed.replace(/\b([A-Z][a-z]+) \(([a-z][a-z' -]{0,20})\) ([A-Z][a-z]+)\b(?! \()/g, (m, tr, word, name) => {
+    if (R.single[name] !== tr) return m;
+    const to = `${word} ${tr} (${name})`;
+    violations.push({ text: m, fix: to, why: 'displaced gloss — the transliteration sat on the word before the name' });
+    return to;
+  });
+  // Inverted gloss: "Egypt (Matzarayam)" — the English got the headword and the Hebrew the
+  // gloss. Swap them: "Matzarayam (Egypt)".
+  fixed = fixed.replace(/\b([A-Z][a-z]+) \(([A-Z][a-z]+)\)/g, (m, name, tr) => {
+    if (R.single[name] !== tr || R.single[tr] === name) return m;
+    const to = `${tr} (${name})`;
+    violations.push({ text: m, fix: to, why: 'inverted gloss — the transliteration is the headword' });
+    return to;
+  });
   for (const f of R.forbidden) {
     f.re.lastIndex = 0;
     const m = f.re.exec(fixed);
