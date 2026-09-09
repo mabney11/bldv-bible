@@ -26,6 +26,7 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { progress } from './progress.mjs';
 
 const args = process.argv.slice(2);
 const argv = (f,d) => { const i = args.indexOf(f); return i>=0 ? args[i+1] : d; };
@@ -654,7 +655,9 @@ const out = [];
 // "he said, however, that..." — which continues in lowercase).
 const SPEECH_VERBS_RE = /\b(said|saying|answered|answering|cried out|cried|spoke|speaking|commanded|swore|sware|declared|asked|asking|prayed|replied),(\s+)(?!["'‘’“”])([A-Z])/g;
 
+const pOT = progress('rendering OT verses', rows.length);
 for (const r of rows) {
+  pOT.tick();
   let changed = false;
   const pieces = [];
   for (const seg of r.segments) {
@@ -928,6 +931,7 @@ for (const r of rows) {
                      // never blanket-strip every verse-final quote mark again.
                      .trim() });
 }
+pOT.done();
 
 // ── WHERE THE ENGLISH AND THE READER DISAGREE ───────────────────────────────
 // Every row here is a word whose English transliteration CANNOT match the Hebrew

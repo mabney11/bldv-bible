@@ -25,6 +25,7 @@
 
 import { readFileSync, existsSync } from 'node:fs';
 import { loadVerseExceptions, renderWithExceptions } from './render-verse-exceptions.mjs';
+import { progress } from './progress.mjs';
 
 const args = process.argv.slice(2);
 const argv = (f, d) => { const i = args.indexOf(f); return i >= 0 ? args[i + 1] : d; };
@@ -261,13 +262,17 @@ if (!NO_VERSE_GLOSS) (() => {
   const hasSource = (() => { try { idx.prepare('SELECT source FROM token_surfaces LIMIT 1').get(); return true; } catch { return false; } })();
   if (!hasSource) { console.log('verse-gloss: surface-index has no `source` column — rebuild with --heb'); idx.close(); return; }
   let n = 0;
+  // streamed (iterate), not .all(): this is the ≈550 MB surface index — the ticker below
+  // is the only sign of life during the minutes it takes, and the rows never sit in one array
+  const pLoad = progress('verse-gloss: reading the surface index (Hebrew tokens)');
   for (const r of idx.prepare(`
       SELECT DISTINCT o.book_id, o.chapter, o.verse, o.token_ordinal, t.strongs
       FROM surface_occurrences o
       JOIN token_surfaces t ON t.word_raw = o.word_raw AND t.source = o.source
            AND t.strongs = o.strongs AND t.pos = o.pos AND t.morph = o.morph
       WHERE o.source = 'HEB'
-      ORDER BY o.book_id, o.chapter, o.verse, o.token_ordinal`).all()) {
+      ORDER BY o.book_id, o.chapter, o.verse, o.token_ordinal`).iterate()) {
+    pLoad.tick();
     if (!r.strongs || !translit) continue;
     const sn = 'H' + String(r.strongs).replace(/^H+/i, '');
     const canonical = ROOTS[sn];
@@ -279,7 +284,7 @@ if (!NO_VERSE_GLOSS) (() => {
     VG.verses.get(key).push({ sn, tr });
     n++;
   }
-  idx.close();
+  pLoad.done(); idx.close();
   VG.on = VG.verses.size > 0;
   console.log(`verse-gloss: ${VG.verses.size.toLocaleString()} verses of Hebrew, ${n.toLocaleString()} tokens, ` +
               `${VG.english.size.toLocaleString()} English words reachable through kjv_def`);
@@ -351,11 +356,15 @@ if (LINKS.size) (() => {
   if (!existsSync('./surface-index.db')) return;
   if (!translitBooksJs) { console.log('links: books.js translit() not found — TOK_TR skipped'); return; }
   const idx = new Database('./surface-index.db', { readonly: true });
+  let pTok = null;
   try {
+    const totalHeb = idx.prepare(`SELECT COUNT(*) n FROM surface_occurrences WHERE source = 'HEB'`).get().n;
+    pTok = progress('links: reading Hebrew token surfaces', totalHeb);
     for (const r of idx.prepare(`
         SELECT o.book_id, o.chapter, o.verse, o.token_ordinal, o.strongs, o.pos
         FROM surface_occurrences o
-        WHERE o.source = 'HEB'`).all()) {
+        WHERE o.source = 'HEB'`).iterate()) {
+      pTok.tick();
       if (r.pos === 'conj' || r.pos === 'art') continue;
       if (!r.strongs) continue;
       const sn = 'H' + String(r.strongs).replace(/^H+/i, '');
@@ -371,7 +380,7 @@ if (LINKS.size) (() => {
       TOK_TR.get(key).set(r.token_ordinal, tr);
     }
   } catch (e) { console.log(`links: could not read the HEB bake (${e.message})`); }
-  idx.close();
+  if (pTok) pTok.done(); idx.close();
 })();
 
 // The SAME tokenisation build-align-links used, but keeping character offsets so a
@@ -602,7 +611,9 @@ const rows = db.prepare(
 console.log(`source: ${srcCol} · untagged ENG rows: ${rows.length.toLocaleString()}\n`);
 
 const updates = []; let changed = 0; const samples = [];
+const pRender = progress('rendering untagged verses', rows.length);
 for (const r of rows) {
+  pRender.tick();
   // surface_occurrences is keyed by canonical ord_c/ord_v (the bake applied any
   // versification offset internally), so prefer those over the TEXT columns.
   const vgKey = `${r.canon_id}|${r.ord_c ?? parseInt(r.chapter, 10)}|${r.ord_v ?? parseInt(r.verse, 10)}`;
@@ -611,6 +622,7 @@ for (const r of rows) {
   if (out !== r.text) { changed++; updates.push({ id: r.id, text: out });
     if (samples.length < 5 && out !== r.src) samples.push({ ref, before: r.src, after: out }); }
 }
+pRender.done();
 console.log(`rows that would change: ${changed.toLocaleString()}`);
 const clip = t => t.length > 180 ? t.slice(0, 180) + '…' : t;
 for (const s of samples) { console.log(`\n  ${s.ref}`); console.log(`   - ${clip(s.before)}`); console.log(`   + ${clip(s.after)}`); }

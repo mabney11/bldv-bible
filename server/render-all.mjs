@@ -33,7 +33,9 @@
 // If any of these flag names differ in your tree, edit the STEPS arrays below — that's
 // the only place the sequence is defined. --dry prints them so you can eyeball first.
 
-import { spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { fmtDur } from './progress.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 // Every step is a script next to this file and reads corpus.db / *.jsonl relative to
@@ -89,22 +91,56 @@ const steps = SURFACE
 console.log(SURFACE ? '── SURFACE-ONLY rebuild ──' : '── FULL rebuild (OT + surface) ──');
 if (DRY) console.log('(dry run — printing steps only, nothing will execute)');
 
+// ── ETA ─────────────────────────────────────────────────────────────────────────
+// Every step's duration is remembered in .render-all-timings.json (per step key, last
+// 5 runs). Before a step: what it took last time. While it runs: a ticker every 15 s with
+// elapsed, expected, and the whole pipeline's remaining time (sum of the remaining steps'
+// last durations). A step with no history shows elapsed only, and earns an estimate for
+// the next run.
+const TIMINGS_PATH = path.join(HERE, '.render-all-timings.json');
+let timings = {};
+try { if (existsSync(TIMINGS_PATH)) timings = JSON.parse(readFileSync(TIMINGS_PATH, 'utf8')); } catch { timings = {}; }
+const keyOf = ([cmd, cmdArgs]) => `${cmd} ${cmdArgs.join(' ')}`;
+const expected = (step) => { const h = timings[keyOf(step)]; return h && h.length ? h.reduce((a, b) => a + b, 0) / h.length : null; };
+const remainingAfter = (idx) => steps.slice(idx + 1).reduce((a, st) => a + (expected(st) || 0), 0);
+const unknownAfter = (idx) => steps.slice(idx + 1).filter((st) => expected(st) === null).length;
+const pipelineExpected = steps.reduce((a, st) => a + (expected(st) || 0), 0);
+if (!DRY && pipelineExpected) console.log(`expected total ≈ ${fmtDur(pipelineExpected)} (from the last runs' timings${steps.some((st) => expected(st) === null) ? '; some steps have no history yet' : ''})`);
+
+const run = (cmd, cmdArgs) => new Promise((resolve) => {
+  // shell:true on Windows/MINGW so "node" resolves the same way it does in your terminal
+  const child = spawn(cmd, cmdArgs, { stdio: 'inherit', shell: process.platform === 'win32', cwd: HERE });
+  child.on('error', (error) => resolve({ error }));
+  child.on('close', (status) => resolve({ status }));
+});
+
 const t0 = Date.now();
 let i = 0;
 for (const [cmd, cmdArgs, desc] of steps) {
   i++;
-  console.log(`\n[${i}/${steps.length}] ${desc}\n    $ ${cmd} ${cmdArgs.join(' ')}`);
+  const step = steps[i - 1], exp = expected(step);
+  console.log(`\n[${i}/${steps.length}] ${desc}\n    $ ${cmd} ${cmdArgs.join(' ')}${exp ? `\n    expected ≈ ${fmtDur(exp)} (last runs)` : '\n    (no timing history yet — elapsed only)'}`);
   if (DRY) continue;
   const started = Date.now();
-  // shell:true on Windows/MINGW so "node" resolves the same way it does in your terminal
-  const r = spawnSync(cmd, cmdArgs, { stdio: 'inherit', shell: process.platform === 'win32', cwd: HERE });
+  const ticker = setInterval(() => {
+    const el = Date.now() - started;
+    const left = exp ? Math.max(exp - el, 0) : null;
+    const rest = remainingAfter(i - 1) + (left ?? 0);
+    const unk = unknownAfter(i - 1);
+    console.log(`    ⏱ step ${i}: ${fmtDur(el)} elapsed${exp ? ` · ~${fmtDur(left)} left of ≈${fmtDur(exp)}` : ''} · pipeline: ${fmtDur(Date.now() - t0)} so far${rest ? `, ~${fmtDur(rest)} to go` : ''}${unk ? ` (+${unk} step${unk > 1 ? 's' : ''} without history)` : ''}`);
+  }, 15000);
+  const r = await run(cmd, cmdArgs);
+  clearInterval(ticker);
   if (r.error) { console.error(`\n\u2717 step ${i} could not start: ${r.error.message}`); process.exit(1); }
   if (r.status !== 0) {
     console.error(`\n\u2717 step ${i} failed (exit ${r.status}). Stopping — no later step ran, corpus left as step ${i - 1} left it.`);
     process.exit(r.status || 1);
   }
-  console.log(`    \u2713 ${((Date.now() - started) / 1000).toFixed(1)}s`);
+  const took = Date.now() - started;
+  timings[keyOf(step)] = [...(timings[keyOf(step)] || []).slice(-4), took];
+  try { writeFileSync(TIMINGS_PATH, JSON.stringify(timings, null, 2) + '\n'); } catch { /* timings are a convenience */ }
+  console.log(`    \u2713 ${fmtDur(took)}${exp ? ` (expected ≈ ${fmtDur(exp)})` : ''} · pipeline ${fmtDur(Date.now() - t0)} so far${remainingAfter(i - 1) ? `, ~${fmtDur(remainingAfter(i - 1))} to go` : ''}`);
 }
 console.log(DRY
   ? '\n(dry run complete — nothing executed)'
-  : `\n\u2713 all ${steps.length} steps complete in ${((Date.now() - t0) / 1000).toFixed(1)}s. Restart the server.`);
+  : `\n\u2713 all ${steps.length} steps complete in ${fmtDur(Date.now() - t0)}. Restart the server.`);
