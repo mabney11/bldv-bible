@@ -111,7 +111,7 @@
   "iscah": "Yasakah",
   "shechem": "Shakam",
   "moreh": "Mawarah",
-  "bethel": "Bayathaal",
+  "bethel": "Bayath-Al",
   "ai": "Iy",
   "pharaoh's": "Paraih",
   "lot's": "Lawat",
@@ -131,7 +131,7 @@
   "siddim": "Shadayam",
   "seir": "Shaiyar",
   "elparan": "Ayalapaaran",
-  "kadesh": "Qadash",
+  "en mishpat": "Iyanamashapat",
   "eshcol": "Ashakal",
   "aner": "Inar",
   "hobah": "Chawabah",
@@ -149,13 +149,14 @@
   "sarah": "Sharah",
   "abraham's": "Abaraham",
   "moab": "Mawaab",
+  "ben ammi": "Banaimay",
   "ammon": "Imawan",
   "abimelech": "Abayamalak",
+  "beersheba": "Baar-Shabai",
   "don't": "Hagar",
   "paran": "Paaran",
   "phicol": "Payakal",
   "abimelech's": "Abayamalak",
-  "beersheba": "Baarashabai",
   "moriah": "Mawarayah",
   "buz": "Bawaz",
   "kemuel": "Qamawaal",
@@ -175,6 +176,7 @@
   "zohar": "Tzachar",
   "machpelah": "Makapalah",
   "laban": "Laban",
+  "beer lahai": "Baaralachayaraay",
   "keturah": "Qatawarah",
   "zimran": "Zamaran",
   "jokshan": "Yaqashan",
@@ -189,6 +191,7 @@
   "hanoch": "Chanawak",
   "abida": "Abayadai",
   "eldaah": "Aladaih",
+  "beer lahai roi": "Baaralachayaraay",
   "nebaioth": "Nabayawath",
   "kedar": "Qadar",
   "adbeel": "Adabaal",
@@ -200,6 +203,7 @@
   "jetur": "Yatawar",
   "naphish": "Napayash",
   "kedemah": "Qadamah",
+  "paddan": "Padan",
   "esau": "Ishaw",
   "esau's": "Ishaw",
   "jacob": "Yaiqab",
@@ -211,6 +215,7 @@
   "judith": "Yahawadayath",
   "beeri": "Baaray",
   "basemath": "Bashamath",
+  "elon": "Ayalawan",
   "rebekah's": "Rabaqah",
   "jacob's": "Yaiqab",
   "mahalath": "Machalath",
@@ -223,6 +228,7 @@
   "reuben": "Raawaban",
   "simeon": "Shamaiwan",
   "levi": "Laway",
+  "dan": "Dan",
   "rachel's": "Rachal",
   "naphtali": "Napathalay",
   "gad": "Gad",
@@ -231,19 +237,20 @@
   "dinah": "Dayanah",
   "laban's": "Laban",
   "gilead": "Galaid",
-  "jegar": "Yagarashahadawathaa",
+  "jegar sahadutha": "Yagarashahadawathaa",
   "galeed": "Galaid",
   "mizpah": "Matzapah",
   "peniel": "Panawaal",
+  "succoth": "Sakawath",
   "hamor": "Chamawar",
   "shechem's": "Shakam",
   "hamor's": "Chamawar",
   "dinah's": "Dayanah",
   "deborah": "Dabawarah",
-  "allon": "Alawanabakawath",
+  "allon bacuth": "Alawanabakawath",
   "benoni": "Banaawanay",
   "benjamin": "Banayamayan",
-  "bethlehem": "Bayathalacham",
+  "bethlehem": "Bayath-Lacham",
   "issachar": "Yashashakar",
   "arba": "Qarayathaarabai",
   "oholibamah": "Ahalayabamah",
@@ -293,6 +300,7 @@
   "samlah": "Shamalah",
   "masrekah": "Masharaqah",
   "shaul": "Shaawal",
+  "baal hanan": "Bailachanan",
   "achbor": "Ikabawar",
   "hadar": "Hadar",
   "pau": "Paiw",
@@ -320,6 +328,7 @@
   "egypt's": "Matzarayam",
   "zaphenath-paneah": "Tzapanathapainach",
   "asenath": "Asanath",
+  "potiphera": "Pawatayaparai",
   "manasseh": "Manashah",
   "ephraim": "Aparayam",
   "benjamin's": "Banayamayan",
@@ -369,15 +378,15 @@
   "jezer": "Yatzar",
   "shillem": "Shalam",
   "rameses": "Raimasas",
-  "israel's": "Yasharaal",
+  "israel's": "Yashar-Al",
   "ephraim's": "Aparayam",
   "manasseh's": "Manashah",
   "asher's": "Ashar",
+  "abel mizraim": "Abalamatzarayam",
   "machir": "Makayar",
   "pithom": "Patham",
   "raamses": "Raimasas",
   "shiphrah": "Shaparah",
-  "moses": "Mashah",
   "zipporah": "Tzaparah",
   "horeb": "Charab",
   "aaron": "Aharawan",
@@ -409,6 +418,7 @@
   "etham": "Atham",
   "pihahiroth": "Payahachayarath",
   "migdol": "Magadawal",
+  "baal zephon": "Bailatzapawan",
   "philistia": "Palashath",
   "miriam": "Marayam",
   "marah": "Marah",
@@ -420,11 +430,10 @@
   "hur": "Chawar",
   "bezalel": "Batzalaal",
   "uri": "Awaray",
+  "oholiab": "Ahalayaab",
   "ahisamach": "Achayasamak",
   "nun": "Nawan",
   "asherim": "Asharah",
-  "oholiab": "Ahalayaab",
-  "with": "Ahalayaab",
   "molech": "Malak",
   "shelomith": "Shalamayath",
   "dibri": "Dabaray",
@@ -440,9 +449,8 @@
   "ammihud": "Imayahawad",
   "gamaliel": "Gamalayaal",
   "pedahzur": "Padahatzawar",
-  "abidan": "Abayadan",
+  "abidan": "Abay-Dan",
   "gideoni": "Gadainay",
-  "of": "Dan",
   "ahiezer": "Achayaizar",
   "ammishaddai": "Imayashaday",
   "pagiel": "Pagaiyaal",
@@ -464,6 +472,7 @@
   "shammua": "Shamawai",
   "zaccur": "Zakawar",
   "shaphat": "Shapat",
+  "caleb": "Kalab",
   "jephunneh": "Yapanah",
   "igal": "Yagaal",
   "hoshea": "Hawashai",
@@ -483,6 +492,7 @@
   "machi": "Makay",
   "zin": "Tzan",
   "rehob": "Rachab",
+  "hamath": "Chamath",
   "ahiman": "Achayaman",
   "sheshai": "Shashay",
   "talmai": "Thalamay",
@@ -491,10 +501,12 @@
   "hormah": "Charamah",
   "dathan": "Dathan",
   "abiram": "Abayaram",
-  "on": "Awan",
   "peleth": "Palath",
+  "hor": "Har",
   "arad": "Irad",
+  "atharim": "Atharayam",
   "oboth": "Abath",
+  "iyeabarim": "Iyayahaibarayam",
   "zered": "Zarad",
   "arnon": "Aranawan",
   "vaheb": "Wahab",
@@ -525,8 +537,9 @@
   "agag": "Agag",
   "balak's": "Balaq",
   "sheth": "Shath",
-  "nevertheless": "Qayan",
+  "kain": "Qayan",
   "shittim": "Shatayam",
+  "baal peor": "Bailapaiwar",
   "zimri": "Zamaray",
   "salu": "Salaw",
   "cozbi": "Kazabay",
@@ -537,6 +550,7 @@
   "arod": "Arawad",
   "arelites": "Araalay",
   "jashub": "Yashawab",
+  "iezer": "Ayaizar",
   "helek": "Chalaq",
   "asriel": "Asharayaal",
   "shemida": "Shamayadai",
@@ -549,12 +563,15 @@
   "tahan": "Thachan",
   "eran": "Iran",
   "ahiram": "Achayaram",
+  "shephupham": "Shapawapam",
   "hupham": "Chawapam",
   "shuham": "Shawacham",
+  "imnites": "Yamanah",
   "amram's": "Imaram",
   "evi": "Away",
   "rekem": "Raqam",
   "reba": "Rabai",
+  "ataroth": "Itarawath",
   "nimrah": "Namarah",
   "elealeh": "Alailaa",
   "sebam": "Shabam",
@@ -563,13 +580,18 @@
   "aroer": "Irawair",
   "atrothshophan": "Itarawathashawapan",
   "jogbehah": "Yagabahah",
+  "beth nimrah": "Bayathanamarah",
+  "beth haran": "Bayathaharan",
   "kiriathaim": "Qarayathayam",
+  "baal meon": "Bailamaiwan",
   "sibmah": "Shabam",
   "nobah": "Nabach",
   "kenath": "Qanath",
   "dophkah": "Dapaqah",
   "alush": "Alawash",
+  "kibroth hattaavah": "Qabarawathahathaawah",
   "rithmah": "Rathamah",
+  "rimmon perez": "Ramanaparatz",
   "libnah": "Labanah",
   "rissah": "Rasah",
   "kehelathah": "Qahalathah",
@@ -577,15 +599,27 @@
   "haradah": "Charadah",
   "makheloth": "Maqahalath",
   "tahath": "Thachath",
+  "mithkah": "Mathaqah",
   "hashmonah": "Chashamanah",
   "moseroth": "Mawasarah",
+  "bene jaakan": "Banayayaiqan",
+  "hor haggidgad": "Charahagadagad",
   "jotbathah": "Yatabathah",
-  "ezion": "Itzayawanagabar",
+  "abronah": "Ibaranah",
+  "ezion geber": "Itzayawanagabar",
   "zalmonah": "Tzalamanah",
   "punon": "Pawanan",
+  "iyim": "Iyayam",
+  "dibon gad": "Dayabawan",
+  "almon diblathaim": "Ilamanadabalathayamah",
+  "beth jeshimoth": "Bayathahayashayamawath",
+  "abel shittim": "Abalahashatayam",
+  "kadesh barnea": "Qadashabaranai",
+  "hazar addar": "Chatzaraadar",
   "azmon": "Itzamawan",
   "zedad": "Tzadad",
   "ziphron": "Zaparan",
+  "hazar enan": "Chatzar-Iyanan",
   "shepham": "Shapam",
   "riblah": "Rabalah",
   "ain": "Iyan",
@@ -603,16 +637,21 @@
   "pedahel": "Padahaal",
   "tophel": "Thapal",
   "dizahab": "Dayazahab",
+  "ashtaroth": "Ishatharawath",
   "elath": "Ayalawath",
   "caphtor": "Kapathar",
   "kedemoth": "Qadamawath",
   "argob": "Aragab",
   "sirion": "Sharayawan",
   "senir": "Shanayar",
+  "salecah": "Salakah",
   "rabbah": "Rabah",
+  "beth peor": "Bayathapaiwar",
   "bezer": "Batzar",
   "golan": "Gawalan",
   "sion": "Shayaan",
+  "beeroth bene jaakan": "Baarathabanayayaiqan",
+  "moserah": "Mawasarah",
   "gudgodah": "Gadagadah",
   "gerizim": "Garazayam",
   "gilgal": "Galagal",
@@ -620,11 +659,15 @@
   "zarethan": "Tzarathan",
   "achan": "Ikan",
   "zabdi": "Zabaday",
+  "beth aven": "Bayathaawan",
   "shebarim": "Shabarayam",
   "achor": "Ikawar",
+  "beth el": "Bayath-Al",
   "gibeon": "Gabaiwan",
   "chephirah": "Kapayarah",
+  "beeroth": "Baarawath",
   "jerusalem": "Yarawashalam",
+  "adoni-zedek": "Adanayatzadaq",
   "hoham": "Hawaham",
   "piram": "Paraam",
   "jarmuth": "Yaramawath",
@@ -632,6 +675,7 @@
   "lachish": "Lakayash",
   "debir": "Dabayar",
   "eglon": "Igalawan",
+  "beth horon": "Bayathachawarawan",
   "azekah": "Izaqah",
   "makkedah": "Maqadah",
   "aijalon": "Ayalawan",
@@ -644,14 +688,17 @@
   "chinneroth": "Kanarawath",
   "dor": "Dawar",
   "merom": "Marawam",
-  "misrephoth": "Masharapawathamayam",
+  "misrephoth maim": "Masharapawathamayam",
   "mizpeh": "Matzapah",
   "halak": "Chalaq",
+  "baal gad": "Bailagad",
   "anab": "Inab",
+  "ashdod": "Ashadawad",
   "geder": "Gadar",
   "adullam": "Idalam",
   "tappuah": "Thapawach",
   "aphek": "Apaq",
+  "lassharon": "Sharawan",
   "meron": "Shamarawanamaraawan",
   "taanach": "Thainak",
   "megiddo": "Magadawan",
@@ -661,21 +708,31 @@
   "shihor": "Shayachawar",
   "ekron": "Iqarawan",
   "mearah": "Mairah",
+  "bamoth baal": "Bamawath",
+  "beth baal meon": "Bayathabailamaiwan",
   "mephaath": "Mawapaith",
   "shahar": "Tzarathahashachar",
+  "ramath mizpeh": "Ramathahamatzapah",
   "betonim": "Batanayam",
   "mahanaim": "Machanayam",
+  "beth haram": "Bayathaharam",
   "zaphon": "Tzapawan",
   "jordan's": "Yaradan",
-  "ashtaroth": "Ishatharawath",
   "addar": "Adar",
+  "karka": "Qaraqai",
+  "beth hoglah": "Bayathachagalah",
+  "beth arabah": "Bayathahairabah",
   "bohan": "Bahan",
   "adummim": "Adamayam",
+  "en shemesh": "Iyanashamash",
+  "en rogel": "Iyanaragal",
   "hinnom": "Hanam",
   "nephtoah": "Napathawach",
   "baalah": "Bailah",
   "chesalon": "Kasalawan",
-  "jabneel": "Yabanaal",
+  "beth shemesh": "Bayath-Shamash",
+  "shikkeron": "Shakarawan",
+  "jabneel": "Yaban-Al",
   "sepher": "Qarayathasanah",
   "achsah": "Ikasah",
   "othniel": "Ithanayaal",
@@ -694,7 +751,10 @@
   "amam": "Amam",
   "shema": "Shamai",
   "moladah": "Mawaladah",
+  "hazar gaddah": "Chatzaragadah",
   "heshmon": "Chashamawan",
+  "beth pelet": "Bayathapalat",
+  "hazar shual": "Chatzarashawail",
   "biziothiah": "Bazayawathayah",
   "iim": "Iyayam",
   "ezem": "Itzam",
@@ -705,10 +765,12 @@
   "sansannah": "Sanasanah",
   "lebaoth": "Labaawath",
   "shilhim": "Shalachayam",
+  "rimmon": "Ramawan",
   "eshtaol": "Ashathaal",
   "zorah": "Tzaraih",
   "ashnah": "Ashanah",
   "zanoah": "Zanawach",
+  "en gannim": "Iyanaganayam",
   "enam": "Iyanayam",
   "socoh": "Shawakah",
   "shaaraim": "Shairayam",
@@ -717,6 +779,7 @@
   "gederothaim": "Gadarathayam",
   "zenan": "Tzanan",
   "hadashah": "Chadashah",
+  "migdal gad": "Magadalagad",
   "dilean": "Dalain",
   "joktheel": "Yaqathaal",
   "bozkath": "Batzaqath",
@@ -724,14 +787,13 @@
   "lahmam": "Lachamas",
   "chitlish": "Kathalayash",
   "gederoth": "Gadarawath",
+  "beth dagon": "Bayathadagawan",
   "ether": "Ithar",
   "ashan": "Ishan",
-  "iphtah": "Yapathach",
   "nezib": "Natzayab",
   "keilah": "Qaiyalah",
   "achzib": "Akazayab",
   "mareshah": "Maraashah",
-  "ashdod": "Ashadawad",
   "jattir": "Yathayar",
   "dannah": "Danah",
   "sannah": "Qarayathasanah",
@@ -742,26 +804,33 @@
   "arab": "Arab",
   "eshan": "Ashain",
   "janim": "Yanayam",
+  "beth tappuah": "Bayathathapawach",
   "aphekah": "Apaqah",
   "humtah": "Chamatah",
   "zior": "Tzayair",
   "jutah": "Yatah",
   "jezreel": "Yazaraial",
   "jokdeam": "Yaqadaim",
-  "kain": "Qayan",
   "halhul": "Chalachawal",
+  "beth zur": "Bayathatzawar",
   "gedor": "Gadar",
   "maarath": "Mairath",
+  "beth anoth": "Bayathainawath",
   "eltekon": "Alathaqan",
+  "kiriath baal": "Qarayathabail",
   "middin": "Madayan",
   "secacah": "Sakakah",
   "nibshan": "Nabashan",
+  "en gedi": "Iyanagaday",
+  "ataroth addar": "Itarawathaadar",
   "michmethath": "Makamathath",
-  "taanath": "Thaanathashalah",
+  "taanath shiloh": "Thaanathashalah",
   "janoah": "Yanawach",
   "naarah": "Nairah",
   "kanah": "Qanah",
   "abiezer": "Abayaizar",
+  "en tappuah": "Iyanathapawach",
+  "beth shean": "Bayath-Shaan",
   "ibleam": "Yabalaim",
   "endor": "Iyanadaar",
   "shiloh": "Shayalah",
@@ -770,7 +839,7 @@
   "zemaraim": "Tzamarayam",
   "parah": "Parah",
   "ophrah": "Iparah",
-  "chephar": "Kaparahaimawanay",
+  "chephar ammoni": "Kaparahaimawanay",
   "ophni": "Ipanay",
   "geba": "Gabai",
   "ramah": "Ramah",
@@ -782,11 +851,17 @@
   "gibeath": "Gabaith",
   "balah": "Balah",
   "bethul": "Bathawal",
+  "beth marcaboth": "Bayathahamarakabawath",
+  "hazar susah": "Chatzarasawasah",
+  "beth lebaoth": "Bayathalabaawath",
   "sharuhen": "Sharawachan",
+  "baalath beer": "Bailathabaar",
   "sarid": "Sharayad",
   "maralah": "Marailah",
   "dabbesheth": "Dabashath",
-  "chisloth": "Kasalathathabar",
+  "chisloth tabor": "Kasalathathabar",
+  "gath hepher": "Gathahachapar",
+  "ethkazin": "Ithaqatzayan",
   "neah": "Naih",
   "hannathon": "Chanathan",
   "el": "Yapathachaal",
@@ -803,14 +878,18 @@
   "ebez": "Abatz",
   "remeth": "Ramath",
   "engannim": "Iyanaganayam",
+  "en haddah": "Iyanachadah",
+  "beth pazzez": "Bayathapatzatz",
   "tabor": "Thabawar",
   "shahazumah": "Shachatzawam",
+  "helkath": "Chalaqath",
   "hali": "Chalay",
   "beten": "Batan",
   "allammelech": "Alamalak",
   "amad": "Imaid",
   "mishal": "Mashaal",
   "shihorlibnath": "Shayachawaralabanath",
+  "beth emek": "Bayathahaimaq",
   "neiel": "Naiyaal",
   "cabul": "Kabawal",
   "ebron": "Ibaran",
@@ -819,21 +898,29 @@
   "hosah": "Chasah",
   "ummah": "Imah",
   "heleph": "Chalap",
+  "zaanannim": "Tzainanayam",
   "adaminekeb": "Adamay",
-  "aznoth": "Azanawathathabawar",
+  "lakkum": "Laqawam",
+  "aznoth tabor": "Azanawathathabawar",
   "ziddim": "Tzadayam",
   "zer": "Tzar",
   "hammath": "Chamath",
   "rakkath": "Raqath",
   "adamah": "Adamah",
+  "en hazor": "Iyanachatzawar",
   "iron": "Yaraawan",
+  "migdal": "Magadalaal",
   "horem": "Charam",
+  "beth anath": "Bayathainath",
   "irshemesh": "Iyarashamash",
   "shaalabbin": "Shailabayam",
   "ithlah": "Yathalah",
   "eltekeh": "Alathaqaa",
   "gibbethon": "Gabathawan",
+  "baalath": "Bailath",
   "jehud": "Yahad",
+  "bene berak": "Banayabaraq",
+  "gath rimmon": "Gatharamawan",
   "jarkon": "Mayahayaraqawan",
   "rakkon": "Raqawan",
   "joppa": "Yapaw",
@@ -860,6 +947,7 @@
   "ashkelon": "Ashaqalawan",
   "kitron": "Qatarawan",
   "nahalol": "Nahalal",
+  "acco": "Ikaw",
   "ahlab": "Achalab",
   "helbah": "Chalabah",
   "aphik": "Apaq",
@@ -867,7 +955,10 @@
   "shaalbim": "Shailabayam",
   "bochim": "Bakayam",
   "baals": "Bail",
+  "baal hermon": "Bailacharamawan",
   "asheroth": "Asharah",
+  "cushan rishathaim": "Kawashanarashaithayam",
+  "seirah": "Shaiyarah",
   "shamgar": "Shamagar",
   "anath": "Inath",
   "sisera": "Sayasaraa",
@@ -875,6 +966,7 @@
   "lappidoth": "Lapayadawath",
   "barak": "Baraq",
   "abinoam": "Abayanaim",
+  "kedesh naphtali": "Qadash",
   "kishon": "Qayashawan",
   "jabin's": "Yabayan",
   "jael": "Yail",
@@ -887,7 +979,12 @@
   "jerub-baal": "Yarabail",
   "jerubbaal": "Yarabail",
   "harod": "Iyanacharad",
+  "purah": "Parah",
+  "beth shittah": "Bayathahashatah",
+  "zererah": "Tzararah",
+  "abel meholah": "Abalamachawalah",
   "tabbath": "Tabath",
+  "beth barah": "Bayathabarah",
   "oreb": "Irab",
   "zeeb": "Zaab",
   "zebah": "Zabach",
@@ -895,6 +992,7 @@
   "penuel": "Panawaal",
   "karkor": "Qaraqar",
   "jether": "Yathar",
+  "baal berith": "Bailabarayath",
   "jotham": "Yawatham",
   "millo": "Malawaa",
   "gaal": "Gail",
@@ -905,6 +1003,7 @@
   "zalmon": "Tzalamawan",
   "thebez": "Thabatz",
   "dodo": "Dawadaw",
+  "kamon": "Qamawan",
   "syria": "Aram",
   "jephthah": "Yapathach",
   "gilead's": "Galaid",
@@ -919,13 +1018,19 @@
   "timnite": "Thamanay",
   "etam": "Iyatam",
   "lehi": "Lachay",
+  "ramath lehi": "Ramathalachay",
+  "en hakkore": "Iyanahaqawaraa",
   "sorek": "Shawaraq",
   "delilah": "Dalayalah",
   "dagon": "Dagawan",
-  "mahaneh": "Machanahadan",
+  "bethlehem judah": "Bayath-Lacham",
+  "mahaneh dan": "Machanahadan",
   "micah's": "Mayakah",
+  "beth rehob": "Bayatharachawab",
   "jebus": "Yabawas",
+  "baal tamar": "Bailathamar",
   "gidom": "Gadaim",
+  "jabesh gilead": "Yabash",
   "lebonah": "Labawanah",
   "elimelech": "Alayamalak",
   "naomi": "Naimay",
@@ -943,6 +1048,7 @@
   "obed": "Iwabad",
   "jesse": "Yashay",
   "ram": "Ram",
+  "ramathaim zophim": "Ramathayamatzawapayam",
   "jeroham": "Yaracham",
   "elihu": "Alayahaw",
   "tohu": "Thachaw",
@@ -957,15 +1063,20 @@
   "ichabod": "Ayakabawad",
   "dagon's": "Dagawan",
   "abinadab": "Abayanadab",
+  "beth kar": "Bayathakar",
   "shen": "Shan",
   "joel": "Yawaal",
   "abijah": "Abayah",
   "kish": "Qayash",
   "abiel": "Abayaal",
+  "becorath": "Bakawarath",
   "aphiah": "Apayach",
   "saul's": "Shaawal",
+  "shalishah": "Shalashah",
+  "shaalim": "Shailayam",
   "zelzah": "Tzalatzach",
   "nahash": "Nachash",
+  "jabesh": "Yabash",
   "bedan": "Badan",
   "michmash": "Makamas",
   "shual": "Shawail",
@@ -991,6 +1102,7 @@
   "adriel": "Idarayaal",
   "david's": "Dawad",
   "naioth": "Nawayath",
+  "secu": "Shakaw",
   "ezel": "Azal",
   "jonathan's": "Yahawanathan",
   "ahimelech": "Achayamalak",
@@ -1000,7 +1112,7 @@
   "nob": "Nab",
   "abiathar": "Abayathar",
   "hachilah": "Chakayalah",
-  "sela": "Salaihamachalaqawath",
+  "sela hammahlekoth": "Salaihamachalaqawath",
   "nabal": "Nabal",
   "abigail": "Abayagayal",
   "nabal's": "Nabal",
@@ -1012,8 +1124,12 @@
   "gilboa": "Galabai",
   "besor": "Bashawar",
   "siphmoth": "Shapamawath",
+  "racal": "Rakal",
+  "borashan": "Kawaraishan",
   "athach": "Ithak",
+  "beth shan": "Bayath-Shaan",
   "ishbosheth": "Ayashabashath",
+  "helkath hazzurim": "Chalaqathahatzarayam",
   "asahel": "Ishahaal",
   "ammah": "Amah",
   "giah": "Gayach",
@@ -1045,7 +1161,7 @@
   "elishua": "Alayashawai",
   "eliada": "Alayadai",
   "eliphelet": "Alayapalat",
-  "baale": "Bailayayahawadah",
+  "baale judah": "Bailayayahawadah",
   "uzzah": "Izaa",
   "ahio": "Achayaw",
   "obed-edom": "Ibadaadawam",
@@ -1059,6 +1175,7 @@
   "benaiah": "Banayah",
   "jehoiada": "Yahawayadai",
   "ziba": "Tzayabaa",
+  "lo debar": "Laadabar",
   "mica": "Mayakaa",
   "hanun": "Chanawan",
   "helam": "Chayalam",
@@ -1069,9 +1186,10 @@
   "jerubbesheth": "Yarabashath",
   "uriah's": "Awarayah",
   "jedidiah": "Yadayadayah",
-  "shimeah": "Shamaih",
   "absalom's": "Abayashalawam",
   "amnon's": "Amanawan",
+  "baal hazor": "Bailachatzawar",
+  "ammihur": "Imayachawar",
   "tekoa": "Thaqawai",
   "joab's": "Yawaab",
   "ahithophel": "Achayathapal",
@@ -1088,9 +1206,11 @@
   "rogelim": "Ragalayam",
   "chimham": "Kamaham",
   "bichri": "Bakaray",
+  "beth maacah": "Bayathamaikah",
   "adoram": "Adaram",
   "ira": "Iyaraa",
   "armoni": "Aramanay",
+  "zela": "Tzalai",
   "ishbibenob": "Yashabawabanab",
   "gob": "Gab",
   "sibbecai": "Sabakay",
@@ -1120,7 +1240,8 @@
   "zelek": "Tzalaq",
   "naharai": "Nacharay",
   "gareb": "Garab",
-  "tahtim": "Thachathayamachadashay",
+  "tahtim hodshi": "Thachathayamachadashay",
+  "dan jaan": "Danayain",
   "araunah": "Arawanah",
   "abishag": "Abayashag",
   "rei": "Raiy",
@@ -1133,13 +1254,17 @@
   "adoniram": "Adanayaram",
   "abda": "Ibadaa",
   "makaz": "Maqatz",
+  "elon beth hanan": "Ayalawanabayathachanan",
+  "arubboth": "Arabawath",
   "taphath": "Tapath",
   "baana": "Bainaa",
   "jokmeam": "Yaqamaim",
   "ahinadab": "Achayanadab",
   "paruah": "Parawach",
+  "ela": "Alaa",
   "geber": "Gabar",
   "solomon's": "Shalamah",
+  "tiphsah": "Thapasach",
   "ethan": "Ayathan",
   "calcol": "Kalakal",
   "darda": "Daradai",
@@ -1155,6 +1280,7 @@
   "rezon": "Razawan",
   "jeroboam": "Yarabaim",
   "nebat": "Nabat",
+  "zeredah": "Tzaradah",
   "zeruah": "Tzarawaih",
   "shishak": "Shayashaq",
   "rehoboam": "Rachabaim",
@@ -1164,11 +1290,12 @@
   "abijam": "Abayam",
   "abishalom": "Abayashalawam",
   "asa": "Asaa",
-  "also": "Maikah",
   "baasha": "Baishaa",
+  "ben hadad": "Banahadad",
   "tabrimmon": "Tabaramawan",
   "hezion": "Chazayawan",
   "ijon": "Iyawan",
+  "abel beth maacah": "Abalabayathamaikah",
   "jehu": "Yahawaa",
   "hanani": "Chananay",
   "baasha's": "Baishaa",
@@ -1191,9 +1318,9 @@
   "hazael": "Chazaal",
   "nimshi": "Namashay",
   "elisha": "Alayashai",
-  "but": "Banahadad",
   "naboth": "Nabawath",
   "ahab's": "Achaab",
+  "ramoth gilead": "Ramathagalaid",
   "imlah": "Yamalaa",
   "zedekiah": "Tzadaqayah",
   "chenaanah": "Kanainah",
@@ -1201,15 +1328,18 @@
   "ahaziah": "Achazayah",
   "azubah": "Izawabah",
   "shilhi": "Shalachay",
+  "baal zebub": "Bailazabawab",
   "jehoram": "Yahawaram",
+  "kir hareseth": "Qayaracharash",
   "gehazi": "Gayachazay",
   "naaman's": "Naiman",
-  "aren't": "Abanah",
+  "aren't abanah": "Abanah",
   "pharpar": "Parapar",
   "benhadad": "Banahadad",
   "zair": "Tzaiyar",
   "athaliah": "Ithalayah",
   "bidkar": "Badaqar",
+  "gur": "Gawar",
   "jehonadab": "Yahawanadab",
   "jehoahaz": "Yahawaachaz",
   "jehosheba": "Yahawashabai",
@@ -1227,16 +1357,16 @@
   "uzziah": "Izayah",
   "menahem": "Manacham",
   "gadi": "Gaday",
-  "tiphsah": "Thapasach",
   "pul": "Pawal",
   "pekahiah": "Paqachayah",
   "pekah": "Paqach",
   "remaliah": "Ramalayahaw",
   "arieh": "Arayah",
-  "tiglath": "Thagalathapalaasar",
+  "tiglath pileser": "Thagalathapalaasar",
   "jerusha": "Yarawashaa",
   "rezin": "Ratzayan",
   "ahaz": "Achaz",
+  "kir": "Qayar",
   "urijah": "Awarayah",
   "hezekiah": "Chazaqayah",
   "shalmaneser": "Shalamanaasar",
@@ -1245,8 +1375,12 @@
   "gozan": "Gawazan",
   "medes": "Maday",
   "babylon": "Babal",
+  "cuthah": "Kawath",
+  "avva": "Iwah",
   "sepharvaim": "Saparawayam",
+  "succoth benoth": "Sakawathabanawath",
   "cuth": "Kawath",
+  "nergal": "Naragal",
   "ashima": "Ashayamaa",
   "nibhaz": "Nabachaz",
   "tartak": "Tharathaq",
@@ -1273,7 +1407,7 @@
   "nisroch": "Nasarak",
   "sharezer": "Sharaatzar",
   "ararat": "Ararat",
-  "esar": "Asarachadawan",
+  "esar haddon": "Asarachadawan",
   "baladan": "Balaadan",
   "hephzibah": "Chapatzayabah",
   "uzza": "Izaa",
@@ -1291,6 +1425,8 @@
   "tikvah": "Thaqawah",
   "harhas": "Charachas",
   "topheth": "Thapath",
+  "nathan melech": "Nathanamalak",
+  "pharaoh necoh": "Paraihanakah",
   "hamutal": "Chamawatal",
   "jeremiah": "Yaramayah",
   "jehoiakim": "Yahawayaqayam",
@@ -1331,6 +1467,7 @@
   "jerioth": "Yarayaiwath",
   "jesher": "Yashar",
   "ardon": "Aradawan",
+  "caleb ephrathah": "Kalabaaparathah",
   "hezron's": "Chatzarawan",
   "ashhur": "Ashachawar",
   "bunah": "Bawanah",
@@ -1360,13 +1497,18 @@
   "jorkeam": "Yaraqaim",
   "moza": "Mawatzaa",
   "gazez": "Gazaz",
+  "jahdai": "Yahaday",
+  "regem": "Ragam",
   "jothan": "Yawatham",
   "geshan": "Gayashan",
   "pelet": "Palat",
   "shaaph": "Shaip",
   "sheber": "Shabar",
   "tirhanah": "Tharachanah",
+  "machbena": "Makabanaa",
+  "gibea": "Gabaia",
   "hareph": "Charap",
+  "beth gader": "Bayathagadar",
   "haroeh": "Raah",
   "jabez": "Yaibatz",
   "bathshua": "Bathashawai",
@@ -1383,7 +1525,7 @@
   "ohel": "Ahal",
   "berechiah": "Barakayah",
   "hasadiah": "Chasadayah",
-  "jushab": "Yawashabachasad",
+  "jushab hesed": "Yawashabachasad",
   "pelatiah": "Palatayah",
   "jeshaiah": "Yashaiyah",
   "rephaiah": "Rapayah",
@@ -1420,15 +1562,19 @@
   "aharhel": "Acharachal",
   "harum": "Haram",
   "chelub": "Kalawab",
+  "shuhah": "Shawachah",
   "mehir": "Machayar",
   "eshton": "Ashathawan",
+  "beth rapha": "Bayatharapaa",
   "paseah": "Pasach",
   "tehinnah": "Thachanah",
+  "ir nahash": "Iyaranachash",
   "hathath": "Chathath",
   "meonothai": "Maiwanathay",
   "harashim": "Charashayam",
   "iru": "Iyaraw",
   "naam": "Naim",
+  "jehallelel": "Yahalalaal",
   "ziphah": "Zayapah",
   "tiria": "Thayarayaa",
   "asarel": "Asharaal",
@@ -1444,22 +1590,28 @@
   "naham": "Nacham",
   "shimon": "Shayamawan",
   "rinnah": "Ranah",
+  "ben hanan": "Banachanan",
   "tilon": "Thawalawan",
   "zoheth": "Zawachath",
   "lecah": "Lakah",
   "laadah": "Laidah",
   "ashbea": "Ashabai",
   "jokim": "Yawaqayam",
+  "cozeba": "Kazabaa",
   "saraph": "Sharap",
   "jashubilehem": "Yashabayalacham",
+  "netaim": "Nataiyam",
   "jarib": "Yarayab",
   "hammuel": "Chamawaal",
   "hazarshual": "Chatzarashawail",
   "tolad": "Thawalad",
+  "hazar susim": "Chatzarasawasayam",
+  "beth biri": "Bayathabaraay",
   "tochen": "Thakan",
   "meshobab": "Mashawabab",
   "jamlech": "Yamalak",
   "joshah": "Yawashah",
+  "joshibiah": "Yawashabayah",
   "asiel": "Ishayaal",
   "jaakobah": "Yaiqabah",
   "jeshohaiah": "Yashawachayah",
@@ -1470,7 +1622,7 @@
   "shimri": "Shamaray",
   "gog": "Gawag",
   "beerah": "Baarah",
-  "tilgath": "Thagalathapalaasar",
+  "tilgath pilneser": "Thagalathapalaasar",
   "jeiel": "Yaiyaal",
   "azaz": "Izaz",
   "shapham": "Shapam",
@@ -1525,13 +1677,14 @@
   "eleadah": "Alaidah",
   "elead": "Alaid",
   "sheerah": "Shaarah",
-  "uzzen": "Azanashaarah",
+  "uzzen sheerah": "Azanashaarah",
   "rephah": "Rapach",
   "resheph": "Rashap",
   "telah": "Thalach",
   "ladan": "Laidan",
   "naaran": "Nairan",
   "azzah": "Izah",
+  "birzaith": "Barazawath",
   "japhlet": "Yapalat",
   "shomer": "Shawamar",
   "hotham": "Chawatham",
@@ -1600,7 +1753,7 @@
   "zecher": "Zakar",
   "mikloth": "Maqalawath",
   "eshbaal": "Ashabail",
-  "merib": "Marayababail",
+  "merib baal": "Marayababail",
   "pithon": "Payathawan",
   "tarea": "Thaarai",
   "jehoaddah": "Yahawaidah",
@@ -1613,11 +1766,13 @@
   "uthai": "Iwathay",
   "imri": "Amaray",
   "sallu": "Salaw",
+  "hassenuah": "Sanawaah",
   "ibneiah": "Yabanayah",
   "michri": "Makaray",
   "ibnijah": "Yabanayah",
   "jehoiarib": "Yahawayarayab",
   "meraioth": "Marayawath",
+  "pashhur": "Pashachawar",
   "malchijah": "Malakayah",
   "maasai": "Maishay",
   "jahzerah": "Yachazarah",
@@ -1637,7 +1792,6 @@
   "shimeam": "Shamaam",
   "tahrea": "Thacharai",
   "jarah": "Yairah",
-  "jabesh": "Yabash",
   "jashobeam": "Yashabaim",
   "pasdammim": "Pasadamayam",
   "shammoth": "Shamawath",
@@ -1646,6 +1800,7 @@
   "ithai": "Athay",
   "hurai": "Chawaray",
   "hashem": "Hasham",
+  "shagee": "Shagaa",
   "sacar": "Shakar",
   "eliphal": "Alayapal",
   "naarai": "Nairay",
@@ -1669,8 +1824,10 @@
   "chidon": "Kayadawan",
   "elpelet": "Alayapalat",
   "beeliada": "Bailayadai",
+  "baal perazim": "Bailaparatzayam",
   "uriel": "Awarayaal",
   "kushaiah": "Qawashayahaw",
+  "ben": "Ban",
   "jaaziel": "Yaizayaal",
   "shemiramoth": "Shamayaramawath",
   "jehiel": "Yachayaal",
@@ -1686,14 +1843,15 @@
   "jehiah": "Yachayah",
   "jahaziel": "Yachazayaal",
   "tibhath": "Tabachath",
+  "cun": "Kawan",
   "tou": "Thaiw",
   "shavsha": "Shawashaa",
+  "arammaacah": "Aram",
   "shophach": "Shawapak",
   "sippai": "Sapay",
   "lahmi": "Lachamay",
   "ornan": "Aranan",
   "zetham": "Zatham",
-  "shelomoth": "Shalamawath",
   "haziel": "Chazayaal",
   "zina": "Zayanaa",
   "zizah": "Zayazah",
@@ -1709,6 +1867,9 @@
   "jeshebeab": "Yashabaab",
   "bilgah": "Balagah",
   "hezir": "Chazayar",
+  "happizzez": "Patzatz",
+  "pethahiah": "Pathachayah",
+  "jehezkel": "Yachazaqaal",
   "gamul": "Gamawal",
   "maaziah": "Maizayah",
   "shubael": "Shabawaal",
@@ -1726,7 +1887,9 @@
   "mallothi": "Malawathay",
   "hothir": "Hawathayar",
   "mahazioth": "Machazayaawath",
+  "izri": "Yatzaray",
   "jesharelah": "Yasharaalah",
+  "azarel": "Izaraal",
   "jathniel": "Yathanayaal",
   "jehohanan": "Yahawachanan",
   "eliehoenai": "Alayahawaiyanay",
@@ -1738,21 +1901,20 @@
   "semachiah": "Samakayahaw",
   "tebaliah": "Tabalayahaw",
   "shelemiah": "Shalamayah",
+  "shallecheth": "Shalakath",
   "jehieli": "Yachayaalay",
   "jerijah": "Yarayah",
   "zabdiel": "Zabadayaal",
-  "dodai": "Dawaday",
   "ammizabad": "Imayazabad",
   "shamhuth": "Shamahawath",
   "heldai": "Chaladay",
-  "azarel": "Izaraal",
   "ezri": "Izaray",
   "shitrai": "Shataray",
   "adlai": "Idalay",
   "obil": "Awabayal",
   "hachmoni": "Chakamawanay",
   "parvaim": "Parawayam",
-  "zeredah": "Tzaradah",
+  "hamath zobah": "Chamathatzawabah",
   "tadmor": "Thadamar",
   "arabia": "Irab",
   "adoraim": "Adawarayam",
@@ -1760,6 +1922,8 @@
   "zaham": "Zaham",
   "jeshanah": "Yashanah",
   "oded": "Iwadad",
+  "abel maim": "Abalamayam",
+  "ben hail": "Banachayal",
   "jehonathan": "Yahawanathan",
   "tobijah": "Tawabayah",
   "tobadonijah": "Tawabaadanayahaw",
@@ -1768,13 +1932,16 @@
   "imla": "Yamalaa",
   "ziz": "Tzayatz",
   "jeruel": "Yarawaal",
+  "dodavahu": "Dawadawahaw",
   "jehoshabeath": "Yahawashabaith",
   "elishaphat": "Alayashapat",
   "zibiah": "Tzabayah",
+  "shimeath": "Shamaith",
   "shimrith": "Shamarayath",
   "jehoaddan": "Yahawaidayan",
   "jechiliah": "Yakalayah",
   "jabneh": "Yabanah",
+  "gur baal": "Gawarabail",
   "jerushah": "Yarawashaa",
   "ophel": "Ipal",
   "meshillemoth": "Mashalamawath",
@@ -1827,12 +1994,14 @@
   "shobai": "Shabay",
   "ziha": "Tzayachaa",
   "hasupha": "Chashawapaa",
+  "tabbaoth": "Tabaiwath",
   "keros": "Qayaras",
   "siaha": "Sayaia",
   "padon": "Padawan",
   "lebanah": "Labanaa",
   "hagabah": "Chagabaa",
   "hagab": "Chagab",
+  "shamlai": "Shamalay",
   "giddel": "Gadal",
   "gahar": "Gachar",
   "nekoda": "Naqawadaa",
@@ -1846,15 +2015,19 @@
   "mehida": "Machayadaa",
   "harsha": "Charashaa",
   "barkos": "Baraqawas",
+  "temah": "Thamach",
   "neziah": "Natzayach",
   "hatipha": "Chatayapaa",
   "sotai": "Sawatay",
+  "hassophereth": "Saparath",
   "peruda": "Parawadaa",
   "jaalah": "Yailaa",
   "darkon": "Daraqawan",
   "hattil": "Chatayal",
-  "pochereth": "Pakarathatzabayayam",
+  "pochereth hazzebaim": "Pakarathatzabayayam",
   "ami": "Amay",
+  "tel melah": "Thalamalach",
+  "tel harsha": "Thalacharashaa",
   "addan": "Adan",
   "tobiah": "Tawabayah",
   "habaiah": "Chabayah",
@@ -1862,14 +2035,15 @@
   "henadad": "Chanadad",
   "darius": "Darayawash",
   "ahasuerus": "Achashawarawash",
+  "artaxerxes": "Arathachashashathaa",
   "bishlam": "Bashalam",
   "tabeel": "Tabaal",
   "shimshai": "Shamashay",
   "osnappar": "Asanapar",
-  "artaxerxes": "Arathachashashathaa",
   "haggai": "Chagay",
   "shetharbozenai": "Shatharabawazanay",
   "achmetha": "Achamathaa",
+  "media": "Maday",
   "adar": "Adar",
   "ezra": "Izaraa",
   "josiphiah": "Yawasapayah",
@@ -1888,7 +2062,6 @@
   "elasah": "Alaishah",
   "kelaiah": "Qalayah",
   "kelita": "Qalayataa",
-  "pethahiah": "Pathachayah",
   "ramiah": "Ramayah",
   "izziah": "Yazayah",
   "aziza": "Izayazaa",
@@ -1913,19 +2086,24 @@
   "shashai": "Shashay",
   "sharai": "Sharay",
   "zebina": "Zabayanaa",
+  "hacaliah": "Chakalayah",
   "chislev": "Kasalaw",
   "shushan": "Shawashan",
   "nisan": "Nayasan",
   "sanballat": "Sanabalat",
   "geshem": "Gasham",
+  "hananel": "Chananaal",
   "hassenaah": "Sanaah",
+  "meshezabel": "Mashayazabaal",
   "joiada": "Yawayadai",
   "besodeiah": "Basawadayah",
   "melatiah": "Malatayah",
   "jadon": "Yadawan",
   "harhaiah": "Charahayah",
   "harumaph": "Charawamap",
+  "hashabneiah": "Chashabanayah",
   "hallohesh": "Lawachash",
+  "beth haccherem": "Bayathahakaram",
   "shallun": "Shalawan",
   "colhozeh": "Kalachazah",
   "azbuk": "Izabawaq",
@@ -1947,16 +2125,17 @@
   "sia": "Sayaia",
   "lebana": "Labanaa",
   "hagaba": "Chagabaa",
+  "salmai": "Shalamay",
   "bazlith": "Batzalawath",
   "sophereth": "Saparath",
   "perida": "Parawadaa",
   "jaala": "Yailaa",
   "addon": "Adawan",
+  "hobaiah": "Chabayah",
   "anaiah": "Inayah",
   "hashbaddanah": "Chashabadanah",
   "bunni": "Banay",
   "chenani": "Kananay",
-  "hashabneiah": "Chashabanayah",
   "athaiah": "Ithayah",
   "hazaiah": "Chazayah",
   "joed": "Yawaid",
@@ -1967,9 +2146,12 @@
   "pelaliah": "Palalayah",
   "amzi": "Amatzay",
   "amashsai": "Imashasay",
+  "ahzai": "Achazay",
   "bakbukiah": "Baqabaqayah",
   "gishpa": "Gashapaa",
   "jekabzeel": "Yaqabatzaal",
+  "meconah": "Makanah",
+  "en rimmon": "Iyanaramawan",
   "aija": "Iy",
   "neballat": "Nabalat",
   "ginnethoi": "Ganathawan",
@@ -1979,6 +2161,7 @@
   "joiakim": "Yawayaqayam",
   "jaddua": "Yadawai",
   "meraiah": "Marayah",
+  "malluchi": "Malawak",
   "helkai": "Chalaqay",
   "ginnethon": "Ganathawan",
   "moadiah": "Mawaidayah",
@@ -1990,7 +2173,6 @@
   "maai": "Maiy",
   "jezrahiah": "Yazarachayah",
   "india": "Hadaw",
-  "media": "Maday",
   "vashti": "Washathay",
   "mehuman": "Mahawaman",
   "biztha": "Bazathaa",
@@ -2005,6 +2187,7 @@
   "meres": "Maras",
   "marsena": "Marasanaa",
   "memucan": "Mamawakan",
+  "susa": "Shawashan",
   "hegai": "Hagaa",
   "hadassah": "Hadasah",
   "esther": "Asathar",
@@ -2041,7 +2224,7 @@
   "barachel": "Barakaal",
   "jemimah": "Yamayamah",
   "keziah": "Qatzayaih",
-  "keren": "Qaranahapawak",
+  "keren happuch": "Qaranahapawak",
   "gebal": "Gabal",
   "agur": "Agawar",
   "jakeh": "Yaqah",
@@ -2049,12 +2232,14 @@
   "lemuel": "Lamawaal",
   "kedar's": "Qadar",
   "amana": "Amanah",
+  "baal hamon": "Bailahamawan",
   "shearjashub": "Shaarayashawab",
   "remaliah's": "Ramalayahaw",
   "immanuel": "Imanawaal",
-  "maher": "Maharashalalachashabaz",
+  "maher shalal hash baz": "Maharashalalachashabaz",
   "jeberechiah": "Yabarakayahaw",
   "calno": "Kalanah",
+  "aiath": "Iy",
   "madmenah": "Madamanah",
   "gebim": "Gabayam",
   "pathros": "Patharawas",
@@ -2062,7 +2247,9 @@
   "horonaim": "Charanayam",
   "nimrim": "Namarayam",
   "eglaim": "Agalayam",
+  "beer elim": "Baaraalayam",
   "dimon": "Dayamawan",
+  "kir heres": "Qayaracharash",
   "sargon": "Saragawan",
   "media's": "Maday",
   "canaan's": "Kanain",
@@ -2073,16 +2260,19 @@
   "bel": "Bal",
   "sinim": "Sayanayam",
   "zion's": "Tzayawan",
+  "destiny": "Manay",
   "tahpanhes": "Thachapanachas",
   "uphaz": "Awapaz",
-  "pashhur": "Pashachawar",
   "coniah": "Kanayahaw",
   "sheshach": "Shashak",
   "azzur": "Izawar",
   "jeremiah's": "Yaramayah",
   "gemariah": "Gamarayah",
+  "goah": "Gaih",
   "hanamel": "Chanamaal",
   "neriah": "Narayah",
+  "mahseiah": "Machasayah",
+  "habazziniah": "Chabatzanayah",
   "igdaliah": "Yagadalayahaw",
   "jehudi": "Yahawaday",
   "cushi": "Kawashay",
@@ -2091,6 +2281,7 @@
   "irijah": "Yaraayayah",
   "jucal": "Yawakal",
   "ebedmelech": "Ibadamalak",
+  "nergal sharezer": "Naragalasharaatzar",
   "samgarnebo": "Samagaranabaw",
   "sarsechim": "Sharasakayam",
   "zedekiah's": "Tzadaqayah",
@@ -2098,7 +2289,11 @@
   "ephai": "Iwapay",
   "jezaniah": "Yazanayah",
   "baalis": "Bailayas",
+  "pharaoh hophra": "Paraihachaparai",
   "madmen": "Madaman",
+  "beth diblathaim": "Bayathadabalathayam",
+  "beth gamul": "Bayathagamawal",
+  "beth meon": "Bayathabailamaiwan",
   "merodach": "Maradak",
   "chaldea": "Kashaday",
   "merathaim": "Marathayam",
@@ -2108,6 +2303,8 @@
   "jehoiachin's": "Yawayakayan",
   "ezekiel": "Yachazaqaal",
   "buzi": "Bawazay",
+  "tel aviv": "Thalaabayab",
+  "diblah": "Dabalah",
   "tammuz": "Thamawaz",
   "bamah": "Bamah",
   "oholah": "Ahalah",
@@ -2115,18 +2312,24 @@
   "shoa": "Shawai",
   "koa": "Qawai",
   "arvad": "Arawad",
+  "helbon": "Chalabawan",
   "vedan": "Wadan",
   "canneh": "Kanah",
   "chilmad": "Kalamad",
+  "seveneh": "Sawanah",
   "aven": "Awan",
   "pibeseth": "Payabasath",
   "tehaphnehes": "Thachapanachas",
+  "hamon gog": "Hamawanagawag",
   "hamonah": "Hamawanah",
+  "israel—for": "Yashar-Al",
+  "en eglaim": "Iyanaigalayam",
   "hethlon": "Chathalan",
   "berothah": "Barawathah",
   "sibraim": "Sabarayam",
   "hatticon": "Chatzarahathayakawan",
   "hauran": "Chawaran",
+  "hazar enon": "Chatzar-Iyanawan",
   "ashpenaz": "Ashapanaz",
   "belteshazzar": "Balatashaatzar",
   "shadrach": "Shadarak",
@@ -2135,25 +2338,28 @@
   "belshazzar": "Balashaatzar",
   "ulai": "Awalay",
   "gabriel": "Gabarayaal",
+  "greece": "Yawan",
   "hosea": "Hawashai",
   "diblaim": "Dabalayam",
   "jareb": "Yarab",
-  "memphis": "Map",
   "shalman": "Shalaman",
+  "beth arbel": "Bayathaarabaal",
   "pethuel": "Pathawaal",
   "amos": "Imawas",
   "sepharad": "Saparad",
   "jonah's": "Yawanah",
+  "shaphir": "Shapayar",
   "zaanan": "Tzaanan",
   "maroth": "Marawath",
-  "moresheth": "Mawarashathagath",
+  "moresheth gath": "Mawarashathagath",
   "nahum": "Nachawam",
   "habakkuk": "Chabaqawaq",
+  "cushan": "Kawashan",
   "jehozadak": "Yahawatzadaq",
   "shebat": "Shabat",
   "hen": "Chan",
+  "regem melech": "Ragamamalak",
   "hadrach": "Chadarak",
-  "greece": "Yawan",
   "hadadrimmon": "Hadadaramawan",
   "megiddon": "Magadawan",
   "malachi": "Malaakay"
@@ -2186,6 +2392,7 @@
   "horite": "Charay",
   "ishmaelites": "Yashamaialay",
   "levite": "Lawayay",
+  "israelites": "Yashar-Al",
   "kohathites": "Qahathay",
   "midianite": "Madayanay",
   "amalekite": "Imalaqay",
@@ -2219,7 +2426,6 @@
   "philistine": "Palashathay",
   "edomite": "Adawamay",
   "jerahmeelites": "Yarachamaalay",
-  "israelites": "Yasharaal",
   "beerothite": "Baarathay",
   "beerothites": "Baarathay",
   "gittite": "Gathay",
@@ -2260,8 +2466,11 @@
  },
  "divine": {
   "yahweh": "Yahawah",
+  "yahweh's": "Yahawah",
   "almighty": "Shaday",
   "yah": "Yah",
+  "yah's": "Yah",
+  "lord's": "Adanay",
   "god": "Alahayam",
   "gods": "Alahayam",
   "lord": "Adanay",
@@ -2281,14 +2490,14 @@
   "second": "shanay",
   "appear": "raah",
   "land": "aratz",
-  "seas": "yam",
+  "seas": "yamayam",
   "seed": "zarai",
   "third": "shalayashay",
-  "lights": "maawar",
-  "signs": "awath",
-  "days": "yawam",
+  "lights": "maarath",
+  "signs": "athawath",
+  "days": "yamayam",
   "two": "shanayam",
-  "stars": "kawakab",
+  "stars": "kawakabayam",
   "fourth": "rabayaiy",
   "sea": "yam",
   "fifth": "chamayashay",
@@ -2309,13 +2518,13 @@
   "river": "nahar",
   "water": "mayam",
   "four": "arabai",
-  "heads": "raash",
+  "heads": "raashay",
   "name": "sham",
   "first": "raashawan",
   "stone": "aban",
   "commanded": "tzawah",
   "die": "mawath",
-  "names": "sham",
+  "names": "shamawath",
   "woman": "ayashah",
   "father": "ab",
   "mother": "am",
@@ -2350,8 +2559,8 @@
   "hundred": "maah",
   "thirty": "shalawashayam",
   "eight": "shamanah",
-  "sons": "ban",
-  "daughters": "banath",
+  "sons": "banay",
+  "daughters": "banawath",
   "nine": "thashai",
   "five": "chamash",
   "twelve": "shanayam",
@@ -2376,14 +2585,14 @@
   "clean": "tahawar",
   "nights": "layal",
   "six": "shash",
-  "mountains": "har",
+  "mountains": "harayam",
   "wind": "rawach",
   "tenth": "isharawan",
   "rest": "yathar",
   "foot": "ragal",
   "families": "mashapachah",
   "altar": "mazabach",
-  "offerings": "ilah",
+  "offerings": "ilawath",
   "curse": "qalalah",
   "man's": "ayash",
   "fear": "yaraa",
@@ -2395,8 +2604,8 @@
   "father's": "ab",
   "servant": "ibad",
   "servants": "ibad",
-  "nations": "gaway",
-  "lands": "aratz",
+  "nations": "gawayam",
+  "lands": "aratzawath",
   "kingdom": "mamalakah",
   "mountain": "har",
   "burn": "qatar",
@@ -2410,15 +2619,15 @@
   "souls": "napash",
   "appeared": "raah",
   "save": "yashai",
-  "princes": "shar",
+  "princes": "sharay",
   "plagues": "makah",
   "wicked": "rashai",
-  "sinners": "chataa",
+  "sinners": "chataayam",
   "arise": "qawam",
   "king": "malak",
   "kings": "malakayam",
   "wilderness": "madabar",
-  "pits": "bawar",
+  "pits": "barawath",
   "goods": "rakawash",
   "king's": "malak",
   "priest": "kahan",
@@ -2434,7 +2643,7 @@
   "iniquity": "iwan",
   "angel": "malaak",
   "possession": "achazah",
-  "peoples": "im",
+  "peoples": "imayam",
   "command": "tzawah",
   "justice": "mashapat",
   "forty's": "arabaiyam",
@@ -2464,35 +2673,35 @@
   "oath": "shabawaih",
   "truth": "amath",
   "mother's": "am",
-  "words": "dabar",
+  "words": "dabaray",
   "sister's": "achawath",
   "prosper": "tzalach",
-  "thousands": "alap",
+  "thousands": "alapayam",
   "hate": "shanaa",
   "veil": "parakath",
   "gifts": "mathanah",
   "commandments": "matzawah",
-  "statutes": "chaq",
+  "statutes": "chaqah",
   "laws": "thawarah",
   "guilt": "asham",
   "possessions": "maqanah",
-  "spirits": "awab",
+  "spirits": "abawath",
   "loves": "ahab",
   "turns": "shawab",
   "anger": "ap",
-  "stones": "aban",
+  "stones": "abanayam",
   "sleep": "shanah",
   "oil": "shaman",
   "vow": "nadar",
   "praise": "halal",
   "ones": "tap",
-  "rods": "maqal",
+  "rods": "maqalawath",
   "anointed": "mashach",
   "inheritance": "nachalah",
   "power": "kach",
   "labor": "imal",
   "sacrifice": "zabach",
-  "messengers": "malaak",
+  "messengers": "malaakayam",
   "gift": "mathanah",
   "grave": "qabar",
   "upright": "yashar",
@@ -2510,14 +2719,14 @@
   "houses": "bayath",
   "hearts": "lab",
   "mercy": "racham",
-  "slaves": "ibad",
+  "slaves": "ibadayam",
   "abomination": "thawaibah",
   "mouths": "pah",
   "ruler": "mashal",
   "glory": "kabawad",
   "believe": "aman",
   "sacrifices": "zabach",
-  "priests": "kahan",
+  "priests": "kahanayam",
   "statute": "chaqah",
   "alone": "badad",
   "swords": "charab",
@@ -2528,15 +2737,15 @@
   "ruler's": "chaqaq",
   "path": "arach",
   "salvation": "yashawaih",
-  "blessings": "barakah",
+  "blessings": "barakath",
   "crown": "itarah",
   "river's": "yaar",
   "memorial": "zakarawan",
-  "wonders": "mawapath",
+  "wonders": "palaa",
   "rod": "matah",
   "redeem": "padah",
   "judgments": "mashapat",
-  "rivers": "nahar",
+  "rivers": "naharawath",
   "plague": "nagai",
   "congregation": "idah",
   "passover": "pasach",
@@ -2548,18 +2757,18 @@
   "holiness": "qadash",
   "praises": "zamar",
   "sanctuary": "qadash",
-  "rulers": "shar",
+  "rulers": "sharay",
   "sabbath": "shabath",
   "testimony": "idawath",
   "counsel": "itzah",
-  "hundreds": "maah",
+  "hundreds": "maawath",
   "fifties": "chamashayam",
-  "tens": "ishar",
+  "tens": "isharath",
   "commands": "tzawah",
   "sanctified": "qadash",
   "ordinances": "mashapat",
   "rises": "qawam",
-  "judges": "shapat",
+  "judges": "shapatayam",
   "eye": "iyan",
   "destroys": "shachath",
   "eye's": "iyan",
@@ -2589,7 +2798,7 @@
   "sanctifies": "qadash",
   "repent": "nacham",
   "ways": "darak",
-  "altars": "mazabach",
+  "altars": "mazabachawath",
   "sins": "chataah",
   "unclean": "tamaa",
   "swears": "shabai",
@@ -2599,7 +2808,7 @@
   "people's": "im",
   "fours": "arabai",
   "departed": "sawar",
-  "tenths": "isharawan",
+  "tenths": "isharanayam",
   "house's": "bayath",
   "transgressions": "pashai",
   "iniquities": "iwan",
@@ -2615,24 +2824,24 @@
   "redeems": "gaal",
   "tabernacle's": "mashakan",
   "amen": "aman",
-  "seeds": "charatzan",
-  "prophets": "nabayaa",
+  "seeds": "charatzanayam",
+  "prophets": "nabayaayam",
   "day's": "yawam",
   "faithful": "aman",
   "commandment": "matzawah",
   "star": "kawakab",
   "remnant": "shaarayath",
   "congregation's": "idah",
-  "images": "pasayal",
-  "kingdoms": "mamalakah",
+  "images": "tzalamay",
+  "kingdoms": "mamalakawath",
   "testimonies": "idawath",
   "confusion": "mahawamah",
   "wonder": "mawapath",
   "serves": "ibad",
   "husband's": "yabam",
-  "evils": "rai",
+  "evils": "raiwath",
   "faithfulness": "amawanah",
-  "moons": "chadash",
+  "moons": "chadashayam",
   "sisters": "achawath",
   "horn": "qaran",
   "inheritances": "nachal",
@@ -2650,28 +2859,28 @@
   "reigns": "malak",
   "name's": "sham",
   "messenger": "malaak",
-  "lions": "aray",
+  "lions": "arayawath",
   "word's": "dabar",
-  "shields": "magan",
+  "shields": "maganayam",
   "minds": "napash",
   "mercies": "racham",
   "fears": "yaraa",
   "queen": "malakah",
-  "ministers": "sharath",
+  "ministers": "masharathay",
   "satan": "shatan",
   "prophecy": "nabawaah",
   "prophesies": "nabaa",
-  "passovers": "pasach",
+  "passovers": "pasachayam",
   "prospers": "tzalach",
   "worships": "shachah",
   "queen's": "malakah",
   "crush": "dakaa",
   "adversary's": "tzar",
-  "paths": "arach",
+  "paths": "arachawath",
   "soul's": "napash",
   "returns": "shawab",
   "restores": "shawab",
-  "scoffers": "lawatz",
+  "scoffers": "latzayam",
   "selah": "salah",
   "counsels": "mawaitzah",
   "heart's": "napash",
@@ -2681,12 +2890,12 @@
   "create": "baraa",
   "confound": "palag",
   "level": "nachath",
-  "congregations": "maqahal",
-  "crowns": "itarah",
-  "winds": "rawach",
+  "congregations": "maqahalawath",
+  "crowns": "itar",
+  "winds": "rawachawath",
   "flames": "lahat",
   "truth's": "amath",
-  "thrones": "kasaa",
+  "thrones": "kasaawath",
   "scoffer": "lawatz",
   "understanding's": "thabawan",
   "sinner": "chataa",
@@ -2695,10 +2904,10 @@
   "family's": "bayath",
   "assemblies": "maqaraa",
   "oils": "shaman",
-  "queens": "malakah",
+  "queens": "malakawath",
   "arises": "qawam",
-  "veils": "railah",
-  "wines": "shamar",
+  "veils": "railawath",
+  "wines": "shamarayam",
   "faith": "amawan",
   "precept": "tzaw",
   "departs": "sawar",
@@ -2711,7 +2920,7 @@
   "covenants": "barayath",
   "creates": "baraa",
   "prophet's": "nabayaa",
-  "staffs": "maqal"
+  "staffs": "maqalawath"
  },
  "ambiguous": {
   "god": [
@@ -2719,13 +2928,14 @@
    "Al×197",
    "Alawah×49"
   ],
+  "god's": [
+   "Alahayam×36",
+   "Al×4",
+   "Alawah×1"
+  ],
   "abel": [
    "Habal×8",
-   "Abalamachawalah×3",
-   "Abal×3",
-   "Abalabayathamaikah×2",
-   "Abalamatzarayam×1",
-   "Abalamayam×1"
+   "Abal×3"
   ],
   "tubal": [
    "Thawabal×8",
@@ -2757,7 +2967,8 @@
    "Haran×7"
   ],
   "egypt": [
-   "Matzarayam×565",
+   "Matzarayam×566",
+   "Matzawar×5",
    "Matzaray×4"
   ],
   "egyptians": [
@@ -2767,28 +2978,18 @@
   ],
   "pharaoh": [
    "Paraih×212",
-   "Paraihanakah×5",
-   "Yahawah×4",
-   "Paraihachaparai×1"
+   "Yahawah×4"
   ],
   "jordan": [
    "Yaradan×168",
    "Kamaham×2"
   ],
-  "en": [
-   "Iyanagaday×6",
-   "Iyanaragal×4",
-   "Iyanaganayam×2",
-   "Iyanamashapat×1",
-   "Iyanathapawach×1",
-   "Iyanachadah×1",
-   "Iyanachatzawar×1",
-   "Iyanahaqawaraa×1",
-   "Iyanaramawan×1",
-   "Iyanaigalayam×1"
+  "kadesh": [
+   "Qadash×17",
+   "Qadashabaranai×1"
   ],
   "amalekites": [
-   "Imalaq×9",
+   "Imalaq×14",
    "Imalaqay×6"
   ],
   "tamar": [
@@ -2804,20 +3005,20 @@
    "Matzarayam×3"
   ],
   "beer": [
-   "Baaralachayaraay×3",
    "Baar×2",
-   "Baaraalayam×1"
+   "Baaralachayaraay×1"
   ],
   "isaac": [
    "Yatzachaq×101",
    "Yashachaq×4"
   ],
-  "ben": [
-   "Banahadad×12",
-   "Banaimay×1",
-   "Banachanan×1",
-   "Ban×1",
-   "Banachayal×1"
+  "moabites": [
+   "Mawaab×12",
+   "Mawaabay×4"
+  ],
+  "kiriath": [
+   "Qarayathaarabai×1",
+   "Qarayathayairayam×1"
   ],
   "mesopotamia": [
    "Aramanaharayam×3",
@@ -2827,36 +3028,19 @@
    "Aramay×7",
    "Aramayath×4"
   ],
-  "elon": [
-   "Ayalawan×7",
-   "Ayalawanabayathachanan×1"
-  ],
   "judah": [
    "Yahawadah×780",
    "Yahawad×6",
    "Gath×2",
    "Yahawaday×1"
   ],
-  "dan": [
-   "Dan×15",
-   "Danayain×1"
-  ],
   "joseph": [
    "Yawasap×189",
    "Yahawasap×1"
   ],
-  "now": [
-   "Kay×1",
-   "Adanayatzadaq×1",
-   "Mawaab×1",
-   "Pashachawar×1"
-  ],
-  "succoth": [
-   "Sakawath×18",
-   "Sakawathabanawath×1"
-  ],
   "israel": [
-   "Yasharaal×2441",
+   "Yashar-Al×2433",
+   "Yasharaal×8",
    "Abayashay×2",
    "Yahawah×2"
   ],
@@ -2885,22 +3069,6 @@
    "Adad×1",
    "Chadad×1"
   ],
-  "baal": [
-   "Bail×59",
-   "Bailapaiwar×6",
-   "Bailachanan×5",
-   "Bailazabawab×4",
-   "Bailatzapawan×3",
-   "Bailamaiwan×3",
-   "Bailagad×3",
-   "Bailacharamawan×2",
-   "Bailabarayath×2",
-   "Bailaparatzayam×2",
-   "Bamawath×1",
-   "Bailathamar×1",
-   "Bailachatzawar×1",
-   "Bailahamawan×1"
-  ],
   "midianites": [
    "Madayan×7",
    "Madayanay×3",
@@ -2918,6 +3086,10 @@
    "Pawaah×2",
    "Pawaih×1"
   ],
+  "moses": [
+   "Mashah×755",
+   "Manashah×1"
+  ],
   "gershom": [
    "Garasham×8",
    "Garashawan×1"
@@ -2926,14 +3098,20 @@
    "Yatharaw×9",
    "Yathar×1"
   ],
+  "levites": [
+   "Lawayay×247",
+   "Laway×5",
+   "Ban×4"
+  ],
   "elkanah": [
    "Alaqanah×12",
    "Athanay×2"
   ],
-  "levites": [
-   "Lawayay×247",
-   "Ban×4",
-   "Laway×4"
+  "baal": [
+   "Bail×59",
+   "Bailapaiwar×5",
+   "Bailatzapawan×1",
+   "Bamawath×1"
   ],
   "joshua": [
    "Yahawashawai×218",
@@ -2947,18 +3125,6 @@
    "Kawashay×8",
    "Kawashayath×2"
   ],
-  "caleb": [
-   "Kalab×30",
-   "Kalabaaparathah×1"
-  ],
-  "hamath": [
-   "Chamath×35",
-   "Chamathatzawabah×1"
-  ],
-  "hor": [
-   "Har×12",
-   "Charahagadagad×2"
-  ],
   "gileadites": [
    "Galaid×2",
    "Galaiday×1"
@@ -2967,66 +3133,9 @@
    "Ibarayam×4",
    "Iyayahaibarayam×1"
   ],
-  "ataroth": [
-   "Itarawath×4",
-   "Itarawathaadar×2"
-  ],
-  "beth": [
-   "Bayathashamash×20",
-   "Bayathachawarawan×14",
-   "Bayathashaan×9",
-   "Bayathaawan×7",
-   "Bayathahayashayamawath×4",
-   "Bayathapaiwar×4",
-   "Bayathatzawar×4",
-   "Bayathachagalah×3",
-   "Bayathahairabah×3",
-   "Bayathainath×3",
-   "Bayathanamarah×2",
-   "Bayathaal×2",
-   "Bayathabailamaiwan×2",
-   "Bayathapalat×2",
-   "Bayathadagawan×2",
-   "Bayathabarah×2",
-   "Bayatharachawab×2",
-   "Bayathamaikah×2",
-   "Bayathahakaram×2",
-   "Bayathaharan×1",
-   "Bayathaharam×1",
-   "Bayathathapawach×1",
-   "Bayathainawath×1",
-   "Bayathahamarakabawath×1",
-   "Bayathalabaawath×1",
-   "Bayathapatzatz×1",
-   "Bayathahaimaq×1",
-   "Bayathahashatah×1",
-   "Bayathakar×1",
-   "Bayathagadar×1",
-   "Bayatharapaa×1",
-   "Bayathadabalathayam×1",
-   "Bayathagamawal×1",
-   "Bayathaarabaal×1"
-  ],
   "jair": [
    "Yaayar×9",
    "Yaiwar×1"
-  ],
-  "rimmon": [
-   "Ramawan×15",
-   "Ramanaparatz×2"
-  ],
-  "bene": [
-   "Banayayaiqan×2",
-   "Banayabaraq×1"
-  ],
-  "hazar": [
-   "Chatzaraiyanan×3",
-   "Chatzarashawail×3",
-   "Chatzaraadar×1",
-   "Chatzaragadah×1",
-   "Chatzarasawasah×1",
-   "Chatzarasawasayam×1",
-   "Chatzaraiyanawan×1"
   ],
   "bukki": [
    "Baqay×2",
@@ -3040,10 +3149,6 @@
    "Labanawan×61",
    "Shalamah×5"
   ],
-  "moabites": [
-   "Mawaab×7",
-   "Mawaabay×4"
-  ],
   "ammonites": [
    "Imawanay×6",
    "Imawan×1"
@@ -3053,13 +3158,9 @@
    "Bailacharamawan×1"
   ],
   "ramoth": [
-   "Ramathagalaid×20",
    "Raamawath×4",
+   "Ramathagalaid×2",
    "Ramawath×1"
-  ],
-  "beeroth": [
-   "Baarawath×5",
-   "Baarathabanayayaiqan×1"
   ],
   "rahab": [
    "Rachab×5",
@@ -3069,17 +3170,9 @@
    "Qarayathayairayam×18",
    "Yairayam×1"
   ],
-  "therefore": [
-   "Adanayatzadaq×1",
-   "Ahalayabah×1"
-  ],
-  "ramath": [
-   "Ramathahamatzapah×1",
-   "Ramathalachay×1"
-  ],
-  "migdal": [
-   "Magadalagad×1",
-   "Magadalaal×1"
+  "iphtah": [
+   "Yapathach×1",
+   "Yapathachaal×1"
   ],
   "shamir": [
    "Shamayar×3",
@@ -3088,26 +3181,6 @@
   "gibeah": [
    "Gabaih×42",
    "Gabai×1"
-  ],
-  "kiriath": [
-   "Qarayathabail×1",
-   "Qarayathayairayam×1"
-  ],
-  "baalath": [
-   "Bailath×3",
-   "Bailathabaar×1"
-  ],
-  "gath": [
-   "Gatharamawan×4",
-   "Gathahachapar×2"
-  ],
-  "helkath": [
-   "Chalaqath×2",
-   "Chalaqathahatzarayam×1"
-  ],
-  "cushan": [
-   "Kawashanarashaithayam×2",
-   "Kawashan×1"
   ],
   "ehud": [
    "Ahawad×9",
@@ -3164,9 +3237,17 @@
    "Yawanadab×7",
    "Yahawanadab×5"
   ],
+  "shimeah": [
+   "Shamaih×2",
+   "Shamaah×1"
+  ],
   "sheva": [
    "Shayaa×1",
    "Shawaa×1"
+  ],
+  "dodai": [
+   "Dawadaw×1",
+   "Dawaday×1"
   ],
   "iddo": [
    "Idaw×9",
@@ -3184,29 +3265,17 @@
   ],
   "micaiah": [
    "Mayakayahaw×20",
-   "Mayakah×2",
-   "Mayakayah×1"
-  ],
-  "kir": [
-   "Qayaracharash×5",
-   "Qayar×5"
-  ],
-  "gur": [
-   "Gawar×1",
-   "Gawarabail×1"
+   "Mayakayah×3",
+   "Mayakah×2"
   ],
   "jews": [
    "Yahawaday×58",
    "Yahawadaay×10",
    "Yahawadayath×6"
   ],
-  "nergal": [
-   "Naragalasharaatzar×3",
-   "Naragal×1"
-  ],
   "hilkiah": [
-   "Chalaqayah×17",
-   "Washanay×1"
+   "Chalaqayah×31",
+   "Washanay×2"
   ],
   "nebuchadnezzar": [
    "Nabawakadanaatzar×58",
@@ -3215,10 +3284,6 @@
   "johanan": [
    "Yawachanan×20",
    "Yahawachanan×1"
-  ],
-  "regem": [
-   "Ragam×1",
-   "Ragamamalak×1"
   ],
   "daniel": [
    "Danayaal×67",
@@ -3252,22 +3317,17 @@
    "Yaiyaal×2",
    "Yaiwaal×1"
   ],
+  "shelomoth": [
+   "Shalamawath×5",
+   "Shalamayath×1"
+  ],
   "ethiopians": [
    "Kawashay×7",
    "Kawash×1"
   ],
-  "tel": [
-   "Thalamalach×2",
-   "Thalacharashaa×2",
-   "Thalaabayab×1"
-  ],
   "chaldean": [
    "Kashaday×2",
    "Kasaday×1"
-  ],
-  "for": [
-   "Izaraa×1",
-   "Thapathah×1"
   ],
   "sabeans": [
    "Shabaa×1",
@@ -3276,6 +3336,10 @@
   "assyrian": [
    "Ashawar×9",
    "Ban×1"
+  ],
+  "memphis": [
+   "Nap×7",
+   "Map×1"
   ],
   "abednego": [
    "Ibadanagawaa×14",
@@ -3288,7 +3352,7 @@
  "termsAmbiguous": {},
  "termsAlternates": {
   "heavens": [
-   "shamayan×2",
+   "shamay×11",
    "marawam×1",
    "raqayai×1"
   ],
@@ -3322,10 +3386,12 @@
    "gawai×1"
   ],
   "waters": [
-   "panayam×2",
+   "may×54",
+   "mayamay×8",
+   "panay×2",
    "rawah×2",
    "shaqah×1",
-   "mathan×1"
+   "mathanayam×1"
   ],
   "light": [
    "maawar×15",
@@ -3382,8 +3448,7 @@
    "nashap×1",
    "tzahar×1",
    "bashath×1",
-   "ayashawan×1",
-   "yahawah×1"
+   "ayashawan×1"
   ],
   "night": [
    "lawan×14",
@@ -3517,18 +3582,31 @@
    "thalayathay×2"
   ],
   "lights": [
-   "awar×3",
+   "maawarath×1",
    "ilah×1",
-   "matzaa×1"
+   "matzaa×1",
+   "haayaraw×1",
+   "awarayam×1",
+   "awar×1"
   ],
   "signs": [
-   "tzayawan×1"
+   "athath×7",
+   "awath×7",
+   "awathath×1",
+   "tzayanayam×1"
   ],
   "days": [
+   "yamay×207",
+   "yawam×112",
+   "yawamayam×3",
+   "yawamay×3",
    "qadash×2",
+   "yamawath×2",
    "yawamam×1",
    "arabaiyam×1",
    "chamash×1",
+   "yawamayan×1",
+   "yamayan×1",
    "hayah×1"
   ],
   "two": [
@@ -3542,6 +3620,11 @@
    "tzamad×1",
    "kapal×1",
    "tharayan×1"
+  ],
+  "stars": [
+   "kawakabay×13",
+   "kawakab×3",
+   "kakabay×1"
   ],
   "fourth": [
    "arabai×11",
@@ -3641,7 +3724,14 @@
    "qadayash×1"
   ],
   "generations": [
-   "thawaladah×37"
+   "thawaladah×24",
+   "thawaladath×7",
+   "darawath×4",
+   "thaladawath×3",
+   "dawarayam×3",
+   "thawaladawath×2",
+   "darath×1",
+   "thaladath×1"
   ],
   "breath": [
    "nashamah×13",
@@ -3699,9 +3789,13 @@
    "rawah×1"
   ],
   "heads": [
-   "shabal×9",
-   "qadad×4",
-   "nadad×1"
+   "raash×42",
+   "shabalayam×9",
+   "raashayam×4",
+   "yaqadaw×3",
+   "qadad×1",
+   "yathanadadaw×1",
+   "raashayan×1"
   ],
   "name": [
    "qaraa×5",
@@ -3750,6 +3844,11 @@
    "asap×1",
    "chayah×1"
   ],
+  "names": [
+   "sham×17",
+   "shamath×15",
+   "shamahath×1"
+  ],
   "woman": [
    "yalad×12",
    "naqabah×2",
@@ -3773,9 +3872,14 @@
    "yabash×2"
   ],
   "eyes": [
-   "maraah×2",
+   "iyanay×85",
+   "iyanayam×30",
+   "iyanayan×3",
    "azan×1",
-   "ipaip×1"
+   "ipaip×1",
+   "maraay×1",
+   "inay×1",
+   "maraah×1"
   ],
   "husband": [
    "bail×13",
@@ -3969,9 +4073,15 @@
    "marar×1"
   ],
   "tents": [
-   "sakah×10",
-   "mashakan×4",
-   "chanah×2"
+   "ahalay×14",
+   "sakawath×9",
+   "ahalayam×8",
+   "mashakan×2",
+   "chanaw×1",
+   "chanah×1",
+   "sakath×1",
+   "mashakanay×1",
+   "mashakanawath×1"
   ],
   "sister": [
    "banath×1"
@@ -3989,12 +4099,17 @@
    "amah×1"
   ],
   "sons": [
-   "yalayad×3",
-   "qarachay×1",
+   "ban×299",
+   "banayam×101",
+   "yaladay×2",
+   "yalayaday×1",
+   "qarachayam×1",
    "lawayay×1"
   ],
   "daughters": [
-   "ban×2"
+   "banath×106",
+   "ban×1",
+   "banayam×1"
   ],
   "twelve": [
    "ishar×13",
@@ -4019,11 +4134,17 @@
    "shalayashay×1"
   ],
   "hands": [
-   "kap×67",
-   "chapan×2",
+   "kap×55",
+   "yaday×40",
+   "yadayam×17",
+   "kapayam×7",
+   "kapay×5",
+   "yadayan×2",
    "harag×1",
    "matzaa×1",
-   "nathan×1"
+   "nathan×1",
+   "chapan×1",
+   "chapanay×1"
   ],
   "twenty": [
    "shanayam×2"
@@ -4109,25 +4230,33 @@
    "akal×1"
   ],
   "people": [
-   "ayash×13",
-   "ban×7",
-   "laam×5",
-   "zabach×5",
+   "imayam×20",
+   "ayash×8",
+   "anashay×5",
+   "banay×5",
    "naam×5",
-   "gaway×4",
    "adam×4",
-   "panayam×2",
+   "laamayam×3",
+   "imay×3",
+   "gaway×3",
+   "panay×2",
+   "zabachaw×2",
+   "zabachanaw×2",
+   "ban×2",
+   "laam×2",
    "irab×2",
    "dawar×1",
    "napash×1",
+   "nazabach×1",
    "rayab×1",
-   "amah×1",
+   "amawath×1",
    "aratz×1",
    "gam×1",
    "gawar×1",
    "asayar×1",
    "ishah×1",
    "anawash×1",
+   "gawayam×1",
    "mashapachah×1"
   ],
   "fifty": [
@@ -4150,12 +4279,17 @@
    "zakak×1",
    "naqay×1"
   ],
+  "nights": [
+   "layalawath×3"
+  ],
   "six": [
    "shath×1"
   ],
   "mountains": [
-   "harar×7",
-   "gabaih×1"
+   "haray×29",
+   "har×15",
+   "hararay×7",
+   "gabaiwath×1"
   ],
   "wind": [
    "qadayam×8",
@@ -4206,26 +4340,40 @@
    "yasawad×1"
   ],
   "families": [
-   "bayath×2",
-   "tap×1"
+   "mashapachath×48",
+   "mashapachawath×30",
+   "tap×1",
+   "bathayam×1",
+   "bayath×1"
   ],
   "altar": [
    "araayal×3",
    "madabach×1"
   ],
   "offerings": [
-   "nasak×28",
+   "ilah×31",
    "manachah×20",
-   "ashah×11",
-   "tharawamah×11",
-   "nadabah×9",
-   "zabach×5",
+   "nasak×19",
+   "ashay×11",
+   "nasakayam×9",
+   "tharawamah×8",
+   "nadabah×6",
+   "ilath×4",
+   "zabachay×4",
    "qaraban×3",
-   "thawadah×3",
+   "nadabawath×3",
+   "iwalawath×3",
+   "tharawamath×2",
+   "thawadawath×2",
    "chataah×1",
    "nayachawach×1",
-   "qarab×1",
-   "thanawapah×1",
+   "yaqarayabaw×1",
+   "thanawapath×1",
+   "iwalath×1",
+   "mazabachayam×1",
+   "ilawan×1",
+   "tharawamawath×1",
+   "thawadath×1",
    "mashaath×1",
    "habahab×1"
   ],
@@ -4247,10 +4395,12 @@
    "bail×2",
    "gabar×2",
    "anash×2",
+   "anashayam×1",
    "ban×1",
-   "bamah×1",
+   "bamawath×1",
    "nakaray×1",
-   "dawad×1"
+   "dawad×1",
+   "anashay×1"
   ],
   "fear": [
    "pachad×44",
@@ -4285,8 +4435,13 @@
    "sakawath×1",
    "sakah×1"
   ],
+  "brothers": [
+   "achay×16",
+   "achayam×14"
+  ],
   "faces": [
-   "ap×4",
+   "panay×16",
+   "apayam×4",
    "yawaialah×2",
    "maraah×2",
    "mail×1"
@@ -4306,21 +4461,40 @@
    "ayash×1"
   ],
   "servants": [
-   "nair×20",
-   "shapachah×7",
-   "amah×5",
-   "ban×5",
+   "ibaday×89",
+   "ibadayam×53",
+   "nair×9",
+   "nairay×6",
+   "nairayam×5",
+   "amah×4",
+   "ban×4",
+   "shapachath×3",
+   "shapachawath×3",
    "sharath×2",
-   "panayam×1",
-   "palach×1"
+   "ibadam×1",
+   "amahath×1",
+   "thaibadaw×1",
+   "shapachah×1",
+   "panay×1",
+   "palachay×1",
+   "banay×1"
   ],
   "nations": [
-   "im×12",
-   "laam×10",
-   "amah×6"
+   "gaway×14",
+   "imayam×11",
+   "laamayam×9",
+   "gawayay×8",
+   "amay×5",
+   "amah×1",
+   "gayayam×1",
+   "amayam×1",
+   "im×1"
   ],
   "lands": [
-   "adamah×2"
+   "aratz×6",
+   "aratzath×5",
+   "adamah×1",
+   "adamawath×1"
   ],
   "kingdom": [
    "malakawath×46",
@@ -4380,14 +4554,18 @@
    "hadar×1"
   ],
   "curses": [
-   "alah×4",
    "arar×3",
-   "qalalah×2",
+   "qalalawath×2",
+   "alawath×2",
    "kay×1",
-   "maarah×1"
+   "alath×1",
+   "alah×1",
+   "maarawath×1"
   ],
   "souls": [
-   "nashamah×1"
+   "napashawath×16",
+   "napashath×1",
+   "nashamawath×1"
   ],
   "save": [
    "chayah×13",
@@ -4399,20 +4577,30 @@
    "natzal×1"
   ],
   "princes": [
-   "nashayaa×41",
-   "nadayab×8",
-   "razan×5",
-   "nasayak×3",
+   "sharayam×65",
+   "shar×50",
+   "nashayaay×23",
+   "nashayaayam×8",
+   "nadayabayam×7",
+   "nashaayam×5",
+   "nashayaam×3",
+   "rawazanayam×3",
+   "nasayakay×2",
+   "razanayam×2",
+   "nashayaa×2",
    "kahan×1",
-   "chashaman×1",
-   "nagayad×1",
-   "shalayash×1",
-   "sagan×1",
-   "sharar×1"
+   "nadayabay×1",
+   "chashamanayam×1",
+   "nagayadayam×1",
+   "nasayak×1",
+   "shalashayam×1",
+   "saganayam×1",
+   "hashayaraw×1"
   ],
   "plagues": [
+   "makawath×3",
    "dabar×2",
-   "nagai×1",
+   "nagaiyam×1",
    "magapah×1"
   ],
   "wicked": [
@@ -4428,6 +4616,10 @@
    "iqash×1",
    "rashaih×1"
   ],
+  "sinners": [
+   "chataa×2",
+   "chataay×1"
+  ],
   "wilderness": [
    "irabah×3",
    "yashayamawan×2",
@@ -4436,31 +4628,41 @@
    "aratz×1"
   ],
   "pits": [
-   "baar×1",
-   "shayachah×1",
-   "mahamarah×1",
+   "baarath×1",
+   "shayachawath×1",
+   "mahamarawath×1",
    "shawachah×1",
    "shachayath×1",
    "makarah×1"
   ],
   "goods": [
    "shalam×2",
-   "nakas×2",
    "qanayan×2",
    "chayal×1",
-   "kabawadah×1"
+   "kabawadah×1",
+   "nakasay×1",
+   "nakasayan×1"
+  ],
+  "king's": [
+   "malakayam×2"
   ],
   "heaven": [
    "shamayan×17"
   ],
   "enemies": [
+   "ayabay×11",
    "sharar×5",
-   "qawam×4",
    "tzar×3",
+   "qawam×2",
+   "awayabay×2",
+   "ayabayam×2",
+   "awayabayam×2",
    "shanaa×1",
    "yad×1",
+   "mathaqawamamayam×1",
    "tzarar×1",
    "shawar×1",
+   "qamayam×1",
    "ir×1"
   ],
   "word": [
@@ -4531,10 +4733,16 @@
    "mamashaq×1"
   ],
   "peoples": [
-   "laam×17",
-   "gaway×2",
-   "panayam×1",
-   "ban×1"
+   "imay×22",
+   "laamayam×12",
+   "imamay×6",
+   "im×3",
+   "amayam×3",
+   "gawayam×2",
+   "laawamayam×2",
+   "panay×1",
+   "ban×1",
+   "imamayam×1"
   ],
   "justice": [
    "dayan×5",
@@ -4658,7 +4866,13 @@
    "itzab×1"
   ],
   "horns": [
-   "yawabal×4"
+   "qaranawath×12",
+   "qaranay×11",
+   "qaranath×5",
+   "qaranayam×4",
+   "yawabalayam×3",
+   "yabalayam×1",
+   "qaranayan×1"
   ],
   "sworn": [
    "yad×3",
@@ -4702,13 +4916,20 @@
    "yatzab×1"
   ],
   "words": [
-   "amar×39",
-   "malah×26",
-   "amarah×2",
+   "dabarayam×113",
+   "dabar×110",
+   "amaray×26",
+   "amar×13",
+   "malayan×10",
+   "malah×8",
+   "malayam×6",
+   "amarawath×2",
+   "malay×2",
    "kan×1",
    "dabarah×1",
+   "yadabaraw×1",
    "laqach×1",
-   "pathach×1"
+   "pathachay×1"
   ],
   "prosper": [
    "shalah×3",
@@ -4717,7 +4938,10 @@
    "kashar×1"
   ],
   "thousands": [
-   "rabaw×1",
+   "alapay×14",
+   "alap×4",
+   "maalayapawath×2",
+   "rabathayam×1",
    "shanaan×1"
   ],
   "hate": [
@@ -4730,7 +4954,9 @@
    "masakah×1"
   ],
   "gifts": [
-   "mathanaa×3",
+   "mathanawath×3",
+   "mathanath×2",
+   "mathanan×2",
    "manachah×1",
    "mashaath×1",
    "ashakar×1",
@@ -4738,20 +4964,29 @@
    "mathan×1",
    "mathath×1",
    "nadah×1",
-   "nadan×1"
+   "nadan×1",
+   "mathanaa×1"
   ],
   "commandments": [
-   "dabar×1"
+   "matzawath×25",
+   "dabaray×1",
+   "matzawawath×1"
   ],
   "statutes": [
-   "chaqah×60",
+   "chaq×42",
+   "chaqayam×28",
    "idah×10",
-   "idawath×4"
+   "chaqawath×5",
+   "idawath×4",
+   "chaqay×1",
+   "chawaqay×1"
   ],
   "laws": [
-   "dath×4",
+   "dathay×4",
+   "thawarath×3",
    "mashapat×2",
-   "chaqah×1"
+   "thawarawath×1",
+   "chaqawath×1"
   ],
   "guilt": [
    "ashamah×6",
@@ -4760,9 +4995,11 @@
   ],
   "possessions": [
    "qanayan×4",
-   "achaz×3",
    "achazah×3",
    "rakawash×1",
+   "haachazaw×1",
+   "yaachazaw×1",
+   "naachazaw×1",
    "maishah×1",
    "shalal×1",
    "bazaz×1",
@@ -4771,7 +5008,9 @@
    "mawarash×1"
   ],
   "spirits": [
-   "rawach×3"
+   "rawachath×2",
+   "awab×2",
+   "rawach×1"
   ],
   "loves": [
    "chabab×1",
@@ -4799,11 +5038,15 @@
    "ibarah×1"
   ],
   "stones": [
-   "ragam×6",
+   "aban×36",
+   "abanay×28",
+   "ragam×4",
    "saqal×3",
-   "matzabah×2",
+   "yaragamaw×2",
    "tzawar×1",
-   "hapak×1"
+   "hapak×1",
+   "matzabawath×1",
+   "matzabah×1"
   ],
   "oil": [
    "yatzahar×17",
@@ -4822,21 +5065,22 @@
    "zakar×1"
   ],
   "ones": [
-   "irayatz×3",
-   "ban×2",
-   "kashab×1",
+   "irayatzayam×3",
+   "banay×2",
+   "kashabayam×1",
    "alam×1",
-   "bashar×1",
+   "mabasharawath×1",
    "tzapan×1",
    "yadayad×1",
    "parad×1",
    "yayan×1",
-   "ilayaz×1",
+   "ilayazay×1",
    "gawar×1",
    "yasap×1"
   ],
   "rods": [
-   "matah×5"
+   "matah×4",
+   "matawath×1"
   ],
   "anointed": [
    "mashayach×34",
@@ -4899,6 +5143,8 @@
    "qatar×1"
   ],
   "messengers": [
+   "malaakay×7",
+   "malaak×5",
    "nagad×1"
   ],
   "gift": [
@@ -4927,6 +5173,9 @@
    "mamalakah×2",
    "yashab×1",
    "mamalakawath×1"
+  ],
+  "dreams": [
+   "chalamawath×8"
   ],
   "moon": [
    "chadash×13",
@@ -4979,11 +5228,16 @@
    "karasaa×2"
   ],
   "houses": [
-   "zabach×3"
+   "bathayam×34",
+   "bathay×32",
+   "zabachaw×2",
+   "zabachatham×1"
   ],
   "hearts": [
-   "labab×20",
-   "labah×6"
+   "labab×19",
+   "labawath×5",
+   "lababawath×1",
+   "labah×1"
   ],
   "mercy": [
    "kaparath×27",
@@ -4994,7 +5248,9 @@
    "chamal×1"
   ],
   "slaves": [
-   "amah×1"
+   "ibad×1",
+   "amah×1",
+   "thaibadaw×1"
   ],
   "abomination": [
    "shaqatz×9",
@@ -5005,7 +5261,7 @@
   ],
   "mouths": [
    "garawan×1",
-   "panayam×1"
+   "panay×1"
   ],
   "ruler": [
    "shar×10",
@@ -5020,14 +5276,20 @@
    "nadayab×1"
   ],
   "sacrifices": [
-   "ishah×1",
-   "dabach×1",
-   "nayachawach×1",
+   "zabachayam×15",
+   "zabachay×13",
+   "yazabachaw×2",
+   "ishayanaw×1",
+   "dabachayan×1",
+   "nayachawachayan×1",
    "thawadah×1"
   ],
   "priests": [
-   "kamar×2",
-   "kahanah×1"
+   "kahan×29",
+   "kahanay×20",
+   "kahanawath×1",
+   "kamarayam×1",
+   "kamar×1"
   ],
   "statute": [
    "chaq×11"
@@ -5051,8 +5313,9 @@
    "shanay×1"
   ],
   "swords": [
+   "charabawath×5",
    "makarah×1",
-   "pathachah×1"
+   "pathachawath×1"
   ],
   "assembly": [
    "itzarah×8",
@@ -5085,7 +5348,9 @@
    "thashawaih×15"
   ],
   "blessings": [
-   "tawab×1"
+   "barakawath×5",
+   "tawab×1",
+   "barakah×1"
   ],
   "crown": [
    "nazar×11",
@@ -5100,8 +5365,12 @@
    "yad×1"
   ],
   "wonders": [
-   "palaa×13",
-   "awath×2"
+   "mapathayam×9",
+   "mawapath×5",
+   "mawapathayam×4",
+   "napalaawath×2",
+   "awath×2",
+   "palaawath×1"
   ],
   "rod": [
    "shabat×25",
@@ -5114,15 +5383,24 @@
    "padawath×1"
   ],
   "judgments": [
-   "shapat×14",
+   "shapatayam×13",
+   "mashapatay×3",
+   "mashapatayam×2",
    "qasam×1",
    "tzadaq×1",
-   "shapawat×1"
+   "shapat×1",
+   "shapawatayam×1"
   ],
   "rivers": [
-   "yaar×14",
-   "nachal×7",
-   "palagah×1",
+   "yaar×9",
+   "nahar×6",
+   "nachalayam×5",
+   "naharayam×5",
+   "yaaray×3",
+   "naharay×2",
+   "nachalay×2",
+   "yaarayam×2",
+   "palagawath×1",
    "mayam×1"
   ],
   "plague": [
@@ -5148,7 +5426,9 @@
    "chaqaq×1"
   ],
   "graves": [
-   "shachayath×1"
+   "qabarayam×3",
+   "shachayath×1",
+   "qabaray×1"
   ],
   "enemy": [
    "tzarar×4",
@@ -5159,11 +5439,15 @@
    "maqawam×1"
   ],
   "praises": [
-   "thahalah×5",
-   "halal×3",
+   "zamaraw×12",
+   "thahalath×3",
+   "yahalalaw×2",
+   "thahalawath×2",
    "nabal×1",
    "kanawar×1",
-   "yadah×1"
+   "yadah×1",
+   "yazamaraw×1",
+   "halal×1"
   ],
   "sanctuary": [
    "maqadash×64",
@@ -5172,19 +5456,25 @@
    "kabawad×1"
   ],
   "rulers": [
-   "sagan×13",
-   "mashal×4",
-   "qatzayan×4",
-   "nashayaa×3",
-   "shalatawan×2",
+   "saganayam×12",
+   "mashalayam×4",
+   "qatzayanay×3",
+   "shalatanay×2",
+   "nashayaay×1",
+   "nashaayam×1",
+   "nashaam×1",
    "parazawan×1",
-   "nagayad×1",
-   "razan×1",
-   "shapat×1",
-   "shalayat×1",
-   "yashab×1",
-   "ithawad×1",
-   "raih×1",
+   "nagayaday×1",
+   "sagan×1",
+   "rawazanayam×1",
+   "sharayam×1",
+   "shapatay×1",
+   "shar×1",
+   "shalayatayam×1",
+   "yawashabayam×1",
+   "ithawaday×1",
+   "qatzayan×1",
+   "raiyam×1",
    "magan×1"
   ],
   "testimony": [
@@ -5202,15 +5492,25 @@
    "mawaitzah×1",
    "itaa×1"
   ],
+  "hundreds": [
+   "maayawath×3",
+   "mayaawath×1"
+  ],
   "tens": [
-   "rababah×2",
-   "rabaw×2"
+   "rababawath×2",
+   "rabathayam×1",
+   "rabaawath×1"
   ],
   "ordinances": [
-   "chaqah×6",
-   "chaq×2",
+   "mashapatayam×28",
+   "mashapatay×9",
+   "chaqawath×3",
+   "chaqah×2",
    "yad×1",
-   "shapat×1"
+   "chaqath×1",
+   "chaqayam×1",
+   "shapat×1",
+   "chaq×1"
   ],
   "rises": [
    "zarach×4",
@@ -5219,10 +5519,15 @@
    "nashaa×1"
   ],
   "judges": [
-   "palayal×3",
-   "dayan×2",
-   "adaragazar×2",
-   "palayalay×1"
+   "shapat×18",
+   "shapatay×5",
+   "palayalayam×2",
+   "adaragazaray×2",
+   "palalayam×1",
+   "shapatatham×1",
+   "dayanayan×1",
+   "palayalay×1",
+   "dayan×1"
   ],
   "eye": [
    "banath×1"
@@ -5256,6 +5561,9 @@
    "palayalayah×1",
    "rayab×1"
   ],
+  "hates": [
+   "shanaay×1"
+  ],
   "labors": [
    "maishah×2",
    "itzab×2",
@@ -5271,7 +5579,9 @@
   "adversaries": [
    "tzarar×9",
    "shatan×4",
-   "tzawar×1"
+   "tzaray×2",
+   "tzawar×1",
+   "tzarayam×1"
   ],
   "ephod": [
    "apad×1"
@@ -5280,6 +5590,10 @@
    "ahal×2",
    "sak×1",
    "shak×1"
+  ],
+  "lamps": [
+   "narath×8",
+   "narawath×6"
   ],
   "lamp": [
    "manawarah×2",
@@ -5313,33 +5627,51 @@
    "manadai×1"
   ],
   "works": [
-   "palaa×18",
+   "palaa×17",
+   "maishay×13",
    "ishah×10",
-   "malaakah×4",
+   "maishayam×4",
+   "malaakah×3",
    "pail×3",
-   "machashabah×2",
-   "mailal×2",
+   "machashabath×2",
    "maibad×2",
    "ilayalah×2",
-   "pailah×2",
    "ibad×2",
-   "mapalaah×1",
-   "mapail×1",
-   "dabar×1"
+   "malaakawath×1",
+   "mailal×1",
+   "mapalaawath×1",
+   "pailawath×1",
+   "pailath×1",
+   "mapailawath×1",
+   "mailalay×1",
+   "napalaawath×1",
+   "dabaray×1"
+  ],
+  "sabbaths": [
+   "shabathawath×6",
+   "shabathath×3"
   ],
   "repent": [
    "shawab×3"
   ],
   "altars": [
-   "chaman×5"
+   "mazabach×19",
+   "mazabachath×10",
+   "chamanayam×3",
+   "chaman×2",
+   "mazabachawathayam×1"
   ],
   "sins": [
-   "chataa×24",
-   "iwan×6",
-   "shagah×1",
+   "chataa×22",
+   "chataawath×21",
+   "chataath×5",
+   "iwan×5",
+   "chataay×2",
+   "yashagaw×1",
    "mail×1",
-   "dabar×1",
+   "dabaray×1",
    "ashamah×1",
+   "iwanawath×1",
    "asham×1",
    "pashai×1"
   ],
@@ -5354,15 +5686,25 @@
   "swears": [
    "alah×1"
   ],
+  "priest's": [
+   "kahanayam×1",
+   "yakahanaw×1"
+  ],
   "eighth": [
    "shamanah×5"
   ],
   "people's": [
+   "imayam×1",
    "nayar×1",
    "napash×1"
   ],
   "transgressions": [
+   "pashaiy×10",
    "iyan×1"
+  ],
+  "iniquities": [
+   "iwanath×6",
+   "iwanawath×5"
   ],
   "burns": [
    "sharap×4",
@@ -5374,8 +5716,13 @@
    "sarap×1"
   ],
   "abominations": [
-   "shaqawatz×11",
-   "galawal×1"
+   "thawaibawath×15",
+   "thawaibath×9",
+   "shaqawatz×7",
+   "thaibawath×5",
+   "shaqawatzayam×2",
+   "shaqawatzay×2",
+   "galalayam×1"
   ],
   "slave": [
    "shapachah×1"
@@ -5383,6 +5730,13 @@
   "family": [
    "alap×1",
    "bayath×1"
+  ],
+  "sanctuaries": [
+   "maqadashay×2"
+  ],
+  "vows": [
+   "nadarayam×2",
+   "nadaraw×1"
   ],
   "ninth": [
    "thashai×8"
@@ -5394,11 +5748,16 @@
    "ahal×1"
   ],
   "seeds": [
-   "paradah×1"
+   "paradawath×1"
   ],
   "prophets": [
-   "ahal×2",
-   "chazah×1"
+   "nabaayam×35",
+   "nabayaa×29",
+   "nabayaay×18",
+   "nabayaam×4",
+   "ahalayam×2",
+   "chazayam×1",
+   "nabaay×1"
   ],
   "faithful": [
    "amath×2",
@@ -5417,19 +5776,27 @@
    "palayatah×3"
   ],
   "images": [
-   "tzalam×10",
+   "pasalayam×7",
+   "pasayal×6",
+   "pasayalay×5",
    "itzab×3",
+   "tzalam×3",
    "pasal×3",
+   "pasayalayam×2",
    "nasak×1",
-   "alayal×1",
+   "alayalayam×1",
    "nasayak×1"
   ],
   "kingdoms": [
-   "malakaw×3",
-   "malakawath×1"
+   "malakawath×2",
+   "mamalakah×1",
+   "mamalakath×1",
+   "malakaw×1",
+   "malakayawath×1"
   ],
   "testimonies": [
-   "idah×11"
+   "idah×9",
+   "idath×2"
   ],
   "confusion": [
    "bashath×4",
@@ -5445,32 +5812,40 @@
   "husband's": [
    "ayash×1"
   ],
+  "evils": [
+   "rai×1"
+  ],
   "faithfulness": [
    "amath×7",
    "amawan×1",
    "kawan×1"
   ],
   "moons": [
-   "yarach×1"
+   "chadash×2",
+   "yarachayam×1"
   ],
   "sisters": [
-   "qatan×1"
+   "qatanawath×1"
   ],
   "horn": [
    "shawapar×1"
   ],
   "inheritances": [
-   "nachalah×1"
+   "nachalath×1"
   ],
   "deaths": [
-   "mamawath×1"
+   "mamawathay×1"
   ],
   "rests": [
    "kawan×1",
    "dawamayah×1",
    "lawan×1"
   ],
+  "voices": [
+   "qalawath×1"
+  ],
   "husbands": [
+   "anashayam×2",
    "bail×2",
    "adawan×1"
   ],
@@ -5505,21 +5880,31 @@
    "tzayar×1"
   ],
   "lions": [
-   "kapayar×12",
-   "labayaa×1",
-   "arayah×1"
+   "kapayarayam×8",
+   "kaparayam×3",
+   "aray×2",
+   "arayayam×1",
+   "labaam×1",
+   "kapayar×1"
   ],
   "shields": [
-   "shalat×7",
-   "tzanah×1",
-   "gab×1"
+   "maganay×5",
+   "shalatay×3",
+   "shalatayam×3",
+   "magan×2",
+   "tzanawath×1",
+   "gabay×1",
+   "shalat×1"
   ],
   "minds": [
-   "kalayah×1",
+   "kalayawath×1",
    "labab×1"
   ],
   "mercies": [
-   "chasad×1"
+   "rachamayam×4",
+   "rachamay×1",
+   "chasaday×1",
+   "rachamayan×1"
   ],
   "fears": [
    "magawarah×2",
@@ -5533,11 +5918,18 @@
    "malak×2",
    "malakaa×2"
   ],
+  "ministers": [
+   "sharath×3",
+   "masharathayam×3"
+  ],
   "prophecy": [
    "nabayaa×1"
   ],
   "prospers": [
    "shakal×1"
+  ],
+  "worships": [
+   "mashathachawayam×1"
   ],
   "crush": [
    "machatz×2",
@@ -5550,18 +5942,23 @@
    "thayarawash×1"
   ],
   "paths": [
-   "nathayab×12",
-   "maigal×6",
-   "shabayal×2",
+   "arach×7",
+   "nathayab×6",
+   "nathayabawath×5",
+   "maigal×4",
+   "maigalay×2",
+   "shabayal×1",
    "masalah×1",
+   "nathabawath×1",
+   "shabayalay×1",
    "darak×1"
   ],
   "restores": [
-   "yahawah×1",
    "ilah×1"
   ],
   "scoffers": [
-   "latzawan×1"
+   "latzawan×1",
+   "thathalawatzatzaw×1"
   ],
   "selah": [
    "mashagab×1",
@@ -5569,6 +5966,7 @@
   ],
   "counsels": [
    "itzah×1",
+   "maitzawath×1",
    "yaitz×1"
   ],
   "heart's": [
@@ -5576,6 +5974,7 @@
    "lab×1"
   ],
   "precepts": [
+   "paqawaday×2",
    "matzawah×2"
   ],
   "princess": [
@@ -5588,23 +5987,34 @@
    "mayashawar×1"
   ],
   "crowns": [
-   "itar×2",
-   "paar×1"
+   "paar×1",
+   "itarah×1",
+   "itarawath×1",
+   "itarath×1"
+  ],
+  "winds": [
+   "rawach×3",
+   "rawachay×1",
+   "rachawath×1"
   ],
   "flames": [
-   "lahab×1",
-   "shabayab×1"
+   "lahabay×1",
+   "shabayabayan×1"
   ],
   "thrones": [
-   "karasaa×1"
+   "kasaa×2",
+   "karasawan×1"
   ],
   "sinner": [
    "chataah×1"
   ],
   "assemblies": [
-   "asapah×1",
+   "asapawath×1",
    "mawaid×1",
    "itzarah×1"
+  ],
+  "oils": [
+   "shamanayam×1"
   ],
   "queens": [
    "sharah×1"
@@ -5619,14 +6029,14 @@
   ]
  },
  "termsDominant": {
-  "heavens": "shamayam (97% of 119)",
+  "heavens": "shamayam (89% of 119)",
   "earth": "aratz (91% of 740)",
   "darkness": "chashak (70% of 101)",
   "spirit": "rawach (95% of 231)",
-  "waters": "mayam (98% of 259)",
+  "waters": "mayam (74% of 259)",
   "light": "awar (74% of 159)",
   "good": "tawab (85% of 434)",
-  "day": "yawam (92% of 1294)",
+  "day": "yawam (92% of 1293)",
   "night": "layal (87% of 223)",
   "one": "achad (77% of 822)",
   "second": "shanay (72% of 138)",
@@ -5634,10 +6044,11 @@
   "land": "aratz (92% of 1644)",
   "seed": "zarai (99% of 196)",
   "third": "shalayashay (83% of 121)",
-  "lights": "maawar (38% of 8)",
-  "signs": "awath (97% of 30)",
-  "days": "yawam (99% of 684)",
+  "lights": "maarath (25% of 8)",
+  "signs": "athawath (47% of 30)",
+  "days": "yamayam (51% of 684)",
   "two": "shanayam (95% of 540)",
+  "stars": "kawakabayam (50% of 34)",
   "fourth": "rabayaiy (75% of 79)",
   "sea": "yam (97% of 292)",
   "fifth": "chamayashay (84% of 51)",
@@ -5649,23 +6060,24 @@
   "seventh": "shabayaiy (88% of 108)",
   "work": "maishah (34% of 356)",
   "holy": "qadash (74% of 459)",
-  "generations": "dawar (68% of 115)",
+  "generations": "dawar (61% of 115)",
   "breath": "rawach (57% of 49)",
   "soul": "napash (99% of 379)",
   "knowledge": "daith (69% of 112)",
   "evil": "rai (91% of 470)",
   "river": "nahar (59% of 142)",
   "water": "mayam (95% of 319)",
-  "heads": "raash (89% of 133)",
+  "heads": "raashay (54% of 133)",
   "name": "sham (98% of 704)",
   "first": "raashawan (56% of 225)",
   "stone": "aban (80% of 127)",
   "commanded": "tzawah (98% of 345)",
   "die": "mawath (96% of 242)",
+  "names": "shamawath (57% of 77)",
   "woman": "ayashah (89% of 227)",
   "mother": "am (98% of 140)",
   "ashamed": "bawash (61% of 44)",
-  "eyes": "iyan (99% of 436)",
+  "eyes": "iyan (72% of 436)",
   "husband": "ayash (81% of 77)",
   "voice": "qawal (99% of 354)",
   "offspring": "tzaatzaa (62% of 13)",
@@ -5681,53 +6093,55 @@
   "offering": "ilah (33% of 637)",
   "sin": "chataah (68% of 316)",
   "brother's": "ach (90% of 29)",
-  "mouth": "pah (94% of 320)",
+  "mouth": "pah (94% of 319)",
   "strength": "kach (31% of 181)",
   "sign": "awath (73% of 48)",
   "son": "ban (99% of 1866)",
-  "tents": "ahal (78% of 73)",
+  "tents": "ahal (48% of 73)",
   "sister": "achawath (99% of 91)",
   "seven": "shabai (97% of 357)",
   "hundred": "maah (99% of 543)",
-  "sons": "ban (100% of 1062)",
-  "daughters": "banath (99% of 236)",
+  "sons": "banay (62% of 1061)",
+  "daughters": "banawath (54% of 236)",
   "twelve": "shanayam (87% of 105)",
   "forty": "arabaiyam (98% of 126)",
   "ten": "ishar (92% of 181)",
   "sixty": "shashayam (92% of 63)",
   "three": "shalawash (96% of 392)",
-  "hands": "yad (78% of 320)",
+  "hands": "yad (59% of 320)",
   "twenty": "isharayam (99% of 267)",
   "mighty": "gabawar (54% of 246)",
   "wickedness": "rai (49% of 108)",
   "heart": "lab (65% of 699)",
   "destroy": "shachath (34% of 204)",
-  "people": "im (97% of 1661)",
+  "people": "im (95% of 1661)",
   "fifty": "chamashayam (99% of 150)",
   "covenant": "barayath (99% of 263)",
   "righteousness": "tzadaqah (61% of 212)",
   "clean": "tahawar (52% of 97)",
+  "nights": "layal (79% of 14)",
   "six": "shash (99% of 183)",
-  "mountains": "har (95% of 158)",
+  "mountains": "harayam (67% of 158)",
   "wind": "rawach (89% of 102)",
   "tenth": "isharawan (38% of 71)",
   "rest": "yathar (36% of 208)",
   "foot": "ragal (91% of 67)",
-  "families": "mashapachah (98% of 165)",
+  "families": "mashapachah (51% of 165)",
   "altar": "mazabach (99% of 341)",
-  "offerings": "ilah (49% of 188)",
+  "offerings": "ilawath (28% of 188)",
   "curse": "qalalah (28% of 85)",
-  "man's": "ayash (55% of 76)",
+  "man's": "ayash (53% of 76)",
   "fear": "yaraa (57% of 222)",
   "everlasting": "iwalam (94% of 68)",
   "wine": "yayan (71% of 177)",
   "tent": "ahal (93% of 287)",
-  "faces": "panayam (86% of 64)",
+  "brothers": "ach (90% of 309)",
+  "faces": "panayam (61% of 64)",
   "father's": "ab (98% of 126)",
   "servant": "ibad (83% of 422)",
-  "servants": "ibad (90% of 403)",
-  "nations": "gaway (94% of 444)",
-  "lands": "aratz (94% of 36)",
+  "servants": "ibad (54% of 403)",
+  "nations": "gawayam (89% of 444)",
+  "lands": "aratzawath (64% of 36)",
   "kingdom": "mamalakah (36% of 163)",
   "mountain": "har (97% of 175)",
   "burn": "qatar (45% of 122)",
@@ -5737,16 +6151,18 @@
   "nation": "gaway (96% of 126)",
   "blessing": "barakah (96% of 49)",
   "curses": "qalal (35% of 17)",
-  "souls": "napash (98% of 56)",
+  "souls": "napash (68% of 56)",
   "save": "yashai (81% of 137)",
-  "princes": "shar (75% of 254)",
-  "plagues": "makah (67% of 12)",
+  "princes": "sharay (30% of 254)",
+  "plagues": "makah (42% of 12)",
   "wicked": "rashai (87% of 289)",
+  "sinners": "chataayam (80% of 15)",
   "wilderness": "madabar (96% of 257)",
-  "pits": "bawar (25% of 8)",
+  "pits": "barawath (25% of 8)",
   "goods": "rakawash (53% of 17)",
+  "king's": "malak (99% of 267)",
   "heaven": "shamayam (88% of 143)",
-  "enemies": "ayab (92% of 209)",
+  "enemies": "ayab (84% of 209)",
   "word": "dabar (91% of 472)",
   "shield": "magan (87% of 46)",
   "sun": "shamash (93% of 116)",
@@ -5756,7 +6172,7 @@
   "iniquity": "iwan (70% of 228)",
   "angel": "malaak (99% of 99)",
   "possession": "achazah (57% of 98)",
-  "peoples": "im (90% of 204)",
+  "peoples": "imayam (74% of 204)",
   "justice": "mashapat (87% of 108)",
   "turn": "shawab (50% of 268)",
   "servant's": "ibad (92% of 12)",
@@ -5773,42 +6189,43 @@
   "swear": "shabai (88% of 43)",
   "love": "ahab (57% of 140)",
   "worship": "shachah (79% of 61)",
-  "horns": "qaran (93% of 56)",
+  "horns": "qaran (34% of 56)",
   "sworn": "shabai (87% of 39)",
   "prince": "nashayaa (58% of 119)",
   "mind": "lab (58% of 33)",
   "oath": "shabawaih (50% of 40)",
   "truth": "amath (81% of 97)",
-  "words": "dabar (84% of 438)",
+  "words": "dabaray (33% of 438)",
   "prosper": "tzalach (85% of 41)",
-  "thousands": "alap (96% of 49)",
+  "thousands": "alapayam (55% of 49)",
   "hate": "shanaa (99% of 77)",
   "veil": "parakath (69% of 36)",
-  "gifts": "mathanah (48% of 21)",
-  "commandments": "matzawah (99% of 111)",
-  "statutes": "chaq (49% of 146)",
-  "laws": "thawarah (63% of 19)",
+  "gifts": "mathanah (24% of 21)",
+  "commandments": "matzawah (76% of 111)",
+  "statutes": "chaqah (38% of 146)",
+  "laws": "thawarah (42% of 19)",
   "guilt": "asham (43% of 14)",
   "possessions": "maqanah (26% of 23)",
-  "spirits": "awab (70% of 10)",
+  "spirits": "abawath (50% of 10)",
   "loves": "ahab (92% of 39)",
   "turns": "shawab (44% of 32)",
   "anger": "ap (78% of 226)",
-  "stones": "aban (91% of 142)",
+  "stones": "abanayam (46% of 142)",
   "oil": "shaman (89% of 187)",
   "praise": "halal (46% of 196)",
   "ones": "tap (69% of 48)",
-  "rods": "maqal (55% of 11)",
+  "rods": "maqalawath (55% of 11)",
   "anointed": "mashach (49% of 85)",
   "inheritance": "nachalah (90% of 214)",
   "power": "kach (40% of 110)",
   "labor": "imal (38% of 72)",
   "sacrifice": "zabach (92% of 157)",
-  "messengers": "malaak (99% of 72)",
+  "messengers": "malaakayam (82% of 72)",
   "gift": "mathanah (29% of 14)",
   "grave": "qabar (83% of 23)",
   "upright": "yashar (86% of 59)",
   "reign": "malak (81% of 141)",
+  "dreams": "chalawam (53% of 17)",
   "moon": "yarach (61% of 44)",
   "eleven": "achad (50% of 14)",
   "pit": "bawar (53% of 70)",
@@ -5816,96 +6233,106 @@
   "wrath": "chamah (48% of 187)",
   "perish": "abad (88% of 91)",
   "throne": "kasaa (98% of 123)",
-  "houses": "bayath (98% of 169)",
+  "houses": "bayath (59% of 169)",
   "hearts": "lab (48% of 50)",
   "mercy": "racham (32% of 85)",
-  "slaves": "ibad (83% of 6)",
+  "slaves": "ibadayam (50% of 6)",
   "abomination": "thawaibah (67% of 61)",
   "mouths": "pah (88% of 17)",
   "ruler": "mashal (32% of 50)",
-  "sacrifices": "zabach (93% of 58)",
-  "priests": "kahan (99% of 312)",
+  "sacrifices": "zabach (41% of 58)",
+  "priests": "kahanayam (83% of 312)",
   "statute": "chaqah (71% of 38)",
   "alone": "badad (24% of 42)",
-  "swords": "charab (88% of 16)",
+  "swords": "charab (56% of 16)",
   "assembly": "qahal (82% of 120)",
   "lion": "aray (65% of 78)",
   "ruler's": "chaqaq (50% of 2)",
   "path": "arach (34% of 32)",
   "salvation": "yashawaih (55% of 114)",
-  "blessings": "barakah (92% of 12)",
+  "blessings": "barakath (42% of 12)",
   "crown": "itarah (43% of 44)",
   "memorial": "zakarawan (69% of 26)",
-  "wonders": "mawapath (55% of 33)",
+  "wonders": "palaa (30% of 33)",
   "rod": "matah (51% of 55)",
   "redeem": "padah (49% of 53)",
-  "judgments": "mashapat (54% of 37)",
-  "rivers": "nahar (58% of 55)",
+  "judgments": "mashapat (41% of 37)",
+  "rivers": "naharawath (35% of 55)",
   "plague": "nagai (70% of 92)",
   "congregation": "idah (96% of 131)",
   "ordinance": "mashapat (76% of 37)",
   "law": "thawarah (90% of 211)",
-  "graves": "qabar (93% of 15)",
+  "graves": "qabar (67% of 15)",
   "enemy": "ayab (90% of 84)",
   "holiness": "qadash (91% of 11)",
-  "praises": "zamar (70% of 37)",
+  "praises": "zamar (35% of 37)",
   "sanctuary": "qadash (54% of 145)",
-  "rulers": "shar (30% of 50)",
+  "rulers": "sharay (26% of 50)",
   "testimony": "idawath (86% of 44)",
   "counsel": "itzah (71% of 105)",
-  "tens": "ishar (43% of 7)",
-  "ordinances": "mashapat (90% of 103)",
+  "hundreds": "maawath (85% of 27)",
+  "tens": "isharath (43% of 7)",
+  "ordinances": "mashapat (54% of 103)",
   "rises": "qawam (61% of 23)",
-  "judges": "shapat (84% of 50)",
+  "judges": "shapatayam (36% of 50)",
   "eye": "iyan (99% of 71)",
   "destroys": "shachath (33% of 12)",
   "ransom": "kapar (85% of 13)",
   "redemption": "gaalah (43% of 14)",
   "judgment": "mashapat (68% of 103)",
+  "hates": "shanaa (95% of 19)",
   "labors": "imal (55% of 11)",
   "adversary": "tzar (50% of 28)",
-  "adversaries": "tzar (74% of 54)",
+  "adversaries": "tzar (69% of 54)",
   "ephod": "apawad (98% of 49)",
   "tabernacle": "mashakan (96% of 106)",
+  "lamps": "nayar (46% of 26)",
   "lamp": "nayar (88% of 26)",
   "minister": "sharath (77% of 57)",
   "wisdom": "chakamah (87% of 172)",
   "understanding": "thabawan (25% of 140)",
-  "works": "maishah (53% of 107)",
+  "works": "maishah (37% of 107)",
+  "sabbaths": "shabath (70% of 30)",
   "repent": "nacham (80% of 15)",
-  "altars": "mazabach (91% of 56)",
-  "sins": "chataah (66% of 105)",
+  "altars": "mazabachawath (38% of 56)",
+  "sins": "chataah (41% of 105)",
   "unclean": "tamaa (92% of 173)",
   "swears": "shabai (83% of 6)",
+  "priest's": "kahan (89% of 19)",
   "eighth": "shamayanay (84% of 31)",
-  "people's": "im (71% of 7)",
-  "transgressions": "pashai (98% of 43)",
+  "people's": "im (57% of 7)",
+  "transgressions": "pashai (74% of 43)",
+  "iniquities": "iwan (74% of 42)",
   "burns": "bair (26% of 19)",
-  "abominations": "thawaibah (84% of 74)",
+  "abominations": "thawaibah (45% of 74)",
   "slave": "ibad (67% of 3)",
   "family": "mashapachah (98% of 122)",
+  "sanctuaries": "maqadash (67% of 6)",
+  "vows": "nadar (92% of 37)",
   "ninth": "thashayaiy (68% of 25)",
   "redeems": "gaal (67% of 3)",
   "tabernacle's": "mashakan (50% of 2)",
-  "seeds": "charatzan (50% of 2)",
-  "prophets": "nabayaa (98% of 149)",
+  "seeds": "charatzanayam (50% of 2)",
+  "prophets": "nabayaayam (40% of 149)",
   "faithful": "aman (73% of 26)",
   "star": "kawakab (67% of 3)",
   "remnant": "shaarayath (57% of 82)",
-  "images": "pasayal (51% of 39)",
-  "kingdoms": "mamalakah (92% of 52)",
+  "images": "tzalamay (18% of 39)",
+  "kingdoms": "mamalakawath (88% of 52)",
   "testimonies": "idawath (54% of 24)",
   "confusion": "mahawamah (33% of 18)",
   "wonder": "mawapath (50% of 8)",
   "husband's": "yabam (80% of 5)",
+  "evils": "raiwath (88% of 8)",
   "faithfulness": "amawanah (71% of 31)",
-  "moons": "chadash (89% of 9)",
+  "moons": "chadashayam (67% of 9)",
   "sisters": "achawath (91% of 11)",
   "horn": "qaran (97% of 38)",
   "inheritances": "nachal (50% of 2)",
   "deaths": "mawath (50% of 2)",
   "rests": "nawach (50% of 6)",
-  "husbands": "ayash (63% of 8)",
+  "voices": "qawal (67% of 3)",
+  "husbands": "ayash (38% of 8)",
   "temple": "hayakal (93% of 80)",
   "world": "thabal (85% of 41)",
   "straight": "yashar (59% of 22)",
@@ -5913,31 +6340,35 @@
   "saves": "yashai (89% of 9)",
   "reigns": "malak (91% of 11)",
   "messenger": "malaak (89% of 27)",
-  "lions": "aray (56% of 32)",
-  "shields": "magan (57% of 21)",
+  "lions": "arayawath (50% of 32)",
+  "shields": "maganayam (24% of 21)",
   "minds": "napash (33% of 3)",
-  "mercies": "racham (96% of 23)",
+  "mercies": "racham (70% of 23)",
   "fears": "yaraa (76% of 17)",
   "queen": "malakah (65% of 49)",
+  "ministers": "masharathay (57% of 14)",
   "prophecy": "nabawaah (75% of 4)",
   "prospers": "tzalach (67% of 3)",
+  "worships": "shachah (67% of 3)",
   "crush": "dakaa (36% of 14)",
-  "paths": "arach (39% of 36)",
-  "restores": "shawab (50% of 4)",
-  "scoffers": "lawatz (75% of 4)",
+  "paths": "arachawath (19% of 36)",
+  "restores": "shawab (67% of 3)",
+  "scoffers": "latzayam (50% of 4)",
   "selah": "salah (97% of 75)",
-  "counsels": "mawaitzah (67% of 6)",
+  "counsels": "mawaitzah (50% of 6)",
   "heart's": "napash (33% of 3)",
-  "precepts": "paqawad (92% of 26)",
+  "precepts": "paqawad (85% of 26)",
   "princess": "banath (50% of 2)",
   "create": "baraa (90% of 10)",
   "level": "nachath (50% of 2)",
-  "crowns": "itarah (50% of 6)",
+  "crowns": "itar (33% of 6)",
+  "winds": "rawachawath (55% of 11)",
   "flames": "lahat (33% of 3)",
-  "thrones": "kasaa (80% of 5)",
+  "thrones": "kasaawath (40% of 5)",
   "sinner": "chataa (89% of 9)",
   "assemblies": "maqaraa (40% of 5)",
-  "queens": "malakah (67% of 3)",
+  "oils": "shaman (50% of 2)",
+  "queens": "malakawath (67% of 3)",
   "faith": "amawan (50% of 2)",
   "dismay": "baithah (33% of 6)"
  }
