@@ -13,7 +13,7 @@
  * "who is there now, and whose portion is it in?" — click a city, a band, or
  * anywhere on the map.
  *
- * Route: /models/holy-land   (linked from /models — "Maps & Models")
+ * Route: /models/holy-land   (linked from /models — "Renderings & Models")
  * Deep links: ?city=<id>  ?overlay=joshua|ezekiel|both|none  ?basemap=plain|online  ?relief=0  ?places=1|0
  *             ?pin=<lon>,<lat>[,<label>]  — a dropped pin; every selection then shows its distance from it
  *
@@ -45,7 +45,7 @@ import {
   ezekielAllotment, toFeature, ringCentroid, labelAnchor, pointInRing, joshuaTribeAt, ezekielAt,
   squareToPaleo, translitOf,
   REGIONS, ALL_PLACES, PLACES_AZ, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
-  countryOf, countryFeature, countryName, twinOf, WATERS, BIBLE_RIVERS,
+  countryOf, countryFeature, countryName, twinOf, WATERS, BIBLE_RIVERS, EZ_LANDMARKS,
 } from '../lib/models/holyLand.js';
 
 // Phones and narrow windows: the panel is a bottom sheet, place dots start off
@@ -233,7 +233,7 @@ function fmtLonLat([lon, lat]) {
 
 // ── Component ────────────────────────────────────────────────────────────────
 export default function HolyLandMap() {
-  usePageTitle(pageTitle('Holy Land in 3D — Maps & Models'));
+  usePageTitle(pageTitle('Holy Land in 3D — Renderings & Models'));
   const { theme, toggle: toggleTheme } = useTheme();
   const [params, setParams] = useSearchParams();
 
@@ -456,8 +456,24 @@ export default function HolyLandMap() {
     };
     const selCityId = sel?.kind === 'city' ? sel.city.id : null;
 
+    // Ezekiel's border landmarks (47:15–20) — Hethlon, Lebo-hamath, Zedad, Berothah,
+    // Hazar-enan, Damascus, Hauran, Tamar, Meribath-kadesh — stand on the map as anchors
+    // whenever his overlay is on, so the corners of the border are named where they are.
+    const anchorIds = showEzekiel ? new Set(EZ_LANDMARKS) : new Set();
+    for (const id of anchorIds) {
+      const c = BIBLICAL_CITIES.find((x) => x.id === id);
+      if (!c) continue;
+      const el = document.createElement('button');
+      el.type = 'button';
+      el.className = `hl-mk hl-mk-b hl-mk-anchor${c.id === selCityId ? ' hl-mk-sel' : ''}`;
+      el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span><span class="hl-mk-paleo" dir="rtl">${c.paleo}</span><span class="hl-mk-en">${c.name}</span></span>`;
+      el.title = `${c.translit} (${c.name}) — a landmark of Ezekiel's border — read ${c.ref}`;
+      el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
+      mk([c.lon, c.lat], el, { pri: c.id === selCityId ? 1 : 1.5, w: Math.max(c.translit.length, c.name.length) * 7 + 14 });
+    }
     if (showBiblical) {
       for (const c of BIBLICAL_CITIES) {
+        if (anchorIds.has(c.id)) continue;   // already on the map as a border anchor
         const el = document.createElement('button');
         el.type = 'button';
         el.className = `hl-mk hl-mk-b${c.id === KEY_CITY ? ' hl-mk-key' : ''}${c.id === selCityId ? ' hl-mk-sel' : ''}`;
@@ -833,7 +849,7 @@ export default function HolyLandMap() {
     <div className={`hl-page${panelOpen ? ' hl-panel-open' : ''}`} data-basemap={basemap}>
       <header className="hl-top">
         <Link to="/landing" className="hl-logo" title="Home">𐤀𐤁</Link>
-        <Link to="/models" className="hl-back" title="Maps & Models">← Models</Link>
+        <Link to="/models" className="hl-back" title="Renderings & Models">← Models</Link>
         <h1 className="hl-h1">The Holy Land in 3D <span>Joshua &amp; Ezekiel allotments</span></h1>
         <PlacePicker pin={pin} selId={sel?.city?.id} onPick={(c) => selectCity(c, true)} />
         <div className="hl-top-actions">

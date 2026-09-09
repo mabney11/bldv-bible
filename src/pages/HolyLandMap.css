@@ -208,6 +208,13 @@
 
 .hl-mk-twin .hl-mk-lbl { top: 8px; left: 6px; }
 
+/* Ezekiel's border landmarks: hollow gold squares, named at every zoom (they are the corners) */
+.hl-mk-anchor .hl-mk-dot { background: #fff3d6; border: 2px solid #b8860b; border-radius: 2px; width: 9px; height: 9px; box-shadow: 0 0 0 1.5px #fff8, 0 0 6px #e8aa5588; }
+.hl-mk-anchor .hl-mk-lbl { display: flex; }
+.hl-mk-anchor .hl-mk-name { color: #5a3600; font-size: 11px; letter-spacing: 0.02em; }
+.hl-mk-anchor .hl-mk-paleo, .hl-mk-anchor .hl-mk-en { display: none; }
+.hl-z-labels .hl-mk-anchor .hl-mk-paleo, .hl-z-labels .hl-mk-anchor .hl-mk-en { display: block; }
+
 /* Nations & lands: purple diamonds, always labelled (they're far apart) */
 .hl-mk-r .hl-mk-dot { background: #a78bfa; transform: rotate(45deg); border-radius: 1px; width: 11px; height: 11px; }
 .hl-mk-r .hl-mk-lbl { display: flex; }

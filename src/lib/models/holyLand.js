@@ -176,14 +176,14 @@ const EZ_WEST = [
 // south end of the Salt Sea the line IS the river and the eastern shore, taken from the
 // bundled geometry (the east shore of Chinnereth carries it across the lake).
 const EZ_EAST = [
-  [37.2,34.35],[36.6,33.9],[36.38,33.5],[36.05,33.3],   // Hazar-enan; between Damascus (N) and Hauran (S)
+  [37.24,34.23],[36.6,33.9],[36.38,33.5],[36.05,33.3],   // Hazar-enan; then between Damascus (N, inside) and Hauran (S)
   ...JORDAN_LINE,                                      // the Jordan, Chinnereth's east shore, the Jordan
   ...eastShore(lakeRing('Dead Sea', 0)),               // the Salt Sea — its east shore
   ...eastShore(lakeRing('Dead Sea', 1)),
   [35.24,30.78],                                       // Tamar
 ];
 // North edge, west → east: sea → Hethlon → Lebo-hamath → Zedad → Hazar-enan (47:15–17).
-const EZ_NORTH = [[35.78,34.45],[36.0,34.45],[36.2,34.2],[36.9,34.3],[37.2,34.35]];
+const EZ_NORTH = [[35.78,34.45],[36.0,34.45],[36.2,34.2],[36.9,34.3],[37.24,34.23]];   // ends AT Hazar-enan (the city dot)
 // South edge, west → east: Brook of Egypt → Meribath-kadesh → Tamar (47:19).
 const EZ_SOUTH = [[33.75,31.13],[34.1,30.85],[34.42,30.65],[34.8,30.65],[35.24,30.78]];
 
@@ -365,6 +365,10 @@ export function ezekielAllotment() {
     meta: { unit, layout, holyKm, sanctKm, cityKm: 4500 * CUBIT_M / 1000, westLon, eastLon, northKm: northDeg * KM_PER_DEG_LAT, southKm: southDeg * KM_PER_DEG_LAT, latTop, latBot, square: [sqW, hTop, sqE, hBot], sanctuary: [midLon, (priestsTop + priestsBot) / 2], city: [midLon, cityMidLat] },
   };
 }
+
+// The landmarks Ezekiel 47:15–20 hangs the border on — shown as border anchors whenever the
+// Ezekiel overlay is on, whatever the city toggles say (ids of BIBLICAL_CITIES entries).
+export const EZ_LANDMARKS = ['hethlon', 'lebo-hamath', 'zedad', 'berothah', 'hazar-enan', 'damascus', 'hauran', 'tamar', 'kadesh-barnea'];
 
 // ── Waters, named as the Bible names them (transliteration primary, paleo, then English) ──
 // Only the waters the built-in basemap actually draws; positions are label anchors.
