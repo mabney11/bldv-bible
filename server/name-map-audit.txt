@@ -1,13 +1,25 @@
-name-map audit — 6248 spellings; 0 relinked, 16 to confirm, 0 value(s) not equal to translit(root)
+name-map audit — 6248 spellings; 0 relinked, 0 to confirm, 20 decided by you, 0 value(s) not equal to translit(root)
 
-FIX (applied): the linked number is not this name; exactly one number carries it
+FIX (preview — run with --apply): the linked number is not this name; exactly one number carries it
 
 CONFIRM: more than one Hebrew name carries this spelling. Below each: every WEB verse that uses the spelling, by the Strong's number the translators tagged — open /parallel on any of them to see the Hebrew. The map keeps the number used in most verses (marked ★); with --apply it is relinked to that number where it differs.
+
+DECIDED (lexicon/name-map-decisions.json): your rulings — shown with the same verse evidence; move a ★ and run --apply to change one
+Jerusalem        H3390  "Yarawashalam"  now: Jerusalem
+                       → H3390 "Yarawashalam" — Jerusalem
+                       H3389  "Yarawashalam" Jerushalaim or Jerushalem, the capital c 641 verse(s): JOSH 10:1, JOSH 10:3, JOSH 10:5, JOSH 10:23, JOSH 12:10, JOSH 15:8 …
+                     ★ H3390  "Yarawashalam" Jerusalem                                26 verse(s): EZRA 4:8, EZRA 4:12, EZRA 4:20, EZRA 4:23, EZRA 4:24, EZRA 5:1 …
+                       Hnull  "?"                                          1 verse(s): 2CHR 22:1
+                       H8671  "Thashayaiy" ninth                                    1 verse(s): JER 39:1
 Jonathan         H3083  "Yahawanathan"  now: Jehonathan, the name of four Israelites
                        → H3129 "Yawanathan" — Jonathan, the name of ten Israelites
                      ★ H3083  "Yahawanathan" Jehonathan, the name of four Israelites  79 verse(s): JUDG 18:30, 1SAM 14:6, 1SAM 14:8, 1SAM 18:1, 1SAM 18:1, 1SAM 18:3 …
                        H3129  "Yawanathan" Jonathan, the name of ten Israelites     42 verse(s): 1SAM 13:2, 1SAM 13:3, 1SAM 13:16, 1SAM 13:22, 1SAM 13:22, 1SAM 14:1 …
                        H1732  "Dawad" David, the youngest son of Jesse         1 verse(s): 1SAM 19:1
+Daniel           H1840  "Danayaal"  now: Daniel or Danijel, the name of two Israelites
+                       → H1840 "Danayaal" — Daniel or Danijel, the name of two Israelites
+                       H1841  "Danayaal" Danijel, the Hebrew prophet              52 verse(s): DAN 2:13, DAN 2:14, DAN 2:15, DAN 2:16, DAN 2:17, DAN 2:18 …
+                     ★ H1840  "Danayaal" Daniel or Danijel, the name of two Israe 29 verse(s): 1CHR 3:1, EZRA 8:2, NEH 10:6, EZK 14:14, EZK 14:20, EZK 28:3 …
 Job              H347   "Ayawab"  now: Ijob, the patriarch famous for his patience
                        → H3102 "Yawab" — Job, an Israelite
                      ★ H347   "Ayawab" Ijob, the patriarch famous for his patie 53 verse(s): JOB 1:1, JOB 1:5, JOB 1:5, JOB 1:5, JOB 1:8, JOB 1:9 …
@@ -20,19 +32,26 @@ Noah             H5146  "Nach"  now: Noach, the patriarch of the flood
                        H776   "Aratz" the earth (at large, or partitively a la 1 verse(s): GEN 9:19
 Joram            H3088  "Yahawaram"  now: Jehoram, the name of a Syrian and of three Israelites
                        → H3141 "Yawaram" — Joram, the name of three Israelites and one Syrian
-                     ★ H3141  "Yawaram" Joram, the name of three Israelites and  20 verse(s): 2SAM 8:10, 2KGS 8:16, 2KGS 8:21, 2KGS 8:23, 2KGS 8:24, 2KGS 8:25 …
-                       H3088  "Yahawaram" Jehoram, the name of a Syrian and of thr 7 verse(s): 2KGS 9:15, 2KGS 9:17, 2KGS 9:21, 2KGS 9:21, 2KGS 9:22, 2KGS 9:23 …
+                       H3141  "Yawaram" Joram, the name of three Israelites and  20 verse(s): 2SAM 8:10, 2KGS 8:16, 2KGS 8:21, 2KGS 8:23, 2KGS 8:24, 2KGS 8:25 …
+                     ★ H3088  "Yahawaram" Jehoram, the name of a Syrian and of thr 7 verse(s): 2KGS 9:15, 2KGS 9:17, 2KGS 9:21, 2KGS 9:21, 2KGS 9:22, 2KGS 9:23 …
                        H3027  "Yad" a hand (the open one (indicating power,  1 verse(s): 2SAM 8:10
+Ramah            H7414  "Ramah"  now: Ramah, the name of four places in Palestine
+                       → H7414 "Ramah" — Ramah, the name of four places in Palestine
+                         H7484 "Raimah" — Ramah, the name of a grandson of Ham, and of a pla
+                     ★ H7414  "Ramah" Ramah, the name of four places in Palest 37 verse(s): JOSH 18:25, JOSH 19:8, JOSH 19:29, JOSH 19:36, JUDG 4:5, JUDG 19:13 …
 Haran            H2771  "Charan"  now: Charan, the name of a man and also of a place
                        → H2039 "Haran" — Haran, the name of two men
                      ★ H2771  "Charan" Charan, the name of a man and also of a  12 verse(s): GEN 11:31, GEN 11:32, GEN 12:4, GEN 12:5, GEN 27:43, GEN 28:10 …
                        H2039  "Haran" Haran, the name of two men               7 verse(s): GEN 11:26, GEN 11:27, GEN 11:27, GEN 11:28, GEN 11:29, GEN 11:31 …
                        H1028  "Bayathaharan" Beth-ha-Ram, a place East of the Jordan  1 verse(s): NUM 32:36
-Jethro           H3500  "Yathar"  now: Jether, the name of five or six Israelites and of one Midian
+Debir            H1688  "Dabayar"  now: Debir, the name of an Amoritish king and of two places in Pa
+                       → H1688 "Dabayar" — Debir, the name of an Amoritish king and of two pl
+                     ★ H1688  "Dabayar" Debir, the name of an Amoritish king and 14 verse(s): JOSH 10:3, JOSH 10:38, JOSH 10:39, JOSH 11:21, JOSH 12:13, JOSH 13:26 …
+Jethro           H3503  "Yatharaw"  now: Jethro, Moses' father-in-law
                        → H3503 "Yatharaw" — Jethro, Moses' father-in-law
                      ★ H3503  "Yatharaw" Jethro, Moses' father-in-law             9 verse(s): EXOD 3:1, EXOD 4:18, EXOD 18:1, EXOD 18:2, EXOD 18:5, EXOD 18:6 …
                        H3500  "Yathar" Jether, the name of five or six Israelit 1 verse(s): EXOD 4:18
-Shelah           H7974  "Shalah"  now: Shelach, a postdiluvian patriarch
+Shelah           H7974  "Shalach"  now: Shelach, a postdiluvian patriarch
                        → H7956 "Shalah" — Shelah, the name of a postdiluvian patriarch and o
                      ★ H7974  "Shalach" Shelach, a postdiluvian patriarch        9 verse(s): GEN 10:24, GEN 10:24, GEN 11:12, GEN 11:13, GEN 11:14, GEN 11:15 …
                        H7956  "Shalah" Shelah, the name of a postdiluvian patri 8 verse(s): GEN 38:5, GEN 38:11, GEN 38:14, GEN 38:26, GEN 46:12, NUM 26:20 …
@@ -48,12 +67,12 @@ Abel             H1893  "Habal"  now: Hebel, the son of Adam
                        H66    "Abalamayam" Abel-Majim, a place in Palestine         1 verse(s): 2CHR 16:4
 Jonadab          H3082  "Yahawanadab"  now: Jehonadab, the name of an Israelite and of an Arab
                        → H3122 "Yawanadab" — Jonadab, the name of an Israelite and of a Rechabi
-                     ★ H3122  "Yawanadab" Jonadab, the name of an Israelite and of 7 verse(s): 2SAM 13:3, 2SAM 13:3, 2SAM 13:32, 2SAM 13:35, JER 35:6, JER 35:10 …
-                       H3082  "Yahawanadab" Jehonadab, the name of an Israelite and  5 verse(s): 2SAM 13:5, JER 35:8, JER 35:14, JER 35:16, JER 35:18
-Dishon           H1789  "Dayashan"  now: Dishan, an Edomite
+                       H3122  "Yawanadab" Jonadab, the name of an Israelite and of 7 verse(s): 2SAM 13:3, 2SAM 13:3, 2SAM 13:32, 2SAM 13:35, JER 35:6, JER 35:10 …
+                     ★ H3082  "Yahawanadab" Jehonadab, the name of an Israelite and  5 verse(s): 2SAM 13:5, JER 35:8, JER 35:14, JER 35:16, JER 35:18
+Dishon           H1787  "Dayashawan"  now: Dishon, the name of two Edomites
                        → H1787 "Dayashawan" — Dishon, the name of two Edomites
                      ★ H1787  "Dayashawan" Dishon, the name of two Edomites         7 verse(s): GEN 36:21, GEN 36:25, GEN 36:26, GEN 36:30, 1CHR 1:38, 1CHR 1:41 …
-Ezer             H687   "Izar"  now: Etser, an Idumaean
+Ezer             H687   "Atzar"  now: Etser, an Idumaean
                        → H5827 "Izar" — Ezer, the name of two Israelites
                          H5829 "Izar" — Ezer, the name of four Israelites
                      ★ H687   "Atzar" Etser, an Idumaean                       5 verse(s): GEN 36:21, GEN 36:27, GEN 36:30, 1CHR 1:38, 1CHR 1:42
@@ -65,29 +84,18 @@ Rahab            H7343  "Rachab"  now: Rachab, a Canaanitess
                      ★ H7343  "Rachab" Rachab, a Canaanitess                    5 verse(s): JOSH 2:1, JOSH 2:3, JOSH 6:17, JOSH 6:23, JOSH 6:25
                        H7293  "Rahab" bluster(-er)                             3 verse(s): JOB 9:13, JOB 26:12, ISA 30:7
                        H7294  "Rahab" Rahab (i.e. boaster), an epithet of Egyp 3 verse(s): PSA 87:4, PSA 89:10, ISA 51:9
-Shamma           H8092  "Shamaia"  now: Shima, the name of four Israelites
+Shamma           H8037  "Shamaa"  now: Shamma, an Israelite
                        → H8037 "Shamaa" — Shamma, an Israelite
                      ★ H8037  "Shamaa" Shamma, an Israelite                     1 verse(s): 1CHR 7:37
 Chesed           H3777  "Kashad"  now: Kesed, a relative of Abraham
                        → H2618 "Chasad" — Chesed, an Israelite
                      ★ H3777  "Kashad" Kesed, a relative of Abraham             1 verse(s): GEN 22:22
-Sirah            H8167  "Shaiyarah"  now: Seirah, a place in Palestine
+Sirah            H5626  "Sarah"  now: Sirah, a cistern so-called
                        → H5626 "Sarah" — Sirah, a cistern so-called
                      ★ H5626  "Sarah" Sirah, a cistern so-called               1 verse(s): 2SAM 3:26
-Salmon           H8009  "Shalamawan"  now: Salmah, an Israelite
+Salmon           H8009  "Shalamah"  now: Salmah, an Israelite
                        → H8012 "Shalamawan" — Salmon, an Israelite
                      ★ H8009  "Shalamah" Salmah, an Israelite                     1 verse(s): RUTH 4:20
                        H8012  "Shalamawan" Salmon, an Israelite                     1 verse(s): RUTH 4:21
 
-RELINK BY VERSE COUNT (applied): the WEB uses these spellings for a different number than the map links
-Joram            H3088 → H3141 "Yawaram" (20 verses)
-Jethro           H3500 → H3503 "Yatharaw" (9 verses)
-Jonadab          H3082 → H3122 "Yawanadab" (7 verses)
-Dishon           H1789 → H1787 "Dayashawan" (7 verses)
-Shamma           H8092 → H8037 "Shamaa" (1 verses)
-Sirah            H8167 → H5626 "Sarah" (1 verses)
-
 VALUE DRIFT: map value ≠ translit(root) — the map must read exactly as the Hebrew
-Shelah           H7974  have "Shalah" want "Shalach"
-Ezer             H687   have "Izar" want "Atzar"
-Salmon           H8009  have "Shalamawan" want "Shalamah"

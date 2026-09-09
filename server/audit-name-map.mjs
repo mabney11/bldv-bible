@@ -56,14 +56,27 @@ for (const sn of Object.keys(dict)) for (const n of leadNames(dict[sn])) (byName
 const best = new Map();
 for (const [name, sn, score] of scaffold.triples) { const c = best.get(name); if (!c || score > c.score) best.set(name, { sn: norm(sn), score }); }
 
-const HAND0 = { Daniel: 'H1840', Debir: 'H1688', Jerusalem: 'H3390', Ramah: 'H7414' };
-const out = [], fixes = [], confirms = [], drift = [];
+// fieldy's rulings (lexicon/name-map-decisions.json) win over everything below.
+const DEC_PATH = path.join(__dirname, 'lexicon', 'name-map-decisions.json');
+const DECISIONS = Object.fromEntries(Object.entries(existsSync(DEC_PATH) ? JSON.parse(readFileSync(DEC_PATH, 'utf8')) : {}).filter(([k]) => !k.startsWith('_')));
+// Stars moved by hand in name-map-audit.txt become decisions too (then the file is regenerated).
+const AUDIT_PATH = path.join(__dirname, 'name-map-audit.txt');
+if (existsSync(AUDIT_PATH)) {
+  let cur = null;
+  for (const ln of readFileSync(AUDIT_PATH, 'utf8').split('\n')) {
+    const head = /^([A-Z][A-Za-z'-]+)\s+H\d+/.exec(ln); if (head) { cur = head[1]; continue; }
+    const star = /^\s*★\s*(H\d+)/.exec(ln); if (star && cur && DECISIONS[cur] !== star[1]) DECISIONS[cur] = star[1];
+  }
+}
+const HAND0 = DECISIONS;
+const out = [], fixes = [], confirms = [], drift = [], decided = [];
 for (const [name, { sn }] of best) {
   const e = entry(sn);
   const cands = byName.get(name) || [];
   const leads = leadNames(e);
   const defHas = new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(cleanDef(e));
-  if (HAND0[name] && HAND0[name] !== sn && cands.includes(HAND0[name])) { /* fall through to FIX */ }
+  if (HAND0[name] && HAND0[name] === sn) { decided.push({ name, sn, curDef: cleanDef(e).slice(0, 60), cands, candDefs: cands.map((c) => cleanDef(entry(c)).slice(0, 50)), have: nm.single[name] }); continue; }
+  if (HAND0[name] && HAND0[name] !== sn) { /* fall through to FIX */ }
   else if (leads.includes(name) || defHas || !cands.length) {
     // value check: is the map's value the transliteration of the root?
     const want = roots[sn] ? translit(roots[sn]) : null;
@@ -76,8 +89,8 @@ for (const [name, { sn }] of best) {
   // noun: Rosh "the head", Kelub "a bird-trap") or is on the hand-confirmed list below.
   // Where the current number is itself a name under a variant KJV spelling (Noach/Noah,
   // Ijob/Job, Jehonathan/Jonathan, Hebel/Abel…) the choice is fieldy's — CONFIRM.
-  const HAND = { Daniel: 'H1840', Debir: 'H1688', Jerusalem: 'H3390', Ramah: 'H7414' };
-  if (HAND[name] && cands.includes(HAND[name]) || (cands.length === 1 && commonNoun)) {
+  const HAND = DECISIONS;
+  if (HAND[name] || (cands.length === 1 && commonNoun)) {
     row.to = HAND[name] || cands[0]; row.want = roots[row.to] ? translit(roots[row.to]) : null;
     if (row.want) fixes.push(row); else confirms.push({ ...row, note: 'candidate has no root in strongs-roots.json' });
   } else confirms.push(row);
@@ -94,7 +107,7 @@ const codeToId = (code) => { const b = Array.isArray(BOOK_ID) ? BOOK_ID.find((x)
 const wsPath = path.join(__dirname, 'web-strongs.jsonl');
 const evidence = new Map();   // spelling -> Map(sn -> [refs])
 if (existsSync(wsPath)) {
-  const want = new Set(confirms.map((r) => r.name));
+  const want = new Set([...confirms, ...decided].map((r) => r.name));
   for (const ln of readFileSync(wsPath, 'utf8').split('\n')) {
     if (!ln) continue;
     let v; try { v = JSON.parse(ln); } catch { continue; }
@@ -111,7 +124,7 @@ if (existsSync(wsPath)) {
   }
 }
 const line = (r) => `${r.name.padEnd(16)} ${r.sn.padEnd(6)} "${r.have || ''}"  now: ${r.curDef}\n${' '.repeat(23)}→ ${r.cands.map((c, i) => `${c} "${roots[c] ? translit(roots[c]) : '?'}" — ${r.candDefs[i]}`).join('\n' + ' '.repeat(25))}`;
-out.push(`name-map audit — ${best.size} spellings; ${fixes.length} relinked, ${confirms.length} to confirm, ${drift.length} value(s) not equal to translit(root)`);
+out.push(`name-map audit — ${best.size} spellings; ${fixes.length} relinked, ${confirms.length} to confirm, ${decided.length} decided by you, ${drift.length} value(s) not equal to translit(root)`);
 out.push('', `FIX (${APPLY ? 'applied' : 'preview — run with --apply'}): the linked number is not this name; exactly one number carries it`);
 for (const r of fixes) out.push(line(r));
 out.push('', 'CONFIRM: more than one Hebrew name carries this spelling. Below each: every WEB verse that uses the spelling, by the Strong\'s number the translators tagged — open /parallel on any of them to see the Hebrew. The map keeps the number used in most verses (marked ★); with --apply it is relinked to that number where it differs.');
@@ -122,12 +135,21 @@ for (const r of confirms) {
   if (!ev) { out.push(' '.repeat(23) + '(no WEB verse tags this spelling — NT / apocrypha only; leave as is)'); continue; }
   const ranked = [...ev.entries()].sort((a, b) => b[1].length - a[1].length);
   for (const [sn, refs] of ranked) {
-    const e = entry(sn); const star = sn === ranked[0][0] ? '★' : ' ';
+    const e = entry(sn); const star = sn === (DECISIONS[r.name] && ev.has(DECISIONS[r.name]) ? DECISIONS[r.name] : ranked[0][0]) ? '★' : ' ';
     out.push(`${' '.repeat(21)}${star} ${sn.padEnd(6)} "${roots[sn] ? translit(roots[sn]) : '?'}" ${cleanDef(e).slice(0, 40).padEnd(40)} ${refs.length} verse(s): ${refs.slice(0, 6).join(', ')}${refs.length > 6 ? ' …' : ''}`);
   }
-  const top = ranked[0][0];
+  const top = DECISIONS[r.name] && ev.has(DECISIONS[r.name]) ? DECISIONS[r.name] : ranked[0][0];
   if (top !== r.sn && roots[top]) relinks.push({ name: r.name, from: r.sn, to: top, want: translit(roots[top]), n: ranked[0][1].length });
   else if (roots[top] && nm.single[r.name] !== translit(roots[top])) drift.push({ name: r.name, sn: top, have: nm.single[r.name], want: translit(roots[top]) });
+}
+out.push('', 'DECIDED (lexicon/name-map-decisions.json): your rulings — shown with the same verse evidence; move a ★ and run --apply to change one');
+for (const r of decided) {
+  out.push(line(r));
+  const ev = evidence.get(r.name); if (!ev) continue;
+  for (const [sn, refs] of [...ev.entries()].sort((a, b) => b[1].length - a[1].length)) {
+    const e = entry(sn); const star = sn === DECISIONS[r.name] ? '★' : ' ';
+    out.push(`${' '.repeat(21)}${star} ${sn.padEnd(6)} "${roots[sn] ? translit(roots[sn]) : '?'}" ${cleanDef(e).slice(0, 40).padEnd(40)} ${refs.length} verse(s): ${refs.slice(0, 6).join(', ')}${refs.length > 6 ? ' …' : ''}`);
+  }
 }
 if (relinks.length) {
   out.push('', `RELINK BY VERSE COUNT (${APPLY ? 'applied' : 'preview'}): the WEB uses these spellings for a different number than the map links`);
@@ -148,4 +170,9 @@ if (APPLY && (fixes.length || drift.length)) {
   for (const d of drift) nm.single[d.name] = d.want;
   writeFileSync(nmPath, JSON.stringify(nm));   // one line, as build-names-from-hebrew writes it
   console.log(`applied: ${fixes.length} relinked in name-scaffold.json, ${fixes.length + drift.length} value(s) rewritten in name-map-expanded.json`);
+}
+if (APPLY) {
+  const dec = existsSync(DEC_PATH) ? JSON.parse(readFileSync(DEC_PATH, 'utf8')) : {};
+  for (const [k, v] of Object.entries(DECISIONS)) dec[k] = v;
+  writeFileSync(DEC_PATH, JSON.stringify(dec, null, 2) + '\n');
 }

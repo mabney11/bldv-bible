@@ -1,0 +1,23 @@
+{
+  "_note": "fieldy's rulings on spellings that name more than one Hebrew name — spelling → the Strong's number the map uses (name-map-expanded.json value = translit of that number's root). audit-name-map.mjs reads this FIRST and never overrides a line here; edit this file (or move the ★ in name-map-audit.txt and run `node audit-name-map.mjs --apply`, which copies the stars in here). Rule seen 2026-09-09: the full theophoric spelling wins — Yahawaram (יהורם) over Yawaram, Yahawanadab over Yawanadab, Yahawanathan over Yawanathan.",
+  "Daniel": "H1840",
+  "Debir": "H1688",
+  "Jerusalem": "H3390",
+  "Ramah": "H7414",
+  "Joram": "H3088",
+  "Jonadab": "H3082",
+  "Jonathan": "H3083",
+  "Job": "H347",
+  "Noah": "H5146",
+  "Haran": "H2771",
+  "Jethro": "H3503",
+  "Shelah": "H7974",
+  "Abel": "H1893",
+  "Dishon": "H1787",
+  "Ezer": "H687",
+  "Rahab": "H7343",
+  "Shamma": "H8037",
+  "Chesed": "H3777",
+  "Sirah": "H5626",
+  "Salmon": "H8009"
+}
