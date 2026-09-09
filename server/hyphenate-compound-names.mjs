@@ -22,6 +22,8 @@
  *
  * Modes:
  *   --list                 print every candidate the dictionary supports (SN, old → new), for picking
+ *   --rule                 preview fieldy's rule: hyphenate unless a waw ties the pieces or the name ends in -yah / -Al
+ *   --rule-apply           add every name the rule hyphenates to the allowlist (hand ✓/✗ decisions kept)
  *   --add H1035,H27,…      add numbers to the allowlist (uses the dictionary split)
  *   --seed-map             add every biblical city / nation on the Holy Land map that has a rule
  *   --remove H27           drop a number from the allowlist
@@ -98,6 +100,35 @@ if (flag('--list')) {
   const all = Object.keys(dict).map(rule).filter(Boolean).sort((a, b) => a.from.localeCompare(b.from));
   console.log(`${all.length} names the dictionary can split (${all.filter((r) => inUse.has(r.from)).length} in use in name-map-expanded.json). Add with --add H####,H####`);
   for (const r of all) console.log(show(r) + (allow[r.sn]?.skip ? '   ✗ excluded' : allow[r.sn] ? '   ✓ allowlisted' : ''));
+  process.exit(0);
+}
+// fieldy's rule (2026-09-08): a compound name stays JOINED when a waw ties the
+// pieces together (Yahawanathan יהו|נתן, Yahawadah) or when it ends in -yah (יה/יהו:
+// Yashaiyah) or -Al (אל: Danayaal, Shamawaal); otherwise the pieces are
+// hyphenated (Abay-Dan, Bayath-Lacham). Names already decided by hand in the
+// allowlist (✓ / ✗) keep their decision — Yashar-Al and Bayath-Al were asked for by name.
+export function joinedByRule(split) {
+  const [head, tail] = [split[0], split[split.length - 1]];
+  const joined = split.join('');
+  if (head.endsWith('ו') || tail.startsWith('ו')) return 'waw ties the pieces';
+  if (/יהו?$/.test(joined)) return 'ends in -yah';
+  if (/אל$/.test(joined)) return 'ends in -Al';
+  return null;
+}
+if (flag('--rule') || flag('--rule-apply')) {
+  const all = Object.keys(dict).map(rule).filter(Boolean).sort((a, b) => a.from.localeCompare(b.from));
+  const decided = (r) => allow[r.sn] ? (allow[r.sn].skip ? '✗ excluded by hand' : '✓ allowlisted by hand') : null;
+  const hy = [], keep = [];
+  for (const r of all) { const why = joinedByRule(r.he.split(' ')); (why ? keep : hy).push({ r, why }); }
+  console.log(`${all.length} splittable names — the rule hyphenates ${hy.length}, leaves ${keep.length} joined.\n\nHYPHENATE (no connective waw, not -yah / -Al):`);
+  for (const { r } of hy) console.log(show(r) + (decided(r) ? '   ' + decided(r) : ''));
+  console.log('\nSTAY JOINED:');
+  for (const { r, why } of keep) console.log(show(r) + `   (${why})` + (decided(r) ? '   ' + decided(r) : ''));
+  if (flag('--rule-apply')) {
+    let n = 0;
+    for (const { r } of hy) if (!allow[r.sn]) { allow[r.sn] = r; n++; }
+    console.log(`\n${n} added to the allowlist by the rule (hand decisions untouched). Next: --apply / --corpus.`); saveAllow();
+  }
   process.exit(0);
 }
 if (flagVal('--add')) {

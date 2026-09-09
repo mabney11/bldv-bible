@@ -9392,6 +9392,26 @@ function defInAppSpelling(def, translit) {
     if (!translit) return clean;
     return clean.replace(/^[A-Z][A-Za-z'\-]*(?: or [A-Z][A-Za-z'\-]*)?(?=\s*[,;(]|$)/, translit);
 }
+// Say it the app's way: every KJV name and title inside a dictionary sentence
+// ("Jehovah-saved", "Jah has saved", "Jerushalaim, the capital") is rewritten
+// through the same name map the reading text uses (server/name-map-expanded.json:
+// single names + theonyms), plus Jah → Yah. Hot-reloaded by mtime.
+const NAME_MAP_PATH = path.join(__dirname, 'name-map-expanded.json');
+let _nameMap = { mtime: 0, map: null, re: null };
+function appSpelling(text) {
+    if (!text) return text;
+    try {
+        const st = fs.statSync(NAME_MAP_PATH);
+        if (st.mtimeMs !== _nameMap.mtime) {
+            const nm = JSON.parse(fs.readFileSync(NAME_MAP_PATH, 'utf8'));
+            const map = { Jah: 'Yah', JAH: 'Yah', Jehovah: 'Yahawah', Yahweh: 'Yahawah', ...(nm.theonyms || {}), ...(nm.single || {}) };
+            const keys = Object.keys(map).filter(k => /^[A-Za-z][A-Za-z' -]*$/.test(k)).sort((a, b) => b.length - a.length)
+                .map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+            _nameMap = { mtime: st.mtimeMs, map, re: new RegExp(`\\b(${keys.join('|')})\\b`, 'g') };
+        }
+    } catch { return text; }
+    return String(text).replace(_nameMap.re, m => _nameMap.map[m] ?? m);
+}
 function strongsAnatomy(snRaw) {
     const sn = normSn(snRaw);
     const e = STRONGS_DICT[sn];
@@ -9406,7 +9426,7 @@ function strongsAnatomy(snRaw) {
     if (ov && Array.isArray(ov.parts)) for (const p of ov.parts) if (p && p.sn && p.gloss) ovGloss[normSn(p.sn)] = p.gloss;
     // Drop a component that is just a spelling variant of the name itself (H3389's derivation cites H3390).
     const parts = partSns.map(strongsPart).filter(p => p.he && p.he.replace(/ /g, '') !== self.he.replace(/ /g, ''))
-        .map(p => ({ ...p, gloss: ovGloss[p.sn] || p.gloss, kjv: kjvShort(p.kjv) }));
+        .map(p => ({ ...p, gloss: ovGloss[p.sn] || appSpelling(p.gloss), kjv: appSpelling(kjvShort(p.kjv)) }));
     const fused = splitFusedCompound(self.he, parts.map(p => p.he));
     if (fused) {
         self.he = fused.join(' ');
@@ -9428,8 +9448,9 @@ function strongsAnatomy(snRaw) {
         ...self,
         isCompound: split.paleo.includes('-'),
         derivation: deriv || null,
-        meaning: (ov && ov.meaning) || (mm ? mm[1].trim() : null),
-        strongs_def: (ov && ov.def) || defInAppSpelling(e.strongs_def, self.translit),
+        // Curated text is read exactly as written; only the dictionary's own wording is respelled.
+        meaning: (ov && ov.meaning) || appSpelling(mm ? mm[1].trim() : null),
+        strongs_def: (ov && ov.def) || appSpelling(defInAppSpelling(e.strongs_def, self.translit)),
         curated: !!ov,
         hyphenated: allowed && split.paleo.includes('-') ? (fused ? 'derivation' : 'lemma') : null,
         split: split.paleo.includes('-') ? split : null,   // the dictionary's split, allowlisted or not

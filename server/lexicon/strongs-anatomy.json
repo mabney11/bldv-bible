@@ -1,10 +1,182 @@
 {
-  "_note": "Curated anatomy overrides for /api/strongs (what words build a Strong's number up), keyed by number. Wins over the dictionary's derivation field. parts: [{ sn, gloss? }] in order; meaning: the plain sense of the compound; def: the definition sentence, in the app's own transliteration. Hot-reloaded on change.",
+  "_note": "Curated anatomy for /api/strongs — fieldy's own reading of what builds a name up. Keyed by Strong's number. parts: [{ sn, gloss }] in order (the literal building pieces, glossed in the app's own spelling); meaning: the pieces read as a sentence; def: the definition line, in the app's spelling. Anything here wins over the dictionary's derivation. Edit the file and the server picks it up on the next request (hot-reloaded by mtime) — no restart.",
+  "_rules": [
+    "No Jehovah / Jah / the LORD / J-spellings anywhere — Yahawah, Yah, and the app's transliterations only (dictionary text is rewritten through name-map-expanded.json automatically; these entries are read as written).",
+    "Al = 'Alahay of Yashar-Al'; a gloss in (parentheses) after the piece; [brackets] for an alternative sense.",
+    "The joined transliteration stays the display form; hyphenation is decided by compound-hyphenation.json, not here."
+  ],
+  "H27": {
+    "parts": [
+      {
+        "sn": "H1",
+        "gloss": "My Father"
+      },
+      {
+        "sn": "H1777",
+        "gloss": "Judge"
+      }
+    ],
+    "meaning": "Abay (My Father) is Dan (Judge)",
+    "def": "Abay-Dan, an Israelite"
+  },
+  "H1840": {
+    "parts": [
+      {
+        "sn": "H1835",
+        "gloss": "judge"
+      },
+      {
+        "sn": "H410",
+        "gloss": "Alahay of Yashar-Al"
+      }
+    ],
+    "meaning": "The (Dan) Judge is Al (Alahay of Yashar-Al)",
+    "def": "Danayaal, the name of two Israelites"
+  },
   "H2216": {
     "parts": [
-      { "sn": "H2213", "gloss": "crown" },
-      { "sn": "H894", "gloss": "Babylon" }
+      {
+        "sn": "H2213",
+        "gloss": "crown"
+      },
+      {
+        "sn": "H894",
+        "gloss": "Babylon"
+      }
     ],
+    "meaning": "Zar (crown) of Babal (Babylon)",
     "def": "Zarababal, an Israelite born in Babylon"
+  },
+  "H3063": {
+    "parts": [
+      {
+        "sn": "H3050",
+        "gloss": "Yah"
+      },
+      {
+        "sn": "H3034",
+        "gloss": "praise"
+      }
+    ],
+    "meaning": "Yah gets the praise",
+    "def": "Yahawadah, the name of five Israelites; also of the tribe descended from the first, and of its territory"
+  },
+  "H3083": {
+    "parts": [
+      {
+        "sn": "H3050",
+        "gloss": "Yah"
+      },
+      {
+        "sn": "H5414",
+        "gloss": "gives"
+      }
+    ],
+    "meaning": "Yah Nathan (gives)",
+    "def": "Yahawanathan, the name of four Israelites"
+  },
+  "H3091": {
+    "parts": [
+      {
+        "sn": "H3068",
+        "gloss": "Yahawah"
+      },
+      {
+        "sn": "H3467",
+        "gloss": "salvation"
+      }
+    ],
+    "meaning": "Yahawah is Shawai [salvation]",
+    "def": "Yahawashawai, the leader who brought Yashar-Al into the land"
+  },
+  "H3290": {
+    "parts": [
+      {
+        "sn": "H6117",
+        "gloss": "take by the heel / supplant"
+      }
+    ],
+    "meaning": "He will supplant / take by the heel",
+    "def": "Yaiqab, the patriarch of Yashar-Al"
+  },
+  "H3327": {
+    "parts": [
+      {
+        "sn": "H6711",
+        "gloss": "laugh"
+      }
+    ],
+    "meaning": "he will laugh",
+    "def": "Yatzachaq, son of Abaraham"
+  },
+  "H3389": {
+    "parts": [
+      {
+        "sn": "H3384",
+        "gloss": "founded"
+      },
+      {
+        "sn": "H7965",
+        "gloss": "peace / wholeness"
+      }
+    ],
+    "meaning": "yarah (founded) in shalam (peace / wholeness)",
+    "def": "Yarawashalam, the capital city of Yashar-Al"
+  },
+  "H3470": {
+    "parts": [
+      {
+        "sn": "H3467",
+        "gloss": "saved"
+      },
+      {
+        "sn": "H3050",
+        "gloss": "Yah"
+      }
+    ],
+    "meaning": "Yah has saved",
+    "def": "Yashaiyah, the name of seven Israelites"
+  },
+  "H3478": {
+    "parts": [
+      {
+        "sn": "H3477",
+        "gloss": "upright"
+      },
+      {
+        "sn": "H410",
+        "gloss": "Alahay of Yashar-Al"
+      }
+    ],
+    "meaning": "Yashar (upright) with Al (Alahay of Yashar-Al)",
+    "def": "Yashar-Al, the name given to Yaiqab; also of his descendants and their land"
+  },
+  "H8050": {
+    "parts": [
+      {
+        "sn": "H8085",
+        "gloss": "hear"
+      },
+      {
+        "sn": "H410",
+        "gloss": "Alahay of Yashar-Al"
+      }
+    ],
+    "meaning": "shamai (hear) Al (Alahay of Yashar-Al)",
+    "def": "Shamawaal, the name of three Israelites"
+  },
+  "H8123": {
+    "parts": [
+      {
+        "sn": "H8121",
+        "gloss": "the sun"
+      },
+      {
+        "sn": "H5125",
+        "gloss": "seed / son"
+      }
+    ],
+    "meaning": "nawan (seed/son) of shamash (the sun)",
+    "def": "Shamashawan, an Israelite"
   }
 }
