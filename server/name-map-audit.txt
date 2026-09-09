@@ -1,6 +1,6 @@
 name-map audit — 6248 spellings; 0 relinked, 0 to confirm, 20 decided by you, 0 value(s) not equal to translit(root)
 
-FIX (preview — run with --apply): the linked number is not this name; exactly one number carries it
+FIX (applied): the linked number is not this name; exactly one number carries it
 
 CONFIRM: more than one Hebrew name carries this spelling. Below each: every WEB verse that uses the spelling, by the Strong's number the translators tagged — open /parallel on any of them to see the Hebrew. The map keeps the number used in most verses (marked ★); with --apply it is relinked to that number where it differs.
 
