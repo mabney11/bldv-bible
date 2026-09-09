@@ -1,4 +1,5 @@
 'use strict';
+const { progress } = require('./progress.cjs');
 /**
  * heb-align.js — build fully-qualified HEB (extra) whole-word surfaces from BHS.
  *
@@ -476,7 +477,9 @@ function buildHebSurfaces(o) {
         byChapter.get(k).push(r);
     }
 
+    const pOT = progress('OT: aligning chapters', byChapter.size);
     for (const [ckey, verses] of byChapter) {
+        pOT.tick();
         const canon = verses[0].canon_id;
         // OFFSET: recomputed every build so it can never go stale, and WRITTEN
         // DOWN so a wrong choice is inspectable and pinnable. Psalms needs this
@@ -620,6 +623,7 @@ function buildHebSurfaces(o) {
             }
         }
     }
+    pOT.done();
 
     // Mark every surface whose FORM has more than one attested Strong's reading.
     // In the OT this is decoration (each token carries its own authoritative SN);
@@ -1109,7 +1113,9 @@ function buildHebSurfaces(o) {
     };
 
     const ntRows = VERSES.all(corpus, ntMin, ntMax);
+    const pNT = progress('NT: resolving whole words', ntRows.length);
     for (const row of ntRows) {
+        pNT.tick();
         const hw = wordsOf(row);
         const ntVerseTokens = ntVerseStmt ? ntVerseStmt.all(row.canon_id, row.chapter, row.verse) : [];
         const ntVerseUsed = new Set();
@@ -1367,6 +1373,7 @@ function buildHebSurfaces(o) {
             });
         }
     }
+    pNT.done();
 
     // Surface the competing readings so a wrong pick is a REPORT LINE, not
     // something to find by reading a verse in the app.

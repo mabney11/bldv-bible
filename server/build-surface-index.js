@@ -22,6 +22,7 @@
 const path    = require('path');
 const fs      = require('fs');
 const Database = require('better-sqlite3');
+const { progress, fmtDur } = require('./progress.cjs');
 
 // ── CLI args ─────────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
@@ -1446,7 +1447,9 @@ const SINGLE_MORPHEME_POS = new Set([
 ]);
 
 let processed = 0;
+const pParse = progress('parsing surface forms', distinctRows.length);
 for (const row of distinctRows) {
+    pParse.tick();
     try {
         // NOTE: surface-strongs-overrides.json is intentionally NOT applied here.
         // It is keyed by word_raw ALONE, so for a homograph surface (same glyphs,
@@ -1513,11 +1516,12 @@ for (const row of distinctRows) {
     }
 
     processed++;
-    if (processed % 5000 === 0) {
+    if (false) {
         process.stdout.write(`  ${processed.toLocaleString()} / ${distinctRows.length.toLocaleString()} combos parsed\r`);
     }
 }
 
+pParse.done();
 console.log(`\nParsed ${surfaceMap.size.toLocaleString()} unique surface forms in ${((Date.now()-t0)/1000).toFixed(1)}s`);
 
 // Finalize each per-(surface,SN) record. The badge SN is the AUTHORITATIVE
@@ -1647,7 +1651,7 @@ if (_invOut) {
 }
 
 // ── Fetch all occurrences (book_id, chapter, verse, token_ordinal) ────────────
-console.log('\nFetching all occurrence locations…');
+console.log('\nFetching all occurrence locations… (one query over every token — no progress possible here; ≈ a minute)');
 const t1 = Date.now();
 // Punctuation IS included here (unlike distinctRows/token_surfaces above —
 // a mark has no morphology to parse, so it never gets its own token_surfaces
@@ -1926,7 +1930,9 @@ const insertSurf = out.prepare(`
 `);
 
 const insertAllSurfs = out.transaction(() => {
+    const p = progress('writing BHS surfaces', surfaceMap.size);
     for (const v of surfaceMap.values()) {
+        p.tick();
         insertSurf.run(
             'BHS', v.word_raw, v.strongs || '', v.pos || '', v.morph || '',
             v.rendered_paleo, v.root_paleo,
@@ -1949,7 +1955,9 @@ const insertOcc = out.prepare(`
 
 const insertAllOccs = out.transaction((rows) => {
     let skipped = 0;
+    const p = progress('writing BHS occurrences', rows.length);
     for (const r of rows) {
+        p.tick();
         const osn = r.strongs ? 'H' + String(r.strongs).replace(/^H+/, '') : '';
         const opos = r.pos || '', omorph = r.morph || '';
         // Punctuation has no token_surfaces row by design (a mark has no
@@ -1989,9 +1997,13 @@ if (hebResult) {
             insertSurf.run('HEB', v.word_raw, v.strongs || '', v.pos || '', v.morph || '',
                            v.rendered_paleo, v.root_paleo, v.all_strongs_json,
                            v.components_json, v.tier, v.ambiguous);
-        for (const r of hebResult.occurrences)
+        const pH = progress('writing HEB occurrences', hebResult.occurrences.length);
+        for (const r of hebResult.occurrences) {
+            pH.tick();
             insertOcc.run(r.source, r.word_raw, r.strongs || '', r.pos || '', r.morph || '',
                           r.book_id, r.chapter, r.verse, r.token_ordinal);
+        }
+        pH.done();
     })();
     const nonZero = hebResult.audit.filter(a => a.offset !== 0);
     console.log(`  HEB rows written. Chapters needing a non-zero offset: ${nonZero.length}` +
