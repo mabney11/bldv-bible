@@ -87,7 +87,12 @@
   },
   "H2704": {
     "sn": "H2704",
-    "skip": true
+    "he": "חצר עינן",
+    "paleo": "𐤇𐤑𐤓-𐤏𐤉𐤍𐤍",
+    "from": "Chatzaraiyanan",
+    "to": "Chatzar-Iyanan",
+    "meaning": "village of springs",
+    "def": "Chatsar-Enan, a place in Palestine"
   },
   "H27": {
     "sn": "H27",
@@ -110,5 +115,14 @@
   "H1630": {
     "sn": "H1630",
     "skip": true
+  },
+  "H2703": {
+    "sn": "H2703",
+    "he": "חצר עינון",
+    "paleo": "𐤇𐤑𐤓-𐤏𐤉𐤍𐤅𐤍",
+    "from": "Chatzaraiyanawan",
+    "to": "Chatzar-Iyanawan",
+    "meaning": "village of springs",
+    "def": "Chatsar-Enon, a place in Palestine"
   }
 }

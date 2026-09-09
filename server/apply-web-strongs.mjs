@@ -178,6 +178,12 @@ if (LEXF) {
 const rootsPath = ['./lexicon/strongs-roots.json','./strongs-roots.json'].find(existsSync);
 if (!rootsPath) die('strongs-roots.json not found');
 const ROOTS = JSON.parse(readFileSync(rootsPath,'utf8'));
+// Compound names fieldy hyphenates (Bayath-Lacham, Chatzar-Iyanawan): the allowlist in
+// lexicon/compound-hyphenation.json is the single source of truth shared with server.js's
+// /api/strongs and the map — a name on it renders hyphenated here too, so the English text,
+// the Root Explorer and the map all spell it the same way.
+const HYPHEN_PATH = './lexicon/compound-hyphenation.json';   // cwd = server/, like rootsPath
+const HYPHEN = existsSync(HYPHEN_PATH) ? JSON.parse(readFileSync(HYPHEN_PATH, 'utf8')) : {};
 
 // ── your transliteration — the ONE source of truth ──────────────────────────
 // NOT transliteration.cjs: that only handles Greek and Ge'ez, and returns Hebrew
@@ -241,6 +247,15 @@ const NEVER_HEAD = new Set([
 // is H1129 banah/build; "did" is grammar) and "that you might do them" (the segment IS
 // H6213 asah, whose kjv_def literally lists "do", so "do" is the verb and deserves its
 // gloss). Blanket-blocking these left ishah (do) unglossed everywhere.
+// Function words that can never BE a name, even capitalised at the start of a segment:
+// "Of Dan:" (H1835) rendered "Dan (Of) Dan", "Nevertheless Kain" → "Qayan (Nevertheless)",
+// "Yashar-Al (but)". The name in such a segment is the capitalised word after them.
+const NAME_NEVER = new Set([
+  'of','to','for','from','in','on','at','by','with','but','even','nevertheless','also','now',
+  'yet','into','unto','upon','over','under','after','before','because','therefore','both',
+  'against','among','between','through','until','till','nor','than','out','up','down','off',
+  'about','above','below','behind','beside','toward','towards','within','without','while']);
+
 const SOFT_HEAD = new Set([
   'might','may','will','shall','can','must','would','should','could','let',
   'do','does','did','have','has','had','be','is','are','was','were','been','am',
@@ -674,7 +689,7 @@ for (const r of rows) {
       // ("Qanaa Al", "Malaa of all good things") and so never got a gloss. An adjv Strong's
       // is a name ONLY when the word is a people in peoples.txt; otherwise it's a term.
       const isNameTag = NMPR.has(seg.sn) || (ADJV.has(seg.sn) && PEOPLE_WORDS.has(bare));
-      const isName = isDivine || (isNameTag && !!ROOTS[seg.sn] && !isTermStrongs);
+      const isName = isDivine || (isNameTag && !!ROOTS[seg.sn] && !isTermStrongs && !NAME_NEVER.has(bare.toLowerCase()));
       const glossed = g ? g.has(normT(bare)) : false;
       // A term is any word THIS Strong's glosses, when the Strong's is one your list
       // selected. So "afraid" renders yaraa (H3372) even though your list says "fear".
@@ -760,9 +775,29 @@ for (const r of rows) {
     let rootPaleo = (pick && !oshbBlocked) ? ROOTS[useSn] : null;
 
     let hit = false;
+    // A name the English writes as two or more capitalised words — "Hazar Enon", "Beth
+    // Shemesh" — is ONE Hebrew word under ONE Strong's. The whole run is the name: it is
+    // replaced together and glossed together, "Chatzar-Iyanawan (Hazar Enon)", instead of
+    // the head word alone with an orphan "Enon" left standing after it.
+    let runEnd = pick ? pick.i : -1;
+    if (pick && pick.isName && !pick.isDivine) {
+      let j = pick.i;
+      while (/[A-Za-z]$/.test(words[j]) && j + 2 < words.length && /^\s+$/.test(words[j + 1])
+             && /^[A-Z][a-z]+[^A-Za-z]*$/.test(words[j + 2])
+             && !NEVER_HEAD.has(words[j + 2].replace(/[^A-Za-z]/g, '').toLowerCase())
+             && !DIVINE.has(words[j + 2].replace(/[^A-Za-z]/g, '').toLowerCase())) j += 2;
+      runEnd = j;
+    }
     const rebuilt = words.map((tok, i) => {
-      if (!pick || i !== pick.i) return tok;
-      const { bare, isDivine, isName } = pick;
+      if (!pick || i !== pick.i) return (pick && i > pick.i && i <= runEnd) ? '' : tok;
+      const { isDivine, isName } = pick;
+      // the run's bare text ("Hazar Enon") with the first word's leading and the last
+      // word's trailing punctuation kept outside it
+      const runToks = words.slice(pick.i, runEnd + 1);
+      const runText = runToks.join('');
+      const lead = runText.match(/^[^A-Za-z]*/)[0], trail = runText.match(/[^A-Za-z]*$/)[0];
+      const bare = runEnd > pick.i ? runText.slice(lead.length, runText.length - trail.length).replace(/\s+/g, ' ') : pick.bare;
+      if (runEnd > pick.i) tok = runText;
       if (oshbBlocked) { oshbBlockedCount++; hit = true; return tok; }
       if (!rootPaleo) { missingRoot.set(useSn, (missingRoot.get(useSn)||0)+1); noRoot++; hit = true; return tok; }
       // Plural rule (see PLURAL_SURF): a plural English word takes the plural form that
@@ -773,7 +808,10 @@ for (const r of rows) {
         const pl = forms.find(f => f.pl && !f.suffixed && f.w && f.w !== rootPaleo);
         if (pl) { drawPaleo = pl.w; pluralHit = true; pluralUsed++; }
       }
-      const tr = translit(drawPaleo);
+      // hyphenated when the name is on the compound allowlist (and that entry really is
+      // this root's transliteration — never a stale entry)
+      const hy = (isName && !isDivine && !pluralHit) ? HYPHEN[useSn] : null;
+      const tr = (hy && !hy.skip && hy.to && hy.from === translit(drawPaleo)) ? hy.to : translit(drawPaleo);
       // CROSS-CHECK against OSHB. If the Strong's this render is using is not one
       // OSHB tags anywhere in this verse, the transliteration printed in the
       // English cannot match the Hebrew block the reader draws from tokens_bhs.
