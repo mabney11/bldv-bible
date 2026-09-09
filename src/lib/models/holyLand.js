@@ -168,7 +168,8 @@ export const HOLY_WORDS = {
   ir:        W('עיר'),      // the city                     (48:15)
   miqdash:   W('מקדש'),     // the sanctuary                (48:10)
   yhwhShammah: W('יהוה שמה'), // the city's name             (48:35)
-  aratzQadash: W('ארץ קדש'),  // "Aratz Qadash" — the Holy Land label on the square (fieldy's phrase; cf. Zechariah 2:12 אדמת הקדש)
+  aratzQadash: W('ארץ קדש'),
+  chalaqim:  W('חלקים'),    // portions — "Nashayaa Chalaqayam", the prince's portion (fieldy's label)  // "Aratz Qadash" — the Holy Land label on the square (fieldy's phrase; cf. Zechariah 2:12 אדמת הקדש)
 };
 const HW = HOLY_WORDS;
 
@@ -301,15 +302,15 @@ export function ezekielAllotment() {
   const subW = midLon - holyLonDeg * (2500 / 25000), subE = midLon + holyLonDeg * (2500 / 25000);
 
   const holy = [
-    { id:'ez-prince-w', kind:'prince', name:`${HW.nasi.tr} (the prince) — west`, he: HW.nasi.he, ref:'Ezekiel 48:21', ring: bandClipLon(holyTop.cutTop, holyTop.cutBot, -180, sqW) },
-    { id:'ez-prince-e', kind:'prince', name:`${HW.nasi.tr} (the prince) — east`, he: HW.nasi.he, ref:'Ezekiel 48:21', ring: bandClipLon(holyTop.cutTop, holyTop.cutBot, sqE, 180) },
-    { id:'ez-levites',  kind:'levites', name:`${HW.leviim.tr} (the Levites)`, he: HW.leviim.he, ref:'Ezekiel 48:13–14', ring: rect(sqW, sqE, levitesTop, levitesBot) },
-    { id:'ez-priests',  kind:'priests', name:`${HW.kohanim.tr} (the priests), sons of ${HW.tzadoq.tr}`, he: HW.kohanim.he, ref:'Ezekiel 48:10–12', ring: rect(sqW, sqE, priestsTop, priestsBot) },
-    { id:'ez-food-w',   kind:'food', name:'Food for the city workers (west)', ref:'Ezekiel 48:18–19', ring: rect(sqW, subW, cityTop, cityBot) },
-    { id:'ez-food-e',   kind:'food', name:'Food for the city workers (east)', ref:'Ezekiel 48:18–19', ring: rect(subE, sqE, cityTop, cityBot) },
+    { id:'ez-prince-w', kind:'prince', name:`${HW.nasi.tr} (the prince) — west`, short:`${HW.nasi.tr} ${HW.chalaqim.tr}`, en:"Prince's Portion", he: HW.nasi.he, ref:'Ezekiel 48:21', ring: bandClipLon(holyTop.cutTop, holyTop.cutBot, -180, sqW) },
+    { id:'ez-prince-e', kind:'prince', name:`${HW.nasi.tr} (the prince) — east`, short:`${HW.nasi.tr} ${HW.chalaqim.tr}`, en:"Prince's Portion", he: HW.nasi.he, ref:'Ezekiel 48:21', ring: bandClipLon(holyTop.cutTop, holyTop.cutBot, sqE, 180) },
+    { id:'ez-levites',  kind:'levites', name:`${HW.leviim.tr} (the Levites)`, short: HW.leviim.tr, en:'the Levites', he: HW.leviim.he, ref:'Ezekiel 48:13–14', ring: rect(sqW, sqE, levitesTop, levitesBot) },
+    { id:'ez-priests',  kind:'priests', name:`${HW.kohanim.tr} (the priests), sons of ${HW.tzadoq.tr}`, short: HW.kohanim.tr, en:`the priests, sons of ${HW.tzadoq.tr}`, he: HW.kohanim.he, ref:'Ezekiel 48:10–12', ring: rect(sqW, sqE, priestsTop, priestsBot) },
+    { id:'ez-food-w',   kind:'food', name:'Food for the city workers (west)', short:'Food', en:'for the city workers', ref:'Ezekiel 48:18–19', ring: rect(sqW, subW, cityTop, cityBot) },
+    { id:'ez-food-e',   kind:'food', name:'Food for the city workers (east)', short:'Food', en:'for the city workers', ref:'Ezekiel 48:18–19', ring: rect(subE, sqE, cityTop, cityBot) },
     { id:'ez-suburbs',  kind:'suburbs', name:'Open land round the city', ref:'Ezekiel 48:17', ring: rect(subW, subE, cityTop, cityBot) },
-    { id:'ez-city',     kind:'city', name:`${HW.ir.tr} (the city) — ${HW.yhwhShammah.tr}`, he: HW.yhwhShammah.he, ref:'Ezekiel 48:15–16, 35', ring: rect(cityW, cityE, cityN, cityS) },
-    { id:'ez-sanctuary', kind:'sanctuary', name:`${HW.miqdash.tr} (the sanctuary)`, he: HW.miqdash.he, ref:'Ezekiel 48:10; 45:2',
+    { id:'ez-city',     kind:'city', name:`${HW.ir.tr} (the city) — ${HW.yhwhShammah.tr}`, short: HW.ir.tr, en:`the city — ${HW.yhwhShammah.tr}`, he: HW.yhwhShammah.he, ref:'Ezekiel 48:15–16, 35', ring: rect(cityW, cityE, cityN, cityS) },
+    { id:'ez-sanctuary', kind:'sanctuary', name:`${HW.miqdash.tr} (the sanctuary)`, short: HW.miqdash.tr, en:'the sanctuary', he: HW.miqdash.he, ref:'Ezekiel 48:10; 45:2',
       ring: rect(midLon - sanctSide / 2, midLon + sanctSide / 2, (priestsTop + priestsBot) / 2 + sanctSideLat / 2, (priestsTop + priestsBot) / 2 - sanctSideLat / 2) },
   ];
 

@@ -245,12 +245,16 @@
 .hl-rl-e .hl-rl-paleo, .hl-rl-e .hl-rl-en, .hl-rl-j .hl-rl-paleo, .hl-rl-j .hl-rl-en { display: none; }
 .hl-rl[data-fit="lg"] .hl-rl-paleo, .hl-rl[data-fit="lg"] .hl-rl-en { display: block; }
 .hl-rl[data-fit="lg"] .hl-rl-paleo { font-size: calc(var(--rl-size, 13px) * 1.05); }
-.hl-rl-h { font-size: var(--rl-size, 11px); padding: 0.1em 0.45em; }
-.hl-rl-h.hl-rl-h-prince { font-size: var(--rl-size, 14px); }
-.hl-prince { display: inline-flex; flex-direction: column; align-items: center; gap: 0; line-height: 1; filter: drop-shadow(0 1px 2px #0008); }
-.hl-prince-ico { font-size: 1em; }
-.hl-prince-txt { font-size: 0.42em; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #5a3600; text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
-.hl-rl[data-fit="sm"] .hl-prince-txt { display: none; }
+.hl-rl-h { font-size: var(--rl-size, 11px); padding: 0.1em 0.45em; display: flex; flex-direction: column; align-items: center; gap: 0.15em; }
+.hl-rl-h .hl-rl-letter { line-height: 1.1; }
+.hl-rl-h .hl-rl-cap, .hl-rl-h .hl-rl-en { display: none; }
+.hl-rl-h[data-fit="lg"] .hl-rl-cap { display: block; font-size: var(--rl-cap, 10px); font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #3a2600; white-space: nowrap; }
+.hl-rl-h[data-fit="lg"] .hl-rl-en { display: block; font-size: calc(var(--rl-cap, 10px) * 0.8); font-weight: 500; color: #4a4033; white-space: nowrap; opacity: 0.9; }
+.hl-rl-h-sanctuary[data-fit="lg"] .hl-rl-cap, .hl-rl-h-city[data-fit="lg"] .hl-rl-cap, .hl-rl-h-sanctuary[data-fit="lg"] .hl-rl-en, .hl-rl-h-city[data-fit="lg"] .hl-rl-en { color: #fff; }
+.hl-rl-h.hl-rl-h-prince { font-size: var(--rl-size, 14px); background: transparent; border: none; box-shadow: none; padding: 0; }
+.hl-prince { display: inline-flex; flex-direction: column; align-items: center; gap: 0.25em; line-height: 1.15; filter: drop-shadow(0 1px 2px #0008); }
+.hl-prince-ico { font-size: 1em; line-height: 1.2; }
+.hl-prince .hl-rl-cap { text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
 .hl-rl-paleo { font-family: var(--paleo-font); font-size: 13px; color: #4a2f00; }
 .hl-rl-j .hl-rl-name { font-style: italic; text-transform: none; }
 .hl-rl-h { font-size: 11px; font-weight: 800; padding: 1px 5px; border-radius: 3px; background: #fff; border: 1px solid #1a1208; color: #1a1208; text-shadow: none; }

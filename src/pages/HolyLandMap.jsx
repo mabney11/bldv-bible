@@ -55,7 +55,6 @@ const SHEET_FRACTION = 0.5;                       // the sheet covers the lower 
 const REGION_DETAIL_ZOOM = 7.8;                   // from here the band labels also show the paleo line + English
 const HOLY_BTN_ZOOM = 10.5;                       // above this the "Tharawamah" caption appears over the square
 // The prince's portion (Ezekiel 48:21–22): a king and a lion — fieldy's pick.
-const PRINCE_MARK = `<span class="hl-prince" aria-label="the prince's land"><span class="hl-prince-ico">🤴🏾🦁</span><span class="hl-prince-txt">${'Nashayaa'}</span></span>`;
 const sheetPx = () => Math.round(window.innerHeight * SHEET_FRACTION);
 import './HolyLandMap.css';
 
@@ -440,13 +439,19 @@ export default function HolyLandMap() {
         const el = document.createElement('button');
         el.type = 'button';
         el.className = `hl-rl hl-rl-h hl-rl-h-${h.kind}`;
-        // The prince's land (48:21–22) is marked by a lion and a king rather than a letter.
-        el.innerHTML = h.kind === 'prince' ? PRINCE_MARK : st.label;
+        // The letter is the button at every zoom; zoomed in, the plot's own name and what it is
+        // appear beneath it (data-fit="lg"), so the priests' land reads as the priests' land and
+        // the sanctuary square inside it as the sanctuary. The prince's land: 🤴🏾🦁 + Nashayaa Chalaqayam.
+        el.innerHTML = h.kind === 'prince'
+          ? `<span class="hl-prince"><span class="hl-prince-ico">🤴🏾🦁</span><span class="hl-rl-cap">${h.short}</span><span class="hl-rl-en">${h.en}</span></span>`
+          : `<span class="hl-rl-letter">${st.label}</span><span class="hl-rl-cap">${h.short}</span><span class="hl-rl-en">${h.en}</span>`;
         el.title = `${h.name} — ${h.ref}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectRegion('holy', h); });
         const a = labelAnchor(h.ring);
-        const m = mk([a.lon, a.lat], el);
-        m._rl = { west: a.west, east: a.east, latSpan: a.latSpan, len: h.kind === 'prince' ? 2.6 : 1.6, kind: 'plot' };
+        // the sanctuary sits in the middle of the priests' land: put the priests' label to its left
+        const lon = h.kind === 'priests' ? a.west + (a.east - a.west) * 0.2 : a.lon;
+        const m = mk([lon, a.lat], el);
+        m._rl = { west: a.west, east: h.kind === 'priests' ? a.west + (a.east - a.west) * 0.4 : a.east, latSpan: a.latSpan, len: h.kind === 'prince' ? 2.6 : 1.6, capLen: Math.max(h.short.length, h.en.length * 0.8), kind: 'plot' };
       }
       // A small caption above the glowing square when zoomed in (the plot buttons are always shown;
       // zoomed out, the buttons themselves say where it is). Click → the priests' portion.
@@ -492,8 +497,17 @@ export default function HolyLandMap() {
       const byW = (w * 0.8) / (m._rl.len * 0.72), byH = h * 0.42;
       const size = Math.min(m._rl.kind === 'plot' ? 26 : 16, byW, byH);
       const el = m.getElement();
-      // three lines (name + paleo + English) need ≈ 3.2 em of height and a size worth reading
-      const tier = size < 6 ? 'hide' : (size >= 11 && h > size * 3.4) ? 'lg' : 'sm';
+      let tier;
+      if (m._rl.kind === 'plot') {
+        // caption (name + what it is) only when it fits the plot at ≥ 8 px
+        const cap = Math.min(13, (w * 0.85) / (m._rl.capLen * 0.6), h * 0.16);
+        el.style.setProperty('--rl-cap', `${Math.max(cap, 6).toFixed(1)}px`);
+        tier = size < 6 ? 'hide' : (cap >= 8 && h >= size * 3.2) ? 'lg' : 'sm';
+      } else {
+        // the name alone on a fresh load; paleo + English only when zoomed in AND the band has
+        // height for three lines (name 1 em + paleo 1.05 em + English 0.75 em + gaps ≈ 3.6 em)
+        tier = size < 6 ? 'hide' : (map.getZoom() >= REGION_DETAIL_ZOOM && size >= 11 && h > size * 4.2) ? 'lg' : 'sm';
+      }
       el.style.setProperty('--rl-size', `${Math.max(size, 6).toFixed(1)}px`);
       el.dataset.fit = tier;
     }
