@@ -370,6 +370,120 @@ export function ezekielAllotment() {
 // Ezekiel overlay is on, whatever the city toggles say (ids of BIBLICAL_CITIES entries).
 export const EZ_LANDMARKS = ['hethlon', 'lebo-hamath', 'zedad', 'berothah', 'hazar-enan', 'damascus', 'hauran', 'tamar', 'kadesh-barnea'];
 
+// ── What the scriptures say of each tribe and each holy plot ─────────────────
+// A tree the detail card drills into: tribe → book → passages. Every item is a verse
+// range the reader can open. Refs verified against the corpus (Jubilees / Jasher chapter
+// and verse numbers are the app's own). `why` is a one-line label, not a paraphrase.
+const P = (ref, why) => ({ ref, why });
+export const TRIBE_SCRIPTURE = {
+  Reuben: [
+    { book: 'Genesis', items: [P('Genesis 29:32', 'birth — "Yahawah has looked on my affliction"'), P('Genesis 35:22', 'Bilhah — the birthright forfeited'), P('Genesis 49:3–4', "Jacob's blessing — unstable as water")] },
+    { book: 'Numbers', items: [P('Numbers 32:1–33', 'asks for the land east of the Jordan')] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:6', "Moses' blessing")] },
+    { book: 'Jubilees', items: [P('Jubilees 28:11', 'birth'), P('Jubilees 33:1–9', 'Bilhah')] },
+    { book: 'Jasher', items: [P('Jasher 31:15', 'the sons of Leah'), P('Jasher 36:14–15', 'the birthright, kingship and priesthood taken from Reuben')] },
+    { book: 'Testament of Reuben', items: [P('Testament of Reuben 1–2', 'his testament')] },
+  ],
+  Simeon: [
+    { book: 'Genesis', items: [P('Genesis 29:33', 'birth — "Yahawah has heard"'), P('Genesis 34:25–31', 'Shechem'), P('Genesis 49:5–7', "Jacob's blessing — scattered in Israel")] },
+    { book: 'Joshua', items: [P('Joshua 19:1–9', 'his lot within Judah')] },
+    { book: 'Jubilees', items: [P('Jubilees 28:13', 'birth'), P('Jubilees 30:1–6', 'Shechem')] },
+    { book: 'Jasher', items: [P('Jasher 31:15', 'the sons of Leah')] },
+    { book: 'Testament of Simeon', items: [P('Testament of Simeon 1–3', 'his testament')] },
+  ],
+  Levi: [
+    { book: 'Genesis', items: [P('Genesis 29:34', 'birth — "joined"'), P('Genesis 34:25–31', 'Shechem'), P('Genesis 49:5–7', "Jacob's blessing")] },
+    { book: 'Numbers', items: [P('Numbers 18:20–24', 'no inheritance — Yahawah is their portion'), P('Numbers 25:10–13', "Phinehas — the covenant of an everlasting priesthood")] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:8–11', "Moses' blessing — the Urim and Thummim")] },
+    { book: 'Ezekiel', items: [P('Ezekiel 44:10–16', 'the Levites who went astray; the sons of Zadok who kept the charge'), P('Ezekiel 48:10–14', 'their land in the holy portion')] },
+    { book: 'Jubilees', items: [P('Jubilees 28:14', 'birth'), P('Jubilees 30:18', 'the seed of Levi chosen for the priesthood'), P('Jubilees 31:12–17', "Isaac's blessing of Levi"), P('Jubilees 32:1–3', 'Levi ordained priest in a dream at Bethel')] },
+    { book: 'Jasher', items: [P('Jasher 36:15', 'the priesthood given to Levi')] },
+    { book: 'Testament of Levi', items: [P('Testament of Levi 1–5', 'his testament')] },
+  ],
+  Judah: [
+    { book: 'Genesis', items: [P('Genesis 29:35', 'birth — "now I will praise Yahawah"'), P('Genesis 38', 'Tamar — the line of Perez'), P('Genesis 49:8–12', "Jacob's blessing — the scepter shall not depart")] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:7', "Moses' blessing")] },
+    { book: 'Ruth', items: [P('Ruth 4:18–22', 'the line from Perez to David')] },
+    { book: 'Jubilees', items: [P('Jubilees 28:15', 'birth'), P('Jubilees 31:18–20', "Isaac's blessing — a prince from Judah")] },
+    { book: 'Jasher', items: [P('Jasher 31:15', 'the sons of Leah'), P('Jasher 36:15', 'the kingship given to Judah'), P('Jasher 56:8–9', "Jacob's charge — rule over your brethren")] },
+    { book: 'Testament of Judah', items: [P('Testament of Judah 1–4', 'his testament')] },
+    { book: 'Prophets', items: [P('Micah 5:2', 'Bethlehem of Judah — the ruler'), P('Isaiah 11:1–10', 'the root of Jesse'), P('Zechariah 12:7', 'the tents of Judah saved first'), P('Revelation 5:5', 'the Lion of the tribe of Judah')] },
+  ],
+  Dan: [
+    { book: 'Genesis', items: [P('Genesis 30:6', 'birth — "Alahayam has judged"'), P('Genesis 49:16–18', "Jacob's blessing — Dan shall judge")] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:22', "Moses' blessing — a lion's cub")] },
+    { book: 'Judges', items: [P('Judges 18', 'Dan takes Laish in the north')] },
+    { book: 'Jubilees', items: [P('Jubilees 28:18', 'birth')] },
+    { book: 'Testament of Dan', items: [P('Testament of Dan 1–2', 'his testament')] },
+  ],
+  Naphtali: [
+    { book: 'Genesis', items: [P('Genesis 30:8', 'birth — "wrestlings"'), P('Genesis 49:21', "Jacob's blessing — a doe let loose")] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:23', "Moses' blessing")] },
+    { book: 'Prophets', items: [P('Isaiah 9:1–2', 'Zebulun and Naphtali — the people who walked in darkness see a great light'), P('Matthew 4:13–16', 'fulfilled by the sea of Galilee')] },
+    { book: 'Jubilees', items: [P('Jubilees 28:19', 'birth')] },
+    { book: 'Testament of Naphtali', items: [P('Testament of Naphtali 1–2', 'his testament')] },
+  ],
+  Gad: [
+    { book: 'Genesis', items: [P('Genesis 30:11', 'birth — "a troop"'), P('Genesis 49:19', "Jacob's blessing")] },
+    { book: 'Numbers', items: [P('Numbers 32:1–33', 'asks for the land east of the Jordan')] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:20–21', "Moses' blessing")] },
+    { book: 'Jubilees', items: [P('Jubilees 28:20', 'birth')] },
+    { book: 'Testament of Gad', items: [P('Testament of Gad 1–2', 'his testament')] },
+  ],
+  Asher: [
+    { book: 'Genesis', items: [P('Genesis 30:13', 'birth — "happy am I"'), P('Genesis 49:20', "Jacob's blessing — royal dainties")] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:24–25', "Moses' blessing")] },
+    { book: 'Jubilees', items: [P('Jubilees 28:21', 'birth')] },
+    { book: 'Testament of Asher', items: [P('Testament of Asher 1', 'his testament')] },
+  ],
+  Issachar: [
+    { book: 'Genesis', items: [P('Genesis 30:18', 'birth — "hire"'), P('Genesis 49:14–15', "Jacob's blessing — a strong donkey")] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:18–19', "Moses' blessing")] },
+    { book: '1 Chronicles', items: [P('1 Chronicles 12:32', 'men who understood the times')] },
+    { book: 'Jubilees', items: [P('Jubilees 28:22', 'birth')] },
+    { book: 'Testament of Issachar', items: [P('Testament of Issachar 1–2', 'his testament')] },
+  ],
+  Zebulun: [
+    { book: 'Genesis', items: [P('Genesis 30:20', 'birth — "dwelling"'), P('Genesis 49:13', "Jacob's blessing — a haven of ships")] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:18–19', "Moses' blessing")] },
+    { book: 'Prophets', items: [P('Isaiah 9:1–2', 'Zebulun and Naphtali — a great light'), P('Matthew 4:13–16', 'fulfilled by the sea of Galilee')] },
+    { book: 'Jubilees', items: [P('Jubilees 28:23', 'birth')] },
+    { book: 'Testament of Zebulun', items: [P('Testament of Zebulun 1–2', 'his testament')] },
+  ],
+  Benjamin: [
+    { book: 'Genesis', items: [P('Genesis 35:16–18', 'birth — Ben-oni, Benjamin'), P('Genesis 49:27', "Jacob's blessing — a ravening wolf")] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:12', "Moses' blessing — the beloved of Yahawah")] },
+    { book: '1 Samuel', items: [P('1 Samuel 9:1–2, 21', 'Saul, of the smallest of the tribes')] },
+    { book: 'Jubilees', items: [P('Jubilees 32:3', 'Rachel with child'), P('Jubilees 32:33', 'birth')] },
+    { book: 'Jasher', items: [P('Jasher 36:12', 'birth')] },
+    { book: 'Testament of Benjamin', items: [P('Testament of Benjamin 1–2', 'his testament')] },
+  ],
+  Ephraim: [
+    { book: 'Genesis', items: [P('Genesis 41:52', 'birth — "fruitful in the land of my affliction"'), P('Genesis 48:8–20', "Jacob sets Ephraim before Manasseh"), P('Genesis 49:22–26', "Jacob's blessing of Joseph")] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:13–17', "Moses' blessing of Joseph — the ten thousands of Ephraim")] },
+    { book: 'Prophets', items: [P('Jeremiah 31:9, 18–20', 'Ephraim my firstborn'), P('Ezekiel 37:15–22', 'the stick of Joseph joined to Judah'), P('Hosea 11:8', '"How can I give you up, Ephraim?"')] },
+    { book: 'Jasher', items: [P('Jasher 50:15', 'Manasseh and Ephraim born to Joseph')] },
+    { book: 'Testament of Joseph', items: [P('Testament of Joseph 1–2', "their father's testament")] },
+  ],
+  Manasseh: [
+    { book: 'Genesis', items: [P('Genesis 41:51', 'birth — "Alahayam has made me forget"'), P('Genesis 48:8–20', "Jacob sets Ephraim before Manasseh"), P('Genesis 49:22–26', "Jacob's blessing of Joseph")] },
+    { book: 'Numbers', items: [P('Numbers 32:33, 39–42', 'the half tribe east of the Jordan')] },
+    { book: 'Deuteronomy', items: [P('Deuteronomy 33:13–17', "Moses' blessing of Joseph — the thousands of Manasseh")] },
+    { book: 'Joshua', items: [P('Joshua 17', 'the lot of Manasseh')] },
+    { book: 'Jasher', items: [P('Jasher 50:15', 'Manasseh and Ephraim born to Joseph')] },
+    { book: 'Testament of Joseph', items: [P('Testament of Joseph 1–2', "their father's testament")] },
+  ],
+};
+// The holy portion's plots, by kind.
+export const HOLY_SCRIPTURE = {
+  levites:   [{ book: 'Numbers', items: [P('Numbers 18:20–24', 'no inheritance — Yahawah is their portion')] }, { book: 'Ezekiel', items: [P('Ezekiel 44:10–14', 'the Levites who went astray keep the charge of the house'), P('Ezekiel 48:13–14', 'their land, never to be sold')] }, { book: 'Jubilees', items: [P('Jubilees 30:18', 'the seed of Levi chosen')] }],
+  priests:   [{ book: 'Numbers', items: [P('Numbers 25:10–13', "Phinehas — an everlasting priesthood")] }, { book: '1 Kings', items: [P('1 Kings 2:35', 'Zadok set in the priesthood')] }, { book: 'Ezekiel', items: [P('Ezekiel 44:15–16', 'the sons of Zadok come near to minister'), P('Ezekiel 48:10–12', 'their land, most holy')] }],
+  prince:    [{ book: 'Ezekiel', items: [P('Ezekiel 34:23–24', 'my servant David a prince among them'), P('Ezekiel 37:24–25', 'David their prince for ever'), P('Ezekiel 45:7–8', "the prince's land on both sides"), P('Ezekiel 46:16–18', 'the prince may not take the people\'s inheritance'), P('Ezekiel 48:21–22', 'his portion')] }],
+  city:      [{ book: 'Ezekiel', items: [P('Ezekiel 48:15–20', 'the city, its open land and its farmland'), P('Ezekiel 48:30–35', 'the gates — and its name, Yahawah Shamah')] }, { book: 'Prophets', items: [P('Zechariah 14:8–11', 'living waters from Jerusalem'), P('Isaiah 2:2–4', 'all nations flow to it'), P('Psalms 48', 'the city of our God')] }],
+  sanctuary: [{ book: 'Ezekiel', items: [P('Ezekiel 40:1–4', 'the vision of the house'), P('Ezekiel 43:1–12', 'the glory returns; the law of the house'), P('Ezekiel 45:1–4', 'the most holy place in the holy portion')] }, { book: 'Prophets', items: [P('Isaiah 2:2–3', "the mountain of Yahawah's house"), P('Haggai 2:9', 'the latter glory greater than the former')] }],
+  food:      [{ book: 'Ezekiel', items: [P('Ezekiel 48:18–19', 'food for those who work in the city')] }],
+};
+
 // ── Waters, named as the Bible names them (transliteration primary, paleo, then English) ──
 // Only the waters the built-in basemap actually draws; positions are label anchors.
 // Rivers the Bible names that the bundled base map does not draw (conventional courses).
@@ -511,7 +625,7 @@ export const BIBLICAL_CITIES = [
   B('lebo-hamath', 'Lebo-hamath', 'לבוא חמת', 36.20, 34.19, 'Numbers 13:21; Numbers 34:8; Joshua 13:5; Judges 3:3; 1 Kings 8:65; 2 Kings 14:25', '"The entrance of Hamath."', 'Amos 6:14; Ezekiel 47:15–20; Ezekiel 48:1'),
   B('hethlon', 'Hethlon', 'חתלן', 36.00, 34.45, 'Ezekiel 47:15; Ezekiel 48:1', ''),
   B('zedad', 'Zedad', 'צדד', 36.92, 34.31, 'Numbers 34:8; Ezekiel 47:15', ''),
-  B('hazar-enan', 'Hazar-enan', 'חצר עינון', 37.24, 34.23, 'Numbers 34:9–10; Ezekiel 47:17; Ezekiel 48:1', 'North-east corner of Ezekiel\'s border.'),
+  B('hazar-enan', 'Hazar-enan', 'חצר עינן', 37.24, 34.23, 'Numbers 34:9–10; Ezekiel 47:17; Ezekiel 48:1', 'North-east corner of Ezekiel\'s border.'),
   B('hauran', 'Hauran', 'חורן', 36.50, 32.75, 'Ezekiel 47:16, 18', ''),
 ].map((c) => ({ ...c, paleo: compoundPaleo(c.he), translit: translitOf(c.he) }));
 

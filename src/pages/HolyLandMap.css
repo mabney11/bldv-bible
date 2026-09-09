@@ -292,7 +292,7 @@
 .hl-gear { position: absolute; top: 80px; right: 10px; z-index: 3; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
 .hl-gear-btn { width: 30px; height: 30px; border-radius: 4px; background: var(--bg2); border: 1px solid var(--border2); color: var(--text); font-size: 17px; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px #0003; }
 .hl-gear-btn:hover, .hl-gear.open .hl-gear-btn { border-color: var(--gold); color: var(--gold); }
-.hl-gear-pop { width: 220px; padding: 10px 12px 12px; border-radius: 10px; background: var(--bg2); border: 1px solid var(--border2); box-shadow: 0 8px 24px #0006; display: flex; flex-direction: column; gap: 7px; }
+.hl-gear-pop { width: 264px; max-height: 70vh; overflow: auto; padding: 10px 12px 12px; border-radius: 10px; background: var(--bg2); border: 1px solid var(--border2); box-shadow: 0 8px 24px #0006; display: flex; flex-direction: column; gap: 7px; }
 .hl-gear-h { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-top: 4px; }
 .hl-gear-h:first-child { margin-top: 0; }
 .hl-gear-more { align-self: flex-start; font-size: 12px; margin-top: 4px; }
@@ -457,3 +457,33 @@
 .hl-mk-today { font-size: 9px; color: #4a4033; font-weight: 400; font-style: italic; opacity: 0.85; }
 
 .hl-key-prince { font-size: 13px; margin-right: 4px; }
+
+/* ── Legend: a translucent button on the map; the colours and keys live here, not in the panel ── */
+.hl-legend-w { position: absolute; left: 12px; top: 52px; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.hl-map-wrap:not(:has(.hl-panel-show)) .hl-legend-w { top: 12px; }
+.hl-legend-btn { padding: 5px 12px; border-radius: 999px; background: color-mix(in srgb, var(--bg2) 72%, transparent); backdrop-filter: blur(4px); border: 1px solid color-mix(in srgb, var(--border2) 80%, transparent); color: var(--text2); font-size: 12px; letter-spacing: 0.04em; box-shadow: 0 1px 4px #0003; }
+.hl-legend-btn:hover, .hl-legend-w.open .hl-legend-btn { color: var(--gold); border-color: var(--gold); background: color-mix(in srgb, var(--bg2) 90%, transparent); }
+.hl-legend-pop { width: min(360px, calc(100vw - 24px)); max-height: 60vh; overflow: auto; padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--bg2) 94%, transparent); backdrop-filter: blur(6px); border: 1px solid var(--border2); box-shadow: 0 4px 18px #0005; display: flex; flex-direction: column; gap: 8px; }
+.hl-legend-marks { grid-template-columns: 1fr; }
+.hl-lg-dot { background: #e8aa55; border-radius: 50% !important; }
+.hl-lg-anchor { background: #fff3d6; border: 2px solid #b8860b !important; border-radius: 2px !important; }
+.hl-lg-modern { background: #4a9eff; border-radius: 2px !important; }
+.hl-lg-gold { background: transparent; border: 2px solid #e8aa55 !important; box-shadow: 0 0 6px #e8aa55; }
+.hl-lg-red { background: transparent; border: 2px solid #e03030 !important; box-shadow: 0 0 6px #e0303088; }
+.hl-look-empty .hl-note b { color: var(--text); }
+@media (max-width: 720px) { .hl-legend-w { top: 56px !important; left: 10px; } .hl-legend-pop { max-height: 50vh; } }
+
+/* ── Scripture tree: tribe → book → passages ── */
+.hl-tree { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.hl-tree-book { border: 1px solid var(--border2); border-radius: 8px; background: var(--bg3); }
+.hl-tree-book > summary { cursor: pointer; list-style: none; padding: 7px 10px; font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.hl-tree-book > summary::-webkit-details-marker { display: none; }
+.hl-tree-book > summary::before { content: '▸'; color: var(--text4); font-size: 11px; transition: transform 0.15s; }
+.hl-tree-book[open] > summary::before { transform: rotate(90deg); }
+.hl-tree-book-name { flex: 1; }
+.hl-tree-items { list-style: none; margin: 0; padding: 0 10px 8px 22px; display: flex; flex-direction: column; gap: 6px; }
+.hl-tree-item { display: flex; flex-direction: column; gap: 2px; }
+.hl-tree-why { font-size: 12px; color: var(--text3); line-height: 1.4; }
+.hl-legend-pop .hl-legend { grid-template-columns: 1fr 1fr; }
+.hl-legend-pop .hl-legend-i { white-space: nowrap; }
+.hl-legend-pop .hl-legend-i small { display: none; }

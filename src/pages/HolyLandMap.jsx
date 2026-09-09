@@ -45,7 +45,7 @@ import {
   ezekielAllotment, toFeature, ringCentroid, labelAnchor, pointInRing, joshuaTribeAt, ezekielAt,
   squareToPaleo, translitOf,
   REGIONS, ALL_PLACES, PLACES_AZ, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
-  countryOf, countryFeature, countryName, twinOf, WATERS, BIBLE_RIVERS, EZ_LANDMARKS,
+  countryOf, countryFeature, countryName, twinOf, WATERS, BIBLE_RIVERS, EZ_LANDMARKS, TRIBE_SCRIPTURE, HOLY_SCRIPTURE,
 } from '../lib/models/holyLand.js';
 
 // Phones and narrow windows: the panel is a bottom sheet, place dots start off
@@ -226,6 +226,22 @@ function buildOnlineStyle(ofm) {
   return style;
 }
 
+// ── Fitting a portion into view ──────────────────────────────────────────────
+// The bottom sheet's share of the screen lives in the MAP's padding (so the centre of the
+// visible half is the centre), and fitBounds' own padding is only the margin around the
+// portion. Handing fitBounds the sheet AND the margin double-counted the sheet: after a
+// water tap had set the map's padding, the next portion could not fit "within the canvas"
+// and fitBounds silently did nothing — the card changed, the view did not (fieldy, on his
+// phone and in the browser). If even the margin cannot fit, fit with none rather than not at all.
+function fitView(map, bounds, { maxZoom = 9.5, pitch = 0, duration = 1200, margin = 80, sheet = true } = {}) {
+  const narrow = isNarrow();
+  map.setPadding({ top: 0, left: 0, right: 0, bottom: narrow && sheet ? sheetPx() : 0 });
+  const pad = narrow ? { top: 40, left: 30, right: 30, bottom: 30 } : margin;
+  const opts = { padding: pad, maxZoom, pitch, duration, essential: true };
+  if (!map.cameraForBounds(bounds, opts)) opts.padding = 0;
+  map.fitBounds(bounds, opts);
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function fmtLonLat([lon, lat]) {
   return `${lat.toFixed(3)}°N ${lon.toFixed(3)}°E`;
@@ -252,7 +268,8 @@ export default function HolyLandMap() {
   const [showBiblical, setShowBiblical] = useState(placesDefault);
   const [showModern, setShowModern] = useState(placesDefault);
   const [showRegions, setShowRegions] = useState(placesDefault);
-  const [gearOpen, setGearOpen] = useState(false);  // the ⚙ widget beside the zoom buttons
+  const [gearOpen, setGearOpen] = useState(false);
+  const [legendOpen, setLegendOpen] = useState(false);  // the ⚙ widget beside the zoom buttons
   const [ctxOnly, setCtxOnly] = useState(true);     // Cities / Peoples tabs limited to the focused portion
   const [pin, setPin] = useState(() => {            // { lon, lat, label }
     const p = params.get('pin');
@@ -350,8 +367,8 @@ export default function HolyLandMap() {
     // the portion fills the screen, a tap from inside the city zooms out to the whole band.
     // maxZoom keeps a portion from becoming a wall of colour, but stays close enough on the
     // small plots that their captions (Maqadash, Iyar…) are still readable.
-    const pad = narrow ? { top: 40, left: 30, right: 30, bottom: sheetPx() + 30 } : 80;
-    const fit = () => map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], { padding: pad, duration: 1200, pitch: threeD ? 45 : 0, maxZoom: PORTION_MAX_ZOOM[kind === 'holy' ? entry.kind : kind] ?? 9.5 });
+    const bounds = [[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]];
+    const fit = () => fitView(map, bounds, { maxZoom: PORTION_MAX_ZOOM[kind === 'holy' ? entry.kind : kind] ?? 9.5, pitch: threeD ? 45 : 0, duration: 1200 });
     if (!narrow && !panelOpenRef.current) {
       // On a desktop the side panel is about to open and take 360 px from the map: fit AFTER
       // the canvas has shrunk, or the portion lands half under the panel.
@@ -457,9 +474,10 @@ export default function HolyLandMap() {
     const selCityId = sel?.kind === 'city' ? sel.city.id : null;
 
     // Ezekiel's border landmarks (47:15–20) — Hethlon, Lebo-hamath, Zedad, Berothah,
-    // Hazar-enan, Damascus, Hauran, Tamar, Meribath-kadesh — stand on the map as anchors
-    // whenever his overlay is on, so the corners of the border are named where they are.
-    const anchorIds = showEzekiel ? new Set(EZ_LANDMARKS) : new Set();
+    // Hazar-enan, Damascus, Hauran, Tamar, Meribath-kadesh — stand out as gold anchors
+    // among the biblical cities when those are on (fieldy: the first view is the pure
+    // allotments — no Damashaq until the cities are turned on).
+    const anchorIds = showEzekiel && showBiblical ? new Set(EZ_LANDMARKS) : new Set();
     for (const id of anchorIds) {
       const c = BIBLICAL_CITIES.find((x) => x.id === id);
       if (!c) continue;
@@ -594,8 +612,7 @@ export default function HolyLandMap() {
     const map = mapRef.current;
     if (!map) return;
     const [w, top, e, bot] = ez.meta.square;
-    const narrow = isNarrow();
-    map.fitBounds([[w, bot], [e, top]], { padding: narrow ? { top: 60, left: 24, right: 24, bottom: (panelOpen ? sheetPx() : 0) + 40 } : 90, maxZoom: 12.5, duration: 1400, pitch: threeD ? 45 : 0 });
+    fitView(map, [[w, bot], [e, top]], { maxZoom: 12.5, pitch: threeD ? 45 : 0, duration: 1400, margin: 90, sheet: panelOpen });
   }, [ez, panelOpen, threeD]);
   const zoomHolyRef = useRef(zoomHoly); zoomHolyRef.current = zoomHoly;
 
@@ -866,7 +883,7 @@ export default function HolyLandMap() {
             <button type="button" className="hl-sheet-x" onClick={() => setPanelOpen(false)} aria-label="Hide panel">{isNarrow() ? 'Map ×' : '◀ Hide panel'}</button>
           </div>
           <div className="hl-tabs" role="tablist">
-            {[['layers', 'Layers'], ['cities', 'Cities'], ['peoples', 'Peoples']].map(([id, label]) => (
+            {[['layers', 'Detailed Look'], ['cities', 'Cities'], ['peoples', 'Peoples']].map(([id, label]) => (
               <button key={id} type="button" role="tab" aria-selected={tab === id} className={`hl-tab${tab === id ? ' on' : ''}`} onClick={() => setTab(id)}>{label}</button>
             ))}
           </div>
@@ -879,58 +896,23 @@ export default function HolyLandMap() {
             </div>
           )}
 
-          {tab === 'layers' && (
-            <div className="hl-sec">
-              <div className="hl-sec-h">Allotment overlays</div>
-              <label className="hl-row"><input type="checkbox" checked={showJoshua} onChange={(e) => setShowJoshua(e.target.checked)} /> <span className="hl-sw" style={{ background: 'repeating-linear-gradient(45deg,#4cca7a,#4cca7a 4px,#6e8aa6 4px,#6e8aa6 8px)' }} /> Joshua 13–19 (conquest)</label>
-              <label className="hl-row"><input type="checkbox" checked={showEzekiel} onChange={(e) => setShowEzekiel(e.target.checked)} /> <span className="hl-sw" style={{ background: 'linear-gradient(#e05555,#3ecfb0,#f2d94e,#4cca7a,#c9c3b8,#f0883e,#6e8aa6,#fff,#2e4a6e,#7a3b5e,#8f8f8f,#a63b8a,#6b3fa0)' }} /> Ezekiel 47–48 (millennial)</label>
+          {tab === 'layers' && !sel && (
+            <div className="hl-sec hl-look-empty">
+              <div className="hl-note">Tap a portion, a city, a river or a sea. What the scriptures say of it — its birth, its blessing, its prophecies — opens here, book by book. Map layers and terrain are under ⚙; the colours and the Holy Portion's key are under <b>Legend</b>.</div>
               {showEzekiel && (
-                <div className="hl-sub">
-                  <div className="hl-sub-h">Holy Portion — 25,000 × 25,000 cubits ≈ {ez.meta.holyKm.toFixed(1)} km / {(ez.meta.holyKm * 0.621371).toFixed(1)} mi a side</div>
-                  <div className="hl-key">
-                    {Object.entries(HOLY_KIND_STYLE).filter(([, st]) => st.label).map(([k, st]) => (
-                      <span key={k} className="hl-key-i">{k === 'prince' ? <span className="hl-key-prince">🦁🤴🏾</span> : <b style={{ background: st.color }}>{st.label}</b>} {ez.holy.find((h) => h.kind === k)?.name}</span>
+                <details className="hl-measures">
+                  <summary>Every measurement of Ezekiel 47–48, with its verse</summary>
+                  <ol>
+                    {EZEKIEL_MEASURES.map((m) => (
+                      <li key={m.ref}>
+                        <PassageRefs refs={m.ref} size="sm" />
+                        <div className="hl-measure-given">{m.given}</div>
+                        <div className="hl-measure-read">→ {m.read}</div>
+                      </li>
                     ))}
-                  </div>
-                  <div className="hl-note">Northern tribes ≈ {ez.meta.northKm.toFixed(0)} km ({(ez.meta.northKm * 0.621371).toFixed(0)} mi) each, southern ≈ {ez.meta.southKm.toFixed(0)} km ({(ez.meta.southKm * 0.621371).toFixed(0)} mi); the city {ez.meta.cityKm.toFixed(1)} km square, the sanctuary {ez.meta.sanctKm.toFixed(1)} km square.</div>
-                  <details className="hl-measures">
-                    <summary>Every measurement, with its verse</summary>
-                    <ol>
-                      {EZEKIEL_MEASURES.map((m) => (
-                        <li key={m.ref}>
-                          <PassageRefs refs={m.ref} size="sm" />
-                          <div className="hl-measure-given">{m.given}</div>
-                          <div className="hl-measure-read">→ {m.read}</div>
-                        </li>
-                      ))}
-                    </ol>
-                  </details>
-                </div>
+                  </ol>
+                </details>
               )}
-              <div className="hl-sec-h">Places</div>
-              <label className="hl-row"><input type="checkbox" checked={showBiblical} onChange={(e) => setShowBiblical(e.target.checked)} /> <span className="hl-sw hl-sw-b" /> Biblical cities (Joshua)</label>
-              <label className="hl-row"><input type="checkbox" checked={showModern} onChange={(e) => setShowModern(e.target.checked)} /> <span className="hl-sw hl-sw-m" /> Today's cities</label>
-              <label className="hl-row"><input type="checkbox" checked={showRegions} onChange={(e) => setShowRegions(e.target.checked)} /> <span className="hl-sw hl-sw-r" /> Nations &amp; lands beyond (Greece, Egypt, Babylon…)</label>
-              <div className="hl-note">City labels appear from zoom 7.5 (now {zoom.toFixed(1)}); Jabneel is always labelled.</div>
-
-              <div className="hl-sec-h">Base map</div>
-              <div className="hl-seg">
-                {BASEMAPS.map((b) => (
-                  <button key={b.id} type="button" className={`hl-seg-b${basemap === b.id ? ' on' : ''}`} onClick={() => setBasemap(b.id)}>{b.label} <small>{b.sub}</small></button>
-                ))}
-              </div>
-              {basemap === 'online' && <label className="hl-row"><input type="checkbox" checked={onlineLabels} onChange={(e) => setOnlineLabels(e.target.checked)} /> Show the online map's place names (English)</label>}
-              <label className="hl-row"><input type="checkbox" checked={relief} onChange={(e) => setRelief(e.target.checked)} /> Relief shading <small className="hl-inline-note">(elevation tiles fetched online; off = fully self-contained)</small></label>
-              <label className="hl-row"><input type="checkbox" checked={threeD} onChange={(e) => setThreeD(e.target.checked)} /> 3D terrain (drag with right mouse / two fingers to tilt &amp; rotate)</label>
-              <label className="hl-row hl-range">Relief ×{exag.toFixed(1)} <input type="range" min="0.5" max="3" step="0.1" value={exag} disabled={!threeD} onChange={(e) => setExag(+e.target.value)} /></label>
-
-              <div className="hl-sec-h">Tribes</div>
-              <div className="hl-legend">
-                {Object.entries(TRIBE_COLORS).map(([t, c]) => (
-                  <span key={t} className="hl-legend-i"><i style={{ background: c }} /> <b>{TRIBE_TRANSLIT[t]}</b> <small>{t}</small> <span className="hl-legend-paleo" dir="rtl">{TRIBE_PALEO[t]}</span></span>
-                ))}
-              </div>
-              <div className="hl-note hl-note-warn">Borders are idealized study-map shapes drawn from the landmark lists in Joshua 13–19 and Ezekiel 47–48, not surveyed lines; city dots use the conventional identifications.</div>
             </div>
           )}
 
@@ -1009,7 +991,7 @@ export default function HolyLandMap() {
         {/* zoom class lives on the WRAPPER: maplibre owns the inner div's className */}
         <div className={`hl-map-wrap${zoom >= 7.5 ? ' hl-z-labels' : ''}${zoom >= REGION_DETAIL_ZOOM ? ' hl-z-region' : ''}${zoom >= HOLY_BTN_ZOOM ? ' hl-z-holy' : ''}`}>
           <div ref={mapEl} className="hl-map" />
-          {!panelOpen && <button type="button" className="hl-panel-show" onClick={() => setPanelOpen(true)} title="Show the panel">☰ Layers · Cities · Peoples</button>}
+          {!panelOpen && <button type="button" className="hl-panel-show" onClick={() => setPanelOpen(true)} title="Show the panel">☰ Detailed Look · Cities · Peoples</button>}
           {/* ⚙ beside the zoom buttons: the everyday toggles, reachable without opening the panel */}
           <div className={`hl-gear${gearOpen ? ' open' : ''}`}>
             <button type="button" className="hl-gear-btn" onClick={() => setGearOpen((v) => !v)} title="Map settings" aria-expanded={gearOpen} aria-label="Map settings">⚙</button>
@@ -1022,11 +1004,52 @@ export default function HolyLandMap() {
                 <div className="hl-gear-h">Allotments</div>
                 <label className="hl-row"><input type="checkbox" checked={showEzekiel} onChange={(e) => setShowEzekiel(e.target.checked)} /> Ezekiel 47–48</label>
                 <label className="hl-row"><input type="checkbox" checked={showJoshua} onChange={(e) => setShowJoshua(e.target.checked)} /> Joshua 13–19</label>
+                <div className="hl-gear-h">Base map</div>
+                <div className="hl-seg">
+                  {BASEMAPS.map((b) => (
+                    <button key={b.id} type="button" className={`hl-seg-b${basemap === b.id ? ' on' : ''}`} onClick={() => setBasemap(b.id)}>{b.label} <small>{b.sub}</small></button>
+                  ))}
+                </div>
+                {basemap === 'online' && <label className="hl-row"><input type="checkbox" checked={onlineLabels} onChange={(e) => setOnlineLabels(e.target.checked)} /> Online map's place names (English)</label>}
                 <div className="hl-gear-h">Terrain</div>
-                <label className="hl-row"><input type="checkbox" checked={relief} onChange={(e) => setRelief(e.target.checked)} /> Relief shading</label>
+                <label className="hl-row"><input type="checkbox" checked={relief} onChange={(e) => setRelief(e.target.checked)} /> Relief shading <small className="hl-inline-note">(tiles fetched online)</small></label>
                 <label className="hl-row"><input type="checkbox" checked={threeD} onChange={(e) => setThreeD(e.target.checked)} /> 3D (two fingers to tilt)</label>
+                <label className="hl-row hl-range">Relief ×{exag.toFixed(1)} <input type="range" min="0.5" max="3" step="0.1" value={exag} disabled={!threeD} onChange={(e) => setExag(+e.target.value)} /></label>
                 <button type="button" className="hl-link hl-gear-more" onClick={() => { setGearOpen(false); zoomHoly(); }}>Zoom to the Holy Portion ✦</button>
-                <button type="button" className="hl-link hl-gear-more" onClick={() => { setGearOpen(false); setTab('layers'); setPanelOpen(true); }}>All layers &amp; measurements →</button>
+              </div>
+            )}
+          </div>
+          {/* Legend: the tribe colours and the Holy Portion's key, off the panel so the panel is for the details */}
+          <div className={`hl-legend-w${legendOpen ? ' open' : ''}`}>
+            <button type="button" className="hl-legend-btn" onClick={() => setLegendOpen((v) => !v)} aria-expanded={legendOpen}>Legend</button>
+            {legendOpen && (
+              <div className="hl-legend-pop" role="group" aria-label="Legend">
+                <div className="hl-gear-h">Tribes</div>
+                <div className="hl-legend">
+                  {Object.entries(TRIBE_COLORS).map(([t, c]) => (
+                    <span key={t} className="hl-legend-i"><i style={{ background: c }} /> <b>{TRIBE_TRANSLIT[t]}</b> <small>{t}</small> <span className="hl-legend-paleo" dir="rtl">{TRIBE_PALEO[t]}</span></span>
+                  ))}
+                </div>
+                {showEzekiel && (
+                  <>
+                    <div className="hl-gear-h">Holy Portion — 25,000 × 25,000 cubits ≈ {ez.meta.holyKm.toFixed(1)} km / {(ez.meta.holyKm * 0.621371).toFixed(1)} mi a side</div>
+                    <div className="hl-key">
+                      {Object.entries(HOLY_KIND_STYLE).filter(([, st]) => st.label).map(([k, st]) => (
+                        <span key={k} className="hl-key-i">{k === 'prince' ? <span className="hl-key-prince">🦁🤴🏾</span> : <b style={{ background: st.color }}>{st.label}</b>} {ez.holy.find((h) => h.kind === k)?.name}</span>
+                      ))}
+                    </div>
+                    <div className="hl-note">Northern tribes ≈ {ez.meta.northKm.toFixed(0)} km ({(ez.meta.northKm * 0.621371).toFixed(0)} mi) each, southern ≈ {ez.meta.southKm.toFixed(0)} km ({(ez.meta.southKm * 0.621371).toFixed(0)} mi); the city {ez.meta.cityKm.toFixed(1)} km square, the sanctuary {ez.meta.sanctKm.toFixed(1)} km square.</div>
+                  </>
+                )}
+                <div className="hl-gear-h">Marks</div>
+                <div className="hl-legend hl-legend-marks">
+                  <span className="hl-legend-i"><i className="hl-lg-dot" /> biblical city</span>
+                  <span className="hl-legend-i"><i className="hl-lg-anchor" /> a landmark of Ezekiel's border</span>
+                  <span className="hl-legend-i"><i className="hl-lg-modern" /> today's city</span>
+                  <span className="hl-legend-i"><i className="hl-lg-gold" /> the selected portion</span>
+                  <span className="hl-legend-i"><i className="hl-lg-red" /> the Holy Portion</span>
+                </div>
+                <div className="hl-note hl-note-warn">Borders are idealized study-map shapes drawn from the landmark lists in Joshua 13–19 and Ezekiel 47–48, not surveyed lines; city dots use the conventional identifications.</div>
               </div>
             )}
           </div>
@@ -1239,6 +1262,29 @@ function Lexical({ he }) {
   );
 }
 
+// ── Scripture tree: tribe → book → passages, each opening inline or in the reader ──
+function ScriptureTree({ tree, title }) {
+  if (!tree || !tree.length) return null;
+  return (
+    <div className="hl-tree">
+      <div className="hl-detail-sub">{title}</div>
+      {tree.map((b, i) => (
+        <details key={b.book} className="hl-tree-book" open={i === 0}>
+          <summary><span className="hl-tree-book-name">{b.book}</span> <span className="hl-count">{b.items.length}</span></summary>
+          <ul className="hl-tree-items">
+            {b.items.map((it) => (
+              <li key={it.ref} className="hl-tree-item">
+                <PassageRefs refs={it.ref} size="sm" />
+                <span className="hl-tree-why">{it.why}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      ))}
+    </div>
+  );
+}
+
 // ── Detail card ──────────────────────────────────────────────────────────────
 function AllotmentLines({ joshua, ezekiel }) {
   return (
@@ -1360,6 +1406,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
         <div className="hl-detail-ref">{sel.kind === 'joshua' ? 'Joshua allotment' : 'Ezekiel — millennial allotment'}</div>
         <Lexical he={e.he || (e.tribe ? TRIBE_HEBREW[e.tribe] : null)} />
         <PassageRefs refs={e.ref} autoOpen />
+        <ScriptureTree tree={sel.kind === 'holy' ? HOLY_SCRIPTURE[e.kind] : TRIBE_SCRIPTURE[e.tribe]} title={sel.kind === 'holy' ? 'What the scriptures say of it' : `What the scriptures say of ${TRIBE_TRANSLIT[e.tribe] || e.tribe}`} />
         {sel.at && <PinRow pin={pin} at={sel.at} label={`${tribeDisplayName(e.name, e.tribe)} (${fmtLonLat(sel.at)})`} onPin={onPin} onUnpin={onUnpin} />}
         {sel.kind === 'holy' && e.kind === 'sanctuary' && <p className="hl-detail-note">500 × 500 with 50 of open land round it (45:2), in the midst of the priests' portion.</p>}
         <div className="hl-detail-sub">Biblical cities inside <span className="hl-count">{sel.cities.biblical.length}</span></div>
