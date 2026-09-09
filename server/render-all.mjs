@@ -28,6 +28,7 @@
 //   6 render-corpus --reset-src                snapshot pristine untagged text -> text_src
 //   7 render-corpus --from-src --apply         surface render NT+Apoc from text_src
 //   8 reseed-translations                      rebuild translation.db from corpus.db ENG
+//   9 fix-name-forms + verify-name-forms       deterministic name passes (bare names, gold () markers) + gate
 //
 // If any of these flag names differ in your tree, edit the STEPS arrays below — that's
 // the only place the sequence is defined. --dry prints them so you can eyeball first.
@@ -63,6 +64,12 @@ const SURFACE_STEPS = [
 ];
 const TAIL_STEPS = [
   ['node', ['reseed-translations.mjs'],                      'reseed translation.db from corpus.db ENG'],
+  // 2026-09-09: the deterministic name passes run AFTER every seed — locked spellings
+  // (Adawam), bare names → "Yawasap (Joseph)", the gold "()" markers the reader paints —
+  // and the same gate the deploy runs closes the pipeline. Seeding no longer skips rows
+  // these passes touched (status is the only edit signal), so nothing freezes again.
+  ['node', ['fix-name-forms.mjs'],                           'name forms: locked spellings, bare names, gold () markers (re-applied every run)'],
+  ['node', ['verify-name-forms.mjs'],                        'gate: fails the pipeline on any name the app would render wrong'],
   ['node', ['verify-integration.mjs'],                       'verify: baseline reaches Studio+reader, report missing chapters'],
 ];
 

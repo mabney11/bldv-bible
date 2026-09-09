@@ -28,7 +28,42 @@ export function loadRules() {
   for (const [k, v] of Object.entries(single)) if (k.length >= minLen && /^[A-Z][a-z]+$/.test(k) && v && v !== k && !skip.has(k)) bare.set(k, v);
   const phrases = new Map();
   for (const [k, v] of Object.entries(nm.phrases || {})) if (/^[A-Z][A-Za-z]+(?:[ -][A-Z][A-Za-z]+)+$/.test(k) && v && !skip.has(k)) phrases.set(k, v);
-  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases };
+  // gold headword markers: the reader paints "Word ()" gold — the words that take an empty
+  // gloss are server/lexicon/auto-gloss-words.json (520, from the 2026-08-29 migration)
+  let gold = new Set();
+  try { gold = new Set(JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'auto-gloss-words.json'), 'utf8'))); } catch { /* none */ }
+  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases, gold };
+}
+
+// ── gold markers: "Yahawah" → "Yahawah ()" ─────────────────────────────────────
+// Same rule as the 2026-08-29 gloss_engine: a word from auto-gloss-words.json gets
+// " ()" when it is not already followed by "(" and the innermost open parenthesis
+// (if any) is a plain aside, not some other word's gloss. A gloss frame is a "("
+// that immediately follows a word; an aside is any other "(". "()" adds no word
+// token, so translation_links are untouched. translation.db only — the corpus
+// keeps names bare.
+export function goldMarkers(text, R) {
+  if (!text || !R.gold.size) return { fixed: text, hits: [] };
+  const toks = [...text.matchAll(TOK)];
+  const stack = [];          // true = gloss frame, false = aside
+  const hits = []; let out = '', last = 0;
+  for (let i = 0; i < toks.length; i++) {
+    const m = toks[i], w = m[0];
+    if (w === '(') { const prev = toks[i - 1]; stack.push(!!(prev && prev[0] !== '(' && prev[0] !== ')' && /^\S*$/.test(text.slice(prev.index + prev[0].length, m.index).trim()))); continue; }
+    if (w === ')') { stack.pop(); continue; }
+    if (!R.gold.has(w)) continue;
+    if (stack.length && stack[stack.length - 1]) continue;                  // inside another word's gloss
+    const nxt = toks[i + 1];
+    if (nxt && nxt[0] === '(' && text.slice(m.index + w.length, nxt.index).trim() === '') continue;   // already glossed
+    const end = m.index + w.length;
+    // possessive "Yahawah's" stays plain, as the corpus writes it
+    if (text.slice(end, end + 2) === "'s" || text.slice(end, end + 2) === '\u2019s') continue;
+    out += text.slice(last, end) + ' ()';
+    last = end;
+    hits.push({ text: w, fix: `${w} ()`, why: 'gold headword marker' });
+  }
+  out += text.slice(last);
+  return { fixed: out, hits };
 }
 
 // ── bare names ────────────────────────────────────────────────────────────────

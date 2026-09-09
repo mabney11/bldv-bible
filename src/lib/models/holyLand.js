@@ -61,7 +61,7 @@ export const TRIBE_COLORS = {
   Asher:     '#3ecfb0',
   Naphtali:  '#f2d94e',
   Manasseh:  '#4cca7a',
-  Ephraim:   '#c9c3b8',
+  Ephraim:   '#8d8d8d',
   Reuben:    '#f0883e',
   Judah:     '#6e8aa6',
   Benjamin:  '#2e4a6e',
@@ -320,7 +320,7 @@ export function ezekielAllotment() {
 }
 
 export const HOLY_KIND_STYLE = {
-  prince:    { color:'#ffffff', opacity:0.55, label:'P' },
+  prince:    { color:'#f2c14e', opacity:0.55, label:'P' },   // gold — the prince's land (48:21–22)
   levites:   { color:'#ffffff', opacity:0.75, label:'L' },
   priests:   { color:'#e8aa55', opacity:0.75, label:'Z' },
   food:      { color:'#d9d2c2', opacity:0.75, label:'X' },

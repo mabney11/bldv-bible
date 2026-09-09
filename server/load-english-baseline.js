@@ -327,9 +327,15 @@ for (const [canonStr, chaptersRaw] of Object.entries(web)) {
     ON CONFLICT(book_id,chapter,verse) DO UPDATE SET
       source_origin = COALESCE(translations.source_origin, excluded.source_origin),
       original_text = COALESCE(translations.original_text, excluded.original_text)`);
-  const resetUntouched = tdb.prepare(`UPDATE translations SET text=?, original_text=?, updated_at=datetime('now')
+  // 2026-09-09: the `text = original_text` guard is GONE. Deterministic passes that run
+// after seeding (the gold "()" marker migration of 2026-08-29, fix-name-forms.mjs)
+// rewrite `text` on unedited rows, which made every such row look "edited" to this
+// guard — so no re-render ever reached the reader again. `status` is the only edit
+// signal (the Studio sets it on save); the passes are re-applied by render-all after
+// this step.
+const resetUntouched = tdb.prepare(`UPDATE translations SET text=?, original_text=?, updated_at=datetime('now')
       WHERE book_id=? AND chapter=? AND verse=? AND source_origin='${SRC_TAG}'
-        AND status='none' AND (original_text IS NULL OR text=original_text)`);
+        AND status='none'`);
   // BUG FOUND 2026-07-27: resetUntouched (the only statement that refreshes an
   // ALREADY-SEEDED verse's `text` column) used to run ONLY behind --reset-baseline
   // — a flag this OT-only baseline was never supposed to use (see the "OT-ONLY"

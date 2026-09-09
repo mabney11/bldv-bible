@@ -21,7 +21,7 @@ import Database from 'better-sqlite3';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadRules, checkText, bareNames, shiftIndices } from './name-form-lib.mjs';
+import { loadRules, checkText, bareNames, shiftIndices, goldMarkers } from './name-form-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
@@ -65,12 +65,16 @@ if (existsSync(TRANS_DB)) {
     for (const r of rows) {
       const a = checkText(r.text || '', R);
       // Bare names only on rows fieldy has not edited by hand (status 'none' = seeded).
-      const ab = NAMES && (r.status || 'none') === 'none' ? bareNames(a.fixed, R) : { fixed: a.fixed, hits: [], shifts: [] };
+      const seeded = (r.status || 'none') === 'none';
+      const ab = NAMES && seeded ? bareNames(a.fixed, R) : { fixed: a.fixed, hits: [], shifts: [] };
+      const ag = seeded ? goldMarkers(ab.fixed, R) : { fixed: ab.fixed, hits: [] };
+      ab.fixed = ag.fixed;
       const b = checkText(r.rich_text || '', R);
-      const bb = NAMES && (r.status || 'none') === 'none' ? bareNames(b.fixed, R) : { fixed: b.fixed, hits: [], shifts: [] };
+      const bb = NAMES && seeded ? bareNames(b.fixed, R) : { fixed: b.fixed, hits: [], shifts: [] };
+      if (seeded) bb.fixed = goldMarkers(bb.fixed, R).fixed;
       if (ab.fixed === (r.text || '') && bb.fixed === (r.rich_text || '')) continue;
       n++;
-      const changes = [...a.violations.filter(v => v.fix), ...ab.hits];
+      const changes = [...a.violations.filter(v => v.fix), ...ab.hits, ...ag.hits];
       if (n <= 12) console.log(`  translation ${r.book_id}:${r.chapter}:${r.verse}  ${changes.map(v => `${v.text} → ${v.fix}`).join('; ')}`);
       if (upd) {
         hist.run(r.book_id, r.chapter, r.verse, r.status, r.text, r.rich_text);   // the state BEFORE this fix
