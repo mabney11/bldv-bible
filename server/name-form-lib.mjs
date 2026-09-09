@@ -50,14 +50,24 @@ export function loadRules() {
   // gloss are server/lexicon/auto-gloss-words.json (520, from the 2026-08-29 migration)
   let gold = new Set();
   try { gold = new Set(JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'auto-gloss-words.json'), 'utf8'))); } catch { /* none */ }
-  // hyphenated form + "(joined form)" pairs from the allowlist, for the self-gloss check
-  let selfGloss = null;
+  // ── compound names (fieldy 2026-09-09: "Bayath-Lacham should be that in all writings;
+  //    Yashar-Al (Israel) when being glossed") — from lexicon/compound-hyphenation.json:
+  //    { from: joined form, to: hyphenated form, en: the English it is glossed with }
+  //    hyphenRe  : the joined form anywhere → the hyphenated form ("Yasharaal" → "Yashar-Al")
+  //    selfGloss : "Yashar-Al (Yasharaal)" / "Yashar-Al (Yashar-Al)" → "Yashar-Al (Israel)"
+  //    bareTr    : a bare hyphenated name (no gloss after it) → "Yashar-Al (Israel)"
+  let hyphenRe = null, hyphenTo = new Map(), selfGloss = null, selfGlossEn = new Map();
+  const bareTr = new Map();
   try {
     const allow = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'compound-hyphenation.json'), 'utf8'));
     const live = Object.values(allow).filter((r) => r && r.to && r.from && !r.skip);
-    if (live.length) selfGloss = new RegExp(`\\b(${Object.values(allow).filter((r) => r && r.to && !r.skip).map((r) => esc(r.to)).join('|')}) \\((?:${Object.values(allow).filter((r) => r && r.from && !r.skip).map((r) => esc(r.from)).join('|')})\\)`, 'g');
+    if (live.length) {
+      for (const r of live) { hyphenTo.set(r.from, r.to); if (r.en) { selfGlossEn.set(r.to, r.en); bareTr.set(r.to, r.en); } }
+      hyphenRe = new RegExp(`\\b(${live.map((r) => esc(r.from)).join('|')})\\b`, 'g');
+      selfGloss = new RegExp(`\\b(${live.map((r) => esc(r.to)).join('|')}) \\((?:${live.flatMap((r) => [esc(r.from), esc(r.to)]).join('|')})\\)`, 'g');
+    }
   } catch { /* none */ }
-  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases, gold, selfGloss };
+  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases, gold, hyphenRe, hyphenTo, selfGloss, selfGlossEn, bareTr };
 }
 
 // ── gold markers: "Yahawah" → "Yahawah ()" ─────────────────────────────────────
@@ -116,13 +126,14 @@ export function bareNames(text, R) {
     let name = null, to = null, span = 1;
     if (nxt && /^[A-Za-z]/.test(nxt[0]) && R.phrases.has(`${w} ${nxt[0]}`)) { name = `${w} ${nxt[0]}`; to = R.phrases.get(name); span = 2; }
     else if (R.bare.has(w)) { name = w; to = R.bare.get(w); }
+    else if (R.bareTr && R.bareTr.has(w)) { name = R.bareTr.get(w); to = w; }   // "Yashar-Al" bare → "Yashar-Al (Israel)"
     if (!name) continue;
     const after = toks[i + span];
     if (after && after[0] === '(') continue;                   // already a headword
     const end = span === 2 ? nxt.index + nxt[0].length : m.index + w.length;
     out += text.slice(last, m.index) + `${to} (${name})`;
     last = end;
-    hits.push({ text: name, fix: `${to} (${name})`, why: 'bare KJV name — never rendered' });
+    hits.push({ text: to === w ? w : name, fix: `${to} (${name})`, why: to === w ? 'bare compound name — glossed with its English' : 'bare KJV name — never rendered' });
     shifts.push(wordIx + span - 1);                            // the gloss token lands after this word index
     if (span === 2) { i++; wordIx++; }
   }
@@ -144,6 +155,11 @@ function pickAllowed(allowed, wrong) {
 export function checkText(text, R) {
   const violations = [];
   let fixed = text;
+  // Joined compound → hyphenated, everywhere (headword, bare, inside a quote): one token
+  // either way, so translation_links' word indices are untouched.
+  if (R.hyphenRe) {
+    fixed = fixed.replace(R.hyphenRe, (m) => { const to = R.hyphenTo.get(m) || m; violations.push({ text: m, fix: to, why: 'compound name is written hyphenated' }); return to; });
+  }
   if (R.mustRe) {
     fixed = fixed.replace(R.mustRe, (m, tr, name) => {
       if (R.must[name].includes(tr)) return m;
@@ -168,7 +184,12 @@ export function checkText(text, R) {
   // A rendering glossed with its own joined spelling — "Yashar-Al (Yasharaal)",
   // "Bayath-Lacham (Bayathalacham)" — is a transliteration explaining itself: the gloss goes.
   if (R.selfGloss) {
-    fixed = fixed.replace(R.selfGloss, (m, to) => { violations.push({ text: m, fix: to, why: 'a transliteration glossed with its own joined spelling' }); return to; });
+    fixed = fixed.replace(R.selfGloss, (m, to) => {
+      const en = R.selfGlossEn.get(to);
+      const out = en ? `${to} (${en})` : to;
+      violations.push({ text: m, fix: out, why: en ? `a transliteration glossed with itself — the gloss is the English, ${en}` : 'a transliteration glossed with its own joined spelling' });
+      return out;
+    });
   }
   // Displaced gloss: "Baarashabai (in) Beersheba" — the transliteration landed on the word
   // before the name and the name stayed bare. Put the word back and gloss the name:

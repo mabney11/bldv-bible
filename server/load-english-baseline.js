@@ -304,19 +304,28 @@ for (const [canonStr, chaptersRaw] of Object.entries(web)) {
   const cols = db.prepare('PRAGMA table_info(verses)').all().map(c=>c.name);
   for (const need of ['corpus','code','chapter','verse','ord_c','ord_v','text','category','src','canon_id','ref_key','book_id'])
     if (!cols.includes(need)) die('verses table missing column: '+need);
-  const del = db.prepare("DELETE FROM verses WHERE corpus='ENG' AND src=?");
+  // 2026-09-09: delete EVERY ENG row of the 66 canonical books, not only the rows this
+  // script tagged. The NT had a second set of rows from an older restore
+  // (src 'nt-baseline-restore-20260726', chapter '2', book_id 6097) that this delete never
+  // touched, so each reload ADDED a fresh NT beside it (chapter '2.0', book_id 40): two rows
+  // per NT verse, and the old one — never reloaded — was re-rendered on top of itself every
+  // run ("The sapar (sapar) (sapar) (book) of the genealogy…", 14,560 NT verses with nested
+  // glosses on 2026-09-09). The baseline file carries all 66 books; it replaces all 66.
+  const del = db.prepare("DELETE FROM verses WHERE corpus='ENG' AND canon_id BETWEEN 1 AND 66");
   const ins = db.prepare(`INSERT INTO verses (ref_key,book_id,corpus,code,chapter,verse,ord_c,ord_v,text,category,src,canon_id)
     VALUES (@ref,@bid,'ENG',@code,@ch,@v,@ch,@v,@text,'scripture',@src,@canon)`);
   const tx = db.transaction(()=>{
-    const removed = del.run(SRC_TAG).changes;
+    const removed = del.run().changes;
+    let inserted = 0;
     for (const a of aligned) {
       const code = CANON2CODE[a.canon] || String(a.canon);
-      ins.run({ref:`ENG:${code}:${a.ch}:${a.v}`,bid:a.canon,code,ch:a.ch,v:a.v,text:a.text,src:SRC_TAG,canon:a.canon});
+      // chapter/verse are TEXT columns: bind strings, or a JS number lands as '2.0'
+      inserted += ins.run({ref:`ENG:${code}:${a.ch}:${a.v}`,bid:a.canon,code,ch:String(a.ch),v:String(a.v),text:a.text,src:SRC_TAG,canon:a.canon}).changes;
     }
-    return removed;
+    return { removed, inserted };
   });
-  const removed = tx();
-  console.log(`[1] corpus.db ENG (reading): removed ${removed}, inserted ${aligned.length} verses — MT-aligned`);
+  const { removed, inserted } = tx();
+  console.log(`[1] corpus.db ENG (reading): removed ${removed}, inserted ${inserted} verses — MT-aligned (one row per verse, all 66 books)`);
 }
 
 // ── STEP 2 — pre-save into translation.db (Studio editable draft) ─────────────

@@ -343,7 +343,7 @@ if (!NO_VERSE_GLOSS) (() => {
   let ldb;
   try { ldb = new Database(dbFile, { readonly: true }); ldb.prepare('SELECT 1 FROM translation_links LIMIT 1').get(); }
   catch { if (ldb) ldb.close(); console.log('links: translation_links not found — skipping the Hebrew-driven pass'); return; }
-  const rows = ldb.prepare(`SELECT book_id, chapter, verse, english_indices, token_ordinals FROM translation_links`).all();
+  const rows = ldb.prepare(`SELECT book_id, chapter, verse, english_phrase, english_indices, token_ordinals FROM translation_links`).all();
   ldb.close();
   let n = 0;
   for (const r of rows) {
@@ -353,7 +353,7 @@ if (!NO_VERSE_GLOSS) (() => {
     if (!eng.length || !ords.length) continue;
     const key = `${r.book_id}|${r.chapter}|${r.verse}`;
     if (!LINKS.has(key)) LINKS.set(key, []);
-    LINKS.get(key).push({ eng: eng.slice().sort((a, b) => a - b), ord: ords[0] });
+    LINKS.get(key).push({ eng: eng.slice().sort((a, b) => a - b), ord: ords[0], phrase: String(r.english_phrase || '').trim() });
     n++;
   }
   console.log(`links: ${n.toLocaleString()} spans across ${LINKS.size.toLocaleString()} verses (${dbFile})`);
@@ -438,23 +438,60 @@ after before between through that this these those there here when where why how
 each few more most other some only very own same too also just now ever never again once
 because while until during against above below out off one two three not was were are been
 being have has had will would shall should may might must can could who whom whose which what
-his her its their your our them they she him you shall unto thou thee thy ye`.split(/\s+/));
+his her its their your our them they she him you shall unto thou thee thy ye
+among way within without beside besides along across toward towards around behind beyond near
+since till whether either neither though although whereas rather quite else than then thus hence
+therefore wherefore hereby thereby whereby whither thither hither indeed even also yet still
+already almost always often sometimes seldom perhaps maybe away back forth down`.split(/\s+/));
+// (the second block, 2026-09-09: prepositions and adverbs a kjv_def happens to list as a
+// stray sense — H776 erets lists "way", H4480 min lists "among" — glossed "in no aratz (way)
+// … man (among)" in Matthew 2:6. A term pin (step 5) can still gloss "way" → darak; only the
+// per-verse fallback is barred from function words.)
 
 // ================= the render function (pure) =======================================
 /** Replace each linked English span with "translit (span)". Right-to-left so
  *  earlier offsets stay valid. */
+// A link's english_indices are word positions in the English AS IT WAS when the link was
+// made (the Studio's HEB-auto alignment ran on already-rendered text, where every
+// "(gloss)" is an extra word). Applied to the pristine source they drift, and the drift
+// is what put "aratz (are)", "man (among)", "yatzaa (shall)" into Matthew 2:6: the
+// Hebrew was right, the index was pointing at the wrong English word. So a link is
+// applied only where the text agrees with it: the words at its indices must BE its
+// english_phrase; if they are not, the phrase is looked for as a whole nearby (the
+// nearest occurrence, up to 12 words either way) and the link moves there; if it is
+// nowhere, the link is skipped and counted — never guessed.
+const LINK_STATS = { applied: 0, moved: 0, stale: 0 };
+const norm = (w) => w.toLowerCase().replace(/[^a-z']/g, '');
 function applyLinks(text, key) {
   const spans = LINKS.get(key);
   const trs = TOK_TR.get(key);
   if (!spans || !trs) return text;
   const toks = tokensWithPos(text);
+  const words = toks.map((t) => norm(t.w));
   const out = [];
   for (const sp of spans) {
     const tr = trs.get(sp.ord);
     if (!tr) continue;
-    const first = sp.eng[0], last = sp.eng[sp.eng.length - 1];
-    if (first < 0 || last >= toks.length) continue;           // index drift: skip, never guess
+    let first = sp.eng[0], last = sp.eng[sp.eng.length - 1];
     if (last - first !== sp.eng.length - 1) continue;         // non-contiguous span
+    const want = sp.phrase ? sp.phrase.split(/\s+/).map(norm).filter(Boolean) : [];
+    const matchesAt = (i) => want.length > 0 && i >= 0 && i + want.length <= words.length && want.every((w, k) => words[i + k] === w);
+    if (!want.length) {
+      if (first < 0 || last >= toks.length) { LINK_STATS.stale++; continue; }
+    } else if (matchesAt(first) && last - first === want.length - 1) {
+      LINK_STATS.applied++;
+    } else {
+      // look for the phrase nearby, nearest first
+      let found = -1;
+      for (let d = 0; d <= 12 && found < 0; d++) {
+        if (matchesAt(first - d)) found = first - d;
+        else if (d && matchesAt(first + d)) found = first + d;
+      }
+      if (found < 0) { LINK_STATS.stale++; continue; }
+      first = found; last = found + want.length - 1;
+      LINK_STATS.moved++;
+    }
+    if (first < 0 || last >= toks.length) { LINK_STATS.stale++; continue; }
     out.push({ s: toks[first].s, e: toks[last].e, tr });
   }
   out.sort((a, b) => b.s - a.s);
@@ -635,6 +672,7 @@ for (const r of rows) {
     if (samples.length < 5 && out !== r.src) samples.push({ ref, before: r.src, after: out }); }
 }
 pRender.done();
+if (LINKS.size) console.log(`links: ${LINK_STATS.applied.toLocaleString()} applied where they stood, ${LINK_STATS.moved.toLocaleString()} moved to where their English word actually is, ${LINK_STATS.stale.toLocaleString()} skipped (their English word is not in the verse)`);
 console.log(`rows that would change: ${changed.toLocaleString()}`);
 const clip = t => t.length > 180 ? t.slice(0, 180) + '…' : t;
 for (const s of samples) { console.log(`\n  ${s.ref}`); console.log(`   - ${clip(s.before)}`); console.log(`   + ${clip(s.after)}`); }

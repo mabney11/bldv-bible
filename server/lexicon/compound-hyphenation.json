@@ -6,7 +6,8 @@
     "from": "Yabanaal",
     "to": "Yaban-Al",
     "meaning": "built of God",
-    "def": "Jabneel, the name of two places in Palestine"
+    "def": "Jabneel, the name of two places in Palestine",
+    "en": "Jabneel"
   },
   "H3389": {
     "sn": "H3389",
@@ -19,7 +20,8 @@
     "from": "Baarashabai",
     "to": "Baar-Shabai",
     "meaning": "well of an oath",
-    "def": "Beer-Sheba, a place in Palestine"
+    "def": "Beer-Sheba, a place in Palestine",
+    "en": "Beersheba"
   },
   "H1008": {
     "sn": "H1008",
@@ -28,7 +30,8 @@
     "from": "Bayathaal",
     "to": "Bayath-Al",
     "meaning": "house of God",
-    "def": "Beth-El, a place in Palestine"
+    "def": "Beth-El, a place in Palestine",
+    "en": "Bethel"
   },
   "H7157": {
     "sn": "H7157",
@@ -41,7 +44,8 @@
     "from": "Bayathashamash",
     "to": "Bayath-Shamash",
     "meaning": null,
-    "def": "Beth-Shemesh, a place in Palestine"
+    "def": "Beth-Shemesh, a place in Palestine",
+    "en": "Beth Shemesh"
   },
   "H1035": {
     "sn": "H1035",
@@ -50,7 +54,8 @@
     "from": "Bayathalacham",
     "to": "Bayath-Lacham",
     "meaning": "house of bread",
-    "def": "Beth-Lechem, a place in Palestine"
+    "def": "Beth-Lechem, a place in Palestine",
+    "en": "Bethlehem"
   },
   "H5872": {
     "sn": "H5872",
@@ -71,7 +76,8 @@
     "from": "Bayathashaan",
     "to": "Bayath-Shaan",
     "meaning": "house of ease",
-    "def": "Beth-Shean or Beth-Shan, a place in Palestine"
+    "def": "Beth-Shean or Beth-Shan, a place in Palestine",
+    "en": "Beth Shean"
   },
   "H1171": {
     "sn": "H1171",
@@ -92,7 +98,8 @@
     "from": "Chatzaraiyanan",
     "to": "Chatzar-Iyanan",
     "meaning": "village of springs",
-    "def": "Chatsar-Enan, a place in Palestine"
+    "def": "Chatsar-Enan, a place in Palestine",
+    "en": "Hazar Enan"
   },
   "H27": {
     "sn": "H27",
@@ -101,7 +108,8 @@
     "from": "Abayadan",
     "to": "Abay-Dan",
     "meaning": null,
-    "def": "Abidan, an Israelite"
+    "def": "Abidan, an Israelite",
+    "en": "Abidan"
   },
   "H3478": {
     "sn": "H3478",
@@ -110,7 +118,8 @@
     "from": "Yasharaal",
     "to": "Yashar-Al",
     "meaning": "he will rule as God",
-    "def": "Jisrael, a symbolical name of Jacob; also (typically) of his posterity"
+    "def": "Jisrael, a symbolical name of Jacob; also (typically) of his posterity",
+    "en": "Israel"
   },
   "H1630": {
     "sn": "H1630",
@@ -123,6 +132,7 @@
     "from": "Chatzaraiyanawan",
     "to": "Chatzar-Iyanawan",
     "meaning": "village of springs",
-    "def": "Chatsar-Enon, a place in Palestine"
+    "def": "Chatsar-Enon, a place in Palestine",
+    "en": "Hazar Enon"
   }
 }
