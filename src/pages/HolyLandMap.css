@@ -248,8 +248,14 @@
 .hl-rl-h { font-size: var(--rl-size, 11px); padding: 0.1em 0.45em; display: flex; flex-direction: column; align-items: center; gap: 0.15em; }
 .hl-rl-h .hl-rl-letter { line-height: 1.1; }
 .hl-rl-h .hl-rl-cap, .hl-rl-h .hl-rl-en { display: none; }
+/* Zoomed in, the lettered button becomes free text standing in its area (the whole plot is
+   the button — "the sanctuary is the entire red and doesn't need a button within a box"). */
+.hl-rl-h[data-fit="lg"] { background: transparent; border-color: transparent; box-shadow: none; padding: 0; gap: 0.1em; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 5px #fff; }
+.hl-rl-h[data-fit="lg"] .hl-rl-letter { display: none; }
+.hl-rl-h[data-fit="lg"]:hover { background: #fff6; border-color: transparent; }
 .hl-rl-h[data-fit="lg"] .hl-rl-cap { display: block; font-size: var(--rl-cap, 10px); font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #3a2600; white-space: nowrap; }
 .hl-rl-h[data-fit="lg"] .hl-rl-en { display: block; font-size: calc(var(--rl-cap, 10px) * 0.8); font-weight: 500; color: #4a4033; white-space: nowrap; opacity: 0.9; }
+.hl-rl-h-sanctuary[data-fit="lg"], .hl-rl-h-city[data-fit="lg"] { text-shadow: 0 0 3px #0009, 0 0 4px #0009; }
 .hl-rl-h-sanctuary[data-fit="lg"] .hl-rl-cap, .hl-rl-h-city[data-fit="lg"] .hl-rl-cap, .hl-rl-h-sanctuary[data-fit="lg"] .hl-rl-en, .hl-rl-h-city[data-fit="lg"] .hl-rl-en { color: #fff; }
 .hl-rl-h.hl-rl-h-prince { font-size: var(--rl-size, 14px); background: transparent; border: none; box-shadow: none; padding: 0; }
 .hl-prince { display: inline-flex; flex-direction: column; align-items: center; gap: 0.25em; line-height: 1.15; filter: drop-shadow(0 1px 2px #0008); }
@@ -367,9 +373,9 @@
 .hl-mk:hover .hl-mk-name { text-decoration: underline; text-underline-offset: 2px; }
 
 /* keep the S/C/Z box colours above the generic pill background */
-.hl-rl.hl-rl-h-sanctuary { background: #e05555; color: #fff; }
-.hl-rl.hl-rl-h-city { background: #4a9eff; color: #fff; }
-.hl-rl.hl-rl-h-priests { background: #e8aa55; color: #1a1208; }
+.hl-rl.hl-rl-h-sanctuary:not([data-fit="lg"]) { background: #e05555; color: #fff; }
+.hl-rl.hl-rl-h-city:not([data-fit="lg"]) { background: #4a9eff; color: #fff; }
+.hl-rl.hl-rl-h-priests:not([data-fit="lg"]) { background: #e8aa55; color: #1a1208; }
 
 
 /* Lexical breakdown */

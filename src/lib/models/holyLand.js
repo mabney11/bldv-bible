@@ -698,33 +698,59 @@ export function ringCentroid(ring) {
   return [cx / (6 * a), cy / (6 * a)];
 }
 /**
- * Where a label sits so it is INSIDE the shape: the widest horizontal run through
- * the ring at its mid-latitude (a bent wedge like Dan has its centroid on the edge).
- * Returns { lon, lat, west, east, latSpan } — west/east are that run's ends, used to
- * size the label to its territory.
+ * Where a label sits so it is INSIDE the shape: the centre of the largest label-shaped
+ * box (≈ 2.5 : 1, wide) that fits wholly within the ring. A bent wedge or a band with a
+ * notch (Ezekiel's Dan, whose north edge rises to Hamath) has its centroid on an edge;
+ * the biggest inscribed box lands in the body of the shape instead.
+ * Returns { lon, lat, west, east, latSpan } — west/east are the ends of the horizontal
+ * run through the anchor (symmetric about it), latSpan the box height (ringLatSpan the whole
+ * ring's): fitRegionLabels() sizes the label to those.
  */
-export function labelAnchor(ring) {
-  const lats = ring.map((p) => p[1]);
-  const minLat = Math.min(...lats), maxLat = Math.max(...lats);
-  const tryLat = (lat) => {
+const ANCHOR_CACHE = new WeakMap();
+export function labelAnchor(ring, aspect = 2.5) {
+  const hit = ANCHOR_CACHE.get(ring);
+  if (hit) return hit;
+  const lons = ring.map((p) => p[0]), lats = ring.map((p) => p[1]);
+  const minLon = Math.min(...lons), maxLon = Math.max(...lons), minLat = Math.min(...lats), maxLat = Math.max(...lats);
+  const W = maxLon - minLon, H = maxLat - minLat, cx0 = (minLon + maxLon) / 2, cy0 = (minLat + maxLat) / 2;
+  // a box of half-height hh (half-width aspect·hh) centred at (x, y) lies inside the ring?
+  const fits = (x, y, hh) => {
+    const hw = hh * aspect;
+    for (let i = 0; i <= 6; i++) {
+      const t = -1 + i / 3;
+      if (!pointInRing([x + hw * t, y - hh], ring) || !pointInRing([x + hw * t, y + hh], ring)) return false;
+    }
+    return pointInRing([x - hw, y], ring) && pointInRing([x + hw, y], ring);
+  };
+  let best = null;
+  const N = 24;
+  for (let i = 1; i < N; i++) for (let j = 1; j < N; j++) {
+    const x = minLon + W * i / N, y = minLat + H * j / N;
+    if (!pointInRing([x, y], ring)) continue;
+    let lo = 0, hi = Math.min(H / 2, W / 2 / aspect);
+    if (!fits(x, y, hi * 0.02)) continue;
+    for (let k = 0; k < 11; k++) { const mid = (lo + hi) / 2; if (fits(x, y, mid)) lo = mid; else hi = mid; }
+    // tie-break toward the shape's centre so equal boxes don't drift to a corner
+    const d = Math.hypot((x - cx0) / (W || 1), (y - cy0) / (H || 1));
+    const score = lo * (1 - 0.06 * d);
+    if (!best || score > best.score) best = { score, lon: x, lat: y, hh: lo };
+  }
+  let out;
+  if (!best) out = { lon: cx0, lat: cy0, west: cx0, east: cx0, latSpan: H, ringLatSpan: H };
+  else {
+    // the horizontal run through the anchor, made symmetric about it (the label is centred there)
     const xs = [];
     for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
       const [x1, y1] = ring[j], [x2, y2] = ring[i];
-      if ((y1 > lat) !== (y2 > lat)) xs.push(x1 + (lat - y1) * (x2 - x1) / (y2 - y1));
+      if ((y1 > best.lat) !== (y2 > best.lat)) xs.push(x1 + (best.lat - y1) * (x2 - x1) / (y2 - y1));
     }
     xs.sort((a, b) => a - b);
-    let best = null;
-    for (let k = 0; k + 1 < xs.length; k += 2) if (!best || xs[k + 1] - xs[k] > best[1] - best[0]) best = [xs[k], xs[k + 1]];
-    return best;
-  };
-  // mid-latitude first; if the ring is pinched there, try a little above and below
-  let lat = (minLat + maxLat) / 2, run = tryLat(lat);
-  for (const f of [0.4, 0.6, 0.3, 0.7]) {
-    const l = minLat + (maxLat - minLat) * f, r = tryLat(l);
-    if (r && (!run || r[1] - r[0] > (run[1] - run[0]) * 1.15)) { run = r; lat = l; }
+    let half = best.hh * aspect;
+    for (let k = 0; k + 1 < xs.length; k += 2) if (best.lon >= xs[k] && best.lon <= xs[k + 1]) half = Math.max(half, Math.min(best.lon - xs[k], xs[k + 1] - best.lon));
+    out = { lon: best.lon, lat: best.lat, west: best.lon - half, east: best.lon + half, latSpan: best.hh * 2, ringLatSpan: H };
   }
-  if (!run) { const c = ringCentroid(ring); return { lon: c[0], lat: c[1], west: c[0], east: c[0], latSpan: maxLat - minLat }; }
-  return { lon: (run[0] + run[1]) / 2, lat, west: run[0], east: run[1], latSpan: maxLat - minLat };
+  ANCHOR_CACHE.set(ring, out);
+  return out;
 }
 export function toFeature(entry, props = {}) {
   return {

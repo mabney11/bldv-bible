@@ -52,6 +52,10 @@ import {
 // (allotments only), and the map is padded so a selection stays visible above the sheet.
 const isNarrow = () => typeof window !== 'undefined' && window.innerWidth <= 720;
 const SHEET_FRACTION = 0.5;                       // the sheet covers the lower half
+// How close a click on a portion takes you (fitBounds is capped here so the view is the
+// same from every starting zoom): the bands stay in their country, the holy plots close
+// enough that their names read as area text.
+const PORTION_MAX_ZOOM = { joshua: 9.5, ezekiel: 9.5, prince: 11, levites: 12.5, priests: 12.5, food: 13, suburbs: 13, city: 13.5, sanctuary: 14 };
 const REGION_DETAIL_ZOOM = 7.8;                   // from here the band labels also show the paleo line + English
 const HOLY_BTN_ZOOM = 10.5;                       // above this the "Tharawamah" caption appears over the square
 // The prince's portion (Ezekiel 48:21–22): a king and a lion — fieldy's pick.
@@ -205,6 +209,7 @@ export default function HolyLandMap() {
   const [exag, setExag] = useState(1.6);
   const [threeD, setThreeD] = useState(false);
   const [panelOpen, setPanelOpen] = useState(() => window.innerWidth > 720);
+  const panelOpenRef = useRef(panelOpen); panelOpenRef.current = panelOpen;
   const [tab, setTab] = useState('layers');    // layers | cities | peoples
   const [q, setQ] = useState('');
   const [sel, setSel] = useState(null);         // { kind:'city'|'joshua'|'ezekiel'|'holy'|'point', ... }
@@ -265,15 +270,22 @@ export default function HolyLandMap() {
     const map = mapRef.current;
     if (!map) return;
     const narrow = isNarrow();
-    if (opts.fly === false) {
-      // Tapped on the map: on a phone, slide the tapped spot up above the sheet so the gold focus is visible.
-      if (narrow && opts.at) map.easeTo({ center: opts.at, padding: { top: 0, left: 0, right: 0, bottom: sheetPx() }, duration: 500 });
-      return;
-    }
     const lons = entry.ring.map((p) => p[0]), lats = entry.ring.map((p) => p[1]);
-    // maxZoom keeps the small holy plots from filling the screen (a portion is the focus, not a wall of colour).
+    // Every portion has ONE view — the same whether it was tapped on the map, picked from a
+    // chip or a card, and whatever the zoom was before: a tap from far away zooms in until
+    // the portion fills the screen, a tap from inside the city zooms out to the whole band.
+    // maxZoom keeps a portion from becoming a wall of colour, but stays close enough on the
+    // small plots that their captions (Maqadash, Iyar…) are still readable.
     const pad = narrow ? { top: 40, left: 30, right: 30, bottom: sheetPx() + 30 } : 80;
-    map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], { padding: pad, duration: 1200, pitch: threeD ? 45 : 0, maxZoom: kind === 'holy' ? 11 : 9.5 });
+    const fit = () => map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], { padding: pad, duration: 1200, pitch: threeD ? 45 : 0, maxZoom: PORTION_MAX_ZOOM[kind === 'holy' ? entry.kind : kind] ?? 9.5 });
+    if (!narrow && !panelOpenRef.current) {
+      // On a desktop the side panel is about to open and take 360 px from the map: fit AFTER
+      // the canvas has shrunk, or the portion lands half under the panel.
+      let done = false;
+      const go = () => { if (done) return; done = true; fit(); };
+      map.once('resize', go);
+      setTimeout(go, 150);
+    } else fit();
   }, [citiesIn, threeD]);
 
   // ── Overlay (re)build — called on every style load and on data changes ─────
@@ -334,8 +346,9 @@ export default function HolyLandMap() {
     // red, so it can never be mistaken for the gold selection glow
     addLayer({ id: 'hl-holy-square-glow', type: 'line', source: 'hl-holy-square', paint: { 'line-color': '#e03030', 'line-width': 14, 'line-blur': 9, 'line-opacity': 0.85 } }, false);
     addLayer({ id: 'hl-holy-square-line', type: 'line', source: 'hl-holy-square', paint: { 'line-color': '#c02020', 'line-width': 1.6, 'line-opacity': 0.95 } }, false);
-    addLayer({ id: 'hl-focus-glow', type: 'line', source: 'hl-focus', paint: { 'line-color': '#e8aa55', 'line-width': 22, 'line-blur': 12, 'line-opacity': 0.85 } });
-    addLayer({ id: 'hl-focus-line', type: 'line', source: 'hl-focus', paint: { 'line-color': '#f5c070', 'line-width': 2.5 } });
+    // above the water: "all borders should be gold including the sea border"
+    addLayer({ id: 'hl-focus-glow', type: 'line', source: 'hl-focus', paint: { 'line-color': '#e8aa55', 'line-width': 22, 'line-blur': 12, 'line-opacity': 0.85 } }, false);
+    addLayer({ id: 'hl-focus-line', type: 'line', source: 'hl-focus', paint: { 'line-color': '#f5c070', 'line-width': 2.5 } }, false);
     addLayer({ id: 'hl-country-glow', type: 'line', source: 'hl-country', paint: { 'line-color': '#a78bfa', 'line-width': 10, 'line-blur': 6, 'line-opacity': 0.55 } }, false);
     addLayer({ id: 'hl-country-line', type: 'line', source: 'hl-country', paint: { 'line-color': '#7c3aed', 'line-width': 2.2, 'line-opacity': 0.95 } }, false);
     addLayer({ id: 'hl-pin-line-casing', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#ffffff', 'line-width': 5, 'line-opacity': 0.7 } }, false);
@@ -439,9 +452,10 @@ export default function HolyLandMap() {
         const el = document.createElement('button');
         el.type = 'button';
         el.className = `hl-rl hl-rl-h hl-rl-h-${h.kind}`;
-        // The letter is the button at every zoom; zoomed in, the plot's own name and what it is
-        // appear beneath it (data-fit="lg"), so the priests' land reads as the priests' land and
-        // the sanctuary square inside it as the sanctuary. The prince's land: 🤴🏾🦁 + Nashayaa Chalaqayam.
+        // Zoomed out the plot is a lettered button (Z, L, C, S, X); once its name fits inside
+        // the plot (data-fit="lg") the button goes and the name stands as free text in the area,
+        // like the prince's 🤴🏾🦁 Nashayaa Chalaqayam — the whole plot is the button, and the
+        // sanctuary is the whole red square, not a box within it.
         el.innerHTML = h.kind === 'prince'
           ? `<span class="hl-prince"><span class="hl-prince-ico">🤴🏾🦁</span><span class="hl-rl-cap">${h.short}</span><span class="hl-rl-en">${h.en}</span></span>`
           : `<span class="hl-rl-letter">${st.label}</span><span class="hl-rl-cap">${h.short}</span><span class="hl-rl-en">${h.en}</span>`;
@@ -451,7 +465,7 @@ export default function HolyLandMap() {
         // the sanctuary sits in the middle of the priests' land: put the priests' label to its left
         const lon = h.kind === 'priests' ? a.west + (a.east - a.west) * 0.2 : a.lon;
         const m = mk([lon, a.lat], el);
-        m._rl = { west: a.west, east: h.kind === 'priests' ? a.west + (a.east - a.west) * 0.4 : a.east, latSpan: a.latSpan, len: h.kind === 'prince' ? 2.6 : 1.6, capLen: Math.max(h.short.length, h.en.length * 0.8), kind: 'plot' };
+        m._rl = { west: a.west, east: h.kind === 'priests' ? a.west + (a.east - a.west) * 0.4 : a.east, latSpan: a.ringLatSpan, len: h.kind === 'prince' ? 2.6 : 1.6, capLen: Math.max(h.short.length, h.en.length * 0.8), capMax: h.kind === 'prince' ? 15 : 20, kind: 'plot' };
       }
       // A small caption above the glowing square when zoomed in (the plot buttons are always shown;
       // zoomed out, the buttons themselves say where it is). Click → the priests' portion.
@@ -499,10 +513,10 @@ export default function HolyLandMap() {
       const el = m.getElement();
       let tier;
       if (m._rl.kind === 'plot') {
-        // caption (name + what it is) only when it fits the plot at ≥ 8 px
-        const cap = Math.min(13, (w * 0.85) / (m._rl.capLen * 0.6), h * 0.16);
+        // area text (name + what it is, two lines ≈ 2.3 em) only when it fits the plot at ≥ 8 px
+        const cap = Math.min(m._rl.capMax, (w * 0.85) / (m._rl.capLen * 0.6), h * 0.3);
         el.style.setProperty('--rl-cap', `${Math.max(cap, 6).toFixed(1)}px`);
-        tier = size < 6 ? 'hide' : (cap >= 8 && h >= size * 3.2) ? 'lg' : 'sm';
+        tier = size < 6 ? 'hide' : cap >= 8 ? 'lg' : 'sm';
       } else {
         // the name alone on a fresh load; paleo + English only when zoomed in AND the band has
         // height for three lines (name 1 em + paleo 1.05 em + English 0.75 em + gaps ≈ 3.6 em)
@@ -574,9 +588,9 @@ export default function HolyLandMap() {
         const holy = holyId && ez.holy.find((h) => h.id === holyId);
         const josh = joshId && JOSHUA_TRIBES.find((t) => t.id === joshId);
         const band = ezId && ez.bands.find((b) => b.id === ezId);
-        if (holy) selectRegionRef.current('holy', holy, { fly: false, at: lonLat });
-        else if (josh) selectRegionRef.current('joshua', josh, { fly: false, at: lonLat });
-        else if (band) selectRegionRef.current('ezekiel', band, { fly: false, at: lonLat });
+        if (holy) selectRegionRef.current('holy', holy, { at: lonLat });
+        else if (josh) selectRegionRef.current('joshua', josh, { at: lonLat });
+        else if (band) selectRegionRef.current('ezekiel', band, { at: lonLat });
         else {
           setSel({ kind: 'point', lonLat, joshua: joshuaTribeAt(lonLat), ezekiel: ezekielAt(lonLat, ez) });
           setPanelOpen(true);
