@@ -10,19 +10,19 @@ import Landing from './pages/Landing.jsx';
 
 // Everything else is lazy. Before this, App.jsx statically imported every
 // page — Translate.jsx (88K), Reader.jsx (76K), CheatsheetLong.js (76K),
-// Parallel.jsx (56K), MultiViewer.jsx (48K), Share.jsx (44K), Root.jsx (40K),
+// Parallel.jsx (56K), MultiViewer.jsx (48K), Root.jsx (40K),
 // Lexicon/HebrewViewer/GlossStudio (~36K each), GlyphEditor (28K) — so a
 // visit to ANY single page downloaded the code for all of them: one 549KB
 // (170KB gzipped) chunk regardless of which tool you actually opened. Vite/
 // Rollup code-splits each dynamic import() into its own chunk automatically,
-// so a Hebrew-reader visit no longer pays for Translate/Share/GlyphEditor/
+// so a Hebrew-reader visit no longer pays for Translate/GlyphEditor/
 // admin tooling it never uses. This changes ONLY how/when the code is
 // downloaded — no component's behavior changes.
 const HebrewViewer     = lazy(() => import('./pages/HebrewViewer.jsx'));
 const Parallel         = lazy(() => import('./pages/Parallel.jsx'));
 const Lexicon          = lazy(() => import('./pages/Lexicon.jsx'));
 const Translate        = lazy(() => import('./pages/Translate.jsx'));
-const Share            = lazy(() => import('./pages/Share.jsx'));
+const Guide            = lazy(() => import('./pages/Guide.jsx'));
 const Root             = lazy(() => import('./pages/Root.jsx'));
 const Cheatsheet       = lazy(() => import('./pages/Cheatsheet.jsx'));
 const GlyphEditor      = lazy(() => import('./pages/GlyphEditor.jsx'));
@@ -122,7 +122,7 @@ class ChunkErrorBoundary extends Component {
  *                   every existing bookmark/share link keeps landing on the
  *                   right page.
  *   /translate    → Translation Studio
- *   /share        → Share & Export
+ *   /guide        → Guide — what the app does and where
  *   /lexicon-page → Lexicon Explorer (multi-language: ?lang=hebrew|greek|geez)
  *   /roots, /root → Root explorer (Hebrew)
  *   /surfaces     → Surface explorer
@@ -335,7 +335,7 @@ export default function App() {
         <Route path="/lexicon-page"   element={<Lexicon />} />
         <Route path="/lexicon"        element={<Lexicon />} />
         <Route path="/translate"      element={<Translate />} />
-        <Route path="/share"          element={<Share />} />
+        <Route path="/guide"          element={<Guide />} />
         <Route path="/search"         element={<Search />} />
         <Route path="/roots"          element={<Root />} />
         <Route path="/root"           element={<Root />} />

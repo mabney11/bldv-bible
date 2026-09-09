@@ -239,15 +239,12 @@ const NAV_LINKS = `
         <a href="/landing">Home</a> ·
         <a href="/bible?book=1&amp;chapter=1">Novel English Bible</a> ·
         <a href="/?book=1&amp;chapter=1">Hebrew Reader</a> ·
-        <a href="/?source=LXX&amp;book=1&amp;chapter=1&amp;verse=1">Greek Scriptures</a> ·
-        <a href="/?source=GEZ&amp;book=1&amp;chapter=1&amp;verse=1">Ge'ez Bible</a> ·
-        <a href="/?source=LAT&amp;book=1&amp;chapter=1&amp;verse=1">Latin Vulgate</a> ·
         <a href="/parallel?book=1&amp;chapter=1">English–Hebrew Parallel</a> ·
         <a href="/translate?book=1&amp;chapter=1&amp;verse=1">Translation Studio</a> ·
         <a href="/works">Works Library</a> ·
-        <a href="/models">Renderings &amp; Models</a> ·
+        <a href="/models">Maps &amp; Models</a> ·
         <a href="/lexicon-page">Lexicon</a> ·
-        <a href="/cheatsheet">Token Cheatsheet</a> ·
+        <a href="/guide">Guide</a> ·
         <a href="/roots">Root Explorer</a> ·
         <a href="/search">Search</a>
       </nav>`;
@@ -956,7 +953,7 @@ const ROUTES = {
       // since this snapshot has no CSS to style a span as a subheading.
       body: `<h1>${escapeHtml(BRAND)}</h1>
       <h2>Online Bible Study Tool</h2>
-      <p>Hebrew · Greek · Latin · Ge'ez — scriptures, plus a library of works.</p>${NAV_LINKS}`,
+      <p>The scriptures in their own names — Hebrew first, English beside it, the land drawn from the text.</p>${NAV_LINKS}`,
     }),
   }],
 
@@ -1105,10 +1102,10 @@ const STATIC_PAGES = {
     description: "Search across Hebrew, Greek, Latin and Ge'ez scripture and literary works.",
     heading: 'Search',
   },
-  '/share': {
-    title: `Share & Export | ${BRAND}`,
-    description: `Export and share verses, word studies and translations from ${BRAND}.`,
-    heading: 'Share & Export',
+  '/guide': {
+    title: `Guide | ${BRAND}`,
+    description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, the Lexicon and the Translation Studio.',
+    heading: 'Guide',
   },
 };
 for (const [path, page] of Object.entries(STATIC_PAGES)) {

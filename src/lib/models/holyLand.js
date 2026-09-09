@@ -374,6 +374,8 @@ export const BIBLE_RIVERS = [
   { id:'arnon',          pts:[[35.555,31.47],[35.66,31.45],[35.78,31.44],[35.9,31.38],[36.02,31.3],[36.15,31.22]] },   // Wadi Mujib
   { id:'jabbok',         pts:[[35.572,32.19],[35.68,32.2],[35.8,32.24],[35.92,32.23],[36.03,32.17],[36.08,32.07],[35.98,31.98]] }, // Zarqa
   { id:'kishon',         pts:[[35.03,32.82],[35.05,32.76],[35.09,32.7],[35.16,32.63],[35.24,32.57],[35.3,32.5]] },
+  { id:'abana',          pts:[[36.02,33.62],[36.12,33.58],[36.22,33.54],[36.3,33.51],[36.42,33.52],[36.55,33.56],[36.66,33.6]] },     // Barada — through Damascus
+  { id:'pharpar',        pts:[[35.88,33.33],[36.0,33.32],[36.12,33.3],[36.26,33.28],[36.4,33.3],[36.55,33.33]] },                     // Awaj — south of Damascus
 ];
 // Every water carries its own verses (history, then what the prophets say of it), like a city.
 // `base` = the name the bundled geometry gives it, so a tap on the water itself finds it.
@@ -403,6 +405,10 @@ export const WATERS = [
     ref:'Genesis 32:22–30; Numbers 21:24; Deuteronomy 2:37; Deuteronomy 3:16; Joshua 12:2; Judges 11:13, 22' },
   { id:'kishon',      ...W('קישון'),     en:'the Kishon',            lon:35.15, lat:32.68, base:'kishon',
     ref:'Judges 4:7, 13; Judges 5:21; 1 Kings 18:40; Psalms 83:9' },
+  { id:'abana',       ...W('אבנה'),      en:'the Abana, river of Damascus', lon:36.45, lat:33.56, base:'abana',
+    ref:'2 Kings 5:12' },
+  { id:'pharpar',     ...W('פרפר'),      en:'the Pharpar, river of Damascus', lon:36.3, lat:33.25, base:'pharpar',
+    ref:'2 Kings 5:12' },
 ];
 
 export const HOLY_KIND_STYLE = {

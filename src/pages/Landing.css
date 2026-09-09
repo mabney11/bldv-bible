@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 40px;
+  gap: 36px;
   padding: 60px 24px calc(60px + var(--safe-bottom));
 }
 
@@ -51,6 +51,26 @@
   text-transform: uppercase;
 }
 
+/* ── Subtitle under the title ─────────────────────────────────────────── */
+.landing-subtitle {
+  font-size: 13px;
+  color: var(--text4);
+  letter-spacing: 0.03em;
+  margin-top: -4px;
+  text-align: center;
+  max-width: 520px;
+  line-height: 1.6;
+}
+
+/* ── The two ways in ──────────────────────────────────────────────────── */
+.landing-enter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
 .landing-cta {
   background: var(--blue2);
   color: #fff;
@@ -61,7 +81,6 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   transition: background 0.15s, transform 0.1s;
-  display: inline-block;
   min-height: 48px;
   display: inline-flex;
   align-items: center;
@@ -69,7 +88,6 @@
 .landing-cta:hover  { background: var(--blue); }
 .landing-cta:active { transform: scale(0.98); }
 
-/* ── Primary "Read" entry — the average-reader path ───────────────────────── */
 .landing-read-cta {
   display: flex;
   flex-direction: column;
@@ -101,6 +119,65 @@
   text-align: center;
 }
 
+/* ── The two big features: Maps & Models, Lexicon ─────────────────────── */
+.landing-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  width: 100%;
+  max-width: 760px;
+}
+.landing-feature {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px 22px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s, box-shadow 0.15s;
+  min-height: 132px;
+}
+.landing-feature:hover {
+  border-color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 8%, var(--bg2));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 18%, transparent);
+}
+.landing-feature:active { transform: scale(0.99); }
+.landing-feature-ico {
+  font-size: 34px;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--gold) 14%, transparent);
+}
+.landing-feature-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.landing-feature-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+.landing-feature-sub {
+  font-size: 12.5px;
+  color: var(--text3);
+  line-height: 1.5;
+}
+.landing-feature-go {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+
+/* ── Tools ────────────────────────────────────────────────────────────── */
 .landing-sec-links {
   display: flex;
   gap: 10px;
@@ -135,86 +212,6 @@
 }
 .landing-sub strong { color: var(--text3); font-weight: 600; }
 
-/* ── Subtitle under the title ─────────────────────────────────────────── */
-.landing-subtitle {
-  font-size: 13px;
-  color: var(--text4);
-  letter-spacing: 0.03em;
-  margin-top: -4px;
-}
-
-/* ── Source switcher: LXX / GNT / GEZ entry cards ─────────────────────── */
-.landing-sources {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  max-width: 720px;
-}
-.landing-sources-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--text4);
-}
-.landing-sources-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: center;
-  width: 100%;
-}
-.landing-source-card {
-  flex: 1 1 200px;
-  max-width: 240px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 16px;
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  transition: border-color 0.15s, background 0.15s, transform 0.1s;
-}
-.landing-source-card:hover {
-  border-color: var(--gold);
-  background: color-mix(in srgb, var(--gold) 8%, var(--bg2));
-}
-.landing-source-card:active { transform: scale(0.98); }
-.landing-source-tag {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--gold);
-}
-.landing-source-name {
-  font-size: 15px;
-  color: var(--text);
-  font-weight: 600;
-}
-.landing-source-sub {
-  font-size: 11px;
-  color: var(--text4);
-}
-
-/* ── Per-language lexicon row ─────────────────────────────────────────── */
-.landing-lex-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.landing-lex-label {
-  color: var(--text4);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 10px;
-  margin-right: 4px;
-}
 .landing-lex-link {
   color: var(--text3);
   text-decoration: none;
@@ -226,8 +223,11 @@
   color: var(--gold);
   border-bottom-color: var(--gold);
 }
-.landing-lex-dot { color: var(--text4); }
 
+@media (max-width: 640px) {
+  .landing-features { grid-template-columns: 1fr; max-width: 460px; }
+  .landing-feature { min-height: 0; }
+}
 @media (max-width: 500px) {
   .landing { gap: 28px; padding: 40px 16px calc(40px + var(--safe-bottom)); }
   .landing-title    { font-size: 26px; }
@@ -237,6 +237,6 @@
   .landing-sec-link { justify-content: center; font-size: 14px; padding: 14px 18px; }
   .landing-logo-mark { width: 90px; height: 90px; }
   .landing-logo-glyph { font-size: 32px; }
-  .landing-sources-row { flex-direction: column; align-items: stretch; }
-  .landing-source-card { max-width: none; }
+  .landing-feature { padding: 16px; gap: 12px; }
+  .landing-feature-name { font-size: 18px; }
 }

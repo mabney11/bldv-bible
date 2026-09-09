@@ -13,7 +13,7 @@
  * "who is there now, and whose portion is it in?" — click a city, a band, or
  * anywhere on the map.
  *
- * Route: /models/holy-land   (linked from /models — "Renderings & Models")
+ * Route: /models/holy-land   (linked from /models — "Maps & Models")
  * Deep links: ?city=<id>  ?overlay=joshua|ezekiel|both|none  ?basemap=plain|online  ?relief=0  ?places=1|0
  *             ?pin=<lon>,<lat>[,<label>]  — a dropped pin; every selection then shows its distance from it
  *
@@ -56,6 +56,7 @@ const SHEET_FRACTION = 0.5;                       // the sheet covers the lower 
 // same from every starting zoom): the bands stay in their country, the holy plots close
 // enough that their names read as area text.
 const PORTION_MAX_ZOOM = { joshua: 9.5, ezekiel: 9.5, prince: 11, levites: 12.5, priests: 12.5, food: 13, suburbs: 13, city: 13.5, sanctuary: 14 };
+const WATER_MIN_ZOOM = 9;                          // a tapped river or sea comes in at least this close
 const REGION_DETAIL_ZOOM = 7.8;                   // from here the band labels also show the paleo line + English
 const HOLY_BTN_ZOOM = 10.5;                       // above this the "Tharawamah" caption appears over the square
 // The prince's portion (Ezekiel 48:21–22): a king and a lion — fieldy's pick.
@@ -133,7 +134,7 @@ function waterGeometry(w) {
 }
 
 // Which water (if any) a tap on the base map landed on: a lake, a river, the Bible's rivers,
-// or the sea itself. Rivers get a few pixels of tolerance.
+// or the sea itself. Rivers get 14 px of tolerance either side.
 function waterHit(map, pt) {
   const q = (layers, pad = 0) => {
     const ls = layers.filter((id) => map.getLayer(id));
@@ -141,7 +142,7 @@ function waterHit(map, pt) {
     const box = pad ? [[pt.x - pad, pt.y - pad], [pt.x + pad, pt.y + pad]] : pt;
     return map.queryRenderedFeatures(box, { layers: ls })[0] || null;
   };
-  const f = q(['hl-lakes']) || q(['hl-rivers', 'hl-bible-rivers'], 6) || q(['water']);
+  const f = q(['hl-lakes']) || q(['hl-rivers', 'hl-bible-rivers'], 14) || q(['water']);
   if (!f) return null;
   const base = f.layer.id === 'water' ? 'sea' : f.properties.name;
   return WATERS.find((w) => w.base === base && !w.twin) || null;
@@ -232,7 +233,7 @@ function fmtLonLat([lon, lat]) {
 
 // ── Component ────────────────────────────────────────────────────────────────
 export default function HolyLandMap() {
-  usePageTitle(pageTitle('Holy Land in 3D — Renderings & Models'));
+  usePageTitle(pageTitle('Holy Land in 3D — Maps & Models'));
   const { theme, toggle: toggleTheme } = useTheme();
   const [params, setParams] = useSearchParams();
 
@@ -326,8 +327,14 @@ export default function HolyLandMap() {
     setPanelOpen(true);
     setGearOpen(false);
     const map = mapRef.current;
-    if (map && isNarrow()) map.easeTo({ center: opts.at || [w.lon, w.lat], padding: { top: 0, left: 0, right: 0, bottom: sheetPx() }, duration: 500 });
-  }, []);
+    if (!map) return;
+    // Snap like a portion does, but to the SPOT that was tapped (the water is long — the
+    // reader wants the reach they touched): centre it, come in to a readable zoom if far out,
+    // never zoom out.
+    const at = opts.at || [w.lon, w.lat];
+    const narrow = isNarrow();
+    map.easeTo({ center: at, zoom: Math.max(map.getZoom(), WATER_MIN_ZOOM), padding: narrow ? { top: 0, left: 0, right: 0, bottom: sheetPx() } : { top: 0, left: 0, right: 0, bottom: 0 }, duration: 900, pitch: threeD ? 45 : 0 });
+  }, [threeD]);
   const selectWaterRef = useRef(selectWater); selectWaterRef.current = selectWater;
 
   const selectRegion = useCallback((kind, entry, opts = {}) => {
@@ -666,6 +673,11 @@ export default function HolyLandMap() {
         // tribe, then an Ezekiel band). Only bare ground gives "This spot".
         const ez = ezRef.current;
         const hit = (layer) => map.getLayer(layer) && map.queryRenderedFeatures(e.point, { layers: [layer] })[0]?.properties?.id;
+        // Water first: the band fills run on under the sea and the lakes (the water paints over
+        // them), so a tap on the water is the water — and a tap NEAR a river is the river; a
+        // tap meant for the territory will not be that close to it.
+        const water = waterHit(map, e.point);
+        if (water) { selectWaterRef.current(water, { at: lonLat }); return; }
         const holyId = hit('hl-holy-fill'), joshId = hit('hl-joshua-fill'), ezId = hit('hl-ez-fill');
         const holy = holyId && ez.holy.find((h) => h.id === holyId);
         const josh = joshId && JOSHUA_TRIBES.find((t) => t.id === joshId);
@@ -673,7 +685,6 @@ export default function HolyLandMap() {
         if (holy) selectRegionRef.current('holy', holy, { at: lonLat });
         else if (josh) selectRegionRef.current('joshua', josh, { at: lonLat });
         else if (band) selectRegionRef.current('ezekiel', band, { at: lonLat });
-        else if (waterHit(map, e.point)) selectWaterRef.current(waterHit(map, e.point), { at: lonLat });
         else {
           setSel({ kind: 'point', lonLat, joshua: joshuaTribeAt(lonLat), ezekiel: ezekielAt(lonLat, ez) });
           setPanelOpen(true);
@@ -683,7 +694,7 @@ export default function HolyLandMap() {
       });
       map.on('mousemove', (e) => {
         const layers = ['hl-holy-fill', 'hl-joshua-fill', 'hl-ez-fill'].filter((id) => map.getLayer(id));
-        map.getCanvas().style.cursor = layers.length && map.queryRenderedFeatures(e.point, { layers }).length ? 'pointer' : '';
+        map.getCanvas().style.cursor = (layers.length && map.queryRenderedFeatures(e.point, { layers }).length) || waterHit(map, e.point) ? 'pointer' : '';
       });
       map.on('error', (ev) => {
         const msg = ev?.error?.message || '';
@@ -822,7 +833,7 @@ export default function HolyLandMap() {
     <div className={`hl-page${panelOpen ? ' hl-panel-open' : ''}`} data-basemap={basemap}>
       <header className="hl-top">
         <Link to="/landing" className="hl-logo" title="Home">𐤀𐤁</Link>
-        <Link to="/models" className="hl-back" title="Renderings & Models">← Models</Link>
+        <Link to="/models" className="hl-back" title="Maps & Models">← Models</Link>
         <h1 className="hl-h1">The Holy Land in 3D <span>Joshua &amp; Ezekiel allotments</span></h1>
         <PlacePicker pin={pin} selId={sel?.city?.id} onPick={(c) => selectCity(c, true)} />
         <div className="hl-top-actions">

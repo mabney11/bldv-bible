@@ -1,5 +1,5 @@
 /**
- * Models.jsx — "Renderings & Models": the index of interactive 3D / visual
+ * Models.jsx — "Maps & Models": the index of interactive 3D / visual
  * models in the app. Linked from the landing page. Each model is its own
  * lazy route (see App.jsx); this page is just the catalogue, so adding a
  * model is one entry in MODELS below plus its route.
@@ -28,12 +28,12 @@ export const MODELS = [
 ];
 
 export default function Models() {
-  usePageTitle(pageTitle('Renderings & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel.');
+  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel.');
   return (
     <div className="models-page">
       <header className="models-top">
         <Link to="/landing" className="models-back" title="Home">←</Link>
-        <h1 className="models-h1">Renderings &amp; Models</h1>
+        <h1 className="models-h1">Maps &amp; Models</h1>
         <span className="models-count">{MODELS.length} model{MODELS.length === 1 ? '' : 's'}</span>
       </header>
       <p className="models-intro">

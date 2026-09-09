@@ -1443,7 +1443,7 @@ app.get('/lexicon-page',   spaShell);
 app.get('/lexicon',        spaShell);
 app.get('/lexicon-source', spaShell);   // legacy → redirect handled by React
 app.get('/landing',        spaShell);
-app.get('/share',          spaShell);
+app.get('/guide',          spaShell);
 app.get('/cheatsheet',     spaShell);
 app.get('/glyph-editor',   spaShell);
 // NOTE: /root, /roots and /surfaces are deliberately NOT registered here.
