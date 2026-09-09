@@ -320,6 +320,16 @@ export function ezekielAllotment() {
   };
 }
 
+// ── Waters, named as the Bible names them (transliteration primary, paleo, then English) ──
+// Only the waters the built-in basemap actually draws; positions are label anchors.
+export const WATERS = [
+  { id:'great-sea',   ...W('הים הגדול'), en:'the Great Sea',        lon:34.05, lat:32.45, ref:'Numbers 34:6; Joshua 1:4; Ezekiel 47:15, 20', always:true },
+  { id:'salt-sea',    ...W('ים המלח'),   en:'the Salt Sea',         lon:35.47, lat:31.4,  ref:'Genesis 14:3; Numbers 34:3, 12; Joshua 3:16; Ezekiel 47:8–10' },
+  { id:'chinnereth',  ...W('ים כנרת'),   en:'the Sea of Chinnereth', lon:35.59, lat:32.82, ref:'Numbers 34:11; Joshua 13:27' },
+  { id:'jordan',      ...W('ירדן'),      en:'the Jordan',           lon:35.56, lat:32.3,  ref:'Joshua 3:15–17; Ezekiel 47:18' },
+  { id:'jordan-s',    ...W('ירדן'),      en:'the Jordan',           lon:35.53, lat:31.9,  ref:'Joshua 3:15–17; Ezekiel 47:18' },
+];
+
 export const HOLY_KIND_STYLE = {
   prince:    { color:'#f2c14e', opacity:0.55, label:'P' },   // gold — the prince's land (48:21–22)
   levites:   { color:'#b9a7e6', opacity:0.7,  label:'L' },   // lavender — the Levites (48:13)

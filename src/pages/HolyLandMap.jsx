@@ -45,7 +45,7 @@ import {
   ezekielAllotment, toFeature, ringCentroid, labelAnchor, pointInRing, joshuaTribeAt, ezekielAt,
   squareToPaleo, translitOf,
   REGIONS, ALL_PLACES, PLACES_AZ, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
-  countryOf, countryFeature, countryName, twinOf,
+  countryOf, countryFeature, countryName, twinOf, WATERS,
 } from '../lib/models/holyLand.js';
 
 // Phones and narrow windows: the panel is a bottom sheet, place dots start off
@@ -117,6 +117,32 @@ function levantGeo() {
     rivers:{ type: 'FeatureCollection', features: levantBase.rivers.map((l) => ({ type: 'Feature', properties: { name: l.name }, geometry: { type: 'LineString', coordinates: l.pts } })) },
   };
   return _levantGeo;
+}
+
+// Runs of shoreline (coast and lakeshore) inside a ring → LineStrings, for the gold border.
+function shoreInside(ring) {
+  const g = levantGeo();
+  const lines = [...g.land.features.map((f) => f.geometry.coordinates[0]), ...g.lakes.features.map((f) => f.geometry.coordinates[0])];
+  const out = [];
+  const lons = ring.map((p) => p[0]), lats = ring.map((p) => p[1]);
+  const bx = [Math.min(...lons), Math.min(...lats), Math.max(...lons), Math.max(...lats)];
+  const near = (p) => p[0] >= bx[0] && p[0] <= bx[2] && p[1] >= bx[1] && p[1] <= bx[3];
+  for (const pts of lines) {
+    let run = [];
+    const push = (p) => { if (pointInRing(p, ring)) run.push(p); else { if (run.length > 1) out.push(run); run = []; } };
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i], q = pts[i + 1];
+      push(p);
+      // long shoreline edges (a lake drawn with few vertices) are split so the gold follows
+      // the shore right up to the portion's cut line instead of stopping at the last vertex
+      if (q && (near(p) || near(q))) {
+        const n = Math.ceil(Math.hypot(q[0] - p[0], q[1] - p[1]) / 0.01);
+        for (let k = 1; k < n; k++) push([p[0] + (q[0] - p[0]) * k / n, p[1] + (q[1] - p[1]) * k / n]);
+      }
+    }
+    if (run.length > 1) out.push(run);
+  }
+  return out.map((c) => ({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: c } }));
 }
 
 const DEM_SOURCES = {
@@ -315,6 +341,9 @@ export default function HolyLandMap() {
     // Gold glow around the selected portion (the app's focus colour).
     const focusEntry = sel?.entry?.ring ? sel.entry : null;
     ensure('hl-focus', { type: 'FeatureCollection', features: focusEntry ? [toFeature(focusEntry)] : [] });
+    // The portion's border along the water is the SHORE, not the offshore ring: every run of
+    // coast / lakeshore vertices that lies inside the selected ring is drawn gold above the water.
+    ensure('hl-focus-shore', { type: 'FeatureCollection', features: focusEntry ? shoreInside(focusEntry.ring) : [] });
     // Purple outline of the modern country a selected NATION stands in (Greece, Egypt, Edom → Jordan).
     // Cities get only their gold dot — a whole country lit up around Ashdod read as "what is highlighted?".
     const countryF = sel?.kind === 'city' && sel.city.kind === 'region' ? countryFeature(countryOf(sel.city)) : null;
@@ -346,9 +375,10 @@ export default function HolyLandMap() {
     // red, so it can never be mistaken for the gold selection glow
     addLayer({ id: 'hl-holy-square-glow', type: 'line', source: 'hl-holy-square', paint: { 'line-color': '#e03030', 'line-width': 14, 'line-blur': 9, 'line-opacity': 0.85 } }, false);
     addLayer({ id: 'hl-holy-square-line', type: 'line', source: 'hl-holy-square', paint: { 'line-color': '#c02020', 'line-width': 1.6, 'line-opacity': 0.95 } }, false);
-    // above the water: "all borders should be gold including the sea border"
-    addLayer({ id: 'hl-focus-glow', type: 'line', source: 'hl-focus', paint: { 'line-color': '#e8aa55', 'line-width': 22, 'line-blur': 12, 'line-opacity': 0.85 } }, false);
-    addLayer({ id: 'hl-focus-line', type: 'line', source: 'hl-focus', paint: { 'line-color': '#f5c070', 'line-width': 2.5 } }, false);
+    addLayer({ id: 'hl-focus-glow', type: 'line', source: 'hl-focus', paint: { 'line-color': '#e8aa55', 'line-width': 22, 'line-blur': 12, 'line-opacity': 0.85 } });
+    addLayer({ id: 'hl-focus-line', type: 'line', source: 'hl-focus', paint: { 'line-color': '#f5c070', 'line-width': 2.5 } });
+    addLayer({ id: 'hl-focus-shore-glow', type: 'line', source: 'hl-focus-shore', paint: { 'line-color': '#e8aa55', 'line-width': 22, 'line-blur': 12, 'line-opacity': 0.85 } }, false);
+    addLayer({ id: 'hl-focus-shore-line', type: 'line', source: 'hl-focus-shore', paint: { 'line-color': '#f5c070', 'line-width': 2.5 } }, false);
     addLayer({ id: 'hl-country-glow', type: 'line', source: 'hl-country', paint: { 'line-color': '#a78bfa', 'line-width': 10, 'line-blur': 6, 'line-opacity': 0.55 } }, false);
     addLayer({ id: 'hl-country-line', type: 'line', source: 'hl-country', paint: { 'line-color': '#7c3aed', 'line-width': 2.2, 'line-opacity': 0.95 } }, false);
     addLayer({ id: 'hl-pin-line-casing', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#ffffff', 'line-width': 5, 'line-opacity': 0.7 } }, false);
@@ -477,6 +507,14 @@ export default function HolyLandMap() {
       small.addEventListener('click', (e) => { e.stopPropagation(); selectRegion('holy', ez.holy.find((h) => h.kind === 'priests')); });
       markersRef.current.push(new maplibregl.Marker({ element: small, anchor: 'bottom', offset: [0, -6] }).setLngLat([(sqW2 + sqE2) / 2, sqTop2]).addTo(map));
     }
+    // Waters named the way the Bible names them (the online basemap has its own names).
+    if (!onlineLabels) for (const wtr of WATERS) {
+      const el = document.createElement('div');
+      el.className = `hl-rl hl-rl-w${wtr.always ? ' hl-rl-w-always' : ''}`;
+      el.innerHTML = `<span class="hl-rl-name">${wtr.tr}</span><span class="hl-rl-paleo" dir="rtl">${wtr.paleo}</span><span class="hl-rl-en">${wtr.en}</span>`;
+      el.title = `${wtr.en} — ${wtr.ref}`;
+      mk([wtr.lon, wtr.lat], el);
+    }
     fitRegionLabelsRef.current(map);   // the band labels exist only now — size them to their bands
   }, [ez, sel, pin, showBiblical, showEzekiel, showJoshua, showModern, showRegions, relief, onlineLabels, selectCity, selectRegion]);
 
@@ -506,9 +544,9 @@ export default function HolyLandMap() {
       const { lng, lat } = m.getLngLat();
       const w = Math.abs(map.project([m._rl.east, lat]).x - map.project([m._rl.west, lat]).x);
       const h = Math.abs(map.project([lng, lat + m._rl.latSpan / 2]).y - map.project([lng, lat - m._rl.latSpan / 2]).y);
-      // uppercase bold letters ≈ 0.72 em wide, one line ≈ 1.2 em tall; 10 % margin each side.
+      // uppercase bold letters ≈ 0.8 em wide (with the tracking), one line ≈ 1.2 em tall; 11 % margin each side.
       // The label must fit BOTH the width of its run and the height of its band, at every zoom.
-      const byW = (w * 0.8) / (m._rl.len * 0.72), byH = h * 0.42;
+      const byW = (w * 0.78) / (m._rl.len * 0.8), byH = h * 0.42;
       const size = Math.min(m._rl.kind === 'plot' ? 26 : 16, byW, byH);
       const el = m.getElement();
       let tier;
