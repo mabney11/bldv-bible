@@ -68,6 +68,25 @@ const OT_CODES = "'GEN','EXOD','LEV','NUM','DEUT','JOSH','JUDG','RUTH','1SAM','2
 const untaggedWhere = `corpus='ENG' AND text IS NOT NULL AND TRIM(text)<>'' AND (
     (canon_id IS NOT NULL AND canon_id >= ?) OR (canon_id IS NULL AND code NOT IN (${OT_CODES})))`;
 
+// ================= --init-src / --reset-src ==========================================
+// One UPDATE. Runs BEFORE the rules, the Strong's dictionary and the surface index are
+// loaded — those pull the whole surface_occurrences table (≈ 550 MB) into memory, which
+// is minutes on Windows, and a snapshot needs none of it (render-all step 7 was paying
+// that cost twice: once here, once in the render step that follows).
+if (INIT_SRC || RESET_SRC) {
+  const db = new Database('./corpus.db');
+  const cols = db.prepare(`PRAGMA table_info(verses)`).all().map(c => c.name);
+  if (!cols.includes('text_src')) db.exec(`ALTER TABLE verses ADD COLUMN text_src TEXT`);
+  const where = RESET_SRC ? untaggedWhere : `text_src IS NULL AND ${untaggedWhere}`;
+  const info = db.prepare(`UPDATE verses SET text_src = text WHERE ${where}`).run(MIN_CANON);
+  console.log(`text_src: ${RESET_SRC ? 'reset' : 'captured'} ${info.changes.toLocaleString()} untagged rows from current text.`);
+  if (INIT_SRC) {
+    console.log('⚠ --init-src snapshots CURRENT text. If those rows were already rendered, re-seed');
+    console.log('  pristine English first (or use --reset-src inside render-all right after reload).');
+  }
+  db.close(); process.exit(0);
+}
+
 // ================= --check ==========================================================
 if (CHECK) {
   const db = new Database('./corpus.db', { readonly: true });
@@ -573,17 +592,7 @@ const cols = db.prepare(`PRAGMA table_info(verses)`).all().map(c => c.name);
 // --reset-src: overwrite it from the CURRENT text — use this inside render-all right after
 //              the pristine reload (load/reingest/de-archaic), when `text` is the fresh
 //              un-rendered English, so the snapshot is a true read-only source copy.
-if (INIT_SRC || RESET_SRC) {
-  if (!cols.includes('text_src')) db.exec(`ALTER TABLE verses ADD COLUMN text_src TEXT`);
-  const where = RESET_SRC ? untaggedWhere : `text_src IS NULL AND ${untaggedWhere}`;
-  const info = db.prepare(`UPDATE verses SET text_src = text WHERE ${where}`).run(MIN_CANON);
-  console.log(`text_src: ${RESET_SRC ? 'reset' : 'captured'} ${info.changes.toLocaleString()} untagged rows from current text.`);
-  if (INIT_SRC) {
-    console.log('⚠ --init-src snapshots CURRENT text. If those rows were already rendered, re-seed');
-    console.log('  pristine English first (or use --reset-src inside render-all right after reload).');
-  }
-  db.close(); process.exit(0);
-}
+// (--init-src / --reset-src are handled up top, before the rules and the surface index load)
 
 const srcCol = FROM_SRC ? 'text_src' : 'text';
 if (FROM_SRC && !cols.includes('text_src')) die('--from-src needs the text_src column — run --init-src first');
