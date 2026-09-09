@@ -13,7 +13,9 @@
  * RULES: server/lexicon/name-form-rules.json (shared with fix-name-forms.mjs)
  *   must:          { "Edom": ["Adawam"], … } — every "X (Edom)" must have X in the list
  *   divineAsHuman: Yahawah / Alahayam / Adanay glossed "(Saul)" etc. is a violation
- *   forbidden:     [{ pattern, why, warn? }]  (warn: report, don't fail)
+ *   replace:       YHWH / Jehovah / the LORD → "Yahawah ()" — a violation until fixed
+ *   forbidden:     [{ pattern, why }]
+ * EVERY rule fails the deploy (fieldy: "warnings are issues and should stop the deployment").
  * Empty glosses "()" are the app's own gold-headword marker and are NOT flagged.
  *
  * USAGE:  node verify-name-forms.mjs [corpus.db] [translation.db]
@@ -33,17 +35,16 @@ const TRANS_DB = process.argv[3] || path.join(__dirname, 'translation.db');
 function die(m) { console.error('✗ ' + m); process.exit(1); }
 if (!existsSync(CORPUS_DB)) die(`corpus.db not found: ${CORPUS_DB}`);
 const R = loadRules();
-console.log(`verify-name-forms: ${Object.keys(R.must).length} locked names, divine-as-human check, ${R.forbidden.length} forbidden patterns`);
+console.log(`verify-name-forms: ${Object.keys(R.must).length} locked names, divine-as-human check, ${R.replace.length} rewrites, ${R.forbidden.length} forbidden patterns — every hit fails`);
 
-const violations = [], warnings = [];
+const violations = [];
 function scan(label, rows) {
   let n = 0;
   for (const r of rows) {
     if (!r.text) continue;
     n++;
-    const { violations: v, warnings: w } = checkText(r.text, R);
+    const { violations: v } = checkText(r.text, R);
     for (const x of v) violations.push(`${label} ${r.ref}  "${x.text}"  — ${x.why}`);
-    for (const x of w) warnings.push(`${label} ${r.ref}  "${x.text}"  — ${x.why}`);
   }
   console.log(`  scanned ${n.toLocaleString()} ${label} verses`);
 }
@@ -54,12 +55,10 @@ if (existsSync(TRANS_DB)) {
   scan('translation', tdb.prepare(`SELECT book_id||':'||chapter||':'||verse AS ref, text FROM translations`).all());
 } else console.log(`  (no translation.db at ${TRANS_DB} — reader rows not checked)`);
 
-for (const w of warnings.slice(0, 20)) console.log('  ⚠ ' + w);
-if (warnings.length > 20) console.log(`  ⚠ … ${warnings.length - 20} more warnings`);
 if (violations.length) {
   for (const v of violations.slice(0, 200)) console.error('  ✗ ' + v);
   if (violations.length > 200) console.error(`  ✗ … ${violations.length - 200} more`);
   die(`${violations.length} name-form violation(s). Run: node fix-name-forms.mjs ${CORPUS_DB} ${TRANS_DB}`);
 }
-console.log(`✓ name forms OK (${warnings.length} warning(s))`);
+console.log('✓ name forms OK');
 process.exit(0);

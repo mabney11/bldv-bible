@@ -16,8 +16,11 @@ export function loadRules() {
   const heads = dah.heads || [];
   const divineGl = new Set(dah.divineGlosses || []);
   const dahRe = heads.length ? new RegExp(`\\b(${heads.map(esc).join('|')}) \\(([A-Z][a-z][A-Za-z'\\-]*)\\)`, 'g') : null;
-  const forbidden = (rules.forbidden || []).map(f => ({ re: new RegExp(f.pattern, 'g'), why: f.why, warn: !!f.warn }));
-  return { must, mustRe, heads, divineGl, dahRe, forbidden, single };
+  const forbidden = (rules.forbidden || []).map(f => ({ re: new RegExp(f.pattern, 'g'), why: f.why }));
+  // replace: a plain rewrite — YHWH / Jehovah / the LORD → "Yahawah ()". One word for one
+  // word plus the "()" marker, which the link tokeniser (/[A-Za-z…'-]+/) does not count.
+  const replace = (rules.replace || []).map(f => ({ re: new RegExp(f.pattern, 'g'), to: f.to, why: f.why }));
+  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single };
 }
 
 /** Which allowed form to use for a wrong one: keep a gentilic ending (-ay) when the list has one. */
@@ -26,9 +29,9 @@ function pickAllowed(allowed, wrong) {
   return allowed.find(a => a.endsWith(tail)) || allowed[0];
 }
 
-/** Scan one verse: { violations:[{text,fix,why}], warnings:[...] , fixed:string }. */
+/** Scan one verse: { violations:[{text,fix,why}], fixed:string }. There is no warning tier — every rule fails. */
 export function checkText(text, R) {
-  const violations = [], warnings = [];
+  const violations = [];
   let fixed = text;
   if (R.mustRe) {
     fixed = fixed.replace(R.mustRe, (m, tr, name) => {
@@ -48,10 +51,13 @@ export function checkText(text, R) {
       return out;
     });
   }
+  for (const f of R.replace) {
+    fixed = fixed.replace(f.re, (m) => { violations.push({ text: m, fix: f.to, why: f.why }); return f.to; });
+  }
   for (const f of R.forbidden) {
     f.re.lastIndex = 0;
     const m = f.re.exec(fixed);
-    if (m) (f.warn ? warnings : violations).push({ text: m[0], fix: null, why: f.why });
+    if (m) violations.push({ text: m[0], fix: null, why: f.why });
   }
-  return { violations, warnings, fixed };
+  return { violations, fixed };
 }
