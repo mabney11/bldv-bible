@@ -309,9 +309,12 @@
 .hl-rl-holy .hl-rl-name { font-size: 12px; letter-spacing: 0.08em; color: #5a3600; }
 .hl-rl-holy .hl-rl-en { font-size: 9.5px; }
 .hl-rl-holy:hover { background: #fff3c4; }
-.hl-rl-h, .hl-rl-holy-sm { display: none; }
-.hl-z-holy .hl-rl-h, .hl-z-holy .hl-rl-holy-sm { display: flex; }
-.hl-z-holy .hl-rl-holy { display: none; }
+.hl-rl-holy-sm { display: none; }
+.hl-z-holy .hl-rl-holy-sm { display: flex; }
+/* the prince's land: lion + king instead of a letter */
+.hl-rl.hl-rl-h-prince { background: transparent; border: none; padding: 0; box-shadow: none; }
+.hl-prince { display: inline-flex; gap: 2px; align-items: center; filter: drop-shadow(0 1px 2px #0008); }
+.hl-rl-h-prince:hover .hl-prince { transform: scale(1.15); }
 .hl-rl-holy-sm { background: #fff8e1dd; border: 1px solid #b8860b; padding: 2px 8px; text-shadow: none; }
 .hl-rl-holy-sm .hl-rl-name { font-size: 11px; letter-spacing: 0.08em; color: #5a3600; }
 .hl-rl-holy-sm .hl-rl-en { font-size: 9px; }

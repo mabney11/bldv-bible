@@ -52,7 +52,17 @@ import {
 // (allotments only), and the map is padded so a selection stays visible above the sheet.
 const isNarrow = () => typeof window !== 'undefined' && window.innerWidth <= 720;
 const SHEET_FRACTION = 0.5;                       // the sheet covers the lower half
-const HOLY_BTN_ZOOM = 10.5;                       // below this the six holy-plot buttons would overlap: hidden, one label instead
+const HOLY_BTN_ZOOM = 10.5;                       // above this the "Tharawamah" caption appears over the square
+// The prince's portion (Ezekiel 48:21–22): a lion and a king, drawn here (original, no library).
+const PRINCE_MARK = `<span class="hl-prince" aria-label="the prince's land"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+  <circle cx="12" cy="12" r="10" fill="#b8741a"/><circle cx="12" cy="12.5" r="6.5" fill="#e6b45a"/>
+  <circle cx="9.3" cy="11" r="1" fill="#2b1a08"/><circle cx="14.7" cy="11" r="1" fill="#2b1a08"/>
+  <path d="M10.4 14.2h3.2l-1.6 1.6z" fill="#2b1a08"/><path d="M12 15.8v1.6M10.6 17.2q1.4 1 2.8 0" stroke="#2b1a08" stroke-width="0.9" fill="none"/>
+  <path d="M6 8.5q1-3 3-2.2M18 8.5q-1-3-3-2.2" stroke="#8a5313" stroke-width="1.6" fill="none"/></svg><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+  <path d="M6 9l2.4-4 3.6 3 3.6-3L18 9z" fill="#f5c542" stroke="#a37a12" stroke-width="0.8"/>
+  <circle cx="12" cy="13" r="4.6" fill="#6b3f1f"/><circle cx="10.3" cy="12.4" r="0.7" fill="#1a0e05"/><circle cx="13.7" cy="12.4" r="0.7" fill="#1a0e05"/>
+  <path d="M10.6 15q1.4 1 2.8 0" stroke="#1a0e05" stroke-width="0.8" fill="none"/>
+  <path d="M5.5 24q0-6 6.5-6.6Q18.5 18 18.5 24z" fill="#7a2338"/><path d="M11 17.6h2v6.4h-2z" fill="#f5c542"/></svg></span>`;
 const sheetPx = () => Math.round(window.innerHeight * SHEET_FRACTION);
 import './HolyLandMap.css';
 
@@ -182,10 +192,10 @@ export default function HolyLandMap() {
   const initialOverlay = params.get('overlay') || 'ezekiel';
   const [showJoshua, setShowJoshua] = useState(initialOverlay === 'joshua' || initialOverlay === 'both');
   const [showEzekiel, setShowEzekiel] = useState(initialOverlay === 'ezekiel' || initialOverlay === 'both');
-  // Place dots: OFF when the model opens (allotments only) — the ⚙ widget on the map, the
-  // Layers tab, or picking a place turns them on. ?places=1 opens with them on.
+  // Place dots: on when the model opens on a desktop (fieldy: without them "the entire holy
+  // land looks more bland"); off on a phone (allotments only) — the ⚙ widget toggles them.
   const placesParam = params.get('places');         // ?places=1|0 overrides
-  const placesDefault = placesParam ? placesParam !== '0' : false;
+  const placesDefault = placesParam ? placesParam !== '0' : !isNarrow();
   const [showBiblical, setShowBiblical] = useState(placesDefault);
   const [showModern, setShowModern] = useState(placesDefault);
   const [showRegions, setShowRegions] = useState(placesDefault);
@@ -430,23 +440,15 @@ export default function HolyLandMap() {
         const el = document.createElement('button');
         el.type = 'button';
         el.className = `hl-rl hl-rl-h hl-rl-h-${h.kind}`;
-        el.textContent = st.label;
+        // The prince's land (48:21–22) is marked by a lion and a king rather than a letter.
+        el.innerHTML = h.kind === 'prince' ? PRINCE_MARK : st.label;
         el.title = `${h.name} — ${h.ref}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectRegion('holy', h); });
         mk(ringCentroid(h.ring), el);
       }
-      // The square's own label. Zoomed out (< HOLY_BTN_ZOOM) the six plot buttons are hidden — they
-      // only collide — and this one label, "Aratz Qadash · Holy Land", sits just east of the glowing
-      // square; tap it and the map frames the square at a zoom where every button fits. Zoomed in,
-      // it becomes a small caption above the square and the buttons take over (CSS: .hl-z-holy).
-      const [sqW2, sqTop2, sqE2, sqBot2] = ez.meta.square;
-      const big = document.createElement('button');
-      big.type = 'button';
-      big.className = 'hl-rl hl-rl-holy';
-      big.innerHTML = `<span class="hl-rl-name">${HOLY_WORDS.aratzQadash.tr}</span><span class="hl-rl-paleo" dir="rtl">${HOLY_WORDS.aratzQadash.paleo}</span><span class="hl-rl-en">Holy Land · the Holy Portion, Ezekiel 48:8–22</span>`;
-      big.title = 'Zoom to the Holy Portion';
-      big.addEventListener('click', (e) => { e.stopPropagation(); zoomHolyRef.current(); });
-      markersRef.current.push(new maplibregl.Marker({ element: big, anchor: 'left', offset: [22, 0] }).setLngLat([sqE2, (sqTop2 + sqBot2) / 2]).addTo(map));
+      // A small caption above the glowing square when zoomed in (the plot buttons are always shown;
+      // zoomed out, the buttons themselves say where it is). Click → the priests' portion.
+      const [sqW2, sqTop2, sqE2] = ez.meta.square;
       const small = document.createElement('button');
       small.type = 'button';
       small.className = 'hl-rl hl-rl-holy-sm';
@@ -616,7 +618,7 @@ export default function HolyLandMap() {
     if (!relief) next.set('relief', '0'); else next.delete('relief');
     if (pin) next.set('pin', `${pin.lon.toFixed(4)},${pin.lat.toFixed(4)},${pin.label}`); else next.delete('pin');
     const anyPlaces = showBiblical || showModern || showRegions;
-    if (anyPlaces) next.set('places', '1'); else next.delete('places');
+    if (anyPlaces !== !isNarrow()) next.set('places', anyPlaces ? '1' : '0'); else next.delete('places');
     if (next.toString() !== params.toString()) setParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showJoshua, showEzekiel, basemap, relief, pin, showBiblical, showModern, showRegions]);
