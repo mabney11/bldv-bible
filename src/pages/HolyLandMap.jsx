@@ -14,8 +14,14 @@
  * anywhere on the map.
  *
  * Route: /models/holy-land   (linked from /models — "Renderings & Models")
- * Deep links: ?city=<id>  ?overlay=joshua|ezekiel|both|none  ?basemap=plain|online  ?relief=0
+ * Deep links: ?city=<id>  ?overlay=joshua|ezekiel|both|none  ?basemap=plain|online  ?relief=0  ?places=1|0
  *             ?pin=<lon>,<lat>[,<label>]  — a dropped pin; every selection then shows its distance from it
+ *
+ * Phones (≤720px): the panel is a bottom sheet over the lower half and the map
+ * is padded to match, so whatever was tapped or picked stays in view above it;
+ * place dots start off (allotments only) and the ⚙ widget under the zoom
+ * buttons toggles them. One "Find a place" box replaces the old search + Jabneel
+ * button: empty it lists every place A→Z, typing filters live.
  *
  * Map engine: maplibre-gl (npm). The base map is BUILT IN — Natural Earth
  * coastlines/lakes/rivers bundled in lib/models/levant-base.json — so nothing
@@ -38,8 +44,15 @@ import {
   HOLY_KIND_STYLE, EZEKIEL_ORDER, EZEKIEL_MEASURES, TRIBE_TRANSLIT, TRIBE_PALEO, tribeDisplayName,
   ezekielAllotment, toFeature, ringCentroid, pointInRing, joshuaTribeAt, ezekielAt,
   squareToPaleo, translitOf,
-  REGIONS, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
+  REGIONS, ALL_PLACES, PLACES_AZ, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
+  countryOf, countryFeature, countryName,
 } from '../lib/models/holyLand.js';
+
+// Phones and narrow windows: the panel is a bottom sheet, place dots start off
+// (allotments only), and the map is padded so a selection stays visible above the sheet.
+const isNarrow = () => typeof window !== 'undefined' && window.innerWidth <= 720;
+const SHEET_FRACTION = 0.5;                       // the sheet covers the lower half
+const sheetPx = () => Math.round(window.innerHeight * SHEET_FRACTION);
 import './HolyLandMap.css';
 
 // ── Base map ─────────────────────────────────────────────────────────────────
@@ -168,11 +181,14 @@ export default function HolyLandMap() {
   const initialOverlay = params.get('overlay') || 'ezekiel';
   const [showJoshua, setShowJoshua] = useState(initialOverlay === 'joshua' || initialOverlay === 'both');
   const [showEzekiel, setShowEzekiel] = useState(initialOverlay === 'ezekiel' || initialOverlay === 'both');
-  const [showBiblical, setShowBiblical] = useState(true);
-  const [showModern, setShowModern] = useState(true);
-  const [showRegions, setShowRegions] = useState(true);
-  const [sq, setSq] = useState('');                 // top-bar search text
-  const [sqOpen, setSqOpen] = useState(false);
+  // Place dots: on by default on a desktop, off on a phone (allotments only) — the ⚙ widget on the map toggles them.
+  const placesParam = params.get('places');         // ?places=1|0 overrides
+  const placesDefault = placesParam ? placesParam !== '0' : !isNarrow();
+  const [showBiblical, setShowBiblical] = useState(placesDefault);
+  const [showModern, setShowModern] = useState(placesDefault);
+  const [showRegions, setShowRegions] = useState(placesDefault);
+  const [gearOpen, setGearOpen] = useState(false);  // the ⚙ widget beside the zoom buttons
+  const [ctxOnly, setCtxOnly] = useState(true);     // Cities / Peoples tabs limited to the focused portion
   const [pin, setPin] = useState(() => {            // { lon, lat, label }
     const p = params.get('pin');
     if (!p) return null;
@@ -210,13 +226,26 @@ export default function HolyLandMap() {
     const at = describePoint([c.lon, c.lat]);
     setSel({ kind: 'city', city: c, ...at });
     setPanelOpen(true);
+    setGearOpen(false);
     const map = mapRef.current;
+    const padding = isNarrow() ? { top: 0, left: 0, right: 0, bottom: sheetPx() } : { top: 0, left: 0, right: 0, bottom: 0 };
     if (fly && map) {
       // Far-off nations get a wide view; cities get a close one.
       // Gentle: come in to a readable scale when far away, never zoom in further when already close.
       const cur = map.getZoom();
-      const zoom = c.kind === 'region' ? Math.min(Math.max(cur, 5.5), 7) : (cur < 9.5 ? 9.5 : cur);
-      map.flyTo({ center: [c.lon, c.lat], zoom, pitch: threeD ? 55 : 0, duration: 1400, essential: true });
+      const outline = c.kind === 'region' ? countryFeature(countryOf(c)) : null;
+      if (outline) {
+        // A nation: frame the whole country whose border is outlined.
+        const pts = outline.geometry.coordinates.flatMap((poly) => poly[0]);
+        const lons = pts.map((p) => p[0]), lats = pts.map((p) => p[1]);
+        map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], { padding: { top: 40 + padding.top, left: 40, right: 40, bottom: 40 + padding.bottom }, maxZoom: 7, pitch: threeD ? 55 : 0, duration: 1400, essential: true });
+      } else {
+        const zoom = c.kind === 'region' ? Math.min(Math.max(cur, 5.5), 7) : (cur < 9.5 ? 9.5 : cur);
+        map.flyTo({ center: [c.lon, c.lat], zoom, padding, pitch: threeD ? 55 : 0, duration: 1400, essential: true });
+      }
+    } else if (map && isNarrow()) {
+      // Tapped on the map: slide the point up into the half the sheet leaves free.
+      map.easeTo({ center: [c.lon, c.lat], padding, duration: 500 });
     }
     const next = new URLSearchParams(params);
     next.set('city', c.id);
@@ -226,11 +255,19 @@ export default function HolyLandMap() {
   const selectRegion = useCallback((kind, entry, opts = {}) => {
     setSel({ kind, entry, cities: citiesIn(entry.ring), at: opts.at || null });
     setPanelOpen(true);
+    setGearOpen(false);
     const map = mapRef.current;
-    if (!map || opts.fly === false) return;
+    if (!map) return;
+    const narrow = isNarrow();
+    if (opts.fly === false) {
+      // Tapped on the map: on a phone, slide the tapped spot up above the sheet so the gold focus is visible.
+      if (narrow && opts.at) map.easeTo({ center: opts.at, padding: { top: 0, left: 0, right: 0, bottom: sheetPx() }, duration: 500 });
+      return;
+    }
     const lons = entry.ring.map((p) => p[0]), lats = entry.ring.map((p) => p[1]);
     // maxZoom keeps the small holy plots from filling the screen (a portion is the focus, not a wall of colour).
-    map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], { padding: 80, duration: 1200, pitch: threeD ? 45 : 0, maxZoom: kind === 'holy' ? 11 : 9.5 });
+    const pad = narrow ? { top: 40, left: 30, right: 30, bottom: sheetPx() + 30 } : 80;
+    map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], { padding: pad, duration: 1200, pitch: threeD ? 45 : 0, maxZoom: kind === 'holy' ? 11 : 9.5 });
   }, [citiesIn, threeD]);
 
   // ── Overlay (re)build — called on every style load and on data changes ─────
@@ -260,6 +297,9 @@ export default function HolyLandMap() {
     // Gold glow around the selected portion (the app's focus colour).
     const focusEntry = sel?.entry?.ring ? sel.entry : null;
     ensure('hl-focus', { type: 'FeatureCollection', features: focusEntry ? [toFeature(focusEntry)] : [] });
+    // Purple outline of the modern country a selected nation / city stands in (Greece, Egypt, Tyre → Lebanon…).
+    const countryF = sel?.kind === 'city' ? countryFeature(countryOf(sel.city)) : null;
+    ensure('hl-country', { type: 'FeatureCollection', features: countryF ? [countryF] : [] });
     ensure('hl-joshua', { type: 'FeatureCollection', features: JOSHUA_TRIBES.map((t) => toFeature(t, { color: TRIBE_COLORS[t.tribe] })) });
     ensure('hl-ez-bands', { type: 'FeatureCollection', features: ez.bands.map((b) => toFeature(b, { color: TRIBE_COLORS[b.tribe] })) });
     ensure('hl-ez-holy', { type: 'FeatureCollection', features: ez.holy.map((h) => toFeature(h, { color: HOLY_KIND_STYLE[h.kind].color, opacity: HOLY_KIND_STYLE[h.kind].opacity })) });
@@ -281,6 +321,8 @@ export default function HolyLandMap() {
     addLayer({ id: 'hl-joshua-line', type: 'line', source: 'hl-joshua', paint: { 'line-color': '#1a1208', 'line-width': 1.6, 'line-dasharray': [2, 1] } });
     addLayer({ id: 'hl-focus-glow', type: 'line', source: 'hl-focus', paint: { 'line-color': '#e8aa55', 'line-width': 22, 'line-blur': 12, 'line-opacity': 0.85 } });
     addLayer({ id: 'hl-focus-line', type: 'line', source: 'hl-focus', paint: { 'line-color': '#f5c070', 'line-width': 2.5 } });
+    addLayer({ id: 'hl-country-glow', type: 'line', source: 'hl-country', paint: { 'line-color': '#a78bfa', 'line-width': 10, 'line-blur': 6, 'line-opacity': 0.55 } }, false);
+    addLayer({ id: 'hl-country-line', type: 'line', source: 'hl-country', paint: { 'line-color': '#7c3aed', 'line-width': 2.2, 'line-opacity': 0.95 } }, false);
     addLayer({ id: 'hl-pin-line-casing', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#ffffff', 'line-width': 5, 'line-opacity': 0.7 } }, false);
     addLayer({ id: 'hl-pin-line', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#e05555', 'line-width': 2.5, 'line-dasharray': [3, 2] } }, false);
 
@@ -436,7 +478,9 @@ export default function HolyLandMap() {
         cooperativeGestures: false,
       });
       mapRef.current = map;
-      map.addControl(new maplibregl.NavigationControl({ visualizePitch: true, showZoom: true }), 'top-right');
+      mapEl.current.__map = map;   // debugging handle (the Map is otherwise only reachable through React internals)
+      // Zoom only — the pitch/compass arrows are useless on a phone; the ⚙ widget below the zoom buttons holds the toggles.
+      map.addControl(new maplibregl.NavigationControl({ showCompass: false, showZoom: true }), 'top-right');
       map.addControl(new maplibregl.ScaleControl({ maxWidth: 120, unit: 'metric' }), 'bottom-right');
       map.on('style.load', () => {
         styleReady.current = true;
@@ -462,6 +506,8 @@ export default function HolyLandMap() {
         else {
           setSel({ kind: 'point', lonLat, joshua: joshuaTribeAt(lonLat), ezekiel: ezekielAt(lonLat, ez) });
           setPanelOpen(true);
+          setGearOpen(false);
+          if (isNarrow()) map.easeTo({ center: lonLat, padding: { top: 0, left: 0, right: 0, bottom: sheetPx() }, duration: 500 });
         }
       });
       map.on('mousemove', (e) => {
@@ -505,13 +551,23 @@ export default function HolyLandMap() {
     else if (map.getPitch() < 20) map.easeTo({ pitch: 50, duration: 600 });
   }, [threeD, exag]);
 
+  // Bottom sheet (phones): pad the map so the visible half is what fitBounds / flyTo aim at.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !isNarrow()) return;
+    const bottom = panelOpen ? sheetPx() : 0;
+    // A fly/fit that opened the panel already carries this padding — don't cut it short.
+    if (map.isMoving() || map.getPadding().bottom === bottom) return;
+    map.easeTo({ padding: { top: 0, left: 0, right: 0, bottom }, duration: 300 });
+  }, [panelOpen]);
+
   // Deep-link ?city=… on first load (after the map exists).
   const deepLinked = useRef(false);
   useEffect(() => {
     if (deepLinked.current) return;
     const id = params.get('city');
     if (!id) { deepLinked.current = true; return; }
-    const c = [...BIBLICAL_CITIES, ...MODERN_CITIES].find((x) => x.id === id);
+    const c = ALL_PLACES.find((x) => x.id === id);
     if (!c) { deepLinked.current = true; return; }
     const t = setInterval(() => {
       if (mapRef.current && styleReady.current) { clearInterval(t); deepLinked.current = true; selectCity(c, true); }
@@ -526,29 +582,42 @@ export default function HolyLandMap() {
     if (basemap === 'online') next.set('basemap', 'online'); else next.delete('basemap');
     if (!relief) next.set('relief', '0'); else next.delete('relief');
     if (pin) next.set('pin', `${pin.lon.toFixed(4)},${pin.lat.toFixed(4)},${pin.label}`); else next.delete('pin');
+    const anyPlaces = showBiblical || showModern || showRegions;
+    if (anyPlaces !== !isNarrow()) next.set('places', anyPlaces ? '1' : '0'); else next.delete('places');
     if (next.toString() !== params.toString()) setParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showJoshua, showEzekiel, basemap, relief, pin]);
+  }, [showJoshua, showEzekiel, basemap, relief, pin, showBiblical, showModern, showRegions]);
 
-  const searchHits = useMemo(() => searchPlaces(sq, 8), [sq]);
-  const pickHit = (c) => { setSq(''); setSqOpen(false); selectCity(c, true); };
   const dropPin = useCallback((lonLat, label) => {
     setPin({ lon: lonLat[0], lat: lonLat[1], label: label || fmtLonLat(lonLat) });
   }, []);
 
+  // ── Focus: the portion the Cities / Peoples tabs are scoped to ─────────────
+  // A selected portion is the focus; a selected city / spot focuses the Ezekiel
+  // band (or Joshua tribe) it stands in. "Show all" lifts the scope.
+  const focus = useMemo(() => {
+    if (!sel) return null;
+    if (sel.entry?.ring) return { kind: sel.kind, entry: sel.entry, label: tribeDisplayName(sel.entry.name, sel.entry.tribe) };
+    const band = sel.ezekiel?.sub || sel.ezekiel?.band || sel.joshua;
+    if (!band?.ring) return null;
+    return { kind: sel.ezekiel?.sub ? 'holy' : sel.ezekiel?.band ? 'ezekiel' : 'joshua', entry: band, label: tribeDisplayName(band.name, band.tribe) };
+  }, [sel]);
+  const scoped = focus && ctxOnly;
+  const inFocus = useCallback((c) => !scoped || pointInRing([c.lon, c.lat], focus.entry.ring), [scoped, focus]);
+
   // ── Derived lists ──────────────────────────────────────────────────────────
   const filteredBiblical = useMemo(() => {
     const s = q.trim().toLowerCase();
-    return BIBLICAL_CITIES.filter((c) => !s || `${c.name} ${c.translit} ${c.he} ${c.ref}`.toLowerCase().includes(s));
-  }, [q]);
+    return BIBLICAL_CITIES.filter((c) => inFocus(c) && (!s || `${c.name} ${c.translit} ${c.he} ${c.ref}`.toLowerCase().includes(s)));
+  }, [q, inFocus]);
   const filteredModern = useMemo(() => {
     const s = q.trim().toLowerCase();
-    return MODERN_CITIES.filter((c) => !s || `${c.name} ${c.country}`.toLowerCase().includes(s));
-  }, [q]);
+    return MODERN_CITIES.filter((c) => inFocus(c) && (!s || `${c.name} ${c.country}`.toLowerCase().includes(s)));
+  }, [q, inFocus]);
   const filteredRegions = useMemo(() => {
     const s = q.trim().toLowerCase();
-    return REGIONS.filter((c) => !s || `${c.name} ${c.translit} ${c.he} ${c.paleo} ${c.ref}`.toLowerCase().includes(s));
-  }, [q]);
+    return REGIONS.filter((c) => inFocus(c) && (!s || `${c.name} ${c.translit} ${c.he} ${c.paleo} ${c.ref}`.toLowerCase().includes(s)));
+  }, [q, inFocus]);
 
   // "Peoples" table: every Ezekiel band → the modern cities inside it, by country.
   const peoples = useMemo(() => EZEKIEL_ORDER.map((name) => {
@@ -561,8 +630,22 @@ export default function HolyLandMap() {
     return { name, tribe: name, cities: MODERN_CITIES.filter((c) => pointInRing([c.lon, c.lat], band.ring)) };
   }), [ez]);
 
-  const goHome = () => mapRef.current?.fitBounds(HOME_BOUNDS, { padding: 20, pitch: threeD ? 50 : 0, bearing: -8, duration: 1200 });
-  const keyCity = BIBLICAL_CITIES.find((c) => c.id === KEY_CITY);
+  // Peoples tab, scoped: only the focused band (the holy portion counts as one).
+  const peoplesShown = useMemo(() => {
+    if (!scoped) return peoples;
+    if (focus.kind === 'holy') return peoples.filter((p) => p.tribe === 'Levi');
+    return peoples.filter((p) => p.tribe !== 'Levi' && p.name === focus.entry.name);
+  }, [peoples, scoped, focus]);
+
+  const goHome = () => { setGearOpen(false); mapRef.current?.fitBounds(HOME_BOUNDS, { padding: 20, pitch: threeD ? 50 : 0, bearing: -8, duration: 1200 }); };
+  const closeDetail = () => { setSel(null); if (isNarrow()) setPanelOpen(false); };
+  const scopeBar = focus && (
+    <div className={`hl-scope${scoped ? ' on' : ''}`}>
+      <i style={{ background: focus.kind === 'holy' ? HOLY_KIND_STYLE[focus.entry.kind].color : TRIBE_COLORS[focus.entry.tribe] }} />
+      {scoped ? <>In <b>{focus.label}</b> only</> : <>All portions</>}
+      <button type="button" className="hl-link" onClick={() => setCtxOnly((v) => !v)}>{scoped ? 'Show all' : `Only ${focus.label}`}</button>
+    </div>
+  );
 
   return (
     <div className={`hl-page${panelOpen ? ' hl-panel-open' : ''}`} data-basemap={basemap}>
@@ -570,51 +653,27 @@ export default function HolyLandMap() {
         <Link to="/landing" className="hl-logo" title="Home">𐤀𐤁</Link>
         <Link to="/models" className="hl-back" title="Renderings & Models">← Models</Link>
         <h1 className="hl-h1">The Holy Land in 3D <span>Joshua &amp; Ezekiel allotments</span></h1>
-        <div className="hl-searchbox">
-          <input
-            className="hl-searchbox-in"
-            value={sq}
-            onChange={(e) => { setSq(e.target.value); setSqOpen(true); }}
-            onFocus={() => setSqOpen(true)}
-            onBlur={() => setTimeout(() => setSqOpen(false), 150)}
-            onKeyDown={(e) => { if (e.key === 'Enter' && searchHits[0]) pickHit(searchHits[0]); if (e.key === 'Escape') { setSq(''); setSqOpen(false); } }}
-            placeholder="Go to… Greece, Yawan, 𐤉𐤅𐤍, Jabneel, Damascus"
-            aria-label="Search places"
-          />
-          {sqOpen && searchHits.length > 0 && (
-            <ul className="hl-searchbox-dd" role="listbox">
-              {searchHits.map((c, i) => (
-                <li key={c.id}>
-                  <button type="button" className={`hl-hit${i === 0 ? ' first' : ''}`} onMouseDown={(e) => e.preventDefault()} onClick={() => pickHit(c)}>
-                    <span className={`hl-hit-kind k-${c.kind}`}>{c.kind === 'biblical' ? 'Bible' : c.kind === 'region' ? 'Nation' : 'Today'}</span>
-                    <span className="hl-hit-main"><b>{c.translit || c.name}</b>{c.translit && <em> {c.name}</em>}{c.country && <em> · {c.country}</em>}</span>
-                    {c.paleo && <span className="hl-hit-paleo" dir="rtl">{c.paleo}</span>}
-                    {pin && <span className="hl-hit-dist">{fmtDistance(haversineKm([pin.lon, pin.lat], [c.lon, c.lat])).text.split(' · ')[0]}</span>}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <PlacePicker pin={pin} selId={sel?.city?.id} onPick={(c) => selectCity(c, true)} />
         <div className="hl-top-actions">
-          <button type="button" className="hl-btn" onClick={() => keyCity && selectCity(keyCity, true)} title="Fly to Jabneel — Joshua 15:11">
-            <span className="hl-btn-paleo" dir="rtl">{keyCity?.paleo}</span> {keyCity?.translit}
-          </button>
           <button type="button" className="hl-btn" onClick={goHome} title="Whole land">⌂</button>
           <button type="button" className="hl-btn" onClick={toggleTheme} title="Toggle light/dark">{theme === 'dark' ? '☀' : '☾'}</button>
-          <button type="button" className="hl-btn hl-panel-toggle" onClick={() => setPanelOpen((v) => !v)} title="Toggle panel">☰</button>
+          <button type="button" className="hl-btn hl-panel-toggle" onClick={() => setPanelOpen((v) => !v)} title="Toggle panel" aria-expanded={panelOpen}>☰</button>
         </div>
       </header>
 
       <div className="hl-body">
         <aside className="hl-panel" aria-label="Map controls">
+          <div className="hl-sheet-bar">
+            <span className="hl-sheet-grip" aria-hidden="true" />
+            <button type="button" className="hl-sheet-x" onClick={() => setPanelOpen(false)} aria-label="Hide panel">Map ×</button>
+          </div>
           <div className="hl-tabs" role="tablist">
             {[['layers', 'Layers'], ['cities', 'Cities'], ['peoples', 'Peoples']].map(([id, label]) => (
               <button key={id} type="button" role="tab" aria-selected={tab === id} className={`hl-tab${tab === id ? ' on' : ''}`} onClick={() => setTab(id)}>{label}</button>
             ))}
           </div>
 
-          {sel && <Detail sel={sel} ez={ez} pin={pin} onPin={dropPin} onUnpin={() => setPin(null)} onClose={() => setSel(null)} onCity={(c) => selectCity(c, true)} onRegion={selectRegion} />}
+          {sel && <Detail sel={sel} ez={ez} pin={pin} onPin={dropPin} onUnpin={() => setPin(null)} onClose={closeDetail} onCity={(c) => selectCity(c, true)} onRegion={selectRegion} />}
           {pin && !sel && (
             <div className="hl-detail hl-detail-pin">
               <div className="hl-detail-name">📍 {pin.label}</div>
@@ -679,7 +738,8 @@ export default function HolyLandMap() {
 
           {tab === 'cities' && (
             <div className="hl-sec">
-              <input className="hl-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search a city — English, transliteration, Hebrew, reference…" />
+              {scopeBar}
+              <input className="hl-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter — English, transliteration, paleo, reference…" />
               <div className="hl-sec-h">Biblical cities <span className="hl-count">{filteredBiblical.length}</span></div>
               <ul className="hl-list">
                 {filteredBiblical.map((c) => (
@@ -720,8 +780,10 @@ export default function HolyLandMap() {
 
           {tab === 'peoples' && (
             <div className="hl-sec">
-              <div className="hl-note">Who lives in each of Ezekiel's portions today — every band from north to south, with the modern cities that fall inside it. Click a band name to zoom to it.</div>
-              {peoples.map((p) => {
+              {scopeBar}
+              <div className="hl-note">Who lives in {scoped ? 'this portion' : "each of Ezekiel's portions"} today — {scoped ? '' : 'every band from north to south, '}with the modern cities that fall inside it. Click a band name to zoom to it.</div>
+              {peoplesShown.length === 0 && <div className="hl-people-none">Not an Ezekiel portion — switch to "All portions".</div>}
+              {peoplesShown.map((p) => {
                 const byCountry = {};
                 for (const c of p.cities) (byCountry[c.country] = byCountry[c.country] || []).push(c);
                 const entry = p.tribe === 'Levi' ? null : ez.bands.find((b) => b.name === p.name);
@@ -749,6 +811,25 @@ export default function HolyLandMap() {
         {/* zoom class lives on the WRAPPER: maplibre owns the inner div's className */}
         <div className={`hl-map-wrap${zoom >= 7.5 ? ' hl-z-labels' : ''}`}>
           <div ref={mapEl} className="hl-map" />
+          {/* ⚙ beside the zoom buttons: the everyday toggles, reachable without opening the panel */}
+          <div className={`hl-gear${gearOpen ? ' open' : ''}`}>
+            <button type="button" className="hl-gear-btn" onClick={() => setGearOpen((v) => !v)} title="Map settings" aria-expanded={gearOpen} aria-label="Map settings">⚙</button>
+            {gearOpen && (
+              <div className="hl-gear-pop" role="group" aria-label="Map settings">
+                <div className="hl-gear-h">Places</div>
+                <label className="hl-row"><input type="checkbox" checked={showBiblical} onChange={(e) => setShowBiblical(e.target.checked)} /> <span className="hl-sw hl-sw-b" /> Biblical cities</label>
+                <label className="hl-row"><input type="checkbox" checked={showModern} onChange={(e) => setShowModern(e.target.checked)} /> <span className="hl-sw hl-sw-m" /> Today's cities</label>
+                <label className="hl-row"><input type="checkbox" checked={showRegions} onChange={(e) => setShowRegions(e.target.checked)} /> <span className="hl-sw hl-sw-r" /> Nations &amp; lands</label>
+                <div className="hl-gear-h">Allotments</div>
+                <label className="hl-row"><input type="checkbox" checked={showEzekiel} onChange={(e) => setShowEzekiel(e.target.checked)} /> Ezekiel 47–48</label>
+                <label className="hl-row"><input type="checkbox" checked={showJoshua} onChange={(e) => setShowJoshua(e.target.checked)} /> Joshua 13–19</label>
+                <div className="hl-gear-h">Terrain</div>
+                <label className="hl-row"><input type="checkbox" checked={relief} onChange={(e) => setRelief(e.target.checked)} /> Relief shading</label>
+                <label className="hl-row"><input type="checkbox" checked={threeD} onChange={(e) => setThreeD(e.target.checked)} /> 3D (two fingers to tilt)</label>
+                <button type="button" className="hl-link hl-gear-more" onClick={() => { setGearOpen(false); setTab('layers'); setPanelOpen(true); }}>All layers &amp; measurements →</button>
+              </div>
+            )}
+          </div>
           {error && <div className="hl-error">{error}</div>}
         </div>
       </div>
@@ -756,6 +837,68 @@ export default function HolyLandMap() {
   );
 }
 
+
+// ── Place picker: one box for every place ────────────────────────────────────
+// Empty → the whole list A→Z (biblical cities, nations & lands, today's cities,
+// with Jabneel — Joshua 15:11 — pinned at the top); typing filters live by
+// English, transliteration, paleo or square Hebrew. Picking flies there and
+// opens the card: the name's roots, its history and every prophecy about it.
+function PlacePicker({ pin, selId, onPick }) {
+  const [q, setQ] = useState('');
+  const [open, setOpen] = useState(false);
+  const [hi, setHi] = useState(0);
+  const listRef = useRef(null);
+  const keyCity = useMemo(() => BIBLICAL_CITIES.find((c) => c.id === KEY_CITY), []);
+  const hits = useMemo(() => {
+    const t = q.trim();
+    if (t) return searchPlaces(t, 80);
+    return [keyCity, ...PLACES_AZ.filter((c) => c.id !== KEY_CITY)];
+  }, [q, keyCity]);
+  useEffect(() => { setHi(0); }, [q]);
+  useEffect(() => {
+    const el = listRef.current?.children[hi];
+    if (el && open) el.scrollIntoView({ block: 'nearest' });
+  }, [hi, open]);
+  const pick = (c) => { setQ(''); setOpen(false); onPick(c); };
+  const kindLabel = (c) => (c.kind === 'biblical' ? 'Bible' : c.kind === 'region' ? 'Nation' : 'Today');
+  return (
+    <div className="hl-searchbox">
+      <input
+        className="hl-searchbox-in"
+        value={q}
+        onChange={(e) => { setQ(e.target.value); setOpen(true); }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowDown') { e.preventDefault(); setHi((h) => Math.min(h + 1, hits.length - 1)); }
+          else if (e.key === 'ArrowUp') { e.preventDefault(); setHi((h) => Math.max(h - 1, 0)); }
+          else if (e.key === 'Enter' && hits[hi]) pick(hits[hi]);
+          else if (e.key === 'Escape') { setQ(''); setOpen(false); e.currentTarget.blur(); }
+        }}
+        placeholder="Find a place — Jabneel, Greece, Yawan, 𐤉𐤅𐤍, Damascus…"
+        aria-label="Find a place"
+        role="combobox"
+        aria-expanded={open}
+        autoComplete="off"
+      />
+      {open && (
+        <ul className="hl-searchbox-dd" role="listbox" ref={listRef}>
+          {hits.length === 0 && <li className="hl-hit-none">Nothing by that name — try the English, the app's spelling, or paleo.</li>}
+          {hits.map((c, i) => (
+            <li key={c.id} role="option" aria-selected={i === hi}>
+              <button type="button" className={`hl-hit${i === hi ? ' first' : ''}${c.id === selId ? ' on' : ''}${c.id === KEY_CITY ? ' key' : ''}`} onMouseDown={(e) => e.preventDefault()} onClick={() => pick(c)} onMouseEnter={() => setHi(i)}>
+                <span className={`hl-hit-kind k-${c.kind}`}>{c.id === KEY_CITY ? '★ Key' : kindLabel(c)}</span>
+                <span className="hl-hit-main"><b>{c.translit || c.name}</b>{c.translit && <em> {c.name}</em>}{c.country && <em> · {c.country}</em>}</span>
+                {c.paleo && <span className="hl-hit-paleo" dir="rtl">{c.paleo}</span>}
+                {pin && <span className="hl-hit-dist">{fmtDistance(haversineKm([pin.lon, pin.lat], [c.lon, c.lat])).text.split(' · ')[0]}</span>}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 // ── Passage chips + inline verse text ────────────────────────────────────────
 // Every reference on the map is a button: click it and the verses themselves
@@ -939,6 +1082,8 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
     const c = sel.city;
     const twinBiblical = c.kind === 'modern' ? BIBLICAL_CITIES.filter((b) => Math.hypot(b.lon - c.lon, b.lat - c.lat) < 0.03) : [];
     const twinModern = c.kind === 'biblical' ? MODERN_CITIES.filter((m) => Math.hypot(m.lon - c.lon, m.lat - c.lat) < 0.03) : [];
+    // "Today:" — the modern twin's own label when there is one (Jerusalem: Israel / West Bank), else the country the point falls in.
+    const today = c.kind !== 'modern' ? (twinModern[0]?.country || countryName(countryOf(c))) : null;
     return (
       <div className={`hl-detail${c.id === KEY_CITY ? ' key' : ''}`}>
         <button type="button" className="hl-detail-x" onClick={onClose} aria-label="Close">×</button>
@@ -946,10 +1091,12 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
           <>
             <div className="hl-detail-paleo" dir="rtl">{c.paleo}</div>
             <div className="hl-detail-name">{c.translit} <em>{c.name}</em></div>
-            <div className="hl-detail-he">{c.he}</div>
+            {today && <div className="hl-detail-ref">Today: {today}</div>}
             <Lexical he={c.he} />
             {c.note && <p className="hl-detail-note">{c.note}</p>}
+            <div className="hl-detail-sub">{c.proph ? 'History' : 'Scripture'}</div>
             <PassageRefs refs={c.ref} autoOpen />
+            {c.proph && <><div className="hl-detail-sub">Prophecies</div><PassageRefs refs={c.proph} /></>}
           </>
         ) : (
           <>
@@ -973,7 +1120,6 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
       <div className="hl-detail">
         <button type="button" className="hl-detail-x" onClick={onClose} aria-label="Close">×</button>
         <div className="hl-detail-name"><i className="hl-detail-sw" style={{ background: color }} /> {tribeDisplayName(e.name, e.tribe)} {e.tribe && <span className="hl-detail-paleo-inline" dir="rtl">{TRIBE_PALEO[e.tribe]}</span>}</div>
-        {e.tribe && <div className="hl-detail-he">{e.name} · {TRIBE_HEBREW[e.tribe]}</div>}
         {e.he && <div className="hl-detail-paleo" dir="rtl">{squareToPaleo(e.he)}</div>}
         <div className="hl-detail-ref">{sel.kind === 'joshua' ? 'Joshua allotment' : 'Ezekiel — millennial allotment'}</div>
         <Lexical he={e.he || (e.tribe ? TRIBE_HEBREW[e.tribe] : null)} />
