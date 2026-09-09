@@ -321,9 +321,9 @@ export function ezekielAllotment() {
 
 export const HOLY_KIND_STYLE = {
   prince:    { color:'#f2c14e', opacity:0.55, label:'P' },   // gold — the prince's land (48:21–22)
-  levites:   { color:'#ffffff', opacity:0.75, label:'L' },
+  levites:   { color:'#b9a7e6', opacity:0.7,  label:'L' },   // lavender — the Levites (48:13)
   priests:   { color:'#e8aa55', opacity:0.75, label:'Z' },
-  food:      { color:'#d9d2c2', opacity:0.75, label:'X' },
+  food:      { color:'#a8c686', opacity:0.7,  label:'X' },   // green — the city's farmland (48:18)
   suburbs:   { color:'#f5efe0', opacity:0.85, label:'' },
   city:      { color:'#4a9eff', opacity:0.9,  label:'C' },
   sanctuary: { color:'#e05555', opacity:1,    label:'S' },
@@ -695,6 +695,35 @@ export function ringCentroid(ring) {
   }
   a *= 0.5;
   return [cx / (6 * a), cy / (6 * a)];
+}
+/**
+ * Where a label sits so it is INSIDE the shape: the widest horizontal run through
+ * the ring at its mid-latitude (a bent wedge like Dan has its centroid on the edge).
+ * Returns { lon, lat, west, east, latSpan } — west/east are that run's ends, used to
+ * size the label to its territory.
+ */
+export function labelAnchor(ring) {
+  const lats = ring.map((p) => p[1]);
+  const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+  const tryLat = (lat) => {
+    const xs = [];
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const [x1, y1] = ring[j], [x2, y2] = ring[i];
+      if ((y1 > lat) !== (y2 > lat)) xs.push(x1 + (lat - y1) * (x2 - x1) / (y2 - y1));
+    }
+    xs.sort((a, b) => a - b);
+    let best = null;
+    for (let k = 0; k + 1 < xs.length; k += 2) if (!best || xs[k + 1] - xs[k] > best[1] - best[0]) best = [xs[k], xs[k + 1]];
+    return best;
+  };
+  // mid-latitude first; if the ring is pinched there, try a little above and below
+  let lat = (minLat + maxLat) / 2, run = tryLat(lat);
+  for (const f of [0.4, 0.6, 0.3, 0.7]) {
+    const l = minLat + (maxLat - minLat) * f, r = tryLat(l);
+    if (r && (!run || r[1] - r[0] > (run[1] - run[0]) * 1.15)) { run = r; lat = l; }
+  }
+  if (!run) { const c = ringCentroid(ring); return { lon: c[0], lat: c[1], west: c[0], east: c[0], latSpan: maxLat - minLat }; }
+  return { lon: (run[0] + run[1]) / 2, lat, west: run[0], east: run[1], latSpan: maxLat - minLat };
 }
 export function toFeature(entry, props = {}) {
   return {

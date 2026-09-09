@@ -42,7 +42,7 @@ import { parseRefs, readerHref, inRanges } from '../lib/models/refs.js';
 import {
   JOSHUA_TRIBES, BIBLICAL_CITIES, MODERN_CITIES, TRIBE_COLORS, TRIBE_HEBREW,
   HOLY_KIND_STYLE, EZEKIEL_ORDER, EZEKIEL_MEASURES, TRIBE_TRANSLIT, TRIBE_PALEO, tribeDisplayName,
-  ezekielAllotment, toFeature, ringCentroid, pointInRing, joshuaTribeAt, ezekielAt,
+  ezekielAllotment, toFeature, ringCentroid, labelAnchor, pointInRing, joshuaTribeAt, ezekielAt,
   squareToPaleo, translitOf,
   REGIONS, ALL_PLACES, PLACES_AZ, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
   countryOf, countryFeature, countryName, twinOf,
@@ -55,7 +55,7 @@ const SHEET_FRACTION = 0.5;                       // the sheet covers the lower 
 const REGION_DETAIL_ZOOM = 7.8;                   // from here the band labels also show the paleo line + English
 const HOLY_BTN_ZOOM = 10.5;                       // above this the "Tharawamah" caption appears over the square
 // The prince's portion (Ezekiel 48:21–22): a king and a lion — fieldy's pick.
-const PRINCE_MARK = `<span class="hl-prince" aria-label="the prince's land">🤴🏾🦁</span>`;
+const PRINCE_MARK = `<span class="hl-prince" aria-label="the prince's land"><span class="hl-prince-ico">🤴🏾🦁</span><span class="hl-prince-txt">${'Nashayaa'}</span></span>`;
 const sheetPx = () => Math.round(window.innerHeight * SHEET_FRACTION);
 import './HolyLandMap.css';
 
@@ -185,10 +185,10 @@ export default function HolyLandMap() {
   const initialOverlay = params.get('overlay') || 'ezekiel';
   const [showJoshua, setShowJoshua] = useState(initialOverlay === 'joshua' || initialOverlay === 'both');
   const [showEzekiel, setShowEzekiel] = useState(initialOverlay === 'ezekiel' || initialOverlay === 'both');
-  // Place dots: on when the model opens on a desktop (fieldy: without them "the entire holy
-  // land looks more bland"); off on a phone (allotments only) — the ⚙ widget toggles them.
+  // Place dots: OFF when the model opens (fieldy: "upon entry I see a nice visual of the
+  // allotments"); the ⚙ widget / Layers tab / picking a place turns them on. ?places=1 overrides.
   const placesParam = params.get('places');         // ?places=1|0 overrides
-  const placesDefault = placesParam ? placesParam !== '0' : !isNarrow();
+  const placesDefault = placesParam ? placesParam !== '0' : false;
   const [showBiblical, setShowBiblical] = useState(placesDefault);
   const [showModern, setShowModern] = useState(placesDefault);
   const [showRegions, setShowRegions] = useState(placesDefault);
@@ -332,8 +332,9 @@ export default function HolyLandMap() {
     addLayer({ id: 'hl-holy-line', type: 'line', source: 'hl-ez-holy', paint: { 'line-color': '#1a1208', 'line-width': 1.4 } });
     addLayer({ id: 'hl-joshua-fill', type: 'fill', source: 'hl-joshua', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': fillOpacity(0.72) } });
     addLayer({ id: 'hl-joshua-line', type: 'line', source: 'hl-joshua', paint: { 'line-color': '#1a1208', 'line-width': 1.6, 'line-dasharray': [2, 1] } });
-    addLayer({ id: 'hl-holy-square-glow', type: 'line', source: 'hl-holy-square', paint: { 'line-color': '#ffd166', 'line-width': 14, 'line-blur': 9, 'line-opacity': 0.9 } }, false);
-    addLayer({ id: 'hl-holy-square-line', type: 'line', source: 'hl-holy-square', paint: { 'line-color': '#f5c070', 'line-width': 1.6, 'line-opacity': 0.95 } }, false);
+    // red, so it can never be mistaken for the gold selection glow
+    addLayer({ id: 'hl-holy-square-glow', type: 'line', source: 'hl-holy-square', paint: { 'line-color': '#e03030', 'line-width': 14, 'line-blur': 9, 'line-opacity': 0.85 } }, false);
+    addLayer({ id: 'hl-holy-square-line', type: 'line', source: 'hl-holy-square', paint: { 'line-color': '#c02020', 'line-width': 1.6, 'line-opacity': 0.95 } }, false);
     addLayer({ id: 'hl-focus-glow', type: 'line', source: 'hl-focus', paint: { 'line-color': '#e8aa55', 'line-width': 22, 'line-blur': 12, 'line-opacity': 0.85 } });
     addLayer({ id: 'hl-focus-line', type: 'line', source: 'hl-focus', paint: { 'line-color': '#f5c070', 'line-width': 2.5 } });
     addLayer({ id: 'hl-country-glow', type: 'line', source: 'hl-country', paint: { 'line-color': '#a78bfa', 'line-width': 10, 'line-blur': 6, 'line-opacity': 0.55 } }, false);
@@ -424,10 +425,11 @@ export default function HolyLandMap() {
       el.style.setProperty('--c', TRIBE_COLORS[tribe] || '#fff');
       el.title = `${entry.name} — cities in this portion and ${entry.ref}`;
       el.addEventListener('click', (e) => { e.stopPropagation(); onClick(); });
-      // west/east edge at the label's latitude → fitRegionLabels() sizes the name to the band
-      const lons = entry.ring.map((p) => p[0]);
-      const m = mk(ringCentroid(entry.ring), el);
-      m._rl = { west: Math.min(...lons), east: Math.max(...lons), len: tribeDisplayName(entry.name, tribe).length };
+      // anchored INSIDE the shape (widest run at mid-latitude); fitRegionLabels() sizes the
+      // name to that run's width and the band's height
+      const a = labelAnchor(entry.ring);
+      const m = mk([a.lon, a.lat], el);
+      m._rl = { west: a.west, east: a.east, latSpan: a.latSpan, len: tribeDisplayName(entry.name, tribe).length, kind: 'band' };
     };
     if (showJoshua) for (const t of JOSHUA_TRIBES) regionLabel(t, 'hl-rl-j', () => selectRegion('joshua', t));
     if (showEzekiel) {
@@ -442,7 +444,9 @@ export default function HolyLandMap() {
         el.innerHTML = h.kind === 'prince' ? PRINCE_MARK : st.label;
         el.title = `${h.name} — ${h.ref}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectRegion('holy', h); });
-        mk(ringCentroid(h.ring), el);
+        const a = labelAnchor(h.ring);
+        const m = mk([a.lon, a.lat], el);
+        m._rl = { west: a.west, east: a.east, latSpan: a.latSpan, len: h.kind === 'prince' ? 2.6 : 1.6, kind: 'plot' };
       }
       // A small caption above the glowing square when zoomed in (the plot buttons are always shown;
       // zoomed out, the buttons themselves say where it is). Click → the priests' portion.
@@ -480,11 +484,18 @@ export default function HolyLandMap() {
   const fitRegionLabels = (map) => {
     for (const m of markersRef.current) {
       if (!m._rl) continue;
-      const lat = m.getLngLat().lat;
-      const px = Math.abs(map.project([m._rl.east, lat]).x - map.project([m._rl.west, lat]).x);
-      // uppercase bold letters ≈ 0.72 em wide; leave a 12 % margin each side
-      const size = Math.max(9, Math.min(18, (px * 0.76) / (m._rl.len * 0.72)));
-      m.getElement().style.setProperty('--rl-size', `${size.toFixed(1)}px`);
+      const { lng, lat } = m.getLngLat();
+      const w = Math.abs(map.project([m._rl.east, lat]).x - map.project([m._rl.west, lat]).x);
+      const h = Math.abs(map.project([lng, lat + m._rl.latSpan / 2]).y - map.project([lng, lat - m._rl.latSpan / 2]).y);
+      // uppercase bold letters ≈ 0.72 em wide, one line ≈ 1.2 em tall; 10 % margin each side.
+      // The label must fit BOTH the width of its run and the height of its band, at every zoom.
+      const byW = (w * 0.8) / (m._rl.len * 0.72), byH = h * 0.42;
+      const size = Math.min(m._rl.kind === 'plot' ? 26 : 16, byW, byH);
+      const el = m.getElement();
+      // three lines (name + paleo + English) need ≈ 3.2 em of height and a size worth reading
+      const tier = size < 6 ? 'hide' : (size >= 11 && h > size * 3.4) ? 'lg' : 'sm';
+      el.style.setProperty('--rl-size', `${Math.max(size, 6).toFixed(1)}px`);
+      el.dataset.fit = tier;
     }
   };
   fitRegionLabelsRef.current = fitRegionLabels;
@@ -632,7 +643,7 @@ export default function HolyLandMap() {
     if (!relief) next.set('relief', '0'); else next.delete('relief');
     if (pin) next.set('pin', `${pin.lon.toFixed(4)},${pin.lat.toFixed(4)},${pin.label}`); else next.delete('pin');
     const anyPlaces = showBiblical || showModern || showRegions;
-    if (anyPlaces !== !isNarrow()) next.set('places', anyPlaces ? '1' : '0'); else next.delete('places');
+    if (anyPlaces) next.set('places', '1'); else next.delete('places');
     if (next.toString() !== params.toString()) setParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showJoshua, showEzekiel, basemap, relief, pin, showBiblical, showModern, showRegions]);
@@ -714,7 +725,7 @@ export default function HolyLandMap() {
         <aside className="hl-panel" aria-label="Map controls">
           <div className="hl-sheet-bar">
             <span className="hl-sheet-grip" aria-hidden="true" />
-            <button type="button" className="hl-sheet-x" onClick={() => setPanelOpen(false)} aria-label="Hide panel">Map ×</button>
+            <button type="button" className="hl-sheet-x" onClick={() => setPanelOpen(false)} aria-label="Hide panel">{isNarrow() ? 'Map ×' : '◀ Hide panel'}</button>
           </div>
           <div className="hl-tabs" role="tablist">
             {[['layers', 'Layers'], ['cities', 'Cities'], ['peoples', 'Peoples']].map(([id, label]) => (
@@ -860,6 +871,7 @@ export default function HolyLandMap() {
         {/* zoom class lives on the WRAPPER: maplibre owns the inner div's className */}
         <div className={`hl-map-wrap${zoom >= 7.5 ? ' hl-z-labels' : ''}${zoom >= REGION_DETAIL_ZOOM ? ' hl-z-region' : ''}${zoom >= HOLY_BTN_ZOOM ? ' hl-z-holy' : ''}`}>
           <div ref={mapEl} className="hl-map" />
+          {!panelOpen && <button type="button" className="hl-panel-show" onClick={() => setPanelOpen(true)} title="Show the panel">☰ Layers · Cities · Peoples</button>}
           {/* ⚙ beside the zoom buttons: the everyday toggles, reachable without opening the panel */}
           <div className={`hl-gear${gearOpen ? ' open' : ''}`}>
             <button type="button" className="hl-gear-btn" onClick={() => setGearOpen((v) => !v)} title="Map settings" aria-expanded={gearOpen} aria-label="Map settings">⚙</button>
