@@ -525,10 +525,10 @@ export default function HolyLandMap() {
         el.className = `hl-rl hl-rl-h hl-rl-h-${h.kind}`;
         // Zoomed out the plot is a lettered button (Z, L, C, S, X); once its name fits inside
         // the plot (data-fit="lg") the button goes and the name stands as free text in the area,
-        // like the prince's 🤴🏾🦁 Nashayaa Chalaqayam — the whole plot is the button, and the
+        // like the prince's 🦁🤴🏾 Nashayaa Chalaqayam — the whole plot is the button, and the
         // sanctuary is the whole red square, not a box within it.
         el.innerHTML = h.kind === 'prince'
-          ? `<span class="hl-prince"><span class="hl-prince-ico">🤴🏾🦁</span><span class="hl-rl-cap">${h.short}</span><span class="hl-rl-en">${h.en}</span></span>`
+          ? `<span class="hl-prince"><span class="hl-prince-ico">🦁🤴🏾</span><span class="hl-rl-cap">${h.short}</span><span class="hl-rl-en">${h.en}</span></span>`
           : `<span class="hl-rl-letter">${st.label}</span><span class="hl-rl-cap">${h.short}</span><span class="hl-rl-en">${h.en}</span>`;
         el.title = `${h.name} — ${h.ref}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectRegion('holy', h); });
@@ -862,7 +862,7 @@ export default function HolyLandMap() {
                   <div className="hl-sub-h">Holy Portion — 25,000 × 25,000 cubits ≈ {ez.meta.holyKm.toFixed(1)} km / {(ez.meta.holyKm * 0.621371).toFixed(1)} mi a side</div>
                   <div className="hl-key">
                     {Object.entries(HOLY_KIND_STYLE).filter(([, st]) => st.label).map(([k, st]) => (
-                      <span key={k} className="hl-key-i">{k === 'prince' ? <span className="hl-key-prince">🤴🏾🦁</span> : <b style={{ background: st.color }}>{st.label}</b>} {ez.holy.find((h) => h.kind === k)?.name}</span>
+                      <span key={k} className="hl-key-i">{k === 'prince' ? <span className="hl-key-prince">🦁🤴🏾</span> : <b style={{ background: st.color }}>{st.label}</b>} {ez.holy.find((h) => h.kind === k)?.name}</span>
                     ))}
                   </div>
                   <div className="hl-note">Northern tribes ≈ {ez.meta.northKm.toFixed(0)} km ({(ez.meta.northKm * 0.621371).toFixed(0)} mi) each, southern ≈ {ez.meta.southKm.toFixed(0)} km ({(ez.meta.southKm * 0.621371).toFixed(0)} mi); the city {ez.meta.cityKm.toFixed(1)} km square, the sanctuary {ez.meta.sanctKm.toFixed(1)} km square.</div>
