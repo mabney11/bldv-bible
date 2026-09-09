@@ -34,7 +34,10 @@ json
 lexicon-audit
 __pycache__
 *.pyc
+# scripts/ is excluded as a whole (font sources, sync tools) — the one file the build
+# needs is let back in below (a later negation wins in .dockerignore).
 scripts
+!scripts/build-headings-if-present.mjs
 tests
 
 # Misc large text/log artifacts sitting at repo root and in server/ from
