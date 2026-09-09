@@ -102,7 +102,9 @@ build(cmap[0x10908], [ring] + x_arms, lsb=45, rsb=45)              # tet ⊗
 #    right) so the M / N ancestry reads at a glance. 2026-09-08. ─────────────────────────────────────────────────────
 mem = [stroke([(40, 720), (150, 490), (260, 720), (370, 490), (480, 720), (560, 0)], W)]   # 'w' head, stem on the RIGHT
 build(cmap[0x1090C], mem, lsb=40, rsb=40)                          # mem
-nun = [stroke([(40, 720), (150, 500), (260, 720), (340, 0)], W)]                          # 'v' head, stem on the RIGHT
+# 2026-09-09 (fieldy): the nun's 'v' made WIDER and deeper so all three strokes of the
+# N ancestor read clearly — down, up, then the long stem.
+nun = [stroke([(40, 720), (200, 400), (360, 720), (440, 0)], W)]                          # wide 'v' head, stem on the RIGHT
 build(cmap[0x1090D], nun, lsb=40, rsb=40)                          # nun
 
 # ── Normalise heights: every letter is scaled UNIFORMLY (stroke weight and

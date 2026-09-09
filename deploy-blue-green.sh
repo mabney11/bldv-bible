@@ -53,6 +53,13 @@ echo "==> Verifying data on $PALEO_DATA_DIR (inside the freshly built image)..."
 docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-versification.mjs /data/corpus.db
 docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-verse-completeness.mjs /data/corpus.db /data/translation.db
 
+# 2026-09-09: prod rendered "Adam (Edom)" in Ezekiel 25 while the corpus on
+# fieldy's machine said "Adawam (Edom)" everywhere — the volume's corpus.db was
+# an older render and nothing compared live data to the app's own name rules.
+# verify-name-forms.mjs locks the spellings in server/lexicon/name-form-rules.json
+# (Edom is ALWAYS Adawam) and fails the deploy on any mismatch.
+docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-name-forms.mjs /data/corpus.db
+
 # 2026-08-18: fieldy compared bldbible.com/parallel's Deuteronomy 13:3 against an
 # external interlinear and found misaligned Hebrew — "I thought that's what the
 # aligner scripts did but there are clearly major lapses." verify-no-eliding.js

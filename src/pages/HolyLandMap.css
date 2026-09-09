@@ -286,7 +286,7 @@
   .hl-tabs { top: 26px; }
   .hl-map-wrap { position: absolute; inset: 0; }
   .hl-detail { margin: 10px 10px 0; padding: 12px 12px; }
-  .hl-detail-x { width: 34px; height: 34px; font-size: 22px; top: 2px; right: 4px; }
+  .hl-detail-x { display: none; }   /* "Map ×" on the sheet bar is the close; the card's × sat on the paleo word */
   .hl-sec { padding: 10px 10px 24px; }
   .hl-gear { top: 78px; right: 10px; }
   .hl-gear-btn { width: 34px; height: 34px; }
@@ -302,9 +302,19 @@
 .hl-measure-given { color: var(--text2); line-height: 1.4; margin-top: 2px; }
 .hl-measure-read { color: var(--text3); line-height: 1.4; margin-top: 2px; }
 .hl-inline-note { color: var(--text4); font-size: 11px; }
-.hl-rl-holy { background: #fffc; border: 1px solid #1a1208; padding: 3px 8px; margin-bottom: 6px; }
-.hl-rl-holy .hl-rl-name { font-size: 12px; letter-spacing: 0.08em; }
+/* The Holy Portion: zoomed out, ONE label east of the glowing square (the six plot
+   buttons are hidden — they only overlap at that scale); zoomed in past HOLY_BTN_ZOOM
+   (.hl-z-holy on the wrapper) the buttons show and the label shrinks to a caption. */
+.hl-rl-holy { background: #fff8e1ee; border: 1px solid #b8860b; padding: 3px 9px; box-shadow: 0 0 0 2px #ffd16655, 0 0 16px 4px #ffd16688; text-shadow: none; }
+.hl-rl-holy .hl-rl-name { font-size: 12px; letter-spacing: 0.08em; color: #5a3600; }
 .hl-rl-holy .hl-rl-en { font-size: 9.5px; }
+.hl-rl-holy:hover { background: #fff3c4; }
+.hl-rl-h, .hl-rl-holy-sm { display: none; }
+.hl-z-holy .hl-rl-h, .hl-z-holy .hl-rl-holy-sm { display: flex; }
+.hl-z-holy .hl-rl-holy { display: none; }
+.hl-rl-holy-sm { background: #fff8e1dd; border: 1px solid #b8860b; padding: 2px 8px; text-shadow: none; }
+.hl-rl-holy-sm .hl-rl-name { font-size: 11px; letter-spacing: 0.08em; color: #5a3600; }
+.hl-rl-holy-sm .hl-rl-en { font-size: 9px; }
 
 /* ── Scripture references: chips that open the verses inline ─────────────── */
 .hl-refs { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }

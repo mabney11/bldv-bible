@@ -168,6 +168,7 @@ export const HOLY_WORDS = {
   ir:        W('עיר'),      // the city                     (48:15)
   miqdash:   W('מקדש'),     // the sanctuary                (48:10)
   yhwhShammah: W('יהוה שמה'), // the city's name             (48:35)
+  aratzQadash: W('ארץ קדש'),  // "Aratz Qadash" — the Holy Land label on the square (fieldy's phrase; cf. Zechariah 2:12 אדמת הקדש)
 };
 const HW = HOLY_WORDS;
 
@@ -349,7 +350,7 @@ export const BIBLICAL_CITIES = [
   B('beth-shemesh', 'Beth-shemesh', 'בית שמש', 34.98, 31.75, 'Joshua 15:10; Joshua 19:22; Joshua 21:16; Judges 1:33; 1 Samuel 6:9–20; 1 Kings 4:9; 2 Kings 14:11–13', ''),
   B('timnah', 'Timnah', 'תמנה', 34.92, 31.79, 'Genesis 38:12–14; Joshua 15:10, 57; Joshua 19:43; Judges 14:1–5; 2 Chronicles 28:18', ''),
   B('ekron', 'Ekron', 'עקרון', 34.85, 31.78, 'Joshua 13:3; Joshua 15:11, 45; Joshua 19:43; Judges 1:18; 1 Samuel 5:10; 1 Samuel 6:17; 1 Samuel 17:52; 2 Kings 1:2', 'Philistine city; named with Jabneel on Judah\'s border.', 'Jeremiah 25:20; Amos 1:8; Zephaniah 2:4; Zechariah 9:5–7'),
-  B('ashdod', 'Ashdod', 'אשדוד', 34.65, 31.76, 'Joshua 11:22; Joshua 13:3; Joshua 15:47; 1 Samuel 5:1–7; 1 Samuel 6:17; 2 Chronicles 26:6; Nehemiah 13:23–24', '', 'Isaiah 20:1; Jeremiah 25:20; Amos 1:8; Amos 3:9; Zephaniah 2:4; Zechariah 9:6; Acts 8:40'),
+  B('ashdod', 'Ashdod', 'אשדוד', 34.655, 31.755, 'Joshua 11:22; Joshua 13:3; Joshua 15:47; 1 Samuel 5:1–7; 1 Samuel 6:17; 2 Chronicles 26:6; Nehemiah 13:23–24', 'Tel Ashdod (31.755°N 34.655°E), the ancient mound — about 5 km south of the modern city\'s centre, which was founded in 1956 on the coast to the north.', 'Isaiah 20:1; Jeremiah 25:20; Amos 1:8; Amos 3:9; Zephaniah 2:4; Zechariah 9:6; Acts 8:40'),
   B('ashkelon', 'Ashkelon', 'אשקלון', 34.55, 31.66, 'Joshua 13:3; Judges 1:18; Judges 14:19; 1 Samuel 6:17; 2 Samuel 1:20', '', 'Jeremiah 25:20; Jeremiah 47:5–7; Amos 1:8; Zephaniah 2:4–7; Zechariah 9:5'),
   B('gaza', 'Gaza', 'עזה', 34.46, 31.50, 'Genesis 10:19; Joshua 10:41; Joshua 15:47; Judges 1:18; Judges 16:1–3, 21–30; 1 Samuel 6:17; 1 Kings 4:24', '', 'Jeremiah 25:20; Jeremiah 47:1, 5; Amos 1:6–7; Zephaniah 2:4; Zechariah 9:5; Acts 8:26'),
   B('gath', 'Gath', 'גת', 34.847, 31.70, 'Joshua 11:22; Joshua 13:3; 1 Samuel 5:8; 1 Samuel 6:17; 1 Samuel 17:4; 1 Samuel 21:10; 1 Samuel 27:2; 2 Samuel 1:20; 2 Chronicles 26:6', '', 'Amos 6:2; Micah 1:10'),
@@ -457,7 +458,7 @@ export const MODERN_CITIES = [
   M('ramallah', 'Ramallah', 'West Bank', 35.20, 31.90, '≈ 40k (≈ 300k metro)'),
   M('jericho-modern', 'Jericho', 'West Bank', 35.44, 31.86, '≈ 20k'),
   M('yavne', 'Yavne', 'Israel', 34.74, 31.87, '≈ 55k', 'Modern successor of Jabneel / Jabneh (Joshua 15:11).'),
-  M('ashdod-modern', 'Ashdod', 'Israel', 34.65, 31.80, '≈ 225k'),
+  M('ashdod-modern', 'Ashdod', 'Israel', 34.65, 31.80, '≈ 225k', 'City centre (31.80°N 34.65°E); Tel Ashdod, the biblical site, lies ≈ 5 km south — which is why the two dots can fall in different portions.'),
   M('jerusalem-modern', 'Jerusalem', 'Israel / West Bank', 35.21, 31.77, '≈ 1M'),
   M('bethlehem-modern', 'Bethlehem', 'West Bank', 35.20, 31.70, '≈ 30k'),
   M('madaba', 'Madaba', 'Jordan', 35.80, 31.72, '≈ 60k'),

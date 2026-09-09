@@ -52,6 +52,7 @@ import {
 // (allotments only), and the map is padded so a selection stays visible above the sheet.
 const isNarrow = () => typeof window !== 'undefined' && window.innerWidth <= 720;
 const SHEET_FRACTION = 0.5;                       // the sheet covers the lower half
+const HOLY_BTN_ZOOM = 10.5;                       // below this the six holy-plot buttons would overlap: hidden, one label instead
 const sheetPx = () => Math.round(window.innerHeight * SHEET_FRACTION);
 import './HolyLandMap.css';
 
@@ -181,9 +182,10 @@ export default function HolyLandMap() {
   const initialOverlay = params.get('overlay') || 'ezekiel';
   const [showJoshua, setShowJoshua] = useState(initialOverlay === 'joshua' || initialOverlay === 'both');
   const [showEzekiel, setShowEzekiel] = useState(initialOverlay === 'ezekiel' || initialOverlay === 'both');
-  // Place dots: on by default on a desktop, off on a phone (allotments only) — the ⚙ widget on the map toggles them.
+  // Place dots: OFF when the model opens (allotments only) — the ⚙ widget on the map, the
+  // Layers tab, or picking a place turns them on. ?places=1 opens with them on.
   const placesParam = params.get('places');         // ?places=1|0 overrides
-  const placesDefault = placesParam ? placesParam !== '0' : !isNarrow();
+  const placesDefault = placesParam ? placesParam !== '0' : false;
   const [showBiblical, setShowBiblical] = useState(placesDefault);
   const [showModern, setShowModern] = useState(placesDefault);
   const [showRegions, setShowRegions] = useState(placesDefault);
@@ -227,6 +229,8 @@ export default function HolyLandMap() {
     setSel({ kind: 'city', city: c, ...at });
     setPanelOpen(true);
     setGearOpen(false);
+    // Picking a place turns its kind of dot on, so the gold focus has a dot to sit on.
+    if (c.kind === 'modern') setShowModern(true); else if (c.kind === 'region') setShowRegions(true); else setShowBiblical(true);
     const map = mapRef.current;
     const padding = isNarrow() ? { top: 0, left: 0, right: 0, bottom: sheetPx() } : { top: 0, left: 0, right: 0, bottom: 0 };
     if (fly && map) {
@@ -297,12 +301,16 @@ export default function HolyLandMap() {
     // Gold glow around the selected portion (the app's focus colour).
     const focusEntry = sel?.entry?.ring ? sel.entry : null;
     ensure('hl-focus', { type: 'FeatureCollection', features: focusEntry ? [toFeature(focusEntry)] : [] });
-    // Purple outline of the modern country a selected nation / city stands in (Greece, Egypt, Tyre → Lebanon…).
-    const countryF = sel?.kind === 'city' ? countryFeature(countryOf(sel.city)) : null;
+    // Purple outline of the modern country a selected NATION stands in (Greece, Egypt, Edom → Jordan).
+    // Cities get only their gold dot — a whole country lit up around Ashdod read as "what is highlighted?".
+    const countryF = sel?.kind === 'city' && sel.city.kind === 'region' ? countryFeature(countryOf(sel.city)) : null;
     ensure('hl-country', { type: 'FeatureCollection', features: countryF ? [countryF] : [] });
     ensure('hl-joshua', { type: 'FeatureCollection', features: JOSHUA_TRIBES.map((t) => toFeature(t, { color: TRIBE_COLORS[t.tribe] })) });
     ensure('hl-ez-bands', { type: 'FeatureCollection', features: ez.bands.map((b) => toFeature(b, { color: TRIBE_COLORS[b.tribe] })) });
     ensure('hl-ez-holy', { type: 'FeatureCollection', features: ez.holy.map((h) => toFeature(h, { color: HOLY_KIND_STYLE[h.kind].color, opacity: HOLY_KIND_STYLE[h.kind].opacity })) });
+    // The 25,000 × 25,000 square itself — a permanent golden glow (Matthew 5:14–16), visible at every zoom.
+    const [sqW, sqTop, sqE, sqBot] = ez.meta.square;
+    ensure('hl-holy-square', { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[sqW, sqTop], [sqE, sqTop], [sqE, sqBot], [sqW, sqBot], [sqW, sqTop]]] } }] });
 
       // Allotment fills/lines go UNDER the basemap's water layer so the sea
     // paints over them — borders end at the coast instead of running into it.
@@ -319,6 +327,8 @@ export default function HolyLandMap() {
     addLayer({ id: 'hl-holy-line', type: 'line', source: 'hl-ez-holy', paint: { 'line-color': '#1a1208', 'line-width': 1.4 } });
     addLayer({ id: 'hl-joshua-fill', type: 'fill', source: 'hl-joshua', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': fillOpacity(0.42) } });
     addLayer({ id: 'hl-joshua-line', type: 'line', source: 'hl-joshua', paint: { 'line-color': '#1a1208', 'line-width': 1.6, 'line-dasharray': [2, 1] } });
+    addLayer({ id: 'hl-holy-square-glow', type: 'line', source: 'hl-holy-square', paint: { 'line-color': '#ffd166', 'line-width': 14, 'line-blur': 9, 'line-opacity': 0.9 } }, false);
+    addLayer({ id: 'hl-holy-square-line', type: 'line', source: 'hl-holy-square', paint: { 'line-color': '#f5c070', 'line-width': 1.6, 'line-opacity': 0.95 } }, false);
     addLayer({ id: 'hl-focus-glow', type: 'line', source: 'hl-focus', paint: { 'line-color': '#e8aa55', 'line-width': 22, 'line-blur': 12, 'line-opacity': 0.85 } });
     addLayer({ id: 'hl-focus-line', type: 'line', source: 'hl-focus', paint: { 'line-color': '#f5c070', 'line-width': 2.5 } });
     addLayer({ id: 'hl-country-glow', type: 'line', source: 'hl-country', paint: { 'line-color': '#a78bfa', 'line-width': 10, 'line-blur': 6, 'line-opacity': 0.55 } }, false);
@@ -329,6 +339,7 @@ export default function HolyLandMap() {
     const vis = (id, on) => map.getLayer(id) && map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none');
     vis('hl-ez-fill', showEzekiel); vis('hl-ez-line', showEzekiel);
     vis('hl-holy-fill', showEzekiel); vis('hl-holy-line', showEzekiel);
+    vis('hl-holy-square-glow', showEzekiel); vis('hl-holy-square-line', showEzekiel);
     vis('hl-joshua-fill', showJoshua); vis('hl-joshua-line', showJoshua);
     map.setPaintProperty('hl-ez-fill', 'fill-opacity', fillOpacity(0.38));
     map.setPaintProperty('hl-joshua-fill', 'fill-opacity', fillOpacity(0.42));
@@ -420,21 +431,39 @@ export default function HolyLandMap() {
         el.addEventListener('click', (e) => { e.stopPropagation(); selectRegion('holy', h); });
         mk(ringCentroid(h.ring), el);
       }
-      // The Holy Portion itself — labelled above its square (48:8–20).
-      // Sits out over the sea, level with the square, so it never covers a band label.
-      const [, sqTop, , sqBot] = ez.meta.square;
-      const el = document.createElement('button');
-      el.type = 'button';
-      el.className = 'hl-rl hl-rl-holy';
-      el.innerHTML = `<span class="hl-rl-name">${HOLY_WORDS.terumah.tr} →</span><span class="hl-rl-paleo" dir="rtl">${HOLY_WORDS.terumah.paleo}</span><span class="hl-rl-en">the Holy Portion · Ezekiel 48:8–22</span>`;
-      el.addEventListener('click', (e) => { e.stopPropagation(); selectRegion('holy', ez.holy.find((h) => h.kind === 'priests')); });
-      const m = new maplibregl.Marker({ element: el, anchor: 'right', offset: [-6, 0] }).setLngLat([ez.meta.westLon, (sqTop + sqBot) / 2]).addTo(map);
-      markersRef.current.push(m);
+      // The square's own label. Zoomed out (< HOLY_BTN_ZOOM) the six plot buttons are hidden — they
+      // only collide — and this one label, "Aratz Qadash · Holy Land", sits just east of the glowing
+      // square; tap it and the map frames the square at a zoom where every button fits. Zoomed in,
+      // it becomes a small caption above the square and the buttons take over (CSS: .hl-z-holy).
+      const [sqW2, sqTop2, sqE2, sqBot2] = ez.meta.square;
+      const big = document.createElement('button');
+      big.type = 'button';
+      big.className = 'hl-rl hl-rl-holy';
+      big.innerHTML = `<span class="hl-rl-name">${HOLY_WORDS.aratzQadash.tr}</span><span class="hl-rl-paleo" dir="rtl">${HOLY_WORDS.aratzQadash.paleo}</span><span class="hl-rl-en">Holy Land · the Holy Portion, Ezekiel 48:8–22</span>`;
+      big.title = 'Zoom to the Holy Portion';
+      big.addEventListener('click', (e) => { e.stopPropagation(); zoomHolyRef.current(); });
+      markersRef.current.push(new maplibregl.Marker({ element: big, anchor: 'left', offset: [22, 0] }).setLngLat([sqE2, (sqTop2 + sqBot2) / 2]).addTo(map));
+      const small = document.createElement('button');
+      small.type = 'button';
+      small.className = 'hl-rl hl-rl-holy-sm';
+      small.innerHTML = `<span class="hl-rl-name">${HOLY_WORDS.terumah.tr}</span><span class="hl-rl-paleo" dir="rtl">${HOLY_WORDS.terumah.paleo}</span><span class="hl-rl-en">the Holy Portion · Ezekiel 48:8–22</span>`;
+      small.addEventListener('click', (e) => { e.stopPropagation(); selectRegion('holy', ez.holy.find((h) => h.kind === 'priests')); });
+      markersRef.current.push(new maplibregl.Marker({ element: small, anchor: 'bottom', offset: [0, -6] }).setLngLat([(sqW2 + sqE2) / 2, sqTop2]).addTo(map));
     }
   }, [ez, sel, pin, showBiblical, showEzekiel, showJoshua, showModern, showRegions, relief, onlineLabels, selectCity, selectRegion]);
 
   const applyRef = useRef(applyOverlays);
   applyRef.current = applyOverlays;
+
+  // Frame the Holy Portion so all six plot buttons fit without touching (≈ zoom 11+).
+  const zoomHoly = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const [w, top, e, bot] = ez.meta.square;
+    const narrow = isNarrow();
+    map.fitBounds([[w, bot], [e, top]], { padding: narrow ? { top: 60, left: 24, right: 24, bottom: (panelOpen ? sheetPx() : 0) + 40 } : 90, maxZoom: 12.5, duration: 1400, pitch: threeD ? 45 : 0 });
+  }, [ez, panelOpen, threeD]);
+  const zoomHolyRef = useRef(zoomHoly); zoomHolyRef.current = zoomHoly;
 
   // Label decluttering: at the current view, higher-priority labels win and
   // any label whose box would overlap one already placed is hidden (the dot
@@ -583,7 +612,7 @@ export default function HolyLandMap() {
     if (!relief) next.set('relief', '0'); else next.delete('relief');
     if (pin) next.set('pin', `${pin.lon.toFixed(4)},${pin.lat.toFixed(4)},${pin.label}`); else next.delete('pin');
     const anyPlaces = showBiblical || showModern || showRegions;
-    if (anyPlaces !== !isNarrow()) next.set('places', anyPlaces ? '1' : '0'); else next.delete('places');
+    if (anyPlaces) next.set('places', '1'); else next.delete('places');
     if (next.toString() !== params.toString()) setParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showJoshua, showEzekiel, basemap, relief, pin, showBiblical, showModern, showRegions]);
@@ -809,7 +838,7 @@ export default function HolyLandMap() {
         </aside>
 
         {/* zoom class lives on the WRAPPER: maplibre owns the inner div's className */}
-        <div className={`hl-map-wrap${zoom >= 7.5 ? ' hl-z-labels' : ''}`}>
+        <div className={`hl-map-wrap${zoom >= 7.5 ? ' hl-z-labels' : ''}${zoom >= HOLY_BTN_ZOOM ? ' hl-z-holy' : ''}`}>
           <div ref={mapEl} className="hl-map" />
           {/* ⚙ beside the zoom buttons: the everyday toggles, reachable without opening the panel */}
           <div className={`hl-gear${gearOpen ? ' open' : ''}`}>
@@ -826,6 +855,7 @@ export default function HolyLandMap() {
                 <div className="hl-gear-h">Terrain</div>
                 <label className="hl-row"><input type="checkbox" checked={relief} onChange={(e) => setRelief(e.target.checked)} /> Relief shading</label>
                 <label className="hl-row"><input type="checkbox" checked={threeD} onChange={(e) => setThreeD(e.target.checked)} /> 3D (two fingers to tilt)</label>
+                <button type="button" className="hl-link hl-gear-more" onClick={() => { setGearOpen(false); zoomHoly(); }}>Zoom to the Holy Portion ✦</button>
                 <button type="button" className="hl-link hl-gear-more" onClick={() => { setGearOpen(false); setTab('layers'); setPanelOpen(true); }}>All layers &amp; measurements →</button>
               </div>
             )}
@@ -859,11 +889,13 @@ function PlacePicker({ pin, selId, onPick }) {
     const el = listRef.current?.children[hi];
     if (el && open) el.scrollIntoView({ block: 'nearest' });
   }, [hi, open]);
-  const pick = (c) => { setQ(''); setOpen(false); onPick(c); };
+  const inputRef = useRef(null);
+  const pick = (c) => { setQ(''); setOpen(false); inputRef.current?.blur(); onPick(c); };   // blur → the phone keyboard goes away
   const kindLabel = (c) => (c.kind === 'biblical' ? 'Bible' : c.kind === 'region' ? 'Nation' : 'Today');
   return (
     <div className="hl-searchbox">
       <input
+        ref={inputRef}
         className="hl-searchbox-in"
         value={q}
         onChange={(e) => { setQ(e.target.value); setOpen(true); }}
