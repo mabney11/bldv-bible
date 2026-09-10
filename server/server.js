@@ -7787,6 +7787,15 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
         // gloss. Its translation was decided once, deliberately, at parse time;
         // never re-look it up.
         if (comp.bakedSplit) return;
+        // An AFFIX chip (verbal ending, pronominal suffix, nominal ending,
+        // preformative, stem letter) carries a LETTER label — applyFlatLabels'
+        // ONE-LETTER-ONE-MEANING policy: 𐤅 suffix = [His], 𐤕 = [Feminine],
+        // 𐤉 = [My/Of] — decided at bake time. Re-looking such a chip up by its
+        // bare paleo finds the STANDALONE particle's lexicon entry (𐤅 = "and")
+        // and clobbered the label: every HEB-edition 𐤁𐤓𐤊𐤅 read "blessed [and]"
+        // while the same word in BHS Judges 5:2 read "[His]" (2026-09-10,
+        // Words of Azariah 1:55). Only root/particle chips are re-glossed.
+        if (comp.css && /^(vbe|prs|nme|pfm|vbs|uvf)-/.test(comp.css)) return;
         const paleo = comp.paleo;
         const candidates = [];
         // Component-own strongs (only set on the root component for non-
