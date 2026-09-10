@@ -297,7 +297,7 @@ export default function Statue() {
                 : <StatueSheet clock={clock} selected={shownSel} onSelect={select} tagsRef={tagsRef} />}
               <div className="st-tags" ref={tagsRef} aria-label="Pieces">
                 {[...PIECES, STONE].map((p) => (
-                  <button key={p.id} type="button" data-id={p.id} className={`st-tag${shownSel === p.id ? ' on' : ''}`} onClick={() => select(shownSel === p.id ? null : p.id)}>{p.tag}</button>
+                  <button key={p.id} type="button" data-id={p.id} className={`st-tag${shownSel === p.id ? ' on' : ''}`} onClick={() => select(shownSel === p.id ? null : p.id)}>{p.id === 'stone' && phase.key === 'mountain' ? 'aban (stone) · tawar (mountain)' : p.tag}</button>
                 ))}
               </div>
             </div>
