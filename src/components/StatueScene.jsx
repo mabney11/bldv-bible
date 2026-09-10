@@ -272,6 +272,10 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
     const mats = Object.fromEntries(Object.keys(MATERIALS).map((k) => [k, stdMaterial(k)]));
     let pieceGroups = new Map();
     let shardSets = [];
+    // Nothing of the figure or the stone is drawn until the sculpted file has either
+    // arrived or been found missing — otherwise the procedural stand-ins flash for the
+    // half-second the GLBs take to download on every fresh load.
+    let figureReady = false, stoneReady = false;
     const disposeGroup = (g) => { world.remove(g); g.traverse((o) => { o.geometry?.dispose?.(); if (o.userData.ownMat) o.material.dispose?.(); }); };
     // Build the figure: the procedural king now; the sculpted one replaces it when its file arrives.
     function buildFigure(groups, samplers) {
@@ -322,11 +326,11 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
     // ── Per-frame placement from the timeline ───────────────────────────────
     const q = new THREE.Quaternion();
     function place(t) {
-      for (const [id, g] of pieceGroups) g.visible = pieceWholeAt(PIECES.find((p) => p.id === id), t);
+      for (const [id, g] of pieceGroups) g.visible = figureReady && pieceWholeAt(PIECES.find((p) => p.id === id), t);
       for (const { piece, shards } of shardSets) {
         for (const { s, mesh, axis } of shards) {
           const a = shardAt(piece, s, t);
-          mesh.visible = a.visible;
+          mesh.visible = figureReady && a.visible;
           if (!a.visible) continue;
           mesh.position.set(a.x, a.y, a.z);
           q.setFromAxisAngle(axis, a.rot); mesh.quaternion.copy(q);
@@ -335,7 +339,7 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
         }
       }
       const st = stoneAt(t);
-      stone.visible = st.visible;
+      stone.visible = stoneReady && st.visible;
       stone.position.set(st.x, st.y, st.z);
       stone.rotation.set(st.spin * 0.7, st.spin, st.spin * 0.3);
       const mt = mountainAt(t);
@@ -433,10 +437,10 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
         btn.style.visibility = visible ? 'visible' : 'hidden';
         if (visible) btn.style.transform = `translate(${((tagV.x + 1) / 2 * w).toFixed(1)}px, ${((1 - tagV.y) / 2 * h).toFixed(1)}px)`;
       };
-      for (const p of PIECES) put(p.id, 0.55, p.y0 + p.h * 0.55, 0.5, pieceWholeAt(p, t));
+      for (const p of PIECES) put(p.id, 0.55, p.y0 + p.h * 0.55, 0.5, figureReady && pieceWholeAt(p, t));
       const st = stoneAt(t), mt = mountainAt(t);
-      if (st.visible) put('stone', st.x, st.y + STONE.r * 1.2, st.z, true);
-      else put('stone', mt.x, (STONE.r * 1.2 + mt.scale * 9) * 0.98, mt.z, true);
+      if (st.visible) put('stone', st.x, st.y + STONE.r * 1.2, st.z, stoneReady);
+      else put('stone', mt.x, (STONE.r * 1.2 + mt.scale * 9) * 0.98, mt.z, stoneReady);
     }
     function resize() {
       const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;
@@ -459,12 +463,12 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
       if (which === 'stone') stone = obj; else mountain = obj;
       lastT = -1; applySelection(currentSel); dirty = true;
     };
-    loadProp(STONE_URL, 'stone', stoneMat, 'stone').then((o) => swapProp('stone', o));
+    loadProp(STONE_URL, 'stone', stoneMat, 'stone').then((o) => { swapProp('stone', o); stoneReady = true; lastT = -1; dirty = true; });
     loadProp(MOUNTAIN_URL, 'mountain', mountainMat, 'mountain').then((o) => swapProp('mountain', o));
     loadKing(mats).then((king) => {
-      if (!alive || !king) return;
-      buildFigure(king.groups, king.samplers);
-      lastT = -1; applySelection(currentSel); dirty = true;
+      if (!alive) return;
+      if (king) { buildFigure(king.groups, king.samplers); applySelection(currentSel); }
+      figureReady = true; lastT = -1; dirty = true;
     });
 
     api.current = {
