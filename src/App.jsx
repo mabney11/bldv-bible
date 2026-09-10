@@ -40,6 +40,7 @@ const VersePage        = lazy(() => import('./pages/VersePage.jsx'));
 const Models           = lazy(() => import('./pages/Models.jsx'));
 const HolyLandMap      = lazy(() => import('./pages/HolyLandMap.jsx'));
 const Prints           = lazy(() => import('./pages/Prints.jsx'));
+const Statue           = lazy(() => import('./pages/Statue.jsx'));
 const Passages         = lazy(() => import('./pages/Passages.jsx'));
 const Passage          = lazy(() => import('./pages/Passage.jsx'));
 
@@ -329,6 +330,7 @@ export default function App() {
         <Route path="/models"         element={<Models />} />
         <Route path="/models/holy-land" element={<HolyLandMap />} />
         <Route path="/models/prints"  element={<Prints />} />
+        <Route path="/models/statue"  element={<Statue />} />
         <Route path="/passages"       element={<Passages />} />
         <Route path="/passage"        element={<Passage />} />
         <Route path="/passage/:slug"  element={<Passage />} />

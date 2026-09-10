@@ -1155,6 +1155,11 @@ const STATIC_PAGES = {
     description: 'The Holy Land as printable map sheets — the allotment of Ezekiel 47–48 with the Holy Portion, the allotment of Joshua 13–19, and the Holy Portion close up — saved as PNG, SVG or PDF.',
     heading: 'Printable Maps',
   },
+  '/models/statue': {
+    title: `The Statue of the Dream | ${BRAND}`,
+    description: 'Nebuchadnezzar\'s image of Daniel 2 and the stone cut without hands as an interactive 3D model — the head of gold, silver, bronze, iron and clay with their verses, and the stone striking the image to pieces.',
+    heading: 'The Statue of the Dream',
+  },
   '/guide': {
     title: `Guide | ${BRAND}`,
     description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, the Lexicon and the Translation Studio.',

@@ -39,6 +39,8 @@ import { useTheme } from '../hooks/useTheme.js';
 import { apiTransChapter, apiSurface, apiLexicon, apiStrongsLookup } from '../lib/api.js';
 import { transliterate } from '../lib/translit.js';
 import { parseRefs, readerHref, inRanges } from '../lib/models/refs.js';
+import { PassageRefs } from '../components/PassageRefs.jsx';
+export { PassageRefs };
 import {
   JOSHUA_TRIBES, BIBLICAL_CITIES, MODERN_CITIES, TRIBE_COLORS, TRIBE_HEBREW,
   HOLY_KIND_STYLE, EZEKIEL_ORDER, EZEKIEL_MEASURES, TRIBE_TRANSLIT, TRIBE_PALEO, tribeDisplayName,
@@ -1184,61 +1186,7 @@ function PlacePicker({ pin, selId, onPick }) {
   );
 }
 
-// ── Passage chips + inline verse text ────────────────────────────────────────
-// Every reference on the map is a button: click it and the verses themselves
-// appear right here (the app's own Novel English), with a link into the Reader
-// that highlights the whole range (?verse=&verseEnd=). Chapters are cached.
-const _chapterCache = new Map();
-function loadChapter(bookId, chapter) {
-  const k = `${bookId}:${chapter}`;
-  if (!_chapterCache.has(k)) _chapterCache.set(k, apiTransChapter(bookId, chapter).then((d) => d?.verses || []).catch(() => []));
-  return _chapterCache.get(k);
-}
-
-function Passage({ refObj }) {
-  const [verses, setVerses] = useState(null);
-  useEffect(() => {
-    let live = true;
-    setVerses(null);
-    loadChapter(refObj.bookId, refObj.chapter).then((vs) => { if (live) setVerses(vs.filter((v) => inRanges(+v.verse, refObj.ranges))); });
-    return () => { live = false; };
-  }, [refObj]);
-  return (
-    <div className="hl-passage">
-      <div className="hl-passage-h">
-        <b>{refObj.label}</b>
-        <span className="hl-passage-links">
-          <Link to={`/passage?ref=${encodeURIComponent(refObj.label)}`} className="hl-passage-open" title="Just these verses, on their own page">Open the passage →</Link>
-          <Link to={readerHref(refObj)} className="hl-passage-open">Reader →</Link>
-        </span>
-      </div>
-      {verses === null && <div className="hl-passage-wait">Loading…</div>}
-      {verses && verses.length === 0 && <div className="hl-passage-wait">No English text for this passage yet.</div>}
-      {verses && verses.map((v) => (
-        <p key={v.verse} className="hl-verse"><sup>{v.verse}</sup>{v.text}</p>
-      ))}
-    </div>
-  );
-}
-
-export function PassageRefs({ refs, autoOpen = false, size = 'md' }) {
-  const parsed = useMemo(() => parseRefs(refs), [refs]);
-  const [open, setOpen] = useState(autoOpen ? 0 : -1);
-  useEffect(() => { setOpen(autoOpen ? 0 : -1); }, [refs, autoOpen]);
-  if (!parsed.length) return refs ? <span className="hl-detail-ref">{refs}</span> : null;
-  return (
-    <div className={`hl-refs hl-refs-${size}`}>
-      <div className="hl-refs-row">
-        {parsed.map((r, i) => (
-          <button key={r.label} type="button" className={`hl-refchip${open === i ? ' on' : ''}`} onClick={() => setOpen(open === i ? -1 : i)} title="Show the verses">
-            <span aria-hidden="true">📖</span> {r.label}
-          </button>
-        ))}
-      </div>
-      {open >= 0 && parsed[open] && <Passage refObj={parsed[open]} />}
-    </div>
-  );
-}
+// Passage chips + inline verse text live in components/PassageRefs.jsx (shared with the statue model).
 
 // ── Lexical breakdown: Bayath [house] Lacham [bread] ─────────────────────────
 // Each word of the Hebrew name is looked up in the app's own surface index

@@ -26,6 +26,20 @@ export const MODELS = [
     ],
   },
   {
+    slug: 'statue',
+    title: 'The Statue of the Dream',
+    kicker: 'Interactive 3D model · Daniel 2',
+    blurb: 'Nebuchadnezzar\'s image — the head of gold, the breast and arms of silver, the belly and thighs of bronze, the legs of iron, the feet of iron and clay — and the stone cut out without hands. Tap any piece for the text\'s own words and verses; play the stone striking it to pieces, scrub through the fall, and see that only the stone remains.',
+    paleo: '𐤑𐤋𐤌 𐤀𐤁𐤍',
+    tags: ['Daniel 2:31–45', 'Daniel 7–8', '3D · 2D sheet', 'Animation'],
+    to: '/models/statue',
+    quick: [
+      { label: 'The stone — Daniel 2:34', to: '/models/statue?piece=stone' },
+      { label: 'The feet of iron and clay', to: '/models/statue?piece=feet' },
+      { label: 'Flat 2D sheet', to: '/models/statue?view=2d' },
+    ],
+  },
+  {
     slug: 'prints',
     title: 'Printable Maps',
     kicker: 'Downloadable map sheets',
@@ -42,7 +56,7 @@ export const MODELS = [
 ];
 
 export default function Models() {
-  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel.');
+  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, and the statue of Daniel 2 with the stone cut without hands.');
   return (
     <div className="models-page">
       <header className="models-top">
@@ -72,7 +86,7 @@ export default function Models() {
         <div className="models-card models-card-soon">
           <span className="models-card-kicker">Coming</span>
           <span className="models-card-title">More models</span>
-          <p className="models-card-blurb">Future renderings — the tabernacle, the temple of Ezekiel 40–43, the city and its gates — will appear here as they're built.</p>
+          <p className="models-card-blurb">Future renderings — the temple of Ezekiel 40–43, the tabernacle, the city and its gates — will appear here as they're built.</p>
         </div>
       </div>
     </div>
