@@ -21,7 +21,7 @@ server/_backups/
 .env.*
 
 # Sculpted model assets (GLB) — large binaries served by /api/models/:file, kept on the
-# data volume in prod (see server.js MODEL ASSETS); Meshy king is CC BY 4.0 (credit on the page)
+# data volume in prod (see server.js MODEL ASSETS); the king is our own asset (Meshy, paid plan)
 server/models/
 
 # Caches

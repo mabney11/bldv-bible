@@ -1429,7 +1429,7 @@ app.use('/lexicon', express.static(path.join(__dirname, 'lexicon'), { maxAge: '5
 
 // ── MODEL ASSETS (Maps & Models) ─────────────────────────────────────────────
 // Sculpted meshes the model pages load at runtime — e.g. the king for the Statue of
-// the Dream (`statue.glb`, generated in Meshy under CC BY 4.0). They are large
+// the Dream (`statue.glb`, our own asset, generated in Meshy on a paid plan). They are large
 // binaries kept OUT of git: looked up in server/models/ first (a dev checkout), then
 // in $DATA_DIR/models/ (the persistent volume on the Lightsail box, beside the
 // databases, so a redeploy does not lose them). A missing file is a plain 404 and

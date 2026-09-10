@@ -25,7 +25,7 @@ import {
   stoneAt, mountainAt, makeShards, shardAt, pieceWholeAt, makeDust, dustAt,
 } from '../lib/models/statue.js';
 
-const KING_URL = '/api/models/statue.glb';   // the sculpted king; absent → the procedural figure stays
+const KING_URL = '/api/models/statue.glb';   // the sculpted king (fieldy's own asset, generated in Meshy on a paid plan); absent → the procedural figure stays
 const SKY = 0x1a1a24;       // a night sky, the dream's own hour — one look in both themes
 const GROUND = 0x3a3329;
 const GOLD_GLOW = new THREE.Color(0xffc857);
@@ -164,7 +164,7 @@ async function loadKingInner(mats) {
   return { groups, samplers };
 }
 
-export default function StatueScene({ clock, selected, onSelect, onReady, onKing }) {
+export default function StatueScene({ clock, selected, onSelect, onReady }) {
   const wrap = useRef(null);
   const api = useRef(null);
 
@@ -388,7 +388,6 @@ export default function StatueScene({ clock, selected, onSelect, onReady, onKing
       if (!alive || !king) return;
       buildFigure(king.groups, king.samplers);
       lastT = -1; applySelection(currentSel); dirty = true;
-      onKing?.(true);
     });
 
     api.current = {
