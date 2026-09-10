@@ -35,6 +35,12 @@ function gradient(defs, id, m, vertical) {
 }
 
 function shapeFor(part, fill, parent) {
+  if (part.kind === 'lathe') {
+    const right = part.profile.map(([r, y]) => `${px(part.x + r * (part.sx || 1))},${py(y)}`);
+    const left = [...part.profile].reverse().map(([r, y]) => `${px(part.x - r * (part.sx || 1))},${py(y)}`);
+    return el('polygon', { points: [...right, ...left].join(' '), fill }, parent);
+  }
+  if (part.kind === 'capsule') return el('line', { x1: px(part.a[0]), y1: py(part.a[1]), x2: px(part.b[0]), y2: py(part.b[1]), stroke: fill, 'stroke-width': part.r * 2 * S, 'stroke-linecap': 'round' }, parent);
   if (part.kind === 'sphere') return el('circle', { cx: px(part.x), cy: py(part.y), r: part.r * S, fill }, parent);
   if (part.kind === 'cylinder') return el('rect', { x: px(part.x) - part.r * S, y: py(part.y + part.h), width: part.r * 2 * S, height: part.h * S, rx: part.r * S * 0.45, fill }, parent);
   return el('rect', { x: px(part.x) - part.w * S / 2, y: py(part.y + part.h), width: part.w * S, height: part.h * S, rx: 5, fill }, parent);

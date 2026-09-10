@@ -50,7 +50,15 @@ export const MATERIALS = {
 // renderer builds — the WebGL scene as meshes, the sheet as flat shapes — kept
 // simple: box, cylinder (vertical), sphere. Iron/clay mixing on the feet is
 // its own list so both renderers show the same stripes and toes.
-export const H_TOTAL = 7.4;
+// Part kinds both renderers understand:
+//   sphere   {x,y,r,z?}                      y = centre
+//   box      {x,y,h,w,d,z?}                  y = bottom
+//   cylinder {x,y,h,r,z?}                    y = bottom
+//   lathe    {x,z?,profile:[[r,y]…],sz?}     a body of revolution, y absolute, sz squashes it front-to-back
+//   capsule  {a:[x,y,z],b:[x,y,z],r}         a limb between two joints
+// The figure is the king of the references: a tall cap, a full beard, arms crossed on
+// the breast, a belted kilt, legs with knee and calf, feet with toes.
+export const H_TOTAL = 7.8;
 export const PIECES = [
   {
     id: 'head', order: 1, y0: 6.1, h: 1.3, material: 'gold',
@@ -61,8 +69,11 @@ export const PIECES = [
     parallel: { ref: 'Daniel 7:4', note: 'The qadamay (first) animal of Daniel 7 — like a arayah (lion) with nashar (eagle\'s) gapayan (wings) — stands where the raash (head) of dahab (gold) stands among the arabai (four) malakayan (kings) (Daniel 7:17).' },
     traditional: 'Babal (Babylon), 626–539 BC',
     parts: [
-      { kind: 'cylinder', x: 0, y: 6.1, h: 0.3, r: 0.32 },                // neck
-      { kind: 'sphere', x: 0, y: 6.9, r: 0.62 },                          // head
+      { kind: 'capsule', a: [0, 6.05, 0], b: [0, 6.5, 0], r: 0.27 },                                                     // neck
+      { kind: 'lathe', x: 0, sz: 0.9, profile: [[0.16, 6.38], [0.38, 6.52], [0.5, 6.78], [0.53, 7.02], [0.48, 7.24], [0.32, 7.38], [0, 7.44]] }, // head
+      { kind: 'lathe', x: 0, z: 0.24, sz: 0.7, profile: [[0.28, 6.0], [0.38, 6.22], [0.44, 6.5], [0.42, 6.68], [0.3, 6.76]] },              // beard
+      { kind: 'box', x: 0, y: 6.72, h: 0.3, w: 0.15, d: 0.22, z: 0.5 },                                                  // nose
+      { kind: 'lathe', x: 0, sz: 0.92, profile: [[0.57, 7.0], [0.58, 7.12], [0.52, 7.3], [0.46, 7.52], [0.38, 7.7], [0.22, 7.78], [0, 7.8]] }, // the tall cap
     ],
   },
   {
@@ -74,13 +85,15 @@ export const PIECES = [
     parallel: { ref: 'Daniel 7:5; Daniel 8:3–4, 20', note: 'The dab (bear) qawam (raised up) on chad (one) shatar (side) (7:5), and the ayal (ram) whose two qaranayam (horns) were gabah (high), achad (one) gabah (higher) than the other (8:3, 20).' },
     traditional: 'Maday (Media) and Paras (Persia), 539–331 BC — the two darai (arms) read as the two peoples',
     parts: [
-      { kind: 'box', x: 0, y: 4.4, h: 1.7, w: 1.9, d: 1.05 },             // torso
-      { kind: 'cylinder', x: -1.22, y: 4.45, h: 1.5, r: 0.29 },           // arms, hanging at the sides
-      { kind: 'cylinder', x: 1.22, y: 4.45, h: 1.5, r: 0.29 },
-      { kind: 'sphere', x: -1.16, y: 5.95, r: 0.36 },                     // shoulders
-      { kind: 'sphere', x: 1.16, y: 5.95, r: 0.36 },
-      { kind: 'sphere', x: -1.22, y: 4.42, r: 0.3 },                      // hands
-      { kind: 'sphere', x: 1.22, y: 4.42, r: 0.3 },
+      { kind: 'lathe', x: 0, sz: 0.66, profile: [[0.8, 4.55], [0.86, 4.9], [0.95, 5.3], [1.03, 5.62], [1.0, 5.85], [0.88, 6.0], [0.5, 6.1], [0.3, 6.16]] }, // torso, chest out
+      { kind: 'sphere', x: -1.02, y: 5.84, r: 0.33 },                                                                    // shoulders
+      { kind: 'sphere', x: 1.02, y: 5.84, r: 0.33 },
+      { kind: 'capsule', a: [-1.08, 5.78, 0.02], b: [-1.1, 5.02, 0.38], r: 0.245 },                                        // upper arms
+      { kind: 'capsule', a: [1.08, 5.78, 0.02], b: [1.1, 5.02, 0.38], r: 0.245 },
+      { kind: 'capsule', a: [1.1, 5.02, 0.4], b: [-0.62, 5.34, 0.78], r: 0.21 },                                           // forearms, crossed on the breast
+      { kind: 'capsule', a: [-1.1, 5.02, 0.38], b: [0.6, 5.06, 0.66], r: 0.21 },
+      { kind: 'sphere', x: -0.66, y: 5.36, z: 0.8, r: 0.22 },                                                              // hands
+      { kind: 'sphere', x: 0.64, y: 5.08, z: 0.68, r: 0.22 },
     ],
   },
   {
@@ -92,9 +105,9 @@ export const PIECES = [
     parallel: { ref: 'Daniel 7:6; Daniel 8:5–8, 21', note: 'The namar (leopard) with arabai (four) gapayan (wings) and arabai (four) raashayan (heads) (7:6), and the tzapayar (goat) whose gadal (great) qaran (horn) was shabar (broken) for arabai (four) (8:8, 21–22).' },
     traditional: 'Yawan (Greece) under Alexander and his successors, 331–146 BC',
     parts: [
-      { kind: 'box', x: 0, y: 3.55, h: 0.85, w: 1.65, d: 1.0 },           // belly
-      { kind: 'cylinder', x: -0.5, y: 2.9, h: 0.7, r: 0.44 },             // thighs
-      { kind: 'cylinder', x: 0.5, y: 2.9, h: 0.7, r: 0.44 },
+      { kind: 'lathe', x: 0, sz: 0.72, profile: [[0.78, 2.95], [0.84, 3.3], [0.87, 3.7], [0.85, 4.0], [0.82, 4.2]] },   // the kilt over the thighs
+      { kind: 'lathe', x: 0, sz: 0.76, profile: [[0.86, 4.18], [0.9, 4.28], [0.86, 4.4]] },                              // belt
+      { kind: 'lathe', x: 0, sz: 0.7, profile: [[0.8, 4.38], [0.82, 4.5], [0.8, 4.6]] },                                 // belly
     ],
   },
   {
@@ -105,10 +118,7 @@ export const PIECES = [
       note: 'No book of scripture names the rabayaiy (fourth) malakaw (kingdom). The text says only what it does: it daqaq (breaks) in pieces and raii (crushes) kal (every) the others.' },
     parallel: { ref: 'Daniel 7:7, 19, 23', note: 'The rabayaiy (fourth) animal, awesome and powerful, with rabarab (great) parazal (iron) shanayan (teeth) — "a rabayaiy (fourth) malakaw (kingdom) on arai (earth)" (7:23).' },
     traditional: 'Rome, 146 BC onward — the two shaq (legs) read as its eastern and western halves',
-    parts: [
-      { kind: 'cylinder', x: -0.5, y: 0.5, h: 2.45, r: 0.38 },
-      { kind: 'cylinder', x: 0.5, y: 0.5, h: 2.45, r: 0.38 },
-    ],
+    parts: [-0.42, 0.42].map((x) => ({ kind: 'lathe', x, profile: [[0.2, 0.42], [0.21, 0.7], [0.25, 1.1], [0.33, 1.55], [0.3, 1.9], [0.3, 2.15], [0.34, 2.45], [0.37, 2.8], [0.36, 3.0]] })), // ankle, calf, knee, thigh
   },
   {
     id: 'feet', order: 5, y0: 0, h: 0.5, material: 'clay',
@@ -119,15 +129,17 @@ export const PIECES = [
     parallel: { ref: 'Daniel 7:7–8, 24', note: 'The ishar (ten) qaranayan (horns) of the rabayaiy (fourth) animal — "ishar (ten) malakayan (kings)" (7:24) — are often set beside the ishar (ten) atzabaith (toes).' },
     traditional: 'The palag (divided) remains of Rome — ishar (ten) malakayan (kings) / a later divided power; the one piece the aban (stone) strikes',
     parts: [
-      { kind: 'box', x: -0.55, y: 0, h: 0.5, w: 0.78, d: 1.7, z: 0.25, mixed: true },   // feet (clay body)
-      { kind: 'box', x: 0.55, y: 0, h: 0.5, w: 0.78, d: 1.7, z: 0.25, mixed: true },
+      { kind: 'box', x: -0.44, y: 0, h: 0.42, w: 0.58, d: 1.3, z: 0.22, mixed: true },   // feet (clay body)
+      { kind: 'box', x: 0.44, y: 0, h: 0.42, w: 0.58, d: 1.3, z: 0.22, mixed: true },
+      { kind: 'sphere', x: -0.44, y: 0.22, z: -0.4, r: 0.24, mixed: true },              // heels
+      { kind: 'sphere', x: 0.44, y: 0.22, z: -0.4, r: 0.24, mixed: true },
     ],
-    // The iron in the clay: bands across each foot and alternating toes.
+    // The iron in the clay: a band across each foot and alternating toes.
     iron: [
-      { kind: 'box', x: -0.55, y: 0.18, h: 0.14, w: 0.8, d: 1.72, z: 0.25 },
-      { kind: 'box', x: 0.55, y: 0.18, h: 0.14, w: 0.8, d: 1.72, z: 0.25 },
+      { kind: 'box', x: -0.44, y: 0.14, h: 0.12, w: 0.6, d: 1.32, z: 0.22 },
+      { kind: 'box', x: 0.44, y: 0.14, h: 0.12, w: 0.6, d: 1.32, z: 0.22 },
     ],
-    toes: [-0.55, 0.55].flatMap((fx) => [-0.3, -0.15, 0, 0.15, 0.3].map((dx, i) => ({ kind: 'box', x: fx + dx, y: 0, h: 0.34, w: 0.13, d: 0.36, z: 1.22, material: i % 2 ? 'clay' : 'iron' }))),
+    toes: [-0.44, 0.44].flatMap((fx) => [-0.22, -0.11, 0, 0.11, 0.22].map((dx, i) => ({ kind: 'box', x: fx + dx, y: 0, h: 0.26 - Math.abs(dx) * 0.2, w: 0.1, d: 0.3, z: 1.0, material: i % 2 ? 'clay' : 'iron' }))),
   },
 ];
 
@@ -139,7 +151,7 @@ export const STONE = {
   parallel: { ref: 'Psalm 118:22; Isaiah 28:16; Isaiah 2:2–3; Matthew 21:42–44; Luke 20:17–18; 1 Peter 2:6–8', note: 'The aban (stone) the builders rejected; the tried, precious corner aban (stone); the tawar (mountain) of the house of Yah set above the hills; "on whomever it falls, it will scatter him as dust".' },
   traditional: 'The malakaw (kingdom) of the Mashayach (Messiah) / the malakaw (kingdom) of shamayan (heaven)',
   r: 0.46,
-  start: { x: -4.6, y: 6.9, z: 1.6 },       // in the air, well clear of the statue
+  start: { x: -4.6, y: 7.3, z: 1.6 },       // in the air, well clear of the statue
   strike: { x: -0.85, y: 0.55, z: 1.1 },    // the feet, from the statue's right / the viewer's left
 };
 
@@ -212,7 +224,9 @@ export function makeShards(piece, count = 26, seed = 7) {
     const p = parts[i % parts.length];
     const size = 0.16 + r() * 0.3;
     let x, y, z;
-    if (p.kind === 'sphere') { const a = r() * Math.PI * 2, b = (r() - 0.5) * Math.PI, rr = r() * p.r; x = p.x + Math.cos(b) * Math.cos(a) * rr; y = p.y + Math.sin(b) * rr; z = Math.cos(b) * Math.sin(a) * rr; }
+    if (p.kind === 'sphere') { const a = r() * Math.PI * 2, b = (r() - 0.5) * Math.PI, rr = r() * p.r; x = p.x + Math.cos(b) * Math.cos(a) * rr; y = p.y + Math.sin(b) * rr; z = (p.z || 0) + Math.cos(b) * Math.sin(a) * rr; }
+    else if (p.kind === 'lathe') { const ys = p.profile.map((q) => q[1]), y0 = Math.min(...ys), y1 = Math.max(...ys), rm = Math.max(...p.profile.map((q) => q[0])); const a = r() * Math.PI * 2, rr = r() * rm; x = p.x + Math.cos(a) * rr; y = y0 + r() * (y1 - y0); z = (p.z || 0) + Math.sin(a) * rr * (p.sz || 1); }
+    else if (p.kind === 'capsule') { const u = r(); x = p.a[0] + (p.b[0] - p.a[0]) * u + (r() - 0.5) * p.r; y = p.a[1] + (p.b[1] - p.a[1]) * u; z = p.a[2] + (p.b[2] - p.a[2]) * u + (r() - 0.5) * p.r; }
     else if (p.kind === 'cylinder') { const a = r() * Math.PI * 2, rr = r() * p.r; x = p.x + Math.cos(a) * rr; y = p.y + r() * p.h; z = Math.sin(a) * rr; }
     else { x = p.x + (r() - 0.5) * p.w; y = p.y + r() * p.h; z = (p.z || 0) + (r() - 0.5) * p.d; }
     const k = STONE.strike;

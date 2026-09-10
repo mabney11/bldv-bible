@@ -31,14 +31,27 @@ function stdMaterial(key) {
   return new THREE.MeshStandardMaterial({ color: new THREE.Color(m.color), metalness: m.metal, roughness: m.rough });
 }
 
+const UP = new THREE.Vector3(0, 1, 0);
 function meshFor(part, material) {
-  let geo;
-  if (part.kind === 'sphere') geo = new THREE.SphereGeometry(part.r, 40, 28);
-  else if (part.kind === 'cylinder') geo = new THREE.CylinderGeometry(part.r, part.r * 0.94, part.h, 36);
-  else geo = new THREE.BoxGeometry(part.w, part.h, part.d, 1, 1, 1);
-  const mesh = new THREE.Mesh(geo, material);
-  const cy = part.kind === 'sphere' ? part.y : part.y + part.h / 2;
-  mesh.position.set(part.x, cy, part.z || 0);
+  let geo, mesh;
+  if (part.kind === 'lathe') {
+    geo = new THREE.LatheGeometry(part.profile.map(([r, y]) => new THREE.Vector2(Math.max(r, 0.001), y)), 56);
+    mesh = new THREE.Mesh(geo, material);
+    mesh.position.set(part.x, 0, part.z || 0);
+    mesh.scale.set(part.sx || 1, 1, part.sz || 1);
+  } else if (part.kind === 'capsule') {
+    const a = new THREE.Vector3(...part.a), b = new THREE.Vector3(...part.b), d = b.clone().sub(a), len = d.length();
+    geo = new THREE.CapsuleGeometry(part.r, len, 6, 28);
+    mesh = new THREE.Mesh(geo, material);
+    mesh.position.copy(a).add(b).multiplyScalar(0.5);
+    mesh.quaternion.setFromUnitVectors(UP, d.normalize());
+  } else {
+    if (part.kind === 'sphere') geo = new THREE.SphereGeometry(part.r, 40, 28);
+    else if (part.kind === 'cylinder') geo = new THREE.CylinderGeometry(part.r, part.r * 0.94, part.h, 36);
+    else geo = new THREE.BoxGeometry(part.w, part.h, part.d, 1, 1, 1);
+    mesh = new THREE.Mesh(geo, material);
+    mesh.position.set(part.x, part.kind === 'sphere' ? part.y : part.y + part.h / 2, part.z || 0);
+  }
   mesh.castShadow = true; mesh.receiveShadow = true;
   return mesh;
 }
@@ -113,7 +126,7 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
     const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 200);
     camera.position.set(8.5, 5.2, 13.5);
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 3.3, 0);
+    controls.target.set(0, 3.6, 0);
     controls.enablePan = false;
     controls.enableDamping = true; controls.dampingFactor = 0.08;
     controls.minDistance = 6; controls.maxDistance = 34;
@@ -295,7 +308,7 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
     api.current = {
       select: applySelection,
       invalidate: () => { dirty = true; },
-      resetView: () => { camera.position.set(8.5, 5.2, 13.5); controls.target.set(0, 3.3, 0); controls.update(); dirty = true; },
+      resetView: () => { camera.position.set(8.5, 5.2, 13.5); controls.target.set(0, 3.6, 0); controls.update(); dirty = true; },
     };
     applySelection(selected);
 
