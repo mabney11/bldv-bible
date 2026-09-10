@@ -9,10 +9,6 @@
     "def": "Jabneel, the name of two places in Palestine",
     "en": "Jabneel"
   },
-  "H3389": {
-    "sn": "H3389",
-    "skip": true
-  },
   "H884": {
     "sn": "H884",
     "he": "באר שבע",
@@ -32,10 +28,6 @@
     "meaning": "house of God",
     "def": "Beth-El, a place in Palestine",
     "en": "Bethel"
-  },
-  "H7157": {
-    "sn": "H7157",
-    "skip": true
   },
   "H1053": {
     "sn": "H1053",
@@ -57,18 +49,6 @@
     "def": "Beth-Lechem, a place in Palestine",
     "en": "Bethlehem"
   },
-  "H5872": {
-    "sn": "H5872",
-    "skip": true
-  },
-  "H6947": {
-    "sn": "H6947",
-    "skip": true
-  },
-  "H3157": {
-    "sn": "H3157",
-    "skip": true
-  },
   "H1052": {
     "sn": "H1052",
     "he": "בית שאן",
@@ -78,18 +58,6 @@
     "meaning": "house of ease",
     "def": "Beth-Shean or Beth-Shan, a place in Palestine",
     "en": "Beth Shean"
-  },
-  "H1171": {
-    "sn": "H1171",
-    "skip": true
-  },
-  "H6439": {
-    "sn": "H6439",
-    "skip": true
-  },
-  "H4311": {
-    "sn": "H4311",
-    "skip": true
   },
   "H2704": {
     "sn": "H2704",
@@ -121,10 +89,6 @@
     "def": "Jisrael, a symbolical name of Jacob; also (typically) of his posterity",
     "en": "Israel"
   },
-  "H1630": {
-    "sn": "H1630",
-    "skip": true
-  },
   "H2703": {
     "sn": "H2703",
     "he": "חצר עינון",
@@ -134,5 +98,101 @@
     "meaning": "village of springs",
     "def": "Chatsar-Enon, a place in Palestine",
     "en": "Hazar Enon"
+  },
+  "H3389": {
+    "sn": "H3389",
+    "skip": true
+  },
+  "H7157": {
+    "sn": "H7157",
+    "he": "קרית יערים",
+    "paleo": "𐤒𐤓𐤉𐤕-𐤉𐤏𐤓𐤉𐤌",
+    "from": "Qarayathayairayam",
+    "to": "Qarayath-Yairayam",
+    "meaning": "city of forests, or city of towns",
+    "def": "Kirjath-Jearim or Kirjath-Arim, a place in Palestine",
+    "en": "Kiriath Jearim"
+  },
+  "H5872": {
+    "sn": "H5872",
+    "he": "עין גדי",
+    "paleo": "𐤏𐤉𐤍-𐤂𐤃𐤉",
+    "from": "Iyanagaday",
+    "to": "Iyan-Gaday",
+    "meaning": "fountain of a kid",
+    "def": "En-Gedi, a place in Palestine",
+    "en": "En Gedi"
+  },
+  "H6947": {
+    "sn": "H6947",
+    "he": "קדש ברנע",
+    "paleo": "𐤒𐤃𐤔-𐤁𐤓𐤍𐤏",
+    "from": "Qadashabaranai",
+    "to": "Qadash-Baranai",
+    "meaning": null,
+    "def": "Kadesh-Barnea, a place in the Desert",
+    "en": "Kadesh Barnea"
+  },
+  "H1630": {
+    "sn": "H1630",
+    "skip": true
+  },
+  "H3157": {
+    "sn": "H3157",
+    "skip": true
+  },
+  "H1171": {
+    "sn": "H1171",
+    "he": "בעל גד",
+    "paleo": "𐤁𐤏𐤋-𐤂𐤃",
+    "from": "Bailagad",
+    "to": "Bail-Gad",
+    "meaning": "Baal of Fortune",
+    "def": "Baal-Gad, a place in Syria",
+    "en": "Baal Gad"
+  },
+  "H6439": {
+    "sn": "H6439",
+    "skip": true
+  },
+  "H4311": {
+    "sn": "H4311",
+    "he": "מי דבא",
+    "paleo": "𐤌𐤉-𐤃𐤁𐤀",
+    "from": "Mayadabaa",
+    "to": "May-Dabaa",
+    "meaning": "water of quiet",
+    "def": "Medeba, a place in Palestine",
+    "en": "Medeba"
+  },
+  "H5898": {
+    "sn": "H5898",
+    "he": "עיר המלח",
+    "paleo": "𐤏𐤉𐤓-𐤄𐤌𐤋𐤇",
+    "from": "Iyarahamalach",
+    "to": "Iyar-HaMalach",
+    "meaning": null,
+    "def": "Irham-Melach, a place near Palestine",
+    "en": "City of the Salt"
+  },
+  "H7433": {
+    "sn": "H7433",
+    "he": "רמת גלעד",
+    "paleo": "𐤓𐤌𐤕-𐤂𐤋𐤏𐤃",
+    "from": "Ramathagalaid",
+    "to": "Ramath-Galaid",
+    "meaning": "heights of Gilad",
+    "def": "Ramoth-Gilad, a place East of the Jordan",
+    "en": "Ramoth Gilead"
+  },
+  "H5874": {
+    "sn": "H5874",
+    "he": "עין דאר",
+    "paleo": "𐤏𐤉𐤍-𐤃𐤀𐤓",
+    "from": "Iyanadaar",
+    "to": "Iyan-Daar",
+    "meaning": "fountain of dwelling",
+    "def": "En-Dor, a place in Palestine",
+    "en": "En Dor"
   }
 }

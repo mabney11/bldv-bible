@@ -540,7 +540,9 @@ export default function HolyLandMap() {
       const m = new maplibregl.Marker({ element: el, anchor: 'bottom' }).setLngLat([pin.lon, pin.lat]).addTo(map);
       markersRef.current.push(m);
     }
-    const regionLabel = (entry, cls, onClick) => {
+    // a Joshua lot that lies inside another (Simeon within Judah) keeps the outer lot's label off it
+    const innerLots = (entry) => JOSHUA_TRIBES.filter((t) => t !== entry && pointInRing(ringCentroid(t.ring), entry.ring)).map((t) => t.ring);
+    const regionLabel = (entry, cls, onClick, avoid = []) => {
       const el = document.createElement('button');
       el.type = 'button';
       el.className = `hl-rl ${cls}`;
@@ -551,11 +553,11 @@ export default function HolyLandMap() {
       el.addEventListener('click', (e) => { e.stopPropagation(); onClick(); });
       // anchored INSIDE the shape (widest run at mid-latitude); fitRegionLabels() sizes the
       // name to that run's width and the band's height
-      const a = labelAnchor(entry.ring);
+      const a = labelAnchor(entry.ring, 2.5, avoid);
       const m = mk([a.lon, a.lat], el);
       m._rl = { west: a.west, east: a.east, latSpan: a.latSpan, len: tribeDisplayName(entry.name, tribe).length, kind: 'band' };
     };
-    if (showJoshua) for (const t of JOSHUA_TRIBES) regionLabel(t, 'hl-rl-j', () => selectRegion('joshua', t));
+    if (showJoshua) for (const t of JOSHUA_TRIBES) regionLabel(t, 'hl-rl-j', () => selectRegion('joshua', t), innerLots(t));
     if (showEzekiel) {
       for (const b of ez.bands) regionLabel(b, 'hl-rl-e', () => selectRegion('ezekiel', b));
       for (const h of ez.holy) {

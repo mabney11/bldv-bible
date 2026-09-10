@@ -178,5 +178,19 @@
     ],
     "meaning": "nawan (seed/son) of shamash (the sun)",
     "def": "Shamashawan, an Israelite"
+  },
+  "H795": {
+    "parts": [
+      {
+        "sn": "H784",
+        "gloss": "fire"
+      },
+      {
+        "sn": "H1732",
+        "gloss": "David"
+      }
+    ],
+    "meaning": "Ash (fire) of Dawad (David)",
+    "def": "Ashadawad, a place in Palashath"
   }
 }

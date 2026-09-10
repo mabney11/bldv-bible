@@ -699,7 +699,8 @@ for (const r of rows) {
       // adjectives — qanna' (jealous), male' (full) — which were rendering as bare capitals
       // ("Qanaa Al", "Malaa of all good things") and so never got a gloss. An adjv Strong's
       // is a name ONLY when the word is a people in peoples.txt; otherwise it's a term.
-      const isNameTag = NMPR.has(seg.sn) || (ADJV.has(seg.sn) && PEOPLE_WORDS.has(bare));
+      // an allowlisted compound (Ir-hammelach H5898 — OSHB tags it a common noun) is a name too
+      const isNameTag = NMPR.has(seg.sn) || (ADJV.has(seg.sn) && PEOPLE_WORDS.has(bare)) || !!(HYPHEN[seg.sn] && !HYPHEN[seg.sn].skip && HYPHEN[seg.sn].to);
       const isName = isDivine || (isNameTag && !!ROOTS[seg.sn] && !isTermStrongs && !NAME_NEVER.has(bare.toLowerCase()));
       const glossed = g ? g.has(normT(bare)) : false;
       // A term is any word THIS Strong's glosses, when the Strong's is one your list
@@ -723,7 +724,12 @@ for (const r of rows) {
     //   a word on YOUR term list that the Strong's glosses   ("man", not "young")
     //   any word the Strong's glosses
     //   the only candidate there is
+    // A NAME segment's head is the capitalised word when there is one: "by the south of
+    // Kadesh Barnea" (H6947) is Kadesh, not "south" — the tag says the segment holds a name,
+    // the capital says which word it is.
     let pick = cands.find(c => c.isDivine)
+            || cands.find(c => c.isName && /^[A-Z]/.test(c.bare) && c.glossed)
+            || cands.find(c => c.isName && /^[A-Z]/.test(c.bare))
             || cands.find(c => c.isName && c.glossed)
             || cands.find(c => c.isName)
             || cands.find(c => c.pinned)                  // a pinned term owns its Strong's
@@ -791,12 +797,20 @@ for (const r of rows) {
     // replaced together and glossed together, "Chatzar-Iyanawan (Hazar Enon)", instead of
     // the head word alone with an orphan "Enon" left standing after it.
     let runEnd = pick ? pick.i : -1;
-    if (pick && pick.isName && !pick.isDivine) {
+    if (pick && pick.isName && !pick.isDivine && /^[A-Z]/.test(pick.bare)) {
       let j = pick.i;
-      while (/[A-Za-z]$/.test(words[j]) && j + 2 < words.length && /^\s+$/.test(words[j + 1])
-             && /^[A-Z][a-z]+[^A-Za-z]*$/.test(words[j + 2])
-             && !NEVER_HEAD.has(words[j + 2].replace(/[^A-Za-z]/g, '').toLowerCase())
-             && !DIVINE.has(words[j + 2].replace(/[^A-Za-z]/g, '').toLowerCase())) j += 2;
+      const capAt = (k) => k < words.length && /^[A-Z][a-z]+[^A-Za-z]*$/.test(words[k])
+             && !NEVER_HEAD.has(words[k].replace(/[^A-Za-z]/g, '').toLowerCase())
+             && !DIVINE.has(words[k].replace(/[^A-Za-z]/g, '').toLowerCase());
+      const gap = (k) => k < words.length && /^\s+$/.test(words[k]);
+      for (;;) {
+        if (!/[A-Za-z]$/.test(words[j])) break;
+        if (gap(j + 1) && capAt(j + 2)) { j += 2; continue; }                    // "Beth Shemesh"
+        // "City of Salt", "Kiriath of the Forests": a lowercase "of" / "the" inside the name,
+        // only when a capitalised word follows it
+        if (gap(j + 1) && /^(of|the)$/.test(words[j + 2] || '') && gap(j + 3) && capAt(j + 4)) { j += 4; continue; }
+        break;
+      }
       runEnd = j;
     }
     const rebuilt = words.map((tok, i) => {

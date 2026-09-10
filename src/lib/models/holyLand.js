@@ -47,7 +47,22 @@ export function squareToPaleo(s) {
 // Compound names are HYPHENATED so each piece can be enunciated on its own:
 // בית לחם → 𐤁𐤉𐤕-𐤋𐤇𐤌 → Bayath-Lacham (fieldy's rule, 2026-09-08). A single
 // word is unchanged.
-const hyphenRule = (hebrew) => HYPHEN_BY_HE[String(hebrew || '').replace(/[\s־-]+/g, '')];
+// The same name is spelled more than one way in the text (Joshua's ראמת גלעד, Kings' רמת גלעד;
+// עין דר / עין דאר): a rule matches on the consonantal skeleton too (matres א ו י dropped),
+// and the hyphenated form is then built from the words AS GIVEN — the transliteration
+// always reads the Hebrew it was handed.
+const skel = (he) => String(he || '').replace(/[\s־-]+/g, '').replace(/(?!^)[אוי]/g, '');
+const HYPHEN_BY_SKEL = Object.fromEntries(Object.values(hyphenAllow).filter((r) => r && !r.skip && r.he).map((r) => [skel(r.he), r]));
+const hyphenRule = (hebrew) => {
+  const key = String(hebrew || '').replace(/[\s־-]+/g, '');
+  const exact = HYPHEN_BY_HE[key];
+  if (exact) return exact;
+  const r = HYPHEN_BY_SKEL[skel(hebrew)];
+  if (!r) return null;
+  const words = String(hebrew || '').trim().split(/[\s־-]+/).filter(Boolean);
+  if (words.length < 2) return null;
+  return { ...r, he: words.join(' '), paleo: words.map(squareToPaleo).join('-'), to: words.map((w) => transliterate(squareToPaleo(w))).join('-') };
+};
 export function compoundPaleo(hebrew) {
   const r = hyphenRule(hebrew);
   if (r) return r.paleo;
@@ -625,7 +640,7 @@ export const BIBLICAL_CITIES = [
   B('lebo-hamath', 'Lebo-hamath', 'לבוא חמת', 36.20, 34.19, 'Numbers 13:21; Numbers 34:8; Joshua 13:5; Judges 3:3; 1 Kings 8:65; 2 Kings 14:25', '"The entrance of Hamath."', 'Amos 6:14; Ezekiel 47:15–20; Ezekiel 48:1'),
   B('hethlon', 'Hethlon', 'חתלן', 36.00, 34.45, 'Ezekiel 47:15; Ezekiel 48:1', ''),
   B('zedad', 'Zedad', 'צדד', 36.92, 34.31, 'Numbers 34:8; Ezekiel 47:15', ''),
-  B('hazar-enan', 'Hazar-enan', 'חצר עינן', 37.24, 34.23, 'Numbers 34:9–10; Ezekiel 47:17; Ezekiel 48:1', 'North-east corner of Ezekiel\'s border.'),
+  B('hazar-enan', 'Hazar-enan', 'חצר עינון', 37.24, 34.23, 'Numbers 34:9–10; Ezekiel 47:17; Ezekiel 48:1', 'North-east corner of Ezekiel\'s border.'),
   B('hauran', 'Hauran', 'חורן', 36.50, 32.75, 'Ezekiel 47:16, 18', ''),
 ].map((c) => ({ ...c, paleo: compoundPaleo(c.he), translit: translitOf(c.he) }));
 
@@ -916,26 +931,30 @@ export function ringCentroid(ring) {
  * ring's): fitRegionLabels() sizes the label to those.
  */
 const ANCHOR_CACHE = new WeakMap();
-export function labelAnchor(ring, aspect = 2.5) {
-  const hit = ANCHOR_CACHE.get(ring);
+export function labelAnchor(ring, aspect = 2.5, avoid = []) {
+  const hit = avoid.length ? null : ANCHOR_CACHE.get(ring);
   if (hit) return hit;
+  // `avoid`: rings drawn INSIDE this one (Simeon's lot lies within Judah's, Joshua 19:1, 9):
+  // the label keeps out of them, so Judah's name stands on Judah's own ground.
+  const inAvoid = (p) => avoid.some((r) => pointInRing(p, r));
   const lons = ring.map((p) => p[0]), lats = ring.map((p) => p[1]);
   const minLon = Math.min(...lons), maxLon = Math.max(...lons), minLat = Math.min(...lats), maxLat = Math.max(...lats);
   const W = maxLon - minLon, H = maxLat - minLat, cx0 = (minLon + maxLon) / 2, cy0 = (minLat + maxLat) / 2;
   // a box of half-height hh (half-width aspect·hh) centred at (x, y) lies inside the ring?
+  const inside = (p) => pointInRing(p, ring) && !inAvoid(p);
   const fits = (x, y, hh) => {
     const hw = hh * aspect;
     for (let i = 0; i <= 6; i++) {
       const t = -1 + i / 3;
-      if (!pointInRing([x + hw * t, y - hh], ring) || !pointInRing([x + hw * t, y + hh], ring)) return false;
+      if (!inside([x + hw * t, y - hh]) || !inside([x + hw * t, y + hh])) return false;
     }
-    return pointInRing([x - hw, y], ring) && pointInRing([x + hw, y], ring);
+    return inside([x - hw, y]) && inside([x + hw, y]);
   };
   let best = null;
   const N = 24;
   for (let i = 1; i < N; i++) for (let j = 1; j < N; j++) {
     const x = minLon + W * i / N, y = minLat + H * j / N;
-    if (!pointInRing([x, y], ring)) continue;
+    if (!inside([x, y])) continue;
     let lo = 0, hi = Math.min(H / 2, W / 2 / aspect);
     if (!fits(x, y, hi * 0.02)) continue;
     for (let k = 0; k < 11; k++) { const mid = (lo + hi) / 2; if (fits(x, y, mid)) lo = mid; else hi = mid; }
@@ -958,7 +977,7 @@ export function labelAnchor(ring, aspect = 2.5) {
     for (let k = 0; k + 1 < xs.length; k += 2) if (best.lon >= xs[k] && best.lon <= xs[k + 1]) half = Math.max(half, Math.min(best.lon - xs[k], xs[k + 1] - best.lon));
     out = { lon: best.lon, lat: best.lat, west: best.lon - half, east: best.lon + half, latSpan: best.hh * 2, ringLatSpan: H };
   }
-  ANCHOR_CACHE.set(ring, out);
+  if (!avoid.length) ANCHOR_CACHE.set(ring, out);
   return out;
 }
 export function toFeature(entry, props = {}) {
