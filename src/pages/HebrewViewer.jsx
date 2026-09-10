@@ -5,6 +5,7 @@ import { usePaleoMode } from '../hooks/usePaleoMode.js';
 import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { useSwipeNav } from '../hooks/useSwipeNav.js';
 import { BOOK_NAMES, PALEO_LETTERS } from '../lib/books.js';
+import { remapLocation } from '../lib/danielAdditions.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { truncateTitle, versePreviewWithGloss } from '../lib/versePreview.js';
@@ -421,12 +422,18 @@ export default function HebrewViewer() {
               ].map(({ key, label, title }) => {
                 // A source you can't open is shown disabled, not hidden, so the row
                 // stays stable — you simply can't attempt a text that isn't there.
-                const available = curSources.includes(key);
+                // Daniel 3 / Words of Azariah: the Greek-numbered sources hold the
+                // prayer and the song inside Daniel 3 — land on the same words
+                // (../lib/danielAdditions.js), and offer the pill even though
+                // Words of Azariah itself has no Greek.
+                const remap = remapLocation(srcParam, key, book, chapter, verse);
+                const loc = remap || { book, chapter, verse };
+                const available = curSources.includes(key) || !!remap;
                 return available ? (
                   <Link
                     key={key}
                     className="txt-btn rd-srclink"
-                    to={`/?source=${key}&book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`}
+                    to={`/?source=${key}&book=${bookToParam(loc.book, idToSlug)}&chapter=${loc.chapter}${loc.verse != null ? `&verse=${loc.verse}` : ''}`}
                     title={title}
                   >{label}</Link>
                 ) : (

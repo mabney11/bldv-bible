@@ -14,6 +14,7 @@ import { useState, useEffect, useLayoutEffect, useMemo, useCallback, useRef } fr
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { BOOK_NAMES } from '../lib/books.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
+import { remapLocation } from '../lib/danielAdditions.js';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { truncateTitle, versePreviewMultiTokens } from '../lib/versePreview.js';
 import {
@@ -565,6 +566,17 @@ export default function MultiViewer() {
   const xChapter     = canonBook != null ? presentedChapter : 1;
   const xVerse       = (canonBook != null && verse != null) ? verse : null;
   const xQuery       = `book=${bookToParam(xBook, idToSlug)}&chapter=${xChapter}${xVerse != null ? `&verse=${xVerse}` : ''}`;
+  // The same WORDS in another source, not just the same verse number: the
+  // Greek/Latin/Syriac/Ge'ez Daniel 3 carry the Prayer of Azariah and the Song
+  // of the Three at 3:24–90 (Hebrew 3:24–33 = Greek 3:91–100), which this app
+  // keeps as its own Hebrew/English book, Words of Azariah — see
+  // ../lib/danielAdditions.js. Everywhere else this is exactly xQuery.
+  const xQueryFor = (key) => {
+    const r = canonBook != null ? remapLocation(source, key, xBook, xChapter, xVerse) : null;
+    if (!r) return xQuery;
+    return `book=${bookToParam(r.book, idToSlug)}&chapter=${r.chapter}${r.verse != null ? `&verse=${r.verse}` : ''}`;
+  };
+  const remapsTo = (key) => (canonBook != null ? remapLocation(source, key, xBook, xChapter, xVerse) : null);
   const xParallelPath = parallelHref(xBook, idToSlug, xChapter, xVerse);
 
   return (
@@ -606,8 +618,8 @@ export default function MultiViewer() {
               // Hebrew witness is always Extra (BHS lives on the flagship route).
               if (key === 'HEB') {
                 const canonical = xBook >= 1 && xBook <= 39;          // BHS only carries 1–39
-                const bhsHref   = `/?${xQuery}`;
-                const extraHref = `/?source=HEB&${xQuery}`;
+                const bhsHref   = `/?${xQueryFor('BHS')}`;
+                const extraHref = `/?source=HEB&${xQueryFor('HEB')}`;
                 const isExtra   = source === 'HEB';
                 const filled = { background: 'var(--blue)', color: '#fff', borderColor: 'var(--blue)' };
                 if (isExtra) {
@@ -624,7 +636,7 @@ export default function MultiViewer() {
                 }
                 // Hebrew not active → open it (BHS for canonical, else Extra),
                 // but only if this book actually has a Hebrew witness.
-                const hebAvail = canonical || hasSource('HEB');
+                const hebAvail = canonical || hasSource('HEB') || !!remapsTo('HEB');
                 return hebAvail ? (
                   <Link key={key} className="txt-btn rd-srclink" to={canonical ? bhsHref : extraHref}
                     title="Open this location in Hebrew">Hebrew</Link>
@@ -646,7 +658,7 @@ export default function MultiViewer() {
               }
               // A source this book doesn't have is shown disabled, not hidden — the
               // row stays stable and you simply can't attempt a text that isn't there.
-              if (!hasSource(key)) {
+              if (!hasSource(key) && !remapsTo(key)) {
                 return (
                   <span
                     key={key}
@@ -657,7 +669,7 @@ export default function MultiViewer() {
                   >{label}</span>
                 );
               }
-              const to = `/?source=${key}&${xQuery}`;
+              const to = `/?source=${key}&${xQueryFor(key)}`;
               return (
                 <Link
                   key={key}

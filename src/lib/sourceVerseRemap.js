@@ -39,6 +39,26 @@
 // this native range has no display counterpart at all (content untranslated
 // in English — the Missing Fragment itself, synFrom [36,105]).
 export const SOURCE_VERSE_REMAP = {
+  // canon_id 27 (Daniel), chapter 3 — the Greek, Latin and Ge'ez Daniel carry
+  // the Prayer of Azariah and the Song of the Three at 3:24–90 (67 verses the
+  // Hebrew never had), so the Hebrew 3:24–33 sit at 3:91–100 there. The
+  // addition itself is shown in this app as its own Hebrew/English book,
+  // Words of Azariah (canon 148) — see src/lib/danielAdditions.js for the
+  // verse-level pairing the language switcher uses — so here its native
+  // range has no display counterpart in THIS chapter. Without these entries
+  // the Reader's Ge'ez script and the Parallel view pinned Ge'ez/Greek/Latin
+  // 3:24–33 (the opening of the prayer) under the English "then
+  // Nabawakadanatzar was astonished…" verses. The Syriac ingest is a hybrid:
+  // 3:1–33 already match the Hebrew, and the addition is appended under its
+  // Greek numbers 34–90 (2026-09-10, content-verified: LXX/GEZ 3:24 = "and
+  // they walked in the midst of the fire", 3:91–92 = the king astonished /
+  // "I see four men loose"; SYR 3:24 = the king astonished, 3:47 = the flame
+  // forty-nine cubits).
+  'LXX:27:3': { segments: [ { synFrom: [24, 90], displayFrom: null }, { synFrom: [91, 100], displayFrom: [24, 33] } ] },
+  'LAT:27:3': { segments: [ { synFrom: [24, 90], displayFrom: null }, { synFrom: [91, 100], displayFrom: [24, 33] } ] },
+  'GEZ:27:3': { segments: [ { synFrom: [24, 90], displayFrom: null }, { synFrom: [91, 100], displayFrom: [24, 33] } ] },
+  'SYR:27:3': { segments: [ { synFrom: [34, 90], displayFrom: null } ] },
+
   'SYR:139:7': {
     segments: [
       { synFrom: [36, 105], displayFrom: null },      // the Missing Fragment — no English text exists for these
