@@ -27,7 +27,7 @@ import { PassageRefs } from '../components/PassageRefs.jsx';
 import { apiTransChapter } from '../lib/api.js';
 import StatueSheet from '../components/StatueSheet.jsx';
 import {
-  PIECES, STONE, WORDS, DURATION, SPEEDS, HIT,
+  PIECES, STONE, WORDS, DURATION, SPEEDS, HIT, MOUNTAIN_FROM,
   phaseAt, selectableAt, pieceById, ALL_REFS, PASSAGE, pieceForWord,
 } from '../lib/models/statue.js';
 import './Statue.css';
@@ -151,7 +151,7 @@ function Passage({ selected, selectable, onPick }) {
           <p key={n} className={`st-v${onVerses.has(n) ? ' on' : ''}`}>
             <sup>{n}</sup>
             {verseParts(String(v.text || ''), n).map((part, i) => part.piece
-              ? <button key={i} type="button" className={`st-w${part.piece === selected ? ' hl' : ''}`} disabled={part.piece !== 'stone' && !selectable.includes(part.piece)} onClick={() => onPick(part.piece)} title={pieceById(part.piece)?.title}>{part.t}</button>
+              ? <button key={i} type="button" className={`st-w${part.piece === selected ? ' hl' : ''}${part.piece !== 'stone' && !selectable.includes(part.piece) ? ' broken' : ''}`} onClick={() => onPick(part.piece)} title={pieceById(part.piece)?.title}>{part.t}</button>
               : <span key={i}>{part.t}</span>)}
           </p>
         );
@@ -252,9 +252,9 @@ export default function Statue() {
   }, [params, setParams]);
   const select = useCallback((id) => { setParam('piece', id); setSheetOpen(!!id); }, [setParam]);
 
-  // A shattered piece cannot stay selected: the card falls back to the overview
-  // (the selection itself is kept in the URL so scrubbing back restores it).
-  const shownSel = sel && (selectable.includes(sel) || sel === 'stone') ? sel : null;
+  // A shattered piece stays selectable — its card says it is broken at this moment
+  // and the text still shows where it comes from; only the model has nothing to glow.
+  const shownSel = sel;
 
   useEffect(() => { document.body.classList.add('st-body'); return () => document.body.classList.remove('st-body'); }, []);
 
@@ -314,6 +314,7 @@ export default function Statue() {
               <input ref={scrubRef} id="st-scrub" type="range" min="0" max="1000" defaultValue="0" step="1" onInput={onScrub} className="st-scrub" aria-label="Scrub through the vision" />
               <div className="st-marks" aria-hidden="true">
                 <span style={{ left: `${(HIT / DURATION) * 100}%` }} title="The strike">strike</span>
+            <span style={{ left: `${(MOUNTAIN_FROM / DURATION) * 100}%` }} title="The mountain">mountain</span>
               </div>
             </div>
             <span ref={timeRef} className="st-time">0.0 s</span>

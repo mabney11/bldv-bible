@@ -22,7 +22,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {
   PIECES, STONE, MATERIALS, H_TOTAL, HIT, KING_BANDS, bandOf,
-  stoneAt, mountainAt, makeShards, shardAt, pieceWholeAt, makeDust, dustAt,
+  stoneAt, mountainAt, cameraAt, makeShards, shardAt, pieceWholeAt, makeDust, dustAt,
 } from '../lib/models/statue.js';
 
 const KING_URL = '/api/models/statue.glb';
@@ -244,7 +244,7 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
     controls.target.set(0, 3.6, 0);
     controls.enablePan = false;
     controls.enableDamping = true; controls.dampingFactor = 0.08;
-    controls.minDistance = 6; controls.maxDistance = 34;
+    controls.minDistance = 2.5; controls.maxDistance = 40;
     controls.maxPolarAngle = Math.PI / 2 - 0.04;   // never below the ground
     controls.update();
 
@@ -340,8 +340,11 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
       }
       const st = stoneAt(t);
       stone.visible = stoneReady && st.visible;
-      stone.position.set(st.x, st.y, st.z);
-      stone.rotation.set(st.spin * 0.7, st.spin, st.spin * 0.3);
+      const sh = st.shake || 0;   // the tremor: a growing jitter in place, a pulse in size
+      stone.position.set(st.x + Math.sin(t * 97) * 0.05 * sh, st.y + Math.abs(Math.sin(t * 131)) * 0.05 * sh, st.z + Math.cos(t * 113) * 0.05 * sh);
+      stone.rotation.set(st.spin * 0.7 + Math.sin(t * 121) * 0.06 * sh, st.spin + Math.cos(t * 89) * 0.06 * sh, st.spin * 0.3);
+      stone.scale.setScalar(st.scale || 1);
+      scriptCamera(cameraAt(t));
       const mt = mountainAt(t);
       mountain.visible = mt.visible;
       if (mt.visible) {
@@ -364,6 +367,26 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
       const j = t - HIT;
       if (j > 0 && j < 0.32) { const k = (0.32 - j) / 0.32 * 0.08; world.position.set(Math.sin(t * 173) * k, Math.cos(t * 191) * k * 0.6, 0); }
       else world.position.set(0, 0, 0);
+    }
+
+    // ── The ending's camera ─────────────────────────────────────────────────
+    // While the timeline scripts the camera (close-in, tremor, growth) the viewer's
+    // azimuth is kept so an orbit they made still counts; when the scrub leaves that
+    // stretch the default view comes back. Between t changes the orbit is free.
+    const DEFAULT_POS = new THREE.Vector3(8.5, 5.2, 13.5), DEFAULT_TARGET = new THREE.Vector3(0, 3.6, 0);
+    const sph = new THREE.Spherical(), off = new THREE.Vector3(), tgt = new THREE.Vector3();
+    let scripted = false;
+    function scriptCamera(cam) {
+      if (!cam) {
+        if (scripted) { camera.position.copy(DEFAULT_POS); controls.target.copy(DEFAULT_TARGET); scripted = false; }
+        return;
+      }
+      scripted = true;
+      off.copy(camera.position).sub(controls.target);
+      sph.setFromVector3(off); sph.radius = cam.distance; sph.phi = cam.polar;
+      tgt.set(cam.target[0], cam.target[1], cam.target[2]);
+      camera.position.copy(tgt).add(off.setFromSpherical(sph));
+      controls.target.copy(tgt);
     }
 
     // ── Selection: emissive glow on the chosen piece ────────────────────────

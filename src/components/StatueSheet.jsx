@@ -12,7 +12,7 @@
 import { useEffect, useRef } from 'react';
 import {
   PIECES, STONE, MATERIALS, H_TOTAL, HIT,
-  stoneAt, mountainAt, makeShards, shardAt, pieceWholeAt, makeDust, dustAt,
+  stoneAt, mountainAt, cameraAt, makeShards, shardAt, pieceWholeAt, makeDust, dustAt,
 } from '../lib/models/statue.js';
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -56,11 +56,18 @@ export default function StatueSheet({ clock, selected, onSelect, tagsRef }) {
     // Frame to the stage: a wide stage sees the whole sheet; a tall one (a phone held
     // upright) crops in around the statue and grows the sky above it instead of
     // shrinking the statue into a letterbox — the ground stays at the bottom either way.
+    // `zoom` is the ending's scripted view (cameraAt): a window around the stone that
+    // closes in, then opens again as the mountain grows. null = the whole sheet.
+    let zoom = null;
     const fitFrame = () => {
       const aspect = host.clientWidth && host.clientHeight ? host.clientWidth / host.clientHeight : W / H;
-      const vw = aspect >= 1.25 ? W : Math.max(380, Math.min(W, Math.round(aspect * 520)));
-      const vh = Math.round(vw / aspect);
-      svg.setAttribute('viewBox', `${Math.round(OX - vw / 2)} ${H - vh} ${vw} ${vh}`);
+      let vw = aspect >= 1.25 ? W : Math.max(380, Math.min(W, Math.round(aspect * 520)));
+      let vh = Math.round(vw / aspect);
+      if (!zoom) { svg.setAttribute('viewBox', `${Math.round(OX - vw / 2)} ${H - vh} ${vw} ${vh}`); return; }
+      const k = Math.min(1, zoom.distance / 15.5);            // fraction of the full window
+      vw = Math.round(vw * k); vh = Math.round(vh * k);
+      const cx = px(zoom.target[0]), cy = py(zoom.target[1]);
+      svg.setAttribute('viewBox', `${Math.round(cx - vw / 2)} ${Math.round(Math.min(cy - vh / 2, H - vh))} ${vw} ${vh}`);
     };
     const ro = new ResizeObserver(fitFrame); ro.observe(host); fitFrame();
     const defs = el('defs', {}, svg);
@@ -117,9 +124,11 @@ export default function StatueSheet({ clock, selected, onSelect, tagsRef }) {
         node.setAttribute('transform', `translate(${px(a.x)} ${py(a.y)}) rotate(${(a.rot * 57.3).toFixed(1)}) scale(${a.scale.toFixed(3)})`);
         node.setAttribute('opacity', a.alpha.toFixed(2));
       }
-      const st = stoneAt(t);
+      const st = stoneAt(t), sh = st.shake || 0;
       stone.style.display = st.visible ? '' : 'none';
-      stone.setAttribute('transform', `translate(${px(st.x)} ${py(st.y)}) rotate(${(-st.spin * 57.3).toFixed(1)})`);
+      stone.setAttribute('transform', `translate(${(px(st.x) + Math.sin(t * 97) * 3 * sh).toFixed(1)} ${(py(st.y) - Math.abs(Math.sin(t * 131)) * 3 * sh).toFixed(1)}) rotate(${(-st.spin * 57.3 + Math.sin(t * 121) * 4 * sh).toFixed(1)}) scale(${(st.scale || 1).toFixed(3)})`);
+      const cam = cameraAt(t);
+      if ((cam && !zoom) || (!cam && zoom) || cam) { zoom = cam; fitFrame(); }
       const mt = mountainAt(t);
       if (mt.visible) {
         const k = STONE.r + mt.scale * 11, cx = px(mt.x), base = py(0);

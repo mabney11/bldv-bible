@@ -180,8 +180,10 @@ export const STONE = {
 export const HIT = 1.8;            // stone meets the feet
 export const DUST_FROM = HIT + 1.3; // fragments start turning to chaff
 export const DUST_GONE = HIT + 3.2; // wind has carried them off
-export const MOUNTAIN_FROM = HIT + 2.6;
-export const DURATION = 7.0;
+export const ZOOM_FROM = DUST_GONE;      // the camera closes in on the stone that remains
+export const SHAKE_FROM = ZOOM_FROM + 1.3; // the stone trembles
+export const MOUNTAIN_FROM = SHAKE_FROM + 0.9; // and swells into the mountain; the camera pulls back to hold it
+export const DURATION = 10.0;
 export const SPEEDS = [0.25, 0.5, 1, 2];
 
 // How long after the strike each piece gives way: feet first, then the statue
@@ -193,7 +195,8 @@ export const PHASES = [
   { from: HIT,           key: 'strikes',  caption: 'It strikes the tzalam (likeness) on its ragal (feet) of parazal (iron) and chasap (clay), and daqaq (breaks) them in pieces.', ref: 'Daniel 2:34' },
   { from: HIT + 0.55,    key: 'shatters', caption: 'Then the parazal (iron), the chasap (clay), the nachash (brass), the kasap (silver) and the dahab (gold) are daqaq (broken) in pieces chad (together).', ref: 'Daniel 2:35' },
   { from: DUST_FROM,     key: 'chaff',    caption: 'They become like the iwar (chaff) of the qayat (summer) threshing floors, and the rawach (wind) nashaa (lifts) them away, so that no athar (place) is shakach (found) for them.', ref: 'Daniel 2:35' },
-  { from: MOUNTAIN_FROM, key: 'mountain', caption: 'And the aban (stone) that struck the tzalam (likeness) becomes a rab (great) tawar (mountain), and malaa (fills) the kal (every) arai (earth).', ref: 'Daniel 2:35, 44–45' },
+  { from: ZOOM_FROM,     key: 'stone',    caption: 'And the aban (stone) that struck the tzalam (likeness) —', ref: 'Daniel 2:35' },
+  { from: MOUNTAIN_FROM, key: 'mountain', caption: '— hawaa (became) a rab (great) tawar (mountain), and malaa (filled) the kal (every) arai (earth).', ref: 'Daniel 2:35, 44–45' },
 ];
 export function phaseAt(t) {
   let p = PHASES[0];
@@ -211,10 +214,31 @@ export function stoneAt(t) {
   const arc = Math.sin(u * Math.PI) * 0.9;            // a slight lob so it is clearly "from above"
   const spin = t * 3.1;
   if (t <= HIT) return { x: s.x + (k.x - s.x) * e, y: s.y + (k.y - s.y) * e + arc, z: s.z + (k.z - s.z) * e, spin, scale: 1, visible: true };
-  // A small settle after impact, then still.
+  // A small settle after impact, then still — then, once the chaff is gone and the
+  // camera has come in, a tremor that builds until the stone gives way to the mountain.
   const a = clamp01((t - HIT) / 0.5);
   const m = mountainAt(t);
-  return { x: k.x + 0.35 * ease.out(a), y: k.y - 0.1 * ease.out(a), z: k.z + 0.3 * ease.out(a), spin: spin + 0.0, scale: 1, visible: m.scale < 0.12 };
+  const shake = t >= SHAKE_FROM ? clamp01((t - SHAKE_FROM) / (MOUNTAIN_FROM - SHAKE_FROM)) : 0;
+  return { x: k.x + 0.35 * ease.out(a), y: k.y - 0.1 * ease.out(a), z: k.z + 0.3 * ease.out(a), spin: HIT * 3.1, scale: 1 + 0.06 * shake * Math.sin(t * 38), shake, visible: m.scale < 0.12 };
+}
+
+/**
+ * The scripted camera for the ending, or null while the viewer is free to orbit:
+ * from ZOOM_FROM it closes in on the stone (keeping the viewer's own azimuth), holds
+ * close through the tremor, then draws back as the mountain swells so the whole
+ * mountain stays in frame. `target` is world-space, `distance` in world units,
+ * `polar` the angle from straight-up (three.js convention; ~1.15 = 24° above level).
+ */
+export function cameraAt(t) {
+  if (t < ZOOM_FROM) return null;
+  const st = stoneAt(t);
+  const near = 3.4, far = 15.5, back = 24;
+  if (t < MOUNTAIN_FROM) {
+    const u = ease.out(clamp01((t - ZOOM_FROM) / (SHAKE_FROM - ZOOM_FROM)));
+    return { target: [st.x, st.y + 0.1, st.z], distance: far + (near - far) * u, polar: 1.28 + (1.15 - 1.28) * u };
+  }
+  const u = ease.out(clamp01((t - MOUNTAIN_FROM) / (DURATION - MOUNTAIN_FROM)));
+  return { target: [st.x, st.y + 0.1 + 3.6 * u, st.z], distance: near + (back - near) * u, polar: 1.15 + (1.3 - 1.15) * u };
 }
 
 /** The mountain the stone becomes: scale 0 → 1 over MOUNTAIN_FROM → DURATION (never shrinks back while scrubbing forward). */
