@@ -1478,6 +1478,23 @@ export default function Parallel() {
   // After a backward cross-chapter step, -1 means "land on the last verse".
   useEffect(() => { if (verse === -1 && verseCount) setVerse(verseCount); }, [verse, verseCount]);
 
+  // ── keyboard nav: ← / → step a verse (or a chapter in chapter view) ──────
+  // Same contract as Reader.jsx / VersePage.jsx: ignored while typing in a
+  // form control, so the selects and the search box keep their own arrows.
+  // fieldy, 2026-09-10: "keyboard navigation doesn't work for /parallel, it
+  // should".
+  useEffect(() => {
+    const onKey = (e) => {
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.key === 'ArrowLeft') { e.preventDefault(); stepVerse(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); stepVerse(1); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [stepVerse]);
+
   // Mobile swipe → prev/next
   const touch = useRef(null);
   const onTouchStart = (e) => { const t = e.touches[0]; touch.current = { x: t.clientX, y: t.clientY }; };
