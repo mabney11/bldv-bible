@@ -23,7 +23,7 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
-import { PassageRefs } from '../components/PassageRefs.jsx';
+import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
 import { apiTransChapter } from '../lib/api.js';
 import StatueSheet from '../components/StatueSheet.jsx';
 import {
@@ -126,7 +126,7 @@ function verseParts(text, verse) {
   if (last < text.length) out.push({ t: text.slice(last) });
   return out;
 }
-const Glossed = ({ heb, gloss }) => <><span className="st-root">{heb}</span> ({gloss})</>;
+const GlossPair = ({ heb, gloss }) => <><span className="st-root">{heb}</span> ({gloss})</>;
 
 function Passage({ selected, selectable, onPick }) {
   const [verses, setVerses] = useState(null);
@@ -154,8 +154,8 @@ function Passage({ selected, selectable, onPick }) {
           <p key={n} className={`st-v${onVerses.has(n) ? ' on' : ''}`}>
             <sup>{n}</sup>
             {verseParts(String(v.text || ''), n).map((part, i) => part.piece
-              ? <button key={i} type="button" className={`st-w${part.piece === selected ? ' hl' : ''}${part.piece !== 'stone' && !selectable.includes(part.piece) ? ' broken' : ''}`} onClick={() => onPick(part.piece)} title={pieceById(part.piece)?.title}><Glossed heb={part.heb} gloss={part.gloss} /></button>
-              : part.heb ? <Glossed key={i} heb={part.heb} gloss={part.gloss} /> : <span key={i}>{part.t}</span>)}
+              ? <button key={i} type="button" className={`st-w${part.piece === selected ? ' hl' : ''}${part.piece !== 'stone' && !selectable.includes(part.piece) ? ' broken' : ''}`} onClick={() => onPick(part.piece)} title={pieceById(part.piece)?.title}><GlossPair heb={part.heb} gloss={part.gloss} /></button>
+              : part.heb ? <GlossPair key={i} heb={part.heb} gloss={part.gloss} /> : <span key={i}>{part.t}</span>)}
           </p>
         );
       })}
@@ -173,20 +173,20 @@ function Card({ id, selectable, ended, onClose, onPick }) {
         <>
           <div className="st-card-h">
             <div className="st-detail-sub">{isStone ? 'The aban (stone)' : `Piece ${item.order} of 5 · ${WORDS[item.materialWord].translit.toLowerCase()} (${WORDS[item.materialWord].en})`}</div>
-            <h2 className="st-card-title">{item.title}</h2>
+            <h2 className="st-card-title"><Glossed text={item.title} /></h2>
             <button type="button" className="st-card-x" onClick={onClose} aria-label="Close">×</button>
           </div>
           <div className="st-words">
             {[...new Set([...item.words, item.materialWord, ...(isStone ? ['yashapah', 'tawar', 'har', 'arach', 'rawach'] : [])])].map((k) => <Word key={k} k={k} />)}
           </div>
-          {gone && <p className="st-gone">This piece is daqaq (broken) in pieces at this moment of the vision — scrub back to see it whole. <span className="st-gone-ref">Daniel 2:35</span></p>}
-          {ended && isStone && <p className="st-only">Only the aban (stone) remains. The tzalam (likeness) is gone — "no athar (place) was shakach (found) for them" — and the aban (stone) has become a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).</p>}
+          {gone && <p className="st-gone"><Glossed text="This piece is daqaq (broken) in pieces at this moment of the vision — scrub back to see it whole." /> <span className="st-gone-ref">Daniel 2:35</span></p>}
+          {ended && isStone && <p className="st-only"><Glossed text={'Only the aban (stone) remains. The tzalam (likeness) is gone — "no athar (place) was shakach (found) for them" — and the aban (stone) has become a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).'} /></p>}
         </>
       ) : (
         <div className="st-card-h">
           <div className="st-detail-sub">The dream Nabawakadanaatzar (Nebuchadnezzar) saw</div>
-          <h2 className="st-card-title">The tzalam (likeness), and the aban (stone) that struck it</h2>
-          {ended && <p className="st-only">Only the aban (stone) remains — the tzalam (likeness) is gone, and the tawar (mountain) malaa (fills) the arai (earth).</p>}
+          <h2 className="st-card-title"><Glossed text="The tzalam (likeness), and the aban (stone) that struck it" /></h2>
+          {ended && <p className="st-only"><Glossed text="Only the aban (stone) remains — the tzalam (likeness) is gone, and the tawar (mountain) malaa (fills) the arai (earth)." /></p>}
         </div>
       )}
 
@@ -200,25 +200,25 @@ function Card({ id, selectable, ended, onClose, onPick }) {
         <>
           <div className="st-detail-sub">What scripture names</div>
           <div className="st-named">
-            <div className="st-named-k">{item.named.kingdom}</div>
-            <div className="st-named-who">{item.named.who}</div>
-            <p>{item.named.note}</p>
+            <div className="st-named-k"><Glossed text={item.named.kingdom} /></div>
+            <div className="st-named-who"><Glossed text={item.named.who} /></div>
+            <p><Glossed text={item.named.note} /></p>
             <PassageRefs refs={item.named.ref} size="sm" />
           </div>
 
-          <div className="st-detail-sub">{isStone ? 'The same aban (stone) elsewhere' : 'The parallel vision'}</div>
+          <div className="st-detail-sub">{isStone ? <Glossed text="The same aban (stone) elsewhere" /> : 'The parallel vision'}</div>
           <div className="st-par">
-            <p>{item.parallel.note}</p>
+            <p><Glossed text={item.parallel.note} /></p>
             <PassageRefs refs={item.parallel.ref} size="sm" />
           </div>
 
           <div className="st-detail-sub">Common reading <em>(interpretation, not the text)</em></div>
-          <p className="st-trad">{item.traditional}</p>
+          <p className="st-trad"><Glossed text={item.traditional} /></p>
           {item.mountain && (
             <>
-              <div className="st-detail-sub">The tawar (mountain) it becomes</div>
+              <div className="st-detail-sub"><Glossed text="The tawar (mountain) it becomes" /></div>
               <div className="st-par">
-                <p>{item.mountain.note}</p>
+                <p><Glossed text={item.mountain.note} /></p>
                 <PassageRefs refs={item.mountain.ref} size="sm" />
               </div>
             </>
@@ -227,7 +227,7 @@ function Card({ id, selectable, ended, onClose, onPick }) {
             <>
               <div className="st-detail-sub">Why it is jasper</div>
               <div className="st-par">
-                <p>{item.colour.note}</p>
+                <p><Glossed text={item.colour.note} /></p>
                 <PassageRefs refs={item.colour.ref} size="sm" />
               </div>
             </>
@@ -328,7 +328,7 @@ export default function Statue() {
               </div>
             </div>
             <div className="st-caption" aria-live="polite">
-              <span className="st-caption-text">{phase.caption}</span>
+              <span className="st-caption-text"><Glossed text={phase.caption} /></span>
               <span className="st-caption-ref">{phase.ref}</span>
             </div>
           </div>
@@ -354,7 +354,7 @@ export default function Statue() {
               <label className="st-loop"><input id="st-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
             </div>
           </div>
-          <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}Tap a piece for its verses; once it is daqaq (broken) it cannot be chosen — at the end only the aban (stone) remains.</p>
+          <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}<Glossed text="Tap a piece for its verses; once it is daqaq (broken) it cannot be chosen — at the end only the aban (stone) remains." /></p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Pieces &amp; verses ↑</button>
         </section>
 

@@ -12,6 +12,25 @@ import { apiTransChapter } from '../lib/api.js';
 import { parseRefs, readerHref, inRanges } from '../lib/models/refs.js';
 import './PassageRefs.css';
 
+// "heb (gloss)" pairs in the app's own text — the transliterated Hebrew/Aramaic
+// word is shown gold (.hl-root) and the English gloss plain, the way the Reader
+// does it. Exported so a model's own prose in that style gets the same look.
+const GLOSS_RE = /([A-Za-zÀ-ɏ][A-Za-zÀ-ɏ'’-]*)([‘’“”"']*)\s+\(([^()]*)\)/g;
+export function glossNodes(text) {
+  const t = String(text ?? '');
+  const out = []; let last = 0, m, k = 0;
+  GLOSS_RE.lastIndex = 0;
+  while ((m = GLOSS_RE.exec(t))) {
+    if (m.index > last) out.push(t.slice(last, m.index));
+    out.push(<span className="hl-root" key={k++}>{m[1]}</span>);
+    out.push(`${m[2]} (${m[3]})`);
+    last = m.index + m[0].length;
+  }
+  if (last < t.length) out.push(t.slice(last));
+  return out;
+}
+export const Glossed = ({ text }) => <>{glossNodes(text)}</>;
+
 const _chapterCache = new Map();
 function loadChapter(bookId, chapter) {
   const k = `${bookId}:${chapter}`;
@@ -39,7 +58,7 @@ function Passage({ refObj }) {
       {verses === null && <div className="hl-passage-wait">Loading…</div>}
       {verses && verses.length === 0 && <div className="hl-passage-wait">No English text for this passage yet.</div>}
       {verses && verses.map((v) => (
-        <p key={v.verse} className="hl-verse"><sup>{v.verse}</sup>{v.text}</p>
+        <p key={v.verse} className="hl-verse"><sup>{v.verse}</sup>{glossNodes(v.text)}</p>
       ))}
     </div>
   );
