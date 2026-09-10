@@ -23,7 +23,8 @@
 //   2 merge-baseline      stitch OT + recovered NT -> english-baseline.jsonl (all 66)
 //   3 load-english-baseline --reset-baseline   load the 66-book baseline into corpus.db ENG
 //   4 reingest-apocrypha --bak                 re-add Apocrypha/pseudepigrapha from backup
-//   5 fix-apocrypha-ords                        backfill ord_c/ord_v on those fresh rows
+//   5 assign-canon-ids + fix-apocrypha-ords     canon_ids for the curated writings, then ord_c/ord_v
+//   5b ingest_heb_azariah                       Words of Azariah errata (idempotent)
 //   6 de-archaic-corpus                        modernize archaic English (idempotent)
 //   6 render-corpus --reset-src                snapshot pristine untagged text -> text_src
 //   7 render-corpus --from-src --apply         surface render NT+Apoc from text_src
@@ -58,7 +59,15 @@ const OT_STEPS = [
   // reader keys on ord_c/ord_v, so without this the books go invisible again on EVERY
   // rebuild — the verse list comes back empty and the reader says "not translated".
   // This must run after reingest and before anything that reads chapters.
+  // 2026-09-10: reingest brings the curated writings back with canon_id NULL — that is
+  // exactly how Words of Azariah (148) sat invisible for weeks. assign-canon-ids.py is
+  // re-runnable and must precede fix-apocrypha-ords (whose scope is canon_id > 66).
+  ['python', ['assign-canon-ids.py'],                        'promote the curated writings to their canon_ids (Jasher, Azariah, Testaments…)'],
   ['node', ['fix-apocrypha-ords.mjs'],                       'backfill ord_c/ord_v on the re-inserted apocrypha rows'],
+  // Words of Azariah: the two KJV errata in the backup text ("0 you dews", "mountains"
+  // for the Greek's fountains) + its canon/ordinal promotion; the Hebrew half of the
+  // script is skipped once it exists, so this is idempotent on every run.
+  ['python', ['ingest_heb_azariah.py'],                      'Words of Azariah: errata + canon/ordinals (Hebrew skipped if present)'],
   ['node', ['de-archaic-corpus.js'],                         'modernize archaic English (idempotent)'],
 ];
 // Snapshot the pristine untagged English into the immutable text_src column, right after

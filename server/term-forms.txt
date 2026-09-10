@@ -99,7 +99,14 @@ left            shamaawalay       # H8042 · 89x in NT · 9x OT · sense 0  alt:
 certain         kawan             # H3559 · 89x in NT · 219x OT · sense 0  alt: Gabar/H1400 Yatzayab/H3330
 become          hawaa             # H1934 · 87x in NT · 71x OT · sense 1  alt: Naawah/H4998 Arayak/H748
 sat             dagar             # H1716 · 87x in NT · 2x OT · sense 1 · via "sit"  alt: Yathab/H3488 Rabatz/H7257
-blessed         asharay          # H835 · 87x in NT · 45x OT · sense 0
+# 2026-09-10, fieldy: "'asharay' should be 'he who' — so if blessing is the word, barak
+# must be used." asharay (H835, אשרי) is the Psalm 1:1 "happy is / he who"; the verb of
+# blessing is barak (H1288), which is what the OT side already renders 315x. Pinning
+# blessed→asharay had every apocrypha "Blessed are you, O Yahawah" reading
+# "Asharay (He who) are you". (Greek makarios vs eulogetos both arrive as "blessed" in
+# the untagged English; if the Beatitudes' makarios should ever stay asharay, that
+# needs a per-verse exception, not this blanket line.)
+blessed         barak             # H1288 · was asharay/H835
 seen            yatab             # H3190 · 87x in NT · 112x OT · sense 33
 feet            ragalay           # H7273 · 86x in NT · 12x OT · sense 0 · via "foot"  alt: Ragala/H7271 Qarasala/H7166
 fell            napal             # H5307 · 85x in NT · 434x OT · sense 15
