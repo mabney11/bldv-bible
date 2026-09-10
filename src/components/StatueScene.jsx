@@ -378,10 +378,10 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
     let scripted = false;
     function scriptCamera(cam) {
       if (!cam) {
-        if (scripted) { camera.position.copy(DEFAULT_POS); controls.target.copy(DEFAULT_TARGET); scripted = false; }
+        if (scripted) { camera.position.copy(DEFAULT_POS); controls.target.copy(DEFAULT_TARGET); scripted = false; if (currentSel) flyTo(currentSel); }
         return;
       }
-      scripted = true;
+      scripted = true; flight = null; followFrom = null;
       off.copy(camera.position).sub(controls.target);
       sph.setFromVector3(off); sph.radius = cam.distance; sph.phi = cam.polar;
       tgt.set(cam.target[0], cam.target[1], cam.target[2]);
@@ -400,10 +400,65 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
       for (const o of objs) o?.traverse((m) => {
         if (m.isMesh && m.material?.emissive) {
           if (!m.userData.ownMat) { m.material = m.material.clone(); m.userData.ownMat = true; }
-          m.material.emissive.copy(GOLD_GLOW).multiplyScalar(m === mountain || mountain.children?.includes(m) ? 0.06 : 0.22);
+          const isMountain = m === mountain || mountain.children?.includes(m);
+          // Textured props (the jasper stone, the green mountain) take less than the
+          // metal pieces, so their own colour still reads through the glow.
+          m.material.emissive.copy(GOLD_GLOW).multiplyScalar(isMountain ? 0.12 : m.material.map ? 0.26 : 0.45);
           glowTargets.push(m);
         }
       });
+    }
+
+    // ── Focus: fly the camera to the chosen piece ───────────────────────────
+    // Like the map: choosing a piece frames it (whatever the current zoom), the
+    // viewer's azimuth is kept, and choosing nothing flies back to the overview.
+    // A drag by the viewer cancels the flight. While the ending scripts the
+    // camera there is no flight — the script owns the view.
+    let flight = null;                       // { from:{pos,tgt}, to:{tgt,dist}, t0, ms }
+    const fTgt = new THREE.Vector3(), fOff = new THREE.Vector3(), fSph = new THREE.Spherical();
+    function focusFor(id, t) {
+      const aspect = camera.aspect || 1, fov = THREE.MathUtils.degToRad(camera.fov);
+      const fit = (height) => Math.max(2.6, (height / 2 + 0.6) / Math.tan(fov / 2) / Math.min(1, aspect) * 1.1);
+      if (!id) return { tgt: DEFAULT_TARGET.clone(), dist: DEFAULT_POS.distanceTo(DEFAULT_TARGET) };
+      if (id === 'stone') {
+        const st = stoneAt(t), mt = mountainAt(t);
+        if (st.visible) return { tgt: new THREE.Vector3(st.x, st.y, st.z), dist: fit(STONE.r * 2.6) };
+        const hgt = mt.scale * 9;
+        return { tgt: new THREE.Vector3(mt.x, hgt * 0.45, mt.z), dist: fit(hgt * 1.15) };
+      }
+      const p = PIECES.find((q) => q.id === id); if (!p) return null;
+      return { tgt: new THREE.Vector3(0, p.y0 + p.h / 2, 0), dist: fit(p.h) };
+    }
+    function flyTo(id) {
+      if (scripted) { flight = null; return; }
+      const to = focusFor(id, clock.t); if (!to) return;
+      flight = { from: { pos: camera.position.clone(), tgt: controls.target.clone() }, to, t0: performance.now(), ms: id ? 700 : 550 };
+      controls.minDistance = Math.min(controls.minDistance, to.dist);
+      dirty = true;
+    }
+    function stepFlight(now) {
+      if (!flight) return false;
+      const k = Math.min(1, (now - flight.t0) / flight.ms), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      // Keep the azimuth/polar the viewer had; slide the target and the distance.
+      fOff.copy(flight.from.pos).sub(flight.from.tgt); fSph.setFromVector3(fOff);
+      fSph.radius = fOff.length() + (flight.to.dist - fOff.length()) * e;
+      if (currentSel) fSph.phi += (1.35 - fSph.phi) * e * 0.5;   // ease toward a level look at the piece
+      fTgt.copy(flight.from.tgt).lerp(flight.to.tgt, e);
+      controls.target.copy(fTgt);
+      camera.position.copy(fTgt).add(fOff.setFromSpherical(fSph));
+      if (k >= 1) flight = null;
+      return true;
+    }
+    controls.addEventListener('start', () => { flight = null; });
+    // While the stone is the focus and the timeline moves it, the view follows it.
+    const follow = new THREE.Vector3();
+    let followFrom = null;
+    function followStone(t) {
+      if (currentSel !== 'stone' || scripted || flight) { followFrom = null; return; }
+      const st = stoneAt(t); if (!st.visible) { followFrom = null; return; }
+      follow.set(st.x, st.y, st.z);
+      if (followFrom) { const d = follow.clone().sub(followFrom); controls.target.add(d); camera.position.add(d); }
+      followFrom = follow.clone();
     }
 
     // Tap vs drag: a pointer that moved is an orbit, not a pick.
@@ -440,7 +495,8 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
       if (!alive) return;
       raf = requestAnimationFrame(frame);
       const t = clock.t;
-      if (t !== lastT) { place(t); lastT = t; dirty = true; }
+      if (t !== lastT) { place(t); followStone(t); lastT = t; dirty = true; }
+      if (stepFlight(performance.now())) dirty = true;
       if (controls.update()) dirty = true;
       if (!dirty) return;
       dirty = false;
@@ -475,8 +531,7 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
       const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;
       renderer.setSize(w, h, false);
       camera.aspect = w / h; camera.updateProjectionMatrix();
-      // On a tall phone stage, pull back so the whole statue fits.
-      controls.minDistance = w < h ? 9 : 6;
+      controls.minDistance = 2.5;
       dirty = true;
     }
     const ro = new ResizeObserver(resize); ro.observe(el); resize();
@@ -501,11 +556,12 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
     });
 
     api.current = {
-      select: applySelection,
+      select: (id) => { const changed = id !== currentSel; applySelection(id); if (changed) flyTo(id); },
       invalidate: () => { dirty = true; },
       resetView: () => { camera.position.set(8.5, 5.2, 13.5); controls.target.set(0, 3.6, 0); controls.update(); dirty = true; },
     };
     applySelection(selected);
+    if (selected) { flyTo(selected); if (flight) { flight.t0 -= flight.ms; stepFlight(performance.now()); } }   // arrive at once on load
 
     return () => {
       alive = false; cancelAnimationFrame(raf); ro.disconnect();

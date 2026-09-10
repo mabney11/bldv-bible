@@ -159,11 +159,11 @@ export function bandOf(yFraction) {
 }
 
 export const STONE = {
-  id: 'stone', title: 'The aban (stone) gazar (cut) out laa (NOT) yadayan (hands)', words: ['aban'], materialWord: 'aban', material: 'stone',
+  id: 'stone', title: 'The aban (stone) gazar (cut) out laa (without) yadayan (hands)', words: ['aban'], materialWord: 'aban', material: 'stone',
   tag: 'aban (stone)', verses: [34, 35, 44, 45], keys: ['aban', 'tawar'],
   dreamRef: 'Daniel 2:34–35', meaningRef: 'Daniel 2:44–45',
   named: { kingdom: 'the malakaw (kingdom) the Alahayam of shamayan (heaven) qawam (raises up)', who: '"which shall ilam (never) be chabal (destroyed) … it shall qawam (stand) ilam (forever)"', ref: 'Daniel 2:44',
-    note: 'Gazar (cut) out of the tawar (mountain), laa (NOT) by yadayan (hands); it strikes the ragal (feet), the whole tzalam (likeness) becomes iwar (chaff), and the aban (stone) becomes a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).' },
+    note: 'Gazar (cut) out of the tawar (mountain), laa (without) yadayan (hands); it strikes the ragal (feet), the whole tzalam (likeness) becomes iwar (chaff), and the aban (stone) becomes a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).' },
   parallel: { ref: 'Psalm 118:22; Isaiah 28:16; Isaiah 2:2–3; Matthew 21:42–44; Luke 20:17–18; 1 Peter 2:6–8', note: 'The aban (stone) the builders rejected; the tried, precious corner aban (stone); the tawar (mountain) of the house of Yah set above the hills; "on whomever it falls, it will scatter him as dust".' },
   traditional: 'The malakaw (kingdom) of the Mashayach (Messiah) / the malakaw (kingdom) of shamayan (heaven)',
   mountain: { ref: 'Isaiah 2:2–3; Micah 4:1–2; Isaiah 11:9; Isaiah 25:6; Ezekiel 36:8; Isaiah 65:25',
@@ -191,7 +191,7 @@ export const SPEEDS = [0.25, 0.5, 1, 2];
 export const BREAK_DELAY = { feet: 0, legs: 0.12, belly: 0.24, chest: 0.36, head: 0.5 };
 
 export const PHASES = [
-  { from: 0,             key: 'falls',    caption: 'An aban (stone), gazar (cut) out laa (NOT) yadayan (hands), comes down.', ref: 'Daniel 2:34' },
+  { from: 0,             key: 'falls',    caption: 'An aban (stone), gazar (cut) out laa (without) yadayan (hands), comes down.', ref: 'Daniel 2:34' },
   { from: HIT,           key: 'strikes',  caption: 'It strikes the tzalam (likeness) on its ragal (feet) of parazal (iron) and chasap (clay), and daqaq (breaks) them in pieces.', ref: 'Daniel 2:34' },
   { from: HIT + 0.55,    key: 'shatters', caption: 'Then the parazal (iron), the chasap (clay), the nachash (brass), the kasap (silver) and the dahab (gold) are daqaq (broken) in pieces chad (together).', ref: 'Daniel 2:35' },
   { from: DUST_FROM,     key: 'chaff',    caption: 'They become like the iwar (chaff) of the qayat (summer) threshing floors, and the rawach (wind) nashaa (lifts) them away, so that no athar (place) is shakach (found) for them.', ref: 'Daniel 2:35' },

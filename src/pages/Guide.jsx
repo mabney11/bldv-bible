@@ -42,7 +42,7 @@ const SECTIONS = [
     id: 'maps',
     ico: '🗺',
     title: 'Maps & Models',
-    body: 'The Holy Land in 3D is drawn from the text, not traced from an atlas: the tribal allotments of Yahawashawai (Joshua) 13–19, the millennial bands of Yachazaqaal (Ezekiel) 47–48 with the Holy Portion measured in cubits, the cities with their verses, and the rivers and seas under the names the Bible gives them. Tap any portion, city or water for its verses; every border and measurement says which verse it comes from. The Statue of the Dream is Daniel 2 in 3D: tap the dahab (gold), kasap (silver), nachash (brass), parazal (iron) and chasap (clay) for their verses, then play the aban (stone) gazar (cut) out laa (NOT) yadayan (hands) striking the tzalam (likeness) to pieces.',
+    body: 'The Holy Land in 3D is drawn from the text, not traced from an atlas: the tribal allotments of Yahawashawai (Joshua) 13–19, the millennial bands of Yachazaqaal (Ezekiel) 47–48 with the Holy Portion measured in cubits, the cities with their verses, and the rivers and seas under the names the Bible gives them. Tap any portion, city or water for its verses; every border and measurement says which verse it comes from. The Statue of the Dream is Daniel 2 in 3D: tap the dahab (gold), kasap (silver), nachash (brass), parazal (iron) and chasap (clay) for their verses, then play the aban (stone) gazar (cut) out laa (without) yadayan (hands) striking the tzalam (likeness) to pieces.',
     links: [
       { to: '/models/holy-land', label: 'The Holy Land in 3D' },
       { to: '/models/holy-land?overlay=joshua', label: 'Joshua’s allotments' },

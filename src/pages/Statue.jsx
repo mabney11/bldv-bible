@@ -154,7 +154,7 @@ function Passage({ selected, selectable, onPick }) {
           <p key={n} className={`st-v${onVerses.has(n) ? ' on' : ''}`}>
             <sup>{n}</sup>
             {verseParts(String(v.text || ''), n).map((part, i) => part.piece
-              ? <button key={i} type="button" className={`st-w${part.piece === selected ? ' hl' : ''}${part.piece !== 'stone' && !selectable.includes(part.piece) ? ' broken' : ''}`} onClick={() => onPick(part.piece)} title={pieceById(part.piece)?.title}><GlossPair heb={part.heb} gloss={part.gloss} /></button>
+              ? <button key={i} type="button" className={`st-w${part.piece === selected ? ' hl' : ''}`} onClick={() => onPick(part.piece)} title={pieceById(part.piece)?.title}><GlossPair heb={part.heb} gloss={part.gloss} /></button>
               : part.heb ? <GlossPair key={i} heb={part.heb} gloss={part.gloss} /> : <span key={i}>{part.t}</span>)}
           </p>
         );
@@ -260,7 +260,7 @@ function Section({ id, title, sub, children }) {
 
 // ── The page ─────────────────────────────────────────────────────────────────
 export default function Statue() {
-  usePageTitle(pageTitle('The Statue of the Dream — Maps & Models'), 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (NOT) yadayan (hands) — an interactive model: tap the dahab (gold), the kasap (silver), the nachash (brass), the parazal (iron) and the chasap (clay) for their verses, and play the aban (stone) striking it to pieces.');
+  usePageTitle(pageTitle('The Statue of the Dream — Maps & Models'), 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (without) yadayan (hands) — an interactive model: tap the dahab (gold), the kasap (silver), the nachash (brass), the parazal (iron) and the chasap (clay) for their verses, and play the aban (stone) striking it to pieces.');
   const [params, setParams] = useSearchParams();
   const canGL = useMemo(webglAvailable, []);
   const view = VIEWS.includes(params.get('view')) ? params.get('view') : (canGL ? '3d' : '2d');
@@ -354,7 +354,7 @@ export default function Statue() {
               <label className="st-loop"><input id="st-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
             </div>
           </div>
-          <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}<Glossed text="Tap a piece for its verses; once it is daqaq (broken) it cannot be chosen — at the end only the aban (stone) remains." /></p>
+          <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}<Glossed text="Tap a piece, a tag or a word in the text for its verses — the view flies to it. At the end only the aban (stone) remains." /></p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Pieces &amp; verses ↑</button>
         </section>
 

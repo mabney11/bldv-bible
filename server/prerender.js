@@ -1157,7 +1157,7 @@ const STATIC_PAGES = {
   },
   '/models/statue': {
     title: `The Statue of the Dream | ${BRAND}`,
-    description: 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (NOT) yadayan (hands) as an interactive 3D model — the raash (head) of dahab (gold), kasap (silver), nachash (brass), parazal (iron) and chasap (clay) with their verses, and the aban (stone) striking the tzalam (likeness) to pieces.',
+    description: 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (without) yadayan (hands) as an interactive 3D model — the raash (head) of dahab (gold), kasap (silver), nachash (brass), parazal (iron) and chasap (clay) with their verses, and the aban (stone) striking the tzalam (likeness) to pieces.',
     heading: 'The Statue of the Dream',
   },
   '/guide': {

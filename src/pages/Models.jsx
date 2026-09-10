@@ -29,7 +29,7 @@ export const MODELS = [
     slug: 'statue',
     title: 'The Statue of the Dream',
     kicker: 'Interactive 3D model · Daniel 2',
-    blurb: 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) — the raash (head) of dahab (gold), the chaday (breast) and darai (arms) of kasap (silver), the maih (belly) and yarakaa (thighs) of nachash (brass), the shaq (legs) of parazal (iron), the ragal (feet) of parazal (iron) and chasap (clay) — and the aban (stone) gazar (cut) out laa (NOT) yadayan (hands). Tap any piece for the text\'s own words and verses; play the aban (stone) striking it to pieces, scrub through the fall, and see that only the aban (stone) remains.',
+    blurb: 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) — the raash (head) of dahab (gold), the chaday (breast) and darai (arms) of kasap (silver), the maih (belly) and yarakaa (thighs) of nachash (brass), the shaq (legs) of parazal (iron), the ragal (feet) of parazal (iron) and chasap (clay) — and the aban (stone) gazar (cut) out laa (without) yadayan (hands). Tap any piece for the text\'s own words and verses; play the aban (stone) striking it to pieces, scrub through the fall, and see that only the aban (stone) remains.',
     paleo: '𐤑𐤋𐤌 𐤀𐤁𐤍',
     tags: ['Daniel 2:31–45', 'Daniel 7–8', '3D · 2D sheet', 'Animation'],
     to: '/models/statue',
@@ -56,7 +56,7 @@ export const MODELS = [
 ];
 
 export default function Models() {
-  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, and the tzalam (likeness) of Daniel 2 with the aban (stone) gazar (cut) out laa (NOT) yadayan (hands).');
+  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, and the tzalam (likeness) of Daniel 2 with the aban (stone) gazar (cut) out laa (without) yadayan (hands).');
   return (
     <div className="models-page">
       <header className="models-top">

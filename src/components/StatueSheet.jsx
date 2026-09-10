@@ -128,7 +128,9 @@ export default function StatueSheet({ clock, selected, onSelect, tagsRef }) {
       stone.style.display = st.visible ? '' : 'none';
       stone.setAttribute('transform', `translate(${(px(st.x) + Math.sin(t * 97) * 3 * sh).toFixed(1)} ${(py(st.y) - Math.abs(Math.sin(t * 131)) * 3 * sh).toFixed(1)}) rotate(${(-st.spin * 57.3 + Math.sin(t * 121) * 4 * sh).toFixed(1)}) scale(${(st.scale || 1).toFixed(3)})`);
       const cam = cameraAt(t);
-      if ((cam && !zoom) || (!cam && zoom) || cam) { zoom = cam; fitFrame(); }
+      if (cam) { zoom = cam; scriptedNow = true; fitFrame(); }
+      else if (scriptedNow) { scriptedNow = false; zoom = null; fitFrame(); if (currentSel) flyTo(currentSel); }
+      else if (currentSel === 'stone' && !flight && zoom) { zoom = focusFor('stone', t); fitFrame(); }   // follow the falling stone
       const mt = mountainAt(t);
       if (mt.visible) {
         const k = STONE.r + mt.scale * 11, cx = px(mt.x), base = py(0);
@@ -144,8 +146,41 @@ export default function StatueSheet({ clock, selected, onSelect, tagsRef }) {
       const j = t - HIT;
       world.setAttribute('transform', j > 0 && j < 0.32 ? `translate(${(Math.sin(t * 173) * (0.32 - j) * 12).toFixed(1)} ${(Math.cos(t * 191) * (0.32 - j) * 8).toFixed(1)})` : '');
     }
+    let currentSel = null, scriptedNow = false;
     function applySelection(id) {
+      currentSel = id;
       svg.querySelectorAll('.st-svg-pick').forEach((n) => n.classList.toggle('on', !!id && n.getAttribute('data-id') === id));
+    }
+    // ── Focus: the frame glides to the chosen piece (or back out to the whole
+    // sheet); as in the scene, the ending's scripted view takes precedence.
+    const FULL = { target: [0, 0], distance: 15.5 };
+    let flight = null;
+    function focusFor(id, t) {
+      const aspect = host.clientWidth && host.clientHeight ? host.clientWidth / host.clientHeight : 1;
+      const fit = (height) => Math.max(3.4, Math.min(15.5, (height + 2.2) * 2.2 / Math.min(1, aspect)));
+      if (!id) return FULL;
+      if (id === 'stone') {
+        const st = stoneAt(t), mt = mountainAt(t);
+        if (st.visible) return { target: [st.x, st.y], distance: fit(STONE.r * 2.6) };
+        const hgt = (STONE.r + mt.scale * 11) * 0.8;
+        return { target: [mt.x, hgt * 0.45], distance: fit(hgt) };
+      }
+      const p = PIECES.find((q) => q.id === id); if (!p) return null;
+      return { target: [0, p.y0 + p.h / 2], distance: fit(p.h) };
+    }
+    function flyTo(id) {
+      if (scriptedNow) return;
+      const to = focusFor(id, clock.t); if (!to) return;
+      const from = zoom || FULL;
+      flight = { from, to, t0: performance.now(), ms: id ? 650 : 500, end: id ? to : null };
+      const step = (now) => {
+        if (!alive || flight?.to !== to) return;
+        const k = Math.min(1, (now - flight.t0) / flight.ms), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+        zoom = { target: [from.target[0] + (to.target[0] - from.target[0]) * e, from.target[1] + (to.target[1] - from.target[1]) * e], distance: from.distance + (to.distance - from.distance) * e };
+        fitFrame(); placeTags(clock.t);
+        if (k < 1) requestAnimationFrame(step); else { zoom = flight.end; flight = null; fitFrame(); placeTags(clock.t); }
+      };
+      requestAnimationFrame(step);
     }
     const onClick = (e) => {
       const n = e.target.closest?.('.st-svg-pick');
@@ -177,8 +212,9 @@ export default function StatueSheet({ clock, selected, onSelect, tagsRef }) {
     let raf = 0, last = -1, alive = true, lastW = 0;
     const frame = () => { if (!alive) return; raf = requestAnimationFrame(frame); const w = host.clientWidth; if (clock.t !== last || w !== lastW) { last = clock.t; lastW = w; place(clock.t); placeTags(clock.t); } };
     place(clock.t); frame();
-    api.current = { select: applySelection };
+    api.current = { select: (id) => { const changed = id !== currentSel; applySelection(id); if (changed) flyTo(id); } };
     applySelection(selected);
+    if (selected) { zoom = focusFor(selected, clock.t); fitFrame(); }
     return () => { alive = false; cancelAnimationFrame(raf); ro.disconnect(); svg.removeEventListener('click', onClick); svg.removeEventListener('keydown', onKey); host.removeChild(svg); api.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
