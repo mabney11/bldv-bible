@@ -30,6 +30,8 @@ export const WORDS = {
   chasap:  { translit: 'Chasap',    paleo: '𐤇𐤎𐤐',  en: 'clay',   sn: 'H2635' },
   aban:    { translit: 'Aban',      paleo: '𐤀𐤁𐤍',  en: 'stone',  sn: 'H69' },
   yashapah:{ translit: 'Yashapah',  paleo: '𐤉𐤔𐤐𐤄', en: 'jasper', sn: 'H3471' },
+  har:     { translit: 'Har',       paleo: '𐤄𐤓',   en: 'mountain (Hebrew)', sn: 'H2022' },
+  arach:   { translit: 'Arach',     paleo: '𐤀𐤓𐤇',  en: 'path', sn: 'H734' },
   tawar:   { translit: 'Tawar',     paleo: '𐤈𐤅𐤓',  en: 'mountain', sn: 'H2906' },
   rawach:  { translit: 'Rawach',    paleo: '𐤓𐤅𐤇',  en: 'wind / spirit', sn: 'H7308' },
   daqaq:   { translit: 'Daqaq',     paleo: '𐤃𐤒𐤒',  en: 'break in pieces', sn: 'H1855' },
@@ -163,6 +165,8 @@ export const STONE = {
     note: 'Gazar (cut) out of the tawar (mountain), laa (NOT) by yadayan (hands); it strikes the ragal (feet), the whole tzalam (likeness) becomes iwar (chaff), and the aban (stone) becomes a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).' },
   parallel: { ref: 'Psalm 118:22; Isaiah 28:16; Isaiah 2:2–3; Matthew 21:42–44; Luke 20:17–18; 1 Peter 2:6–8', note: 'The aban (stone) the builders rejected; the tried, precious corner aban (stone); the tawar (mountain) of the house of Yah set above the hills; "on whomever it falls, it will scatter him as dust".' },
   traditional: 'The malakaw (kingdom) of the Mashayach (Messiah) / the malakaw (kingdom) of shamayan (heaven)',
+  mountain: { ref: 'Isaiah 2:2–3; Micah 4:1–2; Isaiah 11:9; Isaiah 25:6; Ezekiel 36:8; Isaiah 65:25',
+    note: 'Daniel says only that the aban (stone) becomes a rab (great) tawar (mountain) that malaa (fills) the arai (earth); the prophets say what that mountain is like. It is the har (mountain) of Yahawah\'s bayath (house), kawan (established) on the raash (head) of the harayam (mountains), and all gawayam (nations) nahar (flow) to it: "yalak (come), let\'s ilah (go up) to the har (mountain) of Yahawah … he will yarah (teach) us of his darak (ways), and we will yalak (walk) in his arach (paths)" — that is why this mountain is climbed by many arach (paths). "They will not raii (evil) nor shachath (destroy) in all my qadash (holy) har (mountain); for the aratz (earth) will be malaa (full) of the daih (knowledge) of Yahawah" — that is why it is green and teeming with life: the haray (mountains) of Yashar-Al (Israel) nathan (give) forth their branches and nashaa (lift) their paray (fruit), and on this har (mountain) is a mashathah (feast) for all imayam (peoples). The Hebrew prophets say har (𐤄𐤓); Daniel\'s Aramaic says tawar (𐤈𐤅𐤓).' },
   colour: { ref: 'Exodus 28:20; Revelation 4:3; Revelation 21:11, 18–19', note: 'The aban (stone) here is shown as yashapah (jasper): the last of the abanay (stones) of the breastplate, the look of the One on the throne — "like a yashapah (jasper) stone and a sardius" — and the stone of the city that comes down from shamayan (heaven): her light "as if it were a jasper stone, clear as crystal", her wall of jasper, her first foundation jasper. The tawar (mountain) it becomes is the same stone grown.' },
   r: 0.46,
   start: { x: -4.6, y: 7.3, z: 1.6 },       // in the air, well clear of the statue

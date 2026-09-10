@@ -128,7 +128,7 @@ function Card({ id, selectable, ended, onClose, onPick }) {
         <button type="button" className="st-card-x" onClick={onClose} aria-label="Close">×</button>
       </div>
       <div className="st-words">
-        {[...new Set([...item.words, item.materialWord, ...(isStone ? ['yashapah', 'tawar', 'rawach'] : [])])].map((k) => <Word key={k} k={k} />)}
+        {[...new Set([...item.words, item.materialWord, ...(isStone ? ['yashapah', 'tawar', 'har', 'arach', 'rawach'] : [])])].map((k) => <Word key={k} k={k} />)}
       </div>
       {gone && !isStone && <p className="st-gone">This piece is daqaq (broken) in pieces at this moment of the vision — scrub back to see it whole. <span className="st-gone-ref">Daniel 2:35</span></p>}
       {ended && isStone && <p className="st-only">Only the aban (stone) remains. The tzalam (likeness) is gone — "no athar (place) was shakach (found) for them" — and the aban (stone) has become a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).</p>}
@@ -154,6 +154,15 @@ function Card({ id, selectable, ended, onClose, onPick }) {
 
       <div className="st-detail-sub">Common reading <em>(interpretation, not the text)</em></div>
       <p className="st-trad">{item.traditional}</p>
+      {item.mountain && (
+        <>
+          <div className="st-detail-sub">The tawar (mountain) it becomes</div>
+          <div className="st-par">
+            <p>{item.mountain.note}</p>
+            <PassageRefs refs={item.mountain.ref} size="sm" />
+          </div>
+        </>
+      )}
       {item.colour && (
         <>
           <div className="st-detail-sub">Why it is jasper</div>

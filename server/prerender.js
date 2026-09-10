@@ -1259,10 +1259,13 @@ async function renderSnapshot(pathname, query, port, indexHtmlPath) {
     if (route) {
       const qs = query.toString();
       const cacheKey = pathname + (qs ? '?' + qs : '');
+      // Shell check FIRST: it clears the snapshot cache when index.html changed,
+      // so a page rendered before a rebuild cannot be served from the cache with
+      // the previous bundle's script tag (that exact thing happened 2026-09-10).
+      loadShell(indexHtmlPath);
       const cached = cacheGet(cacheKey);
       if (cached !== undefined) return cached;
 
-      loadShell(indexHtmlPath);
       const { title, description, body, canonicalPath } = await route.build(query, port);
       // A route may name its own canonical (see englishChapterRoute's
       // canonicalPath — collapses ?verse=/&lang=/etc. variants onto the
