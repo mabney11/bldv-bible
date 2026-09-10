@@ -1,6 +1,10 @@
 /* Statue.css — /models/statue, the statue of Daniel 2 and the stone */
 
-.st-page { min-height: 100vh; background: var(--bg); color: var(--text); display: flex; flex-direction: column; }
+.st-page { height: 100dvh; background: var(--bg); color: var(--text); display: flex; flex-direction: column; }
+/* The page is exactly one viewport tall on desktop so the side panel is the
+   thing that scrolls (the stage already fits the viewport). Before this the
+   panel was overflow:auto but never taller than its content, and with
+   overscroll-behavior:contain the wheel over it went nowhere. */
 .st-top {
   display: flex; align-items: center; gap: 12px;
   padding: calc(10px + var(--safe-top)) 16px 10px;
@@ -22,7 +26,7 @@
 .st-view:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .st-main { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 0; min-height: 0; }
-.st-stagewrap { display: flex; flex-direction: column; min-width: 0; padding: 14px 16px calc(16px + var(--safe-bottom)); gap: 10px; }
+.st-stagewrap { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: auto; padding: 14px 16px calc(16px + var(--safe-bottom)); gap: 10px; }
 .st-stagebox { position: relative; display: flex; flex-direction: column; gap: 8px; }
 .st-stage { position: relative; border-radius: 10px; overflow: hidden; background: #1a1a24; border: 1px solid var(--border2); aspect-ratio: 4 / 3; max-height: calc(100vh - 290px); min-height: 300px; }
 .st-gl, .st-sheet { position: absolute; inset: 0; }
@@ -93,10 +97,14 @@
 .st-v { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--text); font-family: var(--reader-font, inherit); padding: 4px 8px 4px 9px; border-left: 3px solid transparent; border-radius: 4px; }
 .st-v sup { color: var(--gold); font-size: 10px; margin-right: 5px; font-weight: 700; }
 .st-v.on { border-left-color: var(--gold); background: color-mix(in srgb, var(--gold) 9%, transparent); }
-.st-w { font: inherit; color: inherit; background: none; border: 0; padding: 0 1px; margin: 0; cursor: pointer; border-bottom: 1px dotted var(--text4); border-radius: 2px; }
-.st-w:hover { border-bottom-color: var(--gold); color: var(--gold); }
-.st-w.broken { opacity: 0.6; }
-.st-w.hl { background: color-mix(in srgb, var(--gold) 32%, transparent); border-bottom: 1px solid var(--gold); color: var(--text); font-weight: 600; padding: 0 3px; }
+/* Like the Reader: the transliterated Hebrew/Aramaic word gold, the English
+   gloss white. Piece words are buttons with a faint gold dotted rule under them
+   so they read as tappable; the words themselves keep the same two colours. */
+.st-root { color: var(--gold); font-weight: 600; }
+.st-w { font: inherit; color: var(--text); background: none; border: 0; padding: 0 1px; margin: 0; cursor: pointer; border-bottom: 1px dotted color-mix(in srgb, var(--gold) 55%, transparent); border-radius: 2px; }
+.st-w:hover { border-bottom-color: var(--gold); background: color-mix(in srgb, var(--gold) 12%, transparent); }
+.st-w.broken { opacity: 0.55; }
+.st-w.hl { background: color-mix(in srgb, var(--gold) 22%, transparent); border-bottom: 1px solid var(--gold); font-weight: 600; padding: 0 3px; }
 .st-w:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
 
 .st-words { display: flex; flex-direction: column; gap: 4px; }
@@ -128,6 +136,8 @@
 .st-trad { margin: 0; font-size: 13px; color: var(--text2); line-height: 1.5; }
 
 @media (max-width: 860px) {
+  .st-page { height: auto; min-height: 100dvh; }
+  .st-stagewrap { overflow: visible; }
   .st-main { grid-template-columns: minmax(0, 1fr); }
   .st-stage { aspect-ratio: 4 / 5; max-height: none; }
   .st-opts { width: 100%; justify-content: flex-start; }

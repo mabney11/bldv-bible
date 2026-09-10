@@ -108,6 +108,10 @@ function loadPassage() {
     .catch(() => []);
   return _passagePromise;
 }
+// Every "heb (gloss)" pair in the text becomes a part — the ones that name a
+// piece of the image carry `piece` and render as buttons; the rest render as
+// plain text. Both are shown the way the Reader shows them: the transliterated
+// Hebrew/Aramaic word gold (.st-root), the English gloss white beside it.
 const WORD_RE = /\b([A-Za-z][A-Za-z-]*)\s*\(([^)]*)\)/g;
 function verseParts(text, verse) {
   const out = []; let last = 0, seenRagal = false, m;
@@ -115,14 +119,14 @@ function verseParts(text, verse) {
   while ((m = WORD_RE.exec(text))) {
     const piece = pieceForWord(m[1], verse, seenRagal);
     if (m[1].toLowerCase().startsWith('ragal')) seenRagal = true;
-    if (!piece) continue;
     if (m.index > last) out.push({ t: text.slice(last, m.index) });
-    out.push({ t: m[0], piece });
+    out.push({ t: m[0], heb: m[1], gloss: m[2], piece });
     last = m.index + m[0].length;
   }
   if (last < text.length) out.push({ t: text.slice(last) });
   return out;
 }
+const Glossed = ({ heb, gloss }) => <><span className="st-root">{heb}</span> ({gloss})</>;
 
 function Passage({ selected, selectable, onPick }) {
   const [verses, setVerses] = useState(null);
@@ -151,8 +155,8 @@ function Passage({ selected, selectable, onPick }) {
           <p key={n} className={`st-v${onVerses.has(n) ? ' on' : ''}`}>
             <sup>{n}</sup>
             {verseParts(String(v.text || ''), n).map((part, i) => part.piece
-              ? <button key={i} type="button" className={`st-w${part.piece === selected ? ' hl' : ''}${part.piece !== 'stone' && !selectable.includes(part.piece) ? ' broken' : ''}`} onClick={() => onPick(part.piece)} title={pieceById(part.piece)?.title}>{part.t}</button>
-              : <span key={i}>{part.t}</span>)}
+              ? <button key={i} type="button" className={`st-w${part.piece === selected ? ' hl' : ''}${part.piece !== 'stone' && !selectable.includes(part.piece) ? ' broken' : ''}`} onClick={() => onPick(part.piece)} title={pieceById(part.piece)?.title}><Glossed heb={part.heb} gloss={part.gloss} /></button>
+              : part.heb ? <Glossed key={i} heb={part.heb} gloss={part.gloss} /> : <span key={i}>{part.t}</span>)}
           </p>
         );
       })}
