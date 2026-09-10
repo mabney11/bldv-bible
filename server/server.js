@@ -632,7 +632,13 @@ function _buildTranslitRenumberIndex() {
 // to this regex's [^()]* never being able to cross the inner "(", so the
 // whole span silently never matched (not a lexicon lookup miss, not the
 // isUntouchedBaselineDraft guard — this verse passed that fine).
-const ENGLISH_GLOSS_RX = /\b([A-Za-z]+)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g;
+// (?<![A-Za-z-]) rather than \b: a hyphenated compound name — "Yashar-Al
+// (Israel)", "Bayath-Lacham (house of bread)" — must never be reglossed by
+// its LAST part alone. With \b the match started at "Al", the lexicon's
+// אל→"toward" won, and every apocrypha verse read "Yashar-Al (toward)"
+// (2026-09-10, seen live in Greek Esther 13 and Words of Azariah; the gloss
+// after a hyphenated name is the name-forms pass's business, not this one's).
+const ENGLISH_GLOSS_RX = /(?<![A-Za-z-])([A-Za-z]+)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g;
 function applyLiveGloss(text) {
     if (!text) return text;
     if (!_translitGlossIndex) _translitGlossIndex = _buildTranslitGlossIndex();
