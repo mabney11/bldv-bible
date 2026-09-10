@@ -211,7 +211,7 @@ async function loadKingInner(mats) {
   return { groups, samplers };
 }
 
-export default function StatueScene({ clock, selected, onSelect, onReady, tagsRef }) {
+export default function StatueScene({ clock, selected, onSelect, onReady }) {
   const wrap = useRef(null);
   const api = useRef(null);
 
@@ -374,11 +374,26 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
     // azimuth is kept so an orbit they made still counts; when the scrub leaves that
     // stretch the default view comes back. Between t changes the orbit is free.
     const DEFAULT_POS = new THREE.Vector3(8.5, 5.2, 13.5), DEFAULT_TARGET = new THREE.Vector3(0, 3.6, 0);
+    // The overview: the whole scene — the statue AND the stone hanging beside it —
+    // in frame whatever the stage's shape, from the default angle. On a phone held
+    // upright that means further back than on a wide screen.
+    function overview() {
+      const aspect = camera.aspect || 1, fov = THREE.MathUtils.degToRad(camera.fov);
+      const x0 = STONE.start.x - STONE.r * 1.3, x1 = 1.4, y0 = 0, y1 = Math.max(H_TOTAL, STONE.start.y + STONE.r) + 0.3;
+      const tgt = new THREE.Vector3((x0 + x1) / 2, (y0 + y1) / 2, 0.4);
+      const dh = (y1 - y0) / 2 / Math.tan(fov / 2), dw = (x1 - x0) / 2 / (Math.tan(fov / 2) * aspect);
+      return { tgt, dist: Math.max(dh, dw) * 1.12 + 1.5 };
+    }
+    function goOverview() {
+      const o = overview(); off.copy(DEFAULT_POS).sub(DEFAULT_TARGET).setLength(o.dist);
+      controls.target.copy(o.tgt); camera.position.copy(o.tgt).add(off); dirty = true;
+    }
+    let userMoved = false;
     const sph = new THREE.Spherical(), off = new THREE.Vector3(), tgt = new THREE.Vector3();
     let scripted = false;
     function scriptCamera(cam) {
       if (!cam) {
-        if (scripted) { camera.position.copy(DEFAULT_POS); controls.target.copy(DEFAULT_TARGET); scripted = false; if (currentSel) flyTo(currentSel); }
+        if (scripted) { goOverview(); scripted = false; if (currentSel) flyTo(currentSel); }
         return;
       }
       scripted = true; flight = null; followFrom = null;
@@ -403,7 +418,7 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
           const isMountain = m === mountain || mountain.children?.includes(m);
           // Textured props (the jasper stone, the green mountain) take less than the
           // metal pieces, so their own colour still reads through the glow.
-          m.material.emissive.copy(GOLD_GLOW).multiplyScalar(isMountain ? 0.12 : m.material.map ? 0.26 : 0.45);
+          m.material.emissive.copy(GOLD_GLOW).multiplyScalar(isMountain ? 0.12 : m.material.map ? 0.26 : 0.36);
           glowTargets.push(m);
         }
       });
@@ -419,7 +434,7 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
     function focusFor(id, t) {
       const aspect = camera.aspect || 1, fov = THREE.MathUtils.degToRad(camera.fov);
       const fit = (height) => Math.max(2.6, (height / 2 + 0.6) / Math.tan(fov / 2) / Math.min(1, aspect) * 1.1);
-      if (!id) return { tgt: DEFAULT_TARGET.clone(), dist: DEFAULT_POS.distanceTo(DEFAULT_TARGET) };
+      if (!id) return overview();
       if (id === 'stone') {
         const st = stoneAt(t), mt = mountainAt(t);
         if (st.visible) return { tgt: new THREE.Vector3(st.x, st.y, st.z), dist: fit(STONE.r * 2.6) };
@@ -449,7 +464,7 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
       if (k >= 1) flight = null;
       return true;
     }
-    controls.addEventListener('start', () => { flight = null; });
+    controls.addEventListener('start', () => { flight = null; userMoved = true; });
     // While the stone is the focus and the timeline moves it, the view follows it.
     const follow = new THREE.Vector3();
     let followFrom = null;
@@ -501,37 +516,14 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
       if (!dirty) return;
       dirty = false;
       renderer.render(scene, camera);
-      placeTags(t);
-    }
-    // The floating tags (buttons the page renders over the stage): put each one
-    // beside its piece's screen position; hide it once the piece has shattered.
-    const tagV = new THREE.Vector3();
-    function placeTags(t) {
-      const box = tagsRef?.current; if (!box) return;
-      const w = el.clientWidth, h = el.clientHeight;
-      const put = (id, x, y, z, show) => {
-        const btn = box.querySelector(`[data-id="${id}"]`); if (!btn) return;
-        tagV.set(x, y, z).project(camera);
-        const visible = show && tagV.z < 1 && Math.abs(tagV.x) < 1.2 && Math.abs(tagV.y) < 1.2;
-        btn.style.visibility = visible ? 'visible' : 'hidden';
-        if (!visible) return;
-        const sx = (tagV.x + 1) / 2 * w, sy = (1 - tagV.y) / 2 * h;
-        // On a narrow stage a tag that would run off the right edge sits to the
-        // LEFT of its anchor instead (leader line on its right).
-        const flip = sx + 14 + btn.offsetWidth > w - 4;
-        btn.classList.toggle('flip', flip);
-        btn.style.transform = `translate(${(flip ? sx - btn.offsetWidth : sx).toFixed(1)}px, ${sy.toFixed(1)}px)`;
-      };
-      for (const p of PIECES) put(p.id, 0.55, p.y0 + p.h * 0.55, 0.5, figureReady && pieceWholeAt(p, t));
-      const st = stoneAt(t), mt = mountainAt(t);
-      if (st.visible) put('stone', st.x, st.y + STONE.r * 1.2, st.z, stoneReady);
-      else put('stone', mt.x, (STONE.r * 1.2 + mt.scale * 9) * 0.98, mt.z, stoneReady);
     }
     function resize() {
       const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;
       renderer.setSize(w, h, false);
       camera.aspect = w / h; camera.updateProjectionMatrix();
       controls.minDistance = 2.5;
+      // Until the viewer takes the camera, the overview re-fits to the stage's shape.
+      if (!userMoved && !currentSel && !scripted && !flight) goOverview();
       dirty = true;
     }
     const ro = new ResizeObserver(resize); ro.observe(el); resize();
@@ -558,7 +550,7 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
     api.current = {
       select: (id) => { const changed = id !== currentSel; applySelection(id); if (changed) flyTo(id); },
       invalidate: () => { dirty = true; },
-      resetView: () => { camera.position.set(8.5, 5.2, 13.5); controls.target.set(0, 3.6, 0); controls.update(); dirty = true; },
+      resetView: () => { goOverview(); controls.update(); },
     };
     applySelection(selected);
     if (selected) { flyTo(selected); if (flight) { flight.t0 -= flight.ms; stepFlight(performance.now()); } }   // arrive at once on load

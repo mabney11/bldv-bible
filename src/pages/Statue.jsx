@@ -269,7 +269,6 @@ export default function Statue() {
   const player = usePlayer();
   const { clock, playing, speed, setSpeed, loop, setLoop, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef } = player;
   const [sheetOpen, setSheetOpen] = useState(!!sel);
-  const tagsRef = useRef(null);   // the floating tags over the stage; the renderer places them
 
   const setParam = useCallback((k, v) => {
     const q = new URLSearchParams(params);
@@ -319,11 +318,15 @@ export default function Statue() {
           <div className="st-stagebox">
             <div className="st-stage">
               {use3d
-                ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><StatueScene clock={clock} selected={shownSel} onSelect={select} onReady={(ok) => { if (!ok) setGlOk(false); }} tagsRef={tagsRef} /></Suspense>
-                : <StatueSheet clock={clock} selected={shownSel} onSelect={select} tagsRef={tagsRef} />}
-              <div className="st-tags" ref={tagsRef} aria-label="Pieces">
-                {[...PIECES, STONE].map((p) => (
-                  <button key={p.id} type="button" data-id={p.id} className={`st-tag${shownSel === p.id ? ' on' : ''}`} onClick={() => select(shownSel === p.id ? null : p.id)}>{p.id === 'stone' && phase.key === 'mountain' ? 'aban (stone) · tawar (mountain)' : p.tag}</button>
+                ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><StatueScene clock={clock} selected={shownSel} onSelect={select} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
+                : <StatueSheet clock={clock} selected={shownSel} onSelect={select} />}
+              {/* One row of pieces along the bottom of the stage, the stone first:
+                  tap one and the view flies to it; tap it again to let go. */}
+              <div className="st-strip" role="toolbar" aria-label="Pieces">
+                {[STONE, ...PIECES].map((p) => (
+                  <button key={p.id} type="button" className={`st-chip${shownSel === p.id ? ' on' : ''}`} onClick={() => select(shownSel === p.id ? null : p.id)}>
+                    <Glossed text={p.id === 'stone' && phase.key === 'mountain' ? 'tawar (mountain)' : p.tag.split(' · ')[0]} />
+                  </button>
                 ))}
               </div>
             </div>
@@ -354,7 +357,7 @@ export default function Statue() {
               <label className="st-loop"><input id="st-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
             </div>
           </div>
-          <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}<Glossed text="Tap a piece, a tag or a word in the text for its verses — the view flies to it. At the end only the aban (stone) remains." /></p>
+          <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}<Glossed text="Tap a piece, one of the chips below it, or a word in the text for its verses — the view flies to it. At the end only the aban (stone) remains." /></p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Pieces &amp; verses ↑</button>
         </section>
 

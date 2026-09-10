@@ -46,7 +46,7 @@ function shapeFor(part, fill, parent) {
   return el('rect', { x: px(part.x) - part.w * S / 2, y: py(part.y + part.h), width: part.w * S, height: part.h * S, rx: 5, fill }, parent);
 }
 
-export default function StatueSheet({ clock, selected, onSelect, tagsRef }) {
+export default function StatueSheet({ clock, selected, onSelect }) {
   const wrap = useRef(null);
   const api = useRef(null);
 
@@ -63,7 +63,9 @@ export default function StatueSheet({ clock, selected, onSelect, tagsRef }) {
       const aspect = host.clientWidth && host.clientHeight ? host.clientWidth / host.clientHeight : W / H;
       let vw = aspect >= 1.25 ? W : Math.max(380, Math.min(W, Math.round(aspect * 520)));
       let vh = Math.round(vw / aspect);
-      if (!zoom) { svg.setAttribute('viewBox', `${Math.round(OX - vw / 2)} ${H - vh} ${vw} ${vh}`); return; }
+      // A narrow window is centred between the statue and the stone so both show.
+      const cx0 = vw < W ? Math.max(vw / 2, px(-1.7)) : OX;
+      if (!zoom) { svg.setAttribute('viewBox', `${Math.round(cx0 - vw / 2)} ${H - vh} ${vw} ${vh}`); return; }
       const k = Math.min(1, zoom.distance / 15.5);            // fraction of the full window
       vw = Math.round(vw * k); vh = Math.round(vh * k);
       const cx = px(zoom.target[0]), cy = py(zoom.target[1]);
@@ -177,8 +179,8 @@ export default function StatueSheet({ clock, selected, onSelect, tagsRef }) {
         if (!alive || flight?.to !== to) return;
         const k = Math.min(1, (now - flight.t0) / flight.ms), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
         zoom = { target: [from.target[0] + (to.target[0] - from.target[0]) * e, from.target[1] + (to.target[1] - from.target[1]) * e], distance: from.distance + (to.distance - from.distance) * e };
-        fitFrame(); placeTags(clock.t);
-        if (k < 1) requestAnimationFrame(step); else { zoom = flight.end; flight = null; fitFrame(); placeTags(clock.t); }
+        fitFrame();
+        if (k < 1) requestAnimationFrame(step); else { zoom = flight.end; flight = null; fitFrame(); }
       };
       requestAnimationFrame(step);
     }
@@ -189,28 +191,8 @@ export default function StatueSheet({ clock, selected, onSelect, tagsRef }) {
     const onKey = (e) => { if (e.key === 'Enter' || e.key === ' ') { const n = e.target.closest?.('.st-svg-pick'); if (n) { e.preventDefault(); onSelect?.(n.getAttribute('data-id')); } } };
     svg.addEventListener('click', onClick); svg.addEventListener('keydown', onKey);
 
-    // Floating tags: SVG user units → host pixels through the SVG's own CTM.
-    const placeTags = (t) => {
-      const box = tagsRef?.current; if (!box) return;
-      const ctm = svg.getScreenCTM(); if (!ctm) return;
-      const hostRect = host.getBoundingClientRect();
-      const put = (id, ux, uy, show) => {
-        const btn = box.querySelector(`[data-id="${id}"]`); if (!btn) return;
-        btn.style.visibility = show ? 'visible' : 'hidden'; if (!show) return;
-        const pt = svg.createSVGPoint(); pt.x = ux; pt.y = uy;
-        const sp = pt.matrixTransform(ctm);
-        const sx = sp.x - hostRect.left, sy = sp.y - hostRect.top;
-        const flip = sx + 14 + btn.offsetWidth > hostRect.width - 4;
-        btn.classList.toggle('flip', flip);
-        btn.style.transform = `translate(${(flip ? sx - btn.offsetWidth : sx).toFixed(1)}px, ${sy.toFixed(1)}px)`;
-      };
-      for (const p of PIECES) put(p.id, px(0.55), py(p.y0 + p.h * 0.55), pieceWholeAt(p, t));
-      const st = stoneAt(t), mt = mountainAt(t);
-      if (st.visible) put('stone', px(st.x), py(st.y + STONE.r * 1.2), true);
-      else put('stone', px(mt.x), py((STONE.r + mt.scale * 11) * 0.8), true);
-    };
     let raf = 0, last = -1, alive = true, lastW = 0;
-    const frame = () => { if (!alive) return; raf = requestAnimationFrame(frame); const w = host.clientWidth; if (clock.t !== last || w !== lastW) { last = clock.t; lastW = w; place(clock.t); placeTags(clock.t); } };
+    const frame = () => { if (!alive) return; raf = requestAnimationFrame(frame); const w = host.clientWidth; if (clock.t !== last || w !== lastW) { last = clock.t; lastW = w; place(clock.t); } };
     place(clock.t); frame();
     api.current = { select: (id) => { const changed = id !== currentSel; applySelection(id); if (changed) flyTo(id); } };
     applySelection(selected);
