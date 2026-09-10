@@ -7,7 +7,7 @@ const fmtDur = (ms) => {
   const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
   return h ? `${h}h ${m}m` : m ? `${m}m ${String(r).padStart(2, '0')}s` : `${r}s`;
 };
-function progress(label, total, { every = 5000, stream = process.stderr } = {}) {
+function progress(label, total, { every = 15000, stream = process.stderr } = {}) {
   const t0 = Date.now();
   let n = 0, last = t0, finished = false;
   const line = () => {

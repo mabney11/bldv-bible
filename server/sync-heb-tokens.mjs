@@ -335,10 +335,20 @@ try {
             });
             n++;
         }
-        if (ntExists) cdb.exec(`ALTER TABLE tokens_nt RENAME TO ${backup}`);
+        // The indexes FOLLOW a renamed table: after the rename below they belonged to the
+        // backup, and "CREATE INDEX IF NOT EXISTS" then found the NAME taken and silently
+        // built nothing on the new tokens_nt — every per-verse query in the server, in
+        // build-surface-index and in heb-align full-scanned 1M rows (2026-09-10: the NT
+        // resolution pass fell from 2,900 words/s to 4/s). Drop them first; the backup
+        // table is an archive and needs none.
+        if (ntExists) {
+            cdb.exec(`DROP INDEX IF EXISTS idx_tokens_nt_bcv`);
+            cdb.exec(`DROP INDEX IF EXISTS idx_tokens_nt_sn`);
+            cdb.exec(`ALTER TABLE tokens_nt RENAME TO ${backup}`);
+        }
         cdb.exec(`ALTER TABLE tokens_nt_new RENAME TO tokens_nt`);
-        cdb.exec(`CREATE INDEX IF NOT EXISTS idx_tokens_nt_bcv ON tokens_nt(book_id, chapter, verse, token_ordinal)`);
-        cdb.exec(`CREATE INDEX IF NOT EXISTS idx_tokens_nt_sn  ON tokens_nt(strongs)`);
+        cdb.exec(`CREATE INDEX idx_tokens_nt_bcv ON tokens_nt(book_id, chapter, verse, token_ordinal)`);
+        cdb.exec(`CREATE INDEX idx_tokens_nt_sn  ON tokens_nt(strongs)`);
         return n;
     });
     const written = run();
