@@ -24,10 +24,11 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { PassageRefs } from '../components/PassageRefs.jsx';
+import { apiTransChapter } from '../lib/api.js';
 import StatueSheet from '../components/StatueSheet.jsx';
 import {
-  PIECES, STONE, WORDS, MATERIALS, DURATION, SPEEDS, HIT,
-  phaseAt, selectableAt, pieceById, ALL_REFS,
+  PIECES, STONE, WORDS, DURATION, SPEEDS, HIT,
+  phaseAt, selectableAt, pieceById, ALL_REFS, PASSAGE, pieceForWord,
 } from '../lib/models/statue.js';
 import './Statue.css';
 
@@ -96,80 +97,135 @@ function Word({ k }) {
   );
 }
 
+// ── The story: Daniel 2:31–45, the text the model is drawn from ─────────────
+// Every "translit (gloss)" word that belongs to a piece is a button: tap "dahab
+// (gold)" and the head is selected. When a piece is selected its words light up
+// and its verses get a gold edge — the proof that the text is the source.
+let _passagePromise = null;
+function loadPassage() {
+  if (!_passagePromise) _passagePromise = apiTransChapter(PASSAGE.bookId, PASSAGE.chapter)
+    .then((d) => (d?.verses || []).filter((v) => +v.verse >= PASSAGE.from && +v.verse <= PASSAGE.to))
+    .catch(() => []);
+  return _passagePromise;
+}
+const WORD_RE = /\b([A-Za-z][A-Za-z-]*)\s*\(([^)]*)\)/g;
+function verseParts(text, verse) {
+  const out = []; let last = 0, seenRagal = false, m;
+  WORD_RE.lastIndex = 0;
+  while ((m = WORD_RE.exec(text))) {
+    const piece = pieceForWord(m[1], verse, seenRagal);
+    if (m[1].toLowerCase().startsWith('ragal')) seenRagal = true;
+    if (!piece) continue;
+    if (m.index > last) out.push({ t: text.slice(last, m.index) });
+    out.push({ t: m[0], piece });
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) out.push({ t: text.slice(last) });
+  return out;
+}
+
+function Passage({ selected, selectable, onPick }) {
+  const [verses, setVerses] = useState(null);
+  const box = useRef(null);
+  useEffect(() => { let live = true; loadPassage().then((vs) => { if (live) setVerses(vs); }); return () => { live = false; }; }, []);
+  const item = pieceById(selected);
+  const onVerses = item ? new Set(item.verses) : new Set();
+  useEffect(() => {
+    const first = box.current?.querySelector('.st-v.on');
+    if (first) first.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }, [selected, verses]);
+  return (
+    <div className="st-passage" ref={box}>
+      <div className="st-passage-h">
+        <span className="st-detail-sub">The text · Daniel 2:31–45</span>
+        <span className="st-passage-links">
+          <Link to={`/passage?ref=${encodeURIComponent(ALL_REFS)}`} className="st-passage-open">Open the passage →</Link>
+          <Link to={`/bible?book=${PASSAGE.bookId}&chapter=${PASSAGE.chapter}&verse=${PASSAGE.from}&verseEnd=${PASSAGE.to}`} className="st-passage-open">Reader →</Link>
+        </span>
+      </div>
+      {verses === null && <div className="st-passage-wait">Loading the text…</div>}
+      {verses && verses.length === 0 && <div className="st-passage-wait">No English text for Daniel 2 yet.</div>}
+      {verses && verses.map((v) => {
+        const n = +v.verse;
+        return (
+          <p key={n} className={`st-v${onVerses.has(n) ? ' on' : ''}`}>
+            <sup>{n}</sup>
+            {verseParts(String(v.text || ''), n).map((part, i) => part.piece
+              ? <button key={i} type="button" className={`st-w${part.piece === selected ? ' hl' : ''}`} disabled={part.piece !== 'stone' && !selectable.includes(part.piece)} onClick={() => onPick(part.piece)} title={pieceById(part.piece)?.title}>{part.t}</button>
+              : <span key={i}>{part.t}</span>)}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
 function Card({ id, selectable, ended, onClose, onPick }) {
   const item = pieceById(id);
-  if (!item) {
-    return (
-      <div className="st-card">
-        <div className="st-card-h"><div className="st-detail-sub">The tzalam (likeness) of the dream</div><h2 className="st-card-title">Tap a piece of the tzalam (likeness), or the aban (stone)</h2></div>
-        <p className="st-card-p">The malak (king) saw a rab (great) tzalam (likeness): a raash (head) of dahab (gold), chaday (breast) and darai (arms) of kasap (silver), maih (belly) and yarakaa (thighs) of nachash (brass), shaq (legs) of parazal (iron), ragal (feet) part parazal (iron) and part chasap (clay) — and an aban (stone) gazar (cut) out laa (NOT) yadayan (hands) that struck it on its ragal (feet). Each piece answers with the text's own words for it and the verses that explain it.</p>
-        <ul className="st-legend">
-          {PIECES.map((p) => (
-            <li key={p.id}>
-              <button type="button" className={`st-legend-btn${selectable.includes(p.id) ? '' : ' gone'}`} onClick={() => onPick(p.id)} disabled={!selectable.includes(p.id)}>
-                <i style={{ background: MATERIALS[p.material].color }} /> <span>{p.title}</span> <small>{WORDS[p.materialWord].translit}</small>
-              </button>
-            </li>
-          ))}
-          <li><button type="button" className="st-legend-btn" onClick={() => onPick('stone')}><i style={{ background: MATERIALS.stone.color }} /> <span>{STONE.title}</span> <small>Aban</small></button></li>
-        </ul>
-        {ended && <p className="st-only">Only the aban (stone) remains — the tzalam (likeness) is gone, and the tawar (mountain) malaa (fills) the arai (earth). <PassageRefs refs="Daniel 2:35, 44–45" size="sm" /></p>}
-        <PassageRefs refs={ALL_REFS} size="sm" />
-      </div>
-    );
-  }
   const isStone = id === 'stone';
-  const gone = !selectable.includes(id);
+  const gone = item && !isStone && !selectable.includes(id);
   return (
     <div className="st-card">
-      <div className="st-card-h">
-        <div className="st-detail-sub">{isStone ? 'The aban (stone)' : `Piece ${item.order} of 5 · ${WORDS[item.materialWord].translit.toLowerCase()} (${WORDS[item.materialWord].en})`}</div>
-        <h2 className="st-card-title">{item.title}</h2>
-        <button type="button" className="st-card-x" onClick={onClose} aria-label="Close">×</button>
-      </div>
-      <div className="st-words">
-        {[...new Set([...item.words, item.materialWord, ...(isStone ? ['yashapah', 'tawar', 'har', 'arach', 'rawach'] : [])])].map((k) => <Word key={k} k={k} />)}
-      </div>
-      {gone && !isStone && <p className="st-gone">This piece is daqaq (broken) in pieces at this moment of the vision — scrub back to see it whole. <span className="st-gone-ref">Daniel 2:35</span></p>}
-      {ended && isStone && <p className="st-only">Only the aban (stone) remains. The tzalam (likeness) is gone — "no athar (place) was shakach (found) for them" — and the aban (stone) has become a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).</p>}
-
-      <div className="st-detail-sub">In the dream</div>
-      <PassageRefs refs={item.dreamRef} autoOpen size="md" />
-      <div className="st-detail-sub">The interpretation</div>
-      <PassageRefs refs={item.meaningRef} autoOpen size="md" />
-
-      <div className="st-detail-sub">What scripture names</div>
-      <div className="st-named">
-        <div className="st-named-k">{item.named.kingdom}</div>
-        <div className="st-named-who">{item.named.who}</div>
-        <p>{item.named.note}</p>
-        <PassageRefs refs={item.named.ref} size="sm" />
-      </div>
-
-      <div className="st-detail-sub">{isStone ? 'The same aban (stone) elsewhere' : 'The parallel vision'}</div>
-      <div className="st-par">
-        <p>{item.parallel.note}</p>
-        <PassageRefs refs={item.parallel.ref} size="sm" />
-      </div>
-
-      <div className="st-detail-sub">Common reading <em>(interpretation, not the text)</em></div>
-      <p className="st-trad">{item.traditional}</p>
-      {item.mountain && (
+      {item ? (
         <>
-          <div className="st-detail-sub">The tawar (mountain) it becomes</div>
-          <div className="st-par">
-            <p>{item.mountain.note}</p>
-            <PassageRefs refs={item.mountain.ref} size="sm" />
+          <div className="st-card-h">
+            <div className="st-detail-sub">{isStone ? 'The aban (stone)' : `Piece ${item.order} of 5 · ${WORDS[item.materialWord].translit.toLowerCase()} (${WORDS[item.materialWord].en})`}</div>
+            <h2 className="st-card-title">{item.title}</h2>
+            <button type="button" className="st-card-x" onClick={onClose} aria-label="Close">×</button>
           </div>
+          <div className="st-words">
+            {[...new Set([...item.words, item.materialWord, ...(isStone ? ['yashapah', 'tawar', 'har', 'arach', 'rawach'] : [])])].map((k) => <Word key={k} k={k} />)}
+          </div>
+          {gone && <p className="st-gone">This piece is daqaq (broken) in pieces at this moment of the vision — scrub back to see it whole. <span className="st-gone-ref">Daniel 2:35</span></p>}
+          {ended && isStone && <p className="st-only">Only the aban (stone) remains. The tzalam (likeness) is gone — "no athar (place) was shakach (found) for them" — and the aban (stone) has become a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).</p>}
         </>
+      ) : (
+        <div className="st-card-h">
+          <div className="st-detail-sub">The dream Nabawakadanaatzar (Nebuchadnezzar) saw</div>
+          <h2 className="st-card-title">The tzalam (likeness), and the aban (stone) that struck it</h2>
+          <p className="st-card-p">Tap a piece of the image, a tag on it, or one of the marked words in the text below.</p>
+          {ended && <p className="st-only">Only the aban (stone) remains — the tzalam (likeness) is gone, and the tawar (mountain) malaa (fills) the arai (earth).</p>}
+        </div>
       )}
-      {item.colour && (
+
+      <Passage selected={id} selectable={selectable} onPick={onPick} />
+
+      {item && (
         <>
-          <div className="st-detail-sub">Why it is jasper</div>
-          <div className="st-par">
-            <p>{item.colour.note}</p>
-            <PassageRefs refs={item.colour.ref} size="sm" />
+          <div className="st-detail-sub">What scripture names</div>
+          <div className="st-named">
+            <div className="st-named-k">{item.named.kingdom}</div>
+            <div className="st-named-who">{item.named.who}</div>
+            <p>{item.named.note}</p>
+            <PassageRefs refs={item.named.ref} size="sm" />
           </div>
+
+          <div className="st-detail-sub">{isStone ? 'The same aban (stone) elsewhere' : 'The parallel vision'}</div>
+          <div className="st-par">
+            <p>{item.parallel.note}</p>
+            <PassageRefs refs={item.parallel.ref} size="sm" />
+          </div>
+
+          <div className="st-detail-sub">Common reading <em>(interpretation, not the text)</em></div>
+          <p className="st-trad">{item.traditional}</p>
+          {item.mountain && (
+            <>
+              <div className="st-detail-sub">The tawar (mountain) it becomes</div>
+              <div className="st-par">
+                <p>{item.mountain.note}</p>
+                <PassageRefs refs={item.mountain.ref} size="sm" />
+              </div>
+            </>
+          )}
+          {item.colour && (
+            <>
+              <div className="st-detail-sub">Why it is jasper</div>
+              <div className="st-par">
+                <p>{item.colour.note}</p>
+                <PassageRefs refs={item.colour.ref} size="sm" />
+              </div>
+            </>
+          )}
         </>
       )}
     </div>
@@ -187,6 +243,7 @@ export default function Statue() {
   const player = usePlayer();
   const { clock, playing, speed, setSpeed, loop, setLoop, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef } = player;
   const [sheetOpen, setSheetOpen] = useState(!!sel);
+  const tagsRef = useRef(null);   // the floating tags over the stage; the renderer places them
 
   const setParam = useCallback((k, v) => {
     const q = new URLSearchParams(params);
@@ -236,8 +293,13 @@ export default function Statue() {
           <div className="st-stagebox">
             <div className="st-stage">
               {use3d
-                ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><StatueScene clock={clock} selected={shownSel} onSelect={select} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
-                : <StatueSheet clock={clock} selected={shownSel} onSelect={select} />}
+                ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><StatueScene clock={clock} selected={shownSel} onSelect={select} onReady={(ok) => { if (!ok) setGlOk(false); }} tagsRef={tagsRef} /></Suspense>
+                : <StatueSheet clock={clock} selected={shownSel} onSelect={select} tagsRef={tagsRef} />}
+              <div className="st-tags" ref={tagsRef} aria-label="Pieces">
+                {[...PIECES, STONE].map((p) => (
+                  <button key={p.id} type="button" data-id={p.id} className={`st-tag${shownSel === p.id ? ' on' : ''}`} onClick={() => select(shownSel === p.id ? null : p.id)}>{p.tag}</button>
+                ))}
+              </div>
             </div>
             <div className="st-caption" aria-live="polite">
               <span className="st-caption-text">{phase.caption}</span>

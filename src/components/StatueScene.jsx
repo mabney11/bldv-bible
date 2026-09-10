@@ -211,7 +211,7 @@ async function loadKingInner(mats) {
   return { groups, samplers };
 }
 
-export default function StatueScene({ clock, selected, onSelect, onReady }) {
+export default function StatueScene({ clock, selected, onSelect, onReady, tagsRef }) {
   const wrap = useRef(null);
   const api = useRef(null);
 
@@ -418,6 +418,25 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
       if (!dirty) return;
       dirty = false;
       renderer.render(scene, camera);
+      placeTags(t);
+    }
+    // The floating tags (buttons the page renders over the stage): put each one
+    // beside its piece's screen position; hide it once the piece has shattered.
+    const tagV = new THREE.Vector3();
+    function placeTags(t) {
+      const box = tagsRef?.current; if (!box) return;
+      const w = el.clientWidth, h = el.clientHeight;
+      const put = (id, x, y, z, show) => {
+        const btn = box.querySelector(`[data-id="${id}"]`); if (!btn) return;
+        tagV.set(x, y, z).project(camera);
+        const visible = show && tagV.z < 1 && Math.abs(tagV.x) < 1.2 && Math.abs(tagV.y) < 1.2;
+        btn.style.visibility = visible ? 'visible' : 'hidden';
+        if (visible) btn.style.transform = `translate(${((tagV.x + 1) / 2 * w).toFixed(1)}px, ${((1 - tagV.y) / 2 * h).toFixed(1)}px)`;
+      };
+      for (const p of PIECES) put(p.id, 0.55, p.y0 + p.h * 0.55, 0.5, pieceWholeAt(p, t));
+      const st = stoneAt(t), mt = mountainAt(t);
+      if (st.visible) put('stone', st.x, st.y + STONE.r * 1.2, st.z, true);
+      else put('stone', mt.x, (STONE.r * 1.2 + mt.scale * 9) * 0.98, mt.z, true);
     }
     function resize() {
       const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;

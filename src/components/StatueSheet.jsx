@@ -46,7 +46,7 @@ function shapeFor(part, fill, parent) {
   return el('rect', { x: px(part.x) - part.w * S / 2, y: py(part.y + part.h), width: part.w * S, height: part.h * S, rx: 5, fill }, parent);
 }
 
-export default function StatueSheet({ clock, selected, onSelect }) {
+export default function StatueSheet({ clock, selected, onSelect, tagsRef }) {
   const wrap = useRef(null);
   const api = useRef(null);
 
@@ -145,8 +145,25 @@ export default function StatueSheet({ clock, selected, onSelect }) {
     const onKey = (e) => { if (e.key === 'Enter' || e.key === ' ') { const n = e.target.closest?.('.st-svg-pick'); if (n) { e.preventDefault(); onSelect?.(n.getAttribute('data-id')); } } };
     svg.addEventListener('click', onClick); svg.addEventListener('keydown', onKey);
 
-    let raf = 0, last = -1, alive = true;
-    const frame = () => { if (!alive) return; raf = requestAnimationFrame(frame); if (clock.t !== last) { last = clock.t; place(clock.t); } };
+    // Floating tags: SVG user units → host pixels through the SVG's own CTM.
+    const placeTags = (t) => {
+      const box = tagsRef?.current; if (!box) return;
+      const ctm = svg.getScreenCTM(); if (!ctm) return;
+      const hostRect = host.getBoundingClientRect();
+      const put = (id, ux, uy, show) => {
+        const btn = box.querySelector(`[data-id="${id}"]`); if (!btn) return;
+        btn.style.visibility = show ? 'visible' : 'hidden'; if (!show) return;
+        const pt = svg.createSVGPoint(); pt.x = ux; pt.y = uy;
+        const sp = pt.matrixTransform(ctm);
+        btn.style.transform = `translate(${(sp.x - hostRect.left).toFixed(1)}px, ${(sp.y - hostRect.top).toFixed(1)}px)`;
+      };
+      for (const p of PIECES) put(p.id, px(0.55), py(p.y0 + p.h * 0.55), pieceWholeAt(p, t));
+      const st = stoneAt(t), mt = mountainAt(t);
+      if (st.visible) put('stone', px(st.x), py(st.y + STONE.r * 1.2), true);
+      else put('stone', px(mt.x), py((STONE.r + mt.scale * 11) * 0.8), true);
+    };
+    let raf = 0, last = -1, alive = true, lastW = 0;
+    const frame = () => { if (!alive) return; raf = requestAnimationFrame(frame); const w = host.clientWidth; if (clock.t !== last || w !== lastW) { last = clock.t; lastW = w; place(clock.t); placeTags(clock.t); } };
     place(clock.t); frame();
     api.current = { select: applySelection };
     applySelection(selected);

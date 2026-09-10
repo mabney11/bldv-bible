@@ -66,7 +66,7 @@ export const H_TOTAL = 7.8;
 export const PIECES = [
   {
     id: 'head', order: 1, y0: 6.1, h: 1.3, material: 'gold',
-    words: ['raash'], materialWord: 'dahab',
+    words: ['raash'], materialWord: 'dahab', tag: 'raash (head) · dahab (gold)', verses: [32, 37, 38], keys: ['raash', 'dahab'],
     title: 'The raash (head) of dahab (gold)', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:37–38',
     named: { kingdom: 'Babal (Babylon)', who: 'Nabawakadanaatzar (Nebuchadnezzar) the malak (king) himself', ref: 'Daniel 2:37–38',
       note: 'The only piece the text itself names: "you are the raash (head) of dahab (gold)" — the malak (king) of Babal (Babylon).' },
@@ -82,7 +82,7 @@ export const PIECES = [
   },
   {
     id: 'chest', order: 2, y0: 4.4, h: 1.7, material: 'silver',
-    words: ['chaday', 'darai'], materialWord: 'kasap',
+    words: ['chaday', 'darai'], materialWord: 'kasap', tag: 'chaday (breast) · darai (arms) · kasap (silver)', verses: [32, 39], keys: ['chaday', 'darai', 'kasap'],
     title: 'The chaday (breast) and darai (arms) of kasap (silver)', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:39',
     named: { kingdom: 'not named in Daniel 2', who: '"acharay (another) malakaw (kingdom) inferior to you"', ref: 'Daniel 2:39; 5:28; 8:20',
       note: 'Daniel 2 gives no name. Daniel 5:28 gives Babal (Babylon) to the Maday (Medes) and Paras (Persians), and Daniel 8:20 names the malakay (kings) of Maday (Media) and Paras (Persia) as the ayal (ram) with two qaranayam (horns) — the malakaw (kingdom) that follows Babal (Babylon) in the book\'s own telling.' },
@@ -102,7 +102,7 @@ export const PIECES = [
   },
   {
     id: 'belly', order: 3, y0: 2.9, h: 1.5, material: 'bronze',
-    words: ['maih', 'yarakaa'], materialWord: 'nachash',
+    words: ['maih', 'yarakaa'], materialWord: 'nachash', tag: 'maih (belly) · yarakaa (thighs) · nachash (brass)', verses: [32, 39], keys: ['maih', 'yarakaa', 'nachash'],
     title: 'The maih (belly) and yarakaa (thighs) of nachash (brass)', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:39',
     named: { kingdom: 'not named in Daniel 2', who: '"a thalayathay (third) malakaw (kingdom) of nachash (brass), which shall shalat (bear) rule over kal (every) the arai (earth)"', ref: 'Daniel 2:39; 8:21',
       note: 'Daniel 2 gives no name. Daniel 8:21 names the shaiyar (rough) tzapayar (goat) as the malak (king) of Yawan (Greece), the one that shabar (breaks) the ayal (ram) of Maday (Media) and Paras (Persia).' },
@@ -116,7 +116,7 @@ export const PIECES = [
   },
   {
     id: 'legs', order: 4, y0: 0.5, h: 2.4, material: 'iron',
-    words: ['shaq'], materialWord: 'parazal',
+    words: ['shaq'], materialWord: 'parazal', tag: 'shaq (legs) · parazal (iron)', verses: [33, 40], keys: ['shaq', 'parazal'],
     title: 'The shaq (legs) of parazal (iron)', dreamRef: 'Daniel 2:33', meaningRef: 'Daniel 2:40',
     named: { kingdom: 'not named anywhere in Daniel', who: '"the rabayaiy (fourth) malakaw (kingdom), thaqayap (strong) as parazal (iron)"', ref: 'Daniel 2:40',
       note: 'No book of scripture names the rabayaiy (fourth) malakaw (kingdom). The text says only what it does: it daqaq (breaks) in pieces and raii (crushes) kal (every) the others.' },
@@ -126,7 +126,7 @@ export const PIECES = [
   },
   {
     id: 'feet', order: 5, y0: 0, h: 0.5, material: 'clay',
-    words: ['ragal', 'atzabaith'], materialWord: 'chasap',
+    words: ['ragal', 'atzabaith'], materialWord: 'chasap', tag: 'ragal (feet) · parazal (iron) · chasap (clay)', verses: [33, 34, 41, 42, 43], keys: ['ragal', 'atzabaith', 'chasap', 'parazal'],
     title: 'The ragal (feet) of parazal (iron) and chasap (clay)', dreamRef: 'Daniel 2:33', meaningRef: 'Daniel 2:41–43',
     named: { kingdom: 'not named', who: '"a palag (divided) malakaw (kingdom) … partly thaqayap (strong), and partly thabar (broken)"', ref: 'Daniel 2:41–43',
       note: 'Parazal (iron) irab (mixed) with pachar (potters\') chasap (clay): strength that will not hold together — "they shall not cling to dan (one) dan (another), even as parazal (iron) does not irab (mix) with chasap (clay)". The atzabaith (toes) are the text\'s own detail (2:41–42).' },
@@ -160,6 +160,7 @@ export function bandOf(yFraction) {
 
 export const STONE = {
   id: 'stone', title: 'The aban (stone) gazar (cut) out laa (NOT) yadayan (hands)', words: ['aban'], materialWord: 'aban', material: 'stone',
+  tag: 'aban (stone)', verses: [34, 35, 44, 45], keys: ['aban', 'tawar'],
   dreamRef: 'Daniel 2:34–35', meaningRef: 'Daniel 2:44–45',
   named: { kingdom: 'the malakaw (kingdom) the Alahayam of shamayan (heaven) qawam (raises up)', who: '"which shall ilam (never) be chabal (destroyed) … it shall qawam (stand) ilam (forever)"', ref: 'Daniel 2:44',
     note: 'Gazar (cut) out of the tawar (mountain), laa (NOT) by yadayan (hands); it strikes the ragal (feet), the whole tzalam (likeness) becomes iwar (chaff), and the aban (stone) becomes a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).' },
@@ -317,3 +318,19 @@ export function selectableAt(t) {
 }
 export function pieceById(id) { return id === 'stone' ? STONE : PIECES.find((p) => p.id === id) || null; }
 export const ALL_REFS = 'Daniel 2:31–45';
+// The story the model illustrates: Daniel 2:31–45 in the app's own text (book 27).
+export const PASSAGE = { bookId: 27, chapter: 2, from: 31, to: 45 };
+
+/**
+ * Which piece a "translit (gloss)" word in the passage belongs to, if any.
+ * `parazal` (iron) is the one shared word: it is the legs' iron in v.33 up to
+ * "ragal (feet)" and in v.40, and the feet's iron after that word and in
+ * vv.34, 41–43. `seenRagal` is whether "ragal" has already appeared in this verse.
+ */
+export function pieceForWord(word, verse, seenRagal) {
+  const w = word.toLowerCase();
+  if (w.startsWith('parazal')) return verse === 40 || (verse === 33 && !seenRagal) ? 'legs' : 'feet';
+  for (const p of PIECES) if (p.keys.some((k) => k !== 'parazal' && w.startsWith(k))) return p.id;
+  if (STONE.keys.some((k) => w.startsWith(k))) return 'stone';
+  return null;
+}
