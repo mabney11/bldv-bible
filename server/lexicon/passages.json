@@ -1,47 +1,487 @@
 {
   "_comment": "Curated named passages for /passages and /passage/:slug. One entry = a title + one or more verse ranges (refs use the same grammar as src/lib/models/refs.js: 'Book c:v–v, v–v; Book c:v–v'). Names follow the Novel English Bible's own forms (the headings table is the reference). Bible is the source of truth: a passage is only a window onto the reader's text, never a second copy of it.",
-  "groups": ["Prayers", "Songs", "Blessings", "Law & Covenant", "Decrees & Letters", "Visions & Prophecies"],
+  "groups": [
+    "Prayers",
+    "Songs",
+    "Blessings",
+    "Law & Covenant",
+    "Decrees & Letters",
+    "Visions & Prophecies",
+    "Narratives"
+  ],
   "passages": [
-    { "slug": "prayer-of-azariah", "group": "Prayers", "title": "The Prayer of Azarias", "subtitle": "Prayer of Azariah", "refs": "Words of Azariah 1:1–22", "blurb": "Standing in the midst of the fire, Azarias confesses the sins of his people and pleads the covenant with Abaraham, Yatzachaq and Yaiqab.", "tags": ["fiery furnace", "confession", "Daniel"] },
-    { "slug": "song-of-the-three", "group": "Songs", "title": "The Song of the Three", "subtitle": "Benedicite", "refs": "Words of Azariah 1:28–68", "blurb": "Chananayah, Mashaal and Izarayah call every work of Yahawah — heavens, waters, frost, beasts and men — to bless him from inside the furnace.", "tags": ["fiery furnace", "praise", "Daniel"] },
-    { "slug": "prayer-of-mordecai", "group": "Prayers", "title": "The Prayer of Mardocheus", "subtitle": "Prayer of Mordecai", "refs": "Greek Esther 13:8–17", "blurb": "Mardocheus, having refused to bow to Aman, calls on the Malak (King) Shaday not to let the mouths of those who praise him be shut.", "tags": ["Esther", "Greek additions"] },
-    { "slug": "prayer-of-esther", "group": "Prayers", "title": "The Prayer of Asathar", "subtitle": "Prayer of Esther", "refs": "Greek Esther 14:1–19", "blurb": "Before going in to the king unbidden, Asathar puts off her glory, covers her head with ashes and prays for her people.", "tags": ["Esther", "Greek additions"] },
-    { "slug": "proclamation-of-mordecai", "group": "Decrees & Letters", "title": "The Proclamation of Mardocheus", "subtitle": "The king's second letter, written by Mordecai in the king's name", "refs": "Greek Esther 16:1–24", "blurb": "The decree that undoes Aman's plot: the Yahawadayam (Jews) are declared to live by just laws and be children of the most high God, and the thirteenth of Adar becomes a day of gladness. Written by Mardocheus with the king's ring — see Esther 8:9–10.", "tags": ["Esther", "Greek additions", "Purim"] },
-    { "slug": "decree-of-cyrus", "group": "Decrees & Letters", "title": "The Decree of Kawarash", "subtitle": "Decree of Cyrus", "refs": "Ezra 1:1–4", "blurb": "In his first year Kawarash king of Paras proclaims that the house of Yahawah be built again at Yarawashalam, and that his exiles go up.", "tags": ["return from exile", "temple"] },
-    { "slug": "prayer-of-manasseh", "group": "Prayers", "title": "The Prayer of Manashah", "subtitle": "Prayer of Manasseh", "refs": "Prayer of Manasseh 1:1–14", "blurb": "The penitential prayer of the king who filled Yarawashalam with idols: bowed down with iron bands, he asks the God of the righteous for the repentance he has promised sinners.", "tags": ["repentance", "kings"] },
-    { "slug": "prayer-of-hannah", "group": "Prayers", "title": "The Song of Chanah", "subtitle": "Hannah's prayer", "refs": "1 Samuel 2:1–10", "blurb": "Having received Shamawaal, Chanah exalts the God who raises the poor from the dust — the song Marayam's own would later echo.", "tags": ["barrenness", "Samuel", "praise"] },
-    { "slug": "prayer-of-solomon", "group": "Prayers", "title": "Shalamah's Dedication Prayer", "subtitle": "Solomon's prayer at the dedication of the temple", "refs": "1 Kings 8:22–53", "blurb": "Before the altar, hands spread toward heaven, Shalamah asks that Yahawah's eyes be open toward the house night and day, and hear every prayer made toward this place.", "tags": ["temple", "kings"] },
-    { "slug": "prayer-of-jabez", "group": "Prayers", "title": "The Prayer of Yaibatz", "subtitle": "Prayer of Jabez", "refs": "1 Chronicles 4:9–10", "blurb": "Two verses in the genealogies of Yahawadah: a man more honourable than his brothers asks for blessing, a larger border, and a hand kept from evil.", "tags": ["Chronicles", "Judah"] },
-    { "slug": "prayer-of-hezekiah", "group": "Prayers", "title": "The Writing of Chazaqayah", "subtitle": "Hezekiah's prayer after his recovery", "refs": "Isaiah 38:9–20", "blurb": "Recovered from the sickness that should have taken him, Chazaqayah writes of the gates of death and the living who praise.", "tags": ["healing", "kings"] },
-    { "slug": "prayer-of-jonah", "group": "Prayers", "title": "Yawanah's Prayer from the Fish", "subtitle": "Jonah's prayer", "refs": "Jonah 2:1–9", "blurb": "Out of the belly of the fish, out of the belly of Shaawal, a prayer that ends in a vow: salvation is of Yahawah.", "tags": ["prophets", "deliverance"] },
-    { "slug": "prayer-of-daniel", "group": "Prayers", "title": "Dan's Prayer of Confession", "subtitle": "Daniel's prayer", "refs": "Daniel 9:3–19", "blurb": "With fasting, sackcloth and ashes, Dan confesses for his people and asks the God who brought them out of Matzarayam to let his face shine on the desolate sanctuary.", "tags": ["exile", "confession", "seventy weeks"] },
-    { "slug": "prayer-of-habakkuk", "group": "Prayers", "title": "The Prayer of Chabaqawaq", "subtitle": "Habakkuk's prayer", "refs": "Habakkuk 3:1–19", "blurb": "A prayer set to music: God comes from Thayaman, the mountains scatter, and the prophet resolves to rejoice in Yahawah though the fig tree does not blossom.", "tags": ["prophets", "praise"] },
-    { "slug": "the-lords-prayer", "group": "Prayers", "title": "The Lord's Prayer", "refs": "Matthew 6:9–13", "blurb": "The prayer Yashawai gave his disciples in the Sermon on the Mountain.", "tags": ["Sermon on the Mountain", "Jesus"] },
-    { "slug": "high-priestly-prayer", "group": "Prayers", "title": "Yashawai's Prayer for His Disciples", "subtitle": "The high-priestly prayer", "refs": "John 17:1–26", "blurb": "On the night he was betrayed, Yashawai prays for himself, for those given him, and for all who will believe through their word — that they may be one.", "tags": ["Jesus", "unity"] },
-
-    { "slug": "song-of-the-sea", "group": "Songs", "title": "The Song of Mashah and Marayam", "subtitle": "The Song of the Sea", "refs": "Exodus 15:1–21", "blurb": "On the far shore of the sea: Yahawah is a man of war, horse and rider thrown into the sea, and Marayam answers with timbrel and dance.", "tags": ["exodus", "Red Sea", "praise"] },
-    { "slug": "song-of-moses", "group": "Songs", "title": "The Song of Mashah", "subtitle": "Deuteronomy 32", "refs": "Deuteronomy 32:1–43", "blurb": "Mashah's last song, taught to all Yashar-Al as a witness: the Rock who begot them, the jealousy of a people gone after no-gods, and the vengeance and atonement of Yahawah for his land.", "tags": ["Moses", "covenant", "witness"] },
-    { "slug": "song-of-deborah", "group": "Songs", "title": "The Song of Dabawarah and Baraq", "subtitle": "Song of Deborah", "refs": "Judges 5:1–31", "blurb": "The tribes that came and the tribes that stayed, the stars fighting from heaven, the Qayashawan sweeping Sisera's host away, and Yail's hand on the tent-peg.", "tags": ["judges", "victory"] },
-    { "slug": "song-of-the-bow", "group": "Songs", "title": "Dawad's Lament for Shaawal and Yahawanathan", "subtitle": "The Song of the Bow", "refs": "2 Samuel 1:17–27", "blurb": "How are the mighty fallen — Dawad's lament over the king who hunted him and the friend he loved.", "tags": ["David", "lament"] },
-    { "slug": "song-of-the-vineyard", "group": "Songs", "title": "The Song of the Vineyard", "refs": "Isaiah 5:1–7", "blurb": "A vineyard on a fruitful hill, fenced and planted with the choicest vine, that brought forth wild grapes: the house of Yashar-Al.", "tags": ["Isaiah", "parable"] },
-    { "slug": "magnificat", "group": "Songs", "title": "The Song of Marayam", "subtitle": "Magnificat", "refs": "Luke 1:46–55", "blurb": "In the house of Alayashabai, Marayam magnifies Yahawah who has regarded the low estate of his handmaid and remembered his mercy to Abaraham.", "tags": ["Mary", "praise", "nativity"] },
-    { "slug": "benedictus", "group": "Songs", "title": "The Song of Zakarayah", "subtitle": "Benedictus", "refs": "Luke 1:68–79", "blurb": "His tongue loosed at the naming of Yawachanan, Zakarayah blesses the God who has raised up a horn of salvation in the house of Dawad.", "tags": ["Zechariah", "John the Baptizer", "nativity"] },
-
-    { "slug": "jacobs-blessings", "group": "Blessings", "title": "Yaiqab's Blessing on His Twelve Sons", "subtitle": "Jacob blesses the tribes", "refs": "Genesis 49:1–28", "blurb": "Dying in Matzarayam, Yaiqab gathers his sons and tells each what will befall him in the last days — the sceptre to Yahawadah, the fruitful bough to Yawasap.", "tags": ["Jacob", "tribes", "prophecy"] },
-    { "slug": "jacob-blesses-judah", "group": "Blessings", "title": "The Blessing of Yahawadah", "subtitle": "Jacob's blessing on Judah", "refs": "Genesis 49:8–12", "blurb": "A lion's whelp, the sceptre that shall not depart until he comes to whom it belongs, the foal bound to the vine.", "tags": ["Jacob", "Judah", "Messiah"] },
-    { "slug": "moses-blesses-the-tribes", "group": "Blessings", "title": "The Blessing of Mashah on the Tribes", "subtitle": "Moses blesses the tribes", "refs": "Deuteronomy 33:1–29", "blurb": "Before his death Mashah blesses Yashar-Al tribe by tribe: Yahawah came from Sayanay and rose up from Shaiyar, and the eternal God is a refuge.", "tags": ["Moses", "tribes"] },
-    { "slug": "the-priestly-blessing", "group": "Blessings", "title": "The Priestly Blessing", "subtitle": "The blessing of Aharawan", "refs": "Numbers 6:22–27", "blurb": "The words Aharawan and his sons are to put the Name upon the children of Yashar-Al with: Yahawah bless you and keep you.", "tags": ["Aaron", "priests", "the Name"] },
-    { "slug": "beatitudes", "group": "Blessings", "title": "The Beatitudes", "refs": "Matthew 5:1–12", "blurb": "Yashawai goes up the mountain, sits, and opens his mouth: blessed are the poor in spirit, the meek, the merciful, the peacemakers.", "tags": ["Sermon on the Mountain", "Jesus"] },
-
-    { "slug": "ten-commandments", "group": "Law & Covenant", "title": "The Ten Commandments", "subtitle": "The ten words spoken at Sinai", "refs": "Exodus 20:1–17", "blurb": "Yahawah speaks all these words from the mountain: I am Yahawah your God who brought you out of Matzarayam.", "tags": ["Sinai", "law", "Moses"] },
-    { "slug": "shema", "group": "Law & Covenant", "title": "Hear, O Yashar-Al", "subtitle": "The Shema — the great commandment", "refs": "Deuteronomy 6:4–9", "blurb": "Yahawah our God, Yahawah is one — and you shall love him with all your heart, and teach these words to your children, and write them on your doorposts.", "tags": ["Moses", "law", "love"] },
-    { "slug": "new-covenant", "group": "Law & Covenant", "title": "The Promise of a New Covenant", "refs": "Jeremiah 31:31–34", "blurb": "Days are coming when Yahawah will make a new covenant with the house of Yashar-Al and the house of Yahawadah, and write his law on their hearts.", "tags": ["Jeremiah", "covenant", "prophecy"] },
-
-    { "slug": "valley-of-dry-bones", "group": "Visions & Prophecies", "title": "The Valley of Dry Bones", "refs": "Ezekiel 37:1–14", "blurb": "Set down in a valley full of very dry bones, Yachazaqaal prophesies and hears a noise, a shaking, bone to bone — and the whole house of Yashar-Al stands up, a very great army.", "tags": ["Ezekiel", "resurrection", "Israel"] },
-    { "slug": "suffering-servant", "group": "Visions & Prophecies", "title": "The Suffering Servant", "refs": "Isaiah 52:13–15; 53:1–12", "blurb": "Despised and rejected, wounded for our transgressions, he bears the sin of many and is numbered with the great.", "tags": ["Isaiah", "Messiah", "servant songs"] },
-    { "slug": "river-from-the-temple", "group": "Visions & Prophecies", "title": "The River Flowing from the Temple", "refs": "Ezekiel 47:1–12", "blurb": "Waters issue from under the threshold of the house, ankle-deep, then knee-deep, then a river that cannot be passed — and everything lives where the river comes.", "tags": ["Ezekiel", "temple", "millennium"] },
-    { "slug": "the-holy-portion", "group": "Visions & Prophecies", "title": "The Holy Portion", "subtitle": "The oblation for the priests, the Levites, the city and the prince", "refs": "Ezekiel 48:8–22", "blurb": "The square of 25,000 by 25,000 in the midst of the land: the sanctuary in the middle, the priests' and Levites' portions, the city with its fields, and the prince on either side.", "tags": ["Ezekiel", "millennium", "Holy Land map"] },
-    { "slug": "prologue-of-john", "group": "Visions & Prophecies", "title": "The Word Made Flesh", "subtitle": "The prologue of John", "refs": "John 1:1–18", "blurb": "In the beginning was the Word, and the Word was with God — and the Word became flesh and tabernacled among us.", "tags": ["John", "Jesus", "creation"] },
-    { "slug": "enochs-blessing", "group": "Visions & Prophecies", "title": "Chanawak's Opening Blessing", "subtitle": "1 Enoch 1 — the blessing on the elect and righteous", "refs": "1 Enoch 1:1–9", "blurb": "The words of the blessing of Chanawak for the elect and righteous who will be living in the day of tribulation: the Holy Great One comes forth from his dwelling with ten thousands of his holy ones.", "tags": ["Enoch", "judgement", "Works"] }
+    {
+      "slug": "prayer-of-azariah",
+      "group": "Prayers",
+      "title": "The Prayer of Azarias in the Furnace",
+      "subtitle": "Daniel 3 — the prayer between verses 23 and 24 (Greek Daniel 3:24–45)",
+      "refs": "Daniel 3:19–23; Words of Azariah 1:1–22",
+      "blurb": "Nabawakadanatzar heats the furnace seven times over and the three are thrown in bound — and there, walking in the midst of the fire, Azarias confesses the sins of his people and pleads the covenant with Abaraham, Yatzachaq and Yaiqab. The Hebrew Daniel jumps from verse 23 to 24; the Greek, Latin, Syriac and Ge'ez Daniel keep the prayer here.",
+      "tags": [
+        "Daniel 3",
+        "fiery furnace",
+        "confession",
+        "Greek Daniel"
+      ]
+    },
+    {
+      "slug": "song-of-the-three",
+      "group": "Songs",
+      "title": "The Song of the Three in the Furnace",
+      "subtitle": "Daniel 3 — the angel and the song (Greek Daniel 3:46–90)",
+      "refs": "Words of Azariah 1:23–68; Daniel 3:24–27",
+      "blurb": "The flame streams forty-nine cubits above the furnace, the angel of Yahawah makes its midst like a moist whistling wind, and Chananayah, Mashaal and Izarayah call every work of Yahawah — heavens, waters, frost, beasts and men — to bless him; then the king rises astonished and sees four men walking loose in the fire.",
+      "tags": [
+        "Daniel 3",
+        "fiery furnace",
+        "praise",
+        "Greek Daniel"
+      ]
+    },
+    {
+      "slug": "the-fiery-furnace",
+      "group": "Narratives",
+      "title": "The Fiery Furnace",
+      "subtitle": "Daniel 3 whole, with the prayer and the song the Greek Daniel keeps in it",
+      "refs": "Daniel 3:1–23; Words of Azariah 1:1–68; Daniel 3:24–30",
+      "blurb": "The image of gold on the plain of Dura, the three who would not bow, the furnace, the prayer of Azarias and the song of the three in the midst of the fire, the fourth man like a son of the gods, and the king's decree — the chapter as the Greek, Latin, Syriac and Ge'ez Daniel read it.",
+      "tags": [
+        "Daniel 3",
+        "fiery furnace",
+        "Shadrach, Meshach, Abednego"
+      ]
+    },
+    {
+      "slug": "prayer-of-mordecai",
+      "group": "Prayers",
+      "title": "The Prayer of Mardocheus",
+      "subtitle": "Prayer of Mordecai",
+      "refs": "Greek Esther 13:8–17",
+      "blurb": "Mardocheus, having refused to bow to Aman, calls on the Malak (King) Shaday not to let the mouths of those who praise him be shut.",
+      "tags": [
+        "Esther",
+        "Greek additions"
+      ]
+    },
+    {
+      "slug": "prayer-of-esther",
+      "group": "Prayers",
+      "title": "The Prayer of Asathar",
+      "subtitle": "Prayer of Esther",
+      "refs": "Greek Esther 14:1–19",
+      "blurb": "Before going in to the king unbidden, Asathar puts off her glory, covers her head with ashes and prays for her people.",
+      "tags": [
+        "Esther",
+        "Greek additions"
+      ]
+    },
+    {
+      "slug": "proclamation-of-mordecai",
+      "group": "Decrees & Letters",
+      "title": "The Proclamation of Mardocheus",
+      "subtitle": "The king's second letter, written by Mordecai in the king's name",
+      "refs": "Greek Esther 16:1–24",
+      "blurb": "The decree that undoes Aman's plot: the Yahawadayam (Jews) are declared to live by just laws and be children of the most high God, and the thirteenth of Adar becomes a day of gladness. Written by Mardocheus with the king's ring — see Esther 8:9–10.",
+      "tags": [
+        "Esther",
+        "Greek additions",
+        "Purim"
+      ]
+    },
+    {
+      "slug": "decree-of-cyrus",
+      "group": "Decrees & Letters",
+      "title": "The Decree of Kawarash",
+      "subtitle": "Decree of Cyrus",
+      "refs": "Ezra 1:1–4",
+      "blurb": "In his first year Kawarash king of Paras proclaims that the house of Yahawah be built again at Yarawashalam, and that his exiles go up.",
+      "tags": [
+        "return from exile",
+        "temple"
+      ]
+    },
+    {
+      "slug": "prayer-of-manasseh",
+      "group": "Prayers",
+      "title": "The Prayer of Manashah",
+      "subtitle": "Prayer of Manasseh",
+      "refs": "Prayer of Manasseh 1:1–14",
+      "blurb": "The penitential prayer of the king who filled Yarawashalam with idols: bowed down with iron bands, he asks the God of the righteous for the repentance he has promised sinners.",
+      "tags": [
+        "repentance",
+        "kings"
+      ]
+    },
+    {
+      "slug": "prayer-of-hannah",
+      "group": "Prayers",
+      "title": "The Song of Chanah",
+      "subtitle": "Hannah's prayer",
+      "refs": "1 Samuel 2:1–10",
+      "blurb": "Having received Shamawaal, Chanah exalts the God who raises the poor from the dust — the song Marayam's own would later echo.",
+      "tags": [
+        "barrenness",
+        "Samuel",
+        "praise"
+      ]
+    },
+    {
+      "slug": "prayer-of-solomon",
+      "group": "Prayers",
+      "title": "Shalamah's Dedication Prayer",
+      "subtitle": "Solomon's prayer at the dedication of the temple",
+      "refs": "1 Kings 8:22–53",
+      "blurb": "Before the altar, hands spread toward heaven, Shalamah asks that Yahawah's eyes be open toward the house night and day, and hear every prayer made toward this place.",
+      "tags": [
+        "temple",
+        "kings"
+      ]
+    },
+    {
+      "slug": "prayer-of-jabez",
+      "group": "Prayers",
+      "title": "The Prayer of Yaibatz",
+      "subtitle": "Prayer of Jabez",
+      "refs": "1 Chronicles 4:9–10",
+      "blurb": "Two verses in the genealogies of Yahawadah: a man more honourable than his brothers asks for blessing, a larger border, and a hand kept from evil.",
+      "tags": [
+        "Chronicles",
+        "Judah"
+      ]
+    },
+    {
+      "slug": "prayer-of-hezekiah",
+      "group": "Prayers",
+      "title": "The Writing of Chazaqayah",
+      "subtitle": "Hezekiah's prayer after his recovery",
+      "refs": "Isaiah 38:9–20",
+      "blurb": "Recovered from the sickness that should have taken him, Chazaqayah writes of the gates of death and the living who praise.",
+      "tags": [
+        "healing",
+        "kings"
+      ]
+    },
+    {
+      "slug": "prayer-of-jonah",
+      "group": "Prayers",
+      "title": "Yawanah's Prayer from the Fish",
+      "subtitle": "Jonah's prayer",
+      "refs": "Jonah 2:1–9",
+      "blurb": "Out of the belly of the fish, out of the belly of Shaawal, a prayer that ends in a vow: salvation is of Yahawah.",
+      "tags": [
+        "prophets",
+        "deliverance"
+      ]
+    },
+    {
+      "slug": "prayer-of-daniel",
+      "group": "Prayers",
+      "title": "Dan's Prayer of Confession",
+      "subtitle": "Daniel's prayer",
+      "refs": "Daniel 9:3–19",
+      "blurb": "With fasting, sackcloth and ashes, Dan confesses for his people and asks the God who brought them out of Matzarayam to let his face shine on the desolate sanctuary.",
+      "tags": [
+        "exile",
+        "confession",
+        "seventy weeks"
+      ]
+    },
+    {
+      "slug": "prayer-of-habakkuk",
+      "group": "Prayers",
+      "title": "The Prayer of Chabaqawaq",
+      "subtitle": "Habakkuk's prayer",
+      "refs": "Habakkuk 3:1–19",
+      "blurb": "A prayer set to music: God comes from Thayaman, the mountains scatter, and the prophet resolves to rejoice in Yahawah though the fig tree does not blossom.",
+      "tags": [
+        "prophets",
+        "praise"
+      ]
+    },
+    {
+      "slug": "the-lords-prayer",
+      "group": "Prayers",
+      "title": "The Lord's Prayer",
+      "refs": "Matthew 6:9–13",
+      "blurb": "The prayer Yashawai gave his disciples in the Sermon on the Mountain.",
+      "tags": [
+        "Sermon on the Mountain",
+        "Jesus"
+      ]
+    },
+    {
+      "slug": "high-priestly-prayer",
+      "group": "Prayers",
+      "title": "Yashawai's Prayer for His Disciples",
+      "subtitle": "The high-priestly prayer",
+      "refs": "John 17:1–26",
+      "blurb": "On the night he was betrayed, Yashawai prays for himself, for those given him, and for all who will believe through their word — that they may be one.",
+      "tags": [
+        "Jesus",
+        "unity"
+      ]
+    },
+    {
+      "slug": "song-of-the-sea",
+      "group": "Songs",
+      "title": "The Song of Mashah and Marayam",
+      "subtitle": "The Song of the Sea",
+      "refs": "Exodus 15:1–21",
+      "blurb": "On the far shore of the sea: Yahawah is a man of war, horse and rider thrown into the sea, and Marayam answers with timbrel and dance.",
+      "tags": [
+        "exodus",
+        "Red Sea",
+        "praise"
+      ]
+    },
+    {
+      "slug": "song-of-moses",
+      "group": "Songs",
+      "title": "The Song of Mashah",
+      "subtitle": "Deuteronomy 32",
+      "refs": "Deuteronomy 32:1–43",
+      "blurb": "Mashah's last song, taught to all Yashar-Al as a witness: the Rock who begot them, the jealousy of a people gone after no-gods, and the vengeance and atonement of Yahawah for his land.",
+      "tags": [
+        "Moses",
+        "covenant",
+        "witness"
+      ]
+    },
+    {
+      "slug": "song-of-deborah",
+      "group": "Songs",
+      "title": "The Song of Dabawarah and Baraq",
+      "subtitle": "Song of Deborah",
+      "refs": "Judges 5:1–31",
+      "blurb": "The tribes that came and the tribes that stayed, the stars fighting from heaven, the Qayashawan sweeping Sisera's host away, and Yail's hand on the tent-peg.",
+      "tags": [
+        "judges",
+        "victory"
+      ]
+    },
+    {
+      "slug": "song-of-the-bow",
+      "group": "Songs",
+      "title": "Dawad's Lament for Shaawal and Yahawanathan",
+      "subtitle": "The Song of the Bow",
+      "refs": "2 Samuel 1:17–27",
+      "blurb": "How are the mighty fallen — Dawad's lament over the king who hunted him and the friend he loved.",
+      "tags": [
+        "David",
+        "lament"
+      ]
+    },
+    {
+      "slug": "song-of-the-vineyard",
+      "group": "Songs",
+      "title": "The Song of the Vineyard",
+      "refs": "Isaiah 5:1–7",
+      "blurb": "A vineyard on a fruitful hill, fenced and planted with the choicest vine, that brought forth wild grapes: the house of Yashar-Al.",
+      "tags": [
+        "Isaiah",
+        "parable"
+      ]
+    },
+    {
+      "slug": "magnificat",
+      "group": "Songs",
+      "title": "The Song of Marayam",
+      "subtitle": "Magnificat",
+      "refs": "Luke 1:46–55",
+      "blurb": "In the house of Alayashabai, Marayam magnifies Yahawah who has regarded the low estate of his handmaid and remembered his mercy to Abaraham.",
+      "tags": [
+        "Mary",
+        "praise",
+        "nativity"
+      ]
+    },
+    {
+      "slug": "benedictus",
+      "group": "Songs",
+      "title": "The Song of Zakarayah",
+      "subtitle": "Benedictus",
+      "refs": "Luke 1:68–79",
+      "blurb": "His tongue loosed at the naming of Yawachanan, Zakarayah blesses the God who has raised up a horn of salvation in the house of Dawad.",
+      "tags": [
+        "Zechariah",
+        "John the Baptizer",
+        "nativity"
+      ]
+    },
+    {
+      "slug": "jacobs-blessings",
+      "group": "Blessings",
+      "title": "Yaiqab's Blessing on His Twelve Sons",
+      "subtitle": "Jacob blesses the tribes",
+      "refs": "Genesis 49:1–28",
+      "blurb": "Dying in Matzarayam, Yaiqab gathers his sons and tells each what will befall him in the last days — the sceptre to Yahawadah, the fruitful bough to Yawasap.",
+      "tags": [
+        "Jacob",
+        "tribes",
+        "prophecy"
+      ]
+    },
+    {
+      "slug": "jacob-blesses-judah",
+      "group": "Blessings",
+      "title": "The Blessing of Yahawadah",
+      "subtitle": "Jacob's blessing on Judah",
+      "refs": "Genesis 49:8–12",
+      "blurb": "A lion's whelp, the sceptre that shall not depart until he comes to whom it belongs, the foal bound to the vine.",
+      "tags": [
+        "Jacob",
+        "Judah",
+        "Messiah"
+      ]
+    },
+    {
+      "slug": "moses-blesses-the-tribes",
+      "group": "Blessings",
+      "title": "The Blessing of Mashah on the Tribes",
+      "subtitle": "Moses blesses the tribes",
+      "refs": "Deuteronomy 33:1–29",
+      "blurb": "Before his death Mashah blesses Yashar-Al tribe by tribe: Yahawah came from Sayanay and rose up from Shaiyar, and the eternal God is a refuge.",
+      "tags": [
+        "Moses",
+        "tribes"
+      ]
+    },
+    {
+      "slug": "the-priestly-blessing",
+      "group": "Blessings",
+      "title": "The Priestly Blessing",
+      "subtitle": "The blessing of Aharawan",
+      "refs": "Numbers 6:22–27",
+      "blurb": "The words Aharawan and his sons are to put the Name upon the children of Yashar-Al with: Yahawah bless you and keep you.",
+      "tags": [
+        "Aaron",
+        "priests",
+        "the Name"
+      ]
+    },
+    {
+      "slug": "beatitudes",
+      "group": "Blessings",
+      "title": "The Beatitudes",
+      "refs": "Matthew 5:1–12",
+      "blurb": "Yashawai goes up the mountain, sits, and opens his mouth: blessed are the poor in spirit, the meek, the merciful, the peacemakers.",
+      "tags": [
+        "Sermon on the Mountain",
+        "Jesus"
+      ]
+    },
+    {
+      "slug": "ten-commandments",
+      "group": "Law & Covenant",
+      "title": "The Ten Commandments",
+      "subtitle": "The ten words spoken at Sinai",
+      "refs": "Exodus 20:1–17",
+      "blurb": "Yahawah speaks all these words from the mountain: I am Yahawah your God who brought you out of Matzarayam.",
+      "tags": [
+        "Sinai",
+        "law",
+        "Moses"
+      ]
+    },
+    {
+      "slug": "shema",
+      "group": "Law & Covenant",
+      "title": "Hear, O Yashar-Al",
+      "subtitle": "The Shema — the great commandment",
+      "refs": "Deuteronomy 6:4–9",
+      "blurb": "Yahawah our God, Yahawah is one — and you shall love him with all your heart, and teach these words to your children, and write them on your doorposts.",
+      "tags": [
+        "Moses",
+        "law",
+        "love"
+      ]
+    },
+    {
+      "slug": "new-covenant",
+      "group": "Law & Covenant",
+      "title": "The Promise of a New Covenant",
+      "refs": "Jeremiah 31:31–34",
+      "blurb": "Days are coming when Yahawah will make a new covenant with the house of Yashar-Al and the house of Yahawadah, and write his law on their hearts.",
+      "tags": [
+        "Jeremiah",
+        "covenant",
+        "prophecy"
+      ]
+    },
+    {
+      "slug": "valley-of-dry-bones",
+      "group": "Visions & Prophecies",
+      "title": "The Valley of Dry Bones",
+      "refs": "Ezekiel 37:1–14",
+      "blurb": "Set down in a valley full of very dry bones, Yachazaqaal prophesies and hears a noise, a shaking, bone to bone — and the whole house of Yashar-Al stands up, a very great army.",
+      "tags": [
+        "Ezekiel",
+        "resurrection",
+        "Israel"
+      ]
+    },
+    {
+      "slug": "suffering-servant",
+      "group": "Visions & Prophecies",
+      "title": "The Suffering Servant",
+      "refs": "Isaiah 52:13–15; 53:1–12",
+      "blurb": "Despised and rejected, wounded for our transgressions, he bears the sin of many and is numbered with the great.",
+      "tags": [
+        "Isaiah",
+        "Messiah",
+        "servant songs"
+      ]
+    },
+    {
+      "slug": "river-from-the-temple",
+      "group": "Visions & Prophecies",
+      "title": "The River Flowing from the Temple",
+      "refs": "Ezekiel 47:1–12",
+      "blurb": "Waters issue from under the threshold of the house, ankle-deep, then knee-deep, then a river that cannot be passed — and everything lives where the river comes.",
+      "tags": [
+        "Ezekiel",
+        "temple",
+        "millennium"
+      ]
+    },
+    {
+      "slug": "the-holy-portion",
+      "group": "Visions & Prophecies",
+      "title": "The Holy Portion",
+      "subtitle": "The oblation for the priests, the Levites, the city and the prince",
+      "refs": "Ezekiel 48:8–22",
+      "blurb": "The square of 25,000 by 25,000 in the midst of the land: the sanctuary in the middle, the priests' and Levites' portions, the city with its fields, and the prince on either side.",
+      "tags": [
+        "Ezekiel",
+        "millennium",
+        "Holy Land map"
+      ]
+    },
+    {
+      "slug": "prologue-of-john",
+      "group": "Visions & Prophecies",
+      "title": "The Word Made Flesh",
+      "subtitle": "The prologue of John",
+      "refs": "John 1:1–18",
+      "blurb": "In the beginning was the Word, and the Word was with God — and the Word became flesh and tabernacled among us.",
+      "tags": [
+        "John",
+        "Jesus",
+        "creation"
+      ]
+    },
+    {
+      "slug": "enochs-blessing",
+      "group": "Visions & Prophecies",
+      "title": "Chanawak's Opening Blessing",
+      "subtitle": "1 Enoch 1 — the blessing on the elect and righteous",
+      "refs": "1 Enoch 1:1–9",
+      "blurb": "The words of the blessing of Chanawak for the elect and righteous who will be living in the day of tribulation: the Holy Great One comes forth from his dwelling with ten thousands of his holy ones.",
+      "tags": [
+        "Enoch",
+        "judgement",
+        "Works"
+      ]
+    }
   ]
 }
