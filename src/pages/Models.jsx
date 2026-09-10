@@ -29,13 +29,13 @@ export const MODELS = [
     slug: 'statue',
     title: 'The Statue of the Dream',
     kicker: 'Interactive 3D model · Daniel 2',
-    blurb: 'Nebuchadnezzar\'s image — the head of gold, the breast and arms of silver, the belly and thighs of bronze, the legs of iron, the feet of iron and clay — and the stone cut out without hands. Tap any piece for the text\'s own words and verses; play the stone striking it to pieces, scrub through the fall, and see that only the stone remains.',
+    blurb: 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) — the raash (head) of dahab (gold), the chaday (breast) and darai (arms) of kasap (silver), the maih (belly) and yarakaa (thighs) of nachash (brass), the shaq (legs) of parazal (iron), the ragal (feet) of parazal (iron) and chasap (clay) — and the aban (stone) gazar (cut) out laa (NOT) yadayan (hands). Tap any piece for the text\'s own words and verses; play the aban (stone) striking it to pieces, scrub through the fall, and see that only the aban (stone) remains.',
     paleo: '𐤑𐤋𐤌 𐤀𐤁𐤍',
     tags: ['Daniel 2:31–45', 'Daniel 7–8', '3D · 2D sheet', 'Animation'],
     to: '/models/statue',
     quick: [
-      { label: 'The stone — Daniel 2:34', to: '/models/statue?piece=stone' },
-      { label: 'The feet of iron and clay', to: '/models/statue?piece=feet' },
+      { label: 'The aban (stone) — Daniel 2:34', to: '/models/statue?piece=stone' },
+      { label: 'The ragal (feet) of parazal (iron) and chasap (clay)', to: '/models/statue?piece=feet' },
       { label: 'Flat 2D sheet', to: '/models/statue?view=2d' },
     ],
   },
@@ -56,7 +56,7 @@ export const MODELS = [
 ];
 
 export default function Models() {
-  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, and the statue of Daniel 2 with the stone cut without hands.');
+  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, and the tzalam (likeness) of Daniel 2 with the aban (stone) gazar (cut) out laa (NOT) yadayan (hands).');
   return (
     <div className="models-page">
       <header className="models-top">

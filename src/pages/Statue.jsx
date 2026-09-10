@@ -101,8 +101,8 @@ function Card({ id, selectable, ended, onClose, onPick }) {
   if (!item) {
     return (
       <div className="st-card">
-        <div className="st-card-h"><div className="st-detail-sub">The statue of the dream</div><h2 className="st-card-title">Tap a piece of the image, or the stone</h2></div>
-        <p className="st-card-p">The king saw a great image: a head of gold, breast and arms of silver, belly and thighs of bronze, legs of iron, feet part iron and part clay — and a stone cut out without hands that struck it on its feet. Each piece answers with the text's own words for it and the verses that explain it.</p>
+        <div className="st-card-h"><div className="st-detail-sub">The tzalam (likeness) of the dream</div><h2 className="st-card-title">Tap a piece of the tzalam (likeness), or the aban (stone)</h2></div>
+        <p className="st-card-p">The malak (king) saw a rab (great) tzalam (likeness): a raash (head) of dahab (gold), chaday (breast) and darai (arms) of kasap (silver), maih (belly) and yarakaa (thighs) of nachash (brass), shaq (legs) of parazal (iron), ragal (feet) part parazal (iron) and part chasap (clay) — and an aban (stone) gazar (cut) out laa (NOT) yadayan (hands) that struck it on its ragal (feet). Each piece answers with the text's own words for it and the verses that explain it.</p>
         <ul className="st-legend">
           {PIECES.map((p) => (
             <li key={p.id}>
@@ -113,7 +113,7 @@ function Card({ id, selectable, ended, onClose, onPick }) {
           ))}
           <li><button type="button" className="st-legend-btn" onClick={() => onPick('stone')}><i style={{ background: MATERIALS.stone.color }} /> <span>{STONE.title}</span> <small>Aban</small></button></li>
         </ul>
-        {ended && <p className="st-only">Only the stone remains — the image is gone, and the mountain fills the earth. <PassageRefs refs="Daniel 2:35, 44–45" size="sm" /></p>}
+        {ended && <p className="st-only">Only the aban (stone) remains — the tzalam (likeness) is gone, and the tawar (mountain) malaa (fills) the arai (earth). <PassageRefs refs="Daniel 2:35, 44–45" size="sm" /></p>}
         <PassageRefs refs={ALL_REFS} size="sm" />
       </div>
     );
@@ -123,15 +123,15 @@ function Card({ id, selectable, ended, onClose, onPick }) {
   return (
     <div className="st-card">
       <div className="st-card-h">
-        <div className="st-detail-sub">{isStone ? 'The stone' : `Piece ${item.order} of 5 · ${WORDS[item.materialWord].en}`}</div>
+        <div className="st-detail-sub">{isStone ? 'The aban (stone)' : `Piece ${item.order} of 5 · ${WORDS[item.materialWord].translit.toLowerCase()} (${WORDS[item.materialWord].en})`}</div>
         <h2 className="st-card-title">{item.title}</h2>
         <button type="button" className="st-card-x" onClick={onClose} aria-label="Close">×</button>
       </div>
       <div className="st-words">
         {[...new Set([...item.words, item.materialWord, ...(isStone ? ['tawar', 'rawach'] : [])])].map((k) => <Word key={k} k={k} />)}
       </div>
-      {gone && !isStone && <p className="st-gone">This piece is broken to pieces at this moment of the vision — scrub back to see it whole. <span className="st-gone-ref">Daniel 2:35</span></p>}
-      {ended && isStone && <p className="st-only">Only the stone remains. The image is gone — "no place was found for them" — and the stone has become a great mountain that fills the whole earth.</p>}
+      {gone && !isStone && <p className="st-gone">This piece is daqaq (broken) in pieces at this moment of the vision — scrub back to see it whole. <span className="st-gone-ref">Daniel 2:35</span></p>}
+      {ended && isStone && <p className="st-only">Only the aban (stone) remains. The tzalam (likeness) is gone — "no athar (place) was shakach (found) for them" — and the aban (stone) has become a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).</p>}
 
       <div className="st-detail-sub">In the dream</div>
       <PassageRefs refs={item.dreamRef} autoOpen size="md" />
@@ -146,7 +146,7 @@ function Card({ id, selectable, ended, onClose, onPick }) {
         <PassageRefs refs={item.named.ref} size="sm" />
       </div>
 
-      <div className="st-detail-sub">{isStone ? 'The same stone elsewhere' : 'The parallel vision'}</div>
+      <div className="st-detail-sub">{isStone ? 'The same aban (stone) elsewhere' : 'The parallel vision'}</div>
       <div className="st-par">
         <p>{item.parallel.note}</p>
         <PassageRefs refs={item.parallel.ref} size="sm" />
@@ -160,7 +160,7 @@ function Card({ id, selectable, ended, onClose, onPick }) {
 
 // ── The page ─────────────────────────────────────────────────────────────────
 export default function Statue() {
-  usePageTitle(pageTitle('The Statue of the Dream — Maps & Models'), 'Nebuchadnezzar\'s image of Daniel 2 and the stone cut without hands — an interactive model: tap the head of gold, the silver, the bronze, the iron and the clay for their verses, and play the stone striking it to pieces.');
+  usePageTitle(pageTitle('The Statue of the Dream — Maps & Models'), 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (NOT) yadayan (hands) — an interactive model: tap the dahab (gold), the kasap (silver), the nachash (brass), the parazal (iron) and the chasap (clay) for their verses, and play the aban (stone) striking it to pieces.');
   const [params, setParams] = useSearchParams();
   const canGL = useMemo(webglAvailable, []);
   const view = VIEWS.includes(params.get('view')) ? params.get('view') : (canGL ? '3d' : '2d');
@@ -247,7 +247,7 @@ export default function Statue() {
               <label className="st-loop"><input id="st-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
             </div>
           </div>
-          <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}Tap a piece for its verses; once it is shattered it cannot be chosen — at the end only the stone remains.</p>
+          <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}Tap a piece for its verses; once it is daqaq (broken) it cannot be chosen — at the end only the aban (stone) remains.</p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Pieces &amp; verses ↑</button>
         </section>
 

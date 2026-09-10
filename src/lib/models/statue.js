@@ -22,7 +22,7 @@ export const WORDS = {
   kasap:   { translit: 'Kasap',     paleo: '𐤊𐤎𐤐',  en: 'silver', sn: 'H3702' },
   maih:    { translit: 'Maih',      paleo: '𐤌𐤏𐤄',  en: 'belly',  sn: 'H4577' },
   yarakaa: { translit: 'Yarakaa',   paleo: '𐤉𐤓𐤊𐤀', en: 'thighs', sn: 'H3410' },
-  nachash: { translit: 'Nachash',   paleo: '𐤍𐤇𐤔',  en: 'bronze / brass', sn: 'H5174' },
+  nachash: { translit: 'Nachash',   paleo: '𐤍𐤇𐤔',  en: 'brass', sn: 'H5174' },
   shaq:    { translit: 'Shaq',      paleo: '𐤔𐤒',   en: 'legs',   sn: 'H8243' },
   parazal: { translit: 'Parazal',   paleo: '𐤐𐤓𐤆𐤋', en: 'iron',   sn: 'H6523' },
   ragal:   { translit: 'Ragal',     paleo: '𐤓𐤂𐤋',  en: 'feet',   sn: 'H7271' },
@@ -55,11 +55,11 @@ export const PIECES = [
   {
     id: 'head', order: 1, y0: 6.1, h: 1.3, material: 'gold',
     words: ['raash'], materialWord: 'dahab',
-    title: 'The head of gold', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:37–38',
-    named: { kingdom: 'Babal (Babylon)', who: 'Nabawakadanaatzar (Nebuchadnezzar) himself', ref: 'Daniel 2:37–38',
-      note: 'The only piece the text itself names: "you are the head of gold" — the king of Babylon.' },
-    parallel: { ref: 'Daniel 7:4', note: 'The first beast of Daniel 7 — a lion with eagle\'s wings — stands where the head of gold stands in the sequence of four kingdoms (Daniel 7:17).' },
-    traditional: 'Babylon (626–539 BC)',
+    title: 'The raash (head) of dahab (gold)', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:37–38',
+    named: { kingdom: 'Babal (Babylon)', who: 'Nabawakadanaatzar (Nebuchadnezzar) the malak (king) himself', ref: 'Daniel 2:37–38',
+      note: 'The only piece the text itself names: "you are the raash (head) of dahab (gold)" — the malak (king) of Babal (Babylon).' },
+    parallel: { ref: 'Daniel 7:4', note: 'The qadamay (first) animal of Daniel 7 — like a arayah (lion) with nashar (eagle\'s) gapayan (wings) — stands where the raash (head) of dahab (gold) stands among the arabai (four) malakayan (kings) (Daniel 7:17).' },
+    traditional: 'Babal (Babylon), 626–539 BC',
     parts: [
       { kind: 'cylinder', x: 0, y: 6.1, h: 0.3, r: 0.32 },                // neck
       { kind: 'sphere', x: 0, y: 6.9, r: 0.62 },                          // head
@@ -68,11 +68,11 @@ export const PIECES = [
   {
     id: 'chest', order: 2, y0: 4.4, h: 1.7, material: 'silver',
     words: ['chaday', 'darai'], materialWord: 'kasap',
-    title: 'The breast and arms of silver', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:39',
-    named: { kingdom: 'not named in Daniel 2', who: '"another kingdom inferior to you"', ref: 'Daniel 2:39; 5:28; 8:20',
-      note: 'Daniel 2 gives no name. Daniel 5:28 gives Babylon to "the Medes and Persians", and Daniel 8:20 names "the kings of Media and Persia" as the two-horned ram — the kingdom that follows Babylon in the book\'s own telling.' },
-    parallel: { ref: 'Daniel 7:5; Daniel 8:3–4, 20', note: 'The bear raised up on one side (7:5) and the ram with two horns, one higher than the other (8:3, 20).' },
-    traditional: 'Medo-Persia (539–331 BC) — the two arms read as the two peoples',
+    title: 'The chaday (breast) and darai (arms) of kasap (silver)', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:39',
+    named: { kingdom: 'not named in Daniel 2', who: '"acharay (another) malakaw (kingdom) inferior to you"', ref: 'Daniel 2:39; 5:28; 8:20',
+      note: 'Daniel 2 gives no name. Daniel 5:28 gives Babal (Babylon) to the Maday (Medes) and Paras (Persians), and Daniel 8:20 names the malakay (kings) of Maday (Media) and Paras (Persia) as the ayal (ram) with two qaranayam (horns) — the malakaw (kingdom) that follows Babal (Babylon) in the book\'s own telling.' },
+    parallel: { ref: 'Daniel 7:5; Daniel 8:3–4, 20', note: 'The dab (bear) qawam (raised up) on chad (one) shatar (side) (7:5), and the ayal (ram) whose two qaranayam (horns) were gabah (high), achad (one) gabah (higher) than the other (8:3, 20).' },
+    traditional: 'Maday (Media) and Paras (Persia), 539–331 BC — the two darai (arms) read as the two peoples',
     parts: [
       { kind: 'box', x: 0, y: 4.4, h: 1.7, w: 1.9, d: 1.05 },             // torso
       { kind: 'cylinder', x: -1.22, y: 4.45, h: 1.5, r: 0.29 },           // arms, hanging at the sides
@@ -86,11 +86,11 @@ export const PIECES = [
   {
     id: 'belly', order: 3, y0: 2.9, h: 1.5, material: 'bronze',
     words: ['maih', 'yarakaa'], materialWord: 'nachash',
-    title: 'The belly and thighs of bronze', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:39',
-    named: { kingdom: 'not named in Daniel 2', who: '"a third kingdom of bronze, which shall rule over all the earth"', ref: 'Daniel 2:39; 8:21',
-      note: 'Daniel 2 gives no name. Daniel 8:21 names the rough goat as "the king of Greece", the power that breaks the ram of Media and Persia.' },
-    parallel: { ref: 'Daniel 7:6; Daniel 8:5–8, 21', note: 'The leopard with four wings and four heads (7:6) and the goat whose great horn breaks into four (8:8, 21–22).' },
-    traditional: 'Greece under Alexander and his successors (331–146 BC)',
+    title: 'The maih (belly) and yarakaa (thighs) of nachash (brass)', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:39',
+    named: { kingdom: 'not named in Daniel 2', who: '"a thalayathay (third) malakaw (kingdom) of nachash (brass), which shall shalat (bear) rule over kal (every) the arai (earth)"', ref: 'Daniel 2:39; 8:21',
+      note: 'Daniel 2 gives no name. Daniel 8:21 names the shaiyar (rough) tzapayar (goat) as the malak (king) of Yawan (Greece), the one that shabar (breaks) the ayal (ram) of Maday (Media) and Paras (Persia).' },
+    parallel: { ref: 'Daniel 7:6; Daniel 8:5–8, 21', note: 'The namar (leopard) with arabai (four) gapayan (wings) and arabai (four) raashayan (heads) (7:6), and the tzapayar (goat) whose gadal (great) qaran (horn) was shabar (broken) for arabai (four) (8:8, 21–22).' },
+    traditional: 'Yawan (Greece) under Alexander and his successors, 331–146 BC',
     parts: [
       { kind: 'box', x: 0, y: 3.55, h: 0.85, w: 1.65, d: 1.0 },           // belly
       { kind: 'cylinder', x: -0.5, y: 2.9, h: 0.7, r: 0.44 },             // thighs
@@ -100,11 +100,11 @@ export const PIECES = [
   {
     id: 'legs', order: 4, y0: 0.5, h: 2.4, material: 'iron',
     words: ['shaq'], materialWord: 'parazal',
-    title: 'The legs of iron', dreamRef: 'Daniel 2:33', meaningRef: 'Daniel 2:40',
-    named: { kingdom: 'not named anywhere in Daniel', who: '"the fourth kingdom, strong as iron"', ref: 'Daniel 2:40',
-      note: 'No book of scripture names the fourth kingdom. The text says only what it does: it breaks in pieces and crushes all the others.' },
-    parallel: { ref: 'Daniel 7:7, 19, 23', note: 'The fourth beast, "dreadful and terrible", with great iron teeth — "the fourth kingdom upon earth" (7:23).' },
-    traditional: 'Rome (146 BC onward) — the two legs read as its eastern and western halves',
+    title: 'The shaq (legs) of parazal (iron)', dreamRef: 'Daniel 2:33', meaningRef: 'Daniel 2:40',
+    named: { kingdom: 'not named anywhere in Daniel', who: '"the rabayaiy (fourth) malakaw (kingdom), thaqayap (strong) as parazal (iron)"', ref: 'Daniel 2:40',
+      note: 'No book of scripture names the rabayaiy (fourth) malakaw (kingdom). The text says only what it does: it daqaq (breaks) in pieces and raii (crushes) kal (every) the others.' },
+    parallel: { ref: 'Daniel 7:7, 19, 23', note: 'The rabayaiy (fourth) animal, awesome and powerful, with rabarab (great) parazal (iron) shanayan (teeth) — "a rabayaiy (fourth) malakaw (kingdom) on arai (earth)" (7:23).' },
+    traditional: 'Rome, 146 BC onward — the two shaq (legs) read as its eastern and western halves',
     parts: [
       { kind: 'cylinder', x: -0.5, y: 0.5, h: 2.45, r: 0.38 },
       { kind: 'cylinder', x: 0.5, y: 0.5, h: 2.45, r: 0.38 },
@@ -113,11 +113,11 @@ export const PIECES = [
   {
     id: 'feet', order: 5, y0: 0, h: 0.5, material: 'clay',
     words: ['ragal', 'atzabaith'], materialWord: 'chasap',
-    title: 'The feet of iron and clay', dreamRef: 'Daniel 2:33', meaningRef: 'Daniel 2:41–43',
-    named: { kingdom: 'not named', who: '"a divided kingdom … partly strong and partly broken"', ref: 'Daniel 2:41–43',
-      note: 'Iron mixed with potter\'s clay: strength that will not hold together, "they shall mingle themselves with the seed of men, but they shall not cling to one another". The toes are the text\'s own detail (2:41–42).' },
-    parallel: { ref: 'Daniel 7:7–8, 24', note: 'The ten horns of the fourth beast, "ten kings that shall arise" (7:24), are often set beside the ten toes.' },
-    traditional: 'The divided remains of Rome — ten kingdoms / a later divided power; the one piece the stone strikes',
+    title: 'The ragal (feet) of parazal (iron) and chasap (clay)', dreamRef: 'Daniel 2:33', meaningRef: 'Daniel 2:41–43',
+    named: { kingdom: 'not named', who: '"a palag (divided) malakaw (kingdom) … partly thaqayap (strong), and partly thabar (broken)"', ref: 'Daniel 2:41–43',
+      note: 'Parazal (iron) irab (mixed) with pachar (potters\') chasap (clay): strength that will not hold together — "they shall not cling to dan (one) dan (another), even as parazal (iron) does not irab (mix) with chasap (clay)". The atzabaith (toes) are the text\'s own detail (2:41–42).' },
+    parallel: { ref: 'Daniel 7:7–8, 24', note: 'The ishar (ten) qaranayan (horns) of the rabayaiy (fourth) animal — "ishar (ten) malakayan (kings)" (7:24) — are often set beside the ishar (ten) atzabaith (toes).' },
+    traditional: 'The palag (divided) remains of Rome — ishar (ten) malakayan (kings) / a later divided power; the one piece the aban (stone) strikes',
     parts: [
       { kind: 'box', x: -0.55, y: 0, h: 0.5, w: 0.78, d: 1.7, z: 0.25, mixed: true },   // feet (clay body)
       { kind: 'box', x: 0.55, y: 0, h: 0.5, w: 0.78, d: 1.7, z: 0.25, mixed: true },
@@ -132,12 +132,12 @@ export const PIECES = [
 ];
 
 export const STONE = {
-  id: 'stone', title: 'The stone cut out without hands', words: ['aban'], materialWord: 'aban', material: 'stone',
+  id: 'stone', title: 'The aban (stone) gazar (cut) out laa (NOT) yadayan (hands)', words: ['aban'], materialWord: 'aban', material: 'stone',
   dreamRef: 'Daniel 2:34–35', meaningRef: 'Daniel 2:44–45',
-  named: { kingdom: 'the kingdom the God of heaven sets up', who: '"it shall never be destroyed … it shall stand for ever"', ref: 'Daniel 2:44',
-    note: 'Cut out of the mountain, not by hands; it strikes the feet, the whole statue becomes chaff, and the stone becomes a great mountain that fills the whole earth.' },
-  parallel: { ref: 'Psalm 118:22; Isaiah 28:16; Isaiah 2:2–3; Matthew 21:42–44; Luke 20:17–18; 1 Peter 2:6–8', note: 'The stone the builders rejected; the tried, precious corner stone; the mountain of the house of Yah established above the hills; "on whomever it falls, it will scatter him as dust".' },
-  traditional: 'The kingdom of the Messiah / the kingdom of heaven',
+  named: { kingdom: 'the malakaw (kingdom) the Alahayam of shamayan (heaven) qawam (raises up)', who: '"which shall ilam (never) be chabal (destroyed) … it shall qawam (stand) ilam (forever)"', ref: 'Daniel 2:44',
+    note: 'Gazar (cut) out of the tawar (mountain), laa (NOT) by yadayan (hands); it strikes the ragal (feet), the whole tzalam (likeness) becomes iwar (chaff), and the aban (stone) becomes a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).' },
+  parallel: { ref: 'Psalm 118:22; Isaiah 28:16; Isaiah 2:2–3; Matthew 21:42–44; Luke 20:17–18; 1 Peter 2:6–8', note: 'The aban (stone) the builders rejected; the tried, precious corner aban (stone); the tawar (mountain) of the house of Yah set above the hills; "on whomever it falls, it will scatter him as dust".' },
+  traditional: 'The malakaw (kingdom) of the Mashayach (Messiah) / the malakaw (kingdom) of shamayan (heaven)',
   r: 0.46,
   start: { x: -4.6, y: 6.9, z: 1.6 },       // in the air, well clear of the statue
   strike: { x: -0.85, y: 0.55, z: 1.1 },    // the feet, from the statue's right / the viewer's left
@@ -158,11 +158,11 @@ export const SPEEDS = [0.25, 0.5, 1, 2];
 export const BREAK_DELAY = { feet: 0, legs: 0.12, belly: 0.24, chest: 0.36, head: 0.5 };
 
 export const PHASES = [
-  { from: 0,             key: 'falls',    caption: 'A stone, cut out without hands, comes down.', ref: 'Daniel 2:34' },
-  { from: HIT,           key: 'strikes',  caption: 'It strikes the image on its feet of iron and clay, and breaks them in pieces.', ref: 'Daniel 2:34' },
-  { from: HIT + 0.55,    key: 'shatters', caption: 'Then the iron, the clay, the bronze, the silver and the gold are broken in pieces together.', ref: 'Daniel 2:35' },
-  { from: DUST_FROM,     key: 'chaff',    caption: 'They become like the chaff of the summer threshing floors, and the wind carries them away, so that no place is found for them.', ref: 'Daniel 2:35' },
-  { from: MOUNTAIN_FROM, key: 'mountain', caption: 'And the stone that struck the image becomes a great mountain, and fills the whole earth.', ref: 'Daniel 2:35, 44–45' },
+  { from: 0,             key: 'falls',    caption: 'An aban (stone), gazar (cut) out laa (NOT) yadayan (hands), comes down.', ref: 'Daniel 2:34' },
+  { from: HIT,           key: 'strikes',  caption: 'It strikes the tzalam (likeness) on its ragal (feet) of parazal (iron) and chasap (clay), and daqaq (breaks) them in pieces.', ref: 'Daniel 2:34' },
+  { from: HIT + 0.55,    key: 'shatters', caption: 'Then the parazal (iron), the chasap (clay), the nachash (brass), the kasap (silver) and the dahab (gold) are daqaq (broken) in pieces chad (together).', ref: 'Daniel 2:35' },
+  { from: DUST_FROM,     key: 'chaff',    caption: 'They become like the iwar (chaff) of the qayat (summer) threshing floors, and the rawach (wind) nashaa (lifts) them away, so that no athar (place) is shakach (found) for them.', ref: 'Daniel 2:35' },
+  { from: MOUNTAIN_FROM, key: 'mountain', caption: 'And the aban (stone) that struck the tzalam (likeness) becomes a rab (great) tawar (mountain), and malaa (fills) the kal (every) arai (earth).', ref: 'Daniel 2:35, 44–45' },
 ];
 export function phaseAt(t) {
   let p = PHASES[0];
