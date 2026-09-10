@@ -340,6 +340,12 @@ const HEB_TOKENS = (() => {
 // "id (until)". Demonstratives/conjunctions (that, this, such, it, as) never — too
 // ambiguous to be right often enough.
 const VG_FUNCTION_OK = new Set('you we they them he she him her us me until not all every upon over with from now behold among before after without within between against because therefore also again many much who which whom whose'.split(/\s+/));
+// Senses a root may NOT gloss, whatever kjv_def says. fieldy, 2026-09-10: "I'm confident
+// asharay is not 'blessed'" — 𐤀𐤔𐤓𐤉 is "he who"; where the English says blessed the word
+// is barak. (Delitzsch's Beatitudes carry אשרי; the pin blessed→barak now renders there.)
+const VG_ROOT_NOT = new Map([
+  ['𐤀𐤔𐤓', new Set(['blessed', 'bless', 'blessedness', 'happy', 'happiness'])],
+]);
 const VG_GENERIC = new Set('make made makes making do done did doing get got give gave put set take took bring come came go went cause let self selves one thing things'.split(/\s+/));
 const VG = { verses: new Map(), english: new Map(), on: false };
 if (!NO_VERSE_GLOSS) (() => {
@@ -432,6 +438,7 @@ if (!NO_VERSE_GLOSS) (() => {
     if (!root) continue;
     nSn++;
     for (const word of defWords(def)) {
+      if (VG_ROOT_NOT.get(root)?.has(word)) continue;   // a sense fieldy has ruled out for this root
       addWord(word, root);
       if (!VG.english.has(word)) VG.english.set(word, new Set());
       VG.english.get(word).add(sn);
@@ -547,6 +554,7 @@ if (!NO_VERSE_GLOSS) (() => {
 //     computing translit(ROOTS[sn]) directly sidesteps that bug too, the same
 //     way it already does for the verse-gloss pass.
 const TOK_TR = new Map();     // "canon|ch|v" -> Map(ordinal -> translit)
+const TOK_ROOT = new Map();   // "canon|ch|v" -> Map(ordinal -> root paleo), for VG_ROOT_NOT
 if (LINKS.size) (() => {
   if (!HEB_TOKENS) return;
   if (!translitBooksJs) { console.log('links: books.js translit() not found — TOK_TR skipped'); return; }
@@ -559,6 +567,8 @@ if (LINKS.size) (() => {
       if (!tr || tr.length < 2) continue;
       if (!TOK_TR.has(key)) TOK_TR.set(key, new Map());
       TOK_TR.get(key).set(ord, tr);
+      if (!TOK_ROOT.has(key)) TOK_ROOT.set(key, new Map());
+      TOK_ROOT.get(key).set(ord, ROOTS[toks.find(t => t[0] === ord)?.[1]] || null);
     }
   }
 })();
@@ -629,6 +639,13 @@ function applyLinks(text, key) {
   for (const sp of spans) {
     const tr = trs.get(sp.ord);
     if (!tr) continue;
+    // a link that pairs a root with a sense fieldy has ruled out (אשרי ↔ "Blessed") is
+    // not applied — the pin decides that word instead (see VG_ROOT_NOT)
+    {
+      const root = TOK_ROOT.get(key)?.get(sp.ord);
+      const not = root && VG_ROOT_NOT.get(root);
+      if (not && sp.phrase && sp.phrase.toLowerCase().split(/\s+/).some(w => not.has(w.replace(/[^a-z]/g, '')))) { LINK_STATS.stale++; continue; }
+    }
     let first = sp.eng[0], last = sp.eng[sp.eng.length - 1];
     if (last - first !== sp.eng.length - 1) continue;         // non-contiguous span
     const want = sp.phrase ? sp.phrase.split(/\s+/).map(norm).filter(Boolean) : [];
@@ -797,7 +814,7 @@ function render(text, vgKey) {
       // English forever. Sentence-initial words are ordinary words wearing a
       // capital, so they render like any term, with the capital carried over.
       const before = s.slice(0, off);
-      const sentenceStart = off === 0 || /(^|[.!?;:\u201c\u201d"'\u2019)\]]|\u0000\d+\u0000)\s+$/.test(before);
+      const sentenceStart = off === 0 || /(^|[.!?;:\u201c\u201d"'\u2019)\]]|\u0000\d+\u0000)\s*$/.test(before);
       if (!CAPS_OK.has(lw) && !sentenceStart) return w;
       return `${tr.charAt(0).toUpperCase() + tr.slice(1)} (${w})`;
     }
@@ -868,6 +885,29 @@ function render(text, vgKey) {
           : hit.tr.toLowerCase();
         return `${tr} (${w})`;
       });
+      // 5c. A word step 5 handed to the Hebrew that the Hebrew could not answer for gets
+      //     its global pin after all — an attempt beats plain English (fieldy, 2026-09-10:
+      //     "MOST words attempted"). Same rendering as step 5, capital carried over.
+      if (deferredToVg.size) {
+        // re-guard: 5b just wrote new "(word)" glosses of its own
+        const g3 = [];
+        s = s.replace(/\([^()]*\)/g, seg => { g3.push(seg); return `\u0002${g3.length - 1}\u0002`; });
+        s = s.replace(/\b([A-Za-z][A-Za-z']*)\b(?!\s*[\u0000\u0001\u0002(])/g, (w, _g1, off) => {
+          const lw = w.toLowerCase();
+          if (!deferredToVg.has(lw) || TERM_EXCLUDE.has(lw)) return w;
+          const tr = termFor(lw);
+          if (!tr) return w;
+          if (/^[A-Z]/.test(w)) {
+            if (NAME.has(lw) || PEOPLE.has(lw) || ALIAS.has(lw)) return w;
+            const before = s.slice(0, off);
+            const sentenceStart = off === 0 || /(^|[.!?;:\u201c\u201d"'\u2019)\]]|[\u0000\u0001\u0002]\d+[\u0000\u0001\u0002])\s*$/.test(before);
+            if (!CAPS_OK.has(lw) && !sentenceStart) return w;
+            return `${tr.charAt(0).toUpperCase() + tr.slice(1)} (${w})`;
+          }
+          return `${tr} (${w})`;
+        });
+        s = s.replace(/\u0002(\d+)\u0002/g, (_, i) => g3[+i]);
+      }
       s = s.replace(/\u0001(\d+)\u0001/g, (_, i) => g2[+i]);
     }
   }
