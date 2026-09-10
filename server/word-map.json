@@ -134,6 +134,7 @@
   "en mishpat": "Iyanamashapat",
   "eshcol": "Ashakal",
   "aner": "Inar",
+  "dan": "Dan",
   "hobah": "Chawabah",
   "damascus": "Damashaq",
   "shaveh": "Shawah",
@@ -228,7 +229,6 @@
   "reuben": "Raawaban",
   "simeon": "Shamaiwan",
   "levi": "Laway",
-  "dan": "Dan",
   "rachel's": "Rachal",
   "naphtali": "Napathalay",
   "gad": "Gad",
@@ -522,7 +522,7 @@
   "chemosh": "Kamawash",
   "dibon": "Dayabawan",
   "nophah": "Napach",
-  "medeba": "Mayadabaa",
+  "medeba": "May-Dabaa",
   "jazer": "Yaizayar",
   "bashan": "Bashan",
   "og": "Iwag",
@@ -614,7 +614,7 @@
   "almon diblathaim": "Ilamanadabalathayamah",
   "beth jeshimoth": "Bayathahayashayamawath",
   "abel shittim": "Abalahashatayam",
-  "kadesh barnea": "Qadashabaranai",
+  "kadesh barnea": "Qadash-Baranai",
   "hazar addar": "Chatzaraadar",
   "azmon": "Itzamawan",
   "zedad": "Tzadad",
@@ -655,6 +655,7 @@
   "gudgodah": "Gadagadah",
   "gerizim": "Garazayam",
   "gilgal": "Galagal",
+  "asherah": "Asharah",
   "jeshurun": "Yasharawan",
   "zarethan": "Tzarathan",
   "achan": "Ikan",
@@ -666,8 +667,8 @@
   "gibeon": "Gabaiwan",
   "chephirah": "Kapayarah",
   "beeroth": "Baarawath",
-  "jerusalem": "Yarawashalam",
   "adoni-zedek": "Adanayatzadaq",
+  "jerusalem": "Yarawashalam",
   "hoham": "Hawaham",
   "piram": "Paraam",
   "jarmuth": "Yaramawath",
@@ -691,7 +692,7 @@
   "misrephoth maim": "Masharapawathamayam",
   "mizpeh": "Matzapah",
   "halak": "Chalaq",
-  "baal gad": "Bailagad",
+  "baal gad": "Bail-Gad",
   "anab": "Inab",
   "ashdod": "Ashadawad",
   "geder": "Gadar",
@@ -821,7 +822,8 @@
   "middin": "Madayan",
   "secacah": "Sakakah",
   "nibshan": "Nabashan",
-  "en gedi": "Iyanagaday",
+  "city of salt": "Iyar-HaMalach",
+  "en gedi": "Iyan-Gaday",
   "ataroth addar": "Itarawathaadar",
   "michmethath": "Makamathath",
   "taanath shiloh": "Thaanathashalah",
@@ -832,7 +834,7 @@
   "en tappuah": "Iyanathapawach",
   "beth shean": "Bayath-Shaan",
   "ibleam": "Yabalaim",
-  "endor": "Iyanadaar",
+  "endor": "Iyan-Daar",
   "shiloh": "Shayalah",
   "geliloth": "Galayalawath",
   "keziz": "Qatzayatz",
@@ -975,7 +977,6 @@
   "meroz": "Marawaz",
   "sisera's": "Sayasaraa",
   "gideon": "Gadaiwan",
-  "asherah": "Asharah",
   "jerub-baal": "Yarabail",
   "jerubbaal": "Yarabail",
   "harod": "Iyanacharad",
@@ -1007,7 +1008,6 @@
   "syria": "Aram",
   "jephthah": "Yapathach",
   "gilead's": "Galaid",
-  "tob": "Tawab",
   "minnith": "Manayath",
   "ibzan": "Abatzan",
   "hillel": "Halal",
@@ -1164,6 +1164,7 @@
   "baale judah": "Bailayayahawadah",
   "uzzah": "Izaa",
   "ahio": "Achayaw",
+  "nacon": "Nakawan",
   "obed-edom": "Ibadaadawam",
   "hadadezer": "Hadadaizar",
   "betah": "Batach",
@@ -1320,7 +1321,7 @@
   "elisha": "Alayashai",
   "naboth": "Nabawath",
   "ahab's": "Achaab",
-  "ramoth gilead": "Ramathagalaid",
+  "ramoth gilead": "Ramath-Galaid",
   "imlah": "Yamalaa",
   "zedekiah": "Tzadaqayah",
   "chenaanah": "Kanainah",
@@ -1984,7 +1985,7 @@
   "hashum": "Chasham",
   "gibbar": "Gabar",
   "netophah": "Natapah",
-  "arim": "Qarayathayairayam",
+  "arim": "Qarayath-Yairayam",
   "michmas": "Makamas",
   "magbish": "Magabayash",
   "hadid": "Chadayad",
@@ -2346,6 +2347,7 @@
   "beth arbel": "Bayathaarabaal",
   "pethuel": "Pathawaal",
   "amos": "Imawas",
+  "harmon": "Haramawan",
   "sepharad": "Saparad",
   "jonah's": "Yawanah",
   "shaphir": "Shapayar",
@@ -2986,7 +2988,7 @@
   ],
   "kadesh": [
    "Qadash×17",
-   "Qadashabaranai×1"
+   "Qadash-Baranai×1"
   ],
   "amalekites": [
    "Imalaq×14",
@@ -3018,7 +3020,7 @@
   ],
   "kiriath": [
    "Qarayathaarabai×1",
-   "Qarayathayairayam×1"
+   "Qarayath-Yairayam×1"
   ],
   "mesopotamia": [
    "Aramanaharayam×3",
@@ -3155,11 +3157,12 @@
   ],
   "hermon": [
    "Charamawan×12",
-   "Bailacharamawan×1"
+   "Bailacharamawan×1",
+   "Charamawanayam×1"
   ],
   "ramoth": [
    "Raamawath×4",
-   "Ramathagalaid×2",
+   "Ramath-Galaid×2",
    "Ramawath×1"
   ],
   "rahab": [
@@ -3167,7 +3170,7 @@
    "Rahab×3"
   ],
   "jearim": [
-   "Qarayathayairayam×18",
+   "Qarayath-Yairayam×18",
    "Yairayam×1"
   ],
   "iphtah": [
@@ -3189,6 +3192,10 @@
   "joash": [
    "Yawaash×46",
    "Yawaish×2"
+  ],
+  "tob": [
+   "Tawab×2",
+   "Maikah×1"
   ],
   "micah": [
    "Mayakah×27",
