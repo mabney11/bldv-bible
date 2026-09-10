@@ -218,8 +218,8 @@ function Legend({ model, spec, ez }) {
             const x = (i % 3) * ((W - 80) / 3), y = 22 + Math.floor(i / 3) * 32;
             return (
               <g key={k} transform={`translate(${x} ${y})`}>
-                {k === 'prince' ? <text x="0" y="15" fontSize="15">🦁🤴🏾</text> : <><rect x="2" y="1" width="22" height="18" fill={st.color} fillOpacity="0.9" stroke={INK} strokeWidth="0.8" /><text x="13" y="15" textAnchor="middle" fontFamily={SERIF} fontWeight="700" fontSize="12" fill={k === 'city' || k === 'sanctuary' ? '#fff' : INK}>{st.label}</text></>}
-                <text x="34" y="15" fontFamily={SERIF} fontSize="13" fill={INK}>{k === 'prince' ? `${HOLY_WORDS.nasi.tr} ${HOLY_WORDS.chalaqim.tr} — the prince's portion, on both sides` : h?.name} <tspan fontStyle="italic" fill="#6a5a40">— {h?.ref}</tspan></text>
+                {k === 'prince' ? <text x="0" y="15" fontSize="13">🦁🤴🏾</text> : <><rect x="2" y="1" width="22" height="18" fill={st.color} fillOpacity="0.9" stroke={INK} strokeWidth="0.8" /><text x="13" y="15" textAnchor="middle" fontFamily={SERIF} fontWeight="700" fontSize="12" fill={k === 'city' || k === 'sanctuary' ? '#fff' : INK}>{st.label}</text></>}
+                <text x={k === 'prince' ? 48 : 34} y="15" fontFamily={SERIF} fontSize="13" fill={INK}>{k === 'prince' ? `${HOLY_WORDS.nasi.tr} ${HOLY_WORDS.chalaqim.tr} — the prince's portion, on both sides` : h?.name} <tspan fontStyle="italic" fill="#6a5a40">— {h?.ref}</tspan></text>
               </g>
             );
           })}
@@ -318,13 +318,14 @@ function buildSheet(spec, ez, W) {
     if (spec.id === 'ezekiel') {
       // a callout in the sea, pointing at the square
       const [cx, cy] = p([sqW, (sqTop + sqBot) / 2]);
-      const bw = 330, bh = 118;
-      const bx = Math.max(box.x + 16, cx - 300 - bw), by = Math.min(box.y + box.h - bh - 70, Math.max(box.y + 16, cy - bh / 2 + 120));
-      callout = { x1: bx + bw, y1: by + 24, x2: cx, y2: cy, bx, by, bw, bh, lines: [
+      // up in the open sea (the coast runs north-east, so there is room off Ashar), above the sea's own name
+      const bw = 440, bh = 118;
+      const bx = box.x + 16, by = Math.max(box.y + 16, cy - 400);
+      callout = { x1: bx + bw, y1: by + bh - 12, x2: cx, y2: cy, bx, by, bw, bh, lines: [
         { text: `✦ ${HOLY_WORDS.terumah.tr} — the Holy Portion`, size: 16, bold: true, color: '#8a1a1a' },
         { text: HOLY_WORDS.terumah.paleo, size: 16, paleo: true, color: GOLD },
         { text: `25,000 × 25,000 cubits ≈ ${ez.meta.holyKm.toFixed(1)} km square · Ezekiel 48:8–22`, size: 13, italic: true },
-        { text: `🦁🤴🏾 ${HOLY_WORDS.nasi.tr} ${HOLY_WORDS.chalaqim.tr} — the prince's portion on both sides · 48:21`, size: 13, italic: true },
+        { text: `🦁🤴🏾 ${HOLY_WORDS.nasi.tr} ${HOLY_WORDS.chalaqim.tr} — the prince's portion, both sides · 48:21`, size: 13, italic: true },
       ] };
       placed.push({ x1: bx, y1: by, x2: bx + bw, y2: by + bh });
     }
