@@ -164,7 +164,10 @@ export default function StatueSheet({ clock, selected, onSelect, tagsRef }) {
         btn.style.visibility = show ? 'visible' : 'hidden'; if (!show) return;
         const pt = svg.createSVGPoint(); pt.x = ux; pt.y = uy;
         const sp = pt.matrixTransform(ctm);
-        btn.style.transform = `translate(${(sp.x - hostRect.left).toFixed(1)}px, ${(sp.y - hostRect.top).toFixed(1)}px)`;
+        const sx = sp.x - hostRect.left, sy = sp.y - hostRect.top;
+        const flip = sx + 14 + btn.offsetWidth > hostRect.width - 4;
+        btn.classList.toggle('flip', flip);
+        btn.style.transform = `translate(${(flip ? sx - btn.offsetWidth : sx).toFixed(1)}px, ${sy.toFixed(1)}px)`;
       };
       for (const p of PIECES) put(p.id, px(0.55), py(p.y0 + p.h * 0.55), pieceWholeAt(p, t));
       const st = stoneAt(t), mt = mountainAt(t);

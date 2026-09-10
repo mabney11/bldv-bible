@@ -43,6 +43,8 @@
   transition: background 0.15s, border-color 0.15s;
 }
 .st-tag::before { content: ''; position: absolute; left: -14px; top: 50%; width: 14px; height: 1px; background: rgba(255, 200, 87, 0.6); }
+.st-tag.flip { margin-left: -14px; }
+.st-tag.flip::before { left: auto; right: -14px; }
 .st-tag:hover { background: rgba(20, 20, 28, 0.85); border-color: var(--gold); }
 .st-tag.on { background: var(--gold); color: #1a1208; border-color: var(--gold); }
 .st-tag:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }

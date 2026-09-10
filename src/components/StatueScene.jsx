@@ -458,7 +458,13 @@ export default function StatueScene({ clock, selected, onSelect, onReady, tagsRe
         tagV.set(x, y, z).project(camera);
         const visible = show && tagV.z < 1 && Math.abs(tagV.x) < 1.2 && Math.abs(tagV.y) < 1.2;
         btn.style.visibility = visible ? 'visible' : 'hidden';
-        if (visible) btn.style.transform = `translate(${((tagV.x + 1) / 2 * w).toFixed(1)}px, ${((1 - tagV.y) / 2 * h).toFixed(1)}px)`;
+        if (!visible) return;
+        const sx = (tagV.x + 1) / 2 * w, sy = (1 - tagV.y) / 2 * h;
+        // On a narrow stage a tag that would run off the right edge sits to the
+        // LEFT of its anchor instead (leader line on its right).
+        const flip = sx + 14 + btn.offsetWidth > w - 4;
+        btn.classList.toggle('flip', flip);
+        btn.style.transform = `translate(${(flip ? sx - btn.offsetWidth : sx).toFixed(1)}px, ${sy.toFixed(1)}px)`;
       };
       for (const p of PIECES) put(p.id, 0.55, p.y0 + p.h * 0.55, 0.5, figureReady && pieceWholeAt(p, t));
       const st = stoneAt(t), mt = mountainAt(t);
