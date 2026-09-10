@@ -62,3 +62,10 @@ server/corpus.db?immutable=1
 
 # Per-machine cache of the HEB bake read (render-corpus.mjs) — rebuilt when surface-index.db changes
 server/.surface-index-cache.json
+
+# Claude session scratch — builds, screenshots and tarballs the assistant stages
+# through the device bridge (never source).
+Claude outputs/
+
+# Per-machine ETA history written by render-all.mjs on every run.
+server/.render-all-timings.json

@@ -1,8 +1,0 @@
-{
-  "node apply-web-strongs.mjs": [5800],
-  "node merge-baseline.mjs": [300],
-  "node load-english-baseline.js --reset-baseline": [3200],
-  "node reingest-apocrypha.mjs --bak": [15100],
-  "node fix-apocrypha-ords.mjs": [400],
-  "node de-archaic-corpus.js": [3000]
-}
