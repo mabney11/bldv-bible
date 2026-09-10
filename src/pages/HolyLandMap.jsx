@@ -541,7 +541,8 @@ export default function HolyLandMap() {
       markersRef.current.push(m);
     }
     // a Joshua lot that lies inside another (Simeon within Judah) keeps the outer lot's label off it
-    const innerLots = (entry) => JOSHUA_TRIBES.filter((t) => t !== entry && pointInRing(ringCentroid(t.ring), entry.ring)).map((t) => t.ring);
+    const ringArea = (r) => Math.abs(r.reduce((a, p, i) => { const q = r[(i + 1) % r.length]; return a + p[0] * q[1] - q[0] * p[1]; }, 0)) / 2;
+    const innerLots = (entry) => JOSHUA_TRIBES.filter((t) => t !== entry && ringArea(t.ring) < ringArea(entry.ring) && pointInRing(ringCentroid(t.ring), entry.ring)).map((t) => t.ring);
     const regionLabel = (entry, cls, onClick, avoid = []) => {
       const el = document.createElement('button');
       el.type = 'button';
