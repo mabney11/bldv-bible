@@ -1151,7 +1151,10 @@ function Passage({ refObj }) {
     <div className="hl-passage">
       <div className="hl-passage-h">
         <b>{refObj.label}</b>
-        <Link to={readerHref(refObj)} className="hl-passage-open">Open in the Reader →</Link>
+        <span className="hl-passage-links">
+          <Link to={`/passage?ref=${encodeURIComponent(refObj.label)}`} className="hl-passage-open" title="Just these verses, on their own page">Open the passage →</Link>
+          <Link to={readerHref(refObj)} className="hl-passage-open">Reader →</Link>
+        </span>
       </div>
       {verses === null && <div className="hl-passage-wait">Loading…</div>}
       {verses && verses.length === 0 && <div className="hl-passage-wait">No English text for this passage yet.</div>}

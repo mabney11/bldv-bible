@@ -39,6 +39,8 @@ const LexiconAdmin     = lazy(() => import('./pages/LexiconAdmin.jsx'));
 const VersePage        = lazy(() => import('./pages/VersePage.jsx'));
 const Models           = lazy(() => import('./pages/Models.jsx'));
 const HolyLandMap      = lazy(() => import('./pages/HolyLandMap.jsx'));
+const Passages         = lazy(() => import('./pages/Passages.jsx'));
+const Passage          = lazy(() => import('./pages/Passage.jsx'));
 
 // Shown for the brief moment a lazy page chunk is downloading (near-instant
 // on repeat visits/navigations once a chunk is cached). Deliberately quiet —
@@ -299,6 +301,9 @@ function SelfCanonical() {
     if (!link) return;
     const params = new URLSearchParams(location.search);
     for (const key of [...params.keys()]) {
+      // 'ref' is a tracking/referrer param everywhere EXCEPT /passage, where
+      // ?ref= IS the page (an ad-hoc passage: /passage?ref=Genesis 49:8–12).
+      if (key === 'ref' && location.pathname === '/passage') continue;
       if (key.startsWith('utm_') || IGNORED_PARAMS.has(key)) params.delete(key);
     }
     if (VERSE_AGNOSTIC_ROUTES.has(location.pathname)) params.delete('verse');
@@ -322,6 +327,9 @@ export default function App() {
         <Route path="/works"          element={<Works />} />
         <Route path="/models"         element={<Models />} />
         <Route path="/models/holy-land" element={<HolyLandMap />} />
+        <Route path="/passages"       element={<Passages />} />
+        <Route path="/passage"        element={<Passage />} />
+        <Route path="/passage/:slug"  element={<Passage />} />
         <Route path="/parallel"       element={<ParallelDispatcher />} />
         {/* Clean path form — /parallel/deuteronomy/13-3 (or /parallel/deuteronomy/13
             for a bare chapter, no verse). Ranks above the generic

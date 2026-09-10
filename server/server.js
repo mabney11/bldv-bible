@@ -10741,6 +10741,24 @@ app.get('/sitemap-parallel-pages.xml', production.cache(3600), (req, res) => {
     }
 });
 
+// /sitemap-passages.xml — the curated passage pages (/passages + every
+// /passage/:slug in server/lexicon/passages.json). Small and evergreen; listed
+// in public/robots.txt like the other sitemaps.
+app.get('/sitemap-passages.xml', production.cache(3600), (req, res) => {
+    try {
+        const urls = ['  <url><loc>https://www.bldbible.com/passages</loc></url>'];
+        for (const p of loadPassages().passages) {
+            urls.push(`  <url><loc>https://www.bldbible.com/passage/${encodeURIComponent(p.slug)}</loc></url>`);
+        }
+        res.type('application/xml').send(
+            `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`
+        );
+    } catch (err) {
+        console.error('/sitemap-passages.xml failed:', err);
+        res.status(500).send('');
+    }
+});
+
 // Resolve a root request (?sn=H8064 preferred, ?root=<paleo> legacy) to its
 // index position. Strong's number is the exact identity; the Paleo string is a
 // best-effort fallback for old bookmarks (first entry with that form).
@@ -11317,13 +11335,14 @@ app.get('/api/translate/progress', (req, res) => {
 });
 
 // GET /api/translate/chapter?book=1&chapter=1
-app.get('/api/translate/chapter', (req, res) => {
-    try {
-        const bookId  = parseInt(req.query.book, 10);
-        const chapter = parseInt(req.query.chapter, 10);
-        if (!bookId || !chapter) return res.status(400).json({ error: 'book and chapter required' });
-
-        const lang = (req.query.lang || 'BHS').toString();
+// The English chapter as the reader sees it — verse list (Masoretic→English
+// versification resolved), saved text or live-reglossed baseline per verse,
+// translation links grouped by verse. Factored out of /api/translate/chapter
+// (2026-09-10) so /api/passage can assemble a named passage (one or more verse
+// ranges, possibly across books) from EXACTLY the same text the Reader shows —
+// a passage page is a window onto the reader's text, never a second copy of it.
+function buildEnglishChapter(bookId, chapter, lang = 'BHS') {
+    {
         // All links for this chapter/lang in one query, grouped by verse — the
         // reader attaches them per verse and skips the per-verse links round trip.
         const linkRows = translationDb.stmts.chapterLinks.all(bookId, chapter, lang);
@@ -11397,9 +11416,188 @@ app.get('/api/translate/chapter', (req, res) => {
         const total       = verses.length;
         const done        = verses.filter(v => v.status === 'done').length;
         const in_progress = verses.filter(v => v.status === 'in_progress').length;
-        res.json({ book_id: bookId, chapter, lang, verses, total, done, in_progress });
+        return { book_id: bookId, chapter, lang, verses, total, done, in_progress };
+    }
+}
+
+app.get('/api/translate/chapter', (req, res) => {
+    try {
+        const bookId  = parseInt(req.query.book, 10);
+        const chapter = parseInt(req.query.chapter, 10);
+        if (!bookId || !chapter) return res.status(400).json({ error: 'book and chapter required' });
+        const lang = (req.query.lang || 'BHS').toString();
+        res.json(buildEnglishChapter(bookId, chapter, lang));
     } catch(err) {
         console.error('/api/translate/chapter failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ── PASSAGES ─────────────────────────────────────────────────────────────────
+// A "passage" is a named window onto the reader's text: a title plus one or
+// more verse ranges (which may span chapters and books), served as one
+// bookmarkable page (/passage/:slug) — the Prayer of Azariah, the Proclamation
+// of Mordecai, Yaiqab's blessings — instead of forcing a jump into a chapter.
+// server/lexicon/passages.json is the single source of truth for the curated
+// collection; any reference string also works ad hoc (/api/passage?ref=...),
+// which is what the Holy Land map's "Open the passage" links use.
+//
+// The verse text comes from buildEnglishChapter above — the same assembly the
+// Reader uses (saved translations, live-reglossed untouched drafts, English
+// versification) — so a passage can never disagree with the chapter it is
+// cut from. Pericope headings (level 4) that fall inside a range ride along so
+// the page can show the reader's own section titles.
+const PASSAGES_PATH = path.join(__dirname, 'lexicon', 'passages.json');
+let _passagesCache = null;
+function loadPassages() {
+    try {
+        const st = fs.statSync(PASSAGES_PATH);
+        if (_passagesCache && _passagesCache.mtime === st.mtimeMs) return _passagesCache.data;
+        const raw = JSON.parse(fs.readFileSync(PASSAGES_PATH, 'utf8'));
+        const passages = (raw.passages || []).filter(p => p && p.slug && p.refs);
+        const data = { groups: raw.groups || [], passages, bySlug: Object.fromEntries(passages.map(p => [p.slug, p])) };
+        _passagesCache = { mtime: st.mtimeMs, data };
+        return data;
+    } catch (e) {
+        console.error('[passages] failed to load passages.json:', e.message);
+        return _passagesCache?.data || { groups: [], passages: [], bySlug: {} };
+    }
+}
+
+// Server-side twin of src/lib/models/refs.js's parseRefs (same grammar:
+// "Ezekiel 48:1–7, 23–27; Zechariah 14:8", book optional after the first
+// part, "Ruth 1" = whole chapter, "Nahum 1–3" = a run of whole chapters).
+// Resolves names against BOOK_NAMES + the corpus canon names, so the works
+// (Jasher, 1 Enoch, Greek Esther, Words of Azariah…) parse too.
+let _passageNameToId = null;
+function passageBookId(name) {
+    if (!_passageNameToId) {
+        _passageNameToId = {};
+        const add = (id, n) => { if (n) _passageNameToId[String(n).toLowerCase().replace(/\s+/g, ' ')] = +id; };
+        try { for (const [id, n] of Object.entries(_ensureCanonMeta().names || {})) add(id, n); } catch { /* corpus offline */ }
+        for (const [id, n] of Object.entries(BOOK_NAMES)) add(id, n);   // app names win
+        Object.assign(_passageNameToId, {
+            'song of solomon': _passageNameToId['song of songs'], 'canticles': _passageNameToId['song of songs'],
+            'psalm': _passageNameToId['psalms'], 'revelations': _passageNameToId['revelation'],
+            'prayer of azariah': _passageNameToId['words of azariah'], 'azariah': _passageNameToId['words of azariah'],
+            'additions to esther': _passageNameToId['greek esther'], 'esther (greek)': _passageNameToId['greek esther'],
+            '4 ezra': _passageNameToId['2 esdras / 4 ezra'], '2 esdras': _passageNameToId['2 esdras / 4 ezra'],
+        });
+    }
+    const k = String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    return _passageNameToId[k] ?? null;
+}
+function parsePassageRefs(text) {
+    const out = [];
+    let lastBook = null;
+    for (const part of String(text || '').split(';')) {
+        const m = /^\s*(?:([1-3]?\s?[A-Za-z][A-Za-z .'\/()-]*?)\s+)?(\d+)(?:\s*[–-]\s*(\d+))?(?::([\d\s,–\-]+))?\s*$/.exec(part);
+        if (!m) continue;
+        const book = (m[1] || lastBook || '').trim(), chapter = +m[2], id = passageBookId(book);
+        if (!id) continue;
+        lastBook = book;
+        const name = canonName(id);
+        if (m[3] && !m[4]) {
+            const last = Math.min(+m[3], chapter + 7);
+            for (let ch = chapter; ch <= last; ch++) out.push({ bookId: id, book: name, chapter: ch, ranges: [], label: `${name} ${ch}` });
+            continue;
+        }
+        const ranges = [];
+        if (m[4]) for (const r of m[4].split(',')) {
+            const rm = /(\d+)\s*[–-]?\s*(\d+)?/.exec(r);
+            if (rm) ranges.push([+rm[1], rm[2] ? +rm[2] : +rm[1]]);
+        }
+        const rangeLabel = ranges.map(([a, b]) => a === b ? `${a}` : `${a}–${b}`).join(', ');
+        out.push({ bookId: id, book: name, chapter, ranges, label: `${name} ${chapter}${rangeLabel ? ':' + rangeLabel : ''}` });
+    }
+    return out;
+}
+const inPassageRanges = (v, ranges) => !ranges.length || ranges.some(([a, b]) => v >= a && v <= b);
+
+// Resolve a refs string into sections of verses (one section per parsed
+// reference), each with its reader link, its verses, and the pericopes in it.
+function buildPassage(refsText) {
+    const parsed = parsePassageRefs(refsText);
+    const sections = [];
+    let verseCount = 0, missing = 0;
+    for (const ref of parsed) {
+        let chapterData = null;
+        try { chapterData = buildEnglishChapter(ref.bookId, ref.chapter, 'BHS'); } catch (e) { console.warn('[passage] chapter failed', ref.label, e.message); }
+        const verses = (chapterData?.verses || [])
+            .filter(v => inPassageRanges(+v.verse, ref.ranges))
+            .map(v => ({ verse: v.verse, text: v.text || '' }));
+        verseCount += verses.length;
+        // Ranges that name verses the chapter doesn't have (a wrong seed, or a
+        // book whose English isn't loaded yet — Words of Azariah until
+        // assign-canon-ids + reseed-translations run) count as missing so the
+        // page can say so honestly instead of silently showing less.
+        const expected = ref.ranges.length ? ref.ranges.reduce((n, [a, b]) => n + Math.max(0, b - a + 1), 0) : (chapterData?.verses || []).length;
+        if (verses.length < expected) missing += expected - verses.length;
+        let headings = [];
+        try {
+            headings = translationDb.tdb.prepare(
+                `SELECT verse, end_verse, title, subtitle FROM headings WHERE book_id=? AND level=4 AND chapter=? ORDER BY verse, sort_order`
+            ).all(ref.bookId, ref.chapter).filter(h => inPassageRanges(+h.verse, ref.ranges) && verses.some(v => +v.verse === +h.verse));
+        } catch { /* headings table optional */ }
+        const [v0, v1] = ref.ranges[0] || [];
+        sections.push({
+            book_id: ref.bookId, book: ref.book, chapter: ref.chapter, ranges: ref.ranges, label: ref.label,
+            reader: `/bible?book=${ref.bookId}&chapter=${ref.chapter}${v0 ? `&verse=${v0}${v1 && v1 !== v0 ? `&verseEnd=${v1}` : ''}` : ''}`,
+            verses, headings,
+        });
+    }
+    return { sections, verse_count: verseCount, missing, refs: refsText, parsed_ok: parsed.length > 0 };
+}
+
+// GET /api/passages — the curated collection (meta only, no verse text).
+app.get('/api/passages', production.cache(300), (req, res) => {
+    try {
+        const { groups, passages } = loadPassages();
+        res.json({
+            groups,
+            passages: passages.map(p => ({
+                slug: p.slug, title: p.title, subtitle: p.subtitle || '', group: p.group || '', refs: p.refs,
+                blurb: p.blurb || '', tags: p.tags || [],
+                labels: parsePassageRefs(p.refs).map(r => r.label),
+            })),
+        });
+    } catch (err) {
+        console.error('/api/passages failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /api/passage?ref=Ezekiel 48:8–22 — any reference, ad hoc (no slug).
+app.get('/api/passage', (req, res) => {
+    try {
+        const ref = String(req.query.ref || '').trim().slice(0, 400);
+        if (!ref) return res.status(400).json({ error: 'ref required' });
+        const built = buildPassage(ref);
+        if (!built.parsed_ok) return res.status(404).json({ error: 'unrecognized reference', ref });
+        res.json({ slug: null, title: built.sections.map(s => s.label).join('; '), subtitle: '', group: '', blurb: '', tags: [], ...built });
+    } catch (err) {
+        console.error('/api/passage failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /api/passage/:slug — one curated passage with its verses.
+app.get('/api/passage/:slug', (req, res) => {
+    try {
+        const slug = String(req.params.slug || '').toLowerCase();
+        const { passages, bySlug } = loadPassages();
+        const p = bySlug[slug];
+        if (!p) return res.status(404).json({ error: 'no such passage', slug });
+        const i = passages.indexOf(p);
+        const neighbour = (q) => q ? { slug: q.slug, title: q.title } : null;
+        const built = buildPassage(p.refs);
+        res.json({
+            slug: p.slug, title: p.title, subtitle: p.subtitle || '', group: p.group || '', blurb: p.blurb || '', tags: p.tags || [],
+            prev: neighbour(passages[i - 1]), next: neighbour(passages[i + 1]),
+            ...built,
+        });
+    } catch (err) {
+        console.error('/api/passage/:slug failed:', err);
         res.status(500).json({ error: err.message });
     }
 });

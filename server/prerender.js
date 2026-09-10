@@ -243,6 +243,7 @@ const NAV_LINKS = `
         <a href="/translate?book=1&amp;chapter=1&amp;verse=1">Translation Studio</a> ·
         <a href="/works">Works Library</a> ·
         <a href="/models">Maps &amp; Models</a> ·
+        <a href="/passages">Passages</a> ·
         <a href="/lexicon-page">Lexicon</a> ·
         <a href="/guide">Guide</a> ·
         <a href="/roots">Root Explorer</a> ·
@@ -1076,6 +1077,53 @@ const ROUTES = {
 // real title/description instead of the generic app-wide default every
 // route currently shares. Query-string variants (e.g. /lexicon-page?lang=X)
 // all match, since `match` ignores query params for these.
+// ── PASSAGES (/passages index, /passage/:slug pages) ─────────────────────
+// Named windows onto the reader's text — see server.js "PASSAGES" and
+// src/pages/Passage.jsx. The index lists every curated passage with a real
+// link; each passage page carries its title, its references and the verses
+// themselves (the same text the API serves the React page), so a passage is
+// crawlable as the standalone, bookmarkable page it is meant to be.
+ROUTES['/passages'] = [{
+  match: () => true,
+  build: async (query, port) => {
+    let list = [];
+    try { list = (await fetchJSON(port, '/api/passages')).passages || []; } catch { /* empty collection */ }
+    const items = list.map((p) => `<li><a href="/passage/${encodeURIComponent(p.slug)}">${escapeHtml(p.title)}</a> — ${escapeHtml((p.labels || []).join('; ') || p.refs)}</li>`).join('\n        ');
+    return {
+      title: `Passages | ${BRAND}`,
+      description: 'Named passages of scripture, each on its own page — the Prayer of Azariah, the Proclamation of Mordecai, the blessings of Yaiqab, the songs, the prayers and the decrees.',
+      body: `<h1>Passages</h1>
+      <p>The named passages of scripture, each on its own page — just its verses, in the Novel English Bible's own words.</p>
+      <ul>
+        ${items}
+      </ul>${NAV_LINKS}`,
+    };
+  },
+}];
+const PASSAGE_PATH_RE = /^\/passage\/([a-z0-9-]{1,80})$/;
+async function buildPassagePathSnapshot(match, port) {
+  const [, slug] = match;
+  let data = null;
+  try { data = await fetchJSON(port, `/api/passage/${encodeURIComponent(slug)}`); } catch { return null; }
+  if (!data || !data.sections) return null;
+  const refLine = data.sections.map((s) => s.label).join('; ');
+  const firstText = (data.sections.find((s) => s.verses.length)?.verses[0]?.text || '').replace(/\s*\([^)]*\)/g, '');
+  const sections = data.sections.map((s) => `<h2>${escapeHtml(s.label)}</h2>
+      ${s.verses.map((v) => `<p><sup>${v.verse}</sup> ${escapeHtml(v.text)}</p>`).join('\n      ')}
+      <p><a href="${escapeHtml(s.reader)}">Open ${escapeHtml(s.label)} in the Reader →</a></p>`).join('\n      ');
+  return {
+    title: `${data.title} | Passage`,
+    description: truncate(`${refLine} — ${firstText}`, 160),
+    body: `<h1>${escapeHtml(data.title)}</h1>
+      ${data.subtitle ? `<p><em>${escapeHtml(data.subtitle)}</em></p>` : ''}
+      <p>${escapeHtml(refLine)}</p>
+      ${data.blurb ? `<p>${escapeHtml(data.blurb)}</p>` : ''}
+      ${sections}
+      <p><a href="/passages">All passages</a></p>${NAV_LINKS}`,
+    canonicalPath: `/passage/${slug}`,
+  };
+}
+
 const STATIC_PAGES = {
   '/lexicon-page': {
     title: `Lexicon | ${BRAND}`,
@@ -1104,7 +1152,7 @@ const STATIC_PAGES = {
   },
   '/guide': {
     title: `Guide | ${BRAND}`,
-    description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, the Lexicon and the Translation Studio.',
+    description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, the Lexicon and the Translation Studio.',
     heading: 'Guide',
   },
 };
@@ -1225,6 +1273,23 @@ async function renderSnapshot(pathname, query, port, indexHtmlPath) {
     if (!built) return null;
     const html = render(built);
 
+    cacheSet(cacheKey, html);
+    return html;
+  }
+
+  // /passage/:slug — one named passage (see buildPassagePathSnapshot above).
+  // Two path segments with a non-numeric second segment, so it can never
+  // collide with VERSE_PATH_RE (three segments, numeric) — and tried after
+  // the exact-pathname ROUTES lookup, so it shadows no named route.
+  const passageMatch = PASSAGE_PATH_RE.exec(pathname);
+  if (passageMatch) {
+    const cacheKey = pathname;
+    const cached = cacheGet(cacheKey);
+    if (cached !== undefined) return cached;
+    loadShell(indexHtmlPath);
+    const built = await buildPassagePathSnapshot(passageMatch, port);
+    if (!built) return null;
+    const html = render(built);
     cacheSet(cacheKey, html);
     return html;
   }

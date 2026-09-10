@@ -1,0 +1,133 @@
+/* ── Passage page — /passage/:slug ─────────────────────────────────────────
+   Built on Reader.css's .reader-root shell (imported by Passage.jsx): same
+   night/parchment tokens (--pr-ink, --pr-accent, --pr-rule, --pr-measure),
+   same .rd-body / .rd-verse / .rd-vnum / .rd-root / .rd-quote-* rendering.
+   These rules only add the packaging: the title block, the reference chips,
+   the section rules for multi-range passages, and the foot. */
+
+.pg-ref-link { text-decoration: none; }
+.pg-copy { font-size: 15px; }
+.pg-copy.on { color: var(--pr-accent); }
+
+.pg-page { display: flex; justify-content: center; }
+.pg-passage { width: 100%; max-width: 40rem; animation: rd-fade .4s ease both; }
+
+.pg-head { text-align: center; margin: 4px 0 30px; }
+.pg-title {
+  font-size: clamp(30px, 8vw, 44px);
+  line-height: 1.08;
+  font-weight: 500;
+  color: var(--pr-ink);
+  margin: 6px 0 0;
+  letter-spacing: -0.01em;
+}
+.pg-subtitle {
+  margin-top: 8px;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--pr-ink-soft);
+}
+.pg-refs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+}
+.pg-refchip {
+  font-family: system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--pr-accent);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--pr-accent) 40%, transparent);
+  background: color-mix(in srgb, var(--pr-accent) 8%, transparent);
+  transition: background .15s, border-color .15s;
+}
+.pg-refchip:hover { background: color-mix(in srgb, var(--pr-accent) 18%, transparent); border-color: var(--pr-accent); }
+.pg-blurb {
+  margin: 18px auto 0;
+  max-width: 34rem;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pr-ink-soft);
+}
+.pg-head::after {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 1px;
+  margin: 26px auto 0;
+  background: var(--pr-accent-dim);
+  opacity: .7;
+}
+
+.pg-section + .pg-section { margin-top: 34px; }
+.pg-section-h {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--pr-rule);
+}
+.pg-section-label {
+  font-family: system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--pr-accent);
+}
+.pg-section-open {
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  color: var(--pr-faint);
+  text-decoration: none;
+}
+.pg-section-open:hover { color: var(--pr-ink); }
+
+/* The reading column. Reader.css's .rd-body reserves a 2.5em gutter for its
+   absolutely-positioned verse badges; here the number sits inline at the head
+   of each verse (a passage is short — a flowing paragraph per verse reads
+   better than a gutter), so the gutter is given back. */
+.pg-body { padding-left: 0; font-size: 1.12em; }
+.pg-verse-wrap { display: block; }
+.pg-verse { display: block; margin: 0 0 .75em; }
+.pg-vnum {
+  display: inline-block;
+  min-width: 1.4em;
+  margin-right: .25em;
+  text-decoration: none;
+  vertical-align: baseline;
+  font-size: .72em;
+  position: relative;
+  top: -.35em;
+}
+.pg-empty {
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--pr-faint);
+  padding: 14px 0;
+  text-align: center;
+}
+.pg-note {
+  margin: 26px 0 0;
+  font-family: system-ui, sans-serif;
+  font-size: 12.5px;
+  color: var(--pr-faint);
+  text-align: center;
+}
+
+.pg-foot { justify-content: space-between; flex-wrap: wrap; }
+.pg-foot .rd-foot-btn { text-decoration: none; max-width: 44%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg-foot-all { order: 0; }
+@media (max-width: 560px) {
+  .pg-foot { flex-direction: column; align-items: stretch; }
+  .pg-foot .rd-foot-btn { max-width: none; text-align: center; }
+  .pg-foot-all { order: 3; }
+}

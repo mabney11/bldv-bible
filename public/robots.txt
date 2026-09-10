@@ -17,3 +17,4 @@ Sitemap: https://www.bldbible.com/sitemap-chapters.xml
 Sitemap: https://www.bldbible.com/sitemap-verses.xml
 Sitemap: https://www.bldbible.com/sitemap-verse-pages.xml
 Sitemap: https://www.bldbible.com/sitemap-parallel-pages.xml
+Sitemap: https://www.bldbible.com/sitemap-passages.xml

@@ -409,3 +409,9 @@ export async function apiDelete(path) {
   if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
   return r.json().catch(() => ({}));
 }
+// ── Passages — named windows onto the reader's text (/passages, /passage/:slug).
+// See server.js "PASSAGES": the verses come from the same chapter assembly the
+// Reader uses, so a passage page never disagrees with the chapter it's cut from.
+export const apiPassages = () => jsonFetch('/api/passages');
+export const apiPassage = (slug) => jsonFetch(`/api/passage/${encodeURIComponent(slug)}`);
+export const apiPassageByRef = (ref) => jsonFetch(`/api/passage?ref=${encodeURIComponent(ref)}`);

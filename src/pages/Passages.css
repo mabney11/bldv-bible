@@ -1,0 +1,71 @@
+/* Passages.css — /passages, the collection of named passages */
+
+.pgs-page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  padding-bottom: calc(40px + var(--safe-bottom));
+}
+.pgs-top {
+  display: flex; align-items: center; gap: 12px;
+  padding: calc(10px + var(--safe-top)) 16px 10px;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+}
+.pgs-back {
+  font-size: 18px; color: var(--text2);
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border2); border-radius: 6px;
+}
+.pgs-back:hover { color: var(--gold); border-color: var(--gold); }
+.pgs-h1 { font-size: 16px; font-weight: 700; flex: 1; }
+.pgs-count { font-size: 12px; color: var(--text4); }
+.pgs-intro { max-width: 760px; margin: 22px auto 6px; padding: 0 20px; font-size: 14px; line-height: 1.55; color: var(--text2); }
+
+.pgs-tools {
+  max-width: 1000px; margin: 16px auto 0; padding: 0 20px;
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.pgs-search, .pgs-ref input {
+  flex: 1 1 260px; min-width: 0;
+  padding: 9px 12px; font-size: 14px;
+  color: var(--text); background: var(--bg2);
+  border: 1px solid var(--border2); border-radius: 8px;
+}
+.pgs-search:focus, .pgs-ref input:focus { outline: none; border-color: var(--gold); }
+.pgs-ref { flex: 1 1 320px; display: flex; gap: 6px; }
+.pgs-ref button {
+  padding: 9px 14px; font-size: 13px; font-weight: 600; border-radius: 8px; border: 0;
+  background: var(--blue2); color: #fff; cursor: pointer;
+}
+.pgs-ref button:hover { background: var(--blue); }
+.pgs-ref button:disabled { opacity: .45; cursor: default; }
+
+.pgs-wait { text-align: center; color: var(--text4); font-size: 14px; padding: 40px 20px; }
+
+.pgs-group { max-width: 1000px; margin: 26px auto 0; padding: 0 20px; }
+.pgs-group-h {
+  font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--gold); margin: 0 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+.pgs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.pgs-card {
+  display: flex; flex-direction: column; gap: 5px;
+  padding: 16px 18px 14px;
+  border: 1px solid var(--border2); border-radius: 12px; background: var(--bg2);
+  text-decoration: none; color: var(--text);
+  transition: border-color .15s, background .15s, box-shadow .15s;
+}
+.pgs-card:hover {
+  border-color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 7%, var(--bg2));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 16%, transparent);
+}
+.pgs-card-title { font-size: 17px; font-weight: 700; line-height: 1.25; }
+.pgs-card:hover .pgs-card-title { color: var(--gold); }
+.pgs-card-sub { font-size: 12.5px; font-style: italic; color: var(--text3); }
+.pgs-card-refs { font-size: 12px; font-weight: 600; letter-spacing: .02em; color: var(--blue); margin-top: 2px; }
+.pgs-card-blurb {
+  font-size: 13px; line-height: 1.5; color: var(--text2); margin-top: 4px;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.pgs-card-go { margin-top: auto; padding-top: 8px; font-size: 12px; font-weight: 600; color: var(--gold); letter-spacing: .04em; }

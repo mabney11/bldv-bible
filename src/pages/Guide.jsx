@@ -50,6 +50,17 @@ const SECTIONS = [
     ],
   },
   {
+    id: 'passages',
+    ico: '📜',
+    title: 'Passages',
+    body: 'The named passages — the Prayer of Azarias, the Proclamation of Mardocheus, Yaiqab’s blessing on his sons, the Song of the Sea, the Ten Commandments — each on its own page with just its verses, in the same words and names as the Novel English Bible, at an address you can keep. Any reference can be opened the same way: /passage?ref=Isaiah 53.',
+    links: [
+      { to: '/passages', label: 'All passages' },
+      { to: '/passage/jacobs-blessings', label: 'Yaiqab’s blessing on his twelve sons' },
+      { to: '/passage/proclamation-of-mordecai', label: 'The Proclamation of Mardocheus' },
+    ],
+  },
+  {
     id: 'lexicon',
     ico: '🔎',
     title: 'Lexicon, roots and concordance',
@@ -78,7 +89,7 @@ const SECTIONS = [
 ];
 
 export default function Guide() {
-  usePageTitle(pageTitle('Guide'), 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, the Lexicon and the Translation Studio.');
+  usePageTitle(pageTitle('Guide'), 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, the Lexicon and the Translation Studio.');
   return (
     <div className="guide">
       <header className="guide-top">

@@ -8,7 +8,7 @@ import './Landing.css';
  *   1. Hero: logo + title
  *   2. The two ways in — the Novel English Bible, and the Hebrew itself
  *   3. The two big features — Maps & Models, and the Lexicon
- *   4. The tools (Parallel, Translation Studio, Works Library, Guide)
+ *   4. The tools (Parallel, Translation Studio, Passages, Works Library, Guide)
  *
  * The Greek, Latin and Ge'ez sources are reached from inside the reader
  * (the source switcher), not from here — the front door is the Hebrew.
@@ -68,6 +68,9 @@ export default function Landing() {
         </Link>
         <Link to="/translate?book=1&chapter=1&verse=1" className="landing-sec-link">
           <span aria-hidden="true">✏️</span> Translation Studio
+        </Link>
+        <Link to="/passages" className="landing-sec-link">
+          <span aria-hidden="true">📜</span> Passages
         </Link>
         <Link to="/works" className="landing-sec-link">
           <span aria-hidden="true">📚</span> Works Library
