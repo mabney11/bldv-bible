@@ -143,6 +143,17 @@ export const PIECES = [
   },
 ];
 
+// A sculpted king (a GLB at /api/models/statue.glb — see StatueScene.jsx's loadKing)
+// is cut into the five pieces by HEIGHT, as fractions of the figure's total height,
+// feet on the ground = 0, top of the cap = 1. Measured off the Meshy king: bare
+// feet to the ankle, legs to the hem of the kilt, kilt and belly to the belt's top,
+// breast and crossed arms to the chin, then the bearded head and the tall cap.
+export const KING_BANDS = { feet: [0, 0.07], legs: [0.07, 0.36], belly: [0.36, 0.56], chest: [0.56, 0.815], head: [0.815, 1.001] };
+export function bandOf(yFraction) {
+  for (const [id, [a, b]] of Object.entries(KING_BANDS)) if (yFraction >= a && yFraction < b) return id;
+  return yFraction < 0 ? 'feet' : 'head';
+}
+
 export const STONE = {
   id: 'stone', title: 'The aban (stone) gazar (cut) out laa (NOT) yadayan (hands)', words: ['aban'], materialWord: 'aban', material: 'stone',
   dreamRef: 'Daniel 2:34–35', meaningRef: 'Daniel 2:44–45',
@@ -216,7 +227,7 @@ export function rng(seed) {
  * each with an outward velocity away from the strike point. Built once per
  * renderer; `shardAt` places them.
  */
-export function makeShards(piece, count = 26, seed = 7) {
+export function makeShards(piece, count = 26, seed = 7, sampler = null) {
   const r = rng(seed * 131 + piece.order * 17);
   const parts = piece.parts;
   const out = [];
@@ -224,7 +235,8 @@ export function makeShards(piece, count = 26, seed = 7) {
     const p = parts[i % parts.length];
     const size = 0.16 + r() * 0.3;
     let x, y, z;
-    if (p.kind === 'sphere') { const a = r() * Math.PI * 2, b = (r() - 0.5) * Math.PI, rr = r() * p.r; x = p.x + Math.cos(b) * Math.cos(a) * rr; y = p.y + Math.sin(b) * rr; z = (p.z || 0) + Math.cos(b) * Math.sin(a) * rr; }
+    if (sampler) { const q = sampler(r); x = q[0]; y = q[1]; z = q[2]; }
+    else if (p.kind === 'sphere') { const a = r() * Math.PI * 2, b = (r() - 0.5) * Math.PI, rr = r() * p.r; x = p.x + Math.cos(b) * Math.cos(a) * rr; y = p.y + Math.sin(b) * rr; z = (p.z || 0) + Math.cos(b) * Math.sin(a) * rr; }
     else if (p.kind === 'lathe') { const ys = p.profile.map((q) => q[1]), y0 = Math.min(...ys), y1 = Math.max(...ys), rm = Math.max(...p.profile.map((q) => q[0])); const a = r() * Math.PI * 2, rr = r() * rm; x = p.x + Math.cos(a) * rr; y = y0 + r() * (y1 - y0); z = (p.z || 0) + Math.sin(a) * rr * (p.sz || 1); }
     else if (p.kind === 'capsule') { const u = r(); x = p.a[0] + (p.b[0] - p.a[0]) * u + (r() - 0.5) * p.r; y = p.a[1] + (p.b[1] - p.a[1]) * u; z = p.a[2] + (p.b[2] - p.a[2]) * u + (r() - 0.5) * p.r; }
     else if (p.kind === 'cylinder') { const a = r() * Math.PI * 2, rr = r() * p.r; x = p.x + Math.cos(a) * rr; y = p.y + r() * p.h; z = Math.sin(a) * rr; }
@@ -234,7 +246,7 @@ export function makeShards(piece, count = 26, seed = 7) {
     const push = 2.2 + r() * 2.4;
     out.push({
       x, y, z, size,
-      material: p.mixed && r() < 0.4 ? 'iron' : p.material || piece.material,
+      material: (sampler ? piece.id === 'feet' : p.mixed) && r() < 0.4 ? 'iron' : (sampler ? piece.material : p.material || piece.material),
       vx: (dx / dist) * push + (r() - 0.5) * 1.6,
       vy: 1.2 + r() * 3.4 + (y / H_TOTAL) * 0.8,
       vz: (dz / dist) * push * 0.6 + (r() - 0.5) * 1.6 + 0.6,

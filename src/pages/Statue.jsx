@@ -165,6 +165,7 @@ export default function Statue() {
   const canGL = useMemo(webglAvailable, []);
   const view = VIEWS.includes(params.get('view')) ? params.get('view') : (canGL ? '3d' : '2d');
   const [glOk, setGlOk] = useState(true);
+  const [king, setKing] = useState(false);   // the sculpted GLB king loaded (credit line due)
   const sel = PIECE_IDS.includes(params.get('piece')) ? params.get('piece') : null;
   const player = usePlayer();
   const { clock, playing, speed, setSpeed, loop, setLoop, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef } = player;
@@ -218,7 +219,7 @@ export default function Statue() {
           <div className="st-stagebox">
             <div className="st-stage">
               {use3d
-                ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><StatueScene clock={clock} selected={shownSel} onSelect={select} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
+                ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><StatueScene clock={clock} selected={shownSel} onSelect={select} onReady={(ok) => { if (!ok) setGlOk(false); }} onKing={setKing} /></Suspense>
                 : <StatueSheet clock={clock} selected={shownSel} onSelect={select} />}
             </div>
             <div className="st-caption" aria-live="polite">
@@ -247,7 +248,7 @@ export default function Statue() {
               <label className="st-loop"><input id="st-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
             </div>
           </div>
-          <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}Tap a piece for its verses; once it is daqaq (broken) it cannot be chosen — at the end only the aban (stone) remains.</p>
+          <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}Tap a piece for its verses; once it is daqaq (broken) it cannot be chosen — at the end only the aban (stone) remains.{use3d && king && <span className="st-credit"> · Figure: model created with <a href="https://www.meshy.ai" target="_blank" rel="noopener noreferrer">Meshy</a> — CC BY 4.0.</span>}</p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Pieces &amp; verses ↑</button>
         </section>
 

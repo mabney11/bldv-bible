@@ -17,11 +17,15 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {
-  PIECES, STONE, MATERIALS, H_TOTAL, HIT,
+  PIECES, STONE, MATERIALS, H_TOTAL, HIT, KING_BANDS, bandOf,
   stoneAt, mountainAt, makeShards, shardAt, pieceWholeAt, makeDust, dustAt,
 } from '../lib/models/statue.js';
 
+const KING_URL = '/api/models/statue.glb';   // the sculpted king; absent → the procedural figure stays
 const SKY = 0x1a1a24;       // a night sky, the dream's own hour — one look in both themes
 const GROUND = 0x3a3329;
 const GOLD_GLOW = new THREE.Color(0xffc857);
@@ -96,7 +100,71 @@ function mountainGeometry(seed = 17) {
   return geo;
 }
 
-export default function StatueScene({ clock, selected, onSelect, onReady }) {
+/**
+ * The sculpted king: load the GLB, stand it on the ground at the statue's height,
+ * and cut it into the five pieces by height — every triangle goes to the band its
+ * centre falls in, so it does not matter how the sculptor organised the mesh, and
+ * each band gets OUR metal (the GLB's own textures are ignored). The feet band is
+ * "mingled": alternating stripes across the foot are iron, the rest clay.
+ * Returns { groups: Map<id, Group>, samplers: Map<id, fn> } or null if unavailable.
+ */
+async function loadKing(mats) {
+  try { return await loadKingInner(mats); } catch (e) { console.warn('[statue] sculpted king failed:', e); return null; }
+}
+async function loadKingInner(mats) {
+  const loader = new GLTFLoader();
+  loader.setMeshoptDecoder(MeshoptDecoder);
+  let gltf;
+  try { gltf = await loader.loadAsync(KING_URL); } catch (e) { if (e?.message && !/404/.test(e.message)) console.warn('[statue] sculpted king not loaded:', e.message || e); return null; }
+  const root = gltf.scene; root.updateMatrixWorld(true);
+  // Gather every triangle in world space.
+  const tris = [];   // flat xyz of 9 numbers per triangle
+  root.traverse((m) => {
+    if (!m.isMesh) return;
+    const g = m.geometry.index ? m.geometry.toNonIndexed() : m.geometry;
+    const pos = g.attributes.position, v = new THREE.Vector3();
+    for (let i = 0; i < pos.count; i++) { v.fromBufferAttribute(pos, i).applyMatrix4(m.matrixWorld); tris.push(v.x, v.y, v.z); }
+    if (g !== m.geometry) g.dispose();
+  });
+  if (tris.length < 9) return null;
+  // Normalise: feet on the ground, cap at H_TOTAL, centred on x/z.
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity, minZ = Infinity, maxZ = -Infinity;
+  for (let i = 0; i < tris.length; i += 3) { const x = tris[i], y = tris[i + 1], z = tris[i + 2]; if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; if (z < minZ) minZ = z; if (z > maxZ) maxZ = z; }
+  const h = maxY - minY, k = H_TOTAL / h, cx = (minX + maxX) / 2, cz = (minZ + maxZ) / 2;
+  for (let i = 0; i < tris.length; i += 3) { tris[i] = (tris[i] - cx) * k; tris[i + 1] = (tris[i + 1] - minY) * k; tris[i + 2] = (tris[i + 2] - cz) * k; }
+  // Split by band; feet get a second bucket for the iron stripes.
+  const buckets = Object.fromEntries(Object.keys(KING_BANDS).map((id) => [id, []]));
+  buckets.feetIron = [];
+  for (let i = 0; i < tris.length; i += 9) {
+    const cy = (tris[i + 1] + tris[i + 4] + tris[i + 7]) / 3;
+    const id = bandOf(cy / H_TOTAL);
+    let key = id;
+    if (id === 'feet') { const cxx = (tris[i] + tris[i + 3] + tris[i + 6]) / 3; if (Math.floor((cxx + 10) * 7) % 2 === 0) key = 'feetIron'; }
+    for (let j = 0; j < 9; j++) buckets[key].push(tris[i + j]);
+  }
+  const groups = new Map(), samplers = new Map();
+  for (const piece of PIECES) {
+    const g = new THREE.Group(); g.userData.id = piece.id;
+    const add = (arr, mat) => {
+      if (!arr.length) return;
+      let geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(arr, 3));
+      geo = mergeVertices(geo, 1e-4);      // weld the triangle soup back together so the normals are smooth, not faceted
+      geo.computeVertexNormals();
+      const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
+      g.add(mesh);
+    };
+    add(buckets[piece.id], mats[piece.material]);
+    if (piece.id === 'feet') add(buckets.feetIron, mats.iron);
+    groups.set(piece.id, g);
+    const pts = piece.id === 'feet' ? buckets.feet.concat(buckets.feetIron) : buckets[piece.id];
+    const n = pts.length / 3;
+    samplers.set(piece.id, (r) => { const i = Math.floor(r() * n) * 3; return [pts[i] * 0.92, pts[i + 1], pts[i + 2] * 0.92]; });
+  }
+  return { groups, samplers };
+}
+
+export default function StatueScene({ clock, selected, onSelect, onReady, onKing }) {
   const wrap = useRef(null);
   const api = useRef(null);
 
@@ -155,26 +223,37 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
 
     // ── Pieces ──────────────────────────────────────────────────────────────
     const mats = Object.fromEntries(Object.keys(MATERIALS).map((k) => [k, stdMaterial(k)]));
-    const pieceGroups = new Map();
-    const shardSets = [];
+    let pieceGroups = new Map();
+    let shardSets = [];
+    const disposeGroup = (g) => { world.remove(g); g.traverse((o) => { o.geometry?.dispose?.(); if (o.userData.ownMat) o.material.dispose?.(); }); };
+    // Build the figure: the procedural king now; the sculpted one replaces it when its file arrives.
+    function buildFigure(groups, samplers) {
+      for (const g of pieceGroups.values()) disposeGroup(g);
+      for (const { shards } of shardSets) for (const { mesh } of shards) { world.remove(mesh); mesh.geometry.dispose(); mesh.material.dispose(); }
+      pieceGroups = groups; shardSets = [];
+      for (const piece of PIECES) {
+        world.add(groups.get(piece.id));
+        // Shards: ~26 small meshes per piece, placed by the shared timeline.
+        const shards = makeShards(piece, 26, 7, samplers?.get(piece.id) || null).map((s) => {
+          const geo = s.size > 0.3 ? new THREE.DodecahedronGeometry(s.size * 0.55, 0) : new THREE.BoxGeometry(s.size, s.size * 0.7, s.size * 0.8);
+          const m = mats[s.material].clone(); m.transparent = true;
+          const mesh = new THREE.Mesh(geo, m);
+          mesh.castShadow = true; mesh.visible = false;
+          world.add(mesh);
+          return { s, mesh, axis: new THREE.Vector3(...s.spinAxis).normalize() };
+        });
+        shardSets.push({ piece, shards });
+      }
+    }
+    const proceduralGroups = new Map();
     for (const piece of PIECES) {
       const g = new THREE.Group(); g.userData.id = piece.id;
       for (const part of piece.parts) g.add(meshFor(part, mats[part.mixed ? 'clay' : piece.material]));
       for (const part of piece.iron || []) g.add(meshFor(part, mats.iron));
       for (const part of piece.toes || []) g.add(meshFor(part, mats[part.material]));
-      world.add(g); pieceGroups.set(piece.id, g);
-
-      // Shards: one InstancedMesh-free approach keeps selection/fade simple — ~26 small meshes per piece.
-      const shards = makeShards(piece).map((s) => {
-        const geo = s.size > 0.3 ? new THREE.DodecahedronGeometry(s.size * 0.55, 0) : new THREE.BoxGeometry(s.size, s.size * 0.7, s.size * 0.8);
-        const m = mats[s.material].clone(); m.transparent = true;
-        const mesh = new THREE.Mesh(geo, m);
-        mesh.castShadow = true; mesh.visible = false;
-        world.add(mesh);
-        return { s, mesh, axis: new THREE.Vector3(...s.spinAxis).normalize() };
-      });
-      shardSets.push({ piece, shards });
+      proceduralGroups.set(piece.id, g);
     }
+    buildFigure(proceduralGroups, null);
 
     // ── Stone + mountain ────────────────────────────────────────────────────
     const stoneMat = stdMaterial('stone');
@@ -237,8 +316,9 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
     }
 
     // ── Selection: emissive glow on the chosen piece ────────────────────────
-    let glowTargets = [];
+    let glowTargets = [], currentSel = selected;
     function applySelection(id) {
+      currentSel = id;
       for (const m of glowTargets) m.material.emissive.setHex(0);
       glowTargets = [];
       if (!id) return;
@@ -304,6 +384,12 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
     place(clock.t);
     frame();
     onReady?.(true);
+    loadKing(mats).then((king) => {
+      if (!alive || !king) return;
+      buildFigure(king.groups, king.samplers);
+      lastT = -1; applySelection(currentSel); dirty = true;
+      onKing?.(true);
+    });
 
     api.current = {
       select: applySelection,

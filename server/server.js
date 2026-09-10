@@ -1427,6 +1427,28 @@ app.use(express.static('public', {
 }));
 app.use('/lexicon', express.static(path.join(__dirname, 'lexicon'), { maxAge: '5m' }));
 
+// ── MODEL ASSETS (Maps & Models) ─────────────────────────────────────────────
+// Sculpted meshes the model pages load at runtime — e.g. the king for the Statue of
+// the Dream (`statue.glb`, generated in Meshy under CC BY 4.0). They are large
+// binaries kept OUT of git: looked up in server/models/ first (a dev checkout), then
+// in $DATA_DIR/models/ (the persistent volume on the Lightsail box, beside the
+// databases, so a redeploy does not lose them). A missing file is a plain 404 and
+// the page falls back to its procedural figure — nothing breaks without the asset.
+const MODEL_ASSET_DIRS = [path.join(__dirname, 'models'), path.join(process.env.DATA_DIR || '/data', 'models')];
+app.get('/api/models/:file', (req, res) => {
+  const name = String(req.params.file || '');
+  if (!/^[a-z0-9][a-z0-9._-]*\.(glb|gltf|bin)$/i.test(name)) return res.status(404).end();
+  for (const dir of MODEL_ASSET_DIRS) {
+    const file = path.join(dir, name);
+    if (fs.existsSync(file)) {
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      if (name.endsWith('.glb')) res.type('model/gltf-binary');
+      return res.sendFile(file);
+    }
+  }
+  return res.status(404).end();
+});
+
 // ── SPA PAGE ROUTES ──────────────────────────────────────────────────────────
 // After the React migration, every page in the app is served by a single
 // index.html bundle and React Router maps the URL to the right component.
