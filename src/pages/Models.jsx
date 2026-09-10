@@ -16,7 +16,7 @@ export const MODELS = [
     title: 'The Holy Land in 3D',
     kicker: 'Interactive terrain map',
     blurb: 'Fly over the Levant in 3D relief. Switch between the tribal allotments of Joshua 13–19 and the millennial allotments of Ezekiel 47–48, see the biblical cities of Joshua with their paleo-Hebrew names, and find out which portion today\'s cities and peoples fall in.',
-    paleo: '𐤉𐤁𐤍𐤀𐤋',
+    paleo: '𐤉𐤁𐤍-𐤀𐤋',
     tags: ['Joshua 13–19', 'Ezekiel 47–48', '3D terrain', 'Cities'],
     to: '/models/holy-land',
     quick: [

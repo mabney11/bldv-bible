@@ -411,6 +411,8 @@
 
 /* Decluttering: hidden labels keep their dot */
 .hl-mk-hide .hl-mk-lbl { display: none !important; }
+/* label flipped to the left of the dot when a holy-plot button sits to its right */
+.hl-mk-flip .hl-mk-lbl { left: auto; right: 8px; align-items: flex-end; text-align: right; }
 .hl-mk-twin .hl-mk-dot { left: 3px; top: 3px; }           /* nudge a twin's dot off the biblical one */
 .hl-mk-twin:hover .hl-mk-lbl { display: flex !important; }
 /* Gold focus: the selected city glows like the selected portion */

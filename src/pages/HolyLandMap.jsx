@@ -13,7 +13,7 @@
  * "who is there now, and whose portion is it in?" — click a city, a band, or
  * anywhere on the map.
  *
- * Route: /models/holy-land   (linked from /models — "Renderings & Models")
+ * Route: /models/holy-land   (linked from /models — "Maps & Models")
  * Deep links: ?city=<id>  ?overlay=joshua|ezekiel|both|none  ?basemap=plain|online  ?relief=0  ?places=1|0
  *             ?pin=<lon>,<lat>[,<label>]  — a dropped pin; every selection then shows its distance from it
  *
@@ -249,7 +249,7 @@ function fmtLonLat([lon, lat]) {
 
 // ── Component ────────────────────────────────────────────────────────────────
 export default function HolyLandMap() {
-  usePageTitle(pageTitle('Holy Land in 3D — Renderings & Models'));
+  usePageTitle(pageTitle('Holy Land in 3D — Maps & Models'));
   const { theme, toggle: toggleTheme } = useTheme();
   const [params, setParams] = useSearchParams();
 
@@ -657,7 +657,21 @@ export default function HolyLandMap() {
     fitRegionLabels(map);
     const z = map.getZoom();
     const showAll = z >= 7.5;
+    // The holy plots' lettered buttons (Z, L, C, X, S — shown while the plot is too small for
+    // its name) are placed first, as obstacles: a city label that would sit on one flips to
+    // the left of its dot, and hides if it can't (fieldy, 2026-09-10: "the x collides with my
+    // paleo — it should be its own button, not colliding").
+    const cont = map.getContainer().getBoundingClientRect();
     const placed = [];
+    for (const m of markersRef.current) {
+      if (!m._rl || m._rl.kind !== 'plot') continue;
+      const el = m.getElement();
+      if (el.dataset.fit === 'hide') continue;      // lettered button or the plot's free text — both are obstacles
+      const r = el.getBoundingClientRect();
+      if (!r.width) continue;
+      placed.push({ x1: r.left - cont.left - 3, y1: r.top - cont.top - 3, x2: r.right - cont.left + 3, y2: r.bottom - cont.top + 3, plot: true });
+    }
+    const overlaps = (box) => placed.some((b) => box.x1 < b.x2 && box.x2 > b.x1 && box.y1 < b.y2 && box.y2 > b.y1);
     const items = markersRef.current.filter((m) => m._hl).map((m) => ({ m, p: map.project(m.getLngLat()) }))
       .sort((a, b) => a.m._hl.pri - b.m._hl.pri);
     for (const { m, p } of items) {
@@ -666,10 +680,15 @@ export default function HolyLandMap() {
       const always = pri <= 1;                // key city + selection always labelled
       if (twin && !always) { el.classList.add('hl-mk-hide'); continue; }
       if (!showAll && !always && pri > 2) { el.classList.add('hl-mk-hide'); continue; }
-      const box = { x1: p.x + 6, y1: p.y - 12, x2: p.x + 6 + w, y2: p.y + 22 };
-      const hit = placed.some((b) => box.x1 < b.x2 && box.x2 > b.x1 && box.y1 < b.y2 && box.y2 > b.y1);
-      if (hit && !always) { el.classList.add('hl-mk-hide'); continue; }
+      const right = { x1: p.x + 6, y1: p.y - 12, x2: p.x + 6 + w, y2: p.y + 22 };
+      const left = { x1: p.x - 6 - w, y1: p.y - 12, x2: p.x - 6, y2: p.y + 22 };
+      let box = right, flip = false;
+      if (overlaps(right)) {
+        if (!overlaps(left)) { box = left; flip = true; }
+        else if (!always) { el.classList.add('hl-mk-hide'); continue; }
+      }
       el.classList.remove('hl-mk-hide');
+      el.classList.toggle('hl-mk-flip', flip);
       placed.push(box);
     }
   };
@@ -869,7 +888,7 @@ export default function HolyLandMap() {
     <div className={`hl-page${panelOpen ? ' hl-panel-open' : ''}`} data-basemap={basemap}>
       <header className="hl-top">
         <Link to="/landing" className="hl-logo" title="Home">𐤀𐤁</Link>
-        <Link to="/models" className="hl-back" title="Renderings & Models">← Models</Link>
+        <Link to="/models" className="hl-back" title="Maps & Models">← Models</Link>
         <h1 className="hl-h1">The Holy Land in 3D <span>Joshua &amp; Ezekiel allotments</span></h1>
         <PlacePicker pin={pin} selId={sel?.city?.id} onPick={(c) => selectCity(c, true)} />
         <div className="hl-top-actions">

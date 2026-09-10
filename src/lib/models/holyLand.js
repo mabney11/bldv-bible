@@ -181,7 +181,8 @@ export const JOSHUA_TRIBES = [
 // Points sit a few km OFFSHORE so coastal cities (Beirut, Haifa, Tel Aviv,
 // Gaza…) fall inside their band rather than on the line.
 const EZ_WEST = [
-  [35.78,34.45],[35.6,34.2],[35.44,33.9],[35.3,33.56],[35.13,33.27],[35.04,33.09],
+  [35.78,34.45],[35.66,34.35],[35.6,34.27],   // Ras Enfeh / Chekka juts west of a straight Tripoli→Batroun line — a sliver of Dan's coast sat outside the band (2026-09-10)
+  [35.6,34.2],[35.44,33.9],[35.3,33.56],[35.13,33.27],[35.04,33.09],
   [35.0,32.93],[34.9,32.83],[34.83,32.5],[34.74,32.2],[34.68,32.05],[34.57,31.8],
   [34.36,31.5],[34.18,31.3],[33.75,31.13],
 ];
@@ -286,7 +287,11 @@ function bandBetween(top, bot) {
     ...top,
     ...between(EZ_EAST, topE[1], botE[1]),
     ...[...bot].reverse(),
-    ...between(EZ_WEST, botW[1], topW[1]).reverse(),
+    // (was between(EZ_WEST, botW[1], topW[1]) — arguments reversed, so the filter matched
+    // nothing and every band's west edge was a straight chord between its two cut points;
+    // where the coast bulges west of that chord — Ras Enfeh in Dan, Carmel — a sliver of
+    // land sat outside the band. 2026-09-10.)
+    ...between(EZ_WEST, topW[1], botW[1]).reverse(),
   ];
 }
 // Sub-rectangle of a band clipped to a lon range (used for the prince's portions).
