@@ -88,7 +88,7 @@
 .st-detail-sub em { font-style: normal; text-transform: none; letter-spacing: 0; color: var(--text4); }
 
 .st-passage { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
-.st-passage-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.st-passage-h { display: flex; justify-content: flex-end; align-items: baseline; gap: 8px; margin-bottom: 4px; }
 .st-passage-h .st-detail-sub { margin-top: 0; }
 .st-passage-links { display: inline-flex; gap: 10px; white-space: nowrap; }
 .st-passage-open { color: var(--blue); font-size: 12px; }
@@ -106,6 +106,24 @@
 .st-w.broken { opacity: 0.55; }
 .st-w.hl { background: color-mix(in srgb, var(--gold) 22%, transparent); border-bottom: 1px solid var(--gold); font-weight: 600; padding: 0 3px; }
 .st-w:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+/* The two bands of the panel — Scripture, Details — as vertical tabs: a bold
+   gold bar each, tap to fold. */
+.st-sec { border: 1px solid var(--border2); border-radius: 10px; overflow: hidden; background: var(--bg); margin-top: 6px; }
+.st-sec-h {
+  width: 100%; display: flex; align-items: baseline; gap: 9px; text-align: left; cursor: pointer;
+  border: 0; border-left: 4px solid var(--gold); background: color-mix(in srgb, var(--gold) 13%, var(--bg3));
+  color: var(--text); font: inherit; padding: 10px 12px 10px 11px;
+}
+.st-sec-h:hover { background: color-mix(in srgb, var(--gold) 22%, var(--bg3)); }
+.st-sec-chev { color: var(--gold); font-size: 13px; width: 12px; flex: none; }
+.st-sec-title { font-size: 12.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); flex: none; }
+.st-sec-sub { font-size: 12px; color: var(--text3); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.st-sec:not(.open) .st-sec-h { border-left-color: var(--border3); background: var(--bg3); }
+.st-sec:not(.open) .st-sec-title { color: var(--text2); }
+.st-sec-body { display: flex; flex-direction: column; gap: 10px; padding: 8px 10px 12px; }
+.st-sec-scripture .st-sec-body { padding: 6px 6px 10px; }
+.st-sec-body > .st-detail-sub { margin-top: 6px; }
 
 .st-words { display: flex; flex-direction: column; gap: 4px; }
 .st-word { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 14px; }

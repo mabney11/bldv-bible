@@ -141,7 +141,6 @@ function Passage({ selected, selectable, onPick }) {
   return (
     <div className="st-passage" ref={box}>
       <div className="st-passage-h">
-        <span className="st-detail-sub">The text · Daniel 2:31–45</span>
         <span className="st-passage-links">
           <Link to={`/passage?ref=${encodeURIComponent(ALL_REFS)}`} className="st-passage-open">Open the passage →</Link>
           <Link to={`/bible?book=${PASSAGE.bookId}&chapter=${PASSAGE.chapter}&verse=${PASSAGE.from}&verseEnd=${PASSAGE.to}`} className="st-passage-open">Reader →</Link>
@@ -187,13 +186,16 @@ function Card({ id, selectable, ended, onClose, onPick }) {
         <div className="st-card-h">
           <div className="st-detail-sub">The dream Nabawakadanaatzar (Nebuchadnezzar) saw</div>
           <h2 className="st-card-title">The tzalam (likeness), and the aban (stone) that struck it</h2>
-          <p className="st-card-p">Tap a piece of the image, a tag on it, or one of the marked words in the text below.</p>
           {ended && <p className="st-only">Only the aban (stone) remains — the tzalam (likeness) is gone, and the tawar (mountain) malaa (fills) the arai (earth).</p>}
         </div>
       )}
 
-      <Passage selected={id} selectable={selectable} onPick={onPick} />
+      <Section id="scripture" title="Scripture" sub="Daniel 2:31–45 · the text itself">
+        <Passage selected={id} selectable={selectable} onPick={onPick} />
+      </Section>
 
+      <Section id="details" title="Details" sub={item ? 'what scripture names · the parallel vision · the common reading' : 'choose a piece'}>
+      {!item && <p className="st-card-p">Tap a piece of the image, a tag on it, or one of the marked words in the text for what scripture names it, the parallel vision in Daniel 7–8, and the common reading.</p>}
       {item && (
         <>
           <div className="st-detail-sub">What scripture names</div>
@@ -232,7 +234,27 @@ function Card({ id, selectable, ended, onClose, onPick }) {
           )}
         </>
       )}
+      </Section>
     </div>
+  );
+}
+
+// A collapsible band of the panel — "Scripture" and "Details" sit one above the
+// other like vertical tabs; either or both can be folded to a single bar. The
+// fold is remembered per band across visits.
+function Section({ id, title, sub, children }) {
+  const key = `st-sec-${id}`;
+  const [open, setOpen] = useState(() => { try { return localStorage.getItem(key) !== '0'; } catch { return true; } });
+  const toggle = () => setOpen((o) => { try { localStorage.setItem(key, o ? '0' : '1'); } catch {} return !o; });
+  return (
+    <section className={`st-sec st-sec-${id}${open ? ' open' : ''}`}>
+      <button type="button" className="st-sec-h" onClick={toggle} aria-expanded={open}>
+        <span className="st-sec-chev" aria-hidden="true">{open ? '▾' : '▸'}</span>
+        <span className="st-sec-title">{title}</span>
+        <span className="st-sec-sub">{sub}</span>
+      </button>
+      {open && <div className="st-sec-body">{children}</div>}
+    </section>
   );
 }
 
