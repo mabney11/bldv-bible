@@ -305,11 +305,13 @@
 .hl-scope .hl-link { margin-left: auto; font-size: 12px; white-space: nowrap; }
 
 /* Panel header: on a desktop a slim bar with "◀ Hide panel"; on a phone the sheet's grip + "Map ×" */
-.hl-sheet-bar { display: flex; align-items: center; justify-content: flex-end; padding: 4px 8px; border-bottom: 1px solid var(--border); background: var(--bg2); position: sticky; top: 0; z-index: 3; }
+.hl-sheet-head { position: sticky; top: 0; z-index: 3; background: var(--bg2); }
+.hl-sheet-bar { display: flex; align-items: center; justify-content: flex-end; padding: 4px 8px; border-bottom: 1px solid var(--border); background: var(--bg2); touch-action: none; }
+.hl-sheet-x-float { display: none; }
 .hl-sheet-grip { display: none; }
 .hl-sheet-x { font-size: 12px; color: var(--text2); padding: 3px 9px; border-radius: 6px; border: 1px solid var(--border2); background: var(--bg3); }
 .hl-sheet-x:hover { color: var(--gold); border-color: var(--gold); }
-.hl-tabs { top: 31px; }
+.hl-tabs { position: static; }
 .hl-panel { overflow-x: hidden; }
 .hl-panel * { min-width: 0; }
 .hl-legend-i { flex-wrap: wrap; }
@@ -329,11 +331,13 @@
   .hl-searchbox-dd { position: fixed; left: 8px; right: 8px; top: calc(52px + var(--safe-top)); max-height: 60vh; }
   /* the panel is a bottom sheet over the lower half; the map is padded to match (see SHEET_FRACTION) */
   .hl-panel { position: absolute; left: 0; right: 0; bottom: 0; top: 50%; width: auto; border-right: none; border-top: 1px solid var(--border); z-index: 4; border-radius: 14px 14px 0 0; box-shadow: 0 -6px 24px #0004; }
-  .hl-sheet-bar { justify-content: center; padding: 6px 10px 2px; border-radius: 14px 14px 0 0; border-bottom: none; }
-  .hl-sheet-grip { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--border3); }
+  .hl-sheet-head { border-radius: 14px 14px 0 0; }
+  .hl-sheet-bar { justify-content: center; padding: 8px 10px 6px; border-radius: 14px 14px 0 0; border-bottom: none; cursor: grab; }
+  .hl-sheet-grip { display: block; width: 44px; height: 5px; border-radius: 3px; background: var(--border3); }
+  /* "Map ×" floats just above the sheet, over the map, so the tabs sit flush under the grip */
+  .hl-sheet-x-float { display: block; position: absolute; right: 10px; bottom: calc(50% + 8px); z-index: 5; font-size: 12.5px; padding: 5px 11px; border-radius: 8px; border: 1px solid var(--border2); background: var(--bg2); color: var(--text); box-shadow: 0 2px 8px #0005; }
   .hl-panel-show { top: auto; bottom: 14px; left: 50%; transform: translateX(-50%); }
-  .hl-sheet-x { position: absolute; right: 8px; top: 2px; font-size: 12.5px; color: var(--text2); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border2); background: var(--bg3); }
-  .hl-tabs { top: 26px; }
+  .hl-tabs { border-bottom: 1px solid var(--border); }
   .hl-map-wrap { position: absolute; inset: 0; }
   .hl-detail { margin: 10px 10px 0; padding: 12px 12px; }
   .hl-detail-x { display: none; }   /* "Map ×" on the sheet bar is the close; the card's × sat on the paleo word */
@@ -368,7 +372,24 @@
 .hl-rl-holy-sm .hl-rl-name { font-size: 11px; letter-spacing: 0.08em; color: #5a3600; }
 .hl-rl-holy-sm .hl-rl-en { font-size: 9px; }
 
-/* Reference chips + inline passages: components/PassageRefs.css */
+/* ── Scripture references: chips that open the verses inline ─────────────── */
+.hl-refs { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+.hl-refs-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.hl-refchip { display: inline-flex; align-items: center; gap: 5px; padding: 6px 11px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  background: color-mix(in srgb, var(--gold) 16%, var(--bg2)); border: 1px solid var(--gold); color: var(--gold2, var(--gold)); }
+.hl-refchip:hover { background: color-mix(in srgb, var(--gold) 28%, var(--bg2)); }
+.hl-refchip.on { background: var(--gold); color: #1a1208; }
+.hl-refs-sm .hl-refchip { padding: 2px 7px; font-size: 11.5px; font-weight: 600; border-radius: 6px; }
+.hl-refs-sm { margin-top: 0; display: inline-flex; }
+.hl-passage { border: 1px solid var(--border2); border-left: 3px solid var(--gold); border-radius: 8px; padding: 8px 12px; background: var(--bg2); display: flex; flex-direction: column; gap: 6px; }
+.hl-passage-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 12px; }
+.hl-passage-h b { color: var(--text); }
+.hl-passage-open { color: var(--blue); font-size: 12px; white-space: nowrap; }
+.hl-passage-open:hover { text-decoration: underline; }
+.hl-passage-links { display: inline-flex; gap: 10px; white-space: nowrap; }
+.hl-passage-wait { font-size: 12px; color: var(--text4); }
+.hl-verse { font-size: 13.5px; line-height: 1.55; color: var(--text); font-family: var(--reader-font, inherit); }
+.hl-verse sup { color: var(--gold); font-size: 10px; margin-right: 5px; font-weight: 700; }
 .hl-measures .hl-refs-sm { margin-bottom: 2px; }
 
 /* City labels: pointer + underline on hover only (the whole marker is clickable) */

@@ -39,8 +39,6 @@ import { useTheme } from '../hooks/useTheme.js';
 import { apiTransChapter, apiSurface, apiLexicon, apiStrongsLookup } from '../lib/api.js';
 import { transliterate } from '../lib/translit.js';
 import { parseRefs, readerHref, inRanges } from '../lib/models/refs.js';
-import { PassageRefs } from '../components/PassageRefs.jsx';
-export { PassageRefs };
 import {
   JOSHUA_TRIBES, BIBLICAL_CITIES, MODERN_CITIES, TRIBE_COLORS, TRIBE_HEBREW,
   HOLY_KIND_STYLE, EZEKIEL_ORDER, EZEKIEL_MEASURES, TRIBE_TRANSLIT, TRIBE_PALEO, tribeDisplayName,
@@ -914,6 +912,33 @@ export default function HolyLandMap() {
 
   const goHome = () => { setGearOpen(false); mapRef.current?.fitBounds(HOME_BOUNDS, { padding: 20, pitch: threeD ? 50 : 0, bearing: -8, duration: 1200 }); };
   const closeDetail = () => { setSel(null); if (isNarrow()) setPanelOpen(false); };
+
+  // The bottom sheet's grip: drag it down to close (fieldy: "the panel implies it can be pulled
+  // down on phone but it can't"). The sheet follows the finger; past 90 px (or a quick flick) it closes.
+  const panelRef = useRef(null);
+  const drag = useRef(null);
+  const sheetDragStart = (e) => {
+    if (!isNarrow() || e.pointerType === 'mouse' && e.button !== 0) return;
+    drag.current = { y: e.clientY, t: performance.now(), dy: 0 };
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    if (panelRef.current) panelRef.current.style.transition = 'none';
+  };
+  const sheetDragMove = (e) => {
+    if (!drag.current) return;
+    const dy = Math.max(0, e.clientY - drag.current.y);
+    drag.current.dy = dy;
+    if (panelRef.current) panelRef.current.style.transform = `translateY(${dy}px)`;
+  };
+  const sheetDragEnd = (e) => {
+    if (!drag.current) return;
+    const { dy, t } = drag.current;
+    drag.current = null;
+    const el = panelRef.current;
+    const flick = dy > 30 && performance.now() - t < 250;
+    if (el) { el.style.transition = 'transform 220ms ease-out'; el.style.transform = dy > 90 || flick ? `translateY(${el.offsetHeight}px)` : ''; }
+    if (dy > 90 || flick) setTimeout(() => { if (el) { el.style.transition = ''; el.style.transform = ''; } setPanelOpen(false); }, 200);
+    else setTimeout(() => { if (el) el.style.transition = ''; }, 240);
+  };
   const scopeBar = focus && (
     <div className={`hl-scope${scoped ? ' on' : ''}`}>
       <i style={{ background: focus.kind === 'holy' ? HOLY_KIND_STYLE[focus.entry.kind].color : TRIBE_COLORS[focus.entry.tribe] }} />
@@ -937,15 +962,19 @@ export default function HolyLandMap() {
       </header>
 
       <div className="hl-body">
-        <aside className="hl-panel" aria-label="Map controls">
-          <div className="hl-sheet-bar">
-            <span className="hl-sheet-grip" aria-hidden="true" />
-            <button type="button" className="hl-sheet-x" onClick={() => setPanelOpen(false)} aria-label="Hide panel">{isNarrow() ? 'Map ×' : '◀ Hide panel'}</button>
-          </div>
-          <div className="hl-tabs" role="tablist">
-            {[['layers', 'Detailed Look'], ['cities', 'Cities'], ['peoples', 'Peoples']].map(([id, label]) => (
-              <button key={id} type="button" role="tab" aria-selected={tab === id} className={`hl-tab${tab === id ? ' on' : ''}`} onClick={() => setTab(id)}>{label}</button>
-            ))}
+        <aside className="hl-panel" aria-label="Map controls" ref={panelRef}>
+          {/* One sticky head: the grip (pull it down to close the sheet) and the tabs, flush together,
+              so nothing scrolling beneath shows between them. "Map ×" sits ABOVE the sheet on phones. */}
+          <div className="hl-sheet-head">
+            <div className="hl-sheet-bar" onPointerDown={sheetDragStart} onPointerMove={sheetDragMove} onPointerUp={sheetDragEnd} onPointerCancel={sheetDragEnd}>
+              <span className="hl-sheet-grip" aria-hidden="true" />
+              {!isNarrow() && <button type="button" className="hl-sheet-x" onClick={() => setPanelOpen(false)} aria-label="Hide panel">◀ Hide panel</button>}
+            </div>
+            <div className="hl-tabs" role="tablist">
+              {[['layers', 'Detailed Look'], ['cities', 'Cities'], ['peoples', 'Peoples']].map(([id, label]) => (
+                <button key={id} type="button" role="tab" aria-selected={tab === id} className={`hl-tab${tab === id ? ' on' : ''}`} onClick={() => setTab(id)}>{label}</button>
+              ))}
+            </div>
           </div>
 
           {sel && <Detail sel={sel} ez={ez} pin={pin} onPin={dropPin} onUnpin={() => setPin(null)} onClose={closeDetail} onCity={(c) => selectCity(c, true)} onRegion={selectRegion} />}
@@ -1052,6 +1081,7 @@ export default function HolyLandMap() {
         <div className={`hl-map-wrap${zoom >= 7.5 ? ' hl-z-labels' : ''}${zoom >= REGION_DETAIL_ZOOM ? ' hl-z-region' : ''}${zoom >= HOLY_BTN_ZOOM ? ' hl-z-holy' : ''}`}>
           <div ref={mapEl} className="hl-map" />
           {!panelOpen && <button type="button" className="hl-panel-show" onClick={() => setPanelOpen(true)} title="Show the panel">☰ Detailed Look · Cities · Peoples</button>}
+          {panelOpen && <button type="button" className="hl-sheet-x hl-sheet-x-float" onClick={() => setPanelOpen(false)} aria-label="Close the panel">Map ×</button>}
           {/* ⚙ beside the zoom buttons: the everyday toggles, reachable without opening the panel */}
           <div className={`hl-gear${gearOpen ? ' open' : ''}`}>
             <button type="button" className="hl-gear-btn" onClick={() => setGearOpen((v) => !v)} title="Map settings" aria-expanded={gearOpen} aria-label="Map settings">⚙</button>
@@ -1186,7 +1216,61 @@ function PlacePicker({ pin, selId, onPick }) {
   );
 }
 
-// Passage chips + inline verse text live in components/PassageRefs.jsx (shared with the statue model).
+// ── Passage chips + inline verse text ────────────────────────────────────────
+// Every reference on the map is a button: click it and the verses themselves
+// appear right here (the app's own Novel English), with a link into the Reader
+// that highlights the whole range (?verse=&verseEnd=). Chapters are cached.
+const _chapterCache = new Map();
+function loadChapter(bookId, chapter) {
+  const k = `${bookId}:${chapter}`;
+  if (!_chapterCache.has(k)) _chapterCache.set(k, apiTransChapter(bookId, chapter).then((d) => d?.verses || []).catch(() => []));
+  return _chapterCache.get(k);
+}
+
+function Passage({ refObj }) {
+  const [verses, setVerses] = useState(null);
+  useEffect(() => {
+    let live = true;
+    setVerses(null);
+    loadChapter(refObj.bookId, refObj.chapter).then((vs) => { if (live) setVerses(vs.filter((v) => inRanges(+v.verse, refObj.ranges))); });
+    return () => { live = false; };
+  }, [refObj]);
+  return (
+    <div className="hl-passage">
+      <div className="hl-passage-h">
+        <b>{refObj.label}</b>
+        <span className="hl-passage-links">
+          <Link to={`/passage?ref=${encodeURIComponent(refObj.label)}`} className="hl-passage-open" title="Just these verses, on their own page">Open the passage →</Link>
+          <Link to={readerHref(refObj)} className="hl-passage-open">Reader →</Link>
+        </span>
+      </div>
+      {verses === null && <div className="hl-passage-wait">Loading…</div>}
+      {verses && verses.length === 0 && <div className="hl-passage-wait">No English text for this passage yet.</div>}
+      {verses && verses.map((v) => (
+        <p key={v.verse} className="hl-verse"><sup>{v.verse}</sup>{v.text}</p>
+      ))}
+    </div>
+  );
+}
+
+export function PassageRefs({ refs, autoOpen = false, size = 'md' }) {
+  const parsed = useMemo(() => parseRefs(refs), [refs]);
+  const [open, setOpen] = useState(autoOpen ? 0 : -1);
+  useEffect(() => { setOpen(autoOpen ? 0 : -1); }, [refs, autoOpen]);
+  if (!parsed.length) return refs ? <span className="hl-detail-ref">{refs}</span> : null;
+  return (
+    <div className={`hl-refs hl-refs-${size}`}>
+      <div className="hl-refs-row">
+        {parsed.map((r, i) => (
+          <button key={r.label} type="button" className={`hl-refchip${open === i ? ' on' : ''}`} onClick={() => setOpen(open === i ? -1 : i)} title="Show the verses">
+            <span aria-hidden="true">📖</span> {r.label}
+          </button>
+        ))}
+      </div>
+      {open >= 0 && parsed[open] && <Passage refObj={parsed[open]} />}
+    </div>
+  );
+}
 
 // ── Lexical breakdown: Bayath [house] Lacham [bread] ─────────────────────────
 // Each word of the Hebrew name is looked up in the app's own surface index
