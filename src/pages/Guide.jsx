@@ -46,6 +46,7 @@ const SECTIONS = [
     links: [
       { to: '/models/holy-land', label: 'The Holy Land in 3D' },
       { to: '/models/holy-land?overlay=joshua', label: 'Joshua’s allotments' },
+      { to: '/models/prints', label: 'Printable map sheets (PNG · SVG · PDF)' },
       { to: '/models', label: 'All models' },
     ],
   },

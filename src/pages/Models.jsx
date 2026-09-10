@@ -25,6 +25,20 @@ export const MODELS = [
       { label: 'Jabneel — Joshua 15:11', to: '/models/holy-land?city=jabneel-judah' },
     ],
   },
+  {
+    slug: 'prints',
+    title: 'Printable Maps',
+    kicker: 'Downloadable map sheets',
+    blurb: 'The Holy Land as official-looking map sheets, drawn from the same data as the 3D model: the allotment of Ezekiel 47–48 with the Holy Portion and the prince\'s land, the allotment of Joshua 13–19, and the Holy Portion close up. Save as a print-quality PNG, an SVG, or a PDF.',
+    paleo: '𐤀𐤓𐤑 𐤒𐤃𐤔',
+    tags: ['Ezekiel 47–48', 'Joshua 13–19', 'PNG · SVG · PDF'],
+    to: '/models/prints',
+    quick: [
+      { label: 'Ezekiel\'s allotment', to: '/models/prints?map=ezekiel' },
+      { label: 'Joshua\'s allotment', to: '/models/prints?map=joshua' },
+      { label: 'The Holy Portion', to: '/models/prints?map=holy' },
+    ],
+  },
 ];
 
 export default function Models() {

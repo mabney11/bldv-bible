@@ -1150,6 +1150,11 @@ const STATIC_PAGES = {
     description: "Search across Hebrew, Greek, Latin and Ge'ez scripture and literary works.",
     heading: 'Search',
   },
+  '/models/prints': {
+    title: `Printable Maps | ${BRAND}`,
+    description: 'The Holy Land as printable map sheets — the allotment of Ezekiel 47–48 with the Holy Portion, the allotment of Joshua 13–19, and the Holy Portion close up — saved as PNG, SVG or PDF.',
+    heading: 'Printable Maps',
+  },
   '/guide': {
     title: `Guide | ${BRAND}`,
     description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, the Lexicon and the Translation Studio.',

@@ -275,7 +275,8 @@
 .hl-rl-w .hl-rl-name { font-size: 11px; font-style: italic; font-weight: 700; letter-spacing: 0.12em; }
 .hl-rl-w .hl-rl-paleo { display: none; font-size: 11px; color: #2b4f73; }
 .hl-rl-w .hl-rl-en { display: none; color: #2b4f73; font-style: italic; }
-.hl-rl-w-always, .hl-z-labels .hl-rl-w { display: flex; }
+.hl-rl-w-always, .hl-rl-w.on, .hl-z-labels .hl-rl-w { display: flex; }
+.hl-rl-w.on .hl-rl-paleo, .hl-rl-w.on .hl-rl-en { display: block; }
 .hl-rl-w:hover, .hl-rl-w.on { background: #d9e8f5cc; border-color: #2b4f7366; }
 .hl-rl-w.on .hl-rl-name { color: #b8860b; }
 .hl-z-region .hl-rl-w .hl-rl-name { font-size: 13px; }

@@ -56,7 +56,7 @@ const SHEET_FRACTION = 0.5;                       // the sheet covers the lower 
 // same from every starting zoom): the bands stay in their country, the holy plots close
 // enough that their names read as area text.
 const PORTION_MAX_ZOOM = { joshua: 9.5, ezekiel: 9.5, prince: 11, levites: 12.5, priests: 12.5, food: 13, suburbs: 13, city: 13.5, sanctuary: 14 };
-const WATER_MIN_ZOOM = 9;                          // a tapped river or sea comes in at least this close
+const WATER_MAX_ZOOM = 10.5;                       // a short brook still shows its surroundings
 const REGION_DETAIL_ZOOM = 7.8;                   // from here the band labels also show the paleo line + English
 const HOLY_BTN_ZOOM = 10.5;                       // above this the "Tharawamah" caption appears over the square
 // The prince's portion (Ezekiel 48:21–22): a king and a lion — fieldy's pick.
@@ -131,6 +131,36 @@ function waterGeometry(w) {
     for (const r of BIBLE_RIVERS) if (r.id === w.base) feats.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: r.pts } });
   }
   return feats;
+}
+
+// The view a water gets: the whole body (or course) plus its label, so the name is on it.
+// The Great Sea has no far shore to frame: the view holds the reach that was tapped AND the
+// sea's name (a phone cannot zoom all the way out — fieldy — but the name must be on the water).
+function waterBounds(w, at) {
+  if (w.base === 'sea') {
+    const pts = [[w.lon, w.lat], at || [w.lon, w.lat]];
+    const lons = pts.map((q) => q[0]), lats = pts.map((q) => q[1]);
+    return [[Math.min(...lons) - 0.25, Math.min(...lats) - 0.25], [Math.max(...lons) + 0.25, Math.max(...lats) + 0.25]];
+  }
+  let pts = waterGeometry(w).flatMap((f) => f.geometry.coordinates);
+  let labels = WATERS.filter((x) => x.id === w.id || x.twin === w.id).map((x) => [x.lon, x.lat]);
+  const lake = levantGeo().lakes.features.some((f) => f.properties.name === w.base);
+  if (!lake && at) {
+    // a river runs the length of the land: frame the REACH that was tapped (± ~40 km) with the
+    // nearest of its names, not the whole course from Hermon to the Salt Sea
+    const near = pts.filter((q) => Math.abs(q[0] - at[0]) < 0.3 && Math.abs(q[1] - at[1]) < 0.35);
+    if (near.length > 1) pts = near;
+    labels.sort((p1, p2) => Math.hypot(p1[0] - at[0], p1[1] - at[1]) - Math.hypot(p2[0] - at[0], p2[1] - at[1]));
+    labels = labels.slice(0, 1);
+    pts = [...pts, at];
+  }
+  const all = [...pts, ...labels];
+  if (!all.length) return [[w.lon - 0.2, w.lat - 0.2], [w.lon + 0.2, w.lat + 0.2]];
+  const lons = all.map((p) => p[0]), lats = all.map((p) => p[1]);
+  // a river's label sits beside it: give the frame a little air on every side
+  const padX = Math.max(0.06, (Math.max(...lons) - Math.min(...lons)) * 0.08);
+  const padY = Math.max(0.06, (Math.max(...lats) - Math.min(...lats)) * 0.08);
+  return [[Math.min(...lons) - padX, Math.min(...lats) - padY], [Math.max(...lons) + padX, Math.max(...lats) + padY]];
 }
 
 // Which water (if any) a tap on the base map landed on: a lake, a river, the Bible's rivers,
@@ -345,12 +375,17 @@ export default function HolyLandMap() {
     setGearOpen(false);
     const map = mapRef.current;
     if (!map) return;
-    // Snap like a portion does, but to the SPOT that was tapped (the water is long — the
-    // reader wants the reach they touched): centre it, come in to a readable zoom if far out,
-    // never zoom out.
-    const at = opts.at || [w.lon, w.lat];
-    const narrow = isNarrow();
-    map.easeTo({ center: at, zoom: Math.max(map.getZoom(), WATER_MIN_ZOOM), padding: narrow ? { top: 0, left: 0, right: 0, bottom: sheetPx() } : { top: 0, left: 0, right: 0, bottom: 0 }, duration: 900, pitch: threeD ? 45 : 0 });
+    // Frame the WHOLE water with its name on it (fieldy, on his phone: "I would rather be
+    // zoomed out to see the full body of water and clearly see the name of it") — the same
+    // view whether it was tapped from far out or from inside a city. The Great Sea has no
+    // end: frame its Levant shore, from the Brook of Egypt up past Tyre, with the label.
+    const fit = () => fitView(map, waterBounds(water, opts.at), { maxZoom: water.base === 'sea' ? 8.5 : WATER_MAX_ZOOM, pitch: threeD ? 45 : 0, duration: 1100, margin: 60 });
+    if (!isNarrow() && !panelOpenRef.current) {
+      let done = false;
+      const go = () => { if (done) return; done = true; fit(); };
+      map.once('resize', go);
+      setTimeout(go, 150);
+    } else fit();
   }, [threeD]);
   const selectWaterRef = useRef(selectWater); selectWaterRef.current = selectWater;
 
@@ -803,11 +838,12 @@ export default function HolyLandMap() {
   useEffect(() => {
     if (deepLinked.current) return;
     const id = params.get('city');
-    if (!id) { deepLinked.current = true; return; }
-    const c = ALL_PLACES.find((x) => x.id === id);
-    if (!c) { deepLinked.current = true; return; }
+    const view = params.get('view');                       // ?view=holy — the Holy Portion framed (from the printable sheets)
+    if (!id && view !== 'holy') { deepLinked.current = true; return; }
+    const c = id ? ALL_PLACES.find((x) => x.id === id) : null;
+    if (id && !c) { deepLinked.current = true; return; }
     const t = setInterval(() => {
-      if (mapRef.current && styleReady.current) { clearInterval(t); deepLinked.current = true; selectCity(c, true); }
+      if (mapRef.current && styleReady.current) { clearInterval(t); deepLinked.current = true; if (c) selectCity(c, true); else zoomHolyRef.current(); }
     }, 200);
     return () => clearInterval(t);
   }, [params, selectCity]);
@@ -1038,6 +1074,7 @@ export default function HolyLandMap() {
                 <label className="hl-row"><input type="checkbox" checked={threeD} onChange={(e) => setThreeD(e.target.checked)} /> 3D (two fingers to tilt)</label>
                 <label className="hl-row hl-range">Relief ×{exag.toFixed(1)} <input type="range" min="0.5" max="3" step="0.1" value={exag} disabled={!threeD} onChange={(e) => setExag(+e.target.value)} /></label>
                 <button type="button" className="hl-link hl-gear-more" onClick={() => { setGearOpen(false); zoomHoly(); }}>Zoom to the Holy Portion ✦</button>
+                <Link className="hl-link hl-gear-more" to={`/models/prints?map=${showJoshua && !showEzekiel ? 'joshua' : 'ezekiel'}`}>Printable map sheet (PNG · SVG · PDF) ↗</Link>
               </div>
             )}
           </div>
