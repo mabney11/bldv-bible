@@ -1441,7 +1441,10 @@ app.get('/api/models/:file', (req, res) => {
   for (const dir of MODEL_ASSET_DIRS) {
     const file = path.join(dir, name);
     if (fs.existsSync(file)) {
-      res.setHeader('Cache-Control', 'public, max-age=86400');
+      // Revalidate on every load (sendFile adds ETag/Last-Modified, so an unchanged file
+      // is a cheap 304) — a day-long max-age here meant a replaced model kept showing
+      // the old one until a hard reload (2026-09-10).
+      res.setHeader('Cache-Control', 'no-cache');
       if (name.endsWith('.glb')) res.type('model/gltf-binary');
       return res.sendFile(file);
     }

@@ -1203,18 +1203,29 @@ function cacheSet(key, val) {
   }
 }
 
-// Read the built index.html ONCE per process (it only changes on deploy,
-// which restarts the process). Vite's build output has an EMPTY root div —
+// Read the built index.html and re-read it whenever its mtime changes. It
+// used to be read ONCE per process on the theory that it only changes on
+// deploy (which restarts the process) — true in prod, but on a dev box a
+// `vite build` swaps the bundle hash under a running server, and every
+// prerendered page then points at an `index-XXXX.js` that no longer exists:
+// the shell renders, React never hydrates, a blank page with no console error
+// (2026-09-10, twice in one evening). One statSync per curated render is
+// nothing. The snapshot cache is cleared with it — cached pages embed the old
+// script tag too. Vite's build output has an EMPTY root div —
 // `<div id="root"></div>`, verified against this project's actual build
 // output — so injecting page content is one exact-string replace, not
 // fragile HTML surgery.
-let shell = null;
+let shell = null, shellMtime = 0;
 function loadShell(indexHtmlPath) {
-  if (shell) return;
-  shell = fs.readFileSync(indexHtmlPath, 'utf8');
-  if (!shell.includes('<div id="root"></div>')) {
+  let mtime = shellMtime;
+  try { mtime = fs.statSync(indexHtmlPath).mtimeMs; } catch { if (shell) return; throw new Error('prerender: built index.html is missing'); }
+  if (shell && mtime === shellMtime) return;
+  const next = fs.readFileSync(indexHtmlPath, 'utf8');
+  if (!next.includes('<div id="root"></div>')) {
     throw new Error('prerender: built index.html does not have the expected empty <div id="root"></div> — bail out rather than risk mangled output');
   }
+  if (shell) cache.clear();   // every cached snapshot carries the previous bundle's script tag
+  shell = next; shellMtime = mtime;
 }
 
 function render({ title, description, canonicalPath, body }) {

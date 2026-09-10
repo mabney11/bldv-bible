@@ -29,6 +29,7 @@ export const WORDS = {
   atzabaith:{ translit: 'Atzabaith', paleo: '𐤀𐤑𐤁𐤏', en: 'toes', sn: 'H677' },
   chasap:  { translit: 'Chasap',    paleo: '𐤇𐤎𐤐',  en: 'clay',   sn: 'H2635' },
   aban:    { translit: 'Aban',      paleo: '𐤀𐤁𐤍',  en: 'stone',  sn: 'H69' },
+  yashapah:{ translit: 'Yashapah',  paleo: '𐤉𐤔𐤐𐤄', en: 'jasper', sn: 'H3471' },
   tawar:   { translit: 'Tawar',     paleo: '𐤈𐤅𐤓',  en: 'mountain', sn: 'H2906' },
   rawach:  { translit: 'Rawach',    paleo: '𐤓𐤅𐤇',  en: 'wind / spirit', sn: 'H7308' },
   daqaq:   { translit: 'Daqaq',     paleo: '𐤃𐤒𐤒',  en: 'break in pieces', sn: 'H1855' },
@@ -42,7 +43,8 @@ export const MATERIALS = {
   bronze: { word: 'nachash', color: '#b9733a', hi: '#e6ab70', lo: '#653916', metal: 1.0, rough: 0.38 },
   iron:   { word: 'parazal', color: '#7a8087', hi: '#b3b8be', lo: '#33373c', metal: 0.9, rough: 0.5 },
   clay:   { word: 'chasap',  color: '#b8704e', hi: '#dca78d', lo: '#6b3a23', metal: 0.0, rough: 0.95 },
-  stone:  { word: 'aban',    color: '#7d8779', hi: '#b3bcae', lo: '#3c443a', metal: 0.0, rough: 0.9 },
+  // The aban is jasper — yashapah (Exodus 28:20; Revelation 4:3, 21:11, 18–19): warm mottled ochre and rust-brown, opaque.
+  stone:  { word: 'aban',    color: '#a0653c', hi: '#d8a674', lo: '#5a3320', metal: 0.0, rough: 0.8 },
 };
 
 // ── The pieces, in the order the text names them (head first) ────────────────
@@ -161,6 +163,7 @@ export const STONE = {
     note: 'Gazar (cut) out of the tawar (mountain), laa (NOT) by yadayan (hands); it strikes the ragal (feet), the whole tzalam (likeness) becomes iwar (chaff), and the aban (stone) becomes a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).' },
   parallel: { ref: 'Psalm 118:22; Isaiah 28:16; Isaiah 2:2–3; Matthew 21:42–44; Luke 20:17–18; 1 Peter 2:6–8', note: 'The aban (stone) the builders rejected; the tried, precious corner aban (stone); the tawar (mountain) of the house of Yah set above the hills; "on whomever it falls, it will scatter him as dust".' },
   traditional: 'The malakaw (kingdom) of the Mashayach (Messiah) / the malakaw (kingdom) of shamayan (heaven)',
+  colour: { ref: 'Exodus 28:20; Revelation 4:3; Revelation 21:11, 18–19', note: 'The aban (stone) here is shown as yashapah (jasper): the last of the abanay (stones) of the breastplate, the look of the One on the throne — "like a yashapah (jasper) stone and a sardius" — and the stone of the city that comes down from shamayan (heaven): her light "as if it were a jasper stone, clear as crystal", her wall of jasper, her first foundation jasper. The tawar (mountain) it becomes is the same stone grown.' },
   r: 0.46,
   start: { x: -4.6, y: 7.3, z: 1.6 },       // in the air, well clear of the statue
   strike: { x: -0.85, y: 0.55, z: 1.1 },    // the feet, from the statue's right / the viewer's left

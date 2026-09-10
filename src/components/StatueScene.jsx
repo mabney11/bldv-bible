@@ -25,7 +25,9 @@ import {
   stoneAt, mountainAt, makeShards, shardAt, pieceWholeAt, makeDust, dustAt,
 } from '../lib/models/statue.js';
 
-const KING_URL = '/api/models/statue.glb';   // the sculpted king (fieldy's own asset, generated in Meshy on a paid plan); absent → the procedural figure stays
+const KING_URL = '/api/models/statue.glb';
+const STONE_URL = '/api/models/stone.glb';        // the aban, sculpted — absent → the procedural rock
+const MOUNTAIN_URL = '/api/models/mountain.glb';  // the tawar, sculpted — absent → the procedural cone   // the sculpted king (fieldy's own asset, generated in Meshy on a paid plan); absent → the procedural figure stays
 const SKY = 0x1a1a24;       // a night sky, the dream's own hour — one look in both themes
 const GROUND = 0x3a3329;
 const GOLD_GLOW = new THREE.Color(0xffc857);
@@ -98,6 +100,51 @@ function mountainGeometry(seed = 17) {
   }
   geo.computeVertexNormals();
   return geo;
+}
+
+/**
+ * A sculpted prop (the stone, the mountain): load the GLB, keep its own textured
+ * materials if the sculptor gave it any (a Meshy texture pass), else use `fallbackMat`,
+ * and normalise it into a unit frame the timeline already understands:
+ *   'stone'    → centred on its bounding-sphere centre, radius = STONE.r
+ *   'mountain' → base cut flat on y = 0, height 1, footprint radius 1 (place() scales it)
+ * Returns a Group (castShadow set on every mesh) or null.
+ */
+async function loadProp(url, kind, fallbackMat, tag) {
+  const loader = new GLTFLoader();
+  loader.setMeshoptDecoder(MeshoptDecoder);
+  let gltf;
+  try { gltf = await loader.loadAsync(url); } catch (e) { if (e?.message && !/404/.test(e.message)) console.warn(`[statue] sculpted ${tag} not loaded:`, e.message || e); return null; }
+  try {
+    const root = gltf.scene; root.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(root);
+    if (box.isEmpty()) return null;
+    const size = box.getSize(new THREE.Vector3()), centre = box.getCenter(new THREE.Vector3());
+    const group = new THREE.Group();
+    root.traverse((m) => {
+      if (!m.isMesh) return;
+      const textured = m.material && (m.material.map || m.material.normalMap);
+      const mesh = new THREE.Mesh(m.geometry, textured ? m.material : fallbackMat);
+      if (textured) { m.material.metalness = 0; m.material.roughness = Math.max(0.85, m.material.roughness ?? 1); m.material.envMapIntensity = 0.45; }   // matte: the room light would wash a painted prop out
+      mesh.applyMatrix4(m.matrixWorld);
+      mesh.castShadow = true; mesh.receiveShadow = true;
+      group.add(mesh);
+    });
+    if (kind === 'stone') {
+      const r = Math.max(size.x, size.y, size.z) / 2;
+      const k = STONE.r / r;
+      group.children.forEach((m) => { m.position.sub(centre).multiplyScalar(k); m.scale.multiplyScalar(k); });
+    } else {
+      // Base at y = 0 (whatever sat below the lowest 2% of the height is treated as the flat bottom).
+      const k = 1 / size.y, rf = 1 / (Math.max(size.x, size.z) / 2);
+      group.children.forEach((m) => {
+        m.position.set((m.position.x - centre.x) * rf, (m.position.y - box.min.y) * k, (m.position.z - centre.z) * rf);
+        m.scale.set(m.scale.x * rf, m.scale.y * k, m.scale.z * rf);
+      });
+    }
+    group.userData.id = 'stone';
+    return group;
+  } catch (e) { console.warn(`[statue] sculpted ${tag} failed:`, e); return null; }
 }
 
 /**
@@ -257,10 +304,10 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
 
     // ── Stone + mountain ────────────────────────────────────────────────────
     const stoneMat = stdMaterial('stone');
-    const stone = new THREE.Mesh(stoneGeometry(STONE.r), stoneMat);
+    let stone = new THREE.Mesh(stoneGeometry(STONE.r), stoneMat);
     stone.castShadow = true; stone.userData.id = 'stone'; world.add(stone);
-    const mountainMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(0x515b4f), metalness: 0, roughness: 0.98, flatShading: true, envMapIntensity: 0.35 });
-    const mountain = new THREE.Mesh(mountainGeometry(), mountainMat);
+    const mountainMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(0x7a4a2c), metalness: 0, roughness: 0.98, flatShading: true, envMapIntensity: 0.35 });   // the same jasper stone, weathered
+    let mountain = new THREE.Mesh(mountainGeometry(), mountainMat);
     mountain.castShadow = true; mountain.receiveShadow = true; mountain.userData.id = 'stone'; mountain.visible = false;
     world.add(mountain);
 
@@ -326,7 +373,7 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
       for (const o of objs) o?.traverse((m) => {
         if (m.isMesh && m.material?.emissive) {
           if (!m.userData.ownMat) { m.material = m.material.clone(); m.userData.ownMat = true; }
-          m.material.emissive.copy(GOLD_GLOW).multiplyScalar(m === mountain ? 0.06 : 0.22);
+          m.material.emissive.copy(GOLD_GLOW).multiplyScalar(m === mountain || mountain.children?.includes(m) ? 0.06 : 0.22);
           glowTargets.push(m);
         }
       });
@@ -384,6 +431,17 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
     place(clock.t);
     frame();
     onReady?.(true);
+    const swapProp = (which, obj) => {
+      if (!alive || !obj) return;
+      const old = which === 'stone' ? stone : mountain;
+      world.remove(old); old.geometry?.dispose?.();
+      obj.visible = old.visible; obj.position.copy(old.position); obj.rotation.copy(old.rotation); obj.scale.copy(old.scale);
+      world.add(obj);
+      if (which === 'stone') stone = obj; else mountain = obj;
+      lastT = -1; applySelection(currentSel); dirty = true;
+    };
+    loadProp(STONE_URL, 'stone', stoneMat, 'stone').then((o) => swapProp('stone', o));
+    loadProp(MOUNTAIN_URL, 'mountain', mountainMat, 'mountain').then((o) => swapProp('mountain', o));
     loadKing(mats).then((king) => {
       if (!alive || !king) return;
       buildFigure(king.groups, king.samplers);
