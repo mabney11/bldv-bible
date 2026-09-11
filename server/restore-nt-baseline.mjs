@@ -65,7 +65,7 @@ const importOriginal = tdb.prepare(`
 const resetUntouched = tdb.prepare(`
   UPDATE translations SET text = ?, original_text = ?, updated_at = datetime('now')
   WHERE book_id = ? AND chapter = ? AND verse = ?
-    AND status = 'none' AND (original_text IS NULL OR text = original_text)
+    AND status = 'none' AND rich_text = '' AND (original_text IS NULL OR text = original_text)
 `);
 
 let n = 0;

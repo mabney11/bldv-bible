@@ -67,7 +67,7 @@ const insert = db.prepare(`
     original_text = excluded.original_text,
     source_origin = COALESCE(translations.source_origin, excluded.source_origin),
     updated_at = datetime('now')
-  WHERE translations.status = 'none'
+  WHERE translations.status = 'none' AND translations.rich_text = ''
 `);
 
 const info = insert.run(BOOK_ID, CHAPTER, VERSE, TEXT, ORIGINAL_TEXT);

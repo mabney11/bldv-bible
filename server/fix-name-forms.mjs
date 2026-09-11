@@ -64,8 +64,10 @@ if (existsSync(TRANS_DB)) {
   const tx = db.transaction(() => {
     for (const r of rows) {
       const a = checkText(r.text || '', R);
-      // Bare names only on rows fieldy has not edited by hand (status 'none' = seeded).
-      const seeded = (r.status || 'none') === 'none';
+      // Bare names only on rows fieldy has not edited by hand. status alone is not the
+      // signal (the Studio saves with status 'none' by default) — rich_text is: only
+      // the Studio ever writes it, every seeding script leaves it ''. (2026-09-11)
+      const seeded = (r.status || 'none') === 'none' && !(r.rich_text || '');
       const ab = NAMES && seeded ? bareNames(a.fixed, R) : { fixed: a.fixed, hits: [], shifts: [] };
       const ag = seeded ? goldMarkers(ab.fixed, R) : { fixed: ab.fixed, hits: [] };
       ab.fixed = ag.fixed;

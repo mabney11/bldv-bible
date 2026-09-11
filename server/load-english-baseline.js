@@ -342,9 +342,17 @@ for (const [canonStr, chaptersRaw] of Object.entries(web)) {
 // guard — so no re-render ever reached the reader again. `status` is the only edit
 // signal (the Studio sets it on save); the passes are re-applied by render-all after
 // this step.
+// 2026-09-11: `status` is NOT enough. Translation Studio saves with whatever the
+// status dropdown shows, and it defaults to 'none' — fieldy has hand-translated
+// hundreds of verses and marked only a handful 'done'. Last night's full render-all
+// therefore reset `text` on 62 hand-translated verses (Ezekiel 43:15 among them)
+// back to the WEB baseline. The one column ONLY the Studio ever writes is
+// `rich_text` (every seeding/fix script leaves it ''), so a row is "untouched"
+// only when status='none' AND rich_text=''. restore-clobbered-translations.mjs
+// put the 62 back from their rich_text.
 const resetUntouched = tdb.prepare(`UPDATE translations SET text=?, original_text=?, updated_at=datetime('now')
       WHERE book_id=? AND chapter=? AND verse=? AND source_origin='${SRC_TAG}'
-        AND status='none'`);
+        AND status='none' AND rich_text=''`);
   // BUG FOUND 2026-07-27: resetUntouched (the only statement that refreshes an
   // ALREADY-SEEDED verse's `text` column) used to run ONLY behind --reset-baseline
   // — a flag this OT-only baseline was never supposed to use (see the "OT-ONLY"
@@ -382,7 +390,7 @@ const resetUntouched = tdb.prepare(`UPDATE translations SET text=?, original_tex
   const clearStale = tdb.prepare(`
     UPDATE translations SET text='', original_text='', updated_at=datetime('now')
       WHERE book_id=? AND chapter=? AND verse=? AND source_origin='${SRC_TAG}'
-        AND status='none' AND (original_text IS NULL OR text=original_text)
+        AND status='none' AND rich_text='' AND (original_text IS NULL OR text=original_text)
         AND text != ''`);
   const tx = tdb.transaction(()=>{
     let n = 0;

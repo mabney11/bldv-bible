@@ -34,6 +34,14 @@ const INIT_SRC = args.includes('--init-src');
 const RESET_SRC = args.includes('--reset-src');
 const FROM_SRC = args.includes('--from-src');
 const APPLY    = args.includes('--apply');
+// --translations   render fieldy's HAND-TRANSLATED verses (translation.db rows that carry
+//                  rich_text — the one column only Translation Studio writes) with the same
+//                  guarded pass: his existing "translit (gloss)" spans are protected, bare
+//                  English words pick up the pins/terms/per-verse Hebrew glosses. Writes
+//                  text AND rich_text (tag-aware) + a translation_history row per verse.
+//                  --only / --at filter by book_id here. fieldy, 2026-09-11: "we had a pass
+//                  to catch as many obvious glosses as i could, I want those changes as well".
+const TRANSLATIONS = args.includes('--translations');
 const MIN_CANON = Number(argv('--min-canon', 40));
 // --only 148,154   render (and report on) just these canon_ids — a fast way to see what a
 //                  rule change does to one book; --show N prints N before/after pairs
@@ -752,6 +760,19 @@ function render(text, vgKey) {
     const idiom = new RegExp(`\\b${glossed('became')}\\s+(?:the\\s+)?${glossed('father')}\\s+${glossed('of')}`, 'gi');
     text = text.replace(idiom, 'yalad (begat)');
   }
+  // 1a'. "come/came/comes/coming to pass" is ONE Hebrew word, hayah (H1961) — never
+  //      "hayah (came) to chalapawan (pass)". Same shape as the yalad idiom: each part may
+  //      already be glossed; the whole span is replaced. The tense word is kept in the
+  //      gloss so "It will hayah (come to pass)" still reads. fieldy, 2026-09-11.
+  {
+    const glossed = w => `(?:[a-z][a-z']*\\s+\\((${w})\\)|(${w}))`;
+    const idiom = new RegExp(`(?<!\\()\\b${glossed('come|came|comes|coming')}\\s+${glossed('to')}\\s+${glossed('pass')}(?![A-Za-z])`, 'gi');
+    text = text.replace(idiom, (m, g1, g2) => {
+      const v = (g1 || g2).toLowerCase();
+      const cap = /^[A-Z]/.test(g1 || g2);
+      return `${cap ? 'Hayah' : 'hayah'} (${v} to pass)`;
+    });
+  }
 
   // Which Hebrew verse actually stands beside this English one. The HEB editions do
   // not all share the English versification (Sefaria's Jubilees runs one verse ahead:
@@ -924,6 +945,59 @@ function render(text, vgKey) {
       if (wantN === (n === 'n')) return m;
       return `${a}${wantN ? 'n' : ''}${gap}${first}`;
     });
+}
+
+// ================= --translations : hand-translated verses in translation.db ==========
+if (TRANSLATIONS) {
+  const TDB = './translation.db';
+  if (!existsSync(TDB)) die('translation.db not found — run from server/');
+  const tdb = openDb(TDB, { readonly: !APPLY });
+  const rows = tdb.prepare(`SELECT book_id, chapter, verse, status, text, rich_text, updated_at FROM translations
+     WHERE rich_text IS NOT NULL AND rich_text <> ''
+     ${ONLY.length ? `AND book_id IN (${ONLY.join(',')})` : ''}
+     ORDER BY book_id, chapter, verse`).all();
+  console.log(`--translations: ${rows.length.toLocaleString()} hand-translated verses (rich_text set)\n`);
+  // NO link pass here. translation_links place their inserts by word index in the
+  // pristine English; a hand translation already carries "translit (gloss)" at those
+  // positions, so applyLinks stamped translits onto translits ("baraa (raashayath)",
+  // 2026-09-11 first report). The links ARE this text's own vocabulary — nothing to add.
+  LINKS.clear();
+  // rich_text is the editor's innerHTML: render the text between tags, never the tags.
+  // A segment holding an entity (&amp; …) is left alone rather than mis-read as words.
+  const renderHtml = (html, fn) => html.split(/(<[^>]*>)/).map(seg =>
+    (seg.startsWith('<') || /&[#a-z0-9]+;/i.test(seg)) ? seg : fn(seg)).join('');
+  const updates = []; const samples = [];
+  let words = 0, glossedBefore = 0, glossedAfter = 0;
+  const cov = (text) => { let w = 0, g = 0; const re = /\b([A-Za-z][A-Za-z']*)\b(\s*\([^()]*\))?/g; let m;
+    while ((m = re.exec(text))) { const lw = m[1].toLowerCase();
+      if (m[2]) { w++; g++; re.lastIndex = m.index + m[0].length; continue; }
+      if (lw.length < 3 || VG_FILLER.has(lw) || COMMON.has(lw)) continue; w++; }
+    return { w, g }; };
+  for (const r of rows) {
+    const vgKey = `${r.book_id}|${r.chapter}|${r.verse}`;
+    const ref = `${r.book_id}:${r.chapter}:${r.verse}`;
+    const fn = t => renderWithExceptions(t, ref, VERSE_EXCEPTIONS, x => render(x, vgKey));
+    const out = fn(r.text || '');
+    const richOut = /<[^>]*>/.test(r.rich_text) ? renderHtml(r.rich_text, fn) : out;
+    const b = cov(r.text || ''), a = cov(out); words += a.w; glossedBefore += b.g; glossedAfter += a.g;
+    if (out !== r.text || richOut !== r.rich_text) {
+      updates.push({ ...r, out, richOut });
+      const hit = !AT || (r.book_id === AT.c && r.chapter === AT.ch && r.verse >= AT.v0 && r.verse <= AT.v1);
+      if (hit && (AT || samples.length < SHOW)) samples.push({ ref, before: r.text, after: out });
+    }
+  }
+  const pct = (g, w) => w ? (100 * g / w).toFixed(1) + '%' : '—';
+  console.log(`gloss coverage of the hand translations: ${pct(glossedBefore, words)} -> ${pct(glossedAfter, words)} of ${words.toLocaleString()} content words`);
+  console.log(`verses that would change: ${updates.length.toLocaleString()} / ${rows.length.toLocaleString()}`);
+  for (const s of samples) { console.log(`\n  ${s.ref}`); console.log(`   - ${s.before}`); console.log(`   + ${s.after}`); }
+  if (!APPLY) { console.log('\n[report only] nothing written. Add --apply to write.'); tdb.close(); process.exit(0); }
+  const hist = tdb.prepare(`INSERT INTO translation_history (book_id, chapter, verse, status, text, rich_text, saved_at) VALUES (?, ?, ?, ?, ?, ?, ?)`);
+  const upd  = tdb.prepare(`UPDATE translations SET text = ?, rich_text = ?, updated_at = datetime('now') WHERE book_id = ? AND chapter = ? AND verse = ?`);
+  let n = 0; tdb.transaction(() => { for (const u of updates) {
+    hist.run(u.book_id, u.chapter, u.verse, u.status, u.text, u.rich_text, u.updated_at);
+    n += upd.run(u.out, u.richOut, u.book_id, u.chapter, u.verse).changes; } })();
+  console.log(`\n✓ rewrote ${n.toLocaleString()} hand-translated verses (previous versions in translation_history). Restart the server.`);
+  tdb.close(); process.exit(0);
 }
 
 // ================= open DB, maybe init source =======================================
