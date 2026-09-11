@@ -549,6 +549,24 @@ export const WATERS = [
     ref:'2 Kings 5:12' },
 ];
 
+// ── Names in prose: the app's transliteration first, the familiar name in brackets ──
+// fieldy: "if ever quoting scripture, my paleo hebrew must be used" — a note or a tree
+// label that says "Jacob's blessing" reads "Yaiqab's (Jacob's) blessing". A name already
+// glossed ("Yaban-Al (Jabneel)") is left alone. Tribes come from TRIBE_HEBREW.
+const PROSE_NAMES = {
+  Jacob: 'יעקב', Isaac: 'יצחק', Abraham: 'אברהם', Joseph: 'יוסף', Moses: 'משה', Aaron: 'אהרן', Joshua: 'יהושע',
+  Phinehas: 'פינחס', Urim: 'אורים', Thummim: 'תמים', Bethlehem: 'בית לחם', Bilhah: 'בלהה', Leah: 'לאה', Rachel: 'רחל',
+  Laish: 'ליש', David: 'דוד', Bethel: 'בית אל', Saul: 'שאול', Shechem: 'שכם', Tamar: 'תמר', Perez: 'פרץ', Zadok: 'צדוק',
+  Jordan: 'ירדן', 'Ben-oni': 'בן אוני', Galilee: 'גליל', Jerusalem: 'ירושלם', Jesse: 'ישי', Israel: 'ישראל',
+  Ezekiel: 'יחזקאל', Jabneel: 'יבנאל', Jebus: 'יבוס', Caleb: 'כלב', Hamath: 'חמת', Sidon: 'צידן', Arnon: 'ארנן',
+  ...TRIBE_HEBREW,
+};
+const PROSE_RE = new RegExp(`(\\(\\s*)?\\b(${Object.keys(PROSE_NAMES).sort((a, b) => b.length - a.length).join('|')})('s)?\\b`, 'g');
+export function withNames(text) {
+  if (!text) return text;
+  return String(text).replace(PROSE_RE, (m, paren, name, poss) => { if (paren) return m; const tr = translitOf(PROSE_NAMES[name]).replace(/ /g, '-'); return tr === name ? m : `${tr}${poss || ''} (${name}${poss || ''})`; });
+}
+
 export const HOLY_KIND_STYLE = {
   prince:    { color:'#f2c14e', opacity:0.55, label:'P' },   // gold — the prince's land (48:21–22)
   levites:   { color:'#b9a7e6', opacity:0.7,  label:'L' },   // lavender — the Levites (48:13)
@@ -564,14 +582,14 @@ export const HOLY_KIND_STYLE = {
 // B(id, name, he, lon, lat, history, note, prophecy) — `prophecy` is what the prophets (and the NT) say of the place, in canonical order
 const B = (id, name, he, lon, lat, ref, note = '', proph = '') => ({ id, name, he, lon, lat, ref, note, proph, kind:'biblical' });
 export const BIBLICAL_CITIES = [
-  B('jabneel-judah', 'Jabneel', 'יבנאל', 34.74, 31.87, 'Joshua 15:11; 2 Chronicles 26:6', 'On Judah\'s northern border, "the border went out to Jabneel; and the goings out of the border were at the sea." Later Jabneh / Yavne (2 Chr 26:6). Modern Yavne.'),
-  B('jabneel-naphtali', 'Jabneel (Naphtali)', 'יבנאל', 35.53, 32.71, 'Joshua 19:33', 'A second Jabneel, on Naphtali\'s border — a different town from Judah\'s Jabneel.'),
-  B('jerusalem', 'Jerusalem', 'ירושלם', 35.235, 31.778, 'Joshua 15:8, 63; Judges 1:8; 2 Samuel 5:6–9; 1 Kings 8; 2 Kings 25:1–10; Ezra 1:2–3; Nehemiah 2', 'Jebus; on the Judah–Benjamin line.', 'Psalms 122; Isaiah 2:2–4; Isaiah 52:1–10; Isaiah 62; Jeremiah 3:17; Ezekiel 48:30–35; Daniel 9:24–27; Joel 3:16–21; Micah 4:1–8; Zechariah 8:1–8; Zechariah 12; Zechariah 14; Luke 21:20–24; Revelation 21:2, 10'),
-  B('hebron', 'Hebron', 'חברון', 35.10, 31.53, 'Genesis 13:18; Genesis 23; Genesis 35:27; Numbers 13:22; Joshua 10:36; Joshua 14:13–15; Joshua 20:7; Judges 1:10; 2 Samuel 2:1–4; 2 Samuel 5:1–5; 2 Samuel 15:7–10', 'Kiriath-arba; Caleb\'s inheritance.'),
+  B('jabneel-judah', 'Jabneel', 'יבנאל', 34.74, 31.87, 'Joshua 15:11; 2 Chronicles 26:6', 'On Yahawadah\'s (Judah\'s) northern border, "the border went out to Yaban-Al (Jabneel); and the goings out of the border were at the sea." Later Yabanah (Jabneh, 2 Chr 26:6). Modern Yavne.'),
+  B('jabneel-naphtali', 'Jabneel (Naphtali)', 'יבנאל', 35.53, 32.71, 'Joshua 19:33', 'A second Yaban-Al (Jabneel), on Napathalay\'s (Naphtali\'s) border — a different town from Yahawadah\'s (Judah\'s) Yaban-Al.'),
+  B('jerusalem', 'Jerusalem', 'ירושלם', 35.235, 31.778, 'Joshua 15:8, 63; Judges 1:8; 2 Samuel 5:6–9; 1 Kings 8; 2 Kings 25:1–10; Ezra 1:2–3; Nehemiah 2', 'Yabawas (Jebus); on the Yahawadah–Banayamayan (Judah–Benjamin) line.', 'Psalms 122; Isaiah 2:2–4; Isaiah 52:1–10; Isaiah 62; Jeremiah 3:17; Ezekiel 48:30–35; Daniel 9:24–27; Joel 3:16–21; Micah 4:1–8; Zechariah 8:1–8; Zechariah 12; Zechariah 14; Luke 21:20–24; Revelation 21:2, 10'),
+  B('hebron', 'Hebron', 'חברון', 35.10, 31.53, 'Genesis 13:18; Genesis 23; Genesis 35:27; Numbers 13:22; Joshua 10:36; Joshua 14:13–15; Joshua 20:7; Judges 1:10; 2 Samuel 2:1–4; 2 Samuel 5:1–5; 2 Samuel 15:7–10', 'Qarayath-Arabai (Kiriath-arba); Kalab\'s (Caleb\'s) inheritance.'),
   B('beersheba', 'Beer-sheba', 'באר שבע', 34.79, 31.24, 'Genesis 21:22–33; Genesis 22:19; Genesis 26:23–33; Genesis 28:10; Genesis 46:1–5; Joshua 15:28; Joshua 19:2; Judges 20:1; 1 Samuel 8:2; 1 Kings 19:3', '', 'Amos 5:5; Amos 8:14'),
   B('jericho', 'Jericho', 'יריחו', 35.44, 31.87, 'Numbers 22:1; Deuteronomy 34:3; Joshua 2; Joshua 6; 1 Kings 16:34; 2 Kings 2:4–22', '', 'Luke 10:30; Luke 18:35; Luke 19:1–10; Hebrews 11:30'),
-  B('gilgal', 'Gilgal', 'גלגל', 35.47, 31.88, 'Joshua 4:19–24; Joshua 5:2–12; Joshua 9:6; Joshua 10:6–9; Judges 2:1; 1 Samuel 7:16; 1 Samuel 10:8; 1 Samuel 11:14–15; 1 Samuel 13:4–15; 1 Samuel 15:12–33; 2 Samuel 19:15; 2 Kings 2:1', 'Israel\'s first camp west of the Jordan.', 'Hosea 4:15; Hosea 9:15; Hosea 12:11; Amos 4:4; Amos 5:5; Micah 6:5'),
-  B('bethel', 'Bethel', 'בית אל', 35.22, 31.93, 'Genesis 12:8; Genesis 13:3; Genesis 28:10–22; Genesis 35:1–15; Joshua 8:9; Joshua 16:1; Judges 20:18–28; 1 Samuel 7:16; 1 Kings 12:28–33; 2 Kings 2:2–3; 2 Kings 23:15', 'Luz.', 'Jeremiah 48:13; Hosea 10:15; Hosea 12:4; Amos 3:14; Amos 4:4; Amos 5:5–6; Amos 7:10–13'),
+  B('gilgal', 'Gilgal', 'גלגל', 35.47, 31.88, 'Joshua 4:19–24; Joshua 5:2–12; Joshua 9:6; Joshua 10:6–9; Judges 2:1; 1 Samuel 7:16; 1 Samuel 10:8; 1 Samuel 11:14–15; 1 Samuel 13:4–15; 1 Samuel 15:12–33; 2 Samuel 19:15; 2 Kings 2:1', 'Yashar-Al\'s (Israel\'s) first camp west of the Yaradan (Jordan).', 'Hosea 4:15; Hosea 9:15; Hosea 12:11; Amos 4:4; Amos 5:5; Micah 6:5'),
+  B('bethel', 'Bethel', 'בית אל', 35.22, 31.93, 'Genesis 12:8; Genesis 13:3; Genesis 28:10–22; Genesis 35:1–15; Joshua 8:9; Joshua 16:1; Judges 20:18–28; 1 Samuel 7:16; 1 Kings 12:28–33; 2 Kings 2:2–3; 2 Kings 23:15', 'Lawaz (Luz).', 'Jeremiah 48:13; Hosea 10:15; Hosea 12:4; Amos 3:14; Amos 4:4; Amos 5:5–6; Amos 7:10–13'),
   B('ai', 'Ai', 'עי', 35.257, 31.917, 'Genesis 12:8; Genesis 13:3; Joshua 7; Joshua 8; Ezra 2:28', '', 'Isaiah 10:28; Jeremiah 49:3'),
   B('gibeon', 'Gibeon', 'גבעון', 35.185, 31.847, 'Joshua 9; Joshua 10:1–14; Joshua 18:25; 2 Samuel 2:12–17; 2 Samuel 21:1–9; 1 Kings 3:4–15; 1 Chronicles 16:39', '', 'Isaiah 28:21; Jeremiah 28:1; Jeremiah 41:12–16'),
   B('ramah', 'Ramah', 'רמה', 35.23, 31.90, 'Joshua 18:25; Judges 4:5; 1 Samuel 1:19; 1 Samuel 7:17; 1 Samuel 15:34; 1 Samuel 19:18–24; 1 Kings 15:17–22', '', 'Isaiah 10:29; Jeremiah 31:15; Jeremiah 40:1; Hosea 5:8; Matthew 2:18'),
@@ -579,14 +597,14 @@ export const BIBLICAL_CITIES = [
   B('kiriath-jearim', 'Kiriath-jearim', 'קרית יערים', 35.11, 31.80, 'Joshua 9:17; Joshua 15:9, 60; Joshua 18:14–15; Judges 18:12; 1 Samuel 6:21; 1 Samuel 7:1–2; 1 Chronicles 13:5–6', '', 'Psalms 132:6; Jeremiah 26:20'),
   B('beth-shemesh', 'Beth-shemesh', 'בית שמש', 34.98, 31.75, 'Joshua 15:10; Joshua 19:22; Joshua 21:16; Judges 1:33; 1 Samuel 6:9–20; 1 Kings 4:9; 2 Kings 14:11–13', ''),
   B('timnah', 'Timnah', 'תמנה', 34.92, 31.79, 'Genesis 38:12–14; Joshua 15:10, 57; Joshua 19:43; Judges 14:1–5; 2 Chronicles 28:18', ''),
-  B('ekron', 'Ekron', 'עקרון', 34.85, 31.78, 'Joshua 13:3; Joshua 15:11, 45; Joshua 19:43; Judges 1:18; 1 Samuel 5:10; 1 Samuel 6:17; 1 Samuel 17:52; 2 Kings 1:2', 'Philistine city; named with Jabneel on Judah\'s border.', 'Jeremiah 25:20; Amos 1:8; Zephaniah 2:4; Zechariah 9:5–7'),
+  B('ekron', 'Ekron', 'עקרון', 34.85, 31.78, 'Joshua 13:3; Joshua 15:11, 45; Joshua 19:43; Judges 1:18; 1 Samuel 5:10; 1 Samuel 6:17; 1 Samuel 17:52; 2 Kings 1:2', 'A city of the Palashathayam (Philistines); named with Yaban-Al (Jabneel) on Yahawadah\'s (Judah\'s) border.', 'Jeremiah 25:20; Amos 1:8; Zephaniah 2:4; Zechariah 9:5–7'),
   B('ashdod', 'Ashdod', 'אשדוד', 34.655, 31.755, 'Joshua 11:22; Joshua 13:3; Joshua 15:47; 1 Samuel 5:1–7; 1 Samuel 6:17; 2 Chronicles 26:6; Nehemiah 13:23–24', 'Tel Ashdod (31.755°N 34.655°E), the ancient mound — about 5 km south of the modern city\'s centre, which was founded in 1956 on the coast to the north.', 'Isaiah 20:1; Jeremiah 25:20; Amos 1:8; Amos 3:9; Zephaniah 2:4; Zechariah 9:6; Acts 8:40'),
   B('ashkelon', 'Ashkelon', 'אשקלון', 34.55, 31.66, 'Joshua 13:3; Judges 1:18; Judges 14:19; 1 Samuel 6:17; 2 Samuel 1:20', '', 'Jeremiah 25:20; Jeremiah 47:5–7; Amos 1:8; Zephaniah 2:4–7; Zechariah 9:5'),
   B('gaza', 'Gaza', 'עזה', 34.46, 31.50, 'Genesis 10:19; Joshua 10:41; Joshua 15:47; Judges 1:18; Judges 16:1–3, 21–30; 1 Samuel 6:17; 1 Kings 4:24', '', 'Jeremiah 25:20; Jeremiah 47:1, 5; Amos 1:6–7; Zephaniah 2:4; Zechariah 9:5; Acts 8:26'),
   B('gath', 'Gath', 'גת', 34.847, 31.70, 'Joshua 11:22; Joshua 13:3; 1 Samuel 5:8; 1 Samuel 6:17; 1 Samuel 17:4; 1 Samuel 21:10; 1 Samuel 27:2; 2 Samuel 1:20; 2 Chronicles 26:6', '', 'Amos 6:2; Micah 1:10'),
   B('lachish', 'Lachish', 'לכיש', 34.85, 31.56, 'Joshua 10:3–35; Joshua 12:11; Joshua 15:39; 2 Kings 14:19; 2 Kings 18:14–17; 2 Chronicles 11:9', '', 'Isaiah 36:2; Jeremiah 34:7; Micah 1:13'),
   B('libnah', 'Libnah', 'לבנה', 34.87, 31.62, 'Numbers 33:20; Joshua 10:29–32; Joshua 12:15; Joshua 15:42; Joshua 21:13; 2 Kings 8:22; 2 Kings 19:8; 2 Kings 23:31', '', 'Isaiah 37:8'),
-  B('debir', 'Debir', 'דבר', 35.02, 31.42, 'Joshua 10:38–39; Joshua 11:21; Joshua 12:13; Joshua 15:15–17, 49; Joshua 21:15; Judges 1:11–13', 'Kiriath-sepher.'),
+  B('debir', 'Debir', 'דבר', 35.02, 31.42, 'Joshua 10:38–39; Joshua 11:21; Joshua 12:13; Joshua 15:15–17, 49; Joshua 21:15; Judges 1:11–13', 'Qarayath-Sapar (Kiriath-sepher).'),
   B('bethlehem', 'Bethlehem', 'בית לחם', 35.20, 31.70, 'Genesis 35:19; Judges 17:7; Ruth 1; Ruth 4:11; 1 Samuel 16:1–13; 1 Samuel 17:12', '', 'Micah 5:2; Matthew 2:1–6; Luke 2:4–15; John 7:42'),
   B('tekoa', 'Tekoa', 'תקוע', 35.22, 31.63, '2 Samuel 14:2; 2 Chronicles 11:6; 2 Chronicles 20:20', '', 'Jeremiah 6:1; Amos 1:1'),
   B('engedi', 'En-gedi', 'עין גדי', 35.39, 31.46, 'Joshua 15:62; 1 Samuel 23:29; 1 Samuel 24; 2 Chronicles 20:2', '', 'Song of Songs 1:14; Ezekiel 47:10'),
@@ -594,8 +612,8 @@ export const BIBLICAL_CITIES = [
   B('hormah', 'Hormah', 'חרמה', 34.90, 31.30, 'Numbers 14:45; Numbers 21:3; Deuteronomy 1:44; Joshua 12:14; Joshua 15:30; Joshua 19:4; Judges 1:17; 1 Samuel 30:30', ''),
   B('ziklag', 'Ziklag', 'צקלג', 34.70, 31.38, 'Joshua 15:31; Joshua 19:5; 1 Samuel 27:6; 1 Samuel 30; 2 Samuel 1:1; 2 Samuel 4:10; Nehemiah 11:28', ''),
   B('gerar', 'Gerar', 'גרר', 34.60, 31.38, 'Genesis 10:19; Genesis 20; Genesis 26:1–22; 2 Chronicles 14:13–14', ''),
-  B('kadesh-barnea', 'Kadesh-barnea', 'קדש ברנע', 34.42, 30.65, 'Genesis 14:7; Numbers 13:26; Numbers 20:1–22; Numbers 27:14; Deuteronomy 1:2, 19–46; Joshua 10:41; Joshua 14:6–7', 'Meribath-kadesh — the south-west anchor of Ezekiel\'s border.', 'Psalms 29:8; Ezekiel 47:19; Ezekiel 48:28'),
-  B('tamar', 'Tamar', 'תמר', 35.24, 30.78, '1 Kings 9:18', 'South-east anchor of Ezekiel\'s border.', 'Ezekiel 47:19; Ezekiel 48:28'),
+  B('kadesh-barnea', 'Kadesh-barnea', 'קדש ברנע', 34.42, 30.65, 'Genesis 14:7; Numbers 13:26; Numbers 20:1–22; Numbers 27:14; Deuteronomy 1:2, 19–46; Joshua 10:41; Joshua 14:6–7', 'Marayabath-Qadash (Meribath-kadesh) — the south-west anchor of Yachazaqaal\'s (Ezekiel\'s) border.', 'Psalms 29:8; Ezekiel 47:19; Ezekiel 48:28'),
+  B('tamar', 'Tamar', 'תמר', 35.24, 30.78, '1 Kings 9:18', 'South-east anchor of Yachazaqaal\'s (Ezekiel\'s) border.', 'Ezekiel 47:19; Ezekiel 48:28'),
   B('brook-of-egypt', 'Brook of Egypt', 'נחל מצרים', 33.80, 31.13, 'Genesis 15:18; Numbers 34:5; Joshua 15:4, 47; 1 Kings 8:65; 2 Kings 24:7', 'Wadi el-Arish.', 'Isaiah 27:12; Ezekiel 47:19; Ezekiel 48:28'),
   B('joppa', 'Joppa', 'יפו', 34.75, 32.05, 'Joshua 19:46; 2 Chronicles 2:16; Ezra 3:7; Jonah 1:3', '', 'Acts 9:36–43; Acts 10; Acts 11:5–13'),
   B('aphek', 'Aphek', 'אפק', 34.93, 32.10, 'Joshua 12:18; Joshua 13:4; 1 Samuel 4:1; 1 Samuel 29:1; 1 Kings 20:26–30; 2 Kings 13:17', ''),
@@ -613,11 +631,11 @@ export const BIBLICAL_CITIES = [
   B('beth-shean', 'Beth-shean', 'בית שאן', 35.50, 32.50, 'Joshua 17:11, 16; Judges 1:27; 1 Samuel 31:10–12; 1 Kings 4:12', ''),
   B('tabor', 'Mount Tabor', 'תבור', 35.39, 32.69, 'Joshua 19:22; Judges 4:6–14; Judges 8:18; 1 Samuel 10:3', '', 'Psalms 89:12; Jeremiah 46:18; Hosea 5:1'),
   B('carmel', 'Mount Carmel', 'כרמל', 35.00, 32.73, 'Joshua 12:22; Joshua 19:26; 1 Kings 18:19–46; 2 Kings 2:25; 2 Kings 4:25', '', 'Song of Songs 7:5; Isaiah 33:9; Isaiah 35:2; Jeremiah 46:18; Jeremiah 50:19; Amos 1:2; Amos 9:3; Micah 7:14; Nahum 1:4'),
-  B('chinnereth', 'Chinnereth', 'כנרת', 35.55, 32.87, 'Numbers 34:11; Deuteronomy 3:17; Joshua 11:2; Joshua 13:27; Joshua 19:35; 1 Kings 15:20', 'On the Sea of Chinnereth (Galilee).', 'Isaiah 9:1; Matthew 4:13–18; Luke 5:1'),
+  B('chinnereth', 'Chinnereth', 'כנרת', 35.55, 32.87, 'Numbers 34:11; Deuteronomy 3:17; Joshua 11:2; Joshua 13:27; Joshua 19:35; 1 Kings 15:20', 'On Yam Kanarath (the Sea of Chinnereth).', 'Isaiah 9:1; Matthew 4:13–18; Luke 5:1'),
   B('acco', 'Acco', 'עכו', 35.07, 32.93, 'Judges 1:31', '', 'Acts 21:7'),
   B('achzib', 'Achzib', 'אכזיב', 35.10, 33.05, 'Joshua 19:29; Judges 1:31', '', 'Micah 1:14'),
   B('tyre', 'Tyre', 'צר', 35.19, 33.27, 'Joshua 19:29; 2 Samuel 5:11; 1 Kings 5; 1 Kings 7:13–14; 1 Kings 9:11', '', 'Psalms 45:12; Psalms 87:4; Isaiah 23; Jeremiah 25:22; Jeremiah 47:4; Ezekiel 26; Ezekiel 27; Ezekiel 28:1–19; Joel 3:4–8; Amos 1:9–10; Zechariah 9:2–4; Matthew 11:21–22; Matthew 15:21–28; Acts 21:3–6'),
-  B('sidon', 'Sidon', 'צידון', 35.37, 33.56, 'Genesis 10:15, 19; Joshua 11:8; Joshua 19:28; Judges 1:31; Judges 10:6; 1 Kings 11:1; 1 Kings 16:31; 1 Kings 17:9', '"Great Sidon."', 'Isaiah 23:2–12; Jeremiah 25:22; Jeremiah 27:3; Jeremiah 47:4; Ezekiel 27:8; Ezekiel 28:20–24; Joel 3:4–8; Zechariah 9:2; Matthew 11:21–22; Luke 4:26; Acts 27:3'),
+  B('sidon', 'Sidon', 'צידון', 35.37, 33.56, 'Genesis 10:15, 19; Joshua 11:8; Joshua 19:28; Judges 1:31; Judges 10:6; 1 Kings 11:1; 1 Kings 16:31; 1 Kings 17:9', '"Great Tzayadan (Sidon)."', 'Isaiah 23:2–12; Jeremiah 25:22; Jeremiah 27:3; Jeremiah 47:4; Ezekiel 27:8; Ezekiel 28:20–24; Joel 3:4–8; Zechariah 9:2; Matthew 11:21–22; Luke 4:26; Acts 27:3'),
   B('hazor', 'Hazor', 'חצור', 35.57, 33.02, 'Joshua 11:1–13; Joshua 19:36; Judges 4:2, 17; 1 Kings 9:15; 2 Kings 15:29', '"Head of all those kingdoms."', 'Jeremiah 49:28–33'),
   B('kedesh', 'Kedesh', 'קדש', 35.53, 33.11, 'Joshua 12:22; Joshua 19:37; Joshua 20:7; Joshua 21:32; Judges 4:6–11; 2 Kings 15:29', 'City of refuge.'),
   B('dan', 'Dan (Laish)', 'דן', 35.65, 33.25, 'Genesis 14:14; Joshua 19:47; Judges 18; Judges 20:1; 1 Kings 12:29–30; 1 Kings 15:20', '', 'Jeremiah 4:15; Jeremiah 8:16; Amos 8:14; Ezekiel 48:1'),
@@ -632,20 +650,20 @@ export const BIBLICAL_CITIES = [
   B('succoth', 'Succoth', 'סכות', 35.62, 32.17, 'Genesis 33:17; Joshua 13:27; Judges 8:5–16; 1 Kings 7:46', '', 'Psalms 60:6; Psalms 108:7'),
   B('penuel', 'Penuel', 'פנואל', 35.70, 32.17, 'Genesis 32:22–32; Judges 8:8–17; 1 Kings 12:25', '', 'Hosea 12:4'),
   B('jazer', 'Jazer', 'יעזר', 35.78, 32.05, 'Numbers 21:32; Numbers 32:1–3, 35; Joshua 13:25; Joshua 21:39; 2 Samuel 24:5; 1 Chronicles 26:31', '', 'Isaiah 16:8–9; Jeremiah 48:32'),
-  B('rabbah', 'Rabbah', 'רבה', 35.93, 31.95, 'Deuteronomy 3:11; Joshua 13:25; 2 Samuel 11:1; 2 Samuel 12:26–31; 1 Chronicles 20:1', 'Rabbath-ammon; modern Amman.', 'Jeremiah 49:2–3; Ezekiel 21:20; Ezekiel 25:5; Amos 1:14'),
+  B('rabbah', 'Rabbah', 'רבה', 35.93, 31.95, 'Deuteronomy 3:11; Joshua 13:25; 2 Samuel 11:1; 2 Samuel 12:26–31; 1 Chronicles 20:1', 'Rabath-Imawan (Rabbath-ammon); modern Amman.', 'Jeremiah 49:2–3; Ezekiel 21:20; Ezekiel 25:5; Amos 1:14'),
   B('heshbon', 'Heshbon', 'חשבון', 35.81, 31.80, 'Numbers 21:25–30; Deuteronomy 2:24–30; Joshua 12:2; Joshua 13:17; Joshua 21:39; Judges 11:19–26', '', 'Isaiah 15:4; Isaiah 16:8–9; Jeremiah 48:2, 34, 45; Jeremiah 49:3'),
   B('nebo', 'Mount Nebo', 'נבו', 35.73, 31.77, 'Numbers 32:3, 38; Deuteronomy 32:49; Deuteronomy 34:1–6', '', 'Isaiah 15:2; Jeremiah 48:1, 22'),
   B('medeba', 'Medeba', 'מידבא', 35.79, 31.72, 'Numbers 21:30; Joshua 13:9, 16; 1 Chronicles 19:7', '', 'Isaiah 15:2'),
   B('bezer', 'Bezer', 'בצר', 35.90, 31.62, 'Deuteronomy 4:43; Joshua 20:8; Joshua 21:36', 'City of refuge.'),
   B('dibon', 'Dibon', 'דיבן', 35.78, 31.50, 'Numbers 21:30; Numbers 32:3, 34; Joshua 13:9, 17', '', 'Isaiah 15:2, 9; Jeremiah 48:18, 22'),
-  B('aroer', 'Aroer', 'ערער', 35.83, 31.47, 'Deuteronomy 2:36; Joshua 12:2; Joshua 13:9, 16; Judges 11:26; 2 Samuel 24:5; 2 Kings 10:33', 'On the Arnon.', 'Isaiah 17:2; Jeremiah 48:19'),
+  B('aroer', 'Aroer', 'ערער', 35.83, 31.47, 'Deuteronomy 2:36; Joshua 12:2; Joshua 13:9, 16; Judges 11:26; 2 Samuel 24:5; 2 Kings 10:33', 'On the Aranan (Arnon).', 'Isaiah 17:2; Jeremiah 48:19'),
   // Ezekiel's northern landmarks
   B('damascus', 'Damascus', 'דמשק', 36.30, 33.51, 'Genesis 14:15; Genesis 15:2; 2 Samuel 8:5–6; 1 Kings 11:24; 2 Kings 5; 2 Kings 16:9; Ezekiel 47:16', '', 'Isaiah 7:8; Isaiah 8:4; Isaiah 17:1–3; Jeremiah 49:23–27; Ezekiel 27:18; Amos 1:3–5; Zechariah 9:1; Acts 9:1–25'),
   B('berothah', 'Berothah', 'ברותה', 35.98, 33.78, '2 Samuel 8:8; Ezekiel 47:16', ''),
-  B('lebo-hamath', 'Lebo-hamath', 'לבוא חמת', 36.20, 34.19, 'Numbers 13:21; Numbers 34:8; Joshua 13:5; Judges 3:3; 1 Kings 8:65; 2 Kings 14:25', '"The entrance of Hamath."', 'Amos 6:14; Ezekiel 47:15–20; Ezekiel 48:1'),
+  B('lebo-hamath', 'Lebo-hamath', 'לבוא חמת', 36.20, 34.19, 'Numbers 13:21; Numbers 34:8; Joshua 13:5; Judges 3:3; 1 Kings 8:65; 2 Kings 14:25', '"The entrance of Chamath (Hamath)."', 'Amos 6:14; Ezekiel 47:15–20; Ezekiel 48:1'),
   B('hethlon', 'Hethlon', 'חתלן', 36.00, 34.45, 'Ezekiel 47:15; Ezekiel 48:1', ''),
   B('zedad', 'Zedad', 'צדד', 36.92, 34.31, 'Numbers 34:8; Ezekiel 47:15', ''),
-  B('hazar-enan', 'Hazar-enan', 'חצר עינון', 37.24, 34.23, 'Numbers 34:9–10; Ezekiel 47:17; Ezekiel 48:1', 'North-east corner of Ezekiel\'s border.'),
+  B('hazar-enan', 'Hazar-enan', 'חצר עינון', 37.24, 34.23, 'Numbers 34:9–10; Ezekiel 47:17; Ezekiel 48:1', 'North-east corner of Yachazaqaal\'s (Ezekiel\'s) border.'),
   B('hauran', 'Hauran', 'חורן', 36.50, 32.75, 'Ezekiel 47:16, 18', ''),
 ].map((c) => ({ ...c, paleo: compoundPaleo(c.he), translit: translitOf(c.he) }));
 
@@ -660,9 +678,9 @@ export const MODERN_CITIES = [
   M('tyre-modern', 'Tyre (Sour)', 'Lebanon', 35.20, 33.27, '≈ 60k'),
   M('nabatieh', 'Nabatieh', 'Lebanon', 35.48, 33.38, '≈ 80k'),
   M('damascus-modern', 'Damascus', 'Syria', 36.29, 33.51, '≈ 2.5M'),
-  M('homs', 'Homs', 'Syria', 36.72, 34.73, '≈ 800k', 'Just north of Lebo-hamath.'),
+  M('homs', 'Homs', 'Syria', 36.72, 34.73, '≈ 800k', 'Just north of Labawaa-Chamath (Lebo-hamath).'),
   M('quneitra', 'Quneitra', 'Syria', 35.82, 33.13, ''),
-  M('daraa', 'Daraa', 'Syria', 36.10, 32.62, '≈ 100k', 'Ancient Edrei.'),
+  M('daraa', 'Daraa', 'Syria', 36.10, 32.62, '≈ 100k', 'Ancient Adaraiy (Edrei).'),
   M('suwayda', 'As-Suwayda', 'Syria', 36.57, 32.71, '≈ 75k', 'Druze heartland (Jabal al-Druze).'),
   M('kiryat-shmona', 'Kiryat Shmona', 'Israel', 35.57, 33.21, '≈ 25k'),
   M('majdal-shams', 'Majdal Shams', 'Golan (Druze)', 35.77, 33.27, '≈ 12k'),
@@ -677,10 +695,10 @@ export const MODERN_CITIES = [
   M('irbid', 'Irbid', 'Jordan', 35.85, 32.55, '≈ 570k'),
   M('netanya', 'Netanya', 'Israel', 34.86, 32.32, '≈ 230k'),
   M('tulkarm', 'Tulkarm', 'West Bank', 35.03, 32.31, '≈ 65k'),
-  M('nablus', 'Nablus', 'West Bank', 35.26, 32.22, '≈ 160k', 'Ancient Shechem.'),
+  M('nablus', 'Nablus', 'West Bank', 35.26, 32.22, '≈ 160k', 'Ancient Shakam (Shechem).'),
   M('salt', 'As-Salt', 'Jordan', 35.73, 32.04, '≈ 100k'),
   M('zarqa', 'Zarqa', 'Jordan', 36.09, 32.07, '≈ 640k'),
-  M('amman', 'Amman', 'Jordan', 35.93, 31.95, '≈ 4M metro', 'Ancient Rabbah of the Ammonites.'),
+  M('amman', 'Amman', 'Jordan', 35.93, 31.95, '≈ 4M metro', 'Ancient Rabah (Rabbah) of the Imawan (Ammon).'),
   M('petah-tikva', 'Petah Tikva', 'Israel', 34.89, 32.09, '≈ 250k'),
   M('tel-aviv', 'Tel Aviv–Yafo', 'Israel', 34.78, 32.08, '≈ 4M metro'),
   M('rishon', 'Rishon LeZion', 'Israel', 34.79, 31.96, '≈ 250k'),
@@ -717,11 +735,11 @@ export const MODERN_CITIES = [
 //   iso      — the modern country whose border is drawn (purple) when the place is selected
 const R = (id, name, he, lon, lat, ref, note = '', proph = '', iso = null) => ({ id, name, he, lon, lat, ref, note, proph, iso, kind:'region' });
 export const REGIONS = [
-  R('greece', 'Greece (Javan)', 'יון', 23.73, 37.98, 'Genesis 10:2; 1 Chronicles 1:5; Ezekiel 27:13', 'Athens shown. Javan, son of Japheth — the Ionians / Greeks.',
+  R('greece', 'Greece (Javan)', 'יון', 23.73, 37.98, 'Genesis 10:2; 1 Chronicles 1:5; Ezekiel 27:13', 'Athens shown. Yawan (Javan), son of Yapath (Japheth) — the Ionians / Greeks.',
     'Isaiah 66:19; Daniel 7:6; Daniel 8:5–8, 21–22; Daniel 10:20; Daniel 11:2–4; Joel 3:6; Zechariah 9:13; 1 Maccabees 1:1–10; 1 Maccabees 8:17–32; Acts 17:16–34; Acts 20:2', 'GRC'),
   R('egypt', 'Egypt (Mizraim)', 'מצרים', 31.23, 30.05, 'Genesis 10:6; Genesis 12:10; Genesis 46:6; Exodus 1; Exodus 12:40–41; 1 Kings 3:1', 'Memphis / Cairo shown.',
     'Isaiah 19; Jeremiah 46; Ezekiel 29; Ezekiel 30; Ezekiel 32; Hosea 11:1; Joel 3:19; Zechariah 10:10–11; Zechariah 14:18–19; Matthew 2:13–15', 'EGY'),
-  R('assyria', 'Assyria (Asshur)', 'אשור', 43.26, 35.46, 'Genesis 2:14; Genesis 10:11; 2 Kings 15:29; 2 Kings 17:5–6; 2 Kings 18:13', 'The city of Asshur on the Tigris.',
+  R('assyria', 'Assyria (Asshur)', 'אשור', 43.26, 35.46, 'Genesis 2:14; Genesis 10:11; 2 Kings 15:29; 2 Kings 17:5–6; 2 Kings 18:13', 'The city of Ashawar (Asshur) on the Tigris.',
     'Isaiah 10:5–19; Isaiah 14:24–27; Isaiah 19:23–25; Isaiah 30:31; Micah 5:5–6; Nahum 1–3; Zephaniah 2:13–15; Zechariah 10:10–11', 'IRQ'),
   R('nineveh', 'Nineveh', 'נינוה', 43.15, 36.36, 'Genesis 10:11; 2 Kings 19:36; Jonah 1:2; Jonah 3', '',
     'Nahum 1–3; Zephaniah 2:13–15; Matthew 12:41', 'IRQ'),
@@ -754,11 +772,11 @@ export const REGIONS = [
     'Isaiah 11:14; Isaiah 15; Isaiah 16; Isaiah 25:10–12; Jeremiah 9:26; Jeremiah 25:21; Jeremiah 48; Ezekiel 25:8–11; Amos 2:1–3; Zephaniah 2:8–11; Daniel 11:41', 'JOR'),
   R('ammon', 'Ammon', 'עמון', 35.93, 31.95, 'Genesis 19:38; Deuteronomy 2:19; Judges 11; 1 Samuel 11; 2 Samuel 10; 2 Samuel 12:26–31; Nehemiah 4:7', '',
     'Isaiah 11:14; Jeremiah 9:26; Jeremiah 25:21; Jeremiah 49:1–6; Ezekiel 21:28–32; Ezekiel 25:1–7; Amos 1:13–15; Zephaniah 2:8–11; Daniel 11:41', 'JOR'),
-  R('philistia', 'Philistia', 'פלשת', 34.60, 31.60, 'Genesis 10:14; Genesis 21:32; Genesis 26:1; Exodus 13:17; Exodus 15:14; Joshua 13:2–3; Judges 13:1; Judges 16; 1 Samuel 4; 1 Samuel 17', 'The five lords: Gaza, Ashkelon, Ashdod, Ekron, Gath.',
+  R('philistia', 'Philistia', 'פלשת', 34.60, 31.60, 'Genesis 10:14; Genesis 21:32; Genesis 26:1; Exodus 13:17; Exodus 15:14; Joshua 13:2–3; Judges 13:1; Judges 16; 1 Samuel 4; 1 Samuel 17', 'The five lords: Izah (Gaza), Ashaqalawan (Ashkelon), Ashadawad (Ashdod), Iqarawan (Ekron), Gath.',
     'Psalms 60:8; Isaiah 2:6; Isaiah 11:14; Isaiah 14:28–32; Jeremiah 25:20; Jeremiah 47; Ezekiel 25:15–17; Joel 3:4–8; Amos 1:6–8; Obadiah 1:19; Zephaniah 2:4–7; Zechariah 9:5–7', null),
-  R('sinai', 'Mount Sinai', 'סיני', 33.97, 28.54, 'Exodus 3:1; Exodus 19; Exodus 20; Exodus 24; Exodus 34; Numbers 10:12; Deuteronomy 33:2; 1 Kings 19:8', 'Jebel Musa shown — the traditional site. Horeb.',
+  R('sinai', 'Mount Sinai', 'סיני', 33.97, 28.54, 'Exodus 3:1; Exodus 19; Exodus 20; Exodus 24; Exodus 34; Numbers 10:12; Deuteronomy 33:2; 1 Kings 19:8', 'Jebel Musa shown — the traditional site. Charab (Horeb).',
     'Judges 5:5; Psalms 68:8, 17; Habakkuk 3:3; Malachi 4:4; Acts 7:30–38; Galatians 4:24–25; Hebrews 12:18–22', 'EGY'),
-  R('arabia', 'Arabia', 'ערב', 37.92, 26.61, 'Genesis 25:1–6, 12–18; 1 Kings 10:15; 2 Chronicles 9:14; 2 Chronicles 17:11; Nehemiah 2:19', 'Dedan / al-ʿUla shown. Ishmael and Keturah\'s sons.',
+  R('arabia', 'Arabia', 'ערב', 37.92, 26.61, 'Genesis 25:1–6, 12–18; 1 Kings 10:15; 2 Chronicles 9:14; 2 Chronicles 17:11; Nehemiah 2:19', 'Dadan (Dedan) / al-ʿUla shown. The sons of Yashamaial (Ishmael) and Qatawarah (Keturah).',
     'Isaiah 13:20; Isaiah 21:13–17; Isaiah 60:6–7; Jeremiah 25:23–24; Jeremiah 49:28–33; Ezekiel 27:20–21; Ezekiel 38:13; Acts 2:11; Galatians 1:17; Galatians 4:25', 'SAU'),
   R('ophir', 'Ophir', 'אופיר', 44.0, 14.5, 'Genesis 10:29; 1 Kings 9:28; 1 Kings 10:11; 1 Kings 22:48; 1 Chronicles 29:4', 'Location unknown — placed in southern Arabia, one of several proposals.',
     'Job 22:24; Job 28:16; Psalms 45:9; Isaiah 13:12', 'YEM'),
@@ -769,7 +787,7 @@ export const REGIONS = [
   R('ephesus', 'Ephesus', 'אפסוס', 27.34, 37.94, 'Acts 18:19–21; Acts 19; Acts 20:17–38; Ephesians 1:1; 1 Timothy 1:3', 'Hebrew-NT spelling.', 'Revelation 1:11; Revelation 2:1–7', 'TUR'),
   R('antioch', 'Antioch', 'אנטיוכיא', 36.16, 36.20, 'Acts 11:19–30; Acts 13:1–3; Acts 15:22–35; Galatians 2:11', 'Hebrew-NT spelling. Where the disciples were first called Christians.', '', 'TUR'),
   R('patmos', 'Patmos', 'פטמוס', 26.55, 37.31, 'Revelation 1:9', 'Hebrew-NT spelling.', 'Revelation 1:9–20', 'GRC'),
-  R('tarsus', 'Tarsus', 'טרסוס', 34.90, 36.92, 'Acts 9:11, 30; Acts 11:25; Acts 21:39; Acts 22:3', 'Hebrew-NT spelling. Paul\'s home city.', '', 'TUR'),
+  R('tarsus', 'Tarsus', 'טרסוס', 34.90, 36.92, 'Acts 9:11, 30; Acts 11:25; Acts 21:39; Acts 22:3', 'Hebrew-NT spelling. Paawalawas\' (Paul\'s) home city.', '', 'TUR'),
   R('alexandria', 'Alexandria', 'אלכסנדריא', 29.92, 31.20, 'Acts 6:9; Acts 18:24; Acts 27:6; Acts 28:11', 'Hebrew-NT spelling.', '', 'EGY'),
 ].map((c) => ({ ...c, paleo: compoundPaleo(c.he), translit: translitOf(c.he) }));
 

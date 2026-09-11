@@ -45,7 +45,7 @@ import {
   ezekielAllotment, toFeature, ringCentroid, labelAnchor, pointInRing, joshuaTribeAt, ezekielAt,
   squareToPaleo, translitOf,
   REGIONS, ALL_PLACES, PLACES_AZ, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
-  countryOf, countryFeature, countryName, twinOf, WATERS, BIBLE_RIVERS, EZ_LANDMARKS, TRIBE_SCRIPTURE, HOLY_SCRIPTURE,
+  countryOf, countryFeature, countryName, twinOf, WATERS, BIBLE_RIVERS, EZ_LANDMARKS, TRIBE_SCRIPTURE, HOLY_SCRIPTURE, withNames,
 } from '../lib/models/holyLand.js';
 
 // Phones and narrow windows: the panel is a bottom sheet, place dots start off
@@ -1369,7 +1369,7 @@ function ScriptureTree({ tree, title }) {
             {b.items.map((it) => (
               <li key={it.ref} className="hl-tree-item">
                 <PassageRefs refs={it.ref} size="sm" />
-                <span className="hl-tree-why">{it.why}</span>
+                <span className="hl-tree-why">{withNames(it.why)}</span>
               </li>
             ))}
           </ul>
@@ -1444,7 +1444,7 @@ function TwinCard({ tw, focus, onCity }) {
           <div className="hl-twin-k">Today, for context</div>
           <div className="hl-twin-name m">{m.name}</div>
           <div className="hl-twin-sub dim">{m.country}{country && !country.includes(m.country) ? ` · ${country}` : ''} · {m.pop}</div>
-          {m.note && <div className="hl-twin-sub dim">{m.note}</div>}
+          {m.note && <div className="hl-twin-sub dim">{withNames(m.note)}</div>}
         </button>
       </div>
       <div className="hl-twin-name-row"><span className="hl-twin-k">What became of the name</span> {tw.name}</div>
@@ -1470,7 +1470,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
             <div className="hl-detail-name">{c.translit} <em>{c.name}</em></div>
             {today && <div className="hl-detail-ref">Today: {today}</div>}
             <Lexical he={c.he} />
-            {c.note && <p className="hl-detail-note">{c.note}</p>}
+            {c.note && <p className="hl-detail-note">{withNames(c.note)}</p>}
             <div className="hl-detail-sub">{c.proph ? 'History' : 'Scripture'}</div>
             <PassageRefs refs={c.ref} autoOpen />
             {c.proph && <><div className="hl-detail-sub">Prophecies</div><PassageRefs refs={c.proph} /></>}
@@ -1479,7 +1479,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
           <>
             <div className="hl-detail-name hl-detail-name-m">{c.name} <em>{c.country}</em></div>
             <div className="hl-detail-ref">Today's city, for context · {c.pop}</div>
-            {c.note && <p className="hl-detail-note">{c.note}</p>}
+            {c.note && <p className="hl-detail-note">{withNames(c.note)}</p>}
           </>
         )}
         <AllotmentLines joshua={sel.joshua} ezekiel={sel.ezekiel} />

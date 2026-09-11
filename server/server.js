@@ -1427,31 +1427,6 @@ app.use(express.static('public', {
 }));
 app.use('/lexicon', express.static(path.join(__dirname, 'lexicon'), { maxAge: '5m' }));
 
-// ── MODEL ASSETS (Maps & Models) ─────────────────────────────────────────────
-// Sculpted meshes the model pages load at runtime — e.g. the king for the Statue of
-// the Dream (`statue.glb`, our own asset, generated in Meshy on a paid plan). They are large
-// binaries kept OUT of git: looked up in server/models/ first (a dev checkout), then
-// in $DATA_DIR/models/ (the persistent volume on the Lightsail box, beside the
-// databases, so a redeploy does not lose them). A missing file is a plain 404 and
-// the page falls back to its procedural figure — nothing breaks without the asset.
-const MODEL_ASSET_DIRS = [path.join(__dirname, 'models'), path.join(process.env.DATA_DIR || '/data', 'models')];
-app.get('/api/models/:file', (req, res) => {
-  const name = String(req.params.file || '');
-  if (!/^[a-z0-9][a-z0-9._-]*\.(glb|gltf|bin)$/i.test(name)) return res.status(404).end();
-  for (const dir of MODEL_ASSET_DIRS) {
-    const file = path.join(dir, name);
-    if (fs.existsSync(file)) {
-      // Revalidate on every load (sendFile adds ETag/Last-Modified, so an unchanged file
-      // is a cheap 304) — a day-long max-age here meant a replaced model kept showing
-      // the old one until a hard reload (2026-09-10).
-      res.setHeader('Cache-Control', 'no-cache');
-      if (name.endsWith('.glb')) res.type('model/gltf-binary');
-      return res.sendFile(file);
-    }
-  }
-  return res.status(404).end();
-});
-
 // ── SPA PAGE ROUTES ──────────────────────────────────────────────────────────
 // After the React migration, every page in the app is served by a single
 // index.html bundle and React Router maps the URL to the right component.
@@ -9410,7 +9385,18 @@ function hyphenAllowlist() {
     } catch { _hyphenAllow = { mtime: 0, data: {} }; }
     return _hyphenAllow.data;
 }
-const kjvShort = (kjv) => kjv ? String(kjv).replace(/\[[^\]]*\]\s*/g, '').split(',').slice(0, 3).map(x => x.trim()).filter(Boolean).join(', ') : null;
+// Strong's kjv_def carries cross-references and stray transliterations ("moon. Yrechow.
+// See H3405 (יְרִיחוֹ).") — only the glosses survive: the first sentence, no "See/Compare
+// H…", no square Hebrew (fieldy: only paleo, only his transliterations).
+const kjvShort = (kjv) => {
+    if (!kjv) return null;
+    let s = String(kjv).replace(/\[[^\]]*\]\s*/g, '')
+        .replace(/\((?:For|See|Compare)\b[^)]*\)\.?/gi, '')
+        .replace(/\b(?:See|Compare)\s+H\d+[\s\S]*$/i, '')
+        .replace(/[\u0590-\u05FF][\u0590-\u05FF\u0300-\u036F\s]*/g, '');
+    s = s.split(/\.\s+/)[0].replace(/\.+$/, '');
+    return s.split(',').slice(0, 3).map(x => x.trim()).filter(Boolean).join(', ') || null;
+};
 // Curated anatomy overrides (server/lexicon/strongs-anatomy.json): fieldy's own
 // reading of what builds a number — e.g. H2216 = Zar (crown, H2213) + Babal,
 // "Zarababal, an Israelite born in Babylon" — wins over the dictionary's
