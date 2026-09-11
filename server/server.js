@@ -3694,7 +3694,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 trueRoot: null,             // legacy annotation field — unused now
                 translit: '',
                 translation: finalTranslation,
-                lemmaTranslit: getTranslit(trueRoot),
+                lemmaTranslit: nameTranslit(strongs, trueRoot),   // Har-Al, Yashar-Al — the allowlisted spelling in the reader's tokens too
                 css: isStandaloneException ? 'root' : getCssClass(pos),
                 token_ordinal: tokenOrdinal
             });
@@ -9378,6 +9378,11 @@ function splitFusedCompound(he, partHes) {
 // every number regardless. Re-read when the file changes.
 const HYPHEN_ALLOW_PATH = path.join(__dirname, 'lexicon', 'compound-hyphenation.json');
 let _hyphenAllow = { mtime: 0, data: {} };
+// The app's spelling of a number's name: hyphenated when allowlisted (Har-Al), else the root.
+function nameTranslit(sn, paleo) {
+    const e = sn ? hyphenAllowlist()[normSn(sn)] : null;
+    return e && !e.skip && e.to ? e.to : getTranslit(paleo);
+}
 function hyphenAllowlist() {
     try {
         const st = fs.statSync(HYPHEN_ALLOW_PATH);
@@ -10927,7 +10932,7 @@ app.get('/api/root-explorer/root', production.cache(60), (req, res) => {
         res.json({
             root: entry.root,
             sn: entry.sn,
-            lemmaTranslit: getTranslit(entry.root),
+            lemmaTranslit: nameTranslit(entry.sn, entry.root),
             lexicon: lexicon[entry.root] || null,
             definition,
             homographs,

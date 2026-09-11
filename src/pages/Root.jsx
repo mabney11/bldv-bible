@@ -7,6 +7,7 @@ import { useIsMobile } from '../hooks/useIsMobile.js';
 import { useSwipeNav } from '../hooks/useSwipeNav.js';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { BOOK_NAMES, translit } from '../lib/books.js';
+import { nameTranslit, namePaleo } from '../lib/nameForms.js';
 import { buildBookSlugs, bookToParam } from '../lib/bookSlug.js';
 import { paleoToSVG, getPaleoMode } from '../lib/paleoGlyphs.js';
 import {
@@ -267,7 +268,7 @@ function RootCard({ detail, idToSlug, context, onPickSn }) {
       <div className="rc-row">
         <div className="rc-label">Transliteration</div>
         <div className="rc-translit">
-          {anatomy?.isCompound ? anatomy.translit : (detail.lemmaTranslit || translit(root))}
+          {anatomy?.isCompound ? anatomy.translit : nameTranslit(detail.sn, root)}
           {anatomy?.isCompound && <span className="rc-compound-paleo" dir="rtl">{anatomy.paleo}</span>}
         </div>
       </div>
@@ -507,6 +508,7 @@ export default function Root({ mode = 'root' }) {
     return allList.filter(r =>
       r.root.includes(f) ||
       translit(r.root).toLowerCase().includes(fLower) ||
+      nameTranslit(r.sn, r.root).toLowerCase().replace(/-/g, '').includes(fLower.replace(/-/g, '')) ||
       (r.strongs_label || '').toUpperCase().includes(f.toUpperCase())
     );
   }, [allList, filterText, viewerMode]);
@@ -690,7 +692,7 @@ export default function Root({ mode = 'root' }) {
   const bookMax = Math.max(1, ...(detail?.by_book || []).map(b => b.occ));
   const headerTitle = detail
     ? (detail.kind === 'root'
-        ? `${detail.lemmaTranslit || translit(detail.root)} — ${(detail.total || 0).toLocaleString()} occurrences`
+        ? `${nameTranslit(detail.sn, detail.root)} — ${(detail.total || 0).toLocaleString()} occurrences`
         : `${translit(detail.surface)} — ${(detail.total || 0).toLocaleString()} occurrences`)
     : (detailErr ? 'Error' : 'Loading…');
 
@@ -702,13 +704,13 @@ export default function Root({ mode = 'root' }) {
   const occursText = (n) => `${(n || 0).toLocaleString()} time${n === 1 ? '' : 's'}`;
   const entryDetailText = detail && (
     detail.kind === 'root'
-      ? `${detail.sn ? `${detail.sn}: ` : ''}${detail.lemmaTranslit || translit(detail.root)} (${detail.root}) : ${detail.lexicon || `${occursText(detail.total)} in Scripture`}`
-      : `${detail.strongs ? `${detail.strongs}: ` : ''}${translit(detail.surface)} (${detail.surface}) : surface of ${translit(detail.root)}`
+      ? `${detail.sn ? `${detail.sn}: ` : ''}${nameTranslit(detail.sn, detail.root)} (${detail.root}) : ${detail.lexicon || `${occursText(detail.total)} in Scripture`}`
+      : `${detail.strongs ? `${detail.strongs}: ` : ''}${translit(detail.surface)} (${detail.surface}) : surface of ${nameTranslit(detail.strongs, detail.root)}`
   );
   const pageDescription = detail && (
     detail.kind === 'root'
-      ? `${detail.lemmaTranslit || translit(detail.root)} (Strong's ${detail.sn})${detail.lexicon ? ` — ${detail.lexicon}` : ''}. Occurs ${occursText(detail.total)} in Scripture. Paleo-Hebrew root explorer with verse-by-verse occurrences.`
-      : `${translit(detail.surface)}${detail.strongs ? ` — Strong's ${detail.strongs}` : ''}, a surface form of the root ${translit(detail.root)}. Occurs ${occursText(detail.total)} in Scripture.`
+      ? `${nameTranslit(detail.sn, detail.root)} (Strong's ${detail.sn})${detail.lexicon ? ` — ${detail.lexicon}` : ''}. Occurs ${occursText(detail.total)} in Scripture. Paleo-Hebrew root explorer with verse-by-verse occurrences.`
+      : `${translit(detail.surface)}${detail.strongs ? ` — Strong's ${detail.strongs}` : ''}, a surface form of the root ${nameTranslit(detail.strongs, detail.root)}. Occurs ${occursText(detail.total)} in Scripture.`
   );
   usePageTitle(
     pageTitle(entryDetailText || (viewerMode === 'surface' ? 'Surface Explorer' : 'Root Explorer')),
@@ -757,7 +759,7 @@ export default function Root({ mode = 'root' }) {
           <span className="nav-tl">
             {detail?.kind === 'surface'
               ? (detail.prev ? translit(detail.prev.surface) : '')
-              : (detail?.prev ? translit(detail.prev.root) : '')}
+              : (detail?.prev ? nameTranslit(detail.prev.sn, detail.prev.root) : '')}
           </span>
         </button>
         <span className="alpha-pos">
@@ -774,7 +776,7 @@ export default function Root({ mode = 'root' }) {
           <span className="nav-tl">
             {detail?.kind === 'surface'
               ? (detail.next ? translit(detail.next.surface) : '')
-              : (detail?.next ? translit(detail.next.root) : '')}
+              : (detail?.next ? nameTranslit(detail.next.sn, detail.next.root) : '')}
           </span> ►
         </button>
       </div>
@@ -809,8 +811,8 @@ export default function Root({ mode = 'root' }) {
                   className={`sidebar-item ${detail?.kind === 'root' && detail.sn === r.sn ? 'active' : ''}`}
                   onClick={(e) => { e.preventDefault(); setSearchParams({ sn: r.sn }); if (isMobile) setSidebarOpen(false); }}
                 >
-                  <span className="si-paleo">{r.root}</span>
-                  <span className="si-tl">{translit(r.root)}</span>
+                  <span className="si-paleo">{namePaleo(r.sn, r.root)}</span>
+                  <span className="si-tl">{nameTranslit(r.sn, r.root)}</span>
                   <span className="si-sn">{r.sn}</span>
                   <span className="si-count">{r.count.toLocaleString()}</span>
                 </a>
@@ -851,7 +853,7 @@ export default function Root({ mode = 'root' }) {
                     {detail.kind === 'root' ? detail.root : detail.surface}
                   </div>
                   <div className="rd-tl" style={{ marginTop: 2 }}>
-                    {detail.kind === 'root' ? (detail.lemmaTranslit || translit(detail.root)) : translit(detail.surface)}
+                    {detail.kind === 'root' ? nameTranslit(detail.sn, detail.root) : translit(detail.surface)}
                   </div>
                   <div className="rd-sns" style={{ marginTop: 2 }}>
                     {detail.kind === 'root' ? (detail.strongs || []).join(', ') : detail.strongs}
@@ -869,7 +871,7 @@ export default function Root({ mode = 'root' }) {
                   })()}
                   {detail.kind === 'surface' && detail.root && (
                     <div className="rd-root-link" style={{ marginTop: 6 }}>
-                      Root: <Link to={detail.strongs ? `/roots?sn=${encodeURIComponent(detail.strongs)}` : `/roots?root=${encodeURIComponent(detail.root)}`}>{detail.root} ({translit(detail.root)})</Link>
+                      Root: <Link to={detail.strongs ? `/roots?sn=${encodeURIComponent(detail.strongs)}` : `/roots?root=${encodeURIComponent(detail.root)}`}>{detail.root} ({nameTranslit(detail.strongs, detail.root)})</Link>
                     </div>
                   )}
                 </div>
