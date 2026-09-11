@@ -656,6 +656,39 @@ const out = [];
 const SPEECH_VERBS_RE = /\b(said|saying|answered|answering|cried out|cried|spoke|speaking|commanded|swore|sware|declared|asked|asking|prayed|replied),(\s+)(?!["'‘’“”])([A-Z])/g;
 
 const pOT = progress('rendering OT verses', rows.length);
+
+// ── WEB (English) verse → MT (tokens_bhs) verse ───────────────────────────────
+// web-strongs.jsonl is numbered the English way; tokens_bhs the Masoretic way, and
+// in ~23 books a chapter boundary sits in a different place (1 Kings 4/5: English
+// 5:1–18 is MT 5:15–32). Every OSHB lookup below — the reconciliation gate, the
+// clash count, the plural surface forms — must use the MT key, or it looks at the
+// wrong verse: English 1 Kings 5:6 ("cedar trees out of Lebanon") was checked
+// against MT 5:6 ("Solomon had forty thousand stalls"), found no H3844 there, and
+// the gate's "better Strong's in this verse" fallback printed "Shalamah (Lebanon)".
+// fieldy, 2026-09-11. The table is the loader's CHAPTER_BOUNDARY_SHIFTS
+// (load-english-baseline.js) — KEEP THE TWO IN SYNC — and the arithmetic is its
+// shiftChapterBoundary() applied to one verse instead of a whole chapter.
+const CHAPTER_BOUNDARY_SHIFTS = {
+  1: [[31,32,-1]], 2: [[7,8,4],[21,22,1]], 3: [[5,6,7]], 4: [[16,17,-15],[29,30,-1]], 5: [[12,13,-1],[22,23,-1],[28,29,1]],
+  9: [[23,24,-1]], 10: [[18,19,-1]], 11: [[4,5,-14]], 12: [[11,12,-1]], 13: [[5,6,15]], 14: [[1,2,1],[13,14,1]],
+  16: [[3,4,6],[9,10,-1]], 18: [[40,41,8]], 21: [[4,5,1]], 22: [[6,7,-1]], 23: [[8,9,1]], 24: [[8,9,1]], 26: [[20,21,-5]],
+  27: [[3,4,3],[5,6,-1]], 28: [[1,2,-2],[11,12,-1],[13,14,-1]], 32: [[1,2,-1]], 33: [[4,5,1]], 34: [[1,2,-1]], 38: [[1,2,-4]],
+};
+const ENG_CHAPTER_LEN = new Map();   // "canon:chapter" -> last English verse number in web-strongs.jsonl
+for (const r of rows) { const k = `${CODE2ID[r.code]}:${r.chapter}`; if ((ENG_CHAPTER_LEN.get(k) || 0) < r.verse) ENG_CHAPTER_LEN.set(k, r.verse); }
+function mtVerseKey(code, chapter, verse) {
+  const canon = CODE2ID[code];
+  let ch = chapter, v = verse;
+  if (canon === 39 && ch === 4) { ch = 3; v = (ENG_CHAPTER_LEN.get('39:3') || 18) + v; }                 // Malachi: Eng ch4 = MT ch3 tail
+  else if (canon === 29) { if (ch === 2 && v > 27) { ch = 3; v -= 27; } else if (ch === 3) ch = 4; }     // Joel: Eng 2:28–32 = MT 3, Eng 3 = MT 4
+  else for (const [lo, hi, off] of CHAPTER_BOUNDARY_SHIFTS[canon] || []) {
+    const lowLen = ENG_CHAPTER_LEN.get(`${canon}:${lo}`) || 0;
+    if (off > 0) { if (ch === hi) { if (v <= off) { ch = lo; v = lowLen + v; } else v -= off; } }
+    else if (off < 0) { const k = -off; if (ch === lo && v > lowLen - k) { ch = hi; v -= (lowLen - k); } else if (ch === hi) v += k; }
+  }
+  return `${canon}:${ch}:${v}`;
+}
+
 for (const r of rows) {
   pOT.tick();
   let changed = false;
@@ -775,7 +808,7 @@ for (const r of rows) {
     // curated DIVINE_SN allow-list, which is trustworthy independent of OSHB.
     let oshbBlocked = false;
     if (pick && !pick.isDivine) {
-      const _vk0 = `${CODE2ID[r.code]}:${r.chapter}:${r.verse}`;
+      const _vk0 = mtVerseKey(r.code, r.chapter, r.verse);
       const _oshb0 = OSHB_VERSE_SN.get(_vk0);
       if (_oshb0 && _oshb0.size && !_oshb0.has(useSn)) {
         const better = [..._oshb0].find(sn => { const gg = GLOSS.get(sn); return gg && gg.has(normT(pick.bare)); });
@@ -833,7 +866,7 @@ for (const r of rows) {
       // OSHB writes in this verse for the same Strong's — read, never built.
       let drawPaleo = rootPaleo, pluralHit = false;
       if (PLURALS && !isName && !isDivine && englishIsPlural(bare)) {
-        const forms = PLURAL_SURF.get(`${CODE2ID[r.code]}:${r.chapter}:${r.verse}|${useSn}`) || [];
+        const forms = PLURAL_SURF.get(`${mtVerseKey(r.code, r.chapter, r.verse)}|${useSn}`) || [];
         const pl = forms.find(f => f.pl && !f.suffixed && f.w && f.w !== rootPaleo);
         if (pl) { drawPaleo = pl.w; pluralHit = true; pluralUsed++; }
       }
@@ -844,7 +877,7 @@ for (const r of rows) {
       // CROSS-CHECK against OSHB. If the Strong's this render is using is not one
       // OSHB tags anywhere in this verse, the transliteration printed in the
       // English cannot match the Hebrew block the reader draws from tokens_bhs.
-      const _vk = `${CODE2ID[r.code]}:${r.chapter}:${r.verse}`;
+      const _vk = mtVerseKey(r.code, r.chapter, r.verse);
       const _oshb = OSHB_VERSE_SN.get(_vk);
       if (_oshb && _oshb.size && !_oshb.has(useSn)) {
         SN_CLASH.push({ ref: _vk, word: bare, web_sn: useSn, web_translit: tr,
