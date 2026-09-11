@@ -31,8 +31,9 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import {
-  PIECES, MATERIALS, H, EAST_X, GREAT_COURT,
+  PIECES, MATERIALS, H,
   progressAt, xrayAt, openAt, cameraAt, focusFor,
+  PLACES, ROUTES, MOVERS, moverAt, landAt,
 } from '../lib/models/temple.js';
 
 const SKY = 0xb9cfe3;          // a dry, bright morning over Mawarayah
@@ -695,6 +696,148 @@ function fitSlot(proto, slot) {
   return wrap;
 }
 
+
+// ── The land: the relief map the Build story opens on ────────────────────────
+// One map unit = ⅓ km, Yarawashalam at the origin (see PLACES in temple.js).
+// A coloured height field: the yam to the west, the coast, the hill country,
+// the rift of the Yaradan with the salt sea in it, Labanawan's mountains under
+// cedar to the north; the routes drawn as pale ribbons; the places as small
+// stone towns with their names; rafts, carts, sledges and a caravan slide along
+// the routes. The site itself is a flat shelf at y = −4 so the house lands on it.
+const SEA_Y = -12;
+function coastX(z) { return -152 - 0.13 * z + 14 * Math.sin(z / 95) + 6 * Math.sin(z / 31); }   // the shore bends east going north, as it does
+function landHeight(x, z) {
+  const c = coastX(z);
+  if (x < c) return SEA_Y - 3 - (c - x) * 0.02;
+  let h = -8 + Math.min(1, (x - c) / 120) * 16;                       // the coastal plain climbing to the hill country
+  h += 6 * Math.sin(x / 23 + z / 41) * Math.sin(z / 17) * Math.min(1, (x - c) / 60);
+  const rift = Math.exp(-((x - 78) ** 2) / (2 * 22 * 22));            // the Yaradan's valley
+  h = h * (1 - rift) + (-9) * rift;
+  if (x > 78 + 40) h += Math.min(1, (x - 118) / 60) * 14;             // the land east of the Yaradan
+  if (z < -430) { const k = Math.min(1, (-430 - z) / 90); h += k * (16 + 12 * Math.sin(x / 19) * Math.sin(z / 23) + 10 * Math.sin(x / 47 + z / 31)); }   // Labanawan
+  if (z < -80 && x > 40 && x < 110) h = Math.max(h, -3);
+  if (x > 62 && x < 96 && z > -4 && z < 180) h = -10;                 // the salt sea
+  const r = Math.hypot(x, z);                                          // the shelf the house stands on
+  if (r < 34) h = -4; else if (r < 70) { const k = (r - 34) / 36; h = -4 * (1 - k) + h * k; }
+  return h;
+}
+function landColour(x, z, h) {
+  const c = new THREE.Color();
+  if (h < SEA_Y - 0.5) c.set('#3b6f8a');
+  else if (h < -6 && x > 60 && x < 100) c.set('#c7b88f');           // the rift floor
+  else if (z < -430 && h > 8) c.set(h > 22 ? '#8d8f86' : '#4c6a3a');  // Labanawan: rock above, forest below
+  else if (x < coastX(z) + 25) c.set('#d8c79c');                       // the sandy plain
+  else c.set('#9c8f66').lerp(new THREE.Color('#7f8a55'), Math.max(0, Math.min(1, (h + 4) / 16)));
+  c.offsetHSL(0, 0, (Math.sin(x * 0.37) * Math.sin(z * 0.41)) * 0.03);
+  return c;
+}
+function textSprite(text, scale = 1) {
+  const c = document.createElement('canvas'); c.width = 512; c.height = 96; const g = c.getContext('2d');
+  g.font = '600 34px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.lineWidth = 8; g.strokeStyle = 'rgba(30,22,10,0.85)'; g.strokeText(text, 256, 48); g.fillStyle = '#ffe9b0'; g.fillText(text, 256, 48);
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+  sp.scale.set(64 * scale, 12 * scale, 1); sp.renderOrder = 10; return sp;
+}
+function buildLand(M) {
+  const group = new THREE.Group(); group.name = 'land';
+  const fades = [];   // materials whose opacity follows the map's presence
+  const fadeMat = (m) => { m.transparent = true; fades.push(m); return m; };
+  // height field
+  const SZ = 2600, N = 260;
+  const geo = new THREE.PlaneGeometry(SZ, SZ, N, N); geo.rotateX(-Math.PI / 2); geo.translate(0, 0, -150);
+  const pos = geo.attributes.position, cols = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), z = pos.getZ(i), h = landHeight(x, z); pos.setY(i, h);
+    const c = landColour(x, z, h); cols[i * 3] = c.r; cols[i * 3 + 1] = c.g; cols[i * 3 + 2] = c.b;
+  }
+  geo.setAttribute('color', new THREE.BufferAttribute(cols, 3)); geo.computeVertexNormals();
+  const terrain = new THREE.Mesh(geo, fadeMat(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0 })));
+  terrain.receiveShadow = true; group.add(terrain);
+  // the yam
+  const sea = new THREE.Mesh(new THREE.PlaneGeometry(SZ, SZ), fadeMat(new THREE.MeshStandardMaterial({ color: new THREE.Color('#2f6c8f'), roughness: 0.25, metalness: 0.05 })));
+  sea.rotation.x = -Math.PI / 2; sea.position.set(0, SEA_Y, -150); group.add(sea);
+  // cedars on Labanawan (instanced), and a few on the hills
+  const nTrees = 420;
+  const trunk = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.5, 0.7, 5, 6), fadeMat(new THREE.MeshStandardMaterial({ color: new THREE.Color('#5a3b1f'), roughness: 1 })), nTrees);
+  const crown = new THREE.InstancedMesh(new THREE.ConeGeometry(4.2, 9, 7), fadeMat(new THREE.MeshStandardMaterial({ color: new THREE.Color('#2f5a2a'), roughness: 1 })), nTrees);
+  const m4 = new THREE.Matrix4(); let sd = 5; const rr = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296; };
+  for (let i = 0; i < nTrees; i++) {
+    let x, z, h; let tries = 0;
+    do { x = -160 + rr() * 260; z = -700 + rr() * 220; h = landHeight(x, z); tries++; } while ((h < 4 || h > 24 || x < coastX(z) + 10) && tries < 20);
+    const k = 0.8 + rr() * 0.8;
+    m4.compose(new THREE.Vector3(x, h + 2.5 * k, z), new THREE.Quaternion(), new THREE.Vector3(k, k, k)); trunk.setMatrixAt(i, m4);
+    m4.compose(new THREE.Vector3(x, h + 9 * k, z), new THREE.Quaternion(), new THREE.Vector3(k, k, k)); crown.setMatrixAt(i, m4);
+  }
+  trunk.castShadow = crown.castShadow = true; group.add(trunk, crown);
+  // routes as pale ribbons
+  const curves = {};
+  for (const [key, r] of Object.entries(ROUTES)) {
+    const pts = r.pts.map(([x, z]) => new THREE.Vector3(x, landHeight(x, z) + (key === 'raft' ? SEA_Y - landHeight(x, z) + 0.6 : 0.6), z));
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal', 0.4); curves[key] = curve;
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 80, key === 'raft' ? 0.9 : 0.7, 6, false), fadeMat(new THREE.MeshBasicMaterial({ color: new THREE.Color(key === 'raft' ? '#dbe9f0' : '#f2e6c8'), transparent: true, opacity: 0.75 })));
+    group.add(tube);
+  }
+  // places: a huddle of stone blocks and a name
+  const town = fadeMat(new THREE.MeshStandardMaterial({ color: new THREE.Color('#e4d7b4'), roughness: 0.9 }));
+  for (const [key, pl] of Object.entries(PLACES)) {
+    const [x, z] = pl.at; const h = landHeight(x, z);
+    if (key !== 'yam' && key !== 'yaradan' && key !== 'labanawan' && key !== 'parawayam' && key !== 'har') {
+      for (let i = 0; i < (key === 'yarawashalam' ? 14 : 7); i++) { const b = new THREE.Mesh(new THREE.BoxGeometry(2 + rr() * 2, 1.2 + rr() * 2, 2 + rr() * 2), town); b.position.set(x + (rr() - 0.5) * 12, h + 0.8, z + (rr() - 0.5) * 12); b.castShadow = true; group.add(b); }
+    }
+    if (key === 'har') { const qm = fadeMat(M.stone.clone()); for (let i = 0; i < 5; i++) { const b = new THREE.Mesh(new THREE.BoxGeometry(3, 2.2, 3), qm); b.position.set(x + (rr() - 0.5) * 10, h + 1.1, z + (rr() - 0.5) * 8); group.add(b); } }
+    const sp = textSprite(pl.label, key === 'yam' || key === 'labanawan' ? 1.7 : key === 'parawayam' ? 1.3 : 1); sp.position.set(x, h + (key === 'yam' ? 8 : 16), z); sp.material.transparent = true; fades.push(sp.material); group.add(sp);
+  }
+  // the furnace by Sakawath: a plume of smoke
+  const NS = 120, smokeGeo = new THREE.BufferGeometry(), smokePos = new Float32Array(NS * 3);
+  smokeGeo.setAttribute('position', new THREE.BufferAttribute(smokePos, 3));
+  const smoke = new THREE.Points(smokeGeo, fadeMat(new THREE.PointsMaterial({ color: 0xcfc4b4, size: 3.2, transparent: true, opacity: 0.55, depthWrite: false })));
+  smoke.frustumCulled = false; group.add(smoke);
+  const sk = PLACES.sakawath.at, skh = landHeight(sk[0], sk[1]);
+  // movers
+  const loads = { logs: fadeMat(M.cedar.clone()), stone: fadeMat(M.stone.clone()), brass: fadeMat(M.brass.clone()), gold: fadeMat(M.gold.clone()) };
+  const cartMat = fadeMat(new THREE.MeshStandardMaterial({ color: new THREE.Color('#6b4a2c'), roughness: 0.9 })), oxMat = fadeMat(new THREE.MeshStandardMaterial({ color: new THREE.Color('#4a3524'), roughness: 1 }));
+  const movers = MOVERS.map((m) => {
+    const g = new THREE.Group();
+    if (m.kind === 'raft') {
+      for (let i = 0; i < 6; i++) { const log = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 9, 8), loads.logs); log.rotation.z = Math.PI / 2; log.position.set(0, 0.4, -3 + i * 1.2); g.add(log); }
+      const man = new THREE.Mesh(new THREE.CapsuleGeometry(0.35, 1.2, 3, 8), oxMat); man.position.set(3.5, 1.4, 0); g.add(man);
+    } else if (m.kind === 'sledge') {
+      const bed = new THREE.Mesh(new THREE.BoxGeometry(5, 0.5, 2.6), cartMat); bed.position.y = 0.3; g.add(bed);
+      const block = new THREE.Mesh(new THREE.BoxGeometry(3.4, 1.8, 1.9), loads.stone); block.position.y = 1.5; g.add(block);
+      for (const sx of [-1, 1]) { const ox = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.3, 1), oxMat); ox.position.set(4.5, 1.2, sx * 0.8); g.add(ox); }
+    } else if (m.kind === 'caravan') {
+      for (let i = 0; i < 3; i++) { const camel = new THREE.Mesh(new THREE.CapsuleGeometry(0.6, 2.2, 3, 8), oxMat); camel.rotation.z = Math.PI / 2; camel.position.set(-i * 3.5, 1.8, 0); g.add(camel); const pack = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1, 1.6), loads.gold); pack.position.set(-i * 3.5, 2.8, 0); g.add(pack); }
+    } else {
+      const bed = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.5, 2.6), cartMat); bed.position.y = 1.1; g.add(bed);
+      for (const sx of [-1, 1]) { const w = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.18, 6, 14), cartMat); w.rotation.y = Math.PI / 2; w.position.set(0, 0.95, sx * 1.5); g.add(w); }
+      if (m.load === 'logs') for (let i = 0; i < 3; i++) { const log = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 8, 8), loads.logs); log.rotation.z = Math.PI / 2; log.position.set(0, 1.9 + (i === 2 ? 0.9 : 0), i === 2 ? 0 : (i ? 0.6 : -0.6)); g.add(log); }
+      else { const load = new THREE.Mesh(m.load === 'brass' ? new THREE.SphereGeometry(1.3, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2) : new THREE.BoxGeometry(2.6, 1.4, 1.8), loads[m.load]); load.position.y = 1.4 + (m.load === 'brass' ? 0 : 0.7); g.add(load); }
+      for (const sx of [-1, 1]) { const ox = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.3, 1), oxMat); ox.position.set(4.2, 1.2, sx * 0.8); g.add(ox); }
+    }
+    g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+    g.visible = false; group.add(g);
+    return { m, node: g, curve: curves[m.route] };
+  });
+  const tangent = new THREE.Vector3(), pnt = new THREE.Vector3();
+  function place(t, presence) {
+    group.visible = presence > 0.001;
+    for (const mat of fades) mat.opacity = Math.min(mat.userData.baseOpacity ?? (mat.userData.baseOpacity = mat.opacity ?? 1), 1) * presence;
+    if (!group.visible) return;
+    for (const { m, node, curve } of movers) {
+      const a = moverAt(m, t); node.visible = a.visible; if (!a.visible) continue;
+      curve.getPointAt(a.u, pnt); curve.getTangentAt(a.u, tangent);
+      node.position.copy(pnt); node.rotation.y = Math.atan2(-tangent.z, tangent.x);
+      if (m.kind === 'raft') node.position.y += Math.sin(t * 2.3 + m.t0 * 7) * 0.25;
+    }
+    // smoke drifts up from the casting ground once the brass is being cast
+    const on = t > 6 && t < 13.5;
+    smoke.visible = on;
+    if (on) { for (let i = 0; i < NS; i++) { const u = ((t * 0.35 + i / NS) % 1); smokePos[i * 3] = sk[0] + Math.sin(i * 1.7) * 2 + u * 14; smokePos[i * 3 + 1] = skh + 2 + u * 40; smokePos[i * 3 + 2] = sk[1] + Math.cos(i * 2.3) * 2 - u * 6; } smokeGeo.attributes.position.needsUpdate = true; }
+  }
+  return { group, place };
+}
+
 // ── The component ────────────────────────────────────────────────────────────
 export default function TempleScene({ clock, mode, selected, onSelect, onReady, onFollow, apiRef }) {
   const wrap = useRef(null);
@@ -718,7 +861,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     const pmrem = new THREE.PMREMGenerator(renderer);
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; pmrem.dispose();
 
-    const camera = new THREE.PerspectiveCamera(42, 1, 0.4, 2500);
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.4, 6000);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true; controls.dampingFactor = 0.08; controls.enablePan = true; controls.screenSpacePanning = false;
     controls.minDistance = 2; controls.maxDistance = 900; controls.maxPolarAngle = Math.PI / 2 - 0.02;
@@ -754,6 +897,8 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     }
     const xrayMeshes = [];
     world.traverse((o) => { if (o.isMesh && o.userData.xray) xrayMeshes.push(o); });
+    // the land the Build story opens on
+    const land = buildLand(M); scene.add(land.group);
     const byId = (id) => groups.get(id);
 
     // sculpted parts, when their files exist
@@ -772,6 +917,10 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     // ── Per-frame placement from the timeline ───────────────────────────────
     function place(t) {
       const mode = modeRef.current;
+      const presence = landAt(mode, t);
+      land.place(t, presence);
+      ground.visible = presence < 0.999;
+      scene.fog.near = 380 + 1800 * presence; scene.fog.far = 1100 + 3500 * presence;
       for (const piece of PIECES) {
         const g = byId(piece.id); if (!g || piece.id === 'house') continue;
         const p = progressAt(mode, piece, t);

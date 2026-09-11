@@ -717,7 +717,7 @@ const smooth = (u) => { u = clamp01(u); return u * u * (3 - 2 * u); };
 const ease = { out: (u) => 1 - (1 - u) * (1 - u), inOut: smooth };
 
 // BUILD — captions quote the live text in the order the chapters give it.
-export const BUILD_PHASES = [
+const SITE_PHASES = [
   { from: 0,    key: 'yasad',    caption: '{{1 Kings 6:37 | In the rabayaiy … Zaw}}.', ref: '1 Kings 6:37' },
   { from: 3,    key: 'qayar',    caption: '{{1 Kings 6:7 | The bayath … quarry}}; {{1 Kings 6:7 | there was neither … build}}.', ref: '1 Kings 6:7' },
   { from: 4.5,  key: 'tzalai',   caption: '{{1 Kings 6:5 | Against the qayar … around}} — {{1 Kings 6:6 | The thachathawan … broad}}.', ref: '1 Kings 6:5–6' },
@@ -743,13 +743,13 @@ export const BUILD_PHASES = [
   { from: 33.5, key: 'finished', caption: '{{1 Kings 7:51 | Thus all … shalam}}.', ref: '1 Kings 7:51' },
   { from: 34.5, key: 'arawan',   caption: '{{1 Kings 8:6 | The kahanayam … karawab}}.', ref: '1 Kings 8:6' },
 ];
-export const BUILD_DURATION = 36;
+const SITE_DURATION = 36;
 // See-through stretches of the build: the roof, the south wall and the porch's
 // south side go to glass so the work inside shows.
-export const BUILD_XRAY = [[11.3, 22.2], [30.8, 33.6]];
+const SITE_XRAY = [[11.3, 22.2], [30.8, 33.6]];
 // Where the eye is during the build (the viewer may take the camera; the next
 // keyframe hands it back). [t, position, target].
-export const BUILD_CAMERA = [
+const SITE_CAMERA = [
   [0,    [190, 110, 200], [0, 30, 20]],
   [3,    [110, 45, 110],  [0, 10, 0]],
   [7.5,  [95, 40, 85],    [10, 14, 0]],
@@ -770,6 +770,81 @@ export const BUILD_CAMERA = [
   [34.5, [-8, 6, 6],      [-20, 6, 0]],
   [36,   [-13, 5, 3],     [-20, 7, 0]],
 ];
+
+
+// ── The gathering: where the house's materials came from ─────────────────────
+// The Build story opens on a relief map of the land, drawn at ONE MAP UNIT = ⅓ km
+// (not to the house's cubit scale — the house is a dot at this scale), with
+// Yarawashalam (Jerusalem) at the origin, x east, z south. Positions are the
+// real lie of the places, idealised; the routes are the text's: Labanawan's
+// araz and barawash down to the yam, in rafts to Yapaw, up to Yarawashalam
+// (1 Kings 5:22–23; 2 Chronicles 2:15); stones cut in the har (5:29–32);
+// the brass cast in the kakar of the Yaradan between Sakawath and Tzarathan
+// (7:46); the zahab out of Dawad's store in the city of Dawad (1 Chronicles
+// 29:2–4) — and the zahab of Parawayam (2 Chronicles 3:6), whose place the
+// text does not give, so it comes in from the far south-east, marked so.
+export const GATHER_DURATION = 14;
+export const MAP_KM = 3;                        // map units per km
+export const PLACES = {
+  labanawan:   { at: [-20, -600], label: 'Labanawan (Lebanon)' },
+  tzar:        { at: [-64, -495], label: 'Tzar (Tyre)' },
+  yapaw:       { at: [-152, -36], label: 'Yapaw (Joppa)' },
+  yarawashalam:{ at: [0, 0],      label: 'Yarawashalam (Jerusalem)' },
+  har:         { at: [-14, -34],  label: 'the har (quarry)' },
+  sakawath:    { at: [105, -135], label: 'Sakawath (Succoth)' },
+  tzarathan:   { at: [92, -118],  label: 'Tzarathan (Zarethan)' },
+  dawad:       { at: [4, 14],     label: 'city of Dawad (David)' },
+  parawayam:   { at: [330, 330],  label: 'Parawayam (Parvaim) — place not given' },
+  yam:         { at: [-300, -200], label: 'the yam (sea)' },
+  yaradan:     { at: [78, -60],   label: 'Yaradan (Jordan)' },
+};
+// Routes as polylines (map units); the scene draws them and slides the movers along them.
+export const ROUTES = {
+  raft:   { pts: [[-82, -472], [-115, -400], [-145, -300], [-168, -200], [-175, -100], [-153, -36]], material: 'cedar' },
+  cedar:  { pts: [[-152, -36], [-110, -24], [-60, -10], [-10, -1]], material: 'cedar' },
+  stone:  { pts: [[-14, -34], [-10, -16], [-6, -3]], material: 'stone' },
+  brass:  { pts: [[105, -135], [82, -96], [46, -54], [14, -14], [3, -2]], material: 'brass' },
+  gold:   { pts: [[4, 14], [3, 5], [1, 1]], material: 'gold' },
+  parawayam: { pts: [[330, 330], [230, 215], [120, 110], [40, 36], [3, 3]], material: 'gold' },
+};
+// Every mover: which route, when it sets out, how long it takes. `kind` picks the mesh.
+export const MOVERS = [
+  ...[0, 1, 2, 3].map((i) => ({ route: 'raft', kind: 'raft', t0: 0.4 + i * 0.9, dur: 6.4 })),
+  ...[0, 1, 2].map((i) => ({ route: 'cedar', kind: 'cart', load: 'logs', t0: 7.2 + i * 0.8, dur: 4.6 })),
+  ...[0, 1, 2, 3].map((i) => ({ route: 'stone', kind: 'sledge', load: 'stone', t0: 4 + i * 0.9, dur: 4.2 })),
+  ...[0, 1, 2].map((i) => ({ route: 'brass', kind: 'cart', load: 'brass', t0: 8.6 + i * 0.7, dur: 4.4 })),
+  ...[0, 1].map((i) => ({ route: 'gold', kind: 'cart', load: 'gold', t0: 11 + i * 0.7, dur: 2.2 })),
+  ...[0, 1, 2].map((i) => ({ route: 'parawayam', kind: 'caravan', load: 'gold', t0: 2.5 + i * 0.9, dur: 9.5 })),
+];
+/** Where a mover is at t: { u (0…1 along its route), visible } — gone once it has arrived. */
+export function moverAt(m, t) {
+  const u = (t - m.t0) / m.dur;
+  return { u: clamp01(u), visible: u > 0 && u < 1 };
+}
+/** The map's presence at t of the BUILD story: 1 on the map, fading to 0 as the eye lands on the site. */
+export function landAt(mode, t) {
+  if (mode !== 'build') return 0;
+  return 1 - smooth((t - (GATHER_DURATION - 2.2)) / 2.2);
+}
+export const GATHER_PHASES = [
+  { from: 0,    key: 'gather-cedar', caption: '{{2 Chronicles 2:15 | we will cut … Yarawashalam}}.', ref: '2 Chronicles 2:15' },
+  { from: 3,    key: 'gather-rafts', caption: '{{1 Kings 5:23 | My servants … yam}}; {{1 Kings 5:23 | I will nathan … receive them}}.', ref: '1 Kings 5:23' },
+  { from: 5.5,  key: 'gather-stone', caption: '{{1 Kings 5:29}} {{1 Kings 5:32}}', ref: '1 Kings 5:29, 32' },
+  { from: 8.5,  key: 'gather-brass', caption: '{{1 Kings 7:46}}', ref: '1 Kings 7:46' },
+  { from: 11,   key: 'gather-gold',  caption: '{{1 Chronicles 29:4 | Even shalawash … Awapayar}} — and {{2 Chronicles 3:6 | the zahab … Parawayam}}.', ref: '1 Chronicles 29:4; 2 Chronicles 3:6' },
+];
+export const GATHER_REFS = '1 Kings 5:20–32; 2 Chronicles 2:8–17; 1 Kings 7:46; 1 Chronicles 22:2–4, 14; 29:2–4; 2 Chronicles 3:6';
+export const GATHER_CAMERA = [
+  [0,    [-320, 520, 180],  [-80, 0, -320]],
+  [4,    [-290, 260, 110],  [-110, 0, -130]],
+  [7,    [-90, 190, 130],   [-40, 0, -30]],
+  [9.5,  [140, 230, 30],    [60, 0, -80]],
+  [12,   [130, 170, 210],   [0, 0, 20]],
+];
+export const BUILD_PHASES = [...GATHER_PHASES, ...SITE_PHASES.map((p) => ({ ...p, from: p.from + GATHER_DURATION }))];
+export const BUILD_DURATION = GATHER_DURATION + SITE_DURATION;
+export const BUILD_XRAY = SITE_XRAY.map(([a, b]) => [a + GATHER_DURATION, b + GATHER_DURATION]);
+export const BUILD_CAMERA = [...GATHER_CAMERA, ...SITE_CAMERA.map(([t, p, g]) => [t + GATHER_DURATION, p, g])];
 
 // WALK — in through the gate, to the ark.
 export const WALK_PHASES = [
@@ -824,7 +899,7 @@ export function phaseAt(mode, t) {
 export function progressAt(mode, piece, t) {
   if (mode !== 'build') return 1;
   const [a, b] = piece.build;
-  return smooth((t - a) / (b - a));
+  return smooth((t - GATHER_DURATION - a) / (b - a));
 }
 /** How see-through the roof/south side is at t (0 solid … 1 glass). */
 export function xrayAt(mode, t) {
@@ -857,7 +932,7 @@ export function cameraAt(mode, t) {
 export function marksFor(mode) {
   const ph = MODES[mode].phases, d = MODES[mode].duration;
   const label = mode === 'build'
-    ? { yasad: 'foundation', qayar: 'walls', awalam: 'porch', roof: 'roof', araz: 'cedar', zahab: 'gold', karawab: 'cherubim', chatzar: 'court', palace: 'palace', pillars: 'brass', vessels: 'gold vessels', arawan: 'ark' }
+    ? { 'gather-cedar': 'gathering', yasad: 'foundation', qayar: 'walls', awalam: 'porch', roof: 'roof', araz: 'cedar', zahab: 'gold', karawab: 'cherubim', chatzar: 'court', palace: 'palace', pillars: 'brass', vessels: 'gold vessels', arawan: 'ark' }
     : { gate: 'gate', court: 'court', altar: 'altar', yam: 'sea', bases: 'bases', pillars: 'pillars', porch: 'porch', hayakal: 'hayakal', veil: 'veil', dabayar: 'oracle', karawab: 'cherubim', arawan: 'ark' };
   return ph.filter((p) => label[p.key]).map((p) => ({ at: p.from / d, label: label[p.key] }));
 }

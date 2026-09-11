@@ -24,7 +24,7 @@ import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
 import { usePlayer, Section, WordRow, ModelPassage } from '../components/ModelKit.jsx';
 import TempleSheet from '../components/TempleSheet.jsx';
 import {
-  PIECES, WORDS, MODES, SPEEDS, GROUPS, CHIP_ORDER, PASSAGES, ALL_REFS,
+  PIECES, WORDS, MODES, SPEEDS, GROUPS, CHIP_ORDER, PASSAGES, ALL_REFS, GATHER_REFS,
   phaseAt, pieceById, pieceForWord, marksFor,
 } from '../lib/models/temple.js';
 import './Temple.css';
@@ -72,6 +72,15 @@ function Card({ id, mode, onClose, onPick }) {
 
       <Section id="details" title="Details" sub={item ? 'what the text measures · elsewhere in scripture · what is assumed' : 'choose a part'} storageKey="tp-sec">
         {!item && <p className="st-card-p">Tap a part of the house, one of the chips under it, or a marked word in the text for its measures, verse by verse, the same thing elsewhere in scripture, and what the model had to assume where the text is silent.</p>}
+        {!item && mode === 'build' && (
+          <>
+            <div className="st-detail-sub">Where it all came from</div>
+            <div className="st-par">
+              <p><Glossed text="The story opens on the land, drawn to a different scale (one map unit is a third of a km — the house is a dot on it). Chayaram (Hiram)'s servants bring the araz (cedar) and barawash (fir) down from Labanawan (Lebanon) to the yam (sea) in rafts, to Yapaw (Joppa), and up to Yarawashalam (Jerusalem); the abanayam (stones) are cut in the har (mountain) and brought down; the nachashath (brass) is cast in the kakar (plain) of the Yaradan (Jordan) between Sakawath (Succoth) and Tzarathan (Zarethan) and carried up; the zahab (gold) comes out of Dawad (David)'s store in his city — and the zahab (gold) of Parawayam (Parvaim), whose place the text never gives, comes in from the far side of the map, marked so." /></p>
+              <PassageRefs refs={GATHER_REFS} size="sm" />
+            </div>
+          </>
+        )}
         {item && (
           <>
             <div className="st-detail-sub">What the text gives</div>
