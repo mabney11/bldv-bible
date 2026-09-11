@@ -7,7 +7,7 @@ import { useIsMobile } from '../hooks/useIsMobile.js';
 import { useSwipeNav } from '../hooks/useSwipeNav.js';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { BOOK_NAMES, translit } from '../lib/books.js';
-import { nameTranslit, namePaleo } from '../lib/nameForms.js';
+import { nameTranslit } from '../lib/nameForms.js';
 import { buildBookSlugs, bookToParam } from '../lib/bookSlug.js';
 import { paleoToSVG, getPaleoMode } from '../lib/paleoGlyphs.js';
 import {
@@ -811,7 +811,7 @@ export default function Root({ mode = 'root' }) {
                   className={`sidebar-item ${detail?.kind === 'root' && detail.sn === r.sn ? 'active' : ''}`}
                   onClick={(e) => { e.preventDefault(); setSearchParams({ sn: r.sn }); if (isMobile) setSidebarOpen(false); }}
                 >
-                  <span className="si-paleo">{namePaleo(r.sn, r.root)}</span>
+                  <span className="si-paleo">{r.root}</span>
                   <span className="si-tl">{nameTranslit(r.sn, r.root)}</span>
                   <span className="si-sn">{r.sn}</span>
                   <span className="si-count">{r.count.toLocaleString()}</span>
