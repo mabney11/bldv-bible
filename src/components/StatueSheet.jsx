@@ -159,16 +159,23 @@ export default function StatueSheet({ clock, selected, onSelect }) {
     let flight = null;
     function focusFor(id, t) {
       const aspect = host.clientWidth && host.clientHeight ? host.clientWidth / host.clientHeight : 1;
-      const fit = (height) => Math.max(3.4, Math.min(15.5, (height + 2.2) * 2.2 / Math.min(1, aspect)));
+      const upright = aspect < 1;                 // a phone: the sheet covers the lower part of the stage
+      const fit = (height) => Math.max(4, Math.min(15.5, (height + (upright ? 3.2 : 2.2)) * 2.3 / Math.min(1, aspect)));
+      // With the sheet up only the top ~55% of the stage shows: aim below the piece so it sits there.
+      const lift = (f) => {
+        if (!upright) return f;
+        const vwFull = Math.max(380, Math.min(W, Math.round(aspect * 520))), winH = (vwFull / aspect) * (f.distance / 15.5) / S;
+        return { ...f, target: [f.target[0], f.target[1] - winH * 0.21] };
+      };
       if (!id) return FULL;
       if (id === 'stone') {
         const st = stoneAt(t), mt = mountainAt(t);
-        if (st.visible) return { target: [st.x, st.y], distance: fit(STONE.r * 2.6) };
+        if (st.visible) return lift({ target: [st.x, st.y], distance: fit(STONE.r * 2.6) });
         const hgt = (STONE.r + mt.scale * 11) * 0.8;
-        return { target: [mt.x, hgt * 0.45], distance: fit(hgt) };
+        return lift({ target: [mt.x, hgt * 0.45], distance: fit(hgt) });
       }
       const p = PIECES.find((q) => q.id === id); if (!p) return null;
-      return { target: [0, p.y0 + p.h / 2], distance: fit(p.h) };
+      return lift({ target: [0, p.y0 + p.h / 2], distance: fit(p.h) });
     }
     function flyTo(id) {
       if (scriptedNow) return;

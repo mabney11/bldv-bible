@@ -20,6 +20,10 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import {
   PIECES, STONE, MATERIALS, H_TOTAL, HIT, KING_BANDS, bandOf,
   stoneAt, mountainAt, cameraAt, makeShards, shardAt, pieceWholeAt, makeDust, dustAt,
@@ -404,24 +408,24 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
       controls.target.copy(tgt);
     }
 
-    // ── Selection: emissive glow on the chosen piece ────────────────────────
-    let glowTargets = [], currentSel = selected;
+    // ── Selection: a gold halo around the chosen piece ──────────────────────
+    // An OUTER glow, not a tint — the piece keeps its own colour. Done as a
+    // post-process (OutlinePass): the chosen object's silhouette is blurred
+    // outward in gold and laid over the frame, so it reads the same on every
+    // material, the sculpted GLBs included.
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    const outline = new OutlinePass(new THREE.Vector2(1, 1), scene, camera);
+    outline.visibleEdgeColor.set(0xffd062); outline.hiddenEdgeColor.set(0x6b4a12);
+    outline.edgeStrength = 7; outline.edgeGlow = 1.6; outline.edgeThickness = 3.5; outline.pulsePeriod = 0;
+    composer.addPass(outline);
+    composer.addPass(new OutputPass());
+    composer.setPixelRatio(renderer.getPixelRatio());
+    let currentSel = selected;
     function applySelection(id) {
       currentSel = id;
-      for (const m of glowTargets) m.material.emissive.setHex(0);
-      glowTargets = [];
-      if (!id) return;
-      const objs = id === 'stone' ? [stone, mountain] : [pieceGroups.get(id)];
-      for (const o of objs) o?.traverse((m) => {
-        if (m.isMesh && m.material?.emissive) {
-          if (!m.userData.ownMat) { m.material = m.material.clone(); m.userData.ownMat = true; }
-          const isMountain = m === mountain || mountain.children?.includes(m);
-          // Textured props (the jasper stone, the green mountain) take less than the
-          // metal pieces, so their own colour still reads through the glow.
-          m.material.emissive.copy(GOLD_GLOW).multiplyScalar(isMountain ? 0.12 : m.material.map ? 0.26 : 0.36);
-          glowTargets.push(m);
-        }
-      });
+      const objs = !id ? [] : id === 'stone' ? [stone, mountain] : [pieceGroups.get(id)];
+      outline.selectedObjects = objs.filter(Boolean);
     }
 
     // ── Focus: fly the camera to the chosen piece ───────────────────────────
@@ -433,16 +437,20 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
     const fTgt = new THREE.Vector3(), fOff = new THREE.Vector3(), fSph = new THREE.Spherical();
     function focusFor(id, t) {
       const aspect = camera.aspect || 1, fov = THREE.MathUtils.degToRad(camera.fov);
-      const fit = (height) => Math.max(2.6, (height / 2 + 0.6) / Math.tan(fov / 2) / Math.min(1, aspect) * 1.1);
+      const upright = aspect < 1;                 // a phone: the sheet covers the lower part of the stage
+      const pad = upright ? 1.6 : 1.0;             // room around the piece so its neighbours show too
+      const fit = (height) => Math.max(3.2, (height / 2 + pad) / Math.tan(fov / 2) / Math.min(1, aspect) * 1.15);
+      // With the sheet up only the top ~55% of the stage shows: aim below the piece so it sits there.
+      const lift = (f) => (upright ? { ...f, tgt: f.tgt.clone().setY(f.tgt.y - f.dist * Math.tan(fov / 2) * 0.42) } : f);
       if (!id) return overview();
       if (id === 'stone') {
         const st = stoneAt(t), mt = mountainAt(t);
-        if (st.visible) return { tgt: new THREE.Vector3(st.x, st.y, st.z), dist: fit(STONE.r * 2.6) };
+        if (st.visible) return lift({ tgt: new THREE.Vector3(st.x, st.y, st.z), dist: fit(STONE.r * 2.6) });
         const hgt = mt.scale * 9;
-        return { tgt: new THREE.Vector3(mt.x, hgt * 0.45, mt.z), dist: fit(hgt * 1.15) };
+        return lift({ tgt: new THREE.Vector3(mt.x, hgt * 0.45, mt.z), dist: fit(hgt * 1.15) });
       }
       const p = PIECES.find((q) => q.id === id); if (!p) return null;
-      return { tgt: new THREE.Vector3(0, p.y0 + p.h / 2, 0), dist: fit(p.h) };
+      return lift({ tgt: new THREE.Vector3(0, p.y0 + p.h / 2, 0), dist: fit(p.h) });
     }
     function flyTo(id) {
       if (scripted) { flight = null; return; }
@@ -515,11 +523,12 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
       if (controls.update()) dirty = true;
       if (!dirty) return;
       dirty = false;
-      renderer.render(scene, camera);
+      composer.render();
     }
     function resize() {
       const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;
       renderer.setSize(w, h, false);
+      composer.setSize(w, h); outline.setSize(w, h);
       camera.aspect = w / h; camera.updateProjectionMatrix();
       controls.minDistance = 2.5;
       // Until the viewer takes the camera, the overview re-fits to the stage's shape.
@@ -563,6 +572,7 @@ export default function StatueScene({ clock, selected, onSelect, onReady }) {
       controls.dispose();
       scene.traverse((o) => { o.geometry?.dispose?.(); if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => m.dispose?.()); });
       scene.environment?.dispose?.();
+      composer.dispose?.(); outline.dispose?.();
       renderer.dispose();
       if (renderer.domElement.parentNode === el) el.removeChild(renderer.domElement);
       api.current = null;

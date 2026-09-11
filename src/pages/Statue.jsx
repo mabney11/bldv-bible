@@ -276,6 +276,19 @@ export default function Statue() {
     setParams(q, { replace: true });
   }, [params, setParams]);
   const select = useCallback((id) => { setParam('piece', id); setSheetOpen(!!id); }, [setParam]);
+  // Phone: the grip bar can be pulled down to put the sheet away (or up to keep it).
+  const panelRef = useRef(null), grip = useRef(null);
+  const onGripDown = (e) => { if (e.target.closest('button')) return; grip.current = { y: e.clientY, dy: 0 }; e.currentTarget.setPointerCapture?.(e.pointerId); if (panelRef.current) panelRef.current.style.transition = 'none'; };
+  const onGripMove = (e) => {
+    const g = grip.current; if (!g) return;
+    g.dy = Math.max(0, e.clientY - g.y);
+    if (panelRef.current) panelRef.current.style.transform = `translateY(${g.dy}px)`;
+  };
+  const onGripUp = () => {
+    const g = grip.current; if (!g) return; grip.current = null;
+    const el = panelRef.current; if (el) { el.style.transition = ''; el.style.transform = ''; }
+    if (g.dy > 70) setSheetOpen(false);
+  };
 
   // A shattered piece stays selectable — its card says it is broken at this moment
   // and the text still shows where it comes from; only the model has nothing to glow.
@@ -361,8 +374,10 @@ export default function Statue() {
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Pieces &amp; verses ↑</button>
         </section>
 
-        <aside className={`st-panel${sheetOpen ? ' open' : ''}`}>
-          <div className="st-sheet-bar"><span className="st-sheet-grip" /><button type="button" className="st-sheet-x" onClick={() => { setSheetOpen(false); }}>Model ×</button></div>
+        <aside className={`st-panel${sheetOpen ? ' open' : ''}`} ref={panelRef}>
+          <div className="st-sheet-bar" onPointerDown={onGripDown} onPointerMove={onGripMove} onPointerUp={onGripUp} onPointerCancel={onGripUp}>
+            <span className="st-sheet-grip" /><button type="button" className="st-sheet-x" onClick={() => { setSheetOpen(false); }}>Model ×</button>
+          </div>
           <Card id={shownSel} selectable={selectable} ended={ended} onClose={() => select(null)} onPick={select} />
         </aside>
       </div>
