@@ -40,6 +40,21 @@ export const MODELS = [
     ],
   },
   {
+    slug: 'temple',
+    title: 'The House of Yahawah',
+    kicker: 'Interactive 3D model · 1 Kings 6–7',
+    blurb: 'The bayath (house) Shalamah (Solomon) banah (built) for Yahawah, measured in amah (cubits) from the text: the hayakal (temple) and the dabayar (oracle) with its karawab (cherubim), the awalam (porch), Yakayan (Jachin) and Baiz (Boaz), the yam (sea) on twelve oxen, the ten makanawath (bases), the mazabach (altar), the chatzarawath (courts) and the malak (king)\'s houses. Watch it rise in the order 1 Kings 6–7 gives it, or walk in from the gate to the arawan (ark); tap any part for its measures, verse by verse.',
+    paleo: '𐤁𐤉𐤕 𐤉𐤄𐤅𐤄',
+    tags: ['1 Kings 6–7', '2 Chronicles 3–4', '3D · plan & section', 'Build · Walk'],
+    to: '/models/temple',
+    quick: [
+      { label: 'Walk in, gate to ark', to: '/models/temple?mode=walk' },
+      { label: 'Watch it rise (1 Kings 6–7 in order)', to: '/models/temple?mode=build' },
+      { label: 'The karawab (cherubim) of the dabayar (oracle)', to: '/models/temple?piece=karawab' },
+      { label: 'Yakayan (Jachin) and Baiz (Boaz)', to: '/models/temple?piece=pillars' },
+    ],
+  },
+  {
     slug: 'prints',
     title: 'Printable Maps',
     kicker: 'Downloadable map sheets',
@@ -56,7 +71,7 @@ export const MODELS = [
 ];
 
 export default function Models() {
-  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, and the tzalam (likeness) of Daniel 2 with the aban (stone) gazar (cut) out laa (without) yadayan (hands).');
+  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, and the tzalam (likeness) of Daniel 2 with the aban (stone) gazar (cut) out laa (without) yadayan (hands), and the bayath (house) Shalamah (Solomon) built for Yahawah, measured from 1 Kings 6–7.');
   return (
     <div className="models-page">
       <header className="models-top">

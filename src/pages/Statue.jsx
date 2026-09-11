@@ -24,13 +24,14 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
+import { usePlayer, Section } from '../components/ModelKit.jsx';
 import { apiTransChapter } from '../lib/api.js';
 import StatueSheet from '../components/StatueSheet.jsx';
 import {
   PIECES, STONE, WORDS, DURATION, SPEEDS, HIT, MOUNTAIN_FROM,
   phaseAt, selectableAt, pieceById, ALL_REFS, PASSAGE, pieceForWord,
 } from '../lib/models/statue.js';
-import './Statue.css';
+import '../components/ModelPage.css';
 
 const StatueScene = lazy(() => import('../components/StatueScene.jsx'));
 
@@ -42,49 +43,8 @@ function webglAvailable() {
 const VIEWS = ['3d', '2d'];
 const PIECE_IDS = [...PIECES.map((p) => p.id), 'stone'];
 
-// ── The player ───────────────────────────────────────────────────────────────
-function usePlayer() {
-  const clock = useRef({ t: 0 }).current;
-  const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState(1);
-  const [loop, setLoop] = useState(false);
-  const [phase, setPhase] = useState(() => phaseAt(0));
-  const [selectable, setSelectable] = useState(() => selectableAt(0));
-  const [ended, setEnded] = useState(false);
-  const scrubRef = useRef(null), timeRef = useRef(null);
-  const state = useRef({ playing: false, speed: 1, loop: false, last: 0, raf: 0 });
-  state.current.playing = playing; state.current.speed = speed; state.current.loop = loop;
-
-  const show = useCallback((t) => {
-    clock.t = t;
-    if (scrubRef.current) scrubRef.current.value = String(Math.round((t / DURATION) * 1000));
-    if (timeRef.current) timeRef.current.textContent = `${t.toFixed(1)} s`;
-    const ph = phaseAt(t); setPhase((cur) => (cur.key === ph.key ? cur : ph));
-    const sel = selectableAt(t); setSelectable((cur) => (cur.length === sel.length ? cur : sel));
-    setEnded(t >= DURATION - 1e-6);
-  }, [clock]);
-
-  useEffect(() => {
-    let alive = true;
-    const tick = (now) => {
-      if (!alive) return;
-      state.current.raf = requestAnimationFrame(tick);
-      const st = state.current;
-      if (!st.playing) { st.last = now; return; }
-      let t = clock.t + ((now - st.last) / 1000) * st.speed; st.last = now;
-      if (t >= DURATION) { if (st.loop) t -= DURATION; else { t = DURATION; setPlaying(false); } }
-      show(t);
-    };
-    state.current.raf = requestAnimationFrame(tick);
-    return () => { alive = false; cancelAnimationFrame(state.current.raf); };
-  }, [clock, show]);
-
-  const play = () => { if (clock.t >= DURATION - 1e-6) show(0); state.current.last = performance.now(); setPlaying(true); };
-  const pause = () => setPlaying(false);
-  const seek = (t) => { setPlaying(false); show(Math.max(0, Math.min(DURATION, t))); };
-  const restart = () => { show(0); state.current.last = performance.now(); setPlaying(true); };
-  return { clock, playing, speed, setSpeed, loop, setLoop, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef, show };
-}
+// The player and the folding panel bands are shared with every animated model (components/ModelKit.jsx).
+const TIMELINE = { key: 'statue', duration: DURATION, phaseAt, selectableAt };
 
 // ── Detail card ──────────────────────────────────────────────────────────────
 function Word({ k }) {
@@ -239,25 +199,6 @@ function Card({ id, selectable, ended, onClose, onPick }) {
   );
 }
 
-// A collapsible band of the panel — "Scripture" and "Details" sit one above the
-// other like vertical tabs; either or both can be folded to a single bar. The
-// fold is remembered per band across visits.
-function Section({ id, title, sub, children }) {
-  const key = `st-sec-${id}`;
-  const [open, setOpen] = useState(() => { try { return localStorage.getItem(key) !== '0'; } catch { return true; } });
-  const toggle = () => setOpen((o) => { try { localStorage.setItem(key, o ? '0' : '1'); } catch {} return !o; });
-  return (
-    <section className={`st-sec st-sec-${id}${open ? ' open' : ''}`}>
-      <button type="button" className="st-sec-h" onClick={toggle} aria-expanded={open}>
-        <span className="st-sec-chev" aria-hidden="true">{open ? '▾' : '▸'}</span>
-        <span className="st-sec-title">{title}</span>
-        <span className="st-sec-sub">{sub}</span>
-      </button>
-      {open && <div className="st-sec-body">{children}</div>}
-    </section>
-  );
-}
-
 // ── The page ─────────────────────────────────────────────────────────────────
 export default function Statue() {
   usePageTitle(pageTitle('The Statue of the Dream — Maps & Models'), 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (without) yadayan (hands) — an interactive model: tap the dahab (gold), the kasap (silver), the nachash (brass), the parazal (iron) and the chasap (clay) for their verses, and play the aban (stone) striking it to pieces.');
@@ -266,7 +207,7 @@ export default function Statue() {
   const view = VIEWS.includes(params.get('view')) ? params.get('view') : (canGL ? '3d' : '2d');
   const [glOk, setGlOk] = useState(true);
   const sel = PIECE_IDS.includes(params.get('piece')) ? params.get('piece') : null;
-  const player = usePlayer();
+  const player = usePlayer(TIMELINE);
   const { clock, playing, speed, setSpeed, loop, setLoop, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef } = player;
   const [sheetOpen, setSheetOpen] = useState(!!sel);
 

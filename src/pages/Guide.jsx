@@ -42,11 +42,12 @@ const SECTIONS = [
     id: 'maps',
     ico: '🗺',
     title: 'Maps & Models',
-    body: 'The Holy Land in 3D is drawn from the text, not traced from an atlas: the tribal allotments of Yahawashawai (Joshua) 13–19, the millennial bands of Yachazaqaal (Ezekiel) 47–48 with the Holy Portion measured in cubits, the cities with their verses, and the rivers and seas under the names the Bible gives them. Tap any portion, city or water for its verses; every border and measurement says which verse it comes from. The Statue of the Dream is Daniel 2 in 3D: tap the dahab (gold), kasap (silver), nachash (brass), parazal (iron) and chasap (clay) for their verses, then play the aban (stone) gazar (cut) out laa (without) yadayan (hands) striking the tzalam (likeness) to pieces.',
+    body: 'The Holy Land in 3D is drawn from the text, not traced from an atlas: the tribal allotments of Yahawashawai (Joshua) 13–19, the millennial bands of Yachazaqaal (Ezekiel) 47–48 with the Holy Portion measured in cubits, the cities with their verses, and the rivers and seas under the names the Bible gives them. Tap any portion, city or water for its verses; every border and measurement says which verse it comes from. The Statue of the Dream is Daniel 2 in 3D: tap the dahab (gold), kasap (silver), nachash (brass), parazal (iron) and chasap (clay) for their verses, then play the aban (stone) gazar (cut) out laa (without) yadayan (hands) striking the tzalam (likeness) to pieces. The House of Yahawah is 1 Kings 6–7 in 3D, every measure in amah (cubits) from the text: watch the bayath (house) rise in the order the chapters give it, or walk in from the gate of the gadawal (great) chatzar (court) to the arawan (ark) beneath the karawab (cherubim).',
     links: [
       { to: '/models/holy-land', label: 'The Holy Land in 3D' },
       { to: '/models/holy-land?overlay=joshua', label: 'Joshua’s allotments' },
       { to: '/models/statue', label: 'The Statue of the Dream (Daniel 2)' },
+      { to: '/models/temple', label: 'The House of Yahawah (1 Kings 6–7)' },
       { to: '/models/prints', label: 'Printable map sheets (PNG · SVG · PDF)' },
       { to: '/models', label: 'All models' },
     ],

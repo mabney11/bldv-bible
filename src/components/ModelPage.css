@@ -1,4 +1,4 @@
-/* Statue.css — /models/statue, the statue of Daniel 2 and the stone */
+/* ModelPage.css — the shared page frame of the animated models (/models/statue, /models/temple): stage, player, chips, caption, panel/sheet, passage, card. The st- prefix is the "model page" prefix. */
 
 .st-page { height: 100dvh; background: var(--bg); color: var(--text); display: flex; flex-direction: column; }
 /* The page is exactly one viewport tall on desktop so the side panel is the

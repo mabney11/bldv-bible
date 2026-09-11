@@ -1,0 +1,28 @@
+/* Temple.css — /models/temple, the house of Yahawah. Shares ModelPage.css (the st- classes). */
+.tp-stage { background: #b9cfe3; }
+.tp-modes { margin-right: 6px; }
+.tp-follow {
+  position: absolute; top: 8px; right: 8px; z-index: 2; padding: 6px 11px; border-radius: 999px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+  background: rgba(20, 20, 28, 0.6); color: #ffd97a; border: 1px solid rgba(255, 200, 87, 0.5); backdrop-filter: blur(4px);
+}
+.tp-follow:hover { background: rgba(20, 20, 28, 0.85); }
+.tp-marks { height: 24px; }
+.tp-marks span { font-size: 9px; }
+.tp-marks span:nth-child(even) { top: 11px; }
+.tp-marks span:nth-child(even)::before { height: 17px; margin-top: -11px; }
+.tp-measures { border-collapse: collapse; font-size: 12.5px; line-height: 1.4; width: 100%; }
+.tp-measures th { text-align: left; font-weight: 600; color: var(--text); padding: 4px 8px 4px 0; vertical-align: top; width: 34%; }
+.tp-measures td { color: var(--text2); padding: 4px 6px 4px 0; vertical-align: top; }
+.tp-measures td.tp-measures-ref { color: var(--gold); font-size: 11px; white-space: nowrap; text-align: right; padding-right: 0; }
+.tp-measures tr + tr { border-top: 1px solid var(--border); }
+.tp-measures .hl-root { font-weight: 600; }
+.tp-note { margin-top: 2px; }
+.st-passage-ch { display: flex; flex-direction: column; gap: 2px; }
+.st-passage-ch + .st-passage-ch { margin-top: 10px; }
+.st-passage-chh { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 8px 2px; border-bottom: 1px solid var(--border2); margin-bottom: 4px; }
+.st-passage-chh b { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
+@media (max-width: 860px) {
+  .tp-modes .st-view, .tp-page .st-views .st-view { padding: 6px 9px; }
+  .tp-marks span { display: none; }
+  .tp-marks span:nth-child(3n+1) { display: block; }
+}
