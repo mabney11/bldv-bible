@@ -194,5 +194,14 @@
     "meaning": "fountain of dwelling",
     "def": "En-Dor, a place in Palestine",
     "en": "En Dor"
+  },
+  "H2025": {
+    "sn": "H2025",
+    "he": "הר אל",
+    "paleo": "𐤄𐤓-𐤀𐤋",
+    "from": "Haraal",
+    "to": "Har-Al",
+    "meaning": "mountain of God",
+    "def": "mount of God; figuratively, the altar of burnt-offering"
   }
 }
