@@ -9390,6 +9390,31 @@ function hyphenAllowlist() {
     } catch { _hyphenAllow = { mtime: 0, data: {} }; }
     return _hyphenAllow.data;
 }
+// ── MODEL ASSETS (Maps & Models) ─────────────────────────────────────────────
+// Sculpted meshes the model pages load at runtime — e.g. the king for the Statue of
+// the Dream (`statue.glb`, our own asset, generated in Meshy on a paid plan). They are large
+// binaries kept OUT of git: looked up in server/models/ first (a dev checkout), then
+// in $DATA_DIR/models/ (the persistent volume on the Lightsail box, beside the
+// databases, so a redeploy does not lose them). A missing file is a plain 404 and
+// the page falls back to its procedural figure — nothing breaks without the asset.
+const MODEL_ASSET_DIRS = [path.join(__dirname, 'models'), path.join(process.env.DATA_DIR || '/data', 'models')];
+app.get('/api/models/:file', (req, res) => {
+  const name = String(req.params.file || '');
+  if (!/^[a-z0-9][a-z0-9._-]*\.(glb|gltf|bin)$/i.test(name)) return res.status(404).end();
+  for (const dir of MODEL_ASSET_DIRS) {
+    const file = path.join(dir, name);
+    if (fs.existsSync(file)) {
+      // Revalidate on every load (sendFile adds ETag/Last-Modified, so an unchanged file
+      // is a cheap 304) — a day-long max-age here meant a replaced model kept showing
+      // the old one until a hard reload (2026-09-10).
+      res.setHeader('Cache-Control', 'no-cache');
+      if (name.endsWith('.glb')) res.type('model/gltf-binary');
+      return res.sendFile(file);
+    }
+  }
+  return res.status(404).end();
+});
+
 // Strong's kjv_def carries cross-references and stray transliterations ("moon. Yrechow.
 // See H3405 (יְרִיחוֹ).") — only the glosses survive: the first sentence, no "See/Compare
 // H…", no square Hebrew (fieldy: only paleo, only his transliterations).
