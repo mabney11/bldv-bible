@@ -203,7 +203,10 @@ for (const line of readLines('./name-aliases.txt')) {
   const t = line.trim(); if (!t || t.startsWith('#')) continue;
   const [v, o] = t.split(/\s*->\s*|\s{2,}|\t/); if (v && o) ALIAS.set(v.toLowerCase(), o.toLowerCase());
 }
-for (const [eng, tr] of Object.entries(M.names || {})) NAME.set(eng, tr);
+// Contractions never map (word-map.json once carried "don't" -> Hagar, 2026-09-11);
+// guarded here too so an older word-map.json can't reintroduce it.
+const CONTRACTION = /n't$|'(?:ll|re|ve|d|m)$/i;
+for (const [eng, tr] of Object.entries(M.names || {})) if (!CONTRACTION.test(eng)) NAME.set(eng, tr);
 // name-forms.txt: manual pins, read AFTER the auto-map so they can override it
 // (or add an entry the auto-map deliberately excluded as ambiguous). Survives
 // every word-map.json regeneration — see name-forms.txt's own header comment
@@ -220,7 +223,7 @@ for (const [eng, tr] of Object.entries(M.peoples || {})) PEOPLE.set(eng, tr);
 // terms: OT-derived, minus your excludes, PLUS your exact form-pins (read directly so
 // form-pins take effect on the next render without rebuilding the whole OT map).
 const TERM_EXCLUDE = new Set(readLines('./term-exclude.txt').map(l => l.trim().toLowerCase()).filter(l => l && !l.startsWith('#')));
-for (const [eng, tr] of Object.entries(M.terms || {})) if (!TERM_EXCLUDE.has(eng)) TERM.set(eng, tr);
+for (const [eng, tr] of Object.entries(M.terms || {})) if (!TERM_EXCLUDE.has(eng) && !CONTRACTION.test(eng)) TERM.set(eng, tr);
 for (const line of readLines('./term-forms.txt')) {
   const t = line.trim(); if (!t || t.startsWith('#')) continue;
   const [w, f] = t.split(/\s+/); if (w && f && !TERM_EXCLUDE.has(w.toLowerCase())) TERM.set(w.toLowerCase(), f);

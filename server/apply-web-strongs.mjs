@@ -676,6 +676,10 @@ for (const r of rows) {
       const bare = tok.replace(/^[^A-Za-z]+/,'').replace(/[^A-Za-z]+$/,'');
       if (!bare || bare.length < 2) continue;
       if (NEVER_HEAD.has(bare.toLowerCase())) continue;
+      // A contraction ("Don't", "you'll") is never the head word of a Hebrew name or
+      // term: Genesis 21:17's Hagar tag sat on WEB's "Don't" and rendered
+      // "Hagar (Don't) be afraid", which then taught the word map "don't" -> Hagar.
+      if (/n't$|'(?:ll|re|ve|d|m)$/i.test(tok.replace(/[^A-Za-z']+$/, ''))) continue;
       // Auxiliary/light verb: only a candidate if THIS Strong's actually glosses it.
       // "did" in "you didn't build" (H1129 banah) is filtered; "do" in "do them"
       // (H6213 asah, kjv_def lists "do") survives and renders ishah (do).
@@ -1029,7 +1033,13 @@ if (DRY) { console.log('\n[dry-run] nothing written.'); process.exit(0); }
 // A word rendered several ways (because its Hebrew differs verse to verse) cannot be
 // mapped by spelling alone, so it is left out rather than forced.
 const map = { names: {}, peoples: {}, divine: {}, terms: {}, ambiguous: {} };
+// An English CONTRACTION is never a word to map: the OT alignment once paired "Don't"
+// with הגר (Hagar) — one verse, one spelling, so it passed as "unambiguous" — and the
+// untagged render turned every "Don't you know" into "Hagar you know" (Zechariah 4:5,
+// caught by verify-name-forms on deploy, 2026-09-11). Possessives ("abram's") stay.
+const CONTRACTION = /n't$|'(?:ll|re|ve|d|m)$/i;
 for (const [eng, e] of wordMap) {
+  if (CONTRACTION.test(eng)) continue;
   const forms = [...e.forms].sort((a, b) => b[1] - a[1]);
   if (forms.length > 1) { map.ambiguous[eng] = forms.map(([f, n]) => `${f}×${n}`); continue; }
   const bucket = e.kind === 'name' ? map.names : e.kind === 'people' ? map.peoples
