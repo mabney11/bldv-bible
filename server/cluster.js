@@ -27,6 +27,9 @@ const cluster = require('cluster');
 const os = require('os');
 
 if (cluster.isPrimary) {
+    // Local dev: translation.db must match prod before any worker opens it.
+    // (No-op in the prod container — see sync-from-prod.cjs.)
+    require('./sync-from-prod.cjs').syncFromProd();
     const numWorkers = parseInt(process.env.WORKERS, 10) || os.cpus().length;
     console.log(`[cluster] master pid=${process.pid}  spawning ${numWorkers} workers`);
 

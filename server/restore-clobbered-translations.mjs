@@ -67,10 +67,9 @@ for (const f of fixes) {
 if (!APPLY) { console.log(`\nDry run — nothing written. Re-run with --apply to restore ${fixes.length} verse(s).`); process.exit(0); }
 if (!fixes.length) process.exit(0);
 
-const stamp = new Date().toISOString().replace(/[:T]/g, '-').slice(0, 16);
-const bak = `${DB}.pre-restore-backup-${stamp}.db`;
-db.exec(`VACUUM INTO '${bak.replace(/'/g, "''")}'`);   // consistent snapshot, WAL-safe (plain cp is not)
-console.log(`\nbackup: ${bak}`);
+const { createRequire } = await import('node:module');
+const { backupDb } = createRequire(import.meta.url)('./db-backup.cjs');
+backupDb(DB, 'pre-restore');   // gzip snapshot in backups/ beside the db, capped (db-backup.cjs)
 
 const hist = db.prepare(`INSERT INTO translation_history (book_id, chapter, verse, status, text, rich_text, saved_at) VALUES (?, ?, ?, ?, ?, ?, ?)`);
 const upd  = db.prepare(`UPDATE translations SET text = ?, updated_at = datetime('now') WHERE book_id = ? AND chapter = ? AND verse = ? AND rich_text = ?`);

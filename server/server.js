@@ -2,6 +2,12 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
+// Local dev must run on prod's translation.db — pulled down here, before any
+// database is opened, and the start REFUSES if prod can't be reached (see
+// sync-from-prod.cjs; PALEO_NO_SYNC=1 to work offline on purpose). No-op in the
+// prod container and in cluster workers (cluster.js syncs once in the primary).
+require('./sync-from-prod.cjs').syncFromProd();
+
 // Database driver: prefer better-sqlite3 (native, fast). If unavailable —
 // missing prebuild binary, blocked install script, build-tools not present —
 // fall back to node:sqlite which is built into Node 22.5+ and stable in

@@ -180,7 +180,7 @@ function Card({ id, selectable, ended, onClose, onPick }) {
             {[...new Set([...item.words, item.materialWord, ...(isStone ? ['yashapah', 'tawar', 'har', 'arach', 'rawach'] : [])])].map((k) => <Word key={k} k={k} />)}
           </div>
           {gone && <p className="st-gone"><Glossed text="This piece is daqaq (broken) in pieces at this moment of the vision — scrub back to see it whole." /> <span className="st-gone-ref">Daniel 2:35</span></p>}
-          {ended && isStone && <p className="st-only"><Glossed text={'Only the aban (stone) remains. The tzalam (likeness) is gone — "no athar (place) was shakach (found) for them" — and the aban (stone) has become a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).'} /></p>}
+          {ended && isStone && <p className="st-only"><Glossed text={'Only the aban (stone) remains. The tzalam (likeness) is gone — "{{Daniel 2:35 | no athar … for them}}" — and the aban (stone) has become a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).'} /></p>}
         </>
       ) : (
         <div className="st-card-h">

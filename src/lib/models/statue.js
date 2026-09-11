@@ -69,7 +69,7 @@ export const PIECES = [
     words: ['raash'], materialWord: 'dahab', tag: 'raash (head) · dahab (gold)', verses: [32, 37, 38], keys: ['raash', 'dahab'],
     title: 'The raash (head) of dahab (gold)', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:37–38',
     named: { kingdom: 'Babal (Babylon)', who: 'Nabawakadanaatzar (Nebuchadnezzar) the malak (king) himself', ref: 'Daniel 2:37–38',
-      note: 'The only piece the text itself names: "you are the raash (head) of dahab (gold)" — the malak (king) of Babal (Babylon).' },
+      note: 'The only piece the text itself names: "{{Daniel 2:38 | you are … dahab}}" — the malak (king) of Babal (Babylon).' },
     parallel: { ref: 'Daniel 7:4', note: 'The qadamay (first) animal of Daniel 7 — like a arayah (lion) with nashar (eagle\'s) gapayan (wings) — stands where the raash (head) of dahab (gold) stands among the arabai (four) malakayan (kings) (Daniel 7:17).' },
     traditional: 'Babal (Babylon), 626–539 BC',
     parts: [
@@ -84,7 +84,7 @@ export const PIECES = [
     id: 'chest', order: 2, y0: 4.4, h: 1.7, material: 'silver',
     words: ['chaday', 'darai'], materialWord: 'kasap', tag: 'chaday (breast) · darai (arms) · kasap (silver)', verses: [32, 39], keys: ['chaday', 'darai', 'kasap'],
     title: 'The chaday (breast) and darai (arms) of kasap (silver)', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:39',
-    named: { kingdom: 'not named in Daniel 2', who: '"acharay (another) malakaw (kingdom) inferior to you"', ref: 'Daniel 2:39; 5:28; 8:20',
+    named: { kingdom: 'not named in Daniel 2', who: '"{{Daniel 2:39 | acharay … you}}"', ref: 'Daniel 2:39; 5:28; 8:20',
       note: 'Daniel 2 gives no name. Daniel 5:28 gives Babal (Babylon) to the Maday (Medes) and Paras (Persians), and Daniel 8:20 names the malakay (kings) of Maday (Media) and Paras (Persia) as the ayal (ram) with two qaranayam (horns) — the malakaw (kingdom) that follows Babal (Babylon) in the book\'s own telling.' },
     parallel: { ref: 'Daniel 7:5; Daniel 8:3–4, 20', note: 'The dab (bear) qawam (raised up) on chad (one) shatar (side) (7:5), and the ayal (ram) whose two qaranayam (horns) were gabah (high), achad (one) gabah (higher) than the other (8:3, 20).' },
     traditional: 'Maday (Media) and Paras (Persia), 539–331 BC — the two darai (arms) read as the two peoples',
@@ -104,7 +104,7 @@ export const PIECES = [
     id: 'belly', order: 3, y0: 2.9, h: 1.5, material: 'bronze',
     words: ['maih', 'yarakaa'], materialWord: 'nachash', tag: 'maih (belly) · yarakaa (thighs) · nachash (brass)', verses: [32, 39], keys: ['maih', 'yarakaa', 'nachash'],
     title: 'The maih (belly) and yarakaa (thighs) of nachash (brass)', dreamRef: 'Daniel 2:32', meaningRef: 'Daniel 2:39',
-    named: { kingdom: 'not named in Daniel 2', who: '"a thalayathay (third) malakaw (kingdom) of nachash (brass), which shall shalat (bear) rule over kal (every) the arai (earth)"', ref: 'Daniel 2:39; 8:21',
+    named: { kingdom: 'not named in Daniel 2', who: '"a {{Daniel 2:39 | thalayathay … arai}}"', ref: 'Daniel 2:39; 8:21',
       note: 'Daniel 2 gives no name. Daniel 8:21 names the shaiyar (rough) tzapayar (goat) as the malak (king) of Yawan (Greece), the one that shabar (breaks) the ayal (ram) of Maday (Media) and Paras (Persia).' },
     parallel: { ref: 'Daniel 7:6; Daniel 8:5–8, 21', note: 'The namar (leopard) with arabai (four) gapayan (wings) and arabai (four) raashayan (heads) (7:6), and the tzapayar (goat) whose gadal (great) qaran (horn) was shabar (broken) for arabai (four) (8:8, 21–22).' },
     traditional: 'Yawan (Greece) under Alexander and his successors, 331–146 BC',
@@ -118,9 +118,9 @@ export const PIECES = [
     id: 'legs', order: 4, y0: 0.5, h: 2.4, material: 'iron',
     words: ['shaq'], materialWord: 'parazal', tag: 'shaq (legs) · parazal (iron)', verses: [33, 40], keys: ['shaq', 'parazal'],
     title: 'The shaq (legs) of parazal (iron)', dreamRef: 'Daniel 2:33', meaningRef: 'Daniel 2:40',
-    named: { kingdom: 'not named anywhere in Daniel', who: '"the rabayaiy (fourth) malakaw (kingdom), thaqayap (strong) as parazal (iron)"', ref: 'Daniel 2:40',
+    named: { kingdom: 'not named anywhere in Daniel', who: '"the {{Daniel 2:40 | rabayaiy … as parazal}}"', ref: 'Daniel 2:40',
       note: 'No book of scripture names the rabayaiy (fourth) malakaw (kingdom). The text says only what it does: it daqaq (breaks) in pieces and raii (crushes) kal (every) the others.' },
-    parallel: { ref: 'Daniel 7:7, 19, 23', note: 'The rabayaiy (fourth) animal, awesome and powerful, with rabarab (great) parazal (iron) shanayan (teeth) — "a rabayaiy (fourth) malakaw (kingdom) on arai (earth)" (7:23).' },
+    parallel: { ref: 'Daniel 7:7, 19, 23', note: 'The rabayaiy (fourth) animal, awesome and powerful, with rabarab (great) parazal (iron) shanayan (teeth) — "{{Daniel 7:23 | a rabayaiy … arai}}" (7:23).' },
     traditional: 'Rome, 146 BC onward — the two shaq (legs) read as its eastern and western halves',
     parts: [-0.42, 0.42].map((x) => ({ kind: 'lathe', x, profile: [[0.2, 0.42], [0.21, 0.7], [0.25, 1.1], [0.33, 1.55], [0.3, 1.9], [0.3, 2.15], [0.34, 2.45], [0.37, 2.8], [0.36, 3.0]] })), // ankle, calf, knee, thigh
   },
@@ -128,9 +128,9 @@ export const PIECES = [
     id: 'feet', order: 5, y0: 0, h: 0.5, material: 'clay',
     words: ['ragal', 'atzabaith'], materialWord: 'chasap', tag: 'ragal (feet) · parazal (iron) · chasap (clay)', verses: [33, 34, 41, 42, 43], keys: ['ragal', 'atzabaith', 'chasap', 'parazal'],
     title: 'The ragal (feet) of parazal (iron) and chasap (clay)', dreamRef: 'Daniel 2:33', meaningRef: 'Daniel 2:41–43',
-    named: { kingdom: 'not named', who: '"a palag (divided) malakaw (kingdom) … partly thaqayap (strong), and partly thabar (broken)"', ref: 'Daniel 2:41–43',
-      note: 'Parazal (iron) irab (mixed) with pachar (potters\') chasap (clay): strength that will not hold together — "they shall not cling to dan (one) dan (another), even as parazal (iron) does not irab (mix) with chasap (clay)". The atzabaith (toes) are the text\'s own detail (2:41–42).' },
-    parallel: { ref: 'Daniel 7:7–8, 24', note: 'The ishar (ten) qaranayan (horns) of the rabayaiy (fourth) animal — "ishar (ten) malakayan (kings)" (7:24) — are often set beside the ishar (ten) atzabaith (toes).' },
+    named: { kingdom: 'not named', who: '"a {{Daniel 2:41 | palag … malakaw}} … {{Daniel 2:42 | partly … thabar}}"', ref: 'Daniel 2:41–43',
+      note: 'Parazal (iron) irab (mixed) with pachar (potters\') chasap (clay): strength that will not hold together — "{{Daniel 2:43 | they shall not … chasap}}". The atzabaith (toes) are the text\'s own detail (2:41–42).' },
+    parallel: { ref: 'Daniel 7:7–8, 24', note: 'The ishar (ten) qaranayan (horns) of the rabayaiy (fourth) animal — "{{Daniel 7:24 | ishar malakayan … malakayan}}" (7:24) — are often set beside the ishar (ten) atzabaith (toes).' },
     traditional: 'The palag (divided) remains of Rome — ishar (ten) malakayan (kings) / a later divided power; the one piece the aban (stone) strikes',
     parts: [
       { kind: 'box', x: -0.44, y: 0, h: 0.42, w: 0.58, d: 1.3, z: 0.22, mixed: true },   // feet (clay body)
@@ -162,13 +162,13 @@ export const STONE = {
   id: 'stone', title: 'The aban (stone) gazar (cut) out laa (without) yadayan (hands)', words: ['aban'], materialWord: 'aban', material: 'stone',
   tag: 'aban (stone)', verses: [34, 35, 44, 45], keys: ['aban', 'tawar'],
   dreamRef: 'Daniel 2:34–35', meaningRef: 'Daniel 2:44–45',
-  named: { kingdom: 'the malakaw (kingdom) the Alahayam of shamayan (heaven) qawam (raises up)', who: '"which shall ilam (never) be chabal (destroyed) … it shall qawam (stand) ilam (forever)"', ref: 'Daniel 2:44',
+  named: { kingdom: 'the malakaw (kingdom) the Alahayam of shamayan (heaven) qawam (raises up)', who: '"{{Daniel 2:44 | which shall … chabal}} … {{Daniel 2:44 | it shall qawam … ilam}}"', ref: 'Daniel 2:44',
     note: 'Gazar (cut) out of the tawar (mountain), laa (without) yadayan (hands); it strikes the ragal (feet), the whole tzalam (likeness) becomes iwar (chaff), and the aban (stone) becomes a rab (great) tawar (mountain) that malaa (fills) the kal (every) arai (earth).' },
-  parallel: { ref: 'Psalm 118:22; Isaiah 28:16; Isaiah 2:2–3; Matthew 21:42–44; Luke 20:17–18; 1 Peter 2:6–8', note: 'The aban (stone) the builders rejected; the tried, precious corner aban (stone); the tawar (mountain) of the house of Yah set above the hills; "on whomever it falls, it will scatter him as dust".' },
+  parallel: { ref: 'Psalm 118:22; Isaiah 28:16; Isaiah 2:2–3; Matthew 21:42–44; Luke 20:17–18; 1 Peter 2:6–8', note: 'The aban (stone) the builders rejected; the tried, precious corner aban (stone); the tawar (mountain) of the house of Yah set above the hills; "{{Matthew 21:44 | on whomever … ipar}}".' },
   traditional: 'The malakaw (kingdom) of the Mashayach (Messiah) / the malakaw (kingdom) of shamayan (heaven)',
   mountain: { ref: 'Isaiah 2:2–3; Micah 4:1–2; Isaiah 11:9; Isaiah 25:6; Ezekiel 36:8; Isaiah 65:25',
-    note: 'Daniel says only that the aban (stone) becomes a rab (great) tawar (mountain) that malaa (fills) the arai (earth); the prophets say what that mountain is like. It is the har (mountain) of Yahawah\'s bayath (house), kawan (established) on the raash (head) of the harayam (mountains), and all gawayam (nations) nahar (flow) to it: "yalak (come), let\'s ilah (go up) to the har (mountain) of Yahawah … he will yarah (teach) us of his darak (ways), and we will yalak (walk) in his arach (paths)" — that is why this mountain is climbed by many arach (paths). "They will not raii (evil) nor shachath (destroy) in all my qadash (holy) har (mountain); for the aratz (earth) will be malaa (full) of the daih (knowledge) of Yahawah" — that is why it is green and teeming with life: the haray (mountains) of Yashar-Al (Israel) nathan (give) forth their branches and nashaa (lift) their paray (fruit), and on this har (mountain) is a mashathah (feast) for all imayam (peoples). The Hebrew prophets say har (𐤄𐤓); Daniel\'s Aramaic says tawar (𐤈𐤅𐤓).' },
-  colour: { ref: 'Exodus 28:20; Revelation 4:3; Revelation 21:11, 18–19', note: 'The aban (stone) here is shown as yashapah (jasper): the last of the abanay (stones) of the breastplate, the look of the One on the throne — "like a yashapah (jasper) stone and a sardius" — and the stone of the city that comes down from shamayan (heaven): her light "as if it were a jasper stone, clear as crystal", her wall of jasper, her first foundation jasper — the stone the city is built of, sent first to break the tzalam (likeness).' },
+    note: 'Daniel says only that the aban (stone) becomes a rab (great) tawar (mountain) that malaa (fills) the arai (earth); the prophets say what that mountain is like. It is the har (mountain) of Yahawah\'s bayath (house), kawan (established) on the raash (head) of the harayam (mountains), and all gawayam (nations) nahar (flow) to it: "{{Isaiah 2:3 | yalak … Yahawah}} … {{Isaiah 2:3 | he will yarah … arach}}" — that is why this mountain is climbed by many arach (paths). "{{Isaiah 11:9 | They … Yahawah}}" — that is why it is green and teeming with life: the haray (mountains) of Yashar-Al (Israel) nathan (give) forth their branches and nashaa (lift) their paray (fruit), and on this har (mountain) is a mashathah (feast) for all imayam (peoples). The Hebrew prophets say har (𐤄𐤓); Daniel\'s Aramaic says tawar (𐤈𐤅𐤓).' },
+  colour: { ref: 'Exodus 28:20; Revelation 4:3; Revelation 21:11, 18–19', note: 'The aban (stone) here is shown as yashapah (jasper): the last of the abanay (stones) of the breastplate, the look of the One on the throne — "{{Revelation 4:3 | hamah … sardius}}" — and the stone of the city that comes down from shamayan (heaven): her light "{{Revelation 21:11 | as if … qarach}}", her wall of jasper, her first foundation jasper — the stone the city is built of, sent first to break the tzalam (likeness).' },
   r: 0.46,
   start: { x: -4.6, y: 7.3, z: 1.6 },       // in the air, well clear of the statue
   strike: { x: -0.85, y: 0.55, z: 1.1 },    // the feet, from the statue's right / the viewer's left
@@ -190,13 +190,17 @@ export const SPEEDS = [0.25, 0.5, 1, 2];
 // comes down on itself — "broken in pieces together" (2:35), so the gaps are short.
 export const BREAK_DELAY = { feet: 0, legs: 0.12, belly: 0.24, chest: 0.36, head: 0.5 };
 
+// Captions are QUOTES of the live text ({{Ref | from … to}}, see lib/passages.js):
+// nothing here is a copy of a verse, so an edit in Translation Studio shows up in
+// the caption as soon as the chapter is refetched. Same for every "…" quote in the
+// notes above. fieldy, 2026-09-11.
 export const PHASES = [
-  { from: 0,             key: 'falls',    caption: 'An aban (stone), gazar (cut) out laa (without) yadayan (hands), comes down.', ref: 'Daniel 2:34' },
-  { from: HIT,           key: 'strikes',  caption: 'It strikes the tzalam (likeness) on its ragal (feet) of parazal (iron) and chasap (clay), and daqaq (breaks) them in pieces.', ref: 'Daniel 2:34' },
-  { from: HIT + 0.55,    key: 'shatters', caption: 'Then the parazal (iron), the chasap (clay), the nachash (brass), the kasap (silver) and the dahab (gold) are daqaq (broken) in pieces chad (together).', ref: 'Daniel 2:35' },
-  { from: DUST_FROM,     key: 'chaff',    caption: 'They become like the iwar (chaff) of the qayat (summer) threshing floors, and the rawach (wind) nashaa (lifts) them away, so that no athar (place) is shakach (found) for them.', ref: 'Daniel 2:35' },
-  { from: ZOOM_FROM,     key: 'stone',    caption: 'And the aban (stone) that struck the tzalam (likeness) —', ref: 'Daniel 2:35' },
-  { from: MOUNTAIN_FROM, key: 'mountain', caption: '— hawaa (became) a rab (great) tawar (mountain), and malaa (filled) the kal (every) arai (earth).', ref: 'Daniel 2:35, 44–45' },
+  { from: 0,             key: 'falls',    caption: 'An {{Daniel 2:34 | aban … yadayan}} — comes down.', ref: 'Daniel 2:34' },
+  { from: HIT,           key: 'strikes',  caption: 'It {{Daniel 2:34 | struck … pieces}}.', ref: 'Daniel 2:34' },
+  { from: HIT + 0.55,    key: 'shatters', caption: 'Then the {{Daniel 2:35 | parazal … chad}}.', ref: 'Daniel 2:35' },
+  { from: DUST_FROM,     key: 'chaff',    caption: 'They {{Daniel 2:35 | hawaa … for them}}.', ref: 'Daniel 2:35' },
+  { from: ZOOM_FROM,     key: 'stone',    caption: 'And the {{Daniel 2:35 | aban … likeness}} —', ref: 'Daniel 2:35' },
+  { from: MOUNTAIN_FROM, key: 'mountain', caption: '— {{Daniel 2:35 | hawaa a rab … arai}}.', ref: 'Daniel 2:35, 44–45' },
 ];
 export function phaseAt(t) {
   let p = PHASES[0];

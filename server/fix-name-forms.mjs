@@ -4,8 +4,8 @@
  * "Adam (Edom)" → "Adawam (Edom)", "Yahawah (Saul)" → "Shaawal (Saul)", …
  *
  * Touches corpus.db (ENG rows) and translation.db (translations.text +
- * rich_text; a translation_history row is written for every changed verse so
- * the change is auditable and reversible). Replacements are one word for one
+ * rich_text; a translation_history row is written for every changed HAND-EDITED
+ * verse so the change is auditable and reversible — seeded rows get none). Replacements are one word for one
  * word, so translation_links' english_indices (word positions) stay valid.
  *
  * Bare KJV names (a verse never rendered: "when Joseph came") become "Yawasap (Joseph)"
@@ -79,7 +79,11 @@ if (existsSync(TRANS_DB)) {
       const changes = [...a.violations.filter(v => v.fix), ...ab.hits, ...ag.hits];
       if (n <= 12) console.log(`  translation ${r.book_id}:${r.chapter}:${r.verse}  ${changes.map(v => `${v.text} → ${v.fix}`).join('; ')}`);
       if (upd) {
-        hist.run(r.book_id, r.chapter, r.verse, r.status, r.text, r.rich_text);   // the state BEFORE this fix
+        // History only for a verse someone actually edited: a seeded row's "before"
+        // is just the previous render, and recording it for every touched verse of
+        // every run put 280k rows / 220 MB into translation.db (2026-09-11). The
+        // reader never reads history; the Studio shows it only for edited verses.
+        if (!seeded) hist.run(r.book_id, r.chapter, r.verse, r.status, r.text, r.rich_text);   // the state BEFORE this fix
         upd.run(ab.fixed, bb.fixed, r.book_id, r.chapter, r.verse);
       }
       // A rendered name adds one English token ("(Joseph)"), so every link index past it moves up.

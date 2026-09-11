@@ -8,8 +8,8 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { apiTransChapter } from '../lib/api.js';
 import { parseRefs, readerHref, inRanges } from '../lib/models/refs.js';
+import { loadChapter, parseQuotes, sliceQuote, verseText } from '../lib/passages.js';
 import './PassageRefs.css';
 
 // "heb (gloss)" pairs in the app's own text — the transliterated Hebrew/Aramaic
@@ -29,13 +29,34 @@ export function glossNodes(text) {
   if (last < t.length) out.push(t.slice(last));
   return out;
 }
-export const Glossed = ({ text }) => <>{glossNodes(text)}</>;
 
-const _chapterCache = new Map();
-function loadChapter(bookId, chapter) {
-  const k = `${bookId}:${chapter}`;
-  if (!_chapterCache.has(k)) _chapterCache.set(k, apiTransChapter(bookId, chapter).then((d) => d?.verses || []).catch(() => []));
-  return _chapterCache.get(k);
+// Prose that QUOTES the text never carries a copy of it: it writes
+// {{Daniel 2:35 | hawaa a rab … arai}} and the slice of the live verse is put in
+// its place here (see lib/passages.js). fieldy: "if a verse is updated, the
+// context must also be updated for anything referring to it." Each quote is
+// wrapped in .hl-quote with the reference as its title; while the chapter is
+// still loading the quote is left blank rather than showing anything stale.
+export function Glossed({ text }) {
+  const parts = useMemo(() => parseQuotes(text), [text]);
+  const specs = parts.filter((p) => typeof p === 'object');
+  const key = specs.map((p) => `${p.ref}|${p.from}|${p.to}`).join('\n');
+  const [quotes, setQuotes] = useState(null);
+  useEffect(() => {
+    if (!specs.length) { setQuotes(null); return; }
+    let live = true;
+    Promise.all(specs.map(async (p) => sliceQuote(await verseText(p.ref), p.from, p.to)))
+      .then((q) => { if (live) setQuotes(q); });
+    return () => { live = false; };
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  if (!specs.length) return <>{glossNodes(text)}</>;
+  let qi = 0;
+  return (
+    <>
+      {parts.map((p, i) => (typeof p === 'string'
+        ? <span key={i}>{glossNodes(p)}</span>
+        : <span key={i} className="hl-quote" title={p.ref}>{quotes ? glossNodes(quotes[qi++]) : ''}</span>))}
+    </>
+  );
 }
 
 function Passage({ refObj }) {

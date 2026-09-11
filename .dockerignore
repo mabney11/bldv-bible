@@ -48,3 +48,4 @@ tests
 # Per-machine caches of the render pipeline — rebuilt on demand, never shipped.
 server/.surface-index-cache.json
 server/.render-all-timings.json
+server/backups/
