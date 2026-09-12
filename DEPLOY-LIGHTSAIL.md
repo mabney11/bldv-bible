@@ -154,6 +154,38 @@ docker run -d --name paleo --restart unless-stopped -p 3000:3000 \
 Worth wrapping in a `deploy.sh` script on the box once you've done it
 manually a couple of times.
 
+## 10. The lexicon: one copy, in git, on both machines
+
+`server/lexicon/` (lexicon.json, homographs.json, the per-language lexicons, the
+curation notes) is plain text tracked in git, and git is the single copy of it:
+the container does not use the files baked into the image — `deploy-blue-green.sh`
+bind-mounts `~/paleo-studio/server/lexicon` from this checkout into the container.
+So there are two ways to change the lexicon and they meet in the same place:
+
+- **On the site, `/admin/lexicon`.** A save writes straight into the checkout on
+  this box (with the usual `.backups/` snapshot, which is gitignored). The server
+  watches the folder and reloads within a second.
+- **On your own machine.** Edit, commit, push. On the box, `git pull` in
+  `~/paleo-studio` brings it in and the running server reloads — no image build,
+  no restart.
+
+`lexicon-sync.sh` keeps the two from drifting: it commits anything the admin page
+changed, pulls (rebase) and pushes. Run it by hand after a session of admin
+edits, or let cron do it every few minutes:
+
+```bash
+chmod +x ~/paleo-studio/lexicon-sync.sh
+git -C ~/paleo-studio config user.name "bldbible server"
+git -C ~/paleo-studio config user.email "server@bldbible.com"
+( crontab -l 2>/dev/null; echo '*/5 * * * * ~/paleo-studio/lexicon-sync.sh >> ~/lexicon-sync.log 2>&1' ) | crontab -
+```
+
+The push needs credentials the box already has for `git pull` (a deploy key or a
+token in the remote URL). Locally, pull before you edit; if you and the admin page
+both change the same file between syncs, git says so in `~/lexicon-sync.log`
+(the script aborts the rebase and leaves the local commit in place) and you
+resolve it like any merge — nothing is overwritten silently.
+
 ## Cost recap
 
 | Item | Cost |

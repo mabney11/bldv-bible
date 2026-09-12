@@ -3971,15 +3971,23 @@ function scheduleRebuild(changedFile) {
 
 // Watch both lexicon files
 const LEXICON_DIR = path.join(__dirname, 'lexicon');
-['lexicon.json', 'homographs.json', 'surface-strongs-overrides.json', 'strongs-location-overrides.json', 'strongs-renumber.json'].forEach(file => {
-    const filePath = path.join(LEXICON_DIR, file);
-    if (fs.existsSync(filePath)) {
-        fs.watch(filePath, (eventType) => {
-            if (eventType === 'change') scheduleRebuild(filePath);
-        });
-        console.log(`[hot-reload] Watching ${file}`);
-    }
-});
+// Watch the FOLDER, not the files: a `git pull` (and the admin page's tmp+rename
+// save) replaces a file with a new inode, which a per-file watch silently loses
+// after the first change. In production the folder is the git checkout on the
+// host, bind-mounted in (deploy-blue-green.sh), so edits from either side land
+// here and reload the same way. Anything the loaders read is reloaded; the rest
+// of the folder (notes, per-language lexicons served statically) needs nothing.
+const LEX_WATCHED = new Set(['lexicon.json', 'homographs.json', 'surface-strongs-overrides.json', 'strongs-location-overrides.json', 'strongs-renumber.json', 'strongs-roots.json', 'hebrew-extra-lexicon.json']);
+try {
+    fs.watch(LEXICON_DIR, (eventType, filename) => {
+        if (!filename || !LEX_WATCHED.has(String(filename))) return;
+        _lexiconCache = null; _strongsRootsCache = null;
+        scheduleRebuild(path.join(LEXICON_DIR, String(filename)));
+    });
+    console.log(`[hot-reload] Watching ${LEXICON_DIR} (${[...LEX_WATCHED].join(', ')})`);
+} catch (e) {
+    console.warn('[hot-reload] could not watch the lexicon folder:', e.message);
+}
 
 // ─── LEXICON ADMIN: raw-file mirror editor ─────────────────────────────────
 // Backs /admin/lexicon — a blunt, format-agnostic mirror of every file

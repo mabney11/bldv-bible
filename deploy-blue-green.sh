@@ -148,6 +148,14 @@ docker rm -f "$NEW" 2>/dev/null || true
 # while still capping total memory+swap well short of the host's full 6GB so
 # $OLD + OS + Caddy + sshd still have room during the overlap. Watch `docker
 # stats` on the next attempt and retune again if this is still too tight.
+# 2026-09-12: server/lexicon is bind-mounted FROM THIS GIT CHECKOUT (~/paleo-studio),
+# not read from the image. fieldy: "there is never a reasonable scenario for prod and
+# local to have different lexicons" — the lexicon is text files tracked in git, and
+# git is the one copy. So an edit saved on /admin/lexicon lands in this working tree
+# (lexicon-sync.sh commits and pushes it; see DEPLOY-LIGHTSAIL.md §10), and an edit
+# made on fieldy's machine arrives with `git pull` — no rebuild, no restart: the
+# server watches the folder and reloads. The image still carries a copy (the build
+# needs compound-hyphenation.json) but at runtime the mount wins.
 docker run -d \
   --name "$NEW" \
   --restart unless-stopped \
@@ -156,6 +164,7 @@ docker run -d \
   --memory-swap="1700m" \
   -p "$NEW_PORT:3000" \
   -v /mnt/paleo-data:/data \
+  -v "$(pwd)/server/lexicon:/app/server/lexicon" \
   --env-file .env \
   -e NODE_ENV=production \
   paleo-studio
