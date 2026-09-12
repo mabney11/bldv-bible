@@ -472,32 +472,38 @@ function cherubFigure(sub, b, s, wing, side, mat, tilt, curl = 0) {
   for (const sz of [-1, 1]) { sub.box(0.3 * s, 0, sz * 0.5 * s, 1.0 * s, 0.32 * s, 0.55 * s, mat); ellipsoid(0.8 * s, 0.16 * s, sz * 0.5 * s, 0.3 * s, 0.16 * s, 0.28 * s); }
   const shoulderY = 7.3 * s;
   if (curl) {
-    // ── the wings arched: each a ribbon of lengthwise feathers laid on a quarter circle
-    // that rises from the shoulder and bends forward (+x) to its crown; the feathers
-    // lie flat on the hoop, the innermost reaching the crown, the outer ones shorter
-    const R = curl, sx0 = 0.1 * s, cx = sx0 + R, arc = R * Math.PI / 2;
-    const bend = (geo, zoff, splay) => {             // a blade built along +z (x thick, y wide) laid on the arc; `splay` bows it outward mid-arc
+    // ── the wings as a canopy: each sweeps out from the shoulder and round in a
+    // quarter circle (in plan) about a point `curl` in front of the figure, staying
+    // low — a ring of feathers COVERING what is before it, not a hoop above it. Two
+    // figures facing each other across that point close the ring, wing tip to wing
+    // tip at the sides. Each wing is a band of lengthwise blades at different radii;
+    // the inner ones reach the tip, the outer stop short, so the ring's rim swells
+    // mid-wing and the inside stays round.
+    const cx = curl, sx0 = 0.1 * s, zsh = 0.9 * s;
+    const R = Math.hypot(cx - sx0, zsh), a0 = Math.atan2(zsh, sx0 - cx), span = a0 - Math.PI / 2, arc = R * span;
+    const lay = (geo, dir, rho, rise) => {           // a blade along +z (x thick, y wide): z → angle round the ring, y → radius, x → height
       const p = geo.attributes.position, v = new THREE.Vector3();
       for (let i = 0; i < p.count; i++) {
         v.fromBufferAttribute(p, i);
-        const th = Math.max(0, v.z) / R, nx = -Math.cos(th), ny = Math.sin(th);
-        p.setXYZ(i, cx - R * Math.cos(th) + nx * v.x, shoulderY + R * Math.sin(th) + ny * v.x, zoff + v.y + splay * Math.sin(2 * th));
+        const u = Math.max(0, v.z) / arc, a = a0 - u * span, r = R + rho + v.y;
+        p.setXYZ(i, cx + r * Math.cos(a), shoulderY + rise * Math.sin(u * Math.PI) + v.x, dir * r * Math.sin(a));
       }
       geo.computeVertexNormals();
     };
     for (const dir of [side, -side]) {
-      for (let j = 0; j < 7; j++) {                  // primaries, side by side across the wing's breadth, the outer ones shorter and bowed out
-        const len = arc * (1 - j * 0.1);
-        const geo = new THREE.SphereGeometry(1, 28, 8); geo.scale(0.05 * s, 0.27 * s, len / 2); geo.translate(0, 0, len / 2);
-        bend(geo, dir * (0.62 + j * 0.24) * s, dir * 0.55 * s * (j / 6)); sub.add(geo, mat);
+      for (let j = 0; j < 10; j++) {                 // the blades, inner to outer: the inner ones emerge from under the wing part-way round and reach the tip, the outer stop short
+        const rho = (-1.95 + j * 0.32) * s, inner = Math.max(0, -rho / (1.95 * s)), outer = Math.max(0, rho / (0.93 * s));
+        const start = arc * 0.3 * inner, len = arc * (1 - 0.42 * outer * outer) - start;
+        const geo = new THREE.SphereGeometry(1, 28, 8); geo.scale(0.05 * s, 0.34 * s, len / 2); geo.translate(0, 0, start + len / 2);
+        lay(geo, dir, rho, 0.9 * s); sub.add(geo, mat);
       }
-      for (let j = 0; j < 6; j++) {                  // coverts over the roots, a layer proud of the primaries
-        const len = arc * (0.42 - j * 0.04);
+      for (let j = 0; j < 6; j++) {                  // coverts over the roots, a layer proud of the blades
+        const len = arc * (0.4 - j * 0.03);
         const geo = new THREE.SphereGeometry(1, 20, 8); geo.scale(0.05 * s, 0.28 * s, len / 2); geo.translate(0.07 * s, 0, len / 2);
-        bend(geo, dir * (0.72 + j * 0.24) * s, dir * 0.55 * s * (j / 6)); sub.add(geo, mat);
+        lay(geo, dir, (-0.33 + j * 0.24) * s, 0.9 * s); sub.add(geo, mat);
       }
-      const pts = []; for (let k = 0; k <= 16; k++) { const th = (k / 16) * Math.PI / 2; pts.push(new THREE.Vector3(cx - R * Math.cos(th), shoulderY + R * Math.sin(th), dir * 0.6 * s)); }
-      sub.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 32, 0.09 * s, 8, false), mat);   // the spar along the inner edge
+      const pts = []; for (let k = 0; k <= 16; k++) { const u = k / 16, a = a0 - u * span, r = R + 0.7 * s; pts.push(new THREE.Vector3(cx + r * Math.cos(a), shoulderY + 0.9 * s * Math.sin(u * Math.PI) + 0.04 * s, dir * r * Math.sin(a))); }
+      sub.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 32, 0.09 * s, 8, false), mat);   // the spar along the outer edge
       ellipsoid(0.2 * s, shoulderY - 0.1 * s, dir * 1.1 * s, 0.32 * s, 0.4 * s, 0.6 * s);              // the muscle at the root
     }
     return;
@@ -543,11 +549,11 @@ function buildArk(b, part) {
   // the kaparath (mercy seat), pure gold, the length and breadth of the chest (25:17)
   sub.box(0, 1.54, 0, 2.5, 0.12, 1.5, 'gold');
   // two cherubim of beaten work at its two ends, facing each other, wings spread upward covering the seat (25:18–20):
-  // each pair rises from the shoulders and arches over the seat to meet the other's at the crown — one hoop over the kaparath
+  // each pair sweeps out and round, low over the seat, to meet the other's at the sides — from above, a ring of wings covering the kaparath
   for (const sx of [-1, 1]) {
-    const c = new THREE.Group(); c.position.set(sx * 0.8, 1.66, 0); c.rotation.y = sx > 0 ? Math.PI : 0;   // each turned to face the other across the seat
+    const c = new THREE.Group(); c.position.set(sx * 0.75, 1.66, 0); c.rotation.y = sx > 0 ? Math.PI : 0;   // each turned to face the other across the seat
     const sub2 = new PieceBuilder(b.M, b.piece);
-    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, 0.8 - 0.1 * 0.11);   // wings arched to meet the other's over the middle of the seat
+    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, 0.75);   // wings swept round the seat's middle, a ring over the kaparath closed by the other's
     c.add(...sub2.bake().children); g.add(c);
   }
   g.add(...sub.bake().children); b.mesh(g);
