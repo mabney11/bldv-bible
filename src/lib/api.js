@@ -106,6 +106,14 @@ export const apiTransChapter = async (book, ch) => {
 // precepts.db answers enabled:false with no verses — the marker just never shows.
 export const apiPrecepts = (book, chapter) =>
   jsonFetch(`/api/precepts/chapter?book=${book}&chapter=${chapter}`).catch(() => ({ enabled: false, verses: {} }));
+export const apiPreceptBooks = () => jsonFetch('/api/precepts/books');
+export const apiPreceptList = ({ book, chapter, status, kind, limit, offset } = {}) => {
+  const q = new URLSearchParams();
+  if (book) q.set('book', book); if (chapter) q.set('chapter', chapter);
+  if (status && status !== 'any') q.set('status', status); if (kind && kind !== 'any') q.set('kind', kind);
+  if (limit) q.set('limit', limit); if (offset) q.set('offset', offset);
+  return jsonFetch(`/api/precepts/list?${q}`);
+};
 export const apiPreceptReview = (from, to, status, note = '') => jsonFetch('/api/precepts/review', {
   method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ from, to, status, note }),
 });

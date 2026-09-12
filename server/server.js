@@ -11876,6 +11876,76 @@ app.get('/api/precepts/chapter', (req, res) => {
     }
 });
 
+// GET /api/precepts/books -> { enabled, built_at, books: [{ book, name, verses, links }] }
+// Per-book counts for the Precept Studio's book list (each pair counted once,
+// under both of its books).
+app.get('/api/precepts/books', (req, res) => {
+    try {
+        const db = preceptsDb();
+        if (!db) return res.json({ enabled: false, built_at: null, books: [] });
+        const rows = db.prepare(`SELECT from_book AS book, COUNT(DISTINCT from_chapter || ':' || from_verse) AS verses, COUNT(*) AS links
+                                 FROM precepts GROUP BY from_book`).all();
+        const books = rows.map(r => ({ ...r, name: canonName(r.book) }))
+                          .sort((a, b) => (BOOK_ORDER_POS[a.book] ?? 9999) - (BOOK_ORDER_POS[b.book] ?? 9999));
+        let built_at = null;
+        try { for (const m of _preceptsStmts.meta.all()) if (m.key === 'built_at') built_at = m.value; } catch {}
+        res.json({ enabled: true, built_at, books });
+    } catch (err) {
+        console.error('GET /api/precepts/books failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /api/precepts/list?book=&chapter=&status=&kind=&limit=&offset=
+//   -> { total, items: [{ from:{book,chapter,verse,name,text}, to:{…}, kind, score, status }] }
+// The Studio's queue: each pair ONCE (the from side is whichever of its two
+// verses sorts lower, unless ?book= pins the from side to that book), strongest
+// first. status filters: unreviewed | confirmed | rejected | any (default any;
+// rejected rows are admin-only, as in /chapter).
+app.get('/api/precepts/list', (req, res) => {
+    try {
+        const db = preceptsDb();
+        if (!db) return res.json({ total: 0, items: [] });
+        const admin = isAdminRequest(req);
+        const book = parseInt(req.query.book, 10) || null;
+        const chapter = parseInt(req.query.chapter, 10) || null;
+        const status = String(req.query.status || 'any');
+        const kind = String(req.query.kind || 'any');
+        const limit = Math.min(500, Math.max(1, parseInt(req.query.limit, 10) || 100));
+        const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
+        const where = [];
+        const params = [];
+        if (book) { where.push('from_book=?'); params.push(book); if (chapter) { where.push('from_chapter=?'); params.push(chapter); } }
+        else where.push('(from_book, from_chapter, from_verse) < (to_book, to_chapter, to_verse)');
+        if (kind !== 'any') { where.push('kind=?'); params.push(kind); }
+        let rows = db.prepare(`SELECT * FROM precepts WHERE ${where.join(' AND ')} ORDER BY score DESC, from_book, from_chapter, from_verse`).all(...params);
+        // When pinned to a book, a pair whose two verses are both in that book
+        // appears twice (once per direction) — keep the lower-sorting one.
+        if (book) rows = rows.filter(r => r.to_book !== book || r.from_chapter < r.to_chapter || (r.from_chapter === r.to_chapter && r.from_verse < r.to_verse));
+        // reviews: one query for everything the rows touch would be big; the
+        // table is small, read it whole.
+        const reviews = new Map();
+        try {
+            for (const r of translationDb.tdb.prepare(`SELECT * FROM precept_reviews`).all()) {
+                reviews.set(`${r.from_book}:${r.from_chapter}:${r.from_verse}|${r.to_book}:${r.to_chapter}:${r.to_verse}`, r.status);
+                reviews.set(`${r.to_book}:${r.to_chapter}:${r.to_verse}|${r.from_book}:${r.from_chapter}:${r.from_verse}`, r.status);
+            }
+        } catch {}
+        const withStatus = rows.map(r => ({ r, status: reviews.get(`${r.from_book}:${r.from_chapter}:${r.from_verse}|${r.to_book}:${r.to_chapter}:${r.to_verse}`) || null }))
+            .filter(x => admin || x.status !== 'rejected')
+            .filter(x => status === 'any' ? true : status === 'unreviewed' ? !x.status : x.status === status);
+        const page = withStatus.slice(offset, offset + limit).map(({ r, status }) => ({
+            from: { book: r.from_book, chapter: r.from_chapter, verse: r.from_verse, name: canonName(r.from_book), text: preceptSnippet(r.from_book, r.from_chapter, r.from_verse) },
+            to:   { book: r.to_book,   chapter: r.to_chapter,   verse: r.to_verse,   name: canonName(r.to_book),   text: preceptSnippet(r.to_book, r.to_chapter, r.to_verse) },
+            kind: r.kind, score: r.score, shared: r.shared, run: r.run, source: r.source, status,
+        }));
+        res.json({ total: withStatus.length, items: page });
+    } catch (err) {
+        console.error('GET /api/precepts/list failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // PUT /api/precepts/review  { from:{book,chapter,verse}, to:{book,chapter,verse}, status, note? }
 // status: confirmed | rejected | manual | clear (clear = forget the review).
 // Admin-only on the public instance (blockWritesInReadOnly), open locally like

@@ -37,6 +37,7 @@ const StrongsOverrides = lazy(() => import('./pages/StrongsOverrides.jsx'));
 const GlossStudio      = lazy(() => import('./pages/GlossStudio.jsx'));
 const LexiconAdmin     = lazy(() => import('./pages/LexiconAdmin.jsx'));
 const VersePage        = lazy(() => import('./pages/VersePage.jsx'));
+const PreceptStudio    = lazy(() => import('./pages/PreceptStudio.jsx'));
 const Models           = lazy(() => import('./pages/Models.jsx'));
 const HolyLandMap      = lazy(() => import('./pages/HolyLandMap.jsx'));
 const Prints           = lazy(() => import('./pages/Prints.jsx'));
@@ -333,6 +334,7 @@ export default function App() {
         <Route path="/models/prints"  element={<Prints />} />
         <Route path="/models/statue"  element={<Statue />} />
         <Route path="/models/temple"  element={<Temple />} />
+        <Route path="/precepts"       element={<PreceptStudio />} />
         <Route path="/passages"       element={<Passages />} />
         <Route path="/passage"        element={<Passage />} />
         <Route path="/passage/:slug"  element={<Passage />} />
