@@ -353,35 +353,49 @@ function buildRamp(b, part) {   // a wedge rising to the altar's top from the so
   b.add(geo, 'stone');
 }
 
-/** A flat, feathered, tapered wing blade, `len` long, in the x/y plane (root at x = 0, pointing +x), thickness scaled by `s`. */
+/**
+ * A wing as a stylised cast plate, `len` long, in the x/y plane, root at x = 0 pointing +x:
+ * a straight top edge, a lower edge stepped in four broad feather-ranks, the whole
+ * blade tapering a little toward the tip. Faceless-statue style, no engraving.
+ */
 function wingGeo(len, s) {
   const sh = new THREE.Shape();
-  sh.moveTo(0, -0.9 * s); sh.lineTo(0, 1.1 * s);
-  sh.quadraticCurveTo(len * 0.35, 1.7 * s, len * 0.75, 1.0 * s); sh.quadraticCurveTo(len * 0.95, 0.7 * s, len, 0.15 * s);
-  for (let i = 0; i < 7; i++) { const u = 1 - i / 7, u2 = 1 - (i + 1) / 7; sh.quadraticCurveTo(len * (u + u2) / 2, -1.3 * s - Math.sin(u * 3.1) * 0.3 * s, len * u2, -1.0 * s - Math.sin(u2 * 3.1) * 0.6 * s); }
-  return new THREE.ExtrudeGeometry(sh, { depth: 0.18 * s, bevelEnabled: true, bevelThickness: 0.05 * s, bevelSize: 0.06 * s, bevelSegments: 2 });
+  const h0 = 1.15 * s;                 // half-depth at the root
+  sh.moveTo(0, -h0); sh.lineTo(0, h0);
+  sh.lineTo(len * 0.97, h0 * 0.82); sh.quadraticCurveTo(len, h0 * 0.7, len, h0 * 0.35);   // straight top edge, rounded tip
+  // stepped lower edge: four ranks, each a little deeper than the one outside it
+  const ranks = 4;
+  for (let i = 0; i < ranks; i++) {
+    const x1 = len * (1 - i / ranks), x0 = len * (1 - (i + 1) / ranks);
+    const d1 = h0 * (0.35 + i * 0.22), d0 = h0 * (0.35 + (i + 1) * 0.22);
+    sh.lineTo(x1 - len * 0.03, -d1); sh.quadraticCurveTo(x1 - len * 0.12, -d0 * 1.05, x0 + len * 0.02, -d0);
+  }
+  sh.lineTo(0, -h0);
+  return new THREE.ExtrudeGeometry(sh, { depth: 0.22 * s, bevelEnabled: true, bevelThickness: 0.06 * s, bevelSize: 0.07 * s, bevelSegments: 2 });
 }
 
-/** A standing winged figure, `h` high, one wing to `side` (the wall), the other to the middle. Facing +x (east, the house). */
+/**
+ * A standing winged figure, `h` high, faceless and columnar: a robe like a pillar to the
+ * ground, a plain collar, a smooth featureless head under a low cap, arms folded before
+ * the body; one wing to `side` (the wall), the other to the middle, both held straight out
+ * and level at the shoulder (1 Kings 6:27). Faces +x (east, toward the house — 2 Chr 3:13).
+ */
 function buildCherub(b, part, mat = 'gold') {
   const { x, y, z, h, wing, side } = part;
   const s = h / 10;
   const g = new THREE.Group(); g.position.set(x, y, z); g.userData.slot = part.glb;
   const sub = new PieceBuilder(b.M, b.piece);
-  sub.lathe(0, 0, 0, [[1.4 * s, 0], [1.5 * s, 0.2 * s], [1.15 * s, 2.5 * s], [0.95 * s, 5 * s], [1.05 * s, 6.8 * s], [1.35 * s, 7.4 * s], [0.9 * s, 7.9 * s], [0.45 * s, 8.1 * s], [0, 8.15 * s]], mat, 32);   // robe & shoulders
-  sub.sphere(0.05 * s, 8.85 * s, 0, 0.62 * s, mat, 18);                                                                                              // head
-  sub.lathe(0, 9.2 * s, 0, [[0.62 * s, 0], [0.7 * s, 0.35 * s], [0.5 * s, 0.75 * s], [0, 0.85 * s]], mat, 20);                                         // headdress
-  sub.box(0.42 * s, 8.6 * s, 0, 0.5 * s, 0.35 * s, 0.2 * s, mat);                                                                                       // the face's brow line (faces +x)
-  for (const sx of [-1, 1]) sub.capsule([0.3 * s, 6.9 * s, sx * 1.1 * s], [0.9 * s, 5.2 * s, sx * 0.55 * s], 0.28 * s, mat);                          // arms, before the body
-  for (const sz of [-1, 1]) sub.box(0.35 * s, 0, sz * 0.5 * s, 1.1 * s, 0.35 * s, 0.6 * s, mat);                                                    // feet — "they stood on their feet" (2 Chr 3:13)
-  // Wings: one flat, feathered, tapered blade each side, held out level at the shoulder.
+  sub.lathe(0, 0, 0, [[1.5 * s, 0], [1.5 * s, 0.25 * s], [1.3 * s, 0.4 * s], [1.22 * s, 4.5 * s], [1.18 * s, 6.6 * s], [1.3 * s, 7.0 * s], [1.45 * s, 7.35 * s], [1.05 * s, 7.75 * s], [0.5 * s, 8.0 * s], [0, 8.05 * s]], mat, 40);   // the robe, a pillar; the collar at the shoulders
+  sub.sphere(0, 8.75 * s, 0, 0.66 * s, mat, 24);                                                                                                    // the head, smooth, no features
+  sub.lathe(0, 9.05 * s, 0, [[0.62 * s, 0], [0.7 * s, 0.25 * s], [0.62 * s, 0.55 * s], [0.3 * s, 0.75 * s], [0, 0.8 * s]], mat, 24);                // a low cap
+  for (const sz of [-1, 1]) sub.box(0.45 * s, 0, sz * 0.5 * s, 1.2 * s, 0.3 * s, 0.6 * s, mat);                                                     // feet — "they stood on their feet"
+  // Wings: level at the shoulder, straight out to each side.
   for (const dir of [side, -side]) {
     const geo = wingGeo(wing, s);
     geo.rotateY(dir > 0 ? Math.PI / 2 : -Math.PI / 2);   // blade along ±z, faces ±x
-    geo.translate(0, 6.9 * s, 0);
+    geo.translate(0, 7.0 * s, 0);
     sub.add(geo, mat);
-    // the feathers as raised ribs
-    for (let i = 1; i <= 5; i++) sub.capsule([0.1 * s, 6.9 * s + 0.7 * s - i * 0.33 * s, dir * 0.6 * s], [0.1 * s, 6.9 * s + 0.3 * s - i * 0.36 * s, dir * (wing - 0.4 * s - i * 0.15 * s)], 0.04 * s, mat);
+    sub.capsule([0.05 * s, 7.0 * s, dir * 1.0 * s], [0.05 * s, 6.85 * s, dir * (wing - 0.3 * s)], 0.16 * s, mat);   // the leading spar
   }
   g.add(...sub.bake().children);
   b.mesh(g);
