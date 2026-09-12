@@ -478,6 +478,7 @@ function cherubFigure(sub, b, s, wing, side, mat, tilt, spinePts = null) {
   const UPV = new THREE.Vector3(0, 1, 0);
   for (const dir of [side, -side]) {
     const apex = spinePts?.apex ? new THREE.Vector3(spinePts.apex[0] * s, spinePts.apex[1] * s, dir * spinePts.apex[2] * s) : null;   // an umbrella's apex: the feathers drape away from it
+    const slope = spinePts?.drape ? new THREE.Vector3(0, spinePts.drape[0], -dir * spinePts.drape[1]).normalize() : null;           // or a fixed slope: [down, out] — the feathers fall outward from the spine at that pitch
     const pts = (spinePts?.pts || spinePts) || [
       [-0.85, 5.6, 0.55],                            // the root, in the back
       [-0.75, 7.6, 1.0],                             // rising past the shoulder blade
@@ -493,8 +494,8 @@ function cherubFigure(sub, b, s, wing, side, mat, tilt, spinePts = null) {
         v.fromBufferAttribute(p, k);
         const u = Math.min(1, Math.max(0, v.z / L));
         spine.getPointAt(u, S); spine.getTangentAt(u, T);
-        if (apex) {                                  // drape down the dome, away from the apex, along the surface — but hang straight near the root, so the head is not buried
-          N.copy(apex).sub(S); N.addScaledVector(T, -N.dot(T)); if (N.lengthSq() < 1e-6) N.copy(UPV); N.normalize();
+        if (apex || slope) {                         // drape outward and down (away from the apex, or at the fixed slope) — but hang straight near the root, so the head is not buried
+          if (slope) N.copy(slope); else { N.copy(apex).sub(S); N.addScaledVector(T, -N.dot(T)); if (N.lengthSq() < 1e-6) N.copy(UPV); N.normalize(); }
           const w = Math.min(1, Math.max(0, (u - 0.2) / 0.3)); N.multiplyScalar(w).addScaledVector(UPV, 1 - w).normalize();
         } else {
           T.y = 0; if (T.lengthSq() < 1e-6) T.set(-1, 0, 0); T.normalize();   // the feathers hang straight down from the spine, whatever its pitch
@@ -511,14 +512,31 @@ function cherubFigure(sub, b, s, wing, side, mat, tilt, spinePts = null) {
       geo.rotateX(angle);                            // droop toward −y about the root
       hang(geo); sub.add(geo, mat);
     };
-    const dense = spinePts?.dense || 1;              // more feathers, closer set, for a fuller wing
-    const nP = Math.round(9 * dense), nS = Math.round(8 * dense), nC = Math.round(7 * dense), fw = 1 / Math.sqrt(dense);
+    const dense = spinePts?.dense || 1, wide = spinePts?.wide || 1, droop = spinePts?.droop ?? 1;   // more feathers closer set; broader blades; shorter hanging feathers (a canopy, not a curtain)
+    const nP = Math.round(9 * dense), nS = Math.round(8 * dense), nC = Math.round(7 * dense), fw = wide / Math.sqrt(dense), dr = (u) => 1 + (droop - 1) * u;
+    if (apex || slope) {
+      // a canopy wing: the feathers are set in a row ALL ALONG the spine (as a bird's
+      // primaries are), each falling from it down the drape — longest mid-wing — and
+      // swept a little toward the tip; a second, shorter row lies over their roots
+      const fall = (u, k) => L * droop * 0.5 * (0.3 + 0.7 * Math.pow(Math.sin(Math.PI * Math.min(1, u * 1.05)), 0.7)) * k;
+      const row = (n, u0, k, w, xOff) => {
+        for (let i = 0; i < n; i++) {
+          const u = u0 + (1 - u0) * (i / (n - 1)), len = fall(u, k);
+          const geo = new THREE.SphereGeometry(1, 8, 14); geo.scale(0.07 * s, len / 2, w); geo.translate(xOff, -len / 2, 0);
+          const p = geo.attributes.position; for (let q = 0; q < p.count; q++) p.setZ(q, p.getZ(q) + u * L - p.getY(q) * 0.3);   // along the spine, trailing toward the tip
+          hang(geo); sub.add(geo, mat);
+        }
+      };
+      row(nP + nS, 0.12, 1, 0.3 * s * fw, 0);
+      row(nC + 3, 0.1, 0.45, 0.34 * s * fw, 0.1 * s);
+    } else {
     // primaries: long feathers fanning from the spine (the tip) to ~55° down
-    for (let i = 0; i < nP; i++) { const u = i / (nP - 1); feather(u * 0.95, L * (1 - u * 0.42), (0.36 - u * 0.06) * s * fw, 0.07 * s, 0.05 * s); }
+    for (let i = 0; i < nP; i++) { const u = i / (nP - 1); feather(u * 0.95, L * (1 - u * 0.42) * dr(u), (0.36 - u * 0.06) * s * fw, 0.07 * s, 0.05 * s); }
     // secondaries: shorter, fanning through the same angles between the primaries
-    for (let i = 0; i < nS; i++) { const u = (i + 0.5) / nS; feather(u * 0.95 + 0.05, L * (0.66 - u * 0.24), 0.34 * s * fw, 0.07 * s, 0.17 * s); }
+    for (let i = 0; i < nS; i++) { const u = (i + 0.5) / nS; feather(u * 0.95 + 0.05, L * (0.66 - u * 0.24) * dr(u), 0.34 * s * fw, 0.07 * s, 0.17 * s); }
     // coverts: short and full over the roots
-    for (let i = 0; i < nC; i++) { const u = i / (nC - 1); feather(u * 0.9 + 0.08, L * (0.36 - u * 0.1), 0.3 * s * fw, 0.07 * s, 0.29 * s); }
+    for (let i = 0; i < nC; i++) { const u = i / (nC - 1); feather(u * 0.9 + 0.08, L * (0.36 - u * 0.1) * dr(u), 0.3 * s * fw, 0.07 * s, 0.29 * s); }
+    }
     // the leading edge: a spar along the spine
     sub.add(new THREE.TubeGeometry(spine, 40, 0.12 * s, 8, false), mat);
   }
@@ -545,9 +563,10 @@ function buildArk(b, part) {
   for (const sx of [-1, 1]) {
     const c = new THREE.Group(); c.position.set(sx * 0.75, 1.66, 0); c.rotation.y = sx > 0 ? Math.PI : 0;   // each turned to face the other across the seat
     const sub2 = new PieceBuilder(b.M, b.piece);
-    // the same wings as the great cherubim, but from the crest they stretch forward and down over
-    // the seat, spreading wide — an umbrella; the tips meet the other's low over the middle
-    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, { pts: [[-0.85, 5.6, 1.0], [-0.5, 8.2, 1.9], [0.6, 10.6, 3.2], [3.2, 10.3, 4.6], [5.4, 9.0, 4.6], [6.7, 7.4, 3.8]], apex: [6.8, 13.5, 0], dense: 1.6 });
+    // the same wings as the great cherubim, but each rises high over the head and reaches right
+    // across the seat to come down before the other cherub, the feathers draping outward from the
+    // crown: the four wings overlap into one canopy over the kaparath (the heron's umbrella)
+    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, { pts: [[-0.85, 5.6, 1.0], [-0.5, 8.4, 1.8], [1.2, 11.6, 1.6], [4.2, 13.4, 0.9], [7.4, 12.8, 0.7], [10.2, 10.4, 1.6], [12.0, 7.4, 3.4]], drape: [0.6, 0.8], dense: 2.4, wide: 2.3, droop: 0.64 });
     c.add(...sub2.bake().children); g.add(c);
   }
   g.add(...sub.bake().children); b.mesh(g);
@@ -1490,6 +1509,14 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       if (roamStep(dt)) dirty = true;
       if (stepFlight(now)) dirty = true;
       if (!roam.on && controls.update()) dirty = true;
+      if (!roam.on && !following && !flight && xrayAt(modeRef.current, clock.t) < 0.5) {   // never through a wall: pull the eye in to the first solid between the target and it
+        const off = probe.copy(camera.position).sub(controls.target), dist = off.length();
+        if (dist > 0.5) {
+          rRay.set(controls.target, off.normalize()); rRay.far = dist; rRay.near = 0;
+          const h = rRay.intersectObjects(solids, false).find((q) => q.object.visible && !(q.object.material?.transparent && q.object.material.opacity < 0.3));
+          if (h && h.distance < dist - 0.3) { camera.position.copy(controls.target).addScaledVector(off, Math.max(0.6, h.distance - 0.5)); dirty = true; }
+        }
+      }
       if (!roam.on) {                                // never below the floor: the house's floor inside its footprint, the court's ground outside
         const c = camera.position, inHouse = c.x > WEST_X - 2 && c.x < PORCH_X1 + 2 && Math.abs(c.z) < OUTER_Z + 2;
         const floor = (landAt(modeRef.current, clock.t) > 0.5 ? -60 : inHouse ? 0 : H.courtY) + 0.7;
