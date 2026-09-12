@@ -376,27 +376,71 @@ function wingGeo(len, s) {
 }
 
 /**
- * A standing winged figure, `h` high, faceless and columnar: a robe like a pillar to the
- * ground, a plain collar, a smooth featureless head under a low cap, arms folded before
- * the body; one wing to `side` (the wall), the other to the middle, both held straight out
- * and level at the shoulder (1 Kings 6:27). Faces +x (east, toward the house — 2 Chr 3:13).
+ * A great karawab, `h` high: a standing figure in a pleated robe belted at the waist,
+ * a broad pectoral collar, shoulders, arms folded before the breast, a smooth
+ * featureless head under a banded headdress that falls behind the neck; each wing a
+ * FAN of feathers from the shoulder — long primaries at the tip, secondaries inside
+ * them, a row of coverts over the roots — held straight out and level (1 Kings 6:27),
+ * one to `side` (the wall), the other to the middle. Faces +x (east, toward the
+ * house — 2 Chronicles 3:13). Faceless by fieldy's choice; no engraving.
  */
 function buildCherub(b, part, mat = 'gold') {
   const { x, y, z, h, wing, side } = part;
   const s = h / 10;
   const g = new THREE.Group(); g.position.set(x, y, z); g.userData.slot = part.glb;
   const sub = new PieceBuilder(b.M, b.piece);
-  sub.lathe(0, 0, 0, [[1.5 * s, 0], [1.5 * s, 0.25 * s], [1.3 * s, 0.4 * s], [1.22 * s, 4.5 * s], [1.18 * s, 6.6 * s], [1.3 * s, 7.0 * s], [1.45 * s, 7.35 * s], [1.05 * s, 7.75 * s], [0.5 * s, 8.0 * s], [0, 8.05 * s]], mat, 40);   // the robe, a pillar; the collar at the shoulders
-  sub.sphere(0, 8.75 * s, 0, 0.66 * s, mat, 24);                                                                                                    // the head, smooth, no features
-  sub.lathe(0, 9.05 * s, 0, [[0.62 * s, 0], [0.7 * s, 0.25 * s], [0.62 * s, 0.55 * s], [0.3 * s, 0.75 * s], [0, 0.8 * s]], mat, 24);                // a low cap
-  for (const sz of [-1, 1]) sub.box(0.45 * s, 0, sz * 0.5 * s, 1.2 * s, 0.3 * s, 0.6 * s, mat);                                                     // feet — "they stood on their feet"
-  // Wings: level at the shoulder, straight out to each side.
-  for (const dir of [side, -side]) {
-    const geo = wingGeo(wing, s);
-    geo.rotateY(dir > 0 ? Math.PI / 2 : -Math.PI / 2);   // blade along ±z, faces ±x
-    geo.translate(0, 7.0 * s, 0);
+  const ellipsoid = (px, py, pz, rx, ry, rz, rotX = 0, rotY = 0, rotZ = 0, seg = 14) => {
+    const geo = new THREE.SphereGeometry(1, seg, Math.max(8, seg - 4)); geo.scale(rx, ry, rz);
+    if (rotX) geo.rotateX(rotX); if (rotY) geo.rotateY(rotY); if (rotZ) geo.rotateZ(rotZ);
+    geo.translate(px, py, pz); sub.add(geo, mat);
+  };
+  // ── the robe: a pleated skirt from the hem to the belt, then the bodice to the collar
+  const skirt = new THREE.LatheGeometry([[1.62, 0], [1.6, 0.18], [1.38, 1.2], [1.22, 3.0], [1.12, 4.6], [1.08, 5.1]].map(([r, dy]) => new THREE.Vector2(r * s, dy * s)), 96);
+  { const p = skirt.attributes.position, v = new THREE.Vector3();
+    for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const a = Math.atan2(v.z, v.x), t = 1 - v.y / (5.1 * s); const k = 1 + 0.045 * t * Math.cos(a * 22); p.setXYZ(i, v.x * k, v.y, v.z * k); }
+    skirt.computeVertexNormals(); sub.add(skirt, mat); }
+  sub.lathe(0, 5.1 * s, 0, [[1.1 * s, 0], [1.02 * s, 0.6 * s], [1.08 * s, 1.5 * s], [1.22 * s, 2.1 * s], [1.28 * s, 2.35 * s], [0.9 * s, 2.55 * s], [0.42 * s, 2.7 * s], [0, 2.72 * s]], mat, 48);   // bodice to the shoulders
+  sub.torus(0, 5.15 * s, 0, 1.1 * s, 0.11 * s, mat, Math.PI / 2);                                                                                   // the belt
+  sub.torus(0, 5.15 * s, 0, 1.1 * s, 0.05 * s, mat, Math.PI / 2); ellipsoid(1.16 * s, 5.15 * s, 0, 0.14 * s, 0.22 * s, 0.22 * s);                    // its clasp, at the front
+  sub.lathe(0, 7.15 * s, 0, [[0.55 * s, 0], [1.0 * s, 0.05 * s], [1.05 * s, 0.32 * s], [0.6 * s, 0.5 * s], [0.5 * s, 0.6 * s]], mat, 48);          // the pectoral collar
+  for (let i = 0; i < 3; i++) sub.torus(0, 7.2 * s + i * 0.1 * s, 0, (1.02 - i * 0.14) * s, 0.035 * s, mat, Math.PI / 2);                             // its rows
+  // ── shoulders, arms folded before the breast, hands
+  for (const sz of [-1, 1]) {
+    ellipsoid(0, 7.35 * s, sz * 1.05 * s, 0.5 * s, 0.42 * s, 0.5 * s);                                                                            // shoulder
+    sub.capsule([0.15 * s, 7.25 * s, sz * 1.25 * s], [0.75 * s, 5.95 * s, sz * 1.05 * s], 0.3 * s, mat);                                          // upper arm
+    sub.capsule([0.75 * s, 5.95 * s, sz * 1.05 * s], [1.15 * s, 6.05 * s, -sz * 0.35 * s], 0.27 * s, mat);                                        // forearm across the breast
+    ellipsoid(1.2 * s, 6.08 * s, -sz * 0.5 * s, 0.22 * s, 0.16 * s, 0.34 * s, 0, 0, 0.3 * sz);                                                     // hand
+  }
+  // ── the head: featureless, under a banded headdress with a fall behind the neck
+  sub.cyl(0, 7.75 * s, 0, 0.32 * s, 0.55 * s, mat, 0.34 * s, 20);                                                                                     // neck
+  ellipsoid(0.02 * s, 8.95 * s, 0, 0.62 * s, 0.72 * s, 0.6 * s);                                                                                    // head
+  sub.lathe(0, 9.0 * s, 0, [[0.66 * s, 0], [0.72 * s, 0.25 * s], [0.7 * s, 0.55 * s], [0.5 * s, 0.85 * s], [0.2 * s, 1.0 * s], [0, 1.02 * s]], mat, 32);   // the headdress cap
+  sub.torus(0, 9.05 * s, 0, 0.7 * s, 0.07 * s, mat, Math.PI / 2);                                                                                      // its band
+  ellipsoid(-0.45 * s, 8.35 * s, 0, 0.42 * s, 0.85 * s, 0.62 * s);                                                                                   // the fall behind
+  // ── feet
+  for (const sz of [-1, 1]) { sub.box(0.3 * s, 0, sz * 0.5 * s, 1.0 * s, 0.32 * s, 0.55 * s, mat); ellipsoid(0.8 * s, 0.16 * s, sz * 0.5 * s, 0.3 * s, 0.16 * s, 0.28 * s); }
+  // ── the wings: fans of feathers from the shoulder, straight out and level
+  const shoulderY = 7.3 * s;
+  const feather = (dir, angle, len, w, t, xOff) => {
+    // a feather: a flattened, tapered blade from the shoulder outward at `angle` below level
+    const geo = new THREE.SphereGeometry(1, 10, 6); geo.scale(t, w, len / 2);
+    geo.translate(0, 0, len / 2);                    // root at the origin, tip at +z
+    geo.rotateX(angle);                              // droop toward −y (about the shoulder, in the wing's plane)
+    if (dir < 0) geo.rotateY(Math.PI);               // to the other side
+    geo.translate(xOff, shoulderY, dir * 0.9 * s);
     sub.add(geo, mat);
-    sub.capsule([0.05 * s, 7.0 * s, dir * 1.0 * s], [0.05 * s, 6.85 * s, dir * (wing - 0.3 * s)], 0.16 * s, mat);   // the leading spar
+  };
+  for (const dir of [side, -side]) {
+    const span = wing - 0.9 * s;                     // shoulder to the wall
+    // primaries: nine long feathers fanning from level (the tip) to ~55° down
+    for (let i = 0; i < 9; i++) { const u = i / 8; feather(dir, u * 0.95, span * (1 - u * 0.42), (0.36 - u * 0.06) * s, 0.07 * s, 0.05 * s); }
+    // secondaries: shorter, fanning through the same angles between the primaries
+    for (let i = 0; i < 8; i++) { const u = (i + 0.5) / 8; feather(dir, u * 0.95 + 0.05, span * (0.66 - u * 0.24), 0.34 * s, 0.07 * s, 0.17 * s); }
+    // coverts: short and full over the roots
+    for (let i = 0; i < 7; i++) { const u = i / 6; feather(dir, u * 0.9 + 0.08, span * (0.36 - u * 0.1), 0.3 * s, 0.07 * s, 0.29 * s); }
+    // the leading edge: a spar along the top, and a ridge of muscle at the root
+    sub.capsule([0.1 * s, shoulderY + 0.12 * s, dir * 0.9 * s], [0.1 * s, shoulderY, dir * (wing - 0.25 * s)], 0.12 * s, mat);
+    ellipsoid(0.2 * s, shoulderY - 0.15 * s, dir * 1.35 * s, 0.32 * s, 0.42 * s, 0.7 * s);
   }
   g.add(...sub.bake().children);
   b.mesh(g);
@@ -864,7 +908,7 @@ function exportGlb(obj, name, toFileFrame = false) {
   const exporter = new GLTFExporter();
   const clone = obj.clone(true);
   clone.position.set(0, 0, 0); clone.rotation.set(0, 0, 0); clone.scale.set(1, 1, 1);
-  if (toFileFrame) clone.rotation.y = Math.PI / 2;   // the slot's file frame faces +z (fitSlot turns it back to +x), so a detailed copy round-trips exactly
+  if (toFileFrame) clone.rotation.y = -Math.PI / 2;   // the slot's file frame faces +z (fitSlot turns it back to +x), so a detailed copy round-trips exactly
   clone.traverse((o) => { if (o.isLight || o.isSprite) o.removeFromParent?.(); });
   clone.updateMatrixWorld(true);
   exporter.parse(clone, (buf) => {
