@@ -130,8 +130,11 @@ export function restoreWebQuotes(rendered, web) {
   // offset guess can land mid-phrase; snap it to the nearest rendered unit
   // that follows punctuation, staying between the neighbouring anchors.
   const afterPunct = k => k === 0 || /[,.:;?!]["“”‘’']*$/.test(du[k - 1]);
+  const webAfterPunct = j => j === 0 || /[,.:;?!]["“”‘’']*$/.test(wu[j - 1]);
   const snapOpener = (j, i) => {
-    if (afterPunct(i)) return i;
+    // only an opener that starts a phrase in the WEB gets snapped — a quoted word
+    // mid-sentence (`called the expanse “sky”.`, Genesis 1:8) stays where it maps
+    if (afterPunct(i) || !webAfterPunct(j)) return i;
     let lo = 0, hi = du.length - 1;
     for (const [di, wj] of pairs) { if (wj < j) lo = di + 1; else { hi = di; break; } }
     let best = -1;

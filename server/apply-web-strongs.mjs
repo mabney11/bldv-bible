@@ -96,7 +96,7 @@ if (LEXF) {
   // what the lexicon prose happens to contain.
   const GLOSS_STOP = new Set(['to','of','the','a','an','and','or','in','on','at','by','for',
     'with','from','as','that','which','it','is','be','was','are','were','him','his','her',
-    'them','their','this','these','not','no','but','so','then','there','here','also','again',
+    'them','their','this','these','not','no','but','then','there','here','also','again',
     'moreover','very','more','most','much','many','such','same','other','any','some','one',
     'thing','things','used','use','only','even','yet','still','out','up','down','off','over',
     'under','into','upon','unto','causatively','figuratively','literally','properly','denominative']);
@@ -257,8 +257,11 @@ const TERMS = existsSync(TERMS_F)
 // passing the NAME test: "So Dabar will have an answer", "Qawam will rise".)
 const NEVER_HEAD = new Set([
   'i','we','he','she','it','they','you','me','him','her','them','us','my','your','his',
-  'their','our','a','an','the','o','oh','yes','and','or','not','no','so','then','when',
+  'their','our','a','an','the','o','oh','yes','and','or','not','no','then','when',
   'if','as','that','which','who','whom','whose']);
+// ('so' was here until 2026-09-12. As a conjunction it is still never a head word —
+// SOFT_HEAD below only lets it through when the segment's Strong's actually glosses
+// it — but "and it was so" is H3651 kan, and fieldy wants that read "kan (for sure)".)
 
 // AUXILIARIES and light verbs. Blocked as head words ONLY when the segment's Strong's does
 // not actually gloss them — that is the difference between "you didn't build" (the segment
@@ -277,7 +280,7 @@ const NAME_NEVER = new Set([
 const SOFT_HEAD = new Set([
   'might','may','will','shall','can','must','would','should','could','let',
   'do','does','did','have','has','had','be','is','are','was','were','been','am',
-  'this','these','those','all']);
+  'this','these','those','all','so']);
 
 const normT = w => { w = w.toLowerCase().replace(/[^a-z]/g,'');
   if (/ies$/.test(w)) return w.slice(0,-3)+'y';
@@ -408,6 +411,24 @@ function englishIsPlural(word) {
   return w.length > 3 && w.endsWith('s') && !NOT_PLURAL.test(w);
 }
 let pluralUsed = 0;
+// Attested plural surface + canonical root -> the plural with every root letter present.
+// Walks the surface against the root in order; a root letter the surface skips (a
+// dropped mater, an assimilated letter) is put back, the surface's own ending after the
+// last root letter is kept. A surface that already contains the whole root is returned
+// as written. Additive only — never removes a letter (see the no-eliding rule).
+function plenePlural(surface, root) {
+  const s = [...surface], r = [...root];
+  let p = 0, last = -1, skipped = 0;
+  for (let i = 0; i < s.length && p < r.length; i++) {
+    if (s[i] === r[p]) { p++; last = i; continue; }
+    const q = r.indexOf(s[i], p + 1);
+    if (q > p) { skipped += q - p; p = q + 1; last = i; }
+  }
+  if (p < r.length) skipped += r.length - p;
+  if (!skipped) return surface;
+  const tail = last >= 0 ? s.slice(last + 1).join('') : '';
+  return root + tail;
+}
 if (existsSync('./surface-forms.txt'))
   for (const line of readFileSync('./surface-forms.txt','utf8').split(/\r?\n/)) {
     const t = line.trim();
@@ -460,7 +481,10 @@ try {
     // Every written form of this Strong's in the verse, with its OSHB number/state/suffix —
     // the plural rule below picks the plural one when the English word is plural.
     const m = String(t.morph || '');
-    (PLURAL_SURF.get(k) || PLURAL_SURF.set(k, []).get(k)).push({ w: t.word_raw, pl: /\bnu=(pl|du)\b/.test(m), suffixed: /\bprs=(?!absent)/.test(m) });
+    // Only a NOUN's plural counts: a verb carries nu=pl too (יִשְׁרְצוּ "let them
+    // swarm", Genesis 1:20), and "swarms" was picking that verb up as its plural —
+    // "yasharatzaw (swarms)" beside a root of sharatz (2026-09-12).
+    (PLURAL_SURF.get(k) || PLURAL_SURF.set(k, []).get(k)).push({ w: t.word_raw, pl: /\bnu=(pl|du)\b/.test(m) && /\bsp=(subs|adjv|nmpr)\b/.test(m), suffixed: /\bprs=(?!absent)/.test(m) });
     // Which Strong's OSHB actually tags in this verse. This file renders English
     // from the WEB's OWN Strong's tagging (web-strongs.jsonl); the READER renders
     // Hebrew from OSHB (tokens_bhs). Two independent taggings of one verse — and
@@ -616,6 +640,41 @@ if (existsSync('./gloss-overrides.txt'))
     if (m) GLOSS_OVERRIDE.set(m[1], m[2].trim());
   }
 console.log(`gloss overrides: ${GLOSS_OVERRIDE.size}`);
+
+// HEAD-WORD VOCABULARY BEYOND THE KJV. A segment is only glossed when its Strong's
+// "glosses" the verse word (GLOSS above, built from kjv_def). The WEB often chooses a
+// word the KJV never used — "expanse" for H7549 (KJV: firmament), "sky" for H8064
+// (heaven), "creatures" for H8318 (creeping thing) — and the segment was left in
+// English even though lexicon.json already glosses the root (fieldy, Genesis 1,
+// 2026-09-12: "we may as well tighten up my glosses"). Three more sources of
+// matchable words, none of which changes what is DISPLAYED:
+//   1. the curated gloss for the Strong's root (lexicon.json / homographs.json —
+//      "Shamayam / Heavens", "swarm as many"),
+//   2. gloss-overrides.txt (the English fieldy chose to show is the English to match),
+//   3. gloss-aliases.txt — `H#### word word…`: verse words to accept for a Strong's
+//      when neither of the above names them ("H8064 sky").
+// Grammar words are filtered from 1 and 2; an alias file line is taken as written.
+const ALIAS_STOP = new Set([...NEVER_HEAD, ...SOFT_HEAD, 'to','of','in','on','at','by','for','with','from','but','there','here','also','again','very','more','most','much','many','such','same','other','any','some','one','who','what','make','made','thing','things','ones']);
+let aliasWords = 0;
+const addAliasWords = (sn, text, filtered) => {
+  if (!text) return;
+  let g = GLOSS.get(sn);
+  if (!g) { g = new Set(); GLOSS.set(sn, g); }
+  for (const w of String(text).replace(/\[[^\]]*\]/g, ' ').split(/[\s\/,;:()]+/)) {
+    const n = normT(w);
+    if (n.length < 2 || (filtered && ALIAS_STOP.has(n))) continue;
+    if (!g.has(n)) { g.add(n); aliasWords++; }
+  }
+};
+for (const [sn, root] of Object.entries(ROOTS)) addAliasWords(sn, curatedGloss(root, sn), true);
+for (const [sn, text] of GLOSS_OVERRIDE) addAliasWords(sn, text, true);
+if (existsSync('./gloss-aliases.txt'))
+  for (const line of readFileSync('./gloss-aliases.txt','utf8').split(/\r?\n/)) {
+    const t = line.replace(/#.*$/, '').trim();
+    const m = t.match(/^(H\d+[a-z]?)\s+(.+)$/);
+    if (m) addAliasWords(m[1], m[2], false);
+  }
+console.log(`head-word aliases from lexicon / overrides / gloss-aliases.txt: ${aliasWords}`);
 
 let names = 0, peoples = 0, terms = 0, noRoot = 0, untouched = 0, ambiguous = 0, surfaceUsed = 0;
 let oshbBlockedCount = 0;   // WEB's headword had no OSHB-tagged Strong's anywhere in the verse — left English rather than invent a word
@@ -885,7 +944,14 @@ for (const r of rows) {
       if (PLURALS && !isName && !isDivine && englishIsPlural(bare)) {
         const forms = PLURAL_SURF.get(`${mtVerseKey(r.code, r.chapter, r.verse)}|${useSn}`) || [];
         const pl = forms.find(f => f.pl && !f.suffixed && f.w && f.w !== rootPaleo);
-        if (pl) { drawPaleo = pl.w; pluralHit = true; pluralUsed++; }
+        // The attested plural is read, never built — but the Masoretic spelling may be
+        // DEFECTIVE, dropping a root letter the reader's word block restores (no-eliding
+        // rule, CLAUDE.md): Genesis 1:14 writes מְאֹרֹת, 1:15 מְאוֹרֹת, and the reading
+        // text said "maarath" in one verse and "maawarath" in the next while the token
+        // beside both read Maawarath (fieldy, 2026-09-12). plenePlural() keeps the
+        // attested ending and puts every root letter back, so the plural is the same
+        // word wherever it stands.
+        if (pl) { drawPaleo = plenePlural(pl.w, rootPaleo); pluralHit = true; pluralUsed++; }
       }
       // hyphenated when the name is on the compound allowlist (and that entry really is
       // this root's transliteration — never a stale entry)

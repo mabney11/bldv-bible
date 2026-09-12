@@ -1,0 +1,15 @@
+# gloss-aliases.txt — extra English words a Strong's number may stand behind in the
+# WEB text, so the segment gets glossed even though the KJV never used that word.
+# This changes WHICH segments are glossed, never what the gloss says (that is
+# lexicon.json / homographs.json / gloss-overrides.txt). Read by apply-web-strongs.mjs.
+#
+#   H<number>  word word …      # comment
+#
+# Words the curated lexicon gloss already contains need no line here — those are
+# matched automatically ("Shamayam / Heavens" already matches "heavens").
+
+H7549   expanse firmament      # raqayai — WEB "expanse", KJV "firmament"
+H8064   sky skies              # shamayam — WEB "sky" beside "heavens"
+H8318   creatures creature     # sharatz — WEB "creatures", KJV "creeping thing"
+H8317   swarm swarms swarmed   # sharatz (verb) — WEB "swarm"
+H3651   so                     # kan — "and it was so" → kan (for sure)
