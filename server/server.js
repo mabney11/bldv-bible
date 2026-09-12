@@ -11834,7 +11834,8 @@ function preceptSnippet(b, c, v) {
 }
 
 // GET /api/precepts/chapter?book=&chapter=  -> { book, chapter, enabled, built_at,
-//   verses: { "<verse>": [ { book, chapter, verse, name, kind, score, status, text } ] } }
+//   verses: { "<verse>": [ { book, chapter, verse, name, kind, score, status, text } ] },
+//   more: { "<verse>": n } }   (n further cross-references not sent — see XREF_CAP)
 // Rejected links are dropped for readers and kept (status:'rejected') for an
 // admin so the Studio-style review can undo them. Manual reviews with no
 // matching auto row are added in. Sorted: confirmed first, then by score.
@@ -11855,8 +11856,7 @@ app.get('/api/precepts/chapter', (req, res) => {
             const rv = reviews.get(key);
             const status = rv ? rv.status : null;
             if (status === 'rejected' && !admin) return;
-            (verses[fromVerse] ||= []).push({ ...item, status, name: canonName(item.book),
-                                              text: preceptSnippet(item.book, item.chapter, item.verse) });
+            (verses[fromVerse] ||= []).push({ ...item, status, name: canonName(item.book) });
         };
         if (db) {
             for (const r of _preceptsStmts.chapter.all(bookId, chapter)) {
@@ -11873,10 +11873,22 @@ app.get('/api/precepts/chapter', (req, res) => {
             push(fv, { book: tb, chapter: tc, verse: tv, kind: 'manual', score: 0, shared: 0, run: 0, source: 'studio' });
         }
         const rank = s => (s === 'confirmed' || s === 'manual') ? 0 : s === 'rejected' ? 2 : 1;
-        for (const v of Object.keys(verses)) verses[v].sort((a, b) => rank(a.status) - rank(b.status) || b.score - a.score);
+        // The OpenBible seed gives a verse like Genesis 1:1 eighty-odd
+        // cross-references; the reader's panel shows the strongest XREF_CAP of
+        // the unreviewed ones (by votes) and says how many more the Studio
+        // list has. Corpus quotes/parallels and anything reviewed always show.
+        const XREF_CAP = 12;
+        const more = {};
+        for (const v of Object.keys(verses)) {
+            verses[v].sort((a, b) => rank(a.status) - rank(b.status) || b.score - a.score);
+            let xrefs = 0;
+            const kept = verses[v].filter(it => it.kind !== 'xref' || it.status || ++xrefs <= XREF_CAP);
+            if (kept.length < verses[v].length) more[v] = verses[v].length - kept.length;
+            verses[v] = kept.map(it => ({ ...it, text: preceptSnippet(it.book, it.chapter, it.verse) }));
+        }
         let built_at = null;
         if (db) { try { for (const m of _preceptsStmts.meta.all()) if (m.key === 'built_at') built_at = m.value; } catch {} }
-        res.json({ book: bookId, chapter, enabled: !!db, built_at, verses });
+        res.json({ book: bookId, chapter, enabled: !!db, built_at, verses, more });
     } catch (err) {
         console.error('GET /api/precepts/chapter failed:', err);
         res.status(500).json({ error: err.message });
@@ -11903,7 +11915,7 @@ app.get('/api/precepts/books', (req, res) => {
     }
 });
 
-// GET /api/precepts/list?book=&chapter=&status=&kind=&limit=&offset=
+// GET /api/precepts/list?book=&chapter=&verse=&status=&kind=&limit=&offset=
 //   -> { total, items: [{ from:{book,chapter,verse,name,text}, to:{…}, kind, score, status }] }
 // The Studio's queue: each pair ONCE (the from side is whichever of its two
 // verses sorts lower, unless ?book= pins the from side to that book), strongest
@@ -11916,16 +11928,21 @@ app.get('/api/precepts/list', (req, res) => {
         const admin = isAdminRequest(req);
         const book = parseInt(req.query.book, 10) || null;
         const chapter = parseInt(req.query.chapter, 10) || null;
+        const verse = parseInt(req.query.verse, 10) || null;
         const status = String(req.query.status || 'any');
         const kind = String(req.query.kind || 'any');
         const limit = Math.min(500, Math.max(1, parseInt(req.query.limit, 10) || 100));
         const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
         const where = [];
         const params = [];
-        if (book) { where.push('from_book=?'); params.push(book); if (chapter) { where.push('from_chapter=?'); params.push(chapter); } }
+        if (book) { where.push('from_book=?'); params.push(book); if (chapter) { where.push('from_chapter=?'); params.push(chapter); if (verse) { where.push('from_verse=?'); params.push(verse); } } }
         else where.push('(from_book, from_chapter, from_verse) < (to_book, to_chapter, to_verse)');
         if (kind !== 'any') { where.push('kind=?'); params.push(kind); }
-        let rows = db.prepare(`SELECT * FROM precepts WHERE ${where.join(' AND ')} ORDER BY score DESC, from_book, from_chapter, from_verse`).all(...params);
+        // The OpenBible seed makes this a million-row table; the corpus-wide
+        // queue (no book pinned) reads only the SCAN_CAP strongest rows —
+        // nobody pages past that, and the status filter below still applies.
+        const SCAN_CAP = 5000;
+        let rows = db.prepare(`SELECT * FROM precepts WHERE ${where.join(' AND ')} ORDER BY score DESC, from_book, from_chapter, from_verse ${book ? '' : 'LIMIT ' + SCAN_CAP}`).all(...params);
         // When pinned to a book, a pair whose two verses are both in that book
         // appears twice (once per direction) — keep the lower-sorting one.
         if (book) rows = rows.filter(r => r.to_book !== book || r.from_chapter < r.to_chapter || (r.from_chapter === r.to_chapter && r.from_verse < r.to_verse));
@@ -11948,7 +11965,7 @@ app.get('/api/precepts/list', (req, res) => {
                 const extra = [];
                 for (const m of manual) {
                     let a = { b: m.from_book, c: m.from_chapter, v: m.from_verse }, z = { b: m.to_book, c: m.to_chapter, v: m.to_verse };
-                    if (book) { if (a.b !== book && z.b === book) [a, z] = [z, a]; if (a.b !== book || (chapter && a.c !== chapter)) continue; }
+                    if (book) { if (a.b !== book && z.b === book) [a, z] = [z, a]; if (a.b !== book || (chapter && a.c !== chapter) || (verse && a.v !== verse)) continue; }
                     else if (a.b > z.b || (a.b === z.b && (a.c > z.c || (a.c === z.c && a.v > z.v)))) [a, z] = [z, a];
                     const key = `${a.b}:${a.c}:${a.v}|${z.b}:${z.c}:${z.v}`;
                     if (have.has(key)) continue;

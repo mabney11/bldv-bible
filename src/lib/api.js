@@ -107,9 +107,9 @@ export const apiTransChapter = async (book, ch) => {
 export const apiPrecepts = (book, chapter) =>
   jsonFetch(`/api/precepts/chapter?book=${book}&chapter=${chapter}`).catch(() => ({ enabled: false, verses: {} }));
 export const apiPreceptBooks = () => jsonFetch('/api/precepts/books');
-export const apiPreceptList = ({ book, chapter, status, kind, limit, offset } = {}) => {
+export const apiPreceptList = ({ book, chapter, verse, status, kind, limit, offset } = {}) => {
   const q = new URLSearchParams();
-  if (book) q.set('book', book); if (chapter) q.set('chapter', chapter);
+  if (book) q.set('book', book); if (chapter) q.set('chapter', chapter); if (verse) q.set('verse', verse);
   if (status && status !== 'any') q.set('status', status); if (kind && kind !== 'any') q.set('kind', kind);
   if (limit) q.set('limit', limit); if (offset) q.set('offset', offset);
   return jsonFetch(`/api/precepts/list?${q}`);

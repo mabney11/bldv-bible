@@ -1431,3 +1431,5 @@
 .rd-precept-count { margin-left: auto; color: var(--pr-faint); font-weight: 400; font-size: 13px; }
 .rd-precept-body { overflow-y: auto; padding: 0 14px 18px; }
 /* item / group / review styles live in components/Precepts.css (shared with VersePage) */
+.rd-precept-more { display: block; margin: 10px 4px 4px; padding: 8px 0; color: var(--pr-faint); font-size: 13px; text-decoration: none; border-top: 1px solid var(--pr-rule, rgba(0,0,0,.08)); }
+.rd-precept-more:hover { color: inherit; }

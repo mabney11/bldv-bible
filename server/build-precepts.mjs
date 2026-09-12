@@ -184,6 +184,7 @@ out.exec(`
     PRIMARY KEY (from_book, from_chapter, from_verse, to_book, to_chapter, to_verse)
   ) WITHOUT ROWID;
   CREATE INDEX idx_precepts_chapter ON precepts(from_book, from_chapter);
+  CREATE INDEX idx_precepts_score ON precepts(score DESC);
   CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT);
 `);
 const ins = out.prepare(`INSERT OR REPLACE INTO precepts VALUES (?,?,?,?,?,?,?,?,?,?,?)`);
@@ -213,8 +214,19 @@ console.log(`[precepts] corpus: ${quotes} quotations, ${parallels} parallels (pa
 // 66-book English numbering. Joel is the one book this corpus keeps in the
 // Masoretic numbering (Eng 2:28-32 = 3:1-5, Eng 3 = 4), so those refs are
 // shifted; everything else maps 1:1 onto canon_id 1-66.
-let seeded = 0;
+//   - votes are the score; net-negative rows (the dataset's own "not really")
+//     are skipped;
+//   - a target RANGE ("John.1.1-John.1.3") becomes one row per verse (capped
+//     at RANGE_MAX), which the reader's PreceptList folds back into "John
+//     1:1-3";
+//   - every link is stored in BOTH directions — a cross-reference is
+//     symmetric, and the reader of Hebrews 1:10 wants Genesis 1:1 as much as
+//     the reverse — but never over a row that already exists: corpus quotes
+//     (written above) and the file's own explicit rows win over a derived
+//     reverse (INSERT OR IGNORE, forward rows first).
+let seeded = 0, reversed = 0;
 if (SEED) {
+  const RANGE_MAX = 12;
   const OSIS = ['Gen','Exod','Lev','Num','Deut','Josh','Judg','Ruth','1Sam','2Sam','1Kgs','2Kgs','1Chr','2Chr','Ezra','Neh','Esth','Job','Ps','Prov','Eccl','Song','Isa','Jer','Lam','Ezek','Dan','Hos','Joel','Amos','Obad','Jonah','Mic','Nah','Hab','Zeph','Hag','Zech','Mal','Matt','Mark','Luke','John','Acts','Rom','1Cor','2Cor','Gal','Eph','Phil','Col','1Thess','2Thess','1Tim','2Tim','Titus','Phlm','Heb','Jas','1Pet','2Pet','1John','2John','3John','Jude','Rev'];
   const osisId = Object.fromEntries(OSIS.map((c, i) => [c, i + 1]));
   const parseRef = (s) => {
@@ -224,21 +236,28 @@ if (SEED) {
     if (b === 29) { if (c === 2 && v > 27) { c = 3; v -= 27; } else if (c === 3) c = 4; }
     return { b, c, v };
   };
+  const ign = out.prepare(`INSERT OR IGNORE INTO precepts VALUES (?,?,?,?,?,?,?,?,?,?,?)`);
   const lines = fs.readFileSync(path.resolve(SEED), 'utf8').split(/\r?\n/);
+  const links = [];
+  for (const line of lines) {
+    const [from, to, votes] = line.split('\t');
+    if (!from || !to || from.startsWith('From')) continue;
+    const A = parseRef(from);
+    const [t0s, t1s] = to.split('-');
+    const B0 = parseRef(t0s), B1 = t1s ? parseRef(t1s) : null;
+    if (!A || !B0) continue;
+    const score = Math.max(0, parseInt(votes, 10) || 0);
+    if (score < 1) continue;
+    const targets = [B0];
+    if (B1 && B1.b === B0.b && B1.c === B0.c && B1.v > B0.v) for (let v = B0.v + 1; v <= Math.min(B1.v, B0.v + RANGE_MAX - 1); v++) targets.push({ b: B0.b, c: B0.c, v });
+    for (const B of targets) links.push([A, B, score]);
+  }
   const seedTx = out.transaction(() => {
-    for (const line of lines) {
-      const [from, to, votes] = line.split('\t');
-      if (!from || !to || from.startsWith('From')) continue;
-      const A = parseRef(from), B = parseRef(to.split('-')[0]); // a range keeps its first verse
-      if (!A || !B) continue;
-      const score = Math.max(0, parseInt(votes, 10) || 0);
-      if (score < 1) continue; // net-negative votes are the dataset's own "not really"
-      ins.run(A.b, A.c, A.v, B.b, B.c, B.v, 'xref', score, 0, 0, 'openbible');
-      seeded++;
-    }
+    for (const [A, B, score] of links) seeded += ign.run(A.b, A.c, A.v, B.b, B.c, B.v, 'xref', score, 0, 0, 'openbible').changes;
+    for (const [A, B, score] of links) reversed += ign.run(B.b, B.c, B.v, A.b, A.c, A.v, 'xref', score, 0, 0, 'openbible').changes;
   });
   seedTx();
-  console.log(`[precepts] seeded ${seeded} cross-references from ${SEED}`);
+  console.log(`[precepts] seeded ${seeded} cross-references (+${reversed} reverse) from ${SEED}`);
 }
 
 const setMeta = out.prepare(`INSERT OR REPLACE INTO meta VALUES (?,?)`);

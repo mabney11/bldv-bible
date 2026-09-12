@@ -1193,6 +1193,7 @@ export default function Reader() {
   // of indicator next to the verse"); tapping the marker opens the panel.
   // Keyed by verse number -> [{book, chapter, verse, name, kind, score, status, text}].
   const [precepts, setPrecepts] = useState({});
+  const [preceptMore, setPreceptMore] = useState({}); // verse -> cross-references the server held back (XREF_CAP)
   const [preceptOpen, setPreceptOpen] = useState(null); // verse number whose panel is open
   const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => { getAdminStatus().then(s => setIsAdmin(!!s?.isAdmin)).catch(() => {}); }, []);
@@ -1201,8 +1202,8 @@ export default function Reader() {
     let cancelled = false;
     setPreceptOpen(null);
     apiPrecepts(book, chapter)
-      .then(d => { if (!cancelled) setPrecepts(d && d.verses ? d.verses : {}); })
-      .catch(() => { if (!cancelled) setPrecepts({}); });
+      .then(d => { if (!cancelled) { setPrecepts(d && d.verses ? d.verses : {}); setPreceptMore(d && d.more ? d.more : {}); } })
+      .catch(() => { if (!cancelled) { setPrecepts({}); setPreceptMore({}); } });
     return () => { cancelled = true; };
   }, [book, chapter, bookReady]);
   // Admin review from inside the panel — optimistic, the server row is the truth.
@@ -2306,6 +2307,11 @@ export default function Reader() {
                            onOpen={(b, c, v) => { setPreceptOpen(null); go(b, c, v); }}
                            isAdmin={isAdmin}
                            onReview={(item, status) => reviewPrecept(preceptOpen, item, status)} />
+              {preceptMore[preceptOpen] ? (
+                <Link className="rd-precept-more" to={`/precepts?book=${book}&chapter=${chapter}&verse=${preceptOpen}`}>
+                  {preceptMore[preceptOpen]} more cross-reference{preceptMore[preceptOpen] === 1 ? '' : 's'} in the Precept Studio ›
+                </Link>
+              ) : null}
             </div>
           </div>
         </div>

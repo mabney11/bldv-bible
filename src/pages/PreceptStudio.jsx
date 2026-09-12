@@ -30,9 +30,12 @@ export default function PreceptStudio() {
   usePageTitle(pageTitle('Precepts'), 'Precept upon precept — every place one passage of the corpus quotes another, across all its books, with the linked verses side by side.');
   const [sp, setSp] = useSearchParams();
   const book = parseInt(sp.get('book'), 10) || null;
+  // ?chapter=&verse= pin the list to one verse — the reader's "see all N" link
+  const chapter = book ? parseInt(sp.get('chapter'), 10) || null : null;
+  const verse = chapter ? parseInt(sp.get('verse'), 10) || null : null;
   const status = sp.get('status') || 'any';
   const kind = sp.get('kind') || 'any';
-  const setParam = (k, v) => setSp(prev => { const p = new URLSearchParams(prev); if (v == null || v === '' || v === 'any') p.delete(k); else p.set(k, String(v)); p.delete('page'); return p; });
+  const setParam = (k, v) => setSp(prev => { const p = new URLSearchParams(prev); if (v == null || v === '' || v === 'any') p.delete(k); else p.set(k, String(v)); p.delete('page'); if (k === 'book') { p.delete('chapter'); p.delete('verse'); } return p; });
   const page = parseInt(sp.get('page'), 10) || 0;
 
   const [isAdmin, setIsAdmin] = useState(false);
@@ -52,11 +55,11 @@ export default function PreceptStudio() {
   useEffect(() => {
     let live = true;
     setLoading(true);
-    apiPreceptList({ book, status, kind, limit: PAGE, offset: page * PAGE })
+    apiPreceptList({ book, chapter, verse, status, kind, limit: PAGE, offset: page * PAGE })
       .then(d => { if (live) { setList(d || { total: 0, items: [] }); setLoading(false); } })
       .catch(() => { if (live) { setList({ total: 0, items: [] }); setLoading(false); } });
     return () => { live = false; };
-  }, [book, status, kind, page]);
+  }, [book, chapter, verse, status, kind, page]);
 
   const review = useCallback(async (item, newStatus) => {
     try {
@@ -133,7 +136,7 @@ export default function PreceptStudio() {
 
         <main className="ps-main">
           <div className="ps-tools">
-            <h2 className="ps-h2">{activeBook ? activeBook.name : 'All books'} <span className="ps-total">{list.total.toLocaleString()} pair{list.total === 1 ? '' : 's'}</span></h2>
+            <h2 className="ps-h2">{activeBook ? activeBook.name : 'All books'}{chapter ? ` ${chapter}${verse ? ':' + verse : ''}` : ''}{chapter ? <button type="button" className="ps-unpin" title="Whole book" onClick={() => { setParam('chapter', null); setParam('verse', null); }}>✕</button> : null} <span className="ps-total">{list.total.toLocaleString()} pair{list.total === 1 ? '' : 's'}</span></h2>
             <label className="ps-filter">kind
               <select value={kind} onChange={e => setParam('kind', e.target.value)}>
                 <option value="any">any</option><option value="quote">quotes</option><option value="parallel">parallels</option><option value="xref">cross-refs</option>

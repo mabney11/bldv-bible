@@ -69,3 +69,6 @@
 .ps-add button { padding: 6px 12px; font-size: 13px; font-weight: 600; border-radius: 6px; border: 0; background: var(--blue2); color: #fff; cursor: pointer; }
 .ps-add button:disabled { opacity: .4; cursor: default; }
 .ps-add-msg { color: var(--text2); }
+
+.ps-unpin { margin-left: .4rem; border: 0; background: none; color: inherit; opacity: .55; cursor: pointer; font-size: .8em; }
+.ps-unpin:hover { opacity: 1; }
