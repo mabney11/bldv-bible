@@ -37,8 +37,9 @@ const LEAD = /^["“”‘’']+/;
 // punctuation kept (see rebuildTail)
 const TAIL = /[^\w)]*$/;
 // a word, its glued "(gloss)" if any, and whatever punctuation/glyphs follow the
-// gloss; a dash joins two units (`camels,”—let`) and splits here
-const UNIT_RE = /[^\s(—–]+(?:\s*\((?:[^()]|\([^()]*\))*\))?[^\s(—–]*/g;
+// gloss; a dash joins two units (`camels,”—let`) and splits here — but a dash
+// that ENDS the unit (`forever—”`, an interrupted speech) stays in its tail
+const UNIT_RE = /[^\s(—–]+(?:\s*\((?:[^()]|\([^()]*\))*\))?[^\s(—–]*(?:[—–]+["“”‘’']*(?=\s|$))?/g;
 const GLOSS_RE = /\s*\((?:[^()]|\([^()]*\))*\)/g;
 
 // The WEB's curly glyphs are kept: an opener and a closer are different
@@ -129,6 +130,8 @@ export function restoreWebQuotes(rendered, web) {
   // differs: "The days of the years…" for "The years of my pilgrimage"), the
   // offset guess can land mid-phrase; snap it to the nearest rendered unit
   // that follows punctuation, staying between the neighbouring anchors.
+  const SPEECH_WEB = /^(say|says|said|saying|speak|spoke|tell|told|answer|answered|hear|listen)$/;
+  const keepLead = new Set();
   const afterPunct = k => k === 0 || /[,.:;?!]["“”‘’']*$/.test(du[k - 1]);
   const webAfterPunct = j => j === 0 || /[,.:;?!]["“”‘’']*$/.test(wu[j - 1]);
   const snapOpener = (j, i) => {
@@ -145,25 +148,46 @@ export function restoreWebQuotes(rendered, web) {
     const lm = LEAD.exec(wu[j]);
     // the verse's first opener belongs on its first word and the last closer on
     // its last, whatever the alignment says about a differing first/last word
-    if (lm) lead[j === 0 ? 0 : snapOpener(j, w2d[j])] += lm[0].split('').map(toDb).join('');
+    if (lm) {
+      const i = j === 0 ? 0 : snapOpener(j, w2d[j]);
+      lead[i] += lm[0].split('').map(toDb).join('');
+      // a verse-initial opener, or one whose WEB word is itself the speech verb
+      // (“Say, ‘I am your sign’ — Ezekiel 12:11), stays where it landed
+      if (j === 0 || SPEECH_WEB.test(wc[j])) keepLead.add(i);
+    }
     const tail = TAIL.exec(wu[j].replace(LEAD, ''))[0];
     if (GLYPH.test(tail)) {
       const i = j === wu.length - 1 ? du.length - 1 : w2d[j];
       webTail[i] = (webTail[i] || '') + tail;
     }
   }
+  // An opener that landed on the speech verb itself — `“amar (spoke), Of every
+  // tree` (Genesis 2:16, where the rendered word order differs from the WEB's
+  // and the alignment pulled it one word early) — belongs on the word after.
+  const SPEECH = /^(amar|said|saying|says|say|dabar|spoke|answered|naam)$/;
+  for (let i = 0; i + 1 < du.length; i++) {
+    if (lead[i] && !keepLead.has(i) && /[,:]["“”‘’']*$/.test(du[i]) && SPEECH.test(core(du[i]))) { lead[i + 1] = lead[i] + lead[i + 1]; lead[i] = ''; }
+  }
   // The unit's new tail: the WEB tail's glyphs in the WEB's order, with the
   // unit's own punctuation standing in for the WEB's (`priest):` stays `:` even
   // where the WEB has `priest.”`); with no WEB glyphs the unit just loses its
   // own boundary glyphs.
+  // Punctuation is swapped run by run: each WEB punctuation run takes as many
+  // of the unit's own punctuation characters as it is long, and the LAST run
+  // takes all that remain — so `me!”;` with own `;;` gives `;”;`, while the
+  // WEB's `forever—”` with own `...` gives `...”` (never `.”..`). A run the
+  // unit has nothing left for keeps the WEB's characters.
   const rebuildTail = (own, web) => {
     const ownPunct = own.replace(/["“”‘’']/g, '').split('');
     if (web == null) return ownPunct.join('');
+    const runs = web.match(/["“”‘’']+|[^"“”‘’']+/g) || [];
+    const lastPunct = runs.map((r, i) => GLYPH.test(r[0]) ? -1 : i).filter(i => i >= 0).pop();
     let out = '';
-    for (const ch of web) {
-      if (GLYPH.test(ch)) out += toDb(ch);
-      else out += ownPunct.length ? ownPunct.shift() : ch;
-    }
+    runs.forEach((run, i) => {
+      if (GLYPH.test(run[0])) { out += run.split('').map(toDb).join(''); return; }
+      const take = i === lastPunct ? ownPunct.length : Math.min(run.length, ownPunct.length);
+      out += take ? ownPunct.splice(0, take).join('') : run;
+    });
     return out + ownPunct.join('');
   };
   const out = du.map((u, i) => {
