@@ -427,7 +427,10 @@ export function parseQuoteMarks(raw, boundaries, verseBounds) {
       // sentence end (. ? !) followed by whitespace. Not a comma or colon:
       // those introduce a genuinely NEW quotation (`said, "…`), never a
       // re-opened one.
-      if (vStarts.has(at) || /[.?!]\s+$/.test(raw.slice(Math.max(0, at - 6), at))) { reopenPos = at; reopenIdx = 0; }
+      // …and the sentence end may itself sit inside a closed inner quote
+      // (Matthew 13:28: `…has done this.’ “The ibad (servants)…` — the outer “
+      // re-opens a new paragraph right after the inner ’ closed).
+      if (vStarts.has(at) || /[.?!]["'\u2019\u201D]?\s+$/.test(raw.slice(Math.max(0, at - 6), at))) { reopenPos = at; reopenIdx = 0; }
       const reStyle = ch === '"' ? 'straight' : OPEN_STYLE[ch];
       if (at === reopenPos && reStyle && openStack.length) {
         let idx = -1;
@@ -531,7 +534,16 @@ export function parseQuoteMarks(raw, boundaries, verseBounds) {
     }
     const style = ch === '"' ? 'straight' : OPEN_STYLE[ch];
     if (style !== 'straight' && top && top.style === style) {
-      // Redundant reopen (see comment above) — absorbed as plain text.
+      // Redundant reopen (see comment above). Since 2026-09-12 the glyph is
+      // DROPPED rather than left as visible text, the same treatment the
+      // paragraph re-openers get higher up: a lone “ with no block of its own
+      // (Revelation 2:1 `kathab (write): “He who…`, the dictated letter) read
+      // as a typo. (Tried treating one after a comma/colon as a genuine
+      // nested opener instead — but the WEB closes those letters with a
+      // single ” so the outer level never ends; corpus-wide that cost 44 more
+      // unclosed spans and nesting to depth 13.)
+      flush(at);
+      last = at + ch.length;
       return;
     }
     flush(at);
