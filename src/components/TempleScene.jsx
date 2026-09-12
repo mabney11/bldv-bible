@@ -404,19 +404,55 @@ function buildCherub(b, part, mat = 'gold') {
   sub.torus(0, 5.15 * s, 0, 1.1 * s, 0.05 * s, mat, Math.PI / 2); ellipsoid(1.16 * s, 5.15 * s, 0, 0.14 * s, 0.22 * s, 0.22 * s);                    // its clasp, at the front
   sub.lathe(0, 7.15 * s, 0, [[0.55 * s, 0], [1.0 * s, 0.05 * s], [1.05 * s, 0.32 * s], [0.6 * s, 0.5 * s], [0.5 * s, 0.6 * s]], mat, 48);          // the pectoral collar
   for (let i = 0; i < 3; i++) sub.torus(0, 7.2 * s + i * 0.1 * s, 0, (1.02 - i * 0.14) * s, 0.035 * s, mat, Math.PI / 2);                             // its rows
-  // ── shoulders, arms folded before the breast, hands
+  // ── shoulders and arms: a limb is a body of revolution swept along its bone, so the
+  // deltoid, the biceps and the forearm's taper are real bulges, not capsules
+  const limb = (from, to, profile) => {
+    const A = new THREE.Vector3(...from), B = new THREE.Vector3(...to), d = B.clone().sub(A), len = d.length();
+    const geo = new THREE.LatheGeometry(profile.map(([r, u]) => new THREE.Vector2(r * s, u * len)), 28);
+    geo.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(UP, d.clone().normalize())); geo.translate(A.x, A.y, A.z); sub.add(geo, mat);
+  };
   for (const sz of [-1, 1]) {
-    ellipsoid(0, 7.35 * s, sz * 1.05 * s, 0.5 * s, 0.42 * s, 0.5 * s);                                                                            // shoulder
-    sub.capsule([0.15 * s, 7.25 * s, sz * 1.25 * s], [0.75 * s, 5.95 * s, sz * 1.05 * s], 0.3 * s, mat);                                          // upper arm
-    sub.capsule([0.75 * s, 5.95 * s, sz * 1.05 * s], [1.15 * s, 6.05 * s, -sz * 0.35 * s], 0.27 * s, mat);                                        // forearm across the breast
-    ellipsoid(1.2 * s, 6.08 * s, -sz * 0.5 * s, 0.22 * s, 0.16 * s, 0.34 * s, 0, 0, 0.3 * sz);                                                     // hand
+    const sh = [0.1 * s, 7.3 * s, sz * 1.12 * s], el = [0.72 * s, 5.9 * s, sz * 1.12 * s], wr = [1.22 * s, 6.05 * s, -sz * 0.3 * s];
+    ellipsoid(0.05 * s, 7.3 * s, sz * 1.02 * s, 0.5 * s, 0.46 * s, 0.52 * s);                                                                     // deltoid
+    limb(sh, el, [[0.26, 0], [0.33, 0.18], [0.37, 0.42], [0.34, 0.66], [0.27, 0.86], [0.24, 1]]);                                                 // upper arm, the biceps swelling
+    ellipsoid(el[0], el[1], el[2], 0.27 * s, 0.25 * s, 0.27 * s);                                                                                  // elbow
+    limb(el, wr, [[0.25, 0], [0.29, 0.22], [0.26, 0.5], [0.2, 0.8], [0.17, 1]]);                                                                    // forearm across the breast, tapering to the wrist
+    // the hand: continues the forearm's line past the wrist — a palm, four fingers
+    // curling down over the other forearm, a thumb laid along the top
+    const dir = new THREE.Vector3(wr[0] - el[0], wr[1] - el[1], wr[2] - el[2]).normalize(), perp = new THREE.Vector3(-dir.z, 0, dir.x).normalize();
+    const at = (k, side, drop = 0) => [wr[0] + dir.x * k * s + perp.x * side * s, wr[1] + dir.y * k * s - drop * s, wr[2] + dir.z * k * s + perp.z * side * s];
+    const pc = at(0.22, 0); ellipsoid(pc[0], pc[1], pc[2], 0.2 * s, 0.11 * s, 0.24 * s, 0, Math.atan2(dir.x, dir.z), 0);
+    for (let f = 0; f < 4; f++) { const off = (f - 1.5) * 0.1; sub.capsule(at(0.4, off), at(0.62, off * 1.1, 0.05), 0.048 * s, mat); sub.capsule(at(0.62, off * 1.1, 0.05), at(0.68, off * 1.15, 0.26), 0.044 * s, mat); }
+    sub.capsule(at(0.2, 0.2, -0.06), at(0.45, 0.32, -0.02), 0.052 * s, mat);
   }
   // ── the head: featureless, under a banded headdress with a fall behind the neck
   sub.cyl(0, 7.75 * s, 0, 0.32 * s, 0.55 * s, mat, 0.34 * s, 20);                                                                                     // neck
   ellipsoid(0.02 * s, 8.95 * s, 0, 0.62 * s, 0.72 * s, 0.6 * s);                                                                                    // head
   sub.lathe(0, 9.0 * s, 0, [[0.66 * s, 0], [0.72 * s, 0.25 * s], [0.7 * s, 0.55 * s], [0.5 * s, 0.85 * s], [0.2 * s, 1.0 * s], [0, 1.02 * s]], mat, 32);   // the headdress cap
   sub.torus(0, 9.05 * s, 0, 0.7 * s, 0.07 * s, mat, Math.PI / 2);                                                                                      // its band
-  ellipsoid(-0.45 * s, 8.35 * s, 0, 0.42 * s, 0.85 * s, 0.62 * s);                                                                                   // the fall behind
+  // ── hair: thick corded locks from under the headdress, over the back and sides of the
+  // head to the shoulders, each a rope — a tube along a gentle S-curve, ridged along its
+  // length — the face left bare
+  const lock = (ang, len, phase) => {
+    const r0 = 0.66 * s, y0 = 8.9 * s;
+    const pts = [];
+    for (let k = 0; k <= 5; k++) {
+      const u = k / 5, rr = r0 + u * 0.22 * s + Math.sin(u * 6.2 + phase) * 0.06 * s;
+      pts.push(new THREE.Vector3(Math.cos(ang) * rr + Math.sin(u * 9 + phase) * 0.03 * s, y0 - u * len, Math.sin(ang) * rr));
+    }
+    const curve = new THREE.CatmullRomCurve3(pts);
+    const geo = new THREE.TubeGeometry(curve, 24, 0.15 * s, 8, false);
+    const p = geo.attributes.position, v = new THREE.Vector3(), c = new THREE.Vector3();
+    for (let i = 0; i < p.count; i++) {                          // the rope's twist: the radius swells and pinches along the lock
+      v.fromBufferAttribute(p, i); const u = Math.floor(i / 9) / 24; curve.getPointAt(Math.min(1, u), c);
+      const k = 1 + 0.2 * Math.sin(u * 40 + phase); p.setXYZ(i, c.x + (v.x - c.x) * k, c.y + (v.y - c.y) * k, c.z + (v.z - c.z) * k);
+    }
+    geo.computeVertexNormals(); sub.add(geo, mat);
+    // knots along the cord read as the twist from any angle
+    const tip = pts[pts.length - 1]; ellipsoid(tip.x, tip.y - 0.06 * s, tip.z, 0.15 * s, 0.19 * s, 0.15 * s);
+  };
+  for (let i = 0; i < 15; i++) { const ang = Math.PI * 0.62 + (i / 14) * Math.PI * 0.76; lock(ang, (1.55 + Math.sin(i * 1.7) * 0.15) * s, i * 1.3); }   // over the back, from ear to ear
+  for (const sz of [-1, 1]) for (let i = 0; i < 3; i++) lock(sz * (Math.PI * 0.5 - i * 0.2), (1.45 + i * 0.08) * s, i * 2.1 + (sz > 0 ? 0.5 : 0));            // and three before each ear
   // ── feet
   for (const sz of [-1, 1]) { sub.box(0.3 * s, 0, sz * 0.5 * s, 1.0 * s, 0.32 * s, 0.55 * s, mat); ellipsoid(0.8 * s, 0.16 * s, sz * 0.5 * s, 0.3 * s, 0.16 * s, 0.28 * s); }
   // ── the wings: fans of feathers from the shoulder, straight out and level
