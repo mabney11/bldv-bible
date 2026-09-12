@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
-import { apiTransProgress, apiTransVerse, apiTokens, apiRootFirstByLetters } from '../lib/api.js';
+import { apiTransProgress, apiTransVerse, apiTokens, apiRootFirstByLetters, apiPrecepts, apiPreceptReview } from '../lib/api.js';
+import { getAdminStatus } from '../lib/localOverlay.js';
+import PreceptList from '../components/Precepts.jsx';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { WordRow, computeWordParts, transliterationsToHtml } from '../components/WordBlock.jsx';
@@ -88,6 +90,28 @@ export default function VersePage() {
 
   const [verseData, setVerseData] = useState(null);
   const [loading, setLoading] = useState(true);
+  // ── precepts — every other passage in the corpus that quotes, or is quoted
+  // by, this verse (server/precepts.db; see build-precepts.mjs). Same data
+  // the Reader's gutter marker opens; here it is a section of the page.
+  const [precepts, setPrecepts] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => { getAdminStatus().then(s => setIsAdmin(!!s?.isAdmin)).catch(() => {}); }, []);
+  useEffect(() => {
+    if (!addressValid) { setPrecepts([]); return; }
+    let cancelled = false;
+    apiPrecepts(bookId, chapter)
+      .then(d => { if (!cancelled) setPrecepts((d && d.verses && d.verses[verse]) || []); })
+      .catch(() => { if (!cancelled) setPrecepts([]); });
+    return () => { cancelled = true; };
+  }, [addressValid, bookId, chapter, verse]);
+  const reviewPrecept = useCallback(async (item, status) => {
+    try {
+      await apiPreceptReview({ book: bookId, chapter, verse }, { book: item.book, chapter: item.chapter, verse: item.verse }, status);
+      setPrecepts(prev => prev.map(it => (it.book === item.book && it.chapter === item.chapter && it.verse === item.verse)
+        ? { ...it, status: status === 'clear' ? null : status } : it));
+    } catch (e) { console.warn('precept review failed', e); }
+  }, [bookId, chapter, verse]);
+
   useEffect(() => {
     if (!addressValid) { setLoading(false); return; }
     let cancelled = false;
@@ -462,6 +486,16 @@ export default function VersePage() {
                   right under vp-text; moved below the breakdown table so the
                   verse + its word-by-word data reads as one block before any
                   "go elsewhere" affordance. */}
+              {precepts.length > 0 && (
+                <section className="vp-precepts" aria-label="Precepts">
+                  <h2 className="vp-subhead"><span className="vp-precept-glyph" aria-hidden="true">⁂</span> Precepts <span className="vp-precept-count">{precepts.length}</span></h2>
+                  <PreceptList items={precepts}
+                               renderText={(t) => renderVerseNodesWithQuotes(sanitizeText(t), 'both')}
+                               onOpen={go}
+                               isAdmin={isAdmin}
+                               onReview={reviewPrecept} />
+                </section>
+              )}
               <nav className="vp-views" aria-label={`Open ${verseRef} in`}>
                 <Link className="vp-view-link" to={parallelPath}>Parallel</Link>
                 <Link className="vp-view-link" to={hebrewHref}>Hebrew</Link>

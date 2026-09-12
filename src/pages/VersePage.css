@@ -479,3 +479,8 @@
     white-space: normal;
   }
 }
+
+/* Precepts section — list styles in components/Precepts.css */
+.vp-precepts { margin-top: 18px; }
+.vp-precept-glyph { color: var(--pr-accent); }
+.vp-precept-count { color: var(--pr-faint); font-weight: 400; font-size: 0.8em; margin-left: 6px; }

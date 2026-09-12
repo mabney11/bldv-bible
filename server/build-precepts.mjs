@@ -9,7 +9,8 @@
 //                                                 "Gen.1.1<TAB>Rev.4.11<TAB>votes")
 //   node build-precepts.mjs --db X --out Y         explicit paths (defaults: ./translation.db,
 //                                                 ./precepts.db next to this script)
-//   node build-precepts.mjs --min 5                rarity-weighted score threshold (default 5)
+//   node build-precepts.mjs --min 4.3              rarity-weighted score threshold (default 4.3)
+//   node build-precepts.mjs --tier3                also match 3-root shingles (noisy — see Pass 1)
 //
 // HOW A QUOTATION IS FOUND — and why it works across 152 books
 //   The reading text renders every Strong's-tagged word as the SAME bare-root
@@ -27,7 +28,8 @@
 //   almost nothing — which is what keeps "Thus amar Yahawah of tzabaawath, the
 //   Alahayam of Yashar-Al" (Jeremiah, dozens of times) from linking every
 //   oracle to every other. A pair is kept when the weights sum to at least
-//   --min (default 5: two very rare phrases, or several merely uncommon ones).
+//   --min (default 4.3: one phrase found nowhere else in the corpus, or several
+//   merely uncommon ones).
 //   A run of consecutive shared shingles is a verbatim quotation, scattered
 //   ones are a close parallel.
 //
@@ -65,7 +67,7 @@ const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 && arg
 const DB_PATH  = path.resolve(opt('--db',  path.join(__dirname, 'translation.db')));
 const OUT_PATH = path.resolve(opt('--out', path.join(__dirname, 'precepts.db')));
 const SEED     = opt('--seed', null);
-const MIN_SCORE = parseFloat(opt('--min', '5'));
+const MIN_SCORE = parseFloat(opt('--min', '4.3'));
 const N = 4;            // shingle length in roots
 const MAX_DF = 40;      // a shingle seen in more verses than this is formula, not quotation
 const MAX_VERSE_PAIRS_PER_SHINGLE = 780; // C(40,2) — bounds the pair explosion for df<=MAX_DF
@@ -87,50 +89,65 @@ function roots(text) {
   return out;
 }
 
-// Pass 1: shingle every verse, index shingle -> [verse ids]
+// Pass 1: shingle every verse, index shingle -> [verse ids]. The 4-root
+// shingle is the signal. An optional 3-root tier (--tier3; rarer cap, half
+// weight) exists for the sparsely-glossed books — the NT baseline and much of
+// the untagged corpus carry roots on only half their words — but measured
+// 2026-09-12 it adds ~4,000 mostly-spurious parallels (Josephus to itself,
+// "yad … shamayam") for a handful of real finds, so it is OFF by default.
+// Verbatim-in-Hebrew NT quotations whose English wording diverges from the
+// OT render (Matthew 4:4 / Deuteronomy 8:3: "bad (alone)" vs an unglossed
+// "only") are the --seed set's job, not this matcher's.
 const verses = rows.map((r, i) => ({ i, b: r.book_id, c: r.chapter, v: r.verse, toks: roots(r.text) }));
-const index = new Map();
-for (const vs of verses) {
-  if (vs.toks.length < N) continue;
-  const seen = new Set();
-  for (let j = 0; j + N <= vs.toks.length; j++) {
-    const key = vs.toks.slice(j, j + N).join(' ');
-    if (seen.has(key)) continue;
-    seen.add(key);
-    let lst = index.get(key);
-    if (!lst) { lst = []; index.set(key, lst); }
-    lst.push(vs.i);
-  }
-}
-console.log(`[precepts] ${index.size} distinct ${N}-root shingles (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
-
-// Pass 2: count shared rare shingles per cross-chapter verse pair, remembering
-// each shingle's position in both verses so a consecutive run (verbatim quote)
-// can be told from scattered overlap (parallel).
-const pairs = new Map(); // "a|b" (a<b) -> { n, posA:[], posB:[] }
-const posOf = (vs, key) => { for (let j = 0; j + N <= vs.toks.length; j++) if (vs.toks.slice(j, j + N).join(' ') === key) return j; return -1; };
-let rare = 0;
-for (const [key, lst] of index) {
-  if (lst.length < 2 || lst.length > MAX_DF) continue;
-  rare++;
-  let budget = MAX_VERSE_PAIRS_PER_SHINGLE;
-  for (let x = 0; x < lst.length && budget > 0; x++) {
-    const A = verses[lst[x]];
-    for (let y = x + 1; y < lst.length && budget > 0; y++) {
-      const B = verses[lst[y]];
-      if (A.b === B.b && A.c === B.c) continue; // same chapter: refrain, not a precept
-      budget--;
-      const k = `${A.i}|${B.i}`;
-      let p = pairs.get(k);
-      if (!p) { p = { n: 0, w: 0, posA: [], posB: [] }; pairs.set(k, p); }
-      p.n++;
-      p.w += Math.log2(MAX_DF + 1) - Math.log2(lst.length);
-      p.posA.push(posOf(A, key));
-      p.posB.push(posOf(B, key));
+const TIERS = [{ n: 4, maxDf: MAX_DF, weight: 1.0 }];
+if (args.includes('--tier3')) TIERS.push({ n: 3, maxDf: 12, weight: 0.5 });
+function shingleIndex(n) {
+  const index = new Map();
+  for (const vs of verses) {
+    if (vs.toks.length < n) continue;
+    const seen = new Set();
+    for (let j = 0; j + n <= vs.toks.length; j++) {
+      const key = vs.toks.slice(j, j + n).join(' ');
+      if (seen.has(key)) continue;
+      seen.add(key);
+      let lst = index.get(key);
+      if (!lst) { lst = []; index.set(key, lst); }
+      lst.push(vs.i);
     }
   }
+  return index;
 }
-console.log(`[precepts] ${rare} rare shingles, ${pairs.size} candidate pairs (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
+
+// Pass 2: per cross-chapter verse pair, sum the rarity weights of every shared
+// shingle, remembering each 4-shingle's position in both verses so a
+// consecutive run (verbatim quote) can be told from scattered overlap.
+const pairs = new Map(); // "a|b" (a<b) -> { n, w, posA:[], posB:[] }
+const posOf = (vs, key, n) => { for (let j = 0; j + n <= vs.toks.length; j++) if (vs.toks.slice(j, j + n).join(' ') === key) return j; return -1; };
+for (const tier of TIERS) {
+  const index = shingleIndex(tier.n);
+  let rare = 0;
+  for (const [key, lst] of index) {
+    if (lst.length < 2 || lst.length > tier.maxDf) continue;
+    rare++;
+    const w = tier.weight * (Math.log2(tier.maxDf + 1) - Math.log2(lst.length));
+    let budget = MAX_VERSE_PAIRS_PER_SHINGLE;
+    for (let x = 0; x < lst.length && budget > 0; x++) {
+      const A = verses[lst[x]];
+      for (let y = x + 1; y < lst.length && budget > 0; y++) {
+        const B = verses[lst[y]];
+        if (A.b === B.b && A.c === B.c) continue; // same chapter: refrain, not a precept
+        budget--;
+        const k = `${A.i}|${B.i}`;
+        let p = pairs.get(k);
+        if (!p) { p = { n: 0, w: 0, posA: [], posB: [] }; pairs.set(k, p); }
+        p.w += w;
+        if (tier.n === N) { p.n++; p.posA.push(posOf(A, key, N)); p.posB.push(posOf(B, key, N)); }
+      }
+    }
+  }
+  console.log(`[precepts] ${tier.n}-root tier: ${index.size} shingles, ${rare} rare (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
+}
+console.log(`[precepts] ${pairs.size} candidate pairs`);
 
 // A verbatim quotation: shared shingles that sit at consecutive positions in
 // BOTH verses (a 5+-root run in the same order). Anything else is a parallel.
@@ -172,10 +189,13 @@ const both = out.transaction((A, B, kind, score, shared, run, source) => {
 let quotes = 0, parallels = 0;
 const writeAll = out.transaction(() => {
   for (const [k, p] of pairs) {
-    if (p.w < MIN_SCORE) continue;
     const [ia, ib] = k.split('|').map(Number);
     const A = verses[ia], B = verses[ib];
-    const run = longestRun(p.posA, p.posB);
+    // Within one book a single shared phrase is usually the author's own
+    // habit (Jasher's "and X sent to all the …", Josephus chapter headings),
+    // so a same-book pair has to clear a higher bar than a cross-book one.
+    if (p.w < (A.b === B.b ? MIN_SCORE + 1.7 : MIN_SCORE)) continue;
+    const run = p.n ? longestRun(p.posA, p.posB) : 0;
     const kind = run >= 2 ? 'quote' : 'parallel';
     if (kind === 'quote') quotes++; else parallels++;
     both(A, B, kind, Math.round(p.w * 10) / 10, p.n, run, 'corpus');

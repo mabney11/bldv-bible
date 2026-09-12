@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { apiBookOrder, apiTransChapter, apiTransBookText, apiTokens, apiSourceChapter, apiSourceVerse, apiHeadings, apiPrecepts, apiPreceptReview } from '../lib/api.js';
 import { getAdminStatus } from '../lib/localOverlay.js';
+import PreceptList from '../components/Precepts.jsx';
 import { remapDisplayChapterToSource, remapSourceVerseToDisplay } from '../lib/sourceVerseRemap.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
@@ -2236,62 +2237,30 @@ export default function Reader() {
       </main>
 
       {/* ── precepts panel ──────────────────────────────────────────────────── */}
-      {preceptOpen != null && precepts[preceptOpen]?.length ? (() => {
-        const list = precepts[preceptOpen];
-        const groups = [];
-        for (const it of list) {
-          let g = groups.find(x => x.book === it.book);
-          if (!g) { g = { book: it.book, name: it.name, items: [] }; groups.push(g); }
-          g.items.push(it);
-        }
-        const kindLabel = k => k === 'quote' ? 'quotes' : k === 'parallel' ? 'parallel' : k === 'xref' ? 'cross-ref' : k === 'manual' ? 'added' : k;
-        return (
-          <div className="rd-sheet-wrap" role="dialog" aria-label={`Precepts for ${chapterBookName} ${chapter}:${preceptOpen}`}>
-            <div className="rd-scrim" onClick={() => setPreceptOpen(null)} />
-            <div className="rd-sheet rd-precept-sheet">
-              <div className="rd-sheet-grip" />
-              <div className="rd-sheet-head">
-                <div className="rd-precept-title">
-                  <span className="rd-precept-glyph" aria-hidden="true">⁂</span>
-                  <span>Precepts</span>
-                  <span className="rd-precept-ref">{chapterBookName} {chapter}:{preceptOpen}</span>
-                  <span className="rd-precept-count">{list.length}</span>
-                </div>
-                <button className="rd-sheet-close" onClick={() => setPreceptOpen(null)} aria-label="Close">✕</button>
+      {preceptOpen != null && precepts[preceptOpen]?.length ? (
+        <div className="rd-sheet-wrap" role="dialog" aria-label={`Precepts for ${chapterBookName} ${chapter}:${preceptOpen}`}>
+          <div className="rd-scrim" onClick={() => setPreceptOpen(null)} />
+          <div className="rd-sheet rd-precept-sheet">
+            <div className="rd-sheet-grip" />
+            <div className="rd-sheet-head">
+              <div className="rd-precept-title">
+                <span className="rd-precept-glyph" aria-hidden="true">⁂</span>
+                <span>Precepts</span>
+                <span className="rd-precept-ref">{chapterBookName} {chapter}:{preceptOpen}</span>
+                <span className="rd-precept-count">{precepts[preceptOpen].length}</span>
               </div>
-              <div className="rd-precept-body">
-                {groups.map(g => (
-                  <section className="rd-precept-group" key={g.book}>
-                    <h3 className="rd-precept-book">{g.name}</h3>
-                    {g.items.map(it => (
-                      <div className={`rd-precept-item ${it.status || ''}`} key={`${it.book}:${it.chapter}:${it.verse}`}>
-                        <div className="rd-precept-item-head">
-                          <button type="button" className="rd-precept-link"
-                                  onClick={() => { setPreceptOpen(null); go(it.book, it.chapter, it.verse); }}
-                                  title={`Read ${it.name} ${it.chapter}:${it.verse}`}>
-                            {it.name === 'Psalms' ? 'Psalm' : it.name} {it.chapter}:{it.verse}
-                          </button>
-                          <span className={`rd-precept-kind ${it.kind}`}>{kindLabel(it.kind)}</span>
-                          {it.status === 'confirmed' && <span className="rd-precept-status">✓ confirmed</span>}
-                          {it.status === 'rejected' && <span className="rd-precept-status rejected">rejected</span>}
-                          {isAdmin && (
-                            <span className="rd-precept-review">
-                              {it.status !== 'confirmed' && it.status !== 'manual' && <button type="button" title="Confirm this precept" onClick={() => reviewPrecept(preceptOpen, it, 'confirmed')}>✓</button>}
-                              {it.status !== 'rejected' && <button type="button" title="Reject — hide from readers" onClick={() => reviewPrecept(preceptOpen, it, 'rejected')}>✗</button>}
-                              {it.status && it.kind !== 'manual' && <button type="button" title="Clear review" onClick={() => reviewPrecept(preceptOpen, it, 'clear')}>↺</button>}
-                            </span>
-                          )}
-                        </div>
-                        <p className="rd-precept-text">{it.text ? renderVerseNodes(it.text, glossMode, `pc${it.book}-${it.chapter}-${it.verse}-`) : <em>—</em>}</p>
-                      </div>
-                    ))}
-                  </section>
-                ))}
-              </div>
+              <button className="rd-sheet-close" onClick={() => setPreceptOpen(null)} aria-label="Close">✕</button>
+            </div>
+            <div className="rd-precept-body">
+              <PreceptList items={precepts[preceptOpen]}
+                           renderText={(t, k) => renderVerseNodes(t, glossMode, k)}
+                           onOpen={(b, c, v) => { setPreceptOpen(null); go(b, c, v); }}
+                           isAdmin={isAdmin}
+                           onReview={(item, status) => reviewPrecept(preceptOpen, item, status)} />
             </div>
           </div>
-        );
-      })() : null}
+        </div>
+      ) : null}
 
       {/* ── book / chapter / verse picker ───────────────────────────────────── */}
       {navOpen && (
