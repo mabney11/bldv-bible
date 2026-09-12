@@ -53,7 +53,7 @@ git push --dry-run origin "$(git branch --show-current)" >/dev/null 2>&1 && echo
 
 echo "==> 5. cron, every 5 minutes"
 LINE="*/5 * * * * $REPO/lexicon-sync.sh >> \$HOME/lexicon-sync.log 2>&1"
-( crontab -l 2>/dev/null | grep -v 'lexicon-sync.sh'; echo "$LINE" ) | crontab -
+{ crontab -l 2>/dev/null | grep -v 'lexicon-sync.sh' || true; echo "$LINE"; } | crontab -   # `|| true`: grep finds nothing on a fresh box, and set -e must not stop the line being added
 crontab -l | grep lexicon-sync
 
 echo
