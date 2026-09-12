@@ -100,6 +100,15 @@ export const apiTransChapter = async (book, ch) => {
 // chapter's own (locally-overridden) verses over this response's copy of
 // that chapter before scanning, so what's actually rendered always wins;
 // this data only supplies the NEIGHBORING chapters' text.
+// Precepts — "precept upon precept": every other passage in the corpus that
+// this chapter's verses quote or are quoted by (server/precepts.db, built by
+// build-precepts.mjs) plus the admin's confirm/reject/manual reviews. A missing
+// precepts.db answers enabled:false with no verses — the marker just never shows.
+export const apiPrecepts = (book, chapter) =>
+  jsonFetch(`/api/precepts/chapter?book=${book}&chapter=${chapter}`).catch(() => ({ enabled: false, verses: {} }));
+export const apiPreceptReview = (from, to, status, note = '') => jsonFetch('/api/precepts/review', {
+  method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ from, to, status, note }),
+});
 export const apiTransBookText = async (book) =>
   jsonFetch(`/api/translate/book?book=${book}`).catch(() => ({ book_id: book, chapters: [] }));
 // Named sections spanning a chapter range within one book (e.g. Book of

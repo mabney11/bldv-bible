@@ -1,7 +1,8 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, Fragment } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
-import { apiBookOrder, apiTransChapter, apiTransBookText, apiTokens, apiSourceChapter, apiSourceVerse, apiHeadings } from '../lib/api.js';
+import { apiBookOrder, apiTransChapter, apiTransBookText, apiTokens, apiSourceChapter, apiSourceVerse, apiHeadings, apiPrecepts, apiPreceptReview } from '../lib/api.js';
+import { getAdminStatus } from '../lib/localOverlay.js';
 import { remapDisplayChapterToSource, remapSourceVerseToDisplay } from '../lib/sourceVerseRemap.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
@@ -1138,6 +1139,40 @@ export default function Reader() {
     return () => { cancelled = true; };
   }, [book, bookReady]);
 
+  // ── precepts ("precept upon precept") ──────────────────────────────────────
+  // Every other passage in the corpus that a verse of this chapter quotes or is
+  // quoted by — server/precepts.db via /api/precepts/chapter. A verse with any
+  // shows a marker in the gutter beside its number (fieldy: "I shouldnt have
+  // to select a verse to know that it has precepts, there should be some type
+  // of indicator next to the verse"); tapping the marker opens the panel.
+  // Keyed by verse number -> [{book, chapter, verse, name, kind, score, status, text}].
+  const [precepts, setPrecepts] = useState({});
+  const [preceptOpen, setPreceptOpen] = useState(null); // verse number whose panel is open
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => { getAdminStatus().then(s => setIsAdmin(!!s?.isAdmin)).catch(() => {}); }, []);
+  useEffect(() => {
+    if (!bookReady) return;
+    let cancelled = false;
+    setPreceptOpen(null);
+    apiPrecepts(book, chapter)
+      .then(d => { if (!cancelled) setPrecepts(d && d.verses ? d.verses : {}); })
+      .catch(() => { if (!cancelled) setPrecepts({}); });
+    return () => { cancelled = true; };
+  }, [book, chapter, bookReady]);
+  // Admin review from inside the panel — optimistic, the server row is the truth.
+  const reviewPrecept = useCallback(async (fromVerse, item, status) => {
+    const from = { book, chapter, verse: fromVerse };
+    const to = { book: item.book, chapter: item.chapter, verse: item.verse };
+    try {
+      await apiPreceptReview(from, to, status);
+      setPrecepts(prev => {
+        const list = (prev[fromVerse] || []).map(it => (it.book === item.book && it.chapter === item.chapter && it.verse === item.verse)
+          ? { ...it, status: status === 'clear' ? null : status } : it);
+        return { ...prev, [fromVerse]: list };
+      });
+    } catch (e) { console.warn('precept review failed', e); }
+  }, [book, chapter]);
+
   // ── font size (persisted) ──────────────────────────────────────────────────
   const [fontPx, setFontPx] = useState(() => {
     const v = parseInt(localStorage.getItem('reader-font') || '', 10);
@@ -2152,6 +2187,18 @@ export default function Reader() {
                   const on = marks.has(markKey(vnum));
                   return (
                     <span className={`rd-vnum-wrap ${on ? 'marked' : ''}`} key={`g${vnum}`} style={{ top: `${vnumTops[vnum]}px` }}>
+                      {/* Precept marker — sits in the margin left of the number
+                          whenever this verse quotes, or is quoted by, another
+                          passage anywhere in the corpus (see `precepts` above).
+                          Its own button so it never toggles the highlight. */}
+                      {precepts[vnum]?.length ? (
+                        <button type="button" className={`rd-precept-dot ${precepts[vnum].some(p => p.status === 'confirmed' || p.status === 'manual') ? 'confirmed' : ''}`}
+                                title={`${precepts[vnum].length} precept${precepts[vnum].length === 1 ? '' : 's'} — passages sharing this verse's words`}
+                                aria-label={`Precepts for verse ${vnum}`}
+                                onClick={e => { e.stopPropagation(); setPreceptOpen(vnum); }}>
+                          <span className="rd-precept-glyph" aria-hidden="true">⁂</span>
+                        </button>
+                      ) : null}
                       <sup className="rd-vnum" role="button" tabIndex={0}
                            title={on ? `Clear highlight on verse ${vnum}` : `Highlight verse ${vnum}`}
                            onClick={() => toggleMark(vnum)}
@@ -2187,6 +2234,64 @@ export default function Reader() {
           )}
         </article>
       </main>
+
+      {/* ── precepts panel ──────────────────────────────────────────────────── */}
+      {preceptOpen != null && precepts[preceptOpen]?.length ? (() => {
+        const list = precepts[preceptOpen];
+        const groups = [];
+        for (const it of list) {
+          let g = groups.find(x => x.book === it.book);
+          if (!g) { g = { book: it.book, name: it.name, items: [] }; groups.push(g); }
+          g.items.push(it);
+        }
+        const kindLabel = k => k === 'quote' ? 'quotes' : k === 'parallel' ? 'parallel' : k === 'xref' ? 'cross-ref' : k === 'manual' ? 'added' : k;
+        return (
+          <div className="rd-sheet-wrap" role="dialog" aria-label={`Precepts for ${chapterBookName} ${chapter}:${preceptOpen}`}>
+            <div className="rd-scrim" onClick={() => setPreceptOpen(null)} />
+            <div className="rd-sheet rd-precept-sheet">
+              <div className="rd-sheet-grip" />
+              <div className="rd-sheet-head">
+                <div className="rd-precept-title">
+                  <span className="rd-precept-glyph" aria-hidden="true">⁂</span>
+                  <span>Precepts</span>
+                  <span className="rd-precept-ref">{chapterBookName} {chapter}:{preceptOpen}</span>
+                  <span className="rd-precept-count">{list.length}</span>
+                </div>
+                <button className="rd-sheet-close" onClick={() => setPreceptOpen(null)} aria-label="Close">✕</button>
+              </div>
+              <div className="rd-precept-body">
+                {groups.map(g => (
+                  <section className="rd-precept-group" key={g.book}>
+                    <h3 className="rd-precept-book">{g.name}</h3>
+                    {g.items.map(it => (
+                      <div className={`rd-precept-item ${it.status || ''}`} key={`${it.book}:${it.chapter}:${it.verse}`}>
+                        <div className="rd-precept-item-head">
+                          <button type="button" className="rd-precept-link"
+                                  onClick={() => { setPreceptOpen(null); go(it.book, it.chapter, it.verse); }}
+                                  title={`Read ${it.name} ${it.chapter}:${it.verse}`}>
+                            {it.name === 'Psalms' ? 'Psalm' : it.name} {it.chapter}:{it.verse}
+                          </button>
+                          <span className={`rd-precept-kind ${it.kind}`}>{kindLabel(it.kind)}</span>
+                          {it.status === 'confirmed' && <span className="rd-precept-status">✓ confirmed</span>}
+                          {it.status === 'rejected' && <span className="rd-precept-status rejected">rejected</span>}
+                          {isAdmin && (
+                            <span className="rd-precept-review">
+                              {it.status !== 'confirmed' && it.status !== 'manual' && <button type="button" title="Confirm this precept" onClick={() => reviewPrecept(preceptOpen, it, 'confirmed')}>✓</button>}
+                              {it.status !== 'rejected' && <button type="button" title="Reject — hide from readers" onClick={() => reviewPrecept(preceptOpen, it, 'rejected')}>✗</button>}
+                              {it.status && it.kind !== 'manual' && <button type="button" title="Clear review" onClick={() => reviewPrecept(preceptOpen, it, 'clear')}>↺</button>}
+                            </span>
+                          )}
+                        </div>
+                        <p className="rd-precept-text">{it.text ? renderVerseNodes(it.text, glossMode, `pc${it.book}-${it.chapter}-${it.verse}-`) : <em>—</em>}</p>
+                      </div>
+                    ))}
+                  </section>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })() : null}
 
       {/* ── book / chapter / verse picker ───────────────────────────────────── */}
       {navOpen && (

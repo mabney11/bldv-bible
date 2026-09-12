@@ -11753,6 +11753,154 @@ app.get('/api/translate/verse', (req, res) => {
 });
 
 // PUT /api/translate/verse
+// ── PRECEPTS — "precept upon precept" (Isaiah 28:10): where else in the corpus
+// does this verse's wording appear? ────────────────────────────────────────────
+// Data: server/precepts.db, built by build-precepts.mjs from translation.db's
+// glossed roots (see that file's header for the matching rule). Rebuildable,
+// never live-edited — the same class as corpus.db, so it is opened read-only
+// here and re-opened whenever the file changes (a rebuild or a copy from a
+// fresh build lands without a restart). Absent file = the feature is simply
+// off: every route below answers with empty data, never an error.
+//
+// Curation lives in translation.db (precept_reviews): confirmed / rejected /
+// manual, keyed by the same six numbers. translation.db is the live-edited,
+// prod-is-truth database, so reviews made on bldbible.com survive every
+// rebuild of precepts.db and every sync (feedback-prod-data-direction). The
+// table is created lazily on the first review rather than in the startup
+// schema block, because the public instance runs READ_ONLY and skips that
+// block — an admin's first review creates it there too.
+//
+// book ids are canon_id throughout (translation.db convention).
+const PRECEPTS_PATH = path.join(__dirname, 'precepts.db');
+let _preceptsDb = null, _preceptsStmts = null, _preceptsMtime = 0;
+function preceptsDb() {
+    try {
+        if (!fs.existsSync(PRECEPTS_PATH)) { if (_preceptsDb) { try { _preceptsDb.close(); } catch {} } _preceptsDb = null; _preceptsStmts = null; return null; }
+        const mtime = fs.statSync(PRECEPTS_PATH).mtimeMs;
+        if (_preceptsDb && mtime === _preceptsMtime) return _preceptsDb;
+        if (_preceptsDb) { try { _preceptsDb.close(); } catch {} }
+        _preceptsDb = new Database(PRECEPTS_PATH, { readonly: true, fileMustExist: true });
+        _preceptsMtime = mtime;
+        _preceptsStmts = {
+            chapter: _preceptsDb.prepare(`SELECT from_verse, to_book, to_chapter, to_verse, kind, score, shared, run, source
+                                          FROM precepts WHERE from_book=? AND from_chapter=? ORDER BY from_verse, score DESC`),
+            meta:    _preceptsDb.prepare(`SELECT key, value FROM meta`),
+        };
+        console.log(`[precepts] opened ${PRECEPTS_PATH}`);
+        return _preceptsDb;
+    } catch (e) {
+        console.warn('[precepts] unavailable:', e.message);
+        _preceptsDb = null; _preceptsStmts = null;
+        return null;
+    }
+}
+const PRECEPT_STATUSES = new Set(['confirmed', 'rejected', 'manual', 'clear']);
+function preceptReviewsEnsure() {
+    translationDb.tdb.exec(`
+        CREATE TABLE IF NOT EXISTS precept_reviews (
+            from_book INTEGER NOT NULL, from_chapter INTEGER NOT NULL, from_verse INTEGER NOT NULL,
+            to_book   INTEGER NOT NULL, to_chapter   INTEGER NOT NULL, to_verse   INTEGER NOT NULL,
+            status     TEXT NOT NULL,           -- confirmed | rejected | manual
+            note       TEXT NOT NULL DEFAULT '',
+            updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+            PRIMARY KEY (from_book, from_chapter, from_verse, to_book, to_chapter, to_verse)
+        ) WITHOUT ROWID;
+        CREATE INDEX IF NOT EXISTS idx_precept_reviews_to ON precept_reviews(to_book, to_chapter);
+    `);
+}
+// Reviews touching a chapter, in either direction, as "b:c:v|b:c:v" -> row.
+function preceptReviewsFor(bookId, chapter) {
+    const out = new Map();
+    try {
+        const rows = translationDb.tdb.prepare(`
+            SELECT * FROM precept_reviews
+            WHERE (from_book=? AND from_chapter=?) OR (to_book=? AND to_chapter=?)`).all(bookId, chapter, bookId, chapter);
+        for (const r of rows) {
+            out.set(`${r.from_book}:${r.from_chapter}:${r.from_verse}|${r.to_book}:${r.to_chapter}:${r.to_verse}`, r);
+            out.set(`${r.to_book}:${r.to_chapter}:${r.to_verse}|${r.from_book}:${r.from_chapter}:${r.from_verse}`, r);
+        }
+    } catch { /* table not created yet — no reviews */ }
+    return out;
+}
+function preceptSnippet(b, c, v) {
+    try { const row = translationDb.stmts.getVerse.get(b, c, v); return row && row.text ? row.text : ''; } catch { return ''; }
+}
+
+// GET /api/precepts/chapter?book=&chapter=  -> { book, chapter, enabled, built_at,
+//   verses: { "<verse>": [ { book, chapter, verse, name, kind, score, status, text } ] } }
+// Rejected links are dropped for readers and kept (status:'rejected') for an
+// admin so the Studio-style review can undo them. Manual reviews with no
+// matching auto row are added in. Sorted: confirmed first, then by score.
+app.get('/api/precepts/chapter', (req, res) => {
+    try {
+        const bookId  = parseInt(req.query.book, 10);
+        const chapter = parseInt(req.query.chapter, 10);
+        if (!bookId || !chapter) return res.status(400).json({ error: 'book and chapter required' });
+        const admin = isAdminRequest(req);
+        const db = preceptsDb();
+        const reviews = preceptReviewsFor(bookId, chapter);
+        const verses = {};
+        const seen = new Set();
+        const push = (fromVerse, item) => {
+            const key = `${bookId}:${chapter}:${fromVerse}|${item.book}:${item.chapter}:${item.verse}`;
+            if (seen.has(key)) return;
+            seen.add(key);
+            const rv = reviews.get(key);
+            const status = rv ? rv.status : null;
+            if (status === 'rejected' && !admin) return;
+            (verses[fromVerse] ||= []).push({ ...item, status, name: canonName(item.book),
+                                              text: preceptSnippet(item.book, item.chapter, item.verse) });
+        };
+        if (db) {
+            for (const r of _preceptsStmts.chapter.all(bookId, chapter)) {
+                push(r.from_verse, { book: r.to_book, chapter: r.to_chapter, verse: r.to_verse,
+                                     kind: r.kind, score: r.score, shared: r.shared, run: r.run, source: r.source });
+            }
+        }
+        for (const [key, rv] of reviews) {
+            if (rv.status !== 'manual') continue;
+            const [from, to] = key.split('|');
+            const [fb, fc, fv] = from.split(':').map(Number);
+            if (fb !== bookId || fc !== chapter) continue;
+            const [tb, tc, tv] = to.split(':').map(Number);
+            push(fv, { book: tb, chapter: tc, verse: tv, kind: 'manual', score: 0, shared: 0, run: 0, source: 'studio' });
+        }
+        const rank = s => (s === 'confirmed' || s === 'manual') ? 0 : s === 'rejected' ? 2 : 1;
+        for (const v of Object.keys(verses)) verses[v].sort((a, b) => rank(a.status) - rank(b.status) || b.score - a.score);
+        let built_at = null;
+        if (db) { try { for (const m of _preceptsStmts.meta.all()) if (m.key === 'built_at') built_at = m.value; } catch {} }
+        res.json({ book: bookId, chapter, enabled: !!db, built_at, verses });
+    } catch (err) {
+        console.error('GET /api/precepts/chapter failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// PUT /api/precepts/review  { from:{book,chapter,verse}, to:{book,chapter,verse}, status, note? }
+// status: confirmed | rejected | manual | clear (clear = forget the review).
+// Admin-only on the public instance (blockWritesInReadOnly), open locally like
+// every other Studio write.
+app.put('/api/precepts/review', express.json(), (req, res) => {
+    try {
+        const { from, to, status, note } = req.body || {};
+        const ok = r => r && Number.isInteger(r.book) && Number.isInteger(r.chapter) && Number.isInteger(r.verse);
+        if (!ok(from) || !ok(to) || !PRECEPT_STATUSES.has(status)) return res.status(400).json({ error: 'from, to and a valid status required' });
+        preceptReviewsEnsure();
+        const key = [from.book, from.chapter, from.verse, to.book, to.chapter, to.verse];
+        const rkey = [to.book, to.chapter, to.verse, from.book, from.chapter, from.verse];
+        const del = translationDb.tdb.prepare(`DELETE FROM precept_reviews WHERE from_book=? AND from_chapter=? AND from_verse=? AND to_book=? AND to_chapter=? AND to_verse=?`);
+        del.run(...key); del.run(...rkey);
+        if (status !== 'clear') {
+            translationDb.tdb.prepare(`INSERT INTO precept_reviews(from_book,from_chapter,from_verse,to_book,to_chapter,to_verse,status,note,updated_at)
+                                        VALUES(?,?,?,?,?,?,?,?,datetime('now'))`).run(...key, status, String(note || ''));
+        }
+        res.json({ ok: true, from, to, status });
+    } catch (err) {
+        console.error('PUT /api/precepts/review failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.put('/api/translate/verse', (req, res) => {
     try {
         const { book_id, chapter, verse, status, text, rich_text } = req.body;
