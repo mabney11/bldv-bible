@@ -35,7 +35,7 @@ import {
   PIECES, MATERIALS, H,
   progressAt, xrayAt, openAt, cameraAt, focusFor,
   PLACES, ROUTES, MOVERS, moverAt, landAt,
-  MODES, ROAM_EYE, ROAM_START, ROAM_ENTER, PILLAR, WEST_X, PORCH_X1, OUTER_Z,
+  MODES, ROAM_EYE, ROAM_START, ROAM_ENTER, PILLAR, WEST_X, PORCH_X1, OUTER_Z, EAST_X, ALTAR, INNER_COURT, GREAT_COURT,
 } from '../lib/models/temple.js';
 
 const SKY = 0xb9cfe3;          // a dry, bright morning over Mawarayah
@@ -211,6 +211,9 @@ function makeMaterials() {
     net: new THREE.MeshStandardMaterial({ color: new THREE.Color('#e6ab70'), metalness: 1, roughness: 0.45, alphaMap: netTexture(), transparent: true, side: THREE.DoubleSide, alphaTest: 0.35 }),
     panel: std('brass', { map: panelTexture('#b9733a', '#5a2f12', '#e6ab70'), roughness: 0.5 }),
     flame: new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffd27a') }),
+    linen: new THREE.MeshStandardMaterial({ color: new THREE.Color('#efe6d2'), roughness: 0.95, metalness: 0 }),     // bawatz (fine linen) — the priests and singers
+    royal: new THREE.MeshStandardMaterial({ color: new THREE.Color('#4a2e7a'), roughness: 0.8, metalness: 0.05 }),   // the malak (king)
+    skin:  new THREE.MeshStandardMaterial({ color: new THREE.Color('#b98a63'), roughness: 0.9, metalness: 0 }),
     carvedCedar: std('cedar', { map: carvedCedar.map, bumpMap: carvedCedar.bump, bumpScale: 0.12, roughness: 0.75 }),
     carvedGold: std('gold', { map: carvedGold.map, bumpMap: carvedGold.bump, bumpScale: 0.1, roughness: 0.32 }),
     carvedOlive: std('olive', { map: carvedOlive.map, bumpMap: carvedOlive.bump, bumpScale: 0.12 }),
@@ -1166,6 +1169,186 @@ function buildLand(M) {
 }
 
 
+// ── The dedication (1 Kings 8; 2 Chronicles 5–7): its actors ─────────────────
+// Everything here keys off the DEDICATE story's times (lib/models/temple.js,
+// DEDICATE_PHASES): the assembly in the courts, the priests carrying the ark from
+// the gate to under the wings, the singers east of the altar, the inan (cloud)
+// filling the house, the malak (king) on the kayawar, the ash (fire) from shamayam
+// on the altar, the kabawad (glory), the sacrifices' smoke, seven days passing,
+// the people going home. People are faceless, like the cherubim.
+const DED = { start: 8, porch: 20, set: 28, out: 34, cloud: 41, king: 55, kneel: 63, fire: 72.6, glory: 74, bow: 80, zabach: 90, feast: 100, home: 110 };
+/** Ground height along the procession's line (z = 0): the court, the steps, the floor. */
+function groundAlongX(x) { const x0 = PORCH_X1 + H.pad, x1 = x0 + 4; return x >= x1 ? H.courtY : x <= x0 ? 0 : H.courtY + (1 - (x - x0) / (x1 - x0)) * -H.courtY; }
+/** A faceless figure at scale s (height 10·s), facing +x. Poses: stand, spread (hands to heaven), kneel, carry (a pole on the shoulder), trumpet. */
+function personFigure(sub, s, robe, pose) {
+  const kneel = pose === 'kneel';
+  const base = kneel ? 0 : 0, top = kneel ? 3.1 : 5.1;                                 // kneeling: the robe pools at the knees, the torso sits lower
+  const skirt = new THREE.LatheGeometry((kneel ? [[1.9, 0], [1.8, 0.4], [1.3, 1.6], [1.1, 3.1]] : [[1.5, 0], [1.45, 0.2], [1.25, 1.4], [1.1, 3.2], [1.02, 5.1]]).map(([r, dy]) => new THREE.Vector2(r * s, (base + dy) * s)), 40);
+  sub.add(skirt, robe);
+  const y0 = top;                                                                        // the belt line
+  sub.lathe(0, y0 * s, 0, [[1.02 * s, 0], [0.98 * s, 0.5 * s], [1.05 * s, 1.5 * s], [1.15 * s, 2.0 * s], [0.85 * s, 2.35 * s], [0.4 * s, 2.5 * s], [0, 2.52 * s]], robe, 32);   // the bodice
+  sub.torus(0, (y0 + 0.05) * s, 0, 1.03 * s, 0.09 * s, 'goldDim', Math.PI / 2);        // a sash
+  const sh = y0 + 2.2, neck = sh + 0.45, head = sh + 1.65;
+  sub.cyl(0, neck * s, 0, 0.3 * s, 0.5 * s, 'skin', 0.32 * s, 14);
+  sub.sphere(0, head * s, 0, 0.62 * s, 'skin', 18);
+  sub.lathe(0, (head + 0.1) * s, 0, [[0.66 * s, 0], [0.7 * s, 0.25 * s], [0.62 * s, 0.6 * s], [0.35 * s, 0.85 * s], [0, 0.9 * s]], robe, 24);   // a cap / headcloth
+  // arms: shoulder → elbow → hand, per pose (z = ±side)
+  const A = {
+    stand:   [[0.1, sh, 1.05], [0.3, sh - 1.6, 1.15], [0.5, sh - 3.0, 1.1]],
+    spread:  [[0.1, sh, 1.05], [0.6, sh + 0.9, 1.9], [0.9, sh + 2.6, 2.4]],
+    kneel:   [[0.1, sh, 1.05], [0.6, sh + 0.9, 1.7], [0.8, sh + 2.6, 1.9]],
+    carry:   [[0.1, sh, 1.05], [1.0, sh - 0.9, 1.15], [1.7, sh + 0.5, 1.05]],
+    trumpet: [[0.1, sh, 1.05], [0.9, sh - 0.6, 1.1], [1.3, sh + 1.0, 0.5]],
+  }[pose] || [[0.1, sh, 1.05], [0.3, sh - 1.6, 1.15], [0.5, sh - 3.0, 1.1]];
+  for (const sz of [-1, 1]) {
+    const P = A.map(([x, y, z]) => [x * s, y * s, sz * z * s]);
+    sub.sphere(P[0][0], P[0][1], P[0][2], 0.36 * s, robe, 12);
+    sub.capsule(P[0], P[1], 0.27 * s, robe); sub.capsule(P[1], P[2], 0.22 * s, 'skin'); sub.sphere(P[2][0], P[2][1], P[2][2], 0.24 * s, 'skin', 10);
+    if (pose === 'trumpet' && sz > 0) { const t = new THREE.CylinderGeometry(0.06 * s, 0.34 * s, 3.2 * s, 12); t.rotateZ(-Math.PI / 2); t.rotateY(0.15); t.translate((1.3 + 1.7) * s, (sh + 1.05) * s, 0.35 * s); sub.add(t, 'brass'); }   // the chatzatzarah (trumpet), raised to the mouth
+  }
+}
+function buildDedication(M, byId, lights, sky) {
+  const group = new THREE.Group(); group.name = 'dedication'; group.visible = false;
+  const S = 0.35;                                                                        // a person 3½ amah tall
+  const person = (robe, pose) => { const sub = new PieceBuilder(M, { id: 'ded' }); personFigure(sub, S, robe, pose); const g = sub.bake(); g.userData.id = undefined; return g; };
+  // the procession: the ark (the arawan piece itself is moved) and four priests at the poles
+  const priests = [];
+  for (const [dx, dz] of [[2.9, 0.82], [2.9, -0.82], [-2.9, 0.82], [-2.9, -0.82]]) { const p = person('linen', 'carry'); p.position.set(dx, 0, dz); p.userData.dx = dx; p.userData.dz = dz; group.add(p); priests.push(p); }
+  const ark = byId('arawan'), arkHome = new THREE.Vector3(-20, 0, 0);
+  // the singers and trumpeters, east of the altar, in white
+  const singers = new THREE.Group(); group.add(singers);
+  const singerProto = person('linen', 'trumpet'), singerStand = person('linen', 'stand');
+  for (let r = 0; r < 3; r++) for (let i = 0; i < 12; i++) { const c = (i % 2 ? singerProto : singerStand).clone(); const z = (i < 6 ? -19 + i * 2.4 : 6.6 + (i - 6) * 2.4) + (r % 2) * 1.2; c.position.set(ALTAR.x + ALTAR.w / 2 + 3 + r * 2.2, H.courtY, z); c.rotation.y = Math.PI; singers.add(c); }   // two blocks, the king's road between
+  // the king: standing with hands spread, then kneeling, on the kayawar
+  const kingStand = person('royal', 'spread'), kingKneel = person('royal', 'kneel');
+  for (const k of [kingStand, kingKneel]) { k.position.set(ALTAR.x + 19, H.courtY + 3.3, 0); k.rotation.y = Math.PI; k.visible = false; group.add(k); }
+  // the assembly: an instanced crowd in the courts (body + head as one geometry)
+  const body = new THREE.CapsuleGeometry(0.55, 1.9, 4, 10); body.translate(0, 1.5, 0);
+  const headG = new THREE.SphereGeometry(0.42, 12, 8); headG.translate(0, 3.1, 0);
+  const personG = mergeGeometries([body.toNonIndexed(), headG.toNonIndexed()], false);
+  const N = 900, crowd = new THREE.InstancedMesh(personG, new THREE.MeshStandardMaterial({ roughness: 0.95 }), N);
+  crowd.castShadow = true; group.add(crowd);
+  const seats = []; let sd = 11; const rr = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296; };
+  const tone = new THREE.Color();
+  for (let i = 0; i < N; i++) {
+    let x, z;
+    if (i < 420) { x = INNER_COURT.x1 - 14 + rr() * 12; z = -52 + rr() * 104; if (Math.abs(z) < 6 && x < INNER_COURT.x1 - 4) z += 8 * Math.sign(z || 1); }   // before the altar, leaving the ark's road clear
+    else if (i < 640) { x = GREAT_COURT.x1 - 14 + rr() * 11; z = -70 + rr() * 140; if (Math.abs(z) < 8) z += 9 * Math.sign(z || 1); }
+    else { x = -60 + rr() * 170; z = rr() < 0.5 ? -74 + rr() * 10 : INNER_COURT.z + 4 + rr() * 10; }
+    const y = H.courtY, sc = 0.95 + rr() * 0.2, yaw = Math.PI + (rr() - 0.5) * 0.5;
+    seats.push({ x, y, z, sc, yaw, d: rr() });
+    tone.setHSL(0.07 + rr() * 0.06, 0.25 + rr() * 0.3, 0.3 + rr() * 0.3); crowd.setColorAt(i, tone);
+  }
+  crowd.instanceColor.needsUpdate = true;
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), v3 = new THREE.Vector3(), sv = new THREE.Vector3();
+  function seatCrowd(bow, gone) {
+    for (let i = 0; i < N; i++) {
+      const s = seats[i];
+      const leave = Math.max(0, Math.min(1, (gone - s.d * 0.6) / 0.4));               // each goes in their own time
+      e.set(0, s.yaw, -bow * 1.35, 'YXZ'); q.setFromEuler(e);                        // bowing: down on the face toward the house (−x)
+      v3.set(s.x + leave * 14, s.y, s.z); const k = s.sc * (1 - leave); sv.set(k, k, k);
+      m4.compose(v3, q, sv); crowd.setMatrixAt(i, m4);
+    }
+    crowd.instanceMatrix.needsUpdate = true;
+  }
+  seatCrowd(0, 0);
+  // the inan (cloud) in the house
+  const NC = 3000, cloudGeo = new THREE.BufferGeometry(), cp = new Float32Array(NC * 3), cv = [];
+  for (let i = 0; i < NC; i++) { const inPorch = i > NC * 0.86; cp[i * 3] = inPorch ? EAST_X + rr() * (PORCH_X1 - EAST_X) : H.inX0 + rr() * (H.inX1 - H.inX0); cp[i * 3 + 1] = 0.8 + rr() * (H.inH - 1.6); cp[i * 3 + 2] = (rr() - 0.5) * 2 * (H.inZ - 0.6); cv.push(rr() * Math.PI * 2, 0.3 + rr()); }
+  cloudGeo.setAttribute('position', new THREE.BufferAttribute(cp, 3));
+  const puff = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d'); const r = g.createRadialGradient(32, 32, 2, 32, 32, 30); r.addColorStop(0, 'rgba(255,255,255,0.9)'); r.addColorStop(0.5, 'rgba(255,255,255,0.35)'); r.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = r; g.fillRect(0, 0, 64, 64); const t = new THREE.CanvasTexture(c); return t; })();
+  const cloudMat = new THREE.PointsMaterial({ map: puff, color: new THREE.Color('#f6ead0'), size: 7, transparent: true, opacity: 0, depthWrite: false, sizeAttenuation: true });
+  const cloud = new THREE.Points(cloudGeo, cloudMat); cloud.frustumCulled = false; cloud.renderOrder = 5; group.add(cloud);
+  // the ash (fire) from shamayam: a shaft of light, then flames and smoke on the altar (and, for the sacrifices, over the court)
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 2.2, 240, 16, 1, true), new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffb347'), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+  beam.position.set(ALTAR.x, H.courtY + ALTAR.h + 120, 0); group.add(beam);
+  const NF = 900, fireGeo = new THREE.BufferGeometry(), fp = new Float32Array(NF * 3), fc = new Float32Array(NF * 3), fseed = [];
+  for (let i = 0; i < NF; i++) fseed.push(rr(), rr(), rr());
+  fireGeo.setAttribute('position', new THREE.BufferAttribute(fp, 3)); fireGeo.setAttribute('color', new THREE.BufferAttribute(fc, 3));
+  const fire = new THREE.Points(fireGeo, new THREE.PointsMaterial({ map: puff, vertexColors: true, size: 4, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending })); fire.frustumCulled = false; group.add(fire);
+  const NS = 700, smokeGeo = new THREE.BufferGeometry(), sp = new Float32Array(NS * 3), sseed = [];
+  for (let i = 0; i < NS; i++) sseed.push(rr(), rr(), rr());
+  smokeGeo.setAttribute('position', new THREE.BufferAttribute(sp, 3));
+  const smoke = new THREE.Points(smokeGeo, new THREE.PointsMaterial({ map: puff, color: new THREE.Color('#8a8074'), size: 14, transparent: true, opacity: 0, depthWrite: false })); smoke.frustumCulled = false; group.add(smoke);
+  // the kabawad (glory) seen from the court: light spilling from the doorway and the porch
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: puff, color: new THREE.Color('#ffd88a'), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+  glow.position.set(EAST_X + 5, 10, 0); glow.scale.set(44, 34, 1); group.add(glow);
+  const glowLight = new THREE.PointLight(0xffd27a, 0, 90, 1.5); glowLight.position.set(PORCH_X1 + 6, 12, 0); group.add(glowLight);
+  const hearths = [[ALTAR.x, ALTAR.w / 2 - 1, H.courtY + ALTAR.h, 0]];                  // [x, spread, y, z]: the altar; the court's midst joins for the sacrifices
+  for (const [x, z] of [[58, 24], [58, -24], [96, 30], [96, -30], [72, 44], [72, -44]]) hearths.push([x, 7, H.courtY + 0.4, z]);
+  const fireCol = new THREE.Color();
+  function burn(t, fireK, courtK) {
+    const now = t;
+    for (let i = 0; i < NF; i++) {
+      const [a, b, c] = [fseed[i * 3], fseed[i * 3 + 1], fseed[i * 3 + 2]];
+      const which = i < NF * 0.55 ? 0 : 1 + Math.floor(b * 6), h = hearths[which], k = which === 0 ? fireK : courtK;
+      const u = ((now * (0.6 + c) + a * 7) % 1), rise = u * (which === 0 ? 11 : 6) * k;
+      fp[i * 3] = h[0] + (a - 0.5) * 2 * h[1] * (1 - u * 0.5); fp[i * 3 + 1] = h[2] + rise; fp[i * 3 + 2] = h[3] + (c - 0.5) * 2 * (which === 0 ? ALTAR.w / 2 - 1 : h[1]) * (1 - u * 0.5);
+      fireCol.setHSL(0.09 - u * 0.07, 1, 0.55 - u * 0.25 + (k < 0.01 ? -1 : 0)); fc[i * 3] = fireCol.r; fc[i * 3 + 1] = fireCol.g; fc[i * 3 + 2] = fireCol.b;
+    }
+    fireGeo.attributes.position.needsUpdate = true; fireGeo.attributes.color.needsUpdate = true;
+    for (let i = 0; i < NS; i++) {
+      const [a, b, c] = [sseed[i * 3], sseed[i * 3 + 1], sseed[i * 3 + 2]];
+      const which = i < NS * 0.5 ? 0 : 1 + Math.floor(b * 6), h = hearths[which], k = which === 0 ? fireK : courtK;
+      const u = ((now * 0.12 * (0.7 + c) + a) % 1);
+      sp[i * 3] = h[0] + (a - 0.5) * 8 + u * 22 + Math.sin(u * 9 + a * 6) * 4; sp[i * 3 + 1] = h[2] + 4 + u * 70 * k; sp[i * 3 + 2] = h[3] + (c - 0.5) * 8 - u * 10;
+    }
+    smokeGeo.attributes.position.needsUpdate = true;
+  }
+  const { hallLight, oracleLight, porchLight, sun, hemi, scene } = lights;
+  const skyDay = new THREE.Color(sky), skyNight = new THREE.Color('#141a2c'), skyDusk = new THREE.Color('#d8a06a'), tmpC = new THREE.Color();
+  const sunOffset = new THREE.Vector3(220, 300, 180), dayOffset = sunOffset.clone();
+  let on = false;
+  function place(t) {
+    if (!on) { on = true; group.visible = true; }
+    const sm = (a, b) => Math.max(0, Math.min(1, (t - a) / (b - a))), ease = (u) => u * u * (3 - 2 * u);
+    // the ark's road: the gate → the steps → the porch → the hall → under the wings; then home
+    let x;
+    if (t < DED.start) x = 156; else if (t < DED.porch) x = 156 + (PORCH_X1 - 156) * ease(sm(DED.start, DED.porch)); else if (t < DED.set) x = PORCH_X1 + (arkHome.x - PORCH_X1) * ease(sm(DED.porch, DED.set)); else x = arkHome.x;
+    const carried = t < DED.set ? 1 : 1 - ease(sm(DED.set, DED.set + 1.5));
+    const g = groundAlongX(x), bob = carried * Math.sin(t * 6.5) * 0.06;
+    ark.position.set(x - arkHome.x, g + carried * 2.55 + bob, 0);
+    for (const p of priests) {
+      let px = x + p.userData.dx, py = g, vis = true;
+      if (t >= DED.set) { const u = ease(sm(DED.set + 1.2, DED.out)); px = arkHome.x + p.userData.dx + 4 + (PORCH_X1 + 24 - arkHome.x) * u; py = groundAlongX(px); vis = u < 0.995; }
+      p.position.set(px, py + Math.max(0, Math.sin(t * 6.5 + p.userData.dz) * 0.05), p.userData.dz * 1.0); p.rotation.y = t >= DED.set ? 0 : Math.PI; p.visible = vis;
+    }
+    // singers from the trumpets' verse until the feast; the king on the scaffold; the crowd
+    singers.visible = t >= DED.out - 1 && t < DED.feast;
+    kingStand.visible = (t >= DED.king && t < DED.kneel) || (t >= DED.zabach && t < DED.feast);
+    kingKneel.visible = t >= DED.kneel && t < DED.zabach;
+    seatCrowd(ease(sm(DED.bow, DED.bow + 3)) * (t < DED.zabach ? 1 : 1 - ease(sm(DED.zabach, DED.zabach + 2))), sm(DED.home, DED.home + 8));
+    // the cloud, then the glory in it
+    const cloudK = ease(sm(DED.cloud, DED.cloud + 6)), gloryK = ease(sm(DED.glory, DED.glory + 3));
+    cloudMat.opacity = cloudK * (0.26 + 0.24 * gloryK); cloudMat.color.setHex(0xf6ead0).lerp(new THREE.Color('#ffd57a'), gloryK); cloud.visible = cloudK > 0.001;
+    glow.material.opacity = gloryK * 0.7 * (t < DED.home ? 1 : 1 - ease(sm(DED.home, DED.home + 6))); glowLight.intensity = 900 * gloryK * (t < DED.home ? 1 : 1 - ease(sm(DED.home, DED.home + 6)));
+    if (cloud.visible) { for (let i = 0; i < NC; i++) { const ph = cv[i * 2], sp2 = cv[i * 2 + 1]; cp[i * 3] += Math.sin(t * 0.3 * sp2 + ph) * 0.02; cp[i * 3 + 1] += Math.cos(t * 0.25 * sp2 + ph) * 0.015; cp[i * 3 + 2] += Math.sin(t * 0.2 * sp2 + ph * 2) * 0.02; } cloudGeo.attributes.position.needsUpdate = true; }
+    // the fire: the shaft comes down over a second, then the altar burns; the court's midst from the sacrifices
+    const beamK = t < DED.fire ? 0 : t < DED.fire + 1 ? sm(DED.fire, DED.fire + 1) : 1 - sm(DED.fire + 1.6, DED.fire + 4);
+    beam.material.opacity = beamK * 0.55; beam.scale.y = Math.max(0.001, t < DED.fire + 1 ? sm(DED.fire, DED.fire + 1) : 1); beam.position.y = H.courtY + ALTAR.h + 120 * beam.scale.y;
+    const fireK = t < DED.fire + 0.6 ? 0 : (t < DED.home ? ease(sm(DED.fire + 0.6, DED.fire + 2)) : 1 - ease(sm(DED.home, DED.home + 5)));
+    const courtK = t < DED.zabach ? 0 : (t < DED.home ? ease(sm(DED.zabach, DED.zabach + 3)) : 1 - ease(sm(DED.home, DED.home + 5)));
+    fire.visible = fireK > 0.001 || courtK > 0.001; smoke.visible = fire.visible;
+    if (fire.visible) { burn(t, fireK, courtK); fire.material.opacity = Math.max(fireK, courtK) * 0.9; smoke.material.opacity = Math.max(fireK, courtK) * 0.32; }
+    // the glory: the house's lights swell
+    hallLight.intensity *= 1 + 2.5 * gloryK; oracleLight.intensity *= 1 + 2.5 * gloryK; porchLight.intensity *= 1 + 2 * gloryK;   // place() has just set the story's base values
+    // seven days pass over the feast, and the eighth day ends in the evening
+    let daylight = 1;
+    if (t >= DED.feast && t < DED.home) { const th = (t - DED.feast) / (DED.home - DED.feast) * Math.PI * 2 * 7; daylight = Math.max(0, Math.sin(th)); sunOffset.set(220 * Math.cos(th) + 60, 60 + 300 * Math.max(0.05, Math.sin(th)), 180); }
+    else if (t >= DED.home) { const u = ease(sm(DED.home, DED.home + 10)); daylight = 1 - 0.55 * u; sunOffset.set(280, 300 - 220 * u, 180); }
+    else sunOffset.copy(dayOffset);
+    sun.intensity = 2.6 * Math.max(0.06, daylight); hemi.intensity = 0.85 * (0.25 + 0.75 * daylight);
+    tmpC.copy(skyNight).lerp(skyDay, daylight); if (t >= DED.home) tmpC.copy(skyDay).lerp(skyDusk, ease(sm(DED.home, DED.home + 10)));
+    scene.background.copy(tmpC); scene.fog.color.copy(tmpC);
+  }
+  function off() {
+    if (!on) return; on = false; group.visible = false;
+    ark.position.set(0, 0, 0);
+    sun.intensity = 2.6; hemi.intensity = 0.85; sunOffset.copy(dayOffset); scene.background.copy(skyDay); scene.fog.color.copy(skyDay);
+  }
+  return { group, place, off, sunOffset };
+}
+
 // ── Export: any piece (or one sculpt slot of it) as a GLB — the procedural shape as
 // a BASELINE to detail elsewhere (Meshy's texture pass on an uploaded model, or
 // Blender). ?export=karawab downloads the whole piece; ?export=karawab:slot the first
@@ -1248,6 +1431,8 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     // the land the Build story opens on
     const land = buildLand(M); scene.add(land.group);
     const byId = (id) => groups.get(id);
+    // the dedication's actors (only shown in that story)
+    const ded = buildDedication(M, byId, { hallLight, oracleLight, porchLight, sun, hemi, scene }, SKY); scene.add(ded.group);
 
     // sculpted parts, when their files exist
     for (const [id, g] of groups) {
@@ -1300,6 +1485,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       for (const l of lampLights) l.intensity = 40 * lampOn;
       const goldOn = progressAt(mode, PIECES.find((p) => p.id === 'zahab'), t), porchOn = progressAt(mode, PIECES.find((p) => p.id === 'awalam'), t);
       hallLight.intensity = 420 * Math.max(0.3, lampOn) * goldOn; oracleLight.intensity = 300 * goldOn; porchLight.intensity = 160 * porchOn;
+      if (mode === 'dedicate') ded.place(t); else ded.off();
     }
 
     // ── Camera: scripted while following; the viewer's drag takes it ────────
@@ -1525,7 +1711,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       if (!dirty) return;
       dirty = false; stats.frames++; const f0 = performance.now();
       // the sun's shadow window follows the camera's target so the shadows stay sharp where the eye is
-      sun.target.position.copy(controls.target); sun.position.copy(controls.target).add(new THREE.Vector3(220, 300, 180));
+      sun.target.position.copy(controls.target); sun.position.copy(controls.target).add(ded.sunOffset);
       composer.render(); stats.ms = performance.now() - f0;
     }
     function resize() {

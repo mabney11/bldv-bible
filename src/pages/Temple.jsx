@@ -3,7 +3,7 @@
  * built (1 Kings 6–7; 2 Chronicles 3–4), its courts and the king's houses,
  * as an interactive model.
  *
- * Route: /models/temple   ?piece=<id>  ?view=3d|2d  ?mode=build|walk|roam
+ * Route: /models/temple   ?piece=<id>  ?view=3d|2d  ?mode=build|dedicate|walk|roam
  *
  * - Two stories on ONE model (lib/models/temple.js): BUILD, the chapters in
  *   their own order, the house rising as the scrub bar moves; WALK, in through
@@ -27,7 +27,7 @@ import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
 import { usePlayer, Section, WordRow, ModelPassage, Caption, PaceSelect } from '../components/ModelKit.jsx';
 import TempleSheet from '../components/TempleSheet.jsx';
 import {
-  PIECES, WORDS, MODES, SPEEDS, GROUPS, CHIP_ORDER, PASSAGES, ALL_REFS, GATHER_REFS,
+  PIECES, WORDS, MODES, SPEEDS, GROUPS, CHIP_ORDER, GATHER_REFS, DEDICATE_REFS, passagesFor, refsFor,
   phaseAt, pieceById, pieceForWord, marksFor,
 } from '../lib/models/temple.js';
 import './Temple.css';
@@ -63,18 +63,27 @@ function Card({ id, mode, onClose, onPick }) {
         </>
       ) : (
         <div className="st-card-h">
-          <div className="st-detail-sub">1 Kings 6–7 · 2 Chronicles 3–4</div>
+          <div className="st-detail-sub">{mode === 'dedicate' ? '1 Kings 8 · 2 Chronicles 5–7' : '1 Kings 6–7 · 2 Chronicles 3–4'}</div>
           <h2 className="st-card-title"><Glossed text="The bayath (house) Shalamah (Solomon) banah (built) for Yahawah" /></h2>
-          <p className="st-card-p"><Glossed text={mode === 'roam' ? 'No story here: the house stands finished, and you walk it — through the gate of the gadawal (great) chatzar (court), around the yam (sea) and the makanawath (bases), between Yakayan (Jachin) and Baiz (Boaz); tap the dalathawath (doors) for their words, and tap them again to go in.' : mode === 'build' ? 'Play, and the house rises in the order the text gives it: the yasad (foundation), the qayarawath (walls) of aban (stone), araz (cedar) within, zahab (gold) over the araz (cedar), the karawab (cherubim), the doors, the chatzarawath (courts), the malak (king)\'s houses, Chayaram (Hiram)\'s nachashath (brass), and last the arawan (ark).' : 'Play, and walk in: through the gate of the gadawal (great) chatzar (court), past the mazabach (altar) and the yam (sea), between Yakayan (Jachin) and Baiz (Boaz), through the awalam (porch) and the dalathawath (doors), down the hayakal (temple) between the lampstands, through the parakath (veil) into the dabayar (oracle), beneath the kanapay (wings) of the karawab (cherubim).'} /></p>
+          <p className="st-card-p"><Glossed text={mode === 'dedicate' ? 'Play, and the bayath (house) is chanak (dedicated): the kahanayam (priests) bring the arawan (ark) from the gate to beneath the kanapay (wings) of the karawab (cherubim); the singers and the chatzatzarawath (trumpets) sound as achad (one); the inan (cloud) malaa (fills) the house so the priests cannot imad (stand); Shalamah (Solomon) kneels on the kayawar (scaffold) before the mazabach (altar) and spreads his hands; ash (fire) yarad (comes down) from shamayam (heavens); the kabawad (glory) fills the house and the people karai (bow) on the pavement; the sacrifices, the chag (feast) of seven days, and the people sent home shamach (glad).' : mode === 'roam' ? 'No story here: the house stands finished, and you walk it — through the gate of the gadawal (great) chatzar (court), around the yam (sea) and the makanawath (bases), between Yakayan (Jachin) and Baiz (Boaz); tap the dalathawath (doors) for their words, and tap them again to go in.' : mode === 'build' ? 'Play, and the house rises in the order the text gives it: the yasad (foundation), the qayarawath (walls) of aban (stone), araz (cedar) within, zahab (gold) over the araz (cedar), the karawab (cherubim), the doors, the chatzarawath (courts), the malak (king)\'s houses, Chayaram (Hiram)\'s nachashath (brass), and last the arawan (ark).' : 'Play, and walk in: through the gate of the gadawal (great) chatzar (court), past the mazabach (altar) and the yam (sea), between Yakayan (Jachin) and Baiz (Boaz), through the awalam (porch) and the dalathawath (doors), down the hayakal (temple) between the lampstands, through the parakath (veil) into the dabayar (oracle), beneath the kanapay (wings) of the karawab (cherubim).'} /></p>
         </div>
       )}
 
-      <Section id="scripture" title="Scripture" sub="1 Kings 6–7 · 2 Chronicles 3–4 · the text itself" storageKey="tp-sec">
-        <ModelPassage passages={PASSAGES} selected={id} onPick={onPick} onVerses={onVerses} pieceFor={pieceFor} titleFor={titleFor} allRefs={ALL_REFS} />
+      <Section id="scripture" title="Scripture" sub={mode === 'dedicate' ? '1 Kings 8 · 2 Chronicles 5–7 · the text itself' : '1 Kings 6–7 · 2 Chronicles 3–4 · the text itself'} storageKey="tp-sec">
+        <ModelPassage passages={passagesFor(mode)} selected={id} onPick={onPick} onVerses={onVerses} pieceFor={pieceFor} titleFor={titleFor} allRefs={refsFor(mode)} />
       </Section>
 
       <Section id="details" title="Details" sub={item ? 'what the text measures · elsewhere in scripture · what is assumed' : 'choose a part'} storageKey="tp-sec">
         {!item && <p className="st-card-p">Tap a part of the house, one of the chips under it, or a marked word in the text for its measures, verse by verse, the same thing elsewhere in scripture, and what the model had to assume where the text is silent.</p>}
+        {!item && mode === 'dedicate' && (
+          <>
+            <div className="st-detail-sub">What the model adds</div>
+            <div className="st-par">
+              <p><Glossed text="The text gives the order of the day and the kayawar (scaffold)'s measure; the model supplies the rest and says so: the road the arawan (ark) takes (in through the east gates, up the steps, down the hayakal (temple)); four kahanayam (priests) at its poles; the singers in two blocks east of the mazabach (altar); the kayawar (scaffold) east of the altar facing the house; the inan (cloud) and the kabawad (glory) as light within the house; the ash (fire) as a shaft from shamayam (heavens); the qahal (assembly) as a crowd in the courts; and seven days as seven passes of the sun." /></p>
+              <PassageRefs refs={DEDICATE_REFS} size="sm" />
+            </div>
+          </>
+        )}
         {!item && mode === 'build' && (
           <>
             <div className="st-detail-sub">Where it all came from</div>
@@ -175,8 +184,9 @@ export default function Temple() {
           <h1 className="st-h1">The Bayath (House) of Yahawah</h1>
           <span className="st-h1-paleo" dir="rtl" aria-hidden="true">𐤁𐤉𐤕 𐤉𐤄𐤅𐤄</span>
         </div>
-        <div className="st-views tp-modes tp-mode-build" role="group" aria-label="The building">
+        <div className="st-views tp-modes tp-mode-build" role="group" aria-label="The story">
           <button type="button" className={`st-view${mode === 'build' ? ' on' : ''}`} onClick={() => setParam('mode', 'build')} title="Watch the house rise, 1 Kings 6–7 in order">Build</button>
+          <button type="button" className={`st-view${mode === 'dedicate' ? ' on' : ''}`} onClick={() => setParam('mode', 'dedicate')} title="The dedication: the ark carried in, the cloud, the prayer, the fire, the feast — 1 Kings 8">Dedicate</button>
         </div>
         <div className="st-views tp-modes" role="group" aria-label="The finished house">
           {['walk', 'roam'].map((k) => <button key={k} type="button" className={`st-view${mode === k ? ' on' : ''}`} onClick={() => setParam('mode', k)} title={k === 'walk' ? 'Walk in, from the gate to the ark' : 'Roam the finished house on your own feet'}>{MODES[k].label}</button>)}
@@ -206,7 +216,7 @@ export default function Temple() {
               )}
               {use3d && !roam && !following && <button type="button" className="tp-follow" onClick={() => sceneApi.current?.refocus?.()} title={sel ? 'Recentre on the chosen part' : 'Recentre on where the story is'}>⌖ refocus</button>}
               <div className="st-strip" role="toolbar" aria-label="Parts of the house">
-                {CHIP_ORDER.map((id) => pieceById(id)).filter(Boolean).map((p) => (
+                {CHIP_ORDER.map((id) => pieceById(id)).filter((p) => p && (!p.modes || p.modes.includes(mode))).map((p) => (
                   <button key={p.id} type="button" className={`st-chip${sel === p.id ? ' on' : ''}`} onClick={() => select(sel === p.id ? null : p.id)} title={p.title}>
                     <Glossed text={p.tag.split(' · ')[0]} />
                   </button>
@@ -225,7 +235,7 @@ export default function Temple() {
             <button type="button" className="st-play" onClick={onPlayPause} aria-label={playing ? 'Pause' : 'Play'}>{playing ? '❚❚' : '▶'}</button>
             <button type="button" className="st-restart" onClick={onRestart} aria-label="Play from the beginning" title="From the beginning">↺</button>
             <div className="st-scrubwrap">
-              <input ref={scrubRef} id="tp-scrub" type="range" min="0" max="1000" defaultValue="0" step="1" onInput={onScrub} className="st-scrub" aria-label={mode === 'build' ? 'Scrub through the building' : 'Scrub through the walk'} />
+              <input ref={scrubRef} id="tp-scrub" type="range" min="0" max="1000" defaultValue="0" step="1" onInput={onScrub} className="st-scrub" aria-label={mode === 'build' ? 'Scrub through the building' : mode === 'dedicate' ? 'Scrub through the dedication' : 'Scrub through the walk'} />
               <div className="st-marks tp-marks" aria-hidden="true">
                 {marks.map((m) => <span key={m.label + m.at} style={{ left: `${m.at * 100}%` }}>{m.label}</span>)}
               </div>
