@@ -25,7 +25,7 @@ STATE=server/.studio-sync
 LOG() { echo "$(date -u '+%F %T') $*"; }
 SSH() { ssh -o BatchMode=yes -o ConnectTimeout=15 "$HOST" "$@"; }
 # node inside the image, with the data volume, the script from the box's checkout and a scratch dir
-RDOCKER="docker run --rm -v $RDATA:/data -v $RREPO/server/studio-sync.mjs:/app/server/studio-sync.mjs -v /tmp/studio-sync:/tmp/studio-sync -w /app"
+RDOCKER="docker run --rm -e PALEO_SKIP_HEADINGS=1 -v $RDATA:/data -v $RREPO/server/studio-sync.mjs:/app/server/studio-sync.mjs -v /tmp/studio-sync:/tmp/studio-sync -w /app"
 
 mkdir -p "$STATE/base" "$STATE/merged"
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT

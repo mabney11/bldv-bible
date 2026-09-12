@@ -40,7 +40,12 @@ done
 # to start, fail the deploy's health check, let the blue/green swap keep the old
 # container live instead of cutting over to a broken one — if corpus.db IS there and
 # the script still fails.
-if node /app/server/build-headings.mjs; then
+# One-off `docker run … node <script>` invocations (studio-sync.sh, the verify-*
+# gates in deploy-blue-green.sh) don't serve pages and don't need headings.json —
+# PALEO_SKIP_HEADINGS=1 skips the rebuild (and its screenful of output).
+if [ "$PALEO_SKIP_HEADINGS" = "1" ]; then
+  :
+elif node /app/server/build-headings.mjs; then
   :
 elif [ "$corpus_available" = "1" ]; then
   echo "FATAL: build-headings.mjs failed with corpus.db available — refusing to start. See logs above." >&2
