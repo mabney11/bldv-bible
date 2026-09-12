@@ -398,10 +398,12 @@ function buildCherub(b, part, mat = 'gold') {
 
 /**
  * The figure itself, at scale `s` (= height / 10), wings `wing` long, one to `side`;
- * `tilt` raises both wings from level (0 = straight out, as in the dabayar; ~1.0 = up,
- * as on the kaparath). Built into `sub`; the caller bakes.
+ * `tilt` raises both wings from level (0 = straight out, as in the dabayar; ~1.0 = up).
+ * `curl` (a radius) makes the wings instead rise from the shoulders and arch forward
+ * over whatever the figure faces — a quarter circle each, so two figures facing each
+ * other close a hoop between them, as on the kaparath. Built into `sub`; the caller bakes.
  */
-function cherubFigure(sub, b, s, wing, side, mat, tilt) {
+function cherubFigure(sub, b, s, wing, side, mat, tilt, curl = 0) {
   const ellipsoid = (px, py, pz, rx, ry, rz, rotX = 0, rotY = 0, rotZ = 0, seg = 14) => {
     const geo = new THREE.SphereGeometry(1, seg, Math.max(8, seg - 4)); geo.scale(rx, ry, rz);
     if (rotX) geo.rotateX(rotX); if (rotY) geo.rotateY(rotY); if (rotZ) geo.rotateZ(rotZ);
@@ -468,8 +470,39 @@ function cherubFigure(sub, b, s, wing, side, mat, tilt) {
   for (const sz of [-1, 1]) for (let i = 0; i < 3; i++) lock(sz * (Math.PI * 0.5 - i * 0.2), (1.45 + i * 0.08) * s, i * 2.1 + (sz > 0 ? 0.5 : 0));            // and three before each ear
   // ── feet
   for (const sz of [-1, 1]) { sub.box(0.3 * s, 0, sz * 0.5 * s, 1.0 * s, 0.32 * s, 0.55 * s, mat); ellipsoid(0.8 * s, 0.16 * s, sz * 0.5 * s, 0.3 * s, 0.16 * s, 0.28 * s); }
-  // ── the wings: fans of feathers from the shoulder, straight out and level
   const shoulderY = 7.3 * s;
+  if (curl) {
+    // ── the wings arched: each a ribbon of lengthwise feathers laid on a quarter circle
+    // that rises from the shoulder and bends forward (+x) to its crown; the feathers
+    // lie flat on the hoop, the innermost reaching the crown, the outer ones shorter
+    const R = curl, sx0 = 0.1 * s, cx = sx0 + R, arc = R * Math.PI / 2;
+    const bend = (geo, zoff, splay) => {             // a blade built along +z (x thick, y wide) laid on the arc; `splay` bows it outward mid-arc
+      const p = geo.attributes.position, v = new THREE.Vector3();
+      for (let i = 0; i < p.count; i++) {
+        v.fromBufferAttribute(p, i);
+        const th = Math.max(0, v.z) / R, nx = -Math.cos(th), ny = Math.sin(th);
+        p.setXYZ(i, cx - R * Math.cos(th) + nx * v.x, shoulderY + R * Math.sin(th) + ny * v.x, zoff + v.y + splay * Math.sin(2 * th));
+      }
+      geo.computeVertexNormals();
+    };
+    for (const dir of [side, -side]) {
+      for (let j = 0; j < 7; j++) {                  // primaries, side by side across the wing's breadth, the outer ones shorter and bowed out
+        const len = arc * (1 - j * 0.1);
+        const geo = new THREE.SphereGeometry(1, 28, 8); geo.scale(0.05 * s, 0.27 * s, len / 2); geo.translate(0, 0, len / 2);
+        bend(geo, dir * (0.62 + j * 0.24) * s, dir * 0.55 * s * (j / 6)); sub.add(geo, mat);
+      }
+      for (let j = 0; j < 6; j++) {                  // coverts over the roots, a layer proud of the primaries
+        const len = arc * (0.42 - j * 0.04);
+        const geo = new THREE.SphereGeometry(1, 20, 8); geo.scale(0.05 * s, 0.28 * s, len / 2); geo.translate(0.07 * s, 0, len / 2);
+        bend(geo, dir * (0.72 + j * 0.24) * s, dir * 0.55 * s * (j / 6)); sub.add(geo, mat);
+      }
+      const pts = []; for (let k = 0; k <= 16; k++) { const th = (k / 16) * Math.PI / 2; pts.push(new THREE.Vector3(cx - R * Math.cos(th), shoulderY + R * Math.sin(th), dir * 0.6 * s)); }
+      sub.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 32, 0.09 * s, 8, false), mat);   // the spar along the inner edge
+      ellipsoid(0.2 * s, shoulderY - 0.1 * s, dir * 1.1 * s, 0.32 * s, 0.4 * s, 0.6 * s);              // the muscle at the root
+    }
+    return;
+  }
+  // ── the wings: fans of feathers from the shoulder, straight out and level
   const feather = (dir, angle, len, w, t, xOff) => {
     // a feather: a flattened, tapered blade from the shoulder outward at `angle` below level
     const geo = new THREE.SphereGeometry(1, 10, 6); geo.scale(t, w, len / 2);
@@ -509,11 +542,12 @@ function buildArk(b, part) {
   for (const sz of [-1, 1]) { const pole = new THREE.CylinderGeometry(0.075, 0.075, 4.4, 12); pole.rotateZ(Math.PI / 2); pole.translate(0, 0.36, sz * 0.82); sub.add(pole, 'goldDim'); for (const sx of [-1, 1]) sub.sphere(sx * 2.2, 0.36, sz * 0.82, 0.09, 'gold', 10); }
   // the kaparath (mercy seat), pure gold, the length and breadth of the chest (25:17)
   sub.box(0, 1.54, 0, 2.5, 0.12, 1.5, 'gold');
-  // two cherubim of beaten work at its two ends, facing each other, wings spread upward covering the seat (25:18–20)
+  // two cherubim of beaten work at its two ends, facing each other, wings spread upward covering the seat (25:18–20):
+  // each pair rises from the shoulders and arches over the seat to meet the other's at the crown — one hoop over the kaparath
   for (const sx of [-1, 1]) {
     const c = new THREE.Group(); c.position.set(sx * 0.8, 1.66, 0); c.rotation.y = sx > 0 ? Math.PI : 0;   // each turned to face the other across the seat
     const sub2 = new PieceBuilder(b.M, b.piece);
-    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05);
+    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, 0.8 - 0.1 * 0.11);   // wings arched to meet the other's over the middle of the seat
     c.add(...sub2.bake().children); g.add(c);
   }
   g.add(...sub.bake().children); b.mesh(g);
