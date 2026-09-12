@@ -508,27 +508,48 @@ function cherubFigure(sub, b, s, wing, side, mat, tilt, curl = 0) {
     }
     return;
   }
-  // ── the wings: fans of feathers from the shoulder, straight out and level
-  const feather = (dir, angle, len, w, t, xOff) => {
-    // a feather: a flattened, tapered blade from the shoulder outward at `angle` below level
-    const geo = new THREE.SphereGeometry(1, 10, 6); geo.scale(t, w, len / 2);
-    geo.translate(0, 0, len / 2);                    // root at the origin, tip at +z
-    geo.rotateX(angle - tilt);                       // droop toward −y about the shoulder; `tilt` raises the whole wing
-    if (dir < 0) geo.rotateY(Math.PI);               // to the other side
-    geo.translate(xOff, shoulderY, dir * 0.9 * s);
-    sub.add(geo, mat);
-  };
+  // ── the wings: rooted in the BACK below the shoulder blades, each rises over the
+  // shoulder and arches out to its tip level at the wall — the leading edge is a
+  // spine (root → crest above the head's height → tip) and the feathers fan from
+  // the root and hang from that spine, so the wing has depth from behind
+  const UPV = new THREE.Vector3(0, 1, 0);
   for (const dir of [side, -side]) {
-    const span = wing - 0.9 * s;                     // shoulder to the wall
-    // primaries: nine long feathers fanning from level (the tip) to ~55° down
-    for (let i = 0; i < 9; i++) { const u = i / 8; feather(dir, u * 0.95, span * (1 - u * 0.42), (0.36 - u * 0.06) * s, 0.07 * s, 0.05 * s); }
+    const spine = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.85 * s, 5.6 * s, dir * 0.55 * s),                        // the root, in the back
+      new THREE.Vector3(-0.75 * s, 7.6 * s, dir * 1.0 * s),                         // rising past the shoulder blade
+      new THREE.Vector3(-0.45 * s, 9.4 * s, dir * 2.1 * s),                         // the crest
+      new THREE.Vector3(-0.1 * s, 8.6 * s, dir * (0.55 * (2.1 * s + wing))),         // falling away outward
+      new THREE.Vector3(0.05 * s, shoulderY, dir * wing),                          // the tip, level, at the wall
+    ], false, 'centripetal', 0.5);
+    const L = spine.getLength(), S = new THREE.Vector3(), T = new THREE.Vector3(), N = new THREE.Vector3(), B = new THREE.Vector3();
+    const hang = (geo) => {                          // a blade in the fan's own plane (z out along the edge, y down from it, x thick) hung on the spine
+      const p = geo.attributes.position, v = new THREE.Vector3();
+      for (let k = 0; k < p.count; k++) {
+        v.fromBufferAttribute(p, k);
+        const u = Math.min(1, Math.max(0, v.z / L));
+        spine.getPointAt(u, S); spine.getTangentAt(u, T);
+        T.y = 0; if (T.lengthSq() < 1e-6) T.set(-1, 0, 0); T.normalize();   // the feathers hang straight down from the spine, whatever its pitch
+        N.copy(UPV); B.crossVectors(N, T);
+        p.setXYZ(k, S.x + B.x * v.x + N.x * v.y, S.y + B.y * v.x + N.y * v.y, S.z + B.z * v.x + N.z * v.y);
+      }
+      geo.computeVertexNormals();
+    };
+    const feather = (angle, len, w, t, xOff) => {
+      const geo = new THREE.SphereGeometry(1, 10, 12); geo.scale(t, w, len / 2);
+      geo.translate(xOff, 0, len / 2);               // root at the origin, tip at +z
+      geo.rotateX(angle);                            // droop toward −y about the root
+      hang(geo); sub.add(geo, mat);
+    };
+    // primaries: nine long feathers fanning from the spine (the tip) to ~55° down
+    for (let i = 0; i < 9; i++) { const u = i / 8; feather(u * 0.95, L * (1 - u * 0.42), (0.36 - u * 0.06) * s, 0.07 * s, 0.05 * s); }
     // secondaries: shorter, fanning through the same angles between the primaries
-    for (let i = 0; i < 8; i++) { const u = (i + 0.5) / 8; feather(dir, u * 0.95 + 0.05, span * (0.66 - u * 0.24), 0.34 * s, 0.07 * s, 0.17 * s); }
+    for (let i = 0; i < 8; i++) { const u = (i + 0.5) / 8; feather(u * 0.95 + 0.05, L * (0.66 - u * 0.24), 0.34 * s, 0.07 * s, 0.17 * s); }
     // coverts: short and full over the roots
-    for (let i = 0; i < 7; i++) { const u = i / 6; feather(dir, u * 0.9 + 0.08, span * (0.36 - u * 0.1), 0.3 * s, 0.07 * s, 0.29 * s); }
-    // the leading edge: a spar along the top, and a ridge of muscle at the root
-    sub.capsule([0.1 * s, shoulderY + 0.12 * s, dir * 0.9 * s], [0.1 * s, shoulderY + Math.sin(tilt) * (wing - 1.15 * s), dir * (0.9 * s + Math.cos(tilt) * (wing - 1.15 * s))], 0.12 * s, mat);
-    ellipsoid(0.2 * s, shoulderY - 0.15 * s, dir * 1.35 * s, 0.32 * s, 0.42 * s, 0.7 * s);
+    for (let i = 0; i < 7; i++) { const u = i / 6; feather(u * 0.9 + 0.08, L * (0.36 - u * 0.1), 0.3 * s, 0.07 * s, 0.29 * s); }
+    // the leading edge: a spar along the spine, and the muscle where the wing leaves the back
+    sub.add(new THREE.TubeGeometry(spine, 40, 0.12 * s, 8, false), mat);
+    ellipsoid(-0.7 * s, 5.9 * s, dir * 0.75 * s, 0.42 * s, 0.6 * s, 0.5 * s, 0, 0, dir * 0.35);
+    ellipsoid(-0.55 * s, 7.4 * s, dir * 1.05 * s, 0.3 * s, 0.5 * s, 0.34 * s, 0, 0, dir * 0.5);
   }
 }
 
