@@ -784,18 +784,44 @@ function buildTable(b, part) {
   b.slots.push({ slot: part.glb, node: g, h: 1.6, face: 'x' });
 }
 
-/** The ivory throne of 1 Kings 10:18–20: six steps, a round-backed seat, lions beside the arms and twelve on the steps. */
+/**
+ * The ivory throne of 1 Kings 10:18–20 — shan (ivory) overlaid with gold: six steps up
+ * to the seat, a round back, arm-rests ("yadath (stays)") with a lion standing beside
+ * each, and twelve lions on the six steps, one at each end of each step. The lions are
+ * a sculpt slot (temple-lion, one file cloned fourteen times); the throne itself is
+ * built here. Faces −z in its own frame; the porch turns it to look north, to the court.
+ */
 function buildThrone(b, part) {
-  const { x, y, z } = part; const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = Math.PI / 2; g.userData.slot = part.glb;
+  const { x, y, z } = part; const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = Math.PI / 2; g.userData.part = 'throne';
   const sub = new PieceBuilder(b.M, b.piece);
-  for (let i = 0; i < 6; i++) sub.box(-3 + i * 0.55, i * 0.45, 0, 1.2, 0.45, 6 - i * 0.5, 'ivory');
-  sub.box(1.2, 2.7, 0, 1.6, 0.4, 2, 'gold'); sub.box(1.9, 3.1, 0, 0.3, 2.2, 2, 'ivory');
-  const back = new THREE.CylinderGeometry(1, 1, 0.3, 24, 1, false, 0, Math.PI); back.rotateX(Math.PI / 2); back.rotateY(Math.PI / 2); back.translate(1.95, 5.3, 0); sub.add(back, 'gold');
-  const lion = (lx, ly, lz, s) => { sub.capsule([lx - 0.35 * s, ly + 0.3 * s, lz], [lx + 0.3 * s, ly + 0.32 * s, lz], 0.22 * s, 'gold'); sub.sphere(lx + 0.5 * s, ly + 0.5 * s, lz, 0.2 * s, 'gold', 10); for (const dx of [-0.3, 0.25]) for (const dz of [-0.12, 0.12]) sub.cyl(lx + dx * s, ly, lz + dz * s, 0.06 * s, 0.3 * s, 'gold', 0.06 * s, 8); };
-  for (const sz of [-1, 1]) lion(1.2, 3.1, sz * 1.1, 1);
-  for (let i = 0; i < 6; i++) for (const sz of [-1, 1]) lion(-3 + i * 0.55, i * 0.45 + 0.45, sz * (2.6 - i * 0.25), 0.6);
-  g.add(...sub.bake().children); b.mesh(g);
-  b.slots.push({ slot: part.glb, node: g, h: 6, face: 'x' });
+  const STEP = 0.45, RUN = 0.7, W0 = 7, X0 = -3.6;                  // six steps; each tread runs from its riser back under the next
+  for (let i = 0; i < 6; i++) { const w = W0 - i * 0.45, x0 = X0 + i * RUN, x1 = X0 + 6 * RUN + 1.2; sub.box((x0 + x1) / 2, i * STEP, 0, x1 - x0, STEP, w, 'ivory'); sub.box(x0 + 0.06, (i + 1) * STEP - 0.04, 0, 0.12, 0.05, w + 0.04, 'gold'); }   // a gold nosing on each
+  const TOP = 6 * STEP, SX = X0 + 6 * RUN + 0.3;                     // the seat stands on the top tread
+  sub.box(SX + 0.5, TOP, 0, 2.2, 0.45, 2.6, 'gold');                                                // the seat
+  sub.box(SX + 0.5, TOP - 0.02, 0, 2.3, 0.08, 2.7, 'ivory');
+  for (const sz of [-1, 1]) {                                                                        // the stays (arm-rests): a solid arm with a rounded end and a gold cap
+    sub.box(SX + 0.55, TOP + 0.45, sz * 1.2, 1.9, 0.62, 0.28, 'ivory');
+    sub.cyl(SX - 0.4, TOP + 0.45, sz * 1.2, 0.14, 0.62, 'ivory', 0.14, 12);
+    sub.box(SX + 0.55, TOP + 1.07, sz * 1.2, 1.95, 0.1, 0.34, 'gold'); sub.sphere(SX - 0.4, TOP + 1.12, sz * 1.2, 0.17, 'gold', 12);
+  }
+  sub.box(SX + 1.45, TOP + 0.45, 0, 0.32, 1.9, 2.68, 'ivory');                                       // the back
+  sub.box(SX + 1.62, TOP + 0.45, 0, 0.06, 1.9, 2.68, 'gold');
+  { const back = new THREE.CylinderGeometry(1.34, 1.34, 0.32, 40, 1, false, 0, Math.PI); back.rotateX(-Math.PI / 2); back.rotateY(-Math.PI / 2); back.translate(SX + 1.45, TOP + 2.35, 0); sub.add(back, 'ivory'); }   // "the top of the throne was round behind"
+  { const rim = new THREE.TorusGeometry(1.3, 0.05, 8, 40, Math.PI); rim.rotateY(-Math.PI / 2); rim.translate(SX + 1.45, TOP + 2.35, 0); sub.add(rim, 'gold'); }
+  for (let i = 0; i < 3; i++) sub.torus(SX + 1.28, TOP + 1.0 + i * 0.42, 0, 0.8 - i * 0.14, 0.03, 'gold', 0, Math.PI / 2);   // rings on the back
+  g.add(...sub.bake().children);
+  // fourteen lions: two by the stays, twelve on the steps (one at each end of each step), all facing forward (−x here, the front of the steps)
+  const lion = (px, py, pz, h) => {
+    const l = new THREE.Group(); l.position.set(px, py, pz); l.rotation.y = Math.PI;            // its +x front turned to face down the steps (−x)
+    const sub2 = new PieceBuilder(b.M, b.piece); const k = h / 2.2;
+    sub2.capsule([-0.4 * k, 0.9 * k, 0], [0.4 * k, 0.95 * k, 0], 0.42 * k, 'gold'); sub2.sphere(0.75 * k, 1.5 * k, 0, 0.42 * k, 'gold', 12);   // a stand-in until the sculpt loads
+    for (const dx of [-0.35, 0.35]) for (const dz of [-0.22, 0.22]) sub2.cyl(dx * k, 0, dz * k, 0.1 * k, 0.9 * k, 'gold', 0.1 * k, 8);
+    l.add(...sub2.bake().children); g.add(l);
+    b.slots.push({ slot: 'temple-lion', node: l, h, face: 'x' });
+  };
+  for (const sz of [-1, 1]) lion(SX + 0.4, TOP, sz * 1.95, 2.0);
+  for (let i = 0; i < 6; i++) { const w = W0 - i * 0.45; for (const sz of [-1, 1]) lion(X0 + i * RUN + 0.3, (i + 1) * STEP, sz * (w / 2 - 0.5), 1.0); }
+  b.mesh(g);
 }
 
 function buildPiece(M, piece) {
@@ -1272,17 +1298,18 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     frame();
     onReady?.(true);
 
+    window.__templeExport = (pid, which) => {
+      const g = groups.get(pid); if (!g) return false;
+      if (which && which.startsWith('part:')) { let node = null; g.traverse((o) => { if (!node && o.userData.part === which.slice(5)) node = o; }); if (!node) return false; exportGlb(node, `temple-${which.slice(5)}`, false); return true; }
+      const slot = which === 'slot' ? (g.userData.slots || []).find((sl) => !sl.mirror) : null; exportGlb(slot ? slot.node : g, slot ? slot.slot : `temple-${pid}`, !!slot); return true;
+    };
+
     // ?export=<piece>[:slot] → download that piece's procedural shape as a GLB (see exportGlb)
     const exp = new URLSearchParams(window.location.search).get('export');
     if (exp) {
-      const [pid, which] = exp.split(':'); const g = groups.get(pid);
-      if (g) {
-        const slot = which === 'slot' ? (g.userData.slots || []).find((sl) => !sl.mirror) : null;
-        setTimeout(() => exportGlb(slot ? slot.node : g, slot ? slot.slot : `temple-${pid}`, !!slot), 300);
-      }
+      const [pid, ...rest] = exp.split(':'); const which = rest.join(':');
+      setTimeout(() => window.__templeExport(pid, which), 4500);   // after the sculpted parts have had time to arrive
     }
-    window.__templeExport = (pid, which) => { const g = groups.get(pid); if (!g) return false; const slot = which === 'slot' ? (g.userData.slots || []).find((sl) => !sl.mirror) : null; exportGlb(slot ? slot.node : g, slot ? slot.slot : `temple-${pid}`, !!slot); return true; };
-
     api.current = {
       select: (id) => { const changed = id !== currentSel; applySelection(id); if (changed && id) flyTo(id); if (changed && !id) setFollow(true); dirty = true; },
       follow: () => { setFollow(true); lastT = -1; },
