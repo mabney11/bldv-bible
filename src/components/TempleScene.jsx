@@ -35,7 +35,7 @@ import {
   PIECES, MATERIALS, H,
   progressAt, xrayAt, openAt, cameraAt, focusFor,
   PLACES, ROUTES, MOVERS, moverAt, landAt,
-  MODES, ROAM_EYE, ROAM_START, ROAM_ENTER, PILLAR,
+  MODES, ROAM_EYE, ROAM_START, ROAM_ENTER, PILLAR, WEST_X, PORCH_X1, OUTER_Z,
 } from '../lib/models/temple.js';
 
 const SKY = 0xb9cfe3;          // a dry, bright morning over Mawarayah
@@ -511,16 +511,16 @@ function cherubFigure(sub, b, s, wing, side, mat, tilt, spinePts = null) {
       geo.rotateX(angle);                            // droop toward −y about the root
       hang(geo); sub.add(geo, mat);
     };
-    // primaries: nine long feathers fanning from the spine (the tip) to ~55° down
-    for (let i = 0; i < 9; i++) { const u = i / 8; feather(u * 0.95, L * (1 - u * 0.42), (0.36 - u * 0.06) * s, 0.07 * s, 0.05 * s); }
+    const dense = spinePts?.dense || 1;              // more feathers, closer set, for a fuller wing
+    const nP = Math.round(9 * dense), nS = Math.round(8 * dense), nC = Math.round(7 * dense), fw = 1 / Math.sqrt(dense);
+    // primaries: long feathers fanning from the spine (the tip) to ~55° down
+    for (let i = 0; i < nP; i++) { const u = i / (nP - 1); feather(u * 0.95, L * (1 - u * 0.42), (0.36 - u * 0.06) * s * fw, 0.07 * s, 0.05 * s); }
     // secondaries: shorter, fanning through the same angles between the primaries
-    for (let i = 0; i < 8; i++) { const u = (i + 0.5) / 8; feather(u * 0.95 + 0.05, L * (0.66 - u * 0.24), 0.34 * s, 0.07 * s, 0.17 * s); }
+    for (let i = 0; i < nS; i++) { const u = (i + 0.5) / nS; feather(u * 0.95 + 0.05, L * (0.66 - u * 0.24), 0.34 * s * fw, 0.07 * s, 0.17 * s); }
     // coverts: short and full over the roots
-    for (let i = 0; i < 7; i++) { const u = i / 6; feather(u * 0.9 + 0.08, L * (0.36 - u * 0.1), 0.3 * s, 0.07 * s, 0.29 * s); }
-    // the leading edge: a spar along the spine, and the muscle where the wing leaves the back
+    for (let i = 0; i < nC; i++) { const u = i / (nC - 1); feather(u * 0.9 + 0.08, L * (0.36 - u * 0.1), 0.3 * s * fw, 0.07 * s, 0.29 * s); }
+    // the leading edge: a spar along the spine
     sub.add(new THREE.TubeGeometry(spine, 40, 0.12 * s, 8, false), mat);
-    ellipsoid(-0.7 * s, 5.9 * s, dir * 0.75 * s, 0.42 * s, 0.6 * s, 0.5 * s, 0, 0, dir * 0.35);
-    ellipsoid(-0.55 * s, 7.4 * s, dir * 1.05 * s, 0.3 * s, 0.5 * s, 0.34 * s, 0, 0, dir * 0.5);
   }
 }
 
@@ -547,7 +547,7 @@ function buildArk(b, part) {
     const sub2 = new PieceBuilder(b.M, b.piece);
     // the same wings as the great cherubim, but from the crest they stretch forward and down over
     // the seat, spreading wide — an umbrella; the tips meet the other's low over the middle
-    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, { pts: [[-0.85, 5.6, 0.55], [-0.6, 8.0, 1.2], [0.3, 10.6, 2.0], [3.0, 10.5, 2.6], [5.2, 9.3, 2.4], [6.6, 7.8, 1.5]], apex: [6.8, 13.5, 0] });
+    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, { pts: [[-0.85, 5.6, 1.0], [-0.5, 8.2, 1.9], [0.6, 10.6, 3.2], [3.2, 10.3, 4.6], [5.4, 9.0, 4.6], [6.7, 7.4, 3.8]], apex: [6.8, 13.5, 0], dense: 1.6 });
     c.add(...sub2.bake().children); g.add(c);
   }
   g.add(...sub.bake().children); b.mesh(g);
@@ -1490,6 +1490,11 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       if (roamStep(dt)) dirty = true;
       if (stepFlight(now)) dirty = true;
       if (!roam.on && controls.update()) dirty = true;
+      if (!roam.on) {                                // never below the floor: the house's floor inside its footprint, the court's ground outside
+        const c = camera.position, inHouse = c.x > WEST_X - 2 && c.x < PORCH_X1 + 2 && Math.abs(c.z) < OUTER_Z + 2;
+        const floor = (landAt(modeRef.current, clock.t) > 0.5 ? -60 : inHouse ? 0 : H.courtY) + 0.7;
+        if (c.y < floor) { c.y = floor; if (controls.target.y < floor) controls.target.y = floor; dirty = true; }
+      }
       if (!dirty) return;
       dirty = false; stats.frames++; const f0 = performance.now();
       // the sun's shadow window follows the camera's target so the shadows stay sharp where the eye is
