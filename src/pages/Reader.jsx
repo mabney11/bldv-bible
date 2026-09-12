@@ -420,7 +420,12 @@ export function parseQuoteMarks(raw, boundaries, verseBounds) {
     const top = openStack[openStack.length - 1];
     // WEB paragraph re-openers — see the verseBounds doc comment above.
     if (vStarts) {
-      if (vStarts.has(at)) { reopenPos = at; reopenIdx = 0; }
+      // A paragraph start is a verse start, or — Lev 19:11, several WEB
+      // paragraphs inside ONE verse: `…ganab (steal). "‘You shall not…` — a
+      // sentence end (. ? !) followed by whitespace. Not a comma or colon:
+      // those introduce a genuinely NEW quotation (`said, "…`), never a
+      // re-opened one.
+      if (vStarts.has(at) || /[.?!]\s+$/.test(raw.slice(Math.max(0, at - 6), at))) { reopenPos = at; reopenIdx = 0; }
       const reStyle = ch === '"' ? 'straight' : OPEN_STYLE[ch];
       if (at === reopenPos && reStyle && openStack.length) {
         let idx = -1;
@@ -504,11 +509,13 @@ export function parseQuoteMarks(raw, boundaries, verseBounds) {
       const entry = openStack.pop();
       entry.node.markClose = ch;
       entry.node.end = at + ch.length;
-      // A straight close sitting as the LAST character of a verse is a
+      // A straight close sitting as the LAST character of a verse, or
+      // directly after sentence punctuation (`…die." He said…`), is a
       // deliberate, source-vouched pairing (see the verseBounds comment) —
       // the "two unrelated quotes merged" failure mode reads an OPENER as
-      // the close, and an opener is never the last thing in a verse.
-      if (entry.style === 'straight' && vEnds && vEnds.has(at + ch.length)) entry.node.trusted = true;
+      // the close, and an opener is never the last thing in a verse and is
+      // always preceded by a space (`said, "…`), never by punctuation.
+      if (entry.style === 'straight' && ((vEnds && vEnds.has(at + ch.length)) || /[.?!,;:\u2019']/.test(raw[at - 1] || ''))) entry.node.trusted = true;
       containerStack.pop();
       last = at + ch.length;
       return;
