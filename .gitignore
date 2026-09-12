@@ -77,3 +77,6 @@ Claude outputs/
 
 # Per-machine ETA history written by render-all.mjs on every run.
 server/.render-all-timings.json
+
+# studio-sync: the last agreed snapshot of the Translation Studio rows (studio-sync.sh); server/studio-data/ is the tracked LOG
+server/.studio-sync/

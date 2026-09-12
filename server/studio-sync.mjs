@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /**
- * studio-sync.mjs — the Translation Studio's HAND-MADE work as text in git, so
- * the studio can be used on bldbible.com and on fieldy's machine and both end
- * up with the same translation (2026-09-12: "can we do the same thing with
- * translation studio" as the lexicon — one copy, in git, on both machines).
+ * studio-sync.mjs — the Translation Studio's HAND-MADE work as text, so the
+ * studio can be used on bldbible.com and on fieldy's machine and both end up
+ * with the same translation (2026-09-12: "I just want consistency from my
+ * computer and the server" — no git involved; studio-sync.sh carries the files
+ * over ssh and keeps the last agreed snapshot in server/.studio-sync/).
  *
  * translation.db itself (395 MB, every verse of every book seeded from the
- * corpus) stays where it is; git can't merge a database. What IS the studio's
- * own work is small and row-shaped, and that is what goes in server/studio-data/:
+ * corpus) stays where it is; a database can't be merged as a file. What IS the
+ * studio's own work is small and row-shaped, and that is what is exported:
  *   translations.jsonl — verses with rich_text != '' or status != 'none'
  *                        (status 'none' is NOT an edit signal; rich_text is —
  *                        see the 2026-09-11 clobber note)
@@ -17,7 +18,8 @@
  *   headings.jsonl     — the headings table (Part/Section/Chapter/Pericope)
  * One JSON object per line, sorted by key, so a diff reads as "these verses".
  *
- * Commands (translation.db = ./translation.db beside this file, or $TRANSLATION_DB):
+ * Commands (translation.db = ./translation.db beside this file, or $TRANSLATION_DB;
+ * the files dir = $STUDIO_DATA_DIR, default server/.studio-sync/merged):
  *   export            write the three files from the database
  *   status            how the database differs from the committed files (exit 0)
  *   merge BASE THEIRS three-way merge per key — BASE = the files as of the last
@@ -25,13 +27,13 @@
  *                     database — then APPLY the result to the database (each
  *                     changed verse goes through the same history snapshot as a
  *                     Studio save, so it can be reverted in the UI) and write it
- *                     to server/studio-data/. --dry prints the plan only.
+ *                     to the files dir. --dry prints the plan only.
  *                     Both sides changed the same verse differently → the newer
  *                     updated_at wins and the loser is listed.
  *   restore           the database has just been REPLACED wholesale (local dev
  *                     pulls prod's translation.db at start): put back whatever the
- *                     committed files have that the database lacks — files win.
- * studio-sync.sh drives this with git; sync-from-prod.cjs runs export/restore.
+ *                     files have that the database lacks — files win.
+ * studio-sync.sh drives this over ssh; sync-from-prod.cjs runs it at server start.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -40,7 +42,7 @@ import Database from 'better-sqlite3';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DB_PATH = process.env.TRANSLATION_DB || path.join(HERE, 'translation.db');
-const DATA_DIR = process.env.STUDIO_DATA_DIR || path.join(HERE, 'studio-data');
+const DATA_DIR = process.env.STUDIO_DATA_DIR || path.join(HERE, '.studio-sync', 'merged');
 const FILES = { translations: 'translations.jsonl', links: 'links.jsonl', headings: 'headings.jsonl' };
 const AUTO_LANGS = new Set(['HEB-auto']);
 
@@ -181,7 +183,7 @@ if (cmd === 'export') {
   const ours = exportDb(db), files = readSnap(DATA_DIR);
   const diff = apply(db, files, ours, true);
   const n = diff.translations.length + diff.links.length + diff.headings.length;
-  say(n ? `database differs from ${path.relative(process.cwd(), DATA_DIR)} in ${diff.translations.length} verses, ${diff.links.length} link sets, ${diff.headings.length} headings` : `database matches ${path.relative(process.cwd(), DATA_DIR)}`);
+  say(n ? `database differs from the last sync in ${diff.translations.length} verses, ${diff.links.length} link sets, ${diff.headings.length} headings` : `database matches the last sync`);
   process.exitCode = 0;
 } else if (cmd === 'merge') {
   const [baseDir, theirsDir] = pos;

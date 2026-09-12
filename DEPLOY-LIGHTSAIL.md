@@ -187,38 +187,38 @@ admin page both change the same file between syncs, git says so in
 `~/lexicon-sync.log` (the script aborts the rebase and leaves the local commit
 in place) and you resolve it like any merge — nothing is overwritten silently.
 
-## 11. The Translation Studio: its work in git too
+## 11. The Translation Studio: the same translation here and there
 
-`translation.db` (every verse of every book, ~400 MB) cannot live in git, but the
-studio's *own* work — the verses you have translated, their hand-made links, the
-headings — is a few thousand rows, and those travel as text: `server/studio-data/`
-(`translations.jsonl`, `links.jsonl`, `headings.jsonl`, one line per row, sorted).
-`server/studio-sync.mjs` exports them from the database and merges them back;
-`studio-sync.sh` does the git around it: fetch, three-way merge (last common
-commit ↔ the other side ↔ this database, newest save wins when both edited the
-same verse — the loser lands in that verse's history in the studio, nothing is
-lost), apply, commit, push. Same-verse conflicts are printed, not fought over.
+`translation.db` (every verse of every book, ~400 MB) is not something to copy
+back and forth, but the studio's *own* work — the verses you have translated,
+their hand-made links, the headings — is a few thousand rows. `studio-sync.sh`
+(run from your machine, in Git Bash) keeps those the same on both sides:
 
-On the box, node runs inside the image (the host has none), so its cron line
-sets `STUDIO_SYNC_DOCKER=1` — `scripts/lightsail-lexicon-sync-setup.sh` installs
-it next to the lexicon line:
+1. exports prod's rows (node inside the image on the box) and copies them down;
+2. merges them with your database, three ways against the snapshot of the last
+   sync (`server/.studio-sync/`, not in git): a verse changed on one side is
+   taken; a verse changed on both keeps the newer save and puts the other into
+   that verse's history in the studio, so nothing is lost and the clash is printed;
+3. applies the result here, sends it up, applies it on prod;
+4. keeps the result as the next sync's base, and commits it to
+   `server/studio-data/` as a log — git merges nothing, it only records, so
+   `git log -p server/studio-data/translations.jsonl` shows how a verse's
+   wording improved over time.
 
-```
-*/5 * * * * STUDIO_SYNC_DOCKER=1 /home/ubuntu/paleo-studio/studio-sync.sh >> $HOME/studio-sync.log 2>&1
-```
-
-On your machine, run `./studio-sync.sh` in Git Bash when you like, or schedule it
-the same way (every 5 minutes, hidden window):
+Git is never in the sync path, and nothing happens when both sides already agree. The
+local server runs it at every start (`sync-from-prod.cjs`, before its whole-file
+pull), so simply starting your dev server brings the two into line; run
+`./studio-sync.sh` by hand any time you want it sooner, or schedule it every
+five minutes:
 
 ```
 schtasks /create /f /sc minute /mo 5 /tn "bldbible studio sync" /tr "\"C:\Program Files\Git\bin\bash.exe\" -lc \"~/dev/projects/the-scriptures-app/paleo-studio/studio-sync.sh >> ~/studio-sync.log 2>&1\""
 ```
 
-`sync-from-prod.cjs` (the whole-file pull at every local server start) is aware of
-this: it runs `studio-sync.sh` before pulling and `studio-sync.mjs restore` after,
-so local edits are never lost to the pull, and the git copy is put back into the
-fresh database. `node server/studio-sync.mjs status` says how the database and
-the committed files differ; `merge … --dry` and `restore --dry` only print.
+It needs `ssh paleo-lightsail` to work from that shell (it does already, for
+the start-up pull) and `server/studio-sync.mjs` present in the box's checkout
+(the lexicon cron's `git pull` brings it). `node server/studio-sync.mjs status`
+says how your database differs from the last sync; `restore --dry` only prints.
 
 ## Cost recap
 

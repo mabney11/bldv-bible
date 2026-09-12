@@ -56,12 +56,6 @@ LINE="*/5 * * * * $REPO/lexicon-sync.sh >> \$HOME/lexicon-sync.log 2>&1"
 { crontab -l 2>/dev/null | grep -v 'lexicon-sync.sh' || true; echo "$LINE"; } | crontab -   # `|| true`: grep finds nothing on a fresh box, and set -e must not stop the line being added
 crontab -l | grep lexicon-sync
 
-echo "==> 6. studio sync (translations), every 5 minutes, node inside the image"
-chmod +x studio-sync.sh 2>/dev/null || true
-SLINE="*/5 * * * * STUDIO_SYNC_DOCKER=1 $REPO/studio-sync.sh >> \$HOME/studio-sync.log 2>&1"
-{ crontab -l 2>/dev/null | grep -v 'studio-sync.sh' || true; echo "$SLINE"; } | crontab -
-crontab -l | grep studio-sync
-
 echo
 echo "Done. Now redeploy so the container mounts server/lexicon from this checkout:"
 echo "    ./deploy-blue-green.sh"
