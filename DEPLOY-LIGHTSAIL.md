@@ -170,21 +170,22 @@ So there are two ways to change the lexicon and they meet in the same place:
   no restart.
 
 `lexicon-sync.sh` keeps the two from drifting: it commits anything the admin page
-changed, pulls (rebase) and pushes. Run it by hand after a session of admin
-edits, or let cron do it every few minutes:
+changed, pulls (rebase) and pushes, and cron runs it every five minutes — so a
+push from your machine also reaches the box within five minutes, no manual
+`git pull` needed. One-time setup on the box (deploy key with write access,
+remote switched to ssh, git identity, first sync, cron line):
 
 ```bash
-chmod +x ~/paleo-studio/lexicon-sync.sh
-git -C ~/paleo-studio config user.name "bldbible server"
-git -C ~/paleo-studio config user.email "server@bldbible.com"
-( crontab -l 2>/dev/null; echo '*/5 * * * * ~/paleo-studio/lexicon-sync.sh >> ~/lexicon-sync.log 2>&1' ) | crontab -
+cd ~/paleo-studio && git pull && bash scripts/lightsail-lexicon-sync-setup.sh
+./deploy-blue-green.sh        # so the container mounts server/lexicon from this checkout
 ```
 
-The push needs credentials the box already has for `git pull` (a deploy key or a
-token in the remote URL). Locally, pull before you edit; if you and the admin page
-both change the same file between syncs, git says so in `~/lexicon-sync.log`
-(the script aborts the rebase and leaves the local commit in place) and you
-resolve it like any merge — nothing is overwritten silently.
+The script prints the public key to add at
+github.com/mabney11/bldv-bible/settings/keys — tick **Allow write access** — and
+waits until GitHub accepts it. Locally, pull before you edit; if you and the
+admin page both change the same file between syncs, git says so in
+`~/lexicon-sync.log` (the script aborts the rebase and leaves the local commit
+in place) and you resolve it like any merge — nothing is overwritten silently.
 
 ## Cost recap
 
