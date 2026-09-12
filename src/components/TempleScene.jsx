@@ -30,6 +30,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import {
   PIECES, MATERIALS, H,
   progressAt, xrayAt, openAt, cameraAt, focusFor,
@@ -852,6 +853,27 @@ function buildLand(M) {
   return { group, place };
 }
 
+
+// ── Export: any piece (or one sculpt slot of it) as a GLB — the procedural shape as
+// a BASELINE to detail elsewhere (Meshy's texture pass on an uploaded model, or
+// Blender). ?export=karawab downloads the whole piece; ?export=karawab:slot the first
+// sculpt-slot node of it (one cherub, one ox, one capital…), unmirrored, stood on
+// y = 0 — exactly the frame the slot's GLB is fitted back into, so a detailed copy
+// drops in with no re-alignment. Units are cubits.
+function exportGlb(obj, name, toFileFrame = false) {
+  const exporter = new GLTFExporter();
+  const clone = obj.clone(true);
+  clone.position.set(0, 0, 0); clone.rotation.set(0, 0, 0); clone.scale.set(1, 1, 1);
+  if (toFileFrame) clone.rotation.y = Math.PI / 2;   // the slot's file frame faces +z (fitSlot turns it back to +x), so a detailed copy round-trips exactly
+  clone.traverse((o) => { if (o.isLight || o.isSprite) o.removeFromParent?.(); });
+  clone.updateMatrixWorld(true);
+  exporter.parse(clone, (buf) => {
+    const blob = new Blob([buf], { type: 'model/gltf-binary' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${name}.glb`; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  }, (e) => console.warn('[temple] export failed', e), { binary: true, onlyVisible: false });
+}
+
 // ── The component ────────────────────────────────────────────────────────────
 export default function TempleScene({ clock, mode, selected, onSelect, onReady, onFollow, apiRef }) {
   const wrap = useRef(null);
@@ -1058,6 +1080,17 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     place(clock.t); scriptCamera(clock.t); lastT = clock.t;
     frame();
     onReady?.(true);
+
+    // ?export=<piece>[:slot] → download that piece's procedural shape as a GLB (see exportGlb)
+    const exp = new URLSearchParams(window.location.search).get('export');
+    if (exp) {
+      const [pid, which] = exp.split(':'); const g = groups.get(pid);
+      if (g) {
+        const slot = which === 'slot' ? (g.userData.slots || []).find((sl) => !sl.mirror) : null;
+        setTimeout(() => exportGlb(slot ? slot.node : g, slot ? slot.slot : `temple-${pid}`, !!slot), 300);
+      }
+    }
+    window.__templeExport = (pid, which) => { const g = groups.get(pid); if (!g) return false; const slot = which === 'slot' ? (g.userData.slots || []).find((sl) => !sl.mirror) : null; exportGlb(slot ? slot.node : g, slot ? slot.slot : `temple-${pid}`, !!slot); return true; };
 
     api.current = {
       select: (id) => { const changed = id !== currentSel; applySelection(id); if (changed && id) flyTo(id); if (changed && !id) setFollow(true); dirty = true; },
