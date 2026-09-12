@@ -39,6 +39,7 @@ import {
 } from '../lib/models/temple.js';
 
 const SKIN_TONES = ['#f0d3a9', '#daa86b', '#be8349', '#63371c', '#b0733d', '#916035', '#683f23', '#5e341c', '#4e2e19', '#512b16'];   // Reuben, Simeon, Levi, Judah, Zebulun, Dan, Gad, Asher, Naphtali, Ephraim
+const HAIR_TONES = ['#15100d', '#1e1410', '#2a1a12', '#33200f', '#3d2614'];   // black to dark brown — everyone (fieldy)
 const SKY = 0xb9cfe3;          // a dry, bright morning over Mawarayah
 const XRAY_ROLES = new Set(['roof', 'south', 'tower', 'lintel', 'ceiling', 'slab']);
 const GLB_URL = (name) => `/api/models/${name}.glb`;
@@ -216,6 +217,7 @@ function makeMaterials() {
     royal: new THREE.MeshStandardMaterial({ color: new THREE.Color('#4a2e7a'), roughness: 0.8, metalness: 0.05 }),   // the malak (king)
     // skin tones across the tribes (fieldy's chart, 2026-09-12): Reuben → Ephraim, light to deep brown
     ...Object.fromEntries(SKIN_TONES.map((hex, i) => [`skin${i}`, new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), roughness: 0.9, metalness: 0 })])),
+    ...Object.fromEntries(HAIR_TONES.map((hex, i) => [`hair${i}`, new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), roughness: 1, metalness: 0 })])),
     carvedCedar: std('cedar', { map: carvedCedar.map, bumpMap: carvedCedar.bump, bumpScale: 0.12, roughness: 0.75 }),
     carvedGold: std('gold', { map: carvedGold.map, bumpMap: carvedGold.bump, bumpScale: 0.1, roughness: 0.32 }),
     carvedOlive: std('olive', { map: carvedOlive.map, bumpMap: carvedOlive.bump, bumpScale: 0.12 }),
@@ -1182,7 +1184,7 @@ const DED = { start: 8, porch: 20, set: 28, out: 34, cloud: 41, king: 55, kneel:
 /** Ground height along the procession's line (z = 0): the court, the steps, the floor. */
 function groundAlongX(x) { const x0 = PORCH_X1 + H.pad, x1 = x0 + 4; return x >= x1 ? H.courtY : x <= x0 ? 0 : H.courtY + (1 - (x - x0) / (x1 - x0)) * -H.courtY; }
 /** A faceless figure at scale s (height 10·s), facing +x. Poses: stand, spread (hands to heaven), kneel, carry (a pole on the shoulder), trumpet. */
-function personFigure(sub, s, robe, pose, skin = 'skin5') {
+function personFigure(sub, s, robe, pose, skin = 'skin5', hair = 'hair1') {
   const kneel = pose === 'kneel';
   const base = kneel ? 0 : 0, top = kneel ? 3.1 : 5.1;                                 // kneeling: the robe pools at the knees, the torso sits lower
   const skirt = new THREE.LatheGeometry((kneel ? [[1.9, 0], [1.8, 0.4], [1.3, 1.6], [1.1, 3.1]] : [[1.5, 0], [1.45, 0.2], [1.25, 1.4], [1.1, 3.2], [1.02, 5.1]]).map(([r, dy]) => new THREE.Vector2(r * s, (base + dy) * s)), 40);
@@ -1193,7 +1195,9 @@ function personFigure(sub, s, robe, pose, skin = 'skin5') {
   const sh = y0 + 2.2, neck = sh + 0.45, head = sh + 1.65;
   sub.cyl(0, neck * s, 0, 0.3 * s, 0.5 * s, skin, 0.32 * s, 14);
   sub.sphere(0, head * s, 0, 0.62 * s, skin, 18);
-  sub.lathe(0, (head + 0.1) * s, 0, [[0.66 * s, 0], [0.7 * s, 0.25 * s], [0.62 * s, 0.6 * s], [0.35 * s, 0.85 * s], [0, 0.9 * s]], robe, 24);   // a cap / headcloth
+  sub.lathe(0, (head - 0.05) * s, 0, [[0.64 * s, 0], [0.7 * s, 0.3 * s], [0.62 * s, 0.65 * s], [0.35 * s, 0.9 * s], [0, 0.95 * s]], hair, 24);   // hair, thick over the crown
+  for (let i = 0; i < 6; i++) { const a = Math.PI * 0.55 + (i / 5) * Math.PI * 0.9; sub.capsule([Math.cos(a) * 0.62 * s, (head - 0.1) * s, Math.sin(a) * 0.62 * s], [Math.cos(a) * 0.7 * s, (head - 0.9) * s, Math.sin(a) * 0.7 * s], 0.11 * s, hair); }   // locks down the back and sides
+  if (robe === 'linen') sub.torus(0, (head + 0.28) * s, 0, 0.68 * s, 0.07 * s, robe, Math.PI / 2);   // the priests' linen band
   // arms: shoulder → elbow → hand, per pose (z = ±side)
   const A = {
     stand:   [[0.1, sh, 1.05], [0.3, sh - 1.6, 1.15], [0.5, sh - 3.0, 1.1]],
@@ -1212,8 +1216,8 @@ function personFigure(sub, s, robe, pose, skin = 'skin5') {
 function buildDedication(M, byId, lights, sky) {
   const group = new THREE.Group(); group.name = 'dedication'; group.visible = false;
   const S = 0.35;                                                                        // a person 3½ amah tall
-  let skinN = 3; const nextSkin = () => `skin${(skinN = (skinN * 7 + 3) % SKIN_TONES.length)}`;
-  const person = (robe, pose, skin = nextSkin()) => { const sub = new PieceBuilder(M, { id: 'ded' }); personFigure(sub, S, robe, pose, skin); const g = sub.bake(); g.userData.id = undefined; return g; };
+  let skinN = 3, hairN = 1; const nextSkin = () => `skin${(skinN = (skinN * 7 + 3) % SKIN_TONES.length)}`, nextHair = () => `hair${(hairN = (hairN * 3 + 2) % HAIR_TONES.length)}`;
+  const person = (robe, pose, skin = nextSkin()) => { const sub = new PieceBuilder(M, { id: 'ded' }); personFigure(sub, S, robe, pose, skin, nextHair()); const g = sub.bake(); g.userData.id = undefined; return g; };
   // the procession: the ark (the arawan piece itself is moved) and four priests at the poles
   const priests = [];
   for (const [dx, dz] of [[2.9, 0.82], [2.9, -0.82], [-2.9, 0.82], [-2.9, -0.82]]) { const p = person('linen', 'carry'); p.position.set(dx, 0, dz); p.userData.dx = dx; p.userData.dz = dz; group.add(p); priests.push(p); }
@@ -1231,6 +1235,8 @@ function buildDedication(M, byId, lights, sky) {
   const personG = mergeGeometries([body.toNonIndexed(), headG.toNonIndexed()], false);
   const N = 900, crowd = new THREE.InstancedMesh(personG, new THREE.MeshStandardMaterial({ roughness: 0.95 }), N);
   crowd.castShadow = true; group.add(crowd);
+  const hairG = new THREE.SphereGeometry(0.46, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.62); hairG.translate(0, 3.14, 0);   // a cap of hair over each head
+  const hairCap = new THREE.InstancedMesh(hairG, new THREE.MeshStandardMaterial({ roughness: 1 }), N); group.add(hairCap);
   const seats = []; let sd = 11; const rr = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296; };
   const tone = new THREE.Color();
   for (let i = 0; i < N; i++) {
@@ -1241,8 +1247,9 @@ function buildDedication(M, byId, lights, sky) {
     const y = H.courtY, sc = 0.95 + rr() * 0.2, yaw = Math.PI + (rr() - 0.5) * 0.5;
     seats.push({ x, y, z, sc, yaw, d: rr() });
     tone.set(SKIN_TONES[Math.floor(rr() * SKIN_TONES.length)]).offsetHSL((rr() - 0.5) * 0.02, (rr() - 0.5) * 0.08, (rr() - 0.5) * 0.06); crowd.setColorAt(i, tone);
+    tone.set(HAIR_TONES[Math.floor(rr() * HAIR_TONES.length)]); hairCap.setColorAt(i, tone);
   }
-  crowd.instanceColor.needsUpdate = true;
+  crowd.instanceColor.needsUpdate = true; hairCap.instanceColor.needsUpdate = true;
   const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), v3 = new THREE.Vector3(), sv = new THREE.Vector3();
   function seatCrowd(bow, gone) {
     for (let i = 0; i < N; i++) {
@@ -1250,9 +1257,9 @@ function buildDedication(M, byId, lights, sky) {
       const leave = Math.max(0, Math.min(1, (gone - s.d * 0.6) / 0.4));               // each goes in their own time
       e.set(0, s.yaw, -bow * 1.35, 'YXZ'); q.setFromEuler(e);                        // bowing: down on the face toward the house (−x)
       v3.set(s.x + leave * 14, s.y, s.z); const k = s.sc * (1 - leave); sv.set(k, k, k);
-      m4.compose(v3, q, sv); crowd.setMatrixAt(i, m4);
+      m4.compose(v3, q, sv); crowd.setMatrixAt(i, m4); hairCap.setMatrixAt(i, m4);
     }
-    crowd.instanceMatrix.needsUpdate = true;
+    crowd.instanceMatrix.needsUpdate = true; hairCap.instanceMatrix.needsUpdate = true;
   }
   seatCrowd(0, 0);
   // the inan (cloud) in the house
