@@ -59,6 +59,10 @@ export const WORDS = {
   ash:        { translit: 'Ash',         paleo: '𐤀𐤔',    en: 'fire',                  sn: 'H784' },
   qahal:      { translit: 'Qahal',       paleo: '𐤒𐤄𐤋',   en: 'assembly',              sn: 'H6951' },
   kahanayam:  { translit: 'Kahanayam',   paleo: '𐤊𐤄𐤍𐤉𐤌', en: 'priests',               sn: 'H3548' },
+  malak:      { translit: 'Malak',       paleo: '𐤌𐤋𐤊',   en: 'king',                  sn: 'H4428' },
+  shalamah:   { translit: 'Shalamah',    paleo: '𐤔𐤋𐤌𐤄',  en: 'Solomon — "peaceful"',  sn: 'H8010' },
+  thapalah:   { translit: 'Thapalah',    paleo: '𐤕𐤐𐤋𐤄',  en: 'prayer',                sn: 'H8605' },
+  barak:      { translit: 'Barak',       paleo: '𐤁𐤓𐤊',   en: 'kneel / bless',         sn: 'H1288' },
   dalath:     { translit: 'Dalath',      paleo: '𐤃𐤋𐤕',   en: 'door',                  sn: 'H1817' },
   parakath:   { translit: 'Parakath',    paleo: '𐤐𐤓𐤊𐤕',  en: 'veil',                  sn: 'H6532' },
   sharasharah:{ translit: 'Sharasharah', paleo: '𐤔𐤓𐤔𐤄',  en: 'chain',                 sn: 'H8333' },
@@ -494,6 +498,20 @@ export const PIECES = [
     parts: [box(ALTAR.x + 19, H.courtY, 0, 5, 3, 5), box(ALTAR.x + 19, H.courtY + 3, 0, 5.4, 0.3, 5.4)],
   },
   {
+    // the figure itself is placed by the Dedicate story (TempleScene's buildDedication) inside this piece's group, so a click on him opens this card
+    id: 'malak', order: 17.6, group: 'courts', material: 'brass', modes: ['dedicate'],
+    tag: 'malak (king) · Shalamah (Solomon)', title: 'Shalamah (Solomon) the malak (king), at his thapalah (prayer)',
+    words: ['malak', 'shalamah', 'thapalah', 'barak', 'kayawar', 'qahal'], keys: ['malak', 'shalamah', 'thapalah'],
+    on: V('11:8:22-23', '11:8:54', '14:6:12-13'),
+    refs: '1 Kings 8:22–53, 54; 2 Chronicles 6:12–42',
+    build: [1e9, 1e9 + 1], walk: null,
+    measures: [['stands', 'before the mazabach (altar), before all the qahal (assembly)', '1 Kings 8:22; 2 Chronicles 6:12'], ['on', 'the nachashath (bronze) kayawar (scaffold)', '2 Chronicles 6:13'], ['hands', 'spread toward shamayam (heavens)', '1 Kings 8:22, 54'], ['kneels', 'on his knees, through the thapalah (prayer)', '1 Kings 8:54; 2 Chronicles 6:13']],
+    note: 'The man on the kayawar is the malak (king): "{{1 Kings 8:22}}" He blesses the qahal (assembly) standing, then kneels for the whole thapalah (prayer) — "{{1 Kings 8:54}}" — and stands again to bless them. The prayer is the heart of both accounts (1 Kings 8:23–53; 2 Chronicles 6:14–42); the story\'s captions quote its opening and its end.',
+    elsewhere: { ref: '1 Kings 8:62–66; 2 Chronicles 7:4–10; 1 Kings 3:5–15', note: 'After the prayer the malak (king) and all the people offer the zabach (sacrifices) and keep the chag (feast); at Gabaiwan (Gibeon) he had asked for a hearing heart, and here he asks that this bayath (house) be heard.' },
+    assumed: 'A faceless figure in a royal robe (its colour is not in the text). His place on the scaffold, east of the mazabach (altar) facing the house, is the model\'s reading of "in the midst of the court".',
+    parts: [],
+  },
+  {
     id: 'yam', order: 18, group: 'courts', material: 'brass',
     tag: 'yam (sea) · shanayam ishar (twelve) oxen', title: 'The yatzaq (molten) yam (sea) on twelve oxen',
     words: ['yam', 'shawar', 'shawashan', 'nachashath'], keys: ['yam', 'oxen', 'shapah', 'igal', 'kawas', 'bath', 'bathayam', 'buds'],
@@ -730,6 +748,7 @@ const RULES = [
   R(11, 8, [6, 7, 8], ['arawan', 'karawab', 'kanapay', 'kanapayam', 'dabayar', 'poles'], 'arawan'), R(14, 5, [7, 8, 9], ['arawan', 'karawab', 'dabayar', 'poles'], 'arawan'),
   R(11, 8, [22, 31, 54, 64], ['mazabach'], 'mazabach'), R(14, 6, [12, 22], ['mazabach'], 'mazabach'), R(14, 7, [7, 9], ['mazabach'], 'mazabach'), R(14, 5, [12], ['mazabach'], 'mazabach'),
   R(14, 6, [13], ['kayawar', 'izarah', 'nachashath', 'bronze'], 'kayawar'),
+  R(11, 8, [22, 54, 55], ['shalamah', 'malak', 'kneeling', 'kneeled', 'knees', 'hands', 'kapayaw', 'thapalah'], 'malak'), R(14, 6, [12, 13, 14], ['shalamah', 'malak', 'kneeled', 'knees', 'hands', 'kapayaw', 'thapalah'], 'malak'),
   R(11, 8, [64], ['chatzar'], 'chatzar'), R(14, 7, [7], ['chatzar'], 'chatzar'),
   R(11, 8, [6], ['bayath'], 'house'), R(11, 8, [10, 11, 13, 63], ['bayath'], 'house'), R(14, 5, [13, 14], ['bayath'], 'house'), R(14, 7, [1, 2, 3, 5, 16], ['bayath'], 'house'),
 ];
@@ -955,16 +974,17 @@ export const DEDICATE_DURATION = 120;
 export const DEDICATE_CAMERA = [
   [0,   [200, 70, 150],   [110, 0, 10]],     // the assembly gathers in the courts
   [8,   [172, 10, 40],    [140, 3, 0]],      // the ark at the gate
-  [14,  [122, 9, 32],     [102, 3, 0]],      // carried through the court, the assembly either side
-  [20,  [68, 8, 20],      [46, 5, 0]],       // up the steps, into the porch
+  [14,  [128, 12, -56],   [86, 3, -24]],    // carried through the court, round the south of the kayawar and the altar, the assembly either side
+  [20,  [70, 8, -26],     [48, 5, -2]],      // up the steps, into the porch
   [24,  [22, 8, 5],       [-8, 6, 0]],       // down the hall
   [28,  [-11, 6, 3],      [-20, 5, 0]],      // set down under the wings
   [33,  [-11, 6, 3],      [-20, 5, 0]],
   [34,  [110, 12, 34],    [90, 3, 0]],       // the singers, east of the altar
   [40,  [110, 12, 34],    [90, 3, 0]],
-  [41,  [42, 8, 0],       [0, 9, 0]],        // the cloud, through the doors
-  [49,  [24, 10, 6],      [-6, 9, 0]],       // the hall filled
-  [54,  [24, 10, 6],      [-6, 9, 0]],
+  [41,  [63, 6, 2],       [34, 7, 0]],       // the priests come out through the doors, between the pillars …
+  [45.5,[63, 6, 2],       [34, 7, 0]],
+  [49,  [24, 10, 3],      [-6, 9, 0]],       // … and the cloud fills the hall (the eye goes in through the doorway, not the jamb)
+  [54,  [24, 10, 3],      [-6, 9, 0]],
   [55,  [112, 8, 18],     [95, 3, 0]],       // the king on the scaffold
   [63,  [102, 4, 7],      [95, 3.5, 0]],     // kneeling, hands to heaven
   [71,  [102, 4, 7],      [95, 3.5, 0]],
@@ -1036,7 +1056,7 @@ export function marksFor(mode) {
   return ph.filter((p) => label[p.key]).map((p) => ({ at: p.from / d, label: label[p.key] }));
 }
 /** The pieces the chips row shows, in walking order (gate → ark). */
-export const CHIP_ORDER = ['great-court', 'yair', 'porch-pillars', 'porch-throne', 'king-house', 'chatzar', 'mazabach', 'kayawar', 'yam', 'makanawath', 'pillars', 'awalam', 'yasad', 'qayar', 'tzalai', 'chalawan', 'roof', 'doors', 'araz', 'zahab', 'manawarah', 'shalachan', 'gold-altar', 'sharasharah', 'parakath', 'oracle-doors', 'dabayar', 'karawab', 'arawan'];
+export const CHIP_ORDER = ['great-court', 'yair', 'porch-pillars', 'porch-throne', 'king-house', 'chatzar', 'mazabach', 'kayawar', 'malak', 'yam', 'makanawath', 'pillars', 'awalam', 'yasad', 'qayar', 'tzalai', 'chalawan', 'roof', 'doors', 'araz', 'zahab', 'manawarah', 'shalachan', 'gold-altar', 'sharasharah', 'parakath', 'oracle-doors', 'dabayar', 'karawab', 'arawan'];
 /** Where the eye goes when a piece is chosen (the focus target and a fitting distance), in cubits. */
 export function focusFor(id) {
   const F = {
@@ -1045,7 +1065,7 @@ export function focusFor(id) {
     sharasharah: [[-9, 12, 0], 12], karawab: [[-20, 6, 0], 11], arawan: [[-20, 2, 0], 8], 'oracle-doors': [[-10, 5, 0], 12], doors: [[36, 7, 0], 30],
     parakath: [[-8.8, 6, 0], 12], chatzar: [[20, -2, 0], 200], mazabach: [[76, 2, 0], 60], yam: [[58, 2, 32], 34], makanawath: [[-8, -1, 33], 80],
     pillars: [[48, 12, 0], 60], 'gold-altar': [[-6, 1.4, 0], 6], manawarah: [[9, 2, 7], 16], shalachan: [[12, 1.5, 4], 14],
-    'great-court': [[0, 0, 50], 380], yair: [[0, 12, 128], 170], kayawar: [[95, -1, 0], 26], 'porch-pillars': [[0, 6, 82], 100], 'porch-throne': [[72, 6, 82], 70], 'king-house': [[0, 8, 110], 260],
+    'great-court': [[0, 0, 50], 380], yair: [[0, 12, 128], 170], kayawar: [[95, -1, 0], 26], malak: [[95, 1, 0], 16], 'porch-pillars': [[0, 6, 82], 100], 'porch-throne': [[72, 6, 82], 70], 'king-house': [[0, 8, 110], 260],
   };
   const f = F[id]; return f ? { target: f[0], distance: f[1] } : null;
 }

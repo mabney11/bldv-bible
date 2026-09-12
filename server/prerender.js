@@ -1165,6 +1165,26 @@ const STATIC_PAGES = {
     description: 'The bayath (house) Shalamah (Solomon) banah (built) for Yahawah (1 Kings 6–7; 2 Chronicles 3–4) as an interactive 3D model measured in amah (cubits) from the text — the hayakal (temple) and the dabayar (oracle) with the karawab (cherubim), Yakayan (Jachin) and Baiz (Boaz), the yam (sea) on twelve oxen, the makanawath (bases), the courts and the king\'s houses — rising in the order the text gives, or walked through from the gate to the arawan (ark).',
     heading: 'The Bayath (House) of Yahawah',
   },
+  '/models/temple/build': {
+    title: `Build — The Bayath (House) of Yahawah | ${BRAND}`,
+    description: 'The bayath (house) of Yahawah rising in the order 1 Kings 6–7 and 2 Chronicles 3–4 give it — the yasad (foundation), the walls and chambers, the roof, the araz (cedar) and the zahab (gold), the karawab (cherubim), the doors, the courts, the brass and the vessels, and the arawan (ark) brought in — an interactive 3D model measured in amah (cubits) from the text.',
+    heading: 'Build — The Bayath (House) of Yahawah',
+  },
+  '/models/temple/dedicate': {
+    title: `Dedicate — The Bayath (House) of Yahawah | ${BRAND}`,
+    description: 'The dedication of the bayath (house) of Yahawah, 1 Kings 8 and 2 Chronicles 5–7, on the 3D model: the qahal (assembly), the kahanayam (priests) carrying the arawan (ark) in under the wings, the inan (cloud) filling the house, Shalamah (Solomon)\'s prayer on the kayawar (scaffold), the ash (fire) from heaven on the mazabach (altar), the kabawad (glory), the sacrifices, the feast, the people sent home.',
+    heading: 'Dedicate — The Bayath (House) of Yahawah',
+  },
+  '/models/temple/walk': {
+    title: `Walk — The Bayath (House) of Yahawah | ${BRAND}`,
+    description: 'Walk into the bayath (house) of Yahawah on the 3D model: through the gate of the great court, past the mazabach (altar) and the yam (sea), between Yakayan (Jachin) and Baiz (Boaz), through the awalam (porch) and the doors, down the hayakal, through the parakath (veil) to the arawan (ark) beneath the karawab (cherubim) — verse by verse, or on your own feet.',
+    heading: 'Walk — The Bayath (House) of Yahawah',
+  },
+  '/models/temple/roam': {
+    title: `Roam — The Bayath (House) of Yahawah | ${BRAND}`,
+    description: 'Roam the finished bayath (house) of Yahawah on your own feet — through the gates, around the yam (sea), between the pillars, in through the doors to the arawan (ark); tap any part for its measures and verses.',
+    heading: 'Roam — The Bayath (House) of Yahawah',
+  },
   '/guide': {
     title: `Guide | ${BRAND}`,
     description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, the Lexicon and the Translation Studio.',

@@ -38,6 +38,20 @@
 .tp-roambar { justify-content: center; }
 .tp-roam-hint { font-size: 0.86rem; opacity: 0.85; text-align: center; padding: 6px 4px; }
 
-/* Build stands on its own; Walk and Roam are the two ways through the finished house */
-.tp-mode-build { margin-right: 10px; }
-.tp-mode-build .st-view { border-color: rgba(255, 208, 98, 0.55); }
+/* The story the model is open at (its icon and name; a link back to the chooser), and the chooser itself (/models/temple, TempleIndex.jsx) */
+.tp-story { display: inline-flex; align-items: center; gap: 7px; margin-right: 10px; padding: 5px 12px 5px 8px; border-radius: 999px; border: 1px solid rgba(255, 208, 98, 0.5); color: var(--gold); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap; }
+.tp-story:hover { background: color-mix(in srgb, var(--gold) 14%, transparent); }
+.tp-story svg { color: var(--gold); }
+.tp-index-paleo { font-family: var(--paleo-font); font-weight: 400; color: var(--gold); margin-left: 8px; font-size: 15px; }
+.tp-index-grid { max-width: 1000px; margin: 20px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.tp-index-card { border: 1px solid var(--border2); border-radius: 12px; background: var(--bg2); display: flex; flex-direction: column; overflow: hidden; }
+.tp-index-hero { display: flex; flex-direction: column; gap: 4px; padding: 26px 18px 16px; border-bottom: 1px solid var(--border); background: radial-gradient(120% 90% at 20% 0%, color-mix(in srgb, var(--gold) 22%, var(--bg3)), var(--bg3) 70%); }
+.tp-index-hero:hover .tp-index-title { color: var(--gold); }
+.tp-index-icon { color: var(--gold); margin-bottom: 10px; }
+.tp-index-icon svg { width: 56px; height: 56px; filter: drop-shadow(0 0 10px color-mix(in srgb, var(--gold) 35%, transparent)); }
+.tp-index-kicker { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); }
+.tp-index-title { font-size: 22px; font-weight: 700; transition: color 0.15s; }
+.tp-index-blurb { padding: 14px 18px 0; font-size: 13.5px; line-height: 1.5; color: var(--text2); }
+.tp-index-go { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 18px 18px; margin-top: auto; align-items: center; }
+@media (max-width: 600px) { .tp-story span { display: none; } .tp-story { padding: 5px 8px; } }
+.tp-modes a.st-view { text-decoration: none; display: inline-block; }

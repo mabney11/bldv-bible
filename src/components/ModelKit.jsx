@@ -16,13 +16,13 @@ import './ModelPage.css';
 // costs no re-renders; only the phase caption and "what is selectable" go through
 // React, and only when they change. Swapping the timeline (the temple's Build /
 // Walk) rewinds to 0.
-export function usePlayer(timeline, { pace: paceInit = 'auto' } = {}) {
+export function usePlayer(timeline, { pace: paceInit = 'tap', onContinue } = {}) {
   const clock = useRef({ t: 0 }).current;
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [loop, setLoop] = useState(false);
-  const [pace, setPace] = useState(() => { try { return localStorage.getItem('model-pace') || paceInit; } catch { return paceInit; } });   // 'auto' | 'tap' | 'off'
-  const [hold, setHold] = useState(null);           // { ms, since } while the story waits for the reader; { tap: true } until they tap
+  const [pace, setPace] = useState(() => { try { const v = localStorage.getItem('model-pace'); return v === 'off' ? 'off' : paceInit; } catch { return paceInit; } });   // 'tap' | 'off' (the old timed 'auto' reads as tap)
+  const [hold, setHold] = useState(null);           // { tap: true } while the story waits for the reader to tap
   const [phase, setPhase] = useState(() => timeline.phaseAt(0));
   const [selectable, setSelectable] = useState(() => (timeline.selectableAt ? timeline.selectableAt(0) : null));
   const [ended, setEnded] = useState(false);
@@ -40,17 +40,14 @@ export function usePlayer(timeline, { pace: paceInit = 'auto' } = {}) {
     setEnded(t >= tl.duration - 1e-6);
   }, [clock]);
 
-  // Reading pace: when a new caption comes up while playing, the story waits for it
-  // to be read — long enough for its words (auto), or until the reader taps (tap) —
-  // before moving on. The time is taken from the caption as rendered (its quotes
-  // already filled in), at an unhurried rate, since every word carries a gloss.
-  const readSeconds = () => {
-    const text = captionRef.current?.textContent || '';
-    const words = text.trim().split(/\s+/).filter(Boolean).length;
-    return Math.min(60, Math.max(4, 1.8 + words / 2.2));
-  };
+  // Reading pace: when a new caption comes up while playing, the story waits until
+  // the reader taps (tap) before moving on — every word carries a gloss, and a timed
+  // wait was always too slow for one reader and too fast for another. Tapping also
+  // brings the view back to the story's own spot (onContinue: the page's refocus),
+  // so what the caption describes is in front of the reader when it moves.
+  const onContinueRef = useRef(onContinue); onContinueRef.current = onContinue;
   const clearHold = useCallback(() => { state.current.hold = null; setHold(null); state.current.last = performance.now(); }, []);
-  const continueNow = useCallback(() => { if (state.current.hold) clearHold(); }, [clearHold]);
+  const continueNow = useCallback(() => { if (state.current.hold) { clearHold(); onContinueRef.current?.(); } }, [clearHold]);
 
   useEffect(() => {
     let alive = true;
@@ -61,14 +58,11 @@ export function usePlayer(timeline, { pace: paceInit = 'auto' } = {}) {
       if (!st.playing) { st.last = now; return; }
       if (st.hold) {
         st.last = now;
-        if (st.hold.pending) {                       // give the caption a frame or two to render, then measure it
+        if (st.hold.pending) {                       // give the caption a frame or two to render before asking for the tap
           if (--st.hold.pending > 0) return;
-          if (st.pace === 'tap') { st.hold = { tap: true }; setHold(st.hold); }
-          else { const ms = readSeconds() * 1000; st.hold = { ms, since: now }; setHold(st.hold); }
-          return;
+          st.hold = { tap: true }; setHold(st.hold);
         }
-        if (st.hold.tap || now - st.hold.since < st.hold.ms) return;
-        clearHold();
+        return;
       }
       let t = clock.t + ((now - st.last) / 1000) * st.speed; st.last = now;
       if (t >= D) { if (st.loop) t -= D; else { t = D; setPlaying(false); } }
@@ -97,8 +91,8 @@ export function usePlayer(timeline, { pace: paceInit = 'auto' } = {}) {
 
 // ── The caption under the stage, with the reading wait shown ─────────────────
 // Renders the phase's caption (through `render`, the page's Glossed) and, while the
-// story waits for it to be read, a thin bar filling for the reading time or a
-// "tap to go on" chip; a tap on the caption ends the wait early either way.
+// story waits for it to be read, a "tap to go on" chip; a tap anywhere on the
+// caption goes on (and brings the view back to the story).
 export function Caption({ player, phase, render }) {
   const { hold, continueNow, captionRef, playing } = player;
   const waiting = !!hold && playing;
@@ -108,7 +102,6 @@ export function Caption({ player, phase, render }) {
       <span className="st-caption-foot">
         <span className="st-caption-ref">{phase.ref}</span>
         {waiting && hold.tap && <span className="st-caption-tap">tap to go on ▸</span>}
-        {waiting && hold.ms && <span className="st-caption-bar" aria-hidden="true"><span key={hold.since} className="st-caption-fill" style={{ animationDuration: `${hold.ms}ms` }} /></span>}
       </span>
     </div>
   );
@@ -121,7 +114,6 @@ export function PaceSelect({ player, id = 'st-pace' }) {
     <label className="st-speed" title="How the story waits for each caption to be read">
       <span>read</span>
       <select id={id} value={pace} onChange={(e) => setPace(e.target.value)}>
-        <option value="auto">pause to read</option>
         <option value="tap">tap to go on</option>
         <option value="off">no pause</option>
       </select>

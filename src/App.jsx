@@ -43,6 +43,7 @@ const HolyLandMap      = lazy(() => import('./pages/HolyLandMap.jsx'));
 const Prints           = lazy(() => import('./pages/Prints.jsx'));
 const Statue           = lazy(() => import('./pages/Statue.jsx'));
 const Temple           = lazy(() => import('./pages/Temple.jsx'));
+const TempleIndex      = lazy(() => import('./pages/TempleIndex.jsx'));
 const Passages         = lazy(() => import('./pages/Passages.jsx'));
 const Passage          = lazy(() => import('./pages/Passage.jsx'));
 
@@ -333,7 +334,8 @@ export default function App() {
         <Route path="/models/holy-land" element={<HolyLandMap />} />
         <Route path="/models/prints"  element={<Prints />} />
         <Route path="/models/statue"  element={<Statue />} />
-        <Route path="/models/temple"  element={<Temple />} />
+        <Route path="/models/temple"  element={<TempleIndex />} />
+        <Route path="/models/temple/:story" element={<Temple />} />
         <Route path="/precepts"       element={<PreceptStudio />} />
         <Route path="/passages"       element={<Passages />} />
         <Route path="/passage"        element={<Passage />} />

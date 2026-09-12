@@ -1180,9 +1180,16 @@ function buildLand(M) {
 // filling the house, the malak (king) on the kayawar, the ash (fire) from shamayam
 // on the altar, the kabawad (glory), the sacrifices' smoke, seven days passing,
 // the people going home. People are faceless, like the cherubim.
-const DED = { start: 8, porch: 20, set: 28, out: 34, cloud: 41, king: 55, kneel: 63, fire: 72.6, glory: 74, bow: 80, zabach: 90, feast: 100, home: 110 };
-/** Ground height along the procession's line (z = 0): the court, the steps, the floor. */
+const DED = { start: 8, porch: 20, set: 28, singers: 33, out: 41, cloud: 45, king: 55, kneel: 63, fire: 72.6, glory: 74, bow: 80, zabach: 90, feast: 100, home: 110 };
+/** Ground height along the procession's line: the court, the steps, the floor. */
 function groundAlongX(x) { const x0 = PORCH_X1 + H.pad, x1 = x0 + 4; return x >= x1 ? H.courtY : x <= x0 ? 0 : H.courtY + (1 - (x - x0) / (x1 - x0)) * -H.courtY; }
+/** The ark's road across the courts, gate → steps: south of the kayawar and the mazabach (altar), never through them (x, z; height from groundAlongX). */
+const ROAD_IN = new THREE.CatmullRomCurve3([[156, 0], [124, 0], [110, -2], [104, -12], [98, -24], [86, -28], [66, -28], [59, -20], [56, -8], [54, 0], [PORCH_X1 + 2, 0], [PORCH_X1, 0]].map(([x, z]) => new THREE.Vector3(x, 0, z)), false, 'centripetal');
+/** The priests' way out again: from under the wings, down the hall, out the doors and down the steps, to the south of the altar. */
+const ROAD_OUT = new THREE.CatmullRomCurve3([[-16, 0], [0, 0], [PORCH_X1 - 2, 0], [PORCH_X1, 0], [54, 0], [56, -8], [59, -20], [66, -28], [74, -31]].map(([x, z]) => new THREE.Vector3(x, 0, z)), false, 'centripetal');
+const Y_AXIS = new THREE.Vector3(0, 1, 0);
+/** Where the road is at u (0 … 1 by length), and which way it heads (yaw for a figure facing +x). */
+function alongRoad(road, u, out) { road.getPointAt(u, out.p); road.getTangentAt(u, out.d); out.p.y = groundAlongX(out.p.x); out.yaw = Math.atan2(-out.d.z, out.d.x); return out; }
 /** A faceless figure at scale s (height 10·s), facing +x. Poses: stand, spread (hands to heaven), kneel, carry (a pole on the shoulder), trumpet. */
 function personFigure(sub, s, robe, pose, skin = 'skin5', hair = 'hair1') {
   const kneel = pose === 'kneel';
@@ -1222,13 +1229,16 @@ function buildDedication(M, byId, lights, sky) {
   const priests = [];
   for (const [dx, dz] of [[2.9, 0.82], [2.9, -0.82], [-2.9, 0.82], [-2.9, -0.82]]) { const p = person('linen', 'carry'); p.position.set(dx, 0, dz); p.userData.dx = dx; p.userData.dz = dz; group.add(p); priests.push(p); }
   const ark = byId('arawan'), arkHome = new THREE.Vector3(-20, 0, 0);
+  const road = { p: new THREE.Vector3(), d: new THREE.Vector3(), yaw: Math.PI }, off3 = new THREE.Vector3();
   // the singers and trumpeters, east of the altar, in white
   const singers = new THREE.Group(); group.add(singers);
   const singerProtos = [person('linen', 'trumpet'), person('linen', 'stand'), person('linen', 'trumpet'), person('linen', 'stand'), person('linen', 'trumpet')];
   for (let r = 0; r < 3; r++) for (let i = 0; i < 12; i++) { const c = singerProtos[(r * 12 + i) % singerProtos.length].clone(); const z = (i < 6 ? -19 + i * 2.4 : 6.6 + (i - 6) * 2.4) + (r % 2) * 1.2; c.position.set(ALTAR.x + ALTAR.w / 2 + 3 + r * 2.2, H.courtY, z); c.rotation.y = Math.PI; singers.add(c); }   // two blocks, the king's road between
   // the king: standing with hands spread, then kneeling, on the kayawar
+  // — he lives in the 'malak' piece's group, so a tap on him opens that piece's card
   const kingStand = person('royal', 'spread', 'skin4'), kingKneel = person('royal', 'kneel', 'skin4');   // of Yahawadah (Judah)
-  for (const k of [kingStand, kingKneel]) { k.position.set(ALTAR.x + 19, H.courtY + 3.3, 0); k.rotation.y = Math.PI; k.visible = false; group.add(k); }
+  const kingHost = byId('malak') || group;
+  for (const k of [kingStand, kingKneel]) { k.position.set(ALTAR.x + 19, H.courtY + 3.3, 0); k.rotation.y = Math.PI; k.visible = false; k.traverse((o) => { if (o.isMesh) o.castShadow = true; }); kingHost.add(k); }
   // the assembly: an instanced crowd in the courts (body + head as one geometry)
   const body = new THREE.CapsuleGeometry(0.55, 1.9, 4, 10); body.translate(0, 1.5, 0);
   const headG = new THREE.SphereGeometry(0.42, 12, 8); headG.translate(0, 3.1, 0);
@@ -1241,7 +1251,7 @@ function buildDedication(M, byId, lights, sky) {
   const tone = new THREE.Color();
   for (let i = 0; i < N; i++) {
     let x, z;
-    if (i < 420) { x = INNER_COURT.x1 - 14 + rr() * 12; z = -52 + rr() * 104; if (Math.abs(z) < 6 && x < INNER_COURT.x1 - 4) z += 8 * Math.sign(z || 1); }   // before the altar, leaving the ark's road clear
+    if (i < 420) { x = INNER_COURT.x1 - 14 + rr() * 12; z = -52 + rr() * 104; if (Math.abs(z) < 6) z += 8 * Math.sign(z || 1); if (z < -6 && z > -34) z = -z; }   // before the altar, leaving the ark's road (and its turn south of the kayawar) clear
     else if (i < 640) { x = GREAT_COURT.x1 - 14 + rr() * 11; z = -70 + rr() * 140; if (Math.abs(z) < 8) z += 9 * Math.sign(z || 1); }
     else { x = -60 + rr() * 170; z = rr() < 0.5 ? -74 + rr() * 10 : INNER_COURT.z + 4 + rr() * 10; }
     const y = H.courtY, sc = 0.95 + rr() * 0.2, yaw = Math.PI + (rr() - 0.5) * 0.5;
@@ -1312,19 +1322,22 @@ function buildDedication(M, byId, lights, sky) {
   function place(t) {
     if (!on) { on = true; group.visible = true; }
     const sm = (a, b) => Math.max(0, Math.min(1, (t - a) / (b - a))), ease = (u) => u * u * (3 - 2 * u);
-    // the ark's road: the gate → the steps → the porch → the hall → under the wings; then home
-    let x;
-    if (t < DED.start) x = 156; else if (t < DED.porch) x = 156 + (PORCH_X1 - 156) * ease(sm(DED.start, DED.porch)); else if (t < DED.set) x = PORCH_X1 + (arkHome.x - PORCH_X1) * ease(sm(DED.porch, DED.set)); else x = arkHome.x;
+    // the ark's road: the gate → round the south of the kayawar and the altar → the steps → the porch → the hall → under the wings
+    if (t < DED.porch) alongRoad(ROAD_IN, t < DED.start ? 0 : ease(sm(DED.start, DED.porch)), road);
+    else { road.p.set(t < DED.set ? PORCH_X1 + (arkHome.x - PORCH_X1) * ease(sm(DED.porch, DED.set)) : arkHome.x, 0, 0); road.p.y = groundAlongX(road.p.x); road.yaw = Math.PI; }
     const carried = t < DED.set ? 1 : 1 - ease(sm(DED.set, DED.set + 1.5));
-    const g = groundAlongX(x), bob = carried * Math.sin(t * 6.5) * 0.06;
-    ark.position.set(x - arkHome.x, g + carried * 2.55 + bob, 0);
+    const bob = carried * Math.sin(t * 6.5) * 0.06, turn = road.yaw - Math.PI;   // the ark is built heading −x; the road's heading turns it
+    ark.rotation.y = turn;
+    ark.position.copy(road.p).sub(off3.copy(arkHome).applyAxisAngle(Y_AXIS, turn)); ark.position.y += carried * 2.55 + bob;
     for (const p of priests) {
-      let px = x + p.userData.dx, py = g, vis = true;
-      if (t >= DED.set) { const u = ease(sm(DED.set + 1.2, DED.out)); px = arkHome.x + p.userData.dx + 4 + (PORCH_X1 + 24 - arkHome.x) * u; py = groundAlongX(px); vis = u < 0.995; }
-      p.position.set(px, py + Math.max(0, Math.sin(t * 6.5 + p.userData.dz) * 0.05), p.userData.dz * 1.0); p.rotation.y = t >= DED.set ? 0 : Math.PI; p.visible = vis;
+      let vis = true, yaw = road.yaw;
+      if (t < DED.set) { off3.set(p.userData.dx, 0, p.userData.dz).applyAxisAngle(Y_AXIS, turn).add(road.p); }
+      else if (t < DED.out) { off3.set(arkHome.x + 5 + p.userData.dx * 0.5, 0, p.userData.dz * 1.6); yaw = 0; }   // set down; they stand east of it in the dabayar until the priests come out (1 Kings 8:10)
+      else { const u = sm(DED.out, DED.out + 8); alongRoad(ROAD_OUT, u, road); /* a steady walk: out of the doors at ~45.5, before the cloud */ off3.set(0, 0, p.userData.dz).applyAxisAngle(Y_AXIS, road.yaw).add(road.p); off3.x += p.userData.dx * 0.5 * Math.cos(road.yaw); off3.z -= p.userData.dx * 0.5 * Math.sin(road.yaw); yaw = road.yaw; vis = u < 0.995; }
+      p.position.set(off3.x, off3.y + Math.max(0, Math.sin(t * 6.5 + p.userData.dz) * 0.05), off3.z); p.rotation.y = yaw; p.visible = vis;
     }
     // singers from the trumpets' verse until the feast; the king on the scaffold; the crowd
-    singers.visible = t >= DED.out - 1 && t < DED.feast;
+    singers.visible = t >= DED.singers && t < DED.feast;
     kingStand.visible = (t >= DED.king && t < DED.kneel) || (t >= DED.zabach && t < DED.feast);
     kingKneel.visible = t >= DED.kneel && t < DED.zabach;
     seatCrowd(ease(sm(DED.bow, DED.bow + 3)) * (t < DED.zabach ? 1 : 1 - ease(sm(DED.zabach, DED.zabach + 2))), sm(DED.home, DED.home + 8));
@@ -1353,7 +1366,7 @@ function buildDedication(M, byId, lights, sky) {
   }
   function off() {
     if (!on) return; on = false; group.visible = false;
-    ark.position.set(0, 0, 0);
+    ark.position.set(0, 0, 0); ark.rotation.y = 0;
     sun.intensity = 2.6; hemi.intensity = 0.85; sunOffset.copy(dayOffset); scene.background.copy(skyDay); scene.fog.color.copy(skyDay);
   }
   return { group, place, off, sunOffset };

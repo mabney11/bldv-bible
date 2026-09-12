@@ -3,7 +3,8 @@
  * built (1 Kings 6–7; 2 Chronicles 3–4), its courts and the king's houses,
  * as an interactive model.
  *
- * Route: /models/temple   ?piece=<id>  ?view=3d|2d  ?mode=build|dedicate|walk|roam
+ * Route: /models/temple/:story (build|dedicate|walk|roam)   ?piece=<id>  ?view=3d|2d
+ * (/models/temple itself is the chooser, pages/TempleIndex.jsx; the old ?mode= is sent on)
  *
  * - Two stories on ONE model (lib/models/temple.js): BUILD, the chapters in
  *   their own order, the house rising as the scrub bar moves; WALK, in through
@@ -21,11 +22,12 @@
  *   scripture, and — plainly — what the text does not say and the model assumed.
  */
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
 import { usePlayer, Section, WordRow, ModelPassage, Caption, PaceSelect } from '../components/ModelKit.jsx';
 import TempleSheet from '../components/TempleSheet.jsx';
+import { storyFor } from '../components/TempleStories.jsx';
 import {
   PIECES, WORDS, MODES, SPEEDS, GROUPS, CHIP_ORDER, GATHER_REFS, DEDICATE_REFS, passagesFor, refsFor,
   phaseAt, pieceById, pieceForWord, marksFor,
@@ -125,16 +127,18 @@ function Card({ id, mode, onClose, onPick }) {
 export default function Temple() {
   usePageTitle(pageTitle('The Bayath (House) of Yahawah — Maps & Models'), 'The bayath (house) Shalamah (Solomon) banah (built) for Yahawah (1 Kings 6–7; 2 Chronicles 3–4) as an interactive 3D model, measured in amah (cubits) from the text: the hayakal (temple) and the dabayar (oracle) with the karawab (cherubim), Yakayan (Jachin) and Baiz (Boaz), the yam (sea) on twelve oxen, the makanawath (bases), the chatzarawath (courts) and the malak (king)\'s houses. Watch it rise in the order the text gives, or walk in to the arawan (ark).');
   const [params, setParams] = useSearchParams();
+  const { story } = useParams();
   const canGL = useMemo(webglAvailable, []);
   const view = VIEWS.includes(params.get('view')) ? params.get('view') : (canGL ? '3d' : '2d');
-  const mode = MODES[params.get('mode')] ? params.get('mode') : 'walk';
+  const mode = MODES[story] ? story : 'walk';
   const [glOk, setGlOk] = useState(true);
   const sel = PIECE_IDS.includes(params.get('piece')) ? params.get('piece') : null;
-  const player = usePlayer(TIMELINES[mode]);
+  const sceneApi = useRef(null);
+  // "tap to go on" also brings the view back to where the story is: what the next caption tells is then in front of the reader
+  const player = usePlayer(TIMELINES[mode], { onContinue: () => sceneApi.current?.follow?.() });
   const { clock, playing, speed, setSpeed, loop, setLoop, phase, play, pause, seek, restart, scrubRef, timeRef, hold, continueNow } = player;
   const [sheetOpen, setSheetOpen] = useState(!!sel);
   const [following, setFollowing] = useState(true);
-  const sceneApi = useRef(null);
 
   const setParam = useCallback((k, v) => {
     const q = new URLSearchParams(params);
@@ -175,22 +179,23 @@ export default function Temple() {
     return () => window.removeEventListener('keydown', onKey);
   });
   const marks = useMemo(() => marksFor(mode), [mode]);
+  const storyOf = storyFor(mode);
+  if (!MODES[story]) return <Navigate to={`/models/temple${params.toString() ? `?${params}` : ''}`} replace />;
 
   return (
     <div className={`st-page tp-page${sheetOpen ? ' st-sheet-open' : ''}`}>
       <header className="st-top">
-        <Link to="/models" className="st-back" title="Maps & Models">←</Link>
+        <Link to="/models/temple" className="st-back" title="The house's stories">←</Link>
         <div className="st-h1wrap">
           <h1 className="st-h1">The Bayath (House) of Yahawah</h1>
           <span className="st-h1-paleo" dir="rtl" aria-hidden="true">𐤁𐤉𐤕 𐤉𐤄𐤅𐤄</span>
         </div>
-        <div className="st-views tp-modes tp-mode-build" role="group" aria-label="The story">
-          <button type="button" className={`st-view${mode === 'build' ? ' on' : ''}`} onClick={() => setParam('mode', 'build')} title="Watch the house rise, 1 Kings 6–7 in order">Build</button>
-          <button type="button" className={`st-view${mode === 'dedicate' ? ' on' : ''}`} onClick={() => setParam('mode', 'dedicate')} title="The dedication: the ark carried in, the cloud, the prayer, the fire, the feast — 1 Kings 8">Dedicate</button>
-        </div>
-        <div className="st-views tp-modes" role="group" aria-label="The finished house">
-          {['walk', 'roam'].map((k) => <button key={k} type="button" className={`st-view${mode === k ? ' on' : ''}`} onClick={() => setParam('mode', k)} title={k === 'walk' ? 'Walk in, from the gate to the ark' : 'Roam the finished house on your own feet'}>{MODES[k].label}</button>)}
-        </div>
+        <Link to="/models/temple" className="tp-story" title="This story — tap for the others (Build, Dedicate, Walk)"><storyOf.Icon width="22" height="22" /><span>{storyOf.label}</span></Link>
+        {storyOf.key === 'walk' && (
+          <div className="st-views tp-modes" role="group" aria-label="How to walk">
+            {['walk', 'roam'].map((k) => <Link key={k} to={`/models/temple/${k}${params.toString() ? `?${params}` : ''}`} className={`st-view${mode === k ? ' on' : ''}`} title={k === 'walk' ? 'Guided: from the gate to the ark, verse by verse' : 'On your own feet: go where you will'}>{k === 'walk' ? 'Guided' : 'On foot'}</Link>)}
+          </div>
+        )}
         <div className="st-views" role="group" aria-label="View">
           <button type="button" className={`st-view${use3d ? ' on' : ''}`} onClick={() => setParam('view', '3d')} disabled={!canGL || !glOk} title={canGL && glOk ? 'Lit 3D model — drag to look around' : 'WebGL is not available in this browser'}>3D</button>
           <button type="button" className={`st-view${!use3d ? ' on' : ''}`} onClick={() => setParam('view', '2d')} title="Plan and section — light, prints, works anywhere">2D</button>
@@ -253,7 +258,7 @@ export default function Temple() {
             </div>
           </div>
           )}
-          <p className="st-hint">{use3d && !roam ? 'Left-drag to orbit, scroll to zoom, right-drag to pan — the view only moves when you move it. A click on a part opens its card where you stand; a chip or a word flies to it; move the timeline and the story takes the camera back; "refocus" recentres. ' : ''}<Glossed text="Tap a part, a chip under it, or a word in the text for its measures and verses — one amah (cubit) in the text is one unit in the model." /></p>
+          <p className="st-hint">{use3d && !roam ? 'Left-drag to orbit, scroll to zoom, right-drag to pan — the view only moves when you move it. A click on a part opens its card where you stand; a chip or a word flies to it; move the timeline, or tap to go on, and the story takes the camera back; "refocus" recentres. ' : ''}<Glossed text="Tap a part, a chip under it, or a word in the text for its measures and verses — one amah (cubit) in the text is one unit in the model." /></p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Parts &amp; verses ↑</button>
         </section>
 
