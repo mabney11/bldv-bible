@@ -27,6 +27,11 @@ SSH() { ssh -o BatchMode=yes -o ConnectTimeout=15 "$HOST" "$@"; }
 # node inside the image, with the data volume, the script from the box's checkout and a scratch dir
 RDOCKER="docker run --rm -e PALEO_SKIP_HEADINGS=1 -v $RDATA:/data -v $RREPO/server/studio-sync.mjs:/app/server/studio-sync.mjs -v /tmp/studio-sync:/tmp/studio-sync -w /app"
 
+# the box must have the script (docker would otherwise mount an empty DIRECTORY in its place)
+if ! SSH "test -f $RREPO/server/studio-sync.mjs"; then
+  LOG "prod has no $RREPO/server/studio-sync.mjs yet — push, then \`git pull\` in $RREPO on the box (if a folder of that name is in the way: sudo rmdir it first)" >&2; exit 1
+fi
+
 mkdir -p "$STATE/base" "$STATE/merged"
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 mkdir -p "$TMP/theirs"
