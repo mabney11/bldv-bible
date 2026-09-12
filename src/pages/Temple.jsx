@@ -141,14 +141,20 @@ export default function Temple() {
   const use3d = view === '3d' && canGL && glOk;
   const D = MODES[mode].duration;
   const onPlayPause = () => (playing ? pause() : play());
-  const onScrub = (e) => seek((+e.target.value / 1000) * D);
+  // Moving the timeline hands the camera back to the story: whatever the viewer
+  // had picked or dragged to, a scrub means "show me what happens here". A still
+  // slider leaves their selection and free look alone.
+  const rejoin = useCallback(() => { if (sel) select(null); if (!following) sceneApi.current?.follow?.(); }, [sel, following, select]);
+  const seekAlong = useCallback((t) => { rejoin(); seek(t); }, [rejoin, seek]);
+  const onScrub = (e) => seekAlong((+e.target.value / 1000) * D);
+  const onRestart = () => { rejoin(); restart(); };
   useEffect(() => {
     const onKey = (e) => {
       if (/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(e.target.tagName) || e.metaKey || e.ctrlKey) return;
       if (e.key === ' ') { e.preventDefault(); playing ? pause() : play(); }
-      else if (e.key === 'ArrowLeft') seek(clock.t - 0.5);
-      else if (e.key === 'ArrowRight') seek(clock.t + 0.5);
-      else if (e.key === 'Home') seek(0);
+      else if (e.key === 'ArrowLeft') seekAlong(clock.t - 0.5);
+      else if (e.key === 'ArrowRight') seekAlong(clock.t + 0.5);
+      else if (e.key === 'Home') seekAlong(0);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -196,7 +202,7 @@ export default function Temple() {
 
           <div className="st-player">
             <button type="button" className="st-play" onClick={onPlayPause} aria-label={playing ? 'Pause' : 'Play'}>{playing ? '❚❚' : '▶'}</button>
-            <button type="button" className="st-restart" onClick={restart} aria-label="Play from the beginning" title="From the beginning">↺</button>
+            <button type="button" className="st-restart" onClick={onRestart} aria-label="Play from the beginning" title="From the beginning">↺</button>
             <div className="st-scrubwrap">
               <input ref={scrubRef} id="tp-scrub" type="range" min="0" max="1000" defaultValue="0" step="1" onInput={onScrub} className="st-scrub" aria-label={mode === 'build' ? 'Scrub through the building' : 'Scrub through the walk'} />
               <div className="st-marks tp-marks" aria-hidden="true">
@@ -214,7 +220,7 @@ export default function Temple() {
               <label className="st-loop"><input id="tp-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
             </div>
           </div>
-          <p className="st-hint">{use3d ? 'Drag to look around, scroll to zoom, right-drag to pan; the story takes the camera back when you choose "follow". ' : ''}<Glossed text="Tap a part, a chip under it, or a word in the text for its measures and verses — one amah (cubit) in the text is one unit in the model." /></p>
+          <p className="st-hint">{use3d ? 'Drag to look around, scroll to zoom, right-drag to pan; the story takes the camera back whenever you move the timeline (or choose "follow"). ' : ''}<Glossed text="Tap a part, a chip under it, or a word in the text for its measures and verses — one amah (cubit) in the text is one unit in the model." /></p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Parts &amp; verses ↑</button>
         </section>
 
