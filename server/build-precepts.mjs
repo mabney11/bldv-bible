@@ -68,9 +68,16 @@ const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 && arg
 const DB_PATH  = path.resolve(opt('--db',  path.join(__dirname, 'translation.db')));
 // Default output: next to this script — except on the public box, where the
 // databases live on the /data volume (DATA_DIR, see entrypoint.sh) and a file
-// written inside the container is lost on the next deploy (2026-09-12).
-const DATA_DIR = process.env.DATA_DIR && fs.existsSync(process.env.DATA_DIR) ? process.env.DATA_DIR : null;
+// written inside the container is lost on the next deploy. 2026-09-12, twice:
+// `pexec node build-precepts.mjs` ran without DATA_DIR in its environment, wrote
+// /app/server/precepts.db, and the retired container took the build with it. So
+// the volume is found even when the variable is not set: /data when it exists.
+const DATA_DIR = [process.env.DATA_DIR, '/data'].find((d) => d && fs.existsSync(d)) || null;
 const OUT_PATH = path.resolve(opt('--out', path.join(DATA_DIR || __dirname, 'precepts.db')));
+if (DATA_DIR && !OUT_PATH.startsWith(path.resolve(DATA_DIR) + path.sep) && !fs.existsSync(OUT_PATH)) {
+  // an explicit --out inside the container (or anywhere off the volume) on a box that has one — it will not survive a deploy
+  console.error(`[precepts] WARNING: writing ${OUT_PATH}, which is not on the data volume ${DATA_DIR} — a redeploy loses it. Pass --out ${path.join(DATA_DIR, 'precepts.db')} (the default) unless this is deliberate.`);
+}
 const SEED     = opt('--seed', null);
 const MIN_SCORE = parseFloat(opt('--min', '4.3'));
 const N = 4;            // shingle length in roots
