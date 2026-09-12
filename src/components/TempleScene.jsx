@@ -527,8 +527,8 @@ function cherubFigure(sub, b, s, wing, side, mat, tilt, spinePts = null) {
           hang(geo); sub.add(geo, mat);
         }
       };
-      row(nP + nS, 0.12, 1, 0.3 * s * fw, 0);
-      row(nC + 3, 0.1, 0.45, 0.34 * s * fw, 0.1 * s);
+      row(nP + nS, 0.04, 1, 0.3 * s * fw, 0);          // from right at the back, so the wing is seen to grow from the body
+      row(nC + 3, 0.03, 0.45, 0.34 * s * fw, 0.1 * s);
     } else {
     // primaries: long feathers fanning from the spine (the tip) to ~55° down
     for (let i = 0; i < nP; i++) { const u = i / (nP - 1); feather(u * 0.95, L * (1 - u * 0.42) * dr(u), (0.36 - u * 0.06) * s * fw, 0.07 * s, 0.05 * s); }
@@ -563,10 +563,10 @@ function buildArk(b, part) {
   for (const sx of [-1, 1]) {
     const c = new THREE.Group(); c.position.set(sx * 0.75, 1.66, 0); c.rotation.y = sx > 0 ? Math.PI : 0;   // each turned to face the other across the seat
     const sub2 = new PieceBuilder(b.M, b.piece);
-    // the same wings as the great cherubim, but each rises high over the head and reaches right
-    // across the seat to come down before the other cherub, the feathers draping outward from the
-    // crown: the four wings overlap into one canopy over the kaparath (the heron's umbrella)
-    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, { pts: [[-0.85, 5.6, 1.0], [-0.5, 8.4, 1.8], [1.2, 11.6, 1.6], [4.2, 13.4, 0.9], [7.4, 12.8, 0.7], [10.2, 10.4, 1.6], [12.0, 7.4, 3.4]], drape: [0.6, 0.8], dense: 2.4, wide: 2.3, droop: 0.64 });
+    // the same wings as the great cherubim, but each rises over the head and spreads out and
+    // forward, the feathers draping outward, reaching a little past the seat's middle so the two
+    // cherubim's wings overlap by a handful of feathers there — a canopy open down its centre
+    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, { pts: [[-0.8, 5.8, 0.6], [-0.4, 8.2, 1.3], [1.0, 11.0, 2.3], [3.6, 12.0, 3.5], [6.2, 11.3, 4.3], [8.0, 9.4, 4.6]], drape: [0.55, 0.85], dense: 2.4, wide: 2.3, droop: 0.5 });
     c.add(...sub2.bake().children); g.add(c);
   }
   g.add(...sub.bake().children); b.mesh(g);
