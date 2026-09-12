@@ -389,6 +389,18 @@ function buildCherub(b, part, mat = 'gold') {
   const s = h / 10;
   const g = new THREE.Group(); g.position.set(x, y, z); g.userData.slot = part.glb;
   const sub = new PieceBuilder(b.M, b.piece);
+  cherubFigure(sub, b, s, wing, side, mat, 0);
+  g.add(...sub.bake().children);
+  b.mesh(g);
+  b.slots.push({ slot: part.glb, node: g, h, face: 'x', mirror: side < 0 });
+}
+
+/**
+ * The figure itself, at scale `s` (= height / 10), wings `wing` long, one to `side`;
+ * `tilt` raises both wings from level (0 = straight out, as in the dabayar; ~1.0 = up,
+ * as on the kaparath). Built into `sub`; the caller bakes.
+ */
+function cherubFigure(sub, b, s, wing, side, mat, tilt) {
   const ellipsoid = (px, py, pz, rx, ry, rz, rotX = 0, rotY = 0, rotZ = 0, seg = 14) => {
     const geo = new THREE.SphereGeometry(1, seg, Math.max(8, seg - 4)); geo.scale(rx, ry, rz);
     if (rotX) geo.rotateX(rotX); if (rotY) geo.rotateY(rotY); if (rotZ) geo.rotateZ(rotZ);
@@ -461,7 +473,7 @@ function buildCherub(b, part, mat = 'gold') {
     // a feather: a flattened, tapered blade from the shoulder outward at `angle` below level
     const geo = new THREE.SphereGeometry(1, 10, 6); geo.scale(t, w, len / 2);
     geo.translate(0, 0, len / 2);                    // root at the origin, tip at +z
-    geo.rotateX(angle);                              // droop toward −y (about the shoulder, in the wing's plane)
+    geo.rotateX(angle - tilt);                       // droop toward −y about the shoulder; `tilt` raises the whole wing
     if (dir < 0) geo.rotateY(Math.PI);               // to the other side
     geo.translate(xOff, shoulderY, dir * 0.9 * s);
     sub.add(geo, mat);
@@ -475,32 +487,36 @@ function buildCherub(b, part, mat = 'gold') {
     // coverts: short and full over the roots
     for (let i = 0; i < 7; i++) { const u = i / 6; feather(dir, u * 0.9 + 0.08, span * (0.36 - u * 0.1), 0.3 * s, 0.07 * s, 0.29 * s); }
     // the leading edge: a spar along the top, and a ridge of muscle at the root
-    sub.capsule([0.1 * s, shoulderY + 0.12 * s, dir * 0.9 * s], [0.1 * s, shoulderY, dir * (wing - 0.25 * s)], 0.12 * s, mat);
+    sub.capsule([0.1 * s, shoulderY + 0.12 * s, dir * 0.9 * s], [0.1 * s, shoulderY + Math.sin(tilt) * (wing - 1.15 * s), dir * (0.9 * s + Math.cos(tilt) * (wing - 1.15 * s))], 0.12 * s, mat);
     ellipsoid(0.2 * s, shoulderY - 0.15 * s, dir * 1.35 * s, 0.32 * s, 0.42 * s, 0.7 * s);
   }
-  g.add(...sub.bake().children);
-  b.mesh(g);
-  b.slots.push({ slot: part.glb, node: g, h, face: 'x', mirror: side < 0 });
 }
 
 function buildArk(b, part) {
   const { x, y, z } = part; const g = new THREE.Group(); g.position.set(x, y, z);
   const sub = new PieceBuilder(b.M, b.piece);
-  sub.box(0, 0, 0, 2.5, 1.5, 1.5, 'gold');
-  sub.box(0, 1.45, 0, 2.7, 0.12, 1.7, 'gold'); sub.box(0, 0, 0, 2.7, 0.12, 1.7, 'gold');   // crown moulding top and bottom
-  sub.box(0, 1.57, 0, 2.5, 0.1, 1.5, 'gold');                                                // the kaparath (mercy seat)
-  for (const sz of [-1, 1]) { sub.torus(1.05, 0.35, sz * 0.75, 0.18, 0.05, 'gold', Math.PI / 2); sub.torus(-1.05, 0.35, sz * 0.75, 0.18, 0.05, 'gold', Math.PI / 2); }   // rings for the poles
-  // poles along x
-  for (const sz of [-1, 1]) { const geo = new THREE.CylinderGeometry(0.07, 0.07, 4.2, 10); geo.rotateZ(Math.PI / 2); geo.translate(0, 0.35, sz * 0.75); sub.add(geo, 'goldDim'); }
-  // the two small cherubim at the ends of the mercy seat, wings spread upward toward each other, faces toward the seat (Exodus 25:20)
+  // the chest, 2½ × 1½ × 1½ (Exodus 25:10), with its two crowns of gold — a moulding at the top and at the foot — and corner posts
+  sub.box(0, 0.12, 0, 2.5, 1.38, 1.5, 'gold');
+  for (const [yy, hh] of [[0, 0.14], [1.42, 0.12]]) {
+    sub.box(0, yy, 0, 2.64, hh, 1.64, 'gold');
+    const per = (2.64 + 1.64) * 2;
+    for (let i = 0; i < 40; i++) { const u = (i / 40) * per; let px, pz; if (u < 2.64) { px = -1.32 + u; pz = -0.82; } else if (u < 2.64 + 1.64) { px = 1.32; pz = -0.82 + (u - 2.64); } else if (u < 2.64 * 2 + 1.64) { px = 1.32 - (u - 2.64 - 1.64); pz = 0.82; } else { px = -1.32; pz = 0.82 - (u - 2.64 * 2 - 1.64); } sub.sphere(px, yy + hh + 0.03, pz, 0.035, 'gold', 8); }   // beaded edges on the crowns
+  }
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) sub.box(sx * 1.2, 0.14, sz * 0.7, 0.12, 1.28, 0.12, 'goldDim');
+  // four rings of gold on its four feet, two on each side, and the poles of acacia overlaid with gold through them (25:12–15)
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) sub.torus(sx * 0.95, 0.36, sz * 0.82, 0.16, 0.04, 'gold', Math.PI / 2, 0);
+  for (const sz of [-1, 1]) { const pole = new THREE.CylinderGeometry(0.075, 0.075, 4.4, 12); pole.rotateZ(Math.PI / 2); pole.translate(0, 0.36, sz * 0.82); sub.add(pole, 'goldDim'); for (const sx of [-1, 1]) sub.sphere(sx * 2.2, 0.36, sz * 0.82, 0.09, 'gold', 10); }
+  // the kaparath (mercy seat), pure gold, the length and breadth of the chest (25:17)
+  sub.box(0, 1.54, 0, 2.5, 0.12, 1.5, 'gold');
+  // two cherubim of beaten work at its two ends, facing each other, wings spread upward covering the seat (25:18–20)
   for (const sx of [-1, 1]) {
-    const k = 0.1;   // a tenth the size of the great ones: ~1 cubit high
-    sub.lathe(sx * 0.85, 1.67, 0, [[1.4 * k, 0], [1.5 * k, 0.2 * k], [1.15 * k, 2.5 * k], [0.95 * k, 5 * k], [1.05 * k, 6.8 * k], [1.35 * k, 7.4 * k], [0.9 * k, 7.9 * k], [0.45 * k, 8.1 * k], [0, 8.15 * k]], 'gold', 20);
-    sub.sphere(sx * 0.85, 1.67 + 8.85 * k, 0, 0.62 * k, 'gold', 12);
-    for (const sz of [-1, 1]) { const geo = wingGeo(0.9, k * 1.6); geo.rotateY(sz > 0 ? Math.PI / 2 : -Math.PI / 2); geo.rotateX(-sz * 0.95); geo.rotateY(sx > 0 ? 0.35 : -0.35); geo.translate(sx * 0.85, 1.67 + 6.9 * k, 0); sub.add(geo, 'gold'); }
+    const c = new THREE.Group(); c.position.set(sx * 0.8, 1.66, 0); c.rotation.y = sx > 0 ? Math.PI : 0;   // each turned to face the other across the seat
+    const sub2 = new PieceBuilder(b.M, b.piece);
+    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05);
+    c.add(...sub2.bake().children); g.add(c);
   }
   g.add(...sub.bake().children); b.mesh(g);
-  b.slots.push({ slot: part.glb, node: g, h: 2.7, face: 'x' });
+  b.slots.push({ slot: part.glb, node: g, h: 2.9, face: 'x' });
 }
 
 /** Two leaves (or two folding pairs) in a jambed opening; opened by openAt. */
@@ -606,32 +622,58 @@ function buildSea(b, part) {
   }
 }
 
-/** One of the ten bases: a brass frame with pictured panels on chariot wheels, a round socket, a basin. */
+/**
+ * One of the ten makanawath (7:27–37): a square brass frame 4 × 4 × 3 — corner posts,
+ * ledges (shalabayam) above and below, and between the ledges PANELS in relief:
+ * arayawath (lions), oxen and karawab (cherubim), with wreaths of hanging work
+ * beneath (7:29); four wheels like chariot wheels, axles cast with the base (7:30–33);
+ * undersetters at the four corners (7:34); a round mouth a cubit and a half across
+ * rising half a cubit from the top, its rim engraved (7:31, 35); and on it the basin,
+ * four cubits across, holding forty baths (7:38).
+ */
 function buildBase(b, part) {
   const { x, y, z, w, h, wheel, basinR } = part;
   const g = new THREE.Group(); g.position.set(x, y, z); g.userData.slot = part.glb;
   const sub = new PieceBuilder(b.M, b.piece);
-  const fy = wheel * 2 * 0.35;   // the frame sits just above the axles
-  const fh = h - fy;
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) sub.box(sx * (w / 2 - 0.2), fy, sz * (w / 2 - 0.2), 0.4, fh, 0.4, 'brass');            // corner posts (7:34 supports)
-  for (const sz of [-1, 1]) { sub.box(0, fy, sz * (w / 2 - 0.15), w, 0.3, 0.3, 'brass'); sub.box(0, fy + fh - 0.3, sz * (w / 2 - 0.15), w, 0.3, 0.3, 'brass'); }   // ledges (shalabayam)
+  const fy = wheel * 2 * 0.35, fh = h - fy;                       // the frame rides just above the axles
+  const relief = (sh, depth, tx, ty, tz, rotY, scale, mat = 'brass') => {   // an extruded silhouette laid on a panel face
+    const geo = new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: true, bevelThickness: 0.015, bevelSize: 0.015, bevelSegments: 1 });
+    geo.scale(scale, scale, 1); geo.rotateY(rotY); geo.translate(tx, ty, tz); sub.add(geo, mat);
+  };
+  const lionShape = () => { const p = new THREE.Shape(); p.moveTo(0, 0.3); p.quadraticCurveTo(0.3, 0.55, 0.7, 0.42); p.quadraticCurveTo(1.0, 0.5, 1.1, 0.75); p.quadraticCurveTo(1.35, 0.9, 1.4, 0.6); p.quadraticCurveTo(1.45, 0.4, 1.25, 0.32); p.lineTo(1.2, 0); p.lineTo(1.05, 0); p.lineTo(1.0, 0.25); p.lineTo(0.45, 0.25); p.lineTo(0.4, 0); p.lineTo(0.25, 0); p.lineTo(0.2, 0.22); p.quadraticCurveTo(-0.15, 0.4, 0, 0.3); return p; };
+  const oxShape = () => { const p = new THREE.Shape(); p.moveTo(0.05, 0.28); p.quadraticCurveTo(0.2, 0.62, 0.7, 0.58); p.quadraticCurveTo(1.05, 0.62, 1.15, 0.5); p.lineTo(1.3, 0.62); p.lineTo(1.35, 0.5); p.lineTo(1.22, 0.4); p.quadraticCurveTo(1.32, 0.2, 1.15, 0.12); p.lineTo(1.1, 0); p.lineTo(0.98, 0); p.lineTo(0.95, 0.22); p.lineTo(0.35, 0.22); p.lineTo(0.3, 0); p.lineTo(0.18, 0); p.lineTo(0.15, 0.24); p.quadraticCurveTo(0, 0.2, 0.05, 0.28); return p; };
+  const cherubShape = () => { const p = new THREE.Shape(); p.moveTo(0.55, 0); p.lineTo(0.85, 0); p.lineTo(0.8, 0.5); p.quadraticCurveTo(1.25, 0.72, 1.35, 0.35); p.quadraticCurveTo(1.15, 0.55, 0.85, 0.6); p.lineTo(0.85, 0.7); p.absarc(0.7, 0.8, 0.1, -Math.PI / 2, Math.PI * 1.5, false); p.lineTo(0.55, 0.6); p.quadraticCurveTo(0.25, 0.55, 0.05, 0.35); p.quadraticCurveTo(0.15, 0.72, 0.6, 0.5); p.lineTo(0.55, 0); return p; };
+  const figures = [lionShape, oxShape, cherubShape, lionShape];
+  // corner posts and ledges
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) sub.box(sx * (w / 2 - 0.2), fy, sz * (w / 2 - 0.2), 0.4, fh, 0.4, 'brass');
+  for (const sz of [-1, 1]) { sub.box(0, fy, sz * (w / 2 - 0.15), w, 0.3, 0.3, 'brass'); sub.box(0, fy + fh - 0.3, sz * (w / 2 - 0.15), w, 0.3, 0.3, 'brass'); }
   for (const sx of [-1, 1]) { sub.box(sx * (w / 2 - 0.15), fy, 0, 0.3, 0.3, w, 'brass'); sub.box(sx * (w / 2 - 0.15), fy + fh - 0.3, 0, 0.3, 0.3, w, 'brass'); }
-  // panels between the ledges: lions, oxen, cherubim (7:29)
-  for (const sz of [-1, 1]) sub.box(0, fy + 0.3, sz * (w / 2 - 0.15), w - 0.8, fh - 0.6, 0.12, 'panel');
-  for (const sx of [-1, 1]) { const geo = new THREE.BoxGeometry(0.12, fh - 0.6, w - 0.8); uvBox(geo, 0.12, fh - 0.6, w - 0.8, TILE.panel); geo.translate(sx * (w / 2 - 0.15), fy + 0.3 + (fh - 0.6) / 2, 0); sub.add(geo, 'panel'); }
-  // axles and four wheels like chariot wheels (7:30–33): rim, hub, six spokes
+  // the four panels, each with its figure in relief and a wreath of hanging work beneath (7:29)
+  const faces = [[0, w / 2 - 0.15, 0], [0, -(w / 2 - 0.15), Math.PI], [w / 2 - 0.15, 0, Math.PI / 2], [-(w / 2 - 0.15), 0, -Math.PI / 2]];
+  faces.forEach(([px, pz, ry], i) => {
+    const plate = new THREE.BoxGeometry(w - 0.8, fh - 0.6, 0.12); plate.rotateY(ry); plate.translate(px, fy + fh / 2, pz); sub.add(plate, 'brassDark');
+    const out = new THREE.Vector3(Math.sin(ry), 0, Math.cos(ry)); const sc = 0.95;
+    relief(figures[i](), 0.06, px + out.x * 0.07 - Math.cos(ry) * 0.66 * sc, fy + 0.55, pz + out.z * 0.07 + Math.sin(ry) * 0.66 * sc, ry, sc);
+    for (let k = 0; k < 5; k++) { const t = (k - 2) * 0.55; const ring = new THREE.TorusGeometry(0.16, 0.035, 6, 12, Math.PI); ring.rotateZ(Math.PI); ring.rotateY(ry); ring.translate(px + out.x * 0.08 + Math.cos(ry) * t, fy + 0.42, pz + out.z * 0.08 - Math.sin(ry) * t); sub.add(ring, 'brass'); }
+  });
+  // undersetters: brackets from the four corners up under the round mouth (7:30, 34)
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) sub.capsule([sx * (w / 2 - 0.2), fy + fh - 0.1, sz * (w / 2 - 0.2)], [sx * 0.7, h + 0.4, sz * 0.7], 0.09, 'brass');
+  // axles and wheels like chariot wheels (7:30–33): rim, hub, six spokes
   for (const sx of [-1, 1]) {
     const axle = new THREE.CylinderGeometry(0.1, 0.1, w + 0.9, 10); axle.rotateX(Math.PI / 2); axle.translate(sx * (w / 2 - 0.9), wheel, 0); sub.add(axle, 'brassDark');
     for (const sz of [-1, 1]) {
       const cz = sz * (w / 2 + 0.25), cx = sx * (w / 2 - 0.9);
-      sub.torus(cx, wheel, cz, wheel - 0.12, 0.12, 'brass');                                  // rim (in the x/y plane: torus faces ±z) — no rotation needed
-      { const hub = new THREE.CylinderGeometry(0.22, 0.22, 0.3, 12); hub.rotateX(Math.PI / 2); hub.translate(cx, wheel, cz); sub.add(hub, 'brassDark'); }   // hub
+      sub.torus(cx, wheel, cz, wheel - 0.12, 0.12, 'brass');
+      { const hub = new THREE.CylinderGeometry(0.22, 0.22, 0.34, 12); hub.rotateX(Math.PI / 2); hub.translate(cx, wheel, cz); sub.add(hub, 'brassDark'); }
       for (let i = 0; i < 6; i++) { const geo = new THREE.BoxGeometry(0.08, wheel - 0.2, 0.08); geo.translate(0, (wheel - 0.2) / 2, 0); geo.rotateZ((i / 6) * Math.PI * 2); geo.translate(cx, wheel, cz); sub.add(geo, 'brass'); }
     }
   }
-  // the round socket on top (7:31, 35) and the basin (7:38)
-  sub.lathe(0, h, 0, [[0.9, 0], [0.75, 0.25], [0.8, 0.5]], 'brass', 24);
-  sub.lathe(0, h + 0.5, 0, [[0.6, 0], [1.3, 0.35], [basinR * 0.92, 1.0], [basinR, 1.5], [basinR - 0.12, 1.5], [basinR * 0.88, 1.0], [1.2, 0.5], [0.5, 0.3], [0, 0.3]], 'brass', 40);
+  // the round mouth on top: a cubit and a half across, half a cubit high, its rim engraved (7:31, 35)
+  sub.lathe(0, h, 0, [[0.95, 0], [0.8, 0.15], [0.75, 0.4], [0.82, 0.5]], 'brass', 32);
+  for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; sub.box(Math.cos(a) * 0.8, h + 0.1, Math.sin(a) * 0.8, 0.08, 0.28, 0.04, 'brassDark'); }
+  // the basin, four cubits across, on the mouth (7:38)
+  sub.lathe(0, h + 0.5, 0, [[0.6, 0], [1.3, 0.35], [basinR * 0.92, 1.0], [basinR, 1.5], [basinR - 0.12, 1.5], [basinR * 0.88, 1.0], [1.2, 0.5], [0.5, 0.3], [0, 0.3]], 'brass', 48);
+  sub.torus(0, h + 2.0, 0, basinR - 0.02, 0.06, 'brassDark', Math.PI / 2);
   g.add(...sub.bake().children);
   const water = new THREE.Mesh(new THREE.CircleGeometry(basinR - 0.14, 40), b.M.water); water.rotation.x = -Math.PI / 2; water.position.set(0, h + 0.5 + 1.38, 0); g.add(water);
   b.mesh(g);
