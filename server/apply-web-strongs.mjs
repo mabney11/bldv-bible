@@ -27,6 +27,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { progress } from './progress.mjs';
+import { restoreWebQuotes } from './web-quotes.mjs';
 
 const args = process.argv.slice(2);
 const argv = (f,d) => { const i = args.indexOf(f); return i>=0 ? args[i+1] : d; };
@@ -34,6 +35,22 @@ const DRY   = args.includes('--dry-run');
 const SRC   = argv('--src', './web-strongs.jsonl');
 const TERMS_F = argv('--terms', './sacred-terms.txt');
 const OUT   = argv('--out', './english-baseline.jsonl');
+// The clean WEB text (english-web-raw.jsonl), used only for its QUOTATION
+// MARKS: web-strongs.jsonl's are a scrape artifact (closers stripped at verse
+// ends, openers missing, paragraph re-openers gone), so every rendered verse
+// gets the WEB's marks put back by restoreWebQuotes() below — the same
+// alignment restore-web-quotes.mjs applies to a live translation.db. Same
+// English numbering as web-strongs.jsonl, so the lookup is direct.
+const WEB_RAW_F = argv('--web-raw', './english-web-raw.jsonl');
+const WEB_RAW = new Map();
+if (existsSync(WEB_RAW_F)) {
+  for (const line of readFileSync(WEB_RAW_F, 'utf8').split('\n')) {
+    if (!line.trim()) continue;
+    try { const r = JSON.parse(line); WEB_RAW.set(`${String(r.code).toUpperCase()}:${r.chapter}:${r.verse}`, r.text); } catch {}
+  }
+  console.log(`[quotes] ${WEB_RAW.size} WEB verses loaded for quotation marks`);
+} else console.warn(`[quotes] ${WEB_RAW_F} not found — quotation marks left as scraped`);
+let quotesRestored = 0, quotesUnaligned = 0;
 // Names render "Paraih (Pharaoh)" by default. --bare-names restores the older behaviour
 // where only peoples.txt entries carried a gloss and every other name printed bare.
 const BARE_NAMES = args.includes('--bare-names');
@@ -981,8 +998,19 @@ for (const r of rows) {
                      // fetch-web-strongs.mjs) or gate the strip on real evidence —
                      // never blanket-strip every verse-final quote mark again.
                      .trim() });
+  // Put the WEB's quotation marks back (see WEB_RAW above).
+  {
+    const last = out[out.length - 1];
+    const w = WEB_RAW.get(`${String(r.code).toUpperCase()}:${r.chapter}:${r.verse}`);
+    if (w) {
+      const q = restoreWebQuotes(last.text, w);
+      if (!q.aligned) quotesUnaligned++;
+      else if (q.changed) { last.text = q.text; quotesRestored++; }
+    }
+  }
 }
 pOT.done();
+if (WEB_RAW.size) console.log(`[quotes] quotation marks restored from the WEB on ${quotesRestored} verses (${quotesUnaligned} did not align)`);
 
 // ── WHERE THE ENGLISH AND THE READER DISAGREE ───────────────────────────────
 // Every row here is a word whose English transliteration CANNOT match the Hebrew
