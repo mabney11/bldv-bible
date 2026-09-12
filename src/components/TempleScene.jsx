@@ -38,6 +38,7 @@ import {
   MODES, ROAM_EYE, ROAM_START, ROAM_ENTER, PILLAR, WEST_X, PORCH_X1, OUTER_Z, EAST_X, ALTAR, INNER_COURT, GREAT_COURT,
 } from '../lib/models/temple.js';
 
+const SKIN_TONES = ['#f0d3a9', '#daa86b', '#be8349', '#63371c', '#b0733d', '#916035', '#683f23', '#5e341c', '#4e2e19', '#512b16'];   // Reuben, Simeon, Levi, Judah, Zebulun, Dan, Gad, Asher, Naphtali, Ephraim
 const SKY = 0xb9cfe3;          // a dry, bright morning over Mawarayah
 const XRAY_ROLES = new Set(['roof', 'south', 'tower', 'lintel', 'ceiling', 'slab']);
 const GLB_URL = (name) => `/api/models/${name}.glb`;
@@ -213,7 +214,8 @@ function makeMaterials() {
     flame: new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffd27a') }),
     linen: new THREE.MeshStandardMaterial({ color: new THREE.Color('#efe6d2'), roughness: 0.95, metalness: 0 }),     // bawatz (fine linen) — the priests and singers
     royal: new THREE.MeshStandardMaterial({ color: new THREE.Color('#4a2e7a'), roughness: 0.8, metalness: 0.05 }),   // the malak (king)
-    skin:  new THREE.MeshStandardMaterial({ color: new THREE.Color('#b98a63'), roughness: 0.9, metalness: 0 }),
+    // skin tones across the tribes (fieldy's chart, 2026-09-12): Reuben → Ephraim, light to deep brown
+    ...Object.fromEntries(SKIN_TONES.map((hex, i) => [`skin${i}`, new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), roughness: 0.9, metalness: 0 })])),
     carvedCedar: std('cedar', { map: carvedCedar.map, bumpMap: carvedCedar.bump, bumpScale: 0.12, roughness: 0.75 }),
     carvedGold: std('gold', { map: carvedGold.map, bumpMap: carvedGold.bump, bumpScale: 0.1, roughness: 0.32 }),
     carvedOlive: std('olive', { map: carvedOlive.map, bumpMap: carvedOlive.bump, bumpScale: 0.12 }),
@@ -1180,7 +1182,7 @@ const DED = { start: 8, porch: 20, set: 28, out: 34, cloud: 41, king: 55, kneel:
 /** Ground height along the procession's line (z = 0): the court, the steps, the floor. */
 function groundAlongX(x) { const x0 = PORCH_X1 + H.pad, x1 = x0 + 4; return x >= x1 ? H.courtY : x <= x0 ? 0 : H.courtY + (1 - (x - x0) / (x1 - x0)) * -H.courtY; }
 /** A faceless figure at scale s (height 10·s), facing +x. Poses: stand, spread (hands to heaven), kneel, carry (a pole on the shoulder), trumpet. */
-function personFigure(sub, s, robe, pose) {
+function personFigure(sub, s, robe, pose, skin = 'skin5') {
   const kneel = pose === 'kneel';
   const base = kneel ? 0 : 0, top = kneel ? 3.1 : 5.1;                                 // kneeling: the robe pools at the knees, the torso sits lower
   const skirt = new THREE.LatheGeometry((kneel ? [[1.9, 0], [1.8, 0.4], [1.3, 1.6], [1.1, 3.1]] : [[1.5, 0], [1.45, 0.2], [1.25, 1.4], [1.1, 3.2], [1.02, 5.1]]).map(([r, dy]) => new THREE.Vector2(r * s, (base + dy) * s)), 40);
@@ -1189,8 +1191,8 @@ function personFigure(sub, s, robe, pose) {
   sub.lathe(0, y0 * s, 0, [[1.02 * s, 0], [0.98 * s, 0.5 * s], [1.05 * s, 1.5 * s], [1.15 * s, 2.0 * s], [0.85 * s, 2.35 * s], [0.4 * s, 2.5 * s], [0, 2.52 * s]], robe, 32);   // the bodice
   sub.torus(0, (y0 + 0.05) * s, 0, 1.03 * s, 0.09 * s, 'goldDim', Math.PI / 2);        // a sash
   const sh = y0 + 2.2, neck = sh + 0.45, head = sh + 1.65;
-  sub.cyl(0, neck * s, 0, 0.3 * s, 0.5 * s, 'skin', 0.32 * s, 14);
-  sub.sphere(0, head * s, 0, 0.62 * s, 'skin', 18);
+  sub.cyl(0, neck * s, 0, 0.3 * s, 0.5 * s, skin, 0.32 * s, 14);
+  sub.sphere(0, head * s, 0, 0.62 * s, skin, 18);
   sub.lathe(0, (head + 0.1) * s, 0, [[0.66 * s, 0], [0.7 * s, 0.25 * s], [0.62 * s, 0.6 * s], [0.35 * s, 0.85 * s], [0, 0.9 * s]], robe, 24);   // a cap / headcloth
   // arms: shoulder → elbow → hand, per pose (z = ±side)
   const A = {
@@ -1203,24 +1205,25 @@ function personFigure(sub, s, robe, pose) {
   for (const sz of [-1, 1]) {
     const P = A.map(([x, y, z]) => [x * s, y * s, sz * z * s]);
     sub.sphere(P[0][0], P[0][1], P[0][2], 0.36 * s, robe, 12);
-    sub.capsule(P[0], P[1], 0.27 * s, robe); sub.capsule(P[1], P[2], 0.22 * s, 'skin'); sub.sphere(P[2][0], P[2][1], P[2][2], 0.24 * s, 'skin', 10);
+    sub.capsule(P[0], P[1], 0.27 * s, robe); sub.capsule(P[1], P[2], 0.22 * s, skin); sub.sphere(P[2][0], P[2][1], P[2][2], 0.24 * s, skin, 10);
     if (pose === 'trumpet' && sz > 0) { const t = new THREE.CylinderGeometry(0.06 * s, 0.34 * s, 3.2 * s, 12); t.rotateZ(-Math.PI / 2); t.rotateY(0.15); t.translate((1.3 + 1.7) * s, (sh + 1.05) * s, 0.35 * s); sub.add(t, 'brass'); }   // the chatzatzarah (trumpet), raised to the mouth
   }
 }
 function buildDedication(M, byId, lights, sky) {
   const group = new THREE.Group(); group.name = 'dedication'; group.visible = false;
   const S = 0.35;                                                                        // a person 3½ amah tall
-  const person = (robe, pose) => { const sub = new PieceBuilder(M, { id: 'ded' }); personFigure(sub, S, robe, pose); const g = sub.bake(); g.userData.id = undefined; return g; };
+  let skinN = 3; const nextSkin = () => `skin${(skinN = (skinN * 7 + 3) % SKIN_TONES.length)}`;
+  const person = (robe, pose, skin = nextSkin()) => { const sub = new PieceBuilder(M, { id: 'ded' }); personFigure(sub, S, robe, pose, skin); const g = sub.bake(); g.userData.id = undefined; return g; };
   // the procession: the ark (the arawan piece itself is moved) and four priests at the poles
   const priests = [];
   for (const [dx, dz] of [[2.9, 0.82], [2.9, -0.82], [-2.9, 0.82], [-2.9, -0.82]]) { const p = person('linen', 'carry'); p.position.set(dx, 0, dz); p.userData.dx = dx; p.userData.dz = dz; group.add(p); priests.push(p); }
   const ark = byId('arawan'), arkHome = new THREE.Vector3(-20, 0, 0);
   // the singers and trumpeters, east of the altar, in white
   const singers = new THREE.Group(); group.add(singers);
-  const singerProto = person('linen', 'trumpet'), singerStand = person('linen', 'stand');
-  for (let r = 0; r < 3; r++) for (let i = 0; i < 12; i++) { const c = (i % 2 ? singerProto : singerStand).clone(); const z = (i < 6 ? -19 + i * 2.4 : 6.6 + (i - 6) * 2.4) + (r % 2) * 1.2; c.position.set(ALTAR.x + ALTAR.w / 2 + 3 + r * 2.2, H.courtY, z); c.rotation.y = Math.PI; singers.add(c); }   // two blocks, the king's road between
+  const singerProtos = [person('linen', 'trumpet'), person('linen', 'stand'), person('linen', 'trumpet'), person('linen', 'stand'), person('linen', 'trumpet')];
+  for (let r = 0; r < 3; r++) for (let i = 0; i < 12; i++) { const c = singerProtos[(r * 12 + i) % singerProtos.length].clone(); const z = (i < 6 ? -19 + i * 2.4 : 6.6 + (i - 6) * 2.4) + (r % 2) * 1.2; c.position.set(ALTAR.x + ALTAR.w / 2 + 3 + r * 2.2, H.courtY, z); c.rotation.y = Math.PI; singers.add(c); }   // two blocks, the king's road between
   // the king: standing with hands spread, then kneeling, on the kayawar
-  const kingStand = person('royal', 'spread'), kingKneel = person('royal', 'kneel');
+  const kingStand = person('royal', 'spread', 'skin3'), kingKneel = person('royal', 'kneel', 'skin3');   // of Yahawadah (Judah)
   for (const k of [kingStand, kingKneel]) { k.position.set(ALTAR.x + 19, H.courtY + 3.3, 0); k.rotation.y = Math.PI; k.visible = false; group.add(k); }
   // the assembly: an instanced crowd in the courts (body + head as one geometry)
   const body = new THREE.CapsuleGeometry(0.55, 1.9, 4, 10); body.translate(0, 1.5, 0);
@@ -1237,7 +1240,7 @@ function buildDedication(M, byId, lights, sky) {
     else { x = -60 + rr() * 170; z = rr() < 0.5 ? -74 + rr() * 10 : INNER_COURT.z + 4 + rr() * 10; }
     const y = H.courtY, sc = 0.95 + rr() * 0.2, yaw = Math.PI + (rr() - 0.5) * 0.5;
     seats.push({ x, y, z, sc, yaw, d: rr() });
-    tone.setHSL(0.07 + rr() * 0.06, 0.25 + rr() * 0.3, 0.3 + rr() * 0.3); crowd.setColorAt(i, tone);
+    tone.set(SKIN_TONES[Math.floor(rr() * SKIN_TONES.length)]).offsetHSL((rr() - 0.5) * 0.02, (rr() - 0.5) * 0.08, (rr() - 0.5) * 0.06); crowd.setColorAt(i, tone);
   }
   crowd.instanceColor.needsUpdate = true;
   const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), v3 = new THREE.Vector3(), sv = new THREE.Vector3();
