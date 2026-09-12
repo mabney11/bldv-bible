@@ -37,3 +37,7 @@
 .tp-pad .tp-pad-turnR { grid-column: 3; grid-row: 2; }
 .tp-roambar { justify-content: center; }
 .tp-roam-hint { font-size: 0.86rem; opacity: 0.85; text-align: center; padding: 6px 4px; }
+
+/* Build stands on its own; Walk and Roam are the two ways through the finished house */
+.tp-mode-build { margin-right: 10px; }
+.tp-mode-build .st-view { border-color: rgba(255, 208, 98, 0.55); }

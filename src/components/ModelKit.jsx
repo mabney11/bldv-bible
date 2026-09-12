@@ -16,17 +16,19 @@ import './ModelPage.css';
 // costs no re-renders; only the phase caption and "what is selectable" go through
 // React, and only when they change. Swapping the timeline (the temple's Build /
 // Walk) rewinds to 0.
-export function usePlayer(timeline) {
+export function usePlayer(timeline, { pace: paceInit = 'auto' } = {}) {
   const clock = useRef({ t: 0 }).current;
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [loop, setLoop] = useState(false);
+  const [pace, setPace] = useState(() => { try { return localStorage.getItem('model-pace') || paceInit; } catch { return paceInit; } });   // 'auto' | 'tap' | 'off'
+  const [hold, setHold] = useState(null);           // { ms, since } while the story waits for the reader; { tap: true } until they tap
   const [phase, setPhase] = useState(() => timeline.phaseAt(0));
   const [selectable, setSelectable] = useState(() => (timeline.selectableAt ? timeline.selectableAt(0) : null));
   const [ended, setEnded] = useState(false);
-  const scrubRef = useRef(null), timeRef = useRef(null);
-  const state = useRef({ playing: false, speed: 1, loop: false, last: 0, raf: 0, timeline });
-  state.current.playing = playing; state.current.speed = speed; state.current.loop = loop; state.current.timeline = timeline;
+  const scrubRef = useRef(null), timeRef = useRef(null), captionRef = useRef(null);
+  const state = useRef({ playing: false, speed: 1, loop: false, pace: paceInit, last: 0, raf: 0, timeline, hold: null, phaseKey: null });
+  state.current.playing = playing; state.current.speed = speed; state.current.loop = loop; state.current.timeline = timeline; state.current.pace = pace;
 
   const show = useCallback((t) => {
     const tl = state.current.timeline;
@@ -38,6 +40,18 @@ export function usePlayer(timeline) {
     setEnded(t >= tl.duration - 1e-6);
   }, [clock]);
 
+  // Reading pace: when a new caption comes up while playing, the story waits for it
+  // to be read — long enough for its words (auto), or until the reader taps (tap) —
+  // before moving on. The time is taken from the caption as rendered (its quotes
+  // already filled in), at an unhurried rate, since every word carries a gloss.
+  const readSeconds = () => {
+    const text = captionRef.current?.textContent || '';
+    const words = text.trim().split(/\s+/).filter(Boolean).length;
+    return Math.min(60, Math.max(4, 1.8 + words / 2.2));
+  };
+  const clearHold = useCallback(() => { state.current.hold = null; setHold(null); state.current.last = performance.now(); }, []);
+  const continueNow = useCallback(() => { if (state.current.hold) clearHold(); }, [clearHold]);
+
   useEffect(() => {
     let alive = true;
     const tick = (now) => {
@@ -45,24 +59,74 @@ export function usePlayer(timeline) {
       state.current.raf = requestAnimationFrame(tick);
       const st = state.current, D = st.timeline.duration;
       if (!st.playing) { st.last = now; return; }
+      if (st.hold) {
+        st.last = now;
+        if (st.hold.pending) {                       // give the caption a frame or two to render, then measure it
+          if (--st.hold.pending > 0) return;
+          if (st.pace === 'tap') { st.hold = { tap: true }; setHold(st.hold); }
+          else { const ms = readSeconds() * 1000; st.hold = { ms, since: now }; setHold(st.hold); }
+          return;
+        }
+        if (st.hold.tap || now - st.hold.since < st.hold.ms) return;
+        clearHold();
+      }
       let t = clock.t + ((now - st.last) / 1000) * st.speed; st.last = now;
       if (t >= D) { if (st.loop) t -= D; else { t = D; setPlaying(false); } }
+      const key = st.timeline.phaseAt(t).key;
+      const fresh = key !== st.phaseKey; st.phaseKey = key;
       show(t);
+      if (fresh && st.pace !== 'off') { st.hold = { pending: 3 }; setHold(st.hold); }   // a new caption: wait for it to be read
     };
     state.current.raf = requestAnimationFrame(tick);
     return () => { alive = false; cancelAnimationFrame(state.current.raf); };
-  }, [clock, show]);
+  }, [clock, show, clearHold]);
+
+  useEffect(() => { try { localStorage.setItem('model-pace', pace); } catch {} if (pace === 'off') continueNow(); }, [pace, continueNow]);
 
   // A new timeline: rewind and stop.
   const tlKey = timeline.key || timeline.duration;
   const firstTl = useRef(tlKey);
-  useEffect(() => { if (firstTl.current === tlKey) return; firstTl.current = tlKey; setPlaying(false); show(0); }, [tlKey, show]);
+  useEffect(() => { if (firstTl.current === tlKey) return; firstTl.current = tlKey; setPlaying(false); clearHold(); state.current.phaseKey = null; show(0); }, [tlKey, show, clearHold]);
 
-  const play = () => { if (clock.t >= timeline.duration - 1e-6) show(0); state.current.last = performance.now(); setPlaying(true); };
+  const play = () => { if (clock.t >= timeline.duration - 1e-6) { show(0); state.current.phaseKey = null; } state.current.last = performance.now(); setPlaying(true); };
   const pause = () => setPlaying(false);
-  const seek = (t) => { setPlaying(false); show(Math.max(0, Math.min(timeline.duration, t))); };
-  const restart = () => { show(0); state.current.last = performance.now(); setPlaying(true); };
-  return { clock, playing, speed, setSpeed, loop, setLoop, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef, show };
+  const seek = (t) => { setPlaying(false); clearHold(); const tt = Math.max(0, Math.min(timeline.duration, t)); state.current.phaseKey = timeline.phaseAt(tt).key; show(tt); };   // scrubbing to a caption: no wait when play resumes — they have it in front of them
+  const restart = () => { clearHold(); state.current.phaseKey = null; show(0); state.current.last = performance.now(); setPlaying(true); };
+  return { clock, playing, speed, setSpeed, loop, setLoop, pace, setPace, hold, continueNow, captionRef, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef, show };
+}
+
+// ── The caption under the stage, with the reading wait shown ─────────────────
+// Renders the phase's caption (through `render`, the page's Glossed) and, while the
+// story waits for it to be read, a thin bar filling for the reading time or a
+// "tap to go on" chip; a tap on the caption ends the wait early either way.
+export function Caption({ player, phase, render }) {
+  const { hold, continueNow, captionRef, playing } = player;
+  const waiting = !!hold && playing;
+  return (
+    <div className={`st-caption${waiting ? ' st-caption-wait' : ''}`} aria-live="polite" onClick={waiting ? continueNow : undefined} role={waiting ? 'button' : undefined} title={waiting ? 'Tap to go on' : undefined}>
+      <span ref={captionRef} className="st-caption-text">{render(phase.caption)}</span>
+      <span className="st-caption-foot">
+        <span className="st-caption-ref">{phase.ref}</span>
+        {waiting && hold.tap && <span className="st-caption-tap">tap to go on ▸</span>}
+        {waiting && hold.ms && <span className="st-caption-bar" aria-hidden="true"><span key={hold.since} className="st-caption-fill" style={{ animationDuration: `${hold.ms}ms` }} /></span>}
+      </span>
+    </div>
+  );
+}
+
+/** The reading-pace control for a player's options row. */
+export function PaceSelect({ player, id = 'st-pace' }) {
+  const { pace, setPace } = player;
+  return (
+    <label className="st-speed" title="How the story waits for each caption to be read">
+      <span>read</span>
+      <select id={id} value={pace} onChange={(e) => setPace(e.target.value)}>
+        <option value="auto">pause to read</option>
+        <option value="tap">tap to go on</option>
+        <option value="off">no pause</option>
+      </select>
+    </label>
+  );
 }
 
 // ── A folding band of the panel ──────────────────────────────────────────────

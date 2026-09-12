@@ -24,7 +24,7 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
-import { usePlayer, Section } from '../components/ModelKit.jsx';
+import { usePlayer, Section, Caption, PaceSelect } from '../components/ModelKit.jsx';
 import { apiTransChapter } from '../lib/api.js';
 import StatueSheet from '../components/StatueSheet.jsx';
 import {
@@ -201,14 +201,14 @@ function Card({ id, selectable, ended, onClose, onPick }) {
 
 // ── The page ─────────────────────────────────────────────────────────────────
 export default function Statue() {
-  usePageTitle(pageTitle('The Statue of the Dream — Maps & Models'), 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (without) yadayan (hands) — an interactive model: tap the dahab (gold), the kasap (silver), the nachash (brass), the parazal (iron) and the chasap (clay) for their verses, and play the aban (stone) striking it to pieces.');
+  usePageTitle(pageTitle('The Tzalam (Likeness) of the Dream — Maps & Models'), 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (without) yadayan (hands) — an interactive model: tap the dahab (gold), the kasap (silver), the nachash (brass), the parazal (iron) and the chasap (clay) for their verses, and play the aban (stone) striking it to pieces.');
   const [params, setParams] = useSearchParams();
   const canGL = useMemo(webglAvailable, []);
   const view = VIEWS.includes(params.get('view')) ? params.get('view') : (canGL ? '3d' : '2d');
   const [glOk, setGlOk] = useState(true);
   const sel = PIECE_IDS.includes(params.get('piece')) ? params.get('piece') : null;
   const player = usePlayer(TIMELINE);
-  const { clock, playing, speed, setSpeed, loop, setLoop, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef } = player;
+  const { clock, playing, speed, setSpeed, loop, setLoop, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef, hold, continueNow } = player;
   const [sheetOpen, setSheetOpen] = useState(!!sel);
 
   const setParam = useCallback((k, v) => {
@@ -244,7 +244,8 @@ export default function Statue() {
   useEffect(() => {
     const onKey = (e) => {
       if (/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(e.target.tagName) || e.metaKey || e.ctrlKey) return;
-      if (e.key === ' ') { e.preventDefault(); playing ? pause() : play(); }
+      if (e.key === 'Enter' && hold) { e.preventDefault(); continueNow(); return; }
+      if (e.key === ' ') { e.preventDefault(); if (hold) continueNow(); else playing ? pause() : play(); }
       else if (e.key === 'ArrowLeft') seek(clock.t - 0.25);
       else if (e.key === 'ArrowRight') seek(clock.t + 0.25);
       else if (e.key === 'Home') seek(0);
@@ -258,7 +259,7 @@ export default function Statue() {
       <header className="st-top">
         <Link to="/models" className="st-back" title="Maps & Models">←</Link>
         <div className="st-h1wrap">
-          <h1 className="st-h1">The Statue of the Dream</h1>
+          <h1 className="st-h1">The Tzalam (Likeness) of the Dream</h1>
           <span className="st-h1-paleo" dir="rtl" aria-hidden="true">𐤑𐤋𐤌 · 𐤀𐤁𐤍</span>
         </div>
         <div className="st-views" role="group" aria-label="View">
@@ -284,10 +285,7 @@ export default function Statue() {
                 ))}
               </div>
             </div>
-            <div className="st-caption" aria-live="polite">
-              <span className="st-caption-text"><Glossed text={phase.caption} /></span>
-              <span className="st-caption-ref">{phase.ref}</span>
-            </div>
+            <Caption player={player} phase={phase} render={(t) => <Glossed text={t} />} />
           </div>
 
           <div className="st-player">
@@ -308,6 +306,7 @@ export default function Statue() {
                   {SPEEDS.map((s) => <option key={s} value={s}>{s === 0.25 ? '¼×' : s === 0.5 ? '½×' : `${s}×`}</option>)}
                 </select>
               </label>
+              <PaceSelect player={player} />
               <label className="st-loop"><input id="st-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
             </div>
           </div>

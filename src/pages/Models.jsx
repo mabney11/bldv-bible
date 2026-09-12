@@ -27,7 +27,7 @@ export const MODELS = [
   },
   {
     slug: 'statue',
-    title: 'The Statue of the Dream',
+    title: 'The Tzalam (Likeness) of the Dream',
     kicker: 'Interactive 3D model · Daniel 2',
     blurb: 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) — the raash (head) of dahab (gold), the chaday (breast) and darai (arms) of kasap (silver), the maih (belly) and yarakaa (thighs) of nachash (brass), the shaq (legs) of parazal (iron), the ragal (feet) of parazal (iron) and chasap (clay) — and the aban (stone) gazar (cut) out laa (without) yadayan (hands). Tap any piece for the text\'s own words and verses; play the aban (stone) striking it to pieces, scrub through the fall, and see that only the aban (stone) remains.',
     paleo: '𐤑𐤋𐤌 𐤀𐤁𐤍',
@@ -41,15 +41,16 @@ export const MODELS = [
   },
   {
     slug: 'temple',
-    title: 'The House of Yahawah',
+    title: 'The Bayath (House) of Yahawah',
     kicker: 'Interactive 3D model · 1 Kings 6–7',
     blurb: 'The bayath (house) Shalamah (Solomon) banah (built) for Yahawah, measured in amah (cubits) from the text: the hayakal (temple) and the dabayar (oracle) with its karawab (cherubim), the awalam (porch), Yakayan (Jachin) and Baiz (Boaz), the yam (sea) on twelve oxen, the ten makanawath (bases), the mazabach (altar), the chatzarawath (courts) and the malak (king)\'s houses. Watch it rise in the order 1 Kings 6–7 gives it, or walk in from the gate to the arawan (ark); tap any part for its measures, verse by verse.',
     paleo: '𐤁𐤉𐤕 𐤉𐤄𐤅𐤄',
-    tags: ['1 Kings 6–7', '2 Chronicles 3–4', '3D · plan & section', 'Build · Walk'],
+    tags: ['1 Kings 6–7', '2 Chronicles 3–4', '3D · plan & section', 'Build · Walk · Roam'],
     to: '/models/temple',
     quick: [
       { label: 'Walk in, gate to ark', to: '/models/temple?mode=walk' },
       { label: 'Watch it rise (1 Kings 6–7 in order)', to: '/models/temple?mode=build' },
+      { label: 'Roam it on your own feet', to: '/models/temple?mode=roam' },
       { label: 'The karawab (cherubim) of the dabayar (oracle)', to: '/models/temple?piece=karawab' },
       { label: 'Yakayan (Jachin) and Baiz (Boaz)', to: '/models/temple?piece=pillars' },
     ],

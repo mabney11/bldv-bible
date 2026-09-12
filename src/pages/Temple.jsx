@@ -1,5 +1,5 @@
 /**
- * Temple.jsx — "The House of Yahawah": the bayath (house) Shalamah (Solomon)
+ * Temple.jsx — "The Bayath (House) of Yahawah": the bayath (house) Shalamah (Solomon)
  * built (1 Kings 6–7; 2 Chronicles 3–4), its courts and the king's houses,
  * as an interactive model.
  *
@@ -24,7 +24,7 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
-import { usePlayer, Section, WordRow, ModelPassage } from '../components/ModelKit.jsx';
+import { usePlayer, Section, WordRow, ModelPassage, Caption, PaceSelect } from '../components/ModelKit.jsx';
 import TempleSheet from '../components/TempleSheet.jsx';
 import {
   PIECES, WORDS, MODES, SPEEDS, GROUPS, CHIP_ORDER, PASSAGES, ALL_REFS, GATHER_REFS,
@@ -114,7 +114,7 @@ function Card({ id, mode, onClose, onPick }) {
 
 // ── The page ─────────────────────────────────────────────────────────────────
 export default function Temple() {
-  usePageTitle(pageTitle('The House of Yahawah — Maps & Models'), 'The bayath (house) Shalamah (Solomon) banah (built) for Yahawah (1 Kings 6–7; 2 Chronicles 3–4) as an interactive 3D model, measured in amah (cubits) from the text: the hayakal (temple) and the dabayar (oracle) with the karawab (cherubim), Yakayan (Jachin) and Baiz (Boaz), the yam (sea) on twelve oxen, the makanawath (bases), the chatzarawath (courts) and the malak (king)\'s houses. Watch it rise in the order the text gives, or walk in to the arawan (ark).');
+  usePageTitle(pageTitle('The Bayath (House) of Yahawah — Maps & Models'), 'The bayath (house) Shalamah (Solomon) banah (built) for Yahawah (1 Kings 6–7; 2 Chronicles 3–4) as an interactive 3D model, measured in amah (cubits) from the text: the hayakal (temple) and the dabayar (oracle) with the karawab (cherubim), Yakayan (Jachin) and Baiz (Boaz), the yam (sea) on twelve oxen, the makanawath (bases), the chatzarawath (courts) and the malak (king)\'s houses. Watch it rise in the order the text gives, or walk in to the arawan (ark).');
   const [params, setParams] = useSearchParams();
   const canGL = useMemo(webglAvailable, []);
   const view = VIEWS.includes(params.get('view')) ? params.get('view') : (canGL ? '3d' : '2d');
@@ -122,7 +122,7 @@ export default function Temple() {
   const [glOk, setGlOk] = useState(true);
   const sel = PIECE_IDS.includes(params.get('piece')) ? params.get('piece') : null;
   const player = usePlayer(TIMELINES[mode]);
-  const { clock, playing, speed, setSpeed, loop, setLoop, phase, play, pause, seek, restart, scrubRef, timeRef } = player;
+  const { clock, playing, speed, setSpeed, loop, setLoop, phase, play, pause, seek, restart, scrubRef, timeRef, hold, continueNow } = player;
   const [sheetOpen, setSheetOpen] = useState(!!sel);
   const [following, setFollowing] = useState(true);
   const sceneApi = useRef(null);
@@ -156,7 +156,8 @@ export default function Temple() {
     const onKey = (e) => {
       if (/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(e.target.tagName) || e.metaKey || e.ctrlKey) return;
       if (roam) return;   // the roam has the keys (walking)
-      if (e.key === ' ') { e.preventDefault(); playing ? pause() : play(); }
+      if (e.key === 'Enter' && hold) { e.preventDefault(); continueNow(); return; }
+      if (e.key === ' ') { e.preventDefault(); if (hold) continueNow(); else playing ? pause() : play(); }
       else if (e.key === 'ArrowLeft') seekAlong(clock.t - 0.5);
       else if (e.key === 'ArrowRight') seekAlong(clock.t + 0.5);
       else if (e.key === 'Home') seekAlong(0);
@@ -171,11 +172,14 @@ export default function Temple() {
       <header className="st-top">
         <Link to="/models" className="st-back" title="Maps & Models">←</Link>
         <div className="st-h1wrap">
-          <h1 className="st-h1">The House of Yahawah</h1>
+          <h1 className="st-h1">The Bayath (House) of Yahawah</h1>
           <span className="st-h1-paleo" dir="rtl" aria-hidden="true">𐤁𐤉𐤕 𐤉𐤄𐤅𐤄</span>
         </div>
-        <div className="st-views tp-modes" role="group" aria-label="Story">
-          {Object.keys(MODES).map((k) => <button key={k} type="button" className={`st-view${mode === k ? ' on' : ''}`} onClick={() => setParam('mode', k)} title={k === 'build' ? 'Watch the house rise, 1 Kings 6–7 in order' : k === 'walk' ? 'Walk in, from the gate to the ark' : 'Roam the finished house on your own feet'}>{MODES[k].label}</button>)}
+        <div className="st-views tp-modes tp-mode-build" role="group" aria-label="The building">
+          <button type="button" className={`st-view${mode === 'build' ? ' on' : ''}`} onClick={() => setParam('mode', 'build')} title="Watch the house rise, 1 Kings 6–7 in order">Build</button>
+        </div>
+        <div className="st-views tp-modes" role="group" aria-label="The finished house">
+          {['walk', 'roam'].map((k) => <button key={k} type="button" className={`st-view${mode === k ? ' on' : ''}`} onClick={() => setParam('mode', k)} title={k === 'walk' ? 'Walk in, from the gate to the ark' : 'Roam the finished house on your own feet'}>{MODES[k].label}</button>)}
         </div>
         <div className="st-views" role="group" aria-label="View">
           <button type="button" className={`st-view${use3d ? ' on' : ''}`} onClick={() => setParam('view', '3d')} disabled={!canGL || !glOk} title={canGL && glOk ? 'Lit 3D model — drag to look around' : 'WebGL is not available in this browser'}>3D</button>
@@ -209,10 +213,7 @@ export default function Temple() {
                 ))}
               </div>
             </div>
-            <div className="st-caption" aria-live="polite">
-              <span className="st-caption-text"><Glossed text={phase.caption} /></span>
-              <span className="st-caption-ref">{phase.ref}</span>
-            </div>
+            <Caption player={player} phase={phase} render={(t) => <Glossed text={t} />} />
           </div>
 
           {roam ? (
@@ -237,6 +238,7 @@ export default function Temple() {
                   {SPEEDS.map((s) => <option key={s} value={s}>{s === 0.25 ? '¼×' : s === 0.5 ? '½×' : `${s}×`}</option>)}
                 </select>
               </label>
+              <PaceSelect player={player} id="tp-pace" />
               <label className="st-loop"><input id="tp-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
             </div>
           </div>

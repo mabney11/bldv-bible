@@ -945,8 +945,8 @@ export function cameraAt(mode, t) {
 export function marksFor(mode) {
   const ph = MODES[mode].phases, d = MODES[mode].duration;
   const label = mode === 'build'
-    ? { 'gather-cedar': 'gathering', yasad: 'foundation', qayar: 'walls', awalam: 'porch', roof: 'roof', araz: 'cedar', zahab: 'gold', karawab: 'cherubim', chatzar: 'court', palace: 'palace', pillars: 'brass', vessels: 'gold vessels', arawan: 'ark' }
-    : { gate: 'gate', court: 'court', altar: 'altar', yam: 'sea', bases: 'bases', pillars: 'pillars', porch: 'porch', hayakal: 'hayakal', veil: 'veil', dabayar: 'oracle', karawab: 'cherubim', arawan: 'ark' };
+    ? { 'gather-cedar': 'Labanawan', yasad: 'yasad', qayar: 'qayarawath', awalam: 'awalam', roof: 'gabayam', araz: 'araz', zahab: 'zahab', karawab: 'karawab', chatzar: 'chatzar', palace: 'malak', pillars: 'nachashath', vessels: 'manawarah', arawan: 'arawan' }
+    : { gate: 'gadawal', court: 'chatzar', altar: 'mazabach', yam: 'yam', bases: 'makanawath', pillars: 'imawadayam', porch: 'awalam', hayakal: 'hayakal', veil: 'parakath', dabayar: 'dabayar', karawab: 'karawab', arawan: 'arawan' };
   return ph.filter((p) => label[p.key]).map((p) => ({ at: p.from / d, label: label[p.key] }));
 }
 /** The pieces the chips row shows, in walking order (gate → ark). */

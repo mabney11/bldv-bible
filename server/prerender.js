@@ -1156,14 +1156,14 @@ const STATIC_PAGES = {
     heading: 'Printable Maps',
   },
   '/models/statue': {
-    title: `The Statue of the Dream | ${BRAND}`,
+    title: `The Tzalam (Likeness) of the Dream | ${BRAND}`,
     description: 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (without) yadayan (hands) as an interactive 3D model — the raash (head) of dahab (gold), kasap (silver), nachash (brass), parazal (iron) and chasap (clay) with their verses, and the aban (stone) striking the tzalam (likeness) to pieces.',
-    heading: 'The Statue of the Dream',
+    heading: 'The Tzalam (Likeness) of the Dream',
   },
   '/models/temple': {
-    title: `The House of Yahawah | ${BRAND}`,
+    title: `The Bayath (House) of Yahawah | ${BRAND}`,
     description: 'The bayath (house) Shalamah (Solomon) banah (built) for Yahawah (1 Kings 6–7; 2 Chronicles 3–4) as an interactive 3D model measured in amah (cubits) from the text — the hayakal (temple) and the dabayar (oracle) with the karawab (cherubim), Yakayan (Jachin) and Baiz (Boaz), the yam (sea) on twelve oxen, the makanawath (bases), the courts and the king\'s houses — rising in the order the text gives, or walked through from the gate to the arawan (ark).',
-    heading: 'The House of Yahawah',
+    heading: 'The Bayath (House) of Yahawah',
   },
   '/guide': {
     title: `Guide | ${BRAND}`,
