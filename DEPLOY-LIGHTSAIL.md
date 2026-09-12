@@ -187,6 +187,39 @@ admin page both change the same file between syncs, git says so in
 `~/lexicon-sync.log` (the script aborts the rebase and leaves the local commit
 in place) and you resolve it like any merge — nothing is overwritten silently.
 
+## 11. The Translation Studio: its work in git too
+
+`translation.db` (every verse of every book, ~400 MB) cannot live in git, but the
+studio's *own* work — the verses you have translated, their hand-made links, the
+headings — is a few thousand rows, and those travel as text: `server/studio-data/`
+(`translations.jsonl`, `links.jsonl`, `headings.jsonl`, one line per row, sorted).
+`server/studio-sync.mjs` exports them from the database and merges them back;
+`studio-sync.sh` does the git around it: fetch, three-way merge (last common
+commit ↔ the other side ↔ this database, newest save wins when both edited the
+same verse — the loser lands in that verse's history in the studio, nothing is
+lost), apply, commit, push. Same-verse conflicts are printed, not fought over.
+
+On the box, node runs inside the image (the host has none), so its cron line
+sets `STUDIO_SYNC_DOCKER=1` — `scripts/lightsail-lexicon-sync-setup.sh` installs
+it next to the lexicon line:
+
+```
+*/5 * * * * STUDIO_SYNC_DOCKER=1 /home/ubuntu/paleo-studio/studio-sync.sh >> $HOME/studio-sync.log 2>&1
+```
+
+On your machine, run `./studio-sync.sh` in Git Bash when you like, or schedule it
+the same way (every 5 minutes, hidden window):
+
+```
+schtasks /create /f /sc minute /mo 5 /tn "bldbible studio sync" /tr "\"C:\Program Files\Git\bin\bash.exe\" -lc \"~/dev/projects/the-scriptures-app/paleo-studio/studio-sync.sh >> ~/studio-sync.log 2>&1\""
+```
+
+`sync-from-prod.cjs` (the whole-file pull at every local server start) is aware of
+this: it runs `studio-sync.sh` before pulling and `studio-sync.mjs restore` after,
+so local edits are never lost to the pull, and the git copy is put back into the
+fresh database. `node server/studio-sync.mjs status` says how the database and
+the committed files differ; `merge … --dry` and `restore --dry` only print.
+
 ## Cost recap
 
 | Item | Cost |

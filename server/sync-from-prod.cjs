@@ -96,9 +96,16 @@ function syncFromProd() {
     return;
   }
 
-  // Local differs. If it also differs from what the LAST sync delivered, there are
-  // local Studio edits that prod does not have — they go into the backup, and the
-  // warning says so (prod is truth; edit on bldbible.com, not on localhost).
+  // Local differs. Since 2026-09-12 the Studio's hand-made rows travel through git
+  // (studio-sync.sh / studio-sync.mjs, DEPLOY-LIGHTSAIL.md §11), so local edits are
+  // NOT lost by this pull: they are committed and pushed here first, and put back
+  // into the pulled copy below (`restore`) — prod's cron applies them on its side.
+  try {
+    run('bash', [path.join(HERE, '..', 'studio-sync.sh')], 5 * 60_000);
+    console.log('[sync] studio edits committed to git before the pull');
+  } catch (e) {
+    console.warn(`[sync] WARNING: studio-sync.sh failed (${e.message.split('\n')[0]}) — local Studio edits, if any, are only in the pre-sync backup until it succeeds`);
+  }
   let last = null;
   try { last = JSON.parse(fs.readFileSync(STAMP_FILE, 'utf8')); } catch { /* first run */ }
   if (localMd5) {
@@ -123,6 +130,10 @@ function syncFromProd() {
   }
   writeStamp(remoteMd5);
   console.log(`[sync] ${FILE} pulled from prod (${remoteMd5.slice(0, 8)}, ${(fs.statSync(LOCAL).size / 1048576).toFixed(1)} MB) — ${Date.now() - t0} ms`);
+  // the pulled copy may predate what git holds (edits pushed from here that prod's
+  // cron has not applied yet): put those back — the committed files win.
+  try { process.stdout.write(run('node', [path.join(HERE, 'studio-sync.mjs'), 'restore'], 5 * 60_000)); }
+  catch (e) { console.warn(`[sync] WARNING: studio-sync restore failed (${e.message.split('\n')[0]}) — run: node server/studio-sync.mjs restore`); }
 }
 function writeStamp(md5) {
   try { fs.writeFileSync(STAMP_FILE, JSON.stringify({ md5, at: new Date().toISOString() }) + '\n'); } catch { /* not fatal */ }
