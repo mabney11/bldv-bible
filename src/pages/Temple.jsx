@@ -42,6 +42,7 @@ function webglAvailable() {
 }
 const VIEWS = ['3d', '2d'];
 const PIECE_IDS = PIECES.map((p) => p.id);
+const COARSE = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;   // a touch screen
 const TIMELINES = Object.fromEntries(Object.keys(MODES).map((k) => [k, { key: k, duration: MODES[k].duration, phaseAt: (t) => phaseAt(k, t) }]));
 
 // ── Detail card ──────────────────────────────────────────────────────────────
@@ -190,6 +191,7 @@ export default function Temple() {
           <h1 className="st-h1">The Bayath (House) of Yahawah</h1>
           <span className="st-h1-paleo" dir="rtl" aria-hidden="true">𐤁𐤉𐤕 𐤉𐤄𐤅𐤄</span>
         </div>
+        <span className="tp-top-break" aria-hidden="true" />
         <Link to="/models/temple" className="tp-story" title="This story — tap for the others (Build, Dedicate, Walk)"><storyOf.Icon width="22" height="22" /><span>{storyOf.label}</span></Link>
         {storyOf.key === 'walk' && (
           <div className="st-views tp-modes" role="group" aria-label="How to walk">
@@ -233,7 +235,7 @@ export default function Temple() {
 
           {roam ? (
             <div className="st-player tp-roambar">
-              <span className="tp-roam-hint">{use3d ? 'Drag to look around · W A S D or the arrows to walk (Shift to hurry) · scroll to step · tap a part for its details · tap a door again to go through it' : 'The plan and section show the finished house; switch to 3D to walk it.'}</span>
+              <span className="tp-roam-hint">{!use3d ? 'The plan and section show the finished house; switch to 3D to walk it.' : COARSE ? 'Left thumb on the view: a stick to walk · right thumb: drag to look · tap a part for its details · tap a door again to go through it' : 'Click the view to take the mouse and look around (Esc gives it back) · W A S D or the arrows to walk, ← → turn, Shift to hurry · click a part for its details · click a door again to go through it'}</span>
             </div>
           ) : (
           <div className="st-player">

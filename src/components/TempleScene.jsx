@@ -1392,6 +1392,11 @@ function exportGlb(obj, name, toFileFrame = false) {
   }, (e) => console.warn('[temple] export failed', e), { binary: true, onlyVisible: false });
 }
 
+/** Where the viewer last stood on foot (position, yaw, pitch) — kept while the page lives, so opening a card, a re-mount or a
+ *  switch of view never sends them back to the gate ("don't move me back to the beginning"). */
+let ROAM_MEMO = null;
+const COARSE = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;   // a touch screen: the thumb stick + a look drag instead of the mouse
+
 // ── The component ────────────────────────────────────────────────────────────
 export default function TempleScene({ clock, mode, selected, onSelect, onReady, onFollow, apiRef }) {
   const wrap = useRef(null);
@@ -1476,6 +1481,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     // ── Roam: the viewer on their own feet (state; the controller is below) ──
     const roam = {
       on: false, yaw: Math.PI, pitch: 0, foot: H.courtY, keys: new Set(), glide: null, moving: false,
+      stick: { x: 0, y: 0 },                                                  // the thumb stick (touch): x strafe, y forward, each −1 … 1
       open: { hayakal: 0, dabayar: 0 }, want: { hayakal: 0, dabayar: 0 },   // the doors and the veil, 0 shut … 1 open, eased toward what the viewer asked
     };
 
@@ -1594,11 +1600,14 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       const attempt = (mx, mz) => {
         const l = Math.hypot(mx, mz); if (l < 1e-4) return false;
         step.set(mx / l, 0, mz / l);
-        const eye = camera.position, knee = probe.set(eye.x, roam.foot + 1.2, eye.z);
-        if (blocked(eye, step, l + RADIUS) || blocked(knee.clone(), step, l + RADIUS)) return false;
-        const nx = eye.x + mx, nz = eye.z + mz;
+        const eye = camera.position, nx = eye.x + mx, nz = eye.z + mz;
         const gy = groundUnder(nx, nz, roam.foot + STEP_UP + 0.3);
         if (gy == null || gy > roam.foot + STEP_UP) return false;
+        // the way there is clear at the knee and the eye — measured from the higher of the two grounds, so a flight of steps
+        // (1 high, 1 deep, so the risers two and three ahead stand above the knee) is climbed just by walking at it, while a court
+        // wall or a shut door still blocks
+        const base = Math.max(roam.foot, gy), knee = probe.set(eye.x, base + STEP_UP + 0.2, eye.z), high = knee.clone().setY(base + ROAM_EYE);
+        if (blocked(high, step, l + RADIUS) || blocked(knee.clone(), step, l + RADIUS)) return false;
         eye.x = nx; eye.z = nz; roam.foot = gy; return true;
       };
       return attempt(dx, dz) || attempt(dx, 0) || attempt(0, dz);
@@ -1619,32 +1628,37 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
         if (k >= 1) roam.glide = null;
         aimCamera(); return true;
       }
-      const K = roam.keys; if (!K.size) { roam.moving = false; return changed; }
-      const v = (K.has('run') ? RUN : WALK) * dt;
+      const K = roam.keys, S = roam.stick, stickMag = Math.hypot(S.x, S.y);
+      if (!K.size && stickMag < 0.05) { roam.moving = false; return changed; }
+      const v = (K.has('run') || stickMag > 0.92 ? RUN : WALK) * dt;
       if (K.has('turnL')) roam.yaw -= TURN * dt; if (K.has('turnR')) roam.yaw += TURN * dt;
       fwd.set(Math.cos(roam.yaw), 0, Math.sin(roam.yaw)); rightV.set(-fwd.z, 0, fwd.x);
       let mx = 0, mz = 0;
       if (K.has('forward')) { mx += fwd.x * v; mz += fwd.z * v; } if (K.has('back')) { mx -= fwd.x * v; mz -= fwd.z * v; }
       if (K.has('right')) { mx += rightV.x * v; mz += rightV.z * v; } if (K.has('left')) { mx -= rightV.x * v; mz -= rightV.z * v; }
+      if (stickMag >= 0.05) { const k = Math.min(1, stickMag); mx += (fwd.x * S.y + rightV.x * S.x) * v * k / stickMag; mz += (fwd.z * S.y + rightV.z * S.x) * v * k / stickMag; }
       tryMove(mx, mz);
       // settle the eye onto the ground (a smooth rise on steps)
       const wantY = roam.foot + ROAM_EYE; camera.position.y += (wantY - camera.position.y) * Math.min(1, dt * 10);
-      roam.moving = true; aimCamera(); return true;
+      roam.moving = true; aimCamera(); remember(); return true;
     }
+    function remember() { ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, open: { ...roam.want } }; }
     function roamEnter(on) {
-      roam.on = on; roam.keys.clear(); roam.glide = null; controls.enabled = !on;
+      roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.glide = null; controls.enabled = !on;
       renderer.domElement.style.cursor = on ? 'crosshair' : 'grab';
       if (on) {
         following = false; onFollow?.(true);   // no "follow" button in the roam: there is no story to follow
-        camera.position.set(...ROAM_START.pos); roam.foot = camera.position.y - ROAM_EYE;
-        const [lx, , lz] = ROAM_START.look; roam.yaw = Math.atan2(lz - camera.position.z, lx - camera.position.x); roam.pitch = 0;
+        if (ROAM_MEMO) { camera.position.set(...ROAM_MEMO.pos); roam.yaw = ROAM_MEMO.yaw; roam.pitch = ROAM_MEMO.pitch; }   // back where they stood
+        else { camera.position.set(...ROAM_START.pos); const [lx, , lz] = ROAM_START.look; roam.yaw = Math.atan2(lz - camera.position.z, lx - camera.position.x); roam.pitch = 0; }
+        roam.foot = camera.position.y - ROAM_EYE;
         const gy = groundUnder(camera.position.x, camera.position.z, camera.position.y + 2); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; }
-        for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = 0;
+        for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = ROAM_MEMO?.open?.[k] || 0;
         aimCamera(); place(clock.t);
       } else {
+        if (document.pointerLockElement === renderer.domElement) document.exitPointerLock?.();
         camera.up.set(0, 1, 0); camera.rotation.set(0, 0, 0); for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = 0;
       }
-      dirty = true;
+      setLocked(false); dirty = true;
     }
     /** A second tap on an openable piece: open it and go through. */
     function roamGo(id) {
@@ -1655,15 +1669,45 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       roam.glide = { from: camera.position.clone(), to, yaw0, yaw1, pitch0: roam.pitch, t0: performance.now() + 500, ms: Math.max(1400, camera.position.distanceTo(to) * 90) };
       return true;
     }
-    // look: drag turns the head
-    let look = null;
-    const onLookDown = (e) => { if (!roam.on || e.button === 2) return; look = { x: e.clientX, y: e.clientY }; renderer.domElement.setPointerCapture?.(e.pointerId); };
-    const onLookMove = (e) => {
-      if (!roam.on || !look) return;
-      roam.yaw += (e.clientX - look.x) * 0.0042; roam.pitch = Math.max(-1.45, Math.min(1.45, roam.pitch - (e.clientY - look.y) * 0.0034));
-      look = { x: e.clientX, y: e.clientY }; aimCamera(); dirty = true;
+    // look — with a mouse: a click takes the pointer (pointer lock) and the mouse turns the head like a first-person game, Esc gives
+    // it back; a drag also turns the head when the lock is refused. On a touch screen: a thumb on the left of the view raises a
+    // stick that walks (like Roblox), the other thumb drags to look.
+    const canLock = !COARSE && !!renderer.domElement.requestPointerLock;
+    let locked = false, look = null, stickPtr = null;
+    const cross = document.createElement('div'); cross.className = 'tp-cross'; el.appendChild(cross);                      // the crosshair, while the mouse is taken
+    const stickEl = document.createElement('div'); stickEl.className = 'tp-stick'; stickEl.innerHTML = '<div class="tp-stick-knob"></div>'; el.appendChild(stickEl);
+    const knobEl = stickEl.firstChild, STICK_R = 44;
+    function setLocked(v) { locked = v; cross.hidden = !v; el.classList.toggle('tp-locked', v); }
+    const onLockChange = () => { setLocked(document.pointerLockElement === renderer.domElement); dirty = true; };
+    document.addEventListener('pointerlockchange', onLockChange);
+    const turnHead = (dx, dy) => { roam.yaw += dx * 0.0042; roam.pitch = Math.max(-1.45, Math.min(1.45, roam.pitch - dy * 0.0034)); aimCamera(); remember(); dirty = true; };
+    const onLookDown = (e) => {
+      if (!roam.on || e.button === 2) return;
+      const r = renderer.domElement.getBoundingClientRect();
+      if (e.pointerType === 'touch' && stickPtr == null && e.clientX - r.left < r.width * 0.45) {   // the left thumb: a stick where it landed
+        stickPtr = { id: e.pointerId, x0: e.clientX, y0: e.clientY };
+        stickEl.style.left = `${e.clientX - r.left}px`; stickEl.style.top = `${e.clientY - r.top}px`; stickEl.hidden = false; knobEl.style.transform = '';
+        renderer.domElement.setPointerCapture?.(e.pointerId); return;
+      }
+      if (locked) return;
+      look = { id: e.pointerId, x: e.clientX, y: e.clientY }; renderer.domElement.setPointerCapture?.(e.pointerId);
     };
-    const onLookUp = () => { look = null; };
+    const onLookMove = (e) => {
+      if (!roam.on) return;
+      if (stickPtr && e.pointerId === stickPtr.id) {
+        let dx = e.clientX - stickPtr.x0, dy = e.clientY - stickPtr.y0; const m = Math.hypot(dx, dy);
+        if (m > STICK_R) { dx *= STICK_R / m; dy *= STICK_R / m; }
+        roam.stick.x = dx / STICK_R; roam.stick.y = -dy / STICK_R; knobEl.style.transform = `translate(${dx}px, ${dy}px)`; return;
+      }
+      if (locked) { if (e.movementX || e.movementY) turnHead(e.movementX, e.movementY); return; }
+      if (!look || e.pointerId !== look.id) return;
+      turnHead(e.clientX - look.x, e.clientY - look.y); look.x = e.clientX; look.y = e.clientY;
+    };
+    const onLookUp = (e) => {
+      if (stickPtr && e.pointerId === stickPtr.id) { stickPtr = null; roam.stick.x = roam.stick.y = 0; stickEl.hidden = true; return; }
+      if (look && e.pointerId === look.id) look = null;
+    };
+    stickEl.hidden = true; cross.hidden = true;
     const onWheel = (e) => { if (!roam.on) return; e.preventDefault(); const d = -Math.sign(e.deltaY) * 3; fwd.set(Math.cos(roam.yaw), 0, Math.sin(roam.yaw)); tryMove(fwd.x * d, fwd.z * d); camera.position.y = roam.foot + ROAM_EYE; aimCamera(); dirty = true; };
     const KEYMAP = { KeyW: 'forward', ArrowUp: 'forward', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', KeyD: 'right', ArrowLeft: 'turnL', ArrowRight: 'turnR', ShiftLeft: 'run', ShiftRight: 'run' };
     const onKeyDown = (e) => { if (!roam.on || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return; const k = KEYMAP[e.code]; if (!k) return; e.preventDefault(); roam.keys.add(k); };
@@ -1683,9 +1727,11 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     const onDown = (e) => { down = { x: e.clientX, y: e.clientY, at: performance.now(), button: e.button }; };
     const onUp = (e) => {
       if (!down) return; const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y), held = performance.now() - down.at, button = down.button; down = null;
-      if (moved > 10 || held > 350 || button !== 0) return;   // a drag, a hold, or a right/middle button: the viewer was moving the view, not choosing
+      if (roam.on && locked) { if (held > 350 || button !== 0) return; }   // the mouse is taken: any click picks what the crosshair is on
+      else if (moved > 10 || held > 350 || button !== 0) return;   // a drag, a hold, or a right/middle button: the viewer was moving the view, not choosing
+      if (roam.on && canLock && !locked && e.pointerType === 'mouse') { try { renderer.domElement.requestPointerLock(); } catch { /* not allowed here: the drag still looks */ } }
       const r = renderer.domElement.getBoundingClientRect();
-      ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      if (roam.on && locked) ndc.set(0, 0); else ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       ray.setFromCamera(ndc, camera);
       const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible && !(h.object.material?.transparent && h.object.material.opacity < 0.3));
       let o = hit?.object; while (o && !o.userData.id) o = o.parent;
@@ -1767,6 +1813,8 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       refocus: () => { if (roam.on) return; if (currentSel) flyTo(currentSel); else { setFollow(true); lastT = -1; } dirty = true; },
       modeChanged: () => { const free = !!MODES[modeRef.current]?.free; if (free !== roam.on) roamEnter(free); lastT = -1; if (!free) setFollow(true); dirty = true; },
       move: (key, on) => { if (on) roam.keys.add(key); else roam.keys.delete(key); },
+      teleport: (x, z, yaw) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; const gy = groundUnder(x, z, roam.foot + 40); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
+      locked: () => locked,
       invalidate: () => { dirty = true; },
       roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),   // for tests
       go: (id) => roam.on && roamGo(id),
@@ -1788,6 +1836,9 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       renderer.domElement.removeEventListener('pointercancel', onLookUp);
       renderer.domElement.removeEventListener('wheel', onWheel);
       window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp);
+      document.removeEventListener('pointerlockchange', onLockChange);
+      if (document.pointerLockElement === renderer.domElement) document.exitPointerLock?.();
+      cross.remove(); stickEl.remove();
       controls.dispose();
       scene.traverse((o) => { o.geometry?.dispose?.(); if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => { m.map?.dispose?.(); m.bumpMap?.dispose?.(); m.alphaMap?.dispose?.(); m.dispose?.(); }); });
       scene.environment?.dispose?.();
