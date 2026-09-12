@@ -568,7 +568,7 @@ function buildSea(b, part) {
   for (let q = 0; q < 4; q++) {
     const dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]][q];   // tzapawan (north) −z, mazarach (east) +x, nagab (south) +z, yam (west) −x
     for (let i = -1; i <= 1; i++) {
-      const a = Math.atan2(dirs[1], dirs[0]) + i * (Math.PI / 6), rr = 3.3;
+      const a = Math.atan2(dirs[1], dirs[0]) + i * (Math.PI / 6), rr = 3.8;
       const ox = new THREE.Group(); ox.position.set(x + Math.cos(a) * rr, y, z + Math.sin(a) * rr); ox.rotation.y = Math.atan2(-dirs[1], dirs[0]);   // its +x is its front
       const sub = new PieceBuilder(b.M, b.piece); const s = oxH / 3.2;
       const el = (px, py, pz, rx, ry, rz, rotZ = 0, rotY = 0) => { const geo = new THREE.SphereGeometry(1, 16, 12); geo.scale(rx * s, ry * s, rz * s); if (rotZ) geo.rotateZ(rotZ); if (rotY) geo.rotateY(rotY); geo.translate(px * s, py * s, pz * s); sub.add(geo, 'brass'); };
@@ -706,34 +706,80 @@ function buildPillar(b, part) {
   b.slots.push({ slot: part.glb, node: cap, h: capH + lilyH, face: 'x', keep: [] });
 }
 
-/** A lampstand of the ordinance: shaft, six branches, seven lamps with flames (Exodus 25:31–37). */
+/**
+ * A lampstand "according to the mashapat (ordinance)" (2 Chr 4:7) — Exodus 25:31–40: a
+ * base, a shaft, six branches out of its sides (three each way) rising to one
+ * height; on each branch three cups like almond blossoms with a bud and a flower;
+ * on the shaft four; a lamp on each of the seven. Hammered gold. `h` is its height.
+ */
 function buildLampstand(b, part) {
   const { x, y, z, h } = part, s = h / 3;
   const g = new THREE.Group(); g.position.set(x, y, z); g.userData.slot = part.glb;
   const sub = new PieceBuilder(b.M, b.piece);
-  sub.lathe(0, 0, 0, [[0.55 * s, 0], [0.5 * s, 0.12 * s], [0.2 * s, 0.35 * s], [0.12 * s, 0.5 * s]], 'gold', 24);
-  sub.cyl(0, 0.5 * s, 0, 0.07 * s, 2.1 * s, 'gold', 0.07 * s, 10);
-  for (let i = 1; i <= 3; i++) {
-    const R = 0.35 * s * i;
-    const geo = new THREE.TorusGeometry(R, 0.05 * s, 8, 24, Math.PI); geo.translate(0, 2.6 * s - R, 0); sub.add(geo, 'gold');
-    for (const sx of [-1, 1]) { sub.sphere(sx * R, 2.6 * s + 0.08 * s, 0, 0.1 * s, 'gold', 10); const f = new THREE.Mesh(new THREE.ConeGeometry(0.05 * s, 0.16 * s, 8), b.M.flame); f.position.set(sx * R, 2.78 * s, 0); g.add(f); }
-    sub.sphere(0, 2.6 * s - R * 0.35, 0, 0.09 * s, 'gold', 10);   // a bud where the branches spring
+  const mat = 'gold';
+  // the almond cup (a little flaring calyx), the bud (a knop) and the flower (a ring of petals) as one ornament
+  const ornament = (px, py, pz, k = 1) => {
+    sub.lathe(px, py, pz, [[0.05 * s * k, 0], [0.13 * s * k, 0.09 * s * k], [0.11 * s * k, 0.14 * s * k], [0.04 * s * k, 0.16 * s * k]], mat, 16);   // cup
+    sub.sphere(px, py + 0.2 * s * k, pz, 0.075 * s * k, mat, 12);                                                                              // bud
+    for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2; const pt = new THREE.SphereGeometry(1, 8, 6); pt.scale(0.06 * s * k, 0.025 * s * k, 0.03 * s * k); pt.rotateY(-a); pt.translate(px + Math.cos(a) * 0.09 * s * k, py + 0.3 * s * k, pz + Math.sin(a) * 0.09 * s * k); sub.add(pt, mat); }   // flower
+  };
+  // base: a stepped foot on three low feet
+  sub.lathe(0, 0, 0, [[0.6 * s, 0], [0.62 * s, 0.06 * s], [0.5 * s, 0.14 * s], [0.34 * s, 0.26 * s], [0.16 * s, 0.4 * s], [0.09 * s, 0.5 * s]], mat, 32);
+  for (let i = 0; i < 3; i++) { const a = (i / 3) * Math.PI * 2 + Math.PI / 6; sub.sphere(Math.cos(a) * 0.5 * s, 0.04 * s, Math.sin(a) * 0.5 * s, 0.07 * s, mat, 10); }
+  // the shaft, with its four ornaments (one under each pair of branches, one at the top)
+  sub.cyl(0, 0.45 * s, 0, 0.065 * s, 2.2 * s, mat, 0.075 * s, 12);
+  const branchY = [1.15, 1.5, 1.85].map((v) => v * s), TOP = 2.72 * s;
+  for (let i = 0; i < 3; i++) ornament(0, branchY[i] - 0.28 * s, 0, 0.85);
+  ornament(0, 2.28 * s, 0, 0.9);
+  // six branches: each a quarter-round out of the shaft turning up to the common height, three ornaments along it
+  for (let i = 0; i < 3; i++) {
+    const R = (0.42 + i * 0.36) * s;             // outer branches spring lower and reach farther
+    for (const sx of [-1, 1]) {
+      const pts = []; for (let k = 0; k <= 10; k++) { const t = (k / 10) * Math.PI / 2; pts.push(new THREE.Vector3(sx * R * Math.sin(t), branchY[2 - i] + (TOP - branchY[2 - i]) * (1 - Math.cos(t)), 0)); }
+      const curve = new THREE.CatmullRomCurve3(pts);
+      sub.add(new THREE.TubeGeometry(curve, 20, 0.05 * s, 8, false), mat);
+      for (let k = 1; k <= 3; k++) { const q = curve.getPointAt(0.3 + k * 0.2); ornament(q.x, q.y - 0.14 * s, q.z, 0.62); }
+    }
   }
-  sub.sphere(0, 2.68 * s, 0, 0.11 * s, 'gold', 10); const f = new THREE.Mesh(new THREE.ConeGeometry(0.05 * s, 0.16 * s, 8), b.M.flame); f.position.set(0, 2.86 * s, 0); g.add(f);
+  // seven lamps: a small bowl with a lip and a spout toward the shaft's front, a flame in each
+  const lampAt = (px) => {
+    sub.lathe(px, TOP - 0.02 * s, 0, [[0.03 * s, 0], [0.13 * s, 0.05 * s], [0.15 * s, 0.11 * s], [0.12 * s, 0.13 * s], [0.06 * s, 0.09 * s], [0, 0.09 * s]], mat, 16);
+    const spout = new THREE.SphereGeometry(1, 8, 6); spout.scale(0.05 * s, 0.03 * s, 0.09 * s); spout.translate(px, TOP + 0.09 * s, 0.14 * s); sub.add(spout, mat);
+    const f = new THREE.Mesh(new THREE.ConeGeometry(0.035 * s, 0.13 * s, 8), b.M.flame); f.position.set(px, TOP + 0.18 * s, 0.14 * s); g.add(f);
+  };
+  for (let i = 0; i < 3; i++) for (const sx of [-1, 1]) lampAt(sx * (0.42 + i * 0.36) * s);
+  lampAt(0);
   g.add(...sub.bake().children); b.mesh(g);
-  const light = new THREE.PointLight(0xffc880, 0, 12, 2); light.position.set(0, 2.8 * s, 0); g.add(light); g.userData.lamp = light;
+  const light = new THREE.PointLight(0xffc880, 0, 12, 2); light.position.set(0, TOP + 0.3 * s, 0); g.add(light); g.userData.lamp = light;
   b.slots.push({ slot: part.glb, node: g, h, face: 'x' });
 }
 
-/** A table of the show bread: 2 × 1, 1½ high, with a rim and twelve loaves in two rows (Exodus 25:23–30). */
+/**
+ * A table of the show bread — Exodus 25:23–30: 2 × 1, 1½ high, a crown of gold round
+ * its top, a border a handbreadth wide with its own crown, four legs with rings at the
+ * border's corners for the poles, and on it the twelve loaves in two rows of six
+ * (Leviticus 24:6) with the dishes, spoons, jars and bowls of the ordinance.
+ */
 function buildTable(b, part) {
   const { x, y, z } = part; const g = new THREE.Group(); g.position.set(x, y, z); g.userData.slot = part.glb;
   const sub = new PieceBuilder(b.M, b.piece);
-  sub.box(0, 1.35, 0, 2, 0.15, 1, 'gold');
-  for (const sx of [-0.9, 0.9]) for (const sz of [-0.42, 0.42]) sub.box(sx, 0, sz, 0.14, 1.35, 0.14, 'gold');
-  sub.box(0, 0.75, 0, 2, 0.12, 1, 'gold');                                                              // the border a handbreadth
-  for (const sz of [-1, 1]) sub.box(0, 1.5, sz * 0.47, 2, 0.1, 0.06, 'gold'); for (const sx of [-1, 1]) sub.box(sx * 0.97, 1.5, 0, 0.06, 0.1, 1, 'gold');   // rim
-  for (const sz of [-0.25, 0.25]) for (let i = 0; i < 6; i++) sub.box(-0.75 + i * 0.3, 1.5, sz, 0.26, 0.09, 0.42, 'ivory');                           // twelve loaves
+  sub.box(0, 1.36, 0, 2, 0.14, 1, 'gold');                                                                          // the top
+  for (const sz of [-1, 1]) sub.box(0, 1.5, sz * 0.475, 2.04, 0.1, 0.05, 'gold'); for (const sx of [-1, 1]) sub.box(sx * 0.995, 1.5, 0, 0.05, 0.1, 1.04, 'gold');   // its crown (a raised rim)
+  for (let i = 0; i < 28; i++) { const t = i / 28, per = 6; const u = (t * per) % 6; let px, pz;                       // beading on the crown
+    if (u < 2) { px = -1 + u; pz = -0.475; } else if (u < 3) { px = 1; pz = -0.475 + (u - 2) * 0.95; } else if (u < 5) { px = 1 - (u - 3); pz = 0.475; } else { px = -1; pz = 0.475 - (u - 5) * 0.95; }
+    sub.sphere(px, 1.58, pz, 0.035, 'gold', 8); }
+  sub.box(0, 0.95, 0, 2, 0.16, 1, 'gold');                                                                          // the border, a handbreadth, below the top
+  for (const sz of [-1, 1]) sub.box(0, 1.11, sz * 0.475, 2.02, 0.05, 0.04, 'gold'); for (const sx of [-1, 1]) sub.box(sx * 0.985, 1.11, 0, 0.04, 0.05, 1.02, 'gold');   // the border's crown
+  for (const sx of [-0.9, 0.9]) for (const sz of [-0.42, 0.42]) {
+    sub.lathe(sx, 0, sz, [[0.09, 0], [0.07, 0.1], [0.06, 0.9], [0.075, 1.0], [0.06, 1.36]], 'gold', 12);              // legs, turned
+    sub.sphere(sx, 0.45, sz, 0.075, 'gold', 10);                                                                     // a knop on each
+    sub.torus(sx + Math.sign(sx) * 0.08, 1.0, sz, 0.07, 0.02, 'gold', 0, Math.PI / 2);                                // a ring for the poles at the border
+  }
+  for (const sz of [-0.24, 0.24]) for (let i = 0; i < 6; i++) { const lg = new THREE.SphereGeometry(1, 10, 6); lg.scale(0.13, 0.05, 0.19); lg.translate(-0.68 + i * 0.27, 1.49, sz); sub.add(lg, 'ivory'); }   // twelve loaves, two rows of six
+  sub.lathe(0.86, 1.43, -0.32, [[0.02, 0], [0.09, 0.03], [0.1, 0.06], [0.04, 0.05], [0, 0.05]], 'gold', 12);          // a dish
+  sub.lathe(0.86, 1.43, 0.32, [[0.05, 0], [0.06, 0.16], [0.045, 0.2], [0.03, 0.26], [0, 0.26]], 'gold', 12);          // a jar
+  sub.lathe(-0.86, 1.43, 0.32, [[0.06, 0], [0.09, 0.05], [0.07, 0.08], [0, 0.08]], 'gold', 12);                        // a bowl
+  { const sp = new THREE.CylinderGeometry(0.01, 0.01, 0.2, 6); sp.rotateZ(Math.PI / 2); sp.translate(-0.86, 1.45, -0.32); sub.add(sp, 'gold'); sub.sphere(-0.95, 1.45, -0.32, 0.03, 'gold', 8); }   // a spoon
   g.add(...sub.bake().children); b.mesh(g);
   b.slots.push({ slot: part.glb, node: g, h: 1.6, face: 'x' });
 }
