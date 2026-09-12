@@ -571,12 +571,35 @@ function buildSea(b, part) {
       const a = Math.atan2(dirs[1], dirs[0]) + i * (Math.PI / 6), rr = 3.3;
       const ox = new THREE.Group(); ox.position.set(x + Math.cos(a) * rr, y, z + Math.sin(a) * rr); ox.rotation.y = Math.atan2(-dirs[1], dirs[0]);   // its +x is its front
       const sub = new PieceBuilder(b.M, b.piece); const s = oxH / 3.2;
-      sub.capsule([-1.2 * s, 1.9 * s, 0], [1.1 * s, 1.95 * s, 0], 0.75 * s, 'brass');                            // body
-      sub.box(1.75 * s, 1.75 * s, 0, 1.0 * s, 0.9 * s, 0.7 * s, 'brass');                                          // head
-      sub.box(2.2 * s, 1.55 * s, 0, 0.5 * s, 0.5 * s, 0.55 * s, 'brass');                                          // muzzle
-      for (const sz of [-1, 1]) { const geo = new THREE.ConeGeometry(0.08 * s, 0.7 * s, 8); geo.rotateZ(-0.5); geo.rotateX(sz * 0.9); geo.translate(1.75 * s, 2.35 * s, sz * 0.35 * s); sub.add(geo, 'brass'); }   // horns
-      for (const lx of [-0.85, 0.75]) for (const lz of [-0.4, 0.4]) sub.cyl(lx * s, 0, lz * s, 0.16 * s, 1.5 * s, 'brass', 0.14 * s, 10);           // legs
-      sub.capsule([-1.85 * s, 2.1 * s, 0], [-2.1 * s, 0.9 * s, 0], 0.06 * s, 'brass');                             // tail
+      const el = (px, py, pz, rx, ry, rz, rotZ = 0, rotY = 0) => { const geo = new THREE.SphereGeometry(1, 16, 12); geo.scale(rx * s, ry * s, rz * s); if (rotZ) geo.rotateZ(rotZ); if (rotY) geo.rotateY(rotY); geo.translate(px * s, py * s, pz * s); sub.add(geo, 'brass'); };
+      const tube = (pts, rad, segs = 12) => sub.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map((q) => new THREE.Vector3(q[0] * s, q[1] * s, q[2] * s))), segs, rad * s, 8, false), 'brass');
+      // the body: one long barrel, low withers, haunches, a thick neck rising to the head, a dewlap
+      el(-0.15, 2.0, 0, 1.55, 0.86, 0.76);                                 // barrel
+      el(0.7, 2.18, 0, 0.75, 0.66, 0.64);                                  // withers
+      el(-1.2, 2.0, 0, 0.62, 0.72, 0.6);                                   // haunches
+      sub.capsule([1.05 * s, 2.15 * s, 0], [1.85 * s, 2.4 * s, 0], 0.4 * s, 'brass');   // neck
+      el(1.4, 1.5, 0, 0.5, 0.26, 0.28);                                    // dewlap
+      // the head: one tapered form from skull to muzzle, tilted a little down, with a broad nose
+      { const head = new THREE.LatheGeometry([[0.3, 0], [0.44, 0.2], [0.43, 0.5], [0.34, 0.85], [0.29, 1.05], [0.2, 1.18]].map(([rr, t]) => new THREE.Vector2(rr * s, t * s)), 24);
+        head.rotateZ(-Math.PI / 2); head.rotateZ(-0.22); head.translate(1.85 * s, 2.45 * s, 0); sub.add(head, 'brass'); }
+      el(3.0, 2.15, 0, 0.16, 0.2, 0.24);                                   // the nose
+      for (const sz of [-1, 1]) {
+        el(2.05, 2.6, sz * 0.42, 0.13, 0.09, 0.22, 0, sz * 0.5);          // ears, out to the side
+        tube([[2.0, 2.72, sz * 0.12], [1.98, 2.88, sz * 0.4], [2.12, 3.0, sz * 0.58], [2.4, 2.98, sz * 0.62]], 0.07);   // horns: out, then curving forward
+        el(2.4, 2.98, sz * 0.62, 0.05, 0.05, 0.05);
+        el(2.35, 2.5, sz * 0.36, 0.09, 0.07, 0.05);                        // brow
+      }
+      // legs: thigh/upper, a knee, the shank, a hoof — hind legs angled back
+      for (const [lx, lz, hind] of [[0.95, -0.42, false], [0.95, 0.42, false], [-1.0, -0.42, true], [-1.0, 0.42, true]]) {
+        el(lx, 1.55, lz, 0.28, 0.5, 0.24);                                 // upper leg
+        sub.capsule([lx * s, 1.35 * s, lz * s], [(lx + (hind ? -0.12 : 0.02)) * s, 0.75 * s, lz * s], 0.15 * s, 'brass');
+        el(lx + (hind ? -0.1 : 0.02), 0.78, lz, 0.17, 0.15, 0.16);          // knee / hock
+        sub.capsule([(lx + (hind ? -0.1 : 0.02)) * s, 0.75 * s, lz * s], [(lx + (hind ? -0.04 : 0.05)) * s, 0.2 * s, lz * s], 0.12 * s, 'brass');
+        sub.cyl((lx + (hind ? -0.04 : 0.05)) * s, 0, lz * s, 0.17 * s, 0.22 * s, 'brassDark', 0.15 * s, 10);   // hoof
+      }
+      // tail, with its tuft
+      tube([[-1.7, 2.45, 0], [-1.95, 2.0, 0.05], [-2.0, 1.3, 0.1], [-1.9, 0.8, 0.12]], 0.06, 10);
+      el(-1.9, 0.72, 0.12, 0.11, 0.2, 0.11);
       ox.add(...sub.bake().children); b.mesh(ox);
       b.slots.push({ slot: part.glb, node: ox, h: oxH, face: 'x' });
     }
@@ -615,30 +638,69 @@ function buildBase(b, part) {
   b.slots.push({ slot: part.glb, node: g, h, face: 'x', keep: [water] });
 }
 
-/** Yakayan / Baiz: a brass shaft, the bowl capital with its nets, wreaths and two rows of pomegranates, and the lily work above. */
+/**
+ * Yakayan / Baiz: a brass shaft 18 high, then the capital of 7:16–20 — the bowl
+ * (galath) swelling at its belly (batan), a real CHECKER NET of chain laid over it
+ * (two families of helical cords crossing in diamonds, 7:17), SEVEN WREATHS of
+ * chain work, TWO ROWS OF A HUNDRED pomegranates each with its crown, and above
+ * them the LILY WORK, four cubits — eight petals opening from a calyx (7:19, 22).
+ */
 function buildPillar(b, part) {
   const { x, y, z, r, h, capH, lilyH } = part;
-  b.cyl(x, y, z, r * 1.25, 0.6, 'brass', r * 1.05, 48);                                      // a base ring (assumed)
-  b.cyl(x, y + 0.6, z, r, h - 0.6, 'brass', r, 48);                                            // the shaft, 18 high
+  b.lathe(x, y, z, [[r * 1.3, 0], [r * 1.3, 0.25], [r * 1.12, 0.5], [r * 1.05, 0.7], [r, 0.9]], 'brass', 48);        // a base ring (assumed)
+  b.cyl(x, y + 0.9, z, r, h - 0.9, 'brass', r, 64);                                                                     // the shaft, 18 high
+  b.torus(x, y + h - 0.15, z, r * 1.02, 0.09, 'brassDark', Math.PI / 2);                                              // an astragal under the capital
   const cap = new THREE.Group(); cap.position.set(x, y + h, z); cap.userData.slot = part.glb;
   const sub = new PieceBuilder(b.M, b.piece);
-  // the bowl (galath) — belly (batan) at its lower third
-  sub.lathe(0, 0, 0, [[r, 0], [r * 1.25, 0.6], [r * 1.42, 1.6], [r * 1.38, 2.7], [r * 1.2, 3.8], [r * 1.05, capH - 0.2], [r * 1.12, capH]], 'brass', 64);
-  // the checker net over the bowl (7:17), a hair outside it
-  const netGeo = new THREE.LatheGeometry([[r * 1.02, 0.15], [r * 1.28, 0.65], [r * 1.45, 1.6], [r * 1.41, 2.7], [r * 1.23, 3.8], [r * 1.08, capH - 0.3]].map(([rr, dy]) => new THREE.Vector2(rr, dy)), 64);
-  const net = new THREE.Mesh(netGeo, b.M.net); net.castShadow = false; cap.add(net);
-  // seven wreaths of chain work (7:17)
-  for (let i = 0; i < 7; i++) { const dy = 0.5 + i * ((capH - 1) / 6), rr = [1.22, 1.36, 1.43, 1.4, 1.3, 1.18, 1.08][i] * r; sub.torus(0, dy, 0, rr, 0.07, 'brassDark', Math.PI / 2); }
-  // two rows of a hundred pomegranates each (7:18, 20, 42)
-  const pom = new THREE.SphereGeometry(0.19, 10, 8);
-  const inst = new THREE.InstancedMesh(pom, b.M.brassDark, 200); const m4 = new THREE.Matrix4(); let k = 0;
-  for (const [dy, rr] of [[1.25, r * 1.45 + 0.12], [2.05, r * 1.44 + 0.12]]) for (let i = 0; i < 100; i++) { const a = (i / 100) * Math.PI * 2 + (dy > 2 ? Math.PI / 100 : 0); m4.makeTranslation(Math.cos(a) * rr, dy, Math.sin(a) * rr); inst.setMatrixAt(k++, m4); }
-  inst.castShadow = true; cap.add(inst);
-  // the lily work, four cubits (7:19, 22): a flaring bell with petal ridges
-  const lily = new THREE.LatheGeometry([[r * 1.0, 0], [r * 1.05, 1.0], [r * 1.3, 2.2], [r * 1.7, 3.3], [r * 1.95, lilyH], [r * 1.75, lilyH - 0.15], [r * 1.05, 2.4], [r * 0.9, 1.0], [0, 0.8]].map(([rr, dy]) => new THREE.Vector2(rr, dy)), 72);
-  const lp = lily.attributes.position, v = new THREE.Vector3();
-  for (let i = 0; i < lp.count; i++) { v.fromBufferAttribute(lp, i); const a = Math.atan2(v.z, v.x), t = Math.max(0, (v.y - 1.5) / (lilyH - 1.5)); const kk = 1 + 0.08 * Math.cos(a * 8) * t; lp.setXYZ(i, v.x * kk, v.y + 0.12 * Math.cos(a * 8) * t * t, v.z * kk); }
-  lily.computeVertexNormals(); lily.translate(0, capH, 0); sub.add(lily, 'brass');
+  // the bowl: its radius as a function of height, shared by everything laid on it
+  const bowlR = (t) => r * (1.0 + 0.48 * Math.sin(Math.PI * Math.min(1, t / capH)) * (t < capH * 0.4 ? 1 : 0.92) - 0.06 * (t / capH));   // belly low, easing in to the top
+  const prof = []; for (let i = 0; i <= 24; i++) { const t = (i / 24) * capH; prof.push([bowlR(t), t]); }
+  sub.lathe(0, 0, 0, prof, 'brass', 72);
+  // the net: 18 cords winding one way and 18 the other, each a tube on the bowl's skin
+  for (const dirn of [1, -1]) for (let i = 0; i < 18; i++) {
+    const pts = []; const a0 = (i / 18) * Math.PI * 2;
+    for (let k = 0; k <= 24; k++) { const t = 0.25 + (k / 24) * (capH - 0.6); const a = a0 + dirn * (k / 24) * Math.PI * 0.9; const rr = bowlR(t) + 0.07; pts.push(new THREE.Vector3(Math.cos(a) * rr, t, Math.sin(a) * rr)); }
+    sub.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, 0.05, 6, false), 'brassDark');
+  }
+  // seven wreaths of chain work: a torus at each of seven heights, beaded to read as chain
+  for (let i = 0; i < 7; i++) {
+    const t = 0.35 + i * ((capH - 0.7) / 6), rr = bowlR(t) + 0.1;
+    sub.torus(0, t, 0, rr, 0.055, 'brassDark', Math.PI / 2);
+    const beads = new THREE.SphereGeometry(0.075, 6, 5), n = Math.round(rr * 2 * Math.PI / 0.28);
+    for (let k = 0; k < n; k++) { const a = (k / n) * Math.PI * 2; const g2 = beads.clone(); g2.translate(Math.cos(a) * rr, t, Math.sin(a) * rr); sub.add(g2, 'brass'); }
+  }
+  // two rows of a hundred pomegranates (7:18, 20, 42): a globe with a crowned calyx, hung out from the net
+  const pomGeo = new THREE.SphereGeometry(0.2, 12, 9); pomGeo.scale(1, 1.12, 1);
+  const crownGeo = new THREE.CylinderGeometry(0.1, 0.06, 0.1, 6, 1, true);
+  const stemGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.22, 5);
+  for (const [t, off] of [[capH * 0.34, 0], [capH * 0.58, Math.PI / 100]]) {
+    const rr = bowlR(t) + 0.34;
+    for (let i = 0; i < 100; i++) {
+      const a = (i / 100) * Math.PI * 2 + off, cx = Math.cos(a), cz = Math.sin(a);
+      const g2 = pomGeo.clone(); g2.translate(cx * rr, t - 0.1, cz * rr); sub.add(g2, 'brass');
+      const c2 = crownGeo.clone(); c2.translate(cx * rr, t + 0.17, cz * rr); sub.add(c2, 'brassDark');
+      const st = stemGeo.clone(); st.rotateZ(Math.PI / 2); st.rotateY(-a); st.translate(cx * (rr - 0.2), t + 0.02, cz * (rr - 0.2)); sub.add(st, 'brassDark');
+    }
+  }
+  // the lily work: a calyx, then eight petals opening outward over four cubits, with a ridge down each
+  sub.lathe(0, capH - 0.1, 0, [[bowlR(capH) * 0.95, 0], [r * 0.85, 0.4], [r * 0.8, 0.9], [r * 0.95, 1.2]], 'brass', 48);
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2;
+    const pts = []; for (let k = 0; k <= 8; k++) { const u = k / 8; const rr = r * (0.8 + 1.25 * Math.pow(u, 1.6)); pts.push(new THREE.Vector3(Math.cos(a) * rr, capH + 0.9 + u * (lilyH - 0.9), Math.sin(a) * rr)); }
+    const petal = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 16, 1, 8, false);
+    const p = petal.attributes.position, v = new THREE.Vector3(), c = new THREE.Vector3(); const curve = new THREE.CatmullRomCurve3(pts);
+    for (let j = 0; j < p.count; j++) {                        // flatten the tube into a blade: wide across, thin radially, tapering at the tip
+      v.fromBufferAttribute(p, j); const u = Math.floor(j / 9) / 16; curve.getPointAt(Math.min(1, u), c);
+      const dx = v.x - c.x, dy = v.y - c.y, dz = v.z - c.z; const radial = dx * Math.cos(a) + dz * Math.sin(a), tang = -dx * Math.sin(a) + dz * Math.cos(a);
+      const wdt = (0.55 + 0.35 * Math.sin(u * Math.PI)) * r * 0.9, thk = 0.09 * (1 - u * 0.5) + 0.05 * Math.cos(tang * 4);
+      p.setXYZ(j, c.x + Math.cos(a) * radial * thk - Math.sin(a) * tang * wdt, c.y + dy * 0.12, c.z + Math.sin(a) * radial * thk + Math.cos(a) * tang * wdt);
+    }
+    petal.computeVertexNormals(); sub.add(petal, 'brass');
+    const rib = []; for (let k = 0; k <= 8; k++) { const u = k / 8; const rr = r * (0.8 + 1.25 * Math.pow(u, 1.6)) - 0.06; rib.push(new THREE.Vector3(Math.cos(a) * rr, capH + 0.9 + u * (lilyH - 0.9) + 0.03, Math.sin(a) * rr)); }
+    sub.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(rib), 12, 0.05, 6, false), 'brassDark');
+  }
+  // the pistil in the middle
+  sub.lathe(0, capH + 0.9, 0, [[0.4, 0], [0.34, 1.2], [0.42, 1.9], [0.3, 2.3], [0, 2.4]], 'brass', 24);
   cap.add(...sub.bake().children);
   b.mesh(cap);
   b.slots.push({ slot: part.glb, node: cap, h: capH + lilyH, face: 'x', keep: [] });
