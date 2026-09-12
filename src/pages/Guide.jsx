@@ -64,6 +64,17 @@ const SECTIONS = [
     ],
   },
   {
+    id: 'precepts',
+    ico: '⁂',
+    title: 'Precepts',
+    body: 'Precept upon precept, line upon line. Wherever one passage quotes another — the Psalms in Hebrews, Genesis in Jubilees, Kings in Chronicles and Josephus — a ⁂ stands in the margin beside the verse; tap it for the passages that share its words, in their own reading text, and go straight to them. The Precepts page lists them all, book by book, strongest first.',
+    links: [
+      { to: '/precepts', label: 'All precepts' },
+      { to: '/bible?book=58&chapter=1', label: 'Hebrews 1 — the Psalms quoted' },
+      { to: '/bible?book=68&chapter=15', label: 'Jubilees 15 — Genesis 17 retold' },
+    ],
+  },
+  {
     id: 'lexicon',
     ico: '🔎',
     title: 'Lexicon, roots and concordance',
@@ -92,7 +103,7 @@ const SECTIONS = [
 ];
 
 export default function Guide() {
-  usePageTitle(pageTitle('Guide'), 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, the Lexicon and the Translation Studio.');
+  usePageTitle(pageTitle('Guide'), 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, Precepts, the Lexicon and the Translation Studio.');
   return (
     <div className="guide">
       <header className="guide-top">
