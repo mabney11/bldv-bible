@@ -1,0 +1,2 @@
+# studio-sync log files are written LF on both machines; keep them byte-identical (no CRLF on Windows)
+server/studio-data/*.jsonl text eol=lf
