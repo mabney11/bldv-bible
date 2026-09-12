@@ -1085,6 +1085,9 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
         loadGlb(slot.slot).then((proto) => {
           if (!alive || !proto) return;
           const fitted = fitSlot(proto, slot);
+          // an unpainted sculpt takes the piece's own material (brass, gold…); a painted one keeps its skin
+          const fallback = M[PIECES.find((p) => p.id === id)?.material] || M.brass;
+          fitted.traverse((o) => { if (o.isMesh) { if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); if (!o.material?.map) o.material = fallback; } });
           const keep = new Set(slot.keep || []);
           [...slot.node.children].forEach((c) => { if (!keep.has(c) && !c.isLight) slot.node.remove(c); });
           slot.node.add(fitted); lastT = -1; dirty = true;
