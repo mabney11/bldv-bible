@@ -342,8 +342,41 @@ function isApostrophe(raw, at) {
 // exported (2026-08-26) so Translate.jsx can build its own live quote-nesting
 // preview while editing — same primitives Reader.jsx itself uses below, so
 // the preview matches the real page exactly rather than approximating it.
-export function parseQuoteMarks(raw, boundaries) {
+// `verseBounds` (added 2026-09-12, WEB paragraph re-openers — Leviticus 23):
+// optional { starts: Set<offset>, ends: Set<offset> } marking where each
+// verse's contribution to `raw` begins and ends (bookQuoteScan supplies it;
+// every other caller passes nothing and gets the old behavior). The WEB
+// baseline follows print convention: a speech spanning several paragraphs
+// RE-OPENS its quote marks at the start of every paragraph — `"‘shash (six)
+// …`, `"‘These are …` — and only the last paragraph closes (`.'"`). In this
+// app each paragraph is a verse, so those re-openers land at verse starts.
+// Read naively, a `"` arriving while the innermost open level is curly1 is
+// not a close (only a straight top closes it) and so OPENS a new level, and
+// the `‘` after it opens another — every re-opener verse nested two levels
+// deeper, the >600-char straight spans then dissolved into literal `"`
+// characters (fieldy's Lev 23 screenshot: a lone `"` on its own line, the
+// indent creeping deeper verse by verse). The "redundant reopen" absorption
+// above only ever caught a re-opener whose style matched the TOP of the
+// stack, which is the single-level case (Luke 21). Rule here: an opener glyph
+// sitting at the very start of a verse (or immediately after other
+// re-openers absorbed at that same verse start) whose style is ALREADY open
+// somewhere on the stack, searched outermost-in from just past the level the
+// previous re-opener in this run matched — so a `"‘` run mirrors a
+// [straight, curly1] stack level for level — is a paragraph re-opener: it is
+// dropped from the output entirely (the original opener already rendered
+// where it belongs) and the matched node is tagged `reopens`. A `"` at a
+// verse start with a straight level open is read the same way even though a
+// `"` would normally toggle-close that level: a quotation never closes as the
+// FIRST character of a verse. Straight nodes that carried re-openers, or that
+// closed as the last character of a verse, are additionally tagged `trusted`
+// so dissolveOverlongQuotes leaves them alone — the WEB has explicitly
+// vouched for the pairing, which is exactly the certainty the 600-char cap
+// exists to demand.
+export function parseQuoteMarks(raw, boundaries, verseBounds) {
   if (!raw) return [{ type: 'text', text: raw, start: 0, end: 0 }];
+  const vStarts = verseBounds && verseBounds.starts && verseBounds.starts.size ? verseBounds.starts : null;
+  const vEnds   = verseBounds && verseBounds.ends   && verseBounds.ends.size   ? verseBounds.ends   : null;
+  let reopenPos = -1, reopenIdx = 0; // where the next re-opener in the current verse-start run may sit, and the stack level to search from
   PLAIN_QUOTE_RE.lastIndex = 0;
   const marks = [];
   let m;
@@ -385,6 +418,25 @@ export function parseQuoteMarks(raw, boundaries) {
   marks.forEach(({ at, ch }) => {
     if (bounds) { while (bi < bounds.length && bounds[bi] <= at) { closeNonBracketsAt(bounds[bi]); bi++; } }
     const top = openStack[openStack.length - 1];
+    // WEB paragraph re-openers — see the verseBounds doc comment above.
+    if (vStarts) {
+      if (vStarts.has(at)) { reopenPos = at; reopenIdx = 0; }
+      const reStyle = ch === '"' ? 'straight' : OPEN_STYLE[ch];
+      if (at === reopenPos && reStyle && openStack.length) {
+        let idx = -1;
+        for (let i = reopenIdx; i < openStack.length; i++) { if (openStack[i].style === reStyle) { idx = i; break; } }
+        if (idx !== -1) {
+          flush(at);
+          last = at + ch.length; // the glyph itself is dropped — the real opener already rendered
+          reopenPos = at + ch.length;
+          reopenIdx = idx + 1;
+          const node = openStack[idx].node;
+          node.reopens = (node.reopens || 0) + 1;
+          if (openStack[idx].style === 'straight') node.trusted = true;
+          return;
+        }
+      }
+    }
     // Explicit <...> quote markers (2026-08-25, fieldy: a manual, unambiguous
     // way to mark a quotation the character-based scan below doesn't catch —
     // e.g. Exodus 3:7-10, a multi-verse discourse with no quote glyphs in the
@@ -452,6 +504,11 @@ export function parseQuoteMarks(raw, boundaries) {
       const entry = openStack.pop();
       entry.node.markClose = ch;
       entry.node.end = at + ch.length;
+      // A straight close sitting as the LAST character of a verse is a
+      // deliberate, source-vouched pairing (see the verseBounds comment) —
+      // the "two unrelated quotes merged" failure mode reads an OPENER as
+      // the close, and an opener is never the last thing in a verse.
+      if (entry.style === 'straight' && vEnds && vEnds.has(at + ch.length)) entry.node.trusted = true;
       containerStack.pop();
       last = at + ch.length;
       return;
@@ -547,7 +604,7 @@ export function dissolveOverlongQuotes(nodes) {
   for (const n of nodes) {
     if (n.type === 'text') { out.push(n); continue; }
     const children = dissolveOverlongQuotes(n.children);
-    if (n.style === 'straight' && (n.end - n.start) > MAX_QUOTE_CHARS) {
+    if (n.style === 'straight' && !n.trusted && (n.end - n.start) > MAX_QUOTE_CHARS) {
       if (n.unclosed && n.markOpen) {
         out.push({ type: 'quote', depth: 1, style: n.style, unclosed: true, markOpen: n.markOpen, markClose: '', children: [],
                    start: n.start, end: n.start + n.markOpen.length });
@@ -1651,6 +1708,8 @@ export default function Reader() {
     let acc = '';
     const ranges = {};
     const boundaries = [];
+    const verseStarts = new Set(); // every verse of every chapter, not just the active one — see parseQuoteMarks's verseBounds
+    const verseEnds = new Set();
     let sawActiveChapter = false;
     chapters.forEach(ch => {
       const isActive = ch.chapter === chapter;
@@ -1665,6 +1724,8 @@ export default function Reader() {
         const contribute = q ? `${q.before || ''} ${q.after || ''}` : raw;
         const start = acc.length;
         acc += contribute;
+        verseStarts.add(start);
+        verseEnds.add(acc.length);
         if (isActive) {
           ranges[v.verse] = q
             ? { start, end: acc.length, embedded: { beforeLen: (q.before || '').length } }
@@ -1681,7 +1742,7 @@ export default function Reader() {
       boundaries.push(acc.length);
     });
     if (!sawActiveChapter) return null; // active chapter not in bookText's list yet — defensive fallback below handles it
-    return { tree: dissolveOverlongQuotes(parseQuoteMarks(acc, boundaries)), ranges };
+    return { tree: dissolveOverlongQuotes(parseQuoteMarks(acc, boundaries, { starts: verseStarts, ends: verseEnds })), ranges };
   }, [isForeignScript, bookText, chapter, renderVerseNums, versesByNum]);
 
   // Verse 0 is a superscription/title ("A Psalm of David"), not verse 1 — see
