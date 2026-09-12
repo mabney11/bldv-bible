@@ -52,8 +52,11 @@ function toDb(ch) {
   if (ch === "'") return '’';
   return ch;
 }
+// bare word: gloss, quotes and punctuation stripped; a possessive/contraction
+// tail (’s) dropped so the WEB's "Let’s" meets the rendered "Let us" on "let"
+// (Genesis 1:26 — otherwise the opener slid onto "us")
 function core(unit) {
-  return unit.replace(GLOSS_RE, '').replace(/["“”‘’']/g, '').replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+  return unit.replace(GLOSS_RE, '').replace(/[’']s\b/g, '').replace(/["“”‘’']/g, '').replace(/[^A-Za-z0-9]/g, '').toLowerCase();
 }
 function units(text) { return text.match(UNIT_RE) || []; }
 // The WEB sets nested closers apart with spaces (`place.’ ” ’ ”`) and opens a
@@ -121,11 +124,25 @@ export function restoreWebQuotes(rendered, web) {
     if (w2d[j] < 0) w2d[j] = 0;
   }
   const lead = du.map(() => ''), webTail = du.map(() => null);
+  // An opener sits at a phrase start — after `said,` / `saying:` / a sentence
+  // end. When the WEB unit carrying it has no match (the rendered wording
+  // differs: "The days of the years…" for "The years of my pilgrimage"), the
+  // offset guess can land mid-phrase; snap it to the nearest rendered unit
+  // that follows punctuation, staying between the neighbouring anchors.
+  const afterPunct = k => k === 0 || /[,.:;?!]["“”‘’']*$/.test(du[k - 1]);
+  const snapOpener = (j, i) => {
+    if (afterPunct(i)) return i;
+    let lo = 0, hi = du.length - 1;
+    for (const [di, wj] of pairs) { if (wj < j) lo = di + 1; else { hi = di; break; } }
+    let best = -1;
+    for (let k = lo; k <= hi; k++) if (afterPunct(k) && (best < 0 || Math.abs(k - i) < Math.abs(best - i))) best = k;
+    return best >= 0 ? best : i;
+  };
   for (let j = 0; j < wu.length; j++) {
     const lm = LEAD.exec(wu[j]);
     // the verse's first opener belongs on its first word and the last closer on
     // its last, whatever the alignment says about a differing first/last word
-    if (lm) lead[j === 0 ? 0 : w2d[j]] += lm[0].split('').map(toDb).join('');
+    if (lm) lead[j === 0 ? 0 : snapOpener(j, w2d[j])] += lm[0].split('').map(toDb).join('');
     const tail = TAIL.exec(wu[j].replace(LEAD, ''))[0];
     if (GLYPH.test(tail)) {
       const i = j === wu.length - 1 ? du.length - 1 : w2d[j];
