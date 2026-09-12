@@ -26,3 +26,14 @@
   .tp-marks span { display: none; }
   .tp-marks span:nth-child(3n+1) { display: block; }
 }
+
+/* Roam: the walking pad and its bar */
+.tp-pad { position: absolute; left: 14px; bottom: 58px; display: grid; grid-template-columns: repeat(3, 40px); grid-template-rows: repeat(2, 40px); gap: 4px; z-index: 4; touch-action: none; user-select: none; }
+.tp-pad button { border: 1px solid rgba(255, 225, 160, 0.35); border-radius: 8px; background: rgba(20, 20, 28, 0.62); color: #ffe9b0; font-size: 15px; cursor: pointer; backdrop-filter: blur(3px); }
+.tp-pad button:active { background: rgba(255, 208, 98, 0.55); color: #1a1408; }
+.tp-pad .tp-pad-forward { grid-column: 2; grid-row: 1; }
+.tp-pad .tp-pad-turnL { grid-column: 1; grid-row: 2; }
+.tp-pad .tp-pad-back { grid-column: 2; grid-row: 2; }
+.tp-pad .tp-pad-turnR { grid-column: 3; grid-row: 2; }
+.tp-roambar { justify-content: center; }
+.tp-roam-hint { font-size: 0.86rem; opacity: 0.85; text-align: center; padding: 6px 4px; }

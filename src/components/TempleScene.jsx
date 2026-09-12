@@ -35,6 +35,7 @@ import {
   PIECES, MATERIALS, H,
   progressAt, xrayAt, openAt, cameraAt, focusFor,
   PLACES, ROUTES, MOVERS, moverAt, landAt,
+  MODES, ROAM_EYE, ROAM_START, ROAM_ENTER, PILLAR,
 } from '../lib/models/temple.js';
 
 const SKY = 0xb9cfe3;          // a dry, bright morning over Mawarayah
@@ -916,12 +917,14 @@ function cutGates(piece) {
       if (p.kind !== 'box' || p.role === 'ground') continue;
       if (gate.axis === 'z' && Math.abs(p.x - gate.x) < p.w && p.d > gate.w * 2) {   // an east/west wall: the gap runs along z
         const d1 = (gate.z - gate.w / 2) - (p.z - p.d / 2), d2 = (p.z + p.d / 2) - (gate.z + gate.w / 2);
-        parts.push({ ...p, z: p.z - p.d / 2 + d1 / 2, d: d1 }, { ...p, z: p.z + p.d / 2 - d2 / 2, d: d2 }, { ...p, y: p.y + 6, h: p.h - 6, z: gate.z, d: gate.w, courses: 0 });
+        parts.push({ ...p, z: p.z - p.d / 2 + d1 / 2, d: d1 }, { ...p, z: p.z + p.d / 2 - d2 / 2, d: d2 });
+        if (p.h > 6) parts.push({ ...p, y: p.y + 6, h: p.h - 6, z: gate.z, d: gate.w, courses: 0 });   // a lintel over the gate, only where the wall is tall enough to carry one
         cut = true; break;
       }
       if (gate.axis === 'x' && Math.abs(p.z - gate.z) < p.d && p.w > gate.w * 2) {
         const w1 = (gate.x - gate.w / 2) - (p.x - p.w / 2), w2 = (p.x + p.w / 2) - (gate.x + gate.w / 2);
-        parts.push({ ...p, x: p.x - p.w / 2 + w1 / 2, w: w1 }, { ...p, x: p.x + p.w / 2 - w2 / 2, w: w2 }, { ...p, y: p.y + 6, h: p.h - 6, x: gate.x, w: gate.w, courses: 0 });
+        parts.push({ ...p, x: p.x - p.w / 2 + w1 / 2, w: w1 }, { ...p, x: p.x + p.w / 2 - w2 / 2, w: w2 });
+        if (p.h > 6) parts.push({ ...p, y: p.y + 6, h: p.h - 6, x: gate.x, w: gate.w, courses: 0 });
         cut = true; break;
       }
     }
@@ -1209,6 +1212,12 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       }
     }
 
+    // ── Roam: the viewer on their own feet (state; the controller is below) ──
+    const roam = {
+      on: false, yaw: Math.PI, pitch: 0, foot: H.courtY, keys: new Set(), glide: null, moving: false,
+      open: { hayakal: 0, dabayar: 0 }, want: { hayakal: 0, dabayar: 0 },   // the doors and the veil, 0 shut … 1 open, eased toward what the viewer asked
+    };
+
     // ── Per-frame placement from the timeline ───────────────────────────────
     function place(t) {
       const mode = modeRef.current;
@@ -1224,12 +1233,13 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       }
       const x = xrayAt(mode, t);
       for (const m of xrayMeshes) { m.material.opacity = 1 - 0.92 * x; m.material.depthWrite = x < 0.5; m.castShadow = x < 0.5; }
+      const openOf = (which) => (roam.on ? roam.open[which === 'hayakal' ? 'hayakal' : 'dabayar'] : openAt(mode, which, t));
       for (const ds of doorSets) {
-        const o = openAt(mode, ds.open, t);
+        const o = openOf(ds.open);
         for (const { node, sz, i } of ds.leaves) node.rotation.y = sz * o * (ds.fold ? (i === 0 ? 1.55 : 2.7) : 1.75);   // swing inward; a folding pair doubles back on itself
       }
       for (const vs of veilSets) {
-        const o = openAt(mode, vs.open, t);
+        const o = openOf(vs.open);
         for (const { node, sz } of vs.halves) { node.scale.z = 1 - 0.82 * o; node.position.z = node.userData.rest * (1 + 0.62 * o); }
       }
       // the lamps burn once the lampstands stand (their light is the hall's light)
@@ -1243,7 +1253,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     let following = true, flight = null, lastCamT = -1;
     const posV = new THREE.Vector3(), tgtV = new THREE.Vector3();
     function scriptCamera(t) {
-      if (!following) return;
+      if (!following || roam.on) return;
       const cam = cameraAt(modeRef.current, t);
       posV.set(...cam.pos); tgtV.set(...cam.target);
       camera.position.copy(posV); controls.target.copy(tgtV);
@@ -1275,7 +1285,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
     const outline = new OutlinePass(new THREE.Vector2(1, 1), scene, camera);
-    outline.visibleEdgeColor.set(0xffd062); outline.hiddenEdgeColor.set(0x8a6a2a);
+    outline.visibleEdgeColor.set(0xffd062); outline.hiddenEdgeColor.set(0x000000);   // black = nothing added where a wall hides the part: the halo never shows through
     outline.edgeStrength = 6; outline.edgeGlow = 1.2; outline.edgeThickness = 2.5; outline.pulsePeriod = 0;
     composer.addPass(outline); composer.addPass(new OutputPass());
     composer.setPixelRatio(renderer.getPixelRatio());
@@ -1286,6 +1296,123 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       if (id === 'house') { outline.selectedObjects = PIECES.filter((p) => p.group === 'house' && p.id !== 'house').map((p) => byId(p.id)); return; }
       outline.selectedObjects = [byId(id)].filter(Boolean);
     }
+
+    // ── Roam controller: drag to look, keys (or the pad) to walk, the walls solid ──
+    // Collision is two short rays against the built things — one ahead at eye
+    // height and one at the knee (so a court wall stops you and a door leaf does
+    // until it is opened) — and one straight down for the ground under the next
+    // step, so steps and ramps are climbed and the eye stays 3.4 amah above them.
+    // Only the plain-built pieces (boxes, a few lathes) are tested — a ray through a
+    // capital's two hundred pomegranates or the throne's lions would cost more than
+    // the frame; those get stand-ins (two plain cylinders for Yakayan and Baiz).
+    const SOLID = ['yasad', 'qayar', 'tzalai', 'awalam', 'roof', 'doors', 'oracle-doors', 'parakath', 'dabayar', 'chatzar', 'mazabach', 'great-court', 'yair', 'king-house', 'porch-pillars'];
+    const solids = [ground];
+    for (const id of SOLID) byId(id)?.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) solids.push(o); });
+    for (const sz of [-1, 1]) { const c = new THREE.Mesh(new THREE.CylinderGeometry(PILLAR.r + 0.3, PILLAR.r + 0.3, PILLAR.h + PILLAR.capH + PILLAR.lilyH, 12)); c.position.set(PILLAR.x, (PILLAR.h + PILLAR.capH + PILLAR.lilyH) / 2, sz * PILLAR.z); c.updateMatrixWorld(true); solids.push(c); }
+    const rRay = new THREE.Raycaster(); rRay.firstHitOnly = true;
+    const fwd = new THREE.Vector3(), rightV = new THREE.Vector3(), step = new THREE.Vector3(), probe = new THREE.Vector3(), downV = new THREE.Vector3(0, -1, 0);
+    const WALK = 14, RUN = 32, STEP_UP = 2.4, RADIUS = 1.1, TURN = 1.6;
+    function roamDir(out, pitch = roam.pitch) { return out.set(Math.cos(pitch) * Math.cos(roam.yaw), Math.sin(pitch), Math.cos(pitch) * Math.sin(roam.yaw)); }
+    function aimCamera() {
+      roamDir(fwd); camera.lookAt(probe.copy(camera.position).add(fwd));
+      controls.target.copy(camera.position).add(fwd.multiplyScalar(12));   // the shadow window and the sun follow the target
+    }
+    function blocked(from, dir, len) {
+      rRay.set(from, dir); rRay.far = len; rRay.near = 0;
+      return rRay.intersectObjects(solids, false).some((h) => h.object.visible && !(h.object.material?.transparent && h.object.material.opacity < 0.3));
+    }
+    function groundUnder(x, z, fromY) {
+      probe.set(x, fromY, z); rRay.set(probe, downV); rRay.far = 80; rRay.near = 0;
+      const h = rRay.intersectObjects(solids, false).find((q) => q.object.visible);
+      return h ? h.point.y : null;
+    }
+    /** Try a horizontal move; slides along walls; climbs what is under STEP_UP. Returns true if the eye moved. */
+    function tryMove(dx, dz) {
+      const len = Math.hypot(dx, dz); if (len < 1e-4) return false;
+      const attempt = (mx, mz) => {
+        const l = Math.hypot(mx, mz); if (l < 1e-4) return false;
+        step.set(mx / l, 0, mz / l);
+        const eye = camera.position, knee = probe.set(eye.x, roam.foot + 1.2, eye.z);
+        if (blocked(eye, step, l + RADIUS) || blocked(knee.clone(), step, l + RADIUS)) return false;
+        const nx = eye.x + mx, nz = eye.z + mz;
+        const gy = groundUnder(nx, nz, roam.foot + STEP_UP + 0.3);
+        if (gy == null || gy > roam.foot + STEP_UP) return false;
+        eye.x = nx; eye.z = nz; roam.foot = gy; return true;
+      };
+      return attempt(dx, dz) || attempt(dx, 0) || attempt(0, dz);
+    }
+    function roamStep(dt) {
+      if (!roam.on) return false;
+      let changed = false;
+      // the doors and the veil ease toward what was asked
+      for (const k of Object.keys(roam.open)) {
+        const d = roam.want[k] - roam.open[k];
+        if (Math.abs(d) > 1e-4) { roam.open[k] += Math.sign(d) * Math.min(Math.abs(d), dt / 1.3); changed = true; }
+      }
+      if (changed) place(clock.t);
+      if (roam.glide) {
+        const g = roam.glide, k = Math.min(1, (performance.now() - g.t0) / g.ms), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+        camera.position.lerpVectors(g.from, g.to, e); roam.yaw = g.yaw0 + (g.yaw1 - g.yaw0) * e; roam.pitch = g.pitch0 * (1 - e);
+        roam.foot = camera.position.y - ROAM_EYE;
+        if (k >= 1) roam.glide = null;
+        aimCamera(); return true;
+      }
+      const K = roam.keys; if (!K.size) { roam.moving = false; return changed; }
+      const v = (K.has('run') ? RUN : WALK) * dt;
+      if (K.has('turnL')) roam.yaw -= TURN * dt; if (K.has('turnR')) roam.yaw += TURN * dt;
+      fwd.set(Math.cos(roam.yaw), 0, Math.sin(roam.yaw)); rightV.set(-fwd.z, 0, fwd.x);
+      let mx = 0, mz = 0;
+      if (K.has('forward')) { mx += fwd.x * v; mz += fwd.z * v; } if (K.has('back')) { mx -= fwd.x * v; mz -= fwd.z * v; }
+      if (K.has('right')) { mx += rightV.x * v; mz += rightV.z * v; } if (K.has('left')) { mx -= rightV.x * v; mz -= rightV.z * v; }
+      tryMove(mx, mz);
+      // settle the eye onto the ground (a smooth rise on steps)
+      const wantY = roam.foot + ROAM_EYE; camera.position.y += (wantY - camera.position.y) * Math.min(1, dt * 10);
+      roam.moving = true; aimCamera(); return true;
+    }
+    function roamEnter(on) {
+      roam.on = on; roam.keys.clear(); roam.glide = null; controls.enabled = !on;
+      renderer.domElement.style.cursor = on ? 'crosshair' : 'grab';
+      if (on) {
+        following = false; onFollow?.(true);   // no "follow" button in the roam: there is no story to follow
+        camera.position.set(...ROAM_START.pos); roam.foot = camera.position.y - ROAM_EYE;
+        const [lx, , lz] = ROAM_START.look; roam.yaw = Math.atan2(lz - camera.position.z, lx - camera.position.x); roam.pitch = 0;
+        const gy = groundUnder(camera.position.x, camera.position.z, camera.position.y + 2); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; }
+        for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = 0;
+        aimCamera(); place(clock.t);
+      } else {
+        camera.up.set(0, 1, 0); camera.rotation.set(0, 0, 0); for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = 0;
+      }
+      dirty = true;
+    }
+    /** A second tap on an openable piece: open it and go through. */
+    function roamGo(id) {
+      const e = ROAM_ENTER[id]; if (!e) return false;
+      roam.want[e.open] = 1;
+      const to = new THREE.Vector3(...e.pos), yaw1 = Math.atan2(e.look[2] - e.pos[2], e.look[0] - e.pos[0]);
+      let yaw0 = roam.yaw; while (yaw1 - yaw0 > Math.PI) yaw0 += 2 * Math.PI; while (yaw1 - yaw0 < -Math.PI) yaw0 -= 2 * Math.PI;
+      roam.glide = { from: camera.position.clone(), to, yaw0, yaw1, pitch0: roam.pitch, t0: performance.now() + 500, ms: Math.max(1400, camera.position.distanceTo(to) * 90) };
+      return true;
+    }
+    // look: drag turns the head
+    let look = null;
+    const onLookDown = (e) => { if (!roam.on || e.button === 2) return; look = { x: e.clientX, y: e.clientY }; renderer.domElement.setPointerCapture?.(e.pointerId); };
+    const onLookMove = (e) => {
+      if (!roam.on || !look) return;
+      roam.yaw += (e.clientX - look.x) * 0.0042; roam.pitch = Math.max(-1.45, Math.min(1.45, roam.pitch - (e.clientY - look.y) * 0.0034));
+      look = { x: e.clientX, y: e.clientY }; aimCamera(); dirty = true;
+    };
+    const onLookUp = () => { look = null; };
+    const onWheel = (e) => { if (!roam.on) return; e.preventDefault(); const d = -Math.sign(e.deltaY) * 3; fwd.set(Math.cos(roam.yaw), 0, Math.sin(roam.yaw)); tryMove(fwd.x * d, fwd.z * d); camera.position.y = roam.foot + ROAM_EYE; aimCamera(); dirty = true; };
+    const KEYMAP = { KeyW: 'forward', ArrowUp: 'forward', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', KeyD: 'right', ArrowLeft: 'turnL', ArrowRight: 'turnR', ShiftLeft: 'run', ShiftRight: 'run' };
+    const onKeyDown = (e) => { if (!roam.on || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return; const k = KEYMAP[e.code]; if (!k) return; e.preventDefault(); roam.keys.add(k); };
+    const onKeyUp = (e) => { const k = KEYMAP[e.code]; if (k) roam.keys.delete(k); };
+    renderer.domElement.addEventListener('pointerdown', onLookDown);
+    renderer.domElement.addEventListener('pointermove', onLookMove);
+    renderer.domElement.addEventListener('pointerup', onLookUp);
+    renderer.domElement.addEventListener('pointercancel', onLookUp);
+    renderer.domElement.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('keydown', onKeyDown); window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('blur', () => roam.keys.clear());
 
     // Tap vs drag
     const ray = new THREE.Raycaster(); const ndc = new THREE.Vector2(); let down = null;
@@ -1299,7 +1426,9 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       ray.setFromCamera(ndc, camera);
       const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible && !(h.object.material?.transparent && h.object.material.opacity < 0.3));
       let o = hit?.object; while (o && !o.userData.id) o = o.parent;
-      onSelect?.(o?.userData.id || null);
+      const id = o?.userData.id || null;
+      if (roam.on && id && id === currentSel && roamGo(id)) { dirty = true; return; }   // the second tap on a door: open it and go through
+      onSelect?.(id);
     };
     let hoverT = 0;
     const onMove = (e) => {
@@ -1308,7 +1437,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       const r = renderer.domElement.getBoundingClientRect();
       ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       ray.setFromCamera(ndc, camera);
-      renderer.domElement.style.cursor = ray.intersectObjects(pickables(), true).length ? 'pointer' : 'grab';
+      renderer.domElement.style.cursor = ray.intersectObjects(pickables(), true).length ? 'pointer' : roam.on ? 'crosshair' : 'grab';
     };
     renderer.domElement.addEventListener('pointerdown', onDown);
     renderer.domElement.addEventListener('pointerup', onUp);
@@ -1317,18 +1446,21 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     // ── Loop ────────────────────────────────────────────────────────────────
     let dirty = true, raf = 0, lastT = -1, alive = true;
     controls.addEventListener('change', () => { dirty = true; });
+    let lastNow = performance.now(); const stats = { frames: 0, ms: 0 };
     function frame() {
       if (!alive) return;
       raf = requestAnimationFrame(frame);
+      const now = performance.now(), dt = Math.min(0.1, (now - lastNow) / 1000); lastNow = now;
       const t = clock.t;
       if (t !== lastT) { place(t); scriptCamera(t); lastT = t; dirty = true; lastCamT = t; }
-      if (stepFlight(performance.now())) dirty = true;
-      if (controls.update()) dirty = true;
+      if (roamStep(dt)) dirty = true;
+      if (stepFlight(now)) dirty = true;
+      if (!roam.on && controls.update()) dirty = true;
       if (!dirty) return;
-      dirty = false;
+      dirty = false; stats.frames++; const f0 = performance.now();
       // the sun's shadow window follows the camera's target so the shadows stay sharp where the eye is
       sun.target.position.copy(controls.target); sun.position.copy(controls.target).add(new THREE.Vector3(220, 300, 180));
-      composer.render();
+      composer.render(); stats.ms = performance.now() - f0;
     }
     function resize() {
       const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;
@@ -1353,19 +1485,31 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       setTimeout(() => window.__templeExport(pid, which), 4500);   // after the sculpted parts have had time to arrive
     }
     api.current = {
-      select: (id) => { const changed = id !== currentSel; applySelection(id); if (changed && id) flyTo(id); if (changed && !id) setFollow(true); dirty = true; },
-      follow: () => { setFollow(true); lastT = -1; },
-      modeChanged: () => { lastT = -1; setFollow(true); dirty = true; },
+      select: (id) => { const changed = id !== currentSel; applySelection(id); if (roam.on) { dirty = true; return; } if (changed && id) flyTo(id); if (changed && !id) setFollow(true); dirty = true; },
+      follow: () => { if (roam.on) return; setFollow(true); lastT = -1; },
+      modeChanged: () => { const free = !!MODES[modeRef.current]?.free; if (free !== roam.on) roamEnter(free); lastT = -1; if (!free) setFollow(true); dirty = true; },
+      move: (key, on) => { if (on) roam.keys.add(key); else roam.keys.delete(key); },
       invalidate: () => { dirty = true; },
+      roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),   // for tests
+      go: (id) => roam.on && roamGo(id),
+      solidTris: () => { const m = {}; for (const o of solids) { let q = o; while (q && !q.userData.id) q = q.parent; const k = q?.userData.id || o.name || 'proxy'; m[k] = (m[k] || 0) + Math.round((o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3); } return m; },
     };
+    window.__templeApi = api.current;
     applySelection(selected);
-    if (selected) { flyTo(selected); if (flight) { flight.t0 -= flight.ms; stepFlight(performance.now()); } }
+    if (MODES[modeRef.current]?.free) roamEnter(true);
+    else if (selected) { flyTo(selected); if (flight) { flight.t0 -= flight.ms; stepFlight(performance.now()); } }
 
     return () => {
       alive = false; cancelAnimationFrame(raf); ro.disconnect();
       renderer.domElement.removeEventListener('pointerdown', onDown);
       renderer.domElement.removeEventListener('pointerup', onUp);
       renderer.domElement.removeEventListener('pointermove', onMove);
+      renderer.domElement.removeEventListener('pointerdown', onLookDown);
+      renderer.domElement.removeEventListener('pointermove', onLookMove);
+      renderer.domElement.removeEventListener('pointerup', onLookUp);
+      renderer.domElement.removeEventListener('pointercancel', onLookUp);
+      renderer.domElement.removeEventListener('wheel', onWheel);
+      window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp);
       controls.dispose();
       scene.traverse((o) => { o.geometry?.dispose?.(); if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => { m.map?.dispose?.(); m.bumpMap?.dispose?.(); m.alphaMap?.dispose?.(); m.dispose?.(); }); });
       scene.environment?.dispose?.();

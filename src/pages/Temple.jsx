@@ -3,11 +3,14 @@
  * built (1 Kings 6–7; 2 Chronicles 3–4), its courts and the king's houses,
  * as an interactive model.
  *
- * Route: /models/temple   ?piece=<id>  ?view=3d|2d  ?mode=build|walk
+ * Route: /models/temple   ?piece=<id>  ?view=3d|2d  ?mode=build|walk|roam
  *
  * - Two stories on ONE model (lib/models/temple.js): BUILD, the chapters in
  *   their own order, the house rising as the scrub bar moves; WALK, in through
  *   the gate of the great court to the ark beneath the wings of the karawab.
+ *   And ROAM, no story: the finished house, the viewer walking where they will
+ *   (drag to look, keys or the pad to walk, a door tapped twice opens and lets
+ *   them through).
  * - Two renderers of it: the WebGL scene (three.js, lazy) and the flat sheet
  *   (a plan and a section, no library, the fallback without WebGL).
  * - The panel opens on the TEXT — 1 Kings 6, 7, then 2 Chronicles 3, 4 — with
@@ -62,7 +65,7 @@ function Card({ id, mode, onClose, onPick }) {
         <div className="st-card-h">
           <div className="st-detail-sub">1 Kings 6–7 · 2 Chronicles 3–4</div>
           <h2 className="st-card-title"><Glossed text="The bayath (house) Shalamah (Solomon) banah (built) for Yahawah" /></h2>
-          <p className="st-card-p"><Glossed text={mode === 'build' ? 'Play, and the house rises in the order the text gives it: the yasad (foundation), the qayarawath (walls) of aban (stone), araz (cedar) within, zahab (gold) over the araz (cedar), the karawab (cherubim), the doors, the chatzarawath (courts), the malak (king)\'s houses, Chayaram (Hiram)\'s nachashath (brass), and last the arawan (ark).' : 'Play, and walk in: through the gate of the gadawal (great) chatzar (court), past the mazabach (altar) and the yam (sea), between Yakayan (Jachin) and Baiz (Boaz), through the awalam (porch) and the dalathawath (doors), down the hayakal (temple) between the lampstands, through the parakath (veil) into the dabayar (oracle), beneath the kanapay (wings) of the karawab (cherubim).'} /></p>
+          <p className="st-card-p"><Glossed text={mode === 'roam' ? 'No story here: the house stands finished, and you walk it — through the gate of the gadawal (great) chatzar (court), around the yam (sea) and the makanawath (bases), between Yakayan (Jachin) and Baiz (Boaz); tap the dalathawath (doors) for their words, and tap them again to go in.' : mode === 'build' ? 'Play, and the house rises in the order the text gives it: the yasad (foundation), the qayarawath (walls) of aban (stone), araz (cedar) within, zahab (gold) over the araz (cedar), the karawab (cherubim), the doors, the chatzarawath (courts), the malak (king)\'s houses, Chayaram (Hiram)\'s nachashath (brass), and last the arawan (ark).' : 'Play, and walk in: through the gate of the gadawal (great) chatzar (court), past the mazabach (altar) and the yam (sea), between Yakayan (Jachin) and Baiz (Boaz), through the awalam (porch) and the dalathawath (doors), down the hayakal (temple) between the lampstands, through the parakath (veil) into the dabayar (oracle), beneath the kanapay (wings) of the karawab (cherubim).'} /></p>
         </div>
       )}
 
@@ -140,6 +143,7 @@ export default function Temple() {
 
   const use3d = view === '3d' && canGL && glOk;
   const D = MODES[mode].duration;
+  const roam = !!MODES[mode].free;
   const onPlayPause = () => (playing ? pause() : play());
   // Moving the timeline hands the camera back to the story: whatever the viewer
   // had picked or dragged to, a scrub means "show me what happens here". A still
@@ -151,6 +155,7 @@ export default function Temple() {
   useEffect(() => {
     const onKey = (e) => {
       if (/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(e.target.tagName) || e.metaKey || e.ctrlKey) return;
+      if (roam) return;   // the roam has the keys (walking)
       if (e.key === ' ') { e.preventDefault(); playing ? pause() : play(); }
       else if (e.key === 'ArrowLeft') seekAlong(clock.t - 0.5);
       else if (e.key === 'ArrowRight') seekAlong(clock.t + 0.5);
@@ -170,7 +175,7 @@ export default function Temple() {
           <span className="st-h1-paleo" dir="rtl" aria-hidden="true">𐤁𐤉𐤕 𐤉𐤄𐤅𐤄</span>
         </div>
         <div className="st-views tp-modes" role="group" aria-label="Story">
-          {Object.keys(MODES).map((k) => <button key={k} type="button" className={`st-view${mode === k ? ' on' : ''}`} onClick={() => setParam('mode', k)} title={k === 'build' ? 'Watch the house rise, 1 Kings 6–7 in order' : 'Walk in, from the gate to the ark'}>{MODES[k].label}</button>)}
+          {Object.keys(MODES).map((k) => <button key={k} type="button" className={`st-view${mode === k ? ' on' : ''}`} onClick={() => setParam('mode', k)} title={k === 'build' ? 'Watch the house rise, 1 Kings 6–7 in order' : k === 'walk' ? 'Walk in, from the gate to the ark' : 'Roam the finished house on your own feet'}>{MODES[k].label}</button>)}
         </div>
         <div className="st-views" role="group" aria-label="View">
           <button type="button" className={`st-view${use3d ? ' on' : ''}`} onClick={() => setParam('view', '3d')} disabled={!canGL || !glOk} title={canGL && glOk ? 'Lit 3D model — drag to look around' : 'WebGL is not available in this browser'}>3D</button>
@@ -185,7 +190,17 @@ export default function Temple() {
               {use3d
                 ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><TempleScene clock={clock} mode={mode} selected={sel} onSelect={select} onFollow={setFollowing} apiRef={sceneApi} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
                 : <TempleSheet clock={clock} mode={mode} selected={sel} onSelect={select} />}
-              {use3d && !following && <button type="button" className="tp-follow" onClick={() => { select(null); sceneApi.current?.follow?.(); }} title="Hand the camera back to the story">⟲ follow the story</button>}
+              {use3d && roam && (
+                <div className="tp-pad" aria-label="Walk">
+                  {[['forward', '▲', 'Walk forward (W / ↑)'], ['turnL', '◀', 'Turn left (←)'], ['back', '▼', 'Walk back (S / ↓)'], ['turnR', '▶', 'Turn right (→)']].map(([k, ch, tt]) => (
+                    <button key={k} type="button" className={`tp-pad-${k}`} title={tt} aria-label={tt}
+                      onPointerDown={(e) => { e.preventDefault(); e.currentTarget.setPointerCapture?.(e.pointerId); sceneApi.current?.move?.(k, true); }}
+                      onPointerUp={() => sceneApi.current?.move?.(k, false)} onPointerCancel={() => sceneApi.current?.move?.(k, false)} onLostPointerCapture={() => sceneApi.current?.move?.(k, false)}
+                      onContextMenu={(e) => e.preventDefault()}>{ch}</button>
+                  ))}
+                </div>
+              )}
+              {use3d && !roam && !following && <button type="button" className="tp-follow" onClick={() => { select(null); sceneApi.current?.follow?.(); }} title="Hand the camera back to the story">⟲ follow the story</button>}
               <div className="st-strip" role="toolbar" aria-label="Parts of the house">
                 {CHIP_ORDER.map((id) => pieceById(id)).filter(Boolean).map((p) => (
                   <button key={p.id} type="button" className={`st-chip${sel === p.id ? ' on' : ''}`} onClick={() => select(sel === p.id ? null : p.id)} title={p.title}>
@@ -200,6 +215,11 @@ export default function Temple() {
             </div>
           </div>
 
+          {roam ? (
+            <div className="st-player tp-roambar">
+              <span className="tp-roam-hint">{use3d ? 'Drag to look around · W A S D or the arrows to walk (Shift to hurry) · scroll to step · tap a part for its details · tap a door again to go through it' : 'The plan and section show the finished house; switch to 3D to walk it.'}</span>
+            </div>
+          ) : (
           <div className="st-player">
             <button type="button" className="st-play" onClick={onPlayPause} aria-label={playing ? 'Pause' : 'Play'}>{playing ? '❚❚' : '▶'}</button>
             <button type="button" className="st-restart" onClick={onRestart} aria-label="Play from the beginning" title="From the beginning">↺</button>
@@ -220,7 +240,8 @@ export default function Temple() {
               <label className="st-loop"><input id="tp-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
             </div>
           </div>
-          <p className="st-hint">{use3d ? 'Drag to look around, scroll to zoom, right-drag to pan; the story takes the camera back whenever you move the timeline (or choose "follow"). ' : ''}<Glossed text="Tap a part, a chip under it, or a word in the text for its measures and verses — one amah (cubit) in the text is one unit in the model." /></p>
+          )}
+          <p className="st-hint">{use3d && !roam ? 'Drag to look around, scroll to zoom, right-drag to pan; the story takes the camera back whenever you move the timeline (or choose "follow"). ' : ''}<Glossed text="Tap a part, a chip under it, or a word in the text for its measures and verses — one amah (cubit) in the text is one unit in the model." /></p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Parts &amp; verses ↑</button>
         </section>
 

@@ -293,6 +293,7 @@ export const PIECES = [
       box((EAST_X + PORCH_X1) / 2, 0, -H.porchZ + H.porchWall / 2, H.porchD, H.porchH, H.porchWall, { role: 'north' }),
       box((EAST_X + PORCH_X1) / 2, H.inH + H.roofT, 0, H.porchD, H.porchH - H.inH - H.roofT, 2 * H.porchZ, { role: 'tower' }),   // the tower above the house's roof line, solid
       box((EAST_X + PORCH_X1) / 2, 16, 0, H.porchD, 2, 2 * H.porchZ, { role: 'lintel', mat: 'cedar' }),                             // the lintel over the opening
+      box(PORCH_X1 - H.porchWall / 2, 18, 0, H.porchWall, H.inH + H.roofT - 18, 2 * H.porchZ, { role: 'tower' }),                    // the front above the lintel, solid up to the tower (no hollow behind the opening)
       box((EAST_X + PORCH_X1) / 2, H.porchH, 0, H.porchD + 1, 1, 2 * H.porchZ + 1, { role: 'tower' }),                              // its cap
     ],
   },
@@ -885,9 +886,21 @@ export const WALK_CAMERA = [
   [42,   [-13.2, 3, 2],    [-20, 2.4, 0]],
 ];
 
+// ROAM — no story: the finished house, and the viewer walks where they will.
+export const ROAM_EYE = 3.4;                                                  // eye height above the ground, in cubits (≈ 1.7 m)
+export const ROAM_START = { pos: [150, H.courtY + ROAM_EYE, 0], look: [100, H.courtY + ROAM_EYE, 0] };   // outside the great court's east gate, facing the house
+export const ROAM_PHASES = [{ from: 0, key: 'roam', caption: 'Walk where you will — through the gates, around the yam (sea), between the pillars. Tap a part for its details; tap a door again to go through it.', ref: '' }];
+/** Where a second tap on an openable piece takes the eye — just inside, facing on. */
+export const ROAM_ENTER = {
+  doors: { pos: [26, ROAM_EYE, 0], look: [0, ROAM_EYE, 0], open: 'hayakal' },
+  'oracle-doors': { pos: [-13.5, ROAM_EYE, 0], look: [-20, ROAM_EYE, 0], open: 'dabayar' },
+  parakath: { pos: [-13.5, ROAM_EYE, 0], look: [-20, ROAM_EYE, 0], open: 'dabayar' },
+};
+
 export const MODES = {
   build: { label: 'Build', phases: BUILD_PHASES, duration: BUILD_DURATION, camera: BUILD_CAMERA, xray: BUILD_XRAY },
   walk:  { label: 'Walk',  phases: WALK_PHASES,  duration: WALK_DURATION,  camera: WALK_CAMERA,  xray: [] },
+  roam:  { label: 'Roam',  phases: ROAM_PHASES,  duration: 1,              camera: [[0, ROAM_START.pos, ROAM_START.look]], xray: [], free: true },
 };
 export function phaseAt(mode, t) {
   const ph = MODES[mode].phases; let p = ph[0];
