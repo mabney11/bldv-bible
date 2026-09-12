@@ -8,7 +8,8 @@
 //                                                 reference set (OpenBible.info format:
 //                                                 "Gen.1.1<TAB>Rev.4.11<TAB>votes")
 //   node build-precepts.mjs --db X --out Y         explicit paths (defaults: ./translation.db,
-//                                                 ./precepts.db next to this script)
+//                                                 ./precepts.db next to this script — or on
+//                                                 $DATA_DIR when that is set, i.e. on prod)
 //   node build-precepts.mjs --min 4.3              rarity-weighted score threshold (default 4.3)
 //   node build-precepts.mjs --tier3                also match 3-root shingles (noisy — see Pass 1)
 //
@@ -65,7 +66,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 && args[i + 1] != null ? args[i + 1] : dflt; };
 const DB_PATH  = path.resolve(opt('--db',  path.join(__dirname, 'translation.db')));
-const OUT_PATH = path.resolve(opt('--out', path.join(__dirname, 'precepts.db')));
+// Default output: next to this script — except on the public box, where the
+// databases live on the /data volume (DATA_DIR, see entrypoint.sh) and a file
+// written inside the container is lost on the next deploy (2026-09-12).
+const DATA_DIR = process.env.DATA_DIR && fs.existsSync(process.env.DATA_DIR) ? process.env.DATA_DIR : null;
+const OUT_PATH = path.resolve(opt('--out', path.join(DATA_DIR || __dirname, 'precepts.db')));
 const SEED     = opt('--seed', null);
 const MIN_SCORE = parseFloat(opt('--min', '4.3'));
 const N = 4;            // shingle length in roots

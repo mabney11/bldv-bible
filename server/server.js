@@ -11771,10 +11771,17 @@ app.get('/api/translate/verse', (req, res) => {
 // block — an admin's first review creates it there too.
 //
 // book ids are canon_id throughout (translation.db convention).
-const PRECEPTS_PATH = path.join(__dirname, 'precepts.db');
+// Next to server.js in dev; on the public box the file lives on the /data
+// volume (DATA_DIR) and entrypoint.sh symlinks it in — but only if it existed
+// at container start, so a build that lands on the volume AFTER start is found
+// by the second candidate without a restart.
+const PRECEPTS_CANDIDATES = [path.join(__dirname, 'precepts.db')]
+    .concat(process.env.DATA_DIR ? [path.join(process.env.DATA_DIR, 'precepts.db')] : []);
+let PRECEPTS_PATH = PRECEPTS_CANDIDATES[0];
 let _preceptsDb = null, _preceptsStmts = null, _preceptsMtime = 0;
 function preceptsDb() {
     try {
+        PRECEPTS_PATH = PRECEPTS_CANDIDATES.find(p => fs.existsSync(p)) || PRECEPTS_CANDIDATES[0];
         if (!fs.existsSync(PRECEPTS_PATH)) { if (_preceptsDb) { try { _preceptsDb.close(); } catch {} } _preceptsDb = null; _preceptsStmts = null; return null; }
         const mtime = fs.statSync(PRECEPTS_PATH).mtimeMs;
         if (_preceptsDb && mtime === _preceptsMtime) return _preceptsDb;

@@ -11,7 +11,10 @@ set -e
 
 DATA_DIR="${DATA_DIR:-/data}"
 
-DB_FILES="corpus.db translation.db bible.db concordance.db surface-index.db morph-grc.db"
+# precepts.db is rebuildable (build-precepts.mjs) but must live on the volume like
+# the rest, or a redeploy loses it — 2026-09-12: built inside the container, gone
+# with the next ~/deploy.sh. build-precepts.mjs writes to $DATA_DIR itself when set.
+DB_FILES="corpus.db translation.db bible.db concordance.db surface-index.db morph-grc.db precepts.db"
 
 corpus_available=0
 for f in $DB_FILES; do
