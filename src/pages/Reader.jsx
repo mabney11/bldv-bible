@@ -430,9 +430,27 @@ export function parseQuoteMarks(raw, boundaries, verseBounds) {
       // …and the sentence end may itself sit inside a closed inner quote
       // (Matthew 13:28: `…has done this.’ “The ibad (servants)…` — the outer “
       // re-opens a new paragraph right after the inner ’ closed).
-      if (vStarts.has(at) || /[.?!]["'\u2019\u201D]?\s+$/.test(raw.slice(Math.max(0, at - 6), at))) { reopenPos = at; reopenIdx = 0; }
+      if (vStarts.has(at) || /[.?!]["'\u2019\u201D]?\s+$/.test(raw.slice(Math.max(0, at - 6), at))) {
+        reopenPos = at; reopenIdx = 0;
+        // A re-opener run mirrors the open levels (`“ ‘Six days…` under a
+        // [“, ‘] stack). A LONE “ at a verse start with two or more levels
+        // open, right after a verse that ended in a comma or colon, is not a
+        // re-opening but a deeper nesting: 2 Kings 22:15-16 `‘Tell the man who
+        // sent you to me, | “Yahweh says, ‘Behold…` — the WEB nests four deep
+        // there, and reading that “ as a re-opener lost both of verse 16's
+        // openers and left verse 20's `’ ” ’ ”` two closers short (literal
+        // ’” on the page). The comma/colon test keeps Ezekiel 17:19's “ a
+        // re-opener: there the WEB's inner ‘ (17:16) simply never closes and
+        // the paragraph “ implicitly ends it. Measured 2026-09-12 over the
+        // whole corpus: 5 fewer literal glyphs, 2 more unclosed spans, both in
+        // Words of Gad 7:15 whose source has two ‘ that never close.
+        if (openStack.length >= 2 && ch === '\u201C' && !/^["“‘']\s*["“‘']/.test(raw.slice(at, at + 4))
+            && /[,:]\s*$/.test(raw.slice(Math.max(0, at - 4), at))) reopenPos = -1;
+      }
       const reStyle = ch === '"' ? 'straight' : OPEN_STYLE[ch];
-      if (at === reopenPos && reStyle && openStack.length) {
+      // (the WEB itself spaces a re-opener run — `“ ‘Six days…` — so whitespace
+      // between the glyphs of one run is allowed)
+      if (reopenPos >= 0 && at >= reopenPos && reStyle && openStack.length && /^\s*$/.test(raw.slice(reopenPos, at))) {
         let idx = -1;
         for (let i = reopenIdx; i < openStack.length; i++) { if (openStack[i].style === reStyle) { idx = i; break; } }
         if (idx !== -1) {
