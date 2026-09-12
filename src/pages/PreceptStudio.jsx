@@ -65,6 +65,35 @@ export default function PreceptStudio() {
     } catch (e) { console.warn('precept review failed', e); }
   }, []);
 
+  // ── add a precept by hand ("Genesis 1:1" → "Jubilees 2:1") ─────────────
+  // Any book of the corpus, by the name the reader shows for it; the pair is
+  // stored as a 'manual' review, so it shows in the reader immediately and
+  // survives every rebuild of precepts.db.
+  const [addFrom, setAddFrom] = useState('');
+  const [addTo, setAddTo] = useState('');
+  const [addMsg, setAddMsg] = useState('');
+  const parseRef = useCallback((str) => {
+    const m = /^\s*(.+?)\s+(\d+)[:.](\d+)\s*$/.exec(str || '');
+    if (!m) return null;
+    const want = m[1].toLowerCase().replace(/^psalm$/, 'psalms');
+    const b = order.find(mb => String(mb.name || '').toLowerCase() === want)
+           || order.find(mb => String(mb.name || '').toLowerCase().startsWith(want));
+    const id = b ? (b.id ?? b.book_id ?? b.canon_id) : null;
+    return id ? { book: id, chapter: +m[2], verse: +m[3], name: b.name } : null;
+  }, [order]);
+  const addPrecept = useCallback(async (e) => {
+    e.preventDefault();
+    const from = parseRef(addFrom), to = parseRef(addTo);
+    if (!from || !to) { setAddMsg('Write both as "Book chapter:verse" — e.g. Genesis 1:1'); return; }
+    if (from.book === to.book && from.chapter === to.chapter && from.verse === to.verse) { setAddMsg('A verse cannot be its own precept.'); return; }
+    try {
+      await apiPreceptReview({ book: from.book, chapter: from.chapter, verse: from.verse }, { book: to.book, chapter: to.chapter, verse: to.verse }, 'manual');
+      setAddMsg(`Added ${refLabel(from.name, from.chapter, from.verse)} ↔ ${refLabel(to.name, to.chapter, to.verse)}.`);
+      setAddFrom(''); setAddTo('');
+      setList(prev => ({ total: prev.total + 1, items: [{ from: { ...from, text: '' }, to: { ...to, text: '' }, kind: 'manual', score: 0, status: 'manual' }, ...prev.items] }));
+    } catch (err) { setAddMsg(`Could not add: ${err.message || err}`); }
+  }, [addFrom, addTo, parseRef]);
+
   const [q, setQ] = useState('');
   const books = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -117,20 +146,32 @@ export default function PreceptStudio() {
             </label>
           </div>
 
+          {isAdmin && (
+            <form className="ps-add" onSubmit={addPrecept}>
+              <span className="ps-add-label">Add a precept</span>
+              <input value={addFrom} onChange={e => setAddFrom(e.target.value)} placeholder="Genesis 1:1" aria-label="From verse" />
+              <span aria-hidden="true">↔</span>
+              <input value={addTo} onChange={e => setAddTo(e.target.value)} placeholder="Jubilees 2:1" aria-label="To verse" />
+              <button type="submit" disabled={!addFrom.trim() || !addTo.trim()}>Add</button>
+              {addMsg && <span className="ps-add-msg">{addMsg}</span>}
+            </form>
+          )}
+
           {loading && <div className="ps-wait">Loading…</div>}
           {!loading && !list.items.length && <div className="ps-wait">{meta && !meta.enabled ? 'precepts.db has not been built yet — run server/build-precepts.mjs.' : 'Nothing here.'}</div>}
           {list.items.map((it, i) => (
-            <article className={`ps-pair ${it.status || ''}`} key={`${it.from.book}:${it.from.chapter}:${it.from.verse}|${it.to.book}:${it.to.chapter}:${it.to.verse}`}>
+            <article className={`ps-pair ${it.status === 'manual' ? 'confirmed' : (it.status || '')}`} key={`${it.from.book}:${it.from.chapter}:${it.from.verse}|${it.to.book}:${it.to.chapter}:${it.to.verse}`}>
               <div className="ps-pair-head">
                 <span className={`pc-kind ${it.kind}`}>{KIND_LABEL[it.kind] || it.kind}</span>
                 <span className="ps-score" title="rarity-weighted shared phrases">{it.score}</span>
                 {it.status === 'confirmed' && <span className="pc-status">✓ confirmed</span>}
+                {it.status === 'manual' && <span className="pc-status">✓ added by hand</span>}
                 {it.status === 'rejected' && <span className="pc-status rejected">rejected</span>}
                 {isAdmin && (
                   <span className="pc-review">
-                    {it.status !== 'confirmed' && <button type="button" title="Confirm" onClick={() => review(it, 'confirmed')}>✓</button>}
-                    {it.status !== 'rejected' && <button type="button" title="Reject — hide from readers" onClick={() => review(it, 'rejected')}>✗</button>}
-                    {it.status && <button type="button" title="Clear review" onClick={() => review(it, 'clear')}>↺</button>}
+                    {it.status !== 'confirmed' && it.status !== 'manual' && <button type="button" title="Confirm" onClick={() => review(it, 'confirmed')}>✓</button>}
+                    {it.status !== 'rejected' && <button type="button" title={it.status === 'manual' ? 'Remove this hand-added precept' : 'Reject — hide from readers'} onClick={() => review(it, it.status === 'manual' ? 'clear' : 'rejected')}>✗</button>}
+                    {it.status && it.status !== 'manual' && <button type="button" title="Clear review" onClick={() => review(it, 'clear')}>↺</button>}
                   </span>
                 )}
               </div>

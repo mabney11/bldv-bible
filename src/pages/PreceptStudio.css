@@ -61,3 +61,11 @@
   .ps-side { position: static; max-height: 180px; }
   .ps-pair-body { grid-template-columns: 1fr; }
 }
+
+.ps-add { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0 12px; padding: 10px 12px; border: 1px dashed var(--border2); border-radius: 10px; font-size: 13px; color: var(--text3); }
+.ps-add-label { font-weight: 600; color: var(--text2); }
+.ps-add input { width: 160px; padding: 6px 8px; font-size: 13px; color: var(--text); background: var(--bg2); border: 1px solid var(--border2); border-radius: 6px; }
+.ps-add input:focus { outline: none; border-color: var(--gold); }
+.ps-add button { padding: 6px 12px; font-size: 13px; font-weight: 600; border-radius: 6px; border: 0; background: var(--blue2); color: #fff; cursor: pointer; }
+.ps-add button:disabled { opacity: .4; cursor: default; }
+.ps-add-msg { color: var(--text2); }

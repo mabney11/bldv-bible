@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { apiBookOrder, apiTransChapter, apiTransBookText, apiTokens, apiSourceChapter, apiSourceVerse, apiHeadings, apiPrecepts, apiPreceptReview } from '../lib/api.js';
 import { getAdminStatus } from '../lib/localOverlay.js';
-import PreceptList from '../components/Precepts.jsx';
+import PreceptList, { groupPrecepts, refLabel } from '../components/Precepts.jsx';
 import { remapDisplayChapterToSource, remapSourceVerseToDisplay } from '../lib/sourceVerseRemap.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
@@ -785,6 +785,21 @@ function splitScriptureQuote(raw) {
 // highlight the FULL cited range (Psalm 85:10 AND :11), not just the first
 // verse — see the verse-range highlight effect in Reader() for the landing
 // side of this.
+// The passage an embedded quotation most likely comes from, read off the
+// verse's precepts: the strongest range of kind quote (a confirmed one
+// first), never a rejected one. Returns the same shape scripture-citations.json
+// entries have, so renderScriptureQuote treats both alike.
+function preceptCitation(items) {
+  if (!items || !items.length) return null;
+  const live = items.filter(it => it.status !== 'rejected' && (it.kind === 'quote' || it.kind === 'manual' || it.kind === 'xref'));
+  if (!live.length) return null;
+  const ranges = groupPrecepts(live).flatMap(g => g.ranges.map(r => ({ ...r, name: g.name })));
+  const rank = r => (r.status === 'confirmed' ? 0 : 1);
+  ranges.sort((a, b) => rank(a) - rank(b) || b.score - a.score || (b.verseEnd - b.verse) - (a.verseEnd - a.verse));
+  const best = ranges[0];
+  return { book: best.book, chapter: best.chapter, verseStart: best.verse, verseEnd: best.verseEnd !== best.verse ? best.verseEnd : null,
+           label: refLabel(best.name, best.chapter, best.verse, best.verseEnd) };
+}
 function renderScriptureQuote(q, mode, key, citation, idToSlug) {
   const body = (
     <>
@@ -2066,7 +2081,11 @@ export default function Reader() {
                         const after = q.after
                           ? renderQuoteTree(sliceQuoteTree(bookQuoteScan.tree, beforeEnd + 1, range.end), glossMode, `v${vnum}a-`)
                           : null;
-                        const citation = citations[`${book}:${chapter}:${vnum}`] || null;
+                        // A hand-curated citation wins; otherwise the verse's
+                        // strongest quote-kind precept (confirmed first) names
+                        // the passage the embedded quotation comes from — the
+                        // automatic version of scripture-citations.json.
+                        const citation = citations[`${book}:${chapter}:${vnum}`] || preceptCitation(precepts[vnum]);
                         const out = [];
                         if (before) out.push(...before);
                         out.push(renderScriptureQuote(q, glossMode, 'sq', citation, idToSlug));

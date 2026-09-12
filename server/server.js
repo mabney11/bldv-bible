@@ -11931,9 +11931,29 @@ app.get('/api/precepts/list', (req, res) => {
                 reviews.set(`${r.to_book}:${r.to_chapter}:${r.to_verse}|${r.from_book}:${r.from_chapter}:${r.from_verse}`, r.status);
             }
         } catch {}
-        const withStatus = rows.map(r => ({ r, status: reviews.get(`${r.from_book}:${r.from_chapter}:${r.from_verse}|${r.to_book}:${r.to_chapter}:${r.to_verse}`) || null }))
+        let withStatus = rows.map(r => ({ r, status: reviews.get(`${r.from_book}:${r.from_chapter}:${r.from_verse}|${r.to_book}:${r.to_chapter}:${r.to_verse}`) || null }));
+        // Hand-added precepts (status 'manual') have no precepts.db row — add
+        // them in ahead of everything, oriented like the auto rows.
+        if (kind === 'any' || kind === 'manual') {
+            try {
+                const have = new Set(withStatus.map(x => `${x.r.from_book}:${x.r.from_chapter}:${x.r.from_verse}|${x.r.to_book}:${x.r.to_chapter}:${x.r.to_verse}`));
+                const manual = translationDb.tdb.prepare(`SELECT * FROM precept_reviews WHERE status='manual'`).all();
+                const extra = [];
+                for (const m of manual) {
+                    let a = { b: m.from_book, c: m.from_chapter, v: m.from_verse }, z = { b: m.to_book, c: m.to_chapter, v: m.to_verse };
+                    if (book) { if (a.b !== book && z.b === book) [a, z] = [z, a]; if (a.b !== book || (chapter && a.c !== chapter)) continue; }
+                    else if (a.b > z.b || (a.b === z.b && (a.c > z.c || (a.c === z.c && a.v > z.v)))) [a, z] = [z, a];
+                    const key = `${a.b}:${a.c}:${a.v}|${z.b}:${z.c}:${z.v}`;
+                    if (have.has(key)) continue;
+                    have.add(key);
+                    extra.push({ r: { from_book: a.b, from_chapter: a.c, from_verse: a.v, to_book: z.b, to_chapter: z.c, to_verse: z.v, kind: 'manual', score: 0, shared: 0, run: 0, source: 'studio' }, status: 'manual' });
+                }
+                withStatus = extra.concat(withStatus);
+            } catch { /* no reviews table yet */ }
+        }
+        withStatus = withStatus
             .filter(x => admin || x.status !== 'rejected')
-            .filter(x => status === 'any' ? true : status === 'unreviewed' ? !x.status : x.status === status);
+            .filter(x => status === 'any' ? true : status === 'unreviewed' ? !x.status : status === 'confirmed' ? (x.status === 'confirmed' || x.status === 'manual') : x.status === status);
         const page = withStatus.slice(offset, offset + limit).map(({ r, status }) => ({
             from: { book: r.from_book, chapter: r.from_chapter, verse: r.from_verse, name: canonName(r.from_book), text: preceptSnippet(r.from_book, r.from_chapter, r.from_verse) },
             to:   { book: r.to_book,   chapter: r.to_chapter,   verse: r.to_verse,   name: canonName(r.to_book),   text: preceptSnippet(r.to_book, r.to_chapter, r.to_verse) },
