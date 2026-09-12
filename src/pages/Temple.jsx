@@ -253,7 +253,7 @@ export default function Temple() {
             </div>
           </div>
           )}
-          <p className="st-hint">{use3d && !roam ? 'Drag to look around, scroll to zoom, right-drag to pan; move the timeline and the story takes the camera back; "refocus" recentres on your chosen part, or on the story. ' : ''}<Glossed text="Tap a part, a chip under it, or a word in the text for its measures and verses — one amah (cubit) in the text is one unit in the model." /></p>
+          <p className="st-hint">{use3d && !roam ? 'Left-drag to orbit, scroll to zoom, right-drag to pan — the view only moves when you move it. A click on a part opens its card where you stand; a chip or a word flies to it; move the timeline and the story takes the camera back; "refocus" recentres. ' : ''}<Glossed text="Tap a part, a chip under it, or a word in the text for its measures and verses — one amah (cubit) in the text is one unit in the model." /></p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Parts &amp; verses ↑</button>
         </section>
 

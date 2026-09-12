@@ -38,7 +38,7 @@ import {
   MODES, ROAM_EYE, ROAM_START, ROAM_ENTER, PILLAR, WEST_X, PORCH_X1, OUTER_Z, EAST_X, ALTAR, INNER_COURT, GREAT_COURT,
 } from '../lib/models/temple.js';
 
-const SKIN_TONES = ['#f0d3a9', '#daa86b', '#be8349', '#63371c', '#b0733d', '#916035', '#683f23', '#5e341c', '#4e2e19', '#512b16'];   // Reuben, Simeon, Levi, Judah, Zebulun, Dan, Gad, Asher, Naphtali, Ephraim
+const SKIN_TONES = ['#be8349', '#b0733d', '#916035', '#683f23', '#63371c', '#5e341c', '#512b16', '#4e2e19'];   // light brown → dark brown (Levi, Zebulun, Dan, Gad, Judah, Asher, Ephraim, Naphtali) — the two palest tones of the chart dropped: "between light-brown, brown, and dark brown"
 const HAIR_TONES = ['#15100d', '#1e1410', '#2a1a12', '#33200f', '#3d2614'];   // black to dark brown — everyone (fieldy)
 const SKY = 0xb9cfe3;          // a dry, bright morning over Mawarayah
 const XRAY_ROLES = new Set(['roof', 'south', 'tower', 'lintel', 'ceiling', 'slab']);
@@ -1227,7 +1227,7 @@ function buildDedication(M, byId, lights, sky) {
   const singerProtos = [person('linen', 'trumpet'), person('linen', 'stand'), person('linen', 'trumpet'), person('linen', 'stand'), person('linen', 'trumpet')];
   for (let r = 0; r < 3; r++) for (let i = 0; i < 12; i++) { const c = singerProtos[(r * 12 + i) % singerProtos.length].clone(); const z = (i < 6 ? -19 + i * 2.4 : 6.6 + (i - 6) * 2.4) + (r % 2) * 1.2; c.position.set(ALTAR.x + ALTAR.w / 2 + 3 + r * 2.2, H.courtY, z); c.rotation.y = Math.PI; singers.add(c); }   // two blocks, the king's road between
   // the king: standing with hands spread, then kneeling, on the kayawar
-  const kingStand = person('royal', 'spread', 'skin3'), kingKneel = person('royal', 'kneel', 'skin3');   // of Yahawadah (Judah)
+  const kingStand = person('royal', 'spread', 'skin4'), kingKneel = person('royal', 'kneel', 'skin4');   // of Yahawadah (Judah)
   for (const k of [kingStand, kingKneel]) { k.position.set(ALTAR.x + 19, H.courtY + 3.3, 0); k.rotation.y = Math.PI; k.visible = false; group.add(k); }
   // the assembly: an instanced crowd in the courts (body + head as one geometry)
   const body = new THREE.CapsuleGeometry(0.55, 1.9, 4, 10); body.translate(0, 1.5, 0);
@@ -1666,10 +1666,11 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     // Tap vs drag
     const ray = new THREE.Raycaster(); const ndc = new THREE.Vector2(); let down = null;
     const pickables = () => [...groups.values()].filter((g) => g.visible && g.userData.id !== 'house');
-    const onDown = (e) => { down = { x: e.clientX, y: e.clientY }; };
+    let stillSelect = null;   // a selection made by tapping the view: the camera stays put (the chips, the words and "refocus" fly)
+    const onDown = (e) => { down = { x: e.clientX, y: e.clientY, at: performance.now(), button: e.button }; };
     const onUp = (e) => {
-      if (!down) return; const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y); down = null;
-      if (moved > 8) return;
+      if (!down) return; const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y), held = performance.now() - down.at, button = down.button; down = null;
+      if (moved > 10 || held > 350 || button !== 0) return;   // a drag, a hold, or a right/middle button: the viewer was moving the view, not choosing
       const r = renderer.domElement.getBoundingClientRect();
       ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       ray.setFromCamera(ndc, camera);
@@ -1677,7 +1678,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       let o = hit?.object; while (o && !o.userData.id) o = o.parent;
       const id = o?.userData.id || null;
       if (roam.on && id && id === currentSel && roamGo(id)) { dirty = true; return; }   // the second tap on a door: open it and go through
-      onSelect?.(id);
+      stillSelect = id; onSelect?.(id);
     };
     let hoverT = 0;
     const onMove = (e) => {
@@ -1705,7 +1706,8 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       if (roamStep(dt)) dirty = true;
       if (stepFlight(now)) dirty = true;
       if (!roam.on && controls.update()) dirty = true;
-      if (!roam.on && !following && !flight && xrayAt(modeRef.current, clock.t) < 0.5) {   // never through a wall: pull the eye in to the first solid between the target and it
+      const inHouse = (p) => p.x > WEST_X - 1 && p.x < PORCH_X1 + 1 && Math.abs(p.z) < OUTER_Z + 1 && p.y < H.porchH;
+      if (!roam.on && !following && !flight && xrayAt(modeRef.current, clock.t) < 0.5 && (inHouse(camera.position) || inHouse(controls.target))) {   // never through a wall INSIDE the house; out in the courts the walls are low and the eye is free (pulling it in there dropped it into the crowd)
         const off = probe.copy(camera.position).sub(controls.target), dist = off.length();
         if (dist > 0.5) {
           rRay.set(controls.target, off.normalize()); rRay.far = dist; rRay.near = 0;
@@ -1747,7 +1749,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       setTimeout(() => window.__templeExport(pid, which), 4500);   // after the sculpted parts have had time to arrive
     }
     api.current = {
-      select: (id) => { const changed = id !== currentSel; applySelection(id); if (roam.on) { dirty = true; return; } if (changed && id) flyTo(id); if (changed && !id) setFollow(true); dirty = true; },
+      select: (id) => { const changed = id !== currentSel; applySelection(id); if (roam.on) { dirty = true; return; } const still = stillSelect === id; stillSelect = null; if (changed && id && !still) flyTo(id); if (changed && !id && !still) setFollow(true); dirty = true; },
       follow: () => { if (roam.on) return; setFollow(true); lastT = -1; },
       refocus: () => { if (roam.on) return; if (currentSel) flyTo(currentSel); else { setFollow(true); lastT = -1; } dirty = true; },
       modeChanged: () => { const free = !!MODES[modeRef.current]?.free; if (free !== roam.on) roamEnter(free); lastT = -1; if (!free) setFollow(true); dirty = true; },
