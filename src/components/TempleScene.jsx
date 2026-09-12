@@ -398,12 +398,12 @@ function buildCherub(b, part, mat = 'gold') {
 
 /**
  * The figure itself, at scale `s` (= height / 10), wings `wing` long, one to `side`;
- * `tilt` raises both wings from level (0 = straight out, as in the dabayar; ~1.0 = up).
- * `curl` (a radius) makes the wings instead rise from the shoulders and arch forward
- * over whatever the figure faces — a quarter circle each, so two figures facing each
- * other close a hoop between them, as on the kaparath. Built into `sub`; the caller bakes.
+ * The wings root in the back and follow a spine: by default up over the shoulder and
+ * out level to the tip at `wing` (the dabayar); `spine` overrides the path with its
+ * own points (in units of s, z to the wing's side) — the ark's wings come forward and
+ * down over the seat like an umbrella. Built into `sub`; the caller bakes.
  */
-function cherubFigure(sub, b, s, wing, side, mat, tilt, curl = 0) {
+function cherubFigure(sub, b, s, wing, side, mat, tilt, spinePts = null) {
   const ellipsoid = (px, py, pz, rx, ry, rz, rotX = 0, rotY = 0, rotZ = 0, seg = 14) => {
     const geo = new THREE.SphereGeometry(1, seg, Math.max(8, seg - 4)); geo.scale(rx, ry, rz);
     if (rotX) geo.rotateX(rotX); if (rotY) geo.rotateY(rotY); if (rotZ) geo.rotateZ(rotZ);
@@ -471,56 +471,21 @@ function cherubFigure(sub, b, s, wing, side, mat, tilt, curl = 0) {
   // ── feet
   for (const sz of [-1, 1]) { sub.box(0.3 * s, 0, sz * 0.5 * s, 1.0 * s, 0.32 * s, 0.55 * s, mat); ellipsoid(0.8 * s, 0.16 * s, sz * 0.5 * s, 0.3 * s, 0.16 * s, 0.28 * s); }
   const shoulderY = 7.3 * s;
-  if (curl) {
-    // ── the wings as a canopy: each sweeps out from the shoulder and round in a
-    // quarter circle (in plan) about a point `curl` in front of the figure, staying
-    // low — a ring of feathers COVERING what is before it, not a hoop above it. Two
-    // figures facing each other across that point close the ring, wing tip to wing
-    // tip at the sides. Each wing is a band of lengthwise blades at different radii;
-    // the inner ones reach the tip, the outer stop short, so the ring's rim swells
-    // mid-wing and the inside stays round.
-    const cx = curl, sx0 = 0.1 * s, zsh = 0.9 * s;
-    const R = Math.hypot(cx - sx0, zsh), a0 = Math.atan2(zsh, sx0 - cx), span = a0 - Math.PI / 2, arc = R * span;
-    const lay = (geo, dir, rho, rise) => {           // a blade along +z (x thick, y wide): z → angle round the ring, y → radius, x → height
-      const p = geo.attributes.position, v = new THREE.Vector3();
-      for (let i = 0; i < p.count; i++) {
-        v.fromBufferAttribute(p, i);
-        const u = Math.max(0, v.z) / arc, a = a0 - u * span, r = R + rho + v.y;
-        p.setXYZ(i, cx + r * Math.cos(a), shoulderY + rise * Math.sin(u * Math.PI) + v.x, dir * r * Math.sin(a));
-      }
-      geo.computeVertexNormals();
-    };
-    for (const dir of [side, -side]) {
-      for (let j = 0; j < 10; j++) {                 // the blades, inner to outer: the inner ones emerge from under the wing part-way round and reach the tip, the outer stop short
-        const rho = (-1.95 + j * 0.32) * s, inner = Math.max(0, -rho / (1.95 * s)), outer = Math.max(0, rho / (0.93 * s));
-        const start = arc * 0.3 * inner, len = arc * (1 - 0.42 * outer * outer) - start;
-        const geo = new THREE.SphereGeometry(1, 28, 8); geo.scale(0.05 * s, 0.34 * s, len / 2); geo.translate(0, 0, start + len / 2);
-        lay(geo, dir, rho, 0.9 * s); sub.add(geo, mat);
-      }
-      for (let j = 0; j < 6; j++) {                  // coverts over the roots, a layer proud of the blades
-        const len = arc * (0.4 - j * 0.03);
-        const geo = new THREE.SphereGeometry(1, 20, 8); geo.scale(0.05 * s, 0.28 * s, len / 2); geo.translate(0.07 * s, 0, len / 2);
-        lay(geo, dir, (-0.33 + j * 0.24) * s, 0.9 * s); sub.add(geo, mat);
-      }
-      const pts = []; for (let k = 0; k <= 16; k++) { const u = k / 16, a = a0 - u * span, r = R + 0.7 * s; pts.push(new THREE.Vector3(cx + r * Math.cos(a), shoulderY + 0.9 * s * Math.sin(u * Math.PI) + 0.04 * s, dir * r * Math.sin(a))); }
-      sub.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 32, 0.09 * s, 8, false), mat);   // the spar along the outer edge
-      ellipsoid(0.2 * s, shoulderY - 0.1 * s, dir * 1.1 * s, 0.32 * s, 0.4 * s, 0.6 * s);              // the muscle at the root
-    }
-    return;
-  }
   // ── the wings: rooted in the BACK below the shoulder blades, each rises over the
   // shoulder and arches out to its tip level at the wall — the leading edge is a
   // spine (root → crest above the head's height → tip) and the feathers fan from
   // the root and hang from that spine, so the wing has depth from behind
   const UPV = new THREE.Vector3(0, 1, 0);
   for (const dir of [side, -side]) {
-    const spine = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-0.85 * s, 5.6 * s, dir * 0.55 * s),                        // the root, in the back
-      new THREE.Vector3(-0.75 * s, 7.6 * s, dir * 1.0 * s),                         // rising past the shoulder blade
-      new THREE.Vector3(-0.45 * s, 9.4 * s, dir * 2.1 * s),                         // the crest
-      new THREE.Vector3(-0.1 * s, 8.6 * s, dir * (0.55 * (2.1 * s + wing))),         // falling away outward
-      new THREE.Vector3(0.05 * s, shoulderY, dir * wing),                          // the tip, level, at the wall
-    ], false, 'centripetal', 0.5);
+    const apex = spinePts?.apex ? new THREE.Vector3(spinePts.apex[0] * s, spinePts.apex[1] * s, dir * spinePts.apex[2] * s) : null;   // an umbrella's apex: the feathers drape away from it
+    const pts = (spinePts?.pts || spinePts) || [
+      [-0.85, 5.6, 0.55],                            // the root, in the back
+      [-0.75, 7.6, 1.0],                             // rising past the shoulder blade
+      [-0.45, 9.4, 2.1],                             // the crest
+      [-0.1, 8.6, 0.55 * (2.1 + wing / s)],          // falling away outward
+      [0.05, shoulderY / s, wing / s],               // the tip, level, at the wall
+    ];
+    const spine = new THREE.CatmullRomCurve3(pts.map(([px, py, pz]) => new THREE.Vector3(px * s, py * s, dir * pz * s)), false, 'centripetal', 0.5);
     const L = spine.getLength(), S = new THREE.Vector3(), T = new THREE.Vector3(), N = new THREE.Vector3(), B = new THREE.Vector3();
     const hang = (geo) => {                          // a blade in the fan's own plane (z out along the edge, y down from it, x thick) hung on the spine
       const p = geo.attributes.position, v = new THREE.Vector3();
@@ -528,8 +493,14 @@ function cherubFigure(sub, b, s, wing, side, mat, tilt, curl = 0) {
         v.fromBufferAttribute(p, k);
         const u = Math.min(1, Math.max(0, v.z / L));
         spine.getPointAt(u, S); spine.getTangentAt(u, T);
-        T.y = 0; if (T.lengthSq() < 1e-6) T.set(-1, 0, 0); T.normalize();   // the feathers hang straight down from the spine, whatever its pitch
-        N.copy(UPV); B.crossVectors(N, T);
+        if (apex) {                                  // drape down the dome, away from the apex, along the surface — but hang straight near the root, so the head is not buried
+          N.copy(apex).sub(S); N.addScaledVector(T, -N.dot(T)); if (N.lengthSq() < 1e-6) N.copy(UPV); N.normalize();
+          const w = Math.min(1, Math.max(0, (u - 0.2) / 0.3)); N.multiplyScalar(w).addScaledVector(UPV, 1 - w).normalize();
+        } else {
+          T.y = 0; if (T.lengthSq() < 1e-6) T.set(-1, 0, 0); T.normalize();   // the feathers hang straight down from the spine, whatever its pitch
+          N.copy(UPV);
+        }
+        B.crossVectors(N, T);
         p.setXYZ(k, S.x + B.x * v.x + N.x * v.y, S.y + B.y * v.x + N.y * v.y, S.z + B.z * v.x + N.z * v.y);
       }
       geo.computeVertexNormals();
@@ -570,11 +541,13 @@ function buildArk(b, part) {
   // the kaparath (mercy seat), pure gold, the length and breadth of the chest (25:17)
   sub.box(0, 1.54, 0, 2.5, 0.12, 1.5, 'gold');
   // two cherubim of beaten work at its two ends, facing each other, wings spread upward covering the seat (25:18–20):
-  // each pair sweeps out and round, low over the seat, to meet the other's at the sides — from above, a ring of wings covering the kaparath
+  // each pair rises from the back, over the shoulders, and reaches forward and down over the seat to meet the other's — an umbrella of wings over the kaparath
   for (const sx of [-1, 1]) {
     const c = new THREE.Group(); c.position.set(sx * 0.75, 1.66, 0); c.rotation.y = sx > 0 ? Math.PI : 0;   // each turned to face the other across the seat
     const sub2 = new PieceBuilder(b.M, b.piece);
-    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, 0.75);   // wings swept round the seat's middle, a ring over the kaparath closed by the other's
+    // the same wings as the great cherubim, but from the crest they stretch forward and down over
+    // the seat, spreading wide — an umbrella; the tips meet the other's low over the middle
+    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, { pts: [[-0.85, 5.6, 0.55], [-0.6, 8.0, 1.2], [0.3, 10.6, 2.0], [3.0, 10.5, 2.6], [5.2, 9.3, 2.4], [6.6, 7.8, 1.5]], apex: [6.8, 13.5, 0] });
     c.add(...sub2.bake().children); g.add(c);
   }
   g.add(...sub.bake().children); b.mesh(g);
@@ -1220,7 +1193,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     const camera = new THREE.PerspectiveCamera(42, 1, 0.4, 6000);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true; controls.dampingFactor = 0.08; controls.enablePan = true; controls.screenSpacePanning = false;
-    controls.minDistance = 2; controls.maxDistance = 900; controls.maxPolarAngle = Math.PI / 2 - 0.02;
+    controls.minDistance = 2; controls.maxDistance = 900; controls.maxPolarAngle = Math.PI - 0.02;   // tilt as far as you like — looking up from the floor included
 
     // Light: the sun from the south-east, a warm sky, a cool fill.
     const hemi = new THREE.HemisphereLight(0xdfe8f5, 0x6b5a3e, 0.85); scene.add(hemi);
@@ -1548,6 +1521,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     api.current = {
       select: (id) => { const changed = id !== currentSel; applySelection(id); if (roam.on) { dirty = true; return; } if (changed && id) flyTo(id); if (changed && !id) setFollow(true); dirty = true; },
       follow: () => { if (roam.on) return; setFollow(true); lastT = -1; },
+      refocus: () => { if (roam.on) return; if (currentSel) flyTo(currentSel); else { setFollow(true); lastT = -1; } dirty = true; },
       modeChanged: () => { const free = !!MODES[modeRef.current]?.free; if (free !== roam.on) roamEnter(free); lastT = -1; if (!free) setFollow(true); dirty = true; },
       move: (key, on) => { if (on) roam.keys.add(key); else roam.keys.delete(key); },
       invalidate: () => { dirty = true; },

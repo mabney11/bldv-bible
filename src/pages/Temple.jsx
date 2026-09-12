@@ -200,7 +200,7 @@ export default function Temple() {
                   ))}
                 </div>
               )}
-              {use3d && !roam && !following && <button type="button" className="tp-follow" onClick={() => { select(null); sceneApi.current?.follow?.(); }} title="Hand the camera back to the story">⟲ follow the story</button>}
+              {use3d && !roam && !following && <button type="button" className="tp-follow" onClick={() => sceneApi.current?.refocus?.()} title={sel ? 'Recentre on the chosen part' : 'Recentre on where the story is'}>⌖ refocus</button>}
               <div className="st-strip" role="toolbar" aria-label="Parts of the house">
                 {CHIP_ORDER.map((id) => pieceById(id)).filter(Boolean).map((p) => (
                   <button key={p.id} type="button" className={`st-chip${sel === p.id ? ' on' : ''}`} onClick={() => select(sel === p.id ? null : p.id)} title={p.title}>
@@ -241,7 +241,7 @@ export default function Temple() {
             </div>
           </div>
           )}
-          <p className="st-hint">{use3d && !roam ? 'Drag to look around, scroll to zoom, right-drag to pan; the story takes the camera back whenever you move the timeline (or choose "follow"). ' : ''}<Glossed text="Tap a part, a chip under it, or a word in the text for its measures and verses — one amah (cubit) in the text is one unit in the model." /></p>
+          <p className="st-hint">{use3d && !roam ? 'Drag to look around, scroll to zoom, right-drag to pan; move the timeline and the story takes the camera back; "refocus" recentres on your chosen part, or on the story. ' : ''}<Glossed text="Tap a part, a chip under it, or a word in the text for its measures and verses — one amah (cubit) in the text is one unit in the model." /></p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Parts &amp; verses ↑</button>
         </section>
 
