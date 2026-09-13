@@ -19,7 +19,8 @@ export default function TempleIndex() {
   if (MODES[mode] || params.get('piece') || params.get('view')) {
     const q = new URLSearchParams(params); q.delete('mode');
     const qs = q.toString();
-    return <Navigate to={`/models/temple/${MODES[mode] ? mode : 'walk'}${qs ? `?${qs}` : ''}`} replace />;
+    let last = null; try { last = sessionStorage.getItem('temple-story'); } catch { /* fine */ }   // a ?piece link lands in the story last open (on foot stays on foot), else the walk
+    return <Navigate to={`/models/temple/${MODES[mode] ? mode : MODES[last] ? last : 'walk'}${qs ? `?${qs}` : ''}`} replace />;
   }
   return (
     <div className="models-page tp-index">

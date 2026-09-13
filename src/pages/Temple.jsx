@@ -132,6 +132,8 @@ export default function Temple() {
   const canGL = useMemo(webglAvailable, []);
   const view = VIEWS.includes(params.get('view')) ? params.get('view') : (canGL ? '3d' : '2d');
   const mode = MODES[story] ? story : 'walk';
+  useEffect(() => { if (MODES[story]) { try { sessionStorage.setItem('temple-story', story); } catch { /* fine */ } } }, [story]);
+  const [lock, setLock] = useState(null);   // on foot: { on, why } — a word under the view on whether the mouse is taken
   const [glOk, setGlOk] = useState(true);
   const sel = PIECE_IDS.includes(params.get('piece')) ? params.get('piece') : null;
   const sceneApi = useRef(null);
@@ -181,7 +183,7 @@ export default function Temple() {
   });
   const marks = useMemo(() => marksFor(mode), [mode]);
   const storyOf = storyFor(mode);
-  if (!MODES[story]) return <Navigate to={`/models/temple${params.toString() ? `?${params}` : ''}`} replace />;
+  if (!MODES[story]) { let last = null; try { last = sessionStorage.getItem('temple-story'); } catch { /* fine */ } return <Navigate to={MODES[last] ? `/models/temple/${last}${params.toString() ? `?${params}` : ''}` : `/models/temple${params.toString() ? `?${params}` : ''}`} replace />; }
 
   return (
     <div className={`st-page tp-page${sheetOpen ? ' st-sheet-open' : ''}`}>
@@ -209,7 +211,7 @@ export default function Temple() {
           <div className="st-stagebox">
             <div className="st-stage tp-stage">
               {use3d
-                ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><TempleScene clock={clock} mode={mode} selected={sel} onSelect={select} onFollow={setFollowing} apiRef={sceneApi} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
+                ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><TempleScene clock={clock} mode={mode} selected={sel} onSelect={select} onFollow={setFollowing} onLock={(on, why) => setLock({ on, why, at: Date.now() })} apiRef={sceneApi} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
                 : <TempleSheet clock={clock} mode={mode} selected={sel} onSelect={select} />}
               {use3d && roam && (
                 <div className="tp-pad" aria-label="Walk">
@@ -235,7 +237,7 @@ export default function Temple() {
 
           {roam ? (
             <div className="st-player tp-roambar">
-              <span className="tp-roam-hint">{!use3d ? 'The plan and section show the finished house; switch to 3D to walk it.' : COARSE ? 'Left thumb on the view: a stick to walk · right thumb: drag to look · tap a part for its details · tap a door again to go through it' : 'Click the view to take the mouse and look around (Esc gives it back) · W A S D or the arrows to walk, ← → turn, Shift to hurry · click a part for its details · click a door again to go through it'}</span>
+              <span className="tp-roam-hint">{!use3d ? 'The plan and section show the finished house; switch to 3D to walk it.' : COARSE ? 'Left thumb on the view: a stick to walk · right thumb: drag to look · tap a part for its details · tap a door again to go through it' : lock?.on ? 'The mouse is yours: move it to look, W A S D or the arrows to walk (Shift to hurry), click what the crosshair is on for its details, a door twice to go through · Esc gives the mouse back' : lock?.why ? `The browser would not hand over the mouse (${lock.why}) — drag the view to look instead · W A S D or the arrows to walk · click a part for its details` : 'Click the view to take the mouse and look around (Esc gives it back) · W A S D or the arrows to walk, ← → turn, Shift to hurry · click a part for its details · click a door again to go through it'}</span>
             </div>
           ) : (
           <div className="st-player">

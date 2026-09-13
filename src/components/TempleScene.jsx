@@ -1395,10 +1395,11 @@ function exportGlb(obj, name, toFileFrame = false) {
 /** Where the viewer last stood on foot (position, yaw, pitch) — kept while the page lives, so opening a card, a re-mount or a
  *  switch of view never sends them back to the gate ("don't move me back to the beginning"). */
 let ROAM_MEMO = null;
+try { ROAM_MEMO = JSON.parse(sessionStorage.getItem('temple-roam') || 'null'); } catch { /* no storage: the gate it is */ }
 const COARSE = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;   // a touch screen: the thumb stick + a look drag instead of the mouse
 
 // ── The component ────────────────────────────────────────────────────────────
-export default function TempleScene({ clock, mode, selected, onSelect, onReady, onFollow, apiRef }) {
+export default function TempleScene({ clock, mode, selected, onSelect, onReady, onFollow, onLock, apiRef }) {
   const wrap = useRef(null);
   const api = useRef(null);
   const modeRef = useRef(mode); modeRef.current = mode;
@@ -1642,7 +1643,11 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       const wantY = roam.foot + ROAM_EYE; camera.position.y += (wantY - camera.position.y) * Math.min(1, dt * 10);
       roam.moving = true; aimCamera(); remember(); return true;
     }
-    function remember() { ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, open: { ...roam.want } }; }
+    let memoAt = 0;
+    function remember() {
+      ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, open: { ...roam.want } };
+      const now = performance.now(); if (now - memoAt > 1000) { memoAt = now; try { sessionStorage.setItem('temple-roam', JSON.stringify(ROAM_MEMO)); } catch { /* fine */ } }   // a reload keeps the spot too
+    }
     function roamEnter(on) {
       roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.glide = null; controls.enabled = !on;
       renderer.domElement.style.cursor = on ? 'crosshair' : 'grab';
@@ -1677,7 +1682,16 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
     const cross = document.createElement('div'); cross.className = 'tp-cross'; el.appendChild(cross);                      // the crosshair, while the mouse is taken
     const stickEl = document.createElement('div'); stickEl.className = 'tp-stick'; stickEl.innerHTML = '<div class="tp-stick-knob"></div>'; el.appendChild(stickEl);
     const knobEl = stickEl.firstChild, STICK_R = 44;
-    function setLocked(v) { locked = v; cross.hidden = !v; el.classList.toggle('tp-locked', v); }
+    function setLocked(v) { locked = v; cross.hidden = !v; el.classList.toggle('tp-locked', v); onLock?.(v); }
+    let lockFailed = false;
+    function takeMouse() {
+      // Chrome returns a promise (rejects when the page is not the active document, when no user gesture is seen, or when the user
+      // pressed Esc a moment ago); older browsers return nothing and fire pointerlockerror. Either way the drag-look still works.
+      let p; try { p = renderer.domElement.requestPointerLock(); } catch { p = null; }
+      if (p && typeof p.catch === 'function') p.catch((err) => { lockFailed = true; onLock?.(false, err?.name || 'error'); });
+    }
+    const onLockError = () => { lockFailed = true; onLock?.(false, 'error'); };
+    document.addEventListener('pointerlockerror', onLockError);
     const onLockChange = () => { setLocked(document.pointerLockElement === renderer.domElement); dirty = true; };
     document.addEventListener('pointerlockchange', onLockChange);
     const turnHead = (dx, dy) => { roam.yaw += dx * 0.0042; roam.pitch = Math.max(-1.45, Math.min(1.45, roam.pitch - dy * 0.0034)); aimCamera(); remember(); dirty = true; };
@@ -1729,7 +1743,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       if (!down) return; const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y), held = performance.now() - down.at, button = down.button; down = null;
       if (roam.on && locked) { if (held > 350 || button !== 0) return; }   // the mouse is taken: any click picks what the crosshair is on
       else if (moved > 10 || held > 350 || button !== 0) return;   // a drag, a hold, or a right/middle button: the viewer was moving the view, not choosing
-      if (roam.on && canLock && !locked && e.pointerType === 'mouse') { try { renderer.domElement.requestPointerLock(); } catch { /* not allowed here: the drag still looks */ } }
+      if (roam.on && canLock && !locked && e.pointerType === 'mouse') takeMouse();
       const r = renderer.domElement.getBoundingClientRect();
       if (roam.on && locked) ndc.set(0, 0); else ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       ray.setFromCamera(ndc, camera);
@@ -1836,7 +1850,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       renderer.domElement.removeEventListener('pointercancel', onLookUp);
       renderer.domElement.removeEventListener('wheel', onWheel);
       window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp);
-      document.removeEventListener('pointerlockchange', onLockChange);
+      document.removeEventListener('pointerlockchange', onLockChange); document.removeEventListener('pointerlockerror', onLockError);
       if (document.pointerLockElement === renderer.domElement) document.exitPointerLock?.();
       cross.remove(); stickEl.remove();
       controls.dispose();
