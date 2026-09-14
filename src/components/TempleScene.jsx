@@ -1657,13 +1657,16 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       const piece = PIECES.find((q) => q.id === id); if (!piece) continue;
       for (const part of cutGates(piece).parts) {
         if (PLAN_SKIP.has(part.role)) continue;
-        if (part.kind === 'box' && part.h >= 2.5) plan.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2 });
-        else if (part.kind === 'cyl' && part.r >= 0.8 && part.h >= 2.5) plan.push({ x: part.x, z: part.z, r: part.r });
-        else if (part.kind === 'base') plan.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.w / 2, z1: part.z + part.w / 2, thin: true });
-        else if (part.kind === 'throne') plan.push({ x0: part.x - 3, x1: part.x + 3, z0: part.z - 3, z1: part.z + 3, thin: true });
+        // each thing keeps its height span: the map shows what stands at the walker's own level (a lintel over a gate, or an
+        // upper storey's rooms, must not close a doorway on the ground)
+        const y0 = part.y ?? H.courtY, y1 = y0 + (part.h ?? 3);
+        if (part.kind === 'box' && part.h >= 2.5) plan.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2, y0, y1 });
+        else if (part.kind === 'cyl' && part.r >= 0.8 && part.h >= 2.5) plan.push({ x: part.x, z: part.z, r: part.r, y0, y1 });
+        else if (part.kind === 'base') plan.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.w / 2, z1: part.z + part.w / 2, thin: true, y0, y1: y0 + 4 });
+        else if (part.kind === 'throne') plan.push({ x0: part.x - 3, x1: part.x + 3, z0: part.z - 3, z1: part.z + 3, thin: true, y0, y1: y0 + 6 });
       }
     }
-    plan.push({ x: 58, z: 32, r: 5 }); for (const sz of [-1, 1]) plan.push({ x: PILLAR.x, z: sz * PILLAR.z, r: PILLAR.r });   // the yam (sea), Yakayan and Baiz
+    plan.push({ x: 58, z: 32, r: 5, y0: H.courtY, y1: H.courtY + 8 }); for (const sz of [-1, 1]) plan.push({ x: PILLAR.x, z: sz * PILLAR.z, r: PILLAR.r, y0: H.courtY, y1: 30 });   // the yam (sea), Yakayan and Baiz
     const PLAN_LABELS = [
       [0, 0, 'hayakal'], [-20, 0, 'dabayar'], [40, 0, 'awalam'], [20, -40, 'chatzar'], [76, 0, 'mazabach'], [58, 32, 'yam'], [95, 0, 'kayawar'],
       [129, 0, 'shaar'], [0, -68, 'gadawal chatzar'], [-100, 115, 'bayath yair'], [20, 85, 'awalam of pillars'], [20, 118, 'kasaa'],
@@ -1683,7 +1686,9 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       g.strokeStyle = 'rgba(255, 208, 98, 0.08)'; g.lineWidth = 0.6 / S;
       for (let k = -200; k <= 200; k += 20) { g.beginPath(); g.moveTo(k - px, -200 - pz); g.lineTo(k - px, 200 - pz); g.moveTo(-200 - px, k - pz); g.lineTo(200 - px, k - pz); g.stroke(); }
       g.fillStyle = 'rgba(255, 208, 98, 0.55)';
+      const lo = roam.foot + 0.5, hi = roam.foot + 2.5;   // what stands at his level
       for (const r of plan) {
+        if (r.y0 > hi || r.y1 < lo) continue;
         if (r.r != null) { g.beginPath(); g.arc(r.x - px, r.z - pz, r.r, 0, Math.PI * 2); g.fill(); continue; }
         if (r.x1 - px < -MM_R * 1.5 || r.x0 - px > MM_R * 1.5 || r.z1 - pz < -MM_R * 1.5 || r.z0 - pz > MM_R * 1.5) continue;
         g.globalAlpha = r.thin ? 0.6 : 1; g.fillRect(r.x0 - px, r.z0 - pz, r.x1 - r.x0, r.z1 - r.z0); g.globalAlpha = 1;
