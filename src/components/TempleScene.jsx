@@ -241,6 +241,8 @@ function makeMaterials() {
     plaster: std('plaster', { map: plasterTexture(MATERIALS.plaster.color) }),
     paving: std('paving', { map: pavingTexture(MATERIALS.paving.color, '#6f6449') }),
     garden: std('garden'),
+    rug: new THREE.MeshStandardMaterial({ color: new THREE.Color('#9a5a3a'), roughness: 1, metalness: 0 }),          // a woven rug (photo)
+    'rug-runner': new THREE.MeshStandardMaterial({ color: new THREE.Color('#a2603c'), roughness: 1, metalness: 0 }),
     idealEdge: new THREE.LineBasicMaterial({ color: new THREE.Color('#5d6f8a'), transparent: true, opacity: 0.75 }),   // the drawn edges of what is idealized (idealOf)
     royal: new THREE.MeshStandardMaterial({ color: new THREE.Color('#4a2e7a'), roughness: 0.8, metalness: 0.05 }),   // the malak (king)
     // skin tones across the tribes (fieldy's chart, 2026-09-12): Reuben → Ephraim, light to deep brown
@@ -255,7 +257,7 @@ function makeMaterials() {
   return M;
 }
 // Tile sizes in cubits (u, v) per texture, for the UV scaling of boxes.
-const TILE = { stone: [8, 4], found: [8, 4], cedar: [4, 4], fir: [4, 4], plaster: [4, 4], paving: [4, 4], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], panel: [4, 3] };
+const TILE = { stone: [6, 6], found: [8, 4], cedar: [4, 4], fir: [4, 4], plaster: [5, 5], paving: [4, 4], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], panel: [4, 3] };
 
 /** Scale a BoxGeometry's UVs so a texture tiles every face at world scale. */
 function uvBox(geo, w, h, d, tile) {
@@ -336,7 +338,38 @@ function idealOf(M, matKey) {
   if (!idealCache.hatch) { idealCache.hatch = hatchTexture(); idealCache.hatch.repeat.set(2, 2); }
   const m = base.clone(); m.transparent = false; m.opacity = 1; m.depthWrite = true; m.bumpMap = null; m.emissive = new THREE.Color('#000000');
   m.map = idealCache.hatch; m.color = base.color.clone().lerp(new THREE.Color('#eef0f2'), matKey === 'stone' || matKey === 'plaster' ? 0.35 : 0.2); m.roughness = 1; m.metalness = 0; m.userData.ideal = true;
+  if (photos[matKey]?.hatched) { m.map = photos[matKey].hatched; m.color.set('#ffffff').lerp(new THREE.Color('#eef0f2'), 0.15); }   // the photo, hatched
   c.set(matKey, m); return m;
+}
+
+// ── Photographed surfaces (public/textures/temple/*.jpg, fieldy's) ─────────────
+// Laid over the drawn ones when they arrive: the drawn tile shows until then, so
+// the model never waits on a download. Each photo also gets a hatched twin for
+// the idealized parts (the same picture under the diagonal lines).
+const PHOTOS = { stone: 'stone', cedar: 'cedar', fir: 'cedar', plaster: 'plaster' };   // material key → file
+const photos = {};                                                                        // key → { plain, hatched }
+function hatchOver(img) {
+  return canvas(img.naturalWidth || img.width, img.naturalHeight || img.height, (g, w, h) => {
+    g.drawImage(img, 0, 0, w, h);
+    g.strokeStyle = 'rgba(40,50,70,0.28)'; g.lineWidth = Math.max(1, w / 110);
+    for (let i = -h; i < w + h; i += w / 12) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + h, h); g.stroke(); }
+  });
+}
+function loadPhotos(M, onChange) {
+  const loader = new THREE.TextureLoader();
+  for (const [key, file] of Object.entries(PHOTOS)) {
+    loader.load(`/textures/temple/${file}.jpg`, (tex) => {
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+      const hatched = hatchOver(tex.image);
+      photos[key] = { plain: tex, hatched };
+      if (M[key]) { M[key].map = tex; M[key].color.set(key === 'stone' ? '#e9dfc9' : '#ffffff'); M[key].needsUpdate = true; }   // the limestone a shade warmer than the photo's daylight
+      const ideal = idealCache.get(M)?.get(key); if (ideal) { ideal.map = hatched; ideal.color.set('#ffffff').lerp(new THREE.Color('#eef0f2'), 0.15); ideal.needsUpdate = true; }
+      onChange?.();
+    }, undefined, () => { /* no photo on this server: the drawn tile stays */ });
+  }
+  for (const key of ['rug', 'rug-runner']) {
+    loader.load(`/textures/temple/${key}.jpg`, (tex) => { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; if (M[key]) { M[key].map = tex; M[key].color.set('#ffffff'); M[key].needsUpdate = true; onChange?.(); } }, undefined, () => {});
+  }
 }
 
 /** A box with a doorway cut out of one long side: three boxes (two jambs and a lintel). */
@@ -1495,6 +1528,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
 
     const world = new THREE.Group(); scene.add(world);
     const M = makeMaterials();
+    loadPhotos(M, () => { dirty = true; });
 
     // The mount: a wide plain fading into the haze; the courts lay their own ground.
     const ground = new THREE.Mesh(new THREE.CircleGeometry(1400, 96), M.earth);

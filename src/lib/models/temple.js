@@ -110,6 +110,8 @@ export const MATERIALS = {
   plaster:{ word: 'sid',        color: '#e6dbc4', hi: '#f6efe0', lo: '#b5a88c', metal: 0, rough: 1 },     // lime-washed walls (Deuteronomy 27:2 "plaster them with plaster")
   paving: { word: 'ratzapah',   color: '#b9ab8e', hi: '#d6cbb2', lo: '#7f7359', metal: 0, rough: 0.95 },  // a paved floor
   garden: { word: 'gan',        color: '#5e7d3a', hi: '#8fb35c', lo: '#2f4a1c', metal: 0, rough: 1 },
+  rug:    { word: 'marabad',    color: '#9a5a3a', hi: '#c98a62', lo: '#5a3018', metal: 0, rough: 1 },     // marabadayam (coverings of tapestry), Proverbs 7:16; 31:22
+  'rug-runner': { word: 'marabad', color: '#a2603c', hi: '#cf9068', lo: '#5e341a', metal: 0, rough: 1 },
 };
 
 // ── The house's frame, in cubits ─────────────────────────────────────────────
@@ -258,6 +260,8 @@ function cedarLining(x0, x1, z0, z1, y, h) {
     box(x0 + t / 2, y, (z0 + z1) / 2, t, h, z1 - z0, { mat: 'cedar', role: 'lining' }), box(x1 - t / 2, y, (z0 + z1) / 2, t, h, z1 - z0, { mat: 'cedar', role: 'lining' }),
     box((x0 + x1) / 2, y, (z0 + z1) / 2, x1 - x0, 0.4, z1 - z0, { mat: 'cedar', role: 'floor' }), box((x0 + x1) / 2, y + h - 0.4, (z0 + z1) / 2, x1 - x0, 0.4, z1 - z0, { mat: 'cedar', role: 'ceiling' })];
 }
+/** A woven rug on the floor (marabadayam, Proverbs 7:16; 31:22): a thin slab carrying the photograph once; `which` 'rug' or 'rug-runner'. */
+const rug = (x, z, w, l, which = 'rug', y = Y0) => [box(x, y + 0.3, z, w, 0.08, l, { mat: which, role: 'rug' })];   // a furnishing, shown as itself (not hatched)
 /** A paved floor (idealized) over a room. */
 const paving = (x0, x1, z0, z1, y = Y0) => [ideal(box((x0 + x1) / 2, y, (z0 + z1) / 2, x1 - x0, 0.3, z1 - z0, { mat: 'paving', role: 'pavement' }))];
 
@@ -806,6 +810,7 @@ export const PIECES = [
       out.push(...roofOf(T.x0 - 3, T.x1 + 3, T.z0 - 3, T.z1 + 3, Y0 + T.h - 1.5));
       out.push(...cedarLining(T.x0, T.x1, T.z0, T.z1, Y0, T.h - 1.5).filter((b) => !(b.role === 'lining' && b.d < 1 && b.z < T.z0 + 1)));
       out.push(...portico(T.x0 + 5, T.x1 - 5, T.z0, T.h - 2, 3));
+      out.push(...rug(20, 113, 6, 18, 'rug-runner').map((r) => ({ ...r, y: Y0 + 0.4 })));
       return out;
     })(),
   },
@@ -846,15 +851,15 @@ export const PIECES = [
       const G = 10, U = Y0 + 10;
       out.push(...wallZ(ox0, 108, K.z1, G, 116), ...wallX(135, K.x0, ox0, G, 56), ...wallZ(ox1, 108, K.z1, G, 116), ...wallX(135, ox1, K.x1, G, 104), ...wallX(oz1, ox0, ox1, G, cx));
       out.push(...wallZ(ox0, 135, K.z1, G, 150), ...wallZ(ox1, 135, K.z1, G, 150));
-      out.push(...table(56, 118, 3, 6), ...seat(52, 118), ...seat(60, 118), ...seat(56, 115), ...seat(56, 121), ...lamp(49, 111));
+      out.push(...rug(56, 120, 10, 14), ...table(56, 118, 3, 6), ...seat(52, 118), ...seat(60, 118), ...seat(56, 115), ...seat(56, 121), ...lamp(49, 111));
       out.push(...stair('z', 48, 137, 10, 3), ...jars(59, 152, 6));
-      out.push(...couch(104, 118), ...seat(98, 124), ...table(104, 124, 2.5, 3.5), ...lamp(111, 110), ...jars(97, 152, 9), ...chest(110, 160), ...chest(110, 150));
+      out.push(...rug(104, 121, 9, 12, 'rug-runner'), ...couch(104, 118), ...seat(98, 124), ...table(104, 124, 2.5, 3.5), ...lamp(111, 110), ...jars(97, 152, 9), ...chest(110, 160), ...chest(110, 150));
       out.push(...bed(74, 155, 2.6, 5.5), ...bed(86, 155, 2.6, 5.5));
       out.push(...slab(K.x0, K.x1, K.z0, K.z1, U, [{ x0: ox0 - 3, x1: ox1 + 3, z0: oz0 - 3, z1: oz1 + 3 }, { x0: 46, x1: 50, z0: 142.5, z1: 147 }]));
       out.push(...rail('x', ox0 - 3, ox1 + 3, oz0 - 3, U), ...rail('x', ox0 - 3, ox1 + 3, oz1 + 3, U), ...rail('z', oz0 - 3, oz1 + 3, ox0 - 3, U), ...rail('z', oz0 - 3, oz1 + 3, ox1 + 3, U));
       const H2 = K.h - 10 - 1.5;
       out.push(...wallZ(ox0 - 4, 108, 135, H2, 122, 3, U), ...wallX(135, K.x0, ox0 - 4, H2, null, 3, U), ...wallZ(ox1 + 4, 108, 135, H2, 122, 3, U), ...wallX(135, ox1 + 4, K.x1, H2, null, 3, U), ...wallX(oz1 + 4, ox0 - 4, ox1 + 4, H2, cx, 3, U));
-      out.push(...bed(53, 112, 3.4, 6.5, U), ...table(58, 126, 2.6, 4, U), ...seat(58, 129, U), ...lamp(49, 130, U), ...chest(63, 112, U));
+      out.push(...rug(56, 121, 10, 14, 'rug', U), ...bed(53, 112, 3.4, 6.5, U), ...table(58, 126, 2.6, 4, U), ...seat(58, 129, U), ...lamp(49, 130, U), ...chest(63, 112, U));
       out.push(...bed(108, 112, 3.2, 6, U), ...seat(103, 126, U), ...table(103, 130, 2.2, 3.5, U), ...lamp(111, 130, U));
       out.push(...bed(75, 158, 3, 5.5, U), ...bed(87, 158, 3, 5.5, U), ...lamp(80, 152, U));
       out.push(...stair('x', 46, 152, 10, 3, 1, U));   // from the upper landing, east along it, through the roof
@@ -885,9 +890,9 @@ export const PIECES = [
       out.push(ideal(box(-38, Y0 + 0.05, 130, gx1 - gx0, 0.15, gz1 - gz0, { mat: 'garden', role: 'lawn' })));
       const G = D.h - 1.5;
       out.push(...wallZ(gx0, gz0, gz1, G, 135), ...wallX(135, D.x0, gx0, G), ...wallX(gz0, D.x0, D.x1 - 4, G, -38), ...wallX(gz1, D.x0, D.x1 - 4, G, -46), ...wallZ(gx1, gz0, gz1, G, 122));
-      out.push(...bed(-60, 124, 3.2, 6), ...table(-57, 131, 2.4, 3.6), ...seat(-57, 128), ...lamp(-64, 132), ...chest(-55, 120));
+      out.push(...rug(-59, 127, 8, 12), ...bed(-60, 124, 3.2, 6), ...table(-57, 131, 2.4, 3.6), ...seat(-57, 128), ...lamp(-64, 132), ...chest(-55, 120));
       out.push(...bed(-61, 141, 2.6, 5), ...bed(-61, 150, 2.6, 5), ...chest(-55, 146));
-      out.push(...table(-38, 109, 3, 6), ...seat(-42, 109), ...seat(-34, 109), ...seat(-38, 106), ...seat(-38, 112), ...couch(-22, 110), ...lamp(-14, 106));
+      out.push(...rug(-38, 109, 14, 8, 'rug-runner'), ...table(-38, 109, 3, 6), ...seat(-42, 109), ...seat(-34, 109), ...seat(-38, 106), ...seat(-38, 112), ...couch(-22, 110), ...lamp(-14, 106));
       out.push(...jars(-62, 149, 6), ...jars(-48, 150, 6), ...chest(-40, 152));
       out.push(...stair('x', -50, 150.5, 14, 3));
       return out;
