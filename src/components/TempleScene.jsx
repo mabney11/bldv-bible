@@ -1399,8 +1399,14 @@ try { ROAM_MEMO = JSON.parse(sessionStorage.getItem('temple-roam') || 'null'); }
 const COARSE = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;   // a touch screen: the thumb stick + a look drag instead of the mouse
 
 // ── The component ────────────────────────────────────────────────────────────
-export default function TempleScene({ clock, mode, selected, onSelect, onReady, onFollow, onLock, apiRef }) {
+export default function TempleScene({ clock, mode, selected, onSelect: onSelectProp, onReady, onFollow: onFollowProp, onLock: onLockProp, apiRef }) {
   const wrap = useRef(null);
+  // The scene is built once ([] effect) and lives across the page's re-renders — so its callbacks must always be the page's
+  // CURRENT ones. 2026-09-14: the mount-time onSelect was captured; it carried the page's navigate from the first render (the
+  // guided walk he had opened before pressing "On foot"), so a pick on foot resolved its "?piece=" against /walk and threw the
+  // viewer out of on-foot into the guided story — "when I click a basin I shouldn't be taken out of on foot".
+  const cbs = useRef({}); cbs.current = { onSelect: onSelectProp, onFollow: onFollowProp, onLock: onLockProp };
+  const onSelect = (id) => cbs.current.onSelect?.(id), onFollow = (on) => cbs.current.onFollow?.(on), onLock = (on, why) => cbs.current.onLock?.(on, why);
   const api = useRef(null);
   const modeRef = useRef(mode); modeRef.current = mode;
 
