@@ -243,6 +243,7 @@ function makeMaterials() {
     plaster2: std('plaster2', { map: plasterTexture(MATERIALS.plaster2.color) }),
     paving: std('paving', { map: pavingTexture(MATERIALS.paving.color, '#6f6449') }),
     garden: std('garden'),
+    silver: std('silver'),
     rug: new THREE.MeshStandardMaterial({ color: new THREE.Color('#9a5a3a'), roughness: 1, metalness: 0 }),          // a woven rug (photo)
     'rug-runner': new THREE.MeshStandardMaterial({ color: new THREE.Color('#a2603c'), roughness: 1, metalness: 0 }),
     idealEdge: new THREE.LineBasicMaterial({ color: new THREE.Color('#5d6f8a'), transparent: true, opacity: 0.75 }),   // the drawn edges of what is idealized (idealOf)
@@ -341,6 +342,7 @@ function idealOf(M, matKey) {
   const m = base.clone(); m.transparent = false; m.opacity = 1; m.depthWrite = true; m.bumpMap = null; m.emissive = new THREE.Color('#000000');
   m.map = idealCache.hatch; m.color = base.color.clone().lerp(new THREE.Color('#eef0f2'), matKey === 'stone' || matKey === 'plaster' ? 0.35 : 0.2); m.roughness = 1; m.metalness = 0; m.userData.ideal = true;
   if (photos[matKey]?.hatched) { m.map = photos[matKey].hatched; m.color.set(PHOTO_TINT[matKey] || '#ffffff').lerp(new THREE.Color('#eef0f2'), 0.15); }   // the photo, hatched
+  else if (base.map?.image) { m.map = hatchOver(base.map.image); m.map.repeat.copy(base.map.repeat); m.color = base.color.clone().lerp(new THREE.Color('#eef0f2'), 0.12); }   // a drawn texture (carving, planks), hatched
   c.set(matKey, m); return m;
 }
 
@@ -984,6 +986,7 @@ function buildThrone(b, part) {
   for (let i = 0; i < 6; i++) { const w = W0 - i * 0.45, x0 = X0 + i * RUN, x1 = X0 + 6 * RUN + 1.2; sub.box((x0 + x1) / 2, i * STEP, 0, x1 - x0, STEP, w, 'ivory'); sub.box(x0 + 0.06, (i + 1) * STEP - 0.04, 0, 0.12, 0.05, w + 0.04, 'gold'); }   // a gold nosing on each
   const TOP = 6 * STEP, SX = X0 + 6 * RUN + 0.3;                     // the seat stands on the top tread
   sub.box(SX + 0.5, TOP, 0, 2.2, 0.45, 2.6, 'gold');                                                // the seat
+  sub.box(SX - 1.15, TOP, 0, 1.0, 0.32, 1.6, 'gold'); sub.box(SX - 1.15, TOP + 0.32, 0, 0.8, 0.08, 1.4, 'goldDim');   // the footstool of gold, fastened to the throne (2 Chronicles 9:18)
   sub.box(SX + 0.5, TOP - 0.02, 0, 2.3, 0.08, 2.7, 'ivory');
   for (const sz of [-1, 1]) {                                                                        // the stays (arm-rests): a solid arm with a rounded end and a gold cap
     sub.box(SX + 0.55, TOP + 0.45, sz * 1.2, 1.9, 0.62, 0.28, 'ivory');
@@ -1029,6 +1032,7 @@ function buildPiece(M, piece) {
       case 'lampstand': buildLampstand(b, part); break;
       case 'table': buildTable(b, part); break;
       case 'throne': buildThrone(b, part); break;
+      case 'person': { const g = new THREE.Group(); g.position.set(part.x, part.y ?? H.courtY, part.z); g.rotation.y = part.yaw || 0; const sub = new PieceBuilder(b.M, b.piece); personFigure(sub, part.s || 0.35, part.robe || 'linen', part.pose || 'stand', part.skin || 'skin4', part.hair || 'hair1'); if (part.sword) { sub.box(0.35, 1.2, 0.95, 0.16, 2.6, 0.08, 'brass'); sub.box(0.35, 3.7, 0.95, 0.5, 0.12, 0.12, 'goldDim'); } g.add(...sub.bake().children); b.mesh(g); break; }
       default: break;
     }
   }

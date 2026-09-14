@@ -113,6 +113,7 @@ export const MATERIALS = {
   plaster2:{ word: 'sid',       color: '#d9cfb8', hi: '#ece5d4', lo: '#a89c82', metal: 0, rough: 1 },     // a second plaster, greyer (the forest house's chambers, Pharaoh's daughter's house)
   garden: { word: 'gan',        color: '#5e7d3a', hi: '#8fb35c', lo: '#2f4a1c', metal: 0, rough: 1 },
   rug:    { word: 'marabad',    color: '#9a5a3a', hi: '#c98a62', lo: '#5a3018', metal: 0, rough: 1 },     // marabadayam (coverings of tapestry), Proverbs 7:16; 31:22
+  silver: { word: 'kasap',      color: '#cfd3d8', hi: '#f2f4f6', lo: '#7d838b', metal: 1, rough: 0.35 },
   'rug-runner': { word: 'marabad', color: '#a2603c', hi: '#cf9068', lo: '#5e341a', metal: 0, rough: 1 },
 };
 
@@ -264,6 +265,22 @@ function cedarLining(x0, x1, z0, z1, y, h) {
 }
 /** A woven rug on the floor (marabadayam, Proverbs 7:16; 31:22): a thin slab carrying the photograph once; `which` 'rug' or 'rug-runner'. */
 const rug = (x, z, w, l, which = 'rug', y = Y0) => [box(x, y + 0.3, z, w, 0.08, l, { mat: which, role: 'rug' })];   // a furnishing, shown as itself (not hatched)
+/** The gold drinking vessels of the house of the forest (1 Kings 10:21): cups and bowls on a table (the table is the model's). */
+const vessels = (x, z) => [...table(x, z, 3, 7), ...[[-2.6, -0.8], [-1.6, 0.6], [-0.5, -0.6], [0.6, 0.7], [1.7, -0.7], [2.6, 0.5]].map(([dx, dz]) => cyl(x + dx, Y0 + 1.55, z + dz, 0.28, 0.6, { mat: 'gold', role: 'vessel', r2: 0.36 })),
+  cyl(x + 0.1, Y0 + 1.55, z + 0.05, 0.55, 0.35, { mat: 'gold', role: 'vessel', r2: 0.85 })];
+/** A person standing (faceless, as all the model's people): robe 'linen' | 'royal', yaw = which way they face (0 = +x). */
+const person = (x, z, yaw, robe = 'linen', extra = {}) => [{ kind: 'person', x, z, yaw, robe, skin: `skin${Math.abs(Math.round(x * 3 + z * 7)) % 8}`, hair: `hair${Math.abs(Math.round(x + z)) % 5}`, ...extra }];
+/** Shalamah's palanquin (Song of Songs 3:9–10): a litter of Labanawan cedar, its pillars of silver, its base of gold, its covering of purple. */
+function palanquin(x, z) {
+  const out = [box(x, Y0 + 0.9, z, 5, 0.4, 3, { mat: 'gold', role: 'palanquin' }), box(x, Y0 + 1.3, z, 4.6, 0.5, 2.6, { mat: 'cedar', role: 'palanquin' }),
+    box(x, Y0 + 1.8, z, 4.2, 0.35, 2.2, { mat: 'veil', role: 'palanquin' }), box(x, Y0 + 5.0, z, 5.4, 0.25, 3.4, { mat: 'veil', role: 'palanquin' }), box(x, Y0 + 5.25, z, 5.6, 0.2, 3.6, { mat: 'cedar', role: 'palanquin' })];
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) out.push(cyl(x + sx * 2.2, Y0 + 1.3, z + sz * 1.2, 0.14, 3.7, { mat: 'silver', role: 'palanquin' }));
+  for (const sx of [-1, 1]) out.push(box(x + sx * 3.6, Y0 + 1.0, z, 2.4, 0.18, 0.18, { mat: 'cedar', role: 'palanquin' }));   // the carrying poles
+  for (const sz of [-1, 1]) out.push(box(x, Y0 + 1.6, z + sz * 1.55, 4.4, 3.4, 0.06, { mat: 'veil', role: 'palanquin' }));   // side curtains
+  return out;
+}
+/** Ivory inlay on furniture (Psalm 45:8; Amos 3:15): thin ivory bands along a piece's edges. */
+const inlay = (x, z, w, l, y = Y0) => [ideal(box(x, y + 1.1, z, l + 0.1, 0.1, 0.25, { mat: 'ivory', role: 'inlay' })), ideal(box(x, y + 1.1, z + w / 2 - 0.15, l + 0.1, 0.12, 0.25, { mat: 'ivory', role: 'inlay' })), ideal(box(x, y + 1.1, z - w / 2 + 0.15, l + 0.1, 0.12, 0.25, { mat: 'ivory', role: 'inlay' }))];
 /** A paved floor (idealized) over a room. */
 const paving = (x0, x1, z0, z1, y = Y0) => [ideal(box((x0 + x1) / 2, y, (z0 + z1) / 2, x1 - x0, 0.3, z1 - z0, { mat: 'paving', role: 'pavement' }))];
 
@@ -744,7 +761,7 @@ export const PIECES = [
     note: '"{{1 Kings 7:2 | its arak … imawaday}}" — a hall of cedar columns so many it was named for the forest they came from. Shalamah (Solomon) hung his shields of beaten gold in it (10:17); it was the armoury of the house (Isaiah 22:8).',
     elsewhere: { ref: '1 Kings 10:17, 21; 2 Chronicles 9:16, 20; Isaiah 22:8', note: 'Three hundred shields of gold, the drinking vessels of gold — "none were of silver; it was nothing accounted of in the days of Shalamah (Solomon)".' },
     assumed: 'Its place along the west wall of the great court, stood north–south, and its door on the east; the whole layout of the king\'s buildings — the text describes them one by one and never says where each stood.',
-    idealized: 'The forty-five tzalaith of 7:3, "fifteen in a row", are read here as three storeys of chambers along the long walls — eight on the west and seven on the east of each floor, their windows facing each other across the hall in three ranks (7:4) — with a stair at the south end climbing through them to the roof. The chambers, their floors and the stair are sketched in; the hall, its four rows of pillars, its windows and the gold shields on the pillars are the text\'s.',
+    idealized: 'The forty-five tzalaith of 7:3, "fifteen in a row", are read here as three storeys of chambers along the long walls — eight on the west and seven on the east of each floor, their windows facing each other across the hall in three ranks (7:4) — with a stair at the south end climbing through them to the roof. The chambers, their floors, the stair and the tables are sketched in; the hall, its four rows of pillars, its windows, the gold shields on the pillars and the gold drinking vessels (10:21) are the text\'s.',
     parts: (() => {
       const F = PALACE.forest, W = 3, out = [];
       out.push(...walls(F.x0, F.x1, (F.z1 - F.z0) / 2, W, Y0, F.h, { windows: 3 }).map((b) => ({ ...b, z: b.z + (F.z0 + F.z1) / 2 })));
@@ -767,6 +784,7 @@ export const PIECES = [
       out.push(...stair('x', -122, 162, 30, 3));
       out.push(...paving(F.x0, F.x1, F.z0, F.z1));
       out.push(...doorFrame(F.x1 + W / 2, 82, 8, 6, W, 'z'));
+      out.push(...vessels(-100, 68), ...vessels(-100, 152));   // the gold drinking vessels of the house (10:21)
       return out.map((q) => (q.mat === 'plaster' ? { ...q, mat: 'plaster2' } : q));
     })(),
     gates: [{ x: PALACE.forest.x1 + 1.5, z: 82, w: 8, axis: 'z', leaves: false }],
@@ -782,6 +800,7 @@ export const PIECES = [
     note: '"{{1 Kings 7:6}}" A hall of pillars with a lesser porch of pillars before it — the way in from the inner court\'s south gate to the porch of the throne behind, and to the king\'s house beyond that (7:7–8).',
     elsewhere: { ref: 'Ezekiel 40:48–49; John 10:23; Acts 3:11; Acts 5:12', note: '"Shalamah (Solomon)\'s porch" of John 10:23 and Acts 3:11; 5:12 is not this: it is the colonnade on the east of the second temple\'s outer court, called after him because it was held to stand on his eastern wall of the mount. It belongs to that later house, not to 1 Kings 7.' },
     assumed: 'Its place, on the line from the inner court\'s south gate; that it is a roofed hall walled on three sides and open to the north, its two rows of pillars, and the four pillars of the lesser porch before it — the text gives the measures, "pillars", and a porch with pillars and a beam before them.',
+    idealized: 'Shalamah\'s palanquin stands in the hall: "{{Song of Songs 3:9}}" — its pillars of silver, its base of gold, its covering of purple (Song of Songs 3:9–10). That it waited here is the model\'s.',
     parts: (() => {
       const P = PALACE.hall, out = [];
       out.push(...walls(P.x0, P.x1, (P.z1 - P.z0) / 2, 3, Y0, P.h).map((b) => ({ ...b, z: b.z + (P.z0 + P.z1) / 2 })).filter((b) => b.role !== 'north'));
@@ -791,6 +810,7 @@ export const PIECES = [
       out.push(...portico(8, 32, 66, 11, 4), box(20, Y0 + 12.2, 66.5, 30, 1.2, 8, { mat: 'cedar', role: 'roof' }));
       out.push(box((P.x0 + P.x1) / 2, Y0, (P.z0 + P.z1) / 2, P.x1 - P.x0, 0.3, P.z1 - P.z0, { mat: 'paving', role: 'pavement' }), box(20, Y0, 66, 32, 0.3, 8, { mat: 'paving', role: 'pavement' }));
       out.push(...doorFrame(20, P.z1 + 1.5, 8, 7, 3));
+      out.push(...palanquin(38, 76));   // his palanquin waits inside the hall (Song of Songs 3:9–10)
       return out;
     })(),
     gates: [{ x: 20, z: PALACE.hall.z1 + 1.5, w: 8, axis: 'x', leaves: false }],
@@ -806,12 +826,16 @@ export const PIECES = [
     note: '"{{1 Kings 7:7 | He ishah … mashapat}}" — where the king sat to judge, behind the hall of pillars; its walls, floor and ceiling of cedar. The kasaa (throne) itself stands at its far end.',
     elsewhere: { ref: '1 Kings 3:16–28; Psalm 122:5; Isaiah 6:1', note: '"There are set kasaawath (thrones) for mashapat (judgment), the thrones of the house of Dawad (David)."' },
     assumed: 'Its size (30 × 30) and place, behind the porch of pillars and open to it; the text gives the cedar from floor to floor.',
+    idealized: 'The carving on its cedar walls — palms and open flowers like the house\'s (6:29) — is the model\'s; the text gives the palace cedar plain. The servants along the walls, the ministers in their apparel and the cupbearers by the steps stand where the queen of Sheba saw them (10:5); where each stood is the model\'s.',
     parts: (() => {
       const T = PALACE.throne, out = [];
       out.push(...walls(T.x0, T.x1, (T.z1 - T.z0) / 2, 3, Y0, T.h).map((b) => ({ ...b, z: b.z + (T.z0 + T.z1) / 2 })).filter((b) => b.role !== 'north'));
       out.push(...roofOf(T.x0 - 3, T.x1 + 3, T.z0 - 3, T.z1 + 3, Y0 + T.h - 1.5));
-      out.push(...cedarLining(T.x0, T.x1, T.z0, T.z1, Y0, T.h - 1.5).filter((b) => !(b.role === 'lining' && b.d < 1 && b.z < T.z0 + 1)).map((b) => ({ ...b, mat: 'cedarDark' })));
+      out.push(...cedarLining(T.x0, T.x1, T.z0, T.z1, Y0, T.h - 1.5).filter((b) => !(b.role === 'lining' && b.d < 1 && b.z < T.z0 + 1)).map((b) => ({ ...b, mat: b.role === 'lining' ? 'carvedCedar' : 'cedarDark', ideal: b.role === 'lining', carved: false })));   // the walls carved as the house's are (6:29) — the model's, sketched; the floor and ceiling plain dark cedar
       out.push(...portico(T.x0 + 5, T.x1 - 5, T.z0, T.h - 2, 3));
+      // "the sitting of his servants, the attendance of his ministers and their apparel, his cupbearers" (10:5): along the walls, and by the steps
+      for (let i = 0; i < 5; i++) { out.push(...person(T.x0 + 2.2, 108 + i * 4.2, 0, 'linen'), ...person(T.x1 - 2.2, 108 + i * 4.2, Math.PI, 'linen')); }
+      out.push(...person(11, 118, 0.6, 'royal'), ...person(29, 118, Math.PI - 0.6, 'royal'), ...person(15, 122, -Math.PI / 2, 'linen'), ...person(25, 122, -Math.PI / 2, 'linen'));
       out.push(...rug(20, 113, 6, 18, 'rug-runner').map((r) => ({ ...r, y: Y0 + 0.4 })));
       return out;
     })(),
@@ -840,7 +864,7 @@ export const PIECES = [
     note: '"{{1 Kings 7:8 | His bayath … maishah}}" — the king\'s dwelling in a court of its own behind the porches.',
     elsewhere: { ref: '2 Kings 4:10; Deuteronomy 22:8; 2 Samuel 11:2; 1 Kings 17:12–16', note: 'What scripture says a house had: an upper chamber with a bed, a table, a seat and a lampstand; a roof to walk on, with a parapet; jars of meal and oil in store.' },
     assumed: 'Its size and place east of the porches — the text gives none.',
-    idealized: 'The plan is the model\'s, kept within what scripture says of houses. A colonnade "of like work" as the porches (7:8) opens onto the court within; round the court, below, a hall with a table and seats, a sitting room, a storeroom with jars and chests, the servants\' room and the stair; above, the king\'s upper chamber with the bed, table, seat and lampstand of 2 Kings 4:10, a second chamber, a third to the south, and a gallery round the court; a second stair from the upper landing through the roof to the roof, which has a parapet about it (Deuteronomy 22:8). All of it sketched in.',
+    idealized: 'The plan is the model\'s, kept within what scripture says of houses. A colonnade "of like work" as the porches (7:8) opens onto the court within; round the court, below, a hall with a table and seats, a sitting room, a storeroom with jars and chests, the servants\' room and the stair; above, the king\'s upper chamber with the bed, table, seat and lampstand of 2 Kings 4:10 — the bed inlaid with ivory (Psalm 45:8; Amos 3:15) — a second chamber, a third to the south, and a gallery round the court; a second stair from the upper landing through the roof to the roof, which has a parapet about it (Deuteronomy 22:8). All of it sketched in. The watch with their swords at his chamber\'s door, along the gallery and at the doors below are "{{Song of Songs 3:7}}" (Song of Songs 3:7–8); where each man stood is the model\'s.',
     parts: (() => {
       const K = PALACE.king, out = [];
       const cx = (K.x0 + K.x1) / 2, cz = (K.z0 + K.z1) / 2, ox0 = 67, ox1 = 93, oz0 = 123, oz1 = 145;
@@ -861,7 +885,10 @@ export const PIECES = [
       out.push(...rail('x', ox0 - 3, ox1 + 3, oz0 - 3, U), ...rail('x', ox0 - 3, ox1 + 3, oz1 + 3, U), ...rail('z', oz0 - 3, oz1 + 3, ox0 - 3, U), ...rail('z', oz0 - 3, oz1 + 3, ox1 + 3, U));
       const H2 = K.h - 10 - 1.5;
       out.push(...wallZ(ox0 - 4, 108, 135, H2, 122, 3, U), ...wallX(135, K.x0, ox0 - 4, H2, null, 3, U), ...wallZ(ox1 + 4, 108, 135, H2, 122, 3, U), ...wallX(135, ox1 + 4, K.x1, H2, null, 3, U), ...wallX(oz1 + 4, ox0 - 4, ox1 + 4, H2, cx, 3, U));
-      out.push(...rug(56, 121, 10, 14, 'rug', U), ...bed(53, 112, 3.4, 6.5, U), ...table(58, 126, 2.6, 4, U), ...seat(58, 129, U), ...lamp(49, 130, U), ...chest(63, 112, U));
+      out.push(...rug(56, 121, 10, 14, 'rug', U), ...bed(53, 112, 3.4, 6.5, U), ...inlay(53, 112, 3.4, 6.5, U), ...table(58, 126, 2.6, 4, U), ...seat(58, 129, U), ...lamp(49, 130, U), ...chest(63, 112, U));
+      // "Shalamah's bed — sixty valiant men are about it, every man with his sword" (Song of Songs 3:7–8): the watch at his chamber's door and along the gallery
+      for (const [x, z, yaw] of [[64.5, 119.5, Math.PI / 2], [64.5, 124.5, -Math.PI / 2], [70, 118.5, Math.PI / 2], [78, 118.5, Math.PI / 2], [86, 118.5, Math.PI / 2], [64.5, 132, 0], [64.5, 140, 0], [95.5, 132, Math.PI], [95.5, 140, Math.PI], [48, 108.5, Math.PI / 2], [86, 149.5, -Math.PI / 2], [74, 149.5, -Math.PI / 2]]) out.push(...person(x, z, yaw, 'linen', { y: U, sword: true }));
+      for (const [x, z, yaw] of [[52, 105.5, Math.PI / 2], [62, 105.5, Math.PI / 2], [98, 105.5, Math.PI / 2], [108, 105.5, Math.PI / 2], [47.5, 136, 0], [47.5, 160, 0]]) out.push(...person(x, z, yaw, 'linen', { sword: true }));
       out.push(...bed(108, 112, 3.2, 6, U), ...seat(103, 126, U), ...table(103, 130, 2.2, 3.5, U), ...lamp(111, 130, U));
       out.push(...bed(75, 158, 3, 5.5, U), ...bed(87, 158, 3, 5.5, U), ...lamp(80, 152, U));
       out.push(...stair('x', 46, 152, 10, 3, 1, U));   // from the upper landing, east along it, through the roof
