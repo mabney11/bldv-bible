@@ -992,7 +992,7 @@ function buildThrone(b, part) {
   }
   sub.box(SX + 1.45, TOP + 0.45, 0, 0.32, 1.9, 2.68, 'ivory');                                       // the back
   sub.box(SX + 1.62, TOP + 0.45, 0, 0.06, 1.9, 2.68, 'gold');
-  { const back = new THREE.CylinderGeometry(1.34, 1.34, 0.32, 40, 1, false, 0, Math.PI); back.rotateX(-Math.PI / 2); back.rotateY(-Math.PI / 2); back.translate(SX + 1.45, TOP + 2.35, 0); sub.add(back, 'ivory'); }   // "the top of the throne was round behind"
+  { const back = new THREE.CylinderGeometry(1.34, 1.34, 0.32, 40, 1, false, 0, Math.PI); back.rotateZ(Math.PI / 2); back.translate(SX + 1.45, TOP + 2.35, 0); sub.add(back, 'ivory'); }   // "the top of the throne was round behind": a half-disc on the back's top edge, its arc upward, its thickness along x
   { const rim = new THREE.TorusGeometry(1.3, 0.05, 8, 40, Math.PI); rim.rotateY(-Math.PI / 2); rim.translate(SX + 1.45, TOP + 2.35, 0); sub.add(rim, 'gold'); }
   for (let i = 0; i < 3; i++) sub.torus(SX + 1.28, TOP + 1.0 + i * 0.42, 0, 0.8 - i * 0.14, 0.03, 'gold', 0, Math.PI / 2);   // rings on the back
   g.add(...sub.bake().children);
@@ -1003,7 +1003,7 @@ function buildThrone(b, part) {
     sub2.capsule([-0.4 * k, 0.9 * k, 0], [0.4 * k, 0.95 * k, 0], 0.42 * k, 'gold'); sub2.sphere(0.75 * k, 1.5 * k, 0, 0.42 * k, 'gold', 12);   // a stand-in until the sculpt loads
     for (const dx of [-0.35, 0.35]) for (const dz of [-0.22, 0.22]) sub2.cyl(dx * k, 0, dz * k, 0.1 * k, 0.9 * k, 'gold', 0.1 * k, 8);
     l.add(...sub2.bake().children); g.add(l);
-    b.slots.push({ slot: 'temple-lion', node: l, h, face: 'x', turn: Math.PI });   // the sculpted lion faces the other way from the stand-in: turned to look down the steps
+    b.slots.push({ slot: 'temple-lion', node: l, h, face: 'x', turn: Math.PI, mat: 'gold' });   // the sculpted lion faces the other way from the stand-in: turned to look down the steps; gold, as the throne is overlaid (10:18)
   };
   for (const sz of [-1, 1]) lion(SX + 0.4, TOP, sz * 1.95, 2.0);
   for (let i = 0; i < 6; i++) { const w = W0 - i * 0.45; for (const sz of [-1, 1]) lion(X0 + i * RUN + 0.3, (i + 1) * STEP, sz * (w / 2 - 0.5), 1.0); }
@@ -1562,8 +1562,8 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
           if (!alive || !proto) return;
           const fitted = fitSlot(proto, slot);
           // an unpainted sculpt takes the piece's own material (brass, gold…); a painted one keeps its skin
-          const fallback = M[PIECES.find((p) => p.id === id)?.material] || M.brass;
-          fitted.traverse((o) => { if (o.isMesh) { if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); if (!o.material?.map) o.material = fallback; } });
+          const fallback = M[PIECES.find((p) => p.id === id)?.material] || M.brass, forced = slot.mat ? M[slot.mat] : null;   // a slot may insist on a material whatever the sculpt's skin (the throne's lions: gold)
+          fitted.traverse((o) => { if (o.isMesh) { if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals(); if (forced) o.material = forced; else if (!o.material?.map) o.material = fallback; } });
           const keep = new Set(slot.keep || []);
           [...slot.node.children].forEach((c) => { if (!keep.has(c) && !c.isLight) slot.node.remove(c); });
           slot.node.add(fitted); lastT = -1; dirty = true;
