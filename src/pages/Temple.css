@@ -17,6 +17,7 @@
 .tp-measures tr + tr { border-top: 1px solid var(--border); }
 .tp-measures .hl-root { font-weight: 600; }
 .tp-note { margin-top: 2px; }
+.tp-ideal-swatch { display: inline-block; width: 12px; height: 12px; margin: 0 6px -1px 0; border-radius: 2px; background: rgba(223, 231, 242, 0.45); border: 1px solid #5d6f8a; }
 .st-passage-ch { display: flex; flex-direction: column; gap: 2px; }
 .st-passage-ch + .st-passage-ch { margin-top: 10px; }
 .st-passage-chh { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 8px 2px; border-bottom: 1px solid var(--border2); margin-bottom: 4px; }

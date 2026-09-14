@@ -214,6 +214,7 @@ function makeMaterials() {
     panel: std('brass', { map: panelTexture('#b9733a', '#5a2f12', '#e6ab70'), roughness: 0.5 }),
     flame: new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffd27a') }),
     linen: new THREE.MeshStandardMaterial({ color: new THREE.Color('#efe6d2'), roughness: 0.95, metalness: 0 }),     // bawatz (fine linen) — the priests and singers
+    idealEdge: new THREE.LineBasicMaterial({ color: new THREE.Color('#5d6f8a'), transparent: true, opacity: 0.75 }),   // the drawn edges of what is idealized (idealOf)
     royal: new THREE.MeshStandardMaterial({ color: new THREE.Color('#4a2e7a'), roughness: 0.8, metalness: 0.05 }),   // the malak (king)
     // skin tones across the tribes (fieldy's chart, 2026-09-12): Reuben → Ephraim, light to deep brown
     ...Object.fromEntries(SKIN_TONES.map((hex, i) => [`skin${i}`, new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), roughness: 0.9, metalness: 0 })])),
@@ -251,8 +252,8 @@ class PieceBuilder {
     return key;
   }
   add(geo, matKey, xray = false) {
-    const k = `${matKey}${xray ? '|x' : ''}`;
-    if (!this.buckets.has(k)) this.buckets.set(k, { matKey, xray, geos: [] });
+    const ideal = !!this.ideal, k = `${matKey}${xray ? '|x' : ''}${ideal ? '|i' : ''}`;
+    if (!this.buckets.has(k)) this.buckets.set(k, { matKey, xray, ideal, geos: [] });
     this.buckets.get(k).geos.push(geo);
   }
   box(x, y, z, w, h, d, matKey, xray = false, rot = 0) {
@@ -278,18 +279,34 @@ class PieceBuilder {
   }
   mesh(obj) { this.group.add(obj); return obj; }
   bake() {
-    for (const { matKey, xray, geos } of this.buckets.values()) {
+    for (const { matKey, xray, ideal, geos } of this.buckets.values()) {
       const list = geos.some((g) => !g.index) ? geos.map((g) => (g.index ? g.toNonIndexed() : g)) : geos;
       const geo = list.length === 1 ? list[0] : mergeGeometries(list, false);
       if (!geo) continue;
       let mat = this.M[matKey] || this.M.stone;
       if (xray) { mat = mat.clone(); mat.transparent = true; mat.userData.xray = true; }
+      if (ideal) mat = idealOf(this.M, matKey);
       const mesh = new THREE.Mesh(geo, mat);
-      mesh.castShadow = true; mesh.receiveShadow = true; mesh.userData.xray = xray;
+      mesh.castShadow = !ideal; mesh.receiveShadow = true; mesh.userData.xray = xray; mesh.userData.ideal = ideal;
       this.group.add(mesh);
+      if (ideal) { const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), this.M.idealEdge); edges.userData.ideal = true; edges.raycast = () => {}; this.group.add(edges); }   // its edges drawn, like a sketch
     }
     return this.group;
   }
+}
+
+/** The look of what the model IDEALIZED — parts the text does not give (a doorway, an inner court, a stair): the piece's own
+ *  material paled and see-through, with its edges drawn, so it reads as sketched in beside the solid things the text measures.
+ *  fieldy: "visual clarity that the interior has been idealized when the text doesn't support it — no need for clarity when
+ *  the text supports it". */
+const idealCache = new WeakMap();
+function idealOf(M, matKey) {
+  const base = M[matKey] || M.stone;
+  if (!idealCache.has(M)) idealCache.set(M, new Map());
+  const c = idealCache.get(M); if (c.has(matKey)) return c.get(matKey);
+  const m = base.clone(); m.transparent = true; m.opacity = 0.45; m.depthWrite = false; m.map = null; m.bumpMap = null; m.emissive = new THREE.Color('#000000');
+  m.color = base.color.clone().lerp(new THREE.Color('#dfe7f2'), 0.7); m.roughness = 1; m.metalness = 0; m.userData.ideal = true;
+  c.set(matKey, m); return m;
 }
 
 /** A box with a doorway cut out of one long side: three boxes (two jambs and a lintel). */
@@ -930,6 +947,7 @@ function buildThrone(b, part) {
 function buildPiece(M, piece) {
   const b = new PieceBuilder(M, piece);
   for (const part of piece.parts) {
+    b.ideal = !!part.ideal;   // sketched in (see idealOf)
     switch (part.kind) {
       case 'box': buildBox(b, part); break;
       case 'cyl': b.cyl(part.x, part.y, part.z, part.r, part.h, part.mat || piece.material, part.r2 || part.r); break;
@@ -950,6 +968,7 @@ function buildPiece(M, piece) {
   }
   // gates in the court walls: cedar doors overlaid with brass (2 Chronicles 4:9), open
   for (const gate of piece.gates || []) {
+    if (gate.leaves === false) continue;   // an idealized doorway brings its own sketched leaves (temple.js doorFrame)
     for (const s of [-1, 1]) {
       const leaf = new THREE.Mesh(new THREE.BoxGeometry(gate.axis === 'z' ? 0.4 : gate.w / 2, 6, gate.axis === 'z' ? gate.w / 2 : 0.4), M.brassDark);
       leaf.position.set(gate.x + (gate.axis === 'x' ? s * gate.w * 0.36 : s * 1.6), H.courtY + 3, gate.z + (gate.axis === 'z' ? s * gate.w * 0.36 : s * 1.6));
@@ -974,17 +993,17 @@ function cutGates(piece) {
   for (const p of piece.parts) {
     let cut = false;
     for (const gate of piece.gates) {
-      if (p.kind !== 'box' || p.role === 'ground') continue;
+      if (p.kind !== 'box' || p.role === 'ground' || p.role === 'roof' || p.role === 'pavement' || p.ideal) continue;   // only the walls are cut; a roof spans the gate, the sketched frame stands in it
       if (gate.axis === 'z' && Math.abs(p.x - gate.x) < p.w && p.d > gate.w * 2) {   // an east/west wall: the gap runs along z
         const d1 = (gate.z - gate.w / 2) - (p.z - p.d / 2), d2 = (p.z + p.d / 2) - (gate.z + gate.w / 2);
         parts.push({ ...p, z: p.z - p.d / 2 + d1 / 2, d: d1 }, { ...p, z: p.z + p.d / 2 - d2 / 2, d: d2 });
-        if (p.h > 6) parts.push({ ...p, y: p.y + 6, h: p.h - 6, z: gate.z, d: gate.w, courses: 0 });   // a lintel over the gate, only where the wall is tall enough to carry one
+        if (p.h > 6) parts.push({ ...p, y: p.y + 6, h: p.h - 6, z: gate.z, d: gate.w, courses: 0, windows: 0 });   // a lintel over the gate, only where the wall is tall enough to carry one
         cut = true; break;
       }
       if (gate.axis === 'x' && Math.abs(p.z - gate.z) < p.d && p.w > gate.w * 2) {
         const w1 = (gate.x - gate.w / 2) - (p.x - p.w / 2), w2 = (p.x + p.w / 2) - (gate.x + gate.w / 2);
         parts.push({ ...p, x: p.x - p.w / 2 + w1 / 2, w: w1 }, { ...p, x: p.x + p.w / 2 - w2 / 2, w: w2 });
-        if (p.h > 6) parts.push({ ...p, y: p.y + 6, h: p.h - 6, x: gate.x, w: gate.w, courses: 0 });
+        if (p.h > 6) parts.push({ ...p, y: p.y + 6, h: p.h - 6, x: gate.x, w: gate.w, courses: 0, windows: 0 });
         cut = true; break;
       }
     }
@@ -1847,6 +1866,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       move: (key, on) => { if (key === 'jump') { if (on) jump(); return; } if (on) roam.keys.add(key); else roam.keys.delete(key); },
       teleport: (x, z, yaw) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; const gy = groundUnder(x, z, roam.foot + 40); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
       locked: () => locked,
+      piece: (id) => byId(id),   // for tests
       pick: (nx = 0, ny = 0) => { ndc.set(nx, ny); ray.setFromCamera(ndc, camera); const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible); let o = hit?.object; while (o && !o.userData.id) o = o.parent; return { id: o?.userData.id || null, dist: hit?.distance, obj: hit?.object?.name, yaw: roam.yaw, pitch: roam.pitch }; },   // for tests: what the crosshair is on
       invalidate: () => { dirty = true; },
       roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),   // for tests

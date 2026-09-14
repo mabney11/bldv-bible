@@ -117,6 +117,10 @@ function Card({ id, mode, onClose, onPick }) {
 
             <div className="st-detail-sub">Not in the text <em>(what the model assumed)</em></div>
             <p className="st-trad"><Glossed text={item.assumed} /></p>
+            {item.idealized && (<>
+              <div className="st-detail-sub tp-ideal-sub"><span className="tp-ideal-swatch" aria-hidden="true" />Idealized <em>(sketched in, paled and see-through on the model)</em></div>
+              <p className="st-trad"><Glossed text={item.idealized} /></p>
+            </>)}
           </>
         )}
       </Section>

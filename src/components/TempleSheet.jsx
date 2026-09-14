@@ -35,8 +35,9 @@ const dark = (hex, k = 0.7) => { const n = parseInt(hex.slice(1), 16); const f =
 // ── Plan shapes ──────────────────────────────────────────────────────────────
 function planShape(piece, part, g) {
   const fill = fillFor(piece, part), stroke = dark(fill);
-  const rect = (x, z, w, d, extra = {}) => el('rect', { x: px(x - w / 2), y: pz(z - d / 2), width: w * PS, height: d * PS, fill, stroke, 'stroke-width': 0.6, ...extra }, g);
-  const circ = (x, z, r, extra = {}) => el('circle', { cx: px(x), cy: pz(z), r: r * PS, fill, stroke, 'stroke-width': 0.6, ...extra }, g);
+  const ideal = part.ideal ? { opacity: 0.45, 'stroke-dasharray': '2 1.5' } : {};   // idealized (not in the text): paled and dashed, as in 3D
+  const rect = (x, z, w, d, extra = {}) => el('rect', { x: px(x - w / 2), y: pz(z - d / 2), width: w * PS, height: d * PS, fill, stroke, 'stroke-width': 0.6, ...ideal, ...extra }, g);
+  const circ = (x, z, r, extra = {}) => el('circle', { cx: px(x), cy: pz(z), r: r * PS, fill, stroke, 'stroke-width': 0.6, ...ideal, ...extra }, g);
   switch (part.kind) {
     case 'box': if (part.role === 'ground') return rect(part.x, part.z, part.w, part.d, { fill: MATERIALS.ground.color, stroke: 'none', opacity: 0.6 }); return rect(part.x, part.z, part.w, part.d, { 'data-role': part.role || null, ...(part.role === 'roof' || part.role === 'ceiling' || part.role === 'slab' ? { opacity: 0.35 } : {}) });
     case 'cyl': return circ(part.x, part.z, part.r);
@@ -57,7 +58,8 @@ function planShape(piece, part, g) {
 // ── Section shapes (x across, y up) — only what the middle plane (z ≈ 0) cuts or shows behind it ─
 function sectionShape(piece, part, g) {
   const fill = fillFor(piece, part), stroke = dark(fill);
-  const rect = (x, y, w, h, extra = {}) => el('rect', { x: sx(x - w / 2), y: sy(y + h), width: w * SS, height: h * SS, fill, stroke, 'stroke-width': 0.6, ...extra }, g);
+  const ideal = part.ideal ? { opacity: 0.45, 'stroke-dasharray': '2 1.5' } : {};
+  const rect = (x, y, w, h, extra = {}) => el('rect', { x: sx(x - w / 2), y: sy(y + h), width: w * SS, height: h * SS, fill, stroke, 'stroke-width': 0.6, ...ideal, ...extra }, g);
   const inPlane = (z, d) => Math.abs(z) - d / 2 < 0.01;
   switch (part.kind) {
     case 'box': {

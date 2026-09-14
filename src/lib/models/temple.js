@@ -155,6 +155,31 @@ const cyl = (x, y, z, r, h, extra = {}) => ({ kind: 'cyl', x, y, z, r, h, ...ext
 const lathe = (x, y, z, profile, extra = {}) => ({ kind: 'lathe', x, y, z, profile, ...extra });
 
 // A rectangular wall ring (four walls) of thickness t around the box [x0,x1]×[-z,z], from y for h — as four boxes.
+/** What the model IDEALIZED — `ideal: true` on a part draws it paled, see-through and edge-drawn (TempleScene's idealOf), so a
+ *  doorway, an inner court or a stair the text never gives is plainly a sketch beside the things the text measures. */
+const ideal = (part) => ({ ...part, ideal: true });
+/** An idealized doorway's frame in a wall that runs along x (the wall's centre at x, z; thickness t): two jambs, a threshold and
+ *  two cedar leaves standing open into the building (+z side). The gap itself is cut by the piece's `gates`. */
+function doorFrame(x, z, w, h, t) {
+  return [
+    ideal(box(x - w / 2 - 0.4, H.courtY, z, 0.8, h + 0.6, t + 0.4, { mat: 'stone', role: 'jamb' })), ideal(box(x + w / 2 + 0.4, H.courtY, z, 0.8, h + 0.6, t + 0.4, { mat: 'stone', role: 'jamb' })),
+    ideal(box(x, H.courtY - 0.1, z, w + 1.6, 0.3, t + 1.2, { mat: 'stone', role: 'threshold' })),
+    ideal(box(x - w / 2 + 0.25, H.courtY, z + t / 2 + w / 4, 0.35, h, w / 2, { mat: 'cedar', role: 'leaf' })), ideal(box(x + w / 2 - 0.25, H.courtY, z + t / 2 + w / 4, 0.35, h, w / 2, { mat: 'cedar', role: 'leaf' })),
+  ];
+}
+/** An idealized inner chatzar (court) in a roofed house: the roof in four strips around an opening, cedar columns about it, a pavement. */
+function innerCourt(cx, cz, ow, od, rx0, rx1, rz0, rz1, roofY, colH) {
+  const ox0 = cx - ow / 2, ox1 = cx + ow / 2, oz0 = cz - od / 2, oz1 = cz + od / 2, T = 1.5;
+  const roof = [
+    box((rx0 + rx1) / 2, roofY, (rz0 + oz0) / 2, rx1 - rx0, T, oz0 - rz0, { role: 'roof', mat: 'cedar' }), box((rx0 + rx1) / 2, roofY, (oz1 + rz1) / 2, rx1 - rx0, T, rz1 - oz1, { role: 'roof', mat: 'cedar' }),
+    box((rx0 + ox0) / 2, roofY, cz, ox0 - rx0, T, od, { role: 'roof', mat: 'cedar' }), box((ox1 + rx1) / 2, roofY, cz, rx1 - ox1, T, od, { role: 'roof', mat: 'cedar' }),
+  ];
+  const cols = [];
+  const nx = Math.max(2, Math.round(ow / 8)), nz = Math.max(2, Math.round(od / 8));
+  for (let i = 0; i <= nx; i++) for (const z of [oz0, oz1]) cols.push(ideal(cyl(ox0 + (i / nx) * ow, H.courtY, z, 0.8, colH, { mat: 'cedar', role: 'column' })));
+  for (let i = 1; i < nz; i++) for (const x of [ox0, ox1]) cols.push(ideal(cyl(x, H.courtY, oz0 + (i / nz) * od, 0.8, colH, { mat: 'cedar', role: 'column' })));
+  return [...roof, ...cols, ideal(box(cx, H.courtY, cz, ow - 2, 0.25, od - 2, { mat: 'stone', role: 'pavement' }))];
+}
 function walls(x0, x1, z, t, y, h, extra = {}) {
   const mid = (x0 + x1) / 2, len = x1 - x0 + 2 * t;
   return [
@@ -621,9 +646,12 @@ export const PIECES = [
     note: '"{{1 Kings 7:2 | its arak … imawaday}}" — a hall of cedar columns so many it was named for the forest they came from. Shalamah (Solomon) hung his shields of beaten gold in it (10:17); it was the armoury of the house (Isaiah 22:8).',
     elsewhere: { ref: '1 Kings 10:17, 21; 2 Chronicles 9:16, 20; Isaiah 22:8', note: 'Three hundred shields of gold, the drinking vessels of gold — "none were of silver; it was nothing accounted of in the days of Shalamah (Solomon)".' },
     assumed: 'Its place south of the house of Yahawah, and the whole layout of the king\'s buildings — the text describes them one by one and never says where each stood.',
+    idealized: 'The doorway on the court side (sketched in — the text gives the hall its pillars, beams and windows, but no door). The four rows of cedar columns follow 7:2; their number and spacing are the model\'s, with an aisle to the door — the text counts the beams over them, forty-five, fifteen in a row (7:3), not the pillars.',
     parts: [...walls(-50, 50, 25, 3, H.courtY, 30, { windows: 3 }).map((b) => ({ ...b, z: b.z + 128 })),
       box(0, H.courtY + 30, 128, 106, 2, 56, { role: 'roof', mat: 'cedar' }),
-      ...[-30, -10, 10, 30].flatMap((zz) => Array.from({ length: 15 }, (_, i) => cyl(-42 + i * 6, H.courtY, 128 + zz * 0.6, 1.1, 30, { mat: 'cedar', role: 'column' })))],
+      ...[-30, -10, 10, 30].flatMap((zz) => [-40, -34, -28, -22, -16, -10, -4, 4, 10, 16, 22, 28, 34, 40].map((x) => cyl(x, H.courtY, 128 + zz * 0.6, 1.1, 30, { mat: 'cedar', role: 'column' }))),   // four rows (7:2); an aisle down the middle to the door
+      ...doorFrame(0, 101.5, 8, 6, 3)],
+    gates: [{ x: 0, z: 101.5, w: 8, axis: 'x', leaves: false }],
   },
   {
     id: 'porch-pillars', order: 26, group: 'palace', material: 'stone',
@@ -634,10 +662,10 @@ export const PIECES = [
     build: [25, 26.5], walk: 'gate',
     measures: [['arak (length)', '50 amah', '1 Kings 7:6'], ['rachab (breadth)', '30 amah', '1 Kings 7:6'], ['before it', 'a awalam (porch), imawadayam (pillars) and a threshold', '1 Kings 7:6']],
     note: '"{{1 Kings 7:6}}" A colonnade — the text gives its size and that it had a porch of its own before it.',
-    elsewhere: { ref: 'Ezekiel 40:48–49; John 10:23; Acts 3:11', note: 'Later the people walked in "Shalamah (Solomon)\'s porch" on the temple mount.' },
+    elsewhere: { ref: 'Ezekiel 40:48–49; John 10:23; Acts 3:11; Acts 5:12', note: '"Shalamah (Solomon)\'s porch" of John 10:23 and Acts 3:11; 5:12 is not this: it is the colonnade on the east of the second temple\'s outer court, called after him because it was held to stand on his eastern wall of the mount. It belongs to that later house, not to 1 Kings 7.' },
     assumed: 'Its place between the house of the forest and the inner court; its pillars\' number.',
     parts: [box(0, H.courtY + 14, 82, 50, 2, 30, { role: 'roof', mat: 'cedar' }),
-      ...[-22, -11, 0, 11, 22].flatMap((x) => [-12, 0, 12].map((zz) => cyl(x, H.courtY, 82 + zz, 1.2, 14, { mat: 'stone', role: 'column' }))),
+      ...[-18, -6, 6, 18].flatMap((x) => [-12, 0, 12].map((zz) => cyl(x, H.courtY, 82 + zz, 1.2, 14, { mat: 'stone', role: 'column' }))),   // the way through to the forest house's door runs between them
       box(0, H.courtY, 82, 52, 0.6, 32, { mat: 'stone' })],
   },
   {
@@ -651,6 +679,7 @@ export const PIECES = [
     note: '"{{1 Kings 7:7 | He ishah … mashapat}}" — where the king sat to judge. The great ivory throne of 10:18–20, with its six steps and twelve lions, is set inside it here.',
     elsewhere: { ref: '1 Kings 3:16–28; Psalm 122:5; Isaiah 6:1', note: '"There are set kasaawath (thrones) for mashapat (judgment), the thrones of the house of Dawad (David)."' },
     assumed: 'Its size (30 × 30) and place; the throne inside follows 1 Kings 10.',
+    idealized: 'Its open front to the court and its size — the text gives the cedar from floor to floor and the throne, not the shape of the porch.',
     parts: [box(72, H.courtY, 82, 30, 16, 30, { hollowRoom: true }), box(72, H.courtY + 16, 82, 32, 1.5, 32, { role: 'roof', mat: 'cedar' }),
       { kind: 'throne', x: 82, y: H.courtY + 0.6, z: 82, glb: 'temple-throne' }],
   },
@@ -665,8 +694,10 @@ export const PIECES = [
     note: '"{{1 Kings 7:8 | His bayath … maishah}}" — the king\'s dwelling in a court of its own behind the porches, and a house of the same work for the daughter of Paraih (Pharaoh), whom he brought up out of the city of Dawad (David) into it (9:24).',
     elsewhere: { ref: '1 Kings 3:1; 9:24; 2 Chronicles 8:11; Nehemiah 3:25', note: '"My wife shall not dwell in the house of Dawad (David) malak (king) of Yashar-Al (Israel), because the places are holy where the arawan (ark) of Yahawah has come" (2 Chronicles 8:11).' },
     assumed: 'Both houses\' size and place — the text gives none.',
-    parts: [...walls(-118, -62, 26, 3, H.courtY, 20).map((b) => ({ ...b, z: b.z + 100 })), box(-90, H.courtY + 20, 100, 62, 1.5, 58, { role: 'roof', mat: 'cedar' }),
-      ...walls(64, 118, 22, 3, H.courtY, 18).map((b) => ({ ...b, z: b.z + 134 })), box(91, H.courtY + 18, 134, 60, 1.5, 50, { role: 'roof', mat: 'cedar' })],
+    idealized: 'Everything inside is sketched in: the doorways on the court side, and in each house an inner chatzar (court) open to the sky with cedar columns about it — a reading of "another court within the porch, of like work" (7:8) and of "a house like this porch" for Paraih (Pharaoh)\'s daughter; the text gives no plan of either.',
+    parts: [...walls(-118, -62, 26, 3, H.courtY, 20).map((b) => ({ ...b, z: b.z + 100 })), ...innerCourt(-90, 100, 30, 26, -121, -59, 71, 129, H.courtY + 20, 20), ...doorFrame(-90, 72.5, 8, 6, 3),
+      ...walls(64, 118, 22, 3, H.courtY, 18).map((b) => ({ ...b, z: b.z + 134 })), ...innerCourt(91, 134, 24, 20, 61, 121, 109, 159, H.courtY + 18, 18), ...doorFrame(91, 110.5, 6, 6, 3)],
+    gates: [{ x: -90, z: 72.5, w: 8, axis: 'x', leaves: false }, { x: 91, z: 110.5, w: 6, axis: 'x', leaves: false }],
   },
 ];
 
