@@ -190,7 +190,7 @@ export function ModelPassage({ passages, selected, onPick, onVerses, pieceFor, t
   }, [passages]);
   useEffect(() => {
     const first = box.current?.querySelector('.st-v.on');
-    if (first) first.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    if (first) first.scrollIntoView({ block: 'start', behavior: 'smooth' });   // the chosen verse as high as the panel allows (fieldy) — what follows it is then in view, not what precedes
   }, [selected, chapters]);
   return (
     <div className="st-passage" ref={box}>

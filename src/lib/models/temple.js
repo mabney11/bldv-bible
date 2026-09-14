@@ -167,6 +167,11 @@ function doorFrame(x, z, w, h, t) {
     ideal(box(x - w / 2 + 0.25, H.courtY, z + t / 2 + w / 4, 0.35, h, w / 2, { mat: 'cedar', role: 'leaf' })), ideal(box(x + w / 2 - 0.25, H.courtY, z + t / 2 + w / 4, 0.35, h, w / 2, { mat: 'cedar', role: 'leaf' })),
   ];
 }
+/** A colonnaded front along x at z (open to the court, the house's roof carried over it on a cedar beam): "of like work" as the porches (7:8). */
+function portico(x0, x1, z, h, n) {
+  const cols = Array.from({ length: n }, (_, i) => cyl(x0 + (i / (n - 1)) * (x1 - x0), H.courtY, z, 1.2, h, { mat: 'stone', role: 'column' }));
+  return [...cols, box((x0 + x1) / 2, H.courtY + h, z, x1 - x0 + 3, 1.2, 2.4, { mat: 'cedar', role: 'beam' }), box((x0 + x1) / 2, H.courtY, z + 0.2, x1 - x0 + 4, 0.5, 3.4, { mat: 'stone', role: 'threshold' })];
+}
 /** An idealized inner chatzar (court) in a roofed house: the roof in four strips around an opening, cedar columns about it, a pavement. */
 function innerCourt(cx, cz, ow, od, rx0, rx1, rz0, rz1, roofY, colH) {
   const ox0 = cx - ow / 2, ox1 = cx + ow / 2, oz0 = cz - od / 2, oz1 = cz + od / 2, T = 1.5;
@@ -694,10 +699,9 @@ export const PIECES = [
     note: '"{{1 Kings 7:8 | His bayath … maishah}}" — the king\'s dwelling in a court of its own behind the porches, and a house of the same work for the daughter of Paraih (Pharaoh), whom he brought up out of the city of Dawad (David) into it (9:24).',
     elsewhere: { ref: '1 Kings 3:1; 9:24; 2 Chronicles 8:11; Nehemiah 3:25', note: '"My wife shall not dwell in the house of Dawad (David) malak (king) of Yashar-Al (Israel), because the places are holy where the arawan (ark) of Yahawah has come" (2 Chronicles 8:11).' },
     assumed: 'Both houses\' size and place — the text gives none.',
-    idealized: 'Everything inside is sketched in: the doorways on the court side, and in each house an inner chatzar (court) open to the sky with cedar columns about it — a reading of "another court within the porch, of like work" (7:8) and of "a house like this porch" for Paraih (Pharaoh)\'s daughter; the text gives no plan of either.',
-    parts: [...walls(-118, -62, 26, 3, H.courtY, 20).map((b) => ({ ...b, z: b.z + 100 })), ...innerCourt(-90, 100, 30, 26, -121, -59, 71, 129, H.courtY + 20, 20), ...doorFrame(-90, 72.5, 8, 6, 3),
-      ...walls(64, 118, 22, 3, H.courtY, 18).map((b) => ({ ...b, z: b.z + 134 })), ...innerCourt(91, 134, 24, 20, 61, 121, 109, 159, H.courtY + 18, 18), ...doorFrame(91, 110.5, 6, 6, 3)],
-    gates: [{ x: -90, z: 72.5, w: 8, axis: 'x', leaves: false }, { x: 91, z: 110.5, w: 6, axis: 'x', leaves: false }],
+    idealized: 'The houses\' form is the model\'s. Each opens to the court through a colonnade, "of like work" as the porches (7:8) — the pillars and cedar beam of the porch of pillars — and has within it an inner chatzar (court) open to the sky with cedar columns about it, sketched in: a reading of "another court within the porch" and of "a house like this porch" for Paraih (Pharaoh)\'s daughter. The text gives no plan of either house.',
+    parts: [...walls(-118, -62, 26, 3, H.courtY, 16).map((b) => ({ ...b, z: b.z + 100 })).filter((b) => b.role !== 'north'), ...portico(-114, -66, 74, 14, 6), ...innerCourt(-90, 100, 30, 26, -121, -59, 71, 129, H.courtY + 16, 16),
+      ...walls(64, 118, 22, 3, H.courtY, 14).map((b) => ({ ...b, z: b.z + 134 })).filter((b) => b.role !== 'north'), ...portico(67, 115, 112, 12, 6), ...innerCourt(91, 134, 24, 20, 61, 121, 109, 159, H.courtY + 14, 14)],
   },
 ];
 
