@@ -22,7 +22,7 @@
  *   scripture, and — plainly — what the text does not say and the model assumed.
  */
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
 import { usePlayer, Section, WordRow, ModelPassage, Caption, PaceSelect } from '../components/ModelKit.jsx';
@@ -127,7 +127,7 @@ function Card({ id, mode, onClose, onPick }) {
 // ── The page ─────────────────────────────────────────────────────────────────
 export default function Temple() {
   usePageTitle(pageTitle('The Bayath (House) of Yahawah — Maps & Models'), 'The bayath (house) Shalamah (Solomon) banah (built) for Yahawah (1 Kings 6–7; 2 Chronicles 3–4) as an interactive 3D model, measured in amah (cubits) from the text: the hayakal (temple) and the dabayar (oracle) with the karawab (cherubim), Yakayan (Jachin) and Baiz (Boaz), the yam (sea) on twelve oxen, the makanawath (bases), the chatzarawath (courts) and the malak (king)\'s houses. Watch it rise in the order the text gives, or walk in to the arawan (ark).');
-  const [params, setParams] = useSearchParams();
+  const [params] = useSearchParams();
   const { story } = useParams();
   const canGL = useMemo(webglAvailable, []);
   const view = VIEWS.includes(params.get('view')) ? params.get('view') : (canGL ? '3d' : '2d');
@@ -143,11 +143,13 @@ export default function Temple() {
   const [sheetOpen, setSheetOpen] = useState(!!sel);
   const [following, setFollowing] = useState(true);
 
+  const navigate = useNavigate();
   const setParam = useCallback((k, v) => {
     const q = new URLSearchParams(params);
     if (v == null || v === '') q.delete(k); else q.set(k, v);
-    setParams(q, { replace: true });
-  }, [params, setParams]);
+    // the story's own absolute path, never a relative "?…" — on foot must stay on foot whatever is picked
+    navigate(`/models/temple/${MODES[story] ? story : 'walk'}${q.toString() ? `?${q}` : ''}`, { replace: true });
+  }, [params, navigate, story]);
   const select = useCallback((id) => { setParam('piece', id); setSheetOpen(!!id); }, [setParam]);
 
   const panelRef = useRef(null), grip = useRef(null);
@@ -237,7 +239,7 @@ export default function Temple() {
 
           {roam ? (
             <div className="st-player tp-roambar">
-              <span className="tp-roam-hint">{!use3d ? 'The plan and section show the finished house; switch to 3D to walk it.' : COARSE ? 'Left thumb on the view: a stick to walk · right thumb: drag to look · tap a part for its details · tap a door again to go through it' : lock?.on ? 'The mouse is yours: move it to look, W A S D or the arrows to walk (Shift to hurry), click what the crosshair is on for its details, a door twice to go through · Esc gives the mouse back' : lock?.why ? `The browser would not hand over the mouse (${lock.why}) — drag the view to look instead · W A S D or the arrows to walk · click a part for its details` : 'Click the view to take the mouse and look around (Esc gives it back) · W A S D or the arrows to walk, ← → turn, Shift to hurry · click a part for its details · click a door again to go through it'}</span>
+              <span className="tp-roam-hint">{!use3d ? 'The plan and section show the finished house; switch to 3D to walk it.' : COARSE ? 'Left thumb on the view: a stick to walk · right thumb: drag to look · tap a part for its details · tap a door again to go through it' : lock?.on ? 'The mouse is yours: move it to look, W A S D or the arrows to walk (Shift to hurry), click what the crosshair is on for its details, a door twice to go through · Esc gives the mouse back' : lock?.why ? `The browser would not hand over the mouse (${lock.why}) — drag the view to look instead · W A S D or the arrows to walk · click a part for its details` : 'Click the view once to take the mouse (nothing is chosen by that click) · then move it to look, W A S D or the arrows to walk, ← → turn, Shift to hurry · click what the crosshair is on for its details, a door twice to go through · Esc gives the mouse back'}</span>
             </div>
           ) : (
           <div className="st-player">

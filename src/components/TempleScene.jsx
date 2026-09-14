@@ -1743,7 +1743,10 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       if (!down) return; const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y), held = performance.now() - down.at, button = down.button; down = null;
       if (roam.on && locked) { if (held > 350 || button !== 0) return; }   // the mouse is taken: any click picks what the crosshair is on
       else if (moved > 10 || held > 350 || button !== 0) return;   // a drag, a hold, or a right/middle button: the viewer was moving the view, not choosing
-      if (roam.on && canLock && !locked && e.pointerType === 'mouse') takeMouse();
+      // On foot with a mouse: the first click only takes the mouse (the crosshair comes up) — it never chooses what happened to be
+      // under the cursor on the way in ("a click should only enable the crosshair if I'm not currently scoped"); once the mouse is
+      // taken, a click picks what the crosshair is on. When the browser refuses the lock, clicks pick as before.
+      if (roam.on && canLock && !locked && !lockFailed && e.pointerType === 'mouse') { takeMouse(); return; }
       const r = renderer.domElement.getBoundingClientRect();
       if (roam.on && locked) ndc.set(0, 0); else ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       ray.setFromCamera(ndc, camera);
@@ -1829,6 +1832,7 @@ export default function TempleScene({ clock, mode, selected, onSelect, onReady, 
       move: (key, on) => { if (on) roam.keys.add(key); else roam.keys.delete(key); },
       teleport: (x, z, yaw) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; const gy = groundUnder(x, z, roam.foot + 40); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
       locked: () => locked,
+      pick: (nx = 0, ny = 0) => { ndc.set(nx, ny); ray.setFromCamera(ndc, camera); const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible); let o = hit?.object; while (o && !o.userData.id) o = o.parent; return { id: o?.userData.id || null, dist: hit?.distance, obj: hit?.object?.name, yaw: roam.yaw, pitch: roam.pitch }; },   // for tests: what the crosshair is on
       invalidate: () => { dirty = true; },
       roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),   // for tests
       go: (id) => roam.on && roamGo(id),
