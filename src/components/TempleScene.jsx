@@ -1590,6 +1590,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       on: false, yaw: Math.PI, pitch: 0, foot: H.courtY, keys: new Set(), glide: null, moving: false,
       stick: { x: 0, y: 0 },                                                  // the thumb stick (touch): x strafe, y forward, each −1 … 1
       air: 0, jumpV: 0,                                                       // a jump: height above the feet's ground, and the upward speed
+      airV: { x: 0, z: 0 }, vel: { x: 0, z: 0 }, landAt: 0,                  // the jump's carry (amah/s, kept through the air), the last ground speed, when the feet last landed
       dist: 0,                                                                // the wheel: 0 = through his own eyes, up to DIST_MAX behind him (third person)
       open: { hayakal: 0, dabayar: 0 }, want: { hayakal: 0, dabayar: 0 },   // the doors and the veil, 0 shut … 1 open, eased toward what the viewer asked
     };
@@ -1686,13 +1687,19 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     // height and one at the knee (so a court wall stops you and a door leaf does
     // until it is opened) — and one straight down for the ground under the next
     // step, so steps and ramps are climbed and the eye stays 3.4 amah above them.
-    // Only the plain-built pieces (boxes, a few lathes) are tested — a ray through a
-    // capital's two hundred pomegranates or the throne's lions would cost more than
-    // the frame; those get stand-ins (two plain cylinders for Yakayan and Baiz).
-    const SOLID = ['yasad', 'qayar', 'tzalai', 'awalam', 'roof', 'doors', 'oracle-doors', 'parakath', 'dabayar', 'chatzar', 'mazabach', 'great-court', 'yair', 'king-house', 'daughter-house', 'porch-pillars', 'porch-throne', 'kasaa'];
-    const solids = [ground];
-    for (const id of SOLID) byId(id)?.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) solids.push(o); });
-    for (const sz of [-1, 1]) { const c = new THREE.Mesh(new THREE.CylinderGeometry(PILLAR.r + 0.3, PILLAR.r + 0.3, PILLAR.h + PILLAR.capH + PILLAR.lilyH, 12)); c.position.set(PILLAR.x, (PILLAR.h + PILLAR.capH + PILLAR.lilyH) / 2, sz * PILLAR.z); c.updateMatrixWorld(true); solids.push(c); }
+    // Every built thing is solid to the walker (fieldy: "make every solid thing
+    // solid so I can't pass through it") — the vessels, the lampstands and tables,
+    // the cherubim, the ark, the furniture of the houses — except Yakayan and Baiz,
+    // whose capitals carry four hundred pomegranates: a ray through those would
+    // cost more than the frame, so they get two plain cylinders instead. The
+    // guided camera, which only has to keep out of the WALLS inside the house,
+    // tests the short list.
+    const WALLS = ['yasad', 'qayar', 'tzalai', 'awalam', 'roof', 'doors', 'oracle-doors', 'parakath', 'dabayar', 'chatzar', 'mazabach', 'great-court', 'yair', 'king-house', 'daughter-house', 'porch-pillars', 'porch-throne', 'kasaa'];
+    const NOT_SOLID = new Set(['house', 'pillars', 'sharasharah', 'malak']);   // the whole (a proxy group), the proxied pillars, the chains before the oracle (hung high; the glide through the doors ignores them anyway), the king's figures of the dedication
+    const wallSolids = [ground], solids = [ground];
+    for (const id of WALLS) byId(id)?.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) wallSolids.push(o); });
+    for (const [id, g] of groups) if (!NOT_SOLID.has(id)) g.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) solids.push(o); });
+    for (const sz of [-1, 1]) { const c = new THREE.Mesh(new THREE.CylinderGeometry(PILLAR.r + 0.3, PILLAR.r + 0.3, PILLAR.h + PILLAR.capH + PILLAR.lilyH, 12)); c.position.set(PILLAR.x, (PILLAR.h + PILLAR.capH + PILLAR.lilyH) / 2, sz * PILLAR.z); c.updateMatrixWorld(true); solids.push(c); wallSolids.push(c); }
     const rRay = new THREE.Raycaster(); rRay.firstHitOnly = true;
     const fwd = new THREE.Vector3(), rightV = new THREE.Vector3(), step = new THREE.Vector3(), probe = new THREE.Vector3(), downV = new THREE.Vector3(0, -1, 0), avatarEye = new THREE.Vector3(), backV = new THREE.Vector3();
     const WALK = 32, RUN = 56, STEP_UP = 2.4, RADIUS = 1.1, TURN = 1.6;   // amah/s: a brisk walk by default (fieldy: the old Shift pace), Shift to run
@@ -1754,11 +1761,14 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       // a jump in the air (spacebar / the pad): the eye rises and falls over the feet's ground while any walking goes on
       if (roam.air > 0 || roam.jumpV > 0) {
         roam.air += roam.jumpV * dt; roam.jumpV -= GRAVITY * dt;
-        if (roam.air <= 0) { roam.air = 0; roam.jumpV = 0; }
+        if (roam.air <= 0) { roam.air = 0; roam.jumpV = 0; roam.airV.x = roam.airV.z = 0; roam.landAt = performance.now(); }
         camera.position.y = roam.foot + ROAM_EYE + roam.air; changed = true;
       }
       const K = roam.keys, S = roam.stick, stickMag = Math.hypot(S.x, S.y);
-      if (!K.size && stickMag < 0.05) { roam.moving = false; if (changed) aimCamera(); return changed; }
+      if (!K.size && stickMag < 0.05) {
+        // in the air with nothing pressed: the jump carries him on (a jump is more than straight up and down)
+        if (roam.air > 0 && (roam.airV.x || roam.airV.z)) { tryMove(roam.airV.x * dt, roam.airV.z * dt); aimCamera(); remember(); return true; }
+        roam.moving = false; roam.vel.x = roam.vel.z = 0; if (changed) aimCamera(); return changed; }
       const v = (K.has('run') || stickMag > 0.92 ? RUN : WALK) * dt;
       if (K.has('turnL')) roam.yaw -= TURN * dt; if (K.has('turnR')) roam.yaw += TURN * dt;
       fwd.set(Math.cos(roam.yaw), 0, Math.sin(roam.yaw)); rightV.set(-fwd.z, 0, fwd.x);
@@ -1766,6 +1776,8 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       if (K.has('forward')) { mx += fwd.x * v; mz += fwd.z * v; } if (K.has('back')) { mx -= fwd.x * v; mz -= fwd.z * v; }
       if (K.has('right')) { mx += rightV.x * v; mz += rightV.z * v; } if (K.has('left')) { mx -= rightV.x * v; mz -= rightV.z * v; }
       if (stickMag >= 0.05) { const k = Math.min(1, stickMag); mx += (fwd.x * S.y + rightV.x * S.x) * v * k / stickMag; mz += (fwd.z * S.y + rightV.z * S.x) * v * k / stickMag; }
+      if (roam.air > 0) { mx = mx * 0.35 + roam.airV.x * dt; mz = mz * 0.35 + roam.airV.z * dt; }   // in the air the keys steer only a little; the launch carries him
+      else { roam.vel.x = mx / dt; roam.vel.z = mz / dt; }
       tryMove(mx, mz);
       // settle the eye onto the ground (a smooth rise on steps)
       const wantY = roam.foot + ROAM_EYE + roam.air; camera.position.y += roam.air > 0 ? wantY - camera.position.y : (wantY - camera.position.y) * Math.min(1, dt * 10);
@@ -1776,7 +1788,13 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, dist: roam.dist, open: { ...roam.want } };
       const now = performance.now(); if (now - memoAt > 1000) { memoAt = now; try { sessionStorage.setItem('temple-roam', JSON.stringify(ROAM_MEMO)); } catch { /* fine */ } }   // a reload keeps the spot too
     }
-    function jump() { if (!roam.on || roam.glide || roam.air > 0) return; roam.jumpV = JUMP_V; roam.air = 1e-4; dirty = true; }
+    function jump() {
+      if (!roam.on || roam.glide || roam.air > 0) return;
+      roam.jumpV = JUMP_V; roam.air = 1e-4; dirty = true;
+      // the carry: the speed he had, or from standing a short hop forward
+      if (roam.moving && (roam.vel.x || roam.vel.z)) { roam.airV.x = roam.vel.x; roam.airV.z = roam.vel.z; }
+      else { roam.airV.x = Math.cos(roam.yaw) * WALK * 0.18; roam.airV.z = Math.sin(roam.yaw) * WALK * 0.18; }
+    }
     function roamEnter(on) {
       roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.air = 0; roam.jumpV = 0; roam.glide = null; controls.enabled = !on;
       renderer.domElement.style.cursor = on ? 'crosshair' : 'grab';
@@ -1918,7 +1936,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
         const off = probe.copy(camera.position).sub(controls.target), dist = off.length();
         if (dist > 0.5) {
           rRay.set(controls.target, off.normalize()); rRay.far = dist; rRay.near = 0;
-          const h = rRay.intersectObjects(solids, false).find((q) => q.object.visible && !(q.object.material?.transparent && q.object.material.opacity < 0.3));
+          const h = rRay.intersectObjects(wallSolids, false).find((q) => q.object.visible && !(q.object.material?.transparent && q.object.material.opacity < 0.3));
           if (h && h.distance < dist - 0.3) { camera.position.copy(controls.target).addScaledVector(off, Math.max(0.6, h.distance - 0.5)); dirty = true; }
         }
       }
@@ -1938,17 +1956,21 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       if (roam.on && roam.dist > 0.01) {
         roamDir(fwd); avatarEye.copy(camera.position);
         rRay.set(avatarEye, backV.copy(fwd).negate()); rRay.far = roam.dist + 0.6; rRay.near = 0;
-        const h = rRay.intersectObjects(solids, false).find((q) => q.object.visible && !(q.object.material?.transparent && q.object.material.opacity < 0.3));
+        const h = rRay.intersectObjects(wallSolids, false).find((q) => q.object.visible && !(q.object.material?.transparent && q.object.material.opacity < 0.3));
         const d = h ? Math.max(0.4, h.distance - 0.6) : roam.dist;
         avatar.visible = d > 1.2;
         const bob = roam.moving && roam.air <= 0 ? 0.1 * Math.abs(Math.sin(now / 120)) : 0;
         avatar.position.set(avatarEye.x, roam.foot + roam.air + bob, avatarEye.z); avatar.rotation.set(0, -roam.yaw, 0);
-        avatar.rotation.z = roam.moving && roam.air <= 0 ? 0.03 * Math.sin(now / 120) : 0;
+        const sinceLand = now - roam.landAt, crouch = sinceLand < 220 ? 0.14 * Math.sin((sinceLand / 220) * Math.PI) : 0;   // the knees give on landing
+        avatar.scale.set(1 + crouch * 0.5, 1 - crouch, 1 + crouch * 0.5);
+        // the figure faces +x before its yaw (Euler XYZ: z is applied first, in the figure's own frame), so a lean forward is a
+        // turn about z: a sway with the gait on the ground, a lean into a running jump in the air
+        avatar.rotation.z = roam.air > 0 ? -0.22 * Math.min(1, Math.hypot(roam.airV.x, roam.airV.z) / WALK) : roam.moving ? 0.03 * Math.sin(now / 120) : 0;
         camera.position.copy(avatarEye).addScaledVector(fwd, -d); camera.lookAt(probe.copy(avatarEye).addScaledVector(fwd, 2));
         pulled = true;
       } else avatar.visible = false;
       composer.render(); stats.ms = performance.now() - f0;
-      if (pulled) { camera.position.copy(avatarEye); aimCamera(); }
+      if (pulled) { camera.position.copy(avatarEye); aimCamera(); if (now - roam.landAt < 240) dirty = true; }   // the landing crouch plays out
     }
     function resize() {
       const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;
@@ -1986,6 +2008,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, dist: roam.dist, avatar: avatar.visible ? avatar.position.toArray() : null, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),
       zoom: (d) => { roam.dist = Math.max(0, Math.min(DIST_MAX, d)); dirty = true; },   // for tests: the wheel's distance   // for tests
       go: (id) => roam.on && roamGo(id),
+      bench: (n = 200) => { const t0 = performance.now(); for (let i = 0; i < n; i++) { probe.copy(camera.position); blocked(probe, step.set(Math.cos(i), 0, Math.sin(i)), 3); groundUnder(camera.position.x, camera.position.z, roam.foot + 3); } return (performance.now() - t0) / n; },   // for tests: ms per (ahead + down) probe pair
       solidTris: () => { const m = {}; for (const o of solids) { let q = o; while (q && !q.userData.id) q = q.parent; const k = q?.userData.id || o.name || 'proxy'; m[k] = (m[k] || 0) + Math.round((o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3); } return m; },
     };
     window.__templeApi = api.current;

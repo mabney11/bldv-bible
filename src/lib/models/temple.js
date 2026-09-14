@@ -832,7 +832,7 @@ export const PIECES = [
       out.push(...walls(T.x0, T.x1, (T.z1 - T.z0) / 2, 3, Y0, T.h).map((b) => ({ ...b, z: b.z + (T.z0 + T.z1) / 2 })).filter((b) => b.role !== 'north'));
       out.push(...roofOf(T.x0 - 3, T.x1 + 3, T.z0 - 3, T.z1 + 3, Y0 + T.h - 1.5));
       out.push(...cedarLining(T.x0, T.x1, T.z0, T.z1, Y0, T.h - 1.5).filter((b) => !(b.role === 'lining' && b.d < 1 && b.z < T.z0 + 1)).map((b) => ({ ...b, mat: b.role === 'lining' ? 'carvedCedar' : 'cedarDark', ideal: b.role === 'lining', carved: false })));   // the walls carved as the house's are (6:29) — the model's, sketched; the floor and ceiling plain dark cedar
-      out.push(...portico(T.x0 + 5, T.x1 - 5, T.z0, T.h - 2, 3));
+      out.push(...portico(T.x0 + 3, T.x1 - 3, T.z0, T.h - 2, 4));   // four pillars across the open north side, so the axis — the door from the hall of pillars at x 20 — is an opening between them, never a pillar (fieldy)
       // "the sitting of his servants, the attendance of his ministers and their apparel, his cupbearers" (10:5): along the walls, and by the steps
       for (let i = 0; i < 5; i++) { out.push(...person(T.x0 + 2.2, 108 + i * 4.2, 0, 'linen'), ...person(T.x1 - 2.2, 108 + i * 4.2, Math.PI, 'linen')); }
       out.push(...person(11, 118, 0.6, 'royal'), ...person(29, 118, Math.PI - 0.6, 'royal'), ...person(15, 122, -Math.PI / 2, 'linen'), ...person(25, 122, -Math.PI / 2, 'linen'));
