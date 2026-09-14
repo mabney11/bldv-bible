@@ -35,7 +35,7 @@ import {
   PIECES, MATERIALS, H,
   progressAt, xrayAt, openAt, cameraAt, focusFor,
   PLACES, ROUTES, MOVERS, moverAt, landAt,
-  MODES, ROAM_EYE, ROAM_START, ROAM_ENTER, PILLAR, WEST_X, PORCH_X1, OUTER_Z, EAST_X, ALTAR, INNER_COURT, GREAT_COURT,
+  MODES, ROAM_EYE, ROAM_START, ROAM_ENTER, PILLAR, WEST_X, PORCH_X1, OUTER_Z, EAST_X, ALTAR, INNER_COURT, GREAT_COURT, PALACE,
 } from '../lib/models/temple.js';
 
 const SKIN_TONES = ['#be8349', '#b0733d', '#916035', '#683f23', '#63371c', '#5e341c', '#512b16', '#4e2e19'];   // light brown → dark brown (Levi, Zebulun, Dan, Gad, Judah, Asher, Ephraim, Naphtali) — the two palest tones of the chart dropped: "between light-brown, brown, and dark brown"
@@ -1589,7 +1589,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     const roam = {
       on: false, yaw: Math.PI, pitch: 0, foot: H.courtY, keys: new Set(), glide: null, moving: false,
       stick: { x: 0, y: 0 },                                                  // the thumb stick (touch): x strafe, y forward, each −1 … 1
-      air: 0, jumpV: 0,                                                       // a jump: height above the feet's ground, and the upward speed
+      air: 0, vy: 0,                                                          // in the air (a jump, or walked off an edge): 1 while airborne, and the feet's upward speed
       airV: { x: 0, z: 0 }, vel: { x: 0, z: 0 }, landAt: 0,                  // the jump's carry (amah/s, kept through the air), the last ground speed, when the feet last landed
       dist: 0,                                                                // the wheel: 0 = through his own eyes, up to DIST_MAX behind him (third person)
       open: { hayakal: 0, dabayar: 0 }, want: { hayakal: 0, dabayar: 0 },   // the doors and the veil, 0 shut … 1 open, eased toward what the viewer asked
@@ -1601,6 +1601,38 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       const sub = new PieceBuilder(M, { id: 'avatar' }); personFigure(sub, 0.35, 'linen', 'stand', 'skin4', 'hair1');
       const g = sub.bake(); g.userData.id = undefined; g.traverse((o) => { o.userData.id = undefined; }); g.visible = false; scene.add(g); return g;
     })();
+
+    // ── Where the stairs are: a gold mark at the foot and the head of every stair, drawn through the walls while he is on foot
+    // inside (or on) that house — "right now I'm having to find stairs with memory" (fieldy)
+    const stairMarks = [];
+    {
+      const tex = (down) => {
+        const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+        g.fillStyle = 'rgba(20,14,8,0.62)'; g.beginPath(); g.arc(64, 64, 58, 0, Math.PI * 2); g.fill();
+        g.strokeStyle = '#ffd062'; g.lineWidth = 5; g.beginPath(); g.arc(64, 64, 58, 0, Math.PI * 2); g.stroke();
+        g.lineCap = 'round'; g.lineJoin = 'round'; g.lineWidth = 7;                                    // three steps
+        g.beginPath(); g.moveTo(30, 92); g.lineTo(48, 92); g.lineTo(48, 74); g.lineTo(66, 74); g.lineTo(66, 56); g.lineTo(84, 56); g.lineTo(84, 38); g.lineTo(100, 38); g.stroke();
+        g.beginPath();                                                                                    // the arrow: up at the foot, down at the head
+        if (down) { g.moveTo(40, 34); g.lineTo(40, 64); g.moveTo(28, 52); g.lineTo(40, 64); g.lineTo(52, 52); }
+        else { g.moveTo(40, 64); g.lineTo(40, 30); g.moveTo(28, 42); g.lineTo(40, 30); g.lineTo(52, 42); }
+        g.stroke();
+        const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+      };
+      const matUp = new THREE.SpriteMaterial({ map: tex(false), transparent: true, depthTest: false, depthWrite: false }), matDown = new THREE.SpriteMaterial({ map: tex(true), transparent: true, depthTest: false, depthWrite: false });
+      const HOUSE_OF = { yair: PALACE.forest, 'king-house': PALACE.king, 'daughter-house': PALACE.daughter };
+      for (const [id, box] of Object.entries(HOUSE_OF)) {
+        for (const part of PIECES.find((p) => p.id === id)?.parts || []) {
+          const st = part.stair; if (!st || st.i !== 0) continue;
+          const foot = st.axis === 'x' ? [st.x - st.dir * 1.2, st.y, st.z] : [st.x, st.y, st.z - st.dir * 1.2];
+          const head = st.axis === 'x' ? [st.x + st.dir * (st.n + 0.8), st.y + st.n, st.z] : [st.x, st.y + st.n, st.z + st.dir * (st.n + 0.8)];
+          for (const [pt, mat] of [[foot, matUp], [head, matDown]]) {
+            const sp = new THREE.Sprite(mat); sp.position.set(pt[0], pt[1] + 3.6, pt[2]); sp.scale.set(2.6, 2.6, 1); sp.renderOrder = 999; sp.visible = false;
+            sp.userData.house = box; sp.raycast = () => {}; scene.add(sp); stairMarks.push(sp);
+          }
+        }
+      }
+    }
+    const inHouseOf = (b, p) => p.x > b.x0 - 1 && p.x < b.x1 + 1 && p.z > b.z0 - 1 && p.z < b.z1 + 1 && p.y > H.courtY - 2 && p.y < H.courtY + b.h + 6;
 
     // ── Per-frame placement from the timeline ───────────────────────────────
     function place(t) {
@@ -1701,7 +1733,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     for (const [id, g] of groups) if (!NOT_SOLID.has(id)) g.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) solids.push(o); });
     for (const sz of [-1, 1]) { const c = new THREE.Mesh(new THREE.CylinderGeometry(PILLAR.r + 0.3, PILLAR.r + 0.3, PILLAR.h + PILLAR.capH + PILLAR.lilyH, 12)); c.position.set(PILLAR.x, (PILLAR.h + PILLAR.capH + PILLAR.lilyH) / 2, sz * PILLAR.z); c.updateMatrixWorld(true); solids.push(c); wallSolids.push(c); }
     const rRay = new THREE.Raycaster(); rRay.firstHitOnly = true;
-    const fwd = new THREE.Vector3(), rightV = new THREE.Vector3(), step = new THREE.Vector3(), probe = new THREE.Vector3(), downV = new THREE.Vector3(0, -1, 0), avatarEye = new THREE.Vector3(), backV = new THREE.Vector3();
+    const fwd = new THREE.Vector3(), rightV = new THREE.Vector3(), step = new THREE.Vector3(), probe = new THREE.Vector3(), downV = new THREE.Vector3(0, -1, 0), upV = new THREE.Vector3(0, 1, 0), avatarEye = new THREE.Vector3(), backV = new THREE.Vector3();
     const WALK = 32, RUN = 56, STEP_UP = 2.4, RADIUS = 1.1, TURN = 1.6;   // amah/s: a brisk walk by default (fieldy: the old Shift pace), Shift to run
     const JUMP_V = 9.5, GRAVITY = 26;                                        // a spacebar jump of ~1¾ amah (v²/2g), up and down in ~¾ s
     function roamDir(out, pitch = roam.pitch) { return out.set(Math.cos(pitch) * Math.cos(roam.yaw), Math.sin(pitch), Math.cos(pitch) * Math.sin(roam.yaw)); }
@@ -1726,7 +1758,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
         step.set(mx / l, 0, mz / l);
         const eye = camera.position, nx = eye.x + mx, nz = eye.z + mz;
         const gy = groundUnder(nx, nz, roam.foot + STEP_UP + 0.3);
-        if (gy == null || gy > roam.foot + STEP_UP) return false;
+        if (gy == null || gy > roam.foot + STEP_UP) return false;   // nothing under, or a wall / a roof too high to mantle
         // the way there is clear at the knee and the eye — measured from the higher of the two grounds, so a flight of steps
         // (1 high, 1 deep, so the risers two and three ahead stand above the knee) is climbed just by walking at it, while a court
         // wall or a shut door still blocks
@@ -1735,7 +1767,12 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
         // 1 × 1 steps the knee's ray would meet the third step up and stop you halfway; on the level, the knee's ray stops a court
         // wall or a shut door
         if (blocked(high, step, l + RADIUS) || (gy <= roam.foot + 0.05 && blocked(knee.clone(), step, l + RADIUS))) return false;
-        eye.x = nx; eye.z = nz; roam.foot = gy; return true;
+        eye.x = nx; eye.z = nz;
+        // the feet: a step up or the level is walked (in the air, coming down, it is where he lands — or rising, a ledge mantled);
+        // a short drop is a step down; a longer one walks him off the edge and he falls (basic physics — fieldy)
+        if (gy >= roam.foot - 0.05) { if (!roam.air) roam.foot = gy; else if (roam.vy <= 0) { roam.foot = gy; touchDown(); } else if (gy > roam.foot) roam.foot = gy; }
+        else if (!roam.air) { if (gy >= roam.foot - STEP_UP) roam.foot = gy; else { roam.air = 1; roam.vy = 0; } }
+        return true;
       };
       // a long move (a slow frame) is walked in short strides, so no step or wall is skipped over
       const strides = Math.max(1, Math.ceil(len / 1.0)); let moved = false;
@@ -1758,11 +1795,13 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
         if (k >= 1) roam.glide = null;
         aimCamera(); return true;
       }
-      // a jump in the air (spacebar / the pad): the eye rises and falls over the feet's ground while any walking goes on
-      if (roam.air > 0 || roam.jumpV > 0) {
-        roam.air += roam.jumpV * dt; roam.jumpV -= GRAVITY * dt;
-        if (roam.air <= 0) { roam.air = 0; roam.jumpV = 0; roam.airV.x = roam.airV.z = 0; roam.landAt = performance.now(); }
-        camera.position.y = roam.foot + ROAM_EYE + roam.air; changed = true;
+      // in the air (a jump, or off an edge): the feet fall under gravity until the ground under them is met — a roof, a floor,
+      // the court — while any walking goes on; a ceiling stops the rise
+      if (roam.air) {
+        if (roam.vy > 0 && blocked(probe.copy(camera.position), upV, roam.vy * dt + 0.3)) roam.vy = 0;
+        roam.vy -= GRAVITY * dt; roam.foot += roam.vy * dt;
+        if (roam.vy <= 0) { const gy = groundUnder(camera.position.x, camera.position.z, roam.foot + 0.6); if (gy != null && roam.foot <= gy) { roam.foot = gy; touchDown(); } else if (gy == null && roam.foot < H.courtY - 40) { roam.foot = H.courtY; touchDown(); } }
+        camera.position.y = roam.foot + ROAM_EYE; changed = true;
       }
       const K = roam.keys, S = roam.stick, stickMag = Math.hypot(S.x, S.y);
       if (!K.size && stickMag < 0.05) {
@@ -1780,7 +1819,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       else { roam.vel.x = mx / dt; roam.vel.z = mz / dt; }
       tryMove(mx, mz);
       // settle the eye onto the ground (a smooth rise on steps)
-      const wantY = roam.foot + ROAM_EYE + roam.air; camera.position.y += roam.air > 0 ? wantY - camera.position.y : (wantY - camera.position.y) * Math.min(1, dt * 10);
+      const wantY = roam.foot + ROAM_EYE; camera.position.y += roam.air ? wantY - camera.position.y : (wantY - camera.position.y) * Math.min(1, dt * 10);
       roam.moving = true; aimCamera(); remember(); return true;
     }
     let memoAt = 0;
@@ -1788,15 +1827,16 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, dist: roam.dist, open: { ...roam.want } };
       const now = performance.now(); if (now - memoAt > 1000) { memoAt = now; try { sessionStorage.setItem('temple-roam', JSON.stringify(ROAM_MEMO)); } catch { /* fine */ } }   // a reload keeps the spot too
     }
+    function touchDown() { roam.air = 0; roam.vy = 0; roam.airV.x = roam.airV.z = 0; roam.landAt = performance.now(); }
     function jump() {
-      if (!roam.on || roam.glide || roam.air > 0) return;
-      roam.jumpV = JUMP_V; roam.air = 1e-4; dirty = true;
+      if (!roam.on || roam.glide || roam.air) return;
+      roam.air = 1; roam.vy = JUMP_V; dirty = true;
       // the carry: the speed he had, or from standing a short hop forward
       if (roam.moving && (roam.vel.x || roam.vel.z)) { roam.airV.x = roam.vel.x; roam.airV.z = roam.vel.z; }
       else { roam.airV.x = Math.cos(roam.yaw) * WALK * 0.18; roam.airV.z = Math.sin(roam.yaw) * WALK * 0.18; }
     }
     function roamEnter(on) {
-      roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.air = 0; roam.jumpV = 0; roam.glide = null; controls.enabled = !on;
+      roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.air = 0; roam.vy = 0; roam.glide = null; controls.enabled = !on;
       renderer.domElement.style.cursor = on ? 'crosshair' : 'grab';
       if (on) {
         following = false; onFollow?.(true);   // no "follow" button in the roam: there is no story to follow
@@ -1952,6 +1992,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       // third person on foot: the walker's eye stays where all the walking is reckoned; only for the drawing is the camera pulled
       // back along his line of sight (no further than the nearest wall or floor behind him), looking at him, with our figure under
       // the eye — so the crosshair's pick, from the eye, is the same line the drawn view centres on
+      for (const m of stairMarks) m.visible = roam.on && inHouseOf(m.userData.house, camera.position);
       let pulled = false;
       if (roam.on && roam.dist > 0.01) {
         roamDir(fwd); avatarEye.copy(camera.position);
@@ -1960,7 +2001,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
         const d = h ? Math.max(0.4, h.distance - 0.6) : roam.dist;
         avatar.visible = d > 1.2;
         const bob = roam.moving && roam.air <= 0 ? 0.1 * Math.abs(Math.sin(now / 120)) : 0;
-        avatar.position.set(avatarEye.x, roam.foot + roam.air + bob, avatarEye.z); avatar.rotation.set(0, -roam.yaw, 0);
+        avatar.position.set(avatarEye.x, roam.foot + bob, avatarEye.z); avatar.rotation.set(0, -roam.yaw, 0);
         const sinceLand = now - roam.landAt, crouch = sinceLand < 220 ? 0.14 * Math.sin((sinceLand / 220) * Math.PI) : 0;   // the knees give on landing
         avatar.scale.set(1 + crouch * 0.5, 1 - crouch, 1 + crouch * 0.5);
         // the figure faces +x before its yaw (Euler XYZ: z is applied first, in the figure's own frame), so a lean forward is a
@@ -2000,14 +2041,15 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       refocus: () => { if (roam.on) return; if (currentSel) flyTo(currentSel); else { setFollow(true); lastT = -1; } dirty = true; },
       modeChanged: () => { const free = !!MODES[modeRef.current]?.free; if (free !== roam.on) roamEnter(free); lastT = -1; if (!free) setFollow(true); dirty = true; },
       move: (key, on) => { if (key === 'jump') { if (on) jump(); return; } if (on) roam.keys.add(key); else roam.keys.delete(key); },
-      teleport: (x, z, yaw) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; const gy = groundUnder(x, z, roam.foot + 3);   /* from just above the feet, so a roof overhead is not mistaken for the ground */ if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
+      teleport: (x, z, yaw, y) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; if (y != null) roam.foot = y; roam.air = 0; roam.vy = 0; const gy = groundUnder(x, z, roam.foot + 3);   /* from just above the feet, so a roof overhead is not mistaken for the ground */ if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
       locked: () => locked,
       piece: (id) => byId(id),   // for tests
       pick: (nx = 0, ny = 0) => { ndc.set(nx, ny); ray.setFromCamera(ndc, camera); const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible); let o = hit?.object; while (o && !o.userData.id) o = o.parent; return { id: o?.userData.id || null, dist: hit?.distance, obj: hit?.object?.name, yaw: roam.yaw, pitch: roam.pitch }; },   // for tests: what the crosshair is on
       invalidate: () => { dirty = true; },
-      roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, dist: roam.dist, avatar: avatar.visible ? avatar.position.toArray() : null, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),
+      roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, air: roam.air, vy: roam.vy, dist: roam.dist, avatar: avatar.visible ? avatar.position.toArray() : null, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),
       zoom: (d) => { roam.dist = Math.max(0, Math.min(DIST_MAX, d)); dirty = true; },   // for tests: the wheel's distance   // for tests
       go: (id) => roam.on && roamGo(id),
+      marks: () => stairMarks.filter((m) => m.visible).map((m) => m.position.toArray().map((v) => Math.round(v * 10) / 10)),   // for tests: the stair marks shown
       bench: (n = 200) => { const t0 = performance.now(); for (let i = 0; i < n; i++) { probe.copy(camera.position); blocked(probe, step.set(Math.cos(i), 0, Math.sin(i)), 3); groundUnder(camera.position.x, camera.position.z, roam.foot + 3); } return (performance.now() - t0) / n; },   // for tests: ms per (ahead + down) probe pair
       solidTris: () => { const m = {}; for (const o of solids) { let q = o; while (q && !q.userData.id) q = q.parent; const k = q?.userData.id || o.name || 'proxy'; m[k] = (m[k] || 0) + Math.round((o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3); } return m; },
     };

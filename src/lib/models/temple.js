@@ -232,9 +232,10 @@ function parapet(x0, x1, z0, z1, y) {
 /** A balcony rail (idealized, low) along a line: axis 'x' from a0 to a1 at z = at, or 'z' from a0 to a1 at x = at, standing on floor y. */
 const rail = (axis, a0, a1, at, y) => [ideal(axis === 'x' ? box((a0 + a1) / 2, y, at, a1 - a0, 1.2, 0.5, { mat: 'cedar', role: 'rail' }) : box(at, y, (a0 + a1) / 2, 0.5, 1.2, a1 - a0, { mat: 'cedar', role: 'rail' }))];
 /** A straight stair (idealized): from (x, z) up n steps of 1 × 1, w wide, along ±x (axis 'x', dir) or ±z, from floor y. */
+// each step is built solid down to the floor it rises from (a stepped mass of stone, not floating treads — fieldy)
 const stair = (axis, x, z, n, w, dir = 1, y = Y0) => Array.from({ length: n }, (_, i) => ideal(axis === 'x'
-  ? box(x + dir * (i + 0.5), y + i, z, 1, 1, w, { mat: 'stone', role: 'stair' })
-  : box(x, y + i, z + dir * (i + 0.5), w, 1, 1, { mat: 'stone', role: 'stair' })));
+  ? box(x + dir * (i + 0.5), y, z, 1, i + 1, w, { mat: 'stone', role: 'stair', stair: { axis, x, z, n, w, dir, y, i } })
+  : box(x, y, z + dir * (i + 0.5), w, i + 1, 1, { mat: 'stone', role: 'stair', stair: { axis, x, z, n, w, dir, y, i } })));
 /** The furniture, idealized: a bed (w × l, its head at −x), a table with seats, a couch, a lampstand, a chest, jars. */
 const bed = (x, z, w = 3, l = 6, y = Y0) => [ideal(box(x, y, z, l, 1.1, w, { mat: 'cedar', role: 'bed' })), ideal(box(x, y + 1.1, z, l - 0.4, 0.5, w - 0.4, { mat: 'linen', role: 'bed' })), ideal(box(x - l / 2 + 0.2, y, z, 0.4, 2.6, w, { mat: 'cedar', role: 'bed' }))];
 const table = (x, z, w = 3, l = 5, y = Y0) => [ideal(box(x, y + 1.3, z, l, 0.25, w, { mat: 'cedar', role: 'table' })), ...[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([sx, sz]) => ideal(box(x + sx * (l / 2 - 0.3), y, z + sz * (w / 2 - 0.3), 0.3, 1.3, 0.3, { mat: 'cedar', role: 'table' })))];
