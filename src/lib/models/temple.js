@@ -172,13 +172,55 @@ function portico(x0, x1, z, h, n) {
   const cols = Array.from({ length: n }, (_, i) => cyl(x0 + (i / (n - 1)) * (x1 - x0), H.courtY, z, 1.2, h, { mat: 'stone', role: 'column' }));
   return [...cols, box((x0 + x1) / 2, H.courtY + h, z, x1 - x0 + 3, 1.2, 2.4, { mat: 'cedar', role: 'beam' }), box((x0 + x1) / 2, H.courtY, z + 0.2, x1 - x0 + 4, 0.5, 3.4, { mat: 'stone', role: 'threshold' })];
 }
+// ── A hypothetical dwelling, in bounds ────────────────────────────────────────
+// The text gives the king's house a court within the porch and "like work" as the
+// porches (7:8), nothing of its rooms; so the rooms are drawn from what scripture
+// says a house of the land had: a chamber with a bed, a table, a seat and a
+// lampstand (2 Kings 4:10), a roof to walk on with a parapet about it
+// (Deuteronomy 22:8; 2 Samuel 11:2), storerooms with jars of oil and meal
+// (1 Kings 17:12–16; 2 Kings 4:2–6). All of it sketched in (ideal), around the
+// inner court the text does give. fieldy: "I refuse to think of the king sleeping
+// on the ground surrounded by pillars — creatively remain in bounds."
+const Y0 = H.courtY;
+/** A partition wall (idealized) along x between x0 and x1 at z, or along z between z0 and z1 at x; a doorway (w) at `door` leaves a gap. */
+function wallX(z, x0, x1, h, door = null, dw = 3) {
+  if (door == null) return [ideal(box((x0 + x1) / 2, Y0, z, x1 - x0, h, 1, { mat: 'stone', role: 'partition' }))];
+  return [ideal(box((x0 + door - dw / 2) / 2, Y0, z, door - dw / 2 - x0, h, 1, { mat: 'stone', role: 'partition' })), ideal(box((door + dw / 2 + x1) / 2, Y0, z, x1 - door - dw / 2, h, 1, { mat: 'stone', role: 'partition' })),
+    ideal(box(door, Y0 + 6, z, dw, h - 6, 1, { mat: 'stone', role: 'partition' }))];
+}
+function wallZ(x, z0, z1, h, door = null, dw = 3) {
+  if (door == null) return [ideal(box(x, Y0, (z0 + z1) / 2, 1, h, z1 - z0, { mat: 'stone', role: 'partition' }))];
+  return [ideal(box(x, Y0, (z0 + door - dw / 2) / 2, 1, h, door - dw / 2 - z0, { mat: 'stone', role: 'partition' })), ideal(box(x, Y0, (door + dw / 2 + z1) / 2, 1, h, z1 - door - dw / 2, { mat: 'stone', role: 'partition' })),
+    ideal(box(x, Y0 + 6, door, 1, h - 6, dw, { mat: 'stone', role: 'partition' }))];
+}
+/** The furniture of 2 Kings 4:10 and the storerooms, idealized: a bed (w × l, head at −x), a table with seats, a lampstand, a chest, jars. */
+const bed = (x, z, w = 3, l = 6) => [ideal(box(x, Y0, z, l, 1.1, w, { mat: 'cedar', role: 'bed' })), ideal(box(x, Y0 + 1.1, z, l - 0.4, 0.5, w - 0.4, { mat: 'linen', role: 'bed' })), ideal(box(x - l / 2 + 0.2, Y0, z, 0.4, 2.6, w, { mat: 'cedar', role: 'bed' }))];
+const table = (x, z, w = 3, l = 5) => [ideal(box(x, Y0 + 1.3, z, l, 0.25, w, { mat: 'cedar', role: 'table' })), ...[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([sx, sz]) => ideal(box(x + sx * (l / 2 - 0.3), Y0, z + sz * (w / 2 - 0.3), 0.3, 1.3, 0.3, { mat: 'cedar', role: 'table' })))];
+const seat = (x, z) => [ideal(box(x, Y0, z, 1.1, 0.9, 1.1, { mat: 'cedar', role: 'seat' }))];
+const lamp = (x, z) => [ideal(cyl(x, Y0, z, 0.35, 3.2, { mat: 'brass', role: 'lampstand', r2: 0.15 })), ideal(cyl(x, Y0 + 3.2, z, 0.5, 0.3, { mat: 'brass', role: 'lampstand' }))];
+const chest = (x, z) => [ideal(box(x, Y0, z, 2.4, 1.3, 1.3, { mat: 'cedar', role: 'chest' }))];
+const jars = (x, z, n) => Array.from({ length: n }, (_, i) => ideal(cyl(x + (i % 3) * 1.3, Y0, z + Math.floor(i / 3) * 1.3, 0.55, 1.6, { mat: 'stone', role: 'jar', r2: 0.3 })));
+/** The roof's parapet (Deuteronomy 22:8), a low wall round the roof's edge. */
+function parapet(x0, x1, z0, z1, y) {
+  const t = 0.8, h = 1.4;
+  return [box((x0 + x1) / 2, y, z0 + t / 2, x1 - x0, h, t, { mat: 'stone', role: 'parapet' }), box((x0 + x1) / 2, y, z1 - t / 2, x1 - x0, h, t, { mat: 'stone', role: 'parapet' }),
+    box(x0 + t / 2, y, (z0 + z1) / 2, t, h, z1 - z0, { mat: 'stone', role: 'parapet' }), box(x1 - t / 2, y, (z0 + z1) / 2, t, h, z1 - z0, { mat: 'stone', role: 'parapet' })];
+}
+/** A stair (idealized) climbing along z (dir +1 or −1) from (x, z0) up h steps of 1 × 1, w wide — through the roof's opening onto the roof. */
+const stair = (x, z0, w, h, dir = 1) => Array.from({ length: h }, (_, i) => ideal(box(x, Y0 + i, z0 + dir * (i + 0.5), w, 1, 1, { mat: 'stone', role: 'stair' })));
 /** An idealized inner chatzar (court) in a roofed house: the roof in four strips around an opening, cedar columns about it, a pavement. */
-function innerCourt(cx, cz, ow, od, rx0, rx1, rz0, rz1, roofY, colH) {
+function innerCourt(cx, cz, ow, od, rx0, rx1, rz0, rz1, roofY, colH, hole = null) {
   const ox0 = cx - ow / 2, ox1 = cx + ow / 2, oz0 = cz - od / 2, oz1 = cz + od / 2, T = 1.5;
-  const roof = [
-    box((rx0 + rx1) / 2, roofY, (rz0 + oz0) / 2, rx1 - rx0, T, oz0 - rz0, { role: 'roof', mat: 'cedar' }), box((rx0 + rx1) / 2, roofY, (oz1 + rz1) / 2, rx1 - rx0, T, rz1 - oz1, { role: 'roof', mat: 'cedar' }),
-    box((rx0 + ox0) / 2, roofY, cz, ox0 - rx0, T, od, { role: 'roof', mat: 'cedar' }), box((ox1 + rx1) / 2, roofY, cz, rx1 - ox1, T, od, { role: 'roof', mat: 'cedar' }),
-  ];
+  const roofBox = (x0, x1, z0, z1) => box((x0 + x1) / 2, roofY, (z0 + z1) / 2, x1 - x0, T, z1 - z0, { role: 'roof', mat: 'cedar' });
+  // the strips, with the stair's opening (hole: {x0, x1, z0, z1}) cut out of whichever it crosses
+  const cut = (b) => {
+    if (!hole) return [b];
+    const bx0 = b.x - b.w / 2, bx1 = b.x + b.w / 2, bz0 = b.z - b.d / 2, bz1 = b.z + b.d / 2;
+    if (hole.x1 <= bx0 || hole.x0 >= bx1 || hole.z1 <= bz0 || hole.z0 >= bz1) return [b];
+    const hx0 = Math.max(hole.x0, bx0), hx1 = Math.min(hole.x1, bx1), hz0 = Math.max(hole.z0, bz0), hz1 = Math.min(hole.z1, bz1);
+    return [roofBox(bx0, hx0, bz0, bz1), roofBox(hx1, bx1, bz0, bz1), roofBox(hx0, hx1, bz0, hz0), roofBox(hx0, hx1, hz1, bz1)].filter((r) => r.w > 0.01 && r.d > 0.01);
+  };
+  const roof = [roofBox(rx0, rx1, rz0, oz0), roofBox(rx0, rx1, oz1, rz1), roofBox(rx0, ox0, oz0, oz1), roofBox(ox1, rx1, oz0, oz1)].flatMap(cut);
   const cols = [];
   const nx = Math.max(2, Math.round(ow / 8)), nz = Math.max(2, Math.round(od / 8));
   for (let i = 0; i <= nx; i++) for (const z of [oz0, oz1]) cols.push(ideal(cyl(ox0 + (i / nx) * ow, H.courtY, z, 0.8, colH, { mat: 'cedar', role: 'column' })));
@@ -699,9 +741,25 @@ export const PIECES = [
     note: '"{{1 Kings 7:8 | His bayath … maishah}}" — the king\'s dwelling in a court of its own behind the porches, and a house of the same work for the daughter of Paraih (Pharaoh), whom he brought up out of the city of Dawad (David) into it (9:24).',
     elsewhere: { ref: '1 Kings 3:1; 9:24; 2 Chronicles 8:11; Nehemiah 3:25', note: '"My wife shall not dwell in the house of Dawad (David) malak (king) of Yashar-Al (Israel), because the places are holy where the arawan (ark) of Yahawah has come" (2 Chronicles 8:11).' },
     assumed: 'Both houses\' size and place — the text gives none.',
-    idealized: 'The houses\' form is the model\'s. Each opens to the court through a colonnade, "of like work" as the porches (7:8) — the pillars and cedar beam of the porch of pillars — and has within it an inner chatzar (court) open to the sky with cedar columns about it, sketched in: a reading of "another court within the porch" and of "a house like this porch" for Paraih (Pharaoh)\'s daughter. The text gives no plan of either house.',
-    parts: [...walls(-118, -62, 26, 3, H.courtY, 16).map((b) => ({ ...b, z: b.z + 100 })).filter((b) => b.role !== 'north'), ...portico(-114, -66, 74, 14, 6), ...innerCourt(-90, 100, 30, 26, -121, -59, 71, 129, H.courtY + 16, 16),
-      ...walls(64, 118, 22, 3, H.courtY, 14).map((b) => ({ ...b, z: b.z + 134 })).filter((b) => b.role !== 'north'), ...portico(67, 115, 112, 12, 6), ...innerCourt(91, 134, 24, 20, 61, 121, 109, 159, H.courtY + 14, 14)],
+    idealized: 'The houses\' plan is the model\'s, kept within what scripture says of houses. Each opens to the court through a colonnade "of like work" as the porches (7:8), and has at its heart the inner chatzar (court) of 7:8 with cedar columns about it. Round the court are rooms, sketched in: the king\'s chamber behind it with the four things of a chamber in 2 Kings 4:10 — a bed, a table, a seat and a lampstand — and a chest; a hall with a table and seats; a sitting room; a storeroom with jars and chests (1 Kings 17:12–16; 2 Kings 4:2–6); a stair to the roof, which has a parapet about it (Deuteronomy 22:8; 2 Samuel 11:2). The house for Paraih (Pharaoh)\'s daughter, "like this porch", follows the same plan, smaller.',
+    parts: [
+      // ── the king's house: x −118…−62, z 74…126, walls 16 high; the court (30 × 26) at its heart, the portico across the front
+      ...walls(-118, -62, 26, 3, H.courtY, 16).map((b) => ({ ...b, z: b.z + 100 })).filter((b) => b.role !== 'north'), ...portico(-114, -66, 74, 14, 6), ...innerCourt(-90, 100, 30, 26, -121, -59, 71, 129, H.courtY + 16, 16, { x0: -121, x1: -114.5, z0: 108.4, z1: 114.5 }),
+      ...parapet(-121, -59, 71, 129, H.courtY + 17.5),
+      // the wings: rooms either side of the court, each with a door onto it (west wing x −118…−105, east wing x −75…−62)
+      ...wallZ(-105, 87, 126, 16, 97), ...wallX(107, -118, -105, 16), ...wallZ(-75, 87, 126, 16, 97), ...wallX(107, -75, -62, 16),
+      // behind the court, the king's chamber (30 × 13) with the four things of 2 Kings 4:10 — a bed, a table, a seat, a lampstand — and a chest
+      ...wallX(113, -105, -75, 16, -84), ...bed(-99, 121, 3.4, 6.5), ...table(-90, 122, 2.6, 4), ...seat(-90, 124.4), ...lamp(-95, 116), ...chest(-80, 123.5),
+      // west wing: the hall where he eats (a table and seats), and behind it the stair to the roof; east wing: a sitting room, and the storeroom's jars and chests
+      ...table(-111.5, 92, 3, 5), ...seat(-114, 92), ...seat(-109, 92), ...seat(-111.5, 89.5), ...seat(-111.5, 94.5), ...stair(-116.5, 125.5, 2.4, 17, -1),
+      ...seat(-70, 92), ...seat(-67, 92), ...table(-68.5, 96, 2, 3), ...lamp(-64.5, 89), ...jars(-73, 110, 6), ...chest(-66, 122), ...chest(-71, 122),
+      // ── the house for Paraih (Pharaoh)'s daughter: x 64…118, z 112…156, walls 14 high, "like this porch"; the same plan, smaller
+      ...walls(64, 118, 22, 3, H.courtY, 14).map((b) => ({ ...b, z: b.z + 134 })).filter((b) => b.role !== 'north'), ...portico(67, 115, 112, 12, 6), ...innerCourt(91, 134, 24, 20, 61, 121, 109, 159, H.courtY + 14, 14, { x0: 61, x1: 67.5, z0: 141.6, z1: 147 }),
+      ...parapet(61, 121, 109, 159, H.courtY + 15.5),
+      ...wallZ(79, 124, 156, 14, 132), ...wallX(141, 64, 79, 14), ...wallZ(103, 124, 156, 14, 132), ...wallX(141, 103, 118, 14),
+      ...wallX(144, 79, 103, 14, 96), ...bed(84, 150.5, 3.2, 6), ...table(93, 151, 2.4, 3.6), ...seat(93, 153.3), ...lamp(99, 147), ...chest(100, 152.5),
+      ...table(71.5, 131, 2.6, 4), ...seat(69, 131), ...seat(74, 131), ...stair(65.5, 156, 2.4, 14, -1),
+      ...seat(108, 130), ...seat(111, 130), ...table(109.5, 134, 2, 3), ...jars(105.5, 146, 6), ...chest(114, 153)],
   },
 ];
 

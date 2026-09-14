@@ -304,8 +304,8 @@ function idealOf(M, matKey) {
   const base = M[matKey] || M.stone;
   if (!idealCache.has(M)) idealCache.set(M, new Map());
   const c = idealCache.get(M); if (c.has(matKey)) return c.get(matKey);
-  const m = base.clone(); m.transparent = true; m.opacity = 0.45; m.depthWrite = false; m.map = null; m.bumpMap = null; m.emissive = new THREE.Color('#000000');
-  m.color = base.color.clone().lerp(new THREE.Color('#dfe7f2'), 0.7); m.roughness = 1; m.metalness = 0; m.userData.ideal = true;
+  const m = base.clone(); m.transparent = true; m.opacity = 0.58; m.depthWrite = true; m.map = null; m.bumpMap = null; m.emissive = new THREE.Color('#000000');   // pale but ordering properly, so rooms of sketched walls still read as rooms
+  m.color = base.color.clone().lerp(new THREE.Color('#dfe7f2'), matKey === 'stone' ? 0.7 : 0.45); m.roughness = 1; m.metalness = 0; m.userData.ideal = true;   // stone walls fade most; cedar, brass and linen (the furniture) keep more of their colour so a bed still reads as a bed
   c.set(matKey, m); return m;
 }
 
@@ -1635,10 +1635,16 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
         // (1 high, 1 deep, so the risers two and three ahead stand above the knee) is climbed just by walking at it, while a court
         // wall or a shut door still blocks
         const base = Math.max(roam.foot, gy), knee = probe.set(eye.x, base + STEP_UP + 0.2, eye.z), high = knee.clone().setY(base + ROAM_EYE);
-        if (blocked(high, step, l + RADIUS) || blocked(knee.clone(), step, l + RADIUS)) return false;
+        // climbing (the ground ahead is higher): the thing ahead IS the step, so only the eye's ray is asked — on a stair of
+        // 1 × 1 steps the knee's ray would meet the third step up and stop you halfway; on the level, the knee's ray stops a court
+        // wall or a shut door
+        if (blocked(high, step, l + RADIUS) || (gy <= roam.foot + 0.05 && blocked(knee.clone(), step, l + RADIUS))) return false;
         eye.x = nx; eye.z = nz; roam.foot = gy; return true;
       };
-      return attempt(dx, dz) || attempt(dx, 0) || attempt(0, dz);
+      // a long move (a slow frame) is walked in short strides, so no step or wall is skipped over
+      const strides = Math.max(1, Math.ceil(len / 1.0)); let moved = false;
+      for (let i = 0; i < strides; i++) { const sx = dx / strides, sz = dz / strides; if (!(attempt(sx, sz) || attempt(sx, 0) || attempt(0, sz))) break; moved = true; }
+      return moved;
     }
     function roamStep(dt) {
       if (!roam.on) return false;
@@ -1864,7 +1870,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       refocus: () => { if (roam.on) return; if (currentSel) flyTo(currentSel); else { setFollow(true); lastT = -1; } dirty = true; },
       modeChanged: () => { const free = !!MODES[modeRef.current]?.free; if (free !== roam.on) roamEnter(free); lastT = -1; if (!free) setFollow(true); dirty = true; },
       move: (key, on) => { if (key === 'jump') { if (on) jump(); return; } if (on) roam.keys.add(key); else roam.keys.delete(key); },
-      teleport: (x, z, yaw) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; const gy = groundUnder(x, z, roam.foot + 40); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
+      teleport: (x, z, yaw) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; const gy = groundUnder(x, z, roam.foot + 3);   /* from just above the feet, so a roof overhead is not mistaken for the ground */ if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
       locked: () => locked,
       piece: (id) => byId(id),   // for tests
       pick: (nx = 0, ny = 0) => { ndc.set(nx, ny); ray.setFromCamera(ndc, camera); const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible); let o = hit?.object; while (o && !o.userData.id) o = o.parent; return { id: o?.userData.id || null, dist: hit?.distance, obj: hit?.object?.name, yaw: roam.yaw, pitch: roam.pitch }; },   // for tests: what the crosshair is on
