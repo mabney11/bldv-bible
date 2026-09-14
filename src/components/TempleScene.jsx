@@ -73,6 +73,30 @@ function ashlarTexture(base, mortar) {
     }
   });
 }
+/** Lime plaster: a soft mottle. One tile = 4 × 4 cubits. */
+function plasterTexture(base) {
+  return canvas(256, 256, (g, w, h) => {
+    g.fillStyle = base; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 900; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '255,255,255' : '80,60,30'},${0.02 + rnd() * 0.05})`; const r = 2 + rnd() * 9; g.beginPath(); g.arc(rnd() * w, rnd() * h, r, 0, Math.PI * 2); g.fill(); }
+    for (let i = 0; i < 6; i++) { g.strokeStyle = `rgba(60,40,20,${0.05 + rnd() * 0.06})`; g.lineWidth = 1; g.beginPath(); let x = rnd() * w, y = rnd() * h; g.moveTo(x, y); for (let j = 0; j < 5; j++) { x += rnd() * 30 - 15; y += rnd() * 30 - 15; g.lineTo(x, y); } g.stroke(); }
+  });
+}
+/** Paving: flagstones. One tile = 4 × 4 cubits. */
+function pavingTexture(base, joint) {
+  return canvas(256, 256, (g, w, h) => {
+    g.fillStyle = joint; g.fillRect(0, 0, w, h);
+    const n = 4;
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) { const off = r % 2 ? w / n / 2 : 0; for (const dx of [-w, 0]) { g.fillStyle = shade(base, 0.86 + rnd() * 0.28); g.fillRect(c * (w / n) + off + dx + 2, r * (h / n) + 2, w / n - 4, h / n - 4); } }
+  });
+}
+/** The hatch laid over what is idealized: fine diagonal lines on white (multiplied onto the material), the draughtsman's mark for conjecture. */
+function hatchTexture() {
+  return canvas(128, 128, (g, w, h) => {
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(70,80,100,0.22)'; g.lineWidth = 1.2;
+    for (let i = -h; i < w + h; i += 10) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + h, h); g.stroke(); }
+  });
+}
 function shade(hex, k) {
   const c = new THREE.Color(hex); c.r = Math.min(1, c.r * k); c.g = Math.min(1, c.g * k); c.b = Math.min(1, c.b * k);
   return `#${c.getHexString()}`;
@@ -214,6 +238,9 @@ function makeMaterials() {
     panel: std('brass', { map: panelTexture('#b9733a', '#5a2f12', '#e6ab70'), roughness: 0.5 }),
     flame: new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffd27a') }),
     linen: new THREE.MeshStandardMaterial({ color: new THREE.Color('#efe6d2'), roughness: 0.95, metalness: 0 }),     // bawatz (fine linen) — the priests and singers
+    plaster: std('plaster', { map: plasterTexture(MATERIALS.plaster.color) }),
+    paving: std('paving', { map: pavingTexture(MATERIALS.paving.color, '#6f6449') }),
+    garden: std('garden'),
     idealEdge: new THREE.LineBasicMaterial({ color: new THREE.Color('#5d6f8a'), transparent: true, opacity: 0.75 }),   // the drawn edges of what is idealized (idealOf)
     royal: new THREE.MeshStandardMaterial({ color: new THREE.Color('#4a2e7a'), roughness: 0.8, metalness: 0.05 }),   // the malak (king)
     // skin tones across the tribes (fieldy's chart, 2026-09-12): Reuben → Ephraim, light to deep brown
@@ -228,7 +255,7 @@ function makeMaterials() {
   return M;
 }
 // Tile sizes in cubits (u, v) per texture, for the UV scaling of boxes.
-const TILE = { stone: [8, 4], found: [8, 4], cedar: [4, 4], fir: [4, 4], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], panel: [4, 3] };
+const TILE = { stone: [8, 4], found: [8, 4], cedar: [4, 4], fir: [4, 4], plaster: [4, 4], paving: [4, 4], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], panel: [4, 3] };
 
 /** Scale a BoxGeometry's UVs so a texture tiles every face at world scale. */
 function uvBox(geo, w, h, d, tile) {
@@ -304,8 +331,11 @@ function idealOf(M, matKey) {
   const base = M[matKey] || M.stone;
   if (!idealCache.has(M)) idealCache.set(M, new Map());
   const c = idealCache.get(M); if (c.has(matKey)) return c.get(matKey);
-  const m = base.clone(); m.transparent = true; m.opacity = 0.58; m.depthWrite = true; m.map = null; m.bumpMap = null; m.emissive = new THREE.Color('#000000');   // pale but ordering properly, so rooms of sketched walls still read as rooms
-  m.color = base.color.clone().lerp(new THREE.Color('#dfe7f2'), matKey === 'stone' ? 0.7 : 0.45); m.roughness = 1; m.metalness = 0; m.userData.ideal = true;   // stone walls fade most; cedar, brass and linen (the furniture) keep more of their colour so a bed still reads as a bed
+  // opaque (fieldy: "not a fan of the clear walls"): the material's own colour, a little paled, under a fine diagonal hatch — the
+  // draughtsman's mark for what is conjectured — with its edges drawn; a wall is still a wall to stand behind
+  if (!idealCache.hatch) { idealCache.hatch = hatchTexture(); idealCache.hatch.repeat.set(2, 2); }
+  const m = base.clone(); m.transparent = false; m.opacity = 1; m.depthWrite = true; m.bumpMap = null; m.emissive = new THREE.Color('#000000');
+  m.map = idealCache.hatch; m.color = base.color.clone().lerp(new THREE.Color('#eef0f2'), matKey === 'stone' || matKey === 'plaster' ? 0.35 : 0.2); m.roughness = 1; m.metalness = 0; m.userData.ideal = true;
   c.set(matKey, m); return m;
 }
 
@@ -912,7 +942,7 @@ function buildTable(b, part) {
  * built here. Faces −z in its own frame; the porch turns it to look north, to the court.
  */
 function buildThrone(b, part) {
-  const { x, y, z } = part; const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = Math.PI / 2; g.userData.part = 'throne';
+  const { x, y, z } = part; const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = part.rot ?? Math.PI / 2; g.userData.part = 'throne';
   const sub = new PieceBuilder(b.M, b.piece);
   const STEP = 0.45, RUN = 0.7, W0 = 7, X0 = -3.6;                  // six steps; each tread runs from its riser back under the next
   for (let i = 0; i < 6; i++) { const w = W0 - i * 0.45, x0 = X0 + i * RUN, x1 = X0 + 6 * RUN + 1.2; sub.box((x0 + x1) / 2, i * STEP, 0, x1 - x0, STEP, w, 'ivory'); sub.box(x0 + 0.06, (i + 1) * STEP - 0.04, 0, 0.12, 0.05, w + 0.04, 'gold'); }   // a gold nosing on each
@@ -993,7 +1023,7 @@ function cutGates(piece) {
   for (const p of piece.parts) {
     let cut = false;
     for (const gate of piece.gates) {
-      if (p.kind !== 'box' || p.role === 'ground' || p.role === 'roof' || p.role === 'pavement' || p.ideal) continue;   // only the walls are cut; a roof spans the gate, the sketched frame stands in it
+      if (p.kind !== 'box' || ['ground', 'roof', 'pavement', 'floor', 'ceiling', 'lining', 'parapet', 'beam', 'threshold'].includes(p.role) || p.ideal) continue;   // only the walls are cut; a roof spans the gate, the sketched frame stands in it
       if (gate.axis === 'z' && Math.abs(p.x - gate.x) < p.w && p.d > gate.w * 2) {   // an east/west wall: the gap runs along z
         const d1 = (gate.z - gate.w / 2) - (p.z - p.d / 2), d2 = (p.z + p.d / 2) - (gate.z + gate.w / 2);
         parts.push({ ...p, z: p.z - p.d / 2 + d1 / 2, d: d1 }, { ...p, z: p.z + p.d / 2 - d2 / 2, d: d2 });
@@ -1272,7 +1302,7 @@ function buildDedication(M, byId, lights, sky) {
     let x, z;
     if (i < 420) { x = INNER_COURT.x1 - 14 + rr() * 12; z = -52 + rr() * 104; if (Math.abs(z) < 6) z += 8 * Math.sign(z || 1); if (z < -6 && z > -34) z = -z; }   // before the altar, leaving the ark's road (and its turn south of the kayawar) clear
     else if (i < 640) { x = GREAT_COURT.x1 - 14 + rr() * 11; z = -70 + rr() * 140; if (Math.abs(z) < 8) z += 9 * Math.sign(z || 1); }
-    else { x = -60 + rr() * 170; z = rr() < 0.5 ? -74 + rr() * 10 : INNER_COURT.z + 4 + rr() * 10; }
+    else { x = -60 + rr() * 170; z = rr() < 0.5 ? -74 + rr() * 10 : INNER_COURT.z + 4 + rr() * 10; if (z > 0 && x > -12 && x < 52) x = x < 20 ? x - 64 : x + 40; }   // the king's porches' way stays clear
     const y = H.courtY, sc = 0.95 + rr() * 0.2, yaw = Math.PI + (rr() - 0.5) * 0.5;
     seats.push({ x, y, z, sc, yaw, d: rr() });
     tone.set(SKIN_TONES[Math.floor(rr() * SKIN_TONES.length)]).offsetHSL((rr() - 0.5) * 0.02, (rr() - 0.5) * 0.08, (rr() - 0.5) * 0.06); crowd.setColorAt(i, tone);
@@ -1600,7 +1630,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     // Only the plain-built pieces (boxes, a few lathes) are tested — a ray through a
     // capital's two hundred pomegranates or the throne's lions would cost more than
     // the frame; those get stand-ins (two plain cylinders for Yakayan and Baiz).
-    const SOLID = ['yasad', 'qayar', 'tzalai', 'awalam', 'roof', 'doors', 'oracle-doors', 'parakath', 'dabayar', 'chatzar', 'mazabach', 'great-court', 'yair', 'king-house', 'porch-pillars'];
+    const SOLID = ['yasad', 'qayar', 'tzalai', 'awalam', 'roof', 'doors', 'oracle-doors', 'parakath', 'dabayar', 'chatzar', 'mazabach', 'great-court', 'yair', 'king-house', 'daughter-house', 'porch-pillars', 'porch-throne', 'kasaa'];
     const solids = [ground];
     for (const id of SOLID) byId(id)?.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) solids.push(o); });
     for (const sz of [-1, 1]) { const c = new THREE.Mesh(new THREE.CylinderGeometry(PILLAR.r + 0.3, PILLAR.r + 0.3, PILLAR.h + PILLAR.capH + PILLAR.lilyH, 12)); c.position.set(PILLAR.x, (PILLAR.h + PILLAR.capH + PILLAR.lilyH) / 2, sz * PILLAR.z); c.updateMatrixWorld(true); solids.push(c); }
