@@ -766,18 +766,23 @@ export const PIECES = [
     parts: (() => {
       const F = PALACE.forest, W = 3, out = [];
       out.push(...walls(F.x0, F.x1, (F.z1 - F.z0) / 2, W, Y0, F.h, { windows: 3 }).map((b) => ({ ...b, z: b.z + (F.z0 + F.z1) / 2 })));
-      out.push(...roofOf(F.x0 - W, F.x1 + W, F.z0 - W, F.z1 + W, Y0 + F.h - 2, [{ x0: -97, x1: -90, z0: 160.5, z1: 163.5 }]));
+      // the roof's top at Y0 + F.h, flush with the stair's thirtieth step; its opening runs from where a head would meet the slab
+      // (foot > underside − 3.4, less the walker's 1.5-amah look-ahead) to EXACTLY the last step (x −92) — any further and the walker steps off into the stair hall below (fieldy)
+      out.push(...roofOf(F.x0 - W, F.x1 + W, F.z0 - W, F.z1 + W, Y0 + F.h - 1.5, [{ x0: -100, x1: -92, z0: 160.5, z1: 163.5 }]));
       // four rows of cedar pillars down the nave (x −117…−83), fourteen to a row, with gold shields on every other one
-      for (const x of [-110.2, -103.4, -96.6, -89.8]) for (let i = 0; i < 14; i++) { const z = 70 + i * (86 / 13); out.push(cyl(x, Y0, z, 1.1, F.h - 2.6, { mat: 'cedar', role: 'column' })); if (i % 2 === 0) out.push(...shields(x, z, Y0 + 9)); }
-      out.push(box(-100, Y0 + F.h - 2.6, 115, 34, 0.6, 100, { mat: 'cedar', role: 'ceiling' }));
+      for (const x of [-110.2, -103.4, -96.6, -89.8]) for (let i = 0; i < 14; i++) { const z = 70 + i * (86 / 13); out.push(cyl(x, Y0, z, 1.1, F.h - 2.1, { mat: 'cedar', role: 'column' })); if (i % 2 === 0) out.push(...shields(x, z, Y0 + 9)); }
+      // the nave's ceiling, up to the roof's underside — stopping short of the stair hall at the south end, where the stair climbs
+      // through it to the roof (a ceiling across the stair hole put a floor under the roof's opening)
+      out.push(box(-100, Y0 + F.h - 2.1, 110.5, 34, 0.6, 91, { mat: 'cedar', role: 'ceiling' }), box(-87.5, Y0 + F.h - 2.1, 160.5, 9, 0.6, 9, { mat: 'cedar', role: 'ceiling' }));
       // three storeys of chambers along both long walls (floors at −4, 5, 14), a walkway with a rail on the upper floors
       [Y0, Y0 + 9, Y0 + 18].forEach((y, k) => {
-        const h = k === 2 ? F.h - 2.6 - 18 : 8;
+        const h = k === 2 ? F.h - 2.1 - 18 : 8;
         out.push(...chambers(F.x0, F.x0 + 6, F.z0, 156, 8, y, h));
         if (k === 0) { out.push(...chambers(F.x1, F.x1 - 6, F.z0, 76, 1, y, h)); out.push(...chambers(F.x1, F.x1 - 6, 88, 156, 6, y, h)); }
         else out.push(...chambers(F.x1, F.x1 - 6, F.z0, 156, 7, y, h));
         if (k > 0) {
-          out.push(...slab(F.x0, F.x0 + 8, F.z0, F.z1, y), ...slab(F.x1 - 8, F.x1, F.z0, F.z1, y), ...slab(F.x0 + 8, F.x1 - 8, 156, F.z1, y, [{ x0: -122, x1: -92, z0: 160.5, z1: 163.5 }]));
+          const stairHole = { x0: -122, x1: -92, z0: 160.5, z1: 163.5 };   // the stair climbs through every floor, the west walkway's too
+          out.push(...slab(F.x0, F.x0 + 8, F.z0, F.z1, y, [stairHole]), ...slab(F.x1 - 8, F.x1, F.z0, F.z1, y), ...slab(F.x0 + 8, F.x1 - 8, 156, F.z1, y, [stairHole]));
           out.push(...rail('z', F.z0, 156, F.x0 + 8, y), ...rail('z', F.z0, 156, F.x1 - 8, y), ...rail('x', F.x0 + 8, F.x1 - 8, 156, y));
         }
       });
@@ -871,7 +876,7 @@ export const PIECES = [
       const cx = (K.x0 + K.x1) / 2, cz = (K.z0 + K.z1) / 2, ox0 = 67, ox1 = 93, oz0 = 123, oz1 = 145;
       out.push(...walls(K.x0, K.x1, (K.z1 - K.z0) / 2, 3, Y0, K.h).map((b) => ({ ...b, z: b.z + cz })).filter((b) => b.role !== 'north'));
       out.push(...portico(K.x0 + 5, K.x1 - 5, K.z0 + 2, 12, 7));
-      out.push(...roofOf(K.x0 - 3, K.x1 + 3, K.z0 - 3, K.z1 + 3, Y0 + K.h - 1.5, [{ x0: ox0, x1: ox1, z0: oz0, z1: oz1 }, { x0: 51.5, x1: 56, z0: 150.5, z1: 153.5 }]));
+      out.push(...roofOf(K.x0 - 3, K.x1 + 3, K.z0 - 3, K.z1 + 3, Y0 + K.h - 1.5, [{ x0: ox0, x1: ox1, z0: oz0, z1: oz1 }, { x0: 49, x1: 56, z0: 150.5, z1: 153.5 }]));
       for (let i = 0; i <= 3; i++) for (const z of [oz0, oz1]) out.push(ideal(cyl(ox0 + (i / 3) * (ox1 - ox0), Y0, z, 0.9, K.h - 1.5, { mat: 'cedar', role: 'column' })));
       for (let i = 1; i < 3; i++) for (const x of [ox0, ox1]) out.push(ideal(cyl(x, Y0, oz0 + (i / 3) * (oz1 - oz0), 0.9, K.h - 1.5, { mat: 'cedar', role: 'column' })));
       out.push(...paving(K.x0, K.x1, K.z0, K.z1));
@@ -913,7 +918,7 @@ export const PIECES = [
       const cz = (D.z0 + D.z1) / 2, gx0 = -52, gx1 = -24, gz0 = 115, gz1 = 145;
       out.push(...walls(D.x0, D.x1, (D.z1 - D.z0) / 2, 3, Y0, D.h).map((b) => ({ ...b, z: b.z + cz })).filter((b) => b.role !== 'east'));
       out.push(...porticoZ(D.z0 + 5, D.z1 - 5, D.x1 - 2, 12, 6));
-      out.push(...roofOf(D.x0 - 3, D.x1 + 3, D.z0 - 3, D.z1 + 3, Y0 + D.h - 1.5, [{ x0: gx0, x1: gx1, z0: gz0, z1: gz1 }, { x0: -41, x1: -36, z0: 149, z1: 152 }]));
+      out.push(...roofOf(D.x0 - 3, D.x1 + 3, D.z0 - 3, D.z1 + 3, Y0 + D.h - 1.5, [{ x0: gx0, x1: gx1, z0: gz0, z1: gz1 }, { x0: -43.5, x1: -36, z0: 149, z1: 152 }]));
       out.push(...paving(D.x0, D.x1, D.z0, D.z1));
       out.push(...pool(-38, 130, 8, 6));
       for (const [x, z] of [[-49, 118], [-27, 118], [-49, 142], [-27, 142], [-38, 118], [-49, 130], [-27, 130], [-38, 142]]) out.push(...tree(x, z, 6 + (Math.abs(x + z) % 3)));
