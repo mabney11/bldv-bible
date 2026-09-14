@@ -434,13 +434,23 @@ function buildRamp(b, part) {   // a wedge rising to the altar's top from the so
   const len = part.len, h = part.h, w = part.w;
   const geo = new THREE.BufferGeometry();
   const x0 = part.x - w / 2, x1 = part.x + w / 2, z0 = part.z, z1 = part.z + len, y0 = part.y, y1 = part.y + h;
+  // A closed hull, every face wound outward: the walker's rays (which see front
+  // faces only) must meet the sides and the slope from outside, or he walks into
+  // the wedge and is caught in it.
   const v = [
-    x0, y0, z1, x1, y0, z1, x1, y1, z0, x0, y1, z0,          // top slope
-    x0, y0, z0, x1, y0, z0, x1, y1, z0, x0, y1, z0,          // back (against the altar)
-    x0, y0, z0, x0, y1, z0, x0, y0, z1,                      // sides
-    x1, y0, z0, x1, y0, z1, x1, y1, z0,
+    x0, y0, z1, x1, y0, z1, x1, y1, z0, x0, y1, z0,          // 0–3 top slope (faces up and south)
+    x0, y0, z0, x1, y0, z0, x1, y1, z0, x0, y1, z0,          // 4–7 back (against the altar, faces north)
+    x0, y0, z0, x0, y1, z0, x0, y0, z1,                      // 8–10 west side
+    x1, y0, z0, x1, y0, z1, x1, y1, z0,                      // 11–13 east side
+    x0, y0, z0, x1, y0, z0, x1, y0, z1, x0, y0, z1,          // 14–17 bottom (faces down)
   ];
-  const idx = [0, 1, 2, 0, 2, 3, 4, 6, 5, 4, 7, 6, 8, 9, 10, 11, 12, 13];
+  const idx = [
+    0, 1, 2, 0, 2, 3,       // slope: +y +z
+    4, 6, 5, 4, 7, 6,       // back: −z
+    8, 10, 9,               // west: −x
+    11, 13, 12,             // east: +x
+    14, 15, 16, 14, 16, 17, // bottom: −y
+  ];
   geo.setAttribute('position', new THREE.Float32BufferAttribute(v, 3)); geo.setIndex(idx); geo.computeVertexNormals();
   // uvs are needed for merging with textured geometry: give it plain ones
   geo.setAttribute('uv', new THREE.Float32BufferAttribute(new Array((v.length / 3) * 2).fill(0), 2));
