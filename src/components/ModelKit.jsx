@@ -215,7 +215,8 @@ export function ModelPassage({ passages, selected, onPick, onVerses, pieceFor, t
               const n = +v.verse, key = `${p.bookId}:${p.chapter}:${n}`;
               return (
                 <p key={n} className={`st-v${onVerses.has(key) ? ' on' : ''}`} data-ref={key}>
-                  <sup>{n}</sup>
+                  {/* as in the reader: hovering the number offers "Go to verse" — the verse's own page (/:book/:chapter/:verse; a numeric book id is accepted there) */}
+                  <span className="st-vnum-wrap"><sup className="st-vnum" tabIndex={0}>{n}</sup><Link className="st-vnum-goto" to={`/${p.bookId}/${p.chapter}/${n}`} title={`Open verse ${n} on its own page`}>Go to verse</Link></span>
                   {verseParts(String(v.text || ''), (w) => pieceFor(w, p, n)).map((part, i) => part.piece
                     ? <button key={i} type="button" className={`st-w${part.piece === selected ? ' hl' : ''}`} onClick={() => onPick(part.piece)} title={titleFor?.(part.piece)}><GlossPair heb={part.heb} gloss={part.gloss} /></button>
                     : part.heb ? <GlossPair key={i} heb={part.heb} gloss={part.gloss} /> : <span key={i}>{part.t}</span>)}

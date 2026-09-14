@@ -75,3 +75,14 @@
   .tp-page .tp-story span { display: inline; }
 }
 @media (max-width: 340px) { .tp-page .tp-story span { display: none; } }
+
+/* Quick ways out of the model: home (the reader's 𐤀𐤁 mark) and the other models — beside the back arrow (fieldy: "no quick way home") */
+.tp-nav { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+.tp-nav a { display: inline-flex; align-items: center; height: 34px; padding: 0 10px; border: 1px solid var(--border2); border-radius: 6px; color: var(--text2); font-size: 12.5px; font-weight: 600; white-space: nowrap; text-decoration: none; }
+.tp-nav a:hover { color: var(--gold); border-color: var(--gold); }
+.tp-nav .tp-nav-home { font-size: 15px; letter-spacing: 0.06em; padding: 0 9px; }
+@media (max-width: 560px) { .tp-nav a:not(.tp-nav-home) { display: none; } }
+
+/* The minimap on foot: the plan round the walker, his way up (drawn by TempleScene.drawMinimap) */
+.st-gl canvas.tp-minimap { position: absolute; inset: auto; top: 12px; right: 12px; width: 170px !important; height: 170px !important; cursor: default; border-radius: 10px; border: 1px solid rgba(255, 208, 98, 0.45); box-shadow: 0 4px 16px rgba(0,0,0,.35); pointer-events: none; z-index: 5; }
+@media (max-width: 720px) { .st-gl canvas.tp-minimap { width: 118px !important; height: 118px !important; top: 8px; right: 8px; } }

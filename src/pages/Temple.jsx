@@ -195,6 +195,10 @@ export default function Temple() {
     <div className={`st-page tp-page${sheetOpen ? ' st-sheet-open' : ''}`}>
       <header className="st-top">
         <Link to="/models/temple" className="st-back" title="The house's stories">←</Link>
+        <nav className="tp-nav" aria-label="Elsewhere">
+          <Link to="/landing" className="tp-nav-home" title="Home">𐤀𐤁</Link>
+          <Link to="/models" title="Maps &amp; Models — the other models">Models</Link>
+        </nav>
         <div className="st-h1wrap">
           <h1 className="st-h1">The Bayath (House) of Yahawah</h1>
           <span className="st-h1-paleo" dir="rtl" aria-hidden="true">𐤁𐤉𐤕 𐤉𐤄𐤅𐤄</span>

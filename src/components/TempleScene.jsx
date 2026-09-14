@@ -1638,13 +1638,75 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
           const foot = st.axis === 'x' ? [st.x - st.dir * 1.2, st.y, st.z] : [st.x, st.y, st.z - st.dir * 1.2];
           const head = st.axis === 'x' ? [st.x + st.dir * (st.n + 0.8), st.y + st.n, st.z] : [st.x, st.y + st.n, st.z + st.dir * (st.n + 0.8)];
           for (const [pt, mat] of [[foot, matUp], [head, matDown]]) {
-            const sp = new THREE.Sprite(mat); sp.position.set(pt[0], pt[1] + 3.6, pt[2]); sp.scale.set(2.6, 2.6, 1); sp.renderOrder = 999; sp.visible = false;
+            const sp = new THREE.Sprite(mat); sp.position.set(pt[0], pt[1] + 3.6, pt[2]); sp.scale.set(2.6, 2.6, 1); sp.renderOrder = 999; sp.visible = false; sp.userData.foot = mat === matUp;
             sp.userData.house = box; sp.raycast = () => {}; scene.add(sp); stairMarks.push(sp);
           }
         }
       }
     }
     const inHouseOf = (b, p) => p.x > b.x0 - 1 && p.x < b.x1 + 1 && p.z > b.z0 - 1 && p.z < b.z1 + 1 && p.y > H.courtY - 2 && p.y < H.courtY + b.h + 6;
+
+    // ── The minimap: a plan of the courts and houses round the walker, turned so his way is up (a game's minimap — fieldy:
+    // "labeled buildings and marks so I can see what building I am next to at a glance"). The walls are every wall-high box of
+    // the built pieces; the labels are the parts' names in his renderings.
+    const mmap = document.createElement('canvas'); mmap.className = 'tp-minimap'; mmap.hidden = true; el.appendChild(mmap);
+    const PLAN_PIECES = ['yasad', 'qayar', 'awalam', 'chatzar', 'great-court', 'mazabach', 'yair', 'king-house', 'daughter-house', 'porch-pillars', 'porch-throne', 'kasaa', 'makanawath'];
+    const PLAN_SKIP = new Set(['roof', 'floor', 'ceiling', 'slab', 'parapet', 'lining', 'rail', 'stair', 'pavement', 'paving', 'ground', 'beam', 'threshold', 'rug', 'bed', 'table', 'seat', 'couch', 'chest', 'jar', 'lampstand', 'tree', 'pool', 'inlay', 'vessel']);
+    const plan = [];   // { x0, x1, z0, z1 } walls (filled) and { x, z, r } rounds (pillars, the sea)
+    for (const id of PLAN_PIECES) {
+      const piece = PIECES.find((q) => q.id === id); if (!piece) continue;
+      for (const part of cutGates(piece).parts) {
+        if (PLAN_SKIP.has(part.role)) continue;
+        if (part.kind === 'box' && part.h >= 2.5) plan.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2 });
+        else if (part.kind === 'cyl' && part.r >= 0.8 && part.h >= 2.5) plan.push({ x: part.x, z: part.z, r: part.r });
+        else if (part.kind === 'base') plan.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.w / 2, z1: part.z + part.w / 2, thin: true });
+        else if (part.kind === 'throne') plan.push({ x0: part.x - 3, x1: part.x + 3, z0: part.z - 3, z1: part.z + 3, thin: true });
+      }
+    }
+    plan.push({ x: 58, z: 32, r: 5 }); for (const sz of [-1, 1]) plan.push({ x: PILLAR.x, z: sz * PILLAR.z, r: PILLAR.r });   // the yam (sea), Yakayan and Baiz
+    const PLAN_LABELS = [
+      [0, 0, 'hayakal'], [-20, 0, 'dabayar'], [40, 0, 'awalam'], [20, -40, 'chatzar'], [76, 0, 'mazabach'], [58, 32, 'yam'], [95, 0, 'kayawar'],
+      [129, 0, 'shaar'], [0, -68, 'gadawal chatzar'], [-100, 115, 'bayath yair'], [20, 85, 'awalam of pillars'], [20, 118, 'kasaa'],
+      [80, 134, 'bayath of the malak'], [-38, 130, 'bayath of the banath'], [20, 66, 'lesser awalam'],
+    ];
+    const MM_R = 85;   // amah shown from the centre to the edge
+    function drawMinimap() {
+      const css = mmap.clientWidth || 170, dpr = Math.min(2, window.devicePixelRatio || 1), W = Math.round(css * dpr);
+      if (mmap.width !== W) { mmap.width = mmap.height = W; }
+      const g = mmap.getContext('2d'); if (!g) return;
+      const S = W / (2 * MM_R), cx = W / 2, cy = W / 2, px = camera.position.x, pz = camera.position.z, a = -(roam.yaw + Math.PI / 2);
+      g.clearRect(0, 0, W, W);
+      g.save(); g.beginPath(); g.roundRect(0, 0, W, W, 10 * dpr); g.clip();
+      g.fillStyle = 'rgba(14, 11, 8, 0.78)'; g.fillRect(0, 0, W, W);
+      g.save(); g.translate(cx, cy); g.rotate(a); g.scale(S, S);
+      // the grid of the court, faint
+      g.strokeStyle = 'rgba(255, 208, 98, 0.08)'; g.lineWidth = 0.6 / S;
+      for (let k = -200; k <= 200; k += 20) { g.beginPath(); g.moveTo(k - px, -200 - pz); g.lineTo(k - px, 200 - pz); g.moveTo(-200 - px, k - pz); g.lineTo(200 - px, k - pz); g.stroke(); }
+      g.fillStyle = 'rgba(255, 208, 98, 0.55)';
+      for (const r of plan) {
+        if (r.r != null) { g.beginPath(); g.arc(r.x - px, r.z - pz, r.r, 0, Math.PI * 2); g.fill(); continue; }
+        if (r.x1 - px < -MM_R * 1.5 || r.x0 - px > MM_R * 1.5 || r.z1 - pz < -MM_R * 1.5 || r.z0 - pz > MM_R * 1.5) continue;
+        g.globalAlpha = r.thin ? 0.6 : 1; g.fillRect(r.x0 - px, r.z0 - pz, r.x1 - r.x0, r.z1 - r.z0); g.globalAlpha = 1;
+      }
+      // the stairs' marks
+      g.fillStyle = '#ffd062';
+      for (const m of stairMarks) if (m.userData.foot) { g.beginPath(); g.arc(m.position.x - px, m.position.z - pz, 1.4, 0, Math.PI * 2); g.fill(); }
+      g.restore();
+      // labels stay upright
+      g.font = `${Math.round(9 * dpr)}px system-ui, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+      const ca = Math.cos(a), sa = Math.sin(a);
+      for (const [lx, lz, t] of PLAN_LABELS) {
+        const dx = lx - px, dz = lz - pz; if (Math.hypot(dx, dz) > MM_R * 1.25) continue;
+        const sx = cx + (dx * ca - dz * sa) * S, sy = cy + (dx * sa + dz * ca) * S;
+        g.lineWidth = 3 * dpr; g.strokeStyle = 'rgba(14, 11, 8, 0.85)'; g.strokeText(t, sx, sy); g.fillStyle = '#f3e3b8'; g.fillText(t, sx, sy);
+      }
+      // north, at the rim
+      { const nx = -sa * -1, ny = ca * -1; const rx = cx + nx * (cx - 9 * dpr), ry = cy + ny * (cy - 9 * dpr); g.font = `bold ${Math.round(10 * dpr)}px system-ui, sans-serif`; g.fillStyle = '#ffd062'; g.fillText('N', rx, ry); }
+      // the walker, at the centre, his way up
+      g.fillStyle = '#fff3c4'; g.strokeStyle = 'rgba(0,0,0,0.6)'; g.lineWidth = 1.2 * dpr;
+      g.beginPath(); g.moveTo(cx, cy - 7 * dpr); g.lineTo(cx + 5 * dpr, cy + 5 * dpr); g.lineTo(cx, cy + 2.5 * dpr); g.lineTo(cx - 5 * dpr, cy + 5 * dpr); g.closePath(); g.fill(); g.stroke();
+      g.restore();
+    }
 
     // ── Per-frame placement from the timeline ───────────────────────────────
     function place(t) {
@@ -1850,7 +1912,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     }
     function roamEnter(on) {
       roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.air = 0; roam.vy = 0; roam.glide = null; controls.enabled = !on;
-      renderer.domElement.style.cursor = on ? 'crosshair' : 'grab';
+      renderer.domElement.style.cursor = on ? 'crosshair' : 'grab'; mmap.hidden = !on;
       if (on) {
         following = false; onFollow?.(true);   // no "follow" button in the roam: there is no story to follow
         if (ROAM_MEMO) { camera.position.set(...ROAM_MEMO.pos); roam.yaw = ROAM_MEMO.yaw; roam.pitch = ROAM_MEMO.pitch; roam.dist = ROAM_MEMO.dist || 0; }   // back where they stood
@@ -2004,6 +2066,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       // back along his line of sight (no further than the nearest wall or floor behind him), looking at him, with our figure under
       // the eye — so the crosshair's pick, from the eye, is the same line the drawn view centres on
       for (const m of stairMarks) m.visible = roam.on && inHouseOf(m.userData.house, camera.position);
+      if (roam.on) drawMinimap();
       let pulled = false;
       if (roam.on && roam.dist > 0.01) {
         roamDir(fwd); avatarEye.copy(camera.position);
@@ -2082,7 +2145,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp);
       document.removeEventListener('pointerlockchange', onLockChange); document.removeEventListener('pointerlockerror', onLockError);
       if (document.pointerLockElement === renderer.domElement) document.exitPointerLock?.();
-      cross.remove(); stickEl.remove();
+      cross.remove(); stickEl.remove(); mmap.remove();
       controls.dispose();
       scene.traverse((o) => { o.geometry?.dispose?.(); if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => { m.map?.dispose?.(); m.bumpMap?.dispose?.(); m.alphaMap?.dispose?.(); m.dispose?.(); }); });
       scene.environment?.dispose?.();

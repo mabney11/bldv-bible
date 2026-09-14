@@ -109,6 +109,18 @@
 .st-passage-wait { font-size: 12px; color: var(--text4); }
 .st-v { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--text); font-family: var(--reader-font, inherit); padding: 4px 8px 4px 9px; border-left: 3px solid transparent; border-radius: 4px; }
 .st-v sup { color: var(--gold); font-size: 10px; margin-right: 5px; font-weight: 700; }
+/* the verse number's "Go to verse" popup — the reader's (.rd-vnum-goto), shown on hover or keyboard focus */
+.st-vnum-wrap { position: relative; display: inline-block; }
+.st-v .st-vnum { cursor: default; padding: 1px 3px; border-radius: 4px; }
+.st-vnum-wrap:hover .st-vnum { background: color-mix(in srgb, var(--gold) 20%, transparent); }
+.st-vnum-goto {
+  position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(3px); white-space: nowrap;
+  background: var(--bg2); color: var(--gold); border: 1px solid var(--border2); border-radius: 6px; padding: 4px 9px;
+  font-size: 11px; font-family: system-ui, sans-serif; font-weight: 600; text-decoration: none;
+  opacity: 0; pointer-events: none; transition: opacity .12s ease, transform .12s ease; z-index: 6; box-shadow: 0 4px 14px rgba(0,0,0,.25);
+}
+.st-vnum-goto:hover, .st-vnum-goto:focus-visible { color: var(--text); border-color: var(--gold); }
+.st-vnum-wrap:hover .st-vnum-goto, .st-vnum-wrap:focus-within .st-vnum-goto { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
 .st-v.on { border-left-color: var(--gold); background: color-mix(in srgb, var(--gold) 9%, transparent); }
 /* Like the Reader: the transliterated Hebrew/Aramaic word gold, the English
    gloss white. Piece words are buttons with a faint gold dotted rule under them
