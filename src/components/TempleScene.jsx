@@ -239,6 +239,7 @@ function makeMaterials() {
     flame: new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffd27a') }),
     linen: new THREE.MeshStandardMaterial({ color: new THREE.Color('#efe6d2'), roughness: 0.95, metalness: 0 }),     // bawatz (fine linen) — the priests and singers
     plaster: std('plaster', { map: plasterTexture(MATERIALS.plaster.color) }),
+    plaster2: std('plaster2', { map: plasterTexture(MATERIALS.plaster2.color) }),
     paving: std('paving', { map: pavingTexture(MATERIALS.paving.color, '#6f6449') }),
     garden: std('garden'),
     rug: new THREE.MeshStandardMaterial({ color: new THREE.Color('#9a5a3a'), roughness: 1, metalness: 0 }),          // a woven rug (photo)
@@ -257,7 +258,7 @@ function makeMaterials() {
   return M;
 }
 // Tile sizes in cubits (u, v) per texture, for the UV scaling of boxes.
-const TILE = { stone: [6, 6], found: [8, 4], cedar: [4, 4], fir: [4, 4], plaster: [5, 5], paving: [4, 4], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], panel: [4, 3] };
+const TILE = { stone: [6, 6], found: [8, 4], cedar: [4, 4], fir: [4, 4], plaster: [5, 5], plaster2: [5, 5], paving: [5, 5], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], panel: [4, 3] };
 
 /** Scale a BoxGeometry's UVs so a texture tiles every face at world scale. */
 function uvBox(geo, w, h, d, tile) {
@@ -338,7 +339,7 @@ function idealOf(M, matKey) {
   if (!idealCache.hatch) { idealCache.hatch = hatchTexture(); idealCache.hatch.repeat.set(2, 2); }
   const m = base.clone(); m.transparent = false; m.opacity = 1; m.depthWrite = true; m.bumpMap = null; m.emissive = new THREE.Color('#000000');
   m.map = idealCache.hatch; m.color = base.color.clone().lerp(new THREE.Color('#eef0f2'), matKey === 'stone' || matKey === 'plaster' ? 0.35 : 0.2); m.roughness = 1; m.metalness = 0; m.userData.ideal = true;
-  if (photos[matKey]?.hatched) { m.map = photos[matKey].hatched; m.color.set('#ffffff').lerp(new THREE.Color('#eef0f2'), 0.15); }   // the photo, hatched
+  if (photos[matKey]?.hatched) { m.map = photos[matKey].hatched; m.color.set(PHOTO_TINT[matKey] || '#ffffff').lerp(new THREE.Color('#eef0f2'), 0.15); }   // the photo, hatched
   c.set(matKey, m); return m;
 }
 
@@ -346,7 +347,8 @@ function idealOf(M, matKey) {
 // Laid over the drawn ones when they arrive: the drawn tile shows until then, so
 // the model never waits on a download. Each photo also gets a hatched twin for
 // the idealized parts (the same picture under the diagonal lines).
-const PHOTOS = { stone: 'stone', cedar: 'cedar', fir: 'cedar', plaster: 'plaster' };   // material key → file
+const PHOTOS = { stone: 'stone', cedar: 'cedar', fir: 'cedar', plaster: 'plaster', plaster2: 'plaster2', paving: 'paving' };   // material key → file
+const PHOTO_TINT = { stone: '#e9dfc9', plaster2: '#ddd3bc', paving: '#c9b995' };   // the grey photographs take their colour from here
 const photos = {};                                                                        // key → { plain, hatched }
 function hatchOver(img) {
   return canvas(img.naturalWidth || img.width, img.naturalHeight || img.height, (g, w, h) => {
@@ -362,8 +364,8 @@ function loadPhotos(M, onChange) {
       tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
       const hatched = hatchOver(tex.image);
       photos[key] = { plain: tex, hatched };
-      if (M[key]) { M[key].map = tex; M[key].color.set(key === 'stone' ? '#e9dfc9' : '#ffffff'); M[key].needsUpdate = true; }   // the limestone a shade warmer than the photo's daylight
-      const ideal = idealCache.get(M)?.get(key); if (ideal) { ideal.map = hatched; ideal.color.set('#ffffff').lerp(new THREE.Color('#eef0f2'), 0.15); ideal.needsUpdate = true; }
+      if (M[key]) { M[key].map = tex; M[key].color.set(PHOTO_TINT[key] || '#ffffff'); M[key].needsUpdate = true; }
+      const ideal = idealCache.get(M)?.get(key); if (ideal) { ideal.map = hatched; ideal.color.set(PHOTO_TINT[key] || '#ffffff').lerp(new THREE.Color('#eef0f2'), 0.15); ideal.needsUpdate = true; }
       onChange?.();
     }, undefined, () => { /* no photo on this server: the drawn tile stays */ });
   }

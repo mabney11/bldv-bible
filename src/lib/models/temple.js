@@ -109,6 +109,7 @@ export const MATERIALS = {
   ivory:  { word: 'kasaa',      color: '#efe6cf', hi: '#fffaf0', lo: '#b8a98a', metal: 0, rough: 0.5 },
   plaster:{ word: 'sid',        color: '#e6dbc4', hi: '#f6efe0', lo: '#b5a88c', metal: 0, rough: 1 },     // lime-washed walls (Deuteronomy 27:2 "plaster them with plaster")
   paving: { word: 'ratzapah',   color: '#b9ab8e', hi: '#d6cbb2', lo: '#7f7359', metal: 0, rough: 0.95 },  // a paved floor
+  plaster2:{ word: 'sid',       color: '#d9cfb8', hi: '#ece5d4', lo: '#a89c82', metal: 0, rough: 1 },     // a second plaster, greyer (the forest house's chambers, Pharaoh's daughter's house)
   garden: { word: 'gan',        color: '#5e7d3a', hi: '#8fb35c', lo: '#2f4a1c', metal: 0, rough: 1 },
   rug:    { word: 'marabad',    color: '#9a5a3a', hi: '#c98a62', lo: '#5a3018', metal: 0, rough: 1 },     // marabadayam (coverings of tapestry), Proverbs 7:16; 31:22
   'rug-runner': { word: 'marabad', color: '#a2603c', hi: '#cf9068', lo: '#5e341a', metal: 0, rough: 1 },
@@ -765,7 +766,7 @@ export const PIECES = [
       out.push(...stair('x', -122, 162, 30, 3));
       out.push(...paving(F.x0, F.x1, F.z0, F.z1));
       out.push(...doorFrame(F.x1 + W / 2, 82, 8, 6, W, 'z'));
-      return out;
+      return out.map((q) => (q.mat === 'plaster' ? { ...q, mat: 'plaster2' } : q));
     })(),
     gates: [{ x: PALACE.forest.x1 + 1.5, z: 82, w: 8, axis: 'z', leaves: false }],
   },
@@ -895,7 +896,7 @@ export const PIECES = [
       out.push(...rug(-38, 109, 14, 8, 'rug-runner'), ...table(-38, 109, 3, 6), ...seat(-42, 109), ...seat(-34, 109), ...seat(-38, 106), ...seat(-38, 112), ...couch(-22, 110), ...lamp(-14, 106));
       out.push(...jars(-62, 149, 6), ...jars(-48, 150, 6), ...chest(-40, 152));
       out.push(...stair('x', -50, 150.5, 14, 3));
-      return out;
+      return out.map((q) => (q.mat === 'plaster' ? { ...q, mat: 'plaster2' } : q));
     })(),
   },
 ];
