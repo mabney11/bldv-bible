@@ -145,7 +145,7 @@ export const PORCH_X1 = EAST_X + H.porchD;                                    //
 export const ROOF_Y = H.inH + H.roofT;                                        // 32
 export const INNER_COURT = { x0: -70, x1: 110, z: 60, wallT: 2, wallH: 4.2 }; // size assumed (the text gives courses, not a measure)
 export const GREAT_COURT = { x0: -128, x1: 128, z0: -76, z1: 172, wallT: 3, wallH: 7 }; // assumed
-export const PILLAR = { x: PORCH_X1 + 3.2, z: 7.6, r: 12 / (2 * Math.PI), h: 18, capH: 5, lilyH: 4 }; // 7:15–19: 18 high, a line of 12 about it, capital 5, lily work 4
+export const PILLAR = { x: PORCH_X1 + 1.4, z: 7.6, r: 12 / (2 * Math.PI), h: 18, capH: 5, lilyH: 4 }; // 7:15–19: 18 high, a line of 12 about it, capital 5, lily work 4; stood on the platform's margin before the porch, their base rings (r × 1.3) clear of the steps at x 50 (fieldy)
 export const SEA = { x: 58, z: 32, r: 5, h: 5, oxH: 3.2 };                   // 7:23: 10 brim to brim, 5 high; on the right side eastward toward the south (7:39)
 export const ALTAR = { x: 76, z: 0, w: 20, h: 10 };                           // 2 Chronicles 4:1: 20 × 20 × 10
 export const BASES = { xs: [-36, -22, -8, 6, 20], z: 33, w: 4, h: 3, wheel: 1.5, basinR: 2 }; // 7:27, 32, 38: 4 × 4 × 3, wheels 1½, basins 4 across; five each side (7:39)
@@ -1191,7 +1191,7 @@ export const WALK_CAMERA = [
   [12.5, [72, 7, 46],      [58, 4, 32]],
   [14,   [44, 7, 50],      [-6, 3, 33]],
   [17,   [66, 10, 14],     [48, 14, 0]],
-  [19.5, [61, 22, -4],     [49.2, 21.5, 7.6]],
+  [19.5, [61, 22, -4],     [47.4, 21.5, 7.6]],
   [22,   [50, 8, 0],       [36, 8, 0]],
   [23.5, [47, 9, 0],       [36, 7, 0]],
   [25,   [31, 8, 0],       [0, 10, 0]],
