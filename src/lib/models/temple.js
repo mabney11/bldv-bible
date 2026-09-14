@@ -99,6 +99,7 @@ export const MATERIALS = {
   stone:  { word: 'aban',       color: '#cbbb9a', hi: '#e9dfc6', lo: '#8d7b5c', metal: 0, rough: 0.92 },   // gazayath — hewn limestone
   found:  { word: 'yasad',      color: '#a89676', hi: '#cdbd9d', lo: '#6d5d42', metal: 0, rough: 0.95 },   // the great foundation stones, darker with the ground
   cedar:  { word: 'araz',       color: '#8d5a34', hi: '#c08a5c', lo: '#4e2d16', metal: 0, rough: 0.72 },
+  cedarDark: { word: 'araz',    color: '#6a4022', hi: '#9a6a44', lo: '#3a2010', metal: 0, rough: 0.72 },   // the throne room's cedar, darker
   fir:    { word: 'barawash',   color: '#b98c5e', hi: '#d9b48a', lo: '#6f4c2c', metal: 0, rough: 0.7 },
   olive:  { word: 'shaman',     color: '#a08a57', hi: '#c9b57f', lo: '#5d4d2c', metal: 0, rough: 0.68 },
   gold:   { word: 'zahab',      color: '#d9a93a', hi: '#f7dd8a', lo: '#8a6716', metal: 1, rough: 0.3 },
@@ -809,7 +810,7 @@ export const PIECES = [
       const T = PALACE.throne, out = [];
       out.push(...walls(T.x0, T.x1, (T.z1 - T.z0) / 2, 3, Y0, T.h).map((b) => ({ ...b, z: b.z + (T.z0 + T.z1) / 2 })).filter((b) => b.role !== 'north'));
       out.push(...roofOf(T.x0 - 3, T.x1 + 3, T.z0 - 3, T.z1 + 3, Y0 + T.h - 1.5));
-      out.push(...cedarLining(T.x0, T.x1, T.z0, T.z1, Y0, T.h - 1.5).filter((b) => !(b.role === 'lining' && b.d < 1 && b.z < T.z0 + 1)));
+      out.push(...cedarLining(T.x0, T.x1, T.z0, T.z1, Y0, T.h - 1.5).filter((b) => !(b.role === 'lining' && b.d < 1 && b.z < T.z0 + 1)).map((b) => ({ ...b, mat: 'cedarDark' })));
       out.push(...portico(T.x0 + 5, T.x1 - 5, T.z0, T.h - 2, 3));
       out.push(...rug(20, 113, 6, 18, 'rug-runner').map((r) => ({ ...r, y: Y0 + 0.4 })));
       return out;
@@ -825,7 +826,7 @@ export const PIECES = [
     measures: [['made of', 'shan (ivory), overlaid with tawab (fine) zahab (gold)', '1 Kings 10:18'], ['steps', 'shash (six)', '1 Kings 10:19'], ['the top', 'round behind; stays on either side of the seat', '1 Kings 10:19'], ['lions', 'two by the stays; twelve on the six steps, one at each end of each', '1 Kings 10:19–20'], ['footstool', 'of gold, fastened to the throne', '2 Chronicles 9:18']],
     note: '"{{1 Kings 10:18}} {{1 Kings 10:20 | Twelve … mamalakah}}." — set here in the porch of judgment (7:7), where "he might judge".',
     elsewhere: { ref: '1 Kings 7:7; Psalm 122:5; Matthew 19:28; Revelation 4:2', note: 'The thrones of the house of Dawad (David) set for judgment; twelve thrones to judge the twelve tribes.' },
-    assumed: 'Its size, the lions\' forms, and that it stands in the porch of the throne — the text says he made it, not where it stood.',
+    assumed: 'Its size, the lions\' forms and which way they face (turned here to look down the steps at the one ascending — the text gives their number and places, not their facing), and that it stands in the porch of the throne — the text says he made it, not where it stood.',
     parts: [{ kind: 'throne', x: 20, y: Y0 + 0.6, z: 126, glb: 'temple-throne', rot: -Math.PI / 2 }],
   },
   {

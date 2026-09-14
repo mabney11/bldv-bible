@@ -221,6 +221,7 @@ function makeMaterials() {
     found: std('found', { map: ashlarDark }),
     cedar: std('cedar', { map: plank }),
     cedarPlain: std('cedar'),
+    cedarDark: std('cedar', { map: plank, color: new THREE.Color('#7a4a2a') }),   // the throne room's cedar, darker (fieldy)
     fir: std('fir', { map: plank }),
     olive: std('olive'),
     gold: std('gold'),
@@ -258,7 +259,7 @@ function makeMaterials() {
   return M;
 }
 // Tile sizes in cubits (u, v) per texture, for the UV scaling of boxes.
-const TILE = { stone: [6, 6], found: [8, 4], cedar: [4, 4], fir: [4, 4], plaster: [5, 5], plaster2: [5, 5], paving: [5, 5], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], panel: [4, 3] };
+const TILE = { stone: [6, 6], found: [8, 4], cedar: [4, 4], cedarDark: [4, 4], fir: [4, 4], plaster: [5, 5], plaster2: [5, 5], paving: [5, 5], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], panel: [4, 3] };
 
 /** Scale a BoxGeometry's UVs so a texture tiles every face at world scale. */
 function uvBox(geo, w, h, d, tile) {
@@ -347,8 +348,8 @@ function idealOf(M, matKey) {
 // Laid over the drawn ones when they arrive: the drawn tile shows until then, so
 // the model never waits on a download. Each photo also gets a hatched twin for
 // the idealized parts (the same picture under the diagonal lines).
-const PHOTOS = { stone: 'stone', cedar: 'cedar', fir: 'cedar', plaster: 'plaster', plaster2: 'plaster2', paving: 'paving' };   // material key → file
-const PHOTO_TINT = { stone: '#e9dfc9', plaster2: '#ddd3bc', paving: '#c9b995' };   // the grey photographs take their colour from here
+const PHOTOS = { stone: 'stone', cedar: 'cedar', fir: 'cedar', cedarDark: 'cedar', plaster: 'plaster', plaster2: 'plaster2', paving: 'paving' };   // material key → file
+const PHOTO_TINT = { stone: '#e9dfc9', plaster2: '#ddd3bc', paving: '#c9b995', cedarDark: '#7d5030' };   // the grey photographs take their colour from here; the dark cedar its shade
 const photos = {};                                                                        // key → { plain, hatched }
 function hatchOver(img) {
   return canvas(img.naturalWidth || img.width, img.naturalHeight || img.height, (g, w, h) => {
@@ -1002,7 +1003,7 @@ function buildThrone(b, part) {
     sub2.capsule([-0.4 * k, 0.9 * k, 0], [0.4 * k, 0.95 * k, 0], 0.42 * k, 'gold'); sub2.sphere(0.75 * k, 1.5 * k, 0, 0.42 * k, 'gold', 12);   // a stand-in until the sculpt loads
     for (const dx of [-0.35, 0.35]) for (const dz of [-0.22, 0.22]) sub2.cyl(dx * k, 0, dz * k, 0.1 * k, 0.9 * k, 'gold', 0.1 * k, 8);
     l.add(...sub2.bake().children); g.add(l);
-    b.slots.push({ slot: 'temple-lion', node: l, h, face: 'x' });
+    b.slots.push({ slot: 'temple-lion', node: l, h, face: 'x', turn: Math.PI });   // the sculpted lion faces the other way from the stand-in: turned to look down the steps
   };
   for (const sz of [-1, 1]) lion(SX + 0.4, TOP, sz * 1.95, 2.0);
   for (let i = 0; i < 6; i++) { const w = W0 - i * 0.45; for (const sz of [-1, 1]) lion(X0 + i * RUN + 0.3, (i + 1) * STEP, sz * (w / 2 - 0.5), 1.0); }
@@ -1108,7 +1109,7 @@ function fitSlot(proto, slot) {
   const g = proto.clone(true);
   const k = slot.h / (proto.userData.size.y || 1);
   const wrap = new THREE.Group();
-  g.scale.setScalar(k); g.rotation.y = -Math.PI / 2;   // +z front → +x
+  g.scale.setScalar(k); g.rotation.y = -Math.PI / 2 + (slot.turn || 0);   // +z front → +x (a slot may turn its sculpt further: the lion's front came out reversed)
   if (slot.mirror) { wrap.scale.z = -1; g.traverse((o) => { if (o.isMesh && o.material) o.material.side = THREE.DoubleSide; }); }
   wrap.add(g);
   return wrap;
