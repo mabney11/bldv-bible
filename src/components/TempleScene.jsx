@@ -1489,6 +1489,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     const roam = {
       on: false, yaw: Math.PI, pitch: 0, foot: H.courtY, keys: new Set(), glide: null, moving: false,
       stick: { x: 0, y: 0 },                                                  // the thumb stick (touch): x strafe, y forward, each −1 … 1
+      air: 0, jumpV: 0,                                                       // a jump: height above the feet's ground, and the upward speed
       open: { hayakal: 0, dabayar: 0 }, want: { hayakal: 0, dabayar: 0 },   // the doors and the veil, 0 shut … 1 open, eased toward what the viewer asked
     };
 
@@ -1586,7 +1587,8 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     for (const sz of [-1, 1]) { const c = new THREE.Mesh(new THREE.CylinderGeometry(PILLAR.r + 0.3, PILLAR.r + 0.3, PILLAR.h + PILLAR.capH + PILLAR.lilyH, 12)); c.position.set(PILLAR.x, (PILLAR.h + PILLAR.capH + PILLAR.lilyH) / 2, sz * PILLAR.z); c.updateMatrixWorld(true); solids.push(c); }
     const rRay = new THREE.Raycaster(); rRay.firstHitOnly = true;
     const fwd = new THREE.Vector3(), rightV = new THREE.Vector3(), step = new THREE.Vector3(), probe = new THREE.Vector3(), downV = new THREE.Vector3(0, -1, 0);
-    const WALK = 14, RUN = 32, STEP_UP = 2.4, RADIUS = 1.1, TURN = 1.6;
+    const WALK = 32, RUN = 56, STEP_UP = 2.4, RADIUS = 1.1, TURN = 1.6;   // amah/s: a brisk walk by default (fieldy: the old Shift pace), Shift to run
+    const JUMP_V = 9.5, GRAVITY = 26;                                        // a spacebar jump of ~1¾ amah (v²/2g), up and down in ~¾ s
     function roamDir(out, pitch = roam.pitch) { return out.set(Math.cos(pitch) * Math.cos(roam.yaw), Math.sin(pitch), Math.cos(pitch) * Math.sin(roam.yaw)); }
     function aimCamera() {
       roamDir(fwd); camera.lookAt(probe.copy(camera.position).add(fwd));
@@ -1635,8 +1637,14 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
         if (k >= 1) roam.glide = null;
         aimCamera(); return true;
       }
+      // a jump in the air (spacebar / the pad): the eye rises and falls over the feet's ground while any walking goes on
+      if (roam.air > 0 || roam.jumpV > 0) {
+        roam.air += roam.jumpV * dt; roam.jumpV -= GRAVITY * dt;
+        if (roam.air <= 0) { roam.air = 0; roam.jumpV = 0; }
+        camera.position.y = roam.foot + ROAM_EYE + roam.air; changed = true;
+      }
       const K = roam.keys, S = roam.stick, stickMag = Math.hypot(S.x, S.y);
-      if (!K.size && stickMag < 0.05) { roam.moving = false; return changed; }
+      if (!K.size && stickMag < 0.05) { roam.moving = false; if (changed) aimCamera(); return changed; }
       const v = (K.has('run') || stickMag > 0.92 ? RUN : WALK) * dt;
       if (K.has('turnL')) roam.yaw -= TURN * dt; if (K.has('turnR')) roam.yaw += TURN * dt;
       fwd.set(Math.cos(roam.yaw), 0, Math.sin(roam.yaw)); rightV.set(-fwd.z, 0, fwd.x);
@@ -1646,7 +1654,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       if (stickMag >= 0.05) { const k = Math.min(1, stickMag); mx += (fwd.x * S.y + rightV.x * S.x) * v * k / stickMag; mz += (fwd.z * S.y + rightV.z * S.x) * v * k / stickMag; }
       tryMove(mx, mz);
       // settle the eye onto the ground (a smooth rise on steps)
-      const wantY = roam.foot + ROAM_EYE; camera.position.y += (wantY - camera.position.y) * Math.min(1, dt * 10);
+      const wantY = roam.foot + ROAM_EYE + roam.air; camera.position.y += roam.air > 0 ? wantY - camera.position.y : (wantY - camera.position.y) * Math.min(1, dt * 10);
       roam.moving = true; aimCamera(); remember(); return true;
     }
     let memoAt = 0;
@@ -1654,8 +1662,9 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, open: { ...roam.want } };
       const now = performance.now(); if (now - memoAt > 1000) { memoAt = now; try { sessionStorage.setItem('temple-roam', JSON.stringify(ROAM_MEMO)); } catch { /* fine */ } }   // a reload keeps the spot too
     }
+    function jump() { if (!roam.on || roam.glide || roam.air > 0) return; roam.jumpV = JUMP_V; roam.air = 1e-4; dirty = true; }
     function roamEnter(on) {
-      roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.glide = null; controls.enabled = !on;
+      roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.air = 0; roam.jumpV = 0; roam.glide = null; controls.enabled = !on;
       renderer.domElement.style.cursor = on ? 'crosshair' : 'grab';
       if (on) {
         following = false; onFollow?.(true);   // no "follow" button in the roam: there is no story to follow
@@ -1729,8 +1738,8 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     };
     stickEl.hidden = true; cross.hidden = true;
     const onWheel = (e) => { if (!roam.on) return; e.preventDefault(); const d = -Math.sign(e.deltaY) * 3; fwd.set(Math.cos(roam.yaw), 0, Math.sin(roam.yaw)); tryMove(fwd.x * d, fwd.z * d); camera.position.y = roam.foot + ROAM_EYE; aimCamera(); dirty = true; };
-    const KEYMAP = { KeyW: 'forward', ArrowUp: 'forward', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', KeyD: 'right', ArrowLeft: 'turnL', ArrowRight: 'turnR', ShiftLeft: 'run', ShiftRight: 'run' };
-    const onKeyDown = (e) => { if (!roam.on || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return; const k = KEYMAP[e.code]; if (!k) return; e.preventDefault(); roam.keys.add(k); };
+    const KEYMAP = { KeyW: 'forward', ArrowUp: 'forward', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', KeyD: 'right', ArrowLeft: 'turnL', ArrowRight: 'turnR', ShiftLeft: 'run', ShiftRight: 'run', Space: 'jump' };
+    const onKeyDown = (e) => { if (!roam.on || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return; const k = KEYMAP[e.code]; if (!k) return; e.preventDefault(); if (k === 'jump') { if (!e.repeat) jump(); return; } roam.keys.add(k); };
     const onKeyUp = (e) => { const k = KEYMAP[e.code]; if (k) roam.keys.delete(k); };
     renderer.domElement.addEventListener('pointerdown', onLookDown);
     renderer.domElement.addEventListener('pointermove', onLookMove);
@@ -1835,7 +1844,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       follow: () => { if (roam.on) return; setFollow(true); lastT = -1; },
       refocus: () => { if (roam.on) return; if (currentSel) flyTo(currentSel); else { setFollow(true); lastT = -1; } dirty = true; },
       modeChanged: () => { const free = !!MODES[modeRef.current]?.free; if (free !== roam.on) roamEnter(free); lastT = -1; if (!free) setFollow(true); dirty = true; },
-      move: (key, on) => { if (on) roam.keys.add(key); else roam.keys.delete(key); },
+      move: (key, on) => { if (key === 'jump') { if (on) jump(); return; } if (on) roam.keys.add(key); else roam.keys.delete(key); },
       teleport: (x, z, yaw) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; const gy = groundUnder(x, z, roam.foot + 40); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
       locked: () => locked,
       pick: (nx = 0, ny = 0) => { ndc.set(nx, ny); ray.setFromCamera(ndc, camera); const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible); let o = hit?.object; while (o && !o.userData.id) o = o.parent; return { id: o?.userData.id || null, dist: hit?.distance, obj: hit?.object?.name, yaw: roam.yaw, pitch: roam.pitch }; },   // for tests: what the crosshair is on

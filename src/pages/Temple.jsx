@@ -217,7 +217,7 @@ export default function Temple() {
                 : <TempleSheet clock={clock} mode={mode} selected={sel} onSelect={select} />}
               {use3d && roam && (
                 <div className="tp-pad" aria-label="Walk">
-                  {[['forward', '▲', 'Walk forward (W / ↑)'], ['turnL', '◀', 'Turn left (←)'], ['back', '▼', 'Walk back (S / ↓)'], ['turnR', '▶', 'Turn right (→)']].map(([k, ch, tt]) => (
+                  {[['forward', '▲', 'Walk forward (W / ↑)'], ['turnL', '◀', 'Turn left (←)'], ['back', '▼', 'Walk back (S / ↓)'], ['turnR', '▶', 'Turn right (→)'], ['jump', '⤒', 'Jump (space)']].map(([k, ch, tt]) => (
                     <button key={k} type="button" className={`tp-pad-${k}`} title={tt} aria-label={tt}
                       onPointerDown={(e) => { e.preventDefault(); e.currentTarget.setPointerCapture?.(e.pointerId); sceneApi.current?.move?.(k, true); }}
                       onPointerUp={() => sceneApi.current?.move?.(k, false)} onPointerCancel={() => sceneApi.current?.move?.(k, false)} onLostPointerCapture={() => sceneApi.current?.move?.(k, false)}
@@ -239,7 +239,7 @@ export default function Temple() {
 
           {roam ? (
             <div className="st-player tp-roambar">
-              <span className="tp-roam-hint">{!use3d ? 'The plan and section show the finished house; switch to 3D to walk it.' : COARSE ? 'Left thumb on the view: a stick to walk · right thumb: drag to look · tap a part for its details · tap a door again to go through it' : lock?.on ? 'The mouse is yours: move it to look, W A S D or the arrows to walk (Shift to hurry), click what the crosshair is on for its details, a door twice to go through · Esc gives the mouse back' : lock?.why ? `The browser would not hand over the mouse (${lock.why}) — drag the view to look instead · W A S D or the arrows to walk · click a part for its details` : 'Click the view once to take the mouse (nothing is chosen by that click) · then move it to look, W A S D or the arrows to walk, ← → turn, Shift to hurry · click what the crosshair is on for its details, a door twice to go through · Esc gives the mouse back'}</span>
+              <span className="tp-roam-hint">{!use3d ? 'The plan and section show the finished house; switch to 3D to walk it.' : COARSE ? 'Left thumb on the view: a stick to walk · right thumb: drag to look · ⤒ jumps · tap a part for its details · tap a door again to go through it' : lock?.on ? 'The mouse is yours: move it to look, W A S D or the arrows to walk (Shift to run, space to jump), click what the crosshair is on for its details, a door twice to go through · Esc gives the mouse back' : lock?.why ? `The browser would not hand over the mouse (${lock.why}) — drag the view to look instead · W A S D or the arrows to walk · click a part for its details` : 'Click the view once to take the mouse (nothing is chosen by that click) · then move it to look, W A S D or the arrows to walk, ← → turn, Shift to run, space to jump · click what the crosshair is on for its details, a door twice to go through · Esc gives the mouse back'}</span>
             </div>
           ) : (
           <div className="st-player">

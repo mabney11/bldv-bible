@@ -35,6 +35,8 @@
 .tp-pad .tp-pad-turnL { grid-column: 1; grid-row: 2; }
 .tp-pad .tp-pad-back { grid-column: 2; grid-row: 2; }
 .tp-pad .tp-pad-turnR { grid-column: 3; grid-row: 2; }
+.tp-pad .tp-pad-jump { grid-column: 3; grid-row: 1; }
+@media (pointer: coarse) { .tp-pad { display: grid; grid-template-columns: 44px; grid-template-rows: 44px; left: auto; right: 14px; } .tp-pad button:not(.tp-pad-jump) { display: none; } .tp-pad .tp-pad-jump { grid-column: 1; grid-row: 1; font-size: 20px; } }
 .tp-roambar { justify-content: center; }
 .tp-roam-hint { font-size: 0.86rem; opacity: 0.85; text-align: center; padding: 6px 4px; }
 
@@ -60,7 +62,6 @@
 .st-gl.tp-locked canvas { cursor: none !important; }
 .tp-stick { position: absolute; width: 96px; height: 96px; margin: -48px 0 0 -48px; border-radius: 50%; border: 2px solid rgba(255, 225, 160, 0.45); background: rgba(20, 20, 28, 0.35); pointer-events: none; z-index: 3; backdrop-filter: blur(2px); }
 .tp-stick-knob { position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; background: rgba(255, 208, 98, 0.75); box-shadow: 0 2px 8px #0006; }
-@media (pointer: coarse) { .tp-pad { display: none; } }
 
 /* The header on a narrow screen: the title on its own line (never wrapped into the buttons), the story and the views on the next */
 .tp-top-break { display: none; }
