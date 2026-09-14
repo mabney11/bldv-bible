@@ -1590,8 +1590,16 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       on: false, yaw: Math.PI, pitch: 0, foot: H.courtY, keys: new Set(), glide: null, moving: false,
       stick: { x: 0, y: 0 },                                                  // the thumb stick (touch): x strafe, y forward, each −1 … 1
       air: 0, jumpV: 0,                                                       // a jump: height above the feet's ground, and the upward speed
+      dist: 0,                                                                // the wheel: 0 = through his own eyes, up to DIST_MAX behind him (third person)
       open: { hayakal: 0, dabayar: 0 }, want: { hayakal: 0, dabayar: 0 },   // the doors and the veil, 0 shut … 1 open, eased toward what the viewer asked
     };
+    const DIST_MAX = 15;
+    // our figure on foot — one of the attendants (linen, faceless like all of them), seen when the wheel pulls the view back; the
+    // walker's own position (the eye) is what everything else uses, the figure just stands under it, facing where he looks
+    const avatar = (() => {
+      const sub = new PieceBuilder(M, { id: 'avatar' }); personFigure(sub, 0.35, 'linen', 'stand', 'skin4', 'hair1');
+      const g = sub.bake(); g.userData.id = undefined; g.traverse((o) => { o.userData.id = undefined; }); g.visible = false; scene.add(g); return g;
+    })();
 
     // ── Per-frame placement from the timeline ───────────────────────────────
     function place(t) {
@@ -1686,7 +1694,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     for (const id of SOLID) byId(id)?.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) solids.push(o); });
     for (const sz of [-1, 1]) { const c = new THREE.Mesh(new THREE.CylinderGeometry(PILLAR.r + 0.3, PILLAR.r + 0.3, PILLAR.h + PILLAR.capH + PILLAR.lilyH, 12)); c.position.set(PILLAR.x, (PILLAR.h + PILLAR.capH + PILLAR.lilyH) / 2, sz * PILLAR.z); c.updateMatrixWorld(true); solids.push(c); }
     const rRay = new THREE.Raycaster(); rRay.firstHitOnly = true;
-    const fwd = new THREE.Vector3(), rightV = new THREE.Vector3(), step = new THREE.Vector3(), probe = new THREE.Vector3(), downV = new THREE.Vector3(0, -1, 0);
+    const fwd = new THREE.Vector3(), rightV = new THREE.Vector3(), step = new THREE.Vector3(), probe = new THREE.Vector3(), downV = new THREE.Vector3(0, -1, 0), avatarEye = new THREE.Vector3(), backV = new THREE.Vector3();
     const WALK = 32, RUN = 56, STEP_UP = 2.4, RADIUS = 1.1, TURN = 1.6;   // amah/s: a brisk walk by default (fieldy: the old Shift pace), Shift to run
     const JUMP_V = 9.5, GRAVITY = 26;                                        // a spacebar jump of ~1¾ amah (v²/2g), up and down in ~¾ s
     function roamDir(out, pitch = roam.pitch) { return out.set(Math.cos(pitch) * Math.cos(roam.yaw), Math.sin(pitch), Math.cos(pitch) * Math.sin(roam.yaw)); }
@@ -1765,7 +1773,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     }
     let memoAt = 0;
     function remember() {
-      ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, open: { ...roam.want } };
+      ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, dist: roam.dist, open: { ...roam.want } };
       const now = performance.now(); if (now - memoAt > 1000) { memoAt = now; try { sessionStorage.setItem('temple-roam', JSON.stringify(ROAM_MEMO)); } catch { /* fine */ } }   // a reload keeps the spot too
     }
     function jump() { if (!roam.on || roam.glide || roam.air > 0) return; roam.jumpV = JUMP_V; roam.air = 1e-4; dirty = true; }
@@ -1774,7 +1782,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       renderer.domElement.style.cursor = on ? 'crosshair' : 'grab';
       if (on) {
         following = false; onFollow?.(true);   // no "follow" button in the roam: there is no story to follow
-        if (ROAM_MEMO) { camera.position.set(...ROAM_MEMO.pos); roam.yaw = ROAM_MEMO.yaw; roam.pitch = ROAM_MEMO.pitch; }   // back where they stood
+        if (ROAM_MEMO) { camera.position.set(...ROAM_MEMO.pos); roam.yaw = ROAM_MEMO.yaw; roam.pitch = ROAM_MEMO.pitch; roam.dist = ROAM_MEMO.dist || 0; }   // back where they stood
         else { camera.position.set(...ROAM_START.pos); const [lx, , lz] = ROAM_START.look; roam.yaw = Math.atan2(lz - camera.position.z, lx - camera.position.x); roam.pitch = 0; }
         roam.foot = camera.position.y - ROAM_EYE;
         const gy = groundUnder(camera.position.x, camera.position.z, camera.position.y + 2); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; }
@@ -1782,7 +1790,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
         aimCamera(); place(clock.t);
       } else {
         if (document.pointerLockElement === renderer.domElement) document.exitPointerLock?.();
-        camera.up.set(0, 1, 0); camera.rotation.set(0, 0, 0); for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = 0;
+        camera.up.set(0, 1, 0); camera.rotation.set(0, 0, 0); avatar.visible = false; for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = 0;
       }
       setLocked(false); dirty = true;
     }
@@ -1843,7 +1851,9 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       if (look && e.pointerId === look.id) look = null;
     };
     stickEl.hidden = true; cross.hidden = true;
-    const onWheel = (e) => { if (!roam.on) return; e.preventDefault(); const d = -Math.sign(e.deltaY) * 3; fwd.set(Math.cos(roam.yaw), 0, Math.sin(roam.yaw)); tryMove(fwd.x * d, fwd.z * d); camera.position.y = roam.foot + ROAM_EYE; aimCamera(); dirty = true; };
+    // the wheel never moves the walker (fieldy): it only pulls the view back from his eyes to a third-person view of him, and
+    // forward again into his eyes
+    const onWheel = (e) => { if (!roam.on) return; e.preventDefault(); roam.dist = Math.max(0, Math.min(DIST_MAX, roam.dist + Math.sign(e.deltaY) * 1.5)); remember(); dirty = true; };
     const KEYMAP = { KeyW: 'forward', ArrowUp: 'forward', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', KeyD: 'right', ArrowLeft: 'turnL', ArrowRight: 'turnR', ShiftLeft: 'run', ShiftRight: 'run', Space: 'jump' };
     const onKeyDown = (e) => { if (!roam.on || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return; const k = KEYMAP[e.code]; if (!k) return; e.preventDefault(); if (k === 'jump') { if (!e.repeat) jump(); return; } roam.keys.add(k); };
     const onKeyUp = (e) => { const k = KEYMAP[e.code]; if (k) roam.keys.delete(k); };
@@ -1921,7 +1931,24 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       dirty = false; stats.frames++; const f0 = performance.now();
       // the sun's shadow window follows the camera's target so the shadows stay sharp where the eye is
       sun.target.position.copy(controls.target); sun.position.copy(controls.target).add(ded.sunOffset);
+      // third person on foot: the walker's eye stays where all the walking is reckoned; only for the drawing is the camera pulled
+      // back along his line of sight (no further than the nearest wall or floor behind him), looking at him, with our figure under
+      // the eye — so the crosshair's pick, from the eye, is the same line the drawn view centres on
+      let pulled = false;
+      if (roam.on && roam.dist > 0.01) {
+        roamDir(fwd); avatarEye.copy(camera.position);
+        rRay.set(avatarEye, backV.copy(fwd).negate()); rRay.far = roam.dist + 0.6; rRay.near = 0;
+        const h = rRay.intersectObjects(solids, false).find((q) => q.object.visible && !(q.object.material?.transparent && q.object.material.opacity < 0.3));
+        const d = h ? Math.max(0.4, h.distance - 0.6) : roam.dist;
+        avatar.visible = d > 1.2;
+        const bob = roam.moving && roam.air <= 0 ? 0.1 * Math.abs(Math.sin(now / 120)) : 0;
+        avatar.position.set(avatarEye.x, roam.foot + roam.air + bob, avatarEye.z); avatar.rotation.set(0, -roam.yaw, 0);
+        avatar.rotation.z = roam.moving && roam.air <= 0 ? 0.03 * Math.sin(now / 120) : 0;
+        camera.position.copy(avatarEye).addScaledVector(fwd, -d); camera.lookAt(probe.copy(avatarEye).addScaledVector(fwd, 2));
+        pulled = true;
+      } else avatar.visible = false;
       composer.render(); stats.ms = performance.now() - f0;
+      if (pulled) { camera.position.copy(avatarEye); aimCamera(); }
     }
     function resize() {
       const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;
@@ -1956,7 +1983,8 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       piece: (id) => byId(id),   // for tests
       pick: (nx = 0, ny = 0) => { ndc.set(nx, ny); ray.setFromCamera(ndc, camera); const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible); let o = hit?.object; while (o && !o.userData.id) o = o.parent; return { id: o?.userData.id || null, dist: hit?.distance, obj: hit?.object?.name, yaw: roam.yaw, pitch: roam.pitch }; },   // for tests: what the crosshair is on
       invalidate: () => { dirty = true; },
-      roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),   // for tests
+      roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, dist: roam.dist, avatar: avatar.visible ? avatar.position.toArray() : null, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),
+      zoom: (d) => { roam.dist = Math.max(0, Math.min(DIST_MAX, d)); dirty = true; },   // for tests: the wheel's distance   // for tests
       go: (id) => roam.on && roamGo(id),
       solidTris: () => { const m = {}; for (const o of solids) { let q = o; while (q && !q.userData.id) q = q.parent; const k = q?.userData.id || o.name || 'proxy'; m[k] = (m[k] || 0) + Math.round((o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3); } return m; },
     };
