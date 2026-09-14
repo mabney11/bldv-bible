@@ -1206,7 +1206,7 @@ export const WALK_CAMERA = [
 // ROAM — no story: the finished house, and the viewer walks where they will.
 export const ROAM_EYE = 3.4;                                                  // eye height above the ground, in cubits (≈ 1.7 m)
 export const ROAM_START = { pos: [150, H.courtY + ROAM_EYE, 0], look: [100, H.courtY + ROAM_EYE, 0] };   // outside the great court's east gate, facing the house
-export const ROAM_PHASES = [{ from: 0, key: 'roam', caption: 'Walk where you will — through the gates, around the yam (sea), between the pillars. Tap a part for its details; tap a door again to go through it.', ref: '' }];
+export const ROAM_PHASES = [{ from: 0, key: 'roam', caption: 'Walk where you will — through the gates, around the yam (sea), between the pillars. Tap a part for its details; tap a door or a gate again to open or shut it.', ref: '' }];
 /** Where a second tap on an openable piece takes the eye — just inside, facing on. */
 export const ROAM_ENTER = {
   doors: { pos: [26, ROAM_EYE, 0], look: [0, ROAM_EYE, 0], open: 'hayakal' },

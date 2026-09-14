@@ -1047,14 +1047,21 @@ function buildPiece(M, piece) {
     }
   }
   // gates in the court walls: cedar doors overlaid with brass (2 Chronicles 4:9), open
-  for (const gate of piece.gates || []) {
-    if (gate.leaves === false) continue;   // an idealized doorway brings its own sketched leaves (temple.js doorFrame)
+  // each leaf hangs on a hinge at its own side of the opening (a group at the jamb, the leaf swung from it), so it can be shut
+  // across the opening or swung open — the walker opens and shuts them (see gateSets)
+  (piece.gates || []).forEach((gate, gi) => {
+    if (gate.leaves === false) return;   // an idealized doorway brings its own sketched leaves (temple.js doorFrame)
     for (const s of [-1, 1]) {
-      const leaf = new THREE.Mesh(new THREE.BoxGeometry(gate.axis === 'z' ? 0.4 : gate.w / 2, 6, gate.axis === 'z' ? gate.w / 2 : 0.4), M.brassDark);
-      leaf.position.set(gate.x + (gate.axis === 'x' ? s * gate.w * 0.36 : s * 1.6), H.courtY + 3, gate.z + (gate.axis === 'z' ? s * gate.w * 0.36 : s * 1.6));
-      leaf.rotation.y = gate.axis === 'z' ? s * 1.2 : -s * 1.2; leaf.castShadow = true; b.mesh(leaf);
+      const hinge = new THREE.Group(); const along = gate.axis === 'x';
+      hinge.position.set(gate.x + (along ? s * gate.w / 2 : 0), H.courtY, gate.z + (along ? 0 : s * gate.w / 2));
+      const leaf = new THREE.Mesh(new THREE.BoxGeometry(along ? gate.w / 2 : 0.4, 6, along ? 0.4 : gate.w / 2), M.brassDark);
+      leaf.position.set(along ? -s * gate.w / 4 : 0, 3, along ? 0 : -s * gate.w / 4); leaf.castShadow = true;
+      leaf.userData.gate = `${piece.id}:${gi}`; hinge.add(leaf);
+      hinge.userData.gateLeaf = { key: `${piece.id}:${gi}`, swing: along ? -s * 1.2 : s * 1.2 };
+      hinge.rotation.y = hinge.userData.gateLeaf.swing;   // open, until the walker shuts it
+      b.mesh(hinge);
     }
-  }
+  });
   const g = b.bake();
   g.userData.slots = b.slots;
   // The piece grows from its own base in the BUILD story: hoist the group to its
@@ -1592,9 +1599,13 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       air: 0, vy: 0,                                                          // in the air (a jump, or walked off an edge): 1 while airborne, and the feet's upward speed
       airV: { x: 0, z: 0 }, vel: { x: 0, z: 0 }, landAt: 0,                  // the jump's carry (amah/s, kept through the air), the last ground speed, when the feet last landed
       dist: 0,                                                                // the wheel: 0 = through his own eyes, up to DIST_MAX behind him (third person)
-      open: { hayakal: 0, dabayar: 0 }, want: { hayakal: 0, dabayar: 0 },   // the doors and the veil, 0 shut … 1 open, eased toward what the viewer asked
+      open: { hayakal: 0, dabayar: 0 }, want: { hayakal: 0, dabayar: 0 },   // the doors, the veil and the court gates (keys 'piece:i'), 0 shut … 1 open, eased toward what the viewer asked
     };
     const DIST_MAX = 15;
+    // the court gates' leaves: every hinge group built for a gate, by key; open (1) unless the walker shuts one
+    const gateSets = [];
+    for (const g of groups.values()) g.traverse((o) => { if (o.userData.gateLeaf) { gateSets.push({ key: o.userData.gateLeaf.key, node: o, swing: o.userData.gateLeaf.swing }); roam.open[o.userData.gateLeaf.key] = roam.want[o.userData.gateLeaf.key] = 1; } });
+    const openDefault = (k) => (k.includes(':') ? 1 : 0);
     // our figure on foot — one of the attendants (linen, faceless like all of them), seen when the wheel pulls the view back; the
     // walker's own position (the eye) is what everything else uses, the figure just stands under it, facing where he looks
     const avatar = (() => {
@@ -1654,6 +1665,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
         const o = openOf(ds.open);
         for (const { node, sz, i } of ds.leaves) node.rotation.y = sz * o * (ds.fold ? (i === 0 ? 1.55 : 2.7) : 1.75);   // swing inward; a folding pair doubles back on itself
       }
+      for (const gs of gateSets) gs.node.rotation.y = gs.swing * (roam.on ? roam.open[gs.key] : 1);
       for (const vs of veilSets) {
         const o = openOf(vs.open);
         for (const { node, sz } of vs.halves) { node.scale.z = 1 - 0.82 * o; node.position.z = node.userData.rest * (1 + 0.62 * o); }
@@ -1844,21 +1856,19 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
         else { camera.position.set(...ROAM_START.pos); const [lx, , lz] = ROAM_START.look; roam.yaw = Math.atan2(lz - camera.position.z, lx - camera.position.x); roam.pitch = 0; }
         roam.foot = camera.position.y - ROAM_EYE;
         const gy = groundUnder(camera.position.x, camera.position.z, camera.position.y + 2); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; }
-        for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = ROAM_MEMO?.open?.[k] || 0;
+        for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = ROAM_MEMO?.open?.[k] ?? openDefault(k);
         aimCamera(); place(clock.t);
       } else {
         if (document.pointerLockElement === renderer.domElement) document.exitPointerLock?.();
-        camera.up.set(0, 1, 0); camera.rotation.set(0, 0, 0); avatar.visible = false; for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = 0;
+        camera.up.set(0, 1, 0); camera.rotation.set(0, 0, 0); avatar.visible = false; for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = openDefault(k);
       }
       setLocked(false); dirty = true;
     }
-    /** A second tap on an openable piece: open it and go through. */
-    function roamGo(id) {
-      const e = ROAM_ENTER[id]; if (!e) return false;
-      roam.want[e.open] = 1;
-      const to = new THREE.Vector3(...e.pos), yaw1 = Math.atan2(e.look[2] - e.pos[2], e.look[0] - e.pos[0]);
-      let yaw0 = roam.yaw; while (yaw1 - yaw0 > Math.PI) yaw0 += 2 * Math.PI; while (yaw1 - yaw0 < -Math.PI) yaw0 -= 2 * Math.PI;
-      roam.glide = { from: camera.position.clone(), to, yaw0, yaw1, pitch0: roam.pitch, t0: performance.now() + 500, ms: Math.max(1400, camera.position.distanceTo(to) * 90) };
+    /** A second tap on a door, the veil or a court gate that is already chosen: open it if shut, shut it if open (fieldy). The walker
+     *  goes through on his own feet. Tapping elsewhere and back only chooses it again. */
+    function roamGo(id, gateKey) {
+      const key = gateKey || ROAM_ENTER[id]?.open; if (!key || !(key in roam.want)) return false;
+      roam.want[key] = roam.want[key] > 0.5 ? 0 : 1;
       return true;
     }
     // look — with a mouse: a click takes the pointer (pointer lock) and the mouse turns the head like a first-person game, Esc gives
@@ -1942,7 +1952,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible && !(h.object.material?.transparent && h.object.material.opacity < 0.3));
       let o = hit?.object; while (o && !o.userData.id) o = o.parent;
       const id = o?.userData.id || null;
-      if (roam.on && id && id === currentSel && roamGo(id)) { dirty = true; return; }   // the second tap on a door: open it and go through
+      if (roam.on && id && id === currentSel && roamGo(id, hit?.object?.userData?.gate)) { dirty = true; return; }   // the second tap on a door or a gate: open or shut it
       stillSelect = id; onSelect?.(id);
     };
     let hoverT = 0;
@@ -2048,7 +2058,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       invalidate: () => { dirty = true; },
       roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, air: roam.air, vy: roam.vy, dist: roam.dist, avatar: avatar.visible ? avatar.position.toArray() : null, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),
       zoom: (d) => { roam.dist = Math.max(0, Math.min(DIST_MAX, d)); dirty = true; },   // for tests: the wheel's distance   // for tests
-      go: (id) => roam.on && roamGo(id),
+      go: (id, gate) => roam.on && roamGo(id, gate),
       marks: () => stairMarks.filter((m) => m.visible).map((m) => m.position.toArray().map((v) => Math.round(v * 10) / 10)),   // for tests: the stair marks shown
       bench: (n = 200) => { const t0 = performance.now(); for (let i = 0; i < n; i++) { probe.copy(camera.position); blocked(probe, step.set(Math.cos(i), 0, Math.sin(i)), 3); groundUnder(camera.position.x, camera.position.z, roam.foot + 3); } return (performance.now() - t0) / n; },   // for tests: ms per (ahead + down) probe pair
       solidTris: () => { const m = {}; for (const o of solids) { let q = o; while (q && !q.userData.id) q = q.parent; const k = q?.userData.id || o.name || 'proxy'; m[k] = (m[k] || 0) + Math.round((o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3); } return m; },
