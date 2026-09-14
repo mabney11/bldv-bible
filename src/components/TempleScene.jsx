@@ -1604,8 +1604,9 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     const DIST_MAX = 15;
     // the court gates' leaves: every hinge group built for a gate, by key; open (1) unless the walker shuts one
     const gateSets = [];
-    for (const g of groups.values()) g.traverse((o) => { if (o.userData.gateLeaf) { gateSets.push({ key: o.userData.gateLeaf.key, node: o, swing: o.userData.gateLeaf.swing }); roam.open[o.userData.gateLeaf.key] = roam.want[o.userData.gateLeaf.key] = 1; } });
-    const openDefault = (k) => (k.includes(':') ? 1 : 0);
+    // at the start the great court's gate — the outermost, where the walk begins — stands SHUT (fieldy), the inner court's open
+    const openDefault = (k) => (k.includes(':') && !k.startsWith('great-court') ? 1 : 0);
+    for (const g of groups.values()) g.traverse((o) => { if (o.userData.gateLeaf) { gateSets.push({ key: o.userData.gateLeaf.key, node: o, swing: o.userData.gateLeaf.swing }); roam.open[o.userData.gateLeaf.key] = roam.want[o.userData.gateLeaf.key] = openDefault(o.userData.gateLeaf.key); } });
     // our figure on foot — one of the attendants (linen, faceless like all of them), seen when the wheel pulls the view back; the
     // walker's own position (the eye) is what everything else uses, the figure just stands under it, facing where he looks
     const avatar = (() => {
