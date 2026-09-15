@@ -220,6 +220,49 @@ the start-up pull) and `server/studio-sync.mjs` present in the box's checkout
 (the lexicon cron's `git pull` brings it). `node server/studio-sync.mjs status`
 says how your database differs from the last sync; `restore --dry` only prints.
 
+### 11a. Trigger-based sync (studio-sync-watch.sh)
+
+You translate/link mostly on prod, and Gloss Studio's "100%" for a verse
+needs both full lexical glossing *and* Translation Studio's `done` status —
+so a save on prod doesn't show up as done in Gloss Studio anywhere else
+until `translation.db` there gets it, which used to mean waiting up to 5
+minutes for the scheduled task above (2026-09-15, after Gen 1:6 took a
+while to reach 100%: "I would like to make things more consistent/trigger
+based").
+
+`studio-sync.sh` only ever dials *out* from this machine to the box, never
+the reverse, so prod can't ping this machine the instant you hit save
+without new exposed infrastructure (a webhook back over ngrok) — deliberately
+not built. Instead, `studio-sync-watch.sh` polls a cheap signal often: a
+plain `stat` of `translation.db`'s mtime on the box over an already-open ssh
+connection (no `docker run`, a few hundred ms), and only pays for the full
+`studio-sync.sh` round trip when that mtime actually moved. In practice a
+save on prod reaches here within about 15 seconds instead of up to 5
+minutes.
+
+Set it up once:
+
+```
+powershell -ExecutionPolicy Bypass -File scripts\setup-studio-sync-watch-task.ps1
+```
+
+Needs an elevated ("Run as administrator") PowerShell window —
+`Register-ScheduledTask` requires it even though the task itself then runs
+at your normal, non-elevated logon.
+
+This registers a separate scheduled task, `"bldbible studio sync watch"`,
+that starts `studio-sync-watch.sh` at logon and auto-restarts it if it ever
+dies. It launches through `scripts/studio-sync-watch-hidden.vbs`
+(`wscript.exe`) instead of calling `bash.exe` directly, so no console
+window is ever visible — the task's own `-Hidden` setting only hides the
+task from Task Scheduler's list, it does nothing about a launched `.exe`'s
+own window. The original 5-minute `"bldbible studio sync"` task above is
+left running too, as a backstop for whenever the watcher isn't — both call
+the same `studio-sync.sh`, which now takes its own lock so the two never
+race each other. Logs: `~/studio-sync-watch.log` (the watcher's own
+heartbeat) and `~/studio-sync.log` (each full sync run, from either
+trigger).
+
 ## Cost recap
 
 | Item | Cost |
