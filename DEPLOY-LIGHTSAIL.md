@@ -170,10 +170,11 @@ So there are two ways to change the lexicon and they meet in the same place:
   no restart.
 
 `lexicon-sync.sh` keeps the two from drifting: it commits anything the admin page
-changed, pulls (rebase) and pushes, and cron runs it every five minutes — so a
-push from your machine also reaches the box within five minutes, no manual
-`git pull` needed. One-time setup on the box (deploy key with write access,
-remote switched to ssh, git identity, first sync, cron line):
+changed, pulls (rebase) and pushes. A 5-minute cron runs it as a backstop, but
+the box also runs `lexicon-pull-watch.sh` (§10a below), which polls for a new
+push and triggers the same sync within seconds instead of waiting on the cron.
+One-time setup on the box (deploy key with write access, remote switched to
+ssh, git identity, first sync, cron lines, starts the watcher):
 
 ```bash
 cd ~/paleo-studio && git pull && bash scripts/lightsail-lexicon-sync-setup.sh
@@ -186,6 +187,32 @@ waits until GitHub accepts it. Locally, pull before you edit; if you and the
 admin page both change the same file between syncs, git says so in
 `~/lexicon-sync.log` (the script aborts the rebase and leaves the local commit
 in place) and you resolve it like any merge — nothing is overwritten silently.
+
+### 10a. Trigger-based pull (lexicon-pull-watch.sh)
+
+A push from your machine reaches GitHub in seconds (lexicon-watch.sh, §10 on
+that machine), but until this, the box only picked it up on its own 5-minute
+cron — fieldy, 2026-09-15, after Genesis 1:10 sat unfilled on bldbible.com "a
+little while" after the local push already went through: "lets get prod on
+the same cadence... i thought i didnt need to redeploy for lexicon updates
+now" (correct — this was never about redeploying; `server/lexicon` is
+bind-mounted and hot-reloads on its own, the lag was purely how often the box
+bothered to `git pull` at all).
+
+`lexicon-pull-watch.sh` polls `git ls-remote origin main` every 15s — one ref
+lookup against GitHub, no objects fetched, cheap enough to run constantly —
+and only calls `lexicon-sync.sh` (the real pull, plus its usual commit/push of
+anything changed here) when that sha has actually moved. A push now reaches
+the box in about 15 seconds instead of up to 5 minutes. The 5-minute cron
+stays running too, deliberately, as a backstop if the watcher ever dies.
+
+`lightsail-lexicon-sync-setup.sh` (step 6) registers `@reboot cd
+~/paleo-studio && nohup ./lexicon-pull-watch.sh >> ~/lexicon-pull-watch.log
+2>&1 &` in cron, so it survives a real box reboot, and starts it immediately
+too so it's live without waiting on one. Safe to rerun the setup script any
+time — an already-running watcher just logs "already running" and exits
+(PID-file guarded, `server/.lexicon-watch/.pull-watch.pid`) rather than
+doubling up. Watch it with `tail -f ~/lexicon-pull-watch.log`.
 
 ## 11. The Translation Studio: the same translation here and there
 

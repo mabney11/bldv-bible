@@ -51,12 +51,24 @@ chmod +x lexicon-sync.sh
 ./lexicon-sync.sh
 git push --dry-run origin "$(git branch --show-current)" >/dev/null 2>&1 && echo "    push access OK"
 
-echo "==> 5. cron, every 5 minutes"
+echo "==> 5. cron, every 5 minutes (backstop -- see step 6 for the real trigger)"
 LINE="*/5 * * * * $REPO/lexicon-sync.sh >> \$HOME/lexicon-sync.log 2>&1"
 { crontab -l 2>/dev/null | grep -v 'lexicon-sync.sh' || true; echo "$LINE"; } | crontab -   # `|| true`: grep finds nothing on a fresh box, and set -e must not stop the line being added
 crontab -l | grep lexicon-sync
+
+echo "==> 6. lexicon-pull-watch.sh -- trigger-based pull (see DEPLOY-LIGHTSAIL.md §10a)"
+chmod +x lexicon-pull-watch.sh
+WATCH_LINE="@reboot cd $REPO && nohup ./lexicon-pull-watch.sh >> \$HOME/lexicon-pull-watch.log 2>&1 &"
+{ crontab -l 2>/dev/null | grep -v 'lexicon-pull-watch.sh' || true; echo "$WATCH_LINE"; } | crontab -
+crontab -l | grep lexicon-pull-watch
+echo "    Registered for future reboots. Starting it now too, so it's live without waiting for one:"
+nohup ./lexicon-pull-watch.sh >> "$HOME/lexicon-pull-watch.log" 2>&1 &
+disown
+sleep 1
+tail -1 "$HOME/lexicon-pull-watch.log" 2>/dev/null || true
 
 echo
 echo "Done. Now redeploy so the container mounts server/lexicon from this checkout:"
 echo "    ./deploy-blue-green.sh"
 echo "Watch the sync with:  tail -f ~/lexicon-sync.log"
+echo "Watch the new trigger with:  tail -f ~/lexicon-pull-watch.log"
