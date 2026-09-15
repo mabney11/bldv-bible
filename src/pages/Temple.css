@@ -86,3 +86,14 @@
 /* The minimap on foot: the plan round the walker, his way up (drawn by TempleScene.drawMinimap) */
 .st-gl canvas.tp-minimap { position: absolute; inset: auto; top: 12px; right: 12px; width: 170px !important; height: 170px !important; cursor: default; border-radius: 10px; border: 1px solid rgba(255, 208, 98, 0.45); box-shadow: 0 4px 16px rgba(0,0,0,.35); pointer-events: none; z-index: 5; }
 @media (max-width: 720px) { .st-gl canvas.tp-minimap { width: 118px !important; height: 118px !important; top: 8px; right: 8px; } }
+
+/* Start over, on foot: back to the gate with every door and gate as at the first */
+.tp-reset { flex: none; border: 1px solid var(--gold); color: var(--gold); background: var(--bg2); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.tp-reset:hover { background: color-mix(in srgb, var(--gold) 14%, transparent); }
+.tp-roambar { gap: 10px; }
+/* On foot on a phone the card's sheet stays low, so the view stays in sight — the chosen verse is scrolled to its top anyway;
+   a drag up on the grip makes it tall, a drag down brings it low again, another closes it (fieldy: "the canvas should remain in view") */
+@media (max-width: 860px) {
+  .tp-page.tp-roam .st-panel { max-height: 34vh; }
+  .tp-page.tp-roam.st-sheet-tall .st-panel { max-height: 70vh; }
+}

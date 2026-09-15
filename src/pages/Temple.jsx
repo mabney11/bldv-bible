@@ -145,6 +145,7 @@ export default function Temple() {
   const player = usePlayer(TIMELINES[mode], { onContinue: () => sceneApi.current?.follow?.() });
   const { clock, playing, speed, setSpeed, loop, setLoop, phase, play, pause, seek, restart, scrubRef, timeRef, hold, continueNow } = player;
   const [sheetOpen, setSheetOpen] = useState(!!sel);
+  const [sheetTall, setSheetTall] = useState(false);   // on foot the sheet stays low so the view stays in sight (fieldy); a drag up on its grip makes it tall
   const [following, setFollowing] = useState(true);
 
   const navigate = useNavigate();
@@ -158,8 +159,8 @@ export default function Temple() {
 
   const panelRef = useRef(null), grip = useRef(null);
   const onGripDown = (e) => { if (e.target.closest('button')) return; grip.current = { y: e.clientY, dy: 0 }; e.currentTarget.setPointerCapture?.(e.pointerId); if (panelRef.current) panelRef.current.style.transition = 'none'; };
-  const onGripMove = (e) => { const g = grip.current; if (!g) return; g.dy = Math.max(0, e.clientY - g.y); if (panelRef.current) panelRef.current.style.transform = `translateY(${g.dy}px)`; };
-  const onGripUp = () => { const g = grip.current; if (!g) return; grip.current = null; const el = panelRef.current; if (el) { el.style.transition = ''; el.style.transform = ''; } if (g.dy > 70) setSheetOpen(false); };
+  const onGripMove = (e) => { const g = grip.current; if (!g) return; g.dy = e.clientY - g.y; if (panelRef.current) panelRef.current.style.transform = `translateY(${Math.max(0, g.dy)}px)`; };
+  const onGripUp = () => { const g = grip.current; if (!g) return; grip.current = null; const el = panelRef.current; if (el) { el.style.transition = ''; el.style.transform = ''; } if (g.dy > 70) { if (sheetTall) setSheetTall(false); else setSheetOpen(false); } else if (g.dy < -40) setSheetTall(true); };
 
   useEffect(() => { document.body.classList.add('st-body'); return () => document.body.classList.remove('st-body'); }, []);
 
@@ -192,7 +193,7 @@ export default function Temple() {
   if (!MODES[story]) { let last = null; try { last = sessionStorage.getItem('temple-story'); } catch { /* fine */ } return <Navigate to={MODES[last] ? `/models/temple/${last}${params.toString() ? `?${params}` : ''}` : `/models/temple${params.toString() ? `?${params}` : ''}`} replace />; }
 
   return (
-    <div className={`st-page tp-page${sheetOpen ? ' st-sheet-open' : ''}`}>
+    <div className={`st-page tp-page${sheetOpen ? ' st-sheet-open' : ''}${roam ? ' tp-roam' : ''}${sheetTall ? ' st-sheet-tall' : ''}`}>
       <header className="st-top">
         <Link to="/models/temple" className="st-back" title="The house's stories">←</Link>
         <nav className="tp-nav" aria-label="Elsewhere">
@@ -247,6 +248,7 @@ export default function Temple() {
 
           {roam ? (
             <div className="st-player tp-roambar">
+              {use3d && <button type="button" className="tp-reset" onClick={() => sceneApi.current?.reset?.()} title="Back to the start, outside the gate, every door and gate as at the first">↺ Start over</button>}
               <span className="tp-roam-hint">{!use3d ? 'The plan and section show the finished house; switch to 3D to walk it.' : COARSE ? 'Left thumb on the view: a stick to walk · right thumb: drag to look · ⤒ jumps · tap a part for its details · tap a door or gate again to open or shut it' : lock?.on ? 'The mouse is yours: move it to look, W A S D or the arrows to walk (Shift to run, space to jump), click what the crosshair is on for its details, a door or a gate twice to open or shut it · the wheel pulls the view back to see yourself, forward again into your eyes · Esc gives the mouse back' : lock?.why ? `The browser would not hand over the mouse (${lock.why}) — drag the view to look instead · W A S D or the arrows to walk · click a part for its details` : 'Click the view once to take the mouse (nothing is chosen by that click) · then move it to look, W A S D or the arrows to walk, ← → turn, Shift to run, space to jump · click what the crosshair is on for its details, a door or a gate twice to open or shut it · the wheel pulls the view back to see yourself · Esc gives the mouse back'}</span>
             </div>
           ) : (

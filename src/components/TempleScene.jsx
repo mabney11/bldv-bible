@@ -2128,6 +2128,15 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, air: roam.air, vy: roam.vy, dist: roam.dist, avatar: avatar.visible ? avatar.position.toArray() : null, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),
       zoom: (d) => { roam.dist = Math.max(0, Math.min(DIST_MAX, d)); dirty = true; },   // for tests: the wheel's distance   // for tests
       go: (id, gate) => roam.on && roamGo(id, gate),
+      reset: () => {   // back to the start, outside the great court's gate, every door and gate as at the first (fieldy: "a reset button")
+        if (!roam.on) return;
+        ROAM_MEMO = null; try { sessionStorage.removeItem('temple-roam'); } catch { /* fine */ }
+        camera.position.set(...ROAM_START.pos); const [lx, , lz] = ROAM_START.look; roam.yaw = Math.atan2(lz - camera.position.z, lx - camera.position.x); roam.pitch = 0;
+        roam.air = 0; roam.vy = 0; roam.keys.clear(); roam.foot = camera.position.y - ROAM_EYE;
+        const gy = groundUnder(camera.position.x, camera.position.z, camera.position.y + 2); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; }
+        for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = openDefault(k);
+        place(clock.t); aimCamera(); remember(); dirty = true;
+      },
       marks: () => stairMarks.filter((m) => m.visible).map((m) => m.position.toArray().map((v) => Math.round(v * 10) / 10)),   // for tests: the stair marks shown
       bench: (n = 200) => { const t0 = performance.now(); for (let i = 0; i < n; i++) { probe.copy(camera.position); blocked(probe, step.set(Math.cos(i), 0, Math.sin(i)), 3); groundUnder(camera.position.x, camera.position.z, roam.foot + 3); } return (performance.now() - t0) / n; },   // for tests: ms per (ahead + down) probe pair
       solidTris: () => { const m = {}; for (const o of solids) { let q = o; while (q && !q.userData.id) q = q.parent; const k = q?.userData.id || o.name || 'proxy'; m[k] = (m[k] || 0) + Math.round((o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3); } return m; },
