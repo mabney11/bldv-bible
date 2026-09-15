@@ -7508,11 +7508,26 @@ let _aggregateCoverageCache = null;   // { stamp, tree: { books } }
 
 function _aggregateStampKey() {
     const parts = GS_LANG_LIST.map(l => l.kind === 'heb' ? _glossStudioStampKey() : _genericStampKey(l.kind));
-    // translation.db's own mtime is WAL-unreliable (see the writeVersion
-    // comment on translationDb above) — combine it with the in-process write
-    // counter so a `done` flip or text edit is never missed while the
-    // process stays up, while the mtime still forces a change across a
-    // restart (when the counter resets to 0).
+    // translation.db is also written from OUTSIDE this process: studio-sync.sh's
+    // restore step (and, since studio-sync-watch.sh, that now happens roughly
+    // every 15s instead of every 5min) runs `node server/studio-sync.mjs
+    // restore` in its own short-lived `docker run`, writing straight to the
+    // same file on the shared volume — never through this server's
+    // saveVerseWithHistory, so translationDb.writeVersion (bumped only for
+    // writes THIS process makes) can't see it, and that process's WAL frames
+    // don't get merged into the main file (which is what moves its mtime)
+    // until something checkpoints them. fieldy, 2026-09-15: "gloss studio...
+    // flakily showing verse 9 as 99% at times and 100% at others" — a
+    // `done` flip made through studio-sync (as opposed to a save made
+    // straight against bldbible.com/translate, which THIS process handles
+    // and which writeVersion already covers) was exactly this blind spot.
+    // A passive checkpoint here merges whatever WAL content is sitting on
+    // disk from ANY connection — this process's or a since-exited docker
+    // run's — into the main file before we stat it, so the mtime this
+    // stamp keys off of is trustworthy regardless of who wrote it. PASSIVE
+    // never blocks a concurrent writer and is cheap for a database this
+    // small; safe to call on every coverage request.
+    try { translationDb.tdb.pragma('wal_checkpoint(PASSIVE)'); } catch { /* read-only handle or no WAL yet -- fine */ }
     let dbMtime = 0;
     try { dbMtime = fs.statSync(path.join(__dirname, 'translation.db')).mtimeMs; } catch { /* missing is fine, stamp 0 */ }
     parts.push(`${dbMtime}:${translationDb.writeVersion}`);
