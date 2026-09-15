@@ -1,2 +1,18 @@
 # studio-sync log files are written LF on both machines; keep them byte-identical (no CRLF on Windows)
 server/studio-data/*.jsonl text eol=lf
+# server/lexicon/*.json is bind-mounted into the running container AND
+# edited from a Linux mount (Claude's device-bridge sandbox writes plain
+# LF), while lexicon-watch.sh runs through Git Bash on fieldy's Windows
+# box. Without this, right after lexicon-sync.sh commits, Windows git's
+# own line-ending normalization sees the just-committed LF content as
+# "should be CRLF" and re-marks the file dirty in the working tree --
+# so the very next `git pull --rebase` in the same script run aborts
+# with "You have unstaged changes. Please commit or stash them.",
+# silently blocking the push step (no error surfaced beyond the log).
+# Six lexicon+translation commits piled up unpushed for ~2 hours before
+# this was traced. Forcing LF for these files means git never considers
+# a fresh checkout "modified" on either machine, so the phantom dirty
+# state can't happen. Fieldy, 2026-09-15, after "syriac seemed to have
+# gotten skipped" turned out to be every recent lexicon commit stuck
+# unpushed for the same CRLF-churn reason.
+server/lexicon/*.json text eol=lf
