@@ -832,12 +832,12 @@ export const PIECES = [
     note: '"{{1 Kings 7:7 | He ishah … mashapat}}" — where the king sat to judge, behind the hall of pillars; its walls, floor and ceiling of cedar. The kasaa (throne) itself stands at its far end.',
     elsewhere: { ref: '1 Kings 3:16–28; Psalm 122:5; Isaiah 6:1', note: '"There are set kasaawath (thrones) for mashapat (judgment), the thrones of the house of Dawad (David)."' },
     assumed: 'Its size (30 × 30) and place, behind the porch of pillars and open to it; the text gives the cedar from floor to floor.',
-    idealized: 'The carving on its cedar walls — palms and open flowers like the house\'s (6:29) — is the model\'s; the text gives the palace cedar plain. The servants along the walls, the ministers in their apparel and the cupbearers by the steps stand where the queen of Sheba saw them (10:5); where each stood is the model\'s.',
+    idealized: 'The servants along the walls, the ministers in their apparel and the cupbearers by the steps stand where the queen of Sheba saw them (10:5); where each stood is the model\'s.',
     parts: (() => {
       const T = PALACE.throne, out = [];
       out.push(...walls(T.x0, T.x1, (T.z1 - T.z0) / 2, 3, Y0, T.h).map((b) => ({ ...b, z: b.z + (T.z0 + T.z1) / 2 })).filter((b) => b.role !== 'north'));
       out.push(...roofOf(T.x0 - 3, T.x1 + 3, T.z0 - 3, T.z1 + 3, Y0 + T.h - 1.5));
-      out.push(...cedarLining(T.x0, T.x1, T.z0, T.z1, Y0, T.h - 1.5).filter((b) => !(b.role === 'lining' && b.d < 1 && b.z < T.z0 + 1)).map((b) => ({ ...b, mat: b.role === 'lining' ? 'carvedCedar' : 'cedarDark', ideal: b.role === 'lining', carved: false })));   // the walls carved as the house's are (6:29) — the model's, sketched; the floor and ceiling plain dark cedar
+      out.push(...cedarLining(T.x0, T.x1, T.z0, T.z1, Y0, T.h - 1.5).filter((b) => !(b.role === 'lining' && b.d < 1 && b.z < T.z0 + 1)).map((b) => ({ ...b, mat: 'cedar', ideal: false, carved: false })));   // plain cedar from floor to floor (7:7), the same light cedar as the rest of the palace (fieldy: the dark walls were a misjudgement)
       out.push(...portico(T.x0 + 3, T.x1 - 3, T.z0, T.h - 2, 4));   // four pillars across the open north side, so the axis — the door from the hall of pillars at x 20 — is an opening between them, never a pillar (fieldy)
       // "the sitting of his servants, the attendance of his ministers and their apparel, his cupbearers" (10:5): along the walls, and by the steps
       for (let i = 0; i < 5; i++) { out.push(...person(T.x0 + 2.2, 108 + i * 4.2, 0, 'linen'), ...person(T.x1 - 2.2, 108 + i * 4.2, Math.PI, 'linen')); }

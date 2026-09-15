@@ -373,7 +373,7 @@ function loadPhotos(M, onChange) {
     }, undefined, () => { /* no photo on this server: the drawn tile stays */ });
   }
   for (const key of ['rug', 'rug-runner']) {
-    loader.load(`/textures/temple/${key}.jpg`, (tex) => { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; if (M[key]) { M[key].map = tex; M[key].color.set('#ffffff'); M[key].needsUpdate = true; onChange?.(); } }, undefined, () => {});
+    loader.load(`/textures/temple/${key}.jpg`, (tex) => { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; if (key === 'rug-runner') { tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(1, 3); }   /* the runner is 6 × 18: the damask repeats three times along it */ if (M[key]) { M[key].map = tex; M[key].color.set('#ffffff'); M[key].needsUpdate = true; onChange?.(); } }, undefined, () => {});
   }
 }
 
@@ -1917,7 +1917,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     }
     function roamEnter(on) {
       roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.air = 0; roam.vy = 0; roam.glide = null; controls.enabled = !on;
-      renderer.domElement.style.cursor = on ? 'crosshair' : 'grab'; mmap.hidden = !on;
+      renderer.domElement.style.cursor = on ? 'crosshair' : 'grab'; mmap.hidden = !on; zoneEl.hidden = !(on && COARSE); if (!on) { touches.clear(); pinch = null; }
       if (on) {
         following = false; onFollow?.(true);   // no "follow" button in the roam: there is no story to follow
         if (ROAM_MEMO) { camera.position.set(...ROAM_MEMO.pos); roam.yaw = ROAM_MEMO.yaw; roam.pitch = ROAM_MEMO.pitch; roam.dist = ROAM_MEMO.dist || 0; }   // back where they stood
@@ -1960,16 +1960,25 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
     const onLockChange = () => { setLocked(document.pointerLockElement === renderer.domElement); dirty = true; };
     document.addEventListener('pointerlockchange', onLockChange);
     const turnHead = (dx, dy) => { roam.yaw += dx * 0.0042; roam.pitch = Math.max(-1.45, Math.min(1.45, roam.pitch - dy * 0.0034)); aimCamera(); remember(); dirty = true; };
+    // Touch (fieldy): the stick lives ONLY in the bottom-left of the view — a thumb landing there walks; a touch anywhere higher
+    // or to the right looks, and two fingers pinch the view out to third person (or in, to his eyes) — never mistaken for walking
+    const stickZone = (r, x, y) => x - r.left < r.width * 0.45 && y - r.top > r.height * 0.5;
+    const touches = new Map(); let pinch = null;
+    const zoneEl = document.createElement('div'); zoneEl.className = 'tp-stickzone'; zoneEl.hidden = true; el.appendChild(zoneEl);
     const onLookDown = (e) => {
       if (!roam.on || e.button === 2) return;
       const r = renderer.domElement.getBoundingClientRect();
-      if (e.pointerType === 'touch' && stickPtr == null && e.clientX - r.left < r.width * 0.45) {   // the left thumb: a stick where it landed
+      if (e.pointerType === 'touch' && stickPtr == null && stickZone(r, e.clientX, e.clientY)) {   // the left thumb: a stick where it landed
         stickPtr = { id: e.pointerId, x0: e.clientX, y0: e.clientY };
         stickEl.style.left = `${e.clientX - r.left}px`; stickEl.style.top = `${e.clientY - r.top}px`; stickEl.hidden = false; knobEl.style.transform = '';
-        renderer.domElement.setPointerCapture?.(e.pointerId); return;
+        try { renderer.domElement.setPointerCapture?.(e.pointerId); } catch { /* a synthetic pointer */ } return;
+      }
+      if (e.pointerType === 'touch') {
+        touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (touches.size >= 2) { const [a, b] = [...touches.values()]; pinch = { d0: Math.hypot(a.x - b.x, a.y - b.y), dist0: roam.dist }; look = null; return; }
       }
       if (locked) return;
-      look = { id: e.pointerId, x: e.clientX, y: e.clientY }; renderer.domElement.setPointerCapture?.(e.pointerId);
+      look = { id: e.pointerId, x: e.clientX, y: e.clientY }; try { renderer.domElement.setPointerCapture?.(e.pointerId); } catch { /* a synthetic pointer */ }
     };
     const onLookMove = (e) => {
       if (!roam.on) return;
@@ -1978,12 +1987,23 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
         if (m > STICK_R) { dx *= STICK_R / m; dy *= STICK_R / m; }
         roam.stick.x = dx / STICK_R; roam.stick.y = -dy / STICK_R; knobEl.style.transform = `translate(${dx}px, ${dy}px)`; return;
       }
+      if (touches.has(e.pointerId)) { touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); }
+      if (pinch) {
+        if (touches.size >= 2) {
+          const [a, b] = [...touches.values()], d = Math.hypot(a.x - b.x, a.y - b.y);
+          roam.dist = Math.max(0, Math.min(DIST_MAX, pinch.dist0 + (pinch.d0 - d) * 0.06));   // fingers together: the view pulls back; apart: into his eyes
+          remember(); dirty = true;
+        }
+        return;
+      }
       if (locked) { if (e.movementX || e.movementY) turnHead(e.movementX, e.movementY); return; }
       if (!look || e.pointerId !== look.id) return;
       turnHead(e.clientX - look.x, e.clientY - look.y); look.x = e.clientX; look.y = e.clientY;
     };
     const onLookUp = (e) => {
       if (stickPtr && e.pointerId === stickPtr.id) { stickPtr = null; roam.stick.x = roam.stick.y = 0; stickEl.hidden = true; return; }
+      touches.delete(e.pointerId);
+      if (pinch && touches.size < 2) { pinch = null; look = null; return; }   // the pinch ends: the finger left behind does not turn the head until it lifts and lands again
       if (look && e.pointerId === look.id) look = null;
     };
     stickEl.hidden = true; cross.hidden = true;
@@ -2159,7 +2179,7 @@ export default function TempleScene({ clock, mode, selected, onSelect: onSelectP
       window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp);
       document.removeEventListener('pointerlockchange', onLockChange); document.removeEventListener('pointerlockerror', onLockError);
       if (document.pointerLockElement === renderer.domElement) document.exitPointerLock?.();
-      cross.remove(); stickEl.remove(); mmap.remove();
+      cross.remove(); stickEl.remove(); mmap.remove(); zoneEl.remove();
       controls.dispose();
       scene.traverse((o) => { o.geometry?.dispose?.(); if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => { m.map?.dispose?.(); m.bumpMap?.dispose?.(); m.alphaMap?.dispose?.(); m.dispose?.(); }); });
       scene.environment?.dispose?.();

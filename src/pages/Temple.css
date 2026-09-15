@@ -97,3 +97,6 @@
   .tp-page.tp-roam .st-panel { max-height: 34vh; }
   .tp-page.tp-roam.st-sheet-tall .st-panel { max-height: 70vh; }
 }
+
+/* Where the thumb stick lives on a touch screen: the bottom-left of the view (a faint ring); touches elsewhere look or pinch-zoom */
+.tp-stickzone { position: absolute; left: 14px; bottom: 14px; width: 92px; height: 92px; border-radius: 50%; border: 1.5px dashed rgba(255, 208, 98, 0.35); pointer-events: none; z-index: 2; }
