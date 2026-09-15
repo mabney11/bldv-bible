@@ -1,5 +1,75 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Local lexicon edits now auto-commit and auto-push — `lexicon-watch.sh` (added 2026-09-15)
+
+fieldy, after a Gen 1:8 lexicon-fill session sat uncommitted and had to be manually pushed:
+"I really just want the lexicon files saved and automatically updated... this is a fill+check
+scenario, there shouldn't be much need for back and forth... I don't need you making the push,
+my computer should do it." He does NOT want this for bigger features — scoped explicitly to
+`server/lexicon/*.json` only, same as [[lexicon-sync]]'s existing scope.
+
+**What existed before this:** `lexicon-sync.sh` (commit+pull-rebase+push, see the standing
+[[lexicon-sync]] project note) already ran on the Lightsail box under a 5-minute cron. Nothing
+equivalent ran locally — a lexicon edit made in this checkout (by fieldy or an agent working in
+it) just sat as an uncommitted diff until he remembered `git push` himself. That's the gap this
+closes, mirroring the exact pattern `studio-sync-watch.sh` already established for
+`translation.db` on 2026-09-15 earlier the same day: a cheap local trigger layer on top of the
+existing worker script, not a replacement for it.
+
+**New pieces:**
+- `scripts/lexicon-diff-summary.mjs` — real JSON-value diff (old = `git show HEAD:<path>`, new =
+  the working-tree file), not a line-based grep. A line-based diff falsely flags the LAST key
+  before a closing brace as "changed" every time a new entry is appended after it (only a
+  trailing comma differs) — this compares actual parsed string values, so that case correctly
+  reports nothing for that key. Outputs a compact `file (+n ~n -n)` line per file for the commit
+  subject, then the same lines with capped added/removed/changed key-name lists for the body.
+  Verified directly (scratch edit + revert, not committed): correctly reported one added key,
+  one changed key, and did NOT flag the pre-existing last key that only picked up a trailing
+  comma.
+- `lexicon-sync.sh` — unchanged commit/pull-rebase/push logic, but now builds its commit message
+  from the script above (`lexicon: <file summaries>` subject + added/removed/changed detail
+  body), falling back to the old generic "edits from `<host>`, `<date>`" message if `node` isn't
+  on PATH or the summary comes back empty — still has to be safe to run unattended (box cron,
+  local watcher) either way.
+- `lexicon-watch.sh` (new, repo root) — the local trigger. Polls `git status --porcelain --
+  server/lexicon` every `PALEO_LEXWATCH_INTERVAL` seconds (default 15, same env-var naming
+  convention as `studio-sync-watch.sh`'s `PALEO_WATCH_INTERVAL`). Unlike that script there's no
+  remote box to poll — the signal is this checkout's own working tree, so it's plain local git,
+  no ssh round trip. A one-poll debounce (the dirty-state hash — `git status --porcelain` +
+  `git diff`, both scoped to `server/lexicon` — has to be IDENTICAL across two consecutive polls)
+  guards against catching a lexicon file mid-write (an editor autosave, or an agent still
+  appending entries) and shipping invalid JSON; worst case this adds one poll interval of latency
+  before a settled edit gets synced.
+- `scripts/lexicon-watch-hidden.vbs` + `scripts/setup-lexicon-watch-task.ps1` — same
+  wscript.exe-hidden-window Windows Scheduled Task pattern as `studio-sync-watch-hidden.vbs` /
+  `setup-studio-sync-watch-task.ps1` (task name `bldbible lexicon watch`, starts at logon,
+  restarts on failure, logs to `~/lexicon-watch.log`). Same install step, same caveat: must be
+  registered from an ELEVATED PowerShell —
+  `powershell -ExecutionPolicy Bypass -File scripts\setup-lexicon-watch-task.ps1` — this session
+  could write the files but cannot register a Scheduled Task itself (no elevation available from
+  the device-bridge sandbox). Box-side cron and `studio-sync-watch` are untouched by this.
+
+**A real bootstrapping gap, not yet resolved:** the device-bridge sandbox that edits this
+checkout has no GitHub credentials — no `.netrc`, `.git-credentials`, or SSH key — because it's a
+separate Linux VM (`hostname claude`) that only mounts fieldy's folder, distinct from his actual
+MINGW64 environment where `git push` already works. So this session committed the Gen 1:8
+lexicon-fill work locally but could not push it (confirmed: `git ls-remote origin` — read —
+succeeds; `git push` fails with "could not read Username for 'https://github.com'"). That first
+push, and this automation's own first push, both need fieldy to run `git push origin main` once
+by hand; `lexicon-watch.sh` only takes over from the commit AFTER that point forward. If this
+recurs and matters enough to fix, the fix is the same shape as the box's own deploy key — drop a
+GitHub PAT or deploy key into the sandbox's git credential store — not attempted here since
+fieldy scoped this request to "my computer should do it," not the agent.
+
+**Not yet verified end-to-end** (would need a live push, which this session can't do — see
+above): `lexicon-diff-summary.mjs`'s core diff logic WAS verified directly (scratch edit against
+`greek-lexicon.json`, reverted, not committed — see above). The full `lexicon-watch.sh` polling
+loop, the Scheduled Task registration, and a real commit-message-in-the-wild have not been run.
+After fieldy runs the one bootstrap push and registers the task (elevated PowerShell, see above):
+edit any `server/lexicon/*.json` file, wait ~30s (one settle poll + one sync poll), and confirm
+`git log -1` shows a real added/removed/changed summary instead of the old generic message, and
+that it actually reached GitHub.
+
 ## GSC "Alternate page with proper canonical tag" / "Page with redirect" — the client mutated the URL after hydration and the canonical tag blindly followed it (fixed 2026-09-07)
 
 fieldy got a Search Console email flagging these two NEW reasons blocking pages from being
