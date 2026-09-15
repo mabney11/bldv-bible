@@ -7193,7 +7193,36 @@ function _glossStudioStampKey() {
 //   POS_STRICT (inrg): homograph candidates ONLY — no bare/lexicon fallback,
 //   because the bare paleo answers a DIFFERENT part of speech (𐤄 bare =
 //   article "The", not the interrogative).
-const GS_POS_LONG = { prep: 'preposition', conj: 'conjunction', art: 'article', nega: 'negative', inrg: 'interrogative' };
+const GS_POS_LONG = {
+    // Was a 5-entry particle-only subset (prep/conj/art/nega/inrg), meant to
+    // "mirror reGlossOne's live re-gloss priority chain" (see comment above).
+    // But BHS canonical-book verses (the vast majority of the corpus) are
+    // NOT rendered through reGlossOne/groupSurfaceTokens at all -- bhsVerseWords
+    // calls parseHebrewData directly, whose own POS-keyed homograph tier (T8,
+    // "root_pos -- general fallback, e.g. _verb, _noun") matches against the
+    // FULL PDP_FULL map (13 entries, server.js ~line 3523), not this narrow
+    // one. Every homograph entry keyed by a non-particle POS suffix --
+    // "_verb", "_noun", "_adjective", "_proper noun", "_personal pronoun",
+    // "_demonstrative pronoun", "_interrogative pronoun", "_adverb",
+    // "_interjection" -- was therefore genuinely curated and correctly
+    // rendered live, yet invisible to gsIsGlossed, so it counted as
+    // "NO LEX ENTRY" and dragged coverage % down for no reason. Genesis
+    // 1:11's "ThaDashaa"/H1876 (homographs["<root>_verb"]) is one instance;
+    // any other verb/noun/etc. homograph anywhere in the corpus was the same
+    // bug. Fixed 2026-09-15 -- fieldy: "its saying my words arent lexed but
+    // they are -- I dont see why hebrew isnt 100%." Values below mirror
+    // PDP_FULL's wording for every newly-added POS EXCEPT nega, which stays
+    // 'negative' (not PDP_FULL's 'negation') because that's the suffix
+    // actually curated in homographs.json (H408_negative, <root>_negative);
+    // changing it to match PDP_FULL would silently un-match those two
+    // existing entries instead of fixing anything -- a second, narrower bug
+    // in parseHebrewData's own nega tier, left alone here since it's outside
+    // what fieldy reported and not worth risking a regression to chase.
+    prep: 'preposition', conj: 'conjunction', art: 'article', nega: 'negative', inrg: 'interrogative',
+    verb: 'verb', subs: 'noun', adjv: 'adjective', prde: 'demonstrative pronoun',
+    prps: 'personal pronoun', prin: 'interrogative pronoun', nmpr: 'proper noun',
+    advb: 'adverb', intj: 'interjection',
+};
 const GS_POS_STRICT = new Set(['inrg']);
 
 function gsIsGlossed(root_paleo, pos, strongs, lexicon, homographs, hebExtra) {
