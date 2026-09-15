@@ -963,6 +963,19 @@ const translationDb = (() => {
     // function with a past version's values, so reverting is itself just
     // another save — it also snapshots whatever it's replacing, meaning
     // reverting can never destroy anything either; the timeline only grows.
+    // translation.db runs in WAL mode (see pragmas above) — the main .db
+    // file's mtime does NOT move on every write, only on a WAL checkpoint,
+    // which can lag real writes indefinitely under one long-lived server
+    // connection. Anything that stamped its cache off that file's mtime
+    // (see _aggregateStampKey below) could go stale forever. fieldy,
+    // 2026-09-15: "verse 8 is up to date and marked done but gloss studio
+    // still marks it 99%" — traced to exactly this. Track writes with an
+    // in-process counter instead, bumped by every path that touches the
+    // translations table (saveVerseWithHistory + the two raw-statement
+    // writers below, import-original and revert).
+    let _writeVersion = 0;
+    function bumpWriteVersion() { _writeVersion++; }
+
     function saveVerseWithHistory(book_id, chapter, verse, status, text, rich_text) {
         const run = tdb.transaction(() => {
             const existing = stmts.getVerse.get(book_id, chapter, verse);
@@ -972,9 +985,10 @@ const translationDb = (() => {
             stmts.upsertVerse.run(book_id, chapter, verse, status, text, rich_text);
         });
         run();
+        bumpWriteVersion();
     }
 
-    return { tdb, stmts, saveVerseWithHistory };
+    return { tdb, stmts, saveVerseWithHistory, bumpWriteVersion, get writeVersion() { return _writeVersion; } };
 })();
 
 // --- VERSIFICATION MAP ---
@@ -7494,7 +7508,14 @@ let _aggregateCoverageCache = null;   // { stamp, tree: { books } }
 
 function _aggregateStampKey() {
     const parts = GS_LANG_LIST.map(l => l.kind === 'heb' ? _glossStudioStampKey() : _genericStampKey(l.kind));
-    try { parts.push(fs.statSync(path.join(__dirname, 'translation.db')).mtimeMs); } catch { parts.push(0); }
+    // translation.db's own mtime is WAL-unreliable (see the writeVersion
+    // comment on translationDb above) — combine it with the in-process write
+    // counter so a `done` flip or text edit is never missed while the
+    // process stays up, while the mtime still forces a change across a
+    // restart (when the counter resets to 0).
+    let dbMtime = 0;
+    try { dbMtime = fs.statSync(path.join(__dirname, 'translation.db')).mtimeMs; } catch { /* missing is fine, stamp 0 */ }
+    parts.push(`${dbMtime}:${translationDb.writeVersion}`);
     return parts.join('|');
 }
 
@@ -12229,6 +12250,7 @@ app.post('/api/translate/import-original', (req, res) => {
         const row = src.handle.prepare(`SELECT text FROM verses WHERE book_id=? AND chapter=? AND verse=? LIMIT 1`).get(book_id, chapter, verse);
         if (!row) return res.status(404).json({ error: 'verse not in source' });
         translationDb.stmts.importOriginal.run(book_id, chapter, verse, row.text, src.id, row.text);
+        translationDb.bumpWriteVersion();
         const saved = translationDb.stmts.getVerse.get(book_id, chapter, verse);
         res.json({ ok: true, text: saved.text, source_origin: saved.source_origin, has_original: saved.original_text != null });
     } catch(err) {
@@ -12244,6 +12266,7 @@ app.post('/api/translate/revert', (req, res) => {
         const { book_id, chapter, verse } = req.body;
         if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book_id, chapter, verse required' });
         const r = translationDb.stmts.revertVerse.run(book_id, chapter, verse);
+        if (r.changes) translationDb.bumpWriteVersion();
         if (!r.changes) return res.status(404).json({ error: 'no original snapshot to revert to' });
         const saved = translationDb.stmts.getVerse.get(book_id, chapter, verse);
         res.json({ ok: true, text: saved.text });
