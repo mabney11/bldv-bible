@@ -18,6 +18,33 @@ set -e
 cd "$(dirname "$0")"
 BRANCH="$(git branch --show-current)"
 
+# Single-instance lock: this script is triggered from TWO independent places
+# on the box (the 5-minute cron backstop and lexicon-pull-watch.sh's poll)
+# plus lexicon-watch.sh locally — two invocations CAN legitimately land at
+# the same moment right after a push, and two `git pull --rebase` calls
+# racing to update the same refs/remotes/origin/* ref step on each other
+# ("error: cannot lock ref ..."). studio-sync.sh already solved this exact
+# problem for itself; ported here 2026-09-16 after it happened for real (a
+# restarted lexicon-watch.sh and the box's cron backstop fired in the same
+# window). Age-based (not pid-based) so it behaves the same on Windows/
+# Git-Bash and on the box — see studio-sync.sh's own lock for the original.
+STATE=server/.lexicon-watch
+mkdir -p "$STATE"
+LOCKDIR="$STATE/.sync-lock"
+if ! mkdir "$LOCKDIR" 2>/dev/null; then
+  LOCK_MTIME="$(stat -c %Y "$LOCKDIR" 2>/dev/null || true)"
+  NOW="$(date +%s)"
+  if [ -n "$LOCK_MTIME" ] && [ $((NOW - LOCK_MTIME)) -gt 600 ]; then
+    echo "$(date -u '+%F %T') lock is stale (>10min old — a previous run likely crashed) — clearing and taking it"
+    rm -rf "$LOCKDIR"
+    mkdir "$LOCKDIR" 2>/dev/null || { echo "$(date -u '+%F %T') lost the race for the lock — exiting"; exit 0; }
+  else
+    echo "$(date -u '+%F %T') another lexicon-sync.sh is already running — exiting"
+    exit 0
+  fi
+fi
+trap 'rm -rf "$LOCKDIR"' EXIT
+
 git add -A server/lexicon
 if ! git diff --cached --quiet; then
   CHANGED_FILES="$(git diff --cached --name-only -- server/lexicon)"
