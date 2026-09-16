@@ -56,9 +56,17 @@ while true; do
     if [ "$REMOTE_SHA" != "$PREV" ]; then
       LOG "origin/$BRANCH moved ($PREV -> $REMOTE_SHA) — syncing"
       if ./lexicon-sync.sh; then
+        if [ -f "$STATE/.failing" ]; then
+          rm -f "$STATE/.failing"
+          ./notify.sh "lexicon sync: recovered" "$(hostname) is pulling server/lexicon again." default
+        fi
         echo "$REMOTE_SHA" > "$STAMP_FILE"
       else
         LOG "lexicon-sync.sh failed — will retry next poll (not recording the new sha)"
+        if [ ! -f "$STATE/.failing" ]; then
+          touch "$STATE/.failing"
+          ./notify.sh "lexicon sync: failing" "lexicon-sync.sh is failing on $(hostname) — see lexicon-sync.log." high warning
+        fi
       fi
     fi
   else

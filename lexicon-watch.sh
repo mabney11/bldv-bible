@@ -43,9 +43,17 @@ while true; do
     if [ -n "$PREV" ] && [ "$HASH" = "$PREV" ]; then
       LOG "server/lexicon changed and settled — syncing"
       if ./lexicon-sync.sh; then
+        if [ -f "$STATE/.failing" ]; then
+          rm -f "$STATE/.failing"
+          ./notify.sh "lexicon sync: recovered" "$(hostname) is syncing server/lexicon again." default
+        fi
         rm -f "$STAMP_FILE"
       else
         LOG "lexicon-sync.sh failed — will retry next poll"
+        if [ ! -f "$STATE/.failing" ]; then
+          touch "$STATE/.failing"
+          ./notify.sh "lexicon sync: failing" "lexicon-sync.sh is failing on $(hostname) — see lexicon-sync.log." high warning
+        fi
       fi
     else
       echo "$HASH" > "$STAMP_FILE"

@@ -54,23 +54,34 @@ check_mtime() {
 
 LOG "studio-sync-watch starting — polling $HOST every ${POLL_INTERVAL}s"
 FAILS=0
+SYNC_FAILING=0
 while true; do
     MTIME="$(check_mtime)"
     if [ -z "$MTIME" ]; then
         FAILS=$((FAILS + 1))
         # Don't spam the log every 15s while the box/network is briefly down —
         # once immediately, then only every ~5 minutes until it recovers.
-        if [ "$FAILS" -eq 1 ] || [ $((FAILS % 20)) -eq 0 ]; then
+        if [ "$FAILS" -eq 1 ]; then
+            LOG "can't reach $HOST (attempt $FAILS) — will keep retrying"
+            ./notify.sh "studio sync: can't reach $HOST" "$(hostname) has lost the connection to $HOST." high warning
+        elif [ $((FAILS % 20)) -eq 0 ]; then
             LOG "can't reach $HOST (attempt $FAILS) — will keep retrying"
         fi
         sleep "$POLL_INTERVAL"
         continue
+    fi
+    if [ "$FAILS" -gt 0 ]; then
+        ./notify.sh "studio sync: reconnected" "$HOST is reachable again from $(hostname) after $FAILS failed attempt(s)." default
     fi
     FAILS=0
     LAST="$(cat "$STAMP_FILE" 2>/dev/null || echo '')"
     if [ "$MTIME" != "$LAST" ]; then
         LOG "translation.db changed on prod (${LAST:-none} -> $MTIME) — syncing"
         if ./studio-sync.sh; then
+            if [ "$SYNC_FAILING" -eq 1 ]; then
+                SYNC_FAILING=0
+                ./notify.sh "studio sync: recovered" "studio-sync.sh is succeeding again on $(hostname)." default
+            fi
             # Re-stat AFTER the sync: step 3b of studio-sync.sh just wrote to
             # prod's translation.db too (applying the merged result there), so
             # the baseline has to be the POST-sync mtime — using the mtime that
@@ -80,6 +91,10 @@ while true; do
             [ -n "$NEW" ] && echo "$NEW" > "$STAMP_FILE"
         else
             LOG "studio-sync.sh failed — will retry next poll without advancing the baseline"
+            if [ "$SYNC_FAILING" -eq 0 ]; then
+                SYNC_FAILING=1
+                ./notify.sh "studio sync: failing" "studio-sync.sh is failing on $(hostname) — see studio-sync.log." high warning
+            fi
         fi
     fi
     sleep "$POLL_INTERVAL"

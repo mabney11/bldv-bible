@@ -37,11 +37,17 @@ fi
 
 if ! git pull --rebase -q origin "$BRANCH"; then
   git rebase --abort 2>/dev/null || true
-  echo "$(date -u '+%F %T') CONFLICT: a lexicon file was changed here and elsewhere — resolve in $(pwd) (git status), then rerun" >&2
+  MSG="a lexicon file was changed here and elsewhere — resolve in $(pwd) (git status) on $(hostname), then rerun"
+  echo "$(date -u '+%F %T') CONFLICT: $MSG" >&2
+  ./notify.sh "lexicon-sync: stuck" "$MSG" high warning
   exit 1
 fi
 
 if [ -n "$(git log "origin/$BRANCH..$BRANCH" --oneline)" ]; then
-  git push -q origin "$BRANCH"
+  if ! git push -q origin "$BRANCH"; then
+    echo "$(date -u '+%F %T') PUSH FAILED" >&2
+    ./notify.sh "lexicon-sync: push failed" "git push to origin/$BRANCH failed on $(hostname) — local lexicon commits aren't reaching the other side." high warning
+    exit 1
+  fi
   echo "$(date -u '+%F %T') pushed"
 fi
