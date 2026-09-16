@@ -25,6 +25,7 @@
 set -o pipefail
 cd "$(dirname "$0")"
 POLL_INTERVAL="${PALEO_LEXWATCH_INTERVAL:-15}"   # seconds between checks
+BRANCH="$(git branch --show-current)"
 STATE=server/.lexicon-watch
 STAMP_FILE="$STATE/.last-dirty-hash"
 mkdir -p "$STATE"
@@ -37,7 +38,35 @@ dirty_hash() {
 
 LOG "lexicon-watch starting — polling every ${POLL_INTERVAL}s"
 while true; do
-  if git status --porcelain -- server/lexicon | grep -q .; then
+  # 2026-09-16: a commit that lands WITHOUT going through this script's own
+  # dirty-then-settled path below (fieldy or an agent running `git commit`
+  # directly, rather than editing server/lexicon and letting this script
+  # commit it) leaves the tree clean but the commit unpushed — and a clean
+  # tree used to mean this loop did nothing at all, so it could sit stranded
+  # forever with no trigger left to notice it. Found tonight: several real
+  # commits (a lexicon fix, the notify.sh wiring, a word-map regen) sat
+  # "ahead 5" of origin for ~40 minutes after being committed directly,
+  # because nothing ever went dirty-then-settled to wake this loop up.
+  # AHEAD is unscoped (not `-- server/lexicon`) to match lexicon-sync.sh's
+  # own push step, which pushes the whole branch once triggered, not just
+  # lexicon commits — so this check is "is there ANYTHING unpushed", same
+  # question lexicon-sync.sh itself is about to answer.
+  AHEAD="$(git log "origin/$BRANCH..HEAD" --oneline 2>/dev/null)"
+  if [ -z "$(git status --porcelain -- server/lexicon)" ] && [ -n "$AHEAD" ]; then
+    LOG "commits already made but not yet pushed — syncing"
+    if ./lexicon-sync.sh; then
+      if [ -f "$STATE/.failing" ]; then
+        rm -f "$STATE/.failing"
+        ./notify.sh "lexicon sync: recovered" "$(hostname) is syncing server/lexicon again." default
+      fi
+    else
+      LOG "lexicon-sync.sh failed — will retry next poll"
+      if [ ! -f "$STATE/.failing" ]; then
+        touch "$STATE/.failing"
+        ./notify.sh "lexicon sync: failing" "lexicon-sync.sh is failing on $(hostname) — see lexicon-sync.log." high warning
+      fi
+    fi
+  elif git status --porcelain -- server/lexicon | grep -q .; then
     HASH="$(dirty_hash)"
     PREV="$(cat "$STAMP_FILE" 2>/dev/null || echo '')"
     if [ -n "$PREV" ] && [ "$HASH" = "$PREV" ]; then
