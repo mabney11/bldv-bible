@@ -6,7 +6,8 @@
 # check, so it only ever sends traffic to whichever one is actually healthy —
 # no Caddy reload needed on every deploy, and no window where neither is up.
 #
-# This script builds the new image, starts it on the currently-idle port,
+# This script pulls the latest built image (from GHCR, via GitHub Actions —
+# see .github/workflows/build.yml), starts it on the currently-idle port,
 # and waits for ITS OWN /health to pass before touching the old container at
 # all. If the new one never becomes healthy (bad code, bad data, whatever),
 # the old container is never stopped — you get a failed deploy, not an
@@ -19,8 +20,34 @@ cd ~/paleo-studio
 echo "==> Pulling latest code..."
 git pull
 
-echo "==> Building image..."
-docker build -t paleo-studio .
+echo "==> Pulling built image from GHCR..."
+# 2026-09-16: this used to be `docker build -t paleo-studio .` run right here
+# on the box, sharing it with $OLD while $OLD was still serving live
+# traffic. That caused two separate outages in one evening — first a memory
+# cap (--memory/--memory-swap below on the data gates was the fix for that
+# one), then a second outage from the SAME build's disk I/O (a plain COPY
+# step) contending with $OLD's own SQLite reads against corpus.db /
+# concordance.db, which no memory or CPU flag can fix. The actual problem
+# was building on this box at all: it's a 2 vCPU / 1.9GB instance with no
+# slack for a second workload, whatever resource that workload happens to
+# lean on.
+#
+# The image is now built by .github/workflows/build.yml on GitHub's own
+# runner (triggered on every push to main) and pushed to
+# ghcr.io/mabney11/paleo-studio. This box only pulls the already-built
+# layers — sequential downloads, nothing compiles here, nothing diffs a
+# filesystem here — so there's nothing left on THIS box for a deploy to
+# starve. `git pull` above still matters for entrypoint.sh, this script
+# itself, and the bind-mounted server/lexicon/ (see the lexicon bind-mount
+# note further down); it's just the multi-stage Docker BUILD that moved off
+# this box.
+#
+# One-time setup this needed, done outside this script: `docker login
+# ghcr.io` on this box with a GitHub personal access token that has
+# read:packages scope (GHCR pulls need auth even for your own package
+# unless you make it public).
+docker pull ghcr.io/mabney11/paleo-studio:latest
+docker tag ghcr.io/mabney11/paleo-studio:latest paleo-studio
 
 # ── DATA GATES — run against the LIVE volume, before touching anything ──────
 # corpus.db / translation.db / bible.db are NOT baked into the image (see
@@ -49,9 +76,14 @@ docker build -t paleo-studio .
 # PALEO_DATA_DIR: adjust if the volume isn't mounted at /mnt/paleo-data on
 # this host — same path the `-v` flag below binds into the container as /data.
 PALEO_DATA_DIR="${PALEO_DATA_DIR:-/mnt/paleo-data}"
+# Same --memory/--cpu-quota caps as the docker build above, and for the
+# same reason: these gates all run against the live volume while $OLD is
+# still serving traffic, so none of them should be able to starve it
+# either. (The commented-out fix-name-forms.mjs example a few lines down
+# is left uncapped since it is not something this script ever runs.)
 echo "==> Verifying data on $PALEO_DATA_DIR (inside the freshly built image)..."
-docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-versification.mjs /data/corpus.db
-docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-verse-completeness.mjs /data/corpus.db /data/translation.db
+docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-versification.mjs /data/corpus.db
+docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-verse-completeness.mjs /data/corpus.db /data/translation.db
 
 # 2026-09-09: prod rendered "Adam (Edom)" in Ezekiel 25 while the corpus on
 # fieldy's machine said "Adawam (Edom)" everywhere — the volume's corpus.db was
@@ -60,7 +92,7 @@ docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-verse-comple
 # (Edom is ALWAYS Adawam) and fails the deploy on any mismatch.
 # The READER's text is translation.db, so both DBs are checked. On a failure:
 #   docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db
-docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db
+docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db
 
 # 2026-08-18: fieldy compared bldbible.com/parallel's Deuteronomy 13:3 against an
 # external interlinear and found misaligned Hebrew — "I thought that's what the
@@ -78,8 +110,8 @@ docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-name-forms.m
 # exact word shown in the Parallel/Reader views, which is the specific class of
 # drift the Deuteronomy 13:3 comparison surfaced. See both scripts' headers for
 # what they do and don't check.
-docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-no-eliding.js /data/surface-index.db
-docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-parallel-alignment.mjs /data/surface-index.db
+docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-no-eliding.js /data/surface-index.db
+docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-parallel-alignment.mjs /data/surface-index.db
 
 # 2026-08-20: fieldy, after the BHS-authoritative versification note shipped:
 # "I want my app to line up with what everyone will line up with in their
@@ -93,7 +125,7 @@ docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-parallel-ali
 # that resolution is internally consistent (gap-free, non-duplicated, full
 # BHS coverage) for every affected book before traffic swaps — see its header
 # for exactly what it does and doesn't check.
-docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-english-versification.mjs /data/corpus.db
+docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-english-versification.mjs /data/corpus.db
 
 # Figure out what's currently live. Handles the one-time migration from the
 # old single-container ("paleo") setup too — treat it as if it were paleo-a.
