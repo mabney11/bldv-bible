@@ -7622,6 +7622,16 @@ function _buildAggregateCoverageTree() {
 // background — that's fine, eventually consistent on the next request after
 // each finishes, and matches "less important for the %s to be accurate in
 // real time" exactly.
+// A sub-language cache (Hebrew or one of the generic four) can still be
+// mid-rebuild at the exact moment _buildAggregateCoverageTree() reads it --
+// it hands back its OWN stale tree without blocking (that's the whole point
+// of stale-while-revalidate elsewhere in this file). True while ANY of them
+// did that during the most recent build, i.e. the aggregate result we just
+// produced is a blend that includes at least one not-yet-caught-up source.
+function _aggregateStillSettling() {
+    return _glossCoverageRecomputing || GS_LANG_LIST.some(l => l.kind !== 'heb' && _genericRecomputing.has(l.kind));
+}
+
 function computeAggregateCoverage() {
     const stamp = _aggregateStampKey();
     if (_aggregateCoverageCache) {
@@ -7629,7 +7639,25 @@ function computeAggregateCoverage() {
             _aggregateRecomputing = true;
             setImmediate(() => {
                 try {
-                    _aggregateCoverageCache = { stamp, tree: _buildAggregateCoverageTree() };
+                    const tree = _buildAggregateCoverageTree();
+                    // Only cache this as AUTHORITATIVE for `stamp` once nothing
+                    // underneath was still recomputing when we built it. Caching
+                    // it under the real stamp regardless is what caused Gen 1:14
+                    // to freeze at "88/136 (64.7%)" even after every one of its
+                    // 5 languages individually settled at 100% and two more
+                    // lexicon edits landed: the FIRST rebuild after an edit often
+                    // races a sub-cache that's still catching up, bakes in that
+                    // half-updated blend, then stamps it as current -- so no
+                    // later request ever rebuilds it again, since `stamp` itself
+                    // doesn't change until the NEXT edit. fieldy, 2026-09-16:
+                    // "100% for all languages but 65% for the total verse? I
+                    // refreshed a few times." Tagging it ':partial' instead
+                    // guarantees this stamp can never match a real
+                    // _aggregateStampKey() result, so the very next request
+                    // retries the build instead of freezing on a stale blend --
+                    // it converges within a request or two of the last edit
+                    // rather than needing another lexicon save to even try again.
+                    _aggregateCoverageCache = { stamp: _aggregateStillSettling() ? `${stamp}:partial` : stamp, tree };
                 } catch (e) {
                     console.error('[gloss-studio] background aggregate coverage rebuild failed:', e);
                 } finally {
@@ -7639,7 +7667,10 @@ function computeAggregateCoverage() {
         }
         return _aggregateCoverageCache.tree;
     }
-    _aggregateCoverageCache = { stamp, tree: _buildAggregateCoverageTree() };
+    // First-ever call (server boot / pre-warm) can race the very same way if a
+    // sub-cache hasn't finished its own first build yet -- same guard applies.
+    const tree = _buildAggregateCoverageTree();
+    _aggregateCoverageCache = { stamp: _aggregateStillSettling() ? `${stamp}:partial` : stamp, tree };
     return _aggregateCoverageCache.tree;
 }
 
