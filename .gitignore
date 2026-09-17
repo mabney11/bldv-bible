@@ -81,3 +81,8 @@ server/.render-all-timings.json
 # studio-sync: the last agreed snapshot of the Translation Studio rows (studio-sync.sh); server/studio-data/ is the tracked LOG
 server/.studio-sync/
 server/.ntfy-topic
+
+# Per-box container resource-cap overrides for deploy-blue-green.sh (see its
+# comment above PALEO_DATA_DIR). Lightsail's numbers stay the script's
+# defaults; any box that needs different numbers gets its own untracked file.
+deploy-tuning.env

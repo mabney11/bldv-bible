@@ -76,6 +76,23 @@ docker tag ghcr.io/mabney11/paleo-studio:latest paleo-studio
 # PALEO_DATA_DIR: adjust if the volume isn't mounted at /mnt/paleo-data on
 # this host — same path the `-v` flag below binds into the container as /data.
 PALEO_DATA_DIR="${PALEO_DATA_DIR:-/mnt/paleo-data}"
+
+# Container resource caps for the main app container. These were originally
+# hardcoded numbers tuned specifically for the Lightsail box's 2 vCPUs / ~2GB
+# RAM. cluster.js spawns one worker PER CPU CORE it sees, so a bigger box
+# spawns more workers automatically — cramming them into Lightsail-sized
+# memory caps causes an OOM kill-and-respawn loop (found 2026-09-17 moving to
+# a 6c/12t / 32GB OVH box: 12 workers repeatedly SIGKILLed under the old
+# 1400m/1700m boot cap). Override these in ./deploy-tuning.env (gitignored,
+# per-box) rather than editing this file — that keeps Lightsail's proven
+# numbers as the default for everyone else.
+[ -f ./deploy-tuning.env ] && source ./deploy-tuning.env
+BOOT_CPUS="${BOOT_CPUS:-1}"
+BOOT_MEM="${BOOT_MEM:-1400m}"
+BOOT_MEM_SWAP="${BOOT_MEM_SWAP:-1700m}"
+STABLE_CPUS="${STABLE_CPUS:-2}"
+STABLE_MEM="${STABLE_MEM:-1800m}"
+STABLE_MEM_SWAP="${STABLE_MEM_SWAP:-3800m}"
 # Same --memory/--cpu-quota caps as the docker build above, and for the
 # same reason: these gates all run against the live volume while $OLD is
 # still serving traffic, so none of them should be able to starve it
@@ -191,9 +208,9 @@ docker rm -f "$NEW" 2>/dev/null || true
 docker run -d \
   --name "$NEW" \
   --restart unless-stopped \
-  --cpus="1" \
-  --memory="1400m" \
-  --memory-swap="1700m" \
+  --cpus="$BOOT_CPUS" \
+  --memory="$BOOT_MEM" \
+  --memory-swap="$BOOT_MEM_SWAP" \
   -p "$NEW_PORT:3000" \
   -v /mnt/paleo-data:/data \
   -v "$(pwd)/server/lexicon:/app/server/lexicon" \
@@ -233,7 +250,7 @@ if [ "$ok" != "1" ]; then
 fi
 
 echo "==> $NEW is healthy. Restoring full CPU/memory (retiring $OLD next, no more need to share)..."
-docker update --cpus="2" --memory="1800m" --memory-swap="3800m" "$NEW" > /dev/null
+docker update --cpus="$STABLE_CPUS" --memory="$STABLE_MEM" --memory-swap="$STABLE_MEM_SWAP" "$NEW" > /dev/null
 
 echo "==> Giving Caddy a moment to start routing to it..."
 sleep 6   # >= Caddyfile's health_interval (5s), so Caddy has already marked it up
