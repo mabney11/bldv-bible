@@ -639,3 +639,41 @@ non-subsequence same-length pair, and a mid-word (not just trailing) dropped let
 **Status:** delivered to fieldy, not yet run. Pending: fieldy runs it (dry-run first),
 pastes the report back; review the proposed fixes and the "needs review" list together
 before any `--apply`.
+
+## 2026-09-17 — Prefix meanings belong in the gloss annotation too, not just the transliteration
+
+Genesis 1:15, Hebrew (extra): after filling four blank scaffold entries needed for
+Auto-Link (`WaYahayahaw`, `LaMaawarath`, `LaHaAwayar`, `WaYahayah` — see project memory
+for the full verse-by-verse Auto-Link debugging story), fieldy pointed out the
+right-of-slash English annotation on each was incomplete — it glossed only the bare
+root, dropping the grammatical prefix's own meaning even though the prefix was already
+correctly folded into the transliteration (left of the slash) as its own CamelCase
+segment:
+
+> "when the prefixes are considered in the suggestions its straight forward why they
+> should be — 'And let them be' / 'For luminaries / lights' / 'for the enlightening' /
+> 'and this came to pass' [...] if bhs is source of truth, the modifications should be
+> included in the glosses of languages that dont have detailed tokens"
+
+Fixed in `hebrew-extra-lexicon.json`:
+- `WaYahayahaw / let them be` → `WaYahayahaw / And let them be`
+- `LaMaawarath / luminaries / lights` → `LaMaawarath / For luminaries / lights`
+- `LaHaAwayar / shine` → `LaHaAwayar / for the enlightening`
+- `WaYahayah / this came to pass` → `WaYahayah / and this came to pass`
+
+**Standing rule going forward, for every non-BHS lexicon** (hebrew-extra, latin,
+syriac, geez, greek): BHS is the source of truth for a word's prefix/root
+decomposition — its own tokens carry that breakdown explicitly as `components`
+(`mod-conj` = a "Wa-"/and prefix, `mod-prep` = a "La-"/for-to prefix, `mod-art` =
+a "Ha-"/the prefix, `root` = the bare root, etc., from `/api/tokens?source=BHS`).
+Languages that DON'T have that detailed per-component token data still carry the
+same grammatical prefixes fused into their own transliteration (that's exactly what
+the CamelCase-segment convention already encodes — see `CAMEL_SEGMENT_RE` in
+Translate.jsx). So when curating or fixing one of these languages' gloss values,
+the English annotation after the slash should spell out each fused prefix's meaning
+too ("and", "for", "the", ...), not just the root's gloss — pull that meaning from
+BHS's own component breakdown for the same verse+word whenever it's ambiguous,
+since BHS is authoritative for what the prefix actually is grammatically. This
+doesn't change how Auto-Link matches (it only ever reads the transliteration, left
+of the slash) — it's purely so the curated lexicon itself reads correctly and stays
+consistent with what BHS already knows.
