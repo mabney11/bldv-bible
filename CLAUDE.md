@@ -1,5 +1,48 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Lexicon curation: NEVER invent a transliteration — always pull it from the pre-existing BHS tokens / translation (added 2026-09-17)
+
+fieldy, verbatim, correcting a Genesis 1:15 lexicon-curation session that fabricated "Hayir"
+for 𐤄𐤀𐤉𐤓 (H215, hiphil infinitive "to give light"): "using my paleo hebrew transliterations
+are required. 'Hayir' will never exist in my corpus... The only options we have for other
+languages -- choose a full pre-existing transliteration from the pre-existing BHS tokens and
+translation, make the rest of the lexicons conform around this translation and tokens." He
+also separately confirmed "Hayu" (guessed for 𐤄𐤉𐤅 the same session, by analogy off the
+existing "Hayah / let it be" entry for singular 𐤉𐤄𐤉) was likewise wrong — his own finished
+Genesis 1:15 English already spells this word "WaYahayahaw", so the bare word is
+"Yahayahaw", not a fresh guess. Both got corrected to match what his own translation already
+uses: 𐤄𐤀𐤉𐤓 → "Awayar / shine", 𐤄𐤉𐤅 → "Yahayahaw / let them be".
+
+**Rule for the standing verse-by-verse lexicon-curation project (see project memory's
+lexicon-verse-by-verse note): when a Hebrew word in the verse being curated has no lexicon
+entry yet, do NOT derive its transliteration from the paleo letters by pattern/analogy.**
+Get the real one first, in this order:
+1. Check whether Translation Studio's saved text for that verse (`translation.db`,
+   `translations.text` — even an in-progress draft, not only `status='done'`) already spells
+   this word out. If it does, copy that EXACT spelling, verbatim — do not "clean it up" or
+   normalize its casing.
+2. If not there, grep/jq the lexicon JSONs for another occurrence of the SAME Strong's number
+   or root elsewhere in the corpus and reuse that spelling.
+3. If genuinely nothing exists anywhere yet, that word is not safe to curate unsupervised —
+   flag it to fieldy and ask, rather than fabricate a spelling. A made-up transliteration is
+   worse than leaving the lexicon stub empty: it silently defeats Auto-Link (see "Non-Hebrew
+   lexicon entries must embed the Hebrew-root translit" below) with a string that will never
+   appear anywhere else in the corpus, and it plants a spelling fieldy never chose into files
+   that auto-commit/auto-push (see the section directly below this one).
+
+**For the other four languages (Greek/Latin/Ge'ez/Syriac):** the cognate translit embedded in
+each of THEIR lexicon entries must be copied from that same already-established Hebrew
+transliteration (step 1/2 above), never independently re-derived. The whole point of the
+Auto-Link convention is that all five languages converge on ONE spelling per underlying
+Hebrew word — five independent guesses defeats it even if each guess is individually
+plausible-looking.
+
+**Also: Translation Studio's saved wording (English) is fieldy's, not an agent's, to draft.**
+If a verse already has translated text there — even in-progress — an agent's job in this
+project is curating the LEXICON entries to conform to it, never proposing alternate English
+phrasing for it "to review." Only propose English wording when a verse has no translation at
+all yet and fieldy actually asks for a draft.
+
 ## Local lexicon edits now auto-commit and auto-push — `lexicon-watch.sh` (added 2026-09-15)
 
 fieldy, after a Gen 1:8 lexicon-fill session sat uncommitted and had to be manually pushed:
