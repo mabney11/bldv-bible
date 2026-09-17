@@ -1002,7 +1002,15 @@
    exactly the clash this whole fix is for. The depth-1 box's background
    already covers the full rendered height behind any nested children, so
    painting only it gives full, single-layer coverage either way. */
-.rd-verse.marked .rd-quote-d1 {
+/* rd-quote-marked (Reader.jsx: quoteNodeMarked/sliceQuoteTree's `marked`
+   field) paints the SAME highlight on every per-verse slice of a quote that
+   spans multiple verses, whenever ANY of those verses is marked — a tap or a
+   `?verse=` deep link only lights one verse, but the quote it belongs to may
+   run past that verse's own boundary (Genesis 1:14-15). Without this, only
+   the marked verse's own slice got the fill and the continuation read as a
+   second, separate, unhighlighted quote. */
+.rd-verse.marked .rd-quote-d1,
+.rd-quote-d1.rd-quote-marked {
   background: var(--pr-mark);
   border-radius: 2px;
 }

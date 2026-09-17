@@ -587,7 +587,7 @@ export function parseQuoteMarks(raw, boundaries, verseBounds) {
 // full chapter context) always carries over, so the indent step — and the
 // unclosed warning border — stays consistent across every verse a quote
 // touches, even though each verse gets its own separate <span>.
-export function sliceQuoteTree(nodes, start, end) {
+export function sliceQuoteTree(nodes, start, end, markedOf) {
   const out = [];
   for (const n of nodes) {
     if (n.end <= start || n.start >= end) continue; // no overlap with this slice
@@ -596,7 +596,7 @@ export function sliceQuoteTree(nodes, start, end) {
       if (e > s) out.push({ type: 'text', text: n.text.slice(s - n.start, e - n.start) });
       continue;
     }
-    const children = sliceQuoteTree(n.children, start, end);
+    const children = sliceQuoteTree(n.children, start, end, markedOf);
     const keepOpen  = n.start >= start && n.start < end;
     const keepClose = !!n.markClose && n.end > start && n.end <= end;
     out.push({
@@ -604,6 +604,16 @@ export function sliceQuoteTree(nodes, start, end) {
       depth: n.depth,
       style: n.style,
       unclosed: n.unclosed,
+      // A verse-level highlight (tap-to-mark, or a `?verse=` deep link) is
+      // scoped to the ONE verse it landed on, but a quote can run past that
+      // verse's own boundary (see the verseBounds comment above) — Genesis
+      // 1:14-15, fieldy: marking v14 painted only v14's own slice of the
+      // shared <...> quote, leaving v15's continuation unpainted and reading
+      // as two separate quotes instead of one. `markedOf(n)` — keyed off the
+      // ORIGINAL, unsliced node (see Reader.jsx's quoteNodeMarked) — answers
+      // "is ANY verse this whole quote touches currently marked", so every
+      // per-verse slice of the same quote paints together or not at all.
+      marked: markedOf ? !!markedOf(n) : false,
       markOpen: keepOpen ? n.markOpen : '',
       markClose: keepClose ? n.markClose : '',
       children,
@@ -725,7 +735,8 @@ export function renderQuoteTree(nodes, mode, keyPrefix) {
     // borders line up into one unbroken line (see Reader.css).
     const cls = ['rd-quote', 'rd-quote-block', `rd-quote-d${Math.min(n.depth, 4)}`,
                  n.markOpen ? '' : 'rd-quote-cont-start',
-                 n.markClose ? '' : 'rd-quote-cont-end']
+                 n.markClose ? '' : 'rd-quote-cont-end',
+                 n.marked ? 'rd-quote-marked' : '']
       .filter(Boolean).join(' ');
     out.push(
       <span className={cls} key={`${keyPrefix}q${i}`}>
@@ -1834,6 +1845,31 @@ export default function Reader() {
     return { tree: dissolveOverlongQuotes(parseQuoteMarks(acc, boundaries, { starts: verseStarts, ends: verseEnds })), ranges };
   }, [isForeignScript, bookText, chapter, renderVerseNums, versesByNum]);
 
+  // Every top-level quote node that touches a marked verse, mapped to true —
+  // built off bookQuoteScan's own tree/ranges (never re-parses anything) so
+  // the highlight .rd-verse.marked .rd-quote-d1 paints (Reader.css) can be
+  // applied, via sliceQuoteTree's `marked` field, to every per-verse SLICE of
+  // that SAME quote — not just the one verse that happened to get tapped or
+  // land here via a `?verse=` deep link (Genesis 1:14-15, fieldy: marking
+  // v14 left v15's continuation of their shared quote unpainted, reading as
+  // two separate quotes). Keyed by node identity (a WeakMap) rather than
+  // position, since sliceQuoteTree's own output nodes are copies.
+  const quoteNodeMarked = useMemo(() => {
+    const map = new WeakMap();
+    if (!bookQuoteScan) return map;
+    const verseRanges = Object.entries(bookQuoteScan.ranges);
+    const walk = (nodes) => {
+      nodes.forEach(n => {
+        if (n.type !== 'quote') return;
+        const anyMarked = verseRanges.some(([v, r]) => n.start < r.end && n.end > r.start && marks.has(markKey(Number(v))));
+        map.set(n, anyMarked);
+        walk(n.children);
+      });
+    };
+    walk(bookQuoteScan.tree);
+    return map;
+  }, [bookQuoteScan, marks]);
+
   // Verse 0 is a superscription/title ("A Psalm of David"), not verse 1 — see
   // the headings note below. It used to fall through the ordinary per-verse
   // loop and render glued directly onto verse 1 ("0 · 1 In the beginning…"),
@@ -2101,16 +2137,17 @@ export default function Reader() {
                         const range = bookQuoteScan?.ranges[vnum];
                         const q = splitScriptureQuote(raw);
                         if (!range) return renderVerseNodesWithQuotes(raw, glossMode); // defensive fallback
+                        const quoteMarkedOf = (n) => quoteNodeMarked.get(n);
                         if (!q) {
-                          const sliced = sliceQuoteTree(bookQuoteScan.tree, range.start, range.end);
+                          const sliced = sliceQuoteTree(bookQuoteScan.tree, range.start, range.end, quoteMarkedOf);
                           return renderQuoteTree(sliced, glossMode, `v${vnum}-`);
                         }
                         const beforeEnd = range.start + (range.embedded?.beforeLen || 0);
                         const before = q.before
-                          ? renderQuoteTree(sliceQuoteTree(bookQuoteScan.tree, range.start, beforeEnd), glossMode, `v${vnum}b-`)
+                          ? renderQuoteTree(sliceQuoteTree(bookQuoteScan.tree, range.start, beforeEnd, quoteMarkedOf), glossMode, `v${vnum}b-`)
                           : null;
                         const after = q.after
-                          ? renderQuoteTree(sliceQuoteTree(bookQuoteScan.tree, beforeEnd + 1, range.end), glossMode, `v${vnum}a-`)
+                          ? renderQuoteTree(sliceQuoteTree(bookQuoteScan.tree, beforeEnd + 1, range.end, quoteMarkedOf), glossMode, `v${vnum}a-`)
                           : null;
                         // A hand-curated citation wins; otherwise the verse's
                         // strongest quote-kind precept (confirmed first) names
