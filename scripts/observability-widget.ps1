@@ -207,8 +207,18 @@ $CatchUpButton.Add_MouseLeftButtonDown({
 })
 
 # ── System tray icon ────────────────────────────────────────────────────
+# Same crowned-lion mark as the web app's own favicon (favicon.svg, rasterized
+# to scripts/paleo-studio.ico at build time -- .NET's Icon type can't load an
+# SVG directly) -- fieldy, 2026-09-18: "can we give my system tray icon the
+# same icon my my web app." Falls back to the generic system icon if the .ico
+# is ever missing (e.g. an old checkout mid-update) rather than erroring out.
 $notifyIcon = New-Object System.Windows.Forms.NotifyIcon
-$notifyIcon.Icon = [System.Drawing.SystemIcons]::Application
+$IconPath = Join-Path $RepoRoot 'scripts\paleo-studio.ico'
+if (Test-Path $IconPath) {
+    $notifyIcon.Icon = New-Object System.Drawing.Icon($IconPath)
+} else {
+    $notifyIcon.Icon = [System.Drawing.SystemIcons]::Application
+}
 $notifyIcon.Text = "Paleo Studio observability"
 $notifyIcon.Visible = $true
 
