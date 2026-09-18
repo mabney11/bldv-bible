@@ -43,6 +43,33 @@ project is curating the LEXICON entries to conform to it, never proposing altern
 phrasing for it "to review." Only propose English wording when a verse has no translation at
 all yet and fieldy actually asks for a draft.
 
+**2026-09-17 follow-up — casing convention, and "attempt it even if imperfect."** A first
+pass at this rule copied "Yahayahaw" (single capital, at the start only) into new lexicon
+entries for 𐤄𐤉𐤅, matching the literal current spelling of Genesis 1:15's own translation
+text. fieldy's correction: **internal capitalization marks morpheme boundaries, and that's
+the preferred house style** — "Yahayah sounds like one word, YaHayah looks like multiple
+words coming together and that's what I prefer." This matches the multi-cap style already
+used elsewhere in the corpus for the exact same root (Genesis 1:7/1:12/1:13's "WaYaHayah",
+vs. 1:11's "WaYahayah" / 1:8-9's "WaHayah" — three different existing spellings for one
+root, evidence the corpus was never fully consistent here even before any agent touched it).
+So when copying a transliteration from the existing translation/BHS tokens (the rule above),
+don't just copy the FIRST or MOST RECENT spelling byte-for-byte if the corpus already shows
+multiple variants for the same root — prefer whichever variant carries capital letters at
+real morpheme boundaries (prefix / root / suffix), since that's fieldy's stated preference,
+and apply it consistently to every lexicon entry (all 5 languages) built around that root.
+
+fieldy, in the same message: **"I don't mind inconsistency... I can easily edit a lexicon
+file to correct them. What I don't want is a lack of an attempt when a clear target
+exists."** Concretely: don't skip curating/correcting a shared root just because it also
+appears in other, already-"done" verses — a small, well-evidenced casing fix (adding a
+capital letter to an existing transliteration prefix, leaving the gloss text alone) is low-
+risk and worth doing across every occurrence in the verse being worked, even the ones
+belonging to an older, differently-cased entry (this session also fixed 𐤉𐤄𐤉's "Hayah / let
+it be" → "YaHayah / let it be" this same way, plus its Greek/Latin/Ge'ez/Syriac siblings for
+Genesis 1:15, even though 𐤉𐤄𐤉 is shared with roughly ten other already-completed verses).
+An imperfect-but-attempted fix, flagged clearly, beats silently leaving a known-bad spelling
+in place because "it's used elsewhere too."
+
 ## Local lexicon edits now auto-commit and auto-push — `lexicon-watch.sh` (added 2026-09-15)
 
 fieldy, after a Gen 1:8 lexicon-fill session sat uncommitted and had to be manually pushed:
