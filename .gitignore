@@ -82,6 +82,15 @@ server/.render-all-timings.json
 server/.studio-sync/
 server/.ntfy-topic
 
+# observability widget: per-machine polled status.json (git drift, lexicon/
+# studio sync health, prod reachability/health, site uptime) - transient,
+# regenerated every ~20s by scripts/observability-status.mjs
+server/.observability/
+
+# lexicon/studio watchers' own local state (pid files, .failing markers) -
+# transient, per-machine, never meant to be shared via git
+server/.lexicon-watch/
+
 # Per-box container resource-cap overrides for deploy-blue-green.sh (see its
 # comment above PALEO_DATA_DIR). Lightsail's numbers stay the script's
 # defaults; any box that needs different numbers gets its own untracked file.

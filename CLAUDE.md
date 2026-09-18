@@ -1,5 +1,77 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Desktop observability widget (added 2026-09-18)
+
+fieldy, 2026-09-18, after a lexicon-sync stall sat unnoticed for hours — first a
+stale `.git/index.lock` (my own diagnostic `git status`/`git fetch` calls from
+the device-bridge sandbox created it and couldn't clean it up), then separately
+my own uncommitted edits to `studio-sync.sh`/`studio-sync-watch.sh`/`CLAUDE.md`/
+`DEPLOY-LIGHTSAIL.md` blocking `lexicon-sync.sh`'s `git pull --rebase` step —
+and a near-identical silent stall on 2026-09-16 (a day and a half, per
+`notify.sh`'s own header comment): "the observability of my app needs to be
+improved" — wants a way to SEE the moment local/prod come out of sync or back
+into sync, general app "upness", and safe auto-resolution where possible.
+
+**What it is**: two Windows Scheduled Tasks (registered together by
+`scripts/setup-observability-task.ps1`, run as Administrator):
+- `bldbible observability collector` — hidden, runs
+  `scripts/observability-status.mjs` forever via the same hidden-VBS pattern
+  as the lexicon/studio watchers (`observability-collector-hidden.vbs`). Polls
+  every ~20s: local git ahead/behind `origin/main`, the `lexicon-watch`/
+  `studio-sync` `.failing` marker files, `bldbible.com/health` (reachability +
+  latency + uptime, from `server/production.js`'s existing public `/health`
+  route — no ssh needed for this part), and via `ssh paleo-prod`: the box's own
+  git HEAD vs `origin/main`, running docker containers, and whether
+  `lexicon-pull-watch.sh`'s pid is still alive. Writes the whole picture to
+  `server/.observability/status.json` (write-then-rename, so the widget never
+  reads a half-written file; directory is gitignored, per-machine only).
+- `bldbible observability widget` — visible (that's the point): a small
+  always-on-top WPF window (`scripts/observability-widget.ps1`, top-right of
+  the screen) that polls `status.json` every 5s and color-codes each line
+  (green = fine, orange = drift/failure, gray = no data yet). Its own
+  PowerShell console is hidden; the WPF window itself is not a console and
+  stays visible — separate from the collector so a widget crash/close never
+  stops the underlying polling+auto-resolve.
+
+**Auto-resolve — deliberately narrow, fieldy's own choice (asked directly,
+picked "retry safe, idempotent operations" over the wider "auto-restart the
+app" option)**: the collector auto-removes a `.git/index.lock` once it's
+>2 minutes old (well past anything a real git process would legitimately hold
+it for) — the exact failure that jammed things for the first stretch of the
+2026-09-18 incident. Deliberately NOT auto-fixed, surfaced in the widget
+instead:
+- `lexicon-watch.sh`/`studio-sync-watch.sh` already retry every ~15s on their
+  own poll loop regardless of `.failing` — that flag is a notify.sh status
+  signal, not a gate blocking retries, so there's no "stuck and not retrying"
+  state to kick them out of.
+- Uncommitted local file changes blocking `git pull --rebase` (the SECOND,
+  bigger cause of the 2026-09-18 stall) are NOT auto-committed — deciding what
+  an unknown local change should become is fieldy's call, not a safe/
+  idempotent operation. `git add`+commit is still Claude's job when Claude is
+  the one who left files uncommitted (see the existing "he pushes" workflow
+  rule elsewhere in this file) — just not something the widget does blindly.
+
+**Setup** (one-time, on fieldy's machine): `Register-ScheduledTask` needs an
+elevated PowerShell —
+```
+powershell -ExecutionPolicy Bypass -File scripts\setup-observability-task.ps1
+```
+— then either log off/on or `Start-ScheduledTask` both tasks by name (the
+script prints the exact commands). Safe to re-run any time.
+
+**Gotcha for future Claude sessions**: `PALEO_PROD_HOST`/`PALEO_PROD_REPO` env
+vars work the same as in `studio-sync.sh` (default `paleo-prod` /
+`/root/paleo-studio`). The `ssh`/`docker`/`git` calls to prod run through
+`node`'s `child_process.execFile` directly (array-of-args, no local shell
+involved) specifically so the `sudo -n bash -c '...'` remote-command strings
+never need double-escaping — don't "simplify" this into a shell string without
+re-testing the quoting. The collector cannot be smoke-tested end-to-end from
+the device-bridge sandbox: `bldbible.com` and the `paleo-prod` SSH alias both
+only resolve from fieldy's actual machine (confirmed working there
+2026-09-18), so those two checks showed "unreachable" in-sandbox purely from
+network/DNS scoping, not a bug — don't re-diagnose that as a real problem
+without first confirming it fails on fieldy's own machine too.
+
 ## Moved off AWS Lightsail to OVH (added 2026-09-17)
 
 fieldy moved production off the Lightsail box to a new OVH box — confirmed from
