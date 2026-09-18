@@ -242,7 +242,7 @@ five minutes:
 schtasks /create /f /sc minute /mo 5 /tn "bldbible studio sync" /tr "\"C:\Program Files\Git\bin\bash.exe\" -lc \"~/dev/projects/the-scriptures-app/paleo-studio/studio-sync.sh >> ~/studio-sync.log 2>&1\""
 ```
 
-It needs `ssh paleo-lightsail` to work from that shell (it does already, for
+It needs `ssh paleo-prod` to work from that shell (it does already, for
 the start-up pull) and `server/studio-sync.mjs` present in the box's checkout
 (the lexicon cron's `git pull` brings it). `node server/studio-sync.mjs status`
 says how your database differs from the last sync; `restore --dry` only prints.

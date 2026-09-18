@@ -1,5 +1,124 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Moved off AWS Lightsail to OVH (added 2026-09-17)
+
+fieldy moved production off the Lightsail box to a new OVH box — confirmed from
+`deploy-blue-green.sh`'s own tuning comment (2026-09-17): "found 2026-09-17 moving to a
+6c/12t / 32GB OVH box: 12 workers repeatedly SIGKILLed under the old 1400m/1700m boot cap."
+A `deploy-tuning.env` (gitignored, per-box) override was already added there for the new
+box's bigger CPU/RAM specs — this section is about everything ELSE in this file and
+DEPLOY-LIGHTSAIL.md that still assumes Lightsail and hasn't caught up yet.
+
+**Resolved same day:** fieldy confirmed the new box is `ubuntu@15.204.220.73`
+(`ssh ubuntu@15.204.220.73` already works from his machine — no new key needed) and chose
+a NEW alias, `paleo-prod`, rather than reusing `paleo-lightsail` — so `~/.ssh/config` on
+his machine needs a `Host paleo-prod` block pointing at that IP/user (this session can't
+write that file — outside the mounted folder — so fieldy adds it by hand). `studio-sync.sh`'s
+`HOST="${PALEO_PROD_HOST:-paleo-lightsail}"` default, `studio-sync-watch.sh`'s identical
+default, and DEPLOY-LIGHTSAIL.md's `ssh paleo-lightsail` instructions were all updated to
+`paleo-prod` in the same session. **`paleo-lightsail` as an alias name is now dead
+everywhere in this repo** — if it resurfaces in a future edit or a stale branch, that's
+the OLD box, not the current one.
+
+**Correction #2, same day — the SSH server itself settles this:** direct root login
+is REJECTED. `ssh paleo-prod` (then aliased to `User root`) got back a hard refusal from
+sshd itself: `Please login as the user "ubuntu" rather than the user "root". Connection
+closed.` So the `~/.ssh/config` block must use **`User ubuntu`**, not `User root` — that
+earlier "Correction" paragraph above was wrong and is superseded by this one.
+
+Reconciling this with the terminal paste that showed `root@ns1020995:~/paleo-studio#`,
+`/root/.ssh/bldbible_deploy`, and `/root/paleo-studio`: that session must have logged in
+as `ubuntu` and then elevated (`sudo -i` or similar) before running the
+`lightsail-lexicon-sync-setup.sh` setup commands — sshd blocking root doesn't stop a
+logged-in user from `sudo`-ing to root once connected. So the real state of the box is:
+SSH access is `ubuntu`-only, but the actual checkout, deploy key, and registered
+cron/`@reboot` jobs all live under **`/root`**, not `/home/ubuntu`.
+
+This matters for automation: any *scripted* remote command that connects as `ubuntu` and
+runs something like `ssh paleo-prod "cd ~/paleo-studio && ..."` will fail, because `~`
+resolves to `/home/ubuntu` for that user, not `/root` — and `/home/ubuntu` likely has no
+checkout in it at all. `studio-sync.sh`/`studio-sync-watch.sh` (which do exactly this
+pattern) have NOT yet been verified to work against the OVH box for this reason.
+**Not yet confirmed:** whether `ubuntu` has passwordless sudo (which would let scripted
+commands do `ssh paleo-prod "sudo bash -c 'cd /root/paleo-studio && ...'"`
+non-interactively), or whether the intent is instead to move the checkout/deploy
+key/cron jobs to live under `/home/ubuntu` so no sudo is needed for automation at all.
+Ask fieldy before assuming either way — don't guess a workaround into `studio-sync.sh`
+until this is settled.
+
+**Resolved same day — confirmed on the box:**
+- `sudo -i` as `ubuntu` drops straight into a root shell, no password prompt — `ubuntu`
+  has passwordless sudo. Confirmed.
+- `/home/ubuntu/paleo-studio` does not exist at all. `/root/paleo-studio` is the real
+  (and only) checkout, readable only via `sudo` (parent dir `/root` is `drwx------`).
+- `/mnt/paleo-data` (the docker data volume — `translation.db` lives here) is
+  `drwxr-xr-x root root` with world-readable files inside, so it does NOT need sudo —
+  `ubuntu` can `stat`/read it directly.
+
+`studio-sync.sh` has been patched accordingly:
+- `RREPO` default changed from `/home/ubuntu/paleo-studio` to `/root/paleo-studio`.
+- The `test -f $RREPO/server/studio-sync.mjs` existence check and both `$RDOCKER`
+  invocations (export and restore — each bind-mounts `$RREPO/server/studio-sync.mjs`)
+  now run as `sudo -n bash -c '...'` over the ssh call, so they can actually reach
+  `/root`. `-n` (non-interactive) makes a misconfigured/missing sudo fail fast with a
+  clear error instead of hanging a script or the watcher loop.
+- The export step's `mkdir -p /tmp/studio-sync/export` (now running as root via sudo)
+  also does `chmod 777 /tmp/studio-sync` in the same call — needed so that the LATER
+  `mkdir -p /tmp/studio-sync/merged` (intentionally left un-sudo'd, since `scp` uploads
+  into it next as plain `ubuntu`) can still create a sibling directory there. Without
+  this, `/tmp/studio-sync` would end up root-owned `755` from the export step and block
+  `ubuntu` from writing into it at all for the upload half of the round trip.
+- `studio-sync-watch.sh` needed NO changes — its only remote read is
+  `stat $RDATA/translation.db` under `/mnt/paleo-data`, which `ubuntu` can already read
+  directly (see above).
+
+**Not yet live-tested end-to-end against the OVH box** (no way to SSH from this
+session) — run `./studio-sync.sh` manually once and watch its `LOG` output before
+trusting `studio-sync-watch.sh` to run it unattended in the background.
+
+**Update, same day — the sudo/path fix was correct, but a separate bug surfaced behind
+it:** running `./studio-sync.sh` manually hit
+`mux_client_request_session: read from master failed: Connection reset by peer` /
+`Failed to connect to new control master`, even right after `rm -f ~/.ssh/cm-studio-*`
+and with `bldbible studio sync watch` confirmed NOT running (Task Scheduler showed it
+`Ready`, not `Running` — so this wasn't a race with the watcher). Direct `ssh paleo-prod`
+calls with no ControlMaster options worked fine (`sudo -n true` exited 0, the file
+existence check passed) — the failure was specific to `SSH_OPTS`'s
+`-o ControlMaster=auto -o ControlPersist=120s -o ControlPath=...` multiplexing setup.
+Conclusion: Windows/Git-Bash's OpenSSH does not reliably support UNIX-domain-socket
+ControlMaster multiplexing — a platform limitation, unrelated to the OVH move, the
+`/root` path, or sudo. **Fix: ControlMaster disabled outright** in both
+`studio-sync.sh` and `studio-sync-watch.sh` (`-o ControlMaster=no`, no `ControlPath`) —
+every ssh/scp call now opens its own fresh connection. Slower per call (a full
+handshake instead of a reused one, meaningful for the watcher's 15s polling loop) but
+it actually works. If fieldy ever runs these scripts from a real Linux/macOS shell
+instead of Windows, ControlMaster there is expected to be reliable and could be
+re-enabled — but don't do this speculatively; only if asked. **Confirmed working end-to-end 2026-09-18**: a manual `./studio-sync.sh` run against the OVH box succeeded (exported 102 verses from prod, merged 14 changes in, logged to git) after this fix.
+
+**What does NOT need fixing for this move — already host-agnostic by design:** the
+lexicon git-sync mechanism (`lexicon-sync.sh` / `lexicon-watch.sh` / `lexicon-pull-
+watch.sh`, DEPLOY-LIGHTSAIL.md §10/§10a) never hardcodes a host at all — it only ever
+talks to `origin` (GitHub) over plain `git`. Getting it running "trigger style" on the new
+box is the exact same one-time setup DEPLOY-LIGHTSAIL.md §10 already documents, run ON
+the box, unchanged:
+```bash
+cd ~/paleo-studio && git pull && bash scripts/lightsail-lexicon-sync-setup.sh
+./deploy-blue-green.sh        # so the container mounts server/lexicon from this checkout
+```
+(the script's FILENAME still says "lightsail" but its contents don't — it registers a
+fresh GitHub deploy key for whatever box it's run on, and starts `lexicon-pull-watch.sh`,
+which polls `git ls-remote origin main` every 15s and pulls within seconds of a push —
+same as it did on Lightsail.) If this one-time setup hasn't been run yet on the OVH box,
+that alone fully explains "the lexicon watch isn't working": fieldy's own machine
+(`lexicon-watch.sh`) still pushes lexicon edits to GitHub fine — that half is local-only
+and unaffected by the box move — the box just isn't pulling them because nothing there has
+ever registered a deploy key or started the watcher on this box.
+
+Not renamed/rewritten in this pass: the file is still literally called
+DEPLOY-LIGHTSAIL.md and its prose says "AWS Lightsail" throughout. Leaving that alone for
+now — renaming it is a bigger call (breaks any existing links/bookmarks to it, and it's
+not clear what fieldy wants it called) than this addendum's scope.
+
 ## Lexicon curation: NEVER invent a transliteration — always pull it from the pre-existing BHS tokens / translation (added 2026-09-17)
 
 fieldy, verbatim, correcting a Genesis 1:15 lexicon-curation session that fabricated "Hayir"
@@ -1016,6 +1135,11 @@ in code comments at face value — verify against what's below, and if they visi
 diverge further, fix the comments too.
 
 **Actual deploy flow, confirmed 2026-08-11 by watching a real `~/deploy.sh` run:**
+**[SUPERSEDED 2026-09-17 — see "Moved off AWS Lightsail to OVH" at the top of this file.
+The box, alias, and IP below are the OLD ones; the box itself is gone. Current alias is
+`paleo-prod` (`ubuntu@15.204.220.73`). Everything else in this historical section —
+`~/deploy.sh`, the blue/green swap, `pexec`, the `/data` bind mount — still describes how
+the CURRENT box works too, just reached under the new alias.]**
 - Lightsail Ubuntu box, reached via `ssh paleo-lightsail` (an SSH config alias — see
   `~/.ssh/config` on fieldy's machine; resolves to `ubuntu@<lightsail-ip>`). Holds a
   `~/paleo-studio` checkout of `https://github.com/mabney11/bldv-bible`, branch `main`.

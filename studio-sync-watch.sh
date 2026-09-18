@@ -27,26 +27,24 @@
 # step on each other.
 set -o pipefail
 cd "$(dirname "$0")"
-HOST="${PALEO_PROD_HOST:-paleo-lightsail}"
+HOST="${PALEO_PROD_HOST:-paleo-prod}"
 RDATA="${PALEO_PROD_DATA_DIR:-/mnt/paleo-data}"
 POLL_INTERVAL="${PALEO_WATCH_INTERVAL:-15}"   # seconds between cheap checks
 STATE=server/.studio-sync
 STAMP_FILE="$STATE/.last-remote-mtime"
 mkdir -p "$STATE"
 
-SSH_OPTS="-o BatchMode=yes -o ConnectTimeout=10 -o ControlMaster=auto -o ControlPersist=120s -o ControlPath=$HOME/.ssh/cm-studio-%r@%h:%p"
+# ControlMaster (one shared SSH connection reused for every 15s poll) used
+# to live here, but on fieldy's Windows/Git-Bash machine it produced
+# intermittent "mux_client_request_session: read from master failed" /
+# "Failed to connect to new control master" errors even with no other
+# process contending for the socket — confirmed 2026-09-18 to be a Windows
+# OpenSSH multiplexing reliability problem, not anything about the OVH box.
+# Disabled outright: each poll now opens its own fresh connection. A little
+# heavier per 15s tick (a full handshake instead of a reused one) but it
+# actually works, which a fast unreliable poll does not beat.
+SSH_OPTS="-o BatchMode=yes -o ConnectTimeout=10 -o ControlMaster=no"
 LOG() { echo "$(date -u '+%F %T') $*"; }
-
-# Stop-ScheduledTask kills this process without giving ssh a chance to tear
-# down its multiplexed master connection cleanly, so a restart can inherit a
-# dead control socket from the previous run. ssh detects that itself and
-# falls back to a plain (non-multiplexed) connection per call when it does -
-# functional, just noisier and slightly slower than intended, forever, until
-# the stale file is removed. `ssh -O check` tells a live master from a dead
-# one; only clear the socket when there genuinely isn't one still running.
-if ! ssh -o ControlPath="$HOME/.ssh/cm-studio-%r@%h:%p" -O check "$HOST" >/dev/null 2>&1; then
-    rm -f "$HOME"/.ssh/cm-studio-*
-fi
 
 check_mtime() {
     ssh $SSH_OPTS "$HOST" "stat -c %Y '$RDATA/translation.db' 2>/dev/null" 2>/dev/null

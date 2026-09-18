@@ -16,13 +16,13 @@
 # Run it whenever you like (sync-from-prod.cjs runs it at every local server
 # start; studio-sync-watch.sh — see that file — runs it within seconds of a
 # real change on prod instead of waiting on the 5-minute scheduled task);
-# nothing happens when both sides already agree. Needs `ssh paleo-lightsail`
+# nothing happens when both sides already agree. Needs `ssh paleo-prod`
 # to work from this terminal (PALEO_PROD_HOST / PALEO_PROD_DATA_DIR override).
 set -e -o pipefail
 cd "$(dirname "$0")"
-HOST="${PALEO_PROD_HOST:-paleo-lightsail}"
+HOST="${PALEO_PROD_HOST:-paleo-prod}"
 RDATA="${PALEO_PROD_DATA_DIR:-/mnt/paleo-data}"
-RREPO="${PALEO_PROD_REPO:-/home/ubuntu/paleo-studio}"
+RREPO="${PALEO_PROD_REPO:-/root/paleo-studio}"  # confirmed 2026-09-17: box is ubuntu-login but the checkout/deploy-key/cron all live under /root (ubuntu has passwordless sudo)
 STATE=server/.studio-sync
 LOG() { echo "$(date -u '+%F %T') $*"; }
 
@@ -54,28 +54,24 @@ trap 'rm -rf "$LOCKDIR"' EXIT
 
 BRANCH="$(git branch --show-current)"
 
-# ControlMaster keeps one real SSH connection open and reuses it for every
-# ssh/scp call below, AND for studio-sync-watch.sh's frequent cheap mtime
-# checks — a fresh TCP+auth handshake was most of the latency standing
-# between "prod changed" and "synced", which is the whole point of the
-# watcher. ControlPath lives under ~/.ssh so both scripts share it.
-SSH_OPTS="-o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=auto -o ControlPersist=120s -o ControlPath=$HOME/.ssh/cm-studio-%r@%h:%p"
-
-# Same stale-socket guard as studio-sync-watch.sh (see its comment) - this
-# script can also be killed mid-run (a machine sleep/reboot during the
-# 5-minute backstop task), so check before trusting a leftover control
-# socket instead of letting every ssh/scp call below silently degrade.
-if ! ssh -o ControlPath="$HOME/.ssh/cm-studio-%r@%h:%p" -O check "$HOST" >/dev/null 2>&1; then
-    rm -f "$HOME"/.ssh/cm-studio-*
-fi
+# ControlMaster (one real SSH connection reused across calls) used to live
+# here, but on fieldy's Windows/Git-Bash machine it produced intermittent
+# "mux_client_request_session: read from master failed" / "Failed to
+# connect to new control master" errors even right after clearing the
+# socket file, with no watcher process running to race against — confirmed
+# 2026-09-18 to be a Windows OpenSSH multiplexing reliability problem, not
+# anything about the OVH box, sudo, or paths. Disabled outright: every
+# ssh/scp call below now opens its own fresh connection. Slower per call
+# (a full handshake instead of a reused one) but actually works.
+SSH_OPTS="-o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no"
 
 SSH() { ssh $SSH_OPTS "$HOST" "$@"; }
-SCP_OPTS="-o BatchMode=yes -o ControlPath=$HOME/.ssh/cm-studio-%r@%h:%p"
+SCP_OPTS="-o BatchMode=yes"
 # node inside the image, with the data volume, the script from the box's checkout and a scratch dir
 RDOCKER="docker run --rm -e PALEO_SKIP_HEADINGS=1 -v $RDATA:/data -v $RREPO/server/studio-sync.mjs:/app/server/studio-sync.mjs -v /tmp/studio-sync:/tmp/studio-sync -w /app"
 
 # the box must have the script (docker would otherwise mount an empty DIRECTORY in its place)
-if ! SSH "test -f $RREPO/server/studio-sync.mjs"; then
+if ! SSH "sudo -n bash -c 'test -f $RREPO/server/studio-sync.mjs'"; then
   LOG "prod has no $RREPO/server/studio-sync.mjs yet — push, then \`git pull\` in $RREPO on the box (if a folder of that name is in the way: sudo rmdir it first)" >&2; exit 1
 fi
 
@@ -85,7 +81,7 @@ trap 'rm -rf "$TMP" "$LOCKDIR"' EXIT
 mkdir -p "$TMP/theirs"
 
 # 1. prod's rows
-SSH "mkdir -p /tmp/studio-sync/export && $RDOCKER paleo-studio node server/studio-sync.mjs export /tmp/studio-sync/export" | sed "s/^/$(date -u '+%F %T') prod: /"
+SSH "sudo -n bash -c 'mkdir -p /tmp/studio-sync/export && chmod 777 /tmp/studio-sync && $RDOCKER paleo-studio node server/studio-sync.mjs export /tmp/studio-sync/export'" | sed "s/^/$(date -u '+%F %T') prod: /"
 scp $SCP_OPTS -q "$HOST:/tmp/studio-sync/export/*.jsonl" "$TMP/theirs/"
 
 # 2 + 3a. merge against the last sync's base, apply here, write the result to merged/
@@ -95,7 +91,7 @@ STUDIO_DATA_DIR="$STATE/merged" node server/studio-sync.mjs merge "$STATE/base" 
 if ! diff -qr "$STATE/merged" "$TMP/theirs" >/dev/null 2>&1; then
   SSH "mkdir -p /tmp/studio-sync/merged"
   scp $SCP_OPTS -q "$STATE/merged"/*.jsonl "$HOST:/tmp/studio-sync/merged/"
-  SSH "$RDOCKER -e STUDIO_DATA_DIR=/tmp/studio-sync/merged paleo-studio node server/studio-sync.mjs restore" 2>&1 | sed "s/^/$(date -u '+%F %T') prod: /"
+  SSH "sudo -n bash -c '$RDOCKER -e STUDIO_DATA_DIR=/tmp/studio-sync/merged paleo-studio node server/studio-sync.mjs restore'" 2>&1 | sed "s/^/$(date -u '+%F %T') prod: /"
 fi
 
 # 4. next time, this is what both sides agreed on — and the log
