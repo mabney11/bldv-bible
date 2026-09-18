@@ -7,13 +7,18 @@
 # own header for why this exists — fieldy, 2026-09-18: "the observability
 # of my app needs to be improved").
 #
+# Lives in the system tray (fieldy, 2026-09-18: "can we make it managable
+# from here? eg i just closed it, i want to be able to re-open it from
+# here") — closing the window just hides it; left-click the tray icon or
+# its "Open" menu item to bring it back. "Exit" actually quits the process.
+#
 # Run directly to try it:
 #     powershell -ExecutionPolicy Bypass -File scripts\observability-widget.ps1
 # scripts\setup-observability-task.ps1 registers it to start at logon.
 # The collector (observability-status.mjs) must ALSO be running (same
 # setup script registers it too) or this just shows "waiting for data".
 
-Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
+Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase, System.Windows.Forms, System.Drawing
 
 $RepoRoot = (Resolve-Path "$PSScriptRoot\..").Path
 $StatusFile = Join-Path $RepoRoot 'server\.observability\status.json'
@@ -74,7 +79,7 @@ function Set-Waiting([string]$msg) {
 function Update-Widget {
     if (-not (Test-Path $StatusFile)) {
         Set-Waiting "Waiting for first status..."
-        $LastCheckedText.Text = "No data yet -- is 'bldbible observability' task running?"
+        $LastCheckedText.Text = "No data yet -- is 'bldbible observability collector' task running?"
         return
     }
 
@@ -140,6 +145,52 @@ function Update-Widget {
     $LastCheckedText.Text = "Checked: $($s.generated_at)"
 }
 
+# ── System tray icon ────────────────────────────────────────────────────
+$notifyIcon = New-Object System.Windows.Forms.NotifyIcon
+$notifyIcon.Icon = [System.Drawing.SystemIcons]::Application
+$notifyIcon.Text = "Paleo Studio observability"
+$notifyIcon.Visible = $true
+
+$contextMenu = New-Object System.Windows.Forms.ContextMenuStrip
+$openItem = $contextMenu.Items.Add("Open")
+[void]$contextMenu.Items.Add("-")
+$exitItem = $contextMenu.Items.Add("Exit")
+$notifyIcon.ContextMenuStrip = $contextMenu
+
+$script:exiting = $false
+
+function Show-Widget {
+    $window.Show()
+    $window.WindowState = 'Normal'
+    $window.Activate()
+}
+
+$openItem.add_Click({ Show-Widget })
+$notifyIcon.add_MouseClick({
+    param($s, $e)
+    if ($e.Button -eq [System.Windows.Forms.MouseButtons]::Left) { Show-Widget }
+})
+$exitItem.add_Click({
+    $script:exiting = $true
+    $notifyIcon.Visible = $false
+    $notifyIcon.Dispose()
+    $window.Close()
+})
+
+# Closing the window (the X button / Alt+F4) hides it instead of quitting --
+# the tray icon is what keeps the collector-independent widget "alive" and
+# reachable. Only the tray menu's "Exit" item actually ends the process.
+$window.Add_Closing({
+    param($s, $e)
+    if (-not $script:exiting) {
+        $e.Cancel = $true
+        $window.Hide()
+    }
+})
+$window.Add_Closed({
+    [System.Windows.Threading.Dispatcher]::CurrentDispatcher.InvokeShutdown()
+})
+
 $timer = New-Object System.Windows.Threading.DispatcherTimer
 $timer.Interval = [TimeSpan]::FromSeconds(5)
 $timer.Add_Tick({ Update-Widget })
@@ -151,4 +202,9 @@ $window.Add_Loaded({
     $window.Top = 20
     Update-Widget
 })
-$window.ShowDialog() | Out-Null
+Show-Widget
+
+# Non-modal message loop -- lets the window Hide()/Show() freely (ShowDialog
+# expects a real close to unblock, which fights the hide-to-tray behavior
+# above) while still servicing the NotifyIcon's Win32 messages.
+[System.Windows.Threading.Dispatcher]::Run()
