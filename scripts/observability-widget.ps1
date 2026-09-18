@@ -3,14 +3,15 @@
 # Small always-on-top desktop widget showing paleo-studio's sync/uptime
 # status: local<->GitHub, GitHub<->prod, lexicon/studio sync health, and
 # the live site's reachability. Reads server\.observability\status.json,
-# written every ~20s by scripts\observability-status.mjs (see that file's
-# own header for why this exists — fieldy, 2026-09-18: "the observability
-# of my app needs to be improved").
+# written every ~20s by scripts\observability-status.mjs.
 #
-# Lives in the system tray (fieldy, 2026-09-18: "can we make it managable
-# from here? eg i just closed it, i want to be able to re-open it from
-# here") — closing the window just hides it; left-click the tray icon or
-# its "Open" menu item to bring it back. "Exit" actually quits the process.
+# fieldy, 2026-09-18: "can we make it managable from here? eg i just closed
+# it, i want to be able to re-open it from here" -> system tray icon, close
+# just hides. Then, on the look: "make it 1 window with the 'x' within it,
+# no need for the 'paleo studio' title ... the 'x' would be in the place of
+# the <-->" and "if we can make this widget more transparent" -> borderless,
+# semi-transparent window; the close control replaces the "<->" glyph in the
+# first status line instead of a titlebar.
 #
 # Run directly to try it:
 #     powershell -ExecutionPolicy Bypass -File scripts\observability-widget.ps1
@@ -23,45 +24,83 @@ Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase, Sys
 $RepoRoot = (Resolve-Path "$PSScriptRoot\..").Path
 $StatusFile = Join-Path $RepoRoot 'server\.observability\status.json'
 
+# Borderless + AllowsTransparency: no titlebar, no "Paleo Studio" caption, no
+# system close/min/max buttons -- the rounded semi-transparent Border below
+# is the whole window chrome. Dragging and closing are both handled by hand
+# (MouseLeftButtonDown -> DragMove; the "x" TextBlock -> Hide) since removing
+# the titlebar removes those for free.
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        Title="Paleo Studio" Height="260" Width="320"
-        WindowStyle="ToolWindow" ResizeMode="CanMinimize"
-        Topmost="True" ShowInTaskbar="False"
-        Background="#1e1e1e">
-  <Grid Margin="12">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="Auto"/>
-    </Grid.RowDefinitions>
-    <TextBlock Grid.Row="0" Text="Paleo Studio -- Sync and Uptime" FontWeight="Bold" Foreground="White" FontSize="13" Margin="0,0,0,10"/>
-    <TextBlock Grid.Row="1" Name="LocalGitText" Foreground="White" FontSize="12" Margin="0,3"/>
-    <TextBlock Grid.Row="2" Name="LexiconText" Foreground="White" FontSize="12" Margin="0,3"/>
-    <TextBlock Grid.Row="3" Name="StudioText" Foreground="White" FontSize="12" Margin="0,3"/>
-    <TextBlock Grid.Row="4" Name="ProdText" Foreground="White" FontSize="12" Margin="0,3" TextWrapping="Wrap"/>
-    <TextBlock Grid.Row="5" Name="SiteText" Foreground="White" FontSize="12" Margin="0,3"/>
-    <TextBlock Grid.Row="6" Name="AutoFixText" Foreground="#88ccff" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"/>
-    <TextBlock Grid.Row="7" Name="LastCheckedText" Foreground="Gray" FontSize="10" Margin="0,8,0,0"/>
-  </Grid>
+        Title="Paleo Studio" Height="230" Width="320"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ResizeMode="NoResize" Topmost="True" ShowInTaskbar="False">
+  <Border Name="RootBorder" CornerRadius="10" Background="#CC1A1A1A" BorderBrush="#40FFFFFF" BorderThickness="1">
+    <Grid Margin="14">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+
+      <!-- Row 0: "Local  x  GitHub" -- the close control stands in for the <-> glyph -->
+      <Grid Grid.Row="0" Margin="0,0,0,8">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Text="Local" FontWeight="Bold" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="2" Name="CloseButton" Text="&#x2715;" Foreground="#AAAAAA" FontSize="13"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" Cursor="Hand" Margin="6,0"/>
+        <TextBlock Grid.Column="4" Text="GitHub" FontWeight="Bold" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
+      </Grid>
+
+      <TextBlock Grid.Row="1" Name="LocalGitText" Foreground="White" FontSize="12" Margin="0,3"/>
+      <TextBlock Grid.Row="2" Name="LexiconText" Foreground="White" FontSize="12" Margin="0,3"/>
+      <TextBlock Grid.Row="3" Name="StudioText" Foreground="White" FontSize="12" Margin="0,3"/>
+      <Grid Grid.Row="4" Margin="0,3">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Name="ProdText" Foreground="White" FontSize="12" TextWrapping="Wrap" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Name="CatchUpButton" Text="Catch up" Foreground="#88ccff" FontSize="11"
+                   TextDecorations="Underline" Cursor="Hand" VerticalAlignment="Center" Margin="8,0,0,0" Visibility="Collapsed"/>
+      </Grid>
+      <TextBlock Grid.Row="5" Name="SiteText" Foreground="White" FontSize="12" Margin="0,3"/>
+      <StackPanel Grid.Row="6">
+        <TextBlock Name="AutoFixText" Foreground="#88ccff" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"/>
+        <TextBlock Name="LastCheckedText" Foreground="Gray" FontSize="10" Margin="0,8,0,0"/>
+      </StackPanel>
+    </Grid>
+  </Border>
 </Window>
 "@
 
 $reader = New-Object System.Xml.XmlNodeReader $xaml
 $window = [Windows.Markup.XamlReader]::Load($reader)
 
+$RootBorder      = $window.FindName("RootBorder")
+$CloseButton     = $window.FindName("CloseButton")
 $LocalGitText    = $window.FindName("LocalGitText")
 $LexiconText     = $window.FindName("LexiconText")
 $StudioText      = $window.FindName("StudioText")
 $ProdText        = $window.FindName("ProdText")
+$CatchUpButton   = $window.FindName("CatchUpButton")
 $SiteText        = $window.FindName("SiteText")
 $AutoFixText     = $window.FindName("AutoFixText")
 $LastCheckedText = $window.FindName("LastCheckedText")
+
+# Drag the borderless window by its background (any row/column with no more
+# specific handler -- WPF hit-tests the Border first, so this covers the
+# whole widget except the two clickable text controls above).
+$RootBorder.Add_MouseLeftButtonDown({ $window.DragMove() })
 
 function Get-Brush([Nullable[bool]]$ok) {
     if ($ok -eq $true)  { return [System.Windows.Media.Brushes]::LightGreen }
@@ -74,6 +113,7 @@ function Set-Waiting([string]$msg) {
     $LocalGitText.Foreground = [System.Windows.Media.Brushes]::Gray
     $LexiconText.Text = ""; $StudioText.Text = ""; $ProdText.Text = ""; $SiteText.Text = ""; $AutoFixText.Text = ""
     $LastCheckedText.Text = ""
+    $CatchUpButton.Visibility = 'Collapsed'
 }
 
 function Update-Widget {
@@ -97,7 +137,7 @@ function Update-Widget {
     $ahead  = $s.local.git.ahead
     $behind = $s.local.git.behind
     $gitOk  = $s.local.git.fetch_ok -and ($behind -eq 0)
-    $LocalGitText.Text = "Local <-> GitHub: $ahead ahead / $behind behind"
+    $LocalGitText.Text = "$ahead ahead / $behind behind"
     $LocalGitText.Foreground = Get-Brush $gitOk
 
     $lexFailing = $s.local.lexicon_sync_failing.present
@@ -121,9 +161,11 @@ function Update-Widget {
         $containers = if ($s.prod.containers) { ($s.prod.containers -join ',') } else { "none" }
         $ProdText.Text = "Prod: $pBehind behind GitHub | $containers"
         $ProdText.Foreground = Get-Brush ($pBehind -eq 0)
+        $CatchUpButton.Visibility = if ($pBehind -gt 0) { 'Visible' } else { 'Collapsed' }
     } else {
         $ProdText.Text = "Prod: UNREACHABLE via ssh"
         $ProdText.Foreground = Get-Brush $false
+        $CatchUpButton.Visibility = 'Collapsed'
     }
 
     if ($s.site.reachable) {
@@ -144,6 +186,25 @@ function Update-Widget {
 
     $LastCheckedText.Text = "Checked: $($s.generated_at)"
 }
+
+# "Catch up" -- ssh's to prod and re-triggers lexicon-sync.sh directly
+# (fieldy, 2026-09-18: "i want to make catching up a part of this flow").
+# Safe/idempotent: it's the exact same command lexicon-pull-watch.sh already
+# runs on its own every ~15s; this just fires it immediately on demand
+# instead of waiting, and surfaces the result right in the widget.
+$CatchUpButton.Add_MouseLeftButtonDown({
+    $CatchUpButton.Text = "Syncing..."
+    $CatchUpButton.IsEnabled = $false
+    $bashExe = (Get-Command bash.exe -ErrorAction SilentlyContinue).Source
+    if (-not $bashExe) { $bashExe = "$env:ProgramFiles\Git\bin\bash.exe" }
+    $rrepo = if ($env:PALEO_PROD_REPO) { $env:PALEO_PROD_REPO } else { '/root/paleo-studio' }
+    $hostAlias = if ($env:PALEO_PROD_HOST) { $env:PALEO_PROD_HOST } else { 'paleo-prod' }
+    $remoteCmd = "sudo -n bash -c 'cd $rrepo && ./lexicon-sync.sh'"
+    Start-Process -FilePath $bashExe -ArgumentList @('-lc', "ssh -o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no $hostAlias `"$remoteCmd`" >> ~/observability.log 2>&1") -WindowStyle Hidden
+    Start-Sleep -Seconds 2
+    $CatchUpButton.Text = "Catch up"
+    $CatchUpButton.IsEnabled = $true
+})
 
 # ── System tray icon ────────────────────────────────────────────────────
 $notifyIcon = New-Object System.Windows.Forms.NotifyIcon
@@ -177,9 +238,12 @@ $exitItem.add_Click({
     $window.Close()
 })
 
-# Closing the window (the X button / Alt+F4) hides it instead of quitting --
-# the tray icon is what keeps the collector-independent widget "alive" and
-# reachable. Only the tray menu's "Exit" item actually ends the process.
+$CloseButton.Add_MouseLeftButtonDown({ $window.Hide() })
+
+# Closing the window (Alt+F4 etc, since there's no X button chrome anymore)
+# hides it instead of quitting -- the tray icon is what keeps the
+# collector-independent widget reachable. Only the tray menu's "Exit" item
+# actually ends the process.
 $window.Add_Closing({
     param($s, $e)
     if (-not $script:exiting) {
