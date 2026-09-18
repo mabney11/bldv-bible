@@ -7348,38 +7348,49 @@ function _buildGlossCoverageTrees() {
     return trees;
 }
 
-// Stale-while-revalidate. This tree used to be rebuilt SYNCHRONOUSLY, inline,
-// on the very next request whenever lexicon.json's mtime had ticked since the
-// last build — including a single verse's own /gloss-studio/verse fetch,
-// which briefly depended on this function too (see that route's own comment:
-// it no longer does). fieldy, 2026-08-11, watching Gloss Studio hang on
-// "Loading verse…" for a plain verse open: "most important to get the
-// referenced verse/token data and less important for the %s to be accurate
-// in real time... the books and chapters are not going to change so why does
-// it take so long for them to load?" So: once a tree exists, ALWAYS return it
-// immediately — even if the underlying files have changed since — and kick a
-// rebuild off in the background (setImmediate, guarded so only one rebuild
-// runs at a time) so the NEXT request picks up fresh numbers instead of the
-// CURRENT one paying full rebuild latency (a full iterate() over every
-// Hebrew occurrence in the corpus, up to ~1M rows). Only the very first call
-// after server boot (no cache yet) computes synchronously — unavoidable
-// once, not on every lexicon.json save — and even that is pre-warmed at boot
-// (see the setImmediate warm-up right after app.listen()) so it's normally
-// already done before an admin ever opens the page.
-function getGlossCoverage() {
+// Stale-while-revalidate BY DEFAULT (still true for verse-status, hit on
+// every verse click — see fieldy, 2026-08-11, on Gloss Studio hanging on
+// "Loading verse…": "most important to get the referenced verse/token data
+// and less important for the %s to be accurate in real time"). Once a tree
+// exists, plain getGlossCoverage() returns it immediately even if stale and
+// kicks a rebuild off in the background (setImmediate) so the NEXT request
+// picks up fresh numbers instead of the current one paying full rebuild
+// latency (a full iterate() over every Hebrew occurrence in the corpus, up
+// to ~1M rows).
+//
+// getGlossCoverage({ force: true }) instead rebuilds INLINE, synchronously,
+// when stale — used only by the whole-tree /coverage route (the "Re-sync"
+// button and Gloss Studio's initial page load), never by verse-status or a
+// verse open, so the fast path above is untouched for those. fieldy,
+// 2026-09-18, after a lexicon edit landed on prod but Gen 1:16 sat at
+// "65/110 (59.1%)" in the verse list through several manual re-syncs even
+// though every language was individually already at 100%: "having to hit
+// 'resync' a few times is hacky, hitting once should be enough to triage
+// and get things synced" — the old design needed 1 request per layer
+// (Hebrew tree, each of the 4 generic trees, then the aggregate) to
+// converge, since each stamp-mismatch only kicked off ITS OWN background
+// rebuild rather than waiting on it. force:true collapses that to one.
+function getGlossCoverage(opts = {}) {
+    const { force = false } = opts;
     const stamp = _glossStudioStampKey();
     if (_glossCoverageCache) {
-        if (_glossCoverageCache.stamp !== stamp && !_glossCoverageRecomputing) {
-            _glossCoverageRecomputing = true;
-            setImmediate(() => {
-                try {
-                    _glossCoverageCache = { trees: _buildGlossCoverageTrees(), stamp };
-                } catch (e) {
-                    console.error('[gloss-studio] background coverage rebuild failed:', e);
-                } finally {
-                    _glossCoverageRecomputing = false;
-                }
-            });
+        if (_glossCoverageCache.stamp !== stamp) {
+            if (force) {
+                _glossCoverageCache = { trees: _buildGlossCoverageTrees(), stamp };
+                return _glossCoverageCache;
+            }
+            if (!_glossCoverageRecomputing) {
+                _glossCoverageRecomputing = true;
+                setImmediate(() => {
+                    try {
+                        _glossCoverageCache = { trees: _buildGlossCoverageTrees(), stamp: _glossStudioStampKey() };
+                    } catch (e) {
+                        console.error('[gloss-studio] background coverage rebuild failed:', e);
+                    } finally {
+                        _glossCoverageRecomputing = false;
+                    }
+                });
+            }
         }
         return _glossCoverageCache;
     }
@@ -7474,26 +7485,35 @@ function _buildGenericCoverageTree(srcId) {
     return { books, words };
 }
 
-// Same stale-while-revalidate treatment as getGlossCoverage() above, keyed
-// per source id (Greek/Ge'ez/Latin/Syriac/Coptic each rebuild independently,
-// guarded by their own entry in _genericRecomputing) so re-tokenizing one
-// language's whole corpus never blocks a request for a different one, or for
-// Hebrew.
-function computeGenericCoverage(srcId) {
+// Same stale-while-revalidate treatment as getGlossCoverage() above by
+// default, keyed per source id (Greek/Ge'ez/Latin/Syriac each rebuild
+// independently, guarded by their own entry in _genericRecomputing) so
+// re-tokenizing one language's whole corpus never blocks a request for a
+// different one, or for Hebrew. Same { force: true } escape hatch too — see
+// getGlossCoverage()'s comment for why: used only by the /coverage route.
+function computeGenericCoverage(srcId, opts = {}) {
+    const { force = false } = opts;
     const stamp = _genericStampKey(srcId);
     const cached = _genericCoverageCache[srcId];
     if (cached) {
-        if (cached.stamp !== stamp && !_genericRecomputing.has(srcId)) {
-            _genericRecomputing.add(srcId);
-            setImmediate(() => {
-                try {
-                    _genericCoverageCache[srcId] = { stamp, tree: _buildGenericCoverageTree(srcId) };
-                } catch (e) {
-                    console.error(`[gloss-studio] background ${srcId} coverage rebuild failed:`, e);
-                } finally {
-                    _genericRecomputing.delete(srcId);
-                }
-            });
+        if (cached.stamp !== stamp) {
+            if (force) {
+                const tree = _buildGenericCoverageTree(srcId);
+                _genericCoverageCache[srcId] = { stamp, tree };
+                return tree;
+            }
+            if (!_genericRecomputing.has(srcId)) {
+                _genericRecomputing.add(srcId);
+                setImmediate(() => {
+                    try {
+                        _genericCoverageCache[srcId] = { stamp: _genericStampKey(srcId), tree: _buildGenericCoverageTree(srcId) };
+                    } catch (e) {
+                        console.error(`[gloss-studio] background ${srcId} coverage rebuild failed:`, e);
+                    } finally {
+                        _genericRecomputing.delete(srcId);
+                    }
+                });
+            }
         }
         return cached.tree;
     }
@@ -7565,7 +7585,7 @@ function _aggregateStampKey() {
 
 let _aggregateRecomputing = false;
 
-function _buildAggregateCoverageTree() {
+function _buildAggregateCoverageTree(opts = {}) {
     // book_id -> chapter -> verse -> { total, glossed } — raw lexical sums
     // across every language, before the 'done' adjustment.
     const acc = new Map();
@@ -7576,7 +7596,11 @@ function _buildAggregateCoverageTree() {
         vs.total += total; vs.glossed += glossed;
     };
     for (const l of GS_LANG_LIST) {
-        const books = l.kind === 'heb' ? getGlossCoverage().trees.BHS.books : computeGenericCoverage(l.kind).books;
+        // opts (namely { force: true }) forwards straight through to every
+        // sub-tree, so a forced aggregate rebuild pulls each language's OWN
+        // freshest data too instead of blending in whatever it happened to
+        // have cached — see computeAggregateCoverage()'s force branch.
+        const books = l.kind === 'heb' ? getGlossCoverage(opts).trees.BHS.books : computeGenericCoverage(l.kind, opts).books;
         for (const [book_id, bk] of books) {
             for (const [chapter, ch] of bk.chapters) {
                 for (const [verse, vs] of ch.verses) bump(book_id, chapter, verse, vs.total, vs.glossed);
@@ -7632,44 +7656,62 @@ function _aggregateStillSettling() {
     return _glossCoverageRecomputing || GS_LANG_LIST.some(l => l.kind !== 'heb' && _genericRecomputing.has(l.kind));
 }
 
-function computeAggregateCoverage() {
+// { force: true } (used only by the /coverage route — the "Re-sync" button
+// and Gloss Studio's initial load, never verse-status or a verse open) skips
+// all of the above: it rebuilds every sub-tree fresh, synchronously, in
+// dependency order (getGlossCoverage/computeGenericCoverage first, via
+// _buildAggregateCoverageTree(opts) forwarding force down to them), so there
+// is nothing left "still settling" to race — the aggregate this produces is
+// always stamped with the real, current _aggregateStampKey(). fieldy,
+// 2026-09-18: one Re-sync should be enough to fully converge, not several.
+function computeAggregateCoverage(opts = {}) {
+    const { force = false } = opts;
     const stamp = _aggregateStampKey();
     if (_aggregateCoverageCache) {
-        if (_aggregateCoverageCache.stamp !== stamp && !_aggregateRecomputing) {
-            _aggregateRecomputing = true;
-            setImmediate(() => {
-                try {
-                    const tree = _buildAggregateCoverageTree();
-                    // Only cache this as AUTHORITATIVE for `stamp` once nothing
-                    // underneath was still recomputing when we built it. Caching
-                    // it under the real stamp regardless is what caused Gen 1:14
-                    // to freeze at "88/136 (64.7%)" even after every one of its
-                    // 5 languages individually settled at 100% and two more
-                    // lexicon edits landed: the FIRST rebuild after an edit often
-                    // races a sub-cache that's still catching up, bakes in that
-                    // half-updated blend, then stamps it as current -- so no
-                    // later request ever rebuilds it again, since `stamp` itself
-                    // doesn't change until the NEXT edit. fieldy, 2026-09-16:
-                    // "100% for all languages but 65% for the total verse? I
-                    // refreshed a few times." Tagging it ':partial' instead
-                    // guarantees this stamp can never match a real
-                    // _aggregateStampKey() result, so the very next request
-                    // retries the build instead of freezing on a stale blend --
-                    // it converges within a request or two of the last edit
-                    // rather than needing another lexicon save to even try again.
-                    _aggregateCoverageCache = { stamp: _aggregateStillSettling() ? `${stamp}:partial` : stamp, tree };
-                } catch (e) {
-                    console.error('[gloss-studio] background aggregate coverage rebuild failed:', e);
-                } finally {
-                    _aggregateRecomputing = false;
-                }
-            });
+        if (_aggregateCoverageCache.stamp !== stamp) {
+            if (force) {
+                const tree = _buildAggregateCoverageTree({ force: true });
+                _aggregateCoverageCache = { stamp: _aggregateStampKey(), tree };
+                return tree;
+            }
+            if (!_aggregateRecomputing) {
+                _aggregateRecomputing = true;
+                setImmediate(() => {
+                    try {
+                        const tree = _buildAggregateCoverageTree();
+                        // Only cache this as AUTHORITATIVE for `stamp` once nothing
+                        // underneath was still recomputing when we built it. Caching
+                        // it under the real stamp regardless is what caused Gen 1:14
+                        // to freeze at "88/136 (64.7%)" even after every one of its
+                        // 5 languages individually settled at 100% and two more
+                        // lexicon edits landed: the FIRST rebuild after an edit often
+                        // races a sub-cache that's still catching up, bakes in that
+                        // half-updated blend, then stamps it as current -- so no
+                        // later request ever rebuilds it again, since `stamp` itself
+                        // doesn't change until the NEXT edit. fieldy, 2026-09-16:
+                        // "100% for all languages but 65% for the total verse? I
+                        // refreshed a few times." Tagging it ':partial' instead
+                        // guarantees this stamp can never match a real
+                        // _aggregateStampKey() result, so the very next request
+                        // retries the build instead of freezing on a stale blend --
+                        // it converges within a request or two of the last edit
+                        // rather than needing another lexicon save to even try again.
+                        // (Since 2026-09-18, that "next request" is unnecessary for
+                        // anyone using the /coverage route's force path instead.)
+                        _aggregateCoverageCache = { stamp: _aggregateStillSettling() ? `${_aggregateStampKey()}:partial` : _aggregateStampKey(), tree };
+                    } catch (e) {
+                        console.error('[gloss-studio] background aggregate coverage rebuild failed:', e);
+                    } finally {
+                        _aggregateRecomputing = false;
+                    }
+                });
+            }
         }
         return _aggregateCoverageCache.tree;
     }
     // First-ever call (server boot / pre-warm) can race the very same way if a
     // sub-cache hasn't finished its own first build yet -- same guard applies.
-    const tree = _buildAggregateCoverageTree();
+    const tree = _buildAggregateCoverageTree(opts);
     _aggregateCoverageCache = { stamp: _aggregateStillSettling() ? `${stamp}:partial` : stamp, tree };
     return _aggregateCoverageCache.tree;
 }
@@ -7705,15 +7747,22 @@ function _renderCoverageBooks(books) {
 app.get('/api/admin/gloss-studio/coverage', (req, res) => {
     try {
         const source = req.query.source || 'ALL';
+        // Always force a synchronous, fully-fresh rebuild here (never on
+        // verse-status/missing/a verse open — those stay on the fast lazy
+        // path). This is the whole-tree fetch: Gloss Studio's initial page
+        // load and the "Re-sync" button, both rare enough that paying full
+        // rebuild latency once is the right trade for actually being
+        // correct in one hit. fieldy, 2026-09-18: "hitting once should be
+        // enough to triage and get things synced."
         if (source === 'ALL') {
-            const { books } = computeAggregateCoverage();
+            const { books } = computeAggregateCoverage({ force: true });
             return res.json({ books: _renderCoverageBooks(books) });
         }
         if (GENERIC_GS_SOURCES[source]) {
-            const { books } = computeGenericCoverage(source);
+            const { books } = computeGenericCoverage(source, { force: true });
             return res.json({ books: _renderCoverageBooks(books) });
         }
-        const { books } = getGlossCoverage().trees[source === 'HEB' ? 'HEB' : 'BHS'];
+        const { books } = getGlossCoverage({ force: true }).trees[source === 'HEB' ? 'HEB' : 'BHS'];
         res.json({ books: _renderCoverageBooks(books) });
     } catch (err) {
         console.error('/api/admin/gloss-studio/coverage failed:', err);
