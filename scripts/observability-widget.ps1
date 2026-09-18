@@ -46,7 +46,7 @@ $StatusFile = Join-Path $RepoRoot 'server\.observability\status.json'
         <RowDefinition Height="Auto"/>
       </Grid.RowDefinitions>
 
-      <!-- Row 0: "Local  x  GitHub" -- the close control stands in for the <-> glyph -->
+      <!-- Row 0: "Local  x  GitHub" - the close control stands in for the "less-than dash greater-than" glyph -->
       <Grid Grid.Row="0" Margin="0,0,0,8">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto"/>
