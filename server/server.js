@@ -2534,8 +2534,24 @@ function isRootSubsequence(sub, full) {
 // or null when this is NOT a defective spelling of the canonical root (guards a
 // wrong Strong's number from injecting an unrelated root):
 //   • at most one radical elided   (lcs ≥ canonLen − 1)
-//   • a real overlap               (lcs ≥ 2)
+//   • a real overlap               (lcs ≥ 1)
 //   • few surface additions        (surfaceLen − lcs ≤ 2)
+//
+// FIX 2026-09-21 (fieldy): the overlap floor used to be lcs ≥ 2, not ≥ 1. For
+// EVERY 2-letter canonical root (H6310 Pah "mouth", any geminate/short root)
+// that loses its one elidable radical, the max possible lcs is 1 by
+// construction (n − 1 = 1 letter must remain) — so "at most one radical
+// elided" and "a real overlap ≥ 2" were mutually exclusive and the elision
+// branch was silently dead code for every short root. Concretely: Peh (𐤐𐤄,
+// "mouth") in construct state drops its ה (𐤐𐤉, "peh/pi") — mergeRootDisplay
+// returned null, and the caller's fallback (`_canonTrusted` branch) then threw
+// away the construct Yod entirely and showed the bare canonical root with NO
+// modification at all, violating "every modification visible" twice over:
+// once by not restoring the elided ה, once by silently dropping the ׳. Lowering
+// the floor to ≥ 1 is a no-op for every root of 3+ letters (there `lcs ≥
+// canonLen − 1` is already ≥ 2 and dominates), so this only changes behavior
+// for the 2-letter case it was accidentally foreclosing. Leviticus 24:12's Peh
+// now merges to 𐤐𐤄𐤉 (Pahay) — canonical root + kept surface Yod, per the rule.
 // `surface`/`canonical` are arrays of Paleo code points.
 function mergeRootDisplay(surface, canonical) {
     const S = surface, C = canonical, m = S.length, n = C.length;
@@ -2547,7 +2563,7 @@ function mergeRootDisplay(surface, canonical) {
                 ? dp[i - 1][j - 1] + 1
                 : Math.max(dp[i - 1][j], dp[i][j - 1]);
     const lcs = dp[m][n];
-    if (lcs < 2 || lcs < n - 1 || (m - lcs) > 2) return null;
+    if (lcs < 1 || lcs < n - 1 || (m - lcs) > 2) return null;
     const pairs = [];
     let i = m, j = n;
     while (i > 0 && j > 0) {
@@ -3058,8 +3074,45 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                     else if (_ps === 'p3') pfmObj.translation = _nu === 'pl' ? '[They (f)]' : '[She]';
                 } else if (_pf === 'J' && _nu === 'pl') pfmObj.translation = '[They]';
             }
+            // SYNTHESIZED 3ms PERFECT SUBJECT PREFIX (fieldy, 2026-09-21, replacing the
+            // old empty-paleo vbe-3ms SUFFIX chip below): Hebrew grammar marks a Qal/etc
+            // perfect 3ms verb with NO letter at all ("𐤏𐤔𐤄" already means "he did" via the
+            // bare form) — fieldy: "we are not following hebrew grammar... we are
+            // exposing all modifications... it makes sense to have the exact behavior of
+            // the other words in relation to the subject... This becomes a 'yod prefix.'"
+            // So a perfect 3ms verb now gets the SAME Yod PREFIX every imperfect 3ms verb
+            // already gets (pfm='J' -> 𐤉, css pfm-3ms) instead of an invisible suffix —
+            // same letter, same position (before the root), same css, so applyFlatLabels'
+            // normal FLAT_PREFIX pass relabels it identically to every other 3ms subject
+            // marker in the corpus (tense is no longer distinguished by this chip on
+            // purpose — that's the "exact behavior of the other words" fieldy asked for).
+            // Deliberately does NOT touch paleoArray: there is no real surface letter to
+            // remove, this is purely a display-consistency addition, exactly like the
+            // vbs-hif empty-paleo Hiphil-participle chip fixed earlier this same day.
+            if (!pfmObj && pos === 'verb' && (attributes['vt'] === 'perf' || attributes['vt'] === 'weqt') &&
+                attributes['ps'] === 'p3' && attributes['nu'] !== 'pl' && attributes['gn'] !== 'f' &&
+                (!attributes['prs'] || attributes['prs'] === 'absent')) {
+                pfmObj = { paleo: '𐤉', translit: '', translation: '[He did]', css: 'pfm-3ms' };
+            }
             // Hishtaphel (𐤔𐤇𐤄 'bow down', vs=hsht) is a reflexive stem OSHB leaves vbs-untagged.
             if ((!attributes['vbs'] || attributes['vbs'] === 'absent') && attributes['vs'] === 'hsht') attributes['vbs'] = 'HT';
+            // Hiphil/Hofal PARTICIPLES carry no written stem-marker letter at all — the
+            // causative sense lives in the Mem preformative + internal vowel pattern only;
+            // the causative ה that Hiphil's perfect/imperative/infinitive DO write never
+            // appears here (𐤍𐤊𐤄 Nakah "strike" -> Hiphil participle 𐤌𐤊𐤄 makah "one who
+            // strikes", no ה). OSHB leaves vbs untagged for these forms — same gap as the
+            // Hishtaphel case just above and the participle Mem preformative above that —
+            // so without this the causative modification had NO chip at all: not even the
+            // empty "[Causing]" chip the PARTICIPLE FALLBACK just below already knows how
+            // to render once vbs is actually set. fieldy, 2026-09-21 (Lev 24:18's
+            // WaManakah): "3 modifications but only 2 visible in the tokens." Hofal
+            // (passive-causative, vt=ptcp) intentionally NOT covered here — no
+            // GRAMMAR_MAP.vbs entry exists for it yet; flag to fieldy rather than invent a
+            // label, per this file's own evidence-only rule.
+            if ((!attributes['vbs'] || attributes['vbs'] === 'absent') && pos === 'verb' &&
+                (attributes['vt'] || '').startsWith('ptc') && attributes['vs'] === 'hif') {
+                attributes['vbs'] = 'H';
+            }
             let vbsObj = extractPrefix(attributes, 'vbs', 'vbs', paleoArray);
             let prsObj = extractSuffix(attributes, 'prs', 'prs', paleoArray, _canonEarly);
             let uvfObj = extractSuffix(attributes, 'uvf', 'uvf', paleoArray, _canonEarly);
@@ -3189,13 +3242,6 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 }
             }
             let vbeObj = extractSuffix(attributes, 'vbe', 'vbe', paleoArray, _canonEarly);
-            // The 3ms perfect (𐤀𐤌𐤓 "he said") adds no letter at all, so it had no chip:
-            // emit an empty one, like the unwritten Hifil 𐤄, so every verb shows its subject.
-            if (!vbeObj && pos === 'verb' && (attributes['vt'] === 'perf' || attributes['vt'] === 'weqt') &&
-                attributes['ps'] === 'p3' && attributes['nu'] !== 'pl' && attributes['gn'] !== 'f' &&
-                (!attributes['prs'] || attributes['prs'] === 'absent')) {
-                vbeObj = { paleo: '', translit: '', translation: '[He did]', css: 'vbe-3ms' };
-            }
 
             // ── MASCULINE PLURAL IMPERATIVE "-Ū" ENDING FALLBACK ────────────────
             // Masculine plural imperative ("Praise!", "Keep!", …) always ends in
@@ -4547,7 +4593,15 @@ function _navCacheStamp() {
     // (`firstBySn` payload) the /roots summary card reads — a v9 cache has no
     // such field and _firstAppearanceBySn would stay empty until the next
     // unrelated invalidation.
-    const NAV_BUILD_VERSION = 'wordsurf-v10-first-by-sn';   // roots by Strong's #, word-level surfaces (now per-SN scoped, canonical-root spliced), both editions, root first-appearance index, whole-SN renumbering, full-SN _wordBySn indexing
+    // BUMPED again (2026-09-21, v11) — mergeRootDisplay's overlap guard
+    // changed (lcs >= 2 -> lcs >= 1, see the dated comment on mergeRootDisplay
+    // above) and a new vbs synthesis rule was added for untagged Hiphil
+    // participles (see the Hishtaphel-adjacent comment in the pfm/vbs block
+    // above). Both are LOGIC changes to the same parsing path buildNavIndexes
+    // shares with the reader — a v10 cache was built with the old logic and
+    // would keep the elided-2-letter-root and invisible-Hiphil-participle bugs
+    // alive in the Root Explorer even after the code fix, until this bump.
+    const NAV_BUILD_VERSION = 'wordsurf-v11-merge-guard-vbs-ptc';   // roots by Strong's #, word-level surfaces (now per-SN scoped, canonical-root spliced), both editions, root first-appearance index, whole-SN renumbering, full-SN _wordBySn indexing
     const inputs = [
         path.join(__dirname, 'corpus.db'),             // tokens_bhs — the text the index is built from
         path.join(__dirname, 'surface-index.db'),      // the HEB half of the nav index

@@ -271,7 +271,7 @@ function mergeRootDisplay(surface, canonical) {
                 ? dp[i - 1][j - 1] + 1
                 : Math.max(dp[i - 1][j], dp[i][j - 1]);
     const lcs = dp[m][n];
-    if (lcs < 2 || lcs < n - 1 || (m - lcs) > 2) return null;
+    if (lcs < 1 || lcs < n - 1 || (m - lcs) > 2) return null;
     const pairs = [];
     let i = m, j = n;
     while (i > 0 && j > 0) {

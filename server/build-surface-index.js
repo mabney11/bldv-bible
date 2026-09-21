@@ -627,7 +627,7 @@ function mergeRootDisplay(surface, canonical) {
                 ? dp[i - 1][j - 1] + 1
                 : Math.max(dp[i - 1][j], dp[i][j - 1]);
     const lcs = dp[m][n];
-    if (lcs < 2 || lcs < n - 1 || (m - lcs) > 2) return null;
+    if (lcs < 1 || lcs < n - 1 || (m - lcs) > 2) return null;
     const pairs = [];
     let i = m, j = n;
     while (i > 0 && j > 0) {
@@ -821,7 +821,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
         }
         const _snEarly0 = strongs ? 'H' + strongs.replace(/^H+/, '') : '';
         const _canonEarly = (_snEarly0 && (loadStrongsRoots ? loadStrongsRoots() : (strongsRootsLex || {}))[_snEarly0]) || '';   // canonical root, used to disambiguate suffix alternatives
-        const pfmObj = extractPrefix(attributes, 'pfm', 'pfm', paleoArray);
+        let pfmObj = extractPrefix(attributes, 'pfm', 'pfm', paleoArray);
         // A synthesized 𐤌 on a PASSIVE participle (Pual/Hofal, vt=ptcp) is
         // 'being done', not 'doing' — relabel the chip; colour stays pfm-ptcp.
         if (pfmObj && attributes['pfm'] === 'M' && attributes['vt'] === 'ptcp') pfmObj.translation = '[Passive]';
@@ -836,8 +836,45 @@ function parseToken(wordRaw, pos, morph, strongs) {
                 else if (_ps === 'p3') pfmObj.translation = _nu === 'pl' ? '[They (f)]' : '[She]';
             } else if (_pf === 'J' && _nu === 'pl') pfmObj.translation = '[They]';
         }
+        // SYNTHESIZED 3ms PERFECT SUBJECT PREFIX (fieldy, 2026-09-21, replacing the
+        // old empty-paleo vbe-3ms SUFFIX chip below): Hebrew grammar marks a Qal/etc
+        // perfect 3ms verb with NO letter at all ("𐤏𐤔𐤄" already means "he did" via the
+        // bare form) — fieldy: "we are not following hebrew grammar... we are
+        // exposing all modifications... it makes sense to have the exact behavior of
+        // the other words in relation to the subject... This becomes a 'yod prefix.'"
+        // So a perfect 3ms verb now gets the SAME Yod PREFIX every imperfect 3ms verb
+        // already gets (pfm='J' -> 𐤉, css pfm-3ms) instead of an invisible suffix —
+        // same letter, same position (before the root), same css, so applyFlatLabels'
+        // normal FLAT_PREFIX pass relabels it identically to every other 3ms subject
+        // marker in the corpus (tense is no longer distinguished by this chip on
+        // purpose — that's the "exact behavior of the other words" fieldy asked for).
+        // Deliberately does NOT touch paleoArray: there is no real surface letter to
+        // remove, this is purely a display-consistency addition, exactly like the
+        // vbs-hif empty-paleo Hiphil-participle chip fixed earlier this same day.
+        if (!pfmObj && pos === 'verb' && (attributes['vt'] === 'perf' || attributes['vt'] === 'weqt') &&
+            attributes['ps'] === 'p3' && attributes['nu'] !== 'pl' && attributes['gn'] !== 'f' &&
+            (!attributes['prs'] || attributes['prs'] === 'absent')) {
+            pfmObj = { paleo: '𐤉', translit: '', translation: '[He did]', css: 'pfm-3ms' };
+        }
         // Hishtaphel (𐤔𐤇𐤄 'bow down', vs=hsht) is a reflexive stem OSHB leaves vbs-untagged.
         if ((!attributes['vbs'] || attributes['vbs'] === 'absent') && attributes['vs'] === 'hsht') attributes['vbs'] = 'HT';
+        // Hiphil/Hofal PARTICIPLES carry no written stem-marker letter at all — the
+        // causative sense lives in the Mem preformative + internal vowel pattern only;
+        // the causative ה that Hiphil's perfect/imperative/infinitive DO write never
+        // appears here (𐤍𐤊𐤄 Nakah "strike" -> Hiphil participle 𐤌𐤊𐤄 makah "one who
+        // strikes", no ה). OSHB leaves vbs untagged for these forms — same gap as the
+        // Hishtaphel case just above and the participle Mem preformative above that —
+        // so without this the causative modification had NO chip at all: not even the
+        // empty "[Causing]" chip the PARTICIPLE FALLBACK just below already knows how
+        // to render once vbs is actually set. fieldy, 2026-09-21 (Lev 24:18's
+        // WaManakah): "3 modifications but only 2 visible in the tokens." Hofal
+        // (passive-causative, vt=ptcp) intentionally NOT covered here — no
+        // GRAMMAR_MAP.vbs entry exists for it yet; flag to fieldy rather than invent a
+        // label, per this file's own evidence-only rule.
+        if ((!attributes['vbs'] || attributes['vbs'] === 'absent') && pos === 'verb' &&
+            (attributes['vt'] || '').startsWith('ptc') && attributes['vs'] === 'hif') {
+            attributes['vbs'] = 'H';
+        }
         const vbsObj = extractPrefix(attributes, 'vbs', 'vbs', paleoArray);
         let prsObj = extractSuffix(attributes, 'prs', 'prs', paleoArray, _canonEarly);
         const uvfObj = extractSuffix(attributes, 'uvf', 'uvf', paleoArray, _canonEarly);
@@ -954,13 +991,6 @@ function parseToken(wordRaw, pos, morph, strongs) {
             }
         }
         let vbeObj = extractSuffix(attributes, 'vbe', 'vbe', paleoArray, _canonEarly);
-        // The 3ms perfect (𐤀𐤌𐤓 "he said") adds no letter at all, so it had no chip:
-        // emit an empty one, like the unwritten Hifil 𐤄, so every verb shows its subject.
-        if (!vbeObj && pos === 'verb' && (attributes['vt'] === 'perf' || attributes['vt'] === 'weqt') &&
-            attributes['ps'] === 'p3' && attributes['nu'] !== 'pl' && attributes['gn'] !== 'f' &&
-            (!attributes['prs'] || attributes['prs'] === 'absent')) {
-            vbeObj = { paleo: '', translit: '', translation: '[He did]', css: 'vbe-3ms' };
-        }
 
         // Masculine plural imperative ("Praise!", "Keep!", …) always ends in ־וּ
         // (Waw) — a universal Hebrew inflectional rule, not a per-root guess.

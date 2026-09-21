@@ -1,5 +1,236 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## STANDING RULE: a 3ms PERFECT verb's "he" subject is a synthesized Yod PREFIX, not an invisible suffix — explicit override of Hebrew grammar (fieldy, 2026-09-21)
+
+Follow-up to the section directly below this one, same session. fieldy, on being told
+the empty "[He did]" chip already existed in the data for H6213 Asah (Lev 24:19,
+"כַּאֲשֶׁר עָשָׂה") but only showed up folded into a combined gloss string, verbatim:
+
+> "we are not following 'hebrew grammar' thats what got me in this situation in the
+> first place. We are exposing all modifications. it makes sense to have the exact
+> behavior of the other words in relation to the subject. This becomes a 'yod
+> prefix' and it should work how I requested `KaYaAsharaIshah`, any other 'he did'
+> will also have a yod prefix"
+
+**This is a deliberate, permanent policy decision, not a one-word patch — read it
+before touching `pfm`/`vbe`/subject-marking logic anywhere in this app again.**
+Real Biblical Hebrew grammar marks a Qal (or any binyan's) PERFECT 3ms verb with
+**zero** letters — "𐤏𐤔𐤄" already means "he did/made" via the bare form, no subject
+prefix or suffix at all, unlike every OTHER person/gender/number combination in the
+perfect paradigm (which DO write a real suffix: 𐤕𐤉 "I did", 𐤕 "you/she did", 𐤍𐤅 "we
+did", etc.) and unlike the IMPERFECT paradigm (which marks 3ms with a real, written
+Yod PREFIX — 𐤉, "he/it," pfm='J', css `pfm-3ms`). This app's OWN longstanding rule
+("no eliding, ever" — every modification visible, root or otherwise) had already
+been extended to this exact gap once before (see "The 3ms perfect... adds no letter
+at all, so it had no chip: emit an empty one" note in `git blame`/earlier in this
+file's history) — but an EMPTY chip, however correctly it existed in the component
+data, still visually disappears into a combined gloss parenthetical with nothing to
+anchor it, and reads as inconsistent next to an imperfect verb's real, visible Yod.
+fieldy's call: stop trying to be faithful to which forms Hebrew orthography marks
+and which it doesn't — mark EVERY 3ms subject the same way, always, with the same
+letter, in the same position, with the same styling. Grammatical accuracy on this
+one narrow point is explicitly NOT the goal here.
+
+**Fix, in both `server.js` and `build-surface-index.js`**: removed the old
+empty-paleo `vbe-3ms` SUFFIX chip entirely (`{paleo:'', translation:'[He did]',
+css:'vbe-3ms'}`, appended after the root) and replaced it with a synthesized
+PREFIX — placed in the exact same `pfmObj` slot a REAL imperfect 3ms Yod occupies
+(`{paleo:'𐤉', translation:'[He did]', css:'pfm-3ms'}`), guarded by `!pfmObj` (so it
+never overrides a genuine tagged prefix) and the same person/gender/number/no-object
+-suffix conditions the old rule used (`vt` perf or weqt, `ps`=p3, `nu`!=pl, `gn`!=f,
+no `prs`). Because it reuses `pfm-3ms` — the identical css class a real imperfect
+Yod gets — `applyFlatLabels`'s ordinary `FLAT_PREFIX` pass relabels it to `[He/it]`
+automatically, same as every other 3ms subject marker in the corpus. **This means
+the perfect/imperfect TENSE distinction is no longer visible on this chip at all —
+confirmed, and understood to be intentional** ("the exact behavior of the other
+words"), not an oversight; the root's own gloss is what still carries "did" vs.
+"does/will do" if that matters in context. Deliberately does NOT touch
+`paleoArray` — there is no real surface letter to remove, same as the vbs-hif
+empty-paleo Hiphil-participle fix directly below.
+
+Verified via the `PALEO_PARSE_ONLY` harness (see below): H6213 Asah, Qal perfect
+3ms, now renders `𐤉𐤏𐤔𐤄` ("YaIshah" — Yod prefix + root), labeled `[He/it]`, in the
+FIRST component slot exactly like an imperfect verb. Sanity-checked for
+non-regression: an imperfect 3ms verb (Natan) is untouched (`!pfmObj` guard — the
+real tagged prefix already wins, so this never double-fires); a perfect 3FS verb
+(different gender) is untouched (still gets its own real `vbe-3fs` suffix,
+unaffected by this new prefix rule, since `gn==='f'` excludes it).
+
+**Not yet baked or verified live** — same standing constraint (this sandbox's
+`better-sqlite3` binding still can't load `corpus.db`; verification here is limited
+to the `parseToken`/`parseHebrewData` unit-level harness described in the section
+below). Run `node build-surface-index.js` and restart the server (already covered
+by the same rebuild instruction and `NAV_BUILD_VERSION` bump the section below
+calls for — no separate rebuild needed for this on top of that one). After that,
+Leviticus 24:19's "כַּאֲשֶׁר עָשָׂה" chip should show a real, visible Yod-prefixed
+"He/it" ahead of the root wherever the perfect 3ms subject was previously invisible
+— check that specific word again, since this session could not confirm what the
+final rendered form of that particular multi-particle-chain word (Ka + Asher +
+Asah all folded into one display block) looks like end-to-end without live DB
+access; if the Asher-to-Asah letter boundary still looks garbled after this and the
+rebuild below, that's a separate, so-far-unconfirmed bug worth reporting back with
+the verse reference.
+
+## "No eliding" regressions in Leviticus 24 — two real code bugs found and fixed, one turned out to be a stale bake (fixed 2026-09-21)
+
+fieldy flagged three Parallel-view (BHS) words in Leviticus 24 that broke "let the
+true root shine with all modifications visible": H5414 Nathan showing as "YaThan"
+(missing the assimilated Nun), Lev 24:18's Hiphil participle of Nakah (H5221,
+"WaManakah") combining 3 grammatical modifications into a label but showing only 2
+visible chips, and Lev 24:12's construct of Peh/"mouth" (H6310) showing "Pay"
+where it should show "Pahay" (root Peh-He + the construct Yod kept, not swapped in
+for the root's own elided He). His ask, verbatim: "i dont want to have to go
+looking for other instances" — so this pass looked for the SHARED mechanism behind
+each, not a per-word patch, per this file's own standing rule ("Exception lists
+like NME_EXCLUSIONS are artifacts, not the design," below).
+
+**New tool for future sessions in this sandbox: a real, DB-free way to test
+`parseToken` changes.** `build-surface-index.js` already has a `PALEO_PARSE_ONLY=1`
+early-return (right before it opens `corpus.db`) that exports `{ parseToken,
+GRAMMAR_MAP, isRootSubsequence, strongsRoots }` — built for `audit-modifications.cjs`
+— but the file still unconditionally `require('better-sqlite3')`s at the top, which
+throws immediately in this device-bridge sandbox (`invalid ELF header` — the native
+binding is Windows-built, this sandbox is a Linux VM; same constraint documented
+throughout this file for corpus.db access). Fix: a tiny Node `--require` preload
+that monkey-patches `Module._load` to hand back a no-op fake constructor ONLY for
+the string `'better-sqlite3'`, leaving every other require untouched:
+```js
+const Module = require('module');
+const orig = Module._load;
+Module._load = function(request, parent, isMain) {
+  if (request === 'better-sqlite3') {
+    return function FakeDatabase() { return { prepare(){return{all:()=>[],get:()=>null,run:()=>({changes:0})};}, pragma(){}, exec(){} }; };
+  }
+  return orig.apply(this, arguments);
+};
+```
+Then `PALEO_PARSE_ONLY=1 node --require preload.js -e "const {parseToken} =
+require('./build-surface-index.js'); ..."` runs the REAL current parser against a
+hand-built `(word_raw, pos, morph, strongs)` tuple with zero DB dependency — the
+early-return fires before `new Database(...)` is ever called, so the fake never
+even needs to do anything. This is how every diagnosis and fix below was actually
+verified against the real code, not just `node --check`'d.
+
+**Bug 1 — H6310 Peh, and every other 2-letter canonical root: `mergeRootDisplay`'s
+overlap guard made elision-restoration structurally impossible.** The function's
+null-guard was `if (lcs < 2 || lcs < n - 1 || (m - lcs) > 2) return null;` — three
+conditions meant to read as "at most one radical elided, a real overlap, few
+surface additions." But for a 2-letter canonical root (n=2), "at most one elided"
+(`lcs >= n-1` = `lcs >= 1`) and "a real overlap" (`lcs >= 2`) are mutually
+exclusive: losing 1 of 2 letters can never leave more than 1 behind. So the
+`lcs < 2` clause is a silent no-op for every root of 3+ letters (there `lcs >=
+n-1` is already `>= 2` and dominates) and is EXCLUSIVELY the thing that made
+elision-restoration dead code for every 2-letter root. Confirmed via the harness:
+`mergeRootDisplay([Peh,Yod], [Peh,He])` (construct "pi" dropping its root He)
+returned `null` under the old guard. When it returns null, the caller's fallback
+(`_canonTrusted` branch, since `_canonMissing<=2` trivially passes for a 1-letter
+gap) does `rootDisplay = _canonicalRoot` — the bare canonical root ALONE, silently
+DROPPING the construct Yod rather than keeping it as a surface addition. So this
+was a double violation of "root + all modifications, nothing dropped": the elided
+He never came back, and the attested Yod vanished too. **Fix**: `lcs < 2` ->
+`lcs < 1` (requires at least one real letter of overlap, same protection level the
+`m - lcs <= 2` / `_canonTrusted` upstream gates already provide against a wrong
+Strong's number). This is a no-op for every 3+ letter root — verified against
+H378a Ayashah's own known defective-spelling case (𐤀𐤔𐤄 -> restores to 𐤀𐤉𐤔𐤄
+exactly as before) and against `tests/index-builder-consistency.test.cjs`'s
+existing H3878-vs-unrelated-root rejection test (still passes — that guard fires
+on a 3-letter canonical root, `lcs < n-1` alone already covers it, untouched by
+this change). Verified fixed: `parseToken('𐤐𐤉', 'subs', 'st=c|...', '6310')` now
+renders `𐤐𐤄𐤉` — root 𐤐𐤄 (Pah) restored in full, PLUS the construct Yod kept as
+its own `nme-j` chip (the existing "HARDEN: NO BAKED MODIFICATION MAY LOOK LIKE A
+BARE ROOT" splice already does this correctly once `mergeRootDisplay` actually
+succeeds) — "Pahay," exactly the spelling asked for.
+
+**Bug 2 — Hiphil (and likely Hofal) PARTICIPLES: OSHB never tags `vbs`, so the
+causative modification had no chip at all — not even the empty "unwritten letter"
+kind this codebase already has a working convention for.** This is the same shape
+of bug as the already-fixed "participle Mem preformative" gap earlier in this file
+(OSHB bakes the stem into the binyan pattern rather than tagging it, so a working
+`GRAMMAR_MAP` entry + a whole "PARTICIPLE FALLBACK" branch in `extractPrefix`
+already existed for exactly this case — but both are gated behind `attributes['vbs']`
+actually being SET, and OSHB leaves it `absent` for a Hiphil participle the same
+way it leaves `pfm` untagged there (no separate causative letter is written in
+מַכֶּה makeh, only the Mem preformative + internal pattern). Confirmed via the
+harness: `vbs=absent` on a Hiphil active participle of Nakah (H5221) produced a
+SINGLE chip (Mem prefix folded away since `pfm` also needed its own synthesis,
+root only) with the causative sense nowhere visible; forcing `vbs=H` correctly
+triggered the pre-existing empty-paleo `[Causing]` chip. **Fix**: added a
+synthesis rule right next to the existing Hishtaphel one (`vbs=hsht -> HT`):
+`if ((!attributes['vbs']||absent) && pos==='verb' && vt.startsWith('ptc') &&
+vs==='hif') attributes['vbs']='H';` — in both `server.js` and
+`build-surface-index.js`. Verified: Lev 24:18's word now parses to 3 real
+components — Mem "[One who]", empty "[Causing]" (vbs-hif), root "strike / kill" —
+matching what fieldy expected to see. **Not covered, deliberately**: Hofal
+(passive-causative participle, vt=ptcp). `GRAMMAR_MAP.vbs` has no entry for it at
+all yet, and per this file's own evidence-only rule, I did not invent one — flag
+to fieldy if a Hofal participle turns up showing the same "modification with no
+chip" symptom; it needs its own `GRAMMAR_MAP.vbs` label decided by him, not a
+guessed reuse of `'N'` (which currently means Nifal, a different binyan).
+
+**Bug 3 — H5414 Nathan / "YaThan" did NOT reproduce against current code.**
+`parseToken('𐤉𐤕𐤍', 'verb', 'vt=impf|pfm=J|...', '5414')` — the ordinary Qal
+imperfect 3ms case (assimilated first Nun, the classic Pe-Nun elision) — correctly
+returned `𐤉𐤍𐤕𐤍` ("YaNathan," full root restored) on the FIRST try, no code change
+needed, against both the pre- and post-fix guard (n=3 here, so Bug 1's fix is a
+no-op for this word specifically). Every other 3-letter-root elision case checked
+the same way (H378a) also already works. This means Bug 3 is almost certainly a
+STALE BAKE, not a live code defect — production is very likely serving an old
+`surface-index.db` (or the server's own in-memory `nav-index.cache.json`, see the
+`NAV_BUILD_VERSION` mechanism elsewhere in this file) from before whatever earlier
+session last touched this exact path, not something this session can fully rule
+out without corpus.db access. Only the reading-text/chip-breakdown SURFACE could
+be re-verified here; the nav-index/root-explorer surface (which reads a separately
+cached `nav-index.cache.json`) is even more likely to be showing pre-fix data
+since it survives independently of a `surface-index.db` rebuild — see the
+`NAV_BUILD_VERSION` bump below.
+
+**Bumped `NAV_BUILD_VERSION`** (`server.js`, root explorer's in-memory cache)
+`wordsurf-v10-first-by-sn` -> `wordsurf-v11-merge-guard-vbs-ptc` — Bug 1 and Bug 2
+are both LOGIC changes to the same parsing path `buildNavIndexes()` shares with
+the reader, so a v10 cache built under the old logic would keep both bugs alive
+in the Root Explorer specifically even after this fix, per this file's own
+established rule ("bump the version whenever buildNavIndexes' LOGIC changes, not
+just when an input changes").
+
+**Also kept in sync (same `lcs < 2` -> `lcs < 1` edit only — NOT the vbs/participle
+fix, see below)**: `tests/parse-extract.cjs`, `tests/build-parseToken.cjs`. These
+two are standalone test-fixture copies of the parsers, already visibly stale
+relative to `server.js`/`build-surface-index.js` (neither had the Hishtaphel `vbs`
+synthesis this session found sitting right next to the code it's patching, despite
+comments elsewhere claiming everything is "kept in sync") — I did not try to thread
+the participle-`vbs` fix through them without being able to verify it against
+their already-drifted surrounding code. `tests/surface-overrides.test.cjs`
+independently FAILS on this checkout (`H3878` canonical-root-mismatch guard not
+rejecting an unrelated root) — confirmed via direct analysis (H3878's canonical
+root is 3 letters, so Bug 1's fix is provably a no-op there) that this is a
+PRE-EXISTING failure unrelated to anything in this session, not a regression from
+this fix — worth a look separately.
+
+**Also noticed, not touched**: a stale `.git/index.lock` blocked `git stash` in
+this session's sandbox the same way this file's own "Desktop observability
+widget" section (2026-09-18) describes — confirms that failure mode is still live
+if it resurfaces; the widget's auto-resolve (removes a lock file once it's >2 min
+old) should still clear it on its own on fieldy's machine.
+
+**Not run against a live server this session** (same standing sandbox
+constraint — this device-bridge sandbox's `better-sqlite3` binding is
+Windows-built and can't load here at all, `invalid ELF header`, so the ONLY
+verification possible was the new `PALEO_PARSE_ONLY` harness above plus
+`node --check` on both edited files, both clean). Before calling this fixed:
+```
+node build-surface-index.js
+```
+(rebuilds `surface-index.db` fresh — picks up Bug 1 + Bug 2 automatically, no
+flag needed) then restart the server (loads the new `NAV_BUILD_VERSION`, forcing
+`nav-index.cache.json` to rebuild too). Then check, in the Parallel/BHS view:
+Leviticus 24:12's Peh chip should read "Pahay" with a separate Yod modifier chip,
+not bare "Pay"; Leviticus 24:18's Hiphil participle of Nakah should show 3 visible
+chips (And / One who / Causing) before the root, not 2; and Leviticus 24:19's
+Nathan should already be showing "YaNathan" correctly even before the rebuild —
+if it's STILL "YaThan" after restart, that's new information (means this really
+is a live code path this session's synthetic `parseToken` calls didn't reach) and
+worth flagging back rather than assuming the rebuild alone fixed it.
+
 ## Desktop observability widget (added 2026-09-18)
 
 fieldy, 2026-09-18, after a lexicon-sync stall sat unnoticed for hours — first a
