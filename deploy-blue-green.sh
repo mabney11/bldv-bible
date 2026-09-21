@@ -46,8 +46,55 @@ echo "==> Pulling built image from GHCR..."
 # ghcr.io` on this box with a GitHub personal access token that has
 # read:packages scope (GHCR pulls need auth even for your own package
 # unless you make it public).
-docker pull ghcr.io/mabney11/paleo-studio:latest
-docker tag ghcr.io/mabney11/paleo-studio:latest paleo-studio
+#
+# 2026-09-21: this used to pull `:latest`, which is whatever the last
+# successful build happened to publish — it carries NO relationship to the
+# commit `git pull` above just fetched. A deploy run before GitHub Actions
+# finished (or after a push that never made it to origin at all) still
+# found *some* `:latest` image sitting there, pulled it, and reported
+# success — silently redeploying old code under a new commit's name. That's
+# exactly what happened on 2026-09-21: a server.js fix was rebuilt against
+# and tested locally, but never `git push`ed, so Actions never ran, so
+# `:latest` was still last week's image, and this script cheerfully "deployed"
+# it anyway with no error. build.yml tags every build with BOTH `:latest`
+# and `:<git-sha>` (env.IMAGE_NAME:${{ github.sha }}) specifically so a
+# deploy can demand the one that matches what's actually checked out here —
+# pulling `:$SHA` instead of `:latest` turns "did the right image get built"
+# from an invisible assumption into a hard requirement: if that tag doesn't
+# exist yet on GHCR, the pull fails and the script stops, rather than
+# quietly substituting whatever old image happened to be cached under
+# `:latest`. The short poll loop below covers the ordinary case where you
+# push and immediately deploy, and Actions (usually ~1-2 min) just hasn't
+# finished publishing yet — it is NOT a workaround for missing/failed
+# builds, it is a wait for one that is legitimately still in flight.
+SHA="$(git rev-parse HEAD)"
+IMAGE="ghcr.io/mabney11/paleo-studio:$SHA"
+echo "==> Waiting for GitHub Actions to publish $IMAGE ..."
+pulled=0
+for i in $(seq 1 60); do
+  if docker pull "$IMAGE" > /tmp/paleo-deploy-pull.log 2>&1; then
+    pulled=1
+    break
+  fi
+  if [ "$i" = 1 ]; then
+    echo "    not published yet — normal for the ~1-2 minutes right after a push; polling every 10s (up to 10m)"
+  fi
+  sleep 10
+done
+
+if [ "$pulled" != "1" ]; then
+  echo "==> GAVE UP after 10m waiting for $IMAGE"
+  echo "==> This means GitHub Actions hasn't built this commit — check:"
+  echo "        https://github.com/mabney11/paleo-studio/actions"
+  echo "==> Most likely cause: this commit was never pushed to origin/main."
+  echo "        git log -1 --oneline   (confirm this box's HEAD)"
+  echo "        git push origin main   (from your own machine, if it's unpushed)"
+  echo "==> Nothing was touched — whichever container is currently live is still serving traffic."
+  tail -20 /tmp/paleo-deploy-pull.log
+  exit 1
+fi
+
+docker tag "$IMAGE" paleo-studio
 
 # ── DATA GATES — run against the LIVE volume, before touching anything ──────
 # corpus.db / translation.db / bible.db are NOT baked into the image (see

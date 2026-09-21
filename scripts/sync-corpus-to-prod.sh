@@ -32,7 +32,7 @@
 
 set -euo pipefail
 
-REMOTE_HOST="paleo-lightsail"
+REMOTE_HOST="paleo-prod"
 DB_NAME="${DB:-corpus.db}"
 REMOTE_PATH="/mnt/paleo-data/${DB_NAME}"
 KEEP_BACKUPS=2

@@ -8403,7 +8403,25 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
                 for (const t of tokenQueryFor(bookId, req.query.source).all(bookId, seg.hebChapter)) {
                     if (t.verse < seg.hebStart || t.verse > seg.hebEnd || !t.strongs) continue;
                     const engVerse = seg.engStart + (t.verse - seg.hebStart);
-                    authSN.set(`${engVerse}\u0000${t.token_ordinal}`, normH(t.strongs));
+                    // Apply the SAME blanket whole-SN renumber (snRenumber, e.g. H802 ->
+                    // H378a) that applyLocOverrideToSurfRow already applied to the BAKED
+                    // side (`rows`, above) before this guard ever runs. Found 2026-09-21
+                    // chasing a Leviticus 24 chapter that fell back to live-parse on
+                    // EVERY request no matter what else was fixed: verse 10/11's 𐤀𐤔𐤄
+                    // (H802, renumbered to H378a) and verse 11's 𐤁𐤕 (H1323, renumbered
+                    // to H1151a) are both flagged HOMOGRAPH_SURFACES, and both have a
+                    // blanket renumber — so `baked` below was already H378a/H1151a (post-
+                    // renumber) while `auth` here was still the raw, pre-renumber H802/
+                    // H1323 straight from tokens_bhs. Comparing a renumbered value
+                    // against its own un-renumbered original always disagrees, which
+                    // flagged homographDrift on every single request for any chapter
+                    // containing a renumbered word — regardless of whether the bake was
+                    // actually right — and dragged the WHOLE chapter into the live-parse
+                    // fallback every time. Normalizing auth through the same
+                    // applySnRenumber call the baked side already went through means
+                    // both sides are compared on the same (post-renumber) basis, so a
+                    // renumber never looks like drift again.
+                    authSN.set(`${engVerse}\u0000${t.token_ordinal}`, normH(applySnRenumber(t.strongs, snRenumber)));
                 }
             }
             homographDrift = rows.some(r => {
