@@ -605,14 +605,15 @@ export function sliceQuoteTree(nodes, start, end, markedOf) {
       style: n.style,
       unclosed: n.unclosed,
       // A verse-level highlight (tap-to-mark, or a `?verse=` deep link) is
-      // scoped to the ONE verse it landed on, but a quote can run past that
-      // verse's own boundary (see the verseBounds comment above) — Genesis
-      // 1:14-15, fieldy: marking v14 painted only v14's own slice of the
-      // shared <...> quote, leaving v15's continuation unpainted and reading
-      // as two separate quotes instead of one. `markedOf(n)` — keyed off the
-      // ORIGINAL, unsliced node (see Reader.jsx's quoteNodeMarked) — answers
-      // "is ANY verse this whole quote touches currently marked", so every
-      // per-verse slice of the same quote paints together or not at all.
+      // scoped to the ONE verse it landed on — `markedOf` (Reader.jsx's
+      // render loop, see the 2026-09-21 comment near quoteMarkedOf) just
+      // answers "is THIS verse currently marked", so a quote spanning many
+      // verses paints only the slice(s) belonging to the verse actually
+      // marked, not every verse the quote happens to touch. (2026-08-26 this
+      // used to look up "is ANY verse the whole quote touches marked" so a
+      // quote split across two verses like Genesis 1:14-15 wouldn't show a
+      // seam — reverted 2026-09-21, fieldy: that propagation lit up nearly
+      // all of Leviticus 1 from one tap, since its quote never re-closes.)
       marked: markedOf ? !!markedOf(n) : false,
       markOpen: keepOpen ? n.markOpen : '',
       markClose: keepClose ? n.markClose : '',
@@ -1845,30 +1846,19 @@ export default function Reader() {
     return { tree: dissolveOverlongQuotes(parseQuoteMarks(acc, boundaries, { starts: verseStarts, ends: verseEnds })), ranges };
   }, [isForeignScript, bookText, chapter, renderVerseNums, versesByNum]);
 
-  // Every top-level quote node that touches a marked verse, mapped to true —
-  // built off bookQuoteScan's own tree/ranges (never re-parses anything) so
-  // the highlight .rd-verse.marked .rd-quote-d1 paints (Reader.css) can be
-  // applied, via sliceQuoteTree's `marked` field, to every per-verse SLICE of
-  // that SAME quote — not just the one verse that happened to get tapped or
-  // land here via a `?verse=` deep link (Genesis 1:14-15, fieldy: marking
-  // v14 left v15's continuation of their shared quote unpainted, reading as
-  // two separate quotes). Keyed by node identity (a WeakMap) rather than
-  // position, since sliceQuoteTree's own output nodes are copies.
-  const quoteNodeMarked = useMemo(() => {
-    const map = new WeakMap();
-    if (!bookQuoteScan) return map;
-    const verseRanges = Object.entries(bookQuoteScan.ranges);
-    const walk = (nodes) => {
-      nodes.forEach(n => {
-        if (n.type !== 'quote') return;
-        const anyMarked = verseRanges.some(([v, r]) => n.start < r.end && n.end > r.start && marks.has(markKey(Number(v))));
-        map.set(n, anyMarked);
-        walk(n.children);
-      });
-    };
-    walk(bookQuoteScan.tree);
-    return map;
-  }, [bookQuoteScan, marks]);
+  // 2026-09-21, fieldy: "when I select a verse thats a part of a quote, the
+  // whole quote is highlighted, instead of just the verse selected." Traced
+  // to Leviticus 1: Yahawah's speech opens a quote in v2 and this
+  // translation never gives it a closing mark anywhere in the chapter, so
+  // the ENTIRE quote (v2 through v17) is one still-open node. The
+  // cross-verse propagation this used to do (see sliceQuoteTree's own
+  // comment, and the quoteMarkedOf change just below) was built for a
+  // narrow 2-verse case (Genesis 1:14-15) but, applied to a whole
+  // never-closing discourse like this, lit up nearly the whole chapter from
+  // a single tap — confirmed live (tapping v2 painted v3 onward too, just
+  // faintly enough that a screenshot hid it). fieldy's call: only the
+  // actually-tapped verse highlights, even if that means a still-open
+  // quote's highlight bar stops mid-quote at a verse boundary again.
 
   // Verse 0 is a superscription/title ("A Psalm of David"), not verse 1 — see
   // the headings note below. It used to fall through the ordinary per-verse
@@ -2137,7 +2127,11 @@ export default function Reader() {
                         const range = bookQuoteScan?.ranges[vnum];
                         const q = splitScriptureQuote(raw);
                         if (!range) return renderVerseNodesWithQuotes(raw, glossMode); // defensive fallback
-                        const quoteMarkedOf = (n) => quoteNodeMarked.get(n);
+                        // Per-verse only (see the comment above quoteNodeMarked's
+                        // old spot, further up this component) — every node slice
+                        // rendered here belongs to THIS verse's own render pass, so
+                        // just check whether vnum itself is marked.
+                        const quoteMarkedOf = () => marks.has(markKey(vnum));
                         if (!q) {
                           const sliced = sliceQuoteTree(bookQuoteScan.tree, range.start, range.end, quoteMarkedOf);
                           return renderQuoteTree(sliced, glossMode, `v${vnum}-`);
