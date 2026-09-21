@@ -854,7 +854,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
         if (!pfmObj && pos === 'verb' && (attributes['vt'] === 'perf' || attributes['vt'] === 'weqt') &&
             attributes['ps'] === 'p3' && attributes['nu'] !== 'pl' && attributes['gn'] !== 'f' &&
             (!attributes['prs'] || attributes['prs'] === 'absent')) {
-            pfmObj = { paleo: '𐤉', translit: '', translation: '[He did]', css: 'pfm-3ms' };
+            pfmObj = { paleo: '𐤉', translit: '', translation: '[He did]', css: 'pfm-3ms', synthetic: true };
         }
         // Hishtaphel (𐤔𐤇𐤄 'bow down', vs=hsht) is a reflexive stem OSHB leaves vbs-untagged.
         if ((!attributes['vbs'] || attributes['vbs'] === 'absent') && attributes['vs'] === 'hsht') attributes['vbs'] = 'HT';

@@ -3092,7 +3092,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             if (!pfmObj && pos === 'verb' && (attributes['vt'] === 'perf' || attributes['vt'] === 'weqt') &&
                 attributes['ps'] === 'p3' && attributes['nu'] !== 'pl' && attributes['gn'] !== 'f' &&
                 (!attributes['prs'] || attributes['prs'] === 'absent')) {
-                pfmObj = { paleo: '𐤉', translit: '', translation: '[He did]', css: 'pfm-3ms' };
+                pfmObj = { paleo: '𐤉', translit: '', translation: '[He did]', css: 'pfm-3ms', synthetic: true };
             }
             // Hishtaphel (𐤔𐤇𐤄 'bow down', vs=hsht) is a reflexive stem OSHB leaves vbs-untagged.
             if ((!attributes['vbs'] || attributes['vbs'] === 'absent') && attributes['vs'] === 'hsht') attributes['vbs'] = 'HT';
@@ -8490,11 +8490,25 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
             let comps;
             try { comps = JSON.parse(r.components); } catch { return true; }
             if (!Array.isArray(comps) || !comps.length) return false;
-            // Find the first component that has a paleo glyph. The components
-            // are emitted in display order (prefixes before root before
-            // suffixes), so the first non-empty paleo must share its first
-            // letter with the source word_raw's first letter.
-            const firstWithPaleo = comps.find(c => c && c.paleo && c.paleo.length);
+            // Find the first component that has a paleo glyph AND corresponds to a
+            // REAL, ATTESTED surface letter. components.synthetic === true marks a
+            // deliberately-invented modification with no letter in word_raw at all
+            // (added 2026-09-21 — the 3ms-perfect 'he did' Yod prefix, fieldy's
+            // explicit 'expose all modifications' directive: see the pfmObj comment
+            // a few hundred lines up). Skipping synthetic components here is
+            // required, not optional: word_raw for a bare perfect verb (e.g. עשה)
+            // never starts with the synthesized Yod, so treating that Yod as 'the
+            // surface's first letter' makes this heuristic misfire on every single
+            // 3ms-perfect verb in the corpus, flagging the WHOLE CHAPTER as
+            // index-corrupt and silently diverting it to the live-parse fallback
+            // below — even though the bake itself is correct. Found 2026-09-21
+            // chasing Leviticus 24:19 (Nathan/H5414) rendering unmerged ('Than')
+            // on the live site despite a verified-correct surface-index.db: the
+            // TRUE cause was Lev 24:19's OWN token 11 (Asah/H6213, 'he did')
+            // tripping this exact check and dragging the entire chapter — Nathan
+            // included — into live parse. The first non-empty, non-synthetic
+            // paleo must share its first letter with word_raw's first letter.
+            const firstWithPaleo = comps.find(c => c && c.paleo && c.paleo.length && !c.synthetic);
             if (!firstWithPaleo) return false;
             const sourceFirst = [...r.word_raw][0];
             const compFirst   = [...firstWithPaleo.paleo][0];
