@@ -120,6 +120,7 @@ $StatusFile = Join-Path $RepoRoot 'server\.observability\status.json'
           <TextBlock Name="ClearLocksBtn" Text="Locks"    Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
           <TextBlock Name="DeployBtn"    Text="Deploy"    Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
           <TextBlock Name="LogsBtn"      Text="Logs"      Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
+          <TextBlock Name="RestartCollectorBtn" Text="Restart Collector" Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
         </WrapPanel>
       </StackPanel>
 
@@ -202,6 +203,7 @@ $CatchUpBtn     = $window.FindName("CatchUpBtn")
 $ClearLocksBtn  = $window.FindName("ClearLocksBtn")
 $DeployBtn      = $window.FindName("DeployBtn")
 $LogsBtn        = $window.FindName("LogsBtn")
+$RestartCollectorBtn = $window.FindName("RestartCollectorBtn")
 
 # Drag the borderless window by its background (any row/column with no more
 # specific handler -- WPF hit-tests the Border first, so this covers the
@@ -566,6 +568,84 @@ function Start-PaleoLocalAction {
     $Button.IsEnabled = $true
 }
 
+# fieldy, 2026-09-22: a fix to observability-status.mjs sat completely
+# inert for 3+ hours because Stop-ScheduledTask/Start-ScheduledTask
+# doesn't actually kill the running collector -- its task action launches
+# observability-collector-hidden.vbs, which spawns bash.exe DETACHED
+# (shell.Run(cmd, 0, False)), which spawns node.exe; neither grandchild is
+# in the task's own job object, so Task Scheduler's Stop never reaches
+# them and the old node.exe just keeps running (and keeps winning its own
+# single-instance lock against every new copy) through every restart
+# attempt. See scripts/restart-observability-collector.ps1's header for
+# the full writeup -- this is that same logic, run in-process for a
+# one-click version, using PowerShell's own Get-Process/taskkill/
+# Start-ScheduledTask rather than shelling out to bash (nothing here needs
+# git or ssh). The one authoritative source of truth is the collector's
+# OWN self-reported pid (server\.observability\collector.pid, written by
+# its acquireSingleInstanceLock) -- kill THAT directly instead of trusting
+# Task Scheduler to have tracked it.
+function Invoke-RestartCollector {
+    $taskName = 'bldbible observability collector'
+    $pidFile = Join-Path $RepoRoot 'server\.observability\collector.pid'
+
+    $RestartCollectorBtn.Text = "Restarting..."
+    $RestartCollectorBtn.IsEnabled = $false
+
+    $oldPid = $null
+    if (Test-Path $pidFile) {
+        $raw = (Get-Content $pidFile -Raw -ErrorAction SilentlyContinue)
+        if ($raw -and $raw.Trim() -match '^\d+$') { $oldPid = [int]$raw.Trim() }
+    }
+
+    $killedOld = $true
+    if ($oldPid) {
+        $proc = Get-Process -Id $oldPid -ErrorAction SilentlyContinue
+        if ($proc) {
+            try {
+                & taskkill /PID $oldPid /T /F 2>&1 | Out-Null
+            } catch {}
+            Start-Sleep -Milliseconds 500
+            $killedOld = -not (Get-Process -Id $oldPid -ErrorAction SilentlyContinue)
+        }
+    }
+
+    try {
+        Start-ScheduledTask -TaskName $taskName
+    } catch {
+        $RestartCollectorBtn.Text = "Restart Collector"
+        $RestartCollectorBtn.IsEnabled = $true
+        $AutoFixText.Text = "Restart failed: could not start '$taskName' ($($_.Exception.Message))"
+        return
+    }
+
+    $newPid = $null
+    for ($i = 0; $i -lt 20; $i++) {
+        Start-Sleep -Milliseconds 500
+        if (-not (Test-Path $pidFile)) { continue }
+        $raw = (Get-Content $pidFile -Raw -ErrorAction SilentlyContinue)
+        if (-not $raw -or $raw.Trim() -notmatch '^\d+$') { continue }
+        $candidate = [int]$raw.Trim()
+        if ($candidate -ne $oldPid -and (Get-Process -Id $candidate -ErrorAction SilentlyContinue)) {
+            $newPid = $candidate
+            break
+        }
+    }
+
+    $RestartCollectorBtn.IsEnabled = $true
+    if ($newPid) {
+        $RestartCollectorBtn.Text = "Restarted (pid $newPid)"
+        $AutoFixText.Text = ""
+    } elseif (-not $killedOld) {
+        $RestartCollectorBtn.Text = "Restart Collector"
+        $AutoFixText.Text = "pid $oldPid wouldn't die -- try an elevated PowerShell, or the task may need 'Run with highest privileges'"
+    } else {
+        $RestartCollectorBtn.Text = "Restart Collector"
+        $AutoFixText.Text = "Started, but no new pid showed up in 10s -- check ~\observability.log"
+    }
+    Start-Sleep -Seconds 3
+    $RestartCollectorBtn.Text = "Restart Collector"
+}
+
 $CommitBtn.Add_MouseLeftButtonDown({ Invoke-CommitAndPush })
 $CommitMsgBox.Add_KeyDown({
     param($s, $e)
@@ -693,6 +773,8 @@ $DeployBtn.Add_MouseLeftButtonDown({
 $LogsBtn.Add_MouseLeftButtonDown({
     Start-Process explorer.exe $env:USERPROFILE
 })
+
+$RestartCollectorBtn.Add_MouseLeftButtonDown({ Invoke-RestartCollector })
 
 # ── System tray icon ────────────────────────────────────────────────────
 # Same crowned-lion mark as the web app's own favicon (favicon.svg, rasterized
