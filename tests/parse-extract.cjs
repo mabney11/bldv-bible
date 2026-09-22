@@ -26,7 +26,7 @@ const GRAMMAR_MAP = {
     inrg: { '𐤄': '[?]' },
     // pfm — verbal prefix markers, each tagged with its own css class
     pfm: {
-        'J':  { paleo: ['𐤅𐤉','𐤅','𐤉'], trans: 'He/It',          css: 'pfm-3ms' },
+        'J':  { paleo: ['𐤅𐤉','𐤅','𐤉','𐤋'], trans: 'He/It',      css: 'pfm-3ms' },   // 𐤋 = Aramaic 3rd-person imperfect prefix (𐤋𐤄𐤅𐤀, 𐤋𐤄𐤅𐤍)
         'T':  { paleo: ['𐤕'],            trans: 'She/You',        css: 'pfm-2or3f' },
         'T=': { paleo: ['𐤕'],            trans: 'She',            css: 'pfm-2or3f' },
         '>':  { paleo: ['𐤀'],            trans: 'I',              css: 'pfm-1cs' },
@@ -63,11 +63,14 @@ const GRAMMAR_MAP = {
         'T':   { paleo: ['𐤕'],        trans: 'Feminine',        css: 'nme-f' },
         'J':   { paleo: ['𐤉'],        trans: 'Of/My',           css: 'nme-j' },
         'J=':  { paleo: ['𐤉'],        trans: 'Of/My',           css: 'nme-j' },
-        'JM':  { paleo: ['𐤉𐤌','𐤌'],  trans: 'Plural (masc)',   css: 'nme-jm' },
-        'JM=': { paleo: ['𐤉𐤌','𐤌'],  trans: 'Plural (masc)',   css: 'nme-jm' },
+        'JM':  { paleo: ['𐤉𐤌','𐤉𐤍','𐤌'],  trans: 'Plural (masc)',   css: 'nme-jm' },   // 𐤉𐤍 = Aramaic -in (Daniel/Ezra)
+        'JM=': { paleo: ['𐤉𐤌','𐤉𐤍','𐤌'],  trans: 'Plural (masc)',   css: 'nme-jm' },
         'WT':  { paleo: ['𐤅𐤕','𐤕'],  trans: 'Plural (fem)',    css: 'nme-wt' },
         'WTJ': { paleo: ['𐤅𐤕𐤉','𐤕𐤉'], trans: 'Plural of',    css: 'nme-wtj' },
         'NH':  { paleo: ['𐤍𐤄'],      trans: 'They (fem)',      css: 'nme-nh' },
+        // Synthesized for FEMININE PARTICIPLES / untagged feminine adjectives
+        // (kept in sync): singular -𐤕/-𐤄, plural -𐤅𐤕.
+        'FS':  { paleo: ['𐤕','𐤄'],    trans: 'Feminine',        css: 'nme-f'  },
     },
     // vbe — verbal endings (person agreement)
     vbe: {
@@ -79,8 +82,27 @@ const GRAMMAR_MAP = {
         'W':  { paleo: ['𐤅'],     trans: 'They did',       css: 'vbe-3mp' },
         'WN': { paleo: ['𐤅𐤍'],    trans: 'They did (f)',   css: 'vbe-3fp' },
         'NH': { paleo: ['𐤍𐤄'],    trans: 'They did (f)',   css: 'vbe-3fp' },
-        'H=': { paleo: ['𐤕𐤄','𐤄'], trans: 'She did',      css: 'vbe-3fs' },
-        'H':  { paleo: ['𐤕𐤄','𐤄'], trans: 'She did',      css: 'vbe-3fs' },
+        'H=': { paleo: ['𐤕𐤄','𐤄','𐤕'], trans: 'She did',  css: 'vbe-3fs' },
+        'H':  { paleo: ['𐤕𐤄','𐤄','𐤕'], trans: 'She did',  css: 'vbe-3fs' },
+        // ── SYNTHESIZED ENDINGS (kept in sync between server.js and
+        // build-surface-index.js). OSHB's morph string in corpus.db carries NO
+        // `vbe` key at all, so none of the rows above ever fired from a tag;
+        // parseHebrewData derives the tag from vt/ps/gn/nu (see "VERBAL ENDING
+        // SYNTHESIS") and reaches these rows by the keys below. Longest
+        // alternative first: the paragogic nun (𐤅𐤍, 𐤉𐤍) and the plene 2ms
+        // (𐤕𐤄) / archaic 2fs (𐤕𐤉) spellings are untagged in the corpus.
+        'T2M':  { paleo: ['𐤕𐤄','𐤕'],  trans: 'You did',          css: 'vbe-2ms'   },
+        'T2F':  { paleo: ['𐤕𐤉','𐤕'],  trans: 'You did (f)',      css: 'vbe-2or3f' },
+        'IW3':  { paleo: ['𐤅𐤍','𐤅'],  trans: 'They will',        css: 'vbe-3mp'   },
+        'IW2':  { paleo: ['𐤅𐤍','𐤅'],  trans: 'You all will',     css: 'vbe-2mp'   },
+        'INH3': { paleo: ['𐤍𐤄'],      trans: 'They will (f)',    css: 'vbe-3fp'   },
+        'INH2': { paleo: ['𐤍𐤄'],      trans: 'You all will (f)', css: 'vbe-2fp'   },
+        'IJ':   { paleo: ['𐤉𐤍','𐤉'],  trans: 'You will (f)',     css: 'vbe-2or3f' },
+        'COH1': { paleo: ['𐤄'],       trans: 'Let me',           css: 'vbe-1cs'   },
+        'COHN': { paleo: ['𐤄'],       trans: 'Let us',           css: 'vbe-1cp'   },
+        'IMW':  { paleo: ['𐤅𐤍','𐤅'],  trans: 'you all',          css: 'vbe-2mp'   },
+        'IMJ':  { paleo: ['𐤉𐤍','𐤉'],  trans: 'you (f)',          css: 'vbe-2or3f' },
+        'IMNH': { paleo: ['𐤍𐤄'],      trans: 'you all (f)',      css: 'vbe-2fp'   },
         // 'J' = 2fs verbal ending (yod suffix). Verified empirically: every
         // corpus token with vbe=J has ps=p2|gn=f|nu=sg and ends in 𐤉.
         // 497 occurrences across the OT — examples include 𐤕𐤃𐤁𐤓𐤉 (Isaiah
@@ -732,8 +754,23 @@ function extractPrefix(attributes, attrKey, mapKey, paleoArray) {
     // metathesis already showed in the surface) rather than stripping anything.
     const sibilants = ['𐤔', '𐤎', '𐤑', '𐤆'];
     if (attrKey === 'vbs' && (rawTag === 'HCT' || rawTag === 'HT')) {
-        if (paleoArray.length >= 2 && sibilants.includes(paleoArray[0]) && paleoArray[1] === '𐤕') {
-            return { paleo: '', translit: '', translation: `[${mapData.trans}]`, css: mapData.css || 'mod-pref' };
+        // HITPAEL METATHESIS (kept in sync between server.js and
+        // build-surface-index.js). Before a sibilant the stem's 𐤕 transposes
+        // INSIDE the root (𐤄𐤔𐤕𐤌𐤓 = 𐤄𐤕 + 𐤔𐤌𐤓; after 𐤑 it also hardens to 𐤈:
+        // 𐤄𐤑𐤈𐤃𐤒). The reader shows the root plus its modifications, not the
+        // manuscript letter order (the 1cs 𐤀𐤀𐤌𐤓 rule), so lift the infixed
+        // letter OUT of the root zone into the stem chip — otherwise the root
+        // displays as 𐤔𐤕𐤌𐤓 and the reflexive marker is invisible. Previously
+        // this returned an EMPTY chip and left the 𐤕 inside the root.
+        const _sibAt = (i) => paleoArray.length > i + 1 && sibilants.includes(paleoArray[i]) &&
+                              (paleoArray[i + 1] === '𐤕' || (paleoArray[i] === '𐤑' && paleoArray[i + 1] === '𐤈'));
+        if (paleoArray[0] === '𐤄' && _sibAt(1)) {
+            const inf = paleoArray[2]; paleoArray.splice(2, 1); paleoArray.splice(0, 1);
+            return { paleo: '𐤄' + inf, translit: '', translation: `[${mapData.trans}]`, css: mapData.css || 'mod-pref', infixed: true };
+        }
+        if (_sibAt(0)) {
+            const inf = paleoArray[1]; paleoArray.splice(1, 1);
+            return { paleo: inf, translit: '', translation: `[${mapData.trans}]`, css: mapData.css || 'mod-pref', infixed: true };
         }
     }
     const currentStr = paleoArray.join('');
@@ -746,10 +783,24 @@ function extractPrefix(attributes, attrKey, mapKey, paleoArray) {
         paleoArray.splice(0, charCount);
         return { paleo: matchedPaleo, translit: '', translation: `[${mapData.trans}]`, css: mapData.css || 'mod-pref' };
     }
+    // PARTICIPLE FALLBACK (kept in sync with build-surface-index.js parseToken): in a participle the stem
+    // marker is often not written as its own letter — Hifil/Hofal 𐤄 is
+    // REPLACED by the preformative 𐤌 (𐤌𐤔𐤊𐤉𐤋), and the Hitpael 𐤕 assimilates
+    // into a following dental/emphatic (𐤌𐤈𐤄𐤓, 𐤌𐤃𐤁𐤓) or transposes past a
+    // sibilant (𐤌𐤑𐤈𐤃𐤒). The stem is still tagged and still true, so emit the
+    // same empty-paleo chip the sibilant case above already uses rather than
+    // silently dropping the modification. Participles only — non-participle
+    // forms keep their existing behaviour.
+    // Extended to EVERY form (not just participles): the Hitpael 𐤕 also
+    // assimilates in the imperfect/perfect (𐤉𐤃𐤁𐤓, 𐤉𐤈𐤄𐤓, 𐤄𐤈𐤄𐤓𐤅) and the
+    // tag still says the stem is reflexive, so the label is always true.
+    if (attrKey === 'vbs' && ((attributes['vt'] || '').startsWith('ptc') || rawTag === 'HCT' || rawTag === 'HT')) {
+        return { paleo: '', translit: '', translation: `[${mapData.trans}]`, css: mapData.css || 'mod-pref' };
+    }
     return null;
 }
 
-function extractSuffix(attributes, attrKey, mapKey, paleoArray) {
+function extractSuffix(attributes, attrKey, mapKey, paleoArray, canon) {
     if (!attributes[attrKey] || attributes[attrKey] === 'absent') return null;
     const rawTag = attributes[attrKey];
     // First try the exact morph value; fall back to a "=-stripped" form so
@@ -775,9 +826,18 @@ function extractSuffix(attributes, attrKey, mapKey, paleoArray) {
     }
     const currentStr = paleoArray.join('');
     let matchedPaleo = '';
-    for (let p of mapData.paleo) {
-        if (currentStr.endsWith(p)) { matchedPaleo = p; break; }
+    // Longest alternative wins UNLESS it would eat a letter of the canonical
+    // root (kept in sync): 𐤍𐤏𐤉𐤌𐤌 "pleasant (pl)" is 𐤍𐤏𐤉𐤌 + 𐤌, not 𐤍𐤏 + 𐤉𐤌.
+    // When the root is known, take the first alternative that leaves it intact.
+    const fits = mapData.paleo.filter(p => currentStr.endsWith(p));
+    if (canon && fits.length > 1) {
+        const C = [...canon];
+        matchedPaleo = fits.find(p => isRootSubsequence(C, [...currentStr.slice(0, currentStr.length - p.length)])) || '';
     }
+    if (!matchedPaleo) matchedPaleo = fits[0] || '';
+    // Never strip a tagged ending down to a single letter: the hollow-root
+    // participle 𐤒𐤌𐤉 "those rising against me" is 𐤒𐤌 + 𐤉, its 𐤌 a radical.
+    if (matchedPaleo && canon && [...currentStr].length - [...matchedPaleo].length < 2) matchedPaleo = '';
     if (matchedPaleo) {
         const charCount = [...matchedPaleo].length;
         paleoArray.splice(paleoArray.length - charCount, charCount);
@@ -794,6 +854,89 @@ function extractSuffix(attributes, attrKey, mapKey, paleoArray) {
 // paleo match wins within a table; first table with any match wins — order
 // (nme, prs, vbe, uvf) is arbitrary among genuine ties and only matters for
 // the rare exact collision, which is inherently ambiguous without the tag.
+// TRAILING-RESIDUE CLASSIFIER (kept in sync between server.js and
+// build-surface-index.js). Letters left after the true root that no tag
+// claimed used to fall through to guessSuffixGloss (a blind table lookup) or a
+// bare "[R]"-style stub. Most of them are regular grammar the tags don't
+// name: the doubled last radical of the Polel/Pilpel stems (𐤌𐤔𐤓𐤓 = 𐤔𐤉𐤓 + 𐤓,
+// 𐤀𐤊𐤋𐤊𐤋 = 𐤊𐤅𐤋 + 𐤊𐤋), the III-he passive participle 𐤅𐤉 (𐤁𐤍𐤅𐤉 "built"), and the
+// Aramaic endings of Daniel/Ezra: determinate 𐤀 "the" (𐤌𐤋𐤊𐤀), 1cs perfect
+// 𐤉𐤕 (𐤁𐤍𐤉𐤕 "I built"), 1cp 𐤍𐤀 (𐤀𐤌𐤓𐤍𐤀 "we said"), plural 𐤄𐤕 (𐤀𐤁𐤄𐤕 "fathers").
+// Each rule is gated on the tag that makes it true; returns null to fall back.
+function classifyResidue(extra, pos, attributes, trueRoot) {
+    if (!extra) return null;
+    const a = attributes || {};
+    const R = [...(trueRoot || '')];
+    const last = R.length ? R[R.length - 1] : '';
+    const DOUBLING = new Set(['poel', 'polel', 'poal', 'polal', 'pilp', 'pilpel', 'htpo', 'hitpolel', 'pulal', 'palel']);
+    if (pos === 'verb' && DOUBLING.has(a.vs) && R.length >= 2 &&
+        (extra === last || extra === R[0] + last || extra === R[R.length - 2] + last))
+        return { trans: 'Doubled (intensive)', css: 'mod-dbl' };
+    if ((pos === 'subs' || pos === 'adjv' || pos === 'nmpr') && extra === last && R.length >= 2)
+        return { trans: 'Doubled', css: 'mod-dbl' };
+    if (pos === 'verb' && a.vt === 'ptcp' && extra === '𐤅𐤉') return { trans: 'Passive', css: 'pfm-ptcp' };
+    if (pos === 'verb' && (a.vt === 'perf' || a.vt === 'weqt') && a.ps === 'p1') {
+        if (a.nu !== 'pl' && extra === '𐤉𐤕') return { trans: 'I did', css: 'vbe-1cs' };
+        if (a.nu === 'pl' && extra === '𐤍𐤀') return { trans: 'We did', css: 'vbe-1cp' };
+    }
+    if (pos === 'verb' && a.vt === 'infc' && extra === '𐤉𐤄') return { trans: 'Infinitive', css: 'nme-h' };
+    if (pos === 'subs' && a.nu === 'pl' && extra === '𐤄𐤕') return { trans: 'Plural of', css: 'nme-wtj' };
+    if ((pos === 'subs' || pos === 'adjv' || pos === 'advb') && extra === '𐤀') return { trans: 'The (Aramaic)', css: 'mod-art' };
+    return null;
+}
+
+// ── FLAT LABELS: ONE LETTER-STRING, ONE MEANING (fieldy, Sep 7 2026) ──────────
+// Kept in sync between server.js and build-surface-index.js.
+// "My basic prefixes and suffixes do not need a big umbrella being able to
+// mean a bunch of things. My corpus can read consistently if it weren't for
+// all-over-the-place modifications that don't justify themselves."
+// The morphology tags still decide WHERE a word splits (that is what keeps the
+// root clean); the LETTERS alone decide what the chip says. Colour (css) keeps
+// the tag detail — 2ms vs 2fs "Your", the feminine tint on 𐤕𐤉 — so nothing is
+// lost, it just isn't spelled out as a different word. Chips with no written
+// letters (∅ Causing / Reflexive / He did) keep their own label.
+const FLAT_PREFIX = {
+    '𐤉': 'He/it', '𐤅𐤉': 'And he/it', '𐤋': 'He/it',          // imperfect prefix (𐤋 = Aramaic)
+    '𐤕': 'She/it', '𐤀': 'I', '𐤍': 'We',                      // 𐤍 includes the Nifal 𐤍 (fieldy: "we will")
+    '𐤄': 'Causing', '𐤄𐤕': 'Reflexive', '𐤀𐤕': 'Reflexive',
+    '𐤌': 'One who',                                            // participle / noun-forming 𐤌
+};
+const FLAT_SUFFIX = {
+    '𐤅': 'His', '𐤄𐤅': 'His', '𐤅𐤍': 'His',
+    '𐤄': 'Hers · feminine', '𐤕𐤄': 'Feminine · hers',
+    '𐤉': 'My/Of', '𐤍𐤉': 'Me',
+    '𐤊': 'Your', '𐤊𐤌': 'Your (pl)', '𐤊𐤍': 'Your (f pl)', '𐤊𐤄': 'Your',
+    '𐤌': 'Their', '𐤄𐤌': 'Their', '𐤍': 'Their (f)', '𐤄𐤍': 'Their (f)',
+    '𐤍𐤅': 'Our', '𐤍𐤀': 'Our', '𐤍𐤄': 'Them (f)',
+    '𐤕𐤌': 'You all / them', '𐤕𐤍': 'You all (f)',
+    '𐤕': 'Feminine', '𐤕𐤉': 'My/Of', '𐤉𐤕': 'Of · feminine', '𐤅𐤕𐤉': 'Plural (f) · of',
+    '𐤉𐤌': 'Plural', '𐤉𐤍': 'Plural', '𐤅𐤕': 'Plural (f)', '𐤄𐤕': 'Plural',
+    '𐤀': 'The (Aramaic)',
+};
+const FLAT_CSS = { '𐤕𐤉': 'nme-f' };   // "-thay can be my/of, marked feminine by colour"
+function applyFlatLabels(comps) {
+    if (!comps || !comps.length) return;
+    // group per source token (server.js carries token_ordinal; the builder gets one token)
+    const groups = new Map();
+    comps.forEach((c, i) => { const k = c.token_ordinal === undefined ? 0 : c.token_ordinal; (groups.get(k) || groups.set(k, []).get(k)).push(i); });
+    for (const idx of groups.values()) {
+        const r = idx.find(i => comps[i] && Object.prototype.hasOwnProperty.call(comps[i], 'lemmaTranslit'));
+        if (r === undefined) continue;
+        for (const i of idx) {
+            const c = comps[i];
+            if (i === r || !c || c.isMark || !c.paleo) continue;
+            if (c.css === 'vbs-hit' || c.css === 'vbs-hif') continue;   // 𐤄 Causing, 𐤄𐤕/𐤕 Reflexive keep their stem label; Nifal 𐤍 reads 'We' (fieldy: "𐤍- prefix → we will")
+            let label;
+            if (c.infixed) label = 'Reflexive';
+            else if (i < r) label = FLAT_PREFIX[c.paleo];
+            else label = FLAT_SUFFIX[c.paleo];
+            if (!label) continue;
+            c.translation = `[${label}]`;
+            if (FLAT_CSS[c.paleo] && i > r) c.css = FLAT_CSS[c.paleo];
+        }
+    }
+}
+
 function guessSuffixGloss(paleoStr) {
     if (!paleoStr) return null;
     for (const mapKey of ['nme', 'prs', 'vbe', 'uvf']) {
@@ -816,16 +959,37 @@ function guessSuffixGloss(paleoStr) {
 // (Piel/Pual/Hiphil participle מ, "from") gets that gloss too — an approximation,
 // not a claim the letter IS the preposition, but it beats leaving it fused to
 // the root where it silently defeated every lexicon lookup keyed on the root.
-function guessPrefixGloss(paleoStr) {
+function guessPrefixGloss(paleoStr, pos) {
     if (!paleoStr) return null;
-    const glosses = [];
-    let allKnown = true;
-    for (const ch of paleoStr) {
-        const known = GRAMMAR_MAP.art[ch] || GRAMMAR_MAP.conj[ch] || GRAMMAR_MAP.prep[ch];
-        if (known) glosses.push(known); else allKnown = false;
+    const parts = [];
+    // VERBS (kept in sync): a BHS verb token never carries a proclitic — OSHB
+    // splits 𐤅/𐤄/𐤁/𐤋/𐤊/𐤌 into their own tokens — so leading residue on a verb
+    // is a STEM/PATTERN letter: 𐤄𐤕/𐤀𐤕/𐤕 reflexive (Aramaic ithpe'el and the
+    // hitpolel forms OSHB tags as qal/poal), 𐤄 causative, 𐤌 participle.
+    // Labelling those "The"/"And"/"from" was wrong every time.
+    if (pos === 'verb') {
+        const L = [...paleoStr];
+        let i = 0;
+        while (i < L.length) {
+            if (L[i] === '𐤄' && L[i + 1] === '𐤕') { parts.push({ paleo: '𐤄𐤕', css: 'vbs-hit', trans: 'Reflexive' }); i += 2; }
+            else if (L[i] === '𐤀' && L[i + 1] === '𐤕') { parts.push({ paleo: '𐤀𐤕', css: 'vbs-hit', trans: 'Reflexive' }); i += 2; }
+            else if (L[i] === '𐤕') { parts.push({ paleo: '𐤕', css: 'vbs-hit', trans: 'Reflexive' }); i += 1; }
+            else if (L[i] === '𐤄') { parts.push({ paleo: '𐤄', css: 'vbs-hif', trans: 'Causing' }); i += 1; }
+            else if (L[i] === '𐤌') { parts.push({ paleo: '𐤌', css: 'pfm-ptcp', trans: 'Active' }); i += 1; }
+            else return null;
+        }
+        return parts;
     }
-    if (!glosses.length) return null;
-    return { trans: glosses.join('-'), css: allKnown ? 'mod-pref-known' : 'mod-pref-unk' };
+    // NOUNS/ADJECTIVES: same tokenisation argument — a fused leading 𐤌 is the
+    // noun-forming preformative (𐤌𐤔𐤊𐤉𐤋 maskil, 𐤌𐤔𐤇𐤉𐤕 mashchit), not "from".
+    if ((pos === 'subs' || pos === 'adjv') && paleoStr === '𐤌') return [{ paleo: '𐤌', css: 'mod-nom', trans: 'Noun-forming' }];
+    for (const ch of paleoStr) {
+        if (GRAMMAR_MAP.art[ch])       parts.push({ paleo: ch, css: 'mod-art',  trans: GRAMMAR_MAP.art[ch] });
+        else if (GRAMMAR_MAP.conj[ch]) parts.push({ paleo: ch, css: 'mod-conj', trans: GRAMMAR_MAP.conj[ch] });
+        else if (GRAMMAR_MAP.prep[ch]) parts.push({ paleo: ch, css: 'mod-prep', trans: GRAMMAR_MAP.prep[ch] });
+        else return null;  // one unrecognized letter voids the whole run -- see harden block
+    }
+    return parts;
 }
 
 // ── STRONGS-ROOTS LEXICON ────────────────────────────────────────────────────
@@ -879,8 +1043,24 @@ function isRootSubsequence(sub, full) {
 // or null when this is NOT a defective spelling of the canonical root (guards a
 // wrong Strong's number from injecting an unrelated root):
 //   • at most one radical elided   (lcs ≥ canonLen − 1)
-//   • a real overlap               (lcs ≥ 2)
+//   • a real overlap               (lcs ≥ 1)
 //   • few surface additions        (surfaceLen − lcs ≤ 2)
+//
+// FIX 2026-09-21 (fieldy): the overlap floor used to be lcs ≥ 2, not ≥ 1. For
+// EVERY 2-letter canonical root (H6310 Pah "mouth", any geminate/short root)
+// that loses its one elidable radical, the max possible lcs is 1 by
+// construction (n − 1 = 1 letter must remain) — so "at most one radical
+// elided" and "a real overlap ≥ 2" were mutually exclusive and the elision
+// branch was silently dead code for every short root. Concretely: Peh (𐤐𐤄,
+// "mouth") in construct state drops its ה (𐤐𐤉, "peh/pi") — mergeRootDisplay
+// returned null, and the caller's fallback (`_canonTrusted` branch) then threw
+// away the construct Yod entirely and showed the bare canonical root with NO
+// modification at all, violating "every modification visible" twice over:
+// once by not restoring the elided ה, once by silently dropping the ׳. Lowering
+// the floor to ≥ 1 is a no-op for every root of 3+ letters (there `lcs ≥
+// canonLen − 1` is already ≥ 2 and dominates), so this only changes behavior
+// for the 2-letter case it was accidentally foreclosing. Leviticus 24:12's Peh
+// now merges to 𐤐𐤄𐤉 (Pahay) — canonical root + kept surface Yod, per the rule.
 // `surface`/`canonical` are arrays of Paleo code points.
 function mergeRootDisplay(surface, canonical) {
     const S = surface, C = canonical, m = S.length, n = C.length;
@@ -978,6 +1158,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
 
     const flushWordBlock = () => {
         if (pendingComponents.length === 0) return;
+        applyFlatLabels(pendingComponents);
         transliterateBlock(pendingComponents);
 
         // Suffixes (nme-*, prs-*, vbe-*, and the hardened baked-addition fallback
@@ -1295,7 +1476,34 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 translation = homographs[`${rawPaleo}_interrogative`] || GRAMMAR_MAP.inrg[rawPaleo] || `[${rawPaleo}]`;
             }
 
-            pendingComponents.push({
+            // PARTICLES ARE NOT EXEMPT (kept in sync between server.js and
+            // build-surface-index.js): a preposition/conjunction written as its
+            // root plus a letter still carries a modification. 𐤀𐤇𐤓𐤉 / 𐤀𐤋𐤉 / 𐤏𐤃𐤉
+            // are root + construct 𐤉 (435 BHS occurrences), 𐤋𐤌𐤏𐤍 "for the sake
+            // of" is 𐤋 + 𐤌𐤏𐤍 (260). Split them only on an EXACT match against the
+            // Strong's root so nothing speculative happens; the whole-word gloss
+            // stays on the root chip.
+            let _particleComps = null;
+            {
+                const _psn = strongs ? 'H' + strongs.replace(/^H+/, '') : '';
+                const _pcanon = (_psn && loadStrongsRoots()[_psn]) || '';
+                if (_pcanon && rawPaleo !== _pcanon && [..._pcanon].length >= 2) {
+                    if (rawPaleo === _pcanon + '𐤉') {
+                        _particleComps = [{ paleo: _pcanon, translit: '', translation, css: getCssClass(pos) },
+                                          { paleo: '𐤉', translit: '', translation: '[My/Of]', css: 'nme-j' }];
+                    } else if (rawPaleo.endsWith(_pcanon) && [...rawPaleo].length === [..._pcanon].length + 1) {
+                        const _lead = [...rawPaleo][0];
+                        const _g = GRAMMAR_MAP.prep[_lead] ? ['mod-prep', GRAMMAR_MAP.prep[_lead]]
+                                 : GRAMMAR_MAP.conj[_lead] ? ['mod-conj', GRAMMAR_MAP.conj[_lead]]
+                                 : GRAMMAR_MAP.art[_lead]  ? ['mod-art',  GRAMMAR_MAP.art[_lead]]  : null;
+                        if (_g) _particleComps = [{ paleo: _lead, translit: '', translation: `[${_g[1]}]`, css: _g[0] },
+                                                  { paleo: _pcanon, translit: '', translation, css: getCssClass(pos) }];
+                    }
+                }
+            }
+            if (_particleComps) {
+                for (const c of _particleComps) pendingComponents.push({ ...c, token_ordinal: tokenOrdinal });
+            } else pendingComponents.push({
                 paleo: rawPaleo,
                 translit: '',
                 translation,
@@ -1338,10 +1546,85 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             _curSeg.ordinal = tokenOrdinal;
             pendingHasRoot = true;
 
+            // ── PARTICIPLE PREFORMATIVE MEM (kept in sync with build-surface-index.js parseToken) ──────
+            // OSHB never tags the participle's 𐤌 preformative in `pfm` (it is
+            // baked into the binyan PATTERN, so every participle arrives
+            // pfm=absent), yet GRAMMAR_MAP.pfm.M has existed for it all along and
+            // simply never fired. Left alone, 𐤌𐤕𐤍𐤇𐤌 mathnacham (Gen 27:42, Hitpael
+            // ptc of 𐤍𐤇𐤌 H5162) rendered as one bare chip with NO modification
+            // shown, and a Piel participle like 𐤌𐤁𐤓𐤊 fell through to the
+            // leading-residue guess, which labelled its 𐤌 as the preposition
+            // "from". The rule is exact in the corpus: every derived-stem
+            // participle written with an initial 𐤌 has the preformative there;
+            // Qal participles (𐤌𐤔𐤋, 𐤌𐤋𐤊 …) never take one, so their 𐤌 is a
+            // radical. Synthesize pfm='M' on that grammatical ground only, then
+            // let the normal pfm/vbs extraction peel 𐤌 (+ the Hitpael 𐤕 behind it).
+            if (!attributes['pfm'] || attributes['pfm'] === 'absent') {
+                const _vt = attributes['vt'] || '', _vs = attributes['vs'] || '';
+                if (pos === 'verb' && _vt.startsWith('ptc') && _vs && _vs !== 'qal' && _vs !== 'qpas' &&
+                    paleoArray.length > 1 && paleoArray[0] === '𐤌') {
+                    attributes['pfm'] = 'M';
+                }
+            }
+            const _snEarly0 = strongs ? 'H' + strongs.replace(/^H+/, '') : '';
+            const _canonEarly = (_snEarly0 && loadStrongsRoots()[_snEarly0]) || '';   // canonical root, used to disambiguate suffix alternatives
             let pfmObj = extractPrefix(attributes, 'pfm', 'pfm', paleoArray);
+            // A synthesized 𐤌 on a PASSIVE participle (Pual/Hofal, vt=ptcp) is
+            // 'being done', not 'doing' — relabel the chip; colour stays pfm-ptcp.
+            if (pfmObj && attributes['pfm'] === 'M' && attributes['vt'] === 'ptcp') pfmObj.translation = '[Passive]';
+            // PERSON-AWARE PREFIX LABEL (kept in sync). OSHB's pfm tag names the LETTER
+            // (J=𐤉, T=/T=𐤕), not the person: 𐤕 is "she" in p3 f but "you" in every p2
+            // form (3,700 occurrences read "[She]" on 2nd-person verbs), and 𐤉 on a
+            // plural is "they". ps/gn/nu are tagged, so label from them.
+            if (pfmObj && pos === 'verb') {
+                const _pf = attributes['pfm'], _ps = attributes['ps'] || '', _gn = attributes['gn'] || '', _nu = attributes['nu'] || '';
+                if (_pf === 'T' || _pf === 'T=') {
+                    if (_ps === 'p2') pfmObj.translation = _nu === 'pl' ? '[You all]' : (_gn === 'f' ? '[You (f)]' : '[You]');
+                    else if (_ps === 'p3') pfmObj.translation = _nu === 'pl' ? '[They (f)]' : '[She]';
+                } else if (_pf === 'J' && _nu === 'pl') pfmObj.translation = '[They]';
+            }
+            // SYNTHESIZED 3ms PERFECT SUBJECT PREFIX (fieldy, 2026-09-21, replacing the
+            // old empty-paleo vbe-3ms SUFFIX chip below): Hebrew grammar marks a Qal/etc
+            // perfect 3ms verb with NO letter at all ("𐤏𐤔𐤄" already means "he did" via the
+            // bare form) — fieldy: "we are not following hebrew grammar... we are
+            // exposing all modifications... it makes sense to have the exact behavior of
+            // the other words in relation to the subject... This becomes a 'yod prefix.'"
+            // So a perfect 3ms verb now gets the SAME Yod PREFIX every imperfect 3ms verb
+            // already gets (pfm='J' -> 𐤉, css pfm-3ms) instead of an invisible suffix —
+            // same letter, same position (before the root), same css, so applyFlatLabels'
+            // normal FLAT_PREFIX pass relabels it identically to every other 3ms subject
+            // marker in the corpus (tense is no longer distinguished by this chip on
+            // purpose — that's the "exact behavior of the other words" fieldy asked for).
+            // Deliberately does NOT touch paleoArray: there is no real surface letter to
+            // remove, this is purely a display-consistency addition, exactly like the
+            // vbs-hif empty-paleo Hiphil-participle chip fixed earlier this same day.
+            if (!pfmObj && pos === 'verb' && (attributes['vt'] === 'perf' || attributes['vt'] === 'weqt') &&
+                attributes['ps'] === 'p3' && attributes['nu'] !== 'pl' && attributes['gn'] !== 'f' &&
+                (!attributes['prs'] || attributes['prs'] === 'absent')) {
+                pfmObj = { paleo: '𐤉', translit: '', translation: '[He did]', css: 'pfm-3ms', synthetic: true };
+            }
+            // Hishtaphel (𐤔𐤇𐤄 'bow down', vs=hsht) is a reflexive stem OSHB leaves vbs-untagged.
+            if ((!attributes['vbs'] || attributes['vbs'] === 'absent') && attributes['vs'] === 'hsht') attributes['vbs'] = 'HT';
+            // Hiphil/Hofal PARTICIPLES carry no written stem-marker letter at all — the
+            // causative sense lives in the Mem preformative + internal vowel pattern only;
+            // the causative ה that Hiphil's perfect/imperative/infinitive DO write never
+            // appears here (𐤍𐤊𐤄 Nakah "strike" -> Hiphil participle 𐤌𐤊𐤄 makah "one who
+            // strikes", no ה). OSHB leaves vbs untagged for these forms — same gap as the
+            // Hishtaphel case just above and the participle Mem preformative above that —
+            // so without this the causative modification had NO chip at all: not even the
+            // empty "[Causing]" chip the PARTICIPLE FALLBACK just below already knows how
+            // to render once vbs is actually set. fieldy, 2026-09-21 (Lev 24:18's
+            // WaManakah): "3 modifications but only 2 visible in the tokens." Hofal
+            // (passive-causative, vt=ptcp) intentionally NOT covered here — no
+            // GRAMMAR_MAP.vbs entry exists for it yet; flag to fieldy rather than invent a
+            // label, per this file's own evidence-only rule.
+            if ((!attributes['vbs'] || attributes['vbs'] === 'absent') && pos === 'verb' &&
+                (attributes['vt'] || '').startsWith('ptc') && attributes['vs'] === 'hif') {
+                attributes['vbs'] = 'H';
+            }
             let vbsObj = extractPrefix(attributes, 'vbs', 'vbs', paleoArray);
-            let prsObj = extractSuffix(attributes, 'prs', 'prs', paleoArray);
-            let uvfObj = extractSuffix(attributes, 'uvf', 'uvf', paleoArray);
+            let prsObj = extractSuffix(attributes, 'prs', 'prs', paleoArray, _canonEarly);
+            let uvfObj = extractSuffix(attributes, 'uvf', 'uvf', paleoArray, _canonEarly);
 
             let nmeObj = null;
             // ── SUFFIX STRIPPING IS STRONG'S-DRIVEN — NO PER-WORD SPECIAL CASES ──
@@ -1376,12 +1659,43 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // handles both states uniformly and always emits a labeled chip.
             if (!attributes['nme'] && pos === 'verb' &&
                 (attributes['vt'] || '').startsWith('ptc') &&
-                attributes['nu'] === 'pl') {
+                attributes['nu'] === 'pl' && attributes['gn'] !== 'f') {   // feminine plurals take -𐤅𐤕 (next block)
                 attributes['nme'] = 'JM';
+            }
+            // Same gap for FEMININE participles (kept in sync): OSHB tags gn=f but
+            // no nme, so 𐤉𐤅𐤔𐤁𐤕 / 𐤀𐤄𐤅𐤁𐤄 / 𐤄𐤅𐤋𐤊𐤅𐤕 kept their ending inside the root.
+            if (!attributes['nme'] && pos === 'verb' &&
+                (attributes['vt'] || '').startsWith('ptc') && attributes['gn'] === 'f') {
+                attributes['nme'] = attributes['nu'] === 'pl' ? 'WT' : 'FS';
+            }
+            // FEMININE PLURAL + SUFFIX (kept in sync): 𐤁𐤍𐤅𐤕𐤉𐤄 "her daughters" keeps
+            // the construct 𐤉 between ending and suffix; OSHB tags plain WT.
+            if (attributes['nme'] === 'WT' && prsObj && paleoArray.join('').endsWith('𐤕𐤉')) attributes['nme'] = 'WTJ';
+            // FEMININE ADJECTIVES/NOUNS with no nme tag (kept in sync): only when the
+            // surface is the canonical root plus the ending (matres-insensitive), so
+            // a root that itself ends in 𐤄/𐤕 (𐤕𐤅𐤓𐤄) is never touched.
+            if ((!attributes['nme'] || attributes['nme'] === 'absent') && (pos === 'adjv' || pos === 'subs') &&
+                attributes['gn'] === 'f' && _canonEarly) {
+                const _c = paleoArray.join('');
+                const _skel = x => [...x].filter(ch => ch !== '𐤅' && ch !== '𐤉').join('');   // 𐤀𐤍𐤅𐤔𐤄 = 𐤀𐤍𐤔 + 𐤄
+                const _eq = (a, b) => a === b || (_skel(a) === _skel(b) && [...a].length <= [...b].length + 1);
+                if (attributes['nu'] === 'pl' && _eq(_c, _canonEarly + '𐤅𐤕')) attributes['nme'] = 'WT';
+                else if (attributes['nu'] !== 'pl' && (_eq(_c, _canonEarly + '𐤄') || _eq(_c, _canonEarly + '𐤕'))) attributes['nme'] = 'FS';
             }
 
             if (!shouldExcludeNme) {
-                nmeObj = extractSuffix(attributes, 'nme', 'nme', paleoArray);
+                nmeObj = extractSuffix(attributes, 'nme', 'nme', paleoArray, _canonEarly);
+            }
+            // CONSTRUCT LINKING YOD on a singular noun (kept in sync): 𐤀𐤇𐤉𐤅 "his
+            // brother", 𐤀𐤁𐤉𐤊 "your father" — the 𐤉 is a construct vowel written as a
+            // letter, not part of the root (H251 = 𐤀𐤇). Untagged by OSHB, and without
+            // this the same Strong's got TWO root identities (𐤀𐤇 vs 𐤀𐤇𐤉) depending on
+            // which tag happened to be present. Exact-match guard against the root.
+            if (!nmeObj && (pos === 'subs' || pos === 'adjv') && attributes['nu'] !== 'pl' &&
+                (attributes['st'] === 'c' || prsObj) && _canonEarly && !_canonEarly.endsWith('𐤉') &&
+                paleoArray.join('') === _canonEarly + '𐤉') {
+                paleoArray.pop();
+                nmeObj = { paleo: '𐤉', translit: '', translation: '[My/Of]', css: 'nme-j' };
             }
 
             // JM/JM= tagged but the surface has NEITHER the Yod-Mem nor bare-Mem
@@ -1400,7 +1714,43 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 nmeObj = { paleo: '𐤉', translit: '', translation: `[${jData.trans}]`, css: jData.css };
             }
 
-            let vbeObj = extractSuffix(attributes, 'vbe', 'vbe', paleoArray);
+            // ── VERBAL ENDING SYNTHESIS (kept in sync between server.js and
+            // build-surface-index.js) ──────────────────────────────────────────
+            // corpus.db's morph strings carry NO `vbe` key (checked across all
+            // 37,146 distinct BHS combos), so the person/number afformative of every
+            // perfect (𐤕𐤉 I, 𐤕 you/she, 𐤕𐤌 you all, 𐤍𐤅 we, 𐤅 they), every plural or
+            // 2fs imperfect (𐤅, 𐤍𐤄, 𐤉, + paragogic 𐤍) and every cohortative 𐤄 was
+            // either baked into the displayed root (𐤄𐤀𐤆𐤉𐤍𐤅 -> "𐤀𐤆𐤉𐤍𐤅") or handed
+            // to guessSuffixGloss and mislabelled as a NOUN ending (𐤀𐤌𐤓𐤕𐤉 "I said"
+            // -> 𐤕𐤉 "[Plural of]"). The ending is fully determined by vt/ps/gn/nu,
+            // which OSHB does tag, so derive it — exactly like the masc-plural
+            // imperative rule below already did for one cell of the paradigm. Only
+            // fires when the letters are actually written at the end (extractSuffix
+            // checks), and never strips a word down below two letters.
+            if ((!attributes['vbe'] || attributes['vbe'] === 'absent') && pos === 'verb') {
+                const _vt = attributes['vt'] || '', _ps = attributes['ps'] || '',
+                      _gn = attributes['gn'] || '', _nu = attributes['nu'] || '';
+                let _tag = null;
+                if (_vt === 'perf' || _vt === 'weqt') {
+                    if      (_ps === 'p3') _tag = _nu === 'pl' ? 'W' : (_gn === 'f' ? 'H' : null);
+                    else if (_ps === 'p2') _tag = _nu === 'pl' ? (_gn === 'f' ? 'TN' : 'TM') : (_gn === 'f' ? 'T2F' : 'T2M');
+                    else if (_ps === 'p1') _tag = _nu === 'pl' ? 'NW' : 'TJ';
+                } else if (_vt === 'impf' || _vt === 'wayq' || _vt === 'juss' || _vt === 'coho') {
+                    if (_nu === 'pl' && (_ps === 'p3' || _ps === 'p2'))
+                        _tag = _gn === 'f' ? (_ps === 'p3' ? 'INH3' : 'INH2') : (_ps === 'p3' ? 'IW3' : 'IW2');
+                    else if (_ps === 'p2' && _gn === 'f' && _nu === 'sg') _tag = 'IJ';
+                    else if (_vt === 'coho' && _ps === 'p1') _tag = _nu === 'pl' ? 'COHN' : 'COH1';
+                } else if (_vt === 'impv') {
+                    if (_nu === 'pl') _tag = _gn === 'f' ? 'IMNH' : 'IMW';
+                    else if (_gn === 'f') _tag = 'IMJ';
+                }
+                if (_tag) {
+                    const _alts = GRAMMAR_MAP.vbe[_tag].paleo, _cur = paleoArray.join('');
+                    const _hit = _alts.find(p => _cur.endsWith(p));
+                    if (_hit && paleoArray.length - [..._hit].length >= 2) attributes['vbe'] = _tag;
+                }
+            }
+            let vbeObj = extractSuffix(attributes, 'vbe', 'vbe', paleoArray, _canonEarly);
 
             // ── MASCULINE PLURAL IMPERATIVE "-Ū" ENDING FALLBACK ────────────────
             // Masculine plural imperative ("Praise!", "Keep!", …) always ends in
@@ -1659,7 +2009,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             if (rootDisplay && trueRoot && rootDisplay !== trueRoot && rootDisplay.startsWith(trueRoot)) {
                 const bakedExtra = rootDisplay.slice(trueRoot.length);
                 if (bakedExtra) {
-                    const guess = guessSuffixGloss(bakedExtra);
+                    const guess = classifyResidue(bakedExtra, pos, attributes, trueRoot) || guessSuffixGloss(bakedExtra);
                     bakedModObj = {
                         paleo: bakedExtra,
                         translit: '',
@@ -1687,19 +2037,33 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // it into its own labeled chip instead, exactly like the trailing case:
             // glossed when it maps to a known proclitic (guessPrefixGloss), flagged
             // un-guessed rather than silently fused when it doesn't.
-            let leadModObj = null;
-            if (rootDisplay && trueRoot && rootDisplay !== trueRoot && rootDisplay.endsWith(trueRoot)) {
+            let leadModComps = [];
+            if (rootDisplay && trueRoot && trueRoot.length >= 2 && rootDisplay !== trueRoot && rootDisplay.endsWith(trueRoot)) {
                 const leadExtra = rootDisplay.slice(0, rootDisplay.length - trueRoot.length);
                 if (leadExtra) {
-                    const guess = guessPrefixGloss(leadExtra);
-                    leadModObj = {
-                        paleo: leadExtra,
-                        translit: '',
-                        translation: guess ? `[${guess.trans}]` : `[${getTranslit(leadExtra)}]`,
-                        css: guess ? (guess.css || 'mod-pref-unk') : 'mod-pref-unk',
-                        bakedSplit: true,  // see reGlossOne guard — never re-look-up by bare paleo
-                    };
-                    rootDisplay = trueRoot;
+                    // One component PER letter, each tagged with its real class
+                    // (mod-art/mod-conj/mod-prep) instead of one generic blob --
+                    // that's what lets each letter take its own color and lets
+                    // WordBlock.jsx's existing same-side [data-alt="1"] alternation
+                    // do its job when two+ prefixes stack (ה+מ, etc.). null means
+                    // AT LEAST ONE letter in the residue isn't a recognized
+                    // proclitic -- leadExtra isn't actually a prefix run, it's a
+                    // coincidental suffix match against a too-short or unrelated
+                    // trueRoot (2026-08-30 false-positive regression: bare 1-2
+                    // letter fallback roots getting most of the word stripped off
+                    // as a bogus "prefix"). Leave rootDisplay untouched instead of
+                    // risking corruption.
+                    const parts = guessPrefixGloss(leadExtra, pos);
+                    if (parts) {
+                        leadModComps = parts.map(p => ({
+                            paleo: p.paleo,
+                            translit: '',
+                            translation: `[${p.trans}]`,
+                            css: p.css,
+                            bakedSplit: true,  // see reGlossOne guard -- never re-look-up by bare paleo
+                        }));
+                        rootDisplay = trueRoot;
+                    }
                 }
             }
 
@@ -1893,7 +2257,9 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // same as any other prefix chip (pfmObj/vbsObj). Maqaf halves render
             // their own raw displayRoot untrimmed (see below), so this must not
             // also fire there — it would print the same letters twice.
-            if (leadModObj && !_inMaqafCompound) pendingComponents.push({...leadModObj, token_ordinal: tokenOrdinal});
+            if (leadModComps.length && !_inMaqafCompound) {
+                for (const lm of leadModComps) pendingComponents.push({...lm, token_ordinal: tokenOrdinal});
+            }
 
             pendingComponents.push({
                 paleo: _inMaqafCompound ? displayRoot : rootDisplay,  // surface for maqaf halves
@@ -1903,7 +2269,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 trueRoot: null,             // legacy annotation field — unused now
                 translit: '',
                 translation: finalTranslation,
-                lemmaTranslit: getTranslit(trueRoot),
+                lemmaTranslit: nameTranslit(strongs, trueRoot),   // Har-Al, Yashar-Al — the allowlisted spelling in the reader's tokens too
                 css: isStandaloneException ? 'root' : getCssClass(pos),
                 token_ordinal: tokenOrdinal
             });
@@ -1922,8 +2288,11 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // ANY ending whose letters the canonical root already ends with is
             // absorbed, while a genuine ending on a root that lacks it (e.g. a
             // feminine 𐤕 on a triliteral verb root) is still shown.
+            // ...but ONLY when the surface zone IS the bare root (𐤀𐤋𐤄𐤉𐤌 = 𐤀𐤋𐤄 + 𐤉𐤌 =
+            // root), never when the ending sits ON TOP of it: 𐤀𐤕𐤅𐤕 = 𐤀𐤅𐤕 + 𐤅𐤕,
+            // 𐤉𐤌𐤉𐤌 = 𐤉𐤌 + 𐤉𐤌, 𐤇𐤉𐤉 = 𐤇𐤉 + 𐤉 lost their plural chip to the old test.
             const _endingAbsorbed = nmeObj && nmeObj.paleo &&
-                                    trueRoot && trueRoot.endsWith(nmeObj.paleo);
+                                    trueRoot && trueRoot.endsWith(nmeObj.paleo) && (displayRoot + nmeObj.paleo) === trueRoot;
             if (nmeObj && !_endingAbsorbed) pendingComponents.push({...nmeObj, token_ordinal: tokenOrdinal});
             if (uvfObj) pendingComponents.push({...uvfObj, token_ordinal: tokenOrdinal});
             if (prsObj) pendingComponents.push({...prsObj, token_ordinal: tokenOrdinal});
@@ -2040,5 +2409,20 @@ function loadLexicons() {
     }
     _lexiconCache = { lexicon, homographs, hebExtra, surfaceOverrides, locationOverrides, snRenumber };
     return _lexiconCache;
+}
+const normSn = (sn) => 'H' + String(sn || '').replace(/^H+/i, '');
+const HYPHEN_ALLOW_PATH = path.join(__dirname, 'lexicon', 'compound-hyphenation.json');
+let _hyphenAllow = { mtime: 0, data: {} };
+// The app's spelling of a number's name: hyphenated when allowlisted (Har-Al), else the root.
+function nameTranslit(sn, paleo) {
+    const e = sn ? hyphenAllowlist()[normSn(sn)] : null;
+    return e && !e.skip && e.to ? e.to : getTranslit(paleo);
+}
+function hyphenAllowlist() {
+    try {
+        const st = fs.statSync(HYPHEN_ALLOW_PATH);
+        if (st.mtimeMs !== _hyphenAllow.mtime) _hyphenAllow = { mtime: st.mtimeMs, data: JSON.parse(fs.readFileSync(HYPHEN_ALLOW_PATH, 'utf8')) };
+    } catch { _hyphenAllow = { mtime: 0, data: {} }; }
+    return _hyphenAllow.data;
 }
 module.exports = { parseHebrewData };

@@ -95,3 +95,11 @@ server/.lexicon-watch/
 # comment above PALEO_DATA_DIR). Lightsail's numbers stay the script's
 # defaults; any box that needs different numbers gets its own untracked file.
 deploy-tuning.env
+
+# Ad-hoc diagnostic/scratch files this assistant drops at the repo root (or
+# under tests/) while investigating a specific bug — e.g. _diag_<topic>.cjs,
+# _claude_scratch_<topic>.md, tests/.tmp-<name>.cjs. One-off, never source;
+# deleted once the investigation's findings are folded into CLAUDE.md.
+_diag_*.cjs
+_claude_scratch_*.md
+tests/.tmp-*.cjs

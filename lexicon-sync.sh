@@ -45,8 +45,18 @@ if ! mkdir "$LOCKDIR" 2>/dev/null; then
 fi
 trap 'rm -rf "$LOCKDIR"' EXIT
 
+# Scoped to `-- server/lexicon` on both the diff check and the commit itself
+# (added 2026-09-22, matching studio-sync.sh's own `-- server/studio-data`
+# pattern below) -- without this, a commit fired while studio-sync.sh (or
+# anything else) has ITS OWN unrelated changes staged would silently sweep
+# them into this "lexicon: ..." commit too, since a plain `git commit` with
+# no pathspec commits the whole index, not just what this script added.
+# Found for real 2026-09-22: a stale .git/HEAD.lock left both this script's
+# lexicon staging AND studio-sync.sh's studio-data staging sitting
+# uncommitted at the same time -- harmless that time only because
+# studio-sync.sh's own watcher happened to commit its scope first.
 git add -A server/lexicon
-if ! git diff --cached --quiet; then
+if ! git diff --cached --quiet -- server/lexicon; then
   CHANGED_FILES="$(git diff --cached --name-only -- server/lexicon)"
   SUMMARY=""
   if command -v node >/dev/null 2>&1 && [ -f scripts/lexicon-diff-summary.mjs ]; then
@@ -55,9 +65,9 @@ if ! git diff --cached --quiet; then
   SUBJECT_FRAGMENT="$(printf '%s\n' "$SUMMARY" | sed -n '1p')"
   if [ -n "$SUBJECT_FRAGMENT" ]; then
     BODY="$(printf '%s\n' "$SUMMARY" | tail -n +3)"
-    git commit -q -m "lexicon: $SUBJECT_FRAGMENT" -m "$BODY" -m "$(hostname), $(date -u '+%Y-%m-%d %H:%M UTC')"
+    git commit -q -m "lexicon: $SUBJECT_FRAGMENT" -m "$BODY" -m "$(hostname), $(date -u '+%Y-%m-%d %H:%M UTC')" -- server/lexicon
   else
-    git commit -q -m "lexicon: edits from $(hostname), $(date -u '+%Y-%m-%d %H:%M UTC')"
+    git commit -q -m "lexicon: edits from $(hostname), $(date -u '+%Y-%m-%d %H:%M UTC')" -- server/lexicon
   fi
   echo "$(date -u '+%F %T') committed: $(git log -1 --format=%s)"
 fi

@@ -1,5 +1,106 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Badagahath (H1710, "fish", Genesis 1:28 Parallel/Hebrew-extra) missing its prefix/suffix chips — STALE `surface-index.db`, not a code bug (found 2026-09-22)
+
+fieldy flagged a screenshot of Genesis 1:28 in Parallel (Hebrew extra, bldbible.com): every
+other prefixed/suffixed word in the verse shows its modification bracket (WaBalwap "flying
+thing `[And·in]`", IlaHaAratz "Earth/land `[over·Causing]`", HaRamashath "creep/move about
+`[Causing·Feminine]`") but Badagahath (H1710, "fish") shows bare "fish" with NO bracket at
+all — fieldy, verbatim: "Badagahath has modifications that are not emphasized, ba(in)
+th(feminie)". He's right about what the word IS: בִּ/דְגַ֤ת = Bet preposition "in" (its own
+OSHB token) + H1710's construct-state feminine singular noun, whose ATTESTED spelling ends
+in Tav (the construct fem ending) where the canonical root (`strongs-roots.json["H1710"]` =
+𐤃𐤂𐤄, "Dagah") ends in He — exactly the class of construct-state ending-mutation this file's
+"no eliding" rule and the H6310 Peh/Pahay fix (see "No eliding regressions in Leviticus 24"
+below) already cover for other roots.
+
+**Traced with no DB access** (same standing sandbox constraint documented throughout this
+file — this device-bridge sandbox's `better-sqlite3` binding is `invalid ELF header` through
+this bridge too; confirmed again this session, and deliberately NOT worked around by
+`npm rebuild`-ing a Linux-native binding in place, since `server/node_modules` lives in the
+connected folder shared with fieldy's real Windows/MINGW64 checkout and overwriting the
+working Windows binary there would break his actual dev environment for a diagnostic-only
+need). Got the REAL morphology for this exact occurrence not by guessing but by fetching the
+actual OSHB/morphhb WLC Genesis XML directly from GitHub (`raw.githubusercontent.com/
+openscriptures/morphhb/master/wlc/Gen.xml` — the same public source `server/ingest-bhs-
+oshb.py` itself pulls from) and reading Gen.1.28 straight out of it: `<w lemma="b/1710"
+morph="HR/Ncfsc">בִּ/דְגַ֤ת</w>` — one OSHB `<w>` element, "/"-split (per `ingest-bhs-oshb.py`'s
+own splitting logic) into TWO token rows: a standalone `prep` token (word_raw=𐤁, strongs
+synthesized H9003) and an H1710 `subs` token tagged `gn=f|nu=sg|st=c` whose surface is the
+construct spelling 𐤃𐤂𐤕 (Dalet-Gimel-**Tav**), not the root's own 𐤃𐤂**𐤄**.
+
+**Verified the CURRENT code against this real data, two independent ways, and both are
+already correct:**
+- `build-surface-index.js`'s `parseToken` (the actual OFFLINE BAKER that writes
+  `surface-index.db`'s `components_json` — confirmed by reading its call site,
+  `components_json: JSON.stringify(components)` written verbatim with no post-filtering),
+  run via the file's own `PALEO_PARSE_ONLY=1` harness against the H1710 token alone: returns
+  the FULL restored root (𐤃𐤂𐤄, translit "Dagaha", gloss "fish") plus a SEPARATE suffix
+  component (`{paleo:'𐤕', translit:'th', translation:'[Feminine]', css:'nme-f',
+  bakedSplit:true}`) — exactly right, no eliding, modification visible.
+- `server.js`'s `parseHebrewData` (the live-parse reference path) against BOTH tokens
+  together, via `tests/extract-parse.cjs`/`tests/parse-extract.cjs`. **This extractor was
+  itself broken** — it never sliced `nameTranslit` (added to `server.js` well after the
+  extractor's 1500-line `parseHebrewData` window, for the Har-Al/Yashar-Al hyphenated-name
+  spelling), so any word with a resolved root threw `nameTranslit is not defined` the moment
+  it ran standalone. Fixed `tests/extract-parse.cjs` to also slice `nameTranslit` +
+  `hyphenAllowlist`/`HYPHEN_ALLOW_PATH`/`_hyphenAllow` + `normSn`, the same targeted
+  find-the-function-and-its-close pattern the file already uses for `loadLexicons` — this is
+  a real, general fix to the test tooling (every future use of this extractor needed it, not
+  just this diagnosis), not a one-off hack. Regenerated `tests/parse-extract.cjs` clean
+  (`node tests/extract-parse.cjs`) and re-ran `tests/index-builder-consistency.test.cjs` —
+  still passes. With the extractor fixed, `parseHebrewData` on the real two-token input
+  correctly produces THREE components for one merged word block: prep "In" (`mod-prep`),
+  root "fish" (full 𐤃𐤂𐤄 restored), suffix "[Feminine]" (`nme-f`) — confirming
+  `groupSurfaceTokens` (the `/api/tokens` fast-path function that folds baked
+  `surface-index.db` rows into displayed word blocks — traced it too: it correctly
+  accumulates a standalone `prep`-pos row into `pending` without flushing, same as
+  `parseHebrewData`'s `pendingComponents`/`flushWordBlock`) and `WordBlock.jsx`'s
+  `computeWordParts` (the client-side bracket builder — strips `[...]` from each non-root
+  component's `translation`, drops it only if empty or identical to its own transliteration,
+  otherwise joins every surviving one with `·` inside one bracket) both already handle this
+  combination — prefix-only standalone token immediately followed by a construct-state
+  feminine noun — correctly. Nothing in the current code needed a change for this specific
+  word.
+
+**So why does production show nothing?** File-mtime evidence on fieldy's own dev machine
+(not proof of production's exact state, but the same mechanism): `server/surface-index.db`
+was last built **2026-09-21 18:24:38 UTC**, but `server/corpus.db` was modified **later the
+same day, 23:55:21 UTC**, and `server/server.js` was edited later too (19:02:26 UTC) — i.e.
+the surface index driving the Parallel/Reader chip display on fieldy's own machine already
+predates both the current code and the current `corpus.db` content it should have been baked
+from, before production (a separate, further-behind deploy — see "Production deployment"
+below) even enters the picture. This is the identical "stale bake, not a live code bug"
+failure mode as the Shanahayam entry directly below this one and the Leviticus 24 Nathan/
+"YaThan" case — same file, same standing lesson: a correct code fix is invisible until
+`surface-index.db` is actually rebuilt from it.
+
+**Not run this session** (same standing DB-access constraint). Before calling this fixed:
+```
+node build-surface-index.js
+```
+then restart the server (this is the CHIP/component-breakdown surface — unlike the
+Shanahayam entry below, this does NOT need the `apply-web-strongs.mjs` → `load-english-
+baseline.js` → `render-all.mjs --surface` reading-text pipeline, since Badagahath's reading-
+text prose was never the complaint; only `build-surface-index.js`, which reads straight from
+the CURRENT `corpus.db` + CURRENT parser code and rewrites `surface-index.db`). Verify:
+Genesis 1:28 in Parallel (Hebrew extra) — Badagahath's chip should read "fish `[in·Feminine]`"
+(exact wording per the flat-label system: `GRAMMAR_MAP.prep['𐤁']`="in", `FLAT_SUFFIX['𐤕']`=
+"Feminine"), matching the bracket style already showing correctly on WaBalwap/IlaHaAratz/
+HaRamashath in the same verse. Then repeat the standard deploy step for production
+(`git push` + `~/deploy.sh`/`pexec node build-surface-index.js` against the box's own
+`corpus.db`, per "Production deployment" below) — fieldy's own machine being stale doesn't
+by itself prove production needs the identical rebuild, but nothing suggests production is
+AHEAD of fieldy's own dev checkout either, so treat both as needing the rebuild until
+verified otherwise.
+
+Left in the connected folder, safe to delete: `_diag_badagahath.cjs`, `_diag_badagahath2.cjs`
+(this session's scratch verification scripts) and `tests/.tmp-index-builder-parseToken.cjs`
+(a stray temp file `tests/index-builder-consistency.test.cjs`'s own cleanup step left behind
+— its `unlinkSync` hit the same delete-permission wall this sandbox always hits inside the
+connected folder, not a new bug in that test). `tests/extract-parse.cjs`'s fix and the freshly
+regenerated `tests/parse-extract.cjs` are real, kept changes, not scratch.
+
 ## Shanahayam (H8141, "year") rendering as Shanayam/"two" in the reading text — STALE BAKE, not a live code bug; already fixed in code 2026-09-12, never rebaked (found 2026-09-21)
 
 fieldy flagged Leviticus 25:8 in Parallel (BHS): every chip correctly reads "Shanahayam
