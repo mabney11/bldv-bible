@@ -1,5 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, Fragment } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigationType } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
 import { apiBookOrder, apiTransChapter, apiTransBookText, apiTokens, apiSourceChapter, apiSourceVerse, apiHeadings, apiPrecepts, apiPreceptReview } from '../lib/api.js';
 import { getAdminStatus } from '../lib/localOverlay.js';
@@ -1125,6 +1125,15 @@ export default function Reader() {
   // showing it after a full page reload — same mechanism WordBlock.jsx uses.
   usePaleoMode();
 
+  // Which kind of navigation put us here: 'POP' (browser back/forward) is
+  // the only case where "restore where I was" makes sense; a 'PUSH' (a
+  // fresh Link/button click — Landing's "Novel English Bible" button,
+  // Next/Previous chapter, the book/chapter picker) or a 'REPLACE' (this
+  // page's own URL-param syncing, see ?script= below) is a deliberate new
+  // arrival and should always start clean. See navTypeRef below for why
+  // this raw value isn't read directly at scroll-restore time.
+  const navigationType = useNavigationType();
+
   // ── books / slug map ───────────────────────────────────────────────────────
   const [masterBooks, setMasterBooks] = useState([]);
   useEffect(() => { apiBookOrder().then(b => setMasterBooks(b || [])).catch(() => setMasterBooks([])); }, []);
@@ -1170,8 +1179,19 @@ export default function Reader() {
   const [loading, setLoading] = useState(true);
   const [chapKey, setChapKey] = useState('');   // drives the fade-in on chapter change
 
+  // Frozen per chapter-load, not read live at restore time: `navigationType`
+  // reflects the LATEST router action, and something else in this same
+  // render commit (the ?script= sync effect, further down) can dispatch its
+  // own replace() before the scroll-restore effect below ever runs — by the
+  // time a slow chapter fetch resolves, a genuine POP could otherwise have
+  // already been overwritten to 'REPLACE'. Stamping it here, synchronously,
+  // at the moment THIS chapter's fetch actually starts (this effect runs
+  // before that later one, same commit, same file order) captures the real
+  // answer before anything else gets a chance to change it.
+  const navTypeRef = useRef(navigationType);
   useEffect(() => {
     if (!bookReady) return;
+    navTypeRef.current = navigationType;
     let cancelled = false;
     setLoading(true);
     apiTransChapter(book, chapter)
@@ -1586,13 +1606,28 @@ export default function Reader() {
       }
     }
 
-    // No explicit ?verse= — either a genuinely fresh chapter (nothing saved
-    // yet, land at the top like before) or a return trip. Prefer "returning
-    // from this verse's own page" when both are available: it both tells
-    // the reader which verse they came back from (lit, same treatment as a
-    // citation landing) and scrolls straight to it, which is a more
-    // reliable answer than a raw scrollTop number if anything above it has
-    // reflowed since (font size, margins, etc.).
+    // No explicit ?verse= — figure out whether this is a genuinely fresh
+    // arrival (a Link/button click, Next/Previous chapter, the book/chapter
+    // picker — always start at the top, exactly like a first-ever visit) or
+    // a return trip (browser back/forward — restore where we were). Only a
+    // POP (see navTypeRef above) is a return trip; anything else discards
+    // both memories for this book:chapter instead of leaving them to be
+    // read by some LATER, unrelated POP back to this same chapter, which
+    // would otherwise resurrect a position/highlight from a visit that's no
+    // longer the relevant one.
+    if (navTypeRef.current !== 'POP') {
+      removeSession(RD_RETURN_VERSE_KEY(book, chapter));
+      removeSession(RD_SCROLL_KEY(book, chapter));
+      if (scrollRef.current) scrollRef.current.scrollTop = 0;
+      return;
+    }
+
+    // A return trip. Prefer "returning from this verse's own page" when
+    // both memories are available: it both tells the reader which verse
+    // they came back from (lit, same treatment as a citation landing) and
+    // scrolls straight to it, which is a more reliable answer than a raw
+    // scrollTop number if anything above it has reflowed since (font size,
+    // margins, etc.).
     const returnVerseRaw = readSession(RD_RETURN_VERSE_KEY(book, chapter));
     if (returnVerseRaw != null) {
       removeSession(RD_RETURN_VERSE_KEY(book, chapter));
