@@ -22,7 +22,7 @@ import { sanitizeText, parseQuoteMarks, dissolveOverlongQuotes, sliceQuoteTree, 
 import './Reader.css';
 import {
   getAdminStatus, refreshAdminStatus, mergeVerseWithLocal, getLocalVerse, saveLocalVerse, resetLocalVerse,
-  getLocalLinks, addLocalLink, deleteLocalLink, clearLocalLinks, setLocalLinksOverride, resetLocalLinksOverride,
+  getLocalLinks, addLocalLink, updateLocalLink, deleteLocalLink, clearLocalLinks, setLocalLinksOverride, resetLocalLinksOverride,
   resetAllLocal, hasAnyLocalOverrides,
 } from '../lib/localOverlay.js';
 import { BOOK_NAMES } from '../lib/books.js';
@@ -264,62 +264,252 @@ function translitMatches(a, b) {
   return shorter.length >= FUZZY_TRANSLIT_MIN_LEN && longer.endsWith(shorter);
 }
 
-// One candidate per still-unlinked token, offering every transliteration
-// string that would legitimately identify it. Hebrew (BHS) offers the FULL
-// reconstructed word (root+suffix, no eliding) ahead of the bare root — see
-// the "allow variants" fix below — so "achayam" and "ach" both work. Every
-// other language offers whatever lexTranslitCandidates pulls from its own
-// token's `.gloss` (the lexicon value). `compIdx` on a variant says what a
-// match against it should link: -1 for the whole token, a real index for
-// just that Hebrew component (leaving the rest for a separate manual link).
-function buildAutoLinkCandidates(isBHSLang, tokens, usedOrd) {
-  const out = [];
-  for (const t of tokens) {
-    if (usedOrd.has(t.token_ordinal)) continue;
-    const variants = [];
-    if (isBHSLang) {
-      const comps = t.components || [];
-      const root = comps.find(c => c.css === 'root') || comps.find(c => c.css === 'mod-nmpr');
-      if (!root) continue;
-      const rootTranslit = String(root.translit || '').trim().toLowerCase();
-      if (!rootTranslit) continue;
-      const fullTranslit = comps.filter(c => !c.isMark).map(c => c.translit || '').join('').trim().toLowerCase();
-      const compIdx = comps.length > 1 ? comps.indexOf(root) : -1;
-      if (fullTranslit && fullTranslit !== rootTranslit) variants.push({ text: fullTranslit, compIdx: -1 });
-      variants.push({ text: rootTranslit, compIdx });
-    } else {
-      for (const text of lexTranslitCandidates(t.gloss)) variants.push({ text, compIdx: -1 });
-    }
-    if (variants.length) out.push({ ordinal: t.token_ordinal, used: false, variants });
+// ── Auto-Link matching (reworked 2026-09-22, Genesis 1:29) ──────────────────
+// Fieldy: "gen 1:24-28 linked with minor overhead, v 29 seems more
+// uncooperative... the issues seem to start with the quote '<Hanah'". Traced
+// live on bldbible.com (Claude in Chrome, /api/tokens + /api/translate/verse
+// for Gen 1:24-31) to general gaps — nothing about the '<' itself
+// (cleanEnWord already strips it):
+//
+//  1. PARTICLE-ONLY words were skipped outright. 𐤄𐤍𐤄 Hanah (mod-prde),
+//     𐤋𐤊𐤌 La+kam, 𐤁𐤅 Ba+w carry no css:'root' component, so "Hanah",
+//     "lakam", "baw" could never link — <Hanah is simply the first one.
+//  2. RAW tokens the parser folded into a later word block (𐤀𐤕 before 𐤊𐤋,
+//     𐤏𐤋 before 𐤄𐤀𐤓𐤑, 𐤀𐤔𐤓 before 𐤁𐤅, a lone 𐤅/𐤄/𐤋) have no components of
+//     their own and were invisible. Now they're grouped with the word block
+//     that absorbed them, and each gets the component piece that spells it.
+//     A whole spelled-out English word links every token of the group
+//     ("WaBaKal" -> 31,32,33; "HaAratz" -> 40,41 — exactly how the hand
+//     links in 1:26/1:28 already look); a bare root links just the root's
+//     token ("Aratz" -> 41); a lone particle word links its own raw token
+//     ("il" -> 38, "ashar" -> 30).
+//  3. FUSED English words never matched a shorter source root: "AthaKal" vs
+//     a root "Kal" failed the 4-letter suffix minimum, so the NEXT plain
+//     "kal" grabbed that token and every later kal shifted early. English
+//     words now also offer their last CamelCase segment (AthaKal -> kal).
+//  4. LINKING VOWELS: fieldy writes connective vowels the components don't
+//     carry (AthaKal vs Ath+Kal; ashar vs "Ashara"), and a trailing ending the
+//     components do (LaAkal vs La+Akalah). Matches now also compare the
+//     consonant skeleton (all 'a' removed) and allow a <=2-letter tail.
+//  5. GLOSSES: words inside a (…) gloss are never match targets. They used
+//     to be (parens stripped), so "(zarai)" consumed a zarai token.
+//  6. POSITION: among several matching source words, the one nearest the
+//     English word's relative position wins (ties -> earlier). With a
+//     repeated word ("zarai … zarai … zarai") one missing English occurrence
+//     no longer shifts every later one onto the wrong token.
+//  7. EXTEND, don't duplicate: a match on a token that's already linked adds
+//     the English word to that link (a manual union-merge's shape) instead
+//     of being skipped — only via pieces the link's own words don't spell.
+const SUFFIX_CSS_RE = /^(prs-|nme-|vbe-|uvf)/;
+const skel = s => String(s || '').toLowerCase().replace(/[a\-\s]/g, '');
+const PREFIX_TRANSLIT_MIN_LEN = 5;
+function translitMatchesLoose(a, b) {
+  if (translitMatches(a, b)) return true;
+  if (!a || !b) return false;
+  const sa = skel(a), sb = skel(b);
+  if (sa.length >= 2 && sa === sb) return true;
+  const shorter = a.length <= b.length ? a : b;
+  const longer = a.length <= b.length ? b : a;
+  return shorter.length >= PREFIX_TRANSLIT_MIN_LEN && longer.length - shorter.length <= 2 && longer.startsWith(shorter);
+}
+const translitSame = (a, b) => !!a && !!b && (a === b || skel(a) === skel(b));
+function englishForms(raw) {
+  const clean = cleanAutoLinkWord(raw);
+  if (!clean) return [];
+  const forms = [clean];
+  const root = lastCamelSegment(cleanEnWord(raw));
+  if (root && root.toLowerCase() !== clean) forms.push(root.toLowerCase());
+  return forms;
+}
+function glossMask(enWords) {
+  const mask = [];
+  let depth = 0;
+  for (const w of enWords) {
+    const s = String(w || '');
+    mask.push(depth > 0 || s.startsWith('('));
+    const opens = (s.match(/\(/g) || []).length, closes = (s.match(/\)/g) || []).length;
+    depth = Math.max(0, depth + opens - closes);
   }
-  return out;
+  return mask;
+}
+function componentPieces(comps, ord) {
+  const groups = [];
+  comps.forEach((c, idx) => {
+    if (c.isMark) return;
+    const tr = String(c.translit || '').trim();
+    if (!tr) return;
+    if (SUFFIX_CSS_RE.test(c.css || '') && groups.length) groups[groups.length - 1].text += tr.toLowerCase();
+    else groups.push({ text: tr.toLowerCase(), compIdx: idx, ord, used: false });
+  });
+  return groups;
+}
+function rawTranslit(t) {
+  if (!PALEO_LETTER_RE.test(t.word_raw || '')) return '';
+  return transliterate(String(t.word_raw).replace(/[^\u{10900}-\u{1091F}]/gu, ''), { script: 'paleo-hebrew' }).toLowerCase();
 }
 
-// Walks the English words IN ORDER and greedily pairs each against the
-// first still-unused candidate whose transliteration matches — which is
-// what makes a word used TWICE in one verse ("qaraa" called twice in
-// Genesis 1:5) pair the first occurrence with the first (lowest-ordinal,
-// i.e. earliest-read) source token and the second occurrence with the
-// second, instead of both colliding on whichever token happened to be
-// found first. Fieldy, 2026-08-16: "the order matters... assume my usage
-// will be in the order of the words themselves."
-function matchAutoLinkCandidates(candidates, enWords, usedEn) {
-  const matches = [];
-  for (let i = 0; i < enWords.length; i++) {
-    if (usedEn.has(i)) continue;
-    const clean = cleanAutoLinkWord(enWords[i]);
-    if (!clean || AUTO_LINK_STOP.has(clean)) continue;
-    let hit = null, hitVariant = null;
-    for (const c of candidates) {
-      if (c.used) continue;
-      const v = c.variants.find(vv => translitMatches(vv.text, clean));
-      if (v) { hit = c; hitVariant = v; break; }
+function buildAutoLinkCandidates(isBHSLang, tokens, links, enWords) {
+  const linkByOrd = new Map();
+  for (const l of links) for (const o of (l.token_ordinals || [])) if (!linkByOrd.has(o)) linkByOrd.set(o, l);
+  const groups = [];
+  if (!isBHSLang) {
+    for (const t of tokens) {
+      if (linkByOrd.has(t.token_ordinal)) continue;
+      const whole = lexTranslitCandidates(t.gloss).map(text => ({ text, compIdx: -1 }));
+      if (whole.length) groups.push({ ords: [t.token_ordinal], mainOrd: t.token_ordinal, whole, pieces: [], wholeOpen: true, hit: false });
     }
-    if (!hit) continue;
-    hit.used = true;
-    matches.push({ enIdx: i, ordinal: hit.ordinal, compIdx: hitVariant.compIdx });
+  } else {
+    let pending = [];
+    const flush = (t) => {
+      const comps = t ? (t.components || []) : [];
+      const mainOrd = t ? t.token_ordinal : null;
+      const pieces = t ? componentPieces(comps, mainOrd) : [];
+      // Hand each absorbed raw token the component piece that spells it.
+      for (const r of pending) {
+        const p = pieces.find(pp => pp.ord === mainOrd && skel(pp.text) === skel(r.tr));
+        if (p) p.ord = r.ord;
+        else pieces.splice(pieces.filter(pp => pp.ord !== mainOrd).length, 0, { text: r.tr, compIdx: -1, ord: r.ord, used: false });
+      }
+      const ords = [...pending.map(r => r.ord), ...(t ? [mainOrd] : [])];
+      pending = [];
+      if (!ords.length) return;
+      const whole = [];
+      const full = pieces.map(p => p.text).join('');
+      if (full) whole.push({ text: full, compIdx: -1, all: true });
+      const root = comps.find(c => c.css === 'root') || comps.find(c => c.css === 'mod-nmpr');
+      const rootTr = root ? String(root.translit || '').trim().toLowerCase() : '';
+      if (rootTr && rootTr !== full) whole.push({ text: rootTr, compIdx: comps.length > 1 ? comps.indexOf(root) : -1, all: false });
+      const g = { ords, mainOrd: mainOrd ?? ords[ords.length - 1], whole, pieces: pieces.length > 1 ? pieces : [], wholeOpen: true, hit: false };
+      const linked = ords.filter(o => linkByOrd.has(o));
+      if (linked.length) {
+        g.wholeOpen = false;
+        // Pieces on a linked token that the link's own words already spell
+        // are spent; the rest stay open so the link can be extended. A link
+        // whose words spell none of them (hand-made, different wording) is
+        // left alone entirely.
+        for (const o of linked) {
+          const own = g.pieces.filter(p => p.ord === o);
+          let any = false;
+          for (const i of (linkByOrd.get(o).english_indices || [])) {
+            const forms = englishForms(enWords[i]);
+            const open = own.filter(p => !p.used);
+            const one = open.find(p => forms.some(f => translitMatchesLoose(p.text, f)));
+            if (one) { one.used = true; any = true; }
+            else if (open.length && forms.some(f => skel(open.map(p => p.text).join('')) === skel(f))) { open.forEach(p => { p.used = true; }); any = true; }
+          }
+          if (!any) own.forEach(p => { p.used = true; });
+        }
+        if (!g.pieces.some(p => !p.used)) return;
+      }
+      groups.push(g);
+    };
+    for (const t of tokens) {
+      if (t.components?.length) { flush(t); continue; }
+      const tr = rawTranslit(t);
+      if (tr) pending.push({ ord: t.token_ordinal, tr });
+    }
+    flush(null);
   }
-  return matches;
+  groups.forEach((g, k) => { g.rel = groups.length > 1 ? k / (groups.length - 1) : 0; });
+  return groups;
+}
+
+// For English word i: each candidate group's best option (whole word, or the
+// longest run of consecutive open pieces it spells), then the group nearest
+// the word's relative position in the verse wins — ties go to the earlier
+// group. Proximity keeps a verse whose English repeats a word ("zarai ...
+// zarai ... zarai") pairing each with its own source token even when one
+// English occurrence is missing, instead of every later one shifting early.
+// A run of 2+ pieces the English word spells exactly (skeleton-equal) —
+// "AthaKal" = 𐤀𐤕 + Kal inside a Wa+Ath+Kal group — beats the bare-root
+// match, so the prefix's own token is linked along with the root's.
+function strictSpan(g, forms) {
+  const n = g.pieces.length;
+  for (let len = n; len >= 2; len--) {
+    for (let s = 0; s + len <= n; s++) {
+      const span = g.pieces.slice(s, s + len);
+      if (span.some(p => p.used)) continue;
+      if (forms.some(f => translitSame(span.map(p => p.text).join(''), f))) return { kind: 'span', span };
+    }
+  }
+  return null;
+}
+function optionFor(g, forms) {
+  if (g.wholeOpen && !g.hit) {
+    // The whole spelled-out word first (it may cover absorbed raw tokens),
+    // then the bare root (links just the root's own token), then — only for
+    // a single-piece word — a looser whole-word match. So "Aratz" links the
+    // root, "HaAratz" the whole word, and a multi-piece word like Ashar+Ba+w
+    // is matched piece by piece ("ashar" ... "baw") below instead of one
+    // English word swallowing the lot.
+    const full = g.whole.find(vv => vv.all), root = g.whole.find(vv => !vv.all);
+    const v = (full && forms.some(f => translitSame(full.text, f)) && full)
+      || strictSpan(g, forms)
+      || (root && forms.some(f => translitMatchesLoose(root.text, f)) && root)
+      || (full && !g.pieces.length && forms.some(f => translitMatchesLoose(full.text, f)) && { ...full, all: false })
+      || g.whole.find(vv => vv.all === undefined && forms.some(f => translitMatchesLoose(vv.text, f)));
+    if (v) return v.kind === 'span' ? v : { kind: 'whole', v };
+  }
+  const n = g.pieces.length;
+  for (let len = n; len >= 1; len--) {
+    for (let s = 0; s + len <= n; s++) {
+      const span = g.pieces.slice(s, s + len);
+      if (span.some(p => p.used)) continue;
+      const text = span.map(p => p.text).join('');
+      if (forms.some(f => translitMatchesLoose(text, f))) return { kind: 'span', span };
+    }
+  }
+  return null;
+}
+function matchAutoLinkCandidates(groups, enWords, usedEn) {
+  const inGloss = glossMask(enWords);
+  const hits = [];   // { en, ords:[...], compIdx }
+  const nEn = Math.max(1, enWords.length - 1);
+  for (let i = 0; i < enWords.length; i++) {
+    if (usedEn.has(i) || inGloss[i]) continue;
+    const forms = englishForms(enWords[i]).filter(f => !AUTO_LINK_STOP.has(f));
+    if (!forms.length) continue;
+    const pos = i / nEn;
+    let best = null;
+    for (const g of groups) {
+      const o = optionFor(g, forms);
+      if (!o) continue;
+      const d = Math.abs(g.rel - pos);
+      if (!best || d < best.d - 1e-9) best = { g, o, d };
+    }
+    if (!best) continue;
+    const { g, o } = best;
+    g.hit = true; g.wholeOpen = false;
+    if (o.kind === 'whole') {
+      g.pieces.forEach(p => { p.used = true; });
+      const ords = o.v.all ? g.ords : [g.mainOrd];
+      hits.push({ en: i, ords, compIdx: ords.length === 1 ? o.v.compIdx : -1 });
+    } else {
+      o.span.forEach(p => { p.used = true; });
+      const ords = [...new Set(o.span.map(p => p.ord))];
+      const compIdx = o.span.length === 1 && o.span[0].ord === g.mainOrd && g.pieces.length > 1 ? o.span[0].compIdx : -1;
+      hits.push({ en: i, ords, compIdx });
+    }
+  }
+  return hits;
+}
+
+// Fold hits into link writes: hits sharing a token become one link, and a hit
+// on an already-linked token extends that link instead of creating another.
+function planAutoLinks(hits, links) {
+  const linkByOrd = new Map();
+  for (const l of links) for (const o of (l.token_ordinals || [])) if (!linkByOrd.has(o)) linkByOrd.set(o, l);
+  const plans = [];
+  for (const h of hits) {
+    const existing = h.ords.map(o => linkByOrd.get(o)).find(Boolean) || null;
+    let p = plans.find(pp => (existing && pp.link === existing) || pp.ords.some(o => h.ords.includes(o)));
+    if (!p) { p = { link: existing, ords: [], en: [], compIdx: h.compIdx }; plans.push(p); }
+    else p.compIdx = -1;
+    if (existing && !p.link) p.link = existing;
+    for (const o of h.ords) if (!p.ords.includes(o)) p.ords.push(o);
+    p.en.push(h.en);
+  }
+  return plans;
 }
 
 // Computes matches for ONE language/verse and writes whatever new links it
@@ -332,31 +522,50 @@ function matchAutoLinkCandidates(candidates, enWords, usedEn) {
 // already-loaded tokens/links/enWords) or for every OTHER language in turn.
 async function runAutoLinkForVerse(bookId, chapter, verse, langId, tokens, links, enWords, admin) {
   if (!tokens?.length || !enWords?.length) return { created: 0, matched: 0, errors: [] };
-  const usedEn  = new Set(links.flatMap(l => l.english_indices || []));
-  const usedOrd = new Set(links.flatMap(l => l.token_ordinals  || []));
-  const candidates = buildAutoLinkCandidates(langId === 'BHS', tokens, usedOrd);
-  const matches = matchAutoLinkCandidates(candidates, enWords, usedEn);
-  if (!matches.length) return { created: 0, matched: 0, errors: [] };
+  const usedEn = new Set(links.flatMap(l => l.english_indices || []));
+  const groups = buildAutoLinkCandidates(langId === 'BHS', tokens, links, enWords);
+  const plans = planAutoLinks(matchAutoLinkCandidates(groups, enWords, usedEn), links);
+  if (!plans.length) return { created: 0, matched: 0, errors: [] };
 
   const errors = [];
   let created = 0;
-  for (const m of matches) {
-    const tok = tokens.find(t => t.token_ordinal === m.ordinal);
-    const comp = m.compIdx >= 0 ? tok?.components?.[m.compIdx] : null;
-    const component_hint = comp ? `${m.compIdx}:${comp.css}` : '';
-    const payload = {
-      book_id: bookId, chapter, verse, lang: langId,
-      english_phrase: enWords[m.enIdx], english_indices: [m.enIdx],
-      token_ordinals: [m.ordinal], component_hint,
-      color_index: 0, sort_order: links.length + created,
-    };
+  // Local (non-admin) writes read-modify-write the overlay; keep a running
+  // copy so consecutive writes in this loop see each other.
+  let running = links;
+  for (const p of plans) {
     try {
-      if (admin) await apiTransLink(payload);
-      else await addLocalLink(bookId, chapter, verse, langId, payload, links);
+      if (p.link) {
+        const allEn = [...new Set([...(p.link.english_indices || []), ...p.en])].sort((a, b) => a - b);
+        const allOrd = [...new Set([...(p.link.token_ordinals || []), ...p.ords])].sort((a, b) => a - b);
+        // PUT /api/translate/link/:id rewrites EVERY column (missing ones
+        // reset to defaults), so carry the link's own color/sort through. The
+        // hint is cleared on purpose: the link now spans more of the word
+        // than one component.
+        const merged = {
+          english_indices: allEn, english_phrase: allEn.map(i => enWords[i]).filter(Boolean).join(' '),
+          token_ordinals: allOrd, component_hint: '',
+          color_index: p.link.color_index || 0, sort_order: p.link.sort_order ?? 0,
+        };
+        if (admin) await apiTransUpdateLink({ id: p.link.id, book_id: bookId, chapter, verse, ...merged });
+        else running = (await updateLocalLink(bookId, chapter, verse, langId, p.link.id, merged, running)) || running;
+      } else {
+        const ords = [...p.ords].sort((a, b) => a - b);
+        const tok = ords.length === 1 ? tokens.find(t => t.token_ordinal === ords[0]) : null;
+        const comp = p.compIdx >= 0 ? tok?.components?.[p.compIdx] : null;
+        const en = [...p.en].sort((a, b) => a - b);
+        const payload = {
+          book_id: bookId, chapter, verse, lang: langId,
+          english_phrase: en.map(i => enWords[i]).filter(Boolean).join(' '), english_indices: en,
+          token_ordinals: ords, component_hint: comp ? `${p.compIdx}:${comp.css}` : '',
+          color_index: 0, sort_order: links.length + created,
+        };
+        if (admin) await apiTransLink(payload);
+        else running = (await addLocalLink(bookId, chapter, verse, langId, payload, running)) || running;
+      }
       created++;
     } catch (e) { errors.push(e.message); }
   }
-  return { created, matched: matches.length, errors };
+  return { created, matched: plans.length, errors };
 }
 
 // Independent fetch of ONE language's tokens + resolved links for a verse —
