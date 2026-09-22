@@ -162,7 +162,6 @@ def connect_with_retry(path, attempts=6, base_delay=0.5):
     raise last_err
 
 conn = connect_with_retry(DB)
-conn.execute("PRAGMA locking_mode=EXCLUSIVE")
 cur = conn.cursor()
 
 # 1. Promote the English: canon_id 148 + ordinals (what assign-canon-ids.py and

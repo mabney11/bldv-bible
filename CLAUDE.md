@@ -1,5 +1,119 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Shanahayam (H8141, "year") rendering as Shanayam/"two" in the reading text — STALE BAKE, not a live code bug; already fixed in code 2026-09-12, never rebaked (found 2026-09-21)
+
+fieldy flagged Leviticus 25:8 in Parallel (BHS): every chip correctly reads "Shanahayam
+[Year] [Plural]" tagged H8141, but the reading-text ("Novel English") surface shows "shanayam
+(two)" for the identical words — "pretty much every occurrence that should be Shanahayam
+(year) is getting shanayam (two) — need this fixed across the corpus."
+
+**Traced with no DB access (same standing sandbox constraint — this device-bridge sandbox's
+`better-sqlite3` binding is `invalid ELF header` through this bridge too, not just the
+Windows-native one referenced elsewhere in this file) purely from git history, file mtimes,
+and direct execution of the real functions against hand-built inputs — no guessing.**
+
+**The two symptoms are two different bugs stacked on each other, both already understood:**
+
+1. **The wrong TRANSLITERATION ("shanayam" instead of "Shanahayam") is baked into
+   `server/english-baseline.jsonl` itself, and predates the code that would render it
+   correctly.** `web-strongs.jsonl` tags every "years"/"year" segment in Lev 25:8 correctly as
+   H8141 (confirmed by direct grep — this was never a WEB-vs-OSHB SN clash, ROOTS["H8141"] is
+   correctly `Shin-Nun-He` "Shanah" in both `lexicon/strongs-roots.json` and the stale top-level
+   `server/strongs-roots.json` copy — see the flag about that duplicate file below). The
+   ACTUAL cause: `english-baseline.jsonl`'s mtime is **2026-09-11 22:59 UTC**;
+   `apply-web-strongs.mjs`'s plene-plural fix (commit `3dc2f8e`, "apply-web-strongs: head-word
+   aliases, 'so' -> kan, plene plurals, noun-only plurals") landed **2026-09-12 20:41 UTC** —
+   nine hours AFTER the currently-baked file was generated. Before that commit, the plural-
+   surface line read `drawPaleo = pl.w` — the raw ATTESTED Masoretic spelling, used as-is, no
+   restoration. Leviticus 25:8's real written plural of "year" is the 4-letter Shin-Nun-Yod-Mem
+   spelling — the He of Shanah is elided before the plural ending, completely normal Hebrew
+   orthography — and that 4-letter elided spelling is BYTE-FOR-BYTE IDENTICAL to H8147's own
+   canonical root (Shin-Nun-Yod-Mem, "two" — a genuine, well-known consonantal homograph:
+   unpointed Hebrew is either "years" or "two" depending on vowels/context). The pre-fix code
+   rendered that raw elided spelling directly, which happens to transliterate to "Shanayam" —
+   indistinguishable from "two"'s own transliteration. **This is exactly the "no-eliding"
+   violation this file has a standing rule against** — the same class of bug as the Genesis
+   1:14/1:15 mem-alef-resh-taw ("maarath"/"maawarath") inconsistency that MOTIVATED the
+   2026-09-12 fix in the first place (see that commit's own message).
+   The CURRENT code (`plenePlural(pl.w, rootPaleo)`, unchanged since 3dc2f8e — verified this
+   is still the tip of `git log -- server/apply-web-strongs.mjs`) is provably correct for this
+   exact case: ran the real function standalone against `ROOTS["H8141"]` and `ROOTS["H8147"]`'s
+   own codepoints (`plenePlural(shnayim_letters, shanah_root)` restores the He), `translit()`
+   of the result gives **"Shanahayam"**, matching the chip exactly. **The fix already shipped
+   nine days before fieldy hit this — it just has never been baked.**
+
+2. **The wrong GLOSS ("(two)" instead of "(years)") is a live-server symptom of the SAME stale
+   spelling, not a second independent bug.** The currently-baked `english-baseline.jsonl`
+   actually still says `"shanayam (years)"` (checked directly) — the gloss text itself was
+   fine in the bake (it falls back to the plural English word verbatim,
+   `bare.toLowerCase()`, when `pluralHit` fires, never mind that the transliteration in front
+   of it was wrong). But Lev 25:8 has certainly never been hand-edited in Translation Studio,
+   so it's an "untouched baseline draft" and `applyLiveGloss()`/`isUntouchedBaselineDraft()`
+   (server.js) re-derives its gloss LIVE, at request time, from the CURRENT `lexicon.json`.
+   `applyLiveGloss`'s regex matches `word (gloss)` pairs and looks up `_translitGlossIndex`
+   keyed by the WORD'S OWN transliteration, lowercased — i.e. it looks up `"shanayam"`, not
+   H8141. `lexicon.json` legitimately has an entry for H8147's own root mapping to "two" and,
+   until this session, had NO entry at all for H8141's bare singular root — so the live
+   regloss found a real match under H8147's spelling and overwrote the baked "(years)" with
+   "(two)". `applyLiveGloss` is doing exactly what it's designed to do; it's just operating on
+   the wrong (stale, unrestored) spelling, which is why re-baking alone should also fix this
+   half.
+
+**Scope — this is corpus-wide, not H8141-specific, matching fieldy's own report.** The
+pre-3dc2f8e `drawPaleo = pl.w` bug affects EVERY plural noun anywhere OSHB's attested plural
+spelling elides a root letter (assimilated nun, dropped weak radical, etc.) — Shanah/Shanayim
+is just the most visually confusing instance because the elided form happens to collide with
+an unrelated, real Strong's number's own root. Re-baking fixes all of them in one pass, same
+as it will fix Genesis 1:14/1:15's original elided-mem case that motivated the commit.
+
+**Fixed this session (safe, additive, no live-DB access needed):**
+- `server/lexicon/lexicon.json` — added the missing entry for H8141's bare root -> "year"
+  (H8141's bare root had NO gloss at all before this; `strongs-hebrew-expanded.json`'s own
+  `strongs_def` for H8141 is literally "a year (as a revolution of time)", so this is
+  evidence-sourced, not guessed). This is real but minor: it only ever mattered for a
+  SINGULAR, non-plural occurrence of "year" (curatedGloss falls back to the bare English word
+  anyway when the lexicon has no entry, so nothing was rendering wrong from this gap — it just
+  means a singular "year" now gets a proper curated-lexicon gloss like every other common
+  noun, instead of always falling through to the plain English word).
+- **Not fixed, only flagged**: `server/strongs-roots.json` (a second, stale, top-level copy of
+  the lexicon's roots file, distinct from `server/lexicon/strongs-roots.json` — confirmed by
+  diff to be missing `H378a`/`H1151a`/`H429z` and several other letter-restoration entries from
+  fixes later than 2026-08-22, so it predates several sessions' worth of fixes documented
+  elsewhere in this file). It agrees with the current file for H8141/H8147/H8140 specifically,
+  so it is NOT the cause of this bug, but every script that does
+  `['./lexicon/strongs-roots.json','./strongs-roots.json'].find(existsSync)` (apply-web-
+  strongs.mjs and at least 14 other scripts grep confirms reference a bare `strongs-
+  roots.json` path) silently falls back to this stale copy if `lexicon/strongs-roots.json`
+  ever goes missing. Left untouched (didn't want to delete a file in the connected folder
+  without asking — this sandbox needs the user's own approval to delete anything there
+  anyway) — worth fieldy's call on whether it should be deleted outright or is kept
+  deliberately for some reason not visible from this session.
+
+**Nothing else needed a code change** — `apply-web-strongs.mjs`'s plural-restoration logic,
+the OSHB reconciliation block, and `plenePlural()` itself are all already correct as of
+commit `3dc2f8e` (verified by literally executing all three against real root data pulled
+from this checkout, not by reading the code and assuming).
+
+**Not run this session** (same standing DB-access constraint via this bridge). Before calling
+this fixed, run the full pipeline, in order, then restart the server — same sequence this file
+already documents elsewhere for "any change to apply-web-strongs.mjs, render-corpus.mjs, or
+the CHAR_MAP/transliteration logic":
+```
+node apply-web-strongs.mjs
+node load-english-baseline.js --reset-baseline
+node render-all.mjs --surface
+node verify-no-eliding.js
+```
+then restart the server (this also busts `_translitGlossIndex`/`_translitRenumberIndex` and
+picks up the new `lexicon.json` entry). Verify: Leviticus 25:8 in `/bible` and `/parallel`
+should read "Shanahayam (years)" (plural occurrences) and the chip/reading-text should agree
+letter-for-letter with each other, not just glossed the same. Then spot-check Genesis 1:14/
+1:15 (the original elided-mem case that motivated the 2026-09-12 commit) and a few other
+plural nouns corpus-wide with `verify-no-eliding.js`'s own report — that script exists
+specifically to catch this class of regression and should show a real count of what the stale
+bake was hiding for over a week.
+
+
 ## STANDING RULE: a 3ms PERFECT verb's "he" subject is a synthesized Yod PREFIX, not an invisible suffix — explicit override of Hebrew grammar (fieldy, 2026-09-21)
 
 Follow-up to the section directly below this one, same session. fieldy, on being told

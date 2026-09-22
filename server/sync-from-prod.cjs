@@ -20,7 +20,7 @@
  * (READ_ONLY / NODE_ENV=production / DATA_DIR set) and in cluster workers (the
  * primary syncs once before forking). Escape hatch for working offline:
  *     PALEO_NO_SYNC=1 node server.js        (says so loudly on start)
- * Override the host/path with PALEO_PROD_HOST (default "paleo-lightsail", the
+ * Override the host/path with PALEO_PROD_HOST (default "paleo-prod", the
  * ~/.ssh/config alias) and PALEO_PROD_DATA_DIR (default /mnt/paleo-data).
  */
 'use strict';
@@ -72,7 +72,7 @@ function syncFromProd() {
     console.warn(`[sync] PALEO_NO_SYNC=1 — ${FILE} NOT checked against prod. Local text may be stale; do not push it anywhere.`);
     return;
   }
-  const host = process.env.PALEO_PROD_HOST || 'paleo-lightsail';
+  const host = process.env.PALEO_PROD_HOST || 'paleo-prod';
   const remote = `${process.env.PALEO_PROD_DATA_DIR || '/mnt/paleo-data'}/${FILE}`;
   const t0 = Date.now();
   console.log(`[sync] checking ${FILE} against prod (${host}:${remote})…`);
