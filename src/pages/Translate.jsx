@@ -1157,10 +1157,20 @@ export default function Translate() {
       : [{ chapter: activeChapter, verses: [] }]; // not loaded yet — fall back to the active verse alone
     let acc = '';
     const boundaries = [];
+    const verseStarts = new Set(); // same verse bounds Reader.jsx's bookQuoteScan passes (WEB paragraph re-openers)
+    const verseEnds = new Set();
     let activeRange = null;
     chapters.forEach(ch => {
       const isActiveChapter = ch.chapter === activeChapter;
-      const chVerses = (ch.verses || []).map(v => v);
+      // 2026-09-22: for the ACTIVE chapter, prefer the sidebar's own verse
+      // list (openChapterMap — updated in place on every save) over
+      // bookTextForPreview's copy, which is fetched once per book and so goes
+      // stale the moment a neighbouring verse is saved in this tab. fieldy hit
+      // this at Genesis 1:29 -> 1:30: the `<` saved in v29 never reached v30's
+      // preview. Also makes the preview work when the book text fails to load.
+      const activeList = isActiveChapter ? openChapterMap[`${activeBook}:${activeChapter}`] : null;
+      const chVerses = (activeList && activeList.length ? activeList : (ch.verses || []))
+        .map(v => ({ verse: v.verse, text: v.text }));
       if (isActiveChapter) {
         const idx = chVerses.findIndex(v => v.verse === activeVerse);
         if (idx >= 0) chVerses[idx] = { verse: activeVerse, text: livePreviewText };
@@ -1169,7 +1179,7 @@ export default function Translate() {
       chVerses.forEach(v => {
         const raw = sanitizeText((v.text || '').trim());
         const start = acc.length;
-        if (raw) acc += raw;
+        if (raw) { acc += raw; verseStarts.add(start); verseEnds.add(acc.length); }
         if (isActiveChapter && v.verse === activeVerse) activeRange = { start, end: acc.length };
         acc += ' ';
       });
@@ -1177,11 +1187,11 @@ export default function Translate() {
       boundaries.push(acc.length);
     });
     if (!activeRange) return null;
-    const tree = dissolveOverlongQuotes(parseQuoteMarks(acc, boundaries));
+    const tree = dissolveOverlongQuotes(parseQuoteMarks(acc, boundaries, { starts: verseStarts, ends: verseEnds }));
     const sliced = sliceQuoteTree(tree, activeRange.start, activeRange.end);
     const rendered = renderQuoteTree(sliced, 'both', 'qp-');
     return rendered && rendered.length ? rendered : null;
-  }, [activeBook, activeChapter, activeVerse, bookTextForPreview, livePreviewText]);
+  }, [activeBook, activeChapter, activeVerse, bookTextForPreview, livePreviewText, openChapterMap]);
 
   const setStatus = useCallback(async (newStatus) => {
     saveVerse({ status: newStatus });

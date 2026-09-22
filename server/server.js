@@ -11734,6 +11734,37 @@ app.get('/api/translate/chapter', (req, res) => {
     }
 });
 
+// GET /api/translate/book?book=1
+// Every chapter's English text for a whole book, verse text only — feeds the
+// book-wide quote scan in Reader.jsx (bookQuoteScan) and Translate.jsx's Quote
+// preview, so an explicit <...> quote can carry across verse AND chapter
+// boundaries. Originally added 2026-08-26 and accidentally dropped by commit
+// 15c6987 (2026-08-28, "ashah->ayashah" — a stale copy of server.js
+// overwrote it); src/lib/api.js's apiTransBookText kept calling it and
+// silently fell back on the 404. Restored 2026-09-22 after fieldy found the
+// Studio's Quote preview never continued a <...> quote opened in an earlier
+// verse (Genesis 1:29 -> 1:30): with no book text the preview only ever saw
+// the active verse by itself. Reuses buildEnglishChapter so the text is
+// exactly what /api/translate/chapter serves per chapter.
+app.get('/api/translate/book', (req, res) => {
+    try {
+        const bookId = parseInt(req.query.book, 10);
+        if (!bookId) return res.status(400).json({ error: 'book required' });
+        const chapterRows = db.prepare(`
+            SELECT DISTINCT ord_c AS chapter FROM verses
+            WHERE corpus='ENG' AND canon_id=? AND ord_c IS NOT NULL ORDER BY ord_c
+        `).all(bookId);
+        const chapters = chapterRows.map(r => ({
+            chapter: r.chapter,
+            verses: buildEnglishChapter(bookId, r.chapter).verses.map(v => ({ verse: v.verse, text: v.text })),
+        }));
+        res.json({ book_id: bookId, chapters });
+    } catch(err) {
+        console.error('/api/translate/book failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ── PASSAGES ─────────────────────────────────────────────────────────────────
 // A "passage" is a named window onto the reader's text: a title plus one or
 // more verse ranges (which may span chapters and books), served as one

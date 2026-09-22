@@ -985,6 +985,18 @@
 .rd-verse.marked .rd-vtext.rd-vtext-block {
   background: none;
 }
+/* 2026-09-22, fieldy (Genesis 1:30 opened as ?verse=30): a MARKED verse
+   whose inline .rd-vtext contains a block-level quote gained a blank line
+   above the quote (the verse number stranded on it, the quote bar broken
+   from the previous verse's). CSS only collapses the empty anonymous line
+   box that sits before/after a block child inside an inline element when
+   that inline has no padding/border — the highlighter padding above (cloned
+   onto every fragment) makes that empty line real, one full line-height
+   tall. The quote blocks paint their own highlight anyway, so drop the
+   padding whenever any block quote lives inside the verse text. */
+.rd-verse.marked .rd-vtext:has(.rd-quote-block) {
+  padding: 0;
+}
 /* .rd-quote-block is display:block, so it forms its OWN box rather than
    being one of .rd-vtext's own inline fragments — the background above
    never paints it, which is why marking a verse whose content sits partly
