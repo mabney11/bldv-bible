@@ -359,10 +359,27 @@ function Update-Widget {
 # shows up in the status rows above on the collector's next ~20s poll, or
 # in the relevant log file (Logs button opens the folder they all live in).
 
+# fieldy, 2026-09-22: Commit & Push ran twice (Enter, then the button) with
+# no visible reaction either time, and ~/paleo-widget-actions.log didn't
+# even exist afterward. Root cause: this used to guess a fallback path
+# ("$env:ProgramFiles\Git\bin\bash.exe") when bash.exe wasn't on PATH --
+# a scheduled task (this widget normally starts at logon via one) can run
+# with a much thinner PATH than an interactive shell, so the guess was
+# taken and was wrong, Start-Process threw trying to launch a path that
+# doesn't exist, and nothing anywhere caught it. Now searches PATH plus the
+# common Git-for-Windows install roots directly and returns $null (never a
+# bogus path) when none of them pan out, so callers can tell "no bash" apart
+# from "bash ran and failed" instead of blowing up silently.
 function Get-BashExe {
-    $bashExe = (Get-Command bash.exe -ErrorAction SilentlyContinue).Source
-    if (-not $bashExe) { $bashExe = "$env:ProgramFiles\Git\bin\bash.exe" }
-    return $bashExe
+    $fromPath = (Get-Command bash.exe -ErrorAction SilentlyContinue).Source
+    if ($fromPath) { return $fromPath }
+    $roots = @($env:ProgramFiles, ${env:ProgramFiles(x86)}, (Join-Path $env:LocalAppData 'Programs'))
+    foreach ($root in $roots) {
+        if (-not $root) { continue }
+        $candidate = Join-Path $root 'Git\bin\bash.exe'
+        if (Test-Path $candidate) { return $candidate }
+    }
+    return $null
 }
 
 function Get-ProdSshTarget {
@@ -370,6 +387,50 @@ function Get-ProdSshTarget {
         BashExe   = Get-BashExe
         HostAlias = if ($env:PALEO_PROD_HOST) { $env:PALEO_PROD_HOST } else { 'paleo-prod' }
         RRepo     = if ($env:PALEO_PROD_REPO) { $env:PALEO_PROD_REPO } else { '/root/paleo-studio' }
+    }
+}
+
+# Runs a command via bash.exe SYNCHRONOUSLY and reports what actually
+# happened, instead of the fire-and-forget + fixed Start-Sleep pattern the
+# other actions below use -- Commit & Push needs a real answer, not a guess.
+# Always appends its own result to $LogPath directly from PowerShell
+# (Add-Content), so a log entry exists even when bash.exe can't be found or
+# Start-Process itself throws -- the exact gap that left no log at all for
+# either of the two failed attempts above.
+function Invoke-BashCommandLogged {
+    param(
+        [string]$Command,
+        [string]$LogPath,
+        [string]$Label
+    )
+    $stamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    $bashExe = Get-BashExe
+    if (-not $bashExe) {
+        try {
+            Add-Content -Path $LogPath -Value "[$stamp] $Label -- FAILED: bash.exe not found (checked PATH, Program Files, Program Files (x86), %LocalAppData%\Programs)"
+        } catch {}
+        return @{ Success = $false; Output = "bash.exe not found"; ExitCode = $null; BashMissing = $true }
+    }
+    try {
+        $psi = New-Object System.Diagnostics.ProcessStartInfo
+        $psi.FileName = $bashExe
+        $psi.ArgumentList.Add('-lc')
+        $psi.ArgumentList.Add($Command)
+        $psi.UseShellExecute = $false
+        $psi.RedirectStandardOutput = $true
+        $psi.RedirectStandardError = $true
+        $psi.CreateNoWindow = $true
+        $proc = [System.Diagnostics.Process]::Start($psi)
+        $stdout = $proc.StandardOutput.ReadToEnd()
+        $stderr = $proc.StandardError.ReadToEnd()
+        $proc.WaitForExit()
+        $combined = ($stdout + $stderr).Trim()
+        $ok = ($proc.ExitCode -eq 0)
+        try { Add-Content -Path $LogPath -Value "[$stamp] $Label -- exit=$($proc.ExitCode)`n$combined`n" } catch {}
+        return @{ Success = $ok; Output = $combined; ExitCode = $proc.ExitCode; BashMissing = $false }
+    } catch {
+        try { Add-Content -Path $LogPath -Value "[$stamp] $Label -- FAILED to launch bash.exe: $($_.Exception.Message)" } catch {}
+        return @{ Success = $false; Output = $_.Exception.Message; ExitCode = $null; BashMissing = $false }
     }
 }
 
@@ -388,6 +449,14 @@ function Get-ProdSshTarget {
 # the message uses the standard sh idiom for a literal single-quote inside
 # a single-quoted string: close the quote, insert an escaped literal quote,
 # reopen it.
+# fieldy, 2026-09-22: rewritten after two silent failures in a row (see
+# Get-BashExe's note above -- same root cause). No more fire-and-forget +
+# fixed Start-Sleep + optimistic clear: this now runs the git commands
+# synchronously via Invoke-BashCommandLogged (which always logs, even on a
+# launch failure) and reports the REAL result in NoFilesText -- green and
+# cleared on success; red with the actual error and the message/checkboxes
+# left exactly as they were on failure, so a retry after fixing whatever
+# broke doesn't need to be retyped or rechecked.
 function Invoke-CommitAndPush {
     $msg = $CommitMsgBox.Text.Trim()
     $paths = @($script:SelectedFiles)
@@ -409,27 +478,45 @@ function Invoke-CommitAndPush {
     $CommitBtn.Text = "Committing..."
     $CommitBtn.IsEnabled = $false
     $CommitMsgBox.IsEnabled = $false
-    $bashExe = Get-BashExe
+    $NoFilesText.Visibility = 'Collapsed'
+
     $escapedMsg = $msg -replace "'", "'\''"
     $quotedPaths = ($paths | ForEach-Object { "'" + ($_ -replace "'", "'\''") + "'" }) -join ' '
-    $cmd = "git add -- $quotedPaths && git commit -m '$escapedMsg' && git push origin main"
-    $wrapped = "cd '$RepoRoot' && ($cmd) >> ~/paleo-widget-actions.log 2>&1"
-    Start-Process -FilePath $bashExe -ArgumentList @('-lc', $wrapped) -WindowStyle Hidden
-    Start-Sleep -Seconds 2
+    $cmd = "cd '$RepoRoot' && git add -- $quotedPaths && git commit -m '$escapedMsg' && git push origin main"
+    $logPath = Join-Path $env:USERPROFILE 'paleo-widget-actions.log'
+    $result = Invoke-BashCommandLogged -Command $cmd -LogPath $logPath -Label "commit-and-push: $quotedPaths"
+
     $CommitBtn.Text = "Commit & Push"
     $CommitBtn.IsEnabled = $true
     $CommitMsgBox.IsEnabled = $true
-    $CommitMsgBox.Text = ""
-    # Optimistic clear -- the real confirmation is these paths dropping out
-    # of the next poll's pending list once they're actually committed+pushed.
-    # If the push failed (see ~/paleo-widget-actions.log), git status will
-    # still show them and they'll simply reappear, unchecked, on next poll.
-    $script:SelectedFiles.Clear()
+
+    if ($result.Success) {
+        $CommitMsgBox.Text = ""
+        $script:SelectedFiles.Clear()
+        $NoFilesText.Text = "Committed & pushed"
+        $NoFilesText.Foreground = [System.Windows.Media.Brushes]::LightGreen
+        $NoFilesText.Visibility = 'Visible'
+        # This message (and the checklist itself) resets to the canonical
+        # empty/pending state on the next ~5s poll -- see
+        # Update-FileChecklist's comment on reusing NoFilesText this way.
+    } else {
+        $lastLine = @($result.Output -split "`n" | Where-Object { $_.Trim() }) | Select-Object -Last 1
+        $detail = if ($result.BashMissing) { "bash.exe not found" } else { $lastLine }
+        $NoFilesText.Text = "Failed: $detail (see $logPath)"
+        $NoFilesText.Foreground = [System.Windows.Media.Brushes]::OrangeRed
+        $NoFilesText.Visibility = 'Visible'
+    }
 }
 
 # Runs a command locally (in $RepoRoot, via Git-Bash), appended to a log
 # file in the user's home dir, with a brief "Running..." label on the
-# clicked control while it starts.
+# clicked control while it starts. Stays fire-and-forget (unlike Commit &
+# Push above) since e.g. Studio or a slow network Pull could run for a
+# while and this shouldn't freeze the whole widget -- but launching
+# bash.exe is now wrapped so a launch failure (bad/missing bash.exe) logs
+# immediately, from PowerShell itself, and the button visibly says so
+# instead of silently resetting to idle with no trace anywhere (2026-09-22
+# -- same root cause Get-BashExe's note above describes for Commit & Push).
 function Start-PaleoLocalAction {
     param(
         [System.Windows.Controls.TextBlock]$Button,
@@ -441,10 +528,28 @@ function Start-PaleoLocalAction {
     )
     $Button.Text = $RunningText
     $Button.IsEnabled = $false
+    $logPath = Join-Path $env:USERPROFILE $LogFile
+    $stamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
     $bashExe = Get-BashExe
-    $logPath = "~/$LogFile"
-    $wrapped = "cd '$RepoRoot' && ($Command) >> $logPath 2>&1"
-    Start-Process -FilePath $bashExe -ArgumentList @('-lc', $wrapped) -WindowStyle Hidden
+    if (-not $bashExe) {
+        try { Add-Content -Path $logPath -Value "[$stamp] $IdleText -- FAILED: bash.exe not found" } catch {}
+        $Button.Text = "$IdleText (failed - see log)"
+        Start-Sleep -Seconds 3
+        $Button.Text = $IdleText
+        $Button.IsEnabled = $true
+        return
+    }
+    $wrapped = "cd '$RepoRoot' && ($Command) >> '$logPath' 2>&1"
+    try {
+        Start-Process -FilePath $bashExe -ArgumentList @('-lc', $wrapped) -WindowStyle Hidden
+    } catch {
+        try { Add-Content -Path $logPath -Value "[$stamp] $IdleText -- FAILED to launch bash.exe: $($_.Exception.Message)" } catch {}
+        $Button.Text = "$IdleText (failed - see log)"
+        Start-Sleep -Seconds 3
+        $Button.Text = $IdleText
+        $Button.IsEnabled = $true
+        return
+    }
     Start-Sleep -Seconds $CosmeticSeconds
     $Button.Text = $IdleText
     $Button.IsEnabled = $true
@@ -495,9 +600,21 @@ $CatchUpBtn.Add_MouseLeftButtonDown({
     $CatchUpBtn.Text = "Syncing..."
     $CatchUpBtn.IsEnabled = $false
     $target = Get-ProdSshTarget
-    $remoteCmd = "sudo -n bash -c 'cd $($target.RRepo) && ./lexicon-sync.sh'"
-    $sshCmd = "ssh -o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no $($target.HostAlias) `"$remoteCmd`" >> ~/observability.log 2>&1"
-    Start-Process -FilePath $target.BashExe -ArgumentList @('-lc', $sshCmd) -WindowStyle Hidden
+    $logPath = Join-Path $env:USERPROFILE 'observability.log'
+    $stamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    if (-not $target.BashExe) {
+        try { Add-Content -Path $logPath -Value "[$stamp] Catch Up -- FAILED: bash.exe not found" } catch {}
+        $CatchUpBtn.Text = "Catch Up (failed)"
+    } else {
+        $remoteCmd = "sudo -n bash -c 'cd $($target.RRepo) && ./lexicon-sync.sh'"
+        $sshCmd = "ssh -o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no $($target.HostAlias) `"$remoteCmd`" >> '$logPath' 2>&1"
+        try {
+            Start-Process -FilePath $target.BashExe -ArgumentList @('-lc', $sshCmd) -WindowStyle Hidden
+        } catch {
+            try { Add-Content -Path $logPath -Value "[$stamp] Catch Up -- FAILED to launch bash.exe: $($_.Exception.Message)" } catch {}
+            $CatchUpBtn.Text = "Catch Up (failed)"
+        }
+    }
     Start-Sleep -Seconds 2
     $CatchUpBtn.Text = "Catch Up"
     $CatchUpBtn.IsEnabled = $true
@@ -536,10 +653,22 @@ $DeployBtn.Add_MouseLeftButtonDown({
     $script:DeployArmed = $false
     $DeployBtn.IsEnabled = $false
     $target = Get-ProdSshTarget
-    $remoteCmd = "sudo -n bash -c 'cd $($target.RRepo) && ./deploy-blue-green.sh'"
-    $sshCmd = "ssh -o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no $($target.HostAlias) `"$remoteCmd`" >> ~/deploy.log 2>&1"
-    Start-Process -FilePath $target.BashExe -ArgumentList @('-lc', $sshCmd) -WindowStyle Hidden
-    $DeployBtn.Text = "Deploying (~5m)..."
+    $logPath = Join-Path $env:USERPROFILE 'deploy.log'
+    $stamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    if (-not $target.BashExe) {
+        try { Add-Content -Path $logPath -Value "[$stamp] Deploy -- FAILED: bash.exe not found" } catch {}
+        $DeployBtn.Text = "Deploy (failed)"
+    } else {
+        $remoteCmd = "sudo -n bash -c 'cd $($target.RRepo) && ./deploy-blue-green.sh'"
+        $sshCmd = "ssh -o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no $($target.HostAlias) `"$remoteCmd`" >> '$logPath' 2>&1"
+        try {
+            Start-Process -FilePath $target.BashExe -ArgumentList @('-lc', $sshCmd) -WindowStyle Hidden
+            $DeployBtn.Text = "Deploying (~5m)..."
+        } catch {
+            try { Add-Content -Path $logPath -Value "[$stamp] Deploy -- FAILED to launch bash.exe: $($_.Exception.Message)" } catch {}
+            $DeployBtn.Text = "Deploy (failed)"
+        }
+    }
     $DeployBtn.Foreground = [System.Windows.Media.Brushes]::OrangeRed
     Start-Sleep -Seconds 3
     $DeployBtn.Text = "Deploy"
