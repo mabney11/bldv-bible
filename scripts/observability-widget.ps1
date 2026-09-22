@@ -414,8 +414,19 @@ function Invoke-BashCommandLogged {
     try {
         $psi = New-Object System.Diagnostics.ProcessStartInfo
         $psi.FileName = $bashExe
-        $psi.ArgumentList.Add('-lc')
-        $psi.ArgumentList.Add($Command)
+        # fieldy, 2026-09-22: first deploy of this function threw "You
+        # cannot call a method on a null-valued expression" right here --
+        # ProcessStartInfo.ArgumentList comes back $null under Windows
+        # PowerShell 5.1 (.NET Framework; this widget's actual runtime,
+        # not pwsh/.NET Core where it works fine and where this had been
+        # sanity-checked). Build .Arguments as a single pre-quoted string
+        # by hand instead -- works on both runtimes. $Command is always
+        # built with single-quote escaping (the "close/insert escaped
+        # quote/reopen" idiom already used throughout this file), so it
+        # should never itself contain a literal double-quote, but the
+        # -replace is a defensive no-op if that ever changes.
+        $escapedCmd = $Command -replace '"', '\"'
+        $psi.Arguments = '-lc "' + $escapedCmd + '"'
         $psi.UseShellExecute = $false
         $psi.RedirectStandardOutput = $true
         $psi.RedirectStandardError = $true
