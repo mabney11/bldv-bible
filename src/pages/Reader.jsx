@@ -21,6 +21,7 @@ import { TYPEFACES } from '../lib/typefaces.js';
 // dangerouslySetInnerHTML, same pattern as WordBlock.jsx) makes them match.
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
 import { usePaleoMode } from '../hooks/usePaleoMode.js';
+import { RD_SCROLL_KEY, RD_RETURN_VERSE_KEY, readSession, writeSession, removeSession } from '../lib/readerScrollMemory.js';
 
 // Mirrors WordBlock.jsx's own hasPaleo guard: only route real Paleo-Hebrew
 // letters (U+10900–U+1091F) through the custom SVG renderer — anything else
@@ -1538,8 +1539,33 @@ export default function Reader() {
     setMarks(prev => new Set([...prev, ...keys]));
   }, [book, chapter, verse, verseEnd]);
 
-  // ── scroll: top on chapter change; smooth-scroll + flash a targeted verse ───
+  // ── scroll position memory + highlight-on-return ────────────────────────
+  // `.rd-scroll` is an inner scrollable <main>, not the document/viewport —
+  // a browser only ever restores scroll for the page itself on a back/
+  // forward navigation, never for a scrollable element like this one. So a
+  // plain "tap back out of a verse's own page" always landed back at the
+  // top of the chapter, with no memory of where you'd actually been
+  // reading. Fixed with two small sessionStorage memories, both keyed by
+  // book:chapter (RD_SCROLL_KEY / RD_RETURN_VERSE_KEY above):
+  //  - the last scrollTop seen in this chapter, saved on every scroll
+  //    (debounced, see handleReaderScroll) and restored whenever we land
+  //    back here with no explicit ?verse= target;
+  //  - the verse being opened: written immediately when "Go to verse" is
+  //    clicked (see the rd-vnum-goto Link below), then kept in sync by
+  //    VersePage.jsx itself as long as it stays mounted (Prev/Next-verse
+  //    browsing there updates it too — see lib/readerScrollMemory.js).
+  //    Consumed (read, then removed) the first time we're next back in this
+  //    chapter with no ?verse= — so it fires exactly once, on the return
+  //    trip, and lights the verse the same way a citation landing does.
   const scrollRef = useRef(null);
+  const scrollSaveTimer = useRef(null);
+  const handleReaderScroll = useCallback(() => {
+    if (scrollSaveTimer.current) clearTimeout(scrollSaveTimer.current);
+    scrollSaveTimer.current = setTimeout(() => {
+      if (scrollRef.current) writeSession(RD_SCROLL_KEY(book, chapter), String(scrollRef.current.scrollTop));
+    }, 150);
+  }, [book, chapter]);
+
   useEffect(() => {
     if (loading) return;
     if (verse != null) {
@@ -1559,7 +1585,30 @@ export default function Reader() {
         return () => clearTimeout(t);
       }
     }
-    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+
+    // No explicit ?verse= — either a genuinely fresh chapter (nothing saved
+    // yet, land at the top like before) or a return trip. Prefer "returning
+    // from this verse's own page" when both are available: it both tells
+    // the reader which verse they came back from (lit, same treatment as a
+    // citation landing) and scrolls straight to it, which is a more
+    // reliable answer than a raw scrollTop number if anything above it has
+    // reflowed since (font size, margins, etc.).
+    const returnVerseRaw = readSession(RD_RETURN_VERSE_KEY(book, chapter));
+    if (returnVerseRaw != null) {
+      removeSession(RD_RETURN_VERSE_KEY(book, chapter));
+      const v = parseInt(returnVerseRaw, 10);
+      const el = v ? document.getElementById(`rv-${v}`) : null;
+      if (el) {
+        setMarks(prev => new Set([...prev, markKey(v)]));
+        el.scrollIntoView({ behavior: 'auto', block: 'center' });
+        el.classList.add('rd-flash');
+        const t = setTimeout(() => el.classList.remove('rd-flash'), 1500);
+        return () => clearTimeout(t);
+      }
+    }
+
+    const savedScroll = readSession(RD_SCROLL_KEY(book, chapter));
+    if (scrollRef.current) scrollRef.current.scrollTop = savedScroll != null ? (parseInt(savedScroll, 10) || 0) : 0;
   }, [loading, chapKey, verse]);
 
   // ── navigation ─────────────────────────────────────────────────────────────
@@ -2017,7 +2066,7 @@ export default function Reader() {
       {(aaOpen || switchOpen) && <div className="rd-scrim rd-scrim-menu" onClick={closeAll} />}
 
       {/* ── reading surface ─────────────────────────────────────────────────── */}
-      <main className="rd-scroll" ref={scrollRef} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <main className="rd-scroll" ref={scrollRef} onScroll={handleReaderScroll} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <article className="rd-page">
           {loading ? (
             <div className="rd-state">Opening {bookName}…</div>
@@ -2293,7 +2342,15 @@ export default function Reader() {
                           into anything listening on the verse number. */}
                       <Link className="rd-vnum-goto"
                             to={`/${bookToParam(book, idToSlug)}/${chapter}/${vnum}`}
-                            onClick={e => e.stopPropagation()}
+                            onClick={e => {
+                              e.stopPropagation();
+                              // Stash exactly where we are and which verse
+                              // we're opening, so the scroll-memory effect
+                              // above can put both back when the reader taps
+                              // back out of this verse's own page.
+                              if (scrollRef.current) writeSession(RD_SCROLL_KEY(book, chapter), String(scrollRef.current.scrollTop));
+                              writeSession(RD_RETURN_VERSE_KEY(book, chapter), String(vnum));
+                            }}
                             title={`Open ${chapterBookName} ${chapter}:${vnum} on its own page`}>
                         Go to verse
                       </Link>

@@ -18,6 +18,22 @@
 set -e
 cd ~/paleo-studio
 echo "==> Pulling latest code..."
+# 2026-09-22: render-all.mjs regenerates a few tracked-but-derived files —
+# english-baseline.jsonl, word-map.json, .no-eliding-verify-cache.json —
+# wholesale on every full pipeline run (they're never hand-edited, same
+# category as a lockfile). A pipeline run on this box (bare host or
+# `docker exec` into a live container touching a bind-mounted checkout)
+# can leave one of these modified-but-uncommitted here, which then makes a
+# plain `git pull` abort with "local changes would be overwritten" — this
+# bit us for real on 2026-09-22 (stray host-side apply-web-strongs.mjs
+# output from an earlier failed attempt, hours before the actual deploy).
+# These three are safe to discard unconditionally: whatever's incoming
+# from origin is itself a full regeneration, never a hand-authored diff
+# worth preserving. Do NOT extend this list to source files — an
+# uncommitted local edit to a script or to corpus.db/translation.db (which
+# aren't tracked at all, see .gitignore) should keep blocking the pull so
+# it gets looked at, not silently discarded.
+git checkout -- server/english-baseline.jsonl server/word-map.json server/.no-eliding-verify-cache.json 2>/dev/null || true
 git pull
 
 echo "==> Pulling built image from GHCR..."

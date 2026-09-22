@@ -15,6 +15,7 @@ import { TYPEFACES } from '../lib/typefaces.js';
 import { renderVerseNodesWithQuotes, sanitizeText } from './Reader.jsx';
 import './Reader.css';
 import './VersePage.css';
+import { RD_RETURN_VERSE_KEY, writeSession } from '../lib/readerScrollMemory.js';
 
 // Same key + default Reader.jsx persists its own typeface choice under —
 // "lets persist the font between the reader and the single scripture page":
@@ -87,6 +88,21 @@ export default function VersePage() {
   // there's nothing to resolve against yet, not because it's invalid.
   const resolved = !!progress;
   const addressValid = resolved && !!bookId && !!chapter && verse != null;
+
+  // Keep the Reader's "which verse is open for this chapter" marker in sync
+  // with whatever verse THIS page is actually showing — not just the one it
+  // was first opened on. Covers Prev/Next-verse browsing within this page,
+  // and works no matter how this page was reached (Reader's "Go to verse"
+  // link, a citation, search, precepts, a direct URL) since it's driven by
+  // the resolved address itself, not by the link that led here. Reader.jsx
+  // reads and consumes this the next time it's mounted for this book/chapter
+  // with no ?verse= of its own — see lib/readerScrollMemory.js for the full
+  // scheme (scroll-position memory is the other half, Reader-side only,
+  // since only the Reader itself knows its own scroll offset).
+  useEffect(() => {
+    if (!addressValid) return;
+    writeSession(RD_RETURN_VERSE_KEY(bookId, chapter), String(verse));
+  }, [addressValid, bookId, chapter, verse]);
 
   const [verseData, setVerseData] = useState(null);
   const [loading, setLoading] = useState(true);
