@@ -128,7 +128,18 @@ function log(msg) {
 async function run(cmd, args) {
     try {
         const { stdout } = await execFileP(cmd, args, { cwd: REPO_ROOT, timeout: 15000, windowsHide: true });
-        return { ok: true, out: stdout.trim() };
+        // Only trailing whitespace (the trailing newline every git/ssh
+        // command leaves) gets stripped -- a plain .trim() also ate LEADING
+        // whitespace, and `git status --porcelain`'s unstaged-only status
+        // code is a literal leading space (" M path"), which is significant
+        // column position for checkOtherChanges' fixed-offset line.slice()
+        // parsing below. Whenever that kind of line came first in the
+        // output, .trim() silently ate the space and shifted every path in
+        // the pending-files list one character short (fieldy, 2026-09-22:
+        // "src/pages/Reader.jsx" showed up, and got committed against, as
+        // "rc/pages/Reader.jsx"). No other caller of run() relies on
+        // leading whitespace, so this is a safe blanket change.
+        return { ok: true, out: stdout.replace(/\s+$/, '') };
     } catch (e) {
         const msg = (e.stderr || e.message || String(e)).toString().trim();
         return { ok: false, err: msg };
