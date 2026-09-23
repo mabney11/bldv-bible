@@ -1726,19 +1726,28 @@ export default function Reader() {
   // anchored mid-way through an EARLIER chapter is in effect from here on,
   // exactly like a verse-1 one.
   const hVerse = h => (Number.isFinite(h.verse) && h.verse > 0 ? h.verse : 1);
+  // Any number of headings of the same level may start at the same verse
+  // (several Sections stacked above verse 1, say). "Continued" = the last one
+  // of that level from an EARLIER chapter, shown muted at the top only when
+  // this chapter doesn't start a new one of its own at verse 1.
+  const headingSort = (a, b) => a.level - b.level || (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id;
+  const startHeadingsAt = (level) => headingsList
+    .filter(h => h.level === level && h.chapter === chapter && hVerse(h) <= 1)
+    .sort(headingSort);
   const activeHeadingFor = (level, c) => {
     let best = null;
     for (const h of headingsList) {
-      if (h.level !== level || h.chapter > c) continue;
-      if (h.chapter === c && hVerse(h) > 1) continue;
+      if (h.level !== level || h.chapter >= c) continue;
       if (!best || h.chapter > best.chapter
           || (h.chapter === best.chapter && hVerse(h) > hVerse(best))
           || (h.chapter === best.chapter && hVerse(h) === hVerse(best) && h.sort_order >= best.sort_order)) best = h;
     }
     return best;
   };
-  const activePart = activeHeadingFor(HEADING_LEVEL.PART, chapter);
-  const activeSection = activeHeadingFor(HEADING_LEVEL.SECTION, chapter);
+  const startParts = startHeadingsAt(HEADING_LEVEL.PART);
+  const startSections = startHeadingsAt(HEADING_LEVEL.SECTION);
+  const continuedPart = startParts.length ? null : activeHeadingFor(HEADING_LEVEL.PART, chapter);
+  const continuedSection = startSections.length ? null : activeHeadingFor(HEADING_LEVEL.SECTION, chapter);
   // Section headings (level 2) as {from, title} pairs, chapter-ascending —
   // the shape the book-jump navigator sheet (below) groups chapters by.
   const navSections = headingsList
@@ -1746,7 +1755,7 @@ export default function Reader() {
     .map(h => ({ from: h.chapter, title: h.title }))
     .sort((a, b) => a.from - b.from);
   // Chapter title: at most one per chapter, shown next to the chapter number.
-  const chapterTitleHeading = headingsList.find(h => h.level === HEADING_LEVEL.CHAPTER && h.chapter === chapter && hVerse(h) <= 1);
+  const chapterTitleHeadings = startHeadingsAt(HEADING_LEVEL.CHAPTER);
   // Part / Section / Chapter-title headings anchored at a verse > 1 of the
   // chapter on screen — rendered inline above that verse, Part first.
   const midHeadingsByVerse = (() => {
@@ -2177,25 +2186,29 @@ export default function Reader() {
             </div>
           ) : (
             <div className="rd-chapter" key={chapKey}>
-              {activePart && (
-                <div className={`rd-part-heading ${activePart.chapter === chapter ? 'rd-heading-start' : 'rd-heading-continued'}`}>
-                  <div className="rd-part-title">{activePart.title}</div>
-                  {activePart.chapter === chapter && activePart.subtitle && (
-                    <div className="rd-part-subtitle">{activePart.subtitle}</div>
-                  )}
+              {continuedPart && (
+                <div className="rd-part-heading rd-heading-continued">
+                  <div className="rd-part-title">{continuedPart.title}</div>
                 </div>
               )}
-              {activeSection && (
-                <div className={`rd-section-heading ${activeSection.chapter === chapter ? 'rd-heading-start' : 'rd-heading-continued'}`}>
-                  {activeSection.title}
+              {startParts.map(h => (
+                <div className="rd-part-heading rd-heading-start" key={`part-${h.id}`}>
+                  <div className="rd-part-title">{h.title}</div>
+                  {h.subtitle && <div className="rd-part-subtitle">{h.subtitle}</div>}
                 </div>
+              ))}
+              {continuedSection && (
+                <div className="rd-section-heading rd-heading-continued">{continuedSection.title}</div>
               )}
+              {startSections.map(h => (
+                <div className="rd-section-heading rd-heading-start" key={`sec-${h.id}`}>{h.title}</div>
+              ))}
               <header className="rd-chapter-head">
                 <div className="rd-book-name">{chapterBookName}</div>
                 <div className="rd-chapter-num">{chapter}</div>
-                {chapterTitleHeading?.title && (
-                  <div className="rd-chapter-title">{chapterTitleHeading.title}</div>
-                )}
+                {chapterTitleHeadings.map(h => h.title && (
+                  <div className="rd-chapter-title" key={`ct-${h.id}`}>{h.title}</div>
+                ))}
               </header>
               {/* superscription — a title, not verse 1. Folds together the
                   BHS-derived Paleo heading (when build-headings.mjs has one)

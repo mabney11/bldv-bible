@@ -749,20 +749,13 @@ export default function Translate() {
   // field, or drag a pill onto a verse row) — the chapter pills only own the
   // verse-1 one; mid-chapter headings show as pills inside the verse list.
   const hVerse = h => (Number.isFinite(h?.verse) && h.verse > 0 ? h.verse : 1);
-  const openChapterHeadingEditor = (chapterNum, level) => {
-    const existing = bookHeadings.find(h => h.chapter === chapterNum && h.level === level && hVerse(h) <= 1);
-    setHeadingEditor({
-      id: existing?.id ?? null, level, chapter: chapterNum, verse: 1,
-      title: existing?.title ?? '', subtitle: existing?.subtitle ?? '',
-    });
-  };
   // A Pericope anchors at a specific verse — one click, right from the verse
   // row, either edits what's already there or starts a new one at that verse.
   // "+H" on a verse row: a NEW heading at that verse (Pericope by default —
   // switch the level in the editor for a Part/Section/Chapter title).
-  const openVerseHeadingEditor = (chapterNum, verseNum) => {
+  const openVerseHeadingEditor = (chapterNum, verseNum, level = 4) => {
     setHeadingEditor({
-      id: null, level: 4, chapter: chapterNum, verse: verseNum,
+      id: null, level, chapter: chapterNum, verse: verseNum,
       title: '', subtitle: '',
     });
   };
@@ -1931,17 +1924,20 @@ export default function Translate() {
                   {isOpen && (
                     <div className={`tr-heading-row ${headingDropTarget === `${ch.chapter}:1` ? 'drop-target' : ''}`}
                          {...headingDropProps(ch.chapter, 1)}>
-                      {[1, 2, 3].map(lvl => {
-                        const h = bookHeadings.find(x => x.chapter === ch.chapter && x.level === lvl && hVerse(x) <= 1);
-                        return (
-                          <button key={lvl} {...headingDragProps(h)}
-                                  className={`tr-heading-pill ${h ? 'has-value' : 'empty'}`}
-                                  onClick={() => openChapterHeadingEditor(ch.chapter, lvl)}
-                                  title={h ? `Edit this chapter's ${HEADING_LEVEL_LABEL[lvl]}` : `Add a ${HEADING_LEVEL_LABEL[lvl]} heading starting at chapter ${ch.chapter}`}>
-                            {HEADING_LEVEL_LABEL[lvl]}{h ? `: ${h.title}` : ' +'}
-                          </button>
-                        );
-                      })}
+                      {/* Add-only buttons, always available: any number of
+                          Parts/Sections/Chapter titles per chapter. They start
+                          at verse 1 — change "Starts at verse" in the editor,
+                          or drag the new pill onto another verse. Existing
+                          headings (verse 1 included) show as pills in the
+                          verse list below, right above their verse. */}
+                      {[1, 2, 3].map(lvl => (
+                        <button key={lvl}
+                                className="tr-heading-pill empty"
+                                onClick={() => openVerseHeadingEditor(ch.chapter, 1, lvl)}
+                                title={`Add a ${HEADING_LEVEL_LABEL[lvl]} to chapter ${ch.chapter}`}>
+                          {HEADING_LEVEL_LABEL[lvl]} +
+                        </button>
+                      ))}
                     </div>
                   )}
                   {isOpen && (
@@ -1952,7 +1948,7 @@ export default function Translate() {
                           // pills don't already own: pericopes (any verse) and
                           // Part/Section/Chapter title starting mid-chapter.
                           const here = bookHeadings
-                            .filter(x => x.chapter === ch.chapter && hVerse(x) === v.verse && (x.level === 4 || v.verse > 1))
+                            .filter(x => x.chapter === ch.chapter && hVerse(x) === v.verse)
                             .sort((a, b) => a.level - b.level || (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id);
                           return (
                             <Fragment key={v.verse}>
