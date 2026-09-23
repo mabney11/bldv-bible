@@ -671,6 +671,13 @@
 .rd-part-heading + .rd-section-heading { margin-top: -.6em; }
 .rd-section-heading.rd-heading-start { opacity: 1; font-weight: 700; }
 .rd-section-heading.rd-heading-continued { opacity: .6; }
+/* Part / Section / Chapter title anchored mid-chapter (e.g. Genesis 2:4) —
+   rendered inline above its first verse inside .rd-body, so it needs its own
+   block spacing (and centering) instead of the chapter-head slot's. */
+.rd-heading-mid { display: block; text-align: center; }
+.rd-section-heading.rd-heading-mid { margin: 1.8em 0 .8em; }
+.rd-chapter-title.rd-heading-mid { margin: 1.2em 0 .6em; }
+.rd-part-heading.rd-heading-mid + .rd-section-heading.rd-heading-mid { margin-top: -.4em; }
 
 /* Chapter title — one short line per chapter, right under the big number
    (Gen 1 = "Creation"), KJV chapter-analysis style. */

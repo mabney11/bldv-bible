@@ -744,8 +744,13 @@ export default function Translate() {
   // Chapter-scoped levels (Part/Section/Chapter title) all anchor at verse 1
   // of their chapter; a click on one of these pills opens the editor already
   // pre-filled with whatever's there (or blank, to add one).
+  //
+  // Any level can ALSO start mid-chapter now (editor's "Starts at verse"
+  // field, or drag a pill onto a verse row) — the chapter pills only own the
+  // verse-1 one; mid-chapter headings show as pills inside the verse list.
+  const hVerse = h => (Number.isFinite(h?.verse) && h.verse > 0 ? h.verse : 1);
   const openChapterHeadingEditor = (chapterNum, level) => {
-    const existing = bookHeadings.find(h => h.chapter === chapterNum && h.level === level);
+    const existing = bookHeadings.find(h => h.chapter === chapterNum && h.level === level && hVerse(h) <= 1);
     setHeadingEditor({
       id: existing?.id ?? null, level, chapter: chapterNum, verse: 1,
       title: existing?.title ?? '', subtitle: existing?.subtitle ?? '',
@@ -753,16 +758,60 @@ export default function Translate() {
   };
   // A Pericope anchors at a specific verse — one click, right from the verse
   // row, either edits what's already there or starts a new one at that verse.
+  // "+H" on a verse row: a NEW heading at that verse (Pericope by default —
+  // switch the level in the editor for a Part/Section/Chapter title).
   const openVerseHeadingEditor = (chapterNum, verseNum) => {
-    const existing = bookHeadings.find(h => h.level === 4 && h.chapter === chapterNum && h.verse === verseNum);
     setHeadingEditor({
-      id: existing?.id ?? null, level: 4, chapter: chapterNum, verse: verseNum,
-      title: existing?.title ?? '', subtitle: existing?.subtitle ?? '',
+      id: null, level: 4, chapter: chapterNum, verse: verseNum,
+      title: '', subtitle: '',
     });
   };
+  // Click on an existing heading pill in the verse list.
+  const openExistingHeadingEditor = (h) => {
+    setHeadingEditor({
+      id: h.id, level: h.level, chapter: h.chapter, verse: hVerse(h),
+      title: h.title ?? '', subtitle: h.subtitle ?? '',
+    });
+  };
+  // Drag-to-move: any existing heading pill can be dropped onto a verse row
+  // (re-anchors it to that verse) or onto the chapter's pill row (verse 1).
+  const [headingDropTarget, setHeadingDropTarget] = useState(null); // "ch:verse"
+  const moveHeading = async (id, chapterNum, verseNum) => {
+    const h = bookHeadings.find(x => x.id === id);
+    if (!h || (h.chapter === chapterNum && hVerse(h) === verseNum)) return;
+    try {
+      await apiHeadingUpdate({
+        id, book_id: activeBook, level: h.level, chapter: chapterNum, verse: verseNum,
+        end_chapter: h.end_chapter, end_verse: h.end_verse,
+        title: h.title, subtitle: h.subtitle || '', sort_order: h.sort_order || 0,
+      });
+      await refreshHeadings();
+      toast(`${HEADING_LEVEL_LABEL[h.level]} moved to ${chapterNum}:${verseNum}`, 'ok');
+    } catch (e) { toast('Heading move failed: ' + e.message, 'err'); }
+  };
+  const headingDragProps = (h) => h ? ({
+    draggable: true,
+    onDragStart: e => { e.dataTransfer.setData('text/x-heading-id', String(h.id)); e.dataTransfer.effectAllowed = 'move'; },
+    onDragEnd: () => setHeadingDropTarget(null),
+  }) : {};
+  const headingDropProps = (chapterNum, verseNum) => ({
+    onDragOver: e => {
+      if (!e.dataTransfer.types.includes('text/x-heading-id')) return;
+      e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+      const k = `${chapterNum}:${verseNum}`;
+      if (headingDropTarget !== k) setHeadingDropTarget(k);
+    },
+    onDragLeave: () => setHeadingDropTarget(null),
+    onDrop: e => {
+      const id = parseInt(e.dataTransfer.getData('text/x-heading-id'), 10);
+      setHeadingDropTarget(null);
+      if (Number.isFinite(id)) { e.preventDefault(); moveHeading(id, chapterNum, verseNum); }
+    },
+  });
   const saveHeadingEditor = async () => {
     if (!headingEditor || !activeBook) return;
-    const { id, level, chapter, verse, title, subtitle } = headingEditor;
+    const { id, level, chapter, title, subtitle } = headingEditor;
+    const verse = Math.max(1, parseInt(headingEditor.verse, 10) || 1);
     if (!title.trim()) { toast('A heading needs a title.', 'err'); return; }
     const payload = { book_id: activeBook, level, chapter, verse, title: title.trim(), subtitle: (subtitle || '').trim() };
     try {
@@ -1880,11 +1929,12 @@ export default function Translate() {
                     <span className="tr-chapter-stat">{ch.done}/{ch.total} · {pct}%</span>
                   </button>
                   {isOpen && (
-                    <div className="tr-heading-row">
+                    <div className={`tr-heading-row ${headingDropTarget === `${ch.chapter}:1` ? 'drop-target' : ''}`}
+                         {...headingDropProps(ch.chapter, 1)}>
                       {[1, 2, 3].map(lvl => {
-                        const h = bookHeadings.find(x => x.chapter === ch.chapter && x.level === lvl);
+                        const h = bookHeadings.find(x => x.chapter === ch.chapter && x.level === lvl && hVerse(x) <= 1);
                         return (
-                          <button key={lvl}
+                          <button key={lvl} {...headingDragProps(h)}
                                   className={`tr-heading-pill ${h ? 'has-value' : 'empty'}`}
                                   onClick={() => openChapterHeadingEditor(ch.chapter, lvl)}
                                   title={h ? `Edit this chapter's ${HEADING_LEVEL_LABEL[lvl]}` : `Add a ${HEADING_LEVEL_LABEL[lvl]} heading starting at chapter ${ch.chapter}`}>
@@ -1898,16 +1948,24 @@ export default function Translate() {
                     <div className="tr-verse-list">
                       {verses.length === 0 ? <div className="tr-loading">Loading…</div> :
                         verses.map(v => {
-                          const peri = bookHeadings.find(x => x.level === 4 && x.chapter === ch.chapter && x.verse === v.verse);
+                          // Every heading anchored AT this verse that the chapter
+                          // pills don't already own: pericopes (any verse) and
+                          // Part/Section/Chapter title starting mid-chapter.
+                          const here = bookHeadings
+                            .filter(x => x.chapter === ch.chapter && hVerse(x) === v.verse && (x.level === 4 || v.verse > 1))
+                            .sort((a, b) => a.level - b.level || (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id);
                           return (
                             <Fragment key={v.verse}>
-                              {peri && (
-                                <button className="tr-pericope-pill" onClick={() => openVerseHeadingEditor(ch.chapter, v.verse)}
-                                        title="Edit this pericope heading">
-                                  📌 {peri.title}
+                              {here.map(h => (
+                                <button key={h.id} {...headingDragProps(h)}
+                                        className={`tr-pericope-pill tr-vheading-l${h.level}`}
+                                        onClick={() => openExistingHeadingEditor(h)}
+                                        title={`Edit this ${HEADING_LEVEL_LABEL[h.level]} (drag onto another verse to move it)`}>
+                                  {h.level === 4 ? '📌' : `${HEADING_LEVEL_LABEL[h.level]}:`} {h.title}
                                 </button>
-                              )}
-                              <div className="tr-verse-row-wrap">
+                              ))}
+                              <div className={`tr-verse-row-wrap ${headingDropTarget === `${ch.chapter}:${v.verse}` ? 'drop-target' : ''}`}
+                                   {...headingDropProps(ch.chapter, v.verse)}>
                                 <button
                                   className={`tr-verse-row ${activeVerse === v.verse ? 'active' : ''}`}
                                   onClick={() => loadVerse(activeBook, ch.chapter, v.verse)}>
@@ -1915,7 +1973,7 @@ export default function Translate() {
                                   <span className={`tr-status-dot ${v.status || 'none'}`} />
                                   <span className="tr-verse-preview">{v.text ? v.text.slice(0, 34) : '—'}</span>
                                 </button>
-                                <button className="tr-add-heading-btn" title="Add a pericope heading above this verse"
+                                <button className="tr-add-heading-btn" title="Add a heading above this verse (Pericope, or pick Part/Section/Chapter title in the editor)"
                                         onClick={() => openVerseHeadingEditor(ch.chapter, v.verse)}>+H</button>
                               </div>
                             </Fragment>
@@ -2498,8 +2556,28 @@ export default function Translate() {
           <div className="tr-heading-editor" onClick={e => e.stopPropagation()}>
             <div className="tr-heading-editor-title">
               {headingEditor.id ? 'Edit' : 'Add'} {HEADING_LEVEL_LABEL[headingEditor.level]}
-              {' — '}{activeBookData?.name || ''} {headingEditor.chapter}
-              {headingEditor.level === 4 ? `:${headingEditor.verse}` : ''}
+              {' — '}{activeBookData?.name || ''} {headingEditor.chapter}:{headingEditor.verse}
+            </div>
+            <div className="tr-heading-editor-inline">
+              <label className="tr-heading-editor-label">
+                Level
+                <select
+                  className="tr-heading-editor-input"
+                  value={headingEditor.level}
+                  onChange={e => setHeadingEditor(h => ({ ...h, level: +e.target.value }))}>
+                  {[1, 2, 3, 4].map(l => <option key={l} value={l}>{HEADING_LEVEL_LABEL[l]}</option>)}
+                </select>
+              </label>
+              <label className="tr-heading-editor-label">
+                Starts at verse
+                <input
+                  type="number" min="1"
+                  className="tr-heading-editor-input"
+                  value={headingEditor.verse}
+                  onChange={e => setHeadingEditor(h => ({ ...h, verse: e.target.value }))}
+                  onKeyDown={e => { if (e.key === 'Enter') saveHeadingEditor(); if (e.key === 'Escape') setHeadingEditor(null); }}
+                />
+              </label>
             </div>
             <label className="tr-heading-editor-label">
               Title

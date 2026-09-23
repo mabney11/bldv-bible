@@ -743,6 +743,23 @@
   cursor: pointer;
 }
 .tr-pericope-pill:hover { background: color-mix(in srgb, var(--gold) 16%, var(--bg)); }
+/* Part / Section / Chapter title anchored mid-chapter, shown in the verse
+   list above their verse (same pill as a pericope, blue accent + label). */
+.tr-pericope-pill.tr-vheading-l1,
+.tr-pericope-pill.tr-vheading-l2,
+.tr-pericope-pill.tr-vheading-l3 {
+  background: color-mix(in srgb, var(--blue2, var(--blue)) 10%, var(--bg));
+  border-left-color: var(--blue2, var(--blue));
+}
+.tr-pericope-pill.tr-vheading-l1 { text-transform: uppercase; letter-spacing: .04em; }
+.tr-pericope-pill[draggable="true"], .tr-heading-pill[draggable="true"] { cursor: grab; }
+/* Drop target while dragging a heading pill onto a verse row / chapter row. */
+.tr-verse-row-wrap.drop-target, .tr-heading-row.drop-target {
+  box-shadow: inset 0 2px 0 var(--blue2, var(--blue));
+  background: color-mix(in srgb, var(--blue2, var(--blue)) 10%, transparent);
+}
+.tr-heading-editor-inline { display: flex; gap: 12px; }
+.tr-heading-editor-inline .tr-heading-editor-label { flex: 1; }
 
 .tr-heading-editor-backdrop {
   position: fixed; inset: 0; z-index: 60;

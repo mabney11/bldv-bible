@@ -354,8 +354,9 @@ export default function VersePage() {
     if (!addressValid) return;
     try {
       navigator.clipboard.writeText(`${bookName} ${chapter}:${verse}`);
-      e.currentTarget.classList.add('copied');
-      setTimeout(() => e.currentTarget.classList.remove('copied'), 1500);
+      const el = e.currentTarget; // capture before React nulls it
+      el.classList.add('copied');
+      setTimeout(() => el.classList.remove('copied'), 1500);
     } catch (err) { /* ignore */ }
   };
 

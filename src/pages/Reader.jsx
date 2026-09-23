@@ -1717,11 +1717,23 @@ export default function Reader() {
   // The Part/Section "in effect" for chapter c is whichever heading of that
   // level has the highest anchor chapter <= c — same one-pass rule
   // book-sections.json's consumer used before this replaced it.
+  //
+  // Any level can now anchor at a verse other than 1 (Translation Studio's
+  // heading editor has a "Starts at verse" field) — e.g. Genesis 2:4's
+  // toledot division. A heading anchored mid-way through the chapter ON
+  // SCREEN is not yet "in effect" at the top of that chapter; it renders
+  // inline above its own verse instead (midHeadingsByVerse below). One
+  // anchored mid-way through an EARLIER chapter is in effect from here on,
+  // exactly like a verse-1 one.
+  const hVerse = h => (Number.isFinite(h.verse) && h.verse > 0 ? h.verse : 1);
   const activeHeadingFor = (level, c) => {
     let best = null;
     for (const h of headingsList) {
       if (h.level !== level || h.chapter > c) continue;
-      if (!best || h.chapter > best.chapter || (h.chapter === best.chapter && h.sort_order >= best.sort_order)) best = h;
+      if (h.chapter === c && hVerse(h) > 1) continue;
+      if (!best || h.chapter > best.chapter
+          || (h.chapter === best.chapter && hVerse(h) > hVerse(best))
+          || (h.chapter === best.chapter && hVerse(h) === hVerse(best) && h.sort_order >= best.sort_order)) best = h;
     }
     return best;
   };
@@ -1734,7 +1746,19 @@ export default function Reader() {
     .map(h => ({ from: h.chapter, title: h.title }))
     .sort((a, b) => a.from - b.from);
   // Chapter title: at most one per chapter, shown next to the chapter number.
-  const chapterTitleHeading = headingsList.find(h => h.level === HEADING_LEVEL.CHAPTER && h.chapter === chapter);
+  const chapterTitleHeading = headingsList.find(h => h.level === HEADING_LEVEL.CHAPTER && h.chapter === chapter && hVerse(h) <= 1);
+  // Part / Section / Chapter-title headings anchored at a verse > 1 of the
+  // chapter on screen — rendered inline above that verse, Part first.
+  const midHeadingsByVerse = (() => {
+    const m = new Map();
+    for (const h of headingsList) {
+      if (h.level === HEADING_LEVEL.PERICOPE || h.chapter !== chapter || hVerse(h) <= 1) continue;
+      if (!m.has(h.verse)) m.set(h.verse, []);
+      m.get(h.verse).push(h);
+    }
+    for (const arr of m.values()) arr.sort((a, b) => a.level - b.level || a.sort_order - b.sort_order || a.id - b.id);
+    return m;
+  })();
   // Pericopes for the chapter on screen, keyed by their anchor verse so the
   // verse-body loop can look one up per verse in O(1) as it renders.
   const pericopesByVerse = (() => {
@@ -2308,8 +2332,23 @@ export default function Reader() {
                   // anchors to, the same Fragment-sibling pattern as rd-acrostic
                   // just below (which is why it's computed and placed before it).
                   const peris = pericopesByVerse.get(vnum);
+                  const mids = midHeadingsByVerse.get(vnum);
                   return (
                     <Fragment key={vnum}>
+                    {mids && mids.map((h, hi) => (
+                      h.level === HEADING_LEVEL.PART ? (
+                        <div className="rd-part-heading rd-heading-start rd-heading-mid" key={`mid-${h.id ?? hi}`}>
+                          <div className="rd-part-title">{h.title}</div>
+                          {h.subtitle && <div className="rd-part-subtitle">{h.subtitle}</div>}
+                        </div>
+                      ) : h.level === HEADING_LEVEL.SECTION ? (
+                        <div className="rd-section-heading rd-heading-start rd-heading-mid" key={`mid-${h.id ?? hi}`}>
+                          {h.title}
+                        </div>
+                      ) : (
+                        <div className="rd-chapter-title rd-heading-mid" key={`mid-${h.id ?? hi}`}>{h.title}</div>
+                      )
+                    ))}
                     {peris && peris.map((p, pi) => (
                       <div className="rd-pericope" key={`peri-${p.id ?? pi}`}>
                         <div className="rd-pericope-title">{p.title}</div>

@@ -528,11 +528,15 @@ export default function WordBlock({
             onClick={ev => {
               try {
                 navigator.clipboard.writeText(parts.purePaleo);
-                ev.currentTarget.classList.add('copied');
-                ev.currentTarget.textContent = '✓';
+                // Capture the element NOW — React nulls ev.currentTarget once
+                // the handler returns, so reading it inside setTimeout threw
+                // and left the "copied" state stuck on forever.
+                const btn = ev.currentTarget;
+                btn.classList.add('copied');
+                btn.textContent = '✓';
                 setTimeout(() => {
-                  ev.currentTarget.classList.remove('copied');
-                  ev.currentTarget.textContent = '⧉';
+                  btn.classList.remove('copied');
+                  btn.textContent = '⧉';
                 }, 1500);
               } catch (e) { /* ignore */ }
             }}
@@ -558,8 +562,9 @@ export default function WordBlock({
               if (!text) return;
               try {
                 navigator.clipboard.writeText(text);
-                ev.currentTarget.classList.add('copied');
-                setTimeout(() => ev.currentTarget.classList.remove('copied'), 1500);
+                const el = ev.currentTarget; // capture before React nulls it
+                el.classList.add('copied');
+                setTimeout(() => el.classList.remove('copied'), 1500);
               } catch (e) { /* ignore */ }
             }}
             dangerouslySetInnerHTML={{ __html: translitHtml }}
