@@ -89,6 +89,17 @@ while true; do
     fi
   else
     rm -f "$STAMP_FILE" 2>/dev/null
+    # 2026-09-24: .failing used to be cleared ONLY by a later successful
+    # lexicon-sync.sh run. If the failure is resolved some other way (fieldy
+    # commits + pushes by hand, as after the 14:56 pull-blocked-by-dirty-tree
+    # failure), the tree is clean and nothing is ahead, so this loop never
+    # calls lexicon-sync.sh again and the widget showed "STUCK" forever.
+    # Clean + nothing unpushed = nothing left to sync = not failing.
+    if [ -f "$STATE/.failing" ]; then
+      rm -f "$STATE/.failing"
+      LOG "nothing left to sync (clean, 0 ahead) — clearing stale .failing"
+      ./notify.sh "lexicon sync: recovered" "$(hostname): nothing left to sync; cleared the failing flag." default
+    fi
   fi
   sleep "$POLL_INTERVAL"
 done

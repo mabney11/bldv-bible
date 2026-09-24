@@ -397,7 +397,23 @@ async function pollOnce() {
         checkProd(),
     ]);
 
-    const lexiconFailing = checkFlag('server/.lexicon-watch/.failing');
+    let lexiconFailing = checkFlag('server/.lexicon-watch/.failing');
+    // Auto-resolve (safe, idempotent, same spirit as the stale-lock removal):
+    // lexicon-watch.sh only clears .failing after a later SUCCESSFUL sync, so
+    // a failure resolved by hand (commit + push outside the watcher) left the
+    // flag -- and the widget's "STUCK" -- up forever with nothing left to do
+    // (2026-09-24). If git says local is fetched, 0 ahead, 0 behind, and
+    // server/lexicon is clean, there is nothing a sync could fix: clear it.
+    if (lexiconFailing.present && localGit.fetch_ok && localGit.ahead === 0 && localGit.behind === 0) {
+        const lexDirty = await run('git', ['-C', REPO_ROOT, 'status', '--porcelain', '--', 'server/lexicon']);
+        if (lexDirty.ok && !lexDirty.out.trim()) {
+            try {
+                fs.unlinkSync(path.join(REPO_ROOT, 'server/.lexicon-watch/.failing'));
+                autoResolved.push({ action: 'cleared stale lexicon .failing (clean, 0 ahead/0 behind)', since: lexiconFailing.since });
+                lexiconFailing = { present: false };
+            } catch { /* leave it; next poll retries */ }
+        }
+    }
     const studioFailing = checkFlag('server/.studio-sync/.failing');
     const studioLock = checkFlag('server/.studio-sync/.lock');
     const gitLocks = currentGitLocks();

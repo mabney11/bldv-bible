@@ -305,7 +305,7 @@ def main():
     except Exception:
         pass
     root.configure(bg=BG)
-    WIDTH, HEIGHT = 380, 680
+    WIDTH, HEIGHT = 380, 710   # +30 for the action-log header (2026-09-24)
     root.geometry(f'{WIDTH}x{HEIGHT}')
     root.update_idletasks()
     screen_w = root.winfo_screenwidth()
@@ -388,10 +388,11 @@ def main():
         "Remove any stale git lock file older than 1 minute (a real, actively-forming lock from the last minute is left alone)")
     rebake_btn = make_button(actions_grid, "Rebake",
         "THIS is the corpus/lexicon database sync to prod: rebuilds surface-index.db from your current "
-        "corpus.db, pushes it to prod, and swaps it into the live site. Click again to confirm (~10 min).")
+        "corpus.db, pushes corpus.db (only if yours is newer than prod's) and surface-index.db to prod, and swaps "
+        "them into the live site. Click again to confirm. Dot: orange blinking = running, green = done, red = failed.")
     deploy_btn = make_button(actions_grid, "Deploy",
         "Swap prod's live containers to the latest deployed CODE (not the databases -- that's Rebake). "
-        "Zero downtime. Click again to confirm (~5 min).")
+        "Zero downtime. Click again to confirm. Dot: orange blinking = running, green = done, red = failed.")
     logs_btn = make_button(actions_grid, "Logs",
         "Open the folder holding every log these actions and the background watchers write to")
     restart_btn = make_button(actions_grid, "Restart",
@@ -409,6 +410,85 @@ def main():
     autofix_label.pack(fill='x', pady=(8, 0))
     last_checked_label = tk.Label(main_frame, fg=FG_GRAY, bg=BG, font=('Segoe UI', 8), anchor='w')
     last_checked_label.pack(fill='x', pady=(4, 0))
+
+    # ── Action log panel (fieldy, 2026-09-24: "if i could see the logs of the
+    # actions in the widget that i can minimize or expand"). Shows the live
+    # output of the most recently started action -- only THIS run's lines
+    # (read from the byte offset the log had when the run started). The
+    # header stays visible while collapsed, so running/finished is always
+    # readable at a glance; click it to expand/collapse. ──────────────────
+    LOG_PANEL_HEIGHT = 200
+    log_state = {'expanded': False, 'path': None, 'offset': 0, 'label': '', 'status': '', 'last_text': None}
+    log_header = tk.Label(main_frame, text="\u25b8 LOG  (no action run yet)", fg=FG_DIM, bg=BG,
+                          font=('Segoe UI', 8), anchor='w', cursor='hand2')
+    log_header.pack(fill='x', pady=(10, 2))
+    log_frame = tk.Frame(main_frame, bg=BG, highlightthickness=1, highlightbackground=BORDER)
+    log_text = tk.Text(log_frame, height=12, bg='#111111', fg='#CCCCCC', insertbackground='#CCCCCC',
+                       font=('Consolas', 8), wrap='char', relief='flat', bd=0, padx=4, pady=3,
+                       state='disabled')
+    log_scroll = tk.Scrollbar(log_frame, orient='vertical', command=log_text.yview)
+    log_text.configure(yscrollcommand=log_scroll.set)
+    log_text.pack(side='left', fill='both', expand=True)
+    log_scroll.pack(side='right', fill='y')
+
+    def refresh_log_header():
+        arrow = "\u25be" if log_state['expanded'] else "\u25b8"
+        if log_state['label']:
+            log_header.config(text=f"{arrow} LOG \u00b7 {log_state['label']} \u00b7 {log_state['status']}")
+        else:
+            log_header.config(text=f"{arrow} LOG  (no action run yet)")
+
+    def toggle_log(event=None):
+        log_state['expanded'] = not log_state['expanded']
+        h = root.winfo_height()
+        if log_state['expanded']:
+            log_frame.pack(fill='x', after=log_header)
+            root.geometry(f"{root.winfo_width()}x{h + LOG_PANEL_HEIGHT}")
+            log_state['last_text'] = None
+            tail_log()
+        else:
+            log_frame.pack_forget()
+            root.geometry(f"{root.winfo_width()}x{max(HEIGHT, h - LOG_PANEL_HEIGHT)}")
+        refresh_log_header()
+
+    log_header.bind('<Button-1>', toggle_log)
+    ToolTip(log_header, lambda: "Click to show or hide the live output of the last action you ran"
+                                + (f"\n({log_state['path']})" if log_state['path'] else ""))
+
+    def read_log_since(path, offset):
+        try:
+            with open(path, 'rb') as f:
+                f.seek(offset)
+                data = f.read()
+        except Exception:
+            return ''
+        text = data.decode('utf-8', errors='replace').replace('\r\n', '\n')
+        # progress bars rewrite one line with bare \r -- keep only the last redraw
+        text = '\n'.join(line.split('\r')[-1] for line in text.split('\n'))
+        lines = text.split('\n')
+        return '\n'.join(lines[-400:])
+
+    def tail_log():
+        if not (log_state['expanded'] and log_state['path']):
+            return
+        text = read_log_since(log_state['path'], log_state['offset'])
+        if text == log_state['last_text']:
+            return
+        log_state['last_text'] = text
+        at_bottom = log_text.yview()[1] >= 0.999
+        log_text.config(state='normal')
+        log_text.delete('1.0', 'end')
+        log_text.insert('end', text)
+        log_text.config(state='disabled')
+        if at_bottom:
+            log_text.see('end')
+
+    def log_tail_loop():
+        try:
+            tail_log()
+        finally:
+            root.after(1000, log_tail_loop)
+    root.after(1000, log_tail_loop)
 
     # Pending files, with a Select All / Unselect All toggle next to the header
     # (fieldy, 2026-09-24: "lets add a select all/ unselect all button")
@@ -661,52 +741,121 @@ def main():
     commit_btn.config(command=on_commit_and_push)
     commit_entry.bind('<Return>', lambda e: on_commit_and_push())
 
-    def make_local_action(button, running_text, idle_text, command, log_path, cosmetic_ms=2000):
-        def on_click():
-            button.config(text=running_text, state='disabled')
-            bash_exe = get_bash_exe()
-            if not bash_exe:
-                _append_log(log_path, f"{idle_text} -- FAILED: bash.exe not found")
-                button.config(text=f"{idle_text} (failed - see log)")
-                button.after(3000, lambda: button.config(text=idle_text, state='normal'))
+    # ── Tracked action runs (fieldy, 2026-09-24: "a slow flashing orange dot
+    # can be sufficient in letting me know its still ongoing and a green dot
+    # when its finished"). Every action now keeps its Popen handle, so the
+    # widget KNOWS when the run ends and with what exit code, instead of
+    # resetting the button on a cosmetic timer:
+    #   orange, slowly blinking  running
+    #   green                    finished OK (exit 0)
+    #   red                      failed (non-zero exit / could not launch)
+    # The dot stays until that action is run again. Start/finish lines are
+    # written into the action's own log, and the log panel follows the most
+    # recently started run. ───────────────────────────────────────────────
+    DOT_ORANGE, DOT_DIM, DOT_GREEN, DOT_RED = '#FFA500', '#5A3C00', '#4CD964', '#FF4500'
+    dots = {}
+
+    def dot_for(button):
+        if button not in dots:
+            c = tk.Canvas(button.master, width=9, height=9, bg=BTN_BG, highlightthickness=0, bd=0)
+            oval = c.create_oval(1, 1, 8, 8, fill=DOT_DIM, outline='')
+            dots[button] = (c, oval)
+        c, oval = dots[button]
+        c.place(in_=button, relx=1.0, x=-6, rely=0.5, anchor='e')
+        c.tk.call('raise', c._w, button._w)   # widget stacking; Canvas.lift() means tag_raise (canvas items)
+        return c, oval
+
+    def set_dot(button, color):
+        c, oval = dot_for(button)
+        c.itemconfig(oval, fill=color)
+
+    def start_tracked(button, idle_text, running_text, label, command, log_path):
+        """Run `command` (bash, cd'd into REPO_ROOT, output appended to
+        log_path) and track it to completion. Returns False if it could not
+        be launched."""
+        bash_exe = get_bash_exe()
+        stamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        try:
+            offset = os.path.getsize(log_path)
+        except OSError:
+            offset = 0
+        log_state.update(path=log_path, offset=offset, label=label, status='running', last_text=None)
+        refresh_log_header()
+        if not bash_exe:
+            _append_log(log_path, f"{label} -- FAILED: bash.exe not found")
+            set_dot(button, DOT_RED)
+            log_state['status'] = 'failed (bash.exe not found)'
+            refresh_log_header()
+            return False
+        try:
+            with open(log_path, 'a', encoding='utf-8') as f:
+                f.write(f"\n[{stamp}] \u25b6 {label} started\n")
+        except Exception:
+            pass
+        wrapped = f"cd '{REPO_ROOT}' && ({command}) >> '{log_path}' 2>&1"
+        try:
+            proc = subprocess.Popen([bash_exe, '-lc', wrapped], creationflags=NO_WINDOW)
+        except Exception as e:
+            _append_log(log_path, f"{label} -- FAILED to launch bash.exe: {e}")
+            set_dot(button, DOT_RED)
+            log_state['status'] = 'failed to launch'
+            refresh_log_header()
+            return False
+
+        button.config(text=running_text, state='disabled')
+        started = time.time()
+        blink = {'on': True}
+
+        def poll():
+            rc = proc.poll()
+            if rc is None:
+                blink['on'] = not blink['on']
+                set_dot(button, DOT_ORANGE if blink['on'] else DOT_DIM)
+                if log_state['label'] == label:
+                    mins, secs = divmod(int(time.time() - started), 60)
+                    log_state['status'] = f"running {mins}:{secs:02d}"
+                    refresh_log_header()
+                button.after(700, poll)
                 return
-            ok, err = start_bash_background(command, log_path)
-            if not ok:
-                _append_log(log_path, f"{idle_text} -- FAILED to launch bash.exe: {err}")
-                button.config(text=f"{idle_text} (failed - see log)")
-                button.after(3000, lambda: button.config(text=idle_text, state='normal'))
-                return
-            button.after(cosmetic_ms, lambda: button.config(text=idle_text, state='normal'))
-        button.config(command=on_click)
+            mins, secs = divmod(int(time.time() - started), 60)
+            ok = rc == 0
+            mark = '\u2713' if ok else '\u2717'
+            verdict = 'finished' if ok else 'FAILED'
+            _append_log(log_path, f"{mark} {label} {verdict} (exit {rc}, {mins}:{secs:02d})")
+            set_dot(button, DOT_GREEN if ok else DOT_RED)
+            button.config(text=idle_text, state='normal', fg=FG_LINK)
+            if log_state['label'] == label:
+                log_state['status'] = (f"done in {mins}:{secs:02d}" if ok
+                                        else f"FAILED (exit {rc}) after {mins}:{secs:02d}")
+                refresh_log_header()
+                log_state['last_text'] = None
+                tail_log()
+
+        set_dot(button, DOT_ORANGE)
+        button.after(700, poll)
+        return True
+
+    def make_local_action(button, running_text, idle_text, command, log_path):
+        button.config(command=lambda: start_tracked(button, idle_text, running_text, idle_text, command, log_path))
 
     make_local_action(pull_btn, "Pulling...", "Pull", "git pull --rebase origin main", ACTIONS_LOG)
     make_local_action(push_btn, "Pushing...", "Push", "git push origin main", ACTIONS_LOG)
     make_local_action(lex_btn, "Syncing...", "Lexicon", "./lexicon-sync.sh", ACTIONS_LOG)
-    make_local_action(stu_btn, "Syncing...", "Studio", "./studio-sync.sh", ACTIONS_LOG, cosmetic_ms=3000)
+    make_local_action(stu_btn, "Syncing...", "Studio", "./studio-sync.sh", ACTIONS_LOG)
     make_local_action(
         locks_btn, "Clearing...", "Locks",
         "find .git -maxdepth 4 -iname '*.lock' -not -path '*/objects/*' -mmin +1 -print -delete",
-        ACTIONS_LOG, cosmetic_ms=1000,
+        ACTIONS_LOG,
     )
 
-    def on_catchup():
-        catchup_btn.config(text="Syncing...", state='disabled')
-        target = get_prod_ssh_target()
-        if not target['bash_exe']:
-            _append_log(WIDGET_LOG, "Catch Up -- FAILED: bash.exe not found")
-            catchup_btn.config(text="Catch Up (failed)")
-        else:
-            remote = f"sudo -n bash -c 'cd {target['rrepo']} && ./lexicon-sync.sh'"
-            ssh_cmd = (f"ssh -o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no "
-                       f"{target['host_alias']} \"{remote}\" >> '{WIDGET_LOG}' 2>&1")
-            try:
-                subprocess.Popen([target['bash_exe'], '-lc', ssh_cmd], creationflags=NO_WINDOW)
-            except Exception as e:
-                _append_log(WIDGET_LOG, f"Catch Up -- FAILED to launch bash.exe: {e}")
-                catchup_btn.config(text="Catch Up (failed)")
-        catchup_btn.after(2000, lambda: catchup_btn.config(text="Catch Up", state='normal'))
+    def catchup_command(target):
+        remote = f"sudo -n bash -c 'cd {target['rrepo']} && ./lexicon-sync.sh'"
+        return (f"ssh -o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no "
+                f"{target['host_alias']} \"{remote}\"")
 
-    catchup_btn.config(command=on_catchup)
+    catchup_btn.config(command=lambda: start_tracked(
+        catchup_btn, "Catch Up", "Syncing...", "Catch Up",
+        catchup_command(get_prod_ssh_target()), ACTIONS_LOG))
 
     def make_armed_action(button, idle_text, log_path, label, build_command_fn, running_text):
         state = {'armed': False, 'timer_id': None}
@@ -726,21 +875,12 @@ def main():
                 return
             if state['timer_id']:
                 button.after_cancel(state['timer_id'])
+                state['timer_id'] = None
             state['armed'] = False
-            target = get_prod_ssh_target()
-            if not target['bash_exe']:
-                _append_log(log_path, f"{label} -- FAILED: bash.exe not found")
-                button.config(text=f"{idle_text} (failed)")
-            else:
-                cmd = build_command_fn(target)
-                ok, err = start_bash_background(cmd, log_path)
-                if ok:
-                    button.config(text=running_text)
-                else:
-                    _append_log(log_path, f"{label} -- FAILED to launch bash.exe: {err}")
-                    button.config(text=f"{idle_text} (failed)")
             button.config(fg=FG_WARN)
-            button.after(3000, lambda: button.config(text=idle_text, fg=FG_LINK))
+            if not start_tracked(button, idle_text, running_text, label,
+                                 build_command_fn(get_prod_ssh_target()), log_path):
+                button.config(text=idle_text, fg=FG_LINK)
 
         button.config(command=on_click)
 
@@ -750,13 +890,12 @@ def main():
                 f"{target['host_alias']} \"{remote}\"")
 
     def rebake_command(target):
-        remote = f"sudo -n bash -c 'cd {target['rrepo']} && ./deploy-blue-green.sh'"
-        ssh_cmd = (f"ssh -o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no "
-                   f"{target['host_alias']} \"{remote}\"")
-        return f"node build-surface-index.js && DB=surface-index.db bash scripts/sync-corpus-to-prod.sh widget-rebake && {ssh_cmd}"
+        # scripts/rebake.sh: rebuild surface-index.db, push corpus.db only if
+        # local is newer than prod's, push surface-index.db, blue/green deploy.
+        return "bash scripts/rebake.sh"
 
-    make_armed_action(deploy_btn, "Deploy", DEPLOY_LOG, "Deploy", deploy_command, "Deploying (~5m)...")
-    make_armed_action(rebake_btn, "Rebake", REBAKE_LOG, "Rebake", rebake_command, "Rebaking (~10m)...")
+    make_armed_action(deploy_btn, "Deploy", DEPLOY_LOG, "Deploy", deploy_command, "Deploying...")
+    make_armed_action(rebake_btn, "Rebake", REBAKE_LOG, "Rebake", rebake_command, "Rebaking...")
 
     def on_logs():
         try:
