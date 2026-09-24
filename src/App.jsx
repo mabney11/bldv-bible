@@ -44,6 +44,8 @@ const Prints           = lazy(() => import('./pages/Prints.jsx'));
 const Statue           = lazy(() => import('./pages/Statue.jsx'));
 const Temple           = lazy(() => import('./pages/Temple.jsx'));
 const TempleIndex      = lazy(() => import('./pages/TempleIndex.jsx'));
+const Ezekiel          = lazy(() => import('./pages/Ezekiel.jsx'));
+const EzekielIndex     = lazy(() => import('./pages/EzekielIndex.jsx'));
 const Passages         = lazy(() => import('./pages/Passages.jsx'));
 const Passage          = lazy(() => import('./pages/Passage.jsx'));
 
@@ -336,6 +338,8 @@ export default function App() {
         <Route path="/models/statue"  element={<Statue />} />
         <Route path="/models/temple"  element={<TempleIndex />} />
         <Route path="/models/temple/:story" element={<Temple />} />
+        <Route path="/models/ezekiel"  element={<EzekielIndex />} />
+        <Route path="/models/ezekiel/:story" element={<Ezekiel />} />
         <Route path="/precepts"       element={<PreceptStudio />} />
         <Route path="/passages"       element={<Passages />} />
         <Route path="/passage"        element={<Passage />} />

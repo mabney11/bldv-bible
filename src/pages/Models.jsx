@@ -57,6 +57,21 @@ export const MODELS = [
     ],
   },
   {
+    slug: 'ezekiel',
+    title: 'The Bayath (House) Yachazaqaal (Ezekiel) Saw',
+    kicker: 'Interactive 3D model · Ezekiel 40–43',
+    blurb: 'The bayath (house) shown to Yachazaqaal (Ezekiel) on the gabah (high) har (mountain), measured in the long amah (cubit) of the man\'s qanah (reed): the chawamah (wall) chamash (five) maah (hundred) square, the shairayam (gates) with their lodges and ayalayam (posts), the chatzarawath (courts), the mazabach (altar) with its Har\'Al, the awalam (porch), the hayakal (temple) and the most qadash (holy) place, the tzalai (side) rooms, the banayan (building) and the kahanayam (priests)\' rooms. Walk it the way he was led, or on your own feet.',
+    paleo: '𐤁𐤉𐤕 𐤉𐤇𐤆𐤒𐤀𐤋',
+    tags: ['Ezekiel 40–43', '3D · plan & section', 'Walk · On foot'],
+    to: '/models/ezekiel',
+    quick: [
+      { label: 'Walk — the way the man with the qanah (reed) led him', to: '/models/ezekiel/walk' },
+      { label: 'Roam it on your own feet', to: '/models/ezekiel/roam' },
+      { label: 'The east shair (gate) — Ezekiel 40:6–16', to: '/models/ezekiel/walk?piece=gate-east' },
+      { label: 'The mazabach (altar) — Ezekiel 43:13–17', to: '/models/ezekiel/walk?piece=mazabach' },
+    ],
+  },
+  {
     slug: 'prints',
     title: 'Printable Maps',
     kicker: 'Downloadable map sheets',

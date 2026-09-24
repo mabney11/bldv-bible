@@ -1185,6 +1185,21 @@ const STATIC_PAGES = {
     description: 'Roam the finished bayath (house) of Yahawah on your own feet — through the gates, around the yam (sea), between the pillars, in through the doors to the arawan (ark); tap any part for its measures and verses.',
     heading: 'Roam — The Bayath (House) of Yahawah',
   },
+  '/models/ezekiel': {
+    title: `The Bayath (House) Yachazaqaal (Ezekiel) Saw | ${BRAND}`,
+    description: 'The bayath (house) shown to Yachazaqaal (Ezekiel) on the very high har (mountain) (Ezekiel 40–43) as an interactive 3D model, measured in the long amah (cubit) of the man\'s qanah (reed): the chawamah (wall) five hundred square, the six shairayam (gates) with their lodges and posts, the chatzarawath (courts), the mazabach (altar) with its Har\'Al, the awalam (porch), the hayakal (temple) and the most qadash (holy) place, the tzalai (side) rooms, the banayan (building) and the kahanayam (priests)\' rooms.',
+    heading: 'The Bayath (House) Yachazaqaal (Ezekiel) Saw',
+  },
+  '/models/ezekiel/walk': {
+    title: `Walk — The Bayath (House) Yachazaqaal (Ezekiel) Saw | ${BRAND}`,
+    description: 'Walk the house of Ezekiel 40–43 on the 3D model the way the man with the qanah (reed) led him: up the seven steps into the east shair (gate), across the chayatzawan (outer) chatzar (court), through the inner gates to the mazabach (altar), up to the awalam (porch), into the hayakal (temple) and the most qadash (holy) place, round the tzalai (side) rooms, the banayan (building) and the kahanayam (priests)\' rooms, and out to the chawamah (wall) five hundred square — then the kabawad (glory) comes in by the east.',
+    heading: 'Walk — The Bayath (House) Yachazaqaal (Ezekiel) Saw',
+  },
+  '/models/ezekiel/roam': {
+    title: `Roam — The Bayath (House) Yachazaqaal (Ezekiel) Saw | ${BRAND}`,
+    description: 'Roam the house Yachazaqaal (Ezekiel) saw on your own feet — up the steps and through the shairayam (gates), across the chatzarawath (courts), up to the awalam (porch) and in through the dalathawath (doors); tap any part for its measures and verses.',
+    heading: 'Roam — The Bayath (House) Yachazaqaal (Ezekiel) Saw',
+  },
   '/guide': {
     title: `Guide | ${BRAND}`,
     description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, the Lexicon and the Translation Studio.',
