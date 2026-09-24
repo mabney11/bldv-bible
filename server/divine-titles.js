@@ -143,7 +143,13 @@ function detectVerse(tokens, ref, cfg = loadConfig()) {
     const inCompound = new Set();          // content indexes claimed by a compound
     const usedOnce = new Set();            // ids of `once` compounds already matched here
 
-    // 1) Compounds — greedy, longest first, left to right, non-overlapping.
+    // 1) Compounds — at every start position the longest title wins. Titles may
+    // CHAIN through a shared word ("Shaym Yahawah" + "Yahawah Alahay Yasharal" in
+    // "the Name of Yahawah God of Israel" — both count); a title lying wholly
+    // inside one already found ("Alahay Yasharal" inside "Yahawah Alahay
+    // Yasharal") does not.
+    const spans = [];
+    const inside = idxs => spans.some(sp => idxs.every(x => sp.has(x)));
     for (let i = 0; i < content.length; i++) {
         let matched = null;
         for (const c of cfg.compounds) {
@@ -158,7 +164,7 @@ function detectVerse(tokens, ref, cfg = loadConfig()) {
                 if (j >= content.length || !c.seq[k].has(content[j].sn)) { ok = false; break; }
                 idxs.push(j); j++;
             }
-            if (ok) { matched = { c, idxs }; break; }
+            if (ok && !inside(idxs)) { matched = { c, idxs }; break; }
         }
         if (!matched) continue;
         const { c, idxs } = matched;
@@ -169,7 +175,7 @@ function detectVerse(tokens, ref, cfg = loadConfig()) {
             gold: idxs.filter((_, k) => !c.gold || c.gold.has(k)).map(x => content[x].ord),
         });
         for (const x of idxs) inCompound.add(x);
-        i = idxs[idxs.length - 1];
+        spans.push(new Set(idxs));
     }
 
     // 2) Singles — every listed number, minus words that name another god.

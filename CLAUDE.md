@@ -39,6 +39,20 @@ false-god uses (listed separately, not gold), and the full compound set.
   `server/divine-titles.cache.json` (gitignored), rebuilt when corpus.db,
   divine-titles.json or strongs-roots.json changes.
 
+**Round 2, same day** — fieldy: "ilayawan (most high) ... Yahawah-YaRaah ... AHayah Ashar
+AHayah ... Yah ... can you think of others". (Ilayawan 327, Yah 67, Yahawah Yireh were already
+in round 1.) Added 47 more, evidence-checked against the corpus: Ahayah Ashar Ahayah + the
+second "Ahayah sent me" (Ex 3:14), Imanawal (H6005), ha-Shaym (Lev 24:11/16), Shaym Yahawah
+(108), Yahawah Yahawah (Ex 34:6), Yah Yahawah, Halalaw-Yah, the Isaiah 9:5 names, Pachad
+Yatzachaq, Malak HaKabawad (Ps 24), Adawan / Shapat Kal HaAratz, Natzach / Maqawah / Raah /
+Abayn Yasharal, Qadawash Yaiqab, ten Al- and Alahay- epithets (faithfulness, knowledge,
+vengeance, glory, of old, everlasting, truth, justice, spirits of all flesh ...), Ruach
+Yahawah / Alahayam / HaQadash, and five Aramaic (Alah Ilaya, Mara Malkayn, Malak Shamaya ...).
+Pairs that are ordinary adjacent words elsewhere are pinned with `only_refs` after reading
+their hits (e.g. "Alahay Iwalam" hit Ps 45:6 "your throne, O God, is forever" — pinned to
+Isa 40:28 + Rom 16:26). Matcher change: compound titles may now CHAIN through a shared word
+("Shaym Yahawah" + "Yahawah Alahay Yasharal"); only a title wholly inside another is dropped.
+
 **Verified** (device sandbox, no better-sqlite3): the matcher + the whole server block run
 against every real BHS/HEB row piped in via python sqlite3 — 53 titles, e.g. Yahawah
 7,133, Alahayam 6,369, Al Shaday 11 (Gen 17:1 … Ezek 10:5 + 4 HEB-edition books),
