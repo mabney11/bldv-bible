@@ -109,7 +109,7 @@ export const CHAMBERS = { x0: -150, x1: -50, z0: 50, z1: 100, h: 18 };   // 42:1
 
 // ── Parts ────────────────────────────────────────────────────────────────────
 const K = makeKit(LEVEL.out);
-const { box, cyl, ideal, wallX, wallZ, slab, roofOf, stair, seat, lamp, chest, jars, paving } = K;
+const { box, cyl, ideal, wallX, wallZ, slab, roofOf, stair, seat, lamp, chest, jars, paving, altarFlight } = K;
 
 /**
  * A gatehouse of 40:6–16, in a local frame: u runs along the passage from its OUTER end (u = 0, the
@@ -236,13 +236,9 @@ function innerCourt() {
 
 /** The mazabach (altar) of 43:13–17: the chayaq (base) a cubit with its border, the lower ledge two, the greater four, the Har'Al four with its horns; steps on the east. */
 function altar() {
-  const y = LEVEL.inner, { x, z } = ALTAR, out = [];
-  out.push(box(x, y, z, 20, 1, 20, { role: 'altar' }));                                            // the chayaq (bottom), a cubit, with its border of a span about (43:13)
-  out.push(box(x, y + 1, z, 16, 2, 16, { role: 'altar' }));                                        // the lower ledge, two high, a cubit in (43:14)
-  out.push(box(x, y + 3, z, 14, 4, 14, { role: 'altar' }));                                        // the greater ledge, four high, fourteen square (43:14, 17)
-  out.push(box(x, y + 7, z, 12, 4, 12, { role: 'haral', horns: true }));                           // the Har'Al, four high, the araayal (hearth) twelve square (43:15–16)
-  out.push(...stair('x', x + 10 + 11 * 1.2, z, 11, 12, -1, y, 1, 1.2, 'stone').map((b) => ({ ...b, ideal: false })));   // its steps toward the east (43:17): a flight as broad as the hearth, eleven risers of a cubit climbing to it
-  return out;
+  // the chayaq (bottom) a cubit with its border (43:13), the lower ledge two (43:14), the greater ledge four, fourteen square (43:14, 17),
+  // the Har'Al four with the araayal (hearth) twelve square and its horns (43:15–16); its steps toward the east (43:17), flush with the hearth
+  return altarFlight(ALTAR.x, ALTAR.z, LEVEL.inner, [[20, 1], [16, 2], [14, 4], [12, 4]], 'x', 1, 8, 0.5, 0.7);
 }
 
 /** The awalam (porch) of the house (40:48–49): twenty across, eleven deep, posts five each side, pillars by the posts, ten steps up (the base of a full reed, 41:8). */
@@ -450,7 +446,7 @@ export const PIECES = [
     measures: [['the amah (cubit)', 'a amah (cubit) and a tapach (handbreadth)', '43:13'], ['chayaq (base)', '1 amah, a border of a zarath (span) about its edge', '43:13'], ['lower ledge', '2 amah high, 1 in', '43:14'], ['greater ledge', '4 amah high, 1 in; 14 × 14', '43:14, 17'], ['Har\'Al', '4 amah; the araayal (hearth) 12 × 12, four qaran (horns)', '43:15–16'], ['mailah (steps)', 'toward the qadayam (east)', '43:17']],
     note: '"{{Ezekiel 43:13 | These are … mazabach}}" — the altar rises in three ledges, each a cubit narrower than the one below, to the Har\'Al ("mountain of Al"), the hearth twelve square with a horn at each corner; its steps face the east, so the priest climbs with his back to the sunrise. Seven days it is cleansed (43:25–26); on the eighth the offerings begin (43:27).',
     elsewhere: { ref: 'Exodus 27:1–8; 2 Chronicles 4:1; Exodus 20:26; Ezekiel 43:18–27', note: 'The mashakan (tabernacle)\'s altar of five square and three high with its horns; Shalamah\'s of twenty square and ten high; "neither shall you go up by steps to my altar" (Exodus 20:26) — here the text itself gives the steps.' },
-    assumed: 'The hearth\'s twelve and the ledge\'s fourteen are the Hebrew\'s (shathayam-isharah, arabai-isharah); the lower ledge is drawn sixteen square; the steps eleven of a cubit, as broad as the hearth.',
+    assumed: 'The hearth\'s twelve and the ledge\'s fourteen are the Hebrew\'s (shathayam-isharah, arabai-isharah); the lower ledge is drawn sixteen square; the flight eight wide with risers of half a cubit, the ledges running on beside it.',
     parts: altar(),
   },
   {
@@ -812,7 +808,7 @@ export const MODEL = {
         { label: 'inner tzapawan (north) shair (gate)', bounds: { x0: -13, x1: 13, z0: -108, z1: -50 }, at: [0, -75] },
         { label: 'inner darawam (south) shair (gate)', bounds: { x0: -13, x1: 13, z0: 50, z1: 108 }, at: [0, 75] },
         { label: 'shalachanawath (tables)', bounds: { x0: -18, x1: 18, z0: -112, z1: -90 }, at: [0, -104] },
-        { label: 'mazabach (altar)', bounds: { x0: -11, x1: 24, z0: -11, z1: 11 }, at: [26, 0] },
+        { label: 'mazabach (altar)', bounds: { x0: -11, x1: 24, z0: -11, z1: 11 }, at: [25, 0] },
         { label: 'rooms of the singers', bounds: { x0: 16, x1: 49, z0: -49, z1: 40 }, children: [
           { label: 'room by the north gate (the keepers of the house)', bounds: { x0: 16, x1: 40, z0: -49, z1: -30 }, at: [28, -40] },
           { label: 'room by the east gate (the keepers of the altar)', bounds: { x0: 30, x1: 49, z0: 16, z1: 40 }, at: [40, 28] },

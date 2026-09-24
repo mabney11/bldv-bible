@@ -181,7 +181,36 @@ export function makeKit(Y0) {
       box(x1 + t / 2, y, 0, t, h, 2 * z, { role: 'east', ...extra }),
     ];
   }
-  return { Y0, box, cyl, lathe, ideal, doorFrame, portico, porticoZ, wallX, wallZ, slab, roofOf, parapet, rail, stair, bed, table, seat, couch, lamp, chest, jars, tree, pool, shields, chambers, cedarLining, rug, vessels, person, palanquin, inlay, paving, walls };
+  /**
+   * A tiered altar with its flight (Ezekiel 43:13–17 is the pattern; Shalamah's of 2 Chronicles 4:1 is one tier): `tiers` = [[width,
+   * height] …] from the bottom up, each centred on (x, z) and stacked from floor y; the top tier carries the horns. The stair, `sw`
+   * wide, runs down from the top tier's face along `axis` in direction `dir`, its top step FLUSH with the hearth; each tier runs on
+   * beside the stair to where the stair's surface reaches that tier's top, so the flanks step down with the tiers (fieldy's
+   * reference). Every tier and flank is `role: 'altar'` (solid, not walked), the steps `role: 'stair'`.
+   */
+  function altarFlight(x, z, y, tiers, axis = 'x', dir = 1, sw = 8, rise = 0.5, run = 0.7, mat, stairMat = 'stone') {
+    const out = []; let yy = y;
+    const B = (a, b, w, h, d, extra) => (axis === 'x' ? box(a, yy, b, w, h, d, extra) : box(b, yy, a, d, h, w, extra));   // (along, across) → world
+    tiers.forEach(([w, h], i) => { out.push(box(x, yy, z, w, h, w, { role: i === tiers.length - 1 ? 'haral' : 'altar', horns: i === tiers.length - 1, ...(mat ? { mat } : {}) })); yy += h; });
+    const top = yy - y, topW = tiers[tiers.length - 1][0], n = Math.round(top / rise), L = n * run;
+    const along = axis === 'x' ? x : z, across = axis === 'x' ? z : x;
+    const face = along + dir * topW / 2, foot = face + dir * L;                        // the hearth's face, and the foot of the flight
+    // the flanks: each tier runs on beside the stair until the stair's surface reaches its top (a one-tier altar, Shalamah's, gets
+    // three slices of its own height, so its flanks step down the same way)
+    yy = y;
+    const flankTiers = tiers.length > 1 ? tiers : [0, 1, 2].map(() => [tiers[0][0], tiers[0][1] / 3]);
+    flankTiers.forEach(([w, h]) => {
+      const T = yy - y + h, end = foot - dir * (T / rise) * run, from = along + dir * w / 2;
+      const len = Math.abs(end - from);
+      if (len > 0.05 && w / 2 > sw / 2 + 0.2) for (const sg of [-1, 1]) out.push(B((from + end) / 2, across + sg * (sw / 2 + (w / 2 - sw / 2) / 2), len, h, w / 2 - sw / 2, { role: 'altar', ...(mat ? { mat } : {}) }));
+      yy += h;
+    });
+    // the flight itself, solid, its last step flush with the hearth
+    out.push(...(axis === 'x' ? stair('x', foot, across, n, sw, -dir, y, rise, run, stairMat) : stair('z', across, foot, n, sw, -dir, y, rise, run, stairMat)).map((b) => ({ ...b, ideal: false })));
+    return out;
+  }
+
+  return { Y0, box, cyl, lathe, ideal, doorFrame, altarFlight, portico, porticoZ, wallX, wallZ, slab, roofOf, parapet, rail, stair, bed, table, seat, couch, lamp, chest, jars, tree, pool, shields, chambers, cedarLining, rug, vessels, person, palanquin, inlay, paving, walls };
 }
 
 /** "book:chapter:a-b" specs → ["book:chapter:v", …] — the verses a piece lights up. */

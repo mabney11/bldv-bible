@@ -138,7 +138,7 @@ export const BASES = { xs: [-36, -22, -8, 6, 20], z: 33, w: 4, h: 3, wheel: 1.5,
 // gardens, people. `mat` overrides the piece's material; `role` lets the scene
 // treat a solid as part of the roof/south wall for the see-through (xray) phases.
 const K = makeKit(H.courtY);
-const { box, cyl, ideal, doorFrame, portico, porticoZ, wallX, wallZ, slab, roofOf, rail, stair, bed, table, seat, couch, lamp, chest, jars, tree, pool, shields, chambers, cedarLining, rug, vessels, person, palanquin, inlay, paving, walls } = K;
+const { box, cyl, ideal, doorFrame, altarFlight, portico, porticoZ, wallX, wallZ, slab, roofOf, rail, stair, bed, table, seat, couch, lamp, chest, jars, tree, pool, shields, chambers, cedarLining, rug, vessels, person, palanquin, inlay, paving, walls } = K;
 const Y0 = H.courtY;
 
 // Where the king's buildings stand (all assumed — the text describes them one by one and never says where): south of the house of Yahawah
@@ -463,9 +463,8 @@ export const PIECES = [
     measures: [['arak (length) · rachab (breadth)', '20 × 20 amah', '2 Chronicles 4:1'], ['qawamah (height)', '10 amah', '2 Chronicles 4:1']],
     note: '"{{2 Chronicles 4:1}}" Malakayam (Kings) gives it no measure but knows it: the brass altar before Yahawah was too little for the offerings of the dedication (1 Kings 8:64). It stands in the court before the porch, in line with the doors.',
     elsewhere: { ref: 'Exodus 27:1–8; Ezekiel 43:13–17; 2 Kings 16:14; Exodus 20:26', note: 'The mashakan (tabernacle)\'s altar was 5 × 5 × 3, of acacia and brass; Yachazaqaal (Ezekiel)\'s rises in ledges with steps toward the east. "Neither shall you go up by steps to my altar."' },
-    assumed: 'The horns and the ramp on the south are not in the text (Exodus 20:26 forbids steps; Ezekiel\'s altar has them facing east).',
-    parts: [box(ALTAR.x, H.courtY, ALTAR.z, ALTAR.w, ALTAR.h, ALTAR.w, { horns: true }),
-      { kind: 'ramp', x: ALTAR.x, y: H.courtY, z: ALTAR.z + ALTAR.w / 2, w: 6, h: ALTAR.h, len: 24, dir: 'z' }],
+    assumed: 'The horns and the flight of steps on the south, flush with the top and walled either side, are not in the text (Exodus 20:26 forbids steps; Ezekiel\'s altar has them, facing east).',
+    parts: altarFlight(ALTAR.x, ALTAR.z, H.courtY, [[ALTAR.w, ALTAR.h]], 'z', 1, 6, 0.5, 0.7, undefined, 'stone'),
   },
   {
     id: 'kayawar', order: 17.5, group: 'courts', material: 'brass', modes: ['dedicate'],
