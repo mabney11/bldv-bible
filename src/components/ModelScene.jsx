@@ -368,8 +368,12 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       mapBar.append(up, t); dirty = true;
     }
     (function link(nodes, parent) { for (const n of nodes) { n.parent = parent; if (n.children) link(n.children, n); } })(PLACES, null);
+    function sizeBig() {   // square, by the stage's smaller side (a CSS percentage would take the width for one and the height for the other, and the picture would stretch)
+      if (!mapBig) { mmap.style.removeProperty('width'); mmap.style.removeProperty('height'); return; }
+      const size = Math.round(Math.min(el.clientWidth * 0.86, el.clientHeight * 0.88)); mmap.style.setProperty('width', `${size}px`, 'important'); mmap.style.setProperty('height', `${size}px`, 'important');
+    }
     function showBig(on) {
-      mapBig = on; mmap.classList.toggle('tp-map-big', on); mmap.style.pointerEvents = on ? 'auto' : ''; el.classList.toggle('tp-mapopen', on); mapBar.hidden = !on;
+      mapBig = on; mmap.classList.toggle('tp-map-big', on); mmap.style.pointerEvents = on ? 'auto' : ''; el.classList.toggle('tp-mapopen', on); mapBar.hidden = !on; sizeBig();
       if (on) { if (document.pointerLockElement === renderer.domElement) document.exitPointerLock?.(); setMapView(null); }
       else { gotoEl.hidden = true; gotoAsk = null; mapView = null; mapHover = null; }
       dirty = true;
@@ -484,6 +488,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       for (const [lx, lz, t] of PLAN_LABELS) {
         if (!big && Math.hypot(lx - px, lz - pz) > MM_R * 1.25) continue;
         if (big && mapView) continue;   // drilled in: the place's own names
+        if (big && mapHover && lx >= mapHover.bounds.x0 && lx <= mapHover.bounds.x1 && lz >= mapHover.bounds.z0 && lz <= mapHover.bounds.z1) continue;   // the hovered place shows its own name
         const [sx, sy] = P(lx, lz);
         g.lineWidth = 3 * dpr; g.strokeStyle = 'rgba(14, 11, 8, 0.85)'; g.strokeText(t, sx, sy); g.fillStyle = big && gotoAsk?.label === t ? '#ffd062' : '#f3e3b8'; g.fillText(t, sx, sy);
       }
@@ -910,7 +915,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       if (pulled) { camera.position.copy(avatarEye); aimCamera(); if (now - roam.landAt < 240) dirty = true; }   // the landing crouch plays out
     }
     function resize() {
-      const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;
+      const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return; sizeBig();
       renderer.setSize(w, h, false); composer.setSize(w, h); outline.setSize(w, h);
       camera.aspect = w / h; camera.updateProjectionMatrix(); dirty = true;
     }

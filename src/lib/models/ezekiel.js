@@ -158,9 +158,16 @@ function gatehouse(axis, outer, dir, mid, y, flip = false, stepsOut = 7, stepRis
   // the steps up to the outer end (40:22, 26 seven; 40:31, 34, 37 eight): from the ground below, the gate's width
   const n = stepsOut, rise = stepRise, dOut = -dir;   // the steps lie OUTSIDE the outer end (for a flipped gate that end is the porch's, still at `outer`)
   const s0 = outer;
-  out.push(...(axis === 'x'
-    ? stair('x', s0 + dOut * n, mid, n, w, -dOut, y - n * rise, rise, 1)
-    : stair('z', mid, s0 + dOut * n, n, w, -dOut, y - n * rise, rise, 1)));
+  // the steps the text counts, built solid (only their rise is assumed), a cheek wall of the gate's stone each side so the
+  // flight stands as a founded mass against the gate (fieldy: "it doesn't look like it can support itself")
+  const flight = (axis === 'x'
+    ? stair('x', s0 + dOut * n, mid, n, w - 3, -dOut, y - n * rise, rise, 1)
+    : stair('z', mid, s0 + dOut * n, n, w - 3, -dOut, y - n * rise, rise, 1)).map((b) => ({ ...b, ideal: false }));
+  out.push(...flight);
+  for (const sg of [-1, 1]) {
+    const c = s0 + dOut * n / 2, len = n + 0.2, ch = n * rise + 1.2;
+    out.push(axis === 'x' ? box(c, y - n * rise, mid + sg * (w / 2 - 0.75), len, ch, 1.5, { role: 'cheek' }) : box(mid + sg * (w / 2 - 0.75), y - n * rise, c, 1.5, ch, len, { role: 'cheek' }));
+  }
   // the passage's ends, for the gate leaves (the east gate is shut, 44:1–2) and the plan
   const g0 = outer + dir * U(sill / 2), g1 = outer + dir * U(len - post / 2);
   out.role = roleOut;
@@ -329,11 +336,11 @@ function chambers(s) {
 function tables() {
   const out = [], T = (x, z, y) => box(x, y, z, 1.5, 1, 1.5, { mat: 'stone', role: 'table' });
   // in the porch of the north inner gate (its porch is at the outer court's end, z −100…−92, on the gate's floor), two a side (40:39)
-  for (const sx of [-1, 1]) for (let i = 0; i < 2; i++) out.push(T(sx * 3.5, -98.5 + i * 3.5, LEVEL.inner));
-  // outside, by the entry, as one goes up the steps, two a side (40:40) — beside the flight, on the outer court
-  for (const sx of [-1, 1]) for (let i = 0; i < 2; i++) out.push(T(sx * 15, -103 - i * 3.5, LEVEL.outer));
-  // four of cut stone for the burnt offering, by the side of the gate (40:41–42), a cubit and a half square, a cubit high
-  for (const sx of [-1, 1]) for (let i = 0; i < 2; i++) out.push(T(sx * 16, -94 + i * 3.5, LEVEL.outer));
+  for (const sx of [-1, 1]) for (let i = 0; i < 2; i++) out.push(T(sx * 3.6, -98.5 + i * 3.5, LEVEL.inner));
+  // outside, by the entry, as one goes up (40:40): two a side against the gate's outer walls, on the outer court, clear of the flight
+  for (const sx of [-1, 1]) for (let i = 0; i < 2; i++) out.push(T(sx * 14.5, -106.5 + i * 3.2, LEVEL.outer));
+  // four of cut stone for the burnt offering, by the side of the gate (40:41–42), a cubit and a half square, a cubit high — in a row along its side
+  for (const sx of [-1, 1]) for (let i = 0; i < 2; i++) out.push(T(sx * 14.5, -96 + i * 3.2, LEVEL.outer));
   return out;
 }
 
@@ -407,7 +414,7 @@ export const PIECES = [
     measures: [['in the awalam (porch) of the gate', '2 tables on this side, 2 on that', '40:39'], ['outside, by the entry', '2 on this side, 2 on that — 8', '40:40–41'], ['of cut aban (stone), for the burnt offering', '4, 1½ × 1½ × 1 high', '40:42'], ['shapathayam (hooks)', 'a tapach (handbreadth) long, fastened all around', '40:43']],
     note: '"{{Ezekiel 40:39 | In the awalam … offering}}" — the slaughtering tables of the north gate: on them the burnt offering, the sin offering and the trespass offering are killed, the instruments laid on the four of hewn stone, the flesh of the offering on the tables.',
     elsewhere: { ref: 'Leviticus 1:11; 2 Chronicles 4:8; Ezekiel 46:1–2', note: 'The burnt offering is killed on the north side of the altar before Yahawah (Leviticus 1:11); Shalamah\'s ten tables in the hayakal.' },
-    assumed: 'Where exactly each table stands about the porch is a reconstruction; the four of stone are drawn by the steps.',
+    assumed: 'Where exactly each table stands about the porch is a reconstruction: two a side within it, two a side against its outer walls, the four of stone in a row along its side.',
     parts: tables(),
   },
   {
