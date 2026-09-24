@@ -179,12 +179,10 @@ function gatehouse(axis, outer, dir, mid, y, flip = false, stepsOut = 7, stepRis
 
 /** The great wall (42:20), 500 square, one reed thick and high, on the ground outside; its west run is the building's back. */
 function greatWall() {
-  const { t, h } = WALL, y = LEVEL.out, g = GATE.w / 2, L = OUT - g;   // each of the three gated runs stands in two lengths, the gatehouse itself filling the gap (40:6)
+  const { t, h } = WALL, y = LEVEL.out;   // the piece's `gates` cut the three gaps (builders' cutGates); the east and west runs stand between the north and south ones
   return [
-    box(-(g + OUT) / 2, y, OUT - t / 2, L, h, t, { role: 'south' }), box((g + OUT) / 2, y, OUT - t / 2, L, h, t, { role: 'south' }),
-    box(-(g + OUT) / 2, y, -OUT + t / 2, L, h, t, { role: 'north' }), box((g + OUT) / 2, y, -OUT + t / 2, L, h, t, { role: 'north' }),
-    box(OUT - t / 2, y, -(g + OUT - t) / 2, t, h, L - t, { role: 'east' }), box(OUT - t / 2, y, (g + OUT - t) / 2, t, h, L - t, { role: 'east' }),
-    box(-OUT + t / 2, y, 0, t, h, 2 * OUT - 2 * t, { role: 'west' }),
+    box(0, y, OUT - t / 2, 2 * OUT, h, t, { role: 'south' }), box(0, y, -OUT + t / 2, 2 * OUT, h, t, { role: 'north' }),
+    box(OUT - t / 2, y, 0, t, h, 2 * OUT - 2 * t, { role: 'east' }), box(-OUT + t / 2, y, 0, t, h, 2 * OUT - 2 * t, { role: 'west' }),
   ];
 }
 

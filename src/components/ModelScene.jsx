@@ -839,6 +839,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const canLock = !COARSE && !!renderer.domElement.requestPointerLock;
     let locked = false, look = null, stickPtr = null;
     const cross = document.createElement('div'); cross.className = 'tp-cross'; el.appendChild(cross);                      // the crosshair, while the mouse is taken
+    const THIRD_TILT = 0.12; let crossAt = 0;   // third person: the view tilted down by this, the crosshair (his line of sight) that much above the centre
+    const crossNy = () => (roam.on && roam.dist > 0.01 ? Math.tan(THIRD_TILT) / Math.tan((camera.fov * Math.PI) / 360) : 0);   // where his line of sight falls on the screen (ndc y)
     const stickEl = document.createElement('div'); stickEl.className = 'tp-stick'; stickEl.innerHTML = '<div class="tp-stick-knob"></div>'; el.appendChild(stickEl);
     const knobEl = stickEl.firstChild, STICK_R = 44;
     function setLocked(v) { locked = v; cross.hidden = !v; el.classList.toggle('tp-locked', v); onLock?.(v); }
@@ -1011,9 +1013,14 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         // the figure faces +x before its yaw (Euler XYZ: z is applied first, in the figure's own frame), so a lean forward is a
         // turn about z: a sway with the gait on the ground, a lean into a running jump in the air
         avatar.rotation.z = roam.air > 0 ? -0.22 * Math.min(1, Math.hypot(roam.airV.x, roam.airV.z) / WALK) : roam.moving ? 0.03 * Math.sin(now / 120) : 0;
-        camera.position.copy(avatarEye).addScaledVector(fwd, -d); camera.lookAt(probe.copy(avatarEye).addScaledVector(fwd, 2));
+        // the pulled-back camera stands a little above his line of sight and looks down along it by the same angle, so his head
+        // stays in the middle of the view while the line of sight (the crosshair marks where it goes) falls above his head, not on
+        // it (fieldy: "move the crosshair about an inch up so it doesn't sit on the character's head")
+        const tt = Math.tan(THIRD_TILT);
+        camera.position.copy(avatarEye).addScaledVector(fwd, -d).addScaledVector(upV, d * tt); camera.lookAt(probe.copy(avatarEye).addScaledVector(fwd, 2).addScaledVector(upV, -2 * tt));
+        const ny = crossNy(); if (ny !== crossAt) { crossAt = ny; cross.style.top = `calc(50% - ${(ny * 50).toFixed(2)}%)`; }
         pulled = true;
-      } else avatar.visible = false;
+      } else { avatar.visible = false; if (crossAt !== 0) { crossAt = 0; cross.style.top = '50%'; } }
       composer.render(); stats.ms = performance.now() - f0;
       if (pulled) { camera.position.copy(avatarEye); aimCamera(); if (now - roam.landAt < 240) dirty = true; }   // the landing crouch plays out
     }
