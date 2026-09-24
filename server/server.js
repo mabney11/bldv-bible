@@ -1506,7 +1506,7 @@ const CHAR_MAP = {
 };
 
 const GRAMMAR_MAP = {
-    prep: { '𐤁': 'in', '𐤋': 'to', '𐤌': 'from', '𐤊': 'as', '𐤀𐤕': 'entirety/whole', '𐤏𐤋': 'upon', '𐤀𐤋': 'toward',
+    prep: { '𐤁': 'in', '𐤋': 'to/towards', '𐤌': 'from', '𐤊': 'as', '𐤀𐤕': 'entirety/whole', '𐤏𐤋': 'upon', '𐤀𐤋': 'toward',
         '𐤋𐤊': 'you', '𐤏𐤌': 'with' , '𐤌𐤍': 'from',
     },
     conj: { '𐤅': 'And' },
@@ -2418,6 +2418,11 @@ function applyFlatLabels(comps) {
             const c = comps[i];
             if (i === r || !c || c.isMark || !c.paleo) continue;
             if (c.css === 'vbs-hit' || c.css === 'vbs-hif') continue;
+            // Proclitic particles fused onto a HEB-edition word (𐤋 to, 𐤁 in, 𐤄 the, 𐤅 and)
+            // keep their particle gloss — the flat table's 𐤋 "He/it" is the Aramaic
+            // imperfect prefix, not the preposition (fieldy, 2026-09-24: LaYahawah's
+            // lamad "is supposed to be 'to/towards'").
+            if (c.css === 'mod-prep' || c.css === 'mod-conj' || c.css === 'mod-art' || c.css === 'mod-inrg') continue;
             if (c.css === 'uvf-dir' || c.css === 'uvf-conn') continue;   // directional 𐤄 [Toward], paragogic 𐤍/𐤄/𐤉 [Emphatic] keep their own label (fieldy, 2026-09-24)   // 𐤄 Causing, 𐤄𐤕/𐤕 Reflexive keep their stem label; Nifal 𐤍 reads 'We' (fieldy: "𐤍- prefix → we will")
             let label;
             if (c.infixed) label = 'Reflexive';
@@ -8811,6 +8816,19 @@ function bhsToDisplayRef(bookId, hebChapter, hebVerse) {
 // The tab. Labels are spelled at read time from strongs-roots.json (nameTranslit)
 // — a few dozen lookups, memoized for the life of the process (a new bake
 // arrives with a deploy/restart anyway).
+// A form's label in fieldy's style — a capital at every morpheme boundary
+// ("LaYahawah", "WaAlahayam", "Alahayamay"): each baked part transliterated in
+// place (transliterateBlock keeps the final-letter forms right across parts),
+// prefixes/root capitalized, suffixes lowercase.
+function formLabel(paleo, words) {
+    if (!Array.isArray(words) || !words.length) return paleo.split(' ').map(getTranslit).join(' ');
+    return words.map(parts => {
+        const comps = parts.map(([p]) => ({ paleo: p }));
+        transliterateBlock(comps);
+        return comps.map((c, i) => parts[i][1] ? c.translit.toLowerCase()
+            : c.translit.charAt(0).toUpperCase() + c.translit.slice(1)).join('');
+    }).join(' ');
+}
 let _divineSummary = null;
 function divineSummary() {
     if (_divineSummary) return _divineSummary;
@@ -8829,7 +8847,7 @@ function divineSummary() {
             id: t.id, kind: t.kind, group: t.grp, en: t.en,
             sns: t.kind === 'compound' ? sns.map(m => m.join('/')) : sns,
             label, paleo, occurrences: t.occurrences, verses: t.verses, bookCount: t.book_count,
-            forms: JSON.parse(t.forms_json).map(f => ({ ...f, translit: f.paleo.split(' ').map(getTranslit).join(' ') })),
+            forms: JSON.parse(t.forms_json).map(({ words, ...f }) => ({ ...f, translit: formLabel(f.paleo, words) })),
             bookList: JSON.parse(t.books_json)
                 .sort((a, b) => SRC_ORDER[a.src] - SRC_ORDER[b.src] || (a.book_id ?? 0) - (b.book_id ?? 0) || String(a.code).localeCompare(String(b.code)))
                 .map(b => ({ ...b, name: bookName(b) })),

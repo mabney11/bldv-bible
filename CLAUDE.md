@@ -39,6 +39,17 @@ false-god uses (listed separately, not gold), and the full compound set.
   `server/divine-titles.cache.json` (gitignored), rebuilt when corpus.db,
   divine-titles.json or strongs-roots.json changes.
 
+**Round 5, same day.** (1) Form chips were raw BHS tokens — ETCBC-segmented, so "elohay"
+(my God) read 𐤀𐤋𐤄 "Alah", like Aramaic. Forms are now the rendered word from token_surfaces
+(𐤀𐤋𐤄𐤉𐤌𐤉), labels built per morpheme in fieldy's casing ("LaYahawah", "HaAlahayam",
+"Alahayamay" — forms_json `words` parts → server `formLabel` via transliterateBlock), `raws`
+keep highlighting working. (2) Gen 31:30/32 (Laban's teraphim) → exclude_refs. (3) One verse
+open page-wide; picking a form collapses all books and opens that form's FIRST verse. (4)
+applyFlatLabels (both parsers) now skips proclitic particles (mod-prep/conj/art/inrg): a fused
+HEB-edition 𐤋 read "[He/it]" (FLAT_PREFIX's Aramaic imperfect) — fieldy: lamad "is supposed to
+be 'to/towards'"; GRAMMAR_MAP.prep 𐤋 gloss is now "to/towards" (BHS chips need a
+surface-index rebuild to show it; HEB live-parsed words show it on restart).
+
 **Round 4, same day — the tab stays on the page.** fieldy: pick a written variant ("if i
 click 'Yahaw' only those will show"), a chapter:verse loads IN the page with that word
 highlighted, with an option to go to the verse; main-reader books first, other works behind

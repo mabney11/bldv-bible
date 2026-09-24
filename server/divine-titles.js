@@ -214,4 +214,21 @@ function detectVerse(tokens, ref, cfg = loadConfig()) {
     return { hits, falseGods };
 }
 
-module.exports = { loadConfig, configMtime, detectVerse, normSn, CONFIG_PATH };
+// Split a whole written word into [proclitic letters..., rest] when the rest
+// begins with the title's root — for LABELS only ("LaYahawah", not "Layahawah":
+// fieldy's capital-at-every-morpheme-boundary style). No root match → [word].
+function splitProclitics(raw, sn) {
+    const root = [...(roots()[normSn(sn)] || '')];
+    let w = [...(raw || '')];
+    if (!root.length) return [w.join('')];
+    const need = (root.length >= 3 ? root.slice(0, -1) : root).join('');
+    const pre = [];
+    for (let k = 0; k <= 3; k++) {
+        if (w.join('').startsWith(need)) return [...pre, w.join('')];
+        if (!w.length || !PROCLITICS.has(w[0])) break;
+        pre.push(w[0]); w = w.slice(1);
+    }
+    return [raw];
+}
+
+module.exports = { loadConfig, configMtime, detectVerse, normSn, splitProclitics, CONFIG_PATH };

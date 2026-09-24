@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiDivineTitles, apiDivineTitleRefs, apiBookOrder, apiTokens, apiDocTokens, apiTransChapter } from '../lib/api.js';
 import { parallelHref } from '../lib/bookSlug.js';
@@ -65,6 +65,9 @@ function isFocus(w, forms, kind) {
 function VersePanel({ book, c, v, focusForms, kind, onClose }) {
   const [data, setData] = useState(null);
   const [err, setErr] = useState(null);
+  const ref = useRef(null);
+  // Bring the newly opened verse into view (the previous one just collapsed).
+  useEffect(() => { if (data) ref.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, [data]);
   useEffect(() => {
     let off = false;
     setData(null); setErr(null);
@@ -74,7 +77,7 @@ function VersePanel({ book, c, v, focusForms, kind, onClose }) {
     return () => { off = true; };
   }, [book, c, v]);
   return (
-    <div className="dt-verse">
+    <div className="dt-verse" ref={ref}>
       <div className="dt-verse-h">
         <span className="dt-verse-ref">{book.name} {c}:{v}</span>
         <Link className="dt-verse-go" to={verseHref(book, c, v)}>Open verse →</Link>
@@ -98,17 +101,25 @@ function VersePanel({ book, c, v, focusForms, kind, onClose }) {
   );
 }
 
-function BookRefs({ book, openAll, form, kind }) {
+// ONE verse open on the whole page (fieldy: "expanding another means minimizing
+// where you just were") — the open verse lives in DivineTitles as
+// { bookKey: "title|src|book", ref: [c, v, formsAtRef] }; opening another replaces it.
+function BookRefs({ book, openAll, form, kind, titleId, rawsFor, openVerse, setOpenVerse }) {
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(null);   // [c, v, formsAtRef]
   useEffect(() => { setOpen(openAll); }, [openAll]);
+  const bookKey = `${titleId}|${book.src}|${book.book_id ?? book.code}`;
+  const active = openVerse && openVerse.bookKey === bookKey ? openVerse.ref : null;
+  const setActive = ref => setOpenVerse(ref ? { bookKey, ref } : null);
+  // A verse opened from outside (picking a form opens its first verse) opens its book.
+  useEffect(() => { if (active) setOpen(true); }, [active]);
   const n = book.refs.reduce((a, r) => a + (form ? (r[3]?.[form] || 0) : r[2]), 0);
-  // Which written forms to highlight: the chosen variant, else every form at that verse.
+  // Which written words to highlight: the chosen form, else every form at that
+  // verse — each mapped back to the raw token spellings it was baked from.
   const focusForms = useMemo(() => {
     if (!active) return new Set();
     const fs = form ? [form] : Object.keys(active[2] || {});
-    return new Set(fs.flatMap(f => f.split(' ')));
-  }, [active, form]);
+    return new Set(fs.flatMap(rawsFor));
+  }, [active, form, rawsFor]);
   return (
     <div className="dt-book">
       <button className="dt-book-h" onClick={() => setOpen(o => !o)} aria-expanded={open}>
@@ -138,7 +149,7 @@ function BookRefs({ book, openAll, form, kind }) {
   );
 }
 
-function TitleCard({ t, readerOrder }) {
+function TitleCard({ t, readerOrder, openVerse, setOpenVerse }) {
   const [open, setOpen] = useState(false);
   const [refs, setRefs] = useState(null);
   const [err, setErr] = useState(null);
@@ -164,6 +175,32 @@ function TitleCard({ t, readerOrder }) {
     return { main, more };
   }, [refs, form, readerOrder]);
   const moreCount = more.reduce((a, b) => a + b.refs.length, 0);
+  // form (as displayed) -> the raw token spellings it was baked from.
+  const rawsFor = useMemo(() => {
+    const m = new Map((t.forms || []).map(f => [f.paleo, f.raws && f.raws.length ? f.raws : f.paleo.split(' ')]));
+    return f => m.get(f) || f.split(' ');
+  }, [t.forms]);
+  // Picking a form starts fresh, as if it were the first click on the page:
+  // every book collapses (BookRefs are keyed by form) and the form's FIRST
+  // verse opens — never the verse left open from another form.
+  const pickForm = f => {
+    setForm(f);
+    setOpenAll(false);
+    // Same order the lists show: reader books (in reader order), then more works.
+    const inReader = b => b.src !== 'DOC' && readerOrder.has(b.book_id);
+    const ordered = [
+      ...(refs || []).filter(inReader).sort((a, b) => readerOrder.get(a.book_id) - readerOrder.get(b.book_id)),
+      ...(refs || []).filter(b => !inReader(b)),
+    ];
+    let first = null, firstInMore = false;
+    for (const b of ordered) {
+      const r = (f ? b.refs.filter(r => r[3] && r[3][f]) : b.refs)[0];
+      if (r) { first = { bookKey: `${t.id}|${b.src}|${b.book_id ?? b.code}`, ref: [r[0], r[1], r[3]] }; firstInMore = !inReader(b); break; }
+    }
+    setShowMore(firstInMore);
+    setOpenVerse(first);
+  };
+  const bookProps = { form, kind: t.kind, titleId: t.id, rawsFor, openVerse, setOpenVerse };
   const isOther = t.kind === 'other';
   const multiBook = main.length + (showMore ? more.length : 0) > 1;
 
@@ -183,12 +220,12 @@ function TitleCard({ t, readerOrder }) {
           <div className="dt-meta">
             {!isOther && t.sns && <span className="dt-sns">{t.sns.join(' + ')}</span>}
             {t.forms && t.forms.length > 1 && (
-              <button className={`dt-form ${form ? '' : 'on'}`} onClick={() => setForm(null)}>All forms</button>
+              <button className={`dt-form ${form ? '' : 'on'}`} onClick={() => pickForm(null)}>All forms</button>
             )}
             {(t.forms || []).map(f => (
               <button key={f.paleo} className={`dt-form ${form === f.paleo ? 'on' : ''}`}
                       title={`${fmt(f.n)}× — show only these`}
-                      onClick={() => setForm(form === f.paleo ? null : f.paleo)}>
+                      onClick={() => pickForm(form === f.paleo ? null : f.paleo)}>
                 <span className="dt-form-paleo" dir="rtl">{f.paleo}</span>
                 <span className="dt-form-tr">{f.translit}</span>
                 <span className="dt-form-n">{fmt(f.n)}</span>
@@ -204,7 +241,7 @@ function TitleCard({ t, readerOrder }) {
                   {openAll ? 'Collapse all books' : 'Expand all books'}
                 </button>
               )}
-              {main.map(b => <BookRefs key={`${b.src}:${b.book_id}`} book={b} form={form} kind={t.kind}
+              {main.map(b => <BookRefs key={`${form}|${b.src}:${b.book_id}`} book={b} {...bookProps}
                                        openAll={openAll || (main.length === 1 && !more.length)} />)}
               {!main.length && !more.length && <div className="dt-msg">No verses for this form.</div>}
               {more.length > 0 && (
@@ -213,7 +250,7 @@ function TitleCard({ t, readerOrder }) {
                     <span className="dt-chev">{showMore ? '▾' : '▸'}</span>
                     More works <small>{fmt(more.length)} work{more.length === 1 ? '' : 's'} · {fmt(moreCount)} verse{moreCount === 1 ? '' : 's'}</small>
                   </button>
-                  {showMore && more.map(b => <BookRefs key={`${b.src}:${b.book_id ?? b.code}`} book={b} form={form} kind={t.kind}
+                  {showMore && more.map(b => <BookRefs key={`${form}|${b.src}:${b.book_id ?? b.code}`} book={b} {...bookProps}
                                                         openAll={openAll || (!main.length && more.length === 1)} />)}
                 </div>
               )}
@@ -229,6 +266,7 @@ export default function DivineTitles({ query = '' }) {
   const [data, setData] = useState(null);
   const [err, setErr] = useState(null);
   const [readerOrder, setReaderOrder] = useState(new Map());   // canon id -> position in the main reader
+  const [openVerse, setOpenVerse] = useState(null);             // the one verse open on the page
   useEffect(() => {
     let off = false;
     apiDivineTitles().then(d => { if (!off) setData(d); }).catch(e => { if (!off) setErr(e.message); });
@@ -260,7 +298,7 @@ export default function DivineTitles({ query = '' }) {
       {groups.map(g => (
         <div key={g.key} className="dt-group">
           <h2 className="dt-group-h">{g.label}</h2>
-          {g.items.map(t => <TitleCard key={t.id} t={t} readerOrder={readerOrder} />)}
+          {g.items.map(t => <TitleCard key={t.id} t={t} readerOrder={readerOrder} openVerse={openVerse} setOpenVerse={setOpenVerse} />)}
         </div>
       ))}
       {!groups.length && <div className="lex-state-msg">No titles match “{query}”.</div>}

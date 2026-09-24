@@ -197,7 +197,7 @@ const CHAR_MAP = {
 };
 
 const GRAMMAR_MAP = {
-    prep: { '𐤁': 'in', '𐤋': 'to', '𐤌': 'from', '𐤊': 'as', '𐤀𐤕': 'entirety/whole',
+    prep: { '𐤁': 'in', '𐤋': 'to/towards', '𐤌': 'from', '𐤊': 'as', '𐤀𐤕': 'entirety/whole',
             '𐤏𐤋': 'upon', '𐤀𐤋': 'toward', '𐤋𐤊': 'you', '𐤏𐤌': 'with', '𐤌𐤍': 'from' },
     conj: { '𐤅': 'And' },
     art:  { '𐤄': 'The' },
@@ -552,6 +552,11 @@ function applyFlatLabels(comps) {
             const c = comps[i];
             if (i === r || !c || c.isMark || !c.paleo) continue;
             if (c.css === 'vbs-hit' || c.css === 'vbs-hif') continue;
+            // Proclitic particles fused onto a HEB-edition word (𐤋 to, 𐤁 in, 𐤄 the, 𐤅 and)
+            // keep their particle gloss — the flat table's 𐤋 "He/it" is the Aramaic
+            // imperfect prefix, not the preposition (fieldy, 2026-09-24: LaYahawah's
+            // lamad "is supposed to be 'to/towards'").
+            if (c.css === 'mod-prep' || c.css === 'mod-conj' || c.css === 'mod-art' || c.css === 'mod-inrg') continue;
             if (c.css === 'uvf-dir' || c.css === 'uvf-conn') continue;   // directional 𐤄 [Toward], paragogic 𐤍/𐤄/𐤉 [Emphatic] keep their own label (fieldy, 2026-09-24)   // 𐤄 Causing, 𐤄𐤕/𐤕 Reflexive keep their stem label; Nifal 𐤍 reads 'We' (fieldy: "𐤍- prefix → we will")
             let label;
             if (c.infixed) label = 'Reflexive';

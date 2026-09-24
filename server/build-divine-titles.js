@@ -59,6 +59,36 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
         return stats.get(id);
     };
     const refCounts = new Map(); // "id|src|book|code|ch|v|form" -> n
+    // A hit's FORM is the word as the chips show it. BHS rows are segmented
+    // (ETCBC-style: "elohay", my God, is stored as 𐤀𐤋𐤄 with prs=1cs), which read
+    // as Aramaic "Alah" — so for BHS the form is the baked rendered word from
+    // token_surfaces (𐤀𐤋𐤄𐤉𐤌𐤉 Alahayamay). HEB / DOC rows are already whole
+    // written words. formRaws remembers which raw token spellings each form
+    // covers, so the tab can highlight the right words in a loaded verse.
+    let renderedOf = () => null;
+    try {
+        const q = out.prepare(`SELECT rendered_paleo, components FROM token_surfaces WHERE source='BHS' AND word_raw=? AND strongs=? AND pos=? AND morph=? LIMIT 1`);
+        const q2 = out.prepare(`SELECT rendered_paleo, components FROM token_surfaces WHERE source='BHS' AND word_raw=? AND strongs=? LIMIT 1`);
+        const memo = new Map();
+        renderedOf = r => {
+            const k = `${r.word_raw}|${r.strongs}|${r.pos}|${r.morph}`;
+            if (!memo.has(k)) memo.set(k, q.get(r.word_raw, r.strongs, r.pos, r.morph) || q2.get(r.word_raw, r.strongs) || null);
+            return memo.get(k);
+        };
+    } catch { /* token_surfaces missing — forms fall back to the raw token */ }
+    const formRaws = new Map();  // "id|form" -> Set(raw)
+    const formWords = new Map(); // "id|form" -> [[[paleo, isSuffix], ...] per word] — morpheme parts, for the label
+    const SUF = css => /^(nme-|prs-|vbe-|uvf-|mod-suff)/.test(css || '');
+    const partsOf = (srcTag, r) => {
+        const hit = srcTag === 'BHS' ? renderedOf(r) : null;
+        if (hit && hit.components) {
+            try {
+                const comps = JSON.parse(hit.components).filter(c => c && !c.isMark && c.paleo);
+                if (comps.length) return comps.map(c => [c.paleo, SUF(c.css)]);
+            } catch { /* fall through */ }
+        }
+        return divineTitles.splitProclitics(r.word_raw || '', r.strongs).map(p => [p, false]);
+    };
     let hitRows = 0;
 
     const scan = (sql, srcTag, inferred) => {
@@ -75,6 +105,16 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
             for (const [o, id] of gold) { insHit.run(srcTag, r0.book_id ?? null, r0.code ?? null, r0.chapter, r0.verse, o, id); hitRows++; }
             if (LISTED(srcTag, r0.book_id)) {
                 const rawOf = new Map(rows.map(r => [r.token_ordinal, r.word_raw || '']));
+                const rowOf = new Map(rows.map(r => [r.token_ordinal, r]));
+                const shown = o => (srcTag === 'BHS' && (renderedOf(rowOf.get(o)) || {}).rendered_paleo) || rawOf.get(o);
+                const formOf = (id, ords) => {
+                    const f = ords.map(shown).join(' ');
+                    const k = `${id}|${f}`;
+                    if (!formRaws.has(k)) formRaws.set(k, new Set());
+                    if (!formWords.has(k)) formWords.set(k, ords.map(o => partsOf(srcTag, rowOf.get(o))));
+                    for (const o of ords) formRaws.get(k).add(rawOf.get(o));
+                    return f;
+                };
                 const bk = `${srcTag}|${r0.book_id ?? ''}|${r0.code ?? ''}`;
                 const add = (id, form) => {
                     const s = statOf(id);
@@ -84,8 +124,8 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
                     const rk = `${id}|${bk}|${r0.chapter}|${r0.verse}|${form || ''}`;
                     refCounts.set(rk, (refCounts.get(rk) || 0) + 1);
                 };
-                for (const h of hits) add(h.id, h.ords.map(o => rawOf.get(o)).join(' '));
-                for (const f of falseGods) add('other-gods', rawOf.get(f.ord));
+                for (const h of hits) add(h.id, formOf(h.id, h.ords));
+                for (const f of falseGods) add('other-gods', formOf('other-gods', [f.ord]));
             }
             rows = [];
         };
@@ -111,7 +151,8 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
         const insTitle = out.prepare(`INSERT INTO divine_titles VALUES (?,?,?,?,?,?,?,?,?,?,?)`);
         const ser = (id, ord, kind, grp, en, sns) => {
             const s = statOf(id);
-            const forms = [...s.forms.entries()].sort((a, b) => b[1] - a[1]).slice(0, 60).map(([paleo, n]) => ({ paleo, n }));
+            const forms = [...s.forms.entries()].sort((a, b) => b[1] - a[1]).slice(0, 60)
+                .map(([paleo, n]) => ({ paleo, n, raws: [...(formRaws.get(`${id}|${paleo}`) || [])], words: formWords.get(`${id}|${paleo}`) || null }));
             const books = [...s.books.entries()].map(([bk, n]) => { const [src, b, code] = bk.split('|'); return { src, book_id: b ? +b : null, code: code || null, n }; });
             insTitle.run(id, ord, kind, grp, en || '', JSON.stringify(sns), s.occ, s.verses.size, s.books.size, JSON.stringify(forms), JSON.stringify(books));
         };
