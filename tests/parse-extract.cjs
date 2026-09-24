@@ -113,6 +113,7 @@ const GRAMMAR_MAP = {
         'H': { paleo: ['𐤄'], trans: 'At',          css: 'uvf-dir' },
         'J': { paleo: ['𐤉'], trans: 'Emphatic',        css: 'uvf-conn' },
         'N': { paleo: ['𐤍'], trans: 'Emphatic',        css: 'uvf-conn' },
+        'HE': { paleo: ['𐤄'], trans: 'Emphatic',       css: 'uvf-conn' },   // paragogic he (OSHB Sh) — ingest-bhs-oshb.py, 2026-09-24
     }
 };
 

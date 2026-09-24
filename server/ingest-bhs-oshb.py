@@ -311,22 +311,41 @@ def parse_book(xml_text, book_id, eng_counts=None):
                 seg_texts  = text.split("/")
                 seg_lemmas = lemma.split("/")
                 seg_morphs = morph.split("/")
-                # Pull a trailing pronominal suffix (S*) onto the preceding row's prs=.
+                # Trailing suffix segment (S*) folds onto the preceding (host) row.
+                # OSHB has four kinds: Sp pronominal, Sd directional he, Sh paragogic
+                # he, Sn paragogic nun. Only Sp was understood; the other three hit
+                # the same branch, failed the Sp regex, and were CUT OFF anyway —
+                # morph AND written letter (אַרְצָה stored as 𐤀𐤓𐤑, תְּמֻתוּן as 𐤕𐤌𐤕𐤅;
+                # 1,850 words, 2026-09-24). No eliding: the letter now stays on the
+                # host row's surface and the kind is recorded in uvf=, the BHSA
+                # feature the parsers already chip (GRAMMAR_MAP.uvf H / N / HE).
                 prs_code = None
-                if seg_morphs and seg_morphs[-1].startswith("S"):
+                uvf_code = None
+                suffix_text = ""
+                if len(seg_morphs) > 1 and seg_morphs[-1].startswith("S"):
                     sm = seg_morphs[-1]
-                    # Sp + person gender number  (e.g. Sp3ms)
-                    mm = re.match(r"Sp(\d)([mfbc])?([sp])?", sm)
-                    if mm:
-                        ps = {"1":"1","2":"2","3":"3"}.get(mm.group(1),"3")
-                        gn = (mm.group(2) or "")
-                        nu = (mm.group(3) or "")
-                        prs_code = f"{ps}{gn}{nu}".strip()
+                    had_suffix_lemma = len(seg_lemmas) == len(seg_morphs)
+                    if sm.startswith("Sp"):
+                        # Sp + person gender number  (e.g. Sp3ms)
+                        mm = re.match(r"Sp(\d)([mfbc])?([sp])?", sm)
+                        if mm:
+                            ps = {"1":"1","2":"2","3":"3"}.get(mm.group(1),"3")
+                            gn = (mm.group(2) or "")
+                            nu = (mm.group(3) or "")
+                            prs_code = f"{ps}{gn}{nu}".strip()
+                        # prs letters are emitted by the parsers from the tag (PRS_TAG),
+                        # so the pronominal suffix's own text is not kept on the row.
+                    else:
+                        uvf_code = {"Sd": "H", "Sh": "HE", "Sn": "N"}.get(sm[:2])
+                        # keep the written letter(s) on the host row
+                        if len(seg_texts) == len(seg_morphs):
+                            suffix_text = seg_texts[-1]
                     # The suffix has its OWN morph + surface segment but (almost always)
                     # NO lemma segment, so only trim lemma when its count proves it has one.
-                    had_suffix_lemma = len(seg_lemmas) == len(seg_morphs)
+                    # Only drop a text segment when one actually exists for it.
+                    if len(seg_texts) == len(seg_morphs):
+                        seg_texts = seg_texts[:-1]
                     seg_morphs = seg_morphs[:-1]
-                    if seg_texts:  seg_texts  = seg_texts[:-1]
                     if had_suffix_lemma and seg_lemmas: seg_lemmas = seg_lemmas[:-1]
                 n = len(seg_morphs)
                 for i in range(n):
@@ -344,7 +363,15 @@ def parse_book(xml_text, book_id, eng_counts=None):
                     # Pronominal suffix belongs on the LAST lexical row of this word.
                     if prs_code and i == n - 1 and "prs=absent" in mstr:
                         mstr = mstr.replace("prs=absent", f"prs={prs_code}")
-                    surf = to_paleo(seg_texts[i] if i < len(seg_texts) else "")
+                    seg_surface = seg_texts[i] if i < len(seg_texts) else ""
+                    # Directional/paragogic suffix: same host row, letter kept.
+                    if uvf_code and i == n - 1:
+                        seg_surface += suffix_text
+                        if "uvf=absent" in mstr:
+                            mstr = mstr.replace("uvf=absent", f"uvf={uvf_code}")
+                        elif "uvf=" not in mstr:
+                            mstr += f"|uvf={uvf_code}"
+                    surf = to_paleo(seg_surface)
                     if not surf: continue
                     ordn += 1
                     rows.append((book_id, ech, ev, ordn, surf, pos, mstr, strongs))
