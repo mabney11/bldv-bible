@@ -1,27 +1,32 @@
 /**
- * TempleSheet.jsx — the same house, courts and king's buildings as a flat,
- * measured drawing: a PLAN of the whole complex (north up, east to the right,
- * the way the text faces the house) and a SECTION lengthwise through the house
- * at its middle, porch to oracle. No library; prints; runs anywhere; the view
- * the page shows where WebGL is missing. Every piece is a real element (click,
- * focus, keyboard). Drawn from lib/models/temple.js exactly like the 3D scene.
+ * ModelSheet.jsx — any measured model as a flat, measured drawing: a PLAN of
+ * the whole (north up, east to the right, the way the text faces a house) and
+ * a SECTION lengthwise through its middle (z = 0). No library; prints; runs
+ * anywhere; the view the page shows where WebGL is missing. Every piece is a
+ * real element (click, focus, keyboard). Drawn from the model's data file
+ * exactly like the 3D scene; the frames, grid and labels come from
+ * MODEL.sheet = { plan: { x0, x1, z0, z1, scale, left, top, grid }, section: { x0, x1, y0, y1, scale, left, bottom, tick },
+ *                 titles: [plan, section], labels: [[text, x, z]…], compass: [x, z], aria }.
  *
  * Updates are imperative (opacity set on the nodes each frame for the BUILD
  * story; an eye marker moves on the plan in the WALK), not React re-renders.
  */
 import { useEffect, useRef } from 'react';
-import { PIECES, MATERIALS, H, progressAt, cameraAt, xrayAt } from '../lib/models/temple.js';
+import { BASE_MATERIALS } from '../lib/models/kit.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const W = 1000, HGT = 700;
-// Plan: cubits → px. The complex spans x −131…131, z −79…175.
-const PS = 2.3;
-const PX0 = 24 + 131 * PS, PZ0 = 26 + 79 * PS;
+let MATERIALS = BASE_MATERIALS;
+// Plan: cubits → px; section (x/y) to the right of the plan — both set from the model's sheet frames in setFrames().
+let PS = 2.3, PX0 = 0, PZ0 = 0, SS = 2.75, SX0 = 0, SY0 = 0;
 const px = (x) => PX0 + x * PS, pz = (z) => PZ0 + z * PS;
-// Section (x/y), to the right of the plan: x −48…62, y −6…122.
-const SS = 2.75;
-const SX0 = 676 + 48 * SS, SY0 = HGT - 64 - 6 * SS;
 const sx = (x) => SX0 + x * SS, sy = (y) => SY0 - y * SS;
+function setFrames(sheet, materials) {
+  MATERIALS = { ...BASE_MATERIALS, ...materials };
+  const P = sheet.plan, S = sheet.section;
+  PS = P.scale; PX0 = P.left - P.x0 * PS; PZ0 = P.top - P.z0 * PS;
+  SS = S.scale; SX0 = S.left - S.x0 * SS; SY0 = HGT - S.bottom + S.y0 * SS;
+}
 
 function el(name, attrs, parent) {
   const e = document.createElementNS(NS, name);
@@ -90,34 +95,30 @@ function sectionShape(piece, part, g) {
   }
 }
 
-const LABELS = [
-  ['hayakal', 10, 0], ['dabayar', -20, 0], ['awalam', 41, 0], ['Yakayan', 49, 13], ['Baiz', 49, -13], ['mazabach', 76, 0], ['yam', 58, 40],
-  ['chatzar (inner court)', 20, -54], ['gadawal chatzar (great court)', 0, -70], ['bayath yair Labanawan', 0, 128], ['awalam of imawadayam', 0, 82], ['awalam of the kasaa', 72, 82],
-  ['bayath of the malak', -90, 100], ['bayath for Paraih\'s banath', 91, 134], ['makanawath', -8, 40], ['makanawath', -8, -40],
-];
-
-export default function TempleSheet({ clock, mode, selected, onSelect }) {
+export default function ModelSheet({ model, clock, mode, selected, onSelect }) {
   const wrap = useRef(null);
   const api = useRef(null);
   const modeRef = useRef(mode); modeRef.current = mode;
 
   useEffect(() => {
     const host = wrap.current; if (!host) return undefined;
-    const svg = el('svg', { viewBox: `0 0 ${W} ${HGT}`, class: 'st-svg', role: 'img', 'aria-label': 'The house of Yahawah, drawn flat: a plan of the whole and a section through the house' }, host);
+    const { PIECES, progressAt, cameraAt, xrayAt, sheet } = model, P = sheet.plan, S = sheet.section, GROUND = model.ground;
+    setFrames(sheet, model.MATERIALS);
+    const svg = el('svg', { viewBox: `0 0 ${W} ${HGT}`, class: 'st-svg', role: 'img', 'aria-label': sheet.aria || `${model.title}, drawn flat: a plan of the whole and a section through the middle` }, host);
     const defs = el('defs', {}, svg);
     const hatch = el('pattern', { id: 'tp-hatch', width: 6, height: 6, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
     el('line', { x1: 0, y1: 0, x2: 0, y2: 6, stroke: '#0003', 'stroke-width': 2 }, hatch);
     el('rect', { x: 0, y: 0, width: W, height: HGT, fill: '#f4efe4' }, svg);
     // titles
-    el('text', { x: 24, y: 16, 'font-size': 11, 'font-weight': 700, fill: '#5a4a2e', 'letter-spacing': 1.2 }, svg).textContent = 'PLAN · tzapawan (north) up · mazarach (east) right · one square = 20 amah';
-    el('text', { x: 676, y: 16, 'font-size': 11, 'font-weight': 700, fill: '#5a4a2e', 'letter-spacing': 1.2 }, svg).textContent = 'SECTION · through the middle, awalam to dabayar';
-    // grid on the plan, 20 cubits
-    const grid = el('g', { stroke: '#0000000e', 'stroke-width': 0.6 }, svg);
-    for (let x = -120; x <= 120; x += 20) el('line', { x1: px(x), y1: pz(-78), x2: px(x), y2: pz(174) }, grid);
-    for (let z = -60; z <= 160; z += 20) el('line', { x1: px(-130), y1: pz(z), x2: px(130), y2: pz(z) }, grid);
-    // ground line of the section
-    el('line', { x1: sx(-48), y1: sy(H.courtY), x2: sx(62), y2: sy(H.courtY), stroke: '#7a6a4e', 'stroke-width': 1 }, svg);
-    for (let y = 0; y <= 120; y += 20) { el('line', { x1: sx(-48), y1: sy(y), x2: sx(-46), y2: sy(y), stroke: '#7a6a4e', 'stroke-width': 0.8 }, svg); el('text', { x: sx(-45), y: sy(y) + 3, 'font-size': 8, fill: '#7a6a4e' }, svg).textContent = String(y); }
+    el('text', { x: P.left, y: 16, 'font-size': 11, 'font-weight': 700, fill: '#5a4a2e', 'letter-spacing': 1.2 }, svg).textContent = sheet.titles[0];
+    el('text', { x: S.left, y: 16, 'font-size': 11, 'font-weight': 700, fill: '#5a4a2e', 'letter-spacing': 1.2 }, svg).textContent = sheet.titles[1];
+    // grid on the plan, every `grid` cubits
+    const grid = el('g', { stroke: '#0000000e', 'stroke-width': 0.6 }, svg), G = P.grid;
+    for (let x = Math.ceil(P.x0 / G) * G; x <= P.x1; x += G) el('line', { x1: px(x), y1: pz(P.z0 + 1), x2: px(x), y2: pz(P.z1 - 1) }, grid);
+    for (let z = Math.ceil(P.z0 / G) * G; z <= P.z1; z += G) el('line', { x1: px(P.x0 + 1), y1: pz(z), x2: px(P.x1 - 1), y2: pz(z) }, grid);
+    // ground line of the section, and its height ticks
+    el('line', { x1: sx(S.x0), y1: sy(GROUND), x2: sx(S.x1), y2: sy(GROUND), stroke: '#7a6a4e', 'stroke-width': 1 }, svg);
+    for (let y = 0; y <= S.y1 - 2; y += S.tick) { el('line', { x1: sx(S.x0), y1: sy(y), x2: sx(S.x0) + 5.5, y2: sy(y), stroke: '#7a6a4e', 'stroke-width': 0.8 }, svg); el('text', { x: sx(S.x0) + 8.25, y: sy(y) + 3, 'font-size': 8, fill: '#7a6a4e' }, svg).textContent = String(y); }
 
     const planG = el('g', {}, svg), secG = el('g', {}, svg);
     const nodes = new Map();   // piece id → [{g}]
@@ -135,10 +136,11 @@ export default function TempleSheet({ clock, mode, selected, onSelect }) {
     }
     // labels
     const lab = el('g', { 'font-size': 8.5, fill: '#3b2f1c', 'text-anchor': 'middle', 'pointer-events': 'none' }, svg);
-    for (const [t, x, z] of LABELS) el('text', { x: px(x), y: pz(z) + 3 }, lab).textContent = t;
+    for (const [t, x, z] of sheet.labels) el('text', { x: px(x), y: pz(z) + 3 }, lab).textContent = t;
     // compass
-    el('text', { x: px(122), y: pz(-66), 'font-size': 14, fill: '#8a6716', 'text-anchor': 'middle' }, svg).textContent = '𐤑𐤐𐤅𐤍';
-    el('path', { d: `M${px(122)},${pz(-60)} l-4,10 l4,-3 l4,3 z`, fill: '#8a6716' }, svg);
+    const [cx, cz] = sheet.compass;
+    el('text', { x: px(cx), y: pz(cz), 'font-size': 14, fill: '#8a6716', 'text-anchor': 'middle' }, svg).textContent = '𐤑𐤐𐤅𐤍';
+    el('path', { d: `M${px(cx)},${pz(cz + 6)} l-4,10 l4,-3 l4,3 z`, fill: '#8a6716' }, svg);
     // the eye (walk)
     const eye = el('g', { 'pointer-events': 'none' }, svg);
     const eyeDot = el('circle', { r: 4, fill: '#ffc857', stroke: '#5a3a00', 'stroke-width': 1 }, eye);
@@ -154,7 +156,7 @@ export default function TempleSheet({ clock, mode, selected, onSelect }) {
       // the roof and the near walls thin out in the see-through stretches, on the plan
       const x = xrayAt(mode, t);
       for (const piece of order) {
-        const n = nodes.get(piece.id); if (!n || (piece.group !== 'house' && piece.group !== 'inside')) continue;
+        const n = nodes.get(piece.id); if (!n || !(model.scene?.xrayGroups || new Set(['house', 'inside'])).has(piece.group)) continue;
         n[0].querySelectorAll('[data-role="roof"],[data-role="tower"]').forEach((r) => { r.style.opacity = String(0.35 * (1 - x) + 0.05); });
       }
       const cam = cameraAt(mode, t);
@@ -166,7 +168,7 @@ export default function TempleSheet({ clock, mode, selected, onSelect }) {
     function frame() { if (!alive) return; raf = requestAnimationFrame(frame); if (clock.t !== lastT) { lastT = clock.t; place(clock.t); } }
     place(clock.t); frame();
     api.current = {
-      select: (id) => { for (const [pid, n] of nodes) for (const g of n) g.classList.toggle('on', pid === id || (id === 'house' && PIECES.find((p) => p.id === pid)?.group === 'house')); },
+      select: (id) => { for (const [pid, n] of nodes) for (const g of n) g.classList.toggle('on', pid === id || !!(model.scene?.whole && id === model.scene.whole.id && PIECES.find((p) => p.id === pid)?.group === model.scene.whole.group)); },
       refresh: () => { lastT = -1; },
     };
     return () => { alive = false; cancelAnimationFrame(raf); host.removeChild(svg); api.current = null; };

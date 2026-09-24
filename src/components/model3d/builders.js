@@ -1,0 +1,1172 @@
+/**
+ * builders.js — what every 3D model shares: the drawn textures (ashlar, planks,
+ * plaster, carving, lattice, the veil), the materials, the PieceBuilder that
+ * merges a piece's solids per material, the idealized look, the photographed
+ * surfaces, every part builder (boxes with doorways and windows, ramps, cherubim,
+ * the ark, doors and veils, the sea, the bases, the pillars, lampstands, tables,
+ * thrones, people), the court gates, the sculpted-part slots (GLB) and the GLB
+ * export. Lifted out of TempleScene.jsx (2026-09-24) so Yachazaqaal's house, the
+ * mashakan and the cities are built by the same hands; a model adds nothing
+ * here — it describes its parts (lib/models/*.js) and the scene draws them.
+ */
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { BASE_MATERIALS } from '../../lib/models/kit.js';
+
+export const SKIN_TONES = ['#be8349', '#b0733d', '#916035', '#683f23', '#63371c', '#5e341c', '#512b16', '#4e2e19'];   // light brown → dark brown (Levi, Zebulun, Dan, Gad, Judah, Asher, Ephraim, Naphtali) — the two palest tones of the chart dropped: "between light-brown, brown, and dark brown"
+export const HAIR_TONES = ['#15100d', '#1e1410', '#2a1a12', '#33200f', '#3d2614'];   // black to dark brown — everyone (fieldy)
+export const SKY = 0xb9cfe3;          // a dry, bright morning over Mawarayah
+export const XRAY_ROLES = new Set(['roof', 'south', 'tower', 'lintel', 'ceiling', 'slab']);
+export const XRAY_GROUPS = new Set(['house', 'inside']);   // the piece groups whose roofs and south walls go to glass in the see-through stretches (a model may name its own)
+export const GLB_URL = (name) => `/api/models/${name}.glb`;
+
+// ── Canvas textures ──────────────────────────────────────────────────────────
+export function canvas(w, h, draw) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d'); draw(g, w, h);
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+  return tex;
+}
+let seed = 11;
+const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+
+/** Hewn stone in courses: one tile = 8 × 4 cubits (two courses of two, staggered). */
+function ashlarTexture(base, mortar) {
+  return canvas(512, 256, (g, w, h) => {
+    g.fillStyle = mortar; g.fillRect(0, 0, w, h);
+    const rows = 2, cols = 4;
+    for (let r = 0; r < rows; r++) {
+      const off = r % 2 ? w / cols / 2 : 0;
+      for (let c = -1; c <= cols; c++) {
+        const x = c * (w / cols) + off, y = r * (h / rows);
+        const k = 0.9 + rnd() * 0.2;
+        g.fillStyle = shade(base, k); g.fillRect(x + 3, y + 3, w / cols - 6, h / rows - 6);
+        g.fillStyle = 'rgba(255,255,255,0.10)'; g.fillRect(x + 3, y + 3, w / cols - 6, 5);
+        g.fillStyle = 'rgba(0,0,0,0.14)'; g.fillRect(x + 3, y + h / rows - 9, w / cols - 6, 6);
+        for (let i = 0; i < 40; i++) { g.fillStyle = `rgba(0,0,0,${0.03 + rnd() * 0.05})`; g.fillRect(x + 4 + rnd() * (w / cols - 8), y + 4 + rnd() * (h / rows - 8), 2 + rnd() * 5, 1 + rnd() * 2); }
+      }
+    }
+  });
+}
+/** Lime plaster: a soft mottle. One tile = 4 × 4 cubits. */
+function plasterTexture(base) {
+  return canvas(256, 256, (g, w, h) => {
+    g.fillStyle = base; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 900; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '255,255,255' : '80,60,30'},${0.02 + rnd() * 0.05})`; const r = 2 + rnd() * 9; g.beginPath(); g.arc(rnd() * w, rnd() * h, r, 0, Math.PI * 2); g.fill(); }
+    for (let i = 0; i < 6; i++) { g.strokeStyle = `rgba(60,40,20,${0.05 + rnd() * 0.06})`; g.lineWidth = 1; g.beginPath(); let x = rnd() * w, y = rnd() * h; g.moveTo(x, y); for (let j = 0; j < 5; j++) { x += rnd() * 30 - 15; y += rnd() * 30 - 15; g.lineTo(x, y); } g.stroke(); }
+  });
+}
+/** Paving: flagstones. One tile = 4 × 4 cubits. */
+function pavingTexture(base, joint) {
+  return canvas(256, 256, (g, w, h) => {
+    g.fillStyle = joint; g.fillRect(0, 0, w, h);
+    const n = 4;
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) { const off = r % 2 ? w / n / 2 : 0; for (const dx of [-w, 0]) { g.fillStyle = shade(base, 0.86 + rnd() * 0.28); g.fillRect(c * (w / n) + off + dx + 2, r * (h / n) + 2, w / n - 4, h / n - 4); } }
+  });
+}
+/** The hatch laid over what is idealized: fine diagonal lines on white (multiplied onto the material), the draughtsman's mark for conjecture. */
+function hatchTexture() {
+  return canvas(128, 128, (g, w, h) => {
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(70,80,100,0.22)'; g.lineWidth = 1.2;
+    for (let i = -h; i < w + h; i += 10) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + h, h); g.stroke(); }
+  });
+}
+function shade(hex, k) {
+  const c = new THREE.Color(hex); c.r = Math.min(1, c.r * k); c.g = Math.min(1, c.g * k); c.b = Math.min(1, c.b * k);
+  return `#${c.getHexString()}`;
+}
+/** Cedar planks: one tile = 4 × 4 cubits. */
+function plankTexture(base) {
+  return canvas(256, 256, (g, w, h) => {
+    for (let i = 0; i < 6; i++) {
+      g.fillStyle = shade(base, 0.9 + rnd() * 0.22); g.fillRect(0, i * (h / 6), w, h / 6);
+      g.fillStyle = 'rgba(0,0,0,0.25)'; g.fillRect(0, i * (h / 6), w, 2);
+      for (let j = 0; j < 14; j++) { g.strokeStyle = `rgba(0,0,0,${0.04 + rnd() * 0.08})`; g.lineWidth = 1; g.beginPath(); const y = i * (h / 6) + rnd() * (h / 6); g.moveTo(0, y); g.bezierCurveTo(w * 0.3, y + rnd() * 6 - 3, w * 0.7, y + rnd() * 6 - 3, w, y); g.stroke(); }
+    }
+  });
+}
+/**
+ * The carving of 6:29 — karawab (cherubim), thamar (palm) trees and open
+ * tzatzayam (flowers) in bands, palm between cherub and cherub (Ezekiel 41:18).
+ * One tile = 8 cubits wide × 8 high. `ink` is the relief's shadow colour; the same
+ * drawing in grey is the bump map.
+ */
+function carvedCanvasDraw(base, ink, hi) {
+  return (g, w, h) => {
+    g.fillStyle = base; g.fillRect(0, 0, w, h);
+    const band = h / 2;
+    const palm = (x, y, s) => {
+      g.strokeStyle = ink; g.lineWidth = 3 * s; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(x, y); g.lineTo(x, y - 60 * s); g.stroke();
+      for (let i = 0; i < 4; i++) { g.lineWidth = 2 * s; g.beginPath(); g.moveTo(x, y - 60 * s); g.quadraticCurveTo(x - 30 * s, y - 60 * s - 10 * s * i, x - 44 * s, y - 40 * s - 10 * s * i); g.stroke(); g.beginPath(); g.moveTo(x, y - 60 * s); g.quadraticCurveTo(x + 30 * s, y - 60 * s - 10 * s * i, x + 44 * s, y - 40 * s - 10 * s * i); g.stroke(); }
+      g.lineWidth = 2.5 * s; g.beginPath(); g.moveTo(x, y - 60 * s); g.lineTo(x, y - 92 * s); g.stroke();
+      g.fillStyle = ink; for (let i = -1; i <= 1; i += 2) { g.beginPath(); g.ellipse(x + 6 * s * i, y - 50 * s, 4 * s, 7 * s, 0, 0, 6.29); g.fill(); }
+    };
+    const cherub = (x, y, s) => {
+      g.fillStyle = ink; g.strokeStyle = ink; g.lineWidth = 2 * s;
+      g.beginPath(); g.ellipse(x, y - 78 * s, 7 * s, 8 * s, 0, 0, 6.29); g.fill();                       // head
+      g.beginPath(); g.moveTo(x - 9 * s, y - 68 * s); g.lineTo(x + 9 * s, y - 68 * s); g.lineTo(x + 13 * s, y); g.lineTo(x - 13 * s, y); g.closePath(); g.fill();   // robe
+      for (const d of [-1, 1]) { g.beginPath(); g.moveTo(x + 9 * d * s, y - 64 * s); g.quadraticCurveTo(x + 44 * d * s, y - 95 * s, x + 46 * d * s, y - 40 * s); g.quadraticCurveTo(x + 30 * d * s, y - 52 * s, x + 12 * d * s, y - 44 * s); g.closePath(); g.fill(); }   // wings
+      g.strokeStyle = hi; g.lineWidth = 1.2 * s; for (const d of [-1, 1]) for (let i = 1; i <= 3; i++) { g.beginPath(); g.moveTo(x + 12 * d * s, y - (44 + i * 6) * s); g.quadraticCurveTo(x + 30 * d * s, y - (56 + i * 8) * s, x + (40 + i) * d * s, y - (50 + i * 9) * s); g.stroke(); }
+    };
+    const flower = (x, y, s) => {
+      g.fillStyle = ink; for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2; g.beginPath(); g.ellipse(x + Math.cos(a) * 9 * s, y + Math.sin(a) * 9 * s, 5 * s, 3 * s, a, 0, 6.29); g.fill(); }
+      g.fillStyle = hi; g.beginPath(); g.arc(x, y, 4 * s, 0, 6.29); g.fill();
+    };
+    for (let b = 0; b < 2; b++) {
+      const y0 = band * (b + 1) - 14;
+      // cherub · palm · cherub · palm across the tile, offset on the second band
+      const off = b ? w / 8 : 0;
+      for (let i = 0; i < 4; i++) { const x = off + (i + 0.5) * (w / 4); if (i % 2 === 0) cherub(x, y0, 1.1); else palm(x, y0, 1.15); }
+      for (let i = 0; i < 8; i++) flower(off + (i + 0.5) * (w / 8), y0 - band + 22, 0.7);
+      g.fillStyle = ink; g.fillRect(0, y0 + 6, w, 3);   // the rail between the bands
+    }
+  };
+}
+function carvedTextures(base, ink, hi) {
+  const map = canvas(1024, 1024, carvedCanvasDraw(base, ink, hi));
+  const bump = canvas(1024, 1024, carvedCanvasDraw('#808080', '#404040', '#b0b0b0'));
+  bump.colorSpace = THREE.NoColorSpace;
+  return { map, bump };
+}
+/** The lattice of 6:4 (an alpha map): a diagonal mesh in a frame. */
+function latticeTexture() {
+  const t = canvas(128, 256, (g, w, h) => {
+    g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#fff'; g.lineWidth = 5;
+    for (let i = -h; i < w + h; i += 18) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + h, h); g.stroke(); g.beginPath(); g.moveTo(i, h); g.lineTo(i + h, 0); g.stroke(); }
+    g.lineWidth = 12; g.strokeRect(0, 0, w, h);
+  });
+  t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; t.colorSpace = THREE.NoColorSpace; return t;
+}
+/** The veil: thakalath (blue), aragaman (purple), karamayal (crimson), bawatz (fine linen), with cherubim (2 Chronicles 3:14). */
+function veilTexture() {
+  return canvas(512, 768, (g, w, h) => {
+    const cols = ['#23378a', '#4a2378', '#8c1a2e', '#d8cdb0'];
+    for (let i = 0; i < 48; i++) { g.fillStyle = cols[i % 4]; g.fillRect(0, i * (h / 48), w, h / 48); }
+    g.fillStyle = 'rgba(0,0,0,0.18)'; for (let i = 0; i < 48; i++) g.fillRect(0, i * (h / 48), w, 1);
+    const pat = document.createElement('canvas'); pat.width = w; pat.height = h;
+    const pg = pat.getContext('2d'); carvedCanvasDraw('rgba(0,0,0,0)', '#f0d78c', '#fff0c8')(pg, w, h);
+    g.globalAlpha = 0.85; g.drawImage(pat, 0, 0); g.globalAlpha = 1;
+  });
+}
+/** The checker net of the capitals (7:17): an alpha map. */
+function netTexture() {
+  const t = canvas(256, 128, (g, w, h) => {
+    g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#fff'; g.lineWidth = 4;
+    for (let i = -h; i < w + h; i += 16) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + h, h); g.stroke(); g.beginPath(); g.moveTo(i, h); g.lineTo(i + h, 0); g.stroke(); }
+  });
+  t.colorSpace = THREE.NoColorSpace; return t;
+}
+/** The panels of the bases (7:29, 36): lions, oxen and cherubim between the ledges, wreaths beneath. */
+function panelTexture(base, ink, hi) {
+  return canvas(256, 256, (g, w, h) => {
+    g.fillStyle = base; g.fillRect(0, 0, w, h);
+    g.fillStyle = ink;
+    // a lion
+    g.beginPath(); g.ellipse(70, 110, 38, 18, 0, 0, 6.29); g.fill(); g.beginPath(); g.arc(112, 96, 16, 0, 6.29); g.fill();
+    for (const x of [45, 60, 82, 97]) g.fillRect(x, 118, 7, 26);
+    // an ox
+    g.beginPath(); g.ellipse(180, 112, 40, 20, 0, 0, 6.29); g.fill(); g.fillRect(212, 88, 22, 22);
+    g.strokeStyle = ink; g.lineWidth = 3; g.beginPath(); g.moveTo(214, 88); g.lineTo(206, 72); g.moveTo(232, 88); g.lineTo(240, 72); g.stroke();
+    for (const x of [150, 166, 190, 206]) g.fillRect(x, 122, 7, 24);
+    // a cherub above
+    g.beginPath(); g.arc(128, 34, 9, 0, 6.29); g.fill(); g.beginPath(); g.moveTo(118, 44); g.lineTo(138, 44); g.lineTo(142, 78); g.lineTo(114, 78); g.closePath(); g.fill();
+    for (const d of [-1, 1]) { g.beginPath(); g.moveTo(128 + 10 * d, 48); g.quadraticCurveTo(128 + 60 * d, 20, 128 + 62 * d, 70); g.quadraticCurveTo(128 + 40 * d, 60, 128 + 14 * d, 66); g.closePath(); g.fill(); }
+    // the ledges and the wreath beneath
+    g.fillStyle = hi; g.fillRect(0, 0, w, 6); g.fillRect(0, h - 6, w, 6); g.fillRect(0, 150, w, 4);
+    g.strokeStyle = hi; g.lineWidth = 3; g.beginPath(); for (let x = 0; x <= w; x += 32) g.arc(x, 200, 16, Math.PI, 0, false); g.stroke();
+  });
+}
+
+// ── Materials ────────────────────────────────────────────────────────────────
+/** The three.js materials for a model's MATERIALS table (colours shared with the sheet); any key the table lacks falls back to the temple's. */
+export function makeMaterials(MATERIALS = BASE_MATERIALS) {
+  MATERIALS = { ...BASE_MATERIALS, ...MATERIALS };
+  const std = (key, extra = {}) => { const m = MATERIALS[key]; return new THREE.MeshStandardMaterial({ color: new THREE.Color(m.color), metalness: m.metal, roughness: m.rough, ...extra }); };
+  const ashlar = ashlarTexture(MATERIALS.stone.color, '#8a7a5e');
+  const ashlarDark = ashlarTexture(MATERIALS.found.color, '#5b4d36');
+  const plank = plankTexture(MATERIALS.cedar.color);
+  const carvedCedar = carvedTextures(MATERIALS.cedar.color, '#3b1f0c', '#c58f60');
+  const carvedGold = carvedTextures('#e2b649', '#8a6414', '#fff0b0');
+  const carvedOlive = carvedTextures(MATERIALS.olive.color, '#3f3418', '#d8c58e');
+  const carvedFir = carvedTextures(MATERIALS.fir.color, '#4b3218', '#e2c39a');
+  const carvedStone = carvedTextures(MATERIALS.stone.color, '#7a6a4e', '#efe6cf');   // karawab and thamar cut in stone (Yachazaqaal's walls and posts, 40:16; 41:18)
+  const M = {
+    stone: std('stone', { map: ashlar }),
+    found: std('found', { map: ashlarDark }),
+    cedar: std('cedar', { map: plank }),
+    cedarPlain: std('cedar'),
+    cedarDark: std('cedar', { map: plank, color: new THREE.Color('#7a4a2a') }),   // the throne room's cedar, darker (fieldy)
+    fir: std('fir', { map: plank }),
+    olive: std('olive'),
+    gold: std('gold'),
+    goldDim: std('gold', { roughness: 0.45 }),
+    brass: std('brass'),
+    brassDark: std('brass', { color: new THREE.Color('#8a5228'), roughness: 0.55 }),
+    veil: new THREE.MeshStandardMaterial({ map: veilTexture(), side: THREE.DoubleSide, roughness: 0.9, metalness: 0 }),
+    ground: std('ground'),
+    earth: new THREE.MeshStandardMaterial({ color: new THREE.Color('#7c6d52'), roughness: 1 }),
+    water: new THREE.MeshStandardMaterial({ color: new THREE.Color(MATERIALS.water.color), roughness: 0.12, metalness: 0.1, transparent: true, opacity: 0.85 }),
+    ivory: std('ivory'),
+    dark: new THREE.MeshStandardMaterial({ color: new THREE.Color('#1c1712'), roughness: 1 }),
+    lattice: new THREE.MeshStandardMaterial({ color: new THREE.Color('#d9ccb0'), alphaMap: latticeTexture(), transparent: true, side: THREE.DoubleSide, roughness: 0.9, alphaTest: 0.4 }),
+    net: new THREE.MeshStandardMaterial({ color: new THREE.Color('#e6ab70'), metalness: 1, roughness: 0.45, alphaMap: netTexture(), transparent: true, side: THREE.DoubleSide, alphaTest: 0.35 }),
+    panel: std('brass', { map: panelTexture('#b9733a', '#5a2f12', '#e6ab70'), roughness: 0.5 }),
+    flame: new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffd27a') }),
+    linen: new THREE.MeshStandardMaterial({ color: new THREE.Color('#efe6d2'), roughness: 0.95, metalness: 0 }),     // bawatz (fine linen) — the priests and singers
+    plaster: std('plaster', { map: plasterTexture(MATERIALS.plaster.color) }),
+    plaster2: std('plaster2', { map: plasterTexture(MATERIALS.plaster2.color) }),
+    paving: std('paving', { map: pavingTexture(MATERIALS.paving.color, '#6f6449') }),
+    garden: std('garden'),
+    silver: std('silver'),
+    rug: new THREE.MeshStandardMaterial({ color: new THREE.Color('#9a5a3a'), roughness: 1, metalness: 0 }),          // a woven rug (photo)
+    'rug-runner': new THREE.MeshStandardMaterial({ color: new THREE.Color('#a2603c'), roughness: 1, metalness: 0 }),
+    idealEdge: new THREE.LineBasicMaterial({ color: new THREE.Color('#5d6f8a'), transparent: true, opacity: 0.75 }),   // the drawn edges of what is idealized (idealOf)
+    royal: new THREE.MeshStandardMaterial({ color: new THREE.Color('#4a2e7a'), roughness: 0.8, metalness: 0.05 }),   // the malak (king)
+    // skin tones across the tribes (fieldy's chart, 2026-09-12): Reuben → Ephraim, light to deep brown
+    ...Object.fromEntries(SKIN_TONES.map((hex, i) => [`skin${i}`, new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), roughness: 0.9, metalness: 0 })])),
+    ...Object.fromEntries(HAIR_TONES.map((hex, i) => [`hair${i}`, new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), roughness: 1, metalness: 0 })])),
+    carvedCedar: std('cedar', { map: carvedCedar.map, bumpMap: carvedCedar.bump, bumpScale: 0.12, roughness: 0.75 }),
+    carvedGold: std('gold', { map: carvedGold.map, bumpMap: carvedGold.bump, bumpScale: 0.1, roughness: 0.32 }),
+    carvedOlive: std('olive', { map: carvedOlive.map, bumpMap: carvedOlive.bump, bumpScale: 0.12 }),
+    carvedFir: std('fir', { map: carvedFir.map, bumpMap: carvedFir.bump, bumpScale: 0.12 }),
+    carvedStone: std('stone', { map: carvedStone.map, bumpMap: carvedStone.bump, bumpScale: 0.14, roughness: 0.9 }),
+  };
+  M.stone.map.repeat.set(1, 1); M.found.map.repeat.set(1, 1);
+  return M;
+}
+// Tile sizes in cubits (u, v) per texture, for the UV scaling of boxes.
+const TILE = { stone: [6, 6], found: [8, 4], cedar: [4, 4], cedarDark: [4, 4], fir: [4, 4], plaster: [5, 5], plaster2: [5, 5], paving: [5, 5], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], carvedStone: [8, 8], panel: [4, 3] };
+
+/** Scale a BoxGeometry's UVs so a texture tiles every face at world scale. */
+function uvBox(geo, w, h, d, tile) {
+  const uv = geo.attributes.uv, [tu, tv] = tile;
+  const dims = [[d, h], [d, h], [w, d], [w, d], [w, h], [w, h]];   // +x −x +y −y +z −z
+  for (let f = 0; f < 6; f++) { const [fw, fh] = dims[f]; for (let i = f * 4; i < f * 4 + 4; i++) uv.setXY(i, uv.getX(i) * (fw / tu), uv.getY(i) * (fh / tv)); }
+  uv.needsUpdate = true;
+  return geo;
+}
+
+// ── Builders ─────────────────────────────────────────────────────────────────
+// Each piece is a Group. Static solids are collected as {geometry-in-piece-space,
+// material} and merged per material at the end (`bake`); animated or unique
+// things (doors, veil, water, instanced pomegranates) are added as meshes.
+const UP = new THREE.Vector3(0, 1, 0);
+export class PieceBuilder {
+  constructor(M, piece, xrayGroups = XRAY_GROUPS) { this.M = M; this.piece = piece; this.xrayGroups = xrayGroups; this.group = new THREE.Group(); this.group.userData.id = piece.id; this.buckets = new Map(); this.slots = []; }
+  matFor(part, carvedOverride) {
+    const key = part.mat || this.piece.material;
+    if (part.carved) return carvedOverride || ({ cedar: 'carvedCedar', gold: 'carvedGold', olive: 'carvedOlive', fir: 'carvedFir', stone: 'carvedStone', plaster: 'carvedStone' }[key] || key);
+    return key;
+  }
+  add(geo, matKey, xray = false) {
+    const ideal = !!this.ideal, k = `${matKey}${xray ? '|x' : ''}${ideal ? '|i' : ''}`;
+    if (!this.buckets.has(k)) this.buckets.set(k, { matKey, xray, ideal, geos: [] });
+    this.buckets.get(k).geos.push(geo);
+  }
+  box(x, y, z, w, h, d, matKey, xray = false, rot = 0) {
+    const geo = new THREE.BoxGeometry(w, h, d);
+    if (TILE[matKey]) uvBox(geo, w, h, d, TILE[matKey]);
+    if (rot) geo.rotateY(rot);
+    geo.translate(x, y + h / 2, z);
+    this.add(geo, matKey, xray);
+  }
+  cyl(x, y, z, r, h, matKey, r2 = r, seg = 32, xray = false) {
+    const geo = new THREE.CylinderGeometry(r2, r, h, seg); geo.translate(x, y + h / 2, z); this.add(geo, matKey, xray);
+  }
+  lathe(x, y, z, profile, matKey, seg = 48) {
+    const geo = new THREE.LatheGeometry(profile.map(([r, dy]) => new THREE.Vector2(Math.max(r, 0.001), dy)), seg); geo.translate(x, y, z); this.add(geo, matKey);
+  }
+  sphere(x, y, z, r, matKey, seg = 16) { const geo = new THREE.SphereGeometry(r, seg, Math.max(8, seg / 2)); geo.translate(x, y, z); this.add(geo, matKey); }
+  torus(x, y, z, R, r, matKey, rx = 0, ry = 0) { const geo = new THREE.TorusGeometry(R, r, 10, 40); geo.rotateX(rx); geo.rotateY(ry); geo.translate(x, y, z); this.add(geo, matKey); }
+  capsule(a, b, r, matKey) {
+    const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), d = B.clone().sub(A), len = d.length();
+    const geo = new THREE.CapsuleGeometry(r, len, 4, 14);
+    const q = new THREE.Quaternion().setFromUnitVectors(UP, d.clone().normalize());
+    geo.applyQuaternion(q); geo.translate((A.x + B.x) / 2, (A.y + B.y) / 2, (A.z + B.z) / 2); this.add(geo, matKey);
+  }
+  mesh(obj) { this.group.add(obj); return obj; }
+  bake() {
+    for (const { matKey, xray, ideal, geos } of this.buckets.values()) {
+      const list = geos.some((g) => !g.index) ? geos.map((g) => (g.index ? g.toNonIndexed() : g)) : geos;
+      const geo = list.length === 1 ? list[0] : mergeGeometries(list, false);
+      if (!geo) continue;
+      let mat = this.M[matKey] || this.M.stone;
+      if (xray) { mat = mat.clone(); mat.transparent = true; mat.userData.xray = true; }
+      if (ideal) mat = idealOf(this.M, matKey);
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.castShadow = !ideal; mesh.receiveShadow = true; mesh.userData.xray = xray; mesh.userData.ideal = ideal;
+      this.group.add(mesh);
+      if (ideal) { const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), this.M.idealEdge); edges.userData.ideal = true; edges.raycast = () => {}; this.group.add(edges); }   // its edges drawn, like a sketch
+    }
+    return this.group;
+  }
+}
+
+/** The look of what the model IDEALIZED — parts the text does not give (a doorway, an inner court, a stair): the piece's own
+ *  material paled and see-through, with its edges drawn, so it reads as sketched in beside the solid things the text measures.
+ *  fieldy: "visual clarity that the interior has been idealized when the text doesn't support it — no need for clarity when
+ *  the text supports it". */
+const idealCache = new WeakMap();
+export function idealOf(M, matKey) {
+  const base = M[matKey] || M.stone;
+  if (!idealCache.has(M)) idealCache.set(M, new Map());
+  const c = idealCache.get(M); if (c.has(matKey)) return c.get(matKey);
+  // opaque (fieldy: "not a fan of the clear walls"): the material's own colour, a little paled, under a fine diagonal hatch — the
+  // draughtsman's mark for what is conjectured — with its edges drawn; a wall is still a wall to stand behind
+  if (!idealCache.hatch) { idealCache.hatch = hatchTexture(); idealCache.hatch.repeat.set(2, 2); }
+  const m = base.clone(); m.transparent = false; m.opacity = 1; m.depthWrite = true; m.bumpMap = null; m.emissive = new THREE.Color('#000000');
+  m.map = idealCache.hatch; m.color = base.color.clone().lerp(new THREE.Color('#eef0f2'), matKey === 'stone' || matKey === 'plaster' ? 0.35 : 0.2); m.roughness = 1; m.metalness = 0; m.userData.ideal = true;
+  if (photos[matKey]?.hatched) { m.map = photos[matKey].hatched; m.color.set(PHOTO_TINT[matKey] || '#ffffff').lerp(new THREE.Color('#eef0f2'), 0.15); }   // the photo, hatched
+  else if (base.map?.image) { m.map = hatchOver(base.map.image); m.map.repeat.copy(base.map.repeat); m.color = base.color.clone().lerp(new THREE.Color('#eef0f2'), 0.12); }   // a drawn texture (carving, planks), hatched
+  c.set(matKey, m); return m;
+}
+
+// ── Photographed surfaces (public/textures/temple/*.jpg, fieldy's) ─────────────
+// Laid over the drawn ones when they arrive: the drawn tile shows until then, so
+// the model never waits on a download. Each photo also gets a hatched twin for
+// the idealized parts (the same picture under the diagonal lines).
+const PHOTOS = { stone: 'stone', cedar: 'cedar', fir: 'cedar', cedarDark: 'cedar', plaster: 'plaster', plaster2: 'plaster2', paving: 'paving' };   // material key → file
+const PHOTO_TINT = { stone: '#e9dfc9', plaster2: '#ddd3bc', paving: '#c9b995', cedarDark: '#7d5030' };   // the grey photographs take their colour from here; the dark cedar its shade
+const photos = {};                                                                        // key → { plain, hatched }
+function hatchOver(img) {
+  return canvas(img.naturalWidth || img.width, img.naturalHeight || img.height, (g, w, h) => {
+    g.drawImage(img, 0, 0, w, h);
+    g.strokeStyle = 'rgba(40,50,70,0.28)'; g.lineWidth = Math.max(1, w / 110);
+    for (let i = -h; i < w + h; i += w / 12) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i + h, h); g.stroke(); }
+  });
+}
+export function loadPhotos(M, onChange) {
+  const loader = new THREE.TextureLoader();
+  for (const [key, file] of Object.entries(PHOTOS)) {
+    loader.load(`/textures/temple/${file}.jpg`, (tex) => {
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+      const hatched = hatchOver(tex.image);
+      photos[key] = { plain: tex, hatched };
+      if (M[key]) { M[key].map = tex; M[key].color.set(PHOTO_TINT[key] || '#ffffff'); M[key].needsUpdate = true; }
+      const ideal = idealCache.get(M)?.get(key); if (ideal) { ideal.map = hatched; ideal.color.set(PHOTO_TINT[key] || '#ffffff').lerp(new THREE.Color('#eef0f2'), 0.15); ideal.needsUpdate = true; }
+      onChange?.();
+    }, undefined, () => { /* no photo on this server: the drawn tile stays */ });
+  }
+  for (const key of ['rug', 'rug-runner']) {
+    loader.load(`/textures/temple/${key}.jpg`, (tex) => { tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; if (key === 'rug-runner') { tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(1, 3); }   /* the runner is 6 × 18: the damask repeats three times along it */ if (M[key]) { M[key].map = tex; M[key].color.set('#ffffff'); M[key].needsUpdate = true; onChange?.(); } }, undefined, () => {});
+  }
+}
+
+/** A box with a doorway cut out of one long side: three boxes (two jambs and a lintel). */
+function boxWithDoorway(b, part, matKey, xray) {
+  const { w, h, d } = part, dw = part.doorway.w, dh = part.doorway.h;
+  if (w < d) {   // the wall runs along z: the doorway is cut across z
+    const side = (d - dw) / 2;
+    b.box(part.x, part.y, part.z - dw / 2 - side / 2, w, h, side, matKey, xray);
+    b.box(part.x, part.y, part.z + dw / 2 + side / 2, w, h, side, matKey, xray);
+    b.box(part.x, part.y + dh, part.z, w, h - dh, dw, matKey, xray);
+  } else {
+    const side = (w - dw) / 2;
+    b.box(part.x - dw / 2 - side / 2, part.y, part.z, side, h, d, matKey, xray);
+    b.box(part.x + dw / 2 + side / 2, part.y, part.z, side, h, d, matKey, xray);
+    b.box(part.x, part.y + dh, part.z, dw, h - dh, d, matKey, xray);
+  }
+}
+
+function buildBox(b, part) {
+  const matKey = b.matFor(part);
+  const xray = XRAY_ROLES.has(part.role) && b.xrayGroups.has(b.piece.group);
+  if (part.doorway) { boxWithDoorway(b, part, matKey, xray); return; }
+  if (part.window) {   // a narrowing, latticed window: a dark recess, a lattice in it, and a stone sill
+    b.box(part.x, part.y, part.z, part.w, part.h, part.d, 'dark', xray);
+    const zSign = Math.sign(part.z);
+    const lat = new THREE.Mesh(new THREE.PlaneGeometry(part.w * 0.8, part.h * 0.85), b.M.lattice);
+    lat.position.set(part.x, part.y + part.h / 2, part.z + zSign * part.d * 0.35); if (zSign < 0) lat.rotation.y = Math.PI;
+    lat.userData.xray = xray; b.mesh(lat);
+    b.box(part.x, part.y - 0.3, part.z + zSign * 0.2, part.w + 0.8, 0.3, part.d + 0.4, 'stone', xray);
+    b.box(part.x, part.y + part.h, part.z + zSign * 0.2, part.w + 0.8, 0.5, part.d + 0.4, 'stone', xray);
+    return;
+  }
+  if (part.hollowRoom) {   // three walls and no front (the porch of the throne opens north to the court)
+    const t = 2, { x, y, z, w, h, d } = part;
+    b.box(x - w / 2 + t / 2, y, z, t, h, d, matKey); b.box(x + w / 2 - t / 2, y, z, t, h, d, matKey); b.box(x, y, z + d / 2 - t / 2, w, h, t, matKey);
+    b.box(x, y, z, w - 2 * t, 0.4, d - t, 'cedar');
+    return;
+  }
+  b.box(part.x, part.y, part.z, part.w, part.h, part.d, matKey, xray);
+  if (part.horns) for (const sx of [-1, 1]) for (const sz of [-1, 1]) b.cyl(part.x + sx * (part.w / 2 - part.w * 0.06), part.y + part.h, part.z + sz * (part.d / 2 - part.d * 0.06), part.w * 0.05, part.h * 0.12, matKey, part.w * 0.015, 10);
+  if (part.cedarTop) b.box(part.x, part.y + part.h, part.z, part.w + 0.2, 0.7, part.d + 0.2, 'cedar');
+  if (part.beams) {   // beam ends showing along the long edges, under the parapet line
+    const n = Math.floor(part.w / 2.5);
+    for (let i = 0; i <= n; i++) { const x = part.x - part.w / 2 + i * (part.w / n); b.box(x, part.y - 0.6, part.z, 1.2, 1.2, part.d + 1.2, 'cedar', xray); }
+  }
+  if (part.windows) {   // ranks of windows facing each other (7:4–5) on the long walls
+    const long = part.w > part.d, n = long ? Math.floor(part.w / 6) : Math.floor(part.d / 6);
+    for (let r = 0; r < part.windows; r++) for (let i = 0; i < n; i++) {
+      const y = part.y + 3 + r * ((part.h - 6) / part.windows);
+      if (long) b.box(part.x - part.w / 2 + (i + 0.5) * (part.w / n), y, part.z, 2.2, 4, part.d + 0.2, 'dark');
+      else b.box(part.x, y, part.z - part.d / 2 + (i + 0.5) * (part.d / n), part.w + 0.2, 4, 2.2, 'dark');
+    }
+  }
+}
+
+function buildRamp(b, part) {   // a wedge rising to the altar's top from the south
+  const len = part.len, h = part.h, w = part.w;
+  const geo = new THREE.BufferGeometry();
+  const x0 = part.x - w / 2, x1 = part.x + w / 2, z0 = part.z, z1 = part.z + len, y0 = part.y, y1 = part.y + h;
+  // A closed hull, every face wound outward: the walker's rays (which see front
+  // faces only) must meet the sides and the slope from outside, or he walks into
+  // the wedge and is caught in it.
+  const v = [
+    x0, y0, z1, x1, y0, z1, x1, y1, z0, x0, y1, z0,          // 0–3 top slope (faces up and south)
+    x0, y0, z0, x1, y0, z0, x1, y1, z0, x0, y1, z0,          // 4–7 back (against the altar, faces north)
+    x0, y0, z0, x0, y1, z0, x0, y0, z1,                      // 8–10 west side
+    x1, y0, z0, x1, y0, z1, x1, y1, z0,                      // 11–13 east side
+    x0, y0, z0, x1, y0, z0, x1, y0, z1, x0, y0, z1,          // 14–17 bottom (faces down)
+  ];
+  const idx = [
+    0, 1, 2, 0, 2, 3,       // slope: +y +z
+    4, 6, 5, 4, 7, 6,       // back: −z
+    8, 10, 9,               // west: −x
+    11, 13, 12,             // east: +x
+    14, 15, 16, 14, 16, 17, // bottom: −y
+  ];
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(v, 3)); geo.setIndex(idx); geo.computeVertexNormals();
+  // uvs are needed for merging with textured geometry: give it plain ones
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(new Array((v.length / 3) * 2).fill(0), 2));
+  b.add(geo, 'stone');
+}
+
+/**
+ * A wing as a stylised cast plate, `len` long, in the x/y plane, root at x = 0 pointing +x:
+ * a straight top edge, a lower edge stepped in four broad feather-ranks, the whole
+ * blade tapering a little toward the tip. Faceless-statue style, no engraving.
+ */
+function wingGeo(len, s) {
+  const sh = new THREE.Shape();
+  const h0 = 1.15 * s;                 // half-depth at the root
+  sh.moveTo(0, -h0); sh.lineTo(0, h0);
+  sh.lineTo(len * 0.97, h0 * 0.82); sh.quadraticCurveTo(len, h0 * 0.7, len, h0 * 0.35);   // straight top edge, rounded tip
+  // stepped lower edge: four ranks, each a little deeper than the one outside it
+  const ranks = 4;
+  for (let i = 0; i < ranks; i++) {
+    const x1 = len * (1 - i / ranks), x0 = len * (1 - (i + 1) / ranks);
+    const d1 = h0 * (0.35 + i * 0.22), d0 = h0 * (0.35 + (i + 1) * 0.22);
+    sh.lineTo(x1 - len * 0.03, -d1); sh.quadraticCurveTo(x1 - len * 0.12, -d0 * 1.05, x0 + len * 0.02, -d0);
+  }
+  sh.lineTo(0, -h0);
+  return new THREE.ExtrudeGeometry(sh, { depth: 0.22 * s, bevelEnabled: true, bevelThickness: 0.06 * s, bevelSize: 0.07 * s, bevelSegments: 2 });
+}
+
+/**
+ * A great karawab, `h` high: a standing figure in a pleated robe belted at the waist,
+ * a broad pectoral collar, shoulders, arms folded before the breast, a smooth
+ * featureless head under a banded headdress that falls behind the neck; each wing a
+ * FAN of feathers from the shoulder — long primaries at the tip, secondaries inside
+ * them, a row of coverts over the roots — held straight out and level (1 Kings 6:27),
+ * one to `side` (the wall), the other to the middle. Faces +x (east, toward the
+ * house — 2 Chronicles 3:13). Faceless by fieldy's choice; no engraving.
+ */
+function buildCherub(b, part, mat = 'gold') {
+  const { x, y, z, h, wing, side } = part;
+  const s = h / 10;
+  const g = new THREE.Group(); g.position.set(x, y, z); g.userData.slot = part.glb;
+  const sub = new PieceBuilder(b.M, b.piece);
+  cherubFigure(sub, b, s, wing, side, mat, 0);
+  g.add(...sub.bake().children);
+  b.mesh(g);
+  b.slots.push({ slot: part.glb, node: g, h, face: 'x', mirror: side < 0 });
+}
+
+/**
+ * The figure itself, at scale `s` (= height / 10), wings `wing` long, one to `side`;
+ * The wings root in the back and follow a spine: by default up over the shoulder and
+ * out level to the tip at `wing` (the dabayar); `spine` overrides the path with its
+ * own points (in units of s, z to the wing's side) — the ark's wings come forward and
+ * down over the seat like an umbrella. Built into `sub`; the caller bakes.
+ */
+function cherubFigure(sub, b, s, wing, side, mat, tilt, spinePts = null) {
+  const ellipsoid = (px, py, pz, rx, ry, rz, rotX = 0, rotY = 0, rotZ = 0, seg = 14) => {
+    const geo = new THREE.SphereGeometry(1, seg, Math.max(8, seg - 4)); geo.scale(rx, ry, rz);
+    if (rotX) geo.rotateX(rotX); if (rotY) geo.rotateY(rotY); if (rotZ) geo.rotateZ(rotZ);
+    geo.translate(px, py, pz); sub.add(geo, mat);
+  };
+  // ── the robe: a pleated skirt from the hem to the belt, then the bodice to the collar
+  const skirt = new THREE.LatheGeometry([[1.62, 0], [1.6, 0.18], [1.38, 1.2], [1.22, 3.0], [1.12, 4.6], [1.08, 5.1]].map(([r, dy]) => new THREE.Vector2(r * s, dy * s)), 96);
+  { const p = skirt.attributes.position, v = new THREE.Vector3();
+    for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const a = Math.atan2(v.z, v.x), t = 1 - v.y / (5.1 * s); const k = 1 + 0.045 * t * Math.cos(a * 22); p.setXYZ(i, v.x * k, v.y, v.z * k); }
+    skirt.computeVertexNormals(); sub.add(skirt, mat); }
+  sub.lathe(0, 5.1 * s, 0, [[1.1 * s, 0], [1.02 * s, 0.6 * s], [1.08 * s, 1.5 * s], [1.22 * s, 2.1 * s], [1.28 * s, 2.35 * s], [0.9 * s, 2.55 * s], [0.42 * s, 2.7 * s], [0, 2.72 * s]], mat, 48);   // bodice to the shoulders
+  sub.torus(0, 5.15 * s, 0, 1.1 * s, 0.11 * s, mat, Math.PI / 2);                                                                                   // the belt
+  sub.torus(0, 5.15 * s, 0, 1.1 * s, 0.05 * s, mat, Math.PI / 2); ellipsoid(1.16 * s, 5.15 * s, 0, 0.14 * s, 0.22 * s, 0.22 * s);                    // its clasp, at the front
+  sub.lathe(0, 7.15 * s, 0, [[0.55 * s, 0], [1.0 * s, 0.05 * s], [1.05 * s, 0.32 * s], [0.6 * s, 0.5 * s], [0.5 * s, 0.6 * s]], mat, 48);          // the pectoral collar
+  for (let i = 0; i < 3; i++) sub.torus(0, 7.2 * s + i * 0.1 * s, 0, (1.02 - i * 0.14) * s, 0.035 * s, mat, Math.PI / 2);                             // its rows
+  // ── shoulders and arms: a limb is a body of revolution swept along its bone, so the
+  // deltoid, the biceps and the forearm's taper are real bulges, not capsules
+  const limb = (from, to, profile) => {
+    const A = new THREE.Vector3(...from), B = new THREE.Vector3(...to), d = B.clone().sub(A), len = d.length();
+    const geo = new THREE.LatheGeometry(profile.map(([r, u]) => new THREE.Vector2(r * s, u * len)), 28);
+    geo.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(UP, d.clone().normalize())); geo.translate(A.x, A.y, A.z); sub.add(geo, mat);
+  };
+  for (const sz of [-1, 1]) {
+    const sh = [0.1 * s, 7.3 * s, sz * 1.12 * s], el = [0.72 * s, 5.9 * s, sz * 1.12 * s], wr = [1.22 * s, 6.05 * s, -sz * 0.3 * s];
+    ellipsoid(0.05 * s, 7.3 * s, sz * 1.02 * s, 0.5 * s, 0.46 * s, 0.52 * s);                                                                     // deltoid
+    limb(sh, el, [[0.26, 0], [0.33, 0.18], [0.37, 0.42], [0.34, 0.66], [0.27, 0.86], [0.24, 1]]);                                                 // upper arm, the biceps swelling
+    ellipsoid(el[0], el[1], el[2], 0.27 * s, 0.25 * s, 0.27 * s);                                                                                  // elbow
+    limb(el, wr, [[0.25, 0], [0.29, 0.22], [0.26, 0.5], [0.2, 0.8], [0.17, 1]]);                                                                    // forearm across the breast, tapering to the wrist
+    // the hand: continues the forearm's line past the wrist — a palm, four fingers
+    // curling down over the other forearm, a thumb laid along the top
+    const dir = new THREE.Vector3(wr[0] - el[0], wr[1] - el[1], wr[2] - el[2]).normalize(), perp = new THREE.Vector3(-dir.z, 0, dir.x).normalize();
+    const at = (k, side, drop = 0) => [wr[0] + dir.x * k * s + perp.x * side * s, wr[1] + dir.y * k * s - drop * s, wr[2] + dir.z * k * s + perp.z * side * s];
+    const pc = at(0.22, 0); ellipsoid(pc[0], pc[1], pc[2], 0.2 * s, 0.11 * s, 0.24 * s, 0, Math.atan2(dir.x, dir.z), 0);
+    for (let f = 0; f < 4; f++) { const off = (f - 1.5) * 0.1; sub.capsule(at(0.4, off), at(0.62, off * 1.1, 0.05), 0.048 * s, mat); sub.capsule(at(0.62, off * 1.1, 0.05), at(0.68, off * 1.15, 0.26), 0.044 * s, mat); }
+    sub.capsule(at(0.2, 0.2, -0.06), at(0.45, 0.32, -0.02), 0.052 * s, mat);
+  }
+  // ── the head: featureless, under a banded headdress with a fall behind the neck
+  sub.cyl(0, 7.75 * s, 0, 0.32 * s, 0.55 * s, mat, 0.34 * s, 20);                                                                                     // neck
+  ellipsoid(0.02 * s, 8.95 * s, 0, 0.62 * s, 0.72 * s, 0.6 * s);                                                                                    // head
+  sub.lathe(0, 9.0 * s, 0, [[0.66 * s, 0], [0.72 * s, 0.25 * s], [0.7 * s, 0.55 * s], [0.5 * s, 0.85 * s], [0.2 * s, 1.0 * s], [0, 1.02 * s]], mat, 32);   // the headdress cap
+  sub.torus(0, 9.05 * s, 0, 0.7 * s, 0.07 * s, mat, Math.PI / 2);                                                                                      // its band
+  // ── hair: thick corded locks from under the headdress, over the back and sides of the
+  // head to the shoulders, each a rope — a tube along a gentle S-curve, ridged along its
+  // length — the face left bare
+  const lock = (ang, len, phase) => {
+    const r0 = 0.66 * s, y0 = 8.9 * s;
+    const pts = [];
+    for (let k = 0; k <= 5; k++) {
+      const u = k / 5, rr = r0 + u * 0.22 * s + Math.sin(u * 6.2 + phase) * 0.06 * s;
+      pts.push(new THREE.Vector3(Math.cos(ang) * rr + Math.sin(u * 9 + phase) * 0.03 * s, y0 - u * len, Math.sin(ang) * rr));
+    }
+    const curve = new THREE.CatmullRomCurve3(pts);
+    const geo = new THREE.TubeGeometry(curve, 24, 0.15 * s, 8, false);
+    const p = geo.attributes.position, v = new THREE.Vector3(), c = new THREE.Vector3();
+    for (let i = 0; i < p.count; i++) {                          // the rope's twist: the radius swells and pinches along the lock
+      v.fromBufferAttribute(p, i); const u = Math.floor(i / 9) / 24; curve.getPointAt(Math.min(1, u), c);
+      const k = 1 + 0.2 * Math.sin(u * 40 + phase); p.setXYZ(i, c.x + (v.x - c.x) * k, c.y + (v.y - c.y) * k, c.z + (v.z - c.z) * k);
+    }
+    geo.computeVertexNormals(); sub.add(geo, mat);
+    // knots along the cord read as the twist from any angle
+    const tip = pts[pts.length - 1]; ellipsoid(tip.x, tip.y - 0.06 * s, tip.z, 0.15 * s, 0.19 * s, 0.15 * s);
+  };
+  for (let i = 0; i < 15; i++) { const ang = Math.PI * 0.62 + (i / 14) * Math.PI * 0.76; lock(ang, (1.55 + Math.sin(i * 1.7) * 0.15) * s, i * 1.3); }   // over the back, from ear to ear
+  for (const sz of [-1, 1]) for (let i = 0; i < 3; i++) lock(sz * (Math.PI * 0.5 - i * 0.2), (1.45 + i * 0.08) * s, i * 2.1 + (sz > 0 ? 0.5 : 0));            // and three before each ear
+  // ── feet
+  for (const sz of [-1, 1]) { sub.box(0.3 * s, 0, sz * 0.5 * s, 1.0 * s, 0.32 * s, 0.55 * s, mat); ellipsoid(0.8 * s, 0.16 * s, sz * 0.5 * s, 0.3 * s, 0.16 * s, 0.28 * s); }
+  const shoulderY = 7.3 * s;
+  // ── the wings: rooted in the BACK below the shoulder blades, each rises over the
+  // shoulder and arches out to its tip level at the wall — the leading edge is a
+  // spine (root → crest above the head's height → tip) and the feathers fan from
+  // the root and hang from that spine, so the wing has depth from behind
+  const UPV = new THREE.Vector3(0, 1, 0);
+  for (const dir of [side, -side]) {
+    const apex = spinePts?.apex ? new THREE.Vector3(spinePts.apex[0] * s, spinePts.apex[1] * s, dir * spinePts.apex[2] * s) : null;   // an umbrella's apex: the feathers drape away from it
+    const slope = spinePts?.drape ? new THREE.Vector3(0, spinePts.drape[0], -dir * spinePts.drape[1]).normalize() : null;           // or a fixed slope: [down, out] — the feathers fall outward from the spine at that pitch
+    const pts = (spinePts?.pts || spinePts) || [
+      [-0.85, 5.6, 0.55],                            // the root, in the back
+      [-0.75, 7.6, 1.0],                             // rising past the shoulder blade
+      [-0.45, 9.4, 2.1],                             // the crest
+      [-0.1, 8.6, 0.55 * (2.1 + wing / s)],          // falling away outward
+      [0.05, shoulderY / s, wing / s],               // the tip, level, at the wall
+    ];
+    const spine = new THREE.CatmullRomCurve3(pts.map(([px, py, pz]) => new THREE.Vector3(px * s, py * s, dir * pz * s)), false, 'centripetal', 0.5);
+    const L = spine.getLength(), S = new THREE.Vector3(), T = new THREE.Vector3(), N = new THREE.Vector3(), B = new THREE.Vector3();
+    const hang = (geo) => {                          // a blade in the fan's own plane (z out along the edge, y down from it, x thick) hung on the spine
+      const p = geo.attributes.position, v = new THREE.Vector3();
+      for (let k = 0; k < p.count; k++) {
+        v.fromBufferAttribute(p, k);
+        const u = Math.min(1, Math.max(0, v.z / L));
+        spine.getPointAt(u, S); spine.getTangentAt(u, T);
+        if (apex || slope) {                         // drape outward and down (away from the apex, or at the fixed slope) — but hang straight near the root, so the head is not buried
+          if (slope) N.copy(slope); else { N.copy(apex).sub(S); N.addScaledVector(T, -N.dot(T)); if (N.lengthSq() < 1e-6) N.copy(UPV); N.normalize(); }
+          const w = Math.min(1, Math.max(0, (u - 0.2) / 0.3)); N.multiplyScalar(w).addScaledVector(UPV, 1 - w).normalize();
+        } else {
+          T.y = 0; if (T.lengthSq() < 1e-6) T.set(-1, 0, 0); T.normalize();   // the feathers hang straight down from the spine, whatever its pitch
+          N.copy(UPV);
+        }
+        B.crossVectors(N, T);
+        p.setXYZ(k, S.x + B.x * v.x + N.x * v.y, S.y + B.y * v.x + N.y * v.y, S.z + B.z * v.x + N.z * v.y);
+      }
+      geo.computeVertexNormals();
+    };
+    const feather = (angle, len, w, t, xOff) => {
+      const geo = new THREE.SphereGeometry(1, 10, 12); geo.scale(t, w, len / 2);
+      geo.translate(xOff, 0, len / 2);               // root at the origin, tip at +z
+      geo.rotateX(angle);                            // droop toward −y about the root
+      hang(geo); sub.add(geo, mat);
+    };
+    const dense = spinePts?.dense || 1, wide = spinePts?.wide || 1, droop = spinePts?.droop ?? 1;   // more feathers closer set; broader blades; shorter hanging feathers (a canopy, not a curtain)
+    const nP = Math.round(9 * dense), nS = Math.round(8 * dense), nC = Math.round(7 * dense), fw = wide / Math.sqrt(dense), dr = (u) => 1 + (droop - 1) * u;
+    if (apex || slope) {
+      // a canopy wing: the feathers are set in a row ALL ALONG the spine (as a bird's
+      // primaries are), each falling from it down the drape — longest mid-wing — and
+      // swept a little toward the tip; a second, shorter row lies over their roots
+      const fall = (u, k) => L * droop * 0.5 * (0.3 + 0.7 * Math.pow(Math.sin(Math.PI * Math.min(1, u * 1.05)), 0.7)) * k;
+      const row = (n, u0, k, w, xOff) => {
+        for (let i = 0; i < n; i++) {
+          const u = u0 + (1 - u0) * (i / (n - 1)), len = fall(u, k);
+          const geo = new THREE.SphereGeometry(1, 8, 14); geo.scale(0.07 * s, len / 2, w); geo.translate(xOff, -len / 2, 0);
+          const p = geo.attributes.position; for (let q = 0; q < p.count; q++) p.setZ(q, p.getZ(q) + u * L - p.getY(q) * 0.3);   // along the spine, trailing toward the tip
+          hang(geo); sub.add(geo, mat);
+        }
+      };
+      row(nP + nS, 0.04, 1, 0.3 * s * fw, 0);          // from right at the back, so the wing is seen to grow from the body
+      row(nC + 3, 0.03, 0.45, 0.34 * s * fw, 0.1 * s);
+    } else {
+    // primaries: long feathers fanning from the spine (the tip) to ~55° down
+    for (let i = 0; i < nP; i++) { const u = i / (nP - 1); feather(u * 0.95, L * (1 - u * 0.42) * dr(u), (0.36 - u * 0.06) * s * fw, 0.07 * s, 0.05 * s); }
+    // secondaries: shorter, fanning through the same angles between the primaries
+    for (let i = 0; i < nS; i++) { const u = (i + 0.5) / nS; feather(u * 0.95 + 0.05, L * (0.66 - u * 0.24) * dr(u), 0.34 * s * fw, 0.07 * s, 0.17 * s); }
+    // coverts: short and full over the roots
+    for (let i = 0; i < nC; i++) { const u = i / (nC - 1); feather(u * 0.9 + 0.08, L * (0.36 - u * 0.1) * dr(u), 0.3 * s * fw, 0.07 * s, 0.29 * s); }
+    }
+    // the leading edge: a spar along the spine
+    sub.add(new THREE.TubeGeometry(spine, 40, 0.12 * s, 8, false), mat);
+  }
+}
+
+function buildArk(b, part) {
+  const { x, y, z } = part; const g = new THREE.Group(); g.position.set(x, y, z);
+  const sub = new PieceBuilder(b.M, b.piece);
+  // the chest, 2½ × 1½ × 1½ (Exodus 25:10), with its two crowns of gold — a moulding at the top and at the foot — and corner posts
+  sub.box(0, 0.12, 0, 2.5, 1.38, 1.5, 'gold');
+  for (const [yy, hh] of [[0, 0.14], [1.42, 0.12]]) {
+    sub.box(0, yy, 0, 2.64, hh, 1.64, 'gold');
+    const per = (2.64 + 1.64) * 2;
+    for (let i = 0; i < 40; i++) { const u = (i / 40) * per; let px, pz; if (u < 2.64) { px = -1.32 + u; pz = -0.82; } else if (u < 2.64 + 1.64) { px = 1.32; pz = -0.82 + (u - 2.64); } else if (u < 2.64 * 2 + 1.64) { px = 1.32 - (u - 2.64 - 1.64); pz = 0.82; } else { px = -1.32; pz = 0.82 - (u - 2.64 * 2 - 1.64); } sub.sphere(px, yy + hh + 0.03, pz, 0.035, 'gold', 8); }   // beaded edges on the crowns
+  }
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) sub.box(sx * 1.2, 0.14, sz * 0.7, 0.12, 1.28, 0.12, 'goldDim');
+  // four rings of gold on its four feet, two on each side, and the poles of acacia overlaid with gold through them (25:12–15)
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) sub.torus(sx * 0.95, 0.36, sz * 0.82, 0.16, 0.04, 'gold', Math.PI / 2, 0);
+  for (const sz of [-1, 1]) { const pole = new THREE.CylinderGeometry(0.075, 0.075, 4.4, 12); pole.rotateZ(Math.PI / 2); pole.translate(0, 0.36, sz * 0.82); sub.add(pole, 'goldDim'); for (const sx of [-1, 1]) sub.sphere(sx * 2.2, 0.36, sz * 0.82, 0.09, 'gold', 10); }
+  // the kaparath (mercy seat), pure gold, the length and breadth of the chest (25:17)
+  sub.box(0, 1.54, 0, 2.5, 0.12, 1.5, 'gold');
+  // two cherubim of beaten work at its two ends, facing each other, wings spread upward covering the seat (25:18–20):
+  // each pair rises from the back, over the shoulders, and reaches forward and down over the seat to meet the other's — an umbrella of wings over the kaparath
+  for (const sx of [-1, 1]) {
+    const c = new THREE.Group(); c.position.set(sx * 0.75, 1.66, 0); c.rotation.y = sx > 0 ? Math.PI : 0;   // each turned to face the other across the seat
+    const sub2 = new PieceBuilder(b.M, b.piece);
+    // the same wings as the great cherubim, but each rises over the head and spreads out and
+    // forward, the feathers draping outward, reaching a little past the seat's middle so the two
+    // cherubim's wings overlap by a handful of feathers there — a canopy open down its centre
+    cherubFigure(sub2, b, 0.11, 0.9, 1, 'gold', 1.05, { pts: [[-0.8, 5.8, 0.6], [-0.4, 8.2, 1.3], [1.0, 11.0, 2.3], [3.6, 12.0, 3.5], [6.2, 11.3, 4.3], [8.0, 9.4, 4.6]], drape: [0.55, 0.85], dense: 2.4, wide: 2.3, droop: 0.5 });
+    c.add(...sub2.bake().children); g.add(c);
+  }
+  g.add(...sub.bake().children); b.mesh(g);
+  b.slots.push({ slot: part.glb, node: g, h: 2.9, face: 'x' });
+}
+
+/** Two leaves (or two folding pairs) in a jambed opening; opened by openAt. */
+function buildDoors(b, part) {
+  const { x, y, z, w, h, t } = part;
+  const carved = b.piece.material === 'olive' ? 'carvedOlive' : 'carvedFir';
+  const post = 'olive';
+  // posts and lintel (mazawazah)
+  const sub = new PieceBuilder(b.M, b.piece);
+  for (const sz of [-1, 1]) sub.box(x, y, z + sz * (w / 2 + 0.35), t + 0.8, h + 0.6, 0.7, post);
+  sub.box(x, y + h, z, t + 0.8, 0.7, w + 1.4, post);
+  b.group.add(...sub.bake().children);
+  const leaves = [];
+  for (const sz of [-1, 1]) {
+    const hinge = new THREE.Group(); hinge.position.set(x, y, z + sz * w / 2);
+    const nLeaf = part.fold ? 2 : 1, lw = w / 2 / nLeaf;
+    let parent = hinge;
+    for (let i = 0; i < nLeaf; i++) {
+      const leaf = new THREE.Group();
+      const geo = new THREE.BoxGeometry(t, h, lw); uvBox(geo, t, h, lw, TILE[carved]);
+      const m = new THREE.Mesh(geo, b.M[carved]); m.position.set(0, h / 2, -sz * lw / 2); m.castShadow = true; m.receiveShadow = true;
+      leaf.add(m);
+      const trim = new THREE.Mesh(new THREE.BoxGeometry(t + 0.06, h - 0.4, 0.12), b.M.gold); trim.position.set(0, h / 2, -sz * (lw - 0.12)); leaf.add(trim);
+      const rim = new THREE.Mesh(new THREE.BoxGeometry(t + 0.06, 0.12, lw), b.M.gold); rim.position.set(0, h - 0.3, -sz * lw / 2); leaf.add(rim);
+      parent.add(leaf);
+      leaves.push({ node: leaf, sz, i });
+      const next = new THREE.Group(); next.position.set(0, 0, -sz * lw); leaf.add(next); parent = next;
+    }
+    b.group.add(hinge);
+  }
+  (b.group.userData.doors ||= []).push({ leaves, open: part.open, fold: !!part.fold });   // a piece may hold more than one door (Yachazaqaal's two, 41:23)
+}
+
+function buildVeil(b, part) {
+  const { x, y, z, w, h } = part;
+  const halves = [];
+  for (const sz of [-1, 1]) {
+    const geo = new THREE.PlaneGeometry(w / 2, h, 1, 1); geo.rotateY(Math.PI / 2);
+    const m = new THREE.Mesh(geo, b.M.veil); m.position.set(x, y + h / 2, z + sz * w / 4); m.castShadow = true; m.receiveShadow = true;
+    m.userData.rest = sz * w / 4; b.group.add(m); halves.push({ node: m, sz });
+  }
+  const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, w + 1, 10), b.M.gold); rod.geometry.rotateX(Math.PI / 2); rod.position.set(x, y + h + 0.1, z); b.group.add(rod);
+  (b.group.userData.veil ||= []).push({ halves, open: part.open });
+}
+
+/** The sea: a lily-brimmed bowl a handbreadth thick on twelve oxen, two rows of buds under the brim. */
+function buildSea(b, part) {
+  const { x, y, z, r, h, oxH } = part, top = y + oxH;
+  const th = 0.25;   // a tapach (handbreadth)
+  const prof = [[r * 0.55, 0], [r * 0.8, 0.5], [r * 0.95, 1.5], [r, 2.6], [r, 3.9], [r * 1.05, 4.5], [r * 1.12, 4.85], [r * 1.08, h], [r * 1.02, h - 0.1], [r - th, 4.6], [r - th, 2.6], [r * 0.9, 1.4], [r * 0.7, th + 0.35], [0, th + 0.35]];
+  const geo = new THREE.LatheGeometry(prof.map(([rr, dy]) => new THREE.Vector2(Math.max(rr, 0.001), dy)), 96);
+  // the lily brim: scallop the top rows
+  const pos = geo.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) { v.fromBufferAttribute(pos, i); if (v.y > 4.4) { const a = Math.atan2(v.z, v.x), k = 1 + 0.05 * Math.cos(a * 12) * ((v.y - 4.4) / 0.6); pos.setXYZ(i, v.x * k, v.y + 0.06 * Math.cos(a * 12) * ((v.y - 4.4) / 0.6), v.z * k); } }
+  geo.computeVertexNormals(); geo.translate(x, top, z); b.add(geo, 'brass');
+  // water
+  const water = new THREE.Mesh(new THREE.CircleGeometry(r - th - 0.02, 64), b.M.water); water.rotation.x = -Math.PI / 2; water.position.set(x, top + 4.3, z); b.mesh(water);
+  // buds (7:24 — ten to a cubit, two rows) → 2 × 300 instanced
+  const knop = new THREE.SphereGeometry(0.16, 8, 6);
+  const inst = new THREE.InstancedMesh(knop, b.M.brassDark, 600);
+  const m4 = new THREE.Matrix4(); let k = 0;
+  for (const [ry, rr] of [[3.7, r + 0.1], [3.15, r + 0.08]]) for (let i = 0; i < 300; i++) { const a = (i / 300) * Math.PI * 2 + (ry > 3.5 ? 0 : Math.PI / 300); m4.makeTranslation(x + Math.cos(a) * rr, top + ry, z + Math.sin(a) * rr); inst.setMatrixAt(k++, m4); }
+  inst.castShadow = true; b.mesh(inst);
+  // twelve oxen — three to each quarter of the sky, hinder parts inward (7:25): a ring of twelve, each facing its quarter
+  for (let q = 0; q < 4; q++) {
+    const dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]][q];   // tzapawan (north) −z, mazarach (east) +x, nagab (south) +z, yam (west) −x
+    for (let i = -1; i <= 1; i++) {
+      const a = Math.atan2(dirs[1], dirs[0]) + i * (Math.PI / 6), rr = 3.8;
+      const ox = new THREE.Group(); ox.position.set(x + Math.cos(a) * rr, y, z + Math.sin(a) * rr); ox.rotation.y = Math.atan2(-dirs[1], dirs[0]);   // its +x is its front
+      const sub = new PieceBuilder(b.M, b.piece); const s = oxH / 3.2;
+      const el = (px, py, pz, rx, ry, rz, rotZ = 0, rotY = 0) => { const geo = new THREE.SphereGeometry(1, 16, 12); geo.scale(rx * s, ry * s, rz * s); if (rotZ) geo.rotateZ(rotZ); if (rotY) geo.rotateY(rotY); geo.translate(px * s, py * s, pz * s); sub.add(geo, 'brass'); };
+      const tube = (pts, rad, segs = 12) => sub.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map((q) => new THREE.Vector3(q[0] * s, q[1] * s, q[2] * s))), segs, rad * s, 8, false), 'brass');
+      // the body: one long barrel, low withers, haunches, a thick neck rising to the head, a dewlap
+      el(-0.15, 2.0, 0, 1.55, 0.86, 0.76);                                 // barrel
+      el(0.7, 2.18, 0, 0.75, 0.66, 0.64);                                  // withers
+      el(-1.2, 2.0, 0, 0.62, 0.72, 0.6);                                   // haunches
+      sub.capsule([1.05 * s, 2.15 * s, 0], [1.85 * s, 2.4 * s, 0], 0.4 * s, 'brass');   // neck
+      el(1.4, 1.5, 0, 0.5, 0.26, 0.28);                                    // dewlap
+      // the head: one tapered form from skull to muzzle, tilted a little down, with a broad nose
+      { const head = new THREE.LatheGeometry([[0.3, 0], [0.44, 0.2], [0.43, 0.5], [0.34, 0.85], [0.29, 1.05], [0.2, 1.18]].map(([rr, t]) => new THREE.Vector2(rr * s, t * s)), 24);
+        head.rotateZ(-Math.PI / 2); head.rotateZ(-0.22); head.translate(1.85 * s, 2.45 * s, 0); sub.add(head, 'brass'); }
+      el(3.0, 2.15, 0, 0.16, 0.2, 0.24);                                   // the nose
+      for (const sz of [-1, 1]) {
+        el(2.05, 2.6, sz * 0.42, 0.13, 0.09, 0.22, 0, sz * 0.5);          // ears, out to the side
+        tube([[2.0, 2.72, sz * 0.12], [1.98, 2.88, sz * 0.4], [2.12, 3.0, sz * 0.58], [2.4, 2.98, sz * 0.62]], 0.07);   // horns: out, then curving forward
+        el(2.4, 2.98, sz * 0.62, 0.05, 0.05, 0.05);
+        el(2.35, 2.5, sz * 0.36, 0.09, 0.07, 0.05);                        // brow
+      }
+      // legs: thigh/upper, a knee, the shank, a hoof — hind legs angled back
+      for (const [lx, lz, hind] of [[0.95, -0.42, false], [0.95, 0.42, false], [-1.0, -0.42, true], [-1.0, 0.42, true]]) {
+        el(lx, 1.55, lz, 0.28, 0.5, 0.24);                                 // upper leg
+        sub.capsule([lx * s, 1.35 * s, lz * s], [(lx + (hind ? -0.12 : 0.02)) * s, 0.75 * s, lz * s], 0.15 * s, 'brass');
+        el(lx + (hind ? -0.1 : 0.02), 0.78, lz, 0.17, 0.15, 0.16);          // knee / hock
+        sub.capsule([(lx + (hind ? -0.1 : 0.02)) * s, 0.75 * s, lz * s], [(lx + (hind ? -0.04 : 0.05)) * s, 0.2 * s, lz * s], 0.12 * s, 'brass');
+        sub.cyl((lx + (hind ? -0.04 : 0.05)) * s, 0, lz * s, 0.17 * s, 0.22 * s, 'brassDark', 0.15 * s, 10);   // hoof
+      }
+      // tail, with its tuft
+      tube([[-1.7, 2.45, 0], [-1.95, 2.0, 0.05], [-2.0, 1.3, 0.1], [-1.9, 0.8, 0.12]], 0.06, 10);
+      el(-1.9, 0.72, 0.12, 0.11, 0.2, 0.11);
+      ox.add(...sub.bake().children); b.mesh(ox);
+      b.slots.push({ slot: part.glb, node: ox, h: oxH, face: 'x' });
+    }
+  }
+}
+
+/**
+ * One of the ten makanawath (7:27–37): a square brass frame 4 × 4 × 3 — corner posts,
+ * ledges (shalabayam) above and below, and between the ledges PANELS in relief:
+ * arayawath (lions), oxen and karawab (cherubim), with wreaths of hanging work
+ * beneath (7:29); four wheels like chariot wheels, axles cast with the base (7:30–33);
+ * undersetters at the four corners (7:34); a round mouth a cubit and a half across
+ * rising half a cubit from the top, its rim engraved (7:31, 35); and on it the basin,
+ * four cubits across, holding forty baths (7:38).
+ */
+function buildBase(b, part) {
+  const { x, y, z, w, h, wheel, basinR } = part;
+  const g = new THREE.Group(); g.position.set(x, y, z); g.userData.slot = part.glb;
+  const sub = new PieceBuilder(b.M, b.piece);
+  const fy = wheel * 2 * 0.35, fh = h - fy;                       // the frame rides just above the axles
+  const relief = (sh, depth, tx, ty, tz, rotY, scale, mat = 'brass') => {   // an extruded silhouette laid on a panel face
+    const geo = new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: true, bevelThickness: 0.015, bevelSize: 0.015, bevelSegments: 1 });
+    geo.scale(scale, scale, 1); geo.rotateY(rotY); geo.translate(tx, ty, tz); sub.add(geo, mat);
+  };
+  const lionShape = () => { const p = new THREE.Shape(); p.moveTo(0, 0.3); p.quadraticCurveTo(0.3, 0.55, 0.7, 0.42); p.quadraticCurveTo(1.0, 0.5, 1.1, 0.75); p.quadraticCurveTo(1.35, 0.9, 1.4, 0.6); p.quadraticCurveTo(1.45, 0.4, 1.25, 0.32); p.lineTo(1.2, 0); p.lineTo(1.05, 0); p.lineTo(1.0, 0.25); p.lineTo(0.45, 0.25); p.lineTo(0.4, 0); p.lineTo(0.25, 0); p.lineTo(0.2, 0.22); p.quadraticCurveTo(-0.15, 0.4, 0, 0.3); return p; };
+  const oxShape = () => { const p = new THREE.Shape(); p.moveTo(0.05, 0.28); p.quadraticCurveTo(0.2, 0.62, 0.7, 0.58); p.quadraticCurveTo(1.05, 0.62, 1.15, 0.5); p.lineTo(1.3, 0.62); p.lineTo(1.35, 0.5); p.lineTo(1.22, 0.4); p.quadraticCurveTo(1.32, 0.2, 1.15, 0.12); p.lineTo(1.1, 0); p.lineTo(0.98, 0); p.lineTo(0.95, 0.22); p.lineTo(0.35, 0.22); p.lineTo(0.3, 0); p.lineTo(0.18, 0); p.lineTo(0.15, 0.24); p.quadraticCurveTo(0, 0.2, 0.05, 0.28); return p; };
+  const cherubShape = () => { const p = new THREE.Shape(); p.moveTo(0.55, 0); p.lineTo(0.85, 0); p.lineTo(0.8, 0.5); p.quadraticCurveTo(1.25, 0.72, 1.35, 0.35); p.quadraticCurveTo(1.15, 0.55, 0.85, 0.6); p.lineTo(0.85, 0.7); p.absarc(0.7, 0.8, 0.1, -Math.PI / 2, Math.PI * 1.5, false); p.lineTo(0.55, 0.6); p.quadraticCurveTo(0.25, 0.55, 0.05, 0.35); p.quadraticCurveTo(0.15, 0.72, 0.6, 0.5); p.lineTo(0.55, 0); return p; };
+  const figures = [lionShape, oxShape, cherubShape, lionShape];
+  // corner posts and ledges
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) sub.box(sx * (w / 2 - 0.2), fy, sz * (w / 2 - 0.2), 0.4, fh, 0.4, 'brass');
+  for (const sz of [-1, 1]) { sub.box(0, fy, sz * (w / 2 - 0.15), w, 0.3, 0.3, 'brass'); sub.box(0, fy + fh - 0.3, sz * (w / 2 - 0.15), w, 0.3, 0.3, 'brass'); }
+  for (const sx of [-1, 1]) { sub.box(sx * (w / 2 - 0.15), fy, 0, 0.3, 0.3, w, 'brass'); sub.box(sx * (w / 2 - 0.15), fy + fh - 0.3, 0, 0.3, 0.3, w, 'brass'); }
+  // the four panels, each with its figure in relief and a wreath of hanging work beneath (7:29)
+  const faces = [[0, w / 2 - 0.15, 0], [0, -(w / 2 - 0.15), Math.PI], [w / 2 - 0.15, 0, Math.PI / 2], [-(w / 2 - 0.15), 0, -Math.PI / 2]];
+  faces.forEach(([px, pz, ry], i) => {
+    const plate = new THREE.BoxGeometry(w - 0.8, fh - 0.6, 0.12); plate.rotateY(ry); plate.translate(px, fy + fh / 2, pz); sub.add(plate, 'brassDark');
+    const out = new THREE.Vector3(Math.sin(ry), 0, Math.cos(ry)); const sc = 0.95;
+    relief(figures[i](), 0.06, px + out.x * 0.07 - Math.cos(ry) * 0.66 * sc, fy + 0.55, pz + out.z * 0.07 + Math.sin(ry) * 0.66 * sc, ry, sc);
+    for (let k = 0; k < 5; k++) { const t = (k - 2) * 0.55; const ring = new THREE.TorusGeometry(0.16, 0.035, 6, 12, Math.PI); ring.rotateZ(Math.PI); ring.rotateY(ry); ring.translate(px + out.x * 0.08 + Math.cos(ry) * t, fy + 0.42, pz + out.z * 0.08 - Math.sin(ry) * t); sub.add(ring, 'brass'); }
+  });
+  // undersetters: brackets from the four corners up under the round mouth (7:30, 34)
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) sub.capsule([sx * (w / 2 - 0.2), fy + fh - 0.1, sz * (w / 2 - 0.2)], [sx * 0.7, h + 0.4, sz * 0.7], 0.09, 'brass');
+  // axles and wheels like chariot wheels (7:30–33): rim, hub, six spokes
+  for (const sx of [-1, 1]) {
+    const axle = new THREE.CylinderGeometry(0.1, 0.1, w + 0.9, 10); axle.rotateX(Math.PI / 2); axle.translate(sx * (w / 2 - 0.9), wheel, 0); sub.add(axle, 'brassDark');
+    for (const sz of [-1, 1]) {
+      const cz = sz * (w / 2 + 0.25), cx = sx * (w / 2 - 0.9);
+      sub.torus(cx, wheel, cz, wheel - 0.12, 0.12, 'brass');
+      { const hub = new THREE.CylinderGeometry(0.22, 0.22, 0.34, 12); hub.rotateX(Math.PI / 2); hub.translate(cx, wheel, cz); sub.add(hub, 'brassDark'); }
+      for (let i = 0; i < 6; i++) { const geo = new THREE.BoxGeometry(0.08, wheel - 0.2, 0.08); geo.translate(0, (wheel - 0.2) / 2, 0); geo.rotateZ((i / 6) * Math.PI * 2); geo.translate(cx, wheel, cz); sub.add(geo, 'brass'); }
+    }
+  }
+  // the round mouth on top: a cubit and a half across, half a cubit high, its rim engraved (7:31, 35)
+  sub.lathe(0, h, 0, [[0.95, 0], [0.8, 0.15], [0.75, 0.4], [0.82, 0.5]], 'brass', 32);
+  for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; sub.box(Math.cos(a) * 0.8, h + 0.1, Math.sin(a) * 0.8, 0.08, 0.28, 0.04, 'brassDark'); }
+  // the basin, four cubits across, on the mouth (7:38)
+  sub.lathe(0, h + 0.5, 0, [[0.6, 0], [1.3, 0.35], [basinR * 0.92, 1.0], [basinR, 1.5], [basinR - 0.12, 1.5], [basinR * 0.88, 1.0], [1.2, 0.5], [0.5, 0.3], [0, 0.3]], 'brass', 48);
+  sub.torus(0, h + 2.0, 0, basinR - 0.02, 0.06, 'brassDark', Math.PI / 2);
+  g.add(...sub.bake().children);
+  const water = new THREE.Mesh(new THREE.CircleGeometry(basinR - 0.14, 40), b.M.water); water.rotation.x = -Math.PI / 2; water.position.set(0, h + 0.5 + 1.38, 0); g.add(water);
+  b.mesh(g);
+  b.slots.push({ slot: part.glb, node: g, h, face: 'x', keep: [water] });
+}
+
+/**
+ * Yakayan / Baiz: a brass shaft 18 high, then the capital of 7:16–20 — the bowl
+ * (galath) swelling at its belly (batan), a real CHECKER NET of chain laid over it
+ * (two families of helical cords crossing in diamonds, 7:17), SEVEN WREATHS of
+ * chain work, TWO ROWS OF A HUNDRED pomegranates each with its crown, and above
+ * them the LILY WORK, four cubits — eight petals opening from a calyx (7:19, 22).
+ */
+function buildPillar(b, part) {
+  const { x, y, z, r, h, capH, lilyH } = part;
+  b.lathe(x, y, z, [[r * 1.3, 0], [r * 1.3, 0.25], [r * 1.12, 0.5], [r * 1.05, 0.7], [r, 0.9]], 'brass', 48);        // a base ring (assumed)
+  b.cyl(x, y + 0.9, z, r, h - 0.9, 'brass', r, 64);                                                                     // the shaft, 18 high
+  b.torus(x, y + h - 0.15, z, r * 1.02, 0.09, 'brassDark', Math.PI / 2);                                              // an astragal under the capital
+  const cap = new THREE.Group(); cap.position.set(x, y + h, z); cap.userData.slot = part.glb;
+  const sub = new PieceBuilder(b.M, b.piece);
+  // the bowl: its radius as a function of height, shared by everything laid on it
+  const bowlR = (t) => r * (1.0 + 0.48 * Math.sin(Math.PI * Math.min(1, t / capH)) * (t < capH * 0.4 ? 1 : 0.92) - 0.06 * (t / capH));   // belly low, easing in to the top
+  const prof = []; for (let i = 0; i <= 24; i++) { const t = (i / 24) * capH; prof.push([bowlR(t), t]); }
+  sub.lathe(0, 0, 0, prof, 'brass', 72);
+  // the net: 18 cords winding one way and 18 the other, each a tube on the bowl's skin
+  for (const dirn of [1, -1]) for (let i = 0; i < 18; i++) {
+    const pts = []; const a0 = (i / 18) * Math.PI * 2;
+    for (let k = 0; k <= 24; k++) { const t = 0.25 + (k / 24) * (capH - 0.6); const a = a0 + dirn * (k / 24) * Math.PI * 0.9; const rr = bowlR(t) + 0.07; pts.push(new THREE.Vector3(Math.cos(a) * rr, t, Math.sin(a) * rr)); }
+    sub.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, 0.05, 6, false), 'brassDark');
+  }
+  // seven wreaths of chain work: a torus at each of seven heights, beaded to read as chain
+  for (let i = 0; i < 7; i++) {
+    const t = 0.35 + i * ((capH - 0.7) / 6), rr = bowlR(t) + 0.1;
+    sub.torus(0, t, 0, rr, 0.055, 'brassDark', Math.PI / 2);
+    const beads = new THREE.SphereGeometry(0.075, 6, 5), n = Math.round(rr * 2 * Math.PI / 0.28);
+    for (let k = 0; k < n; k++) { const a = (k / n) * Math.PI * 2; const g2 = beads.clone(); g2.translate(Math.cos(a) * rr, t, Math.sin(a) * rr); sub.add(g2, 'brass'); }
+  }
+  // two rows of a hundred pomegranates (7:18, 20, 42): a globe with a crowned calyx, hung out from the net
+  const pomGeo = new THREE.SphereGeometry(0.2, 12, 9); pomGeo.scale(1, 1.12, 1);
+  const crownGeo = new THREE.CylinderGeometry(0.1, 0.06, 0.1, 6, 1, true);
+  const stemGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.22, 5);
+  for (const [t, off] of [[capH * 0.34, 0], [capH * 0.58, Math.PI / 100]]) {
+    const rr = bowlR(t) + 0.34;
+    for (let i = 0; i < 100; i++) {
+      const a = (i / 100) * Math.PI * 2 + off, cx = Math.cos(a), cz = Math.sin(a);
+      const g2 = pomGeo.clone(); g2.translate(cx * rr, t - 0.1, cz * rr); sub.add(g2, 'brass');
+      const c2 = crownGeo.clone(); c2.translate(cx * rr, t + 0.17, cz * rr); sub.add(c2, 'brassDark');
+      const st = stemGeo.clone(); st.rotateZ(Math.PI / 2); st.rotateY(-a); st.translate(cx * (rr - 0.2), t + 0.02, cz * (rr - 0.2)); sub.add(st, 'brassDark');
+    }
+  }
+  // the lily work: a calyx, then eight petals opening outward over four cubits, with a ridge down each
+  sub.lathe(0, capH - 0.1, 0, [[bowlR(capH) * 0.95, 0], [r * 0.85, 0.4], [r * 0.8, 0.9], [r * 0.95, 1.2]], 'brass', 48);
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2;
+    const pts = []; for (let k = 0; k <= 8; k++) { const u = k / 8; const rr = r * (0.8 + 1.25 * Math.pow(u, 1.6)); pts.push(new THREE.Vector3(Math.cos(a) * rr, capH + 0.9 + u * (lilyH - 0.9), Math.sin(a) * rr)); }
+    const petal = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 16, 1, 8, false);
+    const p = petal.attributes.position, v = new THREE.Vector3(), c = new THREE.Vector3(); const curve = new THREE.CatmullRomCurve3(pts);
+    for (let j = 0; j < p.count; j++) {                        // flatten the tube into a blade: wide across, thin radially, tapering at the tip
+      v.fromBufferAttribute(p, j); const u = Math.floor(j / 9) / 16; curve.getPointAt(Math.min(1, u), c);
+      const dx = v.x - c.x, dy = v.y - c.y, dz = v.z - c.z; const radial = dx * Math.cos(a) + dz * Math.sin(a), tang = -dx * Math.sin(a) + dz * Math.cos(a);
+      const wdt = (0.55 + 0.35 * Math.sin(u * Math.PI)) * r * 0.9, thk = 0.09 * (1 - u * 0.5) + 0.05 * Math.cos(tang * 4);
+      p.setXYZ(j, c.x + Math.cos(a) * radial * thk - Math.sin(a) * tang * wdt, c.y + dy * 0.12, c.z + Math.sin(a) * radial * thk + Math.cos(a) * tang * wdt);
+    }
+    petal.computeVertexNormals(); sub.add(petal, 'brass');
+    const rib = []; for (let k = 0; k <= 8; k++) { const u = k / 8; const rr = r * (0.8 + 1.25 * Math.pow(u, 1.6)) - 0.06; rib.push(new THREE.Vector3(Math.cos(a) * rr, capH + 0.9 + u * (lilyH - 0.9) + 0.03, Math.sin(a) * rr)); }
+    sub.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(rib), 12, 0.05, 6, false), 'brassDark');
+  }
+  // the pistil in the middle
+  sub.lathe(0, capH + 0.9, 0, [[0.4, 0], [0.34, 1.2], [0.42, 1.9], [0.3, 2.3], [0, 2.4]], 'brass', 24);
+  cap.add(...sub.bake().children);
+  b.mesh(cap);
+  b.slots.push({ slot: part.glb, node: cap, h: capH + lilyH, face: 'x', keep: [] });
+}
+
+/**
+ * A lampstand "according to the mashapat (ordinance)" (2 Chr 4:7) — Exodus 25:31–40: a
+ * base, a shaft, six branches out of its sides (three each way) rising to one
+ * height; on each branch three cups like almond blossoms with a bud and a flower;
+ * on the shaft four; a lamp on each of the seven. Hammered gold. `h` is its height.
+ */
+function buildLampstand(b, part) {
+  const { x, y, z, h } = part, s = h / 3;
+  const g = new THREE.Group(); g.position.set(x, y, z); g.userData.slot = part.glb;
+  const sub = new PieceBuilder(b.M, b.piece);
+  const mat = 'gold';
+  // the almond cup (a little flaring calyx), the bud (a knop) and the flower (a ring of petals) as one ornament
+  const ornament = (px, py, pz, k = 1) => {
+    sub.lathe(px, py, pz, [[0.05 * s * k, 0], [0.13 * s * k, 0.09 * s * k], [0.11 * s * k, 0.14 * s * k], [0.04 * s * k, 0.16 * s * k]], mat, 16);   // cup
+    sub.sphere(px, py + 0.2 * s * k, pz, 0.075 * s * k, mat, 12);                                                                              // bud
+    for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2; const pt = new THREE.SphereGeometry(1, 8, 6); pt.scale(0.06 * s * k, 0.025 * s * k, 0.03 * s * k); pt.rotateY(-a); pt.translate(px + Math.cos(a) * 0.09 * s * k, py + 0.3 * s * k, pz + Math.sin(a) * 0.09 * s * k); sub.add(pt, mat); }   // flower
+  };
+  // base: a stepped foot on three low feet
+  sub.lathe(0, 0, 0, [[0.6 * s, 0], [0.62 * s, 0.06 * s], [0.5 * s, 0.14 * s], [0.34 * s, 0.26 * s], [0.16 * s, 0.4 * s], [0.09 * s, 0.5 * s]], mat, 32);
+  for (let i = 0; i < 3; i++) { const a = (i / 3) * Math.PI * 2 + Math.PI / 6; sub.sphere(Math.cos(a) * 0.5 * s, 0.04 * s, Math.sin(a) * 0.5 * s, 0.07 * s, mat, 10); }
+  // the shaft, with its four ornaments (one under each pair of branches, one at the top)
+  sub.cyl(0, 0.45 * s, 0, 0.065 * s, 2.2 * s, mat, 0.075 * s, 12);
+  const branchY = [1.15, 1.5, 1.85].map((v) => v * s), TOP = 2.72 * s;
+  for (let i = 0; i < 3; i++) ornament(0, branchY[i] - 0.28 * s, 0, 0.85);
+  ornament(0, 2.28 * s, 0, 0.9);
+  // six branches: each a quarter-round out of the shaft turning up to the common height, three ornaments along it
+  for (let i = 0; i < 3; i++) {
+    const R = (0.42 + i * 0.36) * s;             // outer branches spring lower and reach farther
+    for (const sx of [-1, 1]) {
+      const pts = []; for (let k = 0; k <= 10; k++) { const t = (k / 10) * Math.PI / 2; pts.push(new THREE.Vector3(sx * R * Math.sin(t), branchY[2 - i] + (TOP - branchY[2 - i]) * (1 - Math.cos(t)), 0)); }
+      const curve = new THREE.CatmullRomCurve3(pts);
+      sub.add(new THREE.TubeGeometry(curve, 20, 0.05 * s, 8, false), mat);
+      for (let k = 1; k <= 3; k++) { const q = curve.getPointAt(0.3 + k * 0.2); ornament(q.x, q.y - 0.14 * s, q.z, 0.62); }
+    }
+  }
+  // seven lamps: a small bowl with a lip and a spout toward the shaft's front, a flame in each
+  const lampAt = (px) => {
+    sub.lathe(px, TOP - 0.02 * s, 0, [[0.03 * s, 0], [0.13 * s, 0.05 * s], [0.15 * s, 0.11 * s], [0.12 * s, 0.13 * s], [0.06 * s, 0.09 * s], [0, 0.09 * s]], mat, 16);
+    const spout = new THREE.SphereGeometry(1, 8, 6); spout.scale(0.05 * s, 0.03 * s, 0.09 * s); spout.translate(px, TOP + 0.09 * s, 0.14 * s); sub.add(spout, mat);
+    const f = new THREE.Mesh(new THREE.ConeGeometry(0.035 * s, 0.13 * s, 8), b.M.flame); f.position.set(px, TOP + 0.18 * s, 0.14 * s); g.add(f);
+  };
+  for (let i = 0; i < 3; i++) for (const sx of [-1, 1]) lampAt(sx * (0.42 + i * 0.36) * s);
+  lampAt(0);
+  g.add(...sub.bake().children); b.mesh(g);
+  const light = new THREE.PointLight(0xffc880, 0, 12, 2); light.position.set(0, TOP + 0.3 * s, 0); g.add(light); g.userData.lamp = light;
+  b.slots.push({ slot: part.glb, node: g, h, face: 'x' });
+}
+
+/**
+ * A table of the show bread — Exodus 25:23–30: 2 × 1, 1½ high, a crown of gold round
+ * its top, a border a handbreadth wide with its own crown, four legs with rings at the
+ * border's corners for the poles, and on it the twelve loaves in two rows of six
+ * (Leviticus 24:6) with the dishes, spoons, jars and bowls of the ordinance.
+ */
+function buildTable(b, part) {
+  const { x, y, z } = part; const g = new THREE.Group(); g.position.set(x, y, z); g.userData.slot = part.glb;
+  const sub = new PieceBuilder(b.M, b.piece);
+  sub.box(0, 1.36, 0, 2, 0.14, 1, 'gold');                                                                          // the top
+  for (const sz of [-1, 1]) sub.box(0, 1.5, sz * 0.475, 2.04, 0.1, 0.05, 'gold'); for (const sx of [-1, 1]) sub.box(sx * 0.995, 1.5, 0, 0.05, 0.1, 1.04, 'gold');   // its crown (a raised rim)
+  for (let i = 0; i < 28; i++) { const t = i / 28, per = 6; const u = (t * per) % 6; let px, pz;                       // beading on the crown
+    if (u < 2) { px = -1 + u; pz = -0.475; } else if (u < 3) { px = 1; pz = -0.475 + (u - 2) * 0.95; } else if (u < 5) { px = 1 - (u - 3); pz = 0.475; } else { px = -1; pz = 0.475 - (u - 5) * 0.95; }
+    sub.sphere(px, 1.58, pz, 0.035, 'gold', 8); }
+  sub.box(0, 0.95, 0, 2, 0.16, 1, 'gold');                                                                          // the border, a handbreadth, below the top
+  for (const sz of [-1, 1]) sub.box(0, 1.11, sz * 0.475, 2.02, 0.05, 0.04, 'gold'); for (const sx of [-1, 1]) sub.box(sx * 0.985, 1.11, 0, 0.04, 0.05, 1.02, 'gold');   // the border's crown
+  for (const sx of [-0.9, 0.9]) for (const sz of [-0.42, 0.42]) {
+    sub.lathe(sx, 0, sz, [[0.09, 0], [0.07, 0.1], [0.06, 0.9], [0.075, 1.0], [0.06, 1.36]], 'gold', 12);              // legs, turned
+    sub.sphere(sx, 0.45, sz, 0.075, 'gold', 10);                                                                     // a knop on each
+    sub.torus(sx + Math.sign(sx) * 0.08, 1.0, sz, 0.07, 0.02, 'gold', 0, Math.PI / 2);                                // a ring for the poles at the border
+  }
+  for (const sz of [-0.24, 0.24]) for (let i = 0; i < 6; i++) { const lg = new THREE.SphereGeometry(1, 10, 6); lg.scale(0.13, 0.05, 0.19); lg.translate(-0.68 + i * 0.27, 1.49, sz); sub.add(lg, 'ivory'); }   // twelve loaves, two rows of six
+  sub.lathe(0.86, 1.43, -0.32, [[0.02, 0], [0.09, 0.03], [0.1, 0.06], [0.04, 0.05], [0, 0.05]], 'gold', 12);          // a dish
+  sub.lathe(0.86, 1.43, 0.32, [[0.05, 0], [0.06, 0.16], [0.045, 0.2], [0.03, 0.26], [0, 0.26]], 'gold', 12);          // a jar
+  sub.lathe(-0.86, 1.43, 0.32, [[0.06, 0], [0.09, 0.05], [0.07, 0.08], [0, 0.08]], 'gold', 12);                        // a bowl
+  { const sp = new THREE.CylinderGeometry(0.01, 0.01, 0.2, 6); sp.rotateZ(Math.PI / 2); sp.translate(-0.86, 1.45, -0.32); sub.add(sp, 'gold'); sub.sphere(-0.95, 1.45, -0.32, 0.03, 'gold', 8); }   // a spoon
+  g.add(...sub.bake().children); b.mesh(g);
+  b.slots.push({ slot: part.glb, node: g, h: 1.6, face: 'x' });
+}
+
+/**
+ * The ivory throne of 1 Kings 10:18–20 — shan (ivory) overlaid with gold: six steps up
+ * to the seat, a round back, arm-rests ("yadath (stays)") with a lion standing beside
+ * each, and twelve lions on the six steps, one at each end of each step. The lions are
+ * a sculpt slot (temple-lion, one file cloned fourteen times); the throne itself is
+ * built here. Faces −z in its own frame; the porch turns it to look north, to the court.
+ */
+function buildThrone(b, part) {
+  const { x, y, z } = part; const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = part.rot ?? Math.PI / 2; g.userData.part = 'throne';
+  const sub = new PieceBuilder(b.M, b.piece);
+  const STEP = 0.45, RUN = 0.7, W0 = 7, X0 = -3.6;                  // six steps; each tread runs from its riser back under the next
+  for (let i = 0; i < 6; i++) { const w = W0 - i * 0.45, x0 = X0 + i * RUN, x1 = X0 + 6 * RUN + 1.2; sub.box((x0 + x1) / 2, i * STEP, 0, x1 - x0, STEP, w, 'ivory'); sub.box(x0 + 0.06, (i + 1) * STEP - 0.04, 0, 0.12, 0.05, w + 0.04, 'gold'); }   // a gold nosing on each
+  const TOP = 6 * STEP, SX = X0 + 6 * RUN + 0.3;                     // the seat stands on the top tread
+  sub.box(SX + 0.5, TOP, 0, 2.2, 0.45, 2.6, 'gold');                                                // the seat
+  sub.box(SX - 1.15, TOP, 0, 1.0, 0.32, 1.6, 'gold'); sub.box(SX - 1.15, TOP + 0.32, 0, 0.8, 0.08, 1.4, 'goldDim');   // the footstool of gold, fastened to the throne (2 Chronicles 9:18)
+  sub.box(SX + 0.5, TOP - 0.02, 0, 2.3, 0.08, 2.7, 'ivory');
+  for (const sz of [-1, 1]) {                                                                        // the stays (arm-rests): a solid arm with a rounded end and a gold cap
+    sub.box(SX + 0.55, TOP + 0.45, sz * 1.2, 1.9, 0.62, 0.28, 'ivory');
+    sub.cyl(SX - 0.4, TOP + 0.45, sz * 1.2, 0.14, 0.62, 'ivory', 0.14, 12);
+    sub.box(SX + 0.55, TOP + 1.07, sz * 1.2, 1.95, 0.1, 0.34, 'gold'); sub.sphere(SX - 0.4, TOP + 1.12, sz * 1.2, 0.17, 'gold', 12);
+  }
+  sub.box(SX + 1.45, TOP + 0.45, 0, 0.32, 1.9, 2.68, 'ivory');                                       // the back
+  sub.box(SX + 1.62, TOP + 0.45, 0, 0.06, 1.9, 2.68, 'gold');
+  { const back = new THREE.CylinderGeometry(1.34, 1.34, 0.32, 40, 1, false, 0, Math.PI); back.rotateZ(Math.PI / 2); back.translate(SX + 1.45, TOP + 2.35, 0); sub.add(back, 'ivory'); }   // "the top of the throne was round behind": a half-disc on the back's top edge, its arc upward, its thickness along x
+  { const rim = new THREE.TorusGeometry(1.3, 0.05, 8, 40, Math.PI); rim.rotateY(-Math.PI / 2); rim.translate(SX + 1.45, TOP + 2.35, 0); sub.add(rim, 'gold'); }
+  for (let i = 0; i < 3; i++) sub.torus(SX + 1.28, TOP + 1.0 + i * 0.42, 0, 0.8 - i * 0.14, 0.03, 'gold', 0, Math.PI / 2);   // rings on the back
+  g.add(...sub.bake().children);
+  // fourteen lions: two by the stays, twelve on the steps (one at each end of each step), all facing forward (−x here, the front of the steps)
+  const lion = (px, py, pz, h) => {
+    const l = new THREE.Group(); l.position.set(px, py, pz); l.rotation.y = Math.PI;            // its +x front turned to face down the steps (−x)
+    const sub2 = new PieceBuilder(b.M, b.piece); const k = h / 2.2;
+    sub2.capsule([-0.4 * k, 0.9 * k, 0], [0.4 * k, 0.95 * k, 0], 0.42 * k, 'gold'); sub2.sphere(0.75 * k, 1.5 * k, 0, 0.42 * k, 'gold', 12);   // a stand-in until the sculpt loads
+    for (const dx of [-0.35, 0.35]) for (const dz of [-0.22, 0.22]) sub2.cyl(dx * k, 0, dz * k, 0.1 * k, 0.9 * k, 'gold', 0.1 * k, 8);
+    l.add(...sub2.bake().children); g.add(l);
+    b.slots.push({ slot: 'temple-lion', node: l, h, face: 'x', turn: Math.PI, mat: 'gold' });   // the sculpted lion faces the other way from the stand-in: turned to look down the steps; gold, as the throne is overlaid (10:18)
+  };
+  for (const sz of [-1, 1]) lion(SX + 0.4, TOP, sz * 1.95, 2.0);
+  for (let i = 0; i < 6; i++) { const w = W0 - i * 0.45; for (const sz of [-1, 1]) lion(X0 + i * RUN + 0.3, (i + 1) * STEP, sz * (w / 2 - 0.5), 1.0); }
+  b.mesh(g);
+}
+
+/** A faceless figure at scale s (height 10·s), facing +x. Poses: stand, spread (hands to heaven), kneel, carry (a pole on the shoulder), trumpet. */
+export function personFigure(sub, s, robe, pose, skin = 'skin5', hair = 'hair1') {
+  const kneel = pose === 'kneel';
+  const base = kneel ? 0 : 0, top = kneel ? 3.1 : 5.1;                                 // kneeling: the robe pools at the knees, the torso sits lower
+  const skirt = new THREE.LatheGeometry((kneel ? [[1.9, 0], [1.8, 0.4], [1.3, 1.6], [1.1, 3.1]] : [[1.5, 0], [1.45, 0.2], [1.25, 1.4], [1.1, 3.2], [1.02, 5.1]]).map(([r, dy]) => new THREE.Vector2(r * s, (base + dy) * s)), 40);
+  sub.add(skirt, robe);
+  const y0 = top;                                                                        // the belt line
+  sub.lathe(0, y0 * s, 0, [[1.02 * s, 0], [0.98 * s, 0.5 * s], [1.05 * s, 1.5 * s], [1.15 * s, 2.0 * s], [0.85 * s, 2.35 * s], [0.4 * s, 2.5 * s], [0, 2.52 * s]], robe, 32);   // the bodice
+  sub.torus(0, (y0 + 0.05) * s, 0, 1.03 * s, 0.09 * s, 'goldDim', Math.PI / 2);        // a sash
+  const sh = y0 + 2.2, neck = sh + 0.45, head = sh + 1.65;
+  sub.cyl(0, neck * s, 0, 0.3 * s, 0.5 * s, skin, 0.32 * s, 14);
+  sub.sphere(0, head * s, 0, 0.62 * s, skin, 18);
+  sub.lathe(0, (head - 0.05) * s, 0, [[0.64 * s, 0], [0.7 * s, 0.3 * s], [0.62 * s, 0.65 * s], [0.35 * s, 0.9 * s], [0, 0.95 * s]], hair, 24);   // hair, thick over the crown
+  for (let i = 0; i < 6; i++) { const a = Math.PI * 0.55 + (i / 5) * Math.PI * 0.9; sub.capsule([Math.cos(a) * 0.62 * s, (head - 0.1) * s, Math.sin(a) * 0.62 * s], [Math.cos(a) * 0.7 * s, (head - 0.9) * s, Math.sin(a) * 0.7 * s], 0.11 * s, hair); }   // locks down the back and sides
+  if (robe === 'linen') sub.torus(0, (head + 0.28) * s, 0, 0.68 * s, 0.07 * s, robe, Math.PI / 2);   // the priests' linen band
+  // arms: shoulder → elbow → hand, per pose (z = ±side)
+  const A = {
+    stand:   [[0.1, sh, 1.05], [0.3, sh - 1.6, 1.15], [0.5, sh - 3.0, 1.1]],
+    spread:  [[0.1, sh, 1.05], [0.6, sh + 0.9, 1.9], [0.9, sh + 2.6, 2.4]],
+    kneel:   [[0.1, sh, 1.05], [0.6, sh + 0.9, 1.7], [0.8, sh + 2.6, 1.9]],
+    carry:   [[0.1, sh, 1.05], [1.0, sh - 0.9, 1.15], [1.7, sh + 0.5, 1.05]],
+    trumpet: [[0.1, sh, 1.05], [0.9, sh - 0.6, 1.1], [1.3, sh + 1.0, 0.5]],
+  }[pose] || [[0.1, sh, 1.05], [0.3, sh - 1.6, 1.15], [0.5, sh - 3.0, 1.1]];
+  for (const sz of [-1, 1]) {
+    const P = A.map(([x, y, z]) => [x * s, y * s, sz * z * s]);
+    sub.sphere(P[0][0], P[0][1], P[0][2], 0.36 * s, robe, 12);
+    sub.capsule(P[0], P[1], 0.27 * s, robe); sub.capsule(P[1], P[2], 0.22 * s, skin); sub.sphere(P[2][0], P[2][1], P[2][2], 0.24 * s, skin, 10);
+    if (pose === 'trumpet' && sz > 0) { const t = new THREE.CylinderGeometry(0.06 * s, 0.34 * s, 3.2 * s, 12); t.rotateZ(-Math.PI / 2); t.rotateY(0.15); t.translate((1.3 + 1.7) * s, (sh + 1.05) * s, 0.35 * s); sub.add(t, 'brass'); }   // the chatzatzarah (trumpet), raised to the mouth
+  }
+}
+/** A piece's Group from its parts; `ground` is the model's court level (where people and gate hinges stand). */
+export function buildPiece(M, piece, ground = -4, xrayGroups = XRAY_GROUPS) {
+  const b = new PieceBuilder(M, piece, xrayGroups);
+  for (const part of piece.parts) {
+    b.ideal = !!part.ideal;   // sketched in (see idealOf)
+    switch (part.kind) {
+      case 'box': buildBox(b, part); break;
+      case 'cyl': b.cyl(part.x, part.y, part.z, part.r, part.h, part.mat || piece.material, part.r2 || part.r); break;
+      case 'lathe': b.lathe(part.x, part.y, part.z, part.profile, part.mat || piece.material); break;
+      case 'ramp': buildRamp(b, part); break;
+      case 'cherub': buildCherub(b, part); break;
+      case 'ark': buildArk(b, part); break;
+      case 'doors': buildDoors(b, part); break;
+      case 'veil': buildVeil(b, part); break;
+      case 'sea': buildSea(b, part); break;
+      case 'base': buildBase(b, part); break;
+      case 'pillar': buildPillar(b, part); break;
+      case 'lampstand': buildLampstand(b, part); break;
+      case 'table': buildTable(b, part); break;
+      case 'throne': buildThrone(b, part); break;
+      case 'person': { const g = new THREE.Group(); g.position.set(part.x, part.y ?? ground, part.z); g.rotation.y = part.yaw || 0; const sub = new PieceBuilder(b.M, b.piece); personFigure(sub, part.s || 0.35, part.robe || 'linen', part.pose || 'stand', part.skin || 'skin4', part.hair || 'hair1'); if (part.sword) { sub.box(0.35, 1.2, 0.95, 0.16, 2.6, 0.08, 'brass'); sub.box(0.35, 3.7, 0.95, 0.5, 0.12, 0.12, 'goldDim'); } g.add(...sub.bake().children); b.mesh(g); break; }
+      default: break;
+    }
+  }
+  // gates in the court walls: cedar doors overlaid with brass (2 Chronicles 4:9), open
+  // each leaf hangs on a hinge at its own side of the opening (a group at the jamb, the leaf swung from it), so it can be shut
+  // across the opening or swung open — the walker opens and shuts them (see gateSets)
+  (piece.gates || []).forEach((gate, gi) => {
+    if (gate.leaves === false) return;   // an idealized doorway brings its own sketched leaves (temple.js doorFrame)
+    for (const s of [-1, 1]) {
+      const hinge = new THREE.Group(); const along = gate.axis === 'x';
+      hinge.position.set(gate.x + (along ? s * gate.w / 2 : 0), gate.y ?? ground, gate.z + (along ? 0 : s * gate.w / 2));   // a gate may stand on a raised floor (Yachazaqaal's, on their steps)
+      const leaf = new THREE.Mesh(new THREE.BoxGeometry(along ? gate.w / 2 : 0.4, 6, along ? 0.4 : gate.w / 2), M.brassDark);
+      leaf.position.set(along ? -s * gate.w / 4 : 0, 3, along ? 0 : -s * gate.w / 4); leaf.castShadow = true;
+      leaf.userData.gate = `${piece.id}:${gi}`; hinge.add(leaf);
+      hinge.userData.gateLeaf = { key: `${piece.id}:${gi}`, swing: along ? -s * 1.2 : s * 1.2 };
+      hinge.rotation.y = hinge.userData.gateLeaf.swing;   // open, until the walker shuts it
+      b.mesh(hinge);
+    }
+  });
+  const g = b.bake();
+  g.userData.slots = b.slots;
+  // The piece grows from its own base in the BUILD story: hoist the group to its
+  // lowest point and shift the children down so scale.y rises from that base.
+  const box = new THREE.Box3().setFromObject(g);
+  const base = box.isEmpty() ? 0 : box.min.y;
+  g.position.y = base; g.children.forEach((c) => { c.position.y -= base; });
+  g.userData.base = base;
+  return g;
+}
+
+/** Cut the court walls at their gates: done by rebuilding the wall boxes with a gap where a gate stands. */
+export function cutGates(piece) {
+  if (!piece.gates) return piece;
+  const parts = [];
+  for (const p of piece.parts) {
+    let cut = false;
+    for (const gate of piece.gates) {
+      if (p.kind !== 'box' || ['ground', 'roof', 'pavement', 'floor', 'ceiling', 'lining', 'parapet', 'beam', 'threshold'].includes(p.role) || p.ideal) continue;   // only the walls are cut; a roof spans the gate, the sketched frame stands in it
+      if (gate.axis === 'z' && Math.abs(p.x - gate.x) < p.w && p.d > gate.w * 2) {   // an east/west wall: the gap runs along z
+        const d1 = (gate.z - gate.w / 2) - (p.z - p.d / 2), d2 = (p.z + p.d / 2) - (gate.z + gate.w / 2);
+        parts.push({ ...p, z: p.z - p.d / 2 + d1 / 2, d: d1 }, { ...p, z: p.z + p.d / 2 - d2 / 2, d: d2 });
+        if (p.h > 6) parts.push({ ...p, y: p.y + 6, h: p.h - 6, z: gate.z, d: gate.w, courses: 0, windows: 0 });   // a lintel over the gate, only where the wall is tall enough to carry one
+        cut = true; break;
+      }
+      if (gate.axis === 'x' && Math.abs(p.z - gate.z) < p.d && p.w > gate.w * 2) {
+        const w1 = (gate.x - gate.w / 2) - (p.x - p.w / 2), w2 = (p.x + p.w / 2) - (gate.x + gate.w / 2);
+        parts.push({ ...p, x: p.x - p.w / 2 + w1 / 2, w: w1 }, { ...p, x: p.x + p.w / 2 - w2 / 2, w: w2 });
+        if (p.h > 6) parts.push({ ...p, y: p.y + 6, h: p.h - 6, x: gate.x, w: gate.w, courses: 0, windows: 0 });
+        cut = true; break;
+      }
+    }
+    if (!cut) parts.push(p);
+  }
+  return { ...piece, parts };
+}
+
+// ── Sculpted parts (Meshy) ───────────────────────────────────────────────────
+// A GLB named for its slot replaces the procedural stand-in of every part that
+// declares that slot: fitted to the slot's height, stood on y = 0, centred on
+// x/z, turned to face +x (the sculpt should face +z, Meshy's default front).
+const glbCache = new Map();
+export async function loadGlb(name) {
+  if (!glbCache.has(name)) {
+    const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);
+    glbCache.set(name, loader.loadAsync(GLB_URL(name)).then((gltf) => {
+      const root = gltf.scene; root.updateMatrixWorld(true);
+      const box = new THREE.Box3().setFromObject(root);
+      if (box.isEmpty()) return null;
+      const size = box.getSize(new THREE.Vector3()), centre = box.getCenter(new THREE.Vector3());
+      const group = new THREE.Group();
+      root.traverse((m) => {
+        if (!m.isMesh) return;
+        const mesh = new THREE.Mesh(m.geometry, m.material);
+        if (m.material) { m.material.envMapIntensity = 0.6; }
+        mesh.applyMatrix4(m.matrixWorld); mesh.castShadow = true; mesh.receiveShadow = true; group.add(mesh);
+      });
+      group.children.forEach((m) => { m.position.sub(new THREE.Vector3(centre.x, box.min.y, centre.z)); });
+      group.userData.size = size;
+      return group;
+    }).catch((e) => { if (e?.message && !/404/.test(e.message)) console.warn(`[temple] sculpted ${name} not loaded:`, e.message || e); return null; }));
+  }
+  return glbCache.get(name);
+}
+export function fitSlot(proto, slot) {
+  const g = proto.clone(true);
+  const k = slot.h / (proto.userData.size.y || 1);
+  const wrap = new THREE.Group();
+  g.scale.setScalar(k); g.rotation.y = -Math.PI / 2 + (slot.turn || 0);   // +z front → +x (a slot may turn its sculpt further: the lion's front came out reversed)
+  if (slot.mirror) { wrap.scale.z = -1; g.traverse((o) => { if (o.isMesh && o.material) o.material.side = THREE.DoubleSide; }); }
+  wrap.add(g);
+  return wrap;
+}
+
+
+// ── Export: any piece (or one sculpt slot of it) as a GLB — the procedural shape as
+// a BASELINE to detail elsewhere (Meshy's texture pass on an uploaded model, or
+// Blender). ?export=karawab downloads the whole piece; ?export=karawab:slot the first
+// sculpt-slot node of it (one cherub, one ox, one capital…), unmirrored, stood on
+// y = 0 — exactly the frame the slot's GLB is fitted back into, so a detailed copy
+// drops in with no re-alignment. Units are cubits.
+export function exportGlb(obj, name, toFileFrame = false) {
+  const exporter = new GLTFExporter();
+  const clone = obj.clone(true);
+  clone.position.set(0, 0, 0); clone.rotation.set(0, 0, 0); clone.scale.set(1, 1, 1);
+  if (toFileFrame) clone.rotation.y = -Math.PI / 2;   // the slot's file frame faces +z (fitSlot turns it back to +x), so a detailed copy round-trips exactly
+  clone.traverse((o) => { if (o.isLight || o.isSprite) o.removeFromParent?.(); });
+  clone.updateMatrixWorld(true);
+  exporter.parse(clone, (buf) => {
+    const blob = new Blob([buf], { type: 'model/gltf-binary' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${name}.glb`; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  }, (e) => console.warn('[temple] export failed', e), { binary: true, onlyVisible: false });
+}
