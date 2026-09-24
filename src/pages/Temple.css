@@ -113,3 +113,7 @@
 .tp-autobar { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 5; padding: 6px 12px; border-radius: 999px; background: rgba(20, 16, 10, 0.8); border: 1px solid rgba(255, 208, 98, 0.45); color: #f3e3b8; font-size: 12.5px; white-space: nowrap; pointer-events: none; }
 .tp-autobar b { color: #ffd97a; }
 @media (max-width: 720px) { .st-gl canvas.tp-minimap.tp-map-big { width: min(94%, 60vh) !important; height: min(94%, 60vh) !important; } }
+.tp-mapbar { position: absolute; z-index: 7; top: 12px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; padding: 5px 10px; border-radius: 999px; background: rgba(20, 16, 10, 0.9); border: 1px solid rgba(255, 208, 98, 0.5); color: #f3e3b8; font-size: 12.5px; white-space: nowrap; }
+.tp-mapbar span { font-weight: 700; color: #ffd97a; }
+.tp-mapbar button { font: inherit; font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid rgba(255, 208, 98, 0.5); background: transparent; color: #ffd97a; cursor: pointer; }
+.tp-goto[hidden], .tp-autobar[hidden], .tp-mapbar[hidden] { display: none !important; }
