@@ -89,12 +89,12 @@ export function makeKit(Y0) {
   function wallX(z, x0, x1, h, door = null, dw = 3, y = Y0) {
     const W = (cx, w) => ideal(box(cx, y, z, w, h, 1, { mat: 'plaster', role: 'partition' }));
     if (door == null) return [W((x0 + x1) / 2, x1 - x0)];
-    return [W((x0 + door - dw / 2) / 2, door - dw / 2 - x0), W((door + dw / 2 + x1) / 2, x1 - door - dw / 2), ideal(box(door, y + 6, z, dw, h - 6, 1, { mat: 'plaster', role: 'partition' }))];
+    return [W((x0 + door - dw / 2) / 2, door - dw / 2 - x0), W((door + dw / 2 + x1) / 2, x1 - door - dw / 2), ideal(box(door, y + 6, z, dw, h - 6, 1, { mat: 'plaster', role: 'partition', opening: { x: door, z, axis: 'x', w: dw, t: 0.5, y } }))];   // the lintel carries the opening's mark: the route goes through it squarely
   }
   function wallZ(x, z0, z1, h, door = null, dw = 3, y = Y0) {
     const W = (cz, d) => ideal(box(x, y, cz, 1, h, d, { mat: 'plaster', role: 'partition' }));
     if (door == null) return [W((z0 + z1) / 2, z1 - z0)];
-    return [W((z0 + door - dw / 2) / 2, door - dw / 2 - z0), W((door + dw / 2 + z1) / 2, z1 - door - dw / 2), ideal(box(x, y + 6, door, 1, h - 6, dw, { mat: 'plaster', role: 'partition' }))];
+    return [W((z0 + door - dw / 2) / 2, door - dw / 2 - z0), W((door + dw / 2 + z1) / 2, z1 - door - dw / 2), ideal(box(x, y + 6, door, 1, h - 6, dw, { mat: 'plaster', role: 'partition', opening: { x, z: door, axis: 'z', w: dw, t: 0.5, y } }))];
   }
   /** A floor slab (idealized cedar, 1 thick, its top at y) over x0…x1 × z0…z1, with rectangular openings cut out (holes: [{x0,x1,z0,z1}]). */
   function slab(x0, x1, z0, z1, y, holes = [], mat = 'cedar', role = 'floor') {
@@ -124,7 +124,7 @@ export function makeKit(Y0) {
     ? box(x + dir * (i + 0.5) * run, y, z, run, (i + 1) * rise, w, { mat, role: 'stair', stair: { axis, x, z, n, w, dir, y, i, rise, run } })
     : box(x, y, z + dir * (i + 0.5) * run, w, (i + 1) * rise, run, { mat, role: 'stair', stair: { axis, x, z, n, w, dir, y, i, rise, run } })));
   /** The furniture, idealized: a bed (w × l, its head at −x), a table with seats, a couch, a lampstand, a chest, jars. */
-  const bed = (x, z, w = 3, l = 6, y = Y0) => [ideal(box(x, y, z, l, 1.1, w, { mat: 'cedar', role: 'bed' })), ideal(box(x, y + 1.1, z, l - 0.4, 0.5, w - 0.4, { mat: 'linen', role: 'bed' })), ideal(box(x - l / 2 + 0.2, y, z, 0.4, 2.6, w, { mat: 'cedar', role: 'bed' }))];
+  const bed = (x, z, w = 3, l = 6, y = Y0) => [ideal(box(x, y, z, l, 1.1, w, { mat: 'cedar', role: 'bed' })), ideal(box(x, y + 1.1, z, l - 0.4, 0.5, w - 0.4, { mat: 'linen', role: 'bed' })), ideal(box(x - l / 2 + 0.3, y, z, 0.3, 2.6, w, { mat: 'cedar', role: 'bed' }))];
   const table = (x, z, w = 3, l = 5, y = Y0) => [ideal(box(x, y + 1.3, z, l, 0.25, w, { mat: 'cedar', role: 'table' })), ...[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([sx, sz]) => ideal(box(x + sx * (l / 2 - 0.3), y, z + sz * (w / 2 - 0.3), 0.3, 1.3, 0.3, { mat: 'cedar', role: 'table' })))];
   const seat = (x, z, y = Y0) => [ideal(box(x, y, z, 1.1, 0.9, 1.1, { mat: 'cedar', role: 'seat' }))];
   const couch = (x, z, y = Y0) => [ideal(box(x, y, z, 5, 1.0, 2, { mat: 'cedar', role: 'couch' })), ideal(box(x, y + 1, z, 4.8, 0.5, 1.8, { mat: 'linen', role: 'couch' })), ideal(box(x, y, z + 0.8, 5, 2.2, 0.35, { mat: 'cedar', role: 'couch' }))];

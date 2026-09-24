@@ -1086,7 +1086,10 @@ export function buildPiece(M, piece, ground = -4, xrayGroups = XRAY_GROUPS) {
       const leaf = new THREE.Mesh(new THREE.BoxGeometry(along ? gate.w / 2 : 0.4, 6, along ? 0.4 : gate.w / 2), M.brassDark);
       leaf.position.set(along ? -s * gate.w / 4 : 0, 3, along ? 0 : -s * gate.w / 4); leaf.castShadow = true;
       leaf.userData.gate = `${piece.id}:${gi}`; hinge.add(leaf);
-      hinge.userData.gateLeaf = { key: `${piece.id}:${gi}`, swing: along ? -s * 1.2 : s * 1.2 };
+      // which way the leaves swing: `gate.open` is the sign along the gate's normal (x for a gate across x, z for one across z) toward
+      // the side they open on — inward, off the hinge face of the jamb, so an open leaf never sweeps through its own wall
+      const open = gate.open ?? -1;
+      hinge.userData.gateLeaf = { key: `${piece.id}:${gi}`, swing: (along ? open * s : -open * s) * 1.2 };
       hinge.rotation.y = hinge.userData.gateLeaf.swing;   // open, until the walker shuts it
       b.mesh(hinge);
     }

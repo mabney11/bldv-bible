@@ -215,6 +215,17 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const plan = [];   // { x0, x1, z0, z1 } walls (filled) and { x, z, r } rounds (pillars, the sea)
     const navWalk = [];   // { x0, x1, z0, z1, top } what can be walked on
     const navObs = [];    // everything else that stands in the way, whatever its height (a table, an altar's ledge, a wall), with its span
+    const navDoors = [];  // every doorway and gate: { x, z, axis ('x': the opening lies along x), w, t (half the wall's thickness), y } — the route goes through them straight, on their axis
+    const addDoor = (d) => {   // a doorway cut through a wall and its lining (or a gate and its threshold) are one door: joined into one span
+      for (const e of navDoors) {
+        if (e.axis !== d.axis || Math.abs(e.y - d.y) > 3) continue;
+        const nA = e.axis === 'x' ? 'z' : 'x', uA = e.axis === 'x' ? 'x' : 'z';
+        if (Math.abs(e[uA] - d[uA]) > 2 || Math.abs(e[nA] - d[nA]) > e.t + d.t + 1.5) continue;
+        const lo = Math.min(e[nA] - e.t, d[nA] - d.t), hi = Math.max(e[nA] + e.t, d[nA] + d.t);
+        e[nA] = (lo + hi) / 2; e.t = (hi - lo) / 2; e.w = Math.min(e.w, d.w); return;
+      }
+      navDoors.push(d);
+    };
     const NAV_SKIP = new Set(SC.navSkip || []);   // pieces the route may ignore (a model's crowd, a proxy group)
     for (const piece of PIECES) {   // every piece feeds the route finder; only the plan's pieces are drawn on the map
       const onPlan = PLAN_PIECES.includes(piece.id);
@@ -225,8 +236,9 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         if (walkable) navWalk.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2, top: y1 });
         else if (part.kind === 'box' && !['roof', 'ceiling', 'slab', 'rug', 'inlay'].includes(part.role)) {
           const R = { x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2, y0, y1 };
-          if (part.doorway) { const dw = part.doorway.w, lintel = { y0: y0 + part.doorway.h, y1 }; if (part.w < part.d) navObs.push({ ...R, z1: part.z - dw / 2 }, { ...R, z0: part.z + dw / 2 }, { ...R, z0: part.z - dw / 2, z1: part.z + dw / 2, ...lintel }); else navObs.push({ ...R, x1: part.x - dw / 2 }, { ...R, x0: part.x + dw / 2 }, { ...R, x0: part.x - dw / 2, x1: part.x + dw / 2, ...lintel }); }
+          if (part.doorway) { const dw = part.doorway.w, lintel = { y0: y0 + part.doorway.h, y1 }; addDoor({ x: part.x, z: part.z, axis: part.w < part.d ? 'z' : 'x', w: dw, t: Math.min(part.w, part.d) / 2, y: y0 }); if (part.w < part.d) navObs.push({ ...R, z1: part.z - dw / 2 }, { ...R, z0: part.z + dw / 2 }, { ...R, z0: part.z - dw / 2, z1: part.z + dw / 2, ...lintel }); else navObs.push({ ...R, x1: part.x - dw / 2 }, { ...R, x0: part.x + dw / 2 }, { ...R, x0: part.x - dw / 2, x1: part.x + dw / 2, ...lintel }); }
           else navObs.push(R);
+          if (part.opening) addDoor({ ...part.opening });   // a partition's doorway (kit wallX/wallZ)
         } else if (part.kind === 'cyl' && part.r >= 0.4) navObs.push({ x: part.x, z: part.z, r: part.r, y0, y1 });
         else if (part.kind === 'base') navObs.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.w / 2, z1: part.z + part.w / 2, y0, y1: y0 + 4 });
         else if (part.kind === 'throne') navObs.push({ x0: part.x - 3, x1: part.x + 3, z0: part.z - 3, z1: part.z + 3, y0, y1: y0 + 6 });
@@ -254,6 +266,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     }
     // a gate's open leaves stand swung back along the jambs, still a little into the passage: the route keeps to its middle
     for (const piece of PIECES) for (const gate of piece.gates || []) {
+      addDoor({ x: gate.x, z: gate.z, axis: gate.axis, w: gate.w, t: gate.t ?? 1, y: gate.y ?? GROUND });
       if (gate.leaves === false) continue;
       const gy = gate.y ?? GROUND, along = gate.axis === 'x', L = 2.6, D = 2.2;
       for (const sg of [-1, 1]) navObs.push(along
@@ -299,7 +312,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       for (let r = 1; r < 40; r++) for (let dj = -r; dj <= r; dj++) for (let di = -r; di <= r; di++) { if (Math.max(Math.abs(di), Math.abs(dj)) !== r) continue; const ii = i + di, jj = j + dj; if (inNav(ii, jj) && !nav.block[jj * nav.W + ii]) return [ii, jj]; }
       return null;
     }
-    function findPath(ax, az, bx, bz) {
+    function findRaw(ax, az, bx, bz) {
       if (!nav) buildNav();
       const clampC = ([i, j]) => [Math.max(0, Math.min(nav.W - 1, i)), Math.max(0, Math.min(nav.Hn - 1, j))];
       const A = nearestFree(...clampC(cellOf(ax, az))), B = nearestFree(...clampC(cellOf(bx, bz))); if (!A || !B) return null;
@@ -331,6 +344,45 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       for (let k = 2; k < cellsOut.length; k++) if (!clear(cellsOut[anchor], cellsOut[k])) { kept.push(cellsOut[k - 1]); anchor = k - 1; }
       if (cellsOut.length > 1) kept.push(cellsOut[cellsOut.length - 1]);
       return kept.map((c) => [nav.x0 + (c % W) + 0.5, nav.z0 + ((c / W) | 0) + 0.5]);
+    }
+    /**
+     * The route, taken through every doorway and gate on it squarely: the way is found, the doors it passes are read off it in
+     * order, and it is found again leg by leg — to a point before each door on the door's own axis, straight through its middle,
+     * to a point beyond — so he comes to a door face on and centred, never up its corner (fieldy).
+     */
+    const APPROACH = 4;   // cubits clear of the wall's face at which he lines up on the door
+    function findPath(ax, az, bx, bz) {
+      const raw = findRaw(ax, az, bx, bz); if (!raw || raw.length < 2) return raw;
+      const crossed = [];   // [{ d, side, at }] in the order met
+      const hits = (p, q, d) => {   // does the leg p → q cross the door d's line (its opening, a cubit wider each way)?
+        const n = d.axis === 'x' ? [0, 1] : [1, 0], u = d.axis === 'x' ? [1, 0] : [0, 1];
+        const sp = (p[0] - d.x) * n[0] + (p[1] - d.z) * n[1], sq = (q[0] - d.x) * n[0] + (q[1] - d.z) * n[1];
+        if ((sp < 0) === (sq < 0) || sp === sq) return null;
+        const f = sp / (sp - sq), cx = p[0] + f * (q[0] - p[0]), cz = p[1] + f * (q[1] - p[1]);
+        const along = (cx - d.x) * u[0] + (cz - d.z) * u[1];
+        if (Math.abs(along) > d.w / 2 + 1) return null;
+        const [ci, cj] = cellOf(cx, cz); if (inNav(ci, cj) && Math.abs(nav.H[cj * nav.W + ci] - d.y) > 3) return null;   // a door on another storey
+        return { side: sp < 0 ? -1 : 1, at: f };
+      };
+      for (let k = 0; k + 1 < raw.length; k++) {
+        const legHits = [];
+        for (const d of navDoors) { const h = hits(raw[k], raw[k + 1], d); if (h) legHits.push({ d, ...h }); }
+        legHits.sort((a, b) => a.at - b.at); crossed.push(...legHits);
+      }
+      if (!crossed.length) return raw;
+      const fixed = [[ax, az]];
+      for (const { d, side } of crossed) {
+        const n = d.axis === 'x' ? [0, 1] : [1, 0], r = d.t + APPROACH;
+        fixed.push([d.x + side * n[0] * r, d.z + side * n[1] * r], [d.x - side * n[0] * r, d.z - side * n[1] * r]);
+      }
+      fixed.push([bx, bz]);
+      const out = [];
+      for (let k = 0; k + 1 < fixed.length; k++) {
+        const leg = findRaw(fixed[k][0], fixed[k][1], fixed[k + 1][0], fixed[k + 1][1]);
+        if (!leg) return raw;   // a leg that cannot be walked: the plain way, rather than none
+        for (const p of leg) if (!out.length || Math.hypot(p[0] - out[out.length - 1][0], p[1] - out[out.length - 1][1]) > 0.6) out.push(p);
+      }
+      return out.length > 1 ? out : raw;
     }
 
     // ── Being walked somewhere: the route as waypoints, followed on the walker's own feet (tryMove, so doors and steps hold);
@@ -513,7 +565,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
           g.strokeRect(x0, y0, x1 - x0, y1 - y0); g.setLineDash([]);
           if (mapView || hov) {   // its name, shortened to what fits its box (the whole name under the pointer)
             g.font = `${Math.round((hov ? 12 : 11) * dpr)}px system-ui, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
-            let t = n.label; if (!hov) { const room = Math.abs(x1 - x0) - 6 * dpr; while (t.length > 3 && g.measureText(t).width > room) { const cut = t.lastIndexOf(' ', t.length - 2); t = (cut > 2 ? t.slice(0, cut) : t.slice(0, -2)) + '…'; } }
+            let t = n.short || n.label; { const room = Math.abs(x1 - x0) - 6 * dpr; while (t.length > 2 && g.measureText(t).width > room) { const cut = t.lastIndexOf(' ', t.length - 2); t = (cut > 2 ? t.slice(0, cut) : t.slice(0, -2)) + '…'; } }   // what fits its box; the whole name goes in the footer
             g.lineWidth = 3 * dpr; g.strokeStyle = 'rgba(14, 11, 8, 0.85)'; g.strokeText(t, (x0 + x1) / 2, (y0 + y1) / 2); g.fillStyle = hov ? '#ffd062' : '#f3e3b8'; g.fillText(t, (x0 + x1) / 2, (y0 + y1) / 2);
           }
           if (n.children?.length) { g.font = `${Math.round(9 * dpr)}px system-ui, sans-serif`; g.fillStyle = 'rgba(255, 208, 98, 0.8)'; g.textAlign = 'right'; g.fillText('▸', x1 - 3 * dpr, y0 + 8 * dpr); g.textAlign = 'center'; }
@@ -544,7 +596,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       if (big && gotoAsk && !gotoAsk.label) { const [sx, sy] = P(gotoAsk.x, gotoAsk.z); g.beginPath(); g.arc(sx, sy, 5 * dpr, 0, Math.PI * 2); g.strokeStyle = '#ffd062'; g.lineWidth = 2 * dpr; g.stroke(); }
       // north, at the rim
       { const nx = big ? 0 : -sa * -1, ny = big ? -1 : ca * -1; const rx = W / 2 + nx * (W / 2 - 9 * dpr), ry = W / 2 + ny * (W / 2 - 9 * dpr); g.font = `bold ${Math.round(10 * dpr)}px system-ui, sans-serif`; g.fillStyle = '#ffd062'; g.fillText('N', rx, ry); }
-      if (big) { g.font = `${Math.round(10 * dpr)}px system-ui, sans-serif`; g.fillStyle = '#c9b98a'; g.textAlign = 'left'; g.fillText(mapView ? 'tap a room to be walked into it · Esc goes up' : 'tap a building to look inside it, a place or the ground to be walked there · M closes', 10 * dpr, W - 10 * dpr); g.textAlign = 'center'; }
+      if (big) { g.font = `${Math.round(10 * dpr)}px system-ui, sans-serif`; g.fillStyle = mapHover ? '#ffd062' : '#c9b98a'; g.textAlign = 'left'; g.fillText(mapHover ? mapHover.label : mapView ? 'tap a room to be walked into it · Esc goes up' : 'tap a building to look inside it, a place or the ground to be walked there · M closes', 10 * dpr, W - 10 * dpr); g.textAlign = 'center'; }
       // the walker: at the centre, his way up (the small map); where he stands, turned his way (the big one)
       const [wx, wy] = big ? P(px, pz) : [W / 2, W / 2], wa = big ? roam.yaw + Math.PI / 2 : 0;
       g.save(); g.translate(wx, wy); g.rotate(wa);

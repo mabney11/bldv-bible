@@ -76,7 +76,7 @@ export const WORDS = {
 };
 
 // ── Materials ────────────────────────────────────────────────────────────────
-export const MATERIALS = { ...BASE_MATERIALS, ground: { word: 'chatzar', color: '#7a6646', hi: '#9a8562', lo: '#4e3f2a', metal: 0, rough: 1 } };   // packed earth of the courts, darker than the pale stone (fieldy: contrast between the ground and the buildings)
+export const MATERIALS = { ...BASE_MATERIALS, ground: { word: 'chatzar', color: '#7a6646', hi: '#9a8562', lo: '#4e3f2a', metal: 0, rough: 1 }, paving: { ...BASE_MATERIALS.paving, color: '#a99b7f' } };   // the pavement a shade deeper than the temple's, under the harder sun   // packed earth of the courts, darker than the pale stone (fieldy: contrast between the ground and the buildings)
 
 // ── The frame, in cubits ─────────────────────────────────────────────────────
 // 42:16–20: five hundred square, a wall about it. 40:5: the wall one reed thick, one reed high.
@@ -170,9 +170,10 @@ function gatehouse(axis, outer, dir, mid, y, flip = false, stepsOut = 7, stepRis
     out.push(axis === 'x' ? box(c, y - n * rise, mid + sg * (w / 2 - 0.75), len, ch, 1.5, { role: 'cheek' }) : box(mid + sg * (w / 2 - 0.75), y - n * rise, c, 1.5, ch, len, { role: 'cheek' }));
   }
   // the passage's ends, for the gate leaves (the east gate is shut, 44:1–2) and the plan
-  const g0 = outer + dir * U(sill / 2), g1 = outer + dir * U(len - post / 2);
+  // the leaves hang at the first threshold's inner face and swing into the passage (+u), clear of their own jambs
+  const g0 = outer + dir * U(sill - 0.25), g1 = outer + dir * U(len - post / 2), open = dir * (flip ? -1 : 1);
   out.role = roleOut;
-  out.gates = axis === 'x' ? [{ axis: 'z', x: g0, z: mid, w: pass, y }, { axis: 'z', x: g1, z: mid, w: pass, y, leaves: false }] : [{ axis: 'x', x: mid, z: g0, w: pass, y }, { axis: 'x', x: mid, z: g1, w: pass, y, leaves: false }];
+  out.gates = axis === 'x' ? [{ axis: 'z', x: g0, z: mid, w: pass, y, open, t: 3.5 }, { axis: 'z', x: g1, z: mid, w: pass, y, leaves: false }] : [{ axis: 'x', x: mid, z: g0, w: pass, y, open, t: 3.5 }, { axis: 'x', x: mid, z: g1, w: pass, y, leaves: false }];
   return out;
 }
 
@@ -316,6 +317,27 @@ function binyan() {
   out.push(...slab(x0 + WALL.t, x1 - wallT, -z + wallT, z - wallT, y + 8, [well, hole(x1 - 10)], 'cedar', 'floor'));
   out.push(...slab(x0 + WALL.t, x1 - wallT, -z + wallT, z - wallT, y + 16, [well, hole(x1 - 18)], 'cedar', 'floor'));
   out.push(...flight(x1 - 10, y), ...flight(x1 - 18, y + 8));
+  // the ground storey furnished as the house of the keepers of the gates (44:11, 14) — the Parbar westward with its courses of
+  // keepers (1 Chronicles 26:18) — all idealized: quarters along the south wall, each with a door on the hall, a bed and a seat;
+  // stores along the north wall west of the stairs, with jars; a table with seats and lamps in the hall
+  const X0 = x0 + WALL.t, X1 = x1 - wallT, Z1 = z - wallT, Z0 = -z + wallT, H8 = 7;   // the partitions rise to the gallery's underside
+  const nQ = 8, qw = (X1 - X0) / nQ, qz = Z1 - 10;
+  for (let i = 0; i < nQ; i++) {
+    const a = X0 + i * qw, b = a + qw, c = (a + b) / 2;
+    out.push(...wallX(qz + 0.5, a, b, H8, c, 3, y));
+    if (i) out.push(...wallZ(a, qz + 1, Z1, H8, null, 3, y));
+    out.push(...K.bed(c - 0.2, Z1 - 2.2, 3, 6, y), ...seat(c + 3, qz + 3.2, y));
+  }
+  const nS = 4, sw = (x1 - 22 - X0) / nS, sz1 = Z0 + 10;
+  for (let i = 0; i < nS; i++) {
+    const a = X0 + i * sw, b = a + sw, c = (a + b) / 2;
+    out.push(...wallX(sz1 - 0.5, a, b, H8, c, 3, y));
+    if (i) out.push(...wallZ(a, Z0, sz1 - 1, H8, null, 3, y));
+    out.push(...jars(a + 1.5, Z0 + 1.5, 6, y), ...jars(a + 1.5, Z0 + 5, 3, y));
+  }
+  out.push(...wallZ(x1 - 22, Z0, sz1 - 1, H8, null, 3, y));   // the stores' east end, the stairs beyond it
+  out.push(...K.table(x0 + 30, 0, 3, 8, y), ...seat(x0 + 27, 2.6, y), ...seat(x0 + 30, 2.6, y), ...seat(x0 + 33, 2.6, y), ...seat(x0 + 27, -2.6, y), ...seat(x0 + 30, -2.6, y), ...seat(x0 + 33, -2.6, y));
+  out.push(...lamp(x0 + 30, -6, y), ...lamp(x0 + 30, 6, y), ...lamp(X1 - 4, Z0 + 4, y), ...lamp(X1 - 4, qz - 3, y));
   return out;
 }
 
@@ -581,7 +603,7 @@ export const PIECES = [
     measures: [['rachab (breadth)', '70 amah', '41:12'], ['its qayar (wall)', '5 amah thick all around', '41:12'], ['arak (length)', '90 amah', '41:12'], ['the house', '100 long; the separate place and the building with its walls, 100', '41:13'], ['the face of the house and the separate place', '100 broad, toward the east', '41:14'], ['the building before the separate place, with its galleries', '100', '41:15']],
     note: '"{{Ezekiel 41:12 | The banayan … amahawath}}" — behind the house, across the separate place, a great building eighty by a hundred outside its walls, its purpose never told; galleries on three stories (41:15–16).',
     elsewhere: { ref: '1 Chronicles 26:18; 2 Kings 23:11; Ezekiel 42:1, 10', note: 'The Parbar westward with its gates and its courses of keepers (1 Chronicles 26:18); the priests\' rooms stand over against the separate place and this building.' },
-    assumed: 'Its height (24), its use, its galleries as floors round an open well with stairs; its back wall is the great wall\'s west run, so the separate place is twenty (41:13–14).',
+    assumed: 'Its height (24) and its galleries as floors round an open well with stairs; its back wall is the great wall\'s west run, so the separate place is twenty (41:13–14). Its use is not told: the model furnishes its ground storey as the house of the keepers of the gates (44:11, 14) — the Parbar westward with its courses of keepers (1 Chronicles 26:18) — quarters with a door on the hall, a bed and a seat, stores with jars, a table and lamps in the hall; all of it hatched as the model\'s own.',
     parts: binyan(),
   },
   {
@@ -801,7 +823,7 @@ export const MODEL = {
     openDefault: (k) => (k.includes(':') && !k.startsWith('gate-east') ? 1 : 0),   // every gate open but the east one, where the walk begins (and which is shut afterward, 44:1–2); the doors shut
   },
   scene: {
-    sky: 0xc4d6e8, shadowR: 300, fog: [900, 2400], maxDistance: 1400, earth: '#5f7a3e',   // the land about the house green (the waters of 47:1–12 heal it — fieldy: an oasis), the courts trodden earth and stone
+    sky: 0xc4d6e8, shadowR: 300, fog: [900, 2400], maxDistance: 1400, earth: '#557139',   // the land about the house green (the waters of 47:1–12 heal it — fieldy: an oasis), the courts trodden earth and stone
     lighting: { sun: 3.1, hemi: 0.62 },   // a harder sun, a dimmer sky: the walls' faces and the drops between the levels read (fieldy: better shading and contrast)
     lights: [
       { key: 'hallLight', color: 0xffd9a0, distance: 70, pos: [(HAY_X0 + HAY_X1) / 2, LEVEL.house + 14, 0], on: () => 320 },
@@ -844,12 +866,17 @@ export const MODEL = {
           { label: 'tzalai (side) rooms · north', bounds: { x0: -146, x1: -61, z0: -31, z1: -16 }, at: [-100, -36] },
           { label: 'tzalai (side) rooms · south', bounds: { x0: -146, x1: -61, z0: 16, z1: 31 }, at: [-100, 36] },
         ] },
-        { label: 'banayan (building)', bounds: { x0: -250, x1: -170, z0: -45, z1: 45 }, at: [-200, 0] },
+        { label: 'banayan (building) — the keepers\' house', short: 'banayan', bounds: { x0: -250, x1: -170, z0: -45, z1: 45 }, children: [
+          { label: 'the hall and its well', short: 'hall', bounds: { x0: -244, x1: -175, z0: -30, z1: 30 }, at: [-214, 0] },
+          { label: 'the stairs to the galleries', short: 'stairs', bounds: { x0: -192, x1: -175, z0: -40, z1: -30 }, at: [-184, -34] },
+          ...Array.from({ length: 8 }, (_, i) => ({ label: `quarters ${i + 1} of the keepers`, short: `${i + 1}`, bounds: { x0: -244 + i * 8.625, x1: -244 + (i + 1) * 8.625, z0: 30, z1: 40 }, at: [-244 + (i + 0.5) * 8.625, 35] })),
+          ...Array.from({ length: 4 }, (_, i) => ({ label: `store ${i + 1}`, short: `store ${i + 1}`, bounds: { x0: -244 + i * 13, x1: -244 + (i + 1) * 13, z0: -40, z1: -30 }, at: [-244 + (i + 0.5) * 13, -35] })),
+        ] },
         ...[-1, 1].map((s) => ({ label: `kahanayam (priests)' rooms · ${s < 0 ? 'north' : 'south'}`, bounds: { x0: -150, x1: -42, z0: Math.min(s * 50, s * 100), z1: Math.max(s * 50, s * 100) }, children: [
-          { label: 'the entry from the outer court (42:9)', bounds: { x0: -58, x1: -42, z0: Math.min(s * 70, s * 80), z1: Math.max(s * 70, s * 80) }, at: [-46, s * 75] },
-          { label: 'mahalak (walk) of ten', bounds: { x0: -150, x1: -58, z0: Math.min(s * 70, s * 80), z1: Math.max(s * 70, s * 80) }, at: [-100, s * 75] },
-          ...Array.from({ length: 8 }, (_, i) => ({ label: `room ${i + 1} before the hayakal (temple)`, bounds: { x0: -150 + i * 12.5, x1: -150 + (i + 1) * 12.5, z0: Math.min(s * 50, s * 70), z1: Math.max(s * 50, s * 70) }, at: [-150 + (i + 0.5) * 12.5, s * 60] })),
-          ...Array.from({ length: 4 }, (_, i) => ({ label: `room ${i + 1} toward the chatzar (court)`, bounds: { x0: -100 + i * 12.5, x1: -100 + (i + 1) * 12.5, z0: Math.min(s * 80, s * 98), z1: Math.max(s * 80, s * 98) }, at: [-100 + (i + 0.5) * 12.5, s * 89] })),
+          { label: 'the entry from the outer court (42:9)', short: 'entry', bounds: { x0: -58, x1: -42, z0: Math.min(s * 70, s * 80), z1: Math.max(s * 70, s * 80) }, at: [-46, s * 75] },
+          { label: 'mahalak (walk) of ten', short: 'mahalak (walk)', bounds: { x0: -150, x1: -58, z0: Math.min(s * 70, s * 80), z1: Math.max(s * 70, s * 80) }, at: [-100, s * 75] },
+          ...Array.from({ length: 8 }, (_, i) => ({ label: `room ${i + 1} before the hayakal (temple)`, short: `${i + 1}`, bounds: { x0: -150 + i * 12.5, x1: -150 + (i + 1) * 12.5, z0: Math.min(s * 50, s * 70), z1: Math.max(s * 50, s * 70) }, at: [-150 + (i + 0.5) * 12.5, s * 60] })),
+          ...Array.from({ length: 4 }, (_, i) => ({ label: `room ${i + 1} toward the chatzar (court)`, short: `${i + 1}`, bounds: { x0: -100 + i * 12.5, x1: -100 + (i + 1) * 12.5, z0: Math.min(s * 80, s * 98), z1: Math.max(s * 80, s * 98) }, at: [-100 + (i + 0.5) * 12.5, s * 89] })),
         ] })),
       ],
     },
