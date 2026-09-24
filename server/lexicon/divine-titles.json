@@ -774,7 +774,10 @@
           "H3068"
         ]
       ],
-      "en": "Yahawah, Yahawah"
+      "en": "Yahawah, Yahawah",
+      "only_refs": [
+        "2:34:6"
+      ]
     },
     {
       "id": "yah-yahawah",
@@ -874,7 +877,13 @@
           "H3519"
         ]
       ],
-      "en": "the King of glory"
+      "en": "the King of glory",
+      "only_refs": [
+        "19:24:7",
+        "19:24:8",
+        "19:24:9",
+        "19:24:10"
+      ]
     },
     {
       "id": "yahawah-gibawar-milchamah",
@@ -979,6 +988,9 @@
       "en": "Shepherd of Israel",
       "gold": [
         0
+      ],
+      "only_refs": [
+        "19:80:1"
       ]
     },
     {
@@ -1117,7 +1129,10 @@
           "H6918"
         ]
       ],
-      "en": "a holy God"
+      "en": "a holy God",
+      "only_refs": [
+        "6:24:19"
+      ]
     },
     {
       "id": "alahay-qadam",
@@ -1129,7 +1144,10 @@
           "H6924"
         ]
       ],
-      "en": "the God of old / eternal God"
+      "en": "the God of old / eternal God",
+      "only_refs": [
+        "5:33:27"
+      ]
     },
     {
       "id": "alahay-iwalam",
@@ -1141,7 +1159,11 @@
           "H5769"
         ]
       ],
-      "en": "the everlasting God"
+      "en": "the everlasting God",
+      "only_refs": [
+        "23:40:28",
+        "45:16:26"
+      ]
     },
     {
       "id": "alahay-amath",
@@ -1153,7 +1175,11 @@
           "H571"
         ]
       ],
-      "en": "the God of truth"
+      "en": "the God of truth",
+      "only_refs": [
+        "14:15:3",
+        "24:10:10"
+      ]
     },
     {
       "id": "alahay-mashapat",
@@ -1165,7 +1191,11 @@
           "H4941"
         ]
       ],
-      "en": "a God of justice"
+      "en": "a God of justice",
+      "only_refs": [
+        "23:30:18",
+        "39:2:17"
+      ]
     },
     {
       "id": "alahay-yashai",
@@ -1190,7 +1220,11 @@
           "H7307"
         ]
       ],
-      "en": "the God of the spirits"
+      "en": "the God of the spirits",
+      "only_refs": [
+        "4:16:22",
+        "4:27:16"
+      ]
     },
     {
       "id": "alahay-kal-bashar",
