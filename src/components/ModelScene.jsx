@@ -84,11 +84,13 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     controls.minDistance = 2; controls.maxDistance = SC.maxDistance || 900; controls.maxPolarAngle = Math.PI - 0.02;   // tilt as far as you like — looking up from the floor included
 
     // Light: the sun from the south-east, a warm sky, a cool fill.
-    const hemi = new THREE.HemisphereLight(0xdfe8f5, 0x6b5a3e, 0.85); scene.add(hemi);
-    const sun = new THREE.DirectionalLight(0xfff3dc, 2.6); sun.position.set(220, 300, 180); sun.castShadow = true;
+    // (a model may set its own levels: scene.lighting { sun, hemi } — a harder sun and a dimmer sky deepen the shadows and the contrast)
+    const LIGHTING = { sun: 2.6, hemi: 0.85, ...(SC.lighting || {}) };
+    const hemi = new THREE.HemisphereLight(0xdfe8f5, 0x6b5a3e, LIGHTING.hemi); scene.add(hemi);
+    const sun = new THREE.DirectionalLight(0xfff3dc, LIGHTING.sun); sun.position.set(220, 300, 180); sun.castShadow = true;
     const sh = small ? 2048 : 4096; sun.shadow.mapSize.set(sh, sh);
     const R = SC.shadowR; sun.shadow.camera.left = -R; sun.shadow.camera.right = R; sun.shadow.camera.top = R; sun.shadow.camera.bottom = -R;
-    sun.shadow.camera.near = 50; sun.shadow.camera.far = 800; sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.4;
+    sun.shadow.camera.near = 50; sun.shadow.camera.far = 800; sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.8;
     scene.add(sun); scene.add(sun.target);
     // The model's own lamps (the temple: the lampstands' light in the roofed hall, the oracle, the porch), each with a rule for
     // how bright it burns at t of the story (from the pieces' progress).
@@ -98,6 +100,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const world = new THREE.Group(); scene.add(world);
     const M = makeMaterials(model.MATERIALS);
     if (SC.earth) M.earth.color.set(SC.earth);   // the plain the model stands on, in the model's own tone
+    M.earth.map.repeat.set(2800 / 16, 2800 / 16);   // the plain's mottle at 16 cubits a tile over the whole disc
     loadPhotos(M, () => { dirty = true; });
 
     // The mount: a wide plain fading into the haze; the courts lay their own ground.
@@ -121,6 +124,14 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const extrasOf = typeof SC.extras === 'string' ? EXTRAS[SC.extras] : SC.extras;
     const extras = extrasOf ? extrasOf({ M, byId, lights: { ...lights, sun, hemi, scene }, sky: SC.sky, scene, world }) : null;
     const sunOffset = extras?.sunOffset || new THREE.Vector3(220, 300, 180);
+    const lsDir = new THREE.Vector3(), lsRight = new THREE.Vector3(), lsUp = new THREE.Vector3(), lsUpWorld = new THREE.Vector3(0, 1, 0);
+    function snapSun(target) {
+      lsDir.copy(sunOffset).normalize(); lsRight.crossVectors(lsUpWorld, lsDir).normalize(); lsUp.crossVectors(lsDir, lsRight);   // the shadow camera's own axes (lookAt with y up)
+      const texel = (2 * R) / sh;
+      const a = Math.round(target.dot(lsRight) / texel) * texel, b = Math.round(target.dot(lsUp) / texel) * texel, c = target.dot(lsDir);
+      sun.target.position.copy(lsRight).multiplyScalar(a).addScaledVector(lsUp, b).addScaledVector(lsDir, c);
+      sun.position.copy(sun.target.position).add(sunOffset);
+    }
 
     // sculpted parts, when their files exist
     for (const [id, g] of groups) {
@@ -926,7 +937,9 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       if (!dirty) return;
       dirty = false; stats.frames++; const f0 = performance.now();
       // the sun's shadow window follows the camera's target so the shadows stay sharp where the eye is
-      sun.target.position.copy(controls.target); sun.position.copy(controls.target).add(sunOffset);
+      // — moved in whole shadow-map texels (in the light's own frame), else the map's grid slides under the scene with every
+      // move of the eye and the shading of a wall shimmers and swims (fieldy: "things fade in and out depending on how I look")
+      snapSun(controls.target);
       // third person on foot: the walker's eye stays where all the walking is reckoned; only for the drawing is the camera pulled
       // back along his line of sight (no further than the nearest wall or floor behind him), looking at him, with our figure under
       // the eye — so the crosshair's pick, from the eye, is the same line the drawn view centres on

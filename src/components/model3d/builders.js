@@ -68,6 +68,21 @@ function pavingTexture(base, joint) {
     for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) { const off = r % 2 ? w / n / 2 : 0; for (const dx of [-w, 0]) { g.fillStyle = shade(base, 0.86 + rnd() * 0.28); g.fillRect(c * (w / n) + off + dx + 2, r * (h / n) + 2, w / n - 4, h / n - 4); } }
   });
 }
+/** Open ground — packed earth or a plain: a mottle of lighter and darker patches, pebbles, and (with `tufts`) tufts of grass,
+ *  in grey so the material's own colour tints it; the plain of an oasis and the trodden earth of a court come from one drawing. */
+function groundTexture(tufts = 0) {
+  const t = canvas(512, 512, (g, w, h) => {
+    g.fillStyle = '#e2e2e2'; g.fillRect(0, 0, w, h);   // near white: the material's colour is the ground's, the drawing only its unevenness
+    for (let i = 0; i < 1400; i++) { const r = 6 + rnd() * 26; g.fillStyle = `rgba(${rnd() < 0.5 ? '255,255,255' : '0,0,0'},${0.03 + rnd() * 0.06})`; g.beginPath(); g.ellipse(rnd() * w, rnd() * h, r, r * (0.5 + rnd() * 0.5), rnd() * 3, 0, 6.29); g.fill(); }
+    for (let i = 0; i < 900; i++) { g.fillStyle = `rgba(0,0,0,${0.08 + rnd() * 0.14})`; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2); }
+    for (let i = 0; i < tufts; i++) {   // a tuft: a few short strokes leaning from one root, greener than the ground (the multiply keeps the tint)
+      const x = rnd() * w, y = rnd() * h, k = 0.7 + rnd() * 0.5;
+      g.strokeStyle = `rgba(120,150,60,${0.55 + rnd() * 0.35})`; g.lineWidth = 1.2;
+      for (let j = 0; j < 5; j++) { g.beginPath(); g.moveTo(x, y); g.lineTo(x + (rnd() * 12 - 6) * k, y - (4 + rnd() * 9) * k); g.stroke(); }
+    }
+  });
+  t.anisotropy = 8; return t;
+}
 /** The hatch laid over what is idealized: fine diagonal lines on white (multiplied onto the material), the draughtsman's mark for conjecture. */
 function hatchTexture() {
   return canvas(128, 128, (g, w, h) => {
@@ -211,8 +226,8 @@ export function makeMaterials(MATERIALS = BASE_MATERIALS) {
     brass: std('brass'),
     brassDark: std('brass', { color: new THREE.Color('#8a5228'), roughness: 0.55 }),
     veil: new THREE.MeshStandardMaterial({ map: veilTexture(), side: THREE.DoubleSide, roughness: 0.9, metalness: 0 }),
-    ground: std('ground'),
-    earth: new THREE.MeshStandardMaterial({ color: new THREE.Color('#7c6d52'), roughness: 1 }),
+    ground: std('ground', { map: groundTexture(0) }),
+    earth: new THREE.MeshStandardMaterial({ color: new THREE.Color('#7c6d52'), roughness: 1, map: groundTexture(260) }),   // the plain: its map repeats over the disc (ModelScene sets the repeat)
     water: new THREE.MeshStandardMaterial({ color: new THREE.Color(MATERIALS.water.color), roughness: 0.12, metalness: 0.1, transparent: true, opacity: 0.85 }),
     ivory: std('ivory'),
     dark: new THREE.MeshStandardMaterial({ color: new THREE.Color('#1c1712'), roughness: 1 }),
@@ -243,7 +258,7 @@ export function makeMaterials(MATERIALS = BASE_MATERIALS) {
   return M;
 }
 // Tile sizes in cubits (u, v) per texture, for the UV scaling of boxes.
-const TILE = { stone: [6, 6], found: [8, 4], cedar: [4, 4], cedarDark: [4, 4], fir: [4, 4], plaster: [5, 5], plaster2: [5, 5], paving: [5, 5], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], carvedStone: [8, 8], panel: [4, 3] };
+const TILE = { stone: [6, 6], found: [8, 4], ground: [14, 14], cedar: [4, 4], cedarDark: [4, 4], fir: [4, 4], plaster: [5, 5], plaster2: [5, 5], paving: [5, 5], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], carvedStone: [8, 8], panel: [4, 3] };
 
 /** Scale a BoxGeometry's UVs so a texture tiles every face at world scale. */
 function uvBox(geo, w, h, d, tile) {

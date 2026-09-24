@@ -110,6 +110,7 @@ export const CHAMBERS = { x0: -150, x1: -50, z0: 50, z1: 100, h: 18 };   // 42:1
 // ── Parts ────────────────────────────────────────────────────────────────────
 const K = makeKit(LEVEL.out);
 const { box, cyl, ideal, wallX, wallZ, slab, roofOf, stair, seat, lamp, chest, jars, paving, altarFlight } = K;
+const pave = (...a) => paving(...a).map((b) => ({ ...b, ideal: false }));   // a pavement the text gives, shown as itself
 
 /**
  * A gatehouse of 40:6–16, in a local frame: u runs along the passage from its OUTER end (u = 0, the
@@ -152,7 +153,7 @@ function gatehouse(axis, outer, dir, mid, y, flip = false, stepsOut = 7, stepRis
   // thresholds and floor: the passage's floor at y, the two thresholds a hand higher
   out.push(B(0, sill, -pass / 2, pass / 2, y, 0.3, { role: 'threshold', mat: 'stone' }));
   out.push(B(sill + 3 * room + 2 * gap, sill + 3 * room + 2 * gap + sill, -pass / 2, pass / 2, y, 0.3, { role: 'threshold', mat: 'stone' }));
-  out.push(B(0, len, -pass / 2 - room, pass / 2 + room, y - 0.5, 0.5, { role: 'floor', mat: 'paving' }));
+  out.push(B(0, len, -pass / 2 - room, pass / 2 + room, y - 0.4, 0.5, { role: 'floor', mat: 'paving' }));   // its top a hand above the court's ground it stands in
   // the roof over the passage and the porch (the posts stand above it)
   out.push(B(0, len - post, -w / 2, w / 2, y + h, 1.5, { role: 'roof' }));
   // the steps up to the outer end (40:22, 26 seven; 40:31, 34, 37 eight): from the ground below, the gate's width
@@ -177,10 +178,12 @@ function gatehouse(axis, outer, dir, mid, y, flip = false, stepsOut = 7, stepRis
 
 /** The great wall (42:20), 500 square, one reed thick and high, on the ground outside; its west run is the building's back. */
 function greatWall() {
-  const { t, h } = WALL, y = LEVEL.out;
+  const { t, h } = WALL, y = LEVEL.out, g = GATE.w / 2, L = OUT - g;   // each of the three gated runs stands in two lengths, the gatehouse itself filling the gap (40:6)
   return [
-    box(0, y, OUT - t / 2, 2 * OUT, h, t, { role: 'south' }), box(0, y, -OUT + t / 2, 2 * OUT, h, t, { role: 'north' }),
-    box(OUT - t / 2, y, 0, t, h, 2 * OUT, { role: 'east' }), box(-OUT + t / 2, y, 0, t, h, 2 * OUT, { role: 'west' }),
+    box(-(g + OUT) / 2, y, OUT - t / 2, L, h, t, { role: 'south' }), box((g + OUT) / 2, y, OUT - t / 2, L, h, t, { role: 'south' }),
+    box(-(g + OUT) / 2, y, -OUT + t / 2, L, h, t, { role: 'north' }), box((g + OUT) / 2, y, -OUT + t / 2, L, h, t, { role: 'north' }),
+    box(OUT - t / 2, y, -(g + OUT - t) / 2, t, h, L - t, { role: 'east' }), box(OUT - t / 2, y, (g + OUT - t) / 2, t, h, L - t, { role: 'east' }),
+    box(-OUT + t / 2, y, 0, t, h, 2 * OUT - 2 * t, { role: 'west' }),
   ];
 }
 
@@ -192,9 +195,10 @@ function outerCourt() {
   out.push(box(0, y, 0, E, h - 0.3, E, { role: 'terrace', mat: 'found', courses: [10, 8] }));   // the terrace's retaining courses, seen from outside the wall as the built platform it is
   out.push(box(0, y + h - 0.3, 0, E, 0.3, E, { role: 'ground', mat: 'ground' }));
   // the pavement, fifty wide, along the east, north and south walls (the building stands along the west), the gates cut through it
-  const P = GATE.len, e = OUT - WALL.t;
-  out.push(...paving(e - P, e, -e, e, h));
-  out.push(...paving(-e, e - P, -e, -e + P, h), ...paving(-e, e - P, e - P, e, h));
+  const P = GATE.len, e = OUT - WALL.t, g = GATE.w / 2;
+  // the ratzapah (pavement) the text gives (40:17–18) — drawn as itself, not hatched — the gates cut through it
+  out.push(...pave(e - P, e, -e, -g, h), ...pave(e - P, e, g, e, h));
+  out.push(...pave(-e, -g, -e, -e + P, h), ...pave(g, e - P, -e, -e + P, h), ...pave(-e, -g, e - P, e, h), ...pave(g, e - P, e - P, e, h));
   // thirty rooms (40:17), ten on each paved side, five either side of the gate: 24 long, 20 deep, a door to the court (idealized)
   const rooms = (axis, wallAt, sign, from, to) => {
     const step = (to - from) / 5;
@@ -223,14 +227,16 @@ function innerCourt() {
   out.push(box(0, y, 0, INNER.x1 - INNER.x0, h - 0.3, 2 * INNER.z, { role: 'terrace', mat: 'found', courses: [10, 8] }));   // the terrace, built of courses
   out.push(box(0, y + h - 0.3, 0, INNER.x1 - INNER.x0, 0.3, 2 * INNER.z, { role: 'ground', mat: 'paving' }));   // paved
   // the house's platform runs west of it at the same level, the separate place and the building's ground with it
-  out.push(box((HOUSE.x0 + INNER.x0) / 2, y, 0, INNER.x0 - HOUSE.x0, h - 0.3, 2 * CHAMBERS.z0, { role: 'terrace', mat: 'found', courses: [10, 8] }), box((HOUSE.x0 + INNER.x0) / 2, y + h - 0.3, 0, INNER.x0 - HOUSE.x0, 0.3, 2 * CHAMBERS.z0, { role: 'ground', mat: 'ground' }));
-  out.push(box((BINYAN.x0 + HOUSE.x0) / 2, y, 0, HOUSE.x0 - BINYAN.x0, h - 0.3, 2 * (OUT - WALL.t), { role: 'terrace', mat: 'found', courses: [10, 8] }), box((BINYAN.x0 + HOUSE.x0) / 2, y + h - 0.3, 0, HOUSE.x0 - BINYAN.x0, 0.3, 2 * (OUT - WALL.t), { role: 'ground', mat: 'ground' }));
-  // the priests' rooms' ground (north and south of the house) at the inner level too
-  for (const s of [-1, 1]) out.push(box((CHAMBERS.x0 + CHAMBERS.x1) / 2, y, s * (CHAMBERS.z0 + CHAMBERS.z1) / 2, CHAMBERS.x1 - CHAMBERS.x0, h - 0.3, CHAMBERS.z1 - CHAMBERS.z0, { role: 'terrace', mat: 'found', courses: [10, 8] }), box((CHAMBERS.x0 + CHAMBERS.x1) / 2, y + h - 0.3, s * (CHAMBERS.z0 + CHAMBERS.z1) / 2, CHAMBERS.x1 - CHAMBERS.x0, 0.3, CHAMBERS.z1 - CHAMBERS.z0, { role: 'ground', mat: 'ground' }));
+  // the house's platform runs west of it at the same level, with the priests' rooms north and south of the house, the separate place
+  // and the building beyond: one founded block from the court to the great wall, as broad as the priests' rooms (their wall of 42:7
+  // stands on its edge); and each inner gate is founded on the outer court too (its floor eight steps up, 40:31)
+  const zE = CHAMBERS.z1 - 2, T = (x0, x1, z0, z1, mat) => out.push(box((x0 + x1) / 2, y, (z0 + z1) / 2, x1 - x0, h - 0.3, z1 - z0, { role: 'terrace', mat: 'found', courses: [10, 8] }), box((x0 + x1) / 2, y + h - 0.3, (z0 + z1) / 2, x1 - x0, 0.3, z1 - z0, { role: 'ground', mat }));
+  T(-OUT + WALL.t, INNER.x0, -zE, zE, 'ground');
+  T(INNER.x1, INNER.x1 + GATE.len, -GATE.w / 2, GATE.w / 2, 'paving'); T(-GATE.w / 2, GATE.w / 2, -INNER.z - GATE.len, -INNER.z, 'paving'); T(-GATE.w / 2, GATE.w / 2, INNER.z, INNER.z + GATE.len, 'paving');
   // a parapet (idealized) on the east and along the north/south runs between the gates and the rooms
   const t = 2, ph = 4.2, gw = GATE.w / 2 + 1;
   out.push(ideal(box(INNER.x1 - t / 2, LEVEL.inner, -(INNER.z + gw) / 2, t, ph, INNER.z - gw, { role: 'east' })), ideal(box(INNER.x1 - t / 2, LEVEL.inner, (INNER.z + gw) / 2, t, ph, INNER.z - gw, { role: 'east' })));
-  for (const s of [-1, 1]) { out.push(ideal(box((INNER.x1 + gw) / 2 - 0, LEVEL.inner, s * (INNER.z - t / 2), INNER.x1 - gw, ph, t, { role: s > 0 ? 'south' : 'north' })), ideal(box((INNER.x0 - gw) / 2, LEVEL.inner, s * (INNER.z - t / 2), -gw - INNER.x0, ph, t, { role: s > 0 ? 'south' : 'north' }))); }
+  for (const s of [-1, 1]) { out.push(ideal(box((INNER.x1 - t + gw) / 2, LEVEL.inner, s * (INNER.z - t / 2), INNER.x1 - t - gw, ph, t, { role: s > 0 ? 'south' : 'north' })), ideal(box((INNER.x0 - gw) / 2, LEVEL.inner, s * (INNER.z - t / 2), -gw - INNER.x0, ph, t, { role: s > 0 ? 'south' : 'north' }))); }
   return out;
 }
 
@@ -261,7 +267,7 @@ function hayakal() {
   const y = LEVEL.house, h = HAY.h, out = [];
   out.push(box((PORCH_X0 + HAY_X1) / 2, y, 0, HAY.front, h, 2 * HAY.inZ + 2 * HAY.wall, { role: 'east', doorway: { w: 10, h: 14 } }));   // the front, six thick — the posts of the temple (41:1) — its opening ten (41:2)
   for (const s of [-1, 1]) out.push(box((HAY_X0 + HAY_X1) / 2, y, s * (HAY.inZ + HAY.wall / 2), HAY.len, h, HAY.wall, { role: s > 0 ? 'south' : 'north' }));
-  out.push(box((HAY_X0 + HAY_X1) / 2, y + h, 0, HAY.len + HAY.front, 2, 2 * HAY.inZ + 2 * HAY.wall, { role: 'roof', beams: true }));
+  out.push(box((HAY_X0 + PORCH_X0) / 2, y + h, 0, PORCH_X0 - HAY_X0, 2, 2 * HAY.inZ + 2 * HAY.wall, { role: 'roof', beams: true }));
   out.push(box((HAY_X0 + HAY_X1) / 2, y, 0, HAY.len, 0.3, 2 * HAY.inZ, { role: 'floor', mat: 'fir' }));
   return out;
 }
@@ -272,7 +278,7 @@ function holy() {
   out.push(box((HAY_X0 + HOLY_X1) / 2, y, 0, HAY.part, h, 2 * HAY.inZ, { role: 'partition', carved: true, doorway: { w: 6, h: 10 } }));   // the posts of the entrance, two (41:3); the entrance six
   for (const s of [-1, 1]) out.push(box((HOLY_X0 + HOLY_X1) / 2, y, s * (HAY.inZ + HAY.wall / 2), HAY.holy, h, HAY.wall, { role: s > 0 ? 'south' : 'north' }));
   out.push(box((BACK_X + HOLY_X0) / 2, y, 0, HAY.back, h, 2 * HAY.inZ + 2 * HAY.wall, { role: 'west' }));
-  out.push(box((HOLY_X0 + HOLY_X1) / 2, y + h, 0, HAY.holy + HAY.part + HAY.back, 2, 2 * HAY.inZ + 2 * HAY.wall, { role: 'roof', beams: true }));
+  out.push(box((BACK_X + HAY_X0) / 2, y + h, 0, HAY_X0 - BACK_X, 2, 2 * HAY.inZ + 2 * HAY.wall, { role: 'roof', beams: true }));
   out.push(box((HOLY_X0 + HOLY_X1) / 2, y, 0, HAY.holy, 0.3, 2 * HAY.inZ, { role: 'floor', mat: 'fir' }));
   return out;
 }
@@ -284,8 +290,8 @@ function sideRooms() {
   for (let i = 0; i < 3; i++) {
     const yy = y + i * st;
     for (const s of [-1, 1]) {
-      out.push(box((x0 + PORCH_X0) / 2, yy, s * (zOut - HAY.sideWall / 2), PORCH_X0 - x0, st, HAY.sideWall, { role: s > 0 ? 'south' : 'north', storey: i, windows: 1 }));
-      out.push(box((x0 + PORCH_X0) / 2, yy + st - 1, s * (zIn + HAY.side / 2), PORCH_X0 - x0, 1, HAY.side, { role: 'slab', storey: i }));
+      out.push(box((x0 + HAY.sideWall + PORCH_X0) / 2, yy, s * (zOut - HAY.sideWall / 2), PORCH_X0 - x0 - HAY.sideWall, st, HAY.sideWall, { role: s > 0 ? 'south' : 'north', storey: i, windows: 1 }));
+      out.push(box((x0 + HAY.sideWall + PORCH_X0) / 2, yy + st - 1, s * (zIn + HAY.side / 2), PORCH_X0 - x0 - HAY.sideWall, 1, HAY.side, { role: 'slab', storey: i }));
       // ten rooms a storey (41:6): partitions every ten along the side (idealized)
       for (let k = 1; k < 8; k++) out.push(ideal(box(PORCH_X0 - k * ((PORCH_X0 - x0) / 8), yy, s * (zIn + HAY.side / 2), 0.6, st - 1, HAY.side, { mat: 'plaster', role: 'partition' })));
     }
@@ -300,8 +306,8 @@ function sideRooms() {
 function binyan() {
   const y = LEVEL.inner, { x0, x1, z, wallT } = BINYAN, h = 24, out = [];
   out.push(box((x0 + x1) / 2, y, z - wallT / 2, x1 - x0, h, wallT, { role: 'south', windows: 3 }), box((x0 + x1) / 2, y, -z + wallT / 2, x1 - x0, h, wallT, { role: 'north', windows: 3 }));
-  out.push(box(x1 - wallT / 2, y, 0, wallT, h, 2 * z, { role: 'east', doorway: { w: 6, h: 10 } }));
-  out.push(box(x0 + WALL.t / 2, y, 0, WALL.t, h, 2 * z, { role: 'west' }));   // its back, on the great wall's line, rising with it
+  out.push(box(x1 - wallT / 2, y, 0, wallT, h, 2 * z - 2 * wallT, { role: 'east', doorway: { w: 6, h: 10 } }));
+  out.push(box(x0 + WALL.t / 2, LEVEL.out + WALL.h, 0, WALL.t, h + y - LEVEL.out - WALL.h, 2 * z - 2 * wallT, { role: 'west' }));   // its back, on the great wall's line, rising from the wall's top
   out.push(box((x0 + x1) / 2, y + h, 0, x1 - x0, 1.5, 2 * z, { role: 'roof' }));
   // galleries (41:16): two floors round an open well, each reached by a flight of sixteen half-cubit steps along the north wall; the
   // opening over a flight runs from the step where the head nears the slab to EXACTLY its last step (the stair-opening rule)
@@ -316,15 +322,30 @@ function binyan() {
 /** The kahanayam (priests)' rooms (42:1–14): a hundred long, fifty broad, three stories stepping back; a walk of ten before them; north of the house, and the south the same. */
 function chambers(s) {
   const y = LEVEL.inner, { x0, x1, z0, z1 } = CHAMBERS, out = [], sz = (v) => s * v, mm = (a, b) => [Math.min(sz(a), sz(b)), Math.max(sz(a), sz(b))];
-  // the wall toward the outer court, fifty long (42:7), at the terrace's edge; the walk of ten (42:4) inside it; the rooms beyond,
-  // three stories stepping back from the walk (42:5–6), their doors toward the outer court (42:4)
-  out.push(box((x0 + x1) / 2, LEVEL.outer, sz(z1 - 1), x1 - x0, LEVEL.inner - LEVEL.outer + 6, 2, { role: s > 0 ? 'south' : 'north' }));
-  out.push(...paving(x0, x1, ...mm(z1 - 12, z1 - 2), y));
-  for (let i = 0; i < 3; i++) {
-    const [d0, d1] = mm(z0, z1 - 12 - 6 * i), yy = y + i * 8;
-    out.push(ideal(box((x0 + x1) / 2, yy, (d0 + d1) / 2, x1 - x0, 8, d1 - d0, { mat: 'plaster', role: 'block', storey: i, windows: 1 })));
+  const ST = 8, D = 20, WK = 10;   // a storey, the depth of the rooms before the temple, the walk (42:4)
+  // the plan (42:1–9): a row of rooms a hundred long before the temple (42:8), a walk of ten before them (42:4), and toward the
+  // outer court a row fifty long (42:8) with the wall of fifty (42:7) taking the rest of the front; the entry from the outer
+  // court at the east end, below (42:9), eight steps up to the walk; the rooms' doors on the walk — toward the north (42:4)
+  const inner = mm(z0, z0 + D), walk = mm(z0 + D, z0 + D + WK), outer = mm(z0 + D + WK, z1 - 2);
+  const row = (X0, X1, [Z0, Z1], doorsAt, n, windowsAt) => {   // a row of n rooms between Z0 and Z1: its two long walls (doors in one), ends, partitions, roof
+    const t = 1, wide = (X1 - X0) / n;
+    out.push(...wallX(windowsAt + (windowsAt < doorsAt ? t / 2 : -t / 2), X0 + t, X1 - t, ST, null, 3, y).map((b) => ({ ...b, windows: 1 })));
+    for (let i = 0; i < n; i++) out.push(...wallX(doorsAt + (doorsAt < windowsAt ? t / 2 : -t / 2), X0 + (i ? 0 : t) + i * wide, X0 + (i + 1) * wide - (i === n - 1 ? t : 0), ST, X0 + (i + 0.5) * wide, 3, y));
+    out.push(...wallZ(X0 + t / 2, Z0, Z1, ST, null, 3, y), ...wallZ(X1 - t / 2, Z0, Z1, ST, null, 3, y));
+    for (let i = 1; i < n; i++) out.push(...wallZ(X0 + i * wide, Z0 + t, Z1 - t, ST, null, 3, y));
+    out.push(...roofOf(X0, X1, Z0, Z1, y + ST).filter((b) => b.role === 'roof'));
+  };
+  row(x0, x1, inner, walk[s > 0 ? 0 : 1], 8, inner[s > 0 ? 0 : 1]);             // the row before the temple: doors on the walk, windows toward the house
+  row(x1 - 50, x1, outer, walk[s > 0 ? 1 : 0], 4, outer[s > 0 ? 1 : 0]);        // the row toward the outer court: doors on the walk, windows toward the court
+  out.push(box((x0 + x0 + 50) / 2, LEVEL.outer, sz(z1 - 1), 50, LEVEL.inner - LEVEL.outer + 6, 2, { role: s > 0 ? 'south' : 'north' }));   // the gadar (wall) of 42:7, fifty, from the outer court's ground
+  out.push(...pave(x0, x1, ...walk, y));                                                                  // the mahalak (walk), paved
+  out.push(...stair('x', x1 + 8, sz(z0 + D + WK / 2), 8, 8, -1, LEVEL.outer, 0.5, 1).map((b) => ({ ...b, ideal: false })));   // the entry on the east (42:9), up from the outer court
+  // the upper stories, stepping back from the walk (42:5–6): solid, idealized, on the ground storey's roof
+  for (let i = 1; i < 3; i++) {
+    const yy = y + ST + 1.5 + (i - 1) * ST, [a0, a1] = mm(z0, z0 + D - 6 * i), [b0, b1] = mm(z1 - 2 - (outer[1] - outer[0]) + 6 * i, z1 - 2);
+    out.push(ideal(box((x0 + x1) / 2, yy, (a0 + a1) / 2, x1 - x0, ST, a1 - a0, { mat: 'plaster', role: 'block', storey: i, windows: 1 })));
+    out.push(ideal(box(x1 - 25, yy, (b0 + b1) / 2, 50, ST, b1 - b0, { mat: 'plaster', role: 'block', storey: i, windows: 1 })));
   }
-  for (let k = 0; k < 8; k++) out.push(ideal(box(x0 + 6 + k * 12.5, y, sz(z1 - 12 - 0.6), 3, 6, 1.2, { mat: 'cedar', role: 'leaf' })));   // eight doors on the walk (idealized)
   return out;
 }
 
@@ -572,7 +593,7 @@ export const PIECES = [
     measures: [['arak (length)', '100 amah, before which the north door', '42:2'], ['rachab (breadth)', '50 amah', '42:2'], ['athawaq (gallery) against gallery', 'in the third story', '42:3'], ['mahalak (walk)', '10 amah broad inward; a way of 1', '42:4'], ['stories', '3, the uppermost straitened, without pillars', '42:5–6'], ['the gadar (wall) toward the outer court', '50 amah', '42:7'], ['entry', 'on the east, from the outer court', '42:9']],
     note: '"{{Ezekiel 42:13 | Then he amar … qadawash}}" — the holy rooms where the priests who come near eat the most holy things and lay down the garments they minister in (42:14); over against the separate place and the building, three stories stepping back as they rise.',
     elsewhere: { ref: 'Ezekiel 44:19; 46:19–20; Leviticus 6:16, 26; 1 Kings 6:5', note: 'They shall put off their garments in the holy rooms (44:19); the priests\' boiling place at their west end (46:19–20); the most holy things eaten in the holy place.' },
-    assumed: 'The block\'s plan — three stepped stories along the outer court\'s side, the walk before them, eight doors — is a reconstruction of 42:1–9.',
+    assumed: 'The plan is a reconstruction of 42:1–9: a row of eight rooms a hundred long before the temple and a row of four toward the outer court, their doors on the walk of ten between them, the wall of fifty before the rest of the front, the entry from the outer court up eight steps at the east end; a storey of eight, and the upper two stories solid, stepping back from the walk.',
     parts: chambers(-1),
   },
   {
@@ -780,7 +801,8 @@ export const MODEL = {
     openDefault: (k) => (k.includes(':') && !k.startsWith('gate-east') ? 1 : 0),   // every gate open but the east one, where the walk begins (and which is shut afterward, 44:1–2); the doors shut
   },
   scene: {
-    sky: 0xc4d6e8, shadowR: 300, fog: [900, 2400], maxDistance: 1400, earth: '#6a5a3f',   // the plain outside the wall, darker than the stone
+    sky: 0xc4d6e8, shadowR: 300, fog: [900, 2400], maxDistance: 1400, earth: '#5f7a3e',   // the land about the house green (the waters of 47:1–12 heal it — fieldy: an oasis), the courts trodden earth and stone
+    lighting: { sun: 3.1, hemi: 0.62 },   // a harder sun, a dimmer sky: the walls' faces and the drops between the levels read (fieldy: better shading and contrast)
     lights: [
       { key: 'hallLight', color: 0xffd9a0, distance: 70, pos: [(HAY_X0 + HAY_X1) / 2, LEVEL.house + 14, 0], on: () => 320 },
       { key: 'holyLight', color: 0xffe2b0, distance: 40, pos: [(HOLY_X0 + HOLY_X1) / 2, LEVEL.house + 12, 0], on: () => 220 },
@@ -796,7 +818,7 @@ export const MODEL = {
       labels: [
         [225, 0, 'shair'], [0, -225, 'shair'], [0, 225, 'shair'], [75, 0, 'inner shair'], [0, -75, 'inner shair'], [0, 75, 'inner shair'],
         [150, 0, 'chayatzawan chatzar'], [0, -150, 'chayatzawan chatzar'], [0, 150, 'chayatzawan chatzar'], [25, 25, 'chatzar'], [0, 0, 'mazabach'],
-        [-55, 0, 'awalam'], [-87, 0, 'hayakal'], [-119, 0, 'qadash'], [-100, -75, 'kahanayam'], [-100, 75, 'kahanayam'], [-210, 0, 'banayan'], [-160, 0, 'gazarah'],
+        [-55, 0, 'awalam'], [-87, 0, 'hayakal'], [-119, 0, 'qadash'], [-100, -60, 'kahanayam'], [-100, 60, 'kahanayam'], [-210, 0, 'banayan'], [-160, 0, 'gazarah'],
       ],
       radius: 120,
       // the places the big map offers (a building drills down to its rooms; `at` is where the walker is taken to stand)
@@ -823,8 +845,12 @@ export const MODEL = {
           { label: 'tzalai (side) rooms · south', bounds: { x0: -146, x1: -61, z0: 16, z1: 31 }, at: [-100, 36] },
         ] },
         { label: 'banayan (building)', bounds: { x0: -250, x1: -170, z0: -45, z1: 45 }, at: [-200, 0] },
-        { label: 'kahanayam (priests)\' rooms · north', bounds: { x0: -150, x1: -50, z0: -100, z1: -50 }, at: [-100, -93] },
-        { label: 'kahanayam (priests)\' rooms · south', bounds: { x0: -150, x1: -50, z0: 50, z1: 100 }, at: [-100, 93] },
+        ...[-1, 1].map((s) => ({ label: `kahanayam (priests)' rooms · ${s < 0 ? 'north' : 'south'}`, bounds: { x0: -150, x1: -42, z0: Math.min(s * 50, s * 100), z1: Math.max(s * 50, s * 100) }, children: [
+          { label: 'the entry from the outer court (42:9)', bounds: { x0: -58, x1: -42, z0: Math.min(s * 70, s * 80), z1: Math.max(s * 70, s * 80) }, at: [-46, s * 75] },
+          { label: 'mahalak (walk) of ten', bounds: { x0: -150, x1: -58, z0: Math.min(s * 70, s * 80), z1: Math.max(s * 70, s * 80) }, at: [-100, s * 75] },
+          ...Array.from({ length: 8 }, (_, i) => ({ label: `room ${i + 1} before the hayakal (temple)`, bounds: { x0: -150 + i * 12.5, x1: -150 + (i + 1) * 12.5, z0: Math.min(s * 50, s * 70), z1: Math.max(s * 50, s * 70) }, at: [-150 + (i + 0.5) * 12.5, s * 60] })),
+          ...Array.from({ length: 4 }, (_, i) => ({ label: `room ${i + 1} toward the chatzar (court)`, bounds: { x0: -100 + i * 12.5, x1: -100 + (i + 1) * 12.5, z0: Math.min(s * 80, s * 98), z1: Math.max(s * 80, s * 98) }, at: [-100 + (i + 0.5) * 12.5, s * 89] })),
+        ] })),
       ],
     },
     inHouse: IN_HOUSE,
