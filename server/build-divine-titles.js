@@ -42,7 +42,8 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
             verse INTEGER NOT NULL, token_ordinal INTEGER NOT NULL, title_id TEXT NOT NULL);
         CREATE TABLE divine_refs (
             title_id TEXT NOT NULL, src TEXT NOT NULL, book_id INTEGER, code TEXT,
-            chapter INTEGER NOT NULL, verse INTEGER NOT NULL, n INTEGER NOT NULL);
+            chapter INTEGER NOT NULL, verse INTEGER NOT NULL, n INTEGER NOT NULL,
+            form TEXT NOT NULL DEFAULT '');   -- the written word(s) of this hit (paleo, space-joined for compounds)
         CREATE TABLE divine_titles (
             id TEXT PRIMARY KEY, ord INTEGER NOT NULL, kind TEXT NOT NULL, grp TEXT NOT NULL,
             en TEXT, sns_json TEXT NOT NULL, occurrences INTEGER NOT NULL, verses INTEGER NOT NULL,
@@ -50,14 +51,14 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
         CREATE TABLE divine_meta (key TEXT PRIMARY KEY, value TEXT);
     `);
     const insHit = out.prepare(`INSERT INTO divine_hits VALUES (?,?,?,?,?,?,?)`);
-    const insRef = out.prepare(`INSERT INTO divine_refs VALUES (?,?,?,?,?,?,?)`);
+    const insRef = out.prepare(`INSERT INTO divine_refs VALUES (?,?,?,?,?,?,?,?)`);
 
     const stats = new Map();   // title id -> { occ, verses:Set, forms:Map, books:Map(bk -> n) }
     const statOf = id => {
         if (!stats.has(id)) stats.set(id, { occ: 0, verses: new Set(), forms: new Map(), books: new Map() });
         return stats.get(id);
     };
-    const refCounts = new Map(); // "id|src|book|code|ch|v" -> n
+    const refCounts = new Map(); // "id|src|book|code|ch|v|form" -> n
     let hitRows = 0;
 
     const scan = (sql, srcTag, inferred) => {
@@ -80,7 +81,7 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
                     s.occ++; s.verses.add(`${bk}|${r0.chapter}|${r0.verse}`);
                     if (form) s.forms.set(form, (s.forms.get(form) || 0) + 1);
                     s.books.set(bk, (s.books.get(bk) || 0) + 1);
-                    const rk = `${id}|${bk}|${r0.chapter}|${r0.verse}`;
+                    const rk = `${id}|${bk}|${r0.chapter}|${r0.verse}|${form || ''}`;
                     refCounts.set(rk, (refCounts.get(rk) || 0) + 1);
                 };
                 for (const h of hits) add(h.id, h.ords.map(o => rawOf.get(o)).join(' '));
@@ -104,13 +105,13 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
         if (has('tokens_nt_docs')) scan(`SELECT code, ${COLS} FROM tokens_nt_docs ORDER BY code, chapter, verse, token_ordinal`, 'DOC', true);
 
         for (const [rk, n] of refCounts) {
-            const [id, s, b, code, c, v] = rk.split('|');
-            insRef.run(id, s, b ? +b : null, code || null, +c, +v, n);
+            const [id, s, b, code, c, v, form] = rk.split('|');
+            insRef.run(id, s, b ? +b : null, code || null, +c, +v, n, form || '');
         }
         const insTitle = out.prepare(`INSERT INTO divine_titles VALUES (?,?,?,?,?,?,?,?,?,?,?)`);
         const ser = (id, ord, kind, grp, en, sns) => {
             const s = statOf(id);
-            const forms = [...s.forms.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([paleo, n]) => ({ paleo, n }));
+            const forms = [...s.forms.entries()].sort((a, b) => b[1] - a[1]).slice(0, 60).map(([paleo, n]) => ({ paleo, n }));
             const books = [...s.books.entries()].map(([bk, n]) => { const [src, b, code] = bk.split('|'); return { src, book_id: b ? +b : null, code: code || null, n }; });
             insTitle.run(id, ord, kind, grp, en || '', JSON.stringify(sns), s.occ, s.verses.size, s.books.size, JSON.stringify(forms), JSON.stringify(books));
         };

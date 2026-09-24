@@ -25,7 +25,10 @@ html[data-theme="light"] .dt-wrap { --dt-gold: #775500; }
 .dt-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
 .dt-sns { font-size: 11.5px; color: var(--text3); border: 1px solid var(--border2); border-radius: 4px; padding: 1px 6px; }
 .dt-forms { display: flex; flex-wrap: wrap; gap: 6px; }
-.dt-form { display: inline-flex; align-items: baseline; gap: 5px; background: var(--bg3); border-radius: 999px; padding: 2px 9px; font-size: 12px; }
+.dt-form { display: inline-flex; align-items: baseline; gap: 5px; background: var(--bg3); border: 1px solid transparent; border-radius: 999px; padding: 2px 9px; font: inherit; font-size: 12px; color: var(--text); cursor: pointer; }
+.dt-form:hover { border-color: var(--dt-gold); }
+.dt-form.on { border-color: var(--dt-gold); background: color-mix(in srgb, var(--dt-gold) 22%, var(--bg3)); }
+.dt-form-n { font-size: 10.5px; color: var(--text3); font-variant-numeric: tabular-nums; }
 .dt-form-paleo { font-family: var(--paleo-font); font-size: 15px; color: var(--dt-gold); unicode-bidi: isolate; }
 .dt-form-tr { color: var(--text2); }
 .dt-msg { font-size: 13px; color: var(--text3); padding: 6px 0; }
@@ -37,10 +40,31 @@ html[data-theme="light"] .dt-wrap { --dt-gold: #775500; }
 .dt-src { font-size: 11px; color: var(--text3); }
 .dt-book-n { margin-left: auto; color: var(--text3); font-variant-numeric: tabular-nums; }
 .dt-refs { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 0 8px 20px; }
-.dt-ref { font-size: 12.5px; color: var(--text); text-decoration: none; border: 1px solid var(--border2); border-radius: 5px; padding: 1px 6px; font-variant-numeric: tabular-nums; }
+.dt-ref { font: inherit; font-size: 12.5px; color: var(--text); background: none; border: 1px solid var(--border2); border-radius: 5px; padding: 1px 6px; font-variant-numeric: tabular-nums; cursor: pointer; }
+.dt-ref.on { background: var(--dt-gold); border-color: var(--dt-gold); color: #1a1208; }
+.dt-ref.on sup { color: #1a1208; }
 .dt-ref:hover { border-color: var(--dt-gold); color: var(--dt-gold); }
 .dt-ref sup { font-size: 9px; color: var(--text3); margin-left: 1px; }
+/* "More works" — every work the main reader does not list. */
+.dt-more { border-top: 1px solid var(--border); margin-top: 4px; }
+.dt-more-h { width: 100%; display: flex; align-items: baseline; gap: 8px; padding: 8px 0; background: none; border: 0; color: var(--text2); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; text-align: left; }
+.dt-more-h small { font-weight: 400; color: var(--text3); }
+.dt-more > .dt-book { margin-left: 14px; }
+/* The verse, loaded in place. */
+.dt-verse { margin: 0 0 10px 20px; border: 1px solid var(--border2); border-left: 3px solid var(--dt-gold); border-radius: 8px; background: var(--bg); padding: 8px 10px; }
+.dt-verse-h { display: flex; align-items: center; gap: 10px; font-size: 13px; margin-bottom: 4px; }
+.dt-verse-ref { font-weight: 700; color: var(--dt-gold); }
+.dt-verse-go { margin-left: auto; color: var(--text2); text-decoration: none; border: 1px solid var(--border2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+.dt-verse-go:hover { border-color: var(--dt-gold); color: var(--text); }
+.dt-verse-x { background: none; border: 0; color: var(--text3); cursor: pointer; font-size: 13px; }
+.dt-verse-en { margin: 4px 0 8px; font-size: 14px; line-height: 1.55; color: var(--text); }
+.dt-verse-words { display: flex; flex-wrap: wrap; gap: 4px 2px; align-items: flex-start; }
+/* The focus word. body + !important: WordBlock.css's card reset strips any
+   plain background/border (see CLAUDE.md, "!important card-reset"). */
+body .word-block.dt-focus { outline: 2px solid var(--dt-gold, #d4a010) !important; outline-offset: 2px; border-radius: 8px !important;
+  background: color-mix(in srgb, #d4a010 14%, transparent) !important; }
 @media (max-width: 640px) {
+  .dt-verse { margin-left: 0; }
   .dt-wrap { padding: 10px 12px 32px; }
   .dt-count { margin-left: 22px; width: 100%; }
   .dt-body { padding-left: 12px; }

@@ -39,6 +39,18 @@ false-god uses (listed separately, not gold), and the full compound set.
   `server/divine-titles.cache.json` (gitignored), rebuilt when corpus.db,
   divine-titles.json or strongs-roots.json changes.
 
+**Round 4, same day — the tab stays on the page.** fieldy: pick a written variant ("if i
+click 'Yahaw' only those will show"), a chapter:verse loads IN the page with that word
+highlighted, with an option to go to the verse; main-reader books first, other works behind
+an expander. `divine_refs` now carries `form` (the hit's written word(s)); the refs endpoint
+returns `[c, v, n, {form: count}]`; `forms_json` keeps up to 60 forms. DivineTitles.jsx: form
+chips filter the refs; a ref opens a VersePanel (apiTokens / apiDocTokens + apiTransChapter,
+cached per chapter) rendering WordBlocks, the focus word = carries a gold mark (comp.divine)
+AND its source token's word_raw is one of the selected forms ("other gods" match on spelling
+alone) → `.dt-focus`; "Open verse →" links out. Books: `apiBookOrder()` = what the main reader
+lists (in its order); everything else (Works Library docs, unlisted books) under "More works".
+Needs a re-bake (`node build-divine-titles.js`) — the old tables have no `form` column.
+
 **Round 3, same day — BAKED, no runtime crunching.** fieldy: "this is something that'll be
 baked into a database/index, my server doesnt need to be crunching for data that doesnt
 change." The first version ran the matcher live (a ~3 s full-corpus scan on first tab load,

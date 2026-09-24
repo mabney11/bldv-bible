@@ -8854,7 +8854,7 @@ app.get('/api/divine-titles', production.cache(3600), (req, res) => {
 });
 app.get('/api/divine-titles/refs', production.cache(3600), (req, res) => {
     try {
-        const q = divineStmt('refs', `SELECT src, book_id, code, chapter, verse, n FROM divine_refs WHERE title_id=?`);
+        const q = divineStmt('refs', `SELECT src, book_id, code, chapter, verse, n, form FROM divine_refs WHERE title_id=?`);
         if (!q) return res.status(503).json(DIVINE_NOT_BAKED);
         const id = String(req.query.id || '');
         const SRC_ORDER = { BHS: 0, HEB: 1, DOC: 2 };
@@ -8864,11 +8864,15 @@ app.get('/api/divine-titles/refs', production.cache(3600), (req, res) => {
             if (!books.has(bk)) books.set(bk, { src: r.src, book_id: r.book_id, code: r.code, name: r.src === 'DOC' ? r.code : canonName(r.book_id), refs: new Map() });
             // BHS rows carry Masoretic numbering; list them the way the pages number them.
             const [c, v] = r.src === 'BHS' ? bhsToDisplayRef(r.book_id, r.chapter, r.verse) : [r.chapter, r.verse];
-            const m = books.get(bk).refs; m.set(`${c}:${v}`, (m.get(`${c}:${v}`) || 0) + r.n);
+            // One entry per verse; `forms` = which written forms occur there, so
+            // the tab can filter to a single variant (e.g. only "Yahaw").
+            const m = books.get(bk).refs, rk = `${c}:${v}`;
+            if (!m.has(rk)) m.set(rk, { n: 0, forms: {} });
+            const e = m.get(rk); e.n += r.n; if (r.form) e.forms[r.form] = (e.forms[r.form] || 0) + r.n;
         }
         const out = [...books.values()]
             .sort((a, b) => SRC_ORDER[a.src] - SRC_ORDER[b.src] || (a.book_id ?? 0) - (b.book_id ?? 0) || String(a.code).localeCompare(String(b.code)))
-            .map(b => ({ ...b, refs: [...b.refs.entries()].map(([k, n]) => { const [c, v] = k.split(':').map(Number); return [c, v, n]; }).sort((x, y) => x[0] - y[0] || x[1] - y[1]) }));
+            .map(b => ({ ...b, refs: [...b.refs.entries()].map(([k, e]) => { const [c, v] = k.split(':').map(Number); return [c, v, e.n, e.forms]; }).sort((x, y) => x[0] - y[0] || x[1] - y[1]) }));
         res.json({ id, books: out });
     } catch (err) {
         console.error('/api/divine-titles/refs failed:', err);
