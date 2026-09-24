@@ -19,45 +19,52 @@ HOST="${PALEO_PROD_HOST:-paleo-prod}"
 RREPO="${PALEO_PROD_REPO:-/root/paleo-studio}"
 DATA="${PALEO_PROD_DATA_DIR:-/mnt/paleo-data}"
 SSH="ssh -o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no"
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
-step() { echo; echo "=== [$(date '+%H:%M:%S')] $* ==="; }
+# Everything lives in main() and is only CALLED on the last line, so bash
+# parses the whole file before running any of it. Without this, editing this
+# file while a Rebake is running (e.g. a git pull mid-run) makes bash resume
+# at a stale byte offset -- "syntax error near unexpected token" (2026-09-24).
+main() {
+  cd "$(dirname "${BASH_SOURCE[0]}")/.."
+  step() { echo; echo "=== [$(date '+%H:%M:%S')] $* ==="; }
 
-step "1/4  surface-index.db: is the local bake current?"
-# Fresh = newer than both what it is baked FROM (corpus.db) and the parser
-# that bakes it (build-surface-index.js) -- same rule as the widget's Bake line.
-# Then there is nothing to rebuild; push the file as-is.
-SI_M=$(stat -c %Y server/surface-index.db 2>/dev/null || echo 0)
-CO_M=$(stat -c %Y server/corpus.db)
-BS_M=$(stat -c %Y server/build-surface-index.js)
-if [ "$SI_M" -gt "$CO_M" ] && [ "$SI_M" -gt "$BS_M" ]; then
-  echo "local surface-index.db is current -> no rebuild needed"
-else
-  echo "local surface-index.db is stale -> rebuilding"
-  if ! (cd server && node build-surface-index.js); then
-    echo
-    echo "!! Rebuild failed. If the error mentions EBUSY / EPERM / 'database is locked',"
-    echo "!! the local server has surface-index.db open (Windows will not replace an open"
-    echo "!! file). Stop the local server (Ctrl+C in its window), click Rebake again, then"
-    echo "!! restart the server."
-    exit 1
+  step "1/4  surface-index.db: is the local bake current?"
+  # Fresh = newer than both what it is baked FROM (corpus.db) and the parser
+  # that bakes it (build-surface-index.js) -- same rule as the widget's Bake line.
+  # Then there is nothing to rebuild; push the file as-is.
+  SI_M=$(stat -c %Y server/surface-index.db 2>/dev/null || echo 0)
+  CO_M=$(stat -c %Y server/corpus.db)
+  BS_M=$(stat -c %Y server/build-surface-index.js)
+  if [ "$SI_M" -gt "$CO_M" ] && [ "$SI_M" -gt "$BS_M" ]; then
+    echo "local surface-index.db is current -> no rebuild needed"
+  else
+    echo "local surface-index.db is stale -> rebuilding"
+    if ! (cd server && node build-surface-index.js); then
+      echo
+      echo "!! Rebuild failed. If the error mentions EBUSY / EPERM / 'database is locked',"
+      echo "!! the local server has surface-index.db open (Windows will not replace an open"
+      echo "!! file). Stop the local server (Ctrl+C in its window), click Rebake again, then"
+      echo "!! restart the server."
+      exit 1
+    fi
   fi
-fi
 
-step "2/4  corpus.db: comparing local vs prod"
-LOCAL_M=$(stat -c %Y server/corpus.db)
-PROD_M=$($SSH "$HOST" "stat -c %Y $DATA/corpus.db" 2>/dev/null || echo 0)
-echo "local corpus.db mtime $(date -d @"$LOCAL_M" '+%F %T')  |  prod $( [ "$PROD_M" -gt 0 ] && date -d @"$PROD_M" '+%F %T' || echo unknown)"
-if [ "$LOCAL_M" -gt "$PROD_M" ]; then
-  echo "local is newer -> pushing corpus.db (large; this is the slow step)"
-  DB=corpus.db bash scripts/sync-corpus-to-prod.sh widget-rebake
-else
-  echo "prod already has this corpus.db -> skipped"
-fi
+  step "2/4  corpus.db: comparing local vs prod"
+  LOCAL_M=$(stat -c %Y server/corpus.db)
+  PROD_M=$($SSH "$HOST" "stat -c %Y $DATA/corpus.db" 2>/dev/null || echo 0)
+  echo "local corpus.db mtime $(date -d @"$LOCAL_M" '+%F %T')  |  prod $( [ "$PROD_M" -gt 0 ] && date -d @"$PROD_M" '+%F %T' || echo unknown)"
+  if [ "$LOCAL_M" -gt "$PROD_M" ]; then
+    echo "local is newer -> pushing corpus.db (large; this is the slow step)"
+    DB=corpus.db bash scripts/sync-corpus-to-prod.sh widget-rebake
+  else
+    echo "prod already has this corpus.db -> skipped"
+  fi
 
-step "3/4  Pushing surface-index.db to prod"
-DB=surface-index.db bash scripts/sync-corpus-to-prod.sh widget-rebake
+  step "3/4  Pushing surface-index.db to prod"
+  DB=surface-index.db bash scripts/sync-corpus-to-prod.sh widget-rebake
 
-step "4/4  Blue/green deploy on prod (containers pick up the new files)"
-$SSH "$HOST" "sudo -n bash -c 'cd $RREPO && ./deploy-blue-green.sh'"
+  step "4/4  Blue/green deploy on prod (containers pick up the new files)"
+  $SSH "$HOST" "sudo -n bash -c 'cd $RREPO && ./deploy-blue-green.sh'"
 
-step "Rebake complete"
+  step "Rebake complete"
+}
+main "$@"
