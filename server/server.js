@@ -2583,6 +2583,86 @@ function mergeRootDisplay(surface, canonical) {
     return out.join('');
 }
 
+// ── ADDITIVE MERGE WITHOUT THE EXTRA-LETTER CAP (2026-09-24) ─────────────────
+// Kept in sync with build-surface-index.js. mergeRootDisplay refuses (null) once the surface
+// carries more than 2 letters outside the canonical root, and the caller then
+// fell back to the BARE canonical root, silently discarding every written
+// letter that differed: 𐤀𐤌𐤍𐤕 (construct) -> 𐤀𐤌𐤅𐤍𐤄 with the 𐤕 gone, 𐤄𐤏𐤋𐤅𐤕 ->
+// 𐤏𐤋𐤄 with 𐤄/𐤅𐤕 gone, 𐤀𐤌𐤕𐤉𐤌 -> 𐤀𐤌𐤄. fieldy's rule is the root PLUS every
+// modification, so this aligns the surface to the canonical root (LCS) and
+// keeps every written letter, tagged by where it sits:
+//   lead  — written letters before the root  -> prefix chips (guessPrefixGloss)
+//   core  — the full canonical root with any interior written letters kept in
+//           place (maters, polel doubling), exactly like mergeRootDisplay does
+//   trail — written letters after the root   -> suffix chips (splitTrailResidue)
+// minLcs: when the Strong's root is already TRUSTED for this word
+// (_canonTrusted — at most 2 radicals absent), one shared letter anchors the
+// alignment (𐤍𐤈𐤄 written 𐤈: I-nun assimilated + III-he apocopated). When only
+// the length heuristic vouches for it, at most one root letter may be absent;
+// a suppletive form (𐤍𐤔𐤉𐤌 for 𐤀𐤉𐤔𐤄) shares too little with
+// its root to align and keeps the old behaviour (flagged, not guessed).
+function fullMergeRootDisplay(surface, canonical, minLcs) {
+    const S = surface, C = canonical, m = S.length, n = C.length;
+    if (n < 2 || m < 1) return null;
+    const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+    for (let i = 1; i <= m; i++)
+        for (let j = 1; j <= n; j++)
+            dp[i][j] = S[i - 1] === C[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    const lcs = dp[m][n];
+    if (lcs < 1 || lcs < (minLcs === undefined ? n - 1 : minLcs)) return null;
+    const pairs = [];
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (S[i - 1] === C[j - 1]) { pairs.push([i - 1, j - 1]); i--; j--; }
+        else if (dp[i - 1][j] >= dp[i][j - 1]) i--; else j--;
+    }
+    pairs.reverse();
+    const out = [];   // [letter, 'S' surface-only | 'C' canonical]
+    let si = 0, ci = 0;
+    for (const [pi, pj] of pairs) {
+        while (ci < pj) { out.push([C[ci], 'C']); ci++; }
+        while (si < pi) { out.push([S[si], 'S']); si++; }
+        out.push([C[pj], 'C']); ci = pj + 1; si = pi + 1;
+    }
+    while (ci < n) { out.push([C[ci], 'C']); ci++; }
+    while (si < m) { out.push([S[si], 'S']); si++; }
+    let a = 0, b = out.length;
+    while (a < b && out[a][1] === 'S') a++;
+    while (b > a && out[b - 1][1] === 'S') b--;
+    const join = arr => arr.map(x => x[0]).join('');
+    return { lead: join(out.slice(0, a)), core: join(out.slice(a, b)), trail: join(out.slice(b)) };
+}
+
+// Trailing written letters after the root -> chips. A whole-residue class
+// (classifyResidue / GRAMMAR_MAP) wins; otherwise split right-to-left into the
+// FLAT_SUFFIX vocabulary (one letter-string, one meaning — 𐤕𐤉𐤌 = 𐤕 [Feminine]
+// + 𐤉𐤌 [Plural]); a remainder the vocabulary can't cover stays ONE flagged
+// chip (mod-suff-unk) rather than being guessed. Kept in sync with build-surface-index.js.
+function splitTrailResidue(trail, pos, attributes, trueRoot) {
+    if (!trail) return [];
+    const chip = (paleo, g) => ({
+        paleo, translit: '',
+        translation: g ? `[${g.trans}]` : `[${getTranslit(paleo)}]`,
+        css: g ? (g.css || 'mod-suff-unk') : 'mod-suff-unk',
+        bakedSplit: true,
+    });
+    const whole = classifyResidue(trail, pos, attributes, trueRoot) || guessSuffixGloss(trail);
+    if (whole) return [chip(trail, whole)];
+    const L = [...trail], pieces = [];
+    let end = L.length;
+    while (end > 0) {
+        let hit = null;
+        for (let start = 0; start < end; start++) {          // longest piece first
+            const piece = L.slice(start, end).join('');
+            if (FLAT_SUFFIX[piece]) { hit = start; break; }
+        }
+        if (hit === null) return [chip(trail, null)];
+        pieces.unshift(L.slice(hit, end).join(''));
+        end = hit;
+    }
+    return pieces.map(pc => chip(pc, guessSuffixGloss(pc) || { trans: FLAT_SUFFIX[pc], css: 'mod-suff-unk' }));
+}
+
 // ── PRONOMINAL SUFFIX (DISPLAY ONLY) ─────────────────────────────────────────
 // Maps a morphology pronominal_suffix tag to its BARE Paleo consonant. This is
 // used purely to RENDER the suffix in the reader — "root + all modifications" —
@@ -3295,14 +3375,20 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // and is deliberately NOT affected by any of this.
             const _prsInfo = attributes['prs'] ? PRS_TAG[attributes['prs']] : null;
             let rootZone = displayRoot;
-            if (_prsInfo && _prsInfo.paleo && rootZone.endsWith(_prsInfo.paleo)) {
+            // Kept in sync with build-surface-index.js: a pronominal suffix FOLLOWS a
+            // written verbal ending, so once a vbe chip has taken letters off the end
+            // what now ends displayRoot is not the suffix (the III-he 𐤉 of 𐤓𐤀𐤉𐤕 was
+            // being peeled as the 1cs 𐤉 and re-appended after the 𐤕).
+            const _vbeWritten = !!(vbeObj && vbeObj.paleo && !vbeObj.synthetic);
+            const _prsPeeled = !!(_prsInfo && _prsInfo.paleo && !_vbeWritten && rootZone.endsWith(_prsInfo.paleo));
+            if (_prsPeeled) {
                 rootZone = rootZone.slice(0, rootZone.length - _prsInfo.paleo.length);
             }
             // Emit the suffix from the tag (reconstructed if the surface omitted it).
             if (_prsInfo) {
                 prsObj = { paleo: _prsInfo.paleo, translit: '',
                            translation: `[${_prsInfo.trans}]`, css: _prsInfo.css,
-                           reconstructed: !displayRoot.endsWith(_prsInfo.paleo) };
+                           reconstructed: !_prsPeeled };
             }
             const _rootZoneLen = [...rootZone].length;
             const pdp = attributes['pdp'] || '';
@@ -3419,6 +3505,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             //   mater  הַנְחִיל: 𐤍𐤑𐤉𐤋 + canonical 𐤍𐤑𐤋 → 𐤍𐤑𐤉𐤋 (yod mater kept)
             let trueRoot;
             let rootDisplay;   // reader-facing root: canonical + kept surface modifications
+            let _fmLead = '', _fmTrail = '';   // written letters around the root (fullMergeRootDisplay)
             if (_canonicalRoot && !skipMutate) {
                 // trueRoot (→ root_paleo) uses displayRoot — the BASELINE input.
                 const merged     = mergeRootDisplay([...displayRoot], [..._canonicalRoot]);
@@ -3468,7 +3555,10 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 } else if (rzMerged) {
                     rootDisplay = rzMerged;
                 } else if (!rzFirst || _canonTrusted || _lengthTrusted) {
-                    rootDisplay = _canonicalRoot;
+                    // Keep every written letter — kept in sync with build-surface-index.js.
+                    const _fm = pos !== 'nmpr' && rzFirst ? fullMergeRootDisplay([...rootZone], [..._canonicalRoot], _canonTrusted ? 1 : undefined) : null;
+                    if (_fm) { rootDisplay = _fm.core; _fmLead = _fm.lead; _fmTrail = _fm.trail; }
+                    else rootDisplay = _canonicalRoot;
                 } else {
                     rootDisplay = MUTATED_ROOTS[rootZone] || rootZone;
                 }
@@ -3567,6 +3657,20 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                     }
                 }
             }
+
+            // Written letters fullMergeRootDisplay found around the root (kept in
+            // sync with build-surface-index.js): recognised prefix run -> chips,
+            // otherwise kept in the root display; a trail always becomes chip(s).
+            let fmTrailComps = [];
+            if (_fmLead) {
+                const parts = guessPrefixGloss(_fmLead, pos);
+                if (parts) {
+                    leadModComps = [...parts.map(p => ({ paleo: p.paleo, translit: '', translation: `[${p.trans}]`, css: p.css, bakedSplit: true })), ...leadModComps];
+                } else {
+                    rootDisplay = _fmLead + rootDisplay;
+                }
+            }
+            if (_fmTrail) fmTrailComps = splitTrailResidue(_fmTrail, pos, attributes, trueRoot);
 
             // Expand short DB codes to fully-qualified key segment names.
             // pdp/sp use short codes (verb, subs, adjv, prep, conj, art, prde, prps, prin, nmpr, advb, nega, intj, inrg)
@@ -3779,6 +3883,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // the baked-addition split must not also fire there — it would print
             // the same letters twice (once inside displayRoot, once as this chip).
             if (bakedModObj && !_inMaqafCompound) pendingComponents.push({...bakedModObj, token_ordinal: tokenOrdinal});
+            if (!_inMaqafCompound) for (const fc of fmTrailComps) pendingComponents.push({...fc, token_ordinal: tokenOrdinal});
 
             if (vbeObj) pendingComponents.push({...vbeObj, token_ordinal: tokenOrdinal});
             // A nominal/feminine ending that the resolved root ALREADY carries is
