@@ -140,7 +140,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
 
     // ── Roam: the viewer on their own feet (state; the controller is below) ──
     const roam = {
-      on: false, yaw: Math.PI, pitch: 0, foot: GROUND, keys: new Set(), glide: null, moving: false,
+      on: false, yaw: Math.PI, pitch: 0, body: Math.PI, foot: GROUND, keys: new Set(), glide: null, moving: false,   // yaw/pitch: where the EYE looks; body: which way the figure faces (his own way while being walked, the look otherwise)
       stick: { x: 0, y: 0 },                                                  // the thumb stick (touch): x strafe, y forward, each −1 … 1
       air: 0, vy: 0,                                                          // in the air (a jump, or walked off an edge): 1 while airborne, and the feet's upward speed
       airV: { x: 0, z: 0 }, vel: { x: 0, z: 0 }, landAt: 0,                  // the jump's carry (amah/s, kept through the air), the last ground speed, when the feet last landed
@@ -325,6 +325,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       const path = findPath(camera.position.x, camera.position.z, x, z);
       if (!path || path.length < 2) { autoEl.hidden = false; autoEl.textContent = path ? 'You are there.' : 'No way there on foot from here.'; setTimeout(() => { if (!auto) autoEl.hidden = true; }, 2200); return false; }
       auto = { path, i: 1, label, dist0: roam.dist, still: 0, lastD: Infinity, tried: new Set() };
+      roam.body = roam.yaw;
       if (roam.dist < 4) roam.dist = 9;   // pull back to watch him go
       autoEl.hidden = false; autoEl.innerHTML = `Walking to <b></b> · any walking key stops it`; autoEl.querySelector('b').textContent = label || 'the place';
       dirty = true; return true;
@@ -357,18 +358,18 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     function autoStep(dt) {
       const a = auto, [tx, tz] = a.path[a.i], ex = camera.position.x, ez = camera.position.z;
       const dx = tx - ex, dz = tz - ez, d = Math.hypot(dx, dz);
-      // the way is opened AHEAD of him (fieldy): a shut gate or door on the route within forty cubits is asked open now, and he
-      // waits a moment before one that is still swinging rather than walk into it
+      // a shut gate or door on the route is opened when he REACHES it: he stops before it, pauses a moment, it is asked open, and he
+      // goes on once it stands open enough — so each opening is seen in its turn (fieldy)
       let wait = false;
       for (const t of shutThings()) {
-        const dd = Math.hypot(t.x - ex, t.z - ez); if (dd > 40 || offRoute(a, t.x, t.z, 60) > 6) continue;
-        if (roam.want[t.key] < 0.5) roam.want[t.key] = 1;
-        if (dd < 4 && roam.open[t.key] < 0.7) wait = true;
+        const dd = Math.hypot(t.x - ex, t.z - ez); if (dd > 5 || offRoute(a, t.x, t.z, 30) > 6) continue;
+        if (roam.want[t.key] < 0.5) { a.pause = (a.pause || 0) + dt; if (a.pause >= 0.35) { roam.want[t.key] = 1; a.pause = 0; } wait = true; }
+        else if (roam.open[t.key] < 0.7) wait = true;
       }
       if (wait) { roam.moving = false; roam.vel.x = roam.vel.z = 0; return; }
       if (d < 1.0) { a.i++; a.still = 0; a.lastD = Infinity; if (a.i >= a.path.length) { cancelAuto(true); return; } return; }
-      const want = Math.atan2(dz, dx); let dy = want - roam.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
-      roam.yaw += Math.sign(dy) * Math.min(Math.abs(dy), 3.2 * dt);
+      const want = Math.atan2(dz, dx); let dy = want - roam.body; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
+      roam.body += Math.sign(dy) * Math.min(Math.abs(dy), 3.2 * dt);   // the figure turns to his way; the eye (the mouse) is free to look about
       const v = Math.min(d, WALK * dt), mx = dx / d * v, mz = dz / d * v;
       const before = Math.hypot(camera.position.x - tx, camera.position.z - tz);
       tryMove(mx, mz);
@@ -936,7 +937,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         const d = h ? Math.max(0.4, h.distance - 0.6) : roam.dist;
         avatar.visible = d > 1.2;
         const bob = roam.moving && roam.air <= 0 ? 0.1 * Math.abs(Math.sin(now / 120)) : 0;
-        avatar.position.set(avatarEye.x, roam.foot + bob, avatarEye.z); avatar.rotation.set(0, -roam.yaw, 0);
+        avatar.position.set(avatarEye.x, roam.foot + bob, avatarEye.z); avatar.rotation.set(0, -(auto ? roam.body : roam.yaw), 0);
         const sinceLand = now - roam.landAt, crouch = sinceLand < 220 ? 0.14 * Math.sin((sinceLand / 220) * Math.PI) : 0;   // the knees give on landing
         avatar.scale.set(1 + crouch * 0.5, 1 - crouch, 1 + crouch * 0.5);
         // the figure faces +x before its yaw (Euler XYZ: z is applied first, in the figure's own frame), so a lean forward is a
@@ -982,6 +983,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       mapPoint: (x, z) => { const r = mmap.getBoundingClientRect(), { S, ox, oz } = bigFrame(mmap.width), k = r.width / mmap.width; return [r.left + (x * S + ox) * k, r.top + (z * S + oz) * k]; },   // for tests: where a world point lies on the big map
       mapView: (label) => { const find = (ns) => { for (const n of ns) { if (n.label === label) return n; const c = n.children && find(n.children); if (c) return c; } return null; }; setMapView(label ? find(PLACES) : null); return mapView?.label || null; },   // for tests
       route: (ax, az, bx, bz) => findPath(ax, az, bx, bz),   // for tests
+      look: (dx, dy = 0) => turnHead(dx, dy),   // for tests: the mouse turning the head
+      body: () => roam.body,
       shut: () => shutThings().map((t) => ({ ...t, off: auto ? offRoute(auto, t.x, t.z, 60) : null, open: roam.open[t.key] })),   // for tests
       teleport: (x, z, yaw, y) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; if (y != null) roam.foot = y; roam.air = 0; roam.vy = 0; const gy = groundUnder(x, z, roam.foot + 3);   /* from just above the feet, so a roof overhead is not mistaken for the ground */ if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
       locked: () => locked,
