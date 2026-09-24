@@ -273,7 +273,11 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         if (r.r != null) { const R = r.r + NAV_PAD; cells(r.x - R, r.x + R, r.z - R, r.z + R, (k, cx, cz) => { if (Math.hypot(cx - r.x, cz - r.z) <= R && r.y0 < H[k] + STEP_MAX && r.y1 > H[k] + 0.5) block[k] = 1; }); continue; }
         cells(r.x0 - NAV_PAD, r.x1 + NAV_PAD, r.z0 - NAV_PAD, r.z1 + NAV_PAD, (k) => { if (r.y0 < H[k] + STEP_MAX && r.y1 > H[k] + 0.5) block[k] = 1; });
       }
-      nav = { x0, z0, W, Hn, H, block };
+      // how far each open cell is from the nearest wall (to four): the route prefers the middle of a passage and the middle of a doorway
+      const clear = new Uint8Array(W * Hn).fill(4); const q = [];
+      for (let k = 0; k < W * Hn; k++) if (block[k]) { clear[k] = 0; q.push(k); }
+      for (let h = 0; h < q.length; h++) { const c = q[h], d = clear[c]; if (d >= 4) continue; const ci = c % W, cj = (c / W) | 0; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ni = ci + di, nj = cj + dj; if (ni < 0 || nj < 0 || ni >= W || nj >= Hn) continue; const n = nj * W + ni; if (clear[n] > d + 1) { clear[n] = d + 1; q.push(n); } } }
+      nav = { x0, z0, W, Hn, H, block, clear };
     }
     const cellOf = (x, z) => [Math.floor(x - nav.x0), Math.floor(z - nav.z0)];
     const inNav = (i, j) => i >= 0 && j >= 0 && i < nav.W && j < nav.Hn;
@@ -303,14 +307,15 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         for (const [di, dj, cost] of DIRS) {
           const ni = ci + di, nj = cj + dj; if (!inNav(ni, nj)) continue; const n = nj * W + ni; if (closed[n] || !passable(c, n)) continue;
           if (di && dj && (nav.block[cj * W + ni] || nav.block[nj * W + ci])) continue;   // no cutting a corner through a wall
-          const drop = H[c] - H[n], nc = g[c] + cost + (drop > STEP_MAX ? 6 + drop : 0);   // a drop is a way, but the stairs are a better one
+          const drop = H[c] - H[n], nc = g[c] + cost * (1 + 2.5 * Math.max(0, 4 - nav.clear[n])) + (drop > STEP_MAX ? 6 + drop : 0);   // a drop is a way, but the stairs are a better one; a wall-hugging way costs more than the middle
           if (nc < g[n]) { g[n] = nc; from[n] = c; push(nc + heur(n), n); }
         }
       }
       if (from[goal] < 0 && goal !== start) return null;
       const cellsOut = []; for (let c = goal; c >= 0; c = from[c]) { cellsOut.push(c); if (c === start) break; } cellsOut.reverse();
       // pull the corners straight: keep a waypoint only where the straight line to the next kept one would cross a wall or a climb
-      const clear = (p, q) => { let i0 = p % W, j0 = (p / W) | 0; const i1 = q % W, j1 = (q / W) | 0; const di = Math.abs(i1 - i0), dj = Math.abs(j1 - j0), sx = i0 < i1 ? 1 : -1, sz = j0 < j1 ? 1 : -1; let err = di - dj, prev = p; for (;;) { const c = j0 * W + i0; if (c !== prev && !passable(prev, c)) return false; prev = c; if (i0 === i1 && j0 === j1) return true; const e2 = 2 * err; if (e2 > -dj) { err -= dj; i0 += sx; } if (e2 < di) { err += di; j0 += sz; } } };
+      const onPath = new Set(cellsOut);
+      const clear = (p, q) => { let i0 = p % W, j0 = (p / W) | 0; const i1 = q % W, j1 = (q / W) | 0; const di = Math.abs(i1 - i0), dj = Math.abs(j1 - j0), sx = i0 < i1 ? 1 : -1, sz = j0 < j1 ? 1 : -1; let err = di - dj, prev = p; for (;;) { const c = j0 * W + i0; if (c !== prev && (!passable(prev, c) || (nav.clear[c] < 3 && !onPath.has(c)))) return false; prev = c; if (i0 === i1 && j0 === j1) return true; const e2 = 2 * err; if (e2 > -dj) { err -= dj; i0 += sx; } if (e2 < di) { err += di; j0 += sz; } } };   // a straight line may not brush a wall the found way kept off
       const kept = [cellsOut[0]]; let anchor = 0;
       for (let k = 2; k < cellsOut.length; k++) if (!clear(cellsOut[anchor], cellsOut[k])) { kept.push(cellsOut[k - 1]); anchor = k - 1; }
       if (cellsOut.length > 1) kept.push(cellsOut[cellsOut.length - 1]);
@@ -325,15 +330,13 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       const path = findPath(camera.position.x, camera.position.z, x, z);
       if (!path || path.length < 2) { autoEl.hidden = false; autoEl.textContent = path ? 'You are there.' : 'No way there on foot from here.'; setTimeout(() => { if (!auto) autoEl.hidden = true; }, 2200); return false; }
       auto = { path, i: 1, label, dist0: roam.dist, still: 0, lastD: Infinity, tried: new Set() };
-      roam.body = roam.yaw;
-      if (roam.dist < 4) roam.dist = 9;   // pull back to watch him go
+      roam.body = roam.yaw;   // the view stays as it was — first person walks first person (fieldy)
       autoEl.hidden = false; autoEl.innerHTML = `Walking to <b></b> · any walking key stops it`; autoEl.querySelector('b').textContent = label || 'the place';
       dirty = true; return true;
     }
-    function cancelAuto(done) {
+    function cancelAuto() {
       if (!auto) return;
-      const a = auto; auto = null; roam.keys.delete('run');
-      if (!done && a.dist0 < 4) roam.dist = a.dist0; else if (done && a.dist0 < 4) roam.dist = a.dist0;
+      auto = null; roam.keys.delete('run');
       autoEl.hidden = true; dirty = true; remember();
     }
     /** every shut gate and door with where it stands and the key that opens it */
