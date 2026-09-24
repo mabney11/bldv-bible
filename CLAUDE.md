@@ -1,5 +1,336 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Widget didn't pop up after the scheduled-task restart -- added logging, still unconfirmed (added 2026-09-24)
+
+fieldy re-ran `setup-observability-task.ps1` (it registered cleanly, printed its normal
+success output), then restarted the `'bldbible observability widget'` task from Task
+Scheduler's own UI -- and nothing appeared. No error, no window, nothing.
+
+**Most likely cause, not yet confirmed**: `observability-widget.ps1`'s own single-instance
+mutex (`Global\PaleoStudioObservabilityWidget`, added 2026-09-22 for exactly this class of
+"two copies running" problem). fieldy had been running the widget "directly" in a visible
+console earlier this same day (to verify the bake-freshness fix, per my own instructions in
+the entry above) -- if that instance is STILL alive in the background (minimized, or just
+never actually closed, since the widget's own "x" only hides to tray rather than quitting),
+it's still holding the mutex, so the Task-Scheduler-launched copy hits the guard and exits
+immediately and completely silently. Should show as an already-present crowned-lion icon in
+the system tray (possibly in the hidden/overflow icons) that a click would bring back into
+view -- or, if that process actually crashed after acquiring the mutex but before creating
+its tray icon, as a leftover `powershell.exe` in Task Manager with no visible icon anywhere,
+which would need to be ended by hand to free the mutex.
+
+**A real, separate bug this surfaced**: BOTH the mutex-refusal exit in
+`observability-widget.ps1` and any failure inside the new `observability-widget-hidden.vbs`
+launcher (added earlier today) were completely silent -- no trace in any log, anywhere,
+making "did this even run" and "why didn't it show up" both unanswerable from the outside.
+Fixed:
+- `observability-widget-hidden.vbs` now writes one line to `~\observability.log` on every
+  single invocation attempt (what it's about to launch), and explicit, logged failures if
+  `powershell.exe` or `observability-widget.ps1` itself can't be found -- mirroring the
+  defensive `fso.FileExists` checks `observability-collector-hidden.vbs` already does for
+  `bash.exe`.
+- `observability-widget.ps1`'s single-instance mutex check now also logs to the same
+  `~\observability.log` before its silent `exit 0`, spelling out exactly what to check
+  (tray icon vs. Task Manager) rather than just disappearing.
+
+**Not resolved yet** -- this only makes the NEXT occurrence diagnosable; it doesn't tell us
+which of the above actually happened this time, since neither logging addition existed yet
+when fieldy hit this. fieldy: please check (in this order, cheapest first) (1) the system
+tray, including hidden/overflow icons, for an existing crowned-lion icon and click it; (2)
+Task Manager for a `powershell.exe` process to end if no tray icon turns up; (3) after
+pulling this fix and restarting the widget task again, `Get-Content ~\observability.log
+-Tail 20` -- it should now show either a normal "launching ..." line followed by the window
+actually appearing, or the specific reason it didn't (mutex held / file not found).
+
+## Rebake button + no-console widget launch + Bake ToolTip (added 2026-09-24)
+
+fieldy's follow-up after the "0 behind GitHub" bake-freshness entry above went live and
+he restarted the widget to check it, verbatim: "its running now but its launching a
+terminal window that must stay open, i dont like that -- also how do I know the corpus
+status? id like a button in the widget for syncing the databases." Three separate small
+asks, all handled in `scripts/observability-widget.ps1` (plus one new file and one
+updated setup script):
+
+**1. No more console window.** He'd run `observability-widget.ps1` "directly" (that
+file's own dev/debug instructions, which I'd pointed him at to verify the previous fix)
+-- that opens a normal visible PowerShell console the WPF window is a child of, so
+closing it kills the widget. Fix: added `scripts/observability-widget-hidden.vbs`, the
+same `wscript.exe` + `WshShell.Run(cmd, 0, False)` pattern this project already uses for
+`observability-collector-hidden.vbs`/`lexicon-watch-hidden.vbs`/
+`studio-sync-watch-hidden.vbs` -- genuinely hides the launched process's own window,
+which is more reliable than trusting `powershell.exe -WindowStyle Hidden` by itself (the
+scheduled task's PREVIOUS widget registration relied on exactly that flag, which is
+apparently what let a console show through here). Updated
+`scripts/setup-observability-task.ps1` so the `'bldbible observability widget'`
+scheduled task now launches through this vbs too (via `wscript.exe`, matching the
+collector's own registration), and removed the now-dead `$PowershellExe` lookup that
+registration no longer needs. fieldy can either re-run that setup script (elevated, as
+before) so this takes effect at next logon, or just double-click
+`scripts\observability-widget-hidden.vbs` directly right now -- no elevation needed for
+that, it's a plain `.vbs` double-click like the other watchers already use.
+
+**2. "How do I know the corpus status?"** The Bake line only ever said OK/STALE, no
+timestamps. Added a `ToolTip` on `$BakeText` built from the exact fields
+`observability-status.mjs`'s `localBakeFreshness()`/`parseProdBakeStat()` already collect
+-- hovering the Bake line now shows local `surface-index.db`/`corpus.db`/
+`build-surface-index.js` mtimes and prod's `surface-index.db`/`corpus.db` mtimes (or "no
+bake data" / "unreachable via ssh" when a side isn't known), no new data collection
+needed, just surfacing what was already being polled.
+
+**3. "A button... for syncing the databases."** New "Rebake" Action button, same 2-click
+arm/confirm safety pattern as Deploy (it also ends in a prod container swap). Deliberately
+does NOT invent new remote logic -- it chains three scripts this project already has and
+already trusts, in the exact order this file's own "not run this session" instructions
+have been telling fieldy to run by hand after every stale-bake diagnosis:
+```
+node build-surface-index.js                                        (rebuild locally)
+DB=surface-index.db bash scripts/sync-corpus-to-prod.sh widget-rebake  (push to prod)
+ssh paleo-prod "sudo -n bash -c 'cd /root/paleo-studio && ./deploy-blue-green.sh'"
+```
+Found `scripts/sync-corpus-to-prod.sh` while researching this (wasn't previously in this
+file's own text) -- it's the SAME script the `feedback_prod-data-direction` project note
+already documents as the accepted way to push a batch-built DB like `surface-index.db`
+local-to-prod (checkpoints both copies' WAL, backs up prod's current file, uploads,
+verifies the byte size matches EXACTLY before touching anything live, atomic swap,
+prunes old backups) -- reusing it here instead of writing a new raw-ssh-rebuild path
+means Rebake inherits all of that script's existing safety for free. The final
+`deploy-blue-green.sh` step (same remote command the Deploy button already runs) is what
+makes the running containers actually pick up the freshly-pushed file via prod's existing
+zero-downtime swap, instead of a raw `docker restart` that would cause a real, if brief,
+outage. All three steps run in one chained `&&` command so a failure at any step stops
+the rest (a bad local rebuild never gets pushed; a bad push never gets deployed), logged
+to a new `rebake.log` (mentioned in the Logs button's own comment alongside the other
+per-action log files).
+
+**Verified**: XAML re-parsed clean with the same standalone-file + `xml.etree.ElementTree`
+method used to catch and fix the earlier `--`-in-a-comment bug (see the CORRECTION entry
+above) -- this round's edits added zero new `<!-- -->` comments, only PowerShell `#`
+comments (outside the XAML block, unaffected by that rule) plus new `$window.FindName`
+wiring and click-handler code, so the main risk here was a different one: this session's
+device-bridge sandbox ran out of local disk mid-edit (a SEPARATE, shared, already-nearly-
+full filesystem on fieldy's own machine used for Claude's shell access there -- NOT
+`paleo-studio`'s own disk or repo, nothing to clean up in this project over it) and its
+shell access broke entirely partway through ("Failed to create bridge sockets"). Finished
+this session's remaining edits by staging files through the (still-working) file-transfer
+side of the bridge instead of the broken shell side, editing/verifying them in Claude's
+own separate cloud workspace, and committing the results back -- same end result, just a
+different path to it. Confirmed no duplicate XAML `Name`s, balanced braces/parens across
+the whole script, and `RebakeBtn`'s `FindName` wiring + all its click-handler references
+resolve consistently. **Could not actually run PowerShell** to confirm the button/tooltip
+work end to end (same standing constraint as every widget change this session) -- fieldy,
+please confirm: the widget opens with no console window at all when launched via the new
+vbs or a fresh scheduled-task run, hovering Bake shows real timestamps, and Rebake's
+"Confirm?" flow does what the log (`~\rebake.log`) says it did.
+
+## Observability widget now watches surface-index.db bake freshness, not just git sync (added 2026-09-23)
+
+fieldy, after the Badagahath/Mawath entries above sent him to check bldbible.com and it
+was STILL showing the pre-fix output there even though the widget's "Prod: 0 behind
+GitHub" line said prod was fully caught up: "the fact prod doesnt have it is the
+problem, i thought my environments were synced. thats something that should be known
+in my observability widget." He's right that this is a real, previously-unwatched gap,
+not user error: git-sync status and bake freshness are two completely different axes.
+`surface-index.db` is a **gitignored, per-box build artifact** — `entrypoint.sh`
+symlinks it (along with `corpus.db` and the rest of `DB_FILES`) from the persistent
+`/data` volume into the running container at boot, and nothing in the automated
+`deploy-blue-green.sh` flow ever runs `node build-surface-index.js` — that's always been
+a manual step (see the Badagahath entry's "Not run this session" instructions above). So
+a box can show "0 behind GitHub" — meaning its CODE is current — while still serving a
+`surface-index.db` baked before the latest `corpus.db` content or the latest parser fix
+landed, exactly what happened here. Git sync literally cannot see this; it was never
+going to self-report as "behind" on anything.
+
+**What changed, concretely:**
+
+- `scripts/observability-status.mjs`: added `localBakeFreshness()` (new consts
+  `SURFACE_INDEX_PATH`/`CORPUS_DB_PATH`/`BUILD_SCRIPT_PATH`, all under `server/`) — plain
+  `fs.statSync` mtime comparison, stale if `surface-index.db` predates EITHER
+  `corpus.db` (new source data) or `build-surface-index.js` itself (a parser fix that
+  hasn't been re-baked yet, which is exactly the Badagahath/Mawath shape). Returns
+  `{known, surface_index_mtime, corpus_db_mtime, build_script_mtime, stale, stale_vs}` —
+  `known: false` (distinct from `stale: false`) when either file is simply missing, so a
+  fresh checkout with no bake yet reads as "no data," not a false "OK."
+- `checkProd()` gained one more `ssh` call (`stat -c '%Y' <dir>/surface-index.db
+  <dir>/corpus.db`, no `sudo` needed since `PALEO_PROD_DATA_DIR`, default
+  `/mnt/paleo-data`, is the world-readable host path bind-mounted to `/data` — unlike
+  `RREPO`'s root-owned checkout, which is why the git/docker checks above it DO need
+  `sudo -n bash -c '...'`) — parsed by the new `parseProdBakeStat()` into the same
+  `{known, surface_index_mtime, corpus_db_mtime, stale}` shape, attached as
+  `prod.surface_index`. New env var: `PALEO_PROD_DATA_DIR` (default `/mnt/paleo-data`),
+  same override pattern as `PALEO_PROD_HOST`/`PALEO_PROD_REPO`.
+- `status.local.surface_index` and `status.prod.surface_index` both land in
+  `status.json`; `pollOnce()`'s `problems[]` array gets two new lines
+  (`local surface-index.db stale (older than ...)` / `prod surface-index.db stale
+  (older than corpus.db)`) so this shows up in the collector's own console log the same
+  way every other drift already does.
+- `scripts/observability-widget.ps1`: one new XAML row (`BakeText`, row 7, right under
+  Site — pushed Actions/AutoFix+LastChecked/Pending-files/Commit-box down one row each,
+  window height 540→560) reading `"Bake: local <OK|STALE|?> / prod <OK|STALE|?>"`,
+  color-coded via the existing `Get-Brush` helper: red if either side is known-stale,
+  green only if both are known-fresh, gray (the "?" case) whenever either side is
+  unknown — file missing locally, or prod unreachable so its own `stat` never ran.
+  `Set-Waiting` also blanks `$BakeText.Text` now, same as every other status line.
+
+**Verified**: `node --check scripts/observability-status.mjs` passes. Could NOT run
+`scripts/observability-widget.ps1` itself this session — no PowerShell in this
+device-bridge sandbox's Linux VM (same standing constraint documented throughout this
+file for anything Windows-only) — so the XAML/row-shift edits were made surgically with
+exact anchor-string matches (the same method used for `tests/extract-parse.cjs` and this
+file's own splices above) and re-verified by `grep`-ing every `Grid.Row="N"` back out
+afterward to confirm 0 through 11 are each used exactly once with no gaps or
+duplicates, but **fieldy should actually open the widget once after pulling this** to
+confirm the new row renders and doesn't clip at the bottom of the window before trusting
+it unattended.
+
+**Not done here, deliberately**: no auto-resolve for a stale bake — same reasoning this
+file's "Auto-resolve — deliberately narrow" note already gives for uncommitted local
+changes: running `node build-surface-index.js` (and, on prod, restarting the container
+afterward) is not something that should ever fire unattended off a poll loop; the widget
+surfaces it, fieldy decides when to rebake. Also didn't wire a one-click "Rebake" Action
+button this session (the widget already has a whole Actions panel this would fit
+naturally into, same pattern as Pull/Push/Deploy) — flagging as an obvious, low-risk
+follow-up if fieldy wants it, but out of scope for what was actually asked ("that's
+something that should be known" — visibility first).
+
+Left in the connected folder, safe to delete: `_claude_scratch_bake_freshness_section.md`
+(this session's own scratch file used only to splice the section above into this file —
+same delete-permission wall as every other stray file already flagged in this session's
+other entries; `rm` failed with `Operation not permitted`, not a new issue).
+
+**CORRECTION, same day — the widget I shipped above broke on first run, and here's why:**
+fieldy pasted back a wall of PowerShell errors — every single status line
+(`$LocalGitText.Text`, `$ProdText.Foreground`, `$FileChecklistPanel.Children.Clear()`, etc,
+not just the new `$BakeText` one) failing with "The property 'X' cannot be found on this
+object" or "You cannot call a method on a null-valued expression." That pattern — literally
+EVERY control null, not just the new one — means `$window` itself never got built:
+`[xml]$xaml = @"..."@` (the PowerShell cast of the whole XAML heredoc to an `[xml]` object)
+must have thrown, which left `$window` uninitialized, which makes every later
+`$window.FindName(...)` return `$null` (a non-terminating error in PowerShell, so the script
+keeps running its 5s timer forever, silently broken, rather than crashing outright — that's
+why the SAME wall of errors repeats every 5 seconds in fieldy's paste instead of appearing
+once).
+
+**Root cause, found by re-parsing the XAML block standalone**: the NEW XML comment I added
+for the BakeText row contained a literal `--` (two consecutive hyphens) in its body: `"...vs.
+corpus.db / build-surface-index.js -- the drift..."`. **XML comments cannot contain `--`
+anywhere in their content** — that's a hard rule of the XML spec, not a WPF quirk — and
+`[xml]` in PowerShell is a strict `System.Xml.XmlDocument.LoadXml` cast that enforces it. My
+own writing habit of using `--` as an em-dash stand-in (visible all over this very file's `#`
+comments, which are outside the XAML block and totally unaffected) is exactly the wrong habit
+to bring INSIDE an `<!-- -->` XAML comment. The three pre-existing XAML comments in this file
+(Row 0, the Actions panel, the pending-files block) all happened to use single hyphens or
+spelled words instead — so this bug was original to my edit, not a pre-existing landmine.
+
+**Fixed**: reworded that one comment to use `:` instead of `--` (`"...build-surface-index.js:
+the drift..."`) — no functional change, XML-comment text only. **Verified properly this
+time**, not just by eyeballing it: extracted the XAML block (lines between `[xml]$xaml = @"`
+and the closing `"@`) into its own file and ran it through a real XML parser
+(`xml.etree.ElementTree.parse`) — confirms clean parse — and separately regex-scanned every
+`<!--...-->` comment body in that block for a literal `--` — zero matches, all four comments
+clean. Re-confirmed `Grid.Row="0"` through `Grid.Row="11"` still each appear exactly once with
+no gaps. **Could not go further than that**: still no PowerShell in this sandbox to actually
+run `[Windows.Markup.XamlReader]::Load` itself, so this is "provably valid XML with the right
+row numbering," not "confirmed to run" — fieldy, please restart the widget (kill it from Task
+Manager or `taskkill /F /IM powershell.exe` if the tray icon's Exit doesn't fully clear the
+single-instance mutex, then re-launch via the scheduled task or directly) and confirm the
+window actually opens with real status text again before trusting this.
+
+**Lesson for future Claude edits to this file specifically**: any text going INSIDE an
+`<!-- -->` block in `observability-widget.ps1`'s XAML heredoc must never contain `--`, and
+should be spot-checked with an XML parser (not just `node --check`, which only validates
+JavaScript — this file has zero JS in it — and not just visual inspection, which is exactly
+what missed this the first time) before calling a XAML edit to this file done. This class of
+bug is nasty specifically because it fails SILENTLY into a "wall of nulls" every-5-seconds
+loop rather than a clean crash, so it looks like a deep structural problem when it's actually
+one bad character in a comment.
+
+## Genesis 3:3's "temutun" (H4191, "die/death") root not shining — ALREADY FIXED in code; local `surface-index.db` looks fresh, production (bldbible.com) is the one still stale (found 2026-09-23)
+
+fieldy flagged a screenshot of Genesis 3:3 in Parallel (BHS, bldbible.com): the word tagged
+H4191 shows "ThaMathaw" (gloss "death `[She/it·His]`") — fieldy, verbatim: "the true root
+'mawath' is not shining in the tokens. should be ThaMawathaw". He's right about the target
+spelling: H4191's canonical root (`strongs-roots.json["H4191"]` — same value in both the
+live `server/lexicon/strongs-roots.json` and the stale top-level duplicate, so that's not the
+culprit here either) is 𐤌𐤅𐤕, Mem-Vav-Tav, "Mawath" — but the Hebrew word in question,
+תְּמֻתֽוּ/ן ("temutun", Qal imperfect 2mp of מות "die" — OSHB `lemma="4191"
+morph="HVqi2mp/Sn"`, Gen.3.3, confirmed straight from the OSHB/morphhb WLC XML fetched fresh
+from GitHub, same source + same no-DB-access method as the Badagahath entry above), is a
+classic Ayin-Vav "hollow root" verb: the imperfect stem regularly drops the root's own MIDDLE
+letter (the Vav), so the actually-written consonants are only Taw(prefix)-Mem-Tav-Vav(2mp
+ending) — the root's own Vav never appears in the surface at all, just like Psalm 119:33's
+long-standing "Known open case" (הוֹרֵנִי, a Pe-Yod root substituting Vav for its own Yod) —
+same general class of gap (a canonical root letter absent from a weak-verb's written form),
+different specific shape (missing MIDDLE letter here, not a substituted one).
+
+**Verified against the CURRENT code, and it's already correct — this looks like the same
+"stale bake" shape as the Badagahath entry above, not a live bug.** Built the token exactly
+as OSHB tags it (`sp=verb|pdp=verb|vs=qal|vt=impf|ps=p2|gn=m|nu=pl|pfm=T=|...`, surface
+𐤕𐤌𐤕𐤅 — Taw-Mem-Tav-Vav) and ran it through BOTH parsers with their real, current logic:
+- `build-surface-index.js`'s `parseToken` (`PALEO_PARSE_ONLY=1` harness): root component
+  comes back as the FULL restored 𐤌𐤅𐤕 (translit "Mawatha", `true_root`/`lemmaTranslit`
+  both "Mawath", gloss "death") — the middle Vav is already being added back in, not
+  dropped. Whole rendered word: 𐤕𐤌𐤅𐤕𐤅 = Tha + Mawath + w = "ThaMawathaw", exactly what
+  fieldy expects.
+- `server.js`'s `parseHebrewData` (via the now-fixed `tests/extract-parse.cjs`/
+  `parse-extract.cjs` — see the Badagahath entry above for that fix): same result,
+  `display_root` shows the raw defective surface (𐤌𐤕) was correctly recognized as an
+  under-attested spelling of the FULL canonical root 𐤌𐤅𐤕, which is what actually renders.
+  Only one token/one row is involved here (no standalone-prefix-token merging like
+  Badagahath needed), so there's no extra `groupSurfaceTokens`/`WordBlock.jsx` layer to
+  second-guess — whatever the bake says is what ships.
+
+So the root-restoration logic for THIS shape of hollow-root defective spelling is already
+solid in the code sitting in the connected folder. (The 𐤕 prefix chip reads "[She/it]" and
+the 𐤅 suffix chip reads "[His]" — both look semantically odd for a 2mp verb, but that's the
+FLAT_PREFIX/FLAT_SUFFIX "one letter, one meaning" system working exactly as designed
+elsewhere in this file: bare 𐤕 always says "She/it", bare 𐤅 always says "His", regardless of
+the real person/number — not a bug, not what fieldy flagged.)
+
+**Timestamps point at production lag, not a code gap, but with a wrinkle worth fieldy's own
+check.** `server/surface-index.db` on this dev machine is now dated **2026-09-22 15:38:44
+UTC** — AFTER `server/corpus.db` (2026-09-21 23:55) and AFTER `build-surface-index.js` itself
+(2026-09-21 18:12) — i.e. someone (presumably fieldy, following the Badagahath entry's
+instructions) already reran `node build-surface-index.js` locally since that entry was
+written. Since that rebuild used the exact same `build-surface-index.js` I just tested above,
+**Genesis 3:3 should already read correctly on fieldy's own local server** if the running
+process has been restarted since 15:38:44 UTC yesterday to pick up the fresh file. The
+bldbible.com screenshot is production, a separate deploy (see "Production deployment" below)
+that lags the local rebuild by definition — same standing gap as Badagahath, not a new one.
+**Worth fieldy explicitly confirming, though**: check this exact verse against his own local
+dev server (not bldbible.com) before assuming a rebuild+redeploy alone fixes it — if it's
+STILL wrong locally despite the fresh bake, that would mean the local server process itself
+hasn't been restarted since the rebuild (nothing here can tell the two apart without him
+looking), not that the code is wrong.
+
+**Separate, unconfirmed side-finding — flagging, not asserting:** OSHB tags this word's
+morph as `Vqi2mp/Sn` — the trailing `Sn` segment is the paragogic Nun (the ן that makes
+"temutun" rather than plain "temutu"), NOT a pronominal suffix. `server/ingest-bhs-oshb.py`'s
+suffix-splitting block only recognizes a trailing morph segment starting with "Sp" (pattern
+`Sp(\d)([mfbc])?([sp])?`) as a real pronominal suffix; `"Sn".startsWith("S")` still enters
+that branch, `mm` fails to match, `prs_code` stays unset, but the code UNCONDITIONALLY does
+`seg_morphs = seg_morphs[:-1]` and `seg_texts = seg_texts[:-1]` regardless of whether `mm`
+matched — silently dropping the paragogic Nun's own morph AND its own text segment (the
+literal ן letter) from the row that gets ingested, rather than keeping it as its own token or
+folding it into the verb's own `nme`/`vbe`. **This was traced only in `ingest-bhs-oshb.py`
+directly (line-read, no DB access) — I could not confirm whether this script is actually what
+populated the real `corpus.db`/`tokens_bhs` currently on disk, or whether some earlier/
+different ingestion path handled `Sn` correctly and this script (written to "reproduce the
+exact format," per its own header) simply has its own bug that was never exercised on a
+paragogic-Nun word before.** If it IS the real gap, the symptom would be a MISSING final
+Nun letter on every paragogic-Nun form in the corpus (2mp/3mp imperfect emphatic forms) —
+its own "no eliding" violation, independent of the root-restoration question fieldy actually
+asked about. Not fixed or touched this session — flagging for fieldy to check against the
+real `tokens_bhs` row for this exact word (`SELECT word_raw, morph FROM tokens_bhs WHERE
+book_id=1 AND chapter=3 AND verse=3 AND strongs='H4191'`, from a machine that can actually
+open `corpus.db`) before deciding whether it needs a fix at all.
+
+**Not run this session** (same standing DB-access constraint as every entry above/below).
+Nothing to rebuild for the root-restoration finding itself — the code was already right;
+just confirm locally, then make sure production has the same `build-surface-index.js` rebuild
++ restart that Badagahath already needed. If fieldy's own `tokens_bhs` check above finds the
+paragogic Nun really is missing corpus-wide, that's a new, separate ingestion fix — not
+attempted here since it couldn't be verified against the real data.
+
 ## Badagahath (H1710, "fish", Genesis 1:28 Parallel/Hebrew-extra) missing its prefix/suffix chips — STALE `surface-index.db`, not a code bug (found 2026-09-22)
 
 fieldy flagged a screenshot of Genesis 1:28 in Parallel (Hebrew extra, bldbible.com): every

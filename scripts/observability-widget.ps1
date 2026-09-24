@@ -32,6 +32,46 @@
 # stale-lock auto-resolve from just .git/index.lock to any .git/*.lock --
 # HEAD.lock (this incident) was never covered before.
 #
+# fieldy, 2026-09-23, after "0 behind GitHub" on prod turned out to mean
+# nothing about a fix actually being LIVE there: bldbible.com was still
+# serving pre-fix chip output because surface-index.db (a gitignored,
+# per-box build artifact -- see build-surface-index.js) hadn't been rebaked
+# since the last corpus.db/parser change, and git-sync status can't see that
+# at all. "the fact prod doesnt have it is the problem, i thought my
+# environments were synced. thats something that should be known in my
+# observability widget." Added the BakeText row below (local + prod,
+# mtime-compared by observability-status.mjs's new localBakeFreshness()/
+# parseProdBakeStat()) right under Site, same Get-Brush color language as
+# every other status line here.
+#
+# fieldy, 2026-09-24: after running this "directly" (per this file's own
+# instructions below) to verify the bake-freshness fix, didn't like that
+# a visible console window has to stay open the whole time (closing it
+# kills the widget, since the WPF window is a child of that console
+# process when launched this way). The scheduled task registered by
+# setup-observability-task.ps1 ALREADY launches this with
+# `-WindowStyle Hidden`, and there's now also observability-widget-hidden.vbs
+# (same wscript.exe + WshShell.Run(0) pattern as
+# observability-collector-hidden.vbs) for a plain double-click, no
+# PowerShell window at all, ever -- use one of those instead of running this
+# file directly for day-to-day use; "Run directly" below is for
+# development/debugging only, where seeing the console IS the point.
+#
+# Same fieldy request, same day: "how do I know the corpus status?" and "id
+# like a button in the widget for syncing the databases" -- added a ToolTip
+# on the Bake line (hover it for the actual local/prod surface-index.db and
+# corpus.db timestamps, not just OK/STALE) and a new "Rebake" Action button
+# below, same arm/confirm safety pattern as Deploy since it touches prod's
+# live data too. Rebake chains three ALREADY-EXISTING, already-safe scripts
+# rather than inventing new remote logic: `node build-surface-index.js`
+# locally, then `DB=surface-index.db bash scripts/sync-corpus-to-prod.sh`
+# (checkpoints, backs up prod's current copy, uploads, verifies the byte
+# size matches BEFORE touching anything live, then swaps atomically -- see
+# that script's own header), then `./deploy-blue-green.sh` on prod so the
+# running containers actually pick up the new file with prod's existing
+# zero-downtime swap instead of a raw `docker restart` (which would cause a
+# real, if brief, outage this project has already built tooling to avoid).
+#
 # Run directly to try it:
 #     powershell -ExecutionPolicy Bypass -File scripts\observability-widget.ps1
 # scripts\setup-observability-task.ps1 registers it to start at logon.
@@ -51,6 +91,18 @@ Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase, Sys
 # `powershell -File observability-widget.ps1` left running from testing.
 $script:SingleInstanceMutex = New-Object System.Threading.Mutex($false, "Global\PaleoStudioObservabilityWidget")
 if (-not $script:SingleInstanceMutex.WaitOne(0)) {
+    # fieldy, 2026-09-24: a Task-Scheduler-triggered run that hits this guard
+    # exits with ZERO trace anywhere -- indistinguishable from "the task
+    # never fired at all" or "the vbs/powershell launch itself failed."
+    # Logged once so "why didn't it pop up" has an actual answer to check:
+    # if this line is in the log, an instance IS already running somewhere
+    # (system tray, including hidden icons -- or a leftover powershell.exe
+    # in Task Manager if the tray icon isn't there either, e.g. it crashed
+    # after acquiring the mutex but before creating the tray icon).
+    try {
+        $stamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+        Add-Content -Path (Join-Path $env:USERPROFILE 'observability.log') -Value "[$stamp] observability-widget.ps1: another instance already holds the single-instance mutex -- exiting without opening a window. Check the system tray (including hidden icons) for an existing crowned-lion icon, or Task Manager for a leftover powershell.exe to end."
+    } catch {}
     exit 0
 }
 
@@ -64,12 +116,13 @@ $StatusFile = Join-Path $RepoRoot 'server\.observability\status.json'
 # the titlebar removes those for free.
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        Title="Paleo Studio" Height="540" Width="340"
+        Title="Paleo Studio" Height="560" Width="340"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         ResizeMode="NoResize" Topmost="True" ShowInTaskbar="False">
   <Border Name="RootBorder" CornerRadius="10" Background="#CC1A1A1A" BorderBrush="#40FFFFFF" BorderThickness="1">
     <Grid Margin="14">
       <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
@@ -104,12 +157,17 @@ $StatusFile = Join-Path $RepoRoot 'server\.observability\status.json'
       <TextBlock Grid.Row="4" Name="StudioText" Foreground="White" FontSize="12" Margin="0,3"/>
       <TextBlock Grid.Row="5" Name="ProdText" Foreground="White" FontSize="12" Margin="0,3" TextWrapping="Wrap"/>
       <TextBlock Grid.Row="6" Name="SiteText" Foreground="White" FontSize="12" Margin="0,3"/>
+      <!-- Row 7: surface-index.db bake freshness, local + prod, vs. corpus.db
+           / build-surface-index.js: the drift "Prod: N behind GitHub"
+           above can NEVER show, since a bake is a per-box build artifact a
+           plain git-based deploy never touches (fieldy, 2026-09-23). -->
+      <TextBlock Grid.Row="7" Name="BakeText" Foreground="White" FontSize="12" Margin="0,3" TextWrapping="Wrap"/>
 
-      <!-- Row 7: Actions, the "one stop shop" panel. Plain underlined
+      <!-- Row 8: Actions, the "one stop shop" panel. Plain underlined
            text links (same visual language as the old Catch-up link), laid
            out in a WrapPanel so it flows to further lines at this width
            without any manual row-counting. -->
-      <StackPanel Grid.Row="7" Margin="0,8,0,0">
+      <StackPanel Grid.Row="8" Margin="0,8,0,0">
         <TextBlock Text="ACTIONS" Foreground="#777777" FontSize="10" Margin="0,0,0,4"/>
         <WrapPanel Name="ActionsPanel">
           <TextBlock Name="PullBtn"      Text="Pull"      Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
@@ -118,13 +176,14 @@ $StatusFile = Join-Path $RepoRoot 'server\.observability\status.json'
           <TextBlock Name="SyncStuBtn"   Text="Studio"    Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
           <TextBlock Name="CatchUpBtn"   Text="Catch Up"  Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
           <TextBlock Name="ClearLocksBtn" Text="Locks"    Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
+          <TextBlock Name="RebakeBtn"    Text="Rebake"    Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
           <TextBlock Name="DeployBtn"    Text="Deploy"    Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
           <TextBlock Name="LogsBtn"      Text="Logs"      Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
           <TextBlock Name="RestartCollectorBtn" Text="Restart Collector" Foreground="#88ccff" FontSize="11" TextDecorations="Underline" Cursor="Hand" Margin="0,0,12,6"/>
         </WrapPanel>
       </StackPanel>
 
-      <StackPanel Grid.Row="8">
+      <StackPanel Grid.Row="9">
         <TextBlock Name="AutoFixText" Foreground="#88ccff" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"/>
         <TextBlock Name="LastCheckedText" Foreground="Gray" FontSize="10" Margin="0,6,0,0"/>
       </StackPanel>
@@ -146,7 +205,7 @@ $StatusFile = Join-Path $RepoRoot 'server\.observability\status.json'
            this way (by its own mtime) longer than PALEO_OBS_STALE_FILE_MS
            (default 24h) in observability-status.mjs, purely a reminder,
            never touched or discarded automatically. -->
-      <StackPanel Grid.Row="9" Margin="0,10,0,0">
+      <StackPanel Grid.Row="10" Margin="0,10,0,0">
         <TextBlock Text="PENDING FILES" Foreground="#777777" FontSize="10" Margin="0,0,0,4"/>
         <TextBlock Name="NoFilesText" Text="Nothing pending outside lexicon/studio-data" Foreground="Gray" FontSize="11" Visibility="Collapsed"/>
         <ScrollViewer MaxHeight="130" VerticalScrollBarVisibility="Auto">
@@ -154,7 +213,7 @@ $StatusFile = Join-Path $RepoRoot 'server\.observability\status.json'
         </ScrollViewer>
       </StackPanel>
 
-      <Grid Grid.Row="10" Margin="0,8,0,0">
+      <Grid Grid.Row="11" Margin="0,8,0,0">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*"/>
           <ColumnDefinition Width="Auto"/>
@@ -180,6 +239,7 @@ $LexiconText        = $window.FindName("LexiconText")
 $StudioText         = $window.FindName("StudioText")
 $ProdText           = $window.FindName("ProdText")
 $SiteText           = $window.FindName("SiteText")
+$BakeText           = $window.FindName("BakeText")
 $AutoFixText        = $window.FindName("AutoFixText")
 $LastCheckedText    = $window.FindName("LastCheckedText")
 $NoFilesText        = $window.FindName("NoFilesText")
@@ -201,6 +261,7 @@ $SyncLexBtn     = $window.FindName("SyncLexBtn")
 $SyncStuBtn     = $window.FindName("SyncStuBtn")
 $CatchUpBtn     = $window.FindName("CatchUpBtn")
 $ClearLocksBtn  = $window.FindName("ClearLocksBtn")
+$RebakeBtn      = $window.FindName("RebakeBtn")
 $DeployBtn      = $window.FindName("DeployBtn")
 $LogsBtn        = $window.FindName("LogsBtn")
 $RestartCollectorBtn = $window.FindName("RestartCollectorBtn")
@@ -220,7 +281,7 @@ function Set-Waiting([string]$msg) {
     $LocalGitText.Text = $msg
     $LocalGitText.Foreground = [System.Windows.Media.Brushes]::Gray
     $LocksWarningText.Visibility = 'Collapsed'
-    $LexiconText.Text = ""; $StudioText.Text = ""; $ProdText.Text = ""; $SiteText.Text = ""; $AutoFixText.Text = ""
+    $LexiconText.Text = ""; $StudioText.Text = ""; $ProdText.Text = ""; $SiteText.Text = ""; $BakeText.Text = ""; $AutoFixText.Text = ""
     $LastCheckedText.Text = ""
 }
 
@@ -340,6 +401,46 @@ function Update-Widget {
         $SiteText.Text = "Site: DOWN or unreachable"
         $SiteText.Foreground = Get-Brush $false
     }
+
+    # Bake freshness: surface-index.db vs. corpus.db (and, locally, vs.
+    # build-surface-index.js itself) -- the drift class "Prod: N behind
+    # GitHub" above can never surface, since the bake is a gitignored,
+    # per-box build artifact a plain deploy never touches (fieldy,
+    # 2026-09-23: "the fact prod doesnt have it is the problem, i thought my
+    # environments were synced"). $null means "unknown" (file missing, or
+    # prod unreachable so its own stat never ran) -- shown as "?", not
+    # treated as either OK or STALE.
+    $localBake = $s.local.surface_index
+    $prodBake  = if ($s.prod.reachable) { $s.prod.surface_index } else { $null }
+    $localBakeOk = if ($localBake -and $localBake.known) { -not $localBake.stale } else { $null }
+    $prodBakeOk  = if ($prodBake -and $prodBake.known)   { -not $prodBake.stale }  else { $null }
+    $localBakeLabel = if ($null -eq $localBakeOk) { "?" } elseif ($localBakeOk) { "OK" } else { "STALE" }
+    $prodBakeLabel  = if (-not $s.prod.reachable) { "?" } elseif ($null -eq $prodBakeOk) { "?" } elseif ($prodBakeOk) { "OK" } else { "STALE" }
+    $BakeText.Text = "Bake: local $localBakeLabel / prod $prodBakeLabel"
+    if ($localBakeOk -eq $false -or $prodBakeOk -eq $false) {
+        $BakeText.Foreground = Get-Brush $false
+    } elseif ($localBakeOk -eq $true -and $prodBakeOk -eq $true) {
+        $BakeText.Foreground = Get-Brush $true
+    } else {
+        $BakeText.Foreground = Get-Brush $null
+    }
+    # fieldy, 2026-09-24: "how do I know the corpus status?" -- OK/STALE
+    # alone doesn't say WHEN anything happened. Hover the Bake line for the
+    # actual mtimes behind that verdict, straight from observability-status.mjs's
+    # localBakeFreshness()/parseProdBakeStat() output.
+    $localBakeDetail = if ($localBake -and $localBake.known) {
+        "local: surface-index.db $($localBake.surface_index_mtime)`ncorpus.db $($localBake.corpus_db_mtime)`nbuild-surface-index.js $($localBake.build_script_mtime)"
+    } else {
+        "local: no bake data (surface-index.db or corpus.db not found)"
+    }
+    $prodBakeDetail = if (-not $s.prod.reachable) {
+        "prod: unreachable via ssh, no bake data"
+    } elseif ($prodBake -and $prodBake.known) {
+        "prod: surface-index.db $($prodBake.surface_index_mtime)`ncorpus.db $($prodBake.corpus_db_mtime)"
+    } else {
+        "prod: reachable but no bake data (stat failed -- check PALEO_PROD_DATA_DIR)"
+    }
+    $BakeText.ToolTip = "$localBakeDetail`n`n$prodBakeDetail
 
     if ($s.auto_resolved -and @($s.auto_resolved).Count -gt 0) {
         $actions = (@($s.auto_resolved) | ForEach-Object { $_.action }) -join ', '
@@ -767,9 +868,85 @@ $DeployBtn.Add_MouseLeftButtonDown({
     $DeployBtn.IsEnabled = $true
 })
 
+# Rebake -- fieldy, 2026-09-24: "id like a button in the widget for syncing
+# the databases," after finding out the hard way (Badagahath/Mawath/H4191
+# above) that prod's surface-index.db can silently go stale even when
+# everything else says "in sync." Same arm/confirm safety as Deploy (this
+# also ends in a prod container swap), but the actual work is just chaining
+# three scripts this project ALREADY trusts, in the order CLAUDE.md's own
+# "not run this session" instructions have been telling fieldy to run BY
+# HAND after every stale-bake diagnosis:
+#   1. `node build-surface-index.js`               -- rebuild locally from
+#      the CURRENT server/corpus.db + CURRENT parser code.
+#   2. `DB=surface-index.db bash scripts/sync-corpus-to-prod.sh widget-rebake`
+#      -- push that fresh file to prod (this script's own header: checksums
+#      + a timestamped backup + a byte-size check BEFORE the live file is
+#      ever touched, so a bad upload can't corrupt anything live).
+#   3. `./deploy-blue-green.sh` on prod over ssh    -- the SAME zero-downtime
+#      swap the Deploy button above already uses, so the running containers
+#      actually pick up the new file instead of serving it from a stale
+#      already-open database handle.
+# All three run in one local bash.exe process chained with && (a failure at
+# any step stops the rest -- a bad rebuild never gets pushed, a bad push
+# never gets deployed), fire-and-forget like Deploy (this can run for
+# several minutes: the rebuild's own time + however long scp of a
+# few-hundred-MB file takes + deploy-blue-green.sh's own ~5m), logged to its
+# own rebake.log rather than mixing into deploy.log or paleo-widget-actions.log.
+$script:RebakeArmed = $false
+$script:RebakeArmTimer = $null
+$RebakeIdleBrush = $RebakeBtn.Foreground
+
+$RebakeBtn.Add_MouseLeftButtonDown({
+    if (-not $script:RebakeArmed) {
+        $script:RebakeArmed = $true
+        $RebakeBtn.Text = "Confirm?"
+        $RebakeBtn.Foreground = [System.Windows.Media.Brushes]::OrangeRed
+        if ($script:RebakeArmTimer) { $script:RebakeArmTimer.Stop() }
+        $script:RebakeArmTimer = New-Object System.Windows.Threading.DispatcherTimer
+        $script:RebakeArmTimer.Interval = [TimeSpan]::FromSeconds(4)
+        $script:RebakeArmTimer.Add_Tick({
+            $script:RebakeArmed = $false
+            $RebakeBtn.Text = "Rebake"
+            $RebakeBtn.Foreground = $RebakeIdleBrush
+            $script:RebakeArmTimer.Stop()
+        })
+        $script:RebakeArmTimer.Start()
+        return
+    }
+
+    if ($script:RebakeArmTimer) { $script:RebakeArmTimer.Stop() }
+    $script:RebakeArmed = $false
+    $RebakeBtn.IsEnabled = $false
+    $target = Get-ProdSshTarget
+    $logPath = Join-Path $env:USERPROFILE 'rebake.log'
+    $stamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    if (-not $target.BashExe) {
+        try { Add-Content -Path $logPath -Value "[$stamp] Rebake -- FAILED: bash.exe not found" } catch {}
+        $RebakeBtn.Text = "Rebake (failed)"
+    } else {
+        $remoteCmd = "sudo -n bash -c 'cd $($target.RRepo) && ./deploy-blue-green.sh'"
+        $sshCmd = "ssh -o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no $($target.HostAlias) `"$remoteCmd`""
+        $cmd = "cd '$RepoRoot' && node build-surface-index.js && DB=surface-index.db bash scripts/sync-corpus-to-prod.sh widget-rebake && $sshCmd"
+        $wrapped = "($cmd) >> '$logPath' 2>&1"
+        try {
+            Start-Process -FilePath $target.BashExe -ArgumentList @('-lc', $wrapped) -WindowStyle Hidden
+            $RebakeBtn.Text = "Rebaking (~10m)..."
+        } catch {
+            try { Add-Content -Path $logPath -Value "[$stamp] Rebake -- FAILED to launch bash.exe: $($_.Exception.Message)" } catch {}
+            $RebakeBtn.Text = "Rebake (failed)"
+        }
+    }
+    $RebakeBtn.Foreground = [System.Windows.Media.Brushes]::OrangeRed
+    Start-Sleep -Seconds 3
+    $RebakeBtn.Text = "Rebake"
+    $RebakeBtn.Foreground = $RebakeIdleBrush
+    $RebakeBtn.IsEnabled = $true
+})
+
 # Opens the folder holding every log these actions (and the watchers) write
 # to -- lexicon-watch.log, studio-sync-watch.log, observability.log,
-# paleo-widget-actions.log, deploy.log all live directly under %USERPROFILE%.
+# paleo-widget-actions.log, deploy.log, rebake.log all live directly under
+# %USERPROFILE%.
 $LogsBtn.Add_MouseLeftButtonDown({
     Start-Process explorer.exe $env:USERPROFILE
 })

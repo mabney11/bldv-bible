@@ -87,6 +87,31 @@ const LOCK_REPORT_MIN_AGE_MS = 10 * 1000;
 // enough for a reminder, not an enforcement mechanism.
 const STALE_FILE_MS = Number(process.env.PALEO_OBS_STALE_FILE_MS || 24 * 60 * 60 * 1000);
 
+// Bake freshness -- surface-index.db is a per-box BUILD ARTIFACT (gitignored,
+// baked from corpus.db by build-surface-index.js, never touched by a plain
+// `git pull`/deploy) that "N behind GitHub" cannot see at all: a box can be
+// fully caught up on git and still be serving a surface-index.db baked
+// before the latest corpus.db content or the latest parser code landed.
+// fieldy, 2026-09-23, after exactly that happened on bldbible.com (git
+// showed 0 behind GitHub; the site was still showing pre-fix output because
+// nobody had reason to think a REBUILD, not a redeploy, was the missing
+// step): "the fact prod doesnt have it is the problem, i thought my
+// environments were synced. thats something that should be known in my
+// observability widget." Checked both locally (plain fs.statSync) and on
+// prod (one extra `stat` over the same ssh connection checkProd() already
+// opens) -- same mtime-comparison method already used by hand in this
+// project's own CLAUDE.md diagnoses (Badagahath/H1710, Mawath/H4191) to
+// spot this exact failure mode, now automated instead of only ever found by
+// re-deriving it from scratch each time.
+const SURFACE_INDEX_PATH = path.join(REPO_ROOT, 'server', 'surface-index.db');
+const CORPUS_DB_PATH = path.join(REPO_ROOT, 'server', 'corpus.db');
+const BUILD_SCRIPT_PATH = path.join(REPO_ROOT, 'server', 'build-surface-index.js');
+// Prod's OWN copies of these files live on the host at this bind-mounted
+// path (see entrypoint.sh: DATA_DIR=/data inside the container, bind-mounted
+// from here), world-readable with no sudo needed -- unlike RREPO's checkout,
+// which needs `sudo -n bash -c '...'` because it's root-owned.
+const PROD_DATA_DIR = process.env.PALEO_PROD_DATA_DIR || '/mnt/paleo-data';
+
 const PID_FILE = path.join(STATE_DIR, 'collector.pid');
 
 function isProcessAlive(pid) {
@@ -210,6 +235,37 @@ function checkFlag(relPath) {
     }
 }
 
+// Compares mtimes, the same mechanism fieldy's own CLAUDE.md write-ups
+// already used by hand: surface-index.db is stale if it predates either the
+// source data it should have been baked from (corpus.db) or the parser code
+// that bakes it (build-surface-index.js) -- either one changing after the
+// last bake means the live chip/component output no longer matches what's
+// actually on disk, exactly the "stale bake, not a live code bug" shape
+// this file has hit more than once. `known: false` (not `stale: false`)
+// when either file is simply missing -- a fresh checkout without a bake yet
+// isn't "fresh," it's "no data to compare," and the widget should say so
+// rather than falsely claiming OK.
+function localBakeFreshness() {
+    let surfaceMs, corpusMs, buildScriptMs;
+    try { surfaceMs = fs.statSync(SURFACE_INDEX_PATH).mtimeMs; } catch { surfaceMs = null; }
+    try { corpusMs = fs.statSync(CORPUS_DB_PATH).mtimeMs; } catch { corpusMs = null; }
+    try { buildScriptMs = fs.statSync(BUILD_SCRIPT_PATH).mtimeMs; } catch { buildScriptMs = null; }
+    if (surfaceMs == null || corpusMs == null) {
+        return { known: false, surface_index_mtime: null, corpus_db_mtime: null, build_script_mtime: null, stale: null, stale_vs: null };
+    }
+    const staleVsCorpus = surfaceMs < corpusMs;
+    const staleVsBuildScript = buildScriptMs != null && surfaceMs < buildScriptMs;
+    const staleVs = [staleVsCorpus && 'corpus.db', staleVsBuildScript && 'build-surface-index.js'].filter(Boolean);
+    return {
+        known: true,
+        surface_index_mtime: new Date(surfaceMs).toISOString(),
+        corpus_db_mtime: new Date(corpusMs).toISOString(),
+        build_script_mtime: buildScriptMs == null ? null : new Date(buildScriptMs).toISOString(),
+        stale: staleVs.length > 0,
+        stale_vs: staleVs.length ? staleVs.join(' and ') : null,
+    };
+}
+
 // Every *.lock file under .git, except .git/objects (git's own
 // maintenance.lock and any in-progress loose-object write there can be a
 // real, legitimately-long-running hold — not something a generic "stale
@@ -280,17 +336,46 @@ async function checkSiteHealth() {
     }
 }
 
+// Parses the two-line `stat -c %Y <a> <b>` output checkProd() below asks
+// for into the same {known, surface_index_mtime, corpus_db_mtime, stale}
+// shape localBakeFreshness() returns, so the widget can treat local/prod
+// identically. Deliberately conservative: anything other than exactly two
+// clean integer lines (missing file, permission error, stat not on PATH,
+// wrong PALEO_PROD_DATA_DIR) comes back `known: false` rather than guessing.
+function parseProdBakeStat(res) {
+    if (!res.ok) return { known: false, surface_index_mtime: null, corpus_db_mtime: null, stale: null, stale_vs: null };
+    const lines = res.out.split('\n').map((s) => s.trim()).filter(Boolean);
+    if (lines.length !== 2 || !lines.every((l) => /^\d+$/.test(l))) {
+        return { known: false, surface_index_mtime: null, corpus_db_mtime: null, stale: null, stale_vs: null };
+    }
+    const surfaceMs = Number(lines[0]) * 1000;
+    const corpusMs = Number(lines[1]) * 1000;
+    const stale = surfaceMs < corpusMs;
+    return {
+        known: true,
+        surface_index_mtime: new Date(surfaceMs).toISOString(),
+        corpus_db_mtime: new Date(corpusMs).toISOString(),
+        stale,
+        stale_vs: stale ? 'corpus.db' : null,
+    };
+}
+
 async function checkProd() {
     const sshOpts = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', '-o', 'ControlMaster=no'];
     const headRes = await run('ssh', [...sshOpts, HOST, `sudo -n bash -c 'cd ${RREPO} && git rev-parse HEAD'`]);
     if (!headRes.ok) {
-        return { reachable: false, error: headRes.err, git_head: null, git_behind_origin: null, containers: [], lexicon_pull_watch: 'unknown' };
+        return { reachable: false, error: headRes.err, git_head: null, git_behind_origin: null, containers: [], lexicon_pull_watch: 'unknown', surface_index: parseProdBakeStat({ ok: false }) };
     }
     const behindRes = await run('ssh', [...sshOpts, HOST,
         `sudo -n bash -c 'cd ${RREPO} && git fetch origin main -q && git rev-list --count HEAD..origin/main'`]);
     const dockerRes = await run('ssh', [...sshOpts, HOST, `docker ps --format '{{.Names}}'`]);
     const pullWatchRes = await run('ssh', [...sshOpts, HOST,
         `sudo -n bash -c 'test -f ${RREPO}/server/.lexicon-watch/.pull-watch.pid && kill -0 $(cat ${RREPO}/server/.lexicon-watch/.pull-watch.pid) 2>/dev/null && echo alive || echo dead'`]);
+    // No sudo here -- PALEO_PROD_DATA_DIR (/mnt/paleo-data by default) is the
+    // world-readable host path entrypoint.sh bind-mounts into /data inside
+    // the container, unlike RREPO's root-owned checkout above.
+    const bakeRes = await run('ssh', [...sshOpts, HOST,
+        `stat -c '%Y' ${PROD_DATA_DIR}/surface-index.db ${PROD_DATA_DIR}/corpus.db`]);
     return {
         reachable: true,
         error: null,
@@ -298,6 +383,7 @@ async function checkProd() {
         git_behind_origin: behindRes.ok ? Number(behindRes.out) : null,
         containers: dockerRes.ok ? dockerRes.out.split('\n').map(s => s.trim()).filter(Boolean) : [],
         lexicon_pull_watch: pullWatchRes.ok ? pullWatchRes.out.trim() : 'unknown',
+        surface_index: parseProdBakeStat(bakeRes),
     };
 }
 
@@ -315,6 +401,7 @@ async function pollOnce() {
     const studioFailing = checkFlag('server/.studio-sync/.failing');
     const studioLock = checkFlag('server/.studio-sync/.lock');
     const gitLocks = currentGitLocks();
+    const surfaceIndex = localBakeFreshness();
 
     const status = {
         generated_at: new Date().toISOString(),
@@ -325,6 +412,7 @@ async function pollOnce() {
             studio_sync_failing: studioFailing,
             studio_sync_lock: studioLock,
             git_locks: gitLocks,
+            surface_index: surfaceIndex,
         },
         site: { url: SITE_URL, ...site },
         prod: { host: HOST, ...prod },
@@ -346,6 +434,8 @@ async function pollOnce() {
     if (!site.reachable) problems.push('site unreachable');
     if (!prod.reachable) problems.push('prod unreachable via ssh');
     if (prod.reachable && prod.git_behind_origin) problems.push(`prod ${prod.git_behind_origin} behind origin`);
+    if (surfaceIndex.known && surfaceIndex.stale) problems.push(`local surface-index.db stale (older than ${surfaceIndex.stale_vs})`);
+    if (prod.reachable && prod.surface_index && prod.surface_index.known && prod.surface_index.stale) problems.push('prod surface-index.db stale (older than corpus.db)');
 
     if (problems.length) log(`ISSUES: ${problems.join('; ')}`);
     else log('all clear');
