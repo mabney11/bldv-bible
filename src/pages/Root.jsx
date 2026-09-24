@@ -17,6 +17,7 @@ import {
   apiStrongs,
 } from '../lib/api.js';
 import './Root.css';
+import NovelText from '../components/NovelText.jsx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Root / Surface explorer — BibleHub-style.
@@ -204,7 +205,7 @@ function VerseCard({ verse, onVerseClick }) {
           {verse.book_name || BOOK_NAMES[verse.book_id] || `Book ${verse.book_id}`} {verse.chapter}:{verse.verse}
         </a>
         {verse.translation && verse.translation.text && (
-          <span className="verse-translation"> — {verse.translation.text}</span>
+          <span className="verse-translation"> — <NovelText text={verse.translation.text} /></span>
         )}
       </div>
       <div className="verse-tokens">
@@ -925,7 +926,7 @@ export default function Root({ mode = 'root' }) {
                     <button key={`${v.book_id}-${v.chapter}-${v.verse}-${i}`} type="button"
                             className={`r2-hit ${i === sel ? 'active' : ''}`} onClick={() => setSel(i)}>
                       <div className="r2-hit-ref">{v.book_name || BOOK_NAMES[v.book_id] || `Book ${v.book_id}`} {v.chapter}:{v.verse}</div>
-                      {v.translation && v.translation.text && <div className="r2-hit-tl">{v.translation.text}</div>}
+                      {v.translation && v.translation.text && <NovelText as="div" className="r2-hit-tl" text={v.translation.text} />}
                     </button>
                   ))}
                   {hasMore && (
@@ -959,7 +960,7 @@ export default function Root({ mode = 'root' }) {
                         <Link to={readerHref} className="r2-btn" style={{ marginLeft: 'auto' }}>open in reader ↗</Link>
                       </div>
                       {cur.translation && cur.translation.text && (
-                        <div className="verse-translation" style={{ marginBottom: 16, color: 'var(--text2)' }}>{cur.translation.text}</div>
+                        <NovelText as="div" className="verse-translation" style={{ marginBottom: 16, color: 'var(--text2)' }} text={cur.translation.text} />
                       )}
                       <div className="r2-verse">
                         {tokens.length

@@ -4,6 +4,7 @@ import { apiDivineTitles, apiDivineTitleRefs, apiBookOrder, apiTokens, apiDocTok
 import { parallelHref } from '../lib/bookSlug.js';
 import WordBlock from './WordBlock.jsx';
 import './DivineTitles.css';
+import NovelText from './NovelText.jsx';
 
 // Divine Titles tab (/lexicon-page?tab=divine) — every name and honorific title
 // of Yah, with every verse it occurs in across the whole corpus: BHS for the OT,
@@ -87,7 +88,7 @@ function VersePanel({ book, c, v, focusForms, kind, onClose }) {
       {!data && !err && <div className="dt-msg"><span className="spin">◌</span> Loading verse…</div>}
       {data && (
         <>
-          {data.english && <p className="dt-verse-en">{data.english}</p>}
+          {data.english && <NovelText as="p" className="dt-verse-en" text={data.english} />}
           <div className="dt-verse-words" dir="rtl">
             {data.words.map((w, i) => (
               <WordBlock key={i} wordObj={w} showSub showCopyBtn={false} showStrongs

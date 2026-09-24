@@ -39,6 +39,17 @@ false-god uses (listed separately, not gold), and the full compound set.
   `server/divine-titles.cache.json` (gitignored), rebuilt when corpus.db,
   divine-titles.json or strongs-roots.json changes.
 
+**Round 6 — Novel English colouring app-wide.** fieldy: "ensure glosses are properly colored
+like my novel reader (this should be the case app-wide)". New `src/components/NovelText.jsx`
+(`NovelText` + `novelNodes(text)`): "root (gloss)" → root in the Reader's gold (.novel-root =
+Reader.css --pr-accent-dim), gloss plain, EMPTY gloss drops its parens ("Yahawah ()" →
+"Yahawah"), Paleo head words drawn as glyphs — same GLOSS_RE as Reader.jsx. Wired into the
+Divine Titles verse panel, Root explorer (3 verse-translation spots), Holy Land map passages,
+Gloss Studio's English line, and PassageRefs.glossNodes (models/passages — was gold but kept
+"()"). Reader/VersePage keep renderVerseNodesWithQuotes (whole-passage quote layout).
+Concordance's verse text is source-language, not Novel English — untouched. Any NEW place that
+shows translation text should render it through NovelText, never as a bare string.
+
 **Round 5, same day.** (1) Form chips were raw BHS tokens — ETCBC-segmented, so "elohay"
 (my God) read 𐤀𐤋𐤄 "Alah", like Aramaic. Forms are now the rendered word from token_surfaces
 (𐤀𐤋𐤄𐤉𐤌𐤉), labels built per morpheme in fieldy's casing ("LaYahawah", "HaAlahayam",

@@ -9,6 +9,7 @@ import MultiWordBlock from '../components/MultiWordBlock.jsx';
 import WordBlock from '../components/WordBlock.jsx';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import './GlossStudio.css';
+import { novelNodes } from '../components/NovelText.jsx';
 
 // /gloss-studio — 100%-curated-by-you lexicon dashboard, laid out like
 // Translation Studio (tr-shell's book/chapter/verse three-pane browser)
@@ -128,7 +129,7 @@ function VerseDetailCard({ v, missingSet, genericSource, dir = 'rtl' }) {
                 : 'Not started in Translation Studio'}
             </span>
           </div>
-          {v.english.text}
+          {novelNodes(v.english.text)}
           {v.english.is_baseline && <span className="gs-badge">baseline</span>}
         </div>
       )}

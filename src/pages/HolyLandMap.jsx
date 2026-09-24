@@ -74,6 +74,7 @@ import './HolyLandMap.css';
 //   • the optional "Online" base map — OpenFreeMap vector tiles (coast at street
 //     precision, modern borders, English place names) — never loaded unless chosen.
 import levantBase from '../lib/models/levant-base.json';
+import { novelNodes } from '../components/NovelText.jsx';
 
 const OFM_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
 const DEM_TILES = 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png';
@@ -1247,7 +1248,7 @@ function Passage({ refObj }) {
       {verses === null && <div className="hl-passage-wait">Loading…</div>}
       {verses && verses.length === 0 && <div className="hl-passage-wait">No English text for this passage yet.</div>}
       {verses && verses.map((v) => (
-        <p key={v.verse} className="hl-verse"><sup>{v.verse}</sup>{v.text}</p>
+        <p key={v.verse} className="hl-verse"><sup>{v.verse}</sup>{novelNodes(v.text)}</p>
       ))}
     </div>
   );

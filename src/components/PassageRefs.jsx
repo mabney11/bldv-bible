@@ -11,24 +11,14 @@ import { Link } from 'react-router-dom';
 import { parseRefs, readerHref, inRanges } from '../lib/models/refs.js';
 import { loadChapter, parseQuotes, sliceQuote, verseText } from '../lib/passages.js';
 import './PassageRefs.css';
+import { novelNodes } from './NovelText.jsx';
 
 // "heb (gloss)" pairs in the app's own text — the transliterated Hebrew/Aramaic
 // word is shown gold (.hl-root) and the English gloss plain, the way the Reader
 // does it. Exported so a model's own prose in that style gets the same look.
-const GLOSS_RE = /([A-Za-zÀ-ɏ][A-Za-zÀ-ɏ'’-]*)([‘’“”"']*)\s+\(([^()]*)\)/g;
-export function glossNodes(text) {
-  const t = String(text ?? '');
-  const out = []; let last = 0, m, k = 0;
-  GLOSS_RE.lastIndex = 0;
-  while ((m = GLOSS_RE.exec(t))) {
-    if (m.index > last) out.push(t.slice(last, m.index));
-    out.push(<span className="hl-root" key={k++}>{m[1]}</span>);
-    out.push(`${m[2]} (${m[3]})`);
-    last = m.index + m[0].length;
-  }
-  if (last < t.length) out.push(t.slice(last));
-  return out;
-}
+// Delegates to NovelText's novelNodes — the ONE app-wide renderer, so an empty
+// gloss drops its parens and Paleo head words get glyphs here too.
+export function glossNodes(text) { return novelNodes(text); }
 
 // Prose that QUOTES the text never carries a copy of it: it writes
 // {{Daniel 2:35 | hawaa a rab … arai}} and the slice of the live verse is put in

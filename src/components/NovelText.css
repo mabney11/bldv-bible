@@ -1,0 +1,5 @@
+/* NovelText — the Reader's "root (gloss)" colouring outside the Reader.
+   Same values as Reader.css's --pr-accent-dim (.rd-root). */
+.novel-root { color: #a67f38; font-weight: 600; }
+[data-theme="light"] .novel-root { color: #b48a3c; }
+.novel-root svg { vertical-align: -0.12em; }
