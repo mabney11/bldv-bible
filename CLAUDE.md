@@ -1,5 +1,25 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## NT English wiped from corpus.db and pushed to prod — load-english-baseline.js now refuses a partial baseline (2026-09-24)
+
+fieldy: bldbible.com/parallel/luke/1-32 showed no English — "something happened that should not
+be allowed. my text is gone". Cause, found by comparing corpus.db with corpus.db.bak-uvf
+(2026-09-21): ALL 7,958 ENG rows for canon 40-66 were gone (OT and every other corpus intact;
+translation.db intact — Luke 1:32's text is still there, but /api/translate/chapter lists verses
+from corpus.db's ENG rows, so no row = no verse). english-baseline.jsonl had been regenerated
+OT-only at 14:37 (apply-web-strongs.mjs writes 39 books; the NT only comes back via render-all's
+merge-baseline.mjs), then load-english-baseline.js ran: its step 1 did `DELETE ... canon_id
+BETWEEN 1 AND 66` and re-inserted only what the file carried. Rebake's "local corpus.db is
+newer → push" step then shipped it to prod.
+
+Fixed: load-english-baseline.js dies if the baseline lacks any of the 66 books (override
+`--allow-partial`, which also scopes the DELETE to the books the file carries); rebake.sh
+refuses to push a corpus.db missing English for any canon 1-66. Repair tool:
+`node server/restore-eng-from-backup.js [backup.db] [--apply]` (default backup
+corpus.db.bak-uvf) — ADDS rows only, only for books with zero ENG rows now. Recovery steps:
+stop the server → dry run → `--apply` → restart → verify Luke 1:32 locally → Rebake (pushes
+corpus.db). The NT rows come back as of 2026-09-21's render.
+
 ## Divine names & titles of Yah: gold chips + "Divine Titles" tab on /lexicon-page (added 2026-09-24)
 
 fieldy: "lets make Alahayam and all honorific titles of Yah golden like His name ...

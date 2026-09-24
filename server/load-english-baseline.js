@@ -117,6 +117,23 @@ for (const ln of fs.readFileSync(JSONL_PATH,'utf8').split(/\r?\n/)) {
   web[c][o.chapter][o.verse] = String(o.text || '');
 }
 if (!Object.keys(web).length) die('no baseline rows parsed');
+// 2026-09-24 DATA-LOSS GUARD. Step 1 below used to DELETE every ENG row of
+// canon 1-66 and re-insert only the books this file carries. On 2026-09-24 the
+// file had been regenerated OT-only (apply-web-strongs.mjs writes 39 books; the
+// NT is only merged back in by render-all's merge-baseline.mjs), so one run
+// wiped the whole NT's English from corpus.db (7,958 verses) and Rebake then
+// pushed that to prod — every NT verse in Parallel/Reader went blank. Now: a
+// baseline missing ANY of the 66 books is refused, and even with
+// --allow-partial the delete only touches the books the file actually carries.
+{
+  const missing = [];
+  for (let c = 1; c <= 66; c++) if (!web[c]) missing.push(CANON2CODE[c]);
+  if (missing.length && !args.includes('--allow-partial'))
+    die(`${path.basename(JSONL_PATH)} carries ${66 - missing.length}/66 books — missing ${missing.join(' ')}.\n`
+      + '  Loading it would DELETE those books\' English from corpus.db. Rebuild the full baseline first\n'
+      + '  (node render-all.mjs runs apply-web-strongs + merge-baseline), or pass --allow-partial to\n'
+      + '  replace ONLY the books this file carries.');
+}
 
 // ── generic MT/English chapter-boundary shift ──────────────────────────────
 // Moves verses across a chapter boundary by a signed `offset`, where offset =
@@ -311,11 +328,14 @@ for (const [canonStr, chaptersRaw] of Object.entries(web)) {
   // per NT verse, and the old one — never reloaded — was re-rendered on top of itself every
   // run ("The sapar (sapar) (sapar) (book) of the genealogy…", 14,560 NT verses with nested
   // glosses on 2026-09-09). The baseline file carries all 66 books; it replaces all 66.
-  const del = db.prepare("DELETE FROM verses WHERE corpus='ENG' AND canon_id BETWEEN 1 AND 66");
+  // Only the books this file carries (see the DATA-LOSS GUARD above).
+  const del = db.prepare("DELETE FROM verses WHERE corpus='ENG' AND canon_id = ?");
+  const carried = Object.keys(web).map(Number).filter(c => c >= 1 && c <= 66);
   const ins = db.prepare(`INSERT INTO verses (ref_key,book_id,corpus,code,chapter,verse,ord_c,ord_v,text,category,src,canon_id)
     VALUES (@ref,@bid,'ENG',@code,@ch,@v,@ch,@v,@text,'scripture',@src,@canon)`);
   const tx = db.transaction(()=>{
-    const removed = del.run().changes;
+    let removed = 0;
+    for (const c of carried) removed += del.run(c).changes;
     let inserted = 0;
     for (const a of aligned) {
       const code = CANON2CODE[a.canon] || String(a.canon);
@@ -325,7 +345,7 @@ for (const [canonStr, chaptersRaw] of Object.entries(web)) {
     return { removed, inserted };
   });
   const { removed, inserted } = tx();
-  console.log(`[1] corpus.db ENG (reading): removed ${removed}, inserted ${inserted} verses — MT-aligned (one row per verse, all 66 books)`);
+  console.log(`[1] corpus.db ENG (reading): removed ${removed}, inserted ${inserted} verses — MT-aligned (one row per verse, ${carried.length} books)`);
 }
 
 // ── STEP 2 — pre-save into translation.db (Studio editable draft) ─────────────

@@ -59,6 +59,20 @@ main() {
     fi
   fi
 
+  # DATA-LOSS GATE (2026-09-24): never push a corpus.db that has lost a canonical
+  # book's English — that is how the whole NT went blank on prod. Every canon 1-66
+  # must have ENG verses.
+  if ! (cd server && node -e "
+const db = new (require('better-sqlite3'))('corpus.db', { readonly: true });
+const have = new Set(db.prepare(\"SELECT DISTINCT canon_id FROM verses WHERE corpus='ENG' AND canon_id BETWEEN 1 AND 66\").all().map(r => r.canon_id));
+const miss = []; for (let c = 1; c <= 66; c++) if (!have.has(c)) miss.push(c);
+if (miss.length) { console.error('!! corpus.db has NO English for canon ' + miss.join(',') + ' -- refusing to push it'); process.exit(1); }
+console.log('corpus.db English present for all 66 canonical books');
+"); then
+    echo "!! Fix corpus.db first (server/restore-eng-from-backup.js), then Rebake again."
+    exit 1
+  fi
+
   step "2/4  corpus.db: comparing local vs prod"
   LOCAL_M=$(stat -c %Y server/corpus.db)
   PROD_M=$($SSH "$HOST" "stat -c %Y $DATA/corpus.db" 2>/dev/null || echo 0)
