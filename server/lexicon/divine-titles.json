@@ -17,7 +17,7 @@
     { "id": "shaday",   "sns": ["H7706"],          "group": "title", "en": "the Almighty" },
     { "id": "ilayawan", "sns": ["H5945"],          "group": "title", "en": "the Most High" },
     { "id": "ilay",     "sns": ["H5943", "H5946"], "group": "title", "en": "the Most High (Aramaic)" },
-    { "id": "yahawah-nasay-name", "sns": ["H3071"], "group": "compound", "en": "Yahawah my banner" }
+    { "id": "yahawah-nasay", "sns": ["H3071"], "group": "compound", "en": "Yahawah my banner" }
   ],
   "compounds": [
     { "id": "al-shaday",            "seq": [["H410"], ["H7706"]],                         "en": "God Almighty" },
@@ -56,7 +56,6 @@
     { "id": "tzawar-yasharal",      "seq": [["H6697"], ["H3478"]],                        "gold": [0], "en": "the Rock of Israel" },
     { "id": "yahawah-tzadaqanaw",   "seq": [["H3068"], ["H6664"]], "only_refs": ["24:23:6", "24:33:16"], "en": "Yahawah our righteousness" },
     { "id": "yahawah-yaraah",       "seq": [["H3068"], ["H7200"]], "only_refs": ["1:22:14"],  "en": "Yahawah will see / provide" },
-    { "id": "yahawah-nasay",        "seq": [["H3068"], ["H5251"]], "only_refs": ["2:17:15"],  "en": "Yahawah my banner" },
     { "id": "yahawah-shalawam",     "seq": [["H3068"], ["H7965"]], "only_refs": ["7:6:24"],   "en": "Yahawah is peace" },
     { "id": "yahawah-shamah",       "seq": [["H3068"], ["H8033"]], "only_refs": ["26:48:35"], "en": "Yahawah is there" },
     { "id": "yahawah-raaah",        "seq": [["H3068"], ["H7462"]], "only_refs": ["19:23:1"],  "en": "Yahawah my shepherd" },
