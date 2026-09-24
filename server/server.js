@@ -8728,8 +8728,10 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
 // An index baked before this existed simply has no marks / a 503 on the tab.
 const _divineStmts = {};
 function divineStmt(name, sql) {
-    if (_divineStmts[name] === undefined) {
-        try { _divineStmts[name] = surfDb.prepare(sql); } catch { _divineStmts[name] = null; }
+    // Only a SUCCESS is remembered — a miss (index not baked yet) is retried on
+    // the next call, so a bake done while the server runs is picked up.
+    if (!_divineStmts[name]) {
+        try { _divineStmts[name] = surfDb.prepare(sql); } catch { return null; }
     }
     return _divineStmts[name];
 }
@@ -8845,17 +8847,19 @@ const DIVINE_NOT_BAKED = { error: 'divine titles not baked into surface-index.db
 app.get('/api/divine-titles', production.cache(3600), (req, res) => {
     try {
         const d = divineSummary();
-        if (!d) return res.status(503).json(DIVINE_NOT_BAKED);
+        // no-store: production.cache() already stamped max-age=3600, and a
+        // browser that cached this error kept showing it after the bake.
+        if (!d) return res.set('Cache-Control', 'no-store').status(503).json(DIVINE_NOT_BAKED);
         res.json(d);
     } catch (err) {
         console.error('/api/divine-titles failed:', err);
-        res.status(500).json({ error: err.message });
+        res.set('Cache-Control', 'no-store').status(500).json({ error: err.message });
     }
 });
 app.get('/api/divine-titles/refs', production.cache(3600), (req, res) => {
     try {
         const q = divineStmt('refs', `SELECT src, book_id, code, chapter, verse, n, form FROM divine_refs WHERE title_id=?`);
-        if (!q) return res.status(503).json(DIVINE_NOT_BAKED);
+        if (!q) return res.set('Cache-Control', 'no-store').status(503).json(DIVINE_NOT_BAKED);
         const id = String(req.query.id || '');
         const SRC_ORDER = { BHS: 0, HEB: 1, DOC: 2 };
         const books = new Map();
@@ -8876,7 +8880,7 @@ app.get('/api/divine-titles/refs', production.cache(3600), (req, res) => {
         res.json({ id, books: out });
     } catch (err) {
         console.error('/api/divine-titles/refs failed:', err);
-        res.status(500).json({ error: err.message });
+        res.set('Cache-Control', 'no-store').status(500).json({ error: err.message });
     }
 });
 
