@@ -1601,7 +1601,7 @@ const GRAMMAR_MAP = {
         'J':  { paleo: ['𐤉'],     trans: 'You did (f)',    css: 'vbe-2fs' },
     },
     uvf: {
-        'H': { paleo: ['𐤄'], trans: 'At',          css: 'uvf-dir' },
+        'H': { paleo: ['𐤄'], trans: 'Toward',      css: 'uvf-dir' },
         'J': { paleo: ['𐤉'], trans: 'Emphatic',        css: 'uvf-conn' },
         'N': { paleo: ['𐤍'], trans: 'Emphatic',        css: 'uvf-conn' },
         'HE': { paleo: ['𐤄'], trans: 'Emphatic',       css: 'uvf-conn' },   // paragogic he (OSHB Sh) — ingest-bhs-oshb.py, 2026-09-24
@@ -2417,7 +2417,8 @@ function applyFlatLabels(comps) {
         for (const i of idx) {
             const c = comps[i];
             if (i === r || !c || c.isMark || !c.paleo) continue;
-            if (c.css === 'vbs-hit' || c.css === 'vbs-hif') continue;   // 𐤄 Causing, 𐤄𐤕/𐤕 Reflexive keep their stem label; Nifal 𐤍 reads 'We' (fieldy: "𐤍- prefix → we will")
+            if (c.css === 'vbs-hit' || c.css === 'vbs-hif') continue;
+            if (c.css === 'uvf-dir' || c.css === 'uvf-conn') continue;   // directional 𐤄 [Toward], paragogic 𐤍/𐤄/𐤉 [Emphatic] keep their own label (fieldy, 2026-09-24)   // 𐤄 Causing, 𐤄𐤕/𐤕 Reflexive keep their stem label; Nifal 𐤍 reads 'We' (fieldy: "𐤍- prefix → we will")
             let label;
             if (c.infixed) label = 'Reflexive';
             else if (i < r) label = FLAT_PREFIX[c.paleo];

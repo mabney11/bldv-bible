@@ -551,7 +551,8 @@ function applyFlatLabels(comps) {
         for (const i of idx) {
             const c = comps[i];
             if (i === r || !c || c.isMark || !c.paleo) continue;
-            if (c.css === 'vbs-hit' || c.css === 'vbs-hif') continue;   // 𐤄 Causing, 𐤄𐤕/𐤕 Reflexive keep their stem label; Nifal 𐤍 reads 'We' (fieldy: "𐤍- prefix → we will")
+            if (c.css === 'vbs-hit' || c.css === 'vbs-hif') continue;
+            if (c.css === 'uvf-dir' || c.css === 'uvf-conn') continue;   // directional 𐤄 [Toward], paragogic 𐤍/𐤄/𐤉 [Emphatic] keep their own label (fieldy, 2026-09-24)   // 𐤄 Causing, 𐤄𐤕/𐤕 Reflexive keep their stem label; Nifal 𐤍 reads 'We' (fieldy: "𐤍- prefix → we will")
             let label;
             if (c.infixed) label = 'Reflexive';
             else if (i < r) label = FLAT_PREFIX[c.paleo];
