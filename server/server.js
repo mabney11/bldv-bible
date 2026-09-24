@@ -2737,7 +2737,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
         // Suffixes (nme-*, prs-*, vbe-*, and the hardened baked-addition fallback
         // mod-suff-unk) render lowercase — trailing morphemes. Every other
         // component (prefix, root) uppercases its first character.
-        const SUFFIX_CSS_PREFIX = ['nme-', 'prs-', 'vbe-', 'mod-suff-unk'];
+        const SUFFIX_CSS_PREFIX = ['nme-', 'prs-', 'vbe-', 'uvf-', 'mod-suff-unk'];
         pendingComponents.forEach(comp => {
             if (!comp.translit) return;
             const isSuffix = SUFFIX_CSS_PREFIX.some(p => comp.css && comp.css.startsWith(p));
@@ -8084,7 +8084,7 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
         if (pos !== 'prep' && pos !== 'conj' && pos !== 'art') return false;
         return !HAS_AFFIX.test(morph || '');                     // affix ⇒ whole word
     };
-    const SUFFIX_CSS_PREFIX = ['nme-', 'prs-', 'vbe-', 'mod-suff-unk'];
+    const SUFFIX_CSS_PREFIX = ['nme-', 'prs-', 'vbe-', 'uvf-', 'mod-suff-unk'];
 
     // ── LIVE RE-GLOSS PASS ──────────────────────────────────────────────────
     // The surface-index was baked against the lexicon at build time. When

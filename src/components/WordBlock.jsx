@@ -6,7 +6,7 @@ import { usePaleoMode } from '../hooks/usePaleoMode.js';
 // mod-suff-unk: heb-align.js's fallback for a stripped NT suffix tail with no
 // attested BHS component to borrow (rare — SUF_COMPS usually finds one, which
 // carries its own real nme-/prs-/vbe- class instead). Treat it the same way.
-const SUFFIX_PREFIXES = ['nme-', 'prs-', 'vbe-', 'mod-suff-unk'];
+const SUFFIX_PREFIXES = ['nme-', 'prs-', 'vbe-', 'uvf-', 'mod-suff-unk'];
 const PREFIX_FULL = [
   'mod-conj','mod-prep','mod-art','mod-nega','mod-advb',
   'mod-intj','mod-inrg','mod-prde','mod-prps','mod-prin','mod-nmpr',

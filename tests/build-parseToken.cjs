@@ -808,7 +808,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
     }
 
     transliterateBlock(components);
-    const SUFFIX_CSS = ['nme-','prs-','vbe-','mod-suff-unk'];
+    const SUFFIX_CSS = ['nme-','prs-','vbe-','uvf-','mod-suff-unk'];
     for (const comp of components) {
         if (!comp.translit) continue;
         const isSuffix = SUFFIX_CSS.some(p => comp.css && comp.css.startsWith(p));

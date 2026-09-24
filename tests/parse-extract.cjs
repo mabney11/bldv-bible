@@ -1246,7 +1246,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
         // Suffixes (nme-*, prs-*, vbe-*, and the hardened baked-addition fallback
         // mod-suff-unk) render lowercase — trailing morphemes. Every other
         // component (prefix, root) uppercases its first character.
-        const SUFFIX_CSS_PREFIX = ['nme-', 'prs-', 'vbe-', 'mod-suff-unk'];
+        const SUFFIX_CSS_PREFIX = ['nme-', 'prs-', 'vbe-', 'uvf-', 'mod-suff-unk'];
         pendingComponents.forEach(comp => {
             if (!comp.translit) return;
             const isSuffix = SUFFIX_CSS_PREFIX.some(p => comp.css && comp.css.startsWith(p));

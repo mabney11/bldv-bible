@@ -39,7 +39,7 @@ import './Root.css';
 // which gives exact counts and a clean 2-4 paleo-letter root list.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const SUFFIX_PREFIX = ['nme-', 'prs-', 'vbe-'];
+const SUFFIX_PREFIX = ['nme-', 'prs-', 'vbe-', 'uvf-'];
 const isSuffix = css => SUFFIX_PREFIX.some(p => css && css.startsWith(p));
 
 // Adapter: the verses endpoint returns "word blocks" each containing
