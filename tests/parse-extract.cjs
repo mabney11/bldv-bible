@@ -1529,8 +1529,18 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // resets first), but _nextTokIsMaqaf must explicitly check that the word
             // ACROSS the maqaf shares this token's own Strong's before treating it
             // as a compound half.
+            // Same shared-Strong's test on the PREVIOUS side (added 2026-09-24). A
+            // particle before the maqaf is still pending (never flushed), so bare
+            // "last pending component is a maqaf" also caught Gen 3:3's pen-tamutun
+            // (H6435 conj + H4191 verb) and rendered the verb's raw defective surface
+            // 𐤌𐤕 ("ThaMathaw") instead of the restored root 𐤌𐤅𐤕 ("ThaMawathaw").
+            // Only a real compound half (same SN on both sides) keeps its surface.
             const _prevIsMaqaf = pendingComponents.length > 0 &&
-                                 pendingComponents[pendingComponents.length - 1].isMaqaf;
+                                 pendingComponents[pendingComponents.length - 1].isMaqaf &&
+                                 !!strongs && (() => {
+                                     const beforeMaqafStrongs = ((lines[index - 2] || '').split('\t')[5] || '').trim() || null;
+                                     return beforeMaqafStrongs === strongs;
+                                 })();
             const _nextTokIsMaqaf = (index + 1 < lines.length) &&
                                     ((lines[index + 1].split('\t')[2] || '').includes('\u05BE'));
             const _nextMaqafSharesRoot = _nextTokIsMaqaf && !!strongs && (() => {
