@@ -8538,9 +8538,18 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
             // paleo must share its first letter with word_raw's first letter.
             const firstWithPaleo = comps.find(c => c && c.paleo && c.paleo.length && !c.synthetic);
             if (!firstWithPaleo) return false;
+            // ADDITIVE-RULE AWARE (2026-09-24). A restored FIRST RADICAL (I-nun
+            // 𐤕𐤕𐤍 -> 𐤍𐤕𐤕𐤍, I-yod 𐤃𐤏𐤕 -> 𐤉𐤃𐤏) legitimately puts a letter in front
+            // of the surface's first letter; the old exact first-letter test
+            // flagged every such word and sent 673 of 929 OT chapters (Gen 3 via
+            // 6:31/22:14 included) to live parse. What this check guards against
+            // is a WRONG Strong's root pasted over the surface (𐤁𐤔𐤓𐤕𐤉 -> 𐤑𐤃𐤒𐤄),
+            // where the surface's first letter is gone entirely. So: drift only
+            // when the surface's first letter is not within the first TWO
+            // rendered letters (room for one restored leading radical).
             const sourceFirst = [...r.word_raw][0];
-            const compFirst   = [...firstWithPaleo.paleo][0];
-            return sourceFirst !== compFirst;
+            const rendered = comps.filter(c => c && c.paleo && !c.synthetic).map(c => c.paleo).join('');
+            return ![...rendered].slice(0, 2).includes(sourceFirst);
         });
         // Same asymmetry as the override case: this first-letter heuristic was
         // written against the BHS bake (one morpheme per row). A HEB row is a
