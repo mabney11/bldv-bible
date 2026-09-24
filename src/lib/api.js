@@ -72,6 +72,10 @@ export const apiTokens   = (book, chapter, source) => jsonFetch(
 export const apiDocTokens = (doc, chapter) => jsonFetch(
   `/api/tokens?doc=${encodeURIComponent(doc)}&chapter=${chapter}`);
 export const apiRaw      = (book, chapter)   => jsonFetch(`/api/raw?book=${book}&chapter=${chapter}`).catch(() => []);
+// Divine names & titles of Yah — summary of every title (counts, forms, books),
+// then one title's full verse list on demand (Divine Titles tab, /lexicon-page).
+export const apiDivineTitles    = ()   => jsonFetch('/api/divine-titles');
+export const apiDivineTitleRefs = (id) => jsonFetch(`/api/divine-titles/refs?id=${encodeURIComponent(id)}`);
 
 // ── Search ─────────────────────────────────────────────────────────────────────
 export const apiSearch   = (q, offset, mode) =>

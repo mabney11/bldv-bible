@@ -37,7 +37,7 @@ import '@fontsource/opendyslexic/700.css';
 // keeps them identical, not just similar-looking today.
 import '../lib/morphColors.css';
 import './Parallel.css';
-import { isPlaceholderGloss, hasTrailingMaqaf } from '../components/WordBlock.jsx';
+import { isPlaceholderGloss, hasTrailingMaqaf, divineCss } from '../components/WordBlock.jsx';
 // The SAME component the novel reader (MultiViewer.jsx) and Gloss Studio use
 // for every non-Hebrew script (Ge'ez/Greek/Latin/Syriac/…) — this page used
 // to render those with a bespoke glyph+gloss-only block that never showed a
@@ -678,7 +678,7 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
               );
             }
             return (
-              <span key={i} className={`${c.css} clickable-comp ${hl ? 'hl' : ''}`}
+              <span key={i} className={`${divineCss(c)} clickable-comp ${hl ? 'hl' : ''}`}
                     data-paleo={c.paleo}
                     title={c.translit ? `Copy ${c.paleo} (${c.translit})` : `Copy ${c.paleo}`}
                     dangerouslySetInnerHTML={{ __html: safeSVG(c.paleo) }} />
@@ -699,7 +699,7 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
                 AFTER it — reading as glued to one word instead of sitting
                 between both, exactly the "at the end of one" bug reported
                 against this page. */}
-            {comps.map((c, i) => c.isMark ? null : <span key={i} className={c.css}>{c.translit}</span>)}
+            {comps.map((c, i) => c.isMark ? null : <span key={i} className={divineCss(c)}>{c.translit}</span>)}
           </span>
           {(rootTrans || mods.length) ? (
             <>{' '}<span className="brk">(</span>

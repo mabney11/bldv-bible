@@ -17,6 +17,7 @@ import {
   mergeLexicon, validateLexiconShape,
 } from '../lib/localOverlay.js';
 import DisplayPanel from '../components/DisplayPanel.jsx';
+import DivineTitles from '../components/DivineTitles.jsx';
 import './Lexicon.css';
 
 // ── LANGUAGES ─────────────────────────────────────────────────────────────
@@ -35,6 +36,9 @@ const TABS_HEBREW = [
   { key: 'roots',      label: 'All Roots' },
   { key: 'surfaces',   label: 'All Surfaces' },
   { key: 'dictionary', label: 'Dictionary' },
+  // Every name/title of Yah with its verse references — its own component,
+  // own data (/api/divine-titles), no letter rail. See DivineTitles.jsx.
+  { key: 'divine',     label: 'Divine Titles' },
 ];
 const TABS_OTHER = [
   { key: 'lexicon',    label: 'Lexicon' },
@@ -368,6 +372,8 @@ export default function Lexicon() {
     let cancelled = false;
     sessionStorage.setItem(`lex-last-tab-${lang}`, tab);
     setLoading(true); setErr(null); setEntries([]);
+    // The Divine Titles tab loads its own data (DivineTitles.jsx).
+    if (tab === 'divine') { setLoading(false); return () => { cancelled = true; }; }
     (async () => {
       try {
         let data;
@@ -625,7 +631,7 @@ export default function Lexicon() {
       <div className="lex-panel">
 
         {/* Letter jump sidebar — alphabet depends on language */}
-        <aside className="lex-sidebar" aria-label="Letter index">
+        {tab !== 'divine' && <aside className="lex-sidebar" aria-label="Letter index">
           {letterAlphabet.map(ltr => (
             <LetterButton
               key={ltr}
@@ -643,7 +649,7 @@ export default function Lexicon() {
             title="Back to top"
             aria-label="Back to top"
           >↑</button>
-        </aside>
+        </aside>}
 
         {/* Right column: search + scrollable list */}
         <div className="lex-rightcol">
@@ -652,7 +658,7 @@ export default function Lexicon() {
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
-              placeholder={`Filter ${langDef.label} words…`}
+              placeholder={tab === 'divine' ? 'Filter titles…' : `Filter ${langDef.label} words…`}
               autoComplete="off"
               spellCheck="false"
               aria-label="Search lexicon"
@@ -663,7 +669,8 @@ export default function Lexicon() {
           </div>
 
           <div className="lex-list" ref={listRef}>
-            {loading && (
+            {tab === 'divine' && <DivineTitles query={query} />}
+            {tab !== 'divine' && loading && (
               <div className="lex-state-msg">
                 <span className="spin">◌</span> Loading…
               </div>
@@ -674,12 +681,12 @@ export default function Lexicon() {
                 <br /><small style={{ color: 'var(--red)' }}>{err}</small>
               </div>
             )}
-            {!loading && !err && grouped.length === 0 && (
+            {tab !== 'divine' && !loading && !err && grouped.length === 0 && (
               <div className="lex-state-msg">
                 No {langDef.label} {tab === 'lexicon' ? 'lexicon' : tab} entries{query ? ` matching "${query}"` : ''}.
               </div>
             )}
-            {!loading && !err && grouped.map((item, i) => {
+            {tab !== 'divine' && !loading && !err && grouped.map((item, i) => {
               if (item.kind === 'anchor')
                 return <AnchorHeader key={`a-${item.letter}-${i}`} letter={item.letter} lang={lang} />;
               const e = item.entry;

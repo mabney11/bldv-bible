@@ -34,6 +34,14 @@ export const hasTrailingMaqaf = wordObj => {
   return !!(last && last.isMaqaf);
 };
 
+// Divine names & titles of Yah (Alahayam, Al Shaday, Adanay, Tzabaawath in
+// Yahawah Tzabaawath, …) — the server stamps `divine` (the title id) on the head
+// component of every such word in /api/tokens (server/divine-titles.js +
+// lexicon/divine-titles.json). The class paints it gold (morphColors.css), the
+// same gold a proper noun like Yahawah already gets. Exported for Parallel.jsx,
+// which renders its own glyph/translit spans.
+export const divineCss = comp => (comp && comp.divine ? `${comp.css} divine-title` : (comp ? comp.css : ''));
+
 const isSuffix = css => SUFFIX_PREFIXES.some(p => css && css.startsWith(p));
 const isPrefix = css =>
   (css && PREFIX_FULL.includes(css)) ||
@@ -239,8 +247,11 @@ export function computeWordParts(wordObj, opts = {}) {
     const altAttr = altIdx % 2 === 1 ? '1' : null;
 
     const ordinal = comp.token_ordinal != null ? comp.token_ordinal : wordObj.token_ordinal;
-    out.compDescs.push({ css: comp.css, paleo: comp.paleo, altAttr, ordinal });
-    out.transliterations.push({ css: comp.css, text: comp.translit || '', altAttr });
+    // divineCss: a divine name/title (server-marked comp.divine) is painted gold
+    // like Yahawah — class added for RENDERING only; comp.css itself is untouched
+    // so every `css === 'root'` rule above/below still sees the real class.
+    out.compDescs.push({ css: divineCss(comp), paleo: comp.paleo, altAttr, ordinal });
+    out.transliterations.push({ css: divineCss(comp), text: comp.translit || '', altAttr });
 
     const clean = (comp.translation || '').replace(/[\[\]]/g, '');
     // The redundancy rule (gloss === transliteration) is what hides proper

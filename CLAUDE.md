@@ -1,5 +1,55 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## Divine names & titles of Yah: gold chips + "Divine Titles" tab on /lexicon-page (added 2026-09-24)
+
+fieldy: "lets make Alahayam and all honorific titles of Yah golden like His name ...
+identify all divine titles of Yah with their verse references ... group them in their
+own tab ... instances throughout the entire corpus." His calls when asked: exclude clear
+false-god uses (listed separately, not gold), and the full compound set.
+
+- **Data: `server/lexicon/divine-titles.json`** (edit this, not code; it's in
+  `server/lexicon/` so `lexicon-watch` auto-commits it). `singles` (every occurrence of
+  H3068/H3069, H3050, H430, H410, H433, H426, H136, H7706, H5945, H5943/H5946, H3071),
+  `compounds` (Strong's sequences of consecutive words, e.g. H410+H7706 Al Shaday,
+  H3068+H6635 Yahawah Tzabaawath, H6918+H3478 Qadawash Yasharal; `gold` = which members
+  paint gold, `only_refs` for pairs that are ordinary words elsewhere, e.g. Yahawah Yireh
+  = Gen 22:14 only), and `false_god` rules (H430/H410/H426/H433 before acher/zar/nekar/
+  chadash/masekah/pesel, or in a bare construct — st=c, no suffix — before idol metals/
+  nations/"the peoples", or after a named idol; plural El/Elah) + `exclude_refs`/
+  `include_refs` hand overrides keyed `book:chapter:verse:H###` in the TOKENS' own (BHS)
+  numbering. No transliteration is typed anywhere: labels are `nameTranslit(sn,
+  getCanonicalRoot(sn))`; `en` is only an English caption.
+- **Matcher: `server/divine-titles.js`** (`detectVerse`). BHS tags are trusted as-is. HEB-
+  edition tokens (tokens_nt canon > 39, tokens_nt_docs) are `inferred`: their SN only
+  counts if the written word (after ≤3 proclitics) starts with the root (found real junk:
+  "ha-knesiyot" tagged H3071, "sho'alim" tagged H410), and the construct false-god rule is
+  off for them (the NT's "God of this people Israel" is Yah).
+- **Gold**: `/api/tokens` runs the matcher on the chapter's raw rows (per versification
+  segment, keyed in the response's English verse space like the homograph guard) and
+  wraps `res.json` to stamp `comp.divine = <title id>` on the head component of each hit
+  token — every exit path (fast path, live-parse fallbacks, doc mode) gets it. Client:
+  `divineCss(comp)` (WordBlock.jsx, also used by Parallel.jsx's own renderer) adds
+  `divine-title` to the RENDER class only (comp.css untouched, so `css === 'root'` rules
+  still work); `lib/morphColors.css` paints it the same gold as `.mod-nmpr` (Yahawah).
+- **Tab**: `/lexicon-page?tab=divine` → `src/components/DivineTitles.jsx`, fed by
+  `GET /api/divine-titles` (summary) + `GET /api/divine-titles/refs?id=` (per-book verse
+  lists). BHS refs are converted to display numbering (`bhsToDisplayRef`, inverse of
+  `resolveEnglishChapter`: Malachi 3:19 → 4:1). Index built once (~3 s full scan of
+  tokens_bhs + tokens_nt + tokens_nt_docs), cached in memory and
+  `server/divine-titles.cache.json` (gitignored), rebuilt when corpus.db,
+  divine-titles.json or strongs-roots.json changes.
+
+**Verified** (device sandbox, no better-sqlite3): the matcher + the whole server block run
+against every real BHS/HEB row piped in via python sqlite3 — 53 titles, e.g. Yahawah
+7,133, Alahayam 6,369, Al Shaday 11 (Gen 17:1 … Ezek 10:5 + 4 HEB-edition books),
+Yahawah Tzabaawath 248, 180 "other gods"; Gen 17:1 marks come out right (Al + Shaday =
+al-shaday, Yahawah = yahawah, verbs untouched). `node --check` + esbuild on every edited
+file. **Not run live** — restart the server and rebuild the frontend, then check Genesis
+3:1 in Parallel (Alahayam glyphs/translit gold like Yahawah) and /lexicon-page → Divine
+Titles. Known limits: rules miss some false-god uses (e.g. "gods" said by pagans with no
+tell-tale neighbour — add them to `exclude_refs`), and the Reader's reading-text column
+is unchanged (already gold for every transliteration).
+
 ## Widget didn't pop up after the scheduled-task restart -- added logging, still unconfirmed (added 2026-09-24)
 
 fieldy re-ran `setup-observability-task.ps1` (it registered cleanly, printed its normal

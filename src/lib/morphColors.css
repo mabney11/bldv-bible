@@ -193,3 +193,17 @@ html[data-theme="light"] .nme-wtj     { --mc: #0a2800; --mb: #90d068; }
 html[data-theme="light"] .nme-nh      { --mc: #005500; --mb: #b8eeb8; }
 html[data-theme="light"] .uvf-dir     { --mc: #004466; --mb: #b0daf0; }
 html[data-theme="light"] .uvf-conn    { --mc: #003355; --mb: #a0cae8; }
+
+/* ── Divine names & titles of Yah ─────────────────────────────────────────────
+ * Alahayam, Al, Adanay, Shaday, Ilayawan, and the words of compound titles
+ * (Al Shaday, Yahawah Tzabaawath, Qadawash Yasharal …) — marked server-side
+ * (comp.divine, see server/divine-titles.js) and painted the SAME gold as
+ * Yahawah's own proper-noun color (.mod-nmpr above). Placed last and
+ * double-classed so it beats .root / `.w .root` / [data-alt] regardless of
+ * which morphology class the word also carries. */
+.divine-title.divine-title,
+.w span.divine-title,
+[data-alt="1"].divine-title    { --mc: #d4a010; --mb: #705000; }
+html[data-theme="light"] .divine-title.divine-title,
+html[data-theme="light"] .w span.divine-title { --mc: #775500; --mb: #ffee98; }
+
