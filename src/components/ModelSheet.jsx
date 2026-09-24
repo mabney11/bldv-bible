@@ -71,7 +71,7 @@ function sectionShape(piece, part, g) {
       if (part.role === 'ground') return rect(part.x, part.y, part.w, 0.6, { fill: MATERIALS.ground.color, stroke: 'none' });
       if (part.role === 'south') return null;                      // the near wall is cut away
       if (part.role === 'north') return rect(part.x, part.y, part.w, part.h, { opacity: 0.55 });   // the far wall, seen inside
-      if (part.role === 'east' || part.role === 'west' || part.role === 'roof' || part.role === 'ceiling' || part.role === 'partition' || part.role === 'tower' || part.role === 'lintel' || part.role === 'floor' || part.role === 'lining' || part.role === 'chains' || part.doorway || !part.role) {
+      if (part.role === 'east' || part.role === 'west' || part.role === 'base' || part.role === 'terrace' || part.role === 'ledge' || part.role === 'altar' || part.role === 'haral' || part.role === 'roof' || part.role === 'ceiling' || part.role === 'partition' || part.role === 'tower' || part.role === 'lintel' || part.role === 'floor' || part.role === 'lining' || part.role === 'chains' || part.doorway || !part.role) {
         if (!inPlane(part.z, part.d) && part.role !== 'north') return null;
         if (part.doorway) { const dh = part.doorway.h; rect(part.x, part.y + dh, part.w, part.h - dh); return el('rect', { x: sx(part.x - part.w / 2), y: sy(part.y + dh), width: part.w * SS, height: dh * SS, fill: '#1c1712', opacity: 0.35 }, g); }
         return rect(part.x, part.y, part.w, part.h);

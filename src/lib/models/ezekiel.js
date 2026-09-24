@@ -76,7 +76,7 @@ export const WORDS = {
 };
 
 // ── Materials ────────────────────────────────────────────────────────────────
-export const MATERIALS = { ...BASE_MATERIALS };
+export const MATERIALS = { ...BASE_MATERIALS, ground: { word: 'chatzar', color: '#7a6646', hi: '#9a8562', lo: '#4e3f2a', metal: 0, rough: 1 } };   // packed earth of the courts, darker than the pale stone (fieldy: contrast between the ground and the buildings)
 
 // ── The frame, in cubits ─────────────────────────────────────────────────────
 // 42:16–20: five hundred square, a wall about it. 40:5: the wall one reed thick, one reed high.
@@ -181,7 +181,9 @@ function greatWall() {
 function outerCourt() {
   const y = LEVEL.out, h = LEVEL.outer, out = [];
   // the terrace: everything inside the wall stands 3½ up (the gates' floors are at it)
-  out.push(box(0, y, 0, 2 * OUT - 2 * WALL.t, h, 2 * OUT - 2 * WALL.t, { role: 'ground', mat: 'ground' }));
+  const E = 2 * OUT - 2 * WALL.t;
+  out.push(box(0, y, 0, E, h - 0.3, E, { role: 'terrace', mat: 'found', courses: [10, 8] }));   // the terrace's retaining courses, seen from outside the wall as the built platform it is
+  out.push(box(0, y + h - 0.3, 0, E, 0.3, E, { role: 'ground', mat: 'ground' }));
   // the pavement, fifty wide, along the east, north and south walls (the building stands along the west), the gates cut through it
   const P = GATE.len, e = OUT - WALL.t;
   out.push(...paving(e - P, e, -e, e, h));
@@ -211,12 +213,13 @@ function outerCourt() {
 /** The inner court (40:47): a hundred square, eight steps above the outer court; its low wall (idealized) where no gate or building stands. */
 function innerCourt() {
   const y = LEVEL.outer, h = LEVEL.inner - LEVEL.outer, out = [];
-  out.push(box(0, y, 0, INNER.x1 - INNER.x0, h, 2 * INNER.z, { role: 'ground', mat: 'paving' }));   // the terrace
+  out.push(box(0, y, 0, INNER.x1 - INNER.x0, h - 0.3, 2 * INNER.z, { role: 'terrace', mat: 'found', courses: [10, 8] }));   // the terrace, built of courses
+  out.push(box(0, y + h - 0.3, 0, INNER.x1 - INNER.x0, 0.3, 2 * INNER.z, { role: 'ground', mat: 'paving' }));   // paved
   // the house's platform runs west of it at the same level, the separate place and the building's ground with it
-  out.push(box((HOUSE.x0 + INNER.x0) / 2, y, 0, INNER.x0 - HOUSE.x0, h, 2 * CHAMBERS.z0, { role: 'ground', mat: 'ground' }));
-  out.push(box((BINYAN.x0 + HOUSE.x0) / 2, y, 0, HOUSE.x0 - BINYAN.x0, h, 2 * (OUT - WALL.t), { role: 'ground', mat: 'ground' }));
+  out.push(box((HOUSE.x0 + INNER.x0) / 2, y, 0, INNER.x0 - HOUSE.x0, h - 0.3, 2 * CHAMBERS.z0, { role: 'terrace', mat: 'found', courses: [10, 8] }), box((HOUSE.x0 + INNER.x0) / 2, y + h - 0.3, 0, INNER.x0 - HOUSE.x0, 0.3, 2 * CHAMBERS.z0, { role: 'ground', mat: 'ground' }));
+  out.push(box((BINYAN.x0 + HOUSE.x0) / 2, y, 0, HOUSE.x0 - BINYAN.x0, h - 0.3, 2 * (OUT - WALL.t), { role: 'terrace', mat: 'found', courses: [10, 8] }), box((BINYAN.x0 + HOUSE.x0) / 2, y + h - 0.3, 0, HOUSE.x0 - BINYAN.x0, 0.3, 2 * (OUT - WALL.t), { role: 'ground', mat: 'ground' }));
   // the priests' rooms' ground (north and south of the house) at the inner level too
-  for (const s of [-1, 1]) out.push(box((CHAMBERS.x0 + CHAMBERS.x1) / 2, y, s * (CHAMBERS.z0 + CHAMBERS.z1) / 2, CHAMBERS.x1 - CHAMBERS.x0, h, CHAMBERS.z1 - CHAMBERS.z0, { role: 'ground', mat: 'ground' }));
+  for (const s of [-1, 1]) out.push(box((CHAMBERS.x0 + CHAMBERS.x1) / 2, y, s * (CHAMBERS.z0 + CHAMBERS.z1) / 2, CHAMBERS.x1 - CHAMBERS.x0, h - 0.3, CHAMBERS.z1 - CHAMBERS.z0, { role: 'terrace', mat: 'found', courses: [10, 8] }), box((CHAMBERS.x0 + CHAMBERS.x1) / 2, y + h - 0.3, s * (CHAMBERS.z0 + CHAMBERS.z1) / 2, CHAMBERS.x1 - CHAMBERS.x0, 0.3, CHAMBERS.z1 - CHAMBERS.z0, { role: 'ground', mat: 'ground' }));
   // a parapet (idealized) on the east and along the north/south runs between the gates and the rooms
   const t = 2, ph = 4.2, gw = GATE.w / 2 + 1;
   out.push(ideal(box(INNER.x1 - t / 2, LEVEL.inner, -(INNER.z + gw) / 2, t, ph, INNER.z - gw, { role: 'east' })), ideal(box(INNER.x1 - t / 2, LEVEL.inner, (INNER.z + gw) / 2, t, ph, INNER.z - gw, { role: 'east' })));
@@ -227,11 +230,11 @@ function innerCourt() {
 /** The mazabach (altar) of 43:13–17: the chayaq (base) a cubit with its border, the lower ledge two, the greater four, the Har'Al four with its horns; steps on the east. */
 function altar() {
   const y = LEVEL.inner, { x, z } = ALTAR, out = [];
-  out.push(box(x, y, z, 20, 1, 20, { role: 'base' }));                                             // the chayaq (bottom), a cubit, with its border of a span about (43:13)
-  out.push(box(x, y + 1, z, 16, 2, 16, { role: 'ledge' }));                                        // the lower ledge, two high, a cubit in (43:14)
-  out.push(box(x, y + 3, z, 14, 4, 14, { role: 'ledge' }));                                        // the greater ledge, four high, fourteen square (43:14, 17)
+  out.push(box(x, y, z, 20, 1, 20, { role: 'altar' }));                                            // the chayaq (bottom), a cubit, with its border of a span about (43:13)
+  out.push(box(x, y + 1, z, 16, 2, 16, { role: 'altar' }));                                        // the lower ledge, two high, a cubit in (43:14)
+  out.push(box(x, y + 3, z, 14, 4, 14, { role: 'altar' }));                                        // the greater ledge, four high, fourteen square (43:14, 17)
   out.push(box(x, y + 7, z, 12, 4, 12, { role: 'haral', horns: true }));                           // the Har'Al, four high, the araayal (hearth) twelve square (43:15–16)
-  out.push(...stair('x', x + 21, z, 22, 8, -1, y, 0.5, 0.5, 'stone').map((b) => ({ ...b, ideal: false })));   // its steps toward the east (43:17): the foot eleven out, climbing the eleven to the hearth
+  out.push(...stair('x', x + 10 + 11 * 1.2, z, 11, 12, -1, y, 1, 1.2, 'stone').map((b) => ({ ...b, ideal: false })));   // its steps toward the east (43:17): a flight as broad as the hearth, eleven risers of a cubit climbing to it
   return out;
 }
 
@@ -440,7 +443,7 @@ export const PIECES = [
     measures: [['the amah (cubit)', 'a amah (cubit) and a tapach (handbreadth)', '43:13'], ['chayaq (base)', '1 amah, a border of a zarath (span) about its edge', '43:13'], ['lower ledge', '2 amah high, 1 in', '43:14'], ['greater ledge', '4 amah high, 1 in; 14 × 14', '43:14, 17'], ['Har\'Al', '4 amah; the araayal (hearth) 12 × 12, four qaran (horns)', '43:15–16'], ['mailah (steps)', 'toward the qadayam (east)', '43:17']],
     note: '"{{Ezekiel 43:13 | These are … mazabach}}" — the altar rises in three ledges, each a cubit narrower than the one below, to the Har\'Al ("mountain of Al"), the hearth twelve square with a horn at each corner; its steps face the east, so the priest climbs with his back to the sunrise. Seven days it is cleansed (43:25–26); on the eighth the offerings begin (43:27).',
     elsewhere: { ref: 'Exodus 27:1–8; 2 Chronicles 4:1; Exodus 20:26; Ezekiel 43:18–27', note: 'The mashakan (tabernacle)\'s altar of five square and three high with its horns; Shalamah\'s of twenty square and ten high; "neither shall you go up by steps to my altar" (Exodus 20:26) — here the text itself gives the steps.' },
-    assumed: 'The hearth\'s twelve and the ledge\'s fourteen are the Hebrew\'s (shathayam-isharah, arabai-isharah); the lower ledge is drawn sixteen square; the steps twenty-two of half a cubit.',
+    assumed: 'The hearth\'s twelve and the ledge\'s fourteen are the Hebrew\'s (shathayam-isharah, arabai-isharah); the lower ledge is drawn sixteen square; the steps eleven of a cubit, as broad as the hearth.',
     parts: altar(),
   },
   {
@@ -774,7 +777,7 @@ export const MODEL = {
     openDefault: (k) => (k.includes(':') && !k.startsWith('gate-east') ? 1 : 0),   // every gate open but the east one, where the walk begins (and which is shut afterward, 44:1–2); the doors shut
   },
   scene: {
-    sky: 0xc4d6e8, shadowR: 300, fog: [900, 2400], maxDistance: 1400,
+    sky: 0xc4d6e8, shadowR: 300, fog: [900, 2400], maxDistance: 1400, earth: '#6a5a3f',   // the plain outside the wall, darker than the stone
     lights: [
       { key: 'hallLight', color: 0xffd9a0, distance: 70, pos: [(HAY_X0 + HAY_X1) / 2, LEVEL.house + 14, 0], on: () => 320 },
       { key: 'holyLight', color: 0xffe2b0, distance: 40, pos: [(HOLY_X0 + HOLY_X1) / 2, LEVEL.house + 12, 0], on: () => 220 },

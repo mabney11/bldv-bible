@@ -97,6 +97,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
 
     const world = new THREE.Group(); scene.add(world);
     const M = makeMaterials(model.MATERIALS);
+    if (SC.earth) M.earth.color.set(SC.earth);   // the plain the model stands on, in the model's own tone
     loadPhotos(M, () => { dirty = true; });
 
     // The mount: a wide plain fading into the haze; the courts lay their own ground.
@@ -196,61 +197,260 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     // the built pieces; the labels are the parts' names in his renderings.
     const mmap = document.createElement('canvas'); mmap.className = 'tp-minimap'; mmap.hidden = true; el.appendChild(mmap);
     const PLAN_PIECES = SC.plan.pieces;
-    const PLAN_SKIP = new Set(['roof', 'floor', 'ceiling', 'slab', 'parapet', 'lining', 'rail', 'stair', 'pavement', 'paving', 'ground', 'beam', 'threshold', 'rug', 'bed', 'table', 'seat', 'couch', 'chest', 'jar', 'lampstand', 'tree', 'pool', 'inlay', 'vessel']);
+    const PLAN_SKIP = new Set(['roof', 'floor', 'ceiling', 'slab', 'parapet', 'lining', 'rail', 'stair', 'pavement', 'paving', 'ground', 'terrace', 'base', 'ledge', 'border', 'beam', 'threshold', 'rug', 'bed', 'table', 'seat', 'couch', 'chest', 'jar', 'lampstand', 'tree', 'pool', 'inlay', 'vessel']);
+    // what the feet may stand on, for the route finder's height field: the ground, terraces, bases, floors, stairs — and anything low
+    // enough to step onto that names no role (a plain step); an upper storey's sketched slab, a roof, a lintel are not the ground under them
+    const WALK_ROLES = new Set(['ground', 'terrace', 'base', 'pavement', 'paving', 'floor', 'stair', 'threshold', 'ledge', 'border', 'step']);
     const plan = [];   // { x0, x1, z0, z1 } walls (filled) and { x, z, r } rounds (pillars, the sea)
+    const navWalk = [];   // { x0, x1, z0, z1, top } what can be walked on
+    const navObs = [];    // everything else that stands in the way, whatever its height (a table, an altar's ledge, a wall), with its span
     for (const id of PLAN_PIECES) {
       const piece = PIECES.find((q) => q.id === id); if (!piece) continue;
       for (const part of cutGates(piece).parts) {
+        const y0 = part.y ?? GROUND, y1 = y0 + (part.h ?? 3);
+        const walkable = part.kind === 'box' && (WALK_ROLES.has(part.role) || (part.h <= 2.4 && !part.role)) && !(part.ideal && part.role === 'floor');
+        if (walkable) navWalk.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2, top: y1 });
+        else if (part.kind === 'box' && !['roof', 'ceiling', 'slab', 'rug', 'inlay'].includes(part.role)) {
+          const R = { x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2, y0, y1 };
+          if (part.doorway) { const dw = part.doorway.w, lintel = { y0: y0 + part.doorway.h, y1 }; if (part.w < part.d) navObs.push({ ...R, z1: part.z - dw / 2 }, { ...R, z0: part.z + dw / 2 }, { ...R, z0: part.z - dw / 2, z1: part.z + dw / 2, ...lintel }); else navObs.push({ ...R, x1: part.x - dw / 2 }, { ...R, x0: part.x + dw / 2 }, { ...R, x0: part.x - dw / 2, x1: part.x + dw / 2, ...lintel }); }
+          else navObs.push(R);
+        } else if (part.kind === 'cyl' && part.r >= 0.4) navObs.push({ x: part.x, z: part.z, r: part.r, y0, y1 });
+        else if (part.kind === 'base') navObs.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.w / 2, z1: part.z + part.w / 2, y0, y1: y0 + 4 });
+        else if (part.kind === 'throne') navObs.push({ x0: part.x - 3, x1: part.x + 3, z0: part.z - 3, z1: part.z + 3, y0, y1: y0 + 6 });
+        else if (part.kind === 'sea') navObs.push({ x: part.x, z: part.z, r: part.r + 1, y0, y1: y0 + 8 });
+        else if (part.kind === 'pillar') navObs.push({ x: part.x, z: part.z, r: part.r * 1.4, y0, y1: y0 + part.h });
         if (PLAN_SKIP.has(part.role)) continue;
         // each thing keeps its height span: the map shows what stands at the walker's own level (a lintel over a gate, or an
         // upper storey's rooms, must not close a doorway on the ground)
-        const y0 = part.y ?? GROUND, y1 = y0 + (part.h ?? 3);
-        if (part.kind === 'box' && part.h >= 2.5) plan.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2, y0, y1 });
+        if (part.kind === 'box' && part.h >= 2.5) {
+          const R = { x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2, y0, y1 };
+          if (part.doorway) {   // a wall with a doorway cut through it: two flanks and the gap between (as builders' boxWithDoorway), so the way in is open on the map and to the route
+            const dw = part.doorway.w, lintel = { y0: y0 + part.doorway.h, y1 };
+            if (part.w < part.d) plan.push({ ...R, z1: part.z - dw / 2 }, { ...R, z0: part.z + dw / 2 }, { ...R, z0: part.z - dw / 2, z1: part.z + dw / 2, ...lintel });
+            else plan.push({ ...R, x1: part.x - dw / 2 }, { ...R, x0: part.x + dw / 2 }, { ...R, x0: part.x - dw / 2, x1: part.x + dw / 2, ...lintel });
+          } else plan.push(R);
+        }
         else if (part.kind === 'cyl' && part.r >= 0.8 && part.h >= 2.5) plan.push({ x: part.x, z: part.z, r: part.r, y0, y1 });
         else if (part.kind === 'base') plan.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.w / 2, z1: part.z + part.w / 2, thin: true, y0, y1: y0 + 4 });
         else if (part.kind === 'throne') plan.push({ x0: part.x - 3, x1: part.x + 3, z0: part.z - 3, z1: part.z + 3, thin: true, y0, y1: y0 + 6 });
       }
     }
+    // a gate's open leaves stand swung back along the jambs, still a little into the passage: the route keeps to its middle
+    for (const id of PLAN_PIECES) for (const gate of PIECES.find((q) => q.id === id)?.gates || []) {
+      if (gate.leaves === false) continue;
+      const gy = gate.y ?? GROUND, along = gate.axis === 'x', L = 2.6, D = 2.2;
+      for (const sg of [-1, 1]) navObs.push(along
+        ? { x0: gate.x + (sg > 0 ? gate.w / 2 - D : -gate.w / 2), x1: gate.x + (sg > 0 ? gate.w / 2 : -gate.w / 2 + D), z0: gate.z - L, z1: gate.z + L, y0: gy, y1: gy + 6 }
+        : { x0: gate.x - L, x1: gate.x + L, z0: gate.z + (sg > 0 ? gate.w / 2 - D : -gate.w / 2), z1: gate.z + (sg > 0 ? gate.w / 2 : -gate.w / 2 + D), y0: gy, y1: gy + 6 });
+    }
     plan.push(...SC.plan.extra);   // what the pieces' parts do not give (the temple: the yam (sea), Yakayan and Baiz)
     const PLAN_LABELS = SC.plan.labels;
     const MM_R = SC.plan.radius;   // amah shown from the centre to the edge
+    // the whole model's extent, for the big map
+    const EXT = { x0: Infinity, x1: -Infinity, z0: Infinity, z1: -Infinity };
+    for (const r of [...plan, ...navWalk]) { const bx0 = r.r != null ? r.x - r.r : r.x0, bx1 = r.r != null ? r.x + r.r : r.x1, bz0 = r.r != null ? r.z - r.r : r.z0, bz1 = r.r != null ? r.z + r.r : r.z1; EXT.x0 = Math.min(EXT.x0, bx0); EXT.x1 = Math.max(EXT.x1, bx1); EXT.z0 = Math.min(EXT.z0, bz0); EXT.z1 = Math.max(EXT.z1, bz1); }
+    for (const [lx, lz] of PLAN_LABELS) { EXT.x0 = Math.min(EXT.x0, lx - 10); EXT.x1 = Math.max(EXT.x1, lx + 10); EXT.z0 = Math.min(EXT.z0, lz - 10); EXT.z1 = Math.max(EXT.z1, lz + 10); }
+    { const [sx, , sz] = ROAM_START.pos; EXT.x0 = Math.min(EXT.x0, sx); EXT.x1 = Math.max(EXT.x1, sx); EXT.z0 = Math.min(EXT.z0, sz); EXT.z1 = Math.max(EXT.z1, sz); const pad = 30; EXT.x0 -= pad; EXT.x1 += pad; EXT.z0 -= pad; EXT.z1 += pad; }
+
+    // ── The route finder: a grid of one-cubit cells over the model, a height field of what can be stood on, and every wall that
+    // stands at that height a block; A* between cells (a climb of more than a step is not a way; a drop is, but costs), then the
+    // corners pulled straight. Built the first time a place is asked for.
+    const STEP_MAX = 2.4, NAV_PAD = 1.2;
+    let nav = null;
+    function buildNav() {
+      const x0 = Math.floor(EXT.x0), z0 = Math.floor(EXT.z0), W = Math.ceil(EXT.x1) - x0 + 1, Hn = Math.ceil(EXT.z1) - z0 + 1;
+      const H = new Float32Array(W * Hn).fill(GROUND), block = new Uint8Array(W * Hn);
+      const cells = (ax0, ax1, az0, az1, fn) => { const i0 = Math.max(0, Math.floor(ax0 - x0)), i1 = Math.min(W - 1, Math.ceil(ax1 - x0)), j0 = Math.max(0, Math.floor(az0 - z0)), j1 = Math.min(Hn - 1, Math.ceil(az1 - z0)); for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) fn(j * W + i, x0 + i + 0.5, z0 + j + 0.5); };
+      for (const w of navWalk) cells(w.x0, w.x1 - 1, w.z0, w.z1 - 1, (k) => { if (w.top > H[k]) H[k] = w.top; });
+      for (const r of [...navObs, ...SC.plan.extra]) {
+        if (r.r != null) { const R = r.r + NAV_PAD; cells(r.x - R, r.x + R, r.z - R, r.z + R, (k, cx, cz) => { if (Math.hypot(cx - r.x, cz - r.z) <= R && r.y0 < H[k] + STEP_MAX && r.y1 > H[k] + 0.5) block[k] = 1; }); continue; }
+        cells(r.x0 - NAV_PAD, r.x1 + NAV_PAD - 1, r.z0 - NAV_PAD, r.z1 + NAV_PAD - 1, (k) => { if (r.y0 < H[k] + STEP_MAX && r.y1 > H[k] + 0.5) block[k] = 1; });
+      }
+      nav = { x0, z0, W, Hn, H, block };
+    }
+    const cellOf = (x, z) => [Math.floor(x - nav.x0), Math.floor(z - nav.z0)];
+    const inNav = (i, j) => i >= 0 && j >= 0 && i < nav.W && j < nav.Hn;
+    /** may the feet go from cell a to cell b (a step up at most, any way down) */
+    function passable(a, b) { if (nav.block[b]) return false; return nav.H[b] - nav.H[a] <= STEP_MAX; }
+    function nearestFree(i, j) {
+      if (inNav(i, j) && !nav.block[j * nav.W + i]) return [i, j];
+      for (let r = 1; r < 40; r++) for (let dj = -r; dj <= r; dj++) for (let di = -r; di <= r; di++) { if (Math.max(Math.abs(di), Math.abs(dj)) !== r) continue; const ii = i + di, jj = j + dj; if (inNav(ii, jj) && !nav.block[jj * nav.W + ii]) return [ii, jj]; }
+      return null;
+    }
+    function findPath(ax, az, bx, bz) {
+      if (!nav) buildNav();
+      const clampC = ([i, j]) => [Math.max(0, Math.min(nav.W - 1, i)), Math.max(0, Math.min(nav.Hn - 1, j))];
+      const A = nearestFree(...clampC(cellOf(ax, az))), B = nearestFree(...clampC(cellOf(bx, bz))); if (!A || !B) return null;
+      const { W, Hn, H } = nav, N = W * Hn, start = A[1] * W + A[0], goal = B[1] * W + B[0];
+      const g = new Float32Array(N).fill(Infinity), from = new Int32Array(N).fill(-1), closed = new Uint8Array(N);
+      const heap = [], hk = [];   // a binary heap of [f, cell]
+      const push = (f, c) => { heap.push(c); hk.push(f); let i = heap.length - 1; while (i > 0) { const p = (i - 1) >> 1; if (hk[p] <= hk[i]) break; [heap[p], heap[i]] = [heap[i], heap[p]]; [hk[p], hk[i]] = [hk[i], hk[p]]; i = p; } };
+      const pop = () => { const c = heap[0], last = heap.pop(), lk = hk.pop(); if (heap.length) { heap[0] = last; hk[0] = lk; let i = 0; for (;;) { const l = 2 * i + 1, r = l + 1; let m = i; if (l < heap.length && hk[l] < hk[m]) m = l; if (r < heap.length && hk[r] < hk[m]) m = r; if (m === i) break; [heap[m], heap[i]] = [heap[i], heap[m]]; [hk[m], hk[i]] = [hk[i], hk[m]]; i = m; } } return c; };
+      const gi = goal % W, gj = (goal / W) | 0, heur = (c) => { const dx = Math.abs(c % W - gi), dz = Math.abs(((c / W) | 0) - gj); return Math.max(dx, dz) + 0.414 * Math.min(dx, dz); };
+      g[start] = 0; push(heur(start), start);
+      const DIRS = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, 1.414], [1, -1, 1.414], [-1, 1, 1.414], [-1, -1, 1.414]];
+      let steps = 0;
+      while (heap.length && steps++ < 400000) {
+        const c = pop(); if (c === goal) break; if (closed[c]) continue; closed[c] = 1;
+        const ci = c % W, cj = (c / W) | 0;
+        for (const [di, dj, cost] of DIRS) {
+          const ni = ci + di, nj = cj + dj; if (!inNav(ni, nj)) continue; const n = nj * W + ni; if (closed[n] || !passable(c, n)) continue;
+          if (di && dj && (nav.block[cj * W + ni] || nav.block[nj * W + ci])) continue;   // no cutting a corner through a wall
+          const drop = H[c] - H[n], nc = g[c] + cost + (drop > STEP_MAX ? 6 + drop : 0);   // a drop is a way, but the stairs are a better one
+          if (nc < g[n]) { g[n] = nc; from[n] = c; push(nc + heur(n), n); }
+        }
+      }
+      if (from[goal] < 0 && goal !== start) return null;
+      const cellsOut = []; for (let c = goal; c >= 0; c = from[c]) { cellsOut.push(c); if (c === start) break; } cellsOut.reverse();
+      // pull the corners straight: keep a waypoint only where the straight line to the next kept one would cross a wall or a climb
+      const clear = (p, q) => { let i0 = p % W, j0 = (p / W) | 0; const i1 = q % W, j1 = (q / W) | 0; const di = Math.abs(i1 - i0), dj = Math.abs(j1 - j0), sx = i0 < i1 ? 1 : -1, sz = j0 < j1 ? 1 : -1; let err = di - dj, prev = p; for (;;) { const c = j0 * W + i0; if (c !== prev && !passable(prev, c)) return false; prev = c; if (i0 === i1 && j0 === j1) return true; const e2 = 2 * err; if (e2 > -dj) { err -= dj; i0 += sx; } if (e2 < di) { err += di; j0 += sz; } } };
+      const kept = [cellsOut[0]]; let anchor = 0;
+      for (let k = 2; k < cellsOut.length; k++) if (!clear(cellsOut[anchor], cellsOut[k])) { kept.push(cellsOut[k - 1]); anchor = k - 1; }
+      if (cellsOut.length > 1) kept.push(cellsOut[cellsOut.length - 1]);
+      return kept.map((c) => [nav.x0 + (c % W) + 0.5, nav.z0 + ((c / W) | 0) + 0.5]);
+    }
+
+    // ── Being walked somewhere: the route as waypoints, followed on the walker's own feet (tryMove, so doors and steps hold);
+    // any walking key or pad press cancels it and he stays where he is (fieldy); the mouse may still look about
+    let auto = null;   // { path, i, label, dist0, still, lastD, gateTried }
+    const autoEl = document.createElement('div'); autoEl.className = 'tp-autobar'; autoEl.hidden = true; el.appendChild(autoEl);
+    function startAuto(x, z, label) {
+      const path = findPath(camera.position.x, camera.position.z, x, z);
+      if (!path || path.length < 2) { autoEl.hidden = false; autoEl.textContent = 'No way there on foot from here.'; setTimeout(() => { if (!auto) autoEl.hidden = true; }, 2200); return false; }
+      auto = { path, i: 1, label, dist0: roam.dist, still: 0, lastD: Infinity, gateTried: 0 };
+      if (roam.dist < 4) roam.dist = 9;   // pull back to watch him go
+      autoEl.hidden = false; autoEl.innerHTML = `Walking to <b></b> · any walking key stops it`; autoEl.querySelector('b').textContent = label || 'the place';
+      dirty = true; return true;
+    }
+    function cancelAuto(done) {
+      if (!auto) return;
+      const a = auto; auto = null; roam.keys.delete('run');
+      if (!done && a.dist0 < 4) roam.dist = a.dist0; else if (done && a.dist0 < 4) roam.dist = a.dist0;
+      autoEl.hidden = true; dirty = true; remember();
+    }
+    function autoStep(dt) {
+      const a = auto, [tx, tz] = a.path[a.i], ex = camera.position.x, ez = camera.position.z;
+      const dx = tx - ex, dz = tz - ez, d = Math.hypot(dx, dz);
+      if (d < 1.0) { a.i++; a.still = 0; a.lastD = Infinity; if (a.i >= a.path.length) { cancelAuto(true); return; } return; }
+      const want = Math.atan2(dz, dx); let dy = want - roam.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
+      roam.yaw += Math.sign(dy) * Math.min(Math.abs(dy), 3.2 * dt);
+      const v = Math.min(d, WALK * dt), mx = dx / d * v, mz = dz / d * v;
+      const before = Math.hypot(camera.position.x - tx, camera.position.z - tz);
+      tryMove(mx, mz);
+      const after = Math.hypot(camera.position.x - tx, camera.position.z - tz);
+      if (before - after < v * 0.2) a.still += dt; else { a.still = 0; a.gateTried = 0; }   // moving again: the next shut thing may be opened too
+      if (a.still > 1.2 && !a.gateTried) {   // held up: a shut gate or door ahead? open the nearest, once
+        a.gateTried = 1; let best = null, bd = 6;
+        for (const gs of gateSets) { const p = new THREE.Vector3(); gs.node.getWorldPosition(p); const dd = Math.hypot(p.x - ex, p.z - ez); if (dd < bd && roam.want[gs.key] < 0.5) { bd = dd; best = gs.key; } }
+        for (const ds of doorSets) { const p = new THREE.Vector3(); ds.leaves[0]?.node.getWorldPosition(p); const dd = Math.hypot(p.x - ex, p.z - ez), key = model.roam.openKey ? model.roam.openKey(ds.open) : ds.open; if (dd < bd && key in roam.want && roam.want[key] < 0.5) { bd = dd; best = key; } }
+        if (best) { roam.want[best] = 1; a.still = 0; }
+      } else if (a.still > 4) cancelAuto(false);
+      const wantY = roam.foot + ROAM_EYE; camera.position.y += roam.air ? wantY - camera.position.y : (wantY - camera.position.y) * Math.min(1, dt * 10);
+      roam.moving = true; roam.vel.x = mx / dt; roam.vel.z = mz / dt;
+    }
+
+    // ── The big map (M): the whole model, north up, and a tap on a place offers to walk there ──
+    let mapBig = false;
+    const gotoEl = document.createElement('div'); gotoEl.className = 'tp-goto'; gotoEl.hidden = true; el.appendChild(gotoEl);
+    let gotoAsk = null;   // { x, z, label }
+    function showBig(on) {
+      mapBig = on; mmap.classList.toggle('tp-map-big', on); mmap.style.pointerEvents = on ? 'auto' : ''; el.classList.toggle('tp-mapopen', on);
+      if (!on) { gotoEl.hidden = true; gotoAsk = null; }
+      dirty = true;
+    }
+    function bigFrame(W) {   // the map's transform: world → pixels, north up, the whole extent fitted
+      const ext = Math.max(EXT.x1 - EXT.x0, EXT.z1 - EXT.z0), S = W / ext;
+      return { S, ox: W / 2 - (EXT.x0 + EXT.x1) / 2 * S, oz: W / 2 - (EXT.z0 + EXT.z1) / 2 * S };
+    }
+    const onMapClick = (e) => {
+      if (!mapBig || !roam.on) return;
+      const r = mmap.getBoundingClientRect(), dpr = mmap.width / r.width, px = (e.clientX - r.left) * dpr, py = (e.clientY - r.top) * dpr;
+      const { S, ox, oz } = bigFrame(mmap.width);
+      const wx = (px - ox) / S, wz = (py - oz) / S;
+      let label = null, bd = 14 * dpr, lx = wx, lz = wz;
+      for (const [x, z, t] of PLAN_LABELS) { const d = Math.hypot(x * S + ox - px, z * S + oz - py); if (d < bd) { bd = d; label = t; lx = x; lz = z; } }
+      gotoAsk = { x: lx, z: lz, label };
+      gotoEl.innerHTML = '<span></span><button type="button" class="tp-goto-go">Go</button><button type="button" class="tp-goto-no">Cancel</button>';
+      gotoEl.querySelector('span').textContent = label ? `Walk to ${label}?` : `Walk here (${Math.round(wx)}, ${Math.round(wz)})?`;
+      gotoEl.style.left = `${Math.min(r.width - 230, Math.max(8, e.clientX - r.left + 8))}px`; gotoEl.style.top = `${Math.min(r.height - 44, Math.max(8, e.clientY - r.top + 8))}px`;
+      gotoEl.hidden = false; dirty = true;
+      e.stopPropagation();
+    };
+    mmap.addEventListener('click', onMapClick);
+    // the clicks on the map must not fall through to the view (a pick, or taking the mouse)
+    mmap.addEventListener('pointerdown', (e) => { if (mapBig) e.stopPropagation(); });
+    mmap.addEventListener('pointerup', (e) => { if (mapBig) e.stopPropagation(); });
+    gotoEl.addEventListener('pointerdown', (e) => e.stopPropagation()); gotoEl.addEventListener('pointerup', (e) => e.stopPropagation());
+    gotoEl.addEventListener('click', (e) => {
+      e.stopPropagation(); const go = e.target.closest('.tp-goto-go');
+      if (go && gotoAsk) { if (startAuto(gotoAsk.x, gotoAsk.z, gotoAsk.label)) showBig(false); }
+      else if (e.target.closest('.tp-goto-no')) { gotoEl.hidden = true; gotoAsk = null; dirty = true; }
+    });
+
     function drawMinimap() {
       const css = mmap.clientWidth || 170, dpr = Math.min(2, window.devicePixelRatio || 1), W = Math.round(css * dpr);
       if (mmap.width !== W) { mmap.width = mmap.height = W; }
       const g = mmap.getContext('2d'); if (!g) return;
-      const S = W / (2 * MM_R), cx = W / 2, cy = W / 2, px = camera.position.x, pz = camera.position.z, a = -(roam.yaw + Math.PI / 2);
+      const px = camera.position.x, pz = camera.position.z;
+      const big = mapBig, S = big ? bigFrame(W).S : W / (2 * MM_R), a = big ? 0 : -(roam.yaw + Math.PI / 2);
+      const { ox, oz } = big ? bigFrame(W) : { ox: 0, oz: 0 };
+      // world → map pixels (the small map turns with him, centred on him; the big one is fixed, north up)
+      const ca = Math.cos(a), sa = Math.sin(a);
+      const P = (x, z) => big ? [x * S + ox, z * S + oz] : [W / 2 + ((x - px) * ca - (z - pz) * sa) * S, W / 2 + ((x - px) * sa + (z - pz) * ca) * S];
       g.clearRect(0, 0, W, W);
       g.save(); g.beginPath(); g.roundRect(0, 0, W, W, 10 * dpr); g.clip();
-      g.fillStyle = 'rgba(14, 11, 8, 0.78)'; g.fillRect(0, 0, W, W);
-      g.save(); g.translate(cx, cy); g.rotate(a); g.scale(S, S);
-      // the grid of the court, faint
+      g.fillStyle = big ? 'rgba(14, 11, 8, 0.9)' : 'rgba(14, 11, 8, 0.78)'; g.fillRect(0, 0, W, W);
+      g.save();
+      if (big) { g.translate(ox, oz); g.scale(S, S); } else { g.translate(W / 2, W / 2); g.rotate(a); g.scale(S, S); g.translate(-px, -pz); }
+      // the grid, faint (twenty cubits; fifty on the big map)
+      const G = big ? 50 : 20, gx0 = Math.floor(EXT.x0 / G) * G, gz0 = Math.floor(EXT.z0 / G) * G;
       g.strokeStyle = 'rgba(255, 208, 98, 0.08)'; g.lineWidth = 0.6 / S;
-      for (let k = -200; k <= 200; k += 20) { g.beginPath(); g.moveTo(k - px, -200 - pz); g.lineTo(k - px, 200 - pz); g.moveTo(-200 - px, k - pz); g.lineTo(200 - px, k - pz); g.stroke(); }
+      for (let k = gx0; k <= EXT.x1; k += G) { g.beginPath(); g.moveTo(k, EXT.z0); g.lineTo(k, EXT.z1); g.stroke(); }
+      for (let k = gz0; k <= EXT.z1; k += G) { g.beginPath(); g.moveTo(EXT.x0, k); g.lineTo(EXT.x1, k); g.stroke(); }
       g.fillStyle = 'rgba(255, 208, 98, 0.55)';
       const lo = roam.foot + 0.5, hi = roam.foot + 2.5;   // what stands at his level
+      const groundAt = (x, z) => { if (!nav) buildNav(); const [i, j] = cellOf(x, z); return inNav(i, j) ? nav.H[j * nav.W + i] : GROUND; };
       for (const r of plan) {
-        if (r.y0 > hi || r.y1 < lo) continue;
-        if (r.r != null) { g.beginPath(); g.arc(r.x - px, r.z - pz, r.r, 0, Math.PI * 2); g.fill(); continue; }
-        if (r.x1 - px < -MM_R * 1.5 || r.x0 - px > MM_R * 1.5 || r.z1 - pz < -MM_R * 1.5 || r.z0 - pz > MM_R * 1.5) continue;
-        g.globalAlpha = r.thin ? 0.6 : 1; g.fillRect(r.x0 - px, r.z0 - pz, r.x1 - r.x0, r.z1 - r.z0); g.globalAlpha = 1;
+        if (big) { const gy = groundAt(r.r != null ? r.x : (r.x0 + r.x1) / 2, r.r != null ? r.z : (r.z0 + r.z1) / 2); if (r.y0 > gy + 2.5 || r.y1 < gy + 0.5) continue; }   // the big map: every wall standing on its own ground
+        else if (r.y0 > hi || r.y1 < lo) continue;
+        if (r.r != null) { g.beginPath(); g.arc(r.x, r.z, r.r, 0, Math.PI * 2); g.fill(); continue; }
+        if (!big && (r.x1 - px < -MM_R * 1.5 || r.x0 - px > MM_R * 1.5 || r.z1 - pz < -MM_R * 1.5 || r.z0 - pz > MM_R * 1.5)) continue;
+        g.globalAlpha = r.thin ? 0.6 : 1; g.fillRect(r.x0, r.z0, r.x1 - r.x0, r.z1 - r.z0); g.globalAlpha = 1;
       }
       // the stairs' marks
       g.fillStyle = '#ffd062';
-      for (const m of stairMarks) if (m.userData.foot) { g.beginPath(); g.arc(m.position.x - px, m.position.z - pz, 1.4, 0, Math.PI * 2); g.fill(); }
+      for (const m of stairMarks) if (m.userData.foot) { g.beginPath(); g.arc(m.position.x, m.position.z, 1.4, 0, Math.PI * 2); g.fill(); }
       g.restore();
-      // labels stay upright
-      g.font = `${Math.round(9 * dpr)}px system-ui, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
-      const ca = Math.cos(a), sa = Math.sin(a);
-      for (const [lx, lz, t] of PLAN_LABELS) {
-        const dx = lx - px, dz = lz - pz; if (Math.hypot(dx, dz) > MM_R * 1.25) continue;
-        const sx = cx + (dx * ca - dz * sa) * S, sy = cy + (dx * sa + dz * ca) * S;
-        g.lineWidth = 3 * dpr; g.strokeStyle = 'rgba(14, 11, 8, 0.85)'; g.strokeText(t, sx, sy); g.fillStyle = '#f3e3b8'; g.fillText(t, sx, sy);
+      // the route he is being led on: a gold line from his feet through the waypoints, arrows along it pointing the way
+      if (auto) {
+        const pts = [[px, pz], ...auto.path.slice(auto.i)].map(([x, z]) => P(x, z));
+        g.lineWidth = 2 * dpr; g.strokeStyle = 'rgba(255, 208, 98, 0.9)'; g.lineJoin = 'round'; g.lineCap = 'round';
+        g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke();
+        g.fillStyle = '#ffd062'; const step = 22 * dpr, ah = 5 * dpr; let carry = step * 0.5;
+        for (let i = 1; i < pts.length; i++) {
+          const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], L = Math.hypot(x1 - x0, y1 - y0); if (L < 1e-3) continue; const ux = (x1 - x0) / L, uy = (y1 - y0) / L;
+          for (let t = carry; t < L; t += step) { const x = x0 + ux * t, y = y0 + uy * t; g.beginPath(); g.moveTo(x + ux * ah, y + uy * ah); g.lineTo(x - uy * ah * 0.7, y + ux * ah * 0.7); g.lineTo(x + uy * ah * 0.7, y - ux * ah * 0.7); g.closePath(); g.fill(); }
+          carry = ((carry - L) % step + step) % step;
+        }
+        const [ex, ey] = pts[pts.length - 1]; g.beginPath(); g.arc(ex, ey, 4 * dpr, 0, Math.PI * 2); g.fillStyle = '#fff3c4'; g.fill(); g.strokeStyle = '#8a6716'; g.lineWidth = 1.5 * dpr; g.stroke();
       }
+      // labels stay upright (the big map: all of them, larger)
+      g.font = `${Math.round((big ? 11 : 9) * dpr)}px system-ui, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+      for (const [lx, lz, t] of PLAN_LABELS) {
+        if (!big && Math.hypot(lx - px, lz - pz) > MM_R * 1.25) continue;
+        const [sx, sy] = P(lx, lz);
+        g.lineWidth = 3 * dpr; g.strokeStyle = 'rgba(14, 11, 8, 0.85)'; g.strokeText(t, sx, sy); g.fillStyle = big && gotoAsk?.label === t ? '#ffd062' : '#f3e3b8'; g.fillText(t, sx, sy);
+      }
+      if (big && gotoAsk && !gotoAsk.label) { const [sx, sy] = P(gotoAsk.x, gotoAsk.z); g.beginPath(); g.arc(sx, sy, 5 * dpr, 0, Math.PI * 2); g.strokeStyle = '#ffd062'; g.lineWidth = 2 * dpr; g.stroke(); }
       // north, at the rim
-      { const nx = -sa * -1, ny = ca * -1; const rx = cx + nx * (cx - 9 * dpr), ry = cy + ny * (cy - 9 * dpr); g.font = `bold ${Math.round(10 * dpr)}px system-ui, sans-serif`; g.fillStyle = '#ffd062'; g.fillText('N', rx, ry); }
-      // the walker, at the centre, his way up
+      { const nx = big ? 0 : -sa * -1, ny = big ? -1 : ca * -1; const rx = W / 2 + nx * (W / 2 - 9 * dpr), ry = W / 2 + ny * (W / 2 - 9 * dpr); g.font = `bold ${Math.round(10 * dpr)}px system-ui, sans-serif`; g.fillStyle = '#ffd062'; g.fillText('N', rx, ry); }
+      if (big) { g.font = `${Math.round(10 * dpr)}px system-ui, sans-serif`; g.fillStyle = '#c9b98a'; g.textAlign = 'left'; g.fillText('M closes · tap a place to be walked there', 10 * dpr, W - 10 * dpr); g.textAlign = 'center'; }
+      // the walker: at the centre, his way up (the small map); where he stands, turned his way (the big one)
+      const [wx, wy] = big ? P(px, pz) : [W / 2, W / 2], wa = big ? roam.yaw + Math.PI / 2 : 0;
+      g.save(); g.translate(wx, wy); g.rotate(wa);
       g.fillStyle = '#fff3c4'; g.strokeStyle = 'rgba(0,0,0,0.6)'; g.lineWidth = 1.2 * dpr;
-      g.beginPath(); g.moveTo(cx, cy - 7 * dpr); g.lineTo(cx + 5 * dpr, cy + 5 * dpr); g.lineTo(cx, cy + 2.5 * dpr); g.lineTo(cx - 5 * dpr, cy + 5 * dpr); g.closePath(); g.fill(); g.stroke();
+      g.beginPath(); g.moveTo(0, -7 * dpr); g.lineTo(5 * dpr, 5 * dpr); g.lineTo(0, 2.5 * dpr); g.lineTo(-5 * dpr, 5 * dpr); g.closePath(); g.fill(); g.stroke();
+      g.restore();
       g.restore();
     }
 
@@ -424,6 +624,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         if (roam.vy <= 0) { const gy = groundUnder(camera.position.x, camera.position.z, prevFoot + 0.6); if (gy != null && roam.foot <= gy) { roam.foot = gy; touchDown(); } else if (gy == null && roam.foot < GROUND - 40) { roam.foot = GROUND; touchDown(); } }
         camera.position.y = roam.foot + ROAM_EYE; changed = true;
       }
+      if (auto && !roam.air) { autoStep(dt); aimCamera(); remember(); return true; }
       const K = roam.keys, S = roam.stick, stickMag = Math.hypot(S.x, S.y);
       if (!K.size && stickMag < 0.05) {
         // in the air with nothing pressed: the jump carries him on (a jump is more than straight up and down)
@@ -458,7 +659,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     }
     function roamEnter(on) {
       roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.air = 0; roam.vy = 0; roam.glide = null; controls.enabled = !on;
-      renderer.domElement.style.cursor = on ? 'crosshair' : 'grab'; mmap.hidden = !on; zoneEl.hidden = !(on && COARSE); if (!on) { touches.clear(); pinch = null; }
+      renderer.domElement.style.cursor = on ? 'crosshair' : 'grab'; mmap.hidden = !on; zoneEl.hidden = !(on && COARSE); if (!on) { touches.clear(); pinch = null; cancelAuto(false); showBig(false); }
       if (on) {
         following = false; onFollow?.(true);   // no "follow" button in the roam: there is no story to follow
         if (ROAM_MEMO) { camera.position.set(...ROAM_MEMO.pos); roam.yaw = ROAM_MEMO.yaw; roam.pitch = ROAM_MEMO.pitch; roam.dist = ROAM_MEMO.dist || 0; }   // back where they stood
@@ -510,6 +711,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       if (!roam.on || e.button === 2) return;
       const r = renderer.domElement.getBoundingClientRect();
       if (e.pointerType === 'touch' && stickPtr == null && stickZone(r, e.clientX, e.clientY)) {   // the left thumb: a stick where it landed
+        if (auto) cancelAuto(false);
         stickPtr = { id: e.pointerId, x0: e.clientX, y0: e.clientY };
         stickEl.style.left = `${e.clientX - r.left}px`; stickEl.style.top = `${e.clientY - r.top}px`; stickEl.hidden = false; knobEl.style.transform = '';
         try { renderer.domElement.setPointerCapture?.(e.pointerId); } catch { /* a synthetic pointer */ } return;
@@ -552,7 +754,15 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     // forward again into his eyes
     const onWheel = (e) => { if (!roam.on) return; e.preventDefault(); roam.dist = Math.max(0, Math.min(DIST_MAX, roam.dist + Math.sign(e.deltaY) * 1.5)); remember(); dirty = true; };
     const KEYMAP = { KeyW: 'forward', ArrowUp: 'forward', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', KeyD: 'right', ArrowLeft: 'turnL', ArrowRight: 'turnR', ShiftLeft: 'run', ShiftRight: 'run', Space: 'jump' };
-    const onKeyDown = (e) => { if (!roam.on || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return; const k = KEYMAP[e.code]; if (!k) return; e.preventDefault(); if (k === 'jump') { if (!e.repeat) jump(); return; } roam.keys.add(k); };
+    const onKeyDown = (e) => {
+      if (!roam.on || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
+      if (e.code === 'KeyM' && !e.repeat) { e.preventDefault(); showBig(!mapBig); return; }   // the whole map
+      if (e.code === 'Escape' && mapBig) { showBig(false); return; }
+      const k = KEYMAP[e.code]; if (!k) return; e.preventDefault();
+      if (k === 'jump') { if (!e.repeat) jump(); return; }
+      if (auto && k !== 'run') cancelAuto(false);   // a walking key of his own: the route is dropped, he stays where he is
+      roam.keys.add(k);
+    };
     const onKeyUp = (e) => { const k = KEYMAP[e.code]; if (k) roam.keys.delete(k); };
     renderer.domElement.addEventListener('pointerdown', onLookDown);
     renderer.domElement.addEventListener('pointermove', onLookMove);
@@ -680,7 +890,11 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       follow: () => { if (roam.on) return; setFollow(true); lastT = -1; },
       refocus: () => { if (roam.on) return; if (currentSel) flyTo(currentSel); else { setFollow(true); lastT = -1; } dirty = true; },
       modeChanged: () => { const free = !!MODES[modeRef.current]?.free; if (free !== roam.on) roamEnter(free); lastT = -1; if (!free) setFollow(true); dirty = true; },
-      move: (key, on) => { if (key === 'jump') { if (on) jump(); return; } if (on) roam.keys.add(key); else roam.keys.delete(key); },
+      move: (key, on) => { if (key === 'jump') { if (on) jump(); return; } if (on && auto && key !== 'run') cancelAuto(false); if (on) roam.keys.add(key); else roam.keys.delete(key); },
+      goTo: (x, z, label) => roam.on && startAuto(x, z, label),   // walk him to a place (the big map's Go); also for tests
+      auto: () => (auto ? { i: auto.i, n: auto.path.length, path: auto.path, label: auto.label } : null),
+      map: (on) => { if (roam.on) showBig(on ?? !mapBig); return mapBig; },
+      route: (ax, az, bx, bz) => findPath(ax, az, bx, bz),   // for tests
       teleport: (x, z, yaw, y) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; if (y != null) roam.foot = y; roam.air = 0; roam.vy = 0; const gy = groundUnder(x, z, roam.foot + 3);   /* from just above the feet, so a roof overhead is not mistaken for the ground */ if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
       locked: () => locked,
       piece: (id) => byId(id),   // for tests
@@ -691,6 +905,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       go: (id, gate) => roam.on && roamGo(id, gate),
       reset: () => {   // back to the start, outside the great court's gate, every door and gate as at the first (fieldy: "a reset button")
         if (!roam.on) return;
+        cancelAuto(false); showBig(false);
         ROAM_MEMO = null; MEMO[model.id] = null; try { sessionStorage.removeItem(STORE); } catch { /* fine */ }
         camera.position.set(...ROAM_START.pos); const [lx, , lz] = ROAM_START.look; roam.yaw = Math.atan2(lz - camera.position.z, lx - camera.position.x); roam.pitch = 0;
         roam.air = 0; roam.vy = 0; roam.keys.clear(); roam.foot = camera.position.y - ROAM_EYE;
@@ -720,7 +935,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp);
       document.removeEventListener('pointerlockchange', onLockChange); document.removeEventListener('pointerlockerror', onLockError);
       if (document.pointerLockElement === renderer.domElement) document.exitPointerLock?.();
-      cross.remove(); stickEl.remove(); mmap.remove(); zoneEl.remove();
+      cross.remove(); stickEl.remove(); mmap.remove(); zoneEl.remove(); gotoEl.remove(); autoEl.remove();
       controls.dispose();
       scene.traverse((o) => { o.geometry?.dispose?.(); if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => { m.map?.dispose?.(); m.bumpMap?.dispose?.(); m.alphaMap?.dispose?.(); m.dispose?.(); }); });
       scene.environment?.dispose?.();

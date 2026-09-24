@@ -102,3 +102,14 @@
 
 /* Where the thumb stick lives on a touch screen: the bottom-left of the view (a faint ring); touches elsewhere look or pinch-zoom */
 .tp-stickzone { position: absolute; left: 14px; bottom: 14px; width: 92px; height: 92px; border-radius: 50%; border: 1.5px dashed rgba(255, 208, 98, 0.35); pointer-events: none; z-index: 2; }
+
+/* The whole map (M on foot): the minimap grown to fill the view, north up, a tap on a place offers the walk there */
+.st-gl canvas.tp-minimap.tp-map-big { width: min(86%, 82vh) !important; height: min(86%, 82vh) !important; top: 50%; left: 50%; right: auto; transform: translate(-50%, -50%); pointer-events: auto !important; cursor: crosshair; z-index: 6; border-color: rgba(255, 208, 98, 0.7); }
+.st-gl.tp-mapopen .tp-cross { display: none; }
+.tp-goto { position: absolute; z-index: 7; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; background: rgba(20, 16, 10, 0.94); border: 1px solid rgba(255, 208, 98, 0.6); color: #f3e3b8; font-size: 13px; box-shadow: 0 6px 20px rgba(0,0,0,.4); white-space: nowrap; }
+.tp-goto button { font: inherit; font-weight: 700; padding: 5px 11px; border-radius: 999px; border: 1px solid rgba(255, 208, 98, 0.5); background: transparent; color: #ffd97a; cursor: pointer; }
+.tp-goto button.tp-goto-go { background: #ffd062; color: #1a1408; }
+.tp-goto button:hover { filter: brightness(1.1); }
+.tp-autobar { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 5; padding: 6px 12px; border-radius: 999px; background: rgba(20, 16, 10, 0.8); border: 1px solid rgba(255, 208, 98, 0.45); color: #f3e3b8; font-size: 12.5px; white-space: nowrap; pointer-events: none; }
+.tp-autobar b { color: #ffd97a; }
+@media (max-width: 720px) { .st-gl canvas.tp-minimap.tp-map-big { width: min(94%, 60vh) !important; height: min(94%, 60vh) !important; } }

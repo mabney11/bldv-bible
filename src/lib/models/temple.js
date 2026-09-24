@@ -227,7 +227,7 @@ export const PIECES = [
     note: 'The stones are sawed with magarah (saws) according to madah (measure), inside and out, "{{1 Kings 7:9 | from the masad … tapach}}" — the same costly work runs from the house\'s foundation to the great court.',
     elsewhere: { ref: 'Isaiah 28:16; Psalm 118:22; 1 Peter 2:6; Ephesians 2:20', note: 'A tried, precious corner aban (stone) laid for a yasad (foundation) in Tzayawan (Zion); the aban (stone) the builders rejected made the raash (head) of the corner.' },
     assumed: 'Four amah high with a four-cubit margin around the house — the text gives the stones\' lengths (10 and 8), not the platform\'s size.',
-    parts: [box((FOUND_X0 + FOUND_X1) / 2, H.courtY, 0, FOUND_X1 - FOUND_X0, H.found, 2 * FOUND_Z, { courses: [10, 8] }),
+    parts: [box((FOUND_X0 + FOUND_X1) / 2, H.courtY, 0, FOUND_X1 - FOUND_X0, H.found, 2 * FOUND_Z, { courses: [10, 8], role: 'base' }),
       // the steps up to the porch, on the east
       box(FOUND_X1 + 2, H.courtY, 0, 4, 1, 24, { mat: 'stone' }), box(FOUND_X1 + 1.5, H.courtY + 1, 0, 3, 1, 24, { mat: 'stone' }), box(FOUND_X1 + 1, H.courtY + 2, 0, 2, 1, 24, { mat: 'stone' }), box(FOUND_X1 + 0.5, H.courtY + 3, 0, 1, 1, 24, { mat: 'stone' })],
   },
