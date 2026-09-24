@@ -1542,7 +1542,11 @@ console.log(`\nOpening ${BIBLE_DB}…`);
 if (process.env.PALEO_PARSE_ONLY) { module.exports = { parseToken, GRAMMAR_MAP, isRootSubsequence, strongsRoots: loadStrongsRoots() }; return; }
 
 const src = new Database(BIBLE_DB); // NOTE: readonly:true blocks locking_mode=EXCLUSIVE from taking effect on this device-bridge mount (see project memory) -- opened writable but this script only ever SELECTs from src
-src.pragma('locking_mode = EXCLUSIVE'); // device-bridge WAL/mmap workaround, see project memory
+// EXCLUSIVE is a workaround for Claude's Linux device-bridge mount only. On
+// Windows it demands SOLE access to corpus.db and fails with SQLITE_BUSY while
+// the local server has it open (widget Rebake, 2026-09-24) -- plain shared
+// reads are fine there.
+if (process.platform !== 'win32') src.pragma('locking_mode = EXCLUSIVE'); // device-bridge WAL/mmap workaround, see project memory
 
 // Count total tokens for progress (punctuation tokens are not surfaces — skip)
 const { total_tokens } = src.prepare(`SELECT COUNT(*) AS total_tokens FROM tokens_bhs WHERE pos != 'punct'`).get();
@@ -1994,7 +1998,7 @@ for (const suffix of ['-wal', '-shm', '-journal']) {
 
 console.log(`\nWriting ${path.basename(outTarget)}…`);
 const out = new Database(outTarget);
-out.pragma('locking_mode = EXCLUSIVE'); // device-bridge WAL/mmap workaround, see project memory
+if (process.platform !== 'win32') out.pragma('locking_mode = EXCLUSIVE'); // device-bridge WAL/mmap workaround, see project memory
 
 out.exec(`
     PRAGMA journal_mode = WAL;

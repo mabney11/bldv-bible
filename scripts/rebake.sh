@@ -22,8 +22,26 @@ SSH="ssh -o BatchMode=yes -o ConnectTimeout=15 -o ControlMaster=no"
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 step() { echo; echo "=== [$(date '+%H:%M:%S')] $* ==="; }
 
-step "1/4  Rebuilding surface-index.db locally"
-(cd server && node build-surface-index.js)
+step "1/4  surface-index.db: is the local bake current?"
+# Fresh = newer than both what it is baked FROM (corpus.db) and the parser
+# that bakes it (build-surface-index.js) -- same rule as the widget's Bake line.
+# Then there is nothing to rebuild; push the file as-is.
+SI_M=$(stat -c %Y server/surface-index.db 2>/dev/null || echo 0)
+CO_M=$(stat -c %Y server/corpus.db)
+BS_M=$(stat -c %Y server/build-surface-index.js)
+if [ "$SI_M" -gt "$CO_M" ] && [ "$SI_M" -gt "$BS_M" ]; then
+  echo "local surface-index.db is current -> no rebuild needed"
+else
+  echo "local surface-index.db is stale -> rebuilding"
+  if ! (cd server && node build-surface-index.js); then
+    echo
+    echo "!! Rebuild failed. If the error mentions EBUSY / EPERM / 'database is locked',"
+    echo "!! the local server has surface-index.db open (Windows will not replace an open"
+    echo "!! file). Stop the local server (Ctrl+C in its window), click Rebake again, then"
+    echo "!! restart the server."
+    exit 1
+  fi
+fi
 
 step "2/4  corpus.db: comparing local vs prod"
 LOCAL_M=$(stat -c %Y server/corpus.db)
