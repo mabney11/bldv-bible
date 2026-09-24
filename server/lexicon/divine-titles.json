@@ -96,6 +96,14 @@
       ],
       "group": "compound",
       "en": "Yahawah my banner"
+    },
+    {
+      "id": "imanawal",
+      "sns": [
+        "H6005"
+      ],
+      "group": "title",
+      "en": "Mighty One with us (Immanuel)"
     }
   ],
   "compounds": [
@@ -686,6 +694,662 @@
         ]
       ],
       "en": "the Ancient of Days"
+    },
+    {
+      "id": "ahayah-ashar-ahayah",
+      "seq": [
+        [
+          "H1961"
+        ],
+        [
+          "H834"
+        ],
+        [
+          "H1961"
+        ]
+      ],
+      "en": "I will be who I will be",
+      "only_refs": [
+        "2:3:14"
+      ]
+    },
+    {
+      "id": "ahayah",
+      "seq": [
+        [
+          "H1961"
+        ],
+        [
+          "H7971"
+        ]
+      ],
+      "en": "'I will be' has sent me",
+      "gold": [
+        0
+      ],
+      "only_refs": [
+        "2:3:14"
+      ]
+    },
+    {
+      "id": "hashaym",
+      "seq": [
+        [
+          "H853",
+          "H5344"
+        ],
+        [
+          "H8034"
+        ]
+      ],
+      "en": "the Name",
+      "gold": [
+        1
+      ],
+      "only_refs": [
+        "3:24:11",
+        "3:24:16"
+      ]
+    },
+    {
+      "id": "shaym-yahawah",
+      "seq": [
+        [
+          "H8034"
+        ],
+        [
+          "H3068",
+          "H3069"
+        ]
+      ],
+      "en": "the Name of Yahawah"
+    },
+    {
+      "id": "yahawah-yahawah",
+      "seq": [
+        [
+          "H3068"
+        ],
+        [
+          "H3068"
+        ]
+      ],
+      "en": "Yahawah, Yahawah"
+    },
+    {
+      "id": "yah-yahawah",
+      "seq": [
+        [
+          "H3050"
+        ],
+        [
+          "H3068"
+        ]
+      ],
+      "en": "Yah Yahawah"
+    },
+    {
+      "id": "halalaw-yah",
+      "seq": [
+        [
+          "H1984"
+        ],
+        [
+          "H3050"
+        ]
+      ],
+      "en": "praise Yah",
+      "gold": [
+        1
+      ]
+    },
+    {
+      "id": "pala-yawaitz",
+      "seq": [
+        [
+          "H6382"
+        ],
+        [
+          "H3289"
+        ]
+      ],
+      "en": "Wonderful Counselor",
+      "only_refs": [
+        "23:9:5"
+      ]
+    },
+    {
+      "id": "abay-iad",
+      "seq": [
+        [
+          "H1"
+        ],
+        [
+          "H5703"
+        ]
+      ],
+      "en": "Everlasting Father",
+      "only_refs": [
+        "23:9:5"
+      ]
+    },
+    {
+      "id": "shar-shalawam",
+      "seq": [
+        [
+          "H8269"
+        ],
+        [
+          "H7965"
+        ]
+      ],
+      "en": "Prince of Peace",
+      "only_refs": [
+        "23:9:5"
+      ]
+    },
+    {
+      "id": "pachad-yatzachaq",
+      "seq": [
+        [
+          "H6343"
+        ],
+        [
+          "H3327",
+          "H3446"
+        ]
+      ],
+      "en": "the Fear of Isaac",
+      "gold": [
+        0
+      ]
+    },
+    {
+      "id": "malak-hakabawad",
+      "seq": [
+        [
+          "H4428"
+        ],
+        [
+          "H3519"
+        ]
+      ],
+      "en": "the King of glory"
+    },
+    {
+      "id": "yahawah-gibawar-milchamah",
+      "seq": [
+        [
+          "H3068"
+        ],
+        [
+          "H1368"
+        ],
+        [
+          "H4421"
+        ]
+      ],
+      "en": "Yahawah mighty in battle"
+    },
+    {
+      "id": "yahawah-ayash-milchamah",
+      "seq": [
+        [
+          "H3068"
+        ],
+        [
+          "H376"
+        ],
+        [
+          "H4421"
+        ]
+      ],
+      "en": "Yahawah a man of war"
+    },
+    {
+      "id": "adawan-kal-haaratz",
+      "seq": [
+        [
+          "H113"
+        ],
+        [
+          "H3605"
+        ],
+        [
+          "H776"
+        ]
+      ],
+      "en": "Lord of all the earth"
+    },
+    {
+      "id": "shapat-kal-haaratz",
+      "seq": [
+        [
+          "H8199"
+        ],
+        [
+          "H3605"
+        ],
+        [
+          "H776"
+        ]
+      ],
+      "en": "Judge of all the earth"
+    },
+    {
+      "id": "natzach-yasharal",
+      "seq": [
+        [
+          "H5331"
+        ],
+        [
+          "H3478"
+        ]
+      ],
+      "en": "the Strength / Glory of Israel",
+      "gold": [
+        0
+      ]
+    },
+    {
+      "id": "maqawah-yasharal",
+      "seq": [
+        [
+          "H4723"
+        ],
+        [
+          "H3478"
+        ]
+      ],
+      "en": "the Hope of Israel",
+      "gold": [
+        0
+      ]
+    },
+    {
+      "id": "raah-yasharal",
+      "seq": [
+        [
+          "H7462"
+        ],
+        [
+          "H3478"
+        ]
+      ],
+      "en": "Shepherd of Israel",
+      "gold": [
+        0
+      ]
+    },
+    {
+      "id": "abayn-yasharal",
+      "seq": [
+        [
+          "H68"
+        ],
+        [
+          "H3478"
+        ]
+      ],
+      "en": "the Stone of Israel",
+      "gold": [
+        0
+      ]
+    },
+    {
+      "id": "qadawash-yaiqab",
+      "seq": [
+        [
+          "H6918"
+        ],
+        [
+          "H3290"
+        ]
+      ],
+      "en": "the Holy One of Jacob",
+      "gold": [
+        0
+      ]
+    },
+    {
+      "id": "al-amawnah",
+      "seq": [
+        [
+          "H410"
+        ],
+        [
+          "H530"
+        ]
+      ],
+      "en": "God of faithfulness"
+    },
+    {
+      "id": "al-daiawath",
+      "seq": [
+        [
+          "H410"
+        ],
+        [
+          "H1844"
+        ]
+      ],
+      "en": "God of knowledge"
+    },
+    {
+      "id": "al-naqamawath",
+      "seq": [
+        [
+          "H410"
+        ],
+        [
+          "H5360"
+        ]
+      ],
+      "en": "God of vengeance"
+    },
+    {
+      "id": "al-hakabawad",
+      "seq": [
+        [
+          "H410"
+        ],
+        [
+          "H3519"
+        ]
+      ],
+      "en": "the God of glory"
+    },
+    {
+      "id": "al-chanawan",
+      "seq": [
+        [
+          "H410"
+        ],
+        [
+          "H2587"
+        ]
+      ],
+      "en": "a gracious God"
+    },
+    {
+      "id": "al-tzadayq",
+      "seq": [
+        [
+          "H410"
+        ],
+        [
+          "H6662"
+        ]
+      ],
+      "en": "a righteous God"
+    },
+    {
+      "id": "al-yashawiah",
+      "seq": [
+        [
+          "H410"
+        ],
+        [
+          "H3444"
+        ]
+      ],
+      "en": "God of salvation"
+    },
+    {
+      "id": "al-satar",
+      "seq": [
+        [
+          "H410"
+        ],
+        [
+          "H5641"
+        ]
+      ],
+      "en": "a God who hides himself"
+    },
+    {
+      "id": "alahayam-qadashaym",
+      "seq": [
+        [
+          "H430"
+        ],
+        [
+          "H6918"
+        ]
+      ],
+      "en": "a holy God"
+    },
+    {
+      "id": "alahay-qadam",
+      "seq": [
+        [
+          "H430"
+        ],
+        [
+          "H6924"
+        ]
+      ],
+      "en": "the God of old / eternal God"
+    },
+    {
+      "id": "alahay-iwalam",
+      "seq": [
+        [
+          "H430"
+        ],
+        [
+          "H5769"
+        ]
+      ],
+      "en": "the everlasting God"
+    },
+    {
+      "id": "alahay-amath",
+      "seq": [
+        [
+          "H430"
+        ],
+        [
+          "H571"
+        ]
+      ],
+      "en": "the God of truth"
+    },
+    {
+      "id": "alahay-mashapat",
+      "seq": [
+        [
+          "H430"
+        ],
+        [
+          "H4941"
+        ]
+      ],
+      "en": "a God of justice"
+    },
+    {
+      "id": "alahay-yashai",
+      "seq": [
+        [
+          "H430"
+        ],
+        [
+          "H3468",
+          "H3444"
+        ]
+      ],
+      "en": "the God of (my) salvation"
+    },
+    {
+      "id": "alahay-haruchawath",
+      "seq": [
+        [
+          "H430"
+        ],
+        [
+          "H7307"
+        ]
+      ],
+      "en": "the God of the spirits"
+    },
+    {
+      "id": "alahay-kal-bashar",
+      "seq": [
+        [
+          "H430"
+        ],
+        [
+          "H3605"
+        ],
+        [
+          "H1320"
+        ]
+      ],
+      "en": "the God of all flesh"
+    },
+    {
+      "id": "alahay-marawam",
+      "seq": [
+        [
+          "H430"
+        ],
+        [
+          "H4791"
+        ]
+      ],
+      "en": "the God on high"
+    },
+    {
+      "id": "alahay-haibarayam",
+      "seq": [
+        [
+          "H430"
+        ],
+        [
+          "H5680"
+        ]
+      ],
+      "en": "the God of the Hebrews",
+      "gold": [
+        0
+      ]
+    },
+    {
+      "id": "ruach-yahawah",
+      "seq": [
+        [
+          "H7307"
+        ],
+        [
+          "H3068"
+        ]
+      ],
+      "en": "the Spirit of Yahawah",
+      "gold": [
+        1
+      ]
+    },
+    {
+      "id": "ruach-alahayam",
+      "seq": [
+        [
+          "H7307"
+        ],
+        [
+          "H430"
+        ]
+      ],
+      "en": "the Spirit of God",
+      "gold": [
+        1
+      ]
+    },
+    {
+      "id": "ruach-haqadash",
+      "seq": [
+        [
+          "H7307"
+        ],
+        [
+          "H6944"
+        ]
+      ],
+      "en": "the Holy Spirit"
+    },
+    {
+      "id": "abay-bashamayam",
+      "seq": [
+        [
+          "H1"
+        ],
+        [
+          "H8064"
+        ]
+      ],
+      "en": "Father in heaven",
+      "gold": [
+        0
+      ]
+    },
+    {
+      "id": "alah-ilaya",
+      "seq": [
+        [
+          "H426"
+        ],
+        [
+          "H5943"
+        ]
+      ],
+      "en": "the Most High God (Aramaic)"
+    },
+    {
+      "id": "alah-chaya",
+      "seq": [
+        [
+          "H426"
+        ],
+        [
+          "H2417"
+        ]
+      ],
+      "en": "the living God (Aramaic)"
+    },
+    {
+      "id": "mara-malkayn",
+      "seq": [
+        [
+          "H4756"
+        ],
+        [
+          "H4430"
+        ]
+      ],
+      "en": "Lord of kings (Aramaic)"
+    },
+    {
+      "id": "malak-shamaya",
+      "seq": [
+        [
+          "H4430"
+        ],
+        [
+          "H8065"
+        ]
+      ],
+      "en": "King of heaven (Aramaic)"
+    },
+    {
+      "id": "mara-shamaya",
+      "seq": [
+        [
+          "H4756"
+        ],
+        [
+          "H8065"
+        ]
+      ],
+      "en": "Lord of heaven (Aramaic)"
     }
   ],
   "false_god": {
