@@ -6,8 +6,8 @@
 // Runs divine-titles.js's matcher over the WHOLE corpus once and writes the
 // result into surface-index.db (the same baked, per-box artifact the reader
 // already serves from, pushed to prod by Rebake). The server only reads:
-//   divine_hits   one row per GOLD word:  (src, book_id, code, chapter, verse,
-//                 token_ordinal, title_id) in the TOKENS' own numbering —
+//   divine_hits   one row per title word: (src, book_id, code, chapter, verse,
+//                 token_ordinal, title_id = gold title or '', forms_json) in the TOKENS' own numbering —
 //                 /api/tokens looks up its chapter here to stamp comp.divine.
 //   divine_refs   one row per (title, verse) with its count — the tab's lists.
 //   divine_titles one row per title: counts, top written forms, per-book counts.
@@ -39,7 +39,9 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
         DROP TABLE IF EXISTS divine_meta;
         CREATE TABLE divine_hits (
             src TEXT NOT NULL, book_id INTEGER, code TEXT, chapter INTEGER NOT NULL,
-            verse INTEGER NOT NULL, token_ordinal INTEGER NOT NULL, title_id TEXT NOT NULL);
+            verse INTEGER NOT NULL, token_ordinal INTEGER NOT NULL,
+            title_id TEXT NOT NULL,          -- gold title ('' = listed but not gold: other gods)
+            forms_json TEXT NOT NULL);       -- {title id: form} for every title this word belongs to
         CREATE TABLE divine_refs (
             title_id TEXT NOT NULL, src TEXT NOT NULL, book_id INTEGER, code TEXT,
             chapter INTEGER NOT NULL, verse INTEGER NOT NULL, n INTEGER NOT NULL,
@@ -50,7 +52,7 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
             book_count INTEGER NOT NULL, forms_json TEXT NOT NULL, books_json TEXT NOT NULL);
         CREATE TABLE divine_meta (key TEXT PRIMARY KEY, value TEXT);
     `);
-    const insHit = out.prepare(`INSERT INTO divine_hits VALUES (?,?,?,?,?,?,?)`);
+    const insHit = out.prepare(`INSERT INTO divine_hits VALUES (?,?,?,?,?,?,?,?)`);
     const insRef = out.prepare(`INSERT INTO divine_refs VALUES (?,?,?,?,?,?,?,?)`);
 
     const stats = new Map();   // title id -> { occ, verses:Set, forms:Map, books:Map(bk -> n) }
@@ -99,22 +101,34 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
             const cfgRef = `${r0.book_id ?? r0.code}:${r0.chapter}:${r0.verse}`;
             const toks = rows.map(r => ({ ord: r.token_ordinal, sn: r.strongs || '', raw: r.word_raw || '', morph: r.morph || '', pos: r.pos || '', inferred }));
             const { hits, falseGods } = divineTitles.detectVerse(toks, cfgRef, cfg);
-            // Gold marks — a compound id beats the single it contains.
-            const gold = new Map();
-            for (const h of hits) for (const o of h.gold) if (!gold.has(o) || h.kind === 'compound') gold.set(o, h.id);
-            for (const [o, id] of gold) { insHit.run(srcTag, r0.book_id ?? null, r0.code ?? null, r0.chapter, r0.verse, o, id); hitRows++; }
+            const rawOf = new Map(rows.map(r => [r.token_ordinal, r.word_raw || '']));
+            const rowOf = new Map(rows.map(r => [r.token_ordinal, r]));
+            const shown = o => (srcTag === 'BHS' && (renderedOf(rowOf.get(o)) || {}).rendered_paleo) || rawOf.get(o);
+            const formOf = (id, ords) => {
+                const f = ords.map(shown).join(' ');
+                const k = `${id}|${f}`;
+                if (!formRaws.has(k)) formRaws.set(k, new Set());
+                if (!formWords.has(k)) formWords.set(k, ords.map(o => partsOf(srcTag, rowOf.get(o))));
+                for (const o of ords) formRaws.get(k).add(rawOf.get(o));
+                return f;
+            };
+            // Per token: its gold title (a compound id beats the single it
+            // contains) and, for EVERY title it belongs to, that title's form —
+            // the tab highlights a word by {title: form}, never by respelling.
+            const perTok = new Map();   // ord -> { gold, forms: {id: form} }
+            const tok = o => perTok.get(o) || perTok.set(o, { gold: '', forms: {} }).get(o);
+            const hitForms = hits.map(h => formOf(h.id, h.ords));
+            hits.forEach((h, i) => {
+                for (const o of h.ords) tok(o).forms[h.id] = hitForms[i];
+                for (const o of h.gold) if (!tok(o).gold || h.kind === 'compound') tok(o).gold = h.id;
+            });
+            const fgForms = falseGods.map(f => formOf('other-gods', [f.ord]));
+            falseGods.forEach((f, i) => { tok(f.ord).forms['other-gods'] = fgForms[i]; });
+            for (const [o, t] of perTok) {
+                insHit.run(srcTag, r0.book_id ?? null, r0.code ?? null, r0.chapter, r0.verse, o, t.gold, JSON.stringify(t.forms));
+                if (t.gold) hitRows++;
+            }
             if (LISTED(srcTag, r0.book_id)) {
-                const rawOf = new Map(rows.map(r => [r.token_ordinal, r.word_raw || '']));
-                const rowOf = new Map(rows.map(r => [r.token_ordinal, r]));
-                const shown = o => (srcTag === 'BHS' && (renderedOf(rowOf.get(o)) || {}).rendered_paleo) || rawOf.get(o);
-                const formOf = (id, ords) => {
-                    const f = ords.map(shown).join(' ');
-                    const k = `${id}|${f}`;
-                    if (!formRaws.has(k)) formRaws.set(k, new Set());
-                    if (!formWords.has(k)) formWords.set(k, ords.map(o => partsOf(srcTag, rowOf.get(o))));
-                    for (const o of ords) formRaws.get(k).add(rawOf.get(o));
-                    return f;
-                };
                 const bk = `${srcTag}|${r0.book_id ?? ''}|${r0.code ?? ''}`;
                 const add = (id, form) => {
                     const s = statOf(id);
@@ -124,8 +138,8 @@ function bake({ corpusPath = path.join(__dirname, 'corpus.db'), outPath = path.j
                     const rk = `${id}|${bk}|${r0.chapter}|${r0.verse}|${form || ''}`;
                     refCounts.set(rk, (refCounts.get(rk) || 0) + 1);
                 };
-                for (const h of hits) add(h.id, formOf(h.id, h.ords));
-                for (const f of falseGods) add('other-gods', formOf('other-gods', [f.ord]));
+                hits.forEach((h, i) => add(h.id, hitForms[i]));
+                falseGods.forEach((f, i) => add('other-gods', fgForms[i]));
             }
             rows = [];
         };

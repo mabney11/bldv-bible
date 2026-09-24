@@ -47,23 +47,17 @@ function loadChapter(book, c) {
   return _chapterCache.get(key);
 }
 
-// The written token(s) a word block came from — sourceTokens when the server
-// sends them (every /api/tokens path does), else the word's own surface.
-const wordRaws = w => (Array.isArray(w.sourceTokens) && w.sourceTokens.length)
-  ? w.sourceTokens.map(t => t.word_raw).filter(Boolean)
-  : [w.word_raw].filter(Boolean);
-
-// Is this word one of the focus words? A title word carries the server's gold
-// mark (comp.divine) — required, so the preposition 𐤀𐤋 "to" never lights up
-// next to Al. "Other gods" words are never gold, so they match on spelling alone.
-function isFocus(w, forms, kind) {
+// Is this word one of the focus words? The server stamps each title word with
+// comp.divineForms = {title id: form} (baked, build-divine-titles.js), so the
+// match is exact: this title, and one of the forms in view. No respelling, no
+// guessing across prefix-merged words (AthaHallayawan = 𐤀𐤕 + 𐤄𐤏𐤋𐤉𐤅𐤍) — and the
+// preposition 𐤀𐤋 "to" can never light up next to Al.
+function isFocus(w, forms, titleId) {
   if (!forms.size) return false;
-  if (!wordRaws(w).some(r => forms.has(r))) return false;
-  if (kind === 'other') return true;
-  return (w.components || []).some(c => c && c.divine);
+  return (w.components || []).some(c => c && c.divineForms && forms.has(c.divineForms[titleId]));
 }
 
-function VersePanel({ book, c, v, focusForms, kind, onClose }) {
+function VersePanel({ book, c, v, focusForms, titleId, onClose }) {
   const [data, setData] = useState(null);
   const [err, setErr] = useState(null);
   const ref = useRef(null);
@@ -92,7 +86,7 @@ function VersePanel({ book, c, v, focusForms, kind, onClose }) {
           <div className="dt-verse-words" dir="rtl">
             {data.words.map((w, i) => (
               <WordBlock key={i} wordObj={w} showSub showCopyBtn={false} showStrongs
-                         className={isFocus(w, focusForms, kind) ? 'dt-focus' : ''} />
+                         className={isFocus(w, focusForms, titleId) ? 'dt-focus' : ''} />
             ))}
             {!data.words.length && <div className="dt-msg">No Hebrew tokens for this verse.</div>}
           </div>
@@ -105,7 +99,7 @@ function VersePanel({ book, c, v, focusForms, kind, onClose }) {
 // ONE verse open on the whole page (fieldy: "expanding another means minimizing
 // where you just were") — the open verse lives in DivineTitles as
 // { bookKey: "title|src|book", ref: [c, v, formsAtRef] }; opening another replaces it.
-function BookRefs({ book, openAll, form, kind, titleId, rawsFor, openVerse, setOpenVerse }) {
+function BookRefs({ book, openAll, form, titleId, openVerse, setOpenVerse }) {
   const [open, setOpen] = useState(false);
   useEffect(() => { setOpen(openAll); }, [openAll]);
   const bookKey = `${titleId}|${book.src}|${book.book_id ?? book.code}`;
@@ -114,13 +108,11 @@ function BookRefs({ book, openAll, form, kind, titleId, rawsFor, openVerse, setO
   // A verse opened from outside (picking a form opens its first verse) opens its book.
   useEffect(() => { if (active) setOpen(true); }, [active]);
   const n = book.refs.reduce((a, r) => a + (form ? (r[3]?.[form] || 0) : r[2]), 0);
-  // Which written words to highlight: the chosen form, else every form at that
-  // verse — each mapped back to the raw token spellings it was baked from.
+  // Which forms to highlight: the chosen one, else every form at that verse.
   const focusForms = useMemo(() => {
     if (!active) return new Set();
-    const fs = form ? [form] : Object.keys(active[2] || {});
-    return new Set(fs.flatMap(rawsFor));
-  }, [active, form, rawsFor]);
+    return new Set(form ? [form] : Object.keys(active[2] || {}));
+  }, [active, form]);
   return (
     <div className="dt-book">
       <button className="dt-book-h" onClick={() => setOpen(o => !o)} aria-expanded={open}>
@@ -143,7 +135,7 @@ function BookRefs({ book, openAll, form, kind, titleId, rawsFor, openVerse, setO
         </div>
       )}
       {open && active && (
-        <VersePanel book={book} c={active[0]} v={active[1]} focusForms={focusForms} kind={kind}
+        <VersePanel book={book} c={active[0]} v={active[1]} focusForms={focusForms} titleId={titleId}
                     onClose={() => setActive(null)} />
       )}
     </div>
@@ -176,11 +168,6 @@ function TitleCard({ t, readerOrder, openVerse, setOpenVerse }) {
     return { main, more };
   }, [refs, form, readerOrder]);
   const moreCount = more.reduce((a, b) => a + b.refs.length, 0);
-  // form (as displayed) -> the raw token spellings it was baked from.
-  const rawsFor = useMemo(() => {
-    const m = new Map((t.forms || []).map(f => [f.paleo, f.raws && f.raws.length ? f.raws : f.paleo.split(' ')]));
-    return f => m.get(f) || f.split(' ');
-  }, [t.forms]);
   // Picking a form starts fresh, as if it were the first click on the page:
   // every book collapses (BookRefs are keyed by form) and the form's FIRST
   // verse opens — never the verse left open from another form.
@@ -201,7 +188,7 @@ function TitleCard({ t, readerOrder, openVerse, setOpenVerse }) {
     setShowMore(firstInMore);
     setOpenVerse(first);
   };
-  const bookProps = { form, kind: t.kind, titleId: t.id, rawsFor, openVerse, setOpenVerse };
+  const bookProps = { form, titleId: t.id, openVerse, setOpenVerse };
   const isOther = t.kind === 'other';
   const multiBook = main.length + (showMore ? more.length : 0) > 1;
 

@@ -8741,11 +8741,11 @@ function divineStmt(name, sql) {
     return _divineStmts[name];
 }
 const divineHitsForChapter = (src, bookId, chapter) => {
-    const q = divineStmt('book', `SELECT verse, token_ordinal, title_id FROM divine_hits WHERE src=? AND book_id=? AND chapter=?`);
+    const q = divineStmt('book', `SELECT verse, token_ordinal, title_id, forms_json FROM divine_hits WHERE src=? AND book_id=? AND chapter=?`);
     return q ? q.all(src, bookId, chapter) : [];
 };
 const divineHitsForDoc = (code, chapter) => {
-    const q = divineStmt('doc', `SELECT verse, token_ordinal, title_id FROM divine_hits WHERE src='DOC' AND code=? AND chapter=?`);
+    const q = divineStmt('doc', `SELECT verse, token_ordinal, title_id, forms_json FROM divine_hits WHERE src='DOC' AND code=? AND chapter=?`);
     return q ? q.all(code, chapter) : [];
 };
 
@@ -8754,7 +8754,7 @@ const divineHitsForDoc = (code, chapter) => {
 // (fast path, each live-parse fallback, doc mode) gets the same marks.
 function installDivineMarks(res, hits) {
     if (!hits.length) return;
-    const hitMap = new Map(hits.map(h => [h.key, h.title_id]));
+    const hitMap = new Map(hits.map(h => [h.key, h]));
     const orig = res.json.bind(res);
     res.json = (body) => {
         try { if (Array.isArray(body)) markDivineWords(body, hitMap); }
@@ -8776,11 +8776,19 @@ function markDivineWords(words, hitMap) {
             byOrd.get(o).push(c);
         }
         for (const [o, cs] of byOrd) {
-            const id = hitMap.get(`${w.verse}\u0000${o}`);
-            if (!id) continue;
+            const h = hitMap.get(`${w.verse}\u0000${o}`);
+            if (!h) continue;
+            // divine = the gold title ('' for an "other gods" word — listed, never gold);
+            // divineForms = {title id: form} so the Divine Titles tab can highlight
+            // exactly the words of the title/form being viewed.
+            let forms = null;
+            try { forms = h.forms_json ? JSON.parse(h.forms_json) : null; } catch { forms = null; }
             const heads = cs.filter(c => HEADS.has(c.css));
-            for (const c of (heads.length ? heads : cs.filter(c => c.sn).slice(0, 1))) c.divine = id;
-            w.divine = true;
+            for (const c of (heads.length ? heads : cs.filter(c => c.sn).slice(0, 1))) {
+                if (h.title_id) c.divine = h.title_id;
+                if (forms) c.divineForms = forms;
+            }
+            if (h.title_id) w.divine = true;
         }
     }
 }

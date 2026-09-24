@@ -39,6 +39,14 @@ false-god uses (listed separately, not gold), and the full compound set.
   `server/divine-titles.cache.json` (gitignored), rebuilt when corpus.db,
   divine-titles.json or strongs-roots.json changes.
 
+**Round 7 — highlight by baked form, not spelling.** fieldy: 𐤄𐤏𐤋𐤉𐤅𐤍 "isnt highlighting in the
+verse" (Jubilees 7:27 — the display merges the separate 𐤀𐤕 token into "AthaHallayawan", so
+matching the verse's word spellings against the form missed it). `divine_hits` now has a row for
+EVERY title word (title_id = gold title, '' for other-gods words) with `forms_json` = {title id:
+form}; /api/tokens stamps `comp.divineForms`; the tab highlights a word when
+`divineForms[title] ∈ forms in view`. Raw-spelling matching removed from DivineTitles.jsx. Old
+bakes have no forms_json → no marks at all until `node build-divine-titles.js` is re-run.
+
 **Round 6 — Novel English colouring app-wide.** fieldy: "ensure glosses are properly colored
 like my novel reader (this should be the case app-wide)". New `src/components/NovelText.jsx`
 (`NovelText` + `novelNodes(text)`): "root (gloss)" → root in the Reader's gold (.novel-root =
