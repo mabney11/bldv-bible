@@ -2167,6 +2167,11 @@ out.close();
 // EEXIST, because it was already there and valid.
 void relinkAfter;
 
+// Divine names & titles of Yah (gold chips + the Divine Titles tab) are baked
+// into this same file — see build-divine-titles.js. Also runnable on its own
+// (node build-divine-titles.js) after editing lexicon/divine-titles.json.
+require('./build-divine-titles').bake({ corpusPath: BIBLE_DB, outPath: outTarget });
+
 // ── Summary ────────────────────────────────────────────────────────────────────
 const statsSurf = fs.statSync(outTarget);
 console.log(`\n✓ surface-index.db written`);

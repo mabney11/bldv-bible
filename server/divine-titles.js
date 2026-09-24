@@ -86,10 +86,16 @@ function surfaceCarriesRoot(t) {
     if (!t.inferred || !t.raw) return true;
     const root = [...(roots()[t.sn] || '')];
     if (!root.length) return true;
+    // A 2-letter root (Yah 𐤉𐤄, Al 𐤀𐤋) must BE the word (optionally after 𐤅) —
+    // as a mere prefix it matches Yahudah, Alah, "sho'alim"; after 𐤁 it's "in it".
+    const exact = root.length <= 2;
     const need = (root.length >= 3 ? root.slice(0, -1) : root).join('');
     let w = [...t.raw];
-    for (let k = 0; k <= 3; k++) {
-        if (w.join('').startsWith(need)) return true;
+    for (let k = 0; k <= (exact ? 1 : 3); k++) {
+        const word = w.join('');
+        if (exact ? word === need : word.startsWith(need)) return true;
+        // ...and may carry at most a bare "and" (𐤅): Aramaic 𐤁𐤉𐤄 is "in it".
+        if (exact && w[0] !== '\u{10905}') break;
         if (!w.length || !PROCLITICS.has(w[0])) break;
         w = w.slice(1);
     }

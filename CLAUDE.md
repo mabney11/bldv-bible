@@ -39,6 +39,23 @@ false-god uses (listed separately, not gold), and the full compound set.
   `server/divine-titles.cache.json` (gitignored), rebuilt when corpus.db,
   divine-titles.json or strongs-roots.json changes.
 
+**Round 3, same day — BAKED, no runtime crunching.** fieldy: "this is something that'll be
+baked into a database/index, my server doesnt need to be crunching for data that doesnt
+change." The first version ran the matcher live (a ~3 s full-corpus scan on first tab load,
+plus a per-chapter detection pass inside /api/tokens). Now `server/build-divine-titles.js`
+bakes `divine_hits` (one row per gold word, tokens' own numbering, src BHS/HEB/DOC),
+`divine_refs`, `divine_titles`, `divine_meta` INTO `surface-index.db`; it runs at the end of
+`build-surface-index.js` and standalone (`node build-divine-titles.js`, ~30 s). `rebake.sh`
+re-bakes just these tables when `lexicon/divine-titles.json` / `divine-titles.js` /
+`build-divine-titles.js` is newer than the index, then pushes surface-index.db as usual.
+server.js only reads (an indexed lookup per chapter for gold; the tab's summary is memoized;
+BHS refs converted to display numbering on read). An index without these tables → no gold,
+503 on the tab. Also tightened HEB-edition/DSS 2-letter titles (Yah, Al): the word must BE
+the root, optionally after 𐤅 — Megillat Ta'anit's Aramaic 𐤁𐤉𐤄 "in it" was being counted as Yah.
+Verified by baking into a scratch db with a node:sqlite shim for better-sqlite3 (this
+sandbox's native binding can't load) and reading it through the real server.js block.
+Hand-curation stays in divine-titles.json (`only_refs`, `exclude_refs`, `include_refs`).
+
 **Round 2, same day** — fieldy: "ilayawan (most high) ... Yahawah-YaRaah ... AHayah Ashar
 AHayah ... Yah ... can you think of others". (Ilayawan 327, Yah 67, Yahawah Yireh were already
 in round 1.) Added 47 more, evidence-checked against the corpus: Ahayah Ashar Ahayah + the

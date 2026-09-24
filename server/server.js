@@ -8429,8 +8429,7 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
                          + `has build-heb-index.mjs --apply --docs been run since this work was ingested?`
                 });
             }
-            installDivineMarks(res, docRows, true, r => r && `${r.verse}\u0000${r.token_ordinal}`,
-                r => `${tokenDoc}:${chapterQ}:${r.verse}`);
+            installDivineMarks(res, divineHitsForDoc(tokenDoc, chapterQ).map(h => ({ ...h, key: `${h.verse}\u0000${h.token_ordinal}` })));
             const rawText = rowsToLines(docRows);
             const { lexicon, homographs, surfaceOverrides } = loadLexicons();
             return res.json(parseHebrewData(rawText, lexicon, homographs, surfaceOverrides));
@@ -8462,20 +8461,19 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
         // The edition this request is about. Everything below — the fast path,
         // the integrity guards, and the live-parse fallback — must agree on it.
         const surfSource = surfaceSourceFor(bookId, req.query.source);
-        // Gold divine titles — detected on the RAW rows (authoritative tags +
-        // morph), per original segment, then keyed in the response's merged
-        // English verse space exactly like the homograph guard below.
+        // Gold divine titles — baked (build-divine-titles.js), looked up per
+        // original segment and keyed in the response's merged English verse
+        // space exactly like the homograph guard below.
         try {
-            const q = tokenQueryFor(bookId, req.query.source);
-            const divRows = [];
+            const divSrc = tokenQueryFor(bookId, req.query.source) === TOKEN_QUERY_NT ? 'HEB' : 'BHS';
+            const divHits = [];
             for (const seg of segments) {
-                for (const t of q.all(bookId, seg.hebChapter)) {
-                    if (t.verse < seg.hebStart || t.verse > seg.hebEnd) continue;
-                    divRows.push({ ...t, _divChapter: seg.hebChapter, _engVerse: seg.engStart + (t.verse - seg.hebStart) });
+                for (const h of divineHitsForChapter(divSrc, bookId, seg.hebChapter)) {
+                    if (h.verse < seg.hebStart || h.verse > seg.hebEnd) continue;
+                    divHits.push({ ...h, key: `${seg.engStart + (h.verse - seg.hebStart)}\u0000${h.token_ordinal}` });
                 }
             }
-            installDivineMarks(res, divRows, q === TOKEN_QUERY_NT, r => r && `${r._engVerse}\u0000${r.token_ordinal}`,
-                r => `${bookId}:${r._divChapter}:${r.verse}`);
+            installDivineMarks(res, divHits);
         } catch (e) { console.warn('divine marks skipped:', e.message); }
         // Merge each segment's rows at the RAW ROW level, before any parsing/grouping/
         // homograph logic runs — that logic already operates on a flat rows array keyed
@@ -8717,52 +8715,39 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
 // ── DIVINE NAMES & TITLES OF YAH (added 2026-09-24) ─────────────────────────
 // fieldy: "lets make Alahayam and all honorific titles of Yah golden like His
 // name ... identify all divine titles of Yah with their verse references ...
-// group them in their own tab ... instances throughout the entire corpus".
-// The matcher and its rules live in divine-titles.js + lexicon/divine-titles.json
-// (the data file is the thing to edit — new title, new false-god rule, a hand
-// exclusion). This block only feeds it corpus rows:
-//   * markDivineTitles — /api/tokens: stamps comp.divine on every title word so
-//     the chip renderers paint it gold (WordBlock/Parallel/Reader: .divine-title).
-//   * /api/divine-titles — every title with counts; /api/divine-titles/refs —
-//     every verse one title occurs in (Divine Titles tab, /lexicon-page).
-// Scope: BHS for the OT (authoritative per-token Strong's), the HEB edition
-// (tokens_nt, canon > 39: NT, Apocrypha, Josephus) and the Works Library docs
-// (tokens_nt_docs) — the last two with inferred tags, see divine-titles.js.
-const divineTitles = require('./divine-titles');
-
-// One verse's raw token rows → detectVerse input.
-function divineTokensOf(rows, inferred) {
-    return rows.map(r => ({ ord: r.token_ordinal, sn: r.strongs || '', raw: r.word_raw || '', morph: r.morph || '', pos: r.pos || '', inferred }));
-}
-
-// /api/tokens: `keyOf(row) -> "verse\u0000ordinal"` in the RESPONSE's verse space;
-// `refOf(row) -> "book:chapter:verse"` in the rows' own numbering (only_refs /
-// exclude_refs in divine-titles.json are written that way).
-// Wraps res.json so every exit of the handler (fast path and each live-parse
-// fallback) gets the same marks without touching their code.
-function installDivineMarks(res, rows, inferred, keyOf, refOf) {
-    const hitMap = new Map();
-    let cur = null, buf = [];
-    const flush = () => {
-        if (!buf.length) return;
-        const { hits } = divineTitles.detectVerse(divineTokensOf(buf, inferred), refOf(buf[0]));
-        const byOrd = new Map(buf.map(r => [r.token_ordinal, r]));
-        for (const h of hits) {
-            for (const o of h.gold) {
-                const k = keyOf(byOrd.get(o));
-                // A compound id is more specific than the single it contains.
-                if (k && (!hitMap.has(k) || h.kind === 'compound')) hitMap.set(k, h.id);
-            }
-        }
-        buf = [];
-    };
-    for (const r of rows) {
-        const vk = `${r._divChapter ?? ''}:${r.verse}`;
-        if (vk !== cur) { flush(); cur = vk; }
-        buf.push(r);
+// group them in their own tab ... instances throughout the entire corpus" — and
+// then: "this is something that'll be baked into a database/index, my server
+// doesnt need to be crunching for data that doesnt change."
+// So NOTHING is detected here. build-divine-titles.js (run by
+// build-surface-index.js, or on its own after editing lexicon/divine-titles.json)
+// bakes divine_hits / divine_refs / divine_titles into surface-index.db, and this
+// block only reads them:
+//   * installDivineMarks — /api/tokens: one indexed lookup per chapter, stamps
+//     comp.divine on the head component of each gold word (.divine-title).
+//   * /api/divine-titles, /api/divine-titles/refs — the Divine Titles tab.
+// An index baked before this existed simply has no marks / a 503 on the tab.
+const _divineStmts = {};
+function divineStmt(name, sql) {
+    if (_divineStmts[name] === undefined) {
+        try { _divineStmts[name] = surfDb.prepare(sql); } catch { _divineStmts[name] = null; }
     }
-    flush();
-    if (!hitMap.size) return;
+    return _divineStmts[name];
+}
+const divineHitsForChapter = (src, bookId, chapter) => {
+    const q = divineStmt('book', `SELECT verse, token_ordinal, title_id FROM divine_hits WHERE src=? AND book_id=? AND chapter=?`);
+    return q ? q.all(src, bookId, chapter) : [];
+};
+const divineHitsForDoc = (code, chapter) => {
+    const q = divineStmt('doc', `SELECT verse, token_ordinal, title_id FROM divine_hits WHERE src='DOC' AND code=? AND chapter=?`);
+    return q ? q.all(code, chapter) : [];
+};
+
+// hits: [{verse, token_ordinal, title_id, key}] where key is "verse\u0000ordinal"
+// in the RESPONSE's verse space. Wraps res.json so every exit of /api/tokens
+// (fast path, each live-parse fallback, doc mode) gets the same marks.
+function installDivineMarks(res, hits) {
+    if (!hits.length) return;
+    const hitMap = new Map(hits.map(h => [h.key, h.title_id]));
     const orig = res.json.bind(res);
     res.json = (body) => {
         try { if (Array.isArray(body)) markDivineWords(body, hitMap); }
@@ -8821,130 +8806,70 @@ function bhsToDisplayRef(bookId, hebChapter, hebVerse) {
     return [best.s.engCh, best.s.engStart + (hebVerse - best.s.hebStart)];
 }
 
-const DIVINE_CACHE_PATH = path.join(__dirname, 'divine-titles.cache.json');
-const DIVINE_BUILD_VERSION = 'dt-v1';
-let _divineIndex = null;
-function divineStamp() {
-    const m = f => { try { return fs.statSync(f).mtimeMs; } catch { return 0; } };
-    return [DIVINE_BUILD_VERSION, m(path.join(__dirname, 'corpus.db')), divineTitles.configMtime(),
-            m(path.join(__dirname, 'lexicon', 'strongs-roots.json'))].join('|');
-}
-function buildDivineIndex() {
-    const t0 = Date.now();
-    const cfg = divineTitles.loadConfig();
-    const titles = new Map();     // id -> { occ, verses:Set, forms:Map, books:Map(bk -> Map(ref -> n)) }
-    const other = { occ: 0, verses: new Set(), forms: new Map(), books: new Map() };
-    const bucket = id => {
-        if (!titles.has(id)) titles.set(id, { occ: 0, verses: new Set(), forms: new Map(), books: new Map() });
-        return titles.get(id);
-    };
-    const record = (b, bk, ref, form) => {
-        b.occ++; b.verses.add(`${bk}|${ref}`);
-        if (form) b.forms.set(form, (b.forms.get(form) || 0) + 1);
-        if (!b.books.has(bk)) b.books.set(bk, new Map());
-        const m = b.books.get(bk); m.set(ref, (m.get(ref) || 0) + 1);
-    };
-    const scan = (iter, inferred, locOf) => {
-        let curKey = null, rows = [], loc = null;
-        const flush = () => {
-            if (!rows.length) return;
-            const { hits, falseGods } = divineTitles.detectVerse(divineTokensOf(rows, inferred), loc.cfgRef);
-            const rawOf = new Map(rows.map(r => [r.token_ordinal, r.word_raw || '']));
-            for (const h of hits) record(bucket(h.id), loc.bk, loc.ref, h.ords.map(o => rawOf.get(o)).join(' '));
-            for (const f of falseGods) record(other, loc.bk, loc.ref, rawOf.get(f.ord));
-            rows = [];
+// The tab. Labels are spelled at read time from strongs-roots.json (nameTranslit)
+// — a few dozen lookups, memoized for the life of the process (a new bake
+// arrives with a deploy/restart anyway).
+let _divineSummary = null;
+function divineSummary() {
+    if (_divineSummary) return _divineSummary;
+    const q = divineStmt('titles', `SELECT * FROM divine_titles ORDER BY ord`);
+    if (!q) return null;
+    const rootLabel = sn => { const k = 'H' + String(sn).replace(/^H+/i, ''); const p = getCanonicalRoot(k); return { paleo: p, translit: nameTranslit(k, p) }; };
+    const bookName = b => b.src === 'DOC' ? b.code : canonName(b.book_id);
+    const SRC_ORDER = { BHS: 0, HEB: 1, DOC: 2 };
+    const titles = q.all().map(t => {
+        const sns = JSON.parse(t.sns_json);
+        let label = '', paleo = '';
+        if (t.kind === 'single') { const r = rootLabel(sns[0]); label = r.translit; paleo = r.paleo; }
+        else if (t.kind === 'compound') { const parts = sns.map(m => rootLabel(m[0])); label = parts.map(p => p.translit).join(' '); paleo = parts.map(p => p.paleo).join(' '); }
+        else label = 'Other gods';
+        return {
+            id: t.id, kind: t.kind, group: t.grp, en: t.en,
+            sns: t.kind === 'compound' ? sns.map(m => m.join('/')) : sns,
+            label, paleo, occurrences: t.occurrences, verses: t.verses, bookCount: t.book_count,
+            forms: JSON.parse(t.forms_json).map(f => ({ ...f, translit: f.paleo.split(' ').map(getTranslit).join(' ') })),
+            bookList: JSON.parse(t.books_json)
+                .sort((a, b) => SRC_ORDER[a.src] - SRC_ORDER[b.src] || (a.book_id ?? 0) - (b.book_id ?? 0) || String(a.code).localeCompare(String(b.code)))
+                .map(b => ({ ...b, name: bookName(b) })),
         };
-        for (const r of iter) {
-            const k = `${r.book_id ?? r.code}|${r.chapter}|${r.verse}`;
-            if (k !== curKey) { flush(); curKey = k; loc = locOf(r); }
-            rows.push(r);
-        }
-        flush();
-    };
-    const COLS = 'chapter, verse, token_ordinal, word_raw, pos, morph, strongs';
-    scan(db.prepare(`SELECT book_id, ${COLS} FROM tokens_bhs ORDER BY book_id, chapter, verse, token_ordinal`).iterate(), false, r => {
-        const [ec, ev] = bhsToDisplayRef(r.book_id, r.chapter, r.verse);
-        // only_refs / exclude_refs are written in BHS numbering (what the tags carry).
-        return { bk: `BHS:${r.book_id}`, ref: `${ec}:${ev}`, cfgRef: `${r.book_id}:${r.chapter}:${r.verse}` };
     });
-    if (NT_TOKENS_READY) {
-        scan(db.prepare(`SELECT book_id, ${COLS} FROM tokens_nt WHERE book_id > 39 ORDER BY book_id, chapter, verse, token_ordinal`).iterate(), true,
-             r => ({ bk: `HEB:${r.book_id}`, ref: `${r.chapter}:${r.verse}`, cfgRef: `${r.book_id}:${r.chapter}:${r.verse}` }));
-    }
-    try {
-        scan(db.prepare(`SELECT code, ${COLS} FROM tokens_nt_docs ORDER BY code, chapter, verse, token_ordinal`).iterate(), true,
-             r => ({ bk: `DOC:${r.code}`, ref: `${r.chapter}:${r.verse}`, cfgRef: `${r.code}:${r.chapter}:${r.verse}` }));
-    } catch { /* no docs table yet */ }
-
-    // ── Serialize ──
-    const bookInfo = bk => {
-        const [src, id] = bk.split(':');
-        if (src === 'DOC') return { src, code: id, name: id };
-        return { src, book_id: +id, name: canonName(+id) };
+    const built = divineStmt('meta', `SELECT value FROM divine_meta WHERE key='built_at'`);
+    _divineSummary = {
+        builtAt: built ? (built.get() || {}).value : null,
+        titles: titles.filter(t => t.kind !== 'other'),
+        other: titles.find(t => t.kind === 'other') || null,
     };
-    const ser = b => ({
-        occurrences: b.occ, verses: b.verses.size, bookCount: b.books.size,
-        forms: [...b.forms.entries()].sort((x, y) => y[1] - x[1]).slice(0, 8)
-            .map(([paleo, n]) => ({ paleo, translit: paleo.split(' ').map(getTranslit).join(' '), n })),
-        books: [...b.books.entries()].map(([bk, m]) => ({
-            ...bookInfo(bk),
-            refs: [...m.entries()].map(([ref, n]) => { const [c, v] = ref.split(':').map(Number); return [c, v, n]; })
-                .sort((a, z) => a[0] - z[0] || a[1] - z[1]),
-        })),
-    });
-    const rootLabel = sn => { const p = getCanonicalRoot(sn); return { paleo: p, translit: nameTranslit(sn, p) }; };
-    const out = [];
-    for (const s of cfg.raw.singles || []) {
-        const sn = divineTitles.normSn((s.sns || [])[0]);
-        const r = rootLabel(sn);
-        out.push({ id: s.id, kind: 'single', group: s.group || 'title', en: s.en || '', sns: s.sns,
-                   label: r.translit, paleo: r.paleo, ...ser(bucket(s.id)) });
-    }
-    for (const c of cfg.raw.compounds || []) {
-        const parts = (c.seq || []).map(m => rootLabel(divineTitles.normSn(m[0])));
-        out.push({ id: c.id, kind: 'compound', group: 'compound', en: c.en || '', sns: (c.seq || []).map(m => m.join('/')),
-                   label: parts.map(p => p.translit).join(' '), paleo: parts.map(p => p.paleo).join(' '), ...ser(bucket(c.id)) });
-    }
-    const data = {
-        stamp: divineStamp(), builtAt: new Date().toISOString(), ms: Date.now() - t0,
-        titles: out,
-        other: { id: 'other-gods', kind: 'other', group: 'other', label: 'Other gods', en: 'the same words naming other gods — not gold', ...ser(other) },
-    };
-    console.log(`divine titles index built in ${data.ms}ms (${out.length} titles)`);
-    return data;
+    return _divineSummary;
 }
-function divineIndex() {
-    const stamp = divineStamp();
-    if (_divineIndex && _divineIndex.stamp === stamp) return _divineIndex;
+const DIVINE_NOT_BAKED = { error: 'divine titles not baked into surface-index.db yet — run: node build-divine-titles.js (or rebuild surface-index.db), then restart' };
+app.get('/api/divine-titles', production.cache(3600), (req, res) => {
     try {
-        const disk = JSON.parse(fs.readFileSync(DIVINE_CACHE_PATH, 'utf8'));
-        if (disk && disk.stamp === stamp) return (_divineIndex = disk);
-    } catch { /* no cache yet */ }
-    _divineIndex = buildDivineIndex();
-    try {
-        fs.writeFileSync(DIVINE_CACHE_PATH + '.tmp', JSON.stringify(_divineIndex));
-        fs.renameSync(DIVINE_CACHE_PATH + '.tmp', DIVINE_CACHE_PATH);
-    } catch (e) { console.warn('divine titles cache not written:', e.message); }
-    return _divineIndex;
-}
-// Summary — no reference lists (those are big; fetched per title below).
-app.get('/api/divine-titles', production.cache(300), (req, res) => {
-    try {
-        const d = divineIndex();
-        const strip = t => { const { books, ...rest } = t; return { ...rest, bookList: books.map(b => ({ src: b.src, book_id: b.book_id, code: b.code, name: b.name, n: b.refs.reduce((a, r) => a + r[2], 0) })) }; };
-        res.json({ builtAt: d.builtAt, titles: d.titles.map(strip), other: strip(d.other) });
+        const d = divineSummary();
+        if (!d) return res.status(503).json(DIVINE_NOT_BAKED);
+        res.json(d);
     } catch (err) {
         console.error('/api/divine-titles failed:', err);
         res.status(500).json({ error: err.message });
     }
 });
-app.get('/api/divine-titles/refs', production.cache(300), (req, res) => {
+app.get('/api/divine-titles/refs', production.cache(3600), (req, res) => {
     try {
-        const d = divineIndex();
+        const q = divineStmt('refs', `SELECT src, book_id, code, chapter, verse, n FROM divine_refs WHERE title_id=?`);
+        if (!q) return res.status(503).json(DIVINE_NOT_BAKED);
         const id = String(req.query.id || '');
-        const t = id === 'other-gods' ? d.other : d.titles.find(x => x.id === id);
-        if (!t) return res.status(404).json({ error: `unknown title ${id}` });
-        res.json({ id, label: t.label, books: t.books });
+        const SRC_ORDER = { BHS: 0, HEB: 1, DOC: 2 };
+        const books = new Map();
+        for (const r of q.all(id)) {
+            const bk = `${r.src}|${r.book_id ?? ''}|${r.code ?? ''}`;
+            if (!books.has(bk)) books.set(bk, { src: r.src, book_id: r.book_id, code: r.code, name: r.src === 'DOC' ? r.code : canonName(r.book_id), refs: new Map() });
+            // BHS rows carry Masoretic numbering; list them the way the pages number them.
+            const [c, v] = r.src === 'BHS' ? bhsToDisplayRef(r.book_id, r.chapter, r.verse) : [r.chapter, r.verse];
+            const m = books.get(bk).refs; m.set(`${c}:${v}`, (m.get(`${c}:${v}`) || 0) + r.n);
+        }
+        const out = [...books.values()]
+            .sort((a, b) => SRC_ORDER[a.src] - SRC_ORDER[b.src] || (a.book_id ?? 0) - (b.book_id ?? 0) || String(a.code).localeCompare(String(b.code)))
+            .map(b => ({ ...b, refs: [...b.refs.entries()].map(([k, n]) => { const [c, v] = k.split(':').map(Number); return [c, v, n]; }).sort((x, y) => x[0] - y[0] || x[1] - y[1]) }));
+        res.json({ id, books: out });
     } catch (err) {
         console.error('/api/divine-titles/refs failed:', err);
         res.status(500).json({ error: err.message });

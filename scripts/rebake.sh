@@ -34,8 +34,19 @@ main() {
   SI_M=$(stat -c %Y server/surface-index.db 2>/dev/null || echo 0)
   CO_M=$(stat -c %Y server/corpus.db)
   BS_M=$(stat -c %Y server/build-surface-index.js)
+  # Divine titles (gold chips + Divine Titles tab) are baked into the same file;
+  # a newer title list / matcher only needs that quick re-bake, not the full one.
+  DT_M=$(stat -c %Y server/lexicon/divine-titles.json server/divine-titles.js server/build-divine-titles.js 2>/dev/null | sort -n | tail -1)
   if [ "$SI_M" -gt "$CO_M" ] && [ "$SI_M" -gt "$BS_M" ]; then
-    echo "local surface-index.db is current -> no rebuild needed"
+    if [ "${DT_M:-0}" -gt "$SI_M" ]; then
+      echo "local surface-index.db is current, divine titles are not -> re-baking just those"
+      if ! (cd server && node build-divine-titles.js); then
+        echo "!! Divine-titles bake failed (stop the local server if the error is EBUSY/locked)."
+        exit 1
+      fi
+    else
+      echo "local surface-index.db is current -> no rebuild needed"
+    fi
   else
     echo "local surface-index.db is stale -> rebuilding"
     if ! (cd server && node build-surface-index.js); then
