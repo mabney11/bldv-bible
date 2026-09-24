@@ -204,8 +204,10 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const plan = [];   // { x0, x1, z0, z1 } walls (filled) and { x, z, r } rounds (pillars, the sea)
     const navWalk = [];   // { x0, x1, z0, z1, top } what can be walked on
     const navObs = [];    // everything else that stands in the way, whatever its height (a table, an altar's ledge, a wall), with its span
-    for (const id of PLAN_PIECES) {
-      const piece = PIECES.find((q) => q.id === id); if (!piece) continue;
+    const NAV_SKIP = new Set(SC.navSkip || []);   // pieces the route may ignore (a model's crowd, a proxy group)
+    for (const piece of PIECES) {   // every piece feeds the route finder; only the plan's pieces are drawn on the map
+      const onPlan = PLAN_PIECES.includes(piece.id);
+      if (!onPlan && (NAV_SKIP.has(piece.id) || (SC.whole && piece.id === SC.whole.id) || (piece.modes && !piece.modes.includes('roam')))) continue;
       for (const part of cutGates(piece).parts) {
         const y0 = part.y ?? GROUND, y1 = y0 + (part.h ?? 3);
         const walkable = part.kind === 'box' && (WALK_ROLES.has(part.role) || (part.h <= 2.4 && !part.role)) && !(part.ideal && part.role === 'floor');
@@ -219,7 +221,11 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         else if (part.kind === 'throne') navObs.push({ x0: part.x - 3, x1: part.x + 3, z0: part.z - 3, z1: part.z + 3, y0, y1: y0 + 6 });
         else if (part.kind === 'sea') navObs.push({ x: part.x, z: part.z, r: part.r + 1, y0, y1: y0 + 8 });
         else if (part.kind === 'pillar') navObs.push({ x: part.x, z: part.z, r: part.r * 1.4, y0, y1: y0 + part.h });
-        if (PLAN_SKIP.has(part.role)) continue;
+        else if (part.kind === 'cherub') navObs.push({ x: part.x, z: part.z, r: 2.4, y0, y1: y0 + (part.h || 10) });
+        else if (part.kind === 'lampstand') navObs.push({ x: part.x, z: part.z, r: 0.8, y0, y1: y0 + (part.h || 3) });
+        else if (part.kind === 'ark') navObs.push({ x0: part.x - 1.5, x1: part.x + 1.5, z0: part.z - 1, z1: part.z + 1, y0, y1: y0 + 3 });
+        else if (part.kind === 'table') navObs.push({ x0: part.x - 1.2, x1: part.x + 1.2, z0: part.z - 0.8, z1: part.z + 0.8, y0, y1: y0 + 2 });
+        if (!onPlan || PLAN_SKIP.has(part.role)) continue;
         // each thing keeps its height span: the map shows what stands at the walker's own level (a lintel over a gate, or an
         // upper storey's rooms, must not close a doorway on the ground)
         if (part.kind === 'box' && part.h >= 2.5) {
@@ -236,7 +242,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       }
     }
     // a gate's open leaves stand swung back along the jambs, still a little into the passage: the route keeps to its middle
-    for (const id of PLAN_PIECES) for (const gate of PIECES.find((q) => q.id === id)?.gates || []) {
+    for (const piece of PIECES) for (const gate of piece.gates || []) {
       if (gate.leaves === false) continue;
       const gy = gate.y ?? GROUND, along = gate.axis === 'x', L = 2.6, D = 2.2;
       for (const sg of [-1, 1]) navObs.push(along
@@ -329,9 +335,37 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       if (!done && a.dist0 < 4) roam.dist = a.dist0; else if (done && a.dist0 < 4) roam.dist = a.dist0;
       autoEl.hidden = true; dirty = true; remember();
     }
+    /** every shut gate and door with where it stands and the key that opens it */
+    function shutThings() {   // each keyed opening at the MIDDLE of its passage (its leaves hang at the jambs either side)
+      const acc = new Map(), p = new THREE.Vector3();
+      const add = (key, node) => { node.getWorldPosition(p); const a = acc.get(key) || { key, x: 0, z: 0, n: 0 }; a.x += p.x; a.z += p.z; a.n++; acc.set(key, a); };
+      for (const gs of gateSets) add(gs.key, gs.node);
+      for (const ds of doorSets) { const key = model.roam.openKey ? model.roam.openKey(ds.open) : ds.open; if (!(key in roam.want)) continue; for (const l of ds.leaves) if (l.i === 0) add(key, l.node); }
+      return [...acc.values()].map((a) => ({ key: a.key, x: a.x / a.n, z: a.z / a.n }));
+    }
+    /** how far a point lies from the route still ahead (the walker's feet through the coming waypoints) */
+    function offRoute(a, x, z, reach) {
+      let px = camera.position.x, pz = camera.position.z, along = 0, best = Infinity;
+      for (let k = a.i; k < a.path.length && along < reach; k++) {
+        const [qx, qz] = a.path[k], vx = qx - px, vz = qz - pz, L = Math.hypot(vx, vz) || 1e-6;
+        const t = Math.max(0, Math.min(1, ((x - px) * vx + (z - pz) * vz) / (L * L)));
+        best = Math.min(best, Math.hypot(px + vx * t - x, pz + vz * t - z));
+        along += L; px = qx; pz = qz;
+      }
+      return best;
+    }
     function autoStep(dt) {
       const a = auto, [tx, tz] = a.path[a.i], ex = camera.position.x, ez = camera.position.z;
       const dx = tx - ex, dz = tz - ez, d = Math.hypot(dx, dz);
+      // the way is opened AHEAD of him (fieldy): a shut gate or door on the route within forty cubits is asked open now, and he
+      // waits a moment before one that is still swinging rather than walk into it
+      let wait = false;
+      for (const t of shutThings()) {
+        const dd = Math.hypot(t.x - ex, t.z - ez); if (dd > 40 || offRoute(a, t.x, t.z, 60) > 6) continue;
+        if (roam.want[t.key] < 0.5) roam.want[t.key] = 1;
+        if (dd < 4 && roam.open[t.key] < 0.7) wait = true;
+      }
+      if (wait) { roam.moving = false; roam.vel.x = roam.vel.z = 0; return; }
       if (d < 1.0) { a.i++; a.still = 0; a.lastD = Infinity; if (a.i >= a.path.length) { cancelAuto(true); return; } return; }
       const want = Math.atan2(dz, dx); let dy = want - roam.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
       roam.yaw += Math.sign(dy) * Math.min(Math.abs(dy), 3.2 * dt);
@@ -948,6 +982,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       mapPoint: (x, z) => { const r = mmap.getBoundingClientRect(), { S, ox, oz } = bigFrame(mmap.width), k = r.width / mmap.width; return [r.left + (x * S + ox) * k, r.top + (z * S + oz) * k]; },   // for tests: where a world point lies on the big map
       mapView: (label) => { const find = (ns) => { for (const n of ns) { if (n.label === label) return n; const c = n.children && find(n.children); if (c) return c; } return null; }; setMapView(label ? find(PLACES) : null); return mapView?.label || null; },   // for tests
       route: (ax, az, bx, bz) => findPath(ax, az, bx, bz),   // for tests
+      shut: () => shutThings().map((t) => ({ ...t, off: auto ? offRoute(auto, t.x, t.z, 60) : null, open: roam.open[t.key] })),   // for tests
       teleport: (x, z, yaw, y) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; if (y != null) roam.foot = y; roam.air = 0; roam.vy = 0; const gy = groundUnder(x, z, roam.foot + 3);   /* from just above the feet, so a roof overhead is not mistaken for the ground */ if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
       locked: () => locked,
       piece: (id) => byId(id),   // for tests
