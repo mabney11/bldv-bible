@@ -5,9 +5,10 @@
  * Lifted out of pages/Statue.jsx when the temple was built; the page CSS
  * they rely on is ModelPage.css (the `st-` classes).
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { loadChapter } from '../lib/passages.js';
+import { loadChapter, verseText, sliceQuote, parseQuotes } from '../lib/passages.js';
+import { parseRefs } from '../lib/models/refs.js';
 import './ModelPage.css';
 
 // ── The player ───────────────────────────────────────────────────────────────
@@ -100,9 +101,102 @@ export function Caption({ player, phase, render }) {
     <div className={`st-caption${waiting ? ' st-caption-wait' : ''}`} aria-live="polite" onClick={waiting ? continueNow : undefined} role={waiting ? 'button' : undefined} title={waiting ? 'Tap to go on' : undefined}>
       <span ref={captionRef} className="st-caption-text">{render(phase.caption)}</span>
       <span className="st-caption-foot">
-        <span className="st-caption-ref">{phase.ref}</span>
+        <CaptionRefs refs={phase.ref} />
         {waiting && hold.tap && <span className="st-caption-tap">tap to go on ▸</span>}
       </span>
+    </div>
+  );
+}
+
+/** The caption's verses as links — one a verse (its own page) or a run of verses (the reader) — so the reader can go straight to
+ *  what is being quoted (fieldy: "I need access to the displayed verses, I should be able to easily go to them"). */
+export function CaptionRefs({ refs }) {
+  const links = useMemo(() => {
+    const out = []; let lastBook = null;
+    for (const r of parseRefs(refs)) {
+      const rs = r.ranges.length ? r.ranges : [[null, null]];
+      for (const [a, b] of rs) {
+        const label = `${r.book === lastBook ? '' : `${r.book} `}${r.chapter}${a ? `:${a}${b !== a ? `–${b}` : ''}` : ''}`;
+        const to = a == null ? `/bible?book=${r.bookId}&chapter=${r.chapter}` : a === b ? `/${r.bookId}/${r.chapter}/${a}` : `/bible?book=${r.bookId}&chapter=${r.chapter}&verse=${a}&verseEnd=${b}`;
+        out.push({ label, to, title: a == null ? `${r.book} ${r.chapter} in the reader` : a === b ? `${r.book} ${r.chapter}:${a} on its own page` : `${r.book} ${r.chapter}:${a}–${b} in the reader` });
+        lastBook = r.book;
+      }
+    }
+    return out;
+  }, [refs]);
+  if (!links.length) return refs ? <span className="st-caption-ref">{refs}</span> : null;
+  return (
+    <span className="st-caption-ref st-caption-refs" onClick={(e) => e.stopPropagation()}>
+      {links.map((l, i) => <Link key={i} to={l.to} className="st-caption-reflink" title={l.title}>{l.label}</Link>)}
+    </span>
+  );
+}
+
+// ── Canvas subtitles: the caption's words, one by one, inside the stage ──────
+// The caption is spoken into the canvas itself: each unit of the text — a plain word, or a "Word (gloss)" pair kept whole — comes
+// up in its turn and settles into the line, the transliteration gold, the gloss beside it, laid low over the scene rather than
+// boxed on top of it (fieldy: "present the text in a nice way in the canvas so it seems immersive … words one by one … like a
+// conversation … in a way that pops and feels inclusive with the canvas"). Quotes are resolved from the live text first, as the
+// caption under the stage resolves them. Togglable ("canvas subtitles"), remembered.
+const UNIT_RE = /(\S+?\s*\([^)]*\)\S*|\S+)/g;
+const GLOSS_UNIT = /^(\S+?)\s*\(([^)]*)\)(\S*)$/;
+export function unitsOf(text) {
+  const out = []; let m; UNIT_RE.lastIndex = 0;
+  while ((m = UNIT_RE.exec(String(text || '')))) {
+    const g = GLOSS_UNIT.exec(m[1]);
+    if (g) out.push({ w: g[1], gloss: g[2].trim(), tail: g[3] }); else out.push({ w: m[1] });
+  }
+  return out;
+}
+/** The caption with its {{quotes}} resolved to the live text, or null while it loads. */
+export function useResolvedCaption(text) {
+  const parts = useMemo(() => parseQuotes(text), [text]);
+  const specs = parts.filter((p) => typeof p === 'object');
+  const key = specs.map((p) => `${p.ref}|${p.from}|${p.to}`).join('\n') + '|' + text;
+  const [resolved, setResolved] = useState(() => (specs.length ? null : text));
+  useEffect(() => {
+    if (!specs.length) { setResolved(text); return undefined; }
+    let live = true; setResolved(null);
+    Promise.all(specs.map(async (p) => sliceQuote(await verseText(p.ref), p.from, p.to)))
+      .then((q) => { if (!live) return; let qi = 0; setResolved(parts.map((p) => (typeof p === 'string' ? p : q[qi++])).join('')); });
+    return () => { live = false; };
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  return resolved;
+}
+const SUB_KEY = 'model-subtitles';
+export function useSubtitles() {
+  const [on, setOn] = useState(() => { try { return localStorage.getItem(SUB_KEY) !== '0'; } catch { return true; } });
+  useEffect(() => { try { localStorage.setItem(SUB_KEY, on ? '1' : '0'); } catch {} }, [on]);
+  return [on, setOn];
+}
+export function SubtitlesToggle({ on, setOn, id = 'st-subs' }) {
+  return <label className="st-loop" title="Speak the caption into the scene, word by word"><input id={id} type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} /> canvas subtitles</label>;
+}
+export function CanvasSubtitles({ phase, on, pace = 170 }) {
+  const text = useResolvedCaption(phase?.caption || '');
+  const units = useMemo(() => unitsOf(text), [text]);
+  const [shown, setShown] = useState(0);
+  const box = useRef(null);
+  // the words come up one by one on the wall clock (the story itself waits for the tap), a glossed pair taking a little longer
+  useEffect(() => {
+    setShown(0);
+    if (!on || !units.length) return undefined;
+    let i = 0, timer = 0, alive = true;
+    const next = () => { if (!alive) return; i++; setShown(i); if (i < units.length) timer = setTimeout(next, units[i - 1].gloss != null ? pace * 1.7 : pace); };
+    timer = setTimeout(next, 120);
+    return () => { alive = false; clearTimeout(timer); };
+  }, [units, on, pace, phase?.key]);
+  useEffect(() => { const el = box.current; if (el) el.scrollTop = el.scrollHeight; }, [shown]);   // a long caption scrolls up as it grows; the newest words stay in view
+  if (!on || !units.length) return null;
+  return (
+    <div className="st-subs" ref={box} aria-hidden="true">
+      <div className="st-subs-line">
+        {units.slice(0, shown).map((u, i) => (
+          u.gloss != null
+            ? <span key={i} className={`st-sub-u st-sub-pair${i === shown - 1 ? ' st-sub-new' : ''}`}><span className="st-sub-w">{u.w}</span>{u.gloss ? <span className="st-sub-g">({u.gloss})</span> : null}{u.tail ? <span className="st-sub-t">{u.tail}</span> : null}</span>
+            : <span key={i} className={`st-sub-u${i === shown - 1 ? ' st-sub-new' : ''}`}>{u.w}</span>
+        ))}
+      </div>
     </div>
   );
 }

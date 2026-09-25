@@ -24,7 +24,7 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
-import { usePlayer, Section, Caption, PaceSelect } from '../components/ModelKit.jsx';
+import { usePlayer, Section, Caption, PaceSelect, CanvasSubtitles, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
 import { apiTransChapter } from '../lib/api.js';
 import StatueSheet from '../components/StatueSheet.jsx';
 import {
@@ -209,6 +209,7 @@ export default function Statue() {
   const sel = PIECE_IDS.includes(params.get('piece')) ? params.get('piece') : null;
   const player = usePlayer(TIMELINE);
   const { clock, playing, speed, setSpeed, loop, setLoop, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef, hold, continueNow } = player;
+  const [subs, setSubs] = useSubtitles();
   const [sheetOpen, setSheetOpen] = useState(!!sel);
 
   const setParam = useCallback((k, v) => {
@@ -275,6 +276,7 @@ export default function Statue() {
               {use3d
                 ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><StatueScene clock={clock} selected={shownSel} onSelect={select} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
                 : <StatueSheet clock={clock} selected={shownSel} onSelect={select} />}
+              <CanvasSubtitles phase={phase} on={subs} />
               {/* One row of pieces along the bottom of the stage, the stone first:
                   tap one and the view flies to it; tap it again to let go. */}
               <div className="st-strip" role="toolbar" aria-label="Pieces">
@@ -308,6 +310,7 @@ export default function Statue() {
               </label>
               <PaceSelect player={player} />
               <label className="st-loop"><input id="st-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
+              <SubtitlesToggle on={subs} setOn={setSubs} />
             </div>
           </div>
           <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}<Glossed text="Tap a piece, one of the chips below it, or a word in the text for its verses — the view flies to it. At the end only the aban (stone) remains." /></p>

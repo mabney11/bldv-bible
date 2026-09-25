@@ -202,3 +202,31 @@
 @media (prefers-reduced-motion: reduce) {
   .st-panel { transition: none; }
 }
+
+/* The caption's verses as links */
+.st-caption-refs { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.st-caption-reflink { color: var(--gold); text-decoration: none; border-bottom: 1px dotted rgba(255, 208, 98, 0.5); }
+.st-caption-reflink:hover { border-bottom-style: solid; color: #ffe08a; }
+
+/* Canvas subtitles — the caption spoken into the scene, word by word, low over it */
+.st-subs {
+  position: absolute; left: 6%; right: 6%; bottom: 52px; max-height: 42%; overflow: hidden; pointer-events: none; z-index: 2;
+  padding: 26px 8px 6px; text-align: center;
+  mask-image: linear-gradient(180deg, transparent, #000 34%);
+  perspective: 900px;
+}
+.st-subs-line {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; column-gap: 0.42em; row-gap: 0.18em;
+  transform: rotateX(6deg); transform-origin: 50% 100%;
+  font-family: var(--reader-font, Georgia, 'Times New Roman', serif); font-size: clamp(17px, 2.6vw, 27px); line-height: 1.32; color: #f6efdf;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.55), 0 0 14px rgba(0, 0, 0, 0.75), 0 0 34px rgba(0, 0, 0, 0.55);
+}
+.st-sub-u { display: inline-block; white-space: nowrap; animation: st-sub-in 0.42s cubic-bezier(0.2, 0.9, 0.25, 1.2) both; }
+.st-sub-pair .st-sub-w { color: var(--gold); font-weight: 700; letter-spacing: 0.01em; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6), 0 0 12px rgba(255, 200, 87, 0.35), 0 0 30px rgba(0, 0, 0, 0.7); }
+.st-sub-pair .st-sub-g { margin-left: 0.28em; font-size: 0.74em; color: #e5dcc7; opacity: 0.92; }
+.st-sub-pair .st-sub-t { color: #f6efdf; }
+.st-sub-new { animation-name: st-sub-pop; }
+@keyframes st-sub-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes st-sub-pop { 0% { opacity: 0; transform: translateY(14px) scale(1.22); filter: blur(2px); } 55% { opacity: 1; transform: translateY(-2px) scale(1.08); filter: none; } 100% { transform: none; } }
+.tp-roam .st-subs { display: none; }
+@media (max-width: 720px) { .st-subs { bottom: 46px; left: 3%; right: 3%; } .st-subs-line { font-size: clamp(15px, 4.2vw, 21px); } }
