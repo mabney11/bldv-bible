@@ -390,12 +390,49 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       return out.length > 1 ? out : raw;
     }
 
+    /**
+     * The grid knows one level: the ground under each cell. An upper storey — the galleries of the building, reached by their
+     * stairs — is above it, and a route asked for from up there must first come DOWN: to the head of a flight whose top is at his
+     * level, down it to its foot, and again until the ground the grid knows is under his feet (fieldy: stuck in the stairs after
+     * climbing to the top floor of the banayan and asking for the holy place). The flights are read from the models' stairs.
+     */
+    const flights = [];
+    for (const piece of PIECES) for (const part of piece.parts || []) {
+      const st = part.stair; if (!st || st.i !== 0) continue;
+      const top = st.n * st.run - 0.5, along = st.axis === 'x';
+      flights.push({ hy: st.y + st.n * st.rise, fy: st.y, len: st.n * st.run, perp: along ? [0, 1] : [1, 0], ahead: along ? [st.x - st.dir * 1.2, st.z] : [st.x, st.z - st.dir * 1.2], head: along ? [st.x + st.dir * top, st.z] : [st.x, st.z + st.dir * top], headOff: along ? [st.x + st.dir * (top + 1.2), st.z] : [st.x, st.z + st.dir * (top + 1.2)], foot: along ? [st.x + st.dir * 0.5, st.z] : [st.x, st.z + st.dir * 0.5] });
+    }
+    function routeFrom(x, z, y, gx, gz) {
+      if (!nav) buildNav();
+      const pre = []; let sx = x, sz = z, sy = y;
+      const join = (rest) => (pre.length ? [[x, z], ...pre, ...rest.slice(1)] : rest);
+      for (let k = 0; k < 5; k++) {
+        const [i, j] = cellOf(sx, sz), h = inNav(i, j) ? nav.H[j * nav.W + i] : GROUND;
+        if (sy - h <= STEP_MAX) { const rest = findPath(sx, sz, gx, gz); if (rest) return join(rest); }   // the grid's ground is under him and knows a way
+        // else: come down a flight — one whose head is at his level, or (standing on its steps) the one he is on
+        let best = null, bd = Infinity, onIt = false;
+        for (const f of flights) {
+          const atHead = Math.abs(f.hy - sy) <= 1.5, on = !atHead && sy > f.fy + 0.3 && sy < f.hy + 0.3 && Math.hypot(f.head[0] - sx, f.head[1] - sz) < f.len + 3;
+          if (!atHead && !on) continue;
+          const d = Math.hypot(f.headOff[0] - sx, f.headOff[1] - sz); if (d < bd) { bd = d; best = f; onIt = on; }
+        }
+        if (!best) return null;
+        if (onIt) pre.push(best.foot);
+        else {   // to the head from beside it, never along the flight's own line (the opening for the flight is there, in the floor he is on)
+          const side = Math.sign((sx - best.headOff[0]) * best.perp[0] + (sz - best.headOff[1]) * best.perp[1]) || 1;
+          pre.push([best.headOff[0] + side * best.perp[0] * 3, best.headOff[1] + side * best.perp[1] * 3], best.headOff, best.head, best.foot);
+        }
+        sx = best.ahead[0]; sz = best.ahead[1]; sy = best.fy;   // and on from the ground before its foot
+      }
+      return null;
+    }
+
     // ── Being walked somewhere: the route as waypoints, followed on the walker's own feet (tryMove, so doors and steps hold);
     // any walking key or pad press cancels it and he stays where he is (fieldy); the mouse may still look about
     let auto = null;   // { path, i, label, dist0, still, lastD, gateTried }
     const autoEl = document.createElement('div'); autoEl.className = 'tp-autobar'; autoEl.hidden = true; el.appendChild(autoEl);
     function startAuto(x, z, label) {
-      const path = findPath(camera.position.x, camera.position.z, x, z);
+      const path = routeFrom(camera.position.x, camera.position.z, roam.foot, x, z);
       if (!path || path.length < 2) { autoEl.hidden = false; autoEl.textContent = path ? 'You are there.' : 'No way there on foot from here.'; setTimeout(() => { if (!auto) autoEl.hidden = true; }, 2200); return false; }
       auto = { path, i: 1, label, dist0: roam.dist, still: 0, lastD: Infinity, tried: new Set() };
       roam.body = roam.yaw;   // the view stays as it was — first person walks first person (fieldy)
@@ -456,7 +493,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
           const [gx, gz] = a.path[a.path.length - 1];
           // a step back off whatever he is against, then the new way
           tryMove(-Math.cos(roam.body) * 0.8, -Math.sin(roam.body) * 0.8);
-          const fresh = findPath(camera.position.x, camera.position.z, gx, gz);
+          const fresh = routeFrom(camera.position.x, camera.position.z, roam.foot, gx, gz);
           a.replans = (a.replans || 0) + 1; a.still = 0; a.lastD = Infinity;
           if (fresh && fresh.length > 1) { a.path = fresh; a.i = 1; }
         }
@@ -1085,7 +1122,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       map: (on) => { if (roam.on) showBig(on ?? !mapBig); return mapBig; },
       mapPoint: (x, z) => { const r = mmap.getBoundingClientRect(), { S, ox, oz } = bigFrame(mmap.width), k = r.width / mmap.width; return [r.left + (x * S + ox) * k, r.top + (z * S + oz) * k]; },   // for tests: where a world point lies on the big map
       mapView: (label) => { const find = (ns) => { for (const n of ns) { if (n.label === label) return n; const c = n.children && find(n.children); if (c) return c; } return null; }; setMapView(label ? find(PLACES) : null); return mapView?.label || null; },   // for tests
-      route: (ax, az, bx, bz) => findPath(ax, az, bx, bz),   // for tests
+      route: (ax, az, bx, bz, ay) => (ay == null ? findPath(ax, az, bx, bz) : routeFrom(ax, az, ay, bx, bz)),   // for tests
       look: (dx, dy = 0) => turnHead(dx, dy),   // for tests: the mouse turning the head
       body: () => roam.body,
       shut: () => shutThings().map((t) => ({ ...t, off: auto ? offRoute(auto, t.x, t.z, 60) : null, open: roam.open[t.key] })),   // for tests
