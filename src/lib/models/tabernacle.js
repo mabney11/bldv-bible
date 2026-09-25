@@ -98,7 +98,17 @@ export const MATERIALS = {
   ramskin:   { word: 'ayalam',     color: '#8e3f2a', hi: '#bd6a50', lo: '#4e2014', metal: 0, rough: 0.85 },  // rams' skins dyed red
   tachash:   { word: 'thachash',   color: '#6b5a48', hi: '#9a8670', lo: '#3a2f24', metal: 0, rough: 0.9 },   // the covering of tachash hides above
   acacia:    { word: 'itz',        color: '#a8834f', hi: '#cfae7d', lo: '#5f4526', metal: 0, rough: 0.75 },  // acacia wood
-  cloud:     { word: 'inan',       color: '#eef0f4', hi: '#ffffff', lo: '#b8bfcc', metal: 0, rough: 1 },
+  cloud:     { word: 'inan',       color: '#eef0f4', hi: '#ffffff', lo: '#b8bfcc', metal: 0, rough: 1, opacity: 0.16 },   // the column's core; the cloud itself is smoke (tabernacleExtras)
+  // the camps, each in a colour of its own that glows a little, so the reader can tell at a glance which tribe is where and that
+  // those close about the tent are the Levites (fieldy). The text gives no colours: these are the model's — the three tribes of a
+  // camp share a family of colour (Yahawadah's camp warm reds, Raawaban's blues, Aparayam's greens, Dan's violets), the Levites white.
+  ...Object.fromEntries(Object.entries({
+    levites: '#f4ead2',
+    judah: '#e0452c', issachar: '#f07a2a', zebulun: '#f2b23a',
+    reuben: '#2f6fd8', simeon: '#3fb3e0', gad: '#5a4fd0',
+    ephraim: '#2f9a4e', manasseh: '#8fc43a', benjamin: '#1f8f8a',
+    dan: '#8a3fc4', asher: '#d84aa8', naphtali: '#c43a5e',
+  }).map(([k, c]) => [`camp-${k}`, { word: k === 'levites' ? 'lawayay' : 'matah', color: c, hi: c, lo: c, metal: 0, rough: 0.9, emissive: c, emissiveIntensity: k === 'levites' ? 0.45 : 0.8 }])),
 };
 
 // ── The frame, in cubits ─────────────────────────────────────────────────────
@@ -138,18 +148,18 @@ function pillar(x, z, h, pillarMat = 'acacia', socketMat = 'brass', capMat = 'si
 /** A pin of brass a little out from a pillar (27:19) — idealized: the text names them, not where they stand. */
 const pin = (x, z) => [ideal(cyl(x, 0, z, 0.09, 0.45, { mat: 'brass', role: 'pin' }))];
 /** A tent of the camp (idealized): a low cone of goats' hair with a dark doorway. */
-const tent = (x, z, r = 2.4, h = 2.6) => [ideal(cyl(x, 0, z, r, h, { mat: 'goatshair', role: 'tent', r2: 0.12 }))];
+const tent = (x, z, r = 2.4, h = 2.6, mat = 'goatshair') => [ideal(cyl(x, 0, z, r, h, { mat, role: 'tent', r2: 0.12 }))];
 /** A dagal (standard): a pole with a cloth — the text names the standards and banners, not their look. */
-const standard = (x, z, big = false) => {
+const standard = (x, z, big = false, mat = 'linen') => {
   const h = big ? 16 : 11, w = big ? 6 : 4, ch = big ? 3.5 : 2.4;
-  return [ideal(cyl(x, 0, z, 0.16, h, { mat: 'acacia', role: 'pole' })), ideal(box(x, h - ch - 0.3, z + w / 2 + 0.16, 0.06, ch, w, { mat: 'linen', role: 'banner' }))];
+  return [ideal(cyl(x, 0, z, 0.16, h, { mat: 'acacia', role: 'pole' })), ideal(box(x, h - ch - 0.3, z + w / 2 + 0.16, 0.06, ch, w, { mat, role: 'banner' }))];
 };
-/** A field of tents in rows between x0…x1 × z0…z1. */
-function field(x0, x1, z0, z1, nx, nz) {
+/** A field of tents in rows between x0…x1 × z0…z1, in the camp's own colour. */
+function field(x0, x1, z0, z1, nx, nz, mat = 'goatshair') {
   const out = [];
   for (let i = 0; i < nx; i++) for (let k = 0; k < nz; k++) {
     const jx = ((i * 7 + k * 3) % 5) * 0.35 - 0.7, jz = ((i * 3 + k * 5) % 5) * 0.35 - 0.7;   // a little irregularity, as camps are
-    out.push(...tent(x0 + (i + 0.5) * ((x1 - x0) / nx) + jx, z0 + (k + 0.5) * ((z1 - z0) / nz) + jz));
+    out.push(...tent(x0 + (i + 0.5) * ((x1 - x0) / nx) + jx, z0 + (k + 0.5) * ((z1 - z0) / nz) + jz, 2.4, 2.6, mat));
   }
   return out;
 }
@@ -200,16 +210,23 @@ function boards() {
   return out;
 }
 
-/** The barayacham (bars) of 26:26–29: five a side, the middle one from end to end, all overlaid with gold — on the outer face of the boards. */
+/** The barayacham (bars) of 26:26–29: five a side, the middle one from end to end, all overlaid with gold — on the outer face of
+ *  the boards. Five rows, so the five are counted at a glance (fieldy: "the scripts say 5 bars but I only see 3"): the middle
+ *  row the one bar end to end, the other four rows each in two lengths meeting toward the middle with a hand's gap. */
+const BAR_ROWS = [1.3, 3.1, 4.85, 6.6, 8.4];
 function bars() {
-  const { x0, x1, z, boardT: bt } = MISH, out = [], t = 0.3, zo = z + bt + t / 2, xm = (x0 + x1) / 2;
+  const { x0, x1, z, boardT: bt } = MISH, out = [], t = 0.3, zo = z + bt + t / 2, xm = (x0 + x1) / 2, gap = 0.6;
   for (const s of [-1, 1]) {
-    for (const y of [1.6, 8.1]) { out.push(box((x0 + xm) / 2, y, s * zo, xm - x0 - 0.3, t, t, { mat: 'gold', role: 'bar' }), box((xm + x1) / 2, y, s * zo, x1 - xm - 0.3, t, t, { mat: 'gold', role: 'bar' })); }
-    out.push(box(xm, 4.85, s * zo, x1 - x0, t, t, { mat: 'gold', role: 'bar' }));   // the middle bar, end to end (26:28)
+    for (const y of BAR_ROWS) {
+      if (y === 4.85) out.push(box(xm, y, s * zo, x1 - x0, t, t, { mat: 'gold', role: 'bar' }));   // the middle bar, end to end (26:28)
+      else out.push(box((x0 + xm - gap / 2) / 2, y, s * zo, xm - x0 - gap / 2 - 0.2, t, t, { mat: 'gold', role: 'bar' }), box((xm + gap / 2 + x1) / 2, y, s * zo, x1 - xm - gap / 2 - 0.2, t, t, { mat: 'gold', role: 'bar' }));
+    }
   }
   const xo = x0 - bt - t / 2, Z = z + bt;
-  for (const y of [1.6, 8.1]) { out.push(box(xo, y, -Z / 2, t, t, Z - 0.3, { mat: 'gold', role: 'bar' }), box(xo, y, Z / 2, t, t, Z - 0.3, { mat: 'gold', role: 'bar' })); }
-  out.push(box(xo, 4.85, 0, t, t, 2 * Z, { mat: 'gold', role: 'bar' }));
+  for (const y of BAR_ROWS) {
+    if (y === 4.85) out.push(box(xo, y, 0, t, t, 2 * Z, { mat: 'gold', role: 'bar' }));
+    else out.push(box(xo, y, -(Z + gap / 2) / 2, t, t, Z - gap / 2 - 0.2, { mat: 'gold', role: 'bar' }), box(xo, y, (Z + gap / 2) / 2, t, t, Z - gap / 2 - 0.2, { mat: 'gold', role: 'bar' }));
+  }
   return out;
 }
 
@@ -291,27 +308,25 @@ function incenseAltar() {
   ];
 }
 
-/** The inan (cloud) over the tent (40:34–38) — its form the model's own. */
+/** The inan (cloud) over the tent (40:34–38): a tall column of smoke by day with ash (fire) in it by night — drawn as smoke and
+ *  fire (tabernacleExtras); this part is only its faint core, so the piece has a body to be chosen and flown to. */
 function cloud() {
-  const { x0, x1 } = MISH, cx = (x0 + x1) / 2, out = [];
-  // a heap of rounded lumps over the tent, low and broad, its underside a little above the roof
-  const lump = (dx, dz, r, dy) => ideal(lathe(cx + dx, MISH.h + 1.6 + dy, dz, [[0.2, 0], [r * 0.55, r * 0.06], [r * 0.85, r * 0.28], [r, r * 0.6], [r * 0.92, r * 0.95], [r * 0.65, r * 1.25], [r * 0.3, r * 1.42], [0.2, r * 1.48]], { mat: 'cloud', role: 'cloud' }));
-  out.push(lump(0, 0, 15, 0), lump(-11, 5, 11, 0.5), lump(9, -6, 12, 0.3), lump(-4, -9, 9, 1.5), lump(6, 8, 9, 1.2), lump(-15, -3, 8, 2), lump(13, 4, 8, 1.8), lump(-2, 2, 10, 6));
-  return out;
+  const { x0, x1, h } = MISH, cx = (x0 + x1) / 2;
+  return [cyl(cx, h + 1, 0, 5, 70, { mat: 'cloud', role: 'cloud' })];
 }
 
 // the camps — the Levites close about (Numbers 1:53; 3:23, 29, 35, 38), the twelve at a distance by their standards (Numbers 2)
-const LEV = (side) => {   // a Levite family's tents on one side
-  const R = LEVITE_R, w = 30, d = 22;
-  if (side === 'east') return [...field(R, R + d, -13, 13, 3, 3), ...standard(R - 3, 0)];
-  if (side === 'south') return field(-w, w, R - 8, R - 8 + d, 6, 2);
-  if (side === 'west') return field(-R - d, -R, -w, w, 2, 6);
-  return field(-w, w, -R + 8 - d, -R + 8, 6, 2);
+const LEV = (side) => {   // a Levite family's tents on one side, all in the Levites' white
+  const R = LEVITE_R, w = 30, d = 22, m = 'camp-levites';
+  if (side === 'east') return [...field(R, R + d, -13, 13, 3, 3, m), ...standard(R - 3, 0, false, m)];
+  if (side === 'south') return field(-w, w, R - 8, R - 8 + d, 6, 2, m);
+  if (side === 'west') return field(-R - d, -R, -w, w, 2, 6, m);
+  return field(-w, w, -R + 8 - d, -R + 8, 6, 2, m);
 };
-const TRIBE = (side, slot) => {   // a tribe's field of tents: `slot` −1 | 0 | 1 along the side, the middle tribe carrying the camp's dagal
-  const R = CAMP_R, L = 70, D = 60, c = slot * 80, out = [];
-  const F = (a0, a1, b0, b1) => (side === 'east' || side === 'west' ? field(a0, a1, b0, b1, 5, 6) : field(b0, b1, a0, a1, 6, 5));
-  const S = (a, b, big) => (side === 'east' || side === 'west' ? standard(a, b, big) : standard(b, a, big));
+const TRIBE = (side, slot, id) => {   // a tribe's field of tents: `slot` −1 | 0 | 1 along the side, the middle tribe carrying the camp's dagal; `id` its colour
+  const R = CAMP_R, L = 70, D = 60, c = slot * 80, out = [], m = `camp-${id}`;
+  const F = (a0, a1, b0, b1) => (side === 'east' || side === 'west' ? field(a0, a1, b0, b1, 5, 6, m) : field(b0, b1, a0, a1, 6, 5, m));
+  const S = (a, b, big) => (side === 'east' || side === 'west' ? standard(a, b, big, m) : standard(b, a, big, m));
   const sign = side === 'east' || side === 'south' ? 1 : -1;
   out.push(...F(sign * R, sign * (R + D), c - L / 2, c + L / 2));
   out.push(...S(sign * (R - 6), c + (slot === 0 ? 0 : 0), slot === 0));
@@ -514,7 +529,7 @@ export const PIECES = [
     measures: [['the cloud', 'covered the ahal (tent) of mawaid', '40:34'], ['the kabawad (glory)', 'filled the mashakan — Mashah could not go in', '40:34–35'], ['when it lifted', 'the children of Yashar-Al set out; when it stayed, they stayed', '40:36–37'], ['by day · by night', 'the cloud on the tabernacle; fire in the cloud', '40:38']],
     note: '"{{Exodus 40:34}}" — the end of the raising and the beginning of the journeys: what the camp saw over the tent every day it stood.',
     elsewhere: { ref: 'Exodus 13:21–22; 33:9–10; Numbers 9:15–23; 1 Kings 8:10–11; Ezekiel 43:4–5', note: 'The pillar of cloud and fire; the cloud at the door of the tent when Mashah went in; the cloud that filled Shalamah\'s house so the priests could not stand to minister.' },
-    assumed: 'Its shape entirely — a pale mass over the tent, hatched as the model\'s own; it is drawn always, as 40:38 says it was, throughout their journeys.',
+    assumed: 'Its shape entirely — a tall column of smoke over the tent with fire in it by night, the model\'s own; it stands always, as 40:38 says it did, throughout their journeys. The days and nights that pass over the camp are the model\'s too.',
     idealized: 'The whole cloud.',
     parts: cloud(), sheet: false,
   },
@@ -556,9 +571,9 @@ export const PIECES = [
     measures: [['side', `the ${side}${slot === 0 ? ' — under its own dagal (standard)' : `, next to ${['Yahawadah', 'Raawaban', 'Aparayam', 'Dan'][['east', 'south', 'west', 'north'].indexOf(side)]}`}`, refs.split(' ')[1].split('–')[0]], ['nashayaa (prince)', prince, ''], ['numbered', number, ''], ['the march', march, '']],
     note: `The children of ${name} "shall chanah (encamp) every ayash (man) by his own dagal (standard), with the banners of their fathers' house" (2:2) — on the ${side} of the tent, ${slot === 0 ? 'the middle tribe of three, whose standard the two beside it follow' : 'beside the standard of the middle tribe'}.`,
     elsewhere: { ref: 'Numbers 1:20–46; 10:11–28; Genesis 49; Deuteronomy 33; Revelation 7:4–8; 21:12–13', note: 'The census the camp is drawn from (Numbers 1); the order of the march (Numbers 10); the blessings of the tribes; the twelve gates of the city, three on a side.' },
-    assumed: 'Each tribe is a company of tents about two hundred cubits from the court, three tribes to a side in the text\'s order — "at a distance" (2:2) is not measured, and the tents stand for tens of thousands the model cannot draw. The standards\' colours and devices are not given and are drawn plain.',
+    assumed: 'Each tribe is a company of tents about two hundred cubits from the court, three tribes to a side in the text\'s order — "at a distance" (2:2) is not measured, and the tents stand for tens of thousands the model cannot draw. The standards\' colours and devices are not given: each tribe\'s colour here is the model\'s own, only to tell the camps apart.',
     idealized: 'Every tent and standard.',
-    parts: TRIBE(side, slot),
+    parts: TRIBE(side, slot, id),
   })),
 ];
 
@@ -668,8 +683,8 @@ export const RAISE_PHASES = [
 ];
 export const RAISE_DURATION = 106;
 export const RAISE_CAMERA = [
-  [0,   [6, 5, 26],       [-26, 7, 1]],                         // the word to Mashah: he stands before the column of fire and smoke where the sanctuary will be
-  [4,   [14, 9, 30],      [-24, 8, 0]],
+  [0,   [12, 8, 36],      [-27, 9, 1]],                         // the word to Mashah: he stands before the column of fire and smoke where the sanctuary will be
+  [4,   [18, 11, 40],     [-25, 10, 0]],
   [6,   [150, 70, 120],   [0, 3, 0]],                          // the bare court's ground, from the south-east
   [11,   [12, 12, 34],     [-25, 5, 0]],                        // the boards go up
   [17,  [-14, 7, 20],     [-25, 5, 0]],                        // the bars, close
@@ -685,7 +700,8 @@ export const RAISE_CAMERA = [
   [68,  [24, 6, 14],      [12, 1.8, 0]],                       // the altar
   [73,  [4, 3.4, 5],      [-3, 1.6, 0]],                       // the basin
   [78,  [96, 46, 74],     [0, 3, 0]],                          // the court goes up around it
-  [84,  [64, 26, 48],     [-25, 9, 0]],                        // the cloud
+  [84,  [64, 26, 48],     [-25, 9, 0]],                        // the cloud comes down, the glory fills the tent
+  [88.5, [56, 22, 42],    [-25, 8, 0]],                        // the eye stays for it
   [91,  [420, 260, 380],  [0, 0, 0]],                          // the camp about it
   [97,  [30, 560, 320],   [0, 0, 0]],                          // the four camps from above
   [102,  [560, 320, 440],  [0, 0, 0]],
@@ -703,7 +719,7 @@ export const ROAM_ENTER = {
 };
 
 export const MODES = {
-  walk: { label: 'Raise', phases: RAISE_PHASES, duration: RAISE_DURATION, camera: RAISE_CAMERA, xray: [[37, 63]] },
+  walk: { label: 'Raise', phases: RAISE_PHASES, duration: RAISE_DURATION, camera: RAISE_CAMERA, xray: [[37, 63], [84.5, 90.5]] },   // within the tent for its furniture; and again as the kabawad (glory) fills it (40:34)
   roam: { label: 'Roam', phases: ROAM_PHASES, duration: 1, camera: [[0, ROAM_START.pos, ROAM_START.look]], xray: [], free: true },
 };
 const TL = timelineFor(MODES);
@@ -771,7 +787,7 @@ export const MODEL = {
     openDefault: () => 0,   // every hanging shut at the start: the screen of the gate, the screen of the door, the veil — the walker parts them
   },
   scene: {
-    sky: 0xd7e3ee, shadowR: 140, fog: [700, 2000], maxDistance: 1400, earth: '#cdb98d', plainDrop: 0.02,   // the plain is the model's ground: the tents and the court's pillars stand on it   // a bright sky over the wilderness; the plain sand
+    sky: 0xd7e3ee, shadowR: 140, fog: [700, 2000], maxDistance: 1400, earth: '#6c8a44', plainDrop: 0.02,   // the plain is the model's ground: the tents and the court's pillars stand on it   // a bright sky over the wilderness; the plain in grass (fieldy)
     lighting: { sun: 3.0, hemi: 0.7 },
     extras: 'tabernacle',   // the opening: Yahawah as a column of fire and smoke, Mashah before it (model3d/tabernacleExtras.js)
     lights: [

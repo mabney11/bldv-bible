@@ -106,7 +106,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
 
     // The mount: a wide plain fading into the haze; the courts lay their own ground.
     const ground = new THREE.Mesh(new THREE.CircleGeometry(1400, 96), M.earth);
-    ground.rotation.x = -Math.PI / 2; ground.position.y = GROUND - (SC.plainDrop ?? 0.6);   // the plain a little under the model's ground (the temple's foundation shows); the mashakan's sand IS the plain ground.receiveShadow = true; world.add(ground);
+    ground.rotation.x = -Math.PI / 2; ground.position.y = GROUND - (SC.plainDrop ?? 0.6);   // the plain a little under the model's ground (the temple's foundation shows); the mashakan's tents stand on it
+    ground.receiveShadow = true; world.add(ground);
 
     // ── Pieces ──────────────────────────────────────────────────────────────
     const groups = new Map();
@@ -796,6 +797,9 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const WALLS = SC.walls;                      // the pieces the guided camera keeps out of, and the third-person back ray
     const NOT_SOLID = new Set(SC.notSolid);      // the temple: the whole (a proxy group), the proxied pillars, the chains before the oracle (hung high), the king's figures of the dedication
     const wallSolids = [ground], solids = [ground];
+    // a mesh counts as a wall only while it is drawn: a piece not yet raised in the story hides its whole group, and the raycaster
+    // does not look up the tree (the mashakan's boards, still unraised, were pulling the opening's camera into the fire)
+    const shown = (o) => { for (let q = o; q; q = q.parent) if (!q.visible) return false; return true; };
     for (const id of WALLS) byId(id)?.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) wallSolids.push(o); });
     for (const [id, g] of groups) if (!NOT_SOLID.has(id)) g.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) solids.push(o); });
     for (const p of SC.proxies) { const c = new THREE.Mesh(new THREE.CylinderGeometry(p.r, p.r, p.h, 12)); c.position.set(p.x, p.y + p.h / 2, p.z); c.updateMatrixWorld(true); solids.push(c); wallSolids.push(c); }   // plain stand-ins for what is too fine to ray against (Yakayan and Baiz with their four hundred pomegranates)
@@ -810,11 +814,11 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     }
     function blocked(from, dir, len) {
       rRay.set(from, dir); rRay.far = len; rRay.near = 0;
-      return rRay.intersectObjects(solids, false).some((h) => h.object.visible && !(h.object.material?.transparent && h.object.material.opacity < 0.3));
+      return rRay.intersectObjects(solids, false).some((h) => shown(h.object) && !(h.object.material?.transparent && h.object.material.opacity < 0.3));
     }
     function groundUnder(x, z, fromY) {
       probe.set(x, fromY, z); rRay.set(probe, downV); rRay.far = 80; rRay.near = 0;
-      const h = rRay.intersectObjects(solids, false).find((q) => q.object.visible);
+      const h = rRay.intersectObjects(solids, false).find((q) => shown(q.object));
       return h ? h.point.y : null;
     }
     /** Try a horizontal move; slides along walls; climbs what is under STEP_UP. Returns true if the eye moved. */
@@ -894,7 +898,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     }
     let memoAt = 0;
     function remember() {
-      ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, dist: roam.dist, open: { ...roam.want } };
+      ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, dist: roam.dist, open: { ...roam.want }, start: ROAM_START.pos };
       const now = performance.now(); if (now - memoAt > 1000) { memoAt = now; MEMO[model.id] = ROAM_MEMO; try { sessionStorage.setItem(STORE, JSON.stringify(ROAM_MEMO)); } catch { /* fine */ } }   // a reload keeps the spot too
     }
     function touchDown() { roam.air = 0; roam.vy = 0; roam.airV.x = roam.airV.z = 0; roam.landAt = performance.now(); }
@@ -910,10 +914,15 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       renderer.domElement.style.cursor = on ? 'crosshair' : 'grab'; mmap.hidden = !on; zoneEl.hidden = !(on && COARSE); if (!on) { touches.clear(); pinch = null; cancelAuto(false); showBig(false); }
       if (on) {
         following = false; onFollow?.(true);   // no "follow" button in the roam: there is no story to follow
-        if (ROAM_MEMO) { camera.position.set(...ROAM_MEMO.pos); roam.yaw = ROAM_MEMO.yaw; roam.pitch = ROAM_MEMO.pitch; roam.dist = ROAM_MEMO.dist || 0; }   // back where they stood
-        else { camera.position.set(...ROAM_START.pos); const [lx, , lz] = ROAM_START.look; roam.yaw = Math.atan2(lz - camera.position.z, lx - camera.position.x); roam.pitch = 0; }
-        roam.foot = camera.position.y - ROAM_EYE;
-        const gy = groundUnder(camera.position.x, camera.position.z, camera.position.y + 2); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; }
+        // a remembered spot is kept only if it is still a spot one can stand and walk from: the model may have changed under it
+        // since (a tent moved, the start moved), and a spot inside a wall left the walker stuck (fieldy: "loaded in a stuck position")
+        const startAt = () => { camera.position.set(...ROAM_START.pos); const [lx, , lz] = ROAM_START.look; roam.yaw = Math.atan2(lz - camera.position.z, lx - camera.position.x); roam.pitch = 0; };
+        if (ROAM_MEMO && (!ROAM_MEMO.start || ROAM_MEMO.start.join() === ROAM_START.pos.join())) { camera.position.set(...ROAM_MEMO.pos); roam.yaw = ROAM_MEMO.yaw; roam.pitch = ROAM_MEMO.pitch; roam.dist = ROAM_MEMO.dist || 0; }   // back where they stood
+        else startAt();
+        place(clock.t);   // everything stands before the ground is probed
+        const settle = () => { roam.foot = camera.position.y - ROAM_EYE; const gy = groundUnder(camera.position.x, camera.position.z, camera.position.y + 2); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } return gy != null; };
+        const canStand = () => { const eye = camera.position.clone(); for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2; probe.set(Math.cos(a), 0, Math.sin(a)); if (!blocked(eye, probe, RADIUS + 0.4)) return true; } return false; };
+        if (!settle() || !canStand()) { startAt(); settle(); ROAM_MEMO = null; }
         for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = ROAM_MEMO?.open?.[k] ?? openDefault(k);
         aimCamera(); place(clock.t);
       } else {
@@ -1000,7 +1009,9 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       }
       if (locked) { if (e.movementX || e.movementY) turnHead(e.movementX, e.movementY); return; }
       if (!look || e.pointerId !== look.id) return;
-      turnHead(e.clientX - look.x, e.clientY - look.y); look.x = e.clientX; look.y = e.clientY;
+      // a finger drags the WORLD (thumb right: what was to the left comes into view — fieldy), a mouse drag turns the head
+      const g = e.pointerType === 'touch' ? -1 : 1;
+      turnHead(g * (e.clientX - look.x), g * (e.clientY - look.y)); look.x = e.clientX; look.y = e.clientY;
     };
     const onLookUp = (e) => {
       if (stickPtr && e.pointerId === stickPtr.id) { stickPtr = null; roam.stick.x = roam.stick.y = 0; stickEl.hidden = true; return; }
@@ -1091,7 +1102,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         const off = probe.copy(camera.position).sub(controls.target), dist = off.length();
         if (dist > 0.5) {
           rRay.set(controls.target, off.normalize()); rRay.far = dist; rRay.near = 0;
-          const h = rRay.intersectObjects(wallSolids, false).find((q) => q.object.visible && !(q.object.material?.transparent && q.object.material.opacity < 0.3));
+          const h = rRay.intersectObjects(wallSolids, false).find((q) => shown(q.object) && !(q.object.material?.transparent && q.object.material.opacity < 0.3));
           if (h && h.distance < dist - 0.3) { camera.position.copy(controls.target).addScaledVector(off, Math.max(0.6, h.distance - 0.5)); dirty = true; }
         }
       }
@@ -1115,7 +1126,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       if (roam.on && roam.dist > 0.01) {
         roamDir(fwd); avatarEye.copy(camera.position);
         rRay.set(avatarEye, backV.copy(fwd).negate()); rRay.far = roam.dist + 0.6; rRay.near = 0;
-        const h = rRay.intersectObjects(wallSolids, false).find((q) => q.object.visible && !(q.object.material?.transparent && q.object.material.opacity < 0.3));
+        const h = rRay.intersectObjects(wallSolids, false).find((q) => shown(q.object) && !(q.object.material?.transparent && q.object.material.opacity < 0.3));
         const d = h ? Math.max(0.4, h.distance - 0.6) : roam.dist;
         avatar.visible = d > 1.2;
         const bob = roam.moving && roam.air <= 0 ? 0.1 * Math.abs(Math.sin(now / 120)) : 0;

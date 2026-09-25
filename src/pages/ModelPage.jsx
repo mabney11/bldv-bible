@@ -230,7 +230,7 @@ export default function ModelPage({ model }) {
                 </div>
               )}
               {!roam && <CanvasTitle phase={phase} on={subs.on} playing={playing} scrubbed={scrubbed} />}
-              {!roam && <CanvasSubtitles phase={phase} clock={clock} timeline={TIMELINES[mode]} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} scrubbed={scrubbed} report={(v) => { player.subs.current = v; }} />}
+              {!roam && <CanvasSubtitles phase={phase} clock={clock} timeline={TIMELINES[mode]} on={subs.on} playing={playing} scrubbed={scrubbed} report={(v) => { player.subs.current = v; }} />}
               {use3d && !roam && !following && <button type="button" className="tp-follow" onClick={() => sceneApi.current?.refocus?.()} title={sel ? 'Recentre on the chosen part' : 'Recentre on where the story is'}>⌖ refocus</button>}
               <div className="st-strip" role="toolbar" aria-label={strings.parts || 'Parts of the model'}>
                 {CHIP_ORDER.map((id) => pieceById(id)).filter((p) => p && (!p.modes || p.modes.includes(mode))).map((p) => (
@@ -240,7 +240,6 @@ export default function ModelPage({ model }) {
                 ))}
               </div>
             </div>
-            <Caption player={player} phase={phase} render={(t) => <Glossed text={t} />} />
           </div>
 
           {roam ? (
@@ -255,7 +254,7 @@ export default function ModelPage({ model }) {
             <div className="st-scrubwrap">
               <input ref={scrubRef} id="tp-scrub" type="range" min="0" max="1000" defaultValue="0" step="1" onInput={onScrub} className="st-scrub" aria-label={`Scrub through the ${storyOf.label.toLowerCase()}`} />
               <div className="st-marks tp-marks" aria-hidden="true">
-                {marks.map((m) => <span key={m.label + m.at} style={{ left: `${m.at * 100}%` }}>{m.label}</span>)}
+                {marks.map((m) => <span key={m.label + m.at} className={m.at < 0.05 ? 'st-mark-l' : m.at > 0.95 ? 'st-mark-r' : ''} style={{ left: `${m.at * 100}%` }}>{m.label}</span>)}
               </div>
             </div>
             <span ref={timeRef} className="st-time">0.0 s</span>
@@ -272,6 +271,7 @@ export default function ModelPage({ model }) {
             </div>
           </div>
           )}
+          <Caption player={player} phase={phase} render={(t) => <Glossed text={t} />} />
           <p className="st-hint">{use3d && !roam ? 'Left-drag to orbit, scroll to zoom, right-drag to pan — the view only moves when you move it. A click on a part opens its card where you stand; a chip or a word flies to it; move the timeline, or tap to go on, and the story takes the camera back; "refocus" recentres. ' : ''}<Glossed text="Tap a part, a chip under it, or a word in the text for its measures and verses — one amah (cubit) in the text is one unit in the model." /></p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Parts &amp; verses ↑</button>
         </section>

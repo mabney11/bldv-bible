@@ -75,7 +75,7 @@
 .st-restart:hover { color: var(--gold); border-color: var(--gold); }
 .st-scrubwrap { flex: 1 1 160px; min-width: 140px; display: flex; flex-direction: column; }
 .st-scrub { width: 100%; margin: 0; accent-color: var(--gold); height: 28px; cursor: pointer; }
-.st-opts { display: inline-flex; align-items: center; gap: 12px; }
+.st-opts { display: flex; flex-basis: 100%; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }   /* its own row under the bar, so the bar has the width for its marks */
 .st-time { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--text2); min-width: 3.6em; text-align: right; }
 .st-speed, .st-loop { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text2); }
 .st-speed select { font: inherit; font-size: 12.5px; background: var(--bg2); color: var(--text); border: 1px solid var(--border2); border-radius: 4px; padding: 3px 6px; }
@@ -83,6 +83,11 @@
 .st-marks { position: relative; height: 14px; margin: -4px 8px 0; font-size: 10px; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; }
 .st-marks span { position: absolute; transform: translateX(-50%); }
 .st-marks span::before { content: ''; display: block; width: 1px; height: 6px; background: var(--text3); margin: 0 auto 1px; }
+/* a mark at either end stays inside the bar instead of hanging over the buttons beside it */
+.st-marks span.st-mark-l { transform: none; }
+.st-marks span.st-mark-l::before { margin-left: 0; }
+.st-marks span.st-mark-r { transform: translateX(-100%); }
+.st-marks span.st-mark-r::before { margin-right: 0; }
 .st-openbtn { display: none; }
 .st-hint { margin: 0; font-size: 12.5px; color: var(--text3); line-height: 1.45; }
 .st-hint .hl-root, .st-detail-sub .hl-root { font-weight: 600; color: color-mix(in srgb, var(--gold) 75%, var(--text3)); }
@@ -182,7 +187,8 @@
   .st-stagewrap { overflow: visible; }
   .st-main { grid-template-columns: minmax(0, 1fr); }
   .st-stage { aspect-ratio: 4 / 5; max-height: none; }
-  .st-opts { width: 100%; justify-content: flex-start; }
+  .st-opts { width: 100%; max-width: 100%; justify-content: flex-start; flex-wrap: wrap; row-gap: 6px; }
+  .st-player { max-width: 100%; }
   .st-panel {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; border-left: 0; border-top: 1px solid var(--border2);
     border-radius: 14px 14px 0 0; box-shadow: 0 -8px 30px #0008; max-height: 62vh;
@@ -211,7 +217,7 @@
 /* Canvas subtitles — the caption spoken into the scene one word at a time, each in the last one's place; the place wanders */
 .st-subs { position: absolute; inset: 0 0 46px 0; overflow: hidden; pointer-events: none; z-index: 2; }
 .st-sub-u {
-  position: absolute; max-width: 70%; transform: translate(-50%, -50%) rotate(var(--rot, 0deg)); transform-origin: 50% 50%;
+  position: absolute; left: 50%; top: 84%; max-width: 70%; transform: translate(-50%, -50%); transform-origin: 50% 50%;   /* one spot, low and centred, clear of the parts' popups */
   font-family: var(--reader-font, Georgia, 'Times New Roman', serif); font-size: clamp(24px, 3.7vw, 44px); line-height: 1.12; color: #f6efdf; text-align: center;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.6);
   paint-order: stroke fill; -webkit-text-stroke: 0.09em #000;   /* a black outline, so the words read on any ground (fieldy) */
@@ -221,8 +227,8 @@
 .st-sub-pair .st-sub-g { display: inline-block; margin-left: 0.3em; font-size: 0.6em; color: #e9e0cb; opacity: 0.94; }
 .st-sub-pair .st-sub-t { color: #f6efdf; }
 @keyframes st-sub-pop {
-  0% { opacity: 0; transform: translate(-50%, -46%) rotate(var(--rot, 0deg)) scale(1.08); }
-  100% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1); }
+  0% { opacity: 0; transform: translate(-50%, -46%) scale(1.08); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 .tp-roam .st-subs { display: none; }
 @media (max-width: 720px) { .st-sub-u { font-size: clamp(20px, 6vw, 32px); max-width: 88%; } }

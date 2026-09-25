@@ -278,7 +278,7 @@ export default function Statue() {
                 ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><StatueScene clock={clock} selected={shownSel} onSelect={select} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
                 : <StatueSheet clock={clock} selected={shownSel} onSelect={select} />}
               <CanvasTitle phase={phase} on={subs.on} playing={playing} scrubbed={scrubbed} />
-              <CanvasSubtitles phase={phase} clock={clock} timeline={TIMELINE} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} scrubbed={scrubbed} report={(v) => { player.subs.current = v; }} />
+              <CanvasSubtitles phase={phase} clock={clock} timeline={TIMELINE} on={subs.on} playing={playing} scrubbed={scrubbed} report={(v) => { player.subs.current = v; }} />
               {/* One row of pieces along the bottom of the stage, the stone first:
                   tap one and the view flies to it; tap it again to let go. */}
               <div className="st-strip" role="toolbar" aria-label="Pieces">
@@ -289,7 +289,6 @@ export default function Statue() {
                 ))}
               </div>
             </div>
-            <Caption player={player} phase={phase} render={(t) => <Glossed text={t} />} />
           </div>
 
           <div className="st-player">
@@ -315,6 +314,7 @@ export default function Statue() {
               <SubtitlesToggle subs={subs} />
             </div>
           </div>
+          <Caption player={player} phase={phase} render={(t) => <Glossed text={t} />} />
           <p className="st-hint">{use3d ? 'Drag to look around, pinch or scroll to zoom. ' : ''}<Glossed text="Tap a piece, one of the chips below it, or a word in the text for its verses — the view flies to it. At the end only the aban (stone) remains." /></p>
           <button type="button" className="st-openbtn" onClick={() => setSheetOpen(true)}>Pieces &amp; verses ↑</button>
         </section>

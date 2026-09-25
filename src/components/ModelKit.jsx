@@ -180,32 +180,16 @@ export function useResolvedCaption(text) {
 const SUB_KEY = 'model-subtitles';
 const readFlag = (k, dflt) => { try { const v = localStorage.getItem(k); return v == null ? dflt : v !== '0'; } catch { return dflt; } };
 const writeFlag = (k, v) => { try { localStorage.setItem(k, v ? '1' : '0'); } catch {} };
-/** The subtitles' settings, remembered: on/off, and whether the words wander a little and lean. */
+/** The subtitles' setting, remembered: on or off. (The words keep one spot — fieldy: "keeping the subtitles in one spot works for my purposes".) */
 export function useSubtitles() {
   const [on, setOn] = useState(() => readFlag(SUB_KEY, true));
-  const [move, setMove] = useState(() => readFlag(`${SUB_KEY}-move`, true));
-  const [rot, setRot] = useState(() => readFlag(`${SUB_KEY}-rot`, true));
   useEffect(() => { writeFlag(SUB_KEY, on); }, [on]);
-  useEffect(() => { writeFlag(`${SUB_KEY}-move`, move); }, [move]);
-  useEffect(() => { writeFlag(`${SUB_KEY}-rot`, rot); }, [rot]);
-  return { on, setOn, move, setMove, rot, setRot };
+  return { on, setOn };
 }
 export function SubtitlesToggle({ subs, id = 'st-subs' }) {
-  const { on, setOn, move, setMove, rot, setRot } = subs;
-  return (
-    <>
-      <label className="st-loop" title="Speak the caption into the scene, word by word, as it plays"><input id={id} type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} /> canvas subtitles</label>
-      {on && <label className="st-loop st-loop-sub" title="Let the words drift a little about the subtitle area"><input id={`${id}-move`} type="checkbox" checked={move} onChange={(e) => setMove(e.target.checked)} /> random movement</label>}
-      {on && <label className="st-loop st-loop-sub" title="Give each word a small lean of its own"><input id={`${id}-rot`} type="checkbox" checked={rot} onChange={(e) => setRot(e.target.checked)} /> random rotation</label>}
-    </>
-  );
+  const { on, setOn } = subs;
+  return <label className="st-loop" title="Speak the caption into the scene, word by word, as it plays"><input id={id} type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} /> canvas subtitles</label>;
 }
-/**
- * The caption spoken into the stage one unit at a time, each taking the last one's place, in the subtitle area (centred, toward
- * the bottom); with `move` the place drifts a little about that area every few words, with `rot` each word leans a little. Runs
- * only while the story PLAYS (nothing before the play button; paused, the word on show stays), a glossed pair holding longer —
- * and longer still for every word of its gloss (fieldy: his Hebrew will carry several English words in a gloss).
- */
 /** A pane's title, spoken whole into the scene (`phase.title`, a template like the caption) — the date, the word, the thing
  *  the pane is about — over and above the one-word subtitles (fieldy: "render a title outside of the single word subtitles to
  *  have the full 'In the first month of the second year…'"). Shown as the subtitles are: once the story has played or the pane
@@ -230,18 +214,14 @@ export function holdFor(u, pace = 520) {
   const glossWords = u.gloss ? u.gloss.trim().split(/\s+/).length : 0;
   return pace * (u.gloss != null ? 1.6 : 1) + Math.min(24, u.w.length) * 18 + Math.max(0, glossWords - 1) * 220;
 }
-// a small deterministic "random" from a string and a number — the same pane and word always land and lean the same way, so
-// scrubbing back and forth shows the same picture
-function hashRnd(str, n) { let h = 2166136261; for (const c of `${str}#${n}`) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return (h % 10007) / 10007; }
 /**
  * The caption spoken into the stage one unit at a time, each taking the last one's place, in the subtitle area (centred, toward
  * the bottom). The words are laid along the pane's own time: the story clock decides which word shows, so scrubbing lands on
  * the word for that moment, scrubbing back to the start shows the first word, and the last word is on show by the pane's end
  * (fieldy: "the subtitles need to be aligned to its segment"). A pane too short for its words asks the player to run it
- * slower (`report({key, factor})`). With `move` the place drifts a little about the area every few words, with `rot` each word
- * leans a little — both fixed for a given word, so the picture is the same however the reader arrives at it.
+ * slower (`report({key, factor})`). The words keep one spot, low and centred, so the reader's eye need not hunt for them.
  */
-export function CanvasSubtitles({ phase, clock, timeline, on, move = true, rot = true, playing = false, scrubbed = null, pace = 520, report }) {
+export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, scrubbed = null, pace = 520, report }) {
   const text = useResolvedCaption(phase?.caption || '');
   const units = useMemo(() => unitsOf(text), [text]);
   const armed = useRef(false); if (playing) armed.current = true;   // nothing before the play button (or a scrub)
@@ -273,14 +253,9 @@ export function CanvasSubtitles({ phase, clock, timeline, on, move = true, rot =
   }, [show, lay, clock]);
   if (idx < 0 || !units[idx]) return null;
   const u = units[idx], key = phase?.key || '';
-  const HOME = { x: 50, y: 84 };   // the subtitle area, low, just above the chips — clear of the parts' popups
-  const first = (phase?.from ?? 0) === 0, group = Math.floor(idx / 4);
-  const x = move && !first ? HOME.x + (hashRnd(key, group * 2) - 0.5) * 18 : HOME.x;
-  const y = move && !first ? HOME.y + (hashRnd(key, group * 2 + 1) - 0.75) * 8 : HOME.y;
-  const r = rot ? (hashRnd(key, 1000 + idx) - 0.5) * 12 : 0;
   return (
     <div className="st-subs" aria-hidden="true">
-      <span key={`${key}:${idx}`} className={`st-sub-u${u.gloss != null ? ' st-sub-pair' : ''}`} style={{ left: `${x}%`, top: `${y}%`, '--rot': `${r}deg` }}>
+      <span key={`${key}:${idx}`} className={`st-sub-u${u.gloss != null ? ' st-sub-pair' : ''}`}>
         {u.gloss != null
           ? <><span className="st-sub-w">{u.w}</span>{u.gloss ? <span className="st-sub-g">({u.gloss})</span> : null}{u.tail ? <span className="st-sub-t">{u.tail}</span> : null}</>
           : u.w}

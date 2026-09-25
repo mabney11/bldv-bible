@@ -204,7 +204,8 @@ function panelTexture(base, ink, hi) {
 /** The three.js materials for a model's MATERIALS table (colours shared with the sheet); any key the table lacks falls back to the temple's. */
 export function makeMaterials(MATERIALS = BASE_MATERIALS) {
   MATERIALS = { ...BASE_MATERIALS, ...MATERIALS };
-  const std = (key, extra = {}) => { const m = MATERIALS[key]; return new THREE.MeshStandardMaterial({ color: new THREE.Color(m.color), metalness: m.metal, roughness: m.rough, ...extra }); };
+  // a model's colour table may add `emissive` (a glow of its own — the mashakan's camps, each tribe in its own colour) and `opacity`
+  const std = (key, extra = {}) => { const m = MATERIALS[key]; return new THREE.MeshStandardMaterial({ color: new THREE.Color(m.color), metalness: m.metal, roughness: m.rough, ...(m.emissive ? { emissive: new THREE.Color(m.emissive), emissiveIntensity: m.emissiveIntensity ?? 0.55 } : {}), ...(m.opacity != null ? { transparent: true, opacity: m.opacity, depthWrite: false } : {}), ...extra }); };
   const ashlar = ashlarTexture(MATERIALS.stone.color, '#8a7a5e');
   const ashlarDark = ashlarTexture(MATERIALS.found.color, '#5b4d36');
   const plank = plankTexture(MATERIALS.cedar.color);
@@ -339,7 +340,7 @@ export function idealOf(M, matKey) {
   // opaque (fieldy: "not a fan of the clear walls"): the material's own colour, a little paled, under a fine diagonal hatch — the
   // draughtsman's mark for what is conjectured — with its edges drawn; a wall is still a wall to stand behind
   if (!idealCache.hatch) { idealCache.hatch = hatchTexture(); idealCache.hatch.repeat.set(2, 2); }
-  const m = base.clone(); m.transparent = false; m.opacity = 1; m.depthWrite = true; m.bumpMap = null; m.emissive = new THREE.Color('#000000');
+  const m = base.clone(); m.transparent = false; m.opacity = 1; m.depthWrite = true; m.bumpMap = null; m.emissive = base.emissive?.getHex() ? base.emissive.clone() : new THREE.Color('#000000');   // a glow of the material's own (the camps' colours) is kept under the hatch
   m.map = idealCache.hatch; m.color = base.color.clone().lerp(new THREE.Color('#eef0f2'), matKey === 'stone' || matKey === 'plaster' ? 0.35 : 0.2); m.roughness = 1; m.metalness = 0; m.userData.ideal = true;
   if (photos[matKey]?.hatched) { m.map = photos[matKey].hatched; m.color.set(PHOTO_TINT[matKey] || '#ffffff').lerp(new THREE.Color('#eef0f2'), 0.15); }   // the photo, hatched
   else if (base.map?.image) { m.map = hatchOver(base.map.image); m.map.repeat.copy(base.map.repeat); m.color = base.color.clone().lerp(new THREE.Color('#eef0f2'), 0.12); }   // a drawn texture (carving, planks), hatched
