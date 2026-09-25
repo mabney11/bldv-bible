@@ -214,6 +214,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const WALK_ROLES = new Set(['ground', 'terrace', 'base', 'pavement', 'paving', 'floor', 'stair', 'threshold', 'ledge', 'border', 'step']);
     const plan = [];   // { x0, x1, z0, z1 } walls (filled) and { x, z, r } rounds (pillars, the sea)
     const navWalk = [];   // { x0, x1, z0, z1, top } what can be walked on
+    const navUpper = [];  // the sketched floors of upper storeys (a gallery): walked on their own level's grid, not the ground's
     const navObs = [];    // everything else that stands in the way, whatever its height (a table, an altar's ledge, a wall), with its span
     const navDoors = [];  // every doorway and gate: { x, z, axis ('x': the opening lies along x), w, t (half the wall's thickness), y } — the route goes through them straight, on their axis
     const addDoor = (d) => {   // a doorway cut through a wall and its lining (or a gate and its threshold) are one door: joined into one span
@@ -234,6 +235,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         const y0 = part.y ?? GROUND, y1 = y0 + (part.h ?? 3);
         const walkable = part.kind === 'box' && (WALK_ROLES.has(part.role) || (part.h <= 2.4 && !part.role)) && !(part.ideal && part.role === 'floor');
         if (walkable) navWalk.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2, top: y1 });
+        else if (part.kind === 'box' && part.ideal && part.role === 'floor') navUpper.push({ x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2, top: y1 });
         else if (part.kind === 'box' && !['roof', 'ceiling', 'slab', 'rug', 'inlay'].includes(part.role)) {
           const R = { x0: part.x - part.w / 2, x1: part.x + part.w / 2, z0: part.z - part.d / 2, z1: part.z + part.d / 2, y0, y1 };
           if (part.doorway) { const dw = part.doorway.w, lintel = { y0: y0 + part.doorway.h, y1 }; addDoor({ x: part.x, z: part.z, axis: part.w < part.d ? 'z' : 'x', w: dw, t: Math.min(part.w, part.d) / 2, y: y0 }); if (part.w < part.d) navObs.push({ ...R, z1: part.z - dw / 2 }, { ...R, z0: part.z + dw / 2 }, { ...R, z0: part.z - dw / 2, z1: part.z + dw / 2, ...lintel }); else navObs.push({ ...R, x1: part.x - dw / 2 }, { ...R, x0: part.x + dw / 2 }, { ...R, x0: part.x - dw / 2, x1: part.x + dw / 2, ...lintel }); }
@@ -287,12 +289,17 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     // corners pulled straight. Built the first time a place is asked for.
     const STEP_MAX = 2.4, NAV_PAD = 0.8;   // a wall's margin on the grid: a three-cubit doorway must stay a way through
     let nav = null;
-    function buildNav() {
+    const levelNavs = new Map();   // the grids of the upper storeys, by floor height (built when first stood on)
+    /** the grid of the ground (level null), or of an upper storey at `level`: there only what stands at that height is floor — a
+     *  gallery's slab, the top steps of its flight — and where nothing does (the well, the flight's opening) is void */
+    function buildNav(level = null) {
       const x0 = Math.floor(EXT.x0), z0 = Math.floor(EXT.z0), W = Math.ceil(EXT.x1) - x0 + 1, Hn = Math.ceil(EXT.z1) - z0 + 1;
-      const H = new Float32Array(W * Hn).fill(GROUND), block = new Uint8Array(W * Hn);
+      const H = new Float32Array(W * Hn).fill(level ?? GROUND), block = new Uint8Array(W * Hn);
+      if (level != null) block.fill(1);
       // every cell whose CENTRE lies in [ax0, ax1] × [az0, az1] (a cell i covers x0 + i … x0 + i + 1)
       const cells = (ax0, ax1, az0, az1, fn) => { const i0 = Math.max(0, Math.floor(ax0 - x0)), i1 = Math.min(W - 1, Math.ceil(ax1 - x0)), j0 = Math.max(0, Math.floor(az0 - z0)), j1 = Math.min(Hn - 1, Math.ceil(az1 - z0)); for (let j = j0; j <= j1; j++) { const cz = z0 + j + 0.5; if (cz < az0 || cz > az1) continue; for (let i = i0; i <= i1; i++) { const cx = x0 + i + 0.5; if (cx < ax0 || cx > ax1) continue; fn(j * W + i, cx, cz); } } };
-      for (const w of navWalk) cells(w.x0, w.x1, w.z0, w.z1, (k) => { if (w.top > H[k]) H[k] = w.top; });
+      if (level == null) for (const w of navWalk) cells(w.x0, w.x1, w.z0, w.z1, (k) => { if (w.top > H[k]) H[k] = w.top; });
+      else for (const w of [...navWalk, ...navUpper]) { if (Math.abs(w.top - level) > 0.8) continue; cells(w.x0, w.x1, w.z0, w.z1, (k) => { block[k] = 0; H[k] = w.top; }); }
       for (const r of [...navObs, ...SC.plan.extra]) {
         if (r.r != null) { const R = r.r + NAV_PAD; cells(r.x - R, r.x + R, r.z - R, r.z + R, (k, cx, cz) => { if (Math.hypot(cx - r.x, cz - r.z) <= R && r.y0 < H[k] + STEP_MAX && r.y1 > H[k] + 0.5) block[k] = 1; }); continue; }
         cells(r.x0 - NAV_PAD, r.x1 + NAV_PAD, r.z0 - NAV_PAD, r.z1 + NAV_PAD, (k) => { if (r.y0 < H[k] + STEP_MAX && r.y1 > H[k] + 0.5) block[k] = 1; });
@@ -306,8 +313,12 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       const clear = new Uint8Array(W * Hn).fill(4); const q = [];
       for (let k = 0; k < W * Hn; k++) if (block[k]) { clear[k] = 0; q.push(k); }
       for (let h = 0; h < q.length; h++) { const c = q[h], d = clear[c]; if (d >= 4) continue; const ci = c % W, cj = (c / W) | 0; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ni = ci + di, nj = cj + dj; if (ni < 0 || nj < 0 || ni >= W || nj >= Hn) continue; const n = nj * W + ni; if (clear[n] > d + 1) { clear[n] = d + 1; q.push(n); } } }
-      nav = { x0, z0, W, Hn, H, block, clear };
+      const built = { x0, z0, W, Hn, H, block, clear };
+      if (level == null) nav = built; else levelNavs.set(level, built);
+      return built;
     }
+    /** run `fn` with the route finder on an upper storey's grid */
+    function onLevel(level, fn) { const key = Math.round(level * 2) / 2; if (!levelNavs.has(key)) buildNav(key); const saved = nav; nav = levelNavs.get(key); try { return fn(); } finally { nav = saved; } }
     const cellOf = (x, z) => [Math.floor(x - nav.x0), Math.floor(z - nav.z0)];
     const inNav = (i, j) => i >= 0 && j >= 0 && i < nav.W && j < nav.Hn;
     /** may the feet go from cell a to cell b (a step up at most, any way down) */
@@ -418,9 +429,10 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         }
         if (!best) return null;
         if (onIt) pre.push(best.foot);
-        else {   // to the head from beside it, never along the flight's own line (the opening for the flight is there, in the floor he is on)
-          const side = Math.sign((sx - best.headOff[0]) * best.perp[0] + (sz - best.headOff[1]) * best.perp[1]) || 1;
-          pre.push([best.headOff[0] + side * best.perp[0] * 3, best.headOff[1] + side * best.perp[1] * 3], best.headOff, best.head, best.foot);
+        else {   // across his floor to the head of the flight, on that floor's own grid (round the well, round the flights' openings)
+          const [hx, hz] = best.headOff, leg = onLevel(sy, () => findRaw(sx, sz, hx, hz));
+          if (leg) pre.push(...leg.slice(1), best.head, best.foot);
+          else { const side = Math.sign((sx - hx) * best.perp[0] + (sz - hz) * best.perp[1]) || 1; pre.push([hx + side * best.perp[0] * 3, hz + side * best.perp[1] * 3], best.headOff, best.head, best.foot); }
         }
         sx = best.ahead[0]; sz = best.ahead[1]; sy = best.fy;   // and on from the ground before its foot
       }
