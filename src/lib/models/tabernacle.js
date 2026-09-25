@@ -645,48 +645,50 @@ export function pieceForWord(word, book, chapter, verse) {
 // ── Timelines ────────────────────────────────────────────────────────────────
 // RAISE — the order Mashah set it up in (Exodus 40:17–33), then the cloud, then the camp.
 export const RAISE_PHASES = [
-  { from: 0,   key: 'day',       caption: '{{Exodus 40:17}}', ref: 'Exodus 40:17' },
-  { from: 5,   key: 'boards',    caption: '{{Exodus 40:18}} {{Exodus 26:16 | Ishar … qarash}}; {{Exodus 26:18}}', ref: 'Exodus 40:18; 26:16, 18' },
-  { from: 11,  key: 'bars',      caption: '{{Exodus 26:26 | You shall … mashakan}}; {{Exodus 26:28}} {{Exodus 26:29}}', ref: 'Exodus 26:26–29' },
-  { from: 16,  key: 'mashakan',  caption: '{{Exodus 40:19}} {{Exodus 26:1 | Moreover … cherubim}}. {{Exodus 26:2 | The arak … amah}}.', ref: 'Exodus 40:19; 26:1–2' },
-  { from: 21,  key: 'ahal',      caption: '{{Exodus 26:7}} {{Exodus 26:8}} {{Exodus 26:12}}', ref: 'Exodus 26:7–8, 12' },
-  { from: 26,  key: 'makasah',   caption: '{{Exodus 26:14}}', ref: 'Exodus 26:14' },
-  { from: 31,  key: 'ark',       caption: '{{Exodus 40:20}} {{Exodus 25:10 | They shall … amahathayam}}. {{Exodus 25:22 | There I … karawab}}.', ref: 'Exodus 40:20; 25:10, 22' },
-  { from: 37,  key: 'veil',      caption: '{{Exodus 40:21}} {{Exodus 26:33 | You shall nathan … idawath}}.', ref: 'Exodus 40:21; 26:33' },
-  { from: 42,  key: 'table',     caption: '{{Exodus 40:22}} {{Exodus 25:23 | You shall … qawamah}}. {{Exodus 25:30}}', ref: 'Exodus 40:22; 25:23, 30' },
-  { from: 47,  key: 'lampstand', caption: '{{Exodus 40:24}} {{Exodus 25:31 | You shall … zahab}}. {{Exodus 25:37}}', ref: 'Exodus 40:24; 25:31, 37' },
-  { from: 52,  key: 'incense',   caption: '{{Exodus 40:26}} {{Exodus 30:2}} {{Exodus 30:6 | You shall … idawath}}.', ref: 'Exodus 40:26; 30:2, 6' },
-  { from: 57,  key: 'screen',    caption: '{{Exodus 40:28}} {{Exodus 26:36}} {{Exodus 26:37}}', ref: 'Exodus 40:28; 26:36–37' },
-  { from: 62,  key: 'altar',     caption: '{{Exodus 40:29 | He shawam … mawaid}}. {{Exodus 27:1}} {{Exodus 27:2}}', ref: 'Exodus 40:29; 27:1–2' },
-  { from: 67,  key: 'basin',     caption: '{{Exodus 40:30}} {{Exodus 30:19}} {{Exodus 30:20 | When they … mawath}}.', ref: 'Exodus 40:30; 30:19–20' },
-  { from: 72,  key: 'court',     caption: '{{Exodus 40:33}} {{Exodus 27:18}} {{Exodus 27:16 | For the shair … arabai}}.', ref: 'Exodus 40:33; 27:16, 18' },
-  { from: 78,  key: 'inan',      caption: '{{Exodus 40:34}} {{Exodus 40:35}} {{Exodus 40:38}}', ref: 'Exodus 40:34–38' },
-  { from: 85,  key: 'camp',      caption: '{{Numbers 2:2}} {{Numbers 2:3 | Those who … Yahawadah}}; {{Numbers 3:38 | Those who … banay}}.', ref: 'Numbers 2:2–3; 3:38' },
-  { from: 91,  key: 'camps',     caption: '{{Numbers 2:10 | On the … Raawaban}}; {{Numbers 2:18 | On the … Aparayam}}; {{Numbers 2:25 | On the … Dan}}. {{Numbers 2:17}}', ref: 'Numbers 2:10, 17, 18, 25' },
-  { from: 96,  key: 'march',     caption: '{{Numbers 2:9 | They shall … raashawan}}. {{Numbers 2:31 | They shall … dagal}}. {{Numbers 2:34}}', ref: 'Numbers 2:9, 31, 34' },
+  { from: 0,   key: 'command',   caption: '{{Exodus 25:1}} {{Exodus 25:8}} {{Exodus 25:9}}', ref: 'Exodus 25:1, 8–9' },
+  { from: 6, key: 'day',       caption: '{{Exodus 40:17}}', ref: 'Exodus 40:17' },
+  { from: 11, key: 'boards',    caption: '{{Exodus 40:18}} {{Exodus 26:16 | Ishar … qarash}}; {{Exodus 26:18}}', ref: 'Exodus 40:18; 26:16, 18' },
+  { from: 17, key: 'bars',      caption: '{{Exodus 26:26 | You shall … mashakan}}; {{Exodus 26:28}} {{Exodus 26:29}}', ref: 'Exodus 26:26–29' },
+  { from: 22, key: 'mashakan',  caption: '{{Exodus 40:19}} {{Exodus 26:1 | Moreover … cherubim}}. {{Exodus 26:2 | The arak … amah}}.', ref: 'Exodus 40:19; 26:1–2' },
+  { from: 27, key: 'ahal',      caption: '{{Exodus 26:7}} {{Exodus 26:8}} {{Exodus 26:12}}', ref: 'Exodus 26:7–8, 12' },
+  { from: 32, key: 'makasah',   caption: '{{Exodus 26:14}}', ref: 'Exodus 26:14' },
+  { from: 37, key: 'ark',       caption: '{{Exodus 40:20}} {{Exodus 25:10 | They shall … amahathayam}}. {{Exodus 25:22 | There I … karawab}}.', ref: 'Exodus 40:20; 25:10, 22' },
+  { from: 43, key: 'veil',      caption: '{{Exodus 40:21}} {{Exodus 26:33 | You shall nathan … idawath}}.', ref: 'Exodus 40:21; 26:33' },
+  { from: 48, key: 'table',     caption: '{{Exodus 40:22}} {{Exodus 25:23 | You shall … qawamah}}. {{Exodus 25:30}}', ref: 'Exodus 40:22; 25:23, 30' },
+  { from: 53, key: 'lampstand', caption: '{{Exodus 40:24}} {{Exodus 25:31 | You shall … zahab}}. {{Exodus 25:37}}', ref: 'Exodus 40:24; 25:31, 37' },
+  { from: 58, key: 'incense',   caption: '{{Exodus 40:26}} {{Exodus 30:2}} {{Exodus 30:6 | You shall … idawath}}.', ref: 'Exodus 40:26; 30:2, 6' },
+  { from: 63, key: 'screen',    caption: '{{Exodus 40:28}} {{Exodus 26:36}} {{Exodus 26:37}}', ref: 'Exodus 40:28; 26:36–37' },
+  { from: 68, key: 'altar',     caption: '{{Exodus 40:29 | He shawam … mawaid}}. {{Exodus 27:1}} {{Exodus 27:2}}', ref: 'Exodus 40:29; 27:1–2' },
+  { from: 73, key: 'basin',     caption: '{{Exodus 40:30}} {{Exodus 30:19}} {{Exodus 30:20 | When they … mawath}}.', ref: 'Exodus 40:30; 30:19–20' },
+  { from: 78, key: 'court',     caption: '{{Exodus 40:33}} {{Exodus 27:18}} {{Exodus 27:16 | For the shair … arabai}}.', ref: 'Exodus 40:33; 27:16, 18' },
+  { from: 84, key: 'inan',      caption: '{{Exodus 40:34}} {{Exodus 40:35}} {{Exodus 40:38}}', ref: 'Exodus 40:34–38' },
+  { from: 91, key: 'camp',      caption: '{{Numbers 2:2}} {{Numbers 2:3 | Those who … Yahawadah}}; {{Numbers 3:38 | Those who … banay}}.', ref: 'Numbers 2:2–3; 3:38' },
+  { from: 97, key: 'camps',     caption: '{{Numbers 2:10 | On the … Raawaban}}; {{Numbers 2:18 | On the … Aparayam}}; {{Numbers 2:25 | On the … Dan}}. {{Numbers 2:17}}', ref: 'Numbers 2:10, 17, 18, 25' },
+  { from: 102, key: 'march',     caption: '{{Numbers 2:9 | They shall … raashawan}}. {{Numbers 2:31 | They shall … dagal}}. {{Numbers 2:34}}', ref: 'Numbers 2:9, 31, 34' },
 ];
-export const RAISE_DURATION = 100;
+export const RAISE_DURATION = 106;
 export const RAISE_CAMERA = [
-  [0,   [150, 70, 120],   [0, 3, 0]],                          // the bare court's ground, from the south-east
-  [5,   [12, 12, 34],     [-25, 5, 0]],                        // the boards go up
-  [11,  [-14, 7, 20],     [-25, 5, 0]],                        // the bars, close
-  [16,  [6, 18, 30],      [-25, 8, 0]],                        // the curtains spread over
-  [21,  [4, 16, 34],      [-25, 8, 0]],                        // the goats' hair tent
-  [26,  [-2, 24, 30],     [-25, 9, 0]],                        // the coverings
-  [31,  [-31.6, 3.6, 2.8], [-35, 1.8, 0]],                     // in the most holy place: the ark
-  [37,  [-19, 3.6, 0],    [-30, 4, 0]],                        // the veil from the holy place
-  [42,  [-16.5, 3.2, 1.2], [-20, 1.4, -3.5]],                  // the table, north
-  [47,  [-16.5, 3.2, -1.2], [-20, 2, 3.5]],                    // the lampstand, south
-  [52,  [-22, 3.4, 2],    [-27, 1.4, 0]],                      // the gold altar before the veil
-  [57,  [2, 4.2, 7],      [-10, 5, 0]],                        // the screen of the door, from outside
-  [62,  [24, 6, 14],      [12, 1.8, 0]],                       // the altar
-  [67,  [4, 3.4, 5],      [-3, 1.6, 0]],                       // the basin
-  [72,  [96, 46, 74],     [0, 3, 0]],                          // the court goes up around it
-  [78,  [64, 26, 48],     [-25, 9, 0]],                        // the cloud
-  [85,  [420, 260, 380],  [0, 0, 0]],                          // the camp about it
-  [91,  [30, 560, 320],   [0, 0, 0]],                          // the four camps from above
-  [96,  [560, 320, 440],  [0, 0, 0]],
-  [100, [640, 360, 500],  [0, 0, 0]],
+  [0,   [260, 120, 210],  [0, 0, 0]],                          // the word on the mountain: the bare plain where the sanctuary will stand, from high and far
+  [6,   [150, 70, 120],   [0, 3, 0]],                          // the bare court's ground, from the south-east
+  [11,   [12, 12, 34],     [-25, 5, 0]],                        // the boards go up
+  [17,  [-14, 7, 20],     [-25, 5, 0]],                        // the bars, close
+  [22,  [6, 18, 30],      [-25, 8, 0]],                        // the curtains spread over
+  [27,  [4, 16, 34],      [-25, 8, 0]],                        // the goats' hair tent
+  [32,  [-2, 24, 30],     [-25, 9, 0]],                        // the coverings
+  [37,  [-31.6, 3.6, 2.8], [-35, 1.8, 0]],                     // in the most holy place: the ark
+  [43,  [-19, 3.6, 0],    [-30, 4, 0]],                        // the veil from the holy place
+  [48,  [-16.5, 3.2, 1.2], [-20, 1.4, -3.5]],                  // the table, north
+  [53,  [-16.5, 3.2, -1.2], [-20, 2, 3.5]],                    // the lampstand, south
+  [58,  [-22, 3.4, 2],    [-27, 1.4, 0]],                      // the gold altar before the veil
+  [63,  [2, 4.2, 7],      [-10, 5, 0]],                        // the screen of the door, from outside
+  [68,  [24, 6, 14],      [12, 1.8, 0]],                       // the altar
+  [73,  [4, 3.4, 5],      [-3, 1.6, 0]],                       // the basin
+  [78,  [96, 46, 74],     [0, 3, 0]],                          // the court goes up around it
+  [84,  [64, 26, 48],     [-25, 9, 0]],                        // the cloud
+  [91,  [420, 260, 380],  [0, 0, 0]],                          // the camp about it
+  [97,  [30, 560, 320],   [0, 0, 0]],                          // the four camps from above
+  [102,  [560, 320, 440],  [0, 0, 0]],
+  [106, [640, 360, 500],  [0, 0, 0]],
 ];
 
 // ROAM — no story: the finished mashakan and its camp, and the viewer walks where they will.
@@ -700,7 +702,7 @@ export const ROAM_ENTER = {
 };
 
 export const MODES = {
-  walk: { label: 'Raise', phases: RAISE_PHASES, duration: RAISE_DURATION, camera: RAISE_CAMERA, xray: [[31, 57]] },
+  walk: { label: 'Raise', phases: RAISE_PHASES, duration: RAISE_DURATION, camera: RAISE_CAMERA, xray: [[37, 63]] },
   roam: { label: 'Roam', phases: ROAM_PHASES, duration: 1, camera: [[0, ROAM_START.pos, ROAM_START.look]], xray: [], free: true },
 };
 const TL = timelineFor(MODES);
@@ -715,7 +717,7 @@ export function progressAt(mode, piece, t) {
 }
 /** The screens and the veil stay drawn in the story (the eye is placed within); on foot the walker parts them. */
 export function openAt() { return 0; }
-const MARK_LABELS = { walk: { boards: 'qarash', mashakan: 'yarayaih', ahal: 'ahal', ark: 'arawan', veil: 'parakath', table: 'shalachan', lampstand: 'manawarah', screen: 'screen', altar: 'mazabach', basin: 'basin', court: 'chatzar', inan: 'inan', camp: 'machanah' } };
+const MARK_LABELS = { walk: { command: 'maqadash', boards: 'qarash', mashakan: 'yarayaih', ahal: 'ahal', ark: 'arawan', veil: 'parakath', table: 'shalachan', lampstand: 'manawarah', screen: 'screen', altar: 'mazabach', basin: 'basin', court: 'chatzar', inan: 'inan', camp: 'machanah' } };
 export const marksFor = (mode) => TL.marksFor(mode, MARK_LABELS);
 /** The pieces the chips row shows, in the way's order (gate → ark, then the camp). */
 export const CHIP_ORDER = ['court', 'gate-screen', 'mazabach', 'basin', 'boards', 'bars', 'mashakan', 'ahal', 'makasah', 'door-screen', 'shalachan', 'manawarah', 'qatarath', 'parakath', 'arawan', 'inan', 'levites-east', 'levites-south', 'levites-west', 'levites-north', 'judah', 'issachar', 'zebulun', 'reuben', 'simeon', 'gad', 'ephraim', 'manasseh', 'benjamin', 'dan', 'asher', 'naphtali'];
@@ -772,7 +774,7 @@ export const MODEL = {
     lighting: { sun: 3.0, hemi: 0.7 },
     lights: [
       { key: 'holyLight', color: 0xffd9a0, distance: 40, pos: [(HOLY.x0 + HOLY.x1) / 2, MISH.h - 2, 0], on: () => 60 },
-      { key: 'mostHolyLight', color: 0xffe6c0, distance: 24, pos: [(MOST_HOLY.x0 + MOST_HOLY.x1) / 2, MISH.h - 2, 0], on: (P, mode, t) => (mode === 'walk' ? 40 + 420 * smooth((t - 78) / 2.5) : 60) },   // the kabawad (glory) fills the tent (40:34)
+      { key: 'mostHolyLight', color: 0xffe6c0, distance: 24, pos: [(MOST_HOLY.x0 + MOST_HOLY.x1) / 2, MISH.h - 2, 0], on: (P, mode, t) => (mode === 'walk' ? 40 + 420 * smooth((t - 84) / 2.5) : 60) },   // the kabawad (glory) fills the tent (40:34)
     ],
     walls: ['court', 'gate-screen', 'boards', 'mashakan', 'ahal', 'makasah', 'door-screen', 'parakath', 'mazabach'],
     notSolid: ['inan'],
