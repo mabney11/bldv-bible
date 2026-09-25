@@ -692,6 +692,7 @@ function buildDoors(b, part) {
       const leaf = new THREE.Group();
       const geo = new THREE.BoxGeometry(t, h, lw); uvBox(geo, t, h, lw, TILE[carved]);
       const m = new THREE.Mesh(geo, b.M[carved]); m.position.set(0, h / 2, -sz * lw / 2); m.castShadow = true; m.receiveShadow = true;
+      m.userData.doorLeaf = part.open;   // a tap on the leaf itself opens or shuts the door (ModelScene roamGo)
       leaf.add(m);
       const trim = new THREE.Mesh(new THREE.BoxGeometry(t + 0.06, h - 0.4, 0.12), b.M.gold); trim.position.set(0, h / 2, -sz * (lw - 0.12)); leaf.add(trim);
       const rim = new THREE.Mesh(new THREE.BoxGeometry(t + 0.06, 0.12, lw), b.M.gold); rim.position.set(0, h - 0.3, -sz * lw / 2); leaf.add(rim);

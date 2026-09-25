@@ -828,8 +828,16 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     }
     /** A second tap on a door, the veil or a court gate that is already chosen: open it if shut, shut it if open (fieldy). The walker
      *  goes through on his own feet. Tapping elsewhere and back only chooses it again. */
-    function roamGo(id, gateKey) {
-      const key = gateKey || ROAM_ENTER[id]?.open; if (!key || !(key in roam.want)) return false;
+    function roamGo(id, gateKey, point) {
+      let key = gateKey || ROAM_ENTER[id]?.open;
+      // a tap beside the leaves — on the jamb, the threshold, the wall the door is set in — from any distance (fieldy: no need to be
+      // near): the nearest door or gate of what was tapped, within ten cubits of the spot
+      if (!key && point) {
+        let bd = 10; const p = new THREE.Vector3();
+        for (const gs of gateSets) { gs.node.getWorldPosition(p); const dd = p.distanceTo(point); if (dd < bd) { bd = dd; key = gs.key; } }
+        for (const ds of doorSets) { const k = model.roam.openKey ? model.roam.openKey(ds.open) : ds.open; if (!(k in roam.want)) continue; for (const l of ds.leaves) { l.node.getWorldPosition(p); const dd = p.distanceTo(point); if (dd < bd) { bd = dd; key = k; } } }
+      }
+      if (!key || !(key in roam.want)) return false;
       roam.want[key] = roam.want[key] > 0.5 ? 0 : 1;
       return true;
     }
@@ -945,7 +953,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible && !(h.object.material?.transparent && h.object.material.opacity < 0.3));
       let o = hit?.object; while (o && !o.userData.id) o = o.parent;
       const id = o?.userData.id || null;
-      if (roam.on && id && id === currentSel && roamGo(id, hit?.object?.userData?.gate)) { dirty = true; return; }   // the second tap on a door or a gate: open or shut it
+      const leafKey = hit?.object?.userData?.gate || (hit?.object?.userData?.doorLeaf && (model.roam.openKey ? model.roam.openKey(hit.object.userData.doorLeaf) : hit.object.userData.doorLeaf));
+      if (roam.on && id && (id === currentSel || leafKey) && roamGo(id, leafKey, hit?.point)) { dirty = true; return; }   // a tap on a leaf, or the second tap on a chosen door or gate: open or shut it, from any distance
       stillSelect = id; onSelect?.(id);
     };
     let hoverT = 0;
