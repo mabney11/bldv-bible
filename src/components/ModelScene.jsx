@@ -297,6 +297,11 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         if (r.r != null) { const R = r.r + NAV_PAD; cells(r.x - R, r.x + R, r.z - R, r.z + R, (k, cx, cz) => { if (Math.hypot(cx - r.x, cz - r.z) <= R && r.y0 < H[k] + STEP_MAX && r.y1 > H[k] + 0.5) block[k] = 1; }); continue; }
         cells(r.x0 - NAV_PAD, r.x1 + NAV_PAD, r.z0 - NAV_PAD, r.z1 + NAV_PAD, (k) => { if (r.y0 < H[k] + STEP_MAX && r.y1 > H[k] + 0.5) block[k] = 1; });
       }
+      // the foot of a terrace's face, a base's side, any drop too high to step up, is a wall too: a cell whose neighbour stands more
+      // than a step higher is blocked, so the route (and the walker's shoulders, a cubit wide) keep off the face and its corners
+      const foot = [];
+      for (let j = 0; j < Hn; j++) for (let i = 0; i < W; i++) { const k = j * W + i; if (block[k]) continue; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ni = i + di, nj = j + dj; if (ni < 0 || nj < 0 || ni >= W || nj >= Hn) continue; if (H[nj * W + ni] - H[k] > STEP_MAX) { foot.push(k); break; } } }
+      for (const k of foot) block[k] = 1;
       // how far each open cell is from the nearest wall (to four): the route prefers the middle of a passage and the middle of a doorway
       const clear = new Uint8Array(W * Hn).fill(4); const q = [];
       for (let k = 0; k < W * Hn; k++) if (block[k]) { clear[k] = 0; q.push(k); }
@@ -447,6 +452,14 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         for (const ds of doorSets) { const p = new THREE.Vector3(); ds.leaves[0]?.node.getWorldPosition(p); const dd = Math.hypot(p.x - ex, p.z - ez), key = model.roam.openKey ? model.roam.openKey(ds.open) : ds.open; if (dd < bd && key in roam.want && roam.want[key] < 0.5 && !a.tried.has(key)) { bd = dd; best = key; } }
         if (best) { roam.want[best] = 1; a.tried.add(best); a.still = 0; }
         else if (d < 3 && a.i < a.path.length - 1) { a.i++; a.still = 0; }   // close enough to a waypoint that cannot quite be reached: go on to the next
+        else if ((a.replans || 0) < 3) {   // pushed against something the way did not know: find the way again from where he stands (fieldy: "self-correct instead of pushing into a corner and giving up")
+          const [gx, gz] = a.path[a.path.length - 1];
+          // a step back off whatever he is against, then the new way
+          tryMove(-Math.cos(roam.body) * 0.8, -Math.sin(roam.body) * 0.8);
+          const fresh = findPath(camera.position.x, camera.position.z, gx, gz);
+          a.replans = (a.replans || 0) + 1; a.still = 0; a.lastD = Infinity;
+          if (fresh && fresh.length > 1) { a.path = fresh; a.i = 1; }
+        }
         else if (a.still > 4) cancelAuto(false);
       }
       const wantY = roam.foot + ROAM_EYE; camera.position.y += roam.air ? wantY - camera.position.y : (wantY - camera.position.y) * Math.min(1, dt * 10);
