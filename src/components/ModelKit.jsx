@@ -29,6 +29,11 @@ export function usePlayer(timeline, { pace: paceInit = 'tap', onContinue } = {})
   const [ended, setEnded] = useState(false);
   const scrubRef = useRef(null), timeRef = useRef(null), captionRef = useRef(null);
   const state = useRef({ playing: false, speed: 1, loop: false, pace: paceInit, last: 0, raf: 0, timeline, hold: null, phaseKey: null });
+  // What the canvas subtitles are up to (CanvasSubtitles writes it): the pane being spoken, whether it is still being spoken, and
+  // when (wall clock, ms) its last word will have had its say. The story stretches a pane so its words are all spoken before
+  // the next pane comes, and never crosses into the next pane while a word is still owed (fieldy: "there needs to be enough time
+  // to show the entire verse … give enough time in the scene for all aspects").
+  const subs = useRef({ key: null, busy: false, endsAt: 0 });
   state.current.playing = playing; state.current.speed = speed; state.current.loop = loop; state.current.timeline = timeline; state.current.pace = pace;
 
   const show = useCallback((t) => {
@@ -65,7 +70,13 @@ export function usePlayer(timeline, { pace: paceInit = 'tap', onContinue } = {})
         }
         return;
       }
-      let t = clock.t + ((now - st.last) / 1000) * st.speed; st.last = now;
+      const curKey = st.timeline.phaseAt(clock.t).key, S = subs.current;
+      let step = ((now - st.last) / 1000) * st.speed; st.last = now;
+      if (S.key === curKey && S.busy) {   // the pane is still being spoken: pace the story so the pane's end and the last word arrive together
+        const end = phaseEndOf(st.timeline, clock.t), span = Math.max(0, end - clock.t), left = Math.max(0.05, (S.endsAt - now) / 1000);
+        step = Math.min(step, span > 0 ? step * Math.min(1, span / (left * st.speed)) : 0);
+      }
+      let t = clock.t + step;
       if (t >= D) { if (st.loop) t -= D; else { t = D; setPlaying(false); } }
       const key = st.timeline.phaseAt(t).key;
       const fresh = key !== st.phaseKey; st.phaseKey = key;
@@ -87,7 +98,14 @@ export function usePlayer(timeline, { pace: paceInit = 'tap', onContinue } = {})
   const pause = () => setPlaying(false);
   const seek = (t) => { setPlaying(false); clearHold(); const tt = Math.max(0, Math.min(timeline.duration, t)); state.current.phaseKey = timeline.phaseAt(tt).key; show(tt); };   // scrubbing to a caption: no wait when play resumes — they have it in front of them
   const restart = () => { clearHold(); state.current.phaseKey = null; show(0); state.current.last = performance.now(); setPlaying(true); };
-  return { clock, playing, speed, setSpeed, loop, setLoop, pace, setPace, hold, continueNow, captionRef, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef, show };
+  return { clock, playing, speed, setSpeed, loop, setLoop, pace, setPace, hold, continueNow, captionRef, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef, show, subs };
+}
+/** Where the pane that holds t ends: the next phase's `from` when the timeline lists its phases, else found by stepping. */
+function phaseEndOf(tl, t) {
+  if (tl.phases) { for (const p of tl.phases) if (p.from > t + 1e-6) return p.from; return tl.duration; }
+  const key = tl.phaseAt(t).key;
+  for (let u = t + 0.25; u < tl.duration; u += 0.25) if (tl.phaseAt(u).key !== key) return u;
+  return tl.duration;
 }
 
 // ── The caption under the stage, with the reading wait shown ─────────────────
@@ -192,47 +210,62 @@ export function SubtitlesToggle({ subs, id = 'st-subs' }) {
  * only while the story PLAYS (nothing before the play button; paused, the word on show stays), a glossed pair holding longer —
  * and longer still for every word of its gloss (fieldy: his Hebrew will carry several English words in a gloss).
  */
-export function CanvasSubtitles({ phase, on, move = true, rot = true, playing = false, scrubbed = null, pace = 520 }) {
+/** How long a unit is held on the canvas (ms): a plain word, a glossed pair longer, and longer again for every word of the gloss. */
+export function holdFor(u, pace = 520) {
+  const glossWords = u.gloss ? u.gloss.trim().split(/\s+/).length : 0;
+  return pace * (u.gloss != null ? 1.6 : 1) + Math.min(24, u.w.length) * 18 + Math.max(0, glossWords - 1) * 220;
+}
+export function CanvasSubtitles({ phase, on, move = true, rot = true, playing = false, scrubbed = null, pace = 520, report }) {
   const active = playing || (!!scrubbed && scrubbed === phase?.key);   // playing, or the pane the reader scrubbed to (fieldy: the subtitles show when scrubbing too)
   const text = useResolvedCaption(phase?.caption || '');
   const units = useMemo(() => unitsOf(text), [text]);
   const [cur, setCur] = useState(null);   // { i, x, y, rot } — the one unit on show, where it stands and how it leans
+  const [prev, setPrev] = useState(null); // the one before it, fading out beneath (a smooth hand-over, not a jump)
   const st = useRef({ i: 0, left: 0, spot: null, key: null });
-  useEffect(() => { st.current = { i: 0, left: 0, spot: null, key: phase?.key }; setCur(null); }, [units, phase?.key, on]);
+  useEffect(() => { st.current = { i: 0, left: 0, spot: null, key: phase?.key }; setCur(null); setPrev(null); }, [units, phase?.key, on]);
+  // what is still owed to the player: the pane, and when its last word will have had its say
+  const tell = (busy, msLeft = 0) => { report?.({ key: phase?.key, busy, endsAt: performance.now() + msLeft }); };
   useEffect(() => {
-    if (!on || !active || !units.length) return undefined;
+    if (!on || !units.length) { tell(false); return undefined; }
+    if (!active) return undefined;
     let timer = 0, alive = true;
     const rnd = (a, b) => a + Math.random() * (b - a);
     const HOME = { x: 50, y: 84 };   // the subtitle area, low, just above the chips — clear of the parts' popups
     const first = !phase || phase.from === 0;   // the first pane keeps to its place
     const place = () => (move && !first ? { x: HOME.x + rnd(-9, 9), y: HOME.y + rnd(-6, 2) } : HOME);
+    const remaining = (from) => { let ms = 0; for (let k = from; k < units.length; k++) ms += holdFor(units[k], pace); return ms; };
     const next = () => {
       if (!alive) return;
       const c = st.current;
-      if (c.i >= units.length) return;
+      if (c.i >= units.length) { tell(false); return; }
       if (c.left <= 0 || !c.spot) { c.spot = place(); c.left = 3 + Math.floor(Math.random() * 4); }
       c.left--;
       const u = units[c.i];
-      setCur({ i: c.i, x: c.spot.x, y: c.spot.y, rot: rot ? rnd(-7, 7) : 0 });
+      setCur((was) => { setPrev(was); return { i: c.i, x: c.spot.x, y: c.spot.y, rot: rot ? rnd(-6, 6) : 0 }; });
       c.i++;
-      if (c.i < units.length) {
-        const glossWords = u.gloss ? u.gloss.trim().split(/\s+/).length : 0;
-        const hold = pace * (u.gloss != null ? 1.6 : 1) + Math.min(24, u.w.length) * 18 + Math.max(0, glossWords - 1) * 220;
-        timer = setTimeout(next, hold);
-      }
+      tell(true, remaining(c.i - 1));
+      timer = setTimeout(next, holdFor(u, pace));   // the last word too has its hold before the pane is done
     };
-    timer = setTimeout(next, st.current.i === 0 ? 200 : pace);   // resuming after a pause: the word on show gets its turn out
+    tell(true, remaining(st.current.i) + 200);
+    timer = setTimeout(next, st.current.i === 0 ? 200 : pace * 0.6);   // resuming after a pause: the word on show gets its turn out
     return () => { alive = false; clearTimeout(timer); };
   }, [units, on, active, move, rot, pace, phase?.key]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => { report?.({ key: null, busy: false, endsAt: 0 }); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (!on || !cur) return null;
-  const u = units[cur.i]; if (!u) return null;
-  return (
-    <div className="st-subs" aria-hidden="true">
-      <span key={cur.i} className={`st-sub-u${u.gloss != null ? ' st-sub-pair' : ''}`} style={{ left: `${cur.x}%`, top: `${cur.y}%`, '--rot': `${cur.rot}deg` }}>
+  const Unit = ({ at, out }) => {
+    const u = units[at.i]; if (!u) return null;
+    return (
+      <span key={`${at.i}${out ? '-out' : ''}`} className={`st-sub-u${u.gloss != null ? ' st-sub-pair' : ''}${out ? ' st-sub-out' : ''}`} style={{ left: `${at.x}%`, top: `${at.y}%`, '--rot': `${at.rot}deg` }}>
         {u.gloss != null
           ? <><span className="st-sub-w">{u.w}</span>{u.gloss ? <span className="st-sub-g">({u.gloss})</span> : null}{u.tail ? <span className="st-sub-t">{u.tail}</span> : null}</>
           : u.w}
       </span>
+    );
+  };
+  return (
+    <div className="st-subs" aria-hidden="true">
+      {prev && prev.i !== cur.i && <Unit at={prev} out />}
+      <Unit at={cur} />
     </div>
   );
 }

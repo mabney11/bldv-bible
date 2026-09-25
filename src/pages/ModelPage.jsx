@@ -38,7 +38,7 @@ function webglAvailable() {
 }
 const VIEWS = ['3d', '2d'];
 const COARSE = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;   // a touch screen
-const timelinesOf = (model) => Object.fromEntries(Object.keys(model.MODES).map((k) => [k, { key: k, duration: model.MODES[k].duration, phaseAt: (t) => model.phaseAt(k, t) }]));
+const timelinesOf = (model) => Object.fromEntries(Object.keys(model.MODES).map((k) => [k, { key: k, duration: model.MODES[k].duration, phases: model.MODES[k].phases, phaseAt: (t) => model.phaseAt(k, t) }]));
 
 // ── Detail card ──────────────────────────────────────────────────────────────
 function Card({ model, id, mode, onClose, onPick }) {
@@ -229,7 +229,7 @@ export default function ModelPage({ model }) {
                   ))}
                 </div>
               )}
-              {!roam && <CanvasSubtitles phase={phase} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} scrubbed={scrubbed} />}
+              {!roam && <CanvasSubtitles phase={phase} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} scrubbed={scrubbed} report={(v) => { player.subs.current = v; }} />}
               {use3d && !roam && !following && <button type="button" className="tp-follow" onClick={() => sceneApi.current?.refocus?.()} title={sel ? 'Recentre on the chosen part' : 'Recentre on where the story is'}>⌖ refocus</button>}
               <div className="st-strip" role="toolbar" aria-label={strings.parts || 'Parts of the model'}>
                 {CHIP_ORDER.map((id) => pieceById(id)).filter((p) => p && (!p.modes || p.modes.includes(mode))).map((p) => (

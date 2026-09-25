@@ -277,7 +277,7 @@ export default function Statue() {
               {use3d
                 ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><StatueScene clock={clock} selected={shownSel} onSelect={select} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
                 : <StatueSheet clock={clock} selected={shownSel} onSelect={select} />}
-              <CanvasSubtitles phase={phase} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} scrubbed={scrubbed} />
+              <CanvasSubtitles phase={phase} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} scrubbed={scrubbed} report={(v) => { player.subs.current = v; }} />
               {/* One row of pieces along the bottom of the stage, the stone first:
                   tap one and the view flies to it; tap it again to let go. */}
               <div className="st-strip" role="toolbar" aria-label="Pieces">
