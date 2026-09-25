@@ -24,7 +24,7 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
-import { usePlayer, Section, Caption, PaceSelect, CanvasSubtitles, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
+import { usePlayer, Section, Caption, PaceSelect, CanvasSubtitles, CanvasTitle, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
 import { apiTransChapter } from '../lib/api.js';
 import StatueSheet from '../components/StatueSheet.jsx';
 import {
@@ -277,6 +277,7 @@ export default function Statue() {
               {use3d
                 ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><StatueScene clock={clock} selected={shownSel} onSelect={select} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
                 : <StatueSheet clock={clock} selected={shownSel} onSelect={select} />}
+              <CanvasTitle phase={phase} on={subs.on} playing={playing} scrubbed={scrubbed} />
               <CanvasSubtitles phase={phase} clock={clock} timeline={TIMELINE} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} scrubbed={scrubbed} report={(v) => { player.subs.current = v; }} />
               {/* One row of pieces along the bottom of the stage, the stone first:
                   tap one and the view flies to it; tap it again to let go. */}

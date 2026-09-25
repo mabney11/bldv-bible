@@ -206,6 +206,25 @@ export function SubtitlesToggle({ subs, id = 'st-subs' }) {
  * only while the story PLAYS (nothing before the play button; paused, the word on show stays), a glossed pair holding longer —
  * and longer still for every word of its gloss (fieldy: his Hebrew will carry several English words in a gloss).
  */
+/** A pane's title, spoken whole into the scene (`phase.title`, a template like the caption) — the date, the word, the thing
+ *  the pane is about — over and above the one-word subtitles (fieldy: "render a title outside of the single word subtitles to
+ *  have the full 'In the first month of the second year…'"). Shown as the subtitles are: once the story has played or the pane
+ *  was scrubbed to. */
+export function CanvasTitle({ phase, on, playing = false, scrubbed = null }) {
+  const text = useResolvedCaption(phase?.title || '');
+  const armed = useRef(false); if (playing) armed.current = true;
+  const show = on && !!phase?.title && !!text && (armed.current || (!!scrubbed && scrubbed === phase?.key));
+  if (!show) return null;
+  const units = unitsOf(text);
+  return (
+    <div className="st-ctitle" key={phase.key} aria-hidden="true">
+      {units.map((u, i) => (u.gloss != null
+        ? <span key={i} className="st-ctitle-pair"><span className="st-ctitle-w">{u.w}</span>{u.gloss ? <span className="st-ctitle-g"> ({u.gloss})</span> : null}{u.tail}</span>
+        : <span key={i}>{u.w}</span>))}
+    </div>
+  );
+}
+
 /** The weight of a unit's time on the canvas (ms at the base pace): a plain word, a glossed pair longer, and longer again for every word of the gloss. */
 export function holdFor(u, pace = 520) {
   const glossWords = u.gloss ? u.gloss.trim().split(/\s+/).length : 0;

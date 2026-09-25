@@ -25,7 +25,7 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } fro
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
-import { usePlayer, Section, WordRow, ModelPassage, Caption, PaceSelect, CanvasSubtitles, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
+import { usePlayer, Section, WordRow, ModelPassage, Caption, PaceSelect, CanvasSubtitles, CanvasTitle, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
 import ModelSheet from '../components/ModelSheet.jsx';
 import { STORY_ICONS } from '../components/ModelStories.jsx';
 import './Temple.css';
@@ -229,6 +229,7 @@ export default function ModelPage({ model }) {
                   ))}
                 </div>
               )}
+              {!roam && <CanvasTitle phase={phase} on={subs.on} playing={playing} scrubbed={scrubbed} />}
               {!roam && <CanvasSubtitles phase={phase} clock={clock} timeline={TIMELINES[mode]} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} scrubbed={scrubbed} report={(v) => { player.subs.current = v; }} />}
               {use3d && !roam && !following && <button type="button" className="tp-follow" onClick={() => sceneApi.current?.refocus?.()} title={sel ? 'Recentre on the chosen part' : 'Recentre on where the story is'}>⌖ refocus</button>}
               <div className="st-strip" role="toolbar" aria-label={strings.parts || 'Parts of the model'}>

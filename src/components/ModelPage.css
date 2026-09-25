@@ -227,3 +227,16 @@
 .tp-roam .st-subs { display: none; }
 @media (max-width: 720px) { .st-sub-u { font-size: clamp(20px, 6vw, 32px); max-width: 88%; } }
 .st-loop-sub { opacity: 0.85; font-size: 0.95em; }
+
+/* A pane's title, spoken whole into the scene */
+.st-ctitle {
+  position: absolute; left: 8%; right: 8%; top: 7%; z-index: 2; pointer-events: none; text-align: center;
+  display: flex; flex-wrap: wrap; justify-content: center; column-gap: 0.32em; row-gap: 0.1em;
+  font-family: var(--reader-font, Georgia, 'Times New Roman', serif); font-size: clamp(17px, 2.4vw, 28px); line-height: 1.25; color: #f6efdf;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6), 0 0 14px rgba(0, 0, 0, 0.8); paint-order: stroke fill; -webkit-text-stroke: 0.07em #000;
+  animation: st-ctitle-in 1.4s ease-out both;
+}
+.st-ctitle-pair .st-ctitle-w { color: var(--gold); font-weight: 700; -webkit-text-stroke: 0.08em #000; }
+.st-ctitle-pair .st-ctitle-g { font-size: 0.72em; color: #e9e0cb; }
+@keyframes st-ctitle-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+.tp-roam .st-ctitle { display: none; }

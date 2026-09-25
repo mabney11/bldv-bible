@@ -645,8 +645,8 @@ export function pieceForWord(word, book, chapter, verse) {
 // ── Timelines ────────────────────────────────────────────────────────────────
 // RAISE — the order Mashah set it up in (Exodus 40:17–33), then the cloud, then the camp.
 export const RAISE_PHASES = [
-  { from: 0,   key: 'command',   caption: '{{Exodus 25:1}} {{Exodus 25:8}} {{Exodus 25:9}}', ref: 'Exodus 25:1, 8–9' },
-  { from: 6, key: 'day',       caption: '{{Exodus 40:17}}', ref: 'Exodus 40:17' },
+  { from: 0,   key: 'command',   caption: '{{Exodus 25:1}} {{Exodus 25:8}} {{Exodus 25:9}}', ref: 'Exodus 25:1, 8–9', title: '{{Exodus 25:8 | Let them … maqadash}}' },
+  { from: 6, key: 'day',       caption: '{{Exodus 40:17}}', ref: 'Exodus 40:17', title: '{{Exodus 40:17 | In the … day of the chadash}}' },
   { from: 11, key: 'boards',    caption: '{{Exodus 40:18}} {{Exodus 26:16 | Ishar … qarash}}; {{Exodus 26:18}}', ref: 'Exodus 40:18; 26:16, 18' },
   { from: 17, key: 'bars',      caption: '{{Exodus 26:26 | You shall … mashakan}}; {{Exodus 26:28}} {{Exodus 26:29}}', ref: 'Exodus 26:26–29' },
   { from: 22, key: 'mashakan',  caption: '{{Exodus 40:19}} {{Exodus 26:1 | Moreover … cherubim}}. {{Exodus 26:2 | The arak … amah}}.', ref: 'Exodus 40:19; 26:1–2' },
@@ -668,7 +668,8 @@ export const RAISE_PHASES = [
 ];
 export const RAISE_DURATION = 106;
 export const RAISE_CAMERA = [
-  [0,   [260, 120, 210],  [0, 0, 0]],                          // the word on the mountain: the bare plain where the sanctuary will stand, from high and far
+  [0,   [6, 5, 26],       [-26, 7, 1]],                         // the word to Mashah: he stands before the column of fire and smoke where the sanctuary will be
+  [4,   [14, 9, 30],      [-24, 8, 0]],
   [6,   [150, 70, 120],   [0, 3, 0]],                          // the bare court's ground, from the south-east
   [11,   [12, 12, 34],     [-25, 5, 0]],                        // the boards go up
   [17,  [-14, 7, 20],     [-25, 5, 0]],                        // the bars, close
@@ -772,6 +773,7 @@ export const MODEL = {
   scene: {
     sky: 0xd7e3ee, shadowR: 140, fog: [700, 2000], maxDistance: 1400, earth: '#cdb98d', plainDrop: 0.02,   // the plain is the model's ground: the tents and the court's pillars stand on it   // a bright sky over the wilderness; the plain sand
     lighting: { sun: 3.0, hemi: 0.7 },
+    extras: 'tabernacle',   // the opening: Yahawah as a column of fire and smoke, Mashah before it (model3d/tabernacleExtras.js)
     lights: [
       { key: 'holyLight', color: 0xffd9a0, distance: 40, pos: [(HOLY.x0 + HOLY.x1) / 2, MISH.h - 2, 0], on: () => 60 },
       { key: 'mostHolyLight', color: 0xffe6c0, distance: 24, pos: [(MOST_HOLY.x0 + MOST_HOLY.x1) / 2, MISH.h - 2, 0], on: (P, mode, t) => (mode === 'walk' ? 40 + 420 * smooth((t - 84) / 2.5) : 60) },   // the kabawad (glory) fills the tent (40:34)

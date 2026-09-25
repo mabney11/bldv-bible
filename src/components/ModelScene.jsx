@@ -32,9 +32,10 @@ import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { SKY, XRAY_GROUPS, makeMaterials, loadPhotos, buildPiece, cutGates, loadGlb, fitSlot, personFigure, exportGlb, PieceBuilder } from './model3d/builders.js';
 import { templeExtras } from './model3d/templeExtras.js';
+import { tabernacleExtras } from './model3d/tabernacleExtras.js';
 
 /** A model's own actors, by the name its MODEL.scene.extras gives (a function is taken as is). */
-const EXTRAS = { temple: templeExtras };
+const EXTRAS = { temple: templeExtras, tabernacle: tabernacleExtras };
 
 /** Where the viewer last stood on foot (position, yaw, pitch) — kept while the page lives, so opening a card, a re-mount or a
  *  switch of view never sends them back to the gate ("don't move me back to the beginning"). */
