@@ -847,7 +847,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const canLock = !COARSE && !!renderer.domElement.requestPointerLock;
     let locked = false, look = null, stickPtr = null;
     const cross = document.createElement('div'); cross.className = 'tp-cross'; el.appendChild(cross);                      // the crosshair, while the mouse is taken
-    const THIRD_TILT = 0.12; let crossAt = 0;   // third person: the view tilted down by this, the crosshair (his line of sight) that much above the centre
+    const THIRD_TILT = 0.05, viewPos = new THREE.Vector3(); let crossAt = 0, viewPulled = false;   // viewPos: where the view was last drawn from (third person: behind and above him)   // third person: the view tilted down by this, the crosshair (his line of sight) that much above the centre
     const crossNy = () => (roam.on && roam.dist > 0.01 ? Math.tan(THIRD_TILT) / Math.tan((camera.fov * Math.PI) / 360) : 0);   // where his line of sight falls on the screen (ndc y)
     const stickEl = document.createElement('div'); stickEl.className = 'tp-stick'; stickEl.innerHTML = '<div class="tp-stick-knob"></div>'; el.appendChild(stickEl);
     const knobEl = stickEl.firstChild, STICK_R = 44;
@@ -937,6 +937,13 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     // Tap vs drag
     const ray = new THREE.Raycaster(); const ndc = new THREE.Vector2(); let down = null;
     const pickables = () => [...groups.values()].filter((g) => g.visible && g.userData.id !== 'house');
+    /** the ray the crosshair marks: his line of sight, cast from where the view was drawn — in third person that is behind and a
+     *  little above him, and what the crosshair covers on the screen is what this ray meets (from the eye itself, a near door's
+     *  leaf under the crosshair could be missed by a cubit — fieldy's gate that "won't open no matter the clicks") */
+    function sightRay() {
+      roamDir(fwd);
+      if (roam.dist > 0.01 && viewPulled) { ray.set(viewPos, fwd); ray.near = 0; } else { ndc.set(0, 0); ray.setFromCamera(ndc, camera); }
+    }
     let stillSelect = null;   // a selection made by tapping the view: the camera stays put (the chips, the words and "refocus" fly)
     const onDown = (e) => { down = { x: e.clientX, y: e.clientY, at: performance.now(), button: e.button }; };
     const onUp = (e) => {
@@ -948,13 +955,12 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       // taken, a click picks what the crosshair is on. When the browser refuses the lock, clicks pick as before.
       if (roam.on && canLock && !locked && !lockFailed && e.pointerType === 'mouse') { takeMouse(); return; }
       const r = renderer.domElement.getBoundingClientRect();
-      if (roam.on && locked) ndc.set(0, 0); else ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
-      ray.setFromCamera(ndc, camera);
+      if (roam.on && locked) sightRay(); else { ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); ray.setFromCamera(ndc, camera); }
       const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible && !(h.object.material?.transparent && h.object.material.opacity < 0.3));
       let o = hit?.object; while (o && !o.userData.id) o = o.parent;
       const id = o?.userData.id || null;
       const leafKey = hit?.object?.userData?.gate || (hit?.object?.userData?.doorLeaf && (model.roam.openKey ? model.roam.openKey(hit.object.userData.doorLeaf) : hit.object.userData.doorLeaf));
-      if (roam.on && id && (id === currentSel || leafKey) && roamGo(id, leafKey, hit?.point)) { dirty = true; return; }   // a tap on a leaf, or the second tap on a chosen door or gate: open or shut it, from any distance
+      if (roam.on && id && id === currentSel && roamGo(id, leafKey, hit?.point)) { dirty = true; return; }   // the second tap on a chosen door or gate (its leaf, or the wall beside it): open or shut it, from any distance
       stillSelect = id; onSelect?.(id);
     };
     let hoverT = 0;
@@ -1028,8 +1034,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         const tt = Math.tan(THIRD_TILT);
         camera.position.copy(avatarEye).addScaledVector(fwd, -d).addScaledVector(upV, d * tt); camera.lookAt(probe.copy(avatarEye).addScaledVector(fwd, 2).addScaledVector(upV, -2 * tt));
         const ny = crossNy(); if (ny !== crossAt) { crossAt = ny; cross.style.top = `calc(50% - ${(ny * 50).toFixed(2)}%)`; }
-        pulled = true;
-      } else { avatar.visible = false; if (crossAt !== 0) { crossAt = 0; cross.style.top = '50%'; } }
+        viewPos.copy(camera.position); viewPulled = true; pulled = true;
+      } else { avatar.visible = false; viewPulled = false; if (crossAt !== 0) { crossAt = 0; cross.style.top = '50%'; } }
       composer.render(); stats.ms = performance.now() - f0;
       if (pulled) { camera.position.copy(avatarEye); aimCamera(); if (now - roam.landAt < 240) dirty = true; }   // the landing crouch plays out
     }
@@ -1073,7 +1079,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       teleport: (x, z, yaw, y) => { if (!roam.on) return; camera.position.x = x; camera.position.z = z; if (yaw != null) roam.yaw = yaw; if (y != null) roam.foot = y; roam.air = 0; roam.vy = 0; const gy = groundUnder(x, z, roam.foot + 3);   /* from just above the feet, so a roof overhead is not mistaken for the ground */ if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } aimCamera(); remember(); dirty = true; },   // for tests
       locked: () => locked,
       piece: (id) => byId(id),   // for tests
-      pick: (nx = 0, ny = 0) => { ndc.set(nx, ny); ray.setFromCamera(ndc, camera); const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible); let o = hit?.object; while (o && !o.userData.id) o = o.parent; return { id: o?.userData.id || null, dist: hit?.distance, obj: hit?.object?.name, yaw: roam.yaw, pitch: roam.pitch }; },   // for tests: what the crosshair is on
+      pick: (nx = 0, ny = 0) => { if (nx === 0 && ny === 0 && roam.on) sightRay(); else { ndc.set(nx, ny); ray.setFromCamera(ndc, camera); } const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible); let o = hit?.object; while (o && !o.userData.id) o = o.parent; return { id: o?.userData.id || null, dist: hit?.distance, obj: hit?.object?.name, yaw: roam.yaw, pitch: roam.pitch }; },   // for tests: what the crosshair is on
       invalidate: () => { dirty = true; },
       roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, air: roam.air, vy: roam.vy, dist: roam.dist, avatar: avatar.visible ? avatar.position.toArray() : null, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),
       zoom: (d) => { roam.dist = Math.max(0, Math.min(DIST_MAX, d)); dirty = true; },   // for tests: the wheel's distance   // for tests
