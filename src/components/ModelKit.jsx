@@ -209,13 +209,14 @@ export function CanvasTitle({ phase, on, playing = false, scrubbed = null }) {
   );
 }
 
-/** The weight of a unit's time on the canvas (ms at the base pace): a plain word — a joining word, a filler — is quick; a glossed
- *  word is the emphasis and holds, and holds longer again for every word of its gloss (fieldy: "filler words can appear and
- *  disappear faster … the glossed words should pop more"). */
-export function holdFor(u, pace = 520) {
+/** The weight of a unit's time on the canvas (ms): a plain word — a joining word, a filler — 0.2 s; a glossed word is the
+ *  emphasis, 0.3 s to 0.45 s by the length of its gloss (fieldy: "0.3–.45s per gloss and .2 for the non glossed words"; per the
+ *  research on word-by-word captions 0.2–0.33 s a word). No word stays longer than a second and a half, whatever the pane. */
+export const HOLD_PLAIN = 200, HOLD_GLOSS = [300, 450], HOLD_MAX = 1500;
+export function holdFor(u) {
+  if (u.gloss == null) return HOLD_PLAIN;
   const glossWords = u.gloss ? u.gloss.trim().split(/\s+/).length : 0;
-  if (u.gloss == null) return pace * 0.5 + Math.min(20, u.w.length) * 12;
-  return pace * 1.35 + Math.min(24, u.w.length) * 14 + Math.max(0, glossWords - 1) * 150;
+  return Math.min(HOLD_GLOSS[1], HOLD_GLOSS[0] + Math.max(0, glossWords - 1) * 50 + Math.max(0, u.w.length - 6) * 8);
 }
 /** A sentence begins with a capital, even where the quote is sliced from the middle of a verse ("in the raashawan" → "In the raashawan"). */
 export function capFirst(text) { return text ? text.replace(/^(\s*["“'‘(]*)([a-z])/, (m, a, b) => a + b.toUpperCase()) : text; }
@@ -226,7 +227,7 @@ export function capFirst(text) { return text ? text.replace(/^(\s*["“'‘(]*)(
  * (fieldy: "the subtitles need to be aligned to its segment"). A pane too short for its words asks the player to run it
  * slower (`report({key, factor})`). The words keep one spot, low and centred, so the reader's eye need not hunt for them.
  */
-export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, scrubbed = null, pace = 520, report }) {
+export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, scrubbed = null, report }) {
   const text = capFirst(useResolvedCaption(phase?.caption || ''));
   const units = useMemo(() => unitsOf(text), [text]);
   const armed = useRef(false); if (playing) armed.current = true;   // nothing before the play button (or a scrub)
@@ -236,14 +237,17 @@ export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, s
   const lay = useMemo(() => {
     if (!phase || !timeline || !units.length) return null;
     const from = phase.from ?? 0, end = phaseEndOf(timeline, from + 1e-3), span = Math.max(0.01, end - from);
-    const w = units.map((u) => holdFor(u, pace)), total = w.reduce((a, b) => a + b, 0), need = total / 1000;
+    const w = units.map((u) => holdFor(u)), total = w.reduce((a, b) => a + b, 0), need = total / 1000;
     // spoken at a sentence's pace (fieldy: "a sentence with multiple words spoken at a good pace"), stretched at most a little
-    // to fill a longer pane — never dragged out one word at a time; a pane too short for its words slows the story instead
-    const scale = Math.max(1, Math.min(1.35, span / need));
+    // to fill a longer pane — never dragged out one word at a time. A pane too SHORT for its words is the common case: the
+    // words are squeezed into the pane's story time and the player runs that pane slower by the same measure (`factor`), so
+    // on the wall clock they still come at their own pace and every one is seen before the pane ends (Exodus 25:1, 8–9 in
+    // six story seconds runs at about a quarter speed)
+    const scale = Math.min(Math.max(1, HOLD_MAX / Math.max(...w)), Math.min(1.35, span / need));
     const at = []; let acc = 0; for (const x of w) { at.push(from + (acc / 1000) * scale); acc += x; }
     const done = from + (acc / 1000) * scale;   // the last word's own time is up: the words are gone until the pane ends
     return { from, end, span, at, done, need, factor: Math.min(1, span / need) };
-  }, [phase, timeline, units, pace]);
+  }, [phase, timeline, units]);
   useEffect(() => { report?.({ key: phase?.key ?? null, factor: lay ? lay.factor : 1 }); }, [lay, phase?.key]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => () => { report?.({ key: null, factor: 1 }); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // which word the story clock is on, read every frame (no React state until it changes)
