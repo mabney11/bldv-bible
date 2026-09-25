@@ -195,7 +195,7 @@ export function SubtitlesToggle({ subs, id = 'st-subs' }) {
  *  have the full 'In the first month of the second year…'"). Shown as the subtitles are: once the story has played or the pane
  *  was scrubbed to. */
 export function CanvasTitle({ phase, on, playing = false, scrubbed = null }) {
-  const text = useResolvedCaption(phase?.title || '');
+  const text = capFirst(useResolvedCaption(phase?.title || ''));
   const armed = useRef(false); if (playing) armed.current = true;
   const show = on && !!phase?.title && !!text && (armed.current || (!!scrubbed && scrubbed === phase?.key));
   if (!show) return null;
@@ -209,11 +209,16 @@ export function CanvasTitle({ phase, on, playing = false, scrubbed = null }) {
   );
 }
 
-/** The weight of a unit's time on the canvas (ms at the base pace): a plain word, a glossed pair longer, and longer again for every word of the gloss. */
+/** The weight of a unit's time on the canvas (ms at the base pace): a plain word — a joining word, a filler — is quick; a glossed
+ *  word is the emphasis and holds, and holds longer again for every word of its gloss (fieldy: "filler words can appear and
+ *  disappear faster … the glossed words should pop more"). */
 export function holdFor(u, pace = 520) {
   const glossWords = u.gloss ? u.gloss.trim().split(/\s+/).length : 0;
-  return pace * (u.gloss != null ? 1.6 : 1) + Math.min(24, u.w.length) * 18 + Math.max(0, glossWords - 1) * 220;
+  if (u.gloss == null) return pace * 0.5 + Math.min(20, u.w.length) * 12;
+  return pace * 1.35 + Math.min(24, u.w.length) * 14 + Math.max(0, glossWords - 1) * 150;
 }
+/** A sentence begins with a capital, even where the quote is sliced from the middle of a verse ("in the raashawan" → "In the raashawan"). */
+export function capFirst(text) { return text ? text.replace(/^(\s*["“'‘(]*)([a-z])/, (m, a, b) => a + b.toUpperCase()) : text; }
 /**
  * The caption spoken into the stage one unit at a time, each taking the last one's place, in the subtitle area (centred, toward
  * the bottom). The words are laid along the pane's own time: the story clock decides which word shows, so scrubbing lands on
@@ -222,7 +227,7 @@ export function holdFor(u, pace = 520) {
  * slower (`report({key, factor})`). The words keep one spot, low and centred, so the reader's eye need not hunt for them.
  */
 export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, scrubbed = null, pace = 520, report }) {
-  const text = useResolvedCaption(phase?.caption || '');
+  const text = capFirst(useResolvedCaption(phase?.caption || ''));
   const units = useMemo(() => unitsOf(text), [text]);
   const armed = useRef(false); if (playing) armed.current = true;   // nothing before the play button (or a scrub)
   const show = on && units.length > 0 && (armed.current || (!!scrubbed && scrubbed === phase?.key));
@@ -231,9 +236,13 @@ export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, s
   const lay = useMemo(() => {
     if (!phase || !timeline || !units.length) return null;
     const from = phase.from ?? 0, end = phaseEndOf(timeline, from + 1e-3), span = Math.max(0.01, end - from);
-    const w = units.map((u) => holdFor(u, pace)), total = w.reduce((a, b) => a + b, 0);
-    const at = []; let acc = 0; for (const x of w) { at.push(from + (acc / total) * span); acc += x; }
-    return { from, end, span, at, need: total / 1000, factor: Math.min(1, span / (total / 1000)) };
+    const w = units.map((u) => holdFor(u, pace)), total = w.reduce((a, b) => a + b, 0), need = total / 1000;
+    // spoken at a sentence's pace (fieldy: "a sentence with multiple words spoken at a good pace"), stretched at most a little
+    // to fill a longer pane — never dragged out one word at a time; a pane too short for its words slows the story instead
+    const scale = Math.max(1, Math.min(1.35, span / need));
+    const at = []; let acc = 0; for (const x of w) { at.push(from + (acc / 1000) * scale); acc += x; }
+    const done = from + (acc / 1000) * scale;   // the last word's own time is up: the words are gone until the pane ends
+    return { from, end, span, at, done, need, factor: Math.min(1, span / need) };
   }, [phase, timeline, units, pace]);
   useEffect(() => { report?.({ key: phase?.key ?? null, factor: lay ? lay.factor : 1 }); }, [lay, phase?.key]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => () => { report?.({ key: null, factor: 1 }); }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -245,7 +254,7 @@ export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, s
       if (!alive) return; raf = requestAnimationFrame(tick);
       const t = clock.t; let i = 0;
       while (i + 1 < lay.at.length && lay.at[i + 1] <= t + 1e-6) i++;
-      if (t < lay.from - 1e-6 || t > lay.end + 1e-6) i = -1;
+      if (t < lay.from - 1e-6 || t > lay.end + 1e-6 || t > lay.done + 0.6) i = -1;
       if (i !== last) { last = i; setIdx(i); }
     };
     tick();
@@ -255,9 +264,9 @@ export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, s
   const u = units[idx], key = phase?.key || '';
   return (
     <div className="st-subs" aria-hidden="true">
-      <span key={`${key}:${idx}`} className={`st-sub-u${u.gloss != null ? ' st-sub-pair' : ''}`}>
+      <span key={`${key}:${idx}`} className={`st-sub-u ${u.gloss != null ? 'st-sub-pair' : 'st-sub-fill'}`}>
         {u.gloss != null
-          ? <><span className="st-sub-w">{u.w}</span>{u.gloss ? <span className="st-sub-g">({u.gloss})</span> : null}{u.tail ? <span className="st-sub-t">{u.tail}</span> : null}</>
+          ? <><span className="st-sub-w">{u.w}{u.tail ? <span className="st-sub-t">{u.tail}</span> : null}</span>{u.gloss ? <span className="st-sub-g">({u.gloss})</span> : null}</>
           : u.w}
       </span>
     </div>

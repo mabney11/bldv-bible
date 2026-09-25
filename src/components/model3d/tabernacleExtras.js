@@ -94,8 +94,8 @@ function makeColumn(group, puff, { NF = 700, NS = 900, H = 46, R = 11, fireH = 1
  *  word to Mashah before dawn; the sun rises as "the first day of the first month" comes and climbs through the raising; sets as
  *  the court goes up; then over the cloud and the camp the days and nights pass quickly, so the cloud is seen by day and the fire
  *  by night (40:38). On foot it is mid-morning. */
-export function dayOf(mode, t) {
-  if (mode !== 'walk') return 0.42;
+export function dayOf(mode, t, night = false) {
+  if (mode !== 'walk') return night ? 0.0 : 0.42;   // on foot: mid-morning, or midnight when asked
   if (t < OPENING.until) return 0.215;
   if (t < 10) return 0.215 + 0.095 * smooth((t - OPENING.until) / 4);   // the sun comes up with "the first day of the first month"
   if (t < 78) return 0.31 + 0.31 * ((t - 10) / 68);
@@ -191,13 +191,26 @@ export function tabernacleExtras({ M, byId, lights, sky, scene }) {
     for (const sp of labels.children) { const s = (mode === 'walk' ? (sp.userData.big ? 64 : 40) : (sp.userData.big ? 22 : 16)) * (0.6 + 0.4 * k); sp.scale.set(s, s / 4, 1); sp.material.opacity = k; }
   }
 
+  let wantNight = false, lastMode = 'walk', lastDayK = 1, lastKc = 0;
+  /** the cloud's smoke and fire for the moment: `sec` the time the particles flow by, `day` how much day it is, `kc` how far the cloud has come down */
+  function cloudAt(sec, day, kc) {
+    const night = 1 - day;
+    cloud.visible = kc > 0.001;
+    if (cloud.visible) { smokeCol.copy(SMOKE_DAY).lerp(SMOKE_NIGHT, night); col1.burn(sec, TENT.x, TENT.z, kc * (0.15 + 0.85 * night), kc * (0.55 + 0.45 * day), smokeCol); }
+  }
   return {
     sunOffset,
     place() { return 0; },
+    /** the hour on foot: { time: 'day' | 'night' } */
+    set({ time }) { if (time) wantNight = time === 'night'; },
+    /** on foot, called every frame by the scene: the fire and the smoke flow on though the story clock stands (fieldy); true when something moved */
+    tick(sec) {
+      if (lastMode === 'walk') return false;
+      cloudAt(sec, lastDayK, lastKc); return cloud.visible;
+    },
     after(mode, t) {
-      const walk = mode === 'walk';
-      const day = daylight(dayOf(mode, t));
-      const night = 1 - day;
+      const walk = mode === 'walk'; lastMode = mode;
+      const day = daylight(dayOf(mode, t, wantNight)); lastDayK = day;
       // the opening stands through the word to Mashah and fades as the day of the raising comes; gone on foot and after
       const k0 = walk ? clamp01(1 - (t - OPENING.until) / OPENING.fade) : 0;
       opening.visible = k0 > 0.001;
@@ -206,9 +219,8 @@ export function tabernacleExtras({ M, byId, lights, sky, scene }) {
         mashah.visible = k0 > 0.02; mashah.traverse((o) => { if (o.isMesh) { o.material.transparent = k0 < 0.999; o.material.opacity = k0; } });
       }
       // the cloud on the tent: comes down as its verse is read; by day smoke, by night the fire in it, each turning into the other
-      const kc = walk ? smooth((t - CLOUD_AT + 0.8) / 2.2) : 1;
-      cloud.visible = kc > 0.001;
-      if (cloud.visible) { smokeCol.copy(SMOKE_DAY).lerp(SMOKE_NIGHT, night); col1.burn(t, TENT.x, TENT.z, kc * (0.15 + 0.85 * night), kc * (0.55 + 0.45 * day), smokeCol); }
+      const kc = walk ? smooth((t - CLOUD_AT + 0.8) / 2.2) : 1; lastKc = kc;
+      cloudAt(walk ? t : performance.now() / 1000, day, kc);
       // the glory fills the mashakan as the cloud comes down (40:34), and rests there while the camp is seen
       const kg = walk ? smooth((t - CLOUD_AT - 0.5) / 3) * (1 - smooth((t - CAMP_AT - 3) / 3)) : 0;
       glory.visible = kg > 0.001;

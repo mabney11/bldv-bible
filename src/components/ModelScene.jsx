@@ -44,7 +44,7 @@ function readMemo(id) { if (!(id in MEMO)) { try { MEMO[id] = JSON.parse(session
 const COARSE = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;   // a touch screen: the thumb stick + a look drag instead of the mouse
 
 // ── The component ────────────────────────────────────────────────────────────
-export default function ModelScene({ model, clock, mode, selected, onSelect: onSelectProp, onReady, onFollow: onFollowProp, onLock: onLockProp, apiRef }) {
+export default function ModelScene({ model, clock, mode, selected, onSelect: onSelectProp, onReady, onFollow: onFollowProp, onLock: onLockProp, apiRef, time = 'day' }) {
   const wrap = useRef(null);
   // The scene is built once ([] effect) and lives across the page's re-renders — so its callbacks must always be the page's
   // CURRENT ones. 2026-09-14: the mount-time onSelect was captured; it carried the page's navigate from the first render (the
@@ -54,6 +54,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
   const onSelect = (id) => cbs.current.onSelect?.(id), onFollow = (on) => cbs.current.onFollow?.(on), onLock = (on, why) => cbs.current.onLock?.(on, why);
   const api = useRef(null);
   const modeRef = useRef(mode); modeRef.current = mode;
+  const timeRef = useRef(time); timeRef.current = time;   // the hour on foot ('day' | 'night'), for a model whose extras keep the sky
   const modelRef = useRef(model);
 
   useEffect(() => {
@@ -125,6 +126,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     // the model's own actors, if it has stories with any (the temple: the land the Build opens on, the dedication)
     const extrasOf = typeof SC.extras === 'string' ? EXTRAS[SC.extras] : SC.extras;
     const extras = extrasOf ? extrasOf({ M, byId, lights: { ...lights, sun, hemi, scene }, sky: SC.sky, scene, world }) : null;
+    extras?.set?.({ time: timeRef.current });
     const sunOffset = extras?.sunOffset || new THREE.Vector3(220, 300, 180);
     const lsDir = new THREE.Vector3(), lsRight = new THREE.Vector3(), lsUp = new THREE.Vector3(), lsUpWorld = new THREE.Vector3(0, 1, 0);
     function snapSun(target) {
@@ -1087,13 +1089,15 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     // ── Loop ────────────────────────────────────────────────────────────────
     let dirty = true, raf = 0, lastT = -1, alive = true;
     controls.addEventListener('change', () => { dirty = true; });
-    let lastNow = performance.now(); const stats = { frames: 0, ms: 0 };
+    let lastNow = performance.now(), lastTick = 0; const stats = { frames: 0, ms: 0 };
     function frame() {
       if (!alive) return;
       raf = requestAnimationFrame(frame);
       const now = performance.now(), dt = Math.min(0.1, (now - lastNow) / 1000); lastNow = now;
       const t = clock.t;
       if (t !== lastT) { place(t); scriptCamera(t); lastT = t; dirty = true; lastCamT = t; }
+      // on foot the story clock stands still, but a model's own weather (the mashakan's fire and smoke) goes on flowing
+      if (roam.on && extras?.tick && now - lastTick > 40) { lastTick = now; if (extras.tick(now / 1000)) dirty = true; }
       if (roamStep(dt)) dirty = true;
       if (stepFlight(now)) dirty = true;
       if (!roam.on && controls.update()) dirty = true;
@@ -1173,6 +1177,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       select: (id) => { const changed = id !== currentSel; applySelection(id); if (roam.on) { dirty = true; return; } const still = stillSelect === id; stillSelect = null; if (changed && id && !still) flyTo(id); if (changed && !id && !still) setFollow(true); dirty = true; },
       follow: () => { if (roam.on) return; setFollow(true); lastT = -1; },
       refocus: () => { if (roam.on) return; if (currentSel) flyTo(currentSel); else { setFollow(true); lastT = -1; } dirty = true; },
+      setTime: (tm) => { extras?.set?.({ time: tm }); lastT = -1; dirty = true; },   // day or night on foot
       modeChanged: () => { const free = !!MODES[modeRef.current]?.free; if (free !== roam.on) roamEnter(free); lastT = -1; if (!free) setFollow(true); dirty = true; },
       move: (key, on) => { if (key === 'jump') { if (on) jump(); return; } if (on && auto && key !== 'run') cancelAuto(false); if (on) roam.keys.add(key); else roam.keys.delete(key); },
       goTo: (x, z, label) => roam.on && startAuto(x, z, label),   // walk him to a place (the big map's Go); also for tests
@@ -1239,6 +1244,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
   useEffect(() => { api.current?.select(selected); }, [selected]);
   const firstMode = useRef(true);
   useEffect(() => { if (firstMode.current) { firstMode.current = false; return; } api.current?.modeChanged(); }, [mode]);
+  useEffect(() => { api.current?.setTime?.(time); }, [time]);
   useEffect(() => { if (apiRef) apiRef.current = api.current; });
 
   return <div ref={wrap} className="st-gl" aria-label={`${model.title} in 3D — drag to look around, tap a part to read about it`} />;

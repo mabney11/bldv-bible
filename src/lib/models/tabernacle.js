@@ -134,7 +134,7 @@ export const LEVITE_R = 60;                                                     
 
 // ── Parts ────────────────────────────────────────────────────────────────────
 const K = makeKit(LEVEL);
-const { box, cyl, lathe, ideal } = K;
+const { box, cyl, lathe, ideal, person } = K;
 
 /** A pillar: a socket, an acacia shaft, a capital of the metal named, a hook. `pillarMat` gold for the tent's, acacia for the court's. */
 function pillar(x, z, h, pillarMat = 'acacia', socketMat = 'brass', capMat = 'silver', r = 0.3) {
@@ -147,20 +147,39 @@ function pillar(x, z, h, pillarMat = 'acacia', socketMat = 'brass', capMat = 'si
 }
 /** A pin of brass a little out from a pillar (27:19) — idealized: the text names them, not where they stand. */
 const pin = (x, z) => [ideal(cyl(x, 0, z, 0.09, 0.45, { mat: 'brass', role: 'pin' }))];
-/** A tent of the camp (idealized): a low cone of goats' hair with a dark doorway. */
-const tent = (x, z, r = 2.4, h = 2.6, mat = 'goatshair') => [ideal(cyl(x, 0, z, r, h, { mat, role: 'tent', r2: 0.12 }))];
+/** A tent of the camp (idealized): a cone of cloth big enough to go into (fieldy), a thin shell open at the bottom, with a doorway
+ *  — a wedge left out of the cone — turned toward the mashakan; the walker steps in through it. */
+const TENT_R = 5.5, TENT_H = 6.5, TENT_DOOR = 1.3;   // the doorway's width in radians (about 75°)
+const tent = (x, z, r = TENT_R, h = TENT_H, mat = 'goatshair') => {
+  const phiC = Math.atan2(-x, -z);   // the doorway faces the sanctuary (lathe phi runs from +z toward +x)
+  return [ideal(lathe(x, 0, z, [[r, 0], [0.3, h], [0.05, h - 0.35], [r - 0.35, 0]], { mat, role: 'tent', phiStart: phiC + TENT_DOOR / 2, phiLength: Math.PI * 2 - TENT_DOOR }))];
+};
+/** The people of a field of tents — a few standing and walking among them, faceless as all the model's people (fieldy: "people
+ *  should be in all of my walkable models"). Deterministic from the field, so the picture is the same every time. */
+function folk(x0, x1, z0, z1, n, tents = []) {
+  const out = []; let h = Math.abs((x0 * 31 + z0 * 17) | 0) + 1;
+  const rnd = () => { h = (h * 1103515245 + 12345) & 0x7fffffff; return h / 0x7fffffff; };
+  for (let i = 0, tries = 0; i < n && tries < 60; tries++) {
+    const x = x0 + rnd() * (x1 - x0), z = z0 + rnd() * (z1 - z0);
+    if (tents.some(([tx, tz]) => Math.hypot(tx - x, tz - z) < TENT_R + 1.2)) continue;   // out in the lanes, not through a tent's wall
+    out.push(...person(x, z, rnd() * Math.PI * 2, 'linen')); i++;
+  }
+  return out;
+}
 /** A dagal (standard): a pole with a cloth — the text names the standards and banners, not their look. */
 const standard = (x, z, big = false, mat = 'linen') => {
   const h = big ? 16 : 11, w = big ? 6 : 4, ch = big ? 3.5 : 2.4;
   return [ideal(cyl(x, 0, z, 0.16, h, { mat: 'acacia', role: 'pole' })), ideal(box(x, h - ch - 0.3, z + w / 2 + 0.16, 0.06, ch, w, { mat, role: 'banner' }))];
 };
 /** A field of tents in rows between x0…x1 × z0…z1, in the camp's own colour. */
-function field(x0, x1, z0, z1, nx, nz, mat = 'goatshair') {
-  const out = [];
+function field(x0, x1, z0, z1, nx, nz, mat = 'goatshair', people = 0) {
+  const out = [], at = [];
   for (let i = 0; i < nx; i++) for (let k = 0; k < nz; k++) {
     const jx = ((i * 7 + k * 3) % 5) * 0.35 - 0.7, jz = ((i * 3 + k * 5) % 5) * 0.35 - 0.7;   // a little irregularity, as camps are
-    out.push(...tent(x0 + (i + 0.5) * ((x1 - x0) / nx) + jx, z0 + (k + 0.5) * ((z1 - z0) / nz) + jz, 2.4, 2.6, mat));
+    const x = x0 + (i + 0.5) * ((x1 - x0) / nx) + jx, z = z0 + (k + 0.5) * ((z1 - z0) / nz) + jz;
+    at.push([x, z]); out.push(...tent(x, z, TENT_R, TENT_H, mat));
   }
+  if (people) out.push(...folk(x0, x1, z0, z1, people, at));
   return out;
 }
 
@@ -316,16 +335,18 @@ function cloud() {
 }
 
 // the camps — the Levites close about (Numbers 1:53; 3:23, 29, 35, 38), the twelve at a distance by their standards (Numbers 2)
-const LEV = (side) => {   // a Levite family's tents on one side, all in the Levites' white
-  const R = LEVITE_R, w = 30, d = 22, m = 'camp-levites';
-  if (side === 'east') return [...field(R, R + d, -13, 13, 3, 3, m), ...standard(R - 3, 0, false, m)];
-  if (side === 'south') return field(-w, w, R - 8, R - 8 + d, 6, 2, m);
-  if (side === 'west') return field(-R - d, -R, -w, w, 2, 6, m);
-  return field(-w, w, -R + 8 - d, -R + 8, 6, 2, m);
+const LEV = (side) => {   // a Levite family's tents on one side, all in the Levites' white — with their people about them
+  const R = LEVITE_R, w = 30, d = 30, m = 'camp-levites';
+  if (side === 'east') return [...field(R, R + d, -15, 15, 2, 2, m, 5), ...standard(R - 3, 0, false, m),
+    // Aharawan and his sons within the court, about the altar and the basin (their charge)
+    ...person(ALTAR.x + 5, ALTAR.z - 4, Math.PI * 0.75, 'linen'), ...person(ALTAR.x - 5, ALTAR.z + 4.5, -0.3, 'linen'), ...person(BASIN.x + 2.5, BASIN.z - 3, -Math.PI / 2 - 0.6, 'linen'), ...person(COURT.x1 - 8, 9, Math.PI, 'linen')];
+  if (side === 'south') return field(-w, w, R - 8, R - 8 + d, 4, 2, m, 6);
+  if (side === 'west') return field(-R - d, -R, -w, w, 2, 4, m, 6);
+  return field(-w, w, -R + 8 - d, -R + 8, 4, 2, m, 6);
 };
 const TRIBE = (side, slot, id) => {   // a tribe's field of tents: `slot` −1 | 0 | 1 along the side, the middle tribe carrying the camp's dagal; `id` its colour
   const R = CAMP_R, L = 70, D = 60, c = slot * 80, out = [], m = `camp-${id}`;
-  const F = (a0, a1, b0, b1) => (side === 'east' || side === 'west' ? field(a0, a1, b0, b1, 5, 6, m) : field(b0, b1, a0, a1, 6, 5, m));
+  const F = (a0, a1, b0, b1) => (side === 'east' || side === 'west' ? field(a0, a1, b0, b1, 4, 5, m, 8) : field(b0, b1, a0, a1, 5, 4, m, 8));
   const S = (a, b, big) => (side === 'east' || side === 'west' ? standard(a, b, big, m) : standard(b, a, big, m));
   const sign = side === 'east' || side === 'south' ? 1 : -1;
   out.push(...F(sign * R, sign * (R + D), c - L / 2, c + L / 2));
@@ -545,7 +566,7 @@ export const PIECES = [
     words, keys: [],
     on, refs, measures, note,
     elsewhere: { ref: 'Numbers 1:47–53; 4:1–33; 18:1–7; 1 Chronicles 23:24–32', note: 'The Levites are not numbered with the tribes but set over the tabernacle, to camp about it that there be no wrath (1:53); Numbers 4 gives each family its burden for the march.' },
-    assumed: 'The Levites\' tents are drawn as a small company close about the court (about sixty cubits out); their number and the room they took the model cannot show.',
+    assumed: 'The Levites\' tents are drawn as a small company close about the court (about sixty cubits out), each tent big enough to go into, with a few of their people about them; their number and the room they took the model cannot show.',
     idealized: 'The tents and the standard.',
     parts: LEV(side),
   })),
@@ -787,7 +808,7 @@ export const MODEL = {
     openDefault: () => 0,   // every hanging shut at the start: the screen of the gate, the screen of the door, the veil — the walker parts them
   },
   scene: {
-    sky: 0xd7e3ee, shadowR: 140, fog: [700, 2000], maxDistance: 1400, earth: '#6c8a44', plainDrop: 0.02,   // the plain is the model's ground: the tents and the court's pillars stand on it   // a bright sky over the wilderness; the plain in grass (fieldy)
+    sky: 0xd7e3ee, shadowR: 140, fog: [700, 2000], maxDistance: 1400, earth: '#6c8a44', plainDrop: 0.02, times: ['day', 'night'],   // on foot, by day or by night (fieldy)   // the plain is the model's ground: the tents and the court's pillars stand on it   // a bright sky over the wilderness; the plain in grass (fieldy)
     lighting: { sun: 3.0, hemi: 0.7 },
     extras: 'tabernacle',   // the opening: Yahawah as a column of fire and smoke, Mashah before it (model3d/tabernacleExtras.js)
     lights: [

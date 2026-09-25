@@ -158,6 +158,8 @@ export default function ModelPage({ model }) {
   useEffect(() => { document.body.classList.add('st-body'); return () => document.body.classList.remove('st-body'); }, []);
 
   const use3d = view === '3d' && canGL && glOk;
+  const TIMES = model.scene?.times || null;   // a model whose sky keeps the hour offers day or night on foot (the mashakan)
+  const timeOfDay = TIMES && TIMES.includes(params.get('time')) ? params.get('time') : (TIMES ? TIMES[0] : 'day');
   const D = MODES[mode].duration;
   const roam = !!MODES[mode].free;
   const onPlayPause = () => (playing ? pause() : play());
@@ -217,7 +219,7 @@ export default function ModelPage({ model }) {
           <div className="st-stagebox">
             <div className="st-stage tp-stage">
               {use3d
-                ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><ModelScene model={model} clock={clock} mode={mode} selected={sel} onSelect={select} onFollow={setFollowing} onLock={(on, why) => setLock({ on, why, at: Date.now() })} apiRef={sceneApi} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
+                ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><ModelScene model={model} clock={clock} mode={mode} selected={sel} onSelect={select} onFollow={setFollowing} time={timeOfDay} onLock={(on, why) => setLock({ on, why, at: Date.now() })} apiRef={sceneApi} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
                 : <ModelSheet model={model} clock={clock} mode={mode} selected={sel} onSelect={select} />}
               {use3d && roam && (
                 <div className="tp-pad" aria-label="Walk">
@@ -245,6 +247,11 @@ export default function ModelPage({ model }) {
           {roam ? (
             <div className="st-player tp-roambar">
               {use3d && <button type="button" className="tp-reset" onClick={() => sceneApi.current?.reset?.()} title="Back to the start, outside the gate, every door and gate as at the first">↺ Start over</button>}
+              {use3d && TIMES && (
+                <div className="st-views tp-times" role="group" aria-label="Time of day">
+                  {TIMES.map((tm) => <button key={tm} type="button" className={`st-view${timeOfDay === tm ? ' on' : ''}`} onClick={() => setParam('time', tm === TIMES[0] ? null : tm)} title={tm === 'night' ? 'By night: the fire in the cloud, the camps by their own light' : 'By day: the cloud on the tent'}>{tm === 'night' ? 'At night' : 'By day'}</button>)}
+                </div>
+              )}
               <span className="tp-roam-hint">{!use3d ? 'The plan and section show the finished model; switch to 3D to walk it.' : COARSE ? 'A thumb in the ring, bottom left: a stick to walk · a finger anywhere else: drag to look · two fingers: pinch to see yourself, spread to look through your eyes · ⤒ jumps · tap a part for its details, a door or a gate twice to open or shut it' : lock?.on ? 'The mouse is yours: move it to look, W A S D or the arrows to walk (Shift to run, space to jump), click what the crosshair is on for its details, a door or a gate twice to open or shut it · the wheel pulls the view back to see yourself, forward again into your eyes · M shows the whole map: tap a place on it and you are walked there · Esc gives the mouse back' : lock?.why ? `The browser would not hand over the mouse (${lock.why}) — drag the view to look instead · W A S D or the arrows to walk · click a part for its details` : 'Click the view once to take the mouse (nothing is chosen by that click) · then move it to look, W A S D or the arrows to walk, ← → turn, Shift to run, space to jump · click what the crosshair is on for its details, a door or a gate twice to open or shut it · the wheel pulls the view back to see yourself · M shows the whole map: tap a place on it and you are walked there · Esc gives the mouse back'}</span>
             </div>
           ) : (
