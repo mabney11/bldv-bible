@@ -172,31 +172,50 @@ export function useSubtitles() {
 export function SubtitlesToggle({ on, setOn, id = 'st-subs' }) {
   return <label className="st-loop" title="Speak the caption into the scene, word by word"><input id={id} type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} /> canvas subtitles</label>;
 }
-export function CanvasSubtitles({ phase, on, pace = 170 }) {
+export function CanvasSubtitles({ phase, on, pace = 300 }) {
   const text = useResolvedCaption(phase?.caption || '');
   const units = useMemo(() => unitsOf(text), [text]);
-  const [shown, setShown] = useState(0);
-  const box = useRef(null);
-  // the words come up one by one on the wall clock (the story itself waits for the tap), a glossed pair taking a little longer
+  const [cur, setCur] = useState(null);   // { i, x, y, rot } — the one unit on show, where it stands and how it leans
+  // one word at a time, each taking the last one's place (fieldy: "words should appear one at a time replacing the position of the
+  // last"); the place itself wanders about the canvas every few words, keeping off the middle most of the time so the model is
+  // seen and not covered — now and then it may sit in the way, which is fine; a small lean of its own for each word
   useEffect(() => {
-    setShown(0);
+    setCur(null);
     if (!on || !units.length) return undefined;
-    let i = 0, timer = 0, alive = true;
-    const next = () => { if (!alive) return; i++; setShown(i); if (i < units.length) timer = setTimeout(next, units[i - 1].gloss != null ? pace * 1.7 : pace); };
-    timer = setTimeout(next, 120);
+    let i = 0, timer = 0, alive = true, left = 0, spot = null;
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const place = () => {   // a fresh spot: off-centre four times in five, away from the chips along the bottom
+      for (let k = 0; k < 8; k++) {
+        const x = rnd(22, 78), y = rnd(20, 74);
+        const mid = x > 34 && x < 66 && y > 28 && y < 66;
+        if (!mid || Math.random() < 0.2 || k === 7) return { x, y };
+      }
+      return { x: 50, y: 40 };
+    };
+    const next = () => {
+      if (!alive) return;
+      if (left <= 0) { spot = place(); left = 3 + Math.floor(Math.random() * 4); }
+      left--;
+      const u = units[i];
+      setCur({ i, x: spot.x, y: spot.y, rot: rnd(-8, 8) });
+      i++;
+      if (i < units.length) {
+        const len = u.w.length + (u.gloss ? u.gloss.length * 0.6 : 0);
+        timer = setTimeout(next, pace * (u.gloss != null ? 1.9 : 1) + Math.min(24, len) * 14);   // a long or glossed unit stays a little longer
+      }
+    };
+    timer = setTimeout(next, 150);
     return () => { alive = false; clearTimeout(timer); };
   }, [units, on, pace, phase?.key]);
-  useEffect(() => { const el = box.current; if (el) el.scrollTop = el.scrollHeight; }, [shown]);   // a long caption scrolls up as it grows; the newest words stay in view
-  if (!on || !units.length) return null;
+  if (!on || !cur) return null;
+  const u = units[cur.i]; if (!u) return null;
   return (
-    <div className="st-subs" ref={box} aria-hidden="true">
-      <div className="st-subs-line">
-        {units.slice(0, shown).map((u, i) => (
-          u.gloss != null
-            ? <span key={i} className={`st-sub-u st-sub-pair${i === shown - 1 ? ' st-sub-new' : ''}`}><span className="st-sub-w">{u.w}</span>{u.gloss ? <span className="st-sub-g">({u.gloss})</span> : null}{u.tail ? <span className="st-sub-t">{u.tail}</span> : null}</span>
-            : <span key={i} className={`st-sub-u${i === shown - 1 ? ' st-sub-new' : ''}`}>{u.w}</span>
-        ))}
-      </div>
+    <div className="st-subs" aria-hidden="true">
+      <span key={cur.i} className={`st-sub-u${u.gloss != null ? ' st-sub-pair' : ''}`} style={{ left: `${cur.x}%`, top: `${cur.y}%`, '--rot': `${cur.rot}deg` }}>
+        {u.gloss != null
+          ? <><span className="st-sub-w">{u.w}</span>{u.gloss ? <span className="st-sub-g">({u.gloss})</span> : null}{u.tail ? <span className="st-sub-t">{u.tail}</span> : null}</>
+          : u.w}
+      </span>
     </div>
   );
 }
