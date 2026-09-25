@@ -192,19 +192,20 @@ export function SubtitlesToggle({ subs, id = 'st-subs' }) {
  * only while the story PLAYS (nothing before the play button; paused, the word on show stays), a glossed pair holding longer —
  * and longer still for every word of its gloss (fieldy: his Hebrew will carry several English words in a gloss).
  */
-export function CanvasSubtitles({ phase, on, move = true, rot = true, playing = false, pace = 520 }) {
+export function CanvasSubtitles({ phase, on, move = true, rot = true, playing = false, scrubbed = null, pace = 520 }) {
+  const active = playing || (!!scrubbed && scrubbed === phase?.key);   // playing, or the pane the reader scrubbed to (fieldy: the subtitles show when scrubbing too)
   const text = useResolvedCaption(phase?.caption || '');
   const units = useMemo(() => unitsOf(text), [text]);
   const [cur, setCur] = useState(null);   // { i, x, y, rot } — the one unit on show, where it stands and how it leans
   const st = useRef({ i: 0, left: 0, spot: null, key: null });
   useEffect(() => { st.current = { i: 0, left: 0, spot: null, key: phase?.key }; setCur(null); }, [units, phase?.key, on]);
   useEffect(() => {
-    if (!on || !playing || !units.length) return undefined;
+    if (!on || !active || !units.length) return undefined;
     let timer = 0, alive = true;
     const rnd = (a, b) => a + Math.random() * (b - a);
-    const HOME = { x: 50, y: 79 };   // the subtitle area, above the chips
+    const HOME = { x: 50, y: 84 };   // the subtitle area, low, just above the chips — clear of the parts' popups
     const first = !phase || phase.from === 0;   // the first pane keeps to its place
-    const place = () => (move && !first ? { x: HOME.x + rnd(-9, 9), y: HOME.y + rnd(-7, 4) } : HOME);
+    const place = () => (move && !first ? { x: HOME.x + rnd(-9, 9), y: HOME.y + rnd(-6, 2) } : HOME);
     const next = () => {
       if (!alive) return;
       const c = st.current;
@@ -222,7 +223,7 @@ export function CanvasSubtitles({ phase, on, move = true, rot = true, playing = 
     };
     timer = setTimeout(next, st.current.i === 0 ? 200 : pace);   // resuming after a pause: the word on show gets its turn out
     return () => { alive = false; clearTimeout(timer); };
-  }, [units, on, playing, move, rot, pace, phase?.key]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [units, on, active, move, rot, pace, phase?.key]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!on || !cur) return null;
   const u = units[cur.i]; if (!u) return null;
   return (

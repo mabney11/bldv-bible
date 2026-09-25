@@ -210,6 +210,7 @@ export default function Statue() {
   const player = usePlayer(TIMELINE);
   const { clock, playing, speed, setSpeed, loop, setLoop, phase, selectable, ended, play, pause, seek, restart, scrubRef, timeRef, hold, continueNow } = player;
   const subs = useSubtitles();
+  const [scrubbed, setScrubbed] = useState(null);   // the pane the reader scrubbed to: its subtitles run though the story is not playing
   const [sheetOpen, setSheetOpen] = useState(!!sel);
 
   const setParam = useCallback((k, v) => {
@@ -240,7 +241,7 @@ export default function Statue() {
 
   const use3d = view === '3d' && canGL && glOk;
   const onPlayPause = () => (playing ? pause() : play());
-  const onScrub = (e) => seek((+e.target.value / 1000) * DURATION);
+  const onScrub = (e) => { const t = (+e.target.value / 1000) * DURATION; seek(t); setScrubbed(TIMELINE.phaseAt(t).key); };
   // Keyboard: space plays/pauses, ← → step a quarter second, Home rewinds (not while typing in a control).
   useEffect(() => {
     const onKey = (e) => {
@@ -276,7 +277,7 @@ export default function Statue() {
               {use3d
                 ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><StatueScene clock={clock} selected={shownSel} onSelect={select} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
                 : <StatueSheet clock={clock} selected={shownSel} onSelect={select} />}
-              <CanvasSubtitles phase={phase} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} />
+              <CanvasSubtitles phase={phase} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} scrubbed={scrubbed} />
               {/* One row of pieces along the bottom of the stage, the stone first:
                   tap one and the view flies to it; tap it again to let go. */}
               <div className="st-strip" role="toolbar" aria-label="Pieces">

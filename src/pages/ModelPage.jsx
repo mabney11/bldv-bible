@@ -138,7 +138,8 @@ export default function ModelPage({ model }) {
   const [sheetOpen, setSheetOpen] = useState(!!sel);
   const [sheetTall, setSheetTall] = useState(false);   // on foot the sheet stays low so the view stays in sight (fieldy); a drag up on its grip makes it tall
   const [following, setFollowing] = useState(true);
-  const subs = useSubtitles();   // the caption spoken into the scene, word by word
+  const subs = useSubtitles();
+  const [scrubbed, setScrubbed] = useState(null);   // the pane the reader scrubbed to: its subtitles run though the story is not playing   // the caption spoken into the scene, word by word
 
   const navigate = useNavigate();
   const setParam = useCallback((k, v) => {
@@ -164,7 +165,7 @@ export default function ModelPage({ model }) {
   // had picked or dragged to, a scrub means "show me what happens here". A still
   // slider leaves their selection and free look alone.
   const rejoin = useCallback(() => { if (sel) select(null); if (!following) sceneApi.current?.follow?.(); }, [sel, following, select]);
-  const seekAlong = useCallback((t) => { rejoin(); seek(t); }, [rejoin, seek]);
+  const seekAlong = useCallback((t) => { rejoin(); seek(t); setScrubbed(TIMELINES[mode].phaseAt(Math.max(0, Math.min(D, t))).key); }, [rejoin, seek, TIMELINES, mode, D]);
   const onScrub = (e) => seekAlong((+e.target.value / 1000) * D);
   const onRestart = () => { rejoin(); restart(); };
   useEffect(() => {
@@ -228,7 +229,7 @@ export default function ModelPage({ model }) {
                   ))}
                 </div>
               )}
-              {!roam && <CanvasSubtitles phase={phase} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} />}
+              {!roam && <CanvasSubtitles phase={phase} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} scrubbed={scrubbed} />}
               {use3d && !roam && !following && <button type="button" className="tp-follow" onClick={() => sceneApi.current?.refocus?.()} title={sel ? 'Recentre on the chosen part' : 'Recentre on where the story is'}>⌖ refocus</button>}
               <div className="st-strip" role="toolbar" aria-label={strings.parts || 'Parts of the model'}>
                 {CHIP_ORDER.map((id) => pieceById(id)).filter((p) => p && (!p.modes || p.modes.includes(mode))).map((p) => (
