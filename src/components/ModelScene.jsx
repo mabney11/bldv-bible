@@ -413,6 +413,35 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       const top = st.n * st.run - 0.5, along = st.axis === 'x';
       flights.push({ hy: st.y + st.n * st.rise, fy: st.y, len: st.n * st.run, perp: along ? [0, 1] : [1, 0], ahead: along ? [st.x - st.dir * 1.2, st.z] : [st.x, st.z - st.dir * 1.2], head: along ? [st.x + st.dir * top, st.z] : [st.x, st.z + st.dir * top], headOff: along ? [st.x + st.dir * (top + 1.2), st.z] : [st.x, st.z + st.dir * (top + 1.2)], foot: along ? [st.x + st.dir * 0.5, st.z] : [st.x, st.z + st.dir * 0.5] });
     }
+    /**
+     * The nearest place on his floor to step off it: an opening in the floor — the well of the building, a flight's opening —
+     * with clear ground beneath (fieldy: "the building has big openings in the floor: send him down through one and pick up
+     * from there"). A breadth-first walk over the floor's own grid from where he stands, to the first floor cell beside a void
+     * cell whose ground below is open and a little clear of walls. Returns the edge to walk to, a point past it (he steps off
+     * and drops), and the ground's height there.
+     */
+    function findDrop(sx, sz, level) {
+      if (!nav) buildNav();
+      const G = nav;   // the ground's grid
+      return onLevel(level, () => {
+        const L = nav, { W, Hn } = L, start = nearestFree(...cellOf(sx, sz).map((v, i) => Math.max(0, Math.min((i ? Hn : W) - 1, v))));
+        if (!start) return null;
+        const seen = new Uint8Array(W * Hn), q = [start[1] * W + start[0]]; seen[q[0]] = 1;
+        for (let h = 0; h < q.length && h < 6000; h++) {
+          const c = q[h], ci = c % W, cj = (c / W) | 0;
+          for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+            const ni = ci + di, nj = cj + dj; if (ni < 0 || nj < 0 || ni >= W || nj >= Hn) continue; const n = nj * W + ni;
+            if (!L.block[n]) { if (!seen[n]) { seen[n] = 1; q.push(n); } continue; }
+            // a void cell of this floor: a drop if the ground beneath is open, clear of walls, and well below
+            if (G.block[n] || G.clear[n] < 2 || G.H[n] > level - 1.5) continue;
+            const ex = L.x0 + ci + 0.5, ez = L.z0 + cj + 0.5, vx = L.x0 + ni + 0.5, vz = L.z0 + nj + 0.5;
+            if (navUpper.some((u) => u.top < level - 0.5 && u.top > G.H[n] + 0.5 && vx > u.x0 && vx < u.x1 && vz > u.z0 && vz < u.z1)) continue;   // a lower floor lies under this opening: not the ground yet
+            return { edge: [ex, ez], off: [ex + di * 1.6, ez + dj * 1.6], ground: G.H[n] };
+          }
+        }
+        return null;
+      });
+    }
     function routeFrom(x, z, y, gx, gz) {
       if (!nav) buildNav();
       const pre = []; let sx = x, sz = z, sy = y;
@@ -420,8 +449,12 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       for (let k = 0; k < 5; k++) {
         const [i, j] = cellOf(sx, sz), h = inNav(i, j) ? nav.H[j * nav.W + i] : GROUND;
         if (sy - h <= STEP_MAX) { const rest = findPath(sx, sz, gx, gz); if (rest) return join(rest); }   // the grid's ground is under him and knows a way
-        // else: come down a flight — one whose head is at his level, or (standing on its steps) the one he is on
+        // else: come down — through the nearest opening in his floor if there is one; failing that by a flight whose head is at
+        // his level, or (standing on its steps) the one he is on
         let best = null, bd = Infinity, onIt = false;
+        for (const f of flights) if (Math.abs(f.hy - sy) > 1.5 && sy > f.fy + 0.3 && sy < f.hy + 0.3 && Math.hypot(f.head[0] - sx, f.head[1] - sz) < f.len + 3) { onIt = true; best = f; break; }
+        if (!onIt) { const drop = findDrop(sx, sz, sy); if (drop) { pre.push(drop.edge, drop.off); sx = drop.off[0]; sz = drop.off[1]; sy = drop.ground; continue; } }
+        if (!onIt)
         for (const f of flights) {
           const atHead = Math.abs(f.hy - sy) <= 1.5, on = !atHead && sy > f.fy + 0.3 && sy < f.hy + 0.3 && Math.hypot(f.head[0] - sx, f.head[1] - sz) < f.len + 3;
           if (!atHead && !on) continue;
