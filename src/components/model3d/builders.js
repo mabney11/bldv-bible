@@ -255,10 +255,12 @@ export function makeMaterials(MATERIALS = BASE_MATERIALS) {
     carvedStone: std('stone', { map: carvedStone.map, bumpMap: carvedStone.bump, bumpScale: 0.14, roughness: 0.9 }),
   };
   M.stone.map.repeat.set(1, 1); M.found.map.repeat.set(1, 1);
+  // a model's own materials (the mashakan's goats' hair, rams' skins, tachash, acacia, cloud …): plain, from its colour table
+  for (const key of Object.keys(MATERIALS)) if (!M[key]) M[key] = std(key);
   return M;
 }
 // Tile sizes in cubits (u, v) per texture, for the UV scaling of boxes.
-const TILE = { stone: [6, 6], found: [8, 4], ground: [14, 14], cedar: [4, 4], cedarDark: [4, 4], fir: [4, 4], plaster: [5, 5], plaster2: [5, 5], paving: [5, 5], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], carvedStone: [8, 8], panel: [4, 3] };
+const TILE = { stone: [6, 6], found: [8, 4], ground: [14, 14], cedar: [4, 4], cedarDark: [4, 4], fir: [4, 4], plaster: [5, 5], plaster2: [5, 5], paving: [5, 5], carvedCedar: [8, 8], carvedGold: [8, 8], carvedOlive: [8, 8], carvedFir: [8, 8], carvedStone: [8, 8], panel: [4, 3], veil: [10, 10] };   // veil: the mashakan's curtains of cherubim laid over its boards as boxes
 
 /** Scale a BoxGeometry's UVs so a texture tiles every face at world scale. */
 function uvBox(geo, w, h, d, tile) {
@@ -720,10 +722,15 @@ function buildDoors(b, part) {
 function buildVeil(b, part) {
   const { x, y, z, w, h } = part;
   const halves = [];
+  // `tile: [u, v]` (cubits per repeat of the cloth's pattern) for a hanging of another size than the temple's veil — the mashakan's
+  // screens of twenty by five and ten by ten — else the pattern spans the half once
+  let mat = b.M.veil;
+  if (part.tile) { mat = b.M.veil.clone(); mat.map = b.M.veil.map.clone(); mat.map.repeat.set((w / 2) / part.tile[0], h / part.tile[1]); mat.map.needsUpdate = true; }
   for (const sz of [-1, 1]) {
     const geo = new THREE.PlaneGeometry(w / 2, h, 1, 1); geo.rotateY(Math.PI / 2);
-    const m = new THREE.Mesh(geo, b.M.veil); m.position.set(x, y + h / 2, z + sz * w / 4); m.castShadow = true; m.receiveShadow = true;
-    m.userData.rest = sz * w / 4; b.group.add(m); halves.push({ node: m, sz });
+    const m = new THREE.Mesh(geo, mat); m.position.set(x, y + h / 2, z + sz * w / 4); m.castShadow = true; m.receiveShadow = true;
+    m.userData.rest = sz * w / 4; m.userData.doorLeaf = part.open;   // a tap on the cloth itself parts or closes it, like a door's leaf (ModelScene roamGo)
+    b.group.add(m); halves.push({ node: m, sz });
   }
   const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, w + 1, 10), b.M.gold); rod.geometry.rotateX(Math.PI / 2); rod.position.set(x, y + h + 0.1, z); b.group.add(rod);
   (b.group.userData.veil ||= []).push({ halves, open: part.open });

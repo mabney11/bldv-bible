@@ -105,7 +105,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
 
     // The mount: a wide plain fading into the haze; the courts lay their own ground.
     const ground = new THREE.Mesh(new THREE.CircleGeometry(1400, 96), M.earth);
-    ground.rotation.x = -Math.PI / 2; ground.position.y = GROUND - 0.6; ground.receiveShadow = true; world.add(ground);
+    ground.rotation.x = -Math.PI / 2; ground.position.y = GROUND - (SC.plainDrop ?? 0.6);   // the plain a little under the model's ground (the temple's foundation shows); the mashakan's sand IS the plain ground.receiveShadow = true; world.add(ground);
 
     // ── Pieces ──────────────────────────────────────────────────────────────
     const groups = new Map();
@@ -495,6 +495,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       const add = (key, node) => { node.getWorldPosition(p); const a = acc.get(key) || { key, x: 0, z: 0, n: 0 }; a.x += p.x; a.z += p.z; a.n++; acc.set(key, a); };
       for (const gs of gateSets) add(gs.key, gs.node);
       for (const ds of doorSets) { const key = model.roam.openKey ? model.roam.openKey(ds.open) : ds.open; if (!(key in roam.want)) continue; for (const l of ds.leaves) if (l.i === 0) add(key, l.node); }
+      for (const vs of veilSets) { const key = model.roam.openKey ? model.roam.openKey(vs.open) : vs.open; if (!(key in roam.want)) continue; for (const hf of vs.halves) add(key, hf.node); }   // a veil or a screen: its two halves average to the middle of its opening
       return [...acc.values()].map((a) => ({ key: a.key, x: a.x / a.n, z: a.z / a.n }));
     }
     /** how far a point lies from the route still ahead (the walker's feet through the coming waypoints) */
@@ -530,8 +531,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       if (before - after < v * 0.2) a.still += dt; else { a.still = 0; a.tried.clear(); }   // moving again: the next shut thing may be opened too
       if (a.still > 1.2) {   // held up: a shut gate or door near? open the nearest not yet tried; a waypoint right at it counts as reached
         let best = null, bd = 9;
-        for (const gs of gateSets) { const p = new THREE.Vector3(); gs.node.getWorldPosition(p); const dd = Math.hypot(p.x - ex, p.z - ez); if (dd < bd && roam.want[gs.key] < 0.5 && !a.tried.has(gs.key)) { bd = dd; best = gs.key; } }
-        for (const ds of doorSets) { const p = new THREE.Vector3(); ds.leaves[0]?.node.getWorldPosition(p); const dd = Math.hypot(p.x - ex, p.z - ez), key = model.roam.openKey ? model.roam.openKey(ds.open) : ds.open; if (dd < bd && key in roam.want && roam.want[key] < 0.5 && !a.tried.has(key)) { bd = dd; best = key; } }
+        for (const t of shutThings()) { const dd = Math.hypot(t.x - ex, t.z - ez); if (dd < bd && roam.want[t.key] < 0.5 && !a.tried.has(t.key)) { bd = dd; best = t.key; } }   // gates, doors and veils alike, by the middle of each opening
         if (best) { roam.want[best] = 1; a.tried.add(best); a.still = 0; }
         else if (d < 3 && a.i < a.path.length - 1) { a.i++; a.still = 0; }   // close enough to a waypoint that cannot quite be reached: go on to the next
         else if ((a.replans || 0) < 3) {   // pushed against something the way did not know: find the way again from where he stands (fieldy: "self-correct instead of pushing into a corner and giving up")
@@ -931,6 +931,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         let bd = 10; const p = new THREE.Vector3();
         for (const gs of gateSets) { gs.node.getWorldPosition(p); const dd = p.distanceTo(point); if (dd < bd) { bd = dd; key = gs.key; } }
         for (const ds of doorSets) { const k = model.roam.openKey ? model.roam.openKey(ds.open) : ds.open; if (!(k in roam.want)) continue; for (const l of ds.leaves) { l.node.getWorldPosition(p); const dd = p.distanceTo(point); if (dd < bd) { bd = dd; key = k; } } }
+        for (const vs of veilSets) { const k = model.roam.openKey ? model.roam.openKey(vs.open) : vs.open; if (!(k in roam.want)) continue; for (const hf of vs.halves) { hf.node.getWorldPosition(p); const dd = p.distanceTo(point); if (dd < bd) { bd = dd; key = k; } } }
       }
       if (!key || !(key in roam.want)) return false;
       roam.want[key] = roam.want[key] > 0.5 ? 0 : 1;

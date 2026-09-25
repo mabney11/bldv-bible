@@ -72,6 +72,21 @@ export const MODELS = [
     ],
   },
   {
+    slug: 'tabernacle',
+    title: 'The Mashakan (Tabernacle) and Its Machanah (Camp)',
+    kicker: 'Interactive 3D model · Exodus 25–27, 40 · Numbers 2',
+    blurb: 'The mashakan (tabernacle) measured in amah (cubits) from the text: the chatzar (court) of qalaiyam (hangings) a hundred by fifty on its sixty imawadayam (pillars), the mazabach (altar) of nachashath (brass) and the basin, the qarashayam (boards) overlaid with zahab (gold) in adanayam (sockets) of kasap (silver), the yarayaihath (curtains) with karawab (cherubim) and the ahal (tent) of izayam (goats)\' hair over them, the shalachan (table), the manawarah (lampstand), the mazabach (altar) of qatarath (incense), the parakath (veil) and the arawan (ark) — with the Lawayay (Levites) and the twelve tribes camped about it by their dagal (standards). Raise it in the order Mashah (Moses) did, or walk it on your own feet.',
+    paleo: '𐤌𐤔𐤊𐤍',
+    tags: ['Exodus 25–27, 40', 'Numbers 2–3', '3D · plan & section', 'Raise · On foot'],
+    to: '/models/tabernacle',
+    quick: [
+      { label: 'Raise — in the order Mashah (Moses) set it up', to: '/models/tabernacle/walk' },
+      { label: 'Roam it and the camp on your own feet', to: '/models/tabernacle/roam' },
+      { label: 'The arawan (ark) — Exodus 25:10–22', to: '/models/tabernacle/walk?piece=arawan' },
+      { label: 'The machanah (camp) of Yahawadah (Judah) — Numbers 2:3', to: '/models/tabernacle/walk?piece=judah' },
+    ],
+  },
+  {
     slug: 'prints',
     title: 'Printable Maps',
     kicker: 'Downloadable map sheets',
@@ -88,7 +103,7 @@ export const MODELS = [
 ];
 
 export default function Models() {
-  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, and the tzalam (likeness) of Daniel 2 with the aban (stone) gazar (cut) out laa (without) yadayan (hands), and the bayath (house) Shalamah (Solomon) built for Yahawah, measured from 1 Kings 6–7.');
+  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, and the tzalam (likeness) of Daniel 2 with the aban (stone) gazar (cut) out laa (without) yadayan (hands), the bayath (house) Shalamah (Solomon) built for Yahawah, measured from 1 Kings 6–7, the house Yachazaqaal (Ezekiel) saw, and the mashakan (tabernacle) with its camp.');
   return (
     <div className="models-page">
       <header className="models-top">
@@ -118,7 +133,7 @@ export default function Models() {
         <div className="models-card models-card-soon">
           <span className="models-card-kicker">Coming</span>
           <span className="models-card-title">More models</span>
-          <p className="models-card-blurb">Future renderings — the temple of Ezekiel 40–43, the tabernacle, the city and its gates — will appear here as they're built.</p>
+          <p className="models-card-blurb">Future renderings — the city of Ezekiel 48 with its twelve gates, the city that comes down (Revelation 21) — will appear here as they're built.</p>
         </div>
       </div>
     </div>

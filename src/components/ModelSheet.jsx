@@ -124,7 +124,7 @@ export default function ModelSheet({ model, clock, mode, selected, onSelect }) {
     const nodes = new Map();   // piece id → [{g}]
     const order = [...PIECES].sort((a, b) => a.order - b.order);
     for (const piece of order) {
-      if (!piece.parts.length) continue;
+      if (!piece.parts.length || piece.sheet === false) continue;   // a piece kept off the flat sheet (the mashakan's camp, far outside the plan's frame)
       const gp = el('g', { class: `st-svg-pick${selected === piece.id ? ' on' : ''}`, tabindex: 0, role: 'button', 'aria-label': piece.tag, 'data-id': piece.id }, planG);
       const gs = el('g', { class: `st-svg-pick${selected === piece.id ? ' on' : ''}`, 'data-id': piece.id }, secG);
       const inner = el('g', {}, gp), innerS = el('g', {}, gs);

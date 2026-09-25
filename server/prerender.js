@@ -1200,6 +1200,21 @@ const STATIC_PAGES = {
     description: 'Roam the house Yachazaqaal (Ezekiel) saw on your own feet — up the steps and through the shairayam (gates), across the chatzarawath (courts), up to the awalam (porch) and in through the dalathawath (doors); tap any part for its measures and verses.',
     heading: 'Roam — The Bayath (House) Yachazaqaal (Ezekiel) Saw',
   },
+  '/models/tabernacle': {
+    title: `The Mashakan (Tabernacle) and Its Machanah (Camp) | ${BRAND}`,
+    description: 'The mashakan (tabernacle) of Exodus 25–27 and 40 as an interactive 3D model measured in amah (cubits) from the text — the chatzar (court) a hundred by fifty on its sixty imawadayam (pillars), the mazabach (altar) of nachashath (brass) and the basin, the qarashayam (boards) overlaid with zahab (gold), the yarayaihath (curtains) with karawab (cherubim) and the ahal (tent) of izayam (goats)\' hair, the shalachan (table), the manawarah (lampstand), the mazabach (altar) of qatarath (incense), the parakath (veil) and the arawan (ark) — with the Lawayay (Levites) and the twelve tribes camped about it (Numbers 2–3).',
+    heading: 'The Mashakan (Tabernacle) and Its Machanah (Camp)',
+  },
+  '/models/tabernacle/walk': {
+    title: `Raise — The Mashakan (Tabernacle) and Its Machanah (Camp) | ${BRAND}`,
+    description: 'Raise the mashakan (tabernacle) on the 3D model in the order Mashah (Moses) set it up (Exodus 40:17–33): the qarashayam (boards) in their adanayam (sockets) and the barayacham (bars), the yarayaihath (curtains) and the ahal (tent) over them, the arawan (ark) and the parakath (veil), the shalachan (table), the manawarah (lampstand), the altar of qatarath (incense), the screen of the pathach (door), the mazabach (altar) and the basin, the chatzar (court) — then the inan (cloud) covers it, and Yashar-Al (Israel) camps about it by their dagal (standards) (Numbers 2).',
+    heading: 'Raise — The Mashakan (Tabernacle) and Its Machanah (Camp)',
+  },
+  '/models/tabernacle/roam': {
+    title: `Roam — The Mashakan (Tabernacle) and Its Machanah (Camp) | ${BRAND}`,
+    description: 'Roam the mashakan (tabernacle) and its camp on your own feet — through the screen of the shair (gate), past the mazabach (altar) and the basin, into the tent to the shalachan (table), the manawarah (lampstand) and, past the parakath (veil), the arawan (ark); or out among the tents of the Lawayay (Levites) and the twelve; tap any part for its measures and verses.',
+    heading: 'Roam — The Mashakan (Tabernacle) and Its Machanah (Camp)',
+  },
   '/guide': {
     title: `Guide | ${BRAND}`,
     description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, the Lexicon and the Translation Studio.',
