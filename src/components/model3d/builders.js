@@ -391,7 +391,19 @@ function boxWithDoorway(b, part, matKey, xray) {
   }
 }
 
-function buildBox(b, part) {
+// Two faces in one plane fight over which is drawn, and the winner changes with the view — the band of "fuzz" along the top of a
+// wall whose roof slab ends exactly at the wall's face, a parapet's corners, a floor's edge in a partition's plane. So every box is
+// drawn a hair inside its measure, by its role (a roof less than a wall, a parapet less still), and every piece a hair of its own,
+// so no two things ever share a plane; nothing of it can be seen at the model's scale, and the measures stay what the text says.
+const INSET = { roof: 0.04, slab: 0.05, floor: 0.06, ceiling: 0.05, parapet: 0.08, lining: 0.03, lintel: 0.02, tower: 0.07, pavement: 0.06, threshold: 0.03, beam: 0.03, rail: 0.05 };
+const pieceHair = (id = '') => { let h = 1; for (const c of id) h = (h * 31 + c.charCodeAt(0)) % 11; return h * 0.003; };   // a piece's own hair, 0 … 0.03, from its name
+function inset(b, part) {
+  const d = (INSET[part.role] || 0) + pieceHair(b.piece.id);
+  if (!d || part.w <= 2 * d + 0.1 || part.d <= 2 * d + 0.1 || part.h <= d + 0.1) return part;
+  return { ...part, w: part.w - 2 * d, d: part.d - 2 * d, h: part.h - d };   // in from the sides, down from the top; the bottom stays on what it stands on
+}
+function buildBox(b, part0) {
+  const part = inset(b, part0);
   const matKey = b.matFor(part);
   const xray = XRAY_ROLES.has(part.role) && b.xrayGroups.has(b.piece.group);
   if (part.doorway) { boxWithDoorway(b, part, matKey, xray); return; }

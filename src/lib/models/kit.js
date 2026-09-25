@@ -113,7 +113,7 @@ export function makeKit(Y0) {
   function parapet(x0, x1, z0, z1, y) {
     const t = 0.8, h = 1.4;
     return [box((x0 + x1) / 2, y, z0 + t / 2, x1 - x0, h, t, { mat: 'stone', role: 'parapet' }), box((x0 + x1) / 2, y, z1 - t / 2, x1 - x0, h, t, { mat: 'stone', role: 'parapet' }),
-      box(x0 + t / 2, y, (z0 + z1) / 2, t, h, z1 - z0, { mat: 'stone', role: 'parapet' }), box(x1 - t / 2, y, (z0 + z1) / 2, t, h, z1 - z0, { mat: 'stone', role: 'parapet' })];
+      box(x0 + t / 2, y, (z0 + z1) / 2, t, h, z1 - z0 - 2 * t, { mat: 'stone', role: 'parapet' }), box(x1 - t / 2, y, (z0 + z1) / 2, t, h, z1 - z0 - 2 * t, { mat: 'stone', role: 'parapet' })];   // the end runs between the long ones (no overlapping corners)
   }
   /** A balcony rail (idealized, low) along a line: axis 'x' from a0 to a1 at z = at, or 'z' from a0 to a1 at x = at, standing on floor y. */
   const rail = (axis, a0, a1, at, y) => [ideal(axis === 'x' ? box((a0 + a1) / 2, y, at, a1 - a0, 1.2, 0.5, { mat: 'cedar', role: 'rail' }) : box(at, y, (a0 + a1) / 2, 0.5, 1.2, a1 - a0, { mat: 'cedar', role: 'rail' }))];
