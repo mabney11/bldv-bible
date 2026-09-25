@@ -138,7 +138,7 @@ export default function ModelPage({ model }) {
   const [sheetOpen, setSheetOpen] = useState(!!sel);
   const [sheetTall, setSheetTall] = useState(false);   // on foot the sheet stays low so the view stays in sight (fieldy); a drag up on its grip makes it tall
   const [following, setFollowing] = useState(true);
-  const [subs, setSubs] = useSubtitles();   // the caption spoken into the scene, word by word
+  const subs = useSubtitles();   // the caption spoken into the scene, word by word
 
   const navigate = useNavigate();
   const setParam = useCallback((k, v) => {
@@ -228,7 +228,7 @@ export default function ModelPage({ model }) {
                   ))}
                 </div>
               )}
-              {!roam && <CanvasSubtitles phase={phase} on={subs} />}
+              {!roam && <CanvasSubtitles phase={phase} on={subs.on} move={subs.move} rot={subs.rot} playing={playing} />}
               {use3d && !roam && !following && <button type="button" className="tp-follow" onClick={() => sceneApi.current?.refocus?.()} title={sel ? 'Recentre on the chosen part' : 'Recentre on where the story is'}>⌖ refocus</button>}
               <div className="st-strip" role="toolbar" aria-label={strings.parts || 'Parts of the model'}>
                 {CHIP_ORDER.map((id) => pieceById(id)).filter((p) => p && (!p.modes || p.modes.includes(mode))).map((p) => (
@@ -266,7 +266,7 @@ export default function ModelPage({ model }) {
               </label>
               <PaceSelect player={player} id="tp-pace" />
               <label className="st-loop"><input id="tp-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
-              <SubtitlesToggle on={subs} setOn={setSubs} id="tp-subs" />
+              <SubtitlesToggle subs={subs} id="tp-subs" />
             </div>
           </div>
           )}

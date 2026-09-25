@@ -164,49 +164,65 @@ export function useResolvedCaption(text) {
   return resolved;
 }
 const SUB_KEY = 'model-subtitles';
+const readFlag = (k, dflt) => { try { const v = localStorage.getItem(k); return v == null ? dflt : v !== '0'; } catch { return dflt; } };
+const writeFlag = (k, v) => { try { localStorage.setItem(k, v ? '1' : '0'); } catch {} };
+/** The subtitles' settings, remembered: on/off, and whether the words wander a little and lean. */
 export function useSubtitles() {
-  const [on, setOn] = useState(() => { try { return localStorage.getItem(SUB_KEY) !== '0'; } catch { return true; } });
-  useEffect(() => { try { localStorage.setItem(SUB_KEY, on ? '1' : '0'); } catch {} }, [on]);
-  return [on, setOn];
+  const [on, setOn] = useState(() => readFlag(SUB_KEY, true));
+  const [move, setMove] = useState(() => readFlag(`${SUB_KEY}-move`, true));
+  const [rot, setRot] = useState(() => readFlag(`${SUB_KEY}-rot`, true));
+  useEffect(() => { writeFlag(SUB_KEY, on); }, [on]);
+  useEffect(() => { writeFlag(`${SUB_KEY}-move`, move); }, [move]);
+  useEffect(() => { writeFlag(`${SUB_KEY}-rot`, rot); }, [rot]);
+  return { on, setOn, move, setMove, rot, setRot };
 }
-export function SubtitlesToggle({ on, setOn, id = 'st-subs' }) {
-  return <label className="st-loop" title="Speak the caption into the scene, word by word"><input id={id} type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} /> canvas subtitles</label>;
+export function SubtitlesToggle({ subs, id = 'st-subs' }) {
+  const { on, setOn, move, setMove, rot, setRot } = subs;
+  return (
+    <>
+      <label className="st-loop" title="Speak the caption into the scene, word by word, as it plays"><input id={id} type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} /> canvas subtitles</label>
+      {on && <label className="st-loop st-loop-sub" title="Let the words drift a little about the subtitle area"><input id={`${id}-move`} type="checkbox" checked={move} onChange={(e) => setMove(e.target.checked)} /> random movement</label>}
+      {on && <label className="st-loop st-loop-sub" title="Give each word a small lean of its own"><input id={`${id}-rot`} type="checkbox" checked={rot} onChange={(e) => setRot(e.target.checked)} /> random rotation</label>}
+    </>
+  );
 }
-export function CanvasSubtitles({ phase, on, pace = 300 }) {
+/**
+ * The caption spoken into the stage one unit at a time, each taking the last one's place, in the subtitle area (centred, toward
+ * the bottom); with `move` the place drifts a little about that area every few words, with `rot` each word leans a little. Runs
+ * only while the story PLAYS (nothing before the play button; paused, the word on show stays), a glossed pair holding longer —
+ * and longer still for every word of its gloss (fieldy: his Hebrew will carry several English words in a gloss).
+ */
+export function CanvasSubtitles({ phase, on, move = true, rot = true, playing = false, pace = 520 }) {
   const text = useResolvedCaption(phase?.caption || '');
   const units = useMemo(() => unitsOf(text), [text]);
   const [cur, setCur] = useState(null);   // { i, x, y, rot } — the one unit on show, where it stands and how it leans
-  // one word at a time, each taking the last one's place (fieldy: "words should appear one at a time replacing the position of the
-  // last"); the place itself wanders about the canvas every few words, keeping off the middle most of the time so the model is
-  // seen and not covered — now and then it may sit in the way, which is fine; a small lean of its own for each word
+  const st = useRef({ i: 0, left: 0, spot: null, key: null });
+  useEffect(() => { st.current = { i: 0, left: 0, spot: null, key: phase?.key }; setCur(null); }, [units, phase?.key, on]);
   useEffect(() => {
-    setCur(null);
-    if (!on || !units.length) return undefined;
-    let i = 0, timer = 0, alive = true, left = 0, spot = null;
+    if (!on || !playing || !units.length) return undefined;
+    let timer = 0, alive = true;
     const rnd = (a, b) => a + Math.random() * (b - a);
-    const place = () => {   // a fresh spot: off-centre four times in five, away from the chips along the bottom
-      for (let k = 0; k < 8; k++) {
-        const x = rnd(22, 78), y = rnd(20, 74);
-        const mid = x > 34 && x < 66 && y > 28 && y < 66;
-        if (!mid || Math.random() < 0.2 || k === 7) return { x, y };
-      }
-      return { x: 50, y: 40 };
-    };
+    const HOME = { x: 50, y: 79 };   // the subtitle area, above the chips
+    const first = !phase || phase.from === 0;   // the first pane keeps to its place
+    const place = () => (move && !first ? { x: HOME.x + rnd(-9, 9), y: HOME.y + rnd(-7, 4) } : HOME);
     const next = () => {
       if (!alive) return;
-      if (left <= 0) { spot = place(); left = 3 + Math.floor(Math.random() * 4); }
-      left--;
-      const u = units[i];
-      setCur({ i, x: spot.x, y: spot.y, rot: rnd(-8, 8) });
-      i++;
-      if (i < units.length) {
-        const len = u.w.length + (u.gloss ? u.gloss.length * 0.6 : 0);
-        timer = setTimeout(next, pace * (u.gloss != null ? 1.9 : 1) + Math.min(24, len) * 14);   // a long or glossed unit stays a little longer
+      const c = st.current;
+      if (c.i >= units.length) return;
+      if (c.left <= 0 || !c.spot) { c.spot = place(); c.left = 3 + Math.floor(Math.random() * 4); }
+      c.left--;
+      const u = units[c.i];
+      setCur({ i: c.i, x: c.spot.x, y: c.spot.y, rot: rot ? rnd(-7, 7) : 0 });
+      c.i++;
+      if (c.i < units.length) {
+        const glossWords = u.gloss ? u.gloss.trim().split(/\s+/).length : 0;
+        const hold = pace * (u.gloss != null ? 1.6 : 1) + Math.min(24, u.w.length) * 18 + Math.max(0, glossWords - 1) * 220;
+        timer = setTimeout(next, hold);
       }
     };
-    timer = setTimeout(next, 150);
+    timer = setTimeout(next, st.current.i === 0 ? 200 : pace);   // resuming after a pause: the word on show gets its turn out
     return () => { alive = false; clearTimeout(timer); };
-  }, [units, on, pace, phase?.key]);
+  }, [units, on, playing, move, rot, pace, phase?.key]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!on || !cur) return null;
   const u = units[cur.i]; if (!u) return null;
   return (
