@@ -791,6 +791,31 @@ function render(text, vgKey) {
   const picked = (VG.on && vgKey) ? pickAlignedTokens(text, vgKey) : null;
   const vgToks = picked ? picked.toks : null;
   const vgSns = vgToks ? new Set(vgToks.map(t => t.sn)) : null;
+  // Every root transliteration standing in this verse's Hebrew (±2 verses, to tolerate
+  // versification drift), even when pickAlignedTokens rejected the verse as a whole.
+  // 2026-09-26: 35k NT/Apocrypha verses are rejected there, and for them step 5 used to
+  // apply every global pin blind — "achad (one)", "shairay (city)", "hamah (like)" into
+  // verses whose Hebrew has no such word. Where the verse HAS Hebrew, a pin now has to
+  // name one of these roots; books with no Hebrew at all keep the old fallback.
+  const hebTrNear = (() => {
+    if (!VG.on || !vgKey) return null;
+    const [c, ch, v] = vgKey.split('|');
+    const set = new Set(); let any = false;
+    for (const d of [0, 1, -1, 2, -2]) {
+      const toks = VG.verses.get(`${c}|${ch}|${+v + d}`);
+      if (!toks || !toks.length) continue;
+      any = true;
+      for (const t of toks) { const n = String(t.tr || '').toLowerCase().replace(/[^a-z]/g, ''); if (n) set.add(n); }
+    }
+    return any ? set : null;
+  })();
+  const pinInHebrew = tr => {
+    if (!hebTrNear) return true;
+    const n = String(tr).toLowerCase().replace(/[^a-z]/g, '');
+    if (hebTrNear.has(n)) return true;
+    for (const r of hebTrNear) if (r.length >= 3 && n.startsWith(r)) return true;
+    return false;
+  };
   // Words step 5 chose NOT to render because this verse has real Hebrew backing —
   // step 5b is given first refusal on these (see its TERM.has guard below), instead
   // of the global pin's one-size-fits-all transliteration.
@@ -834,6 +859,7 @@ function render(text, vgKey) {
     // pins behave exactly as before there — that's the "reasoning allowed" carve-out
     // for books with no Hebrew original to check against.
     if (vgSns) { deferredToVg.add(lw); return w; }
+    if (!pinInHebrew(tr)) return w;
     if (/^[A-Z]/.test(w)) {
       if (NAME.has(lw) || PEOPLE.has(lw) || ALIAS.has(lw)) return w;
       // A capital can mean "proper noun" or just "start of sentence". Only the

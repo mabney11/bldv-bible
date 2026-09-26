@@ -59,6 +59,16 @@ nashay # H802`, `himself → gap`) — worth a review pass.
   transliteration is a root in that verse's Hebrew; otherwise the English stays plain. And
   with no HEB rows in the index, render-corpus saw NO Hebrew for any NT verse, so every
   NT word went through the blanket pins — rebuild first, then render, then re-run the audit.
+- **First real run (fieldy, same day):** audit only fell 387k → 363k. render-corpus reported
+  "9,884 verses glossed from their Hebrew, 35,237 rejected (Hebrew disagrees with the English —
+  pins only)": for rejected verses `vgSns` is null, so STEP 5 (not just 5c) applied every pin
+  blind. Step 5 now also requires the pin's transliteration to be a root in the verse's Hebrew
+  (±2 verses) whenever the verse has any Hebrew at all (`pinInHebrew`). Books with no Hebrew
+  keep the old fallback.
+- sync-heb-tokens --check: 100% identical tokenization, 5,342 SN disagreements (0.5%). Sampled
+  ones show the INDEX is worse in places (𐤀𐤕𐤔𐤋𐤌𐤅𐤍 Salmon → H853, 𐤅𐤉𐤔𐤉 Jesse → H3426,
+  𐤅𐤌𐤕𐤍 Matthan → H4191) — the head-picker lets a particle/common word win. Hold --apply
+  until that's fixed; the reader and Root Explorer read the index, not tokens_nt.
 
 **Also:** HebrewViewer prev/next arrows + ArrowLeft/Right were dead on every HEB-only book
 (`meta` came from the BHS book list → undefined → sideNav returned). Now falls back to the
