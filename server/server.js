@@ -5261,11 +5261,21 @@ try { fs.watchFile(WORK_TITLES_PATH, { interval: 1000 }, loadWorkTitles); } catc
 // Each source skips ids it does not contain. Hot-reloads.
 const BOOK_ORDER_PATH = path.join(__dirname, 'book-order.json');
 let BOOK_ORDER_POS = {};
+let BOOK_ORDER_NAMES = {};   // every {id, name} anywhere in book-order.json (Josephus 217-220 …)
 let _orderedBooksCache = {};
 function loadBookOrder() {
     try {
         const raw = fs.existsSync(BOOK_ORDER_PATH)
             ? JSON.parse(fs.readFileSync(BOOK_ORDER_PATH, 'utf8')) : {};
+        const names = {};
+        (function walk(o) {
+            if (Array.isArray(o)) return o.forEach(walk);
+            if (o && typeof o === 'object') {
+                if (Number.isFinite(o.id) && typeof o.name === 'string' && o.name && names[o.id] == null) names[o.id] = o.name;
+                Object.values(o).forEach(walk);
+            }
+        })(raw);
+        BOOK_ORDER_NAMES = names;
         const list = Array.isArray(raw.order) ? raw.order : [];
         const pos = {};
         list.forEach((e, i) => {
@@ -5620,7 +5630,7 @@ function buildCanonMeta() {
     return { names, chap };
 }
 function _ensureCanonMeta() { if (!_canonMeta) _canonMeta = buildCanonMeta(); return _canonMeta; }
-function canonName(id)     { return BOOK_NAMES[id] || _ensureCanonMeta().names[id] || `Book ${id}`; }
+function canonName(id)     { return BOOK_NAMES[id] || BOOK_ORDER_NAMES[id] || _ensureCanonMeta().names[id] || `Book ${id}`; }
 function canonChapters(id) { return _ensureCanonMeta().chap[id] || { first: 1, last: 1 }; }
 
 // GET /api/works  -> every literary work/doc across all sources, with resolved
@@ -7904,7 +7914,7 @@ function computeAggregateCoverage(opts = {}) {
 // the actual root_paleo forms still needing an entry (not just a fraction).
 function _renderCoverageBooks(books) {
     return [...books.entries()].map(([book_id, bk]) => ({
-        book_id, name: BOOK_NAMES[book_id] || `Book ${book_id}`,
+        book_id, name: canonName(book_id),
         total: bk.total, glossed: bk.glossed, pct: _glossPct(bk.glossed, bk.total),
         chapters: [...bk.chapters.entries()].map(([chapter, c]) => ({
             chapter, total: c.total, glossed: c.glossed, pct: _glossPct(c.glossed, c.total),
@@ -7973,7 +7983,7 @@ app.get('/api/admin/gloss-studio/structure', (req, res) => {
                 total += chTotal;
                 return { chapter, total: chTotal, verses };
             }).sort((a, b) => a.chapter - b.chapter);
-            return { book_id, name: BOOK_NAMES[book_id] || `Book ${book_id}`, total, chapters };
+            return { book_id, name: canonName(book_id), total, chapters };
         }).sort((a, b) => a.book_id - b.book_id);
         res.json({ books });
     } catch (err) {
@@ -9744,7 +9754,7 @@ app.get('/api/admin/verse-tokens', (req, res) => {
                 sourceTokens,
             };
         });
-        res.json({ book_id, chapter, verse, book_name: BOOK_NAMES[book_id] || `Book ${book_id}`, is_heb: navHebBooks().has(book_id), blocks });
+        res.json({ book_id, chapter, verse, book_name: canonName(book_id), is_heb: navHebBooks().has(book_id), blocks });
     } catch (err) {
         console.error('/api/admin/verse-tokens failed:', err);
         res.status(500).json({ error: err.message });
@@ -9759,7 +9769,7 @@ app.get('/api/admin/strongs-overrides', (req, res) => {
         const [book_id, chapter, verse, token_ordinal] = key.split(':').map(Number);
         return {
             key, book_id, chapter, verse, token_ordinal,
-            book_name: BOOK_NAMES[book_id] || `Book ${book_id}`,
+            book_name: canonName(book_id),
             strongs: ov.strongs, word_raw: ov.word_raw || '', note: ov.note || '',
             parts: Array.isArray(ov.parts) ? ov.parts : null,
         };
@@ -10835,7 +10845,7 @@ function bhsVersePage(hitRows, lexicon, homographs, surfaceOverrides, forceSourc
         } catch { /* translation.db may be empty */ }
         out.push({
             book_id: v.book_id,
-            book_name: BOOK_NAMES[v.book_id] || `Book ${v.book_id}`,
+            book_name: canonName(v.book_id),
             chapter: v.chapter,
             verse: v.verse,
             hit_ordinals: v.hit_ordinals,
@@ -10891,7 +10901,7 @@ app.get('/api/admin/gloss-studio/verse', (req, res) => {
         const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(book_id, chapter, verse));
 
         res.json({
-            book_id, book_name: BOOK_NAMES[book_id] || `Book ${book_id}`,
+            book_id, book_name: canonName(book_id),
             chapter, verse, words, missing,
             english: {
                 text: englishText, is_baseline: !isUserOverride && !!englishText,
@@ -10941,7 +10951,7 @@ app.get('/api/admin/gloss-studio/root-verses', (req, res) => {
                 const isUserOverride = !!savedText && !isUntouchedDraft;
                 const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(o.book_id, o.chapter, o.verse));
                 verses.push({
-                    book_id: o.book_id, book_name: BOOK_NAMES[o.book_id] || `Book ${o.book_id}`,
+                    book_id: o.book_id, book_name: canonName(o.book_id),
                     chapter: o.chapter, verse: o.verse, words,
                     english: { text: englishText, is_baseline: !isUserOverride && !!englishText },
                 });
@@ -11488,7 +11498,7 @@ app.get('/api/root-explorer/root', production.cache(60), (req, res) => {
             for (const bb of scopedByBook) byBookMap.set(bb.book_id, (byBookMap.get(bb.book_id) || 0) + bb.occ);
         }
         const by_book = [...byBookMap.entries()]
-            .map(([book_id, occ]) => ({ book_id, name: BOOK_NAMES[book_id] || `Book ${book_id}`, occ }))
+            .map(([book_id, occ]) => ({ book_id, name: canonName(book_id), occ }))
             .sort((a, b) => b.occ - a.occ || a.book_id - b.book_id);
 
         const prev = idx > 0 ? index[idx - 1] : null;
@@ -11511,7 +11521,7 @@ app.get('/api/root-explorer/root', production.cache(60), (req, res) => {
         // own first appearance. `first_by_letters` is the pooled answer the
         // word-by-word table already shows; `first_by_sn` is this number's.
         const fmtLoc = loc => loc
-            ? { book_id: loc.book_id, book_name: BOOK_NAMES[loc.book_id] || `Book ${loc.book_id}`, chapter: loc.chapter, verse: loc.verse }
+            ? { book_id: loc.book_id, book_name: canonName(loc.book_id), chapter: loc.chapter, verse: loc.verse }
             : null;
         const definition = rootDefinitionForSN(entry.root, entry.sn);
         const homographs = index
@@ -11617,7 +11627,7 @@ app.get('/api/root-explorer/first-by-letters', production.cache(3600), (req, res
         for (const rootPaleo of roots) {
             const loc = getFirstAppearanceByRoot(rootPaleo);
             results[rootPaleo] = loc
-                ? { book_id: loc.book_id, book_name: BOOK_NAMES[loc.book_id] || `Book ${loc.book_id}`, chapter: loc.chapter, verse: loc.verse }
+                ? { book_id: loc.book_id, book_name: canonName(loc.book_id), chapter: loc.chapter, verse: loc.verse }
                 : null;
         }
         res.json({ results });
@@ -11728,7 +11738,7 @@ app.get('/api/surface-explorer/surface', production.cache(60), (req, res) => {
         const entry = index[idx];
         const sn = entry.sn;
         const by_book = (entry.by_book || [])
-            .map(bb => ({ book_id: bb.book_id, name: BOOK_NAMES[bb.book_id] || `Book ${bb.book_id}`, occ: bb.occ }))
+            .map(bb => ({ book_id: bb.book_id, name: canonName(bb.book_id), occ: bb.occ }))
             .sort((a, b) => b.occ - a.occ || a.book_id - b.book_id);
         const total = entry.count;
 
@@ -11829,7 +11839,7 @@ app.get('/api/surface-explorer/first-by-word', production.cache(3600), (req, res
                     }
                 }
                 if (best) {
-                    hit = { book_id: best.book_id, book_name: BOOK_NAMES[best.book_id] || `Book ${best.book_id}`, chapter: best.chapter, verse: best.verse };
+                    hit = { book_id: best.book_id, book_name: canonName(best.book_id), chapter: best.chapter, verse: best.verse };
                 }
             }
             _firstBySurfaceCache.set(word, hit);
@@ -13085,7 +13095,7 @@ app.get('/api/multi/books', production.cache(60), (req, res) => {
         `).all(source_id);
         const books = rows.map(r => ({
             book_id:    r.book_id,
-            name:       MULTI_BOOK_NAMES[r.book_id] || `Book ${r.book_id}`,
+            name:       MULTI_canonName(r.book_id),
             n_chapters: r.n_chapters,
             n_verses:   r.n_verses,
         }));
@@ -13109,7 +13119,7 @@ app.get('/api/multi/chapters', production.cache(60), (req, res) => {
         res.json({
             source:  source_id,
             book_id,
-            book_name: MULTI_BOOK_NAMES[book_id] || `Book ${book_id}`,
+            book_name: MULTI_canonName(book_id),
             chapters: rows,
         });
     } catch (e) {
@@ -13141,7 +13151,7 @@ app.get('/api/multi/verses', production.cache(60), (req, res) => {
         res.json({
             source:    source_id,
             book_id,
-            book_name: MULTI_BOOK_NAMES[book_id] || `Book ${book_id}`,
+            book_name: MULTI_canonName(book_id),
             chapter,
             doc_id:    pref?.doc_id || null,
             verses:    rows,
@@ -13186,9 +13196,9 @@ app.get('/api/multi/verse', production.cache(60), (req, res) => {
         `).get(source_id, cur.ord + 1);
 
         res.json({
-            current: { ...cur, book_name: MULTI_BOOK_NAMES[cur.book_id] || `Book ${cur.book_id}` },
-            prev:    prev ? { ...prev, book_name: MULTI_BOOK_NAMES[prev.book_id] || `Book ${prev.book_id}` } : null,
-            next:    next ? { ...next, book_name: MULTI_BOOK_NAMES[next.book_id] || `Book ${next.book_id}` } : null,
+            current: { ...cur, book_name: MULTI_canonName(cur.book_id) },
+            prev:    prev ? { ...prev, book_name: MULTI_canonName(prev.book_id) } : null,
+            next:    next ? { ...next, book_name: MULTI_canonName(next.book_id) } : null,
         });
     } catch (e) {
         console.error('/api/multi/verse', e); res.status(500).json({ error: e.message });
@@ -13219,7 +13229,7 @@ app.get('/api/multi/parallel', production.cache(60), (req, res) => {
         `).all(book_id, chapter, verse);
         res.json({
             book_id,
-            book_name: MULTI_BOOK_NAMES[book_id] || `Book ${book_id}`,
+            book_name: MULTI_canonName(book_id),
             chapter,
             verse,
             sources: rows,

@@ -1032,6 +1032,13 @@ function buildHebSurfaces(o) {
             ];
             for (const [split, maxWhole] of cands) {
                 if (!split || split === chosen || wholeCount > maxWhole) continue;
+                // An ENDING split never overrides a whole word the OT actually attests.
+                // 2026-09-26: once SUF_COMPS found evidence for more tails, Rev 21:18's
+                // 𐤅𐤁𐤍𐤉𐤍 (attested exactly: 𐤅 + Aramaic banayin "building") lost to
+                // 𐤅 + 𐤁𐤍 "son" + [My/Of] + [Emphatic] — a common stem beats a rare exact
+                // word on frequency. Prefix splits (the 𐤌𐤓𐤅𐤕 "from Ruth" case this block
+                // exists for) still may.
+                if (chosen.tier === 'exact' && (split.tier === 'suffix' || split.tier === 'affixed')) continue;
                 if (formCount(stemOfR(split)) < PREFER_SPLIT_STEM) continue;
                 chosen = split;
                 preferredSplits++;
