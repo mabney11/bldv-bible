@@ -844,6 +844,8 @@ function render(text, vgKey) {
   s = s.replace(/\b([A-Za-z][A-Za-z']*)\b(?!\s*[\u0000(])/g, (w, _g1, off) => {
     const lw = w.toLowerCase();
     if (TERM_EXCLUDE.has(lw)) return w;
+    // half of a hyphenated English compound (in-law, twenty-five, burnt-offering) is not a word
+    if (s[off - 1] === '-' || s[off + w.length] === '-') return w;
     const tr = termFor(lw);
     if (!tr) return w;
     // A global pin is one transliteration for the whole corpus — picked by popularity,
@@ -892,6 +894,7 @@ function render(text, vgKey) {
       s = s.replace(/\b([A-Za-z][A-Za-z']*)\b(?!\s*[\u0000\u0001(])/g, (w, _g, off) => {
         engIdx = Math.max(engIdx, engWords.indexOf(off));
         const lw = w.toLowerCase();
+        if (s[off - 1] === '-' || s[off + w.length] === '-') return w;   // half of an English compound
         const isFunction = lw.length < 3 || VG_FILLER.has(lw) || COMMON.has(lw);
         // Normally a word with a global TERM entry is assumed already handled by step 5
         // and is off-limits here. Exception: words step 5 itself deferred because this
@@ -963,6 +966,7 @@ function render(text, vgKey) {
         s = s.replace(/\b([A-Za-z][A-Za-z']*)\b(?!\s*[\u0000\u0001\u0002(])/g, (w, _g1, off) => {
           const lw = w.toLowerCase();
           if (!deferredToVg.has(lw) || TERM_EXCLUDE.has(lw)) return w;
+          if (s[off - 1] === '-' || s[off + w.length] === '-') return w;
           const tr = termFor(lw);
           if (!tr) return w;
           if (!pinInVerse(tr)) return w;
@@ -1103,9 +1107,21 @@ let unglossedRows = 0, unglossedPairs = 0;
 const unglossSrc = (t) => {
   if (!FROM_SRC || !t) return t;
   let n = 0;
+  const known = w => {
+    const n = w.toLowerCase().replace(/[^a-z]/g, '');
+    if (KNOWN_TR.has(n)) return true;
+    // plural / construct endings the pins added: pachawath, malachamawath, tzalamay …
+    for (const e of ['awath', 'ayam', 'ath', 'ay', 'aw', 'am'])
+      if (n.length > e.length + 2 && n.endsWith(e) && KNOWN_TR.has(n.slice(0, -e.length))) return true;
+    return false;
+  };
   const out = t.replace(/\b([A-Za-z][A-Za-z'’-]*) \(([A-Za-z][A-Za-z'’ -]{0,38})\)/g, (m, tr, eng) => {
-    if (!KNOWN_TR.has(tr.toLowerCase().replace(/[^a-z]/g, ''))) return m;
     if (eng.trim().split(/\s+/).length > 3) return m;
+    // A pin that replaced the second half of an English compound: "in-thawarah (law)",
+    // "twenty-chamash (five)", "burnt-ilawath (offerings)" -> "in-law", "twenty-five" …
+    const hy = tr.lastIndexOf('-');
+    if (hy > 0 && known(tr.slice(hy + 1))) { n++; return tr.slice(0, hy + 1) + eng; }
+    if (!known(tr)) return m;
     n++; return eng;
   });
   if (n) { unglossedRows++; unglossedPairs += n; }
