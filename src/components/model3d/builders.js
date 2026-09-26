@@ -292,6 +292,7 @@ export class PieceBuilder {
   box(x, y, z, w, h, d, matKey, xray = false, rot = 0) {
     const geo = new THREE.BoxGeometry(w, h, d);
     if (TILE[matKey]) uvBox(geo, w, h, d, TILE[matKey]);
+    else if (this.ideal && Math.max(w, h, d) > 60) uvBox(geo, w, h, d, [30, 30]);   // a conjectured wall a city long keeps the hatch at a wall's density, not two strokes over a mile
     if (rot) geo.rotateY(rot);
     geo.translate(x, y + h / 2, z);
     this.add(geo, matKey, xray);
@@ -321,15 +322,23 @@ export class PieceBuilder {
   bake() {
     for (const { matKey, xray, ideal, geos } of this.buckets.values()) {
       const list = geos.some((g) => !g.index) ? geos.map((g) => (g.index ? g.toNonIndexed() : g)) : geos;
-      const geo = list.length === 1 ? list[0] : mergeGeometries(list, false);
-      if (!geo) continue;
-      let mat = this.M[matKey] || this.M.stone;
-      if (xray) { mat = mat.clone(); mat.transparent = true; mat.userData.xray = true; }
-      if (ideal) mat = idealOf(this.M, matKey);
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.castShadow = !ideal; mesh.receiveShadow = true; mesh.userData.xray = xray; mesh.userData.ideal = ideal;
-      this.group.add(mesh);
-      if (ideal) { const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), this.M.idealEdge); edges.userData.ideal = true; edges.raycast = () => {}; this.group.add(edges); }   // its edges drawn, like a sketch
+      // a model that reaches millions of amah from the origin (the city of the Revelation) would jitter in float32: the geometries
+      // are merged by chunk of the model and each chunk's mesh carries its centre, so the vertices stay small
+      const chunks = new Map();
+      for (const g of list) { g.computeBoundingBox(); const c = g.boundingBox.getCenter(new THREE.Vector3()); const k = c.length() < CHUNK ? '0' : `${Math.round(c.x / CHUNK)}|${Math.round(c.z / CHUNK)}`; if (!chunks.has(k)) chunks.set(k, []); chunks.get(k).push(g); }
+      for (const part of chunks.values()) {
+        const geo = part.length === 1 ? part[0] : mergeGeometries(part, false);
+        if (!geo) continue;
+        geo.computeBoundingBox(); const centre = geo.boundingBox.getCenter(new THREE.Vector3());
+        if (centre.length() > CHUNK) geo.translate(-centre.x, -centre.y, -centre.z); else centre.set(0, 0, 0);
+        let mat = this.M[matKey] || this.M.stone;
+        if (xray) { mat = mat.clone(); mat.transparent = true; mat.userData.xray = true; }
+        if (ideal) mat = idealOf(this.M, matKey);
+        const mesh = new THREE.Mesh(geo, mat); mesh.position.copy(centre);
+        mesh.castShadow = !ideal; mesh.receiveShadow = true; mesh.userData.xray = xray; mesh.userData.ideal = ideal;
+        this.group.add(mesh);
+        if (ideal) { const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), this.M.idealEdge); edges.position.copy(centre); edges.userData.ideal = true; edges.raycast = () => {}; this.group.add(edges); }   // its edges drawn, like a sketch
+      }
     }
     return this.group;
   }
@@ -340,6 +349,8 @@ export class PieceBuilder {
  *  fieldy: "visual clarity that the interior has been idealized when the text doesn't support it — no need for clarity when
  *  the text supports it". */
 const idealCache = new WeakMap();
+const CHUNK = 16384;   // the chunk (amah) the baked geometry is merged and re-centred by, far from the origin
+
 export function idealOf(M, matKey) {
   const base = M[matKey] || M.stone;
   if (!idealCache.has(M)) idealCache.set(M, new Map());
@@ -1088,6 +1099,8 @@ export function buildPiece(M, piece, ground = -4, xrayGroups = XRAY_GROUPS) {
       case 'box': buildBox(b, part); break;
       case 'cyl': b.cyl(part.x, part.y, part.z, part.r, part.h, part.mat || piece.material, part.r2 || part.r); break;
       case 'poly': b.poly(part.ring, part.y ?? ground, part.mat || piece.material); break;
+      case 'sphere': b.sphere(part.x, part.y, part.z, part.r, part.mat || piece.material, part.seg || 24); break;
+      case 'torus': b.torus(part.x, part.y, part.z, part.R, part.r, part.mat || piece.material, part.rx || 0, part.ry || 0); break;
       case 'lathe': b.lathe(part.x, part.y, part.z, part.profile, part.mat || piece.material, part.seg || 48, part.phiStart || 0, part.phiLength ?? Math.PI * 2); break;
       case 'ramp': buildRamp(b, part); break;
       case 'cherub': buildCherub(b, part); break;

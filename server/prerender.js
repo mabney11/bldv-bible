@@ -1235,6 +1235,21 @@ const STATIC_PAGES = {
     description: 'Walk the city of Ezekiel 48 on your own feet — in at any of the twelve gates named for the tribes, down its streets to the square in the midst, out to the open land and the fields.',
     heading: 'Roam — The Iyar (City) Yachazaqaal (Ezekiel) Saw',
   },
+  '/models/revelation-city': {
+    title: `The Shairay (City) Coming Down Out of Shamayam (Heaven) | ${BRAND}`,
+    description: 'The holy city of Revelation 21–22 as an interactive 3D model at the text\'s own scale — twelve thousand stadia a side over the Holy Land, its jasper wall on twelve foundations of stones, its twelve gates of pearl, the street of gold, the river of life and the throne — see it come down, or stand in its gate on your own feet.',
+    heading: 'The Shairay (City) Coming Down Out of Shamayam (Heaven)',
+  },
+  '/models/revelation-city/descend': {
+    title: `Descend — The Shairay (City) Coming Down Out of Shamayam (Heaven) | ${BRAND}`,
+    description: 'The holy city of Revelation 21–22 coming down out of heaven on the 3D model as the text gives it: the new earth, the city whole, the mountain, its light, the wall and the twelve gates, the twelve foundations stone by stone, the measuring, the gold, the river of life and the tree, the throne.',
+    heading: 'Descend — The Shairay (City) Coming Down Out of Shamayam (Heaven)',
+  },
+  '/models/revelation-city/roam': {
+    title: `Roam — The Shairay (City) Coming Down Out of Shamayam (Heaven) | ${BRAND}`,
+    description: 'Stand in the gate of pearl of the holy city of Revelation 21 on your own feet — the wall of jasper on its twelve foundations towering either side, the street of gold and the river of life before you — and be carried, as John was, to any gate or to the throne.',
+    heading: 'Roam — The Shairay (City) Coming Down Out of Shamayam (Heaven)',
+  },
   '/guide': {
     title: `Guide | ${BRAND}`,
     description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, the Lexicon and the Translation Studio.',

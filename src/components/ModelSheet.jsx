@@ -57,6 +57,8 @@ function planShape(piece, part, g) {
     case 'lampstand': return circ(part.x, part.z, 0.9, { fill: MATERIALS.gold.color });
     case 'table': return rect(part.x, part.z, 2, 1);
     case 'throne': return rect(part.x, part.z, 6, 4, { fill: MATERIALS.ivory.color });
+    case 'torus': return part.ry ? rect(part.x, part.z, part.r * 2, part.R * 2) : rect(part.x, part.z, part.R * 2, part.r * 2);
+    case 'sphere': return circ(part.x, part.z, part.r);
     default: return null;
   }
 }
@@ -91,6 +93,8 @@ function sectionShape(piece, part, g) {
     case 'lampstand': return Math.abs(part.z) < 8 ? rect(part.x, part.y, 2.2, part.h, { opacity: 0.6 }) : null;
     case 'table': return Math.abs(part.z) < 5 ? rect(part.x, part.y, 2, 1.6, { opacity: 0.6 }) : null;
     case 'throne': return null;
+    case 'torus': return Math.abs(part.z) < part.R + part.r ? rect(part.x, part.y - part.R - part.r, part.ry ? part.r * 2 : (part.R + part.r) * 2, (part.R + part.r) * 2) : null;
+    case 'sphere': return Math.abs(part.z) < part.r ? rect(part.x, part.y - part.r, part.r * 2, part.r * 2) : null;
     default: return null;
   }
 }

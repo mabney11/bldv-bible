@@ -482,7 +482,10 @@ export const MODEL = {
   WORDS, MATERIALS, PIECES, GROUPS, MODES, SPEEDS, CHIP_ORDER, PASSAGES, STORIES,
   pieceById, pieceForWord, passagesFor, refsFor, phaseAt, progressAt, xrayAt, openAt, cameraAt, marksFor, focusFor,
   stories: STORIES,
-  related: [{ label: 'Open the house model →', to: '/models/ezekiel', note: 'The bayath (house) standing in the portion\'s midst is its own model, walked gate by gate the way the man with the qanah (reed) led him.' }],
+  related: [
+    { label: 'Open the house model →', to: '/models/ezekiel', note: 'The bayath (house) standing in the portion\'s midst is its own model, walked gate by gate the way the man with the qanah (reed) led him.' },
+    { label: 'The city coming down out of heaven →', to: '/models/revelation-city', note: 'The shairay (city) of Revelation 21 on this same ground, twelve thousand stadia a side — a thousand times this one — with twelve gates of pearl bearing the same names, three to a side.' },
+  ],
   card: {
     title: 'The iyar (city) and the qadash (holy) tharawamah (portion) Yachazaqaal (Ezekiel) raah (saw)',
     subtitle: (mode) => (mode === 'portion' ? 'Ezekiel 45:1–8; 47; 48' : 'Ezekiel 48:15–20, 30–35'),

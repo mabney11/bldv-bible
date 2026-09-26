@@ -34,9 +34,10 @@ import { SKY, XRAY_GROUPS, makeMaterials, loadPhotos, buildPiece, cutGates, load
 import { templeExtras } from './model3d/templeExtras.js';
 import { tabernacleExtras } from './model3d/tabernacleExtras.js';
 import { cityExtras } from './model3d/cityExtras.js';
+import { revelationExtras } from './model3d/revelationExtras.js';
 
 /** A model's own actors, by the name its MODEL.scene.extras gives (a function is taken as is). */
-const EXTRAS = { temple: templeExtras, tabernacle: tabernacleExtras, city: cityExtras };
+const EXTRAS = { temple: templeExtras, tabernacle: tabernacleExtras, city: cityExtras, revelation: revelationExtras };
 
 /** Where the viewer last stood on foot (position, yaw, pitch) — kept while the page lives, so opening a card, a re-mount or a
  *  switch of view never sends them back to the gate ("don't move me back to the beginning"). */
@@ -298,9 +299,14 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const levelNavs = new Map();   // the grids of the upper storeys, by floor height (built when first stood on)
     /** the grid of the ground (level null), or of an upper storey at `level`: there only what stands at that height is floor — a
      *  gallery's slab, the top steps of its flight — and where nothing does (the well, the flight's opening) is void */
+    /** the grid's extent: the whole model — or, for a model too wide for one grid (the city of the Revelation, four million
+     *  amah a side), SC.navAround amah about the walker, rebuilt where he is carried */
+    const navExt = () => (SC.navAround ? { x0: camera.position.x - SC.navAround, x1: camera.position.x + SC.navAround, z0: camera.position.z - SC.navAround, z1: camera.position.z + SC.navAround } : EXT);
+    function navFresh() { if (SC.navAround && nav && Math.hypot(camera.position.x - nav.cx, camera.position.z - nav.cz) > SC.navAround * 0.6) { nav = null; levelNavs.clear(); } }
     function buildNav(level = null) {
       // a coarse grid is shifted half a cell, so that cell CENTRES fall on the round coordinates a model's gates sit on (the city's at 0, ±1,500)
-      const x0 = Math.floor(EXT.x0 / CS) * CS - (CS > 1 ? CS / 2 : 0), z0 = Math.floor(EXT.z0 / CS) * CS - (CS > 1 ? CS / 2 : 0), W = Math.ceil((EXT.x1 - x0) / CS) + 1, Hn = Math.ceil((EXT.z1 - z0) / CS) + 1;
+      const NE = navExt();
+      const x0 = Math.floor(NE.x0 / CS) * CS - (CS > 1 ? CS / 2 : 0), z0 = Math.floor(NE.z0 / CS) * CS - (CS > 1 ? CS / 2 : 0), W = Math.ceil((NE.x1 - x0) / CS) + 1, Hn = Math.ceil((NE.z1 - z0) / CS) + 1;
       const H = new Float32Array(W * Hn).fill(level ?? GROUND), block = new Uint8Array(W * Hn);
       if (level != null) block.fill(1);
       // every cell whose CENTRE lies in [ax0, ax1] × [az0, az1] (a cell i covers x0 + i … x0 + i + 1)
@@ -320,7 +326,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       const clear = new Uint8Array(W * Hn).fill(4); const q = [];
       for (let k = 0; k < W * Hn; k++) if (block[k]) { clear[k] = 0; q.push(k); }
       for (let h = 0; h < q.length; h++) { const c = q[h], d = clear[c]; if (d >= 4) continue; const ci = c % W, cj = (c / W) | 0; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const ni = ci + di, nj = cj + dj; if (ni < 0 || nj < 0 || ni >= W || nj >= Hn) continue; const n = nj * W + ni; if (clear[n] > d + 1) { clear[n] = d + 1; q.push(n); } } }
-      const built = { x0, z0, W, Hn, H, block, clear };
+      const built = { x0, z0, W, Hn, H, block, clear, cx: camera.position.x, cz: camera.position.z };
       if (level == null) nav = built; else levelNavs.set(level, built);
       return built;
     }
@@ -375,7 +381,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
      */
     const APPROACH = 4;   // cubits clear of the wall's face at which he lines up on the door
     function findPath(ax, az, bx, bz) {
-      const raw = findRaw(ax, az, bx, bz); if (!raw || raw.length < 2) return raw;
+      navFresh(); const raw = findRaw(ax, az, bx, bz); if (!raw || raw.length < 2) return raw;
       const crossed = [];   // [{ d, side, at }] in the order met
       const hits = (p, q, d) => {   // does the leg p → q cross the door d's line (its opening, a cubit wider each way)?
         const n = d.axis === 'x' ? [0, 1] : [1, 0], u = d.axis === 'x' ? [1, 0] : [0, 1];
@@ -450,7 +456,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       });
     }
     function routeFrom(x, z, y, gx, gz) {
-      if (!nav) buildNav();
+      navFresh(); if (!nav) buildNav();
       const pre = []; let sx = x, sz = z, sy = y;
       const join = (rest) => (pre.length ? [[x, z], ...pre, ...rest.slice(1)] : rest);
       for (let k = 0; k < 5; k++) {
@@ -490,6 +496,21 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       roam.body = roam.yaw;   // the view stays as it was — first person walks first person (fieldy)
       autoEl.hidden = false; autoEl.innerHTML = `Walking to <b></b> · any walking key stops it`; autoEl.querySelector('b').textContent = label || 'the place';
       dirty = true; return true;
+    }
+    /** Carried to a place too far to walk (the city of the Revelation, 21:10 — "He carried me away in the Spirit"): a veil of
+     *  light, the walker set down there facing `face`, the veil lifted. */
+    const carryEl = document.createElement('div'); carryEl.className = 'tp-carry'; el.appendChild(carryEl);
+    function carryTo(x, z, face, label) {
+      cancelAuto(); carryEl.classList.add('tp-carry-on');
+      setTimeout(() => {
+        const yaw = face ? Math.atan2(face[1] - z, face[0] - x) : roam.yaw;
+        camera.position.x = x; camera.position.z = z; roam.yaw = yaw; roam.body = yaw; roam.pitch = 0; roam.air = 0; roam.vy = 0; nav = null; levelNavs.clear();
+        const gy = groundUnder(x, z, roam.foot + 3); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; }
+        aimCamera(); remember(); dirty = true;
+        autoEl.hidden = false; autoEl.innerHTML = 'Carried to <b></b>'; autoEl.querySelector('b').textContent = label || 'the place';
+        setTimeout(() => { carryEl.classList.remove('tp-carry-on'); dirty = true; }, 120);
+        setTimeout(() => { if (!auto) autoEl.hidden = true; }, 2600);
+      }, 520);
     }
     function cancelAuto() {
       if (!auto) return;
@@ -593,11 +614,12 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const levelPlaces = () => (mapView ? mapView.children || [] : PLACES);
     const placeAt = (wx, wz) => { let best = null; for (const n of levelPlaces()) { const b = n.bounds; if (wx >= b.x0 && wx <= b.x1 && wz >= b.z0 && wz <= b.z1) { if (!best || (b.x1 - b.x0) * (b.z1 - b.z0) < (best.bounds.x1 - best.bounds.x0) * (best.bounds.z1 - best.bounds.z0)) best = n; } } return best; };
     const mapWorld = (e) => { const r = mmap.getBoundingClientRect(), dpr = mmap.width / r.width, px = (e.clientX - r.left) * dpr, py = (e.clientY - r.top) * dpr; const { S, ox, oz } = bigFrame(mmap.width); return { r, dpr, px, py, S, ox, oz, wx: (px - ox) / S, wz: (py - oz) / S }; };
-    function askGo(e, x, z, label) {
+    function askGo(e, x, z, label, face = null) {
       const { r } = mapWorld(e);
-      gotoAsk = { x, z, label };
+      const far = !!SC.carryBeyond && Math.hypot(x - camera.position.x, z - camera.position.z) > SC.carryBeyond;
+      gotoAsk = { x, z, label, far, face };
       gotoEl.innerHTML = '<span></span><button type="button" class="tp-goto-go">Go</button><button type="button" class="tp-goto-no">Cancel</button>';
-      gotoEl.querySelector('span').textContent = label ? `Walk to ${label}?` : `Walk here (${Math.round(x)}, ${Math.round(z)})?`;
+      gotoEl.querySelector('span').textContent = far ? `Be carried to ${label || 'there'}?` : label ? `Walk to ${label}?` : `Walk here (${Math.round(x)}, ${Math.round(z)})?`;
       gotoEl.style.left = `${Math.min(r.width - 230, Math.max(8, e.clientX - r.left + 8))}px`; gotoEl.style.top = `${Math.min(r.height - 44, Math.max(8, e.clientY - r.top + 8))}px`;
       gotoEl.hidden = false; dirty = true;
     }
@@ -607,7 +629,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       const { dpr, px, py, S, ox, oz, wx, wz } = mapWorld(e);
       const n = placeAt(wx, wz);
       if (n && n.children?.length) { setMapView(n); return; }   // a building: look inside it
-      if (n) { const [ax, az] = n.at || [(n.bounds.x0 + n.bounds.x1) / 2, (n.bounds.z0 + n.bounds.z1) / 2]; askGo(e, ax, az, n.label); return; }
+      if (n) { const [ax, az] = n.at || [(n.bounds.x0 + n.bounds.x1) / 2, (n.bounds.z0 + n.bounds.z1) / 2]; askGo(e, ax, az, n.label, n.face || null); return; }
       let label = null, bd = 14 * dpr, lx = wx, lz = wz;
       if (!mapView) for (const [x, z, t] of PLAN_LABELS) { const d = Math.hypot(x * S + ox - px, z * S + oz - py); if (d < bd) { bd = d; label = t; lx = x; lz = z; } }
       askGo(e, lx, lz, label);
@@ -620,7 +642,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     for (const q of [gotoEl, mapBar]) { q.addEventListener('pointerdown', (e) => e.stopPropagation()); q.addEventListener('pointerup', (e) => e.stopPropagation()); }
     gotoEl.addEventListener('click', (e) => {
       e.stopPropagation(); const go = e.target.closest('.tp-goto-go');
-      if (go && gotoAsk) { if (startAuto(gotoAsk.x, gotoAsk.z, gotoAsk.label)) showBig(false); }
+      if (go && gotoAsk) { if (gotoAsk.far) { carryTo(gotoAsk.x, gotoAsk.z, gotoAsk.face, gotoAsk.label); showBig(false); } else if (startAuto(gotoAsk.x, gotoAsk.z, gotoAsk.label)) showBig(false); }
       else if (e.target.closest('.tp-goto-no')) { gotoEl.hidden = true; gotoAsk = null; dirty = true; }
     });
 
@@ -640,7 +662,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       g.save();
       if (big) { g.translate(ox, oz); g.scale(S, S); } else { g.translate(W / 2, W / 2); g.rotate(a); g.scale(S, S); g.translate(-px, -pz); }
       // the grid, faint (twenty cubits; fifty on the big map)
-      const G = big ? 50 : 20, gx0 = Math.floor(EXT.x0 / G) * G, gz0 = Math.floor(EXT.z0 / G) * G;
+      const span = big ? Math.max(EXT.x1 - EXT.x0, EXT.z1 - EXT.z0) : 0, G = span > 12000 ? Math.pow(10, Math.floor(Math.log10(span / 30))) : big ? 50 : 20, gx0 = Math.floor(EXT.x0 / G) * G, gz0 = Math.floor(EXT.z0 / G) * G;   // a city of millions of amah gets a grid of hundreds of thousands, not fifties
       g.strokeStyle = 'rgba(255, 208, 98, 0.08)'; g.lineWidth = 0.6 / S;
       for (let k = gx0; k <= EXT.x1; k += G) { g.beginPath(); g.moveTo(k, EXT.z0); g.lineTo(k, EXT.z1); g.stroke(); }
       for (let k = gz0; k <= EXT.z1; k += G) { g.beginPath(); g.moveTo(EXT.x0, k); g.lineTo(EXT.x1, k); g.stroke(); }
@@ -1189,6 +1211,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       map: (on) => { if (roam.on) showBig(on ?? !mapBig); return mapBig; },
       mapPoint: (x, z) => { const r = mmap.getBoundingClientRect(), { S, ox, oz } = bigFrame(mmap.width), k = r.width / mmap.width; return [r.left + (x * S + ox) * k, r.top + (z * S + oz) * k]; },   // for tests: where a world point lies on the big map
       mapView: (label) => { const find = (ns) => { for (const n of ns) { if (n.label === label) return n; const c = n.children && find(n.children); if (c) return c; } return null; }; setMapView(label ? find(PLACES) : null); return mapView?.label || null; },   // for tests
+      carry: (x, z, face, label) => carryTo(x, z, face, label),   // for tests
+      groups: () => [...groups].map(([id, g]) => { const bb = new THREE.Box3().setFromObject(g); return { id, visible: g.visible, sy: g.scale.y, py: g.position.y, n: g.children.length, min: bb.min.toArray().map((v) => Math.round(v * 10) / 10), max: bb.max.toArray().map((v) => Math.round(v * 10) / 10) }; }),   // for tests: every piece's group, its scale and its world box
       route: (ax, az, bx, bz, ay) => (ay == null ? findPath(ax, az, bx, bz) : routeFrom(ax, az, ay, bx, bz)),   // for tests
       look: (dx, dy = 0) => turnHead(dx, dy),   // for tests: the mouse turning the head
       body: () => roam.body,
@@ -1233,7 +1257,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp);
       document.removeEventListener('pointerlockchange', onLockChange); document.removeEventListener('pointerlockerror', onLockError);
       if (document.pointerLockElement === renderer.domElement) document.exitPointerLock?.();
-      cross.remove(); stickEl.remove(); mmap.remove(); zoneEl.remove(); gotoEl.remove(); autoEl.remove(); mapBar.remove();
+      cross.remove(); stickEl.remove(); mmap.remove(); zoneEl.remove(); gotoEl.remove(); autoEl.remove(); mapBar.remove(); carryEl.remove();
       controls.dispose();
       scene.traverse((o) => { o.geometry?.dispose?.(); if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => { m.map?.dispose?.(); m.bumpMap?.dispose?.(); m.alphaMap?.dispose?.(); m.dispose?.(); }); });
       scene.environment?.dispose?.();

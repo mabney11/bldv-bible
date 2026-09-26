@@ -112,6 +112,8 @@
 .tp-goto button:hover { filter: brightness(1.1); }
 .tp-autobar { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 5; padding: 6px 12px; border-radius: 999px; background: rgba(20, 16, 10, 0.8); border: 1px solid rgba(255, 208, 98, 0.45); color: #f3e3b8; font-size: 12.5px; white-space: nowrap; pointer-events: none; }
 .tp-autobar b { color: #ffd97a; }
+.tp-carry { position: absolute; inset: 0; z-index: 8; background: #fff6de; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }   /* carried away in the Spirit: a veil of light while the walker is set down elsewhere */
+.tp-carry.tp-carry-on { opacity: 1; }
 
 .tp-mapbar { position: absolute; z-index: 7; top: 12px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; padding: 5px 10px; border-radius: 999px; background: rgba(20, 16, 10, 0.9); border: 1px solid rgba(255, 208, 98, 0.5); color: #f3e3b8; font-size: 12.5px; white-space: nowrap; }
 .tp-mapbar span { font-weight: 700; color: #ffd97a; }

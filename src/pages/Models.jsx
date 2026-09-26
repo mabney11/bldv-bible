@@ -102,6 +102,21 @@ export const MODELS = [
     ],
   },
   {
+    slug: 'revelation-city',
+    title: 'The Shairay (City) Coming Down Out of Shamayam (Heaven)',
+    kicker: 'Interactive 3D model · Revelation 21–22',
+    blurb: 'The qadash (holy) shairay (city), New Yarawashalam, at the text\'s own scale — twelve thousand stadia a side and as high, coming down over the Holy Land map\'s own land on the same ground as Yachazaqaal\'s city: its wall of yashapah (jasper) a hundred and forty-four amah on twelve adanay (foundations) of twelve stones, its twelve shairayam (gates) each one pearl with a malaak (angel) at it, the rachab (street) of zahab (gold), the nahar (river) of the water of chay (life) from the kasaa (throne) and the ayalan (tree) of life on either side. Watch it come down, or stand in its gate on your own feet and be carried to the throne.',
+    paleo: '𐤉𐤓𐤅𐤔𐤋𐤌 𐤇𐤃𐤔𐤄',
+    tags: ['Revelation 21–22', '3D · plan & section', 'Descend · On foot'],
+    to: '/models/revelation-city',
+    quick: [
+      { label: 'Descend — the city comes down, verse by verse', to: '/models/revelation-city/descend' },
+      { label: 'Stand in its gate on your own feet', to: '/models/revelation-city/roam' },
+      { label: 'The twelve adanay (foundations) — Revelation 21:19–20', to: '/models/revelation-city/descend?piece=yasawad-1' },
+      { label: 'The nahar (river) of the water of chay (life) — Revelation 22:1–2', to: '/models/revelation-city/descend?piece=nahar' },
+    ],
+  },
+  {
     slug: 'prints',
     title: 'Printable Maps',
     kicker: 'Downloadable map sheets',
@@ -148,7 +163,7 @@ export default function Models() {
         <div className="models-card models-card-soon">
           <span className="models-card-kicker">Coming</span>
           <span className="models-card-title">More models</span>
-          <p className="models-card-blurb">Future renderings — the city that comes down (Revelation 21–22), Noah's thabah (ark) and the flood, the tower of Babel, the camp on the march — will appear here as they're built.</p>
+          <p className="models-card-blurb">Future renderings — Noah's thabah (ark) and the flood, the tower of Babel, the camp on the march, the three in the furnace, Daniel in the lions' den — will appear here as they're built.</p>
         </div>
       </div>
     </div>
