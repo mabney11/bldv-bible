@@ -17,6 +17,9 @@ const [LON0, LAT0] = centroid(cityRing);
 const K_LAT = 111320 / CUBIT_M, K_LON = K_LAT * Math.cos((LAT0 * Math.PI) / 180);
 /** lon/lat → [x, z] cubits about the city's centre */
 export const toXZ = ([lon, lat]) => [(lon - LON0) * K_LON, -(lat - LAT0) * K_LAT];
+/** [x, z] cubits → lon/lat (the inverse, for a heightfield laid over the frame) */
+export const fromXZ = ([x, z]) => [LON0 + x / K_LON, LAT0 - z / K_LAT];
+export const ORIGIN = [LON0, LAT0];
 const ringXZ = (ring) => ring.map(toXZ);
 
 // the window of the land the model draws (lon/lat): the whole plain, so the coast is the only edge of the sea

@@ -15,7 +15,7 @@
  * across the city but carries you, as the malaak (angel) carried Yawachanan (John): "{{Revelation 21:10 | He nahal … har}}".
  */
 import { makeKit, V, SPEEDS, smooth, timelineFor, BASE_MATERIALS } from './kit.js';
-import { GEO, CUBIT_M } from './ezekiel-geo.js';
+import { GEO, CUBIT_M, HOUSE_XZ } from './ezekiel-geo.js';
 import { GATES, WORDS as EZ_WORDS } from './ezekiel-city.js';
 export { GATES };   // the gates' names, in Ezekiel's order (48:31–34), so the two cities pair gate for gate
 
@@ -71,8 +71,8 @@ export const MATERIALS = {
   land:     { word: 'aratz',     color: '#7f9a5a', hi: '#a4bd7c', lo: '#52673a', metal: 0, rough: 1 },                  // the land of the map
   jasper:   { word: 'yashapah',  color: '#79c69c', hi: '#d4f4e0', lo: '#4a8a66', metal: 0.15, rough: 0.2, emissive: '#2f6a4a', emissiveIntensity: 0.35 },   // "clear as crystal"
   pearl:    { word: 'shair',     color: '#f6f1ea', hi: '#ffffff', lo: '#c9bfb4', metal: 0.05, rough: 0.15, emissive: '#e8d8c8', emissiveIntensity: 0.35 },
-  goldglass:{ word: 'zahab',     color: '#e6b03a', hi: '#ffe9a0', lo: '#9a7a2a', metal: 0.2, rough: 0.5, opacity: 0.55, emissive: '#a06e14', emissiveIntensity: 0.7 },   // "pure gold, like clear glass" — the city's body
-  goldfloor:{ word: 'zahab',     color: '#c9993a', hi: '#ffe08a', lo: '#8a6a20', metal: 0.85, rough: 0.3, opacity: 0.86 },   // the city of gold underfoot; the land shows through it
+  goldglass:{ word: 'zahab',     color: '#f0bc3c', hi: '#ffe9a0', lo: '#9a7a2a', metal: 0.25, rough: 0.35, emissive: '#c8881a', emissiveIntensity: 1.1 },   // solid, and radiant (fieldy: "solid and very radiant in light")   // "pure gold, like clear glass" — the city's body
+  goldfloor:{ word: 'zahab',     color: '#c9993a', hi: '#ffe08a', lo: '#8a6a20', metal: 0.85, rough: 0.3 },   // the city of gold underfoot; the land shows through it
   street:   { word: 'rachab',    color: '#ffe28a', hi: '#fff6c8', lo: '#a3862a', metal: 0.8, rough: 0.1, emissive: '#8a6a20', emissiveIntensity: 0.55 },   // "transparent glass"
   glory:    { word: 'kabawad',   color: '#fff6dc', hi: '#ffffff', lo: '#cbb98a', metal: 0, rough: 0.3, emissive: '#ffe9b0', emissiveIntensity: 1.2 },
   life:     { word: 'chay',      color: '#6fc9d8', hi: '#b8f0f8', lo: '#2f7f8c', metal: 0.1, rough: 0.1, opacity: 0.85, emissive: '#2a6a78', emissiveIntensity: 0.3 },   // "clear as crystal"
@@ -155,7 +155,7 @@ export const PIECES = [
     tag: 'aratz (earth) · thayarawash (new)', title: 'A thayarawash (new) shamayam (heaven) and a thayarawash (new) aratz (earth) — and the yam (sea) is no more',
     words: ['aratz', 'shamayam', 'yam'], keys: ['aratz', 'earth', 'land', 'yam', 'sea', 'thayarawash', 'new'],
     on: V('66:21:1'), refs: 'Revelation 21:1',
-    measures: [['the earth', 'the Holy Land map\'s own land, as under Yachazaqaal\'s city', 'the map\'s'], ['the sea', 'none — "the yam (sea) is no more"', '21:1']],
+    measures: [['the earth', 'the Holy Land map\'s own land, as under Yachazaqaal\'s city', 'the map\'s'], ['its mountains', 'the map\'s relief (the same terrain tiles), drawn two and a half times their height so they read against the city', 'the map\'s'], ['the sea', 'none — "the yam (sea) is no more"', '21:1']],
     note: '"{{Revelation 21:1 | the raashawan … more}}" — the land the city comes down over is the map\'s own, the same ground the iyar (city) of Ezekiel 48 stands on, drawn without its seas.',
     elsewhere: { ref: 'Isaiah 65:17–19; 66:22; 2 Peter 3:13; Ezekiel 47:13–20', note: 'New heavens and a new earth, and Jerusalem a rejoicing; the borders of the land the map draws.' },
     assumed: 'That the new earth keeps the old land\'s shape — the model draws the map\'s coast, without the sea.',
@@ -170,7 +170,7 @@ export const PIECES = [
     note: '"{{Revelation 21:16 | width and height … thakan}}" — the city\'s body, as high as it is broad, drawn as gold one can see through.',
     elsewhere: { ref: 'Revelation 21:16', note: 'The measure of the city.' },
     assumed: 'A cube (a pyramid is also read).',
-    parts: [box(0, CITY_Y, 0, SIDE, SIDE, SIDE, { mat: 'goldglass' })],
+    parts: [box(0, CITY_Y + WALL.h, 0, SIDE, SIDE - WALL.h, SIDE, { mat: 'goldglass' })],   // the body rests on the wall: through a gate one sees the street, not a face of gold
   },
   {
     id: 'zahab', order: 1, group: 'city', material: 'goldfloor', raise: D('coming'), sheet: false,
@@ -334,16 +334,17 @@ export const DESCEND_DURATION = STONE_FROM + 12 * STONE_EACH + 84;   // ≈ 191 
 const E = HALF + WALL.t, G1 = GATE_AT[1];
 const T0 = DESCEND_PHASES.reduce((o, p) => ({ ...o, [p.key]: p.from }), {});
 export const DESCEND_CAMERA = [
-  [0,   [1400000, 1600000, 3600000], [0, 0, -400000]],                          // the new earth from the south, from far: the land without its seas
-  [9,   [6200000, 1200000, 8200000], [0, 2600000, 0]],                          // the city coming down from heaven, seen whole against the sky
-  [24,  [6000000, 1400000, 7800000], [0, 2200000, 0]],
+  [0,   [1400000, 1600000, 3600000], [0, 0, -400000]],                          // the new earth from the south, from far: the land without its seas, its mountains
+  [9,   [HOUSE_XZ[0] - 12000, 26000, HOUSE_XZ[1] + 16000], [HOUSE_XZ[0] + 400000, -6000, HOUSE_XZ[1] + 140000]],   // from the great and high mountain — the house's mountain, where Yachazaqaal was set (40:2) — looking out over the land as the city comes down over it
+  [17,  [HOUSE_XZ[0] - 12000, 26000, HOUSE_XZ[1] + 16000], [HOUSE_XZ[0] + 400000, 40000, HOUSE_XZ[1] + 140000]],
+  [24,  [HOUSE_XZ[0] - 12000, 26000, HOUSE_XZ[1] + 16000], [HOUSE_XZ[0] + 380000, 260000, HOUSE_XZ[1] + 130000]],   // … the eye lifts as the city fills the sky
   [26,  [5200000, 300000, 5600000], [0, 1200000, 0]],                           // from the mountain: a mountain of gold before the eye, its edge and its top
   [38,  [4200000, 900000, 4400000], [0, 1500000, 0]],                           // its light
   [50,  [E + 700, 90, G1 + 520], [E - 100, 70, G1]],                             // the east wall and its middle gate, close
   [58,  [E + 260, 110, G1 + 700], [E, 60, G1 - 4000]],                            // along the wall from the gate: the three of a side are a third of the side apart
   [STONE_FROM, [E + 360, 60, G1 - 300], [E, 36, G1 - 80]],                         // the foundations, course by course, at the gate's corner
   [STONE_FROM + 12 * STONE_EACH + 3, [E + 520, 100, G1 - 420], [E, 60, G1 - 40]],   // … all twelve under the jasper
-  [STONE_FROM + 12 * STONE_EACH + 6, [7200000, 2600000, 7400000], [0, 1800000, 0]],   // the measuring: the cube whole
+  [STONE_FROM + 12 * STONE_EACH + 6, [10500000, 3600000, 10800000], [0, 1700000, 0]],   // the measuring: the cube whole
   [STONE_FROM + 12 * STONE_EACH + 22, [E - 400, 9, 40], [E - 3000, 6, 0]],            // the street of gold from inside the gate, westward
   [STONE_FROM + 12 * STONE_EACH + 34, [E + 300, 12, 90], [E - 200, 30, 0]],           // the east gate: the nations coming in
   [STONE_FROM + 12 * STONE_EACH + 48, [E - 900, 14, 70], [E - 1500, 4, 0]],           // the river in the midst of the street, the trees either side
