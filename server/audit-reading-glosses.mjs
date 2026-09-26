@@ -50,6 +50,17 @@ try {
   for (const sec of ['single', 'phrases', 'theonyms']) for (const v of Object.values(nm[sec] || {}))
     { names.add(norm(v)); for (const w of String(v).split(/[\s-]+/)) names.add(norm(w)); }
 } catch { /* no name map */ }
+// peoples/gentilics (word-map.json "peoples": Palashathay, Babalay …) are names too
+try {
+  const wm = JSON.parse(readFileSync('./word-map.json', 'utf8'));
+  for (const sec of ['names', 'peoples']) for (const v of Object.values(wm[sec] || {}))
+    { names.add(norm(v)); for (const w of String(v).split(/[\s-]+/)) names.add(norm(w)); }
+} catch { /* no word map */ }
+// translation.db keys by the verse's TEXT chapter/verse, the Hebrew by ord_c/ord_v —
+// they differ in books whose chapters were renumbered (Josephus). Map text -> ord.
+const ordOf = new Map();
+for (const r of corpus.prepare(`SELECT canon_id AS c, chapter AS ch, verse AS v, ord_c, ord_v FROM verses WHERE corpus='ENG' AND canon_id IS NOT NULL AND ord_c IS NOT NULL`).iterate())
+  ordOf.set(`${r.c}|${+r.ch}|${+r.v}`, `${r.c}|${r.ord_c}|${r.ord_v}`);
 
 // Hebrew per verse: canon|ch|v -> { roots:Set, surf:Set }
 const heb = new Map();
@@ -88,17 +99,22 @@ if (tdb) for (const r of tdb.prepare(`SELECT book_id AS c, chapter AS ch, verse 
 
 for (const [key, text] of texts) {
   if (ONLY && !key.startsWith(ONLY + '|')) continue;
-  const h = heb.get(key);
+  const hk = ordOf.get(key) || key;
+  const h = heb.get(hk);
   for (const m of String(text).matchAll(PAIR)) {
     const word = norm(m[1]); if (!word || word.length < 2) continue;
+    // an English aside, not a gloss: "(masc)", "(and that with great integrity …)"
+    if (/^(masc|fem|pl|sg|m|f)\.?$/i.test(m[2].trim()) || m[2].trim().split(/\s+/).length > 4) continue;
     pairs++;
     if (names.has(word)) { skippedNames++; continue; }
     if (!h) { noHeb++; continue; }
+    // a prefixed form of the root (haadam = ha + adam, waiyar …) counts too
+    const bare = word.replace(/^(?:wa|ha|ba|la|ka|ma|ya|tha|sha)+/, '');
     const inVerse = e => { if (!e) return false; if (e.surf.has(word)) return true;
-      for (const r of e.roots) if (r && (word === r || (r.length >= 3 && word.startsWith(r)))) return true; return false; };
+      for (const r of e.roots) if (r && (word === r || bare === r || (r.length >= 3 && (word.startsWith(r) || bare.startsWith(r))))) return true; return false; };
     if (inVerse(h)) { ok++; continue; }
     // In a neighbouring verse (±2) = versification drift, not a bad gloss. Counted apart.
-    const [c, ch, v] = key.split('|');
+    const [c, ch, v] = hk.split('|');
     if ([1, -1, 2, -2].some(d => inVerse(heb.get(`${c}|${ch}|${+v + d}`)))) { near++; continue; }
     const fk = `${m[1].toLowerCase()} (${m[2]})`;
     let f = flags.get(fk); if (!f) flags.set(fk, f = { n: 0, refs: [] });

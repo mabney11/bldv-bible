@@ -1095,13 +1095,14 @@ const coverageOf = (text, canon) => {
 // pair whose word is a KNOWN transliteration (a Strong's root, a term pin, an OT-learned
 // term) and is not a name is unwrapped; "men (neither from you …)" is left alone.
 const KNOWN_TR = new Set();
+const NAME_TR = new Set();   // names/peoples — never unwrapped (Yashar-Al (Israelites))
 if (FROM_SRC) {
   const nz = x => String(x || '').toLowerCase().replace(/[^a-z]/g, '');
   if (translitBooksJs) for (const v of Object.values(ROOTS)) { const t = nz(translitBooksJs(v)); if (t.length >= 2) KNOWN_TR.add(t); }
   for (const v of TERM.values()) KNOWN_TR.add(nz(v));
   for (const v of AUTO_TERM.values()) KNOWN_TR.add(nz(v));
-  for (const v of NAME.values()) KNOWN_TR.delete(nz(v));
-  for (const v of PEOPLE.values()) KNOWN_TR.delete(nz(v));
+  for (const v of NAME.values()) { KNOWN_TR.delete(nz(v)); NAME_TR.add(nz(v)); }
+  for (const v of PEOPLE.values()) { KNOWN_TR.delete(nz(v)); NAME_TR.add(nz(v)); }
 }
 let unglossedRows = 0, unglossedPairs = 0;
 const unglossSrc = (t) => {
@@ -1111,16 +1112,19 @@ const unglossSrc = (t) => {
     const n = w.toLowerCase().replace(/[^a-z]/g, '');
     if (KNOWN_TR.has(n)) return true;
     // plural / construct endings the pins added: pachawath, malachamawath, tzalamay …
-    for (const e of ['awath', 'ayam', 'ath', 'ay', 'aw', 'am'])
-      if (n.length > e.length + 2 && n.endsWith(e) && KNOWN_TR.has(n.slice(0, -e.length))) return true;
+    for (const e of ['awath', 'ayam', 'ath', 'ay', 'aw', 'am', 'atha', 'aya', 'a'])
+      if (n.length >= e.length + 2 && n.endsWith(e) && KNOWN_TR.has(n.slice(0, -e.length))) return true;
     return false;
   };
   const out = t.replace(/\b([A-Za-z][A-Za-z'’-]*) \(([A-Za-z][A-Za-z'’ -]{0,38})\)/g, (m, tr, eng) => {
     if (eng.trim().split(/\s+/).length > 3) return m;
     // A pin that replaced the second half of an English compound: "in-thawarah (law)",
     // "twenty-chamash (five)", "burnt-ilawath (offerings)" -> "in-law", "twenty-five" …
+    if (NAME_TR.has(tr.toLowerCase().replace(/[^a-z]/g, ''))) return m;
+    // Only an ENGLISH first half: lowercase, and not itself a transliteration. (The
+    // first version also hit "Yashar-Al (Israelites)" and produced Yashar-Yashar-Al.)
     const hy = tr.lastIndexOf('-');
-    if (hy > 0 && known(tr.slice(hy + 1))) { n++; return tr.slice(0, hy + 1) + eng; }
+    if (hy > 0 && tr === tr.toLowerCase() && !known(tr.slice(0, hy)) && known(tr.slice(hy + 1))) { n++; return tr.slice(0, hy + 1) + eng; }
     if (!known(tr)) return m;
     n++; return eng;
   });
