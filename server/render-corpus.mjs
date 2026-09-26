@@ -1082,6 +1082,35 @@ const coverageOf = (text, canon) => {
     c.words++;
   }
 };
+// ── text_src that was captured AFTER glossing ─────────────────────────────────────
+// text_src is meant to be the pristine English, but for 16,504 rows (Josephus 217-220,
+// 2 Esdras, the Works Library …) --init-src ran after a render, so the snapshot already
+// holds "shairay (city)", "sadar (order)" … and a rebuild can never remove them: step 2
+// guards every existing "(gloss)". Unwrap them back to the English before rendering, so
+// the rebuild really is from English and every gate (pinInHebrew etc.) applies. Only a
+// pair whose word is a KNOWN transliteration (a Strong's root, a term pin, an OT-learned
+// term) and is not a name is unwrapped; "men (neither from you …)" is left alone.
+const KNOWN_TR = new Set();
+if (FROM_SRC) {
+  const nz = x => String(x || '').toLowerCase().replace(/[^a-z]/g, '');
+  if (translitBooksJs) for (const v of Object.values(ROOTS)) { const t = nz(translitBooksJs(v)); if (t.length >= 2) KNOWN_TR.add(t); }
+  for (const v of TERM.values()) KNOWN_TR.add(nz(v));
+  for (const v of AUTO_TERM.values()) KNOWN_TR.add(nz(v));
+  for (const v of NAME.values()) KNOWN_TR.delete(nz(v));
+  for (const v of PEOPLE.values()) KNOWN_TR.delete(nz(v));
+}
+let unglossedRows = 0, unglossedPairs = 0;
+const unglossSrc = (t) => {
+  if (!FROM_SRC || !t) return t;
+  let n = 0;
+  const out = t.replace(/\b([A-Za-z][A-Za-z'’-]*) \(([A-Za-z][A-Za-z'’ -]{0,38})\)/g, (m, tr, eng) => {
+    if (!KNOWN_TR.has(tr.toLowerCase().replace(/[^a-z]/g, ''))) return m;
+    if (eng.trim().split(/\s+/).length > 3) return m;
+    n++; return eng;
+  });
+  if (n) { unglossedRows++; unglossedPairs += n; }
+  return out;
+};
 const pRender = progress('rendering untagged verses', rows.length);
 for (const r of rows) {
   pRender.tick();
@@ -1089,13 +1118,14 @@ for (const r of rows) {
   // versification offset internally), so prefer those over the TEXT columns.
   const vgKey = `${r.canon_id}|${r.ord_c ?? parseInt(r.chapter, 10)}|${r.ord_v ?? parseInt(r.verse, 10)}`;
   const ref = `${r.canon_id}:${r.chapter}:${r.verse}`;
-  const out = renderWithExceptions(r.src, ref, VERSE_EXCEPTIONS, text => render(text, vgKey));
+  const out = renderWithExceptions(unglossSrc(r.src), ref, VERSE_EXCEPTIONS, text => render(text, vgKey));
   coverageOf(out, r.canon_id);
   if (out !== r.text) { changed++; updates.push({ id: r.id, text: out });
     if (!AT && samples.length < SHOW && out !== r.src) samples.push({ ref, before: r.src, after: out }); }
   if (AT && r.canon_id === AT.c && +(r.ord_c ?? r.chapter) === AT.ch && +(r.ord_v ?? r.verse) >= AT.v0 && +(r.ord_v ?? r.verse) <= AT.v1) samples.push({ ref, before: r.src, after: out });
 }
 pRender.done();
+if (FROM_SRC) console.log(`text_src: unwrapped ${unglossedPairs.toLocaleString()} stale gloss pair(s) in ${unglossedRows.toLocaleString()} row(s) before rendering`);
 {
   const tot = { words: 0, glossed: 0 };
   for (const c of COV.values()) { tot.words += c.words; tot.glossed += c.glossed; }

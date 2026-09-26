@@ -65,6 +65,15 @@ nashay # H802`, `himself → gap`) — worth a review pass.
   blind. Step 5 now also requires the pin's transliteration to be a root in the verse's Hebrew
   (±2 verses) whenever the verse has any Hebrew at all (`pinInHebrew`). Books with no Hebrew
   keep the old fallback.
+- **Second run: 363k → 350k, still high. Two more causes:** (a) the audit compared against
+  tokens_nt (the other tagger) — it now reads surface-index.db's HEB rows, the same Hebrew the
+  reader and render use, and counts ±2-verse matches separately (versification drift). That
+  alone: 237k. (b) 16,504 `text_src` rows (Josephus 217-220 = 11.8k, 2 Esdras, Works Library)
+  were captured AFTER a render, so the "pristine" English already holds "shairay (city)",
+  "sadar (order)" …, and step 2 guards existing glosses, so no rebuild could ever remove them.
+  render-corpus --from-src now unwraps `known-translit (English)` pairs (Strong's root
+  translits, TERM/AUTO_TERM values; names excluded; gloss ≤3 words) back to English before
+  rendering, and logs how many.
 - sync-heb-tokens --check: 100% identical tokenization, 5,342 SN disagreements (0.5%). Sampled
   ones show the INDEX is worse in places (𐤀𐤕𐤔𐤋𐤌𐤅𐤍 Salmon → H853, 𐤅𐤉𐤔𐤉 Jesse → H3426,
   𐤅𐤌𐤕𐤍 Matthan → H4191) — the head-picker lets a particle/common word win. Hold --apply

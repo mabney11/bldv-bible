@@ -60,12 +60,26 @@ const addTok = (c, ch, v, sn, raw) => {
 };
 for (const r of corpus.prepare(`SELECT book_id, chapter, verse, strongs, word_raw FROM tokens_bhs WHERE strongs != ''`).iterate())
   addTok(r.book_id, r.chapter, r.verse, r.strongs, r.word_raw);
-for (const r of corpus.prepare(`SELECT book_id, chapter, verse, strongs, word_raw FROM tokens_nt WHERE book_id > 39`).iterate())
-  addTok(r.book_id, r.chapter, r.verse, r.strongs, r.word_raw);
+// NT/Apocrypha Hebrew: the SAME source the reader and render-corpus use — the HEB rows of
+// surface-index.db. (tokens_nt is a second tagger's opinion until sync-heb-tokens --apply;
+// auditing against it flagged words the rendered Hebrew really does contain.)
+{
+  let used = false;
+  if (existsSync('./surface-index.db')) {
+    try {
+      const sdb = openRO('./surface-index.db');
+      for (const r of sdb.prepare(`SELECT book_id, chapter, verse, strongs, word_raw FROM surface_occurrences WHERE source='HEB' AND book_id > 39`).iterate())
+        addTok(r.book_id, r.chapter, r.verse, r.strongs, r.word_raw);
+      used = true;
+    } catch (e) { console.warn(`surface-index.db unreadable (${e.message}) — falling back to tokens_nt`); }
+  }
+  if (!used) for (const r of corpus.prepare(`SELECT book_id, chapter, verse, strongs, word_raw FROM tokens_nt WHERE book_id > 39`).iterate())
+    addTok(r.book_id, r.chapter, r.verse, r.strongs, r.word_raw);
+}
 
 const PAIR = /\b([A-Za-z][A-Za-z'’-]*)\s+\(([^()]{1,60})\)/g;
 const flags = new Map();   // "word (gloss)" -> {n, refs[], why}
-let pairs = 0, ok = 0, skippedNames = 0, noHeb = 0;
+let pairs = 0, ok = 0, near = 0, skippedNames = 0, noHeb = 0;
 const texts = new Map();
 for (const r of corpus.prepare(`SELECT canon_id AS c, chapter AS ch, verse AS v, text FROM verses WHERE corpus='ENG' AND canon_id IS NOT NULL`).iterate())
   texts.set(`${r.c}|${+r.ch}|${+r.v}`, r.text);
@@ -80,9 +94,12 @@ for (const [key, text] of texts) {
     pairs++;
     if (names.has(word)) { skippedNames++; continue; }
     if (!h) { noHeb++; continue; }
-    let hit = h.surf.has(word);
-    if (!hit) for (const r of h.roots) { if (r && (word === r || (r.length >= 3 && word.startsWith(r)))) { hit = true; break; } }
-    if (hit) { ok++; continue; }
+    const inVerse = e => { if (!e) return false; if (e.surf.has(word)) return true;
+      for (const r of e.roots) if (r && (word === r || (r.length >= 3 && word.startsWith(r)))) return true; return false; };
+    if (inVerse(h)) { ok++; continue; }
+    // In a neighbouring verse (±2) = versification drift, not a bad gloss. Counted apart.
+    const [c, ch, v] = key.split('|');
+    if ([1, -1, 2, -2].some(d => inVerse(heb.get(`${c}|${ch}|${+v + d}`)))) { near++; continue; }
     const fk = `${m[1].toLowerCase()} (${m[2]})`;
     let f = flags.get(fk); if (!f) flags.set(fk, f = { n: 0, refs: [] });
     f.n++; if (f.refs.length < 6) f.refs.push(key.replace(/\|/g, ':'));
@@ -92,7 +109,7 @@ const rows = [...flags.entries()].sort((a, b) => b[1].n - a[1].n);
 const total = rows.reduce((s, [, f]) => s + f.n, 0);
 const lines = [
   `reading-gloss audit — ${new Date().toISOString()}`,
-  `pairs ${pairs.toLocaleString()} · ok ${ok.toLocaleString()} · names skipped ${skippedNames.toLocaleString()} · verses without Hebrew tokens ${noHeb.toLocaleString()}`,
+  `pairs ${pairs.toLocaleString()} · ok ${ok.toLocaleString()} · ok in a neighbouring verse ${near.toLocaleString()} · names skipped ${skippedNames.toLocaleString()} · verses without Hebrew tokens ${noHeb.toLocaleString()}`,
   `FLAGGED ${total.toLocaleString()} pairs, ${rows.length.toLocaleString()} distinct "word (gloss)" — the word is not any Hebrew root in its verse`,
   `(refs are canon:chapter:verse)`, '',
   ...rows.slice(0, TOP).map(([k, f]) => `${String(f.n).padStart(6)}  ${k}   e.g. ${f.refs.join(' ')}`),
