@@ -209,15 +209,11 @@ export function CanvasTitle({ phase, on, playing = false, scrubbed = null }) {
   );
 }
 
-/** The weight of a unit's time on the canvas (ms): a plain word — a joining word, a filler — 0.2 s; a glossed word is the
- *  emphasis, 0.3 s to 0.45 s by the length of its gloss (fieldy: "0.3–.45s per gloss and .2 for the non glossed words"; per the
- *  research on word-by-word captions 0.2–0.33 s a word). No word stays longer than a second and a half, whatever the pane. */
-export const HOLD_PLAIN = 200, HOLD_GLOSS = [300, 450], HOLD_MAX = 1500;
-export function holdFor(u) {
-  if (u.gloss == null) return HOLD_PLAIN;
-  const glossWords = u.gloss ? u.gloss.trim().split(/\s+/).length : 0;
-  return Math.min(HOLD_GLOSS[1], HOLD_GLOSS[0] + Math.max(0, glossWords - 1) * 50 + Math.max(0, u.w.length - 6) * 8);
-}
+/** The weight of a unit's time on the canvas (ms): a plain word — a joining word, a filler — reads quickly, 0.2 s; a glossed
+ *  word is the emphasis and snaps in for a smooth 0.993 s (fieldy: "the common words read quickly and the hebrew words snap for
+ *  about a second"). No word stays longer than a second and a half, whatever the pane. */
+export const HOLD_PLAIN = 200, HOLD_GLOSS = 993, HOLD_MAX = 1500;
+export function holdFor(u) { return u.gloss == null ? HOLD_PLAIN : HOLD_GLOSS; }
 /** A sentence begins with a capital, even where the quote is sliced from the middle of a verse ("in the raashawan" → "In the raashawan"). */
 export function capFirst(text) { return text ? text.replace(/^(\s*["“'‘(]*)([a-z])/, (m, a, b) => a + b.toUpperCase()) : text; }
 /**

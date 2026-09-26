@@ -225,7 +225,7 @@
 }
 /* a plain word — a filler, a joining word — is quick and a little smaller; a glossed word is the emphasis: bigger, gold, its gloss beneath it */
 .st-sub-fill { font-weight: 600; animation-duration: 0.14s; }
-.st-sub-pair { display: inline-flex; flex-direction: column; align-items: center; gap: 0.05em; font-size: 1.18em; animation-duration: 0.26s; }
+.st-sub-pair { display: inline-flex; flex-direction: column; align-items: center; gap: 0.05em; font-size: clamp(31px, 4.8vw, 57px); animation-duration: 0.26s; }   /* bigger than the common words (an em here would be the stage's small font, not the word's) */
 .st-sub-pair .st-sub-w { color: var(--gold); font-weight: 700; letter-spacing: 0.01em; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6), 0 0 14px rgba(255, 200, 87, 0.4), 0 0 36px rgba(0, 0, 0, 0.75); paint-order: stroke fill; -webkit-text-stroke: 0.1em #000; }
 .st-sub-pair .st-sub-g { display: block; font-size: 0.6em; line-height: 1.15; color: #e9e0cb; opacity: 0.94; -webkit-text-stroke: 0.07em #000; }
 .st-sub-pair .st-sub-t { color: #f6efdf; }
@@ -234,7 +234,7 @@
   100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 .tp-roam .st-subs { display: none; }
-@media (max-width: 720px) { .st-sub-u { font-size: clamp(20px, 6vw, 32px); max-width: 88%; } }
+@media (max-width: 720px) { .st-sub-u { font-size: clamp(20px, 6vw, 32px); max-width: 88%; } .st-sub-pair { font-size: clamp(26px, 7.8vw, 42px); } }
 .st-loop-sub { opacity: 0.85; font-size: 0.95em; }
 
 /* A pane's title, spoken whole into the scene */

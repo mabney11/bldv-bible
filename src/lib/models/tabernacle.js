@@ -731,10 +731,10 @@ export const RAISE_CAMERA = [
 
 // ROAM — no story: the finished mashakan and its camp, and the viewer walks where they will.
 export const ROAM_EYE = 3.4;
-export const ROAM_START = { pos: [57, LEVEL + ROAM_EYE, 0], look: [0, LEVEL + ROAM_EYE, 0] };   // before the gate of the court (the priests' tents behind), facing the tent
+export const ROAM_START = { pos: [54, LEVEL + ROAM_EYE, 2.5], look: [0, LEVEL + ROAM_EYE, 0] };   // before the gate of the court, a step past the priests' dagal (standard) at (57, 0) — not inside its pole (fieldy) — facing the tent
 export const ROAM_PHASES = [{ from: 0, key: 'roam', caption: 'Walk where you will — through the screen of the shair (gate), past the mazabach (altar) and the basin, through the screen of the pathach (door) into the tent and, past the parakath (veil), to the arawan (ark); or out to the machanah (camp). Tap a part for its details; tap a screen or the veil again to part it.', ref: '' }];
 export const ROAM_ENTER = {
-  'gate-screen': { pos: [56, ROAM_EYE, 0], look: [0, ROAM_EYE, 0], open: 'gate' },
+  'gate-screen': { pos: [54, ROAM_EYE, 2.5], look: [0, ROAM_EYE, 0], open: 'gate' },
   'door-screen': { pos: [-6, ROAM_EYE, 0], look: [-30, ROAM_EYE, 0], open: 'door' },
   parakath: { pos: [-26, ROAM_EYE, 0], look: [-40, ROAM_EYE, 0], open: 'veil' },
 };
