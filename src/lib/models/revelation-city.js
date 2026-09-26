@@ -54,7 +54,7 @@ export const WALL = { h: 144, t: 24, found: 72, block: 12, span: 2400 };   // 21
 export const GATE_W = 120;                               // the gap in the wall for each pearl (assumed)
 export const GATE_AT = [-HALF * 2 / 3, 0, HALF * 2 / 3]; // three a side, a third of the side apart — as Ezekiel's city is drawn, so the gates pair off
 export const CITY_Y = 0;                                  // the city stands on the plain: the land lies beneath its floor of gold
-export const STREET_W = 240, RIVER_W = 40;                // the street of gold with the river of life in its midst (widths assumed)
+export const STREET_W = 240, RIVER_W = 40, STREET_Y = 0.3;                // the street of gold with the river of life in its midst (widths assumed)
 export const LEVEL = 0;
 export const LAYER = { land: -0.5 };   // the land a hand above the plain (plainDrop 1): outside the walls the walker stands a step below the city's floor
 export const STONES = [   // 21:19–20, in the text's order, with a colour for each (the stones as they are known)
@@ -74,7 +74,7 @@ export const MATERIALS = {
   jasper:   { word: 'yashapah',  color: '#79c69c', hi: '#d4f4e0', lo: '#4a8a66', metal: 0.15, rough: 0.2, emissive: '#2f6a4a', emissiveIntensity: 0.35 },   // "clear as crystal"
   pearl:    { word: 'shair',     color: '#f6f1ea', hi: '#ffffff', lo: '#c9bfb4', metal: 0.05, rough: 0.15, emissive: '#e8d8c8', emissiveIntensity: 0.35 },
   goldglass:{ word: 'zahab',     color: '#f0bc3c', hi: '#ffe9a0', lo: '#9a7a2a', metal: 0.25, rough: 0.35, emissive: '#c8881a', emissiveIntensity: 1.1 },   // solid, and radiant (fieldy: "solid and very radiant in light")   // "pure gold, like clear glass" — the city's body
-  goldfloor:{ word: 'zahab',     color: '#c9993a', hi: '#ffe08a', lo: '#8a6a20', metal: 0.85, rough: 0.3 },   // the city of gold underfoot; the land shows through it
+  goldfloor:{ word: 'chay',      color: '#86b25e', hi: '#a9d07f', lo: '#587a3c', metal: 0, rough: 1 },   // the ground within the walls: green — the river of life and the tree of life make the city a garden; the text's gold is the street and the body (fieldy: "the streets are supposed to be gold, not all the ground")   // the city of gold underfoot; the land shows through it
   street:   { word: 'rachab',    color: '#ffe28a', hi: '#fff6c8', lo: '#a3862a', metal: 0.8, rough: 0.1, emissive: '#8a6a20', emissiveIntensity: 0.55 },   // "transparent glass"
   glory:    { word: 'kabawad',   color: '#fff6dc', hi: '#ffffff', lo: '#cbb98a', metal: 0, rough: 0.3, emissive: '#ffe9b0', emissiveIntensity: 1.2 },
   life:     { word: 'chay',      color: '#6fc9d8', hi: '#b8f0f8', lo: '#2f7f8c', metal: 0.1, rough: 0.1, opacity: 0.85, emissive: '#2a6a78', emissiveIntensity: 0.3 },   // "clear as crystal"
@@ -131,31 +131,28 @@ const gateWay = (side, i) => { const at = GATE_AT[i], along = side === 'north' |
 /** The city's floor of gold, in slabs whose corners fall on the gates and the throne (where the walker stands, the vertices are near — float32 keeps its precision). */
 function floor() { const L = [-HALF, GATE_AT[0], 0, GATE_AT[2], HALF], out = []; for (let i = 0; i < 4; i++) for (let k = 0; k < 4; k++) out.push(box((L[i] + L[i + 1]) / 2, CITY_Y - 1, (L[k] + L[k + 1]) / 2, L[i + 1] - L[i], 1, L[k + 1] - L[k], { mat: 'goldfloor', role: 'ground' })); return out; }
 /** The street of gold (21:21) from the throne to the east gate in the middle of the side, and on to the west; the river of the water of life in its midst (22:1–2). */
-function street() { const L = [-HALF, GATE_AT[0], 0, GATE_AT[2], HALF]; return L.slice(0, -1).map((a, i) => box((a + L[i + 1]) / 2, CITY_Y - 0.98, 0, L[i + 1] - a, 1.0, STREET_W, { mat: 'street', role: 'ground' })); }   // its top a hair above the floor's: no one stands in it
+function street() { const L = [-HALF, GATE_AT[0], 0, GATE_AT[2], HALF]; return L.slice(0, -1).map((a, i) => box((a + L[i + 1]) / 2, CITY_Y - 0.7, 0, L[i + 1] - a, 1.0, STREET_W, { mat: 'street', role: 'ground' })); }   // its top STREET_Y above the floor's (a hair is lost to float32 at two million amah): no one stands in it
 function river() {
-  const out = [box((150 + GATE_AT[2]) / 2, CITY_Y + 0.02, 0, GATE_AT[2] - 150, 0.3, RIVER_W, { mat: 'life', role: 'water' }), box((GATE_AT[2] + HALF - 150) / 2, CITY_Y + 0.02, 0, HALF - 150 - GATE_AT[2], 0.3, RIVER_W, { mat: 'life', role: 'water' })];   // from the throne's foot eastward to the gate
-  for (let d = 0; d < 6; d++) out.push(ideal(cyl(0, CITY_Y + 0.02 + d * 0.06, 0, 58 - d * 6, 0.3, { mat: 'life', role: 'water' })));   // the spring at the throne's foot, a shallow pool stepping up
+  const out = [box((150 + GATE_AT[2]) / 2, CITY_Y + STREET_Y + 0.05, 0, GATE_AT[2] - 150, 0.3, RIVER_W, { mat: 'life', role: 'water' }), box((GATE_AT[2] + HALF - 150) / 2, CITY_Y + STREET_Y + 0.05, 0, HALF - 150 - GATE_AT[2], 0.3, RIVER_W, { mat: 'life', role: 'water' })];   // from the throne's foot eastward to the gate
+  for (let d = 0; d < 6; d++) out.push(ideal(cyl(0, CITY_Y + STREET_Y + 0.05 + d * 0.06, 0, 58 - d * 6, 0.3, { mat: 'life', role: 'water' })));   // the spring at the throne's foot, a shallow pool stepping up
   return out;
 }
 /** The tree of life on this side of the river and on that (22:2): along the river where the walker can be — from the throne, and in from the gate. */
 function trees() {
-  const out = [], T = (x, z, h) => [ideal(cyl(x, CITY_Y, z, 1.2, h * 0.5, { mat: 'cedar', role: 'tree' })), ideal(lathe(x, CITY_Y + h * 0.4, z, [[0.4, 0], [h * 0.34, h * 0.22], [h * 0.3, h * 0.5], [0.2, h * 0.66]], { mat: 'leaf', role: 'tree' }))];
+  const out = [], T = (x, z, h) => [ideal(cyl(x, CITY_Y + STREET_Y, z, 1.2, h * 0.5, { mat: 'cedar', role: 'tree' })), ideal(lathe(x, CITY_Y + STREET_Y + h * 0.4, z, [[0.4, 0], [h * 0.34, h * 0.22], [h * 0.3, h * 0.5], [0.2, h * 0.66]], { mat: 'leaf', role: 'tree' }))];
   const along = (u0, u1) => { for (let u = u0; u < u1; u += 160) for (const s of [-1, 1]) out.push(...T(u, s * (RIVER_W / 2 + 22 + ((u / 160) % 3) * 8), 26 + ((u / 160) % 4) * 4)); };
   along(220, 14000); along(HALF - 14000, HALF - 200);
   return out;
 }
-/** The throne of Alahayam and of the Lamb (22:1, 3) in the midst: a seat of light on a dais of glory — no one is drawn on it. */
+/** The throne of Alahayam and of the Lamb (22:1, 3) in the midst: no seat and no figure is drawn — the kasaa is the shining kabawad (glory) itself, the extras' column of light standing where the river springs, ever flowing (fieldy: "like the shining version of the flaming fire"). Here only its footing: a low round of light the spring rises from. */
 function throne() {
-  const out = [];
-  for (let i = 0; i < 7; i++) out.push(ideal(cyl(0, CITY_Y + 1.6 + i * 2, 0, 120 - i * 12, 2, { mat: 'glory', role: 'dais' })));
-  out.push(ideal(lathe(0, CITY_Y + 15.6, 0, [[0.1, 0], [18, 0], [16, 4], [14, 14], [20, 22], [22, 30], [12, 34], [0.1, 36]], { mat: 'glory', role: 'throne' })));
-  return out;
+  return [ideal(cyl(0, CITY_Y + STREET_Y + 0.5, 0, 70, 1.2, { mat: 'glory', role: 'dais' })), ideal(cyl(0, CITY_Y + STREET_Y + 1.7, 0, 40, 1.0, { mat: 'glory', role: 'dais' }))];
 }
 /** The gawayam (nations) walking in its light (21:24–26): in at the east gate, along the street, before the throne. */
 function nations() {
   const out = []; let seed = 7; const rr = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
-  for (let i = 0; i < 26; i++) out.push(...person(HALF - 60 - rr() * 900, (rr() - 0.5) * (STREET_W - 60) + (rr() < 0.5 ? -RIVER_W : RIVER_W), Math.PI + (rr() - 0.5), i % 5 === 0 ? 'royal' : 'linen', { y: CITY_Y }));
-  for (let i = 0; i < 18; i++) { const a = rr() * Math.PI * 2, r = 150 + rr() * 160; out.push(...person(Math.cos(a) * r, Math.sin(a) * r, a + Math.PI, i % 4 === 0 ? 'royal' : 'linen', { y: CITY_Y })); }
+  for (let i = 0; i < 26; i++) out.push(...person(HALF - 60 - rr() * 900, (rr() - 0.5) * (STREET_W - 60) + (rr() < 0.5 ? -RIVER_W : RIVER_W), Math.PI + (rr() - 0.5), i % 5 === 0 ? 'royal' : 'linen', { y: CITY_Y + STREET_Y }));
+  for (let i = 0; i < 18; i++) { const a = rr() * Math.PI * 2, r = 150 + rr() * 160; const z = Math.sin(a) * r; out.push(...person(Math.cos(a) * r, z, a + Math.PI, i % 4 === 0 ? 'royal' : 'linen', { y: CITY_Y + (Math.abs(z) < STREET_W / 2 ? STREET_Y : 0) })); }
   for (let i = 0; i < 10; i++) out.push(...person(HALF + WALL.t + 40 + rr() * 300, (rr() - 0.5) * 160, Math.PI + (rr() - 0.5) * 0.6, 'linen', { y: CITY_Y }));
   return out;
 }
@@ -190,7 +187,7 @@ export const PIECES = [
     tag: 'shairay (city) · naqaa (pure) zahab (gold)', title: 'The shairay (city) of naqaa (pure) zahab (gold), hamah (like) naqaa (pure) glass — twelve thousand stadia every way',
     words: ['shairay', 'zahab', 'iyar'], keys: ['shairay', 'city', 'zahab', 'gold', 'glass', 'stadia', 'square', 'arak', 'length', 'width', 'height'],
     on: V('66:21:16', '66:21:18'), refs: 'Revelation 21:16, 18',
-    measures: [['arak (length)', '12,000 stadia — 4,228,571 amah, 2,220 km', '21:16'], ['width', 'the same', '21:16'], ['height', 'the same — drawn as a cube', '21:16'], ['of what', 'pure gold, like pure glass', '21:18']],
+    measures: [['arak (length)', '12,000 stadia — 4,228,571 amah, 2,220 km', '21:16'], ['width', 'the same', '21:16'], ['height', 'the same — drawn as a cube', '21:16'], ['of what', 'pure gold, like pure glass', '21:18'], ['the ground within', 'drawn green: a garden about the river of life and the tree of life; the gold is the street and the body', 'assumed']],
     note: '"{{Revelation 21:16 | He madad … thakan}}" — a stadion is drawn as 185 m, 352 amah of the map\'s cubit: the city is as broad as the whole land from Egypt to the Euphrates and as high, and the model draws it so, its body of gold like glass, the earth showing through its floor.',
     elsewhere: { ref: 'Ezekiel 48:16, 35; Isaiah 60:11–19; Hebrews 11:10', note: 'Yachazaqaal\'s city of 4,500 amah a side — a thousandth of this one\'s — with the same twelve gates; the city whose gates stand open and whose light is Yahawah; the city with foundations.' },
     assumed: 'That the equal height makes a cube (a pyramid is also read); the body of gold drawn as glass one can see the earth through.',
@@ -271,10 +268,10 @@ export const PIECES = [
     words: ['kasaa', 'kabawad', 'awar', 'hayakal'], keys: ['kasaa', 'throne', 'kabawad', 'glory', 'nayar', 'lamp', 'hayakal', 'temple'],
     on: V('66:22:3-5', '66:21:22-23'), refs: 'Revelation 22:3–5; 21:22–23',
     measures: [['where', 'in the city — the river proceeds from it, so in its midst', '22:1, 3'], ['the temple', 'none: the Adanay Alahayam and the Lamb are its temple', '21:22'], ['the light', 'no sun nor moon: the glory of Alahayam lights it, and its lamp is the Lamb', '21:23'], ['the night', 'none', '22:5']],
-    note: '"{{Revelation 21:22}}" — where Yachazaqaal\'s portion had the house in its midst, this city has a throne and no temple. The model draws a seat of light on a dais of light and no one on it; from it the river runs, and by it the whole city is lit, day without night.',
+    note: '"{{Revelation 21:22}}" — where Yachazaqaal\'s portion had the house in its midst, this city has a throne and no temple. The model draws no seat and no figure — only the kabawad (glory), a shining column of light standing in the midst, ever flowing, as the fire stood over the mashakan; from its foot the river runs, and by it the whole city is lit, day without night.',
     elsewhere: { ref: 'Revelation 4:2–6; Isaiah 6:1; Ezekiel 1:26–28; 43:7', note: 'The throne set in heaven with the rainbow about it; the throne high and lifted up; the likeness of a throne over the firmament; "the place of my throne … in the midst of the children of Israel forever".' },
-    assumed: 'Everything of its form; that it stands at the city\'s centre.',
-    idealized: 'The throne and its dais.',
+    assumed: 'That the throne is seen as its glory alone — no seat, no figure; that it stands at the city\'s centre.',
+    idealized: 'The footing of light.',
     parts: throne(),
   },
   {
@@ -358,11 +355,12 @@ export const DESCEND_CAMERA = [
   [STONE_FROM, [E + 360, 60, G1 - 300], [E, 36, G1 - 80]],                         // the foundations, course by course, at the gate's corner
   [STONE_FROM + 12 * STONE_EACH + 3, [E + 520, 100, G1 - 420], [E, 60, G1 - 40]],   // … all twelve under the jasper
   [STONE_FROM + 12 * STONE_EACH + 6, [10500000, 3600000, 10800000], [0, 1700000, 0]],   // the measuring: the cube whole
-  [STONE_FROM + 12 * STONE_EACH + 22, [E - 400, 9, 40], [E - 3000, 6, 0]],            // the street of gold from inside the gate, westward
+  [STONE_FROM + 12 * STONE_EACH + 22, [E - 300, 7, 90], [E - 1400, 2, 20]],            // the street of gold from inside the gate, westward, the green either side
   [STONE_FROM + 12 * STONE_EACH + 34, [E + 300, 12, 90], [E - 200, 30, 0]],           // the east gate: the nations coming in
-  [STONE_FROM + 12 * STONE_EACH + 48, [E - 900, 16, 0], [E - 1600, 2, 0]],            // down the river in the midst of the street, the trees either side
-  [STONE_FROM + 12 * STONE_EACH + 66, [620, 90, 460], [0, 40, 0]],                     // the throne
-  [DESCEND_DURATION, [1600, 400, 1200], [0, 60, 0]],
+  [STONE_FROM + 12 * STONE_EACH + 48, [E - 700, 5, 34], [E - 1100, 6, -10]],           // on the bank: the river of life, the trees of life on either side
+  [STONE_FROM + 12 * STONE_EACH + 58, [E - 900, 6, -36], [E - 1300, 8, 14]],           // … and from the other bank
+  [STONE_FROM + 12 * STONE_EACH + 66, [520, 40, 380], [0, 60, 0]],                     // the throne: the glory in the midst
+  [DESCEND_DURATION, [1200, 220, 900], [0, 80, 0]],
 ];
 
 // ROAM — no story: the city stands, its gates open, and the walker goes where they will — carried, when it is far.
@@ -401,7 +399,7 @@ export const CHIP_ORDER = ['zahab', 'chawamah', ...STONES.map((_, i) => `yasawad
 /** Where the eye goes when a piece is chosen (the focus target and a fitting distance), in cubits. */
 export function focusFor(id) {
   const F = {
-    aratz: [[0, 0, -200000], 5000000], zahab: [[0, 1200000, 0], 9000000], chawamah: [[E, 80, G1 - 300], 900], rachab: [[E - 1200, 4, 0], 700], nahar: [[E - 700, 4, 0], 260], itz: [[E - 600, 12, 0], 220], kasaa: [[0, 40, 0], 480], gawayam: [[E - 300, 6, 0], 260],
+    aratz: [[0, 0, -200000], 5000000], zahab: [[0, 1200000, 0], 9000000], chawamah: [[E, 80, G1 - 300], 900], rachab: [[E - 1200, 4, 0], 700], nahar: [[E - 700, 4, 0], 260], itz: [[E - 600, 12, 0], 220], kasaa: [[0, 60, 0], 520], gawayam: [[E - 300, 6, 0], 260],
   };
   let m = /^yasawad-(\d+)$/.exec(id); if (m) return { target: [E, 36, G1 - 300], distance: 200 };
   m = /^gate-(\w+)-(\d)$/.exec(id);

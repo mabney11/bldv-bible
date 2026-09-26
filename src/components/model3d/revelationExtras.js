@@ -81,10 +81,12 @@ export function revelationExtras({ M, byId, lights, scene, camera }) {
   const mv = new THREE.Vector3();
   // the kabawad (glory) over the throne: a column of white-gold light, ever flowing, as the cloud and the fire over the mashakan (fieldy)
   const glory = new THREE.Group(); scene.add(glory);
-  const column = makeColumn(glory, puff, { NF: 900, NS: 700, H: 160, R: 36, fireH: 90, base: CITY_Y + 50, sizeF: 9, sizeS: 26, hue: 0.12, sat: 0.55, lum: 0.86, glowCol: '#fff1c4', lightCol: 0xfff0c0 });
-  const cloudCol = new THREE.Color('#fff4dc');
+  const column = makeColumn(glory, puff, { NF: 1400, NS: 900, H: 280, R: 70, fireH: 150, base: CITY_Y + 2, sizeF: 16, sizeS: 44, hue: 0.12, sat: 0.5, lum: 0.9, glowCol: '#fff4d0', lightCol: 0xfff2cc });
+  const cloudCol = new THREE.Color('#fff9ec');
+  // the shining about it: halos of light, additive, breathing (the fire's shining rather than its burning — fieldy)
+  const halos = [[260, 120, 0.55, '#fff6dc'], [140, 70, 0.7, '#ffffff'], [90, 300, 0.35, '#fff0c0']].map(([w, y, op, col]) => { const h = new THREE.Sprite(new THREE.SpriteMaterial({ map: puff, color: new THREE.Color(col), transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false })); h.position.set(0, CITY_Y + y, 0); h.scale.set(w, w * (y > 200 ? 2.2 : 1), 1); h.userData.op = op; glory.add(h); return h; });
   let lastBurn = -1;
-  function burn(sec) { if (Math.abs(sec - lastBurn) < 0.03) return; lastBurn = sec; column.burn(sec, 0, 0, 1, 0.8, cloudCol); }
+  function burn(sec) { if (Math.abs(sec - lastBurn) < 0.03) return; lastBurn = sec; column.burn(sec, 0, 0, 1, 0.55, cloudCol); const p = 0.85 + 0.15 * Math.sin(sec * 1.7) * Math.sin(sec * 0.9); for (const h of halos) h.material.opacity = h.userData.op * p; }
   let glow = null;
   // the mountains, when the tiles come
   const land = byId('aratz');
