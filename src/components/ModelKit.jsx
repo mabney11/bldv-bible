@@ -210,9 +210,9 @@ export function CanvasTitle({ phase, on, playing = false, scrubbed = null }) {
 }
 
 /** The weight of a unit's time on the canvas (ms): a plain word — a joining word, a filler — reads quickly, 0.2 s; a glossed
- *  word is the emphasis and snaps in for a smooth 0.993 s (fieldy: "the common words read quickly and the hebrew words snap for
+ *  word is the emphasis and snaps in for a smooth 1.24 s (fieldy: "the common words read quickly and the hebrew words snap for
  *  about a second"). No word stays longer than a second and a half, whatever the pane. */
-export const HOLD_PLAIN = 200, HOLD_GLOSS = 993, HOLD_MAX = 1500;
+export const HOLD_PLAIN = 200, HOLD_GLOSS = 1240, HOLD_MAX = 1500;
 export function holdFor(u) { return u.gloss == null ? HOLD_PLAIN : HOLD_GLOSS; }
 /** A sentence begins with a capital, even where the quote is sliced from the middle of a verse ("in the raashawan" → "In the raashawan"). */
 export function capFirst(text) { return text ? text.replace(/^(\s*["“'‘(]*)([a-z])/, (m, a, b) => a + b.toUpperCase()) : text; }
