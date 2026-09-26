@@ -85,7 +85,6 @@ export const MATERIALS = {
 const K = makeKit(LEVEL);
 const { box, poly, cyl, lathe, ideal, person } = K;
 const sphere = (x, y, z, r, extra = {}) => ({ kind: 'sphere', x, y, z, r, ...extra });
-const torus = (x, y, z, R, r, extra = {}) => ({ kind: 'torus', x, y, z, R, r, ...extra });
 const sheetOf = (ring, top, mat) => poly(ring, top, { mat, role: 'land', ideal: false });
 
 /** The runs of one side of the wall between −E…E at height y, h high, with the gaps for the three gates (each side's own axis). */
@@ -102,16 +101,19 @@ function runs(side, y, h, t, mat, role) {
 function cityWall() { return ['north', 'east', 'south', 'west'].flatMap((s) => runs(s, CITY_Y + 12 * WALL.found, WALL.h - 12 * WALL.found, WALL.t, 'jasper', s)); }
 /** One foundation course (21:14, 19–20): the i-th stone, six amah high, round the whole city, stepped a little wider than the one above. */
 function foundation(i) { const step = (11 - i) * 1.2; return ['north', 'east', 'south', 'west'].flatMap((s) => runs(s, CITY_Y + i * WALL.found, WALL.found, WALL.t + step * 2, `stone-${STONES[i][0]}`, s)); }
-/** A gate of one pearl (21:21): a great pearl standing in the wall's gap, the way through its middle — with its malaak (angel) beside it (21:12). */
+export const PEARL = { w: 150, d: 56, h: 170, wayW: 72, wayH: 110 };   // the gate: one block of pearl across the wall's gap, standing proud of the wall and above it, the way cut through it (fieldy: "a gate that is pure pearl")
+/** A gate of one pearl (21:21): a gate of pearl set in the wall's gap, the way through it — with its malaak (angel) beside it (21:12). */
 function pearlGate(side, i) {
   const at = GATE_AT[i], along = side === 'north' || side === 'south', c = side === 'north' ? -HALF - WALL.t / 2 : side === 'south' ? HALF + WALL.t / 2 : side === 'east' ? HALF + WALL.t / 2 : -HALF - WALL.t / 2;
   const [x, z] = along ? [at, c] : [c, at];
-  const out = [torus(x, CITY_Y + 44, z, 76, 26, { mat: 'pearl', role: 'gate', ry: along ? 0 : Math.PI / 2 })];   // the pearl: a ring 204 across, its foot in the ground, the way 100 wide beneath its crown
-  const ax = along ? x + 90 : x + (side === 'east' ? 40 : -40), az = along ? z + (side === 'north' ? -40 : 40) : z + 90;   // the angel stands outside, beside the gate
+  const out = [along
+    ? box(x, CITY_Y, z, PEARL.w, PEARL.h, PEARL.d, { mat: 'pearl', role: 'gate', doorway: { w: PEARL.wayW, h: PEARL.wayH } })
+    : box(x, CITY_Y, z, PEARL.d, PEARL.h, PEARL.w, { mat: 'pearl', role: 'gate', doorway: { w: PEARL.wayW, h: PEARL.wayH } })];
+  const ax = along ? x + 96 : x + (side === 'east' ? 48 : -48), az = along ? z + (side === 'north' ? -48 : 48) : z + 96;   // the angel stands outside, beside the gate
   out.push(...person(ax, az, along ? (side === 'north' ? Math.PI / 2 : -Math.PI / 2) : (side === 'east' ? Math.PI : 0), 'angel', { y: CITY_Y, s: 1.1, skin: 'skin1', hair: 'hair0' }));
   return out;
 }
-const gateWay = (side, i) => { const at = GATE_AT[i], along = side === 'north' || side === 'south', c = side === 'north' ? -HALF - WALL.t / 2 : side === 'south' ? HALF + WALL.t / 2 : side === 'east' ? HALF + WALL.t / 2 : -HALF - WALL.t / 2; return along ? { x: at, z: c, axis: 'x', w: 100, t: WALL.t / 2, leaves: false } : { x: c, z: at, axis: 'z', w: 100, t: WALL.t / 2, leaves: false }; };
+const gateWay = (side, i) => { const at = GATE_AT[i], along = side === 'north' || side === 'south', c = side === 'north' ? -HALF - WALL.t / 2 : side === 'south' ? HALF + WALL.t / 2 : side === 'east' ? HALF + WALL.t / 2 : -HALF - WALL.t / 2; return along ? { x: at, z: c, axis: 'x', w: PEARL.wayW, t: PEARL.d / 2, leaves: false } : { x: c, z: at, axis: 'z', w: PEARL.wayW, t: PEARL.d / 2, leaves: false }; };
 /** The city's floor of gold, in slabs whose corners fall on the gates and the throne (where the walker stands, the vertices are near — float32 keeps its precision). */
 function floor() { const L = [-HALF, GATE_AT[0], 0, GATE_AT[2], HALF], out = []; for (let i = 0; i < 4; i++) for (let k = 0; k < 4; k++) out.push(box((L[i] + L[i + 1]) / 2, CITY_Y - 1, (L[k] + L[k + 1]) / 2, L[i + 1] - L[i], 1, L[k + 1] - L[k], { mat: 'goldfloor', role: 'ground' })); return out; }
 /** The street of gold (21:21) from the throne to the east gate in the middle of the side, and on to the west; the river of the water of life in its midst (22:1–2). */
@@ -209,10 +211,10 @@ export const PIECES = [
     tag: `shair (gate) of ${name} · pearl`, title: `The shair (gate) of ${name} (${en}) on the ${side} — achad (one) pearl, and its malaak (angel)`,
     words: ['shair', 'malaak', 'shabat'], keys: [name.toLowerCase(), en.toLowerCase()],
     on: V('66:21:12-13', '66:21:21', '66:21:25'), refs: 'Revelation 21:12–13, 21, 25',
-    measures: [['the side', `the ${side}: three gates — ${GATES[side].map((g) => g[0]).join(', ')}`, '21:13'], ['of what', 'one pearl', '21:21'], ['its name', `a tribe's — ${name}: the order of Ezekiel 48:${{ north: 31, east: 32, south: 33, west: 34 }[side]}, so the two cities pair gate for gate`, '21:12; assumed'], ['shut?', 'never by day, and there is no night', '21:25'], ['its size', 'a pearl 204 amah across, the way through it 100 wide', 'assumed']],
+    measures: [['the side', `the ${side}: three gates — ${GATES[side].map((g) => g[0]).join(', ')}`, '21:13'], ['of what', 'one pearl', '21:21'], ['its name', `a tribe's — ${name}: the order of Ezekiel 48:${{ north: 31, east: 32, south: 33, west: 34 }[side]}, so the two cities pair gate for gate`, '21:12; assumed'], ['shut?', 'never by day, and there is no night', '21:25'], ['its size', `one block of pearl ${PEARL.w} across and ${PEARL.h} high, the way through it ${PEARL.wayW} wide and ${PEARL.wayH} high`, 'assumed']],
     note: `"{{Revelation 21:21 | The twelve … pearl}}" — every gate one pearl, with a malaak (angel) at it and a tribe's name on it; which name on which gate the Revelation does not say, so this one is ${name}'s as in Yachazaqaal's city.`,
     elsewhere: { ref: 'Ezekiel 48:30–34; Isaiah 60:11; Genesis 28:17', note: 'The gates of Yachazaqaal\'s city, three a side, with the same names; gates open continually; "this is the gate of heaven".' },
-    assumed: 'The pearl\'s size and form (a ring the way passes through), the gate\'s place a third along the side, and which tribe\'s name it bears.',
+    assumed: 'The pearl\'s size and form (a gate of one block of pearl, the way cut through it), the gate\'s place a third along the side, and which tribe\'s name it bears.',
     idealized: 'The pearl.',
     parts: pearlGate(side, i), gates: [gateWay(side, i)],
   }))),
@@ -353,7 +355,7 @@ export const DESCEND_CAMERA = [
 export const ROAM_EYE = 3.4;
 export const ROAM_START = { pos: [E + 90, CITY_Y + ROAM_EYE, 30], look: [E - 200, CITY_Y + 40, 0] };   // outside the middle east gate, facing the pearl
 const MILES = (c) => (c * CUBIT_M / 1609.34);
-export const ROAM_PHASES = [{ from: 0, key: 'roam', caption: `Walk where you will — in at the pearl gate before you, down the rachab (street) of gold with the nahar (river) of the water of chay (life) in its midst and the ayalan (tree) of life on either side. The city is twelve thousand stadia a side — ${Math.round(MILES(SIDE))} miles, and as high — so the map does not walk you across it: as the malaak (angel) carried Yawachanan, it carries you to any gate or to the kasaa (throne) in the midst. At ${Math.round(32 * CUBIT_M * 2.23694)} miles an hour the walk from this gate to the throne would take ${Math.round(MILES(HALF) / (32 * CUBIT_M * 2.23694))} hours. Tap a part for its details. Yachazaqaal's city stood on this same ground, a thousandth the size — its gates bear the same names.`, ref: '' }];
+export const ROAM_PHASES = [{ from: 0, key: 'roam', caption: `Walk where you will — in at the gate of pearl before you, down the rachab (street) of gold with the nahar (river) of the water of chay (life) in its midst and the ayalan (tree) of life on either side. The city is twelve thousand stadia a side — ${Math.round(MILES(SIDE))} miles, and as high — so the map does not walk you across it: as the malaak (angel) carried Yawachanan, it carries you to any gate or to the kasaa (throne) in the midst. At ${Math.round(32 * CUBIT_M * 2.23694)} miles an hour the walk from this gate to the throne would take ${Math.round(MILES(HALF) / (32 * CUBIT_M * 2.23694))} hours. Tap a part for its details. Yachazaqaal's city stood on this same ground, a thousandth the size — its gates bear the same names.`, ref: '' }];
 export const ROAM_ENTER = {};
 
 export const MODES = {
@@ -387,7 +389,7 @@ export function focusFor(id) {
   };
   let m = /^yasawad-(\d+)$/.exec(id); if (m) return { target: [E, (+m[1] - 0.5) * WALL.found, G1 - 200], distance: 160 };
   m = /^gate-(\w+)-(\d)$/.exec(id);
-  if (m) { const g = gateWay(m[1], +m[2]); return { target: [g.x, 40, g.z], distance: 520 }; }
+  if (m) { const g = gateWay(m[1], +m[2]); return { target: [g.x, 70, g.z], distance: 480 }; }
   const f = F[id]; return f ? { target: f[0], distance: f[1] } : null;
 }
 
@@ -416,7 +418,7 @@ export const MODEL = {
     title: 'The qadash (holy) shairay (city), New Yarawashalam, bawaa (coming) down out of shamayam (heaven)',
     subtitle: (mode) => (mode === 'roam' ? 'Revelation 21:12–27; 22:1–5' : 'Revelation 21:1–22:5'),
     intro: (mode) => (mode === 'roam'
-      ? 'No story here: the city stands, and you stand at its middle east gate — the pearl before you, the wall of jasper on its twelve foundations towering either side, the street of gold running in to the throne with the river in its midst. The city is the text\'s size, so the map carries you across it rather than walking you; tap a part for its words and measures.'
+      ? 'No story here: the city stands, and you stand at its middle east gate — the gate of pearl before you, the wall of jasper on its twelve foundations towering either side, the street of gold running in to the throne with the river in its midst. The city is the text\'s size, so the map carries you across it rather than walking you; tap a part for its words and measures.'
       : 'Play, and the vision unfolds as the text gives it: the new earth without its sea, the city coming down out of heaven whole, the mountain it is seen from, its light like jasper, the wall and the twelve gates, the twelve foundations named stone by stone, the measuring with the golden reed, the gold like glass, the nations coming in at gates never shut, the river of life and the tree, and the throne where there is no temple and no night.'),
     extras: () => [{ heading: 'The scale, and what the model adds', refs: 'Revelation 21:15–17; Ezekiel 40:5; 48:16', text: 'The text measures the city in stadia and its wall in amah (cubits): the model draws both at their word — a stadion 185 m, that is 352 amah of the map\'s cubit of 0.525 m — so the city is 4,228,571 amah, about 1,380 miles, a side and as high, and the wall 144 amah high about it. That is the whole land from the river of Egypt to the Euphrates under one city, and the model sets it down over the Holy Land map\'s own land with its centre where Yarawashalam stands, on the same ground as the city of Ezekiel 48 (a thousandth the size), whose gates give these their names in the same order. What the text does not give — the wall\'s thickness, the foundations as courses, the pearls\' form, the street\'s course and breadth, the river\'s breadth, the trees\' number, the throne\'s form, the people — is the model\'s, and each card says so.' }],
     choose: 'Tap a part — a gate, a foundation, the wall, the street, the river, the throne — or a chip under the model, or a marked word in the text, for its measures verse by verse, the same thing elsewhere in scripture, and what the model had to assume.',

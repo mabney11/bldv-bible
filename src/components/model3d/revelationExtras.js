@@ -23,7 +23,7 @@ export function revelationExtras({ M, byId, lights, scene }) {
   const o = HALF + WALL.t / 2;
   for (const side of ['north', 'east', 'south', 'west']) GATES[side].forEach(([name], i) => {
     const at = GATE_AT[i], [x, z] = side === 'north' ? [at, -o] : side === 'south' ? [at, o] : side === 'east' ? [o, at] : [-o, at];
-    gateNames.add(mk(name, '#fff0c0', x, 175, z, 110));
+    gateNames.add(mk(name, '#fff0c0', x, 196, z, 110));
   });
   for (const sp of gateNames.children) { const s = sp.userData.size; sp.scale.set(s, s / 4, 1); }
   let glow = null;
