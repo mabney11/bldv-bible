@@ -117,8 +117,9 @@ function Card({ model, id, mode, onClose, onPick }) {
 }
 
 // ── The page ─────────────────────────────────────────────────────────────────
-/** The reader's own figure — the robed, faceless walker of every model — in right-side silhouette, running to the right and
- *  leaning further forward the faster the pace, the wind streaking behind (fieldy's sketch: one, two or three streaks). */
+/** The reader's own figure — the robed, faceless walker of every model, legless as in the model, the robe to the ground — in
+ *  right-side silhouette, running to the right and leaning further forward the faster the pace, the wind streaking behind
+ *  (fieldy's sketch: one, two or three streaks; "we don't show his legs in the app so the figure doesn't need them either"). */
 function RunnerIcon({ wind = 0 }) {
   const lean = 6 + wind * 9;   // degrees forward (clockwise: the top of the figure moves to the right, the way it runs)
   return (
@@ -128,15 +129,14 @@ function RunnerIcon({ wind = 0 }) {
         {wind >= 1 && <path d="M2 20 L15 20" />}
         {wind >= 2 && <path d="M5 26 L16 26" />}
       </g>
-      <g transform={`rotate(${lean} 29 34)`} fill="currentColor" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+      <g transform={`rotate(${lean} 28 33)`} fill="currentColor" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
         <ellipse cx="28.6" cy="6.2" rx="3.6" ry="3.9" stroke="none" />                       {/* the head, with the hair's fullness */}
         <path d="M25.6 5.2 C24.4 3.2 27.4 1.6 30.2 2.4 C32.4 3 32.8 5.4 32 7 C31.6 5 29 4.4 27.2 5.6 Z" stroke="none" />   {/* the hair over the band */}
-        <path d="M26 10 L31.4 10 L33.4 20.2 L34 30 L20.6 30 L23.6 19.6 Z" stroke="none" />   {/* the robe, swinging back at the hem */}
+        <path d="M26 10 L31.4 10 L33.2 19 C34.6 24 36.4 29 37 32 L19 32 C19.8 29 21.6 24 23.6 19 Z" stroke="none" />       {/* the robe, flaring to the ground */}
+        <path d="M18.4 32.4 L37.6 32.4" fill="none" strokeWidth="2.6" />                     {/* the robe's foot, flat on the ground */}
         <path d="M31 12.6 L37.4 15 L40 10.4" fill="none" strokeWidth="2.4" />                {/* the leading arm, forward */}
         <path d="M26.4 12.4 L21.4 16.6" fill="none" strokeWidth="2.4" />                     {/* the trailing arm */}
-        <path d="M30.5 29.6 L36.8 34.4" fill="none" strokeWidth="2.6" />                     {/* the stepping leg */}
-        <path d="M24 29.6 L19.6 34.6" fill="none" strokeWidth="2.6" />                       {/* the trailing leg */}
-        <path d="M23.2 21 L33.8 21" fill="none" strokeWidth="1.2" stroke="var(--bg, #14100a)" opacity="0.9" />   {/* the sash */}
+        <path d="M23.2 20.6 L33.6 20.6" fill="none" strokeWidth="1.2" stroke="var(--bg, #14100a)" opacity="0.9" />   {/* the sash */}
       </g>
     </svg>
   );
