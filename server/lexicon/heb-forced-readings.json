@@ -2,7 +2,6 @@
   "_README": "HEB-edition forced segmentation, keyed by the written word (word_raw) -> the exact forms array heb-align.js's resolveAll() must produce for it (prefix letters..., stem, suffix tail). Applies to EVERY occurrence of that spelling, so use it only when the automatic pick is wrong everywhere. Evidence-gated: the reading is used only if heb-align itself proposed it (stem attested as a whole word, tail attested as a real suffix); otherwise it is ignored and reported by build-surface-index.js. Takes effect on the next `node build-surface-index.js --heb` (then sync-heb-tokens.mjs --apply to re-project tokens_nt).",
   "_2026-09-26": "shlichei 'apostles/messengers of' (Rev 21:14, 2 Cor 11:13, Jude 17, Josephus) was split as 𐤔 + 𐤋 + 𐤉𐤇𐤉 (jussive of chayah H2421, 'may he live'). Correct: root 𐤔𐤋𐤉𐤇 Shalayach (sent one, as every other apostle-word in the NT already reads) + construct-plural 𐤉.",
   "𐤔𐤋𐤉𐤇𐤉": ["𐤔𐤋𐤉𐤇", "𐤉"],
-  "𐤔𐤋𐤉𐤇𐤉𐤅": ["𐤔𐤋𐤉𐤇", "𐤉𐤅"],
   "𐤋𐤔𐤋𐤉𐤇𐤉": ["𐤋", "𐤔𐤋𐤉𐤇", "𐤉"],
   "𐤊𐤔𐤋𐤉𐤇𐤉": ["𐤊", "𐤔𐤋𐤉𐤇", "𐤉"],
   "𐤅𐤋𐤔𐤋𐤉𐤇𐤉": ["𐤅", "𐤋", "𐤔𐤋𐤉𐤇", "𐤉"]
