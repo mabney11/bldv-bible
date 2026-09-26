@@ -121,3 +121,14 @@
 /* a model that stands in another's story (the house in the holy portion; the portion around the house) */
 .tp-index-related { margin-top: 18px; font-size: 14px; }
 .tp-index-related .models-card-q { margin-left: 6px; }
+
+/* the walker's pace, on the right of the stage: the usual walk at the bottom, faster above, much faster at the top — each with its
+   speed in miles an hour at the model's cubit (fieldy: a mi/h reference, to feel how big the city is) */
+.tp-speeds { position: absolute; right: 14px; bottom: 64px; display: flex; flex-direction: column; gap: 6px; z-index: 4; }   /* under the minimap, above the chips */
+.tp-speed { display: flex; flex-direction: column; align-items: center; gap: 1px; width: 58px; padding: 5px 2px 4px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(20, 16, 10, 0.55); color: #e9e0cb; cursor: pointer; font: inherit; }
+.tp-speed .tp-runner { display: block; }
+.tp-speed-mph { font-size: 10.5px; line-height: 1; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.tp-speed-mph small { font-size: 8.5px; opacity: 0.8; }
+.tp-speed.on { border-color: var(--gold); color: var(--gold); background: rgba(40, 30, 10, 0.8); }
+.tp-speed:hover { border-color: var(--gold); }
+@media (pointer: coarse) { .tp-speeds { right: auto; left: 14px; top: 14px; bottom: auto; } .tp-speed { width: 52px; } }   /* phones: the jump pad has the right, the stick the bottom left */

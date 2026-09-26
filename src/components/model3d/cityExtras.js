@@ -6,7 +6,9 @@
  */
 import * as THREE from 'three';
 import { makeSky, labelTexture } from './sky.js';
-import { CITY, GATES, STRIP, TRIBES_N, TRIBES_S, TRIBE_H, HOUSE_AT, PRINCE, RIVER_Z } from '../../lib/models/ezekiel-city.js';
+import { CITY, GATES, HOUSE_AT, RIVER_Z } from '../../lib/models/ezekiel-city.js';
+import { GEO, toXZ } from '../../lib/models/ezekiel-geo.js';
+import { TRIBE_TRANSLIT, WATERS } from '../../lib/models/holyLand.js';
 
 const GATE_AT = [-1500, 0, 1500];
 
@@ -26,15 +28,17 @@ export function cityExtras({ lights, sky, scene }) {
   });
   // the land's owners, over the strips (the Portion story)
   const landNames = new THREE.Group(); landNames.visible = false; scene.add(landNames);
-  landNames.add(mk('kahanayam', '#f3e6c4', 0, 600, (STRIP.priests[0] + STRIP.priests[1]) / 2 + 3000, 5000));
+  const S = GEO.strips;
+  landNames.add(mk('kahanayam', '#f3e6c4', S.priests.centre[0], 600, S.priests.centre[1] + 3200, 5000));
   landNames.add(mk('bayath', '#ffe08a', HOUSE_AT[0], 500, HOUSE_AT[2] - 900, 2200));
-  landNames.add(mk('Lawayay', '#f3e6c4', 0, 600, (STRIP.levites[0] + STRIP.levites[1]) / 2, 5000));
+  landNames.add(mk('Lawayay', '#f3e6c4', S.levites.centre[0], 600, S.levites.centre[1], 5000));
   landNames.add(mk('iyar', '#ffe08a', 0, 500, 0, 2600));
-  landNames.add(mk('nashayaa', '#e8dcc6', (PRINCE.x0 + PRINCE.x1) / 2, 600, -10000, 5000));
-  landNames.add(mk('nashayaa', '#e8dcc6', -(PRINCE.x0 + PRINCE.x1) / 2, 600, -10000, 5000));
+  landNames.add(mk('nashayaa', '#3a2e10', S.princeE.centre[0], 600, S.princeE.centre[1], 5000));
+  landNames.add(mk('nashayaa', '#3a2e10', S.princeW.centre[0], 600, S.princeW.centre[1], 5000));
   landNames.add(mk('nachal', '#9fd0ea', HOUSE_AT[0] + 6000, 400, RIVER_Z - 900, 2400));
-  TRIBES_N.forEach((name, i) => landNames.add(mk(name, '#e6f0d6', 0, 700, STRIP.priests[0] - (6.5 - i) * TRIBE_H, 6500)));
-  TRIBES_S.forEach((name, i) => landNames.add(mk(name, '#e6f0d6', 0, 700, STRIP.city[1] + (i + 0.5) * TRIBE_H, 6500)));
+  for (const b of GEO.tribes) landNames.add(mk(TRIBE_TRANSLIT[b.tribe] || b.tribe, '#f6f1e4', b.centre[0], 900, b.centre[1], 12000));
+  // the waters, with the map's own names for them
+  for (const w of WATERS) { if (!['great-sea', 'salt-sea', 'chinnereth', 'jordan'].includes(w.id)) continue; const [x, z] = toXZ([w.lon, w.lat]); landNames.add(mk(w.tr, '#e6f4ff', x, 900, z, w.id === 'great-sea' ? 16000 : 9000)); }
   function size(group, k) { for (const sp of group.children) { const s = sp.userData.size * k; sp.scale.set(s, s / 4, 1); sp.material.opacity = Math.min(1, k * 1.2); } }
   return {
     sunOffset,

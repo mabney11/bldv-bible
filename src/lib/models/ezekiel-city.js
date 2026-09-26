@@ -8,8 +8,9 @@
  * be twenty-seven thousand amah a side and the house a speck in it. The card says so.
  *
  * Frame: the city's centre is the origin; north is −z, east +x (the house model's frame, so its pieces stand in this one
- * unmoved, only set down 17,500 north — 48:8–20: the priests' strip of 10,000 with the sanctuary in its midst, the
- * Levites' 10,000, then the city's 5,000, north to south).
+ * unmoved, only set down in the sanctuary's place). The land — the tribes' bands from the sea to the Jordan, the holy square
+ * anchored on Jerusalem with its strips (Levites north, the priests with the sanctuary in the midst, the city south), the
+ * prince's land, the coast, the seas and the Jordan — is the Holy Land map's own geometry (ezekiel-geo.js), so the two agree.
  *
  * Two stories: PORTION (from above — the oblation laid out at scale, the house in it, the tribes' strips north and south,
  * the waters from the house running east) and CITY (the wall, the twelve gates in the text's order, the dwellings, the
@@ -17,6 +18,8 @@
  */
 import { makeKit, V, SPEEDS, smooth, timelineFor, BASE_MATERIALS } from './kit.js';
 import { WORDS as HOUSE_WORDS, MATERIALS as HOUSE_MATERIALS, PIECES as HOUSE_PIECES, gatehouse, GATE, OUT as HOUSE_OUT } from './ezekiel.js';
+import { GEO, HOUSE_XZ, CUBIT_M, ribbon } from './ezekiel-geo.js';
+import { TRIBE_TRANSLIT } from './holyLand.js';
 
 // ── Words ────────────────────────────────────────────────────────────────────
 export const WORDS = {
@@ -42,13 +45,15 @@ export const MATERIALS = {
   ...BASE_MATERIALS, ...HOUSE_MATERIALS,
   ground:   { word: 'iyar',       color: '#b9a98a', hi: '#d6c8aa', lo: '#7d6f56', metal: 0, rough: 1 },     // the city's trodden ground
   suburb:   { word: 'magarash',   color: '#8fa757', hi: '#b3c87a', lo: '#5b6e35', metal: 0, rough: 1 },     // the open land about it, kept green
-  field:    { word: 'sadah',      color: '#c8b45a', hi: '#e2d07e', lo: '#8a7a34', metal: 0, rough: 1 },     // the fields east and west, in grain
-  priests:  { word: 'kahanayam',  color: '#d9c9a6', hi: '#f0e4c8', lo: '#9a8c6c', metal: 0, rough: 1 },     // the priests' strip, pale
-  levites:  { word: 'lawayay',    color: '#c6b48f', hi: '#e0d0ac', lo: '#8a7a5a', metal: 0, rough: 1 },     // the Levites', a shade deeper
+  field:    { word: 'sadah',      color: '#a8c686', hi: '#c6dea8', lo: '#6f8a56', metal: 0, rough: 1 },     // the fields east and west (the map's colour)
+  priests:  { word: 'kahanayam',  color: '#e8aa55', hi: '#f4c884', lo: '#9c6f30', metal: 0, rough: 1 },     // the priests' strip (the map's colour)
+  levites:  { word: 'lawayay',    color: '#b9a7e6', hi: '#d4c8f0', lo: '#7d6fa0', metal: 0, rough: 1 },     // the Levites' (the map's colour)
   cityland: { word: 'chal',       color: '#a8b87a', hi: '#c6d49a', lo: '#6e7c4a', metal: 0, rough: 1 },     // the city's common land
-  prince:   { word: 'nashayaa',   color: '#9c8f7a', hi: '#bcae96', lo: '#665c4c', metal: 0, rough: 1 },     // the prince's land either side
-  tribeN:   { word: 'shabat',     color: '#8aa868', hi: '#a9c489', lo: '#56703f', metal: 0, rough: 1 },     // the tribes' strips, two greens turn about
-  tribeS:   { word: 'shabat',     color: '#5f7a48', hi: '#829c68', lo: '#3a4d2c', metal: 0, rough: 1 },
+  prince:   { word: 'nashayaa',   color: '#f2c14e', hi: '#f8d982', lo: '#a5822c', metal: 0, rough: 1 },     // the prince's land either side (the map's gold)
+  land:     { word: 'aratz',      color: '#8c9a6a', hi: '#aab88a', lo: '#5e6a44', metal: 0, rough: 1 },     // the land from the sea to the Jordan (the map's coast)
+  sea:      { word: 'yam',        color: '#5b8fb0', hi: '#8fbcd6', lo: '#33607d', metal: 0, rough: 0.3 },   // the great sea, the salt sea, Chinnereth, the Jordan
+  // the tribes in the map's own colours (holyLand.js TRIBE_COLORS), so the bands read the same here and there
+  ...Object.fromEntries(GEO.tribes.map((b) => [`tribe-${b.tribe}`, { word: 'shabat', color: b.color, hi: b.color, lo: b.color, metal: 0, rough: 1 }])),
   citywall: { word: 'chawamah',   color: '#cfc3ad', hi: '#e8dfcc', lo: '#8c8270', metal: 0, rough: 0.9 },   // the city's wall, of stone
   house:    { word: 'mawashab',   color: '#d8cdb3', hi: '#ece4d0', lo: '#948b74', metal: 0, rough: 1 },     // the dwellings
 };
@@ -56,17 +61,12 @@ export const MATERIALS = {
 // ── The frame, in cubits ─────────────────────────────────────────────────────
 export const CITY = { half: 2250, wallT: 10, wallH: 24 };         // 48:16: 4,500 a side (wall's thickness and height assumed)
 export const SUBURB = 250;                                        // 48:17: 250 all around
-export const STRIP = { x: 12500, priests: [-22500, -12500], levites: [-12500, -2500], city: [-2500, 2500] };   // 48:8–20: 25,000 wide; 10,000 + 10,000 + 5,000 north to south
-export const FIELDS = { x0: 2500, x1: 12500 };                    // 48:18: 10,000 eastward and 10,000 westward of the city's 5,000
-export const PRINCE = { x0: 12500, x1: 25000, z0: -22500, z1: 2500 };   // 45:7; 48:21: from the portion to the east and west borders (the borders' distance assumed)
-export const LAND_X = 25000;                                      // the land's breadth east to west (assumed — 47:18–20 give places, not measures)
-export const TRIBE_H = 10000;                                     // each tribe's strip north to south (assumed equal; 48:1–7, 23–27 say "one portion" each)
-export const HOUSE_AT = [0, 0.9, -17500];                           // the sanctuary in the midst of the priests' strip (48:10)
+export const HOUSE_AT = [HOUSE_XZ[0], 0.9, HOUSE_XZ[1]];       // the sanctuary in the midst of the priests' strip (48:10), where the map puts it
+const SEA = GEO.lakes.find((l) => /dead/i.test(l.name));
+export const SEA_X = SEA ? Math.min(...SEA.ring.map((p) => p[0])) : 30000;   // the salt sea's west shore, where the waters of 47 come down
 export const RIVER_Z = HOUSE_AT[2] + 10;                          // the waters come out on the south side of the altar (47:1)
 export const LEVEL = 0;
 export const CITY_Y = 1.8;   // the city's ground layer (LAYER.city): the wall, the gates, the houses and the people stand on it
-export const TRIBES_N = ['Dan', 'Ashar', 'Napathalay', 'Manashah', 'Aparayam', 'Raawaban', 'Yahawadah'];       // 48:1–7, from the north border to the portion
-export const TRIBES_S = ['Banayamayan', 'Shamaiwan', 'Yashashakar', 'Zabawalawan', 'Gad'];                      // 48:23–27, from the portion to the south border
 export const GATES = {   // 48:30–34, in the text's order along each side (the order along a side is the model's)
   north: [['Raawaban', 'Reuben'], ['Yahawadah', 'Judah'], ['Laway', 'Levi']],
   east:  [['Yawasap', 'Joseph'], ['Banayamayan', 'Benjamin'], ['Dan', 'Dan']],
@@ -77,11 +77,16 @@ const GATE_AT = [-1500, 0, 1500];   // the three of a side, a third apart (assum
 
 // ── Parts ────────────────────────────────────────────────────────────────────
 const K = makeKit(LEVEL);   // the city's own pieces are lifted to their layer below (CITY_Y)
-const { box, cyl, ideal, tree, person } = K;
+const { box, poly, cyl, ideal, tree, person } = K;
 // the land's layers lie one on the other, each a hand above the last, so none fights another at a distance: the tribes' strips
 // on the plain, the prince's over them, the portion's strips over those, the fields, the open land, the city's own ground
-export const LAYER = { tribes: 0.3, prince: 0.6, strips: 0.9, fields: 1.2, suburb: 1.5, city: 1.8 };
+// … but seen from hundreds of thousands of cubits up, layers a hand apart fight in the depth buffer, so the land's own layers
+// step down by fathoms: the sea (the plain) at −22, the land −16, the lakes and the Jordan on it, the tribes' bands −10, the
+// prince's −5, and the holy square's strips just under the city's ground (the city itself stands at 1.8)
+export const LAYER = { land: -16, lakes: -13, tribes: -10, prince: -5, strips: 0.9, fields: 1.2, suburb: 1.5, city: 1.8 };
 const flat = (x0, x1, z0, z1, mat, top = 0.6, extra = {}) => box((x0 + x1) / 2, top - 1, (z0 + z1) / 2, x1 - x0, 1, z1 - z0, { mat, role: 'ground', ...extra });
+const cityStrip = () => { const pts = [...GEO.strips.foodW.ring, ...GEO.strips.foodE.ring]; const xs = pts.map((p) => p[0]), zs = pts.map((p) => p[1]); const x0 = Math.min(...xs), x1 = Math.max(...xs), z0 = Math.min(...zs), z1 = Math.max(...zs); return [[x0, z0], [x1, z0], [x1, z1], [x0, z1]]; };
+const sheetOf = (ring, top, mat) => poly(ring, top, { mat, role: 'land', ideal: false });   // a strip of the land from the map, flat
 
 /** The city's wall, 4,500 square (48:16), in runs between the gates' gaps (each the house-gate's 25 wide) with a lintel over each gap. Thickness and height are the model's. */
 function cityWall() {
@@ -130,13 +135,13 @@ function citizens() {
 /** The waters from under the threshold of the house, eastward (47:1–12): a thousand measured four times — to the ankles, the knees, the loins, a river to swim in — then on to the east country and the sea; trees on either bank. */
 function river() {
   const x0 = HOUSE_AT[0] + HOUSE_OUT, z = RIVER_Z, out = [];
-  const W = [[0, 1000, 5, 9], [1000, 2000, 9, 18], [2000, 3000, 18, 40], [3000, 4000, 40, 110], [4000, LAND_X - x0, 110, 160]];   // widths at each stretch's start and end (the depths the text gives are the model's widths)
+  const W = [[0, 1000, 5, 9], [1000, 2000, 9, 18], [2000, 3000, 18, 40], [3000, 4000, 40, 110], [4000, Math.max(4500, SEA_X + 600 - x0), 110, 160]];   // widths at each stretch's start and end (the depths the text gives are the model's widths); then down to the salt sea (47:8)
   for (const [a, b, w0, w1] of W) {
     const n = Math.max(1, Math.round((b - a) / 250));
-    for (let i = 0; i < n; i++) { const u0 = a + (i / n) * (b - a), u1 = a + ((i + 1) / n) * (b - a), w = w0 + ((w1 - w0) * (i + 0.5)) / n; out.push(box(x0 + (u0 + u1) / 2, LAYER.strips - 0.2, z, u1 - u0 + 2, 0.5, w, { mat: 'water', role: 'water', ideal: false })); }
+    for (let i = 0; i < n; i++) { const u0 = a + (i / n) * (b - a), u1 = a + ((i + 1) / n) * (b - a), w = w0 + ((w1 - w0) * (i + 0.5)) / n, xm = x0 + (u0 + u1) / 2; const y = xm < 12200 ? LAYER.strips - 0.2 : xm < SEA_X ? LAYER.prince - 0.2 : LAYER.lakes; out.push(box(xm, y, z, u1 - u0 + 2, 0.5, w, { mat: 'water', role: 'water', ideal: false })); }
   }
   // "very many trees on the one side and on the other" (47:7, 12): a tree every fifty cubits, either bank, along the measured four thousand and beyond
-  for (let u = 60; u < 9000; u += 50) { const w = u < 1000 ? 7 : u < 2000 ? 14 : u < 3000 ? 30 : u < 4000 ? 76 : 130; for (const s of [-1, 1]) out.push(...tree(x0 + u + (s > 0 ? 17 : -13) % 30, z + s * (w / 2 + 12 + ((u / 50) % 3) * 6), 14 + ((u / 50) % 4) * 3)); }
+  for (let u = 60; u < 9000; u += 50) { if (x0 + u > 12200) break; const w = u < 1000 ? 7 : u < 2000 ? 14 : u < 3000 ? 30 : u < 4000 ? 76 : 130; for (const s of [-1, 1]) out.push(...tree(x0 + u + (s > 0 ? 17 : -13) % 30, z + s * (w / 2 + 12 + ((u / 50) % 3) * 6), 14 + ((u / 50) % 4) * 3)); }
   return out;
 }
 
@@ -217,7 +222,7 @@ export const PIECES = [
     measures: [['east of the city', '10,000 × 5,000', '48:18'], ['west of the city', '10,000 × 5,000', '48:18'], ['their increase', 'bread for those who serve the city', '48:18']],
     note: '"{{Ezekiel 48:18}}" — the city\'s strip is twenty-five thousand long like the others; the five thousand square in its middle is the city and its open land, and the ten thousand either side grow its food.',
     elsewhere: { ref: 'Ezekiel 45:6; Leviticus 25:34', note: 'The city\'s possession beside the holy oblation; the fields of the Levites\' cities that may not be sold.' },
-    parts: [flat(FIELDS.x0, FIELDS.x1, STRIP.city[0], STRIP.city[1], 'field', LAYER.fields), flat(-FIELDS.x1, -FIELDS.x0, STRIP.city[0], STRIP.city[1], 'field', LAYER.fields)],
+    parts: [sheetOf(GEO.strips.foodE.ring, LAYER.fields, 'field'), sheetOf(GEO.strips.foodW.ring, LAYER.fields, 'field')],
   },
   // — the holy portion (the Portion story) —
   {
@@ -227,10 +232,10 @@ export const PIECES = [
     on: V('26:45:1-4', '26:48:9-12'),
     refs: 'Ezekiel 45:1–4; 48:9–12',
     measures: [['arak (length)', '25,000, east to west', '45:1; 48:10'], ['rachab (breadth)', '10,000', '45:3; 48:10'], ['the sanctuary', '500 square, with 50 of open land, in its midst', '45:2; 48:10'], ['whose', 'the priests of the sons of Tzadawaq (Zadok), who kept the charge', '48:11']],
-    note: '"{{Ezekiel 48:10 | For these … thawak}}" — the northern strip of the oblation, most holy, with the house standing in the middle of it; the house drawn here is the house model itself, set down in its place.',
+    note: '"{{Ezekiel 48:10 | For these … thawak}}" — the northern strip of the oblation, most holy, with the house standing in the middle of it; the house drawn here is the house model itself, set down in its place — Levites north of it, the city south, as the Holy Land map lays the square out.',
     elsewhere: { ref: 'Ezekiel 40–43; 44:15–16; Numbers 35:1–8', note: 'The house that stands in this strip (its own model); the sons of Zadok who come near; the Levites\' cities of the first settlement.' },
     assumed: 'The strips are drawn 25,000 by 10,000 amah (cubits), not reeds — see the wall\'s card.',
-    parts: [flat(-STRIP.x, STRIP.x, STRIP.priests[0], STRIP.priests[1], 'priests', LAYER.strips)],
+    parts: [sheetOf(GEO.strips.priests.ring, LAYER.strips, 'priests')],
   },
   {
     id: 'lawayay', order: 21, group: 'portion', material: 'levites', raise: { portion: 'levites' }, modes: ['portion'], sheet: false,
@@ -241,7 +246,7 @@ export const PIECES = [
     measures: [['arak (length)', '25,000', '48:13'], ['rachab (breadth)', '10,000', '48:13'], ['may it be sold?', 'no — nor exchanged; it is holy to Yahawah', '48:14']],
     note: '"{{Ezekiel 48:13 | Answerable … rachab}}" — the middle strip, between the priests\' and the city\'s, for the Levites who serve the house.',
     elsewhere: { ref: 'Ezekiel 44:10–14; Numbers 3:5–10', note: 'The Levites who went astray and keep the charge of the house but do not come near; their first charge about the tabernacle.' },
-    parts: [flat(-STRIP.x, STRIP.x, STRIP.levites[0], STRIP.levites[1], 'levites', LAYER.strips)],
+    parts: [sheetOf(GEO.strips.levites.ring, LAYER.strips, 'levites')],
   },
   {
     id: 'achazah', order: 22, group: 'portion', material: 'cityland', raise: { portion: 'cityland' }, modes: ['portion'], sheet: false,
@@ -252,7 +257,7 @@ export const PIECES = [
     measures: [['rachab (breadth)', '5,000', '45:6; 48:15'], ['arak (length)', '25,000, side by side with the holy portion', '45:6'], ['for whom', 'the whole house of Yashar-Al', '45:6']],
     note: '"{{Ezekiel 45:6}}" — the southern strip, common ground: the city in its middle, its fields either side.',
     elsewhere: { ref: 'Ezekiel 48:16–19', note: 'The city\'s own measures, its open land, its fields and its workers.' },
-    parts: [flat(-STRIP.x, STRIP.x, STRIP.city[0], STRIP.city[1], 'cityland', LAYER.strips)],
+    parts: [sheetOf(cityStrip(), LAYER.strips, 'cityland')],
   },
   {
     id: 'nashayaa', order: 23, group: 'portion', material: 'prince', raise: { portion: 'prince' }, modes: ['portion'], sheet: false,
@@ -264,30 +269,38 @@ export const PIECES = [
     note: '"{{Ezekiel 45:8}}" — land of his own either side of the holy square, so that the princes need no longer take the people\'s.',
     elsewhere: { ref: 'Ezekiel 46:16–18; 34:23–24', note: 'The prince may give of his own inheritance to his sons and not thrust the people from theirs; my servant David a prince among them.' },
     assumed: 'How far the land runs east and west of the portion.',
-    parts: [flat(PRINCE.x0, PRINCE.x1, PRINCE.z0, PRINCE.z1, 'prince', LAYER.prince), flat(-PRINCE.x1, -PRINCE.x0, PRINCE.z0, PRINCE.z1, 'prince', LAYER.prince)],
+    parts: [sheetOf(GEO.strips.princeE.ring, LAYER.prince, 'prince'), sheetOf(GEO.strips.princeW.ring, LAYER.prince, 'prince')],
   },
-  ...TRIBES_N.map((name, i) => ({
-    id: `tribe-n-${i}`, order: 30 + i, group: 'tribes', material: 'tribeN', raise: { portion: 'north' }, modes: ['portion'], sheet: false,
-    tag: `${name} · north`, title: `${name}: one portion, from the qadayam (east) paah (side) to the yam (sea) paah (side)`,
-    words: ['shabat', 'gabawal'], keys: [name.toLowerCase()],
-    on: V(`26:48:${[1, 2, 3, 4, 5, 6, 7][i]}`), refs: `Ezekiel 48:${[1, 2, 3, 4, 5, 6, 7][i]}`,
-    measures: [['place', `${i === 0 ? 'at the north border, ' : ''}strip ${i + 1} of seven north of the holy portion${i === 6 ? ', its border the portion\'s' : ''}`, `48:${i + 1}`], ['breadth north to south', 'not measured — drawn 10,000 each', 'assumed']],
-    note: `"{{Ezekiel 48:${i + 1}}}" — ${name}\'s strip, the whole breadth of the land from east to west, ${i === 6 ? 'the last before the oblation, whose north border is Yahawadah\'s' : `${['first', 'second', 'third', 'fourth', 'fifth', 'sixth'][i]} from the north`}.`,
-    elsewhere: { ref: 'Ezekiel 47:13–21; Joshua 13–19', note: 'The land\'s borders these strips are cut across; the first division under Yahawashai (Joshua), tribe by tribe.' },
-    assumed: 'The strips\' equal breadth; the land\'s breadth east to west.',
-    parts: [flat(-LAND_X, LAND_X, STRIP.priests[0] - (7 - i) * TRIBE_H, STRIP.priests[0] - (6 - i) * TRIBE_H, i % 2 ? 'tribeS' : 'tribeN', LAYER.tribes)],
-  })),
-  ...TRIBES_S.map((name, i) => ({
-    id: `tribe-s-${i}`, order: 40 + i, group: 'tribes', material: 'tribeS', raise: { portion: 'south' }, modes: ['portion'], sheet: false,
-    tag: `${name} · south`, title: `${name}: one portion, from the qadayam (east) paah (side) to the yam (sea) paah (side)`,
-    words: ['shabat', 'gabawal'], keys: [name.toLowerCase()],
-    on: V(`26:48:${[23, 24, 25, 26, 27][i]}`), refs: `Ezekiel 48:${[23, 24, 25, 26, 27][i]}`,
-    measures: [['place', `strip ${i + 1} of five south of the holy portion${i === 4 ? ', at the south border' : ''}`, `48:${23 + i}`], ['breadth north to south', 'not measured — drawn 10,000 each', 'assumed']],
-    note: `"{{Ezekiel 48:${23 + i}}}" — ${name}\'s strip, ${i === 0 ? 'the first south of the city\'s strip' : `${['second', 'third', 'fourth', 'fifth'][i - 1]} from the portion`}${i === 4 ? '; beyond it the south border, from Thamar to the waters of Meriboth Qadash and the great sea (48:28)' : ''}.`,
-    elsewhere: { ref: 'Ezekiel 47:19; 48:28–29; Joshua 15; 18:11–28', note: 'The south border; Yahawadah\'s and Banayamayan\'s first lots, that lay here too.' },
-    assumed: 'The strips\' equal breadth; the land\'s breadth east to west.',
-    parts: [flat(-LAND_X, LAND_X, STRIP.city[1] + i * TRIBE_H, STRIP.city[1] + (i + 1) * TRIBE_H, i % 2 ? 'tribeN' : 'tribeS', LAYER.tribes)],
-  })),
+  ...GEO.tribes.map((b, i) => {
+    const north = i < 7, name = TRIBE_TRANSLIT[b.tribe] || b.tribe, v = north ? i + 1 : i + 16;   // 48:1–7 Dan…Yahawadah; 48:23–27 Banayamayan…Gad
+    return {
+      id: b.id, order: 30 + i, group: 'tribes', material: `tribe-${b.tribe}`, raise: { portion: north ? 'north' : 'south' }, modes: ['portion'], sheet: false,
+      tag: `${name} · ${north ? 'north' : 'south'}`, title: `${name} (${b.tribe}): one portion, from the qadayam (east) paah (side) to the yam (sea) paah (side)`,
+      words: ['shabat', 'gabawal'], keys: [name.toLowerCase(), b.tribe.toLowerCase()],
+      on: V(`26:48:${v}`), refs: `Ezekiel 48:${v}`,
+      measures: [['place', north ? `${i === 0 ? 'at the north border, ' : ''}strip ${i + 1} of seven north of the holy portion${i === 6 ? ', its border the portion\'s' : ''}` : `strip ${i - 6} of five south of the holy portion${i === 11 ? ', at the south border' : ''}`, `48:${v}`], ['breadth', 'from the sea to the Jordan, as the Holy Land map draws it; the strips north to south drawn equal', 'the map\'s']],
+      note: `"{{Ezekiel 48:${v}}}" — ${name}\'s strip, the whole breadth of the land from the great sea to the Yaradan (Jordan), ${north ? (i === 6 ? 'the last before the oblation' : `${['first', 'second', 'third', 'fourth', 'fifth', 'sixth'][i]} from the north`) : (i === 7 ? 'the first south of the city\'s strip' : `${['second', 'third', 'fourth', 'fifth'][i - 8]} from the portion`)}; the same band, in the same colour, as on the Holy Land map.`,
+      elsewhere: { ref: 'Ezekiel 47:13–21; Joshua 13–19', note: 'The land\'s borders these strips are cut across; the first division under Yahawashai (Joshua), tribe by tribe — both on the Holy Land map.' },
+      assumed: 'The strips\' equal breadth north to south (the text says "one portion" each); the coast and the Jordan are the map\'s.',
+      parts: [sheetOf(b.ring, LAYER.tribes, `tribe-${b.tribe}`)],
+    };
+  }),
+  {
+    id: 'aratz', order: 29, group: 'portion', material: 'land', raise: { portion: 'oblation' }, modes: ['portion'], sheet: false,
+    tag: 'aratz (land) · yam (sea) · Yaradan (Jordan)', title: 'The aratz (land) from the gadawal (great) yam (sea) to the Yaradan (Jordan) and the yam (sea) of salt',
+    words: ['gabawal', 'mayam'], keys: ['yaradan', 'jordan', 'yam', 'sea', 'aratz', 'land'],
+    on: V('26:47:15-20'),
+    refs: 'Ezekiel 47:15–20',
+    measures: [['tzapawan (north)', 'from the great sea by Chathalan (Hethlon) to Chatzar-Iyanawan (Hazar Enan)', '47:15–17'], ['qadayam (east)', 'the Yaradan (Jordan) to the east sea', '47:18'], ['nagab (south)', 'from Thamar (Tamar) to the waters of Meriboth Qadash (Kadesh) to the brook of Matzarayam (Egypt)', '47:19'], ['yam (sea) — west', 'the great sea', '47:20']],
+    note: '"{{Ezekiel 47:18}}" — the land the portions are cut across, drawn from the Holy Land map: the coast, the Yaradan (Jordan), Chinnereth and the salt sea the waters of 47 run down into.',
+    elsewhere: { ref: 'Numbers 34:1–12; Ezekiel 47:8–10', note: 'The borders as Mashah (Moses) gave them; the sea the river heals.' },
+    assumed: 'The coast, the lakes and the Jordan are today\'s (Natural Earth), as the map draws them.',
+    parts: [
+      ...GEO.land.map((r) => sheetOf(r, LAYER.land, 'land')),
+      ...GEO.lakes.map((l) => sheetOf(l.ring, LAYER.lakes, 'sea')),
+      ...GEO.rivers.map((r) => sheetOf(ribbon(r.pts, /jordan/i.test(r.name) ? 260 : 140), LAYER.lakes, 'sea')),
+    ],
+  },
   {
     id: 'nachal', order: 50, group: 'portion', material: 'water', raise: { portion: 'river' }, modes: ['portion'], sheet: false,
     tag: 'nachal (river) from the house', title: 'The mayam (waters) from under the mapathan (threshold) of the bayath (house), eastward: a nachal (river) that could not be passed through',
@@ -360,18 +373,18 @@ export const PORTION_PHASES = [
 ];
 export const PORTION_DURATION = 122;
 export const PORTION_CAMERA = [
-  [0,   [26000, 30000, 30000],  [0, 0, -10000]],                 // the land from the south-east, high
-  [9,   [0, 22000, -2000],      [0, 0, -14000]],                 // the priests' strip from above
-  [20,  [1200, 900, -16200],    [0, 20, -17500]],                // down to the house in its midst
-  [28,  [0, 20000, 6000],       [0, 0, -8000]],                  // the Levites' strip
+  [0,   [90000, 160000, 220000], [0, 0, -60000]],                // the land from the south, high: the sea, the Jordan, the bands
+  [9,   [GEO.strips.priests.centre[0], 22000, GEO.strips.priests.centre[1] + 12000], [GEO.strips.priests.centre[0], 0, GEO.strips.priests.centre[1]]],   // the priests' strip from above
+  [20,  [HOUSE_AT[0] + 1200, 900, HOUSE_AT[2] + 1300], [HOUSE_AT[0], 20, HOUSE_AT[2]]],   // down to the house in its midst
+  [28,  [GEO.strips.levites.centre[0], 24000, GEO.strips.levites.centre[1] + 14000], [GEO.strips.levites.centre[0], 0, GEO.strips.levites.centre[1]]],   // the Levites' strip
   [36,  [0, 16000, 9000],       [0, 0, 0]],                      // the city's strip
   [44,  [3200, 3400, 4200],     [0, 0, 0]],                      // the city itself
   [56,  [0, 20000, 8000],       [0, 0, 0]],                      // its fields east and west, the foursquare whole
-  [68,  [0, 36000, 12000],      [0, 0, -10000]],                 // the prince's land either side
-  [79,  [0, 80000, -20000],     [0, 0, -50000]],                 // the tribes north
-  [90,  [0, 80000, 40000],      [0, 0, 20000]],                  // the tribes south
-  [100, [3500, 1600, -15200],   [2500, 0, -17400]],              // the river from the house, eastward
-  [110, [12000, 6000, -12000],  [8000, 0, -17400]],              // … on toward the sea
+  [68,  [0, 60000, 30000],      [0, 0, -12000]],                 // the prince's land either side, to the sea and the Jordan
+  [79,  [40000, 300000, -60000], [-20000, 0, -230000]],          // the tribes north, to the border
+  [90,  [-40000, 260000, 200000], [0, 0, 120000]],               // the tribes south
+  [100, [HOUSE_AT[0] + 3500, 1600, HOUSE_AT[2] + 2300], [HOUSE_AT[0] + 2500, 0, HOUSE_AT[2]]],     // the river from the house, eastward
+  [110, [HOUSE_AT[0] + 14000, 9000, HOUSE_AT[2] + 6000], [HOUSE_AT[0] + 16000, 0, HOUSE_AT[2]]],   // … on down to the salt sea
   [114, [3000, 3200, 4000],     [0, 0, 0]],                      // the city, and its name
   [122, [6000, 5000, 7000],     [0, 0, 0]],
 ];
@@ -408,7 +421,7 @@ export const CITY_CAMERA = [
 // ROAM — no story: the city stands, its gates open, and the walker goes where they will.
 export const ROAM_EYE = 3.4;
 export const ROAM_START = { pos: [CITY.half + CITY.wallT + 60, LAYER.suburb + ROAM_EYE, 0], look: [0, CITY_Y + ROAM_EYE, 0] };   // outside the middle east gate — Banayamayan's — facing the city
-export const ROAM_PHASES = [{ from: 0, key: 'roam', caption: 'Walk where you will — in at any of the twelve shairayam (gates), each with a shabat (tribe)\'s name, down its street to the square in the midst, or out through the magarash (open land) to the fields. Tap a part for its details. The bayath (house) stands seventeen thousand five hundred amah north of here, in the kahanayam (priests)\' strip — the map takes you toward it, or open the house model to walk it.', ref: '' }];
+export const ROAM_PHASES = [{ from: 0, key: 'roam', caption: `Walk where you will — in at any of the twelve shairayam (gates), each with a shabat (tribe)\'s name, down its street to the square in the midst, or out through the magarash (open land) to the fields. Tap a part for its details. The bayath (house) stands north of here, in the kahanayam (priests)\' strip in the thawak (midst) of the portion — the map takes you toward it, or open the house model to walk it. The city is four thousand five hundred amah a side — about ${(4500 * CUBIT_M / 1609.34).toFixed(1)} miles at the reed\'s cubit of ${Math.round(CUBIT_M * 39.37)} inches; the walk is ${Math.round(32 * CUBIT_M * 2.23694)} miles an hour and crosses it in ${Math.round(4500 / 32 / 60 * 10) / 10} minutes — the runner buttons on the right go faster.`, ref: '' }];
 export const ROAM_ENTER = {};
 
 export const MODES = {
@@ -439,12 +452,12 @@ export function focusFor(id) {
   const G = CITY.half, o = G + CITY.wallT / 2;
   const F = {
     chawamah: [[0, 10, 0], 6200], mawashab: [[0, 6, 0], 3000], people: [[0, 4, 0], 90], magarash: [[0, 0, 0], 6800], sadah: [[0, 0, 0], 26000],
-    kahanayam: [[0, 0, -17500], 30000], lawayay: [[0, 0, -7500], 30000], achazah: [[0, 0, 0], 30000], nashayaa: [[0, 0, -10000], 60000], nachal: [[4000, 0, RIVER_Z], 5000],
+    kahanayam: [[GEO.strips.priests.centre[0], 0, GEO.strips.priests.centre[1]], 30000], lawayay: [[GEO.strips.levites.centre[0], 0, GEO.strips.levites.centre[1]], 30000], achazah: [[0, 0, 0], 30000], nashayaa: [[0, 0, -10000], 90000], nachal: [[HOUSE_AT[0] + 4000, 0, RIVER_Z], 5000],
   };
   const m = /^gate-(\w+)-(\d)$/.exec(id);
   if (m) { const at = GATE_AT[+m[2]], s = m[1]; const [x, z] = s === 'north' ? [at, -o] : s === 'south' ? [at, o] : s === 'east' ? [o, at] : [-o, at]; return { target: [x, 12, z], distance: 120 }; }
-  if (id.startsWith('tribe-n-')) { const i = +id.slice(8); return { target: [0, 0, STRIP.priests[0] - (6.5 - i) * TRIBE_H], distance: 60000 }; }
-  if (id.startsWith('tribe-s-')) { const i = +id.slice(8); return { target: [0, 0, STRIP.city[1] + (i + 0.5) * TRIBE_H], distance: 60000 }; }
+  const band = GEO.tribes.find((b) => b.id === id); if (band) return { target: [band.centre[0], 0, band.centre[1]], distance: 90000 };
+  if (id === 'aratz') return { target: [0, 0, -60000], distance: 500000 };
   if (id.startsWith('house-')) return { target: [HOUSE_AT[0], 10, HOUSE_AT[2]], distance: 900 };
   const f = F[id]; return f ? { target: f[0], distance: f[1] } : null;
 }
@@ -465,7 +478,7 @@ export const MODEL = {
   description: 'The iyar (city) of Ezekiel 48 and the qadash (holy) tharawamah (portion) it stands in (Ezekiel 45:1–8; 48) as an interactive 3D model measured in amah (cubits) from the text — the portion twenty-five alap (thousand) square with the kahanayam (priests)\' strip and the bayath (house) in its midst, the Lawayay (Levites)\' strip, the city\'s strip; the city four thousand five hundred a side with its magarash (open land) and its twelve shairayam (gates) named for the shabatay (tribes); the nashayaa (prince)\'s land, the tribes\' portions north and south, and the nachal (river) from the house (Ezekiel 47). Lay it out from above, or walk the city\'s streets and gates on your own feet.',
   indexDescription: 'The city of Ezekiel 48 and the holy portion of Ezekiel 45 and 48 as an interactive 3D model measured in cubits from the text, with the house model standing in its place — lay out the portion from above, or walk the city and its twelve gates on your own feet.',
   indexIntro: 'One model, measured in amah (cubits) from the text, two ways in: the whole qadash (holy) tharawamah (portion) laid out from above with the bayath (house) — the house model itself — standing in its midst and the tribes\' strips about it; and the iyar (city) at your own height, its twelve shairayam (gates) named for the tribes, its streets and its people. Every part can be tapped for its measures and verses.',
-  ground: LEVEL,
+  ground: LEVEL, cubit: CUBIT_M,   // the long cubit of the reed, as the map takes it (for the walker's miles an hour)
   WORDS, MATERIALS, PIECES, GROUPS, MODES, SPEEDS, CHIP_ORDER, PASSAGES, STORIES,
   pieceById, pieceForWord, passagesFor, refsFor, phaseAt, progressAt, xrayAt, openAt, cameraAt, marksFor, focusFor,
   stories: STORIES,
@@ -478,7 +491,7 @@ export const MODEL = {
       : mode === 'portion'
         ? 'Play, and the land is divided from above as the text divides it: the holy oblation lifted up, twenty-five thousand square; the priests\' strip with the house in its midst; the Levites\'; the city\'s with the city and its fields; the prince\'s land either side; the tribes\' strips north and south; and the waters from the house, measured a thousand four times, running east.'
         : 'Play, and the city is measured as the text measures it: four thousand five hundred a side, two hundred and fifty of open land round about; then the twelve gates in the text\'s order, three to a side, each named for a tribe; the dwellings and the fields; those who serve the city out of all the tribes; and its name.'),
-    extras: () => [{ heading: 'The unit, and what the model adds', refs: 'Ezekiel 45:1–6; 48:8–35; 40:5', text: 'The text counts the portion and the city in thousands and hundreds, and where the rendering says "reeds" the model still draws them as amah (cubits), one unit each, as the house is drawn: in reeds (six amah and a handbreadth each, 40:5) the city alone would be twenty-seven thousand amah a side and the house, at five hundred, a speck in its strip. The strips\' order north to south (priests, Levites, city) is 48:8–22\'s; the tribes\' strips are drawn equal, the land\'s breadth east to west and the prince\'s reach to the borders are the model\'s; the city\'s wall, houses and streets, and the gates\' form (the house\'s own gates) are the model\'s too — the text gives the sides, the open land, and the gates\' names.' }],
+    extras: () => [{ heading: 'The unit, and what the model adds', refs: 'Ezekiel 45:1–6; 48:8–35; 40:5', text: 'The text counts the portion and the city in thousands and hundreds, and where the rendering says "reeds" the model still draws them as amah (cubits), one unit each, as the house is drawn: in reeds (six amah and a handbreadth each, 40:5) the city alone would be twenty-seven thousand amah a side and the house, at five hundred, a speck in its strip. The land, the strips and the tribes\' bands are the Holy Land map\'s own layout (the square anchored on Jerusalem, Levites north, the priests with the sanctuary in the midst, the city south; the bands from the sea to the Jordan, equal north to south); the city\'s wall, houses and streets, and the gates\' form (the house\'s own gates) are the model\'s too — the text gives the sides, the open land, and the gates\' names.' }],
     choose: 'Tap a part — a gate, the wall, a strip of the land, the river — or a chip under the model, or a marked word in the text, for its measures verse by verse, the same thing elsewhere in scripture, and what the model had to assume.',
   },
   strings: { parts: 'Parts of the city and the portion', storiesTitle: 'The city\'s stories', guidedTitle: 'Guided: measured as the text measures it, verse by verse' },
@@ -489,10 +502,10 @@ export const MODEL = {
     openDefault: () => 1,
   },
   scene: {
-    sky: 0xc9dbea, shadowR: 220, fog: [200000, 900000], maxDistance: 160000, far: 1000000, plainR: 120000, logDepth: true, earth: '#6f8a44', plainDrop: 0.02, times: ['day', 'night'],
+    sky: 0xc9dbea, shadowR: 220, fog: [400000, 2500000], maxDistance: 900000, far: 4000000, plainR: 1500000, logDepth: true, earth: '#4f80a2', plainDrop: 22, times: ['day', 'night'],   // the plain is the sea; the land is drawn on it from the map
     lighting: { sun: 3.0, hemi: 0.7 }, extras: 'city',
     navCell: 4,   // the route grid at four cubits a cell (the city is 4,500 square — a cubit grid would be twenty million cells)
-    navSkip: ['people', 'sadah', 'kahanayam', 'lawayay', 'achazah', 'nashayaa', 'nachal', ...TRIBES_N.map((_, i) => `tribe-n-${i}`), ...TRIBES_S.map((_, i) => `tribe-s-${i}`)],
+    navSkip: ['people', 'sadah', 'kahanayam', 'lawayay', 'achazah', 'nashayaa', 'nachal', 'aratz', ...GEO.tribes.map((b) => b.id)],
     lights: [],
     walls: ['chawamah', 'mawashab', ...['north', 'east', 'south', 'west'].flatMap((s) => [0, 1, 2].map((i) => `gate-${s}-${i}`))],
     notSolid: ['people'],
@@ -509,7 +522,7 @@ export const MODEL = {
       places: [
         ...['north', 'east', 'south', 'west'].flatMap((s) => GATES[s].map(([name, en], i) => { const at = GATE_AT[i], o = CITY.half + CITY.wallT, a = o + 60; const [x, z, b] = s === 'north' ? [at, -o, { x0: at - 14, x1: at + 14, z0: -a, z1: -o + 52 }] : s === 'south' ? [at, o, { x0: at - 14, x1: at + 14, z0: o - 52, z1: a }] : s === 'east' ? [o, at, { x0: o - 52, x1: a, z0: at - 14, z1: at + 14 }] : [-o, at, { x0: -a, x1: -o + 52, z0: at - 14, z1: at + 14 }]; return { label: `shair (gate) of ${name} (${en}) · ${s}`, short: name, bounds: b, at: [s === 'east' ? o - 26 : s === 'west' ? -o + 26 : x, s === 'north' ? -o + 26 : s === 'south' ? o - 26 : z] }; })),
         { label: 'the square in the midst', short: 'square', bounds: { x0: -45, x1: 45, z0: -45, z1: 45 }, at: [0, 0] },
-        { label: 'toward the bayath (house) — 17,500 north (open the house model to walk it)', short: 'north road', bounds: { x0: -30, x1: 30, z0: -CITY.half - SUBURB - 400, z1: -CITY.half - SUBURB }, at: [0, -CITY.half - SUBURB - 300] },
+        { label: 'toward the bayath (house), north (open the house model to walk it)', short: 'north road', bounds: { x0: -30, x1: 30, z0: -CITY.half - SUBURB - 400, z1: -CITY.half - SUBURB }, at: [0, -CITY.half - SUBURB - 300] },
       ],
     },
     inHouse: () => false,

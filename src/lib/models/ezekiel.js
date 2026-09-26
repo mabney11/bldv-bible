@@ -800,7 +800,7 @@ export const MODEL = {
   description: 'The bayath (house) shown to Yachazaqaal (Ezekiel) on the very high har (mountain) (Ezekiel 40–43) as an interactive 3D model, measured in the long amah (cubit) of the man\'s qanah (reed): the chawamah (wall) five hundred square, the six shairayam (gates) with their lodges and posts, the chatzarawath (courts), the mazabach (altar) with its Har\'Al, the awalam (porch), the hayakal (temple) and the most qadash (holy) place, the tzalai (side) rooms, the banayan (building) and the kahanayam (priests)\' rooms. Walk it the way he was led, or on your own feet.',
   indexDescription: 'The bayath (house) Yachazaqaal (Ezekiel) was shown (Ezekiel 40–43) as an interactive 3D model, measured in the long amah (cubit) from the text — walk it gate by gate the way the man with the qanah (reed) led him, or roam it on your own feet.',
   indexIntro: 'One model, measured in the long amah (cubit) of the man\'s qanah (reed), and the way through it the text itself gives: the man leads, gate by gate, and every part on the model can be tapped for its measures and verses.',
-  ground: LEVEL.out,
+  ground: LEVEL.out, cubit: 0.525,   // the long cubit, "a cubit and a handbreadth" (40:5)
   WORDS, MATERIALS, PIECES, GROUPS, MODES, SPEEDS, CHIP_ORDER, PASSAGES, STORIES,
   pieceById, pieceForWord, passagesFor, refsFor, phaseAt, progressAt, xrayAt, openAt, cameraAt, marksFor, focusFor,
   stories: STORIES,

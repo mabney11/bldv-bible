@@ -46,6 +46,8 @@ export const BASE_MATERIALS = {
 /** The toolkit bound to a ground level Y0 (the courts' y). */
 export function makeKit(Y0) {
   const box = (x, y, z, w, h, d, extra = {}) => ({ kind: 'box', x, y, z, w, h, d, ...extra });
+  /** a flat polygon at height y over the ground plane: ring = [[x, z], …] (a strip of land drawn from a map, a sea, a river) */
+  const poly = (ring, y, extra = {}) => ({ kind: 'poly', ring, y, ...extra });
   const cyl = (x, y, z, r, h, extra = {}) => ({ kind: 'cyl', x, y, z, r, h, ...extra });
   const lathe = (x, y, z, profile, extra = {}) => ({ kind: 'lathe', x, y, z, profile, ...extra });
 
@@ -210,7 +212,7 @@ export function makeKit(Y0) {
     return out;
   }
 
-  return { Y0, box, cyl, lathe, ideal, doorFrame, altarFlight, portico, porticoZ, wallX, wallZ, slab, roofOf, parapet, rail, stair, bed, table, seat, couch, lamp, chest, jars, tree, pool, shields, chambers, cedarLining, rug, vessels, person, palanquin, inlay, paving, walls };
+  return { Y0, box, poly, cyl, lathe, ideal, doorFrame, altarFlight, portico, porticoZ, wallX, wallZ, slab, roofOf, parapet, rail, stair, bed, table, seat, couch, lamp, chest, jars, tree, pool, shields, chambers, cedarLining, rug, vessels, person, palanquin, inlay, paving, walls };
 }
 
 /** "book:chapter:a-b" specs → ["book:chapter:v", …] — the verses a piece lights up. */

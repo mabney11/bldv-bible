@@ -157,7 +157,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
 
     // ── Roam: the viewer on their own feet (state; the controller is below) ──
     const roam = {
-      on: false, yaw: Math.PI, pitch: 0, body: Math.PI, foot: GROUND, keys: new Set(), glide: null, moving: false,   // yaw/pitch: where the EYE looks; body: which way the figure faces (his own way while being walked, the look otherwise)
+      on: false, yaw: Math.PI, pitch: 0, body: Math.PI, foot: GROUND, keys: new Set(), glide: null, moving: false, mul: 1,   // mul: the pace the reader picked (1 walk, or faster across a city)   // yaw/pitch: where the EYE looks; body: which way the figure faces (his own way while being walked, the look otherwise)
       stick: { x: 0, y: 0 },                                                  // the thumb stick (touch): x strafe, y forward, each −1 … 1
       air: 0, vy: 0,                                                          // in the air (a jump, or walked off an edge): 1 while airborne, and the feet's upward speed
       airV: { x: 0, z: 0 }, vel: { x: 0, z: 0 }, landAt: 0,                  // the jump's carry (amah/s, kept through the air), the last ground speed, when the feet last landed
@@ -531,7 +531,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       if (d < 1.0) { a.i++; a.still = 0; a.lastD = Infinity; if (a.i >= a.path.length) { cancelAuto(true); return; } return; }
       const want = Math.atan2(dz, dx); let dy = want - roam.body; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
       roam.body += Math.sign(dy) * Math.min(Math.abs(dy), 3.2 * dt);   // the figure turns to his way; the eye (the mouse) is free to look about
-      const v = Math.min(d, WALK * dt), mx = dx / d * v, mz = dz / d * v;
+      const v = Math.min(d, WALK * roam.mul * dt), mx = dx / d * v, mz = dz / d * v;
       const before = Math.hypot(camera.position.x - tx, camera.position.z - tz);
       tryMove(mx, mz);
       const after = Math.hypot(camera.position.x - tx, camera.position.z - tz);
@@ -887,7 +887,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         // in the air with nothing pressed: the jump carries him on (a jump is more than straight up and down)
         if (roam.air > 0 && (roam.airV.x || roam.airV.z)) { tryMove(roam.airV.x * dt, roam.airV.z * dt); aimCamera(); remember(); return true; }
         roam.moving = false; roam.vel.x = roam.vel.z = 0; if (changed) aimCamera(); return changed; }
-      const v = (K.has('run') || stickMag > 0.92 ? RUN : WALK) * dt;
+      const v = (K.has('run') || stickMag > 0.92 ? RUN : WALK) * roam.mul * dt;
       if (K.has('turnL')) roam.yaw -= TURN * dt; if (K.has('turnR')) roam.yaw += TURN * dt;
       fwd.set(Math.cos(roam.yaw), 0, Math.sin(roam.yaw)); rightV.set(-fwd.z, 0, fwd.x);
       let mx = 0, mz = 0;
@@ -1180,6 +1180,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       select: (id) => { const changed = id !== currentSel; applySelection(id); if (roam.on) { dirty = true; return; } const still = stillSelect === id; stillSelect = null; if (changed && id && !still) flyTo(id); if (changed && !id && !still) setFollow(true); dirty = true; },
       follow: () => { if (roam.on) return; setFollow(true); lastT = -1; },
       refocus: () => { if (roam.on) return; if (currentSel) flyTo(currentSel); else { setFollow(true); lastT = -1; } dirty = true; },
+      pace: (m) => { roam.mul = Math.max(1, Math.min(20, +m || 1)); },   // the walker's pace: 1 the usual walk, more across a city (fieldy: faster and much faster)
       setTime: (tm) => { extras?.set?.({ time: tm }); lastT = -1; dirty = true; },   // day or night on foot
       modeChanged: () => { const free = !!MODES[modeRef.current]?.free; if (free !== roam.on) roamEnter(free); lastT = -1; if (!free) setFollow(true); dirty = true; },
       move: (key, on) => { if (key === 'jump') { if (on) jump(); return; } if (on && auto && key !== 'run') cancelAuto(false); if (on) roam.keys.add(key); else roam.keys.delete(key); },

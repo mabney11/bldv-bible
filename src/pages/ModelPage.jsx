@@ -117,6 +117,26 @@ function Card({ model, id, mode, onClose, onPick }) {
 }
 
 // ── The page ─────────────────────────────────────────────────────────────────
+/** A running figure with the wind behind it — one, two or three streaks for the pace. */
+function RunnerIcon({ wind = 0 }) {
+  return (
+    <svg viewBox="0 0 40 32" width="40" height="32" aria-hidden="true" className="tp-runner">
+      <g stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" fill="none">
+        <circle cx="27" cy="6" r="3.2" fill="currentColor" stroke="none" />
+        <path d="M24 10 L19 17 L13 15" />
+        <path d="M24 10 L27 16 L22 22 L19 29" />
+        <path d="M27 16 L33 18 L36 13" />
+        <path d="M24 10 L17 11" />
+      </g>
+      <g stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.75">
+        {wind >= 0 && <path d="M3 13 L11 13" />}
+        {wind >= 1 && <path d="M1 19 L12 19" />}
+        {wind >= 2 && <path d="M4 25 L14 25" />}
+      </g>
+    </svg>
+  );
+}
+
 export default function ModelPage({ model }) {
   const { MODES, SPEEDS, CHIP_ORDER, pieceById, marksFor, base, strings = {} } = model;
   usePageTitle(pageTitle(`${model.title} — Maps & Models`), model.description);
@@ -158,6 +178,12 @@ export default function ModelPage({ model }) {
   useEffect(() => { document.body.classList.add('st-body'); return () => document.body.classList.remove('st-body'); }, []);
 
   const use3d = view === '3d' && canGL && glOk;
+  // the walker's pace on foot: the usual walk, faster, much faster — with the speed in miles an hour at the model's cubit, so
+  // the size of the place is felt (fieldy: "a mi/hr reference in scale to the city")
+  const PACES = [1, 3, 8], CUBIT = model.cubit || 0.457, WALK_CUBITS = 32;
+  const [paceMul, setPaceMul] = useState(() => { try { const v = +localStorage.getItem('model-pace-mul'); return PACES.includes(v) ? v : 1; } catch { return 1; } });
+  useEffect(() => { sceneApi.current?.pace?.(paceMul); try { localStorage.setItem('model-pace-mul', String(paceMul)); } catch {} }, [paceMul, mode, use3d]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const mph = (m) => Math.round(WALK_CUBITS * m * CUBIT * 2.23694);
   const TIMES = model.scene?.times || null;   // a model whose sky keeps the hour offers day or night on foot (the mashakan)
   const timeOfDay = TIMES && TIMES.includes(params.get('time')) ? params.get('time') : (TIMES ? TIMES[0] : 'day');
   const D = MODES[mode].duration;
@@ -221,6 +247,16 @@ export default function ModelPage({ model }) {
               {use3d
                 ? <Suspense fallback={<div className="st-loading">Loading the 3D model…</div>}><ModelScene model={model} clock={clock} mode={mode} selected={sel} onSelect={select} onFollow={setFollowing} time={timeOfDay} onLock={(on, why) => setLock({ on, why, at: Date.now() })} apiRef={sceneApi} onReady={(ok) => { if (!ok) setGlOk(false); }} /></Suspense>
                 : <ModelSheet model={model} clock={clock} mode={mode} selected={sel} onSelect={select} />}
+              {use3d && roam && (
+                <div className="tp-speeds" role="group" aria-label="Pace">
+                  {[...PACES].reverse().map((m, i) => (
+                    <button key={m} type="button" className={`tp-speed${paceMul === m ? ' on' : ''}`} onClick={() => setPaceMul(m)} title={`${m === 1 ? 'The usual walk' : m === 3 ? 'Faster' : 'Much faster'} — about ${mph(m)} miles an hour at a cubit of ${Math.round(CUBIT * 39.37)} inches`} aria-label={`${m === 1 ? 'Walk' : m === 3 ? 'Faster' : 'Much faster'}, about ${mph(m)} miles an hour`}>
+                      <RunnerIcon wind={2 - i} />
+                      <span className="tp-speed-mph">{mph(m)} <small>mi/h</small></span>
+                    </button>
+                  ))}
+                </div>
+              )}
               {use3d && roam && (
                 <div className="tp-pad" aria-label="Walk">
                   {[['forward', '▲', 'Walk forward (W / ↑)'], ['turnL', '◀', 'Turn left (←)'], ['back', '▼', 'Walk back (S / ↓)'], ['turnR', '▶', 'Turn right (→)'], ['jump', '⤒', 'Jump (space)']].map(([k, ch, tt]) => (

@@ -303,6 +303,12 @@ export class PieceBuilder {
   lathe(x, y, z, profile, matKey, seg = 48, phiStart = 0, phiLength = Math.PI * 2) {
     const geo = new THREE.LatheGeometry(profile.map(([r, dy]) => new THREE.Vector2(Math.max(r, 0.001), dy)), seg, phiStart, phiLength); geo.translate(x, y, z); this.add(geo, matKey);
   }
+  /** a flat polygon on the ground plane at height `y` (a strip of land, a sea, a river's ribbon): `ring` = [[x, z], …] */
+  poly(ring, y, matKey) {
+    if (!ring || ring.length < 3) return;
+    const shape = new THREE.Shape(ring.map(([x, z]) => new THREE.Vector2(x, -z)));
+    const geo = new THREE.ShapeGeometry(shape); geo.rotateX(-Math.PI / 2); geo.translate(0, y, 0); this.add(geo, matKey);
+  }
   sphere(x, y, z, r, matKey, seg = 16) { const geo = new THREE.SphereGeometry(r, seg, Math.max(8, seg / 2)); geo.translate(x, y, z); this.add(geo, matKey); }
   torus(x, y, z, R, r, matKey, rx = 0, ry = 0) { const geo = new THREE.TorusGeometry(R, r, 10, 40); geo.rotateX(rx); geo.rotateY(ry); geo.translate(x, y, z); this.add(geo, matKey); }
   capsule(a, b, r, matKey) {
@@ -1081,6 +1087,7 @@ export function buildPiece(M, piece, ground = -4, xrayGroups = XRAY_GROUPS) {
     switch (part.kind) {
       case 'box': buildBox(b, part); break;
       case 'cyl': b.cyl(part.x, part.y, part.z, part.r, part.h, part.mat || piece.material, part.r2 || part.r); break;
+      case 'poly': b.poly(part.ring, part.y ?? ground, part.mat || piece.material); break;
       case 'lathe': b.lathe(part.x, part.y, part.z, part.profile, part.mat || piece.material, part.seg || 48, part.phiStart || 0, part.phiLength ?? Math.PI * 2); break;
       case 'ramp': buildRamp(b, part); break;
       case 'cherub': buildCherub(b, part); break;
