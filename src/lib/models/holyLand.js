@@ -93,7 +93,7 @@ export const TRIBE_COLORS = {
 
 // Hebrew spellings of the tribes (for the labels' paleo line)
 export const TRIBE_HEBREW = {
-  Dan: 'דן', Asher: 'אשר', Naphtali: 'נפתלי', Manasseh: 'מנשה', Ephraim: 'אפרים',
+  Dan: 'דן', Asher: 'אשר', Naphtali: 'נפתלי', Manasseh: 'מנשה', Ephraim: 'אפרים', Joseph: 'יוסף',
   Reuben: 'ראובן', Judah: 'יהודה', Benjamin: 'בנימין', Simeon: 'שמעון',
   Issachar: 'יששכר', Zebulun: 'זבולון', Gad: 'גד', Levi: 'לוי',
 };

@@ -71,7 +71,7 @@ export const MATERIALS = {
   ...BASE_MATERIALS,
   newearth: { word: 'aratz',     color: '#b9ae8c', hi: '#d8cfae', lo: '#7e765c', metal: 0, rough: 1 },                  // the new earth, no sea
   land:     { word: 'aratz',     color: '#7f9a5a', hi: '#a4bd7c', lo: '#52673a', metal: 0, rough: 1 },                  // the land of the map
-  jasper:   { word: 'yashapah',  color: '#79c69c', hi: '#d4f4e0', lo: '#4a8a66', metal: 0.15, rough: 0.2, emissive: '#2f6a4a', emissiveIntensity: 0.35 },   // "clear as crystal"
+  jasper:   { word: 'yashapah',  color: '#a3d6bd', hi: '#effff7', lo: '#5f9c7e', metal: 0.1, rough: 0.12, emissive: '#3c7d5e', emissiveIntensity: 0.28 },   // the wall's jasper (21:18): green, as the stone is known — the text gives no colour, only "clear as crystal" (21:11), so it is drawn pale and bright
   pearl:    { word: 'shair',     color: '#f6f1ea', hi: '#ffffff', lo: '#c9bfb4', metal: 0.05, rough: 0.15, emissive: '#e8d8c8', emissiveIntensity: 0.35 },
   goldglass:{ word: 'zahab',     color: '#f0bc3c', hi: '#ffe9a0', lo: '#9a7a2a', metal: 0.25, rough: 0.35, emissive: '#c8881a', emissiveIntensity: 1.1 },   // solid, and radiant (fieldy: "solid and very radiant in light")   // "pure gold, like clear glass" — the city's body
   goldfloor:{ word: 'chay',      color: '#86b25e', hi: '#a9d07f', lo: '#587a3c', metal: 0, rough: 1 },   // the ground within the walls: green — the river of life and the tree of life make the city a garden; the text's gold is the street and the body (fieldy: "the streets are supposed to be gold, not all the ground")   // the city of gold underfoot; the land shows through it
@@ -198,10 +198,10 @@ export const PIECES = [
     tag: 'chawamah (wall) · 144 amah · yashapah (jasper)', title: 'A kabad (great) and ilay (high) wall of yashapah (jasper), achad (one) hundred forty-arabai (four) amah (cubits)',
     words: ['chawamah', 'yashapah', 'amah'], keys: ['wall', 'walls', 'yashapah', 'jasper', 'amah', 'cubits'],
     on: V('66:21:12', '66:21:17-18'), refs: 'Revelation 21:12, 17–18',
-    measures: [['its measure', '144 amah, by the measure of a man, that is, of an angel — drawn as its height', '21:17'], ['its stuff', 'jasper', '21:18'], ['its thickness', 'not measured — 24 here', 'assumed'], ['its foundations', 'twelve stones through its lower half, set as the ephod\'s rows', '21:14, 19–20']],
+    measures: [['its measure', '144 amah, by the measure of a man, that is, of an angel — drawn as its height', '21:17'], ['its stuff', 'yashapah (jasper) — the text names the stone, not a colour; the model\'s green is the stone as it is known, drawn pale for "clear as crystal"', '21:18; 21:11'], ['its thickness', 'not measured — 24 here', 'assumed'], ['its foundations', 'twelve stones through its lower half, set as the ephod\'s rows', '21:14, 19–20']],
     note: '"{{Revelation 21:17}}" — the one measure of the text that is in amah, and small against the city\'s stadia: a wall a hundred and forty-four high about a city four million wide; the model keeps both, so that from the gate the wall towers and from the mountain it is a line.',
     elsewhere: { ref: 'Ezekiel 40:5; 42:20; Zechariah 2:4–5; Isaiah 60:18', note: 'The reed of six cubits that measured Yachazaqaal\'s wall; the wall of the sanctuary five hundred round; a city with no wall, for Yahawah a wall of fire; walls called Salvation.' },
-    assumed: 'That the hundred and forty-four is the height (it may be the thickness); the thickness.',
+    assumed: 'That the hundred and forty-four is the height (it may be the thickness); the thickness; the jasper\'s colour.',
     parts: cityWall(),
   },
   ...STONES.map(([id, en, color], i) => ({
@@ -221,10 +221,10 @@ export const PIECES = [
     tag: `shair (gate) of ${name} · pearl`, title: `The shair (gate) of ${name} (${en}) on the ${side} — achad (one) pearl, and its malaak (angel)`,
     words: ['shair', 'malaak', 'shabat'], keys: [name.toLowerCase(), en.toLowerCase()],
     on: V('66:21:12-13', '66:21:21', '66:21:25'), refs: 'Revelation 21:12–13, 21, 25',
-    measures: [['the side', `the ${side}: three gates — ${GATES[side].map((g) => g[0]).join(', ')}`, '21:13'], ['of what', 'one pearl', '21:21'], ['its name', `a tribe's — ${name}: the order of Ezekiel 48:${{ north: 31, east: 32, south: 33, west: 34 }[side]}, so the two cities pair gate for gate`, '21:12; assumed'], ['shut?', 'never by day, and there is no night', '21:25'], ['its size', `one block of pearl ${PEARL.w} across and ${PEARL.h} high, the way through it ${PEARL.wayW} wide and ${PEARL.wayH} high`, 'assumed']],
+    measures: [['the side', `the ${side}: three gates — ${GATES[side].map((g) => g[0]).join(', ')}`, '21:13'], ['of what', 'one pearl', '21:21'], ['its name', `a tribe's — ${name}: the order of Ezekiel 48:${{ north: 31, east: 32, south: 33, west: 34 }[side]}, so the two cities pair gate for gate`, '21:12; assumed'], ['its name written', `${name} in paleo and in transliteration — on the lintel without and within, on the flanks, on two standing stones and in the pavement before it`, '21:12; the places assumed'], ['shut?', 'never by day, and there is no night', '21:25'], ['its size', `one block of pearl ${PEARL.w} across and ${PEARL.h} high, the way through it ${PEARL.wayW} wide and ${PEARL.wayH} high`, 'assumed']],
     note: `"{{Revelation 21:21 | The twelve … pearl}}" — every gate one pearl, with a malaak (angel) at it and a tribe's name on it; which name on which gate the Revelation does not say, so this one is ${name}'s as in Yachazaqaal's city.`,
     elsewhere: { ref: 'Ezekiel 48:30–34; Isaiah 60:11; Genesis 28:17', note: 'The gates of Yachazaqaal\'s city, three a side, with the same names; gates open continually; "this is the gate of heaven".' },
-    assumed: 'The pearl\'s size and form (a gate of one block of pearl, the way cut through it), the gate\'s place a third along the side, and which tribe\'s name it bears.',
+    assumed: 'The pearl\'s size and form (a gate of one block of pearl, the way cut through it), the gate\'s place a third along the side, which tribe\'s name it bears, and where the name is written (the text says only that the names are on the gates).',
     idealized: 'The pearl.',
     parts: pearlGate(side, i), gates: [gateWay(side, i)],
   }))),
@@ -258,7 +258,7 @@ export const PIECES = [
     measures: [['where', 'on either side of the river', '22:2'], ['its fruit', 'twelve kinds, one every month', '22:2'], ['its leaves', 'for the healing of the nations', '22:2'], ['how many', 'one tree, or a kind of tree, on both banks — drawn as many', 'assumed']],
     note: '"{{Revelation 22:2 | On this … chadash}}" — the tree on both banks, as the trees of Ezekiel 47:12 whose fruit was for food and whose leaf was for medicine; the model plants them along the river where the walker goes, from the throne and in from the gate.',
     elsewhere: { ref: 'Genesis 2:9; 3:22–24; Ezekiel 47:12; Revelation 2:7', note: 'The tree of life in the midst of the garden, and the way to it kept; the trees on the river\'s banks whose leaf does not fade; "to him who overcomes".' },
-    assumed: 'The trees\' number, spacing and form.',
+    assumed: 'The trees\' number, spacing and form; the standards among them — twelve in from the east gate and twelve out from the throne, each with a tribe\'s name and the sign the blessings give it (Genesis 49; Deuteronomy 33: Yahawadah a lion, Dan a serpent, Zabawalawan ships, Napathalay a hind …) — are the model\'s, after the dagal (standards) of Numbers 2; the Revelation gives the tribes no signs.',
     idealized: 'The trees.',
     parts: trees(),
   },
@@ -447,7 +447,7 @@ export const MODEL = {
     navSkip: ['aratz', 'gawayam', 'itz', 'guph'],
     lights: [],
     walls: ['chawamah', ...STONES.map((_, i) => `yasawad-${i + 1}`), ...['north', 'east', 'south', 'west'].flatMap((s) => [0, 1, 2].map((i) => `gate-${s}-${i}`))],
-    notSolid: ['gawayam', 'aratz', 'guph'],
+    notSolid: ['gawayam', 'aratz', 'guph'], farHide: ['guph'],   // the body hidden while the walker's view is pulled far back: from above it would hide him and the street
     proxies: [],
     stairHouses: {},
     plan: {

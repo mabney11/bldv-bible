@@ -19,7 +19,7 @@
  *   id, title, ground, PIECES, MATERIALS, MODES, progressAt, xrayAt, openAt, cameraAt, focusFor
  *   roam: { eye, start:{pos,look}, enter:{pieceId:{open}}, openKeys, openKey(which), openDefault(key) }
  *   scene: { sky, shadowR, xrayGroups, whole:{id,group}, lights:[{key,color,distance,decay,pos,on(progressOf,mode,t)}],
- *            walls:[ids], notSolid:[ids], proxies:[{x,y,z,r,h}], stairHouses:{id:box}, plan:{pieces,labels,extra,radius},
+ *            walls:[ids], notSolid:[ids], farHide:[ids], proxies:[{x,y,z,r,h}], stairHouses:{id:box}, plan:{pieces,labels,extra,radius},
  *            inHouse(p), floorAt(p,mode,t), extras(ctx) → { sunOffset, place(mode,t) → presence, after(mode,t) } }
  */
 import { useEffect, useRef } from 'react';
@@ -166,6 +166,17 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       open: Object.fromEntries((model.roam.openKeys || []).map((k) => [k, 0])), want: Object.fromEntries((model.roam.openKeys || []).map((k) => [k, 0])),   // the doors, the veil and the court gates (keys 'piece:i'), 0 shut … 1 open, eased toward what the viewer asked
     };
     const DIST_MAX = 15;
+    // beyond the third-person view the wheel keeps pulling back — geometrically, up to the whole model's span, the view tilting
+    // down over him as it goes, so that on a big model the walker sees where he stands against the whole of it (fieldy: "for big
+    // models I should be able to zoom all the way out to the point I see the model"). roam.dist is the true distance; the wheel's
+    // notches run on a linear scale v (1.5 a notch) that becomes geometric past DIST_MAX
+    let DIST_FAR = DIST_MAX;   // set once the model's extent is known
+    const V_STEP = 1.5, FAR_K = 1.22;
+    const distV = (d) => (d <= DIST_MAX ? d : DIST_MAX + V_STEP * Math.log(d / DIST_MAX) / Math.log(FAR_K));
+    const vDist = (v) => (v <= DIST_MAX ? v : Math.min(DIST_FAR, DIST_MAX * Math.pow(FAR_K, (v - DIST_MAX) / V_STEP)));
+    const zoomTo = (v) => { roam.dist = vDist(Math.max(0, Math.min(distV(DIST_FAR), v))); };
+    const FAR_HIDE = new Set(SC.farHide || []);   // pieces hidden while the view is pulled far back (a city's radiant body: from above it would hide the walker)
+    const farOn = () => roam.on && roam.dist > DIST_MAX + 0.01;
     // the court gates' leaves: every hinge group built for a gate, by key; open (1) unless the walker shuts one
     const gateSets = [];
     // what stands open at the start (the temple: the court gates open except the great court's — the outermost, where the walk begins — fieldy; the doors and the veil shut)
@@ -181,6 +192,13 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     // ── Where the stairs are: a gold mark at the foot and the head of every stair, drawn through the walls while he is on foot
     // inside (or on) that house — "right now I'm having to find stairs with memory" (fieldy)
     const stairMarks = [];
+    // the walker's beacon: a point of light over his head while the view is pulled far back, sized by the distance, so that a
+    // figure of four cubits is still found on a model of millions
+    const beacon = (() => {
+      const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d');
+      const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.3, 'rgba(255,240,200,1)'); gr.addColorStop(0.5, 'rgba(255,190,60,0.9)'); gr.addColorStop(1, 'rgba(255,160,40,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, depthTest: false })); sp.renderOrder = 1000; sp.visible = false; scene.add(sp); return sp;
+    })();
     {
       const tex = (down) => {
         const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
@@ -290,6 +308,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     for (const r of [...plan, ...navWalk]) { const bx0 = r.r != null ? r.x - r.r : r.x0, bx1 = r.r != null ? r.x + r.r : r.x1, bz0 = r.r != null ? r.z - r.r : r.z0, bz1 = r.r != null ? r.z + r.r : r.z1; EXT.x0 = Math.min(EXT.x0, bx0); EXT.x1 = Math.max(EXT.x1, bx1); EXT.z0 = Math.min(EXT.z0, bz0); EXT.z1 = Math.max(EXT.z1, bz1); }
     for (const [lx, lz] of PLAN_LABELS) { EXT.x0 = Math.min(EXT.x0, lx - 10); EXT.x1 = Math.max(EXT.x1, lx + 10); EXT.z0 = Math.min(EXT.z0, lz - 10); EXT.z1 = Math.max(EXT.z1, lz + 10); }
     { const [sx, , sz] = ROAM_START.pos; EXT.x0 = Math.min(EXT.x0, sx); EXT.x1 = Math.max(EXT.x1, sx); EXT.z0 = Math.min(EXT.z0, sz); EXT.z1 = Math.max(EXT.z1, sz); const pad = 30; EXT.x0 -= pad; EXT.x1 += pad; EXT.z0 -= pad; EXT.z1 += pad; }
+    DIST_FAR = Math.max(DIST_MAX * 3, 1.3 * Math.max(EXT.x1 - EXT.x0, EXT.z1 - EXT.z0));   // far enough back that the whole model is in the view from wherever he stands
 
     // ── The route finder: a grid of one-cubit cells over the model, a height field of what can be stood on, and every wall that
     // stands at that height a block; A* between cells (a climb of more than a step is not a way; a drop is, but costs), then the
@@ -739,7 +758,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       for (const piece of PIECES) {
         const g = byId(piece.id); if (!g || piece.id === SC.whole?.id) continue;
         const p = progressAt(mode, piece, t);
-        g.visible = p > 0.001;
+        g.visible = p > 0.001 && !(FAR_HIDE.has(piece.id) && farOn());
         g.scale.y = Math.max(0.001, p);
       }
       const x = xrayAt(mode, t);
@@ -981,7 +1000,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     let locked = false, look = null, stickPtr = null;
     const cross = document.createElement('div'); cross.className = 'tp-cross'; el.appendChild(cross);                      // the crosshair, while the mouse is taken
     const THIRD_TILT = 0.05, viewPos = new THREE.Vector3(); let crossAt = 0, viewPulled = false;   // viewPos: where the view was last drawn from (third person: behind and above him)   // third person: the view tilted down by this, the crosshair (his line of sight) that much above the centre
-    const crossNy = () => (roam.on && roam.dist > 0.01 ? Math.tan(THIRD_TILT) / Math.tan((camera.fov * Math.PI) / 360) : 0);   // where his line of sight falls on the screen (ndc y)
+    const tiltAt = () => (roam.dist <= DIST_MAX ? THIRD_TILT : THIRD_TILT + (1.05 - THIRD_TILT) * Math.min(1, Math.log(roam.dist / DIST_MAX) / Math.log(Math.max(2, DIST_FAR / DIST_MAX))));   // far back, the view tilts down over him (to 60°): the model seen from above with him in its midst
+    const crossNy = () => (roam.on && roam.dist > 0.01 ? Math.min(0.9, Math.tan(tiltAt()) / Math.tan((camera.fov * Math.PI) / 360)) : 0);   // where his line of sight falls on the screen (ndc y)
     const stickEl = document.createElement('div'); stickEl.className = 'tp-stick'; stickEl.innerHTML = '<div class="tp-stick-knob"></div>'; el.appendChild(stickEl);
     const knobEl = stickEl.firstChild, STICK_R = 44;
     function setLocked(v) { locked = v; cross.hidden = !v; el.classList.toggle('tp-locked', v); onLock?.(v); }
@@ -1029,7 +1049,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       if (pinch) {
         if (touches.size >= 2) {
           const [a, b] = [...touches.values()], d = Math.hypot(a.x - b.x, a.y - b.y);
-          roam.dist = Math.max(0, Math.min(DIST_MAX, pinch.dist0 + (pinch.d0 - d) * 0.06));   // fingers together: the view pulls back; apart: into his eyes
+          zoomTo(distV(pinch.dist0) + (pinch.d0 - d) * 0.06);   // fingers together: the view pulls back; apart: into his eyes
           remember(); dirty = true;
         }
         return;
@@ -1049,7 +1069,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     stickEl.hidden = true; cross.hidden = true;
     // the wheel never moves the walker (fieldy): it only pulls the view back from his eyes to a third-person view of him, and
     // forward again into his eyes
-    const onWheel = (e) => { if (!roam.on) return; e.preventDefault(); roam.dist = Math.max(0, Math.min(DIST_MAX, roam.dist + Math.sign(e.deltaY) * 1.5)); remember(); dirty = true; };
+    const onWheel = (e) => { if (!roam.on) return; e.preventDefault(); zoomTo(distV(roam.dist) + Math.sign(e.deltaY) * V_STEP); if (farOn() !== wasFar) { wasFar = farOn(); dirty = true; place(clock.t); } remember(); dirty = true; };
+    let wasFar = false;
     const KEYMAP = { KeyW: 'forward', ArrowUp: 'forward', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', KeyD: 'right', ArrowLeft: 'turnL', ArrowRight: 'turnR', ShiftLeft: 'run', ShiftRight: 'run', Space: 'jump' };
     const onKeyDown = (e) => {
       if (!roam.on || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
@@ -1155,9 +1176,10 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       if (roam.on && roam.dist > 0.01) {
         roamDir(fwd); avatarEye.copy(camera.position);
         rRay.set(avatarEye, backV.copy(fwd).negate()); rRay.far = roam.dist + 0.6; rRay.near = 0;
-        const h = rRay.intersectObjects(wallSolids, false).find((q) => shown(q.object) && !(q.object.material?.transparent && q.object.material.opacity < 0.3));
+        const h = roam.dist <= DIST_MAX ? rRay.intersectObjects(wallSolids, false).find((q) => shown(q.object) && !(q.object.material?.transparent && q.object.material.opacity < 0.3)) : null;   // far back the view rises over the walls: nothing stops it
         const d = h ? Math.max(0.4, h.distance - 0.6) : roam.dist;
         avatar.visible = d > 1.2;
+        beacon.visible = roam.dist > DIST_MAX * 1.6; if (beacon.visible) { const bs = roam.dist * 0.09; beacon.position.set(avatarEye.x, roam.foot + 1.2 + bs * 0.4, avatarEye.z); beacon.scale.set(bs, bs, 1); }
         const bob = roam.moving && roam.air <= 0 ? 0.1 * Math.abs(Math.sin(now / 120)) : 0;
         avatar.position.set(avatarEye.x, roam.foot + bob, avatarEye.z); avatar.rotation.set(0, -(auto ? roam.body : roam.yaw), 0);
         const sinceLand = now - roam.landAt, crouch = sinceLand < 220 ? 0.14 * Math.sin((sinceLand / 220) * Math.PI) : 0;   // the knees give on landing
@@ -1168,11 +1190,11 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         // the pulled-back camera stands a little above his line of sight and looks down along it by the same angle, so his head
         // stays in the middle of the view while the line of sight (the crosshair marks where it goes) falls above his head, not on
         // it (fieldy: "move the crosshair about an inch up so it doesn't sit on the character's head")
-        const tt = Math.tan(THIRD_TILT);
+        const tt = Math.tan(tiltAt());
         camera.position.copy(avatarEye).addScaledVector(fwd, -d).addScaledVector(upV, d * tt); camera.lookAt(probe.copy(avatarEye).addScaledVector(fwd, 2).addScaledVector(upV, -2 * tt));
         const ny = crossNy(); if (ny !== crossAt) { crossAt = ny; cross.style.top = `calc(50% - ${(ny * 50).toFixed(2)}%)`; }
-        viewPos.copy(camera.position); viewPulled = true; pulled = true;
-      } else { avatar.visible = false; viewPulled = false; if (crossAt !== 0) { crossAt = 0; cross.style.top = '50%'; } }
+        viewPos.copy(camera.position); viewPulled = true; pulled = true; camera.userData.view = viewPos; camera.userData.viewPulled = true;   // the extras read where the view is drawn from (the camera itself sits back at his eye between frames)
+      } else { avatar.visible = false; beacon.visible = false; viewPulled = false; camera.userData.viewPulled = false; if (crossAt !== 0) { crossAt = 0; cross.style.top = '50%'; } }
       composer.render(); stats.ms = performance.now() - f0;
       if (pulled) { camera.position.copy(avatarEye); aimCamera(); if (now - roam.landAt < 240) dirty = true; }   // the landing crouch plays out
     }
@@ -1212,6 +1234,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       mapPoint: (x, z) => { const r = mmap.getBoundingClientRect(), { S, ox, oz } = bigFrame(mmap.width), k = r.width / mmap.width; return [r.left + (x * S + ox) * k, r.top + (z * S + oz) * k]; },   // for tests: where a world point lies on the big map
       mapView: (label) => { const find = (ns) => { for (const n of ns) { if (n.label === label) return n; const c = n.children && find(n.children); if (c) return c; } return null; }; setMapView(label ? find(PLACES) : null); return mapView?.label || null; },   // for tests
       carry: (x, z, face, label) => carryTo(x, z, face, label),   // for tests
+      three: () => ({ scene, camera, renderer }),   // for tests
       groups: (deep = false) => [...groups].map(([id, g]) => { const bx = (o) => { const bb = new THREE.Box3().setFromObject(o); return { min: bb.min.toArray().map((v) => Math.round(v * 10) / 10), max: bb.max.toArray().map((v) => Math.round(v * 10) / 10) }; }; return { id, visible: g.visible, sy: g.scale.y, py: g.position.y, n: g.children.length, ...bx(g), children: deep ? g.children.map((c) => ({ type: c.type, n: c.geometry?.attributes?.position?.count, ...bx(c) })) : undefined }; }),   // for tests: every piece's group, its scale and its world box
       route: (ax, az, bx, bz, ay) => (ay == null ? findPath(ax, az, bx, bz) : routeFrom(ax, az, ay, bx, bz)),   // for tests
       look: (dx, dy = 0) => turnHead(dx, dy),   // for tests: the mouse turning the head
@@ -1222,8 +1245,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       piece: (id) => byId(id),   // for tests
       pick: (nx = 0, ny = 0) => { if (nx === 0 && ny === 0 && roam.on) sightRay(); else { ndc.set(nx, ny); ray.setFromCamera(ndc, camera); } const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible); let o = hit?.object; while (o && !o.userData.id) o = o.parent; return { id: o?.userData.id || null, dist: hit?.distance, obj: hit?.object?.name, yaw: roam.yaw, pitch: roam.pitch }; },   // for tests: what the crosshair is on
       invalidate: () => { dirty = true; },
-      roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, air: roam.air, vy: roam.vy, dist: roam.dist, avatar: avatar.visible ? avatar.position.toArray() : null, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),
-      zoom: (d) => { roam.dist = Math.max(0, Math.min(DIST_MAX, d)); dirty = true; },   // for tests: the wheel's distance   // for tests
+      roam: () => ({ on: roam.on, pos: camera.position.toArray(), foot: roam.foot, air: roam.air, vy: roam.vy, dist: roam.dist, beacon: beacon.visible ? [...beacon.position.toArray(), beacon.scale.x] : null, eye: viewPos.toArray(), avatar: avatar.visible ? avatar.position.toArray() : null, open: { ...roam.open }, frames: stats.frames, ms: stats.ms }),
+      zoom: (d) => { roam.dist = Math.max(0, Math.min(DIST_FAR, d)); place(clock.t); dirty = true; },   // for tests: the wheel's distance   // for tests
       go: (id, gate) => roam.on && roamGo(id, gate),
       reset: () => {   // back to the start, outside the great court's gate, every door and gate as at the first (fieldy: "a reset button")
         if (!roam.on) return;
