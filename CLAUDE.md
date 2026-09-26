@@ -1,5 +1,54 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## NT/Apocrypha Hebrew went missing from surface-index.db — Rebake built BHS-only (fixed 2026-09-26)
+
+fieldy, same session, four symptoms: Rev 21:18 𐤅𐤁𐤍𐤉𐤍 read "Wabanaayan" (𐤅 fused into the root,
+no [And] chip); 𐤃𐤅𐤌𐤄 in Rev 21:18 absent from the Root Explorer ("something wonky with my NT
+and Apocrypha roots"); Rev 21:14 𐤔𐤋𐤉𐤇𐤉 read as chayah; "hamah (great uproar)" in place of "like".
+
+**Root cause of the first two:** `build-surface-index.js` only baked the HEB edition with
+`--heb`, and `scripts/rebake.sh` (= the widget's Rebake button) ran the bare command. The
+2026-09-24 Rebake therefore rebuilt a BHS-only index (local surface_occurrences: 490,052
+rows, 0 with source='HEB') and pushed it. With no HEB rows: /api/tokens live-parses
+untagged tokens_nt for every NT/Apocrypha chapter (prefixes fused, suffixes lost), and the
+Root Explorer (`hebNavIterate` reads ONLY surface_occurrences source='HEB') loses every
+NT/Apocrypha occurrence. **Fix:** HEB is now baked by DEFAULT (`--no-heb` opts out,
+`--heb` is a no-op); rebake.sh refuses to push a surface-index.db with zero HEB rows.
+Verified by running heb-align against the real corpus (node:sqlite shim — set
+`SQLITE_TMPDIR=/tmp` in the device sandbox, its /sessions disk is full and SQLite's GROUP BY
+temp files otherwise fail as "database or disk is full", silently emptying SUF_COMPS):
+𐤅𐤁𐤍𐤉𐤍 → [𐤅 And] + 𐤁𐤍𐤀 Banaa "Construction / Building" + [𐤉𐤍 Plural] = WaBanaayan.
+
+**𐤔𐤋𐤉𐤇𐤉 (apostles of):** was 𐤔 + 𐤋 + 𐤉𐤇𐤉 (jussive of chayah). Two fixes in heb-align.js:
+(1) SUF_COMPS' evidence query had `LIMIT 30`; since the 2026-09-07 "component must BE the
+suffix" gate, the top 30 rows are mostly root-final letters, so only 4/38 tails ever found
+evidence and the whole suffix/affixed tier was effectively off. Now `LIMIT 400` (10/38) —
+**this re-enables suffix splits corpus-wide; run verify-parallel-alignment after the bake.**
+(2) New `lexicon/heb-forced-readings.json` (word_raw → forms[]), read by
+build-surface-index.js as `forcedReadings`: picks a reading only if resolveAll() itself
+proposed it; misses are printed with what WAS offered. 𐤔𐤋𐤉𐤇𐤉 now = 𐤔𐤋𐤉𐤇 Shalayach
+(H7972, lexicon "Apostle") + 𐤉 [My/Of], in 8 occurrences incl. 𐤋/𐤊/𐤅𐤋 prefixed. Not covered:
+Josephus 𐤔𐤋𐤉𐤇𐤉𐤅 (tail 𐤉𐤅 has no attested evidence yet).
+
+**"hamah (like)":** term-forms.txt pinned `like → hamah # H1992` (auto-generated from kjv_def;
+H1992 is "they/them"). 1,938 NT/Apocrypha "like"s; the live re-gloss then showed lexicon
+𐤄𐤌𐤄 (H1993) "great uproar". Pin removed; render-corpus VG_ROOT_NOT also bars 𐤄𐤌 from
+like/such/so. Other auto-generated pins in that block look equally suspect (e.g. `every →
+nashay # H802`, `himself → gap`) — worth a review pass.
+
+**Also:** HebrewViewer prev/next arrows + ArrowLeft/Right were dead on every HEB-only book
+(`meta` came from the BHS book list → undefined → sideNav returned). Now falls back to the
+master dropdown entry.
+
+**Run, in order (fieldy's machine), then restart the server:**
+```
+cd server
+node build-surface-index.js          # HEB now included; check the "forced readings" line
+node sync-heb-tokens.mjs --check --out sync-check.txt   # then --apply if the report is clean
+node render-all.mjs --surface        # like→hamah gone; reseeds translation.db
+```
+Then Rebake (pushes surface-index.db + corpus.db).
+
 ## NT English wiped from corpus.db and pushed to prod — load-english-baseline.js now refuses a partial baseline (2026-09-24)
 
 fieldy: bldbible.com/parallel/luke/1-32 showed no English — "something happened that should not

@@ -356,6 +356,9 @@ const VG_FUNCTION_OK = new Set('you we they them he she him her us me until not 
 // is barak. (Delitzsch's Beatitudes carry אשרי; the pin blessed→barak now renders there.)
 const VG_ROOT_NOT = new Map([
   ['𐤀𐤔𐤓', new Set(['blessed', 'bless', 'blessedness', 'happy', 'happiness'])],
+  // 2026-09-26: 𐤄𐤌 (H1992 hem/hemmah) is "they/them"; its kjv_def's "like"/"such"/"so" come
+  // from phrases ("like them"). Was the source of "hamah (like)" across the NT.
+  ['𐤄𐤌', new Set(['like', 'likes', 'liked', 'liking', 'such', 'so'])],
 ]);
 const VG_GENERIC = new Set('make made makes making do done did doing get got give gave put set take took bring come came go went cause let self selves one thing things'.split(/\s+/));
 const VG = { verses: new Map(), english: new Map(), on: false };

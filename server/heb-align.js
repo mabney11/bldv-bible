@@ -350,6 +350,8 @@ function buildHebSurfaces(o) {
     // outrank 𐤔𐤋𐤉𐤔𐤉 "third".
     const PREFER_PARTICLE_MAX = o.preferParticleMax === undefined ? 10 : o.preferParticleMax;
     let preferredSplits = 0;
+    let forcedReadingHits = 0;
+    const forcedReadingMisses = new Map();   // word -> the readings resolveAll DID offer
     const {
         src, parseToken,
         corpus = 'HEB', otMax = 39, ntMin = 40, ntMax: ntMaxArg,
@@ -368,6 +370,15 @@ function buildHebSurfaces(o) {
         // "this spelling always means X" rule would just break every OTHER
         // occurrence where the majority reading is correct.
         occurrenceOverrides = new Map(),
+        // Spelling-keyed FORCED SEGMENTATION, added 2026-09-26. word_raw ->
+        // the exact forms array resolveAll() must produce (e.g. 𐤔𐤋𐤉𐤇𐤉 ->
+        // [𐤔𐤋𐤉𐤇, 𐤉] "apostles of"). For a word whose every occurrence the
+        // automatic pick splits wrongly — Revelation 21:14's shlichei was read
+        // as 𐤔 + 𐤋 + 𐤉𐤇𐤉 (a jussive of chayah, "may he live"). Evidence-gated
+        // like everything else here: it only selects a reading resolveAll()
+        // itself proposed (attested stem, attested tail); it can never invent
+        // one. Data lives in lexicon/heb-forced-readings.json.
+        forcedReadings = new Map(),
         log = () => {},
     } = o;
     const occKey = (b, c, v, ord) => `${b}|${c}|${v}|${ord}`;
@@ -692,8 +703,15 @@ function buildHebSurfaces(o) {
             WHERE word_raw LIKE '%' || ? AND pos != 'punct'
             GROUP BY pos, morph, strongs
             ORDER BY n DESC
-            LIMIT 30
+            LIMIT 400
         `);
+        // LIMIT was 30. Since the 2026-09-07 "the borrowed component must BE the
+        // suffix" gate below, the top 30 rows ending in a tail are mostly words whose
+        // last letter is a ROOT radical or an absorbed ending (𐤊𐤉, 𐤁𐤍𐤉 nme=JM, 𐤀𐤍𐤉 …),
+        // so almost no tail ever found its evidence: a 2026-09-26 probe showed 4/38
+        // tails attested, which silently disabled the whole `suffix`/`affixed` tier —
+        // 𐤔𐤋𐤉𐤇𐤉 "apostles of" (𐤔𐤋𐤉𐤇 + 𐤉) could not even be proposed. The gates are
+        // unchanged; they just get enough rows to find a real example.
         // What tail(s) does THIS token's OWN morphology (not its spelling)
         // actually imply? Gates the SQL's textual LIKE match against real
         // tagging, so a word ending in 𐤊 for some unrelated reason (a root
@@ -914,6 +932,13 @@ function buildHebSurfaces(o) {
     const resolve = (w) => {
         const all = resolveAll(w);
         if (!all.length) return null;
+        const forced = forcedReadings.get(w);
+        if (Array.isArray(forced) && forced.length) {
+            const key = forced.join('\u0000');
+            const hitF = all.find(r => r.forms.join('\u0000') === key);
+            if (hitF) { forcedReadingHits++; return hitF; }
+            forcedReadingMisses.set(w, all.map(r => r.tier + ':' + r.forms.join('+')).join(' | '));
+        }
         // A whole-word `exact` hit is usually right, but not always: a NT name
         // fused with a particle can coincide with an unrelated OT word, and the
         // coincidence wins because it is tried first. 𐤌𐤓𐤅𐤕 (𐤌 + 𐤓𐤅𐤕 Ruth)
@@ -1379,6 +1404,8 @@ function buildHebSurfaces(o) {
     // something to find by reading a verse in the app.
     stats.ambiguousReadings = ambiguousReadings;
     stats.preferredSplits = preferredSplits;
+    stats.forcedReadingHits = forcedReadingHits;
+    stats.forcedReadingMisses = [...forcedReadingMisses].map(([w, alts]) => `${w} (offered: ${alts})`);
     stats.ntTokensNtFallback = ntTokensNtFallback;
     return { surfaces, occurrences, audit, stats };
 }

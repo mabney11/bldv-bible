@@ -52,7 +52,10 @@ himself         gap              # H1610 · 214x in NT · 4x OT · sense 1  alt:
 answered        amar              # H559 · 210x in NT · 5308x OT · sense 0 · via "answer"  alt: Dabar/H1696 Amara/H561
 give            yahab             # H3052 · 209x in NT · 28x OT · sense 1  alt: Shawamath/H7761 Yanaq/H3243
 among           thawak           # H8432 · 209x in NT · 418x OT · sense 0  alt: Bayana/H996 Bayan/H997
-like            hamah             # H1992 · 207x in NT · 561x OT · sense 1  alt: Mashal/H4912 Mashala/H4915
+# REMOVED 2026-09-26 (fieldy: "hamah is nowhere in this verse"): like -> hamah # H1992.
+# H1992 is hem/hemmah "they/them"; "like" is only in its kjv_def from phrases like
+# "like them". Rendered 1,938 NT/Apocrypha "like"s as hamah, which the live re-gloss
+# then turned into "hamah (great uproar)" (lexicon 𐤄𐤌𐤄 = H1993).
 sent            shalach           # H7972 · 200x in NT · 14x OT · sense 1 · via "send"  alt: Nawayap/H5130 Shawab/H7725
 children        tap              # H2945 · 170x in NT · 42x OT · sense 0
 jews            yahawaday        # H3064 · 168x in NT · 75x OT · sense 0 · via "jew"  alt: Yahawadaayan/H3062

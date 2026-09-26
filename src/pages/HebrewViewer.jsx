@@ -197,7 +197,6 @@ export default function HebrewViewer() {
     [tokens]
   );
   const verseCount = verseNums.length ? Math.max(...verseNums) : 0;
-  const meta = books.find(b => b.book_id === book);
 
   // ── nav ──────────────────────────────────────────────────────────────────
   const setUrl = useCallback((b, c, v) => {
@@ -241,6 +240,11 @@ export default function HebrewViewer() {
       };
     });
   }, [masterBooks, hvBookMeta, books]);
+  // Chapter range for prev/next. `books` is the BHS list only, so for an HEB-only book
+  // (every NT book, e.g. Revelation) it was undefined and sideNav returned before doing
+  // anything — arrows and ArrowLeft/Right were dead there. The master dropdown entry
+  // carries the range for every book (BHS's own range still wins when present).
+  const meta = books.find(b => b.book_id === book) || dropdownBooks.find(b => b.book_id === book);
   const onPickBook = useCallback((id) => {
     const mb = dropdownBooks.find(b => b.book_id === id);
     if (mb && mb.foreign && mb.primary)

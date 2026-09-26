@@ -59,6 +59,20 @@ main() {
     fi
   fi
 
+  # HEB-COVERAGE GATE (2026-09-26): never push a surface-index.db without the HEB
+  # (NT/Apocrypha Hebrew) edition -- a BHS-only index makes every NT chapter live-parse
+  # untagged tokens (prefixes fused into roots, no suffix chips). build-surface-index.js
+  # now bakes HEB by default; this catches an index built with --no-heb or an old copy.
+  if ! (cd server && node -e "
+const db = new (require('better-sqlite3'))('surface-index.db', { readonly: true });
+const n = db.prepare(\"SELECT COUNT(*) AS n FROM surface_occurrences WHERE source='HEB'\").get().n;
+if (!n) { console.error('!! surface-index.db has NO HEB rows -- refusing to push it'); process.exit(1); }
+console.log('surface-index.db HEB rows: ' + n);
+"); then
+    echo "!! Rebuild with: (cd server && node build-surface-index.js), then Rebake again."
+    exit 1
+  fi
+
   # DATA-LOSS GATE (2026-09-24): never push a corpus.db that has lost a canonical
   # book's English — that is how the whole NT went blank on prod. Every canon 1-66
   # must have ENG verses.

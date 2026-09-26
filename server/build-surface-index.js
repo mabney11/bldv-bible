@@ -33,10 +33,15 @@ function argVal(flag) {
 const BIBLE_DB  = argVal('--db')  || path.join(__dirname, 'corpus.db');
 const OUT_DB    = argVal('--out') || path.join(__dirname, 'surface-index.db');
 const LEX_DIR   = argVal('--lex') || path.join(__dirname, 'lexicon');
-// --heb bakes the unsegmented HEB (extra) corpus alongside BHS, so the NT and the
-// OT are served from ONE index and neither needs live parsing. OFF by default:
-// without it this script behaves exactly as before, byte for byte.
-const WITH_HEB  = args.includes('--heb');
+// The unsegmented HEB (extra) corpus is baked alongside BHS, so the NT and the
+// OT are served from ONE index and neither needs live parsing. ON by default since
+// 2026-09-26 (`--no-heb` opts out; `--heb` still accepted, now a no-op): it used to
+// be OFF, and rebake.sh / the widget's Rebake button ran the bare command — so a
+// Rebake silently rebuilt a BHS-only index and PUSHED it to prod. Every NT/HEB
+// chapter then fell back to live-parsing untagged tokens_nt rows: no proclitic
+// split (Rev 21:18 𐤅𐤁𐤍𐤉𐤍 rendered "Wabanaayan", the 𐤅 fused into the root), no
+// suffix chips, no forced readings.
+const WITH_HEB  = !args.includes('--no-heb');
 // Uncurated Strong's kjv_def is OFF by default. It is still BAKED when --kjv is
 // passed, but always labelled gloss_src:'kjv' so the reader can hide it without
 // a rebuild. Default: a word fieldy has not curated renders as bare paleo.
@@ -48,6 +53,10 @@ const HEB_PINS  = path.join(LEX_DIR, 'heb-offset-pins.json');
 // "book_id|chapter|verse|token_ordinal" -> forced Strong's number ("H3225"),
 // never by word shape (that's surface-strongs-overrides.json, BHS-only).
 const HEB_OCC_OVERRIDES = path.join(LEX_DIR, 'heb-occurrence-overrides.json');
+// Spelling-keyed forced segmentation for the HEB edition (word_raw -> forms[]),
+// see `forcedReadings` in heb-align.js. Only selects a reading heb-align itself
+// proposes from attested stem + tail; never invents one.
+const HEB_FORCED_READINGS = path.join(LEX_DIR, 'heb-forced-readings.json');
 
 if (!fs.existsSync(BIBLE_DB)) {
     console.error(`✗ corpus.db (tokens_bhs source) not found at: ${BIBLE_DB}`);
@@ -1840,6 +1849,14 @@ if (WITH_HEB) {
             console.log(`  ${occurrenceOverrides.size} occurrence override(s) loaded from ${path.basename(HEB_OCC_OVERRIDES)}`);
         } catch (e) { console.warn(`  ⚠ could not read ${HEB_OCC_OVERRIDES}: ${e.message}`); }
     }
+    let forcedReadings = new Map();
+    if (fs.existsSync(HEB_FORCED_READINGS)) {
+        try {
+            forcedReadings = new Map(Object.entries(JSON.parse(fs.readFileSync(HEB_FORCED_READINGS, 'utf8')))
+                .filter(([k, v]) => !k.startsWith('_') && Array.isArray(v)));
+            console.log(`  ${forcedReadings.size} forced reading(s) loaded from ${path.basename(HEB_FORCED_READINGS)}`);
+        } catch (e) { console.warn(`  ⚠ could not read ${HEB_FORCED_READINGS}: ${e.message}`); }
+    }
     console.log('\nBuilding HEB (extra) whole-word surfaces…');
     const tH = Date.now();
     // `--prefer-split=N` : a whole-word match attested <=N loses to a
@@ -1863,7 +1880,13 @@ if (WITH_HEB) {
                                    // truth: no separate list to keep in sync.
                                    fusedParticles: [...STANDALONE_WORDS],
                                    occurrenceOverrides,
+                                   forcedReadings,
                                    log: m => console.log(m) });
+    if (forcedReadings.size) {
+        const hs = hebResult.stats;
+        console.log(`  forced readings: ${hs.forcedReadingHits} occurrence(s) applied`
+            + (hs.forcedReadingMisses.length ? `; NOT attested (ignored): ${hs.forcedReadingMisses.join(' ')}` : ''));
+    }
     const st = hebResult.stats;
     console.log(`  OT: ${st.ot_aligned.toLocaleString()}/${st.ot_words.toLocaleString()} words aligned ` +
                 `(${(100 * st.ot_aligned / (st.ot_words || 1)).toFixed(1)}%)`);
