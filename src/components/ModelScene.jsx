@@ -128,7 +128,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const byId = (id) => groups.get(id);
     // the model's own actors, if it has stories with any (the temple: the land the Build opens on, the dedication)
     const extrasOf = typeof SC.extras === 'string' ? EXTRAS[SC.extras] : SC.extras;
-    const extras = extrasOf ? extrasOf({ M, byId, lights: { ...lights, sun, hemi, scene }, sky: SC.sky, scene, world }) : null;
+    const extras = extrasOf ? extrasOf({ M, byId, lights: { ...lights, sun, hemi, scene }, sky: SC.sky, scene, world, camera }) : null;
     extras?.set?.({ time: timeRef.current });
     const sunOffset = extras?.sunOffset || new THREE.Vector3(220, 300, 180);
     const lsDir = new THREE.Vector3(), lsRight = new THREE.Vector3(), lsUp = new THREE.Vector3(), lsUpWorld = new THREE.Vector3(0, 1, 0);

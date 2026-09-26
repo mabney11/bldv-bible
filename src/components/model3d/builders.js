@@ -205,7 +205,10 @@ function panelTexture(base, ink, hi) {
 export function makeMaterials(MATERIALS = BASE_MATERIALS) {
   MATERIALS = { ...BASE_MATERIALS, ...MATERIALS };
   // a model's colour table may add `emissive` (a glow of its own — the mashakan's camps, each tribe in its own colour) and `opacity`
-  const std = (key, extra = {}) => { const m = MATERIALS[key]; return new THREE.MeshStandardMaterial({ color: new THREE.Color(m.color), metalness: m.metal, roughness: m.rough, ...(m.emissive ? { emissive: new THREE.Color(m.emissive), emissiveIntensity: m.emissiveIntensity ?? 0.55 } : {}), ...(m.opacity != null ? { transparent: true, opacity: m.opacity, depthWrite: false } : {}), ...extra }); };
+  // a model's colour table may also give `cells` (rows of colours) with `tile` [u, v] cubits: a hard-edged pattern repeated over the
+  // part at world scale — the twelve stones of the city's foundation in the ephod's rows, on a wall a thousand miles long
+  const cellsTexture = (rows) => { const c = document.createElement('canvas'); const cw = rows[0].length, ch = rows.length; c.width = cw * 8; c.height = ch * 8; const g = c.getContext('2d'); rows.forEach((row, j) => row.forEach((col, i) => { g.fillStyle = col; g.fillRect(i * 8, (ch - 1 - j) * 8, 8, 8); })); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = THREE.NearestFilter; t.minFilter = THREE.LinearMipmapLinearFilter; t.anisotropy = 8; t.colorSpace = THREE.SRGBColorSpace; return t; };
+  const std = (key, extra = {}) => { const m = MATERIALS[key]; const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(m.color), metalness: m.metal, roughness: m.rough, ...(m.emissive ? { emissive: new THREE.Color(m.emissive), emissiveIntensity: m.emissiveIntensity ?? 0.55 } : {}), ...(m.opacity != null ? { transparent: true, opacity: m.opacity, depthWrite: false } : {}), ...(m.cells ? { map: cellsTexture(m.cells) } : {}), ...extra }); if (m.tile) mat.userData.tile = m.tile; return mat; };
   const ashlar = ashlarTexture(MATERIALS.stone.color, '#8a7a5e');
   const ashlarDark = ashlarTexture(MATERIALS.found.color, '#5b4d36');
   const plank = plankTexture(MATERIALS.cedar.color);
@@ -291,7 +294,8 @@ export class PieceBuilder {
   }
   box(x, y, z, w, h, d, matKey, xray = false, rot = 0) {
     const geo = new THREE.BoxGeometry(w, h, d);
-    if (TILE[matKey]) uvBox(geo, w, h, d, TILE[matKey]);
+    const tile = TILE[matKey] || this.M[matKey]?.userData?.tile;
+    if (tile) uvBox(geo, w, h, d, tile);
     else if (this.ideal && Math.max(w, h, d) > 60) uvBox(geo, w, h, d, [30, 30]);   // a conjectured wall a city long keeps the hatch at a wall's density, not two strokes over a mile
     if (rot) geo.rotateY(rot);
     geo.translate(x, y + h / 2, z);
@@ -309,6 +313,11 @@ export class PieceBuilder {
     if (!ring || ring.length < 3) return;
     const shape = new THREE.Shape(ring.map(([x, z]) => new THREE.Vector2(x, -z)));
     const geo = new THREE.ShapeGeometry(shape); geo.rotateX(-Math.PI / 2); geo.translate(0, y, 0); this.add(geo, matKey);
+  }
+  /** a box with no bottom face, single-sided: solid from outside and above, nothing from within (the city of gold like glass — a walker inside it sees the sky) */
+  shell(x, y, z, w, h, d, matKey) {
+    const geo = new THREE.BoxGeometry(w, h, d); const idx = Array.from(geo.index.array); geo.setIndex([...idx.slice(0, 18), ...idx.slice(24)]); geo.clearGroups();   // the faces +x −x +y | −y | +z −z: the −y dropped
+    geo.translate(x, y + h / 2, z); this.add(geo, matKey);
   }
   sphere(x, y, z, r, matKey, seg = 16) { const geo = new THREE.SphereGeometry(r, seg, Math.max(8, seg / 2)); geo.translate(x, y, z); this.add(geo, matKey); }
   torus(x, y, z, R, r, matKey, rx = 0, ry = 0) { const geo = new THREE.TorusGeometry(R, r, 10, 40); geo.rotateX(rx); geo.rotateY(ry); geo.translate(x, y, z); this.add(geo, matKey); }
@@ -1099,6 +1108,7 @@ export function buildPiece(M, piece, ground = -4, xrayGroups = XRAY_GROUPS) {
       case 'box': buildBox(b, part); break;
       case 'cyl': b.cyl(part.x, part.y, part.z, part.r, part.h, part.mat || piece.material, part.r2 || part.r); break;
       case 'poly': b.poly(part.ring, part.y ?? ground, part.mat || piece.material); break;
+      case 'shell': b.shell(part.x, part.y, part.z, part.w, part.h, part.d, part.mat || piece.material); break;
       case 'sphere': b.sphere(part.x, part.y, part.z, part.r, part.mat || piece.material, part.seg || 24); break;
       case 'torus': b.torus(part.x, part.y, part.z, part.R, part.r, part.mat || piece.material, part.rx || 0, part.ry || 0); break;
       case 'lathe': b.lathe(part.x, part.y, part.z, part.profile, part.mat || piece.material, part.seg || 48, part.phiStart || 0, part.phiLength ?? Math.PI * 2); break;

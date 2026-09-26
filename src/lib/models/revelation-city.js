@@ -50,7 +50,7 @@ export const WORDS = {
 export const STADION = 185 / CUBIT_M;                    // one stadion, 185 m, in the map's cubit: 352.4 amah
 export const SIDE = Math.round(12000 * STADION);         // 21:16 — twelve thousand stadia: 4,228,571 amah
 export const HALF = SIDE / 2;
-export const WALL = { h: 144, t: 24, found: 6 };         // 21:17 — the wall a hundred and forty-four amah: twelve foundation courses of six (21:14, 19–20) and jasper above (21:18); thickness assumed
+export const WALL = { h: 144, t: 24, found: 72, block: 12, span: 2400 };   // 21:17 — the wall a hundred and forty-four amah: the lower 72 its twelve foundations of twelve stones (21:14, 19–20), set in blocks of 12 in the ephod's rows (Exodus 28:17–20), jasper above (21:18); thickness assumed. Within `span` of each gate the blocks are drawn one by one; beyond, as a pattern on the run.
 export const GATE_W = 120;                               // the gap in the wall for each pearl (assumed)
 export const GATE_AT = [-HALF * 2 / 3, 0, HALF * 2 / 3]; // three a side, a third of the side apart — as Ezekiel's city is drawn, so the gates pair off
 export const CITY_Y = 0;                                  // the city stands on the plain: the land lies beneath its floor of gold
@@ -62,6 +62,8 @@ export const STONES = [   // 21:19–20, in the text's order, with a colour for 
   ['sardonyx', 'sardonyx', '#c9865f'], ['sardius', 'sardius', '#b8342a'], ['chrysolite', 'chrysolite', '#c8c84a'], ['tharashayash', 'beryl', '#7fc9b0'],
   ['patadah', 'topaz', '#e8c14a'], ['chrysoprase', 'chrysoprase', '#8fd46a'], ['jacinth', 'jacinth', '#e07a3a'], ['amethyst', 'amethyst', '#8a5bc4'],
 ];
+/** which stone a block of the foundation is, by its row (0 at the ground) and its column along the wall: the twelve in four rows of three as the ephod's stones sit, each three-wide tile stepped a row on from the last — a checkerboard of the twelve */
+export const stoneAt = (row, col) => ((((row % 4) + 4) % 4 + Math.floor((((col % 12) + 12) % 12) / 3)) % 4) * 3 + (((col % 3) + 3) % 3);
 const ORD = ['raashawan (first)', 'shanay (second)', 'shalayashay (third)', 'rabayaiy (fourth)', 'chamayashay (fifth)', 'shashay (sixth)', 'shabayaiy (seventh)', 'shamayanay (eighth)', 'thashayaiy (ninth)', 'ishayaray (tenth)', 'eleventh', 'twelfth'];
 
 // ── Materials ────────────────────────────────────────────────────────────────
@@ -79,6 +81,7 @@ export const MATERIALS = {
   leaf:     { word: 'ayalan',    color: '#5fae62', hi: '#8fd08e', lo: '#2e6a34', metal: 0, rough: 0.9 },
   angel:    { word: 'malaak',    color: '#ffffff', hi: '#ffffff', lo: '#cfd6e0', metal: 0, rough: 0.6, emissive: '#e0e8ff', emissiveIntensity: 0.4 },
   ...Object.fromEntries(STONES.map(([id, en, color]) => [`stone-${id}`, { word: 'aban', color, hi: color, lo: color, metal: 0.15, rough: 0.25, emissive: color, emissiveIntensity: 0.18 }])),
+  ephod:    { word: 'aban', color: '#ffffff', hi: '#ffffff', lo: '#888888', metal: 0.15, rough: 0.3, cells: Array.from({ length: 4 }, (_, r) => Array.from({ length: 12 }, (_, c) => STONES[stoneAt(r, c)][2])), tile: [144, 48] },   // the foundations' pattern for the runs far from any gate: 12 columns × 4 rows of 12-cubit blocks, repeated
 };
 
 // ── Parts ────────────────────────────────────────────────────────────────────
@@ -88,19 +91,30 @@ const sphere = (x, y, z, r, extra = {}) => ({ kind: 'sphere', x, y, z, r, ...ext
 const sheetOf = (ring, top, mat) => poly(ring, top, { mat, role: 'land', ideal: false });
 
 /** The runs of one side of the wall between −E…E at height y, h high, with the gaps for the three gates (each side's own axis). */
-function runs(side, y, h, t, mat, role) {
+function runs(side, y, h, t, mat, role, halfGap = GATE_W / 2) {
   const out = [], E = HALF + WALL.t, along = side === 'north' || side === 'south', at = side === 'north' ? -HALF - WALL.t / 2 : side === 'south' ? HALF + WALL.t / 2 : side === 'east' ? HALF + WALL.t / 2 : -HALF - WALL.t / 2;
   const a0 = along ? -E : -HALF, a1 = along ? E : HALF;
   let u = a0;
   const mk = (u0, u1) => (along ? box((u0 + u1) / 2, y, at, u1 - u0, h, t, { mat, role }) : box(at, y, (u0 + u1) / 2, t, h, u1 - u0, { mat, role }));
-  for (const g of GATE_AT) { out.push(mk(u, g - GATE_W / 2)); u = g + GATE_W / 2; }
+  for (const g of GATE_AT) { out.push(mk(u, g - halfGap)); u = g + halfGap; }
   out.push(mk(u, a1));
   return out;
 }
 /** The wall of jasper above the twelve foundations (21:17–18). */
-function cityWall() { return ['north', 'east', 'south', 'west'].flatMap((s) => runs(s, CITY_Y + 12 * WALL.found, WALL.h - 12 * WALL.found, WALL.t, 'jasper', s)); }
-/** One foundation course (21:14, 19–20): the i-th stone, six amah high, round the whole city, stepped a little wider than the one above. */
-function foundation(i) { const step = (11 - i) * 1.2; return ['north', 'east', 'south', 'west'].flatMap((s) => runs(s, CITY_Y + i * WALL.found, WALL.found, WALL.t + step * 2, `stone-${STONES[i][0]}`, s)); }
+function cityWall() { return ['north', 'east', 'south', 'west'].flatMap((s) => [...runs(s, CITY_Y + WALL.found, WALL.h - WALL.found, WALL.t, 'jasper', s), ...runs(s, CITY_Y, WALL.found, WALL.t, 'ephod', s, WALL.span)]); }
+/** The i-th stone's blocks of the foundation (21:14, 19–20) within a gate's span of each gate: 12-cubit blocks, six rows, in the ephod's checker (stoneAt); the rest of the wall's length carries the same as a pattern (cityWall). */
+function foundation(i) {
+  const out = [], B = WALL.block, rows = WALL.found / B, n = Math.floor(WALL.span / B), mat = `stone-${STONES[i][0]}`;
+  for (const side of ['north', 'east', 'south', 'west']) {
+    const along = side === 'north' || side === 'south', at = side === 'north' ? -HALF - WALL.t / 2 : side === 'south' ? HALF + WALL.t / 2 : side === 'east' ? HALF + WALL.t / 2 : -HALF - WALL.t / 2;
+    for (const g of GATE_AT) for (let c = -n; c < n; c++) {
+      const u = g + (c + 0.5) * B; if (Math.abs(u - g) < GATE_W / 2 + B / 2) continue;   // the gate's gap
+      const col = Math.round((u - B / 2) / B);   // the block's column counted from the city's centre line, so the pattern joins the runs' beyond the span
+      for (let r = 0; r < rows; r++) { if (stoneAt(r, col) !== i) continue; out.push(along ? box(u, CITY_Y + r * B, at, B, B, WALL.t, { mat, role: side }) : box(at, CITY_Y + r * B, u, WALL.t, B, B, { mat, role: side })); }
+    }
+  }
+  return out;
+}
 export const PEARL = { w: 150, d: 56, h: 170, wayW: 72, wayH: 110 };   // the gate: one block of pearl across the wall's gap, standing proud of the wall and above it, the way cut through it (fieldy: "a gate that is pure pearl")
 /** A gate of one pearl (21:21): a gate of pearl set in the wall's gap, the way through it — with its malaak (angel) beside it (21:12). */
 function pearlGate(side, i) {
@@ -117,10 +131,10 @@ const gateWay = (side, i) => { const at = GATE_AT[i], along = side === 'north' |
 /** The city's floor of gold, in slabs whose corners fall on the gates and the throne (where the walker stands, the vertices are near — float32 keeps its precision). */
 function floor() { const L = [-HALF, GATE_AT[0], 0, GATE_AT[2], HALF], out = []; for (let i = 0; i < 4; i++) for (let k = 0; k < 4; k++) out.push(box((L[i] + L[i + 1]) / 2, CITY_Y - 1, (L[k] + L[k + 1]) / 2, L[i + 1] - L[i], 1, L[k + 1] - L[k], { mat: 'goldfloor', role: 'ground' })); return out; }
 /** The street of gold (21:21) from the throne to the east gate in the middle of the side, and on to the west; the river of the water of life in its midst (22:1–2). */
-function street() { const L = [-HALF, GATE_AT[0], 0, GATE_AT[2], HALF]; return L.slice(0, -1).map((a, i) => box((a + L[i + 1]) / 2, CITY_Y + 0.4, 0, L[i + 1] - a, 0.6, STREET_W, { mat: 'street', role: 'ground' })); }
+function street() { const L = [-HALF, GATE_AT[0], 0, GATE_AT[2], HALF]; return L.slice(0, -1).map((a, i) => box((a + L[i + 1]) / 2, CITY_Y - 0.98, 0, L[i + 1] - a, 1.0, STREET_W, { mat: 'street', role: 'ground' })); }   // its top a hair above the floor's: no one stands in it
 function river() {
-  const out = [box((150 + GATE_AT[2]) / 2, CITY_Y + 0.9, 0, GATE_AT[2] - 150, 0.5, RIVER_W, { mat: 'life', role: 'water' }), box((GATE_AT[2] + HALF - 150) / 2, CITY_Y + 0.9, 0, HALF - 150 - GATE_AT[2], 0.5, RIVER_W, { mat: 'life', role: 'water' })];   // from the throne's foot eastward to the gate
-  for (let d = 0; d < 6; d++) out.push(ideal(cyl(0, CITY_Y + 1.2, 0, 28 + d * 6, 0.4, { mat: 'life', role: 'water' })));   // the spring at the throne
+  const out = [box((150 + GATE_AT[2]) / 2, CITY_Y + 0.02, 0, GATE_AT[2] - 150, 0.3, RIVER_W, { mat: 'life', role: 'water' }), box((GATE_AT[2] + HALF - 150) / 2, CITY_Y + 0.02, 0, HALF - 150 - GATE_AT[2], 0.3, RIVER_W, { mat: 'life', role: 'water' })];   // from the throne's foot eastward to the gate
+  for (let d = 0; d < 6; d++) out.push(ideal(cyl(0, CITY_Y + 0.02 + d * 0.06, 0, 58 - d * 6, 0.3, { mat: 'life', role: 'water' })));   // the spring at the throne's foot, a shallow pool stepping up
   return out;
 }
 /** The tree of life on this side of the river and on that (22:2): along the river where the walker can be — from the throne, and in from the gate. */
@@ -135,7 +149,6 @@ function throne() {
   const out = [];
   for (let i = 0; i < 7; i++) out.push(ideal(cyl(0, CITY_Y + 1.6 + i * 2, 0, 120 - i * 12, 2, { mat: 'glory', role: 'dais' })));
   out.push(ideal(lathe(0, CITY_Y + 15.6, 0, [[0.1, 0], [18, 0], [16, 4], [14, 14], [20, 22], [22, 30], [12, 34], [0.1, 36]], { mat: 'glory', role: 'throne' })));
-  out.push(ideal(sphere(0, CITY_Y + 60, 0, 30, { mat: 'glory', role: 'glory', seg: 32 })));
   return out;
 }
 /** The gawayam (nations) walking in its light (21:24–26): in at the east gate, along the street, before the throne. */
@@ -170,7 +183,7 @@ export const PIECES = [
     note: '"{{Revelation 21:16 | width and height … thakan}}" — the city\'s body, as high as it is broad, drawn as gold one can see through.',
     elsewhere: { ref: 'Revelation 21:16', note: 'The measure of the city.' },
     assumed: 'A cube (a pyramid is also read).',
-    parts: [box(0, CITY_Y + WALL.h, 0, SIDE, SIDE - WALL.h, SIDE, { mat: 'goldglass' })],   // the body rests on the wall: through a gate one sees the street, not a face of gold
+    parts: [{ kind: 'shell', x: 0, y: CITY_Y + WALL.h, z: 0, w: SIDE, h: SIDE - WALL.h, d: SIDE, mat: 'goldglass' }],   // the body rests on the wall (through a gate one sees the street) and has no underside: solid gold from without, clear as glass from within — the sky over the street
   },
   {
     id: 'zahab', order: 1, group: 'city', material: 'goldfloor', raise: D('coming'), sheet: false,
@@ -188,7 +201,7 @@ export const PIECES = [
     tag: 'chawamah (wall) · 144 amah · yashapah (jasper)', title: 'A kabad (great) and ilay (high) wall of yashapah (jasper), achad (one) hundred forty-arabai (four) amah (cubits)',
     words: ['chawamah', 'yashapah', 'amah'], keys: ['wall', 'walls', 'yashapah', 'jasper', 'amah', 'cubits'],
     on: V('66:21:12', '66:21:17-18'), refs: 'Revelation 21:12, 17–18',
-    measures: [['its measure', '144 amah, by the measure of a man, that is, of an angel — drawn as its height', '21:17'], ['its stuff', 'jasper', '21:18'], ['its thickness', 'not measured — 24 here', 'assumed'], ['its foundations', 'twelve, the lower half of it, a stone each', '21:14, 19–20']],
+    measures: [['its measure', '144 amah, by the measure of a man, that is, of an angel — drawn as its height', '21:17'], ['its stuff', 'jasper', '21:18'], ['its thickness', 'not measured — 24 here', 'assumed'], ['its foundations', 'twelve stones through its lower half, set as the ephod\'s rows', '21:14, 19–20']],
     note: '"{{Revelation 21:17}}" — the one measure of the text that is in amah, and small against the city\'s stadia: a wall a hundred and forty-four high about a city four million wide; the model keeps both, so that from the gate the wall towers and from the mountain it is a line.',
     elsewhere: { ref: 'Ezekiel 40:5; 42:20; Zechariah 2:4–5; Isaiah 60:18', note: 'The reed of six cubits that measured Yachazaqaal\'s wall; the wall of the sanctuary five hundred round; a city with no wall, for Yahawah a wall of fire; walls called Salvation.' },
     assumed: 'That the hundred and forty-four is the height (it may be the thickness); the thickness.',
@@ -199,10 +212,10 @@ export const PIECES = [
     tag: `${ORD[i]} · ${en}`, title: `The ${ORD[i]} adanay (foundation): ${id === en ? en : `${id} (${en})`}`,
     words: ['adanay', 'aban'], keys: [id, en, ORD[i].split(' ')[0]],
     on: V(i < 4 ? '66:21:19' : '66:21:20', '66:21:14'), refs: `Revelation 21:${i < 4 ? 19 : 20}, 14`,
-    measures: [['which', `the ${ORD[i]} of twelve`, `21:${i < 4 ? 19 : 20}`], ['whose name', 'one of the twelve Apostles of the Lamb — which, the text does not say', '21:14'], ['its course', 'six amah high, round the whole city; the twelve together the lower half of the wall', 'assumed']],
-    note: `"{{Revelation 21:${i < 4 ? 19 : 20} | ${i === 0 ? 'The raashawan' : i === 4 ? 'the chamayashay' : ORD[i].split(' ')[0]} … ${en}}}" — the ${ORD[i]} course of the wall's foundation, drawn as one stone the whole way round in the stone's own colour, ${i === 0 ? 'the jasper the wall itself is built of' : i === 11 ? 'the last and highest, under the jasper' : 'one course above the last'}.`,
+    measures: [['which', `the ${ORD[i]} of twelve`, `21:${i < 4 ? 19 : 20}`], ['whose name', 'one of the twelve Apostles of the Lamb — which, the text does not say', '21:14'], ['its place', 'blocks of twelve amah in the lower half of the wall, the twelve stones set in four rows of three as on the ephod (Exodus 28:17–20), stepped on from tile to tile — a checker of the twelve round the whole city', 'assumed']],
+    note: `"{{Revelation 21:${i < 4 ? 19 : 20} | ${i === 0 ? 'The raashawan' : i === 4 ? 'the chamayashay' : ORD[i].split(' ')[0]} … ${en}}}" — the ${ORD[i]} of the twelve stones, its blocks set through the foundation of the wall in the ephod's order, ${i === 0 ? 'the jasper the wall itself is built of' : 'in its own colour'}.`,
     elsewhere: { ref: 'Exodus 28:17–21; Ezekiel 28:13; Isaiah 54:11–12', note: 'The twelve stones of the breastplate, a tribe\'s name on each; the stones of Eden\'s covering; foundations of sapphires and gates of carbuncles.' },
-    assumed: 'That the twelve foundations are twelve courses one on another (they may be twelve stones side by side, one under each gate); their height; the colours.',
+    assumed: 'That the twelve foundations are set through the wall\'s lower half in the ephod\'s rows (they may be twelve stones side by side, one under each gate); the blocks\' size; the colours.',
     idealized: 'The course.',
     parts: foundation(i),
   })),
@@ -347,7 +360,7 @@ export const DESCEND_CAMERA = [
   [STONE_FROM + 12 * STONE_EACH + 6, [10500000, 3600000, 10800000], [0, 1700000, 0]],   // the measuring: the cube whole
   [STONE_FROM + 12 * STONE_EACH + 22, [E - 400, 9, 40], [E - 3000, 6, 0]],            // the street of gold from inside the gate, westward
   [STONE_FROM + 12 * STONE_EACH + 34, [E + 300, 12, 90], [E - 200, 30, 0]],           // the east gate: the nations coming in
-  [STONE_FROM + 12 * STONE_EACH + 48, [E - 900, 14, 70], [E - 1500, 4, 0]],           // the river in the midst of the street, the trees either side
+  [STONE_FROM + 12 * STONE_EACH + 48, [E - 900, 16, 0], [E - 1600, 2, 0]],            // down the river in the midst of the street, the trees either side
   [STONE_FROM + 12 * STONE_EACH + 66, [620, 90, 460], [0, 40, 0]],                     // the throne
   [DESCEND_DURATION, [1600, 400, 1200], [0, 60, 0]],
 ];
@@ -378,6 +391,8 @@ export function progressAt(mode, piece, t) {
 }
 /** how far the city has come down: 1 = in heaven (the coming phase's start), 0 = on the earth */
 export function descentAt(mode, t) { if (mode !== 'descend') return 0; const a = T0.coming, b = T0.mountain; return 1 - smooth((t - a) / (b - a)); }
+/** where the measuring light is on its way round the city, 0 → 1 through the Measure phase (null outside it) */
+export function measureAt(mode, t) { if (mode !== 'descend') return null; const a = T0.measure, b = T0.gold; if (t < a || t >= b) return null; return (t - a) / (b - a); }
 export const CITY_IDS = PIECES.filter((p) => p.id !== 'aratz').map((p) => p.id);   // guph included: the body descends with the rest
 export function openAt() { return 1; }
 const MARK_LABELS = { descend: { newearth: 'aratz', coming: 'bawaa', mountain: 'har', light: 'awar', wall: 'chawamah', foundations: 'adanay', measure: 'madad', gold: 'zahab', 'gates-east': 'shair', river: 'nahar', throne: 'kasaa' } };
@@ -388,7 +403,7 @@ export function focusFor(id) {
   const F = {
     aratz: [[0, 0, -200000], 5000000], zahab: [[0, 1200000, 0], 9000000], chawamah: [[E, 80, G1 - 300], 900], rachab: [[E - 1200, 4, 0], 700], nahar: [[E - 700, 4, 0], 260], itz: [[E - 600, 12, 0], 220], kasaa: [[0, 40, 0], 480], gawayam: [[E - 300, 6, 0], 260],
   };
-  let m = /^yasawad-(\d+)$/.exec(id); if (m) return { target: [E, (+m[1] - 0.5) * WALL.found, G1 - 200], distance: 160 };
+  let m = /^yasawad-(\d+)$/.exec(id); if (m) return { target: [E, 36, G1 - 300], distance: 200 };
   m = /^gate-(\w+)-(\d)$/.exec(id);
   if (m) { const g = gateWay(m[1], +m[2]); return { target: [g.x, 70, g.z], distance: 480 }; }
   const f = F[id]; return f ? { target: f[0], distance: f[1] } : null;

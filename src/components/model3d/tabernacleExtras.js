@@ -27,7 +27,7 @@ const CLOUD_AT = 84, CAMP_AT = 91;               // the story's moments (RAISE_P
 const TENT = { x: (MISH.x0 + MISH.x1) / 2, z: 0, top: MISH.h + 1.2 };
 const clamp01 = (v) => Math.max(0, Math.min(1, v));
 
-function puffTexture() {
+export function puffTexture() {
   const c = document.createElement('canvas'); c.width = c.height = 64;
   const g = c.getContext('2d'), r = g.createRadialGradient(32, 32, 2, 32, 32, 30);
   r.addColorStop(0, 'rgba(255,255,255,0.9)'); r.addColorStop(0.45, 'rgba(255,255,255,0.35)'); r.addColorStop(1, 'rgba(255,255,255,0)');
@@ -38,7 +38,7 @@ let seed = 7; const rr = () => { seed = (seed * 1664525 + 1013904223) >>> 0; ret
 
 /** A column of smoke with fire in its root: points for the fire (additive, yellow to red) and for the smoke (soft grey) over a spot.
  *  `H` how high the smoke climbs, `R` how broad it grows; the fire reaches `fireH`. */
-function makeColumn(group, puff, { NF = 700, NS = 900, H = 46, R = 11, fireH = 15, base = 0, sizeF = 4.5, sizeS = 12 }) {
+export function makeColumn(group, puff, { NF = 700, NS = 900, H = 46, R = 11, fireH = 15, base = 0, sizeF = 4.5, sizeS = 12, hue = 0.11, sat = 1, lum = 0.58, glowCol = '#ffb257', lightCol = 0xffa64a }) {   // hue/sat/lum: the fire's colour (the glory over the throne of the Revelation is white-gold)
   const fireGeo = new THREE.BufferGeometry(), fp = new Float32Array(NF * 3), fc = new Float32Array(NF * 3), fseed = [];
   for (let i = 0; i < NF; i++) fseed.push(rr(), rr(), rr());
   fireGeo.setAttribute('position', new THREE.BufferAttribute(fp, 3)); fireGeo.setAttribute('color', new THREE.BufferAttribute(fc, 3));
@@ -49,9 +49,9 @@ function makeColumn(group, puff, { NF = 700, NS = 900, H = 46, R = 11, fireH = 1
   smokeGeo.setAttribute('position', new THREE.BufferAttribute(sp, 3));
   const smoke = new THREE.Points(smokeGeo, new THREE.PointsMaterial({ map: puff, color: new THREE.Color('#7d7268'), size: sizeS, transparent: true, opacity: 0, depthWrite: false }));
   smoke.frustumCulled = false; group.add(smoke);
-  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: puff, color: new THREE.Color('#ffb257'), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: puff, color: new THREE.Color(glowCol), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
   glow.scale.set(R * 2.4, R * 1.8, 1); group.add(glow);
-  const light = new THREE.PointLight(0xffa64a, 0, R * 11, 1.6); group.add(light);
+  const light = new THREE.PointLight(lightCol, 0, R * 11, 1.6); group.add(light);
   const col = new THREE.Color();
   /** lay the points for the moment `t` over (x, z): `kF` the fire's strength, `kS` the smoke's, `smokeCol` its colour */
   function burn(t, x, z, kF, kS, smokeCol) {
@@ -59,7 +59,7 @@ function makeColumn(group, puff, { NF = 700, NS = 900, H = 46, R = 11, fireH = 1
       const [a, b, c] = [fseed[i * 3], fseed[i * 3 + 1], fseed[i * 3 + 2]];
       const u = (t * (0.5 + c * 0.7) + a * 7) % 1, r = (R * 0.3) * (1 - u * 0.6), ang = b * Math.PI * 2 + t * 0.6;
       fp[i * 3] = x + Math.cos(ang) * r * (0.4 + a * 0.6); fp[i * 3 + 1] = base + 0.2 + u * fireH; fp[i * 3 + 2] = z + Math.sin(ang) * r * (0.4 + c * 0.6);
-      col.setHSL(0.11 - u * 0.09, 1, 0.58 - u * 0.3); fc[i * 3] = col.r; fc[i * 3 + 1] = col.g; fc[i * 3 + 2] = col.b;
+      col.setHSL(hue - u * 0.09 * sat, sat, lum - u * 0.3 * sat); fc[i * 3] = col.r; fc[i * 3 + 1] = col.g; fc[i * 3 + 2] = col.b;
     }
     fireGeo.attributes.position.needsUpdate = true; fireGeo.attributes.color.needsUpdate = true;
     for (let i = 0; i < NS; i++) {
