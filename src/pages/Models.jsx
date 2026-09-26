@@ -4,8 +4,11 @@
  * lazy route (see App.jsx); this page is just the catalogue, so adding a
  * model is one entry in MODELS below plus its route.
  *
- * Route: /models
+ * Route: /models — a catalogue with three views (posters: a thumbnail with the paleo name and the title, like a film app;
+ * a list: one row a model, its stories as links; cards: the full blurbs) and a search box, for when the list is long.
+ * Thumbnails: public/model-thumbs/<slug>.jpg (a frame of the model, 800 × 500).
  */
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import './Models.css';
@@ -132,20 +135,85 @@ export const MODELS = [
   },
 ];
 
+
+const VIEWS = [['posters', 'Posters'], ['list', 'List'], ['cards', 'Cards']];
+const norm = (t) => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+/** every word of a model's text, for the search */
+const haystack = (m) => norm([m.title, m.kicker, m.blurb, m.slug, ...(m.tags || []), ...(m.quick || []).map((q) => q.label)].join(' '));
+
+function Thumb({ m }) {
+  const [broken, setBroken] = useState(false);
+  return (
+    <span className={`models-thumb${broken ? ' models-thumb-none' : ''}`} aria-hidden="true">
+      {!broken && <img src={`/model-thumbs/${m.slug}.jpg`} alt="" loading="lazy" onError={() => setBroken(true)} />}
+      <span className="models-thumb-paleo">{m.paleo}</span>
+    </span>
+  );
+}
+
 export default function Models() {
-  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, and the tzalam (likeness) of Daniel 2 with the aban (stone) gazar (cut) out laa (without) yadayan (hands), the bayath (house) Shalamah (Solomon) built for Yahawah, measured from 1 Kings 6–7, the house Yachazaqaal (Ezekiel) saw, and the mashakan (tabernacle) with its camp.');
+  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, the tzalam (likeness) of Daniel 2, the bayath (house) Shalamah (Solomon) built for Yahawah, the house and the city Yachazaqaal (Ezekiel) saw, the mashakan (tabernacle) with its camp, and the city coming down out of heaven.');
+  const [view, setView] = useState(() => { try { return localStorage.getItem('models-view') || 'posters'; } catch { return 'posters'; } });
+  const [q, setQ] = useState('');
+  useEffect(() => { try { localStorage.setItem('models-view', view); } catch { /* private mode */ } }, [view]);
+  const words = norm(q).split(/\s+/).filter(Boolean);
+  const shown = useMemo(() => (words.length ? MODELS.filter((m) => { const h = haystack(m); return words.every((w) => h.includes(w)); }) : MODELS), [words.join(' ')]);
   return (
     <div className="models-page">
       <header className="models-top">
         <Link to="/landing" className="models-back" title="Home">←</Link>
         <h1 className="models-h1">Maps &amp; Models</h1>
-        <span className="models-count">{MODELS.length} model{MODELS.length === 1 ? '' : 's'}</span>
+        <span className="models-count">{words.length ? `${shown.length} of ${MODELS.length}` : `${MODELS.length} model${MODELS.length === 1 ? '' : 's'}`}</span>
       </header>
       <p className="models-intro">
         Visual and three-dimensional renderings built from the text — maps, layouts and structures described in scripture, drawn to scale where the text gives measurements and idealized where it gives landmarks. More will be added here over time.
       </p>
+      <div className="models-bar">
+        <label className="models-search">
+          <span aria-hidden="true">⌕</span>
+          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search — Ezekiel, gate, tabernacle, Revelation 21…" aria-label="Search the models" />
+          {q && <button type="button" className="models-search-x" onClick={() => setQ('')} aria-label="Clear">×</button>}
+        </label>
+        <div className="models-views" role="tablist" aria-label="View">
+          {VIEWS.map(([k, label]) => <button key={k} type="button" role="tab" aria-selected={view === k} className={`models-view${view === k ? ' on' : ''}`} onClick={() => setView(k)}>{label}</button>)}
+        </div>
+      </div>
+      {!shown.length && <p className="models-none">Nothing here for “{q}” — try a book, a word from the text, or a part (gate, altar, ark).</p>}
+
+      {view === 'posters' && (
+        <div className="models-posters">
+          {shown.map((m) => (
+            <Link key={m.slug} to={m.to} className="models-poster" title={m.title}>
+              <Thumb m={m} />
+              <span className="models-poster-text">
+                <span className="models-poster-kicker">{m.kicker}</span>
+                <span className="models-poster-title">{m.title}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {view === 'list' && (
+        <div className="models-list" role="list">
+          {shown.map((m) => (
+            <div key={m.slug} className="models-row" role="listitem">
+              <Link to={m.to} className="models-row-paleo" aria-hidden="true">{m.paleo}</Link>
+              <div className="models-row-main">
+                <Link to={m.to} className="models-row-title">{m.title}</Link>
+                <span className="models-row-kicker">{m.kicker}</span>
+                <span className="models-row-links">{m.quick.map((qk) => <Link key={qk.to} to={qk.to}>{qk.label}</Link>)}</span>
+              </div>
+              <div className="models-row-tags">{m.tags.map((t) => <span key={t}>{t}</span>)}</div>
+              <Link to={m.to} className="models-row-open">Open →</Link>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {view === 'cards' && (
       <div className="models-grid">
-        {MODELS.map((m) => (
+        {shown.map((m) => (
           <article key={m.slug} className="models-card">
             <Link to={m.to} className="models-card-hero">
               <span className="models-card-paleo" aria-hidden="true">{m.paleo}</span>
@@ -160,12 +228,15 @@ export default function Models() {
             </div>
           </article>
         ))}
+        {!words.length && (
         <div className="models-card models-card-soon">
           <span className="models-card-kicker">Coming</span>
           <span className="models-card-title">More models</span>
           <p className="models-card-blurb">Future renderings — Noah's thabah (ark) and the flood, the tower of Babel, the camp on the march, the three in the furnace, Daniel in the lions' den — will appear here as they're built.</p>
         </div>
+        )}
       </div>
+      )}
     </div>
   );
 }

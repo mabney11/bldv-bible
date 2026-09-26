@@ -51,3 +51,58 @@
 .models-card-q:hover { text-decoration: underline; }
 .models-card-soon { padding: 26px 18px 18px; gap: 4px; opacity: 0.6; border-style: dashed; }
 .models-card-soon .models-card-blurb { padding: 10px 0 0; }
+
+/* ── the catalogue's bar: search, and the three views ─────────────────────── */
+.models-bar { max-width: 1000px; margin: 14px auto 0; padding: 0 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.models-search { flex: 1 1 260px; display: flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid var(--border2); border-radius: 999px; background: var(--bg2); color: var(--text3); }
+.models-search:focus-within { border-color: var(--gold); }
+.models-search span { font-size: 16px; line-height: 1; }
+.models-search input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--text); font: inherit; font-size: 14px; }
+.models-search input::placeholder { color: var(--text4); }
+.models-search-x { background: transparent; border: 0; color: var(--text3); font-size: 18px; line-height: 1; cursor: pointer; padding: 0 2px; }
+.models-search-x:hover { color: var(--gold); }
+.models-views { display: flex; border: 1px solid var(--border2); border-radius: 999px; overflow: hidden; background: var(--bg2); }
+.models-view { font: inherit; font-size: 12.5px; font-weight: 600; padding: 7px 14px; background: transparent; border: 0; color: var(--text3); cursor: pointer; }
+.models-view + .models-view { border-left: 1px solid var(--border2); }
+.models-view:hover { color: var(--text); }
+.models-view.on { background: var(--gold); color: #1a1408; }
+.models-none { max-width: 1000px; margin: 30px auto; padding: 0 20px; color: var(--text3); font-size: 14px; }
+
+/* ── posters: a thumbnail, the paleo name over it, the title beneath (a film app's shelf) ── */
+.models-posters { max-width: 1000px; margin: 18px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px 16px; }
+.models-poster { display: flex; flex-direction: column; gap: 8px; color: var(--text); border-radius: 12px; }
+.models-poster:hover .models-poster-title { color: var(--gold); }
+.models-poster:hover .models-thumb { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), 0 0 0 1px color-mix(in srgb, var(--gold) 45%, transparent); }
+.models-thumb { position: relative; display: block; aspect-ratio: 8 / 5; border-radius: 12px; overflow: hidden; background: radial-gradient(120% 90% at 20% 0%, color-mix(in srgb, var(--gold) 22%, var(--bg3)), var(--bg3) 70%); border: 1px solid var(--border2); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); transition: transform 0.15s, box-shadow 0.15s; }
+.models-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.models-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 8, 4, 0) 45%, rgba(10, 8, 4, 0.78) 100%); pointer-events: none; }
+.models-thumb-paleo { position: absolute; left: 12px; bottom: 9px; z-index: 1; font-family: var(--paleo-font); font-size: 30px; line-height: 1; color: var(--gold); letter-spacing: -1px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8); }
+.models-thumb-none .models-thumb-paleo { left: 50%; top: 50%; bottom: auto; transform: translate(-50%, -50%); font-size: 40px; }
+.models-poster-text { display: flex; flex-direction: column; gap: 2px; padding: 0 2px; }
+.models-poster-kicker { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); }
+.models-poster-title { font-size: 15px; font-weight: 700; line-height: 1.25; transition: color 0.15s; }
+
+/* ── the list: one row a model — the paleo, the title and its stories, the refs, Open ── */
+.models-list { max-width: 1000px; margin: 18px auto; padding: 0 20px; display: flex; flex-direction: column; }
+.models-row { display: grid; grid-template-columns: 96px 1fr auto auto; gap: 8px 16px; align-items: center; padding: 12px 6px; border-top: 1px solid var(--border); }
+.models-row:last-child { border-bottom: 1px solid var(--border); }
+.models-row:hover { background: color-mix(in srgb, var(--bg2) 60%, transparent); }
+.models-row-paleo { font-family: var(--paleo-font); font-size: 20px; color: var(--gold); letter-spacing: -1px; line-height: 1.1; word-break: break-all; }
+.models-row-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.models-row-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.models-row-title:hover { color: var(--gold); }
+.models-row-kicker { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); }
+.models-row-links { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; }
+.models-row-links a { color: var(--blue); }
+.models-row-links a:hover { text-decoration: underline; }
+.models-row-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; max-width: 240px; }
+.models-row-tags span { font-size: 11px; padding: 3px 8px; border-radius: 10px; border: 1px solid var(--border2); color: var(--text3); white-space: nowrap; }
+.models-row-open { background: var(--blue2); color: #fff; padding: 7px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.models-row-open:hover { background: var(--blue); }
+@media (max-width: 720px) {
+  .models-row { grid-template-columns: 1fr auto; }
+  .models-row-paleo { display: none; }
+  .models-row-tags { grid-column: 1 / -1; justify-content: flex-start; max-width: none; }
+  .models-posters { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px 12px; }
+  .models-thumb-paleo { font-size: 24px; }
+}
