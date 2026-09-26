@@ -87,6 +87,21 @@ export const MODELS = [
     ],
   },
   {
+    slug: 'ezekiel-city',
+    title: 'The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion',
+    kicker: 'Interactive 3D model · Ezekiel 45 · 47 · 48',
+    blurb: 'The iyar (city) of Ezekiel 48 and the qadash (holy) tharawamah (portion) it stands in, measured in amah (cubits) from the text: the portion twenty-five alap (thousand) square with the kahanayam (priests)\' strip and the bayath (house) — the house model itself — in its midst, the Lawayay (Levites)\' strip and the city\'s; the city four thousand five hundred a side with its magarash (open land) and twelve shairayam (gates) named for the shabatay (tribes); the nashayaa (prince)\'s land, the tribes\' strips north and south, and the nachal (river) from the house. Lay it out from above, or walk the city on your own feet.',
+    paleo: '𐤉𐤄𐤅𐤄 𐤔𐤌𐤄',
+    tags: ['Ezekiel 45 · 47 · 48', '3D · plan & section', 'Portion · City · On foot'],
+    to: '/models/ezekiel-city',
+    quick: [
+      { label: 'Portion — the land divided, from above', to: '/models/ezekiel-city/portion' },
+      { label: 'City — the wall and the twelve gates', to: '/models/ezekiel-city/city' },
+      { label: 'Walk its streets on your own feet', to: '/models/ezekiel-city/roam' },
+      { label: 'The nachal (river) from the house — Ezekiel 47:1–12', to: '/models/ezekiel-city/portion?piece=nachal' },
+    ],
+  },
+  {
     slug: 'prints',
     title: 'Printable Maps',
     kicker: 'Downloadable map sheets',
@@ -133,7 +148,7 @@ export default function Models() {
         <div className="models-card models-card-soon">
           <span className="models-card-kicker">Coming</span>
           <span className="models-card-title">More models</span>
-          <p className="models-card-blurb">Future renderings — the city of Ezekiel 48 with its twelve gates, the city that comes down (Revelation 21) — will appear here as they're built.</p>
+          <p className="models-card-blurb">Future renderings — the city that comes down (Revelation 21–22), Noah's thabah (ark) and the flood, the tower of Babel, the camp on the march — will appear here as they're built.</p>
         </div>
       </div>
     </div>

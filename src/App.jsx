@@ -48,6 +48,8 @@ const Ezekiel          = lazy(() => import('./pages/Ezekiel.jsx'));
 const EzekielIndex     = lazy(() => import('./pages/EzekielIndex.jsx'));
 const Tabernacle       = lazy(() => import('./pages/Tabernacle.jsx'));
 const TabernacleIndex  = lazy(() => import('./pages/TabernacleIndex.jsx'));
+const EzekielCity      = lazy(() => import('./pages/EzekielCity.jsx'));
+const EzekielCityIndex = lazy(() => import('./pages/EzekielCityIndex.jsx'));
 const Passages         = lazy(() => import('./pages/Passages.jsx'));
 const Passage          = lazy(() => import('./pages/Passage.jsx'));
 
@@ -344,6 +346,8 @@ export default function App() {
         <Route path="/models/ezekiel/:story" element={<Ezekiel />} />
         <Route path="/models/tabernacle"  element={<TabernacleIndex />} />
         <Route path="/models/tabernacle/:story" element={<Tabernacle />} />
+        <Route path="/models/ezekiel-city"  element={<EzekielCityIndex />} />
+        <Route path="/models/ezekiel-city/:story" element={<EzekielCity />} />
         <Route path="/precepts"       element={<PreceptStudio />} />
         <Route path="/passages"       element={<Passages />} />
         <Route path="/passage"        element={<Passage />} />

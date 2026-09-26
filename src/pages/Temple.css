@@ -117,3 +117,7 @@
 .tp-mapbar span { font-weight: 700; color: #ffd97a; }
 .tp-mapbar button { font: inherit; font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid rgba(255, 208, 98, 0.5); background: transparent; color: #ffd97a; cursor: pointer; }
 .tp-goto[hidden], .tp-autobar[hidden], .tp-mapbar[hidden] { display: none !important; }
+
+/* a model that stands in another's story (the house in the holy portion; the portion around the house) */
+.tp-index-related { margin-top: 18px; font-size: 14px; }
+.tp-index-related .models-card-q { margin-left: 6px; }

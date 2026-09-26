@@ -52,6 +52,11 @@ export default function ModelIndex({ model }) {
           );
         })}
       </div>
+      {model.related?.length > 0 && (
+        <p className="models-intro tp-index-related">
+          {model.related.map((r, i) => <span key={r.to}>{i > 0 ? ' · ' : ''}<Glossed text={r.note} /> <Link to={r.to} className="models-card-q">{r.label}</Link></span>)}
+        </p>
+      )}
     </div>
   );
 }

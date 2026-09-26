@@ -33,9 +33,10 @@ import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { SKY, XRAY_GROUPS, makeMaterials, loadPhotos, buildPiece, cutGates, loadGlb, fitSlot, personFigure, exportGlb, PieceBuilder } from './model3d/builders.js';
 import { templeExtras } from './model3d/templeExtras.js';
 import { tabernacleExtras } from './model3d/tabernacleExtras.js';
+import { cityExtras } from './model3d/cityExtras.js';
 
 /** A model's own actors, by the name its MODEL.scene.extras gives (a function is taken as is). */
-const EXTRAS = { temple: templeExtras, tabernacle: tabernacleExtras };
+const EXTRAS = { temple: templeExtras, tabernacle: tabernacleExtras, city: cityExtras };
 
 /** Where the viewer last stood on foot (position, yaw, pitch) — kept while the page lives, so opening a card, a re-mount or a
  *  switch of view never sends them back to the gate ("don't move me back to the beginning"). */
@@ -66,7 +67,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const STORE = `${model.id}-roam`;
     let ROAM_MEMO = readMemo(model.id);
     let renderer;
-    try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' }); }
+    try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance', logarithmicDepthBuffer: !!SC.logDepth }); }   // a model tens of thousands of cubits across (the holy portion) needs the logarithmic depth buffer, or its flat strips fight the plain at a distance
     catch (e) { onReady?.(false, e); return undefined; }
     const small = Math.min(window.innerWidth, window.innerHeight) < 700;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2));
@@ -80,7 +81,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const pmrem = new THREE.PMREMGenerator(renderer);
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; pmrem.dispose();
 
-    const camera = new THREE.PerspectiveCamera(42, 1, 0.4, 6000);
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.4, SC.far || 6000);   // a model may push the far plane out (the holy portion is 25,000 cubits square)
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true; controls.dampingFactor = 0.08; controls.enablePan = true; controls.screenSpacePanning = false;
     controls.minDistance = 2; controls.maxDistance = SC.maxDistance || 900; controls.maxPolarAngle = Math.PI - 0.02;   // tilt as far as you like — looking up from the floor included
@@ -102,11 +103,11 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const world = new THREE.Group(); scene.add(world);
     const M = makeMaterials(model.MATERIALS);
     if (SC.earth) M.earth.color.set(SC.earth);   // the plain the model stands on, in the model's own tone
-    M.earth.map.repeat.set(2800 / 16, 2800 / 16);   // the plain's mottle at 16 cubits a tile over the whole disc
+    M.earth.map.repeat.set((2 * (SC.plainR || 1400)) / 16, (2 * (SC.plainR || 1400)) / 16);   // the plain's mottle at 16 cubits a tile over the whole disc
     loadPhotos(M, () => { dirty = true; });
 
     // The mount: a wide plain fading into the haze; the courts lay their own ground.
-    const ground = new THREE.Mesh(new THREE.CircleGeometry(1400, 96), M.earth);
+    const ground = new THREE.Mesh(new THREE.CircleGeometry(SC.plainR || 1400, 96), M.earth);
     ground.rotation.x = -Math.PI / 2; ground.position.y = GROUND - (SC.plainDrop ?? 0.6);   // the plain a little under the model's ground (the temple's foundation shows); the mashakan's tents stand on it
     ground.receiveShadow = true; world.add(ground);
 
@@ -115,6 +116,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const doorSets = [], veilSets = [], lampLights = [];
     for (const piece of PIECES) {
       const g = buildPiece(M, cutGates(piece), GROUND, SC.xrayGroups);
+      if (piece.offset) g.position.set(...piece.offset);   // a piece drawn in another model's frame, set down elsewhere (the house standing in the holy portion)
       groups.set(piece.id, g); world.add(g);
       if (g.userData.doors) doorSets.push(...g.userData.doors);
       if (g.userData.veil) veilSets.push(...g.userData.veil);
@@ -271,7 +273,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       }
     }
     // a gate's open leaves stand swung back along the jambs, still a little into the passage: the route keeps to its middle
-    for (const piece of PIECES) for (const gate of piece.gates || []) {
+    for (const piece of PIECES) for (const gate of (piece.modes && !piece.modes.includes('roam')) ? [] : piece.gates || []) {   // a story-only piece (the house set down in the portion) has no doors on foot
       addDoor({ x: gate.x, z: gate.z, axis: gate.axis, w: gate.w, t: gate.t ?? 1, y: gate.y ?? GROUND });
       if (gate.leaves === false) continue;
       const gy = gate.y ?? GROUND, along = gate.axis === 'x', L = 2.6, D = 2.2;
@@ -291,17 +293,18 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     // ── The route finder: a grid of one-cubit cells over the model, a height field of what can be stood on, and every wall that
     // stands at that height a block; A* between cells (a climb of more than a step is not a way; a drop is, but costs), then the
     // corners pulled straight. Built the first time a place is asked for.
-    const STEP_MAX = 2.4, NAV_PAD = 0.8;   // a wall's margin on the grid: a three-cubit doorway must stay a way through
+    const STEP_MAX = 2.4, NAV_PAD = 0.8, CS = SC.navCell || 1;   // CS: the grid's cell in cubits — 1 for a house, more for a city (Yachazaqaal's iyar is 4,500 square: a cubit grid would be twenty million cells)   // a wall's margin on the grid: a three-cubit doorway must stay a way through
     let nav = null;
     const levelNavs = new Map();   // the grids of the upper storeys, by floor height (built when first stood on)
     /** the grid of the ground (level null), or of an upper storey at `level`: there only what stands at that height is floor — a
      *  gallery's slab, the top steps of its flight — and where nothing does (the well, the flight's opening) is void */
     function buildNav(level = null) {
-      const x0 = Math.floor(EXT.x0), z0 = Math.floor(EXT.z0), W = Math.ceil(EXT.x1) - x0 + 1, Hn = Math.ceil(EXT.z1) - z0 + 1;
+      // a coarse grid is shifted half a cell, so that cell CENTRES fall on the round coordinates a model's gates sit on (the city's at 0, ±1,500)
+      const x0 = Math.floor(EXT.x0 / CS) * CS - (CS > 1 ? CS / 2 : 0), z0 = Math.floor(EXT.z0 / CS) * CS - (CS > 1 ? CS / 2 : 0), W = Math.ceil((EXT.x1 - x0) / CS) + 1, Hn = Math.ceil((EXT.z1 - z0) / CS) + 1;
       const H = new Float32Array(W * Hn).fill(level ?? GROUND), block = new Uint8Array(W * Hn);
       if (level != null) block.fill(1);
       // every cell whose CENTRE lies in [ax0, ax1] × [az0, az1] (a cell i covers x0 + i … x0 + i + 1)
-      const cells = (ax0, ax1, az0, az1, fn) => { const i0 = Math.max(0, Math.floor(ax0 - x0)), i1 = Math.min(W - 1, Math.ceil(ax1 - x0)), j0 = Math.max(0, Math.floor(az0 - z0)), j1 = Math.min(Hn - 1, Math.ceil(az1 - z0)); for (let j = j0; j <= j1; j++) { const cz = z0 + j + 0.5; if (cz < az0 || cz > az1) continue; for (let i = i0; i <= i1; i++) { const cx = x0 + i + 0.5; if (cx < ax0 || cx > ax1) continue; fn(j * W + i, cx, cz); } } };
+      const cells = (ax0, ax1, az0, az1, fn) => { const i0 = Math.max(0, Math.floor((ax0 - x0) / CS)), i1 = Math.min(W - 1, Math.ceil((ax1 - x0) / CS)), j0 = Math.max(0, Math.floor((az0 - z0) / CS)), j1 = Math.min(Hn - 1, Math.ceil((az1 - z0) / CS)); for (let j = j0; j <= j1; j++) { const cz = z0 + (j + 0.5) * CS; if (cz < az0 || cz > az1) continue; for (let i = i0; i <= i1; i++) { const cx = x0 + (i + 0.5) * CS; if (cx < ax0 || cx > ax1) continue; fn(j * W + i, cx, cz); } } };
       if (level == null) for (const w of navWalk) cells(w.x0, w.x1, w.z0, w.z1, (k) => { if (w.top > H[k]) H[k] = w.top; });
       else for (const w of [...navWalk, ...navUpper]) { if (Math.abs(w.top - level) > 0.8) continue; cells(w.x0, w.x1, w.z0, w.z1, (k) => { block[k] = 0; H[k] = w.top; }); }
       for (const r of [...navObs, ...SC.plan.extra]) {
@@ -323,7 +326,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     }
     /** run `fn` with the route finder on an upper storey's grid */
     function onLevel(level, fn) { const key = Math.round(level * 2) / 2; if (!levelNavs.has(key)) buildNav(key); const saved = nav; nav = levelNavs.get(key); try { return fn(); } finally { nav = saved; } }
-    const cellOf = (x, z) => [Math.floor(x - nav.x0), Math.floor(z - nav.z0)];
+    const cellOf = (x, z) => [Math.floor((x - nav.x0) / CS), Math.floor((z - nav.z0) / CS)];
     const inNav = (i, j) => i >= 0 && j >= 0 && i < nav.W && j < nav.Hn;
     /** may the feet go from cell a to cell b (a step up at most, any way down) */
     function passable(a, b) { if (nav.block[b]) return false; return nav.H[b] - nav.H[a] <= STEP_MAX; }
@@ -363,7 +366,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       const kept = [cellsOut[0]]; let anchor = 0;
       for (let k = 2; k < cellsOut.length; k++) if (!clear(cellsOut[anchor], cellsOut[k])) { kept.push(cellsOut[k - 1]); anchor = k - 1; }
       if (cellsOut.length > 1) kept.push(cellsOut[cellsOut.length - 1]);
-      return kept.map((c) => [nav.x0 + (c % W) + 0.5, nav.z0 + ((c / W) | 0) + 0.5]);
+      return kept.map((c) => [nav.x0 + ((c % W) + 0.5) * CS, nav.z0 + (((c / W) | 0) + 0.5) * CS]);
     }
     /**
      * The route, taken through every doorway and gate on it squarely: the way is found, the doors it passes are read off it in
@@ -438,7 +441,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
             if (!L.block[n]) { if (!seen[n]) { seen[n] = 1; q.push(n); } continue; }
             // a void cell of this floor: a drop if the ground beneath is open, clear of walls, and well below
             if (G.block[n] || G.clear[n] < 2 || G.H[n] > level - 1.5) continue;
-            const ex = L.x0 + ci + 0.5, ez = L.z0 + cj + 0.5, vx = L.x0 + ni + 0.5, vz = L.z0 + nj + 0.5;
+            const ex = L.x0 + (ci + 0.5) * CS, ez = L.z0 + (cj + 0.5) * CS, vx = L.x0 + (ni + 0.5) * CS, vz = L.z0 + (nj + 0.5) * CS;
             if (navUpper.some((u) => u.top < level - 0.5 && u.top > G.H[n] + 0.5 && vx > u.x0 && vx < u.x1 && vz > u.z0 && vz < u.z1)) continue;   // a lower floor lies under this opening: not the ground yet
             return { edge: [ex, ez], off: [ex + di * 1.6, ez + dj * 1.6], ground: G.H[n] };
           }

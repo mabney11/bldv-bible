@@ -1215,6 +1215,26 @@ const STATIC_PAGES = {
     description: 'Roam the mashakan (tabernacle) and its camp on your own feet — through the screen of the shair (gate), past the mazabach (altar) and the basin, into the tent to the shalachan (table), the manawarah (lampstand) and, past the parakath (veil), the arawan (ark); or out among the tents of the Lawayay (Levites) and the twelve; tap any part for its measures and verses.',
     heading: 'Roam — The Mashakan (Tabernacle) and Its Machanah (Camp)',
   },
+  '/models/ezekiel-city': {
+    title: `The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion | ${BRAND}`,
+    description: 'The city of Ezekiel 48 and the holy portion of Ezekiel 45 and 48 as an interactive 3D model measured in cubits from the text, with the house model standing in its place — lay out the portion from above, or walk the city and its twelve gates on your own feet.',
+    heading: 'The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion',
+  },
+  '/models/ezekiel-city/portion': {
+    title: `Portion — The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion | ${BRAND}`,
+    description: 'The holy portion of Ezekiel 45 and 48 laid out from above on the 3D model: the priests\' strip with the house in its midst, the Levites\' strip, the city\'s strip with the city and its fields, the prince\'s land, the tribes\' portions north and south, and the river from the house (Ezekiel 47).',
+    heading: 'Portion — The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion',
+  },
+  '/models/ezekiel-city/city': {
+    title: `City — The Iyar (City) Yachazaqaal (Ezekiel) Saw | ${BRAND}`,
+    description: 'The city of Ezekiel 48 measured on the 3D model as the text measures it — four thousand five hundred a side, two hundred and fifty of open land about it, and its twelve gates named for the tribes, three to a side, in the text\'s order.',
+    heading: 'City — The Iyar (City) Yachazaqaal (Ezekiel) Saw',
+  },
+  '/models/ezekiel-city/roam': {
+    title: `Roam — The Iyar (City) Yachazaqaal (Ezekiel) Saw | ${BRAND}`,
+    description: 'Walk the city of Ezekiel 48 on your own feet — in at any of the twelve gates named for the tribes, down its streets to the square in the midst, out to the open land and the fields.',
+    heading: 'Roam — The Iyar (City) Yachazaqaal (Ezekiel) Saw',
+  },
   '/guide': {
     title: `Guide | ${BRAND}`,
     description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, the Lexicon and the Translation Studio.',

@@ -121,7 +121,7 @@ const pave = (...a) => paving(...a).map((b) => ({ ...b, ideal: false }));   // a
  *   threshold 6 (40:6) · rooms 6 × 6, three a side, 5 between (40:7, 10, 12) · threshold 6 (40:7) · porch 8 (40:9) · posts 2 (40:9)
  *   = 50 (40:15); across: passage 10 (40:11) + rooms 6 + 6 + walls 1½ = 25 (40:13)
  */
-function gatehouse(axis, outer, dir, mid, y, flip = false, stepsOut = 7, stepRise = 0.5) {
+export function gatehouse(axis, outer, dir, mid, y, flip = false, stepsOut = 7, stepRise = 0.5) {
   const { len, w, pass, room, gap, sill, porch, post, h, postH, wallT } = GATE;
   const U = (u) => (flip ? len - u : u);
   // a box from local (u0…u1) × (v0…v1), bottom yy, hh high
@@ -804,6 +804,7 @@ export const MODEL = {
   WORDS, MATERIALS, PIECES, GROUPS, MODES, SPEEDS, CHIP_ORDER, PASSAGES, STORIES,
   pieceById, pieceForWord, passagesFor, refsFor, phaseAt, progressAt, xrayAt, openAt, cameraAt, marksFor, focusFor,
   stories: STORIES,
+  related: [{ label: 'Open the city and the portion →', to: '/models/ezekiel-city', note: 'This house stands in the thawak (midst) of the kahanayam (priests)\' strip of the qadash (holy) tharawamah (portion), with the iyar (city) of the twelve shairayam (gates) south of it (Ezekiel 45; 48) — laid out at scale in its own model.' }],
   card: {
     title: 'The bayath (house) Yachazaqaal (Ezekiel) raah (saw) on the gabah (high) har (mountain)',
     subtitle: () => 'Ezekiel 40–43',

@@ -50,6 +50,7 @@ const SECTIONS = [
       { to: '/models/temple', label: 'The Bayath (House) of Yahawah (1 Kings 6–7)' },
       { to: '/models/ezekiel', label: 'The Bayath (House) Yachazaqaal (Ezekiel) Saw (Ezekiel 40–43)' },
       { to: '/models/tabernacle', label: 'The Mashakan (Tabernacle) and Its Machanah (Camp) (Exodus 25–27, 40 · Numbers 2)' },
+      { to: '/models/ezekiel-city', label: 'The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion (Ezekiel 45 · 47 · 48)' },
       { to: '/models/prints', label: 'Printable map sheets (PNG · SVG · PDF)' },
       { to: '/models', label: 'All models' },
     ],
