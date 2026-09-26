@@ -4,5 +4,8 @@
   "𐤔𐤋𐤉𐤇𐤉": ["𐤔𐤋𐤉𐤇", "𐤉"],
   "𐤋𐤔𐤋𐤉𐤇𐤉": ["𐤋", "𐤔𐤋𐤉𐤇", "𐤉"],
   "𐤊𐤔𐤋𐤉𐤇𐤉": ["𐤊", "𐤔𐤋𐤉𐤇", "𐤉"],
-  "𐤅𐤋𐤔𐤋𐤉𐤇𐤉": ["𐤅", "𐤋", "𐤔𐤋𐤉𐤇", "𐤉"]
+  "𐤅𐤋𐤔𐤋𐤉𐤇𐤉": ["𐤅", "𐤋", "𐤔𐤋𐤉𐤇", "𐤉"],
+  "_lemma_shape": "{sn, pos, morph} = the whole written word is this Strong's lemma (accepted only if the dictionary lemma's consonants spell the word exactly). Candidates come from scripts' heb-reading-audit (lemma_conflicts): NT words resolved by gluing two OT words together although the word itself is a dictionary lemma.",
+  "𐤉𐤔𐤐𐤄": {"sn": "H3471", "pos": "subs", "morph": "sp=subs|pdp=subs|gn=m|nu=sg|st=a|prs=absent|uvf=absent"},
+  "𐤌𐤋𐤊𐤉𐤑𐤃𐤒": {"sn": "H4442", "pos": "nmpr", "morph": "sp=nmpr|pdp=nmpr"}
 }
