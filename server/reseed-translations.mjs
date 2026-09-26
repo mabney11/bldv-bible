@@ -27,10 +27,17 @@
 import { existsSync } from 'node:fs';
 const die = m => { console.error('\u2717 '+m); process.exit(1); };
 let Database; try{({default:Database}=await import('better-sqlite3'));}catch{die('run from server/');}
-for(const f of['./corpus.db','./translation.db']) if(!existsSync(f)) die(f+' not found');
+// Paths: default ./corpus.db ./translation.db; or pass both (prod: run in the image
+// against the data volume — `node reseed-translations.mjs /data/corpus.db /data/translation.db`,
+// which rebake.sh does after pushing corpus.db, because local translation.db is
+// REPLACED by prod's on every server start (sync-from-prod.cjs): a local-only
+// reseed never reaches the reader).
+const _args = process.argv.slice(2).filter(a => !a.startsWith('--'));
+const CORPUS_DB = _args[0] || './corpus.db', TRANS_DB = _args[1] || './translation.db';
+for(const f of[CORPUS_DB, TRANS_DB]) if(!existsSync(f)) die(f+' not found');
 
-const src = new Database('./corpus.db', { readonly: true });
-const tdb = new Database('./translation.db');
+const src = new Database(CORPUS_DB, { readonly: true });
+const tdb = new Database(TRANS_DB);
 tdb.pragma('journal_mode=WAL');
 
 // Find canon_ids for non-OT ENG books. MUST use canon_id, not verses.book_id/
@@ -56,8 +63,10 @@ console.log(`non-OT ENG verses in corpus.db: ${rows.length.toLocaleString()}`);
 if (!rows.length) { console.log('\u2717 No non-OT verses found in corpus.db — run reingest-apocrypha.mjs first'); tdb.close(); process.exit(1); }
 
 // Clear apocrypha rows by canon_id range (> 66), leaving OT 1-39 and NT 40-66 intact.
-const n_del = tdb.prepare('DELETE FROM translations WHERE book_id > 66').run().changes;
-console.log(`Cleared ${n_del} stale apocrypha rows (canon_id > 66)`);
+// 2026-09-26: only UNTOUCHED rows (status='none' AND rich_text='') — this used to clear
+// every apocrypha row, which would destroy saved Studio work now that it runs on prod.
+const n_del = tdb.prepare(`DELETE FROM translations WHERE book_id > 66 AND status = 'none' AND rich_text = ''`).run().changes;
+console.log(`Cleared ${n_del} untouched apocrypha rows (canon_id > 66); saved edits kept`);
 
 // BUG FOUND 2026-07-27 (same class as the OT translation.db freeze fixed the
 // same day in load-english-baseline.js, but worse here): this used to be a

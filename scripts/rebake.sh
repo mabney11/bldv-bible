@@ -27,7 +27,7 @@ main() {
   cd "$(dirname "${BASH_SOURCE[0]}")/.."
   step() { echo; echo "=== [$(date '+%H:%M:%S')] $* ==="; }
 
-  step "1/4  surface-index.db: is the local bake current?"
+  step "1/5  surface-index.db: is the local bake current?"
   # Fresh = newer than both what it is baked FROM (corpus.db) and the parser
   # that bakes it (build-surface-index.js) -- same rule as the widget's Bake line.
   # Then there is nothing to rebuild; push the file as-is.
@@ -87,7 +87,7 @@ console.log('corpus.db English present for all 66 canonical books');
     exit 1
   fi
 
-  step "2/4  corpus.db: comparing local vs prod"
+  step "2/5  corpus.db: comparing local vs prod"
   LOCAL_M=$(stat -c %Y server/corpus.db)
   PROD_M=$($SSH "$HOST" "stat -c %Y $DATA/corpus.db" 2>/dev/null || echo 0)
   echo "local corpus.db mtime $(date -d @"$LOCAL_M" '+%F %T')  |  prod $( [ "$PROD_M" -gt 0 ] && date -d @"$PROD_M" '+%F %T' || echo unknown)"
@@ -98,11 +98,20 @@ console.log('corpus.db English present for all 66 canonical books');
     echo "prod already has this corpus.db -> skipped"
   fi
 
-  step "3/4  Pushing surface-index.db to prod"
+  step "3/5  Pushing surface-index.db to prod"
   DB=surface-index.db bash scripts/sync-corpus-to-prod.sh widget-rebake
 
-  step "4/4  Blue/green deploy on prod (containers pick up the new files)"
+  step "4/5  Blue/green deploy on prod (containers pick up the new files)"
   $SSH "$HOST" "sudo -n bash -c 'cd $RREPO && ./deploy-blue-green.sh'"
+
+  # 5/5 (2026-09-26): the reader's NT/Apocrypha text comes from translation.db, and
+  # local translation.db is REPLACED by prod's on every server start
+  # (sync-from-prod.cjs) — so a local render-all never reaches the reader. Re-seed
+  # prod's translation.db in place from the corpus.db just pushed: untouched rows only
+  # (status='none' AND rich_text=''), saved Studio work is never touched. Then
+  # re-apply the name forms, as render-all does locally.
+  step "5/5  Reseeding prod translation.db from the pushed corpus.db (untouched rows only)"
+  $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node reseed-translations.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db'"
 
   step "Rebake complete"
 }
