@@ -3,12 +3,12 @@
  * the city coming down out of heaven in the Descend story (the whole city's groups lowered together from far above the
  * earth to the ground, 21:2, 10), the light that is not the sun's (21:23; 22:5 — one still light, no day and no night, the
  * throne's glory breathing), the names of the tribes on the gates — inscribed in paleo and in the app's transliteration on
- * the pearl's lintel and flanks, on two standing stones and in the pavement before each gate (21:12) — and the tribes'
- * signs on standards among the trees along the river.
+ * the pearl over the way and down its posts, on two standing stones and in the pavement before each gate (21:12) — and the
+ * tribes' signs painted on the cloths of the standards among the trees (the standards are pieces of the model).
  */
 import * as THREE from 'three';
 import { labelTexture } from './sky.js';
-import { CITY_IDS, descentAt, measureAt, SIDE, GATES, HALF, WALL, GATE_AT, CITY_Y, PEARL, RIVER_W, STREET_Y } from '../../lib/models/revelation-city.js';
+import { CITY_IDS, descentAt, measureAt, SIDE, GATES, HALF, WALL, GATE_AT, CITY_Y, PEARL, LAYER, STONES, stoneAt, SIGNS, TRIBES, STANDARD, standardsOf } from '../../lib/models/revelation-city.js';
 import { TRIBE_PALEO } from '../../lib/models/holyLand.js';
 import { makeColumn, puffTexture } from './tabernacleExtras.js';
 import { toXZ, CUBIT_M } from '../../lib/models/ezekiel-geo.js';
@@ -34,15 +34,10 @@ async function loadRelief() {
   return { w, h, hm, lonOf, latOf };
 }
 function reliefMesh({ w, h, hm, lonOf, latOf }, gateXZ, base) {
-  // the height under the east gate, so the floor of the city meets the ground there
-  let gi = 0, gj = 0, bd = Infinity;
-  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const [x, z] = toXZ([lonOf(i), latOf(j)]); const dd = Math.hypot(x - gateXZ[0], z - gateXZ[1]); if (dd < bd) { bd = dd; gi = i; gj = j; } }
-  const h0 = hm[gj * w + gi];
   const pos = new Float32Array(w * h * 3), col = new Float32Array(w * h * 3), cA = new THREE.Color('#b9ae8c'), cB = new THREE.Color('#7f9a5a'), cC = new THREE.Color('#8a7a5a'), cD = new THREE.Color('#f4f2ec'), cc = new THREE.Color();
   for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
     const k = j * w + i, m = hm[k], [x, z] = toXZ([lonOf(i), latOf(j)]);
-    const under = Math.abs(x) < HALF && Math.abs(z) < HALF;   // under the city the land is held below its floor (the city rests on the mountains: the peaks do not rise through the street)
-    pos[k * 3] = x; pos[k * 3 + 1] = Math.min(under ? -base - 2 : Infinity, (EXAG * (m - h0)) / CUBIT_M - base - 1); pos[k * 3 + 2] = z;   // level with the plain at the gate
+    pos[k * 3] = x; pos[k * 3 + 1] = LAYER.land + (EXAG * Math.max(0, m)) / CUBIT_M - base; pos[k * 3 + 2] = z;   // on the plain at the mountain's foot (the group is hoisted to its base)
     if (m < 400) cc.copy(cA).lerp(cB, m / 400); else if (m < 1600) cc.copy(cB).lerp(cC, (m - 400) / 1200); else cc.copy(cC).lerp(cD, Math.min(1, (m - 1600) / 1400));
     col[k * 3] = cc.r; col[k * 3 + 1] = cc.g; col[k * 3 + 2] = cc.b;
   }
@@ -55,32 +50,38 @@ function reliefMesh({ w, h, hm, lonOf, latOf }, gateXZ, base) {
 
 const DROP = SIDE * 1.15;   // how far above the earth the city starts its descent
 
-// ── The tribes' signs: what the text says of each (Genesis 49; Deuteronomy 33), drawn as a sign on a standard (the standards
-// themselves are the model's, after the dagal of Numbers 2; the text gives the tribes no devices — the card says so)
-export const SIGNS = {
-  Raawaban:    ['🌊', 'unstable as water', 'Genesis 49:4'],
-  Yahawadah:   ['🦁', 'a lion\'s whelp', 'Genesis 49:9'],
-  Laway:       ['📜', 'they shall teach Yaiqab your judgments', 'Deuteronomy 33:10'],
-  Yawasap:     ['🐂', 'the firstborn of his ox', 'Deuteronomy 33:17'],
-  Banayamayan: ['🐺', 'a wolf that tears', 'Genesis 49:27'],
-  Dan:         ['🐍', 'a serpent in the way', 'Genesis 49:17'],
-  Shamaiwan:   ['🗡️', 'weapons of violence', 'Genesis 49:5'],
-  Yashashakar: ['⛺', 'in your tents', 'Deuteronomy 33:18'],
-  Zabawalawan: ['⛵', 'a haven of ships', 'Genesis 49:13'],
-  Gad:         ['⚔️', 'a troop shall press on him', 'Genesis 49:19'],
-  Ashar:       ['🫒', 'let him dip his foot in oil', 'Deuteronomy 33:24'],
-  Napathalay:  ['🦌', 'a hind let loose', 'Genesis 49:21'],
-};
+// ── Inscriptions: the paleo (the BLD Paleo font) and the app's transliteration painted on canvases laid on the stone
 const PALEO_FONT = '"BLD Paleo", "Segoe UI Historic", "Noto Sans Phoenician", sans-serif';
+const EMOJI_FONT = '"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
 const fontsReady = typeof document !== 'undefined' && document.fonts?.load ? document.fonts.load(`80px ${PALEO_FONT}`).catch(() => null) : Promise.resolve(null);
-/** An inscription: the paleo over the transliteration, cut into the stone (dark letters with a light edge below — a relief in the pearl). */
-function inscription(paleo, name, { w = 1024, h = 512, ink = '#5a4630', edge = 'rgba(255,255,255,0.7)', sign = null } = {}) {
+/** does this font draw the character, or a box? (the same width as a codepoint no font has = the box) */
+function hasGlyph(g, ch, font) { g.font = font; const w = g.measureText(ch).width, w0 = g.measureText('\u{10FFFF}').width; return Math.abs(w - w0) > 0.5; }
+/** the sign of a tribe drawn at (cx, cy) in a square of side s: an emoji (with its stand-in when the font lacks it), or the breastplate of twelve stones */
+function drawSign(g, sign, alt, cx, cy, s) {
+  if (sign === 'breastplate') {
+    const cell = s / 4.6, x0 = cx - cell * 1.5 - cell * 0.15, y0 = cy - cell * 2 - cell * 0.15;
+    g.fillStyle = '#c9a24a'; g.fillRect(x0 - cell * 0.35, y0 - cell * 0.35, cell * 3.6 + cell * 0.7, cell * 4.6 + cell * 0.7);
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) { g.fillStyle = STONES[stoneAt(r, c)][2]; g.fillRect(x0 + c * cell * 1.2, y0 + r * cell * 1.2, cell, cell); }
+    return;
+  }
+  const font = `${Math.round(s)}px ${EMOJI_FONT}`; const ch = hasGlyph(g, sign, font) ? sign : (alt || '✦');
+  g.font = font; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#3a2c18'; g.fillText(ch, cx, cy);
+}
+/** A canvas texture: `lines` drawn top to bottom — {paleo}, {text}, {sign} or {letters} (a word letter under letter) — cut into the stone (dark, with a light edge). */
+function inscription(lines, { w = 1024, h = 512, ink = '#5a4630', edge = 'rgba(255,255,255,0.7)' } = {}) {
   const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
   const draw = () => {
     g.clearRect(0, 0, w, h); g.textAlign = 'center'; g.textBaseline = 'middle';
-    const put = (text, font, y) => { g.font = font; g.fillStyle = edge; g.fillText(text, w / 2, y + h * 0.012); g.fillStyle = ink; g.fillText(text, w / 2, y); };
-    if (sign) { put(sign, `${Math.round(h * 0.42)}px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif`, h * 0.3); put(paleo, `${Math.round(h * 0.2)}px ${PALEO_FONT}`, h * 0.66); put(name, `600 ${Math.round(h * 0.12)}px system-ui, sans-serif`, h * 0.86); }
-    else { put(paleo, `${Math.round(h * 0.46)}px ${PALEO_FONT}`, h * 0.34); put(name, `600 ${Math.round(h * 0.24)}px system-ui, sans-serif`, h * 0.74); }
+    const put = (text, font, x, y) => { g.font = font; g.fillStyle = edge; g.fillText(text, x, y + h * 0.008); g.fillStyle = ink; g.fillText(text, x, y); };
+    const total = lines.reduce((a, l) => a + (l.share || 1), 0); let y = 0;
+    for (const l of lines) {
+      const hh = h * (l.share || 1) / total, cy = y + hh / 2;
+      if (l.paleo != null) put(l.paleo, `${Math.round(hh * 0.62)}px ${PALEO_FONT}`, w / 2, cy);
+      else if (l.text != null) put(l.text, `600 ${Math.round(hh * 0.5)}px system-ui, sans-serif`, w / 2, cy);
+      else if (l.sign != null) drawSign(g, l.sign, l.alt, w / 2, cy, hh * 0.8);
+      else if (l.letters != null) { const n = l.letters.length, step = hh / n; for (let i = 0; i < n; i++) put(l.letters[i], `700 ${Math.round(Math.min(step * 0.8, w * 0.7))}px system-ui, sans-serif`, w / 2, y + step * (i + 0.5)); }
+      y += hh;
+    }
   };
   draw(); const t = new THREE.CanvasTexture(c); t.anisotropy = 8; t.colorSpace = THREE.SRGBColorSpace;
   fontsReady.then(() => { draw(); t.needsUpdate = true; });   // drawn again once the paleo font has come
@@ -105,48 +106,40 @@ export function revelationExtras({ M, byId, lights, scene, camera }) {
   const o = HALF + WALL.t / 2;
   for (const side of ['north', 'east', 'south', 'west']) GATES[side].forEach(([name], i) => {
     const at = GATE_AT[i], [x, z] = side === 'north' ? [at, -o] : side === 'south' ? [at, o] : side === 'east' ? [o, at] : [-o, at];
-    gateNames.add(mk(name, '#fff0c0', x, 196, z, 110));
+    gateNames.add(mk(name, '#fff0c0', x, PEARL.h + 26, z, 110));
   });
   for (const sp of gateNames.children) { const s = sp.userData.size; sp.scale.set(s, s / 4, 1); }
-  // the names inscribed where the walker is (fieldy: "I need to see the name of the tribes on the gates and in the general
-  // entrance area … the paleo and transliteration inscripted in a few locations"): on the lintel of the pearl without and
-  // within, large on its two flanks, at eye level beside the way, on two standing stones before the gate, and in the pavement
+  // the names inscribed where the walker is (fieldy): the paleo over the way, without and within, fitting between the posts; the
+  // transliteration letter under letter down both posts; the name and the tribe's sign on two standing stones before the gate,
+  // and in the pavement, read by one coming in
   const inscr = new THREE.Group(); scene.add(inscr);
   const stoneMat = M.pearl;
   for (const side of ['north', 'east', 'south', 'west']) GATES[side].forEach(([name, en], i) => {
     const at = GATE_AT[i], [x, z] = side === 'north' ? [at, -o] : side === 'south' ? [at, o] : side === 'east' ? [o, at] : [-o, at];
     const [nx, nz] = side === 'north' ? [0, -1] : side === 'south' ? [0, 1] : side === 'east' ? [1, 0] : [-1, 0];   // outward
     const [ax, az] = [-nz, nx];   // along the wall
-    const paleo = TRIBE_PALEO[en] || '', tex = inscription(paleo, name), texEye = inscription(paleo, name, { w: 512, h: 384 });
-    const P = (u, v, y, w, h, out, t = tex) => inscr.add(plaque(t, x + ax * u + nx * v, y, z + az * u + nz * v, w, h, nx * out, nz * out));
-    const f = PEARL.d / 2, lintelY = CITY_Y + (PEARL.wayH + PEARL.h) / 2, flankU = (PEARL.wayW / 2 + PEARL.w / 2) / 2, flankW = PEARL.w / 2 - PEARL.wayW / 2 - 4;
+    const paleo = TRIBE_PALEO[en] || '', sg = SIGNS[name] || {};
+    const texTop = inscription([{ paleo }], { w: 1024, h: 384 }), texPost = inscription([{ letters: name.toUpperCase().split('') }], { w: 256, h: 1024 });
+    const texStone = inscription([{ sign: sg.sign, alt: sg.alt, share: 1.6 }, { paleo, share: 1 }, { text: name, share: 0.7 }], { w: 512, h: 768 }), texPav = inscription([{ paleo }, { text: name, share: 0.6 }], { w: 1024, h: 512 });
+    const P = (u, v, y, w, h, out, t) => inscr.add(plaque(t, x + ax * u + nx * v, y, z + az * u + nz * v, w, h, nx * out, nz * out));
+    const f = PEARL.d / 2, lintelY = CITY_Y + (PEARL.wayH + PEARL.h) / 2, lintelH = PEARL.h - PEARL.wayH, postU = (PEARL.wayW / 2 + PEARL.w / 2) / 2, postW = PEARL.w / 2 - PEARL.wayW / 2;
     for (const out of [1, -1]) {
-      P(0, f * out, lintelY, 112, 52, out);                                          // the lintel
-      for (const su of [-1, 1]) { P(su * flankU, f * out, CITY_Y + 62, flankW, flankW * 0.6, out); P(su * flankU, f * out, CITY_Y + 4.2, 9, 6.5, out, texEye); }   // the flanks, high and at eye level
+      P(0, f * out, lintelY, PEARL.wayW - 6, lintelH - 8, out, texTop);                                                    // the paleo over the way, between the posts
+      for (const su of [-1, 1]) P(su * postU, f * out, CITY_Y + PEARL.wayH / 2 + 2, postW - 8, PEARL.wayH - 10, out, texPost);   // the name down each post
     }
-    // two standing stones before the gate, either side of the way, the name on both faces
-    for (const su of [-1, 1]) {
-      const sx = x + ax * su * 64 + nx * 58, sz = z + az * su * 64 + nz * 58, sw = 7, sh = 10, st = 1.6;
+    for (const su of [-1, 1]) {   // two standing stones before the gate, either side of the way: the sign, the paleo and the name, on both faces
+      const sx = x + ax * su * 80 + nx * 64, sz = z + az * su * 80 + nz * 64, sw = 8, sh = 12, st = 1.6;
       const st3 = new THREE.Mesh(new THREE.BoxGeometry(Math.abs(ax) * sw + Math.abs(nx) * st, sh, Math.abs(az) * sw + Math.abs(nz) * st), stoneMat); st3.position.set(sx, CITY_Y + sh / 2, sz); st3.castShadow = true; inscr.add(st3);
-      for (const out of [1, -1]) inscr.add(plaque(texEye, sx + nx * (st / 2) * out, CITY_Y + sh * 0.56, sz + nz * (st / 2) * out, sw - 0.8, sh * 0.7, nx * out, nz * out));
+      for (const out of [1, -1]) inscr.add(plaque(texStone, sx + nx * (st / 2) * out, CITY_Y + sh * 0.53, sz + nz * (st / 2) * out, sw - 0.8, sh * 0.88, nx * out, nz * out));
     }
-    // in the pavement before the gate, read by one coming in
-    const pav = new THREE.Mesh(new THREE.PlaneGeometry(60, 30), new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
-    pav.position.set(x + nx * 118, CITY_Y + 0.12, z + nz * 118); pav.rotation.set(-Math.PI / 2, Math.atan2(nx, nz), 0, 'YXZ'); pav.renderOrder = 2; inscr.add(pav);   // laid flat, its top toward the city: read by one walking in
+    const pav = new THREE.Mesh(new THREE.PlaneGeometry(56, 28), new THREE.MeshBasicMaterial({ map: texPav, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
+    pav.position.set(x + nx * 130, CITY_Y + 0.12, z + nz * 130); pav.rotation.set(-Math.PI / 2, Math.atan2(nx, nz), 0, 'YXZ'); pav.renderOrder = 2; inscr.add(pav);   // laid flat, its top toward the city: read by one walking in
   });
-  // the tribes' signs on standards among the trees along the river — twelve in from the east gate, twelve out from the throne
-  // (fieldy: "include each tribe's symbol in the area of my makeshift trees")
-  const ALL = ['north', 'east', 'south', 'west'].flatMap((sd) => GATES[sd]);
-  const poleMat = new THREE.MeshStandardMaterial({ color: '#7a5a34', roughness: 0.8 });
-  const standard = (u, sgn, [name, en]) => {
-    const zz = sgn * (RIVER_W / 2 + 76), y0 = CITY_Y + STREET_Y, ph = 16;
-    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, ph, 8), poleMat); pole.position.set(u, y0 + ph / 2, zz); pole.castShadow = true; inscr.add(pole);
-    const tex = inscription(TRIBE_PALEO[en] || '', name, { w: 512, h: 512, ink: '#3a2c18', edge: 'rgba(255,255,255,0.5)', sign: SIGNS[name]?.[0] || '' });
-    const cz = zz + sgn * 5.9, cy = y0 + ph - 6.2;   // the cloth hangs from the pole away from the river, its face along the street
-    const cloth = new THREE.Mesh(new THREE.PlaneGeometry(11, 11), new THREE.MeshStandardMaterial({ color: '#f3ead6', roughness: 0.9, side: THREE.DoubleSide })); cloth.position.set(u, cy, cz); cloth.rotation.y = Math.PI / 2; cloth.castShadow = true; inscr.add(cloth);
-    for (const out of [1, -1]) inscr.add(plaque(tex, u, cy, cz, 10.4, 10.4, out, 0, 0.08));   // read by one walking the street, either way
-  };
-  ALL.forEach((g, k) => { standard(HALF - 420 - k * 210, k % 2 ? 1 : -1, g); standard(380 + k * 210, k % 2 ? -1 : 1, g); });
+  // the tribes' signs on the cloths of the standards among the trees (the standards themselves are pieces: tap one for its card)
+  TRIBES.forEach(([name, en], k) => {
+    const sg = SIGNS[name] || {}, tex = inscription([{ sign: sg.sign, alt: sg.alt, share: 1.7 }, { paleo: TRIBE_PALEO[en] || '', share: 1 }, { text: name, share: 0.7 }], { w: 512, h: 512, ink: '#3a2c18', edge: 'rgba(255,255,255,0.5)' });
+    for (const st of standardsOf(k)) { const cy = st.y + STANDARD.poleH - STANDARD.cloth / 2 - 0.6, cz = st.z + st.sgn * 0.4; for (const out of [1, -1]) inscr.add(plaque(tex, st.x, cy, cz, STANDARD.cloth - 0.6, STANDARD.cloth - 0.6, out, 0, 0.16)); }   // read by one walking the street, either way
+  });
   // the gates seen from afar: a pearl of light over each, sized by the eye's distance (a gate of 170 amah is nothing on a wall of four million)
   const puff = puffTexture();
   const gateFar = new THREE.Group(); scene.add(gateFar);

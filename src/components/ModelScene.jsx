@@ -1223,7 +1223,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     api.current = {
       select: (id) => { const changed = id !== currentSel; applySelection(id); if (roam.on) { dirty = true; return; } const still = stillSelect === id; stillSelect = null; if (changed && id && !still) flyTo(id); if (changed && !id && !still) setFollow(true); dirty = true; },
       follow: () => { if (roam.on) return; setFollow(true); lastT = -1; },
-      refocus: () => { if (roam.on) return; if (currentSel) flyTo(currentSel); else { setFollow(true); lastT = -1; } dirty = true; },
+      refocus: () => { if (roam.on) return; if (currentSel) flyTo(currentSel); else { setFollow(true); flight = null; scriptCamera(clock.t); controls.update(); lastT = -1; } dirty = true; },   // back to where the story's eye is now, at once
       pace: (m) => { roam.mul = Math.max(1, Math.min(20, +m || 1)); },   // the walker's pace: 1 the usual walk, more across a city (fieldy: faster and much faster)
       setTime: (tm) => { extras?.set?.({ time: tm }); lastT = -1; dirty = true; },   // day or night on foot
       modeChanged: () => { const free = !!MODES[modeRef.current]?.free; if (free !== roam.on) roamEnter(free); lastT = -1; if (!free) setFollow(true); dirty = true; },

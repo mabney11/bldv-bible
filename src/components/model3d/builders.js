@@ -319,6 +319,24 @@ export class PieceBuilder {
     const geo = new THREE.BoxGeometry(w, h, d); const idx = Array.from(geo.index.array); geo.setIndex([...idx.slice(0, 18), ...idx.slice(24)]); geo.clearGroups();   // the faces +x −x +y | −y | +z −z: the −y dropped
     geo.translate(x, y + h / 2, z); this.add(geo, matKey);
   }
+  /** a mountain: a ridged cone of footprint radius r and height h with a level summit plateau of radius `top` (a city may rest on it), its base at y */
+  mountain(x, y, z, r, h, top, matKey, seed = 17) {
+    const A = 96, N = 28, pos = [], idx = [];
+    const ring = (i) => i / N;   // 0 at the centre … 1 at the foot
+    for (let i = 0; i <= N; i++) for (let j = 0; j < A; j++) {
+      const a = (j / A) * Math.PI * 2, u = ring(i);
+      let rr = top + (r - top) * Math.max(0, (u - 0.3) / 0.7), yy = h;   // the plateau to u = 0.3, the flank beyond
+      if (u > 0.3) {
+        const sIn = (u - 0.3) / 0.7;
+        const ridge = 1 + 0.07 * Math.sin(a * 5 + seed) + 0.04 * Math.sin(a * 11 + sIn * 9) + 0.02 * Math.sin(a * 23 - sIn * 17);
+        rr = top + (r - top) * sIn * ridge;
+        yy = h * Math.pow(1 - sIn, 1.5) + 0.05 * h * Math.sin(a * 7 + seed) * sIn * (1 - sIn);
+      } else rr = top * (u / 0.3);
+      pos.push(x + Math.cos(a) * rr, y + yy, z + Math.sin(a) * rr);
+    }
+    for (let i = 0; i < N; i++) for (let j = 0; j < A; j++) { const a = i * A + j, b = i * A + ((j + 1) % A), c = a + A, d = b + A; idx.push(a, c, b, b, c, d); }
+    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setIndex(idx); geo.computeVertexNormals(); this.add(geo, matKey);
+  }
   sphere(x, y, z, r, matKey, seg = 16) { const geo = new THREE.SphereGeometry(r, seg, Math.max(8, seg / 2)); geo.translate(x, y, z); this.add(geo, matKey); }
   torus(x, y, z, R, r, matKey, rx = 0, ry = 0) { const geo = new THREE.TorusGeometry(R, r, 10, 40); geo.rotateX(rx); geo.rotateY(ry); geo.translate(x, y, z); this.add(geo, matKey); }
   capsule(a, b, r, matKey) {
@@ -1109,6 +1127,7 @@ export function buildPiece(M, piece, ground = -4, xrayGroups = XRAY_GROUPS) {
       case 'cyl': b.cyl(part.x, part.y, part.z, part.r, part.h, part.mat || piece.material, part.r2 || part.r); break;
       case 'poly': b.poly(part.ring, part.y ?? ground, part.mat || piece.material); break;
       case 'shell': b.shell(part.x, part.y, part.z, part.w, part.h, part.d, part.mat || piece.material); break;
+      case 'mountain': b.mountain(part.x, part.y, part.z, part.r, part.h, part.top, part.mat || piece.material, part.seed); break;
       case 'sphere': b.sphere(part.x, part.y, part.z, part.r, part.mat || piece.material, part.seg || 24); break;
       case 'torus': b.torus(part.x, part.y, part.z, part.R, part.r, part.mat || piece.material, part.rx || 0, part.ry || 0); break;
       case 'lathe': b.lathe(part.x, part.y, part.z, part.profile, part.mat || piece.material, part.seg || 48, part.phiStart || 0, part.phiLength ?? Math.PI * 2); break;

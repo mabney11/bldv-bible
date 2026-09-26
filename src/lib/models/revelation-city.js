@@ -44,6 +44,8 @@ export const WORDS = {
   hayakal:    { translit: 'Hayakal',     paleo: '𐤄𐤉𐤊𐤋',   en: 'temple / palace',                  sn: 'H1964' },
   gawayam:    { translit: 'Gawayam',     paleo: '𐤂𐤅𐤉𐤌',   en: 'nations',                          sn: 'H1471' },
   layal:      { translit: 'Layal',       paleo: '𐤋𐤉𐤋',    en: 'night',                            sn: 'H3915' },
+  har:        { translit: 'Har',         paleo: '𐤄𐤓',     en: 'mountain',                         sn: 'H2022' },
+  dagal:      { translit: 'Dagal',       paleo: '𐤃𐤂𐤋',    en: 'standard / banner',                sn: 'H1714' },
 };
 
 // ── The frame, in cubits ─────────────────────────────────────────────────────
@@ -51,12 +53,16 @@ export const STADION = 185 / CUBIT_M;                    // one stadion, 185 m, 
 export const SIDE = Math.round(12000 * STADION);         // 21:16 — twelve thousand stadia: 4,228,571 amah
 export const HALF = SIDE / 2;
 export const WALL = { h: 144, t: 24, found: 72, block: 12, span: 2400 };   // 21:17 — the wall a hundred and forty-four amah: the lower 72 its twelve foundations of twelve stones (21:14, 19–20), set in blocks of 12 in the ephod's rows (Exodus 28:17–20), jasper above (21:18); thickness assumed. Within `span` of each gate the blocks are drawn one by one; beyond, as a pattern on the run.
-export const GATE_W = 120;                               // the gap in the wall for each pearl (assumed)
+export const GATE_W = 150;                               // the gap in the wall for each pearl (assumed)
 export const GATE_AT = [-HALF * 2 / 3, 0, HALF * 2 / 3]; // three a side, a third of the side apart — as Ezekiel's city is drawn, so the gates pair off
 export const CITY_Y = 0;                                  // the city stands on the plain: the land lies beneath its floor of gold
 export const STREET_W = 240, RIVER_W = 40, STREET_Y = 0.3;                // the street of gold with the river of life in its midst (widths assumed)
 export const LEVEL = 0;
-export const LAYER = { land: -0.5 };   // the land a hand above the plain (plainDrop 1): outside the walls the walker stands a step below the city's floor
+/** The kabad (great) and ilay (high) har (mountain) the city rests on (21:10): the text gives it no measure. The model's stands on the plain far
+ *  below, its summit a plateau the city's whole footprint sits on (the walker outside the gate stands on it, a step under the floor), its
+ *  flanks falling away all round — after the mountain of Daniel 2:35, the stone that became a mountain and filled the earth (fieldy). */
+export const MOUNT = { r: 6000000, h: 2800000, top: 3100000 };
+export const LAYER = { land: -MOUNT.h - 1.5 };   // the land lies on the plain at the mountain's foot
 export const STONES = [   // 21:19–20, in the text's order, with a colour for each (the stones as they are known)
   ['yashapah', 'jasper', '#9fd8b0'], ['sapayar', 'sapphire', '#2f5fbf'], ['chalcedony', 'chalcedony', '#b9c8d8'], ['emerald', 'emerald', '#2e9e5c'],
   ['sardonyx', 'sardonyx', '#c9865f'], ['sardius', 'sardius', '#b8342a'], ['chrysolite', 'chrysolite', '#c8c84a'], ['tharashayash', 'beryl', '#7fc9b0'],
@@ -71,6 +77,8 @@ export const MATERIALS = {
   ...BASE_MATERIALS,
   newearth: { word: 'aratz',     color: '#b9ae8c', hi: '#d8cfae', lo: '#7e765c', metal: 0, rough: 1 },                  // the new earth, no sea
   land:     { word: 'aratz',     color: '#7f9a5a', hi: '#a4bd7c', lo: '#52673a', metal: 0, rough: 1 },                  // the land of the map
+  rock:     { word: 'har',       color: '#7d6a54', hi: '#a89680', lo: '#4a3d30', metal: 0, rough: 1 },                  // the mountain
+  cloth:    { word: 'dagal',     color: '#f3ead6', hi: '#ffffff', lo: '#b8ae98', metal: 0, rough: 0.9 },
   jasper:   { word: 'yashapah',  color: '#a3d6bd', hi: '#effff7', lo: '#5f9c7e', metal: 0.1, rough: 0.12, emissive: '#3c7d5e', emissiveIntensity: 0.28 },   // the wall's jasper (21:18): green, as the stone is known — the text gives no colour, only "clear as crystal" (21:11), so it is drawn pale and bright
   pearl:    { word: 'shair',     color: '#f6f1ea', hi: '#ffffff', lo: '#c9bfb4', metal: 0.05, rough: 0.15, emissive: '#e8d8c8', emissiveIntensity: 0.35 },
   goldglass:{ word: 'zahab',     color: '#f0bc3c', hi: '#ffe9a0', lo: '#9a7a2a', metal: 0.25, rough: 0.35, emissive: '#c8881a', emissiveIntensity: 1.1 },   // solid, and radiant (fieldy: "solid and very radiant in light")   // "pure gold, like clear glass" — the city's body
@@ -115,7 +123,7 @@ function foundation(i) {
   }
   return out;
 }
-export const PEARL = { w: 150, d: 56, h: 170, wayW: 72, wayH: 110 };   // the gate: one block of pearl across the wall's gap, standing proud of the wall and above it, the way cut through it (fieldy: "a gate that is pure pearl")
+export const PEARL = { w: 190, d: 56, h: 180, wayW: 90, wayH: 120 };   // the gate: one block of pearl across the wall's gap, standing proud of the wall and above it, the way cut through it (fieldy: "a gate that is pure pearl")
 /** A gate of one pearl (21:21): a gate of pearl set in the wall's gap, the way through it — with its malaak (angel) beside it (21:12). */
 function pearlGate(side, i) {
   const at = GATE_AT[i], along = side === 'north' || side === 'south', c = side === 'north' ? -HALF - WALL.t / 2 : side === 'south' ? HALF + WALL.t / 2 : side === 'east' ? HALF + WALL.t / 2 : -HALF - WALL.t / 2;
@@ -144,6 +152,35 @@ function trees() {
   along(220, 14000); along(HALF - 14000, HALF - 200);
   return out;
 }
+/** The dagal (standards) among the trees: two for each tribe — in from the east gate and out from the throne — a pole with a cloth that carries the
+ *  tribe's name and the sign its blessing gives it (the extras paint the cloth). [x, z, side] for each, in the gates' order of the tribes. */
+export const STANDARD = { poleH: 22, cloth: 14, off: RIVER_W / 2 + 80 };
+export const TRIBES = ['north', 'east', 'south', 'west'].flatMap((s) => GATES[s]);
+export const standardsOf = (k) => [[HALF - 330 - k * 230, k % 2 ? 1 : -1], [420 + k * 230, k % 2 ? -1 : 1]].map(([u, sgn]) => ({ x: u, z: sgn * STANDARD.off, sgn, y: CITY_Y + STREET_Y }));
+function standardParts(k) {
+  return standardsOf(k).flatMap(({ x, z, sgn, y }) => [
+    ideal(cyl(x, y, z, 0.45, STANDARD.poleH, { mat: 'cedar', role: 'pole' })),
+    ideal(box(x, y + STANDARD.poleH - STANDARD.cloth - 0.6, z + sgn * 0.4, 0.25, STANDARD.cloth, STANDARD.cloth, { mat: 'cloth', role: 'banner' })),   // the cloth hangs from the pole away from the river, faced along the street
+  ]);
+}
+/** The signs of the tribes on their standards: what the blessings say of each (Genesis 49; Deuteronomy 33 — and Yawasap's sheaves, 37:7), as the
+ *  standards of the tribes have long been drawn. The text gives the tribes no devices: the sign, and the standard, are the model's. */
+export const SIGNS = {
+  Raawaban:    { sign: '🌊', of: 'the waters — "unstable as water"', ref: 'Genesis 49:4', verse: 'Genesis 49:4' },
+  Yahawadah:   { sign: '🦁', of: 'the lion — "a lion\'s whelp"', ref: 'Genesis 49:9', verse: 'Genesis 49:9' },
+  Laway:       { sign: 'breastplate', of: 'the breastplate of the Thummim and the Urim', ref: 'Deuteronomy 33:8; Exodus 28:29–30', verse: 'Deuteronomy 33:8' },
+  Yawasap:     { sign: '🌾', of: 'the sheaves — his dream, and "a fruitful bough"', ref: 'Genesis 37:7; 49:22', verse: 'Genesis 49:22' },
+  Banayamayan: { sign: '🐺', of: 'the wolf — "a wolf that tears"', ref: 'Genesis 49:27', verse: 'Genesis 49:27' },
+  Dan:         { sign: '🐍', of: 'the serpent — "a serpent in the way"', ref: 'Genesis 49:17', verse: 'Genesis 49:17' },
+  Shamaiwan:   { sign: '🏰', of: 'the walled city — the city of his sword', ref: 'Genesis 49:5–7; 34:25', verse: 'Genesis 49:5' },
+  Yashashakar: { sign: '🫏', alt: '🐴', of: 'the strong ass couching between the burdens', ref: 'Genesis 49:14', verse: 'Genesis 49:14' },
+  Zabawalawan: { sign: '⛵', of: 'the ship — "a haven of ships"', ref: 'Genesis 49:13', verse: 'Genesis 49:13' },
+  Gad:         { sign: '⛺', of: 'the tents of a troop — "a troop shall press on him"', ref: 'Genesis 49:19; Deuteronomy 33:20', verse: 'Genesis 49:19' },
+  Ashar:       { sign: '🌴', of: 'the tree — "his bread shall be fat", his foot in oil', ref: 'Genesis 49:20; Deuteronomy 33:24', verse: 'Genesis 49:20' },
+  Napathalay:  { sign: '🦌', of: 'the hind — "a hind let loose"', ref: 'Genesis 49:21', verse: 'Genesis 49:21' },
+};
+/** The mountain: its base on the plain, its summit plateau a step under the city's floor. */
+function mountain() { return [{ kind: 'mountain', x: 0, y: CITY_Y - 1 - MOUNT.h, z: 0, r: MOUNT.r, h: MOUNT.h, top: MOUNT.top, mat: 'rock', role: 'mountain', ideal: true }]; }
 /** The throne of Alahayam and of the Lamb (22:1, 3) in the midst: no seat and no figure is drawn — the kasaa is the shining kabawad (glory) itself, the extras' column of light standing where the river springs, ever flowing (fieldy: "like the shining version of the flaming fire"). Here only its footing: a low round of light the spring rises from. */
 function throne() {
   return [ideal(cyl(0, CITY_Y + STREET_Y + 0.5, 0, 70, 1.2, { mat: 'glory', role: 'dais' })), ideal(cyl(0, CITY_Y + STREET_Y + 1.7, 0, 40, 1.0, { mat: 'glory', role: 'dais' }))];
@@ -170,6 +207,18 @@ export const PIECES = [
     elsewhere: { ref: 'Isaiah 65:17–19; 66:22; 2 Peter 3:13; Ezekiel 47:13–20', note: 'New heavens and a new earth, and Jerusalem a rejoicing; the borders of the land the map draws.' },
     assumed: 'That the new earth keeps the old land\'s shape — the model draws the map\'s coast, without the sea.',
     parts: GEO.land.map((r) => sheetOf(r, LAYER.land, 'land')),
+  },
+  {
+    id: 'har', order: 0.5, group: 'earth', material: 'rock', raise: D('newearth'), sheet: false,
+    tag: 'har (mountain) · kabad (great) · ilay (high)', title: 'The kabad (great) and ilay (high) har (mountain) the shairay (city) comes to rest on',
+    words: ['har'], keys: ['har', 'mountain', 'kabad', 'great', 'ilay', 'high', 'tawar'],
+    on: V('66:21:10'), refs: 'Revelation 21:10',
+    measures: [['its height', `${(MOUNT.h / 1000).toFixed(0)} thousand amah from the plain to its summit — not given; the model\'s, so the city sits on it`, 'assumed'], ['its summit', `a plateau ${(MOUNT.top * 2 / 1000000).toFixed(1)} million amah across, the city\'s whole footprint on it`, 'assumed'], ['its foot', `${(MOUNT.r * 2 / 1000000).toFixed(1)} million amah across, on the plain of the new earth`, 'assumed']],
+    note: '"{{Revelation 21:10}}" — Yawachanan is carried to a great and high mountain and shown the city coming down; the model sets the city on the mountain itself, as the aban (stone) of Daniel 2:35 became a great tawar (mountain) that filled the earth, and the har (mountain) of Yahawah\'s house is established on the head of the mountains (Isaiah 2:2).',
+    elsewhere: { ref: 'Daniel 2:35, 44–45; Isaiah 2:2–3; Micah 4:1–2; Ezekiel 40:2; Isaiah 11:9', note: 'The stone that became a great mountain and filled the whole earth; the mountain of Yahawah\'s house on the top of the mountains; Yachazaqaal set on a very high mountain with the frame of a city on it.' },
+    assumed: 'The mountain itself — the text places Yawachanan on one and does not say the city rests on it; its size and shape, and that its summit is level under the whole city.',
+    idealized: 'The mountain.',
+    parts: mountain(),
   },
   {   // the body of the city — its own piece so that the walker's rays and the route can be told to pass through it (it is neither wall nor floor)
     id: 'guph', group: 'city', material: 'goldglass', raise: D('coming'), order: 1,
@@ -221,13 +270,25 @@ export const PIECES = [
     tag: `shair (gate) of ${name} · pearl`, title: `The shair (gate) of ${name} (${en}) on the ${side} — achad (one) pearl, and its malaak (angel)`,
     words: ['shair', 'malaak', 'shabat'], keys: [name.toLowerCase(), en.toLowerCase()],
     on: V('66:21:12-13', '66:21:21', '66:21:25'), refs: 'Revelation 21:12–13, 21, 25',
-    measures: [['the side', `the ${side}: three gates — ${GATES[side].map((g) => g[0]).join(', ')}`, '21:13'], ['of what', 'one pearl', '21:21'], ['its name', `a tribe's — ${name}: the order of Ezekiel 48:${{ north: 31, east: 32, south: 33, west: 34 }[side]}, so the two cities pair gate for gate`, '21:12; assumed'], ['its name written', `${name} in paleo and in transliteration — on the lintel without and within, on the flanks, on two standing stones and in the pavement before it`, '21:12; the places assumed'], ['shut?', 'never by day, and there is no night', '21:25'], ['its size', `one block of pearl ${PEARL.w} across and ${PEARL.h} high, the way through it ${PEARL.wayW} wide and ${PEARL.wayH} high`, 'assumed']],
+    measures: [['the side', `the ${side}: three gates — ${GATES[side].map((g) => g[0]).join(', ')}`, '21:13'], ['of what', 'one pearl', '21:21'], ['its name', `a tribe's — ${name}: the order of Ezekiel 48:${{ north: 31, east: 32, south: 33, west: 34 }[side]}, so the two cities pair gate for gate`, '21:12; assumed'], ['its name written', `${name} — in paleo over the way without and within, in letters down both posts, with its sign on two standing stones and in the pavement before it`, '21:12; the places assumed'], ['shut?', 'never by day, and there is no night', '21:25'], ['its size', `one block of pearl ${PEARL.w} across and ${PEARL.h} high, the way through it ${PEARL.wayW} wide and ${PEARL.wayH} high`, 'assumed']],
     note: `"{{Revelation 21:21 | The twelve … pearl}}" — every gate one pearl, with a malaak (angel) at it and a tribe's name on it; which name on which gate the Revelation does not say, so this one is ${name}'s as in Yachazaqaal's city.`,
     elsewhere: { ref: 'Ezekiel 48:30–34; Isaiah 60:11; Genesis 28:17', note: 'The gates of Yachazaqaal\'s city, three a side, with the same names; gates open continually; "this is the gate of heaven".' },
     assumed: 'The pearl\'s size and form (a gate of one block of pearl, the way cut through it), the gate\'s place a third along the side, which tribe\'s name it bears, and where the name is written (the text says only that the names are on the gates).',
     idealized: 'The pearl.',
     parts: pearlGate(side, i), gates: [gateWay(side, i)],
   }))),
+  ...TRIBES.map(([name, en], k) => ({
+    id: `dagal-${en.toLowerCase()}`, order: 43 + k / 100, group: 'life', material: 'cloth', raise: D('river'),
+    tag: `dagal (standard) · ${name}`, title: `The dagal (standard) of ${name} (${en}) among the trees — its sign, ${SIGNS[name].of.split(' — ')[0]}`,
+    words: ['dagal', 'ayalan'], keys: ['dagal', 'standard', 'standards', 'banner', 'banners', 'flag', 'flags', 'sign', 'crest', name.toLowerCase(), en.toLowerCase()],
+    on: V('66:21:12'), refs: `Revelation 21:12; ${SIGNS[name].ref}`,
+    measures: [['the tribe', `${name} (${en}) — whose name is on a gate of the city`, '21:12'], ['its sign', SIGNS[name].of, SIGNS[name].ref], ['where', 'two: among the trees in from the east gate, and out from the throne', 'assumed'], ['its size', `a pole ${STANDARD.poleH} high, the cloth ${STANDARD.cloth} square`, 'assumed']],
+    note: `"{{${SIGNS[name].verse}}}" — the sign on the cloth is what the blessing says of ${name}; the twelve stand among the trees as the tribes camped by their dagal (standards) about the tent (Numbers 2:2). The Revelation writes the tribes\' names on the gates and gives them no signs: the standards and their signs are the model\'s.`,
+    elsewhere: { ref: 'Numbers 2:2; Genesis 49:1–28; Deuteronomy 33:6–25; Ezekiel 48:31–34', note: 'Every man by his own standard with the ensign of his father\'s house; the blessings of Yaiqab and of Mashah on the tribes, from which the signs are taken; the gates of Yachazaqaal\'s city with the same names.' },
+    assumed: 'The standards, their signs and their places.',
+    idealized: 'The pole and the cloth.',
+    parts: standardParts(k),
+  })),
   {
     id: 'rachab', order: 40, group: 'city', material: 'street', raise: D('gold'),
     tag: 'rachab (street) · zahab (gold)', title: 'The rachab (street) of the shairay (city), naqaa (pure) zahab (gold), hamah (like) transparent glass',
@@ -258,7 +319,7 @@ export const PIECES = [
     measures: [['where', 'on either side of the river', '22:2'], ['its fruit', 'twelve kinds, one every month', '22:2'], ['its leaves', 'for the healing of the nations', '22:2'], ['how many', 'one tree, or a kind of tree, on both banks — drawn as many', 'assumed']],
     note: '"{{Revelation 22:2 | On this … chadash}}" — the tree on both banks, as the trees of Ezekiel 47:12 whose fruit was for food and whose leaf was for medicine; the model plants them along the river where the walker goes, from the throne and in from the gate.',
     elsewhere: { ref: 'Genesis 2:9; 3:22–24; Ezekiel 47:12; Revelation 2:7', note: 'The tree of life in the midst of the garden, and the way to it kept; the trees on the river\'s banks whose leaf does not fade; "to him who overcomes".' },
-    assumed: 'The trees\' number, spacing and form; the standards among them — twelve in from the east gate and twelve out from the throne, each with a tribe\'s name and the sign the blessings give it (Genesis 49; Deuteronomy 33: Yahawadah a lion, Dan a serpent, Zabawalawan ships, Napathalay a hind …) — are the model\'s, after the dagal (standards) of Numbers 2; the Revelation gives the tribes no signs.',
+    assumed: 'The trees\' number, spacing and form. The dagal (standards) among them are their own pieces: tap one for its tribe and the verse its sign is from.',
     idealized: 'The trees.',
     parts: trees(),
   },
@@ -342,21 +403,20 @@ export const DESCEND_PHASES = [
 ];
 export const DESCEND_DURATION = STONE_FROM + 12 * STONE_EACH + 84;   // ≈ 191 s
 const E = HALF + WALL.t, G1 = GATE_AT[1];
+const DROP = SIDE * 1.15;                                        // how far above the earth the city starts its descent (the extras use the same)
+const GROUND_EYE = [4800000, CITY_Y - 1 - MOUNT.h + 4000, 10400000];   // on the plain at the mountain's foot, a man's height and a little up, looking up the mountain
 const T0 = DESCEND_PHASES.reduce((o, p) => ({ ...o, [p.key]: p.from }), {});
 export const DESCEND_CAMERA = [
-  [0,   [1400000, 1600000, 3600000], [0, 0, -400000]],                          // the new earth from the south, from far: the land without its seas, its mountains
-  [9,   [HOUSE_XZ[0] - 12000, 26000, HOUSE_XZ[1] + 16000], [HOUSE_XZ[0] + 400000, -6000, HOUSE_XZ[1] + 140000]],   // from the great and high mountain — the house's mountain, where Yachazaqaal was set (40:2) — looking out over the land as the city comes down over it
-  [17,  [HOUSE_XZ[0] - 12000, 26000, HOUSE_XZ[1] + 16000], [HOUSE_XZ[0] + 400000, 40000, HOUSE_XZ[1] + 140000]],
-  [24,  [HOUSE_XZ[0] - 12000, 26000, HOUSE_XZ[1] + 16000], [HOUSE_XZ[0] + 380000, 260000, HOUSE_XZ[1] + 130000]],   // … the eye lifts as the city fills the sky
-  [26,  [5200000, 300000, 5600000], [0, 1200000, 0]],                           // from the mountain: a mountain of gold before the eye, its edge and its top
-  [38,  [4200000, 900000, 4400000], [0, 1500000, 0]],                           // its light
+  [0,   [3600000, -MOUNT.h + 700000, 11000000], [0, -1000000, 0]],                // the new earth from the south, from far: the land without its seas, and the great mountain standing on it
+  ...[9, 13, 17, 21, 24, 26].map((t) => [t, GROUND_EYE, [0, CITY_Y + 500000 + DROP * 0.75 * (1 - smooth((t - 9) / 17)), 0]]),   // the eye follows the city's underside down to the summit   // from the ground at the mountain's foot, looking up: the city comes down the sky and rests on the summit (fieldy)
+  [38,  [8200000, 1800000, 8800000], [0, 1600000, 0]],                          // its light — the city on the mountain, whole
   [50,  [E + 700, 90, G1 + 520], [E - 100, 70, G1]],                             // the east wall and its middle gate, close
   [58,  [E + 260, 110, G1 + 700], [E, 60, G1 - 4000]],                            // along the wall from the gate: the three of a side are a third of the side apart
   [STONE_FROM, [E + 360, 60, G1 - 300], [E, 36, G1 - 80]],                         // the foundations, course by course, at the gate's corner
   [STONE_FROM + 12 * STONE_EACH + 3, [E + 520, 100, G1 - 420], [E, 60, G1 - 40]],   // … all twelve under the jasper
   [STONE_FROM + 12 * STONE_EACH + 6, [10500000, 3600000, 10800000], [0, 1700000, 0]],   // the measuring: the cube whole
-  [STONE_FROM + 12 * STONE_EACH + 22, [E - 300, 7, 90], [E - 1400, 2, 20]],            // the street of gold from inside the gate, westward, the green either side
-  [STONE_FROM + 12 * STONE_EACH + 34, [E + 300, 12, 90], [E - 200, 30, 0]],           // the east gate: the nations coming in
+  [STONE_FROM + 12 * STONE_EACH + 22, [E - 300, 7, 24], [E - 1400, 2, 0]],            // the street of gold from inside the gate, westward, the green either side
+  [STONE_FROM + 12 * STONE_EACH + 34, [E + 300, 12, 24], [E - 200, 30, 0]],           // the east gate: the nations coming in (the eye passes back out through the way, not through the pearl)
   [STONE_FROM + 12 * STONE_EACH + 48, [E - 700, 5, 34], [E - 1100, 6, -10]],           // on the bank: the river of life, the trees of life on either side
   [STONE_FROM + 12 * STONE_EACH + 58, [E - 900, 6, -36], [E - 1300, 8, 14]],           // … and from the other bank
   [STONE_FROM + 12 * STONE_EACH + 66, [520, 40, 380], [0, 60, 0]],                     // the throne: the glory in the midst
@@ -391,17 +451,20 @@ export function progressAt(mode, piece, t) {
 export function descentAt(mode, t) { if (mode !== 'descend') return 0; const a = T0.coming, b = T0.mountain; return 1 - smooth((t - a) / (b - a)); }
 /** where the measuring light is on its way round the city, 0 → 1 through the Measure phase (null outside it) */
 export function measureAt(mode, t) { if (mode !== 'descend') return null; const a = T0.measure, b = T0.gold; if (t < a || t >= b) return null; return (t - a) / (b - a); }
-export const CITY_IDS = PIECES.filter((p) => p.id !== 'aratz').map((p) => p.id);   // guph included: the body descends with the rest
+export const CITY_IDS = PIECES.filter((p) => p.group !== 'earth').map((p) => p.id);   // guph included: the body descends with the rest
 export function openAt() { return 1; }
 const MARK_LABELS = { descend: { newearth: 'aratz', coming: 'bawaa', mountain: 'har', light: 'awar', wall: 'chawamah', foundations: 'adanay', measure: 'madad', gold: 'zahab', 'gates-east': 'shair', river: 'nahar', throne: 'kasaa' } };
 export const marksFor = (mode) => TL.marksFor(mode, MARK_LABELS);
-export const CHIP_ORDER = ['zahab', 'chawamah', ...STONES.map((_, i) => `yasawad-${i + 1}`), 'gate-east-1', 'gate-east-0', 'gate-east-2', 'gate-north-0', 'gate-north-1', 'gate-north-2', 'gate-south-0', 'gate-south-1', 'gate-south-2', 'gate-west-0', 'gate-west-1', 'gate-west-2', 'rachab', 'nahar', 'itz', 'kasaa', 'gawayam', 'aratz'];
+export const CHIP_ORDER = ['zahab', 'chawamah', ...STONES.map((_, i) => `yasawad-${i + 1}`), 'gate-east-1', 'gate-east-0', 'gate-east-2', 'gate-north-0', 'gate-north-1', 'gate-north-2', 'gate-south-0', 'gate-south-1', 'gate-south-2', 'gate-west-0', 'gate-west-1', 'gate-west-2', 'rachab', 'nahar', 'itz', ...TRIBES.map(([, en]) => `dagal-${en.toLowerCase()}`), 'kasaa', 'gawayam', 'har', 'aratz'];
 /** Where the eye goes when a piece is chosen (the focus target and a fitting distance), in cubits. */
 export function focusFor(id) {
   const F = {
-    aratz: [[0, 0, -200000], 5000000], zahab: [[0, 1200000, 0], 9000000], chawamah: [[E, 80, G1 - 300], 900], rachab: [[E - 1200, 4, 0], 700], nahar: [[E - 700, 4, 0], 260], itz: [[E - 600, 12, 0], 220], kasaa: [[0, 60, 0], 520], gawayam: [[E - 300, 6, 0], 260],
+    aratz: [[0, -MOUNT.h, -200000], 14000000], zahab: [[0, 1200000, 0], 9000000], chawamah: [[E, 80, G1 - 300], 900], rachab: [[E - 1200, 4, 0], 700], nahar: [[E - 700, 4, 0], 260], itz: [[E - 600, 12, 0], 220], kasaa: [[0, 60, 0], 520], gawayam: [[E - 300, 6, 0], 260],
   };
   let m = /^yasawad-(\d+)$/.exec(id); if (m) return { target: [E, 36, G1 - 300], distance: 200 };
+  if (id === 'har') return { target: [0, -MOUNT.h / 2, 0], distance: 16000000 };
+  m = /^dagal-(\w+)$/.exec(id);
+  if (m) { const k = TRIBES.findIndex(([, en]) => en.toLowerCase() === m[1]); const st = standardsOf(Math.max(0, k))[0]; return { target: [st.x, st.y + STANDARD.poleH * 0.7, st.z], distance: 60 }; }
   m = /^gate-(\w+)-(\d)$/.exec(id);
   if (m) { const g = gateWay(m[1], +m[2]); return { target: [g.x, 70, g.z], distance: 480 }; }
   const f = F[id]; return f ? { target: f[0], distance: f[1] } : null;
@@ -440,14 +503,14 @@ export const MODEL = {
   strings: { parts: 'Parts of the city', storiesTitle: 'The city\'s story', guidedTitle: 'Guided: as the text gives it, verse by verse' },
   roam: { eye: ROAM_EYE, start: ROAM_START, enter: ROAM_ENTER, openKeys: [], openKey: (which) => which, openDefault: () => 1 },
   scene: {
-    sky: 0xcfe3f2, shadowR: 240, fog: [30000000, 120000000], maxDistance: 20000000, far: 60000000, plainR: 8000000, logDepth: true, earth: '#c4b894', plainDrop: 1,
+    sky: 0xcfe3f2, shadowR: 240, fog: [30000000, 120000000], maxDistance: 20000000, far: 60000000, plainR: 8000000, logDepth: true, earth: '#c4b894', plainDrop: MOUNT.h + 2,
     lighting: { sun: 2.6, hemi: 1.1 }, extras: 'revelation',
     navCell: 4, navAround: 2400,   // the route grid is built about the walker (2,400 amah each way) and rebuilt where he is carried — the whole city would be a million cells a side
     carryBeyond: 1800,             // a place on the map farther than this is not walked to but carried to (21:10)
-    navSkip: ['aratz', 'gawayam', 'itz', 'guph'],
+    navSkip: ['aratz', 'har', 'gawayam', 'itz', 'guph', ...TRIBES.map(([, en]) => `dagal-${en.toLowerCase()}`)],
     lights: [],
     walls: ['chawamah', ...STONES.map((_, i) => `yasawad-${i + 1}`), ...['north', 'east', 'south', 'west'].flatMap((s) => [0, 1, 2].map((i) => `gate-${s}-${i}`))],
-    notSolid: ['gawayam', 'aratz', 'guph'], farHide: ['guph'],   // the body hidden while the walker's view is pulled far back: from above it would hide him and the street
+    notSolid: ['gawayam', 'aratz', 'har', 'guph'], farHide: ['guph'],   // the body hidden while the walker's view is pulled far back: from above it would hide him and the street
     proxies: [],
     stairHouses: {},
     plan: {
