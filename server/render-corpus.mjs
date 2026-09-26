@@ -915,6 +915,21 @@ function render(text, vgKey) {
       // 5c. A word step 5 handed to the Hebrew that the Hebrew could not answer for gets
       //     its global pin after all — an attempt beats plain English (fieldy, 2026-09-10:
       //     "MOST words attempted"). Same rendering as step 5, capital carried over.
+      //
+      //     GATED 2026-09-26 (fieldy: "there should be flags for translations that use
+      //     glosses that dont exist in the hebrew"): the pin now fires only when its
+      //     transliteration is a root that actually stands in THIS verse's Hebrew. The
+      //     ungated fallback is what printed "hamah (like)" 1,938 times (and "achad (one)",
+      //     "shairay (city)" …) into verses whose Hebrew has no such word. No Hebrew
+      //     match -> the English word stays plain. audit-reading-glosses.mjs reports any
+      //     pair that still slips through.
+      const _vgTr = new Set((vgToks || []).map(t => String(t.tr || '').toLowerCase().replace(/[^a-z]/g, '')).filter(Boolean));
+      const pinInVerse = tr => {
+        const n = String(tr).toLowerCase().replace(/[^a-z]/g, '');
+        if (_vgTr.has(n)) return true;
+        for (const r of _vgTr) if (r.length >= 3 && n.startsWith(r)) return true;
+        return false;
+      };
       if (deferredToVg.size) {
         // re-guard: 5b just wrote new "(word)" glosses of its own
         const g3 = [];
@@ -924,6 +939,7 @@ function render(text, vgKey) {
           if (!deferredToVg.has(lw) || TERM_EXCLUDE.has(lw)) return w;
           const tr = termFor(lw);
           if (!tr) return w;
+          if (!pinInVerse(tr)) return w;
           if (/^[A-Z]/.test(w)) {
             if (NAME.has(lw) || PEOPLE.has(lw) || ALIAS.has(lw)) return w;
             const before = s.slice(0, off);

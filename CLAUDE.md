@@ -36,6 +36,30 @@ H1992 is "they/them"). 1,938 NT/Apocrypha "like"s; the live re-gloss then showed
 like/such/so. Other auto-generated pins in that block look equally suspect (e.g. `every →
 nashay # H802`, `himself → gap`) — worth a review pass.
 
+**Sweep (same session, fieldy: "find and fix these regressions"):**
+- **Jasper** 𐤉𐤔𐤐𐤄 (Rev 21:18, 12 NT occ.) was `adjacent`: 𐤉𐤔 "there is" + 𐤐𐤄 "here" (H6311),
+  because its 3 OT verses never aligned. heb-forced-readings.json now also takes a LEXICON
+  shape `{sn,pos,morph}` — accepted by build-surface-index.js only when the Strong's
+  dictionary lemma's consonants spell the word exactly. Jasper → H3471, Melchizedek
+  𐤌𐤋𐤊𐤉𐤑𐤃𐤒 → H4442 (was malk + [My/Of] + tzedek).
+- **Lexicon over a locative-𐤄 split** (heb-align.js, automatic): a `suffix` reading whose
+  tail is bare 𐤄 "[Toward]" on a word that is itself an unambiguous NON-NAME Strong's lemma
+  (≥4 letters) now takes the lemma: 𐤕𐤇𐤋𐤄 tehillah (was 𐤕 + chalal + [Toward]), 𐤐𐤒𐤃𐤄,
+  𐤕𐤔𐤅𐤁𐤄, 𐤍𐤇𐤌𐤄, 𐤁𐤈𐤇𐤄 … 50 words / 281 occurrences in the probe. Glosses for these
+  lemmas are uncurated (show paleo) until fieldy adds them.
+- `server/heb-lemma-conflicts.txt` — 576 more NT words resolved by splitting/gluing although
+  the whole word is a dictionary lemma, with refs. NOT auto-fixed (many splits are right:
+  𐤏𐤋𐤌𐤄 al-mah "why" vs almah, 𐤊𐤀𐤁 "like a father") — review list for forced readings.
+- **Reading-text gloss audit:** `node audit-reading-glosses.mjs [--canon 66] [--out f]` flags
+  every `word (gloss)` whose word is no root in its verse's Hebrew (names skipped). Baseline
+  run (before the rebuild): 387k flagged pairs / 5,918 distinct — `server/reading-gloss-audit.txt`.
+  Top: achad (one) 9,225, matham (men), ishah (did), kabad (great), shairay (city),
+  hamah (like) … Most come from render-corpus step 5c: a word the verse's Hebrew could not
+  answer for got its GLOBAL pin anyway. **5c is now gated** — the pin fires only if its
+  transliteration is a root in that verse's Hebrew; otherwise the English stays plain. And
+  with no HEB rows in the index, render-corpus saw NO Hebrew for any NT verse, so every
+  NT word went through the blanket pins — rebuild first, then render, then re-run the audit.
+
 **Also:** HebrewViewer prev/next arrows + ArrowLeft/Right were dead on every HEB-only book
 (`meta` came from the BHS book list → undefined → sideNav returned). Now falls back to the
 master dropdown entry.
@@ -46,6 +70,7 @@ cd server
 node build-surface-index.js          # HEB now included; check the "forced readings" line
 node sync-heb-tokens.mjs --check --out sync-check.txt   # then --apply if the report is clean
 node render-all.mjs --surface        # like→hamah gone; reseeds translation.db
+node audit-reading-glosses.mjs       # should be far below the 387k baseline
 ```
 Then Rebake (pushes surface-index.db + corpus.db).
 

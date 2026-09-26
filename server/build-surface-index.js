@@ -1850,10 +1850,41 @@ if (WITH_HEB) {
         } catch (e) { console.warn(`  ⚠ could not read ${HEB_OCC_OVERRIDES}: ${e.message}`); }
     }
     let forcedReadings = new Map();
+    const lemmaIndex = new Map();
     if (fs.existsSync(HEB_FORCED_READINGS)) {
         try {
+            // Two shapes: an array (forms resolveAll must offer) or {sn, pos, morph}
+            // (a whole-word Strong's lemma). The lemma shape is accepted ONLY when
+            // the dictionary's own lemma, consonants only, spells exactly this word.
+            const HEBL = 'אבגדהוזחטיכלמנסעפצקרשת', FIN = { 'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ' };
+            const lemmaPaleo = sn => {
+                const e = STRONGS_DICT[sn] || STRONGS_DICT[String(sn).replace(/^H/, '')];
+                const l = (e && e.lemma) || '';
+                let out = '';
+                for (const ch of l) { const c = FIN[ch] || ch; const i = HEBL.indexOf(c); if (i >= 0) out += String.fromCodePoint(0x10900 + i); }
+                return out;
+            };
             forcedReadings = new Map(Object.entries(JSON.parse(fs.readFileSync(HEB_FORCED_READINGS, 'utf8')))
-                .filter(([k, v]) => !k.startsWith('_') && Array.isArray(v)));
+                .filter(([k, v]) => {
+                    if (k.startsWith('_')) return false;
+                    if (Array.isArray(v)) return true;
+                    if (v && v.sn && lemmaPaleo(v.sn) === k) return true;
+                    console.warn(`  ⚠ forced reading ${k} -> ${JSON.stringify(v)} ignored: not an array, or ${v && v.sn}'s lemma (${v && v.sn ? lemmaPaleo(v.sn) : '-'}) does not spell this word`);
+                    return false;
+                }));
+            // Unambiguous, non-name whole-word lemmas for heb-align's lexicon-over-split
+            // rule. A name's strongs_def starts with the capitalised name ("Chasrah, an
+            // Israelite"); a spelling shared by 2+ non-name lemmas is left out.
+            const seen = new Map();
+            for (const sn of Object.keys(STRONGS_DICT)) {
+                const e = STRONGS_DICT[sn]; const def = String((e && e.strongs_def) || '').trim();
+                if (!def || /^[A-Z]/.test(def)) continue;
+                const p = lemmaPaleo(sn); if ([...p].length < 4) continue;
+                const k = /^H/.test(sn) ? sn : 'H' + sn;
+                seen.set(p, seen.has(p) && seen.get(p) !== k ? null : k);
+            }
+            for (const [p, sn] of seen) if (sn) lemmaIndex.set(p, sn);
+            console.log(`  ${lemmaIndex.size} unambiguous non-name lemmas indexed for lexicon-over-split`);
             console.log(`  ${forcedReadings.size} forced reading(s) loaded from ${path.basename(HEB_FORCED_READINGS)}`);
         } catch (e) { console.warn(`  ⚠ could not read ${HEB_FORCED_READINGS}: ${e.message}`); }
     }
@@ -1880,11 +1911,11 @@ if (WITH_HEB) {
                                    // truth: no separate list to keep in sync.
                                    fusedParticles: [...STANDALONE_WORDS],
                                    occurrenceOverrides,
-                                   forcedReadings,
+                                   forcedReadings, lemmaIndex,
                                    log: m => console.log(m) });
     if (forcedReadings.size) {
         const hs = hebResult.stats;
-        console.log(`  forced readings: ${hs.forcedReadingHits} occurrence(s) applied`
+        console.log(`  lexicon-over-split: ${hs.lexiconOverSplit} occurrence(s); forced readings: ${hs.forcedReadingHits} occurrence(s) applied`
             + (hs.forcedReadingMisses.length ? `; NOT attested (ignored): ${hs.forcedReadingMisses.join(' ')}` : ''));
     }
     const st = hebResult.stats;

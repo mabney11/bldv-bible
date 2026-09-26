@@ -351,6 +351,7 @@ function buildHebSurfaces(o) {
     const PREFER_PARTICLE_MAX = o.preferParticleMax === undefined ? 10 : o.preferParticleMax;
     let preferredSplits = 0;
     let forcedReadingHits = 0;
+    let lexiconOverSplit = 0;
     const forcedReadingMisses = new Map();   // word -> the readings resolveAll DID offer
     const {
         src, parseToken,
@@ -379,6 +380,8 @@ function buildHebSurfaces(o) {
         // itself proposed (attested stem, attested tail); it can never invent
         // one. Data lives in lexicon/heb-forced-readings.json.
         forcedReadings = new Map(),
+        // Whole-word Strong's lemmas (paleo consonants -> SN), unambiguous non-names only.
+        lemmaIndex = new Map(),
         log = () => {},
     } = o;
     const occKey = (b, c, v, ord) => `${b}|${c}|${v}|${ord}`;
@@ -1155,7 +1158,40 @@ function buildHebSurfaces(o) {
         for (let i = 0; i < hw.length; i++) {
             const w = hw[i];
             stats.nt_words++;
+            // Forced LEXICON reading ({sn, pos, morph} in heb-forced-readings.json):
+            // the whole written word IS a Strong's lemma the OT alignment never
+            // attested (jasper 𐤉𐤔𐤐𐤄 H3471 — its 3 OT verses didn't align, so the
+            // `adjacent` tier glued 𐤉𐤔 "there is" + 𐤐𐤄 "here" instead). The caller
+            // (build-surface-index.js) only passes entries whose Strong's lemma
+            // consonants equal the word exactly, so this cannot invent a reading.
+            const emitLexicon = (sn, pos, morph, tag) => {
+                const comp = composeWord([{ word_raw: w, pos: pos || 'subs', morph: morph || '',
+                                            strongs: sn, token_ordinal: 1 }], parseToken);
+                record(w, comp, 'lexicon', false);
+                bump(tag); stats.nt_hit++;
+                occurrences.push({
+                    source: corpus, word_raw: w, strongs: comp.strongs, pos: comp.pos, morph: comp.morph,
+                    book_id: row.canon_id, chapter: row.chapter, verse: row.verse, token_ordinal: i + 1,
+                });
+            };
+            {
+                const lf = forcedReadings.get(w);
+                if (lf && !Array.isArray(lf) && lf.sn) { forcedReadingHits++; emitLexicon(lf.sn, lf.pos, lf.morph, 'nt_lexicon'); continue; }
+            }
             const hit = resolve(w);
+            // LEXICON OVER A LOCATIVE-𐤄 SPLIT (2026-09-26 audit). A `suffix` reading whose
+            // tail is a bare 𐤄 ("[Toward]") on a word that is ITSELF, letter for letter, a
+            // non-name Strong's lemma is almost always a feminine noun split into a verb +
+            // directional He: 𐤕𐤇𐤋𐤄 tehillah "beginning" read as 𐤕 + chalal + [Toward],
+            // 𐤐𐤒𐤃𐤄 pekudah, 𐤕𐤔𐤅𐤁𐤄 teshuvah, 𐤍𐤇𐤌𐤄 nechamah … (50 words, 335 occurrences).
+            // lemmaIndex (from build-surface-index.js) holds only unambiguous, non-name
+            // lemmas, so this never invents a word the dictionary doesn't spell exactly.
+            if (hit && hit.tier === 'suffix' && hit.forms[hit.forms.length - 1] === '\u{10904}'
+                && [...w].length >= 4 && lemmaIndex.has(w) && !forcedReadings.has(w)) {
+                lexiconOverSplit++;
+                emitLexicon(lemmaIndex.get(w), 'subs', '', 'nt_lexicon_pref');
+                continue;
+            }
             if (!hit) {
                 let usedFallback = false;
 
@@ -1405,6 +1441,7 @@ function buildHebSurfaces(o) {
     stats.ambiguousReadings = ambiguousReadings;
     stats.preferredSplits = preferredSplits;
     stats.forcedReadingHits = forcedReadingHits;
+    stats.lexiconOverSplit = lexiconOverSplit;
     stats.forcedReadingMisses = [...forcedReadingMisses].map(([w, alts]) => `${w} (offered: ${alts})`);
     stats.ntTokensNtFallback = ntTokensNtFallback;
     return { surfaces, occurrences, audit, stats };
