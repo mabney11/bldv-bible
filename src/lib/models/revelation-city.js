@@ -278,7 +278,7 @@ export const PIECES = [
     parts: pearlGate(side, i), gates: [gateWay(side, i)],
   }))),
   ...TRIBES.map(([name, en], k) => ({
-    id: `dagal-${en.toLowerCase()}`, order: 43 + k / 100, group: 'life', material: 'cloth', raise: D('river'),
+    id: `dagal-${en.toLowerCase()}`, order: 43 + k / 100, group: 'life', material: 'cloth', raise: D('coming'),
     tag: `dagal (standard) · ${name}`, title: `The dagal (standard) of ${name} (${en}) among the trees — its sign, ${SIGNS[name].of.split(' — ')[0]}`,
     words: ['dagal', 'ayalan'], keys: ['dagal', 'standard', 'standards', 'banner', 'banners', 'flag', 'flags', 'sign', 'crest', name.toLowerCase(), en.toLowerCase()],
     on: V('66:21:12'), refs: `Revelation 21:12; ${SIGNS[name].ref}`,
@@ -290,7 +290,7 @@ export const PIECES = [
     parts: standardParts(k),
   })),
   {
-    id: 'rachab', order: 40, group: 'city', material: 'street', raise: D('gold'),
+    id: 'rachab', order: 40, group: 'city', material: 'street', raise: D('coming'),
     tag: 'rachab (street) · zahab (gold)', title: 'The rachab (street) of the shairay (city), naqaa (pure) zahab (gold), hamah (like) transparent glass',
     words: ['rachab', 'zahab'], keys: ['rachab', 'street'],
     on: V('66:21:21', '66:22:2'), refs: 'Revelation 21:21; 22:2',
@@ -301,7 +301,7 @@ export const PIECES = [
     parts: street(),
   },
   {
-    id: 'nahar', order: 41, group: 'life', material: 'life', raise: D('river'),
+    id: 'nahar', order: 41, group: 'life', material: 'life', raise: D('coming'),
     tag: 'nahar (river) of mayam (water) of chay (life)', title: 'A nahar (river) of mayam (water) of chay (life), clear as crystal, out of the kasaa (throne)',
     words: ['nahar', 'mayam', 'chay', 'kasaa'], keys: ['nahar', 'river', 'mayam', 'water', 'waters', 'crystal'],
     on: V('66:22:1-2'), refs: 'Revelation 22:1–2',
@@ -312,7 +312,7 @@ export const PIECES = [
     parts: river(),
   },
   {
-    id: 'itz', order: 42, group: 'life', material: 'leaf', raise: D('river'),
+    id: 'itz', order: 42, group: 'life', material: 'leaf', raise: D('coming'),
     tag: 'ayalan (tree) of chay (life)', title: 'The ayalan (tree) of chay (life) on this tzad (side) of the nahar (river) and on that: twelve zanay (kinds) of thabawaahath (fruits)',
     words: ['ayalan', 'chay', 'nahar', 'gawayam'], keys: ['ayalan', 'tree', 'trees', 'thabawaahath', 'fruit', 'fruits', 'ipay', 'leaves', 'rapaah', 'healing'],
     on: V('66:22:2', '66:22:14'), refs: 'Revelation 22:2, 14',
@@ -324,7 +324,7 @@ export const PIECES = [
     parts: trees(),
   },
   {
-    id: 'kasaa', order: 43, group: 'life', material: 'glory', raise: D('throne'),
+    id: 'kasaa', order: 43, group: 'life', material: 'glory', raise: D('coming'),
     tag: 'kasaa (throne) · in its midst', title: 'The kasaa (throne) of Alahayam and of the Lamb, in the thawak (midst) of the shairay (city)',
     words: ['kasaa', 'kabawad', 'awar', 'hayakal'], keys: ['kasaa', 'throne', 'kabawad', 'glory', 'nayar', 'lamp', 'hayakal', 'temple'],
     on: V('66:22:3-5', '66:21:22-23'), refs: 'Revelation 22:3–5; 21:22–23',
