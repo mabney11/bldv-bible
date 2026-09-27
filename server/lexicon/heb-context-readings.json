@@ -44,7 +44,6 @@
   "𐤁𐤍𐤇𐤋𐤒𐤉𐤄": {"sn": "H1121", "from": "H2518", "to_words": ["childr", "son", "sons"], "from_words": ["hilkia"], "note": "Chilhijah, the name of eight Israelites (0%) -> a son (as a builder of the family name), (67%) over 3 occ"},
   "𐤁𐤍𐤉𐤅𐤎𐤐": {"sn": "H1121", "from": "H3130", "to_words": ["childr", "son", "sons"], "from_words": ["joseph"], "note": "Joseph, the name of seven Israelites (0%) -> a son (as a builder of the family name), (100%) over 6 occ"},
   "𐤁𐤍𐤉𐤔𐤅𐤏": {"sn": "H1121", "from": "H3442", "to_words": ["childr", "son", "sons"], "from_words": ["jeshua"], "note": "Jeshua, the name of ten Israelites, also (0%) -> a son (as a builder of the family name), (67%) over 3 occ"},
-  "𐤁𐤍𐤋𐤅𐤉": {"sn": "H1121", "from": "H3878", "to_words": ["childr", "son", "sons"], "from_words": ["levi"], "note": "Levi, a son of Jacob (0%) -> a son (as a builder of the family name), (67%) over 3 occ"},
   "𐤁𐤏𐤅𐤋𐤄": {"sn": "H5766", "from": "H1166", "to_words": ["iniqui", "no", "unrigh"], "from_words": ["domini", "husban", "marri", "wife"], "note": "to be master; hence, to marry (17%) -> (moral) evil (67%) over 6 occ"},
   "𐤁𐤏𐤆": {"sn": "H5797", "from": "H1162", "to_words": ["power", "streng", "strong"], "from_words": ["boaz", "then"], "note": "Boaz, the ancestor of David; also the na (18%) -> strength in various applications (force, (54%) over 28 occ"},
   "𐤁𐤑𐤅𐤓𐤅𐤕": {"sn": "H1219", "from": "H6697", "to_words": ["all", "fortif"], "from_words": ["rock"], "note": "properly, a cliff (or sharp rock, as com (0%) -> to gather grapes; also to be isolated (i (75%) over 12 occ"},
@@ -231,5 +230,6 @@
   "𐤔𐤍𐤅": {"sn": "H8133", "from": "H8127", "to_words": ["chang", "divers"], "from_words": ["ivory", "teeth", "tooth"], "note": "a tooth (as sharp); specifically  ivory; (0%) -> {to alter} (67%) over 12 occ"},
   "𐤔𐤏𐤉𐤓𐤉𐤌": {"sn": "H8163", "from": "H8184", "to_words": ["goat", "male"], "from_words": ["barley"], "note": "barley (as villose) (0%) -> shaggy; as noun, a he-goat; by analogy,  (60%) over 5 occ"},
   "𐤔𐤏𐤓𐤄": {"sn": "H8177", "from": "H8184", "to_words": ["hair"], "from_words": ["barley"], "note": "barley (as villose) (0%) -> hair (60%) over 5 occ"},
-  "𐤕𐤀𐤉𐤌": {"sn": "H8372", "from": "H8380", "to_words": ["lodg", "lodge", "room"], "from_words": ["behold", "twin"], "note": "a twin (in plural only), literally or fi (0%) -> a room (as circumscribed) (75%) over 4 occ"}
+  "𐤕𐤀𐤉𐤌": {"sn": "H8372", "from": "H8380", "to_words": ["lodg", "lodge", "room"], "from_words": ["behold", "twin"], "note": "a twin (in plural only), literally or fi (0%) -> a room (as circumscribed) (75%) over 4 occ"},
+  "𐤁𐤍𐤋𐤅𐤉": {"sn": "H1121", "from": "H3878", "to_words": ["childr", "son", "sons"], "from_words": ["levi"], "note": "Levi, a son of Jacob (0%) -> a son (as a builder of the family name), (67%) over 3 occ"}
 }
