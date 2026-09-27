@@ -334,7 +334,7 @@ export class PieceBuilder {
       } else rr = top * (u / 0.3);
       pos.push(x + Math.cos(a) * rr, y + yy, z + Math.sin(a) * rr);
     }
-    for (let i = 0; i < N; i++) for (let j = 0; j < A; j++) { const a = i * A + j, b = i * A + ((j + 1) % A), c = a + A, d = b + A; idx.push(a, c, b, b, c, d); }
+    for (let i = 0; i < N; i++) for (let j = 0; j < A; j++) { const a = i * A + j, b = i * A + ((j + 1) % A), c = a + A, d = b + A; idx.push(a, b, c, b, d, c); }   // wound so the faces look up and out (the walker's ray down must meet a front face)
     const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setIndex(idx); geo.computeVertexNormals(); this.add(geo, matKey);
   }
   sphere(x, y, z, r, matKey, seg = 16) { const geo = new THREE.SphereGeometry(r, seg, Math.max(8, seg / 2)); geo.translate(x, y, z); this.add(geo, matKey); }

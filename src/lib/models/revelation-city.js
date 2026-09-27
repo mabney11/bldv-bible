@@ -510,7 +510,7 @@ export const MODEL = {
     navSkip: ['aratz', 'har', 'gawayam', 'itz', 'guph', ...TRIBES.map(([, en]) => `dagal-${en.toLowerCase()}`)],
     lights: [],
     walls: ['chawamah', ...STONES.map((_, i) => `yasawad-${i + 1}`), ...['north', 'east', 'south', 'west'].flatMap((s) => [0, 1, 2].map((i) => `gate-${s}-${i}`))],
-    notSolid: ['gawayam', 'aratz', 'har', 'guph'], farHide: ['guph'],   // the body hidden while the walker's view is pulled far back: from above it would hide him and the street
+    notSolid: ['gawayam', 'aratz', 'guph'], farHide: ['guph'],   // the mountain stays solid: its summit is the ground the walker stands on outside the walls (the plain lies millions of amah below)   // the body hidden while the walker's view is pulled far back: from above it would hide him and the street
     proxies: [],
     stairHouses: {},
     plan: {
