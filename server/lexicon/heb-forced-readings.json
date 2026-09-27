@@ -1,11 +1,41 @@
 {
   "_README": "HEB-edition forced segmentation, keyed by the written word (word_raw) -> the exact forms array heb-align.js's resolveAll() must produce for it (prefix letters..., stem, suffix tail). Applies to EVERY occurrence of that spelling, so use it only when the automatic pick is wrong everywhere. Evidence-gated: the reading is used only if heb-align itself proposed it (stem attested as a whole word, tail attested as a real suffix); otherwise it is ignored and reported by build-surface-index.js. Takes effect on the next `node build-surface-index.js --heb` (then sync-heb-tokens.mjs --apply to re-project tokens_nt).",
   "_2026-09-26": "shlichei 'apostles/messengers of' (Rev 21:14, 2 Cor 11:13, Jude 17, Josephus) was split as 𐤔 + 𐤋 + 𐤉𐤇𐤉 (jussive of chayah H2421, 'may he live'). Correct: root 𐤔𐤋𐤉𐤇 Shalayach (sent one, as every other apostle-word in the NT already reads) + construct-plural 𐤉.",
-  "𐤔𐤋𐤉𐤇𐤉": ["𐤔𐤋𐤉𐤇", "𐤉"],
-  "𐤋𐤔𐤋𐤉𐤇𐤉": ["𐤋", "𐤔𐤋𐤉𐤇", "𐤉"],
-  "𐤊𐤔𐤋𐤉𐤇𐤉": ["𐤊", "𐤔𐤋𐤉𐤇", "𐤉"],
-  "𐤅𐤋𐤔𐤋𐤉𐤇𐤉": ["𐤅", "𐤋", "𐤔𐤋𐤉𐤇", "𐤉"],
+  "𐤔𐤋𐤉𐤇𐤉": [
+    "𐤔𐤋𐤉𐤇",
+    "𐤉"
+  ],
+  "𐤋𐤔𐤋𐤉𐤇𐤉": [
+    "𐤋",
+    "𐤔𐤋𐤉𐤇",
+    "𐤉"
+  ],
+  "𐤊𐤔𐤋𐤉𐤇𐤉": [
+    "𐤊",
+    "𐤔𐤋𐤉𐤇",
+    "𐤉"
+  ],
+  "𐤅𐤋𐤔𐤋𐤉𐤇𐤉": [
+    "𐤅",
+    "𐤋",
+    "𐤔𐤋𐤉𐤇",
+    "𐤉"
+  ],
   "_lemma_shape": "{sn, pos, morph} = the whole written word is this Strong's lemma (accepted only if the dictionary lemma's consonants spell the word exactly). Candidates come from scripts' heb-reading-audit (lemma_conflicts): NT words resolved by gluing two OT words together although the word itself is a dictionary lemma.",
-  "𐤉𐤔𐤐𐤄": {"sn": "H3471", "pos": "subs", "morph": "sp=subs|pdp=subs|gn=m|nu=sg|st=a|prs=absent|uvf=absent"},
-  "𐤌𐤋𐤊𐤉𐤑𐤃𐤒": {"sn": "H4442", "pos": "nmpr", "morph": "sp=nmpr|pdp=nmpr"}
+  "𐤉𐤔𐤐𐤄": {
+    "sn": "H3471",
+    "pos": "subs",
+    "morph": "sp=subs|pdp=subs|gn=m|nu=sg|st=a|prs=absent|uvf=absent"
+  },
+  "𐤌𐤋𐤊𐤉𐤑𐤃𐤒": {
+    "sn": "H4442",
+    "pos": "nmpr",
+    "morph": "sp=nmpr|pdp=nmpr"
+  },
+  "_2026-09-27": "be'itah 'in its time' (1 Tim 2:6, 6:15, Heb 4:16, 2 Baruch 12:4/22:5/39:3/39:4, Josephus Ant.) matched the OT whole word 𐤁𐤏𐤕𐤄 H1205 be'atah 'terror' (Jer 8:15, 14:19 only) because an exact whole-word hit wins. Correct: 𐤁 [in] + 𐤏𐤕 Ith (H6256 time) + 𐤄 [Hers/feminine] - the same reading the HEB OT already bakes for be'itah. NT/Apocrypha only: resolve() never runs for canon 1-39, so the two genuine Jeremiah 'terror' occurrences keep H1205.",
+  "𐤁𐤏𐤕𐤄": [
+    "𐤁",
+    "𐤏𐤕",
+    "𐤄"
+  ]
 }
