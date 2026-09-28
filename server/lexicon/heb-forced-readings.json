@@ -7,7 +7,7 @@
   "𐤅𐤋𐤔𐤋𐤉𐤇𐤉": ["𐤅", "𐤋", "𐤔𐤋𐤉𐤇", "𐤉"],
   "_2026-09-27": "be'itah 'in its time' (1 Tim 2:6, 6:15, Heb 4:16, 2 Baruch 12:4/22:5/39:3/39:4, Josephus Ant.) matched the OT whole word 𐤁𐤏𐤕𐤄 H1205 be'atah 'terror' (Jer 8:15, 14:19) because an exact whole-word hit wins. Correct: 𐤁 [in] + 𐤏𐤕 (H6256 time) + 𐤄 [Hers/feminine], the reading the HEB OT already bakes for be'itah. resolve() only runs for canon 40+, so the two Jeremiah 'terror' occurrences keep H1205.",
   "𐤁𐤏𐤕𐤄": ["𐤁", "𐤏𐤕", "𐤄"],
-  "_2026-09-28": "we'amon 'and Amon' (Matt 1:10) was split as 𐤅 + 𐤀𐤌 'mother' + 𐤅 + 𐤍. Correct: 𐤅 [And] + 𐤀𐤌𐤅𐤍 Amawan (H526, the same reading the bare word already gets).",
+  "_2026-09-28": "we'amon 'and Amon' (Matt 1:10) was split as 𐤅 + 𐤀𐤌 'mother' + 𐤅 + 𐤍. Correct: 𐤅 [And] + 𐤀𐤌𐤅𐤍 Amawan (H526, the same reading the bare word already gets). Also hits Josephus Ant. 7:235, where the context ('alacrity and fidelity') suggests we'emun 'and faithfulness' (H529), which no OT form offers; Amon is no worse than 'mother' there.",
   "𐤅𐤀𐤌𐤅𐤍": ["𐤅", "𐤀𐤌𐤅𐤍"],
   "_lemma_shape": "{sn, pos, morph} = the whole written word is this Strong's lemma (accepted only if the dictionary lemma's consonants spell the word exactly). Candidates come from scripts' heb-reading-audit (lemma_conflicts): NT words resolved by gluing two OT words together although the word itself is a dictionary lemma.",
   "𐤉𐤔𐤐𐤄": {"sn": "H3471", "pos": "subs", "morph": "sp=subs|pdp=subs|gn=m|nu=sg|st=a|prs=absent|uvf=absent"},
