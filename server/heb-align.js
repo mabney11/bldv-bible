@@ -1264,7 +1264,13 @@ function buildHebSurfaces(o) {
                     const vs = verseStems(row.canon_id, row.chapter, row.verse);
                     const fromHit = (cr.from_words || []).some(x => vs.has(x));
                     const toHit = (cr.to_words || []).some(x => vs.has(x));
-                    if (fromHit && !toHit) {
+                    // Switch where the English supports the new reading. Where it
+                    // supports NEITHER, switch only if the old reading is implausible
+                    // across the whole corpus (from_agree <= 5%: porch for "but", the
+                    // river Kebar for "already"); a reading that does fit elsewhere
+                    // (𐤏𐤅𐤓 skin, 12% — "leather belt", Matt 3:4) stays.
+                    const fromAgree = typeof cr.from_agree === 'number' ? cr.from_agree : 0;
+                    if ((fromHit && !toHit) || (!toHit && fromAgree > 0.05)) {
                         contextVetoed++;
                     } else {
                         const isTail = (r, k) => (r.tier === 'suffix' || r.tier === 'affixed') && k === r.forms.length - 1;

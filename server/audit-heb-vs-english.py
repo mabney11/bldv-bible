@@ -232,6 +232,7 @@ if a.write:
         out[r['word']] = {
             'sn': r['to'], 'from': r['frm'],
             'to_words': sorted(PROF[r['to']]), 'from_words': sorted(PROF[r['frm']]),
+            'from_agree': round(r['a0'], 3), 'to_agree': round(r['a1'], 3),
             'note': f'{gl(r["frm"])} ({r["a0"]:.0%}) -> {gl(r["to"])} ({r["a1"]:.0%}) over {r["n"]} occ',
         }
     p = os.path.join(here, 'lexicon', 'heb-context-readings.json')
