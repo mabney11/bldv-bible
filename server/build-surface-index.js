@@ -57,6 +57,7 @@ const HEB_OCC_OVERRIDES = path.join(LEX_DIR, 'heb-occurrence-overrides.json');
 // see `forcedReadings` in heb-align.js. Only selects a reading heb-align itself
 // proposes from attested stem + tail; never invents one.
 const HEB_FORCED_READINGS = path.join(LEX_DIR, 'heb-forced-readings.json');
+const HEB_CONTEXT_READINGS = path.join(LEX_DIR, 'heb-context-readings.json');
 
 if (!fs.existsSync(BIBLE_DB)) {
     console.error(`✗ corpus.db (tokens_bhs source) not found at: ${BIBLE_DB}`);
@@ -1888,6 +1889,23 @@ if (WITH_HEB) {
             console.log(`  ${forcedReadings.size} forced reading(s) loaded from ${path.basename(HEB_FORCED_READINGS)}`);
         } catch (e) { console.warn(`  ⚠ could not read ${HEB_FORCED_READINGS}: ${e.message}`); }
     }
+    // Context readings (audit-heb-vs-english.py --write) + the English of every NT/
+    // Apocrypha verse, the independent witness heb-align uses per occurrence.
+    let contextReadings = new Map();
+    if (fs.existsSync(HEB_CONTEXT_READINGS)) {
+        try {
+            contextReadings = new Map(Object.entries(JSON.parse(fs.readFileSync(HEB_CONTEXT_READINGS, 'utf8')))
+                .filter(([k, v]) => !k.startsWith('_') && v && v.sn));
+            console.log(`  ${contextReadings.size} context reading(s) loaded from ${path.basename(HEB_CONTEXT_READINGS)}`);
+        } catch (e) { console.warn(`  ⚠ could not read ${HEB_CONTEXT_READINGS}: ${e.message}`); }
+    }
+    const _engVerse = new Map();
+    try {
+        for (const r of src.prepare(`SELECT canon_id, chapter, verse, text FROM verses WHERE corpus = 'ENG' AND canon_id >= 40`).all()) {
+            _engVerse.set(`${r.canon_id}|${Number(r.chapter)}|${Number(r.verse)}`, r.text || '');
+        }
+    } catch (e) { console.warn(`  ⚠ could not read the English verses: ${e.message}`); }
+    const englishOf = (c, ch, v) => _engVerse.get(`${c}|${Number(ch)}|${Number(v)}`) || '';
     console.log('\nBuilding HEB (extra) whole-word surfaces…');
     const tH = Date.now();
     // `--prefer-split=N` : a whole-word match attested <=N loses to a
@@ -1912,7 +1930,16 @@ if (WITH_HEB) {
                                    fusedParticles: [...STANDALONE_WORDS],
                                    occurrenceOverrides,
                                    forcedReadings, lemmaIndex,
+                                   contextReadings, englishOf,
                                    log: m => console.log(m) });
+    {
+        const hs = hebResult.stats;
+        console.log(`  context readings: ${hs.contextSwitches} occurrence(s) switched to the reading the verse's English supports, `
+            + `${hs.contextVetoed} kept (English supports the original); 3fs possessive 𐤄: ${hs.suffix3fs} occurrence(s)`
+            + (hs.contextMisses.length ? `; no matching reading offered for: ${hs.contextMisses.slice(0, 30).join(' ')}` : ''));
+        const _ctxOut = (() => { const i = process.argv.indexOf('--ctx-out'); return i >= 0 ? process.argv[i + 1] : 'heb-context-switches.txt'; })();
+        try { fs.writeFileSync(path.resolve(__dirname, _ctxOut), 'ref\tword\tfrom->to\tbefore -> after\n' + hs.contextLog.join('\n') + '\n'); console.log(`  (every switch listed in ${_ctxOut})`); } catch { /* report only */ }
+    }
     if (forcedReadings.size) {
         const hs = hebResult.stats;
         console.log(`  lexicon-over-split: ${hs.lexiconOverSplit} occurrence(s); forced readings: ${hs.forcedReadingHits} occurrence(s) applied`
