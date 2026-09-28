@@ -83,6 +83,80 @@ function groundTexture(tufts = 0) {
   });
   t.anisotropy = 8; return t;
 }
+/** A polished stone slab (a model's MATERIALS entry with `stone: { kind, base, light, dark, fleck, seam, joint, bands, cells }` and
+ *  `tile: [u, v]` cubits): drawn pixel by pixel from tileable noise so the pattern runs on unbroken across tiles — `mottle` (clouded,
+ *  as jasper and carnelian), `banded` (agate's waving bands: sardonyx, chalcedony), `crystal` (a mass of crystals, each its own shade:
+ *  emerald, topaz, amethyst), `lapis` (the sapphire of the ancients, lapis lazuli: deep blue, pale streaks, flecks of gold). `seam`
+ *  lays a gold line along the top and foot of each tile (a course between gold, as fieldy's painting of the twelve), `joint` the fine
+ *  line where one slab meets the next, at the tile's edge. */
+export function stoneTexture(spec, tile = [48, 6]) {
+  const [tu, tv] = tile, W = 1024, H = Math.max(64, Math.min(1024, Math.round((W * tv) / tu / 8) * 8));
+  const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  const img = g.createImageData(W, H), px = img.data;
+  let s = 0; for (const ch of JSON.stringify(spec)) s = (s * 31 + ch.charCodeAt(0)) >>> 0;
+  const rng = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+  // a periodic lattice of random values per octave: px cells across, py down — the noise wraps at the tile's edges
+  const lattice = (nx, ny) => { const a = new Float32Array(nx * ny); for (let i = 0; i < a.length; i++) a[i] = rng(); return { nx, ny, a }; };
+  const aspect = W / H, base = Math.max(2, Math.round(3 * aspect / 4) * 1);
+  const oct = [1, 2, 4, 8, 16].map((k) => lattice(Math.max(1, Math.round(base * k)), Math.max(1, Math.round((base * k) / aspect)) || 1));
+  const sm = (t) => t * t * (3 - 2 * t);
+  const val = (L, u, v) => { const x = u * L.nx, y = v * L.ny, x0 = Math.floor(x), y0 = Math.floor(y), fx = sm(x - x0), fy = sm(y - y0); const i0 = ((x0 % L.nx) + L.nx) % L.nx, i1 = (i0 + 1) % L.nx, j0 = ((y0 % L.ny) + L.ny) % L.ny, j1 = (j0 + 1) % L.ny; const a = L.a[j0 * L.nx + i0], b = L.a[j0 * L.nx + i1], cc = L.a[j1 * L.nx + i0], d = L.a[j1 * L.nx + i1]; return (a + (b - a) * fx) + ((cc + (d - cc) * fx) - (a + (b - a) * fx)) * fy; };
+  const fbm = (u, v, n = 5) => { let t = 0, amp = 0.5, sum = 0; for (let k = 0; k < n; k++) { t += val(oct[k], u, v) * amp; sum += amp; amp *= 0.5; } return t / sum; };
+  // the crystals: a jittered seed in every cell of a periodic grid, each pixel taking its nearest (and the gap to the second, for the
+  // crystal's face) — a granular mass of small crystals, each its own shade
+  const GX = Math.max(4, Math.round((spec.cells || 90) * 0.9)), GY = Math.max(1, Math.round(GX / aspect * 1.4)), sd = Array.from({ length: GX * GY }, () => [rng(), rng(), rng()]);
+  const worley = (u, v) => { const x = u * GX, y = v * GY, ix = Math.floor(x), iy = Math.floor(y); let d1 = 9, d2 = 9, k1 = 0; for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) { const cx = ix + i, cy = iy + j, w = ((cx % GX) + GX) % GX, h = ((cy % GY) + GY) % GY, q = sd[h * GX + w]; const dx = (cx + q[0] - x) * (GY / GX) * aspect, dy = cy + q[1] - y; const d = dx * dx + dy * dy; if (d < d1) { d2 = d1; d1 = d; k1 = h * GX + w; } else if (d < d2) d2 = d; } return [Math.sqrt(d2) - Math.sqrt(d1), sd[k1][2]]; };
+  const col = (h) => { const q = new THREE.Color(h).getHexString(); return [0, 2, 4].map((i) => parseInt(q.slice(i, i + 2), 16)); };   // the hex's own sRGB values (THREE.Color holds linear)
+  const B = col(spec.base), Lt = col(spec.light || spec.base), Dk = col(spec.dark || spec.base), F = spec.fleck ? col(spec.fleck) : null, WH = [236, 232, 226];
+  const mix3 = (t) => (t < 0.5 ? Dk.map((d, i) => d + (B[i] - d) * (t / 0.5)) : B.map((b, i) => b + (Lt[i] - b) * ((t - 0.5) / 0.5)));
+  const kind = spec.kind || 'mottle', bands = spec.bands || 5;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const u = x / W, v = y / H, n = fbm(u, v);
+    let t, white = 0;
+    if (kind === 'banded') {   // agate: bands that wander and pinch, finer lines within them, clouded
+      const w1 = fbm(u + 0.37, v + 0.11, 4), w2 = fbm(u + 0.73, v + 0.59, 3), ph = v * bands + (w1 - 0.5) * 3.2 + (w2 - 0.5) * 1.1;
+      const b1 = 0.5 + 0.5 * Math.sin(ph * Math.PI * 2), b2 = 0.5 + 0.5 * Math.sin(ph * Math.PI * 10.5);
+      t = 0.28 + n * 0.45 + (b1 - 0.5) * 0.36 + (b2 - 0.5) * 0.05; white = Math.max(0, b1 - 0.9) * 2.4 * (spec.white ?? 1);
+    } else if (kind === 'crystal') { const [edge, sk] = worley(u, v); t = 0.4 + (sk - 0.5) * 0.22 + (n - 0.5) * 0.7 + (edge < 0.05 ? 0.07 * (1 - edge / 0.05) : 0); }
+    else { const r = 1 - Math.abs(2 * fbm(u + 0.51, v + 0.23, 4) - 1); t = n * 0.9 + 0.08 + Math.pow(r, 7) * 0.25; if (kind === 'lapis') { t = n * 0.9 + 0.08; white = Math.pow(r, 12) * 0.38; } }
+    t = Math.max(0, Math.min(1, t));
+    let [r, gg, b] = mix3(t);
+    if (white > 0) { const k = Math.min(1, white); r += (WH[0] - r) * k; gg += (WH[1] - gg) * k; b += (WH[2] - b) * k; }
+    if (F && kind === 'lapis') { const f = fbm(u * 3 + 0.8, v * 3 + 0.1, 3); if (rng() < Math.max(0, f - 0.6) * 0.09) { r = F[0]; gg = F[1]; b = F[2]; } }   // the gold of the pyrite, in drifts
+    const k = 4 * (y * W + x); px[k] = r; px[k + 1] = gg; px[k + 2] = b; px[k + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  if (spec.joint) {   // where one slab meets the next: a fine dark line, a lit arris either side
+    g.fillStyle = spec.joint; g.fillRect(0, 0, 2, H); g.fillStyle = 'rgba(255,255,255,0.18)'; g.fillRect(2, 0, 2, H); g.fillStyle = 'rgba(0,0,0,0.16)'; g.fillRect(W - 3, 0, 3, H);
+    if (spec.jointRows) for (let j = 0; j < spec.jointRows; j++) { const yy = Math.round((j * H) / spec.jointRows); g.fillStyle = spec.joint; g.fillRect(0, yy - 1, W, 2); }
+  }
+  if (spec.seam) {   // the gold between the courses
+    const sh = Math.max(3, Math.round(H * 0.035));
+    g.fillStyle = spec.seam; g.fillRect(0, 0, W, sh); g.fillRect(0, H - sh, W, sh);
+    g.fillStyle = 'rgba(255,248,210,0.55)'; g.fillRect(0, H - sh, W, 1); g.fillRect(0, 0, W, 1);
+    g.fillStyle = 'rgba(0,0,0,0.18)'; g.fillRect(0, sh, W, 2); g.fillRect(0, H - sh - 2, W, 2);
+  }
+  const tex = new THREE.CanvasTexture(c); tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  return tex;
+}
+/** A house's face, one bay by one storey (a MATERIALS entry with `facade: { wall, trim, glass, arch }` and `tile: [bay, storey]`):
+ *  dressed stone, a band at the floor, a window with its frame and a pane of gold-lit glass (the city's own light in it). */
+export function facadeTexture(f) {
+  return canvas(192, 160, (g, w, h) => {
+    g.fillStyle = f.wall; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 500; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '255,255,255' : '90,70,30'},${0.03 + rnd() * 0.05})`; const r = 1 + rnd() * 5; g.beginPath(); g.arc(rnd() * w, rnd() * h, r, 0, Math.PI * 2); g.fill(); }
+    g.strokeStyle = 'rgba(90,70,30,0.16)'; g.lineWidth = 1;   // the courses of the stone
+    for (let y = 20; y < h; y += 20) { g.beginPath(); g.moveTo(0, y + 0.5); g.lineTo(w, y + 0.5); g.stroke(); for (let x = ((y / 20) % 2) * 32; x < w; x += 64) { g.beginPath(); g.moveTo(x + 0.5, y); g.lineTo(x + 0.5, y + 20); g.stroke(); } }
+    g.fillStyle = f.trim; g.fillRect(0, h - 10, w, 10); g.fillStyle = 'rgba(0,0,0,0.12)'; g.fillRect(0, h - 12, w, 2);   // the band at the floor (the tile's foot)
+    const ww = 64, wh = 84, wx = (w - ww) / 2, wy = 34;
+    g.fillStyle = f.trim; if (f.arch) { g.beginPath(); g.moveTo(wx - 7, wy + wh + 7); g.lineTo(wx - 7, wy + ww / 2); g.arc(w / 2, wy + ww / 2, ww / 2 + 7, Math.PI, 0); g.lineTo(wx + ww + 7, wy + wh + 7); g.closePath(); g.fill(); } else g.fillRect(wx - 7, wy - 7, ww + 14, wh + 14);
+    const gr = g.createLinearGradient(0, wy, 0, wy + wh); gr.addColorStop(0, f.glass); gr.addColorStop(0.55, shade(f.glass, 0.7)); gr.addColorStop(1, shade(f.glass, 0.45));
+    g.fillStyle = gr; if (f.arch) { g.beginPath(); g.moveTo(wx, wy + wh); g.lineTo(wx, wy + ww / 2); g.arc(w / 2, wy + ww / 2, ww / 2, Math.PI, 0); g.lineTo(wx + ww, wy + wh); g.closePath(); g.fill(); } else g.fillRect(wx, wy, ww, wh);
+    g.fillStyle = f.trim; g.fillRect(w / 2 - 3, wy + (f.arch ? ww / 2 : 0), 6, wh - (f.arch ? ww / 2 : 0)); g.fillRect(wx, wy + wh * 0.55, ww, 5);   // the mullion and transom
+    g.fillStyle = 'rgba(255,250,225,0.35)'; g.fillRect(wx + 6, wy + (f.arch ? ww / 2 : 6), 8, wh * 0.4);   // a gleam
+    g.fillStyle = shade(f.trim, 0.8); g.fillRect(wx - 10, wy + wh + 7, ww + 20, 6);   // the sill
+  });
+}
 /** The hatch laid over what is idealized: fine diagonal lines on white (multiplied onto the material), the draughtsman's mark for conjecture. */
 function hatchTexture() {
   return canvas(128, 128, (g, w, h) => {
@@ -208,7 +282,10 @@ export function makeMaterials(MATERIALS = BASE_MATERIALS) {
   // a model's colour table may also give `cells` (rows of colours) with `tile` [u, v] cubits: a hard-edged pattern repeated over the
   // part at world scale — the twelve stones of the city's foundation in the ephod's rows, on a wall a thousand miles long
   const cellsTexture = (rows) => { const c = document.createElement('canvas'); const cw = rows[0].length, ch = rows.length; c.width = cw * 8; c.height = ch * 8; const g = c.getContext('2d'); rows.forEach((row, j) => row.forEach((col, i) => { g.fillStyle = col; g.fillRect(i * 8, (ch - 1 - j) * 8, 8, 8); })); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = THREE.NearestFilter; t.minFilter = THREE.LinearMipmapLinearFilter; t.anisotropy = 8; t.colorSpace = THREE.SRGBColorSpace; return t; };
-  const std = (key, extra = {}) => { const m = MATERIALS[key]; const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(m.color), metalness: m.metal, roughness: m.rough, ...(m.emissive ? { emissive: new THREE.Color(m.emissive), emissiveIntensity: m.emissiveIntensity ?? 0.55 } : {}), ...(m.opacity != null ? { transparent: true, opacity: m.opacity, depthWrite: false } : {}), ...(m.cells ? { map: cellsTexture(m.cells) } : {}), ...extra }); if (m.tile) mat.userData.tile = m.tile; return mat; };
+  const std = (key, extra = {}) => { const m = MATERIALS[key]; const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(m.color), metalness: m.metal, roughness: m.rough, ...(m.emissive ? { emissive: new THREE.Color(m.emissive), emissiveIntensity: m.emissiveIntensity ?? 0.55 } : {}), ...(m.opacity != null ? { transparent: true, opacity: m.opacity, depthWrite: false } : {}), ...(m.cells ? { map: cellsTexture(m.cells) } : {}), ...extra }); if (m.tile) mat.userData.tile = m.tile;
+    if (m.facade) { mat.map = facadeTexture(m.facade); mat.color.set('#ffffff'); }
+    if (m.stone) { const tx = stoneTexture(m.stone, m.tile); mat.map = tx; mat.color.set('#ffffff'); if (m.emissive) { mat.emissiveMap = tx; mat.emissive.set('#ffffff'); } }   // a polished stone: its colours in the drawing (the table's colour is the sheet's)
+    return mat; };
   const ashlar = ashlarTexture(MATERIALS.stone.color, '#8a7a5e');
   const ashlarDark = ashlarTexture(MATERIALS.found.color, '#5b4d36');
   const plank = plankTexture(MATERIALS.cedar.color);
@@ -1258,4 +1335,43 @@ export function exportGlb(obj, name, toFileFrame = false) {
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${name}.glb`; a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   }, (e) => console.warn('[temple] export failed', e), { binary: true, onlyVisible: false });
+}
+
+/** A stand-in for the rays of the walk (the ground under him, the wall before him) over a piece made of thousands of axis-aligned
+ *  boxes — a city's homes: the boxes kept in a grid of `cell` amah, so a ray tests only the few boxes of the cells it crosses rather
+ *  than every triangle of the merged meshes. Added as a child of the piece's group (its position under the group's hoist) so it
+ *  moves and hides with the piece; `raycast` reports { distance, point, object } as a mesh would. */
+export function boxSolid(parts, base = 0, cell = 64) {
+  const boxes = [], grid = new Map();
+  for (const p of parts) if (p.kind === 'box' && !p.rot) boxes.push([p.x - p.w / 2, p.y ?? 0, p.z - p.d / 2, p.x + p.w / 2, (p.y ?? 0) + p.h, p.z + p.d / 2]);
+  boxes.forEach((b, i) => { for (let gx = Math.floor(b[0] / cell); gx <= Math.floor(b[3] / cell); gx++) for (let gz = Math.floor(b[2] / cell); gz <= Math.floor(b[5] / cell); gz++) { const k = `${gx},${gz}`; if (!grid.has(k)) grid.set(k, []); grid.get(k).push(i); } });
+  const o = new THREE.Object3D(); o.position.y = -base; o.userData.boxSolid = true;
+  const inv = new THREE.Matrix4(), ro = new THREE.Vector3(), rd = new THREE.Vector3(), hit = new THREE.Vector3();
+  o.raycast = (raycaster, out) => {
+    o.updateWorldMatrix(true, false); inv.copy(o.matrixWorld).invert();
+    const r = raycaster.ray; ro.copy(r.origin).applyMatrix4(inv); rd.copy(r.direction).transformDirection(inv);
+    const far = Math.min(raycaster.far, 1e8), near = raycaster.near || 0;
+    // walk the cells the ray crosses (2D, x-z), nearest first; the first box met in a cell's nearer part ends it
+    let gx = Math.floor(ro.x / cell), gz = Math.floor(ro.z / cell);
+    const sx = Math.sign(rd.x), sz = Math.sign(rd.z), tdx = sx ? Math.abs(cell / rd.x) : Infinity, tdz = sz ? Math.abs(cell / rd.z) : Infinity;
+    let tx = sx ? ((sx > 0 ? (gx + 1) * cell : gx * cell) - ro.x) / rd.x : Infinity, tz = sz ? ((sz > 0 ? (gz + 1) * cell : gz * cell) - ro.z) / rd.z : Infinity;
+    let t0 = 0, best = Infinity, seen = new Set();
+    for (let steps = 0; steps < 4096 && t0 <= far; steps++) {
+      const list = grid.get(`${gx},${gz}`);
+      if (list) for (const i of list) {
+        if (seen.has(i)) continue; seen.add(i); const b = boxes[i];
+        let lo = -Infinity, hi = far;   // the slab test (a ray starting inside a box does not meet it)
+        for (let a = 0; a < 3; a++) { const oa = a === 0 ? ro.x : a === 1 ? ro.y : ro.z, da = a === 0 ? rd.x : a === 1 ? rd.y : rd.z, mn = b[a], mx = b[a + 3]; if (Math.abs(da) < 1e-12) { if (oa < mn || oa > mx) { lo = Infinity; break; } continue; } let t1 = (mn - oa) / da, t2 = (mx - oa) / da; if (t1 > t2) [t1, t2] = [t2, t1]; if (t1 > lo) lo = t1; if (t2 < hi) hi = t2; if (lo > hi) break; }
+        if (lo <= hi && lo < best && lo >= near) best = lo;
+      }
+      const tNext = Math.min(tx, tz); if (best <= tNext) break;
+      t0 = tNext; if (tx < tz) { tx += tdx; gx += sx; } else { tz += tdz; gz += sz; }
+      if (!isFinite(t0)) break;
+    }
+    if (best === Infinity || best > far) return;
+    hit.copy(rd).multiplyScalar(best).add(ro).applyMatrix4(o.matrixWorld);
+    const distance = r.origin.distanceTo(hit); if (distance < raycaster.near || distance > raycaster.far) return;
+    out.push({ distance, point: hit.clone(), object: o });
+  };
+  return o;
 }

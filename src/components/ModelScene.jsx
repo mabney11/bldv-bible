@@ -30,7 +30,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
-import { SKY, XRAY_GROUPS, makeMaterials, loadPhotos, buildPiece, cutGates, loadGlb, fitSlot, personFigure, exportGlb, PieceBuilder } from './model3d/builders.js';
+import { SKY, XRAY_GROUPS, makeMaterials, loadPhotos, buildPiece, cutGates, loadGlb, fitSlot, personFigure, exportGlb, PieceBuilder, boxSolid } from './model3d/builders.js';
 import { templeExtras } from './model3d/templeExtras.js';
 import { tabernacleExtras } from './model3d/tabernacleExtras.js';
 import { cityExtras } from './model3d/cityExtras.js';
@@ -158,7 +158,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
 
     // ── Roam: the viewer on their own feet (state; the controller is below) ──
     const roam = {
-      on: false, yaw: Math.PI, pitch: 0, body: Math.PI, foot: GROUND, keys: new Set(), glide: null, moving: false, mul: 1,   // mul: the pace the reader picked (1 walk, or faster across a city)   // yaw/pitch: where the EYE looks; body: which way the figure faces (his own way while being walked, the look otherwise)
+      on: false, yaw: Math.PI, pitch: 0, body: Math.PI, foot: GROUND, keys: new Set(), glide: null, moving: false, mul: 1, fly: false,   // fly: carried through the air (the view pulled far back)   // mul: the pace the reader picked (1 walk, or faster across a city)   // yaw/pitch: where the EYE looks; body: which way the figure faces (his own way while being walked, the look otherwise)
       stick: { x: 0, y: 0 },                                                  // the thumb stick (touch): x strafe, y forward, each −1 … 1
       air: 0, vy: 0,                                                          // in the air (a jump, or walked off an edge): 1 while airborne, and the feet's upward speed
       airV: { x: 0, z: 0 }, vel: { x: 0, z: 0 }, landAt: 0,                  // the jump's carry (amah/s, kept through the air), the last ground speed, when the feet last landed
@@ -523,8 +523,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       cancelAuto(); carryEl.classList.add('tp-carry-on');
       setTimeout(() => {
         const yaw = face ? Math.atan2(face[1] - z, face[0] - x) : roam.yaw;
-        camera.position.x = x; camera.position.z = z; roam.yaw = yaw; roam.body = yaw; roam.pitch = 0; roam.air = 0; roam.vy = 0; nav = null; levelNavs.clear();
-        const gy = groundUnder(x, z, roam.foot + 3); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; }
+        camera.position.x = x; camera.position.z = z; roam.yaw = yaw; roam.body = yaw; roam.pitch = 0; roam.air = 0; roam.vy = 0; roam.fly = false; nav = null; levelNavs.clear();
+        const gy = groundUnder(x, z, roam.foot + 3) ?? groundUnder(x, z, camera.position.y + 1, Infinity); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; }
         aimCamera(); remember(); dirty = true;
         autoEl.hidden = false; autoEl.innerHTML = 'Carried to <b></b>'; autoEl.querySelector('b').textContent = label || 'the place';
         setTimeout(() => { carryEl.classList.remove('tp-carry-on'); dirty = true; }, 120);
@@ -627,7 +627,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       return { x0: b.x0 - m, x1: b.x1 + m, z0: b.z0 - m, z1: b.z1 + m };
     }
     function bigFrame(W) {   // the map's transform: world → pixels, north up, the view's extent fitted
-      const E = viewExt(), ext = Math.max(E.x1 - E.x0, E.z1 - E.z0), S = W / ext;
+      const E = viewExt(), ext = Math.max(E.x1 - E.x0, E.z1 - E.z0) * (mapView ? 1 : 1 + 2 * (SC.plan.pad || 0)), S = W / ext;   // the whole map keeps a margin (plan.pad) for the names standing outside the wall
       return { S, ox: W / 2 - (E.x0 + E.x1) / 2 * S, oz: W / 2 - (E.z0 + E.z1) / 2 * S };
     }
     const levelPlaces = () => (mapView ? mapView.children || [] : PLACES);
@@ -714,6 +714,17 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
           if (n.children?.length) { g.font = `${Math.round(9 * dpr)}px system-ui, sans-serif`; g.fillStyle = 'rgba(255, 208, 98, 0.8)'; g.textAlign = 'right'; g.fillText('▸', x1 - 3 * dpr, y0 + 8 * dpr); g.textAlign = 'center'; }
         }
       }
+      // a model too big for its walls to show at the map's scale (the city of the Revelation) gives them as lines and marks drawn at the
+      // map's own sizes: its wall's outline, its street, a pearl at every gate (fieldy: "clearly see all tribal gates")
+      if (big && !mapView) {
+        for (const [x0, z0, x1, z1] of SC.plan.outline || []) { const [a, b] = P(x0, z0), [c, d] = P(x1, z1); g.lineWidth = 3 * dpr; g.strokeStyle = 'rgba(168, 216, 192, 0.95)'; g.strokeRect(a, b, c - a, d - b); g.lineWidth = 1 * dpr; g.strokeStyle = 'rgba(217, 178, 74, 0.9)'; g.strokeRect(a + 2.5 * dpr, b + 2.5 * dpr, c - a - 5 * dpr, d - b - 5 * dpr); }
+        for (const ln of SC.plan.lines || []) { const [a, b] = P(...ln.from), [c, d] = P(...ln.to); g.lineWidth = (ln.w || 2) * dpr; g.strokeStyle = ln.color || 'rgba(255, 214, 110, 0.85)'; g.beginPath(); g.moveTo(a, b); g.lineTo(c, d); g.stroke(); }
+        for (const mk of SC.plan.marks || []) {
+          const [a, b] = P(mk.x, mk.z);
+          if (mk.kind === 'throne') { const gr = g.createRadialGradient(a, b, 0, a, b, 11 * dpr); gr.addColorStop(0, 'rgba(255,255,240,1)'); gr.addColorStop(0.45, 'rgba(255,226,140,0.9)'); gr.addColorStop(1, 'rgba(255,200,80,0)'); g.fillStyle = gr; g.beginPath(); g.arc(a, b, 11 * dpr, 0, Math.PI * 2); g.fill(); continue; }
+          g.beginPath(); g.arc(a, b, 6 * dpr, 0, Math.PI * 2); g.fillStyle = '#fbf6ee'; g.fill(); g.lineWidth = 2 * dpr; g.strokeStyle = '#ffd062'; g.stroke();
+        }
+      }
       // the route he is being led on: a gold line from his feet through the waypoints, arrows along it pointing the way
       if (auto) {
         const pts = [[px, pz], ...auto.path.slice(auto.i)].map(([x, z]) => P(x, z));
@@ -728,14 +739,20 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         const [ex, ey] = pts[pts.length - 1]; g.beginPath(); g.arc(ex, ey, 4 * dpr, 0, Math.PI * 2); g.fillStyle = '#fff3c4'; g.fill(); g.strokeStyle = '#8a6716'; g.lineWidth = 1.5 * dpr; g.stroke();
       }
       // labels stay upright (the big map: all of them, larger)
-      g.font = `${Math.round((big ? 11 : 9) * dpr)}px system-ui, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.font = `${big && SC.plan.outline ? '600 ' : ''}${Math.round((big ? (SC.plan.outline ? 13 : 11) : 9) * dpr)}px system-ui, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
       for (const [lx, lz, t] of PLAN_LABELS) {
         if (!big && Math.hypot(lx - px, lz - pz) > MM_R * 1.25) continue;
         if (big && mapView) continue;   // drilled in: the place's own names
         if (big && mapHover && lx >= mapHover.bounds.x0 && lx <= mapHover.bounds.x1 && lz >= mapHover.bounds.z0 && lz <= mapHover.bounds.z1) continue;   // the hovered place shows its own name
-        const [sx, sy] = P(lx, lz);
+        let [sx, sy] = P(lx, lz);
+        if (big && SC.plan.outline) {   // a gate's name beside its pearl: north and south outside the wall, east and west just within it
+          const [ox0, oz0, ox1, oz1] = SC.plan.outline[0];
+          if (lx > ox1) { g.textAlign = 'right'; sx = P(ox1, 0)[0] - 12 * dpr; sy -= 12 * dpr; } else if (lx < ox0) { g.textAlign = 'left'; sx = P(ox0, 0)[0] + 12 * dpr; sy -= 12 * dpr; } else g.textAlign = 'center';   // east and west: read inward from the gate, over the line of the street
+          if (lz < oz0) sy = P(0, oz0)[1] - 16 * dpr; else if (lz > oz1) sy = P(0, oz1)[1] + 16 * dpr;
+        }
         g.lineWidth = 3 * dpr; g.strokeStyle = 'rgba(14, 11, 8, 0.85)'; g.strokeText(t, sx, sy); g.fillStyle = big && gotoAsk?.label === t ? '#ffd062' : '#f3e3b8'; g.fillText(t, sx, sy);
       }
+      g.textAlign = 'center';
       if (big && gotoAsk && !gotoAsk.label) { const [sx, sy] = P(gotoAsk.x, gotoAsk.z); g.beginPath(); g.arc(sx, sy, 5 * dpr, 0, Math.PI * 2); g.strokeStyle = '#ffd062'; g.lineWidth = 2 * dpr; g.stroke(); }
       // north, at the rim
       { const nx = big ? 0 : -sa * -1, ny = big ? -1 : ca * -1; const rx = W / 2 + nx * (W / 2 - 9 * dpr), ry = W / 2 + ny * (W / 2 - 9 * dpr); g.font = `bold ${Math.round(10 * dpr)}px system-ui, sans-serif`; g.fillStyle = '#ffd062'; g.fillText('N', rx, ry); }
@@ -847,12 +864,18 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     // does not look up the tree (the mashakan's boards, still unraised, were pulling the opening's camera into the fire)
     const shown = (o) => { for (let q = o; q; q = q.parent) if (!q.visible) return false; return true; };
     for (const id of WALLS) byId(id)?.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) wallSolids.push(o); });
-    for (const [id, g] of groups) if (!NOT_SOLID.has(id)) g.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) solids.push(o); });
+    const BOX_SOLID = new Set(SC.boxSolids || []);   // pieces of thousands of plain boxes (a city's homes): their rays go to a grid of the boxes, not the merged triangles
+    for (const [id, g] of groups) if (!NOT_SOLID.has(id)) {
+      if (BOX_SOLID.has(id)) { const bs = boxSolid(PIECES.find((p) => p.id === id)?.parts || [], g.userData.base || 0); g.add(bs); solids.push(bs); continue; }
+      g.traverse((o) => { if (o.isMesh && !o.isInstancedMesh && !o.userData.lamp) solids.push(o); });
+    }
     for (const p of SC.proxies) { const c = new THREE.Mesh(new THREE.CylinderGeometry(p.r, p.r, p.h, 12)); c.position.set(p.x, p.y + p.h / 2, p.z); c.updateMatrixWorld(true); solids.push(c); wallSolids.push(c); }   // plain stand-ins for what is too fine to ray against (Yakayan and Baiz with their four hundred pomegranates)
     const rRay = new THREE.Raycaster(); rRay.firstHitOnly = true;
     const fwd = new THREE.Vector3(), rightV = new THREE.Vector3(), step = new THREE.Vector3(), probe = new THREE.Vector3(), downV = new THREE.Vector3(0, -1, 0), upV = new THREE.Vector3(0, 1, 0), avatarEye = new THREE.Vector3(), backV = new THREE.Vector3();
     const WALK = 32, RUN = 56, STEP_UP = 2.4, RADIUS = 1.1, TURN = 1.6;   // amah/s: a brisk walk by default (fieldy: the old Shift pace), Shift to run
     const JUMP_V = 9.5, GRAVITY = 26;                                        // a spacebar jump of ~1¾ amah (v²/2g), up and down in ~¾ s
+    const FLY_K = 0.45;                                                      // carried, far back: the pace, in view-distances a second (the ball crosses about half the view a second)
+    const FLY_CEIL = GROUND + 1.2 * Math.max(EXT.x1 - EXT.x0, EXT.z1 - EXT.z0) + 200;   // how high he may be carried: a little over the model's span
     function roamDir(out, pitch = roam.pitch) { return out.set(Math.cos(pitch) * Math.cos(roam.yaw), Math.sin(pitch), Math.cos(pitch) * Math.sin(roam.yaw)); }
     function aimCamera() {
       roamDir(fwd); camera.lookAt(probe.copy(camera.position).add(fwd));
@@ -862,8 +885,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       rRay.set(from, dir); rRay.far = len; rRay.near = 0;
       return rRay.intersectObjects(solids, false).some((h) => shown(h.object) && !(h.object.material?.transparent && h.object.material.opacity < 0.3));
     }
-    function groundUnder(x, z, fromY) {
-      probe.set(x, fromY, z); rRay.set(probe, downV); rRay.far = 80; rRay.near = 0;
+    function groundUnder(x, z, fromY, far = 80) {
+      probe.set(x, fromY, z); rRay.set(probe, downV); rRay.far = far; rRay.near = 0;
       const h = rRay.intersectObjects(solids, false).find((q) => shown(q.object));
       return h ? h.point.y : null;
     }
@@ -912,6 +935,32 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         if (k >= 1) roam.glide = null;
         aimCamera(); return true;
       }
+      // CARRIED (fieldy: "as I zoom out I still want to be able to move … as if I were moving the person, the speed … scaled
+      // automatically … up or down wherever my cursor is looking"): with the view pulled far back, the walking keys (or the stick)
+      // carry him through the air as the malaak (angel) carried Yawachanan — along his line of sight, climbing where he looks up and
+      // sinking where he looks down, at a pace that grows with the view's distance (the ball crosses the view in a few seconds at any
+      // zoom), over walls and roofs, never below the ground. Held there while the keys rest; brought in close, he is set down.
+      if (roam.fly && !farOn()) { roam.fly = false; land(); if (roam.glide) return true; }
+      if (farOn()) {
+        const K = roam.keys, S = roam.stick, stickMag = Math.hypot(S.x, S.y);
+        const drive = K.has('forward') || K.has('back') || K.has('left') || K.has('right') || stickMag >= 0.05;
+        if (drive && !roam.fly) { roam.fly = true; roam.air = 0; roam.vy = 0; cancelAuto(false); }
+        if (roam.fly) {
+          if (K.has('turnL')) roam.yaw -= TURN * dt; if (K.has('turnR')) roam.yaw += TURN * dt;
+          const v = Math.max(WALK * roam.mul, roam.dist * FLY_K) * (K.has('run') || stickMag > 0.92 ? 2.5 : 1) * dt;
+          roamDir(fwd); rightV.set(-Math.sin(roam.yaw), 0, Math.cos(roam.yaw));
+          let f = (K.has('forward') ? 1 : 0) - (K.has('back') ? 1 : 0), r = (K.has('right') ? 1 : 0) - (K.has('left') ? 1 : 0);
+          if (stickMag >= 0.05) { const k = Math.min(1, stickMag) / stickMag; f += S.y * k; r += S.x * k; }
+          const eye = camera.position;
+          eye.addScaledVector(fwd, f * v).addScaledVector(rightV, r * v);
+          if (eye.y > FLY_CEIL) eye.y = FLY_CEIL;
+          const gy = groundUnder(eye.x, eye.z, eye.y + 1, Infinity);
+          if (gy != null && eye.y < gy + ROAM_EYE) eye.y = gy + ROAM_EYE;   // skimming the ground: he goes along it, not into it
+          roam.foot = eye.y - ROAM_EYE; roam.moving = drive; roam.vel.x = roam.vel.z = 0;
+          if (drive) { aimCamera(); remember(); }
+          return drive || changed;
+        }
+      }
       // in the air (a jump, or off an edge): the feet fall under gravity until the ground under them is met — a roof, a floor,
       // the court — while any walking goes on; a ceiling stops the rise
       if (roam.air) {
@@ -944,19 +993,28 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     }
     let memoAt = 0;
     function remember() {
-      ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, dist: roam.dist, open: { ...roam.want }, start: ROAM_START.pos };
+      ROAM_MEMO = { pos: camera.position.toArray(), yaw: roam.yaw, pitch: roam.pitch, dist: roam.dist, fly: !!roam.fly, open: { ...roam.want }, start: ROAM_START.pos };
       const now = performance.now(); if (now - memoAt > 1000) { memoAt = now; MEMO[model.id] = ROAM_MEMO; try { sessionStorage.setItem(STORE, JSON.stringify(ROAM_MEMO)); } catch { /* fine */ } }   // a reload keeps the spot too
+    }
+    /** set down from a carry: glided to the ground under him (the view brought in close) */
+    function land() {
+      const eye = camera.position, gy = groundUnder(eye.x, eye.z, eye.y + 1, Infinity);
+      if (gy == null) { roam.foot = eye.y - ROAM_EYE; roam.air = 1; roam.vy = 0; return; }
+      const drop = eye.y - ROAM_EYE - gy;
+      if (drop <= STEP_UP) { roam.foot = gy; eye.y = gy + ROAM_EYE; touchDown(); return; }
+      roam.glide = { from: eye.clone(), to: new THREE.Vector3(eye.x, gy + ROAM_EYE, eye.z), t0: performance.now(), ms: Math.min(2600, 700 + Math.sqrt(drop) * 18), yaw0: roam.yaw, yaw1: roam.yaw, pitch0: roam.pitch };
+      touchDown(); remember();
     }
     function touchDown() { roam.air = 0; roam.vy = 0; roam.airV.x = roam.airV.z = 0; roam.landAt = performance.now(); }
     function jump() {
-      if (!roam.on || roam.glide || roam.air) return;
+      if (!roam.on || roam.glide || roam.air || roam.fly) return;
       roam.air = 1; roam.vy = JUMP_V; dirty = true;
       // the carry: the speed he had, or from standing a short hop forward
       if (roam.moving && (roam.vel.x || roam.vel.z)) { roam.airV.x = roam.vel.x; roam.airV.z = roam.vel.z; }
       else { roam.airV.x = Math.cos(roam.yaw) * WALK * 0.18; roam.airV.z = Math.sin(roam.yaw) * WALK * 0.18; }
     }
     function roamEnter(on) {
-      roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.air = 0; roam.vy = 0; roam.glide = null; controls.enabled = !on;
+      roam.on = on; roam.keys.clear(); roam.stick.x = roam.stick.y = 0; roam.air = 0; roam.vy = 0; roam.glide = null; roam.fly = false; controls.enabled = !on;
       renderer.domElement.style.cursor = on ? 'crosshair' : 'grab'; mmap.hidden = !on; zoneEl.hidden = !(on && COARSE); if (!on) { touches.clear(); pinch = null; cancelAuto(false); showBig(false); }
       if (on) {
         following = false; onFollow?.(true);   // no "follow" button in the roam: there is no story to follow
@@ -968,7 +1026,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         place(clock.t);   // everything stands before the ground is probed
         const settle = () => { roam.foot = camera.position.y - ROAM_EYE; const gy = groundUnder(camera.position.x, camera.position.z, camera.position.y + 2); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; } return gy != null; };
         const canStand = () => { const eye = camera.position.clone(); for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2; probe.set(Math.cos(a), 0, Math.sin(a)); if (!blocked(eye, probe, RADIUS + 0.4)) return true; } return false; };
-        if (!settle() || !canStand()) { startAt(); settle(); ROAM_MEMO = null; }
+        if (ROAM_MEMO?.fly && (ROAM_MEMO.dist || 0) > DIST_MAX + 0.01 && camera.position.y > GROUND - 1e7) { roam.fly = true; roam.foot = camera.position.y - ROAM_EYE; }   // he was being carried: held where he was
+        else if (!settle() || !canStand()) { startAt(); settle(); ROAM_MEMO = null; }
         for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = ROAM_MEMO?.open?.[k] ?? openDefault(k);
         aimCamera(); place(clock.t);
       } else {
@@ -1253,14 +1312,14 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         cancelAuto(false); showBig(false);
         ROAM_MEMO = null; MEMO[model.id] = null; try { sessionStorage.removeItem(STORE); } catch { /* fine */ }
         camera.position.set(...ROAM_START.pos); const [lx, , lz] = ROAM_START.look; roam.yaw = Math.atan2(lz - camera.position.z, lx - camera.position.x); roam.pitch = 0;
-        roam.air = 0; roam.vy = 0; roam.keys.clear(); roam.foot = camera.position.y - ROAM_EYE;
+        roam.air = 0; roam.vy = 0; roam.fly = false; roam.keys.clear(); roam.foot = camera.position.y - ROAM_EYE;
         const gy = groundUnder(camera.position.x, camera.position.z, camera.position.y + 2); if (gy != null) { roam.foot = gy; camera.position.y = gy + ROAM_EYE; }
         for (const k of Object.keys(roam.open)) roam.open[k] = roam.want[k] = openDefault(k);
         place(clock.t); aimCamera(); remember(); dirty = true;
       },
       marks: () => stairMarks.filter((m) => m.visible).map((m) => m.position.toArray().map((v) => Math.round(v * 10) / 10)),   // for tests: the stair marks shown
       bench: (n = 200) => { const t0 = performance.now(); for (let i = 0; i < n; i++) { probe.copy(camera.position); blocked(probe, step.set(Math.cos(i), 0, Math.sin(i)), 3); groundUnder(camera.position.x, camera.position.z, roam.foot + 3); } return (performance.now() - t0) / n; },   // for tests: ms per (ahead + down) probe pair
-      solidTris: () => { const m = {}; for (const o of solids) { let q = o; while (q && !q.userData.id) q = q.parent; const k = q?.userData.id || o.name || 'proxy'; m[k] = (m[k] || 0) + Math.round((o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3); } return m; },
+      solidTris: () => { const m = {}; for (const o of solids) { if (!o.geometry) continue; let q = o; while (q && !q.userData.id) q = q.parent; const k = q?.userData.id || o.name || 'proxy'; m[k] = (m[k] || 0) + Math.round((o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3); } return m; },
     };
     window.__modelApi = window.__templeApi = api.current;
     applySelection(selected);
