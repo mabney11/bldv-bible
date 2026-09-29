@@ -235,3 +235,6 @@ body .par-mwb-wrap.hl .multi-word-block .visible-text {
   .pl-main { padding: 12px 12px 40px; }
   .pl-status { display: none; }
 }
+
+/* the verse pages, one tap apart (VerseSwitch, 2026-09-29) */
+.pl-vswitch { margin-left: auto; }

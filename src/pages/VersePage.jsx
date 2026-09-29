@@ -4,7 +4,7 @@ import { useTheme } from '../hooks/useTheme.js';
 import { apiTransProgress, apiTransVerse, apiTokens, apiRootFirstByLetters, apiPrecepts, apiPreceptReview } from '../lib/api.js';
 import { getAdminStatus } from '../lib/localOverlay.js';
 import PreceptList from '../components/Precepts.jsx';
-import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
+import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { WordRow, computeWordParts, transliterationsToHtml } from '../components/WordBlock.jsx';
 import BookIcon from '../components/BookIcon.jsx';
@@ -16,6 +16,9 @@ import { renderVerseNodesWithQuotes, sanitizeText } from './Reader.jsx';
 import './Reader.css';
 import './VersePage.css';
 import { RD_RETURN_VERSE_KEY, writeSession } from '../lib/readerScrollMemory.js';
+import TranslatedMark from '../components/TranslatedMark.jsx';
+import VerseSwitch from '../components/VerseSwitch.jsx';
+import { modelsForVerse } from '../lib/models/seo.js';
 
 // Same key + default Reader.jsx persists its own typeface choice under —
 // "lets persist the font between the reader and the single scripture page":
@@ -139,7 +142,9 @@ export default function VersePage() {
   }, [addressValid, bookId, chapter, verse]);
 
   const verseRef = addressValid ? formatRef(bookName, chapter, verse) : '';
-  usePageTitle(verseRef ? `${verseRef} | Reader` : '');
+  // "Detailed Verse" — this page's official name (fieldy, 2026-09-29); matches
+  // server/prerender.js's buildVersePathSnapshot title.
+  usePageTitle(verseRef ? `${verseRef} | Detailed Verse` : '');
 
   // ── Hebrew Viewer word-by-word — "the hebrew viewew wordblocks for the
   // 'word by word'": fetch the SAME token data HebrewViewer.jsx renders
@@ -370,10 +375,9 @@ export default function VersePage() {
   // /?... (no source param) is Reader's own "Paleo Reader" entry — App.jsx's
   // RootDispatcher defaults an unset `source` to 'hebrew', so this is the
   // same HebrewViewer destination the rest of the app calls "Hebrew".
-  const locQuery = addressValid ? `book=${bookToParam(bookId, idToSlug)}&chapter=${chapter}&verse=${verse}` : '';
-  const parallelPath = addressValid ? parallelHref(bookId, idToSlug, chapter, verse) : '/parallel';
-  const hebrewHref = addressValid ? `/?${locQuery}` : '/';
-  const translateHref = addressValid ? `/translate?${locQuery}` : '/translate';
+  const bookSlugHere = addressValid ? bookToParam(bookId, idToSlug) : '';
+  // The story models / maps built from this verse — "See it in 3D".
+  const models3d = useMemo(() => (addressValid ? modelsForVerse(bookSlugHere, chapter, verse) : []), [addressValid, bookSlugHere, chapter, verse]);
 
   return (
     <div className="reader-root vp-root" data-typeface={typeface} style={{ '--pr-reading': typefaceStack }}>
@@ -382,6 +386,14 @@ export default function VersePage() {
         <div className="rd-ref vp-ref-static">
           <span className="rd-ref-txt">{addressValid ? verseRef : 'Verse'}</span>
         </div>
+        {/* The Hebrew Viewer at this same verse — its "English" pill comes back
+            here, so the two verse pages are one tap apart either way. The rest
+            of the verse pages are in the VerseSwitch at the foot of the page
+            (kept out of the verse info itself, fieldy's earlier call). */}
+        {addressValid && (
+          <Link className="rd-bar-btn vp-hebrew-link" to={`/?book=${bookSlugHere}&chapter=${chapter}&verse=${verse}`}
+                title="This verse in the Hebrew Viewer" aria-label="This verse in the Hebrew Viewer">𐤏𐤁</Link>
+        )}
         <Link className="rd-bar-btn vp-chapter-link" to={chapterHref} title="Open this chapter as flowing text">
           <BookIcon />
         </Link>
@@ -405,6 +417,9 @@ export default function VersePage() {
             </div>
           ) : (
             <div className="vp-verse">
+              {verseData.status === 'done' && (
+                <TranslatedMark className="vp-tmark" refLabel={verseRef} updatedAt={verseData.updated_at} />
+              )}
               <div
                 className="vp-ref-block clickable-comp"
                 onClick={handleRefCopy}
@@ -432,6 +447,16 @@ export default function VersePage() {
                   ? <span className="vp-text-hebrew" dangerouslySetInnerHTML={{ __html: paleoSentenceHtml }} />
                   : renderVerseNodesWithQuotes(sanitizeText(verseData.text), 'both')}
               </p>
+              {models3d.length > 0 && (
+                <nav className="vp-3d" aria-label="See it in 3D">
+                  <span className="vp-3d-label">See it in 3D</span>
+                  {models3d.map((m) => (
+                    <Link key={m.base} className={`vp-3d-link vp-3d-${m.kind}`} to={m.base}>
+                      <span aria-hidden="true">{m.kind === 'map' ? '🗺' : '🏛'}</span> {m.title}
+                    </Link>
+                  ))}
+                </nav>
+              )}
               {hebrewWords.length > 0 ? (
                 <>
                   <h2 className="vp-subhead">Word by word</h2>
@@ -513,11 +538,7 @@ export default function VersePage() {
                                onReview={reviewPrecept} />
                 </section>
               )}
-              <nav className="vp-views" aria-label={`Open ${verseRef} in`}>
-                <Link className="vp-view-link" to={parallelPath}>Parallel</Link>
-                <Link className="vp-view-link" to={hebrewHref}>Hebrew</Link>
-                <Link className="vp-view-link" to={translateHref}>Translation Studio</Link>
-              </nav>
+              <VerseSwitch className="vp-switch vp-switch-foot" current="detail" slug={bookSlugHere} chapter={chapter} verse={verse} />
             </div>
           )}
         </article>

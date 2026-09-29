@@ -5,7 +5,8 @@
  * line on this.
  */
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
-import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
+import { pageTitle } from '../hooks/usePageTitle.js';
+import { useModelSeo } from '../lib/models/seo.js';
 import { Glossed } from '../components/PassageRefs.jsx';
 import { STORY_ICONS } from '../components/ModelStories.jsx';
 import './Models.css';
@@ -13,7 +14,7 @@ import './Temple.css';
 
 export default function ModelIndex({ model }) {
   const { MODES, base, stories } = model;
-  usePageTitle(pageTitle(`${model.title} — Maps & Models`), model.indexDescription || model.description);
+  useModelSeo(pageTitle(`${model.title} — Interactive Story Models`), model.indexDescription || model.description);
   const [params] = useSearchParams();
   const mode = params.get('mode');
   if (MODES[mode] || params.get('piece') || params.get('view')) {
@@ -25,7 +26,7 @@ export default function ModelIndex({ model }) {
   return (
     <div className="models-page tp-index">
       <header className="models-top">
-        <Link to="/models" className="models-back" title="Maps & Models">←</Link>
+        <Link to="/models" className="models-back" title="Interactive Story Models">←</Link>
         <h1 className="models-h1">{model.title} <span className="tp-index-paleo" dir="rtl" aria-hidden="true">{model.paleo}</span></h1>
         <span className="models-count">{stories.length} {stories.length === 1 ? 'story' : 'stories'}</span>
       </header>

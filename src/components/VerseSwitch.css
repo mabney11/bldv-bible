@@ -1,0 +1,5 @@
+.vswitch { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 3px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg2); font-size: 12px; line-height: 1; }
+.vswitch-item { padding: 6px 11px; border-radius: 999px; color: var(--text3); text-decoration: none; white-space: nowrap; transition: color .15s, background .15s; }
+a.vswitch-item:hover { color: var(--gold); background: color-mix(in srgb, var(--gold) 10%, transparent); }
+.vswitch-item.on { color: var(--bg, #111); background: var(--gold); font-weight: 600; }
+@media (max-width: 500px) { .vswitch { font-size: 11.5px; } .vswitch-item { padding: 6px 9px; } }

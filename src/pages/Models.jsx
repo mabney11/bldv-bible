@@ -4,18 +4,20 @@
  * lazy route (see App.jsx); this page is just the catalogue, so adding a
  * model is one entry in MODELS below plus its route.
  *
- * Route: /models — a catalogue with three views (posters: a thumbnail with the paleo name and the title, like a film app;
+ * Routes: /models (Interactive Story Models) and /maps (Maps) — the same catalogue split by `kind`; a catalogue with three views (posters: a thumbnail with the paleo name and the title, like a film app;
  * a list: one row a model, its stories as links; cards: the full blurbs) and a search box, for when the list is long.
  * Thumbnails: public/model-thumbs/<slug>.jpg (a frame of the model, 800 × 500).
  */
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
+import { pageTitle } from '../hooks/usePageTitle.js';
+import { useModelSeo } from '../lib/models/seo.js';
 import './Models.css';
 
 export const MODELS = [
   {
     slug: 'holy-land',
+    kind: 'map',
     title: 'The Holy Land in 3D',
     kicker: 'Interactive terrain map',
     blurb: 'Fly over the Levant in 3D relief. Switch between the tribal allotments of Joshua 13–19 and the millennial allotments of Ezekiel 47–48, see the biblical cities of Joshua with their paleo-Hebrew names, and find out which portion today\'s cities and peoples fall in.',
@@ -30,6 +32,7 @@ export const MODELS = [
   },
   {
     slug: 'statue',
+    kind: 'story',
     title: 'The Tzalam (Likeness) of the Dream',
     kicker: 'Interactive 3D model · Daniel 2',
     blurb: 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) — the raash (head) of dahab (gold), the chaday (breast) and darai (arms) of kasap (silver), the maih (belly) and yarakaa (thighs) of nachash (brass), the shaq (legs) of parazal (iron), the ragal (feet) of parazal (iron) and chasap (clay) — and the aban (stone) gazar (cut) out laa (without) yadayan (hands). Tap any piece for the text\'s own words and verses; play the aban (stone) striking it to pieces, scrub through the fall, and see that only the aban (stone) remains.',
@@ -44,6 +47,7 @@ export const MODELS = [
   },
   {
     slug: 'temple',
+    kind: 'story',
     title: 'The Bayath (House) of Yahawah',
     kicker: 'Interactive 3D model · 1 Kings 6–7',
     blurb: 'The bayath (house) Shalamah (Solomon) banah (built) for Yahawah, measured in amah (cubits) from the text: the hayakal (temple) and the dabayar (oracle) with its karawab (cherubim), the awalam (porch), Yakayan (Jachin) and Baiz (Boaz), the yam (sea) on twelve oxen, the ten makanawath (bases), the mazabach (altar), the chatzarawath (courts) and the malak (king)\'s houses. Three stories on one model: watch it rise in the order 1 Kings 6–7 gives it, see it dedicated (1 Kings 8), or walk in from the gate to the arawan (ark); tap any part for its measures, verse by verse.',
@@ -61,6 +65,7 @@ export const MODELS = [
   },
   {
     slug: 'ezekiel',
+    kind: 'story',
     title: 'The Bayath (House) Yachazaqaal (Ezekiel) Saw',
     kicker: 'Interactive 3D model · Ezekiel 40–43',
     blurb: 'The bayath (house) shown to Yachazaqaal (Ezekiel) on the gabah (high) har (mountain), measured in the long amah (cubit) of the man\'s qanah (reed): the chawamah (wall) chamash (five) maah (hundred) square, the shairayam (gates) with their lodges and ayalayam (posts), the chatzarawath (courts), the mazabach (altar) with its Har\'Al, the awalam (porch), the hayakal (temple) and the most qadash (holy) place, the tzalai (side) rooms, the banayan (building) and the kahanayam (priests)\' rooms. Walk it the way he was led, or on your own feet.',
@@ -76,6 +81,7 @@ export const MODELS = [
   },
   {
     slug: 'tabernacle',
+    kind: 'story',
     title: 'The Mashakan (Tabernacle) and Its Machanah (Camp)',
     kicker: 'Interactive 3D model · Exodus 25–27, 40 · Numbers 2',
     blurb: 'The mashakan (tabernacle) measured in amah (cubits) from the text: the chatzar (court) of qalaiyam (hangings) a hundred by fifty on its sixty imawadayam (pillars), the mazabach (altar) of nachashath (brass) and the basin, the qarashayam (boards) overlaid with zahab (gold) in adanayam (sockets) of kasap (silver), the yarayaihath (curtains) with karawab (cherubim) and the ahal (tent) of izayam (goats)\' hair over them, the shalachan (table), the manawarah (lampstand), the mazabach (altar) of qatarath (incense), the parakath (veil) and the arawan (ark) — with the Lawayay (Levites) and the twelve tribes camped about it by their dagal (standards). Raise it in the order Mashah (Moses) did, or walk it on your own feet.',
@@ -91,6 +97,7 @@ export const MODELS = [
   },
   {
     slug: 'ezekiel-city',
+    kind: 'story',
     title: 'The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion',
     kicker: 'Interactive 3D model · Ezekiel 45 · 47 · 48',
     blurb: 'The iyar (city) of Ezekiel 48 and the qadash (holy) tharawamah (portion) it stands in, measured in amah (cubits) from the text: the portion twenty-five alap (thousand) square with the kahanayam (priests)\' strip and the bayath (house) — the house model itself — in its midst, the Lawayay (Levites)\' strip and the city\'s; the city four thousand five hundred a side with its magarash (open land) and twelve shairayam (gates) named for the shabatay (tribes); the nashayaa (prince)\'s land, the tribes\' strips north and south, and the nachal (river) from the house. Lay it out from above, or walk the city on your own feet.',
@@ -106,6 +113,7 @@ export const MODELS = [
   },
   {
     slug: 'revelation-city',
+    kind: 'story',
     title: 'The Shairay (City) Coming Down Out of Shamayam (Heaven)',
     kicker: 'Interactive 3D model · Revelation 21–22',
     blurb: 'The qadash (holy) shairay (city), New Yarawashalam, at the text\'s own scale — twelve thousand stadia a side and as high, coming down over the Holy Land map\'s own land on the same ground as Yachazaqaal\'s city: its wall of yashapah (jasper) a hundred and forty-four amah on twelve adanay (foundations) of twelve stones, its twelve shairayam (gates) each one pearl with a malaak (angel) at it, the rachab (street) of zahab (gold), the nahar (river) of the water of chay (life) from the kasaa (throne) and the ayalan (tree) of life on either side. Watch it come down, or stand in its gate on your own feet and be carried to the throne.',
@@ -121,6 +129,7 @@ export const MODELS = [
   },
   {
     slug: 'prints',
+    kind: 'map',
     title: 'Printable Maps',
     kicker: 'Downloadable map sheets',
     blurb: 'The Holy Land as official-looking map sheets, drawn from the same data as the 3D model: the allotment of Ezekiel 47–48 with the Holy Portion and the prince\'s land, the allotment of Joshua 13–19, and the Holy Portion close up. Save as a print-quality PNG, an SVG, or a PDF.',
@@ -151,27 +160,41 @@ function Thumb({ m }) {
   );
 }
 
-export default function Models() {
-  usePageTitle(pageTitle('Maps & Models'), 'Interactive 3D maps and models for scripture study — the Holy Land in relief with the allotments of Joshua and Ezekiel, the tzalam (likeness) of Daniel 2, the bayath (house) Shalamah (Solomon) built for Yahawah, the house and the city Yachazaqaal (Ezekiel) saw, the mashakan (tabernacle) with its camp, and the city coming down out of heaven.');
+/** Story Models (/models) and Maps (/maps) are one catalogue split by `kind` —
+ *  fieldy, 2026-09-29: "Interactive Story Models — i can anticipate this getting
+ *  big so i want to separate it from maps". Each keeps its own count, search and
+ *  views; the header links across to the other. */
+const KINDS = {
+  story: { h1: 'Interactive Story Models', to: '/models', other: { to: '/maps', label: 'Maps →' }, noun: ['model', 'models'],
+    intro: 'The stories of scripture in 3D, built from the text — measured in amah (cubits) where the text gives measures, raised and walked in the order the text gives them. Watch it happen verse by verse, or roam it on your own feet. More will be added here over time.',
+    placeholder: 'Search — temple, tabernacle, Ezekiel, gate, Revelation 21…' },
+  map: { h1: 'Maps', to: '/maps', other: { to: '/models', label: 'Story Models →' }, noun: ['map', 'maps'],
+    intro: 'The land drawn from the text — the twelve shabatay (tribes) of Yashar-Al (Israel) in 3D relief, the allotments of Yahawashawai (Joshua) and Yachazaqaal (Ezekiel), the cities, rivers and seas under the names the Bible gives them, and printable sheets.',
+    placeholder: 'Search — Ezekiel 48, Joshua, tribes, Holy Portion…' },
+};
+
+export default function Models({ kind = 'story' }) {
+  const K = KINDS[kind] || KINDS.story;
+  const ALL = useMemo(() => MODELS.filter((m) => (m.kind || 'story') === kind), [kind]);
+  useModelSeo(pageTitle(K.h1));
   const [view, setView] = useState(() => { try { return localStorage.getItem('models-view') || 'posters'; } catch { return 'posters'; } });
   const [q, setQ] = useState('');
   useEffect(() => { try { localStorage.setItem('models-view', view); } catch { /* private mode */ } }, [view]);
   const words = norm(q).split(/\s+/).filter(Boolean);
-  const shown = useMemo(() => (words.length ? MODELS.filter((m) => { const h = haystack(m); return words.every((w) => h.includes(w)); }) : MODELS), [words.join(' ')]);
+  const shown = useMemo(() => (words.length ? ALL.filter((m) => { const h = haystack(m); return words.every((w) => h.includes(w)); }) : ALL), [words.join(' '), ALL]);
   return (
     <div className="models-page">
       <header className="models-top">
         <Link to="/landing" className="models-back" title="Home">←</Link>
-        <h1 className="models-h1">Maps &amp; Models</h1>
-        <span className="models-count">{words.length ? `${shown.length} of ${MODELS.length}` : `${MODELS.length} model${MODELS.length === 1 ? '' : 's'}`}</span>
+        <h1 className="models-h1">{K.h1}</h1>
+        <span className="models-count">{words.length ? `${shown.length} of ${ALL.length}` : `${ALL.length} ${K.noun[ALL.length === 1 ? 0 : 1]}`}</span>
+        <Link to={K.other.to} className="models-other">{K.other.label}</Link>
       </header>
-      <p className="models-intro">
-        Visual and three-dimensional renderings built from the text — maps, layouts and structures described in scripture, drawn to scale where the text gives measurements and idealized where it gives landmarks. More will be added here over time.
-      </p>
+      <p className="models-intro">{K.intro}</p>
       <div className="models-bar">
         <label className="models-search">
           <span aria-hidden="true">⌕</span>
-          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search — Ezekiel, gate, tabernacle, Revelation 21…" aria-label="Search the models" />
+          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={K.placeholder} aria-label={`Search the ${K.noun[1]}`} />
           {q && <button type="button" className="models-search-x" onClick={() => setQ('')} aria-label="Clear">×</button>}
         </label>
         <div className="models-views" role="tablist" aria-label="View">
@@ -228,7 +251,7 @@ export default function Models() {
             </div>
           </article>
         ))}
-        {!words.length && (
+        {!words.length && kind === 'story' && (
         <div className="models-card models-card-soon">
           <span className="models-card-kicker">Coming</span>
           <span className="models-card-title">More models</span>

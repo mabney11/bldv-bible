@@ -39,6 +39,7 @@ const LexiconAdmin     = lazy(() => import('./pages/LexiconAdmin.jsx'));
 const VersePage        = lazy(() => import('./pages/VersePage.jsx'));
 const PreceptStudio    = lazy(() => import('./pages/PreceptStudio.jsx'));
 const Models           = lazy(() => import('./pages/Models.jsx'));
+const Progress         = lazy(() => import('./pages/Progress.jsx'));
 const HolyLandMap      = lazy(() => import('./pages/HolyLandMap.jsx'));
 const Prints           = lazy(() => import('./pages/Prints.jsx'));
 const Statue           = lazy(() => import('./pages/Statue.jsx'));
@@ -338,7 +339,9 @@ export default function App() {
         <Route path="/admin-login"    element={<AdminLogin />} />
         <Route path="/book-manager"   element={<BookManager />} />
         <Route path="/works"          element={<Works />} />
-        <Route path="/models"         element={<Models />} />
+        <Route path="/models"         element={<Models kind="story" />} />
+        <Route path="/maps"           element={<Models kind="map" />} />
+        <Route path="/progress"       element={<Progress />} />
         <Route path="/models/holy-land" element={<HolyLandMap />} />
         <Route path="/models/prints"  element={<Prints />} />
         <Route path="/models/statue"  element={<Statue />} />

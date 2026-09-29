@@ -7,6 +7,7 @@ import { useSwipeNav } from '../hooks/useSwipeNav.js';
 import { BOOK_NAMES, PALEO_LETTERS } from '../lib/books.js';
 import { remapLocation } from '../lib/danielAdditions.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
+import VerseSwitch, { detailedVerseHref } from '../components/VerseSwitch.jsx';
 import { usePageTitle } from '../hooks/usePageTitle.js';
 import { truncateTitle, versePreviewWithGloss } from '../lib/versePreview.js';
 import { formatTokenRowDescriptive } from '../lib/tokenLabels.js';
@@ -433,12 +434,19 @@ export default function HebrewViewer() {
                 const remap = remapLocation(srcParam, key, book, chapter, verse);
                 const loc = remap || { book, chapter, verse };
                 const available = curSources.includes(key) || !!remap;
+                // English on a single verse → the Detailed Verse page for it
+                // (fieldy, 2026-09-29: "lets make the 'english' button … also
+                // take me to" /<book>/<chapter>/<verse>). At chapter level it
+                // still opens the English source reader, as before.
+                const toDetailed = key === 'ENG' && loc.verse != null;
                 return available ? (
                   <Link
                     key={key}
                     className="txt-btn rd-srclink"
-                    to={`/?source=${key}&book=${bookToParam(loc.book, idToSlug)}&chapter=${loc.chapter}${loc.verse != null ? `&verse=${loc.verse}` : ''}`}
-                    title={title}
+                    to={toDetailed
+                      ? detailedVerseHref(bookToParam(loc.book, idToSlug), loc.chapter, loc.verse)
+                      : `/?source=${key}&book=${bookToParam(loc.book, idToSlug)}&chapter=${loc.chapter}${loc.verse != null ? `&verse=${loc.verse}` : ''}`}
+                    title={toDetailed ? 'Open this verse as a Detailed Verse — English, word by word' : title}
                   >{label}</Link>
                 ) : (
                   <span
@@ -489,6 +497,8 @@ export default function HebrewViewer() {
       {verse != null && (
         <div className="hv-verse-bar">
           <span className="hv-verse-ref">{bookName} {chapter}:{verse}</span>
+          <VerseSwitch className="hv-vswitch" current="hebrew" slug={bookToParam(book, idToSlug)} chapter={chapter} verse={verse}
+                       hebrewHref={`/?${srcParam && srcParam !== 'BHS' ? `source=${srcParam}&` : ''}book=${bookToParam(book, idToSlug)}&chapter=${chapter}&verse=${verse}`} />
           <button className="hv-back-btn" onClick={exitVerseScroll}>↑ Full chapter</button>
         </div>
       )}

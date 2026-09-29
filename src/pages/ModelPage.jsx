@@ -23,7 +23,8 @@
  */
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
+import { pageTitle } from '../hooks/usePageTitle.js';
+import { useModelSeo } from '../lib/models/seo.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
 import { usePlayer, Section, WordRow, ModelPassage, Caption, PaceSelect, CanvasSubtitles, CanvasTitle, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
 import ModelSheet from '../components/ModelSheet.jsx';
@@ -144,7 +145,7 @@ function RunnerIcon({ wind = 0 }) {
 
 export default function ModelPage({ model }) {
   const { MODES, SPEEDS, CHIP_ORDER, pieceById, marksFor, base, strings = {} } = model;
-  usePageTitle(pageTitle(`${model.title} — Maps & Models`), model.description);
+  useModelSeo(pageTitle(`${model.title} — Interactive Story Models`), model.description);
   const TIMELINES = useMemo(() => timelinesOf(model), [model]);
   const PIECE_IDS = useMemo(() => model.PIECES.map((p) => p.id), [model]);
   const [params] = useSearchParams();
@@ -226,7 +227,7 @@ export default function ModelPage({ model }) {
         <Link to={base} className="st-back" title={strings.storiesTitle || 'The model\'s stories'}>←</Link>
         <nav className="tp-nav" aria-label="Elsewhere">
           <Link to="/landing" className="tp-nav-home" title="Home">𐤀𐤁</Link>
-          <Link to="/models" title="Maps &amp; Models — the other models">Models</Link>
+          <Link to="/models" title="Interactive Story Models — the other models">Models</Link>
         </nav>
         <div className="st-h1wrap">
           <h1 className="st-h1">{model.title}</h1>

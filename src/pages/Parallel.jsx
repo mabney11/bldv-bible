@@ -8,6 +8,7 @@ import { transliterate } from '../lib/translit.js';
 import { sqToPaleo } from '../lib/sqToPaleo.js';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle } from '../hooks/usePageTitle.js';
+import VerseSwitch from '../components/VerseSwitch.jsx';
 import { truncateTitle, versePreviewTranslit } from '../lib/versePreview.js';
 import { TYPEFACES } from '../lib/typefaces.js';
 import { remapSourceVerseToDisplay, remapDisplayChapterToSource } from '../lib/sourceVerseRemap.js';
@@ -529,7 +530,7 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
     // trailMark/lemma/strongs) — see the src.push sites in loadChapter.
     const hl = hoveredOrds.has(word.token_ordinal);
     return (
-      <div className={`par-mwb-wrap ${linked ? 'lnk' : ''} ${hl ? 'hl' : ''}`}
+      <div className={`par-mwb-wrap ${linked ? 'lnk' : ''} ${hl ? 'hl' : ''}`} data-copy={word.word || word.word_raw || ''}
            onMouseEnter={enter} onMouseLeave={leave}>
         <MultiWordBlock token={word} source={lang} />
       </div>
@@ -552,6 +553,9 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
   // genuine compound when EVERY resulting half has real (non-mark) content —
   // a maqaf with nothing on one side is an ordinary trailing mark and falls
   // through to the normal (non-split) render below.
+  // What a selection over this word copies (see useSurfaceCopy): the plain
+  // paleo letters, never the SVG glyphs / translit / gloss / Strong's chips.
+  const copyPaleo = comps.filter(c => !c.isMark).map(c => c.paleo || '').join('');
   let maqafHalves = null;
   if (comps.some(c => c.isMaqaf)) {
     const segs = [[]];
@@ -563,7 +567,7 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
   }
   if (maqafHalves) {
     return (
-      <div className={`word-block maqaf-chip ${linked ? 'lnk' : ''}`} onMouseEnter={enter} onMouseLeave={leave}
+      <div className={`word-block maqaf-chip ${linked ? 'lnk' : ''}`} data-copy={maqafHalves.map(seg => seg.map(c => c.paleo || '').join('')).join('־')} onMouseEnter={enter} onMouseLeave={leave}
            style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '2px' }}>
         {maqafHalves.flatMap((seg, hi) => {
           const els = [];
@@ -647,7 +651,7 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
   const modRun = mods.reduce((acc, m, i) => i ? [...acc, <span key={`b${i}`} className="brk">-</span>, m] : [m], []);
 
   return (
-    <div className={`word-block ${linked ? 'lnk' : ''}`} onMouseEnter={enter} onMouseLeave={leave}>
+    <div className={`word-block ${linked ? 'lnk' : ''}`} data-copy={copyPaleo} onMouseEnter={enter} onMouseLeave={leave}>
       <div className="paleo">
         <span className="visible-text"
               onClick={(e) => { const el = e.target.closest && e.target.closest('.clickable-comp'); if (el) copyOnClick(el, el.getAttribute('data-paleo') || ''); }}>
@@ -749,6 +753,32 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
 }
 
 // ─── One verse: English | source ─────────────────────────────────────────────
+// ─── Copying the surface ─────────────────────────────────────────────────────
+// fieldy, 2026-09-29: "lets give /parallel the ability to copy the entire
+// surface like the main reader behave". The Hebrew Viewer rebuilds a selection's
+// clipboard text from each word's plain paleo (its .search-text spans) instead
+// of whatever the DOM happens to hold. Here the paleo is drawn as SVG, so a
+// native copy came out as the translit/gloss/Strong's debris with no Hebrew at
+// all. Each word block now carries its paleo in data-copy; a copy over the
+// verses becomes, per verse: "Isaiah 29:4 <English>" then the paleo line.
+const squash = t => (t || '').replace(/\s+/g, ' ').trim();
+function verseCopyText(el, refPrefix) {
+  const src = [...(el.querySelectorAll?.('[data-copy]') || [])].map(n => n.getAttribute('data-copy')).filter(Boolean).join(' ');
+  // a selection inside the English alone clones only its word spans (no
+  // .en-verse-text wrapper) — then the fragment's own text IS the English
+  const enEl = el.querySelector?.('.en-verse-text');
+  const en = squash(enEl ? enEl.textContent : (src || el.querySelector?.('.par-col-heb') ? '' : el.textContent));
+  const v = el.getAttribute?.('data-verse');
+  const head = [refPrefix && v != null ? `${refPrefix}:${v}` : (v != null ? v : ''), en].filter(Boolean).join(' ');
+  return [head, src].filter(Boolean).join('\n');
+}
+function surfaceCopyText(root, refPrefix) {
+  const verses = [...root.querySelectorAll('.par-verse')];
+  if (verses.length) return verses.map(v => verseCopyText(v, refPrefix)).filter(Boolean).join('\n\n');
+  // a selection inside one column of one verse: its English, then its paleo
+  return verseCopyText(root, refPrefix);
+}
+
 function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, onRefClick, hovered, setHovered, unaligned, glossMode, lang }) {
   // Verse 0 is a chapter title/superscription, not a real verse (see Reader.jsx's
   // matching treatment) — its English is typically one short line while its source
@@ -1512,6 +1542,39 @@ export default function Parallel() {
   const visibleVerses = verse != null ? verseNums.filter(v => v === verse) : verseNums;
   const curBookName = (books.find(b => b.book_id === book) || {}).name || BOOK_NAMES[book] || `Book ${book}`;
   const refTitle = `${curBookName} ${chapter}${verse != null ? ':' + verse : ''}`;
+  const outputRef = useRef(null);
+  const chapterRef = `${curBookName} ${chapter}`;
+  // Native selection → clean text (see surfaceCopyText). Only selections that
+  // start inside the verses; everything else on the page copies as usual.
+  useEffect(() => {
+    const onCopy = (e) => {
+      const sel = window.getSelection();
+      const out = outputRef.current;
+      if (!sel || sel.rangeCount === 0 || sel.isCollapsed || !out || !out.contains(sel.anchorNode)) return;
+      const frag = sel.getRangeAt(0).cloneContents();
+      const holder = document.createElement('div');
+      holder.appendChild(frag);
+      // a selection that stayed inside one verse row has no .par-verse wrapper
+      // in the fragment — give it back its verse number from the live DOM
+      const vEl = (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement)?.closest('.par-verse');
+      if (!holder.querySelector('.par-verse') && vEl) holder.setAttribute('data-verse', vEl.getAttribute('data-verse'));
+      const text = surfaceCopyText(holder, chapterRef);
+      if (!text) return;
+      e.clipboardData.setData('text/plain', text);
+      e.preventDefault();
+    };
+    document.addEventListener('copy', onCopy);
+    return () => document.removeEventListener('copy', onCopy);
+  }, [chapterRef]);
+  const [copiedAll, setCopiedAll] = useState(false);
+  const copyAll = useCallback(() => {
+    const out = outputRef.current;
+    if (!out) return;
+    const text = surfaceCopyText(out, chapterRef);
+    try {
+      navigator.clipboard.writeText(text).then(() => { setCopiedAll(true); setTimeout(() => setCopiedAll(false), 1500); });
+    } catch { /* ignore */ }
+  }, [refTitle, chapterRef]);
 
   // ── browser tab title ──────────────────────────────────────────────────
   // Chapter view: "<book> <ch> | Parallel". Single-verse view appends a
@@ -1635,7 +1698,11 @@ export default function Parallel() {
       <div className="pl-main" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <div className="pl-head-row">
           <div className="pl-ref-title">{refTitle}</div>
+          {verse != null && (
+            <VerseSwitch className="pl-vswitch" current="parallel" slug={bookToParam(book, idToSlug)} chapter={chapter} verse={verse} hebrewHref={hebHref} />
+          )}
           {verse != null && <button className="pl-txt-btn" onClick={() => setVerse(null)}>↑ Full chapter</button>}
+          <button className="pl-txt-btn" onClick={copyAll} title={`Copy ${refTitle} — the English and the paleo Hebrew, verse by verse`}>{copiedAll ? '✓ Copied' : '⧉ Copy'}</button>
           <button className="pl-txt-btn" onClick={() => setLegendOpen(o => !o)}>Legend ▾</button>
         </div>
 
@@ -1657,7 +1724,7 @@ export default function Parallel() {
           </div>
         )}
 
-        <div className="pl-output">
+        <div className="pl-output" ref={outputRef}>
           {visibleVerses.length === 0 && !status && <div className="no-translation">No text available for this chapter.</div>}
           <VerseErrorBoundary key={`${book}-${chapter}-${lang}`} onError={onRenderError}>
             {visibleVerses.map(v => (

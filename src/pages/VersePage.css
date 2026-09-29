@@ -53,6 +53,7 @@
   justify-content: center;
 }
 .vp-verse {
+  position: relative;
   width: 100%;
   max-width: 38rem;
   animation: rd-fade .4s ease both;
@@ -484,3 +485,17 @@
 .vp-precepts { margin-top: 18px; }
 .vp-precept-glyph { color: var(--pr-accent); }
 .vp-precept-count { color: var(--pr-faint); font-weight: 400; font-size: 0.8em; margin-left: 6px; }
+
+/* ── 2026-09-29 ───────────────────────────────────────────────────────────
+   fieldy's 𐤌 (TranslatedMark) — top right of the verse, beside the heading. */
+.vp-tmark { position: absolute; top: 4px; right: 0; }
+/* the verse pages, one tap apart (VerseSwitch) — at the foot, where the old
+   Parallel/Hebrew/Studio links sat */
+.vp-switch-foot { margin-top: 28px; }
+.vp-hebrew-link { font-family: var(--paleo-font); font-size: 15px; letter-spacing: -1px; text-decoration: none; margin-left: auto; }
+.vp-hebrew-link + .vp-chapter-link { margin-left: 4px; }
+/* "See it in 3D" — the story models / maps built from this verse */
+.vp-3d { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: -18px 0 32px; font-family: system-ui, sans-serif; }
+.vp-3d-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--pr-ink-soft); margin-right: 2px; }
+.vp-3d-link { font-size: 13px; color: var(--gold, #d4a24c); text-decoration: none; padding: 6px 12px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--gold, #d4a24c) 45%, transparent); transition: background .15s, box-shadow .15s; }
+.vp-3d-link:hover { background: color-mix(in srgb, var(--gold, #d4a24c) 12%, transparent); box-shadow: 0 0 12px color-mix(in srgb, var(--gold, #d4a24c) 25%, transparent); }

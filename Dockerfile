@@ -23,6 +23,9 @@ COPY public ./public
 # and — because `npm run build` ends in `|| true` — the image shipped with a
 # broken/absent bundle instead of failing (2026-09-08 deploy).
 COPY server/lexicon/compound-hyphenation.json ./server/lexicon/
+# Story Models / Maps SEO (titles, descriptions, verse ranges) — ONE copy read by
+# server/prerender.js and imported by the frontend (src/lib/models/seo.js).
+COPY server/seo/models-seo.json ./server/seo/
 COPY scripts/build-headings-if-present.mjs ./scripts/
 # vite.config.js has build.outDir set to 'server/public', so this writes
 # the built bundle straight there — there is no dist/ folder in this repo.

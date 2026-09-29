@@ -222,3 +222,7 @@ body.present .hv-ref-title { font-size: 36px; margin-bottom: 32px; }
   .hv-options-row     { padding: 8px 8px 0; }
   .hv-legend          { margin: 8px 4px; padding: 12px; }
 }
+
+/* the verse pages, one tap apart (VerseSwitch, 2026-09-29) */
+.hv-verse-bar { flex-wrap: wrap; }
+.hv-vswitch { margin-left: auto; }

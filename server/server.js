@@ -890,6 +890,7 @@ const translationDb = (() => {
         `),
         chapterProgress: tdb.prepare(`SELECT verse, status, text, source_origin, original_text FROM translations WHERE book_id=? AND chapter=?`),
         allProgress:     tdb.prepare(`SELECT book_id, chapter, verse, status FROM translations`),
+        markedVerses:    tdb.prepare(`SELECT book_id, chapter, verse, status, updated_at FROM translations WHERE status IN ('done','in_progress') ORDER BY book_id, chapter, verse`),
         // Links are scoped to a language.
         getLinks: tdb.prepare(`
             SELECT * FROM translation_links
@@ -11992,6 +11993,22 @@ app.get('/parallel', (req, res) => {
 });
 
 // GET /api/translate/progress
+// GET /api/translate/marked — every verse fieldy has marked in the Translation
+// Studio ('done' or 'in_progress'), with when it was last saved. Public and
+// read-only: /progress shows it to readers ("id like my users to be able to see
+// my progress in translation studio", 2026-09-29), verse by verse. Small — only
+// hand-marked rows, never the ~68k seeded 'none' rows.
+app.get('/api/translate/marked', (req, res) => {
+    try {
+        const rows = translationDb.stmts.markedVerses.all();
+        res.set('Cache-Control', 'public, max-age=60');
+        res.json({ verses: rows.map(r => ({ b: r.book_id, c: r.chapter, v: r.verse, s: r.status === 'done' ? 'd' : 'p', t: r.updated_at || null })) });
+    } catch (err) {
+        console.error('/api/translate/marked failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.get('/api/translate/progress', (req, res) => {
     try {
         const verseCounts = db.prepare(`
@@ -12458,6 +12475,7 @@ app.get('/api/translate/verse', (req, res) => {
             book_id: bookId, chapter, verse, lang,
             token_source: tokenSource,   // author links against THIS, not `lang`
             status:    saved?.status    || 'none',
+            updated_at: saved?.status === 'done' ? (saved.updated_at || null) : null,   // the 𐤌 badge's date
             text:      savedText || baseline,
             rich_text: saved?.rich_text || '',
             prefilled: !savedText && !!baseline,        // box holds baseline, not your own text

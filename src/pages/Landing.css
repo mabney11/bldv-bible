@@ -51,16 +51,29 @@
   text-transform: uppercase;
 }
 
-/* ── Subtitle under the title ─────────────────────────────────────────── */
+/* ── The pitch under the title (fieldy, 2026-09-29) ─────────────────── */
 .landing-subtitle {
-  font-size: 13px;
-  color: var(--text4);
-  letter-spacing: 0.03em;
-  margin-top: -4px;
+  font-size: 15.5px;
+  color: var(--text2, var(--text));
+  letter-spacing: 0.01em;
+  margin: -2px 0 0;
   text-align: center;
-  max-width: 520px;
-  line-height: 1.6;
+  max-width: 600px;
+  line-height: 1.7;
+  text-wrap: pretty;
 }
+/* "… and so much more VVV" — three chevrons pointing down to the features */
+.landing-more {
+  display: inline-flex; flex-direction: column; align-items: center;
+  margin-top: -10px; text-decoration: none; color: var(--gold); line-height: .42;
+  font-size: 26px; padding: 4px 16px 10px; border-radius: 10px;
+}
+.landing-more span { animation: landing-more 1.8s ease-in-out infinite; opacity: .35; }
+.landing-more span:nth-child(2) { animation-delay: .18s; }
+.landing-more span:nth-child(3) { animation-delay: .36s; }
+.landing-more:hover span { opacity: 1; }
+@keyframes landing-more { 0%, 100% { opacity: .3; transform: translateY(0); } 45% { opacity: 1; transform: translateY(3px); } }
+@media (prefers-reduced-motion: reduce) { .landing-more span { animation: none; opacity: .8; } }
 
 /* ── The two ways in ──────────────────────────────────────────────────── */
 .landing-enter {
@@ -158,6 +171,11 @@
   border-radius: 12px;
   background: color-mix(in srgb, var(--gold) 14%, transparent);
 }
+.landing-feature-lex .landing-feature-ico { background: color-mix(in srgb, #c8322f 12%, transparent); }
+.landing-lexdex { display: block; transition: transform .2s; }
+.landing-feature-lex:hover .landing-lexdex { transform: rotate(-6deg) scale(1.06); }
+.landing-features { scroll-margin-top: 24px; }
+.landing-mem { font-family: var(--paleo-font); color: var(--gold); }
 .landing-feature-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .landing-feature-name {
   font-size: 20px;

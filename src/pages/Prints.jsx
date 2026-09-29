@@ -7,7 +7,8 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
+import { pageTitle } from '../hooks/usePageTitle.js';
+import { useModelSeo } from '../lib/models/seo.js';
 import HolyLandPoster, { PRINTS, posterSvgText, posterToPng, saveBlob } from '../components/HolyLandPoster.jsx';
 import './Prints.css';
 
@@ -15,7 +16,7 @@ const FILE = { ezekiel: 'holy-land-ezekiel-47-48', joshua: 'holy-land-joshua-13-
 const MAP_LINK = { ezekiel: '/models/holy-land?overlay=ezekiel', joshua: '/models/holy-land?overlay=joshua', holy: '/models/holy-land?overlay=ezekiel&view=holy' };
 
 export default function Prints() {
-  usePageTitle(pageTitle('Printable Maps — Maps & Models'), 'The Holy Land as printable map sheets: the allotments of Joshua and of Ezekiel, and the Holy Portion — save as PNG, SVG or PDF.');
+  useModelSeo(pageTitle('Printable Maps — Maps'), 'The Holy Land as printable map sheets: the allotments of Joshua and of Ezekiel, and the Holy Portion — save as PNG, SVG or PDF.');
   const [params, setParams] = useSearchParams();
   const id = PRINTS.some((p) => p.id === params.get('map')) ? params.get('map') : 'ezekiel';
   const spec = PRINTS.find((p) => p.id === id);
@@ -45,7 +46,7 @@ export default function Prints() {
   return (
     <div className="prints-page">
       <header className="prints-top">
-        <Link to="/models" className="prints-back" title="Maps & Models">←</Link>
+        <Link to="/maps" className="prints-back" title="Maps">←</Link>
         <h1 className="prints-h1">Printable Maps</h1>
         <Link to={MAP_LINK[id]} className="prints-open">Interactive map ↗</Link>
       </header>

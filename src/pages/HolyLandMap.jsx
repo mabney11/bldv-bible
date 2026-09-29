@@ -34,7 +34,8 @@ import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
+import { pageTitle } from '../hooks/usePageTitle.js';
+import { useModelSeo } from '../lib/models/seo.js';
 import { useTheme } from '../hooks/useTheme.js';
 import { apiTransChapter, apiSurface, apiLexicon, apiStrongsLookup } from '../lib/api.js';
 import { transliterate } from '../lib/translit.js';
@@ -280,7 +281,7 @@ function fmtLonLat([lon, lat]) {
 
 // ── Component ────────────────────────────────────────────────────────────────
 export default function HolyLandMap() {
-  usePageTitle(pageTitle('Holy Land in 3D — Maps & Models'));
+  useModelSeo(pageTitle('The Holy Land in 3D — Maps'));
   const { theme, toggle: toggleTheme } = useTheme();
   const [params, setParams] = useSearchParams();
 
@@ -952,7 +953,7 @@ export default function HolyLandMap() {
     <div className={`hl-page${panelOpen ? ' hl-panel-open' : ''}`} data-basemap={basemap}>
       <header className="hl-top">
         <Link to="/landing" className="hl-logo" title="Home">𐤀𐤁</Link>
-        <Link to="/models" className="hl-back" title="Maps & Models">← Models</Link>
+        <Link to="/maps" className="hl-back" title="Maps">← Maps</Link>
         <h1 className="hl-h1">The Holy Land in 3D <span>Joshua &amp; Ezekiel allotments</span></h1>
         <PlacePicker pin={pin} selId={sel?.city?.id} onPick={(c) => selectCity(c, true)} />
         <div className="hl-top-actions">

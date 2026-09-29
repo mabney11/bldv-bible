@@ -106,3 +106,7 @@
   .models-posters { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px 12px; }
   .models-thumb-paleo { font-size: 24px; }
 }
+
+/* Story Models ⇄ Maps cross-link in the header (2026-09-29 split) */
+.models-other { margin-left: auto; font-size: 12.5px; color: var(--gold); text-decoration: none; border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent); border-radius: 999px; padding: 5px 12px; white-space: nowrap; }
+.models-other:hover { background: color-mix(in srgb, var(--gold) 12%, transparent); }

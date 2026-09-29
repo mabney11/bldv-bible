@@ -83,6 +83,8 @@ export const apiSearch   = (q, offset, mode) =>
 
 // ── Translation studio ─────────────────────────────────────────────────────────
 export const apiTransProgress = ()                          => jsonFetch('/api/translate/progress');
+// every verse marked done / in progress in the Translation Studio (public, read-only — /progress)
+export const apiTransMarked = ()                            => jsonFetch('/api/translate/marked');
 // Both of these overlay a non-admin's local edits (src/lib/localOverlay.js) on top
 // of the server's published text before returning — so a local-only edit made in
 // Translate Studio shows up everywhere the translation is read (Reader, Share,

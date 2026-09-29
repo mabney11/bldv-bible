@@ -22,7 +22,8 @@
  */
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
+import { pageTitle } from '../hooks/usePageTitle.js';
+import { useModelSeo } from '../lib/models/seo.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
 import { usePlayer, Section, Caption, PaceSelect, CanvasSubtitles, CanvasTitle, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
 import { apiTransChapter } from '../lib/api.js';
@@ -201,7 +202,7 @@ function Card({ id, selectable, ended, onClose, onPick }) {
 
 // ── The page ─────────────────────────────────────────────────────────────────
 export default function Statue() {
-  usePageTitle(pageTitle('The Tzalam (Likeness) of the Dream — Maps & Models'), 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (without) yadayan (hands) — an interactive model: tap the dahab (gold), the kasap (silver), the nachash (brass), the parazal (iron) and the chasap (clay) for their verses, and play the aban (stone) striking it to pieces.');
+  useModelSeo(pageTitle('The Tzalam (Likeness) of the Dream — Interactive Story Models'), 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (without) yadayan (hands) — an interactive model: tap the dahab (gold), the kasap (silver), the nachash (brass), the parazal (iron) and the chasap (clay) for their verses, and play the aban (stone) striking it to pieces.');
   const [params, setParams] = useSearchParams();
   const canGL = useMemo(webglAvailable, []);
   const view = VIEWS.includes(params.get('view')) ? params.get('view') : (canGL ? '3d' : '2d');
@@ -259,7 +260,7 @@ export default function Statue() {
   return (
     <div className={`st-page${sheetOpen ? ' st-sheet-open' : ''}`}>
       <header className="st-top">
-        <Link to="/models" className="st-back" title="Maps & Models">←</Link>
+        <Link to="/models" className="st-back" title="Interactive Story Models">←</Link>
         <div className="st-h1wrap">
           <h1 className="st-h1">The Tzalam (Likeness) of the Dream</h1>
           <span className="st-h1-paleo" dir="rtl" aria-hidden="true">𐤑𐤋𐤌 · 𐤀𐤁𐤍</span>

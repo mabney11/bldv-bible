@@ -1830,6 +1830,10 @@ export default function Translate() {
           </button>
         )}
         <button className="tr-txt-btn" onClick={openOverview}>📊 Overview</button>
+        {/* the public view of the same progress — what readers see (/progress) */}
+        <Link className="tr-txt-btn" to="/progress" title="Translation progress as readers see it — every verse marked translated">
+          <span style={{ fontFamily: 'var(--paleo-font)', color: 'var(--gold)' }}>𐤌</span> Progress
+        </Link>
         {activeBook && activeChapter && (
           <button className="tr-txt-btn" onClick={openChapterView}>📖 Chapter</button>
         )}

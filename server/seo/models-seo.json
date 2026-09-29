@@ -1,0 +1,510 @@
+{
+ "_note": "SEO for Story Models and Maps — ONE copy read by server/prerender.js (snapshots, JSON-LD, sitemap) and the client (document.title/description, verse-page 'See it in 3D' links). Titles lead with the words people search; descriptions keep fieldy's translit (gloss) voice.",
+ "models": {
+  "holy-land": {
+   "kind": "map",
+   "base": "/models/holy-land",
+   "name": "The Holy Land in 3D",
+   "refs": [
+    {
+     "slug": "joshua",
+     "book": "Joshua",
+     "from": [
+      13,
+      1
+     ],
+     "to": [
+      19,
+      51
+     ]
+    },
+    {
+     "slug": "ezekiel",
+     "book": "Ezekiel",
+     "from": [
+      47,
+      13
+     ],
+     "to": [
+      48,
+      35
+     ]
+    }
+   ],
+   "aka": [
+    "12 tribes map",
+    "twelve tribes of Israel map",
+    "tribal allotments of Israel",
+    "Ezekiel 48 map",
+    "Ezekiel 47 borders",
+    "millennial kingdom map",
+    "Joshua land division map",
+    "map of the tribes of Israel",
+    "Holy Portion map",
+    "prince's portion of Ezekiel 45 and 48",
+    "Holy Land 3D terrain map",
+    "biblical cities of Joshua"
+   ]
+  },
+  "prints": {
+   "kind": "map",
+   "base": "/models/prints",
+   "name": "Printable Maps",
+   "refs": [
+    {
+     "slug": "ezekiel",
+     "book": "Ezekiel",
+     "from": [
+      47,
+      13
+     ],
+     "to": [
+      48,
+      35
+     ]
+    },
+    {
+     "slug": "joshua",
+     "book": "Joshua",
+     "from": [
+      13,
+      1
+     ],
+     "to": [
+      19,
+      51
+     ]
+    }
+   ],
+   "aka": [
+    "printable 12 tribes map",
+    "Ezekiel 48 map PDF",
+    "Joshua tribal allotment map printable",
+    "Holy Portion map printable",
+    "Bible map PNG SVG PDF"
+   ]
+  },
+  "statue": {
+   "kind": "story",
+   "base": "/models/statue",
+   "name": "The Tzalam (Likeness) of the Dream",
+   "refs": [
+    {
+     "slug": "daniel",
+     "book": "Daniel",
+     "from": [
+      2,
+      31
+     ],
+     "to": [
+      2,
+      45
+     ]
+    }
+   ],
+   "aka": [
+    "Nebuchadnezzar's statue",
+    "Daniel 2 statue 3D",
+    "statue of gold silver bronze iron and clay",
+    "the stone cut without hands",
+    "image of Daniel 2",
+    "four kingdoms of Daniel"
+   ]
+  },
+  "temple": {
+   "kind": "story",
+   "base": "/models/temple",
+   "name": "The Bayath (House) of Yahawah",
+   "refs": [
+    {
+     "slug": "1-kings",
+     "book": "1 Kings",
+     "from": [
+      6,
+      1
+     ],
+     "to": [
+      8,
+      66
+     ]
+    },
+    {
+     "slug": "2-chronicles",
+     "book": "2 Chronicles",
+     "from": [
+      3,
+      1
+     ],
+     "to": [
+      7,
+      22
+     ]
+    }
+   ],
+   "aka": [
+    "Solomon's Temple 3D model",
+    "first temple model",
+    "1 Kings 6 temple",
+    "Jachin and Boaz",
+    "molten sea on twelve oxen",
+    "holy of holies",
+    "cherubim of the oracle",
+    "temple dedication 1 Kings 8"
+   ]
+  },
+  "ezekiel": {
+   "kind": "story",
+   "base": "/models/ezekiel",
+   "name": "The Bayath (House) Yachazaqaal (Ezekiel) Saw",
+   "refs": [
+    {
+     "slug": "ezekiel",
+     "book": "Ezekiel",
+     "from": [
+      40,
+      1
+     ],
+     "to": [
+      43,
+      27
+     ]
+    }
+   ],
+   "aka": [
+    "Ezekiel's temple 3D model",
+    "Ezekiel 40-43 temple",
+    "third temple",
+    "millennial temple",
+    "Ezekiel temple gates",
+    "Ezekiel altar 43"
+   ]
+  },
+  "tabernacle": {
+   "kind": "story",
+   "base": "/models/tabernacle",
+   "name": "The Mashakan (Tabernacle) and Its Machanah (Camp)",
+   "refs": [
+    {
+     "slug": "exodus",
+     "book": "Exodus",
+     "from": [
+      25,
+      1
+     ],
+     "to": [
+      27,
+      21
+     ]
+    },
+    {
+     "slug": "exodus",
+     "book": "Exodus",
+     "from": [
+      40,
+      1
+     ],
+     "to": [
+      40,
+      38
+     ]
+    },
+    {
+     "slug": "numbers",
+     "book": "Numbers",
+     "from": [
+      2,
+      1
+     ],
+     "to": [
+      2,
+      34
+     ]
+    },
+    {
+     "slug": "numbers",
+     "book": "Numbers",
+     "from": [
+      3,
+      23
+     ],
+     "to": [
+      3,
+      38
+     ]
+    }
+   ],
+   "aka": [
+    "tabernacle 3D model",
+    "tabernacle of Moses",
+    "camp of the 12 tribes",
+    "Numbers 2 camp layout",
+    "tribes around the tabernacle",
+    "ark of the covenant",
+    "menorah lampstand",
+    "wilderness tabernacle"
+   ]
+  },
+  "ezekiel-city": {
+   "kind": "story",
+   "base": "/models/ezekiel-city",
+   "name": "The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion",
+   "refs": [
+    {
+     "slug": "ezekiel",
+     "book": "Ezekiel",
+     "from": [
+      45,
+      1
+     ],
+     "to": [
+      45,
+      8
+     ]
+    },
+    {
+     "slug": "ezekiel",
+     "book": "Ezekiel",
+     "from": [
+      47,
+      1
+     ],
+     "to": [
+      47,
+      12
+     ]
+    },
+    {
+     "slug": "ezekiel",
+     "book": "Ezekiel",
+     "from": [
+      48,
+      8
+     ],
+     "to": [
+      48,
+      35
+     ]
+    }
+   ],
+   "aka": [
+    "Ezekiel 48 city",
+    "twelve gates named for the tribes",
+    "Ezekiel holy portion",
+    "Yahweh Shammah",
+    "river from the temple Ezekiel 47",
+    "Ezekiel 48 land division",
+    "12 tribes gates"
+   ]
+  },
+  "revelation-city": {
+   "kind": "story",
+   "base": "/models/revelation-city",
+   "name": "The Shairay (City) Coming Down Out of Shamayam (Heaven)",
+   "refs": [
+    {
+     "slug": "revelation",
+     "book": "Revelation",
+     "from": [
+      21,
+      1
+     ],
+     "to": [
+      22,
+      5
+     ]
+    }
+   ],
+   "aka": [
+    "New Jerusalem 3D model",
+    "Revelation 21 city",
+    "New Jerusalem size 12000 stadia",
+    "twelve gates of pearl",
+    "twelve foundations stones",
+    "street of gold",
+    "river of the water of life",
+    "holy city Revelation"
+   ]
+  }
+ },
+ "pages": {
+  "/models": {
+   "kind": "index",
+   "index": "story",
+   "title": "3D Bible Story Models — Solomon's Temple, Tabernacle, Ezekiel's Temple & New Jerusalem | BLD Bible",
+   "h1": "Interactive Story Models",
+   "description": "Interactive 3D story models built from the text of scripture — watch the bayath (house) Shalamah (Solomon) banah (built) rise, walk the bayath (house) Yachazaqaal (Ezekiel) saw gate by gate, raise the mashakan (tabernacle) with the twelve shabatay (tribes) camped about it, see the tzalam (likeness) of Daniel 2 struck by the aban (stone), and stand in the gate of the city coming down out of shamayam (heaven).",
+   "aka": [
+    "3D Bible models",
+    "Solomon's Temple 3D",
+    "Ezekiel's temple model",
+    "tabernacle 3D model",
+    "New Jerusalem 3D",
+    "Bible storytelling in 3D"
+   ]
+  },
+  "/maps": {
+   "kind": "index",
+   "index": "map",
+   "title": "Bible Maps — the 12 Tribes of Israel in 3D, Joshua & Ezekiel Allotments | BLD Bible",
+   "h1": "Maps",
+   "description": "Bible maps drawn from the text — the twelve shabatay (tribes) of Yashar-Al (Israel) in 3D relief with the allotments of Yahawashawai (Joshua) 13–19 and Yachazaqaal (Ezekiel) 47–48, the qadash (holy) portion and the nashayaa (prince)'s land, the biblical cities, rivers and seas under their own names, and printable map sheets.",
+   "aka": [
+    "12 tribes map",
+    "twelve tribes of Israel map",
+    "tribal allotments of Israel",
+    "Ezekiel 48 map",
+    "Ezekiel 47 borders",
+    "millennial kingdom map",
+    "Joshua land division map",
+    "map of the tribes of Israel"
+   ]
+  },
+  "/models/holy-land": {
+   "kind": "page",
+   "model": "holy-land",
+   "title": "12 Tribes of Israel Map in 3D — Ezekiel 48 & Joshua 13–19 Allotments | BLD Bible",
+   "h1": "The Holy Land in 3D",
+   "description": "The twelve shabatay (tribes) of Yashar-Al (Israel) on a 3D map of the Holy Land — the allotments of Yahawashawai (Joshua) 13–19 and the millennial allotments of Yachazaqaal (Ezekiel) 47–48 with the qadash (holy) portion and the nashayaa (prince)'s land, every border traced to its verse, and the biblical cities, rivers and seas under the names the text gives them."
+  },
+  "/models/prints": {
+   "kind": "page",
+   "model": "prints",
+   "title": "Printable 12 Tribes Maps — Ezekiel 47–48, Joshua 13–19 & the Holy Portion | BLD Bible",
+   "h1": "Printable Maps",
+   "description": "The Holy Land as printable map sheets — the allotment of Ezekiel 47–48 with the Holy Portion, the allotment of Joshua 13–19, and the Holy Portion close up — saved as PNG, SVG or PDF."
+  },
+  "/models/statue": {
+   "kind": "page",
+   "model": "statue",
+   "title": "Nebuchadnezzar's Statue in 3D — the Tzalam (Likeness) of Daniel 2 | BLD Bible",
+   "h1": "The Tzalam (Likeness) of the Dream",
+   "description": "Nabawakadanaatzar (Nebuchadnezzar)'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (without) yadayan (hands) as an interactive 3D model — the raash (head) of dahab (gold), kasap (silver), nachash (brass), parazal (iron) and chasap (clay) with their verses, and the aban (stone) striking the tzalam (likeness) to pieces."
+  },
+  "/models/temple": {
+   "kind": "page",
+   "model": "temple",
+   "title": "Solomon's Temple 3D Model — the Bayath (House) of Yahawah, 1 Kings 6–8 | BLD Bible",
+   "h1": "The Bayath (House) of Yahawah",
+   "description": "The bayath (house) Shalamah (Solomon) banah (built) for Yahawah (1 Kings 6–7; 2 Chronicles 3–4) as an interactive 3D model measured in amah (cubits) from the text — the hayakal (temple) and the dabayar (oracle) with the karawab (cherubim), Yakayan (Jachin) and Baiz (Boaz), the yam (sea) on twelve oxen, the makanawath (bases), the courts and the king's houses — rising in the order the text gives, or walked through from the gate to the arawan (ark)."
+  },
+  "/models/temple/build": {
+   "kind": "page",
+   "model": "temple",
+   "title": "Building Solomon's Temple in 3D — 1 Kings 6–7 in the Text's Order | BLD Bible",
+   "h1": "Build — The Bayath (House) of Yahawah",
+   "description": "The bayath (house) of Yahawah rising in the order 1 Kings 6–7 and 2 Chronicles 3–4 give it — the yasad (foundation), the walls and chambers, the roof, the araz (cedar) and the zahab (gold), the karawab (cherubim), the doors, the courts, the brass and the vessels, and the arawan (ark) brought in — an interactive 3D model measured in amah (cubits) from the text."
+  },
+  "/models/temple/dedicate": {
+   "kind": "page",
+   "model": "temple",
+   "title": "Dedication of Solomon's Temple in 3D — 1 Kings 8, 2 Chronicles 5–7 | BLD Bible",
+   "h1": "Dedicate — The Bayath (House) of Yahawah",
+   "description": "The dedication of the bayath (house) of Yahawah, 1 Kings 8 and 2 Chronicles 5–7, on the 3D model: the qahal (assembly), the kahanayam (priests) carrying the arawan (ark) in under the wings, the inan (cloud) filling the house, Shalamah (Solomon)'s prayer on the kayawar (scaffold), the ash (fire) from heaven on the mazabach (altar), the kabawad (glory), the sacrifices, the feast, the people sent home."
+  },
+  "/models/temple/walk": {
+   "kind": "page",
+   "model": "temple",
+   "title": "Walk Through Solomon's Temple in 3D — Gate to the Ark | BLD Bible",
+   "h1": "Walk — The Bayath (House) of Yahawah",
+   "description": "Walk into the bayath (house) of Yahawah on the 3D model: through the gate of the great court, past the mazabach (altar) and the yam (sea), between Yakayan (Jachin) and Baiz (Boaz), through the awalam (porch) and the doors, down the hayakal, through the parakath (veil) to the arawan (ark) beneath the karawab (cherubim) — verse by verse, or on your own feet."
+  },
+  "/models/temple/roam": {
+   "kind": "page",
+   "model": "temple",
+   "title": "Explore Solomon's Temple on Foot — Interactive 3D | BLD Bible",
+   "h1": "Roam — The Bayath (House) of Yahawah",
+   "description": "Roam the finished bayath (house) of Yahawah on your own feet — through the gates, around the yam (sea), between the pillars, in through the doors to the arawan (ark); tap any part for its measures and verses."
+  },
+  "/models/ezekiel": {
+   "kind": "page",
+   "model": "ezekiel",
+   "title": "Ezekiel's Temple 3D Model — Ezekiel 40–43, Measured from the Text | BLD Bible",
+   "h1": "The Bayath (House) Yachazaqaal (Ezekiel) Saw",
+   "description": "The bayath (house) shown to Yachazaqaal (Ezekiel) on the very high har (mountain) (Ezekiel 40–43) as an interactive 3D model, measured in the long amah (cubit) of the man's qanah (reed): the chawamah (wall) five hundred square, the six shairayam (gates) with their lodges and posts, the chatzarawath (courts), the mazabach (altar) with its Har'Al, the awalam (porch), the hayakal (temple) and the most qadash (holy) place, the tzalai (side) rooms, the banayan (building) and the kahanayam (priests)' rooms."
+  },
+  "/models/ezekiel/walk": {
+   "kind": "page",
+   "model": "ezekiel",
+   "title": "Walk Ezekiel's Temple in 3D — the Way the Man with the Reed Led Him | BLD Bible",
+   "h1": "Walk — The Bayath (House) Yachazaqaal (Ezekiel) Saw",
+   "description": "Walk the house of Ezekiel 40–43 on the 3D model the way the man with the qanah (reed) led him: up the seven steps into the east shair (gate), across the chayatzawan (outer) chatzar (court), through the inner gates to the mazabach (altar), up to the awalam (porch), into the hayakal (temple) and the most qadash (holy) place, round the tzalai (side) rooms, the banayan (building) and the kahanayam (priests)' rooms, and out to the chawamah (wall) five hundred square — then the kabawad (glory) comes in by the east."
+  },
+  "/models/ezekiel/roam": {
+   "kind": "page",
+   "model": "ezekiel",
+   "title": "Explore Ezekiel's Temple on Foot — Interactive 3D | BLD Bible",
+   "h1": "Roam — The Bayath (House) Yachazaqaal (Ezekiel) Saw",
+   "description": "Roam the house Yachazaqaal (Ezekiel) saw on your own feet — up the steps and through the shairayam (gates), across the chatzarawath (courts), up to the awalam (porch) and in through the dalathawath (doors); tap any part for its measures and verses."
+  },
+  "/models/tabernacle": {
+   "kind": "page",
+   "model": "tabernacle",
+   "title": "Tabernacle 3D Model & the Camp of the 12 Tribes — Exodus 25–27, Numbers 2 | BLD Bible",
+   "h1": "The Mashakan (Tabernacle) and Its Machanah (Camp)",
+   "description": "The mashakan (tabernacle) of Exodus 25–27 and 40 as an interactive 3D model measured in amah (cubits) from the text — the chatzar (court) a hundred by fifty on its sixty imawadayam (pillars), the mazabach (altar) of nachashath (brass) and the basin, the qarashayam (boards) overlaid with zahab (gold), the yarayaihath (curtains) with karawab (cherubim) and the ahal (tent) of izayam (goats)' hair, the shalachan (table), the manawarah (lampstand), the mazabach (altar) of qatarath (incense), the parakath (veil) and the arawan (ark) — with the Lawayay (Levites) and the twelve tribes camped about it (Numbers 2–3)."
+  },
+  "/models/tabernacle/walk": {
+   "kind": "page",
+   "model": "tabernacle",
+   "title": "Raise the Tabernacle in 3D — Exodus 40 in Order, Then the 12 Tribes' Camp | BLD Bible",
+   "h1": "Raise — The Mashakan (Tabernacle) and Its Machanah (Camp)",
+   "description": "Raise the mashakan (tabernacle) on the 3D model in the order Mashah (Moses) set it up (Exodus 40:17–33): the qarashayam (boards) in their adanayam (sockets) and the barayacham (bars), the yarayaihath (curtains) and the ahal (tent) over them, the arawan (ark) and the parakath (veil), the shalachan (table), the manawarah (lampstand), the altar of qatarath (incense), the screen of the pathach (door), the mazabach (altar) and the basin, the chatzar (court) — then the inan (cloud) covers it, and Yashar-Al (Israel) camps about it by their dagal (standards) (Numbers 2)."
+  },
+  "/models/tabernacle/roam": {
+   "kind": "page",
+   "model": "tabernacle",
+   "title": "Explore the Tabernacle and the 12 Tribes' Camp on Foot — 3D | BLD Bible",
+   "h1": "Roam — The Mashakan (Tabernacle) and Its Machanah (Camp)",
+   "description": "Roam the mashakan (tabernacle) and its camp on your own feet — through the screen of the shair (gate), past the mazabach (altar) and the basin, into the tent to the shalachan (table), the manawarah (lampstand) and, past the parakath (veil), the arawan (ark); or out among the tents of the Lawayay (Levites) and the twelve; tap any part for its measures and verses."
+  },
+  "/models/ezekiel-city": {
+   "kind": "page",
+   "model": "ezekiel-city",
+   "title": "Ezekiel 48 City & Holy Portion in 3D — the 12 Gates of the Tribes | BLD Bible",
+   "h1": "The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion",
+   "description": "The city of Ezekiel 48 and the holy portion of Ezekiel 45 and 48 as an interactive 3D model measured in cubits from the text, with the house model standing in its place — lay out the portion from above, or walk the city and its twelve gates on your own feet."
+  },
+  "/models/ezekiel-city/portion": {
+   "kind": "page",
+   "model": "ezekiel-city",
+   "title": "Ezekiel 48 Land Division in 3D — the Holy Portion, the Prince's Land & the 12 Tribes | BLD Bible",
+   "h1": "Portion — The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion",
+   "description": "The holy portion of Ezekiel 45 and 48 laid out from above on the 3D model: the priests' strip with the house in its midst, the Levites' strip, the city's strip with the city and its fields, the prince's land, the tribes' portions north and south, and the river from the house (Ezekiel 47)."
+  },
+  "/models/ezekiel-city/city": {
+   "kind": "page",
+   "model": "ezekiel-city",
+   "title": "The City of Ezekiel 48 in 3D — 12 Gates Named for the Tribes | BLD Bible",
+   "h1": "City — The Iyar (City) Yachazaqaal (Ezekiel) Saw",
+   "description": "The city of Ezekiel 48 measured on the 3D model as the text measures it — four thousand five hundred a side, two hundred and fifty of open land about it, and its twelve gates named for the tribes, three to a side, in the text's order."
+  },
+  "/models/ezekiel-city/roam": {
+   "kind": "page",
+   "model": "ezekiel-city",
+   "title": "Walk the City of Ezekiel 48 on Foot — 3D | BLD Bible",
+   "h1": "Roam — The Iyar (City) Yachazaqaal (Ezekiel) Saw",
+   "description": "Walk the city of Ezekiel 48 on your own feet — in at any of the twelve gates named for the tribes, down its streets to the square in the midst, out to the open land and the fields."
+  },
+  "/models/revelation-city": {
+   "kind": "page",
+   "model": "revelation-city",
+   "title": "New Jerusalem 3D Model at Full Scale — Revelation 21–22 | BLD Bible",
+   "h1": "The Shairay (City) Coming Down Out of Shamayam (Heaven)",
+   "description": "The holy city of Revelation 21–22 as an interactive 3D model at the text's own scale — twelve thousand stadia a side over the Holy Land, its jasper wall on twelve foundations of stones, its twelve gates of pearl, the street of gold, the river of life and the throne — see it come down, or stand in its gate on your own feet."
+  },
+  "/models/revelation-city/descend": {
+   "kind": "page",
+   "model": "revelation-city",
+   "title": "New Jerusalem Coming Down in 3D — Revelation 21–22 Verse by Verse | BLD Bible",
+   "h1": "Descend — The Shairay (City) Coming Down Out of Shamayam (Heaven)",
+   "description": "The holy city of Revelation 21–22 coming down out of heaven on the 3D model as the text gives it: the new earth, the city whole, the mountain, its light, the wall and the twelve gates, the twelve foundations stone by stone, the measuring, the gold, the river of life and the tree, the throne."
+  },
+  "/models/revelation-city/roam": {
+   "kind": "page",
+   "model": "revelation-city",
+   "title": "Stand in the Pearl Gate of New Jerusalem — Revelation 21 in 3D | BLD Bible",
+   "h1": "Roam — The Shairay (City) Coming Down Out of Shamayam (Heaven)",
+   "description": "Stand in the gate of pearl of the holy city of Revelation 21 on your own feet — the wall of jasper on its twelve foundations towering either side, the street of gold and the river of life before you — and be carried, as John was, to any gate or to the throne."
+  }
+ }
+}

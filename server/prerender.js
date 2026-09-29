@@ -82,8 +82,10 @@ const SITE = 'https://www.bldbible.com';
 // survives only as index.html's JSON-LD alternateName, for search
 // disambiguation — it is no longer used in any title or heading.
 const BRAND = 'BLD Bible';
-const LANDING_TITLE = `${BRAND}: Online Bible Study Tool`;
-const APP_DESC = "Read Hebrew, Greek, Latin, Ge'ez and Syriac scripture word by word with Strong's numbers, a concordance, root and lexicon tools, and a Hebrew-backed English Bible translation.";
+const LANDING_TITLE = `${BRAND}: Hebrew–English Bible & Interactive 3D Bible Stories`;
+const APP_DESC = "Read the Bible in English with the original Hebrew beside it, and step into its stories in interactive 3D — Solomon's Temple, Ezekiel's temple and city, the tabernacle and the camp of the 12 tribes, the 12 tribes' land on a 3D map, and New Jerusalem.";
+// Landing hero copy — mirrors Landing.jsx's .landing-subtitle word for word.
+const LANDING_PITCH = 'Read the Bible in English with the original Hebrew text that any translator should package with their translation. Immerse yourself in the 3D storytelling epics of the Bible. See the prophetic Holy Land which is sure to come, the Temple that Solomon built, and so much more.';
 
 // Canonical 66-book table — mirrors server.js's TX_BOOK_NAMES exactly (kept
 // as a separate copy on purpose: this module has no access to that
@@ -239,10 +241,12 @@ const NAV_LINKS = `
         <a href="/landing">Home</a> ·
         <a href="/bible?book=1&amp;chapter=1">Novel English Bible</a> ·
         <a href="/?book=1&amp;chapter=1">Hebrew Reader</a> ·
-        <a href="/parallel?book=1&amp;chapter=1">English–Hebrew Parallel</a> ·
+        <a href="/parallel/genesis/1">English–Paleo Hebrew Parallel Bible</a> ·
         <a href="/translate?book=1&amp;chapter=1&amp;verse=1">Translation Studio</a> ·
         <a href="/works">Works Library</a> ·
-        <a href="/models">Maps &amp; Models</a> ·
+        <a href="/models">Interactive Story Models</a> ·
+        <a href="/maps">Maps</a> ·
+        <a href="/progress">Translation Progress</a> ·
         <a href="/passages">Passages</a> ·
         <a href="/lexicon-page">Lexicon</a> ·
         <a href="/guide">Guide</a> ·
@@ -814,7 +818,7 @@ async function buildVersePathSnapshot(match, port) {
   if (!data || !data.text) {
     const chapterHref = `/bible?book=${encodeURIComponent(canonicalSlug)}&chapter=${chapter}&verse=${verse}`;
     return {
-      title: `${heading} | Reader`,
+      title: `${heading} | Detailed Verse`,
       description: `${heading} doesn't have English text yet in ${BRAND}.`,
       body: `<h1>${escapeHtml(heading)}</h1>
       <p>${escapeHtml(heading)} doesn't have English text yet.</p>
@@ -828,12 +832,25 @@ async function buildVersePathSnapshot(match, port) {
     .map((t) => `<li>${escapeHtml(t.word_raw)}${t.strongs ? ` — <a href="/roots?sn=${encodeURIComponent(t.strongs)}">${escapeHtml(t.strongs)}</a>` : ''}</li>`)
     .join('\n        ');
 
+  // "See it in 3D" — the story models / maps built from this verse (internal
+  // links from ~31k verse pages are what tells a search engine the model pages
+  // are about these passages), and fieldy's 𐤌 mark on a verse he has finished.
+  const models = modelsForVerse(canonicalSlug, chapter, verse);
+  const modelLinks = models.length
+    ? `<h2>See it in 3D</h2>\n      <ul>\n        ${models.map((m) => `<li><a href="${m.base}">${escapeHtml((MODEL_SEO.pages[m.base] || { title: m.name }).title.replace(/ \| BLD Bible$/, ''))}</a></li>`).join('\n        ')}\n      </ul>`
+    : '';
+  const translated = data.status === 'done'
+    ? `<p>𐤌 Translated by MaAratz, ibad (servant of) Yah — <a href="/progress">translation progress</a>.</p>`
+    : '';
   return {
-    title: `${heading} | Reader`,
+    title: `${heading} | Detailed Verse`,
     description: `${heading} — ${truncate(data.text, 140)}`,
     body: `<h1>${escapeHtml(heading)}</h1>
       <p>${escapeHtml(data.text)}</p>
-      ${wordItems ? `<h2>Hebrew, word by word</h2>\n      <ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
+      ${translated}
+      ${wordItems ? `<h2>Hebrew, word by word</h2>\n      <ul>\n        ${wordItems}\n      </ul>` : ''}
+      ${modelLinks}
+      <p><a href="/parallel/${canonicalSlug}/${chapter}-${verse}">${escapeHtml(heading)} in the English–Paleo Hebrew Parallel Bible</a> · <a href="/?book=${encodeURIComponent(canonicalSlug)}&amp;chapter=${chapter}&amp;verse=${verse}">Hebrew Viewer</a></p>${NAV_LINKS}`,
     canonicalPath,
   };
 }
@@ -954,7 +971,20 @@ const ROUTES = {
       // since this snapshot has no CSS to style a span as a subheading.
       body: `<h1>${escapeHtml(BRAND)}</h1>
       <h2>Online Bible Study Tool</h2>
-      <p>The scriptures in their own names — Hebrew first, English beside it, the land drawn from the text.</p>${NAV_LINKS}`,
+      <p>${escapeHtml(LANDING_PITCH)}</p>
+      <h2>Interactive Story Models</h2>
+      <ul>
+        ${MODEL_SEO_LIST('story')}
+      </ul>
+      <h2>Maps</h2>
+      <ul>
+        ${MODEL_SEO_LIST('map')}
+      </ul>
+      <h2>English–Paleo Hebrew Parallel Bible</h2>
+      <p><a href="/parallel/genesis/1">Genesis 1, English and Hebrew side by side</a> — every word linked to its Hebrew.</p>
+      <h2>Lexicon</h2>
+      <p><a href="/lexicon-page">Every word, root and name</a> — its paleo letters, its parts, its Strong's number and every verse it stands in.</p>
+      <p><a href="/progress">Translation progress</a> — every verse translated so far.</p>${NAV_LINKS}`,
     }),
   }],
 
@@ -1124,6 +1154,80 @@ async function buildPassagePathSnapshot(match, port) {
   };
 }
 
+
+// ── STORY MODELS + MAPS (server/seo/models-seo.json) ─────────────────────────
+// 2026-09-29, fieldy: "my seo should highlight the interactive 3d story telling
+// my app provides ... if someone searches '12 tribes map ezekiel' my app should
+// be a relevant hit". Before this, /models and /models/holy-land had NO snapshot
+// at all (bare shell) and every other model page's snapshot was an <h1> plus the
+// nav — nothing for a search engine to match "12 tribes", "Ezekiel 48 map" or
+// "Solomon's temple 3D" against, and none of them were in any sitemap. Each page
+// now gets: a title that leads with the words people search, the description in
+// fieldy's translit (gloss) voice, the phrases it answers, its scripture ranges
+// as links into the Detailed Verse pages, its stories, the other models, and
+// JSON-LD (LearningResource / Map + BreadcrumbList) in <head>. The same file
+// feeds the client's document.title and the verse pages' "See it in 3D" links.
+const MODEL_SEO = require('./seo/models-seo.json');
+const refLabel = (r) => `${r.book} ${r.from[0]}:${r.from[1]}${r.to[0] === r.from[0] ? `–${r.to[1]}` : `–${r.to[0]}:${r.to[1]}`}`;
+function MODEL_SEO_LIST(kind) {
+  return Object.values(MODEL_SEO.models).filter((m) => m.kind === kind).map((m) => {
+    const pg = MODEL_SEO.pages[m.base];
+    return `<li><a href="${m.base}">${escapeHtml(pg ? pg.title.replace(/ \| BLD Bible$/, '') : m.name)}</a> — ${escapeHtml(m.refs.map(refLabel).join(' · '))}</li>`;
+  }).join('\n        ');
+}
+/** the model pages whose scripture covers this verse — used by the verse snapshots */
+function modelsForVerse(slug, chapter, verse) {
+  const key = chapter * 1000 + verse;
+  return Object.values(MODEL_SEO.models).filter((m) => m.refs.some((r) => r.slug === slug
+    && key >= r.from[0] * 1000 + r.from[1] && key <= r.to[0] * 1000 + r.to[1]));
+}
+function modelPageSnapshot(path, pg) {
+  const m = pg.model ? MODEL_SEO.models[pg.model] : null;
+  const url = `${SITE}${path}`;
+  const others = Object.values(MODEL_SEO.models).filter((o) => !m || o.base !== m.base);
+  const stories = m ? Object.entries(MODEL_SEO.pages).filter(([p2]) => p2.startsWith(`${m.base}/`) && p2 !== path) : [];
+  const listed = pg.kind === 'index' ? Object.values(MODEL_SEO.models).filter((o) => o.kind === pg.index) : [];
+  const aka = (m ? m.aka : pg.aka) || [];
+  const refs = m ? m.refs : [];
+  const isMap = (m && m.kind === 'map') || pg.index === 'map';
+  const ld = [{
+    '@context': 'https://schema.org',
+    '@type': isMap && pg.kind !== 'index' ? 'Map' : (pg.kind === 'index' ? 'CollectionPage' : 'LearningResource'),
+    name: pg.title.replace(/ \| BLD Bible$/, ''),
+    alternateName: pg.h1,
+    description: pg.description,
+    url,
+    inLanguage: 'en',
+    isAccessibleForFree: true,
+    keywords: aka.join(', '),
+    ...(pg.kind !== 'index' && !isMap ? { learningResourceType: 'Interactive 3D model', interactivityType: 'active', educationalUse: 'Bible study' } : {}),
+    ...(refs.length ? { about: refs.map((r) => ({ '@type': 'CreativeWork', name: refLabel(r), url: `${SITE}/${r.slug}/${r.from[0]}/${r.from[1]}` })) } : {}),
+    isPartOf: { '@type': 'WebSite', name: BRAND, url: `${SITE}/` },
+  }, {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: BRAND, item: `${SITE}/landing` },
+      { '@type': 'ListItem', position: 2, name: isMap ? 'Maps' : 'Interactive Story Models', item: `${SITE}${isMap ? '/maps' : '/models'}` },
+      ...(pg.kind === 'index' ? [] : [{ '@type': 'ListItem', position: 3, name: pg.h1, item: url }]),
+    ],
+  }];
+  const body = `<h1>${escapeHtml(pg.h1)}</h1>
+      <p>${escapeHtml(pg.description)}</p>
+      ${aka.length ? `<p>For: ${escapeHtml(aka.join(' · '))}</p>` : ''}
+      ${refs.length ? `<h2>The scripture it is built from</h2>\n      <ul>\n        ${refs.map((r) => `<li><a href="/${r.slug}/${r.from[0]}/${r.from[1]}">${escapeHtml(refLabel(r))}</a> · <a href="/parallel/${r.slug}/${r.from[0]}">${escapeHtml(`${r.book} ${r.from[0]}`)} in English and Hebrew</a></li>`).join('\n        ')}\n      </ul>` : ''}
+      ${stories.length ? `<h2>Stories on this model</h2>\n      <ul>\n        ${stories.map(([p2, s2]) => `<li><a href="${p2}">${escapeHtml(s2.title.replace(/ \| BLD Bible$/, ''))}</a> — ${escapeHtml(truncate(s2.description, 160))}</li>`).join('\n        ')}\n      </ul>` : ''}
+      ${listed.length ? `<ul>\n        ${listed.map((o) => { const op = MODEL_SEO.pages[o.base]; return `<li><a href="${o.base}">${escapeHtml(op ? op.title.replace(/ \| BLD Bible$/, '') : o.name)}</a> — ${escapeHtml(op ? truncate(op.description, 200) : '')}</li>`; }).join('\n        ')}\n      </ul>` : ''}
+      ${m ? `<h2>More interactive models and maps</h2>\n      <ul>\n        ${others.map((o) => `<li><a href="${o.base}">${escapeHtml((MODEL_SEO.pages[o.base] || { title: o.name }).title.replace(/ \| BLD Bible$/, ''))}</a></li>`).join('\n        ')}\n      </ul>` : ''}${NAV_LINKS}`;
+  return {
+    title: pg.title,
+    description: truncate(pg.description, 300),
+    body,
+    canonicalPath: path,
+    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`,
+  };
+}
+
 const STATIC_PAGES = {
   '/lexicon-page': {
     title: `Lexicon | ${BRAND}`,
@@ -1150,109 +1254,16 @@ const STATIC_PAGES = {
     description: "Search across Hebrew, Greek, Latin and Ge'ez scripture and literary works.",
     heading: 'Search',
   },
-  '/models/prints': {
-    title: `Printable Maps | ${BRAND}`,
-    description: 'The Holy Land as printable map sheets — the allotment of Ezekiel 47–48 with the Holy Portion, the allotment of Joshua 13–19, and the Holy Portion close up — saved as PNG, SVG or PDF.',
-    heading: 'Printable Maps',
-  },
-  '/models/statue': {
-    title: `The Tzalam (Likeness) of the Dream | ${BRAND}`,
-    description: 'Nabawakadanaatzar (Nebuchadnezzar)\'s tzalam (likeness) of Daniel 2 and the aban (stone) gazar (cut) out laa (without) yadayan (hands) as an interactive 3D model — the raash (head) of dahab (gold), kasap (silver), nachash (brass), parazal (iron) and chasap (clay) with their verses, and the aban (stone) striking the tzalam (likeness) to pieces.',
-    heading: 'The Tzalam (Likeness) of the Dream',
-  },
-  '/models/temple': {
-    title: `The Bayath (House) of Yahawah | ${BRAND}`,
-    description: 'The bayath (house) Shalamah (Solomon) banah (built) for Yahawah (1 Kings 6–7; 2 Chronicles 3–4) as an interactive 3D model measured in amah (cubits) from the text — the hayakal (temple) and the dabayar (oracle) with the karawab (cherubim), Yakayan (Jachin) and Baiz (Boaz), the yam (sea) on twelve oxen, the makanawath (bases), the courts and the king\'s houses — rising in the order the text gives, or walked through from the gate to the arawan (ark).',
-    heading: 'The Bayath (House) of Yahawah',
-  },
-  '/models/temple/build': {
-    title: `Build — The Bayath (House) of Yahawah | ${BRAND}`,
-    description: 'The bayath (house) of Yahawah rising in the order 1 Kings 6–7 and 2 Chronicles 3–4 give it — the yasad (foundation), the walls and chambers, the roof, the araz (cedar) and the zahab (gold), the karawab (cherubim), the doors, the courts, the brass and the vessels, and the arawan (ark) brought in — an interactive 3D model measured in amah (cubits) from the text.',
-    heading: 'Build — The Bayath (House) of Yahawah',
-  },
-  '/models/temple/dedicate': {
-    title: `Dedicate — The Bayath (House) of Yahawah | ${BRAND}`,
-    description: 'The dedication of the bayath (house) of Yahawah, 1 Kings 8 and 2 Chronicles 5–7, on the 3D model: the qahal (assembly), the kahanayam (priests) carrying the arawan (ark) in under the wings, the inan (cloud) filling the house, Shalamah (Solomon)\'s prayer on the kayawar (scaffold), the ash (fire) from heaven on the mazabach (altar), the kabawad (glory), the sacrifices, the feast, the people sent home.',
-    heading: 'Dedicate — The Bayath (House) of Yahawah',
-  },
-  '/models/temple/walk': {
-    title: `Walk — The Bayath (House) of Yahawah | ${BRAND}`,
-    description: 'Walk into the bayath (house) of Yahawah on the 3D model: through the gate of the great court, past the mazabach (altar) and the yam (sea), between Yakayan (Jachin) and Baiz (Boaz), through the awalam (porch) and the doors, down the hayakal, through the parakath (veil) to the arawan (ark) beneath the karawab (cherubim) — verse by verse, or on your own feet.',
-    heading: 'Walk — The Bayath (House) of Yahawah',
-  },
-  '/models/temple/roam': {
-    title: `Roam — The Bayath (House) of Yahawah | ${BRAND}`,
-    description: 'Roam the finished bayath (house) of Yahawah on your own feet — through the gates, around the yam (sea), between the pillars, in through the doors to the arawan (ark); tap any part for its measures and verses.',
-    heading: 'Roam — The Bayath (House) of Yahawah',
-  },
-  '/models/ezekiel': {
-    title: `The Bayath (House) Yachazaqaal (Ezekiel) Saw | ${BRAND}`,
-    description: 'The bayath (house) shown to Yachazaqaal (Ezekiel) on the very high har (mountain) (Ezekiel 40–43) as an interactive 3D model, measured in the long amah (cubit) of the man\'s qanah (reed): the chawamah (wall) five hundred square, the six shairayam (gates) with their lodges and posts, the chatzarawath (courts), the mazabach (altar) with its Har\'Al, the awalam (porch), the hayakal (temple) and the most qadash (holy) place, the tzalai (side) rooms, the banayan (building) and the kahanayam (priests)\' rooms.',
-    heading: 'The Bayath (House) Yachazaqaal (Ezekiel) Saw',
-  },
-  '/models/ezekiel/walk': {
-    title: `Walk — The Bayath (House) Yachazaqaal (Ezekiel) Saw | ${BRAND}`,
-    description: 'Walk the house of Ezekiel 40–43 on the 3D model the way the man with the qanah (reed) led him: up the seven steps into the east shair (gate), across the chayatzawan (outer) chatzar (court), through the inner gates to the mazabach (altar), up to the awalam (porch), into the hayakal (temple) and the most qadash (holy) place, round the tzalai (side) rooms, the banayan (building) and the kahanayam (priests)\' rooms, and out to the chawamah (wall) five hundred square — then the kabawad (glory) comes in by the east.',
-    heading: 'Walk — The Bayath (House) Yachazaqaal (Ezekiel) Saw',
-  },
-  '/models/ezekiel/roam': {
-    title: `Roam — The Bayath (House) Yachazaqaal (Ezekiel) Saw | ${BRAND}`,
-    description: 'Roam the house Yachazaqaal (Ezekiel) saw on your own feet — up the steps and through the shairayam (gates), across the chatzarawath (courts), up to the awalam (porch) and in through the dalathawath (doors); tap any part for its measures and verses.',
-    heading: 'Roam — The Bayath (House) Yachazaqaal (Ezekiel) Saw',
-  },
-  '/models/tabernacle': {
-    title: `The Mashakan (Tabernacle) and Its Machanah (Camp) | ${BRAND}`,
-    description: 'The mashakan (tabernacle) of Exodus 25–27 and 40 as an interactive 3D model measured in amah (cubits) from the text — the chatzar (court) a hundred by fifty on its sixty imawadayam (pillars), the mazabach (altar) of nachashath (brass) and the basin, the qarashayam (boards) overlaid with zahab (gold), the yarayaihath (curtains) with karawab (cherubim) and the ahal (tent) of izayam (goats)\' hair, the shalachan (table), the manawarah (lampstand), the mazabach (altar) of qatarath (incense), the parakath (veil) and the arawan (ark) — with the Lawayay (Levites) and the twelve tribes camped about it (Numbers 2–3).',
-    heading: 'The Mashakan (Tabernacle) and Its Machanah (Camp)',
-  },
-  '/models/tabernacle/walk': {
-    title: `Raise — The Mashakan (Tabernacle) and Its Machanah (Camp) | ${BRAND}`,
-    description: 'Raise the mashakan (tabernacle) on the 3D model in the order Mashah (Moses) set it up (Exodus 40:17–33): the qarashayam (boards) in their adanayam (sockets) and the barayacham (bars), the yarayaihath (curtains) and the ahal (tent) over them, the arawan (ark) and the parakath (veil), the shalachan (table), the manawarah (lampstand), the altar of qatarath (incense), the screen of the pathach (door), the mazabach (altar) and the basin, the chatzar (court) — then the inan (cloud) covers it, and Yashar-Al (Israel) camps about it by their dagal (standards) (Numbers 2).',
-    heading: 'Raise — The Mashakan (Tabernacle) and Its Machanah (Camp)',
-  },
-  '/models/tabernacle/roam': {
-    title: `Roam — The Mashakan (Tabernacle) and Its Machanah (Camp) | ${BRAND}`,
-    description: 'Roam the mashakan (tabernacle) and its camp on your own feet — through the screen of the shair (gate), past the mazabach (altar) and the basin, into the tent to the shalachan (table), the manawarah (lampstand) and, past the parakath (veil), the arawan (ark); or out among the tents of the Lawayay (Levites) and the twelve; tap any part for its measures and verses.',
-    heading: 'Roam — The Mashakan (Tabernacle) and Its Machanah (Camp)',
-  },
-  '/models/ezekiel-city': {
-    title: `The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion | ${BRAND}`,
-    description: 'The city of Ezekiel 48 and the holy portion of Ezekiel 45 and 48 as an interactive 3D model measured in cubits from the text, with the house model standing in its place — lay out the portion from above, or walk the city and its twelve gates on your own feet.',
-    heading: 'The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion',
-  },
-  '/models/ezekiel-city/portion': {
-    title: `Portion — The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion | ${BRAND}`,
-    description: 'The holy portion of Ezekiel 45 and 48 laid out from above on the 3D model: the priests\' strip with the house in its midst, the Levites\' strip, the city\'s strip with the city and its fields, the prince\'s land, the tribes\' portions north and south, and the river from the house (Ezekiel 47).',
-    heading: 'Portion — The Iyar (City) Yachazaqaal (Ezekiel) Saw and the Holy Portion',
-  },
-  '/models/ezekiel-city/city': {
-    title: `City — The Iyar (City) Yachazaqaal (Ezekiel) Saw | ${BRAND}`,
-    description: 'The city of Ezekiel 48 measured on the 3D model as the text measures it — four thousand five hundred a side, two hundred and fifty of open land about it, and its twelve gates named for the tribes, three to a side, in the text\'s order.',
-    heading: 'City — The Iyar (City) Yachazaqaal (Ezekiel) Saw',
-  },
-  '/models/ezekiel-city/roam': {
-    title: `Roam — The Iyar (City) Yachazaqaal (Ezekiel) Saw | ${BRAND}`,
-    description: 'Walk the city of Ezekiel 48 on your own feet — in at any of the twelve gates named for the tribes, down its streets to the square in the midst, out to the open land and the fields.',
-    heading: 'Roam — The Iyar (City) Yachazaqaal (Ezekiel) Saw',
-  },
-  '/models/revelation-city': {
-    title: `The Shairay (City) Coming Down Out of Shamayam (Heaven) | ${BRAND}`,
-    description: 'The holy city of Revelation 21–22 as an interactive 3D model at the text\'s own scale — twelve thousand stadia a side over the Holy Land, its jasper wall on twelve foundations of stones, its twelve gates of pearl, the street of gold, the river of life and the throne — see it come down, or stand in its gate on your own feet.',
-    heading: 'The Shairay (City) Coming Down Out of Shamayam (Heaven)',
-  },
-  '/models/revelation-city/descend': {
-    title: `Descend — The Shairay (City) Coming Down Out of Shamayam (Heaven) | ${BRAND}`,
-    description: 'The holy city of Revelation 21–22 coming down out of heaven on the 3D model as the text gives it: the new earth, the city whole, the mountain, its light, the wall and the twelve gates, the twelve foundations stone by stone, the measuring, the gold, the river of life and the tree, the throne.',
-    heading: 'Descend — The Shairay (City) Coming Down Out of Shamayam (Heaven)',
-  },
-  '/models/revelation-city/roam': {
-    title: `Roam — The Shairay (City) Coming Down Out of Shamayam (Heaven) | ${BRAND}`,
-    description: 'Stand in the gate of pearl of the holy city of Revelation 21 on your own feet — the wall of jasper on its twelve foundations towering either side, the street of gold and the river of life before you — and be carried, as John was, to any gate or to the throne.',
-    heading: 'Roam — The Shairay (City) Coming Down Out of Shamayam (Heaven)',
+  // /models/* and /maps entries live in server/seo/models-seo.json now — see
+  // MODEL_SEO below (richer bodies, JSON-LD, one copy shared with the client).
+  '/progress': {
+    title: `Translation Progress | ${BRAND}`,
+    description: "MaAratz's translation of the scriptures, verse by verse — every verse translated so far, book by book and chapter by chapter, each one open in English with its original Hebrew word by word.",
+    heading: 'Translation Progress',
   },
   '/guide': {
     title: `Guide | ${BRAND}`,
-    description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel view, Maps & Models, Passages, the Lexicon and the Translation Studio.',
+    description: 'What BLD Bible does and where to find it — the Novel English Bible, the paleo-Hebrew reader, the Parallel Bible, the Interactive Story Models and Maps, Passages, the Lexicon and the Translation Studio.',
     heading: 'Guide',
   },
 };
@@ -1265,6 +1276,10 @@ for (const [path, page] of Object.entries(STATIC_PAGES)) {
       body: `<h1>${escapeHtml(page.heading)}</h1>${NAV_LINKS}`,
     }),
   }];
+}
+
+for (const [path, pg] of Object.entries(MODEL_SEO.pages)) {
+  ROUTES[path] = [{ match: () => true, build: async () => modelPageSnapshot(path, pg) }];
 }
 
 // Bounded LRU cache: unlike the original Genesis-1-only version (a fixed
@@ -1318,7 +1333,7 @@ function loadShell(indexHtmlPath) {
   shell = next; shellMtime = mtime;
 }
 
-function render({ title, description, canonicalPath, body }) {
+function render({ title, description, canonicalPath, body, head }) {
   const canonical = `${SITE}${canonicalPath}`;
   return shell
     .replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`)
@@ -1329,6 +1344,7 @@ function render({ title, description, canonicalPath, body }) {
     .replace(/<meta name="twitter:title" content="[^"]*" \/>/, `<meta name="twitter:title" content="${escapeHtml(title)}" />`)
     .replace(/<meta name="twitter:description" content="[^"]*" \/>/, `<meta name="twitter:description" content="${escapeHtml(description)}" />`)
     .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${escapeHtml(canonical)}$2`)
+    .replace('</head>', head ? `  ${head}\n  </head>` : '</head>')
     .replace('<div id="root"></div>', `<div id="root">\n      ${body}\n    </div>`);
 }
 
@@ -1356,12 +1372,12 @@ async function renderSnapshot(pathname, query, port, indexHtmlPath) {
       const cached = cacheGet(cacheKey);
       if (cached !== undefined) return cached;
 
-      const { title, description, body, canonicalPath } = await route.build(query, port);
+      const { title, description, body, canonicalPath, head } = await route.build(query, port);
       // A route may name its own canonical (see englishChapterRoute's
       // canonicalPath — collapses ?verse=/&lang=/etc. variants onto the
       // book+chapter URL that's actually in the sitemap). Falls back to this
       // exact request's own URL, same as before, for every route that doesn't.
-      const html = render({ title, description, canonicalPath: canonicalPath || cacheKey, body });
+      const html = render({ title, description, canonicalPath: canonicalPath || cacheKey, body, head });
 
       cacheSet(cacheKey, html);
       return html;
