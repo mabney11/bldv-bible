@@ -21,25 +21,72 @@ import './Landing.css';
  * Keep the pitch word for word with server/prerender.js's LANDING_PITCH.
  */
 
-/** A handheld field-guide device — the Lexicon's icon ("a pokedex like image
- *  instead of the magnifying glass"): a red case, a lens, three lights, and a
- *  screen showing 𐤀. Drawn here, no image file. */
-export function LexiconDeviceIcon({ size = 40 }) {
+/** The Lexicon's icon — a smartphone (fieldy, 2026-09-29: "make it look more
+ *  like a smartphone, i like the alap but lets also have an ox head image and
+ *  scribble text denoting more details about a word can be found here"): the
+ *  ox head the letter was drawn from, beside 𐤀, over lines of scribbled notes. */
+export function LexiconDeviceIcon({ size = 44 }) {
   return (
     <svg className="landing-lexdex" width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
-      <rect x="6" y="3" width="36" height="42" rx="6" fill="#c8322f" />
-      <rect x="6" y="3" width="36" height="42" rx="6" fill="none" stroke="#7a1715" strokeWidth="1.5" />
-      <path d="M6 17 H42" stroke="#7a1715" strokeWidth="1.5" />
-      <circle cx="15" cy="10.5" r="5.2" fill="#f4f1e8" />
-      <circle cx="15" cy="10.5" r="3.9" fill="#3aa0e8" />
-      <circle cx="13.6" cy="9.1" r="1.3" fill="#e6f5ff" />
-      <circle cx="25" cy="8" r="1.6" fill="#f06a5e" />
-      <circle cx="30" cy="8" r="1.6" fill="#f5c542" />
-      <circle cx="35" cy="8" r="1.6" fill="#58c26b" />
-      <rect x="11" y="21" width="26" height="16" rx="2.5" fill="#1d2320" stroke="#f4f1e8" strokeWidth="1.6" />
-      <text x="24" y="33.6" textAnchor="middle" fontSize="12" fill="#e6b84a" style={{ fontFamily: 'var(--paleo-font)' }}>𐤀</text>
-      <circle cx="13" cy="41" r="1.4" fill="#7a1715" />
-      <rect x="27" y="40" width="10" height="2" rx="1" fill="#7a1715" />
+      <rect x="10" y="1.5" width="28" height="45" rx="6" fill="#c8322f" />
+      <rect x="11.6" y="3.1" width="24.8" height="41.8" rx="4.6" fill="#111214" />
+      <rect x="13.2" y="6.4" width="21.6" height="35.4" rx="2.4" fill="#f4ecd8" />
+      <rect x="20.5" y="4.1" width="7" height="1.4" rx=".7" fill="#2a2b2f" />
+      <rect x="20" y="42.6" width="8" height="1" rx=".5" fill="#55565c" />
+      {/* the ox head — horns, ears, face, eyes, nostrils */}
+      <g transform="translate(14.6 9) scale(.95)" fill="none" stroke="#6b3f18" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3.2 3.4 Q1 3 .4 .4 M8.8 3.4 Q11 3 11.6 .4" />
+        <path d="M3 3.4 Q6 2.4 9 3.4 L8.4 9 Q6 11.6 3.6 9 Z" fill="#c98a4b" />
+        <path d="M3 4.4 L.9 5.6 L3.2 6 M9 4.4 L11.1 5.6 L8.8 6" fill="#c98a4b" />
+        <circle cx="4.9" cy="5.6" r=".45" fill="#2a1a0c" stroke="none" />
+        <circle cx="7.1" cy="5.6" r=".45" fill="#2a1a0c" stroke="none" />
+        <circle cx="5.3" cy="8.9" r=".35" fill="#2a1a0c" stroke="none" />
+        <circle cx="6.7" cy="8.9" r=".35" fill="#2a1a0c" stroke="none" />
+      </g>
+      <text x="30" y="19.5" textAnchor="middle" fontSize="11" fill="#b8801f" style={{ fontFamily: 'var(--paleo-font)' }}>𐤀</text>
+      {/* scribbled notes — more about the word */}
+      <g fill="none" strokeLinecap="round" strokeWidth=".95">
+        <path d="M15.4 25 q1 -1.2 2 0 t2 0 t2 0 t2 0 t2 0 t2 0 t2 0" stroke="#b8801f" />
+        <path d="M15.4 29 q1 -1.1 2 0 t2 0 t2 0 t2 0 t2 0 t2 0" stroke="#7a6a4e" />
+        <path d="M15.4 33 q1 -1.1 2 0 t2 0 t2 0 t2 0 t2 0 t2 0 t2 0" stroke="#7a6a4e" />
+        <path d="M15.4 37 q1 -1.1 2 0 t2 0 t2 0 t2 0" stroke="#7a6a4e" />
+      </g>
+    </svg>
+  );
+}
+
+/** Maps' icon — the chart of the twelve tribes: Ezekiel 48's bands north to
+ *  south (Dan … Judah, the holy portion with the sanctuary, Benjamin … Gad) with
+ *  the Great Sea on the west. Colours = src/lib/models/holyLand.js TRIBE_COLORS. */
+const EZ_BANDS = ['#e05555', '#3ecfb0', '#f2d94e', '#4cca7a', '#8d8d8d', '#f0883e', '#6e8aa6', 'HOLY', '#2e4a6e', '#7a3b5e', '#8f8f8f', '#a63b8a', '#6b3fa0'];
+export function TribesChartIcon({ size = 44 }) {
+  const top = 5, h = 38, bh = h / EZ_BANDS.length;
+  return (
+    <svg className="landing-tribes" width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
+      <defs><clipPath id="lt-land"><path d="M13 5 Q11 12 12.5 18 Q10.5 26 12 33 Q10 39 12.5 43 L41 43 L41 5 Z" /></clipPath></defs>
+      <rect x="4" y="4" width="40" height="40" rx="3" fill="#2c5f8a" />
+      <path d="M5 12 q2 -1 4 0 M5 22 q2 -1 4 0 M5 32 q2 -1 4 0" stroke="#7fb3d9" strokeWidth=".8" fill="none" strokeLinecap="round" />
+      <g clipPath="url(#lt-land)">
+        {EZ_BANDS.map((c, i) => (c === 'HOLY'
+          ? <g key={i}><rect x="0" y={top + i * bh} width="48" height={bh} fill="#f2c14e" /><rect x="26" y={top + i * bh + .4} width={bh - .8} height={bh - .8} fill="#e05555" /></g>
+          : <rect key={i} x="0" y={top + i * bh} width="48" height={bh} fill={c} stroke="#0e0e0f" strokeWidth=".25" />))}
+      </g>
+      <path d="M41 5 L41 43" stroke="#7fb3d9" strokeWidth="1.2" />
+    </svg>
+  );
+}
+
+/** The Parallel Bible's icon — English beside paleo, in four quadrants:
+ *  A 𐤀 over b 𐤁 (fieldy, 2026-09-29). */
+export function ParallelQuadIcon({ size = 44 }) {
+  return (
+    <svg className="landing-quad" width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
+      <rect x="3" y="3" width="42" height="42" rx="7" fill="#f4ecd8" />
+      <path d="M24 7 V41 M7 24 H41" stroke="#b79a62" strokeWidth="1.2" />
+      <text x="13.5" y="19.5" textAnchor="middle" fontSize="15" fill="#2a2320" style={{ fontFamily: 'Georgia, serif', fontWeight: 700 }}>A</text>
+      <text x="34.5" y="19.5" textAnchor="middle" fontSize="15" fill="#b8801f" style={{ fontFamily: 'var(--paleo-font)' }}>𐤀</text>
+      <text x="13.5" y="38.5" textAnchor="middle" fontSize="15" fill="#2a2320" style={{ fontFamily: 'Georgia, serif', fontWeight: 700 }}>b</text>
+      <text x="34.5" y="38.5" textAnchor="middle" fontSize="15" fill="#b8801f" style={{ fontFamily: 'var(--paleo-font)' }}>𐤁</text>
     </svg>
   );
 }
@@ -86,12 +133,12 @@ const FEATURES = [
     go: 'Play the stories →',
   },
   {
-    to: '/maps', cls: 'landing-feature-maps', ico: '🗺', name: 'Maps',
+    to: '/maps', cls: 'landing-feature-maps', ico: <TribesChartIcon />, name: 'Maps',
     sub: 'The prophetic Holy Land in 3D — the twelve tribes\' allotments of Joshua and of Ezekiel\'s kingdom to come, the Holy Portion, the cities, the rivers and seas, every border traced to its verse; printable sheets too',
     go: 'Open the maps →',
   },
   {
-    to: '/parallel/genesis/1', cls: 'landing-feature-parallel', ico: '📖', name: 'English–Paleo Hebrew Parallel Bible',
+    to: '/parallel/genesis/1', cls: 'landing-feature-parallel', ico: <ParallelQuadIcon />, name: 'English–Paleo Hebrew Parallel Bible',
     sub: 'Every verse in English beside its paleo Hebrew, word for word — hover a word and its Hebrew lights up; the Hebrew every translation should come packaged with',
     go: 'Open the parallel Bible →',
   },

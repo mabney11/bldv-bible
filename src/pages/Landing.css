@@ -181,8 +181,11 @@
 @keyframes lsg-twinkle { 50% { opacity: .25; } }
 @media (prefers-reduced-motion: reduce) { .landing-storygame * { transition: none !important; animation: none !important; } }
 .landing-feature-lex .landing-feature-ico { background: color-mix(in srgb, #c8322f 12%, transparent); }
+.landing-tribes, .landing-quad { display: block; transition: transform .2s; }
+.landing-feature-maps:hover .landing-tribes, .landing-feature-parallel:hover .landing-quad { transform: scale(1.07); }
 .landing-lexdex { display: block; transition: transform .2s; }
 .landing-feature-lex:hover .landing-lexdex { transform: rotate(-6deg) scale(1.06); }
+.landing-lexdex { overflow: visible; }
 .landing-features { scroll-margin-top: 24px; }
 .landing-mem { font-family: var(--paleo-font); color: var(--gold); }
 .landing-feature-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
