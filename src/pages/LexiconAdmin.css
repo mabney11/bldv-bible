@@ -174,3 +174,47 @@
   .la-body { flex-direction: column; }
   .la-backups { width: auto; border-left: none; border-top: 1px solid var(--border); }
 }
+
+/* ── Chip view (LexiconChips.jsx) ───────────────────────────────────────── */
+.lc-wrap { flex: 1; display: flex; flex-direction: column; min-width: 0; padding: 14px 20px; gap: 12px; overflow: auto; }
+.lc-searchbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: sticky; top: 0; z-index: 2; background: var(--bg); padding-bottom: 6px; }
+.lc-search {
+  flex: 1 1 320px; min-height: 40px; padding: 8px 12px; border-radius: 6px;
+  background: var(--bg3); color: var(--text); border: 1px solid var(--border2); font-size: 15px;
+}
+.lc-search:focus { outline: none; border-color: var(--blue); }
+.lc-count { font-size: 11px; color: var(--text3); white-space: nowrap; }
+.lc-on { color: var(--blue); }
+.lc-kbd { display: flex; flex-direction: column; gap: 6px; align-items: center; padding: 10px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; }
+.lc-kbd-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.lc-key {
+  min-width: 42px; min-height: 42px; font-size: 22px; border-radius: 6px; cursor: pointer;
+  background: var(--bg3); color: var(--text); border: 1px solid var(--border2);
+}
+.lc-key:hover { border-color: var(--blue); }
+.lc-key-wide { font-size: 12px; padding: 0 14px; }
+.lc-editor { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; background: var(--bg2); border: 1px solid var(--blue); border-radius: 8px; }
+.lc-editor-title { font-size: 12px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; }
+.lc-field { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--text3); }
+.lc-field input, .lc-field textarea {
+  background: var(--bg3); color: var(--text); border: 1px solid var(--border2); border-radius: 6px;
+  padding: 8px 10px; font-size: 15px; font-family: inherit;
+}
+.lc-field input:focus, .lc-field textarea:focus { outline: none; border-color: var(--blue); }
+.lc-editor-actions { display: flex; align-items: center; gap: 10px; }
+.lc-danger { color: var(--red, #e5484d); }
+.lc-error { font-size: 12px; color: var(--red, #e5484d); }
+.lc-chips { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+.lc-chip {
+  display: inline-flex; align-items: baseline; gap: 8px; max-width: 100%;
+  padding: 6px 10px; border-radius: 999px; cursor: pointer; text-align: start;
+  background: var(--bg3); color: var(--text); border: 1px solid var(--border2); font-size: 13px;
+}
+.lc-chip:hover { border-color: var(--blue); }
+.lc-chip:disabled { opacity: 0.5; cursor: default; }
+.lc-chip-active { border-color: var(--blue); background: color-mix(in srgb, var(--blue) 14%, var(--bg3)); }
+.lc-chip-note { border-style: dashed; }
+.lc-chip-key { font-weight: 700; font-size: 16px; white-space: nowrap; }
+.lc-chip-hint { color: var(--text3); font-size: 14px; }
+.lc-chip-val { color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 420px; }
+.lc-more { align-self: center; }

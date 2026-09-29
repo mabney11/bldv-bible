@@ -362,6 +362,7 @@ export const apiAdminListStrongsOverrides = () => jsonFetch('/api/admin/strongs-
 // so restoreLexiconBackup can always undo a save (including one that wiped
 // the file down to nothing).
 export const apiAdminListLexiconFiles = () => jsonFetch('/api/admin/lexicon-files');
+export const apiAdminLexiconSnIndex = () => jsonFetch('/api/admin/lexicon-sn-index');
 export const apiAdminGetLexiconFile = (name) =>
   jsonFetch(`/api/admin/lexicon-file?name=${encodeURIComponent(name)}`);
 export const apiAdminSaveLexiconFile = (name, content) =>

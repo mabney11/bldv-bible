@@ -2566,9 +2566,15 @@ function isRootSubsequence(sub, full) {
 // "men" (H376, root 𐤀𐤉𐤔) aligned as 𐤀·𐤔 with 𐤍 between, and the merge produced
 // 𐤀𐤉𐤍𐤔 "Ayanash" — a word that exists nowhere (4,528 occurrences). 2026-09-28,
 // kept in sync between server.js and build-surface-index.js.
+let _interiorRejected = false;   // set by the merges; read + reset per token by the parser
 function _interiorForeign(pairs, S, C) {
     const rootSet = new Set(C);
+    const MATER = new Set(['\u{10909}', '\u{10905}']);
     for (let k = 1; k < pairs.length; k++) {
+        // Only between two RADICAL anchors: an alignment anchored on a 𐤉/𐤅 is
+        // often a tie the LCS broke the wrong way (a prefix 𐤅 standing in for
+        // the root's 𐤅 in 𐤅𐤄𐤌𐤎𐤓), not evidence of a foreign stem.
+        if (MATER.has(C[pairs[k - 1][1]]) || MATER.has(C[pairs[k][1]])) continue;
         for (let si = pairs[k - 1][0] + 1; si < pairs[k][0]; si++) {
             const ch = S[si];
             if (!rootSet.has(ch) && ch !== '\u{10909}' && ch !== '\u{10905}' && ch !== '\u{10900}' && ch !== '\u{10915}') return true;
@@ -2595,7 +2601,7 @@ function mergeRootDisplay(surface, canonical) {
         else if (dp[i - 1][j] >= dp[i][j - 1]) i--; else j--;
     }
     pairs.reverse();
-    if (_interiorForeign(pairs, S, C)) return null;
+    if (_interiorForeign(pairs, S, C)) { _interiorRejected = true; return null; }
     const out = [];
     let si = 0, ci = 0;
     for (const [pi, pj] of pairs) {
@@ -2642,7 +2648,7 @@ function fullMergeRootDisplay(surface, canonical, minLcs) {
         else if (dp[i - 1][j] >= dp[i][j - 1]) i--; else j--;
     }
     pairs.reverse();
-    if (_interiorForeign(pairs, S, C)) return null;
+    if (_interiorForeign(pairs, S, C)) { _interiorRejected = true; return null; }
     const out = [];   // [letter, 'S' surface-only | 'C' canonical]
     let si = 0, ci = 0;
     for (const [pi, pj] of pairs) {
@@ -3562,6 +3568,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 // rootDisplay (reader only) uses rootZone — the suffix has been
                 // peeled off so the merge shows canonical + root-zone modifications
                 // (mutated radical, mater) WITHOUT the suffix; the suffix is a chip.
+                _interiorRejected = false;
                 const rzMerged = mergeRootDisplay([...rootZone], [..._canonicalRoot]);
                 const rzFirst  = [...rootZone][0];
                 // NMPR GUARD (kept in sync with build-surface-index.js). FIRST CUT
@@ -3617,7 +3624,16 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 const _have = new Map();
                 for (const ch of [..._fmLead, ...(rootDisplay || ''), ..._fmTrail]) _have.set(ch, (_have.get(ch) || 0) + 1);
                 const _drops = [...rootZone].some(ch => { const n = _have.get(ch) || 0; if (!n) return true; _have.set(ch, n - 1); return false; });
-                if (rootDisplay && rootZone && _drops) { rootDisplay = rootZone; _fmLead = ''; _fmTrail = ''; }
+                if (rootDisplay && rootZone && _drops) { rootDisplay = rootZone; _interiorRejected = true; _fmLead = ''; _fmTrail = ''; }
+                // The display fell back to the written stem, so the grouping root must not
+                // claim the canonical one either (verify-no-eliding: true_root and paleo
+                // never disagree). 𐤀𐤍𐤔𐤉𐤌 anashim groups under 𐤀𐤍𐤔; its Strong's (H376)
+                // and its gloss (looked up by the canonical root) are unchanged.
+                if (_interiorRejected && trueRoot === _canonicalRoot) {
+                    const _shown = [..._fmLead, ...(rootDisplay || ''), ..._fmTrail];
+                    let _k = 0; for (const ch of _shown) if (ch === [..._canonicalRoot][_k]) _k++;
+                    if (_k < [..._canonicalRoot].length) trueRoot = MUTATED_ROOTS[displayRoot] || displayRoot;
+                }
             }
 
             // ── HARDEN: NO BAKED MODIFICATION MAY LOOK LIKE A BARE ROOT ─────────
@@ -3819,7 +3835,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                 ...buildKeys(trueRoot),
                 ...buildKeys(displayRoot),
                 // the Strong's own canonical root — see build-surface-index.js
-                ...(typeof _canonicalRoot === 'string' && _canonicalRoot ? buildKeys(_canonicalRoot) : []),
+                ...(typeof _canonicalRoot === 'string' && _canonicalRoot && pos !== 'nmpr' ? buildKeys(_canonicalRoot) : []),
             ];
 
             let finalTranslation = null;
@@ -4287,6 +4303,37 @@ app.get('/api/admin/lexicon-files', (req, res) => {
             return { name, size: st.size, mtime: st.mtimeMs };
         });
         res.json({ files });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/admin/lexicon-sn-index -> { index: { "H3915": ["𐤋𐤉𐤋", "𐤋𐤉𐤋𐤄"], ... } }
+// Strong's number -> the paleo spellings it answers to: its canonical root
+// (strongs-roots.json) and its dictionary lemma's consonants. Lets the Lexicon
+// Admin sort "H3915": "night" among the 𐤋 words and find it when you TYPE
+// 𐤋𐤉𐤋𐤄 (Layalah). Static data -> built once per process.
+let _lexSnIndex = null;
+app.get('/api/admin/lexicon-sn-index', (req, res) => {
+    try {
+        if (!_lexSnIndex) {
+            const HEBL = 'אבגדהוזחטיכלמנסעפצקרשת', FIN = { 'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ' };
+            const toPaleo = (h) => {
+                let out = '';
+                for (const ch of String(h || '')) { const c = FIN[ch] || ch; const i = HEBL.indexOf(c); if (i >= 0) out += String.fromCodePoint(0x10900 + i); }
+                return out;
+            };
+            const roots = loadStrongsRoots() || {};
+            const idx = {};
+            const add = (sn, p) => { if (!p) return; (idx[sn] = idx[sn] || []).includes(p) || idx[sn].push(p); };
+            for (const [sn, p] of Object.entries(roots)) add(sn, p);
+            for (const [k, e] of Object.entries(STRONGS_DICT || {})) {
+                const sn = /^H/.test(k) ? k : 'H' + k;
+                add(sn, toPaleo(e && e.lemma));
+            }
+            _lexSnIndex = idx;
+        }
+        res.json({ index: _lexSnIndex });
     } catch (e) {
         res.status(500).json({ error: e.message });
     }

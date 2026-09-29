@@ -6,11 +6,18 @@ import '../components/TopBar.css'; // .logo-btn/.txt-btn/.icon-btn, reused here
 import {
   apiAdminListLexiconFiles, apiAdminGetLexiconFile, apiAdminSaveLexiconFile,
   apiAdminListLexiconBackups, apiAdminGetLexiconBackup, apiAdminRestoreLexiconBackup,
+  apiAdminLexiconSnIndex,
 } from '../lib/api.js';
+import LexiconChips, { parseLexicon } from './LexiconChips.jsx';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import './LexiconAdmin.css';
 
-// /admin/lexicon — a blunt, format-agnostic mirror of every file in
+// /admin/lexicon — every file in server/lexicon/. JSON object files open as
+// CHIPS (LexiconChips.jsx: Hebrew-ordered, click to edit key/value or remove,
+// Ctrl+F search with the paleo keyboard, Strong's keys findable by their
+// Hebrew letters); "Raw text" switches back to the original editor below.
+//
+// Original design notes: a blunt, format-agnostic mirror of every file in
 // server/lexicon/: pick one from the list, its exact raw text loads into a
 // single editable window, hit Save and it's written straight back to that
 // file on disk — no structured form standing between you and the text, so
@@ -35,6 +42,7 @@ import './LexiconAdmin.css';
 
 const NEW_FILE_TEMPLATE = '{\n  \n}\n';
 const LAST_FILE_KEY = 'lexAdmin_lastFile';
+const VIEW_KEY = 'lexAdmin_view';   // 'chips' | 'raw'
 
 function fmtBytes(n) {
   if (n == null) return '—';
@@ -67,6 +75,10 @@ export default function LexiconAdmin() {
   const [preview, setPreview] = useState(null); // { file, content } | null
 
   const [newFileOpen, setNewFileOpen] = useState(false);
+  // Chip view (default) for any JSON object file; raw text for .md notes, JSON
+  // that doesn't parse, or on request. See LexiconChips.jsx.
+  const [view, setView] = useState(() => { try { return localStorage.getItem(VIEW_KEY) || 'chips'; } catch { return 'chips'; } });
+  const [snIndex, setSnIndex] = useState(null);
   const [newFileName, setNewFileName] = useState('');
 
   // Set by confirmNewFile() so the [selected]-driven auto-load effect below
@@ -94,6 +106,11 @@ export default function LexiconAdmin() {
   }, [toast]);
 
   useEffect(() => { if (isAdmin) loadFiles(); }, [isAdmin, loadFiles]);
+  useEffect(() => {
+    if (!isAdmin) return;
+    apiAdminLexiconSnIndex().then(d => setSnIndex(d.index || {})).catch(() => setSnIndex({}));
+  }, [isAdmin]);
+  useEffect(() => { try { localStorage.setItem(VIEW_KEY, view); } catch { /* private mode */ } }, [view]);
 
   const loadFile = useCallback((name) => {
     if (!name) return;
@@ -172,6 +189,11 @@ export default function LexiconAdmin() {
     try { JSON.parse(content); return null; }
     catch (e) { return e.message; }
   }, [selected, content]);
+
+  const chipsAvailable = useMemo(
+    () => !!selected && selected.endsWith('.json') && parseLexicon(content) !== null,
+    [selected, content]);
+  const showChips = chipsAvailable && view === 'chips';
 
   const save = useCallback(async () => {
     if (!selected || saving) return;
@@ -285,6 +307,11 @@ export default function LexiconAdmin() {
         <button className="txt-btn" onClick={() => setBackupsOpen(o => !o)}>
           {backupsOpen ? 'Hide backups' : 'Backups'}
         </button>
+        {chipsAvailable && (
+          <button className="txt-btn" onClick={() => setView(v => (v === 'chips' ? 'raw' : 'chips'))}>
+            {view === 'chips' ? 'Raw text' : 'Chips'}
+          </button>
+        )}
         <span className="la-spacer" />
         <span className="la-charcount">{content.length.toLocaleString()} chars</span>
         <button className="txt-btn" onClick={revert} disabled={!dirty || loading}>Revert</button>
@@ -311,14 +338,18 @@ export default function LexiconAdmin() {
       )}
 
       <div className="la-body">
-        <textarea
-          className="la-editor"
-          value={content}
-          onChange={e => setContent(e.target.value)}
-          spellCheck={false}
-          disabled={loading}
-          placeholder={loading ? 'Loading…' : ''}
-        />
+        {showChips ? (
+          <LexiconChips content={content} onChange={setContent} snIndex={snIndex} disabled={loading} />
+        ) : (
+          <textarea
+            className="la-editor"
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            spellCheck={false}
+            disabled={loading}
+            placeholder={loading ? 'Loading…' : ''}
+          />
+        )}
 
         {backupsOpen && (
           <aside className="la-backups">
