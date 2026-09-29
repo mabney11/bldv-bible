@@ -55,25 +55,13 @@ export function LexiconDeviceIcon({ size = 44 }) {
   );
 }
 
-/** Maps' icon — the chart of the twelve tribes: Ezekiel 48's bands north to
- *  south (Dan … Judah, the holy portion with the sanctuary, Benjamin … Gad) with
- *  the Great Sea on the west. Colours = src/lib/models/holyLand.js TRIBE_COLORS. */
-const EZ_BANDS = ['#e05555', '#3ecfb0', '#f2d94e', '#4cca7a', '#8d8d8d', '#f0883e', '#6e8aa6', 'HOLY', '#2e4a6e', '#7a3b5e', '#8f8f8f', '#a63b8a', '#6b3fa0'];
+/** Maps' icon — the real map, not a drawing (fieldy, 2026-09-29: "keep my map
+ *  realistic … all 12 tribes should fit in the frame"): a render of
+ *  /models/holy-land's own Ezekiel 47–48 allotment, Dan to Gad, north up, saved
+ *  as public/model-thumbs/holy-land-icon.jpg (256 px; the /maps poster
+ *  holy-land.jpg is the same render at 800 × 500, with the tribes' names). */
 export function TribesChartIcon({ size = 44 }) {
-  const top = 5, h = 38, bh = h / EZ_BANDS.length;
-  return (
-    <svg className="landing-tribes" width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
-      <defs><clipPath id="lt-land"><path d="M13 5 Q11 12 12.5 18 Q10.5 26 12 33 Q10 39 12.5 43 L41 43 L41 5 Z" /></clipPath></defs>
-      <rect x="4" y="4" width="40" height="40" rx="3" fill="#2c5f8a" />
-      <path d="M5 12 q2 -1 4 0 M5 22 q2 -1 4 0 M5 32 q2 -1 4 0" stroke="#7fb3d9" strokeWidth=".8" fill="none" strokeLinecap="round" />
-      <g clipPath="url(#lt-land)">
-        {EZ_BANDS.map((c, i) => (c === 'HOLY'
-          ? <g key={i}><rect x="0" y={top + i * bh} width="48" height={bh} fill="#f2c14e" /><rect x="26" y={top + i * bh + .4} width={bh - .8} height={bh - .8} fill="#e05555" /></g>
-          : <rect key={i} x="0" y={top + i * bh} width="48" height={bh} fill={c} stroke="#0e0e0f" strokeWidth=".25" />))}
-      </g>
-      <path d="M41 5 L41 43" stroke="#7fb3d9" strokeWidth="1.2" />
-    </svg>
-  );
+  return <img className="landing-tribes" src="/model-thumbs/holy-land-icon.jpg" width={size} height={size} alt="" loading="lazy" />;
 }
 
 /** The Parallel Bible's icon — English beside paleo, in four quadrants:

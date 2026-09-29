@@ -182,6 +182,7 @@
 @media (prefers-reduced-motion: reduce) { .landing-storygame * { transition: none !important; animation: none !important; } }
 .landing-feature-lex .landing-feature-ico { background: color-mix(in srgb, #c8322f 12%, transparent); }
 .landing-tribes, .landing-quad { display: block; transition: transform .2s; }
+.landing-tribes { border-radius: 9px; object-fit: cover; box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold) 30%, transparent); }
 .landing-feature-maps:hover .landing-tribes, .landing-feature-parallel:hover .landing-quad { transform: scale(1.07); }
 .landing-lexdex { display: block; transition: transform .2s; }
 .landing-feature-lex:hover .landing-lexdex { transform: rotate(-6deg) scale(1.06); }
