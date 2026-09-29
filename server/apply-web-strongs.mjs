@@ -427,7 +427,15 @@ function plenePlural(surface, root) {
   if (p < r.length) skipped += r.length - p;
   if (!skipped) return surface;
   const tail = last >= 0 ? s.slice(last + 1).join('') : '';
-  return root + tail;
+  const out = root + tail;
+  // Written letters are never dropped (2026-09-28): a suppletive plural shares
+  // little with its singular's root — 𐤍𐤔𐤉𐤌 nashim "women" (H802, root 𐤀𐤉𐤔𐤄)
+  // came out 𐤀𐤉𐤔𐤄𐤉𐤌 "ayashahayam", its 𐤍 gone. Restore only when every letter
+  // of the attested plural survives; otherwise the plural is its own spelling.
+  const have = new Map();
+  for (const ch of out) have.set(ch, (have.get(ch) || 0) + 1);
+  for (const ch of s) { const n = have.get(ch) || 0; if (!n) return surface; have.set(ch, n - 1); }
+  return out;
 }
 if (existsSync('./surface-forms.txt'))
   for (const line of readFileSync('./surface-forms.txt','utf8').split(/\r?\n/)) {

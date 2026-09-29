@@ -634,6 +634,23 @@ function guessPrefixGloss(paleoStr, pos) {
 // server.js mergeRootDisplay (see there for full docs). Returns the merged Paleo
 // string, or null when the surface is NOT a defective spelling of the canonical
 // root. `surface`/`canonical` are arrays of Paleo code points.
+// A written letter INSIDE the aligned root span that is neither a root letter nor
+// a mater (𐤉/𐤅, quiescent 𐤀 as in 𐤓𐤀𐤔 for 𐤓𐤅𐤔) nor the hitpael infix 𐤕 means the surface is not this root plus
+// modifications — it is a different stem (suppletive plural). 𐤀𐤍𐤔𐤉𐤌 anashim
+// "men" (H376, root 𐤀𐤉𐤔) aligned as 𐤀·𐤔 with 𐤍 between, and the merge produced
+// 𐤀𐤉𐤍𐤔 "Ayanash" — a word that exists nowhere (4,528 occurrences). 2026-09-28,
+// kept in sync between server.js and build-surface-index.js.
+function _interiorForeign(pairs, S, C) {
+    const rootSet = new Set(C);
+    for (let k = 1; k < pairs.length; k++) {
+        for (let si = pairs[k - 1][0] + 1; si < pairs[k][0]; si++) {
+            const ch = S[si];
+            if (!rootSet.has(ch) && ch !== '\u{10909}' && ch !== '\u{10905}' && ch !== '\u{10900}' && ch !== '\u{10915}') return true;
+        }
+    }
+    return false;
+}
+
 function mergeRootDisplay(surface, canonical) {
     const S = surface, C = canonical, m = S.length, n = C.length;
     if (n < 2) return null;
@@ -652,6 +669,7 @@ function mergeRootDisplay(surface, canonical) {
         else if (dp[i - 1][j] >= dp[i][j - 1]) i--; else j--;
     }
     pairs.reverse();
+    if (_interiorForeign(pairs, S, C)) return null;
     const out = [];
     let si = 0, ci = 0;
     for (const [pi, pj] of pairs) {
@@ -698,6 +716,7 @@ function fullMergeRootDisplay(surface, canonical, minLcs) {
         else if (dp[i - 1][j] >= dp[i][j - 1]) i--; else j--;
     }
     pairs.reverse();
+    if (_interiorForeign(pairs, S, C)) return null;
     const out = [];   // [letter, 'S' surface-only | 'C' canonical]
     let si = 0, ci = 0;
     for (const [pi, pj] of pairs) {
@@ -1332,6 +1351,24 @@ function parseToken(wordRaw, pos, morph, strongs) {
             rootDisplay = MUTATED_ROOTS[rootZone] || rootZone;
         }
 
+
+        // ── WRITTEN LETTERS ARE NEVER DROPPED (2026-09-28) ──────────────────
+        // Restoration is additive: the canonical root may ADD letters the
+        // orthography elided, but every letter actually written must survive.
+        // The _lengthTrusted fallback above painted the bare canonical root over
+        // any surface of similar length — suppletive plurals lost their own
+        // letters entirely: 𐤍𐤔𐤉𐤌 nashim (H802) rendered 𐤀𐤉𐤔𐤄 "Ayashah" (its
+        // 𐤍 and 𐤌 gone, an 𐤀 and 𐤄 invented), 567 occurrences; also names whose
+        // Strong's is a different name (𐤁𐤕 Bath -> 𐤁𐤍). Reordering is fine (the
+        // hitpael 𐤄𐤔𐤕𐤇𐤅𐤄 -> 𐤄𐤕𐤔𐤇𐤅𐤄 keeps every letter); losing one is not.
+        // The root / lemma / gloss still come from the Strong's (trueRoot).
+        {
+            const _have = new Map();
+            for (const ch of [..._fmLead, ...(rootDisplay || ''), ..._fmTrail]) _have.set(ch, (_have.get(ch) || 0) + 1);
+            const _drops = [...rootZone].some(ch => { const n = _have.get(ch) || 0; if (!n) return true; _have.set(ch, n - 1); return false; });
+            if (rootDisplay && rootZone && _drops) { rootDisplay = rootZone; _fmLead = ''; _fmTrail = ''; }
+        }
+
         // ── HARDEN: NO BAKED MODIFICATION MAY LOOK LIKE A BARE ROOT ─────────
         // Kept in sync with server.js. mergeRootDisplay tolerates up to 2 surface
         // letters not part of the canonical root so it can preserve a mid-word
@@ -1474,7 +1511,9 @@ function parseToken(wordRaw, pos, morph, strongs) {
                 fpdp ? `${snNorm}_${fpdp}` : null,
                 snNorm,
             ] : [],
-            roots: [...lookupKeys, trueRoot, displayRoot],
+            // + the Strong's own canonical root: a written form that keeps its own
+            // letters (𐤍𐤔𐤉𐤌 nashim) is still glossed by the root its Strong's names.
+            roots: [...lookupKeys, trueRoot, displayRoot, ...(_canonicalRoot ? [_canonicalRoot] : [])],
         });
         // src 'none' => nothing curated covers this word. Show the ROOT'S OWN
         // PALEO in the gloss slot. An empty gloss reads as "this word was
