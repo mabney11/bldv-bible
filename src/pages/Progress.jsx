@@ -111,7 +111,7 @@ export default function Progress() {
       <section className="pg-hero">
         <span className="pg-hero-mark" aria-hidden="true">{TRANSLATOR.mark}</span>
         <div className="pg-hero-text">
-          <p className="pg-hero-lead">{TRANSLATOR.name}, <em>ibad</em> (servant of) <em>Yah</em> — <em>yad</em> (hand) <em>{TRANSLATE_WORD.translit}</em> ({TRANSLATE_WORD.gloss})</p>
+          <p className="pg-hero-lead"><em>{TRANSLATOR.name}</em>, <em>ibaday Yahawah Alahayam</em> (servant of Yahawah Alahayam), <em>yad {TRANSLATE_WORD.translit}</em> (hand {TRANSLATE_WORD.gloss})</p>
           <p className="pg-hero-sub">The scriptures translated verse by verse from the Hebrew. A verse marked translated carries the <span className="pg-inline-mark">{TRANSLATOR.mark}</span> on its Detailed Verse page.</p>
         </div>
         <span className="pg-hero-sig" dir="rtl">{TRANSLATOR.paleo}</span>

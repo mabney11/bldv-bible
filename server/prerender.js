@@ -840,7 +840,7 @@ async function buildVersePathSnapshot(match, port) {
     ? `<h2>See it in 3D</h2>\n      <ul>\n        ${models.map((m) => `<li><a href="${m.base}">${escapeHtml((MODEL_SEO.pages[m.base] || { title: m.name }).title.replace(/ \| BLD Bible$/, ''))}</a></li>`).join('\n        ')}\n      </ul>`
     : '';
   const translated = data.status === 'done'
-    ? `<p>𐤌 Translated by MaAratz, ibad (servant of) Yah — <a href="/progress">translation progress</a>.</p>`
+    ? `<p>𐤌 MaAratz, ibaday Yahawah Alahayam (servant of Yahawah Alahayam), yad tharagam (hand translated) — <a href="/progress">translation progress</a>.</p>`
     : '';
   return {
     title: `${heading} | Detailed Verse`,
