@@ -640,9 +640,15 @@ function guessPrefixGloss(paleoStr, pos) {
 // "men" (H376, root 𐤀𐤉𐤔) aligned as 𐤀·𐤔 with 𐤍 between, and the merge produced
 // 𐤀𐤉𐤍𐤔 "Ayanash" — a word that exists nowhere (4,528 occurrences). 2026-09-28,
 // kept in sync between server.js and build-surface-index.js.
+let _interiorRejected = false;   // set by the merges; read + reset per token by the parser
 function _interiorForeign(pairs, S, C) {
     const rootSet = new Set(C);
+    const MATER = new Set(['\u{10909}', '\u{10905}']);
     for (let k = 1; k < pairs.length; k++) {
+        // Only between two RADICAL anchors: an alignment anchored on a 𐤉/𐤅 is
+        // often a tie the LCS broke the wrong way (a prefix 𐤅 standing in for
+        // the root's 𐤅 in 𐤅𐤄𐤌𐤎𐤓), not evidence of a foreign stem.
+        if (MATER.has(C[pairs[k - 1][1]]) || MATER.has(C[pairs[k][1]])) continue;
         for (let si = pairs[k - 1][0] + 1; si < pairs[k][0]; si++) {
             const ch = S[si];
             if (!rootSet.has(ch) && ch !== '\u{10909}' && ch !== '\u{10905}' && ch !== '\u{10900}' && ch !== '\u{10915}') return true;
@@ -669,7 +675,7 @@ function mergeRootDisplay(surface, canonical) {
         else if (dp[i - 1][j] >= dp[i][j - 1]) i--; else j--;
     }
     pairs.reverse();
-    if (_interiorForeign(pairs, S, C)) return null;
+    if (_interiorForeign(pairs, S, C)) { _interiorRejected = true; return null; }
     const out = [];
     let si = 0, ci = 0;
     for (const [pi, pj] of pairs) {
@@ -716,7 +722,7 @@ function fullMergeRootDisplay(surface, canonical, minLcs) {
         else if (dp[i - 1][j] >= dp[i][j - 1]) i--; else j--;
     }
     pairs.reverse();
-    if (_interiorForeign(pairs, S, C)) return null;
+    if (_interiorForeign(pairs, S, C)) { _interiorRejected = true; return null; }
     const out = [];   // [letter, 'S' surface-only | 'C' canonical]
     let si = 0, ci = 0;
     for (const [pi, pj] of pairs) {
@@ -1296,6 +1302,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
         // modifications with the pronominal suffix peeled off (it becomes a chip).
         let _fmLead = '', _fmTrail = '';   // written letters around the root (fullMergeRootDisplay)
         if (_canonicalRoot && !skipMutate) {
+            _interiorRejected = false;
             const rzMerged  = mergeRootDisplay([...rootZone], [..._canonicalRoot]);
             const canonFirst = [..._canonicalRoot][0];
             const rzFirst    = [...rootZone][0];
@@ -1366,7 +1373,16 @@ function parseToken(wordRaw, pos, morph, strongs) {
             const _have = new Map();
             for (const ch of [..._fmLead, ...(rootDisplay || ''), ..._fmTrail]) _have.set(ch, (_have.get(ch) || 0) + 1);
             const _drops = [...rootZone].some(ch => { const n = _have.get(ch) || 0; if (!n) return true; _have.set(ch, n - 1); return false; });
-            if (rootDisplay && rootZone && _drops) { rootDisplay = rootZone; _fmLead = ''; _fmTrail = ''; }
+            if (rootDisplay && rootZone && _drops) { rootDisplay = rootZone; _interiorRejected = true; _fmLead = ''; _fmTrail = ''; }
+            // The display fell back to the written stem, so the grouping root must not
+            // claim the canonical one either (verify-no-eliding: true_root and paleo
+            // never disagree). 𐤀𐤍𐤔𐤉𐤌 anashim groups under 𐤀𐤍𐤔; its Strong's (H376)
+            // and its gloss (looked up by the canonical root) are unchanged.
+            if (_interiorRejected && trueRoot === _canonicalRoot) {
+                const _shown = [..._fmLead, ...(rootDisplay || ''), ..._fmTrail];
+                let _k = 0; for (const ch of _shown) if (ch === [..._canonicalRoot][_k]) _k++;
+                if (_k < [..._canonicalRoot].length) trueRoot = MUTATED_ROOTS[displayRoot] || displayRoot;
+            }
         }
 
         // ── HARDEN: NO BAKED MODIFICATION MAY LOOK LIKE A BARE ROOT ─────────
@@ -1513,7 +1529,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
             ] : [],
             // + the Strong's own canonical root: a written form that keeps its own
             // letters (𐤍𐤔𐤉𐤌 nashim) is still glossed by the root its Strong's names.
-            roots: [...lookupKeys, trueRoot, displayRoot, ...(_canonicalRoot ? [_canonicalRoot] : [])],
+            roots: [...lookupKeys, trueRoot, displayRoot, ...(_canonicalRoot && pos !== 'nmpr' ? [_canonicalRoot] : [])],
         });
         // src 'none' => nothing curated covers this word. Show the ROOT'S OWN
         // PALEO in the gloss slot. An empty gloss reads as "this word was
