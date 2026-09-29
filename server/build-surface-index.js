@@ -620,6 +620,9 @@ function guessPrefixGloss(paleoStr, pos) {
     // NOUNS/ADJECTIVES: same tokenisation argument — a fused leading 𐤌 is the
     // noun-forming preformative (𐤌𐤔𐤊𐤉𐤋 maskil, 𐤌𐤔𐤇𐤉𐤕 mashchit), not "from".
     if ((pos === 'subs' || pos === 'adjv') && paleoStr === '𐤌') return [{ paleo: '𐤌', css: 'mod-nom', trans: 'Noun-forming' }];
+    // A written 𐤍 ahead of a restored noun root (𐤍𐤔𐤉𐤌 nashim = 𐤍 + 𐤀𐤉𐤔𐤄 + 𐤉𐤌,
+    // "NaAyashahayam") reads [Emphatic] — fieldy, 2026-09-29.
+    if ((pos === 'subs' || pos === 'adjv') && paleoStr === '𐤍') return [{ paleo: '𐤍', css: 'uvf-conn', trans: 'Emphatic' }];
     for (const ch of paleoStr) {
         if (GRAMMAR_MAP.art[ch])       parts.push({ paleo: ch, css: 'mod-art',  trans: GRAMMAR_MAP.art[ch] });
         else if (GRAMMAR_MAP.conj[ch]) parts.push({ paleo: ch, css: 'mod-conj', trans: GRAMMAR_MAP.conj[ch] });
@@ -675,7 +678,6 @@ function mergeRootDisplay(surface, canonical) {
         else if (dp[i - 1][j] >= dp[i][j - 1]) i--; else j--;
     }
     pairs.reverse();
-    if (_interiorForeign(pairs, S, C)) { _interiorRejected = true; return null; }
     const out = [];
     let si = 0, ci = 0;
     for (const [pi, pj] of pairs) {
@@ -706,7 +708,7 @@ function mergeRootDisplay(surface, canonical) {
 // the length heuristic vouches for it, at most one root letter may be absent;
 // a suppletive form (𐤍𐤔𐤉𐤌 for 𐤀𐤉𐤔𐤄) shares too little with
 // its root to align and keeps the old behaviour (flagged, not guessed).
-function fullMergeRootDisplay(surface, canonical, minLcs) {
+function fullMergeRootDisplay(surface, canonical, minLcs, surfaceFirst) {
     const S = surface, C = canonical, m = S.length, n = C.length;
     if (n < 2 || m < 1) return null;
     const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
@@ -722,10 +724,12 @@ function fullMergeRootDisplay(surface, canonical, minLcs) {
         else if (dp[i - 1][j] >= dp[i][j - 1]) i--; else j--;
     }
     pairs.reverse();
-    if (_interiorForeign(pairs, S, C)) { _interiorRejected = true; return null; }
     const out = [];   // [letter, 'S' surface-only | 'C' canonical]
     let si = 0, ci = 0;
     for (const [pi, pj] of pairs) {
+        // surfaceFirst: written letters that precede a matched root letter come
+        // BEFORE the restored ones (𐤍 + 𐤀𐤉𐤔𐤄, not 𐤀𐤉 + 𐤍 + 𐤔𐤄).
+        if (surfaceFirst) { while (si < pi) { out.push([S[si], 'S']); si++; } }
         while (ci < pj) { out.push([C[ci], 'C']); ci++; }
         while (si < pi) { out.push([S[si], 'S']); si++; }
         out.push([C[pj], 'C']); ci = pj + 1; si = pi + 1;
@@ -1373,7 +1377,16 @@ function parseToken(wordRaw, pos, morph, strongs) {
             const _have = new Map();
             for (const ch of [..._fmLead, ...(rootDisplay || ''), ..._fmTrail]) _have.set(ch, (_have.get(ch) || 0) + 1);
             const _drops = [...rootZone].some(ch => { const n = _have.get(ch) || 0; if (!n) return true; _have.set(ch, n - 1); return false; });
-            if (rootDisplay && rootZone && _drops) { rootDisplay = rootZone; _interiorRejected = true; _fmLead = ''; _fmTrail = ''; }
+            if (rootDisplay && rootZone && _drops && pos !== 'nmpr') {
+                // Additive, never subtractive: the whole Strong's root with every written
+                // letter kept around it — letters before it lead, letters after it trail
+                // (𐤍𐤔𐤉𐤌 -> 𐤍 [Emphatic] + 𐤀𐤉𐤔𐤄 + 𐤉𐤌 [Plural], "NaAyashahayam"). Only a
+                // word sharing no letter with the root at all (a name half, a wrong
+                // Strong's) keeps its written spelling.
+                const _sfm = _canonicalRoot ? fullMergeRootDisplay([...rootZone], [..._canonicalRoot], 1, true) : null;
+                if (_sfm) { rootDisplay = _sfm.core; _fmLead = _sfm.lead; _fmTrail = _sfm.trail; trueRoot = _canonicalRoot; }
+                else { rootDisplay = rootZone; _interiorRejected = true; _fmLead = ''; _fmTrail = ''; }
+            }
             // The display fell back to the written stem, so the grouping root must not
             // claim the canonical one either (verify-no-eliding: true_root and paleo
             // never disagree). 𐤀𐤍𐤔𐤉𐤌 anashim groups under 𐤀𐤍𐤔; its Strong's (H376)

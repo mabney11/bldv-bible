@@ -418,20 +418,20 @@ let pluralUsed = 0;
 // as written. Additive only — never removes a letter (see the no-eliding rule).
 function plenePlural(surface, root) {
   const s = [...surface], r = [...root];
-  let p = 0, last = -1, skipped = 0;
+  let p = 0, last = -1, first = -1, skipped = 0;
   for (let i = 0; i < s.length && p < r.length; i++) {
-    if (s[i] === r[p]) { p++; last = i; continue; }
+    if (s[i] === r[p]) { p++; last = i; if (first < 0) first = i; continue; }
     const q = r.indexOf(s[i], p + 1);
-    if (q > p) { skipped += q - p; p = q + 1; last = i; }
+    if (q > p) { skipped += q - p; p = q + 1; last = i; if (first < 0) first = i; }
   }
   if (p < r.length) skipped += r.length - p;
   if (!skipped) return surface;
   const tail = last >= 0 ? s.slice(last + 1).join('') : '';
-  const out = root + tail;
-  // Written letters are never dropped (2026-09-28): a suppletive plural shares
-  // little with its singular's root — 𐤍𐤔𐤉𐤌 nashim "women" (H802, root 𐤀𐤉𐤔𐤄)
-  // came out 𐤀𐤉𐤔𐤄𐤉𐤌 "ayashahayam", its 𐤍 gone. Restore only when every letter
-  // of the attested plural survives; otherwise the plural is its own spelling.
+  // Additive, never subtractive (fieldy, 2026-09-29): written letters ahead of
+  // the first root letter stay in front of it. 𐤍𐤔𐤉𐤌 nashim (H802, root 𐤀𐤉𐤔𐤄)
+  // = 𐤍 + 𐤀𐤉𐤔𐤄 + 𐤉𐤌 "NaAyashahayam" — was 𐤀𐤉𐤔𐤄𐤉𐤌 with its 𐤍 gone.
+  const lead = first > 0 ? s.slice(0, first).join('') : '';
+  const out = lead + root + tail;
   const have = new Map();
   for (const ch of out) have.set(ch, (have.get(ch) || 0) + 1);
   for (const ch of s) { const n = have.get(ch) || 0; if (!n) return surface; have.set(ch, n - 1); }
