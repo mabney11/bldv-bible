@@ -85,7 +85,7 @@ const BRAND = 'BLD Bible';
 const LANDING_TITLE = `${BRAND}: Hebrew–English Bible & Interactive 3D Bible Stories`;
 const APP_DESC = "Read the Bible in English with the original Hebrew beside it, and step into its stories in interactive 3D — Solomon's Temple, Ezekiel's temple and city, the tabernacle and the camp of the 12 tribes, the 12 tribes' land on a 3D map, and New Jerusalem.";
 // Landing hero copy — mirrors Landing.jsx's .landing-subtitle word for word.
-const LANDING_PITCH = 'Read the Bible in English with the original Hebrew text that any translator should package with their translation. Immerse yourself in the 3D storytelling epics of the Bible. See the prophetic Holy Land which is sure to come, the Temple that Solomon built, and so much more.';
+const LANDING_PITCH = 'Read the Bible in English with the original Hebrew text that any translator should package with their translation. Immerse yourself in the 3D storytelling epics of the Bible. See the prophetic Holy Land which is sure to come, the Temple that Solomon built, and so much more!';
 
 // Canonical 66-book table — mirrors server.js's TX_BOOK_NAMES exactly (kept
 // as a separate copy on purpose: this module has no access to that

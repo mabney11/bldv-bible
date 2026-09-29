@@ -158,7 +158,7 @@ export default function Landing() {
         <p className="landing-subtitle">
           Read the Bible in English with the original Hebrew text that any translator should package with their translation.
           Immerse yourself in the 3D storytelling epics of the Bible. See the prophetic Holy Land which is sure to come,
-          the Temple that Solomon built, and so much more
+          the Temple that Solomon built, and so much more!
         </p>
         <a href="#landing-explore" className="landing-more" onClick={toFeatures} aria-label="See it all below">
           <span aria-hidden="true">⌄</span><span aria-hidden="true">⌄</span><span aria-hidden="true">⌄</span>
