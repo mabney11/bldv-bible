@@ -44,11 +44,46 @@ export function LexiconDeviceIcon({ size = 40 }) {
   );
 }
 
+/** Interactive Story Models' icon — "something that implies 'interactive games'
+ *  are here" (fieldy, 2026-09-29): a pixel-art temple and its mountain rising out
+ *  of an open book (the story coming off the page), pixel stars, and a game
+ *  controller badge. Drawn here, no image file; lifts and twinkles on hover. */
+export function StoryGameIcon({ size = 44 }) {
+  const px = (x, y, w, h, f) => <rect x={x} y={y} width={w} height={h} fill={f} shapeRendering="crispEdges" />;
+  return (
+    <svg className="landing-storygame" width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
+      {/* stars */}
+      <g className="lsg-stars" fill="#f5d27a">
+        {px(5, 6, 2, 2)}{px(40, 4, 2, 2)}{px(33, 11, 1.5, 1.5)}{px(10, 15, 1.5, 1.5)}
+      </g>
+      {/* the story rising off the page */}
+      <g className="lsg-rise">
+        {/* mountain, stepped like pixel art */}
+        {px(12, 26, 24, 4, '#3f7f6e')}{px(15, 22, 18, 4, '#4a9480')}{px(18, 18, 12, 4, '#56a88f')}
+        {/* the house on the mountain top */}
+        {px(19, 12, 10, 6, '#e8aa55')}{px(18, 10, 12, 2, '#f5c070')}{px(21, 8, 6, 2, '#f5c070')}
+        {px(23, 14, 2, 4, '#5a3a14')}{px(20, 13, 1.5, 3, '#fff3d6')}{px(26.5, 13, 1.5, 3, '#fff3d6')}
+      </g>
+      {/* open book */}
+      <path d="M4 31 Q14 27 24 31 Q34 27 44 31 L44 39 Q34 35 24 39 Q14 35 4 39 Z" fill="#f4ecd8" />
+      <path d="M24 31 L24 39" stroke="#b79a62" strokeWidth="1" />
+      <path d="M4 39 Q14 35 24 39 Q34 35 44 39 L44 41 Q34 37 24 41 Q14 37 4 41 Z" fill="#8a5a2b" />
+      <path d="M8 32.5 Q14 30.5 20 32.5 M8 35 Q14 33 20 35 M28 32.5 Q34 30.5 40 32.5 M28 35 Q34 33 40 35" stroke="#c9b58a" strokeWidth=".8" fill="none" />
+      {/* controller badge */}
+      <g className="lsg-pad" transform="translate(30 38)">
+        <rect x="0" y="0" width="16" height="9" rx="4.5" fill="#2b6fd6" stroke="#0e0e0f" strokeWidth="1" />
+        {px(3, 3.5, 5, 2, '#fff')}{px(4.5, 2, 2, 5, '#fff')}
+        <circle cx="11" cy="3.3" r="1.1" fill="#f5c542" /><circle cx="12.8" cy="5.6" r="1.1" fill="#f06a5e" />
+      </g>
+    </svg>
+  );
+}
+
 const FEATURES = [
   {
-    to: '/models', cls: 'landing-feature-models', ico: '🏛', name: 'Interactive Story Models',
+    to: '/models', cls: 'landing-feature-models', ico: <StoryGameIcon />, name: 'Interactive Story Models',
     sub: 'The epics of the Bible in 3D, built from the text — watch Shalamah (Solomon)\'s bayath (house) rise, walk the house and the city Yachazaqaal (Ezekiel) saw, raise the mashakan (tabernacle) with the twelve tribes camped about it, and stand in the gate of the city coming down out of shamayam (heaven)',
-    go: 'Enter the stories →',
+    go: 'Play the stories →',
   },
   {
     to: '/maps', cls: 'landing-feature-maps', ico: '🗺', name: 'Maps',

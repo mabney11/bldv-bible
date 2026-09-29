@@ -171,6 +171,15 @@
   border-radius: 12px;
   background: color-mix(in srgb, var(--gold) 14%, transparent);
 }
+.landing-feature-models .landing-feature-ico { background: radial-gradient(circle at 50% 30%, #1f3f86, #10214a); }
+.landing-storygame { display: block; overflow: visible; }
+.landing-storygame .lsg-rise { transition: transform .35s cubic-bezier(.3,1.6,.5,1); }
+.landing-storygame .lsg-pad { transition: transform .25s; transform-box: fill-box; }
+.landing-feature-models:hover .lsg-rise { transform: translateY(-3px); }
+.landing-feature-models:hover .lsg-pad { transform: translate(30px, 38px) rotate(-8deg); }
+.landing-feature-models:hover .lsg-stars { animation: lsg-twinkle .9s steps(2) infinite; }
+@keyframes lsg-twinkle { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .landing-storygame * { transition: none !important; animation: none !important; } }
 .landing-feature-lex .landing-feature-ico { background: color-mix(in srgb, #c8322f 12%, transparent); }
 .landing-lexdex { display: block; transition: transform .2s; }
 .landing-feature-lex:hover .landing-lexdex { transform: rotate(-6deg) scale(1.06); }
