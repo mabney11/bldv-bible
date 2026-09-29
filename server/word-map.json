@@ -4205,7 +4205,7 @@
   ],
   "people": [
    "imayam×20",
-   "ayashay×5",
+   "anashay×5",
    "banay×5",
    "imay×4",
    "adam×4",
@@ -4328,16 +4328,18 @@
    "tharawamah×9",
    "nasakayam×9",
    "nadabah×6",
-   "ilahath×5",
+   "ilahath×4",
    "zabachay×4",
    "qaraban×3",
    "nadabahawath×3",
+   "iwalawath×3",
    "tharawamahath×2",
    "thawadahawath×2",
    "ashah×1",
    "nayachawach×1",
    "qarab×1",
    "thanawapahath×1",
+   "iwalath×1",
    "zabach×1",
    "ilahawan×1",
    "tharawamahawath×1",
@@ -4363,11 +4365,11 @@
    "anash×3",
    "gabar×2",
    "bail×1",
-   "ayashayam×1",
+   "anashayam×1",
    "achar×1",
    "nakaray×1",
    "dawad×1",
-   "ayashay×1"
+   "anashay×1"
   ],
   "fear": [
    "pachad×45",
@@ -5432,7 +5434,8 @@
    "malak×1"
   ],
   "hundreds": [
-   "maahayawath×3"
+   "maahayawath×3",
+   "mayaawath×1"
   ],
   "tens": [
    "rababahawath×2",
@@ -5776,7 +5779,7 @@
    "qawalawath×1"
   ],
   "husbands": [
-   "ayashayam×2",
+   "anashayam×2",
    "bail×2",
    "adawan×1"
   ],
@@ -6051,7 +6054,7 @@
   "foot": "ragal (91% of 67)",
   "families": "mashapachah (51% of 172)",
   "altar": "mazabach (99% of 353)",
-  "offerings": "ilahawath (29% of 191)",
+  "offerings": "ilahawath (28% of 191)",
   "curse": "qalalah (29% of 89)",
   "man's": "ayash (55% of 78)",
   "fear": "yaraa (57% of 228)",
@@ -6194,7 +6197,7 @@
   "rulers": "saganayam (27% of 52)",
   "testimony": "idawath (88% of 48)",
   "counsel": "itzah (71% of 107)",
-  "hundreds": "maahawath (89% of 27)",
+  "hundreds": "maahawath (85% of 27)",
   "tens": "isharath (43% of 7)",
   "ordinances": "mashapat (54% of 104)",
   "rises": "qawam (61% of 23)",
