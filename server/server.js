@@ -257,6 +257,26 @@ production.install(app, { gzip: { threshold: 1024, level: 4 } });
 // calls next() straight away, so nothing else in this file changes
 // behavior. Deliberately excludes /roots — that path's real handler below
 // has its own redirect-to-first-root logic that must keep running.
+// ── WHAT SEARCH ENGINES MAY LIST (2026-09-30) ──────────────────────────────
+// fieldy: Google's sitelinks under "bldbible" were /concordance?corpus=LAT&…
+// and /surfaces?word=… — "basically my landing page links should be whats
+// advertized". Sitelinks are Google's pick among the pages it has indexed, so
+// the utility/lookup pages (endless query-string variants, no standalone
+// value) are now `noindex, follow`: still crawled, their links still count,
+// but never listed. robots.txt Disallow would be wrong here — a blocked page
+// can't be read, so its noindex would never be seen and the bare URL could
+// still be listed.
+const NOINDEX_PATHS = new Set(['/concordance', '/surfaces', '/search', '/cheatsheet',
+    '/admin-login', '/book-manager', '/glyph-editor', '/gloss-studio']);
+app.use((req, res, next) => {
+    if (NOINDEX_PATHS.has(req.path) || req.path.startsWith('/admin/')) res.setHeader('X-Robots-Tag', 'noindex, follow');
+    // A bare "/" is the home page — the SPA itself sends it on to /landing, so
+    // say so with a real 301 and let /landing (full prerendered snapshot,
+    // every feature linked) be the one page search engines hold as home.
+    if (req.method === 'GET' && req.path === '/' && !Object.keys(req.query || {}).length) return res.redirect(301, '/landing');
+    next();
+});
+
 const { renderSnapshot } = require('./prerender.js');
 const INDEX_HTML_PATH = path.join(__dirname, 'public', 'index.html');
 app.use(async (req, res, next) => {

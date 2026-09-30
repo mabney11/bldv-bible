@@ -23,9 +23,7 @@
   <url><loc>https://www.bldbible.com/lexicon-page?lang=hebrew</loc></url>
   <url><loc>https://www.bldbible.com/lexicon-page?lang=greek</loc></url>
   <url><loc>https://www.bldbible.com/lexicon-page?lang=geez</loc></url>
-  <url><loc>https://www.bldbible.com/cheatsheet</loc></url>
   <url><loc>https://www.bldbible.com/roots</loc></url>
-  <url><loc>https://www.bldbible.com/search</loc></url>
   <url><loc>https://www.bldbible.com/share</loc></url>
   <!-- Story Models + Maps (server/seo/models-seo.json) and the public translation progress -->
   <url><loc>https://www.bldbible.com/progress</loc></url>

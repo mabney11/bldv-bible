@@ -236,22 +236,24 @@ function versesArticle(heading, verses) {
   return `<h1>${escapeHtml(heading)}</h1>\n      ${items}`;
 }
 
+// Every snapshot's site-wide nav — in the landing page's own order, the
+// features first (fieldy, 2026-09-30: "my landing page links should be whats
+// advertized"). Site-wide links are the strongest hint a search engine gets
+// about which pages are the site's main sections (i.e. its sitelinks), so the
+// lookup tools (Root Explorer, Search) are no longer in it.
 const NAV_LINKS = `
       <nav>
-        <a href="/landing">Home</a> ·
+        <a href="/landing">BLD Bible</a> ·
         <a href="/bible?book=1&amp;chapter=1">Novel English Bible</a> ·
-        <a href="/?book=1&amp;chapter=1">Hebrew Reader</a> ·
+        <a href="/models">Interactive Bible Stories</a> ·
+        <a href="/maps">Bible Maps</a> ·
         <a href="/parallel/genesis/1">English–Paleo Hebrew Parallel Bible</a> ·
-        <a href="/translate?book=1&amp;chapter=1&amp;verse=1">Translation Studio</a> ·
-        <a href="/works">Works Library</a> ·
-        <a href="/models">Interactive Story Models</a> ·
-        <a href="/maps">Maps</a> ·
+        <a href="/lexicon-page">Lexicon</a> ·
+        <a href="/?book=1&amp;chapter=1">Hebrew Reader</a> ·
         <a href="/progress">Translation Progress</a> ·
         <a href="/passages">Passages</a> ·
-        <a href="/lexicon-page">Lexicon</a> ·
-        <a href="/guide">Guide</a> ·
-        <a href="/roots">Root Explorer</a> ·
-        <a href="/search">Search</a>
+        <a href="/works">Works Library</a> ·
+        <a href="/guide">Guide</a>
       </nav>`;
 
 // A book+chapter reader page backed by /api/translate/chapter (English —
