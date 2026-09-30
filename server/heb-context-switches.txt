@@ -351,6 +351,7 @@ ref	word	from->to	before -> after
 46:10:23	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 46:11:7	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 46:11:11	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
+46:11:14	𐤐𐤓𐤏	H6319->H6544	exact:𐤐𐤓𐤏 -> exact:𐤐𐤓𐤏
 46:11:15	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 46:11:15	𐤔𐤏𐤓𐤄	H8184->H8177	exact:𐤔𐤏𐤓𐤄 -> exact:𐤔𐤏𐤓𐤄
 46:12:4	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋

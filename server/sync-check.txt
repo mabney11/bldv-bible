@@ -12,21 +12,7 @@ index:  C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\server\surf
   rows:   tokens_nt 1,053,043  ->  projection 1,053,043
   verses: in both 52,648, only in tokens_nt 0, only in the index 0
   of the shared verses, 52,648 (100.0%) tokenize identically
-  where they do, Strong's agree on 971,844 and DISAGREE on 8,149 (0.8%)
-
-  Disagreements (the index value is the one the reader already shows):
-    40:1:4.9 𐤀𐤕𐤔𐤋𐤌𐤅𐤍  tokens_nt=H8012  index=H853
-    40:1:5.8 𐤌𐤓𐤅𐤕  tokens_nt=H4751  index=H7327
-    40:1:10.7 𐤅𐤀𐤌𐤅𐤍  tokens_nt=H526  index=H517
-    40:1:25.6 𐤀𐤕𐤁𐤊𐤅𐤓𐤄  tokens_nt=H1063  index=H1060
-    40:3:4.9 𐤅𐤌𐤀𐤊𐤋𐤅  tokens_nt=H398  index=H3978
-    40:3:12.7 𐤀𐤕𐤃𐤂𐤍𐤅  tokens_nt=H1709  index=H1715
-    40:4:2.3 𐤑𐤅𐤌𐤅  tokens_nt=H6680  index=H6685
-    40:4:3.3 𐤄𐤌𐤍𐤎𐤄  tokens_nt=H5254  index=H5127
-    40:4:8.11 𐤅𐤊𐤁𐤅𐤃𐤍  tokens_nt=H3513  index=H3519
-    40:4:16.11 𐤍𐤂𐤄  tokens_nt=H5051  index=H5050
-    40:5:15.4 𐤍𐤓  tokens_nt=H5369  index=H5216
-    40:5:22.1 𐤀𐤁𐤋  tokens_nt=H60  index=H61
+  where they do, Strong's agree on 986,225 and DISAGREE on 0 (0.0%)
 
 ── TRANSLATION LINKS ────────────────────────────────────────────────────
   26,254 links total, 253 bound to HEB.

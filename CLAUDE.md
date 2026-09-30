@@ -1,5 +1,78 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## "Son of Ayash (man)" — maqaf pairs fused in text_paleo, aligner borrowed Strong's from elsewhere in the verse (fixed 2026-09-30)
+
+fieldy, Matthew 16:27: "son of Ayash is never prophetic verbiage … Ban-HaAdam should be whatever
+tokens are used in Ezekiel for 'Son of Man'". His call when told the cause: "these are bugs that
+must be fixed, not negotiable tradeoffs."
+
+**Root cause.** `verses.text_paleo` (HEB edition) was ingested with every maqaf DELETED, not
+turned into a space: בֶּן־הָאָדָם → one word 𐤁𐤍𐤄𐤀𐤃𐤌. `verses.text` kept the boundary. heb-align.js's
+`wordsOf()` preferred text_paleo, so the rule `splitWords()` already states ("maqaf is a
+tokenisation BOUNDARY") never fired. Measured: the two columns differ ONLY by these joins —
+23,950 fused words / 11,673 verses (every NT book, Enoch, Josephus…). A fused pair resolved only
+if the same pair sat adjacent in the OT (`adjacent` tier); ben-ha'adam never does, so it got no
+Strong's, and build-align-links gave English "Man" the only man-word left in the verse — 𐤀𐤉𐤔
+H376 from "to every man" at the END of the Hebrew. The 46 `H1121＋H430` "Ben+HaElohim" entries in
+strongs-location-overrides.json (generate-ben-elohim-overrides.cjs) were hand patches for this
+same bug.
+
+**Fixes:**
+- heb-align.js `wordsOf()`: when `text` spells the same letters as text_paleo, its word
+  boundaries win. build-surface-index prints `maqaf: N verses tokenised at their maqaf boundaries`.
+  **Every token after a fused pair moves to a higher token_ordinal** in those verses.
+- `server/remap-maqaf-ordinals.py [--apply]` — one-time migration of ordinal-keyed lexicon files:
+  heb-occurrence-overrides.json (Heb 1:13 right-hand pin 58|1|13|6 → 58|1|13|8) and
+  strongs-location-overrides.json (all 46 Ben+Elohim patches RETIRED into
+  `_retired_maqaf_2026-09-30` in the same file — each half now resolves on its own). Refuses to
+  run twice. Do NOT re-run generate-ben-elohim-overrides.cjs.
+- server.js `locOverrideWordMatches()`: a location override applies only if its `word_raw` (paleo
+  letters) matches the row's — a stale key can no longer relabel whatever word now sits there.
+- build-align-links.mjs: (1) POSITION GUARD — a token is eligible only within 0.4 of the
+  English word's relative position or 2 tokens of it (`--max-rel-dist`, `--max-tok-dist`);
+  3,300 far candidates refused (John 11:27 "come to believe" → "he who comes into the world").
+  (2) CONSTRUCT CHAIN — "X of [the] Y" with X on token k takes token k+1 for Y (590 picks: Son of
+  Man, kingdom of heaven, Mount of Olives, book of life…). (3) LOSER FALLBACK / no ride-along —
+  a word that loses its token, or rides in a neighbour's span while a better-fitting token of its
+  own is free, takes that token (only if it is one of the token's top-3 learned words AND
+  p ≥ 0.5 × the token it leaves: "son" moves 𐤉𐤇𐤉𐤃→𐤁𐤍, "out" does NOT move 𐤉𐤑𐤀→𐤋𐤔𐤊𐤓 "hire").
+  (4) "only" removed from ENGLISH_STOP (𐤉𐤇𐤉𐤃 / 𐤓𐤒 are real words). (5) A Hebrew NAME token
+  (pos nmpr) answers only a Capitalised English word (Luke 3 "yashay (son) of Yashay").
+- render-corpus.mjs `hebTrNear`: the pin gate now uses the verse pickAlignedTokens matched, else
+  the verse's own Hebrew; ±2 only when the verse has none. Five verses of Hebrew always contain
+  𐤌𐤍 min, so `according → man` passed in verses with no min. Pin removed from term-forms.txt
+  (H4481 is Aramaic "from"). The rest of that auto-generated block (saw→mashawar, children→tap,
+  chief→abay, able→yad …) is still suspect — the narrowed gate now blocks most of its misfires.
+- lexicon/heb-context-readings.json: hand entry `𐤋𐤁𐤍` → H1121 (le-ben, spelled like Laban H3837),
+  switches only where the verse's English says son/sons/children. audit-heb-vs-english.py `--write`
+  now always keeps `hand_added` entries.
+
+**Verified against the real corpus** (device sandbox: node:sqlite shim for better-sqlite3, bake
+from a /tmp COPY of corpus.db — the mounted folder can't open SQLite's -shm, `disk I/O error` —
+and every process must finish inside one 3-minute call; detached processes are killed):
+NT unresolved HEB tokens 8,797 → 7,145; Matt 16:27 tokens `𐤁𐤍 H1121 | 𐤄𐤀𐤃𐤌 H120` (= Ezek 2:1);
+all 84 NT "Son of Man" → "Ban (Son) of Adam (Man)" (was 51 bare, 15 "Son of Ayash (Man)", Napash/
+Rai/Bail/Yalad variants); all 41 "Son of God" → "Ban (Son)"; "(son)" glossed ban 155 → 420, non-ben
+"(son)" 22 → 3; "man (according)" 16 → 0; HEB-auto links 23,263 → 28,047, multi-word spans 492 → 584.
+Matt 16:27 renders: "For the Ban (Son) of Adam (Man) will bawaa (come) in the kabawad (glory) of
+his Ab (Father) with his malaak (angels), and then he will shalam (render) to everyone according
+to his maishah (deeds)."
+
+**Run, in order (fieldy's machine) — remap and rebake back to back:** lexicon/ auto-syncs to
+prod within ~30 s, and prod hot-reloads strongs-location-overrides.json, so between `--apply`
+and the Rebake prod's 46 Son-of-God verses show the fused word again.
+```
+cd server
+python remap-maqaf-ordinals.py            # dry run: 1 re-key, 46 retired
+python remap-maqaf-ordinals.py --apply
+node build-surface-index.js               # check the "maqaf: 11,673 verses" line
+node sync-heb-tokens.mjs --check --out sync-check.txt   # then --apply
+node build-align-links.mjs --out align-report.txt --apply
+node render-all.mjs --surface
+```
+Restart the server, check /matthew/16/27 and /john/3/16, then Rebake (pushes surface-index.db +
+corpus.db) and deploy (server.js changed).
+
 ## NT/Apocrypha Hebrew went missing from surface-index.db — Rebake built BHS-only (fixed 2026-09-26)
 
 fieldy, same session, four symptoms: Rev 21:18 𐤅𐤁𐤍𐤉𐤍 read "Wabanaayan" (𐤅 fused into the root,

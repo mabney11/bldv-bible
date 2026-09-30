@@ -167,6 +167,9 @@ const stripGlosses = txt => String(txt || '')
     .replace(/\b[A-Za-z\u00C0-\u024F][A-Za-z\u00C0-\u024F'-]*\s+\(([^()]*)\)/g, '$1');
 const words = txt => stripGlosses(txt).toLowerCase()
     .replace(/[^a-z\u00C0-\u024F'\s-]/g, ' ').split(/\s+/).filter(Boolean);
+// Same tokens, case kept — only to ask "is this English word capitalised?"
+const wordsCased = txt => stripGlosses(txt)
+    .replace(/[^A-Za-z\u00C0-\u024F'\s-]/g, ' ').split(/\s+/).filter(Boolean);
 
 say('build-align-links — learn English<->Strongs from the OT, align the NT');
 if (STRICT) say(`--strict: min-ratio ${MINRATIO}, min-support ${MINSUPPORT}, min-prob ${MINP}` +
@@ -457,7 +460,7 @@ try {
         if (!tr || tr.length < 2) { skippedParticle++; continue; }
         const k = `${r.book_id}|${r.chapter}|${r.verse}`;
         if (!ntTok.has(k)) ntTok.set(k, []);
-        ntTok.get(k).push({ ord: r.token_ordinal, sn: 'H' + String(r.strongs).replace(/^H+/i, ''), tr });
+        ntTok.get(k).push({ ord: r.token_ordinal, sn: 'H' + String(r.strongs).replace(/^H+/i, ''), tr, name: r.pos === 'nmpr' });
     }
     if (skippedParticle) say(`  excluded ${skippedParticle.toLocaleString()} particle/one-letter tokens as link targets`);
 } catch (e) { say(`could not read the HEB bake: ${e.message}`); }
@@ -465,6 +468,24 @@ idx.close();
 say('');
 say(`NT verses with Hebrew: ${ntTok.size.toLocaleString()}`);
 
+// A token's own best English words (top 3 by probability). The ride-along split and the
+// loser fallback only move a word to a token whose OWN learned English this word is —
+// "son" is H1121's; "out" is not 𐤋𐤔𐤊𐤓 "hire"'s (Matt 20:1 sent "out" there).
+const _top = new Map();
+const isOwnWord = (sn, w) => {
+    if (!_top.has(sn)) {
+        const m = t.get(sn);
+        const nul = t.get(NULLSN) || new Map();
+        const r = ([w, p]) => p / Math.max(nul.get(w) || 0, 1e-6);   // same ranking as the report
+        _top.set(sn, new Set(m ? [...m].filter(x => !ENGLISH_STOP.has(x[0]) && x[1] >= MINP)
+            .sort((a, b) => r(b) - r(a)).slice(0, 3).map(x => x[0]) : []));
+    }
+    return _top.get(sn).has(w);
+};
+// ...and only when that token explains the word at least half as well as the token it
+// would leave (p(word|sn)): "son" 0.160 under 𐤁𐤍 vs 0.175 under 𐤉𐤇𐤉𐤃 moves; "out"
+// 0.085 under 𐤋𐤔𐤊𐤓 "hire" vs 0.373 under 𐤉𐤑𐤀 stays with "went" (Matt 20:1).
+const pOf = (sn, w) => (t.get(sn) && t.get(sn).get(w)) || 0;
 const links = [];
 let farRefused = 0, constructPicked = 0, fallbackPicked = 0;
 let alignedTok = 0, totalTok = 0, spansMulti = 0;
@@ -472,6 +493,12 @@ for (const [k, toks] of ntTok) {
     const text = eng.get(k);
     if (!text) continue;
     const e = words(text);
+    // A HEBREW NAME ANSWERS ONLY A CAPITALISED ENGLISH WORD (2026-09-30). OT training ties
+    // "son" to names ("Isaiah son of Amoz", "David son of Jesse"), so in Luke 3's
+    // genealogy and Acts 13:22 lowercase "son" was taken by 𐤀𐤌𐤅𐤑 / 𐤉𐤔𐤉 / 𐤔𐤀𐤋𐤕𐤉𐤀𐤋 —
+    // "the yashay (son) of Yashay" — while 𐤁𐤍 stood beside it.
+    const ec = wordsCased(text);
+    const capAt = i => ec.length !== e.length || /^[A-Z\u00C0-\u00DE]/.test(ec[i]);
     if (!e.length) continue;
     totalTok += toks.length;
 
@@ -490,6 +517,7 @@ for (const [k, toks] of ntTok) {
         let best = null, bestScore = 0;
         for (const tok of toks) {
             if ((support.get(tok.sn) || 0) < MINSUPPORT) continue;
+            if (tok.name && !capAt(i)) continue;
             const p = (t.get(tok.sn) && t.get(tok.sn).get(e[i])) || 0;
             if (p < MINP) continue;
             const ratio = p / Math.max(nullP, 1e-6);
@@ -512,7 +540,7 @@ for (const [k, toks] of ntTok) {
             const x = e[i - 1] === 'of' ? i - 2 : (e[i - 1] === 'the' && e[i - 2] === 'of') ? i - 3 : -1;
             const head = x >= 0 ? assign[x] : null;
             const nxt = head && toks.find(tk => tk.ord === head.ord + 1);
-            if (nxt && (support.get(nxt.sn) || 0) >= MINSUPPORT) {
+            if (nxt && (support.get(nxt.sn) || 0) >= MINSUPPORT && !(nxt.name && !capAt(i))) {
                 const p = (t.get(nxt.sn) && t.get(nxt.sn).get(e[i])) || 0;
                 const ratio = p / Math.max(nullP, 1e-6);
                 if (p >= MINP && ratio >= MINRATIO) { best = nxt; bestScore = 1e9 + ratio; constructPicked++; }
@@ -532,13 +560,19 @@ for (const [k, toks] of ntTok) {
             if (!bestFor.has(o) || score[i] > score[bestFor.get(o)]) bestFor.set(o, i);
         }
         const keep = new Set([...bestFor.values()]);
-        const lost = [];
+        const keptOrds = new Set([...keep].map(j => assign[j].ord));
+        const lost = [], lostSn = [];
         for (let i = 0; i < e.length; i++) {
-            // a neighbour continuing the same token stays, so multi-word spans survive
+            // a neighbour continuing the same token stays, so multi-word spans survive —
+            // UNLESS the word has a free eligible token of its own ("one and only Son":
+            // "Son" rode along in 𐤉𐤇𐤉𐤃's span while 𐤁𐤍 sat unclaimed beside it).
+            // "became the father of" still merges: no other token there answers "father".
             if (assign[i] && !keep.has(i)) {
                 const prevSame = i > 0 && assign[i - 1] && assign[i - 1].ord === assign[i].ord && (keep.has(i - 1) || assign[i - 1] === assign[i]);
                 const nextSame = i + 1 < e.length && assign[i + 1] && assign[i + 1].ord === assign[i].ord;
-                if (!prevSame && !nextSame) { assign[i] = null; lost.push(i); }
+                const ownFree = (cands[i] || []).some(c => c.tok.sn !== assign[i].sn && !keptOrds.has(c.tok.ord)
+                    && isOwnWord(c.tok.sn, e[i]) && pOf(c.tok.sn, e[i]) >= 0.5 * pOf(assign[i].sn, e[i]));
+                if ((!prevSame && !nextSame) || ownFree) { lostSn[i] = assign[i].sn; assign[i] = null; lost.push(i); }
             }
         }
         // LOSER FALLBACK (2026-09-30). A word that lost its token to a stronger claim
@@ -549,7 +583,8 @@ for (const [k, toks] of ntTok) {
         if (lost.length) {
             const held = new Set(assign.filter(Boolean).map(a => a.ord));
             for (const i of lost.sort((a, b) => score[b] - score[a])) {
-                const alt = (cands[i] || []).filter(c => !held.has(c.tok.ord)).sort((a, b) => b.ratio - a.ratio)[0];
+                const alt = (cands[i] || []).filter(c => !held.has(c.tok.ord) && isOwnWord(c.tok.sn, e[i])
+                    && pOf(c.tok.sn, e[i]) >= 0.5 * pOf(lostSn[i], e[i])).sort((a, b) => b.ratio - a.ratio)[0];
                 if (alt) { assign[i] = alt.tok; score[i] = alt.ratio; held.add(alt.tok.ord); fallbackPicked++; }
             }
         }

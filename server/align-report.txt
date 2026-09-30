@@ -1,78 +1,81 @@
 build-align-links — learn English<->Strongs from the OT, align the NT
 baseline: 23,145 verses from ./web-strongs.jsonl
-  gloss-pair density: 6% of sampled verses
-English verses: 52,619
-OT verses (the training set): 22,904 from the baseline, 0 from text_src, 134 from rendered text
-training verses (English + tagged Hebrew): 23,038
-translation table: 8,595 Strong's numbers  (5,056 seen in fewer than 5 verses — excluded as link targets)
-  EM iteration 1/12 — mean change 2.63e-3
-  EM iteration 2/12 — mean change 1.70e-3
-  EM iteration 3/12 — mean change 1.21e-3
-  EM iteration 4/12 — mean change 7.79e-4
-  EM iteration 5/12 — mean change 4.90e-4
-  EM iteration 6/12 — mean change 3.28e-4
-  EM iteration 7/12 — mean change 2.34e-4
-  EM iteration 8/12 — mean change 1.74e-4
-  EM iteration 9/12 — mean change 1.35e-4
-  EM iteration 10/12 — mean change 1.07e-4
-  EM iteration 11/12 — mean change 8.72e-5
-  EM iteration 12/12 — mean change 7.24e-5
+  gloss-pair density: 2% of sampled verses
+English verses: 68,114
+OT verses (the training set): 23,011 from the baseline, 0 from text_src, 133 from rendered text
+training verses (English + tagged Hebrew): 23,144
+translation table: 8,626 Strong's numbers  (5,079 seen in fewer than 5 verses — excluded as link targets)
+  EM iteration 1/12 — mean change 4.10e-3
+  EM iteration 2/12 — mean change 3.01e-3
+  EM iteration 3/12 — mean change 2.17e-3
+  EM iteration 4/12 — mean change 1.32e-3
+  EM iteration 5/12 — mean change 8.03e-4
+  EM iteration 6/12 — mean change 5.29e-4
+  EM iteration 7/12 — mean change 3.73e-4
+  EM iteration 8/12 — mean change 2.77e-4
+  EM iteration 9/12 — mean change 2.13e-4
+  EM iteration 10/12 — mean change 1.69e-4
+  EM iteration 11/12 — mean change 1.37e-4
+  EM iteration 12/12 — mean change 1.13e-4
 
 ────────────────────────────────────────────────────────────────────────────
 WHAT IT LEARNED — top English for a few Strong's numbers
 ────────────────────────────────────────────────────────────────────────────
   (xN = how many times more likely this word is here than corpus-wide)
-  H3205  beget         father x1000+  bore x1000+  born x1000+  she x1000+  became x1000+  a x2.7
-  H1     father        father x1000+  fathers x1000+  your x44.6  their x37.7  his x9.4  to x1.5
-  H1121  son           children x1000+  son x1000+  sons x1000+  of x2.1  the x1.1
-  H559   say           said x1000+  saying x1000+  ' x1000+  me x190.2  i x47.7  you x10.1
-  H8085  hear          heard x1000+  hear x1000+  listen x1000+  have x44.2  you x18.8  to x1.7
-  H1697  word          word x1000+  words x1000+  thing x1000+  of x1.2  to x1.1  the x1.0
+  H3205  beget         became x1000+  father x1000+  bore x1000+  she x1000+  born x1000+  a x5.5
+  H1     father        father x1000+  fathers x1000+  father's x1000+  their x27.2  your x9.6  his x5.2
+  H1121  son           children x1000+  son x1000+  sons x1000+  of x1.8  the x0.6
+  H559   say           said x1000+  saying x1000+  ' x1000+  me x32.2  i x11.3  to x1.0
+  H8085  hear          heard x1000+  hear x1000+  listen x1000+  when x137.1  have x17.8  you x3.8
+  H1697  word          word x1000+  words x1000+  thing x1000+  came x1000+  of x0.8  the x0.4
 
 
 H3205 is the test: "became" / "father" scoring high means the model learned
 the idiom kjv_def cannot express. If instead you see OUR OWN transliterations
 (yalad, ab, ban, amar, shamai, dabar) near the top, it is training on rendered
 output rather than the original translation — check that text_src is populated.
-  excluded 9,575 particle/one-letter tokens as link targets
+  excluded 9,585 particle/one-letter tokens as link targets
 
 NT verses with Hebrew: 7,956
 
 ────────────────────────────────────────────────────────────────────────────
 ALIGNMENT RESULT
 ────────────────────────────────────────────────────────────────────────────
-Hebrew tokens in NT verses that also have English: 76,322
-links generated                                  : 23,263
-  covering more than one English word            : 492
-tokens now aligned                               : 23,263 (30.5%)
+Hebrew tokens in NT verses that also have English: 76,664
+links generated                                  : 26,304
+  covering more than one English word            : 567
+candidates refused as too far from the word      : 2,967 (position guard: >0.4 of the verse AND >2 tokens away)
+construct-chain picks ("X of Y" -> token after X): 449
+loser fallbacks (lost a token, took the next free): 139
+tokens now aligned                               : 26,304 (34.3%)
 
 ────────────────────────────────────────────────────────────────────────────
 WHERE THE UNALIGNED TOKENS ARE
 ────────────────────────────────────────────────────────────────────────────
-unaligned tokens: 53,059
+unaligned tokens: 50,360
 
   count    strongs   best English the model knows for it
   ----------------------------------------------------------------
-  1759     H1961     be 0.12  it 0.08  that 0.05
-  1571     H853      the 0.20  and 0.17  of 0.08
-  1282     H430      god 0.30  new 0.03  your 0.03
-  1229     H413      to 0.37  the 0.13  and 0.08
-  1162     H1931     he 0.08  is 0.08  that 0.05
-  998      H559      said 0.26  saying 0.08  to 0.07
-  946      H3808     not 0.19  shall 0.07  but 0.05
-  916      H834      which 0.12  that 0.07  the 0.06
-  879      H3442     jeshua 0.37  the 0.28  of 0.20
-  715      H376      man 0.20  men 0.14  a 0.07
-  668      H6213     do 0.09  to 0.07  and 0.05
-  614      H935      and 0.13  to 0.11  come 0.11
-  582      H3605     all 0.33  the 0.03  new 0.03
-  543      H4899     anointed 0.21  - 0.05  against 0.04
-  523      H5921     the 0.13  on 0.12  and 0.08
-  509      H259      one 0.42  of 0.17  the 0.15
-  500      H589      i 0.31  am 0.10  my 0.05
-  495      H6440     before 0.24  the 0.08  and 0.08
-  486      H1697     the 0.15  word 0.14  of 0.12
-  432      H369      no 0.16  there 0.14  is 0.13
+  1759     H1961     be 0.20  it 0.14  shall 0.10
+  1563     H853      the 0.28  and 0.25  of 0.09
+  1282     H430      god 0.57  your 0.10  you 0.06
+  1228     H413      to 0.48  the 0.09  and 0.07
+  1164     H1931     he 0.22  is 0.19  that 0.13
+  928      H559      said 0.35  saying 0.09  i 0.07
+  906      H834      which 0.21  that 0.14  the 0.11
+  896      H3808     not 0.29  shall 0.10  but 0.08
+  879      H3442     jeshua 0.47  the 0.22  of 0.18
+  706      H376      man 0.27  men 0.19  a 0.10
+  628      H6213     do 0.14  done 0.08  to 0.08
+  586      H3605     all 0.59  the 0.09  and 0.07
+  542      H4899     anointed 0.33  against 0.07  my 0.06
+  512      H5921     the 0.24  on 0.21  and 0.13
+  509      H935      come 0.15  came 0.13  to 0.11
+  509      H259      one 0.54  of 0.16  the 0.10
+  500      H589      i 0.51  am 0.17  my 0.09
+  487      H6440     before 0.38  the 0.11  and 0.09
+  476      H1697     word 0.20  words 0.17  of 0.13
+  420      H369      no 0.24  there 0.21  is 0.19
 
 Read this as three groups:
   • particles with no English counterpart (H853 direct-object marker, and
@@ -86,18 +89,18 @@ Read this as three groups:
 REVIEW — first 12 multi-word spans
 ────────────────────────────────────────────────────────────────────────────
 Read these before applying. A wrong span here becomes a wrong gloss everywhere.
-  40:3:5  H3318   ord 1  "went out"
   40:3:16  H5927   ord 6  "went up"
+  40:4:2  H705    ord 6  "forty nights"
   40:4:24  H3318   ord 1  "went out"
   40:5:1  H5927   ord 5  "went up"
+  40:5:16  H215    ord 2  "light shine"
   40:5:27  H5003   ord 6  "commit adultery"
   40:5:28  H5003   ord 10  "committed adultery"
-  40:5:32  H5003   ord 12  "commits adultery"
+  40:5:32  H5003   ord 17  "commits adultery"
   40:6:3  H3225   ord 9  "right hand"
+  40:6:6  H2315   ord 5  "inner room"
+  40:7:15  H2061   ord 10  "ravening wolves"
   40:8:29  H6817   ord 3  "cried out"
-  40:9:26  H3318   ord 1  "went out"
-  40:9:31  H3318   ord 2  "went out"
-  40:9:32  H3318   ord 2  "went out"
 
-written to ./translation.db: 16,273 previous auto rows replaced, 23,263 inserted (lang='HEB-auto').
+written to ./translation.db: 23,263 previous auto rows replaced, 26,304 inserted (lang='HEB-auto').
 Hand-authored rows with a different lang were not touched.
