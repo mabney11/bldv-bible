@@ -39,3 +39,91 @@ export const writeSession = (k, v) => {
 export const removeSession = (k) => {
   try { sessionStorage.removeItem(k); } catch { /* ignore */ }
 };
+
+// ── Back-button contract (fieldy, 2026-09-30 — gated by
+//    scripts/verify-reader-back-scroll.mjs, which runs before every build) ──
+//
+// Browser/phone Back into the Reader puts you EXACTLY where you were looking
+// when you left — same verse at the same spot on screen. Which verse is
+// highlighted/selected, or which verse's page you went to, never moves the
+// view. Only a fresh arrival (Link, Next/Prev chapter, picker) starts at the
+// top; an explicit ?verse= deep link goes to that verse.
+//
+// Regression history — both of these have silently broken it before:
+//  1. The return trip scrolled to (and centred) the verse whose page you
+//     opened, instead of the view you left.
+//  2. The "was this a Back?" answer was read from react-router's
+//     navigationType AFTER the ?script= sync had dispatched a replace() —
+//     with slug URLs (?book=matthew) the chapter fetch can't start until the
+//     slug map loads, so by then navigationType already said 'REPLACE' and
+//     every Back was treated as a fresh arrival (top of chapter, memory wiped).
+//     Fix: stamp the arrival type during RENDER, once per book:chapter
+//     (stampArrival), and never dispatch a no-op setSearchParams.
+
+// Returns the stamp to keep: unchanged while we're still on the same
+// book:chapter (later REPLACEs of ?script=/?verse= can't overwrite it), a new
+// one the first time a new book:chapter renders.
+export function stampArrival(prev, locKey, navType) {
+  if (prev && prev.locKey === locKey) return prev;
+  return { locKey, navType };
+}
+
+// Serialise what's on screen: the first verse whose bottom is below the top
+// of the scroller, and how far its top sits from the scroller's top. A verse
+// anchor survives reflow (headings/fonts arriving late) where a raw
+// scrollTop doesn't; scrollTop is kept as the fallback.
+export function captureView(scroller) {
+  if (!scroller) return null;
+  const top = scroller.scrollTop;
+  const sTop = scroller.getBoundingClientRect().top;
+  const verses = scroller.querySelectorAll('[id^="rv-"]');
+  for (const el of verses) {
+    const r = el.getBoundingClientRect();
+    if (r.bottom > sTop + 1) {
+      const v = parseInt(el.id.slice(3), 10);
+      if (v) return { top, v, off: Math.round(r.top - sTop) };
+      break;
+    }
+  }
+  return { top };
+}
+
+export function encodeView(view) { return view ? JSON.stringify(view) : null; }
+export function decodeView(raw) {
+  if (raw == null || raw === '') return null;
+  // legacy format: a bare scrollTop number
+  if (/^\d+(\.\d+)?$/.test(raw)) return { top: parseFloat(raw) };
+  try {
+    const o = JSON.parse(raw);
+    if (o && typeof o.top === 'number') return o;
+  } catch { /* fall through */ }
+  return null;
+}
+
+// The whole decision, pure so the gate can exercise it:
+//  - not a Back/Forward (PUSH / REPLACE)           → top, forget memories
+//  - Back with a saved view                        → that view, whatever
+//                                                    verse is marked/opened
+//  - Back, no saved view, but a return verse       → that verse
+//  - otherwise                                     → top
+export function planRestore({ navType, savedView, returnVerse }) {
+  if (navType !== 'POP') return { kind: 'top', forget: true };
+  if (savedView) return { kind: 'view', view: savedView, flashVerse: returnVerse || null };
+  if (returnVerse) return { kind: 'verse', verse: returnVerse };
+  return { kind: 'top', forget: false };
+}
+
+// Put `view` back on screen, instantly (the reader's CSS has
+// scroll-behavior: smooth, which would otherwise animate from the top).
+export function applyView(scroller, view) {
+  if (!scroller || !view) return;
+  let target = view.top || 0;
+  if (view.v) {
+    const el = scroller.querySelector(`#rv-${view.v}`);
+    if (el) {
+      const sTop = scroller.getBoundingClientRect().top;
+      target = scroller.scrollTop + (el.getBoundingClientRect().top - sTop) - (view.off || 0);
+    }
+  }
+  scroller.scrollTo({ top: Math.max(0, target), behavior: 'instant' });
+}

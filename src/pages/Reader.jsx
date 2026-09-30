@@ -21,7 +21,8 @@ import { TYPEFACES } from '../lib/typefaces.js';
 // dangerouslySetInnerHTML, same pattern as WordBlock.jsx) makes them match.
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
 import { usePaleoMode } from '../hooks/usePaleoMode.js';
-import { RD_SCROLL_KEY, RD_RETURN_VERSE_KEY, readSession, writeSession, removeSession } from '../lib/readerScrollMemory.js';
+import { RD_SCROLL_KEY, RD_RETURN_VERSE_KEY, readSession, writeSession, removeSession,
+         stampArrival, captureView, encodeView, decodeView, planRestore, applyView } from '../lib/readerScrollMemory.js';
 
 // Mirrors WordBlock.jsx's own hasPaleo guard: only route real Paleo-Hebrew
 // letters (U+10900–U+1091F) through the custom SVG renderer — anything else
@@ -1130,7 +1131,7 @@ export default function Reader() {
   // fresh Link/button click — Landing's "Novel English Bible" button,
   // Next/Previous chapter, the book/chapter picker) or a 'REPLACE' (this
   // page's own URL-param syncing, see ?script= below) is a deliberate new
-  // arrival and should always start clean. See navTypeRef below for why
+  // arrival and should always start clean. See arrivalRef below for why
   // this raw value isn't read directly at scroll-restore time.
   const navigationType = useNavigationType();
 
@@ -1148,6 +1149,13 @@ export default function Reader() {
   const chapter    = parseInt(sp.get('chapter') || '1', 10);
   const verseParam = sp.get('verse');
   const verse      = verseParam ? parseInt(verseParam, 10) : null;
+  // How we ARRIVED at this book:chapter — stamped during render, once per
+  // book:chapter, so no later REPLACE (the ?script= sync, a ?verse= tweak)
+  // can turn a Back into a "fresh arrival". See stampArrival in
+  // lib/readerScrollMemory.js for the regression this closes; the gate
+  // scripts/verify-reader-back-scroll.mjs checks it's still wired this way.
+  const arrivalRef = useRef(null);
+  arrivalRef.current = stampArrival(arrivalRef.current, `${bookParam || ''}:${chapter}`, navigationType);
   // Optional companion to ?verse= — set by a citation link from an embedded
   // scripture quotation (see renderScriptureQuote) that cites a RANGE, not a
   // single verse (Psalm 85:10-11). When present, the scroll/highlight effect
@@ -1177,21 +1185,12 @@ export default function Reader() {
   // ── chapter text ───────────────────────────────────────────────────────────
   const [verses, setVerses]   = useState([]);
   const [loading, setLoading] = useState(true);
+  const loadingRef = useRef(true);
+  loadingRef.current = loading;
   const [chapKey, setChapKey] = useState('');   // drives the fade-in on chapter change
 
-  // Frozen per chapter-load, not read live at restore time: `navigationType`
-  // reflects the LATEST router action, and something else in this same
-  // render commit (the ?script= sync effect, further down) can dispatch its
-  // own replace() before the scroll-restore effect below ever runs — by the
-  // time a slow chapter fetch resolves, a genuine POP could otherwise have
-  // already been overwritten to 'REPLACE'. Stamping it here, synchronously,
-  // at the moment THIS chapter's fetch actually starts (this effect runs
-  // before that later one, same commit, same file order) captures the real
-  // answer before anything else gets a chance to change it.
-  const navTypeRef = useRef(navigationType);
   useEffect(() => {
     if (!bookReady) return;
-    navTypeRef.current = navigationType;
     let cancelled = false;
     setLoading(true);
     apiTransChapter(book, chapter)
@@ -1338,13 +1337,17 @@ export default function Reader() {
     try { localStorage.setItem(SCRIPT_KEY, script); } catch { /* non-fatal */ }
   }, [script]);
   useEffect(() => {
+    // Only when it actually differs: setSearchParams ALWAYS navigates, even
+    // when the callback returns prev, and that no-op REPLACE used to clobber
+    // the Back-button detection (see stampArrival).
+    if (sp.get('script') === script) return;
     setSp(prev => {
       if (prev.get('script') === script) return prev;
       const p = new URLSearchParams(prev);
       p.set('script', script);
       return p;
     }, { replace: true });
-  }, [script, setSp]);
+  }, [script, setSp, sp]);
 
   // ── Hebrew-mode gloss toggle (persisted) — All Hebrew | With glosses ──────
   const [hebGlossMode, setHebGlossMode] = useState(() => {
@@ -1582,13 +1585,26 @@ export default function Reader() {
   const handleReaderScroll = useCallback(() => {
     if (scrollSaveTimer.current) clearTimeout(scrollSaveTimer.current);
     scrollSaveTimer.current = setTimeout(() => {
-      if (scrollRef.current) writeSession(RD_SCROLL_KEY(book, chapter), String(scrollRef.current.scrollTop));
+      if (scrollRef.current) writeSession(RD_SCROLL_KEY(book, chapter), encodeView(captureView(scrollRef.current)));
     }, 150);
+  }, [book, chapter]);
+  // Flush the exact view on the way out (the debounced save above can be up
+  // to 150ms stale when a link is tapped right after a scroll). Layout-effect
+  // cleanup, so the <main> is still attached.
+  useLayoutEffect(() => {
+    const el = scrollRef.current;
+    return () => {
+      if (el && el.isConnected && !loadingRef.current) writeSession(RD_SCROLL_KEY(book, chapter), encodeView(captureView(el)));
+    };
   }, [book, chapter]);
 
   useEffect(() => {
     if (loading) return;
-    if (verse != null) {
+    // A Back to a ?verse= URL still returns to the view you LEFT, not to the
+    // cited verse — the ?verse= jump is for arriving, not for returning.
+    const arrivedByBack = (arrivalRef.current ? arrivalRef.current.navType : navigationType) === 'POP';
+    const hasSavedView = decodeView(readSession(RD_SCROLL_KEY(book, chapter))) != null;
+    if (verse != null && !(arrivedByBack && hasSavedView)) {
       const el = document.getElementById(`rv-${verse}`);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1610,40 +1626,60 @@ export default function Reader() {
     // arrival (a Link/button click, Next/Previous chapter, the book/chapter
     // picker — always start at the top, exactly like a first-ever visit) or
     // a return trip (browser back/forward — restore where we were). Only a
-    // POP (see navTypeRef above) is a return trip; anything else discards
+    // POP (see arrivalRef above) is a return trip; anything else discards
     // both memories for this book:chapter instead of leaving them to be
     // read by some LATER, unrelated POP back to this same chapter, which
     // would otherwise resurrect a position/highlight from a visit that's no
     // longer the relevant one.
-    if (navTypeRef.current !== 'POP') {
-      removeSession(RD_RETURN_VERSE_KEY(book, chapter));
-      removeSession(RD_SCROLL_KEY(book, chapter));
-      if (scrollRef.current) scrollRef.current.scrollTop = 0;
-      return;
-    }
-
-    // A return trip. Prefer "returning from this verse's own page" when
-    // both memories are available: it both tells the reader which verse
-    // they came back from (lit, same treatment as a citation landing) and
-    // scrolls straight to it, which is a more reliable answer than a raw
-    // scrollTop number if anything above it has reflowed since (font size,
-    // margins, etc.).
     const returnVerseRaw = readSession(RD_RETURN_VERSE_KEY(book, chapter));
-    if (returnVerseRaw != null) {
-      removeSession(RD_RETURN_VERSE_KEY(book, chapter));
-      const v = parseInt(returnVerseRaw, 10);
-      const el = v ? document.getElementById(`rv-${v}`) : null;
-      if (el) {
-        setMarks(prev => new Set([...prev, markKey(v)]));
-        el.scrollIntoView({ behavior: 'auto', block: 'center' });
-        el.classList.add('rd-flash');
-        const t = setTimeout(() => el.classList.remove('rd-flash'), 1500);
-        return () => clearTimeout(t);
-      }
+    const plan = planRestore({
+      navType: arrivalRef.current ? arrivalRef.current.navType : navigationType,
+      savedView: decodeView(readSession(RD_SCROLL_KEY(book, chapter))),
+      returnVerse: returnVerseRaw != null ? (parseInt(returnVerseRaw, 10) || null) : null,
+    });
+    removeSession(RD_RETURN_VERSE_KEY(book, chapter));          // one-shot
+    if (plan.forget) removeSession(RD_SCROLL_KEY(book, chapter));
+    const scroller = scrollRef.current;
+    if (!scroller) return;
+    if (plan.kind === 'top') { scroller.scrollTo({ top: 0, behavior: 'instant' }); return; }
+
+    // Light the verse whose page we came back from — a cue only; it never
+    // decides where the view lands (fieldy: "it doesn't matter what verse I
+    // have selected or highlighted, bring me back to where I was").
+    const flashV = plan.kind === 'verse' ? plan.verse : plan.flashVerse;
+    const flashEl = flashV ? document.getElementById(`rv-${flashV}`) : null;
+    if (flashEl) {
+      setMarks(prev => new Set([...prev, markKey(flashV)]));
+      flashEl.classList.add('rd-flash');
+    }
+    const timers = [];
+    timers.push(setTimeout(() => flashEl && flashEl.classList.remove('rd-flash'), 1500));
+
+    if (plan.kind === 'verse') {
+      if (flashEl) flashEl.scrollIntoView({ behavior: 'instant', block: 'center' });
+      return () => timers.forEach(clearTimeout);
     }
 
-    const savedScroll = readSession(RD_SCROLL_KEY(book, chapter));
-    if (scrollRef.current) scrollRef.current.scrollTop = savedScroll != null ? (parseInt(savedScroll, 10) || 0) : 0;
+    // plan.kind === 'view' — the exact view we left. Re-applied a few times
+    // while late content (headings, precepts, web fonts) settles above it,
+    // until the reader moves on their own.
+    applyView(scroller, plan.view);
+    let touched = false;
+    const onUser = () => { touched = true; };
+    const evs = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+    evs.forEach(e => window.addEventListener(e, onUser, { passive: true, capture: true }));
+    const again = () => { if (!touched) applyView(scroller, plan.view); };
+    const raf = requestAnimationFrame(again);
+    [120, 400, 900, 1600].forEach(ms => timers.push(setTimeout(again, ms)));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(again).catch(() => {});
+    timers.push(setTimeout(() => evs.forEach(e => window.removeEventListener(e, onUser, { capture: true })), 2000));
+    return () => {
+      cancelAnimationFrame(raf);
+      touched = true;
+      timers.forEach(clearTimeout);
+      evs.forEach(e => window.removeEventListener(e, onUser, { capture: true }));
+      if (flashEl) flashEl.classList.remove('rd-flash');
+    };
   }, [loading, chapKey, verse]);
 
   // ── navigation ─────────────────────────────────────────────────────────────
@@ -2435,7 +2471,7 @@ export default function Reader() {
                               // we're opening, so the scroll-memory effect
                               // above can put both back when the reader taps
                               // back out of this verse's own page.
-                              if (scrollRef.current) writeSession(RD_SCROLL_KEY(book, chapter), String(scrollRef.current.scrollTop));
+                              if (scrollRef.current) writeSession(RD_SCROLL_KEY(book, chapter), encodeView(captureView(scrollRef.current)));
                               writeSession(RD_RETURN_VERSE_KEY(book, chapter), String(vnum));
                             }}
                             title={`Open ${chapterBookName} ${chapter}:${vnum} on its own page`}>

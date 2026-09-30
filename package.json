@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/verify-reader-back-scroll.mjs",
+    "verify:back-scroll": "node scripts/verify-reader-back-scroll.mjs",
     "build": "vite build && node scripts/build-headings-if-present.mjs",
     "preview": "vite preview"
   },
