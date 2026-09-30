@@ -4507,9 +4507,22 @@ function applyLocOverridesToRawRows(rows, locationOverrides, book_id, chapter, v
         const ch = chapter  != null ? chapter  : r.chapter;
         const vs = verse    != null ? verse    : r.verse;
         const ov = locationOverrides[locOverrideKey(bk, ch, vs, r.token_ordinal)];
-        if (ov && ov.strongs) r.strongs = ov.strongs;
+        if (ov && ov.strongs && locOverrideWordMatches(ov, r)) r.strongs = ov.strongs;
     }
     return rows;
+}
+
+// A location override names the word it was written for (ov.word_raw). Keys are
+// positions, and positions move whenever a verse is re-tokenised — the 2026-09-30
+// maqaf fix shifted every token after a construct pair in 11,673 HEB verses. Without
+// this check a stale key silently re-labels whatever word now sits there. Compared on
+// paleo letters only (so niqqud/maqaf/script differences never block a real match);
+// an override with no word_raw, or a row with none, still applies as before.
+function locOverrideWordMatches(ov, row) {
+    if (!ov || !ov.word_raw || !row || !row.word_raw) return true;
+    const letters = s => [...String(s)].filter(c => c >= '\u{10900}' && c <= '\u{10915}').join('');
+    const a = letters(ov.word_raw), b = letters(row.word_raw);
+    return !a || !b || a === b;
 }
 
 // For surface_occurrences-shaped rows (the /api/tokens fast path) — these
@@ -4567,7 +4580,7 @@ function applyLocOverrideToSurfRow(row, locationOverrides, book_id, chapter) {
     }
     if (!locationOverrides || !Object.keys(locationOverrides).length) return row;
     const ov = locationOverrides[locOverrideKey(book_id, chapter, row.verse, row.token_ordinal)];
-    if (!ov || !ov.strongs) return row;
+    if (!ov || !ov.strongs || !locOverrideWordMatches(ov, row)) return row;
     row.strongs = ov.strongs;
     if (row.components) {
         try {

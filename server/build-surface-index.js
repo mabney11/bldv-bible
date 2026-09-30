@@ -2018,6 +2018,8 @@ if (WITH_HEB) {
                 `(${(100 * st.ot_aligned / (st.ot_words || 1)).toFixed(1)}%)`);
     console.log(`  NT: ${st.nt_hit.toLocaleString()}/${st.nt_words.toLocaleString()} words qualified ` +
                 `(${(100 * st.nt_hit / (st.nt_words || 1)).toFixed(1)}%)`);
+    console.log(`  maqaf: ${(st.maqafSplitVerses || 0).toLocaleString()} verses tokenised at their maqaf ` +
+                `boundaries (text_paleo had fused them; see wordsOf in heb-align.js)`);
     // AMBIGUOUS READINGS — the answer to "I don't like that I had to stumble
     // across this manually". A word that more than one reading fits is a
     // DECISION the builder made silently; here it is a line in a report.

@@ -472,10 +472,28 @@ function buildHebSurfaces(o) {
         return tokCache.get(k);
     };
     const bhsTokens = (canon, ch, v) => rawBhsTokens(canon, ch, v).filter(t => t.paleo);
+    // MAQAF BOUNDARIES (fixed 2026-09-30, fieldy: Matthew 16:27 read "Son of Ayash (man)").
+    // text_paleo was ingested with every maqaf DELETED rather than turned into a
+    // space, so construct pairs came through as one fused word — 𐤁𐤍𐤄𐤀𐤃𐤌 for
+    // בֶּן־הָאָדָם — while `text` kept the boundary (𐤁𐤍 𐤄𐤀𐤃𐤌). splitWords()
+    // already treats maqaf as a tokenisation boundary (BHS tokenises either side);
+    // text_paleo simply erased it before splitWords could see it. Measured on the
+    // real corpus: the two columns differ ONLY by these joins — 23,950 fused words
+    // in 11,778 verses (every NT book, Enoch, Josephus …), 8,797 of the NT's
+    // unresolved tokens, Son of Man x63, Son of God x38. A fused pair can only
+    // resolve if that exact pair happens to sit adjacent somewhere in the OT (the
+    // `adjacent` tier), so ben-ha'adam — never adjacent in the OT — got no Strong's
+    // at all and the English aligner borrowed H376 from "every man" for it.
+    // Rule: when `text` spells the SAME letters as text_paleo, its word boundaries
+    // win. Anything else (a genuinely different text) keeps text_paleo as before.
     const wordsOf = (row) => {
         const a = hasPaleoCol ? splitWords(row.text_paleo) : [];
-        return a.length ? a : splitWords(row.text);
+        if (!a.length) return splitWords(row.text);
+        const b = splitWords(row.text);
+        if (b.length > a.length && b.join('') === a.join('')) { maqafSplitVerses++; return b; }
+        return a;
     };
+    let maqafSplitVerses = 0;
 
     const surfaces = new Map();       // surfKey -> record
     const occurrences = [];           // rows for surface_occurrences
@@ -1572,6 +1590,7 @@ function buildHebSurfaces(o) {
     stats.contextMisses = [...contextMisses].map(([w, sn]) => `${w}->${sn}`);
     stats.contextLog = contextLog;
     stats.suffix3fs = suffix3fs;
+    stats.maqafSplitVerses = maqafSplitVerses;
     return { surfaces, occurrences, audit, stats };
 }
 

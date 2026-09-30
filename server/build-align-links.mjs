@@ -89,8 +89,23 @@ const MINRATIO = parseFloat(arg('min-ratio', STRICT ? '4' : '1.5'));
 // distribution over the few verses it appears in — which is how H3442 (Yeshua)
 // came to "prefer" the word "the". Require real support before trusting it.
 const MINSUPPORT = parseInt(arg('min-support', STRICT ? '15' : '5'), 10);
+// POSITION GUARD (2026-09-30, fieldy: Matthew 16:27 "Son of Ayash (man)"). The best
+// token for an English word used to be chosen from ANYWHERE in the verse. When the
+// real token was missing (ben-ha'adam had no Strong's), "Man" near the start of the
+// English took 𐤀𐤉𐤔 H376 from "to every man" at the very end of the Hebrew. Same
+// failure without any missing token: John 11:27 "I have come to believe" took
+// 𐤄𐤁𐤀 "he who comes into the world"; Matt 4:18's first "sea" took the second 𐤉𐤌.
+// A candidate token is now only eligible if it sits within MAXREL of the English
+// word's relative position OR within MAXTOK tokens of it (so short verses and
+// Hebrew's verb-first order are not punished). An English word with no eligible
+// token stays plain English — an unglossed word, never a wrong one.
+const MAXREL = parseFloat(arg('max-rel-dist', '0.4'));
+const MAXTOK = parseFloat(arg('max-tok-dist', '2'));
 
 // ENGLISH FUNCTION WORDS NEVER RECEIVE A LINK.
+// ("only" REMOVED 2026-09-30: it has real Hebrew — 𐤉𐤇𐤉𐤃 yachid, 𐤓𐤒 raq. As a stop word
+// it could never claim yachid, so "his one and only Son" handed "Son" to 𐤉𐤇𐤉𐤃 and
+// rendered "Yachayad (Son)" beside an unclaimed 𐤁𐤍, John 3:16 among 10 verses.)
 // Every wrong gloss in Matthew 1 was a content token attached to one of these:
 // "Yashawai (the)", "ath (of)", "ith (at)", "babal (of)", "mana (from)",
 // "marayam (was)", "yaladath (she)", "hamah (like)". No Hebrew word is what "the"
@@ -111,7 +126,7 @@ is am are was were be been being do does did done have has had having
 will would shall should may might must can could
 i me my mine we us our ours you your yours he him his she her hers it its
 they them their theirs who whom whose which what when where why how
-not no nor all any both each every few more most other some such only very
+not no nor all any both each every few more most other some such very
 own same too also just now ever never again once
 one two three four five six seven eight nine ten`.split(/\s+/));
 const SAMPLE  = parseInt(arg('sample', '12'), 10);
@@ -413,6 +428,7 @@ if (contaminated.length) {
 // ── align the NT ────────────────────────────────────────────────────────────
 const idx = new Database(IDX, { readonly: true });
 const ntTok = new Map();
+const ntLen = new Map();   // verse -> highest token ordinal, EVERY token (particles, unresolved)
 try {
     let skippedParticle = 0;
     for (const r of idx.prepare(`
@@ -422,6 +438,10 @@ try {
              AND t2.strongs = o.strongs AND t2.pos = o.pos AND t2.morph = o.morph
         WHERE o.source='HEB' AND o.book_id BETWEEN 40 AND 66
         ORDER BY o.book_id, o.chapter, o.verse, o.token_ordinal`).all()) {
+        {
+            const vk = `${r.book_id}|${r.chapter}|${r.verse}`;
+            if ((ntLen.get(vk) || 0) < r.token_ordinal) ntLen.set(vk, r.token_ordinal);
+        }
         if (!r.strongs) continue;
         // A bare conjunction or article must not own an English span. Left
         // unguarded, a lone 𐤅 was handed the word "became" and rendered as
@@ -446,6 +466,7 @@ say('');
 say(`NT verses with Hebrew: ${ntTok.size.toLocaleString()}`);
 
 const links = [];
+let farRefused = 0, constructPicked = 0, fallbackPicked = 0;
 let alignedTok = 0, totalTok = 0, spansMulti = 0;
 for (const [k, toks] of ntTok) {
     const text = eng.get(k);
@@ -457,6 +478,12 @@ for (const [k, toks] of ntTok) {
     // best token per English word, NULL included so a word can align to nothing
     const assign = new Array(e.length).fill(null);
     const score = new Array(e.length).fill(0);
+    const cands = new Array(e.length).fill(null);   // every eligible token per word, best first
+    const nT = ntLen.get(k) || Math.max(...toks.map(x => x.ord));
+    const near = (i, ord) => {
+        const er = (i + 0.5) / e.length, tr = (ord - 0.5) / nT;
+        return Math.abs(er - tr) <= MAXREL || Math.abs(er - tr) * nT <= MAXTOK;
+    };
     for (let i = 0; i < e.length; i++) {
         if (ENGLISH_STOP.has(e[i])) continue;      // function words go to NULL, always
         const nullP = (t.get(NULLSN) && t.get(NULLSN).get(e[i])) || 0;
@@ -466,7 +493,30 @@ for (const [k, toks] of ntTok) {
             const p = (t.get(tok.sn) && t.get(tok.sn).get(e[i])) || 0;
             if (p < MINP) continue;
             const ratio = p / Math.max(nullP, 1e-6);
-            if (ratio >= MINRATIO && ratio > bestScore) { bestScore = ratio; best = tok; }
+            if (ratio < MINRATIO) continue;
+            if (!near(i, tok.ord)) { farRefused++; continue; }
+            (cands[i] = cands[i] || []).push({ tok, ratio });
+            // equal ratio = the same Strong's twice in one verse: the nearer one wins
+            const closer = best && ratio === bestScore &&
+                Math.abs((i + 0.5) / e.length - (tok.ord - 0.5) / nT) <
+                Math.abs((i + 0.5) / e.length - (best.ord - 0.5) / nT);
+            if (ratio > bestScore || closer) { bestScore = ratio; best = tok; }
+        }
+        // CONSTRUCT CHAIN (2026-09-30, Matt 26:24 / Mark 14:21 "woe to that man by whom
+        // the Son of Man is betrayed"). English "X of [the] Y" with X already on Hebrew
+        // token k is a construct pair: Y is token k+1 — 𐤁𐤍 𐤄𐤀𐤃𐤌, "house of Israel",
+        // "word of the Lord". Frequency alone handed "Man" to 𐤋𐤀𐤉𐤔 (H376, "that man")
+        // and left 𐤄𐤀𐤃𐤌 unclaimed. Only a token the model itself supports for this word
+        // (same MINP / MINRATIO floors) is taken; it then outranks any rival claim.
+        {
+            const x = e[i - 1] === 'of' ? i - 2 : (e[i - 1] === 'the' && e[i - 2] === 'of') ? i - 3 : -1;
+            const head = x >= 0 ? assign[x] : null;
+            const nxt = head && toks.find(tk => tk.ord === head.ord + 1);
+            if (nxt && (support.get(nxt.sn) || 0) >= MINSUPPORT) {
+                const p = (t.get(nxt.sn) && t.get(nxt.sn).get(e[i])) || 0;
+                const ratio = p / Math.max(nullP, 1e-6);
+                if (p >= MINP && ratio >= MINRATIO) { best = nxt; bestScore = 1e9 + ratio; constructPicked++; }
+            }
         }
         if (best) { assign[i] = best; score[i] = bestScore; }
     }
@@ -482,12 +532,25 @@ for (const [k, toks] of ntTok) {
             if (!bestFor.has(o) || score[i] > score[bestFor.get(o)]) bestFor.set(o, i);
         }
         const keep = new Set([...bestFor.values()]);
+        const lost = [];
         for (let i = 0; i < e.length; i++) {
             // a neighbour continuing the same token stays, so multi-word spans survive
             if (assign[i] && !keep.has(i)) {
                 const prevSame = i > 0 && assign[i - 1] && assign[i - 1].ord === assign[i].ord && (keep.has(i - 1) || assign[i - 1] === assign[i]);
                 const nextSame = i + 1 < e.length && assign[i + 1] && assign[i + 1].ord === assign[i].ord;
-                if (!prevSame && !nextSame) assign[i] = null;
+                if (!prevSame && !nextSame) { assign[i] = null; lost.push(i); }
+            }
+        }
+        // LOSER FALLBACK (2026-09-30). A word that lost its token to a stronger claim
+        // used to drop to nothing, even with another eligible token free right beside
+        // it — "one and only Son": "only" now takes 𐤉𐤇𐤉𐤃, and "Son" falls back to 𐤁𐤍.
+        // Same floors as the first pick (MINP, MINRATIO, position guard); never a token
+        // another word still holds; best remaining ratio first.
+        if (lost.length) {
+            const held = new Set(assign.filter(Boolean).map(a => a.ord));
+            for (const i of lost.sort((a, b) => score[b] - score[a])) {
+                const alt = (cands[i] || []).filter(c => !held.has(c.tok.ord)).sort((a, b) => b.ratio - a.ratio)[0];
+                if (alt) { assign[i] = alt.tok; score[i] = alt.ratio; held.add(alt.tok.ord); fallbackPicked++; }
             }
         }
     }
@@ -516,6 +579,10 @@ rule('ALIGNMENT RESULT');
 say(`Hebrew tokens in NT verses that also have English: ${totalTok.toLocaleString()}`);
 say(`links generated                                  : ${links.length.toLocaleString()}`);
 say(`  covering more than one English word            : ${spansMulti.toLocaleString()}`);
+say(`candidates refused as too far from the word      : ${farRefused.toLocaleString()}` +
+    ` (position guard: >${MAXREL} of the verse AND >${MAXTOK} tokens away)`);
+say(`construct-chain picks ("X of Y" -> token after X): ${constructPicked.toLocaleString()}`);
+say(`loser fallbacks (lost a token, took the next free): ${fallbackPicked.toLocaleString()}`);
 say(`tokens now aligned                               : ${alignedTok.toLocaleString()}` +
     ` (${(100 * alignedTok / (totalTok || 1)).toFixed(1)}%)`);
 

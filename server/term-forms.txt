@@ -64,7 +64,10 @@ every           nashay           # H802 · 167x in NT · 781x OT · sense 2  alt
 took            thamak            # H8551 · 154x in NT · 21x OT · sense 0 · via "take"  alt: Sharash/H8327 Gawazaha/H1491
 flesh           bashar            # H1321 · 151x in NT · 3x OT · sense 0  alt: Tabachah/H2878 Shaara/H7607
 time            danah             # H1836 · 150x in NT · 58x OT · sense 0  alt: Idan/H5732 Manaha/H4489
-according       man              # H4481 · 150x in NT · 109x OT · sense 0
+# REMOVED 2026-09-30 (fieldy, Matthew 16:27 "render to everyone man (from) to his deeds"):
+# according -> man # H4481. H4481 is Aramaic min "from"; "according" only reaches it via
+# kjv_def phrases. Matt 16:27's Hebrew is 𐤊𐤌𐤏𐤔𐤄𐤅 (k + ma'aseh + his) — no 𐤌𐤍 — and
+# the pin passed the gate only because a NEIGHBOURING verse had min (window now narrowed).
 gave            yahab             # H3052 · 146x in NT · 28x OT · sense 1 · via "give"  alt: Shawamath/H7761 Yanaq/H3243
 city            shairay          # H8179 · 145x in NT · 374x OT · sense 0  alt: Qarayah/H7151 Qarayaa/H7149
 body            bashar           # H1320 · 142x in NT · 270x OT · sense 0  alt: Itzama/H6106 Nabalahatha/H5038

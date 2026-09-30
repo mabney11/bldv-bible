@@ -240,7 +240,8 @@ if a.write:
     try:
         old = json.load(open(p, encoding='utf8'))
         for k, v in old.items():
-            if not k.startswith('_') and k not in out:
+            # a hand_added entry (a curated decision) always wins over a regenerated one
+            if not k.startswith('_') and (k not in out or (isinstance(v, dict) and v.get('hand_added'))):
                 out[k] = v
     except (OSError, ValueError):
         pass

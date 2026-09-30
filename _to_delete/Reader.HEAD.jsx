@@ -1,0 +1,2580 @@
+import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, Fragment } from 'react';
+import { Link, useSearchParams, useNavigationType } from 'react-router-dom';
+import { useTheme } from '../hooks/useTheme.js';
+import { apiBookOrder, apiTransChapter, apiTransBookText, apiTokens, apiSourceChapter, apiSourceVerse, apiHeadings, apiPrecepts, apiPreceptReview } from '../lib/api.js';
+import { getAdminStatus } from '../lib/localOverlay.js';
+import PreceptList, { groupPrecepts, refLabel } from '../components/Precepts.jsx';
+import { remapDisplayChapterToSource, remapSourceVerseToDisplay } from '../lib/sourceVerseRemap.js';
+import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
+import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
+import { computeWordParts } from '../components/WordBlock.jsx';
+import { transliterate } from '../lib/translit.js';
+import { TYPEFACES } from '../lib/typefaces.js';
+// "I should see my custom waw and dalath" — the inline paleo spellings below
+// (divine-title prefix, no-gloss fallback, chapter superscription) used to be
+// rendered as plain Unicode text, styled with a system Phoenician-block font
+// ('Segoe UI Historic' / 'Noto Sans Phoenician' in Reader.css). That's a
+// DIFFERENT letterform set than the app's own hand-drawn glyphs — the real
+// custom shapes only exist as user-editable SVG strokes (paleoGlyphs.js,
+// GlyphEditor), the same renderer WordBlock/Parallel already use for every
+// OTHER paleo glyph on the site. Wiring these three spots to paleoToSVG (via
+// dangerouslySetInnerHTML, same pattern as WordBlock.jsx) makes them match.
+import { paleoToSVG } from '../lib/paleoGlyphs.js';
+import { usePaleoMode } from '../hooks/usePaleoMode.js';
+import { RD_SCROLL_KEY, RD_RETURN_VERSE_KEY, readSession, writeSession, removeSession } from '../lib/readerScrollMemory.js';
+
+// Mirrors WordBlock.jsx's own hasPaleo guard: only route real Paleo-Hebrew
+// letters (U+10900–U+1091F) through the custom SVG renderer — anything else
+// (stray non-paleo content in a .paleo field) stays plain, escaped text.
+const READER_PALEO_RE = /[\u{10900}-\u{1091F}]/u;
+const readerHasPaleo = s => READER_PALEO_RE.test(s || '');
+function ReaderPaleoText({ text, className, dir, block }) {
+  if (!text) return null;
+  const Tag = block ? 'div' : 'span';
+  return readerHasPaleo(text)
+    ? <Tag className={className} dir={dir} dangerouslySetInnerHTML={{ __html: paleoToSVG(text) }} />
+    : <Tag className={className} dir={dir}>{text}</Tag>;
+}
+// Same morphology color system Parallel/HebrewViewer use (.mod-conj, .pfm-3ms,
+// .root, …) — imported here so the Hebrew reading mode below colors each
+// transliterated morpheme identically to the rest of the app.
+import '../lib/morphColors.css';
+// Reading typefaces. Self-hosted so they work offline and behind ngrok — no request to
+// Google's CDN. Weights: 400 body, 600/700 for the chapter numeral and bar.
+//
+// THREE are packaged on npm — install once:
+//   npm i @fontsource/alegreya @fontsource/ysabeau @fontsource/opendyslexic
+//
+// The other four (Cochineal, Antykwa Toruńska, Coelacanth, Kierkegaard) are TeX/OSP
+// faces with no @fontsource package. They are declared as @font-face in Reader.css
+// reading from /fonts/ — drop the .woff2 files there and they light up. Until then each
+// one falls back to Alegreya, so the reader never breaks on a missing file.
+import '@fontsource/alegreya/400.css';
+import '@fontsource/alegreya/700.css';
+import '@fontsource/ysabeau/400.css';
+import '@fontsource/ysabeau/600.css';
+import '@fontsource/opendyslexic/400.css';
+import '@fontsource/opendyslexic/700.css';
+import './Reader.css';
+
+/**
+ * Reader — the "pretty" reading surface for the average reader.
+ *
+ * Purely text. It renders the SAME English that powers the rest of the app
+ * (your saved translations, with the loaded baseline standing in for verses you
+ * haven't touched yet) as clean, flowing scripture — no Strong's, no surf, no
+ * gloss. Mobile-first, two themes (Parchment / Night), and it shares the app's
+ * ?book=<slug>&chapter=&verse= URLs so you can hop to any other reader at the
+ * exact same place.
+ */
+// FONT_MIN is deliberately very low (5px): some readers zoom the whole page and
+// want the text small relative to it, and a few of these faces (OpenDyslexic,
+// Verdana) run large for their em, so a floor of 15 was effectively ~17.
+const FONT_MIN = 5, FONT_MAX = 32, FONT_DEFAULT = 20;
+
+// ── Reading column width ("Margins") ───────────────────────────────────────
+// Controls .rd-page's max-width (--pr-measure — see Reader.css), i.e. how
+// long a line of text gets before it wraps. Framed to the reader as
+// "Margins +/-" (2026-08-19 request: "I want to be able to make lines as
+// long or as short as I want, still adjust to the screen") since a narrower
+// measure reads as more whitespace down the sides on a big screen, even
+// though what's actually being set is the column's own width, not padding.
+// It's still screen-adaptive at either end: .rd-page is width:100% first,
+// max-width second, so on a phone this cap never even engages — the column
+// is already narrower than MEASURE_MIN would allow. MEASURE_MAX (90rem) is
+// generous on purpose; there's no correctness reason to stop someone from
+// reading at a very wide measure if that's what they want, only a
+// conventional-typography one, and this control exists specifically to let
+// the reader override that convention.
+const MEASURE_MIN = 28, MEASURE_MAX = 90, MEASURE_STEP = 2, MEASURE_DEFAULT = 46;
+
+// ── Reading typefaces ────────────────────────────────────────────────────────
+// Chosen for legibility rather than flavour. `id` is what we persist, so never
+// rename one — add a new entry instead, or a saved preference silently falls back.
+// Catalog itself lives in ../lib/typefaces.js (2026-08-15 extraction) so
+// Parallel.jsx's English column can offer the exact same set of faces
+// without a second hand-maintained copy — see that file's own comment for
+// the per-face notes.
+const TYPEFACE_DEFAULT = 'alegreya';
+const TYPEFACE_KEY = 'reader-typeface';
+
+// ── Gloss display mode ───────────────────────────────────────────────────────
+// The baseline English carries "translit (gloss)" pairs — "yawam (days)". This lets a
+// reader show both, the Hebrew alone, or the English alone, without touching the data:
+// it's a pure display transform over the same text.
+const GLOSS_MODES = [
+  { id: 'both',   label: 'Both',         note: 'yawam (days)' },
+  { id: 'hebrew', label: 'Hebrew only',  note: 'yawam' },
+  { id: 'gloss',  label: 'English only', note: 'days' },
+];
+const GLOSS_DEFAULT = 'both';
+const GLOSS_KEY = 'reader-gloss-mode';
+
+// ── Script mode: English prose vs. plain transliterated source text ────────
+// "English" is the reader as it's always worked — the saved English
+// translation. "Hebrew" reads the verse in actual Hebrew word order, straight
+// from the same token stream (components[]: css class + translit + gloss)
+// that powers the Parallel viewer — BHS (Masoretic OT) or HEB (NT, Jasher,
+// and any further Hebrew source ingested under that table). "Ge'ez" does the
+// same for the Ethiopic source, transliterated client-side (translit.js) —
+// that source has no Strong's/morphology breakdown, so there's no per-
+// morpheme color coding there, just the plain transliteration and its gloss.
+// Either non-English mode simply isn't offered for a book with no matching
+// source — "for the texts that have it".
+const SCRIPT_MODES = [
+  { id: 'english', label: 'English', note: 'who doesn’t halak (move)' },
+  { id: 'hebrew',  label: 'Hebrew',  note: 'Asharay HaAyash…' },
+  { id: 'geez',    label: 'Ge’ez',   note: 'transliterated Ethiopic' },
+];
+const SCRIPT_DEFAULT = 'english';
+const SCRIPT_KEY = 'reader-script';
+
+// Gloss toggle for the two non-English scripts. Simpler than GLOSS_MODES
+// above — there's no "English only" here (that's just the English script) —
+// so it's the two ends of the same idea: bare transliteration, or
+// transliteration + gloss. Same ids or both scripts (the persisted choice
+// carries over between them); only the label/note text differs.
+const HEB_GLOSS_MODES = [
+  { id: 'translit', label: 'All Hebrew',   note: 'Asharay HaAyash' },
+  { id: 'glossed',  label: 'With glosses', note: 'Asharay (who/that)' },
+];
+const GEEZ_GLOSS_MODES = [
+  { id: 'translit', label: 'All Ge’ez',    note: 'Bagize Fatara' },
+  { id: 'glossed',  label: 'With glosses', note: 'Bagize (in-beginning)' },
+];
+const HEB_GLOSS_DEFAULT = 'glossed';
+const HEB_GLOSS_KEY = 'reader-heb-gloss-mode';
+
+// ── Verse-number click behavior ─────────────────────────────────────────────
+// "Multi": every tap adds to the set of lit verses (the original behavior — any
+// number can be lit at once, independent of each other).
+// "Single": tapping a verse replaces the whole set with just that one — tap v3,
+// then v4, and by the end only v4 is lit. Tapping the already-lit verse clears
+// it (same "clearing works the same" behavior in both modes).
+const MARK_MODES = [
+  { id: 'multi',  label: 'Multi',  note: 'each tap adds a highlight' },
+  { id: 'single', label: 'Single', note: 'only the last tap stays lit' },
+];
+const MARK_MODE_DEFAULT = 'multi';
+const MARK_MODE_KEY = 'reader-mark-mode';
+// Traditional Ancient Hebrew pictographic sense of each root letter — shown next to
+// the acrostic stanza heading (Psalm 119, 25, 34, 37, 111, 112, 145, Lamentations
+// 1-4, Proverbs 31) so the letter isn't just a label but carries its picture, e.g.
+// "𐤀 – Alap (strength)". Keyed by the paleo glyph headings.json already sends.
+const LETTER_MEANING = {
+  '𐤀': 'strength', '𐤁': 'house',   '𐤂': 'camel',   '𐤃': 'door',
+  '𐤄': 'behold',   '𐤅': 'nail',    '𐤆': 'weapon',  '𐤇': 'fence',
+  '𐤈': 'surround', '𐤉': 'hand',    '𐤊': 'palm',    '𐤋': 'goad',
+  '𐤌': 'water',    '𐤍': 'fish',    '𐤎': 'support', '𐤏': 'eye',
+  '𐤐': 'mouth',    '𐤑': 'harvest', '𐤒': 'horizon', '𐤓': 'head',
+  '𐤔': 'teeth',    '𐤕': 'sign',
+};
+// The baseline English occasionally carries a raw Hebrew maqaf (\u05BE, U+05BE) \u2014
+// the source text's word-joining hyphen \u2014 left over from how the baseline was
+// generated. Reading faces (Alegreya, Ysabeau, \u2026) have no glyph for it, so the
+// browser falls back to a system/historic face that draws it as a wildly
+// oversized dash (the "long line" that isn't a period or a maqaf at all
+// visually \u2014 just a missing-glyph fallback). Normalize every occurrence to an
+// ordinary period, glued straight onto the preceding word with no leading
+// space \u2014 the same "end sentences with punctuation, right at the end of the
+// last word" treatment as every other full stop in the text.
+const MAQAF_RE = /\s*\u05BE\s*/g;
+// A manually-typed/pasted verse can carry non-breaking spaces and other
+// look-alike Unicode whitespace (from a word processor, or the Studio's
+// rich-text editor inserting &nbsp; between words) instead of an ordinary
+// space. Browsers treat those as NOT a valid line-break point, so a stretch
+// of them reads as one unbreakable "word" and can run the whole rest of a
+// sentence off the edge of the page (see also the CSS `overflow-wrap` safety
+// net on .rd-body, which is the hard backstop \u2014 this fixes it at the text
+// level too, so the line wraps at an actual word boundary instead of an
+// arbitrary mid-word point).
+const ODD_SPACE_RE = /[\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000\uFEFF]/g;
+export const sanitizeText = (s) => (s || '').replace(MAQAF_RE, '.').replace(ODD_SPACE_RE, ' ');
+
+// A transliterated head word followed by its parenthetical gloss. Accents allowed;
+// nested parens deliberately excluded so an ordinary "(see note)" aside is left alone.
+// The head word is normally a Latin transliteration ("raashayath"), but "I included
+// paleo hebrew and attempted to gloss it ... I expect it to be gold" — a curated
+// translation can also embed the actual untranslatable Paleo-Hebrew letters directly
+// (e.g. a bare 𐤀 standing in for the Hebrew direct-object marker) with its own
+// "(gloss)" right after, same as any transliterated word — so the head-word class
+// also accepts U+10900–U+1091F. Needs the `u` flag for that code-point range; every
+// other escape in this pattern is a plain 4-hex \uXXXX, unaffected by `u` mode.
+const GLOSS_RE = /([A-Za-z\u00C0-\u024F\u{10900}-\u{1091F}][A-Za-z\u00C0-\u024F\u{10900}-\u{1091F}'\u2019-]*)([\u2018\u2019\u201C\u201D"']*)\s+\(([^()]*)\)/gu;
+const applyGlossMode = (t, mode) => (!t || mode === 'both') ? t
+  : t.replace(GLOSS_RE, (_m, heb, quote, gloss) => (mode === 'hebrew' ? heb + quote : (gloss.trim() || heb)));
+// Same "term (gloss)" pairs as applyGlossMode, but returns React nodes instead of a
+// string so the transliterated Hebrew/Aramaic root can be wrapped in its own span
+// (.rd-root) and stand out from the English gloss beside it. 'gloss' mode has no root
+// left on screen, so it stays a plain string — nothing to highlight.
+function renderVerseNodes(t, mode, keyPrefix = '') {
+  if (!t) return t;
+  if (mode === 'gloss') return applyGlossMode(t, mode);
+  const nodes = [];
+  let last = 0, key = 0, m;
+  GLOSS_RE.lastIndex = 0;
+  while ((m = GLOSS_RE.exec(t))) {
+    const [full, heb, quote, gloss] = m;
+    if (m.index > last) nodes.push(t.slice(last, m.index));
+    // A head word that's actually Paleo-Hebrew letters (see GLOSS_RE above) gets
+    // the same custom-SVG glyph treatment as everywhere else on the site — "the
+    // letters show fine but I expect it to be gold" was about color, but a bare
+    // Unicode fallback glyph here would be the exact system-font mismatch already
+    // fixed for the divine-title/no-gloss spots above, so route it the same way.
+    nodes.push(
+      readerHasPaleo(heb)
+        ? <span className="rd-root" dir="rtl" key={`${keyPrefix}${key++}`} dangerouslySetInnerHTML={{ __html: paleoToSVG(heb) }} />
+        : <span className="rd-root" key={`${keyPrefix}${key++}`}>{heb}</span>
+    );
+    if (quote) nodes.push(quote);
+    if (mode === 'both' && gloss.trim()) nodes.push(` (${gloss.trim()})`);
+    last = m.index + full.length;
+  }
+  nodes.push(t.slice(last));
+  return nodes;
+}
+
+// ── Plain in-verse quotation marks (ordinary dialogue, e.g. Yahu said,
+// "Let there be light.") — distinct from the embedded-scripture-quote system
+// below (renderScriptureQuote), which sets apart a whole QUOTED PASSAGE with
+// its own numbered lines. 2026-08-16: originally just made the mark
+// CHARACTERS bigger and colored; later, per direct feedback ("not a fan of
+// the quotes") reworked to grey out the whole quoted SPAN; later still
+// ("lets undo the grey scale and instead handle quotes with newlines and
+// indentation") reworked AGAIN — a quotation is now its own block, indented
+// further than its parent for each level of nesting (see the hand-drawn
+// sketch this was built from: "Said" -> an indented block, with a further-
+// indented nested-quote block inside it), instead of a color difference.
+// Double AND single curly quotes, plus straight ". 2026-08-18: originally
+// single quotes were left out entirely — "a generic single-quote scan would
+// light up on every contraction and possessive ('don't', 'Alaph's') instead
+// of actual speech" — but the user asked directly for real quote-within-a-
+// quote nesting (Matthew 5:33/38's "'You shall not make false vows...'"
+// inside the outer discourse quote, each 'Yes'/'No' in v37) to render with
+// its OWN deeper indent, the same block treatment the outer quote already
+// gets. So single curly ‘ ’ are tracked too now, as their own nesting style
+// ('curly1', vs. the outer double quote's 'curly2') — the contraction/
+// possessive collision is handled with a narrow heuristic instead of being
+// avoided altogether: isApostrophe() below skips a ’ that's immediately
+// followed by a letter ("can’t", "y’all", mid-word every time), since a
+// genuine CLOSING quote mark is essentially never followed immediately by
+// another letter with no space — prose doesn't run "...vows,’she said" with
+// no gap. A ’ that survives the check but still doesn't match an open
+// curly1 level (a plural possessive like "elders’ teaching", or just
+// mismatched source data) falls through as inert punctuation rather than
+// forcing a wrong close — see the "stray closer" branch below.
+//
+// True nesting needs a real stack, not just "pair by position": curly
+// U+201C/U+201D and U+2018/U+2019 are directionally unambiguous (open always
+// pushes, close always pops — modulo the apostrophe check above), but a
+// straight " is the SAME glyph both ways, so a straight mark toggles
+// whatever straight-quote level is currently on top of the stack — open if
+// none is, close if one is. Depth (which indent step it gets, see
+// .rd-quote-d1..d4 in Reader.css) is just the stack's size when a quote node
+// is opened, so a single-quote nested inside a double-quote pair reports the
+// next indent step deeper, and text AFTER that nested quote closes drops
+// back to the outer quote's own indent — it's still that node's child, not
+// back out at the chapter's top level. A level still open when the
+// chapter's text runs out never got a matching close in the data — no
+// longer flagged as an error (see renderQuoteTree below): a real multi-
+// chapter discourse (e.g. Matthew 5-7's Sermon on the Mount) legitimately
+// never closes within any ONE chapter, since quote state resets at chapter
+// boundaries — that's expected, not a data bug, so it no longer gets the red
+// "unclosed" treatment it used to.
+//
+// 2026-08-17, Luke 21:10-28: a single long discourse re-opens “ at the start
+// of several verses (10, 19, 20) with NO closing mark in between, then
+// finally closes once at v28 — the classic English typesetting convention
+// for a quotation spanning several paragraphs, where EVERY paragraph gets
+// its own opening mark but only the LAST one closes. Treated naively as
+// nesting, that reads as 3 levels deep and never-closing (the earlier levels
+// have nothing left to close them) — the user flagged this directly:
+// "there doesnt seem to be any nested quotes here." A “ that opens while the
+// CURRENT innermost level is ALREADY curly2 is exactly this pattern, not a
+// genuine quote-within-a-quote — absorbed as plain text, visible but not
+// starting a new block, leaving the ORIGINAL opener as the one that
+// eventually closes. (2026-08-18: the user has since had these redundant
+// reopens stripped from the corpus directly — see the Luke 21 / Matthew 5
+// cleanup — so this absorption is now a safety net for the rest of the
+// corpus rather than the primary fix, but stays in place since new redundant
+// reopens are still legal English typesetting, just not what this reader
+// wants to show.) The same absorption applies to a redundant ‘ reopen over
+// an already-open curly1 level, for consistency, though it's a rarer pattern
+// since single-quoted spans are usually short and don't cross verses.
+// Every node (text or quote) is stamped with its [start, end) offset in
+// `raw` — not needed for a single isolated verse, but essential once a quote
+// can SPAN MULTIPLE VERSES (see sliceQuoteTree below): the caller runs this
+// ONCE over a whole chapter's concatenated text, then cuts the result back
+// apart at each verse's own boundary.
+const PLAIN_QUOTE_RE = /["'“”‘’<>]/g;
+const OPEN_STYLE  = { '“': 'curly2', '‘': 'curly1' };
+const CLOSE_STYLE = { '”': 'curly2', '’': 'curly1' };
+// See the big comment above: a ’ immediately followed by a letter is read as
+// mid-word (can’t, y’all, elders’teaching-with-no-space — vanishingly rare)
+// rather than a closing single-quote mark. Same test applies to a plain
+// straight ' below.
+function isApostrophe(raw, at) {
+  const next = raw[at + 1];
+  return !!next && /[A-Za-z]/.test(next);
+}
+// `boundaries` (added 2026-08-26, cross-chapter <...> quotes): sorted offsets
+// where one chapter's contribution ends and the next begins, when `raw` is a
+// BOOK-WIDE concatenation rather than a single chapter (see Reader.jsx's
+// bookQuoteScan below). At each boundary crossed, every currently-open
+// REAL-quote-character span (any style but 'bracket') is force-closed right
+// there — same "unclosed, no error" treatment a chapter's own end already
+// gives an unresolved quote (see the big comment above), just applied mid-
+// string instead of only at the very end — because real quote chars are
+// deliberately chapter-scoped (a discourse like the Sermon on the Mount, or
+// a curly quote that simply never closes in the source, should NOT merge
+// Matthew 5 into Matthew 6). An explicit '<' bracket quote is the opposite
+// by design: it exists specifically so fieldy can mark a span that DOES
+// cross a chapter boundary, so it's left untouched here and keeps
+// accumulating children from the next chapter's text. Edge case, deliberately
+// not specially handled: a bracket quote nested INSIDE a still-open real
+// quote at the exact boundary gets swept closed along with its parent —
+// closing "every open entry from the first non-bracket one on, inward out"
+// rather than trying to selectively rescue a bracket buried under a real
+// quote that itself has to end here. In practice the outer wrapper for
+// anything meant to cross a chapter is always the bracket (that's the whole
+// point of it), so this only bites a contrived reverse-nesting no real
+// translation would produce. With boundaries=[] (every other caller —
+// VersePage.jsx's single verse, the gloss-mode branch below) this is a
+// total no-op and behavior is unchanged from before boundaries existed.
+// parseQuoteMarks/sliceQuoteTree/dissolveOverlongQuotes/renderQuoteTree are
+// exported (2026-08-26) so Translate.jsx can build its own live quote-nesting
+// preview while editing — same primitives Reader.jsx itself uses below, so
+// the preview matches the real page exactly rather than approximating it.
+// `verseBounds` (added 2026-09-12, WEB paragraph re-openers — Leviticus 23):
+// optional { starts: Set<offset>, ends: Set<offset> } marking where each
+// verse's contribution to `raw` begins and ends (bookQuoteScan supplies it;
+// every other caller passes nothing and gets the old behavior). The WEB
+// baseline follows print convention: a speech spanning several paragraphs
+// RE-OPENS its quote marks at the start of every paragraph — `"‘shash (six)
+// …`, `"‘These are …` — and only the last paragraph closes (`.'"`). In this
+// app each paragraph is a verse, so those re-openers land at verse starts.
+// Read naively, a `"` arriving while the innermost open level is curly1 is
+// not a close (only a straight top closes it) and so OPENS a new level, and
+// the `‘` after it opens another — every re-opener verse nested two levels
+// deeper, the >600-char straight spans then dissolved into literal `"`
+// characters (fieldy's Lev 23 screenshot: a lone `"` on its own line, the
+// indent creeping deeper verse by verse). The "redundant reopen" absorption
+// above only ever caught a re-opener whose style matched the TOP of the
+// stack, which is the single-level case (Luke 21). Rule here: an opener glyph
+// sitting at the very start of a verse (or immediately after other
+// re-openers absorbed at that same verse start) whose style is ALREADY open
+// somewhere on the stack, searched outermost-in from just past the level the
+// previous re-opener in this run matched — so a `"‘` run mirrors a
+// [straight, curly1] stack level for level — is a paragraph re-opener: it is
+// dropped from the output entirely (the original opener already rendered
+// where it belongs) and the matched node is tagged `reopens`. A `"` at a
+// verse start with a straight level open is read the same way even though a
+// `"` would normally toggle-close that level: a quotation never closes as the
+// FIRST character of a verse. Straight nodes that carried re-openers, or that
+// closed as the last character of a verse, are additionally tagged `trusted`
+// so dissolveOverlongQuotes leaves them alone — the WEB has explicitly
+// vouched for the pairing, which is exactly the certainty the 600-char cap
+// exists to demand.
+export function parseQuoteMarks(raw, boundaries, verseBounds) {
+  if (!raw) return [{ type: 'text', text: raw, start: 0, end: 0 }];
+  const vStarts = verseBounds && verseBounds.starts && verseBounds.starts.size ? verseBounds.starts : null;
+  const vEnds   = verseBounds && verseBounds.ends   && verseBounds.ends.size   ? verseBounds.ends   : null;
+  let reopenPos = -1, reopenIdx = 0; // where the next re-opener in the current verse-start run may sit, and the stack level to search from
+  PLAIN_QUOTE_RE.lastIndex = 0;
+  const marks = [];
+  let m;
+  while ((m = PLAIN_QUOTE_RE.exec(raw))) {
+    if ((m[0] === '’' || m[0] === "'") && isApostrophe(raw, m.index)) continue; // contraction/possessive, not a close
+    marks.push({ at: m.index, ch: m[0] });
+  }
+  const bounds = boundaries && boundaries.length ? boundaries : null;
+  if (!marks.length && !bounds) return [{ type: 'text', text: raw, start: 0, end: raw.length }];
+
+  const root = { children: [] };
+  const containerStack = [root];   // top = node whose .children we're appending to
+  const openStack = [];            // parallel stack of { style: 'curly2'|'curly1'|'straight'|'bracket', node }
+  let last = 0;
+  const flush = (end) => {
+    if (end > last) containerStack[containerStack.length - 1].children.push({ type: 'text', text: raw.slice(last, end), start: last, end });
+    last = end;
+  };
+  // Force-closes every open non-bracket entry at `pos`, innermost first,
+  // stopping as soon as (and including) the first one found from the top —
+  // see the boundaries doc comment above for what this does with a bracket
+  // buried underneath one.
+  let bi = 0;
+  const closeNonBracketsAt = (pos) => {
+    let cut = -1;
+    for (let i = 0; i < openStack.length; i++) {
+      if (openStack[i].style !== 'bracket') { cut = i; break; }
+    }
+    if (cut === -1) return; // every currently-open entry is a bracket — none reset here
+    flush(pos);
+    for (let i = openStack.length - 1; i >= cut; i--) {
+      const entry = openStack.pop();
+      entry.node.unclosed = true;
+      entry.node.end = pos;
+      containerStack.pop();
+    }
+    last = pos;
+  };
+  marks.forEach(({ at, ch }) => {
+    if (bounds) { while (bi < bounds.length && bounds[bi] <= at) { closeNonBracketsAt(bounds[bi]); bi++; } }
+    const top = openStack[openStack.length - 1];
+    // WEB paragraph re-openers — see the verseBounds doc comment above.
+    if (vStarts) {
+      // A paragraph start is a verse start, or — Lev 19:11, several WEB
+      // paragraphs inside ONE verse: `…ganab (steal). "‘You shall not…` — a
+      // sentence end (. ? !) followed by whitespace. Not a comma or colon:
+      // those introduce a genuinely NEW quotation (`said, "…`), never a
+      // re-opened one.
+      // …and the sentence end may itself sit inside a closed inner quote
+      // (Matthew 13:28: `…has done this.’ “The ibad (servants)…` — the outer “
+      // re-opens a new paragraph right after the inner ’ closed).
+      if (vStarts.has(at) || /[.?!]["'\u2019\u201D]?\s+$/.test(raw.slice(Math.max(0, at - 6), at))) {
+        reopenPos = at; reopenIdx = 0;
+        // A re-opener run mirrors the open levels (`“ ‘Six days…` under a
+        // [“, ‘] stack). A LONE “ at a verse start with two or more levels
+        // open, right after a verse that ended in a comma or colon, is not a
+        // re-opening but a deeper nesting: 2 Kings 22:15-16 `‘Tell the man who
+        // sent you to me, | “Yahweh says, ‘Behold…` — the WEB nests four deep
+        // there, and reading that “ as a re-opener lost both of verse 16's
+        // openers and left verse 20's `’ ” ’ ”` two closers short (literal
+        // ’” on the page). The comma/colon test keeps Ezekiel 17:19's “ a
+        // re-opener: there the WEB's inner ‘ (17:16) simply never closes and
+        // the paragraph “ implicitly ends it. Measured 2026-09-12 over the
+        // whole corpus: 5 fewer literal glyphs, 2 more unclosed spans, both in
+        // Words of Gad 7:15 whose source has two ‘ that never close.
+        if (openStack.length >= 2 && ch === '\u201C' && !/^["“‘']\s*["“‘']/.test(raw.slice(at, at + 4))
+            && /[,:]\s*$/.test(raw.slice(Math.max(0, at - 4), at))) reopenPos = -1;
+      }
+      const reStyle = ch === '"' ? 'straight' : OPEN_STYLE[ch];
+      // (the WEB itself spaces a re-opener run — `“ ‘Six days…` — so whitespace
+      // between the glyphs of one run is allowed)
+      if (reopenPos >= 0 && at >= reopenPos && reStyle && openStack.length && /^\s*$/.test(raw.slice(reopenPos, at))) {
+        let idx = -1;
+        for (let i = reopenIdx; i < openStack.length; i++) { if (openStack[i].style === reStyle) { idx = i; break; } }
+        if (idx !== -1) {
+          flush(at);
+          last = at + ch.length; // the glyph itself is dropped — the real opener already rendered
+          reopenPos = at + ch.length;
+          reopenIdx = idx + 1;
+          const node = openStack[idx].node;
+          node.reopens = (node.reopens || 0) + 1;
+          if (openStack[idx].style === 'straight') node.trusted = true;
+          return;
+        }
+      }
+    }
+    // Explicit <...> quote markers (2026-08-25, fieldy: a manual, unambiguous
+    // way to mark a quotation the character-based scan below doesn't catch —
+    // e.g. Exodus 3:7-10, a multi-verse discourse with no quote glyphs in the
+    // source text at all, so PLAIN_QUOTE_RE had nothing to find; or a long
+    // STRAIGHT-quote span that dissolveOverlongQuotes strips past
+    // MAX_QUOTE_CHARS, see below). '<' always opens, '>' only ever closes an
+    // open '<' — total directional certainty, unlike a straight " or a
+    // possessive '/'’, so no heuristics needed and no length cap applies
+    // (dissolveOverlongQuotes only targets style 'straight'). Pushed onto the
+    // SAME depth stack as the real-quote-character scan, so '<<...>>' nests
+    // exactly like a real quote-within-a-quote — and can even nest inside or
+    // around a real curly/straight quote — for free. Rendered as real
+    // typographic marks (renderQuoteTree below), alternating double/single by
+    // depth; the angle brackets themselves never reach the page.
+    if (ch === '<' || ch === '>') {
+      if (ch === '<') {
+        flush(at);
+        const node = { type: 'quote', depth: openStack.length + 1, style: 'bracket', markOpen: ch, markClose: '', children: [], start: at, end: raw.length };
+        containerStack[containerStack.length - 1].children.push(node);
+        openStack.push({ style: 'bracket', node });
+        containerStack.push(node);
+        last = at + ch.length;
+      } else if (top && top.style === 'bracket') {
+        flush(at);
+        const entry = openStack.pop();
+        entry.node.markClose = ch;
+        entry.node.end = at + ch.length;
+        containerStack.pop();
+        last = at + ch.length;
+      }
+      // A stray '>' with no open '<' falls through as inert text, same as an
+      // unmatched real closer below — don't advance `last`.
+      return;
+    }
+    // A bare straight ' (added 2026-08-23) is NEVER treated as an opener — it's
+    // far too common as an ordinary apostrophe/possessive for that to be safe,
+    // and unlike " a lone ' has no dedicated role of its own. The ONLY thing
+    // it's allowed to do is CLOSE an already-open curly1 ‘...’ span: the
+    // web-strongs.jsonl source that builds the OT baseline regularly opens a
+    // nested quote with a real curly ‘ but closes it with a plain ' instead of
+    // ’ — an artifact of the interlinear scrape (english-web-raw.jsonl, the
+    // clean WEB source this app also carries, has the correctly-paired curly
+    // close in the same spot). Left unhandled, that mismatched pair never
+    // closes, so the parser stays "inside the quote" for the rest of the
+    // chapter — the ' and every verse after it render as one runaway nested
+    // quote block (Genesis 2:23 and 3:1, fieldy screenshot 2026-08-23, was the
+    // report). Every other role — opener, or closer of anything but an open
+    // curly1 — falls through untouched, exactly as before this case existed.
+    if (ch === "'") {
+      if (top && top.style === 'curly1') {
+        flush(at);
+        const entry = openStack.pop();
+        entry.node.markClose = ch;
+        entry.node.end = at + ch.length;
+        containerStack.pop();
+        last = at + ch.length;
+      }
+      return;
+    }
+    const closes = ch === '"' ? (top && top.style === 'straight')
+                 : CLOSE_STYLE[ch] ? (top && top.style === CLOSE_STYLE[ch])
+                 : false; // “ and ‘ are always openers, never a close
+    if (closes) {
+      flush(at);
+      const entry = openStack.pop();
+      entry.node.markClose = ch;
+      entry.node.end = at + ch.length;
+      // A straight close sitting as the LAST character of a verse, or
+      // directly after sentence punctuation (`…die." He said…`), is a
+      // deliberate, source-vouched pairing (see the verseBounds comment) —
+      // the "two unrelated quotes merged" failure mode reads an OPENER as
+      // the close, and an opener is never the last thing in a verse and is
+      // always preceded by a space (`said, "…`), never by punctuation.
+      if (entry.style === 'straight' && ((vEnds && vEnds.has(at + ch.length)) || /[.?!,;:\u2019']/.test(raw[at - 1] || ''))) entry.node.trusted = true;
+      containerStack.pop();
+      last = at + ch.length;
+      return;
+    }
+    if (CLOSE_STYLE[ch]) {
+      // A closer glyph (” or ’) with no matching open of that style — leave
+      // it as inert plain text rather than force a wrong pairing (see the
+      // possessive-apostrophe note above). Don't advance `last`, so it just
+      // rides along in the next flush().
+      return;
+    }
+    const style = ch === '"' ? 'straight' : OPEN_STYLE[ch];
+    if (style !== 'straight' && top && top.style === style) {
+      // Redundant reopen (see comment above). Since 2026-09-12 the glyph is
+      // DROPPED rather than left as visible text, the same treatment the
+      // paragraph re-openers get higher up: a lone “ with no block of its own
+      // (Revelation 2:1 `kathab (write): “He who…`, the dictated letter) read
+      // as a typo. (Tried treating one after a comma/colon as a genuine
+      // nested opener instead — but the WEB closes those letters with a
+      // single ” so the outer level never ends; corpus-wide that cost 44 more
+      // unclosed spans and nesting to depth 13.)
+      flush(at);
+      last = at + ch.length;
+      return;
+    }
+    flush(at);
+    const node = { type: 'quote', depth: openStack.length + 1, style, markOpen: ch, markClose: '', children: [], start: at, end: raw.length };
+    containerStack[containerStack.length - 1].children.push(node);
+    openStack.push({ style, node });
+    containerStack.push(node);
+    last = at + ch.length;
+  });
+  if (bounds) { while (bi < bounds.length) { closeNonBracketsAt(bounds[bi]); bi++; } }
+  flush(raw.length);
+  openStack.forEach(({ node }) => { node.unclosed = true; node.end = raw.length; });
+  return root.children;
+}
+
+// Cuts a parseQuoteMarks() tree down to just the portion covering
+// [start, end) of the original raw string it was built from — how a
+// chapter-wide quote scan gets split back into one render per verse. A quote
+// node that opened in an EARLIER verse (its own markOpen sits before `start`)
+// renders here with no leading mark — the real one already appeared where it
+// belongs; likewise a still-unresolved quote continuing into a LATER verse
+// renders with no trailing mark here. Depth/unclosed status (resolved with
+// full chapter context) always carries over, so the indent step — and the
+// unclosed warning border — stays consistent across every verse a quote
+// touches, even though each verse gets its own separate <span>.
+export function sliceQuoteTree(nodes, start, end, markedOf) {
+  const out = [];
+  for (const n of nodes) {
+    if (n.end <= start || n.start >= end) continue; // no overlap with this slice
+    if (n.type === 'text') {
+      const s = Math.max(n.start, start), e = Math.min(n.end, end);
+      if (e > s) out.push({ type: 'text', text: n.text.slice(s - n.start, e - n.start) });
+      continue;
+    }
+    const children = sliceQuoteTree(n.children, start, end, markedOf);
+    const keepOpen  = n.start >= start && n.start < end;
+    const keepClose = !!n.markClose && n.end > start && n.end <= end;
+    out.push({
+      type: 'quote',
+      depth: n.depth,
+      style: n.style,
+      unclosed: n.unclosed,
+      // A verse-level highlight (tap-to-mark, or a `?verse=` deep link) is
+      // scoped to the ONE verse it landed on — `markedOf` (Reader.jsx's
+      // render loop, see the 2026-09-21 comment near quoteMarkedOf) just
+      // answers "is THIS verse currently marked", so a quote spanning many
+      // verses paints only the slice(s) belonging to the verse actually
+      // marked, not every verse the quote happens to touch. (2026-08-26 this
+      // used to look up "is ANY verse the whole quote touches marked" so a
+      // quote split across two verses like Genesis 1:14-15 wouldn't show a
+      // seam — reverted 2026-09-21, fieldy: that propagation lit up nearly
+      // all of Leviticus 1 from one tap, since its quote never re-closes.)
+      marked: markedOf ? !!markedOf(n) : false,
+      markOpen: keepOpen ? n.markOpen : '',
+      markClose: keepClose ? n.markClose : '',
+      children,
+    });
+  }
+  return out;
+}
+
+// A straight " is the SAME glyph both directions, so once pairing is allowed
+// to run across a whole chapter, one genuinely-unclosed straight mark makes
+// the NEXT stray straight mark anywhere later — verses away, on a wholly
+// unrelated quotation — misread as ITS close, silently merging two unrelated
+// quotes into one giant span. Curly “ ” marks don't have this problem: “ only
+// ever opens and ” only ever closes the innermost open curly level, so a
+// curly quote that runs long, or even genuinely never closes (the source
+// text just doesn't have a closing mark), still pairs correctly however far
+// it runs — nothing downstream can be mismatched by it. So only STRAIGHT
+// quote spans get capped/dissolved here; curly ones are trusted at any
+// length. (2026-08-16, fieldy: Luke 21:8-36 is one continuous curly-quoted
+// Olivet Discourse, ~4100 characters and never explicitly closed in this
+// translation's own text — a real span, not mis-paired data. An earlier
+// version of this cap applied to curly too and silently dissolved that whole
+// discourse back to plain narrative text, which is what the user was
+// flagging as "quotes not properly considered.")
+//
+// Cap how far a STRAIGHT quote node — closed or not — is allowed to run
+// before we stop trusting its pairing. Past the cap: an unclosed node keeps
+// ONLY its dangling open mark flagged (still findable) while everything
+// after it renders as ordinary text instead of dragging the rest of the
+// chapter down with it; a CLOSED-but-overlong node (the "two unrelated
+// quotes merged" case) just unwraps entirely — both of its marks render as
+// plain characters, no quote styling at all, since the pairing itself is the
+// thing not to be trusted.
+const MAX_QUOTE_CHARS = 600;
+export function dissolveOverlongQuotes(nodes) {
+  const out = [];
+  for (const n of nodes) {
+    if (n.type === 'text') { out.push(n); continue; }
+    const children = dissolveOverlongQuotes(n.children);
+    if (n.style === 'straight' && !n.trusted && (n.end - n.start) > MAX_QUOTE_CHARS) {
+      if (n.unclosed && n.markOpen) {
+        out.push({ type: 'quote', depth: 1, style: n.style, unclosed: true, markOpen: n.markOpen, markClose: '', children: [],
+                   start: n.start, end: n.start + n.markOpen.length });
+      } else if (n.markOpen) {
+        out.push({ type: 'text', text: n.markOpen, start: n.start, end: n.start + n.markOpen.length });
+      }
+      out.push(...children);
+      if (n.markClose) out.push({ type: 'text', text: n.markClose, start: n.end - n.markClose.length, end: n.end });
+      continue;
+    }
+    out.push({ ...n, children });
+  }
+  return out;
+}
+
+// Turns the tree above into React nodes — text leaves still get the usual
+// GLOSS_RE treatment (renderVerseNodes), quote nodes become a block-level
+// <span> (display:block in CSS — see .rd-quote-block in Reader.css) that
+// breaks onto its own line and indents further the deeper it's nested (depth
+// picks .rd-quote-d1..d4, each a further left-margin step), wrapping its own
+// open/close marks and its children (which may themselves be nested quote
+// blocks, indented one step further still). unclosed status is layered on
+// TOP of the depth class (not instead of it) so a still-open quote keeps its
+// normal indentation and just gains a warning-colored left border alongside
+// it, rather than losing its place in the nesting.
+//
+// A quote spanning several verses (sliceQuoteTree) renders as one SEPARATE
+// block <span> per verse it touches — each verse still needs its own DOM
+// node — but each of those still belongs to the SAME quotation, and the
+// user flagged the visible seam between them ("if its continued in the
+// quote it shouldnt break the block"). A slice with no markOpen didn't
+// start the quote here (it's a continuation from an earlier verse) — drop
+// its top margin. A slice with no markClose doesn't end the quote here (it
+// continues into a later verse, or is genuinely unclosed) — drop its bottom
+// margin. Two touching continuation slices then abut with zero gap between
+// them, their borders lining up into what reads as one unbroken block.
+// Display glyphs for a bracket-marked node (angle brackets never reach the
+// page) — alternates double/single by nesting depth, the standard nested-
+// quote typographic convention: depth 1,3,5.. -> “ ”, depth 2,4,6.. -> ‘ ’.
+const BRACKET_GLYPHS = [['\u201C', '\u201D'], ['\u2018', '\u2019']];
+function bracketGlyph(depth, close) {
+  return BRACKET_GLYPHS[(depth - 1) % 2][close ? 1 : 0];
+}
+export function renderQuoteTree(nodes, mode, keyPrefix) {
+  const out = [];
+  nodes.forEach((n, i) => {
+    if (n.type === 'text') {
+      const rendered = renderVerseNodes(n.text, mode, `${keyPrefix}t${i}-`);
+      if (Array.isArray(rendered)) out.push(...rendered); else out.push(rendered);
+      return;
+    }
+    const inner = [];
+    const openGlyph  = n.markOpen  ? (n.style === 'bracket' ? bracketGlyph(n.depth, false) : n.markOpen)  : '';
+    const closeGlyph = n.markClose ? (n.style === 'bracket' ? bracketGlyph(n.depth, true)  : n.markClose) : '';
+    if (openGlyph) inner.push(openGlyph);
+    inner.push(...renderQuoteTree(n.children, mode, `${keyPrefix}q${i}-`));
+    if (closeGlyph) inner.push(closeGlyph);
+    // n.unclosed no longer gets its own class/red styling here (2026-08-18,
+    // direct feedback: "its fine to have it unclosed but there is no error
+    // so it shouldnt highlight red") — a quote can legitimately still be
+    // open at the end of a chapter (a discourse that continues into the
+    // next chapter, where quote-tracking starts over) with nothing actually
+    // wrong, and the red warning border/tooltip was flagging that as if it
+    // were a data bug. The flag is still computed (kept on the node, unused
+    // here) in case a future, more targeted signal wants it — e.g. only for
+    // a straight-quote span, where a genuine stray mark is more likely.
+    //
+    // 2026-08-18: tried making the outer (depth 1) quote inline so a
+    // whole-chapter discourse (Matthew 5's Sermon on the Mount) would read
+    // as flowing prose instead of one verse per line. Reverted per direct
+    // feedback: "verses starting on its own line is fine I think it makes
+    // things more readable." Every quote depth stays block, own line, per
+    // the earlier standing behavior. The REAL bug the user was flagging
+    // ("the bar should be solid through all of matthew 5 but it broke
+    // between 33/34") is the margin gap between two separate block <span>s
+    // that are both part of the same still-open quote — fixed below via
+    // rd-quote-cont-start/-end, which drop the touching margin so
+    // consecutive continuation slices abut with zero gap and their left
+    // borders line up into one unbroken line (see Reader.css).
+    const cls = ['rd-quote', 'rd-quote-block', `rd-quote-d${Math.min(n.depth, 4)}`,
+                 n.markOpen ? '' : 'rd-quote-cont-start',
+                 n.markClose ? '' : 'rd-quote-cont-end',
+                 n.marked ? 'rd-quote-marked' : '']
+      .filter(Boolean).join(' ');
+    out.push(
+      <span className={cls} key={`${keyPrefix}q${i}`}>
+        {inner}
+      </span>
+    );
+  });
+  return out;
+}
+
+// Combines the parser/renderer above with the existing GLOSS_RE handling in
+// renderVerseNodes — quote marks are found in the RAW string first (so
+// they're never accidentally matched inside a "root (gloss)" pair), then
+// each plain-text leaf still gets full gloss-mode treatment exactly as
+// before.
+// Exported so VersePage.jsx's single-verse quote paragraph can reuse the
+// SAME "root (gloss)" + quote-nesting rendering the chapter Reader uses —
+// "the novel reader shows non-glossed hebrew just fine but the others show
+// the empty parens" — VersePage used to just dump verseData.text as plain
+// text, so a word with an empty curated gloss ("Alahayam ()") rendered its
+// literal dangling parens instead of the clean "Alahayam" this same function
+// already produces for Reader.jsx (see renderVerseNodes below: an empty
+// gloss.trim() is simply never appended), and the root word never got its
+// .rd-root gold styling either. VersePage.jsx imports Reader.css already, so
+// .rd-root/.rd-quote-* resolve identically once this is wired in.
+export function renderVerseNodesWithQuotes(t, mode) {
+  if (!t) return t;
+  if (mode === 'gloss') {
+    // gloss mode collapses to a plain string (applyGlossMode) — still worth
+    // marking quotes in it, just with nothing left for GLOSS_RE to do.
+    const rendered = renderQuoteTree(parseQuoteMarks(applyGlossMode(t, mode)), mode, 'g');
+    return (rendered.length === 1 && typeof rendered[0] === 'string') ? rendered[0] : rendered;
+  }
+  return renderQuoteTree(parseQuoteMarks(t), mode, 'q');
+}
+// ── Embedded scripture quotations (Pistis Sophia and similar apocryphal/
+// Gnostic works) ─────────────────────────────────────────────────────────
+// These texts frequently quote an Old Testament passage mid-paragraph and
+// keep the QUOTED passage's OWN verse numbers rather than this app's, e.g.
+// Pistis Sophia II 1 quoting Psalm 85:10-11:
+//   ..."'10. Grace and truth met together...' "'11. Truth hath sprouted...'"
+// ingest-gnostic-priority.py already merges these into one app paragraph
+// instead of fabricating extra app verse numbers for each quoted line (no
+// invented numbering) — but left as plain prose, the quotation's own numbers
+// read as clutter in the middle of the narrative. Detect the run and render
+// it as its own indented block, with each embedded number as its own small
+// badge (echoing .rd-vnum's treatment, dimmer so it never reads as one of
+// THIS book's own verse numbers).
+const QUOTE_MARK_RE = /(["'‘’“”]{1,2})(\d{1,3})\.\s+/g;
+const QUOTE_CLOSE_RE = /\.\s*["'‘’“”]{1,2}(?=\s|$)/g;
+function splitScriptureQuote(raw) {
+  if (!raw || typeof raw !== 'string') return null;
+  QUOTE_MARK_RE.lastIndex = 0;
+  const marks = [];
+  let m;
+  while ((m = QUOTE_MARK_RE.exec(raw))) marks.push(m);
+  if (!marks.length) return null;
+  const first = marks[0];
+  const last = marks[marks.length - 1];
+  const lastMarkEnd = last.index + last[0].length;
+  QUOTE_CLOSE_RE.lastIndex = lastMarkEnd;
+  const close = QUOTE_CLOSE_RE.exec(raw);
+  const quoteEnd = close ? close.index + close[0].length : raw.length;
+  const lines = marks.map((mm, i) => {
+    const start = mm.index + mm[0].length;
+    const end = (i + 1 < marks.length) ? marks[i + 1].index : quoteEnd;
+    return { num: mm[2], text: raw.slice(start, end).trim() };
+  }).filter(l => l.text);
+  if (!lines.length) return null;
+  // The last line's own text runs up through the quotation's closing marks
+  // (".'\"" etc, matched by QUOTE_CLOSE_RE above) — strip the trailing quote
+  // character(s) so the visible sentence ends cleanly at its period; the
+  // blockquote styling itself already signals "this is a quotation," so a
+  // literal closing quote mark baked into the text is redundant clutter.
+  const lastLine = lines[lines.length - 1];
+  lastLine.text = lastLine.text.replace(/["'‘’“”]{1,2}$/, '').trim();
+  return { before: raw.slice(0, first.index), lines, after: raw.slice(quoteEnd) };
+}
+
+// Renders a detected embedded quotation as its own block; `mode` is the
+// same glossMode used for the surrounding prose so gloss display stays
+// consistent between the narrative and the quoted passage. `citation`
+// (optional, from server/public/scripture-citations.json — see the fetch in
+// Reader()) points it back at the canonical passage it quotes: the whole
+// block becomes a link, and hovering shows the reference. The link carries
+// &verseEnd= alongside the usual &verse= so the destination page can
+// highlight the FULL cited range (Psalm 85:10 AND :11), not just the first
+// verse — see the verse-range highlight effect in Reader() for the landing
+// side of this.
+// The passage an embedded quotation most likely comes from, read off the
+// verse's precepts: the strongest range of kind quote (a confirmed one
+// first), never a rejected one. Returns the same shape scripture-citations.json
+// entries have, so renderScriptureQuote treats both alike.
+function preceptCitation(items) {
+  if (!items || !items.length) return null;
+  const live = items.filter(it => it.status !== 'rejected' && (it.kind === 'quote' || it.kind === 'manual' || it.kind === 'xref'));
+  if (!live.length) return null;
+  const ranges = groupPrecepts(live).flatMap(g => g.ranges.map(r => ({ ...r, name: g.name })));
+  const rank = r => (r.status === 'confirmed' ? 0 : 1);
+  ranges.sort((a, b) => rank(a) - rank(b) || b.score - a.score || (b.verseEnd - b.verse) - (a.verseEnd - a.verse));
+  const best = ranges[0];
+  return { book: best.book, chapter: best.chapter, verseStart: best.verse, verseEnd: best.verseEnd !== best.verse ? best.verseEnd : null,
+           label: refLabel(best.name, best.chapter, best.verse, best.verseEnd) };
+}
+function renderScriptureQuote(q, mode, key, citation, idToSlug) {
+  const body = (
+    <>
+      {q.lines.map((l, i) => (
+        <p className="rd-squote-line" key={i}>
+          <sup className="rd-squote-num">{l.num}</sup>
+          {renderVerseNodes(l.text, mode)}
+        </p>
+      ))}
+      {citation && <span className="rd-squote-ref">{citation.label}</span>}
+    </>
+  );
+  if (!citation) {
+    return <blockquote className="rd-squote" key={key}>{body}</blockquote>;
+  }
+  const to = `/?book=${bookToParam(citation.book, idToSlug)}&chapter=${citation.chapter}` +
+             `&verse=${citation.verseStart}${citation.verseEnd ? `&verseEnd=${citation.verseEnd}` : ''}`;
+  return (
+    <Link to={to} className="rd-squote rd-squote-link" key={key} title={`Open ${citation.label}`}>
+      {body}
+    </Link>
+  );
+}
+
+const idOf = m => m.id ?? m.book_id ?? m.canon_id;
+
+// "All Hebrew" — flowing prose, no gloss. Reuses computeWordParts (the exact
+// per-component breakdown Parallel/WordBlock use) so every morpheme's color
+// matches the rest of the app; a word's components are joined with no space
+// (they spell one word — "Ha" + "Ayash" -> "HaAyash") and every word gets the
+// SAME weight (.hw-word), so e.g. "Ba"+"Raashayath" reads as one uniform word
+// rather than a bold root stitched to a lighter-weight prefix.
+function renderHebrewProseNodes(words) {
+  const nodes = [];
+  let key = 0;
+  (words || []).forEach((word) => {
+    const parts = computeWordParts(word);
+    parts.transliterations.forEach((t) => {
+      nodes.push(
+        <span key={key++} className={`hw hw-word ${t.css}`} data-alt={t.altAttr || undefined}>{t.text}</span>
+      );
+    });
+    nodes.push(' ');
+  });
+  return nodes;
+}
+
+// "With glosses" — one cell per word, laid out the way the Hebrew Viewer's
+// WordBlock does: the transliteration on top, its gloss directly BELOW it in
+// visible parens, so which gloss belongs to which word is never ambiguous.
+// Unlike WordBlock/Parallel this still reads left-to-right, word 1 → word N
+// (no RTL flip) — cells are inline-flex, so the browser wraps them exactly
+// like words in running text; it just reads as a novel with a caption under
+// each word instead of the caption folded into the sentence.
+//
+// A word whose LAST component is a maqaf (isMaqaf — server.js flushes a fresh
+// word block right after one, so it's always the final component when present)
+// is typographically glued to the word that follows it ("Kal-Iwalah" is one
+// prosodic unit). Left alone, two separate wrapping cells can end up split
+// across a line break — the dash stranded at the end of one line, its partner
+// starting the next. Those two cells are grouped into one `.hwc-maqaf-pair`
+// (display:inline-flex, so it can never wrap internally) instead.
+const endsWithMaqaf = (word) => {
+  const comps = word?.components || [];
+  const last = comps[comps.length - 1];
+  return !!(last && last.isMaqaf);
+};
+
+// A maqaf baked WITHIN this single word's own components — a two-part
+// construct chain sharing one token, e.g. Genesis 1:11's עַל־הָאָרֶץ ("Il" +
+// maqaf + "HaAratz") — is a DIFFERENT case from endsWithMaqaf above (a maqaf
+// trailing off to a wholly separate next word/token). Left undetected, the
+// two halves fell through to computeWordParts() unsplit and rendered as one
+// unbroken run ("IlHaAratz") with no sign a maqaf ever separated them.
+// Mirrors components/WordBlock.jsx's own maqafSplit exactly: split on every
+// isMaqaf component, and only treat it as a genuine compound when EVERY
+// resulting half has real (non-mark) content — a maqaf with nothing on one
+// side is an ordinary trailing mark, not a baked-in compound.
+const internalMaqafSplit = (word) => {
+  const comps = word?.components || [];
+  if (!comps.some(c => c && c.isMaqaf)) return null;
+  const segs = [[]];
+  for (const c of comps) {
+    if (c && c.isMaqaf) { segs.push([]); continue; }
+    segs[segs.length - 1].push(c);
+  }
+  return segs.some(s => s.length === 0) ? null : segs;
+};
+
+// Divine names/titles — surfaced systematically by Strong's number, not
+// hand-picked per word, so every occurrence gets its paleo spelling
+// regardless of which epithet the curated gloss happens to use that day
+// (the user's own complaint: "I don't want to have to stumble across a name
+// that doesn't also show the hebrew"):
+//   H410  El         H426  Elah (Aramaic)   H430  Elohim   H433  Eloah
+//   H3050 Yah        H3068 YHWH             H3069 YHWH (Adonai-vocalized)
+//   H136  Adonai     H7706 Shaddai          H5945 Elyon
+// H113 (adown, "lord/master") is deliberately excluded — it's the ordinary
+// word for a human master/sir, not a divine title, and tagging it would
+// paleo-prefix every "my lord" a servant says to a person.
+const DIVINE_SN = new Set(['H410', 'H426', 'H430', 'H433', 'H3050', 'H3068', 'H3069', 'H136', 'H7706', 'H5945']);
+const normSN = (s) => (s ? 'H' + String(s).replace(/^H+/i, '') : null);
+
+// The component that HEADS a word block — same rule computeWordParts uses to
+// decide what a gloss is "about": a root-class component, or (when the block
+// has none — a bare proper noun) the mod-nmpr component promoted to head.
+function headComponent(word) {
+  const comps = word?.components || [];
+  const root = comps.find(c => c && c.css === 'root');
+  if (root) return root;
+  return comps.find(c => c && c.css === 'mod-nmpr') || null;
+}
+
+// If this word's head component is a divine title, its (server-resolved,
+// canonical) paleo spelling — else null.
+function divinePaleo(word) {
+  const comp = headComponent(word);
+  if (!comp) return null;
+  const sn = normSN(comp.sn || word?.strongs);
+  return sn && DIVINE_SN.has(sn) ? comp.paleo : null;
+}
+
+function renderHebrewWordCells(words) {
+  const list = words || [];
+  let key = 0;
+  const buildCell = (word) => {
+    const parts = computeWordParts(word);
+    if (!parts.transliterations.length) return null;
+    const hasGloss = parts.rootTrans.length > 0 || parts.modTrans.length > 0;
+    const divine = divinePaleo(word);
+    return (
+      <span className="hwc" key={key++}>
+        <span className="hwc-word">
+          {parts.transliterations.map((t, ti) => (
+            <span key={ti} className={`hw hw-word ${t.css}`} data-alt={t.altAttr || undefined}>{t.text}</span>
+          ))}
+        </span>
+        {/* Always rendered, even with nothing to show — every cell reserves the
+            same gloss-line height so a row of words with mixed gloss coverage
+            still lines up cell to cell instead of the "expects a gloss" ones
+            standing taller than their gloss-less neighbors. */}
+        <span className="hwc-gloss">
+          {(hasGloss || divine) ? (
+            <>
+              <span className="brk">(</span>
+              {divine && <ReaderPaleoText text={divine} className="hw-divine" dir="rtl" />}
+              {divine && hasGloss && ' '}
+              {parts.rootTrans.map((r, ri) => <span key={`r${ri}`} className="hw root">{spaceGloss(r.clean)}</span>)}
+              {parts.modTrans.length > 0 && (
+                <>
+                  {parts.rootTrans.length > 0 && ' '}
+                  <span className="brk">[</span>
+                  {parts.modTrans.map((m, mi) => (
+                    <span key={`m${mi}`}>
+                      {mi > 0 && <span className="brk">-</span>}
+                      <span className={`hw ${m.css}`} data-alt={m.altAttr || undefined}>{spaceGloss(m.clean)}</span>
+                    </span>
+                  ))}
+                  <span className="brk">]</span>
+                </>
+              )}
+              <span className="brk">)</span>
+            </>
+          ) : (
+            <ReaderPaleoText text={parts.purePaleo} className="hw-src-fallback" dir="rtl" />
+ )}
+        </span>
+      </span>
+    );
+  };
+
+  const out = [];
+  for (let i = 0; i < list.length; i++) {
+    const word = list[i];
+
+    const split = internalMaqafSplit(word);
+    if (split) {
+      const cells = split.map(seg => buildCell({ components: seg })).filter(Boolean);
+      if (cells.length >= 2) {
+        out.push(
+          <span className="hwc-maqaf-pair" key={key++}>
+            {cells.flatMap((c, ci) => ci > 0
+              ? [<span key={`d${ci}`} className="hwc-maqaf-dash" aria-hidden="true">-</span>, c]
+              : [c])}
+          </span>
+        );
+        continue;
+      }
+      // Fell through (e.g. a half produced no transliterations at all) —
+      // treat it as an ordinary word below rather than dropping it silently.
+    }
+
+    const cell = buildCell(word);
+    if (!cell) continue;
+    if (endsWithMaqaf(word) && i + 1 < list.length) {
+      const nextCell = buildCell(list[i + 1]);
+      i++;   // the next word is consumed into this pair
+      // The maqaf itself (e.g. Genesis 1:8's way'hi-erev) is real punctuation
+      // computeWordParts() deliberately pulls OUT of the word's own glyph/
+      // translit row (see its `trailingMark` comment — an inline mark there
+      // would drag the real letters off-center from their gloss line below).
+      // That's correct for the glyph row, but this cell format has no OTHER
+      // place the connector gets drawn, so without it the pair just reads as
+      // two unrelated words with a plain space — the coupling the Hebrew
+      // itself shows is silently lost. Render it explicitly here instead.
+      out.push(
+        <span className="hwc-maqaf-pair" key={key++}>
+          {cell}<span className="hwc-maqaf-dash" aria-hidden="true">-</span>{nextCell}
+        </span>
+      );
+    } else {
+      out.push(cell);
+    }
+  }
+  return out;
+}
+
+// ── Ge'ez ("plain" source: word + gloss, no Strong's/morphology breakdown) ──
+// Same two render shapes as Hebrew (flowing prose vs. word cells), but there
+// are no components to color-code — Ge'ez tokens aren't tagged the way BHS/
+// HEB are — so this is just the transliteration (via translit.js, client-
+// side, same table the rest of the app uses for Ethiopic) and its gloss, in
+// the reader's plain ink color. `.hw-word` still applies (bold, uniform
+// size), it just never picks up a morphology `--mc` tint since no morphology
+// class is present.
+// Lexicon entries write alternatives as "righteous/just/fair" with no space
+// around the slash — fine for the Parallel viewer's single-line gloss, but
+// in a width-bound word cell it leaves the wrapper no break opportunity
+// except mid-word (the "righteou / s" fragmenting the user flagged). Rather
+// than asking for a lexicon-wide edit, normalize the spacing at render time:
+// "a/b/c", "a /b/ c", etc. all become "a / b / c" — a real space either side
+// of every slash, which both reads better and gives the browser a proper
+// place to wrap between alternatives instead of splitting a word in half.
+const spaceGloss = s => (s || '').replace(/\s*\/\s*/g, ' / ');
+
+const cleanGloss = g => spaceGloss((g || '').replace(/[[\]]/g, '').trim());
+
+function renderPlainProseNodes(words) {
+  const nodes = [];
+  let key = 0;
+  (words || []).forEach((w) => {
+    const t = transliterate(w.word || '', { script: 'ethiopic' });
+    if (!t) return;
+    nodes.push(<span key={key++} className="hw-word">{t}</span>, ' ');
+  });
+  return nodes;
+}
+
+function renderPlainWordCells(words) {
+  let key = 0;
+  return (words || []).map((w) => {
+    const t = transliterate(w.word || '', { script: 'ethiopic' });
+    if (!t) return null;
+    const gloss = cleanGloss(w.gloss);
+    return (
+      <span className="hwc" key={key++}>
+        <span className="hwc-word"><span className="hw-word">{t}</span></span>
+        {/* Always rendered (see the matching Hebrew comment above) so every
+            word's cell reserves the same gloss-line height, whether or not
+            this particular token happens to have gloss data. */}
+        <span className="hwc-gloss">
+          {gloss
+            ? (<><span className="brk">(</span>{gloss}<span className="brk">)</span></>)
+            : <span className="hw-geez-fallback">{w.word}</span>}
+        </span>
+      </span>
+    );
+  });
+}
+
+export default function Reader() {
+  const [sp, setSp] = useSearchParams();
+  const { theme, toggle: toggleTheme } = useTheme();
+  // Not read directly below — renderHebrewWordCells()/the superscription JSX
+  // call paleoToSVG() straight from module state, so this component doesn't
+  // need the mode VALUE. It needs the SUBSCRIPTION: usePaleoMode() re-renders
+  // this component whenever the user toggles desktop/mobile mode or saves an
+  // edited glyph in GlyphEditor, which is what makes the custom-glyph inline
+  // paleo spellings above actually pick up a live edit instead of only
+  // showing it after a full page reload — same mechanism WordBlock.jsx uses.
+  usePaleoMode();
+
+  // Which kind of navigation put us here: 'POP' (browser back/forward) is
+  // the only case where "restore where I was" makes sense; a 'PUSH' (a
+  // fresh Link/button click — Landing's "Novel English Bible" button,
+  // Next/Previous chapter, the book/chapter picker) or a 'REPLACE' (this
+  // page's own URL-param syncing, see ?script= below) is a deliberate new
+  // arrival and should always start clean. See navTypeRef below for why
+  // this raw value isn't read directly at scroll-restore time.
+  const navigationType = useNavigationType();
+
+  // ── books / slug map ───────────────────────────────────────────────────────
+  const [masterBooks, setMasterBooks] = useState([]);
+  useEffect(() => { apiBookOrder().then(b => setMasterBooks(b || [])).catch(() => setMasterBooks([])); }, []);
+
+  const { slugToId, idToSlug } = useMemo(
+    () => buildBookSlugs((masterBooks || []).map(mb => ({ id: idOf(mb), name: mb.name }))),
+    [masterBooks]
+  );
+
+  const bookParam  = sp.get('book');
+  const book       = resolveBookParam(bookParam, slugToId, 1);
+  const chapter    = parseInt(sp.get('chapter') || '1', 10);
+  const verseParam = sp.get('verse');
+  const verse      = verseParam ? parseInt(verseParam, 10) : null;
+  // Optional companion to ?verse= — set by a citation link from an embedded
+  // scripture quotation (see renderScriptureQuote) that cites a RANGE, not a
+  // single verse (Psalm 85:10-11). When present, the scroll/highlight effect
+  // below lights up every verse from `verse` through `verseEnd`, not just the
+  // first one.
+  const verseEndParam = sp.get('verseEnd');
+  const verseEnd = verseEndParam ? parseInt(verseEndParam, 10) : null;
+  // A slug URL resolves only once the map has loaded — until then, don't act on
+  // the Genesis fallback (mirrors the other readers).
+  const bookReady  = !bookParam || /^\d+$/.test(bookParam) || Object.keys(slugToId).length > 0;
+
+  const booksOrdered = masterBooks;
+  const bookIndex = useMemo(() => booksOrdered.findIndex(m => idOf(m) === book), [booksOrdered, book]);
+  const meta      = booksOrdered[bookIndex] || null;
+  const bookName  = meta?.name || `Book ${book}`;
+  // Every other plural-looking book name ("Chronicles", "Kings"...) still refers to
+  // the whole book when paired with a chapter number ("2 Kings 4"). Psalms is the
+  // one exception in ordinary English usage — a single chapter IS "a psalm" — so a
+  // chapter reference reads "Psalm 119", not "Psalms 119". Book-level labels (the
+  // nav sheet's book row, its "— chapters" heading) keep the plural "Psalms" since
+  // that's the book's actual name; this is only for text that pairs the name with
+  // a specific chapter.
+  const chapterBookName = bookName === 'Psalms' ? 'Psalm' : bookName;
+  const firstCh   = meta?.first || 1;
+  const lastCh    = meta?.last  || chapter;
+
+  // ── chapter text ───────────────────────────────────────────────────────────
+  const [verses, setVerses]   = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [chapKey, setChapKey] = useState('');   // drives the fade-in on chapter change
+
+  // Frozen per chapter-load, not read live at restore time: `navigationType`
+  // reflects the LATEST router action, and something else in this same
+  // render commit (the ?script= sync effect, further down) can dispatch its
+  // own replace() before the scroll-restore effect below ever runs — by the
+  // time a slow chapter fetch resolves, a genuine POP could otherwise have
+  // already been overwritten to 'REPLACE'. Stamping it here, synchronously,
+  // at the moment THIS chapter's fetch actually starts (this effect runs
+  // before that later one, same commit, same file order) captures the real
+  // answer before anything else gets a chance to change it.
+  const navTypeRef = useRef(navigationType);
+  useEffect(() => {
+    if (!bookReady) return;
+    navTypeRef.current = navigationType;
+    let cancelled = false;
+    setLoading(true);
+    apiTransChapter(book, chapter)
+      .then(d => { if (cancelled) return; setVerses((d && d.verses) || []); setLoading(false); setChapKey(`${book}-${chapter}-${Date.now()}`); })
+      .catch(() => { if (cancelled) return; setVerses([]); setLoading(false); });
+    return () => { cancelled = true; };
+  }, [book, chapter, bookReady]);
+
+  // Whole-book English text, fetched once per BOOK (not per chapter — chapter
+  // navigation within the same book reuses this) — feeds the cross-chapter
+  // <...> quote scan below (bookQuoteScan). Best-effort: on failure this
+  // just falls back to single-chapter quote scanning (the boundaries array
+  // ends up empty), never blocks the chapter itself from rendering.
+  const [bookText, setBookText] = useState(null);
+  useEffect(() => {
+    // Fetched regardless of the active script (Hebrew/Ge'ez toggle lives
+    // further down as `script`/`isForeignScript`) — cheap, and simplest to
+    // just not consume it below when the plain-quote system doesn't apply.
+    if (!bookReady) return;
+    let cancelled = false;
+    apiTransBookText(book)
+      .then(d => { if (!cancelled) setBookText(d && d.chapters ? d : null); })
+      .catch(() => { if (!cancelled) setBookText(null); });
+    return () => { cancelled = true; };
+  }, [book, bookReady]);
+
+  // ── precepts ("precept upon precept") ──────────────────────────────────────
+  // Every other passage in the corpus that a verse of this chapter quotes or is
+  // quoted by — server/precepts.db via /api/precepts/chapter. A verse with any
+  // shows a marker in the gutter beside its number (fieldy: "I shouldnt have
+  // to select a verse to know that it has precepts, there should be some type
+  // of indicator next to the verse"); tapping the marker opens the panel.
+  // Keyed by verse number -> [{book, chapter, verse, name, kind, score, status, text}].
+  const [precepts, setPrecepts] = useState({});
+  const [preceptMore, setPreceptMore] = useState({}); // verse -> cross-references the server held back (XREF_CAP)
+  const [preceptOpen, setPreceptOpen] = useState(null); // verse number whose panel is open
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => { getAdminStatus().then(s => setIsAdmin(!!s?.isAdmin)).catch(() => {}); }, []);
+  useEffect(() => {
+    if (!bookReady) return;
+    let cancelled = false;
+    setPreceptOpen(null);
+    apiPrecepts(book, chapter)
+      .then(d => { if (!cancelled) { setPrecepts(d && d.verses ? d.verses : {}); setPreceptMore(d && d.more ? d.more : {}); } })
+      .catch(() => { if (!cancelled) { setPrecepts({}); setPreceptMore({}); } });
+    return () => { cancelled = true; };
+  }, [book, chapter, bookReady]);
+  // Admin review from inside the panel — optimistic, the server row is the truth.
+  const reviewPrecept = useCallback(async (fromVerse, item, status) => {
+    const from = { book, chapter, verse: fromVerse };
+    const to = { book: item.book, chapter: item.chapter, verse: item.verse };
+    try {
+      await apiPreceptReview(from, to, status);
+      setPrecepts(prev => {
+        const list = (prev[fromVerse] || []).map(it => (it.book === item.book && it.chapter === item.chapter && it.verse === item.verse)
+          ? { ...it, status: status === 'clear' ? null : status } : it);
+        return { ...prev, [fromVerse]: list };
+      });
+    } catch (e) { console.warn('precept review failed', e); }
+  }, [book, chapter]);
+
+  // ── font size (persisted) ──────────────────────────────────────────────────
+  const [fontPx, setFontPx] = useState(() => {
+    const v = parseInt(localStorage.getItem('reader-font') || '', 10);
+    return (v >= FONT_MIN && v <= FONT_MAX) ? v : FONT_DEFAULT;
+  });
+  useEffect(() => { localStorage.setItem('reader-font', String(fontPx)); }, [fontPx]);
+
+  // ── reading column width / "Margins" (persisted) ───────────────────────────
+  const [measureRem, setMeasureRem] = useState(() => {
+    const v = parseInt(localStorage.getItem('reader-measure') || '', 10);
+    return (v >= MEASURE_MIN && v <= MEASURE_MAX) ? v : MEASURE_DEFAULT;
+  });
+  useEffect(() => { localStorage.setItem('reader-measure', String(measureRem)); }, [measureRem]);
+
+  // ── typeface (persisted) ───────────────────────────────────────────────────
+  // Sticky by design: once chosen it survives reloads, chapter changes and
+  // navigation, and only ever changes when the reader picks a different face.
+  // Validated against the catalogue so a stale/hand-edited value can't wedge the
+  // reader into an unusable font — an unknown id falls back to the default.
+  const [typeface, setTypeface] = useState(() => {
+    try {
+      const saved = localStorage.getItem(TYPEFACE_KEY);
+      return TYPEFACES.some(f => f.id === saved) ? saved : TYPEFACE_DEFAULT;
+    } catch { return TYPEFACE_DEFAULT; }   // private mode / storage disabled
+  });
+  useEffect(() => {
+    try { localStorage.setItem(TYPEFACE_KEY, typeface); } catch { /* non-fatal */ }
+  }, [typeface]);
+  const typefaceStack = useMemo(
+    () => (TYPEFACES.find(f => f.id === typeface) || TYPEFACES[0]).stack,
+    [typeface]
+  );
+
+  // ── browser tab ────────────────────────────────────────────────────────────
+  // Reference first ("Genesis 1 | Reader", 2026-08-15 — see
+  // hooks/usePageTitle.js). An empty chapter is flagged in the tab too, so a
+  // book that isn't translated is obvious without opening it.
+  const readerRef = bookReady && meta ? formatRef(chapterBookName, chapter, verse) : '';
+  const readerNote = (!loading && verses.length === 0) ? ' · not translated' : '';
+  usePageTitle(readerRef ? `${readerRef}${readerNote} | Reader` : '');
+
+  // ── gloss display mode (persisted) ─────────────────────────────────────────
+  // both | hebrew | gloss. Validated the same way as the typeface, so a stale value
+  // can't wedge the reader into a mode that no longer exists.
+  const [glossMode, setGlossMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem(GLOSS_KEY);
+      return GLOSS_MODES.some(m => m.id === saved) ? saved : GLOSS_DEFAULT;
+    } catch { return GLOSS_DEFAULT; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem(GLOSS_KEY, glossMode); } catch { /* non-fatal */ }
+  }, [glossMode]);
+
+  // ── verse-number click mode (persisted) ─────────────────────────────────────
+  // multi | single. Validated the same way as gloss mode / typeface.
+  const [markMode, setMarkMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem(MARK_MODE_KEY);
+      return MARK_MODES.some(m => m.id === saved) ? saved : MARK_MODE_DEFAULT;
+    } catch { return MARK_MODE_DEFAULT; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem(MARK_MODE_KEY, markMode); } catch { /* non-fatal */ }
+  }, [markMode]);
+
+  // ── script mode (persisted + shareable via ?script=) ───────────────────────
+  // The URL is checked FIRST, once, on mount — a link with ?script=hebrew opens
+  // straight into that mode, so you can send someone straight to the English or
+  // the Hebrew. Absent that, fall back to whatever this browser had saved.
+  // Every change writes BOTH: localStorage (so the next visit with no ?script=
+  // remembers it) and the URL (so the current tab's address bar always reflects
+  // the mode you're actually reading in, and can be copied/shared as-is).
+  const [script, setScript] = useState(() => {
+    const urlScript = sp.get('script');
+    if (SCRIPT_MODES.some(m => m.id === urlScript)) return urlScript;
+    try {
+      const saved = localStorage.getItem(SCRIPT_KEY);
+      return SCRIPT_MODES.some(m => m.id === saved) ? saved : SCRIPT_DEFAULT;
+    } catch { return SCRIPT_DEFAULT; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem(SCRIPT_KEY, script); } catch { /* non-fatal */ }
+  }, [script]);
+  useEffect(() => {
+    setSp(prev => {
+      if (prev.get('script') === script) return prev;
+      const p = new URLSearchParams(prev);
+      p.set('script', script);
+      return p;
+    }, { replace: true });
+  }, [script, setSp]);
+
+  // ── Hebrew-mode gloss toggle (persisted) — All Hebrew | With glosses ──────
+  const [hebGlossMode, setHebGlossMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem(HEB_GLOSS_KEY);
+      return HEB_GLOSS_MODES.some(m => m.id === saved) ? saved : HEB_GLOSS_DEFAULT;
+    } catch { return HEB_GLOSS_DEFAULT; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem(HEB_GLOSS_KEY, hebGlossMode); } catch { /* non-fatal */ }
+  }, [hebGlossMode]);
+
+  // ── Hebrew token stream — fetched only once the Hebrew script is selected,
+  // so a reader who never touches it costs nothing extra. `hebTried` tells the
+  // render below "the fetch for THIS book/chapter has settled" so it can tell
+  // a genuinely Hebrew-less book apart from still-loading.
+  //
+  // Two source tables carry Hebrew tokens (same split Parallel uses): BHS is
+  // the Masoretic OT; HEB is "everything else with a Hebrew/Strong's token
+  // stream" — the NT, Jasher, and any further Hebrew source ingested under
+  // that table. Try BHS first (the common case); if a book has nothing there
+  // (a 404, or a 200 with zero tokens), fall back to HEB before giving up, so
+  // Matthew/Jasher/future non-Masoretic ingests light up here too instead of
+  // only in the Parallel viewer.
+  const [hebWords, setHebWords] = useState([]);
+  const [hebLoading, setHebLoading] = useState(false);
+  const [hebTried, setHebTried] = useState(false);
+  useEffect(() => {
+    // Also probes while still on 'english' once the English baseline has come
+    // back empty — the auto-language-fallback effect below needs to know
+    // whether Hebrew has this passage BEFORE dead-ending the reader on "not
+    // translated". Once the English chapter fetch is still in flight this is
+    // simply skipped (nothing to react to yet).
+    const need = script === 'hebrew' || (script === 'english' && !loading && verses.length === 0);
+    if (!need || !bookReady) return;
+    let cancelled = false;
+    setHebLoading(true);
+    setHebTried(false);
+    const asWords = d => Array.isArray(d) ? d : (d?.tokens || d?.words || d?.rows || []);
+    apiTokens(book, chapter, 'BHS')
+      .then(asWords)
+      .catch(() => [])
+      .then(words => (words.length ? words : apiTokens(book, chapter, 'HEB').then(asWords).catch(() => [])))
+      .then(words => { if (!cancelled) setHebWords(words); })
+      .finally(() => { if (!cancelled) { setHebLoading(false); setHebTried(true); } });
+    return () => { cancelled = true; };
+  }, [script, book, chapter, bookReady, loading, verses.length]);
+
+  const hebWordsByVerse = useMemo(() => {
+    const m = {};
+    (hebWords || []).forEach(w => (m[w.verse] || (m[w.verse] = [])).push(w));
+    return m;
+  }, [hebWords]);
+  const hebUnavailable = script === 'hebrew' && hebTried && !hebLoading && Object.keys(hebWordsByVerse).length === 0;
+
+  // ── Ge'ez token stream — same lazy, fetch-once-selected pattern as Hebrew.
+  // The Ge'ez source has no Strong's-tagged token table, so it's read the way
+  // Parallel reads any "plain" source: /api/source/GEZ/chapter, using its
+  // embedded per-verse tokens if present, otherwise one /api/source/GEZ/verse
+  // fetch per verse — the exact fallback Parallel.jsx's loadChapter uses for
+  // this same source, so it never drifts from what's already proven to work.
+  const [gzWords, setGzWords] = useState([]);
+  const [gzLoading, setGzLoading] = useState(false);
+  const [gzTried, setGzTried] = useState(false);
+  useEffect(() => {
+    // Same broadened trigger as the Hebrew probe above — also checked while
+    // still on 'english' with an empty baseline, so the auto-fallback effect
+    // has an answer from Ge'ez too, not just Hebrew.
+    const need = script === 'geez' || (script === 'english' && !loading && verses.length === 0);
+    if (!need || !bookReady) return;
+    let cancelled = false;
+    setGzLoading(true);
+    setGzTried(false);
+    // GEZ 1 Esdras (book/canon_id 81) numbers its own chapters one ahead of
+    // every other edition and has a handful of chapters with real internal
+    // verse split/merge points on top of that offset — see
+    // src/lib/sourceVerseRemap.js for the full detail. `nativeChapter` is
+    // what this source's own /chapter endpoint needs; `chapter` stays the
+    // DISPLAY chapter for everything else (state, URL, the English pane).
+    const nativeChapter = (book === 81) ? remapDisplayChapterToSource('GEZ', 81, chapter) : chapter;
+    apiSourceChapter('GEZ', { book }, nativeChapter)
+      .then(async (chapData) => {
+        const verses = Array.isArray(chapData?.verses) ? chapData.verses : [];
+        const out = [];
+        if (verses.some(v => Array.isArray(v.tokens))) {
+          // Running per-display-verse ordinal offset — same reasoning as
+          // Parallel.jsx's loadChapter: when a merge feeds one display verse
+          // from more than one native verse (e.g. GEZ:81:8's native v.24+v.25
+          // both = English v.22), this keeps their words in native order
+          // instead of letting both restart at ordinal 1 and interleave on
+          // the sort below. A no-op for every book with no chapter/verse
+          // remap registered (offset for that key is always still 0).
+          const dvTokenOffset = {};
+          verses.forEach(v =>
+            remapSourceVerseToDisplay('GEZ', book, chapter, v.verse).forEach(dv => {
+              const base = dvTokenOffset[dv] || 0;
+              (v.tokens || []).forEach((t, i) => out.push({
+                verse: dv, token_ordinal: base + (t.ord ?? (i + 1)), word: t.word ?? '', gloss: t.gloss || '',
+              }));
+              dvTokenOffset[dv] = base + (v.tokens || []).length;
+            })
+          );
+        } else if (verses.length) {
+          await Promise.all(verses.map(vs =>
+            apiSourceVerse('GEZ', { book }, nativeChapter, vs.verse)
+              .then(sv => remapSourceVerseToDisplay('GEZ', book, chapter, vs.verse).forEach(dv =>
+                (sv?.tokens || []).forEach((t, i) => out.push({
+                  verse: dv, token_ordinal: t.ord ?? (i + 1), word: t.word ?? '', gloss: t.gloss || '',
+                }))
+              ))
+              .catch(() => {})
+          ));
+        }
+        out.sort((a, z) => a.verse - z.verse || a.token_ordinal - z.token_ordinal);
+        return out;
+      })
+      .catch(() => [])
+      .then(words => { if (!cancelled) setGzWords(words); })
+      .finally(() => { if (!cancelled) { setGzLoading(false); setGzTried(true); } });
+    return () => { cancelled = true; };
+  }, [script, book, chapter, bookReady, loading, verses.length]);
+
+  const gzWordsByVerse = useMemo(() => {
+    const m = {};
+    (gzWords || []).forEach(w => (m[w.verse] || (m[w.verse] = [])).push(w));
+    return m;
+  }, [gzWords]);
+  const gzUnavailable = script === 'geez' && gzTried && !gzLoading && Object.keys(gzWordsByVerse).length === 0;
+
+  // ── auto language fallback ──────────────────────────────────────────────────
+  // A book/chapter with no English translation used to dead-end the reader —
+  // "not translated" — even when the passage plainly exists in Hebrew or
+  // Ge'ez (e.g. Psalm 151/154, translated nowhere in English yet but present
+  // in the source). Rather than force a trip out to the Parallel Viewer, walk
+  // English -> Hebrew -> Ge'ez once each has settled and land on whichever
+  // one actually has this passage. Only ever acts while still on the default
+  // 'english' script with genuinely nothing to show — it never overrides a
+  // script you picked yourself (Hebrew/Ge'ez's own "no source text" state
+  // already offers a manual "Read in English" button for that direction).
+  useEffect(() => {
+    if (script !== 'english' || loading || verses.length > 0) return;
+    if (hebTried && !hebLoading && Object.keys(hebWordsByVerse).length > 0) { setScript('hebrew'); return; }
+    if (gzTried && !gzLoading && Object.keys(gzWordsByVerse).length > 0) setScript('geez');
+  }, [script, loading, verses.length, hebTried, hebLoading, hebWordsByVerse, gzTried, gzLoading, gzWordsByVerse]);
+
+  // ── chapter headings: superscriptions and acrostic stanza letters ──────────
+  // Neither is verse text. A superscription ("A Psalm of David") lives at verse 0 in
+  // tokens_bhs and belongs ABOVE verse 1; an acrostic letter (Alap, Bayath) heads the
+  // stanza that starts at a given verse. build-headings.mjs writes public/headings.json
+  // for EVERY chapter that has them — Psalms, Lamentations, Proverbs 31, Habakkuk 3 —
+  // so nothing here is psalm-specific.
+  const [headings, setHeadings] = useState({});
+  useEffect(() => {
+    let live = true;
+    fetch('/headings.json')
+      .then(r => (r.ok ? r.json() : {}))
+      .then(j => { if (live) setHeadings(j || {}); })
+      .catch(() => {});                        // absent file is not an error
+    return () => { live = false; };
+  }, []);
+  const chapHead = headings[`${book}:${chapter}`] || null;
+
+  // ── embedded scripture-quote citations ──────────────────────────────────────
+  // Hand-curated links from an embedded quotation (splitScriptureQuote above)
+  // back to the canonical passage it quotes — see server/public/scripture-
+  // citations.json. Not auto-detected (matching a quoted passage against the
+  // whole Bible is a much bigger, separate problem); this only lights up the
+  // specific instances someone has confirmed by hand. Absent file/entry is not
+  // an error — the quote still renders, just without the link.
+  const [citations, setCitations] = useState({});
+  useEffect(() => {
+    let live = true;
+    fetch('/scripture-citations.json')
+      .then(r => (r.ok ? r.json() : {}))
+      .then(j => { if (live) setCitations(j || {}); })
+      .catch(() => {});
+    return () => { live = false; };
+  }, []);
+
+  // ── verse highlights (session-only; a refresh clears them) ─────────────────
+  // Tap a verse number to light it; tap again to clear it — keyed by
+  // book:chapter:verse so marks survive moving between chapters but not a page
+  // reload. Two modes (see MARK_MODES above, toggled in the Aa panel):
+  // "multi" (default) — any number of verses can be lit at once, each
+  // independent, exactly the original behavior. "single" — lighting a NEW
+  // verse replaces the whole set, so only the most recently tapped verse stays
+  // lit; tapping the already-lit verse still clears it in both modes.
+  const [marks, setMarks] = useState(() => new Set());
+  const markKey = (vnum) => `${book}:${chapter}:${vnum}`;
+  const toggleMark = useCallback((vnum) => {
+    const k = `${book}:${chapter}:${vnum}`;
+    setMarks(prev => {
+      if (markMode === 'single') {
+        return prev.has(k) ? new Set() : new Set([k]);
+      }
+      const n = new Set(prev); if (n.has(k)) n.delete(k); else n.add(k); return n;
+    });
+  }, [book, chapter, markMode]);
+
+  // A landing verse (?verse=10, from a citation link, the book-icon link on
+  // VersePage/Hebrew Viewer/Parallel, or a plain deep link) marks it lit —
+  // same persistent highlight as tapping the verse number — not just a
+  // transient flash, so "the verse I was on is selected on entry" actually
+  // stays lit once you arrive rather than fading after the scroll animation.
+  // ?verseEnd=11 (from renderScriptureQuote's range citations) extends this
+  // to light the whole cited range instead of just the first verse.
+  useEffect(() => {
+    if (verse == null) return;
+    const end = (verseEnd && verseEnd >= verse) ? verseEnd : verse;
+    const keys = [];
+    for (let v = verse; v <= end; v++) keys.push(markKey(v));
+    setMarks(prev => new Set([...prev, ...keys]));
+  }, [book, chapter, verse, verseEnd]);
+
+  // ── scroll position memory + highlight-on-return ────────────────────────
+  // `.rd-scroll` is an inner scrollable <main>, not the document/viewport —
+  // a browser only ever restores scroll for the page itself on a back/
+  // forward navigation, never for a scrollable element like this one. So a
+  // plain "tap back out of a verse's own page" always landed back at the
+  // top of the chapter, with no memory of where you'd actually been
+  // reading. Fixed with two small sessionStorage memories, both keyed by
+  // book:chapter (RD_SCROLL_KEY / RD_RETURN_VERSE_KEY above):
+  //  - the last scrollTop seen in this chapter, saved on every scroll
+  //    (debounced, see handleReaderScroll) and restored whenever we land
+  //    back here with no explicit ?verse= target;
+  //  - the verse being opened: written immediately when "Go to verse" is
+  //    clicked (see the rd-vnum-goto Link below), then kept in sync by
+  //    VersePage.jsx itself as long as it stays mounted (Prev/Next-verse
+  //    browsing there updates it too — see lib/readerScrollMemory.js).
+  //    Consumed (read, then removed) the first time we're next back in this
+  //    chapter with no ?verse= — so it fires exactly once, on the return
+  //    trip, and lights the verse the same way a citation landing does.
+  const scrollRef = useRef(null);
+  const scrollSaveTimer = useRef(null);
+  const handleReaderScroll = useCallback(() => {
+    if (scrollSaveTimer.current) clearTimeout(scrollSaveTimer.current);
+    scrollSaveTimer.current = setTimeout(() => {
+      if (scrollRef.current) writeSession(RD_SCROLL_KEY(book, chapter), String(scrollRef.current.scrollTop));
+    }, 150);
+  }, [book, chapter]);
+
+  useEffect(() => {
+    if (loading) return;
+    if (verse != null) {
+      const el = document.getElementById(`rv-${verse}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Flash every verse in the cited range (verse..verseEnd), not just
+        // the first — a range citation should draw the eye across the whole
+        // quoted span, not just where it lands.
+        const rangeEnd = (verseEnd && verseEnd >= verse) ? verseEnd : verse;
+        const flashed = [];
+        for (let v = verse; v <= rangeEnd; v++) {
+          const ve = document.getElementById(`rv-${v}`);
+          if (ve) { ve.classList.add('rd-flash'); flashed.push(ve); }
+        }
+        const t = setTimeout(() => flashed.forEach(ve => ve.classList.remove('rd-flash')), 1500);
+        return () => clearTimeout(t);
+      }
+    }
+
+    // No explicit ?verse= — figure out whether this is a genuinely fresh
+    // arrival (a Link/button click, Next/Previous chapter, the book/chapter
+    // picker — always start at the top, exactly like a first-ever visit) or
+    // a return trip (browser back/forward — restore where we were). Only a
+    // POP (see navTypeRef above) is a return trip; anything else discards
+    // both memories for this book:chapter instead of leaving them to be
+    // read by some LATER, unrelated POP back to this same chapter, which
+    // would otherwise resurrect a position/highlight from a visit that's no
+    // longer the relevant one.
+    if (navTypeRef.current !== 'POP') {
+      removeSession(RD_RETURN_VERSE_KEY(book, chapter));
+      removeSession(RD_SCROLL_KEY(book, chapter));
+      if (scrollRef.current) scrollRef.current.scrollTop = 0;
+      return;
+    }
+
+    // A return trip. Prefer "returning from this verse's own page" when
+    // both memories are available: it both tells the reader which verse
+    // they came back from (lit, same treatment as a citation landing) and
+    // scrolls straight to it, which is a more reliable answer than a raw
+    // scrollTop number if anything above it has reflowed since (font size,
+    // margins, etc.).
+    const returnVerseRaw = readSession(RD_RETURN_VERSE_KEY(book, chapter));
+    if (returnVerseRaw != null) {
+      removeSession(RD_RETURN_VERSE_KEY(book, chapter));
+      const v = parseInt(returnVerseRaw, 10);
+      const el = v ? document.getElementById(`rv-${v}`) : null;
+      if (el) {
+        setMarks(prev => new Set([...prev, markKey(v)]));
+        el.scrollIntoView({ behavior: 'auto', block: 'center' });
+        el.classList.add('rd-flash');
+        const t = setTimeout(() => el.classList.remove('rd-flash'), 1500);
+        return () => clearTimeout(t);
+      }
+    }
+
+    const savedScroll = readSession(RD_SCROLL_KEY(book, chapter));
+    if (scrollRef.current) scrollRef.current.scrollTop = savedScroll != null ? (parseInt(savedScroll, 10) || 0) : 0;
+  }, [loading, chapKey, verse]);
+
+  // ── navigation ─────────────────────────────────────────────────────────────
+  // Built from the CURRENT search params, not a fresh URLSearchParams, so a
+  // chapter/book jump never drops ?script= (or any other param riding along) —
+  // only book/chapter/verse are ever touched here.
+  const go = useCallback((b, c, v) => {
+    setSp(prev => {
+      const p = new URLSearchParams(prev);
+      p.set('book', bookToParam(b, idToSlug));
+      p.set('chapter', String(c));
+      if (v != null) p.set('verse', String(v)); else p.delete('verse');
+      return p;
+    });
+  }, [idToSlug, setSp]);
+
+  const prevLoc = useMemo(() => {
+    if (chapter > firstCh) return { b: book, c: chapter - 1 };
+    const pb = booksOrdered[bookIndex - 1];
+    return pb ? { b: idOf(pb), c: pb.last || 1 } : null;
+  }, [book, chapter, firstCh, booksOrdered, bookIndex]);
+  const nextLoc = useMemo(() => {
+    if (chapter < lastCh) return { b: book, c: chapter + 1 };
+    const nb = booksOrdered[bookIndex + 1];
+    return nb ? { b: idOf(nb), c: nb.first || 1 } : null;
+  }, [book, chapter, lastCh, booksOrdered, bookIndex]);
+
+  // ── overlays ───────────────────────────────────────────────────────────────
+  const [navOpen, setNavOpen]     = useState(false);
+  const [bookQuery, setBookQuery] = useState('');
+  const [aaOpen, setAaOpen]       = useState(false);
+  const [switchOpen, setSwitchOpen] = useState(false);
+
+  const openNav  = () => { setBookQuery(''); setAaOpen(false); setSwitchOpen(false); setNavOpen(true); };
+  const closeAll = () => { setAaOpen(false); setSwitchOpen(false); };
+
+  // Land the picker already scrolled to where you are, in both columns, instead of
+  // opening at the top of Genesis chapter 1 every time. Each column keeps a ref to
+  // just its "cur" row/cell (there's only ever one per column); on open, wait a frame
+  // so the sheet has actually laid out — scrollIntoView on a just-mounted, zero-size
+  // container is a no-op — then jump both into view with no animation.
+  const curBookRef = useRef(null);
+  const curChapterRef = useRef(null);
+  useEffect(() => {
+    if (!navOpen) return;
+    const id = requestAnimationFrame(() => {
+      curBookRef.current?.scrollIntoView({ block: 'center' });
+      curChapterRef.current?.scrollIntoView({ block: 'center' });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [navOpen]);
+
+  const curChapters = [];
+  for (let c = firstCh; c <= lastCh; c++) curChapters.push(c);
+
+  // Named sections spanning a chapter range within this book (e.g. Book of
+  // Melchizedek's 3 originally-separate parts) — [] for the vast majority of
+  // books that don't have any, which is the normal/expected case.
+  const [headingsList, setHeadingsList] = useState([]);
+  useEffect(() => {
+    if (!bookReady) return;
+    let cancelled = false;
+    apiHeadings(book).then(h => { if (!cancelled) setHeadingsList(h); });
+    return () => { cancelled = true; };
+  }, [book, bookReady]);
+  // Four nesting levels — see server.js's `headings` table comment for the
+  // full scheme: 1=Part (spans many chapters), 2=Section (spans a chapter
+  // range within/without a Part), 3=Chapter title (one line, this chapter
+  // only), 4=Pericope (a verse-range heading within a chapter).
+  const HEADING_LEVEL = { PART: 1, SECTION: 2, CHAPTER: 3, PERICOPE: 4 };
+  // The Part/Section "in effect" for chapter c is whichever heading of that
+  // level has the highest anchor chapter <= c — same one-pass rule
+  // book-sections.json's consumer used before this replaced it.
+  //
+  // Any level can now anchor at a verse other than 1 (Translation Studio's
+  // heading editor has a "Starts at verse" field) — e.g. Genesis 2:4's
+  // toledot division. A heading anchored mid-way through the chapter ON
+  // SCREEN is not yet "in effect" at the top of that chapter; it renders
+  // inline above its own verse instead (midHeadingsByVerse below). One
+  // anchored mid-way through an EARLIER chapter is in effect from here on,
+  // exactly like a verse-1 one.
+  const hVerse = h => (Number.isFinite(h.verse) && h.verse > 0 ? h.verse : 1);
+  // Any number of headings of the same level may start at the same verse
+  // (several Sections stacked above verse 1, say). "Continued" = the last one
+  // of that level from an EARLIER chapter, shown muted at the top only when
+  // this chapter doesn't start a new one of its own at verse 1.
+  const headingSort = (a, b) => a.level - b.level || (a.sort_order || 0) - (b.sort_order || 0) || a.id - b.id;
+  const startHeadingsAt = (level) => headingsList
+    .filter(h => h.level === level && h.chapter === chapter && hVerse(h) <= 1)
+    .sort(headingSort);
+  const activeHeadingFor = (level, c) => {
+    let best = null;
+    for (const h of headingsList) {
+      if (h.level !== level || h.chapter >= c) continue;
+      if (!best || h.chapter > best.chapter
+          || (h.chapter === best.chapter && hVerse(h) > hVerse(best))
+          || (h.chapter === best.chapter && hVerse(h) === hVerse(best) && h.sort_order >= best.sort_order)) best = h;
+    }
+    return best;
+  };
+  const startParts = startHeadingsAt(HEADING_LEVEL.PART);
+  const startSections = startHeadingsAt(HEADING_LEVEL.SECTION);
+  const continuedPart = startParts.length ? null : activeHeadingFor(HEADING_LEVEL.PART, chapter);
+  const continuedSection = startSections.length ? null : activeHeadingFor(HEADING_LEVEL.SECTION, chapter);
+  // Section headings (level 2) as {from, title} pairs, chapter-ascending —
+  // the shape the book-jump navigator sheet (below) groups chapters by.
+  const navSections = headingsList
+    .filter(h => h.level === HEADING_LEVEL.SECTION)
+    .map(h => ({ from: h.chapter, title: h.title }))
+    .sort((a, b) => a.from - b.from);
+  // Chapter title: at most one per chapter, shown next to the chapter number.
+  const chapterTitleHeadings = startHeadingsAt(HEADING_LEVEL.CHAPTER);
+  // Part / Section / Chapter-title headings anchored at a verse > 1 of the
+  // chapter on screen — rendered inline above that verse, Part first.
+  const midHeadingsByVerse = (() => {
+    const m = new Map();
+    for (const h of headingsList) {
+      if (h.level === HEADING_LEVEL.PERICOPE || h.chapter !== chapter || hVerse(h) <= 1) continue;
+      if (!m.has(h.verse)) m.set(h.verse, []);
+      m.get(h.verse).push(h);
+    }
+    for (const arr of m.values()) arr.sort((a, b) => a.level - b.level || a.sort_order - b.sort_order || a.id - b.id);
+    return m;
+  })();
+  // Pericopes for the chapter on screen, keyed by their anchor verse so the
+  // verse-body loop can look one up per verse in O(1) as it renders.
+  const pericopesByVerse = (() => {
+    const m = new Map();
+    for (const h of headingsList) {
+      if (h.level !== HEADING_LEVEL.PERICOPE || h.chapter !== chapter) continue;
+      if (!m.has(h.verse)) m.set(h.verse, []);
+      m.get(h.verse).push(h);
+    }
+    for (const arr of m.values()) arr.sort((a, b) => a.sort_order - b.sort_order || a.id - b.id);
+    return m;
+  })();
+  const filteredBooks = booksOrdered.filter(m =>
+    !bookQuery.trim() || (m.name || '').toLowerCase().includes(bookQuery.trim().toLowerCase()));
+
+  const loc = `book=${bookToParam(book, idToSlug)}&chapter=${chapter}${verse != null ? `&verse=${verse}` : ''}`;
+  const parallelPath = parallelHref(book, idToSlug, chapter, verse);
+  const readers = [
+    { label: 'Paleo Reader',   to: `/?${loc}`,          hint: 'Paleo-Hebrew, glossed' },
+    { label: 'Parallel',       to: parallelPath,        hint: 'English beside the source' },
+    { label: 'Translation Studio', to: `/translate?${loc}`, hint: 'Edit the English' },
+  ];
+
+  // ── keyboard nav: ← previous chapter, → next chapter ────────────────────────
+  // Skipped while typing in a form control (the book-search box, etc.) or while
+  // any sheet/menu is open, so arrow keys there behave normally instead of
+  // silently paging the chapter underneath the open overlay.
+  useEffect(() => {
+    const onKey = (e) => {
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+      if (navOpen || aaOpen || switchOpen) return;
+      if (e.key === 'ArrowLeft') { if (prevLoc) { e.preventDefault(); go(prevLoc.b, prevLoc.c, null); } }
+      else if (e.key === 'ArrowRight') { if (nextLoc) { e.preventDefault(); go(nextLoc.b, nextLoc.c, null); } }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [prevLoc, nextLoc, go, navOpen, aaOpen, switchOpen]);
+
+  // Swipe left/right → next/prev chapter (mobile).
+  const touch = useRef(null);
+  const onTouchStart = e => { const t = e.touches[0]; touch.current = { x: t.clientX, y: t.clientY }; };
+  const onTouchEnd = e => {
+    if (!touch.current) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touch.current.x, dy = t.clientY - touch.current.y;
+    touch.current = null;
+    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.6) {
+      const dest = dx < 0 ? nextLoc : prevLoc;
+      if (dest) go(dest.b, dest.c, null);
+    }
+  };
+
+  const refLabel = `${chapterBookName} ${chapter}${verse != null ? `:${verse}` : ''}`;
+  // Either non-English script shares the same two-way gloss toggle and the
+  // same "own block per verse in glossed mode" layout rule below.
+  const isForeignScript = script !== 'english';
+  const srcLoading = script === 'hebrew' ? hebLoading : script === 'geez' ? gzLoading : false;
+  const srcWordsByVerse = script === 'hebrew' ? hebWordsByVerse : script === 'geez' ? gzWordsByVerse : null;
+  const srcLabel = script === 'geez' ? 'Ge’ez' : 'Hebrew';
+
+  // Verse numbers to actually render, driven by the ACTIVE script rather than
+  // always the English baseline — a book with zero English translation but a
+  // full Hebrew (or Ge'ez) token stream must still render when you're reading
+  // it in that script, instead of going blank just because `verses` (English)
+  // came back empty. `renderVerseNums.length === 0` is the one signal the
+  // markup below needs to decide "nothing to show here at all."
+  const versesByNum = useMemo(() => {
+    const m = {};
+    (verses || []).forEach(v => { m[v.verse] = v; });
+    return m;
+  }, [verses]);
+  const renderVerseNums = useMemo(() => {
+    if (!isForeignScript) return verses.map(v => v.verse);
+    return Object.keys(srcWordsByVerse || {}).map(Number).sort((a, b) => a - b);
+  }, [isForeignScript, verses, srcWordsByVerse]);
+
+  // Verse numbers live in a fixed left gutter (see .rd-vnum-wrap in
+  // Reader.css — position:absolute, left:0) instead of inline in the running
+  // text — the previous inline-number design ("glued" to each verse's first
+  // word via splitFirstToken/.rd-vnum-glue) forced a visible line break
+  // wherever a number landed, which broke a quote block that continues
+  // across a verse boundary right in the middle ("numbers shouldnt float...
+  // if its continued in the quote it shouldnt break the block"). Each verse
+  // now renders an invisible zero-size anchor (.rd-vanchor, see the render
+  // below) as the very first thing inside it — wherever that anchor's own
+  // text line ends up after wrapping (including deep inside an indented
+  // quote block), its number badge is positioned in the gutter at that same
+  // vertical offset, per the user's own description: "'2' would be under
+  // 1... and to the left of 'putting'" (i.e. lined up with whichever line
+  // verse 2 actually starts on, not glued inline into that line).
+  // Recomputed via measurement (not pure CSS) because the containing block
+  // for an element positioned relative to a DISTANT ancestor can't
+  // automatically track an inline anchor's line position — this mirrors the
+  // sidenote/margin-note technique used by many typographic reading UIs.
+  const bodyRef = useRef(null);
+  const vAnchorRefs = useRef({});
+  const [vnumTops, setVnumTops] = useState({});
+  useLayoutEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+    const measure = () => {
+      const bodyTop = body.getBoundingClientRect().top;
+      const next = {};
+      Object.entries(vAnchorRefs.current).forEach(([vnum, el]) => {
+        if (!el) return;
+        next[vnum] = el.getBoundingClientRect().top - bodyTop;
+      });
+      setVnumTops(next);
+    };
+    measure();
+    // Width changes (window resize, sidebar/theme-panel open/close) reflow
+    // wrapped lines and shift every anchor below the change — re-measure on
+    // any such resize, not just on our own explicit dependencies below.
+    const ro = new ResizeObserver(measure);
+    ro.observe(body);
+    return () => ro.disconnect();
+  }, [chapKey, glossMode, hebGlossMode, script, fontPx, typeface, renderVerseNums]);
+
+  // Chapter-wide (as of 2026-08-26, BOOK-wide for the bracket system —
+  // see below) plain-quote scan (English only — Hebrew/Ge'ez never run
+  // through the plain-quote system at all). Concatenates every rendered
+  // verse's narrative text IN ORDER and parses quote marks across the WHOLE
+  // thing once, so a quote that opens in one verse and doesn't close until a
+  // later one (e.g. Genesis 1:9's "Let the waters…") is still recognized as
+  // ONE continuous quotation — per-verse parsing had no way to see past its
+  // own verse's boundary, so the far side of a multi-verse quote had no
+  // opening mark to pair against and silently rendered as plain text.
+  // A verse with an embedded scripture quotation (splitScriptureQuote)
+  // contributes only its own before/after narrative — the embedded block's
+  // marks are a wholly different system (its own numbered lines) and must
+  // never be folded into this scan.
+  //
+  // Widened from chapter-only to BOOK-wide 2026-08-26, fieldy: "I want
+  // quotes that happen to span across chapters to work with this [the <...>
+  // system]." The concatenation now runs across every chapter of the book
+  // (bookText, fetched once per book above), with a boundary offset recorded
+  // after each chapter's own contribution; parseQuoteMarks force-closes any
+  // still-open REAL quote character at each boundary it crosses (chapter-
+  // scoped, exactly as before) while a '<' bracket quote sails through
+  // untouched (see parseQuoteMarks' own boundaries comment). The chapter
+  // ACTUALLY being displayed always uses `versesByNum` (this component's own
+  // live, locally-overridden fetch) rather than bookText's copy of that same
+  // chapter, so what's rendered is never at the mercy of bookText being
+  // slightly stale — bookText only supplies the NEIGHBORING chapters, purely
+  // to resolve carry-in/carry-out bracket state correctly. `ranges` below
+  // still only covers the ACTIVE chapter's verses (that's all the render
+  // loop needs), just expressed in book-wide tree offsets now instead of
+  // chapter-wide ones — sliceQuoteTree doesn't care either way, it only
+  // ever worked in raw offsets.
+  const bookQuoteScan = useMemo(() => {
+    if (isForeignScript) return null;
+    const chapters = (bookText?.chapters?.length)
+      ? bookText.chapters.slice().sort((a, b) => a.chapter - b.chapter)
+      : [{ chapter, verses: [] }]; // bookText not loaded yet (or failed) — fall back to just the active chapter
+    let acc = '';
+    const ranges = {};
+    const boundaries = [];
+    const verseStarts = new Set(); // every verse of every chapter, not just the active one — see parseQuoteMarks's verseBounds
+    const verseEnds = new Set();
+    let sawActiveChapter = false;
+    chapters.forEach(ch => {
+      const isActive = ch.chapter === chapter;
+      if (isActive) sawActiveChapter = true;
+      const chVerses = isActive
+        ? renderVerseNums.filter(v => v !== 0).map(v => ({ verse: v, text: versesByNum[v]?.text || '' }))
+        : (ch.verses || []);
+      chVerses.forEach(v => {
+        const raw = sanitizeText((v.text || '').trim());
+        if (!raw) { if (isActive) ranges[v.verse] = { start: acc.length, end: acc.length, embedded: null }; return; }
+        const q = isActive ? splitScriptureQuote(raw) : null; // embedded-citation splitting only matters for what we render
+        const contribute = q ? `${q.before || ''} ${q.after || ''}` : raw;
+        const start = acc.length;
+        acc += contribute;
+        verseStarts.add(start);
+        verseEnds.add(acc.length);
+        if (isActive) {
+          ranges[v.verse] = q
+            ? { start, end: acc.length, embedded: { beforeLen: (q.before || '').length } }
+            : { start, end: acc.length, embedded: null };
+        }
+        acc += ' ';
+      });
+      acc += ' '; // separator between chapters, mirrors the per-verse one above
+      // Boundary = offset where the NEXT chapter's contribution begins,
+      // captured in this same pass (not a second walk over the data) so it
+      // can never drift out of sync with `acc`/`ranges` above. A trailing
+      // boundary after the very last chapter is harmless — parseQuoteMarks
+      // just sweeps an empty stack there, same as reaching end-of-string.
+      boundaries.push(acc.length);
+    });
+    if (!sawActiveChapter) return null; // active chapter not in bookText's list yet — defensive fallback below handles it
+    return { tree: dissolveOverlongQuotes(parseQuoteMarks(acc, boundaries, { starts: verseStarts, ends: verseEnds })), ranges };
+  }, [isForeignScript, bookText, chapter, renderVerseNums, versesByNum]);
+
+  // 2026-09-21, fieldy: "when I select a verse thats a part of a quote, the
+  // whole quote is highlighted, instead of just the verse selected." Traced
+  // to Leviticus 1: Yahawah's speech opens a quote in v2 and this
+  // translation never gives it a closing mark anywhere in the chapter, so
+  // the ENTIRE quote (v2 through v17) is one still-open node. The
+  // cross-verse propagation this used to do (see sliceQuoteTree's own
+  // comment, and the quoteMarkedOf change just below) was built for a
+  // narrow 2-verse case (Genesis 1:14-15) but, applied to a whole
+  // never-closing discourse like this, lit up nearly the whole chapter from
+  // a single tap — confirmed live (tapping v2 painted v3 onward too, just
+  // faintly enough that a screenshot hid it). fieldy's call: only the
+  // actually-tapped verse highlights, even if that means a still-open
+  // quote's highlight bar stops mid-quote at a verse boundary again.
+
+  // Verse 0 is a superscription/title ("A Psalm of David"), not verse 1 — see
+  // the headings note below. It used to fall through the ordinary per-verse
+  // loop and render glued directly onto verse 1 ("0 · 1 In the beginning…"),
+  // with a bare middot standing in for its own untranslated text. Pull its
+  // text out here so the title block (below, alongside the Paleo heading)
+  // can show it on its own line, and the main loop can skip vnum 0 entirely.
+  const verse0Text = useMemo(() => {
+    if (!renderVerseNums.includes(0)) return null;
+    if (script === 'hebrew' || script === 'geez') {
+      const words = srcWordsByVerse ? srcWordsByVerse[0] : null;
+      if (!words?.length) return null;
+      if (hebGlossMode === 'glossed') {
+        return script === 'hebrew' ? renderHebrewWordCells(words) : renderPlainWordCells(words);
+      }
+      return script === 'hebrew' ? renderHebrewProseNodes(words) : renderPlainProseNodes(words);
+    }
+    const raw = sanitizeText((versesByNum[0]?.text || '').trim());
+    return raw ? renderVerseNodesWithQuotes(raw, glossMode) : null;
+  }, [renderVerseNums, script, srcWordsByVerse, hebGlossMode, versesByNum, glossMode]);
+
+  return (
+    <div className="reader-root" data-typeface={typeface}
+         style={{ '--reader-size': `${fontPx}px`, '--pr-reading': typefaceStack, '--pr-measure': `${measureRem}rem` }}>
+      {/* ── top bar ─────────────────────────────────────────────────────────── */}
+      <header className="rd-bar">
+        <Link to="/landing" className="rd-bar-btn rd-home" title="Home" aria-label="Home">𐤀𐤁</Link>
+
+        <button className="rd-ref" onClick={openNav} aria-haspopup="dialog" title="Choose book, chapter & verse">
+          <span className="rd-ref-txt">{refLabel}</span>
+          <span className="rd-ref-caret" aria-hidden="true">▾</span>
+        </button>
+
+        <div className="rd-bar-right">
+          <button className={`rd-bar-btn ${switchOpen ? 'on' : ''}`} onClick={() => { setSwitchOpen(o => !o); setAaOpen(false); }}
+                  title="Switch reader" aria-label="Switch reader">⇄</button>
+          <button className={`rd-bar-btn rd-aa ${aaOpen ? 'on' : ''}`} onClick={() => { setAaOpen(o => !o); setSwitchOpen(false); }}
+                  title="Text size, typeface & theme" aria-label="Text size, typeface and theme">A<span className="rd-aa-sm">a</span></button>
+        </div>
+
+        {switchOpen && (
+          <div className="rd-menu rd-menu-switch" role="menu">
+            <div className="rd-menu-head">Open this place in</div>
+            {readers.map(r => (
+              <Link key={r.to} to={r.to} className="rd-menu-item" role="menuitem" onClick={closeAll}>
+                <span className="rd-menu-item-label">{r.label}</span>
+                <span className="rd-menu-item-hint">{r.hint}</span>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {aaOpen && (
+          <div className="rd-menu rd-menu-aa" role="dialog" aria-label="Text size, typeface and theme">
+            <div className="rd-aa-row">
+              <span className="rd-aa-label">Text size</span>
+              <div className="rd-aa-size">
+                <button className="rd-aa-step" disabled={fontPx <= FONT_MIN}
+                        onClick={() => setFontPx(v => Math.max(FONT_MIN, v - 1))} aria-label="Smaller">A−</button>
+                <span className="rd-aa-val">{fontPx}</span>
+                <button className="rd-aa-step" disabled={fontPx >= FONT_MAX}
+                        onClick={() => setFontPx(v => Math.min(FONT_MAX, v + 1))} aria-label="Larger">A+</button>
+              </div>
+            </div>
+            <div className="rd-aa-row">
+              <span className="rd-aa-label">Margins</span>
+              <div className="rd-aa-size">
+                {/* "+" reads as MORE margin (shorter lines), matching the
+                    row's own label — which means it has to DECREASE
+                    measureRem (the column's max-width). Shown value is the
+                    margin level, not the raw measure, so it counts up with
+                    "+" the same intuitive way Text size's number does. */}
+                <button className="rd-aa-step" disabled={measureRem >= MEASURE_MAX}
+                        onClick={() => setMeasureRem(v => Math.min(MEASURE_MAX, v + MEASURE_STEP))}
+                        aria-label="Less margin, longer lines" title="Less margin, longer lines">−</button>
+                <span className="rd-aa-val">{Math.round((MEASURE_MAX - measureRem) / MEASURE_STEP)}</span>
+                <button className="rd-aa-step" disabled={measureRem <= MEASURE_MIN}
+                        onClick={() => setMeasureRem(v => Math.max(MEASURE_MIN, v - MEASURE_STEP))}
+                        aria-label="More margin, shorter lines" title="More margin, shorter lines">+</button>
+              </div>
+            </div>
+            <div className="rd-aa-row rd-aa-row-col">
+              <span className="rd-aa-label">Script</span>
+              <div className="rd-aa-gloss">
+                {SCRIPT_MODES.map(m => (
+                  <button key={m.id}
+                          className={`rd-gloss-chip ${script === m.id ? 'sel' : ''}`}
+                          onClick={() => setScript(m.id)}
+                          aria-pressed={script === m.id}
+                          title={`Read in ${m.label} — e.g. ${m.note}`}>
+                    <span className="rd-gloss-name">{m.label}</span>
+                    <span className="rd-gloss-note">{m.note}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="rd-aa-row rd-aa-row-col">
+              <span className="rd-aa-label">Glosses</span>
+              <div className={`rd-aa-gloss ${isForeignScript ? 'cols-2' : ''}`}>
+                {(isForeignScript ? (script === 'geez' ? GEEZ_GLOSS_MODES : HEB_GLOSS_MODES) : GLOSS_MODES).map(m => (
+                  <button key={m.id}
+                          className={`rd-gloss-chip ${(isForeignScript ? hebGlossMode : glossMode) === m.id ? 'sel' : ''}`}
+                          onClick={() => (isForeignScript ? setHebGlossMode(m.id) : setGlossMode(m.id))}
+                          aria-pressed={(isForeignScript ? hebGlossMode : glossMode) === m.id}
+                          title={`Show ${m.label.toLowerCase()} — e.g. ${m.note}`}>
+                    <span className="rd-gloss-name">{m.label}</span>
+                    <span className="rd-gloss-note">{m.note}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="rd-aa-row rd-aa-row-col">
+              <span className="rd-aa-label">Verse selection</span>
+              <div className="rd-aa-gloss">
+                {MARK_MODES.map(m => (
+                  <button key={m.id}
+                          className={`rd-gloss-chip ${markMode === m.id ? 'sel' : ''}`}
+                          onClick={() => setMarkMode(m.id)}
+                          aria-pressed={markMode === m.id}
+                          title={m.note}>
+                    <span className="rd-gloss-name">{m.label}</span>
+                    <span className="rd-gloss-note">{m.note}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="rd-aa-row rd-aa-row-col">
+              <span className="rd-aa-label">Typeface</span>
+              <div className="rd-aa-fonts">
+                {TYPEFACES.map(f => (
+                  <button key={f.id}
+                          className={`rd-font-chip ${typeface === f.id ? 'sel' : ''}`}
+                          style={{ fontFamily: f.stack }}
+                          onClick={() => setTypeface(f.id)}
+                          aria-pressed={typeface === f.id}
+                          title={f.note}>
+                    <span className="rd-font-name">{f.label}</span>
+                    <span className="rd-font-note">{f.note}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="rd-aa-row">
+              <span className="rd-aa-label">Theme</span>
+              <div className="rd-aa-themes">
+                <button className={`rd-theme-chip parchment ${theme === 'light' ? 'sel' : ''}`}
+                        onClick={() => { if (theme !== 'light') toggleTheme(); }}>Parchment</button>
+                <button className={`rd-theme-chip night ${theme !== 'light' ? 'sel' : ''}`}
+                        onClick={() => { if (theme === 'light') toggleTheme(); }}>Night</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {(aaOpen || switchOpen) && <div className="rd-scrim rd-scrim-menu" onClick={closeAll} />}
+
+      {/* ── reading surface ─────────────────────────────────────────────────── */}
+      <main className="rd-scroll" ref={scrollRef} onScroll={handleReaderScroll} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        <article className="rd-page">
+          {loading ? (
+            <div className="rd-state">Opening {bookName}…</div>
+          ) : (script === 'english' && verses.length === 0 && (hebLoading || gzLoading)) ? (
+            // English came back empty and Hebrew/Ge'ez are still being checked
+            // (see the auto-fallback effect above) — a plain loading state so a
+            // book that resolves into another script never flashes the "not
+            // translated" dead end first.
+            <div className="rd-state">Opening {bookName}…</div>
+          ) : (isForeignScript && srcLoading) ? (
+            <div className="rd-state">Loading {srcLabel}…</div>
+          ) : renderVerseNums.length === 0 ? (
+            <div className="rd-state rd-state-untranslated">
+              <div className="rd-state-icon">𐤀𐤁</div>
+              {isForeignScript ? (
+                <>
+                  <p className="rd-state-title">{bookName} has no {srcLabel} source text.</p>
+                  <p className="rd-state-sub">
+                    {script === 'geez'
+                      ? "The Ge’ez reading needs a source text for this book, and this one doesn't have one yet. Read it in English, or open the Parallel Viewer to see whatever source text does exist."
+                      : "The Hebrew reading needs a tokenized Hebrew source for this book — the Masoretic Old Testament, or a Hebrew edition of the New Testament, Jasher, or similar. This book doesn't have one yet. Read it in English, or open the Parallel Viewer to see whatever source text does exist."}
+                  </p>
+                  <div className="rd-state-actions">
+                    <button className="rd-state-btn rd-state-btn-primary" onClick={() => setScript('english')}>
+                      Read in English
+                    </button>
+                    <Link className="rd-state-btn rd-state-btn-secondary" to={parallelPath}>
+                      Open in Parallel Viewer →
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="rd-state-title">{bookName} has not been translated into English yet.</p>
+                  <p className="rd-state-sub">
+                    It has no Hebrew or Ge’ez source text here either — view whatever
+                    the Parallel Viewer does have, or start a translation in the Studio.
+                  </p>
+                  <div className="rd-state-actions">
+                    <Link className="rd-state-btn rd-state-btn-primary" to={parallelPath}>
+                      Open in Parallel Viewer →
+                    </Link>
+                    <Link className="rd-state-btn rd-state-btn-secondary" to={`/translate?${loc}`}>
+                      Translate in the Studio
+                    </Link>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="rd-chapter" key={chapKey}>
+              {continuedPart && (
+                <div className="rd-part-heading rd-heading-continued">
+                  <div className="rd-part-title">{continuedPart.title}</div>
+                </div>
+              )}
+              {startParts.map(h => (
+                <div className="rd-part-heading rd-heading-start" key={`part-${h.id}`}>
+                  <div className="rd-part-title">{h.title}</div>
+                  {h.subtitle && <div className="rd-part-subtitle">{h.subtitle}</div>}
+                </div>
+              ))}
+              {continuedSection && (
+                <div className="rd-section-heading rd-heading-continued">{continuedSection.title}</div>
+              )}
+              {startSections.map(h => (
+                <div className="rd-section-heading rd-heading-start" key={`sec-${h.id}`}>{h.title}</div>
+              ))}
+              <header className="rd-chapter-head">
+                <div className="rd-book-name">{chapterBookName}</div>
+                <div className="rd-chapter-num">{chapter}</div>
+                {chapterTitleHeadings.map(h => h.title && (
+                  <div className="rd-chapter-title" key={`ct-${h.id}`}>{h.title}</div>
+                ))}
+              </header>
+              {/* superscription — a title, not verse 1. Folds together the
+                  BHS-derived Paleo heading (when build-headings.mjs has one)
+                  and the verse-0 translation itself (once someone's entered
+                  it in the Studio), so a Psalm's title always reads as a
+                  title on its own line — never glued onto verse 1. */}
+              {(chapHead?.super || verse0Text) && (
+                <div className="rd-super" id={renderVerseNums.includes(0) ? 'rv-0' : undefined}>
+                  {chapHead?.super && (
+                    <>
+                      <ReaderPaleoText text={chapHead.super.paleo} className="rd-super-paleo" dir="rtl" block />
+                      <div className="rd-super-translit">{chapHead.super.translit}</div>
+                    </>
+                  )}
+                  {verse0Text && <div className="rd-super-en">{verse0Text}</div>}
+                </div>
+              )}
+              <div ref={bodyRef} className={`rd-body ${isForeignScript ? 'rd-heb' : ''} ${isForeignScript && hebGlossMode === 'glossed' ? 'rd-heb-glossed' : ''}`} style={{ fontSize: `${fontPx}px` }}>
+                {renderVerseNums.filter(vnum => vnum !== 0).map((vnum) => {
+                  const verseSrcWords = srcWordsByVerse ? srcWordsByVerse[vnum] : null;
+                  const text = script === 'hebrew'
+                    ? (verseSrcWords?.length
+                        ? (hebGlossMode === 'glossed' ? renderHebrewWordCells(verseSrcWords) : renderHebrewProseNodes(verseSrcWords))
+                        : '·')
+                    : script === 'geez'
+                    ? (verseSrcWords?.length
+                        ? (hebGlossMode === 'glossed' ? renderPlainWordCells(verseSrcWords) : renderPlainProseNodes(verseSrcWords))
+                        : '·')
+                    : (() => {
+                        const raw = sanitizeText((versesByNum[vnum]?.text || '').trim());
+                        if (!raw) return '·';
+                        // Slice this verse's own portion out of the CHAPTER-wide
+                        // quote scan (bookQuoteScan, above) instead of parsing
+                        // this verse's text in isolation — that's what lets a
+                        // quote spanning several verses stay one continuous
+                        // quotation instead of losing its far side.
+                        const range = bookQuoteScan?.ranges[vnum];
+                        const q = splitScriptureQuote(raw);
+                        if (!range) return renderVerseNodesWithQuotes(raw, glossMode); // defensive fallback
+                        // Per-verse only (see the comment above quoteNodeMarked's
+                        // old spot, further up this component) — every node slice
+                        // rendered here belongs to THIS verse's own render pass, so
+                        // just check whether vnum itself is marked.
+                        const quoteMarkedOf = () => marks.has(markKey(vnum));
+                        if (!q) {
+                          const sliced = sliceQuoteTree(bookQuoteScan.tree, range.start, range.end, quoteMarkedOf);
+                          return renderQuoteTree(sliced, glossMode, `v${vnum}-`);
+                        }
+                        const beforeEnd = range.start + (range.embedded?.beforeLen || 0);
+                        const before = q.before
+                          ? renderQuoteTree(sliceQuoteTree(bookQuoteScan.tree, range.start, beforeEnd, quoteMarkedOf), glossMode, `v${vnum}b-`)
+                          : null;
+                        const after = q.after
+                          ? renderQuoteTree(sliceQuoteTree(bookQuoteScan.tree, beforeEnd + 1, range.end, quoteMarkedOf), glossMode, `v${vnum}a-`)
+                          : null;
+                        // A hand-curated citation wins; otherwise the verse's
+                        // strongest quote-kind precept (confirmed first) names
+                        // the passage the embedded quotation comes from — the
+                        // automatic version of scripture-citations.json.
+                        const citation = citations[`${book}:${chapter}:${vnum}`] || preceptCitation(precepts[vnum]);
+                        const out = [];
+                        if (before) out.push(...before);
+                        out.push(renderScriptureQuote(q, glossMode, 'sq', citation, idToSlug));
+                        if (after) out.push(...after);
+                        return out;
+                      })();
+                  const on = marks.has(markKey(vnum));
+                  const acro = chapHead?.acrostics?.[vnum];
+                  // A trailing space normally separates this verse's own
+                  // text from the next verse's, since neither side supplies
+                  // one on its own (e.g. "...treasury." + "He raah" would
+                  // otherwise run together as "treasury.He raah"). But when
+                  // a verse's rendered content ENDS in a block-level NESTED
+                  // quote (.rd-quote-block — see Reader.css), that trailing
+                  // space becomes its own stray line: a lone inline text
+                  // node sitting right after a block child forces its own
+                  // anonymous line box, showing up as an unwanted blank line
+                  // between two quote-block chunks that are otherwise
+                  // touching seamlessly (rd-quote-cont-start/-end above).
+                  // The block break itself already separates the verses
+                  // visually, so skip the extra space in that case. Every
+                  // quote depth is block again (2026-08-18 revert, see
+                  // renderQuoteTree), so this applies uniformly.
+                  const lastNode = Array.isArray(text) ? text[text.length - 1] : text;
+                  const endsInQuoteBlock = !!lastNode?.props?.className?.includes('rd-quote-block');
+                  // 2026-08-19: .rd-verse itself is now display:block (see
+                  // Reader.css) — "lets start verses on new lines" — so
+                  // EVERY verse gets its own line, not just quoted ones
+                  // (plain narrative used to share a line the way ordinary
+                  // prose does; Genesis 1:5 starting mid-line was the
+                  // report). Its default bottom margin gives normal
+                  // paragraph spacing between verses. But when a verse's
+                  // last content is a STILL-OPEN quote continuing into the
+                  // next verse (rd-quote-cont-end — same signal the quote
+                  // margin-zeroing above uses), that margin has to be zero
+                  // too, or it reopens exactly the "break in the vertical
+                  // bar" gap that fix just closed — the quote-block's own
+                  // margin was zeroed, but the verse WRAPPING it still had
+                  // its normal paragraph margin, which alone is enough to
+                  // separate the border into visible segments again.
+                  const endsInQuoteCont = !!lastNode?.props?.className?.includes('rd-quote-cont-end');
+                  // 2026-08-19: "verse numbers should not offset [...] if I
+                  // change the text size after[wards] the offset happens" —
+                  // a verse whose ENTIRE content is a block quote (nothing
+                  // narrative before it, like Luke 21:32) puts .rd-vtext
+                  // (still display:inline, needed so box-decoration-break:
+                  // clone can paint the sticky highlight per WRAPPED LINE
+                  // for ordinary narrative verses) in a browser-quirk
+                  // position: an inline box whose only child is a
+                  // block-level element still reserves one phantom line of
+                  // height at ITS OWN font-size/line-height, even though it
+                  // has no actual inline content of its own to show there.
+                  // That phantom line is what the verse number badge was
+                  // measuring against (rd-vanchor sits right before it) —
+                  // invisible at the default font size, but it scales
+                  // linearly with Text size, so a bigger font opened a
+                  // real, growing gap between the number and its text.
+                  // Scoped narrowly to verses with NO bare narrative text at
+                  // all (every top-level node is a quote block) — a block
+                  // container doesn't need this anonymous-inline-wrapper
+                  // trick for a block child, so switching JUST these
+                  // verses' vtext to display:block removes the phantom line
+                  // outright, and it's safe here specifically because
+                  // there's no inline text left for the clone-highlight
+                  // trick to apply to in the first place (the quote block
+                  // itself already gets its own highlight — see
+                  // .rd-verse.marked .rd-quote-block in Reader.css).
+                  const nodeList = Array.isArray(text) ? text : (text ? [text] : []);
+                  const allQuoteBlock = nodeList.length > 0 &&
+                    nodeList.every(n => n && typeof n === 'object' && n.props?.className?.includes('rd-quote-block'));
+                  // Pericope headings (level 4, see the `headings` table comment in
+                  // server.js) — a granular title over a verse range, anchored at its
+                  // FIRST verse. Rendered inline, right above the verse row it
+                  // anchors to, the same Fragment-sibling pattern as rd-acrostic
+                  // just below (which is why it's computed and placed before it).
+                  const peris = pericopesByVerse.get(vnum);
+                  const mids = midHeadingsByVerse.get(vnum);
+                  return (
+                    <Fragment key={vnum}>
+                    {mids && mids.map((h, hi) => (
+                      h.level === HEADING_LEVEL.PART ? (
+                        <div className="rd-part-heading rd-heading-start rd-heading-mid" key={`mid-${h.id ?? hi}`}>
+                          <div className="rd-part-title">{h.title}</div>
+                          {h.subtitle && <div className="rd-part-subtitle">{h.subtitle}</div>}
+                        </div>
+                      ) : h.level === HEADING_LEVEL.SECTION ? (
+                        <div className="rd-section-heading rd-heading-start rd-heading-mid" key={`mid-${h.id ?? hi}`}>
+                          {h.title}
+                        </div>
+                      ) : (
+                        <div className="rd-chapter-title rd-heading-mid" key={`mid-${h.id ?? hi}`}>{h.title}</div>
+                      )
+                    ))}
+                    {peris && peris.map((p, pi) => (
+                      <div className="rd-pericope" key={`peri-${p.id ?? pi}`}>
+                        <div className="rd-pericope-title">{p.title}</div>
+                        {p.subtitle && <div className="rd-pericope-subtitle">{p.subtitle}</div>}
+                      </div>
+                    ))}
+                    {acro && (
+                      <div className="rd-acrostic">
+                        <span className="rd-acrostic-glyph">{acro.letter}</span>
+                        <span className="rd-acrostic-name">
+                          {acro.label}
+                          {LETTER_MEANING[acro.letter[0]] && ` (${LETTER_MEANING[acro.letter[0]]})`}
+                          {acro.spelled && (
+                            <>
+                              {' – '}
+                              <span className="rd-acrostic-spelled">{acro.spelled}</span>
+                            </>
+                          )}
+                        </span>
+                      </div>
+                    )}
+                    <span className={`rd-verse ${on ? 'marked' : ''} ${endsInQuoteCont ? 'rd-verse-cont-after' : ''}`} id={`rv-${vnum}`}>
+                      {/* Invisible, zero-size — exists purely so the effect
+                          above can measure exactly where this verse begins
+                          (even mid-line, even inside an indented quote block)
+                          and place its gutter number badge at that same
+                          vertical position. See vAnchorRefs above. */}
+                      <span className="rd-vanchor" ref={el => { vAnchorRefs.current[vnum] = el; }} />
+                      <span className={`rd-vtext ${allQuoteBlock ? 'rd-vtext-block' : ''}`}>{text}</span>{!endsInQuoteBlock && ' '}
+                    </span>
+                    </Fragment>
+                  );
+                })}
+                {/* Verse-number gutter — rendered as a separate absolutely-
+                    positioned layer (see .rd-vnum-wrap in Reader.css:
+                    position:absolute, left:0) rather than inline in the text
+                    above, so a number never interrupts a quote block or forces
+                    a line break; each badge's `top` comes from vnumTops
+                    (measured against its verse's own .rd-vanchor). */}
+                {renderVerseNums.filter(vnum => vnum !== 0 && vnumTops[vnum] != null).map((vnum) => {
+                  const on = marks.has(markKey(vnum));
+                  return (
+                    <span className={`rd-vnum-wrap ${on ? 'marked' : ''}`} key={`g${vnum}`} style={{ top: `${vnumTops[vnum]}px` }}>
+                      {/* Precept marker — sits in the margin left of the number
+                          whenever this verse quotes, or is quoted by, another
+                          passage anywhere in the corpus (see `precepts` above).
+                          Its own button so it never toggles the highlight. */}
+                      {precepts[vnum]?.length ? (
+                        <button type="button" className={`rd-precept-dot ${precepts[vnum].some(p => p.status === 'confirmed' || p.status === 'manual') ? 'confirmed' : ''}`}
+                                title={`${precepts[vnum].length} precept${precepts[vnum].length === 1 ? '' : 's'} — passages sharing this verse's words`}
+                                aria-label={`Precepts for verse ${vnum}`}
+                                onClick={e => { e.stopPropagation(); setPreceptOpen(vnum); }}>
+                          <span className="rd-precept-glyph" aria-hidden="true">⁂</span>
+                        </button>
+                      ) : null}
+                      <sup className="rd-vnum" role="button" tabIndex={0}
+                           title={on ? `Clear highlight on verse ${vnum}` : `Highlight verse ${vnum}`}
+                           onClick={() => toggleMark(vnum)}
+                           onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMark(vnum); } }}>
+                        {vnum}
+                      </sup>
+                      {/* Hover/focus-revealed link to this verse's own clean
+                          URL (/:bookSlug/:chapter/:verse — VersePage.jsx).
+                          stopPropagation so a click doesn't also bubble up
+                          into anything listening on the verse number. */}
+                      <Link className="rd-vnum-goto"
+                            to={`/${bookToParam(book, idToSlug)}/${chapter}/${vnum}`}
+                            onClick={e => {
+                              e.stopPropagation();
+                              // Stash exactly where we are and which verse
+                              // we're opening, so the scroll-memory effect
+                              // above can put both back when the reader taps
+                              // back out of this verse's own page.
+                              if (scrollRef.current) writeSession(RD_SCROLL_KEY(book, chapter), String(scrollRef.current.scrollTop));
+                              writeSession(RD_RETURN_VERSE_KEY(book, chapter), String(vnum));
+                            }}
+                            title={`Open ${chapterBookName} ${chapter}:${vnum} on its own page`}>
+                        Go to verse
+                      </Link>
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* chapter foot — prev / next roll across books */}
+          {!loading && (
+            <nav className="rd-foot" aria-label="Chapter navigation">
+              <button className="rd-foot-btn" disabled={!prevLoc}
+                      onClick={() => prevLoc && go(prevLoc.b, prevLoc.c, null)}>‹ Previous</button>
+              <button className="rd-foot-ref" onClick={openNav}>{chapterBookName} {chapter}</button>
+              <button className="rd-foot-btn" disabled={!nextLoc}
+                      onClick={() => nextLoc && go(nextLoc.b, nextLoc.c, null)}>Next ›</button>
+            </nav>
+          )}
+        </article>
+      </main>
+
+      {/* ── precepts panel ──────────────────────────────────────────────────── */}
+      {preceptOpen != null && precepts[preceptOpen]?.length ? (
+        <div className="rd-sheet-wrap" role="dialog" aria-label={`Precepts for ${chapterBookName} ${chapter}:${preceptOpen}`}>
+          <div className="rd-scrim" onClick={() => setPreceptOpen(null)} />
+          <div className="rd-sheet rd-precept-sheet">
+            <div className="rd-sheet-grip" />
+            <div className="rd-sheet-head">
+              <div className="rd-precept-title">
+                <span className="rd-precept-glyph" aria-hidden="true">⁂</span>
+                <span>Precepts</span>
+                <span className="rd-precept-ref">{chapterBookName} {chapter}:{preceptOpen}</span>
+                <span className="rd-precept-count">{precepts[preceptOpen].length}</span>
+              </div>
+              <button className="rd-sheet-close" onClick={() => setPreceptOpen(null)} aria-label="Close">✕</button>
+            </div>
+            <div className="rd-precept-body">
+              <PreceptList items={precepts[preceptOpen]}
+                           renderText={(t, k) => renderVerseNodes(t, glossMode, k)}
+                           onOpen={(b, c, v) => { setPreceptOpen(null); go(b, c, v); }}
+                           isAdmin={isAdmin}
+                           onReview={(item, status) => reviewPrecept(preceptOpen, item, status)} />
+              {preceptMore[preceptOpen] ? (
+                <Link className="rd-precept-more" to={`/precepts?book=${book}&chapter=${chapter}&verse=${preceptOpen}`}>
+                  {preceptMore[preceptOpen]} more cross-reference{preceptMore[preceptOpen] === 1 ? '' : 's'} in the Precept Studio ›
+                </Link>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {/* ── book / chapter / verse picker ───────────────────────────────────── */}
+      {navOpen && (
+        <div className="rd-sheet-wrap" role="dialog" aria-label="Choose passage">
+          <div className="rd-scrim" onClick={() => setNavOpen(false)} />
+          <div className="rd-sheet">
+            <div className="rd-sheet-grip" />
+            <div className="rd-sheet-head">
+              <input className="rd-sheet-search" placeholder="Find a book…" value={bookQuery}
+                     onChange={e => setBookQuery(e.target.value)} autoFocus />
+              <button className="rd-sheet-close" onClick={() => setNavOpen(false)} aria-label="Close">✕</button>
+            </div>
+
+            <div className="rd-sheet-body">
+              {/* Books — one tap jumps straight to that book (chapter 1). */}
+              <div className="rd-sheet-col rd-col-books">
+                {filteredBooks.map((m, i) => {
+                  const id = idOf(m);
+                  return (
+                    <button key={id}
+                            ref={id === book ? curBookRef : null}
+                            className={`rd-book-row ${id === book ? 'cur' : ''}`}
+                            onClick={() => { go(id, 1, null); setNavOpen(false); }}>
+                      <span className="rd-book-idx">{i + 1}</span>
+                      <span className="rd-book-label">{m.name || `Book ${id}`}</span>
+                    </button>
+                  );
+                })}
+                {filteredBooks.length === 0 && <div className="rd-sheet-empty">No match.</div>}
+              </div>
+
+              {/* Chapter / verse jumps within the book you're reading. */}
+              <div className="rd-sheet-col rd-col-chapters">
+                <div className="rd-sheet-sub">{bookName} — chapters</div>
+                {navSections.length === 0 ? (
+                  <div className="rd-grid">
+                    {curChapters.map(c => (
+                      <button key={c}
+                              ref={c === chapter ? curChapterRef : null}
+                              className={`rd-grid-cell ${c === chapter ? 'cur' : ''}`}
+                              onClick={() => { go(book, c, null); setNavOpen(false); }}>{c}</button>
+                    ))}
+                  </div>
+                ) : (
+                  // This book has Section headings (level 2 — e.g. Book of
+                  // Melchizedek's 3 originally-separate parts) — break the chapter
+                  // grid into one sub-grid per section, with the section's title
+                  // as a heading, instead of one flat run of numbers.
+                  navSections.map((s, i) => {
+                    const nextFrom = navSections[i + 1]?.from ?? (lastCh + 1);
+                    const chaptersInSection = curChapters.filter(c => c >= s.from && c < nextFrom);
+                    if (!chaptersInSection.length) return null;
+                    return (
+                      <div key={s.from} className="rd-section-group">
+                        <div className="rd-section-title">{s.title}</div>
+                        <div className="rd-grid">
+                          {chaptersInSection.map(c => (
+                            <button key={c}
+                                    ref={c === chapter ? curChapterRef : null}
+                                    className={`rd-grid-cell ${c === chapter ? 'cur' : ''}`}
+                                    onClick={() => { go(book, c, null); setNavOpen(false); }}>{c}</button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+                {verses.length > 0 && (
+                  <>
+                    <div className="rd-sheet-sub">Jump to verse</div>
+                    <div className="rd-grid rd-grid-verses">
+                      {verses.map(v => (
+                        <button key={v.verse}
+                                className={`rd-grid-cell ${v.verse === verse ? 'cur' : ''}`}
+                                onClick={() => { go(book, chapter, v.verse); setNavOpen(false); }}>{v.verse}</button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

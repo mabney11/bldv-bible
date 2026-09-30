@@ -797,11 +797,21 @@ function render(text, vgKey) {
   // apply every global pin blind — "achad (one)", "shairay (city)", "hamah (like)" into
   // verses whose Hebrew has no such word. Where the verse HAS Hebrew, a pin now has to
   // name one of these roots; books with no Hebrew at all keep the old fallback.
+  //
+  // NARROWED 2026-09-30 (fieldy, Matthew 16:27 "render to everyone man (from) to his
+  // deeds"). The ±2 window was always taken, even when the verse's OWN Hebrew was right
+  // there. Five verses of Hebrew contain every common particle — 𐤌𐤍 min "from" is in
+  // nearly every window — so a bad pin like `according -> man` passed the gate in a
+  // verse that has no 𐤌𐤍 at all. Now: the verse pickAlignedTokens matched, if any;
+  // else the verse's own Hebrew, if it has any; only a verse with NO Hebrew of its own
+  // (a versification gap) still borrows from its neighbours.
   const hebTrNear = (() => {
     if (!VG.on || !vgKey) return null;
     const [c, ch, v] = vgKey.split('|');
     const set = new Set(); let any = false;
-    for (const d of [0, 1, -1, 2, -2]) {
+    const own = VG.verses.get(`${c}|${ch}|${+v}`);
+    const window = picked ? [picked.d] : (own && own.length ? [0] : [0, 1, -1, 2, -2]);
+    for (const d of window) {
       const toks = VG.verses.get(`${c}|${ch}|${+v + d}`);
       if (!toks || !toks.length) continue;
       any = true;
