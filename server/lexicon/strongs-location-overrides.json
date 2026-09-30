@@ -1,1123 +1,1590 @@
 {
   "_comment": "Location-keyed Strong's # overrides. Key = book_id:chapter:verse:token_ordinal (get these from the token's OWN ordinal, e.g. via /api/admin/verse-tokens or the Strong's Override admin page at /admin/strongs-overrides). Unlike surface-strongs-overrides.json (keyed by bare spelling, only fills a BLANK SN, applies to every occurrence of that spelling), this REPLACES an existing SN and applies to exactly the one occurrence named by the key — so the same spelling can carry different Strong's #s in different verses. Each value is { strongs, word_raw, note }. strongs can be a real Strong's # (a correction) or a new synthetic one like \"H2995a\" (a homograph split — same spelling, deliberately distinct sense). See loadLexicons()/applyLocOverride*/locOverridesTargeting() in server.js for how this gets applied.",
-  "41:5:7:8": {
-    "strongs": "H1121＋H410",
-    "word_raw": "𐤁𐤍𐤀𐤋",
-    "note": " [css convention updated to construct-modifier]",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋",
-        "strongs": "H410",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ]
-  },
-  "40:4:3:6": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "40:4:6:4": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "40:8:29:8": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "40:16:16:8": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "40:26:63:17": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "40:27:40:11": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "40:27:43:9": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "40:27:54:17": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "41:1:1:5": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "41:3:11:11": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "41:15:39:16": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "42:1:35:17": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "42:3:38:4": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "42:4:3:5": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "42:4:9:9": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "42:4:41:9": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "42:22:70:5": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "43:1:34:7": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "43:1:49:7": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "43:5:25:14": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "43:9:35:10": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁",
-        "strongs": "",
-        "gloss": "in",
-        "css": "mod-prep"
-      },
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "43:10:36:12": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "43:11:4:13": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "43:11:27:8": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "43:19:7:11": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤋𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤋",
-        "strongs": "",
-        "gloss": "to",
-        "css": "mod-prep"
-      },
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "43:20:31:9": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "44:8:37:14": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "44:9:20:9": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "45:1:4:3": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤋𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤋",
-        "strongs": "",
-        "gloss": "to",
-        "css": "mod-prep"
-      },
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "47:1:19:2": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "48:2:20:18": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "49:4:13:7": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "58:4:14:11": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "58:6:6:9": {
-    "strongs": "H853＋H1121＋H430",
-    "word_raw": "𐤀𐤕𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤀𐤕",
-        "strongs": "H853",
-        "gloss": "entirety",
-        "css": "mod-prep"
-      },
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "58:7:3:13": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤋𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤋",
-        "strongs": "",
-        "gloss": "to",
-        "css": "mod-prep"
-      },
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "58:10:29:8": {
-    "strongs": "H853＋H1121＋H430",
-    "word_raw": "𐤀𐤕𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤀𐤕",
-        "strongs": "H853",
-        "gloss": "entirety",
-        "css": "mod-prep"
-      },
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "62:3:8:11": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "62:4:15:5": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "62:5:5:10": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "62:5:10:2": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁",
-        "strongs": "",
-        "gloss": "in",
-        "css": "mod-prep"
-      },
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "62:5:12:8": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "62:5:13:6": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "62:5:13:16": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "62:5:20:4": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
-  },
-  "66:2:18:7": {
-    "strongs": "H1121＋H430",
-    "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
-    "parts": [
-      {
-        "paleo": "𐤁𐤍",
-        "strongs": "H1121",
-        "gloss": "son",
-        "css": "mod-cstr"
-      },
-      {
-        "paleo": "𐤄",
-        "strongs": "",
-        "gloss": "the",
-        "css": "mod-art"
-      },
-      {
-        "paleo": "𐤀𐤋𐤄𐤉𐤌",
-        "strongs": "H430",
-        "gloss": "Alahayam",
-        "css": "root"
-      }
-    ],
-    "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+  "_maqaf_remap_applied": "2026-09-30",
+  "_retired_maqaf_2026-09-30": {
+    "41:5:7:8": {
+      "value": {
+        "strongs": "H1121＋H410",
+        "word_raw": "𐤁𐤍𐤀𐤋",
+        "note": " [css convention updated to construct-modifier]",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋",
+            "strongs": "H410",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ]
+      },
+      "became": [
+        "41:5:7:9",
+        "41:5:7:10"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤀𐤋"
+      ]
+    },
+    "40:4:3:6": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "40:4:3:6",
+        "40:4:3:7"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "40:4:6:4": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "40:4:6:4",
+        "40:4:6:5"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "40:8:29:8": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "40:8:29:9",
+        "40:8:29:10"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "40:16:16:8": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "40:16:16:8",
+        "40:16:16:9"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "40:26:63:17": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "40:26:63:18",
+        "40:26:63:19"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "40:27:40:11": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "40:27:40:12",
+        "40:27:40:13"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "40:27:43:9": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "40:27:43:10",
+        "40:27:43:11"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "40:27:54:17": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "40:27:54:21",
+        "40:27:54:22"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "41:1:1:5": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "41:1:1:5",
+        "41:1:1:6"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "41:3:11:11": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "41:3:11:11",
+        "41:3:11:12"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "41:15:39:16": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "41:15:39:17",
+        "41:15:39:18"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "42:1:35:17": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "42:1:35:19",
+        "42:1:35:20"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "42:3:38:4": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "42:3:38:7",
+        "42:3:38:8"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "42:4:3:5": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "42:4:3:5",
+        "42:4:3:6"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "42:4:9:9": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "42:4:9:11",
+        "42:4:9:12"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "42:4:41:9": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "42:4:41:10",
+        "42:4:41:11"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "42:22:70:5": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "42:22:70:6",
+        "42:22:70:7"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "43:1:34:7": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "43:1:34:7",
+        "43:1:34:8"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "43:1:49:7": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "43:1:49:7",
+        "43:1:49:8"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "43:5:25:14": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "43:5:25:16",
+        "43:5:25:17"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "43:9:35:10": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁",
+            "strongs": "",
+            "gloss": "in",
+            "css": "mod-prep"
+          },
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "43:9:35:10",
+        "43:9:35:11"
+      ],
+      "words": [
+        "𐤁𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "43:10:36:12": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "43:10:36:13",
+        "43:10:36:14"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "43:11:4:13": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "43:11:4:15",
+        "43:11:4:16"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "43:11:27:8": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "43:11:27:9",
+        "43:11:27:10"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "43:19:7:11": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤋𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤋",
+            "strongs": "",
+            "gloss": "to",
+            "css": "mod-prep"
+          },
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "43:19:7:15",
+        "43:19:7:16"
+      ],
+      "words": [
+        "𐤋𐤁𐤍",
+        "𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "43:20:31:9": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "43:20:31:10",
+        "43:20:31:11"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "44:8:37:14": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "44:8:37:17",
+        "44:8:37:18"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "44:9:20:9": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "44:9:20:11",
+        "44:9:20:12"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "45:1:4:3": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤋𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤋",
+            "strongs": "",
+            "gloss": "to",
+            "css": "mod-prep"
+          },
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "45:1:4:3",
+        "45:1:4:4"
+      ],
+      "words": [
+        "𐤋𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "47:1:19:2": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "47:1:19:2",
+        "47:1:19:3"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "48:2:20:18": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "48:2:20:21",
+        "48:2:20:22"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "49:4:13:7": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "49:4:13:8",
+        "49:4:13:9"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "58:4:14:11": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "58:4:14:12",
+        "58:4:14:13"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "58:6:6:9": {
+      "value": {
+        "strongs": "H853＋H1121＋H430",
+        "word_raw": "𐤀𐤕𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤀𐤕",
+            "strongs": "H853",
+            "gloss": "entirety",
+            "css": "mod-prep"
+          },
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "58:6:6:9",
+        "58:6:6:10",
+        "58:6:6:11"
+      ],
+      "words": [
+        "𐤀𐤕",
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "58:7:3:13": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤋𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤋",
+            "strongs": "",
+            "gloss": "to",
+            "css": "mod-prep"
+          },
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "58:7:3:16",
+        "58:7:3:17"
+      ],
+      "words": [
+        "𐤋𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "58:10:29:8": {
+      "value": {
+        "strongs": "H853＋H1121＋H430",
+        "word_raw": "𐤀𐤕𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤀𐤕",
+            "strongs": "H853",
+            "gloss": "entirety",
+            "css": "mod-prep"
+          },
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "58:10:29:9",
+        "58:10:29:10",
+        "58:10:29:11"
+      ],
+      "words": [
+        "𐤀𐤕",
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "62:3:8:11": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "62:3:8:12",
+        "62:3:8:13"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "62:4:15:5": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "62:4:15:6",
+        "62:4:15:7"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "62:5:5:10": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "62:5:5:12",
+        "62:5:5:13"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "62:5:10:2": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁",
+            "strongs": "",
+            "gloss": "in",
+            "css": "mod-prep"
+          },
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "62:5:10:2",
+        "62:5:10:3"
+      ],
+      "words": [
+        "𐤁𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "62:5:12:8": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "62:5:12:11",
+        "62:5:12:12"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "62:5:13:6": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "62:5:13:6",
+        "62:5:13:7"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "62:5:13:16": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "62:5:13:17",
+        "62:5:13:18"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "62:5:20:4": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "62:5:20:4",
+        "62:5:20:5"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤀𐤋𐤄𐤉𐤌"
+      ]
+    },
+    "66:2:18:7": {
+      "value": {
+        "strongs": "H1121＋H430",
+        "word_raw": "𐤁𐤍𐤄𐤀𐤋𐤄𐤉𐤌",
+        "parts": [
+          {
+            "paleo": "𐤁𐤍",
+            "strongs": "H1121",
+            "gloss": "son",
+            "css": "mod-cstr"
+          },
+          {
+            "paleo": "𐤄",
+            "strongs": "",
+            "gloss": "the",
+            "css": "mod-art"
+          },
+          {
+            "paleo": "𐤀𐤋𐤄𐤉𐤌",
+            "strongs": "H430",
+            "gloss": "Alahayam",
+            "css": "root"
+          }
+        ],
+        "note": "Ben + [prefix/article] + Elohim — construct compound, Elohim is head. Auto-generated."
+      },
+      "became": [
+        "66:2:18:8",
+        "66:2:18:9"
+      ],
+      "words": [
+        "𐤁𐤍",
+        "𐤄𐤀𐤋𐤄𐤉𐤌"
+      ]
+    }
   }
 }
