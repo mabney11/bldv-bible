@@ -1121,7 +1121,6 @@ ref	word	from->to	before -> after
 219:1:172	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 219:1:176	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 219:1:180	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
-219:1:186	𐤀𐤌𐤌	H538->H517	exact:𐤀𐤌𐤌 -> exact:𐤀𐤌𐤌
 219:1:190	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 219:1:192	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 219:1:193	𐤀𐤌𐤑	H533->H553	exact:𐤀𐤌𐤑 -> exact:𐤀𐤌𐤑
@@ -1908,7 +1907,6 @@ ref	word	from->to	before -> after
 219:5:449	𐤀𐤌𐤑	H533->H553	exact:𐤀𐤌𐤑 -> exact:𐤀𐤌𐤑
 219:5:449	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 219:5:452	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
-219:5:460	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 219:5:462	𐤀𐤌𐤑	H533->H553	exact:𐤀𐤌𐤑 -> exact:𐤀𐤌𐤑
 219:5:464	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 219:5:471	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
@@ -1924,7 +1922,6 @@ ref	word	from->to	before -> after
 219:5:529	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 219:5:530	𐤁𐤌𐤅𐤕	H1116->H4191	exact:𐤁𐤌𐤅𐤕 -> exact:𐤁𐤌𐤅𐤕
 219:5:537	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
-219:5:540	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 219:5:545	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 219:5:572	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 219:6:1	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
@@ -1994,7 +1991,6 @@ ref	word	from->to	before -> after
 219:6:304	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 219:6:315	𐤏𐤉𐤓𐤌	H5903->H5892	exact:𐤏𐤉𐤓𐤌 -> exact:𐤏𐤉𐤓𐤌
 219:6:322	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
-219:6:328	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 219:6:331	𐤁𐤏𐤆	H1162->H5797	exact:𐤁𐤏𐤆 -> exact:𐤁𐤏𐤆
 219:6:336	𐤍𐤇𐤔𐤉𐤌	H5173->H5175	exact:𐤍𐤇𐤔𐤉𐤌 -> exact:𐤍𐤇𐤔𐤉𐤌
 219:6:340	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
@@ -3258,7 +3254,6 @@ ref	word	from->to	before -> after
 220:14:186	𐤉𐤏𐤋𐤌	H3281->H5927	exact:𐤉𐤏𐤋𐤌 -> exact:𐤉𐤏𐤋𐤌
 220:14:259	𐤅𐤓𐤁𐤅𐤕	H7379->H7227	exact:𐤅𐤓𐤁𐤅𐤕 -> exact:𐤅𐤓𐤁𐤅𐤕
 220:14:265	𐤅𐤓𐤁𐤅𐤕	H7379->H7227	exact:𐤅𐤓𐤁𐤅𐤕 -> exact:𐤅𐤓𐤁𐤅𐤕
-220:14:270	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 220:14:272	𐤄𐤌𐤑𐤅𐤓	H6697->H4692	proclitic:𐤄+𐤌+𐤑𐤅𐤓 -> exact:𐤄𐤌𐤑𐤅𐤓
 220:14:274	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 220:14:276	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
