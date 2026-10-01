@@ -67,7 +67,8 @@ export function loadRules() {
       selfGloss = new RegExp(`\\b(${live.map((r) => esc(r.to)).join('|')}) \\((?:${live.flatMap((r) => [esc(r.from), esc(r.to)]).join('|')})\\)`, 'g');
     }
   } catch { /* none */ }
-  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases, gold, hyphenRe, hyphenTo, selfGloss, selfGlossEn, bareTr };
+  const glossed = new Map(Object.entries(rules.glossed || {}).filter(([k, v]) => !k.startsWith('_') && v));
+  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases, gold, hyphenRe, hyphenTo, selfGloss, selfGlossEn, bareTr, glossed };
 }
 
 // ── gold markers: "Yahawah" → "Yahawah ()" ─────────────────────────────────────
@@ -214,4 +215,38 @@ export function checkText(text, R) {
     if (m) violations.push({ text: m[0], fix: null, why: f.why });
   }
   return { violations, fixed };
+}
+
+// ── glossed divine names (fieldy 2026-10-01: "lets go ahead and gloss Alahayam (God),
+// Yashawai (Jesus) Mashayach (Christ / Anointed One)") — lexicon/name-form-rules.json
+// "glossed". Outside every parenthesis, such a word with no gloss, or with the empty gold
+// marker "()", gets its gloss. The gloss adds English words, so `shifts` (as bareNames)
+// lists, per added word, the word index it lands after — translation_links move up.
+export function divineGlosses(text, R) {
+  if (!text || !R.glossed || !R.glossed.size) return { fixed: text, hits: [], shifts: [] };
+  const toks = [...text.matchAll(TOK)];
+  const hits = [], shifts = [];
+  let depth = 0, wordIx = -1, out = '', last = 0;
+  for (let i = 0; i < toks.length; i++) {
+    const m = toks[i], w = m[0];
+    if (w === '(') { depth++; continue; }
+    if (w === ')') { depth = Math.max(0, depth - 1); continue; }
+    wordIx++;
+    if (depth || !R.glossed.has(w)) continue;
+    const gl = R.glossed.get(w), n = (gl.match(/[A-Za-z\u00C0-\u024F'-]+/g) || []).length;
+    const nx = toks[i + 1], nx2 = toks[i + 2];
+    const between = nx ? text.slice(m.index + w.length, nx.index) : '';
+    if (nx && nx[0] === '(' && !between.trim()) {
+      if (!(nx2 && nx2[0] === ')' && !text.slice(nx.index + 1, nx2.index).trim())) continue;   // already glossed
+      out += text.slice(last, m.index) + `${w} (${gl})`;
+      last = nx2.index + 1; i += 2;
+    } else {
+      out += text.slice(last, m.index) + `${w} (${gl})`;
+      last = m.index + w.length;
+    }
+    hits.push({ text: w, fix: `${w} (${gl})`, why: 'glossed divine name — never bare' });
+    for (let k = 0; k < n; k++) shifts.push(wordIx);
+  }
+  out += text.slice(last);
+  return { fixed: out, hits, shifts };
 }

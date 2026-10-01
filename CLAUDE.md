@@ -48,6 +48,46 @@ This replaces "reading text = bare Strong's root" from Genesis 3 on. Genesis 1�
   spelling — the HEB parse reads Yosef's yod as a verb prefix ("WaYaYawasap").
 - The parallel gate also accepts the block reading of a word (formOf), not only its chips'
   components joined: HEB-edition components read "W"+"Ya"+"Bawayaa"+"w".
+- **HEBREW WORD ORDER, woven glosses (fieldy, same day, after seeing Matt 5 / 2 Kgs 5).** His
+  saved Gen 2:7 is the model: every Hebrew word in order, English only inside its brackets —
+  "WaYaShalach (And sent) Alayaw (to him) Alayashai (Elisha) Malaak (a messenger) LaAmar
+  (saying)". His choices: Hebrew order (not English order); names keep their English gloss;
+  "i dont want any text in brackets unless thats the only context it provides" → the [label]s
+  are gone: modform-lib weave() writes the modification INTO the English — prefixes in front
+  ("And sent", "in the house", "his nostrils"; article on a verb = "who"), a pronoun suffix on a
+  verb or preposition is its object ("to him"), plural/emphatic follow " - " ("who mourn -
+  plural"). Gen 1-2 unchanged.
+  merge-modforms.mjs --corpus does it for every machine verse from Gen 3 (OT from
+  apply-web-strongs' output, NT/Apocrypha from render-corpus'): pairs → their Hebrew word
+  (marker \uE002ord\uE003 / form / root), the table fills more (OT too), then interlinear():
+  pairs sorted by Hebrew ordinal; English no pair holds goes into the nearest pair's brackets
+  in its clause (never a name's); a Hebrew word with no English gets its CHIP gloss (fieldy's
+  curated lexicon, else the WEB's likeliest English for its Strong's, else his placeholder =
+  root paleo); a quotation opens on the first of its words in Hebrew order and closes on the
+  last. A verse keeps English order (still woven) when its quotation marks would change order,
+  or when most of its CONTENT words found no Hebrew word (free paraphrase). Measured on a copy:
+  NT 4,816 of 7,958 in Hebrew order (968 quote-order, 2,137 paraphrase); Apocrypha 5,171
+  (14,534 paraphrase — Josephus etc.); OT ~all. Both gates pass.
+  NT concepts the OT names (lexicon/reading-concepts.json, his words): genealogy →
+  Thawaladahawath, repent → Nacham, baptize → Rachatz — written where the verse's Hebrew has
+  שׁוּב / טָבַל (tagged or not); the parallel gate accepts them there. NT/Apocrypha only.
+- **Follow-ups (fieldy, same day):**
+  - "let 'Wa' lead all context its used in" — modform-lib leadAnd(): a word with 𐤅 starts its
+    English with "and"/"And" ("WaYaBawaa (And so came)"); a later "and" moves to the front, a
+    leading "but" gives way.
+  - "gloss Alahayam (God), Yashawai (Jesus) Mashayach (Christ / Anointed One)" —
+    lexicon/name-form-rules.json "glossed"; name-form-lib divineGlosses() (bare or gold "()" →
+    glossed, link indices shifted); fix-name-forms writes it on EVERY row (saved ones with a
+    history row), verify-name-forms fails a survivor, merge-modforms writes it first so
+    prefixes join ("WaAlahayam (and God)").
+  - Matthew 5:5 "Hamah (great uproar)": server.js applyLiveGloss re-glossed by SPELLING
+    (𐤄𐤌𐤄 = H1993) over H1992 "they". It now only re-glosses Genesis 1-2; from Gen 3 the baked
+    text is authoritative and merge-modforms bakes an unmodified word's curated gloss per
+    Strong's (MF.curatePairs + curatedOf: homograph chip gloss → the word's own lexicon spelling
+    unless that spelling is another common Strong's root → the root's lexicon gloss only when
+    no other Strong's shares the root → else the verse's English). English left before a comma
+    goes to the Hebrew word right after the previous one when the English named none
+    ("Asharay (He who) HaInawayam (are the gentle - plural)").
 - **fieldy's saved verses** — merge-modforms.mjs --saved (render-all after reseed; Rebake
   step 5 on prod): same merge, his wording kept; translation_history row first, rich_text
   merged the same way, translation_links english_indices re-mapped (LCS + the head word into

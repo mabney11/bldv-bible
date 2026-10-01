@@ -27,7 +27,7 @@ import Database from 'better-sqlite3';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadRules, checkText, bareNames, goldMarkers } from './name-form-lib.mjs';
+import { loadRules, checkText, bareNames, goldMarkers, divineGlosses } from './name-form-lib.mjs';
 import { loadRenumberForms, checkRenumbered } from './renumber-forms-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -52,6 +52,7 @@ function scan(label, rows) {
     const c = checkText(r.text, R);
     for (const x of c.violations) violations.push(`${label} ${r.ref}  "${x.text}"  — ${x.why}`);
     for (const x of checkRenumbered(r.text, r.ref, RF).hits) violations.push(`${label} ${r.ref}  "${x.text}"  — ${x.why} → ${x.fix}`);
+    for (const x of divineGlosses(c.fixed, R).hits) violations.push(`${label} ${r.ref}  "${x.text}"  — ${x.why} → ${x.fix}`);
     if ((r.status || 'none') === 'none') {
       const b = bareNames(c.fixed, R);
       for (const x of b.hits) violations.push(`${label} ${r.ref}  "${x.text}"  — ${x.why} → ${x.fix}`);

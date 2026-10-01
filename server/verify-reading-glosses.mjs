@@ -69,6 +69,7 @@ if (!booksJs) die('books.js (translit) not found');
 const { translit } = await import(pathToFileURL(booksJs).href);
 const MF = await import(pathToFileURL(path.join(__dirname, 'modform-lib.mjs')).href);
 await MF.loadCharMap();
+const CONCEPTS = MF.loadConcepts();
 const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
 const words = s => String(s || '').toLowerCase().match(/[a-z]{3,}/g) || [];
 const trCache = new Map();
@@ -117,6 +118,15 @@ const addTok = (c, ch, v, sn, raw) => {
   const k = `${c}|${Math.trunc(+ch)}|${Math.trunc(+v)}`; let e = heb.get(k); if (!e) heb.set(k, e = { roots: new Set(), surf: new Set() });
   for (const one of String(sn || '').split(/[+＋]/)) { const t = trSn(one); if (t) e.roots.add(t); }
   if (raw) e.surf.add(norm(translit(raw)));
+  // a concept the OT already names (lexicon/reading-concepts.json): Nacham where the verse has
+  // שׁוּב for "repent", Rachatz where it has טָבַל for "baptize"
+  for (const C of CONCEPTS) {
+    const rc = String(raw || '').replace(/[^\u{10900}-\u{10915}]/gu, '');
+    const rcc = [...rc].filter(ch => ![...'𐤀𐤅𐤉𐤄'].includes(ch)).join('');
+    if (C.hebSn.has('H' + String(sn || '').replace(/^H+/i, '')) || (rcc && C.hebRoot.some(h => rcc.includes(h)))) {
+      const t = trSn(C.to); if (t) e.roots.add(t); if (C.form) e.roots.add(norm(C.form));
+    }
+  }
 };
 { // BHS stores a proclitic or suffix as its own row (𐤁 + 𐤅 "in him"): add each run of
   // 2-3 adjacent rows' letters as a surface too, so "baw" is found as written.

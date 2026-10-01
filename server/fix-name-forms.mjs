@@ -21,7 +21,7 @@ import Database from 'better-sqlite3';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadRules, checkText, bareNames, shiftIndices, goldMarkers } from './name-form-lib.mjs';
+import { loadRules, checkText, bareNames, shiftIndices, goldMarkers, divineGlosses } from './name-form-lib.mjs';
 import { loadRenumberForms, checkRenumbered } from './renumber-forms-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -51,7 +51,8 @@ if (existsSync(CORPUS_DB)) {
       const c0 = renum(r.text, `${r.canon_id}:${r.ord_c}:${r.ord_v}`);
       const c = checkText(c0.fixed, R);
       const b = NAMES ? bareNames(c.fixed, R) : { fixed: c.fixed, hits: [] };
-      const changes = [...c0.hits, ...c.violations.filter(v => v.fix), ...b.hits];
+      const d = divineGlosses(b.fixed, R); b.fixed = d.fixed;   // Alahayam (God), Yashawai (Jesus) … every row
+      const changes = [...c0.hits, ...c.violations.filter(v => v.fix), ...b.hits, ...d.hits];
       if (!changes.length || b.fixed === r.text) continue;
       n++;
       if (n <= 12) console.log(`  corpus ${r.canon_id}:${r.ord_c}:${r.ord_v}  ${changes.map(v => `${v.text} → ${v.fix}`).join('; ')}`);
@@ -81,14 +82,18 @@ if (existsSync(TRANS_DB)) {
       // the Studio ever writes it, every seeding script leaves it ''. (2026-09-11)
       const seeded = (r.status || 'none') === 'none' && !(r.rich_text || '');
       const ab = NAMES && seeded ? bareNames(a.fixed, R) : { fixed: a.fixed, hits: [], shifts: [] };
-      const ag = seeded ? goldMarkers(ab.fixed, R) : { fixed: ab.fixed, hits: [] };
+      // the glossed divine names come before the gold markers (which would mark them "()"),
+      // on EVERY row — fieldy asked for them everywhere; a saved row keeps a history row
+      const ad = divineGlosses(ab.fixed, R);
+      const ag = seeded ? goldMarkers(ad.fixed, R) : { fixed: ad.fixed, hits: [] };
       ab.fixed = ag.fixed;
       const b = checkText(renum(r.rich_text || '', ref).fixed, R);
       const bb = NAMES && seeded ? bareNames(b.fixed, R) : { fixed: b.fixed, hits: [], shifts: [] };
+      bb.fixed = divineGlosses(bb.fixed, R).fixed;
       if (seeded) bb.fixed = goldMarkers(bb.fixed, R).fixed;
       if (ab.fixed === (r.text || '') && bb.fixed === (r.rich_text || '')) continue;
       n++;
-      const changes = [...a0.hits, ...a.violations.filter(v => v.fix), ...ab.hits, ...ag.hits];
+      const changes = [...a0.hits, ...a.violations.filter(v => v.fix), ...ab.hits, ...ad.hits, ...ag.hits];
       if (n <= 12) console.log(`  translation ${r.book_id}:${r.chapter}:${r.verse}  ${changes.map(v => `${v.text} → ${v.fix}`).join('; ')}`);
       if (upd) {
         // History only for a verse someone actually edited: a seeded row's "before"
@@ -99,9 +104,9 @@ if (existsSync(TRANS_DB)) {
         upd.run(ab.fixed, bb.fixed, r.book_id, r.chapter, r.verse);
       }
       // A rendered name adds one English token ("(Joseph)"), so every link index past it moves up.
-      if (ab.shifts.length) for (const l of linkSel.all(r.book_id, r.chapter, r.verse)) {
+      if (ab.shifts.length || ad.shifts.length) for (const l of linkSel.all(r.book_id, r.chapter, r.verse)) {
         let ix; try { ix = JSON.parse(l.english_indices || '[]'); } catch { continue; }
-        const nix = shiftIndices(ix, ab.shifts);
+        const nix = shiftIndices(shiftIndices(ix, ab.shifts), ad.shifts);
         if (JSON.stringify(nix) !== JSON.stringify(ix)) { links++; if (linkUpd) linkUpd.run(JSON.stringify(nix), l.id); }
       }
     }

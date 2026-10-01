@@ -587,7 +587,7 @@ const englishBaselineStmt = (() => {
 })();
 function englishBaseline(canonId, chapter, verse) {
     if (!englishBaselineStmt) return '';
-    try { const r = englishBaselineStmt.get(canonId, chapter, verse); return applyLiveGloss((r && r.text) || ''); }
+    try { const r = englishBaselineStmt.get(canonId, chapter, verse); return applyLiveGloss((r && r.text) || '', canonId, chapter); }
     catch { return ''; }
 }
 
@@ -665,8 +665,15 @@ function _buildTranslitRenumberIndex() {
 // (2026-09-10, seen live in Greek Esther 13 and Words of Azariah; the gloss
 // after a hyphenated name is the name-forms pass's business, not this one's).
 const ENGLISH_GLOSS_RX = /(?<![A-Za-z-])([A-Za-z]+)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g;
-function applyLiveGloss(text) {
+// 2026-10-01 (fieldy, Matthew 5:5 "Hamah (great uproar)": "my tokens support what it should
+// be lets make the text match it"): from Genesis 3 on the reading text is baked with
+// modification forms and each word's gloss chosen per Strong's (merge-modforms.mjs). The live
+// re-gloss below is keyed by SPELLING only — it put 𐤄𐤌𐤄 H1993 "great uproar" on H1992
+// "they" — so there it only swaps renumbered spellings; Genesis 1-2 (the bare-root on-ramp)
+// keep the live gloss. Pass the verse's book/chapter.
+function applyLiveGloss(text, book, chapter) {
     if (!text) return text;
+    const glossLive = book == null || (Number(book) === 1 && Number(chapter) <= 2);
     if (!_translitGlossIndex) _translitGlossIndex = _buildTranslitGlossIndex();
     if (!_translitRenumberIndex) _translitRenumberIndex = _buildTranslitRenumberIndex();
     return text.replace(ENGLISH_GLOSS_RX, (whole, word) => {
@@ -677,6 +684,7 @@ function applyLiveGloss(text) {
         const renamed = _translitRenumberIndex.get(word.toLowerCase());
         const displayWord = renamed || word;
         const gloss = _translitGlossIndex.get(displayWord.toLowerCase());
+        if (!glossLive) return renamed ? whole.replace(word, displayWord) : whole;
         if (renamed) return gloss ? `${displayWord} (${gloss})` : displayWord;
         return gloss ? `${displayWord} (${gloss})` : whole;
     });
@@ -11044,7 +11052,7 @@ app.get('/api/admin/gloss-studio/verse', (req, res) => {
         const savedText = (saved?.text && saved.text.trim()) ? saved.text : '';
         const isUntouchedDraft = isUntouchedBaselineDraft(saved);
         const isUserOverride = !!savedText && !isUntouchedDraft;
-        const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(book_id, chapter, verse));
+        const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(book_id, chapter, verse), book_id, chapter);
 
         res.json({
             book_id, book_name: canonName(book_id),
@@ -11095,7 +11103,7 @@ app.get('/api/admin/gloss-studio/root-verses', (req, res) => {
                 const savedText = (saved?.text && saved.text.trim()) ? saved.text : '';
                 const isUntouchedDraft = isUntouchedBaselineDraft(saved);
                 const isUserOverride = !!savedText && !isUntouchedDraft;
-                const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(o.book_id, o.chapter, o.verse));
+                const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(o.book_id, o.chapter, o.verse), o.book_id, o.chapter);
                 verses.push({
                     book_id: o.book_id, book_name: canonName(o.book_id),
                     chapter: o.chapter, verse: o.verse, words,
@@ -11129,7 +11137,7 @@ app.get('/api/admin/gloss-studio/root-verses', (req, res) => {
             const savedText = (saved?.text && saved.text.trim()) ? saved.text : '';
             const isUntouchedDraft = isUntouchedBaselineDraft(saved);
             const isUserOverride = !!savedText && !isUntouchedDraft;
-            const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(v.book_id, v.chapter, v.verse));
+            const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(v.book_id, v.chapter, v.verse), v.book_id, v.chapter);
             v.english = { text: englishText, is_baseline: !isUserOverride && !!englishText };
         }
 
@@ -12222,7 +12230,7 @@ function buildEnglishChapter(bookId, chapter, lang = 'BHS') {
             const savedText = (s?.text && s.text.trim()) ? s.text : '';
             const isUntouchedDraft = isUntouchedBaselineDraft(s);
             const isUserOverride = !!savedText && !isUntouchedDraft;
-            const text = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(bookId, chapter, r.verse));
+            const text = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(bookId, chapter, r.verse), bookId, chapter);
             return { verse: r.verse, status: s?.status || 'none', text, links: linksByVerse[r.verse] || [] };
         });
         const total       = verses.length;
@@ -12506,7 +12514,7 @@ app.get('/api/translate/verse', (req, res) => {
         const rawSavedText = saved?.text || '';
         const isUntouchedDraft = isUntouchedBaselineDraft(saved);
         const savedText = (rawSavedText && !isUntouchedDraft) ? rawSavedText : '';
-        const baseline  = savedText ? '' : applyLiveGloss(rawSavedText || englishBaseline(bookId, chapter, verse));
+        const baseline  = savedText ? '' : applyLiveGloss(rawSavedText || englishBaseline(bookId, chapter, verse), bookId, chapter);
         res.json({
             book_id: bookId, chapter, verse, lang,
             token_source: tokenSource,   // author links against THIS, not `lang`
@@ -13091,7 +13099,7 @@ app.get('/api/parallel/verse', (req, res) => {
         // Same pre-seeded-snapshot staleness as /api/translate/chapter: re-gloss
         // live against the current lexicon unless this is the user's real
         // translation (never rewritten).
-        const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(book, ch, v));
+        const englishText = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(book, ch, v), book, ch);
         const isBaseline  = !isUserOverride && !!englishText;
         const enWords = englishText.trim().split(/\s+/).filter(Boolean);
 

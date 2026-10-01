@@ -28,6 +28,7 @@ import { existsSync, writeFileSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as MF from './modform-lib.mjs';
+import { loadRules as loadNameRules, divineGlosses } from './name-form-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const argv = process.argv.slice(2);
@@ -166,7 +167,7 @@ if (CORPUS) {
   // mergeModforms() then lets its prefixes take in "in the", "and", "we will" as in the OT.
   const TAB_PATH = val('--table', path.join(__dirname, 'align-table.json'));
   let TAB = null;
-  try { TAB = JSON.parse(readFileSync(TAB_PATH, 'utf8')); } catch { die(`${TAB_PATH} missing — run build-align-links.mjs first (it writes the table every run); without it the NT/Apocrypha would lose most of their Hebrew words`); }
+  try { TAB = JSON.parse(readFileSync(TAB_PATH, 'utf8')); } catch { console.warn(`  ⚠ ${TAB_PATH} missing — run build-align-links.mjs first; NT/Apocrypha get only their glossed words`); }
   const MF_P = +val('--min-p', '0.03'), MF_RATIO = +val('--min-ratio', '2'), MF_DIST = +val('--max-dist', '0.3');
   let aligned = 0;
   const FUNC = new Set(('a an the and or but if for nor so yet of to in into on onto at by with from as than that this these those which who whom whose what ' +
@@ -209,6 +210,18 @@ if (CORPUS) {
         cand.push({ k, h, sc: Math.log(ratio) - 4 * d });
       }
     });
+    // a preposition carrying its pronoun is its own word: "to him", "for you"
+    for (const h of H.concat(ws.filter(x => !usedW.has(x) && /prep/.test(x.pos || '') && !TAB.sn[x.sn]))) {
+      const pm = h.mods.find(m => m.pron); if (!pm || !/prep/.test(h.pos || '')) continue;
+      const head = h.comps.find(c => c.css === 'mod-prep');
+      const preps = new Set([...(head && MF.PREP_EN()[head.paleo] || []), ...Object.keys((TAB.sn[h.sn]) || {}).slice(0, 4)]);
+      const prons = new Set([...(MF.PRS_EN()[pm.pr] || [])]);
+      for (let k = 0; k + 1 < units.length; k++) {
+        const a = units[k], b = units[k + 1];
+        if (a.pair || b.pair || !/^\s+$/.test(text.slice(a.e, b.s))) continue;
+        if (preps.has(a.t.toLowerCase()) && prons.has(b.t.toLowerCase())) { cand.push({ k, h, sc: 50 }, { k: k + 1, h, sc: 50 }); break; }
+      }
+    }
     cand.sort((a, b) => b.sc - a.sc);
     const owner = new Map(), best = new Map();   // unit -> h ; h -> best unit
     for (const c of cand) {
@@ -229,22 +242,120 @@ if (CORPUS) {
     aligned += reps.length;
     return out;
   };
+  // a Hebrew word with no English of its own: its lexicon gloss (fieldy's curated words),
+  // else the table's likeliest English for its Strong's — modifications woven in
+  let LEX = {};
+  try { LEX = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'lexicon.json'), 'utf8')); } catch { LEX = {}; }
+  const ROOTS = (() => { try { return JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'strongs-roots.json'), 'utf8')); } catch { return {}; } })();
+  const tidy = g => String(g || '').replace(/\[[^\]]*\]/g, ' ').replace(/\([^()]*\)/g, ' ').replace(/\s+/g, ' ').replace(/^[\s\/]+|[\s\/]+$/g, '').trim();
+  const PREPWORDS = new Set([...Object.values(MF.PREP_EN()).flatMap(x => [...x]), ...'upon over on with before after under against about between among toward unto beside behind above below through beyond within'.split(' ')]);
+  const glossOf = h => {
+    // the chip's own gloss (fieldy's curated lexicon/homographs, as the Parallel shows it),
+    // else the WEB's likeliest English for its Strong's, else his placeholder: the root's paleo
+    const root = h.comps.find(c => c.css === 'root' || c.css === 'mod-nmpr') || h.comps.find(c => c.true_root) || h.comps.find(c => c.css === 'mod-prep') || h.comps[h.comps.length - 1];
+    let g = (!h.mods.length && curatedOf(h)) || (root ? tidy(root.translation) : '');
+    // a preposition's chip may carry a homograph's sense (עָלֵינוּ "went up"): its WEB English first
+    if (/prep/.test(h.pos || '') && h.sn !== 'H853' && TAB && TAB.sn[h.sn]) {
+      const p = Object.entries(TAB.sn[h.sn]).sort((a, b) => b[1] - a[1]).map(x => x[0]).find(w => PREPWORDS.has(w));
+      if (p) g = p;
+    }
+    if (/^[\u{10900}-\u{1091F}\s\/]*$/u.test(g) || /^\[.*\]$/.test(g)) g = '';
+    if (!g && TAB && TAB.sn[h.sn]) g = Object.entries(TAB.sn[h.sn]).sort((a, b) => b[1] - a[1])[0][0];
+    if (!g && root) g = root.paleo;
+    return g ? MF.weave(h, g) : '';
+  };
+  // NT concepts the OT already names (lexicon/reading-concepts.json): repent -> Nacham …
+  const CONC = MF.loadConcepts();
+  const PAIR_RE = /(\d+)?\b([A-Za-z][A-Za-z'’-]*)\s+\(((?:[^()]|\([^()]*\))*)\)/g;
+  let conceptN = 0;
+  const applyConcepts = (text, ws) => {
+    if (!CONC.length) return { text, ws };
+    let out = text, W = ws.slice();
+    for (const C of CONC) {
+      for (let guard = 0; guard < 30; guard++) {
+        // the next English word of this family not yet inside a concept pair
+        const pairs = [...out.matchAll(PAIR_RE)];
+        const inPair = idx => pairs.find(pm => idx > pm.index + pm[0].indexOf('(') && idx < pm.index + pm[0].length);
+        let hit = null;
+        for (const tm of out.matchAll(/[A-Za-z]+/g)) {
+          if (!C.re.test(tm[0])) continue;
+          const pm = inPair(tm.index);
+          if (pm && pm[1] && W.some(x => x.concept === C.name && String(x.ord) === pm[1].slice(1, -1))) continue;   // already done
+          hit = { tm, pm }; break;
+        }
+        if (!hit) break;
+        const h = W.find(x => !x.concept && C.matches(x));
+        if (!h) break;                                   // the verse's Hebrew has no word for it: English stays
+        const cw = MF.conceptWord(h, C);
+        W = W.map(x => (x === h ? cw : x));
+        const mk = `\uE002${cw.ord}\uE003`;
+        if (hit.pm) {
+          const pm = hit.pm, head = pm.index + (pm[1] ? pm[1].length : 0);
+          out = out.slice(0, pm.index) + mk + cw.form + out.slice(head + pm[2].length);
+        } else {
+          out = out.slice(0, hit.tm.index) + `${mk}${cw.form} (${hit.tm[0]})` + out.slice(hit.tm.index + hit.tm[0].length);
+        }
+        conceptN++;
+      }
+    }
+    return { text: out, ws: W };
+  };
+  const ilWhy = new Map(); let ilOk = 0;
+  const NR = loadNameRules();
+  // curated gloss for an unmodified word (MF.curatePairs): its own lexicon entry — unless that
+  // spelling is the root of ANOTHER, common, Strong's (𐤄𐤌𐤄 is H1993 "great uproar"; the
+  // verse's 𐤄𐤌𐤄 is H1992 "they"), a name's spelling never blocks (𐤀𐤔𐤓𐤉 Asharay "He who"
+  // vs the gentilic H843) — else the chip's curated gloss
+  const ROOT_OWNERS = new Map();
+  for (const [sn, p] of Object.entries(ROOTS)) { if (!ROOT_OWNERS.has(p)) ROOT_OWNERS.set(p, new Set()); ROOT_OWNERS.get(p).add(sn); }
+  const curatedOf = h => {
+    const root = h.comps.find(c => c.css === 'root') || h.comps.find(c => c.true_root) || null;   // a particle's head is mod-intj / mod-prps
+    const chip = root ? tidy(root.translation) : '';
+    const placeholder = g => !g || /^[\u{10900}-\u{1091F}\s\/]*$/u.test(g);
+    // 1. his Strong's-specific (homograph) gloss: Irawam "cunning / crafty", not 𐤏𐤓𐤅𐤌 "naked"
+    if (root && root.gloss_src === 'homograph' && !placeholder(chip)) return chip;
+    // 2. the word's own spelling in his lexicon (𐤀𐤔𐤓𐤉 "He who") — unless that spelling is
+    //    another common word's root (𐤄𐤌𐤄 = H1993 "great uproar", but here H1992 "they")
+    const surf = h.comps.map(c => c.paleo).join('');
+    const own = ROOT_OWNERS.get(surf);
+    if (tidy(LEX[surf]) && !(own && !own.has(h.sn) && !MF.isNameTr(MF.formOf([{ paleo: surf, css: 'root' }])))) return tidy(LEX[surf]);
+    // 3. the root's lexicon gloss — only when no other Strong's shares that root (𐤀𐤐 is
+    //    "also" H637 and "nose" H639: the English of the verse is kept instead)
+    const rp = root && (root.true_root || root.paleo);
+    const owners = rp ? ROOT_OWNERS.get(rp) : null;
+    if (root && root.gloss_src === 'lexicon' && !placeholder(chip) && (!owners || (owners.size === 1 && owners.has(h.sn)))) return chip;
+    return '';
+  };
+
   const rows = cdb.prepare(`SELECT id, canon_id c, chapter ch, verse v, ord_c, ord_v, text, coalesce(text_src,'') src FROM verses WHERE corpus='ENG' AND canon_id IS NOT NULL AND text IS NOT NULL AND text != ''`).all();
   const upd = DRY ? null : cdb.prepare(`UPDATE verses SET text = ? WHERE id = ?`);
   cdb.transaction(() => {
+    // test aids: --only c:ch:v,… limits the run; --text-json file {"c:ch:v": text} replaces the db text
+    const ONLY = argv.includes('--only') ? new Set(val('--only', '').split(',')) : null;
+    const TJ = argv.includes('--text-json') ? JSON.parse(readFileSync(val('--text-json'), 'utf8')) : null;
     for (const r of rows) {
+      if (ONLY && !ONLY.has(`${r.c}:${r.ch}:${r.v}`)) continue;
+      if (TJ && TJ[`${r.c}:${r.ch}:${r.v}`]) r.text = TJ[`${r.c}:${r.ch}:${r.v}`];
       // the OT's own forms come from apply-web-strongs; this pass gives its NAMES their
       // prefixes and finishes any pair it left (Genesis 1-2 stay as they are)
       if (!MF.modformApplies(r.c, r.ch)) continue;
       seen++;
-      const ws = hebWords(r.c, r.ch, r.v);
-      const t1 = fill(r.text, r.src, links.get(`${r.c}|${r.ord_c}|${r.ord_v}`), ws);
+      let ws = hebWords(r.c, r.ch, r.v);
+      r.text = divineGlosses(r.text, NR).fixed;   // Alahayam (God), Yashawai (Jesus), Mashayach (Christ / Anointed One) — before the forms, so prefixes join
+      const cc = r.c > 39 ? applyConcepts(r.text, ws) : { text: r.text, ws }; ws = cc.ws;   // NT/Apocrypha words the OT already names
+      const t1 = fill(cc.text, r.src, links.get(`${r.c}|${r.ord_c}|${r.ord_v}`), ws);
       // every pair whose word is in the verse's Hebrew becomes its full form, as in the OT
-      let r2 = MF.mergeModforms(t1, ws, { all: true });
-      if (r.c > 39) { const t2 = alignFill(r2.text, ws); if (t2 !== r2.text) { const r3 = MF.mergeModforms(t2, ws, { all: true }); r2 = { text: r3.text, n: r2.n + r3.n }; } }
+      let r2 = MF.mergeModforms(t1, ws, { all: true, keepMarks: true });
+      { const t2 = alignFill(r2.text, ws); if (t2 !== r2.text) { const r3 = MF.mergeModforms(t2, ws, { all: true, keepMarks: true }); r2 = { text: r3.text, n: r2.n + r3.n }; } }
+      r2.text = MF.curatePairs(r2.text, ws, curatedOf);
+      // Hebrew word order, every Hebrew word, the English inside its brackets
+      const il = MF.interlinear(r2.text, ws, glossOf);
+      const grp = r.c <= 39 ? 'OT' : r.c <= 66 ? 'NT' : 'Apoc';
+      if (il.ok) { r2 = { text: il.text, n: r2.n }; ilOk++; ilWhy.set(grp + ' hebrew-order', (ilWhy.get(grp + ' hebrew-order') || 0) + 1); } else ilWhy.set(grp + ' ' + il.why, (ilWhy.get(grp + ' ' + il.why) || 0) + 1);
+      r2.text = r2.text.replace(/\uE002\d+r?\uE003/g, '');
       if (r2.text === r.text) continue;
       changed++; pairs += r2.n;
-      if (samples.length < 12 && r.c <= 66 && (r.c > 39 || samples.length < 4)) samples.push(`${r.c}:${r.ch}:${r.v}  ${r2.text}`);
+      if (samples.length < (ONLY ? 99 : 12) && (ONLY || (r.c <= 66 && (r.c > 39 || samples.length < 4)))) samples.push(`${r.c}:${r.ch}:${r.v}  ${r2.text}`);
       if (upd) upd.run(r2.text, r.id);
       if (JSONL) JSONL.push(JSON.stringify({ c: r.c, ch: r.ch, v: r.v, text: r2.text }));
     }
@@ -252,6 +363,7 @@ if (CORPUS) {
   if (JSONL) writeFileSync(argv[argv.indexOf('--jsonl') + 1], JSONL.join('\n') + '\n');
   console.log(`modification forms (corpus.db ENG, Gen 3 on: OT names + NT + Apocrypha): ${changed.toLocaleString()} of ${seen.toLocaleString()} verses, ${pairs.toLocaleString()} Hebrew words written ` +
               `(${filled.toLocaleString()} from the Parallel links, ${aligned.toLocaleString()} from the learned table)${DRY ? ' (dry run)' : ''}`);
+  console.log(`  Hebrew word order: ${ilOk.toLocaleString()} verses; English order kept: ${[...ilWhy].map(([k, n]) => `${n.toLocaleString()} ${k}`).join(', ') || 'none'}; concept words (repent/baptize/genealogy…): ${conceptN}`);
 } else {
   const tdb = new Database(TRANS_DB, { readonly: DRY });
   const rows = tdb.prepare(`SELECT book_id c, chapter ch, verse v, status, text, coalesce(rich_text,'') rt FROM translations
@@ -285,5 +397,5 @@ if (CORPUS) {
   console.log(`modification forms (your saved verses, Gen 3 on): ${changed} of ${seen} verses merged, ${pairs} words upgraded, ` +
               `${linkRows} link rows re-indexed${DRY ? ' (dry run — nothing written)' : ' — the old wording of each is in translation_history'}`);
 }
-for (const s of samples.slice(0, SAVED ? 400 : 8)) console.log('  ' + s);
+for (const s of samples.slice(0, SAVED ? 400 : (argv.includes('--only') ? 99 : 8))) console.log('  ' + s);
 cdb.close(); sdb.close();
