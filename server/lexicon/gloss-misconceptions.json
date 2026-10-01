@@ -1,0 +1,7 @@
+{
+  "_README": "Known-wrong reading-text pairs — tried on EVERY verse by verify-reading-glosses.mjs (the parallel gate), including verses with no Hebrew tokens. A pair 'word (gloss)' is a violation when word matches and the gloss contains one of gloss_words, unless THAT verse's own Hebrew has the word's root. strongs-renumber.json entries with raw_root + gloss_words (ashah→woman/wife, bath→daughter) are added automatically — do not repeat them here. Add a line whenever fieldy finds a new one.",
+  "entries": [
+    { "word": "hamah", "gloss_words": ["like", "such", "great", "uproar"], "why": "hamah is H1992 'they/them' / H1993 'roar' — never 'like' (fieldy 2026-09-26: \"hamah is nowhere in this verse\")" },
+    { "word": "man", "gloss_words": ["according"], "why": "man is min 'from' (H4480/H4481) — 'according' is k-/l-pi (fieldy 2026-09-30, Matthew 16:27)" }
+  ]
+}
