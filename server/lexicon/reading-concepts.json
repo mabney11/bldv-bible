@@ -1,0 +1,6 @@
+{
+  "_note": "fieldy 2026-10-01: \"geneaology is Thawaladahawath per Genesis 2, repent must be Nacham, 'baptize' must be 'Rachatz' -- these are not new made up concepts in the NT\". en = English word family (regex, case-insensitive); to = the Strong's whose root the reading text writes; form = the spelling to write (optional, else the root's); hebSn / hebRoot = what the verse's Hebrew may carry for it (root letters catch the HEB edition's untagged words). Read by modform-lib.mjs (merge-modforms) and verify-reading-glosses.mjs (the parallel gate accepts the concept's root where the verse has one of these).",
+  "genealogy": { "en": "^genealog", "to": "H8435", "form": "Thawaladahawath", "hebSn": ["H8435", "H3187"], "hebRoot": ["𐤕𐤅𐤋𐤃", "𐤉𐤇𐤔"] },
+  "repent":    { "en": "^repent",   "to": "H5162", "hebSn": ["H7725", "H5162", "H8666"], "hebRoot": ["𐤔𐤅𐤁", "𐤍𐤇𐤌"] },
+  "baptize":   { "en": "^baptiz|^baptis", "to": "H7364", "hebSn": ["H2881", "H7364"], "hebRoot": ["𐤈𐤁𐤋", "𐤓𐤇𐤑"] }
+}
