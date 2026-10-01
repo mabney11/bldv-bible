@@ -45,6 +45,8 @@
 
 import Database from 'better-sqlite3';
 import { writeFileSync, existsSync, readFileSync } from 'fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const argv = process.argv.slice(2);
 const arg = (n, d = null) => {
@@ -426,6 +428,25 @@ if (contaminated.length) {
     say('');
     say(`  ⚠ CONTAMINATION DETECTED: ${contaminated.join(', ')} rank in the top 3.`);
     say('  The model is learning its own output. Do NOT --apply these links.');
+}
+
+// ── the learned table, for the READING TEXT (2026-10-01) ─────────────────────
+// fieldy: "I want the new testament and apocrypha to also adhere to the hebrew focused
+// translation." merge-modforms.mjs --corpus gives every Hebrew word of an NT/Apocrypha
+// verse its English, as the OT reads — from this table (p(word|Strong's), learned from the
+// WEB's tagged OT), with floors of its own. The Parallel links above/below keep theirs.
+// Written every run (no --apply needed): server/align-table.json.
+{
+    const TABLE_OUT = arg('table-out', path.join(path.dirname(fileURLToPath(import.meta.url)), 'align-table.json'));
+    const tab = { _note: 'p(english word | Strong\'s) learned by build-align-links.mjs from the tagged OT; read by merge-modforms.mjs', _null: {}, sn: {} };
+    for (const [w, p] of [...nullM].sort((a, b) => b[1] - a[1])) if (p >= 1e-5) tab._null[w] = +p.toPrecision(3);
+    for (const [sn, m] of t) {
+        if (sn === NULLSN || (support.get(sn) || 0) < 3) continue;
+        const top = [...m].filter(([, p]) => p >= 0.01).sort((a, b) => b[1] - a[1]).slice(0, 40);
+        if (top.length) tab.sn[sn] = Object.fromEntries(top.map(([w, p]) => [w, +p.toPrecision(3)]));
+    }
+    writeFileSync(TABLE_OUT, JSON.stringify(tab));
+    say(`reading-text table: ${Object.keys(tab.sn).length.toLocaleString()} Strong's -> ${TABLE_OUT}`);
 }
 
 // ── align the NT ────────────────────────────────────────────────────────────

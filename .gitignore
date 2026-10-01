@@ -105,3 +105,5 @@ deploy-tuning.env
 _diag_*.cjs
 _claude_scratch_*.md
 tests/.tmp-*.cjs
+# learned English<->Strong's table, rewritten by every build-align-links.mjs run (read by merge-modforms.mjs)
+server/align-table.json

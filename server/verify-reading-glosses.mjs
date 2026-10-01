@@ -67,6 +67,8 @@ const ROOTS = L('lexicon/strongs-roots.json');
 const booksJs = ['../src/lib/books.js', './vendor/books.js', './src/lib/books.js'].map(x => path.join(__dirname, x)).find(existsSync);
 if (!booksJs) die('books.js (translit) not found');
 const { translit } = await import(pathToFileURL(booksJs).href);
+const MF = await import(pathToFileURL(path.join(__dirname, 'modform-lib.mjs')).href);
+await MF.loadCharMap();
 const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
 const words = s => String(s || '').toLowerCase().match(/[a-z]{3,}/g) || [];
 const trCache = new Map();
@@ -144,7 +146,10 @@ if (existsSync(INDEX_DB)) {
       const comp = new Map();
       for (const t of sdb.prepare(`SELECT source, word_raw, strongs, pos, morph, components FROM token_surfaces`).iterate()) {
         let cs; try { cs = JSON.parse(t.components || '[]'); } catch { continue; }
-        comp.set(`${t.source}\u0000${t.word_raw}\u0000${t.strongs}\u0000${t.pos}\u0000${t.morph}`, norm(cs.map(x => x.translit || '').join('')));
+        // two spellings of one word: the chips' components joined ("w"+"ya"+"bawayaa"+"w"),
+        // and the block reading the reading text writes (modform-lib formOf: "WaYaBawayaaw")
+        const blk = norm(MF.formOf(cs.filter(x => x && x.paleo)));
+        comp.set(`${t.source}\u0000${t.word_raw}\u0000${t.strongs}\u0000${t.pos}\u0000${t.morph}`, [norm(cs.map(x => x.translit || '').join('')), blk]);
       }
       let run = [], rk = '';
       for (const o of sdb.prepare(`SELECT source, book_id, chapter, verse, token_ordinal, word_raw, strongs, pos, morph FROM surface_occurrences ORDER BY source, book_id, chapter, verse, token_ordinal`).iterate()) {
@@ -155,7 +160,7 @@ if (existsSync(INDEX_DB)) {
         if (!j) { run = []; continue; }
         run.push(j); if (run.length > 3) run.shift();
         const e = heb.get(`${o.book_id}|${Math.trunc(+o.chapter)}|${Math.trunc(+o.verse)}`) || (heb.set(`${o.book_id}|${Math.trunc(+o.chapter)}|${Math.trunc(+o.verse)}`, { roots: new Set(), surf: new Set() }), heb.get(`${o.book_id}|${Math.trunc(+o.chapter)}|${Math.trunc(+o.verse)}`));
-        for (let i = 0; i < run.length; i++) e.surf.add(run.slice(i).join(''));
+        for (let i = 0; i < run.length; i++) { e.surf.add(run.slice(i).map(x => x[0]).join('')); e.surf.add(run.slice(i).map(x => x[1]).join('')); }
       }
     }
     sdb.close(); hebFrom = 'surface-index.db';

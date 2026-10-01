@@ -27,11 +27,27 @@ This replaces "reading text = bare Strong's root" from Genesis 3 on. Genesis 1�
 - **NT/Apocrypha** — merge-modforms.mjs --corpus (render-all, after render-corpus): every
   "word (gloss)" whose word is one of the verse's HEB roots becomes the full form; its gloss
   takes in the English to its left its prefixes/subject account for ("he will shalam (render)"
-  → "YaShalam (he will render)") and an object pronoun to its right. Names are NEVER merged:
-  besides a mod-nmpr tag, a capitalised gloss that is a name in word-map.json (or a name's
-  spelling) is skipped — the first run turned Josephus "Yawasap (Joseph)" into "WaYaYawasap
-  (and Joseph)" (HEB word untagged) and verify-name-forms stopped render-all on 5 verses.
+  → "YaShalam (he will render)") and an object pronoun to its right. Names: see "Names take their proclitics" below
+  (the first run wrote Josephus "WaYaYawasap (and Joseph)" and verify-name-forms stopped render-all).
   Measured: 23,769 verses / 106,175 words.
+- **NT/Apocrypha follow the OT (fieldy, same day: "I want the new testament and apocrypha to
+  also adhere to the hebrew focused translation").** merge-modforms.mjs --corpus now (1) writes
+  EVERY pair whose word is in the verse's Hebrew as its full form (mod-less too: "Kasap
+  (money)"), matching by the HEB word's own root OR its Strong's root ("yalad (begat)" is
+  HEB הוֹלִיד); (2) gives every remaining Hebrew word the plain English it best explains, from
+  server/align-table.json — p(english|Strong's) that build-align-links.mjs learns from the WEB's
+  tagged OT and writes on EVERY run (so build-align-links must run before render-all; a
+  missing table is fatal). Floors: p >= 0.03, 2x likelier than corpus-wide, within 0.3 of the
+  Hebrew word's relative position; a function word ("for", "him") only for a Hebrew word whose
+  own top-3 English it is at p >= 0.2. One contiguous run per Hebrew word. NT words with English
+  of their own: 40% -> 52% (Hebrew-tagged HEB tokens). Both gates pass on the result.
+- **Names take their proclitics** (fieldy: "the whole Wa...(and ...) is a common hebrew pattern
+  so it makes sense that it exists across my corpus regardless of the writing period"):
+  "and Yawasap (Joseph)" -> "WaYawasap (and Joseph)", in every book from Gen 3 (the --corpus pass
+  covers the OT's names too). Only and/the/prepositions attach and the name keeps its own
+  spelling — the HEB parse reads Yosef's yod as a verb prefix ("WaYaYawasap").
+- The parallel gate also accepts the block reading of a word (formOf), not only its chips'
+  components joined: HEB-edition components read "W"+"Ya"+"Bawayaa"+"w".
 - **fieldy's saved verses** — merge-modforms.mjs --saved (render-all after reseed; Rebake
   step 5 on prod): same merge, his wording kept; translation_history row first, rich_text
   merged the same way, translation_links english_indices re-mapped (LCS + the head word into

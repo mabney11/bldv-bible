@@ -21,6 +21,7 @@
 import path from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
 const NAME_ENG = new Set(), NAME_TR = new Set();
+let ROOTS = {};
 import { fileURLToPath, pathToFileURL } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -39,6 +40,10 @@ export async function loadCharMap() {
       NAME_ENG.add(String(eng).toLowerCase()); NAME_TR.add(String(tr).toLowerCase().normalize('NFD').replace(/[^a-z]/g, ''));
     }
   } catch { /* no word-map.json: names are still skipped when the HEB word is tagged mod-nmpr */ }
+  // each Strong's number's root, the spelling the render's "word (gloss)" pairs are written in
+  // (render-corpus glosses by Strong's root: "yalad (begat)" stands for HEB הוֹלִיד, whose
+  // own root block reads differently) — so a pair finds its word by either spelling
+  try { ROOTS = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'strongs-roots.json'), 'utf8')); } catch { ROOTS = {}; }
   return CHAR_MAP;
 }
 
@@ -81,6 +86,7 @@ const PREP = {
   '𐤊': W('as like according when about just such'),
   '𐤔': W('that which who whom whose what'),
 };
+const PREP_TR = { '𐤁': 'Ba', '𐤋': 'La', '𐤌': 'Ma', '𐤊': 'Ka', '𐤔': 'Sha' };
 const CONJ = W('and but then so now yet or also even');
 const ART = W('the this that these those o');
 const PRS = {
@@ -138,6 +144,7 @@ export function verseWordsLoader(sdb) {
       const root = all.find(x => isRootCss(x.css)) || all[all.length - 1];
       words.push({ pos: r.pos || '', ord: r.ord, sn: r.sn ? 'H' + String(r.sn).replace(/^H+/i, '') : '', comps: all, form: formOf(all),
                    rootTr: formOf([{ ...root, css: 'root' }]).toLowerCase(), isName: root.css === 'mod-nmpr',
+                   snTr: (() => { const k = r.sn ? 'H' + String(r.sn).replace(/^H+/i, '') : ''; return ROOTS[k] ? formOf([{ paleo: ROOTS[k], css: 'root' }]).toLowerCase() : ''; })(),
                    mods: all.filter(x => x !== root).map(x => modInfo(x, source)).filter(Boolean) });
     }
     return words;
@@ -199,30 +206,59 @@ export function absorbRightCount(nextTokens, word) {
 /** Upgrade every "word (gloss)" in a verse's text whose word is one of this verse's
  *  Hebrew roots: the word becomes the full form, the gloss absorbs the English its
  *  modifications account for. Names are left as they are. Returns { text, n }. */
-export function mergeModforms(text, words) {
-  if (!text || !words.length) return { text, n: 0 };
-  const PAIR = /\b([A-Za-z][A-Za-z'’-]*)\s+\(([^()]{1,80})\)/g;
+export function mergeModforms(text, words, opts = {}) {
+  // opts.all — every pair whose word is one of the verse's roots becomes its full form, even a
+  //            word with no modification ("kasap (money)" -> "Kasap (money)"), as the OT's
+  //            machine text reads. Off for fieldy's saved verses (his casing kept there).
+  // A pair may carry a marker U+E002<ord>U+E003 in front of its word (merge-modforms puts
+  // one on every pair it built from the aligner): then it is THAT Hebrew word, not the
+  // first unused one with the same root.
+  if (!text || !words.length) return { text: String(text || '').replace(/\uE002\d+\uE003/g, ''), n: 0 };
+  const PAIR = /(?:\uE002(\d+)\uE003)?\b([A-Za-z][A-Za-z'’-]*)\s+\(([^()]{1,80})\)/g;
   const used = new Set();
   const norm = s => s.toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
   const hits = [];
   const depthAt = i => { let d = 0; for (let k = 0; k < i; k++) { if (text[k] === '(') d++; else if (text[k] === ')' && d) d--; } return d; };
   for (const m of text.matchAll(PAIR)) {
     if (depthAt(m.index)) continue;                    // a pair inside another gloss: "Ahayah (I hayah (come to pass))"
-    const w = norm(m[1]);
-    if (!w || m[1].includes('-')) continue;
+    const w = norm(m[2]);
+    if (!w || m[2].includes('-')) continue;
     // a NAME is never merged: a capitalised gloss that is a name, or a name's spelling glossed
     // with a capital ("sham (name)" is a word — Sham (Shem) is a name)
-    const g = m[2].trim();
-    if (!g || (/^[A-Z]/.test(g) && (NAME_ENG.has(g.toLowerCase()) || NAME_TR.has(w)))) continue;
-    const done = words.find(x => !used.has(x) && norm(x.form) === w && x.mods.length);
-    if (done) { used.add(done); continue; }                                  // already a full form — and that word is taken
-    const cands = words.filter(x => !used.has(x) && !x.isName && x.rootTr === w);
-    if (!cands.length) continue;
-    const word = cands[0]; used.add(word);
-    if (!word.mods.length) continue;                                          // nothing to add — keep as is
+    const g = m[3].trim();
+    if (!g) continue;                                                         // "Yahawah ()": the gold marker, never touched
+    if (!m[1] && /^[A-Z]/.test(g) && (NAME_ENG.has(g.toLowerCase()) || NAME_TR.has(w))) {   // (a marked pair was built from a non-name Hebrew word)
+      // A NAME takes its proclitics like any word — fieldy: "the whole Wa...(and ...) is a
+      // common hebrew pattern so it makes sense that it exists across my corpus regardless of
+      // the writing period" — "and Yawasap (Joseph)" -> "WaYawasap (and Joseph)". Only and /
+      // the / a preposition attach, and the name keeps the spelling the name rules gave it:
+      // the HEB parse can read the yod of Yosef as a verb prefix ("WaYaYawasap").
+      const nw = words.find(x => !used.has(x) && (x.rootTr === w || x.snTr === w));
+      if (!nw) continue;
+      used.add(nw);
+      const ri = nw.comps.findIndex(c => isRootCss(c.css));
+      const pre = (ri < 0 ? [] : nw.comps.slice(0, ri)).filter(c => c.css === 'mod-conj' || c.css === 'mod-art' || (c.css === 'mod-prep' && PREP_TR[c.paleo]));
+      if (!pre.length || pre.length !== (ri < 0 ? 0 : ri) && nw.comps.slice(0, ri).some(c => !pre.includes(c) && !String(c.css || '').startsWith('pfm-'))) continue;
+      const lead = pre.map(c => c.css === 'mod-conj' ? 'Wa' : c.css === 'mod-art' ? 'Ha' : PREP_TR[c.paleo]).join('');
+      hits.push({ m, word: { form: lead + m[2], mods: pre.map(c => modInfo(c, 'BHS')).filter(Boolean) } });
+      continue;
+    }
+    let word = null;
+    if (m[1]) { word = words.find(x => String(x.ord) === m[1] && !x.isName) || null; if (!word) continue; }   // the marker is authoritative
+    else {
+      const done = words.find(x => !used.has(x) && norm(x.form) === w && (x.mods.length || opts.all));
+      if (done) { used.add(done); if (!opts.all || m[2] === done.form) continue; word = done; }   // already a full form — and that word is taken
+      else {
+        const cands = words.filter(x => !used.has(x) && !x.isName && x.rootTr === w);
+        if (!cands.length) cands.push(...words.filter(x => !used.has(x) && !x.isName && x.snTr && x.snTr === w));
+        if (!cands.length) continue;
+        word = cands[0];
+      }
+    }
+    used.add(word);
+    if (!word.mods.length && !opts.all) continue;                              // nothing to add — keep as is
     hits.push({ m, word });
   }
-  if (!hits.length) return { text, n: 0 };
   let out = text;
   for (const { m, word } of hits.reverse()) {
     const start = m.index, end = m.index + m[0].length;
@@ -239,9 +275,8 @@ export function mergeModforms(text, words) {
     }
     let tail = after, rightWord = '';
     if (takeR) { const mm = after.match(/^\s+([A-Za-z]+)([,.;:!?]?)/); rightWord = mm[1]; tail = (mm[2] || '') + after.slice(mm[0].length); }
-    // sentence-initial capital moves to the form, the gloss keeps its own words
-    const english = [...leftWords, m[2], rightWord].filter(Boolean).join(' ');
+    const english = [...leftWords, m[3], rightWord].filter(Boolean).join(' ');
     out = head + quote + pairFor(word, english) + tail;
   }
-  return { text: out, n: hits.length };
+  return { text: out.replace(/\uE002\d+\uE003/g, ''), n: hits.length };
 }
