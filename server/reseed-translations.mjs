@@ -57,6 +57,14 @@ console.log(`OT canon_ids: ${otBooks.length}, non-OT canon_ids: ${nonOtBooks.len
 const rows = src.prepare(
   `SELECT canon_id AS book_id, chapter, verse, text FROM verses
    WHERE corpus='ENG' AND canon_id > 39 AND text IS NOT NULL AND TRIM(text)<>''`).all();
+// 2026-10-01: the OT too. load-english-baseline.js refreshes OT rows, but only in the LOCAL
+// translation.db — which prod's replaces on every server start — and Rebake step 5 runs
+// THIS script on prod. So no OT render change (the modification forms from Genesis 3 on,
+// fieldy 2026-10-01) ever reached the reader: prod's untouched OT rows were frozen
+// snapshots. Same guard as below: only rows nobody saved (status='none' AND rich_text='').
+const otRows = src.prepare(
+  `SELECT canon_id AS book_id, chapter, verse, text FROM verses
+   WHERE corpus='ENG' AND canon_id BETWEEN 1 AND 39 AND text IS NOT NULL AND TRIM(text)<>''`).all();
 src.close();
 console.log(`non-OT ENG verses in corpus.db: ${rows.length.toLocaleString()}`);
 
@@ -111,14 +119,18 @@ const resetUntouched = tdb.prepare(`
   WHERE book_id = ? AND chapter = ? AND verse = ?
     AND status = 'none' AND rich_text = ''
 `);
-let n=0;
+let n=0, nOt=0;
 tdb.transaction(()=>{
   for(const r of rows) {
     importOriginal.run(r.book_id, r.chapter, r.verse, r.text, r.text);
     resetUntouched.run(r.text, r.text, r.book_id, r.chapter, r.verse);
     n++;
   }
+  // OT: refresh existing untouched rows only (load-english-baseline.js owns seeding them,
+  // with its own source_origin and its blank-title rules)
+  for(const r of otRows) nOt += resetUntouched.run(r.text, r.text, r.book_id, r.chapter, r.verse).changes;
 })();
+console.log(`\u2713 refreshed ${nOt.toLocaleString()} untouched OT rows from corpus.db ENG (saved edits left untouched)`);
 tdb.close();
 console.log(`\u2713 seeded/refreshed ${n.toLocaleString()} non-OT rows into translation.db (saved edits left untouched)`);
 console.log('Restart the server.');

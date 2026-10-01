@@ -773,10 +773,39 @@ function mtVerseKey(code, chapter, verse) {
   return `${canon}:${ch}:${v}`;
 }
 
+// ── MODIFICATION FORMS (fieldy, 2026-10-01 — see modform-lib.mjs) ─────────────
+// From Genesis 3 on, a term segment renders as the Hebrew WORD as the Parallel chips
+// draw it (prefixes, root, suffixes) glossed with the segment's WHOLE English — the
+// WEB already groups English by Hebrew word: "In that day" | "will be beautiful" |
+// "and the fruit". "BaYawam (In that day)", not "In that yawam (day)". A label is
+// added only for a modification the English does not express ("[Emphatic]").
+// --no-modforms restores the bare-root rendering everywhere.
+const MODFORMS = !process.argv.includes('--no-modforms');
+let MF = null, mfVerseWords = null, modformUsed = 0;
+let mfMarkerMismatch = 0;
+const MF_OPEN = '\uE000', MF_CLOSE = '\uE001', MF_SPAN_RE = /\uE000([^\uE001]*)\uE001/g;
+if (MODFORMS) {
+  try {
+    MF = await import('./modform-lib.mjs');
+    await MF.loadCharMap();
+    const { default: Database } = await import('better-sqlite3');
+    const sdb = new Database('./surface-index.db', { readonly: true });
+    const cache = new Map();
+    const loader = MF.verseWordsLoader(sdb);
+    mfVerseWords = (canon, ch, v) => { const k = `${canon}:${ch}:${v}`;
+      if (!cache.has(k)) { if (cache.size > 64) cache.clear(); cache.set(k, loader('BHS', canon, ch, v)); }
+      return cache.get(k); };
+    console.log('modification forms: ON from Genesis 3 (--no-modforms to disable)');
+  } catch (e) { console.warn(`modification forms OFF — ${e.message}`); MF = null; }
+}
+
 for (const r of rows) {
   pOT.tick();
   let changed = false;
   const pieces = [];
+  const mfOn = MF && MF.modformApplies(CODE2ID[r.code], r.chapter);
+  const mfSeen = new Map();   // Strong's -> how many of this verse's segments used it (nth word)
+  const mfPairs = [];         // this verse's modification-form pairs, in text order (see MF_OPEN)
   for (const seg of r.segments) {
     if (!seg.sn) { pieces.push(seg.text); continue; }
     const paleo = ROOTS[seg.sn];
@@ -934,7 +963,8 @@ for (const r of rows) {
       }
       runEnd = j;
     }
-    const rebuilt = words.map((tok, i) => {
+    let mfSegWord = null, mfOld = null;
+    let rebuilt = words.map((tok, i) => {
       if (!pick || i !== pick.i) return (pick && i > pick.i && i <= runEnd) ? '' : tok;
       const { isDivine, isName } = pick;
       // the run's bare text ("Hazar Enon") with the first word's leading and the last
@@ -1021,8 +1051,39 @@ for (const r of rows) {
       // derive a root from — see map.terms below), just not here.
       const shown = tr.toLowerCase();
       noteTerm(bare, shown);
+      if (mfOn) {
+        const [mc, mch, mv] = mtVerseKey(r.code, r.chapter, r.verse).split(':').map(Number);
+        const nth = mfSeen.get(useSn) || 0; mfSeen.set(useSn, nth + 1);
+        const ws = mfVerseWords(mc, mch, mv).filter(w => w.sn === useSn && !w.isName);
+        const word = ws[nth] || ws[ws.length - 1];
+        if (word) { mfSegWord = word; mfOld = { i, repl: tok.replace(bare, `${shown} (${gl})`) }; return tok; }
+      }
       return tok.replace(bare, `${shown} (${gl})`);
     }).join('');
+    // the whole segment is this word's English: "BaYawam (In that day)," — punctuation
+    // and quote marks at its edges stay outside the gloss
+    if (mfSegWord) {
+      // Only the CLAUSE holding the head word goes inside the gloss: a WEB segment can run
+      // across a comma ("fruit, and ate" for H398) — then "fruit, WaThaAkal (and ate)".
+      const headStart = words.slice(0, pick.i).join('').length;
+      const runText = words.slice(pick.i, runEnd + 1).join('');
+      const headEnd = headStart + runText.length - runText.match(/[^A-Za-z]*$/)[0].length;
+      const before = rebuilt.slice(0, headStart), after = rebuilt.slice(headEnd);
+      const cs = Math.max(...[',', ';', ':', '.', '!', '?'].map(ch => before.lastIndexOf(ch))) + 1;
+      const ceRel = after.search(/[,;:.!?]/);
+      const ce = ceRel < 0 ? rebuilt.length : headEnd + ceRel;
+      const mid = rebuilt.slice(cs, ce);
+      const lead = mid.match(/^[^A-Za-z]*/)[0], trail = mid.match(/[^A-Za-z]*$/)[0];
+      const core = mid.slice(lead.length, mid.length - trail.length).replace(/\s+/g, ' ');
+      if (core && !/[()]/.test(core)) {
+        // held between two invisible markers until the WEB's quotes are back (the
+        // restorer aligns on the plain English words); folded into "Form (english)" after
+        mfPairs.push(MF.pairParts(mfSegWord, core));
+        rebuilt = rebuilt.slice(0, cs) + lead + MF_OPEN + core + MF_CLOSE + trail + rebuilt.slice(ce);
+        modformUsed++;
+      }
+      else rebuilt = words.map((t, j) => (j === mfOld.i ? mfOld.repl : t)).join('');   // can't wrap cleanly: the old head-word gloss
+    }
     if (!hit) {
       untouched++;
       // Record WHY a word stayed English. A segment with no head word means this Strong's
@@ -1082,8 +1143,28 @@ for (const r of rows) {
       else if (q.changed) { last.text = q.text; quotesRestored++; }
     }
   }
+  // Fold each marked span into its modification-form pair. A quote mark or punctuation the
+  // restorer put at the span's edge stays OUTSIDE the parentheses: “BaYawam (in that day)
+  if (mfPairs.length) {
+    const last = out[out.length - 1];
+    let k = 0;
+    last.text = last.text.replace(MF_SPAN_RE, (_m, inner) => {
+      const p = mfPairs[k++];
+      const lead = inner.match(/^[^A-Za-z0-9]*/)[0];
+      const rest = inner.slice(lead.length);
+      const trail = rest.match(/[^A-Za-z0-9]*$/)[0];
+      const english = rest.slice(0, rest.length - trail.length).replace(/\s+/g, ' ');
+      if (!p || !english) return lead + english + trail;
+      return lead + MF.renderPair({ ...p, english }) + trail;
+    });
+    if (k !== mfPairs.length || /[\uE000\uE001]/.test(last.text)) mfMarkerMismatch++;
+    last.text = last.text.replace(/[\uE000\uE001]/g, '');
+  }
 }
 pOT.done();
+if (MF) console.log(`modification forms: ${modformUsed.toLocaleString()} segments rendered as their full Hebrew word` +
+                   (mfMarkerMismatch ? ` — ${mfMarkerMismatch} verses lost a marker` : ''));
+if (MF && mfMarkerMismatch) { console.error('modification forms: marker mismatch — refusing to write a half-folded text'); process.exit(1); }
 if (WEB_RAW.size) console.log(`[quotes] quotation marks restored from the WEB on ${quotesRestored} verses (${quotesUnaligned} did not align)`);
 
 // ── WHERE THE ENGLISH AND THE READER DISAGREE ───────────────────────────────

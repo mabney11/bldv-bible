@@ -116,9 +116,12 @@ console.log('corpus.db English present for all 66 canonical books');
   # links on the wrong words. Derived rows only — hand-authored links (any other lang)
   # are untouched, so this is the in-place regeneration the prod-data rule allows.
   # Runs BEFORE fix-name-forms, which re-indexes link rows.
+  # 2026-10-01: reseed now refreshes untouched OT rows too (they were frozen on prod), and
+  # merge-modforms --saved merges the modification forms into fieldy's saved verses
+  # (history row first; his wording kept).
   step "5/5  Rebuilding prod auto-links, then reseeding prod translation.db from the pushed corpus.db (untouched rows only)"
   $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node build-align-links.mjs --db /data/corpus.db --index /data/surface-index.db --links /data/translation.db --out /tmp/align-report.txt --apply'"
-  $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node reseed-translations.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node verify-reading-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --fix --review /tmp/gloss-gate-review.txt && docker run --rm -v $DATA:/data paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db'"
+  $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node reseed-translations.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node merge-modforms.mjs /data/corpus.db /data/translation.db /data/surface-index.db --saved && docker run --rm -v $DATA:/data paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node verify-reading-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --fix --review /tmp/gloss-gate-review.txt && docker run --rm -v $DATA:/data paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db'"
 
   step "Rebake complete"
 }

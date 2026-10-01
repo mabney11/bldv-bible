@@ -78,9 +78,14 @@ const SNAPSHOT_STEP = [
 ];
 const SURFACE_STEPS = [
   ['node', ['render-corpus.mjs', '--from-src', '--apply'],   'surface render NT + Apocrypha FROM text_src (names, terms, theonyms, adam)'],
+  // 2026-10-01 (fieldy): modification forms — "NaAkal (we will eat) Lachamanaw (our own
+  // bread)". The OT gets them in apply-web-strongs; the NT/Apocrypha here, from the HEB
+  // edition's words of each verse.
+  ['node', ['merge-modforms.mjs', '--corpus'],               'modification forms for the NT + Apocrypha (full Hebrew word, English its modifications carry)'],
 ];
 const TAIL_STEPS = [
   ['node', ['reseed-translations.mjs'],                      'reseed translation.db from corpus.db ENG'],
+  ['node', ['merge-modforms.mjs', '--saved'],                'modification forms merged into your saved verses (Gen 3 on; your wording kept, old text in translation_history)'],
   // 2026-09-09: the deterministic name passes run AFTER every seed — locked spellings
   // (Adawam), bare names → "Yawasap (Joseph)", the gold "()" markers the reader paints —
   // and the same gate the deploy runs closes the pipeline. Seeding no longer skips rows

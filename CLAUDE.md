@@ -1,5 +1,44 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## MODIFICATION FORMS in the reading text, Genesis 3 onward (added 2026-10-01)
+
+fieldy: "introduce modifications into my translated texts so my translated text would get
+'NaAyashahayam (Woman [emphatic plural]) .. NaAkal (we will eat) lachamanaw (our own bread)' —
+perhaps the existing filler text can be shifted into their corresponding modification glosses …
+lets do this from Gen 3 onward throughout the corpus. I like that my chapters 1 and 2 ease readers
+into this Hebrew oriented bible." His choices: the gloss is the English phrase, a [label] ONLY for
+a modification no English word in it expresses; his saved verses are MERGED, not skipped.
+This replaces "reading text = bare Strong's root" from Genesis 3 on. Genesis 1–2 are unchanged.
+
+- **server/modform-lib.mjs** — one WORD = what a Parallel chip draws: the token's components
+  with BHS's separate proclitic rows (H9000–H9009, a BARE letter only — בּוֹ / לִי / לָהֶם are
+  words of their own) folded in. FORM = chip spelling (capital at each morpheme boundary before
+  the root, suffixes lowercase). Labels: Emphatic, Toward, Plural (if the English isn't plural),
+  possessive suffix (My/Our/His…), prep, conj, article — each only when the English lacks it.
+  Never labelled: 𐤋 (to/for/infinitive by context), verb subject markers, gender, construct,
+  stems. HEB-edition words (NT/Apoc, no morphology): a final-yod "My" is never labelled (it is
+  as often the construct plural, Matt 5:3 עֲנִיֵּי).
+- **OT machine text** — apply-web-strongs.mjs: the WEB segment of the head word becomes the
+  gloss ("BaYawam (In that day)"), trimmed to the CLAUSE holding the head word ("fruit,
+  WaThaAkal (and ate)"). Pairs are held between U+E000/U+E001 markers while restoreWebQuotes()
+  runs (it aligns on plain English words), then folded; a quote at a span edge stays outside the
+  parentheses. A lost marker FAILS the run. `--no-modforms` disables. Measured: 166,589
+  segments, quotes unaligned 33 (46 before).
+- **NT/Apocrypha** — merge-modforms.mjs --corpus (render-all, after render-corpus): every
+  "word (gloss)" whose word is one of the verse's HEB roots becomes the full form; its gloss
+  takes in the English to its left its prefixes/subject account for ("he will shalam (render)"
+  → "YaShalam (he will render)") and an object pronoun to its right. Names untouched.
+  Measured: 23,769 verses / 106,175 words.
+- **fieldy's saved verses** — merge-modforms.mjs --saved (render-all after reseed; Rebake
+  step 5 on prod): same merge, his wording kept; translation_history row first, rich_text
+  merged the same way, translation_links english_indices re-mapped (LCS + the head word into
+  its form). Idempotent (a word already in full form takes its Hebrew word). Measured on a
+  copy of prod: 110 of 121 Gen-3+ saved verses, 463 words; the parallel gate still passes.
+- **reseed-translations.mjs now refreshes untouched OT rows** (status='none' AND rich_text='')
+  from corpus.db ENG. Before, only load-english-baseline.js did — in the LOCAL translation.db,
+  which prod's replaces — so prod's OT reader rows were frozen snapshots and no OT render change
+  could ever reach the reader.
+
 ## The PARALLEL GATE — no glossed word may disagree with its verse's Hebrew (added 2026-10-01)
 
 fieldy, Isaiah 4:1 "Shabai (seven) ashah (wife / individual woman)": "the 'ashah' regression crept
