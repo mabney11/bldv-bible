@@ -1,4 +1,4 @@
-# verify-reading-glosses — glossed words in YOUR SAVED verses that are not in that verse's Hebrew (2026-10-01T12:15:45.681Z)
+# verify-reading-glosses — glossed words in YOUR SAVED verses that are not in that verse's Hebrew (2026-10-01T18:13:30.093Z)
 # Fix each in the Studio, or sign a deliberate one off in lexicon/gloss-gate-accepted.json as "ref|pair": "why".
 translation 19:110:6  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "sabayab (place)"  — "sabayab" is no Hebrew word in 19:110:6
 translation 19:127:4  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "tap (children)"  — "tap" is no Hebrew word in 19:127:4
