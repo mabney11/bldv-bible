@@ -1554,7 +1554,21 @@ export default function Parallel() {
       const frag = sel.getRangeAt(0).cloneContents();
       const holder = document.createElement('div');
       holder.appendChild(frag);
-      // a selection that stayed inside one verse row has no .par-verse wrapper
+      // fieldy, 2026-10-01: "i only highlighted 'naAyashahayam' but 'Isaiah 4:1
+      // naAyashahayam' is what was added to my clipboard — that is not useful."
+      // The verse form (ref + English + paleo line) is for copying VERSES: a selection
+      // that crosses verses, or spans both columns of one. Anything smaller copies
+      // exactly what was highlighted — except a run of whole word blocks in the source
+      // column, whose glyphs are SVG (no text): that copies as their paleo, nothing more.
+      const wholeVerses = holder.querySelector('.par-verse') || (holder.querySelector('.par-col-en') && holder.querySelector('.par-col-heb'));
+      if (!wholeVerses) {
+        const blocks = [...holder.querySelectorAll('[data-copy]')].map(n => n.getAttribute('data-copy')).filter(Boolean);
+        if (blocks.length < 2) return;                    // native copy: exactly the highlighted text
+        e.clipboardData.setData('text/plain', blocks.join(' '));
+        e.preventDefault();
+        return;
+      }
+      // a selection across both columns of ONE verse row has no .par-verse wrapper
       // in the fragment — give it back its verse number from the live DOM
       const vEl = (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement)?.closest('.par-verse');
       if (!holder.querySelector('.par-verse') && vEl) holder.setAttribute('data-verse', vEl.getAttribute('data-verse'));

@@ -2792,16 +2792,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
         // Suffixes (nme-*, prs-*, vbe-*, and the hardened baked-addition fallback
         // mod-suff-unk) render lowercase — trailing morphemes. Every other
         // component (prefix, root) uppercases its first character.
-        const SUFFIX_CSS_PREFIX = ['nme-', 'prs-', 'vbe-', 'uvf-', 'mod-suff-unk'];
-        pendingComponents.forEach(comp => {
-            if (!comp.translit) return;
-            const isSuffix = SUFFIX_CSS_PREFIX.some(p => comp.css && comp.css.startsWith(p));
-            if (isSuffix) {
-                comp.translit = comp.translit.toLowerCase();
-            } else {
-                comp.translit = comp.translit.charAt(0).toUpperCase() + comp.translit.slice(1);
-            }
-        });
+        caseComponentTranslits(pendingComponents);
 
         if (wordCounter === 1) {
             const first = pendingComponents[0];
@@ -8363,13 +8354,7 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
         transliterateBlock(pending);
         // Suffix components (nme/prs/vbe) render lowercase; everything else
         // gets its first character uppercased. Mirrors parseHebrewData.
-        for (const c of pending) {
-            if (!c.translit) continue;
-            const isSuffix = SUFFIX_CSS_PREFIX.some(p => c.css && c.css.startsWith(p));
-            c.translit = isSuffix
-                ? c.translit.toLowerCase()
-                : c.translit.charAt(0).toUpperCase() + c.translit.slice(1);
-        }
+        caseComponentTranslits(pending);
         // Live re-gloss — each component re-translates against its OWN paleo
         // and source-row pos, NOT the parent word-block's pos/strongs.
         // _sourcePos was stamped at row-ingest time below.
@@ -8977,6 +8962,24 @@ function bhsToDisplayRef(bookId, hebChapter, hebVerse) {
 // The tab. Labels are spelled at read time from strongs-roots.json (nameTranslit)
 // — a few dozen lookups, memoized for the life of the process (a new bake
 // arrives with a deploy/restart anyway).
+// Capital at every morpheme boundary BEFORE the root; suffixes after it lowercase.
+// Position decides, not the class alone (fieldy, 2026-10-01: "prefixes should be
+// capitalized, Isaiah 4:1 naAyashahayam should be NaAyashahayam"): the paragogic 𐤍
+// [Emphatic] is classed uvf-conn — a suffix class — but in 𐤍 + 𐤀𐤉𐤔𐤄 + 𐤉𐤌 it stands in
+// front of the root, so it is a prefix and reads "Na". Shared by parseHebrewData and the
+// /api/tokens fast path. A block with no `root` component keeps the class rule.
+function caseComponentTranslits(comps) {
+    // (list kept inside: a hoisted function can run before a module-level const is initialised)
+    const SUFFIX_CSS_PREFIX_ALL = ['nme-', 'prs-', 'vbe-', 'uvf-', 'mod-suff-unk'];
+    const rootIdx = comps.findIndex(c => c && c.css === 'root');
+    comps.forEach((c, i) => {
+        if (!c || !c.translit) return;
+        const suffixClass = SUFFIX_CSS_PREFIX_ALL.some(p => c.css && c.css.startsWith(p));
+        const isSuffix = suffixClass && (rootIdx < 0 || i > rootIdx);
+        c.translit = isSuffix ? c.translit.toLowerCase() : c.translit.charAt(0).toUpperCase() + c.translit.slice(1);
+    });
+}
+
 // A form's label in fieldy's style — a capital at every morpheme boundary
 // ("LaYahawah", "WaAlahayam", "Alahayamay"): each baked part transliterated in
 // place (transliterateBlock keeps the final-letter forms right across parts),
