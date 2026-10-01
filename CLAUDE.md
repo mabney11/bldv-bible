@@ -88,6 +88,24 @@ This replaces "reading text = bare Strong's root" from Genesis 3 on. Genesis 1�
     no other Strong's shares the root → else the verse's English). English left before a comma
     goes to the Hebrew word right after the previous one when the English named none
     ("Asharay (He who) HaInawayam (are the gentle - plural)").
+- **"I shouldnt see single letters, the tokens shuld be validated aganst the tokens"** (Matt 6:9
+  "L (To) Kah (thus) Palal (Pray like this)"). Three causes, three fixes:
+  1. The HEB parse of 𐤋𐤊𐤍 (lakhen) kept only the chip 𐤋 — 1,162 HEB surfaces (7,749
+     occurrences) whose chips spell only the START of the word. build-surface-index.js
+     coverLetters() gives the missing letters back (root, or a suffix piece if there is a root)
+     before writing token_surfaces, and reports it; modform-lib's loader repairs an index baked
+     before that. (9,589 HEB surfaces whose chips RESPELL a letter — 𐤄𐤅 suffix → 𐤅 — are by
+     design and only counted.)
+  2. Lone letters in the word list: the interrogative 𐤄 (no Strong's, pos inrg) was not folded
+     like the H9000-H9009 proclitics ("H (the)" 1,606x in the OT); the Aramaic emphatic 𐤀 (pos
+     art) now closes the word BEFORE it; any other lone letter joins the next word. After the
+     loader: 0 single-letter words corpus-wide.
+  3. A pair written as its bare root ("palal (Pray)") is shown as the verse's TOKEN form
+     (ThaThaPalalaw), modifications woven; a pair bound to no token word ("qadash (holy)" whose
+     word YaThaQadashaw already stands) is not shown as Hebrew — its English joins its
+     neighbours. ("Palal" was also taken for the name of Nehemiah 3: a name now needs an
+     English name gloss or a name-tagged token.) The 𐤔 chip "[𐤔]" reads "who".
+  The parallel gate fails any single-letter word.
 - **fieldy's saved verses** — merge-modforms.mjs --saved (render-all after reseed; Rebake
   step 5 on prod): same merge, his wording kept; translation_history row first, rich_text
   merged the same way, translation_links english_indices re-mapped (LCS + the head word into

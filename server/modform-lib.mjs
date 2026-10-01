@@ -113,7 +113,12 @@ function modInfo(c, source) {
   const css = c.css || '', p = c.paleo || '';
   if (css === 'mod-conj') return { kind: 'pre', eng: CONJ, label: 'and' };
   if (css === 'mod-art') return { kind: 'pre', eng: ART, label: 'the' };
-  if (css === 'mod-prep' && PREP[p]) return { kind: 'pre', eng: PREP[p], label: (c.translation || '').replace(/[\[\]]/g, '').split('/')[0] || p, inf: p === '𐤋' };
+  if (css === 'mod-prep' && PREP[p]) {
+    // the chip's own word, unless it is a placeholder (𐤔 "[𐤔]"): then the letter's sense
+    let lab = (c.translation || '').replace(/[\[\]]/g, '').split('/')[0].trim();
+    if (!lab || /[\u{10900}-\u{10915}]/u.test(lab)) lab = { '𐤔': 'who', '𐤁': 'in', '𐤋': 'to', '𐤌': 'from', '𐤊': 'as' }[p] || '';
+    return { kind: 'pre', eng: PREP[p], label: lab || null, inf: p === '𐤋' };
+  }
   if (css.startsWith('pfm-') && css !== 'pfm-ptcp') { const pr = css.slice(4);
     return { kind: 'subj', eng: SUBJ[pr] || SUBJ[pr[0]] || SUBJ['3'], label: null }; }
   if (css.startsWith('vbe-')) return { kind: 'subj-suf', eng: SUBJ[css.slice(4)] || SUBJ[css.slice(4, 5)] || W('they'), label: null };
@@ -141,11 +146,30 @@ export function verseWordsLoader(sdb) {
     for (const r of st.all(source, b, c, v)) {
       let comps; try { comps = JSON.parse(r.components || '[]'); } catch { comps = []; }
       comps = comps.filter(x => x && x.paleo);
+      // every letter of the word must be in its components: an index baked before
+      // build-surface-index's coverLetters() can hold 𐤋𐤊𐤍 as the lone chip 𐤋 ("L (To)")
+      { const raw = [...String(r.word_raw || '')].filter(ch => ch >= '\u{10900}' && ch <= '\u{10915}');
+        const have = [...comps.map(x => x.paleo).join('')];
+        let k = 0; for (const ch of have) if (k < raw.length && raw[k] === ch) k++;
+        if (raw.length && k < raw.length && have.length < raw.length && have.every((ch, q) => ch === raw[q])) {
+          const tail = raw.slice(have.length).join('');
+          comps = [...comps, comps.some(x => x.css === 'root') ? { paleo: tail, css: 'mod-suff-unk' } : { paleo: tail, true_root: tail, translation: tail, gloss_src: 'none', css: 'root' }];
+        } }
       if (!comps.length) continue;                                  // punctuation / maqaf
       const single = [...(r.word_raw || '')].length === 1;
       // a preposition carrying its own pronoun (בּוֹ "in him", לִי "to me", לָהֶם "to them") is a
       // WORD of its own — only a bare letter is a proclitic of the next word
-      if (PROCLITIC_SN.test(r.sn || '') && single && comps.length === 1 && /^(prep|conj|art)$/.test(r.pos || '')) { pending.push(...comps); continue; }
+      // (any lone proclitic letter: the BHS rows H9000-H9009, and the interrogative 𐤄 of 𐤄𐤌𐤍
+      // Genesis 3:11, which has no Strong's — "H (the)" stood alone 1,606 times in the OT)
+      if (single && comps.length === 1 && '𐤅𐤄𐤁𐤋𐤊𐤌𐤔'.includes(r.word_raw) && (PROCLITIC_SN.test(r.sn || '') || /^(prep|conj|art|inrg)$/.test(r.pos || ''))) { pending.push(...comps); continue; }
+      // a single letter is never a word of its own (fieldy): the Aramaic emphatic 𐤀 (BHS row,
+      // pos art, Ezra/Daniel) closes the word before it; any other lone letter (a numeral, a
+      // suspended letter) joins the word after it
+      if (single && !pending.length && [...comps.map(x => x.paleo).join('')].length === 1) {
+        const prev = words[words.length - 1];
+        if (r.word_raw === '𐤀' && /art/.test(r.pos || '') && prev) { prev.comps.push({ ...comps[0], css: 'nme-emph' }); prev.form = formOf(prev.comps); continue; }
+        pending.push(...comps); continue;
+      }
       const all = [...pending, ...comps]; pending = [];
       // a preposition standing as its own word (אֵלָיו "to him", לְךָ "to you") has no root
       // component: the preposition is its head, the pronoun its suffix
@@ -161,6 +185,7 @@ export function verseWordsLoader(sdb) {
                      return mi;
                    }).filter(Boolean) });
     }
+    if (pending.length && words.length) { const last = words[words.length - 1]; last.comps.push(...pending.map(x => ({ ...x, css: 'mod-suff-unk' }))); last.form = formOf(last.comps); }
     return words;
   };
 }
@@ -241,7 +266,7 @@ export function mergeModforms(text, words, opts = {}) {
     // with a capital ("sham (name)" is a word — Sham (Shem) is a name)
     const g = m[4].trim();
     if (!g) continue;                                                         // "Yahawah ()": the gold marker, never touched
-    if (!m[1] && /^[A-Z]/.test(g) && (NAME_ENG.has(g.toLowerCase()) || NAME_TR.has(w))) {   // (a marked pair was built from a non-name Hebrew word)
+    if (!m[1] && /^[A-Z]/.test(g) && (NAME_ENG.has(g.toLowerCase()) || (NAME_TR.has(w) && words.some(x => x.isName && (x.rootTr === w || x.snTr === w))))) {   // "Palal (Pray)" is the verb, not Palal of Nehemiah 3   // (a marked pair was built from a non-name Hebrew word)
       // A NAME takes its proclitics like any word — fieldy: "the whole Wa...(and ...) is a
       // common hebrew pattern so it makes sense that it exists across my corpus regardless of
       // the writing period" — "and Yawasap (Joseph)" -> "WaYawasap (and Joseph)". Only and /
@@ -415,10 +440,17 @@ export function interlinear(text, words, glossOf, opts = {}) {
         engWordsN += (m[5].match(/[A-Za-z]+/g) || []).filter(x => !LIGHT.has(x.toLowerCase())).length;
         const h = find(m[3], m[2]);
         if (h) used.add(h);
+        // a pair whose word is no word of this verse's tokens (its Hebrew word already stands
+        // elsewhere: "YaThaQadashaw (be kept) qadash (holy)") is not shown as Hebrew — its
+        // English joins the words around it. A name keeps its place.
+        if (!h && (!/^[A-Z]/.test(m[3]) || norm(m[3]).length <= 1) && m[5].trim()) { for (const x of m[5].trim().split(/\s+/)) { if (!LIGHT.has(x.toLowerCase())) residueN++; els.push({ k: 'w', t: x }); } continue; }
         const gl = m[5].trim();
         // a name's brackets hold only its English name: never English from around it
         const isName = (h && h.isName) || gl === ''
           || (gl.match(/\b[A-Z][a-z'’-]+/g) || []).some(x => NAME_ENG.has(x.toLowerCase().replace(/[’']s$/, '')));
+        // the Hebrew word shown is the TOKEN's: a pair still written as its bare root ("palal")
+        // becomes the verse's word ("ThaThaPalalaw"), its modifications woven into the English
+        if (h && !isName && norm(m[3]) !== norm(h.form)) { els.push({ k: 'item', h, form: h.form, gloss: weave(h, gl), name: false }); continue; }
         els.push({ k: 'item', h, form: m[3], gloss: gl, name: isName });
         continue;
       }

@@ -236,6 +236,10 @@ function check(key, text) {
     const hy = m[1].lastIndexOf('-'); const claim = hy > 0 ? m[1].slice(hy + 1) : m[1];
     const keep = hy > 0 ? m[1].slice(0, hy + 1) : '';
     const word = norm(claim); const g = m[2].trim();
+    // a single letter is never a word (fieldy, Matthew 6:9 "L (To)": "I shouldnt see single
+    // letters, the tokens shuld be validated aganst the tokens") — a proclitic standing alone
+    // means the word's other letters were lost
+    if (word.length === 1 && /^[A-Z]/.test(m[1]) && g) { out.push({ index: m.index, m: m[0], word: m[1], keep, gloss: g, why: `"${m[1]}" is a single letter — not a word of ${hk.replace(/\|/g, ':')}` }); continue; }
     if (!word || word.length < 2) continue;
     if (/^(masc|fem|pl|sg|m|f)\.?$/i.test(g) || g.split(/\s+/).length > 4) continue;   // an English aside, not a gloss
     if (/^[a-z]/.test(m[1]) && /^[A-Z]/.test(g) && g.split(/\s+/).length > 1) continue;  // "egypt (for he lived …)" — prose

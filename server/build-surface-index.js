@@ -2222,6 +2222,41 @@ out.exec(`
     CREATE INDEX idx_surf_strongs     ON token_surfaces(strongs);
 `);
 
+// ── EVERY LETTER OF THE WORD IS IN ITS CHIPS (fieldy, 2026-10-01, Matthew 6:9: "LaKah is
+// the word, I shouldnt see single letters, the tokens shuld be validated aganst the tokens").
+// The HEB parse of 𐤋𐤊𐤍 (lakhen) returned ONE component — the preposition 𐤋 — and dropped
+// 𐤊𐤍: the chips showed "L" and the reading text wrote "L (To)". A surface whose components
+// spell only the START of the word (1,162 HEB surfaces, 7,749 occurrences when found) gets
+// the missing letters back as its root (or, if it has a root, as a suffix piece), so the
+// word reads as written: LaKan. Components that ADD letters (the reconstructed root, a
+// restored suffix) are by design and untouched; any other disagreement is counted below.
+const coverStat = { repaired: 0, other: 0, ex: [], otherEx: [] };
+function coverLetters(v) {
+    let comps; try { comps = JSON.parse(v.components_json || '[]'); } catch { return; }
+    const raw = [...String(v.word_raw || '')].filter(ch => ch >= '\u{10900}' && ch <= '\u{10915}');
+    const have = [...comps.map(c => (c && c.paleo) || '').join('')];
+    if (!raw.length) return;
+    let i = 0; for (const ch of have) { if (i < raw.length && raw[i] === ch) i++; }
+    if (i === raw.length) return;                                   // every letter is there
+    if (have.length < raw.length && have.every((ch, k) => ch === raw[k])) {
+        const tail = raw.slice(have.length).join('');
+        const hasRoot = comps.some(c => c && c.css === 'root');
+        comps.push(hasRoot ? { paleo: tail, translit: '', translation: '', css: 'mod-suff-unk', restored: true }
+                           : { paleo: tail, true_root: tail, translit: '', translation: tail, gloss_src: 'none', css: 'root', restored: true });
+        transliterateBlock(comps);
+        const SUFFIX = ['nme-', 'prs-', 'vbe-', 'uvf-', 'mod-suff-unk'];
+        for (const c of comps) if (c.translit) c.translit = SUFFIX.some(p => c.css && c.css.startsWith(p)) ? c.translit.toLowerCase() : c.translit.charAt(0).toUpperCase() + c.translit.slice(1);
+        v.components_json = JSON.stringify(comps);
+        coverStat.repaired++; if (coverStat.ex.length < 5) coverStat.ex.push(`${v.word_raw} ${have.join('')}→${have.join('') + tail}`);
+    } else { coverStat.other++; if (coverStat.otherEx.length < 5) coverStat.otherEx.push(`${v.word_raw} (chips ${have.join('')})`); }
+}
+for (const v of surfaceMap.values()) coverLetters(v);
+if (hebResult) for (const v of hebResult.surfaces.values()) coverLetters(v);
+console.log(`  letters: ${coverStat.repaired.toLocaleString()} surfaces whose chips spelled only the start of the word got the rest back` +
+            (coverStat.ex.length ? ` (${coverStat.ex.join(', ')})` : ''));
+console.log(`  letters: ${coverStat.other.toLocaleString()} surfaces whose chips respell a letter (𐤄𐤅 suffix → 𐤅, hitpael 𐤔𐤕 → 𐤕𐤔) — by design, listed for review` +
+            (coverStat.otherEx.length ? ` (${coverStat.otherEx.join(', ')})` : ''));
+
 // Insert token_surfaces
 const insertSurf = out.prepare(`
     INSERT OR IGNORE INTO token_surfaces
