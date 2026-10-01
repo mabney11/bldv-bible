@@ -172,6 +172,12 @@ docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-q
 # (Edom is ALWAYS Adawam) and fails the deploy on any mismatch.
 # The READER's text is translation.db, so both DBs are checked. On a failure:
 #   docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db
+# 2026-10-01: REPAIR before the gate. The fix used to be a manual step after a failed
+# deploy, and rebake.sh only runs it AFTER the deploy (step 5) — so a rule that is new in
+# this image (e.g. the retired "ashah" spelling for H802) could never be repaired before
+# the gate that checks it. fix-name-forms only applies the deterministic name/spelling
+# rules (history row for any hand-saved verse); the gate below still fails on anything left.
+docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db
 docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db
 
 # 2026-10-01: THE PARALLEL GATE (fieldy, Isaiah 4:1 "ashah (wife / individual woman)":
