@@ -27,7 +27,10 @@ This replaces "reading text = bare Strong's root" from Genesis 3 on. Genesis 1�
 - **NT/Apocrypha** — merge-modforms.mjs --corpus (render-all, after render-corpus): every
   "word (gloss)" whose word is one of the verse's HEB roots becomes the full form; its gloss
   takes in the English to its left its prefixes/subject account for ("he will shalam (render)"
-  → "YaShalam (he will render)") and an object pronoun to its right. Names untouched.
+  → "YaShalam (he will render)") and an object pronoun to its right. Names are NEVER merged:
+  besides a mod-nmpr tag, a capitalised gloss that is a name in word-map.json (or a name's
+  spelling) is skipped — the first run turned Josephus "Yawasap (Joseph)" into "WaYaYawasap
+  (and Joseph)" (HEB word untagged) and verify-name-forms stopped render-all on 5 verses.
   Measured: 23,769 verses / 106,175 words.
 - **fieldy's saved verses** — merge-modforms.mjs --saved (render-all after reseed; Rebake
   step 5 on prod): same merge, his wording kept; translation_history row first, rich_text

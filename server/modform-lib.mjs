@@ -19,7 +19,8 @@
 // morpheme boundary before the root, suffixes lowercase — the chip spelling
 // (NaAyashahayam, BaYawam, Lachamanaw).
 import path from 'node:path';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+const NAME_ENG = new Set(), NAME_TR = new Set();
 import { fileURLToPath, pathToFileURL } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -29,6 +30,15 @@ export async function loadCharMap() {
   const p = ['../src/lib/books.js', './vendor/books.js', './src/lib/books.js'].map(x => path.join(__dirname, x)).find(existsSync);
   if (!p) throw new Error('modform-lib: books.js not found');
   CHAR_MAP = (await import(pathToFileURL(p).href)).CHAR_MAP;
+  // NAMES are never merged (Josephus "Yawasap (Joseph)" became "WaYaYawasap (and Joseph)"
+  // — the HEB word carried no name tag, and the name gate then saw a bare "Joseph").
+  // word-map.json is apply-web-strongs' own list of every name it rendered.
+  try {
+    const wm = JSON.parse(readFileSync(path.join(__dirname, 'word-map.json'), 'utf8'));
+    for (const k of ['names', 'peoples', 'divine']) for (const [eng, tr] of Object.entries(wm[k] || {})) {
+      NAME_ENG.add(String(eng).toLowerCase()); NAME_TR.add(String(tr).toLowerCase().normalize('NFD').replace(/[^a-z]/g, ''));
+    }
+  } catch { /* no word-map.json: names are still skipped when the HEB word is tagged mod-nmpr */ }
   return CHAR_MAP;
 }
 
@@ -200,6 +210,10 @@ export function mergeModforms(text, words) {
     if (depthAt(m.index)) continue;                    // a pair inside another gloss: "Ahayah (I hayah (come to pass))"
     const w = norm(m[1]);
     if (!w || m[1].includes('-')) continue;
+    // a NAME is never merged: a capitalised gloss that is a name, or a name's spelling glossed
+    // with a capital ("sham (name)" is a word — Sham (Shem) is a name)
+    const g = m[2].trim();
+    if (!g || (/^[A-Z]/.test(g) && (NAME_ENG.has(g.toLowerCase()) || NAME_TR.has(w)))) continue;
     const done = words.find(x => !used.has(x) && norm(x.form) === w && x.mods.length);
     if (done) { used.add(done); continue; }                                  // already a full form — and that word is taken
     const cands = words.filter(x => !used.has(x) && !x.isName && x.rootTr === w);
