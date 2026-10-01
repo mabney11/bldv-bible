@@ -34,48 +34,48 @@ H3205 is the test: "became" / "father" scoring high means the model learned
 the idiom kjv_def cannot express. If instead you see OUR OWN transliterations
 (yalad, ab, ban, amar, shamai, dabar) near the top, it is training on rendered
 output rather than the original translation — check that text_src is populated.
-  excluded 9,585 particle/one-letter tokens as link targets
+  excluded 15,484 particle/one-letter tokens as link targets
 
 NT verses with Hebrew: 7,956
 
 ────────────────────────────────────────────────────────────────────────────
 ALIGNMENT RESULT
 ────────────────────────────────────────────────────────────────────────────
-Hebrew tokens in NT verses that also have English: 76,664
-links generated                                  : 26,304
-  covering more than one English word            : 567
-candidates refused as too far from the word      : 2,967 (position guard: >0.4 of the verse AND >2 tokens away)
-construct-chain picks ("X of Y" -> token after X): 449
-loser fallbacks (lost a token, took the next free): 139
-tokens now aligned                               : 26,304 (34.3%)
+Hebrew tokens in NT verses that also have English: 87,070
+links generated                                  : 28,047
+  covering more than one English word            : 584
+candidates refused as too far from the word      : 3,323 (position guard: >0.4 of the verse AND >2 tokens away)
+construct-chain picks ("X of Y" -> token after X): 590
+loser fallbacks (lost a token, took the next free): 173
+tokens now aligned                               : 28,047 (32.2%)
 
 ────────────────────────────────────────────────────────────────────────────
 WHERE THE UNALIGNED TOKENS ARE
 ────────────────────────────────────────────────────────────────────────────
-unaligned tokens: 50,360
+unaligned tokens: 59,023
 
   count    strongs   best English the model knows for it
   ----------------------------------------------------------------
-  1759     H1961     be 0.20  it 0.14  shall 0.10
-  1563     H853      the 0.28  and 0.25  of 0.09
-  1282     H430      god 0.57  your 0.10  you 0.06
-  1228     H413      to 0.48  the 0.09  and 0.07
-  1164     H1931     he 0.22  is 0.19  that 0.13
-  928      H559      said 0.35  saying 0.09  i 0.07
-  906      H834      which 0.21  that 0.14  the 0.11
-  896      H3808     not 0.29  shall 0.10  but 0.08
-  879      H3442     jeshua 0.47  the 0.22  of 0.18
-  706      H376      man 0.27  men 0.19  a 0.10
-  628      H6213     do 0.14  done 0.08  to 0.08
-  586      H3605     all 0.59  the 0.09  and 0.07
-  542      H4899     anointed 0.33  against 0.07  my 0.06
-  512      H5921     the 0.24  on 0.21  and 0.13
-  509      H935      come 0.15  came 0.13  to 0.11
-  509      H259      one 0.54  of 0.16  the 0.10
-  500      H589      i 0.51  am 0.17  my 0.09
-  487      H6440     before 0.38  the 0.11  and 0.09
-  476      H1697     word 0.20  words 0.17  of 0.13
-  420      H369      no 0.24  there 0.21  is 0.19
+  2711     H413      to 0.48  the 0.09  and 0.07
+  1853     H853      the 0.28  and 0.25  of 0.09
+  1853     H1961     be 0.20  it 0.14  shall 0.10
+  1838     H5921     the 0.24  on 0.21  and 0.13
+  1724     H3605     all 0.59  the 0.09  and 0.07
+  1518     H3808     not 0.29  shall 0.10  but 0.08
+  1333     H430      god 0.57  your 0.10  you 0.06
+  1193     H1931     he 0.22  is 0.19  that 0.13
+  959      H559      said 0.35  saying 0.09  i 0.07
+  900      H3442     jeshua 0.47  the 0.22  of 0.18
+  728      H376      man 0.27  men 0.19  a 0.10
+  725      H4480     from 0.21  of 0.20  the 0.20
+  677      H6213     do 0.14  done 0.08  to 0.08
+  673      H1571     also 0.37  and 0.07  even 0.06
+  604      H834      which 0.21  that 0.14  the 0.11
+  570      H4899     anointed 0.33  against 0.07  my 0.06
+  540      H935      come 0.15  came 0.13  to 0.11
+  521      H1697     word 0.20  words 0.17  of 0.13
+  518      H259      one 0.54  of 0.16  the 0.10
+  515      H589      i 0.51  am 0.17  my 0.09
 
 Read this as three groups:
   • particles with no English counterpart (H853 direct-object marker, and
@@ -89,18 +89,18 @@ Read this as three groups:
 REVIEW — first 12 multi-word spans
 ────────────────────────────────────────────────────────────────────────────
 Read these before applying. A wrong span here becomes a wrong gloss everywhere.
+  40:2:16  H8141   ord 20  "years old"
+  40:3:12  H1637   ord 6  "threshing floor"
   40:3:16  H5927   ord 6  "went up"
   40:4:2  H705    ord 6  "forty nights"
   40:4:24  H3318   ord 1  "went out"
-  40:5:1  H5927   ord 5  "went up"
+  40:5:1  H5927   ord 6  "went up"
+  40:5:13  H7993   ord 17  "cast out"
   40:5:16  H215    ord 2  "light shine"
   40:5:27  H5003   ord 6  "commit adultery"
-  40:5:28  H5003   ord 10  "committed adultery"
-  40:5:32  H5003   ord 17  "commits adultery"
-  40:6:3  H3225   ord 9  "right hand"
-  40:6:6  H2315   ord 5  "inner room"
-  40:7:15  H2061   ord 10  "ravening wolves"
-  40:8:29  H6817   ord 3  "cried out"
+  40:5:28  H5003   ord 11  "committed adultery"
+  40:5:32  H5003   ord 20  "commits adultery"
+  40:6:3  H3225   ord 10  "right hand"
 
-written to ./translation.db: 23,263 previous auto rows replaced, 26,304 inserted (lang='HEB-auto').
+written to ./translation.db: 23,263 previous auto rows replaced, 28,047 inserted (lang='HEB-auto').
 Hand-authored rows with a different lang were not touched.

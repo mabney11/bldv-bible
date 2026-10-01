@@ -3,16 +3,30 @@ corpus: C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\server\corp
 index:  C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\server\surface-index.db
 
   index BHS: 490,052 occurrences / 39 books
-  index HEB: 1,121,078 occurrences / 92 books
+  index HEB: 1,145,474 occurrences / 92 books
 
   tokens_nt: 1,053,043 rows
   columns:   book_id, chapter, verse, token_ordinal, word_raw, pos, morph, strongs, source_id
 
 ── WHAT CHANGES ─────────────────────────────────────────────────────────
-  rows:   tokens_nt 1,053,043  ->  projection 1,053,043
+  rows:   tokens_nt 1,053,043  ->  projection 1,077,439
   verses: in both 52,648, only in tokens_nt 0, only in the index 0
-  of the shared verses, 52,648 (100.0%) tokenize identically
-  where they do, Strong's agree on 986,225 and DISAGREE on 0 (0.0%)
+  of the shared verses, 40,975 (77.8%) tokenize identically
+  where they do, Strong's agree on 794,949 and DISAGREE on 68 (0.0%)
+
+  Disagreements (the index value is the one the reader already shows):
+    68:27:12.14 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
+    68:28:13.2 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
+    68:28:14.8 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
+    68:29:17.4 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
+    70:50:27.15 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
+    100:7:6.288 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
+    100:7:6.294 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
+    100:7:6.312 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
+    100:7:6.321 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
+    100:7:9.18 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
+    100:7:9.102 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
+    100:8:4.220 𐤋𐤁𐤍  tokens_nt=H3837  index=H1121
 
 ── TRANSLATION LINKS ────────────────────────────────────────────────────
   26,254 links total, 253 bound to HEB.

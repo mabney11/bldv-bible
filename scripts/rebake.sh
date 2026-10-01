@@ -110,7 +110,14 @@ console.log('corpus.db English present for all 66 canonical books');
   # prod's translation.db in place from the corpus.db just pushed: untouched rows only
   # (status='none' AND rich_text=''), saved Studio work is never touched. Then
   # re-apply the name forms, as render-all does locally.
-  step "5/5  Reseeding prod translation.db from the pushed corpus.db (untouched rows only)"
+  # 2026-10-01: ALSO rebuild prod's auto-links (translation_links lang='HEB-auto') against
+  # the surface-index.db just pushed. They point at HEB token ordinals, and a re-tokenised
+  # bake (the 2026-09-30 maqaf fix moved ordinals in 11,673 verses) leaves prod's old
+  # links on the wrong words. Derived rows only — hand-authored links (any other lang)
+  # are untouched, so this is the in-place regeneration the prod-data rule allows.
+  # Runs BEFORE fix-name-forms, which re-indexes link rows.
+  step "5/5  Rebuilding prod auto-links, then reseeding prod translation.db from the pushed corpus.db (untouched rows only)"
+  $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node build-align-links.mjs --db /data/corpus.db --index /data/surface-index.db --links /data/translation.db --out /tmp/align-report.txt --apply'"
   $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node reseed-translations.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db'"
 
   step "Rebake complete"

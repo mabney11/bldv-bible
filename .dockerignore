@@ -38,6 +38,11 @@ __pycache__
 # needs is let back in below (a later negation wins in .dockerignore).
 scripts
 !scripts/build-headings-if-present.mjs
+# 2026-10-01: the Reader Back-button gate runs as `prebuild` inside the image build
+# (Dockerfile COPYs it). Without this line it was missing from the build context,
+# the COPY failed, and GitHub Actions published no image from 3de3344 onward —
+# deploy-blue-green.sh then gave up waiting for ghcr.io/...:<sha>.
+!scripts/verify-reader-back-scroll.mjs
 tests
 
 # Misc large text/log artifacts sitting at repo root and in server/ from
