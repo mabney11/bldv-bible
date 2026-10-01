@@ -118,5 +118,11 @@
       "Madmen",
       "Iram"
     ]
+  },
+  "glossed": {
+    "_note": "fieldy 2026-10-01: \"lets go ahead and gloss Alahayam (God), Yashawai (Jesus) Mashayach (Christ / Anointed One)\". These words are no longer bare / gold \"()\": wherever one stands without a gloss (or with the empty gold marker) it reads 'Word (gloss)'. fix-name-forms writes it on every row (saved ones with a history row), verify-name-forms fails on a survivor, merge-modforms writes it before the modification forms so prefixes join: 'LaAlahayam (to God)'.",
+    "Alahayam": "God",
+    "Yashawai": "Jesus",
+    "Mashayach": "Christ / Anointed One"
   }
 }
