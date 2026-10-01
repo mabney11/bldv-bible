@@ -28,6 +28,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadRules, checkText, bareNames, goldMarkers } from './name-form-lib.mjs';
+import { loadRenumberForms, checkRenumbered } from './renumber-forms-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CORPUS_DB = process.argv[2] || path.join(__dirname, 'corpus.db');
@@ -35,6 +36,11 @@ const TRANS_DB = process.argv[3] || path.join(__dirname, 'translation.db');
 function die(m) { console.error('✗ ' + m); process.exit(1); }
 if (!existsSync(CORPUS_DB)) die(`corpus.db not found: ${CORPUS_DB}`);
 const R = loadRules();
+// Retired renumber spellings ("ashah" for H802 woman → ayashah, 2026-10-01) — checked on
+// EVERY row, hand-saved ones included: it is a spelling, and fieldy's rule.
+const cdb = new Database(CORPUS_DB, { readonly: true });
+const RF = await loadRenumberForms(cdb);
+console.log(`verify-name-forms: retired renumber spellings: ${RF.forms.map(f => `${f.oldTr}→${f.newTr} (${f.from})`).join(', ') || 'none'}`);
 console.log(`verify-name-forms: ${Object.keys(R.must).length} locked names, divine-as-human check, ${R.replace.length} rewrites, ${R.forbidden.length} forbidden patterns — every hit fails`);
 
 const violations = [];
@@ -45,6 +51,7 @@ function scan(label, rows) {
     n++;
     const c = checkText(r.text, R);
     for (const x of c.violations) violations.push(`${label} ${r.ref}  "${x.text}"  — ${x.why}`);
+    for (const x of checkRenumbered(r.text, r.ref, RF).hits) violations.push(`${label} ${r.ref}  "${x.text}"  — ${x.why} → ${x.fix}`);
     if ((r.status || 'none') === 'none') {
       const b = bareNames(c.fixed, R);
       for (const x of b.hits) violations.push(`${label} ${r.ref}  "${x.text}"  — ${x.why} → ${x.fix}`);
@@ -53,7 +60,6 @@ function scan(label, rows) {
   }
   console.log(`  scanned ${n.toLocaleString()} ${label} verses`);
 }
-const cdb = new Database(CORPUS_DB, { readonly: true });
 scan('corpus', cdb.prepare(`SELECT canon_id||':'||ord_c||':'||ord_v AS ref, 'none' AS status, text FROM verses WHERE corpus = 'ENG'`).all());
 if (existsSync(TRANS_DB)) {
   const tdb = new Database(TRANS_DB, { readonly: true });

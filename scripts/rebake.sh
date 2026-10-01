@@ -118,7 +118,7 @@ console.log('corpus.db English present for all 66 canonical books');
   # Runs BEFORE fix-name-forms, which re-indexes link rows.
   step "5/5  Rebuilding prod auto-links, then reseeding prod translation.db from the pushed corpus.db (untouched rows only)"
   $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node build-align-links.mjs --db /data/corpus.db --index /data/surface-index.db --links /data/translation.db --out /tmp/align-report.txt --apply'"
-  $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node reseed-translations.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db'"
+  $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node reseed-translations.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node verify-reading-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --fix --review /tmp/gloss-gate-review.txt && docker run --rm -v $DATA:/data paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db'"
 
   step "Rebake complete"
 }

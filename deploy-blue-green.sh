@@ -174,6 +174,17 @@ docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-q
 #   docker run --rm -v "$PALEO_DATA_DIR:/data" paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db
 docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db
 
+# 2026-10-01: THE PARALLEL GATE (fieldy, Isaiah 4:1 "ashah (wife / individual woman)":
+# "there should not be glossed words on the translated side that disagree with the token
+# side"). Every `word (gloss)` the reader serves must be a Hebrew word in THAT verse's
+# tokens (±2 only in chapters with known versification drift), and known misconceptions
+# (lexicon/gloss-misconceptions.json + retired renumber spellings: ashah≠woman, bath≠
+# daughter) fail everywhere. --fix first: machine rows are unwrapped to plain English,
+# a misconception is removed even from a saved verse (history row kept); a mismatch in a
+# verse fieldy saved himself is listed, not rewritten. Exit 1 on anything left. Bigger
+# memory than the other gates: it loads the whole Hebrew index.
+docker run --rm --memory="2g" --memory-swap="2g" -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-reading-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --fix --review /tmp/gloss-gate-review.txt
+
 # 2026-08-18: fieldy compared bldbible.com/parallel's Deuteronomy 13:3 against an
 # external interlinear and found misaligned Hebrew — "I thought that's what the
 # aligner scripts did but there are clearly major lapses." verify-no-eliding.js

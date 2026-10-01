@@ -1,0 +1,43 @@
+# verify-reading-glosses — glossed words in YOUR SAVED verses that are not in that verse's Hebrew (2026-10-01T06:22:21.074Z)
+# Fix each in the Studio, or sign a deliberate one off in lexicon/gloss-gate-accepted.json as "ref|pair": "why".
+translation 19:110:6  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "sabayab (place)"  — "sabayab" is no Hebrew word in 19:110:6
+translation 19:127:4  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "tap (children)"  — "tap" is no Hebrew word in 19:127:4
+translation 38:4:14  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "shaman (oil)"  — "shaman" is no Hebrew word in 38:4:14
+translation 1:1:12  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "Yawatzaa (brought forth)"  — "Yawatzaa" is no Hebrew word in 1:1:12
+translation 1:1:14  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "badayal (the division)"  — "badayal" is no Hebrew word in 1:1:14
+translation 1:1:15  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "awayar (shine)"  — "awayar" is no Hebrew word in 1:1:15
+translation 1:1:17  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "awayar (shine)"  — "awayar" is no Hebrew word in 1:1:17
+translation 1:1:18  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "badayal (division)"  — "badayal" is no Hebrew word in 1:1:18
+translation 1:2:17  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "alak (you eat)"  — "alak" is no Hebrew word in 1:2:17
+translation 1:6:17  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "haa (even)"  — "haa" is no Hebrew word in 1:6:17
+translation 1:6:17  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "shachaq (sky)"  — "shachaq" is no Hebrew word in 1:6:17
+translation 1:15:13  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "chayay (live)"  — "chayay" is no Hebrew word in 1:15:13
+translation 1:15:15  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "yawamay (age)"  — "yawamay" is no Hebrew word in 1:15:15
+translation 1:24:27  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "ahab (loving)"  — "ahab" is no Hebrew word in 1:24:27
+translation 3:24:2  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "tamayad (always / continually)"  — "tamayad" is no Hebrew word in 3:24:2
+translation 3:24:11  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "bawayaa (brought)"  — "bawayaa" is no Hebrew word in 3:24:11
+translation 3:24:12  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "Yanayachaw (left him)"  — "Yanayachaw" is no Hebrew word in 3:24:12
+translation 3:24:20  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "Shahar (break)"  — "Shahar" is no Hebrew word in 3:24:20
+translation 19:91:9  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "dawaaray (dwelling)"  — "dawaaray" is no Hebrew word in 19:91:9
+translation 19:91:9  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "sabayab (place)"  — "sabayab" is no Hebrew word in 19:91:9
+translation 19:127:2  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "ahabahath (loved)"  — "ahabahath" is no Hebrew word in 19:127:2
+translation 19:127:2  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "tap (ones)"  — "tap" is no Hebrew word in 19:127:2
+translation 23:4:1  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "qabal (hold)"  — "qabal" is no Hebrew word in 23:4:1
+translation 23:57:13  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "qawah (gathered)"  — "qawah" is no Hebrew word in 23:57:13
+translation 38:4:3  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "ayalan (trees)"  — "ayalan" is no Hebrew word in 38:4:3
+translation 38:4:3  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "tzad (side)"  — "tzad" is no Hebrew word in 38:4:3
+translation 38:4:3  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "yad (hand)"  — "yad" is no Hebrew word in 38:4:3
+translation 38:4:3  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "tzad (side)"  — "tzad" is no Hebrew word in 38:4:3
+translation 19:110:7  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "rawayam (will lift up)"  — "rawayam" is no Hebrew word in 19:110:7
+translation 40:1:21  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "yahab (give)"  — "yahab" is no Hebrew word in 40:1:21
+translation 40:5:1  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "dagar (sat)"  — "dagar" is no Hebrew word in 40:5:1
+translation 40:5:1  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "lamawad (disciples)"  — "lamawad" is no Hebrew word in 40:5:1
+translation 40:25:6  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "bawaa (arrived)"  — "bawaa" is no Hebrew word in 40:25:6
+translation 40:25:10  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "chag (feast/festival)"  — "chag" is no Hebrew word in 40:25:10
+translation 41:1:1  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "az (beginning)"  — "az" is no Hebrew word in 41:1:1
+translation 41:1:2  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "zamanathawan (prepare)"  — "zamanathawan" is no Hebrew word in 41:1:2
+translation 42:21:31  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "Haa (Even)"  — "Haa" is no Hebrew word in 42:21:31
+translation 42:21:31  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "anah (happening)"  — "anah" is no Hebrew word in 42:21:31
+translation 42:21:31  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "qarab (near)"  — "qarab" is no Hebrew word in 42:21:31
+translation 44:24:14  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "yadah (confess)"  — "yadah" is no Hebrew word in 44:24:14
+translation 44:24:14  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "abawath (fathers)"  — "abawath" is no Hebrew word in 44:24:14

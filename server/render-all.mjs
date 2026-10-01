@@ -86,6 +86,7 @@ const TAIL_STEPS = [
   // and the same gate the deploy runs closes the pipeline. Seeding no longer skips rows
   // these passes touched (status is the only edit signal), so nothing freezes again.
   ['node', ['fix-name-forms.mjs'],                           'name forms: locked spellings, bare names, gold () markers (re-applied every run)'],
+  ['node', ['verify-reading-glosses.mjs', '--fix'],          'parallel gate: every glossed word must be in its verse\'s Hebrew (machine rows repaired; known misconceptions removed; your saved verses listed in gloss-gate-review.txt)'],
   ['node', ['verify-name-forms.mjs'],                        'gate: fails the pipeline on any name the app would render wrong'],
   ['node', ['verify-integration.mjs'],                       'verify: baseline reaches Studio+reader, report missing chapters'],
 ];

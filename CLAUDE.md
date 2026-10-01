@@ -1,5 +1,48 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## The PARALLEL GATE — no glossed word may disagree with its verse's Hebrew (added 2026-10-01)
+
+fieldy, Isaiah 4:1 "Shabai (seven) ashah (wife / individual woman)": "the 'ashah' regression crept
+back … the gate must be harder. Ashah = 'fire of'. Ayashah = 'individual woman / wife'" / "there
+should be a 'parallel' gate for every verse and common misconceptions like this should be tried" /
+"there should not be glossed words on the translated side that disagree with the token side."
+
+**Why it came back:** not the render (corpus.db said "ayashah (women)"). translation.db's Isaiah 4:1
+row held August text — the spelling the app used before the Ayashah fix — in `rich_text`; the 2026-09-11
+clobber repair (restore-clobbered-translations.mjs) restored text from rich_text, and since then the row
+counted as hand-saved, so nothing touched it. audit-reading-glosses.mjs DID flag it — but was
+report-only and in no pipeline.
+
+**`server/verify-reading-glosses.mjs [corpus.db] [translation.db] [surface-index.db] [--fix]`** — the gate.
+Every `word (gloss)` in translation.db (what the reader serves) and corpus.db ENG must be a Hebrew word
+of THAT verse — OT: the BHS chips as the bake renders them (surface-index components, joined, plus runs
+of 2-3 adjacent rows: tokens_bhs alone strips pronoun suffixes, בוֹ is the row 𐤁); NT/Apocrypha: HEB
+surface rows. Prefix peeling is exhaustive (wa-ya-hayah), root family either way (rab↔rabah). ±2 verses
+ONLY in drift chapters (versification-differences.json, Malachi 4, Joel, heb_offsets ≠ 0) and canon 67+
+(render-corpus aligns those to neighbouring verses). Not a gloss: a word in the verse's ORIGINAL English
+(text_src / web-strongs.jsonl — "though (they were)"), or a name pair. **Misconceptions**
+(`lexicon/gloss-misconceptions.json` + every strongs-renumber entry with raw_root+gloss_words) are tried on
+every verse, Hebrew or not. `--fix`: machine rows (status 'none' AND rich_text '') unwrap to plain English
+("fig-nathan (leaves)" → "fig-leaves"), link indices shift down; a misconception is removed even from a
+saved verse (history row). A non-misconception mismatch in fieldy's saved verse is NEVER rewritten:
+listed in `server/gloss-gate-review.txt`, fatal only with `--saved-fatal` / PALEO_GLOSS_SAVED_FATAL=1;
+sign-offs go in `lexicon/gloss-gate-accepted.json` ("ref|pair": "why").
+Wired: render-all (after fix-name-forms), rebake.sh step 5 (prod, --fix), deploy-blue-green.sh (--fix, 2g).
+
+**Retired renumber spellings — `server/renumber-forms-lib.mjs`**, used by fix-name-forms (respell,
+saved verses too: "ashah (wife…)" → "ayashah (wife…)") and verify-name-forms (fail). Derived from
+strongs-renumber.json `raw_root` + new `gloss_words`: translit(raw_root) is legal only where the verse's
+Hebrew has a Strong's that still owns raw_root (𐤀𐤔𐤄 = H800/H801 fire) and the gloss is not the
+renumbered word's meaning.
+
+**Measured (copy of prod's translation.db, 2026-10-01):** 244 reader verses repaired, 4 saved verses had a
+misconception removed (Isa 4:1 respelled; Ps 1:4, Mal 4:2 "hamah (like)", Acts 24:14 "man (according)"),
+41 saved-verse items for fieldy's review. Not yet run on prod — Rebake step 5 does it.
+
+**Also found, not fixed:** 7,322 OT + 3,313 NT verses never saved in the Studio are served as frozen
+snapshots: fix-name-forms' gold "()" markers make text ≠ original_text, so isUntouchedBaselineDraft()
+treats them as user overrides (no live regloss). The parallel gate now catches any wrong gloss in them.
+
 ## "Son of Ayash (man)" — maqaf pairs fused in text_paleo, aligner borrowed Strong's from elsewhere in the verse (fixed 2026-09-30)
 
 fieldy, Matthew 16:27: "son of Ayash is never prophetic verbiage … Ban-HaAdam should be whatever

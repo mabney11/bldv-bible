@@ -22,6 +22,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadRules, checkText, bareNames, shiftIndices, goldMarkers } from './name-form-lib.mjs';
+import { loadRenumberForms, checkRenumbered } from './renumber-forms-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
@@ -31,6 +32,14 @@ const CORPUS_DB = args[0] || path.join(__dirname, 'corpus.db');
 const TRANS_DB = args[1] || path.join(__dirname, 'translation.db');
 const R = loadRules();
 let total = 0;
+// Retired renumber spellings — see renumber-forms-lib.mjs. Hebrew evidence comes from corpus.db.
+const RF = await (async () => {
+  if (!existsSync(CORPUS_DB)) return { forms: [], sn: new Map(), anyHeb: new Set() };
+  const h = new Database(CORPUS_DB, { readonly: true });
+  try { return await loadRenumberForms(h); } finally { h.close(); }
+})();
+// One word for one word ("ashah" → "ayashah"), so link english_indices stay valid.
+const renum = (text, ref) => checkRenumbered(text, ref, RF);
 
 if (existsSync(CORPUS_DB)) {
   const db = new Database(CORPUS_DB, { readonly: DRY });
@@ -39,9 +48,10 @@ if (existsSync(CORPUS_DB)) {
   let n = 0;
   const tx = db.transaction(() => {
     for (const r of rows) {
-      const c = checkText(r.text, R);
+      const c0 = renum(r.text, `${r.canon_id}:${r.ord_c}:${r.ord_v}`);
+      const c = checkText(c0.fixed, R);
       const b = NAMES ? bareNames(c.fixed, R) : { fixed: c.fixed, hits: [] };
-      const changes = [...c.violations.filter(v => v.fix), ...b.hits];
+      const changes = [...c0.hits, ...c.violations.filter(v => v.fix), ...b.hits];
       if (!changes.length || b.fixed === r.text) continue;
       n++;
       if (n <= 12) console.log(`  corpus ${r.canon_id}:${r.ord_c}:${r.ord_v}  ${changes.map(v => `${v.text} → ${v.fix}`).join('; ')}`);
@@ -63,7 +73,9 @@ if (existsSync(TRANS_DB)) {
   let n = 0, links = 0;
   const tx = db.transaction(() => {
     for (const r of rows) {
-      const a = checkText(r.text || '', R);
+      const ref = `${r.book_id}:${r.chapter}:${r.verse}`;
+      const a0 = renum(r.text || '', ref);
+      const a = checkText(a0.fixed, R);
       // Bare names only on rows fieldy has not edited by hand. status alone is not the
       // signal (the Studio saves with status 'none' by default) — rich_text is: only
       // the Studio ever writes it, every seeding script leaves it ''. (2026-09-11)
@@ -71,12 +83,12 @@ if (existsSync(TRANS_DB)) {
       const ab = NAMES && seeded ? bareNames(a.fixed, R) : { fixed: a.fixed, hits: [], shifts: [] };
       const ag = seeded ? goldMarkers(ab.fixed, R) : { fixed: ab.fixed, hits: [] };
       ab.fixed = ag.fixed;
-      const b = checkText(r.rich_text || '', R);
+      const b = checkText(renum(r.rich_text || '', ref).fixed, R);
       const bb = NAMES && seeded ? bareNames(b.fixed, R) : { fixed: b.fixed, hits: [], shifts: [] };
       if (seeded) bb.fixed = goldMarkers(bb.fixed, R).fixed;
       if (ab.fixed === (r.text || '') && bb.fixed === (r.rich_text || '')) continue;
       n++;
-      const changes = [...a.violations.filter(v => v.fix), ...ab.hits, ...ag.hits];
+      const changes = [...a0.hits, ...a.violations.filter(v => v.fix), ...ab.hits, ...ag.hits];
       if (n <= 12) console.log(`  translation ${r.book_id}:${r.chapter}:${r.verse}  ${changes.map(v => `${v.text} → ${v.fix}`).join('; ')}`);
       if (upd) {
         // History only for a verse someone actually edited: a seeded row's "before"
