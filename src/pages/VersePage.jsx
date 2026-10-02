@@ -4,7 +4,7 @@ import { useTheme } from '../hooks/useTheme.js';
 import { apiTransProgress, apiTransVerse, apiTokens, apiRootFirstByLetters, apiPrecepts, apiPreceptReview } from '../lib/api.js';
 import { getAdminStatus } from '../lib/localOverlay.js';
 import PreceptList from '../components/Precepts.jsx';
-import { buildBookSlugs, resolveBookParam, bookToParam } from '../lib/bookSlug.js';
+import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { WordRow, computeWordParts, transliterationsToHtml } from '../components/WordBlock.jsx';
 import BookIcon from '../components/BookIcon.jsx';
@@ -211,6 +211,8 @@ export default function VersePage() {
   // Collapsible raw-text box (plain, copyable) below the word-by-word table —
   // mirrors HebrewViewer's own "descriptive raw tokens" toggle UX.
   const [rawTextOpen, setRawTextOpen] = useState(false);
+  // the top bar's "Open this verse in" menu (see verseViews)
+  const [switchOpen, setSwitchOpen] = useState(false);
 
   // ── "root|lex_word|definition|modifications|strongs #s|link to the first
   // verse the root appears in" — "The 'First surface' can be removed" (the
@@ -325,12 +327,14 @@ export default function VersePage() {
     const onKey = (e) => {
       const t = e.target;
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+      // the "open this verse in" menu is up — Escape closes it, arrows don't page underneath it
+      if (switchOpen) { if (e.key === 'Escape') setSwitchOpen(false); return; }
       if (e.key === 'ArrowLeft') { if (prevLoc) { e.preventDefault(); go(prevLoc.b, prevLoc.c, prevLoc.v); } }
       else if (e.key === 'ArrowRight') { if (nextLoc) { e.preventDefault(); go(nextLoc.b, nextLoc.c, nextLoc.v); } }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [prevLoc, nextLoc, go]);
+  }, [prevLoc, nextLoc, go, switchOpen]);
 
   // ── swipe nav (mobile) — same thresholds as Reader/Parallel ────────────────
   const touch = useRef(null);
@@ -376,6 +380,17 @@ export default function VersePage() {
   // RootDispatcher defaults an unset `source` to 'hebrew', so this is the
   // same HebrewViewer destination the rest of the app calls "Hebrew".
   const bookSlugHere = addressValid ? bookToParam(bookId, idToSlug) : '';
+  // The top bar's ⇄ menu — the novel reader's "Open this place in" menu, on
+  // this page (fieldy, 2026-10-02: the bar had a single 𐤏𐤁 button to the Hebrew
+  // Viewer; "it should instead have the options for Hebrew viewer, parallel,
+  // studio similar to the novel reader"). Same three destinations, same names,
+  // as the VerseSwitch pills at the foot of the page, which stay.
+  const verseQuery = addressValid ? `book=${bookSlugHere}&chapter=${chapter}&verse=${verse}` : '';
+  const verseViews = addressValid ? [
+    { label: 'Hebrew Viewer', to: `/?${verseQuery}`, hint: 'Paleo-Hebrew, glossed' },
+    { label: 'Parallel', to: parallelHref(bookId, idToSlug, chapter, verse), hint: 'English beside the source' },
+    { label: 'Studio', to: `/translate?${verseQuery}`, hint: 'Translation Studio — edit the English' },
+  ] : [];
   // The story models / maps built from this verse — "See it in 3D".
   const models3d = useMemo(() => (addressValid ? modelsForVerse(bookSlugHere, chapter, verse) : []), [addressValid, bookSlugHere, chapter, verse]);
 
@@ -386,18 +401,33 @@ export default function VersePage() {
         <div className="rd-ref vp-ref-static">
           <span className="rd-ref-txt">{addressValid ? verseRef : 'Verse'}</span>
         </div>
-        {/* The Hebrew Viewer at this same verse — its "English" pill comes back
-            here, so the two verse pages are one tap apart either way. The rest
-            of the verse pages are in the VerseSwitch at the foot of the page
-            (kept out of the verse info itself, fieldy's earlier call). */}
-        {addressValid && (
-          <Link className="rd-bar-btn vp-hebrew-link" to={`/?book=${bookSlugHere}&chapter=${chapter}&verse=${verse}`}
-                title="This verse in the Hebrew Viewer" aria-label="This verse in the Hebrew Viewer">𐤏𐤁</Link>
+        {/* ⇄ — this verse in the other verse pages (Hebrew Viewer, Parallel,
+            Studio), the same menu the novel reader's bar opens. The
+            VerseSwitch pills at the foot of the page stay as they are. */}
+        <div className="rd-bar-right">
+          {addressValid && (
+            <button className={`rd-bar-btn ${switchOpen ? 'on' : ''}`} onClick={() => setSwitchOpen(o => !o)}
+                    title="Open this verse in…" aria-label="Open this verse in another view"
+                    aria-haspopup="menu" aria-expanded={switchOpen}>⇄</button>
+          )}
+          <Link className="rd-bar-btn vp-chapter-link" to={chapterHref} title="Open this chapter as flowing text">
+            <BookIcon />
+          </Link>
+        </div>
+        {switchOpen && addressValid && (
+          <div className="rd-menu rd-menu-switch" role="menu">
+            <div className="rd-menu-head">Open this verse in</div>
+            {verseViews.map(r => (
+              <Link key={r.to} to={r.to} className="rd-menu-item" role="menuitem" onClick={() => setSwitchOpen(false)}>
+                <span className="rd-menu-item-label">{r.label}</span>
+                <span className="rd-menu-item-hint">{r.hint}</span>
+              </Link>
+            ))}
+          </div>
         )}
-        <Link className="rd-bar-btn vp-chapter-link" to={chapterHref} title="Open this chapter as flowing text">
-          <BookIcon />
-        </Link>
       </header>
+
+      {switchOpen && <div className="rd-scrim rd-scrim-menu" onClick={() => setSwitchOpen(false)} />}
 
       <main className="rd-scroll" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <article className="rd-page vp-page">

@@ -55,6 +55,12 @@ import MultiWordBlock from '../components/MultiWordBlock.jsx';
 // page looking IDENTICAL to the reader rather than a re-approximation.
 import './MultiViewer.css';
 import { getAdminStatus, getLocalVersesForChapter, mergeChapterVersesWithLocal } from '../lib/localOverlay.js';
+// The novel reader's own quotation parser — the English column used to print
+// the raw marks ("<Ap (indeed) … Garden)?>>"). Same primitives the Reader, the
+// Detailed Verse page and the Studio preview run, so all four agree on what a
+// quotation is; only the drawing differs here (per-word spans, for the links).
+import { sanitizeText, parseQuoteMarks, dissolveOverlongQuotes, sliceQuoteTree, bracketGlyph } from './Reader.jsx';
+import { apiTransBookText } from '../lib/api.js';
 
 // ── English column: text size + typeface (persisted) ───────────────────────
 // Own keys, deliberately NOT shared with Reader.jsx's 'reader-font'/
@@ -360,6 +366,71 @@ function glossOwnerMap(words) {
     i = j;
   }
   return owner;
+}
+
+// ─── Quotation marks in the English column ───────────────────────────────────
+// fieldy, 2026-10-02: "lets make the parallel reader parse quotes like my
+// readers instead of rendering the raw markup". The English here is drawn one
+// span per whitespace word, because a link's english_indices are word indices —
+// so the Reader's renderQuoteTree (which emits strings) can't be dropped in.
+// Instead the Reader's own parse tree is laid back over the words:
+//   - the verse's text is rebuilt as its words joined by one space, so word i
+//     sits at a known offset;
+//   - every text leaf of the (sliced) tree hands its characters to the word(s)
+//     it covers. A mark the parser consumed — `<`, `>`, a real “ ” ‘ ’, a WEB
+//     paragraph re-opener — is in no leaf, so it simply isn't part of any word;
+//     the node it opened or closed draws the glyph instead;
+//   - a quote node becomes a block (Parallel.css .pl-quote, the Reader's
+//     .rd-quote-block rules) holding the words inside it.
+// Word INDICES never change, so links, hover and the gloss pairing all still
+// resolve — they just run on the clean words.
+const splitEnWords = t => (t || '').trim().split(/\s+/).filter(Boolean);
+// A verse parsed on its own: the title row (verse 0 — the Reader keeps it out of
+// its chapter scan too) and the fallback before the chapter scan exists.
+function soloQuoteSlice(joined) {
+  return { nodes: sliceQuoteTree(dissolveOverlongQuotes(parseQuoteMarks(joined)), 0, joined.length), base: 0 };
+}
+// -> { items, clean, parts }: `items` is the tree to draw ({type:'w', idx, text,
+// part} | {type:'q', depth, open, close, contStart, contEnd, items}); clean[i] is
+// word i without its consumed marks; parts[i] is how many leaves word i was cut
+// across (2+ only when a mark sits INSIDE a word: `says—“Behold`).
+function layoutEnWords(enWords, quote) {
+  const joined = enWords.join(' ');
+  const q = quote || soloQuoteSlice(joined);
+  const starts = [];
+  let off = 0;
+  for (const w of enWords) { starts.push(off); off += w.length + 1; }
+  const clean = enWords.map(() => '');
+  const parts = enWords.map(() => 0);
+  let wi = 0;   // leaves arrive in reading order, so one forward pointer is enough
+  const walk = (nodes) => {
+    const out = [];
+    for (const n of nodes) {
+      if (n.type !== 'text') {
+        const bracket = n.style === 'bracket';
+        out.push({
+          type: 'q', depth: n.depth,
+          open:  n.markOpen  ? (bracket ? bracketGlyph(n.depth, false) : n.markOpen)  : '',
+          close: n.markClose ? (bracket ? bracketGlyph(n.depth, true)  : n.markClose) : '',
+          // no mark on this side = the quotation runs on from / into another verse
+          contStart: !n.markOpen, contEnd: !n.markClose,
+          items: walk(n.children || []),
+        });
+        continue;
+      }
+      const s = n.start - q.base, e = n.end - q.base;
+      while (wi < enWords.length && starts[wi] + enWords[wi].length <= s) wi++;
+      for (let i = wi; i < enWords.length && starts[i] < e; i++) {
+        const fs = Math.max(s, starts[i]), fe = Math.min(e, starts[i] + enWords[i].length);
+        if (fe <= fs) continue;
+        const text = n.text.slice(fs - s, fe - s);
+        out.push({ type: 'w', idx: i, text, part: parts[i]++ });
+        clean[i] += text;
+      }
+    }
+    return out;
+  };
+  return { items: walk(q.nodes), clean, parts };
 }
 
 // Keep the most-recent link per unique token-set that carries english_indices.
@@ -779,7 +850,7 @@ function surfaceCopyText(root, refPrefix) {
   return verseCopyText(root, refPrefix);
 }
 
-function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, onRefClick, hovered, setHovered, unaligned, glossMode, lang }) {
+function VerseRow({ v, words, tx, quote, showSub, rich, isPaleoScript, dir, isActive, onRefClick, hovered, setHovered, unaligned, glossMode, lang }) {
   // Verse 0 is a chapter title/superscription, not a real verse (see Reader.jsx's
   // matching treatment) — its English is typically one short line while its source
   // column is a handful of tall, stacked word-blocks (glyph + translit + gloss +
@@ -799,17 +870,95 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
   const enIsHl = (idx) => hovered?.verse === v && hovered.links.some(l => (l.english_indices || []).includes(idx));
   const onHoverLink = useCallback((ls) => setHovered(ls ? { verse: v, links: ls } : null), [setHovered, v]);
 
-  const enWords = (tx?.text || '').trim().split(/\s+/).filter(Boolean);
+  const enWords = splitEnWords(tx?.text);
+  // The words laid into the verse's quotation tree (see layoutEnWords): which
+  // block each one sits in, and its text with the quote marks taken off.
+  const enLayout = useMemo(() => layoutEnWords(enWords, quote), [tx?.text, quote]);
   // display list keeps each word's ORIGINAL index so english_indices still resolve
-  const enTokens = useMemo(() => glossTokens(enWords, glossMode), [tx?.text, glossMode]);
+  const enTokens = useMemo(() => glossTokens(enLayout.clean, glossMode), [enLayout, glossMode]);
   // idx -> its group's head idx (see glossOwnerMap) — a link recorded against
   // just the translit word's index still lights up its trailing "(gloss)" too,
   // and hovering the gloss itself now triggers the same link as its head word.
-  const glossOwner = useMemo(() => glossOwnerMap(enWords), [tx?.text]);
+  const glossOwner = useMemo(() => glossOwnerMap(enLayout.clean), [enLayout]);
   // "Missing in this translation" — see sourceCandidateSet's header comment.
   // null (not an empty Set) for BHS/rich languages, which turns the flag off
   // entirely below rather than flagging every word against zero candidates.
   const srcCandidates = useMemo(() => (rich ? null : sourceCandidateSet(words)), [words, rich]);
+
+  // One English word (or one piece of a word a quote mark cuts in two).
+  const renderWord = (it, key) => {
+    const tok = enTokens[it.idx];
+    if (!tok || tok.hide) return null;
+    const idx = it.idx;
+    // glossTokens may have rewritten the word (a gloss mode folding its pair
+    // into it); a cut word is then drawn whole, once, where its first piece sits.
+    let text = tok.text;
+    if (enLayout.parts[idx] > 1) {
+      if (tok.text === enLayout.clean[idx]) text = it.text;
+      else if (it.part !== 0) return null;
+    }
+    if (!text) return null;
+    // Route through the group's head index so a linked translit
+    // word and its own trailing "(gloss)" parenthetical act as one
+    // unit — hovering or linking either highlights both.
+    const ownerIdx = glossOwner[idx] ?? idx;
+    const link = links.find(l => (l.english_indices || []).includes(ownerIdx));
+    // A word that OWNS a following "(gloss)" — i.e. is itself the
+    // transliteration half of a "raashayath (beginning)" pair —
+    // reads in the gold accent, same signal Reader.css's
+    // .rd-root gives the identical pairing in the novel reader.
+    // Fieldy, 2026-08-16, correcting an earlier miss that colored
+    // the ORIGINAL-language column instead: "I want color for my
+    // english hebrew glosses like the novel reader, the other
+    // language... can remain grey."
+    const isRoot = glossOwner[idx] === idx;
+    // Flag a translit-head word as "missing in this translation"
+    // when nothing in THIS language's own verse text carries a
+    // lexicon gloss transliterating to it — i.e. the same check
+    // Auto-Link itself would make, surfaced instead of silently
+    // producing zero matches. Fieldy, 2026-08-17, after learning
+    // Latin Genesis 1:5 genuinely has no word for "Alahayam":
+    // "I would like to flag and display that information in the
+    // reader... a word for `Alahayam` is missing from this
+    // translation." Only for translit-head words with no
+    // existing link — a plain word ("the", "and") or one that's
+    // already linked has nothing to flag.
+    const isMissing = isRoot && !link && srcCandidates && !candidateSetHasFuzzyAL(srcCandidates, cleanAutoLinkWordAL(text));
+    return (
+      <span key={key}
+            className={`en-w ${isRoot ? 'en-root' : ''} ${link ? 'lnk' : ''} ${enIsHl(ownerIdx) ? 'hl' : ''} ${isMissing ? 'en-missing' : ''}`}
+            title={isMissing ? `No matching word found in this translation for "${text.replace(GLOSS_TRAIL, '')}" — may be genuinely absent from this edition, or just not linked yet` : undefined}
+            onMouseEnter={() => link && setHovered({ verse: v, links: [link] })}
+            onMouseLeave={() => link && setHovered(null)}>
+        {text}
+      </span>
+    );
+  };
+  // Words and quote blocks, one space BETWEEN neighbours (never inside a word's
+  // own span — fieldy, 2026-08-17: a highlight box must hug its word — and never
+  // between a word and the quote glyph that belongs against it).
+  const renderEn = (items, keyPrefix) => {
+    const out = [];
+    items.forEach((it, i) => {
+      const key = `${keyPrefix}${i}`;
+      let el;
+      if (it.type === 'q') {
+        const cls = ['pl-quote', `pl-quote-d${Math.min(it.depth, 4)}`,
+                     it.contStart ? 'pl-quote-cont-start' : '', it.contEnd ? 'pl-quote-cont-end' : '']
+          .filter(Boolean).join(' ');
+        const inner = renderEn(it.items, `${key}-`);
+        // a slice with neither mark nor a visible word (a gloss mode hid them all) draws nothing
+        el = (inner.length || it.open || it.close)
+          ? <span key={key} className={cls}>{it.open}{inner}{it.close}</span> : null;
+      } else {
+        el = renderWord(it, key);
+      }
+      if (el == null) return;
+      if (out.length) out.push(' ');
+      out.push(el);
+    });
+    return out;
+  };
 
   return (
     <div className={`par-verse ${isTitle ? 'par-verse-title' : ''}`} data-verse={v}>
@@ -819,52 +968,7 @@ function VerseRow({ v, words, tx, showSub, rich, isPaleoScript, dir, isActive, o
         <div className="par-col-en">
           {tx?.text?.trim() ? (
             <div className="en-verse-text">
-              {enTokens.map(({ idx, text, hide }) => {
-                if (hide) return null;
-                // Route through the group's head index so a linked translit
-                // word and its own trailing "(gloss)" parenthetical act as one
-                // unit — hovering or linking either highlights both.
-                const ownerIdx = glossOwner[idx] ?? idx;
-                const link = links.find(l => (l.english_indices || []).includes(ownerIdx));
-                // A word that OWNS a following "(gloss)" — i.e. is itself the
-                // transliteration half of a "raashayath (beginning)" pair —
-                // reads in the gold accent, same signal Reader.css's
-                // .rd-root gives the identical pairing in the novel reader.
-                // Fieldy, 2026-08-16, correcting an earlier miss that colored
-                // the ORIGINAL-language column instead: "I want color for my
-                // english hebrew glosses like the novel reader, the other
-                // language... can remain grey."
-                const isRoot = glossOwner[idx] === idx;
-                // Flag a translit-head word as "missing in this translation"
-                // when nothing in THIS language's own verse text carries a
-                // lexicon gloss transliterating to it — i.e. the same check
-                // Auto-Link itself would make, surfaced instead of silently
-                // producing zero matches. Fieldy, 2026-08-17, after learning
-                // Latin Genesis 1:5 genuinely has no word for "Alahayam":
-                // "I would like to flag and display that information in the
-                // reader... a word for `Alahayam` is missing from this
-                // translation." Only for translit-head words with no
-                // existing link — a plain word ("the", "and") or one that's
-                // already linked has nothing to flag.
-                const isMissing = isRoot && !link && srcCandidates && !candidateSetHasFuzzyAL(srcCandidates, cleanAutoLinkWordAL(text));
-                // The trailing space used to live INSIDE the span (`{text}{' '}`),
-                // so a highlighted/linked word's background/underline box
-                // stretched to cover that space too — visibly oversized next to
-                // its neighbor (fieldy, 2026-08-17: strip highlights to content).
-                // Rendering it as a sibling text node after the span keeps the
-                // same whitespace between words with no box around it.
-                return (
-                  <span key={idx}>
-                    <span className={`en-w ${isRoot ? 'en-root' : ''} ${link ? 'lnk' : ''} ${enIsHl(ownerIdx) ? 'hl' : ''} ${isMissing ? 'en-missing' : ''}`}
-                          title={isMissing ? `No matching word found in this translation for "${text.replace(GLOSS_TRAIL, '')}" — may be genuinely absent from this edition, or just not linked yet` : undefined}
-                          onMouseEnter={() => link && setHovered({ verse: v, links: [link] })}
-                          onMouseLeave={() => link && setHovered(null)}>
-                      {text}
-                    </span>
-                    {' '}
-                  </span>
-                );
-              })}
+              {renderEn(enLayout.items, 'e')}
             </div>
           ) : <div className="no-translation">—</div>}
         </div>
@@ -981,6 +1085,62 @@ export default function Parallel() {
   const [unaligned, setUnaligned] = useState(() => new Set()); // verses whose source blob was dropped
   const [status, setStatus] = useState('');
   const [hovered, setHovered] = useState(null);         // { verse, links: [...] }
+
+  // ── quotations (see layoutEnWords) ────────────────────────────────────────
+  // The whole book's English, fetched once per book exactly as the Reader does
+  // (apiTransBookText): an explicit <…> quotation may open in one chapter and
+  // close in another, and only the neighbouring chapters can say whether this
+  // one starts inside it. Until it arrives (or if it fails) the scan below runs
+  // on this chapter alone — right for everything but that carry-in.
+  const [bookText, setBookText] = useState(null);
+  useEffect(() => {
+    if (!bookResolved) return;
+    let cancelled = false;
+    setBookText(null);
+    apiTransBookText(book).then(d => { if (!cancelled) setBookText(d); }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [book, bookResolved]);
+  // verse -> { nodes, base }: the Reader's bookQuoteScan, cut back to one slice
+  // per verse of THIS chapter. The chapter on screen always contributes
+  // `translations` (the live, locally-overlaid text the rows draw), never
+  // bookText's copy of it, and contributes it as its words joined by single
+  // spaces so each word's offset is known. Verse 0 (the title row) stays out,
+  // as in the Reader, and is parsed on its own by its row.
+  const quoteByVerse = useMemo(() => {
+    const verseNums = Object.keys(translations).map(Number)
+      .filter(n => n !== 0 && translations[n]?.text?.trim()).sort((a, z) => a - z);
+    if (!verseNums.length) return {};
+    let chapters = (bookText && bookText.book_id === book && bookText.chapters?.length)
+      ? bookText.chapters.slice().sort((a, z) => a.chapter - z.chapter) : null;
+    if (!chapters || !chapters.some(ch => ch.chapter === chapter)) chapters = [{ chapter, verses: [] }];
+    let acc = '';
+    const ranges = {};
+    const boundaries = [];
+    const starts = new Set(), ends = new Set();
+    for (const ch of chapters) {
+      const isActive = ch.chapter === chapter;
+      const list = isActive
+        ? verseNums.map(n => ({ verse: n, text: splitEnWords(translations[n].text).join(' ') }))
+        : (ch.verses || []).filter(x => x.verse !== 0).map(x => ({ verse: x.verse, text: sanitizeText((x.text || '').trim()) }));
+      for (const x of list) {
+        if (!x.text) continue;
+        const start = acc.length;
+        acc += x.text;
+        starts.add(start); ends.add(acc.length);
+        if (isActive) ranges[x.verse] = { start, end: acc.length };
+        acc += ' ';
+      }
+      acc += ' ';
+      boundaries.push(acc.length);   // real quote marks reset per chapter; <…> carries across
+    }
+    const tree = dissolveOverlongQuotes(parseQuoteMarks(acc, boundaries, { starts, ends }));
+    const out = {};
+    for (const n of verseNums) {
+      const r = ranges[n];
+      if (r) out[n] = { nodes: sliceQuoteTree(tree, r.start, r.end), base: r.start };
+    }
+    return out;
+  }, [translations, bookText, book, chapter]);
 
   // Transliteration & gloss are NOT optional and never were. They are the whole
   // point of the parallel view, and /parallel must not diverge from the main
@@ -1742,7 +1902,7 @@ export default function Parallel() {
           {visibleVerses.length === 0 && !status && <div className="no-translation">No text available for this chapter.</div>}
           <VerseErrorBoundary key={`${book}-${chapter}-${lang}`} onError={onRenderError}>
             {visibleVerses.map(v => (
-              <VerseRow key={v} v={v} words={wordsByVerse[v] || []} tx={translations[v]}
+              <VerseRow key={v} v={v} words={wordsByVerse[v] || []} tx={translations[v]} quote={quoteByVerse[v]}
                         showSub={showSub} rich={rich} isPaleoScript={srcMeta.script === 'paleo-hebrew'} dir={dir}
                         isActive={verse === v} onRefClick={setVerse} unaligned={unaligned.has(v)}
                         hovered={hovered} setHovered={setHovered} glossMode={glossMode} lang={lang} />

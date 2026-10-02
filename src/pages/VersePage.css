@@ -492,8 +492,6 @@
 /* the verse pages, one tap apart (VerseSwitch) — at the foot, where the old
    Parallel/Hebrew/Studio links sat */
 .vp-switch-foot { margin-top: 28px; }
-.vp-hebrew-link { font-family: var(--paleo-font); font-size: 15px; letter-spacing: -1px; text-decoration: none; margin-left: auto; }
-.vp-hebrew-link + .vp-chapter-link { margin-left: 4px; }
 /* "See it in 3D" — the story models / maps built from this verse */
 .vp-3d { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: -18px 0 32px; font-family: system-ui, sans-serif; }
 .vp-3d-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--pr-ink-soft); margin-right: 2px; }

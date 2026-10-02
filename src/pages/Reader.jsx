@@ -595,7 +595,9 @@ export function sliceQuoteTree(nodes, start, end, markedOf) {
     if (n.end <= start || n.start >= end) continue; // no overlap with this slice
     if (n.type === 'text') {
       const s = Math.max(n.start, start), e = Math.min(n.end, end);
-      if (e > s) out.push({ type: 'text', text: n.text.slice(s - n.start, e - n.start) });
+      // start/end kept (2026-10-02) so Parallel.jsx can map a leaf back onto the
+      // verse's word indices; renderQuoteTree never reads them.
+      if (e > s) out.push({ type: 'text', text: n.text.slice(s - n.start, e - n.start), start: s, end: e });
       continue;
     }
     const children = sliceQuoteTree(n.children, start, end, markedOf);
@@ -697,7 +699,7 @@ export function dissolveOverlongQuotes(nodes) {
 // page) — alternates double/single by nesting depth, the standard nested-
 // quote typographic convention: depth 1,3,5.. -> “ ”, depth 2,4,6.. -> ‘ ’.
 const BRACKET_GLYPHS = [['\u201C', '\u201D'], ['\u2018', '\u2019']];
-function bracketGlyph(depth, close) {
+export function bracketGlyph(depth, close) {
   return BRACKET_GLYPHS[(depth - 1) % 2][close ? 1 : 0];
 }
 export function renderQuoteTree(nodes, mode, keyPrefix) {

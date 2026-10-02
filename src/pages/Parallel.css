@@ -53,7 +53,12 @@
 /* ── Main / heading ────────────────────────────────────────────────────────*/
 .pl-main { position: relative; padding: 14px 18px 48px; max-width: 1200px; margin: 0 auto; }
 .pl-head-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-.pl-ref-title { flex: 1; min-width: 0; font-size: 20px; font-weight: 700; color: var(--gold); }
+/* The title keeps its own width (flex-basis auto, no shrink) and the row wraps
+   around it. It used to be `flex: 1; min-width: 0` — free to shrink to nothing —
+   so on a phone the VerseSwitch pills took the whole line and "Genesis 1:1"
+   was squeezed into a sliver underneath them (fieldy's screenshot, 2026-10-02).
+   max-width lets a long book name wrap inside its own line instead. */
+.pl-ref-title { flex: 1 0 auto; min-width: 0; max-width: 100%; font-size: 20px; font-weight: 700; color: var(--gold); }
 .pl-legend { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; padding: 10px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px; }
 .pl-legend .leg { font-size: 12px; padding: 2px 8px; border-radius: 5px; border: 1px solid currentColor; color: var(--mc, var(--text2)); }
 .pl-legend .leg-note { color: var(--teal); font-style: italic; font-size: 12px; }
@@ -91,6 +96,22 @@
 .par-verse-title .par-cols { align-items: center; }
 .par-verse-title .en-verse-text { font-style: italic; text-align: center; }
 
+/* ── Quotations in the English column (Parallel.jsx layoutEnWords, 2026-10-02) ─
+   The novel reader's treatment (Reader.css .rd-quote-block / -d1..d4 /
+   -cont-start/-end), restated on this page's own classes because Reader.css's
+   custom properties (--pr-*) only exist inside .reader-root: a quotation is its
+   own block; the outermost level carries the bar, each deeper level indents a
+   step further with no bar of its own; a slice that continues from / into
+   another verse drops the margin on that side. */
+.pl-quote { display: block; margin: .45em 0; }
+.pl-quote-d1 { display: flow-root; border-left: 3px solid color-mix(in srgb, var(--text3) 68%, transparent); padding-left: .75em; }
+.pl-quote-d2 { margin-left: 1.5em; }
+.pl-quote-d3 { margin-left: 2.1em; }
+.pl-quote-d4 { margin-left: 2.7em; }
+.pl-quote-cont-start { margin-top: 0; }
+.pl-quote-cont-end { margin-bottom: 0; }
+/* the title row is centred — a bar and a left indent would pull it off centre */
+.par-verse-title .pl-quote { border-left: 0; padding-left: 0; margin-left: 0; }
 .en-w { display: inline; padding: 1px 2px; border-radius: 3px; transition: background .12s, color .12s; cursor: default; }
 .en-w.lnk { cursor: pointer; }
 /* The transliteration half of a "raashayath (beginning)" pair — same gold
@@ -238,3 +259,5 @@ body .par-mwb-wrap.hl .multi-word-block .visible-text {
 
 /* the verse pages, one tap apart (VerseSwitch, 2026-09-29) */
 .pl-vswitch { margin-left: auto; }
+/* on a phone the pills drop to their own line under the title — start it at the left edge */
+@media (max-width: 760px) { .pl-vswitch { margin-left: 0; max-width: 100%; } }
