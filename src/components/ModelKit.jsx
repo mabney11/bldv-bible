@@ -5,7 +5,7 @@
  * Lifted out of pages/Statue.jsx when the temple was built; the page CSS
  * they rely on is ModelPage.css (the `st-` classes).
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { loadChapter, verseText, sliceQuote, parseQuotes } from '../lib/passages.js';
 import { parseRefs } from '../lib/models/refs.js';
@@ -260,13 +260,23 @@ export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, s
     tick();
     return () => { alive = false; cancelAnimationFrame(raf); };
   }, [show, lay, clock]);
+  // the subtitle face is fetched before the first word needs it, so no word is ever seen in the fallback face
+  useEffect(() => { try { document.fonts?.load("italic 800 1em 'Montserrat'"); } catch {} }, []);
+  // a transliteration is one line, never broken: one too long for the stage is set smaller until it fits (its gloss keeps its size)
+  const wordRef = useRef(null);
+  useLayoutEffect(() => {
+    const w = wordRef.current, box = w?.closest('.st-subs'); if (!w || !box) return;
+    w.style.fontSize = '';
+    const room = box.clientWidth * 0.9, need = w.scrollWidth;
+    if (need > room) w.style.fontSize = `${Math.max(0.5, room / need).toFixed(3)}em`;
+  }, [idx, phase?.key, units]);
   if (idx < 0 || !units[idx]) return null;
   const u = units[idx], key = phase?.key || '';
   return (
     <div className="st-subs" aria-hidden="true">
       <span key={`${key}:${idx}`} className={`st-sub-u ${u.gloss != null ? 'st-sub-pair' : 'st-sub-fill'}`}>
         {u.gloss != null
-          ? <><span className="st-sub-w">{u.w}{u.tail ? <span className="st-sub-t">{u.tail}</span> : null}</span>{u.gloss ? <span className="st-sub-g">({u.gloss})</span> : null}</>
+          ? <><span className="st-sub-w" ref={wordRef}>{u.w}{u.tail ? <span className="st-sub-t">{u.tail}</span> : null}</span>{u.gloss ? <span className="st-sub-g">({u.gloss})</span> : null}</>
           : u.w}
       </span>
     </div>
