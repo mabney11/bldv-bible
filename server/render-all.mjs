@@ -77,6 +77,12 @@ const SNAPSHOT_STEP = [
   ['node', ['render-corpus.mjs', '--reset-src'],             'snapshot pristine untagged text -> immutable text_src (read-only source)'],
 ];
 const SURFACE_STEPS = [
+  // 2026-10-03: Josephus (217-220) and 2 Esdras (139) are reloaded by no step above, so
+  // --reset-src used to snapshot their PREVIOUS render as the next run's English. The
+  // snapshot now keeps an existing text_src when the text is already rendered; this step
+  // puts back the snapshots that were overwritten (from the newest corpus.db.bak* that still
+  // has the verse in English). A no-op once they are clean.
+  ['node', ['restore-text-src.mjs'],                         'text_src: restore the English of books whose snapshot captured rendered text (Josephus, 2 Esdras)'],
   ['node', ['render-corpus.mjs', '--from-src', '--apply'],   'surface render NT + Apocrypha FROM text_src (names, terms, theonyms, adam)'],
   // 2026-10-01 (fieldy): modification forms — "NaAkal (we will eat) Lachamanaw (our own
   // bread)". The OT gets them in apply-web-strongs; the NT/Apocrypha here, from the HEB

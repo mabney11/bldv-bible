@@ -2252,6 +2252,45 @@ function coverLetters(v) {
 }
 for (const v of surfaceMap.values()) coverLetters(v);
 if (hebResult) for (const v of hebResult.surfaces.values()) coverLetters(v);
+
+// ── READING-FORM RULES (fieldy, 2026-10-03) ──────────────────────────────────────────────
+// "corpus wide i want 'our father' to be 'Abanaw' - not 'Abayanaw' which means 'my&our' the
+// my particle is a token that does not add context" / "i want the yod removed from the
+// tokens for the word, not just the transliteraton. The letters need to be 𐤀𐤁𐤍𐤅 (father
+// [our])". lexicon/reading-form-rules.json: the component named by `drop` (𐤉 nme-j
+// [My/Of]) is REMOVED when it stands between the root and the `before` suffix (𐤍𐤅 prs-1cp
+// [Our]): the baked chips are 𐤀𐤁 + 𐤍𐤅 and rendered_paleo is 𐤀𐤁𐤍𐤅. A deliberate exception
+// to "no eliding" (and to coverLetters above, which runs first on purpose) — his word, his
+// spelling. Baked here so the server only reads it; server.js applyReadingFormRules /
+// modform-lib.mjs applyFormRules are the same rule — KEEP IN SYNC. The word must spell
+// root + dropped letter as written: 𐤌𐤀𐤉𐤁𐤉𐤍𐤅 "from our enemies", which the HEB parse tags
+// H1, is not "our father". word_raw (the row's key, the corpus spelling) is not changed.
+const READING_FORM_RULES = (() => {
+    try { return (JSON.parse(fs.readFileSync(path.join(LEX_DIR, 'reading-form-rules.json'), 'utf8')).rules || []).filter(r => r && r.root && r.drop && r.before); }
+    catch { return []; }
+})();
+const formRuleStat = { n: 0, ex: [] };
+function applyReadingFormRules(v) {
+    if (!READING_FORM_RULES.length) return;
+    let comps; try { comps = JSON.parse(v.components_json || '[]'); } catch { return; }
+    let hit = false;
+    for (const R of READING_FORM_RULES) {
+        const i = comps.findIndex(c => c && c.css === 'root' && c.paleo === R.root && (!R.sn || !c.sn || ('H' + String(c.sn).replace(/^H+/i, '')) === R.sn));
+        if (i < 0) continue;
+        const a = comps[i + 1], b = comps[i + 2];
+        if (!a || !b || a.css !== R.drop || b.css !== R.before || !a.paleo || !b.paleo) continue;
+        if (!String(v.word_raw || '').includes(R.root + a.paleo)) continue;
+        comps.splice(i + 1, 1);
+        hit = true;
+    }
+    if (!hit) return;
+    v.components_json = JSON.stringify(comps);
+    if (v.rendered_paleo != null) v.rendered_paleo = comps.map(c => (c && c.paleo) || '').join('');
+    formRuleStat.n++; if (formRuleStat.ex.length < 4) formRuleStat.ex.push(`${v.word_raw} → ${comps.map(c => c.paleo || '').join('')} ${comps.map(c => c.translit || '').join('')}`);
+}
+for (const v of surfaceMap.values()) applyReadingFormRules(v);
+if (hebResult) for (const v of hebResult.surfaces.values()) applyReadingFormRules(v);
+console.log(`  reading forms: ${formRuleStat.n.toLocaleString()} surfaces respelled by lexicon/reading-form-rules.json` + (formRuleStat.ex.length ? ` (${formRuleStat.ex.join(', ')})` : ''));
 console.log(`  letters: ${coverStat.repaired.toLocaleString()} surfaces whose chips spelled only the start of the word got the rest back` +
             (coverStat.ex.length ? ` (${coverStat.ex.join(', ')})` : ''));
 console.log(`  letters: ${coverStat.other.toLocaleString()} surfaces whose chips respell a letter (𐤄𐤅 suffix → 𐤅, hitpael 𐤔𐤕 → 𐤕𐤔) — by design, listed for review` +

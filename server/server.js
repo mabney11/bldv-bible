@@ -2216,6 +2216,40 @@ function getTranslit(paleoStr) {
     return translit.charAt(0).toUpperCase() + translit.slice(1);
 }
 
+// ── READING-FORM RULES (fieldy, 2026-10-03) ──────────────────────────────────────────────
+// "corpus wide i want 'our father' to be 'Abanaw' - not 'Abayanaw' which means 'my&our' the
+// my particle is a token that does not add context" / "i want the yod removed from the
+// tokens for the word, not just the transliteraton. The letters need to be 𐤀𐤁𐤍𐤅 (father
+// [our])". lexicon/reading-form-rules.json: the component named by `drop` (𐤉 nme-j
+// [My/Of]) is REMOVED when it stands between the root and the `before` suffix (𐤍𐤅 prs-1cp
+// [Our]): the chips are 𐤀𐤁 + 𐤍𐤅. A deliberate exception to "no eliding" — his word, his
+// spelling. build-surface-index.js bakes this (same function there, KEEP IN SYNC, and
+// modform-lib.mjs applyFormRules for the reading text); the calls here cover the live
+// parser and an index baked before the rule. wordRaws: the block's corpus words — one must
+// spell root + dropped letter as written (𐤌𐤀𐤉𐤁𐤉𐤍𐤅 "from our enemies" is not "our father").
+// The corpus word_raw itself (sourceTokens, the surface explorer's key) is not rewritten.
+let _readingFormRules = null;
+function readingFormRules() {
+    if (!_readingFormRules) {
+        try { _readingFormRules = (JSON.parse(fs.readFileSync(path.join(__dirname, 'lexicon', 'reading-form-rules.json'), 'utf8')).rules || []).filter(r => r && r.root && r.drop && r.before); }
+        catch { _readingFormRules = []; }
+    }
+    return _readingFormRules;
+}
+function applyReadingFormRules(comps, wordRaws) {
+    let n = 0;
+    for (const R of readingFormRules()) {
+        const i = comps.findIndex(c => c && c.css === 'root' && c.paleo === R.root && (!R.sn || !c.sn || ('H' + String(c.sn).replace(/^H+/i, '')) === R.sn));
+        if (i < 0) continue;
+        const a = comps[i + 1], b = comps[i + 2];
+        if (!a || !b || a.css !== R.drop || b.css !== R.before || !a.paleo || !b.paleo) continue;
+        if (wordRaws && wordRaws.length && !wordRaws.some(w => String(w || '').includes(R.root + a.paleo))) continue;
+        comps.splice(i + 1, 1);
+        n++;
+    }
+    return n;
+}
+
 function transliterateBlock(components) {
     // A maqaf component (isMaqaf) splits the block into words joined by a dash.
     // Each word's LAST letter must take its FINAL form, so transliterate per
@@ -2795,6 +2829,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
     const flushWordBlock = () => {
         if (pendingComponents.length === 0) return;
         applyFlatLabels(pendingComponents);
+        applyReadingFormRules(pendingComponents, pendingSegments.map(sg => sg.surface));   // "our father" is 𐤀𐤁 + 𐤍𐤅
         transliterateBlock(pendingComponents);
 
         // Suffixes (nme-*, prs-*, vbe-*, and the hardened baked-addition fallback
@@ -8359,6 +8394,7 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
         // particle is folded into the next non-particle's block, the combined
         // word block needs its translit recomputed so that only the very last
         // letter uses the final form.
+        applyReadingFormRules(pending, pendingSources.map(sr => sr.word_raw));   // an index baked before reading-form-rules.json
         transliterateBlock(pending);
         // Suffix components (nme/prs/vbe) render lowercase; everything else
         // gets its first character uppercased. Mirrors parseHebrewData.

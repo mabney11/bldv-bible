@@ -72,7 +72,7 @@ if ! git diff --cached --quiet -- server/lexicon; then
   echo "$(date -u '+%F %T') committed: $(git log -1 --format=%s)"
 fi
 
-if ! git pull --rebase -q origin "$BRANCH"; then
+if ! git pull --rebase --autostash -q origin "$BRANCH"; then
   git rebase --abort 2>/dev/null || true
   MSG="a lexicon file was changed here and elsewhere — resolve in $(pwd) (git status) on $(hostname), then rerun"
   echo "$(date -u '+%F %T') CONFLICT: $MSG" >&2

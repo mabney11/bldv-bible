@@ -51,6 +51,61 @@ export async function loadCharMap() {
   return CHAR_MAP;
 }
 
+// ── READING-FORM RULES (fieldy, 2026-10-03) ──────────────────────────────────────────────
+// "corpus wide i want 'our father' to be 'Abanaw' - not 'Abayanaw' which means 'my&our' the
+// my particle is a token that does not add context." Then, shown the 𐤉 kept as a silent
+// letter: "i want the yod removed from the tokens for the word, not just the
+// transliteraton. The letters need to be 𐤀𐤁𐤍𐤅 (father [our])".
+// lexicon/reading-form-rules.json: the component named by `drop` (𐤉 nme-j [My/Of]) is
+// REMOVED when it stands between the root and the `before` suffix (𐤍𐤅 prs-1cp [Our]) —
+// the word's tokens are 𐤀𐤁 + 𐤍𐤅, its letters 𐤀𐤁𐤍𐤅, it reads Abanaw. A deliberate
+// exception to "no eliding": his word, his spelling. build-surface-index.js bakes the same
+// drop into the chips and server.js applies it to the live parser and to an index baked
+// before the rule (applyReadingFormRules in both — KEEP IN SYNC); the loader below applies
+// it too, so the reading text never waits for a rebuild. The corpus's own word_raw
+// (tokens_bhs / tokens_nt / the verse's Hebrew text) is not rewritten: it stays the lookup
+// key for the surface explorer and search.
+let FORM_RULES = null;
+export function loadFormRules() {
+  if (FORM_RULES) return FORM_RULES;
+  let raw = {};
+  try { raw = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'reading-form-rules.json'), 'utf8')); } catch { raw = {}; }
+  FORM_RULES = (raw.rules || []).filter(r => r && r.root && r.drop && r.before);
+  return FORM_RULES;
+}
+const snKey = sn => (sn ? 'H' + String(sn).replace(/^H+/i, '') : '');
+/** The components with every reading-form rule applied (a new array when one applied).
+ *  wordRaw, when given, must spell root + dropped letter as written — 𐤌𐤀𐤉𐤁𐤉𐤍𐤅 "from our
+ *  enemies", which the HEB parse tags H1, is not "our father". */
+export function applyFormRules(comps, wordRaw) {
+  const rules = loadFormRules();
+  if (!rules.length || !Array.isArray(comps) || comps.length < 3) return comps;
+  let out = comps;
+  for (const R of rules) {
+    const i = out.findIndex(c => c && c.css === 'root' && c.paleo === R.root && (!R.sn || !c.sn || snKey(c.sn) === R.sn));
+    if (i < 0) continue;
+    const a = out[i + 1], b = out[i + 2];
+    if (!a || !b || a.css !== R.drop || b.css !== R.before || !a.paleo || !b.paleo) continue;
+    if (wordRaw && !String(wordRaw).includes(R.root + a.paleo)) continue;
+    out = [...out.slice(0, i + 1), ...out.slice(i + 2)];
+  }
+  return out;
+}
+const PROCLITIC_TR = '(?:Wa|Ha|Ba|La|Ma|Ka|Sha)';
+/** A spelling the rules retired -> the one they write ("LaAbayanaw" -> "LaAbanaw"). */
+export function respellRetired(text) {
+  let out = String(text || '');
+  for (const R of loadFormRules()) {
+    if (!R.retired || !R.form || !out.toLowerCase().includes(R.retired.toLowerCase())) continue;
+    out = out.replace(new RegExp(`\\b(${PROCLITIC_TR}*)${R.retired}\\b`, 'g'), `$1${R.form}`)
+             .replace(new RegExp(`\\b${R.retired.toLowerCase()}\\b`, 'g'), R.form.toLowerCase());
+  }
+  return out;
+}
+/** [{ re, form, retired }] — the parallel gate fails a reading text that still has one. */
+export const retiredForms = () => loadFormRules().filter(R => R.retired && R.form)
+  .map(R => ({ retired: R.retired, form: R.form, re: new RegExp(`\\b${PROCLITIC_TR}*${R.retired}\\b|\\b${R.retired.toLowerCase()}\\b`) }));
+
 /** Genesis 1-2 keep the bare-root reading text (fieldy's on-ramp). */
 export const modformApplies = (canon, chapter) => !(Number(canon) === 1 && Number(chapter) <= 2);
 
@@ -156,6 +211,7 @@ export function verseWordsLoader(sdb) {
           comps = [...comps, comps.some(x => x.css === 'root') ? { paleo: tail, css: 'mod-suff-unk' } : { paleo: tail, true_root: tail, translation: tail, gloss_src: 'none', css: 'root' }];
         } }
       if (!comps.length) continue;                                  // punctuation / maqaf
+      comps = applyFormRules(comps, r.word_raw);                    // "our father" is 𐤀𐤁 + 𐤍𐤅, Abanaw
       const single = [...(r.word_raw || '')].length === 1;
       // a preposition carrying its own pronoun (בּוֹ "in him", לִי "to me", לָהֶם "to them") is a
       // WORD of its own — only a bare letter is a proclitic of the next word
@@ -364,6 +420,95 @@ export function weave(word, english) {
   if (hasConj(word)) body = leadAnd(body);
   return notes.length ? `${body} - ${notes.join(', ')}` : body;
 }
+
+// ── NO LABEL A READER HAS TO DECODE (fieldy, 2026-10-03) ────────────────────────────────
+// "I want readable glosses unless it is purely contextual — 'WaHaChazayaqaw (and take hold)'
+// instead of 'WaHaChazayaqaw (take [and])'." weave() already writes every NEW gloss that way;
+// this takes the [and] / [the·Plural] / [in·His] labels out of text written before it — his
+// saved verses, and any text a later pass finds already in full form (mergeModforms skips a
+// word that is done). The label's meaning goes into the English the way weave() puts it
+// there: and / the / in / from / as / who / toward / his in front, "- plural" / "- emphatic"
+// (context only: English has no word for them) behind. A bracket that is not a modification
+// label — "[...]" a lacuna, an editor's note — is never touched.
+const LABEL_ATOM = '(?:and|the|in|from|as|to|for|like|within him|𐤔|Toward|Plural|Emphatic|My|Our|Your \\(pl\\)|Your|His|Her|Their)';
+const LABEL_RE = new RegExp(`\\s*\\[(${LABEL_ATOM}(?:·${LABEL_ATOM})*)\\]`, 'gu');
+const ATOM_POSS = { my: 'my', our: 'our', your: 'your', 'your (pl)': 'your', his: 'his', her: 'her', their: 'their' };
+const ATOM_PRS = { my: '1cs', our: '1cp', your: '2ms', 'your (pl)': '2mp', his: '3ms', her: '3fs', their: '3mp' };
+const ATOM_PREP = { in: '𐤁', to: '𐤋', for: '𐤋', from: '𐤌', as: '𐤊', like: '𐤊', '𐤔': '𐤔' };
+/** The English with the labels' meaning written into it — for a pair whose Hebrew word is not known. */
+export function weaveAtoms(english, atoms) {
+  const eng = String(english || '').replace(/\s+/g, ' ').trim();
+  const ws = engWords(eng);
+  const has = set => !!set && ws.some(w => set.has(w));
+  const pre = [], notes = []; let conj = false;
+  for (const a of atoms) {
+    const k = String(a).toLowerCase();
+    if (k === 'and') { conj = true; continue; }
+    if (k === 'plural') { if (!isPluralEng(ws)) notes.push('plural'); continue; }
+    if (k === 'emphatic') { notes.push('emphatic'); continue; }
+    if (k === 'toward') { if (!has(W('to toward towards into unto'))) pre.push('toward'); continue; }
+    if (k === 'the') { if (!has(ART)) pre.push('the'); continue; }
+    if (ATOM_POSS[k]) { if (!has(PRS[ATOM_PRS[k]])) pre.push(ATOM_POSS[k]); continue; }
+    if (ATOM_PREP[k]) { if (!has(PREP[ATOM_PREP[k]])) pre.push(k === '𐤔' ? 'who' : k); continue; }
+    if (!eng.toLowerCase().includes(k)) pre.push(k);                       // "within him"
+  }
+  let body = eng;
+  if (pre.length) {
+    let p = pre.join(' ');
+    const first = body.split(' ')[0] || '';
+    const keepCap = first === 'I' || (!LIGHT.has(first.toLowerCase()) && (NAME_ENG.has(first.toLowerCase()) || REVERENT.has(first.replace(/[’']s$/, ''))));
+    if (body && /^[A-Z]/.test(body) && !keepCap) { body = body[0].toLowerCase() + body.slice(1); p = p[0].toUpperCase() + p.slice(1); }
+    body = body ? `${p} ${body}` : p;
+  }
+  if (conj) body = leadAnd(body);
+  if (!notes.length) return body;
+  return / - (?:plural|emphatic)(?:, (?:plural|emphatic))*$/.test(body) ? `${body}, ${notes.join(', ')}` : `${body} - ${notes.join(', ')}`;
+}
+/** Every "Form (english [Label·Label])" in a text -> "Form (woven english)". words = the
+ *  verse's Hebrew words (a pair that is one of them is woven from its own modifications; any
+ *  other from what its labels say). Works on rich text too. Returns { text, n }. */
+export function unlabel(text, words = []) {
+  const src = String(text || '');
+  if (!src.includes('[')) return { text: src, n: 0 };
+  const norm = s => String(s).toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
+  const used = new Set();
+  let n = 0;
+  const out = src.replace(/((\d+)r?)?\b([A-Za-z][A-Za-z'’-]*)(\s*)\(((?:[^()]|\([^()]*\))*)\)/g, (m, mk, ord, w, sp, gl, at) => {
+    // the word is taken even when its gloss has no label: the next same form is the next word
+    let h = ord != null ? words.find(x => String(x.ord) === ord) : null;
+    if (!h) h = words.find(x => !used.has(x) && norm(x.form) === norm(w)) || null;
+    if (h) used.add(h);
+    const atoms = [];
+    const eng = gl.replace(LABEL_RE, (_, a) => { atoms.push(...a.split('·')); return ''; }).replace(/\s+/g, ' ').trim();
+    if (!atoms.length) return m;
+    n++;
+    // his own word's modifications say more than the label did ("who dwell", "struck him");
+    // a label the tokens do not carry any more is still written, from the label itself
+    let g;
+    if (h && !h.isName && h.mods.length) {
+      g = weave(h, eng);
+      const lost = atoms.filter(a => { const k = a.toLowerCase();
+        if (k === 'and') return !/^and\b/i.test(g);
+        if (k === 'plural' || k === 'emphatic') return !new RegExp(` - (?:[a-z]+, )*${k}\\b`).test(g) && !(k === 'plural' && isPluralEng(engWords(g)));
+        return false; });
+      if (lost.length) g = weaveAtoms(g, lost);
+    } else g = weaveAtoms(eng, atoms);
+    // the English right before the word already says it: "who HaImadayam (stand [the·Plural])"
+    // -> "who HaImadayam (stand - plural)", not "(who stand - plural)"
+    { const before = ((src.slice(Math.max(0, at - 40), at).match(/(?:^|[\s>“"‘(])((?:[A-Za-z]+\s+){1,3})$/) || [])[1] || '').toLowerCase().split(/\s+/).filter(Boolean);
+      const first = (g.match(/^[A-Za-z]+/) || [])[0];
+      if (before.length && first && before.includes(first.toLowerCase()) && LIGHT.has(first.toLowerCase()) && !eng.toLowerCase().startsWith(first.toLowerCase() + ' ') && g.length > first.length + 1)
+        g = g.slice(first.length + 1); }
+    // a sentence starts here: so does its gloss ("WaAInah (And I answered)")
+    if (/^[a-z]/.test(g) && /(?:^|[.!?])["“‘'’”\s]*$/.test(src.slice(Math.max(0, at - 6), at))) g = g[0].toUpperCase() + g.slice(1);
+    return `${mk || ''}${w}${sp}(${g})`;
+  });
+  return { text: out, n };
+}
+/** True when a reading text still carries a modification label inside a gloss (the gate). */
+export const hasLabel = text => { const s = String(text || ''); if (!s.includes('[')) return false;
+  for (const m of s.matchAll(/\b[A-Za-z][A-Za-z'’-]*\s*\(((?:[^()]|\([^()]*\))*)\)/g)) { LABEL_RE.lastIndex = 0; if (LABEL_RE.test(m[1])) return true; }
+  return false; };
 
 // ── CONCEPTS THE NT SHARES WITH THE OT (fieldy, 2026-10-01) ──────────────────────────────
 // "geneaology is Thawaladahawath per Genesis 2, repent must be Nacham, 'baptize' must be

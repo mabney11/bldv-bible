@@ -18,6 +18,14 @@
 //              row gets a translation_history row first (reversible), rich_text is merged
 //              the same way, and translation_links english_indices are re-mapped onto the
 //              new word positions.
+//              2026-10-03 (fieldy, Isaiah 4:1: "I want readable glosses unless it is purely
+//              contextual … this verse isnt keeping the order of the hebrew"): (1) a [label]
+//              written before the woven glosses is woven in ("take [and]" -> "and take");
+//              (2) a spelling reading-form-rules.json retired is respelled (Abayanaw ->
+//              Abanaw); (3) a row he saved WITHOUT rewriting it — status 'none', plain text,
+//              no links of his, its English still the machine's (>= 90% the same words) — is
+//              handed back to the machine text: corpus.db's rendering, Hebrew word order,
+//              rich_text cleared so every later render reaches it. --keep-saved-order skips (3).
 //   --dry      report only.
 //
 // USAGE (from server/):
@@ -341,6 +349,8 @@ if (CORPUS) {
       if (!MF.modformApplies(r.c, r.ch)) continue;
       seen++;
       let ws = hebWords(r.c, r.ch, r.v);
+      const text0 = r.text;
+      r.text = MF.respellRetired(MF.unlabel(r.text, ws).text);   // text an older run left in full form: no [label], no retired spelling
       r.text = divineGlosses(r.text, NR).fixed;   // Alahayam (God), Yashawai (Jesus), Mashayach (Christ / Anointed One) — before the forms, so prefixes join
       const cc = r.c > 39 ? applyConcepts(r.text, ws) : { text: r.text, ws }; ws = cc.ws;   // NT/Apocrypha words the OT already names
       const t1 = fill(cc.text, r.src, links.get(`${r.c}|${r.ord_c}|${r.ord_v}`), ws);
@@ -353,7 +363,8 @@ if (CORPUS) {
       const grp = r.c <= 39 ? 'OT' : r.c <= 66 ? 'NT' : 'Apoc';
       if (il.ok) { r2 = { text: il.text, n: r2.n }; ilOk++; ilWhy.set(grp + ' hebrew-order', (ilWhy.get(grp + ' hebrew-order') || 0) + 1); } else ilWhy.set(grp + ' ' + il.why, (ilWhy.get(grp + ' ' + il.why) || 0) + 1);
       r2.text = r2.text.replace(/\uE002\d+r?\uE003/g, '');
-      if (r2.text === r.text) continue;
+      r2.text = MF.respellRetired(r2.text);
+      if (r2.text === text0) continue;
       changed++; pairs += r2.n;
       if (samples.length < (ONLY ? 99 : 12) && (ONLY || (r.c <= 66 && (r.c > 39 || samples.length < 4)))) samples.push(`${r.c}:${r.ch}:${r.v}  ${r2.text}`);
       if (upd) upd.run(r2.text, r.id);
@@ -372,14 +383,53 @@ if (CORPUS) {
   const upd = DRY ? null : tdb.prepare(`UPDATE translations SET text = ?, rich_text = ?, updated_at = datetime('now') WHERE book_id = ? AND chapter = ? AND verse = ?`);
   const linkSel = tdb.prepare(`SELECT id, english_indices FROM translation_links WHERE book_id = ? AND chapter = ? AND verse = ?`);
   const linkUpd = DRY ? null : tdb.prepare(`UPDATE translation_links SET english_indices = ? WHERE id = ?`);
+  // ── a saved row whose wording is still the machine's ────────────────────────────────
+  // The Studio saves with status 'none' and writes rich_text; a row saved that way without
+  // its English being rewritten (a gloss picked, a link tried, the clobber repair of
+  // 2026-09-11) froze as a "saved verse": Isaiah 4:1 kept August's English order and its
+  // [labels] while corpus.db already read "WaHaChazayaqaw (And shall take hold) Shabai
+  // (seven) …". Such a row goes back to the machine text. A verse he REWROTE (his words
+  // differ), formatted (rich text markup), linked by hand or marked in_progress/done is his
+  // and keeps its order.
+  const KEEP_ORDER = argv.includes('--keep-saved-order');
+  const SAME = +val('--same-wording', '0.9');
+  const plainWords = t => (String(t || '').replace(/<[^>]+>/g, ' ')
+    .replace(/\b[A-Za-z][A-Za-z'’-]*\s*\(((?:[^()]|\([^()]*\))*)\)/g, ' $1 ').replace(/\[[^\]]*\]/g, ' ').toLowerCase().match(/[a-z']+/g) || []);
+  const sameness = (a, b) => {
+    if (!a.length || !b.length) return 0;
+    const n = a.length, m = b.length; let prev = new Uint16Array(m + 1), cur = new Uint16Array(m + 1);
+    for (let i = 1; i <= n; i++) { for (let j = 1; j <= m; j++) cur[j] = a[i - 1] === b[j - 1] ? prev[j - 1] + 1 : Math.max(prev[j], cur[j - 1]); [prev, cur] = [cur, prev]; }
+    return 2 * prev[m] / (n + m);
+  };
+  const corpusText = cdb.prepare(`SELECT text FROM verses WHERE corpus='ENG' AND canon_id = ? AND CAST(chapter AS INTEGER) = ? AND CAST(verse AS INTEGER) = ? AND text IS NOT NULL AND text != ''`);
+  const origSel = tdb.prepare(`SELECT coalesce(original_text,'') ot FROM translations WHERE book_id = ? AND chapter = ? AND verse = ?`);
+  const ownLinks = tdb.prepare(`SELECT count(*) n FROM translation_links WHERE book_id = ? AND chapter = ? AND verse = ? AND lang NOT LIKE '%auto%'`);
+  const release = DRY ? null : tdb.prepare(`UPDATE translations SET text = ?, rich_text = '', original_text = ?, updated_at = datetime('now') WHERE book_id = ? AND chapter = ? AND verse = ?`);
+  let released = 0, woven = 0, respelled = 0; const releasedRefs = [], keptOrder = [];
   tdb.transaction(() => {
     for (const r of rows) {
       if (!MF.modformApplies(r.c, r.ch)) continue;
       seen++;
       const ws = hebWords(r.c, r.ch, r.v);
-      const t2 = MF.mergeModforms(r.text, ws);
-      if (!t2.n || t2.text === r.text) continue;
-      const rich = !r.rt ? r.rt : (r.rt === r.text ? t2.text : MF.mergeModforms(r.rt, ws).text);
+      // (3) his wording, or the machine's?
+      if (!KEEP_ORDER && (r.status || 'none') === 'none' && !/<[a-z!/]/i.test(r.rt) && !ownLinks.get(r.c, r.ch, r.v).n) {
+        const ct = corpusText.get(r.c, r.ch, r.v), ot = origSel.get(r.c, r.ch, r.v);
+        const like = ct && ot && ot.ot ? sameness(plainWords(r.text), plainWords(ot.ot)) : 0;
+        if (ct && like >= SAME && ct.text !== r.text) {
+          released++; releasedRefs.push(`${r.c}:${r.ch}:${r.v}`);
+          samples.push(`${r.c}:${r.ch}:${r.v}  (machine wording, ${Math.round(like * 100)}% — back to the machine text)\n    was: ${r.text}\n    now: ${ct.text}`);
+          if (!DRY) { histIns.run(r.c, r.ch, r.v, r.status, r.text, r.rt); release.run(ct.text, ct.text, r.c, r.ch, r.v); }
+          continue;
+        }
+        if (ct && /[A-Za-z]\)\s+[a-z]+\s+[A-Za-z]/.test(r.text)) keptOrder.push(`${r.c}:${r.ch}:${r.v} (${Math.round(like * 100)}% machine wording)`);
+      }
+      // (1) + (2), then the forms
+      const u = MF.unlabel(r.text, ws); woven += u.n;
+      const t1 = MF.respellRetired(u.text); if (t1 !== u.text) respelled++;
+      const t2 = MF.mergeModforms(t1, ws);
+      const fixRich = x => MF.mergeModforms(MF.respellRetired(MF.unlabel(x, ws).text), ws).text;
+      const rich = !r.rt ? r.rt : (r.rt === r.text ? t2.text : fixRich(r.rt));
+      if (t2.text === r.text && rich === r.rt) continue;
       changed++; pairs += t2.n;
       samples.push(`${r.c}:${r.ch}:${r.v}\n    was: ${r.text}\n    now: ${t2.text}`);
       if (DRY) continue;
@@ -393,6 +443,9 @@ if (CORPUS) {
       }
     }
   })();
+  console.log(`saved verses: ${woven} [label](s) woven into their English, ${respelled} verse(s) respelled (reading-form-rules.json), ` +
+              `${released} saved without a rewrite handed back to the machine text (Hebrew word order)${released ? ': ' + releasedRefs.join(' ') : ''}`);
+  if (keptOrder.length) console.log(`  kept as you wrote them, English outside the brackets (${keptOrder.length}): ${keptOrder.join(', ')}`);
   tdb.close();
   console.log(`modification forms (your saved verses, Gen 3 on): ${changed} of ${seen} verses merged, ${pairs} words upgraded, ` +
               `${linkRows} link rows re-indexed${DRY ? ' (dry run — nothing written)' : ' — the old wording of each is in translation_history'}`);

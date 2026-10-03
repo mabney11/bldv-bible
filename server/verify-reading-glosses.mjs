@@ -158,7 +158,8 @@ if (existsSync(INDEX_DB)) {
         let cs; try { cs = JSON.parse(t.components || '[]'); } catch { continue; }
         // two spellings of one word: the chips' components joined ("w"+"ya"+"bawayaa"+"w"),
         // and the block reading the reading text writes (modform-lib formOf: "WaYaBawayaaw")
-        const blk = norm(MF.formOf(cs.filter(x => x && x.paleo)));
+        // (reading-form-rules.json folded in: 𐤀𐤁𐤉𐤍𐤅 reads Abanaw, also from an index baked before the rule)
+        const blk = norm(MF.formOf(MF.applyFormRules(cs.filter(x => x && x.paleo), t.word_raw)));
         comp.set(`${t.source}\u0000${t.word_raw}\u0000${t.strongs}\u0000${t.pos}\u0000${t.morph}`, [norm(cs.map(x => x.translit || '').join('')), blk]);
       }
       let run = [], rk = '';
@@ -254,14 +255,47 @@ function check(key, text) {
   return out;
 }
 // "word (gloss)" -> "gloss", right to left so indices hold. Returns { text, removedAt:[token positions] }
+// A gloss that holds a NAME never unwraps to a bare English name — verify-name-forms, the
+// next gate, fails "Herod" outside a gloss (Josephus War 1:212, "ChaWahawaradawas (Him that
+// Herod)": a section numeral glued onto the word). The name keeps its own pair, the rest
+// of the gloss stands as English: "Him that Hawaradawas (Herod)". Same number of words, so
+// no link index moves.
+let NAME_RULES = null;
+try { NAME_RULES = (await import(pathToFileURL(path.join(__dirname, 'name-form-lib.mjs')).href)).loadRules(); } catch { NAME_RULES = null; }
 function unwrap(text, vs) {
   let s = text; const removedAt = [];
   for (const x of [...vs].sort((a, b) => b.index - a.index)) {
+    if (NAME_RULES && NAME_RULES.bare && !x.keep) {
+      const gw = x.gloss.split(/\s+/);
+      const ni = gw.findIndex(w => NAME_RULES.bare.has((w.match(/^[A-Za-z][A-Za-z'-]*/) || [''])[0]));
+      if (ni >= 0) {
+        const nm = gw[ni].match(/^[A-Za-z][A-Za-z'-]*/)[0];
+        gw[ni] = `${NAME_RULES.bare.get(nm)} (${nm})${gw[ni].slice(nm.length)}`;
+        s = s.slice(0, x.index) + gw.join(' ') + s.slice(x.index + x.m.length);
+        continue;
+      }
+    }
     removedAt.push(s.slice(0, x.index).split(/\s+/).filter(Boolean).length);
     s = s.slice(0, x.index) + (x.keep || '') + x.gloss + s.slice(x.index + x.m.length);   // "fig-nathan (leaves)" -> "fig-leaves"
   }
   return { text: s, removedAt };
 }
+
+// ── readable glosses, current spellings (fieldy, 2026-10-03) ────────────────────────────
+// "I want readable glosses unless it is purely contextual — 'WaHaChazayaqaw (and take hold)'
+// instead of 'WaHaChazayaqaw (take [and])'" / "corpus wide i want 'our father' to be 'Abanaw'
+// - not 'Abayanaw'". No reading text from Genesis 3 on may carry a modification [label]
+// inside a gloss, or a spelling lexicon/reading-form-rules.json retired. --fix rewrites both
+// (the label's meaning woven into the English; a saved verse gets a history row first).
+const RETIRED = MF.retiredForms();
+const stale = (c, ch, text) => {
+  const why = [];
+  if (MF.modformApplies(c, ch) && MF.hasLabel(text)) why.push('a modification [label] inside a gloss — its meaning belongs in the English ("take [and]" → "and take")');
+  for (const R of RETIRED) { const m = R.re.exec(text); if (m) why.push(`"${m[0]}" — retired spelling, write ${R.form} (lexicon/reading-form-rules.json)`); }
+  return why;
+};
+const freshen = text => MF.respellRetired(MF.unlabel(text, []).text);
+let fixedStale = 0;
 
 const violations = [];   // printable, fatal
 const review = [];       // fieldy's saved verses — listed, not fatal unless --saved-fatal
@@ -273,6 +307,8 @@ let fixedCorpus = 0, fixedTrans = 0, fixedSaved = 0, linkRows = 0;
   cdb.transaction(() => {
     for (const r of rows) {
       const key = `${r.c}|${+r.ch}|${+r.v}`;
+      { const st = stale(r.c, r.ch, r.text);
+        if (st.length) { if (FIX) { r.text = freshen(r.text); upd.run(r.text, r.id); fixedStale++; } else for (const w of st) violations.push(`corpus ${key.replace(/\|/g, ':')}  ${w}`); } }
       const vs = check(key, r.text); if (!vs.length) continue;
       if (FIX) { upd.run(unwrap(r.text, vs).text, r.id); fixedCorpus++; continue; }
       for (const x of vs) violations.push(`corpus ${key.replace(/\|/g, ':')}  "${x.m}"  — ${x.why}`);
@@ -291,8 +327,16 @@ if (existsSync(TRANS_DB)) {
   tdb.transaction(() => {
     for (const r of rows) {
       const key = `${r.c}|${+r.ch}|${+r.v}`;
-      const vs = check(key, r.text).filter(x => !ACCEPT[`${key.replace(/\|/g, ':')}|${x.m}`]); if (!vs.length) continue;
       const seeded = (r.status || 'none') === 'none' && !r.rt;
+      { const st = stale(r.c, r.ch, r.text).concat(r.rt && r.rt !== r.text ? stale(r.c, r.ch, r.rt) : []);
+        if (st.length) {
+          if (FIX) {
+            const t = freshen(r.text), rich = r.rt ? freshen(r.rt) : r.rt;
+            if (seeded) upd.run(t, r.text, t, r.c, r.ch, r.v); else { histIns.run(r.c, r.ch, r.v, r.status, r.text, r.rt); savedUpd.run(t, rich, r.c, r.ch, r.v); }
+            r.text = t; r.rt = rich; fixedStale++;
+          } else for (const w of [...new Set(st)]) violations.push(`translation ${key.replace(/\|/g, ':')}${seeded ? '' : '  [your saved verse — merge-modforms.mjs --saved rewrites it]'}  ${w}`);
+        } }
+      const vs = check(key, r.text).filter(x => !ACCEPT[`${key.replace(/\|/g, ':')}|${x.m}`]); if (!vs.length) continue;
       // A KNOWN misconception is removed even from a saved verse: the wrong Hebrew word
       // goes, fieldy's English stays ("hamah (like)" -> "like"), a history row keeps it reversible.
       if (FIX && !seeded) {
@@ -331,6 +375,7 @@ if (existsSync(TRANS_DB)) {
 } else console.log(`  (no translation.db at ${TRANS_DB} — reader rows not checked)`);
 
 console.log(`verify-reading-glosses: Hebrew from tokens_bhs + ${hebFrom}; ${MIS.length} misconception rule(s); ${drift.size} chapters with known versification drift (±2 allowed there only)`);
+if (FIX && fixedStale) console.log(`  --fix: ${fixedStale.toLocaleString()} verse(s) had a [label] woven into its English or a retired spelling respelled`);
 if (FIX) console.log(`  --fix: unwrapped unsupported glosses in ${fixedCorpus.toLocaleString()} corpus verse(s), ${fixedTrans.toLocaleString()} reader verse(s); removed known misconceptions from ${fixedSaved} saved verse(s) (history kept); ${linkRows} link row(s) re-indexed`);
 if (OUT) writeFileSync(OUT, violations.concat(review).join('\n') + '\n');
 if (review.length) {

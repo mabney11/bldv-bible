@@ -102,9 +102,33 @@ if (INIT_SRC || RESET_SRC) {
   const db = new Database('./corpus.db');
   const cols = db.prepare(`PRAGMA table_info(verses)`).all().map(c => c.name);
   if (!cols.includes('text_src')) db.exec(`ALTER TABLE verses ADD COLUMN text_src TEXT`);
-  const where = RESET_SRC ? untaggedWhere : `text_src IS NULL AND ${untaggedWhere}`;
-  const info = db.prepare(`UPDATE verses SET text_src = text WHERE ${where}`).run(MIN_CANON);
+  // 2026-10-03: a snapshot must never capture RENDERED text. --reset-src runs right after the
+  // reload, when the reloaded books hold pristine English — but Josephus (217-220) and
+  // 2 Esdras (139) are reloaded by nothing, so their `text` is the previous run's output and
+  // each full run made it the next run's "source" (modification forms, [labels], Hebrew word
+  // order and all: 12,108 verses read "WaYaSair (And my spirit was sore [and])"). Decided per
+  // BOOK: a book any of whose text carries modification forms with their glosses
+  // ("WaYaSair (…)") was not reloaded, and its existing text_src is kept — every row of it,
+  // also the ones whose rendering happens to have no such form. A reloaded book has none.
+  // restore-text-src.mjs repairs a snapshot that was already overwritten.
+  const RENDERED = /\b[A-Z][a-z]+(?:[A-Z][a-z]+)+ \((?!\))/;
+  const all = db.prepare(`SELECT id, code, text, text_src FROM verses WHERE ${untaggedWhere}`).all(MIN_CANON);
+  const perBook = new Map();
+  for (const r of all) { const b = perBook.get(r.code) || { n: 0, rendered: 0 }; perBook.set(r.code, b); b.n++; if (RENDERED.test(r.text)) b.rendered++; }
+  const notReloaded = new Set([...perBook].filter(([, b]) => b.rendered >= 3 && b.rendered / b.n > 0.02).map(([code]) => code));
+  const upd = db.prepare(`UPDATE verses SET text_src = text WHERE id = ?`);
+  let changes = 0, kept = 0;
+  db.transaction(() => {
+    for (const r of all) {
+      const has = r.text_src != null && r.text_src !== '';
+      if (!RESET_SRC && has) continue;                                         // --init-src: only rows without one
+      if (RESET_SRC && has && notReloaded.has(r.code)) { kept++; continue; }   // rendered text is never a source
+      upd.run(r.id); changes++;
+    }
+  })();
+  const info = { changes };
   console.log(`text_src: ${RESET_SRC ? 'reset' : 'captured'} ${info.changes.toLocaleString()} untagged rows from current text.`);
+  if (kept) console.log(`text_src: kept the existing snapshot of ${kept.toLocaleString()} row(s) in ${notReloaded.size} book(s) no reload step refreshed (their text is the last render): ${[...notReloaded].slice(0, 12).join(', ')}${notReloaded.size > 12 ? ' …' : ''}`);
   if (INIT_SRC) {
     console.log('⚠ --init-src snapshots CURRENT text. If those rows were already rendered, re-seed');
     console.log('  pristine English first (or use --reset-src inside render-all right after reload).');

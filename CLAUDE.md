@@ -1,5 +1,80 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## READABLE GLOSSES, HEBREW ORDER FOR UNREWRITTEN SAVES, "Abanaw" (added 2026-10-03)
+
+fieldy, on bldbible.com/parallel/isaiah/4 — "Shabai (seven) NaAyashahayam (wife / individual woman
+[Emphatic·Plural]) shall WaHaChazayaqaw (take [and]) qabal (hold) …": "I want readable glosses unless
+it is purely contextual so 'WaHaChazayaqaw (and take hold)' instead of 'WaHaChazayaqaw (take [and])'" /
+"this verse isnt keeping the order of the hebrew, WaHaChazayaqaw before Shabai and NaAyashahayam" /
+"corpus wide i want 'our father' to be 'Abanaw' - not 'Abayanaw' which means 'my&our' the my particle
+is a token that does not add context. So the Prayer from Matt 6 and every other case should be Abanaw".
+
+**Why Isaiah 4:1 still looked like that:** corpus.db already read "WaHaChazayaqaw (And shall take
+hold) Shabai (seven) NaAyashahayam (women - emphatic) …". translation.db's row counted as SAVED
+(status 'none', rich_text set — saved in the Studio 2026-08-18 with the WEB's wording), so only
+merge-modforms --saved ever touched it: once, before weave() existed (hence the [labels]), in English
+order (his wording is kept), and never again (a word already in full form is skipped).
+
+- **No [label] a reader has to decode** — modform-lib `unlabel(text, words)`: every
+  "Form (english [and·His])" becomes woven English — from the word's own modifications (weave) when
+  the verse has that word, else from the label itself (`weaveAtoms`): and / the / in / from / as / who /
+  toward / his in front; "- plural", "- emphatic" behind (the only "purely contextual" marks left).
+  A leading word the English right before already says is not repeated ("who HaImadayam (stand -
+  plural)"). A bracket that is not a modification label ("[...]") is never touched. Runs in
+  merge-modforms --corpus (first thing, every verse) and --saved (text AND rich_text). `hasLabel()` is
+  the gate's test: verify-reading-glosses fails a machine row with a label (`--fix` weaves it).
+- **A save that never rewrote the English goes back to the machine text** (merge-modforms --saved):
+  status 'none', plain rich_text (no markup), no translation_links of his (lang not %auto%), and its
+  words >= 90% the same as original_text (glosses unwrapped, LCS) → history row, then
+  text = corpus.db ENG, rich_text = '' — so it is in Hebrew word order and every later render reaches
+  it. A verse he REWROTE, formatted, linked, or marked in_progress/done keeps his order (labels woven
+  only); those with English outside the brackets are listed on every run. `--keep-saved-order` turns
+  the hand-back off; `--same-wording 0.9` is the threshold. Measured on the 2026-10-02 copy of prod:
+  36 handed back (Isa 4:1, Lev 23 ×14, …), 79 labels woven in 54 kept verses, idempotent.
+  "Claude outputs/saved-verses-2026-10-03.txt" has every before/after.
+- **"Abanaw" — lexicon/reading-form-rules.json** (`{sn, root, drop, before, retired, form}`). His
+  follow-up the same morning, shown the 𐤉 kept as a silent letter: "i want the yod removed from the
+  tokens for the word, not just the transliteraton. The letters need to be 𐤀𐤁𐤍𐤅 (father [our])".
+  So the rule REMOVES the component: 𐤉 nme-j [My/Of] standing between root 𐤀𐤁 (H1) and 𐤍𐤅 prs-1cp
+  [Our] is dropped — tokens 𐤀𐤁 + 𐤍𐤅, letters 𐤀𐤁𐤍𐤅, chip gloss "father [Our]", reads Abanaw. A
+  DELIBERATE EXCEPTION to "no eliding" (his word, his spelling — do not "restore" the yod, and do
+  not let coverLetters put it back: the rule runs after it on purpose). Three copies of one small
+  rule, KEEP IN SYNC: modform-lib `applyFormRules` (reading text, gate; the loader applies it to an
+  index baked before the rule), build-surface-index.js `applyReadingFormRules` (baked chips +
+  rendered_paleo, right after coverLetters), server.js `applyReadingFormRules` (live parser + the
+  /api/tokens flush, for an old index). There is no `silent` flag any more. The word must SPELL
+  root+𐤉 (𐤌𐤀𐤉𐤁𐤉𐤍𐤅 "from our enemies" is tagged H1 by the HEB parse — not touched; that mis-tag is
+  still open). NOT rewritten: the corpus's own word_raw (tokens_bhs 𐤀𐤁𐤉 / tokens_nt 𐤀𐤁𐤉𐤍𐤅 — the
+  surface explorer's key, WordBlock's sourceTokens, /api/search), the Root Explorer's surface-forms
+  list, and the HEB edition's verse text — ask before touching those (𐤀𐤁𐤍𐤅 is also the written
+  word "his stone", H68: one surface key would merge the two). `respellRetired()` rewrites
+  "(Wa|La|Ma…)Abayanaw" in existing text (corpus pass, saved pass, gate --fix); the gate fails a
+  survivor. 5 surfaces (BHS 𐤀𐤁𐤉+[Our]; HEB 𐤀𐤁𐤉𐤍𐤅, 𐤋-, 𐤌-, 𐤅𐤋-), 147 HEB + 25 BHS occurrences
+  (Matt 6:9, Gen 19:32, Isa 63:16 …). NOT covered (he named only "our father"): Abawathayanaw
+  "our fathers", Abayak / Abayaw / Achayaw (the same 𐤉) — ask before dropping it there.
+- **The source of 12,108 labelled verses was a feedback loop, not weaving** — Josephus (217-220) and
+  2 Esdras (139) are reloaded by NO render-all step, so `render-corpus --reset-src` snapshotted their
+  previous RENDER as the next run's English (text_src held "WaYaSair (And my spirit was sore [and])";
+  later runs added ",,,,," and glosses that swallowed half a verse). Fixes: (1) --reset-src decides per
+  BOOK — a book whose text carries modification forms was not reloaded and keeps its text_src;
+  (2) **server/restore-text-src.mjs** (render-all, first surface step; no-op when clean) puts
+  text_src back from the newest corpus.db.bak* whose copy of the verse is still English
+  (corpus.db.bak-uvf of 2026-09-21 has all 13,240) and exits 1 if rendered text remains with no
+  backup — KEEP THAT BACKUP until a full render-all has run. Measured: the five books re-render
+  with 0 labels, 193,890 Hebrew words.
+- **verify-reading-glosses unwrap never leaves a bare name**: "ChaWahawaradawas (Him that Herod)"
+  (a section numeral glued onto the word, War 1:212) → "Him that Hawaradawas (Herod)", not "Him that
+  Herod" (verify-name-forms then failed the pipeline).
+- Verified on scratch copies (corpus ENG + prod's translation.db + surface-index): restore →
+  render-corpus (5 books) → merge-modforms --corpus → reseed → --saved → fix-name-forms → both gates
+  pass, 0 reader rows with a label, a second --saved run changes nothing. NOT run on the real
+  corpus.db / prod (the device bridge cannot write WAL databases on the Windows mount): fieldy runs
+  `node render-all.mjs`, pushes corpus.db, Rebake.
+- Device-bridge notes for the next session: better-sqlite3 in server/node_modules is the Windows
+  build — `npm i better-sqlite3 --cache /tmp/npmcache` in /tmp and copy the scripts there; read the
+  repo's DBs with python `file:…?immutable=1`; TMPDIR=/tmp (the session disk is full); a plain
+  `git status` leaves .git/index.lock it cannot unlink — use `GIT_OPTIONAL_LOCKS=0 git …`.
+
 ## MODIFICATION FORMS in the reading text, Genesis 3 onward (added 2026-10-01)
 
 fieldy: "introduce modifications into my translated texts so my translated text would get
