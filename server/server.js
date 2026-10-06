@@ -8509,7 +8509,10 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
         // empty-paleo component with a bracketed-? translation, as a
         // belt-and-suspenders check in case the css drifts.
         comps = comps.filter(c => {
-            if (c.css === 'mod-suff-unk' || c.css === 'mod-pref-unk') return false;
+            // Only the EMPTY-letter ghosts. A mod-suff-unk chip that carries letters is a
+            // real baked split (𐤀𐤉𐤊𐤄 → 𐤀𐤉 + 𐤊𐤄 "kah [Your]", 𐤀𐤁𐤉𐤅 → 𐤀𐤁 + 𐤉𐤅) — dropping
+            // it here cut the word's ending off the card (1,236 surfaces, 2026-10-06).
+            if ((c.css === 'mod-suff-unk' || c.css === 'mod-pref-unk') && !c.paleo) return false;
             const trans = String(c.translation || '');
             if (!c.paleo && /^\[\?/.test(trans)) return false;
             return true;
