@@ -227,18 +227,26 @@ function WordRow({ entry, tab, lang, src }) {
     [paleo, isHebrew]
   );
 
+  // The root itself is the way in: clicking the glyphs (or the transliteration)
+  // opens the same page the old "explore ↗" button did.
+  const exploreTitle = isRoot ? 'View this root' : isSurface ? 'View this surface' : 'Explore this root';
+
   return (
     <div className="lex-row">
       {isHebrew ? (
-        <div
-          className="lex-row-paleo"
+        <a
+          className="lex-row-paleo lex-root-link"
+          href={href}
+          title={exploreTitle}
           dangerouslySetInnerHTML={{ __html: paleoHtml }}
         />
       ) : (
         <div className={`lex-row-paleo lex-row-${lang}`}>{word}</div>
       )}
       <div className="lex-row-body">
-        {tl && <div className="lex-row-tl">{tl}</div>}
+        {tl && (href
+          ? <a className="lex-row-tl lex-root-link" href={href} title={exploreTitle}>{tl}</a>
+          : <div className="lex-row-tl">{tl}</div>)}
         {def && <div className="lex-row-def">{def}</div>}
         {isHebrew && entry.pos && <div className="lex-row-pos">{entry.pos}</div>}
         <div className="lex-row-meta">
@@ -246,11 +254,6 @@ function WordRow({ entry, tab, lang, src }) {
             <span className="lex-count">{entry.count.toLocaleString()} occ.</span>
           )}
           {sn && <span className="lex-sn">{sn}</span>}
-          {href && (
-            <a href={href} className="lex-link">
-              {isRoot ? 'view root ↗' : isSurface ? 'view surface ↗' : 'explore ↗'}
-            </a>
-          )}
         </div>
       </div>
     </div>

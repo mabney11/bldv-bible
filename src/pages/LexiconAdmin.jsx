@@ -2,47 +2,56 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { getAdminStatus } from '../lib/localOverlay.js';
 import { useToast } from '../components/Toast.jsx';
+import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import '../components/TopBar.css'; // .logo-btn/.txt-btn/.icon-btn, reused here
 import {
   apiAdminListLexiconFiles, apiAdminGetLexiconFile, apiAdminSaveLexiconFile,
   apiAdminListLexiconBackups, apiAdminGetLexiconBackup, apiAdminRestoreLexiconBackup,
-  apiAdminLexiconSnIndex,
+  apiAdminLexiconSnIndex, apiSourceLexiconCurated,
 } from '../lib/api.js';
-import LexiconChips, { parseLexicon } from './LexiconChips.jsx';
+import LexiconTable, { parseLexicon, detectScript } from './LexiconTable.jsx';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
+import './Lexicon.css';       // the public lexicon page's layout: rail, tabs, rows, anchors
 import './LexiconAdmin.css';
 
-// /admin/lexicon — every file in server/lexicon/. JSON object files open as
-// CHIPS (LexiconChips.jsx: Hebrew-ordered, click to edit key/value or remove,
-// Ctrl+F search with the paleo keyboard, Strong's keys findable by their
-// Hebrew letters); "Raw text" switches back to the original editor below.
+// /admin/lexicon — laid out like the public lexicon page.
 //
-// Original design notes: a blunt, format-agnostic mirror of every file in
-// server/lexicon/: pick one from the list, its exact raw text loads into a
-// single editable window, hit Save and it's written straight back to that
-// file on disk — no structured form standing between you and the text, so
-// this works identically for lexicon.json, homographs.json, any of the
-// per-language lexicons (greek-/geez-/latin-/syriac-lexicon.json), or the
-// .md curation notes. Deliberately NOT what Gloss Studio or
-// StrongsOverrides are (Gloss Studio only ever READS lexicon.json; this
-// page is the one place that writes the raw files themselves).
+//   language tabs   Hebrew · Greek · Ge'ez · Latin · Syriac
+//   Hebrew's tabs   Lexicon (lexicon.json) · Homographs (homographs.json)
+//   every other language has one tab, Lexicon
+//   everything else in server/lexicon/ (rules, notes, overrides, the big
+//   corpus lexicons…) sits in the "Other files" dropdown.
 //
-// Saved content is live in the running app within ~300ms — server.js
-// already watches lexicon.json/homographs.json/the two override files for
-// hot-reload, and the other per-language lexicons re-read on next request
-// keyed off mtime. See server.js's "Lexicon Admin: raw-file mirror editor"
-// section for the write + cache-busting side of this.
+// A JSON object file opens as a table (LexiconTable.jsx: letter rail, one row
+// per entry, pencil to edit key/value); "Raw text" — and any file that is not
+// a JSON object, like the .md notes — opens the plain editor.
 //
-// SAFETY (per fieldy: wiping the text and hitting Save must never destroy
-// the saved data): the server snapshots a file's CURRENT content to a
-// timestamped backup before every save, including a save that empties it.
-// The Backups panel here lets you preview or restore any prior snapshot,
-// and restoring itself backs up whatever was live first — so every step is
-// reversible, nothing is a one-way door.
+// The server side is unchanged: a blunt, format-agnostic mirror of each file
+// (GET exact text, POST new text, backups). SAFETY (fieldy: wiping the text and
+// hitting Save must never destroy the saved data): the server snapshots a
+// file's CURRENT content before every save, including a save that empties it;
+// the Backups panel previews/restores any snapshot, and restoring backs up
+// whatever was live first — so every step is reversible. Saved content is live
+// in the running app within ~300ms (server.js hot-reload).
 
 const NEW_FILE_TEMPLATE = '{\n  \n}\n';
 const LAST_FILE_KEY = 'lexAdmin_lastFile';
-const VIEW_KEY = 'lexAdmin_view';   // 'chips' | 'raw'
+const VIEW_KEY = 'lexAdmin_view';   // 'table' | 'raw'
+
+// Language tabs. `src` is the corpus whose transliterations the public page
+// shows for that language (Greek/Ge'ez words are transliterated from the
+// corpus DB, not stored in the JSON).
+const LANGS = [
+  { key: 'hebrew', label: 'Hebrew', script: 'paleo', tabs: [
+    { key: 'lexicon',    label: 'Lexicon',    file: 'lexicon.json',    sortOnSave: true },
+    { key: 'homographs', label: 'Homographs', file: 'homographs.json', sortOnSave: true },
+  ] },
+  { key: 'greek',  label: 'Greek',  script: 'greek',  src: 'GNT', tabs: [{ key: 'lexicon', label: 'Lexicon', file: 'greek-lexicon.json' }] },
+  { key: 'geez',   label: "Ge'ez",  script: 'geez',   src: 'GEZ', tabs: [{ key: 'lexicon', label: 'Lexicon', file: 'geez-lexicon.json' }] },
+  { key: 'latin',  label: 'Latin',  script: 'latin',  tabs: [{ key: 'lexicon', label: 'Lexicon', file: 'latin-lexicon.json' }] },
+  { key: 'syriac', label: 'Syriac', script: 'syriac', tabs: [{ key: 'lexicon', label: 'Lexicon', file: 'syriac-lexicon.json' }] },
+];
+const TAB_FILES = new Map(LANGS.flatMap(l => l.tabs.map(t => [t.file, { ...t, lang: l }])));
 
 function fmtBytes(n) {
   if (n == null) return '—';
@@ -57,6 +66,7 @@ function fmtTime(ms) {
 
 export default function LexiconAdmin() {
   usePageTitle(pageTitle('Lexicon Admin'));
+  useLocalStorageNumber('lex-glyph-size', 28, '--glyph-word');   // same glyph size as the public page
   const toast = useToast();
   const [isAdmin, setIsAdmin] = useState(null); // null = checking
 
@@ -75,11 +85,11 @@ export default function LexiconAdmin() {
   const [preview, setPreview] = useState(null); // { file, content } | null
 
   const [newFileOpen, setNewFileOpen] = useState(false);
-  // Chip view (default) for any JSON object file; raw text for .md notes, JSON
-  // that doesn't parse, or on request. See LexiconChips.jsx.
-  const [view, setView] = useState(() => { try { return localStorage.getItem(VIEW_KEY) || 'chips'; } catch { return 'chips'; } });
-  const [snIndex, setSnIndex] = useState(null);
   const [newFileName, setNewFileName] = useState('');
+  const [view, setView] = useState(() => { try { return localStorage.getItem(VIEW_KEY) || 'table'; } catch { return 'table'; } });
+  const [snIndex, setSnIndex] = useState(null);
+  const [tlMaps, setTlMaps] = useState({});   // { GNT: {word_norm: translit}, GEZ: {...} }
+  const lastTabRef = useRef({});              // language -> last file opened under it
 
   // Set by confirmNewFile() so the [selected]-driven auto-load effect below
   // doesn't immediately GET a file that doesn't exist on disk yet.
@@ -96,8 +106,9 @@ export default function LexiconAdmin() {
         const list = d.files || [];
         setFiles(list);
         if (list.length && !preferName) {
-          const remembered = localStorage.getItem(LAST_FILE_KEY);
-          const match = list.find(f => f.name === remembered);
+          let remembered = null;
+          try { remembered = localStorage.getItem(LAST_FILE_KEY); } catch { /* private mode */ }
+          const match = list.find(f => f.name === remembered) || list.find(f => f.name === 'lexicon.json');
           setSelected(match ? match.name : list[0].name);
         }
       })
@@ -111,6 +122,21 @@ export default function LexiconAdmin() {
     apiAdminLexiconSnIndex().then(d => setSnIndex(d.index || {})).catch(() => setSnIndex({}));
   }, [isAdmin]);
   useEffect(() => { try { localStorage.setItem(VIEW_KEY, view); } catch { /* private mode */ } }, [view]);
+
+  const active = TAB_FILES.get(selected) || null;          // { key,label,file,sortOnSave,lang } | null (an "other" file)
+
+  // Transliterations for Greek / Ge'ez come from the corpus (as on the public page).
+  const activeSrc = active?.lang.src || null;
+  useEffect(() => {
+    if (!isAdmin || !activeSrc || tlMaps[activeSrc]) return;
+    apiSourceLexiconCurated(activeSrc)
+      .then(d => {
+        const m = {};
+        for (const e of d.entries || []) if (e.tl) m[e.word_norm] = e.tl;
+        setTlMaps(prev => ({ ...prev, [activeSrc]: m }));
+      })
+      .catch(() => setTlMaps(prev => ({ ...prev, [activeSrc]: {} })));
+  }, [isAdmin, activeSrc, tlMaps]);
 
   const loadFile = useCallback((name) => {
     if (!name) return;
@@ -127,7 +153,9 @@ export default function LexiconAdmin() {
 
   useEffect(() => {
     if (!selected) return;
-    localStorage.setItem(LAST_FILE_KEY, selected);
+    try { localStorage.setItem(LAST_FILE_KEY, selected); } catch { /* private mode */ }
+    const t = TAB_FILES.get(selected);
+    if (t) lastTabRef.current[t.lang.key] = selected;
     if (skipNextLoadRef.current) { skipNextLoadRef.current = false; return; }
     loadFile(selected);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,10 +182,12 @@ export default function LexiconAdmin() {
   }, [dirty]);
 
   const pickFile = (name) => {
+    if (!name || name === selected) return;
     if (dirty && !confirm(`Discard unsaved changes to ${selected}?`)) return;
     setNewFileOpen(false);
     setSelected(name);
   };
+  const pickLang = (lang) => pickFile(lastTabRef.current[lang.key] || lang.tabs[0].file);
 
   const startNewFile = () => {
     if (dirty && !confirm(`Discard unsaved changes to ${selected}?`)) return;
@@ -190,10 +220,12 @@ export default function LexiconAdmin() {
     catch (e) { return e.message; }
   }, [selected, content]);
 
-  const chipsAvailable = useMemo(
-    () => !!selected && selected.endsWith('.json') && parseLexicon(content) !== null,
+  const parsed = useMemo(
+    () => (selected && selected.endsWith('.json') ? parseLexicon(content) : null),
     [selected, content]);
-  const showChips = chipsAvailable && view === 'chips';
+  const tableAvailable = parsed !== null;
+  const showTable = tableAvailable && view === 'table';
+  const tableScript = active ? active.lang.script : (parsed ? detectScript(parsed.entries) : 'generic');
 
   const save = useCallback(async () => {
     if (!selected || saving) return;
@@ -241,7 +273,7 @@ export default function LexiconAdmin() {
     try {
       const d = await apiAdminRestoreLexiconBackup(selected, b.file);
       setContent(d.content); setOriginal(d.content);
-      setMeta(m => ({ size: Buffer_byteLength(d.content), mtime: Date.now() }));
+      setMeta({ size: Buffer_byteLength(d.content), mtime: Date.now() });
       setPreview(null);
       loadFiles(selected);
       loadBackups(selected);
@@ -261,11 +293,14 @@ export default function LexiconAdmin() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [save]);
 
-  const selectOptions = useMemo(() => {
-    if (selected && !files.some(f => f.name === selected)) {
-      return [{ name: selected, size: null, _pending: true }, ...files];
+  // "Other files": everything that is not one of the language tabs. A file
+  // just created (not on disk yet) is listed too.
+  const otherFiles = useMemo(() => {
+    const list = files.filter(f => !TAB_FILES.has(f.name));
+    if (selected && !TAB_FILES.has(selected) && !files.some(f => f.name === selected)) {
+      return [{ name: selected, size: null, _pending: true }, ...list];
     }
-    return files;
+    return list;
   }, [files, selected]);
 
   if (isAdmin === null) return <div className="page-stub"><p>Checking admin status…</p></div>;
@@ -278,47 +313,63 @@ export default function LexiconAdmin() {
     );
   }
 
-  return (
-    <div className="la-page">
-      <div className="la-topbar">
-        <Link to="/landing" className="logo-btn">𐤀𐤁</Link>
-        <span className="la-title">Lexicon Admin</span>
-        <span className="la-spacer" />
-        {meta && (
-          <span className="la-meta">{fmtBytes(meta.size)} · saved {fmtTime(meta.mtime)}</span>
-        )}
-        {dirty && <span className="la-dirty-badge">unsaved changes</span>}
-      </div>
+  const tabs = active ? active.lang.tabs : [];
 
-      <div className="la-toolbar">
-        <select
-          className="la-select"
-          value={selected}
-          onChange={e => pickFile(e.target.value)}
-          disabled={filesLoading}
-        >
-          {selectOptions.map(f => (
-            <option key={f.name} value={f.name}>
-              {f.name}{f._pending ? ' (new, unsaved)' : ` — ${fmtBytes(f.size)}`}
-            </option>
-          ))}
-        </select>
-        <button className="txt-btn" onClick={startNewFile}>+ New file</button>
-        <button className="txt-btn" onClick={() => setBackupsOpen(o => !o)}>
-          {backupsOpen ? 'Hide backups' : 'Backups'}
-        </button>
-        {chipsAvailable && (
-          <button className="txt-btn" onClick={() => setView(v => (v === 'chips' ? 'raw' : 'chips'))}>
-            {view === 'chips' ? 'Raw text' : 'Chips'}
+  return (
+    <div className="lex-page lax-page">
+      <header className="lex-topbar">
+        <div className="lex-topbar-left">
+          <Link to="/landing" className="logo-btn" aria-label="Home">𐤀𐤁</Link>
+          <div className="nav-divider" />
+          <span className="lex-page-title">Lexicon Admin</span>
+        </div>
+        <div className="lex-topbar-right">
+          {meta && <span className="la-meta">{fmtBytes(meta.size)} · saved {fmtTime(meta.mtime)}</span>}
+          {dirty && <span className="la-dirty-badge">unsaved changes</span>}
+          <button className="txt-btn" onClick={revert} disabled={!dirty || loading}>Revert</button>
+          <button className="la-save-btn lax-save" onClick={save} disabled={!dirty || saving || loading}>
+            {saving ? 'Saving…' : 'Save'}
           </button>
-        )}
+        </div>
+      </header>
+
+      {/* ── LANGUAGE TABS ─────────────────────────────────────────────────── */}
+      <nav className="lex-langbar" aria-label="Language">
+        {LANGS.map(l => (
+          <button key={l.key} className={`lex-langtab${active && active.lang.key === l.key ? ' active' : ''}`}
+                  onClick={() => pickLang(l)}>{l.label}</button>
+        ))}
+      </nav>
+
+      {/* ── TABS UNDER THE LANGUAGE (an "other file" has none) ────────────── */}
+      <nav className="lex-tabbar" aria-label="Tabs">
+        {tabs.map(t => (
+          <button key={t.key} className={`lex-tab${selected === t.file ? ' active' : ''}`}
+                  onClick={() => pickFile(t.file)}>{t.label}</button>
+        ))}
+        {!active && <span className="lax-otherfile-label">{selected || '…'}</span>}
         <span className="la-spacer" />
-        <span className="la-charcount">{content.length.toLocaleString()} chars</span>
-        <button className="txt-btn" onClick={revert} disabled={!dirty || loading}>Revert</button>
-        <button className="la-save-btn" onClick={save} disabled={!dirty || saving || loading}>
-          {saving ? 'Saving…' : 'Save'}
-        </button>
-      </div>
+        <div className="lax-tools">
+          <select className="lax-select" value={active ? '' : selected}
+                  onChange={e => pickFile(e.target.value)} disabled={filesLoading}
+                  title="Rules, notes, overrides and the large corpus lexicons">
+            <option value="">Other files…</option>
+            {otherFiles.map(f => (
+              <option key={f.name} value={f.name}>
+                {f.name}{f._pending ? ' (new, unsaved)' : ` — ${fmtBytes(f.size)}`}
+              </option>
+            ))}
+          </select>
+          <button className="txt-btn" onClick={startNewFile}>+ New file</button>
+          <button className="txt-btn" onClick={() => setBackupsOpen(o => !o)}>{backupsOpen ? 'Hide backups' : 'Backups'}</button>
+          {tableAvailable && (
+            <button className="txt-btn" onClick={() => setView(v => (v === 'table' ? 'raw' : 'table'))}>
+              {view === 'table' ? 'Raw text' : 'Table'}
+            </button>
+          )}
+          <span className="la-charcount">{content.length.toLocaleString()} chars</span>
+        </div>
+      </nav>
 
       {newFileOpen && (
         <div className="la-newfile-row">
@@ -337,9 +388,13 @@ export default function LexiconAdmin() {
         <div className="la-json-warn">⚠ Not valid JSON: {jsonError} — you can still save, just double check first.</div>
       )}
 
-      <div className="la-body">
-        {showChips ? (
-          <LexiconChips content={content} onChange={setContent} snIndex={snIndex} disabled={loading} />
+      <div className="lex-panel lax-body">
+        {showTable ? (
+          <LexiconTable
+            content={content} onChange={setContent} snIndex={snIndex} disabled={loading}
+            translits={activeSrc ? tlMaps[activeSrc] : null}
+            script={tableScript} sortOnSave={!!active?.sortOnSave}
+          />
         ) : (
           <textarea
             className="la-editor"

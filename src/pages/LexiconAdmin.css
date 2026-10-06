@@ -1,23 +1,8 @@
-.la-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg);
-  color: var(--text);
-}
-.la-topbar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg2);
-}
-.la-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text2);
-}
+/* /admin/lexicon — layout (topbar, language tabs, tabs, letter rail, anchors,
+   list) comes from Lexicon.css, the public lexicon page's stylesheet. This
+   file holds what is admin-only: the Save controls, the "Other files" tools,
+   the entry rows/editor (.lax-*), the keyboard and the backups panel. */
+
 .la-spacer { flex: 1; }
 .la-meta {
   font-size: 11px;
@@ -36,29 +21,6 @@
   padding: 3px 8px;
   white-space: nowrap;
 }
-
-.la-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg2);
-}
-.la-select {
-  background: var(--bg3);
-  color: var(--text);
-  border: 1px solid var(--border2);
-  padding: 9px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-  min-height: 40px;
-  max-width: 360px;
-  flex: 1 1 260px;
-}
-.la-select:focus { outline: none; border-color: var(--blue); }
 .la-charcount { font-size: 11px; color: var(--text3); white-space: nowrap; }
 .la-save-btn {
   background: var(--blue2);
@@ -74,9 +36,11 @@
 }
 .la-save-btn:hover:not(:disabled) { background: var(--blue); }
 .la-save-btn:disabled { opacity: 0.4; cursor: default; }
-.la-toolbar .txt-btn:disabled { opacity: 0.4; cursor: default; }
+.lex-topbar .txt-btn:disabled { opacity: 0.4; cursor: default; }
+.lax-save { min-height: 32px; padding: 6px 18px; }
 
 .la-newfile-row {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -98,6 +62,7 @@
 .la-hint { font-size: 11px; color: var(--text4); }
 
 .la-json-warn {
+  flex-shrink: 0;
   font-size: 12px;
   color: var(--red);
   background: color-mix(in srgb, var(--red) 10%, var(--bg));
@@ -105,13 +70,9 @@
   padding: 8px 20px;
 }
 
-.la-body {
-  flex: 1;
-  display: flex;
-  min-height: 0;
-}
 .la-editor {
   flex: 1;
+  min-width: 0;
   min-height: 0;
   resize: none;
   background: var(--bg);
@@ -156,13 +117,13 @@
 .la-backup-time { font-size: 11px; color: var(--text2); flex: 1 1 auto; }
 .la-backup-size { font-size: 10px; color: var(--text3); }
 .la-backup-row .txt-btn { padding: 5px 10px; font-size: 11px; min-height: 28px; }
-
 .la-preview {
   margin-top: 16px;
   border-top: 1px solid var(--border);
   padding-top: 12px;
 }
 .la-editor-readonly {
+  width: 100%;
   height: 320px;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -170,51 +131,158 @@
   padding: 10px;
 }
 
-@media (max-width: 800px) {
-  .la-body { flex-direction: column; }
-  .la-backups { width: auto; border-left: none; border-top: 1px solid var(--border); }
+/* ── tools on the tab row ───────────────────────────────────────────────── */
+.lax-tools { display: flex; align-items: center; gap: 8px; flex: none; align-self: center; padding-left: 12px; }
+.lax-select {
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  min-height: 30px;
+  max-width: 260px;
+  cursor: pointer;
 }
+.lax-select:focus { outline: none; border-color: var(--blue); }
+.lax-otherfile-label {
+  align-self: center;
+  padding: 0 16px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold);
+  white-space: nowrap;
+}
+.lex-tabbar .txt-btn { white-space: nowrap; }
 
-/* ── Chip view (LexiconChips.jsx) ───────────────────────────────────────── */
-.lc-wrap { flex: 1; display: flex; flex-direction: column; min-width: 0; padding: 14px 20px; gap: 12px; overflow: auto; }
-.lc-searchbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: sticky; top: 0; z-index: 2; background: var(--bg); padding-bottom: 6px; }
-.lc-search {
-  flex: 1 1 320px; min-height: 40px; padding: 8px 12px; border-radius: 6px;
-  background: var(--bg3); color: var(--text); border: 1px solid var(--border2); font-size: 15px;
+/* ── search bar (reuses .lex-search) ────────────────────────────────────── */
+.lax-search { height: auto; min-height: var(--search-h); flex-wrap: wrap; padding-top: 6px; padding-bottom: 6px; }
+.lax-search input { min-width: 180px; }
+.lax-ltr { direction: ltr; text-align: left; unicode-bidi: isolate; }
+.lax-count { font-size: 11px; color: var(--text3); white-space: nowrap; }
+.lax-on { color: var(--blue); }
+
+/* ── on-screen keyboard ─────────────────────────────────────────────────── */
+.lax-kbd {
+  flex-shrink: 0; max-height: 42vh; overflow: auto;
+  display: flex; flex-direction: column; gap: 6px; align-items: center;
+  padding: 10px; background: var(--bg2); border-bottom: 1px solid var(--border);
 }
-.lc-search:focus { outline: none; border-color: var(--blue); }
-.lc-count { font-size: 11px; color: var(--text3); white-space: nowrap; }
-.lc-on { color: var(--blue); }
-.lc-kbd { display: flex; flex-direction: column; gap: 6px; align-items: center; padding: 10px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; }
-.lc-kbd-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
-.lc-key {
+.lax-kbd-tabs { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+.lax-kbd-keys { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.lax-kbd-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.lax-kbd-key {
   min-width: 42px; min-height: 42px; font-size: 22px; border-radius: 6px; cursor: pointer;
   background: var(--bg3); color: var(--text); border: 1px solid var(--border2);
 }
-.lc-key:hover { border-color: var(--blue); }
-.lc-key-wide { font-size: 12px; padding: 0 14px; }
-.lc-editor { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; background: var(--bg2); border: 1px solid var(--blue); border-radius: 8px; }
-.lc-editor-title { font-size: 12px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; }
-.lc-field { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--text3); }
-.lc-field input, .lc-field textarea {
+.lax-kbd-key:hover { border-color: var(--blue); }
+.lax-kbd-key-wide { font-size: 12px; padding: 0 14px; }
+
+/* ── table: header + rows ───────────────────────────────────────────────── */
+.lax-page { --lax-cols: clamp(110px, 24vw, 250px) minmax(0, 1fr) clamp(110px, 18vw, 220px) 40px; }
+.lax-head, .lax-row {
+  display: grid;
+  grid-template-columns: var(--lax-cols);
+  align-items: center;
+  gap: 14px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.lax-head {
+  flex-shrink: 0;
+  padding-top: 5px; padding-bottom: 5px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text4);
+}
+.lax-row {
+  padding-top: 9px; padding-bottom: 9px;
+  border-bottom: 1px solid var(--border);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 58px;
+}
+.lax-row:hover { background: var(--bg3); }
+.lax-note .lax-key { font-style: italic; }
+
+.lax-c-letters { min-width: 0; display: flex; flex-direction: column; gap: 3px; align-items: flex-start; }
+.lax-letters { min-width: 0; }
+.lax-letters-none { color: var(--text4); }
+.lax-letters-dim { opacity: 0.55; }
+/* a key shown as written: left-to-right, in file order, whatever script it holds */
+.lax-key {
+  font: 11px/1.35 ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  color: var(--text3);
+  direction: ltr; text-align: left; unicode-bidi: isolate;
+  overflow-wrap: anywhere;
+}
+.lax-c-value {
+  font-size: 14px; line-height: 1.45; color: var(--text);
+  direction: ltr; text-align: left; unicode-bidi: isolate;
+  overflow-wrap: anywhere; min-width: 0;
+}
+.lax-blank { color: var(--text4); font-style: italic; }
+.lax-c-tl { font-size: 13px; font-weight: 700; color: var(--text2); overflow-wrap: anywhere; min-width: 0; }
+.lax-pencil {
+  width: 32px; height: 32px; border-radius: 6px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; color: var(--text3); border: 1px solid transparent;
+}
+.lax-pencil:hover { color: var(--gold); background: var(--bg4); border-color: var(--border2); }
+.lax-pencil:disabled { opacity: 0.4; cursor: default; }
+
+@keyframes lax-flash {
+  from { background: color-mix(in srgb, var(--gold) 30%, transparent); }
+  to   { background: transparent; }
+}
+.lax-flash { animation: lax-flash 2.2s ease-out; }
+
+/* text scripts in the letters column (the paleo ones are SVG glyphs) */
+.lax-text { flex-direction: row; flex-wrap: wrap; color: var(--text); line-height: 1.2; font-size: calc(var(--glyph-word, 28px) * 0.85); }
+.lax-text-greek  { font-family: 'Cardo', 'GFS Didot', 'Times New Roman', serif; }
+.lax-text-geez   { font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif; }
+.lax-text-latin  { font-family: 'Cardo', Georgia, serif; font-size: calc(var(--glyph-word, 28px) * 0.7); }
+.lax-text-syriac { font-family: 'Estrangelo Edessa', 'Noto Sans Syriac', 'Serto Jerusalem', serif; direction: rtl; }
+.lax-anchor { gap: 8px; }
+.lax-anchor-text { font-size: 22px; font-weight: 700; color: var(--gold); }
+.lax-anchor-text.lax-text-greek, .lax-anchor-text.lax-text-geez, .lax-anchor-text.lax-text-syriac { font-weight: 400; font-size: 26px; }
+.lax-anchor-glyph { display: inline-flex; }
+
+.lax-more { align-self: center; margin: 12px auto; display: block; }
+
+/* ── entry editor (new entry pinned above the list; edit in place) ──────── */
+.lax-editor {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 12px 14px; margin: 8px 12px;
+  background: var(--bg2); border: 1px solid var(--blue); border-radius: 8px;
+}
+.lax-editor-inline { margin: 6px 12px; }
+.lax-editor-title { font-size: 12px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; }
+.lax-field { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--text3); }
+.lax-field input, .lax-field textarea {
   background: var(--bg3); color: var(--text); border: 1px solid var(--border2); border-radius: 6px;
   padding: 8px 10px; font-size: 15px; font-family: inherit;
 }
-.lc-field input:focus, .lc-field textarea:focus { outline: none; border-color: var(--blue); }
-.lc-editor-actions { display: flex; align-items: center; gap: 10px; }
-.lc-danger { color: var(--red, #e5484d); }
-.lc-error { font-size: 12px; color: var(--red, #e5484d); }
-.lc-chips { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
-.lc-chip {
-  display: inline-flex; align-items: baseline; gap: 8px; max-width: 100%;
-  padding: 6px 10px; border-radius: 999px; cursor: pointer; text-align: start;
-  background: var(--bg3); color: var(--text); border: 1px solid var(--border2); font-size: 13px;
+.lax-field input:focus, .lax-field textarea:focus { outline: none; border-color: var(--blue); }
+.lax-preview { display: flex; align-items: center; gap: 14px; min-height: 36px; }
+.lax-preview .lex-row-paleo { min-width: 0; }
+.lax-preview-tl { font-size: 14px; font-weight: 700; color: var(--text2); }
+.lax-editor-actions { display: flex; align-items: center; gap: 10px; }
+.lax-danger { color: var(--red, #e5484d); }
+.lax-error { font-size: 12px; color: var(--red, #e5484d); }
+
+@media (max-width: 800px) {
+  .la-backups { position: fixed; top: 0; right: 0; bottom: 0; width: min(340px, 92vw); z-index: 30; box-shadow: -8px 0 24px rgba(0,0,0,0.4); }
+  .la-meta { display: none; }
 }
-.lc-chip:hover { border-color: var(--blue); }
-.lc-chip:disabled { opacity: 0.5; cursor: default; }
-.lc-chip-active { border-color: var(--blue); background: color-mix(in srgb, var(--blue) 14%, var(--bg3)); }
-.lc-chip-note { border-style: dashed; }
-.lc-chip-key { font-weight: 700; font-size: 16px; white-space: nowrap; }
-.lc-chip-hint { color: var(--text3); font-size: 14px; }
-.lc-chip-val { color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 420px; }
-.lc-more { align-self: center; }
+@media (max-width: 700px) {
+  .lax-page { --lax-cols: minmax(0, 1fr) 40px; }
+  .lax-head { display: none; }
+  .lax-row { grid-template-areas: "l p" "v v" "t t"; row-gap: 4px; }
+  .lax-c-letters { grid-area: l; }
+  .lax-pencil { grid-area: p; }
+  .lax-c-value { grid-area: v; }
+  .lax-c-tl { grid-area: t; font-weight: 600; color: var(--text3); }
+}
