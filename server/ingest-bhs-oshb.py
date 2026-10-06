@@ -334,7 +334,15 @@ def parse_book(xml_text, book_id, eng_counts=None):
                             nu = (mm.group(3) or "")
                             prs_code = f"{ps}{gn}{nu}".strip()
                         # prs letters are emitted by the parsers from the tag (PRS_TAG),
-                        # so the pronominal suffix's own text is not kept on the row.
+                        # so the pronominal suffix's own text is not kept on the row —
+                        # EXCEPT when the host's morph has no prs= slot to carry the tag
+                        # (inrg/prde/nega/advb/intj: אַיֶּ/כָּה, הִנְ/נִי, אֵינֶ/נּוּ — 419
+                        # words, 2026-10-06). The tag was then silently dropped along with
+                        # the suffix's letters (Gen 3:9 stored as 𐤀𐤉, not 𐤀𐤉𐤊𐤄). Those keep
+                        # the written letters on the host row (below); the parsers peel a
+                        # pronominal suffix off the surface letters.
+                        if len(seg_texts) == len(seg_morphs):
+                            suffix_text = seg_texts[-1]
                     else:
                         uvf_code = {"Sd": "H", "Sh": "HE", "Sn": "N"}.get(sm[:2])
                         # keep the written letter(s) on the host row
@@ -361,9 +369,12 @@ def parse_book(xml_text, book_id, eng_counts=None):
                     else:
                         strongs = strong_from_lemma(pl)
                     # Pronominal suffix belongs on the LAST lexical row of this word.
-                    if prs_code and i == n - 1 and "prs=absent" in mstr:
-                        mstr = mstr.replace("prs=absent", f"prs={prs_code}")
                     seg_surface = seg_texts[i] if i < len(seg_texts) else ""
+                    if prs_code and i == n - 1:
+                        if "prs=absent" in mstr:
+                            mstr = mstr.replace("prs=absent", f"prs={prs_code}")
+                        else:
+                            seg_surface += suffix_text   # no prs= slot: keep the written suffix letters
                     # Directional/paragogic suffix: same host row, letter kept.
                     if uvf_code and i == n - 1:
                         seg_surface += suffix_text
