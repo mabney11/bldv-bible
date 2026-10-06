@@ -7594,7 +7594,7 @@ function gsIsGlossed(root_paleo, pos, strongs, lexicon, homographs, hebExtra) {
     const posLong = GS_POS_LONG[pos];
     if (posLong) candidates.push(`${root_paleo}_${posLong}`);
 
-    if (GS_POS_STRICT.has(pos)) {
+    if (GS_POS_STRICT.has(pos) && [...root_paleo].length === 1) {
         return candidates.some(k => !!homographs[k]);
     }
 
@@ -8325,7 +8325,8 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
         // the interrogative; bare 𐤄 in the lexicon/GRAMMAR_MAP is the ARTICLE
         // ("The"). Only pos-keyed sources may answer for these — no bare fallback.
         const POS_STRICT = new Set(['inrg']);
-        if (POS_STRICT.has(pos)) {
+        // Only the single-letter interrogative 𐤄 collides with the article; 𐤌𐤉/𐤌𐤄 etc. use the normal chain.
+        if (POS_STRICT.has(pos) && [...paleo].length === 1) {
             for (const key of candidates) {
                 if (homographs[key]) { comp.translation = homographs[key]; return; }
             }
