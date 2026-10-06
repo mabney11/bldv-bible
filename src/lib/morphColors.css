@@ -43,7 +43,9 @@
 .mod-prin       { --mc: #c08888; --mb: #603030; }
 .mod-nmpr       { --mc: #d4a010; --mb: #705000; }
 .mod-pref-unk   { --mc: #888; --mb: #333; }
-.mod-suff-unk   { --mc: #888; --mb: #333; }
+/* Suffix tail the parsers peeled off but have no named class for (𐤀𐤉𐤊𐤄 = 𐤀𐤉 + 𐤊𐤄 "kah"). Was grey and sank into the
+ * background; bright aqua is unused by every other class here. */
+.mod-suff-unk   { --mc: #19e0f0; --mb: #004850; }
 /* Construct-state noun standing in front of another noun ("son OF ___",
  * "Ben-Elohim" / "Ben-Al") — a genuine grammatical relationship, not a
  * blended lexeme, so it gets its own color distinct from every mod-* above
@@ -109,7 +111,7 @@
 [data-alt="1"].mod-advb  { --mc: #90d8ff; --mb: #003868; }
 [data-alt="1"].mod-nmpr  { --mc: #f8c838; --mb: #504000; }
 [data-alt="1"].mod-pref-unk { --mc: #c8c8c8; --mb: #555555; }
-[data-alt="1"].mod-suff-unk { --mc: #c8c8c8; --mb: #555555; }
+[data-alt="1"].mod-suff-unk { --mc: #7ff2ff; --mb: #005a66; }
 [data-alt="1"].pfm-3ms   { --mc: #ffaa80; --mb: #601800; }
 [data-alt="1"].pfm-2or3f { --mc: #f8c8e0; --mb: #581840; }
 [data-alt="1"].pfm-1cs   { --mc: #b0d8ff; --mb: #003868; }
@@ -206,4 +208,4 @@ html[data-theme="light"] .uvf-conn    { --mc: #003355; --mb: #a0cae8; }
 [data-alt="1"].divine-title    { --mc: #d4a010; --mb: #705000; }
 html[data-theme="light"] .divine-title.divine-title,
 html[data-theme="light"] .w span.divine-title { --mc: #775500; --mb: #ffee98; }
-
+html[data-theme="light"] .mod-suff-unk { --mc: #007c8c; --mb: #c8f0f4; }
