@@ -2247,6 +2247,10 @@ function coverLetters(v) {
         const SUFFIX = ['nme-', 'prs-', 'vbe-', 'uvf-', 'mod-suff-unk'];
         for (const c of comps) if (c.translit) c.translit = SUFFIX.some(p => c.css && c.css.startsWith(p)) ? c.translit.toLowerCase() : c.translit.charAt(0).toUpperCase() + c.translit.slice(1);
         v.components_json = JSON.stringify(comps);
+        // rendered_paleo / root_paleo are derived from the SAME components (verify-parallel-alignment's
+        // gate): the restored letters are part of the word the reader shows, and a restored root IS the root.
+        v.rendered_paleo = comps.map(c => (c && c.paleo) || '').join('');
+        if (!hasRoot) v.root_paleo = tail;
         coverStat.repaired++; if (coverStat.ex.length < 5) coverStat.ex.push(`${v.word_raw} ${have.join('')}→${have.join('') + tail}`);
     } else { coverStat.other++; if (coverStat.otherEx.length < 5) coverStat.otherEx.push(`${v.word_raw} (chips ${have.join('')})`); }
 }
