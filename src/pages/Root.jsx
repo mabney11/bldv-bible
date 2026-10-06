@@ -18,6 +18,7 @@ import {
 } from '../lib/api.js';
 import './Root.css';
 import NovelText from '../components/NovelText.jsx';
+import RootAdminEdit from '../components/RootAdminEdit.jsx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Root / Surface explorer — BibleHub-style.
@@ -254,7 +255,9 @@ function RootCard({ detail, idToSlug, context, onPickSn }) {
   const verseHref = loc => `/${bookToParam(loc.book_id, idToSlug)}/${loc.chapter}/${loc.verse}`;
   const locLabel  = loc => `${loc.book_name || BOOK_NAMES[loc.book_id] || `Book ${loc.book_id}`} ${loc.chapter}:${loc.verse}`;
 
-  const def = detail.definition || { text: '', src: 'none' };
+  const [savedDef, setSavedDef] = useState(null);
+  useEffect(() => { setSavedDef(null); }, [detail.sn]);
+  const def = savedDef != null ? { text: savedDef, src: 'saved' } : (detail.definition || { text: '', src: 'none' });
   const first = detail.first_by_letters || null;
   const homographs = detail.homographs?.length
     ? detail.homographs
@@ -296,6 +299,7 @@ function RootCard({ detail, idToSlug, context, onPickSn }) {
           {def.text
             ? <span className="rc-def-text">{def.text}</span>
             : <span className="rc-def-placeholder" title="Not yet in your lexicon/homographs — showing the root letters">{root}</span>}
+          <RootAdminEdit root={root} sn={detail.sn} current={def.text} onSaved={setSavedDef} />
         </div>
       </div>
       <div className="rc-row">

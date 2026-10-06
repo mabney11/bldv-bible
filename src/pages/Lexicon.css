@@ -313,8 +313,16 @@
 /* Hierarchy: transliteration first, then MY lexicon value (picked out with a
    gold bar + tint so it stands apart from the grey detail text, but smaller
    and lighter than the transliteration), then everything else. */
-.lex-row-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
-.lex-row-tl   { display: inline-block; font-size: 17px; font-weight: 700; color: var(--text2); line-height: 1.3; }
+.lex-row-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; }
+/* Paleo is bigger here and FLUSH LEFT: the glyph run is a row-reverse flex, so
+   flex-end packs it against the left edge — every word's last letter (its
+   leftmost glyph) sits on the same vertical line. No min-width, or short words
+   would leave a gap on the left. */
+.lex-row-head .lex-row-paleo { min-width: 0; justify-content: flex-end; }
+.lex-row-head .lex-row-paleo svg.pg { width: calc(var(--glyph-word) * 1.45); height: calc(var(--glyph-word) * 1.45); }
+.lex-row-head .lex-row-paleo .pg-fallback { font-size: calc(var(--glyph-word) * 1.45); }
+.lex-row-head .lex-row-greek, .lex-row-head .lex-row-geez { font-size: calc(var(--glyph-word) * 1.2); }
+.lex-row-tl   { display: inline-block; font-size: clamp(19px, 0.9vw + 11px, 30px); font-weight: 700; color: var(--text2); line-height: 1.3; }
 /* The value is the headline of the row: big, bold, bright. */
 .lex-row-def  {
   display: block; margin-top: 4px;

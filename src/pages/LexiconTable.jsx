@@ -104,6 +104,27 @@ function makeComparer(script) {
   };
 }
 
+// Set one key in a Hebrew lexicon file's text (used by the roots page's admin
+// editor): replace in place if the key exists, otherwise insert and re-sort the
+// same way the table does on save. Returns the new file text, or null if the
+// text isn't a JSON object.
+export function upsertEntry(content, key, value, snIndex) {
+  const parsed = parseLexicon(content);
+  if (!parsed) return null;
+  const entries = parsed.entries.slice();
+  const i = entries.findIndex(([k]) => k === key);
+  if (i >= 0) entries[i] = [key, value];
+  else {
+    entries.push([key, value]);
+    const cmp = makeComparer('paleo');
+    const sorted = entries
+      .map(([k, v]) => ({ key: k, value: v, d: describeKey(k, 'paleo', snIndex || {}) }))
+      .sort(cmp).map(r => [r.key, r.value]);
+    return serializeLexicon(sorted, parsed.indent);
+  }
+  return serializeLexicon(entries, parsed.indent);
+}
+
 const valText = v => typeof v === 'string' ? v : JSON.stringify(v);
 
 // Type into (or backspace in) a React-controlled field from outside React:

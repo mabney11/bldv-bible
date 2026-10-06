@@ -1,0 +1,13 @@
+.rae { display: block; margin-top: 6px; }
+.rae-toggle { background: none; border: 1px solid var(--border); color: var(--text3); border-radius: 6px; padding: 2px 9px; font-size: 12px; cursor: pointer; }
+.rae-toggle:hover { color: var(--gold); border-color: var(--gold); }
+.rae-panel { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; max-width: 560px; }
+.rae-input { width: 100%; box-sizing: border-box; background: var(--bg2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 16px; resize: vertical; }
+.rae-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.rae-btn { flex: 1 1 220px; text-align: left; background: var(--bg3); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.rae-btn:hover:not(:disabled) { border-color: var(--gold); }
+.rae-btn:disabled { opacity: .6; cursor: default; }
+.rae-btn small { display: block; margin-top: 2px; font-size: 11px; font-weight: 400; color: var(--text3); overflow-wrap: anywhere; }
+.rae-key { unicode-bidi: isolate; font-family: monospace; }
+.rae-ok { color: var(--green, #3fb950); font-size: 13px; }
+.rae-err { color: var(--red, #e5484d); font-size: 13px; }
