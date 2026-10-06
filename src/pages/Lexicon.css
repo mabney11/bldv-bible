@@ -281,7 +281,7 @@
      before each row is measured. The value matches the typical computed
      height (translit row + def row + meta row + paddings ≈ 90px). */
   content-visibility: auto;
-  contain-intrinsic-size: 0 90px;
+  contain-intrinsic-size: 0 100px;
 }
 .lex-row:hover { background: var(--bg3); }
 
@@ -313,14 +313,18 @@
 /* Hierarchy: transliteration first, then MY lexicon value (picked out with a
    gold bar + tint so it stands apart from the grey detail text, but smaller
    and lighter than the transliteration), then everything else. */
-.lex-row-tl   { display: inline-block; font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.3; }
+.lex-row-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.lex-row-tl   { display: inline-block; font-size: 17px; font-weight: 700; color: var(--text2); line-height: 1.3; }
+/* The value is the headline of the row: big, bold, bright. */
 .lex-row-def  {
-  display: block; width: fit-content; max-width: 100%;
-  margin-top: 5px; padding: 3px 10px 3px 9px;
-  font-size: 13px; font-weight: 600; line-height: 1.45; color: var(--text);
-  background: color-mix(in srgb, var(--gold) 13%, transparent);
-  border-left: 3px solid var(--gold);
-  border-radius: 0 6px 6px 0;
+  display: block; margin-top: 4px;
+  font-size: clamp(20px, 1.4vw + 10px, 34px); font-weight: 800; line-height: 1.18; color: var(--text);
+  overflow-wrap: anywhere;
+}
+/* Optional picture (like the landing-page cards): left of the text. */
+.lex-row-img {
+  flex-shrink: 0; width: 72px; height: 72px; object-fit: cover;
+  border-radius: 12px; border: 1px solid var(--border); background: var(--bg3);
 }
 
 /* The root is the link: glyphs and transliteration both open it. */
@@ -381,8 +385,9 @@ a.lex-row-paleo.lex-root-link:hover { filter: brightness(1.3); }
   .lex-tab        { padding: 0 11px; font-size: 12px; }
   .lex-page-title { font-size: 13px; }
   .lex-row-paleo  { min-width: 56px; }
-  .lex-row-tl     { font-size: 14px; }
-  .lex-row-def    { font-size: 12px; }
+  .lex-row-tl     { font-size: 15px; }
+  .lex-row-def    { font-size: 21px; }
+  .lex-row-img    { width: 60px; height: 60px; border-radius: 10px; }
   .lex-row        { padding: 10px 12px; gap: 10px; }
   .lex-row-meta   { gap: 5px; }
 }

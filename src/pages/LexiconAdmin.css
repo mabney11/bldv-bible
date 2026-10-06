@@ -179,53 +179,71 @@
 .lax-kbd-key:hover { border-color: var(--blue); }
 .lax-kbd-key-wide { font-size: 12px; padding: 0 14px; }
 
-/* ── table: header + rows ───────────────────────────────────────────────── */
-.lax-page { --lax-cols: clamp(110px, 24vw, 250px) minmax(0, 1fr) clamp(110px, 18vw, 220px) 40px; }
-.lax-head, .lax-row {
+/* ── scale ──────────────────────────────────────────────────────────────────
+   ONE base size drives the letters, the transliteration, the value, the rail
+   and the anchors. It follows the screen (16px on a phone → ~30px on a big
+   desktop) and the A− / A+ buttons multiply it (--lax-zoom, up to 3.2×) for
+   presenting. */
+.lax-page {
+  --lax-zoom: 1;
+  --lax-base: calc(clamp(16px, 0.9vw + 9px, 30px) * var(--lax-zoom));
+  --glyph-word: calc(var(--lax-base) * 1.9);
+  --glyph-btn: calc(var(--lax-base) * 0.95);
+  --glyph-anchor: calc(var(--lax-base) * 1.2);
+  --sidebar-w: calc(var(--lax-base) * 2.6);
+  /* Two tracks today: the word | my value.  A third (the PNG) goes here, e.g.
+     minmax(0, 0.95fr) minmax(0, 1.05fr) minmax(0, 0.7fr) — rows already read
+     their columns from this one line. Never more than three. */
+  --lax-cols: minmax(0, 0.95fr) minmax(0, 1.05fr);
+}
+.lax-page .lex-letter-btn { width: calc(var(--sidebar-w) - 8px); height: calc(var(--lax-base) * 2.1); font-size: calc(var(--lax-base) * 0.95); }
+.lax-page .lex-back-top { width: calc(var(--sidebar-w) - 10px); height: calc(var(--lax-base) * 1.6); font-size: calc(var(--lax-base) * 0.7); }
+.lax-page .lex-anchor { min-height: calc(var(--lax-base) * 1.9); padding: 2px calc(var(--lax-base) * 0.9); }
+.lax-page .lex-search input { font-size: max(15px, calc(var(--lax-base) * 0.8)); min-height: calc(var(--lax-base) * 1.9); }
+.lax-zoom { display: inline-flex; gap: 2px; }
+
+/* ── rows: [ 𐤀𐤁 (Ab) ] [ father ]  ─ tight, big, nothing wasted ──────────── */
+.lax-row {
+  position: relative;
   display: grid;
   grid-template-columns: var(--lax-cols);
   align-items: center;
-  gap: 14px;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-.lax-head {
-  flex-shrink: 0;
-  padding-top: 5px; padding-bottom: 5px;
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
-  color: var(--text4);
-}
-.lax-row {
-  padding-top: 9px; padding-bottom: 9px;
+  column-gap: calc(var(--lax-base) * 1.1);
+  padding: calc(var(--lax-base) * 0.5) calc(var(--lax-base) * 2.6) calc(var(--lax-base) * 0.5) calc(var(--lax-base) * 0.9);
   border-bottom: 1px solid var(--border);
   content-visibility: auto;
-  contain-intrinsic-size: 0 58px;
+  contain-intrinsic-size: 0 calc(var(--lax-base) * 3.6);
 }
 .lax-row:hover { background: var(--bg3); }
 .lax-note .lax-key { font-style: italic; }
 
-.lax-c-letters { min-width: 0; display: flex; flex-direction: column; gap: 3px; align-items: flex-start; }
+.lax-c-word { min-width: 0; display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+.lax-wordline { display: flex; flex-wrap: wrap; align-items: center; gap: 0.1em calc(var(--lax-base) * 0.6); min-width: 0; }
 .lax-letters { min-width: 0; }
 .lax-letters-none { color: var(--text4); }
 .lax-letters-dim { opacity: 0.55; }
+.lax-tl { font-size: calc(var(--lax-base) * 1.05); font-weight: 600; color: var(--text2); overflow-wrap: anywhere; }
 /* a key shown as written: left-to-right, in file order, whatever script it holds */
 .lax-key {
-  font: 11px/1.35 ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  font: calc(var(--lax-base) * 0.62)/1.35 ui-monospace, 'SFMono-Regular', Consolas, monospace;
   color: var(--text3);
   direction: ltr; text-align: left; unicode-bidi: isolate;
   overflow-wrap: anywhere;
 }
 .lax-c-value {
-  font-size: 14px; line-height: 1.45; color: var(--text);
+  font-size: calc(var(--lax-base) * 1.4);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: var(--text);
   direction: ltr; text-align: left; unicode-bidi: isolate;
   overflow-wrap: anywhere; min-width: 0;
 }
-.lax-blank { color: var(--text4); font-style: italic; }
-.lax-c-tl { font-size: 13px; font-weight: 700; color: var(--text2); overflow-wrap: anywhere; min-width: 0; }
+.lax-blank { font-size: calc(var(--lax-base) * 0.85); font-weight: 400; font-style: italic; color: var(--text4); }
 .lax-pencil {
-  width: 32px; height: 32px; border-radius: 6px; cursor: pointer;
+  position: absolute; right: calc(var(--lax-base) * 0.45); top: 50%; transform: translateY(-50%);
+  width: calc(var(--lax-base) * 1.9); height: calc(var(--lax-base) * 1.9); border-radius: 8px; cursor: pointer;
+  font-size: calc(var(--lax-base) * 1.05);
   display: inline-flex; align-items: center; justify-content: center;
   background: transparent; color: var(--text3); border: 1px solid transparent;
 }
@@ -278,11 +296,14 @@
   .la-meta { display: none; }
 }
 @media (max-width: 700px) {
-  .lax-page { --lax-cols: minmax(0, 1fr) 40px; }
-  .lax-head { display: none; }
-  .lax-row { grid-template-areas: "l p" "v v" "t t"; row-gap: 4px; }
-  .lax-c-letters { grid-area: l; }
-  .lax-pencil { grid-area: p; }
-  .lax-c-value { grid-area: v; }
-  .lax-c-tl { grid-area: t; font-weight: 600; color: var(--text3); }
+  /* phone: the two columns stack inside each row — word on top, value under it, both big */
+  .lax-page { --lax-cols: minmax(0, 1fr); }
+  .lax-row { row-gap: calc(var(--lax-base) * 0.15); padding-right: calc(var(--lax-base) * 2.4); }
+  .lax-c-value { font-size: calc(var(--lax-base) * 1.3); }
 }
+
+/* SVG width/height attributes can't take var(); size glyphs via CSS so they follow zoom */
+.lax-page .lax-wordline svg.pg { width: var(--glyph-word); height: var(--glyph-word); }
+.lex-sidebar .lex-letter-btn svg.pg { width: var(--glyph-btn); height: var(--glyph-btn); }
+.lax-page .lax-wordline .pg-fallback { font-size: var(--glyph-word); line-height: 1; }
+.lax-page .lex-letter-btn .pg-fallback { font-size: var(--glyph-btn); }

@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { getAdminStatus } from '../lib/localOverlay.js';
 import { useToast } from '../components/Toast.jsx';
-import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import '../components/TopBar.css'; // .logo-btn/.txt-btn/.icon-btn, reused here
 import {
   apiAdminListLexiconFiles, apiAdminGetLexiconFile, apiAdminSaveLexiconFile,
@@ -36,7 +35,9 @@ import './LexiconAdmin.css';
 
 const NEW_FILE_TEMPLATE = '{\n  \n}\n';
 const LAST_FILE_KEY = 'lexAdmin_lastFile';
-const VIEW_KEY = 'lexAdmin_view';   // 'table' | 'raw'
+const VIEW_KEY = 'lexAdmin_view2';  // 'table' (default) | 'raw'  — new key: the old one held 'chips'/'raw' from the previous design
+const ZOOM_KEY = 'lexAdmin_zoom';
+const ZOOMS = [0.8, 1, 1.25, 1.5, 1.8, 2.2, 2.7, 3.2];
 
 // Language tabs. `src` is the corpus whose transliterations the public page
 // shows for that language (Greek/Ge'ez words are transliterated from the
@@ -66,7 +67,6 @@ function fmtTime(ms) {
 
 export default function LexiconAdmin() {
   usePageTitle(pageTitle('Lexicon Admin'));
-  useLocalStorageNumber('lex-glyph-size', 28, '--glyph-word');   // same glyph size as the public page
   const toast = useToast();
   const [isAdmin, setIsAdmin] = useState(null); // null = checking
 
@@ -86,7 +86,10 @@ export default function LexiconAdmin() {
 
   const [newFileOpen, setNewFileOpen] = useState(false);
   const [newFileName, setNewFileName] = useState('');
-  const [view, setView] = useState(() => { try { return localStorage.getItem(VIEW_KEY) || 'table'; } catch { return 'table'; } });
+  const [view, setView] = useState(() => { try { return localStorage.getItem(VIEW_KEY) === 'raw' ? 'raw' : 'table'; } catch { return 'table'; } });
+  // text size for the whole table (one base size drives letters, value, rail) — big for presenting, fine on a phone
+  const [zoomIdx, setZoomIdx] = useState(() => { try { const i = ZOOMS.indexOf(parseFloat(localStorage.getItem(ZOOM_KEY))); return i >= 0 ? i : 1; } catch { return 1; } });
+  useEffect(() => { try { localStorage.setItem(ZOOM_KEY, String(ZOOMS[zoomIdx])); } catch { /* private mode */ } }, [zoomIdx]);
   const [snIndex, setSnIndex] = useState(null);
   const [tlMaps, setTlMaps] = useState({});   // { GNT: {word_norm: translit}, GEZ: {...} }
   const lastTabRef = useRef({});              // language -> last file opened under it
@@ -316,7 +319,7 @@ export default function LexiconAdmin() {
   const tabs = active ? active.lang.tabs : [];
 
   return (
-    <div className="lex-page lax-page">
+    <div className="lex-page lax-page" style={{ '--lax-zoom': ZOOMS[zoomIdx] }}>
       <header className="lex-topbar">
         <div className="lex-topbar-left">
           <Link to="/landing" className="logo-btn" aria-label="Home">𐤀𐤁</Link>
@@ -362,6 +365,12 @@ export default function LexiconAdmin() {
           </select>
           <button className="txt-btn" onClick={startNewFile}>+ New file</button>
           <button className="txt-btn" onClick={() => setBackupsOpen(o => !o)}>{backupsOpen ? 'Hide backups' : 'Backups'}</button>
+          {showTable && (
+            <span className="lax-zoom" title="Text size">
+              <button className="txt-btn" onClick={() => setZoomIdx(i => Math.max(0, i - 1))} disabled={zoomIdx === 0} aria-label="Smaller text">A−</button>
+              <button className="txt-btn" onClick={() => setZoomIdx(i => Math.min(ZOOMS.length - 1, i + 1))} disabled={zoomIdx === ZOOMS.length - 1} aria-label="Bigger text">A+</button>
+            </span>
+          )}
           {tableAvailable && (
             <button className="txt-btn" onClick={() => setView(v => (v === 'table' ? 'raw' : 'table'))}>
               {view === 'table' ? 'Raw text' : 'Table'}

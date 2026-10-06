@@ -141,7 +141,7 @@ function Letters({ text, script, dim }) {
 }
 
 const Pencil = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
   </svg>
 );
@@ -201,14 +201,18 @@ const Row = memo(function Row({ r, script, flash, onEdit, disabled }) {
   const showKey = r.key !== r.d.head;
   return (
     <div className={`lax-row${flash ? ' lax-flash' : ''}${r.d.group === 0 ? ' lax-note' : ''}`} data-lkey={r.key}>
-      <div className="lax-c-letters">
-        {r.d.head ? <Letters text={r.d.head} script={script} dim={r.d.derived} /> : null}
+      {/* column 1: the word — letters, then (transliteration).  column 2: my lexicon value.
+          A third column (the PNG) slots in after these two: add a track to --lax-cols in LexiconAdmin.css. */}
+      <div className="lax-c-word">
+        <div className="lax-wordline">
+          {r.d.head ? <Letters text={r.d.head} script={script} dim={r.d.derived} /> : null}
+          {r.tl && <span className="lax-tl">({r.tl})</span>}
+        </div>
         {(showKey || !r.d.head) && <div className="lax-key" dir="ltr" title="the key, exactly as in the file">{r.key}</div>}
       </div>
       <div className={`lax-c-value${r.value === '' ? ' lax-blank' : ''}`} dir="ltr">
         {r.value === '' ? 'blank' : valText(r.value)}
       </div>
-      <div className="lax-c-tl">{r.tl}</div>
       <button className="lax-pencil" onClick={() => onEdit(r)} disabled={disabled} title="Edit key / value" aria-label={`Edit ${r.key}`}><Pencil /></button>
     </div>
   );
@@ -502,9 +506,6 @@ export default function LexiconTable({ content, onChange, snIndex, translits, sc
                        script={script} onApply={onApply('')} onCancel={() => setEditKey(null)} track={track} />
         )}
 
-        <div className="lax-head" aria-hidden="true">
-          <div>Letters</div><div>Lexicon value</div><div>Transliteration</div><div />
-        </div>
 
         <div className="lex-list" ref={listRef}>
           {start > 0 && (

@@ -192,6 +192,36 @@ const getWord  = e => e.word  || e.paleo || e.root || e.surface || '';
 // ─────────────────────────────────────────────────────────────────────────────
 // WORD ROW
 // ─────────────────────────────────────────────────────────────────────────────
+// Optional per-entry pictures: /lexicon-img/<lang>/index.json lists the keys that
+// have a PNG at /lexicon-img/<lang>/<key>.png. Fetched once per language; rows
+// without a picture take no space.
+const _imgIdx = {};
+function useLexImage(lang, key) {
+  const [, bump] = useState(0);
+  useEffect(() => {
+    if (!key || _imgIdx[lang]) return;
+    _imgIdx[lang] = { loading: true, keys: new Set(), subs: new Set() };
+    fetch(`/lexicon-img/${lang}/index.json`)
+      .then(r => (r.ok ? r.json() : []))
+      .catch(() => [])
+      .then(list => {
+        const e = _imgIdx[lang];
+        e.keys = new Set(Array.isArray(list) ? list : []);
+        e.loading = false;
+        e.subs.forEach(f => f());
+      });
+  }, [lang, key]);
+  useEffect(() => {
+    const e = _imgIdx[lang];
+    if (!key || !e) return;
+    const f = () => bump(n => n + 1);
+    e.subs.add(f);
+    return () => e.subs.delete(f);
+  }, [lang, key]);
+  const e = _imgIdx[lang];
+  return key && e && e.keys.has(key) ? `/lexicon-img/${lang}/${encodeURIComponent(key)}.png` : null;
+}
+
 function WordRow({ entry, tab, lang, src }) {
   const isHebrew  = lang === 'hebrew';
   const isRoot    = tab === 'roots';
@@ -231,22 +261,28 @@ function WordRow({ entry, tab, lang, src }) {
   // opens the same page the old "explore ↗" button did.
   const exploreTitle = isRoot ? 'View this root' : isSurface ? 'View this surface' : 'Explore this root';
 
+  const imgKey = isHebrew ? paleo : word;
+  const img = useLexImage(lang, tab === 'lexicon' || tab === 'roots' ? imgKey : null);
+
   return (
-    <div className="lex-row">
-      {isHebrew ? (
-        <a
-          className="lex-row-paleo lex-root-link"
-          href={href}
-          title={exploreTitle}
-          dangerouslySetInnerHTML={{ __html: paleoHtml }}
-        />
-      ) : (
-        <div className={`lex-row-paleo lex-row-${lang}`}>{word}</div>
-      )}
+    <div className={`lex-row${img ? ' lex-row-has-img' : ''}`}>
+      {img && <img className="lex-row-img" src={img} alt="" loading="lazy" decoding="async" />}
       <div className="lex-row-body">
-        {tl && (href
-          ? <a className="lex-row-tl lex-root-link" href={href} title={exploreTitle}>{tl}</a>
-          : <div className="lex-row-tl">{tl}</div>)}
+        <div className="lex-row-head">
+          {isHebrew ? (
+            <a
+              className="lex-row-paleo lex-root-link"
+              href={href}
+              title={exploreTitle}
+              dangerouslySetInnerHTML={{ __html: paleoHtml }}
+            />
+          ) : (
+            <div className={`lex-row-paleo lex-row-${lang}`}>{word}</div>
+          )}
+          {tl && (href
+            ? <a className="lex-row-tl lex-root-link" href={href} title={exploreTitle}>({tl})</a>
+            : <div className="lex-row-tl">({tl})</div>)}
+        </div>
         {def && <div className="lex-row-def">{def}</div>}
         {isHebrew && entry.pos && <div className="lex-row-pos">{entry.pos}</div>}
         <div className="lex-row-meta">
