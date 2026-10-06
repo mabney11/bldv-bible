@@ -626,7 +626,10 @@ export default function Root({ mode = 'root' }) {
       setVTotal(d.total || 0);
       setHasMore(!!d.hasMore);
       setVOffset(off + incoming.length);
-      setVerses(prev => reset ? incoming : [...prev, ...incoming]);
+      // Show/link the English display numbers; keep the BHS ones for reference.
+      const shown = incoming.map(v => (v.display_chapter == null ? v
+        : { ...v, bhs_chapter: v.chapter, bhs_verse: v.verse, chapter: v.display_chapter, verse: v.display_verse }));
+      setVerses(prev => reset ? shown : [...prev, ...shown]);
     } catch (e) {
       if (!stale()) console.error('verses load failed:', e);
     } finally {

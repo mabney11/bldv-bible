@@ -11313,7 +11313,16 @@ function wordOccurrencePage(occ, offset, limit, lexicon, homographs, surfaceOver
     const hitRows = page.flatMap(o => (o.ords || []).map(ord => ({
         book_id: o.book_id, chapter: o.chapter, verse: o.verse, token_ordinal: ord,
     })));
-    return bhsVersePage(hitRows, lexicon, homographs, surfaceOverrides);
+    const out = bhsVersePage(hitRows, lexicon, homographs, surfaceOverrides);
+    // chapter/verse stay the BHS (Masoretic) numbers the tokens are keyed by;
+    // display_chapter/display_verse are the English-authoritative numbers the
+    // reader shows (Daniel 4:9 in the Aramaic = Daniel 4:12 everywhere else), so
+    // every label and link built from a hit opens the verse it names.
+    for (const v of out) {
+        const [dc, dv] = bhsToDisplayRef(v.book_id, v.chapter, v.verse);
+        v.display_chapter = dc; v.display_verse = dv;
+    }
+    return out;
 }
 
 // GET /api/root-explorer/list
@@ -11710,9 +11719,13 @@ app.get('/api/root-explorer/root', production.cache(60), (req, res) => {
         // it yet and the client shows the bare paleo placeholder), and its
         // own first appearance. `first_by_letters` is the pooled answer the
         // word-by-word table already shows; `first_by_sn` is this number's.
-        const fmtLoc = loc => loc
-            ? { book_id: loc.book_id, book_name: canonName(loc.book_id), chapter: loc.chapter, verse: loc.verse }
-            : null;
+        // First-appearance locations are BHS-keyed; hand the page the English
+        // display ref (what its links and labels must say).
+        const fmtLoc = loc => {
+            if (!loc) return null;
+            const [chapter, verse] = bhsToDisplayRef(loc.book_id, loc.chapter, loc.verse);
+            return { book_id: loc.book_id, book_name: canonName(loc.book_id), chapter, verse };
+        };
         const definition = rootDefinitionForSN(entry.root, entry.sn);
         const homographs = index
             .filter(e => e.root === entry.root)
