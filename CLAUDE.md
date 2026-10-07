@@ -1,5 +1,43 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## DIVINE NAMES FOLLOW THE VERSE'S OWN HEBREW: Yahawah vs Adanay (added 2026-10-06)
+
+fieldy, Matthew 1:20: the word-by-word table reads 𐤉𐤄𐤅𐤄 Yahawah (H3068) while the reading text said
+"a Malaak (angel / messenger of Yah) of the Adanay YaNaRaah". "new testament has usage of Yahawah that
+should be in my text appropriately. I dont want to have to be the one who finds this mismatched tokens."
+
+**Cause.** english-nt-baseline.jsonl already holds every "the Lord" as "the Adanay" (sanitize-english's theonym
+`Lord -> Adanay`; only uppercase `LORD` -> Yahawah), so render-corpus never saw a "Lord" to consult the Hebrew
+about, and the parallel gate skips names/theonyms by design. Nothing compared the English divine name with the
+verse's own Hebrew word.
+
+**`server/divine-name-lib.mjs` + `server/fix-divine-names.mjs`: repair AND gate.** Canon >= 40. Hebrew divine
+words come from tokens_nt by SPELLING (up to 3 proclitic letters + 𐤉𐤄𐤅𐤄 = Y, + 𐤀𐤃𐤍𐤉 = A), NOT the Strong's
+tag (the HEB edition's tags are inferred; a tagged 𐤁𐤄𐤅𐤄 exists). English: Yahawah / Adanay at depth 0 (never
+inside a "(gloss)"), with glued proclitics (WaAdanay) and a straight-quote `'s`. Per verse: same Y/A multiset = fine;
+same COUNT = the n-th English word takes the n-th Hebrew word's name; Hebrew has Y and no A = every Adanay is
+Yahawah; English names that are all names the Hebrew has = fine; anything else is listed in
+`server/divine-name-review.txt`, never rewritten.
+"the Adanay" -> "Yahawah" DROPS the article (as THEONYMS does for "the LORD"; Adanay keeps the NT's "the
+Adanay"), and translation_links english_indices are re-indexed (a link on the dropped "the" moves onto the name).
+Yahawah -> Adanay only in canon <= 66 (Rom 9:28: the HEB edition has only 𐤀𐤃𐤍𐤉); the Apocrypha's Hebrew is a
+retranslation, so a Y->A there is listed. Chapters with versification drift (surface-index heb_offsets != 0) are skipped.
+Default = repair corpus.db ENG + SEEDED translation.db rows (status 'none', no rich_text). fieldy's SAVED verses are
+listed, not touched, unless `--saved` (history row first). `--check` = the gate (writes nothing, exit 1 on any
+machine row that disagrees).
+Wired: render-all (right after merge-modforms --corpus; `--check` after verify-name-forms), rebake.sh step 5 (before
+fix-name-forms, `--check` at the end), deploy-blue-green.sh (before fix-name-forms; `--check` after the parallel
+gate). It runs BEFORE fix-name-forms so the gold "()" marker lands on the right name.
+
+**Measured on a scratch copy of the 2026-10-06 corpus.db + translation.db:** 185 verses repaired (194 Adanay ->
+Yahawah: Matt 1:20/22/24, 2:13/15/19, 3:3, 4:7/10, 21:9/42, 22:37/44, Mark 12, Acts 2:34, 11:21, 15:17 ...; Rom 9:28
+Yahawah -> Adanay), 0 saved verses affected, 6 listed as undecidable, idempotent (second run 0, `--check` exit 0),
+40 link rows re-indexed. NOT run on the real corpus.db / prod (the device bridge cannot write WAL databases on the
+Windows mount). fieldy runs `node render-all.mjs --surface` (or just `node fix-divine-names.mjs`), restarts the
+server, then Rebake.
+Known limit, not touched: 772 NT verses say Adanay where the HEB edition has NO 𐤀𐤃𐤍𐤉/𐤉𐤄𐤅𐤄 word at all (Jesus as
+"Lord": the edition often uses another word). Ask before deciding what those should read.
+
 ## READABLE GLOSSES, HEBREW ORDER FOR UNREWRITTEN SAVES, "Abanaw" (added 2026-10-03)
 
 fieldy, on bldbible.com/parallel/isaiah/4 — "Shabai (seven) NaAyashahayam (wife / individual woman

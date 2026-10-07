@@ -177,6 +177,9 @@ docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-q
 # this image (e.g. the retired "ashah" spelling for H802) could never be repaired before
 # the gate that checks it. fix-name-forms only applies the deterministic name/spelling
 # rules (history row for any hand-saved verse); the gate below still fails on anything left.
+# 2026-10-06: Yahawah / Adanay in the English must be the verse's own Hebrew word (Matthew 1:20). Before
+# the name-form repair so the gold "()" marker lands on the right name; --check closes it below.
+docker run --rm --memory="1g" --memory-swap="1g" -v "$PALEO_DATA_DIR:/data" paleo-studio node fix-divine-names.mjs /data/corpus.db /data/translation.db /data/surface-index.db
 docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db
 docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db
 
@@ -190,6 +193,7 @@ docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-q
 # verse fieldy saved himself is listed, not rewritten. Exit 1 on anything left. Bigger
 # memory than the other gates: it loads the whole Hebrew index.
 docker run --rm --memory="2g" --memory-swap="2g" -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-reading-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --fix --review /tmp/gloss-gate-review.txt
+docker run --rm --memory="1g" --memory-swap="1g" -v "$PALEO_DATA_DIR:/data" paleo-studio node fix-divine-names.mjs /data/corpus.db /data/translation.db /data/surface-index.db --check
 
 # 2026-08-18: fieldy compared bldbible.com/parallel's Deuteronomy 13:3 against an
 # external interlinear and found misaligned Hebrew — "I thought that's what the

@@ -1,0 +1,6 @@
+AMBIGUOUS corpus 66:19:16  Hebrew [A]  WaIl (And he has on) Bagadaw (his garment) WaIl (and on) Yarakaw (his thigh) Kathawab (written), Sham (a there) “Malak (king) HaMalakayam (OF The kINGS), Yahawa
+AMBIGUOUS corpus 136:21:4  Hebrew [A]  And Yahawah HaBawayaay (sent) one of his glorious Napashay (ones), the archangel Gabarayaal, and (he) WaAAmar (and said) Alay (to me): Have BaRawach (in courage
+AMBIGUOUS corpus 220:20:90  Hebrew [A]  But although the grandees of Adiabene had failed in their HaRaashawan (the first) attempt, as being delivered up by Alahayam (God) into their malak (king)’s han
+AMBIGUOUS translation 66:19:16  Hebrew [A]  WaIl (And he has on) Bagadaw (his garment) WaIl (and on) Yarakaw (his thigh) Kathawab (written), Sham (a there) “Malak (king) HaMalakayam (OF The kINGS), Yahawa
+AMBIGUOUS translation 136:21:4  Hebrew [A]  And Yahawah () HaBawayaay (sent) one of his glorious Napashay (ones), the archangel Gabarayaal (), and (he) WaAAmar (and said) Alay (to me): Have BaRawach (in c
+AMBIGUOUS translation 220:20:90  Hebrew [A]  But although the grandees of Adiabene had failed in their HaRaashawan (the first) attempt, as being delivered up by Alahayam (God) into their malak (king)’s han

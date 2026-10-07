@@ -88,6 +88,9 @@ const SURFACE_STEPS = [
   // bread)". The OT gets them in apply-web-strongs; the NT/Apocrypha here, from the HEB
   // edition's words of each verse.
   ['node', ['merge-modforms.mjs', '--corpus'],               'modification forms for the NT + Apocrypha (full Hebrew word, English its modifications carry)'],
+  // 2026-10-06 (fieldy, Matthew 1:20 "of the Adanay" over a 𐤉𐤄𐤅𐤄 token): the NT baseline holds every "the Lord"
+  // as Adanay, so nothing ever asked the verse's Hebrew. Yahawah / Adanay now follow the HEB word of THAT verse.
+  ['node', ['fix-divine-names.mjs'],                         'divine names: Yahawah / Adanay in the English must be the verse\'s own Hebrew word (𐤉𐤄𐤅𐤄 / 𐤀𐤃𐤍𐤉)'],
 ];
 const TAIL_STEPS = [
   ['node', ['reseed-translations.mjs'],                      'reseed translation.db from corpus.db ENG'],
@@ -99,6 +102,7 @@ const TAIL_STEPS = [
   ['node', ['fix-name-forms.mjs'],                           'name forms: locked spellings, bare names, gold () markers (re-applied every run)'],
   ['node', ['verify-reading-glosses.mjs', '--fix'],          'parallel gate: every glossed word must be in its verse\'s Hebrew (machine rows repaired; known misconceptions removed; your saved verses listed in gloss-gate-review.txt)'],
   ['node', ['verify-name-forms.mjs'],                        'gate: fails the pipeline on any name the app would render wrong'],
+  ['node', ['fix-divine-names.mjs', '--check'],              'divine-name gate: no Adanay over a Yahawah token (or the reverse); saved verses listed in divine-name-review.txt'],
   ['node', ['verify-integration.mjs'],                       'verify: baseline reaches Studio+reader, report missing chapters'],
 ];
 
