@@ -108,7 +108,7 @@ function makeComparer(script) {
 // editor): replace in place if the key exists, otherwise insert and re-sort the
 // same way the table does on save. Returns the new file text, or null if the
 // text isn't a JSON object.
-export function upsertEntry(content, key, value, snIndex) {
+export function upsertEntry(content, key, value, snIndex, sort = true) {
   const parsed = parseLexicon(content);
   if (!parsed) return null;
   const entries = parsed.entries.slice();
@@ -116,6 +116,8 @@ export function upsertEntry(content, key, value, snIndex) {
   if (i >= 0) entries[i] = [key, value];
   else {
     entries.push([key, value]);
+    // non-Hebrew files keep the order they already have: a new key goes at the end
+    if (!sort) return serializeLexicon(entries, parsed.indent);
     const cmp = makeComparer('paleo');
     const sorted = entries
       .map(([k, v]) => ({ key: k, value: v, d: describeKey(k, 'paleo', snIndex || {}) }))
@@ -244,6 +246,7 @@ export default function LexiconTable({ content, onChange, snIndex, translits, sc
   const parsed = useMemo(() => parseLexicon(content), [content]);
   const [query, setQuery] = useState('');
   const dq = useDeferredValue(query);
+  const [exact, setExact] = useState(false);          // exact-match toggle: the whole word / key / value, not a piece of it
   const [start, setStart] = useState(0);            // the window into `grouped` that is rendered: [start, start+limit)
   const [limit, setLimit] = useState(PAGE);
   const [editKey, setEditKey] = useState(null);       // origKey of the row being edited, or '' for a new entry
@@ -280,6 +283,26 @@ export default function LexiconTable({ content, onChange, snIndex, translits, sc
     if (!raw) return rows;
     const ql = raw.toLowerCase();
     const qp = onlyPaleo(toPaleo(raw));
+    if (exact) {
+      // Whole-word match: the key, the word's letters, its transliteration, its
+      // whole value, or its Strong's number must EQUAL what was typed (marks
+      // ignored for Greek / Syriac etc. so ܘܠܐ finds ܘܠܐ with or without points).
+      const fold = x => stripMarks(String(x || '')).toLowerCase().replace(/ς/g, 'σ');
+      const qf = fold(raw);
+      return rows.filter(r => {
+        if (r.key === raw || r.key.toLowerCase() === ql || fold(r.key) === qf) return true;
+        if (r.d.head && fold(r.d.head) === qf) return true;
+        if (r.tl && r.tl.toLowerCase() === ql) return true;
+        if (fold(valText(r.value)) === qf) return true;
+        if (qp) {
+          const forms = [onlyPaleo(toPaleo(r.key)), r.d.head];
+          const sn = snOf(r.key);
+          if (sn && snIndex && snIndex[sn]) forms.push(...snIndex[sn]);
+          if (forms.some(f => f && f === qp)) return true;
+        }
+        return snOf(r.key)?.toLowerCase() === ql;
+      });
+    }
     return rows.filter(r => {
       if (r.key.toLowerCase().includes(ql) || valText(r.value).toLowerCase().includes(ql) || r.tl.toLowerCase().includes(ql)) return true;
       if (!qp) return false;
@@ -290,7 +313,7 @@ export default function LexiconTable({ content, onChange, snIndex, translits, sc
       // form that what was typed begins with (𐤋𐤉𐤋𐤄 still offers root 𐤋𐤉𐤋)
       return forms.some(f => f && (f.includes(qp) || (f.length >= 2 && qp.startsWith(f))));
     });
-  }, [rows, dq, snIndex]);
+  }, [rows, dq, snIndex, exact]);
 
   // Rows with a letter header wherever the letter changes. A row with no
   // letter of its own files under the previous one; each letter heads once.
@@ -316,7 +339,7 @@ export default function LexiconTable({ content, onChange, snIndex, translits, sc
     return base;
   }, [script, hasRail, anchorAt]);
 
-  useEffect(() => { setStart(0); setLimit(PAGE); }, [dq, script]);
+  useEffect(() => { setStart(0); setLimit(PAGE); }, [dq, script, exact]);
 
   // Window starts line up with a letter header, so the first rows shown always
   // sit under their letter. anchorBefore(i) = the last header at or before i.
@@ -489,6 +512,10 @@ export default function LexiconTable({ content, onChange, snIndex, translits, sc
           <input ref={searchRef} type="search" dir="ltr" className="lax-ltr" value={query} onFocus={track}
                  onChange={e => setQuery(e.target.value)} autoComplete="off" spellCheck="false"
                  placeholder="Search keys, values, transliteration, Strong's… (Ctrl+F) — type paleo or Hebrew letters" aria-label="Search" />
+          <button className={`txt-btn${exact ? ' lax-on' : ''}`} onClick={() => setExact(x => !x)} aria-pressed={exact}
+                  title="Exact match: only entries whose key, word, transliteration or value is exactly what you typed">
+            {exact ? '☑' : '☐'} exact
+          </button>
           <button className={`txt-btn${kbdOpen ? ' lax-on' : ''}`} onClick={() => setKbdOpen(o => !o)} title="On-screen keyboard">⌨ keyboard</button>
           <button className="txt-btn" onClick={openNew} disabled={disabled}>+ Add entry</button>
           <span className="lax-count">

@@ -6479,6 +6479,8 @@ app.get('/api/concordance/forms', (req,res)=>{
     res.json({corpus, group:g, count: rows.length, forms: rows});
 });
 
+// corpus -> which curated lexicon file (see _glossFileFor) holds its glosses
+const _CONC_LEX_SCRIPT = { GNT:'greek', LXX:'greek', GRC:'greek', GEZ:'ethiopic', LAT:'latin', SYR:'syriac' };
 // GET /api/concordance/surface?corpus=&word=&limit=  — every occurrence of a surface form
 // across the whole script group (OT + NT + works), with a per-corpus breakdown.
 app.get('/api/concordance/surface', (req,res)=>{
@@ -6501,7 +6503,17 @@ app.get('/api/concordance/surface', (req,res)=>{
     else if (_fDoc)                              { _ocW += ' AND code=?';     _ocP.push(_fDoc);  }
     const occ=concDb.prepare(`SELECT corpus,canon_id,code,ord_c,ord_v,ch,v,surface FROM tokens WHERE ${_ocW} ORDER BY (canon_id IS NULL), canon_id, ord_c, ord_v, ord LIMIT ?`).all(..._ocP,limit).map(_concRow);
     const focus=(_fBook!=null||_fDoc) ? { book:_fBook, doc:_fDoc, count: concDb.prepare(`SELECT COUNT(*) n FROM tokens WHERE ${_ocW}`).get(..._ocP).n } : null;
-    res.json({corpus, group:g, norm, display, count: total, focus, by_corpus, by_book, occurrences: occ});
+    // The curated-lexicon entry behind this surface form, so the page can show its
+    // gloss and (for an admin) set it: file + canonical key, same key the reader
+    // resolves glosses with (_canonKey), never the corpus norm.
+    const _lexScript = _CONC_LEX_SCRIPT[corpus] || null;
+    let lex = null, gloss = null;
+    if (_lexScript) {
+        const key = _canonKey(_lexScript, word);
+        gloss = _lookupGloss(_lexScript, key);
+        lex = { file: path.basename(_glossFileFor(_lexScript)), key, value: gloss };
+    }
+    res.json({corpus, group:g, norm, display, count: total, focus, by_corpus, by_book, occurrences: occ, gloss, lex});
 });
 
 // GET /api/concordance/lemma?corpus=&lemma=&limit=  — occurrences by lemma.

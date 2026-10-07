@@ -4,6 +4,7 @@ import { apiConcordanceLemma, apiConcordanceSurface, apiSourceVerse } from '../l
 import { BOOK_NAMES } from '../lib/books.js';
 import detectScript from '../lib/scripts.js';
 import MultiWordBlock from '../components/MultiWordBlock.jsx';
+import LexiconSurfaceEdit from '../components/LexiconSurfaceEdit.jsx';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import './Root.css';
 
@@ -296,6 +297,10 @@ export default function Concordance() {
               ? <div className="rd-def" style={{ marginTop: 4 }}>{d.gloss}</div>
               : d && <div className="rd-def" style={{ marginTop: 4, opacity: 0.6 }} title="No gloss in your lexicon yet — showing the form"
                           lang="grc"><span style={{ opacity: 0.7 }}>[</span>{headWord}<span style={{ opacity: 0.7 }}>]</span></div>}
+            {d && !lemma && d.lex && (
+              <LexiconSurfaceEdit file={d.lex.file} lexKey={d.lex.key} current={d.gloss || ''}
+                                  onSaved={v => setD(prev => prev && ({ ...prev, gloss: v, lex: { ...prev.lex, value: v } }))} />
+            )}
             {d && d.by_corpus && d.by_corpus.length > 0 && (
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
                 {d.by_corpus.map((c, i) => <span key={i} className="conc2-chip">{c.corpus} · {c.n}</span>)}
