@@ -639,7 +639,8 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
   if (maqafHalves) {
     return (
       <div className={`word-block maqaf-chip ${linked ? 'lnk' : ''}`} data-copy={maqafHalves.map(seg => seg.map(c => c.paleo || '').join('')).join('־')} onMouseEnter={enter} onMouseLeave={leave}
-           style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '2px' }}>
+           style={{ flexDirection: 'column', alignItems: 'center' }}>
+        <div className="par-maqaf-row" style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', gap: '2px' }}>
         {maqafHalves.flatMap((seg, hi) => {
           const els = [];
           if (hi > 0) {
@@ -660,13 +661,14 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
           );
           return els;
         })}
+        </div>
         {/* One badge for the WHOLE compound (not one per half) — the fetched
             word already carries word_raw/strongs for the combined form, and
             splitting that accurately per half would need per-token surf/SN
             data this page doesn't fetch. Matches components/WordBlock.jsx's
             own coreStrongs badge, which is likewise shown once at the end. */}
         {showSub && (word.word_raw || word.strongs) && (
-          <div className="strongs-badge" style={{ alignSelf: 'flex-start', marginTop: '4px' }}>
+          <div className="strongs-badge" style={{ marginTop: '4px' }}>
             <span className="surf-sn-group" style={{ display: 'inline-flex', gap: '3px', alignItems: 'center' }}>
               {word.word_raw && (
                 <a className="surf-badge-link"
