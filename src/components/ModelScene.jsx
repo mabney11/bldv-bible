@@ -1130,7 +1130,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     // forward again into his eyes
     const onWheel = (e) => { if (!roam.on) return; e.preventDefault(); zoomTo(distV(roam.dist) + Math.sign(e.deltaY) * V_STEP); if (farOn() !== wasFar) { wasFar = farOn(); dirty = true; place(clock.t); } remember(); dirty = true; };
     let wasFar = false;
-    const KEYMAP = { KeyW: 'forward', ArrowUp: 'forward', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', KeyD: 'right', ArrowLeft: 'turnL', ArrowRight: 'turnR', KeyQ: 'turnL', KeyE: 'turnR', ShiftLeft: 'run', ShiftRight: 'run', Space: 'jump' };
+    const KEYMAP = { KeyW: 'forward', ArrowUp: 'forward', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', KeyD: 'right', ArrowLeft: 'turnL', ArrowRight: 'turnR', ShiftLeft: 'run', ShiftRight: 'run', Space: 'jump' };
     const onKeyDown = (e) => {
       if (!roam.on || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
       if (e.code === 'KeyM' && !e.repeat) { e.preventDefault(); showBig(!mapBig); return; }   // the whole map
