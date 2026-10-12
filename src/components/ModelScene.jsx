@@ -43,7 +43,7 @@ const EXTRAS = { temple: templeExtras, tabernacle: tabernacleExtras, city: cityE
  *  switch of view never sends them back to the gate ("don't move me back to the beginning"). */
 const MEMO = {};   // model id → where the viewer last stood
 function readMemo(id) { if (!(id in MEMO)) { try { MEMO[id] = JSON.parse(sessionStorage.getItem(`${id}-roam`) || 'null'); } catch { MEMO[id] = null; /* no storage: the gate it is */ } } return MEMO[id]; }
-const COARSE = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;   // a touch screen: the thumb stick + a look drag instead of the mouse
+const COARSE = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches && !matchMedia('(any-pointer: fine)').matches;   // a touch screen with no mouse or trackpad (a touch laptop keeps pointer lock): the thumb stick + a look drag instead of the mouse
 
 // ── The component ────────────────────────────────────────────────────────────
 export default function ModelScene({ model, clock, mode, selected, onSelect: onSelectProp, onReady, onFollow: onFollowProp, onLock: onLockProp, apiRef, time = 'day' }) {
@@ -1064,16 +1064,16 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     const stickEl = document.createElement('div'); stickEl.className = 'tp-stick'; stickEl.innerHTML = '<div class="tp-stick-knob"></div>'; el.appendChild(stickEl);
     const knobEl = stickEl.firstChild, STICK_R = 44;
     function setLocked(v) { locked = v; cross.hidden = !v; el.classList.toggle('tp-locked', v); onLock?.(v); }
-    let lockFailed = false;
+    let lockFails = 0;   // consecutive refusals; one refusal (a click right after Esc, a focus hiccup) must not end mouse-look for the session — a trackpad cannot hold a drag and press keys at once
     function takeMouse() {
       // Chrome returns a promise (rejects when the page is not the active document, when no user gesture is seen, or when the user
       // pressed Esc a moment ago); older browsers return nothing and fire pointerlockerror. Either way the drag-look still works.
       let p; try { p = renderer.domElement.requestPointerLock(); } catch { p = null; }
-      if (p && typeof p.catch === 'function') p.catch((err) => { lockFailed = true; onLock?.(false, err?.name || 'error'); });
+      if (p && typeof p.catch === 'function') p.catch((err) => { lockFails++; onLock?.(false, err?.name || 'error'); });
     }
-    const onLockError = () => { lockFailed = true; onLock?.(false, 'error'); };
+    const onLockError = () => { lockFails++; onLock?.(false, 'error'); };
     document.addEventListener('pointerlockerror', onLockError);
-    const onLockChange = () => { setLocked(document.pointerLockElement === renderer.domElement); dirty = true; };
+    const onLockChange = () => { if (document.pointerLockElement === renderer.domElement) lockFails = 0; setLocked(document.pointerLockElement === renderer.domElement); dirty = true; };
     document.addEventListener('pointerlockchange', onLockChange);
     const turnHead = (dx, dy) => { roam.yaw += dx * 0.0042; roam.pitch = Math.max(-1.45, Math.min(1.45, roam.pitch - dy * 0.0034)); aimCamera(); remember(); dirty = true; };
     // Touch (fieldy): the stick lives ONLY in the bottom-left of the view — a thumb landing there walks; a touch anywhere higher
@@ -1130,7 +1130,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
     // forward again into his eyes
     const onWheel = (e) => { if (!roam.on) return; e.preventDefault(); zoomTo(distV(roam.dist) + Math.sign(e.deltaY) * V_STEP); if (farOn() !== wasFar) { wasFar = farOn(); dirty = true; place(clock.t); } remember(); dirty = true; };
     let wasFar = false;
-    const KEYMAP = { KeyW: 'forward', ArrowUp: 'forward', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', KeyD: 'right', ArrowLeft: 'turnL', ArrowRight: 'turnR', ShiftLeft: 'run', ShiftRight: 'run', Space: 'jump' };
+    const KEYMAP = { KeyW: 'forward', ArrowUp: 'forward', KeyS: 'back', ArrowDown: 'back', KeyA: 'left', KeyD: 'right', ArrowLeft: 'turnL', ArrowRight: 'turnR', KeyQ: 'turnL', KeyE: 'turnR', ShiftLeft: 'run', ShiftRight: 'run', Space: 'jump' };
     const onKeyDown = (e) => {
       if (!roam.on || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
       if (e.code === 'KeyM' && !e.repeat) { e.preventDefault(); showBig(!mapBig); return; }   // the whole map
@@ -1168,7 +1168,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       // On foot with a mouse: the first click only takes the mouse (the crosshair comes up) — it never chooses what happened to be
       // under the cursor on the way in ("a click should only enable the crosshair if I'm not currently scoped"); once the mouse is
       // taken, a click picks what the crosshair is on. When the browser refuses the lock, clicks pick as before.
-      if (roam.on && canLock && !locked && !lockFailed && e.pointerType === 'mouse') { takeMouse(); return; }
+      if (roam.on && canLock && !locked && lockFails < 2 && e.pointerType === 'mouse') { takeMouse(); return; }
       const r = renderer.domElement.getBoundingClientRect();
       if (roam.on && locked) sightRay(); else { ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); ray.setFromCamera(ndc, camera); }
       const hit = ray.intersectObjects(pickables(), true).find((h) => h.object.visible && !(h.object.material?.transparent && h.object.material.opacity < 0.3));
