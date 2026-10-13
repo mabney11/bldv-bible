@@ -1,0 +1,19 @@
+{
+  "batch": 48,
+  "verses": {
+    "LIT2365Storyo 1:1": {
+      "heb": "דבר על מלכי צדק אשר נצח את המות בחלשת הבריאה, למען יקדים הראותה טובה. והלא עליו נכתב, כי נגלל ונסתר כחנוך, למען לא יראהו המות.",
+      "eng": "A story concerning Melchizedek, who conquered death in the weakness of created nature, so that he might first show it to be good. And is it not concerning him that it is written, that he was wrapped and hidden like Enoch, so that death would not see him?"
+    },
+    "LIT2365Storyo 1:2": {
+      "heb": "וזאת, אם שמרת, ואם גם נתת לחם אחד בעבור שמו של מלכי צדק, וכוס מים קרים לעני, אין לך חטא ואין לך פשע עד בני בניך, עד שבעה דורות, ולא תזכר חטאתם, כי מנהיג צדקתו של יהוה. אמן. ואם לא הרג את אחיו, ולא קרב אל אשת אביו, ולא גלה את סוד יהוה הנסתר, אין לו חטא ואין לו פשע לעולמי עולמים, אמן. את הספר הזה אשר קנו אבא נב וחרה כרסטוס, יהיה להם לזכרון עד עולם, ומנהיג למלכות השמים, אמן.",
+      "eng": "And this: if you keep it, and if also you give one loaf of bread for the sake of the name of Melchizedek, and a cup of cold water to the poor, you have no sin and you have no fault to the children of your children, to seven generations, and their sin shall not be remembered, for the righteousness of the LORD is a guide. Amen. And if he did not kill his brother, and did not approach the wife of his father, and did not reveal the hidden secret of the LORD, he has no sin and he has no fault forever and ever, amen. This book, which Abba Nob and Hara Krestos acquired, may it be for them a memorial forever, and a guide to the kingdom of heaven, amen."
+    }
+  },
+  "names": {
+    "መልከ ጼዴቅ": {"heb": "מלכי צדק", "eng": "Melchizedek"},
+    "ኖብ": {"heb": "נב", "eng": "Nob"},
+    "ሐራ": {"heb": "חרה", "eng": "Hara"},
+    "ክርስቶስ": {"heb": "כרסטוס", "eng": "Krestos"}
+  }
+}

@@ -65,7 +65,11 @@ REGISTRY = {
  141: ("Five Psalms of David",   [("ENG","FIVE_PSALMS_OF_DAVID")]),
  142: ("Visions of Amram",       [("ENG","VISIONS_OF_AMRAM")]),
  # Split Ge'ez 1 Meqabyan off canon 69 (shared with 1 Maccabees) onto its own id
- 143: ("1 Meqabyan",            [("GEZ","1MEQ")]),
+ 143: ("1 Meqabyan",            [("GEZ","1MEQ"), ("HEB","1MEQ"), ("ENG","1MEQ")]),
+ # 2/3 Meqabyan: canon 87/88 were set before this registry; listed so HEB/ENG (2026-10-12
+ # Ge'ez->Hebrew backfill, ingest_geez_heb_backfill.py) stay re-runnable.
+  87: ("2 Meqabyan",            [("GEZ","2MEQ"), ("HEB","2MEQ"), ("ENG","2MEQ")]),
+  88: ("3 Meqabyan",            [("GEZ","3MEQ"), ("HEB","3MEQ"), ("ENG","3MEQ")]),
  144: ("Testament of Kohath",   [("ENG","TESTAMENT_OF_KOHATH")]),
  145: ("Book of Nathan the Prophet",[("ENG","BOOK_OF_NATHAN_THE_PROPHET")]),
  146: ("Apocryphon of Joshua",  [("ENG","APOCRYPHON_OF_JOSHUA")]),
@@ -114,13 +118,13 @@ REGISTRY = {
  # genealogy claim in 212. GEZ-only, like 1 Meqabyan (143) — displays in the reader
  # via text_paleo/native Ethiopic script, no sanitize-english.js/glossify-terms.js
  # pipeline needed (that pipeline is ENG-only).
- 212: ("Treatise on Melchizedek",        [("GEZ","LIT3332Melchiz")]),
- 213: ("Salam to Melchizedek",           [("GEZ","LIT7232Melchiz")]),
+ 212: ("Treatise on Melchizedek",        [("GEZ","LIT3332Melchiz"), ("HEB","LIT3332Melchiz"), ("ENG","LIT3332Melchiz")]),
+ 213: ("Salam to Melchizedek",           [("GEZ","LIT7232Melchiz"), ("HEB","LIT7232Melchiz"), ("ENG","LIT7232Melchiz")]),
  # Two homilies read together as one 2-chapter book — run
  # fix-melchiz-cyril-chapters.py BEFORE this script, or LIT3327Melchiz2's chapter-1
  # rows collide with LIT3326Melchiz1's own chapter 1.
- 214: ("Homilies of Cyril on Melchizedek", [("GEZ","LIT3326Melchiz1"), ("GEZ","LIT3327Melchiz2")]),
- 215: ("Story of Melchizedek",           [("GEZ","LIT2365Storyo")]),
+ 214: ("Homilies of Cyril on Melchizedek", [("GEZ","LIT3326Melchiz1"), ("GEZ","LIT3327Melchiz2"), ("HEB","LIT3326Melchiz1"), ("ENG","LIT3326Melchiz1")]),
+ 215: ("Story of Melchizedek",           [("GEZ","LIT2365Storyo"), ("HEB","LIT2365Storyo"), ("ENG","LIT2365Storyo")]),
 
  # "Book of Melchizedek" (found 2026-08-01, fieldy has confirmed rights to use it) —
  # a 2010 English/Spanish translation (Isaac & Ezequiel Ramirez Vargas, from Enoch

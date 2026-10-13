@@ -1,5 +1,59 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## No bare consonant chips: "MaAbanaw", never "MAbanaw" (added 2026-10-13)
+
+fieldy, on build-surface-index's "reading forms: … → MAbanaw, LAbanaw": "MaAbanaw is what my
+transliteration would be. No standalone 'M' or 'L' should be in my corpus". Cause: HEB-edition chips
+for a proclitic are copied from a STANDALONE BHS row (𐤌 H9006 alone is a whole word, so its letter
+took the FINAL form "M"); glued in front of a root they kept it. ~46k HEB chips read W/B/L/H/M/K/Sh
+in surface-index.db (BHS: 0). server.js transliterateBlock fixed it at request time, so the reader
+looked right, but anything reading the index raw (this log, gates, Root Explorer) saw "M".
+Fix: build-surface-index.js `fixBareChipTranslits` (right after the reading-form rules): any chip that
+is not the word's last and whose translit has no vowel is re-transliterated in its word (medial
+forms), prefix capitalised / suffix lowercase; prints `chip translits: N …`. Tested on a 2,799-row
+sample of the real index: 1,280 chips fixed, 0 bare left, 0 BHS rows changed. Reading text
+(corpus.db ENG + translation.db) scanned: 0 bare-consonant prefixes. Rebuild the index to apply.
+
+## GE'EZ-ONLY BOOKS GET HEBREW + ENGLISH: 1/2/3 Meqabyan + the Melchizedek works (added 2026-10-12)
+
+fieldy: "using the same backfill technique as getting hebrew Josephus, I want to backfill the meqabyan
+and whatever other texts only exist in ge'ez ... for every word there will be an instance that exists
+that also has hebrew text in my corpus". Ge'ez-only canon ids (GEZ and nothing else): 143 1 Meqabyan
+(762 rows), 87 2 Meqabyan (433), 88 3 Meqabyan (209), 212-215 Melchizedek works (8). Not covered:
+75 Epistle of Jeremiah (GEZ+LXX+SYR, no HEB/ENG) and 89 4 Baruch (ENG + 15 GEZ rows) — ask first.
+
+**`server/geez-heb-backfill/`** (all of it is the reproducible pipeline):
+- `build_table.py` — Ge'ez -> Hebrew word table learned from the corpus's OWN parallels: every verse in
+  both GEZ and HEB (31,274 pairs, chapter/verse keys normalised — NT HEB rows are "1.0"), keyed by the
+  Ge'ez full form / form without ወ+ለ/በ/ከ/ዘ/እም / consonant skeleton (fidel -> 1st order), counted
+  against Hebrew words and their proclitic-peeled stems (a peel counts only if it is itself an attested
+  word), Dice score. Writes geez_heb_table.json and heb_attested.json (every Hebrew word of the corpus,
+  EXCLUDING conf='ai-generated-corpus-terminology' rows, so AI Hebrew never attests AI Hebrew).
+- `make_sheets.py` — 48 batch sheets: each verse's Ge'ez + per word the attested Hebrew candidates
+  (+ geez-lexicon.json gloss). `GUIDE.md` — the shared translation guide (divine names: እግዚአብሔር ->
+  יהוה "the LORD", አምላክ -> אלהים "God"; fixed names מקביס Meqabis, צירוצידן Tsirutsaydan; split
+  Ge'ez rows with one verse number -> one merged row).
+- `check_heb.py` — THE GATE: every Hebrew word is an attested corpus word, whole or after <=3 proclitics
+  (ו ה ב ל כ מ ש); only names a batch listed are exempt. All 1,393 verses: 0 unattested.
+- `out/batch_NNN.json` (agent output, incl. per-batch names + unclear-verse notes in the session),
+  `geez_heb_import.json` (normalised: Sebelyanos/Meqabis/Seela/Pantos unified; LIT texts "Son of God").
+**`server/ingest_geez_heb_backfill.py [--dry]`** inserts HEB (square text + text_paleo,
+src paleo-studio:ai-original-translation, conf ai-generated-corpus-terminology — same tag as Josephus
+9-20) and ENG (conf ai-from-heb-backfill, text_src = text) rows, 14 books, one transaction, refuses to
+run twice. assign-canon-ids.py registry lists HEB/ENG for 143/87/88/212-215. Tested on a /tmp copy of
+corpus.db (2,786 rows, second run refused). NOT run on the real corpus.db (bridge can't write WAL DBs).
+
+fieldy runs, in server/:
+```
+python ingest_geez_heb_backfill.py --dry
+python ingest_geez_heb_backfill.py
+node build-surface-index.js          # bakes the new HEB rows (canon > 40 is in the HEB edition)
+node render-all.mjs --surface        # reset-src picks up the new ENG; merge-modforms weaves Hebrew forms
+```
+restart, check /bible?book=1-meqabyan&chapter=1&script=english, then Rebake (pushes corpus.db + index).
+Known: the source Ge'ez is fragmentary in places (cut-off verses, "))" for lost numbers); those
+translations end where the Ge'ez ends — nothing invented.
+
 ## DIVINE NAMES FOLLOW THE VERSE'S OWN HEBREW: Yahawah vs Adanay (added 2026-10-06)
 
 fieldy, Matthew 1:20: the word-by-word table reads 𐤉𐤄𐤅𐤄 Yahawah (H3068) while the reading text said

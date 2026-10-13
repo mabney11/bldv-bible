@@ -43,6 +43,10 @@
 .mod-prin       { --mc: #c08888; --mb: #603030; }
 .mod-nmpr       { --mc: #d4a010; --mb: #705000; }
 .mod-pref-unk   { --mc: #888; --mb: #333; }
+/* Generic prefix fallback (a GRAMMAR_MAP entry with no css of its own) and the doubled-letter (dagesh/intensive)
+ * marker -- both used to render uncoloured. */
+.mod-pref       { --mc: #d0a0e0; --mb: #503060; }
+.mod-dbl        { --mc: #e0c0a0; --mb: #604020; }
 /* Suffix tail the parsers peeled off but have no named class for (𐤀𐤉𐤊𐤄 = 𐤀𐤉 + 𐤊𐤄 "kah"). Was grey and sank into the
  * background; bright aqua is unused by every other class here. */
 .mod-suff-unk   { --mc: #19e0f0; --mb: #004850; }
@@ -71,6 +75,7 @@
 .prs-1cs        { --mc: #70c8f8; --mb: #185878; }
 .prs-1cp        { --mc: #4898e0; --mb: #104870; }
 .prs-2ms        { --mc: #90d870; --mb: #286010; }
+.prs-2fs        { --mc: #90d870; --mb: #286010; }   /* 𐤊 "Your" (fem.) -- one letter, one meaning: same as 2ms */
 .prs-2mp        { --mc: #68c048; --mb: #185000; }
 .prs-2fp        { --mc: #50a830; --mb: #104000; }
 .prs-3ms        { --mc: #e8d048; --mb: #706000; }
@@ -84,6 +89,7 @@
 .vbe-2or3f      { --mc: #d888b8; --mb: #703060; }
 .vbe-2mp        { --mc: #90c870; --mb: #286010; }
 .vbe-2ms        { --mc: #a8d890; --mb: #3a7020; }   /* "You did" — synthesized perfect 2ms (sits between 2mp green and 2or3f pink) */
+.vbe-2fs        { --mc: #a8d890; --mb: #3a7020; }   /* "You did" (fem.) -- same as 2ms */
 .vbe-2fp        { --mc: #68b050; --mb: #184800; }
 .vbe-3ms        { --mc: #e8784a; --mb: #802818; }
 .vbe-3fs        { --mc: #f0889a; --mb: #803040; }
@@ -98,6 +104,7 @@
 .nme-wt         { --mc: #68a858; --mb: #103800; }
 .nme-wtj        { --mc: #50a840; --mb: #083800; }
 .nme-nh         { --mc: #98d898; --mb: #204820; }
+.nme-emph       { --mc: #f0a070; --mb: #703818; }
 
 /* ── Directional / unmarked final ─────────────────────────────────────────── */
 .uvf-dir        { --mc: #98c8e8; --mb: #185068; }
@@ -123,6 +130,7 @@
 [data-alt="1"].prs-1cs   { --mc: #b0eeff; --mb: #003858; }
 [data-alt="1"].prs-1cp   { --mc: #90c8ff; --mb: #003060; }
 [data-alt="1"].prs-2ms   { --mc: #c8ffa0; --mb: #1a5000; }
+[data-alt="1"].prs-2fs   { --mc: #c8ffa0; --mb: #1a5000; }
 [data-alt="1"].prs-2mp   { --mc: #a8f078; --mb: #104000; }
 [data-alt="1"].prs-3ms   { --mc: #fff890; --mb: #585000; }
 [data-alt="1"].prs-3fs   { --mc: #ffb8c8; --mb: #601828; }
@@ -140,6 +148,8 @@
 [data-alt="1"].vbe-2or3f { --mc: #f8c8e0; --mb: #581840; }
 [data-alt="1"].vbe-2mp   { --mc: #c8f0a0; --mb: #1a5000; }
 [data-alt="1"].vbe-2ms   { --mc: #d0f0b8; --mb: #2a5010; }
+[data-alt="1"].vbe-2fs   { --mc: #d0f0b8; --mb: #2a5010; }
+[data-alt="1"].mod-pref  { --mc: #ecc8f8; --mb: #402050; }
 [data-alt="1"].mod-nom   { --mc: #e8c8a0; --mb: #402808; }
 [data-alt="1"].vbe-3mp   { --mc: #f0c888; --mb: #502800; }
 [data-alt="1"].vbe-3fp   { --mc: #e0b078; --mb: #481c00; }
@@ -170,6 +180,7 @@ html[data-theme="light"] .vbs-hit     { --mc: #007744; --mb: #98eec8; }
 html[data-theme="light"] .prs-1cs     { --mc: #003388; --mb: #b8d0ff; }
 html[data-theme="light"] .prs-1cp     { --mc: #002266; --mb: #a8c0ff; }
 html[data-theme="light"] .prs-2ms     { --mc: #226600; --mb: #c0eea0; }
+html[data-theme="light"] .prs-2fs     { --mc: #226600; --mb: #c0eea0; }
 html[data-theme="light"] .prs-2mp     { --mc: #1a5500; --mb: #b0e890; }
 html[data-theme="light"] .prs-2fp     { --mc: #114400; --mb: #a0e080; }
 html[data-theme="light"] .prs-3ms     { --mc: #776600; --mb: #ffee88; }
@@ -181,6 +192,7 @@ html[data-theme="light"] .vbe-1cp     { --mc: #002266; --mb: #a8c0ff; }
 html[data-theme="light"] .vbe-2or3f   { --mc: #880055; --mb: #ffb8e8; }
 html[data-theme="light"] .vbe-2mp     { --mc: #226600; --mb: #c0eea0; }
 html[data-theme="light"] .vbe-2ms     { --mc: #2d6a10; --mb: #d0f0b8; }
+html[data-theme="light"] .vbe-2fs     { --mc: #2d6a10; --mb: #d0f0b8; }
 html[data-theme="light"] .vbe-2fp     { --mc: #1a5500; --mb: #b0e890; }
 html[data-theme="light"] .vbe-3ms     { --mc: #992200; --mb: #ffd0b0; }
 html[data-theme="light"] .vbe-3fs     { --mc: #990044; --mb: #ffb0cc; }
@@ -193,6 +205,9 @@ html[data-theme="light"] .nme-jm      { --mc: #1a3800; --mb: #b0e088; }
 html[data-theme="light"] .nme-wt      { --mc: #113000; --mb: #a0d878; }
 html[data-theme="light"] .nme-wtj     { --mc: #0a2800; --mb: #90d068; }
 html[data-theme="light"] .nme-nh      { --mc: #005500; --mb: #b8eeb8; }
+html[data-theme="light"] .nme-emph    { --mc: #8a3a00; --mb: #ffd0b0; }
+html[data-theme="light"] .mod-pref    { --mc: #6a2088; --mb: #ecd0f8; }
+html[data-theme="light"] .mod-dbl     { --mc: #6a4010; --mb: #f0dcc0; }
 html[data-theme="light"] .uvf-dir     { --mc: #004466; --mb: #b0daf0; }
 html[data-theme="light"] .uvf-conn    { --mc: #003355; --mb: #a0cae8; }
 

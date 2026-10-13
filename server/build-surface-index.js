@@ -2290,11 +2290,49 @@ function applyReadingFormRules(v) {
     if (!hit) return;
     v.components_json = JSON.stringify(comps);
     if (v.rendered_paleo != null) v.rendered_paleo = comps.map(c => (c && c.paleo) || '').join('');
-    formRuleStat.n++; if (formRuleStat.ex.length < 4) formRuleStat.ex.push(`${v.word_raw} → ${comps.map(c => c.paleo || '').join('')} ${comps.map(c => c.translit || '').join('')}`);
+    formRuleStat.n++; if (formRuleStat.ex.length < 4) formRuleStat.ex.push(`${v.word_raw} → ${comps.map(c => c.paleo || '').join('')}`); formRuleStat.last = formRuleStat.last || []; formRuleStat.last.push(v);
 }
 for (const v of surfaceMap.values()) applyReadingFormRules(v);
 if (hebResult) for (const v of hebResult.surfaces.values()) applyReadingFormRules(v);
-console.log(`  reading forms: ${formRuleStat.n.toLocaleString()} surfaces respelled by lexicon/reading-form-rules.json` + (formRuleStat.ex.length ? ` (${formRuleStat.ex.join(', ')})` : ''));
+
+// ── No bare consonant in a baked chip (fieldy 2026-10-13, on the line above printing
+// "MAbanaw" / "LAbanaw": "MaAbanaw is what my transliteration would be. No standalone 'M'
+// or 'L' should be in my corpus"). A proclitic/doubled chip copied from a STANDALONE BHS row
+// (𐤌 H9006 alone is the whole word, so its letter took the FINAL form "M") kept that
+// translit when the HEB parse glued it in front of a root — 46,000+ HEB chips read W/B/L/H/M/
+// K/Sh. Inside a word only the word's LAST letter is final: such a chip is re-transliterated
+// in place (medial forms, "Ma"), capitalised as a prefix. server.js transliterateBlock already
+// does this at request time; the bake now agrees, so nothing that reads the index raw
+// (reading forms, gates, the Root Explorer, this log) ever sees a bare "M".
+const VOWEL_RE = /[aeiou]/i;
+const bareStat = { n: 0, chips: 0 };
+function fixBareChipTranslits(v) {
+    let comps; try { comps = JSON.parse(v.components_json || '[]'); } catch { return; }
+    if (!Array.isArray(comps) || comps.length < 2) return;
+    const total = comps.reduce((n, c) => n + [...((c && c.paleo) || '')].length, 0);
+    let cur = 0, hit = false;
+    const rootIdx = comps.findIndex(c => c && (c.css === 'root' || c.css === 'mod-nmpr'));
+    comps.forEach((c, i) => {
+        const chars = [...((c && c.paleo) || '')];
+        const start = cur; cur += chars.length;
+        if (!chars.length || cur === total) return;                 // the word's last chip keeps its final form
+        if (c.translit && VOWEL_RE.test(c.translit)) return;          // already positional
+        let t = '';
+        chars.forEach((ch, k) => { const m = CHAR_MAP[ch]; t += m ? (start + k === total - 1 ? m.fin : m.med) : ch; });
+        if (!VOWEL_RE.test(t) || t === c.translit) return;
+        const suffix = /^(nme-|prs-|vbe-|uvf-|mod-suff-unk)/.test(c.css || '') && (rootIdx < 0 || i > rootIdx);
+        c.translit = suffix ? t.toLowerCase() : t.charAt(0).toUpperCase() + t.slice(1);
+        hit = true; bareStat.chips++;
+    });
+    if (!hit) return;
+    v.components_json = JSON.stringify(comps);
+    bareStat.n++;
+}
+for (const v of surfaceMap.values()) fixBareChipTranslits(v);
+if (hebResult) for (const v of hebResult.surfaces.values()) fixBareChipTranslits(v);
+{ const exs = (formRuleStat.last || []).slice(0, 4).map(v => { const cs = JSON.parse(v.components_json); return `${v.word_raw} → ${cs.map(c => c.paleo || '').join('')} ${cs.map(c => c.translit || '').join('')}`; });
+  console.log(`  reading forms: ${formRuleStat.n.toLocaleString()} surfaces respelled by lexicon/reading-form-rules.json` + (exs.length ? ` (${exs.join(', ')})` : '')); }
+console.log(`  chip translits: ${bareStat.chips.toLocaleString()} bare-consonant chips in ${bareStat.n.toLocaleString()} surfaces re-transliterated in their word`);
 console.log(`  letters: ${coverStat.repaired.toLocaleString()} surfaces whose chips spelled only the start of the word got the rest back` +
             (coverStat.ex.length ? ` (${coverStat.ex.join(', ')})` : ''));
 console.log(`  letters: ${coverStat.other.toLocaleString()} surfaces whose chips respell a letter (𐤄𐤅 suffix → 𐤅, hitpael 𐤔𐤕 → 𐤕𐤔) — by design, listed for review` +
