@@ -93,6 +93,74 @@ try {
   }
 } catch {}
 
+// ── shared spellings: a lexicon gloss belongs to ONE of the spelling's Strong's ─────────────
+// fieldy, Habakkuk 2:3 "Am (mother)" — 𐤀𐤌 is H517 "mother" AND H518 "if/although"; the
+// verse's token is H518. A pair whose gloss is the spelling's lexicon gloss fails when the
+// verse's Hebrew has only the OTHER owners (lex-owner-lib.cjs decides whose it is). Not
+// unwrapped by --fix ("Am (mother)" -> "mother" would be worse): merge-modforms writes the
+// right gloss; a machine row that still has one is fatal, a saved verse is listed.
+const LO = (await import(pathToFileURL(path.join(__dirname, 'lex-owner-lib.mjs')).href)).shared();
+const OWNED = [];
+try {
+  const LEXJ = L('lexicon/lexicon.json');
+  for (const x of LO.contested(LEXJ)) {
+    const gw = new Set(LO.glossWords(x.gloss)); if (!gw.size) continue;
+    OWNED.push({ word: norm(translit(x.spelling)), gloss: gw, lexGloss: x.gloss, spelling: x.spelling, fit: x.fit, others: x.others,
+                 why: `${x.spelling} "${x.gloss}" is ${[...x.fit].join('/')}'s gloss — this verse's word is ${[...x.others].join('/')} (lex-owner-lib.cjs)` });
+  }
+} catch {}
+
+// The English the wrong owner's word should carry, for --fix: fieldy's Strong's-keyed homograph
+// ("𐤀𐤌_H518"), else the WEB's likeliest content word for that Strong's (align-table.json —
+// H518 "if", H5973 "with", H310 "after", H1241 "cattle"; two strong words join: "fine linen"),
+// else the first word of its kjv_def. null = leave it (reported, fatal on a machine row).
+const HOMO = (() => { try { return L('lexicon/homographs.json'); } catch { return {}; } })();
+const ATAB = (() => { try { return L('align-table.json').sn || {}; } catch { return {}; } })();
+const SDEF = (() => { try { return L('strongs-hebrew-expanded.json'); } catch { return {}; } })();
+const FILL = new Set('a an and the of to in on at by for from with as is are was were be been it its i me my we us our you your he him his she her they them their this that these those will shall may might can could would should then there here so not no yes up out all also which who what when'.split(' '));
+const ownerEnglish = (spelling, sn, lexGloss) => {
+  const h = HOMO[`${spelling}_${sn}`];
+  if (h) return String(h).replace(/\[[^\]]*\]|\([^()]*\)/g, ' ').replace(/\s+/g, ' ').trim() || null;
+  const lw = new Set(LO.glossWords(lexGloss));
+  const cand = Object.entries(ATAB[sn] || {}).filter(([w]) => /^[a-z]+$/.test(w) && w.length >= 2 && !lw.has(w))
+    .filter(([w], i, a) => !FILL.has(w) || (i === 0 && a.length && w.length > 2 && ['with', 'after', 'they', 'here', 'these', 'if', 'then'].includes(w)))
+    .sort((a, b) => b[1] - a[1]);
+  if (cand.length) return (cand[1] && cand[1][1] >= 0.3 && cand[0][1] >= 0.3) ? `${cand[0][0]} ${cand[1][0]}` : cand[0][0];
+  const d = SDEF[sn] || {};
+  const w = (String(d.kjv_def || d.strongs_def || '').replace(/\[[^\]]*\]|\([^()]*\)/g, ' ').match(/[a-z]{3,}/) || [])[0];
+  return w && !lw.has(w) ? w : null;
+};
+// "and other" -> "and after", "Mother" -> "If", "nation / people" -> "with": the lexicon gloss's
+// words go, the woven English around them stays
+const reglossText = (g, own, repl) => {
+  const cap = /^[A-Z]/.test(g);
+  let out = g;
+  const L0 = String(own.lexGloss).trim();
+  const i = out.toLowerCase().indexOf(L0.toLowerCase());
+  if (i >= 0) out = out.slice(0, i) + repl + out.slice(i + L0.length);
+  else {
+    let done = false;
+    out = out.split(/(\s+)/).map(t => { const w = LO.glossWords(t)[0]; if (w && own.gloss.has(w)) { if (done) return ''; done = true; return repl; } return t; }).join('').replace(/\s{2,}/g, ' ').replace(/\s*\/\s*$/, '').trim();
+  }
+  out = out.replace(/\s+\/\s+(?=\s|$)/g, ' ').trim();
+  return cap ? out.charAt(0).toUpperCase() + out.slice(1) : out.charAt(0).toLowerCase() + out.slice(1);
+};
+// apply owner repairs right to left; returns { text, shifts:[{at, oldN, newN}] } in whitespace tokens
+function regloss(text, vs) {
+  let s = text; const shifts = [];
+  for (const x of [...vs].sort((a, b) => b.index - a.index)) {
+    const pair = `${x.word} (${x.newGloss})`;
+    if (s.slice(x.index, x.index + x.m.length) !== x.m) continue;
+    const at = s.slice(0, x.index).split(/\s+/).filter(Boolean).length;
+    shifts.push({ at, oldN: x.m.split(/\s+/).filter(Boolean).length, newN: pair.split(/\s+/).filter(Boolean).length });
+    s = s.slice(0, x.index) + pair + s.slice(x.index + x.m.length);
+  }
+  return { text: s, shifts };
+}
+const shiftIdx = (i, shifts) => { for (const sh of [...shifts].sort((a, b) => b.at - a.at)) {
+  if (i >= sh.at + sh.oldN) i += sh.newN - sh.oldN; else if (i >= sh.at + sh.newN) i = sh.at + sh.newN - 1; } return i; };
+let fixedOwner = 0;
+
 // Signed-off exceptions: { "23:4:1|qabal (hold)": "why" } — a deliberate choice of fieldy's.
 let ACCEPT = {}; try { ACCEPT = L('lexicon/gloss-gate-accepted.json'); } catch {}
 // ── chapters whose verse numbering diverges between English and the Hebrew ──────
@@ -116,7 +184,8 @@ const cdb = new Database(CORPUS_DB, { readonly: !FIX });
 const heb = new Map();   // "c|ch|v" -> { roots:Set, surf:Set }
 const addTok = (c, ch, v, sn, raw) => {
   const k = `${c}|${Math.trunc(+ch)}|${Math.trunc(+v)}`; let e = heb.get(k); if (!e) heb.set(k, e = { roots: new Set(), surf: new Set() });
-  for (const one of String(sn || '').split(/[+＋]/)) { const t = trSn(one); if (t) e.roots.add(t); }
+  for (const one of String(sn || '').split(/[+＋]/)) { const t = trSn(one); if (t) e.roots.add(t);
+    const n = String(one).trim().replace(/^H*/i, 'H'); if (/^H\d+[a-z]?$/.test(n)) { (e.sns || (e.sns = new Set())).add(n); } }
   if (raw) e.surf.add(norm(translit(raw)));
   // a concept the OT already names (lexicon/reading-concepts.json): Nacham where the verse has
   // שׁוּב for "repent", Rachatz where it has טָבַל for "baptize"
@@ -247,6 +316,22 @@ function check(key, text) {
     const supported = inVerse(h, word) || near.some(e => inVerse(e, word));
     const mis = MIS.find(x => x.word === word && words(g).some(w => x.gloss.has(w)));
     if (mis && !supported) { out.push({ index: m.index, m: m[0], word: m[1], keep, gloss: g, why: `misconception: ${mis.why}` }); continue; }
+    { const gl = LO.glossWords(g); const pw = peel(word);
+      const own = OWNED.find(x => pw.has(x.word) && gl.some(w => x.gloss.has(w)));
+      if (own) {
+        // the verse's OWN Hebrew decides when it has any (Exod 21:19's H518 is not excused by
+        // 21:17's H517 two verses away); neighbours only for a verse with none
+        const sns = new Set((h && h.sns && h.sns.size ? [h] : near).flatMap(e => (e && e.sns) ? [...e.sns] : []));
+        const has = set => [...set].some(sn => sns.has(sn));
+        if (has(own.others) && !has(own.fit)) {
+          const sn = [...own.others].filter(x => sns.has(x)).sort((a, b) => (Object.values(ATAB[b] || {})[0] || 0) - (Object.values(ATAB[a] || {})[0] || 0))[0];
+          const repl = sn ? ownerEnglish(own.spelling, sn, own.lexGloss) : null;
+          const newGloss = repl ? reglossText(g, own, repl) : null;
+          out.push({ index: m.index, m: m[0], word: m[1], keep, gloss: g, owner: true, newGloss: newGloss && newGloss !== g ? newGloss : null,
+                     why: `owner: ${own.why}${repl ? ` — --fix writes "${repl}"` : ''}` });
+          continue;
+        }
+      } }
     if (src && hy < 0 && src.lower.has(claim.toLowerCase())) continue;                                   // English, not a transliteration
     if (src && /^[A-Z][a-z'’-]+$/.test(g) && src.caps.has(g) && !src.lower.has(g.toLowerCase())) continue;   // a name pair
     if (names.has(word) || !h || supported) continue;
@@ -310,7 +395,17 @@ let fixedCorpus = 0, fixedTrans = 0, fixedSaved = 0, linkRows = 0;
       { const st = stale(r.c, r.ch, r.text);
         if (st.length) { if (FIX) { r.text = freshen(r.text); upd.run(r.text, r.id); fixedStale++; } else for (const w of st) violations.push(`corpus ${key.replace(/\|/g, ':')}  ${w}`); } }
       const vs = check(key, r.text); if (!vs.length) continue;
-      if (FIX) { upd.run(unwrap(r.text, vs).text, r.id); fixedCorpus++; continue; }
+      if (FIX) {
+        // a shared spelling's wrong owner gloss: the right English in its place ("Am (mother)" -> "Am (if)")
+        const ow = vs.filter(x => x.owner && x.newGloss);
+        if (ow.length) { r.text = regloss(r.text, ow).text; fixedOwner += ow.length; }
+        const vs2 = ow.length ? check(key, r.text) : vs;
+        const un = vs2.filter(x => !x.owner || !x.newGloss);   // an owner with no English of its own (H2581, a name): the gloss stands as English
+        if (un.length) { r.text = unwrap(r.text, un).text; fixedCorpus++; }
+        if (ow.length || un.length) upd.run(r.text, r.id);
+        for (const x of vs2.filter(x => x.owner && x.newGloss)) violations.push(`corpus ${key.replace(/\|/g, ':')}  "${x.m}"  — ${x.why}`);
+        continue;
+      }
       for (const x of vs) violations.push(`corpus ${key.replace(/\|/g, ':')}  "${x.m}"  — ${x.why}`);
     }
   })();
@@ -355,15 +450,29 @@ if (existsSync(TRANS_DB)) {
           if (!vs.length) continue;
         }
       }
-      if (FIX && seeded) {
-        const u = unwrap(r.text, vs);
+      if (FIX && seeded && vs.some(x => x.owner && x.newGloss)) {
+        const ow = vs.filter(x => x.owner && x.newGloss);
+        const g = regloss(r.text, ow);
+        upd.run(g.text, r.text, g.text, r.c, r.ch, r.v); fixedOwner += ow.length;
+        if (g.shifts.some(sh => sh.oldN !== sh.newN)) for (const l of linkSel.all(r.c, r.ch, r.v)) {
+          let ix; try { ix = JSON.parse(l.english_indices || '[]'); } catch { continue; }
+          const nix = [...new Set(ix.map(i => shiftIdx(i, g.shifts)))];
+          if (JSON.stringify(nix) !== JSON.stringify(ix)) { linkRows++; linkUpd.run(JSON.stringify(nix), l.id); }
+        }
+        r.text = g.text;
+        vs.splice(0, vs.length, ...check(key, r.text).filter(x => !ACCEPT[`${key.replace(/\|/g, ':')}|${x.m}`]));
+        if (!vs.length) continue;
+      }
+      if (FIX && seeded && vs.some(x => !x.owner || !x.newGloss)) {
+        const u = unwrap(r.text, vs.filter(x => !x.owner || !x.newGloss));
         upd.run(u.text, r.text, u.text, r.c, r.ch, r.v); fixedTrans++;
         for (const l of linkSel.all(r.c, r.ch, r.v)) {
           let ix; try { ix = JSON.parse(l.english_indices || '[]'); } catch { continue; }
           const nix = ix.map(i => i - u.removedAt.filter(p => p < i).length);
           if (JSON.stringify(nix) !== JSON.stringify(ix)) { linkRows++; linkUpd.run(JSON.stringify(nix), l.id); }
         }
-        continue;
+        vs.splice(0, vs.length, ...vs.filter(x => x.owner && x.newGloss));   // owner repairs that did not take are reported
+        if (!vs.length) continue;
       }
       for (const x of vs) {
         const line = `translation ${key.replace(/\|/g, ':')}${seeded ? '' : '  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]'}  "${x.m}"  — ${x.why}`;
@@ -374,8 +483,9 @@ if (existsSync(TRANS_DB)) {
   tdb.close();
 } else console.log(`  (no translation.db at ${TRANS_DB} — reader rows not checked)`);
 
-console.log(`verify-reading-glosses: Hebrew from tokens_bhs + ${hebFrom}; ${MIS.length} misconception rule(s); ${drift.size} chapters with known versification drift (±2 allowed there only)`);
+console.log(`verify-reading-glosses: Hebrew from tokens_bhs + ${hebFrom}; ${MIS.length} misconception rule(s); ${OWNED.length} shared-spelling owner rule(s); ${drift.size} chapters with known versification drift (±2 allowed there only)`);
 if (FIX && fixedStale) console.log(`  --fix: ${fixedStale.toLocaleString()} verse(s) had a [label] woven into its English or a retired spelling respelled`);
+if (FIX && fixedOwner) console.log(`  --fix: ${fixedOwner.toLocaleString()} shared-spelling gloss(es) given their own Strong's English (lex-owner-lib.cjs: "Am (mother)" on H518 -> "Am (if)")`);
 if (FIX) console.log(`  --fix: unwrapped unsupported glosses in ${fixedCorpus.toLocaleString()} corpus verse(s), ${fixedTrans.toLocaleString()} reader verse(s); removed known misconceptions from ${fixedSaved} saved verse(s) (history kept); ${linkRows} link row(s) re-indexed`);
 if (OUT) writeFileSync(OUT, violations.concat(review).join('\n') + '\n');
 if (review.length) {

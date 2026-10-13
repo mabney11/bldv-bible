@@ -80,6 +80,8 @@ const production = require('./production');
 // One curated-gloss rule for the whole app (see gloss-resolver.cjs) — used by
 // the /roots summary card's per-Strong's-number definitions.
 const { createGlossResolver } = require('./gloss-resolver.cjs');
+const _lexOwner = require('./lex-owner-lib.cjs').shared();   // which Strong's a spelling-keyed lexicon gloss belongs to
+const _lexMine = (lex, k, sn) => (k && lex && lex[k] && _lexOwner.fits(k, lex[k], sn)) ? lex[k] : '';
 
 const app = express();
 app.set('trust proxy', 1);  // behind ngrok / a platform proxy: use X-Forwarded-For for req.ip
@@ -3126,11 +3128,11 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // keeping the table as a safety net (per "keep tables as fallback").
             //   Priority: homographs[<paleo>_<pos>]  →  lexicon[<paleo>]  →  GRAMMAR_MAP  →  [paleo]
             if (pos === 'prep') {
-                translation = homographs[`${rawPaleo}_preposition`] || lexicon[rawPaleo] || GRAMMAR_MAP.prep[rawPaleo] || `[${rawPaleo}]`;
+                translation = homographs[`${rawPaleo}_preposition`] || _lexMine(lexicon, rawPaleo, strongs) || GRAMMAR_MAP.prep[rawPaleo] || `[${rawPaleo}]`;
             } else if (pos === 'conj') {
-                translation = homographs[`${rawPaleo}_conjunction`] || lexicon[rawPaleo] || GRAMMAR_MAP.conj[rawPaleo] || `[${rawPaleo}]`;
+                translation = homographs[`${rawPaleo}_conjunction`] || _lexMine(lexicon, rawPaleo, strongs) || GRAMMAR_MAP.conj[rawPaleo] || `[${rawPaleo}]`;
             } else if (pos === 'art') {
-                translation = homographs[`${rawPaleo}_article`] || lexicon[rawPaleo] || GRAMMAR_MAP.art[rawPaleo] || `[${rawPaleo}]`;
+                translation = homographs[`${rawPaleo}_article`] || _lexMine(lexicon, rawPaleo, strongs) || GRAMMAR_MAP.art[rawPaleo] || `[${rawPaleo}]`;
             } else if (pos === 'inrg') {
                 // NO bare lexicon[rawPaleo] fallback: lexicon['𐤄'] is the ARTICLE
                 // gloss, and letting it answer here is exactly what rendered the
@@ -3960,13 +3962,15 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
                     // `"𐤉𐤔𐤁": "inhabit/dwell"` matched the surface, printing
                     // yashab's gloss under an H7725 badge. Same chain as the
                     // bake, so the two paths cannot disagree.
-                    lexicon[trueRoot]         ||   // the Strong's root
-                    lexicon[rootPlene]        ||   // matres-collapsed root
-                    lexicon[displayRoot]      ||
+                    // (a spelling shared by several Strong's answers only for its owner:
+                    // lex-owner-lib.cjs — 𐤀𐤌 "mother" is H517's, never H518's)
+                    _lexMine(lexicon, trueRoot, strongs)    ||   // the Strong's root
+                    _lexMine(lexicon, rootPlene, strongs)   ||   // matres-collapsed root
+                    _lexMine(lexicon, displayRoot, strongs) ||
                     // curated HEB-edition lexicon — the bake reads it, so this
                     // path must too or the same word reads differently depending
                     // on whether the index or the parser served the chapter
-                    hebExtra[trueRoot] || hebExtra[displayRoot] ||
+                    _lexMine(hebExtra, trueRoot, strongs) || _lexMine(hebExtra, displayRoot, strongs) ||
                     // PLACEHOLDER = THE ROOT'S OWN PALEO, unbracketed. Nothing
                     // curated covers this word yet. An EMPTY gloss reads as "this
                     // word was ignored"; the root letters read as "no entry yet,
@@ -8355,15 +8359,20 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
             if (homographs[key]) { comp.translation = homographs[key]; return; }
         }
         // Lexicon, then the curated HEB-edition lexicon (same order as the bake)
-        if (lexicon[paleo])  { comp.translation = lexicon[paleo];  comp.gloss_src = 'lexicon';   return; }
-        if (hebExtra[paleo]) { comp.translation = hebExtra[paleo]; comp.gloss_src = 'heb-extra'; return; }
+        // Shared spelling (𐤀𐤌 = H517 "mother" + H518 "if"): the spelling's lexicon entry
+        // answers only for the Strong's it belongs to (lex-owner-lib.cjs). A chip BAKED with
+        // another owner's gloss is reset to the placeholder below instead of keeping it.
+        const mine = g => !ownSn || _lexOwner.fits(paleo, g, ownSn);
+        if (lexicon[paleo]  && mine(lexicon[paleo]))  { comp.translation = lexicon[paleo];  comp.gloss_src = 'lexicon';   return; }
+        if (hebExtra[paleo] && mine(hebExtra[paleo])) { comp.translation = hebExtra[paleo]; comp.gloss_src = 'heb-extra'; return; }
+        if (ownSn && ((lexicon[paleo] && comp.translation === lexicon[paleo]) || (hebExtra[paleo] && comp.translation === hebExtra[paleo]))) comp.translation = '';
         // A root chip that keeps its OWN written letters (𐤍𐤔𐤉𐤌 nashim, H802) has no
         // lexicon entry under that spelling: gloss it by the root its Strong's names.
         if (ownSn && comp.css && !/^(mod-|vbe|prs|nme|pfm|vbs|uvf)/.test(comp.css)) {
             const canon = getCanonicalRoot(ownSn, comp.true_root || paleo);
             if (canon && canon !== paleo) {
                 if (homographs[`${canon}_${ownSn}`]) { comp.translation = homographs[`${canon}_${ownSn}`]; return; }
-                if (lexicon[canon])  { comp.translation = lexicon[canon];  comp.gloss_src = 'lexicon';   return; }
+                if (lexicon[canon] && _lexOwner.fits(canon, lexicon[canon], ownSn))  { comp.translation = lexicon[canon];  comp.gloss_src = 'lexicon';   return; }
                 if (hebExtra[canon]) { comp.translation = hebExtra[canon]; comp.gloss_src = 'heb-extra'; return; }
             }
         }

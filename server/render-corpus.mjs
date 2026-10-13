@@ -26,6 +26,8 @@
 import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { loadVerseExceptions, renderWithExceptions } from './render-verse-exceptions.mjs';
 import { progress } from './progress.mjs';
+import { shared as lexOwners } from './lex-owner-lib.mjs';
+const LO = lexOwners();   // which Strong's a spelling-keyed lexicon gloss belongs to
 
 const args = process.argv.slice(2);
 const argv = (f, d) => { const i = args.indexOf(f); return i >= 0 ? args[i + 1] : d; };
@@ -489,6 +491,10 @@ if (!NO_VERSE_GLOSS) (() => {
   // reach those.
   VG.lexWords = new Map();            // root paleo -> Set(every english word in the curated gloss)
   VG.lexHeads = new Map();            // root paleo -> Set(the HEAD word of each alternative: "il / over" → il, over; "you (masc)" → you)
+  // a root spelling shared by several Strong's (𐤀𐤌 = H517 "mother" + H518 "if"): its curated
+  // gloss answers only for the owner it belongs to (lex-owner-lib.cjs) — VG.lexOk(t)
+  VG.lexGloss = new Map();
+  VG.lexOk = t => !VG.lexGloss.has(t.root) || LO.fits(t.root, VG.lexGloss.get(t.root), t.sn);
   const GLOSS_SKIP = new Set(['the', 'a', 'an', 'of', 'to', 'be', 'is']);
   for (const f of ['./lexicon/lexicon.json', './lexicon/hebrew-extra-lexicon.json']) {
     if (!existsSync(f)) continue;
@@ -498,6 +504,7 @@ if (!NO_VERSE_GLOSS) (() => {
       const clean = gloss.toLowerCase().replace(/\([^)]*\)/g, ' ');
       const words = clean.split(/[\/,;|·\-–—\s]+/).map(x => x.replace(/[^a-z']/g, '')).filter(x => x.length >= 2);
       if (!words.length) continue;
+      if (!VG.lexGloss.has(paleo)) VG.lexGloss.set(paleo, gloss);
       if (!VG.lexWords.has(paleo)) VG.lexWords.set(paleo, new Set());
       for (const w of words) VG.lexWords.get(paleo).add(w);
       if (!VG.lexHeads.has(paleo)) VG.lexHeads.set(paleo, new Set());
@@ -732,7 +739,7 @@ function agreement(text, toks) {
     const forms = vgLemmas(lw);
     const roots = new Set();
     for (const f of forms) { const c = VG.byRoot.get(f); if (c) for (const r of c) roots.add(r); }
-    if (toks.some(t => t.root && (roots.has(t.root) || (VG.lexWords.get(t.root) && forms.some(f => VG.lexWords.get(t.root).has(f)))))) matched++;
+    if (toks.some(t => t.root && (roots.has(t.root) || (VG.lexOk(t) && VG.lexWords.get(t.root) && forms.some(f => VG.lexWords.get(t.root).has(f)))))) matched++;
   }
   return { content, matched, ratio: content ? matched / content : 0 };
 }
@@ -944,8 +951,8 @@ function render(text, vgKey) {
         // pure grammar never takes a gloss, whatever the Hebrew is tagged; nor does a word
         // that IS a transliteration already (a theonym step 3 wrote bare: "Alahayam")
         if (VG_NEVER.has(lw) || VG_OUTPUT_WORDS.has(lw)) return w;
-        const lexHit = (t) => { const lw2 = VG.lexWords.get(t.root); return !!lw2 && forms.some(f => lw2.has(f)); };
-        const lexHead = (t) => { const h = VG.lexHeads.get(t.root); return !!h && forms.some(f => h.has(f)); };
+        const lexHit = (t) => { const lw2 = VG.lexWords.get(t.root); return !!lw2 && VG.lexOk(t) && forms.some(f => lw2.has(f)); };
+        const lexHead = (t) => { const h = VG.lexHeads.get(t.root); return !!h && VG.lexOk(t) && forms.some(f => h.has(f)); };
         const pos = engWords.length > 1 ? engIdx / (engWords.length - 1) : 0;
         let best = null, bestScore = -1;
         toks.forEach((t, i) => {

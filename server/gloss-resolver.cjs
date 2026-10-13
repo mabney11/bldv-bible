@@ -47,6 +47,9 @@ function createGlossResolver(o = {}) {
         homographs = {}, lexicon = {}, hebExtra = {},
         uncurated = null, allowUncurated = false,
     } = o;
+    // o.owner: false = no shared-spelling check; default = the app-wide lex-owner-lib instance
+    let owner = o.owner;
+    if (owner === undefined) { try { owner = require('./lex-owner-lib.cjs').shared(); } catch { owner = null; } }
 
     /**
      * @param {object} q
@@ -75,9 +78,13 @@ function createGlossResolver(o = {}) {
         // 2. Paleo-keyed homographs.
         for (const k of withPlene(roots)) if (homographs[k]) return { text: homographs[k], src: 'homograph' };
 
-        // 3. lexicon.json, then the HEB edition's own lexicon. Both curated.
-        for (const k of withPlene(roots)) if (lexicon[k])  return { text: lexicon[k],  src: 'lexicon'   };
-        for (const k of withPlene(roots)) if (hebExtra[k]) return { text: hebExtra[k], src: 'heb-extra' };
+        // 3. lexicon.json, then the HEB edition's own lexicon. Both curated — but keyed by
+        //    SPELLING, and a spelling can be the root of several Strong's (𐤀𐤌 = H517 "mother"
+        //    and H518 "if/although"). The entry only answers for the Strong's it belongs to
+        //    (lex-owner-lib.cjs); for the others it is skipped, never borrowed.
+        const mine = (k, g) => !owner || !q.sn || owner.fits(k, g, q.sn);
+        for (const k of withPlene(roots)) if (lexicon[k]  && mine(k, lexicon[k]))  return { text: lexicon[k],  src: 'lexicon'   };
+        for (const k of withPlene(roots)) if (hebExtra[k] && mine(k, hebExtra[k])) return { text: hebExtra[k], src: 'heb-extra' };
 
         // 4. Uncurated dictionary text, only if the caller opted in.
         if (allowUncurated && uncurated && q.sn) {

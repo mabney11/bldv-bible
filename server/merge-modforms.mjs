@@ -36,6 +36,7 @@ import { existsSync, writeFileSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as MF from './modform-lib.mjs';
+import * as LOL from './lex-owner-lib.mjs';
 import { loadRules as loadNameRules, divineGlosses } from './name-form-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -257,11 +258,15 @@ if (CORPUS) {
   const ROOTS = (() => { try { return JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'strongs-roots.json'), 'utf8')); } catch { return {}; } })();
   const tidy = g => String(g || '').replace(/\[[^\]]*\]/g, ' ').replace(/\([^()]*\)/g, ' ').replace(/\s+/g, ' ').replace(/^[\s\/]+|[\s\/]+$/g, '').trim();
   const PREPWORDS = new Set([...Object.values(MF.PREP_EN()).flatMap(x => [...x]), ...'upon over on with before after under against about between among toward unto beside behind above below through beyond within'.split(' ')]);
+  const LO = LOL.shared();   // which Strong's a spelling-keyed lexicon gloss belongs to
   const glossOf = h => {
     // the chip's own gloss (fieldy's curated lexicon/homographs, as the Parallel shows it),
     // else the WEB's likeliest English for its Strong's, else his placeholder: the root's paleo
     const root = h.comps.find(c => c.css === 'root' || c.css === 'mod-nmpr') || h.comps.find(c => c.true_root) || h.comps.find(c => c.css === 'mod-prep') || h.comps[h.comps.length - 1];
-    let g = (!h.mods.length && curatedOf(h)) || (root ? tidy(root.translation) : '');
+    // a chip baked with ANOTHER Strong's lexicon gloss (shared spelling: H1836 "this" baked as
+    // "Dan") is not this word's gloss — lex-owner-lib decides, the WEB table answers instead
+    const chipOk = c => !(c && c.gloss_src === 'lexicon' && !LO.fits(c.true_root || c.paleo, LEX[c.true_root || c.paleo] || c.translation, c.sn || h.sn));
+    let g = (!h.mods.length && curatedOf(h)) || (root && chipOk(root) ? tidy(root.translation) : '');
     // a preposition's chip may carry a homograph's sense (עָלֵינוּ "went up"): its WEB English first
     if (/prep/.test(h.pos || '') && h.sn !== 'H853' && TAB && TAB.sn[h.sn]) {
       const p = Object.entries(TAB.sn[h.sn]).sort((a, b) => b[1] - a[1]).map(x => x[0]).find(w => PREPWORDS.has(w));
@@ -326,7 +331,12 @@ if (CORPUS) {
     //    another common word's root (𐤄𐤌𐤄 = H1993 "great uproar", but here H1992 "they")
     const surf = h.comps.map(c => c.paleo).join('');
     const own = ROOT_OWNERS.get(surf);
-    if (tidy(LEX[surf]) && !(own && !own.has(h.sn) && !MF.isNameTr(MF.formOf([{ paleo: surf, css: 'root' }])))) return tidy(LEX[surf]);
+    //    …and when the spelling is SHARED by several Strong's (𐤀𐤌 = H517 "mother" and H518
+    //    "if/although"), only the owner(s) the gloss belongs to may take it (lex-owner-lib:
+    //    Strong's definition + WEB-learned English). Habakkuk 2:3 "Am (mother)" — fieldy:
+    //    "despite my tokens disagreeing" / "i need a general solution, not a hotfix"
+    if (tidy(LEX[surf]) && own && own.has(h.sn) && !LO.fits(surf, LEX[surf], h.sn)) { /* another owner's word: fall through */ }
+    else if (tidy(LEX[surf]) && !(own && !own.has(h.sn) && !MF.isNameTr(MF.formOf([{ paleo: surf, css: 'root' }])))) return tidy(LEX[surf]);
     // 3. the root's lexicon gloss — only when no other Strong's shares that root (𐤀𐤐 is
     //    "also" H637 and "nose" H639: the English of the verse is kept instead)
     const rp = root && (root.true_root || root.paleo);

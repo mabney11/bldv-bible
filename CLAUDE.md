@@ -1,5 +1,49 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## A SHARED SPELLING'S LEXICON GLOSS BELONGS TO ONE STRONG'S: "Am (mother)" on H518 (added 2026-10-13)
+
+fieldy, Habakkuk 2:3 "Am (mother)" where the token is H518 'im "if/although": "I dont like the
+incorrect usage of 'Am' being translated 'mother' despite my tokens disagreeing" / "this isnt the
+only place I had to make the change, i need a general solution, not a hotfix".
+**Cause:** lexicon/lexicon.json is keyed by SPELLING, and 173 spellings with a lexicon entry are
+the root of 2+ Strong's (𐤀𐤌 = H517 mother + H518 if). merge-modforms `curatedOf` step 2 (and
+render-corpus `lexHit`, gloss-resolver step 3, server.js reGlossOne / parseHebrewData) took the
+spelling's gloss for whatever Strong's the token carried. Measured on the 2026-10-13 corpus.db:
+5,697 reading-text pairs (2,705 "Am (mother)", only 29 with H517; "Im (nation / people)" on H5973
+"with", "Sham (name)" on H8033 "there", "Achar (other)" on H310 "after", "Baqar (morning)" on
+H1241 cattle, "Shash (six)" on linen, "Kalah (complete)" on "bride" ...).
+**Rule — `server/lex-owner-lib.cjs` (ONE copy; .mjs is its ESM face):** the gloss belongs to every
+owner whose own evidence names it — Strong's strongs_def + kjv_def and align-table.json's English
+(p >= .05), related forms count (sin/sinner, complete/completed), a Capitalised coinage leading
+the gloss that no owner's evidence knows ("Shabath / Rest", "Idan / Eden") counts for all. An
+owner is excluded only when it has NO evidence while another does; no evidence anywhere = all keep
+it (𐤀𐤕 "entirety"). An SN-keyed or pos-keyed homographs.json entry always wins — that is how to
+give an excluded owner a gloss (e.g. `"𐤀𐤌_H518"`). `node -e "const L=require('./lex-owner-lib.cjs').shared();console.log(L.contested(require('./lexicon/lexicon.json')))"` lists them.
+Wired: gloss-resolver.cjs (bake + Root Explorer), server.js reGlossOne (+ resets a chip baked with
+another owner's gloss to the placeholder) and parseHebrewData (`_lexMine`), merge-modforms curatedOf
++ glossOf (a chip baked with another owner's gloss is not used; the WEB table answers),
+render-corpus `VG.lexOk`. **Gate:** verify-reading-glosses "owner:" rule (per verse by Strong's
+NUMBER, not spelling): fatal on machine rows, listed for saved verses, NOT unwrapped by --fix
+("Am (mother)" -> "mother" would be worse) — the re-render writes the right gloss.
+Verified on scratch copies: OT re-render of the 1,552 flagged verses — "Am (mother)" 747 -> 0,
+Gen 3:20 (real H517) keeps "Am (mother)", every one of the 1,258 changed verses changed only an
+owner pair (Am -> "if"/"only / if only", Im -> "with" …); NT Matt 4:3/4:6 "Am (If)", 2:11
+"Im (with)". NOT run on the real DBs (bridge can't write WAL). fieldy runs `node render-all.mjs
+--surface` (+ `node build-surface-index.js` so baked chips like H1836 "Dan" clear), restart, Rebake.
+Hab 2:3's Am reads his homograph "(rhetorical) only / if only" (tidied to "only / if only").
+**Follow-up, same day — fieldy's first run stopped at step 8 (4,915 failures, all OT):** `render-all
+--surface` never re-renders the OT, and merge-modforms skips a verse already in full form, so the OT
+kept its old pairs. The gate's `--fix` now REPAIRS an owner violation in place on machine rows
+(corpus.db + seeded translation.db): the wrong owner's words inside the gloss are replaced by that
+Strong's own English — homographs `"<paleo>_H###"` first, else align-table's likeliest content word
+(H518 "if", H5973 "with", H310 "after", H1241 "cattle", H2007 "they", "fine linen"), else its kjv_def —
+woven words kept ("WaAchar (and other)" -> "(and after)"), case kept, link indices shifted. An owner
+with no English of its own (H2581, a name) is unwrapped like any unsupported gloss. The verse's OWN
+Hebrew decides when it has any (Exod 21:19's H518 is not excused by 21:17's H517); ±2 only for a
+verse with none. Measured on a copy of fieldy's DBs as step 8 left them: 4,905 + 668 repaired, gate
+passes, second run changes nothing. Remaining "Am (mother)": 93 real H517, 255 Apocrypha with no
+Hebrew (English "mother"), ~37 whose verse has neither word — not decidable by the gate.
+
 ## No bare consonant chips: "MaAbanaw", never "MAbanaw" (added 2026-10-13)
 
 fieldy, on build-surface-index's "reading forms: … → MAbanaw, LAbanaw": "MaAbanaw is what my
