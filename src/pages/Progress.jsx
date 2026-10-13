@@ -12,7 +12,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { apiTransProgress, apiTransMarked } from '../lib/api.js';
 import { buildBookSlugs } from '../lib/bookSlug.js';
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
-import { TRANSLATOR, TRANSLATE_WORD } from '../components/TranslatedMark.jsx';
+import { TRANSLATOR, Credit } from '../components/TranslatedMark.jsx';
 import './Models.css';
 import './Progress.css';
 
@@ -87,7 +87,7 @@ export default function Progress() {
                     const v = i + 1;
                     const r = status.get(`${b.book_id}:${ch.chapter}:${v}`);
                     const cls = r?.s === 'd' ? 'd' : r?.s === 'p' ? 'p' : '';
-                    const label = `${b.name} ${ch.chapter}:${v}${cls === 'd' ? ' — translated' : cls === 'p' ? ' — in progress' : ''}`;
+                    const label = `${b.name} ${ch.chapter}:${v}${cls === 'd' ? ' — translated' : cls === 'p' ? ' — in progress (touched, not yet marked translated)' : ''}`;
                     return <Link key={v} to={verseHref(b.book_id, ch.chapter, v)} className={`pg-cell ${cls}`} title={label} aria-label={label} />;
                   })}
                 </span>
@@ -111,7 +111,7 @@ export default function Progress() {
       <section className="pg-hero">
         <span className="pg-hero-mark" aria-hidden="true">{TRANSLATOR.mark}</span>
         <div className="pg-hero-text">
-          <p className="pg-hero-lead"><em>{TRANSLATOR.name}</em>, <em>ibaday Yahawah Alahayam</em> (servant of Yahawah Alahayam), <em>yad {TRANSLATE_WORD.translit}</em> (hand {TRANSLATE_WORD.gloss})</p>
+          <p className="pg-hero-lead"><Credit /></p>
           <p className="pg-hero-sub">The scriptures translated verse by verse from the Hebrew. A verse marked translated carries the <span className="pg-inline-mark">{TRANSLATOR.mark}</span> on its Detailed Verse page.</p>
         </div>
         <span className="pg-hero-sig" dir="rtl">{TRANSLATOR.paleo}</span>

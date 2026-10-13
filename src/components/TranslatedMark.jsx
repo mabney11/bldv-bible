@@ -28,7 +28,19 @@ function fmtDate(t) {
   return isNaN(d) ? '' : d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-export default function TranslatedMark({ refLabel, updatedAt, size = 'md', className = '' }) {
+// The one line of credit, shared by the verse card, /progress and the prerender:
+// Hebrew (gold) with its gloss after each group.
+export function Credit() {
+  return (
+    <>
+      <em>{TRANSLATOR.name}</em>, <em>Ibaday</em> (servant of) <em>Yahawah Alahayam</em>, <em>yad</em> (hand) <em>{TRANSLATE_WORD.translit}</em> ({TRANSLATE_WORD.gloss})
+    </>
+  );
+}
+
+// variant 'touched' = a verse he has opened and saved but not marked 'done': the
+// same bubble in silver instead of gold (2026-10-12).
+export default function TranslatedMark({ refLabel, updatedAt, size = 'md', className = '', variant = 'done' }) {
   const [open, setOpen] = useState(false);
   const tipId = useId();
   const root = useRef(null);
@@ -42,19 +54,19 @@ export default function TranslatedMark({ refLabel, updatedAt, size = 'md', class
   }, [open]);
   const date = fmtDate(updatedAt);
   return (
-    <span ref={root} className={`tmark tmark-${size}${open ? ' open' : ''} ${className}`}
+    <span ref={root} className={`tmark tmark-${size}${variant === 'touched' ? ' tmark-touched' : ''}${open ? ' open' : ''} ${className}`}
           onPointerEnter={(e) => { if (e.pointerType === 'mouse') setOpen(true); }}
           onPointerLeave={(e) => { if (e.pointerType === 'mouse') setOpen(false); }}>
       <button type="button" className="tmark-badge" aria-describedby={tipId} aria-expanded={open}
-              aria-label={`Translated by ${TRANSLATOR.name}`}
+              aria-label={variant === 'touched' ? `In progress — touched by ${TRANSLATOR.name}, not yet marked translated` : `Translated by ${TRANSLATOR.name}`}
               onClick={(e) => setOpen((o) => (e.nativeEvent?.pointerType === 'mouse' ? true : !o))} onFocus={(e) => { if (e.target.matches?.(':focus-visible')) setOpen(true); }} onBlur={(e) => { if (!root.current?.contains(e.relatedTarget)) setOpen(false); }}>
         <span className="tmark-glyph" aria-hidden="true">{TRANSLATOR.mark}</span>
       </button>
       <span id={tipId} role="tooltip" className="tmark-tip">
         <span className="tmark-line tmark-who"><b>{TRANSLATOR.name}</b>,</span>
-        <span className="tmark-line"><b>ibaday Yahawah Alahayam</b> (servant of Yahawah Alahayam),</span>
-        <span className="tmark-line"><b>yad {TRANSLATE_WORD.translit}</b> (hand {TRANSLATE_WORD.gloss})</span>
-        {(refLabel || date) && <span className="tmark-meta">{refLabel}{refLabel && date ? ' · ' : ''}{date ? `marked translated ${date}` : ''}</span>}
+        <span className="tmark-line"><b>Ibaday</b> (servant of) <b>Yahawah Alahayam</b>,</span>
+        <span className="tmark-line"><b>yad</b> (hand) <b>{TRANSLATE_WORD.translit}</b> ({TRANSLATE_WORD.gloss})</span>
+        {(refLabel || date) && <span className="tmark-meta">{refLabel}{refLabel && date ? ' · ' : ''}{date ? `${variant === 'touched' ? 'in progress, last touched' : 'marked translated'} ${date}` : ''}</span>}
         <Link to="/progress" className="tmark-more" tabIndex={open ? 0 : -1}>Every verse translated so far →</Link>
         <span className="tmark-sig" dir="rtl" aria-label={`signed ${TRANSLATOR.name}`}>{TRANSLATOR.paleo}</span>
       </span>

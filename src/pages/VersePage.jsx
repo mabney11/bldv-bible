@@ -447,8 +447,9 @@ export default function VersePage() {
             </div>
           ) : (
             <div className="vp-verse">
-              {verseData.status === 'done' && (
-                <TranslatedMark className="vp-tmark" refLabel={verseRef} updatedAt={verseData.updated_at} />
+              {(verseData.status === 'done' || verseData.status === 'in_progress') && (
+                <TranslatedMark className="vp-tmark" refLabel={verseRef} updatedAt={verseData.updated_at}
+                                variant={verseData.status === 'done' ? 'done' : 'touched'} />
               )}
               <div
                 className="vp-ref-block clickable-comp"

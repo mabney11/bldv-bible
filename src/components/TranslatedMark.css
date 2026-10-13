@@ -55,3 +55,7 @@
 /* an invisible bridge over the gap between the badge and the card, so moving the
    pointer down onto the card's link doesn't close it on the way */
 .tmark.open::after { content: ''; position: absolute; top: 100%; right: 0; width: max(100%, 80px); height: 12px; }
+
+/* in progress — touched, saved, not yet marked 'done': the same bubble in silver.
+   Re-pointing --gold inside the scope recolours the glow, ring, card and links. */
+.tmark-touched { --gold: var(--silver, #c3c9d3); }
