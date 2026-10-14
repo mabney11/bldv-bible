@@ -174,9 +174,12 @@ if (CORPUS) {
   // (NULL), with p >= MF_P, within MF_DIST of the Hebrew word's relative position. A Hebrew
   // word takes ONE contiguous run of English; the run becomes "Form (english)", and
   // mergeModforms() then lets its prefixes take in "in the", "and", "we will" as in the OT.
-  const TAB_PATH = val('--table', path.join(__dirname, 'align-table.json'));
-  let TAB = null;
-  try { TAB = JSON.parse(readFileSync(TAB_PATH, 'utf8')); } catch { console.warn(`  ⚠ ${TAB_PATH} missing — run build-align-links.mjs first; NT/Apocrypha get only their glossed words`); }
+  // RETIRED 2026-10-14 — fieldy: "I never agreed for that stuff to be a source of truth
+  // affecting my corpus. What I put in my lexicons/homographs are to be the source of truth."
+  // align-table.json is no longer read: no English is assigned to a Hebrew word by the learned
+  // table (alignFill is a no-op), and a word with no English of its own gets HIS chip gloss
+  // (lexicon/homographs) or his placeholder (the root's paleo) — never the table's likeliest word.
+  const TAB = null;
   const MF_P = +val('--min-p', '0.03'), MF_RATIO = +val('--min-ratio', '2'), MF_DIST = +val('--max-dist', '0.3');
   let aligned = 0;
   const FUNC = new Set(('a an the and or but if for nor so yet of to in into on onto at by with from as than that this these those which who whom whose what ' +
@@ -261,7 +264,7 @@ if (CORPUS) {
   const LO = LOL.shared();   // which Strong's a spelling-keyed lexicon gloss belongs to
   const glossOf = h => {
     // the chip's own gloss (fieldy's curated lexicon/homographs, as the Parallel shows it),
-    // else the WEB's likeliest English for its Strong's, else his placeholder: the root's paleo
+    // else his placeholder: the root's paleo (the learned table no longer answers, 2026-10-14)
     const root = h.comps.find(c => c.css === 'root' || c.css === 'mod-nmpr') || h.comps.find(c => c.true_root) || h.comps.find(c => c.css === 'mod-prep') || h.comps[h.comps.length - 1];
     // a chip baked with ANOTHER Strong's lexicon gloss (shared spelling: H1836 "this" baked as
     // "Dan") is not this word's gloss — lex-owner-lib decides, the WEB table answers instead
@@ -383,7 +386,7 @@ if (CORPUS) {
   })();
   if (JSONL) writeFileSync(argv[argv.indexOf('--jsonl') + 1], JSONL.join('\n') + '\n');
   console.log(`modification forms (corpus.db ENG, Gen 3 on: OT names + NT + Apocrypha): ${changed.toLocaleString()} of ${seen.toLocaleString()} verses, ${pairs.toLocaleString()} Hebrew words written ` +
-              `(${filled.toLocaleString()} from the Parallel links, ${aligned.toLocaleString()} from the learned table)${DRY ? ' (dry run)' : ''}`);
+              `(${filled.toLocaleString()} from the Parallel links; learned table retired)${DRY ? ' (dry run)' : ''}`);
   console.log(`  Hebrew word order: ${ilOk.toLocaleString()} verses; English order kept: ${[...ilWhy].map(([k, n]) => `${n.toLocaleString()} ${k}`).join(', ') || 'none'}; concept words (repent/baptize/genealogy…): ${conceptN}`);
 } else {
   const tdb = new Database(TRANS_DB, { readonly: DRY });

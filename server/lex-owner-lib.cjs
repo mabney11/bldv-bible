@@ -1,6 +1,15 @@
 'use strict';
 /**
- * lex-owner-lib.cjs — WHICH Strong's number a spelling-keyed lexicon gloss belongs to.
+ * lex-owner-lib.cjs — REPORT ONLY (2026-10-14). fieldy: "I never agreed for that stuff to be a
+ * source of truth affecting my corpus. What I put in my lexicons/homographs are to be the source
+ * of truth." A spelling-keyed lexicon gloss applies to EVERY Strong's spelled with those letters;
+ * a Strong's-keyed homograph ("𐤀𐤌_H518") is how he gives one number its own gloss. `fits()` is
+ * therefore always true — nothing here hides, resets or rewrites a gloss any more. What remains
+ * is `contested()` / `review()`: a LIST for fieldy (server/lexicon-owner-review.txt) of spellings
+ * whose gloss the Strong's dictionary does not name for one of its numbers. align-table.json is
+ * not read at all.
+ *
+ * History (what this file USED to do, 2026-10-13 — retired):
  *
  * fieldy, Habakkuk 2:3 (2026-10-13): "I dont like the incorrect usage of 'Am' being translated
  * 'mother' despite my tokens disagreeing" / "i need a general solution, not a hotfix".
@@ -26,7 +35,11 @@ const path = require('path');
 const J = f => { const p = [path.join(__dirname, 'lexicon', f), path.join(__dirname, f)].find(x => fs.existsSync(x)); try { return p ? JSON.parse(fs.readFileSync(p, 'utf8')) : null; } catch { return null; } };
 
 const STOP = new Set('the and for with from that this who which what are was were been being have has had his her its their our your you she they them him not but into onto unto upon made make one ones thing things picture also very used use idiom phrase such concept'.split(' '));
-const stem = w => w.replace(/['’]s$/, '').replace(/ies$/, 'y').replace(/(?<=[a-z]{3})s$/, '');
+// irregular English forms a gloss and a dictionary entry name differently ("said" vs KJV "say"):
+// without these, H559's own evidence never named its lexicon gloss "said" and the word was
+// excluded from its own spelling (2026-10-14, Genesis 4:1 WaThaAmar showed the placeholder).
+const IRREG = { said: 'say', saith: 'say', spoke: 'speak', spoken: 'speak', went: 'go', gone: 'go', came: 'come', saw: 'see', seen: 'see', gave: 'give', given: 'give', took: 'take', taken: 'take', made: 'make', knew: 'know', known: 'know', ate: 'eat', eaten: 'eat', bore: 'bear', born: 'bear', begot: 'beget', begotten: 'beget', brought: 'bring', sought: 'seek', taught: 'teach', thought: 'think', fought: 'fight', bought: 'buy', built: 'build', sent: 'send', spent: 'spend', kept: 'keep', slept: 'sleep', wept: 'weep', left: 'leave', felt: 'feel', dwelt: 'dwell', heard: 'hear', held: 'hold', told: 'tell', sold: 'sell', stood: 'stand', sat: 'sit', fell: 'fall', fallen: 'fall', rose: 'rise', risen: 'rise', drew: 'draw', drawn: 'draw', slew: 'slay', slain: 'slay', smote: 'smite', smitten: 'smite', wrote: 'write', written: 'write', drank: 'drink', drunk: 'drink', found: 'find', bound: 'bind', fled: 'flee', led: 'lead', fed: 'feed', met: 'meet', lay: 'lie', laid: 'lay', struck: 'strike', became: 'become', began: 'begin', begun: 'begin', chose: 'choose', chosen: 'choose', forgot: 'forget', forgave: 'forgive', hid: 'hide', hidden: 'hide', men: 'man', women: 'woman', children: 'child', feet: 'foot', teeth: 'tooth' };
+const stem = w => { w = w.replace(/['’]s$/, ''); if (IRREG[w]) return IRREG[w]; return w.replace(/ies$/, 'y').replace(/(?<=[a-z]{3})s$/, ''); };
 const wordsOf = s => (String(s || '').toLowerCase().match(/[a-z]+/g) || []);
 /** a gloss's content words: "fire / offering made by fire" -> fire, offering */
 const glossWords = g => [...new Set(wordsOf(String(g || '').replace(/\[[^\]]*\]/g, ' ').replace(/\([^()]*\)/g, ' ')).filter(w => w.length >= 3 && !STOP.has(w)).map(stem))];
@@ -35,7 +48,8 @@ const normH = s => (s ? 'H' + String(s).replace(/^H+/i, '') : '');
 function loadOwnerEvidence(o = {}) {
     const ROOTS = o.roots || J('strongs-roots.json') || {};
     const DEF = o.defs || J('strongs-hebrew-expanded.json') || {};
-    const TAB = o.table !== undefined ? o.table : J('align-table.json');
+    // evidence for the REVIEW list only: the Strong's dictionary. No learned table.
+    const TAB = o.table || null;
     const owners = new Map();   // spelling -> Set(sn)
     for (const [sn, p] of Object.entries(ROOTS)) { if (!owners.has(p)) owners.set(p, new Set()); owners.get(p).add(sn); }
     const evCache = new Map();
@@ -69,8 +83,10 @@ function loadOwnerEvidence(o = {}) {
         const out = best > 0 ? new Set(sc.filter(x => x[1] > 0).map(x => x[0])) : own;   // ANY evidence keeps it; none at all = every owner
         fitCache.set(key, out); return out;
     };
-    /** may a token tagged `sn`, written `spelling`, show `gloss` (spelling-keyed)? */
-    const fits = (spelling, gloss, sn) => {
+    /** may a token tagged `sn`, written `spelling`, show `gloss` (spelling-keyed)? — ALWAYS yes:
+     *  fieldy's lexicon is the source of truth (2026-10-14). Kept so the callers need no change. */
+    const fits = () => true;
+    const _fitsRetired = (spelling, gloss, sn) => {
         if (!sn) return true;
         const f = fitting(spelling, gloss);
         if (!f) return true;
@@ -89,11 +105,16 @@ function loadOwnerEvidence(o = {}) {
         }
         return out;
     };
-    return { owners, fitting, fits, contested, glossWords };
+    /** the review list: contested spellings minus owners fieldy already gave a homograph */
+    const review = (lexicon, homographs = {}) => contested(lexicon)
+        .map(x => ({ ...x, others: new Set([...x.others].filter(sn => !homographs[`${x.spelling}_${sn}`])) }))
+        .filter(x => x.others.size);
+    return { owners, fitting, fits, contested, review, glossWords };
 }
 
 let _shared = null;
-/** one process-wide instance (strongs-roots / definitions / align-table rarely change) */
+/** one process-wide instance */
 function shared() { return _shared || (_shared = loadOwnerEvidence()); }
 
 module.exports = { loadOwnerEvidence, shared, glossWords };
+

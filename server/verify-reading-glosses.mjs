@@ -100,22 +100,16 @@ try {
 // unwrapped by --fix ("Am (mother)" -> "mother" would be worse): merge-modforms writes the
 // right gloss; a machine row that still has one is fatal, a saved verse is listed.
 const LO = (await import(pathToFileURL(path.join(__dirname, 'lex-owner-lib.mjs')).href)).shared();
+// RETIRED 2026-10-14 (fieldy: his lexicon/homographs are the source of truth): a spelling's
+// lexicon gloss applies to every Strong's spelled that way, so there is no "wrong owner" to
+// fail or repair. lex-owner-lib's contested() is now a review LIST only.
 const OWNED = [];
-try {
-  const LEXJ = L('lexicon/lexicon.json');
-  for (const x of LO.contested(LEXJ)) {
-    const gw = new Set(LO.glossWords(x.gloss)); if (!gw.size) continue;
-    OWNED.push({ word: norm(translit(x.spelling)), gloss: gw, lexGloss: x.gloss, spelling: x.spelling, fit: x.fit, others: x.others,
-                 why: `${x.spelling} "${x.gloss}" is ${[...x.fit].join('/')}'s gloss — this verse's word is ${[...x.others].join('/')} (lex-owner-lib.cjs)` });
-  }
-} catch {}
-
 // The English the wrong owner's word should carry, for --fix: fieldy's Strong's-keyed homograph
 // ("𐤀𐤌_H518"), else the WEB's likeliest content word for that Strong's (align-table.json —
 // H518 "if", H5973 "with", H310 "after", H1241 "cattle"; two strong words join: "fine linen"),
 // else the first word of its kjv_def. null = leave it (reported, fatal on a machine row).
 const HOMO = (() => { try { return L('lexicon/homographs.json'); } catch { return {}; } })();
-const ATAB = (() => { try { return L('align-table.json').sn || {}; } catch { return {}; } })();
+const ATAB = {};   // align-table.json is not read (2026-10-14)
 const SDEF = (() => { try { return L('strongs-hebrew-expanded.json'); } catch { return {}; } })();
 const FILL = new Set('a an and the of to in on at by for from with as is are was were be been it its i me my we us our you your he him his she her they them their this that these those will shall may might can could would should then there here so not no yes up out all also which who what when'.split(' '));
 const ownerEnglish = (spelling, sn, lexGloss) => {

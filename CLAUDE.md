@@ -1,6 +1,52 @@
 # CLAUDE.md — project rules for paleo-studio
 
-## A SHARED SPELLING'S LEXICON GLOSS BELONGS TO ONE STRONG'S: "Am (mother)" on H518 (added 2026-10-13)
+## YOUR LEXICON/HOMOGRAPHS ARE THE ONLY SOURCE OF TRUTH FOR A GLOSS — owner rule + learned table RETIRED (2026-10-14)
+
+fieldy, after Genesis 4:1 WaThaAmar (H559) showed the placeholder although lexicon.json has "𐤀𐤌𐤓": "said":
+"I never agreed for that stuff to be a source of truth affecting my corpus. What I put in my
+lexicons/homographs are to be the source of truth." He chose: retire it AND drop the table's fill-ins.
+**Never reintroduce a machine source (align-table.json, the Strong's dictionary, any learned model) that
+decides, hides, resets or rewrites a gloss.** Machine evidence may only produce a REVIEW LIST.
+
+- **lex-owner-lib.cjs: `fits()` is always true.** A spelling-keyed lexicon gloss applies to EVERY Strong's
+  spelled with those letters; a Strong's-keyed homograph ("𐤀𐤌_H518") is how fieldy gives one number its own
+  gloss. Callers (server.js reGlossOne/_lexMine, gloss-resolver.cjs, merge-modforms curatedOf/glossOf,
+  render-corpus VG.lexOk) are unchanged and now never exclude. `review(lexicon, homographs)` lists spellings
+  whose gloss the Strong's dictionary doesn't name for one of its numbers, minus numbers he already gave a
+  homograph → `server/lexicon-owner-review.txt` (163 spellings / 283 numbers). Report only.
+- Why it broke: the rule decided owners from align-table.json (gitignored, so absent on prod) + the
+  dictionary. On prod "said" went to H561/H562 only (their definitions say "something said"; H559's says
+  "say"), so every H559 chip was reset to the placeholder. A same-day patch copying the table into
+  lexicon/owner-evidence.json was REVERTED and the file deleted.
+- **verify-reading-glosses.mjs: the "owner:" rule and its --fix repair are gone** (OWNED is empty, the
+  table is not read). That repair wrote the table's English into machine rows on 2026-10-13: corpus.db held
+  "Am (if)" 1,785 verses, "Im (with)" 1,959, "Achar (after)" 208, "Baqar (cattle)" 82 … A FULL
+  `node render-all.mjs` (not --surface) regenerates every machine row from the WEB text + his lexicon,
+  which removes them. Expected consequence, accepted by fieldy: "Am (mother)" returns on H518 (and the other
+  listed numbers read their spelling's gloss) until he adds a homograph.
+- **merge-modforms.mjs: align-table.json is not read** (`TAB = null`): no English is assigned to a Hebrew
+  word by the learned table (alignFill is a no-op), and a word with no English of its own gets HIS chip
+  gloss or his placeholder (root paleo) — never "the WEB's likeliest English". NT/Apocrypha words that only
+  the table explained now show the placeholder until he glosses them.
+- Still built from the same learned model, NOT changed (asked fieldy): build-align-links.mjs's
+  `lang='HEB-auto'` translation_links, which render-corpus applyLinks also stamps into NT reading text.
+  build-align-links still writes align-table.json; nothing reads it for glosses.
+
+## EVERY TOKEN'S STRONG'S IS VISIBLE: per-token badges in Parallel (2026-10-14)
+
+fieldy, Habakkuk 2:3: "There is no strongs link for 'Am' or 'kay' here. They must all be visible that way
+I can modify any word within my app. I dont want to run into the blocker again". A display block can hold
+several corpus tokens (a particle folded onto its host, a maqaf compound אִם־יִתְמַהְמַהּ / כִּי־בֹא); Parallel
+drew ONE badge from the block's head `strongs`, so Am (H518) and Kay (H3588) had none.
+**Rule: badges come from the block's `sourceTokens` (server: groupSurfaceTokens pendingSources), one per
+Strong's, never from the head alone.** `src/lib/snBadges.js` (tokensOfComps — match by component
+token_ordinal, not position; badgeSNs — every real Strong's, a H9xxx grammar code only when nothing else).
+Parallel.jsx `SnBadges` renders them for every block and every maqaf half (the combined compound badge is
+gone). components/WordBlock.jsx maqaf halves now take their tokens by ordinal too (src[i] by position gave a
+conj+root half the conj's H9000). Needs a frontend rebuild + deploy. Live-parse fallback blocks with no
+sourceTokens still show only the head badge.
+
+## [RETIRED 2026-10-14 — see the entry above; kept for history] A SHARED SPELLING'S LEXICON GLOSS BELONGS TO ONE STRONG'S: "Am (mother)" on H518 (added 2026-10-13)
 
 fieldy, Habakkuk 2:3 "Am (mother)" where the token is H518 'im "if/although": "I dont like the
 incorrect usage of 'Am' being translated 'mother' despite my tokens disagreeing" / "this isnt the

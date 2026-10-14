@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
 import { usePaleoMode } from '../hooks/usePaleoMode.js';
+import { tokensOfComps } from '../lib/snBadges.js';
 
 // Classes treated as suffix vs prefix for the alternating-color logic.
 // mod-suff-unk: heb-align.js's fallback for a stripped NT suffix tail with no
@@ -461,16 +462,18 @@ export default function WordBlock({
         style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '2px' }}
       >
         {maqafSplit.segs.flatMap((segComps, i) => {
-          const st = src[i] || {};
+          // this half's OWN tokens, matched by token_ordinal — not src[i] by position, which
+          // gave a half spanning a conjunction + root the conjunction's H9000 (lib/snBadges.js)
+          const own = tokensOfComps(segComps, src);
+          const toks = own.length ? own : (src[i] ? [src[i]] : []);
+          const st = toks.find(t => t.strongs && !isVirtualSN(t.strongs)) || toks[0] || {};
           const half = {
             verse: wordObj.verse,
             token_ordinal: st.token_ordinal ?? wordObj.token_ordinal,
             components: segComps,
             strongs: st.strongs,
             word_raw: st.word_raw,
-            sourceTokens: st.word_raw
-              ? [{ token_ordinal: st.token_ordinal, word_raw: st.word_raw, strongs: st.strongs }]
-              : undefined,
+            sourceTokens: toks.length ? toks : undefined,
             coreStrongs: null,
           };
           const els = [];

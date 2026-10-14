@@ -12,6 +12,7 @@ import VerseSwitch from '../components/VerseSwitch.jsx';
 import { truncateTitle, versePreviewTranslit } from '../lib/versePreview.js';
 import { TYPEFACES } from '../lib/typefaces.js';
 import { remapSourceVerseToDisplay, remapDisplayChapterToSource } from '../lib/sourceVerseRemap.js';
+import { tokensOfComps, badgeSNs } from '../lib/snBadges.js';
 // Same reading typefaces the novel Reader offers (see ../lib/typefaces.js) —
 // pulled in here 2026-08-15 so the English column can look like the Reader
 // instead of the plain system-UI stack it used to render in. Self-hosted,
@@ -576,6 +577,40 @@ const isVirtualSN = sn => {
   return !isNaN(n) && n >= 9000;
 };
 
+// The surf + Strong's chips under a word. EVERY Strong's of the block's own tokens gets a chip
+// (lib/snBadges.js) — a particle folded onto its host (Kay H3588 + Bawaa H935, Habakkuk 2:3)
+// used to show only the host's number, leaving the particle with no link to edit it.
+function SnBadges({ word, comps, style }) {
+  const own = tokensOfComps(comps, word.sourceTokens);
+  const toks = own.length ? own : (word.sourceTokens || []);
+  const sns = badgeSNs(toks, word.strongs);
+  const surf = word.word_raw || (toks.find(t => !isVirtualSN(t.strongs)) || toks[0] || {}).word_raw;
+  if (!surf && !sns.length) return null;
+  return (
+    <div className="strongs-badge" style={style}>
+      <span className="surf-sn-group" style={{ display: 'inline-flex', gap: '3px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+        {surf && (
+          <a className="surf-badge-link"
+             href={`/surfaces?${new URLSearchParams({ word: surf })}`}
+             title={`Browse surface ${surf}`}
+             onClick={(e) => e.stopPropagation()}>surf</a>
+        )}
+        {sns.map(sn => isVirtualSN(sn) ? (
+          <span key={sn} className="sn-link root sn-virtual"
+                title="Grammar/virtual code — no root entry"
+                style={{ opacity: 0.6, cursor: 'default' }}
+                onClick={(e) => e.stopPropagation()}>{sn}</span>
+        ) : (
+          <a key={sn} className="sn-link root"
+             href={`/roots?sn=${sn}`}
+             title={`Explore root ${sn}`}
+             onClick={(e) => e.stopPropagation()}>{sn}</a>
+        ))}
+      </span>
+    </div>
+  );
+}
+
 // ─── A single source word block ──────────────────────────────────────────────
 // `rich` = this language has a Strong's-tagged token stream, so it renders
 // glossed Paleo components (per-component colour + highlight). It used to be
@@ -655,43 +690,17 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
           // regardless, since that reads token_ordinal directly off comps.
           els.push(
             <WordBlock key={`h${hi}`}
-                       word={{ token_ordinal: seg[0]?.token_ordinal ?? word.token_ordinal, components: seg }}
+                       word={{ token_ordinal: seg[0]?.token_ordinal ?? word.token_ordinal, components: seg,
+                               // its OWN tokens, so each half shows its own surf + Strong's
+                               // (אִם־יִתְמַהְמַהּ: Am H518 and YaThamahamah H4102, not one badge)
+                               sourceTokens: tokensOfComps(seg, word.sourceTokens) }}
                        showSub={showSub} rich={rich} isPaleoScript={isPaleoScript} dir={dir}
                        hoveredOrds={hoveredOrds} onHoverLink={() => {}} blockLinks={[]} />
           );
           return els;
         })}
         </div>
-        {/* One badge for the WHOLE compound (not one per half) — the fetched
-            word already carries word_raw/strongs for the combined form, and
-            splitting that accurately per half would need per-token surf/SN
-            data this page doesn't fetch. Matches components/WordBlock.jsx's
-            own coreStrongs badge, which is likewise shown once at the end. */}
-        {showSub && (word.word_raw || word.strongs) && (
-          <div className="strongs-badge" style={{ marginTop: '4px' }}>
-            <span className="surf-sn-group" style={{ display: 'inline-flex', gap: '3px', alignItems: 'center' }}>
-              {word.word_raw && (
-                <a className="surf-badge-link"
-                   href={`/surfaces?${new URLSearchParams({ word: word.word_raw })}`}
-                   title={`Browse surface ${word.word_raw}`}
-                   onClick={(e) => e.stopPropagation()}>surf</a>
-              )}
-              {word.strongs && (
-                isVirtualSN(word.strongs) ? (
-                  <span className="sn-link root sn-virtual"
-                        title="Grammar/virtual code — no root entry"
-                        style={{ opacity: 0.6, cursor: 'default' }}
-                        onClick={(e) => e.stopPropagation()}>{fmtSN(word.strongs)}</span>
-                ) : (
-                  <a className="sn-link root"
-                     href={`/roots?sn=${fmtSN(word.strongs)}`}
-                     title={`Explore root ${fmtSN(word.strongs)}`}
-                     onClick={(e) => e.stopPropagation()}>{fmtSN(word.strongs)}</a>
-                )
-              )}
-            </span>
-          </div>
-        )}
+        {/* No combined badge: every half above shows its own (SnBadges). */}
       </div>
     );
   }
@@ -791,34 +800,10 @@ function WordBlock({ word, showSub, rich, isPaleoScript, dir, hoveredOrds, onHov
               surface explorer for this exact form, H#### -> the root explorer.
               Without them a word here was a dead end, while the identical word
               in the reader was a link into the corpus-wide index. */}
-          {(word.word_raw || word.strongs) && (
-            // Breathing room between the gloss line and the chips. Inline rather
-            // than in CSS because `.strongs-badge` is styled globally and shared
-            // with the main reader — this keeps the change to this page.
-            <div className="strongs-badge" style={{ marginTop: '7px' }}>
-              <span className="surf-sn-group" style={{ display: 'inline-flex', gap: '3px', alignItems: 'center' }}>
-                {word.word_raw && (
-                  <a className="surf-badge-link"
-                     href={`/surfaces?${new URLSearchParams({ word: word.word_raw })}`}
-                     title={`Browse surface ${word.word_raw}`}
-                     onClick={(e) => e.stopPropagation()}>surf</a>
-                )}
-                {word.strongs && (
-                  isVirtualSN(word.strongs) ? (
-                    <span className="sn-link root sn-virtual"
-                          title="Grammar/virtual code — no root entry"
-                          style={{ opacity: 0.6, cursor: 'default' }}
-                          onClick={(e) => e.stopPropagation()}>{fmtSN(word.strongs)}</span>
-                  ) : (
-                    <a className="sn-link root"
-                       href={`/roots?sn=${fmtSN(word.strongs)}`}
-                       title={`Explore root ${fmtSN(word.strongs)}`}
-                       onClick={(e) => e.stopPropagation()}>{fmtSN(word.strongs)}</a>
-                  )
-                )}
-              </span>
-            </div>
-          )}
+          {/* Same chips as the main reader: surf -> the surface explorer, H#### -> the root
+              explorer — one per Strong's in this block (SnBadges). marginTop: breathing room
+              between the gloss line and the chips (.strongs-badge is styled globally). */}
+          <SnBadges word={word} comps={comps} style={{ marginTop: '7px' }} />
         </div>
       ) : null}
     </div>
