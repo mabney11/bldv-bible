@@ -20,7 +20,7 @@
 // Exit 1 when rendered text_src remains and no backup has that verse in English — the books
 // cannot be rebuilt from it; re-ingest them (ingest_josephus_*.py) or pass --from.
 import Database from 'better-sqlite3';
-import { existsSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, statSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -60,10 +60,32 @@ const backups = (val('--from', '') ? val('--from').split(',') : readdirSync(dir)
 const byCanon = new Map();
 for (const r of bad) byCanon.set(r.c ?? r.code, (byCanon.get(r.c ?? r.code) || 0) + 1);
 console.log(`text_src holds rendered text in ${mustFix.toLocaleString()} verse(s) of ${badBooks.size} book(s) — rows of those books: ${[...byCanon].map(([c, n]) => `${c} ×${n.toLocaleString()}`).join(', ')}`);
-if (!backups.length) die(`no backup to restore from (looked for ${base}.bak* in ${dir}) — pass --from <backup.db>, or re-ingest those books`);
 
 const upd = DRY ? null : db.prepare(`UPDATE verses SET text_src = ? WHERE id = ?`);
 let left = bad, restored = 0;
+
+// The Ge'ez-only books given Hebrew + English by the backfill (2026-10-12: 1/2/3 Meqabyan, the
+// Melchizedek works) are younger than every corpus.db.bak*, so no backup has them. Their English
+// SOURCE is the import file the ingest read (geez-heb-backfill/geez_heb_import.json, "eng") —
+// it answers first. (2026-10-14: 4 Melchizedek verses, canon 212/213/215, stopped render-all.)
+{
+  const IMP = path.join(__dirname, 'geez-heb-backfill', 'geez_heb_import.json');
+  let imp = null; try { imp = JSON.parse(readFileSync(IMP, 'utf8')); } catch {}
+  if (imp && Array.isArray(imp.rows)) {
+    const want = new Map();
+    for (const x of imp.rows) if (x && x.eng) { want.set(`${x.canon_id}|${x.chapter}|${x.verse}`, x.eng); want.set(`${x.code}|${x.chapter}|${x.verse}`, x.eng); }
+    const next = []; let n = 0;
+    const run = () => { for (const r of left) {
+      const t = want.get(`${r.c}|${r.ch}|${r.v}`) || want.get(`${r.code}|${r.ch}|${r.v}`);
+      if (!t || isRendered(t)) { next.push(r); continue; }
+      if (t !== r.text_src) { if (upd) upd.run(t, r.id); n++; }
+    } };
+    if (DRY) run(); else db.transaction(run)();
+    if (n) console.log(`  ${n.toLocaleString()} verse(s) from geez-heb-backfill/geez_heb_import.json`);
+    restored += n; left = next.filter(r => isRendered(r.text_src) || badBooks.has(r.code));
+  }
+}
+if (left.length && !backups.length) die(`no backup to restore from (looked for ${base}.bak* in ${dir}) — pass --from <backup.db>, or re-ingest those books`);
 for (const f of backups) {
   if (!left.length) break;
   let bak; try { bak = new Database(f, { readonly: true, fileMustExist: true }); } catch (e) { console.warn(`  (skipped ${path.basename(f)}: ${e.message})`); continue; }

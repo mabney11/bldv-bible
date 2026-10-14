@@ -141,6 +141,9 @@ node build-surface-index.js          # bakes the new HEB rows (canon > 40 is in 
 node render-all.mjs --surface        # reset-src picks up the new ENG; merge-modforms weaves Hebrew forms
 ```
 restart, check /bible?book=1-meqabyan&chapter=1&script=english, then Rebake (pushes corpus.db + index).
+**2026-10-14:** these books are younger than every corpus.db.bak*, so when a snapshot captured their
+rendered text (4 Melchizedek verses, canon 212/213/215) restore-text-src had no backup and stopped
+render-all at step 10. It now restores them first from `geez-heb-backfill/geez_heb_import.json` ("eng").
 Known: the source Ge'ez is fragmentary in places (cut-off verses, "))" for lost numbers); those
 translations end where the Ge'ez ends — nothing invented.
 
