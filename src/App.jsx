@@ -85,19 +85,39 @@ function RouteFallback() {
 // reload per tab session (sessionStorage flag) so a genuinely broken chunk
 // (not just staleness) doesn't reload-loop forever; a second failure shows
 // a real fallback with a manual retry.
-const CHUNK_ERROR_RE = /dynamically imported module|Importing a module script failed|ChunkLoadError|loading chunk|loading css chunk/i;
-const CHUNK_RELOAD_FLAG = 'bld-chunk-reload-attempted';
+// 2026-10-15 (fieldy: "this happens randomly from time to time, i can refresh
+// and it will load properly"). Two holes in the version above:
+//   1. The "already tried" flag was a plain '1' in sessionStorage that was never
+//      cleared, so after ONE auto-reload a tab could never auto-recover again —
+//      the next deploy that stranded that tab went straight to this screen.
+//      Now it's a timestamp: auto-reload unless we already did so in the last
+//      30 s (still stops a genuinely broken chunk from reload-looping).
+//   2. Vite's CSS-preload failure ("Unable to preload CSS for …") didn't match
+//      the regex, so it skipped the auto-reload entirely. Vite fires a
+//      `vite:preloadError` event for exactly this; we handle it below.
+// The server side of the fix (old builds' chunks stay downloadable after a
+// deploy) is in entrypoint.sh + server.js's /assets archive fallback.
+const CHUNK_ERROR_RE = /dynamically imported module|Importing a module script failed|ChunkLoadError|loading chunk|loading css chunk|Unable to preload CSS|Failed to fetch/i;
+const CHUNK_RELOAD_KEY = 'bld-chunk-reload-at';
+function reloadForStaleChunk() {
+  let last = 0;
+  try { last = Number(sessionStorage.getItem(CHUNK_RELOAD_KEY)) || 0; } catch { /* private mode */ }
+  if (Date.now() - last < 30_000) return false;
+  try { sessionStorage.setItem(CHUNK_RELOAD_KEY, String(Date.now())); } catch { /* non-fatal */ }
+  window.location.reload();
+  return true;
+}
+if (typeof window !== 'undefined') {
+  window.addEventListener('vite:preloadError', (e) => {
+    if (reloadForStaleChunk()) e.preventDefault();
+  });
+}
 class ChunkErrorBoundary extends Component {
   constructor(props) { super(props); this.state = { failed: false }; }
   static getDerivedStateFromError() { return { failed: true }; }
   componentDidCatch(error) {
-    const isChunkError = CHUNK_ERROR_RE.test(error?.message || '');
-    let alreadyTried = true;
-    try { alreadyTried = sessionStorage.getItem(CHUNK_RELOAD_FLAG) === '1'; } catch { /* private mode */ }
-    if (isChunkError && !alreadyTried) {
-      try { sessionStorage.setItem(CHUNK_RELOAD_FLAG, '1'); } catch { /* non-fatal */ }
-      window.location.reload();
-    }
+    if (CHUNK_ERROR_RE.test(error?.message || '')) reloadForStaleChunk();
+    else console.error('[ChunkErrorBoundary] render error:', error);
   }
   render() {
     if (!this.state.failed) return this.props.children;

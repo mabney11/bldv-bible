@@ -57,4 +57,16 @@ else
   echo "WARNING: build-headings.mjs failed (corpus.db not available yet) — headings.json not refreshed." >&2
 fi
 
+# Keep every build's hashed chunks on the volume (2026-10-15) so a page loaded
+# from the previous build can still fetch its lazy chunks after a deploy —
+# server.js serves $DATA_DIR/asset-archive for any /assets/ file the current
+# build lacks. -n never overwrites; files untouched for 30 days are pruned
+# (the current build always serves from its own public/assets first).
+# Never fatal: a failure here only loses the safety net.
+if [ -d /app/server/public/assets ]; then
+  mkdir -p "$DATA_DIR/asset-archive" 2>/dev/null \
+    && cp -n /app/server/public/assets/* "$DATA_DIR/asset-archive/" 2>/dev/null || true
+  find "$DATA_DIR/asset-archive" -type f -mtime +30 -delete 2>/dev/null || true
+fi
+
 exec "$@"

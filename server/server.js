@@ -1477,6 +1477,18 @@ app.use(express.static('public', {
     },
 }));
 app.use('/lexicon', express.static(path.join(__dirname, 'lexicon'), { maxAge: '5m' }));
+// Previous builds' hashed chunks (2026-10-15). Every deploy ships a fresh image
+// whose public/assets holds ONLY the new build, so a tab opened before the
+// deploy (or an HTML response served by the old container in the seconds
+// before the blue/green cutover) asks for chunk names that now 404 and the app
+// shows "Something didn't load correctly." entrypoint.sh copies each build's
+// assets into $DATA_DIR/asset-archive (pruned after 30 days); this serves them
+// for any /assets/ file the current build no longer has.
+const ASSET_ARCHIVE = path.join(process.env.DATA_DIR || '/data', 'asset-archive');
+if (fs.existsSync(ASSET_ARCHIVE)) {
+    app.use('/assets', express.static(ASSET_ARCHIVE, { maxAge: '365d', immutable: true }));
+}
+
 
 // ── SPA PAGE ROUTES ──────────────────────────────────────────────────────────
 // After the React migration, every page in the app is served by a single
