@@ -89,6 +89,20 @@ while true; do
     fi
   else
     rm -f "$STAMP_FILE" 2>/dev/null
+    # PULL what was saved on the site (Root page "set value", admin edits): the box commits
+    # those to GitHub, and until 2026-10-14 this machine never took them unless it had an edit of
+    # its own to push — "𐤀𐤌_H518" sat on GitHub while local renders still wrote "Am (mother)".
+    # Fast-forward only, and only when the remote moved: never a merge; git refuses the ff if a
+    # file it would change has local edits, and we log that.
+    REMOTE="$(git ls-remote origin "refs/heads/$BRANCH" 2>/dev/null | cut -f1)"
+    if [ -n "$REMOTE" ] && [ "$REMOTE" != "$(git rev-parse HEAD)" ] && ! git merge-base --is-ancestor "$REMOTE" HEAD 2>/dev/null; then
+      BEFORE="$(git rev-parse HEAD)"
+      if git fetch -q origin "$BRANCH" && git merge --ff-only -q "origin/$BRANCH" 2>>"$STATE/pull.err"; then
+        LOG "pulled $(git rev-list --count "$BEFORE..HEAD") commit(s) from origin/$BRANCH (edits made on the site)"
+      else
+        LOG "could not fast-forward to origin/$BRANCH (local edits in the same files?) — see $STATE/pull.err"
+      fi
+    fi
     # 2026-09-24: .failing used to be cleared ONLY by a later successful
     # lexicon-sync.sh run. If the failure is resolved some other way (fieldy
     # commits + pushes by hand, as after the 14:56 pull-blocked-by-dirty-tree

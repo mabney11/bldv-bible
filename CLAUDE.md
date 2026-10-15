@@ -32,6 +32,26 @@ decides, hides, resets or rewrites a gloss.** Machine evidence may only produce 
   `lang='HEB-auto'` translation_links, which render-corpus applyLinks also stamps into NT reading text.
   build-align-links still writes align-table.json; nothing reads it for glosses.
 
+## "𐤀𐤌_H518" ON THE SITE, "Am (mother)" IN THE TEXT; H518 WITH NO OT VERSES (2026-10-14)
+
+fieldy: "I added an entry for H518 but the tokens are still getting 'mother' — also, the context should
+not be Matthew, thats confusing". Three causes:
+1. **His entry never reached this machine.** He saved `"𐤀𐤌_H518": "although - rhetorical"` on the site
+   (Root page "set value"); the box committed it to GitHub, but lexicon-watch.sh only ever PUSHED — it
+   pulled only when it had a local edit of its own — so the local render used the old lexicon (7 commits
+   behind). lexicon-watch.sh now fast-forwards to origin when the remote moved and server/lexicon is clean
+   (`git merge --ff-only`; refuses and logs if a file it would change has local edits).
+2. **merge-modforms took his homographs only through the chip baked into surface-index.db**, which
+   predates any entry added after the last index build. It now reads homographs.json itself on every run
+   (`homoOf`: `<paleo>_H###`, then `<paleo>_<pos>` — reGlossOne's order) before the lexicon, in both
+   curatedOf (curatePairs re-glosses every unmodified pair each run) and glossOf.
+3. **The root page folded every conj/prep/art row into the next word** (`WORD_FOLD_POS`), but 41,612 BHS
+   rows tagged conj/prep are WORDS with their own Strong's (אִם H518, כִּי H3588, אֵת H853, עַל H5921 …).
+   Their occurrences were credited to the next word, so /roots?sn=H518 listed no OT verse and its
+   occurrence list (and "This context", which falls back to the open hit) started at Matthew 4:3.
+   server.js `isFoldRow`: only a grammar-code (H9000+) / no-Strong's / one-letter row folds.
+   NAV_BUILD_VERSION → wordsurf-v12-particle-words. Hab 2:3 now folds to H3588 · … · H518 · H4102 · …
+
 ## EVERY TOKEN'S STRONG'S IS VISIBLE: per-token badges in Parallel (2026-10-14)
 
 fieldy, Habakkuk 2:3: "There is no strongs link for 'Am' or 'kay' here. They must all be visible that way

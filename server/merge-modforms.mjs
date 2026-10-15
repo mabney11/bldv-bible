@@ -269,7 +269,7 @@ if (CORPUS) {
     // a chip baked with ANOTHER Strong's lexicon gloss (shared spelling: H1836 "this" baked as
     // "Dan") is not this word's gloss — lex-owner-lib decides, the WEB table answers instead
     const chipOk = c => !(c && c.gloss_src === 'lexicon' && !LO.fits(c.true_root || c.paleo, LEX[c.true_root || c.paleo] || c.translation, c.sn || h.sn));
-    let g = (!h.mods.length && curatedOf(h)) || (root && chipOk(root) ? tidy(root.translation) : '');
+    let g = homoOf(h) || (!h.mods.length && curatedOf(h)) || (root && chipOk(root) ? tidy(root.translation) : '');
     // a preposition's chip may carry a homograph's sense (עָלֵינוּ "went up"): its WEB English first
     if (/prep/.test(h.pos || '') && h.sn !== 'H853' && TAB && TAB.sn[h.sn]) {
       const p = Object.entries(TAB.sn[h.sn]).sort((a, b) => b[1] - a[1]).map(x => x[0]).find(w => PREPWORDS.has(w));
@@ -324,10 +324,28 @@ if (CORPUS) {
   // vs the gentilic H843) — else the chip's curated gloss
   const ROOT_OWNERS = new Map();
   for (const [sn, p] of Object.entries(ROOTS)) { if (!ROOT_OWNERS.has(p)) ROOT_OWNERS.set(p, new Set()); ROOT_OWNERS.get(p).add(sn); }
+  // fieldy's homographs, read from HIS FILE on every run — not only through the chip baked into
+  // surface-index.db, which predates any entry he adds after the last index build (2026-10-14:
+  // "𐤀𐤌_H518": "although - rhetorical" was live on the site but the reading text still said
+  // "Am (mother)"). Same order as server.js reGlossOne: <paleo>_H###, then <paleo>_<pos>.
+  let HOMO = {};
+  try { HOMO = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'homographs.json'), 'utf8')); } catch { HOMO = {}; }
+  const POS_LONG = { prep: 'preposition', conj: 'conjunction', art: 'article', nega: 'negative', inrg: 'interrogative' };
+  const homoOf = h => {
+    const root = h.comps.find(c => c.css === 'root') || h.comps.find(c => c.true_root) || h.comps.find(c => !/^(mod-|vbe|prs|nme|pfm|vbs|uvf)/.test(c.css || '')) || null;
+    const keys = [...new Set([root && root.true_root, root && root.paleo, h.comps.map(c => c.paleo).join('')].filter(Boolean))];
+    const sns = h.sn ? [...new Set([h.sn, h.sn.replace(/[a-z]$/, '')])] : [];
+    for (const k of keys) for (const sn of sns) { const g = tidy(HOMO[`${k}_${sn}`]); if (g && !/^[\u{10900}-\u{1091F}\s\/]*$/u.test(g)) return g; }
+    const pl = POS_LONG[(h.pos || '').replace(/^.*\b(prep|conj|art|nega|inrg)\b.*$/, '$1')];
+    if (pl) for (const k of keys) { const g = tidy(HOMO[`${k}_${pl}`]); if (g && !/^[\u{10900}-\u{1091F}\s\/]*$/u.test(g)) return g; }
+    return '';
+  };
   const curatedOf = h => {
     const root = h.comps.find(c => c.css === 'root') || h.comps.find(c => c.true_root) || null;   // a particle's head is mod-intj / mod-prps
     const chip = root ? tidy(root.translation) : '';
     const placeholder = g => !g || /^[\u{10900}-\u{1091F}\s\/]*$/u.test(g);
+    // 0. his homograph for this Strong's / part of speech, straight from homographs.json
+    { const g = homoOf(h); if (g) return g; }
     // 1. his Strong's-specific (homograph) gloss: Irawam "cunning / crafty", not 𐤏𐤓𐤅𐤌 "naked"
     if (root && root.gloss_src === 'homograph' && !placeholder(chip)) return chip;
     // 2. the word's own spelling in his lexicon (𐤀𐤔𐤓𐤉 "He who") — unless that spelling is

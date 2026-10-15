@@ -4822,6 +4822,18 @@ function _recordFirst(map, key, loc) {
 // Declared here (not beside foldRowsToWords) because buildNavIndexes() runs at
 // module load, before that later block's `const`s would initialize.
 const WORD_FOLD_POS = new Set(['conj', 'prep', 'art']);
+// A row folds onto the next word only when it is a real PROCLITIC: a bare letter carrying a
+// grammar code (H9000-H9009) or no Strong's at all. A conj/prep WORD with its own Strong's
+// (אִם H518, כִּי H3588, אֵת H853, עַל H5921, אֶל H413, אֲשֶׁר H834 … 41,612 BHS rows) is a word of its
+// own — folding it handed its occurrence to the NEXT word, so /roots?sn=H518 listed no OT verse
+// at all and "This context" opened Matthew 4:3 (fieldy, 2026-10-14). A one-letter row (𐤋 tagged
+// H3606 …) still folds: it is written as a prefix.
+const isFoldRow = r => {
+    if (!WORD_FOLD_POS.has((r.pos || '').trim())) return false;
+    const n = parseInt(String(r.strongs || '').replace(/^H+/i, ''), 10);
+    if (!n || n >= 9000) return true;
+    return [..._paleoOnly(r.word_raw)].length <= 1;
+};
 const _paleoOnly = s => String(s || '').replace(/[^\u{10900}-\u{10915}]/gu, '');
 
 // Disk cache for the nav indexes.  buildNavIndexes() is expensive (~1 second
@@ -4894,7 +4906,7 @@ function _navCacheStamp() {
     // shares with the reader — a v10 cache was built with the old logic and
     // would keep the elided-2-letter-root and invisible-Hiphil-participle bugs
     // alive in the Root Explorer even after the code fix, until this bump.
-    const NAV_BUILD_VERSION = 'wordsurf-v11-merge-guard-vbs-ptc';   // roots by Strong's #, word-level surfaces (now per-SN scoped, canonical-root spliced), both editions, root first-appearance index, whole-SN renumbering, full-SN _wordBySn indexing
+    const NAV_BUILD_VERSION = 'wordsurf-v12-particle-words';   // roots by Strong's #, word-level surfaces (now per-SN scoped, canonical-root spliced), both editions, root first-appearance index, whole-SN renumbering, full-SN _wordBySn indexing
     const inputs = [
         path.join(__dirname, 'corpus.db'),             // tokens_bhs — the text the index is built from
         path.join(__dirname, 'surface-index.db'),      // the HEB half of the nav index
@@ -11243,7 +11255,7 @@ function foldRowsToWords(rows) {
         // splice below, so find it once and reuse the index for both.
         let contentIdx = -1;
         for (let i = pending.length - 1; i >= 0; i--) {
-            if (!WORD_FOLD_POS.has((pending[i].pos || '').trim())) { contentIdx = i; break; }
+            if (!isFoldRow(pending[i])) { contentIdx = i; break; }
         }
         if (contentIdx < 0) contentIdx = pending.length - 1;
         const snRaw = pending[contentIdx].strongs;
@@ -11261,7 +11273,7 @@ function foldRowsToWords(rows) {
     };
     for (const r of rows) {
         pending.push(r);
-        if (!WORD_FOLD_POS.has((r.pos || '').trim())) close();   // content morpheme ends the word
+        if (!isFoldRow(r)) close();   // a content morpheme (or a particle WORD) ends the word
     }
     close();   // trailing proclitics (rare) flush as their own unit
     return out;
