@@ -44,7 +44,7 @@ import {
   JOSHUA_TRIBES, BIBLICAL_CITIES, MODERN_CITIES, TRIBE_COLORS, TRIBE_HEBREW,
   HOLY_KIND_STYLE, EZEKIEL_ORDER, EZEKIEL_MEASURES, TRIBE_TRANSLIT, TRIBE_PALEO, tribeDisplayName,
   ezekielAllotment, toFeature, ringCentroid, labelAnchor, pointInRing, joshuaTribeAt, ezekielAt,
-  squareToPaleo, translitOf,
+  translitOf,
   REGIONS, ALL_PLACES, PLACES_AZ, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
   countryOf, countryFeature, countryName, twinOf, WATERS, BIBLE_RIVERS, EZ_LANDMARKS, TRIBE_SCRIPTURE, HOLY_SCRIPTURE, withNames,
 } from '../lib/models/holyLand.js';
@@ -1282,7 +1282,7 @@ export function PassageRefs({ refs, autoOpen = false, size = 'md' }) {
 const _surfCache = new Map();
 let _lexPromise = null;
 function lookupWord(he) {
-  const paleo = squareToPaleo(he);
+  const paleo = he;   // baked Paleo
   if (!_surfCache.has(paleo)) {
     _surfCache.set(paleo, apiSurface(paleo).then((d) => ({ paleo, comps: d.components || [], sn: d.strongs, root: d.root_paleo }))
       .catch(async () => {
@@ -1498,7 +1498,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
       <div className="hl-detail">
         <button type="button" className="hl-detail-x" onClick={onClose} aria-label="Close">×</button>
         <div className="hl-detail-name"><i className="hl-detail-sw" style={{ background: color }} /> {tribeDisplayName(e.name, e.tribe)} {e.tribe && <span className="hl-detail-paleo-inline" dir="rtl">{TRIBE_PALEO[e.tribe]}</span>}</div>
-        {e.he && <div className="hl-detail-paleo" dir="rtl">{squareToPaleo(e.he)}</div>}
+        {e.he && <div className="hl-detail-paleo" dir="rtl">{e.he}</div>}
         <div className="hl-detail-ref">{sel.kind === 'joshua' ? 'Joshua allotment' : 'Ezekiel — millennial allotment'}</div>
         <Lexical he={e.he || (e.tribe ? TRIBE_HEBREW[e.tribe] : null)} />
         <PassageRefs refs={e.ref} autoOpen />

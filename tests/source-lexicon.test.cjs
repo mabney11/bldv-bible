@@ -136,7 +136,7 @@ async function main() {
         r = await get('/api/cross-lang-equivalents?word=iesous');
         const direct = r.json();
         expect('cross-lang resolves by key "iesous"',
-            direct.hebrew_lemma === 'יהושע',
+            direct.hebrew_lemma === '\u{10909}\u{10904}\u{10905}\u{10914}\u{1090F}',   // Paleo (CLAUDE.md rule zero)
             `got hebrew=${direct.hebrew_lemma}`);
 
         // ── cross-lang resolves by greek lemma ───────────────────────────────

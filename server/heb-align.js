@@ -393,6 +393,14 @@ function buildHebSurfaces(o) {
         // (canon, chapter, verse) -> the English of that verse (string, '' if none).
         // Used by contextReadings and by the bare-𐤄 suffix choice.
         englishOf = null,
+        // ROOT STRIP (2026-10-16, see the block after SUF_3FS). null = off.
+        // { roots: Map(paleo -> [SN]), verbs: Set(SN), names: Set(SN),
+        //   snText: Map(SN -> English of kjv_def + strongs_def + his lexicon gloss),
+        //   freq: Map(SN -> BHS count) } — built by build-surface-index.js.
+        rootStrip = null,
+        // (canon, chapter, verse) -> the verse's ORIGINAL English (text_src), the
+        // witness root-strip checks a Strong's against. Falls back to englishOf.
+        englishSrcOf = null,
         log = () => {},
     } = o;
     // Same stemming as audit-heb-vs-english.py's stem() — keep them identical.
@@ -825,6 +833,201 @@ function buildHebSurfaces(o) {
     } catch { SUF_3FS = null; }
     log(`  3fs possessive 𐤄 for NT splits: ${SUF_3FS ? 'from BHS' : 'NOT FOUND (all bare 𐤄 stay [Toward])'}`);
 
+    // ── ROOT STRIP (added 2026-10-16) ─────────────────────────────────────────
+    // fieldy, Revelation 16:21: 𐤅𐤉𐤂𐤃𐤐𐤅 "and they blasphemed" showed no Strong's.
+    // "I literally just took off what looks like regular prefixes and searched for
+    // the transliteration of what I assumed to be the root" — 𐤂𐤃𐤐 Gadap H1442. "I
+    // want the NT tokens combed over again following this strategy."
+    // Why every tier above missed it: they peel only 𐤅 𐤄 𐤁 𐤋 𐤊 𐤌 𐤔 (+ the fused
+    // particles) and then need the stem to be a WHOLE word the OT spells that way.
+    // A verb's own prefix (𐤉 𐤕 𐤀 𐤍, 𐤄 hiphil, 𐤄𐤕/𐤉𐤕 … hithpael) is never peeled, so
+    // 𐤅+𐤉+𐤂𐤃𐤐+𐤅 had no path. Measured 2026-10-16: 14,970 HEB surfaces unresolved.
+    // This tier does what he did, for words NOTHING ELSE resolved (it never changes
+    // an existing reading): peel proclitics (+ particle), a verb preformative, and an
+    // attested suffix tail (one piece, or ending + pronoun: 𐤉 + 𐤅 "his …s"); the stem
+    // must then BE a Strong's root (strongs-roots.json) or an OT-attested form of that
+    // Strong's (internal 𐤅/𐤉 ignored only when nothing matches exactly). Gates — each a
+    // mistake the probe made before it was added:
+    //  - a preformative only with a VERB Strong's (strongs_def "to …"); an imperfect
+    //    one (𐤉 𐤕 𐤀 𐤍 𐤉𐤕 𐤕𐤕 𐤍𐤕, and 𐤌𐤕) only after 𐤅/𐤔/𐤄, never after a preposition
+    //    (𐤌+𐤀+ra'ah for 𐤌𐤀𐤅𐤓𐤏𐤅𐤕 "from the events");
+    //  - every chip is BHS evidence: proclitics PROC_COMPS, tails SUF_COMPS,
+    //    preformatives PFM_COMPS (parseToken of real BHS verbs) — nothing typed here;
+    //  - the verse's own English must name that Strong's (kjv_def / strongs_def / his
+    //    lexicon gloss; ±1 verse in canon > 66) — OR the spelling must, in >= 2 of its
+    //    occurrences and >= 30% of them. Without that witness the root-only guesses were
+    //    often wrong (Goshen, Sivan, "scourge"), so those are LISTED in
+    //    heb-rootstrip-review.txt, never tagged.
+    const RS_PREFS = ['𐤌𐤕', '𐤄𐤕', '𐤉𐤕', '𐤕𐤕', '𐤍𐤕', '𐤉', '𐤕', '𐤀', '𐤍', '𐤄', '𐤌'];
+    const RS_IMPF = new Set(['𐤉', '𐤕', '𐤀', '𐤍', '𐤉𐤕', '𐤕𐤕', '𐤍𐤕', '𐤌𐤕']);
+    const RS_IMPF_AFTER = new Set(['𐤅', '𐤔', '𐤄']);
+    const PFM_COMPS = new Map();
+    if (rootStrip) {
+        const q = src.prepare(`SELECT word_raw, pos, morph, strongs, COUNT(*) AS n FROM tokens_bhs
+                               WHERE pos = 'verb' AND word_raw LIKE ? || '%'
+                               GROUP BY morph ORDER BY n DESC LIMIT 60`);
+        for (const pf of RS_PREFS) {
+            let rows = [];
+            try { rows = q.all(pf); } catch { rows = []; }
+            const tally = new Map();
+            for (const row of rows) {
+                if ([...row.word_raw].length < [...pf].length + 3) continue;
+                let parsed = null;
+                try { parsed = parseToken(row.word_raw, row.pos, row.morph, row.strongs); } catch { continue; }
+                const lead = []; let acc = '';
+                for (const c of (parsed && parsed.components) || []) {
+                    if (!/^(pfm|vbs)-/.test(c.css || '')) break;
+                    lead.push(c); acc += c.paleo || '';
+                    if (acc === pf) break;
+                }
+                if (acc !== pf) continue;
+                const k = lead.map(c => c.css).join('+');
+                if (!tally.has(k)) tally.set(k, { n: 0, comps: lead });
+                tally.get(k).n++;
+            }
+            const best = [...tally.values()].sort((a, b) => b.n - a.n)[0];
+            if (best) PFM_COMPS.set(pf, best.comps.map(c => ({ ...c })));
+        }
+        log(`  root-strip preformatives taken from BHS: ${[...PFM_COMPS.keys()].join(' ') || '(none)'}`);
+    }
+    const RS_TAILS = SUFFIX_TAILS.filter(t => SUF_COMPS.has(t));
+    const RS_ENDINGS = new Set(['𐤉', '𐤕', '𐤅𐤕', '𐤅𐤕𐤉']);
+    // Proclitics stack in one order only: 𐤅, then 𐤔, then 𐤌, then 𐤁/𐤋/𐤊, then 𐤄.
+    // 𐤋+𐤄+𐤔 (𐤋𐤄𐤔𐤕𐤌𐤔 "to make use", a hithpael) is not Hebrew and read as "remove".
+    const RS_PROC_RANK = { '𐤅': 0, '𐤔': 1, '𐤌': 2, '𐤁': 3, '𐤋': 3, '𐤊': 3, '𐤄': 4 };
+    const rsRoots = (rootStrip && rootStrip.roots) || new Map();
+    const rsMatres = (s) => {
+        const a = [...s];
+        return a.length > 2 ? a[0] + a.slice(1, -1).filter(c => c !== '𐤅' && c !== '𐤉').join('') + a[a.length - 1] : s;
+    };
+    const rsMatIdx = new Map();
+    for (const [p, sns] of rsRoots) {
+        if ([...p].length < 3) continue;
+        const k = rsMatres(p);
+        if (!rsMatIdx.has(k)) rsMatIdx.set(k, new Set());
+        for (const sn of sns) rsMatIdx.get(k).add(sn);
+    }
+    const rsVerb = sn => !!(rootStrip && rootStrip.verbs.has(sn));
+    const rsName = sn => !!(rootStrip && rootStrip.names.has(sn));
+    const rsFreq = sn => (rootStrip && rootStrip.freq.get(sn)) || 0;
+    const rsTailSplits = (chars) => {
+        const out = [{ pieces: [], len: 0 }];
+        for (const t1 of RS_TAILS) {
+            const l1 = [...t1].length;
+            if (chars.length < l1 + 3 || chars.slice(chars.length - l1).join('') !== t1) continue;
+            out.push({ pieces: [t1], len: l1 });
+            // Two pieces only as a NOUN ending + a PRONOUN suffix (𐤕𐤋𐤌𐤉𐤃+𐤉+𐤅 "his
+            // disciples"). Any other pair invents morphology: 𐤅+𐤍 split "legion"
+            // (𐤄𐤋𐤂𐤉𐤅𐤍) into 𐤋𐤂𐤉 "valley" + [His] + 𐤍.
+            if (!ALL_PRS_FORMS.includes(t1)) continue;
+            for (const t0 of RS_TAILS) {
+                if (!RS_ENDINGS.has(t0)) continue;
+                const l0 = [...t0].length;
+                if (chars.length < l0 + l1 + 3) continue;
+                if (chars.slice(chars.length - l1 - l0, chars.length - l1).join('') !== t0) continue;
+                out.push({ pieces: [t0, t1], len: l0 + l1 });
+            }
+        }
+        return out;
+    };
+    const _rsCache = new Map();
+    const rsCands = (w) => {
+        if (_rsCache.has(w)) return _rsCache.get(w);
+        const chars = [...w], n = chars.length;
+        const starts = [{ pre: [], k: 0, particle: false }];
+        for (const p of FUSED_PARTICLES) {
+            const pl = [...p].length;
+            if (n >= pl + 3 && chars.slice(0, pl).join('') === p) starts.push({ pre: [p], k: pl, particle: true });
+        }
+        const prefixes = [];
+        for (const st of starts) {
+            prefixes.push(st);
+            let acc = [...st.pre], j = st.k;
+            let rank = -1;
+            for (let m = 0; m < 3 && j < n && PROCLITIC_SET.has(chars[j]); m++) {
+                const r = RS_PROC_RANK[chars[j]];
+                if (r < rank || (r === rank && r !== 3)) break;
+                rank = r;
+                acc = [...acc, chars[j]]; j++;
+                prefixes.push({ pre: acc, k: j, particle: st.particle });
+            }
+        }
+        const tails = rsTailSplits(chars);
+        const exact = [], loose = [];
+        for (const P of prefixes) {
+            const procs = P.pre.filter(x => [...x].length === 1);
+            for (const pf of ['', ...PFM_COMPS.keys()]) {
+                const pl = [...pf].length;
+                if (pf) {
+                    if (chars.slice(P.k, P.k + pl).join('') !== pf) continue;
+                    if (RS_IMPF.has(pf) && (P.particle || procs.some(c => !RS_IMPF_AFTER.has(c)))) continue;
+                }
+                for (const T of tails) {
+                    const st = chars.slice(P.k + pl, n - T.len);
+                    if (st.length < 3) continue;
+                    if (!P.pre.length && !pf && !T.pieces.length) continue;
+                    const stem = st.join('');
+                    const lastProc = procs[procs.length - 1];
+                    const add = (sn, how, arr) => {
+                        if (!_isReal(sn)) return;
+                        if (pf && !rsVerb(sn)) return;
+                        arr.push({ pre: P.pre, pf, stem, tail: T.pieces, sn, how, stripped: n - st.length,
+                                   // 𐤌 read as "from" before a VERB loses to 𐤌 read as the participle
+                                   mProc: !pf && lastProc === '𐤌' && rsVerb(sn) });
+                    };
+                    const rootSNs = rsRoots.get(stem) || [];
+                    for (const sn of rootSNs) add(sn, 'root', exact);
+                    const b = FORMS.get(stem);
+                    if (b) for (const v of b.values()) {
+                        const rec = surfaces.get(v.key);
+                        const sn = rec && _normH(rec.strongs);
+                        if (sn && !rootSNs.includes(sn)) add(sn, 'form', exact);
+                    }
+                    for (const sn of rsMatIdx.get(rsMatres(stem)) || []) add(sn, 'matres', loose);
+                }
+            }
+        }
+        // Internal 𐤅/𐤉 only when nothing matches exactly — or when every exact match is a name.
+        const out = exact.some(x => !rsName(x.sn)) ? exact : [...exact, ...loose];
+        _rsCache.set(w, out);
+        return out;
+    };
+    const RS_HOW = { root: 0, form: 1, matres: 2 };
+    // A NAME loses to an ordinary word whenever both fit: the 2026-10-16 sample's misses
+    // were mostly names (𐤋𐤂𐤌𐤅𐤓 "to finish" -> Gomer, 𐤀𐤆𐤓𐤇𐤉𐤌 "citizens" -> Ezrahite).
+    const rsCmp = (a, b) => ((rsName(a.sn) ? 1 : 0) - (rsName(b.sn) ? 1 : 0)) || (RS_HOW[a.how] - RS_HOW[b.how])
+        || (a.stripped - b.stripped) || ((a.mProc ? 1 : 0) - (b.mProc ? 1 : 0)) || (rsFreq(b.sn) - rsFreq(a.sn));
+    const RS_STOP = new Set(('the and that this with from they them their there were what which shall will would should '
+        + 'might have been being into upon unto over make made take took give gave come came went bring brought thing '
+        + 'things cause also self such some many much other another away back again before after first time place part '
+        + 'even about against among through without within thus therefore more most same idiom phrase margin compare '
+        + 'very great like your yours ours whom when then than each every').split(' '));
+    const rsStems = (t) => new Set(((t || '').match(/[A-Za-z]{4,}/g) || [])
+        .filter(x => !RS_STOP.has(x.toLowerCase())).map(stemWord));
+    const _rsW = new Map();
+    const rsWords = (sn) => {
+        if (!_rsW.has(sn)) _rsW.set(sn, rsStems(String((rootStrip && rootStrip.snText.get(sn)) || '').replace(/\[[^\]]*\]/g, ' ')));
+        return _rsW.get(sn);
+    };
+    const _rsVS = new Map();
+    const rsVerse = (c, ch, v) => {
+        const k = c + '|' + ch + '|' + v;
+        if (!_rsVS.has(k)) {
+            const eo = englishSrcOf || englishOf || (() => '');
+            let t = eo(c, ch, v) || '';
+            if (c > 66 || !t) t += ' ' + (eo(c, ch, v - 1) || '') + ' ' + (eo(c, ch, v + 1) || '');
+            _rsVS.set(k, rsStems(t));
+        }
+        return _rsVS.get(k);
+    };
+    const rsAgreeing = (w, c, ch, v) => {
+        const vs = rsVerse(c, ch, v);
+        return rsCands(w).filter(x => { for (const s of rsWords(x.sn)) if (vs.has(s)) return true; return false; }).sort(rsCmp);
+    };
+    let rootStripHits = 0;
+    const rootStripLog = [], rootStripReview = new Map();   // word -> {n, best, refs}
+    const rsSpellPick = new Map();                          // word -> SN its own occurrences support
+
     // ── NT ────────────────────────────────────────────────────────────────────
     log('  NT: resolving whole words against the OT-attested form table…');
     const MATRES_INDEX = new Map();
@@ -1232,6 +1435,77 @@ function buildHebSurfaces(o) {
     };
 
     const ntRows = VERSES.all(corpus, ntMin, ntMax);
+    // Root strip, spelling level: for each word nothing else resolves, how many of its
+    // occurrences have English naming each candidate Strong's. Counted before the loop
+    // so an occurrence whose own verse is silent can follow its spelling's evidence.
+    if (rootStrip) {
+        const _savedMaqaf = maqafSplitVerses;
+        const resolvable = new Map(), tally = new Map();
+        for (const row of ntRows) {
+            for (const w of wordsOf(row)) {
+                if (!resolvable.has(w)) {
+                    const lf = forcedReadings.get(w);
+                    // resolveAll, not resolve(): resolve() bumps report counters, and it is null exactly when resolveAll is empty
+                    resolvable.set(w, !!(lf && !Array.isArray(lf) && lf.sn) || resolveAll(w).length > 0 || !rsCands(w).length);
+                }
+                if (resolvable.get(w)) continue;
+                if (!tally.has(w)) tally.set(w, { n: 0, by: new Map() });
+                const t = tally.get(w); t.n++;
+                const ag = rsAgreeing(w, row.canon_id, row.chapter, row.verse);
+                if (ag.length) t.by.set(ag[0].sn, (t.by.get(ag[0].sn) || 0) + 1);
+            }
+        }
+        maqafSplitVerses = _savedMaqaf;   // wordsOf counts; the real loop counts again
+        for (const [w, t] of tally) {
+            const top = [...t.by].sort((a, b) => b[1] - a[1])[0];
+            if (top && top[1] >= 2 && top[1] / t.n >= 0.3) rsSpellPick.set(w, top[0]);
+        }
+        log(`  root strip: ${tally.size.toLocaleString()} unresolved spellings have a root-strip candidate; `
+            + `${rsSpellPick.size.toLocaleString()} backed by their own occurrences' English`);
+    }
+    const rsCompose = (x) => {
+        const components = [], spans = [], all = [];
+        const push = (comps, p) => {
+            const start = components.length;
+            for (const c of comps) components.push({ ...c });
+            spans.push({ start, end: components.length, pos: p });
+        };
+        for (const p of x.pre) {
+            if ([...p].length === 1) {
+                const att = PROC_COMPS.get(p);
+                if (att) { push(att.components, att.pos || 'prep'); if (att.strongs) all.push(att.strongs); }
+                else push([{ paleo: p, translit: '', translation: '', css: 'mod-pref-unk', derived: true }], 'prep');
+            } else {
+                const b = bestOf(p);
+                if (!b) return null;
+                const rec = surfaces.get(b.key);
+                push(JSON.parse(rec.components_json), rec.pos || 'prep');
+                for (const sn of JSON.parse(rec.all_strongs_json)) all.push(sn);
+            }
+        }
+        if (x.pf) push(PFM_COMPS.get(x.pf), 'verb');
+        let pos = '', morph = '', root = '';
+        const headSpan = spans.length;
+        if (formHasSN(x.stem, x.sn)) {
+            const rec = surfaces.get(bestOf(x.stem, x.sn).key);
+            push(JSON.parse(rec.components_json), rec.pos || '');
+            pos = rec.pos || ''; morph = rec.morph || ''; root = rec.root_paleo;
+        } else {
+            const cw = composeWord([{ word_raw: x.stem, pos: rsVerb(x.sn) ? 'verb' : 'subs', morph: '',
+                                      strongs: x.sn, token_ordinal: 1 }], parseToken);
+            push(cw.components, cw.pos);
+            pos = cw.pos; morph = cw.morph; root = cw.root_paleo;
+        }
+        all.push(x.sn);
+        for (const t of x.tail) {
+            const att = SUF_COMPS.get(t);
+            if (!att) return null;
+            push([att.component], att.pos || '');
+        }
+        demoteNonHead(components, spans, headSpan);
+        return { components, strongs: x.sn, pos, morph, root_paleo: root || x.stem,
+                 rendered_paleo: components.map(c => c.paleo).join(''), all_strongs: [...new Set(all)] };
+    };
     const pNT = progress('NT: resolving whole words', ntRows.length);
     for (const row of ntRows) {
         pNT.tick();
@@ -1395,6 +1669,44 @@ function buildHebSurfaces(o) {
                                 bump('nt_tokens_nt_fallback');
                             }
                         } catch { /* parseToken failed on this reading — fall through to unresolved */ }
+                    }
+                }
+
+                // 3. ROOT STRIP (see the block after SUF_3FS): peel prefixes, a verb
+                //    preformative and an attested tail; the stem must be a Strong's root
+                //    and the verse's English (or the spelling's) must name it.
+                if (!usedFallback && rootStrip) {
+                    const ref = `${row.canon_id}:${row.chapter}:${row.verse}`;
+                    // One spelling, one reading: when the spelling's own occurrences agree on
+                    // a Strong's, every occurrence takes it. Per-verse English alone was noisy
+                    // for a word with many candidate roots (𐤄𐤇𐤉𐤉𐤋𐤉𐤌 "the soldiers" read
+                    // army in one verse and "dream" in the next).
+                    let pick = null, why = '';
+                    if (rsSpellPick.has(w)) {
+                        pick = rsCands(w).filter(x => x.sn === rsSpellPick.get(w)).sort(rsCmp)[0] || null;
+                        why = 'spelling';
+                    }
+                    if (!pick) {
+                        const ag = rsAgreeing(w, row.canon_id, row.chapter, row.verse);
+                        if (ag.length) { pick = ag[0]; why = 'english'; }
+                    }
+                    const comp = pick ? rsCompose(pick) : null;
+                    if (comp) {
+                        const snCount = new Set(rsCands(w).map(x => x.sn)).size;
+                        record(w, comp, 'nt_rootstrip', snCount > 1);
+                        occurrences.push({
+                            source: corpus, word_raw: w, strongs: comp.strongs, pos: comp.pos, morph: comp.morph,
+                            book_id: row.canon_id, chapter: row.chapter, verse: row.verse, token_ordinal: i + 1,
+                        });
+                        usedFallback = true; rootStripHits++; bump('nt_rootstrip');
+                        rootStripLog.push(`${ref}\t${w}\t${why}\t${[...pick.pre, pick.pf ? '[' + pick.pf + ']' : ''].filter(Boolean).join('+')} ${pick.stem} ${pick.tail.join('+')}\t${pick.sn}\t${pick.how}`);
+                    } else {
+                        const cs = rsCands(w);
+                        if (cs.length) {
+                            if (!rootStripReview.has(w)) rootStripReview.set(w, { n: 0, best: [...cs].sort(rsCmp)[0], refs: [] });
+                            const r = rootStripReview.get(w); r.n++;
+                            if (r.refs.length < 5) r.refs.push(ref);
+                        }
                     }
                 }
 
@@ -1591,6 +1903,11 @@ function buildHebSurfaces(o) {
     stats.contextLog = contextLog;
     stats.suffix3fs = suffix3fs;
     stats.maqafSplitVerses = maqafSplitVerses;
+    stats.rootStripHits = rootStripHits;
+    stats.rootStripSpellings = rsSpellPick.size;
+    stats.rootStripLog = rootStripLog;
+    stats.rootStripReview = [...rootStripReview].sort((a, b) => b[1].n - a[1].n)
+        .map(([w, r]) => `${r.n}\t${w}\t${[...r.best.pre, r.best.pf ? '[' + r.best.pf + ']' : ''].filter(Boolean).join('+')} ${r.best.stem} ${r.best.tail.join('+')}\t${r.best.sn}\t${r.best.how}\t${r.refs.join(' ')}`);
     return { surfaces, occurrences, audit, stats };
 }
 

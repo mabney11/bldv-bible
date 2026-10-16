@@ -87,6 +87,13 @@ console.log('corpus.db English present for all 66 canonical books');
     exit 1
   fi
 
+  # NO SQUARE SCRIPT GATE (2026-10-16, CLAUDE.md top rule): never push DBs or code that
+  # would put square Hebrew in front of a reader. Fix with: (cd server && node verify-no-square-script.mjs --fix)
+  if ! (cd server && node verify-no-square-script.mjs); then
+    echo "!! NO SQUARE SCRIPT gate failed -- refusing to push. Run (cd server && node verify-no-square-script.mjs --fix), then Rebake again."
+    exit 1
+  fi
+
   step "2/5  corpus.db: comparing local vs prod"
   LOCAL_M=$(stat -c %Y server/corpus.db)
   PROD_M=$($SSH "$HOST" "stat -c %Y $DATA/corpus.db" 2>/dev/null || echo 0)
@@ -121,7 +128,7 @@ console.log('corpus.db English present for all 66 canonical books');
   # (history row first; his wording kept).
   step "5/5  Rebuilding prod auto-links, then reseeding prod translation.db from the pushed corpus.db (untouched rows only)"
   $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node build-align-links.mjs --db /data/corpus.db --index /data/surface-index.db --links /data/translation.db --out /tmp/align-report.txt --apply'"
-  $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node reseed-translations.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node merge-modforms.mjs /data/corpus.db /data/translation.db /data/surface-index.db --saved && docker run --rm -v $DATA:/data paleo-studio node fix-divine-names.mjs /data/corpus.db /data/translation.db /data/surface-index.db && docker run --rm -v $DATA:/data paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node verify-reading-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --fix --review /tmp/gloss-gate-review.txt && docker run --rm -v $DATA:/data paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node fix-divine-names.mjs /data/corpus.db /data/translation.db /data/surface-index.db --check'"
+  $SSH "$HOST" "sudo -n bash -c 'docker run --rm -v $DATA:/data paleo-studio node reseed-translations.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node merge-modforms.mjs /data/corpus.db /data/translation.db /data/surface-index.db --saved && docker run --rm -v $DATA:/data paleo-studio node fix-divine-names.mjs /data/corpus.db /data/translation.db /data/surface-index.db && docker run --rm -v $DATA:/data paleo-studio node fix-name-forms.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node verify-reading-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --fix --review /tmp/gloss-gate-review.txt && docker run --rm -v $DATA:/data paleo-studio node verify-name-forms.mjs /data/corpus.db /data/translation.db && docker run --rm -v $DATA:/data paleo-studio node fix-divine-names.mjs /data/corpus.db /data/translation.db /data/surface-index.db --check && docker run --rm -v $DATA:/data paleo-studio node verify-no-square-script.mjs /data/corpus.db /data/translation.db /data/surface-index.db --fix'"
 
   step "Rebake complete"
 }

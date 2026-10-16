@@ -4401,19 +4401,13 @@ let _lexSnIndex = null;
 app.get('/api/admin/lexicon-sn-index', (req, res) => {
     try {
         if (!_lexSnIndex) {
-            const HEBL = 'אבגדהוזחטיכלמנסעפצקרשת', FIN = { 'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ' };
-            const toPaleo = (h) => {
-                let out = '';
-                for (const ch of String(h || '')) { const c = FIN[ch] || ch; const i = HEBL.indexOf(c); if (i >= 0) out += String.fromCodePoint(0x10900 + i); }
-                return out;
-            };
             const roots = loadStrongsRoots() || {};
             const idx = {};
             const add = (sn, p) => { if (!p) return; (idx[sn] = idx[sn] || []).includes(p) || idx[sn].push(p); };
             for (const [sn, p] of Object.entries(roots)) add(sn, p);
             for (const [k, e] of Object.entries(STRONGS_DICT || {})) {
                 const sn = /^H/.test(k) ? k : 'H' + k;
-                add(sn, toPaleo(e && e.lemma));
+                add(sn, String((e && e.lemma) || '').replace(/\s+/g, ''));   // baked Paleo lemma
             }
             _lexSnIndex = idx;
         }
@@ -7036,30 +7030,7 @@ function _greekAcuteNorm(s) {
     return s.normalize('NFD').replace(/\u0300/g, '\u0301').normalize('NFC');
 }
 
-// Square (modern/Aramaic) Hebrew → Paleo (U+10900), mirroring lib/hebrewPaleo.js:
-// the 22 consonants map 1:1, the 5 final forms fold to their base, niqqud /
-// cantillation / maqaf / sof-pasuq (U+0591–U+05C7) are dropped, and anything
-// already Paleo (or a space) passes through — so it is IDEMPOTENT. The app is
-// Paleo-only: lexicons key on Paleo, so the Hebrew gloss/copy key must be Paleo
-// too. This converts whether or not the corpus text was ingested as Paleo.
-const _HEB_TO_PALEO = (() => {
-    const base = 'אבגדהוזחטיכלמנסעפצקרשת';
-    const paleo = [...'𐤀𐤁𐤂𐤃𐤄𐤅𐤆𐤇𐤈𐤉𐤊𐤋𐤌𐤍𐤎𐤏𐤐𐤑𐤒𐤓𐤔𐤕'];
-    const m = {};
-    [...base].forEach((h, i) => { m[h] = paleo[i]; });
-    for (const [fin, b] of Object.entries({ 'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ' })) m[fin] = m[b];
-    return m;
-})();
-function _squareToPaleo(s) {
-    let out = '';
-    for (const ch of String(s || '')) {
-        if (_HEB_TO_PALEO[ch]) { out += _HEB_TO_PALEO[ch]; continue; }
-        const cp = ch.codePointAt(0);
-        if (cp >= 0x0591 && cp <= 0x05C7) continue;   // niqqud / cantillation / maqaf / sof-pasuq
-        out += ch;
-    }
-    return out;
-}
+// (square->Paleo key conversion removed 2026-10-16: the Hebrew text and lexicons are baked Paleo.)
 
 // ── Canonical gloss / copy key — ONE source of truth ────────────────────────
 // The string that resolves a word's gloss must be EXACTLY the string the reader
@@ -7075,9 +7046,7 @@ function _canonKey(script, s) {
     let w = String(s || '').normalize('NFC').replace(_STOPS, '').trim();
     if (script === 'greek')    w = _greekAcuteNorm(w);
     if (script === 'ethiopic') w = _ethiopicNorm(w);
-    // The app is Paleo-only: a Hebrew gloss/copy key is ALWAYS Paleo, so a Paleo
-    // lexicon resolves and the (Paleo) copy equals the key — no modern Hebrew.
-    if (script === 'paleo-hebrew' || script === 'hebrew') w = _squareToPaleo(w);
+    // Hebrew text is BAKED in Paleo (CLAUDE.md rule zero) — no conversion here.
     return w;
 }
 function _loadGlosses(script) {
@@ -10114,31 +10083,26 @@ app.delete('/api/admin/strongs-override', (req, res) => {
 // gloss), and the compound itself HYPHENATED — Bayath-Lacham, 𐤁𐤉𐤕-𐤋𐤇𐤌 — so
 // each piece can be enunciated on its own. Nothing here is inferred: no
 // derivation in the dictionary → parts: [].
+// BAKED Paleo dictionary (build-strongs-paleo.mjs -> strongs-hebrew-paleo.json): lemma = Paleo
+// consonantal parts separated by one space; strongs_def/derivation/kjv_def with every Hebrew
+// word in Paleo. CLAUDE.md rule zero: nothing here converts at request time, and the square
+// source dictionary is never read by the server.
 const STRONGS_DICT = (() => {
-    const p = ['strongs-hebrew-expanded.json', 'strongs-hebrew.json']
-        .map(f => path.join(__dirname, f)).find(f => fs.existsSync(f));
-    if (!p) return {};
+    const p = path.join(__dirname, 'strongs-hebrew-paleo.json');
+    if (!fs.existsSync(p)) { console.warn('[strongs] strongs-hebrew-paleo.json missing — run: node build-strongs-paleo.mjs'); return {}; }
     try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return {}; }
 })();
-const SQUARE_TO_PALEO = {
-    'א':'𐤀','ב':'𐤁','ג':'𐤂','ד':'𐤃','ה':'𐤄','ו':'𐤅','ז':'𐤆','ח':'𐤇','ט':'𐤈',
-    'י':'𐤉','כ':'𐤊','ך':'𐤊','ל':'𐤋','מ':'𐤌','ם':'𐤌','נ':'𐤍','ן':'𐤍','ס':'𐤎',
-    'ע':'𐤏','פ':'𐤐','ף':'𐤐','צ':'𐤑','ץ':'𐤑','ק':'𐤒','ר':'𐤓','ש':'𐤔','ת':'𐤕',
-};
-// Pointed lemma → consonantal parts (split on space / maqaf), each as square Hebrew.
+// Baked lemma (or a Paleo query) → its parts (split on space / maqaf / hyphen).
 function lemmaParts(lemma) {
-    return String(lemma || '')
-        .replace(/־/g, ' ')            // maqaf is a word joiner → split point
-        .replace(/[֑-ׇ׳״͏]/g, '')   // points, accents, geresh, CGJ
-        .split(/[\s\-]+/).map(s => s.trim()).filter(Boolean);
+    return String(lemma || '').split(/[\s\u05BE\-]+/).map(s => s.trim()).filter(Boolean);
 }
-const squareToPaleoStr = (s) => [...s].map(c => SQUARE_TO_PALEO[c] ?? c).join('');
 const normSn = (sn) => 'H' + String(sn || '').replace(/^H+/i, '');
 // consonantal lemma (parts joined by one space) → [sn, …]
 // Indexed by the exact consonants AND by a vowel-letter skeleton (internal
 // י/ו dropped per word), so a defective spelling still finds the plene lemma:
 // אהרן → אַהֲרוֹן, יהושע → יְהוֹשׁוּעַ, מגדו → מְגִדּוֹן. Exact hits are returned first.
-const skelWord = (w) => w ? w[0] + w.slice(1).replace(/[יו]/g, '') : w;
+const PALEO_YOD = '\u{10909}', PALEO_WAW = '\u{10905}';
+const skelWord = (w) => { const a = [...(w || '')]; return a.length ? a[0] + a.slice(1).filter(c => c !== PALEO_YOD && c !== PALEO_WAW).join('') : w; };
 const consKey = (parts) => parts.join(' ');
 const skelKey = (parts) => parts.map(skelWord).join(' ');
 const STRONGS_BY_CONSONANTS = (() => {
@@ -10159,15 +10123,15 @@ function strongsByHebrew(he) {
     if (exact.length) return exact;
     // Skeleton hits ranked by how close the lemma's consonant count is to the
     // input (חזקיהו → חזקיה H2396 before חזקה H2393), then by number.
-    const want = parts.join('').length;
-    const lemmaLen = (sn) => lemmaParts((STRONGS_DICT[sn] || {}).lemma).join('').length;
+    const want = [...parts.join('')].length;
+    const lemmaLen = (sn) => [...lemmaParts((STRONGS_DICT[sn] || {}).lemma).join('')].length;
     return [...(STRONGS_BY_CONSONANTS['skel:' + skelKey(parts)] || [])]
         .sort((a, b) => Math.abs(lemmaLen(a) - want) - Math.abs(lemmaLen(b) - want) || parseInt(a.slice(1), 10) - parseInt(b.slice(1), 10));
 }
 function strongsPart(sn) {
     const e = STRONGS_DICT[sn] || STRONGS_DICT[sn.replace(/^H/, '')];
     const parts = lemmaParts(e && e.lemma);
-    const paleo = parts.map(squareToPaleoStr).join('-');
+    const paleo = parts.join('-');
     let gloss = null;
     try {
         // SN-aware curated definition first (homographs.json), then the
@@ -10178,7 +10142,7 @@ function strongsPart(sn) {
     } catch { /* lexicon unavailable */ }
     return {
         sn, lemma: e ? e.lemma : null, he: parts.join(' '), paleo,
-        translit: parts.map(p => getTranslit(squareToPaleoStr(p))).join('-'),
+        translit: parts.map(p => getTranslit(p)).join('-'),
         xlit: e ? e.xlit : null,
         gloss,                                             // curated only (lexicon.json / homographs); null if uncurated
         kjv: e && e.kjv_def ? String(e.kjv_def).replace(/\.$/, '') : null,
@@ -10191,15 +10155,17 @@ function strongsPart(sn) {
 // a match ignoring internal vowel letters (דין ~ דן). Only ever from the
 // derivation + the spelling itself, never guessed; no match → left whole.
 // Keep in step with server/hyphenate-compound-names.mjs.
-const skelHe = (s) => s ? s[0] + s.slice(1).replace(/[יו]/g, '') : s;
+// Paleo letters (the baked dictionary), counted as LETTERS — a Paleo letter is two UTF-16 units.
+const skelHe = skelWord;
 function splitFusedCompound(he, partHes) {
     if (!he || he.includes(' ') || partHes.length < 2) return null;
     const first = partHes[0], last = partHes[partHes.length - 1];
+    const L = [...he];
     let best = null;
-    for (let k = 2; k <= he.length - 2; k++) {
-        const head = he.slice(0, k), tail = he.slice(k);
+    for (let k = 2; k <= L.length - 2; k++) {
+        const head = L.slice(0, k).join(''), tail = L.slice(k).join('');
         const t = tail === last ? 3 : (last && skelHe(tail) === skelHe(last)) ? 2 : 0;
-        const h = head === first ? 3 : head === first + 'י' ? 2.5 : (first && skelHe(head) === skelHe(first)) ? 2 : (first && head.startsWith(first)) ? 1 : 0;
+        const h = head === first ? 3 : head === first + PALEO_YOD ? 2.5 : (first && skelHe(head) === skelHe(first)) ? 2 : (first && head.startsWith(first)) ? 1 : 0;
         if (!t && h < 2) continue;
         const score = t + h;
         if (!best || score > best.score) best = { score, split: [head, tail] };
@@ -10256,7 +10222,7 @@ const kjvShort = (kjv) => {
     let s = String(kjv).replace(/\[[^\]]*\]\s*/g, '')
         .replace(/\((?:For|See|Compare)\b[^)]*\)\.?/gi, '')
         .replace(/\b(?:See|Compare)\s+H\d+[\s\S]*$/i, '')
-        .replace(/[\u0590-\u05FF][\u0590-\u05FF\u0300-\u036F\s]*/g, '');
+        .replace(/[\u{10900}-\u{1091F}][\u{10900}-\u{1091F}\s]*/gu, '');   // the baked dictionary's Hebrew is Paleo
     s = s.split(/\.\s+/)[0].replace(/\.+$/, '');
     return s.split(',').slice(0, 3).map(x => x.trim()).filter(Boolean).join(', ') || null;
 };
@@ -10319,8 +10285,8 @@ function strongsAnatomy(snRaw) {
     const fused = splitFusedCompound(self.he, parts.map(p => p.he));
     if (fused) {
         self.he = fused.join(' ');
-        self.paleo = fused.map(squareToPaleoStr).join('-');
-        self.translit = fused.map(f => getTranslit(squareToPaleoStr(f))).join('-');
+        self.paleo = fused.join('-');
+        self.translit = fused.map(f => getTranslit(f)).join('-');
     }
     // The hyphenated NAME only for allowlisted numbers; otherwise the joined
     // form the rest of the app uses, with the split kept in `split` for reference.
@@ -10329,7 +10295,7 @@ function strongsAnatomy(snRaw) {
     const split = { he: self.he, paleo: self.paleo, translit: self.translit };
     if (!allowed) {
         const joined = self.he.replace(/ /g, '');
-        self.he = joined; self.paleo = squareToPaleoStr(joined); self.translit = getTranslit(squareToPaleoStr(joined));
+        self.he = joined; self.paleo = joined; self.translit = getTranslit(joined);
     }
     // The plain-English meaning the dictionary gives after the components: "...; house of bread;"
     const mm = /\)\s*;\s*([^;()]+?)\s*;?\s*$/.exec(deriv);

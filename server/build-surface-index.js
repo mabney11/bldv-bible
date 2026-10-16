@@ -1967,13 +1967,48 @@ if (WITH_HEB) {
             console.log(`  ${contextReadings.size} context reading(s) loaded from ${path.basename(HEB_CONTEXT_READINGS)}`);
         } catch (e) { console.warn(`  ⚠ could not read ${HEB_CONTEXT_READINGS}: ${e.message}`); }
     }
-    const _engVerse = new Map();
+    const _engVerse = new Map(), _engSrc = new Map();
     try {
-        for (const r of src.prepare(`SELECT canon_id, chapter, verse, text FROM verses WHERE corpus = 'ENG' AND canon_id >= 40`).all()) {
-            _engVerse.set(`${r.canon_id}|${Number(r.chapter)}|${Number(r.verse)}`, r.text || '');
+        for (const r of src.prepare(`SELECT canon_id, chapter, verse, text, text_src FROM verses WHERE corpus = 'ENG' AND canon_id >= 40`).all()) {
+            const k = `${r.canon_id}|${Number(r.chapter)}|${Number(r.verse)}`;
+            _engVerse.set(k, r.text || '');
+            _engSrc.set(k, r.text_src || r.text || '');
         }
     } catch (e) { console.warn(`  ⚠ could not read the English verses: ${e.message}`); }
     const englishOf = (c, ch, v) => _engVerse.get(`${c}|${Number(ch)}|${Number(v)}`) || '';
+    // Root strip's witness is the ORIGINAL English (text_src): the rendered text's
+    // glosses came from earlier readings and would vouch for themselves.
+    const englishSrcOf = (c, ch, v) => _engSrc.get(`${c}|${Number(ch)}|${Number(v)}`) || '';
+    // ROOT STRIP data (heb-align.js, 2026-10-16): every Strong's root by spelling, which
+    // numbers are verbs / names, the English each number is known by (dictionary + his
+    // lexicon + homographs), and how often the BHS uses it (a tie-break only).
+    let rootStrip = null;
+    if (!args.includes('--no-root-strip')) {
+        const roots = new Map(), verbs = new Set(), names = new Set(), snText = new Map(), freq = new Map();
+        const normSN = sn => 'H' + String(sn).replace(/^H+/i, '');
+        for (const [sn0, paleo] of Object.entries(strongsRootsLex || {})) {
+            if (!paleo || sn0.startsWith('_')) continue;
+            const sn = normSN(sn0);
+            if (!roots.has(paleo)) roots.set(paleo, []);
+            if (!roots.get(paleo).includes(sn)) roots.get(paleo).push(sn);
+        }
+        for (const [sn0, e] of Object.entries(STRONGS_DICT)) {
+            const sn = normSN(sn0), def = String((e && e.strongs_def) || '').trim();
+            if (/^(\([^)]*\)\s*)?(properly,?\s*)?to\s/i.test(def)) verbs.add(sn);
+            if (/^[A-Z]/.test(def)) names.add(sn);
+            let t = `${(e && e.kjv_def) || ''} ${def}`;
+            const rp = (strongsRootsLex || {})[sn] || (strongsRootsLex || {})[sn0];
+            if (rp && lexicon && typeof lexicon[rp] === 'string') t += ' ' + lexicon[rp];
+            if (rp && homographs && typeof homographs[`${rp}_${sn}`] === 'string') t += ' ' + homographs[`${rp}_${sn}`];
+            snText.set(sn, t);
+        }
+        try {
+            for (const r of src.prepare(`SELECT strongs, COUNT(*) AS n FROM tokens_bhs WHERE strongs != '' GROUP BY strongs`).all())
+                freq.set(normSN(r.strongs), r.n);
+        } catch { /* tie-break only */ }
+        rootStrip = { roots, verbs, names, snText, freq };
+        console.log(`  root strip: ${roots.size.toLocaleString()} root spellings, ${verbs.size.toLocaleString()} verbs (--no-root-strip disables)`);
+    }
     console.log('\nBuilding HEB (extra) whole-word surfaces…');
     const tH = Date.now();
     // `--prefer-split=N` : a whole-word match attested <=N loses to a
@@ -1999,6 +2034,7 @@ if (WITH_HEB) {
                                    occurrenceOverrides,
                                    forcedReadings, lemmaIndex,
                                    contextReadings, englishOf,
+                                   rootStrip, englishSrcOf,
                                    log: m => console.log(m) });
     {
         const hs = hebResult.stats;
@@ -2007,6 +2043,21 @@ if (WITH_HEB) {
             + (hs.contextMisses.length ? `; no matching reading offered for: ${hs.contextMisses.slice(0, 30).join(' ')}` : ''));
         const _ctxOut = (() => { const i = process.argv.indexOf('--ctx-out'); return i >= 0 ? process.argv[i + 1] : 'heb-context-switches.txt'; })();
         try { fs.writeFileSync(path.resolve(__dirname, _ctxOut), 'ref\tword\tfrom->to\tbefore -> after\n' + hs.contextLog.join('\n') + '\n'); console.log(`  (every switch listed in ${_ctxOut})`); } catch { /* report only */ }
+    }
+    if (rootStrip) {
+        // Every word root strip tagged, and every word it could split but NO English
+        // vouched for — the second list is for review, nothing in it was tagged.
+        const hs = hebResult.stats;
+        console.log(`  root strip: ${(hs.rootStripHits || 0).toLocaleString()} occurrence(s) tagged by peeling prefixes/tails `
+            + `to a Strong's root (${(hs.rootStripSpellings || 0).toLocaleString()} spellings backed by their own occurrences); `
+            + `${(hs.rootStripReview || []).length.toLocaleString()} spellings had a candidate no English named`);
+        try {
+            fs.writeFileSync(path.resolve(__dirname, 'heb-rootstrip.txt'),
+                'ref\tword\twitness\tprefixes [preformative] stem tails\tSN\tstem is\n' + (hs.rootStripLog || []).join('\n') + '\n');
+            fs.writeFileSync(path.resolve(__dirname, 'heb-rootstrip-review.txt'),
+                'occurrences\tword\tbest split (NOT applied)\tSN\tstem is\trefs\n' + (hs.rootStripReview || []).join('\n') + '\n');
+            console.log('  (tagged: heb-rootstrip.txt; not tagged, for review: heb-rootstrip-review.txt)');
+        } catch { /* report only */ }
     }
     if (forcedReadings.size) {
         const hs = hebResult.stats;

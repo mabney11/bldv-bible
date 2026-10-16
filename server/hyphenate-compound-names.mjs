@@ -38,6 +38,8 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+const { toPaleoDisplay } = createRequire(import.meta.url)('./no-square-script.cjs');
 import { transliterate } from '../src/lib/translit.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -87,7 +89,10 @@ function rule(snRaw) {
   if (!split) return null;
   const from = tr(parts.join('')), to = split.map(tr).join('-');
   if (from === to) return null;
-  return { sn, he: split.join(' '), paleo: split.map(paleo).join('-'), from, to, meaning: (/\)\s*;\s*([^;()]+?)\s*;?\s*$/.exec(e.derivation || '') || [])[1] || null, def: e.strongs_def || null };
+  // NO SQUARE SCRIPT (CLAUDE.md rule zero): the allowlist is a lexicon file the site can show, so
+  // it stores Paleo only — `he` is the Paleo pieces separated by a space; the dictionary's own
+  // square lemma is read here and never written.
+  return { sn, he: split.map(paleo).join(' '), paleo: split.map(paleo).join('-'), from, to, meaning: toPaleoDisplay((/\)\s*;\s*([^;()]+?)\s*;?\s*$/.exec(e.derivation || '') || [])[1] || null), def: toPaleoDisplay(e.strongs_def || null) };
 }
 
 const nmPath = path.join(__dirname, 'name-map-expanded.json');
@@ -108,11 +113,14 @@ if (flag('--list')) {
 // hyphenated (Abay-Dan, Bayath-Lacham). Names already decided by hand in the
 // allowlist (✓ / ✗) keep their decision — Yashar-Al and Bayath-Al were asked for by name.
 export function joinedByRule(split) {
+  split = split.map((x) => toPaleoDisplay(x));
   const [head, tail] = [split[0], split[split.length - 1]];
   const joined = split.join('');
-  if (head.endsWith('ו') || tail.startsWith('ו')) return 'waw ties the pieces';
-  if (/יהו?$/.test(joined)) return 'ends in -yah';
-  if (/אל$/.test(joined)) return 'ends in -Al';
+  // Paleo pieces (the allowlist's `he`); square ones are converted first.
+  const W = '\u{10905}';
+  if (head.endsWith(W) || tail.startsWith(W)) return 'waw ties the pieces';
+  if (/\u{10909}\u{10904}\u{10905}?$/u.test(joined)) return 'ends in -yah';
+  if (/\u{10900}\u{1090B}$/u.test(joined)) return 'ends in -Al';
   return null;
 }
 if (flag('--rule') || flag('--rule-apply')) {
@@ -139,7 +147,8 @@ if (flagVal('--add')) {
 if (flagVal('--remove')) { for (const sn of flagVal('--remove').split(',')) allow[normSn(sn)] = { sn: normSn(sn), skip: true }; saveAllow(); process.exit(0); }
 if (flag('--seed-map')) {
   const m = await import('../src/lib/models/holyLand.js');
-  const byHe = {}; for (const [sn, e] of Object.entries(dict)) { const k = lemmaParts(e.lemma).join(' '); if (k) (byHe[k] ||= []).push(normSn(sn)); }
+  // The map's city spellings are baked Paleo (CLAUDE.md rule zero), so key the dictionary by Paleo too.
+  const byHe = {}; for (const [sn, e] of Object.entries(dict)) { const k = lemmaParts(e.lemma).map(paleo).join(' '); if (k) (byHe[k] ||= []).push(normSn(sn)); }
   let n = 0;
   for (const c of [...m.BIBLICAL_CITIES, ...m.REGIONS]) for (const sn of byHe[c.he.replace(/[\s־-]+/g, ' ')] || []) { const r = rule(sn); if (r && !allow[r.sn]) { allow[r.sn] = r; n++; console.log('added' + show(r)); } }
   console.log(`${n} map names added`); saveAllow(); process.exit(0);

@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 'use strict';
+// RETIRED 2026-10-16 (CLAUDE.md rule zero). This converter DROPS Hebrew punctuation (maqaf,
+// sof pasuq, paseq, geresh, gershayim) — fieldy: "all punctuation should stay". The one converter
+// is server/no-square-script.cjs, and the bake is `node verify-no-square-script.mjs --fix`.
+console.error('fix-square-hebrew.js is retired — run: node verify-no-square-script.mjs --fix (keeps punctuation)');
+process.exit(1);
 /*
  * fix-square-hebrew.js  (v2)
  *

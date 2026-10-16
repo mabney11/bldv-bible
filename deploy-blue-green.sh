@@ -194,6 +194,13 @@ docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-q
 # memory than the other gates: it loads the whole Hebrew index.
 docker run --rm --memory="2g" --memory-swap="2g" -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-reading-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --fix --review /tmp/gloss-gate-review.txt
 docker run --rm --memory="1g" --memory-swap="1g" -v "$PALEO_DATA_DIR:/data" paleo-studio node fix-divine-names.mjs /data/corpus.db /data/translation.db /data/surface-index.db --check
+# 2026-10-16 NO SQUARE SCRIPT (CLAUDE.md rule zero, no exceptions): fieldy — "as long as no square
+# script is available to read on my web app" / "no wiggle room" / "no conversion at the site level, the
+# conversions should already be baked". The site converts NOTHING, so this BAKES prod's data (--fix:
+# every Hebrew-edition and English row, every machine translation row -> Paleo, punctuation kept) and
+# fails on anything left: a verse he saved, square script in server.js, a stale strongs-hebrew-paleo.json,
+# a square lexicon file. The LIVE half runs against $NEW below, before $OLD is retired.
+docker run --rm --memory="1g" --memory-swap="1g" -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-no-square-script.mjs /data/corpus.db /data/translation.db /data/surface-index.db --fix
 
 # 2026-08-18: fieldy compared bldbible.com/parallel's Deuteronomy 13:3 against an
 # external interlinear and found misaligned Hebrew — "I thought that's what the
@@ -330,6 +337,15 @@ if [ "$ok" != "1" ]; then
   echo "==> $NEW FAILED health check after 5m — NOT touching $OLD. Site is still served by $OLD."
   echo "==> Check what went wrong: docker logs $NEW --tail 80"
   echo "==> ($NEW is left running so you can inspect it. Clean up with: docker rm -f $NEW)"
+  exit 1
+fi
+
+# NO SQUARE SCRIPT — LIVE half: the new container's actual responses (Hebrew-edition chapters
+# stored square, Strong's anatomy, tokens, reader, prerendered pages) must carry no square
+# Hebrew and keep their punctuation. Fails -> $NEW is removed and $OLD keeps serving.
+if ! docker exec "$NEW" node verify-no-square-script.mjs --url http://localhost:3000; then
+  echo "==> $NEW FAILED the NO SQUARE SCRIPT live gate — removing it. Site is still served by ${OLD:-nothing}."
+  docker rm -f "$NEW" > /dev/null 2>&1 || true
   exit 1
 fi
 

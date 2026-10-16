@@ -1,5 +1,103 @@
 # CLAUDE.md — project rules for paleo-studio
 
+## ⛔ RULE ZERO — NO SQUARE SCRIPT ON THE SITE, BAKED NOT CONVERTED. NO EXCEPTIONS. (fieldy, 2026-10-16)
+
+"as long as no square script is available to read on my web app i dont care about the underlying data" /
+"the maqaf should stay the maqaf -- all punctuation should stay" / "this is supposed to be project knowledge
+that has no wiggle room. The claude.md should be aware with gates in my deploy pipeline" / "there needs to be
+no conversion at the site level, the conversions should already be baked -- having conversions sounds like
+wasted and unecessary processing".
+
+**The rule.** Nothing a reader can see on bldbible.com — page text, API responses, prerendered HTML, titles,
+tooltips, admin pages — contains square Hebrew: letters U+05D0–05EA (finals, ligatures U+05EF–05F2,
+presentation forms U+FB1D–FB4F) or Hebrew points/accents. **Hebrew punctuation is NOT square script and is
+kept exactly as written:** maqaf ־, paseq ׀, sof pasuq ׃, nun hafukha ׆, geresh ׳, gershayim ״.
+**And the site converts NOTHING at request time or in the browser** (no response guard, no SQL view function,
+no DOM observer, no square→Paleo call on a served string — fieldy's bake-static-data rule). Every string the
+site serves is STORED Paleo; conversion happens once, offline, in the bake. A request-time converter was
+built and REMOVED the same day — do not bring one back as a "safety net".
+
+**The ONE converter** — `server/no-square-script.cjs` (`toPaleoDisplay`): square letters -> Paleo (finals
+folded, presentation forms decomposed), points/cantillation dropped, punctuation kept, idempotent. Used only
+by OFFLINE bakes. `fix-square-hebrew.js` is RETIRED (it dropped punctuation); `paleo-migrate.mjs` is history.
+
+**What is baked, and where:**
+- corpus.db: every HEB `text` row (22 translated books + Works Library docs were square — the ingests still
+  write square; the pipeline bakes them) and ENG text; translation.db machine rows. Bake =
+  `node verify-no-square-script.mjs --fix` (render-all, deploy). A verse fieldy SAVED in the Studio is never
+  rewritten — it FAILS the gate until he fixes it.
+- Strong's: `server/build-strongs-paleo.mjs` -> `server/strongs-hebrew-paleo.json` (lemma = Paleo parts,
+  space-separated; strongs_def/derivation/kjv_def with Paleo Hebrew; CGJ/geresh stripped from lemmas). server.js
+  reads ONLY that file (STRONGS_DICT); its anatomy/lookup code is Paleo-native (letters counted with [...s];
+  matres 𐤅/𐤉). The square strongs-hebrew-expanded.json stays for the offline scripts. Re-run the build after the
+  dictionary changes (the gate fails a stale file). Regression 2026-10-16: 8,674 numbers vs the old square code —
+  identical except 6 fused names (H2185 H2582 H3224 H5960 H6765 H8070) now split where the square code missed a
+  final-form letter (חן vs חנ); display unchanged unless allowlisted.
+- Lexicon files (server/lexicon/*.json): Paleo, no square at all (compound-hyphenation, cross-lang-equivalents,
+  name-map-decisions, strongs-renumber converted). hyphenate-compound-names.mjs writes Paleo only (its joining
+  rule reads Paleo; same 436/271 result).
+- Front end: src/lib/models/holyLand.js place names, TRIBE_HEBREW, PROSE_NAMES are Paleo in the source (no
+  squareToPaleo; 695 city/region/tribe values verified identical to the original output); CheatsheetLong.js
+  examples are Paleo. The only square strings allowed in src/ are the converters for what a USER TYPES into a
+  search box (lib/sqToPaleo.js, lib/hebrewPaleo.js, lib/translit.js, pages/LexiconChips.jsx,
+  pages/LexiconTable.jsx) — input, never served data.
+
+**The gate** `server/verify-no-square-script.mjs` (exit 1 = stop; it never converts for the site):
+CODE — server.js loads no converter and has no square script in code; src/ has no square string outside the
+typed-input converters. STRONGS — strongs-hebrew-paleo.json present, current, Paleo. LEXICON — every
+lexicon/*.json Paleo. DATA — corpus.db HEB+ENG, translation.db, surface-index.db chips Paleo (`--fix` bakes).
+LIVE (`--url`) — the running server's responses carry no square script.
+**Wired:** `render-all.mjs` (`--fix`, after verify-name-forms); `scripts/rebake.sh` (step 1 checks local DBs +
+code and refuses to push; step 5 bakes prod after the reseed with `--fix`); `deploy-blue-green.sh` (data gate
+`--fix` with the other gates — this bakes prod's corpus.db/translation.db; LIVE gate
+`docker exec $NEW … --url http://localhost:3000` after the health check — on failure $NEW is removed and $OLD
+keeps serving). Never remove or weaken a step. A new ingest, route, page or file that shows Hebrew must leave
+Paleo in storage and pass the gate.
+**Measured 2026-10-16:** 17,156 HEB rows of 22 translated books + 33,347 Works Library rows stored square
+(7,701 pointed) and /api/source/HEB/* served them raw; /api/strongs sent square lemmas and the Root page
+rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
+CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
+
+## ROOT STRIP: NT/Apocrypha Hebrew words peeled down to a Strong's root (added 2026-10-16)
+
+fieldy, Revelation 16:21 𐤅𐤉𐤂𐤃𐤐𐤅 showed no Strong's: "I literally just took off what looks like regular
+prefixes and searched for the transliteration of what I assumed to be the root ... its a root that seems
+obviously associated with the NT word. I want the NT tokens combed over again following this strategy and
+tighten up my baseline."
+**Why it was unresolved:** heb-align.js peels only 𐤅 𐤄 𐤁 𐤋 𐤊 𐤌 𐤔 (+ fused particles) and then needs the
+stem to be a WHOLE word the OT spells that way. A verb's own preformative (𐤉 𐤕 𐤀 𐤍, 𐤄, 𐤄𐤕/𐤉𐤕/𐤕𐤕/𐤍𐤕/𐤌𐤕)
+was never peeled, so 𐤅+𐤉+𐤂𐤃𐤐+𐤅 had no path. Measured: 40,667 NT/Apocrypha occurrences unresolved.
+**`nt_rootstrip` tier (heb-align.js, block after SUF_3FS; data from build-surface-index.js `rootStrip`):**
+runs ONLY on words every other tier + the tokens_nt fallbacks left unresolved — no existing reading changes.
+Peel proclitics (in Hebrew order only: 𐤅, 𐤔, 𐤌, 𐤁/𐤋/𐤊, 𐤄 — 𐤋+𐤄+𐤔 is not Hebrew), a preformative, and a
+SUF_COMPS tail (one piece, or noun ending 𐤉/𐤕/𐤅𐤕/𐤅𐤕𐤉 + a pronoun: "his disciples"); the stem must BE a
+Strong's root (strongs-roots.json) or an OT-attested form of that Strong's (internal 𐤅/𐤉 ignored only when
+nothing matches exactly, or every exact match is a name). Gates: a preformative only with a VERB Strong's
+(strongs_def "to …"); an imperfect one never after a preposition; every chip is BHS evidence (PROC_COMPS,
+SUF_COMPS, PFM_COMPS = parseToken of real BHS verbs: 𐤉 [He/it], 𐤕 [She/it], 𐤀 [I], 𐤍 [We], 𐤄 [Causing],
+𐤄𐤕 [Reflexive] …); a name loses to an ordinary word when both fit. **Witness required:** the spelling's own
+occurrences agree on one Strong's (>= 2 and >= 30% of them name it in their ORIGINAL English, text_src,
+±1 verse in canon > 66) — then every occurrence takes it — else this verse's English must name it. English
+known for a Strong's = kjv_def + strongs_def + HIS lexicon.json/homographs gloss, so a word left untagged
+because the dictionary words differ (𐤕𐤋𐤌𐤉𐤃 talmid = "pupil/scholar" vs "disciples", 68x) is fixed by giving
+the root a gloss in his lexicon — the next build tags it. No witness = NOT tagged, listed in
+`server/heb-rootstrip-review.txt` (count, word, best split, SN, refs). Tagged list: `server/heb-rootstrip.txt`.
+Without the witness the root-only guesses were ~50% right (Mishnaic גוף "body" -> H1479 "shut", מבטיח
+"promise" -> "daubing"), so do not loosen it. `--no-root-strip` turns the tier off.
+**Measured on a /tmp copy of corpus.db (node:sqlite shim, buildHebSurfaces only):** 8,613 occurrences /
+3,902 spellings tagged (758 in the NT proper), unresolved 40,667 -> 32,054; sampled precision ~90% (misses:
+Mishnaic words Strong's lacks). Rev 16:21 = [And] + [He/it] + Gadap H1442 + [His]. The build takes ~70 s
+longer at most. NOT run on the real DBs (bridge can't write WAL): fieldy runs `node build-surface-index.js`,
+`node render-all.mjs --surface`, restarts, then Rebake.
+**𐤉𐤉 -> 𐤉𐤄 (fieldy, same day: "no tag, use 𐤉𐤄 -- im certain that 𐤉𐤉 is a mistranslation"):** the HEB
+edition's printed abbreviation of the divine name is CORRECTED IN THE TEXT, not tagged —
+`server/fix-yy-to-yah.py [corpus.db] [--apply]` rewrites whole-word 𐤉𐤉 (optional 𐤅 + one of 𐤋𐤁𐤌𐤊) to 𐤉𐤄 in
+verses.text_paleo + text (square יי -> יה) for canon >= 40 / Works Library docs, and tokens_nt / tokens_nt_docs
+word_raw. OT untouched (Gen 24:60 𐤄𐤉𐤉 "be", Ps 6:9 𐤁𐤊𐤉𐤉). Not words: 𐤔𐤁𐤅𐤉𐤉, 𐤁𐤁𐤋𐤉𐤉, 𐤇𐤉𐤉. Docs' 𐤉𐤉𐤉𐤉 not
+touched (not asked). Tested on a /tmp copy: 626 verses / 796 words, 833 + 15 token rows, second run 0. The
+resolver then reads 𐤉𐤄 as H3050 (exact form) and 𐤋𐤉𐤄/𐤌𐤉𐤄 as proclitic + Yah. Divine-title gold for a 2-letter
+title only covers bare/𐤅-prefixed (divine-titles.js surfaceCarriesRoot — 𐤁𐤉𐤄 is also Aramaic "in it").
+
 ## YOUR LEXICON/HOMOGRAPHS ARE THE ONLY SOURCE OF TRUTH FOR A GLOSS — owner rule + learned table RETIRED (2026-10-14)
 
 fieldy, after Genesis 4:1 WaThaAmar (H559) showed the placeholder although lexicon.json has "𐤀𐤌𐤓": "said":

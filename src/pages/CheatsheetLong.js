@@ -51,7 +51,7 @@ export const CHEATSHEET_LONG_HTML = `<section class="section" id="pos">
     <tr><td class="mono">impf</td><td>Imperfect</td><td>Incomplete/habitual action. Person prefix + subject.</td><td>pfm= encodes prefix</td></tr>
     <tr><td class="mono">wayq</td><td>Wayyiqtol</td><td>Narrative past. 𐤅 + imperfect (waw-consecutive). Most common in narrative.</td><td>pfm=J with 𐤅𐤉 or 𐤅 prefix in word_raw</td></tr>
     <tr><td class="mono">impv</td><td>Imperative</td><td>Command, 2nd person only.</td><td>ps=p2, often vbe=W for plural</td></tr>
-    <tr><td class="mono">infc</td><td>Infinitive construct</td><td>Verbal noun used with לְ/בְּ. "to do / in doing"</td><td>No pfm, has nme or prs sometimes</td></tr>
+    <tr><td class="mono">infc</td><td>Infinitive construct</td><td>Verbal noun used with 𐤋/𐤁. "to do / in doing"</td><td>No pfm, has nme or prs sometimes</td></tr>
     <tr><td class="mono">infa</td><td>Infinitive absolute</td><td>Emphatic/adverbial form. Often before cognate verb.</td><td>pdp=advb common</td></tr>
     <tr><td class="mono">ptca</td><td>Participle active</td><td>Agent noun / ongoing action. "the one doing X"</td><td>Often pdp=subs or pdp=adjv</td></tr>
     <tr><td class="mono">ptcp</td><td>Participle passive</td><td>State resulting from action. "the one having been done to"</td><td>Rare; pual ptcp mostly</td></tr>
@@ -239,7 +239,7 @@ export const CHEATSHEET_LONG_HTML = `<section class="section" id="pos">
   </div>
 
   <div class="callout">
-    <b>Why prs before nme?</b> Pronominal suffixes attach to the very end of the inflected form and sit outside nominal endings: שִׂמְלָה + הּ = שִׂמְלָתָהּ. Strip prs first (𐤄) then nme (𐤕) to reach root 𐤔𐤌𐤋.
+    <b>Why prs before nme?</b> Pronominal suffixes attach to the very end of the inflected form and sit outside nominal endings: 𐤔𐤌𐤋𐤄 + 𐤄 = 𐤔𐤌𐤋𐤕𐤄. Strip prs first (𐤄) then nme (𐤕) to reach root 𐤔𐤌𐤋.
   </div>
   <div class="callout">
     <b>vbs=H failure mode:</b> In Hifil imperfect, the 𐤄 of the Hifil stem contracts phonologically into the prefix vowel — the 𐤄 is NOT present as a consonant in word_raw. vbs=H is still encoded, but the strip attempt silently fails. This is expected; the display root just has one more character that MUTATED_ROOTS handles.

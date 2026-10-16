@@ -102,6 +102,8 @@ const TAIL_STEPS = [
   ['node', ['fix-name-forms.mjs'],                           'name forms: locked spellings, bare names, gold () markers (re-applied every run)'],
   ['node', ['verify-reading-glosses.mjs', '--fix'],          'parallel gate: every glossed word must be in its verse\'s Hebrew (machine rows repaired; known misconceptions removed; your saved verses listed in gloss-gate-review.txt)'],
   ['node', ['verify-name-forms.mjs'],                        'gate: fails the pipeline on any name the app would render wrong'],
+  // 2026-10-16 NO SQUARE SCRIPT (CLAUDE.md rule zero): the site converts nothing — everything it serves is baked Paleo here.
+  ['node', ['verify-no-square-script.mjs', '--fix'],          'NO SQUARE SCRIPT gate + BAKE: Hebrew-edition and English text, translation rows baked to Paleo (punctuation kept); fails on a saved verse, a stale strongs-hebrew-paleo.json, a square lexicon file, or square script in server.js/src'],
   ['node', ['fix-divine-names.mjs', '--check'],              'divine-name gate: no Adanay over a Yahawah token (or the reverse); saved verses listed in divine-name-review.txt'],
   ['node', ['verify-integration.mjs'],                       'verify: baseline reaches Studio+reader, report missing chapters'],
 ];
