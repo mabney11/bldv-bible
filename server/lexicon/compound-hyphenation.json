@@ -497,12 +497,10 @@
   },
   "H38": {
     "sn": "H38",
-    "he": "𐤀𐤁 𐤉𐤌",
-    "paleo": "𐤀𐤁-𐤉𐤌",
+    "skip": true,
     "from": "Abayam",
     "to": "Ab-Yam",
-    "meaning": null,
-    "def": "Abijam (or Abijah), a king of Judah"
+    "why": "fieldy 2026-10-16: \"lets keep Abayam\" — written joined; the hyphenated form is rewritten back"
   },
   "H40": {
     "sn": "H40",
