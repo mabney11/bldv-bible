@@ -57,18 +57,28 @@ export function loadRules() {
   //    selfGloss : "Yashar-Al (Yasharaal)" / "Yashar-Al (Yashar-Al)" → "Yashar-Al (Israel)"
   //    bareTr    : a bare hyphenated name (no gloss after it) → "Yashar-Al (Israel)"
   let hyphenRe = null, hyphenTo = new Map(), selfGloss = null, selfGlossEn = new Map();
+  let unhyphenRe = null; const unhyphenTo = new Map();
   const bareTr = new Map();
   try {
     const allow = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'compound-hyphenation.json'), 'utf8'));
     const live = Object.values(allow).filter((r) => r && r.to && r.from && !r.skip);
+    // A tombstone that keeps its from/to (fieldy 2026-10-16: "lets keep Abayam") undoes an
+    // earlier hyphenation: "Ab-Yam" (with any glued proclitic) goes back to "Abayam".
+    const back = Object.values(allow).filter((r) => r && r.skip && r.to && r.from && r.to !== r.from);
+    if (back.length) {
+      for (const r of back) unhyphenTo.set(r.to, r.from);
+      unhyphenRe = new RegExp(`(?<![A-Za-z\\u00C0-\\u024F'-])((?:Wa|Ha|La|Ba|Ka|Ma|Sha|Mi)*)(${back.map((r) => esc(r.to)).sort((x, y) => y.length - x.length).join('|')})(?![A-Za-z\\u00C0-\\u024F'-])`, 'g');
+    }
     if (live.length) {
       for (const r of live) { hyphenTo.set(r.from, r.to); if (r.en) { selfGlossEn.set(r.to, r.en); bareTr.set(r.to, r.en); } }
-      hyphenRe = new RegExp(`\\b(${live.map((r) => esc(r.from)).join('|')})\\b`, 'g');
+      // The joined form alone OR behind the proclitics the reading text glues onto a name
+      // ("WaBayathaal (and Bethel)", "LaYasharaal") — the prefix is kept, the name hyphenated.
+      hyphenRe = new RegExp(`(?<![A-Za-z\\u00C0-\\u024F'-])((?:Wa|Ha|La|Ba|Ka|Ma|Sha|Mi)*)(${live.map((r) => esc(r.from)).sort((a, b) => b.length - a.length).join('|')})(?![A-Za-z\\u00C0-\\u024F'-])`, 'g');
       selfGloss = new RegExp(`\\b(${live.map((r) => esc(r.to)).join('|')}) \\((?:${live.flatMap((r) => [esc(r.from), esc(r.to)]).join('|')})\\)`, 'g');
     }
   } catch { /* none */ }
   const glossed = new Map(Object.entries(rules.glossed || {}).filter(([k, v]) => !k.startsWith('_') && v));
-  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases, gold, hyphenRe, hyphenTo, selfGloss, selfGlossEn, bareTr, glossed };
+  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases, gold, hyphenRe, hyphenTo, unhyphenRe, unhyphenTo, selfGloss, selfGlossEn, bareTr, glossed };
 }
 
 // ── gold markers: "Yahawah" → "Yahawah ()" ─────────────────────────────────────
@@ -158,8 +168,11 @@ export function checkText(text, R) {
   let fixed = text;
   // Joined compound → hyphenated, everywhere (headword, bare, inside a quote): one token
   // either way, so translation_links' word indices are untouched.
+  if (R.unhyphenRe) {
+    fixed = fixed.replace(R.unhyphenRe, (m, pre, name) => { const to = pre + (R.unhyphenTo.get(name) || name); violations.push({ text: m, fix: to, why: 'compound name is written joined (hyphen removed by fieldy)' }); return to; });
+  }
   if (R.hyphenRe) {
-    fixed = fixed.replace(R.hyphenRe, (m) => { const to = R.hyphenTo.get(m) || m; violations.push({ text: m, fix: to, why: 'compound name is written hyphenated' }); return to; });
+    fixed = fixed.replace(R.hyphenRe, (m, pre, name) => { const to = pre + (R.hyphenTo.get(name) || name); violations.push({ text: m, fix: to, why: 'compound name is written hyphenated' }); return to; });
   }
   if (R.mustRe) {
     fixed = fixed.replace(R.mustRe, (m, tr, name) => {

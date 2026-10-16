@@ -87,6 +87,41 @@ swapped, event loops never blocked, lock removed; a gloss-only save starts no bu
 real DBs/server (the shell to fieldy's machine was down): restart, edit a gloss on /roots, then load a
 verse straight away — it must answer; the log says "glosses reloaded (no index rebuild needed)".
 
+## COMPOUND NAMES ARE HYPHENATED IN THE CORPUS, -Al NAMES INCLUDED (added 2026-10-16)
+
+fieldy: "I'd like hyphens between compound words such as Yaban-Al and Aray-Al -- I want it like this in my
+corpus and not just the lexicon pages. Bayath-Al etc." Asked the scope, he chose "your full rule, minus the
+-Al exception": every compound name the Strong's dictionary can split is hyphenated, EXCEPT a name whose
+pieces a waw ties together (Yahawanathan, Yahawadah) or that ends in -yah (Yashaiyah). -Al names now
+hyphenate (Aray-Al, Danay-Al, Shamaw-Al, Gabaray-Al) — the 2026-09-08 rule's -Al exception is gone.
+- `lexicon/compound-hyphenation.json` stays the ONE source of truth (server.js nameTranslit/strongsAnatomy,
+  apply-web-strongs, name-form-lib, holyLand.js). `hyphenate-compound-names.mjs --rule-apply` filled it:
+  491 live numbers (was ~24 hand-picked). A piece that is itself a hyphenated name keeps its hyphen inside
+  the longer one (H415 Al-Alahay-Yashar-Al). Hand decisions (✓/✗) are never overwritten.
+- **Excluded with `{skip:true, why}` tombstones (24):** compounds that are ORDINARY WORDS, not names — the
+  reading text would show them as if they were names: H6757 tzalmaveth "shadow of death", H1100 belial,
+  H320 Aramaic "later" (same letters as H319 acharith), H375 "where?" (= H374 ephah), H305, H417, H510,
+  H799, H808, H865, H1107, H1099, H2755, H1976, H3628, H6495, H6550 (= H6551 Parosh), H6574, H5524, H7915,
+  H8333, H148; H5799 azazel "scapegoat" (ask before hyphenating); H1567 Galeed, because the same letters
+  spell H1568 Gilead, which would have become "Gal-Id". hyphenRe rewrites by SPELLING, so before adding a
+  number check that no other Strong's root transliterates to its joined form.
+- name-map-expanded.json rewritten by `--apply` (1,503 values; the script now writes it as ONE line, as
+  git keeps it). auto-gloss-words.json: the hyphenated form of each gold word added (52) so the gold "()"
+  marker still lands (Ach-Ab, Abay-Shalawam …).
+- name-form-lib `hyphenRe` (fix-name-forms repairs, verify-name-forms FAILS a survivor) now also matches the
+  joined form behind glued proclitics: "WaBayathaal (and Bethel)" → "WaBayath-Al", "LaYasharaal" →
+  "LaYashar-Al" — before, `\b` never fired inside a prefixed word, so those were invisible to the gate.
+- Measured on english-baseline.jsonl + english-nt-baseline.jsonl: 2,194 of 39,061 verses carry a joined
+  compound (Ban-Yamayan 158, Yashar-Al 156 — the Aramaic H3479 and NT ones —, Abay-Shalawam 110, Al-Izar
+  106, Yarab-Im 103, Ach-Ab 91, Danay-Al 81 …). NOT run on the real DBs (the device shell was down this
+  session). fieldy runs `cd server && node render-all.mjs` (apply-web-strongs writes the OT hyphenated;
+  fix-name-forms rewrites corpus.db + translation.db, saved verses with a history row; verify-name-forms
+  gates), restarts, then Rebake. Root pages/chips update as soon as the lexicon file syncs (hot-reloaded).
+- To undo one: `node hyphenate-compound-names.mjs --remove H####`, --apply, re-render. The tombstone keeps
+  its from/to, so name-form-lib (fix-name-forms; the gate fails a survivor) rewrites the hyphenated form
+  BACK to the joined one, prefixes kept. First use, same day — fieldy: "lets keep Abayam": H38 Ab-Yam →
+  Abayam (Abijam), name map's 4 values reverted, "Ab-Yam" dropped from auto-gloss-words.
+
 ## ROOT STRIP: NT/Apocrypha Hebrew words peeled down to a Strong's root (added 2026-10-16)
 
 fieldy, Revelation 16:21 𐤅𐤉𐤂𐤃𐤐𐤅 showed no Strong's: "I literally just took off what looks like regular

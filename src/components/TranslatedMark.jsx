@@ -13,14 +13,17 @@
  * Ezra 4:7, the letter "set forth" (translated) in Aramayath. Written in his
  * transliteration (ת → th, a-vowels): tharagam. Change TRANSLATE_WORD to rename.
  *
+ * 2026-10-16 wording (fieldy): "MaAratz (Maurice) Yahawaban (Yeban), ibaday (servant of) Yah /
+ * tharagam (translated by) yad (hand)".
+ *
  * Hover, keyboard focus or a tap opens the card; a second tap / Escape closes it.
  */
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './TranslatedMark.css';
 
-export const TRANSLATOR = { name: 'MaAratz', paleo: '𐤌𐤀𐤓𐤑', mark: '𐤌' };
-export const TRANSLATE_WORD = { translit: 'tharagam', gloss: 'translated', paleo: '𐤕𐤓𐤂𐤌' };
+export const TRANSLATOR = { name: 'MaAratz', gloss: 'Maurice', surname: 'Yahawaban', surnameGloss: 'Yeban', paleo: '𐤌𐤀𐤓𐤑', mark: '𐤌' };
+export const TRANSLATE_WORD = { translit: 'tharagam', gloss: 'translated by', paleo: '𐤕𐤓𐤂𐤌' };
 
 function fmtDate(t) {
   if (!t) return '';
@@ -33,7 +36,7 @@ function fmtDate(t) {
 export function Credit() {
   return (
     <>
-      <em>{TRANSLATOR.name}</em>, <em>Ibaday</em> (servant of) <em>Yahawah Alahayam</em>, <em>yad</em> (hand) <em>{TRANSLATE_WORD.translit}</em> ({TRANSLATE_WORD.gloss})
+      <em>{TRANSLATOR.name}</em> ({TRANSLATOR.gloss}) <em>{TRANSLATOR.surname}</em> ({TRANSLATOR.surnameGloss}), <em>ibaday</em> (servant of) <em>Yah</em> — <em>{TRANSLATE_WORD.translit}</em> ({TRANSLATE_WORD.gloss}) <em>yad</em> (hand)
     </>
   );
 }
@@ -63,9 +66,8 @@ export default function TranslatedMark({ refLabel, updatedAt, size = 'md', class
         <span className="tmark-glyph" aria-hidden="true">{TRANSLATOR.mark}</span>
       </button>
       <span id={tipId} role="tooltip" className="tmark-tip">
-        <span className="tmark-line tmark-who"><b>{TRANSLATOR.name}</b>,</span>
-        <span className="tmark-line"><b>Ibaday</b> (servant of) <b>Yahawah Alahayam</b>,</span>
-        <span className="tmark-line"><b>yad</b> (hand) <b>{TRANSLATE_WORD.translit}</b> ({TRANSLATE_WORD.gloss})</span>
+        <span className="tmark-line tmark-who"><b>{TRANSLATOR.name}</b> ({TRANSLATOR.gloss}) <b>{TRANSLATOR.surname}</b> ({TRANSLATOR.surnameGloss}), <b>ibaday</b> (servant of) <b>Yah</b></span>
+        <span className="tmark-line"><b>{TRANSLATE_WORD.translit}</b> ({TRANSLATE_WORD.gloss}) <b>yad</b> (hand)</span>
         {(refLabel || date) && <span className="tmark-meta">{refLabel}{refLabel && date ? ' · ' : ''}{date ? `${variant === 'touched' ? 'in progress, last touched' : 'marked translated'} ${date}` : ''}</span>}
         <Link to="/progress" className="tmark-more" tabIndex={open ? 0 : -1}>Every verse translated so far →</Link>
         <span className="tmark-sig" dir="rtl" aria-label={`signed ${TRANSLATOR.name}`}>{TRANSLATOR.paleo}</span>

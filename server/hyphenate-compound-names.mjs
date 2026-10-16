@@ -22,7 +22,8 @@
  *
  * Modes:
  *   --list                 print every candidate the dictionary supports (SN, old → new), for picking
- *   --rule                 preview fieldy's rule: hyphenate unless a waw ties the pieces or the name ends in -yah / -Al
+ *   --rule                 preview fieldy's rule: hyphenate unless a waw ties the pieces or the name ends in -yah
+ *                          (-Al names hyphenate since 2026-10-16: Aray-Al, Yaban-Al, Bayath-Al)
  *   --rule-apply           add every name the rule hyphenates to the allowlist (hand ✓/✗ decisions kept)
  *   --add H1035,H27,…      add numbers to the allowlist (uses the dictionary split)
  *   --seed-map             add every biblical city / nation on the Holy Land map that has a rule
@@ -107,9 +108,9 @@ if (flag('--list')) {
   for (const r of all) console.log(show(r) + (allow[r.sn]?.skip ? '   ✗ excluded' : allow[r.sn] ? '   ✓ allowlisted' : ''));
   process.exit(0);
 }
-// fieldy's rule (2026-09-08): a compound name stays JOINED when a waw ties the
-// pieces together (Yahawanathan יהו|נתן, Yahawadah) or when it ends in -yah (יה/יהו:
-// Yashaiyah) or -Al (אל: Danayaal, Shamawaal); otherwise the pieces are
+// fieldy's rule (2026-09-08, -Al dropped 2026-10-16): a compound name stays JOINED when a
+// waw ties the pieces together (Yahawanathan יהו|נתן, Yahawadah) or when it ends in -yah
+// (יה/יהו: Yashaiyah); otherwise — -Al names included (Aray-Al, Danay-Al) — the pieces are
 // hyphenated (Abay-Dan, Bayath-Lacham). Names already decided by hand in the
 // allowlist (✓ / ✗) keep their decision — Yashar-Al and Bayath-Al were asked for by name.
 export function joinedByRule(split) {
@@ -120,7 +121,9 @@ export function joinedByRule(split) {
   const W = '\u{10905}';
   if (head.endsWith(W) || tail.startsWith(W)) return 'waw ties the pieces';
   if (/\u{10909}\u{10904}\u{10905}?$/u.test(joined)) return 'ends in -yah';
-  if (/\u{10900}\u{1090B}$/u.test(joined)) return 'ends in -Al';
+  // -Al is NO LONGER an exception (fieldy, 2026-10-16: "I'd like hyphens between compound
+  // words such as Yaban-Al and Aray-Al -- I want it like this in my corpus and not just the
+  // lexicon pages"). Aray-Al, Danay-Al, Shamaw-Al … hyphenate like Bayath-Al / Yashar-Al.
   return null;
 }
 if (flag('--rule') || flag('--rule-apply')) {
@@ -128,13 +131,17 @@ if (flag('--rule') || flag('--rule-apply')) {
   const decided = (r) => allow[r.sn] ? (allow[r.sn].skip ? '✗ excluded by hand' : '✓ allowlisted by hand') : null;
   const hy = [], keep = [];
   for (const r of all) { const why = joinedByRule(r.he.split(' ')); (why ? keep : hy).push({ r, why }); }
-  console.log(`${all.length} splittable names — the rule hyphenates ${hy.length}, leaves ${keep.length} joined.\n\nHYPHENATE (no connective waw, not -yah / -Al):`);
+  console.log(`${all.length} splittable names — the rule hyphenates ${hy.length}, leaves ${keep.length} joined.\n\nHYPHENATE (no connective waw, not -yah):`);
   for (const { r } of hy) console.log(show(r) + (decided(r) ? '   ' + decided(r) : ''));
   console.log('\nSTAY JOINED:');
   for (const { r, why } of keep) console.log(show(r) + `   (${why})` + (decided(r) ? '   ' + decided(r) : ''));
   if (flag('--rule-apply')) {
     let n = 0;
     for (const { r } of hy) if (!allow[r.sn]) { allow[r.sn] = r; n++; }
+    // A piece that is itself a hyphenated name is spelled that way inside the longer one:
+    // Al-Alahay-Yasharaal → Al-Alahay-Yashar-Al (H415). Same pieces, same letters.
+    const joinedTo = new Map(Object.values(allow).filter((e) => e && !e.skip && e.from && e.to).map((e) => [e.from, e.to]));
+    for (const e of Object.values(allow)) if (e && !e.skip && e.to) e.to = e.to.split('-').map((p, i, a) => (a.length > 1 && joinedTo.get(p)) || p).join('-');
     console.log(`\n${n} added to the allowlist by the rule (hand decisions untouched). Next: --apply / --corpus.`); saveAllow();
   }
   process.exit(0);
@@ -144,7 +151,8 @@ if (flagVal('--add')) {
   saveAllow(); process.exit(0);
 }
 // --remove keeps a { skip: true } tombstone so --seed-map never re-adds the number.
-if (flagVal('--remove')) { for (const sn of flagVal('--remove').split(',')) allow[normSn(sn)] = { sn: normSn(sn), skip: true }; saveAllow(); process.exit(0); }
+// It keeps the old from/to, so name-form-lib rewrites an already-hyphenated form back to the joined one.
+if (flagVal('--remove')) { for (const sn of flagVal('--remove').split(',')) { const k = normSn(sn), o = allow[k] || rule(k) || {}; allow[k] = { sn: k, skip: true, ...(o.from && o.to ? { from: o.from, to: o.to } : {}) }; } saveAllow(); process.exit(0); }
 if (flag('--seed-map')) {
   const m = await import('../src/lib/models/holyLand.js');
   // The map's city spellings are baked Paleo (CLAUDE.md rule zero), so key the dictionary by Paleo too.
@@ -162,7 +170,9 @@ console.log(`${Object.values(allow).filter((r) => !r.skip).length} allowlisted n
 for (const r of [...used.values()].sort((a, b) => a.from.localeCompare(b.from))) console.log(show(r));
 if (APPLY) {
   for (const sect of ['single', 'phrases', 'theonyms']) for (const [k, v] of Object.entries(nm[sect] || {})) if (used.has(v)) nm[sect][k] = used.get(v).to;
-  fs.writeFileSync(nmPath, JSON.stringify(nm, null, 2) + '\n');
+  const back = new Map(Object.values(allow).filter((r) => r && r.skip && r.from && r.to).map((r) => [r.to, r.from]));
+  for (const sect of ['single', 'phrases', 'theonyms']) for (const [k, v] of Object.entries(nm[sect] || {})) if (back.has(v)) nm[sect][k] = back.get(v);
+  fs.writeFileSync(nmPath, JSON.stringify(nm));   // ONE line, as the file is kept in git
   console.log('name-map-expanded.json rewritten');
 }
 if (flag('--corpus')) {
