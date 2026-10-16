@@ -5,7 +5,7 @@
     "Format: { entries: { '<key>': { ...fields }, ... } }",
     "",
     "Each entry MAY have (use whichever fields fit):",
-    "  hebrew_lemma:   Hebrew lemma (modern script) — e.g. 'יהושע'",
+    "  hebrew_lemma:   Hebrew lemma (modern script) — e.g. '𐤉𐤄𐤅𐤔𐤏'",
     "  hebrew_paleo:   Paleo-Hebrew rendering — e.g. '𐤉𐤄𐤅𐤔𐤏'",
     "  greek_lemma:    Greek lemma (LXX/GNT, accents preserved) — e.g. 'Ἰησοῦς'",
     "  greek_surface:  Greek surface form (also accepted)",
@@ -26,36 +26,36 @@
   "entries": {
     "iesous": {
       "canonical_eng": "Yahawashai",
-      "hebrew_lemma":  "יהושע",
+      "hebrew_lemma":  "𐤉𐤄𐤅𐤔𐤏",
       "hebrew_paleo":  "𐤉𐤄𐤅𐤔𐤏",
       "greek_lemma":   "Ἰησοῦς",
       "geez_lemma":    "ኢየሱስ",
       "aliases":       ["Iesous", "Jesus", "Joshua", "Yeshua"],
-      "notes":         "Greek transliteration of Hebrew יהושע / יֵשׁוּעַ (short form). Used in LXX for Joshua son of Nun and in GNT for the New Testament figure.",
+      "notes":         "Greek transliteration of Hebrew 𐤉𐤄𐤅𐤔𐤏 / 𐤉𐤔𐤅𐤏 (short form). Used in LXX for Joshua son of Nun and in GNT for the New Testament figure.",
       "refs":          ["LXX|6|1|1", "GNT|40|1|1"]
     },
     "kyrios": {
       "canonical_eng": "Adonay",
-      "hebrew_lemma":  "אדני",
+      "hebrew_lemma":  "𐤀𐤃𐤍𐤉",
       "hebrew_paleo":  "𐤀𐤃𐤍𐤉",
       "greek_lemma":   "κύριος",
       "geez_lemma":    "እግዚእ",
       "aliases":       ["Kyrios", "Lord"],
-      "notes":         "Greek κύριος is the LXX's standard rendering of יהוה (the Tetragrammaton) and אדני. In Ge'ez, እግዚእ is the corresponding term.",
+      "notes":         "Greek κύριος is the LXX's standard rendering of 𐤉𐤄𐤅𐤄 (the Tetragrammaton) and 𐤀𐤃𐤍𐤉. In Ge'ez, እግዚእ is the corresponding term.",
       "refs":          ["LXX|1|2|4"]
     },
     "theos": {
       "canonical_eng": "Alahayam",
-      "hebrew_lemma":  "אלהים",
+      "hebrew_lemma":  "𐤀𐤋𐤄𐤉𐤌",
       "hebrew_paleo":  "𐤀𐤋𐤄𐤉𐤌",
       "greek_lemma":   "θεός",
       "geez_lemma":    "እግዚአብሔር",
       "aliases":       ["Theos", "God", "Elohim"],
-      "notes":         "Greek θεός renders Hebrew אלהים in LXX. Ge'ez እግዚአብሔር is a compound (Lord-of-the-region) commonly translated 'God'."
+      "notes":         "Greek θεός renders Hebrew 𐤀𐤋𐤄𐤉𐤌 in LXX. Ge'ez እግዚአብሔር is a compound (Lord-of-the-region) commonly translated 'God'."
     },
     "ierousalem": {
       "canonical_eng": "Yarushalam",
-      "hebrew_lemma":  "ירושלם",
+      "hebrew_lemma":  "𐤉𐤓𐤅𐤔𐤋𐤌",
       "hebrew_paleo":  "𐤉𐤓𐤅𐤔𐤋𐤌",
       "greek_lemma":   "Ἰερουσαλήμ",
       "geez_lemma":    "ኢየሩሳሌም",
@@ -64,7 +64,7 @@
     },
     "moses": {
       "canonical_eng": "Mashah",
-      "hebrew_lemma":  "משה",
+      "hebrew_lemma":  "𐤌𐤔𐤄",
       "hebrew_paleo":  "𐤌𐤔𐤄",
       "greek_lemma":   "Μωϋσῆς",
       "geez_lemma":    "ሙሴ",
@@ -72,7 +72,7 @@
     },
     "abraham": {
       "canonical_eng": "Abaraham",
-      "hebrew_lemma":  "אברהם",
+      "hebrew_lemma":  "𐤀𐤁𐤓𐤄𐤌",
       "hebrew_paleo":  "𐤀𐤁𐤓𐤄𐤌",
       "greek_lemma":   "Ἀβραάμ",
       "geez_lemma":    "አብርሃም",
@@ -80,7 +80,7 @@
     },
     "david": {
       "canonical_eng": "Dawad",
-      "hebrew_lemma":  "דוד",
+      "hebrew_lemma":  "𐤃𐤅𐤃",
       "hebrew_paleo":  "𐤃𐤅𐤃",
       "greek_lemma":   "Δαυίδ",
       "geez_lemma":    "ዳዊት",
@@ -88,7 +88,7 @@
     },
     "israel": {
       "canonical_eng": "Yashar-Al",
-      "hebrew_lemma":  "ישראל",
+      "hebrew_lemma":  "𐤉𐤔𐤓𐤀𐤋",
       "hebrew_paleo":  "𐤉𐤔𐤓𐤀𐤋",
       "greek_lemma":   "Ἰσραήλ",
       "geez_lemma":    "እስራኤል",
@@ -96,7 +96,7 @@
     },
     "adam": {
       "canonical_eng": "Adam",
-      "hebrew_lemma":  "אדם",
+      "hebrew_lemma":  "𐤀𐤃𐤌",
       "hebrew_paleo":  "𐤀𐤃𐤌",
       "greek_lemma":   "Ἀδάμ",
       "geez_lemma":    "አዳም",
@@ -104,7 +104,7 @@
     },
     "noah": {
       "canonical_eng": "Nawah",
-      "hebrew_lemma":  "נח",
+      "hebrew_lemma":  "𐤍𐤇",
       "hebrew_paleo":  "𐤍𐤇",
       "greek_lemma":   "Νῶε",
       "geez_lemma":    "ኖኅ",
@@ -112,7 +112,7 @@
     },
     "jacob": {
       "canonical_eng": "Yaqab",
-      "hebrew_lemma":  "יעקב",
+      "hebrew_lemma":  "𐤉𐤏𐤒𐤁",
       "hebrew_paleo":  "𐤉𐤏𐤒𐤁",
       "greek_lemma":   "Ἰακώβ",
       "geez_lemma":    "ያዕቆብ",
@@ -120,7 +120,7 @@
     },
     "isaac": {
       "canonical_eng": "Yatzaq",
-      "hebrew_lemma":  "יצחק",
+      "hebrew_lemma":  "𐤉𐤑𐤇𐤒",
       "hebrew_paleo":  "𐤉𐤑𐤇𐤒",
       "greek_lemma":   "Ἰσαάκ",
       "geez_lemma":    "ይስሐቅ",
@@ -128,7 +128,7 @@
     },
     "egypt": {
       "canonical_eng": "Matzaram",
-      "hebrew_lemma":  "מצרים",
+      "hebrew_lemma":  "𐤌𐤑𐤓𐤉𐤌",
       "hebrew_paleo":  "𐤌𐤑𐤓𐤉𐤌",
       "greek_lemma":   "Αἴγυπτος",
       "geez_lemma":    "ግብጽ",
@@ -136,7 +136,7 @@
     },
     "babylon": {
       "canonical_eng": "Babal",
-      "hebrew_lemma":  "בבל",
+      "hebrew_lemma":  "𐤁𐤁𐤋",
       "hebrew_paleo":  "𐤁𐤁𐤋",
       "greek_lemma":   "Βαβυλών",
       "geez_lemma":    "ባቢሎን",
@@ -144,7 +144,7 @@
     },
     "satan": {
       "canonical_eng": "the Adversary",
-      "hebrew_lemma":  "שטן",
+      "hebrew_lemma":  "𐤔𐤈𐤍",
       "hebrew_paleo":  "𐤔𐤈𐤍",
       "greek_lemma":   "σατανᾶς",
       "geez_lemma":    "ሰይጣን",
@@ -152,7 +152,7 @@
     },
     "messiah": {
       "canonical_eng": "Mashayach",
-      "hebrew_lemma":  "משיח",
+      "hebrew_lemma":  "𐤌𐤔𐤉𐤇",
       "hebrew_paleo":  "𐤌𐤔𐤉𐤇",
       "greek_lemma":   "Χριστός",
       "geez_lemma":    "ክርስቶስ",
@@ -160,16 +160,16 @@
     },
     "spirit": {
       "canonical_eng": "Spirit/Wind",
-      "hebrew_lemma":  "רוח",
+      "hebrew_lemma":  "𐤓𐤅𐤇",
       "hebrew_paleo":  "𐤓𐤅𐤇",
       "greek_lemma":   "πνεῦμα",
       "geez_lemma":    "መንፈስ",
       "aliases":       ["Pneuma", "Ruach"],
-      "notes":         "Hebrew רוח and Greek πνεῦμα both span wind/breath/spirit; LXX consistently renders רוח as πνεῦμα."
+      "notes":         "Hebrew 𐤓𐤅𐤇 and Greek πνεῦμα both span wind/breath/spirit; LXX consistently renders 𐤓𐤅𐤇 as πνεῦμα."
     },
     "covenant": {
       "canonical_eng": "Covenant",
-      "hebrew_lemma":  "ברית",
+      "hebrew_lemma":  "𐤁𐤓𐤉𐤕",
       "hebrew_paleo":  "𐤁𐤓𐤉𐤕",
       "greek_lemma":   "διαθήκη",
       "geez_lemma":    "ኪዳን",
@@ -177,7 +177,7 @@
     },
     "law": {
       "canonical_eng": "Tawarah",
-      "hebrew_lemma":  "תורה",
+      "hebrew_lemma":  "𐤕𐤅𐤓𐤄",
       "hebrew_paleo":  "𐤕𐤅𐤓𐤄",
       "greek_lemma":   "νόμος",
       "geez_lemma":    "ሕግ",
@@ -185,7 +185,7 @@
     },
     "prophet": {
       "canonical_eng": "Prophet",
-      "hebrew_lemma":  "נביא",
+      "hebrew_lemma":  "𐤍𐤁𐤉𐤀",
       "hebrew_paleo":  "𐤍𐤁𐤉𐤀",
       "greek_lemma":   "προφήτης",
       "geez_lemma":    "ነቢይ",
@@ -193,7 +193,7 @@
     },
     "house": {
       "canonical_eng": "House",
-      "hebrew_lemma":  "בית",
+      "hebrew_lemma":  "𐤁𐤉𐤕",
       "hebrew_paleo":  "𐤁𐤉𐤕",
       "greek_lemma":   "οἶκος",
       "geez_lemma":    "ቤት",
@@ -201,7 +201,7 @@
     },
     "son": {
       "canonical_eng": "Son",
-      "hebrew_lemma":  "בן",
+      "hebrew_lemma":  "𐤁𐤍",
       "hebrew_paleo":  "𐤁𐤍",
       "greek_lemma":   "υἱός",
       "geez_lemma":    "ወልድ",
@@ -209,7 +209,7 @@
     },
     "earth": {
       "canonical_eng": "Aratz",
-      "hebrew_lemma":  "ארץ",
+      "hebrew_lemma":  "𐤀𐤓𐤑",
       "hebrew_paleo":  "𐤀𐤓𐤑",
       "greek_lemma":   "γῆ",
       "geez_lemma":    "ምድር",
@@ -217,7 +217,7 @@
     },
     "heaven": {
       "canonical_eng": "Shamayam",
-      "hebrew_lemma":  "שמים",
+      "hebrew_lemma":  "𐤔𐤌𐤉𐤌",
       "hebrew_paleo":  "𐤔𐤌𐤉𐤌",
       "greek_lemma":   "οὐρανός",
       "geez_lemma":    "ሰማይ",
