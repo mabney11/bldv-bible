@@ -30,6 +30,7 @@ server/models/
 
 # Caches
 server/nav-index.cache.json
+server/nav-index.cache.json.*
 server/divine-titles.cache.json
 server/divine-titles.cache.json.tmp
 

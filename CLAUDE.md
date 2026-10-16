@@ -58,6 +58,35 @@ Paleo in storage and pass the gate.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## A LEXICON SAVE NEVER TAKES THE SITE DOWN — rebuilds run in the background (added 2026-10-16)
+
+fieldy: "I dont like how my app goes down when I make a change to a lex entry -- these updates should be
+processed asynchronously and not affect the performance of my app" (saved an entry on /roots?sn=H1259,
+went back to the verse -> "We'll be right back").
+**Cause:** server.js's lexicon fs.watch made EVERY cluster worker (12 on OVH) null its nav index and run
+`_buildNavIndexesUncached()` synchronously at the same instant — every event loop blocked for the whole
+build (the same 12-at-once shape that OOM-killed a worker at boot, see the warm-up NOTE by app.listen).
+And mostly wasted: the nav index never reads a gloss, yet lexicon.json/homographs.json were in its cache stamp.
+**Now (server.js "HOT RELOAD" block):**
+- GLOSS files (lexicon.json, homographs.json, hebrew-extra-lexicon.json, surface-strongs-overrides.json):
+  a save only drops `_lexiconCache` + the two translit reverse indexes; the next request re-reads (ms).
+  They are no longer nav-cache stamp inputs.
+- INDEX files (strongs-roots.json, strongs-location-overrides.json, strongs-renumber.json) and the admin
+  "rebuild indexes" / location-override routes: workers KEEP SERVING the current index;
+  `refreshNavIndexesInBackground()` takes `nav-index.cache.json.lock` and ONE worker spawns
+  `node server.js` with PALEO_NAV_BUILD_ONLY=1 (+PALEO_NO_SYNC=1, nice 10), which builds, writes
+  nav-index.cache.json + `.stamp` sidecar, exits (never listens). Workers poll the sidecar every 2s and
+  swap the new index in, staggered 0-3s. A failed build writes `.failed` (no retry for 5 min on that
+  stamp); the old index keeps serving.
+- Boot: a cache stale only by input mtimes (same NAV_BUILD_VERSION) is served at once and refreshed in
+  the background; a NAV_BUILD_VERSION bump still builds synchronously (blue-green covers that).
+- The cache is stamped with the inputs at the START of the build (a mid-build change used to mislabel it).
+**Never put a synchronous buildNavIndexes() back on a request or watch path.**
+Verified: node --check; the coordination block run in 4 simulated workers -> exactly 1 builder, all 4
+swapped, event loops never blocked, lock removed; a gloss-only save starts no build. NOT run against the
+real DBs/server (the shell to fieldy's machine was down): restart, edit a gloss on /roots, then load a
+verse straight away — it must answer; the log says "glosses reloaded (no index rebuild needed)".
+
 ## ROOT STRIP: NT/Apocrypha Hebrew words peeled down to a Strong's root (added 2026-10-16)
 
 fieldy, Revelation 16:21 𐤅𐤉𐤂𐤃𐤐𐤅 showed no Strong's: "I literally just took off what looks like regular

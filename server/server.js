@@ -4251,63 +4251,190 @@ function canonicalizeRootSurface(rawPaleo, sn, snRenumber) {
     return rawPaleo;
 }
 
-// ── HOT RELOAD — watch lexicon files and rebuild indexes automatically ────
-// Debounced so rapid successive saves (e.g. editor auto-save) only trigger once.
+// ── HOT RELOAD — lexicon edits never take the site down (fieldy, 2026-10-16) ──
+// "I dont like how my app goes down when I make a change to a lex entry --
+// these updates should be processed asynchronously and not affect the
+// performance of my app."  Before this, EVERY save to any watched lexicon
+// file made EVERY cluster worker (one per core — 12 on the OVH box) null its
+// nav indexes and run _buildNavIndexesUncached() synchronously, all at the
+// same instant: a full pass over tokens_bhs + ~390k HEB rows per worker, on
+// every core at once. Every event loop was blocked for the whole build (and
+// 12 simultaneous builds is the same memory shape that OOM-killed a worker at
+// boot — see the warm-up NOTE near app.listen), so Caddy got no answer and
+// showed "We'll be right back". And it was mostly WASTED work: the nav index
+// is built from corpus.db / surface-index.db / strongs-roots.json / the
+// location overrides / strongs-renumber.json — it never reads a gloss.
+//
+// Now, two kinds of change:
+//   • GLOSS files (lexicon.json, homographs.json, hebrew-extra-lexicon.json,
+//     surface-strongs-overrides.json) — read per request through
+//     loadLexicons(). A save just drops the parsed copy (and the two reverse
+//     indexes built from it); the next request re-reads the file (~ms). No
+//     index rebuild at all.
+//   • INDEX files (strongs-roots.json, strongs-location-overrides.json,
+//     strongs-renumber.json) — the nav index really does change. The workers
+//     KEEP SERVING the index they have; ONE background process
+//     (`node server.js` with PALEO_NAV_BUILD_ONLY=1, low priority) rebuilds
+//     nav-index.cache.json, and each worker swaps the new one in when it is
+//     written (staggered, a JSON load each). A lock file makes sure only one
+//     builder runs no matter how many workers saw the change.
+// Never put a synchronous buildNavIndexes() back on a request/watch path.
 let _rebuildTimer = null;
-let _rebuildInProgress = false;
 let _lastRebuildAt = null;
+let _navLoadedStamp = null;     // _navCacheStamp() of the index currently in memory
 
-function scheduleRebuild(changedFile) {
-    if (_rebuildTimer) clearTimeout(_rebuildTimer);
-    _rebuildTimer = setTimeout(() => {
-        if (_rebuildInProgress) {
-            // Already rebuilding — reschedule for after it finishes
-            scheduleRebuild(changedFile);
-            return;
-        }
-        console.log(`[hot-reload] ${path.basename(changedFile)} changed — rebuilding indexes...`);
-        _rebuildInProgress = true;
-        _lexiconCache = null;          // bust the cache so loadLexicons re-reads from disk
-        _translitGlossIndex = null;    // bust the English-baseline live-gloss reverse index too
-        _translitRenumberIndex = null; // bust the renumbered-root word-swap index too
-        _rootNavIndex = null;
-        _surfNavIndex = null;
-        _rootByValue  = null;
-        _surfByValue  = null;
-        _rootBySN     = null;
-        _firstAppearanceByRoot = null;   // rebuilt fresh inside buildNavIndexes() below
-        _firstAppearanceBySn = null;
-        _firstBySurfaceCache.clear();
-        try {
-            buildNavIndexes();
-            _lastRebuildAt = new Date();
-            console.log(`[hot-reload] Done. ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces.`);
-        } catch (err) {
-            console.error('[hot-reload] Rebuild failed:', err.message);
-        } finally {
-            _rebuildInProgress = false;
-        }
-    }, 300); // 300 ms debounce
+const GLOSS_FILES = new Set(['lexicon.json', 'homographs.json', 'hebrew-extra-lexicon.json', 'surface-strongs-overrides.json']);
+const INDEX_FILES = new Set(['strongs-roots.json', 'strongs-location-overrides.json', 'strongs-renumber.json']);
+
+function _bustGlossCaches() {
+    _lexiconCache = null;          // loadLexicons re-reads from disk on the next call
+    _translitGlossIndex = null;    // English-baseline live-gloss reverse index
+    _translitRenumberIndex = null; // renumbered-root word-swap index
 }
 
-// Watch both lexicon files
-const LEXICON_DIR = path.join(__dirname, 'lexicon');
+// Debounced: an editor autosave / tmp+rename save fires several events.
+let _pendingKinds = new Set();
+let _pendingNames = new Set();
+function scheduleRebuild(changedFile) {
+    _pendingNames.add(path.basename(String(changedFile || '')));
+    _pendingKinds.add(INDEX_FILES.has(path.basename(String(changedFile || ''))) ? 'index' : 'gloss');
+    if (_rebuildTimer) clearTimeout(_rebuildTimer);
+    _rebuildTimer = setTimeout(() => {
+        _rebuildTimer = null;
+        const kinds = _pendingKinds; _pendingKinds = new Set();
+        const name = [..._pendingNames].join(', '); _pendingNames = new Set();
+        _bustGlossCaches();
+        if (kinds.has('index')) {
+            _strongsRootsCache = null;
+            console.log(`[hot-reload] ${name} changed — nav index rebuilding in the background (still serving the current one)`);
+            refreshNavIndexesInBackground();
+        } else {
+            _lastRebuildAt = new Date();
+            console.log(`[hot-reload] ${name} changed — glosses reloaded (no index rebuild needed)`);
+        }
+    }, 300);
+}
+
+// ── Background nav-index refresh ───────────────────────────────────────────
+const NAV_POLL_MS     = 2000;
+const NAV_GIVE_UP_MS  = 30 * 60 * 1000;
+let _navRefresh = null;          // { startedAt, force, swapAt } while a refresh is pending
+
+function _navSidecarStamp() {
+    try { return fs.readFileSync(NAV_CACHE_PATH + '.stamp', 'utf8'); } catch { return null; }
+}
+function _pidAlive(pid) {
+    if (!pid) return false;
+    try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; }
+}
+function _readJson(p) { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return null; } }
+
+// One builder for every worker. The lock records the builder child's pid; a
+// lock whose child is gone (or that never got a child within 60s, or is older
+// than the give-up window) is stale and is taken over.
+function _tryStartNavBuilder(force, want) {
+    const LOCK = NAV_CACHE_PATH + '.lock';
+    const FAIL = NAV_CACHE_PATH + '.failed';
+    const failed = _readJson(FAIL);
+    if (failed && failed.stamp === want && Date.now() - (failed.at || 0) < 5 * 60 * 1000) return;   // don't crash-loop a broken build
+    const take = () => { const fd = fs.openSync(LOCK, 'wx'); fs.writeSync(fd, JSON.stringify({ owner: process.pid, at: Date.now() })); fs.closeSync(fd); };
+    try { take(); }
+    catch (e) {
+        if (e.code !== 'EEXIST') return;
+        const l = _readJson(LOCK) || {};
+        const age = Date.now() - (l.at || 0);
+        const stale = l.child ? (!_pidAlive(l.child) || age > NAV_GIVE_UP_MS) : age > 60 * 1000;
+        if (!stale) return;                      // someone else is building
+        try { fs.unlinkSync(LOCK); take(); } catch { return; }
+    }
+    let child;
+    try {
+        child = require('child_process').spawn(process.execPath, [path.join(__dirname, 'server.js')], {
+            cwd: __dirname,
+            env: { ...process.env, PALEO_NAV_BUILD_ONLY: '1', PALEO_NO_SYNC: '1', ...(force ? { PALEO_NAV_FORCE: '1' } : {}) },
+            stdio: ['ignore', 'inherit', 'inherit'],
+        });
+        try { require('os').setPriority(child.pid, 10); } catch { /* best effort: keep it off the request path's CPU */ }
+        fs.writeFileSync(LOCK, JSON.stringify({ owner: process.pid, child: child.pid, at: Date.now() }));
+        console.log(`[nav-refresh] builder pid=${child.pid} started by worker pid=${process.pid}`);
+    } catch (e) {
+        console.error('[nav-refresh] could not start the builder:', e.message);
+        try { fs.unlinkSync(LOCK); } catch { }
+        return;
+    }
+    child.on('exit', (code) => {
+        const l = _readJson(LOCK);
+        if (l && l.child === child.pid) { try { fs.unlinkSync(LOCK); } catch { } }
+        if (code !== 0) {
+            console.error(`[nav-refresh] builder exited code=${code} — keeping the current index; will retry in 5 min or on the next change`);
+            try { fs.writeFileSync(FAIL, JSON.stringify({ stamp: want, at: Date.now(), code })); } catch { }
+        } else {
+            try { fs.unlinkSync(FAIL); } catch { }
+        }
+    });
+}
+
+function refreshNavIndexesInBackground({ force = false } = {}) {
+    if (_navRefresh) { if (force) _navRefresh.force = true; return; }
+    if (!force && _navCacheStamp() === _navLoadedStamp) return;
+    _navRefresh = { startedAt: Date.now(), force, swapAt: 0, forcedBuilt: false };
+    const tick = () => {
+        const r = _navRefresh;
+        if (!r) return;
+        if (Date.now() - r.startedAt > NAV_GIVE_UP_MS) {
+            console.error('[nav-refresh] gave up waiting for the background build — still serving the previous index');
+            _navRefresh = null; return;
+        }
+        const want = _navCacheStamp();
+        if (!r.force && want === _navLoadedStamp) { _navRefresh = null; return; }
+        const onDisk = _navSidecarStamp();
+        if (onDisk === want && !(r.force && !r.forcedBuilt)) {
+            // Stagger the swap so 12 workers don't all parse 29 MB in the same tick.
+            if (!r.swapAt) r.swapAt = Date.now() + Math.floor(Math.random() * 3000);
+            if (Date.now() >= r.swapAt) {
+                const cached = _loadNavCache();
+                if (cached) {
+                    _applyNavCache(cached);
+                    _firstBySurfaceCache.clear();
+                    _lastRebuildAt = new Date();
+                    console.log(`[nav-refresh] worker pid=${process.pid} swapped in the new index (${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces)`);
+                    _navRefresh = null; return;
+                }
+                r.swapAt = 0;   // file vanished/raced — look again next tick
+            }
+        } else {
+            r.swapAt = 0;
+            if (r.force && !r.forcedBuilt) {
+                // A forced rebuild (admin button) must not be satisfied by the
+                // existing file: remove its stamp so the builder rebuilds.
+                try { fs.unlinkSync(NAV_CACHE_PATH + '.stamp'); } catch { }
+                r.forcedBuilt = true;
+            }
+            _tryStartNavBuilder(r.force, want);
+        }
+        setTimeout(tick, NAV_POLL_MS).unref();
+    };
+    setTimeout(tick, 50).unref();
+}
+
 // Watch the FOLDER, not the files: a `git pull` (and the admin page's tmp+rename
 // save) replaces a file with a new inode, which a per-file watch silently loses
 // after the first change. In production the folder is the git checkout on the
 // host, bind-mounted in (deploy-blue-green.sh), so edits from either side land
 // here and reload the same way. Anything the loaders read is reloaded; the rest
 // of the folder (notes, per-language lexicons served statically) needs nothing.
-const LEX_WATCHED = new Set(['lexicon.json', 'homographs.json', 'surface-strongs-overrides.json', 'strongs-location-overrides.json', 'strongs-renumber.json', 'strongs-roots.json', 'hebrew-extra-lexicon.json']);
-try {
-    fs.watch(LEXICON_DIR, (eventType, filename) => {
-        if (!filename || !LEX_WATCHED.has(String(filename))) return;
-        _lexiconCache = null; _strongsRootsCache = null;
-        scheduleRebuild(path.join(LEXICON_DIR, String(filename)));
-    });
-    console.log(`[hot-reload] Watching ${LEXICON_DIR} (${[...LEX_WATCHED].join(', ')})`);
-} catch (e) {
-    console.warn('[hot-reload] could not watch the lexicon folder:', e.message);
+const LEXICON_DIR = path.join(__dirname, 'lexicon');
+const LEX_WATCHED = new Set([...GLOSS_FILES, ...INDEX_FILES]);
+if (process.env.PALEO_NAV_BUILD_ONLY !== '1') {
+    try {
+        fs.watch(LEXICON_DIR, (eventType, filename) => {
+            if (!filename || !LEX_WATCHED.has(String(filename))) return;
+            scheduleRebuild(path.join(LEXICON_DIR, String(filename)));
+        });
+        console.log(`[hot-reload] Watching ${LEXICON_DIR} (${[...LEX_WATCHED].join(', ')})`);
+    } catch (e) {
+        console.warn('[hot-reload] could not watch the lexicon folder:', e.message);
+    }
 }
 
 // ─── LEXICON ADMIN: raw-file mirror editor ─────────────────────────────────
@@ -4355,9 +4482,8 @@ function _lexFilePath(name) {
 // latin/syriac) and cross-lang-equivalents.json need no help here — they
 // already re-read off disk keyed by mtime / on every request.
 function _lexBustCaches(fullPath) {
-    _lexiconCache = null;
-    _strongsRootsCache = null;
-    scheduleRebuild(fullPath);
+    _bustGlossCaches();            // this worker's next request already sees the save
+    scheduleRebuild(fullPath);     // index files -> background rebuild (see HOT RELOAD)
 }
 function _lexSnapshotBackup(name, currentContent) {
     const dir = path.join(LEX_BACKUP_DIR, name);
@@ -4916,10 +5042,10 @@ function _navCacheStamp() {
     const inputs = [
         path.join(__dirname, 'corpus.db'),             // tokens_bhs — the text the index is built from
         path.join(__dirname, 'surface-index.db'),      // the HEB half of the nav index
-        path.join(__dirname, 'lexicon', 'lexicon.json'),
-        path.join(__dirname, 'lexicon', 'homographs.json'),
+        // lexicon.json / homographs.json / surface-strongs-overrides.json are
+        // NOT inputs (2026-10-16): the build never reads a gloss, and listing
+        // them made every gloss save invalidate a cache that hadn't changed.
         path.join(__dirname, 'lexicon', 'strongs-roots.json'),
-        path.join(__dirname, 'lexicon', 'surface-strongs-overrides.json'),
         path.join(__dirname, 'lexicon', 'strongs-location-overrides.json'),
         path.join(__dirname, 'lexicon', 'strongs-renumber.json'),
     ];
@@ -4929,19 +5055,28 @@ function _navCacheStamp() {
     }).join('|');
 }
 
-function _loadNavCache() {
+// allowStale: accept a cache whose INPUT mtimes moved but whose build-logic
+// version is the same — used at boot so a worker serves the last good index
+// immediately and refreshes it in the background, instead of every worker
+// rebuilding at once. A NAV_BUILD_VERSION change is never served stale.
+function _loadNavCache({ allowStale = false } = {}) {
     if (!fs.existsSync(NAV_CACHE_PATH)) return null;
     try {
         const data = JSON.parse(fs.readFileSync(NAV_CACHE_PATH, 'utf8'));
-        if (data.stamp !== _navCacheStamp()) return null;   // stale
-        return data;
+        const want = _navCacheStamp();
+        if (data.stamp === want) return data;
+        if (allowStale && String(data.stamp || '').split('|')[0] === want.split('|')[0]) { data._stale = true; return data; }
+        return null;
     } catch { return null; }
 }
 
-function _saveNavCache() {
+// `stamp` = the stamp computed when the build STARTED. Computing it at save
+// time (as before) would label a build made from older inputs with the newer
+// stamp if a file changed mid-build, and that cache would never be replaced.
+function _saveNavCache(stamp = _navCacheStamp()) {
     try {
         const payload = {
-            stamp: _navCacheStamp(),
+            stamp,
             root: _rootNavIndex,
             surf: _surfNavIndex,
             // Map isn't JSON-serializable directly — plain object round-trips
@@ -4953,6 +5088,10 @@ function _saveNavCache() {
         const tmp = NAV_CACHE_PATH + '.tmp';
         fs.writeFileSync(tmp, JSON.stringify(payload));
         fs.renameSync(tmp, NAV_CACHE_PATH);
+        // Small sidecar so waiting workers can tell the new index is ready
+        // without parsing 29 MB every poll. Written AFTER the cache itself.
+        fs.writeFileSync(NAV_CACHE_PATH + '.stamp.tmp', stamp);
+        fs.renameSync(NAV_CACHE_PATH + '.stamp.tmp', NAV_CACHE_PATH + '.stamp');
     } catch (e) {
         console.warn('[nav-cache] save failed (will rebuild next time):', e.message);
     }
@@ -5069,11 +5208,8 @@ function hebOccForSN(sn, book = null) {
     return book != null ? rows.filter(r => r.book_id === book) : rows;
 }
 
-function buildNavIndexes() {
-    // Try the disk cache first — saves ~1 second of startup time when nothing
-    // has changed since the last build.
-    const cached = _loadNavCache();
-    if (cached) {
+function _applyNavCache(cached) {
+    {
         _rootNavIndex = cached.root;
         _surfNavIndex = cached.surf;
         _rootByValue  = new Map(_rootNavIndex.map((e, i) => [e.root, i]));
@@ -5092,13 +5228,26 @@ function buildNavIndexes() {
         });
         _firstAppearanceByRoot = new Map(Object.entries(cached.firstAppearance || {}));
         _firstAppearanceBySn   = new Map(Object.entries(cached.firstBySn || {}));
-        console.log(`[nav-cache] hit: ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces, ${_firstAppearanceByRoot.size} first-appearances (saved ~1s)`);
+        _navLoadedStamp = cached._stale ? null : cached.stamp;
+        console.log(`[nav-cache] ${cached._stale ? 'stale hit (refreshing in background)' : 'hit'}: ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces, ${_firstAppearanceByRoot.size} first-appearances`);
+    }
+}
+
+function buildNavIndexes() {
+    // Disk cache first. A cache that is only stale by input mtimes is served
+    // as-is and refreshed by ONE background builder (see HOT RELOAD) — so a
+    // boot after a lexicon edit doesn't make every worker rebuild at once.
+    const cached = _loadNavCache({ allowStale: process.env.PALEO_NAV_BUILD_ONLY !== '1' });
+    if (cached) {
+        _applyNavCache(cached);
+        if (cached._stale) refreshNavIndexesInBackground();
         return;
     }
     return _buildNavIndexesUncached();
 }
 
 function _buildNavIndexesUncached() {
+    const _buildStamp = _navCacheStamp();   // inputs as of the START of the build
     const { lexicon, homographs, surfaceOverrides, locationOverrides, snRenumber } = loadLexicons();
 
     // ── 1. ROOTS = STRONG'S NUMBERS (BibleHub model) ──────────────────────────
@@ -5413,7 +5562,8 @@ function _buildNavIndexesUncached() {
 
     console.log(`Nav indexes built: ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces, ${_firstAppearanceByRoot.size} first-appearances`);
     // Persist to disk so the next process start can skip the rebuild.
-    _saveNavCache();
+    _navLoadedStamp = _buildStamp;
+    _saveNavCache(_buildStamp);
 }
 
 // Build indexes at startup (synchronous — runs before any request is served)
@@ -9449,6 +9599,21 @@ function navParsedRoot(row, lexicon, homographs) {
 }
 
 // Must be after STRONGS_ROOT_OVERRIDES and navParsedRoot
+if (process.env.PALEO_NAV_BUILD_ONLY === '1') {
+    // Background builder (spawned by refreshNavIndexesInBackground): build the
+    // nav index, write nav-index.cache.json (+ .stamp), exit. Never listens.
+    try {
+        if (process.env.PALEO_NAV_FORCE === '1' || _navSidecarStamp() !== _navCacheStamp()) {
+            const t0 = Date.now();
+            _buildNavIndexesUncached();
+            console.log(`[nav-refresh] builder pid=${process.pid} done in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+        }
+        process.exit(0);
+    } catch (e) {
+        console.error('[nav-refresh] builder failed:', e && e.stack || e);
+        process.exit(1);
+    }
+}
 buildNavIndexes();
 
 function getRootNavIndex()   { return _rootNavIndex   || []; }
@@ -9873,35 +10038,13 @@ app.get('/api/nav/surfaces/neighbors', (req, res) => {
 // Hit this any time after editing a lexicon file to force an immediate rebuild
 // without waiting for the file-watcher debounce or restarting the server.
 app.post('/admin/rebuild-indexes', (req, res) => {
-    if (_rebuildInProgress) {
-        return res.json({ ok: false, message: 'Rebuild already in progress — try again in a moment.' });
-    }
-    _rebuildInProgress = true;
-    _lexiconCache = null;
-    _rootNavIndex = null;
-    _surfNavIndex = null;
-    _rootByValue  = null;
-    _surfByValue  = null;
-    _rootBySN     = null;
-    _firstAppearanceByRoot = null;   // rebuilt fresh inside buildNavIndexes() below
-        _firstAppearanceBySn = null;
-    _firstBySurfaceCache.clear();
-    try {
-        buildNavIndexes();
-        _lastRebuildAt = new Date();
-        console.log(`[admin] Manual rebuild complete. ${_rootNavIndex.length} roots, ${_surfNavIndex.length} surfaces.`);
-        res.json({
-            ok: true,
-            roots: _rootNavIndex.length,
-            surfaces: _surfNavIndex.length,
-            rebuiltAt: _lastRebuildAt.toISOString()
-        });
-    } catch (err) {
-        console.error('[admin] Manual rebuild failed:', err.message);
-        res.status(500).json({ ok: false, message: err.message });
-    } finally {
-        _rebuildInProgress = false;
-    }
+    // Background (2026-10-16): a synchronous rebuild here blocked this worker
+    // for the whole build. The current index keeps serving; poll
+    // /admin/index-status for lastRebuildAt.
+    _bustGlossCaches();
+    _strongsRootsCache = null;
+    refreshNavIndexesInBackground({ force: true });
+    res.json({ ok: true, queued: true, message: 'Rebuilding in the background — the current index keeps serving until the new one is ready.' });
 });
 
 // GET /admin/index-status — quick health check
@@ -9909,7 +10052,7 @@ app.get('/admin/index-status', (req, res) => {
     res.json({
         roots: _rootNavIndex?.length ?? 0,
         surfaces: _surfNavIndex?.length ?? 0,
-        rebuildInProgress: _rebuildInProgress,
+        rebuildInProgress: !!_navRefresh,
         lastRebuildAt: _lastRebuildAt?.toISOString() ?? null,
         lexiconCached: _lexiconCache !== null,
     });
@@ -9998,16 +10141,13 @@ function _readLocOverridesRaw() {
 function _writeLocOverridesRaw(obj) {
     fs.writeFileSync(LOC_OVERRIDE_PATH, JSON.stringify(obj, null, 2) + '\n', 'utf8');
 }
-// Rebuild everything the override touches, synchronously, so the admin sees
-// the effect immediately instead of waiting on the 300ms fs.watch debounce.
+// The override itself applies at once (loadLexicons re-reads it on the next
+// request: reader, verse lists, root pages). Only the nav index's counts/lists
+// catch up in the background (2026-10-16 — the old synchronous rebuild here
+// blocked this worker, and fs.watch then made every other worker do the same).
 function _applyLocOverrideChangeNow() {
-    _lexiconCache = null;
-    _rootNavIndex = null; _surfNavIndex = null;
-    _rootByValue = null; _surfByValue = null; _rootBySN = null; _wordBySn = null;
-    _firstAppearanceByRoot = null;   // rebuilt fresh inside buildNavIndexes() below
-        _firstAppearanceBySn = null;
-    _firstBySurfaceCache.clear();
-    buildNavIndexes();
+    _bustGlossCaches();
+    refreshNavIndexesInBackground();
 }
 
 // POST /api/admin/strongs-override — create or update one override.
