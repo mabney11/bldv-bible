@@ -203,5 +203,4373 @@
     "to": "Har-Al",
     "meaning": "mountain of God",
     "def": "mount of God; figuratively, the altar of burnt-offering"
+  },
+  "H305": {
+    "sn": "H305",
+    "skip": true,
+    "why": "interjection \"would that!\", not a name (also spells H304 Achlai) (2026-10-16)"
+  },
+  "H320": {
+    "sn": "H320",
+    "skip": true,
+    "why": "Aramaic \"later/end\" — same spelling as H319 acharith, a common word (2026-10-16)"
+  },
+  "H375": {
+    "sn": "H375",
+    "skip": true,
+    "why": "\"where?\" — same spelling as H374 ephah (2026-10-16)"
+  },
+  "H417": {
+    "sn": "H417",
+    "skip": true,
+    "why": "\"hail\", a common noun (2026-10-16)"
+  },
+  "H510": {
+    "sn": "H510",
+    "skip": true,
+    "why": "\"resistlessness\", a common noun (2026-10-16)"
+  },
+  "H799": {
+    "sn": "H799",
+    "skip": true,
+    "why": "\"fire-law\", a common noun (2026-10-16)"
+  },
+  "H808": {
+    "sn": "H808",
+    "skip": true,
+    "why": "\"foundation\", a common noun (2026-10-16)"
+  },
+  "H865": {
+    "sn": "H865",
+    "skip": true,
+    "why": "\"heretofore\", an adverb (2026-10-16)"
+  },
+  "H1107": {
+    "sn": "H1107",
+    "skip": true,
+    "why": "\"except/without\", a preposition (2026-10-16)"
+  },
+  "H1100": {
+    "sn": "H1100",
+    "skip": true,
+    "why": "\"worthlessness\" (belial), a common noun (2026-10-16)"
+  },
+  "H1099": {
+    "sn": "H1099",
+    "skip": true,
+    "why": "\"nothing whatever\", a common noun (2026-10-16)"
+  },
+  "H2755": {
+    "sn": "H2755",
+    "skip": true,
+    "why": "\"doves' dung\", a common noun (2026-10-16)"
+  },
+  "H1976": {
+    "sn": "H1976",
+    "skip": true,
+    "why": "\"this very\", a pronoun (2026-10-16)"
+  },
+  "H3628": {
+    "sn": "H3628",
+    "skip": true,
+    "why": "\"prison\", a common noun (2026-10-16)"
+  },
+  "H6495": {
+    "sn": "H6495",
+    "skip": true,
+    "why": "\"jail-delivery\", a common noun (2026-10-16)"
+  },
+  "H6550": {
+    "sn": "H6550",
+    "skip": true,
+    "why": "\"flea\" — same spelling as H6551 Parosh (2026-10-16)"
+  },
+  "H6574": {
+    "sn": "H6574",
+    "skip": true,
+    "why": "\"crotch\", a common noun (2026-10-16)"
+  },
+  "H5524": {
+    "sn": "H5524",
+    "skip": true,
+    "why": "\"booths of daughters\", a common noun (2026-10-16)"
+  },
+  "H7915": {
+    "sn": "H7915",
+    "skip": true,
+    "why": "\"knife\", a common noun (2026-10-16)"
+  },
+  "H8333": {
+    "sn": "H8333",
+    "skip": true,
+    "why": "\"chain\", a common noun (2026-10-16)"
+  },
+  "H6757": {
+    "sn": "H6757",
+    "skip": true,
+    "why": "\"shadow of death\", a common noun (2026-10-16)"
+  },
+  "H148": {
+    "sn": "H148",
+    "skip": true,
+    "why": "Aramaic \"astrologer\", a common noun (2026-10-16)"
+  },
+  "H5799": {
+    "sn": "H5799",
+    "skip": true,
+    "why": "\"scapegoat\" (azazel) — a common noun in the dictionary; ask before hyphenating (2026-10-16)"
+  },
+  "H1567": {
+    "sn": "H1567",
+    "skip": true,
+    "why": "Galeed \"Gal-Id\" — the same letters spell H1568 Gilead, which would become Gal-Id too (2026-10-16)"
+  },
+  "H62": {
+    "sn": "H62",
+    "he": "𐤀𐤁𐤋 𐤁𐤉𐤕 𐤌𐤏𐤊𐤄",
+    "paleo": "𐤀𐤁𐤋-𐤁𐤉𐤕-𐤌𐤏𐤊𐤄",
+    "from": "Abalabayathamaikah",
+    "to": "Abal-Bayath-Maikah",
+    "meaning": "meadow of Beth-Maakah",
+    "def": "Abel of Beth-maakah, a place in Palestine"
+  },
+  "H63": {
+    "sn": "H63",
+    "he": "𐤀𐤁𐤋 𐤄𐤔𐤈𐤉𐤌",
+    "paleo": "𐤀𐤁𐤋-𐤄𐤔𐤈𐤉𐤌",
+    "from": "Abalahashatayam",
+    "to": "Abal-Hashatayam",
+    "meaning": null,
+    "def": "Abel hash-Shittim, a place in Palestine"
+  },
+  "H64": {
+    "sn": "H64",
+    "he": "𐤀𐤁𐤋 𐤊𐤓𐤌𐤉𐤌",
+    "paleo": "𐤀𐤁𐤋-𐤊𐤓𐤌𐤉𐤌",
+    "from": "Abalakaramayam",
+    "to": "Abal-Karamayam",
+    "meaning": "meadow of vineyards",
+    "def": "Abel-Keramim, a place in Palestine"
+  },
+  "H65": {
+    "sn": "H65",
+    "he": "𐤀𐤁𐤋 𐤌𐤇𐤅𐤋𐤄",
+    "paleo": "𐤀𐤁𐤋-𐤌𐤇𐤅𐤋𐤄",
+    "from": "Abalamachawalah",
+    "to": "Abal-Machawalah",
+    "meaning": null,
+    "def": "Abel-Mecholah, a place in Palestine"
+  },
+  "H67": {
+    "sn": "H67",
+    "he": "𐤀𐤁𐤋 𐤌𐤑𐤓𐤉𐤌",
+    "paleo": "𐤀𐤁𐤋-𐤌𐤑𐤓𐤉𐤌",
+    "from": "Abalamatzarayam",
+    "to": "Abal-Matzarayam",
+    "meaning": "meadow of Egypt",
+    "def": "Abel-Mitsrajim, a place in Palestine"
+  },
+  "H66": {
+    "sn": "H66",
+    "he": "𐤀𐤁𐤋 𐤌𐤉𐤌",
+    "paleo": "𐤀𐤁𐤋-𐤌𐤉𐤌",
+    "from": "Abalamayam",
+    "to": "Abal-Mayam",
+    "meaning": "meadow of water",
+    "def": "Abel-Majim, a place in Palestine"
+  },
+  "H72": {
+    "sn": "H72",
+    "he": "𐤀𐤁𐤍 𐤄𐤏𐤆𐤓",
+    "paleo": "𐤀𐤁𐤍-𐤄𐤏𐤆𐤓",
+    "from": "Abanahaizar",
+    "to": "Aban-Haizar",
+    "meaning": null,
+    "def": "Eben-ha-Ezer, a place in Palestine"
+  },
+  "H74": {
+    "sn": "H74",
+    "he": "𐤀𐤁 𐤍𐤓",
+    "paleo": "𐤀𐤁-𐤍𐤓",
+    "from": "Abanar",
+    "to": "Ab-Nar",
+    "meaning": null,
+    "def": "Abner, an Israelite"
+  },
+  "H22": {
+    "sn": "H22",
+    "he": "𐤀𐤁𐤉 𐤀𐤋",
+    "paleo": "𐤀𐤁𐤉-𐤀𐤋",
+    "from": "Abayaal",
+    "to": "Abay-Al",
+    "meaning": null,
+    "def": "Abiel, the name of two Israelites"
+  },
+  "H23": {
+    "sn": "H23",
+    "he": "𐤀𐤁𐤉 𐤀𐤎𐤐",
+    "paleo": "𐤀𐤁𐤉-𐤀𐤎𐤐",
+    "from": "Abayaasap",
+    "to": "Abay-Asap",
+    "meaning": null,
+    "def": "Abiasaph, an Israelite"
+  },
+  "H28": {
+    "sn": "H28",
+    "he": "𐤀𐤁 𐤉𐤃𐤏",
+    "paleo": "𐤀𐤁-𐤉𐤃𐤏",
+    "from": "Abayadai",
+    "to": "Ab-Yadai",
+    "meaning": null,
+    "def": "Abida, a son of Abraham by Keturah"
+  },
+  "H25": {
+    "sn": "H25",
+    "he": "𐤀𐤁𐤉 𐤂𐤁𐤏𐤅𐤍",
+    "paleo": "𐤀𐤁𐤉-𐤂𐤁𐤏𐤅𐤍",
+    "from": "Abayagabaiwan",
+    "to": "Abay-Gabaiwan",
+    "meaning": null,
+    "def": "Abi-Gibon, perhaps an Israelite"
+  },
+  "H26": {
+    "sn": "H26",
+    "he": "𐤀𐤁𐤉 𐤂𐤉𐤋",
+    "paleo": "𐤀𐤁𐤉-𐤂𐤉𐤋",
+    "from": "Abayagayal",
+    "to": "Abay-Gayal",
+    "meaning": null,
+    "def": "Abigail or Abigal, the name of two Israelitesses"
+  },
+  "H33": {
+    "sn": "H33",
+    "he": "𐤀𐤁𐤉 𐤄𐤏𐤆𐤓𐤉",
+    "paleo": "𐤀𐤁𐤉-𐤄𐤏𐤆𐤓𐤉",
+    "from": "Abayahaizaray",
+    "to": "Abay-Haizaray",
+    "meaning": null,
+    "def": "an Abiezrite or descendant of Abiezer"
+  },
+  "H30": {
+    "sn": "H30",
+    "he": "𐤀𐤁𐤉 𐤄𐤅𐤀",
+    "paleo": "𐤀𐤁𐤉-𐤄𐤅𐤀",
+    "from": "Abayahawaa",
+    "to": "Abay-Hawaa",
+    "meaning": null,
+    "def": "Abihu, a son of Aaron"
+  },
+  "H31": {
+    "sn": "H31",
+    "he": "𐤀𐤁𐤉 𐤄𐤅𐤃",
+    "paleo": "𐤀𐤁𐤉-𐤄𐤅𐤃",
+    "from": "Abayahawad",
+    "to": "Abay-Hawad",
+    "meaning": null,
+    "def": "Abihud, the name of two Israelites"
+  },
+  "H32": {
+    "sn": "H32",
+    "he": "𐤀𐤁 𐤉𐤄𐤉𐤋",
+    "paleo": "𐤀𐤁-𐤉𐤄𐤉𐤋",
+    "from": "Abayahayal",
+    "to": "Ab-Yahayal",
+    "meaning": null,
+    "def": "Abihail or Abichail, the name of three Israelites and two Israelitesses"
+  },
+  "H45": {
+    "sn": "H45",
+    "he": "𐤀𐤁𐤉 𐤏𐤋𐤁𐤅𐤍",
+    "paleo": "𐤀𐤁𐤉-𐤏𐤋𐤁𐤅𐤍",
+    "from": "Abayailabawan",
+    "to": "Abay-Ilabawan",
+    "meaning": null,
+    "def": "Abialbon, an Israelite"
+  },
+  "H44": {
+    "sn": "H44",
+    "he": "𐤀𐤁𐤉 𐤏𐤆𐤓",
+    "paleo": "𐤀𐤁𐤉-𐤏𐤆𐤓",
+    "from": "Abayaizar",
+    "to": "Abay-Izar",
+    "meaning": null,
+    "def": "Abiezer, the name of two Israelites"
+  },
+  "H38": {
+    "sn": "H38",
+    "he": "𐤀𐤁 𐤉𐤌",
+    "paleo": "𐤀𐤁-𐤉𐤌",
+    "from": "Abayam",
+    "to": "Ab-Yam",
+    "meaning": null,
+    "def": "Abijam (or Abijah), a king of Judah"
+  },
+  "H40": {
+    "sn": "H40",
+    "he": "𐤀𐤁𐤉 𐤌𐤋𐤊",
+    "paleo": "𐤀𐤁𐤉-𐤌𐤋𐤊",
+    "from": "Abayamalak",
+    "to": "Abay-Malak",
+    "meaning": null,
+    "def": "Abimelek, the name of two Philistine kings and of two Israelites"
+  },
+  "H41": {
+    "sn": "H41",
+    "he": "𐤀𐤁𐤉 𐤍𐤃𐤁",
+    "paleo": "𐤀𐤁𐤉-𐤍𐤃𐤁",
+    "from": "Abayanadab",
+    "to": "Abay-Nadab",
+    "meaning": null,
+    "def": "Abinadab, the name of four Israelites"
+  },
+  "H42": {
+    "sn": "H42",
+    "he": "𐤀𐤁𐤉 𐤍𐤏𐤌",
+    "paleo": "𐤀𐤁𐤉-𐤍𐤏𐤌",
+    "from": "Abayanaim",
+    "to": "Abay-Naim",
+    "meaning": null,
+    "def": "Abinoam, an Israelite"
+  },
+  "H48": {
+    "sn": "H48",
+    "he": "𐤀𐤁𐤉 𐤓𐤌",
+    "paleo": "𐤀𐤁𐤉-𐤓𐤌",
+    "from": "Abayaram",
+    "to": "Abay-Ram",
+    "meaning": null,
+    "def": "Abiram, the name of two Israelites"
+  },
+  "H49": {
+    "sn": "H49",
+    "he": "𐤀𐤁 𐤉𐤔𐤂",
+    "paleo": "𐤀𐤁-𐤉𐤔𐤂",
+    "from": "Abayashag",
+    "to": "Ab-Yashag",
+    "meaning": null,
+    "def": "Abishag, a concubine of David"
+  },
+  "H53": {
+    "sn": "H53",
+    "he": "𐤀𐤁𐤉 𐤔𐤋𐤅𐤌",
+    "paleo": "𐤀𐤁𐤉-𐤔𐤋𐤅𐤌",
+    "from": "Abayashalawam",
+    "to": "Abay-Shalawam",
+    "meaning": null,
+    "def": "Abshalom, a son of David; also (the fuller form) a later Israelite"
+  },
+  "H50": {
+    "sn": "H50",
+    "he": "𐤀𐤁𐤉 𐤔𐤅𐤏",
+    "paleo": "𐤀𐤁𐤉-𐤔𐤅𐤏",
+    "from": "Abayashawai",
+    "to": "Abay-Shawai",
+    "meaning": null,
+    "def": "Abishua, the name of two Israelites"
+  },
+  "H51": {
+    "sn": "H51",
+    "he": "𐤀𐤁𐤉 𐤔𐤅𐤓",
+    "paleo": "𐤀𐤁𐤉-𐤔𐤅𐤓",
+    "from": "Abayashawar",
+    "to": "Abay-Shawar",
+    "meaning": null,
+    "def": "Abishur, an Israelite"
+  },
+  "H52": {
+    "sn": "H52",
+    "he": "𐤀𐤁𐤉 𐤔𐤉",
+    "paleo": "𐤀𐤁𐤉-𐤔𐤉",
+    "from": "Abayashay",
+    "to": "Abay-Shay",
+    "meaning": null,
+    "def": "Abishai, an Israelite"
+  },
+  "H37": {
+    "sn": "H37",
+    "he": "𐤀𐤁𐤉 𐤈𐤋",
+    "paleo": "𐤀𐤁𐤉-𐤈𐤋",
+    "from": "Abayatal",
+    "to": "Abay-Tal",
+    "meaning": null,
+    "def": "Abital, a wife of King David"
+  },
+  "H36": {
+    "sn": "H36",
+    "he": "𐤀𐤁𐤉 𐤈𐤅𐤁",
+    "paleo": "𐤀𐤁𐤉-𐤈𐤅𐤁",
+    "from": "Abayatawab",
+    "to": "Abay-Tawab",
+    "meaning": null,
+    "def": "Abitub, an Israelite"
+  },
+  "H54": {
+    "sn": "H54",
+    "he": "𐤀𐤁 𐤉𐤕𐤓",
+    "paleo": "𐤀𐤁-𐤉𐤕𐤓",
+    "from": "Abayathar",
+    "to": "Ab-Yathar",
+    "meaning": null,
+    "def": "Ebjathar, an Israelite"
+  },
+  "H256": {
+    "sn": "H256",
+    "he": "𐤀𐤇 𐤀𐤁",
+    "paleo": "𐤀𐤇-𐤀𐤁",
+    "from": "Achaab",
+    "to": "Ach-Ab",
+    "meaning": null,
+    "def": "Achab, the name of a king of Israel and of a prophet at Babylon"
+  },
+  "H257": {
+    "sn": "H257",
+    "he": "𐤀𐤇 𐤁𐤍",
+    "paleo": "𐤀𐤇-𐤁𐤍",
+    "from": "Achaban",
+    "to": "Ach-Ban",
+    "meaning": null,
+    "def": "Achban, an Israelite"
+  },
+  "H316": {
+    "sn": "H316",
+    "he": "𐤀𐤇𐤓 𐤇𐤋",
+    "paleo": "𐤀𐤇𐤓-𐤇𐤋",
+    "from": "Acharachal",
+    "to": "Achar-Chal",
+    "meaning": null,
+    "def": "Acharchel, an Israelite"
+  },
+  "H279": {
+    "sn": "H279",
+    "he": "𐤀𐤇𐤉 𐤀𐤌",
+    "paleo": "𐤀𐤇𐤉-𐤀𐤌",
+    "from": "Achayaam",
+    "to": "Achay-Am",
+    "meaning": null,
+    "def": "Achiam, an Israelite"
+  },
+  "H284": {
+    "sn": "H284",
+    "he": "𐤀𐤇𐤉 𐤇𐤃",
+    "paleo": "𐤀𐤇𐤉-𐤇𐤃",
+    "from": "Achayachad",
+    "to": "Achay-Chad",
+    "meaning": null,
+    "def": "Achichud, an Israelite"
+  },
+  "H282": {
+    "sn": "H282",
+    "he": "𐤀𐤇𐤉 𐤄𐤅𐤃",
+    "paleo": "𐤀𐤇𐤉-𐤄𐤅𐤃",
+    "from": "Achayahawad",
+    "to": "Achay-Hawad",
+    "meaning": null,
+    "def": "Achihud, an Israelite"
+  },
+  "H295": {
+    "sn": "H295",
+    "he": "𐤀𐤇𐤉 𐤏𐤆𐤓",
+    "paleo": "𐤀𐤇𐤉-𐤏𐤆𐤓",
+    "from": "Achayaizar",
+    "to": "Achay-Izar",
+    "meaning": "brother of help",
+    "def": "Achiezer, the name of two Israelites"
+  },
+  "H286": {
+    "sn": "H286",
+    "he": "𐤀𐤇 𐤉𐤋𐤅𐤃",
+    "paleo": "𐤀𐤇-𐤉𐤋𐤅𐤃",
+    "from": "Achayalawad",
+    "to": "Ach-Yalawad",
+    "meaning": "brother of one born",
+    "def": "Achilud, an Israelite"
+  },
+  "H290": {
+    "sn": "H290",
+    "he": "𐤀𐤇𐤉 𐤌𐤏𐤑",
+    "paleo": "𐤀𐤇𐤉-𐤌𐤏𐤑",
+    "from": "Achayamaitz",
+    "to": "Achay-Maitz",
+    "meaning": "brother of anger",
+    "def": "Achimaats, the name of three Israelites"
+  },
+  "H288": {
+    "sn": "H288",
+    "he": "𐤀𐤇𐤉 𐤌𐤋𐤊",
+    "paleo": "𐤀𐤇𐤉-𐤌𐤋𐤊",
+    "from": "Achayamalak",
+    "to": "Achay-Malak",
+    "meaning": null,
+    "def": "Achimelek, the name of an Israelite and of a Hittite"
+  },
+  "H289": {
+    "sn": "H289",
+    "he": "𐤀𐤇𐤉 𐤌𐤍",
+    "paleo": "𐤀𐤇𐤉-𐤌𐤍",
+    "from": "Achayaman",
+    "to": "Achay-Man",
+    "meaning": null,
+    "def": "Achiman, the name of an Anakite and of an Israelite"
+  },
+  "H287": {
+    "sn": "H287",
+    "he": "𐤀𐤇𐤉 𐤌𐤅𐤕",
+    "paleo": "𐤀𐤇𐤉-𐤌𐤅𐤕",
+    "from": "Achayamawath",
+    "to": "Achay-Mawath",
+    "meaning": "brother of death",
+    "def": "Achimoth, an Israelite"
+  },
+  "H292": {
+    "sn": "H292",
+    "he": "𐤀𐤇𐤉 𐤍𐤃𐤁",
+    "paleo": "𐤀𐤇𐤉-𐤍𐤃𐤁",
+    "from": "Achayanadab",
+    "to": "Achay-Nadab",
+    "meaning": "brother of liberality",
+    "def": "Achinadab, an Israelite"
+  },
+  "H293": {
+    "sn": "H293",
+    "he": "𐤀𐤇𐤉 𐤍𐤏𐤌",
+    "paleo": "𐤀𐤇𐤉-𐤍𐤏𐤌",
+    "from": "Achayanaim",
+    "to": "Achay-Naim",
+    "meaning": "brother of pleasantness",
+    "def": "Achinoam, the name of two Israelitesses"
+  },
+  "H296": {
+    "sn": "H296",
+    "he": "𐤀𐤇𐤉 𐤒𐤌",
+    "paleo": "𐤀𐤇𐤉-𐤒𐤌",
+    "from": "Achayaqam",
+    "to": "Achay-Qam",
+    "meaning": null,
+    "def": "Achikam, an Israelite"
+  },
+  "H299": {
+    "sn": "H299",
+    "he": "𐤀𐤇𐤉 𐤓𐤏",
+    "paleo": "𐤀𐤇𐤉-𐤓𐤏",
+    "from": "Achayarai",
+    "to": "Achay-Rai",
+    "meaning": "brother of wrong",
+    "def": "Achira, an Israelite"
+  },
+  "H297": {
+    "sn": "H297",
+    "he": "𐤀𐤇𐤉 𐤓𐤌",
+    "paleo": "𐤀𐤇𐤉-𐤓𐤌",
+    "from": "Achayaram",
+    "to": "Achay-Ram",
+    "meaning": null,
+    "def": "Achiram, an Israelite"
+  },
+  "H294": {
+    "sn": "H294",
+    "he": "𐤀𐤇𐤉 𐤎𐤌𐤊",
+    "paleo": "𐤀𐤇𐤉-𐤎𐤌𐤊",
+    "from": "Achayasamak",
+    "to": "Achay-Samak",
+    "meaning": "brother of support",
+    "def": "Achisamak, an Israelite"
+  },
+  "H300": {
+    "sn": "H300",
+    "he": "𐤀𐤇𐤉 𐤔𐤇𐤓",
+    "paleo": "𐤀𐤇𐤉-𐤔𐤇𐤓",
+    "from": "Achayashachar",
+    "to": "Achay-Shachar",
+    "meaning": null,
+    "def": "Achishachar, an Israelite"
+  },
+  "H301": {
+    "sn": "H301",
+    "he": "𐤀𐤇𐤉 𐤔𐤓",
+    "paleo": "𐤀𐤇𐤉-𐤔𐤓",
+    "from": "Achayashar",
+    "to": "Achay-Shar",
+    "meaning": null,
+    "def": "Achishar, an Israelite"
+  },
+  "H285": {
+    "sn": "H285",
+    "he": "𐤀𐤇𐤉 𐤈𐤅𐤁",
+    "paleo": "𐤀𐤇𐤉-𐤈𐤅𐤁",
+    "from": "Achayatawab",
+    "to": "Achay-Tawab",
+    "meaning": "brother of goodness",
+    "def": "Achitub, the name of several priests"
+  },
+  "H302": {
+    "sn": "H302",
+    "he": "𐤀𐤇𐤉 𐤕𐤐𐤋",
+    "paleo": "𐤀𐤇𐤉-𐤕𐤐𐤋",
+    "from": "Achayathapal",
+    "to": "Achay-Thapal",
+    "meaning": "brother of folly",
+    "def": "Achithophel, an Israelite"
+  },
+  "H110": {
+    "sn": "H110",
+    "he": "𐤀𐤃𐤁 𐤀𐤋",
+    "paleo": "𐤀𐤃𐤁-𐤀𐤋",
+    "from": "Adabaal",
+    "to": "Adab-Al",
+    "meaning": "disciplined of God",
+    "def": "Adbeel, a son of Ishmael"
+  },
+  "H137": {
+    "sn": "H137",
+    "he": "𐤀𐤃𐤍𐤉 𐤁𐤆𐤒",
+    "paleo": "𐤀𐤃𐤍𐤉-𐤁𐤆𐤒",
+    "from": "Adanayabazaq",
+    "to": "Adanay-Bazaq",
+    "meaning": "lord of Bezek",
+    "def": "Adoni-Bezek; a Canaanitish king"
+  },
+  "H140": {
+    "sn": "H140",
+    "he": "𐤀𐤃𐤍𐤉 𐤒𐤌",
+    "paleo": "𐤀𐤃𐤍𐤉-𐤒𐤌",
+    "from": "Adanayaqam",
+    "to": "Adanay-Qam",
+    "meaning": null,
+    "def": "Adonikam, the name of one or two Israelites"
+  },
+  "H141": {
+    "sn": "H141",
+    "he": "𐤀𐤃𐤍𐤉 𐤓𐤌",
+    "paleo": "𐤀𐤃𐤍𐤉-𐤓𐤌",
+    "from": "Adanayaram",
+    "to": "Adanay-Ram",
+    "meaning": "lord of height",
+    "def": "Adoniram, an Israelite"
+  },
+  "H139": {
+    "sn": "H139",
+    "he": "𐤀𐤃𐤍𐤉 𐤑𐤃𐤒",
+    "paleo": "𐤀𐤃𐤍𐤉-𐤑𐤃𐤒",
+    "from": "Adanayatzadaq",
+    "to": "Adanay-Tzadaq",
+    "meaning": "lord of justice",
+    "def": "Adoni-Tsedek, a Canaanitish king"
+  },
+  "H152": {
+    "sn": "H152",
+    "he": "𐤀𐤃𐤓 𐤌𐤋𐤊",
+    "paleo": "𐤀𐤃𐤓-𐤌𐤋𐤊",
+    "from": "Adaramalak",
+    "to": "Adar-Malak",
+    "meaning": null,
+    "def": "Adrammelek, the name of an Assyrian idol, also of a son of Sennacherib"
+  },
+  "H171": {
+    "sn": "H171",
+    "he": "𐤀𐤄𐤋𐤉 𐤀𐤁",
+    "paleo": "𐤀𐤄𐤋𐤉-𐤀𐤁",
+    "from": "Ahalayaab",
+    "to": "Ahalay-Ab",
+    "meaning": null,
+    "def": "Oholiab, an Israelite"
+  },
+  "H173": {
+    "sn": "H173",
+    "he": "𐤀𐤄𐤋𐤉 𐤁𐤌𐤄",
+    "paleo": "𐤀𐤄𐤋𐤉-𐤁𐤌𐤄",
+    "from": "Ahalayabamah",
+    "to": "Ahalay-Bamah",
+    "meaning": null,
+    "def": "Oholibamah, a wife of Esau"
+  },
+  "H415": {
+    "sn": "H415",
+    "he": "𐤀𐤋 𐤀𐤋𐤄𐤉 𐤉𐤔𐤓𐤀𐤋",
+    "paleo": "𐤀𐤋-𐤀𐤋𐤄𐤉-𐤉𐤔𐤓𐤀𐤋",
+    "from": "Alaalahayayasharaal",
+    "to": "Al-Alahay-Yashar-Al",
+    "meaning": "the mighty god if Jisrael",
+    "def": "El-Elohi-Jisrael, the title given to a consecrated spot by Jacob"
+  },
+  "H416": {
+    "sn": "H416",
+    "he": "𐤀𐤋 𐤁𐤉𐤕 𐤀𐤋",
+    "paleo": "𐤀𐤋-𐤁𐤉𐤕-𐤀𐤋",
+    "from": "Alabayathaal",
+    "to": "Al-Bayath-Al",
+    "meaning": "the God of Bethel",
+    "def": "El-Bethel, the title given to a consecrated spot by Jacob"
+  },
+  "H445": {
+    "sn": "H445",
+    "he": "𐤀𐤋 𐤇𐤍𐤍",
+    "paleo": "𐤀𐤋-𐤇𐤍𐤍",
+    "from": "Alachanan",
+    "to": "Al-Chanan",
+    "meaning": null,
+    "def": "Elchanan, an Israelite"
+  },
+  "H419": {
+    "sn": "H419",
+    "he": "𐤀𐤋 𐤃𐤃",
+    "paleo": "𐤀𐤋-𐤃𐤃",
+    "from": "Aladad",
+    "to": "Al-Dad",
+    "meaning": "God has loved",
+    "def": "Eldad, an Israelite"
+  },
+  "H420": {
+    "sn": "H420",
+    "he": "𐤀𐤋 𐤃𐤏𐤄",
+    "paleo": "𐤀𐤋-𐤃𐤏𐤄",
+    "from": "Aladaih",
+    "to": "Al-Daih",
+    "meaning": "God of knowledge",
+    "def": "Eldaah, a son of Midian"
+  },
+  "H496": {
+    "sn": "H496",
+    "he": "𐤀𐤋 𐤏𐤃",
+    "paleo": "𐤀𐤋-𐤏𐤃",
+    "from": "Alaid",
+    "to": "Al-Id",
+    "meaning": "God has testified",
+    "def": "Elad, an Israelite"
+  },
+  "H497": {
+    "sn": "H497",
+    "he": "𐤀𐤋 𐤏𐤃𐤄",
+    "paleo": "𐤀𐤋-𐤏𐤃𐤄",
+    "from": "Alaidah",
+    "to": "Al-Idah",
+    "meaning": "God has decked",
+    "def": "Eladah, an Israelite"
+  },
+  "H500": {
+    "sn": "H500",
+    "he": "𐤀𐤋 𐤏𐤋𐤀",
+    "paleo": "𐤀𐤋-𐤏𐤋𐤀",
+    "from": "Alailaa",
+    "to": "Al-Ilaa",
+    "meaning": null,
+    "def": "Elale or Elaleh, a place east of the Jordan"
+  },
+  "H501": {
+    "sn": "H501",
+    "he": "𐤀𐤋 𐤏𐤔𐤄",
+    "paleo": "𐤀𐤋-𐤏𐤔𐤄",
+    "from": "Alaishah",
+    "to": "Al-Ishah",
+    "meaning": "God has made",
+    "def": "Elasah, the name of four Israelites"
+  },
+  "H498": {
+    "sn": "H498",
+    "he": "𐤀𐤋 𐤏𐤅𐤆𐤉",
+    "paleo": "𐤀𐤋-𐤏𐤅𐤆𐤉",
+    "from": "Alaiwazay",
+    "to": "Al-Iwazay",
+    "meaning": null,
+    "def": "Eluzai, an Israelite"
+  },
+  "H499": {
+    "sn": "H499",
+    "he": "𐤀𐤋 𐤏𐤆𐤓",
+    "paleo": "𐤀𐤋-𐤏𐤆𐤓",
+    "from": "Alaizar",
+    "to": "Al-Izar",
+    "meaning": null,
+    "def": "Elazar, the name of seven Israelites"
+  },
+  "H487": {
+    "sn": "H487",
+    "he": "𐤀𐤋 𐤌𐤋𐤊",
+    "paleo": "𐤀𐤋-𐤌𐤋𐤊",
+    "from": "Alamalak",
+    "to": "Al-Malak",
+    "meaning": null,
+    "def": "Allammelek, a place in Palestine"
+  },
+  "H493": {
+    "sn": "H493",
+    "he": "𐤀𐤋 𐤍𐤏𐤌",
+    "paleo": "𐤀𐤋-𐤍𐤏𐤌",
+    "from": "Alanaim",
+    "to": "Al-Naim",
+    "meaning": null,
+    "def": "Elnaam, an Israelite"
+  },
+  "H494": {
+    "sn": "H494",
+    "he": "𐤀𐤋 𐤍𐤕𐤍",
+    "paleo": "𐤀𐤋-𐤍𐤕𐤍",
+    "from": "Alanathan",
+    "to": "Al-Nathan",
+    "meaning": null,
+    "def": "Elnathan, the name of four Israelites"
+  },
+  "H508": {
+    "sn": "H508",
+    "he": "𐤀𐤋 𐤐𐤏𐤋",
+    "paleo": "𐤀𐤋-𐤐𐤏𐤋",
+    "from": "Alapail",
+    "to": "Al-Pail",
+    "meaning": null,
+    "def": "Elpaal, an Israelite"
+  },
+  "H511": {
+    "sn": "H511",
+    "he": "𐤀𐤋 𐤒𐤍𐤄",
+    "paleo": "𐤀𐤋-𐤒𐤍𐤄",
+    "from": "Alaqanah",
+    "to": "Al-Qanah",
+    "meaning": "God has obtained",
+    "def": "Elkanah, the name of several Israelites"
+  },
+  "H515": {
+    "sn": "H515",
+    "he": "𐤀𐤋 𐤕𐤒𐤍",
+    "paleo": "𐤀𐤋-𐤕𐤒𐤍",
+    "from": "Alathaqan",
+    "to": "Al-Thaqan",
+    "meaning": null,
+    "def": "Eltekon, a place in Palestine"
+  },
+  "H516": {
+    "sn": "H516",
+    "he": "𐤀𐤋 𐤕𐤔𐤇𐤕",
+    "paleo": "𐤀𐤋-𐤕𐤔𐤇𐤕",
+    "from": "Alathashachath",
+    "to": "Al-Thashachath",
+    "meaning": null,
+    "def": "'Thou must not destroy'; probably the opening words to a popular song"
+  },
+  "H513": {
+    "sn": "H513",
+    "he": "𐤀𐤋 𐤕𐤅𐤋𐤃",
+    "paleo": "𐤀𐤋-𐤕𐤅𐤋𐤃",
+    "from": "Alathawalad",
+    "to": "Al-Thawalad",
+    "meaning": null,
+    "def": "Eltolad, a place in Palestine"
+  },
+  "H439": {
+    "sn": "H439",
+    "he": "𐤀𐤋𐤅𐤍 𐤁𐤊𐤅𐤕",
+    "paleo": "𐤀𐤋𐤅𐤍-𐤁𐤊𐤅𐤕",
+    "from": "Alawanabakawath",
+    "to": "Alawan-Bakawath",
+    "meaning": "oak of weeping",
+    "def": "Allon-Bakuth, a monumental tree"
+  },
+  "H446": {
+    "sn": "H446",
+    "he": "𐤀𐤋𐤉 𐤀𐤁",
+    "paleo": "𐤀𐤋𐤉-𐤀𐤁",
+    "from": "Alayaab",
+    "to": "Alay-Ab",
+    "meaning": null,
+    "def": "Eliab, the name of six Israelites"
+  },
+  "H448": {
+    "sn": "H448",
+    "he": "𐤀𐤋 𐤉𐤀𐤕𐤄",
+    "paleo": "𐤀𐤋-𐤉𐤀𐤕𐤄",
+    "from": "Alayaathah",
+    "to": "Al-Yaathah",
+    "meaning": null,
+    "def": "Eliathah, an Israelite"
+  },
+  "H455": {
+    "sn": "H455",
+    "he": "𐤀𐤋𐤉 𐤇𐤁𐤀",
+    "paleo": "𐤀𐤋𐤉-𐤇𐤁𐤀",
+    "from": "Alayachabaa",
+    "to": "Alay-Chabaa",
+    "meaning": "God will hide",
+    "def": "Eljachba, an Israelite"
+  },
+  "H456": {
+    "sn": "H456",
+    "he": "𐤀𐤋𐤉 𐤇𐤓𐤐",
+    "paleo": "𐤀𐤋𐤉-𐤇𐤓𐤐",
+    "from": "Alayacharap",
+    "to": "Alay-Charap",
+    "meaning": "God of autumn",
+    "def": "Elichoreph, an Israelite"
+  },
+  "H450": {
+    "sn": "H450",
+    "he": "𐤀𐤋 𐤉𐤃𐤏",
+    "paleo": "𐤀𐤋-𐤉𐤃𐤏",
+    "from": "Alayadai",
+    "to": "Al-Yadai",
+    "meaning": null,
+    "def": "Eljada, the name of two Israelites and of an Aramaean leader"
+  },
+  "H454": {
+    "sn": "H454",
+    "he": "𐤀𐤋 𐤉𐤄𐤅𐤏𐤉𐤍𐤉",
+    "paleo": "𐤀𐤋-𐤉𐤄𐤅𐤏𐤉𐤍𐤉",
+    "from": "Alayahawaiyanay",
+    "to": "Al-Yahawaiyanay",
+    "meaning": null,
+    "def": "Eljehoenai or Eljoenai, the name of seven Israelites"
+  },
+  "H463": {
+    "sn": "H463",
+    "he": "𐤀𐤋𐤉 𐤏𐤌",
+    "paleo": "𐤀𐤋𐤉-𐤏𐤌",
+    "from": "Alayaim",
+    "to": "Alay-Im",
+    "meaning": null,
+    "def": "Eliam, an Israelite"
+  },
+  "H461": {
+    "sn": "H461",
+    "he": "𐤀𐤋𐤉 𐤏𐤆𐤓",
+    "paleo": "𐤀𐤋𐤉-𐤏𐤆𐤓",
+    "from": "Alayaizar",
+    "to": "Alay-Izar",
+    "meaning": "God of help",
+    "def": "Eliezer, the name of a Damascene and of ten Israelites"
+  },
+  "H458": {
+    "sn": "H458",
+    "he": "𐤀𐤋𐤉 𐤌𐤋𐤊",
+    "paleo": "𐤀𐤋𐤉-𐤌𐤋𐤊",
+    "from": "Alayamalak",
+    "to": "Alay-Malak",
+    "meaning": null,
+    "def": "Elimelek, an Israelite"
+  },
+  "H465": {
+    "sn": "H465",
+    "he": "𐤀𐤋 𐤉𐤐𐤋",
+    "paleo": "𐤀𐤋-𐤉𐤐𐤋",
+    "from": "Alayapal",
+    "to": "Al-Yapal",
+    "meaning": "God of judgment",
+    "def": "Eliphal, an Israelite"
+  },
+  "H466": {
+    "sn": "H466",
+    "he": "𐤀𐤋𐤉 𐤐𐤋𐤄𐤅",
+    "paleo": "𐤀𐤋𐤉-𐤐𐤋𐤄𐤅",
+    "from": "Alayapalahaw",
+    "to": "Alay-Palahaw",
+    "meaning": "God of his distinction",
+    "def": "Eliphelehu, an Israelite"
+  },
+  "H467": {
+    "sn": "H467",
+    "he": "𐤀𐤋𐤉 𐤐𐤋𐤈",
+    "paleo": "𐤀𐤋𐤉-𐤐𐤋𐤈",
+    "from": "Alayapalat",
+    "to": "Alay-Palat",
+    "meaning": "God of deliverance",
+    "def": "Eliphelet or Elpelet, the name of six Israelites"
+  },
+  "H464": {
+    "sn": "H464",
+    "he": "𐤀𐤋𐤉 𐤐𐤆",
+    "paleo": "𐤀𐤋𐤉-𐤐𐤆",
+    "from": "Alayapaz",
+    "to": "Alay-Paz",
+    "meaning": "God of gold",
+    "def": "Eliphaz, the name of one of Job's friends, and of a son of Esau"
+  },
+  "H470": {
+    "sn": "H470",
+    "he": "𐤀𐤋𐤉 𐤒𐤀",
+    "paleo": "𐤀𐤋𐤉-𐤒𐤀",
+    "from": "Alayaqaa",
+    "to": "Alay-Qaa",
+    "meaning": "God of rejection",
+    "def": "Elika, an Israelite"
+  },
+  "H471": {
+    "sn": "H471",
+    "he": "𐤀𐤋𐤉 𐤒𐤉𐤌",
+    "paleo": "𐤀𐤋𐤉-𐤒𐤉𐤌",
+    "from": "Alayaqayam",
+    "to": "Alay-Qayam",
+    "meaning": "God of raising",
+    "def": "Eljakim, the name of four Israelites"
+  },
+  "H460": {
+    "sn": "H460",
+    "he": "𐤀𐤋 𐤉𐤎𐤐",
+    "paleo": "𐤀𐤋-𐤉𐤎𐤐",
+    "from": "Alayasap",
+    "to": "Al-Yasap",
+    "meaning": null,
+    "def": "Eljasaph, the name of two Israelites"
+  },
+  "H472": {
+    "sn": "H472",
+    "he": "𐤀𐤋𐤉 𐤔𐤁𐤏",
+    "paleo": "𐤀𐤋𐤉-𐤔𐤁𐤏",
+    "from": "Alayashabai",
+    "to": "Alay-Shabai",
+    "meaning": null,
+    "def": "Elisheba, the wife of Aaron"
+  },
+  "H476": {
+    "sn": "H476",
+    "he": "𐤀𐤋𐤉 𐤔𐤌𐤏",
+    "paleo": "𐤀𐤋𐤉-𐤔𐤌𐤏",
+    "from": "Alayashamai",
+    "to": "Alay-Shamai",
+    "meaning": "God of hearing",
+    "def": "Elishama, the name of seven Israelites"
+  },
+  "H478": {
+    "sn": "H478",
+    "he": "𐤀𐤋𐤉 𐤔𐤐𐤈",
+    "paleo": "𐤀𐤋𐤉-𐤔𐤐𐤈",
+    "from": "Alayashapat",
+    "to": "Alay-Shapat",
+    "meaning": "God of judgment",
+    "def": "Elishaphat, an Israelite"
+  },
+  "H474": {
+    "sn": "H474",
+    "he": "𐤀𐤋𐤉 𐤔𐤅𐤏",
+    "paleo": "𐤀𐤋𐤉-𐤔𐤅𐤏",
+    "from": "Alayashawai",
+    "to": "Alay-Shawai",
+    "meaning": null,
+    "def": "Elishua, the son of King David"
+  },
+  "H475": {
+    "sn": "H475",
+    "he": "𐤀𐤋𐤉 𐤔𐤉𐤁",
+    "paleo": "𐤀𐤋𐤉-𐤔𐤉𐤁",
+    "from": "Alayashayab",
+    "to": "Alay-Shayab",
+    "meaning": "God will restore",
+    "def": "Eljashib, the name of six Israelites"
+  },
+  "H469": {
+    "sn": "H469",
+    "he": "𐤀𐤋𐤉 𐤑𐤐𐤍",
+    "paleo": "𐤀𐤋𐤉-𐤑𐤐𐤍",
+    "from": "Alayatzapan",
+    "to": "Alay-Tzapan",
+    "meaning": "God of treasure",
+    "def": "Elitsaphan or Eltsaphan, an Israelite"
+  },
+  "H468": {
+    "sn": "H468",
+    "he": "𐤀𐤋𐤉 𐤑𐤅𐤓",
+    "paleo": "𐤀𐤋𐤉-𐤑𐤅𐤓",
+    "from": "Alayatzawar",
+    "to": "Alay-Tzawar",
+    "meaning": null,
+    "def": "Elitsur, an Israelite"
+  },
+  "H443": {
+    "sn": "H443",
+    "he": "𐤀𐤋 𐤆𐤁𐤃",
+    "paleo": "𐤀𐤋-𐤆𐤁𐤃",
+    "from": "Alazabad",
+    "to": "Al-Zabad",
+    "meaning": "God has bestowed",
+    "def": "Elzabad, the name of two Israelites"
+  },
+  "H593": {
+    "sn": "H593",
+    "he": "𐤀𐤍𐤉 𐤏𐤌",
+    "paleo": "𐤀𐤍𐤉-𐤏𐤌",
+    "from": "Anayaim",
+    "to": "Anay-Im",
+    "meaning": null,
+    "def": "Aniam, an Israelite"
+  },
+  "H658": {
+    "sn": "H658",
+    "he": "𐤀𐤐𐤎 𐤃𐤌𐤉𐤌",
+    "paleo": "𐤀𐤐𐤎-𐤃𐤌𐤉𐤌",
+    "from": "Apasadamayam",
+    "to": "Apas-Damayam",
+    "meaning": "boundary of blood-drops",
+    "def": "Ephes-Dammim, a place in Palestine"
+  },
+  "H763": {
+    "sn": "H763",
+    "he": "𐤀𐤓𐤌 𐤍𐤄𐤓𐤉𐤌",
+    "paleo": "𐤀𐤓𐤌-𐤍𐤄𐤓𐤉𐤌",
+    "from": "Aramanaharayam",
+    "to": "Aram-Naharayam",
+    "meaning": null,
+    "def": "Aram of (the) two rivers (Euphrates and Tigris) or Mesopotamia"
+  },
+  "H760": {
+    "sn": "H760",
+    "he": "𐤀𐤓𐤌 𐤑𐤅𐤁𐤄",
+    "paleo": "𐤀𐤓𐤌-𐤑𐤅𐤁𐤄",
+    "from": "Aramatzawabah",
+    "to": "Aram-Tzawabah",
+    "meaning": null,
+    "def": "Aram of Tsoba (or Coele-Syria)"
+  },
+  "H739": {
+    "sn": "H739",
+    "he": "𐤀𐤓𐤉 𐤀𐤋",
+    "paleo": "𐤀𐤓𐤉-𐤀𐤋",
+    "from": "Arayaal",
+    "to": "Aray-Al",
+    "meaning": null,
+    "def": "lion of God; i.e. heroic"
+  },
+  "H634": {
+    "sn": "H634",
+    "he": "𐤀𐤎𐤓 𐤇𐤃𐤅𐤍",
+    "paleo": "𐤀𐤎𐤓-𐤇𐤃𐤅𐤍",
+    "from": "Asarachadawan",
+    "to": "Asar-Chadawan",
+    "meaning": null,
+    "def": "Esar-chaddon, an Assyrian king"
+  },
+  "H792": {
+    "sn": "H792",
+    "he": "𐤀𐤔 𐤁𐤏𐤋",
+    "paleo": "𐤀𐤔-𐤁𐤏𐤋",
+    "from": "Ashabail",
+    "to": "Ash-Bail",
+    "meaning": "man of Baal",
+    "def": "Eshbaal (or Ishbosheth), a son of Saul"
+  },
+  "H798": {
+    "sn": "H798",
+    "he": "𐤀𐤔𐤃𐤅𐤕 𐤄𐤐𐤎𐤂𐤄",
+    "paleo": "𐤀𐤔𐤃𐤅𐤕-𐤄𐤐𐤎𐤂𐤄",
+    "from": "Ashadawathahapasagah",
+    "to": "Ashadawath-Hapasagah",
+    "meaning": null,
+    "def": "Ashdoth-Pisgah, a place east of the Jordan"
+  },
+  "H840": {
+    "sn": "H840",
+    "he": "𐤀𐤔𐤓 𐤀𐤋",
+    "paleo": "𐤀𐤔𐤓-𐤀𐤋",
+    "from": "Asharaal",
+    "to": "Ashar-Al",
+    "meaning": "right of God",
+    "def": "Asarel, an Israelite"
+  },
+  "H856": {
+    "sn": "H856",
+    "he": "𐤀𐤕 𐤁𐤏𐤋",
+    "paleo": "𐤀𐤕-𐤁𐤏𐤋",
+    "from": "Athabail",
+    "to": "Ath-Bail",
+    "meaning": "with Baal",
+    "def": "Ethbaal, a Phoenician king"
+  },
+  "H222": {
+    "sn": "H222",
+    "he": "𐤀𐤅𐤓𐤉 𐤀𐤋",
+    "paleo": "𐤀𐤅𐤓𐤉-𐤀𐤋",
+    "from": "Awarayaal",
+    "to": "Awaray-Al",
+    "meaning": "flame of God",
+    "def": "Uriel, the name of two Israelites"
+  },
+  "H192": {
+    "sn": "H192",
+    "he": "𐤀𐤅𐤉𐤋 𐤌𐤓𐤃𐤊",
+    "paleo": "𐤀𐤅𐤉𐤋-𐤌𐤓𐤃𐤊",
+    "from": "Awayalamaradak",
+    "to": "Awayal-Maradak",
+    "meaning": null,
+    "def": "Evil-Merodak, a Babylonian king"
+  },
+  "H372": {
+    "sn": "H372",
+    "he": "𐤀𐤉 𐤏𐤆𐤓",
+    "paleo": "𐤀𐤉-𐤏𐤆𐤓",
+    "from": "Ayaizar",
+    "to": "Ay-Izar",
+    "meaning": "helpless",
+    "def": "Iezer, an Israelite"
+  },
+  "H350": {
+    "sn": "H350",
+    "he": "𐤀𐤉 𐤊𐤁𐤅𐤃",
+    "paleo": "𐤀𐤉-𐤊𐤁𐤅𐤃",
+    "from": "Ayakabawad",
+    "to": "Ay-Kabawad",
+    "meaning": null,
+    "def": "Ikabod, a son of Phineas"
+  },
+  "H364": {
+    "sn": "H364",
+    "he": "𐤀𐤉𐤋 𐤐𐤀𐤓𐤍",
+    "paleo": "𐤀𐤉𐤋-𐤐𐤀𐤓𐤍",
+    "from": "Ayalapaaran",
+    "to": "Ayal-Paaran",
+    "meaning": "oak of Paran",
+    "def": "El-Paran, a portion of the district of Paran"
+  },
+  "H358": {
+    "sn": "H358",
+    "he": "𐤀𐤉𐤋𐤅𐤍 𐤁𐤉𐤕 𐤇𐤍𐤍",
+    "paleo": "𐤀𐤉𐤋𐤅𐤍-𐤁𐤉𐤕-𐤇𐤍𐤍",
+    "from": "Ayalawanabayathachanan",
+    "to": "Ayalawan-Bayath-Chanan",
+    "meaning": null,
+    "def": "Elon of Beth-chanan, a place in Palestine"
+  },
+  "H378": {
+    "sn": "H378",
+    "he": "𐤀𐤉𐤔 𐤁𐤔𐤕",
+    "paleo": "𐤀𐤉𐤔-𐤁𐤔𐤕",
+    "from": "Ayashabashath",
+    "to": "Ayash-Bashath",
+    "meaning": "man of shame",
+    "def": "Ish-Bosheth, a son of King Saul"
+  },
+  "H381": {
+    "sn": "H381",
+    "he": "𐤀𐤉𐤔 𐤇𐤉𐤋",
+    "paleo": "𐤀𐤉𐤔-𐤇𐤉𐤋",
+    "from": "Ayashachayal",
+    "to": "Ayash-Chayal",
+    "meaning": "living man",
+    "def": "Ishchail (or Ish-chai), an Israelite"
+  },
+  "H379": {
+    "sn": "H379",
+    "he": "𐤀𐤉𐤔 𐤄𐤅𐤃",
+    "paleo": "𐤀𐤉𐤔-𐤄𐤅𐤃",
+    "from": "Ayashahawad",
+    "to": "Ayash-Hawad",
+    "meaning": "man of renown",
+    "def": "Ishod, an Israelite"
+  },
+  "H382": {
+    "sn": "H382",
+    "he": "𐤀𐤉𐤔 𐤈𐤅𐤁",
+    "paleo": "𐤀𐤉𐤔-𐤈𐤅𐤁",
+    "from": "Ayashatawab",
+    "to": "Ayash-Tawab",
+    "meaning": "man of Tob",
+    "def": "Ish-Tob, a place in Palestine"
+  },
+  "H385": {
+    "sn": "H385",
+    "he": "𐤀𐤉 𐤕𐤌𐤓",
+    "paleo": "𐤀𐤉-𐤕𐤌𐤓",
+    "from": "Ayathamar",
+    "to": "Ay-Thamar",
+    "meaning": "coast of the palm-tree",
+    "def": "Ithamar, a son of Aaron"
+  },
+  "H384": {
+    "sn": "H384",
+    "he": "𐤀𐤉𐤕𐤉 𐤀𐤋",
+    "paleo": "𐤀𐤉𐤕𐤉-𐤀𐤋",
+    "from": "Ayathayaal",
+    "to": "Ayathay-Al",
+    "meaning": "God has arrived",
+    "def": "Ithiel, the name of an Israelite, also of a symbolical person"
+  },
+  "H348": {
+    "sn": "H348",
+    "he": "𐤀𐤉 𐤆𐤁𐤋",
+    "paleo": "𐤀𐤉-𐤆𐤁𐤋",
+    "from": "Ayazabal",
+    "to": "Ay-Zabal",
+    "meaning": null,
+    "def": "Izebel, the wife of king Ahab"
+  },
+  "H242": {
+    "sn": "H242",
+    "he": "𐤀𐤆𐤍 𐤔𐤀𐤓𐤄",
+    "paleo": "𐤀𐤆𐤍-𐤔𐤀𐤓𐤄",
+    "from": "Azanashaarah",
+    "to": "Azan-Shaarah",
+    "meaning": null,
+    "def": "Uzzen-Sheerah, a place in Palestine"
+  },
+  "H243": {
+    "sn": "H243",
+    "he": "𐤀𐤆𐤍𐤅𐤕 𐤕𐤁𐤅𐤓",
+    "paleo": "𐤀𐤆𐤍𐤅𐤕-𐤕𐤁𐤅𐤓",
+    "from": "Azanawathathabawar",
+    "to": "Azanawath-Thabawar",
+    "meaning": null,
+    "def": "Aznoth-Tabor, a place in Palestine"
+  },
+  "H879": {
+    "sn": "H879",
+    "he": "𐤁𐤀𐤓 𐤀𐤋𐤉𐤌",
+    "paleo": "𐤁𐤀𐤓-𐤀𐤋𐤉𐤌",
+    "from": "Baaraalayam",
+    "to": "Baar-Alayam",
+    "meaning": "well of heroes",
+    "def": "Beer-Elim, a place in the Desert"
+  },
+  "H883": {
+    "sn": "H883",
+    "he": "𐤁𐤀𐤓 𐤋𐤇𐤉 𐤓𐤀𐤉",
+    "paleo": "𐤁𐤀𐤓-𐤋𐤇𐤉-𐤓𐤀𐤉",
+    "from": "Baaralachayaraay",
+    "to": "Baar-Lachay-Raay",
+    "meaning": null,
+    "def": "Beer-Lachai-Roi, a place in the Desert"
+  },
+  "H885": {
+    "sn": "H885",
+    "he": "𐤁𐤀𐤓𐤕 𐤁𐤍𐤉 𐤉𐤏𐤒𐤍",
+    "paleo": "𐤁𐤀𐤓𐤕-𐤁𐤍𐤉-𐤉𐤏𐤒𐤍",
+    "from": "Baarathabanayayaiqan",
+    "to": "Baarath-Banay-Yaiqan",
+    "meaning": null,
+    "def": "Beeroth-Bene-Jaakan, a place in the Desert"
+  },
+  "H1170": {
+    "sn": "H1170",
+    "he": "𐤁𐤏𐤋 𐤁𐤓𐤉𐤕",
+    "paleo": "𐤁𐤏𐤋-𐤁𐤓𐤉𐤕",
+    "from": "Bailabarayath",
+    "to": "Bail-Barayath",
+    "meaning": null,
+    "def": "Baal-Berith, a special deity of the Shechemites"
+  },
+  "H1177": {
+    "sn": "H1177",
+    "he": "𐤁𐤏𐤋 𐤇𐤍𐤍",
+    "paleo": "𐤁𐤏𐤋-𐤇𐤍𐤍",
+    "from": "Bailachanan",
+    "to": "Bail-Chanan",
+    "meaning": "possessor of grace",
+    "def": "Baal-Chanan, the name of an Edomite, also of an Israelite"
+  },
+  "H1179": {
+    "sn": "H1179",
+    "he": "𐤁𐤏𐤋 𐤇𐤓𐤌𐤅𐤍",
+    "paleo": "𐤁𐤏𐤋-𐤇𐤓𐤌𐤅𐤍",
+    "from": "Bailacharamawan",
+    "to": "Bail-Charamawan",
+    "meaning": "possessor of Hermon",
+    "def": "Baal-Chermon, a place in Palestine"
+  },
+  "H1178": {
+    "sn": "H1178",
+    "he": "𐤁𐤏𐤋 𐤇𐤑𐤅𐤓",
+    "paleo": "𐤁𐤏𐤋-𐤇𐤑𐤅𐤓",
+    "from": "Bailachatzawar",
+    "to": "Bail-Chatzawar",
+    "meaning": "possessor of a village",
+    "def": "Baal-Chatsor, a place in Palestine"
+  },
+  "H1174": {
+    "sn": "H1174",
+    "he": "𐤁𐤏𐤋 𐤄𐤌𐤅𐤍",
+    "paleo": "𐤁𐤏𐤋-𐤄𐤌𐤅𐤍",
+    "from": "Bailahamawan",
+    "to": "Bail-Hamawan",
+    "meaning": "possessor of a multitude",
+    "def": "Baal-Hamon, a place in Palestine"
+  },
+  "H1186": {
+    "sn": "H1186",
+    "he": "𐤁𐤏𐤋 𐤌𐤏𐤅𐤍",
+    "paleo": "𐤁𐤏𐤋-𐤌𐤏𐤅𐤍",
+    "from": "Bailamaiwan",
+    "to": "Bail-Maiwan",
+    "meaning": null,
+    "def": "Baal-Meon, a place East of the Jordan"
+  },
+  "H1187": {
+    "sn": "H1187",
+    "he": "𐤁𐤏𐤋 𐤐𐤏𐤅𐤓",
+    "paleo": "𐤁𐤏𐤋-𐤐𐤏𐤅𐤓",
+    "from": "Bailapaiwar",
+    "to": "Bail-Paiwar",
+    "meaning": "Baal of Peor",
+    "def": "Baal-Peor, a Moabitish deity"
+  },
+  "H1188": {
+    "sn": "H1188",
+    "he": "𐤁𐤏𐤋 𐤐𐤓𐤑𐤉𐤌",
+    "paleo": "𐤁𐤏𐤋-𐤐𐤓𐤑𐤉𐤌",
+    "from": "Bailaparatzayam",
+    "to": "Bail-Paratzayam",
+    "meaning": "possessor of breaches",
+    "def": "Baal-Peratsim, a place in Palestine"
+  },
+  "H1190": {
+    "sn": "H1190",
+    "he": "𐤁𐤏𐤋 𐤔𐤋𐤔𐤄",
+    "paleo": "𐤁𐤏𐤋-𐤔𐤋𐤔𐤄",
+    "from": "Bailashalashah",
+    "to": "Bail-Shalashah",
+    "meaning": null,
+    "def": "Baal of Shalishah, Baal-Shalishah, a place in Palestine"
+  },
+  "H1192": {
+    "sn": "H1192",
+    "he": "𐤁𐤏𐤋𐤕 𐤁𐤀𐤓",
+    "paleo": "𐤁𐤏𐤋𐤕-𐤁𐤀𐤓",
+    "from": "Bailathabaar",
+    "to": "Bailath-Baar",
+    "meaning": "mistress of a well",
+    "def": "Baalath-Beer, a place in Palestine"
+  },
+  "H1193": {
+    "sn": "H1193",
+    "he": "𐤁𐤏𐤋 𐤕𐤌𐤓",
+    "paleo": "𐤁𐤏𐤋-𐤕𐤌𐤓",
+    "from": "Bailathamar",
+    "to": "Bail-Thamar",
+    "meaning": null,
+    "def": "Baal-Tamar, a place in Palestine"
+  },
+  "H1189": {
+    "sn": "H1189",
+    "he": "𐤁𐤏𐤋 𐤑𐤐𐤅𐤍",
+    "paleo": "𐤁𐤏𐤋-𐤑𐤐𐤅𐤍",
+    "from": "Bailatzapawan",
+    "to": "Bail-Tzapawan",
+    "meaning": "Baal of winter",
+    "def": "Baal-Tsephon, a place in Eqypt"
+  },
+  "H1181": {
+    "sn": "H1181",
+    "he": "𐤁𐤏𐤋𐤉 𐤁𐤌𐤅𐤕",
+    "paleo": "𐤁𐤏𐤋𐤉-𐤁𐤌𐤅𐤕",
+    "from": "Bailayabamawath",
+    "to": "Bailay-Bamawath",
+    "meaning": null,
+    "def": "Baale-Bamoth, a place East of the Jordan"
+  },
+  "H1182": {
+    "sn": "H1182",
+    "he": "𐤁𐤏𐤋 𐤉𐤃𐤏",
+    "paleo": "𐤁𐤏𐤋-𐤉𐤃𐤏",
+    "from": "Bailayadai",
+    "to": "Bail-Yadai",
+    "meaning": "Baal has known",
+    "def": "Beeljada, an Israelite"
+  },
+  "H1184": {
+    "sn": "H1184",
+    "he": "𐤁𐤏𐤋𐤉 𐤉𐤄𐤅𐤃𐤄",
+    "paleo": "𐤁𐤏𐤋𐤉-𐤉𐤄𐤅𐤃𐤄",
+    "from": "Bailayayahawadah",
+    "to": "Bailay-Yahawadah",
+    "meaning": "masters of Judah",
+    "def": "Baale-Jehudah, a place in Palestine"
+  },
+  "H1176": {
+    "sn": "H1176",
+    "he": "𐤁𐤏𐤋 𐤆𐤁𐤅𐤁",
+    "paleo": "𐤁𐤏𐤋-𐤆𐤁𐤅𐤁",
+    "from": "Bailazabawab",
+    "to": "Bail-Zabawab",
+    "meaning": null,
+    "def": "Baal-Zebub, a special deity of the Ekronites"
+  },
+  "H1081": {
+    "sn": "H1081",
+    "he": "𐤁𐤋 𐤀𐤃𐤍",
+    "paleo": "𐤁𐤋-𐤀𐤃𐤍",
+    "from": "Balaadan",
+    "to": "Bal-Adan",
+    "meaning": null,
+    "def": "Baladan, the name of a Babylonian prince"
+  },
+  "H1109": {
+    "sn": "H1109",
+    "he": "𐤁𐤋 𐤏𐤌",
+    "paleo": "𐤁𐤋-𐤏𐤌",
+    "from": "Balaim",
+    "to": "Bal-Im",
+    "meaning": null,
+    "def": "Bilam, a Mesopotamian prophet; also a place in Palestine"
+  },
+  "H1125": {
+    "sn": "H1125",
+    "he": "𐤁𐤍 𐤀𐤁𐤉𐤍𐤃𐤁",
+    "paleo": "𐤁𐤍-𐤀𐤁𐤉𐤍𐤃𐤁",
+    "from": "Banaabayanadab",
+    "to": "Ban-Abay-Nadab",
+    "meaning": null,
+    "def": "Ben-Abinadab, an Israelite"
+  },
+  "H1126": {
+    "sn": "H1126",
+    "he": "𐤁𐤍 𐤀𐤅𐤍𐤉",
+    "paleo": "𐤁𐤍-𐤀𐤅𐤍𐤉",
+    "from": "Banaawanay",
+    "to": "Ban-Awanay",
+    "meaning": "son of my sorrow",
+    "def": "Ben-Oni, the original name of Benjamin"
+  },
+  "H1135": {
+    "sn": "H1135",
+    "he": "𐤁𐤍 𐤇𐤍𐤍",
+    "paleo": "𐤁𐤍-𐤇𐤍𐤍",
+    "from": "Banachanan",
+    "to": "Ban-Chanan",
+    "meaning": "son of Chanan",
+    "def": "Ben-Chanan, an Israelite"
+  },
+  "H1136": {
+    "sn": "H1136",
+    "he": "𐤁𐤍 𐤇𐤎𐤃",
+    "paleo": "𐤁𐤍-𐤇𐤎𐤃",
+    "from": "Banachasad",
+    "to": "Ban-Chasad",
+    "meaning": "son of kindness",
+    "def": "Ben-Chesed, an Israelite"
+  },
+  "H1133": {
+    "sn": "H1133",
+    "he": "𐤁𐤍 𐤇𐤅𐤓",
+    "paleo": "𐤁𐤍-𐤇𐤅𐤓",
+    "from": "Banachawar",
+    "to": "Ban-Chawar",
+    "meaning": "son of Chur",
+    "def": "Ben-Chur, an Israelite"
+  },
+  "H1134": {
+    "sn": "H1134",
+    "he": "𐤁𐤍 𐤇𐤉𐤋",
+    "paleo": "𐤁𐤍-𐤇𐤉𐤋",
+    "from": "Banachayal",
+    "to": "Ban-Chayal",
+    "meaning": "son of might",
+    "def": "Ben-Chail, an Israelite"
+  },
+  "H1128": {
+    "sn": "H1128",
+    "he": "𐤁𐤍 𐤃𐤒𐤓",
+    "paleo": "𐤁𐤍-𐤃𐤒𐤓",
+    "from": "Banadaqar",
+    "to": "Ban-Daqar",
+    "meaning": null,
+    "def": "Ben-Deker, an Israelite"
+  },
+  "H1127": {
+    "sn": "H1127",
+    "he": "𐤁𐤍 𐤂𐤁𐤓",
+    "paleo": "𐤁𐤍-𐤂𐤁𐤓",
+    "from": "Banagabar",
+    "to": "Ban-Gabar",
+    "meaning": null,
+    "def": "Ben-Geber, an Israelite"
+  },
+  "H1130": {
+    "sn": "H1130",
+    "he": "𐤁𐤍 𐤄𐤃𐤃",
+    "paleo": "𐤁𐤍-𐤄𐤃𐤃",
+    "from": "Banahadad",
+    "to": "Ban-Hadad",
+    "meaning": "son of Hadad",
+    "def": "Ben-Hadad, the name of several Syrian kings"
+  },
+  "H1151": {
+    "sn": "H1151",
+    "he": "𐤁𐤍 𐤏𐤌𐤉",
+    "paleo": "𐤁𐤍-𐤏𐤌𐤉",
+    "from": "Banaimay",
+    "to": "Ban-Imay",
+    "meaning": null,
+    "def": "Ben-Ammi, a son of Lot"
+  },
+  "H1139": {
+    "sn": "H1139",
+    "he": "𐤁𐤍𐤉 𐤁𐤓𐤒",
+    "paleo": "𐤁𐤍𐤉-𐤁𐤓𐤒",
+    "from": "Banayabaraq",
+    "to": "Banay-Baraq",
+    "meaning": null,
+    "def": "sons of lightning, Bene-berak, a place in Palestine"
+  },
+  "H1144": {
+    "sn": "H1144",
+    "he": "𐤁𐤍 𐤉𐤌𐤉𐤍",
+    "paleo": "𐤁𐤍-𐤉𐤌𐤉𐤍",
+    "from": "Banayamayan",
+    "to": "Ban-Yamayan",
+    "meaning": null,
+    "def": "Binjamin, youngest son of Jacob; also the tribe descended from him, and its territory"
+  },
+  "H1145": {
+    "sn": "H1145",
+    "he": "𐤁𐤍 𐤉𐤌𐤉𐤍𐤉",
+    "paleo": "𐤁𐤍-𐤉𐤌𐤉𐤍𐤉",
+    "from": "Banayamayanay",
+    "to": "Ban-Yamayanay",
+    "meaning": null,
+    "def": "a Benjaminite, or descendent of Benjamin"
+  },
+  "H1142": {
+    "sn": "H1142",
+    "he": "𐤁𐤍𐤉 𐤉𐤏𐤒𐤍",
+    "paleo": "𐤁𐤍𐤉-𐤉𐤏𐤒𐤍",
+    "from": "Banayayaiqan",
+    "to": "Banay-Yaiqan",
+    "meaning": "sons of Yaakan",
+    "def": "Bene-Jaakan, a place in the Desert"
+  },
+  "H1132": {
+    "sn": "H1132",
+    "he": "𐤁𐤍 𐤆𐤅𐤇𐤕",
+    "paleo": "𐤁𐤍-𐤆𐤅𐤇𐤕",
+    "from": "Banazawachath",
+    "to": "Ban-Zawachath",
+    "meaning": "son of Zocheth",
+    "def": "Ben-Zocheth, an Israelite"
+  },
+  "H1255": {
+    "sn": "H1255",
+    "he": "𐤁𐤓𐤀𐤃𐤊 𐤁𐤋𐤀𐤃𐤍",
+    "paleo": "𐤁𐤓𐤀𐤃𐤊-𐤁𐤋𐤀𐤃𐤍",
+    "from": "Baraadakabalaadan",
+    "to": "Baraadak-Bal-Adan",
+    "meaning": null,
+    "def": "Berodak-Baladan, a Babylonian king"
+  },
+  "H1292": {
+    "sn": "H1292",
+    "he": "𐤁𐤓𐤊 𐤀𐤋",
+    "paleo": "𐤁𐤓𐤊-𐤀𐤋",
+    "from": "Barakaal",
+    "to": "Barak-Al",
+    "meaning": null,
+    "def": "Barakel, the father of one of Job's friends"
+  },
+  "H1337": {
+    "sn": "H1337",
+    "he": "𐤁𐤕 𐤓𐤁𐤉𐤌",
+    "paleo": "𐤁𐤕-𐤓𐤁𐤉𐤌",
+    "from": "Batharabayam",
+    "to": "Bath-Rabayam",
+    "meaning": null,
+    "def": "the daughter (i.e. city) of Rabbah"
+  },
+  "H1339": {
+    "sn": "H1339",
+    "he": "𐤁𐤕 𐤔𐤁𐤏",
+    "paleo": "𐤁𐤕-𐤔𐤁𐤏",
+    "from": "Bathashabai",
+    "to": "Bath-Shabai",
+    "meaning": "daughter of an oath",
+    "def": "Bath-Sheba, the mother of Solomon"
+  },
+  "H1340": {
+    "sn": "H1340",
+    "he": "𐤁𐤕 𐤔𐤅𐤏",
+    "paleo": "𐤁𐤕-𐤔𐤅𐤏",
+    "from": "Bathashawai",
+    "to": "Bath-Shawai",
+    "meaning": null,
+    "def": "Bath-shua,"
+  },
+  "H1212": {
+    "sn": "H1212",
+    "he": "𐤁𐤑𐤋 𐤀𐤋",
+    "paleo": "𐤁𐤑𐤋-𐤀𐤋",
+    "from": "Batzalaal",
+    "to": "Batzal-Al",
+    "meaning": null,
+    "def": "Betsalel, the name of two Israelites"
+  },
+  "H1009": {
+    "sn": "H1009",
+    "he": "𐤁𐤉𐤕 𐤀𐤓𐤁𐤀𐤋",
+    "paleo": "𐤁𐤉𐤕-𐤀𐤓𐤁𐤀𐤋",
+    "from": "Bayathaarabaal",
+    "to": "Bayath-Arabaal",
+    "meaning": "house of God's ambush",
+    "def": "Beth-Arbel, a place in Palestine"
+  },
+  "H1007": {
+    "sn": "H1007",
+    "he": "𐤁𐤉𐤕 𐤀𐤅𐤍",
+    "paleo": "𐤁𐤉𐤕-𐤀𐤅𐤍",
+    "from": "Bayathaawan",
+    "to": "Bayath-Awan",
+    "meaning": "house of vanity",
+    "def": "Beth-Aven, a place in Palestine"
+  },
+  "H1010": {
+    "sn": "H1010",
+    "he": "𐤁𐤉𐤕 𐤁𐤏𐤋 𐤌𐤏𐤅𐤍",
+    "paleo": "𐤁𐤉𐤕-𐤁𐤏𐤋-𐤌𐤏𐤅𐤍",
+    "from": "Bayathabailamaiwan",
+    "to": "Bayath-Bail-Maiwan",
+    "meaning": null,
+    "def": "Beth-Baal-Meon, a place in Palestine"
+  },
+  "H1011": {
+    "sn": "H1011",
+    "he": "𐤁𐤉𐤕 𐤁𐤓𐤀𐤉",
+    "paleo": "𐤁𐤉𐤕-𐤁𐤓𐤀𐤉",
+    "from": "Bayathabaraay",
+    "to": "Bayath-Baraay",
+    "meaning": "house of a creative one",
+    "def": "Beth-Biri, a place in Palestine"
+  },
+  "H1012": {
+    "sn": "H1012",
+    "he": "𐤁𐤉𐤕 𐤁𐤓𐤄",
+    "paleo": "𐤁𐤉𐤕-𐤁𐤓𐤄",
+    "from": "Bayathabarah",
+    "to": "Bayath-Barah",
+    "meaning": null,
+    "def": "Beth-Barah, a place in Palestine"
+  },
+  "H1031": {
+    "sn": "H1031",
+    "he": "𐤁𐤉𐤕 𐤇𐤂𐤋𐤄",
+    "paleo": "𐤁𐤉𐤕-𐤇𐤂𐤋𐤄",
+    "from": "Bayathachagalah",
+    "to": "Bayath-Chagalah",
+    "meaning": "house of a partridge",
+    "def": "Beth-Choglah, a place in Palestine"
+  },
+  "H1032": {
+    "sn": "H1032",
+    "he": "𐤁𐤉𐤕 𐤇𐤅𐤓𐤅𐤍",
+    "paleo": "𐤁𐤉𐤕-𐤇𐤅𐤓𐤅𐤍",
+    "from": "Bayathachawarawan",
+    "to": "Bayath-Chawarawan",
+    "meaning": "house of hollowness",
+    "def": "Beth-Choron, the name of two adjoining places in Palestine"
+  },
+  "H1015": {
+    "sn": "H1015",
+    "he": "𐤁𐤉𐤕 𐤃𐤁𐤋𐤕𐤉𐤌",
+    "paleo": "𐤁𐤉𐤕-𐤃𐤁𐤋𐤕𐤉𐤌",
+    "from": "Bayathadabalathayam",
+    "to": "Bayath-Dabalathayam",
+    "meaning": null,
+    "def": "Beth-Diblathajim, a place East of the Jordan"
+  },
+  "H1016": {
+    "sn": "H1016",
+    "he": "𐤁𐤉𐤕 𐤃𐤂𐤅𐤍",
+    "paleo": "𐤁𐤉𐤕-𐤃𐤂𐤅𐤍",
+    "from": "Bayathadagawan",
+    "to": "Bayath-Dagawan",
+    "meaning": "house of Dagon",
+    "def": "Beth-Dagon, the name of two places in Palestine"
+  },
+  "H1013": {
+    "sn": "H1013",
+    "he": "𐤁𐤉𐤕 𐤂𐤃𐤓",
+    "paleo": "𐤁𐤉𐤕-𐤂𐤃𐤓",
+    "from": "Bayathagadar",
+    "to": "Bayath-Gadar",
+    "meaning": null,
+    "def": "Beth-Gader, a place in Palestine"
+  },
+  "H1014": {
+    "sn": "H1014",
+    "he": "𐤁𐤉𐤕 𐤂𐤌𐤅𐤋",
+    "paleo": "𐤁𐤉𐤕-𐤂𐤌𐤅𐤋",
+    "from": "Bayathagamawal",
+    "to": "Bayath-Gamawal",
+    "meaning": null,
+    "def": "Beth-Gamul, a place East of the Jordan"
+  },
+  "H1017": {
+    "sn": "H1017",
+    "he": "𐤁𐤉𐤕 𐤄𐤀𐤋𐤉",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤀𐤋𐤉",
+    "from": "Bayathahaalay",
+    "to": "Bayath-Haalay",
+    "meaning": null,
+    "def": "a Beth-elite, or inhabitant of Bethel"
+  },
+  "H1018": {
+    "sn": "H1018",
+    "he": "𐤁𐤉𐤕 𐤄𐤀𐤑𐤋",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤀𐤑𐤋",
+    "from": "Bayathahaatzal",
+    "to": "Bayath-Haatzal",
+    "meaning": null,
+    "def": "Beth-ha-Etsel, a place in Palestine"
+  },
+  "H1019": {
+    "sn": "H1019",
+    "he": "𐤁𐤉𐤕 𐤄𐤂𐤋𐤂𐤋",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤂𐤋𐤂𐤋",
+    "from": "Bayathahagalagal",
+    "to": "Bayath-Hagalagal",
+    "meaning": null,
+    "def": "Beth-hag-Gilgal, a place in Palestine"
+  },
+  "H1025": {
+    "sn": "H1025",
+    "he": "𐤁𐤉𐤕 𐤄𐤏𐤌𐤒",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤏𐤌𐤒",
+    "from": "Bayathahaimaq",
+    "to": "Bayath-Haimaq",
+    "meaning": null,
+    "def": "Beth-ha-Emek, a place in Palestine"
+  },
+  "H1026": {
+    "sn": "H1026",
+    "he": "𐤁𐤉𐤕 𐤄𐤏𐤓𐤁𐤄",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤏𐤓𐤁𐤄",
+    "from": "Bayathahairabah",
+    "to": "Bayath-Hairabah",
+    "meaning": null,
+    "def": "Beth-ha-Arabah, a place in Palestine"
+  },
+  "H1021": {
+    "sn": "H1021",
+    "he": "𐤁𐤉𐤕 𐤄𐤊𐤓𐤌",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤊𐤓𐤌",
+    "from": "Bayathahakaram",
+    "to": "Bayath-Hakaram",
+    "meaning": null,
+    "def": "Beth-hak-Kerem, a place in Palestine"
+  },
+  "H1022": {
+    "sn": "H1022",
+    "he": "𐤁𐤉𐤕 𐤄𐤋𐤇𐤌𐤉",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤋𐤇𐤌𐤉",
+    "from": "Bayathahalachamay",
+    "to": "Bayath-Halachamay",
+    "meaning": null,
+    "def": "a Beth-lechemite, or native of Bethlechem"
+  },
+  "H1023": {
+    "sn": "H1023",
+    "he": "𐤁𐤉𐤕 𐤄𐤌𐤓𐤇𐤒",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤌𐤓𐤇𐤒",
+    "from": "Bayathahamarachaq",
+    "to": "Bayath-Hamarachaq",
+    "meaning": null,
+    "def": "Beth-ham-Merchak, a place in Palestine"
+  },
+  "H1024": {
+    "sn": "H1024",
+    "he": "𐤁𐤉𐤕 𐤄𐤌𐤓𐤊𐤁𐤅𐤕",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤌𐤓𐤊𐤁𐤅𐤕",
+    "from": "Bayathahamarakabawath",
+    "to": "Bayath-Hamarakabawath",
+    "meaning": null,
+    "def": "Beth-ham-Markaboth or Beth-Markaboth, a place in Palestine"
+  },
+  "H1027": {
+    "sn": "H1027",
+    "he": "𐤁𐤉𐤕 𐤄𐤓𐤌",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤓𐤌",
+    "from": "Bayathaharam",
+    "to": "Bayath-Haram",
+    "meaning": null,
+    "def": "Beth-ha-Ram, a place East of the Jordan"
+  },
+  "H1028": {
+    "sn": "H1028",
+    "he": "𐤁𐤉𐤕 𐤄𐤓𐤍",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤓𐤍",
+    "from": "Bayathaharan",
+    "to": "Bayath-Haran",
+    "meaning": null,
+    "def": "Beth-ha-Ram, a place East of the Jordan"
+  },
+  "H1030": {
+    "sn": "H1030",
+    "he": "𐤁𐤉𐤕 𐤄𐤔𐤌𐤔𐤉",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤔𐤌𐤔𐤉",
+    "from": "Bayathahashamashay",
+    "to": "Bayath-Hashamashay",
+    "meaning": null,
+    "def": "a Beth-shimshite, or inhabitant of Bethshemesh"
+  },
+  "H1029": {
+    "sn": "H1029",
+    "he": "𐤁𐤉𐤕 𐤄𐤔𐤈𐤄",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤔𐤈𐤄",
+    "from": "Bayathahashatah",
+    "to": "Bayath-Hashatah",
+    "meaning": null,
+    "def": "Beth-hash-Shittah, a place in Palestine"
+  },
+  "H1020": {
+    "sn": "H1020",
+    "he": "𐤁𐤉𐤕 𐤄𐤉𐤔𐤉𐤌𐤅𐤕",
+    "paleo": "𐤁𐤉𐤕-𐤄𐤉𐤔𐤉𐤌𐤅𐤕",
+    "from": "Bayathahayashayamawath",
+    "to": "Bayath-Hayashayamawath",
+    "meaning": null,
+    "def": "Beth-ha-Jeshimoth, a town East of the Jordan"
+  },
+  "H1040": {
+    "sn": "H1040",
+    "he": "𐤁𐤉𐤕 𐤏𐤃𐤍",
+    "paleo": "𐤁𐤉𐤕-𐤏𐤃𐤍",
+    "from": "Bayathaidan",
+    "to": "Bayath-Idan",
+    "meaning": "house of pleasure",
+    "def": "Beth-Eden, a place in Syria"
+  },
+  "H1043": {
+    "sn": "H1043",
+    "he": "𐤁𐤉𐤕 𐤏𐤍𐤕",
+    "paleo": "𐤁𐤉𐤕-𐤏𐤍𐤕",
+    "from": "Bayathainath",
+    "to": "Bayath-Inath",
+    "meaning": null,
+    "def": "Beth-Anath, a place in Palestine"
+  },
+  "H1042": {
+    "sn": "H1042",
+    "he": "𐤁𐤉𐤕 𐤏𐤍𐤅𐤕",
+    "paleo": "𐤁𐤉𐤕-𐤏𐤍𐤅𐤕",
+    "from": "Bayathainawath",
+    "to": "Bayath-Inawath",
+    "meaning": "house of replies",
+    "def": "Beth-Anoth, a place in Palestine"
+  },
+  "H1044": {
+    "sn": "H1044",
+    "he": "𐤁𐤉𐤕 𐤏𐤒𐤃",
+    "paleo": "𐤁𐤉𐤕-𐤏𐤒𐤃",
+    "from": "Bayathaiqad",
+    "to": "Bayath-Iqad",
+    "meaning": null,
+    "def": "Beth-Eked, a place in Palestine"
+  },
+  "H1045": {
+    "sn": "H1045",
+    "he": "𐤁𐤉𐤕 𐤏𐤔𐤕𐤓𐤅𐤕",
+    "paleo": "𐤁𐤉𐤕-𐤏𐤔𐤕𐤓𐤅𐤕",
+    "from": "Bayathaishatharawath",
+    "to": "Bayath-Ishatharawath",
+    "meaning": "house of Ashtoreths",
+    "def": "Beth-Ashtaroth, a place in Palestine"
+  },
+  "H1041": {
+    "sn": "H1041",
+    "he": "𐤁𐤉𐤕 𐤏𐤆𐤌𐤅𐤕",
+    "paleo": "𐤁𐤉𐤕-𐤏𐤆𐤌𐤅𐤕",
+    "from": "Bayathaizamawath",
+    "to": "Bayath-Iz-Mawath",
+    "meaning": null,
+    "def": "house of Azmaveth, a place in Palestine"
+  },
+  "H1033": {
+    "sn": "H1033",
+    "he": "𐤁𐤉𐤕 𐤊𐤓",
+    "paleo": "𐤁𐤉𐤕-𐤊𐤓",
+    "from": "Bayathakar",
+    "to": "Bayath-Kar",
+    "meaning": "house of pasture",
+    "def": "Beth-Car, a place in Palestine"
+  },
+  "H1034": {
+    "sn": "H1034",
+    "he": "𐤁𐤉𐤕 𐤋𐤁𐤀𐤅𐤕",
+    "paleo": "𐤁𐤉𐤕-𐤋𐤁𐤀𐤅𐤕",
+    "from": "Bayathalabaawath",
+    "to": "Bayath-Labaawath",
+    "meaning": "house of lionesses",
+    "def": "Beth-Lebaoth, a place in Palestine"
+  },
+  "H1036": {
+    "sn": "H1036",
+    "he": "𐤁𐤉𐤕 𐤋𐤏𐤐𐤓𐤄",
+    "paleo": "𐤁𐤉𐤕-𐤋𐤏𐤐𐤓𐤄",
+    "from": "Bayathalaiparah",
+    "to": "Bayath-Laiparah",
+    "meaning": null,
+    "def": "Beth-le-Aphrah, a place in Palestine"
+  },
+  "H1038": {
+    "sn": "H1038",
+    "he": "𐤁𐤉𐤕 𐤌𐤏𐤊𐤄",
+    "paleo": "𐤁𐤉𐤕-𐤌𐤏𐤊𐤄",
+    "from": "Bayathamaikah",
+    "to": "Bayath-Maikah",
+    "meaning": "house of Maakah",
+    "def": "Beth-Maakah, a place in Palestine"
+  },
+  "H1037": {
+    "sn": "H1037",
+    "he": "𐤁𐤉𐤕 𐤌𐤋𐤅𐤀",
+    "paleo": "𐤁𐤉𐤕-𐤌𐤋𐤅𐤀",
+    "from": "Bayathamalawaa",
+    "to": "Bayath-Malawaa",
+    "meaning": null,
+    "def": "Beth-Millo, the name of two citadels"
+  },
+  "H1039": {
+    "sn": "H1039",
+    "he": "𐤁𐤉𐤕 𐤍𐤌𐤓𐤄",
+    "paleo": "𐤁𐤉𐤕-𐤍𐤌𐤓𐤄",
+    "from": "Bayathanamarah",
+    "to": "Bayath-Namarah",
+    "meaning": null,
+    "def": "Beth-Nimrah, a place east of the Jordan"
+  },
+  "H1047": {
+    "sn": "H1047",
+    "he": "𐤁𐤉𐤕 𐤐𐤏𐤅𐤓",
+    "paleo": "𐤁𐤉𐤕-𐤐𐤏𐤅𐤓",
+    "from": "Bayathapaiwar",
+    "to": "Bayath-Paiwar",
+    "meaning": "house of Peor",
+    "def": "Beth-Peor, a place East of the Jordan"
+  },
+  "H1046": {
+    "sn": "H1046",
+    "he": "𐤁𐤉𐤕 𐤐𐤋𐤈",
+    "paleo": "𐤁𐤉𐤕-𐤐𐤋𐤈",
+    "from": "Bayathapalat",
+    "to": "Bayath-Palat",
+    "meaning": "house of escape",
+    "def": "Beth-Palet, a place in Palestine"
+  },
+  "H1048": {
+    "sn": "H1048",
+    "he": "𐤁𐤉𐤕 𐤐𐤑𐤑",
+    "paleo": "𐤁𐤉𐤕-𐤐𐤑𐤑",
+    "from": "Bayathapatzatz",
+    "to": "Bayath-Patzatz",
+    "meaning": "house of dispersion",
+    "def": "Beth-Patstsets, a place in Palestine"
+  },
+  "H1050": {
+    "sn": "H1050",
+    "he": "𐤁𐤉𐤕 𐤓𐤇𐤅𐤁",
+    "paleo": "𐤁𐤉𐤕-𐤓𐤇𐤅𐤁",
+    "from": "Bayatharachawab",
+    "to": "Bayath-Rachawab",
+    "meaning": null,
+    "def": "Beth-Rechob, a place in Palestine"
+  },
+  "H1051": {
+    "sn": "H1051",
+    "he": "𐤁𐤉𐤕 𐤓𐤐𐤀",
+    "paleo": "𐤁𐤉𐤕-𐤓𐤐𐤀",
+    "from": "Bayatharapaa",
+    "to": "Bayath-Rapaa",
+    "meaning": null,
+    "def": "Beth-Rapha, an Israelite"
+  },
+  "H1054": {
+    "sn": "H1054",
+    "he": "𐤁𐤉𐤕 𐤕𐤐𐤅𐤇",
+    "paleo": "𐤁𐤉𐤕-𐤕𐤐𐤅𐤇",
+    "from": "Bayathathapawach",
+    "to": "Bayath-Thapawach",
+    "meaning": null,
+    "def": "Beth-Tappuach, a place in Palestine"
+  },
+  "H1049": {
+    "sn": "H1049",
+    "he": "𐤁𐤉𐤕 𐤑𐤅𐤓",
+    "paleo": "𐤁𐤉𐤕-𐤑𐤅𐤓",
+    "from": "Bayathatzawar",
+    "to": "Bayath-Tzawar",
+    "meaning": null,
+    "def": "Beth-Tsur, a place in Palestine"
+  },
+  "H2521": {
+    "sn": "H2521",
+    "he": "𐤇𐤋𐤒𐤕 𐤄𐤑𐤓𐤉𐤌",
+    "paleo": "𐤇𐤋𐤒𐤕-𐤄𐤑𐤓𐤉𐤌",
+    "from": "Chalaqathahatzarayam",
+    "to": "Chalaqath-Hatzarayam",
+    "meaning": null,
+    "def": "Chelkath Hats-tsurim, a place in Palestine"
+  },
+  "H2576": {
+    "sn": "H2576",
+    "he": "𐤇𐤌𐤕 𐤃𐤀𐤓",
+    "paleo": "𐤇𐤌𐤕-𐤃𐤀𐤓",
+    "from": "Chamathadaar",
+    "to": "Chamath-Daar",
+    "meaning": "hot springs of Dor",
+    "def": "Chammath-Dor, a place in Palestine"
+  },
+  "H2579": {
+    "sn": "H2579",
+    "he": "𐤇𐤌𐤕 𐤓𐤁𐤄",
+    "paleo": "𐤇𐤌𐤕-𐤓𐤁𐤄",
+    "from": "Chamatharabah",
+    "to": "Chamath-Rabah",
+    "meaning": null,
+    "def": "Chamath-Rabbah"
+  },
+  "H2578": {
+    "sn": "H2578",
+    "he": "𐤇𐤌𐤕 𐤑𐤅𐤁𐤄",
+    "paleo": "𐤇𐤌𐤕-𐤑𐤅𐤁𐤄",
+    "from": "Chamathatzawabah",
+    "to": "Chamath-Tzawabah",
+    "meaning": null,
+    "def": "Chamath-Tsobah"
+  },
+  "H2606": {
+    "sn": "H2606",
+    "he": "𐤇𐤍𐤍 𐤀𐤋",
+    "paleo": "𐤇𐤍𐤍-𐤀𐤋",
+    "from": "Chananaal",
+    "to": "Chanan-Al",
+    "meaning": "God has favored",
+    "def": "Chananel, probably an Israelite, from whom a tower of Jerusalem was named"
+  },
+  "H2592": {
+    "sn": "H2592",
+    "he": "𐤇𐤍𐤉 𐤀𐤋",
+    "paleo": "𐤇𐤍𐤉-𐤀𐤋",
+    "from": "Chanayaal",
+    "to": "Chanay-Al",
+    "meaning": "favor of God",
+    "def": "Channiel, the name of two Israelites"
+  },
+  "H2657": {
+    "sn": "H2657",
+    "he": "𐤇𐤐𐤑𐤉 𐤁𐤄",
+    "paleo": "𐤇𐤐𐤑𐤉-𐤁𐤄",
+    "from": "Chapatzayabah",
+    "to": "Chapatzay-Bah",
+    "meaning": null,
+    "def": "Cheptsi-bah, a fanciful name for Palestine"
+  },
+  "H2735": {
+    "sn": "H2735",
+    "he": "𐤇𐤓 𐤄𐤂𐤃𐤂𐤃",
+    "paleo": "𐤇𐤓-𐤄𐤂𐤃𐤂𐤃",
+    "from": "Charahagadagad",
+    "to": "Char-Hagadagad",
+    "meaning": null,
+    "def": "Chor-hag-Gidgad, a place in the Desert"
+  },
+  "H2806": {
+    "sn": "H2806",
+    "he": "𐤇𐤔𐤁 𐤃𐤍𐤄",
+    "paleo": "𐤇𐤔𐤁-𐤃𐤍𐤄",
+    "from": "Chashabadanah",
+    "to": "Chashab-Danah",
+    "meaning": "considerate judge",
+    "def": "Chasbaddanah, an Israelite"
+  },
+  "H2692": {
+    "sn": "H2692",
+    "he": "𐤇𐤑𐤓 𐤀𐤃𐤓",
+    "paleo": "𐤇𐤑𐤓-𐤀𐤃𐤓",
+    "from": "Chatzaraadar",
+    "to": "Chatzar-Adar",
+    "meaning": null,
+    "def": "Chatsar-Addar, a place in Palestine"
+  },
+  "H2693": {
+    "sn": "H2693",
+    "he": "𐤇𐤑𐤓 𐤂𐤃𐤄",
+    "paleo": "𐤇𐤑𐤓-𐤂𐤃𐤄",
+    "from": "Chatzaragadah",
+    "to": "Chatzar-Gadah",
+    "meaning": null,
+    "def": "Chatsar-Gaddah, a place in Palestine"
+  },
+  "H2694": {
+    "sn": "H2694",
+    "he": "𐤇𐤑𐤓 𐤄𐤕𐤉𐤊𐤅𐤍",
+    "paleo": "𐤇𐤑𐤓-𐤄𐤕𐤉𐤊𐤅𐤍",
+    "from": "Chatzarahathayakawan",
+    "to": "Chatzar-Hathayakawan",
+    "meaning": null,
+    "def": "Chatsar-hat-Tikon, a place in Palestine"
+  },
+  "H2700": {
+    "sn": "H2700",
+    "he": "𐤇𐤑𐤓 𐤌𐤅𐤕",
+    "paleo": "𐤇𐤑𐤓-𐤌𐤅𐤕",
+    "from": "Chatzaramawath",
+    "to": "Chatzar-Mawath",
+    "meaning": "village of death",
+    "def": "Chatsarmaveth, a place in Arabia"
+  },
+  "H2701": {
+    "sn": "H2701",
+    "he": "𐤇𐤑𐤓 𐤎𐤅𐤎𐤄",
+    "paleo": "𐤇𐤑𐤓-𐤎𐤅𐤎𐤄",
+    "from": "Chatzarasawasah",
+    "to": "Chatzar-Sawasah",
+    "meaning": "village of cavalry",
+    "def": "Chatsar-Susah, a place in Palestine"
+  },
+  "H2702": {
+    "sn": "H2702",
+    "he": "𐤇𐤑𐤓 𐤎𐤅𐤎𐤉𐤌",
+    "paleo": "𐤇𐤑𐤓-𐤎𐤅𐤎𐤉𐤌",
+    "from": "Chatzarasawasayam",
+    "to": "Chatzar-Sawasayam",
+    "meaning": "village of horses",
+    "def": "Chatsar-Susim, a place in Palestine"
+  },
+  "H2705": {
+    "sn": "H2705",
+    "he": "𐤇𐤑𐤓 𐤔𐤅𐤏𐤋",
+    "paleo": "𐤇𐤑𐤓-𐤔𐤅𐤏𐤋",
+    "from": "Chatzarashawail",
+    "to": "Chatzar-Shawail",
+    "meaning": null,
+    "def": "Chatsar-Shual, a place in Palestine"
+  },
+  "H2688": {
+    "sn": "H2688",
+    "he": "𐤇𐤑𐤑𐤅𐤍 𐤕𐤌𐤓",
+    "paleo": "𐤇𐤑𐤑𐤅𐤍-𐤕𐤌𐤓",
+    "from": "Chatzatzawanathamar",
+    "to": "Chatzatzawan-Thamar",
+    "meaning": null,
+    "def": "Chatsetson-tamar, a place in Palestine"
+  },
+  "H2675": {
+    "sn": "H2675",
+    "he": "𐤇𐤑𐤅𐤓 𐤇𐤃𐤕𐤄",
+    "paleo": "𐤇𐤑𐤅𐤓-𐤇𐤃𐤕𐤄",
+    "from": "Chatzawarachadathah",
+    "to": "Chatzawar-Chadathah",
+    "meaning": null,
+    "def": "new Chatsor, a place in Palestine"
+  },
+  "H2680": {
+    "sn": "H2680",
+    "he": "𐤇𐤑𐤉 𐤄𐤌𐤍𐤇𐤕𐤉",
+    "paleo": "𐤇𐤑𐤉-𐤄𐤌𐤍𐤇𐤕𐤉",
+    "from": "Chatzayahamanachathay",
+    "to": "Chatzay-Hamanachathay",
+    "meaning": null,
+    "def": "a Chatsi-ham-Menachtite or descendant of Chatsi-ham-Menuchoth"
+  },
+  "H2679": {
+    "sn": "H2679",
+    "he": "𐤇𐤑𐤉 𐤄𐤌𐤍𐤇𐤅𐤕",
+    "paleo": "𐤇𐤑𐤉-𐤄𐤌𐤍𐤇𐤅𐤕",
+    "from": "Chatzayahamanachawath",
+    "to": "Chatzay-Hamanachawath",
+    "meaning": null,
+    "def": "Chatsi-ham-Menuchoth, an Israelite"
+  },
+  "H2334": {
+    "sn": "H2334",
+    "he": "𐤇𐤅𐤅𐤕 𐤉𐤏𐤉𐤓",
+    "paleo": "𐤇𐤅𐤅𐤕-𐤉𐤏𐤉𐤓",
+    "from": "Chawawathayaiyar",
+    "to": "Chawawath-Yaiyar",
+    "meaning": null,
+    "def": "hamlets of Jair, a region of Palestine"
+  },
+  "H2419": {
+    "sn": "H2419",
+    "he": "𐤇𐤉 𐤀𐤋",
+    "paleo": "𐤇𐤉-𐤀𐤋",
+    "from": "Chayaal",
+    "to": "Chay-Al",
+    "meaning": "living of God",
+    "def": "Chiel, an Israelite"
+  },
+  "H2371": {
+    "sn": "H2371",
+    "he": "𐤇𐤆 𐤀𐤋",
+    "paleo": "𐤇𐤆-𐤀𐤋",
+    "from": "Chazaal",
+    "to": "Chaz-Al",
+    "meaning": "God has seen",
+    "def": "Chazael, a king of Syria"
+  },
+  "H2381": {
+    "sn": "H2381",
+    "he": "𐤇𐤆𐤉 𐤀𐤋",
+    "paleo": "𐤇𐤆𐤉-𐤀𐤋",
+    "from": "Chazayaal",
+    "to": "Chazay-Al",
+    "meaning": "seen of God",
+    "def": "Chaziel, a Levite"
+  },
+  "H1840": {
+    "sn": "H1840",
+    "he": "𐤃𐤍𐤉 𐤀𐤋",
+    "paleo": "𐤃𐤍𐤉-𐤀𐤋",
+    "from": "Danayaal",
+    "to": "Danay-Al",
+    "meaning": "judge of God",
+    "def": "Daniel or Danijel, the name of two Israelites"
+  },
+  "H1842": {
+    "sn": "H1842",
+    "he": "𐤃𐤍 𐤉𐤏𐤍",
+    "paleo": "𐤃𐤍-𐤉𐤏𐤍",
+    "from": "Danayain",
+    "to": "Dan-Yain",
+    "meaning": "judge of purpose",
+    "def": "Dan-Jaan, a place in Palestine"
+  },
+  "H1862": {
+    "sn": "H1862",
+    "he": "𐤃𐤓 𐤃𐤏",
+    "paleo": "𐤃𐤓-𐤃𐤏",
+    "from": "Daradai",
+    "to": "Dar-Dai",
+    "meaning": "pearl of knowledge",
+    "def": "Darda, an Israelite"
+  },
+  "H1774": {
+    "sn": "H1774",
+    "he": "𐤃𐤉 𐤆𐤄𐤁",
+    "paleo": "𐤃𐤉-𐤆𐤄𐤁",
+    "from": "Dayazahab",
+    "to": "Day-Zahab",
+    "meaning": "of gold",
+    "def": "Dizahab, a place in the Desert"
+  },
+  "H1403": {
+    "sn": "H1403",
+    "he": "𐤂𐤁𐤓𐤉 𐤀𐤋",
+    "paleo": "𐤂𐤁𐤓𐤉-𐤀𐤋",
+    "from": "Gabarayaal",
+    "to": "Gabaray-Al",
+    "meaning": "man of God",
+    "def": "Gabriel, an archangel"
+  },
+  "H1441": {
+    "sn": "H1441",
+    "he": "𐤂𐤃𐤏 𐤍𐤉",
+    "paleo": "𐤂𐤃𐤏-𐤍𐤉",
+    "from": "Gadainay",
+    "to": "Gadai-Nay",
+    "meaning": null,
+    "def": "Gidoni, an Israelite"
+  },
+  "H1427": {
+    "sn": "H1427",
+    "he": "𐤂𐤃𐤉 𐤀𐤋",
+    "paleo": "𐤂𐤃𐤉-𐤀𐤋",
+    "from": "Gadayaal",
+    "to": "Gaday-Al",
+    "meaning": "fortune of God",
+    "def": "Gaddiel, an Israelite"
+  },
+  "H1533": {
+    "sn": "H1533",
+    "he": "𐤂𐤋 𐤁𐤏",
+    "paleo": "𐤂𐤋-𐤁𐤏",
+    "from": "Galabai",
+    "to": "Gal-Bai",
+    "meaning": "fountain of ebullition",
+    "def": "Gilboa, a mountain of Palestine"
+  },
+  "H1583": {
+    "sn": "H1583",
+    "he": "𐤂𐤌𐤋𐤉 𐤀𐤋",
+    "paleo": "𐤂𐤌𐤋𐤉-𐤀𐤋",
+    "from": "Gamalayaal",
+    "to": "Gamalay-Al",
+    "meaning": "reward of God",
+    "def": "Gamliel, an Israelite"
+  },
+  "H1662": {
+    "sn": "H1662",
+    "he": "𐤂𐤕 𐤄𐤇𐤐𐤓",
+    "paleo": "𐤂𐤕-𐤄𐤇𐤐𐤓",
+    "from": "Gathahachapar",
+    "to": "Gath-Hachapar",
+    "meaning": null,
+    "def": "Gath-Chepher, a place in Palestine"
+  },
+  "H1667": {
+    "sn": "H1667",
+    "he": "𐤂𐤕 𐤓𐤌𐤅𐤍",
+    "paleo": "𐤂𐤕-𐤓𐤌𐤅𐤍",
+    "from": "Gatharamawan",
+    "to": "Gath-Ramawan",
+    "meaning": null,
+    "def": "Gath-Rimmon, a place in Palestine"
+  },
+  "H1485": {
+    "sn": "H1485",
+    "he": "𐤂𐤅𐤓 𐤁𐤏𐤋",
+    "paleo": "𐤂𐤅𐤓-𐤁𐤏𐤋",
+    "from": "Gawarabail",
+    "to": "Gawar-Bail",
+    "meaning": "dwelling of Baal",
+    "def": "Gur-Baal, a place in Arabia"
+  },
+  "H1909": {
+    "sn": "H1909",
+    "he": "𐤄𐤃𐤃 𐤏𐤆𐤓",
+    "paleo": "𐤄𐤃𐤃-𐤏𐤆𐤓",
+    "from": "Hadadaizar",
+    "to": "Hadad-Izar",
+    "meaning": null,
+    "def": "Hadadezer, a Syrian king"
+  },
+  "H1910": {
+    "sn": "H1910",
+    "he": "𐤄𐤃𐤃 𐤓𐤌𐤅𐤍",
+    "paleo": "𐤄𐤃𐤃-𐤓𐤌𐤅𐤍",
+    "from": "Hadadaramawan",
+    "to": "Hadad-Ramawan",
+    "meaning": null,
+    "def": "Hadad-Rimmon, a place in Palestine"
+  },
+  "H1928": {
+    "sn": "H1928",
+    "he": "𐤄𐤃𐤓 𐤏𐤆𐤓",
+    "paleo": "𐤄𐤃𐤓-𐤏𐤆𐤓",
+    "from": "Hadaraizar",
+    "to": "Hadar-Izar",
+    "meaning": null,
+    "def": "Hadarezer,  a Syrian king"
+  },
+  "H1996": {
+    "sn": "H1996",
+    "he": "𐤄𐤌𐤅𐤍 𐤂𐤅𐤂",
+    "paleo": "𐤄𐤌𐤅𐤍-𐤂𐤅𐤂",
+    "from": "Hamawanagawag",
+    "to": "Hamawan-Gawag",
+    "meaning": null,
+    "def": "the multitude of Gog; the fanciful name of an emblematic place in Palestine"
+  },
+  "H5654": {
+    "sn": "H5654",
+    "he": "𐤏𐤁𐤃 𐤀𐤃𐤅𐤌",
+    "paleo": "𐤏𐤁𐤃-𐤀𐤃𐤅𐤌",
+    "from": "Ibadaadawam",
+    "to": "Ibad-Adawam",
+    "meaning": "worker of Edom",
+    "def": "Obed-Edom, the name of five Israelites"
+  },
+  "H5655": {
+    "sn": "H5655",
+    "he": "𐤏𐤁𐤃 𐤀𐤋",
+    "paleo": "𐤏𐤁𐤃-𐤀𐤋",
+    "from": "Ibadaal",
+    "to": "Ibad-Al",
+    "meaning": "serving God",
+    "def": "Abdeel, an Israelite"
+  },
+  "H5663": {
+    "sn": "H5663",
+    "he": "𐤏𐤁𐤃 𐤌𐤋𐤊",
+    "paleo": "𐤏𐤁𐤃-𐤌𐤋𐤊",
+    "from": "Ibadamalak",
+    "to": "Ibad-Malak",
+    "meaning": "servant of a king",
+    "def": "Ebed-Melek, a eunuch of Zedekeah"
+  },
+  "H5664": {
+    "sn": "H5664",
+    "he": "𐤏𐤁𐤃 𐤍𐤂𐤅",
+    "paleo": "𐤏𐤁𐤃-𐤍𐤂𐤅",
+    "from": "Ibadanagaw",
+    "to": "Ibad-Nagaw",
+    "meaning": null,
+    "def": "Abed-Nego, the Babylonian name of one of Daniel's companions"
+  },
+  "H5665": {
+    "sn": "H5665",
+    "he": "𐤏𐤁𐤃 𐤍𐤂𐤅𐤀",
+    "paleo": "𐤏𐤁𐤃-𐤍𐤂𐤅𐤀",
+    "from": "Ibadanagawaa",
+    "to": "Ibad-Nagawaa",
+    "meaning": null,
+    "def": "Abed-Nego, the name of Azariah"
+  },
+  "H5661": {
+    "sn": "H5661",
+    "he": "𐤏𐤁𐤃𐤉 𐤀𐤋",
+    "paleo": "𐤏𐤁𐤃𐤉-𐤀𐤋",
+    "from": "Ibadayaal",
+    "to": "Ibaday-Al",
+    "meaning": "servant of God",
+    "def": "Abdiel, an Israelite"
+  },
+  "H5741": {
+    "sn": "H5741",
+    "he": "𐤏𐤃𐤓𐤉 𐤀𐤋",
+    "paleo": "𐤏𐤃𐤓𐤉-𐤀𐤋",
+    "from": "Idarayaal",
+    "to": "Idaray-Al",
+    "meaning": "flock of God",
+    "def": "Adriel, an Israelite"
+  },
+  "H5717": {
+    "sn": "H5717",
+    "he": "𐤏𐤃𐤉 𐤀𐤋",
+    "paleo": "𐤏𐤃𐤉-𐤀𐤋",
+    "from": "Idayaal",
+    "to": "Iday-Al",
+    "meaning": "ornament of God",
+    "def": "Adiel, the name of three Israelites"
+  },
+  "H5963": {
+    "sn": "H5963",
+    "he": "𐤏𐤋𐤌𐤍 𐤃𐤁𐤋𐤕𐤉𐤌𐤄",
+    "paleo": "𐤏𐤋𐤌𐤍-𐤃𐤁𐤋𐤕𐤉𐤌𐤄",
+    "from": "Ilamanadabalathayamah",
+    "to": "Ilaman-Dabalathayamah",
+    "meaning": null,
+    "def": "Almon-Diblathajemah, a place in Moab"
+  },
+  "H6008": {
+    "sn": "H6008",
+    "he": "𐤏𐤌 𐤏𐤃",
+    "paleo": "𐤏𐤌-𐤏𐤃",
+    "from": "Imaid",
+    "to": "Im-Id",
+    "meaning": "people of time",
+    "def": "Amad, a place in Palestine"
+  },
+  "H6019": {
+    "sn": "H6019",
+    "he": "𐤏𐤌 𐤓𐤌",
+    "paleo": "𐤏𐤌-𐤓𐤌",
+    "from": "Imaram",
+    "to": "Im-Ram",
+    "meaning": "high people",
+    "def": "Amram, the name of two Israelites"
+  },
+  "H5988": {
+    "sn": "H5988",
+    "he": "𐤏𐤌𐤉 𐤀𐤋",
+    "paleo": "𐤏𐤌𐤉-𐤀𐤋",
+    "from": "Imayaal",
+    "to": "Imay-Al",
+    "meaning": "people of God",
+    "def": "Ammiel, the name of three or four Israelites"
+  },
+  "H5991": {
+    "sn": "H5991",
+    "he": "𐤏𐤌𐤉 𐤇𐤅𐤓",
+    "paleo": "𐤏𐤌𐤉-𐤇𐤅𐤓",
+    "from": "Imayachawar",
+    "to": "Imay-Chawar",
+    "meaning": "people of nobility",
+    "def": "Ammichur, a Syrian prince"
+  },
+  "H5989": {
+    "sn": "H5989",
+    "he": "𐤏𐤌𐤉 𐤄𐤅𐤃",
+    "paleo": "𐤏𐤌𐤉-𐤄𐤅𐤃",
+    "from": "Imayahawad",
+    "to": "Imay-Hawad",
+    "meaning": "people of splendor",
+    "def": "Ammihud, the name of three Israelites"
+  },
+  "H5992": {
+    "sn": "H5992",
+    "he": "𐤏𐤌𐤉 𐤍𐤃𐤁",
+    "paleo": "𐤏𐤌𐤉-𐤍𐤃𐤁",
+    "from": "Imayanadab",
+    "to": "Imay-Nadab",
+    "meaning": "people of liberality",
+    "def": "Amminadab, the name of four Israelites"
+  },
+  "H5993": {
+    "sn": "H5993",
+    "he": "𐤏𐤌𐤉 𐤍𐤃𐤉𐤁",
+    "paleo": "𐤏𐤌𐤉-𐤍𐤃𐤉𐤁",
+    "from": "Imayanadayab",
+    "to": "Imay-Nadayab",
+    "meaning": null,
+    "def": "Ammi-Nadib, probably an Israelite"
+  },
+  "H5996": {
+    "sn": "H5996",
+    "he": "𐤏𐤌𐤉 𐤔𐤃𐤉",
+    "paleo": "𐤏𐤌𐤉-𐤔𐤃𐤉",
+    "from": "Imayashaday",
+    "to": "Imay-Shaday",
+    "meaning": null,
+    "def": "Ammishaddai, an Israelite"
+  },
+  "H5990": {
+    "sn": "H5990",
+    "he": "𐤏𐤌𐤉 𐤆𐤁𐤃",
+    "paleo": "𐤏𐤌𐤉-𐤆𐤁𐤃",
+    "from": "Imayazabad",
+    "to": "Imay-Zabad",
+    "meaning": "people of endowment",
+    "def": "Ammizabad, an Israelite"
+  },
+  "H6214": {
+    "sn": "H6214",
+    "he": "𐤏𐤔𐤄 𐤀𐤋",
+    "paleo": "𐤏𐤔𐤄-𐤀𐤋",
+    "from": "Ishahaal",
+    "to": "Ishah-Al",
+    "meaning": "God has made",
+    "def": "Asahel, the name of four Israelites"
+  },
+  "H6255": {
+    "sn": "H6255",
+    "he": "𐤏𐤔𐤕𐤓𐤕 𐤒𐤓𐤍𐤉𐤌",
+    "paleo": "𐤏𐤔𐤕𐤓𐤕-𐤒𐤓𐤍𐤉𐤌",
+    "from": "Ishatharathaqaranayam",
+    "to": "Ishatharath-Qaranayam",
+    "meaning": null,
+    "def": "Ashteroth-Karnaim, a place East of the Jordan"
+  },
+  "H6221": {
+    "sn": "H6221",
+    "he": "𐤏𐤔𐤉 𐤀𐤋",
+    "paleo": "𐤏𐤔𐤉-𐤀𐤋",
+    "from": "Ishayaal",
+    "to": "Ishay-Al",
+    "meaning": "made of God",
+    "def": "Asiel, an Israelite"
+  },
+  "H5853": {
+    "sn": "H5853",
+    "he": "𐤏𐤈𐤓𐤅𐤕 𐤀𐤃𐤓",
+    "paleo": "𐤏𐤈𐤓𐤅𐤕-𐤀𐤃𐤓",
+    "from": "Itarawathaadar",
+    "to": "Itarawath-Adar",
+    "meaning": "crowns of Addar",
+    "def": "Atroth-Addar, a place in Palestine"
+  },
+  "H5854": {
+    "sn": "H5854",
+    "he": "𐤏𐤈𐤓𐤅𐤕 𐤁𐤉𐤕 𐤉𐤅𐤀𐤁",
+    "paleo": "𐤏𐤈𐤓𐤅𐤕-𐤁𐤉𐤕-𐤉𐤅𐤀𐤁",
+    "from": "Itarawathabayathayawaab",
+    "to": "Itarawath-Bayath-Yawaab",
+    "meaning": "crowns of the house of Joab",
+    "def": "Atroth-beth-Joab, a place in Palestine"
+  },
+  "H5855": {
+    "sn": "H5855",
+    "he": "𐤏𐤈𐤓𐤅𐤕 𐤔𐤅𐤐𐤍",
+    "paleo": "𐤏𐤈𐤓𐤅𐤕-𐤔𐤅𐤐𐤍",
+    "from": "Itarawathashawapan",
+    "to": "Itarawath-Shawapan",
+    "meaning": null,
+    "def": "Atroth-Shophan, a place in Palestine"
+  },
+  "H6274": {
+    "sn": "H6274",
+    "he": "𐤏𐤕𐤍𐤉 𐤀𐤋",
+    "paleo": "𐤏𐤕𐤍𐤉-𐤀𐤋",
+    "from": "Ithanayaal",
+    "to": "Ithanay-Al",
+    "meaning": "force of God",
+    "def": "Othniel, an Israelite"
+  },
+  "H6278": {
+    "sn": "H6278",
+    "he": "𐤏𐤕 𐤒𐤑𐤉𐤍",
+    "paleo": "𐤏𐤕-𐤒𐤑𐤉𐤍",
+    "from": "Ithaqatzayan",
+    "to": "Ith-Qatzayan",
+    "meaning": "time of a judge",
+    "def": "Eth-Katsin, a place in Palestine"
+  },
+  "H6100": {
+    "sn": "H6100",
+    "he": "𐤏𐤑𐤉𐤅𐤍 𐤂𐤁𐤓",
+    "paleo": "𐤏𐤑𐤉𐤅𐤍-𐤂𐤁𐤓",
+    "from": "Itzayawanagabar",
+    "to": "Itzayawan-Gabar",
+    "meaning": "backbone-like of a man",
+    "def": "Etsjon-Geber, a place on the Red Sea"
+  },
+  "H5876": {
+    "sn": "H5876",
+    "he": "𐤏𐤉𐤍 𐤇𐤃𐤄",
+    "paleo": "𐤏𐤉𐤍-𐤇𐤃𐤄",
+    "from": "Iyanachadah",
+    "to": "Iyan-Chadah",
+    "meaning": "fountain of sharpness",
+    "def": "En-Chaddah, a place in Palestine"
+  },
+  "H5878": {
+    "sn": "H5878",
+    "he": "𐤏𐤉𐤍 𐤇𐤓𐤃",
+    "paleo": "𐤏𐤉𐤍-𐤇𐤓𐤃",
+    "from": "Iyanacharad",
+    "to": "Iyan-Charad",
+    "meaning": "fountain of trembling",
+    "def": "En-Charod, a place in Palestine"
+  },
+  "H5877": {
+    "sn": "H5877",
+    "he": "𐤏𐤉𐤍 𐤇𐤑𐤅𐤓",
+    "paleo": "𐤏𐤉𐤍-𐤇𐤑𐤅𐤓",
+    "from": "Iyanachatzawar",
+    "to": "Iyan-Chatzawar",
+    "meaning": "fountain of a village",
+    "def": "En-Chatsor, a place in Palestine"
+  },
+  "H5873": {
+    "sn": "H5873",
+    "he": "𐤏𐤉𐤍 𐤂𐤍𐤉𐤌",
+    "paleo": "𐤏𐤉𐤍-𐤂𐤍𐤉𐤌",
+    "from": "Iyanaganayam",
+    "to": "Iyan-Ganayam",
+    "meaning": "fountain of gardens",
+    "def": "En-Gannim, a place in Palestine"
+  },
+  "H5875": {
+    "sn": "H5875",
+    "he": "𐤏𐤉𐤍 𐤄𐤒𐤅𐤓𐤀",
+    "paleo": "𐤏𐤉𐤍-𐤄𐤒𐤅𐤓𐤀",
+    "from": "Iyanahaqawaraa",
+    "to": "Iyan-Haqawaraa",
+    "meaning": "fountain of One calling",
+    "def": "En-hak-Kore, a place near Palestine"
+  },
+  "H5882": {
+    "sn": "H5882",
+    "he": "𐤏𐤉𐤍 𐤏𐤂𐤋𐤉𐤌",
+    "paleo": "𐤏𐤉𐤍-𐤏𐤂𐤋𐤉𐤌",
+    "from": "Iyanaigalayam",
+    "to": "Iyan-Igalayam",
+    "meaning": "fountain of two calves",
+    "def": "En-Eglajim, a place in Palestine"
+  },
+  "H5880": {
+    "sn": "H5880",
+    "he": "𐤏𐤉𐤍 𐤌𐤔𐤐𐤈",
+    "paleo": "𐤏𐤉𐤍-𐤌𐤔𐤐𐤈",
+    "from": "Iyanamashapat",
+    "to": "Iyan-Mashapat",
+    "meaning": "fountain of judgment",
+    "def": "En-Mishpat, a place near Palestine"
+  },
+  "H5883": {
+    "sn": "H5883",
+    "he": "𐤏𐤉𐤍 𐤓𐤂𐤋",
+    "paleo": "𐤏𐤉𐤍-𐤓𐤂𐤋",
+    "from": "Iyanaragal",
+    "to": "Iyan-Ragal",
+    "meaning": "fountain of a traveller",
+    "def": "En-Rogel, a place near Jerusalem"
+  },
+  "H5884": {
+    "sn": "H5884",
+    "he": "𐤏𐤉𐤍 𐤓𐤌𐤅𐤍",
+    "paleo": "𐤏𐤉𐤍-𐤓𐤌𐤅𐤍",
+    "from": "Iyanaramawan",
+    "to": "Iyan-Ramawan",
+    "meaning": "fountain of a pomegranate",
+    "def": "En-Rimmon, a place in Palestine"
+  },
+  "H5885": {
+    "sn": "H5885",
+    "he": "𐤏𐤉𐤍 𐤔𐤌𐤔",
+    "paleo": "𐤏𐤉𐤍-𐤔𐤌𐤔",
+    "from": "Iyanashamash",
+    "to": "Iyan-Shamash",
+    "meaning": "fountain of the sun",
+    "def": "En-Shemesh, a place in Palestine"
+  },
+  "H5886": {
+    "sn": "H5886",
+    "he": "𐤏𐤉𐤍 𐤕𐤍𐤉𐤌",
+    "paleo": "𐤏𐤉𐤍-𐤕𐤍𐤉𐤌",
+    "from": "Iyanathanayam",
+    "to": "Iyan-Thanayam",
+    "meaning": "fountain of jackals",
+    "def": "En-Tannim, a pool near Jerusalem"
+  },
+  "H5887": {
+    "sn": "H5887",
+    "he": "𐤏𐤉𐤍 𐤕𐤐𐤅𐤇",
+    "paleo": "𐤏𐤉𐤍-𐤕𐤐𐤅𐤇",
+    "from": "Iyanathapawach",
+    "to": "Iyan-Thapawach",
+    "meaning": "fountain of an apple-tree",
+    "def": "En-Tappuach, a place in Palestine"
+  },
+  "H5899": {
+    "sn": "H5899",
+    "he": "𐤏𐤉𐤓 𐤄𐤕𐤌𐤓𐤉𐤌",
+    "paleo": "𐤏𐤉𐤓-𐤄𐤕𐤌𐤓𐤉𐤌",
+    "from": "Iyarahathamarayam",
+    "to": "Iyar-Hathamarayam",
+    "meaning": null,
+    "def": "Ir-hat-Temarim, a place in Palestine"
+  },
+  "H5904": {
+    "sn": "H5904",
+    "he": "𐤏𐤉𐤓 𐤍𐤇𐤔",
+    "paleo": "𐤏𐤉𐤓-𐤍𐤇𐤔",
+    "from": "Iyaranachash",
+    "to": "Iyar-Nachash",
+    "meaning": "city of a serpent",
+    "def": "Ir-Nachash, a place in Palestine"
+  },
+  "H5905": {
+    "sn": "H5905",
+    "he": "𐤏𐤉𐤓 𐤔𐤌𐤔",
+    "paleo": "𐤏𐤉𐤓-𐤔𐤌𐤔",
+    "from": "Iyarashamash",
+    "to": "Iyar-Shamash",
+    "meaning": "city of the sun",
+    "def": "Ir-Shemesh, a place in Palestine"
+  },
+  "H5863": {
+    "sn": "H5863",
+    "he": "𐤏𐤉𐤉 𐤄𐤏𐤁𐤓𐤉𐤌",
+    "paleo": "𐤏𐤉𐤉-𐤄𐤏𐤁𐤓𐤉𐤌",
+    "from": "Iyayahaibarayam",
+    "to": "Iyay-Haibarayam",
+    "meaning": null,
+    "def": "Ije-ha-Abarim, a place near Palestine"
+  },
+  "H5802": {
+    "sn": "H5802",
+    "he": "𐤏𐤆 𐤁𐤅𐤒",
+    "paleo": "𐤏𐤆-𐤁𐤅𐤒",
+    "from": "Izabawaq",
+    "to": "Iz-Bawaq",
+    "meaning": "stern depopulator",
+    "def": "Azbuk, an Israelite"
+  },
+  "H5803": {
+    "sn": "H5803",
+    "he": "𐤏𐤆 𐤂𐤃",
+    "paleo": "𐤏𐤆-𐤂𐤃",
+    "from": "Izagad",
+    "to": "Iz-Gad",
+    "meaning": "stern troop",
+    "def": "Azgad, an Israelite"
+  },
+  "H5820": {
+    "sn": "H5820",
+    "he": "𐤏𐤆 𐤌𐤅𐤕",
+    "paleo": "𐤏𐤆-𐤌𐤅𐤕",
+    "from": "Izamawath",
+    "to": "Iz-Mawath",
+    "meaning": "strong one of death",
+    "def": "Azmaveth, the name of three Israelites and of a place in Palestine"
+  },
+  "H5832": {
+    "sn": "H5832",
+    "he": "𐤏𐤆𐤓 𐤀𐤋",
+    "paleo": "𐤏𐤆𐤓-𐤀𐤋",
+    "from": "Izaraal",
+    "to": "Izar-Al",
+    "meaning": "God has helped",
+    "def": "Azarel, the name of five Israelites"
+  },
+  "H5837": {
+    "sn": "H5837",
+    "he": "𐤏𐤆𐤓𐤉 𐤀𐤋",
+    "paleo": "𐤏𐤆𐤓𐤉-𐤀𐤋",
+    "from": "Izarayaal",
+    "to": "Izaray-Al",
+    "meaning": "help of God",
+    "def": "Azriel, the name of three Israelites"
+  },
+  "H5840": {
+    "sn": "H5840",
+    "he": "𐤏𐤆𐤓𐤉 𐤒𐤌",
+    "paleo": "𐤏𐤆𐤓𐤉-𐤒𐤌",
+    "from": "Izarayaqam",
+    "to": "Izaray-Qam",
+    "meaning": "help of an enemy",
+    "def": "Azrikam, the name of four Israelites"
+  },
+  "H5815": {
+    "sn": "H5815",
+    "he": "𐤏𐤆𐤉 𐤀𐤋",
+    "paleo": "𐤏𐤆𐤉-𐤀𐤋",
+    "from": "Izayaal",
+    "to": "Izay-Al",
+    "meaning": "strengthened of God",
+    "def": "Aziel, an Israelite"
+  },
+  "H5816": {
+    "sn": "H5816",
+    "he": "𐤏𐤆𐤉 𐤀𐤋",
+    "paleo": "𐤏𐤆𐤉-𐤀𐤋",
+    "from": "Izayaal",
+    "to": "Izay-Al",
+    "meaning": "strength of God",
+    "def": "Uzziel, the name of six Israelites"
+  },
+  "H3609": {
+    "sn": "H3609",
+    "he": "𐤊𐤋 𐤀𐤁",
+    "paleo": "𐤊𐤋-𐤀𐤁",
+    "from": "Kalaab",
+    "to": "Kal-Ab",
+    "meaning": null,
+    "def": "Kilab, an Israelite"
+  },
+  "H3613": {
+    "sn": "H3613",
+    "he": "𐤊𐤋𐤁 𐤀𐤐𐤓𐤕𐤄",
+    "paleo": "𐤊𐤋𐤁-𐤀𐤐𐤓𐤕𐤄",
+    "from": "Kalabaaparathah",
+    "to": "Kalab-Aparathah",
+    "meaning": null,
+    "def": "Caleb-Ephrathah, a place in Egypt (if the text is correct)"
+  },
+  "H3626": {
+    "sn": "H3626",
+    "he": "𐤊𐤋 𐤇𐤆𐤄",
+    "paleo": "𐤊𐤋-𐤇𐤆𐤄",
+    "from": "Kalachazah",
+    "to": "Kal-Chazah",
+    "meaning": "every seer",
+    "def": "Col-Chozeh, an Israelite"
+  },
+  "H3726": {
+    "sn": "H3726",
+    "he": "𐤊𐤐𐤓 𐤄𐤏𐤌𐤅𐤍𐤉",
+    "paleo": "𐤊𐤐𐤓-𐤄𐤏𐤌𐤅𐤍𐤉",
+    "from": "Kaparahaimawanay",
+    "to": "Kapar-Haimawanay",
+    "meaning": null,
+    "def": "Kefar-ha-Ammoni, a place in Palestine"
+  },
+  "H3696": {
+    "sn": "H3696",
+    "he": "𐤊𐤎𐤋𐤕 𐤕𐤁𐤓",
+    "paleo": "𐤊𐤎𐤋𐤕-𐤕𐤁𐤓",
+    "from": "Kasalathathabar",
+    "to": "Kasalath-Thabar",
+    "meaning": "flanks of Tabor",
+    "def": "Kisloth-Tabor, a place in Palestine"
+  },
+  "H3798": {
+    "sn": "H3798",
+    "he": "𐤊𐤕𐤋 𐤉𐤔",
+    "paleo": "𐤊𐤕𐤋-𐤉𐤔",
+    "from": "Kathalayash",
+    "to": "Kathal-Yash",
+    "meaning": "wall of a man",
+    "def": "Kithlish, a place in Palestine"
+  },
+  "H3565": {
+    "sn": "H3565",
+    "he": "𐤊𐤅𐤓 𐤏𐤔𐤍",
+    "paleo": "𐤊𐤅𐤓-𐤏𐤔𐤍",
+    "from": "Kawaraishan",
+    "to": "Kawar-Ishan",
+    "meaning": "furnace of smoke",
+    "def": "Cor-Ashan, a place in Palestine"
+  },
+  "H3573": {
+    "sn": "H3573",
+    "he": "𐤊𐤅𐤔𐤍 𐤓𐤔𐤏𐤕𐤉𐤌",
+    "paleo": "𐤊𐤅𐤔𐤍-𐤓𐤔𐤏𐤕𐤉𐤌",
+    "from": "Kawashanarashaithayam",
+    "to": "Kawashan-Rashaithayam",
+    "meaning": "Cushan of double wickedness",
+    "def": "Cushan-Rishathajim, a Mesopotamian king"
+  },
+  "H3810": {
+    "sn": "H3810",
+    "he": "𐤋𐤀 𐤃𐤁𐤓",
+    "paleo": "𐤋𐤀-𐤃𐤁𐤓",
+    "from": "Laadabar",
+    "to": "Laa-Dabar",
+    "meaning": "pastureless",
+    "def": "Lo-Debar, a place in Palestine"
+  },
+  "H3818": {
+    "sn": "H3818",
+    "he": "𐤋𐤀 𐤏𐤌𐤉",
+    "paleo": "𐤋𐤀-𐤏𐤌𐤉",
+    "from": "Laaimay",
+    "to": "Laa-Imay",
+    "meaning": null,
+    "def": "Lo-Ammi, the symbolic name of a son of Hosea"
+  },
+  "H3819": {
+    "sn": "H3819",
+    "he": "𐤋𐤀 𐤓𐤇𐤌𐤄",
+    "paleo": "𐤋𐤀-𐤓𐤇𐤌𐤄",
+    "from": "Laarachamah",
+    "to": "Laa-Rachamah",
+    "meaning": "not pitied",
+    "def": "Lo-Ruchamah, the symbolic name of a son of Hosea"
+  },
+  "H4265": {
+    "sn": "H4265",
+    "he": "𐤌𐤇𐤍𐤄 𐤃𐤍",
+    "paleo": "𐤌𐤇𐤍𐤄-𐤃𐤍",
+    "from": "Machanahadan",
+    "to": "Machanah-Dan",
+    "meaning": "camp of Dan",
+    "def": "Machaneh-Dan, a place in Palestine"
+  },
+  "H4232": {
+    "sn": "H4232",
+    "he": "𐤌𐤇𐤅𐤉 𐤀𐤋",
+    "paleo": "𐤌𐤇𐤅𐤉-𐤀𐤋",
+    "from": "Machawayaal",
+    "to": "Machaway-Al",
+    "meaning": "smitten of God",
+    "def": "Mechujael or Mechijael, an antediluvian patriarch"
+  },
+  "H4027": {
+    "sn": "H4027",
+    "he": "𐤌𐤂𐤃𐤋 𐤀𐤋",
+    "paleo": "𐤌𐤂𐤃𐤋-𐤀𐤋",
+    "from": "Magadalaal",
+    "to": "Magadal-Al",
+    "meaning": "tower of God",
+    "def": "Migdal-El, a place in Palestine"
+  },
+  "H4028": {
+    "sn": "H4028",
+    "he": "𐤌𐤂𐤃𐤋 𐤂𐤃",
+    "paleo": "𐤌𐤂𐤃𐤋-𐤂𐤃",
+    "from": "Magadalagad",
+    "to": "Magadal-Gad",
+    "meaning": "tower of Fortune",
+    "def": "Migdal-Gad, a place in Palestine"
+  },
+  "H4029": {
+    "sn": "H4029",
+    "he": "𐤌𐤂𐤃𐤋 𐤏𐤃𐤓",
+    "paleo": "𐤌𐤂𐤃𐤋-𐤏𐤃𐤓",
+    "from": "Magadalaidar",
+    "to": "Magadal-Idar",
+    "meaning": "tower of a flock",
+    "def": "Migdal-Eder, a place in Palestine"
+  },
+  "H4025": {
+    "sn": "H4025",
+    "he": "𐤌𐤂𐤃𐤉 𐤀𐤋",
+    "paleo": "𐤌𐤂𐤃𐤉-𐤀𐤋",
+    "from": "Magadayaal",
+    "to": "Magaday-Al",
+    "meaning": "preciousness of God",
+    "def": "Magdiel, an Idumaean"
+  },
+  "H4047": {
+    "sn": "H4047",
+    "he": "𐤌𐤂𐤐𐤉 𐤏𐤔",
+    "paleo": "𐤌𐤂𐤐𐤉-𐤏𐤔",
+    "from": "Magapayaish",
+    "to": "Magapay-Ish",
+    "meaning": null,
+    "def": "Magpiash, an Israelite"
+  },
+  "H4036": {
+    "sn": "H4036",
+    "he": "𐤌𐤂𐤅𐤓 𐤌𐤎𐤁𐤉𐤁",
+    "paleo": "𐤌𐤂𐤅𐤓-𐤌𐤎𐤁𐤉𐤁",
+    "from": "Magawaramasabayab",
+    "to": "Magawar-Masabayab",
+    "meaning": null,
+    "def": "Magor-mis-Sabib, a symbolic name of Pashur"
+  },
+  "H4111": {
+    "sn": "H4111",
+    "he": "𐤌𐤄𐤋𐤋 𐤀𐤋",
+    "paleo": "𐤌𐤄𐤋𐤋-𐤀𐤋",
+    "from": "Mahalalaal",
+    "to": "Mahalal-Al",
+    "meaning": "praise of God",
+    "def": "Mahalalel, the name of an antediluvian patriarch and of an Israelite"
+  },
+  "H4122": {
+    "sn": "H4122",
+    "he": "𐤌𐤄𐤓 𐤔𐤋𐤋 𐤇𐤔 𐤁𐤆",
+    "paleo": "𐤌𐤄𐤓-𐤔𐤋𐤋-𐤇𐤔-𐤁𐤆",
+    "from": "Maharashalalachashabaz",
+    "to": "Mahar-Shalal-Chash-Baz",
+    "meaning": null,
+    "def": "Maher-Shalal-Chash-Baz; the symbolical name of the son of Isaiah"
+  },
+  "H4105": {
+    "sn": "H4105",
+    "he": "𐤌𐤄𐤉𐤈𐤁 𐤀𐤋",
+    "paleo": "𐤌𐤄𐤉𐤈𐤁-𐤀𐤋",
+    "from": "Mahayatabaal",
+    "to": "Mahayatab-Al",
+    "meaning": "bettered of God",
+    "def": "Mehetabel, the name of an Edomitish man and woman"
+  },
+  "H4610": {
+    "sn": "H4610",
+    "he": "𐤌𐤏𐤋𐤄 𐤏𐤒𐤓𐤁𐤉𐤌",
+    "paleo": "𐤌𐤏𐤋𐤄-𐤏𐤒𐤓𐤁𐤉𐤌",
+    "from": "Mailahaiqarabayam",
+    "to": "Mailah-Iqarabayam",
+    "meaning": null,
+    "def": "Steep of Scorpions, a place in the Desert"
+  },
+  "H4367": {
+    "sn": "H4367",
+    "he": "𐤌𐤊 𐤍𐤃𐤁𐤉",
+    "paleo": "𐤌𐤊-𐤍𐤃𐤁𐤉",
+    "from": "Makanadabay",
+    "to": "Mak-Nadabay",
+    "meaning": null,
+    "def": "Maknadbai, an Israelite"
+  },
+  "H4439": {
+    "sn": "H4439",
+    "he": "𐤌𐤋𐤊𐤉 𐤀𐤋",
+    "paleo": "𐤌𐤋𐤊𐤉-𐤀𐤋",
+    "from": "Malakayaal",
+    "to": "Malakay-Al",
+    "meaning": null,
+    "def": "Malkiel, an Israelite"
+  },
+  "H4443": {
+    "sn": "H4443",
+    "he": "𐤌𐤋𐤊𐤉 𐤓𐤌",
+    "paleo": "𐤌𐤋𐤊𐤉-𐤓𐤌",
+    "from": "Malakayaram",
+    "to": "Malakay-Ram",
+    "meaning": null,
+    "def": "Malkiram, an Israelite"
+  },
+  "H4444": {
+    "sn": "H4444",
+    "he": "𐤌𐤋𐤊𐤉 𐤔𐤅𐤏",
+    "paleo": "𐤌𐤋𐤊𐤉-𐤔𐤅𐤏",
+    "from": "Malakayashawai",
+    "to": "Malakay-Shawai",
+    "meaning": "king of wealth",
+    "def": "Malkishua, an Israelite"
+  },
+  "H4442": {
+    "sn": "H4442",
+    "he": "𐤌𐤋𐤊𐤉 𐤑𐤃𐤒",
+    "paleo": "𐤌𐤋𐤊𐤉-𐤑𐤃𐤒",
+    "from": "Malakayatzadaq",
+    "to": "Malakay-Tzadaq",
+    "meaning": "king of right",
+    "def": "Malki-Tsedek, an early king in Palestine"
+  },
+  "H4509": {
+    "sn": "H4509",
+    "he": "𐤌𐤍 𐤉𐤌𐤉𐤍",
+    "paleo": "𐤌𐤍-𐤉𐤌𐤉𐤍",
+    "from": "Manayamayan",
+    "to": "Man-Yamayan",
+    "meaning": null,
+    "def": "Minjamin, the name of two Israelites"
+  },
+  "H4648": {
+    "sn": "H4648",
+    "he": "𐤌𐤐𐤉 𐤁𐤔𐤕",
+    "paleo": "𐤌𐤐𐤉-𐤁𐤔𐤕",
+    "from": "Mapayabashath",
+    "to": "Mapay-Bashath",
+    "meaning": null,
+    "def": "Mephibosheth, the name of two Israelites"
+  },
+  "H4757": {
+    "sn": "H4757",
+    "he": "𐤌𐤓𐤀𐤃𐤊 𐤁𐤋𐤀𐤃𐤍",
+    "paleo": "𐤌𐤓𐤀𐤃𐤊-𐤁𐤋𐤀𐤃𐤍",
+    "from": "Maraadakabalaadan",
+    "to": "Maraadak-Bal-Adan",
+    "meaning": null,
+    "def": "Merodak-Baladan, a Babylonian king"
+  },
+  "H4807": {
+    "sn": "H4807",
+    "he": "𐤌𐤓𐤉𐤁 𐤁𐤏𐤋",
+    "paleo": "𐤌𐤓𐤉𐤁-𐤁𐤏𐤋",
+    "from": "Marayababail",
+    "to": "Marayab-Bail",
+    "meaning": null,
+    "def": "quarreller of Baal, Merib-Baal, an epithet of Gideon"
+  },
+  "H4810": {
+    "sn": "H4810",
+    "he": "𐤌𐤓𐤉 𐤁𐤏𐤋",
+    "paleo": "𐤌𐤓𐤉-𐤁𐤏𐤋",
+    "from": "Marayabail",
+    "to": "Maray-Bail",
+    "meaning": null,
+    "def": "Meri-Baal, an epithet of Gideon"
+  },
+  "H4956": {
+    "sn": "H4956",
+    "he": "𐤌𐤔𐤓𐤐𐤅𐤕 𐤌𐤉𐤌",
+    "paleo": "𐤌𐤔𐤓𐤐𐤅𐤕-𐤌𐤉𐤌",
+    "from": "Masharapawathamayam",
+    "to": "Masharapawath-Mayam",
+    "meaning": "burnings of water",
+    "def": "Misrephoth-Majim, a place in Palestine"
+  },
+  "H4898": {
+    "sn": "H4898",
+    "he": "𐤌𐤔𐤉𐤆𐤁 𐤀𐤋",
+    "paleo": "𐤌𐤔𐤉𐤆𐤁-𐤀𐤋",
+    "from": "Mashayazabaal",
+    "to": "Mashayazab-Al",
+    "meaning": "delivered of God",
+    "def": "Meshezabel, an Israelite"
+  },
+  "H4965": {
+    "sn": "H4965",
+    "he": "𐤌𐤕𐤂 𐤄𐤀𐤌𐤄",
+    "paleo": "𐤌𐤕𐤂-𐤄𐤀𐤌𐤄",
+    "from": "Mathagahaamah",
+    "to": "Mathag-Haamah",
+    "meaning": null,
+    "def": "Metheg-ha-Ammah, an epithet of Gath"
+  },
+  "H4967": {
+    "sn": "H4967",
+    "he": "𐤌𐤕𐤅𐤔 𐤀𐤋",
+    "paleo": "𐤌𐤕𐤅𐤔-𐤀𐤋",
+    "from": "Mathawashaal",
+    "to": "Mathawash-Al",
+    "meaning": null,
+    "def": "Methusael, an antediluvian patriarch"
+  },
+  "H4182": {
+    "sn": "H4182",
+    "he": "𐤌𐤅𐤓𐤔𐤕 𐤂𐤕",
+    "paleo": "𐤌𐤅𐤓𐤔𐤕-𐤂𐤕",
+    "from": "Mawarashathagath",
+    "to": "Mawarashath-Gath",
+    "meaning": "possession of Gath",
+    "def": "Moresheth-Gath, a place in Palestine"
+  },
+  "H4313": {
+    "sn": "H4313",
+    "he": "𐤌𐤉 𐤄𐤉𐤓𐤒𐤅𐤍",
+    "paleo": "𐤌𐤉-𐤄𐤉𐤓𐤒𐤅𐤍",
+    "from": "Mayahayaraqawan",
+    "to": "May-Hayaraqawan",
+    "meaning": null,
+    "def": "Me-haj-Jarkon, a place in Palestine"
+  },
+  "H4317": {
+    "sn": "H4317",
+    "he": "𐤌𐤉𐤊 𐤀𐤋",
+    "paleo": "𐤌𐤉𐤊-𐤀𐤋",
+    "from": "Mayakaal",
+    "to": "Mayak-Al",
+    "meaning": null,
+    "def": "Mikael, the name of an archangel and of nine Israelites"
+  },
+  "H4332": {
+    "sn": "H4332",
+    "he": "𐤌𐤉 𐤔𐤀𐤋",
+    "paleo": "𐤌𐤉-𐤔𐤀𐤋",
+    "from": "Mayashaal",
+    "to": "May-Shaal",
+    "meaning": null,
+    "def": "Mishael, the name of three Israelites"
+  },
+  "H4314": {
+    "sn": "H4314",
+    "he": "𐤌𐤉 𐤆𐤄𐤁",
+    "paleo": "𐤌𐤉-𐤆𐤄𐤁",
+    "from": "Mayazahab",
+    "to": "May-Zahab",
+    "meaning": null,
+    "def": "Me-Zahab, an Edomite"
+  },
+  "H5041": {
+    "sn": "H5041",
+    "he": "𐤍𐤁 𐤋𐤈",
+    "paleo": "𐤍𐤁-𐤋𐤈",
+    "from": "Nabalat",
+    "to": "Nab-Lat",
+    "meaning": "foolish secrecy",
+    "def": "Neballat, a place in Palestine"
+  },
+  "H5160": {
+    "sn": "H5160",
+    "he": "𐤍𐤇𐤋𐤉 𐤀𐤋",
+    "paleo": "𐤍𐤇𐤋𐤉-𐤀𐤋",
+    "from": "Nachalayaal",
+    "to": "Nachalay-Al",
+    "meaning": "valley of God",
+    "def": "Nachaliel, a place in the Desert"
+  },
+  "H5272": {
+    "sn": "H5272",
+    "he": "𐤍𐤏𐤉 𐤀𐤋",
+    "paleo": "𐤍𐤏𐤉-𐤀𐤋",
+    "from": "Naiyaal",
+    "to": "Naiy-Al",
+    "meaning": "moved of God",
+    "def": "Neiel, a place in Palestine"
+  },
+  "H5371": {
+    "sn": "H5371",
+    "he": "𐤍𐤓𐤂𐤋 𐤔𐤓𐤀𐤑𐤓",
+    "paleo": "𐤍𐤓𐤂𐤋-𐤔𐤓𐤀𐤑𐤓",
+    "from": "Naragalasharaatzar",
+    "to": "Naragal-Sharaatzar",
+    "meaning": null,
+    "def": "Nergal-Sharetser, the name of two Babylonians"
+  },
+  "H5417": {
+    "sn": "H5417",
+    "he": "𐤍𐤕𐤍 𐤀𐤋",
+    "paleo": "𐤍𐤕𐤍-𐤀𐤋",
+    "from": "Nathanaal",
+    "to": "Nathan-Al",
+    "meaning": "given of God",
+    "def": "Nethanel, the name of ten Israelites"
+  },
+  "H5419": {
+    "sn": "H5419",
+    "he": "𐤍𐤕𐤍 𐤌𐤋𐤊",
+    "paleo": "𐤍𐤕𐤍-𐤌𐤋𐤊",
+    "from": "Nathanamalak",
+    "to": "Nathan-Malak",
+    "meaning": null,
+    "def": "Nethan-Melek, an Israelite"
+  },
+  "H6355": {
+    "sn": "H6355",
+    "he": "𐤐𐤇𐤕 𐤌𐤅𐤀𐤁",
+    "paleo": "𐤐𐤇𐤕-𐤌𐤅𐤀𐤁",
+    "from": "Pachathamawaab",
+    "to": "Pachath-Mawaab",
+    "meaning": "pit of Moab",
+    "def": "Pachath-Moab, an Israelite"
+  },
+  "H6300": {
+    "sn": "H6300",
+    "he": "𐤐𐤃𐤄 𐤀𐤋",
+    "paleo": "𐤐𐤃𐤄-𐤀𐤋",
+    "from": "Padahaal",
+    "to": "Padah-Al",
+    "meaning": "God has ransomed",
+    "def": "Pedahel, an Israelite"
+  },
+  "H6301": {
+    "sn": "H6301",
+    "he": "𐤐𐤃𐤄 𐤑𐤅𐤓",
+    "paleo": "𐤐𐤃𐤄-𐤑𐤅𐤓",
+    "from": "Padahatzawar",
+    "to": "Padah-Tzawar",
+    "meaning": null,
+    "def": "Pedahtsur, an Israelite"
+  },
+  "H6295": {
+    "sn": "H6295",
+    "he": "𐤐𐤂𐤏𐤉 𐤀𐤋",
+    "paleo": "𐤐𐤂𐤏𐤉-𐤀𐤋",
+    "from": "Pagaiyaal",
+    "to": "Pagaiy-Al",
+    "meaning": "accident of God",
+    "def": "Pagiel, an Israelite"
+  },
+  "H6380": {
+    "sn": "H6380",
+    "he": "𐤐𐤊𐤓𐤕 𐤑𐤁𐤉𐤉𐤌",
+    "paleo": "𐤐𐤊𐤓𐤕-𐤑𐤁𐤉𐤉𐤌",
+    "from": "Pakarathatzabayayam",
+    "to": "Pakarath-Tzabayayam",
+    "meaning": "trap of gazelles",
+    "def": "Pokereth-Tsebajim, one of the 'servants of Solomon'"
+  },
+  "H6409": {
+    "sn": "H6409",
+    "he": "𐤐𐤋𐤈𐤉 𐤀𐤋",
+    "paleo": "𐤐𐤋𐤈𐤉-𐤀𐤋",
+    "from": "Palatayaal",
+    "to": "Palatay-Al",
+    "meaning": "deliverance of God",
+    "def": "Paltiel, the name of two Israelites"
+  },
+  "H6548": {
+    "sn": "H6548",
+    "he": "𐤐𐤓𐤏𐤄 𐤇𐤐𐤓𐤏",
+    "paleo": "𐤐𐤓𐤏𐤄-𐤇𐤐𐤓𐤏",
+    "from": "Paraihachaparai",
+    "to": "Paraih-Chaparai",
+    "meaning": null,
+    "def": "Paroh-Chophra, an Egyptian king"
+  },
+  "H6549": {
+    "sn": "H6549",
+    "he": "𐤐𐤓𐤏𐤄 𐤍𐤊𐤄",
+    "paleo": "𐤐𐤓𐤏𐤄-𐤍𐤊𐤄",
+    "from": "Paraihanakah",
+    "to": "Paraih-Nakah",
+    "meaning": null,
+    "def": "Paroh-Nekoh (or -Neko), an Egyptian king"
+  },
+  "H6560": {
+    "sn": "H6560",
+    "he": "𐤐𐤓𐤑 𐤏𐤆𐤀",
+    "paleo": "𐤐𐤓𐤑-𐤏𐤆𐤀",
+    "from": "Paratzaizaa",
+    "to": "Paratz-Izaa",
+    "meaning": "break of Uzza",
+    "def": "Perets-Uzza, a place in Palestine"
+  },
+  "H6450": {
+    "sn": "H6450",
+    "he": "𐤐𐤎 𐤃𐤌𐤉𐤌",
+    "paleo": "𐤐𐤎-𐤃𐤌𐤉𐤌",
+    "from": "Pasadamayam",
+    "to": "Pas-Damayam",
+    "meaning": null,
+    "def": "Pas-Dammim, a place in Palestine"
+  },
+  "H6319": {
+    "sn": "H6319",
+    "he": "𐤐𐤅𐤈𐤉 𐤐𐤓𐤏",
+    "paleo": "𐤐𐤅𐤈𐤉-𐤐𐤓𐤏",
+    "from": "Pawatayaparai",
+    "to": "Pawatay-Parai",
+    "meaning": null,
+    "def": "Poti-Phera, an Egyptian"
+  },
+  "H6364": {
+    "sn": "H6364",
+    "he": "𐤐𐤉 𐤁𐤎𐤕",
+    "paleo": "𐤐𐤉-𐤁𐤎𐤕",
+    "from": "Payabasath",
+    "to": "Pay-Basath",
+    "meaning": null,
+    "def": "Pi-Beseth, a place in Egypt"
+  },
+  "H6367": {
+    "sn": "H6367",
+    "he": "𐤐𐤉 𐤄𐤇𐤉𐤓𐤕",
+    "paleo": "𐤐𐤉-𐤄𐤇𐤉𐤓𐤕",
+    "from": "Payahachayarath",
+    "to": "Pay-Hachayarath",
+    "meaning": null,
+    "def": "Pi-ha-Chiroth, a place in Egypt"
+  },
+  "H6369": {
+    "sn": "H6369",
+    "he": "𐤐𐤉 𐤊𐤋",
+    "paleo": "𐤐𐤉-𐤊𐤋",
+    "from": "Payakal",
+    "to": "Pay-Kal",
+    "meaning": "mouth of all",
+    "def": "Picol, a Philistine"
+  },
+  "H6914": {
+    "sn": "H6914",
+    "he": "𐤒𐤁𐤓𐤅𐤕 𐤄𐤕𐤀𐤅𐤄",
+    "paleo": "𐤒𐤁𐤓𐤅𐤕-𐤄𐤕𐤀𐤅𐤄",
+    "from": "Qabarawathahathaawah",
+    "to": "Qabarawath-Hathaawah",
+    "meaning": null,
+    "def": "Kibroth-hat-Taavh, a place in the Desert"
+  },
+  "H6909": {
+    "sn": "H6909",
+    "he": "𐤒𐤁𐤑 𐤀𐤋",
+    "paleo": "𐤒𐤁𐤑-𐤀𐤋",
+    "from": "Qabatzaal",
+    "to": "Qabatz-Al",
+    "meaning": "God has gathered",
+    "def": "Kabtseel, a place in Palestine"
+  },
+  "H6934": {
+    "sn": "H6934",
+    "he": "𐤒𐤃𐤌𐤉 𐤀𐤋",
+    "paleo": "𐤒𐤃𐤌𐤉-𐤀𐤋",
+    "from": "Qadamayaal",
+    "to": "Qadamay-Al",
+    "meaning": "presence of God",
+    "def": "Kadmiel, the name of three Israelites"
+  },
+  "H7163": {
+    "sn": "H7163",
+    "he": "𐤒𐤓𐤍 𐤄𐤐𐤅𐤊",
+    "paleo": "𐤒𐤓𐤍-𐤄𐤐𐤅𐤊",
+    "from": "Qaranahapawak",
+    "to": "Qaran-Hapawak",
+    "meaning": "horn of cosmetic",
+    "def": "Keren-hap-Puk, one of Job's daughters"
+  },
+  "H7153": {
+    "sn": "H7153",
+    "he": "𐤒𐤓𐤉𐤕 𐤀𐤓𐤁𐤏",
+    "paleo": "𐤒𐤓𐤉𐤕-𐤀𐤓𐤁𐤏",
+    "from": "Qarayathaarabai",
+    "to": "Qarayath-Arabai",
+    "meaning": null,
+    "def": "Kirjath-Arba or Kirjath-ha-Arba, a place in Palestine"
+  },
+  "H7154": {
+    "sn": "H7154",
+    "he": "𐤒𐤓𐤉𐤕 𐤁𐤏𐤋",
+    "paleo": "𐤒𐤓𐤉𐤕-𐤁𐤏𐤋",
+    "from": "Qarayathabail",
+    "to": "Qarayath-Bail",
+    "meaning": "city of Baal",
+    "def": "Kirjath-Baal, a place in Palestine"
+  },
+  "H7155": {
+    "sn": "H7155",
+    "he": "𐤒𐤓𐤉𐤕 𐤇𐤑𐤅𐤕",
+    "paleo": "𐤒𐤓𐤉𐤕-𐤇𐤑𐤅𐤕",
+    "from": "Qarayathachatzawath",
+    "to": "Qarayath-Chatzawath",
+    "meaning": "city of streets",
+    "def": "Kirjath-Chutsoth, a place in Moab"
+  },
+  "H7158": {
+    "sn": "H7158",
+    "he": "𐤒𐤓𐤉𐤕 𐤎𐤍𐤄",
+    "paleo": "𐤒𐤓𐤉𐤕-𐤎𐤍𐤄",
+    "from": "Qarayathasanah",
+    "to": "Qarayath-Sanah",
+    "meaning": "city of branches, or of a book",
+    "def": "Kirjath-Sannah or Kirjath-Sepher, a place in Palestine"
+  },
+  "H7025": {
+    "sn": "H7025",
+    "he": "𐤒𐤉𐤓 𐤇𐤓𐤔",
+    "paleo": "𐤒𐤉𐤓-𐤇𐤓𐤔",
+    "from": "Qayaracharash",
+    "to": "Qayar-Charash",
+    "meaning": "fortress of earthenware",
+    "def": "Kir-Cheres or Kir-Chareseth, a place in Moab"
+  },
+  "H7248": {
+    "sn": "H7248",
+    "he": "𐤓𐤁 𐤌𐤂",
+    "paleo": "𐤓𐤁-𐤌𐤂",
+    "from": "Rabamag",
+    "to": "Rab-Mag",
+    "meaning": null,
+    "def": "Rab-Mag, a Babylonian official"
+  },
+  "H7249": {
+    "sn": "H7249",
+    "he": "𐤓𐤁 𐤎𐤓𐤉𐤎",
+    "paleo": "𐤓𐤁-𐤎𐤓𐤉𐤎",
+    "from": "Rabasarayas",
+    "to": "Rab-Sarayas",
+    "meaning": null,
+    "def": "Rab-Saris, a Babylonian official"
+  },
+  "H7262": {
+    "sn": "H7262",
+    "he": "𐤓𐤁 𐤔𐤒𐤄",
+    "paleo": "𐤓𐤁-𐤔𐤒𐤄",
+    "from": "Rabashaqah",
+    "to": "Rab-Shaqah",
+    "meaning": "chief butler",
+    "def": "Rabshakeh, a Babylonian official"
+  },
+  "H7346": {
+    "sn": "H7346",
+    "he": "𐤓𐤇𐤁 𐤏𐤌",
+    "paleo": "𐤓𐤇𐤁-𐤏𐤌",
+    "from": "Rachabaim",
+    "to": "Rachab-Im",
+    "meaning": "a people has enlarged",
+    "def": "Rechabam, an Israelite king"
+  },
+  "H7278": {
+    "sn": "H7278",
+    "he": "𐤓𐤂𐤌 𐤌𐤋𐤊",
+    "paleo": "𐤓𐤂𐤌-𐤌𐤋𐤊",
+    "from": "Ragamamalak",
+    "to": "Ragam-Malak",
+    "meaning": "king's heap",
+    "def": "Regem-Melek, an Israelite"
+  },
+  "H7428": {
+    "sn": "H7428",
+    "he": "𐤓𐤌𐤍 𐤐𐤓𐤑",
+    "paleo": "𐤓𐤌𐤍-𐤐𐤓𐤑",
+    "from": "Ramanaparatz",
+    "to": "Raman-Paratz",
+    "meaning": "pomegranate of the breach",
+    "def": "Rimmon-Perets, a place in the Desert"
+  },
+  "H7434": {
+    "sn": "H7434",
+    "he": "𐤓𐤌𐤕 𐤄𐤌𐤑𐤐𐤄",
+    "paleo": "𐤓𐤌𐤕-𐤄𐤌𐤑𐤐𐤄",
+    "from": "Ramathahamatzapah",
+    "to": "Ramath-Hamatzapah",
+    "meaning": null,
+    "def": "Ramath-ham-Mitspeh, a place in Palestine"
+  },
+  "H7437": {
+    "sn": "H7437",
+    "he": "𐤓𐤌𐤕 𐤋𐤇𐤉",
+    "paleo": "𐤓𐤌𐤕-𐤋𐤇𐤉",
+    "from": "Ramathalachay",
+    "to": "Ramath-Lachay",
+    "meaning": "height of a jaw-bone",
+    "def": "Ramath-Lechi, a place in Palestine"
+  },
+  "H7436": {
+    "sn": "H7436",
+    "he": "𐤓𐤌𐤕𐤉𐤌 𐤑𐤅𐤐𐤉𐤌",
+    "paleo": "𐤓𐤌𐤕𐤉𐤌-𐤑𐤅𐤐𐤉𐤌",
+    "from": "Ramathayamatzawapayam",
+    "to": "Ramathayam-Tzawapayam",
+    "meaning": "double height of watchers",
+    "def": "Ramathajim-Tsophim, a place in Palestine"
+  },
+  "H7501": {
+    "sn": "H7501",
+    "he": "𐤓𐤐 𐤀𐤋",
+    "paleo": "𐤓𐤐-𐤀𐤋",
+    "from": "Rapaal",
+    "to": "Rap-Al",
+    "meaning": "God has cured",
+    "def": "Rephael, an Israelite"
+  },
+  "H7320": {
+    "sn": "H7320",
+    "he": "𐤓𐤅𐤌𐤌𐤕𐤉 𐤏𐤆𐤓",
+    "paleo": "𐤓𐤅𐤌𐤌𐤕𐤉-𐤏𐤆𐤓",
+    "from": "Rawamamathayaizar",
+    "to": "Rawamamathay-Izar",
+    "meaning": "I have raised up a help",
+    "def": "Romamti-Ezer, an Israelite"
+  },
+  "H5555": {
+    "sn": "H5555",
+    "he": "𐤎𐤋𐤏 𐤄𐤌𐤇𐤋𐤒𐤅𐤕",
+    "paleo": "𐤎𐤋𐤏-𐤄𐤌𐤇𐤋𐤒𐤅𐤕",
+    "from": "Salaihamachalaqawath",
+    "to": "Salai-Hamachalaqawath",
+    "meaning": null,
+    "def": "Sela-ham-Machlekoth, a place in Palestine"
+  },
+  "H5562": {
+    "sn": "H5562",
+    "he": "𐤎𐤌𐤂𐤓 𐤍𐤁𐤅",
+    "paleo": "𐤎𐤌𐤂𐤓-𐤍𐤁𐤅",
+    "from": "Samagaranabaw",
+    "to": "Samagar-Nabaw",
+    "meaning": null,
+    "def": "Samgar-Nebo, a Babylonian general"
+  },
+  "H7597": {
+    "sn": "H7597",
+    "he": "𐤔𐤀𐤋𐤕𐤉 𐤀𐤋",
+    "paleo": "𐤔𐤀𐤋𐤕𐤉-𐤀𐤋",
+    "from": "Shaalathayaal",
+    "to": "Shaalathay-Al",
+    "meaning": "I have asked God",
+    "def": "Shealtiel, an Israelite"
+  },
+  "H7610": {
+    "sn": "H7610",
+    "he": "𐤔𐤀𐤓 𐤉𐤔𐤅𐤁",
+    "paleo": "𐤔𐤀𐤓-𐤉𐤔𐤅𐤁",
+    "from": "Shaarayashawab",
+    "to": "Shaar-Yashawab",
+    "meaning": "a remnant will return",
+    "def": "Shear-Jashub, the symbolic name of one of Isaiah's sons"
+  },
+  "H7707": {
+    "sn": "H7707",
+    "he": "𐤔𐤃𐤉 𐤀𐤅𐤓",
+    "paleo": "𐤔𐤃𐤉-𐤀𐤅𐤓",
+    "from": "Shadayaawar",
+    "to": "Shaday-Awar",
+    "meaning": "spreader of light",
+    "def": "Shedejur, an Israelite"
+  },
+  "H8017": {
+    "sn": "H8017",
+    "he": "𐤔𐤋𐤌𐤉 𐤀𐤋",
+    "paleo": "𐤔𐤋𐤌𐤉-𐤀𐤋",
+    "from": "Shalamayaal",
+    "to": "Shalamay-Al",
+    "meaning": "peace of God",
+    "def": "Shelumiel, an Israelite"
+  },
+  "H8038": {
+    "sn": "H8038",
+    "he": "𐤔𐤌 𐤀𐤁𐤓",
+    "paleo": "𐤔𐤌-𐤀𐤁𐤓",
+    "from": "Shamaabar",
+    "to": "Sham-Abar",
+    "meaning": "name of pinion, i.e. illustrious",
+    "def": "Shemeber, a king of Zeboim"
+  },
+  "H8112": {
+    "sn": "H8112",
+    "he": "𐤔𐤌𐤓𐤅𐤍 𐤌𐤓𐤀𐤅𐤍",
+    "paleo": "𐤔𐤌𐤓𐤅𐤍-𐤌𐤓𐤀𐤅𐤍",
+    "from": "Shamarawanamaraawan",
+    "to": "Shamarawan-Maraawan",
+    "meaning": "guard of lashing",
+    "def": "Shimron-Meron, a place in Palestine"
+  },
+  "H8061": {
+    "sn": "H8061",
+    "he": "𐤔𐤌 𐤉𐤃𐤏",
+    "paleo": "𐤔𐤌-𐤉𐤃𐤏",
+    "from": "Shamayadai",
+    "to": "Sham-Yadai",
+    "meaning": "name of knowing",
+    "def": "Shemida, an Israelite"
+  },
+  "H8134": {
+    "sn": "H8134",
+    "he": "𐤔𐤍 𐤀𐤁",
+    "paleo": "𐤔𐤍-𐤀𐤁",
+    "from": "Shanaab",
+    "to": "Shan-Ab",
+    "meaning": "a father has turned",
+    "def": "Shinab, a Canaanite"
+  },
+  "H8370": {
+    "sn": "H8370",
+    "he": "𐤔𐤕𐤓 𐤁𐤅𐤆𐤍𐤉",
+    "paleo": "𐤔𐤕𐤓-𐤁𐤅𐤆𐤍𐤉",
+    "from": "Shatharabawazanay",
+    "to": "Shathar-Bawazanay",
+    "meaning": null,
+    "def": "Shethar-Bozenai, a Persian officer"
+  },
+  "H7741": {
+    "sn": "H7741",
+    "he": "𐤔𐤅𐤄 𐤒𐤓𐤉𐤕𐤉𐤌",
+    "paleo": "𐤔𐤅𐤄-𐤒𐤓𐤉𐤕𐤉𐤌",
+    "from": "Shawahaqarayathayam",
+    "to": "Shawah-Qarayathayam",
+    "meaning": "plain of a double city",
+    "def": "Shaveh-Kirjathajim, a place East of the Jordan"
+  },
+  "H7802": {
+    "sn": "H7802",
+    "he": "𐤔𐤅𐤔𐤍 𐤏𐤃𐤅𐤕",
+    "paleo": "𐤔𐤅𐤔𐤍-𐤏𐤃𐤅𐤕",
+    "from": "Shawashanaidawath",
+    "to": "Shawashan-Idawath",
+    "meaning": null,
+    "def": "Shushan-Eduth or Shoshannim-Eduth, the title of a popular song"
+  },
+  "H7884": {
+    "sn": "H7884",
+    "he": "𐤔𐤉𐤇𐤅𐤓 𐤋𐤁𐤍𐤕",
+    "paleo": "𐤔𐤉𐤇𐤅𐤓-𐤋𐤁𐤍𐤕",
+    "from": "Shayachawaralabanath",
+    "to": "Shayachawar-Labanath",
+    "meaning": "darkish whiteness",
+    "def": "Shichor-Libnath, a stream of Palestine"
+  },
+  "H2870": {
+    "sn": "H2870",
+    "he": "𐤈𐤁 𐤀𐤋",
+    "paleo": "𐤈𐤁-𐤀𐤋",
+    "from": "Tabaal",
+    "to": "Tab-Al",
+    "meaning": null,
+    "def": "Tabeel, the name of a Syrian and of a Persian"
+  },
+  "H2886": {
+    "sn": "H2886",
+    "he": "𐤈𐤁 𐤓𐤌𐤅𐤍",
+    "paleo": "𐤈𐤁-𐤓𐤌𐤅𐤍",
+    "from": "Tabaramawan",
+    "to": "Tab-Ramawan",
+    "meaning": null,
+    "def": "Tabrimmon, a Syrian"
+  },
+  "H8387": {
+    "sn": "H8387",
+    "he": "𐤕𐤀𐤍𐤕 𐤔𐤋𐤄",
+    "paleo": "𐤕𐤀𐤍𐤕-𐤔𐤋𐤄",
+    "from": "Thaanathashalah",
+    "to": "Thaanath-Shalah",
+    "meaning": "approach of Shiloh",
+    "def": "Taanath-Shiloh, a place in Palestine"
+  },
+  "H8483": {
+    "sn": "H8483",
+    "he": "𐤕𐤇𐤕𐤉𐤌 𐤇𐤃𐤔𐤉",
+    "paleo": "𐤕𐤇𐤕𐤉𐤌-𐤇𐤃𐤔𐤉",
+    "from": "Thachathayamachadashay",
+    "to": "Thachathayam-Chadashay",
+    "meaning": null,
+    "def": "Tachtim-Chodshi, a place in Palestine"
+  },
+  "H8407": {
+    "sn": "H8407",
+    "he": "𐤕𐤂𐤋𐤕 𐤐𐤋𐤀𐤎𐤓",
+    "paleo": "𐤕𐤂𐤋𐤕-𐤐𐤋𐤀𐤎𐤓",
+    "from": "Thagalathapalaasar",
+    "to": "Thagalath-Palaasar",
+    "meaning": null,
+    "def": "Tiglath-Pileser or Tilgath-pilneser, an Assyryrian king"
+  },
+  "H8512": {
+    "sn": "H8512",
+    "he": "𐤕𐤋 𐤀𐤁𐤉𐤁",
+    "paleo": "𐤕𐤋-𐤀𐤁𐤉𐤁",
+    "from": "Thalaabayab",
+    "to": "Thal-Abayab",
+    "meaning": "mound of green growth",
+    "def": "Tel-Abib, a place in Chaldaea"
+  },
+  "H8521": {
+    "sn": "H8521",
+    "he": "𐤕𐤋 𐤇𐤓𐤔𐤀",
+    "paleo": "𐤕𐤋-𐤇𐤓𐤔𐤀",
+    "from": "Thalacharashaa",
+    "to": "Thal-Charashaa",
+    "meaning": "mound of workmanship",
+    "def": "Tel-Charsha, a place in Babylonia"
+  },
+  "H8528": {
+    "sn": "H8528",
+    "he": "𐤕𐤋 𐤌𐤋𐤇",
+    "paleo": "𐤕𐤋-𐤌𐤋𐤇",
+    "from": "Thalamalach",
+    "to": "Thal-Malach",
+    "meaning": "mound of salt",
+    "def": "Tel-Melach, a place in Babylonia"
+  },
+  "H8556": {
+    "sn": "H8556",
+    "he": "𐤕𐤌𐤍𐤕 𐤇𐤓𐤎",
+    "paleo": "𐤕𐤌𐤍𐤕-𐤇𐤓𐤎",
+    "from": "Thamanathacharas",
+    "to": "Thamanath-Charas",
+    "meaning": null,
+    "def": "Timnath-Cheres, a place in Palestine"
+  },
+  "H8423": {
+    "sn": "H8423",
+    "he": "𐤕𐤅𐤁𐤋 𐤒𐤉𐤍",
+    "paleo": "𐤕𐤅𐤁𐤋-𐤒𐤉𐤍",
+    "from": "Thawabalaqayan",
+    "to": "Thawabal-Qayan",
+    "meaning": "offspring of Cain",
+    "def": "Tubal-Kajin, an antidiluvian patriarch"
+  },
+  "H6753": {
+    "sn": "H6753",
+    "he": "𐤑𐤋𐤋 𐤐𐤅𐤍𐤉",
+    "paleo": "𐤑𐤋𐤋-𐤐𐤅𐤍𐤉",
+    "from": "Tzalalapawanay",
+    "to": "Tzalal-Pawanay",
+    "meaning": "shade-facing",
+    "def": "Tselelponi, an Israelitess"
+  },
+  "H6759": {
+    "sn": "H6759",
+    "he": "𐤑𐤋 𐤌𐤍𐤏",
+    "paleo": "𐤑𐤋-𐤌𐤍𐤏",
+    "from": "Tzalamanai",
+    "to": "Tzal-Manai",
+    "meaning": "shade has been denied",
+    "def": "Tsalmunna, a Midianite"
+  },
+  "H6766": {
+    "sn": "H6766",
+    "he": "𐤑𐤋 𐤑𐤇",
+    "paleo": "𐤑𐤋-𐤑𐤇",
+    "from": "Tzalatzach",
+    "to": "Tzal-Tzach",
+    "meaning": "clear shade",
+    "def": "Tseltsach, a place in Palestine"
+  },
+  "H6847": {
+    "sn": "H6847",
+    "he": "𐤑𐤐𐤍𐤕 𐤐𐤏𐤍𐤇",
+    "paleo": "𐤑𐤐𐤍𐤕-𐤐𐤏𐤍𐤇",
+    "from": "Tzapanathapainach",
+    "to": "Tzapanath-Painach",
+    "meaning": null,
+    "def": "Tsophnath-Paneach, Joseph's Egyptian name"
+  },
+  "H6890": {
+    "sn": "H6890",
+    "he": "𐤑𐤓𐤕 𐤄𐤔𐤇𐤓",
+    "paleo": "𐤑𐤓𐤕-𐤄𐤔𐤇𐤓",
+    "from": "Tzarathahashachar",
+    "to": "Tzarath-Hashachar",
+    "meaning": null,
+    "def": "Tsereth-hash-Shachar, a place in Palestine"
+  },
+  "H6700": {
+    "sn": "H6700",
+    "he": "𐤑𐤅𐤓𐤉 𐤀𐤋",
+    "paleo": "𐤑𐤅𐤓𐤉-𐤀𐤋",
+    "from": "Tzawarayaal",
+    "to": "Tzawaray-Al",
+    "meaning": "rock of God",
+    "def": "Tsuriel, an Israelite"
+  },
+  "H6701": {
+    "sn": "H6701",
+    "he": "𐤑𐤅𐤓𐤉 𐤔𐤃𐤉",
+    "paleo": "𐤑𐤅𐤓𐤉-𐤔𐤃𐤉",
+    "from": "Tzawarayashaday",
+    "to": "Tzawaray-Shaday",
+    "meaning": null,
+    "def": "Tsurishaddai, an Israelite"
+  },
+  "H2991": {
+    "sn": "H2991",
+    "he": "𐤉𐤁𐤋 𐤏𐤌",
+    "paleo": "𐤉𐤁𐤋-𐤏𐤌",
+    "from": "Yabalaim",
+    "to": "Yabal-Im",
+    "meaning": "devouring people",
+    "def": "Jibleam, a place in Palestine"
+  },
+  "H3164": {
+    "sn": "H3164",
+    "he": "𐤉𐤇𐤃𐤉 𐤀𐤋",
+    "paleo": "𐤉𐤇𐤃𐤉-𐤀𐤋",
+    "from": "Yachadayaal",
+    "to": "Yachaday-Al",
+    "meaning": "unity of God",
+    "def": "Jachdiel, an Israelite"
+  },
+  "H3177": {
+    "sn": "H3177",
+    "he": "𐤉𐤇𐤋 𐤀𐤋",
+    "paleo": "𐤉𐤇𐤋-𐤀𐤋",
+    "from": "Yachalaal",
+    "to": "Yachal-Al",
+    "meaning": "expectant of God",
+    "def": "Jachleel, an Israelite"
+  },
+  "H3183": {
+    "sn": "H3183",
+    "he": "𐤉𐤇𐤑 𐤀𐤋",
+    "paleo": "𐤉𐤇𐤑-𐤀𐤋",
+    "from": "Yachatzaal",
+    "to": "Yachatz-Al",
+    "meaning": "God will allot",
+    "def": "Jachtseel, an Israelite"
+  },
+  "H3185": {
+    "sn": "H3185",
+    "he": "𐤉𐤇𐤑𐤉 𐤀𐤋",
+    "paleo": "𐤉𐤇𐤑𐤉-𐤀𐤋",
+    "from": "Yachatzayaal",
+    "to": "Yachatzay-Al",
+    "meaning": "allotted of God",
+    "def": "Jachtsiel, an Israelite"
+  },
+  "H3171": {
+    "sn": "H3171",
+    "he": "𐤉𐤇𐤉 𐤀𐤋",
+    "paleo": "𐤉𐤇𐤉-𐤀𐤋",
+    "from": "Yachayaal",
+    "to": "Yachay-Al",
+    "meaning": "God will live",
+    "def": "Jechiel (or Jechavel), the name of eight Israelites"
+  },
+  "H3168": {
+    "sn": "H3168",
+    "he": "𐤉𐤇𐤆𐤒 𐤀𐤋",
+    "paleo": "𐤉𐤇𐤆𐤒-𐤀𐤋",
+    "from": "Yachazaqaal",
+    "to": "Yachazaq-Al",
+    "meaning": "God will strengthen",
+    "def": "Jechezkel, the name of two Israelites"
+  },
+  "H3166": {
+    "sn": "H3166",
+    "he": "𐤉𐤇𐤆𐤉 𐤀𐤋",
+    "paleo": "𐤉𐤇𐤆𐤉-𐤀𐤋",
+    "from": "Yachazayaal",
+    "to": "Yachazay-Al",
+    "meaning": "beheld of God",
+    "def": "Jachaziel, the name of five Israelites"
+  },
+  "H3043": {
+    "sn": "H3043",
+    "he": "𐤉𐤃𐤉𐤏 𐤀𐤋",
+    "paleo": "𐤉𐤃𐤉𐤏-𐤀𐤋",
+    "from": "Yadayaial",
+    "to": "Yadayai-Al",
+    "meaning": "knowing God",
+    "def": "Jediael, the name of three Israelites"
+  },
+  "H3026": {
+    "sn": "H3026",
+    "he": "𐤉𐤂𐤓 𐤔𐤄𐤃𐤅𐤕𐤀",
+    "paleo": "𐤉𐤂𐤓-𐤔𐤄𐤃𐤅𐤕𐤀",
+    "from": "Yagarashahadawathaa",
+    "to": "Yagar-Shahadawathaa",
+    "meaning": "heap of the testimony",
+    "def": "Jegar-Sahadutha, a cairn East of the Jordan"
+  },
+  "H3094": {
+    "sn": "H3094",
+    "he": "𐤉𐤄𐤋𐤋 𐤀𐤋",
+    "paleo": "𐤉𐤄𐤋𐤋-𐤀𐤋",
+    "from": "Yahalalaal",
+    "to": "Yahalal-Al",
+    "meaning": "praising God",
+    "def": "Jehallelel, the name of two Israelites"
+  },
+  "H3071": {
+    "sn": "H3071",
+    "he": "𐤉𐤄𐤅𐤄 𐤍𐤎𐤉",
+    "paleo": "𐤉𐤄𐤅𐤄-𐤍𐤎𐤉",
+    "from": "Yahawahanasay",
+    "to": "Yahawah-Nasay",
+    "meaning": null,
+    "def": "Jehovah-Nissi, a symbolical name of an altar in the Desert"
+  },
+  "H3073": {
+    "sn": "H3073",
+    "he": "𐤉𐤄𐤅𐤄 𐤔𐤋𐤅𐤌",
+    "paleo": "𐤉𐤄𐤅𐤄-𐤔𐤋𐤅𐤌",
+    "from": "Yahawahashalawam",
+    "to": "Yahawah-Shalawam",
+    "meaning": null,
+    "def": "Jehovah-Shalom, a symbolical name of an altar in Palestine"
+  },
+  "H3074": {
+    "sn": "H3074",
+    "he": "𐤉𐤄𐤅𐤄 𐤔𐤌𐤄",
+    "paleo": "𐤉𐤄𐤅𐤄-𐤔𐤌𐤄",
+    "from": "Yahawahashamah",
+    "to": "Yahawah-Shamah",
+    "meaning": null,
+    "def": "Jehovah-Shammah, a symbolic title of Jerusalem"
+  },
+  "H3072": {
+    "sn": "H3072",
+    "he": "𐤉𐤄𐤅𐤄 𐤑𐤃𐤒𐤍𐤅",
+    "paleo": "𐤉𐤄𐤅𐤄-𐤑𐤃𐤒𐤍𐤅",
+    "from": "Yahawahatzadaqanaw",
+    "to": "Yahawah-Tzadaqanaw",
+    "meaning": null,
+    "def": "Jehovah-Tsidkenu, a symbolical epithet of the Messiah and of Jerusalem"
+  },
+  "H3070": {
+    "sn": "H3070",
+    "he": "𐤉𐤄𐤅𐤄 𐤉𐤓𐤀𐤄",
+    "paleo": "𐤉𐤄𐤅𐤄-𐤉𐤓𐤀𐤄",
+    "from": "Yahawahayaraah",
+    "to": "Yahawah-Yaraah",
+    "meaning": null,
+    "def": "Jehovah-Jireh, a symbolical name for Mount Moriah"
+  },
+  "H3078": {
+    "sn": "H3078",
+    "he": "𐤉𐤄𐤅𐤉 𐤊𐤉𐤍",
+    "paleo": "𐤉𐤄𐤅𐤉-𐤊𐤉𐤍",
+    "from": "Yahawayakayan",
+    "to": "Yahaway-Kayan",
+    "meaning": "Jehovah will establish",
+    "def": "Jehojakin, a Jewish king"
+  },
+  "H3079": {
+    "sn": "H3079",
+    "he": "𐤉𐤄𐤅𐤉 𐤒𐤉𐤌",
+    "paleo": "𐤉𐤄𐤅𐤉-𐤒𐤉𐤌",
+    "from": "Yahawayaqayam",
+    "to": "Yahaway-Qayam",
+    "meaning": "Jehovah will raise",
+    "def": "Jehojakim, a Jewish king"
+  },
+  "H3080": {
+    "sn": "H3080",
+    "he": "𐤉𐤄𐤅𐤉 𐤓𐤉𐤁",
+    "paleo": "𐤉𐤄𐤅𐤉-𐤓𐤉𐤁",
+    "from": "Yahawayarayab",
+    "to": "Yahaway-Rayab",
+    "meaning": "Jehovah will contend",
+    "def": "Jehojarib, the name of two Israelites"
+  },
+  "H3296": {
+    "sn": "H3296",
+    "he": "𐤉𐤏𐤓𐤉 𐤀𐤓𐤂𐤉𐤌",
+    "paleo": "𐤉𐤏𐤓𐤉-𐤀𐤓𐤂𐤉𐤌",
+    "from": "Yairayaaragayam",
+    "to": "Yairay-Aragayam",
+    "meaning": "woods of weavers",
+    "def": "Jaare-Oregim, an Israelite"
+  },
+  "H3300": {
+    "sn": "H3300",
+    "he": "𐤉𐤏𐤔𐤉 𐤀𐤋",
+    "paleo": "𐤉𐤏𐤔𐤉-𐤀𐤋",
+    "from": "Yaishayaal",
+    "to": "Yaishay-Al",
+    "meaning": "made of God",
+    "def": "Jaasiel, an Israelite"
+  },
+  "H3273": {
+    "sn": "H3273",
+    "he": "𐤉𐤏𐤉 𐤀𐤋",
+    "paleo": "𐤉𐤏𐤉-𐤀𐤋",
+    "from": "Yaiyaal",
+    "to": "Yaiy-Al",
+    "meaning": "carried away of God",
+    "def": "Jeiel, the name of six Israelites"
+  },
+  "H3268": {
+    "sn": "H3268",
+    "he": "𐤉𐤏𐤆𐤉 𐤀𐤋",
+    "paleo": "𐤉𐤏𐤆𐤉-𐤀𐤋",
+    "from": "Yaizayaal",
+    "to": "Yaizay-Al",
+    "meaning": "emboldened of God",
+    "def": "Jaaziel, an Israelite"
+  },
+  "H3317": {
+    "sn": "H3317",
+    "he": "𐤉𐤐𐤕𐤇 𐤀𐤋",
+    "paleo": "𐤉𐤐𐤕𐤇-𐤀𐤋",
+    "from": "Yapathachaal",
+    "to": "Yapathach-Al",
+    "meaning": "God will open",
+    "def": "Jiphtach-el, a place in Palestine"
+  },
+  "H3343": {
+    "sn": "H3343",
+    "he": "𐤉𐤒𐤁𐤑 𐤀𐤋",
+    "paleo": "𐤉𐤒𐤁𐤑-𐤀𐤋",
+    "from": "Yaqabatzaal",
+    "to": "Yaqabatz-Al",
+    "meaning": "God will gather",
+    "def": "Jekabtseel, a place in Palestine"
+  },
+  "H3347": {
+    "sn": "H3347",
+    "he": "𐤉𐤒𐤃 𐤏𐤌",
+    "paleo": "𐤉𐤒𐤃-𐤏𐤌",
+    "from": "Yaqadaim",
+    "to": "Yaqad-Im",
+    "meaning": null,
+    "def": "Jokdeam, a place in Palestine"
+  },
+  "H3360": {
+    "sn": "H3360",
+    "he": "𐤉𐤒𐤌 𐤏𐤌",
+    "paleo": "𐤉𐤒𐤌-𐤏𐤌",
+    "from": "Yaqamaim",
+    "to": "Yaqam-Im",
+    "meaning": null,
+    "def": "Jekamam, an Israelite"
+  },
+  "H3361": {
+    "sn": "H3361",
+    "he": "𐤉𐤒𐤌 𐤏𐤌",
+    "paleo": "𐤉𐤒𐤌-𐤏𐤌",
+    "from": "Yaqamaim",
+    "to": "Yaqam-Im",
+    "meaning": null,
+    "def": "Jokmeam, a place in Palestine"
+  },
+  "H3362": {
+    "sn": "H3362",
+    "he": "𐤉𐤒𐤍 𐤏𐤌",
+    "paleo": "𐤉𐤒𐤍-𐤏𐤌",
+    "from": "Yaqanaim",
+    "to": "Yaqan-Im",
+    "meaning": null,
+    "def": "Jokneam, a place in Palestine"
+  },
+  "H3354": {
+    "sn": "H3354",
+    "he": "𐤉𐤒𐤅𐤕𐤉 𐤀𐤋",
+    "paleo": "𐤉𐤒𐤅𐤕𐤉-𐤀𐤋",
+    "from": "Yaqawathayaal",
+    "to": "Yaqawathay-Al",
+    "meaning": "obedience of God",
+    "def": "Jekuthiel, an Israelite"
+  },
+  "H3378": {
+    "sn": "H3378",
+    "he": "𐤉𐤓 𐤁𐤏𐤋",
+    "paleo": "𐤉𐤓-𐤁𐤏𐤋",
+    "from": "Yarabail",
+    "to": "Yar-Bail",
+    "meaning": "Baal will contend",
+    "def": "Jerubbaal, a symbolic name of Gideon"
+  },
+  "H3379": {
+    "sn": "H3379",
+    "he": "𐤉𐤓𐤁 𐤏𐤌",
+    "paleo": "𐤉𐤓𐤁-𐤏𐤌",
+    "from": "Yarabaim",
+    "to": "Yarab-Im",
+    "meaning": null,
+    "def": "Jarobam, the name of two Israelite kings"
+  },
+  "H3380": {
+    "sn": "H3380",
+    "he": "𐤉𐤓 𐤁𐤔𐤕",
+    "paleo": "𐤉𐤓-𐤁𐤔𐤕",
+    "from": "Yarabashath",
+    "to": "Yar-Bashath",
+    "meaning": null,
+    "def": "Jerubbesheth, a symbolic name for Gideon"
+  },
+  "H3396": {
+    "sn": "H3396",
+    "he": "𐤉𐤓𐤇𐤌 𐤀𐤋",
+    "paleo": "𐤉𐤓𐤇𐤌-𐤀𐤋",
+    "from": "Yarachamaal",
+    "to": "Yaracham-Al",
+    "meaning": "God will compassionate",
+    "def": "Jerachmeel, the name of three Israelites"
+  },
+  "H3416": {
+    "sn": "H3416",
+    "he": "𐤉𐤓𐤐 𐤀𐤋",
+    "paleo": "𐤉𐤓𐤐-𐤀𐤋",
+    "from": "Yarapaal",
+    "to": "Yarap-Al",
+    "meaning": "God will heal",
+    "def": "Jirpeel, a place in Palestine"
+  },
+  "H3421": {
+    "sn": "H3421",
+    "he": "𐤉𐤓𐤒 𐤏𐤌",
+    "paleo": "𐤉𐤓𐤒-𐤏𐤌",
+    "from": "Yaraqaim",
+    "to": "Yaraq-Im",
+    "meaning": "people will be poured forth",
+    "def": "Jorkeam, a place in Palestine"
+  },
+  "H3400": {
+    "sn": "H3400",
+    "he": "𐤉𐤓𐤉 𐤀𐤋",
+    "paleo": "𐤉𐤓𐤉-𐤀𐤋",
+    "from": "Yarayaal",
+    "to": "Yaray-Al",
+    "meaning": "thrown of God",
+    "def": "Jeriel, an Israelite"
+  },
+  "H3428": {
+    "sn": "H3428",
+    "he": "𐤉𐤔𐤁 𐤀𐤁",
+    "paleo": "𐤉𐤔𐤁-𐤀𐤁",
+    "from": "Yashabaab",
+    "to": "Yashab-Ab",
+    "meaning": null,
+    "def": "Jeshebab, an Israelite"
+  },
+  "H3429": {
+    "sn": "H3429",
+    "he": "𐤉𐤔𐤁 𐤁𐤔𐤁𐤕",
+    "paleo": "𐤉𐤔𐤁-𐤁𐤔𐤁𐤕",
+    "from": "Yashababashabath",
+    "to": "Yashab-Bashabath",
+    "meaning": null,
+    "def": "Joshebbash-Shebeth, an Israelite"
+  },
+  "H3434": {
+    "sn": "H3434",
+    "he": "𐤉𐤔𐤁 𐤏𐤌",
+    "paleo": "𐤉𐤔𐤁-𐤏𐤌",
+    "from": "Yashabaim",
+    "to": "Yashab-Im",
+    "meaning": "people will return",
+    "def": "Jashobam, the name of two or three Israelites"
+  },
+  "H3436": {
+    "sn": "H3436",
+    "he": "𐤉𐤔𐤁 𐤒𐤔𐤄",
+    "paleo": "𐤉𐤔𐤁-𐤒𐤔𐤄",
+    "from": "Yashabaqashah",
+    "to": "Yashab-Qashah",
+    "meaning": "a hard seat",
+    "def": "Joshbekashah, an Israelite"
+  },
+  "H3433": {
+    "sn": "H3433",
+    "he": "𐤉𐤔𐤁𐤉 𐤋𐤇𐤌",
+    "paleo": "𐤉𐤔𐤁𐤉-𐤋𐤇𐤌",
+    "from": "Yashabayalacham",
+    "to": "Yashabay-Lacham",
+    "meaning": "returner of bread",
+    "def": "Jashubi-Lechem, an Israelite"
+  },
+  "H3458": {
+    "sn": "H3458",
+    "he": "𐤉𐤔𐤌𐤏 𐤀𐤋",
+    "paleo": "𐤉𐤔𐤌𐤏-𐤀𐤋",
+    "from": "Yashamaial",
+    "to": "Yashamai-Al",
+    "meaning": "God will hear",
+    "def": "Jishmael, the name of Abraham's oldest son, and of five Israelites"
+  },
+  "H3480": {
+    "sn": "H3480",
+    "he": "𐤉𐤔𐤓 𐤀𐤋𐤄",
+    "paleo": "𐤉𐤔𐤓-𐤀𐤋𐤄",
+    "from": "Yasharaalah",
+    "to": "Yashar-Alah",
+    "meaning": null,
+    "def": "Jesarelah, an Israelite"
+  },
+  "H3485": {
+    "sn": "H3485",
+    "he": "𐤉𐤔 𐤔𐤊𐤓",
+    "paleo": "𐤉𐤔-𐤔𐤊𐤓",
+    "from": "Yashashakar",
+    "to": "Yash-Shakar",
+    "meaning": "he will bring a reward",
+    "def": "Jissaskar, a son of Jacob"
+  },
+  "H3450": {
+    "sn": "H3450",
+    "he": "𐤉𐤔𐤉𐤌 𐤀𐤋",
+    "paleo": "𐤉𐤔𐤉𐤌-𐤀𐤋",
+    "from": "Yashayamaal",
+    "to": "Yashayam-Al",
+    "meaning": "God will place",
+    "def": "Jesimael, an Israelite"
+  },
+  "H3507": {
+    "sn": "H3507",
+    "he": "𐤉𐤕𐤓 𐤏𐤌",
+    "paleo": "𐤉𐤕𐤓-𐤏𐤌",
+    "from": "Yatharaim",
+    "to": "Yathar-Im",
+    "meaning": "excellence of people",
+    "def": "Jithream, a son of David"
+  },
+  "H3128": {
+    "sn": "H3128",
+    "he": "𐤉𐤅𐤍𐤕 𐤀𐤋𐤌 𐤓𐤇𐤒𐤉𐤌",
+    "paleo": "𐤉𐤅𐤍𐤕-𐤀𐤋𐤌-𐤓𐤇𐤒𐤉𐤌",
+    "from": "Yawanathaalamarachaqayam",
+    "to": "Yawanath-Alam-Rachaqayam",
+    "meaning": null,
+    "def": "dove of (the) silence (i.e. dumb Israel) of (i.e. among) distances (i.e. strangers); the title of a ditty (used for a name of its melody)"
+  },
+  "H3142": {
+    "sn": "H3142",
+    "he": "𐤉𐤅𐤔𐤁 𐤇𐤎𐤃",
+    "paleo": "𐤉𐤅𐤔𐤁-𐤇𐤎𐤃",
+    "from": "Yawashabachasad",
+    "to": "Yawashab-Chasad",
+    "meaning": "kindness will be returned",
+    "def": "Jushab-Chesed, an Israelite"
+  },
+  "H2068": {
+    "sn": "H2068",
+    "he": "𐤆𐤁𐤃𐤉 𐤀𐤋",
+    "paleo": "𐤆𐤁𐤃𐤉-𐤀𐤋",
+    "from": "Zabadayaal",
+    "to": "Zabaday-Al",
+    "meaning": null,
+    "def": "gift of God; zabdiel, the name of two Israelites"
+  },
+  "H2216": {
+    "sn": "H2216",
+    "he": "𐤆𐤓 𐤁𐤁𐤋",
+    "paleo": "𐤆𐤓-𐤁𐤁𐤋",
+    "from": "Zarababal",
+    "to": "Zar-Babal",
+    "meaning": null,
+    "def": "Zerubbabel, an Israelite"
   }
 }
