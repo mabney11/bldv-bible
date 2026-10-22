@@ -431,6 +431,23 @@ function buildHebSurfaces(o) {
         }
         return _stemCache.get(k);
     };
+    // The ORIGINAL English (text_src) of a verse, as stems — for a context reading
+    // marked witness:"src". The rendered text carries the glosses of the reading
+    // being questioned ("Chamath (Hamath)"), so it would vouch for itself; the
+    // original English cannot (same reason root strip reads text_src).
+    const _srcStemCache = new Map();
+    const verseSrcStems = (c, ch, v) => {
+        if (!englishSrcOf) return verseStems(c, ch, v);
+        const k = c + '|' + ch + '|' + v;
+        if (!_srcStemCache.has(k)) {
+            let t = englishSrcOf(c, ch, v) || '';
+            if (!t) t = (englishSrcOf(c, ch, v - 1) || '') + ' ' + (englishSrcOf(c, ch, v + 1) || '');   // versification drift
+            _srcStemCache.set(k, t.trim()
+                ? new Set((t.match(/[A-Za-z]{2,}/g) || []).map(stemWord))
+                : verseStems(c, ch, v));
+        }
+        return _srcStemCache.get(k);
+    };
     let contextSwitches = 0, contextVetoed = 0, suffix3fs = 0;
     const contextMisses = new Map();
     const contextLog = [];
@@ -1553,7 +1570,9 @@ function buildHebSurfaces(o) {
                 const cr = contextReadings.get(w);
                 if (cr && cr.sn && hit && !forcedReadings.has(w)
                     && !occurrenceOverrides.has(occKey(row.canon_id, row.chapter, row.verse, i + 1))) {
-                    const vs = verseStems(row.canon_id, row.chapter, row.verse);
+                    const vs = cr.witness === 'src'
+                        ? verseSrcStems(row.canon_id, row.chapter, row.verse)
+                        : verseStems(row.canon_id, row.chapter, row.verse);
                     const fromHit = (cr.from_words || []).some(x => vs.has(x));
                     const toHit = (cr.to_words || []).some(x => vs.has(x));
                     // Switch where the English supports the new reading. Where it

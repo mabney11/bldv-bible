@@ -175,8 +175,8 @@ function modInfo(c, source) {
     return { kind: 'pre', eng: PREP[p], label: lab || null, inf: p === '𐤋' };
   }
   if (css.startsWith('pfm-') && css !== 'pfm-ptcp') { const pr = css.slice(4);
-    return { kind: 'subj', eng: SUBJ[pr] || SUBJ[pr[0]] || SUBJ['3'], label: null }; }
-  if (css.startsWith('vbe-')) return { kind: 'subj-suf', eng: SUBJ[css.slice(4)] || SUBJ[css.slice(4, 5)] || W('they'), label: null };
+    return { kind: 'subj', eng: SUBJ[pr] || SUBJ[pr[0]] || SUBJ['3'], label: null, pr }; }
+  if (css.startsWith('vbe-')) return { kind: 'subj-suf', eng: SUBJ[css.slice(4)] || SUBJ[css.slice(4, 5)] || W('they'), label: null, pr: css.slice(4) };
   if (css.startsWith('prs-')) { const pr = css.slice(4);
     const lab = { '1cs': 'My', '1cp': 'Our', '2ms': 'Your', '2fs': 'Your', '2mp': 'Your (pl)', '2fp': 'Your (pl)', '3ms': 'His', '3fs': 'Her', '3mp': 'Their', '3fp': 'Their' }[pr];
     // the HEB edition (NT/Apocrypha) has no morphology: a final yod is parsed as "my", but
@@ -385,6 +385,8 @@ export function mergeModforms(text, words, opts = {}) {
 const LIGHT = new Set(('a an the and or but if for nor so yet of to in into on onto at by with from as than that this these those which who whom whose what i me my we us our you your he him his she her it its they them their ' +
   'be is are was were been being have has had do does did will shall would should may might must can could not no up out there then when where while all any some').split(' '));
 const REVERENT = new Set('God Lord LORD Heaven Heavens Kingdom Spirit Son Father Holy Word Christ Messiah Name Most High Almighty Savior Lamb Good News Man'.split(' '));
+// "NOT" (his lexicon) -> "not": an all-caps word is lowered whole, never "nOT"
+const lowerFirst = s => /^[A-Z]{2,}(?![a-z])/.test(s) ? s.replace(/^[A-Z]+/, x => x.toLowerCase()) : s.charAt(0).toLowerCase() + s.slice(1);
 const OBJ = { '1cs': 'me', '1cp': 'us', '2ms': 'you', '2fs': 'you', '2mp': 'you', '2fp': 'you', '3ms': 'him', '3fs': 'her', '3mp': 'them', '3fp': 'them' };
 const POSS = { '1cs': 'my', '1cp': 'our', '2ms': 'your', '2fs': 'your', '2mp': 'your', '2fp': 'your', '3ms': 'his', '3fs': 'her', '3mp': 'their', '3fp': 'their' };
 export function weave(word, english) {
@@ -402,7 +404,7 @@ export function weave(word, english) {
     if (has(m.eng)) continue;
     if (m.pron) { if (!m.label) continue; if (objSuffix) post.unshift(OBJ[m.pr] || ''); else pre.push(POSS[m.pr] || ''); continue; }
     if (m.label === 'Toward') { pre.push('toward'); continue; }
-    if (m.label === 'the' && isVerb) { pre.push('who'); continue; }     // HaAbalayam: "who mourn"
+    if (m.label === 'the' && isVerb) { if (!ws.some(w => /^(who|whoever|whom|which|that|those)$/.test(w))) pre.push('who'); continue; }     // HaAbalayam: "who mourn"
     pre.push(String(m.label).toLowerCase());
   }
   const objs = post.filter(x => Object.values(OBJ).includes(x)), notes = post.filter(x => !objs.includes(x));
@@ -413,12 +415,125 @@ export function weave(word, english) {
     // a capital the English keeps mid-sentence (a name, Heaven, Spirit, Son) stays; only a
     // sentence's first capital moves to the woven word in front ("And sent")
     const keepCap = first === 'I' || (!LIGHT.has(first.toLowerCase()) && (NAME_ENG.has(first.toLowerCase()) || REVERENT.has(first.replace(/[’']s$/, ''))));
+    const POSSW = new Set(Object.values(POSS));
+    const lead = [];   // "from work" + his -> "from his work", never "his from work"
+    if (pre.every(x => POSSW.has(x))) { const bw = body.split(' '); while (bw.length > 1 && /^(and|or|but|from|in|into|to|for|of|with|by|on|upon|as|at|unto|over|under|before|after|against|among|through|toward|towards)$/i.test(bw[0])) lead.push(bw.shift()); body = bw.join(' '); }
     let p = pre.filter(Boolean).join(' ');
-    if (cap && !keepCap) { body = body[0].toLowerCase() + body.slice(1); p = p[0].toUpperCase() + p.slice(1); }
+    if (lead.length) { body = `${lead.join(' ')} ${p} ${body}`; }
+    else {
+    if (cap && !keepCap) { body = lowerFirst(body); p = p[0].toUpperCase() + p.slice(1); }
     body = `${p} ${body}`;
+    }
   }
   if (hasConj(word)) body = leadAnd(body);
   return notes.length ? `${body} - ${notes.join(', ')}` : body;
+}
+
+// ── THE BASELINE GLOSS IS THE WORD'S OWN ENGLISH (fieldy, 2026-10-22) ─────────────────────
+// "clean up the baseline translations to not try so much context, it should use only the words
+// and modifications that exist. so 'ThaThaShachawah' should translate (you [reflexive] bow),
+// ThaIbadam (you serve them), WaLaa (And not)" — Exodus 20:5 read "ThaThaShachawah (you shall
+// not bow yourself down to them) … ThaIbadam (nor serve them them for I your),,". The WEB tags
+// English in chunks ("to them, nor serve" -> serve), and its helpers belong to other Hebrew
+// words or to no letter at all. A machine gloss keeps:
+//   - the content words of its chunk — those your lexicon's gloss for the root names, when any
+//     does ("visiting" for visit; "generation … hate" -> "hate"), else all of them;
+//   - English one of the word's OWN chips expresses (and, the, in, them, his …) — weave() adds
+//     any it lacks, so nothing is invented and nothing is lost;
+//   - its subject from the prefix/suffix (you, I, we; "he/they" only when the WEB wrote it),
+//     and "[reflexive]" for the 𐤕 of the reflexive stem (vbs-hit).
+// Dropped: shall/will/am, a/the/of/on/not/nor with no chip of this word behind them, pronouns
+// no chip owns, "yourself". A function word (not, for, I, to them) keeps its English minus the
+// auxiliaries. Machine text only — the Hebrew-order pass of merge-modforms --corpus.
+const AUX_B = W('shall will would should may might must be is are was were been being have has had do does did can could am');
+const PARTICLE = W('up out down off away forth back together');
+const BE_DO = W('be is are was were been being am');
+// joining words that are Hebrew words of their own (Gam, Kay, Ki, Ad …) — never a content word's
+const JOINER = W('even though although because unless until till whether whenever wherever however therefore also indeed only just whoever whomever whatever whichever');
+const REFLEX = W('myself ourselves yourself yourselves himself herself itself themselves');
+const PRON_ALL = W('i me my mine myself we us our ours ourselves you your yours yourself yourselves thee thou thy thine ye he him his himself she her hers herself it its itself they them their theirs themselves');
+const FN_POS = /^(prep|conj|nega|advb|prps|prde|prin|prin|inrg|intj|art)$/;
+export function baseGloss(word, gloss, verseEng = '') {
+  // weave() writes "- plural" again; an older run may have left it twice. Doubled words go too ("them them").
+  const g0 = String(gloss || '').replace(/(?:\s*-\s*(?:plural|emphatic)(?:,\s*(?:plural|emphatic))*)+\s*$/i, '').replace(/\b(\w+)(?:\s+\1\b)+/gi, '$1').trim();
+  const g = g0.replace(/\[[^\]]*\]/g, ' ');
+  if (!word || g.includes('/') || /[\u{10900}-\u{1091F}]/u.test(g)) return g0;   // his lexicon gloss / his paleo placeholder: as written                            // a lexicon gloss ("guilt/iniquity") is his, as written
+  // a word an older run mangled ("nOT" from "NOT") is lowered whole
+  const toks = (g.match(/[A-Za-z][A-Za-z'’-]*/g) || []).map(t => /^[a-z]+[A-Z]/.test(t) ? t.toLowerCase() : t).filter(t => !/^(plural|emphatic)$/i.test(t));
+  if (!toks.length) return g0;
+  const low = t => t.toLowerCase().replace(/[’']s$/, '');
+  if (word.isName || word.sn === 'H853' || FN_POS.test(word.pos || '')) {
+    const k = toks.filter(t => !AUX_B.has(low(t)));
+    return (k.length ? k : toks).join(' ');
+  }
+  const subjMod = word.mods.find(m => m.kind === 'subj' || m.kind === 'subj-suf');
+  const isVerbW = /verb/i.test(word.pos || '') || !!subjMod;
+  // a noun's "might" / "will" / "can" is a word: helpers are dropped from verbs only (be-forms from all)
+  const isAux = t => { const w = low(t); return /n['’]t$/.test(w) || (AUX_B.has(w) && (isVerbW || BE_DO.has(w))); };
+  const own = word.mods.filter(m => m.kind !== 'subj' && m.kind !== 'subj-suf' && m.eng);
+  // 𐤋 vouches only for to/for — never "of" ("generation of those who hate me" -> "hate me")
+  const expressed = t => own.some(m => m.inf ? /^(to|for)$/.test(low(t)) : m.eng.has(low(t)));
+  const isContent = t => { const w = low(t); return PARTICLE.has(w) || (!LIGHT.has(w) && !JOINER.has(w) && !isAux(t) && !PRON_ALL.has(w)); };
+  const root = word.comps.find(c => isRootCss(c.css));
+  const lexW = String((root && root.translation) || '').toLowerCase().replace(/\[[^\]]*\]|\([^)]*\)/g, ' ').match(/[a-z]{3,}/g) || [];
+  const close = (a, b) => a === b || (a.length >= 4 && b.length >= 4 && a.slice(0, 4) === b.slice(0, 4));
+  const contentIdx = toks.map((t, i) => isContent(t) ? i : -1).filter(i => i >= 0);
+  const hit = new Set(contentIdx.filter(i => !PARTICLE.has(low(toks[i])) && lexW.some(l => close(low(toks[i]), l))));
+  const keepContent = new Set(hit.size
+    ? contentIdx.filter(i => hit.has(i) || (PARTICLE.has(low(toks[i])) && contentIdx.some(j => j < i && hit.has(j))))
+    : contentIdx);
+  // the subject: the WEB's own pronoun before the verb, else the prefix's person (I / we / you)
+  let subj = '';
+  const firstC = contentIdx.length ? contentIdx[0] : toks.length;
+  if (subjMod) {
+    const sw = toks.slice(0, firstC).find(t => subjMod.eng && subjMod.eng.has(low(t)) && /^(i|we|you|ye|thou|he|she|it|they)$/.test(low(t)));
+    if (sw) subj = low(sw) === 'i' ? 'I' : low(sw);
+    else {
+      const pr = String(subjMod.pr || '');
+      if (pr.startsWith('1')) subj = pr.includes('p') ? 'we' : 'I';
+      else if (pr.startsWith('2') && (pr !== '2or3f' || /\b(you|your|yours|ye|thou|thee|thy)\b/i.test(verseEng))) subj = 'you';
+    }
+  }
+  const seen = new Set();
+  const body = [];
+  const kept = [...keepContent];
+  // each chip vouches for ONE English word — its own label if the chunk has it ("from"), else
+  // the first it can mean: 𐤌 never lets both "of" and "from" through
+  const claim = new Map();   // token index -> mod
+  for (const m of own) {
+    // the article on a participle reads "who" ("Blessed are those who mourn" -> "who mourn")
+    const can = i => !claim.has(i) && !keepContent.has(i) && !REFLEX.has(low(toks[i])) && (m.inf ? /^(to|for)$/.test(low(toks[i])) : (m.eng.has(low(toks[i])) && !(m.label === 'the' && low(toks[i]) === 'those')) || (m.label === 'the' && /^(who|whoever|which)$/.test(low(toks[i]))));
+    const lab = String(m.label || '').toLowerCase();
+    let i = toks.findIndex((t, q) => can(q) && low(t) === lab);
+    if (i < 0) i = toks.findIndex((t, q) => can(q));
+    if (i >= 0) claim.set(i, m);
+  }
+  toks.forEach((t, i) => {
+    if (keepContent.has(i)) { body.push(t); return; }
+    if (isContent(t)) return;
+    if (subjMod && i < firstC && low(t) === low(subj)) return;           // the subject goes first
+    if (REFLEX.has(low(t))) return;                                        // "yourself": the stem's [reflexive], or another word's
+    // a to / of inside one kept phrase ("came to pass", "shadow of death")
+    if (/^(to|of)$/.test(low(t)) && kept.some(j => j < i) && kept.some(j => j > i) && !toks.slice(i + 1, Math.min(...kept.filter(j => j > i))).some(x => isContent(x))) { body.push(t); return; }
+    if (claim.has(i)) body.push(t);
+  });
+  if (!body.some(t => isContent(t))) {
+    // nothing of its own survived: the chunk minus its helpers
+    // what a chip vouches for, plus a do/have/make verb the helpers hid ("who does" — 𐤏𐤔𐤄 is "do")
+    let k = toks.filter((t, i) => claim.has(i) || (!(LIGHT.has(low(t)) && !/^(do|does|did|have|has|had)$/.test(low(t))) && !JOINER.has(low(t)) && !REFLEX.has(low(t)) && !PRON_ALL.has(low(t)) && !BE_DO.has(low(t)) && !/^(shall|will|would|should|must|may|might|can|could)$/.test(low(t)) && !/n['’]t$/.test(low(t))));
+    if (!k.some(t => !claim.has(toks.indexOf(t)))) k = toks.filter(t => !isAux(t) && !JOINER.has(low(t)) && !REFLEX.has(low(t)) && !/^(the|a|an|of|not|nor|no)$/i.test(t));
+    if (!k.length) return g0;
+    return [subj, ...k.filter(t => low(t) !== low(subj))].filter(Boolean).join(' ');
+  }
+  // a sentence capital of the WEB's ("You shall …") is not the word's; a name / Heaven / I keep theirs
+  const keepCap = t => NAME_ENG.has(low(t)) || REVERENT.has(t.replace(/[’']s$/, '')) || isNameTr(t) || /^[A-Z][a-z]*(?:a[a-z]){2,}$/.test(t);   // Alahayam, Yasharaal
+  const cased = body.map(t => (/^[A-Z][a-z]/.test(t) && !keepCap(t)) ? lowerFirst(t) : t);
+  // the stem's own chip: 𐤕 [Reflexive] (vbs-hit), [Causing] (vbs-hif) — modifications that exist
+  const refl = word.comps.some(c => c.css === 'vbs-hit') ? '[reflexive]' : word.comps.some(c => c.css === 'vbs-hif') ? '[causing]' : '';
+  // the stem sits on the verb itself: "to [causing] wise", "you [reflexive] bow down"
+  const at = cased.findIndex(t => isContent(t));
+  if (refl) cased.splice(at < 0 ? 0 : at, 0, refl);
+  return [subj, ...cased].filter(Boolean).filter((t, i, a) => i === 0 || t.toLowerCase() !== a[i - 1].toLowerCase()).join(' ');   // "against (Moses) against" -> one
 }
 
 // ── NO LABEL A READER HAS TO DECODE (fieldy, 2026-10-03) ────────────────────────────────
@@ -595,8 +710,8 @@ export function interlinear(text, words, glossOf, opts = {}) {
           || (gl.match(/\b[A-Z][a-z'’-]+/g) || []).some(x => NAME_ENG.has(x.toLowerCase().replace(/[’']s$/, '')));
         // the Hebrew word shown is the TOKEN's: a pair still written as its bare root ("palal")
         // becomes the verse's word ("ThaThaPalalaw"), its modifications woven into the English
-        if (h && !isName && norm(m[3]) !== norm(h.form)) { els.push({ k: 'item', h, form: h.form, gloss: weave(h, gl), name: false }); continue; }
-        els.push({ k: 'item', h, form: m[3], gloss: gl, name: isName });
+        if (h && !isName && norm(m[3]) !== norm(h.form)) { els.push({ k: 'item', h, form: h.form, gloss: weave(h, opts.baseline ? baseGloss(h, gl, text) : gl), name: false }); continue; }
+        els.push({ k: 'item', h, form: m[3], gloss: (opts.baseline && h && !isName && gl) ? weave(h, baseGloss(h, gl, text)) : gl, name: isName });
         continue;
       }
       // a bare Hebrew word (a name, Yahawah, Alahayam) or English
@@ -631,14 +746,16 @@ export function interlinear(text, words, glossOf, opts = {}) {
     const w = words.filter(x => !used.has(x) && !x.isName && x.sn !== 'H853' && x.ord > prev.h.ord && x.ord < bound).sort((a, b) => a.ord - b.ord)[0];
     if (!w) return null;
     used.add(w);
-    const gi = { k: 'item', h: w, form: w.form, gloss: weave(w, buf.join(' ')), name: false, lead: '', trail: '', pre: [], suf: [], ei: prev.ei + 0.5, gap: true };
+    const gi = { k: 'item', h: w, form: w.form, gloss: weave(w, opts.baseline ? baseGloss(w, buf.join(' '), text) : buf.join(' ')), name: false, lead: '', trail: '', pre: [], suf: [], ei: prev.ei + 0.5, gap: true };
     gapItems.push(gi); buf = [];
     return gi;
   };
   for (let j = 0; j < els.length; j++) {
     const e = els[j];
     if (e.k === 'ws') continue;
-    if (e.k === 'w') { buf.push(e.t); continue; }
+    // baseline: a leftover helper ("to them", "for I", "your") belongs to another Hebrew word
+    // or to none — it is dropped, never stuffed into a neighbour's brackets
+    if (e.k === 'w') { if (opts.baseline && (LIGHT.has(e.t.toLowerCase()) || AUX_B.has(e.t.toLowerCase()))) continue; buf.push(e.t); continue; }
     if (e.k === 'p') {
       const nx = els[j + 1];
       const before = j === 0 || els[j - 1].k === 'ws' || (els[j - 1].k === 'p' && /^[“‘"'(\[—–]$/.test(els[j - 1].t));
@@ -728,7 +845,8 @@ export function interlinear(text, words, glossOf, opts = {}) {
   // the verse starts a sentence: its first gloss does too ("WaYaShalach (And sent)")
   { const f = ordered.find(it => it.gloss !== null || it.pre.length);
     if (f && f === ordered[0]) { if (f.pre.length) f.pre[0] = f.pre[0][0].toUpperCase() + f.pre[0].slice(1); else if (f.gloss) f.gloss = f.gloss[0].toUpperCase() + f.gloss.slice(1); } }
-  const res = ordered.map(render).join(' ').replace(/\s+([,.;:!?”’)])/g, '$1').replace(/\s+/g, ' ').trim();
+  let res = ordered.map(render).join(' ').replace(/\s+([,.;:!?”’)])/g, '$1').replace(/\s+/g, ' ').trim();
+  if (opts.baseline) res = res.replace(/([,;:])(?:\s*[,;:])+/g, '$1').replace(/[,;:]\s*([.!?])/g, '$1').replace(/^[,;:]\s*/, '');   // ",," left by dropped helpers
   const quotes = s => (s.replace(/\((?:[^()]|\([^()]*\))*\)/g, '').match(/[“”‘’"]/g) || []).join('');
   if (quotes(res) !== quotes(text)) { out.why = 'quotes'; return out; }
   out.text = res; out.ok = true;
@@ -751,7 +869,7 @@ export function leadAnd(g) {
   if (t.length && cap) {
     const first = t[0];
     const keep = first === 'I' || (!LIGHT.has(first.toLowerCase()) && (NAME_ENG.has(first.toLowerCase()) || REVERENT.has(first.replace(/[’']s$/, ''))));
-    if (!keep) t[0] = first[0].toLowerCase() + first.slice(1);
+    if (!keep) t[0] = lowerFirst(first);
   }
   return [cap ? 'And' : 'and', ...t].join(' ');
 }

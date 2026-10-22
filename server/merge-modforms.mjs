@@ -390,7 +390,8 @@ if (CORPUS) {
       { const t2 = alignFill(r2.text, ws); if (t2 !== r2.text) { const r3 = MF.mergeModforms(t2, ws, { all: true, keepMarks: true }); r2 = { text: r3.text, n: r2.n + r3.n }; } }
       r2.text = MF.curatePairs(r2.text, ws, curatedOf);
       // Hebrew word order, every Hebrew word, the English inside its brackets
-      const il = MF.interlinear(r2.text, ws, glossOf);
+      // baseline: each gloss is its word's own English + its chips; leftover helpers dropped (fieldy, 2026-10-22)
+      const il = MF.interlinear(r2.text, ws, glossOf, { baseline: true });
       const grp = r.c <= 39 ? 'OT' : r.c <= 66 ? 'NT' : 'Apoc';
       if (il.ok) { r2 = { text: il.text, n: r2.n }; ilOk++; ilWhy.set(grp + ' hebrew-order', (ilWhy.get(grp + ' hebrew-order') || 0) + 1); } else ilWhy.set(grp + ' ' + il.why, (ilWhy.get(grp + ' ' + il.why) || 0) + 1);
       r2.text = r2.text.replace(/\uE002\d+r?\uE003/g, '');

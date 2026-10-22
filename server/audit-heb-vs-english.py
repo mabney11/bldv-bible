@@ -86,8 +86,11 @@ PROF = {sn: {k for k, v in c.items() if v >= max(2, 0.12 * segs[sn])} for sn, c 
 cdb = sqlite3.connect('file:' + os.path.join(here, 'corpus.db') + '?mode=ro', uri=True)
 cdb.execute('pragma temp_store=memory')
 ENG = {}
+# The ORIGINAL English (text_src), not the rendered text: the rendered text carries the
+# glosses of the very readings under audit ("Chamath (Hamath)" on Rev 6:16's wrath), so
+# a wrong reading vouched for itself and was never flagged (2026-10-21).
 for cid, ch, v, t in cdb.execute(
-        "SELECT canon_id, chapter, verse, text FROM verses WHERE corpus='ENG' AND canon_id >= ?", (a.canon_min,)):
+        "SELECT canon_id, chapter, verse, COALESCE(NULLIF(text_src, ''), text) FROM verses WHERE corpus='ENG' AND canon_id >= ?", (a.canon_min,)):
     try:
         ENG[(cid, int(ch), int(v))] = t or ''
     except (TypeError, ValueError):

@@ -58,6 +58,67 @@ Paleo in storage and pass the gate.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## THE BASELINE GLOSS IS THE WORD'S OWN ENGLISH + ITS CHIPS (added 2026-10-22)
+
+fieldy, Exodus 20:5 "ThaThaShachawah (you shall not bow yourself down to them) … WaLaa (And nOT) ThaIbadam (nor
+serve them them for I your),,": "clean up the baseline translations to not try so much context, it should use only
+the words and modifications that exist … ThaThaShachawah (you [reflexive] bow), ThaIbadam (you serve them), WaLaa
+(And not) … my baseline can be improved so its ready for me to apply my modifications within the parens of properly
+ordered hebrew words." Cause: the WEB tags English in CHUNKS ("to them, nor serve" -> H5647, "them, for I, Yahweh" ->
+H3068) and interlinear() put every leftover English word into the nearest pair's brackets.
+**modform-lib `baseGloss(word, gloss, verseEng)`**, used by `interlinear(…, { baseline: true })` (merge-modforms
+--corpus = MACHINE text only; saved verses never go through it; Gen 1-2 untouched):
+- keeps the chunk's content words — only those his lexicon gloss for the root names (4-letter stem match:
+  visiting/visit, serve/servant) when any does, else all; a phrasal particle after a kept word stays ("bow down");
+  a to/of inside one kept phrase stays ("came to pass");
+- each chip vouches for ONE English word, its own label first (𐤌 keeps "from", never "of" too; 𐤋 only to/for);
+  weave() then adds any chip English missing (and, the/who, in, his, them, "- plural");
+- subject: the WEB's own pronoun before the verb, else the prefix's person — I / we / you (2or3f only when the verse's
+  English has a 2nd-person word); never adds he/she/they;
+- the stem chip: `[reflexive]` (vbs-hit), `[causing]` (vbs-hif), placed on the verb ("to [causing] wise");
+- dropped: shall/will/am (from VERBS only — a noun's "might" stays), n't, a/the/of/on/not/nor no chip owns,
+  pronouns no chip owns, "yourself", joiners (even though, whoever …), "- plural" left twice, doubled words;
+- passes through unchanged: a gloss with "/" (his lexicon's "guilt/iniquity") or paleo (his placeholder);
+- fallback when no content word survives: what the chips vouch for + do/have ("HaIshah (who does)").
+interlinear baseline: a leftover LIGHT/aux English word is DROPPED, not put into a neighbour's brackets; ",," -> ",",
+",." -> ".". `lowerFirst()`: an all-caps word is lowered whole ("And not", never "And nOT") in weave + leadAnd.
+Measured (merge-modforms --corpus --dry, Exodus + Ps 1-30 + Matt 5-7, 1,611 verses changed; real DBs via a node:sqlite
+shim): 0 ",,", 0 "nOT", 0 "who who" (was in many verses), 0 "plural - plural", 0 empty "()". Ex 20:5 -> "Laa (NOT)
+ThaThaShachawah (you [reflexive] bow down), Lam (for them) WaLaa (And not) ThaIbadam (you serve them), Kay (surely)
+Anakay (I) … Banayam (children), Il (over) Shalashayam (third - plural) … LaShanaay (hate me),". verify-reading-glosses'
+hasLabel() does not count [reflexive]/[causing] (not modification-label atoms), unlabel() keeps them.
+Known, not caused by this (same with baseline off): 4 of those verses carry nested parens (Exod 1:1 "Matzarayam (Egypt)
+(Matzarayam (who came …"); Ruth 1:16 duplicates "WaAlahayam (and God)" and adds "Alahayamay (My alahayam)".
+NOT run on the real DBs: fieldy runs `cd server && node render-all.mjs` (full: fresh WEB chunks), restart, Rebake.
+
+## 𐤇𐤌𐤕 IS "WRATH" (H2534), NOT THE CITY HAMATH (H2574), OUTSIDE THE OT (added 2026-10-21)
+
+fieldy, Revelation 6:16 "from the wrath of the Lamb" read "Chamath (Hamath)" H2574: "I want the text to be the
+ruler ... use backward validation". The HEB edition writes 𐤇𐤌𐤕 chamath, the construct of chemah H2534 "heat /
+wrath" — NOT 𐤀𐤐 af. Backward check: Gen 27:44 𐤇𐤌𐤕 𐤀𐤇𐤉 (H2534) + 27:45 𐤀𐤐 𐤀𐤇𐤉 (H639) are rendered by the LXX
+together as "τὸν θυμὸν καὶ τὴν ὀργὴν" — both are wrath, and the Greek ὀργή does NOT decide which Hebrew word a
+verse uses; the verse's own Hebrew does. BHS tags 𐤇𐤌𐤕 H2534 83x vs Hamath 34x, but in the HEB OT the BARE word
+aligns Hamath 31 / wrath 20 (wrath mostly carries a suffix there), so bestOf's count gave every NT/Apocrypha
+𐤇𐤌𐤕 to the city: 145 occurrences (Rev 6:16, 14:8/10/19, 15:7, 16:1/19, 18:3, 19:15, Heb 11:27, Rom 3:13
+"poison", Acts 21:35, Apocrypha, Josephus "anger/indignation", 𐤌𐤇𐤌𐤕 "because of" …).
+**Fix (data, not a special case in code):** 14 hand_added entries in lexicon/heb-context-readings.json (𐤇𐤌𐤕,
+𐤌𐤇𐤌𐤕, 𐤅𐤇𐤌𐤕𐤌, 𐤁𐤇𐤌𐤕𐤌 …) -> H2534, from_agree 0 (switch unless the English names the place), and
+`"witness": "src"` — new in heb-align.js: the entry is judged against the verse's ORIGINAL English (text_src),
+because the rendered text already says "Chamath (Hamath)" and would vouch for the wrong reading. Dry run: 138
+switch to H2534, 7 stay Hamath (Josephus Ant 1:138 Amathus, 3:303, 7:107-108, 9:206, 10:82). "amath" is not a
+place word — text_src holds "amath (truth)" glosses. OT untouched (context readings run on canon 40+ only).
+Gloss: homographs.json "𐤇𐤌𐤄_H2534": "wrath / heat" (Strong's-keyed; 𐤇𐤌𐤄 also spells H2535 "sun").
+NOT run on the real DBs: `node build-surface-index.js` (log: context switches), `node render-all.mjs --surface`,
+restart, Rebake.
+**Why it slipped (fieldy: "that should be chamahath ... why did it slip"):** the no-eliding rule never failed —
+every 𐤇𐤌𐤕 tagged H2534 already bakes as 𐤇𐤌𐤄 + 𐤕 [Feminine] = Chamahath (50+ OT verses). Tagged H2574, the root IS
+𐤇𐤌𐤕, so there was no modification to expose. The safety net that should have caught the mis-tag,
+audit-heb-vs-english.py, judged words against the RENDERED English, which already said "Chamath (Hamath)" — the
+wrong reading vouched for itself. It now reads text_src (COALESCE(NULLIF(text_src,''),text)). Re-run 2026-10-21
+(server/heb-english-audit.txt): 114 A rows not yet in heb-context-readings.json, 43 high-confidence (𐤀𐤎𐤐 Asaph ->
+gather, 𐤉𐤓𐤇𐤌 Jeroham, 𐤉𐤀𐤉𐤓 Jair, 𐤎𐤊𐤅𐤕 Succoth -> huts, 𐤅𐤏𐤔𐤍 Ashan -> smoke, 𐤀𐤃𐤍𐤉𐤄 Adonijah …). NOT written —
+ask fieldy before `--write` (it regenerates the file; hand_added entries are kept).
+
 ## A LEXICON SAVE NEVER TAKES THE SITE DOWN — rebuilds run in the background (added 2026-10-16)
 
 fieldy: "I dont like how my app goes down when I make a change to a lex entry -- these updates should be
