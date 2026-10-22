@@ -53,10 +53,40 @@ code and refuses to push; step 5 bakes prod after the reseed with `--fix`); `dep
 `docker exec $NEW … --url http://localhost:3000` after the health check — on failure $NEW is removed and $OLD
 keeps serving). Never remove or weaken a step. A new ingest, route, page or file that shows Hebrew must leave
 Paleo in storage and pass the gate.
+**2026-10-22:** the DATA gate also checks/bakes corpus.db ENG `text_src` and translation.db `original_text` — 147:2:12's
+dagesh ("ּBal[aam]") lived in text_src, so every `render-all --surface` rendered it back into `text` after --fix and the
+Rebake gate failed again.
 **Measured 2026-10-16:** 17,156 HEB rows of 22 translated books + 33,347 Works Library rows stored square
 (7,701 pointed) and /api/source/HEB/* served them raw; /api/strongs sent square lemmas and the Root page
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
+
+## SAVED VERSES IN EXACT HEBREW ORDER, EVERY ENGLISH WORD IN A GLOSS (added 2026-10-22)
+
+fieldy, Lev 24:11 (his saved verse, in_progress): "this is too much english not in glosses. I now want to have the
+exact hebrew order and all and i will make the glosses work — the stray 'of, was, etc' should not be standalone
+english words but appropriately contextually correctly consumed into a gloss". SUPERSEDES "a verse he rewrote /
+formatted / linked / marked in_progress or done keeps his order" (2026-10-03).
+**merge-modforms --saved** now runs `interlinear(…, { maxResidue: 99, saved: true })` on every saved verse from Gen 3
+(Gen 1–2 untouched; `--keep-saved-order` turns it off): every Hebrew word in order; a word his English never named
+shows his lexicon/homograph gloss (`savedGloss`, else chip, else paleo placeholder); NOTHING of his is dropped —
+each English word goes into a gloss: "of" with the word BEFORE it (construct: "WaSham (And the name of) Amaw (his
+mother was)"); English standing between two words with an unnamed Hebrew word between them goes to that word — the
+one whose gloss it names ("afterwards" -> WaAcharay "after"), forced only when exactly one candidate; a verse-opening
+aside ("And indeed,") to the unnamed word it names (WaGam); the rest to the word after it / its clause. A pair
+written with other proclitics ("HaSham" for the verse's WaSham), a ≥80%-alike spelling ("dabarathay" /
+Dabarahathay) or Paleo letters ("𐤀𐤕 (…)") is that Hebrew word, shown as its token form ("athaw" -> "Athaw").
+Saved mode: a leading "but" stays (it carries the 𐤅: no "And but"), only ADJACENT repeats are trimmed. A sentence's
+end mark (. ; : ? !) closes the last of its words in Hebrew order; an opening quote goes to an unnamed word right
+before the quotation; an apostrophe inside a word ("Yahawah’s") is not a quotation mark. History row first; links
+follow their words (`reorderMap`: same word nearest relative position, else the form holding it); `<div>`-only rich
+text is re-wrapped around the new text. Dry run on his translation.db: 109 of 124 saved verses (Gen 3+) reordered,
+0 English words lost (one doubled "the" trimmed, Ps 91:9), 0 lowercase English outside a gloss, 23 of them carry
+his own links. Lev 24:11 -> "WaYaNaqab (And blasphemed / cursed) Ban (the son of) HaAyashah (the woman)
+HaYasharaalayath (the Israelite) Ath (the entirety of) HaSham (The Name) WaYaQalal (and he cursed it). WaYaBawayaaw
+(And then brought) Athaw (the entirety of his words) Al (to) Mashah (Moses). WaSham (And the name of) Amaw (his mother
+was) Shalamayath (), Banath (daughter of) Dabaray (Debri) LaMatah (of the tribe) Dan ()."
+Runs in render-all (after reseed) and Rebake step 5 on prod.
 
 ## A ROOT CHIP HOLDS THE STRONG'S ROOT: prefix / stem letters become chips, both editions (added 2026-10-22)
 
@@ -118,6 +148,11 @@ web-strongs.jsonl for the OT by `verses.code`):
    (between the great)", "Yahawah ThaYawashayainaw (don't save us) …");
 3. otherwise it is a gloss holding a Hebrew word: the inner word shows its English only, the outer word is not
    repeated — "Thamayamam (complete / whole blemish)", "Ahayah (I come to pass)", "Yashar-Al (Israel)".
+**Also (2026-10-22, render-all step 9 failed on Ezra 1:3):** a ONE-WORD or EMPTY bracket group that does not follow a word
+— the WEB aside "(he is God)" left after Hebrew ordering as "Hawaa (…) (Alahayam)", or "()," at a verse start — counts as
+stray (`hasNested`): its brackets go, so the word stands bare and fix-name-forms gives it "(God)". An English aside
+("(I speak as one beside himself.)") is prose and stays. ~83 rows, mostly 1 Enoch's editorial "(and)" / "(which)".
+merge-modforms --saved runs unnest too (before fix-name-forms; the gate's step-8 repair came after the name rule).
 Wired: merge-modforms --corpus (every machine verse, after interlinear); verify-reading-glosses `stale()` FAILS a
 nested gloss from Gen 3 on and `--fix` (render-all, rebake, deploy) repairs it via `freshen(text, key)` — his saved
 verses get a translation_history row first (link indices are not remapped; 3 verses).

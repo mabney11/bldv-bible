@@ -551,13 +551,22 @@ export function baseGloss(word, gloss, verseEng = '') {
 // of its parentheses, or one standing after another gloss (a word has one gloss), is shape 1.
 const _words = t => (String(t || '').toLowerCase().match(/[a-z]+/g) || []);
 // nested, a ")" with nothing open, or a "(" never closed — all need unnest()
-export const hasNested = text => { let d = 0; for (const ch of String(text || '')) { if (ch === '(') { if (++d > 1) return true; } else if (ch === ')') { if (!d) return true; d--; } } return d !== 0; };
+// a "(" belongs to the word right before it (Latin letters, a hyphenated name, or Paleo letters)
+const GLOSS_OPEN = /[A-Za-z0-9'’\-\u{10900}-\u{1091F}]\s?$/u;
+// a bracket group holding one word or nothing, (Alahayam) or (), is no aside; an English aside,
+// (I speak as one beside himself.), is prose and stays
+const LONE_GROUP = /^\(\s*[A-Za-z'’-]*\s*\)/;
+export const hasNested = text => { const t = String(text || ''); let d = 0;
+  for (let i = 0; i < t.length; i++) { const ch = t[i];
+    if (ch === '(') { if (++d > 1) return true; if (!GLOSS_OPEN.test(t.slice(Math.max(0, i - 3), i)) && LONE_GROUP.test(t.slice(i))) return true; }   // a one-word group after ")" / punctuation: the WEB aside (he is God) left as (Alahayam)
+    else if (ch === ')') { if (!d) return true; d--; } }
+  return d !== 0; };
 // The WEB's own "(" / ")" that the Hebrew-order pass carried around as punctuation ("Yaiqab (Jacob)):
 // … (Matzarayam (…") — a bracket that is not the gloss of the word right before it — go.
 function dropStrayBrackets(s) {
   const drop = new Set(), st = [];
   for (let i = 0; i < s.length; i++) {
-    if (s[i] === '(') st.push({ i, gloss: st.length > 0 || /[A-Za-z0-9'’-]\s?$/.test(s.slice(Math.max(0, i - 2), i)) });   // inside a group: the nesting pass decides
+    if (s[i] === '(') st.push({ i, gloss: st.length > 0 || GLOSS_OPEN.test(s.slice(Math.max(0, i - 3), i)) || !LONE_GROUP.test(s.slice(i)) });   // inside a group: the nesting pass decides; an English aside stays
     else if (s[i] === ')') { if (!st.length) drop.add(i); else { const o = st.pop(); if (!o.gloss) { drop.add(o.i); drop.add(i); } } }
   }
   for (const o of st) drop.add(o.i);   // never closed
@@ -773,8 +782,18 @@ export function interlinear(text, words, glossOf, opts = {}) {
     return words.find(h => !used.has(h) && norm(h.form) === n)
         || words.find(h => !used.has(h) && (h.rootTr === n || h.snTr === n))
         || (n.length >= 4 ? words.find(h => !used.has(h) && norm(h.form).endsWith(n)) : null)
-        || words.find(h => !used.has(h) && h.isName && squash(norm(h.form)) === squash(n)) || null;
+        || words.find(h => !used.has(h) && h.isName && squash(norm(h.form)) === squash(n))
+        // written with other proclitics ("HaSham" for the verse's WaSham): the same root, prefixes aside
+        || (() => { const bare = n.replace(/^(?:wa|ha|ba|la|ka|ma|sha)+(?=[a-z]{2})/, '');
+                    return bare !== n ? words.find(h => !used.has(h) && !h.isName && (h.rootTr === bare || h.snTr === bare)) || null : null; })()
+        // a spelling a little off the token's ("dabarathay" / Dabarahathay): the closest unused word, >= 80% alike
+        || (() => { if (n.length < 5) return null; let best = null, bs = 0;
+                    for (const h of words) { if (used.has(h) || h.isName) continue; const f = norm(h.form); const sc = 1 - lev(n, f) / Math.max(n.length, f.length); if (sc > bs) { bs = sc; best = h; } }
+                    return bs >= 0.8 ? best : null; })();
   };
+  function lev(a, b) { const d = Array.from({ length: a.length + 1 }, (_, i) => [i]); for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    return d[a.length][b.length]; }
   const els = [];
   let engWordsN = 0, residueN = 0;
   for (const m of text.matchAll(TOK)) {
@@ -798,7 +817,8 @@ export function interlinear(text, words, glossOf, opts = {}) {
         // the Hebrew word shown is the TOKEN's: a pair still written as its bare root ("palal")
         // becomes the verse's word ("ThaThaPalalaw"), its modifications woven into the English
         if (h && !isName && norm(m[3]) !== norm(h.form)) { els.push({ k: 'item', h, form: h.form, gloss: weave(h, opts.baseline ? baseGloss(h, gl, text) : gl), name: false }); continue; }
-        els.push({ k: 'item', h, form: m[3], gloss: (opts.baseline && h && !isName && gl) ? weave(h, baseGloss(h, gl, text)) : gl, name: isName });
+        // a found word is written as its token's form ("athaw" -> "Athaw", "banath" -> "Banath")
+        els.push({ k: 'item', h, form: (h && !isName && h.form) ? h.form : m[3], gloss: (opts.baseline && h && !isName && gl) ? weave(h, baseGloss(h, gl, text)) : gl, name: isName });
         continue;
       }
       // a bare Hebrew word (a name, Yahawah, Alahayam) or English
@@ -826,14 +846,23 @@ export function interlinear(text, words, glossOf, opts = {}) {
   // Hebrew word with no English stands right after the previous word, the leftover is ITS
   // English ("Blessed are the gentle," → HaInawayam, not Asharay)
   const gapItems = [];
-  const gapWord = (j) => {
-    if (!prev || !prev.h || !buf.some(w => !LIGHT.has(w.toLowerCase()))) return null;
+  const stem4 = x => x.toLowerCase().replace(/[^a-z]/g, '').slice(0, 4);
+  const glossNames = (x, b) => { const g = ((x.comps.find(c => isRootCss(c.css)) || x.comps[x.comps.length - 1] || {}).translation || '') + ' ' + (glossOf ? glossOf(x) || '' : '');
+    const gs = new Set((String(g).toLowerCase().match(/[a-z]+/g) || []).map(stem4)); return b.some(w => w.length > 1 && gs.has(stem4(w))); };
+  const gapWord = (j, force) => {
+    if ((!prev || !prev.h) && !force) return null;
+    if (!force && !buf.some(w => !LIGHT.has(w.toLowerCase()))) return null;
     let bound = Infinity;
     for (let q = j; q < els.length; q++) if (els[q].k === 'item' && els[q].h) { bound = els[q].h.ord; break; }
-    const w = words.filter(x => !used.has(x) && !x.isName && x.sn !== 'H853' && x.ord > prev.h.ord && x.ord < bound).sort((a, b) => a.ord - b.ord)[0];
+    const lo = prev && prev.h ? prev.h.ord : -Infinity;
+    const cands = words.filter(x => !used.has(x) && !x.isName && x.sn !== 'H853' && x.ord > lo && x.ord < bound).sort((a, b) => a.ord - b.ord);
+    // the word whose gloss the English names ("afterwards" -> WaAcharay "after"); forced, only a
+    // single candidate or a named one — never a guess between several
+    let w = cands.find(x => glossNames(x, buf)) || null;
+    if (!w && (!force || cands.length === 1)) w = cands[0] || null;
     if (!w) return null;
     used.add(w);
-    const gi = { k: 'item', h: w, form: w.form, gloss: weave(w, opts.baseline ? baseGloss(w, buf.join(' '), text) : buf.join(' ')), name: false, lead: '', trail: '', pre: [], suf: [], ei: prev.ei + 0.5, gap: true };
+    const gi = { k: 'item', h: w, form: w.form, gloss: weave(w, opts.baseline ? baseGloss(w, buf.join(' '), text) : buf.join(' ')), name: false, lead: '', trail: '', pre: [], suf: [], ei: (prev ? prev.ei : -1) + 0.5, gap: true };
     gapItems.push(gi); buf = [];
     return gi;
   };
@@ -851,8 +880,9 @@ export function interlinear(text, words, glossOf, opts = {}) {
         if (buf.length) { const tgt = (prev && glossed(prev)) ? prev : (nearestGlossed(prev ? prev.ei : 0, -1) || nearestGlossed(prev ? prev.ei + 1 : 0, 1)); flushTo(tgt, tgt === prev ? 'suf' : 'pre'); }
         pendingLead += e.t; continue;
       }
-      // closer / clause punctuation: residue so far belongs to the item before it
-      if (buf.length) { const gi = gapWord(j); if (gi) prev = gi; }
+      // closer / clause punctuation: residue so far belongs to the item before it (a saved verse's
+      // opening aside, "And indeed,", goes to the unnamed word it names — WaGam)
+      if (buf.length) { const gi = gapWord(j, !opts.baseline && !prev); if (gi) { if (!prev) { gi.lead = pendingLead; pendingLead = ''; } prev = gi; } }
       if (buf.length) {
         const tgt = (prev && glossed(prev)) ? prev : (nearestGlossed(prev ? prev.ei : -1, -1) || nearestGlossed(prev ? prev.ei + 1 : 0, 1));
         if (tgt) { const wh = prev && tgt.ei <= prev.ei ? 'suf' : 'pre'; flushTo(tgt, wh); }
@@ -861,6 +891,13 @@ export function interlinear(text, words, glossOf, opts = {}) {
       continue;
     }
     // an item
+    // "of" (and an "of the" run) is the construct of the word BEFORE it — "HaSham (the name of)
+    // Amaw" — when no punctuation stands between (fieldy, 2026-10-22: stray words "appropriately
+    // contextually correctly consumed into a gloss")
+    if (buf.length && /^of$/i.test(buf[0]) && prev && glossed(prev) && !prev.trail) prev.suf.push(buf.shift());
+    // English between two words with an unnamed Hebrew word between them is THAT word's ("… to
+    // Mashah" where the Hebrew has 𐤀𐤋): saved verses (not baseline, which drops helpers)
+    if (buf.length && !opts.baseline && e.h) { const gi = gapWord(j, true); if (gi) { prev = gi; gi.lead = pendingLead; pendingLead = ''; } }
     if (buf.length) {
       // English right before a word is that word's ("and the" + HaAretz); before a name it goes
       // to the word before the name, or else the one after it
@@ -911,30 +948,40 @@ export function interlinear(text, words, glossOf, opts = {}) {
     const firstS = S.reduce((a, b) => (pos.get(b) < pos.get(a) ? b : a)), lastS = S.reduce((a, b) => (pos.get(b) > pos.get(a) ? b : a));
     let head = firstS;
     // Hebrew words the English had no word for, right before the quotation, open it ("Ap Kay")
-    for (let q = pos.get(head) - 1; q >= 0 && ordered[q].added && !ordered[q].trail; q--) head = ordered[q];
+    for (let q = pos.get(head) - 1; q >= 0 && (ordered[q].added || ordered[q].gap) && !ordered[q].trail; q--) head = ordered[q];
     if (head !== X) { const l = X.lead; X.lead = head.lead; head.lead = l; }
     if (/[”’"']/.test(itemsE[k].trail) && lastS !== itemsE[k]) { const t = itemsE[k].trail; itemsE[k].trail = lastS.trail; lastS.trail = t; }
     i = k;
   }
+  // a sentence's end mark (. ; : ? !) closes the last of its words in Hebrew order
+  { let st = 0;
+    for (let i = 0; i < itemsE.length; i++) {
+      const m = /^([.;:!?]+)$/.exec(itemsE[i].trail);
+      if (!m) continue;
+      const S = itemsE.slice(st, i + 1).filter(it => pos.has(it)); st = i + 1;
+      if (!S.length) continue;
+      const lastS = S.reduce((a, b) => (pos.get(b) > pos.get(a) ? b : a));
+      if (lastS !== itemsE[i] && !/[.;:!?]/.test(lastS.trail)) { itemsE[i].trail = ''; lastS.trail = lastS.trail.replace(/[,]+$/, '') + m[1]; }
+    } }
   // the verse's first opener and its final punctuation stay at the ends
   const firstE = itemsE[0], lastE = itemsE[itemsE.length - 1], firstH = ordered[0], lastH = ordered[ordered.length - 1];
   if (firstE !== firstH && firstE.lead && !firstH.lead) { firstH.lead = firstE.lead; firstE.lead = ''; }
   if (lastE !== lastH && /[.!?]/.test(lastE.trail)) { const t = lastE.trail; lastE.trail = lastH.trail; lastH.trail = t; }
   const dedupe = g => { const t = g.split(' '); const out2 = [];
-    for (let i = 0; i < t.length; i++) { const w = t[i].toLowerCase(); if (/^(the|and|in|of|to|a|an)$/.test(w) && out2.slice(-3).some(x => x.toLowerCase() === w)) continue; out2.push(t[i]); }
+    for (let i = 0; i < t.length; i++) { const w = t[i].toLowerCase(); if (/^(the|and|in|of|to|a|an)$/.test(w) && (opts.saved ? (out2.length && out2[out2.length - 1].toLowerCase() === w) : out2.slice(-3).some(x => x.toLowerCase() === w))) continue; out2.push(t[i]); }
     return out2.join(' '); };
   const render = it => {
     let g = dedupe([...it.pre, it.gloss || '', ...it.suf].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim());
-    if (it.h && hasConj(it.h) && /^Wa/.test(it.form) && (it.gloss !== null || it.pre.length || it.suf.length)) g = leadAnd(g);
+    if (it.h && hasConj(it.h) && /^Wa/.test(it.form) && (it.gloss !== null || it.pre.length || it.suf.length)) g = leadAnd(g, !!opts.saved);
     const body = it.gloss === null && !it.pre.length && !it.suf.length ? it.form : `${it.form} (${g})`;
     return it.lead + body + it.trail;
   };
   // the verse starts a sentence: its first gloss does too ("WaYaShalach (And sent)")
   { const f = ordered.find(it => it.gloss !== null || it.pre.length);
     if (f && f === ordered[0]) { if (f.pre.length) f.pre[0] = f.pre[0][0].toUpperCase() + f.pre[0].slice(1); else if (f.gloss) f.gloss = f.gloss[0].toUpperCase() + f.gloss.slice(1); } }
-  let res = ordered.map(render).join(' ').replace(/\s+([,.;:!?”’)])/g, '$1').replace(/\s+/g, ' ').trim();
+  let res = ordered.map(render).join(' ').replace(/\s+([,.;:!?”’)])/g, '$1').replace(/\s+/g, ' ').trim().replace(/^[,;:]+\s*/, '');
   if (opts.baseline) res = res.replace(/([,;:])(?:\s*[,;:])+/g, '$1').replace(/[,;:]\s*([.!?])/g, '$1').replace(/^[,;:]\s*/, '');   // ",," left by dropped helpers
-  const quotes = s => (s.replace(/\((?:[^()]|\([^()]*\))*\)/g, '').match(/[“”‘’"]/g) || []).join('');
+  const quotes = s => (s.replace(/\((?:[^()]|\([^()]*\))*\)/g, '').replace(/(?<=[A-Za-z])[’'](?=[A-Za-z])/g, '').match(/[“”‘’"]/g) || []).join('');   // "Yahawah’s" is an apostrophe, not a quote
   if (quotes(res) !== quotes(text)) { out.why = 'quotes'; return out; }
   out.text = res; out.ok = true;
   return out;
@@ -945,14 +992,14 @@ export function interlinear(text, words, glossOf, opts = {}) {
 // A word carrying the conjunction 𐤅 starts its English with "and": an "and" found later in
 // the gloss moves to the front, a leading "but" gives way to it, everything else stays
 // ("And so came", "and Joseph"). A sentence's capital moves to "And".
-export function leadAnd(g) {
+export function leadAnd(g, keepBut = false) {
   let s = String(g || '').replace(/\s+/g, ' ').trim();
   if (!s) return 'and';
   const cap = /^[A-Z]/.test(s);
   let t = s.split(' ');
   const ai = t.findIndex(w => /^and$/i.test(w));
   if (ai === 0) t.shift(); else if (ai > 0) t.splice(ai, 1);
-  if (t.length && /^but$/i.test(t[0])) t.shift();
+  if (t.length && /^but$/i.test(t[0])) { if (keepBut) return s; t.shift(); }   // his saved "but" stays — it carries the 𐤅 itself
   if (t.length && cap) {
     const first = t[0];
     const keep = first === 'I' || (!LIGHT.has(first.toLowerCase()) && (NAME_ENG.has(first.toLowerCase()) || REVERENT.has(first.replace(/[’']s$/, ''))));

@@ -112,7 +112,7 @@ if (!urlArg) {
             if (shown++ < 8) console.log(`      ${r.ref}: ${sample(cols.map(c => r[c] || '').join(' | '))}`);
         }
         if (todo.length) {
-            db.transaction(() => { for (const r of todo) { upd.run(...cols.map(c => toPaleoDisplay(r[c])), ...fixable.key(r)); fixed++; } })();
+            db.transaction(() => { for (const r of todo) { upd.run(...cols.map(c => (typeof r[c] === 'string' ? toPaleoDisplay(r[c]) : r[c])), ...fixable.key(r)); fixed++; } })();
             console.log(`    ${label}: ${fixed} row(s) baked to Paleo`);
         }
         if (bad) fail(`${label}: ${bad} row(s) hold square script` + (!fixable ? ' (rebuild it)' : !FIX ? ' (bake with --fix)' : ' (verses fieldy saved — fix them in the Studio)'));
@@ -120,15 +120,18 @@ if (!urlArg) {
     };
     if (fs.existsSync(corpusP)) {
         const db = new Database(corpusP, { readonly: !FIX });
-        for (const corp of ['HEB', 'ENG'])
-            scan(db, `corpus.db ${corp} text`, `SELECT id, coalesce(canon_id, code)||' '||chapter||':'||verse AS ref, text FROM verses WHERE corpus = '${corp}'`,
-                 ['text'], { table: 'verses', where: 'id = ?', isMachine: () => true, key: r => [r.id] });
+        scan(db, `corpus.db HEB text`, `SELECT id, coalesce(canon_id, code)||' '||chapter||':'||verse AS ref, text FROM verses WHERE corpus = 'HEB'`,
+             ['text'], { table: 'verses', where: 'id = ?', isMachine: () => true, key: r => [r.id] });
+        // ENG text_src too (2026-10-22): it is the English every `render-all --surface` renders FROM —
+        // a dagesh left there (147:2:12 "ּBal[aam]") came back in `text` on every render after --fix
+        scan(db, `corpus.db ENG text`, `SELECT id, coalesce(canon_id, code)||' '||chapter||':'||verse AS ref, text, text_src FROM verses WHERE corpus = 'ENG'`,
+             ['text', 'text_src'], { table: 'verses', where: 'id = ?', isMachine: () => true, key: r => [r.id] });
         db.close();
     } else fail(`missing ${corpusP}`);
     if (fs.existsSync(transP)) {
         const db = new Database(transP, { readonly: !FIX });
-        scan(db, 'translation.db translations', `SELECT book_id, chapter, verse, book_id||':'||chapter||':'||verse AS ref, text, rich_text, status FROM translations`,
-             ['text', 'rich_text'], { table: 'translations', where: 'book_id = ? AND chapter = ? AND verse = ?',
+        scan(db, 'translation.db translations', `SELECT book_id, chapter, verse, book_id||':'||chapter||':'||verse AS ref, text, rich_text, original_text, status FROM translations`,
+             ['text', 'rich_text', 'original_text'], { table: 'translations', where: 'book_id = ? AND chapter = ? AND verse = ?',
                                       isMachine: r => r.status === 'none' && !r.rich_text, key: r => [r.book_id, r.chapter, r.verse] });
         db.close();
     } else fail(`missing ${transP}`);

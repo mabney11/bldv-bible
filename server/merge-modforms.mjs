@@ -71,6 +71,20 @@ const hebWords = (c, ch, v) => {
 // Old whitespace-token positions -> new ones (translation_links english_indices). Words
 // that survive are matched by LCS on their letters; a head word that became its full form
 // ("akal" -> "NaAkal") maps to the unmatched new token in the same gap.
+// Words that MOVED (Hebrew order): each old word -> the same word wherever it now stands (nearest
+// relative position among equals), else the full form holding it ("malaak" in "HaMalaak"), else nearest.
+export function reorderMap(oldText, newText) {
+  const a = oldText.split(/\s+/).filter(Boolean), b = newText.split(/\s+/).filter(Boolean);
+  const k = t => t.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const ka = a.map(k), kb = b.map(k), n = a.length, m = b.length, used = new Set();
+  const rel = (i, j) => Math.abs(j / Math.max(1, m) - i / Math.max(1, n));
+  const best = (i, ok) => { let pick = -1; for (let j = 0; j < m; j++) if (!used.has(j) && ok(j) && (pick < 0 || rel(i, j) < rel(i, pick))) pick = j; return pick; };
+  const map = new Array(n).fill(-1);
+  for (let i = 0; i < n; i++) if (ka[i]) { const j = best(i, j => kb[j] === ka[i]); if (j >= 0) { map[i] = j; used.add(j); } }
+  for (let i = 0; i < n; i++) if (map[i] < 0 && ka[i].length >= 2) { const j = best(i, j => kb[j].includes(ka[i]) && /[A-Z]/.test(b[j])); if (j >= 0) { map[i] = j; used.add(j); } }
+  for (let i = 0; i < n; i++) if (map[i] < 0) { const j = best(i, () => true); map[i] = j >= 0 ? j : Math.max(0, Math.min(m - 1, Math.round(i * m / Math.max(1, n)))); if (j >= 0) used.add(j); }
+  return map;
+}
 export function indexMap(oldText, newText) {
   const a = oldText.split(/\s+/).filter(Boolean), b = newText.split(/\s+/).filter(Boolean);
   const k = t => t.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -441,6 +455,36 @@ if (CORPUS) {
   const ownLinks = tdb.prepare(`SELECT count(*) n FROM translation_links WHERE book_id = ? AND chapter = ? AND verse = ? AND lang NOT LIKE '%auto%'`);
   const release = DRY ? null : tdb.prepare(`UPDATE translations SET text = ?, rich_text = '', original_text = ?, updated_at = datetime('now') WHERE book_id = ? AND chapter = ? AND verse = ?`);
   let released = 0, woven = 0, respelled = 0; const releasedRefs = [], keptOrder = [];
+  // ── YOUR SAVED VERSES IN HEBREW ORDER (fieldy, 2026-10-22) ─────────────────────────────
+  // "this is too much english not in glosses. I now want to have the exact hebrew order and all
+  // and i will make the glosses work — the stray 'of, was, etc' should not be standalone english
+  // words but appropriately contextually correctly consumed into a gloss". Every saved verse from
+  // Gen 3 on goes through interlinear(): every Hebrew word in order (a word your English never
+  // named shows its chip gloss / placeholder), each English word YOU wrote inside the brackets of
+  // the word it goes with ("of" with the word before it, "the" / "and" / a preposition with the word
+  // after, the rest with its clause). Nothing of yours is dropped. History row first, links follow
+  // their words (reorderMap); <div>-only rich text is re-wrapped. --keep-saved-order turns it off.
+  let reordered = 0; const notReordered = [];
+  const ORIG_S = MF.loadOrigEnglish(cdb, __dirname);   // which brackets are the WEB's own (unnest)
+  const tidyG = g => String(g || '').replace(/\[[^\]]*\]/g, ' ').replace(/\([^()]*\)/g, ' ').replace(/\s+/g, ' ').replace(/^[\s\/]+|[\s\/]+$/g, '').trim();
+  // his lexicon / homographs first (𐤂𐤌 "indeed / moreover", 𐤀𐤍𐤊𐤉 "I"), else the chip, else his placeholder
+  let SLEX = {}, SHOM = {};
+  try { SLEX = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'lexicon.json'), 'utf8')); } catch { SLEX = {}; }
+  try { SHOM = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'homographs.json'), 'utf8')); } catch { SHOM = {}; }
+  const savedGloss = h => {
+    const root = h.comps.find(c => c.css === 'root' || c.css === 'mod-nmpr') || h.comps.find(c => /^mod-/.test(c.css || '') && c.css !== 'mod-conj' && c.css !== 'mod-art') || h.comps[h.comps.length - 1];
+    const rp = root ? (root.true_root || root.paleo) : '';
+    let g = (rp && typeof SHOM[`${rp}_${h.sn}`] === 'string' && tidyG(SHOM[`${rp}_${h.sn}`])) || (rp && typeof SLEX[rp] === 'string' && tidyG(SLEX[rp])) || (root ? tidyG(root.translation) : '');
+    if (!g || /^\[.*\]$/.test(g)) g = root ? root.paleo : '';
+    return g ? MF.weave(h, g) : '';
+  };
+  // a pair written with Paleo letters as its word ("𐤀𐤕 (the entirety of)") is that Hebrew word
+  const paleoPairs = (t, ws) => t.replace(/([\u{10900}-\u{1091F}]+)(\s*\()/gu, (m, p, rest) => {
+    const h = ws.find(x => x.comps.map(c => c.paleo).join('') === p || (x.word_raw && x.word_raw === p));
+    return h ? h.form + rest : m;
+  });
+  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const divOnly = rt => /<[a-z]/i.test(rt) && !/<(?!\/?(div|br)\b)[a-z\/][^>]*>/i.test(rt);
   tdb.transaction(() => {
     for (const r of rows) {
       if (!MF.modformApplies(r.c, r.ch)) continue;
@@ -463,14 +507,22 @@ if (CORPUS) {
       const t1 = MF.respellRetired(u.text); if (t1 !== u.text) respelled++;
       const t2 = MF.mergeModforms(t1, ws);
       const fixRich = x => MF.mergeModforms(MF.respellRetired(MF.unlabel(x, ws).text), ws).text;
-      const rich = !r.rt ? r.rt : (r.rt === r.text ? t2.text : fixRich(r.rt));
+      let moved = false;
+      if (!KEEP_ORDER && ws.length) {
+        const il = MF.interlinear(paleoPairs(t2.text, ws), ws, savedGloss, { maxResidue: 99, saved: true });
+        if (il.ok) { if (il.text !== t2.text) { t2.text = il.text; moved = true; reordered++; } }
+        else notReordered.push(`${r.c}:${r.ch}:${r.v} (${il.why})`);
+      }
+      // no gloss inside a gloss, no stray one-word bracket — before fix-name-forms sees the verse
+      { const u2 = MF.unnest(t2.text, ORIG_S.get(`${r.c}|${+r.ch}|${+r.v}`) || ''); if (u2 !== t2.text) { t2.text = u2; moved = true; } }
+      const rich = !r.rt ? r.rt : (r.rt === r.text ? t2.text : (moved && divOnly(r.rt) ? `<div>${esc(t2.text)}</div>` : fixRich(r.rt)));
       if (t2.text === r.text && rich === r.rt) continue;
       changed++; pairs += t2.n;
       samples.push(`${r.c}:${r.ch}:${r.v}\n    was: ${r.text}\n    now: ${t2.text}`);
       if (DRY) continue;
       histIns.run(r.c, r.ch, r.v, r.status, r.text, r.rt);
       upd.run(t2.text, rich, r.c, r.ch, r.v);
-      const map = indexMap(r.text, t2.text);
+      const map = moved ? reorderMap(r.text, t2.text) : indexMap(r.text, t2.text);
       for (const l of linkSel.all(r.c, r.ch, r.v)) {
         let ix; try { ix = JSON.parse(l.english_indices || '[]'); } catch { continue; }
         const nix = [...new Set(ix.map(i => (i >= 0 && i < map.length) ? map[i] : i))];
@@ -481,6 +533,8 @@ if (CORPUS) {
   console.log(`saved verses: ${woven} [label](s) woven into their English, ${respelled} verse(s) respelled (reading-form-rules.json), ` +
               `${released} saved without a rewrite handed back to the machine text (Hebrew word order)${released ? ': ' + releasedRefs.join(' ') : ''}`);
   if (keptOrder.length) console.log(`  kept as you wrote them, English outside the brackets (${keptOrder.length}): ${keptOrder.join(', ')}`);
+  console.log(`  Hebrew order: ${reordered} saved verse(s) put in Hebrew word order, every English word in a gloss` +
+              (notReordered.length ? `; NOT reordered (${notReordered.length}): ${notReordered.join(', ')}` : ''));
   tdb.close();
   console.log(`modification forms (your saved verses, Gen 3 on): ${changed} of ${seen} verses merged, ${pairs} words upgraded, ` +
               `${linkRows} link rows re-indexed${DRY ? ' (dry run — nothing written)' : ' — the old wording of each is in translation_history'}`);
