@@ -764,6 +764,50 @@ function buildHebSurfaces(o) {
         log(`  proclitic glosses taken from BHS: ${[...PROC_COMPS.keys()].join(' ') || '(none found)'}`);
     }
 
+    // ── proclitics glued INTO a fallback root chip (fieldy, 2026-10-22) ─────────
+    // Revelation 6:15 𐤅𐤄𐤕𐤒𐤉𐤐𐤉𐤌 rendered "Wahathaqayapayam": the tokens_nt fallback took
+    // the NT row's reading whole, and its ONE root chip was 𐤅𐤄𐤕𐤒𐤉𐤐 — 𐤅 [And] and 𐤄 [The]
+    // inside the root, while the Strong's root H8630 is 𐤕𐤒𐤐 Thaqap. He expects
+    // "WaHaThaqayapayam". Every letter before the Strong's root's first letter that is a
+    // proclitic (≤3, 𐤅 only first, in Hebrew order) becomes the same chip the OT gives
+    // that letter (PROC_COMPS); the root chip keeps the rest, which must still hold the
+    // root's letters. Names are never peeled (Beer-sheba's 𐤁). Fallback tiers only — a
+    // stem letter the OT itself keeps in its root chip (Niphal 𐤄, participle 𐤌) is not
+    // a proclitic and is not touched here.
+    const SN_ROOT = new Map();
+    {
+        let R = null;
+        try { R = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, 'lexicon', 'strongs-roots.json'), 'utf8')); } catch { R = null; }
+        if (R) for (const [sn, p] of Object.entries(R)) if (typeof p === 'string' && p) SN_ROOT.set(_normH(sn), p);
+    }
+    // Hebrew order: 𐤅, then 𐤔, then one of 𐤌 𐤁 𐤋 𐤊, then 𐤄 (𐤋+𐤄+𐤔 is not Hebrew)
+    const PROC_RANK = new Map([['\u{10905}', 0], ['\u{10914}', 1], ['\u{1090C}', 2], ['\u{10901}', 2], ['\u{1090B}', 2], ['\u{1090A}', 2], ['\u{10904}', 3]]);
+    let peeledFallback = 0;
+    const peelGluedProclitics = (comp) => {
+        const cs = comp && comp.components;
+        if (!Array.isArray(cs) || /nmpr/.test(comp.pos || '')) return comp;
+        const ri = cs.findIndex(c => c && c.css === 'root');
+        if (ri < 0) return comp;
+        const can = [...(SN_ROOT.get(_normH(comp.strongs)) || '')];
+        const rp = [...(cs[ri].paleo || '')];
+        if (!can.length || !rp.length || rp[0] === can[0]) return comp;
+        const k = rp.indexOf(can[0]);
+        if (k <= 0 || k > 3) return comp;
+        let lead = rp.slice(0, k), rest = rp.slice(k);
+        // a verb's 𐤄 after a preposition is its infinitive's stem letter (𐤁𐤄𐤈𐤁𐤋 "when immersing"), never
+        // "the" — it stays with the root, as the OT keeps it
+        if (/verb/.test(comp.pos || '') && lead.length > 1 && lead[lead.length - 1] === '\u{10904}' && PROC_RANK.get(lead[lead.length - 2]) === 2) { rest = [lead[lead.length - 1], ...rest]; lead = lead.slice(0, -1); }
+        if (!lead.every(ch => PROCLITIC_SET.has(ch) && PROC_COMPS.has(ch))) return comp;
+        for (let a = 1; a < lead.length; a++) if (!(PROC_RANK.get(lead[a]) > PROC_RANK.get(lead[a - 1]))) return comp;
+        { let q = 0; for (const ch of rest) if (q < can.length && ch === can[q]) q++; if (q < can.length) return comp; }   // the rest still spells the root
+        const pre = lead.flatMap(ch => PROC_COMPS.get(ch).components.map(c => ({ ...c })));
+        const root = { ...cs[ri], paleo: rest.join(''), translit: '' };   // build-surface-index re-spells it in its word
+        peeledFallback++;
+        const components = [...cs.slice(0, ri), ...pre, root, ...cs.slice(ri + 1)];
+        const all = [...new Set([...lead.map(ch => PROC_COMPS.get(ch).strongs).filter(Boolean), ...(comp.all_strongs || [])])];
+        return { ...comp, components, all_strongs: all, rendered_paleo: components.map(c => c.paleo).join('') };
+    };
+
     // ── attested components for a bare SUFFIX tail (added 2026-07-29) ────────
     // Every prefix tier above (particle, proclitic) has a mirror-image gap on
     // the SUFFIX side that this file never closed: a fused word ending in a
@@ -1645,7 +1689,7 @@ function buildHebSurfaces(o) {
                             const pb = bestOf(cand.prefix);
                             if (pb) prefixComponents = JSON.parse(surfaces.get(pb.key).components_json);
                             else prefixComponents = [{ paleo: cand.prefix, translit: '', translation: '', css: 'mod-pref', derived: true }];
-                            const comp = buildFallbackComp(parsed, normSN, ntRow.pos, ntRow.morph, prefixComponents);
+                            const comp = peelGluedProclitics(buildFallbackComp(parsed, normSN, ntRow.pos, ntRow.morph, prefixComponents));
                             record(w, comp, 'nt_tokens_nt_fallback', false);
                             occurrences.push({
                                 source: corpus, word_raw: w, strongs: normSN,
@@ -1670,12 +1714,12 @@ function buildHebSurfaces(o) {
                             const parsed = parseToken(ntRow.word_raw, ntRow.pos, ntRow.morph, ntRow.strongs);
                             if (parsed && parsed.components && parsed.components.length) {
                                 const normSN = 'H' + String(ntRow.strongs).replace(/^H+/i, '');
-                                const comp = {
+                                const comp = peelGluedProclitics({
                                     components: parsed.components,
                                     strongs: normSN, pos: ntRow.pos || '', morph: ntRow.morph || '',
                                     root_paleo: parsed.root_paleo, rendered_paleo: parsed.rendered_paleo,
                                     all_strongs: [normSN],
-                                };
+                                });
                                 record(w, comp, 'nt_tokens_nt_fallback', false);
                                 occurrences.push({
                                     source: corpus, word_raw: w, strongs: normSN,
@@ -1916,6 +1960,8 @@ function buildHebSurfaces(o) {
     stats.lexiconOverSplit = lexiconOverSplit;
     stats.forcedReadingMisses = [...forcedReadingMisses].map(([w, alts]) => `${w} (offered: ${alts})`);
     stats.ntTokensNtFallback = ntTokensNtFallback;
+    stats.peeledFallback = peeledFallback;
+    log(`  fallback readings: ${peeledFallback.toLocaleString()} root chips had glued proclitics peeled into their own chips (𐤅𐤄𐤕𐤒𐤉𐤐 -> [And] [The] 𐤕𐤒𐤉𐤐)`);
     stats.contextSwitches = contextSwitches;
     stats.contextVetoed = contextVetoed;
     stats.contextMisses = [...contextMisses].map(([w, sn]) => `${w}->${sn}`);

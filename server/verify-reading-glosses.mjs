@@ -258,7 +258,7 @@ const peel = (w) => { const out = new Set([w]); const q = [w];
 // ("though (they were)"); a capitalised gloss that is a proper noun there is a NAME pair,
 // governed by the name-form rules, not by this gate.
 const engSrc = new Map();   // "c|ch|v" -> { lower:Set, caps:Set }
-const addEng = (k, t) => { const e = { lower: new Set(), caps: new Set() };
+const addEng = (k, t) => { const e = { lower: new Set(), caps: new Set(), raw: String(t || '') };
   for (const w of String(t || '').match(/[A-Za-z][A-Za-z'’-]*/g) || []) { e.lower.add(w.toLowerCase()); if (/^[A-Z]/.test(w)) e.caps.add(w); }
   engSrc.set(k, e); };
 for (const r of cdb.prepare(`SELECT canon_id c, chapter ch, verse v, text_src FROM verses WHERE corpus='ENG' AND canon_id > 39 AND text_src IS NOT NULL AND text_src != ''`).iterate())
@@ -369,11 +369,13 @@ function unwrap(text, vs) {
 const RETIRED = MF.retiredForms();
 const stale = (c, ch, text) => {
   const why = [];
+  // fieldy 2026-10-22: "clean up the double nesting … show english glosses instead of doubling the hebrew transliteration"
+  if (MF.modformApplies(c, ch) && MF.hasNested(text)) why.push('a gloss inside a gloss — "Thamayamam (thamayam (complete / whole) blemish)": the WEB\'s own brackets go, an inner word shows its English');
   if (MF.modformApplies(c, ch) && MF.hasLabel(text)) why.push('a modification [label] inside a gloss — its meaning belongs in the English ("take [and]" → "and take")');
   for (const R of RETIRED) { const m = R.re.exec(text); if (m) why.push(`"${m[0]}" — retired spelling, write ${R.form} (lexicon/reading-form-rules.json)`); }
   return why;
 };
-const freshen = text => MF.respellRetired(MF.unlabel(text, []).text);
+const freshen = (text, key) => MF.respellRetired(MF.unnest(MF.unlabel(text, []).text, ((key && engSrc.get(key)) || {}).raw || ''));
 let fixedStale = 0;
 
 const violations = [];   // printable, fatal
@@ -387,7 +389,7 @@ let fixedCorpus = 0, fixedTrans = 0, fixedSaved = 0, linkRows = 0;
     for (const r of rows) {
       const key = `${r.c}|${+r.ch}|${+r.v}`;
       { const st = stale(r.c, r.ch, r.text);
-        if (st.length) { if (FIX) { r.text = freshen(r.text); upd.run(r.text, r.id); fixedStale++; } else for (const w of st) violations.push(`corpus ${key.replace(/\|/g, ':')}  ${w}`); } }
+        if (st.length) { if (FIX) { r.text = freshen(r.text, key); upd.run(r.text, r.id); fixedStale++; } else for (const w of st) violations.push(`corpus ${key.replace(/\|/g, ':')}  ${w}`); } }
       const vs = check(key, r.text); if (!vs.length) continue;
       if (FIX) {
         // a shared spelling's wrong owner gloss: the right English in its place ("Am (mother)" -> "Am (if)")
@@ -420,7 +422,7 @@ if (existsSync(TRANS_DB)) {
       { const st = stale(r.c, r.ch, r.text).concat(r.rt && r.rt !== r.text ? stale(r.c, r.ch, r.rt) : []);
         if (st.length) {
           if (FIX) {
-            const t = freshen(r.text), rich = r.rt ? freshen(r.rt) : r.rt;
+            const t = freshen(r.text, key), rich = r.rt ? freshen(r.rt, key) : r.rt;
             if (seeded) upd.run(t, r.text, t, r.c, r.ch, r.v); else { histIns.run(r.c, r.ch, r.v, r.status, r.text, r.rt); savedUpd.run(t, rich, r.c, r.ch, r.v); }
             r.text = t; r.rt = rich; fixedStale++;
           } else for (const w of [...new Set(st)]) violations.push(`translation ${key.replace(/\|/g, ':')}${seeded ? '' : '  [your saved verse — merge-modforms.mjs --saved rewrites it]'}  ${w}`);

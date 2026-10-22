@@ -2366,7 +2366,7 @@ function fixBareChipTranslits(v) {
     comps.forEach((c, i) => {
         const chars = [...((c && c.paleo) || '')];
         const start = cur; cur += chars.length;
-        if (!chars.length || cur === total) return;                 // the word's last chip keeps its final form
+        if (!chars.length || (cur === total && c.translit)) return;  // the word's last chip keeps its final form (a blank one is spelled: a peeled fallback root)
         if (c.translit && VOWEL_RE.test(c.translit)) return;          // already positional
         let t = '';
         chars.forEach((ch, k) => { const m = CHAR_MAP[ch]; t += m ? (start + k === total - 1 ? m.fin : m.med) : ch; });
@@ -2378,6 +2378,23 @@ function fixBareChipTranslits(v) {
     if (!hit) return;
     v.components_json = JSON.stringify(comps);
     bareStat.n++;
+}
+// PREFIX / STEM LETTERS INSIDE A ROOT CHIP (fieldy, 2026-10-22: "these are things that should
+// already be established as my baseline") — stem-split.cjs: a root chip holds the Strong's root;
+// 𐤅 / prepositions / 𐤄 / 𐤉 𐤕 𐤀 𐤍 / 𐤌 / 𐤄𐤕 … in front of it become chips with the flat labels.
+// Runs before fixBareChipTranslits, which spells the new chips and the shortened root in the word.
+{
+    const { makeSplitter } = require('./stem-split.cjs');
+    const sp = makeSplitter({ strongsRoots: strongsRootsLex, strongsDict: STRONGS_DICT, flatPrefix: FLAT_PREFIX, surfaces: [...surfaceMap.values()] });
+    for (const v of surfaceMap.values()) sp.split(v, 'BHS');   // BHS: morphology decides; proclitics are its own tokens
+    if (hebResult) for (const v of hebResult.surfaces.values()) sp.split(v, 'HEB');
+    const by = [...sp.stat.by].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, n]) => `${k} ${n}`).join(', ');
+    console.log(`  stem letters: ${sp.stat.surfaces.toLocaleString()} surfaces had prefix / stem letters moved out of the root chip into ${sp.stat.chips.toLocaleString()} chips (${by})` +
+                (sp.stat.ex.length ? `\n    e.g. ${sp.stat.ex.slice(0, 4).join(' · ')}` : ''));
+    if (sp.stat.mistag.length) {
+        fs.writeFileSync(path.join(__dirname, 'stem-split-mistags.txt'), '# root chips left whole: their opening letters spell another Strong\'s word (likely a wrong tag upstream)\n' + sp.stat.mistag.join('\n') + '\n');
+        console.log(`  stem letters: ${sp.stat.mistag.length} left whole as probable wrong Strong's — server/stem-split-mistags.txt`);
+    }
 }
 for (const v of surfaceMap.values()) fixBareChipTranslits(v);
 if (hebResult) for (const v of hebResult.surfaces.values()) fixBareChipTranslits(v);

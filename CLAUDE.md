@@ -58,6 +58,74 @@ Paleo in storage and pass the gate.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## A ROOT CHIP HOLDS THE STRONG'S ROOT: prefix / stem letters become chips, both editions (added 2026-10-22)
+
+fieldy, on the ~1,400 occurrences left after the fallback peel: "yes they need to be fixed -- these are things that
+should already be established as my baseline". **`server/stem-split.cjs` (`makeSplitter`)**, called by
+build-surface-index.js right before `fixBareChipTranslits` on BHS (surfaceMap) AND HEB (hebResult) surfaces. A root
+chip whose letters start BEFORE the Strong's root (lexicon/strongs-roots.json; the rest must still spell it, ≤4
+leading letters) has those letters moved into chips with the FLAT_PREFIX labels:
+- proclitics — HEB fallback readings only (not BHS, not tiers exact/plene/reconstructed, nothing split yet):
+  𐤅 [And], 𐤔 [who] (also after a preposition: Mishnaic 𐤊𐤔 / 𐤌𐤔), 𐤁 in / 𐤋 to/towards / 𐤊 as / 𐤌 from (𐤌 right
+  before a verb root is its participle instead), 𐤄 [The] on a noun/participle;
+- verb prefixes / stems (pos verb or a "to …" Strong's): 𐤄𐤕 𐤀𐤕 [Reflexive]; 𐤉 𐤕 𐤀 𐤍 [He/it] [She/it] [I] [We]
+  (imperfect-type vt, or no morphology), then a following 𐤕 [Reflexive] (infixed); 𐤌 [One who] (+𐤕); 𐤄 [Causing]
+  (+𐤍 [We] — Nifal infinitive 𐤄𐤍); 𐤍 [We] (Nifal); after an existing prefix chip: 𐤕 [Reflexive] when the stem is
+  hit/htpo/… (or HEB with no morphology), 𐤄 [Causing] when hif/haf.
+- STAYS with the root: a vowel letter after the prefix (𐤀|𐤉𐤕𐤌𐤌, Hophal 𐤄|𐤅𐤇𐤃𐤃, 𐤉|𐤉𐤔𐤕𐤄), a noun's own spelling,
+  names, Shaphel 𐤔, anything unrecognised; and — where no morphology vouches for the form — a chip whose opening
+  letters spell ANOTHER non-name Strong's root (probable wrong tag upstream, listed in server/stem-split-mistags.txt).
+New chips copy translit/colour from the index's most common chip of that kind; the root chip's translit is blanked
+and re-spelled by fixBareChipTranslits (which now also spells a blank LAST chip). Letters never change: measured on
+the current index — 593 surfaces / ~840 occurrences split, 0 words whose letters changed, 48 left whole as mis-tag
+suspects (𐤌𐤔𐤇𐤉𐤕 H7843 = H4889 "destroyer", 𐤌𐤉𐤍𐤒𐤕 …). Top patterns: HEB 𐤅 [And] 194, 𐤅+𐤉 86, 𐤕 [Reflexive]
+79 (Hitpolel 𐤉|𐤕|𐤁𐤅𐤔𐤔), 𐤅+𐤕 64, BHS 𐤀|𐤕|𐤒𐤅𐤈𐤈 38, 𐤄𐤏𐤋𐤕𐤅 [Causing] 26, BHS 𐤌𐤂𐤉𐤇𐤍 [One who], 𐤄𐤁𐤅𐤆 [Causing].
+Known imperfect: 𐤊𐤓𐤎𐤌 (H7450, really H3765 kirsem) still splits 𐤊 [as] — 6 occurrences, a wrong tag.
+Run: `node build-surface-index.js` (log line "stem letters: …"), `node render-all.mjs --surface`, restart, Rebake.
+
+## PROCLITICS GLUED INTO A FALLBACK ROOT CHIP: "Wahathaqayapayam" -> "WaHaThaqayapayam" (added 2026-10-22)
+
+fieldy, Revelation 6:15 𐤅𐤄𐤕𐤒𐤉𐤐𐤉𐤌 (H8630, root 𐤕𐤒𐤐 Thaqap): "I expect WaHaThaqayapayam as the word rendered".
+Cause: tier `nt_tokens_nt_fallback` (heb-align.js, both paths) took the tokens_nt row's parse whole — ONE root
+chip 𐤅𐤄𐤕𐤒𐤉𐤐, so formOf/transliterateBlock had no morpheme boundary to capitalise. **heb-align
+`peelGluedProclitics(comp)`** (fallback tiers only): letters before the Strong's root's first letter
+(lexicon/strongs-roots.json), ≤3, all proclitics in Hebrew order (𐤅, 𐤔, one of 𐤌𐤁𐤋𐤊, 𐤄), the rest still
+spelling the root -> each becomes the chip the OT gives that letter (PROC_COMPS); the root chip keeps the rest with
+a blank translit that build-surface-index `fixBareChipTranslits` now spells even when it is the word's last chip.
+Never a name (mod-nmpr / pos nmpr). A verb's 𐤄 after a preposition is its infinitive's stem letter and stays with
+the root (𐤁𐤄𐤈𐤁𐤋 -> [in] + 𐤄𐤈𐤁𐤋). Logged as "fallback readings: N root chips had glued proclitics peeled".
+Measured on the current index: 459 HEB occurrences peeled (𐤅 170, 𐤄 98, 𐤋 53, 𐤁 43 …).
+NOT touched, listed for later: 648 fallback occurrences whose leading letters are verb preformatives / stem
+letters (𐤀𐤍𐤒𐤄 1cs, 𐤄𐤕 hitpael …) and ~870 OT-derived root chips that hold a stem letter (Niphal-infinitive 𐤄
+𐤄𐤁𐤍𐤕, participle 𐤌 𐤌𐤂𐤉𐤇𐤍) — those want stem/preformative chips, not and/the.
+**Capitalisation carries a dropped inner word** (fieldy: "'AHayah (I come to pass)' — lets make letter
+capitalization the differentiator"): unnest() shape 2, when the inner word is the root at the END of the outer
+word ("Ahayah (I hayah (come to pass))"), recases the outer at that boundary -> "AHayah (I come to pass)".
+Run: `node build-surface-index.js`, `node render-all.mjs --surface`, restart, Rebake.
+
+## NO GLOSS INSIDE A GLOSS (added 2026-10-22)
+
+fieldy: "lets clean up the double nesting -- that stemmed from a previous design decision thats not necessary granted
+the direction of my reader -- we can show english glosses instead of doubling the hebrew transliteration".
+Measured: 271 corpus.db ENG + 274 translation.db rows (3 of them his saved verses: Exod 3:14, Ezek 43:15, Matt 5:1).
+**modform-lib `unnest(text, origEnglish)`** (+ `hasNested`, `loadOrigEnglish(cdb, dir)` = text_src for canon 40+,
+web-strongs.jsonl for the OT by `verses.code`):
+1. the WEB's own "(" / ")" that the Hebrew-order pass carried around as punctuation and split apart ("Yaiqab
+   (Jacob)): … (Matzarayam (…") — any bracket not right after a word, a ")" with nothing open, a "(" never
+   closed — is dropped (`dropStrayBrackets`; indices are UTF-16 units: paleo letters are 2);
+2. a group holding another, whose words match one of the WEB's parentheses or that follows another gloss, is the
+   WEB's aside: its brackets go, each Hebrew word inside keeps its own gloss ("HaIyar (the city) HaGadawalah
+   (between the great)", "Yahawah ThaYawashayainaw (don't save us) …");
+3. otherwise it is a gloss holding a Hebrew word: the inner word shows its English only, the outer word is not
+   repeated — "Thamayamam (complete / whole blemish)", "Ahayah (I come to pass)", "Yashar-Al (Israel)".
+Wired: merge-modforms --corpus (every machine verse, after interlinear); verify-reading-glosses `stale()` FAILS a
+nested gloss from Gen 3 on and `--fix` (render-all, rebake, deploy) repairs it via `freshen(text, key)` — his saved
+verses get a translation_history row first (link indices are not remapped; 3 verses).
+Verified on the real DBs (node:sqlite shim): 545 rows -> 0 still nested; every result's letters are an in-order
+subset of the original (only brackets and a doubled outer word removed); merge-modforms --dry on the 271 corpus
+verses -> 0 nested. NOT written to the real DBs: `cd server && node render-all.mjs --surface` (the OT baseline
+from the earlier change is already in corpus.db), restart, Rebake.
+
 ## THE BASELINE GLOSS IS THE WORD'S OWN ENGLISH + ITS CHIPS (added 2026-10-22)
 
 fieldy, Exodus 20:5 "ThaThaShachawah (you shall not bow yourself down to them) … WaLaa (And nOT) ThaIbadam (nor

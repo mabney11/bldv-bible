@@ -536,6 +536,93 @@ export function baseGloss(word, gloss, verseEng = '') {
   return [subj, ...cased].filter(Boolean).filter((t, i, a) => i === 0 || t.toLowerCase() !== a[i - 1].toLowerCase()).join(' ');   // "against (Moses) against" -> one
 }
 
+// ── NO NESTED GLOSSES (fieldy, 2026-10-22) ───────────────────────────────────────────────
+// "lets clean up the double nesting -- that stemmed from a previous design decision thats not
+// necessary granted the direction of my reader -- we can show english glosses instead of doubling
+// the hebrew transliteration". Two shapes, ~190 verses:
+//   1. the WEB's OWN parenthesis around Hebrew words — "HaIyar (the city) (HaGadawalah (between
+//      the great))", "Yahawah (ThaYawashayainaw (don't save us) …)": the outer brackets are the
+//      WEB's punctuation, the words inside are Hebrew words in order -> the brackets go, every
+//      word keeps its own gloss;
+//   2. a Hebrew word INSIDE a gloss — "Thamayamam (thamayam (complete / whole) blemish)",
+//      "Ahayah (I hayah (come to pass))", "Yashar-Al (Yashar-Al/(Israel))" -> the inner word
+//      shows its English only, and the outer word is not repeated: "(complete / whole blemish)".
+// Which is which: the verse's ORIGINAL English (WEB / text_src) — a group whose words match one
+// of its parentheses, or one standing after another gloss (a word has one gloss), is shape 1.
+const _words = t => (String(t || '').toLowerCase().match(/[a-z]+/g) || []);
+// nested, a ")" with nothing open, or a "(" never closed — all need unnest()
+export const hasNested = text => { let d = 0; for (const ch of String(text || '')) { if (ch === '(') { if (++d > 1) return true; } else if (ch === ')') { if (!d) return true; d--; } } return d !== 0; };
+// The WEB's own "(" / ")" that the Hebrew-order pass carried around as punctuation ("Yaiqab (Jacob)):
+// … (Matzarayam (…") — a bracket that is not the gloss of the word right before it — go.
+function dropStrayBrackets(s) {
+  const drop = new Set(), st = [];
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] === '(') st.push({ i, gloss: st.length > 0 || /[A-Za-z0-9'’-]\s?$/.test(s.slice(Math.max(0, i - 2), i)) });   // inside a group: the nesting pass decides
+    else if (s[i] === ')') { if (!st.length) drop.add(i); else { const o = st.pop(); if (!o.gloss) { drop.add(o.i); drop.add(i); } } }
+  }
+  for (const o of st) drop.add(o.i);   // never closed
+  if (!drop.size) return s;
+  return s.split('').map((ch, i) => drop.has(i) ? '' : ch).join('')   // UTF-16 units, as the indices are (paleo letters are 2 units).replace(/\(\s+/g, '(').replace(/\s+\)/g, ')').replace(/[ \t]{2,}/g, ' ').replace(/\s+([,.;:!?])/g, '$1');
+}
+export function unnest(text, orig = '') {
+  let s = String(text || '');
+  if (!hasNested(s)) return s;
+  s = dropStrayBrackets(s);
+  const web = (String(orig || '').match(/\(([^()]*)\)/g) || []).map(x => _words(x)).filter(w => w.length);
+  for (let guard = 0; guard < 20 && hasNested(s); guard++) {
+    // the first top-level group that holds another
+    let d = 0, a = -1, b = -1, deep = false;
+    for (let i = 0; i < s.length; i++) {
+      if (s[i] === '(') { if (d === 0) { a = i; deep = false; } else deep = true; d++; }
+      else if (s[i] === ')' && d) { d--; if (d === 0 && deep) { b = i; break; } }
+    }
+    if (b < 0) break;
+    const inner = s.slice(a + 1, b);
+    const prev = s.slice(0, a).replace(/\s+$/, '');
+    const iw = new Set(_words(inner));
+    const isWeb = !/[A-Za-z0-9'’-]$/.test(prev) || web.some(w => w.filter(x => iw.has(x)).length >= Math.max(1, Math.ceil(w.length / 2)));
+    if (isWeb) {   // shape 1: the WEB's brackets go
+      s = s.slice(0, a) + inner.trim() + s.slice(b + 1);
+      continue;
+    }
+    // shape 2: English only inside one gloss, the outer word not repeated
+    const outerW = (prev.match(/([A-Za-z][A-Za-z'’-]*)$/) || ['', ''])[1];
+    const outer = outerW.toLowerCase();
+    // capitalisation carries what the inner word said (fieldy: "AHayah (I come to pass)"): when the
+    // inner word is the root at the END of the outer one ("Ahayah (I hayah (…))"), the root takes
+    // its capital — prefix A + root Hayah
+    { const innerW = (inner.match(/^\s*[^()]*?\b([A-Za-z][A-Za-z'’-]*)\s*\(/) || ['', ''])[1].toLowerCase();
+      if (innerW && outer.length > innerW.length && outer.endsWith(innerW)) {
+        const cut = outerW.length - innerW.length;
+        const recased = outerW.slice(0, cut) + outerW.charAt(cut).toUpperCase() + outerW.slice(cut + 1);
+        const os = prev.length - outerW.length;                 // same length: a / b do not move
+        s = s.slice(0, os) + recased + s.slice(os + outerW.length);
+      } }
+    let eng = inner;
+    for (let k = 0; k < 10 && /\(/.test(eng); k++) eng = eng.replace(/([A-Za-z][A-Za-z'’-]*)?\s*\(([^()]*)\)/g, (m, w, g) => g.trim() || w || '');
+    const same = t => !!outer && t.replace(/[^A-Za-z'’-]/g, '').toLowerCase() === outer;   // "Yashar-Al (Yashar-Al/Israel)" -> "(Israel)"
+    eng = eng.split(/\s+/).map(t => t.split('/').filter(q => !same(q)).join('/')).filter(t => t && !same(t)).join(' ')
+      .replace(/^[\s\/,;:]+/, '').replace(/[\s\/,;:]+$/, '').replace(/\s+/g, ' ').trim();
+    if (!eng) eng = inner.replace(/[()]/g, ' ').replace(/\s+/g, ' ').trim();
+    s = s.slice(0, a) + '(' + eng + ')' + s.slice(b + 1);
+  }
+  return s.replace(/[ \t]{2,}/g, ' ');
+}
+/** The ORIGINAL English of every verse ("c|ch|v" -> text): text_src for canon 40+, the WEB
+ *  (web-strongs.jsonl) for the OT — what unnest() checks a parenthesis against. */
+export function loadOrigEnglish(cdb, dir) {
+  const out = new Map();
+  for (const r of cdb.prepare(`SELECT canon_id c, chapter ch, verse v, text_src t FROM verses WHERE corpus='ENG' AND canon_id > 39 AND text_src IS NOT NULL AND text_src != ''`).all())
+    out.set(`${r.c}|${+r.ch}|${+r.v}`, r.t);
+  const codeCanon = new Map(cdb.prepare(`SELECT DISTINCT code, canon_id FROM verses WHERE corpus='ENG' AND canon_id BETWEEN 1 AND 39`).all().map(r => [r.code, r.canon_id]));
+  const f = ['web-strongs.jsonl', 'english-web-raw.jsonl'].map(x => path.join(dir, x)).find(existsSync);
+  if (f) for (const line of readFileSync(f, 'utf8').split('\n')) {
+    if (!line.trim()) continue; let j; try { j = JSON.parse(line); } catch { continue; }
+    const c = codeCanon.get(j.code); if (c) out.set(`${c}|${+j.chapter}|${+j.verse}`, j.text);
+  }
+  return out;
+}
+
 // ── NO LABEL A READER HAS TO DECODE (fieldy, 2026-10-03) ────────────────────────────────
 // "I want readable glosses unless it is purely contextual — 'WaHaChazayaqaw (and take hold)'
 // instead of 'WaHaChazayaqaw (take [and])'." weave() already writes every NEW gloss that way;

@@ -366,6 +366,7 @@ if (CORPUS) {
     return '';
   };
 
+  const ORIG = MF.loadOrigEnglish(cdb, __dirname);   // the WEB / text_src: which parentheses are the WEB's own (unnest)
   const rows = cdb.prepare(`SELECT id, canon_id c, chapter ch, verse v, ord_c, ord_v, text, coalesce(text_src,'') src FROM verses WHERE corpus='ENG' AND canon_id IS NOT NULL AND text IS NOT NULL AND text != ''`).all();
   const upd = DRY ? null : cdb.prepare(`UPDATE verses SET text = ? WHERE id = ?`);
   cdb.transaction(() => {
@@ -396,6 +397,8 @@ if (CORPUS) {
       if (il.ok) { r2 = { text: il.text, n: r2.n }; ilOk++; ilWhy.set(grp + ' hebrew-order', (ilWhy.get(grp + ' hebrew-order') || 0) + 1); } else ilWhy.set(grp + ' ' + il.why, (ilWhy.get(grp + ' ' + il.why) || 0) + 1);
       r2.text = r2.text.replace(/\uE002\d+r?\uE003/g, '');
       r2.text = MF.respellRetired(r2.text);
+      // no gloss inside a gloss: the WEB's own brackets go, a word inside a gloss shows its English (fieldy, 2026-10-22)
+      r2.text = MF.unnest(r2.text, ORIG.get(`${r.c}|${+r.ch}|${+r.v}`) || '');
       if (r2.text === text0) continue;
       changed++; pairs += r2.n;
       if (samples.length < (ONLY ? 99 : 12) && (ONLY || (r.c <= 66 && (r.c > 39 || samples.length < 4)))) samples.push(`${r.c}:${r.ch}:${r.v}  ${r2.text}`);
