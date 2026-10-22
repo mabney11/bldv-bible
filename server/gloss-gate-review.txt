@@ -1,4 +1,4 @@
-# verify-reading-glosses — glossed words in YOUR SAVED verses that are not in that verse's Hebrew (2026-10-22T14:23:59.710Z)
+# verify-reading-glosses — glossed words in YOUR SAVED verses that are not in that verse's Hebrew (2026-10-22T15:29:40.171Z)
 # Fix each in the Studio, or sign a deliberate one off in lexicon/gloss-gate-accepted.json as "ref|pair": "why".
 translation 19:110:6  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "sabayab (place)"  — "sabayab" is no Hebrew word in 19:110:6
 translation 38:4:14  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "shaman (oil)"  — "shaman" is no Hebrew word in 38:4:14
@@ -32,3 +32,4 @@ translation 41:1:1  [YOUR SAVED VERSE — fix in the Studio, or sign it off in l
 translation 42:21:31  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "Haa (Even)"  — "Haa" is no Hebrew word in 42:21:31
 translation 42:21:31  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "anah (happening)"  — "anah" is no Hebrew word in 42:21:31
 translation 42:21:31  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "qarab (near)"  — "qarab" is no Hebrew word in 42:21:31
+translation 66:6:16  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "Ap (the wrath)"  — "Ap" is no Hebrew word in 66:6:16
