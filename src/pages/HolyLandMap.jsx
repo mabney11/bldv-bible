@@ -81,6 +81,7 @@ import './HolyLandMap.css';
 import levantBase from '../lib/models/levant-base.json';
 // Land OUTSIDE levantBase's box (Europe, India…) at 1:50m — scripts/build-world-land.py — so far-off places stand on land.
 import worldLand from '../lib/models/world-land.json';
+import terrain from '../lib/models/terrain-climate.json';
 import { novelNodes } from '../components/NovelText.jsx';
 
 const OFM_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
@@ -1701,6 +1702,41 @@ function TwinCard({ tw, focus, onCity }) {
   );
 }
 
+// ── The land: height and climate (baked by scripts/build-terrain-climate.py) ──
+const FT = 3.28084;
+const fmtM = (m) => `${m.toLocaleString('en-US')} m`;
+const fmtFt = (m) => `${Math.round(m * FT).toLocaleString('en-US')} ft`;
+const heightWords = (m) => m < 0 ? `${fmtM(-m)} below the sea (${fmtFt(-m)})` : m === 0 ? 'sea level' : `${fmtM(m)} (${fmtFt(m)})`;
+const fmtC = (c) => `${Math.round(c)} °C / ${Math.round(c * 9 / 5 + 32)} °F`;
+// States that run off the map: the bake measured the part the map shows.
+const nw = (x) => <span className="hl-nw">{x}</span>;
+const WL_PART = new Set(['egypt', 'saudi-arabia', 'iraq', 'jordan', 'syria']);
+function LandFacts({ point, area, what }) {
+  const t = point ? terrain.points[point] : terrain.areas[area];
+  if (!t) return null;
+  return (
+    <div className="hl-land">
+      <div className="hl-land-row">
+        <span className="hl-land-k">Height</span>
+        {point
+          ? <span className="hl-land-v"><b>{heightWords(t.m)}</b>{t.m > 0 && ' above the sea'}{what && <small> · {what}</small>}</span>
+          : <span className="hl-land-v"><b>{t.lo < 0 ? `${fmtM(-t.lo)} below the sea` : fmtM(t.lo)} up to {fmtM(t.hi)}</b> <small>({t.lo < 0 ? `${fmtFt(-t.lo)} below` : fmtFt(t.lo)} up to {fmtFt(t.hi)})</small><br />mostly about {heightWords(t.mid)}{what && <small> · {what}</small>}</span>}
+      </div>
+      {t.year != null && (
+        <div className="hl-land-row">
+          <span className="hl-land-k">Warmth</span>
+          <span className="hl-land-v">
+            Year round <b>{nw(fmtC(t.year))}</b>{t.yearSpread && <small> ({Math.round(t.yearSpread[0])}–{Math.round(t.yearSpread[1])} °C, {Math.round(t.yearSpread[0] * 9 / 5 + 32)}–{Math.round(t.yearSpread[1] * 9 / 5 + 32)} °F, highlands to lowlands)</small>}<br />
+            {t.cold.m}, the coldest: {nw(fmtC(t.cold.avg))}, nights {nw(fmtC(t.cold.low))}<br />
+            {t.hot.m}, the hottest: {nw(fmtC(t.hot.avg))}, days {nw(fmtC(t.hot.high))}
+          </span>
+        </div>
+      )}
+      <div className="hl-land-src">Monthly averages 1970–2000 (WorldClim){area ? '; heights over the whole area' : ''}</div>
+    </div>
+  );
+}
+
 function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion, onFit }) {
   if (sel.kind === 'city') {
     const c0 = sel.city;
@@ -1739,6 +1775,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion, onFit
             {c.note && <p className="hl-detail-note">{withNames(c.note)}</p>}
           </>
         )}
+        <LandFacts point={c0.id} what={c0.id === 'jerusalem' ? 'the Temple Mount' : null} />
         <AllotmentLines joshua={sel.joshua} ezekiel={sel.ezekiel} />
         {tw && <TwinCard tw={tw} focus={c0.kind} onCity={onCity} />}
         <PinRow pin={pin} at={[c0.lon, c0.lat]} label={c.translit || c.name} onPin={onPin} onUnpin={onUnpin} />
@@ -1756,6 +1793,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion, onFit
         {e.he && <div className="hl-detail-paleo" dir="rtl">{e.he}</div>}
         <div className="hl-detail-ref">{sel.kind === 'joshua' ? 'Joshua allotment' : 'Ezekiel — millennial allotment'}</div>
         <Lexical he={e.he || (e.tribe ? TRIBE_HEBREW[e.tribe] : null)} />
+        <LandFacts area={e.id} />
         <PassageRefs refs={e.ref} autoOpen />
         <ScriptureTree tree={sel.kind === 'holy' ? HOLY_SCRIPTURE[e.kind] : TRIBE_SCRIPTURE[e.tribe]} title={sel.kind === 'holy' ? 'What the scriptures say of it' : `What the scriptures say of ${TRIBE_TRANSLIT[e.tribe] || e.tribe}`} />
         {sel.at && <PinRow pin={pin} at={sel.at} label={`${tribeDisplayName(e.name, e.tribe)} (${fmtLonLat(sel.at)})`} onPin={onPin} onUnpin={onUnpin} />}
@@ -1775,6 +1813,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion, onFit
         <div className="hl-detail-name hl-detail-name-m"><i className="hl-detail-sw" style={{ background: e.color }} /> {e.name}</div>
         <div className="hl-detail-ref">Worldly allotment · {WORLDLY_KIND[e.kind]} — today's lines, for context</div>
         <p className="hl-detail-note"><b>{e.status}.</b>{e.note ? ` ${e.note}` : ''}</p>
+        <LandFacts area={`wl-${e.id}`} what={WL_PART.has(e.id) ? 'the part on this map' : null} />
         {sel.at && <AllotmentLines joshua={joshuaTribeAt(sel.at)} ezekiel={ezekielAt(sel.at, ez)} />}
         {sel.at && <PinRow pin={pin} at={sel.at} label={`${e.name} (${fmtLonLat(sel.at)})`} onPin={onPin} onUnpin={onUnpin} />}
         <div className="hl-detail-sub">Biblical cities inside <span className="hl-count">{sel.cities.biblical.length}</span></div>
