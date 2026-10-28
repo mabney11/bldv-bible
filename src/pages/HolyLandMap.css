@@ -505,3 +505,18 @@
 .hl-legend-pop .hl-legend { grid-template-columns: 1fr 1fr; }
 .hl-legend-pop .hl-legend-i { white-space: nowrap; }
 .hl-legend-pop .hl-legend-i small { display: none; }
+
+/* ── The Holy Portion inset (zoomed out): a callout beside the square, dashed leaders to its corners ── */
+.hl-inset { position: absolute; z-index: 3; width: 168px; background: #fff8e1f2; border: 1px solid #b8860b; border-radius: 6px; padding: 3px 4px 4px; box-shadow: 0 0 0 2px #e0303033, 0 2px 10px #0006; color: #1a1208; }
+.hl-inset-h { display: block; width: 100%; background: none; border: 0; padding: 0 0 2px; text-align: center; cursor: pointer; line-height: 1.15; color: #5a3600; font-size: 10px; }
+.hl-inset-h b { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+.hl-inset-h span { font-family: var(--paleo-font); font-size: 11px; color: #4a2f00; }
+.hl-inset-h small { display: block; font-size: 8.5px; color: #6b5a3a; }
+.hl-inset-svg { display: block; width: 100%; height: auto; }
+.hl-inset-plot { stroke: #1a1208; stroke-width: 0.0006; cursor: pointer; }
+.hl-inset-plot:hover, .hl-inset-plot.on { stroke: #f5c070; stroke-width: 0.0025; filter: brightness(1.08); }
+.hl-inset-sq { fill: none; stroke: #c02020; stroke-width: 0.0018; pointer-events: none; }
+.hl-inset-lbl text { text-anchor: middle; dominant-baseline: middle; font-weight: 700; fill: #1a1208; pointer-events: none; }
+.hl-inset-leaders { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; overflow: visible; }
+.hl-inset-leaders line { stroke: #c02020; stroke-width: 1.4; stroke-dasharray: 4 3; opacity: 0.9; }
+@media (max-width: 720px) { .hl-inset { width: 148px; } }

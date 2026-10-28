@@ -60,6 +60,7 @@ const SHEET_FRACTION = 0.5;                       // the sheet covers the lower 
 const PORTION_MAX_ZOOM = { worldly: 12, joshua: 9.5, ezekiel: 9.5, prince: 11, levites: 12.5, priests: 12.5, food: 13, suburbs: 13, city: 13.5, sanctuary: 14 };
 const WATER_MAX_ZOOM = 10.5;                       // a short brook still shows its surroundings
 const REGION_DETAIL_ZOOM = 7.8;                   // from here the band labels also show the paleo line + English
+const INSET_HIDE_PX = 120;                      // the Holy Portion inset shows while the square is narrower than this
 const LABEL_MIN = 8;                            // px — the smallest band / worldly name (never hidden)
 const HOLY_BTN_ZOOM = 10.5;                       // above this the "Tharawamah" caption appears over the square
 // The prince's portion (Ezekiel 48:21–22): a king and a lion — fieldy's pick.
@@ -715,7 +716,40 @@ export default function HolyLandMap() {
     }
   };
   // sized AND spread: also run after a rebuild (the labels are created after the last moveend) and while zooming
-  fitRegionLabelsRef.current = (map) => { fitRegionLabels(map); spreadRegionLabels(map); };
+  fitRegionLabelsRef.current = (map) => { fitRegionLabels(map); spreadRegionLabels(map); placeHolyInset(map); };
+
+  // ── The Holy Portion inset: zoomed out the square is a few pixels, so a callout beside it shows
+  // its plots (fieldy, 2026-10-28: "a popout similar to [the printable sheet] that shows the different
+  // portions so the holy portion is visible and accessible even when zoomed out"). Dashed leaders run
+  // from the square's corners to the box; each plot in the box is a button. Placed east of the square
+  // (over the Jordan) when there is room, else west over the sea; gone once the square itself is big
+  // enough to hold its own buttons.
+  const insetRef = useRef(null);
+  const leaderRef = useRef(null);
+  const placeHolyInset = (map) => {
+    const box = insetRef.current, svg = leaderRef.current;
+    if (!box || !svg || !map) return;
+    const hide = () => { box.style.display = 'none'; svg.style.display = 'none'; };
+    if (!showEzekielRef.current) return hide();
+    const [sqW, sqTop, sqE, sqBot] = ezRef.current.meta.square;
+    const nw = map.project([sqW, sqTop]), ne = map.project([sqE, sqTop]), se = map.project([sqE, sqBot]), sw = map.project([sqW, sqBot]);
+    const cont = map.getContainer();
+    const cw = cont.clientWidth, ch = cont.clientHeight;
+    if (ne.x - nw.x > INSET_HIDE_PX || ne.x < 0 || nw.x > cw || se.y < 0 || ne.y > ch) return hide();
+    box.style.display = 'block'; svg.style.display = 'block';
+    const W = box.offsetWidth, H = box.offsetHeight, gap = 34;
+    let x = ne.x + gap, east = true;
+    if (x + W > cw - 6) {
+      if (nw.x - gap - W >= 6) { x = nw.x - gap - W; east = false; }
+      else x = cw - W - 6;
+    }
+    const midY = (ne.y + se.y) / 2;
+    const y = Math.max(6, Math.min(ch - H - 6, midY - H / 2));
+    box.style.left = `${x}px`; box.style.top = `${y}px`;
+    const [a, b, bx] = east ? [ne, se, x] : [nw, sw, x + W];
+    svg.innerHTML = `<line x1="${a.x}" y1="${a.y}" x2="${bx}" y2="${y + 1}" /><line x1="${b.x}" y1="${b.y}" x2="${bx}" y2="${y + H - 1}" />`;
+  };
+  const placeInsetRef = useRef(placeHolyInset); placeInsetRef.current = placeHolyInset;
   // Area names kept at LABEL_MIN can run into each other (Latrun / East Jerusalem, Ashar / Dan): the biggest
   // names stay put, and a smaller one that would touch a name already placed steps up or down a line.
   const spreadRegionLabels = (map) => {
@@ -744,6 +778,7 @@ export default function HolyLandMap() {
     if (!map) return;
     fitRegionLabels(map);
     spreadRegionLabels(map);
+    placeHolyInset(map);
     const z = map.getZoom();
     const showAll = z >= 7.5;
     // The holy plots' lettered buttons (Z, L, C, X, S — shown while the plot is too small for
@@ -809,6 +844,7 @@ export default function HolyLandMap() {
         applyRef.current(map);
       });
       map.on('zoom', () => { setZoom(map.getZoom()); fitRegionLabelsRef.current(map); });
+      map.on('move', () => placeInsetRef.current(map));
       map.on('moveend', () => declutterRef.current(map));
       map.on('click', (e) => {
         const lonLat = [e.lngLat.lng, e.lngLat.lat];
@@ -855,8 +891,10 @@ export default function HolyLandMap() {
   const threeDRef = useRef(threeD); threeDRef.current = threeD;
   const exagRef = useRef(exag); exagRef.current = exag;
   const ezRef = useRef(ez); ezRef.current = ez;
+  const showEzekielRef = useRef(showEzekiel); showEzekielRef.current = showEzekiel;
   const selectRegionRef = useRef(selectRegion); selectRegionRef.current = selectRegion;
 
+  useEffect(() => { placeInsetRef.current(mapRef.current); }, [showEzekiel]);
   // Re-apply overlays whenever their inputs change.
   useEffect(() => { applyOverlays(mapRef.current); }, [applyOverlays]);
 
@@ -1139,6 +1177,10 @@ export default function HolyLandMap() {
         {/* zoom class lives on the WRAPPER: maplibre owns the inner div's className */}
         <div className={`hl-map-wrap${zoom >= 7.5 ? ' hl-z-labels' : ''}${zoom >= REGION_DETAIL_ZOOM ? ' hl-z-region' : ''}${zoom >= HOLY_BTN_ZOOM ? ' hl-z-holy' : ''}`}>
           <div ref={mapEl} className="hl-map" />
+          <svg ref={leaderRef} className="hl-inset-leaders" aria-hidden="true" />
+          <div ref={insetRef} className="hl-inset" style={{ display: 'none' }}>
+            <HolyInset ez={ez} selId={sel?.kind === 'holy' ? sel.entry.id : null} onPlot={(h) => selectRegion('holy', h)} onTitle={zoomHoly} />
+          </div>
           {!panelOpen && <button type="button" className="hl-panel-show" onClick={() => setPanelOpen(true)} title="Show the panel">☰ Detailed Look · Cities · Peoples</button>}
           {panelOpen && <button type="button" className="hl-sheet-x hl-sheet-x-float" onClick={() => setPanelOpen(false)} aria-label="Close the panel">Map ×</button>}
           {/* ⚙ beside the zoom buttons: the everyday toggles, reachable without opening the panel */}
@@ -1473,6 +1515,56 @@ function AllotmentLines({ joshua, ezekiel, today }) {
         ) : <span className="hl-allot-v dim">outside the borders of Ezekiel 47</span>}
       </div>
     </div>
+  );
+}
+
+// The Holy Portion drawn as a small schematic (the same rings as the map, framed on the square with a
+// stub of the prince's land on each side) — every plot a button, like the printable sheet's close-up.
+function HolyInset({ ez, selId, onPlot, onTitle }) {
+  const [sqW, sqTop, sqE, sqBot] = ez.meta.square;
+  const k = Math.cos(((sqTop + sqBot) / 2) * Math.PI / 180);
+  const side = (sqE - sqW) * 0.42;                       // prince stubs either side
+  const x0 = sqW - side, x1 = sqE + side;
+  const W = (x1 - x0) * k, H = sqTop - sqBot;
+  const px = ([lon, lat]) => `${((lon - x0) * k).toFixed(5)},${(sqTop - lat).toFixed(5)}`;
+  const bb = (ring) => { const xs = ring.map((p) => p[0]), ys = ring.map((p) => p[1]); return { w: Math.max(...xs), e: Math.min(...xs) === Math.max(...xs) ? 0 : Math.min(...xs), cx: (Math.max(Math.min(...xs), x0) + Math.min(Math.max(...xs), x1)) / 2, cy: (Math.min(...ys) + Math.max(...ys)) / 2 }; };
+  const fs = H / 11;                                     // base font size in viewBox units
+  const label = (h) => {
+    const { cx, cy } = bb(h.ring);
+    const X = ((cx - x0) * k), Y = (sqTop - cy);
+    if (h.kind === 'prince') return <text x={X} y={Y} fontSize={fs * 0.95}><tspan x={X} dy={-fs * 0.2}>🦁🤴🏾</tspan><tspan x={X} dy={fs * 1.15} fontSize={fs * 0.62}>{h.short.split(' ')[0]}</tspan></text>;
+    if (h.kind === 'levites') return <text x={X} y={Y + fs * 0.35} fontSize={fs}>{h.short}</text>;
+    if (h.kind === 'priests') return <text x={X} y={Y - fs * 1.45} fontSize={fs * 0.9}>{h.short}</text>;
+    if (h.kind === 'sanctuary') return <text x={X} y={Y + fs * 1.3} fontSize={fs * 0.55}>{h.short}</text>;
+    if (h.kind === 'city') return <text x={X} y={Y + fs * 0.25} fontSize={fs * 0.62} fill="#fff">{h.short}</text>;
+    if (h.kind === 'food') return <text x={X} y={Y + fs * 0.25} fontSize={fs * 0.6}>{h.short}</text>;
+    return null;
+  };
+  const order = ['prince', 'levites', 'priests', 'food', 'suburbs', 'city', 'sanctuary'];
+  const plots = [...ez.holy].sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind));
+  return (
+    <>
+      <button type="button" className="hl-inset-h" onClick={onTitle} title="Zoom to the Holy Portion">
+        <b>{HOLY_WORDS.terumah.tr}</b> <span dir="rtl">{HOLY_WORDS.terumah.paleo}</span> <small>the Holy Portion · Ezekiel 48:8–22</small>
+      </button>
+      <svg className="hl-inset-svg" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet">
+        <defs><clipPath id="hl-inset-clip"><rect x="0" y="0" width={W} height={H} /></clipPath></defs>
+        <g clipPath="url(#hl-inset-clip)">
+          {plots.map((h) => {
+            const st = HOLY_KIND_STYLE[h.kind];
+            return (
+              <polygon key={h.id} points={h.ring.map(px).join(' ')} className={`hl-inset-plot${h.id === selId ? ' on' : ''}`}
+                style={{ fill: st.color, fillOpacity: Math.max(st.opacity, 0.8) }}
+                onClick={(e) => { e.stopPropagation(); onPlot(h); }}>
+                <title>{h.name} — {h.ref}</title>
+              </polygon>
+            );
+          })}
+          <rect x={side * k} y="0" width={(sqE - sqW) * k} height={H} className="hl-inset-sq" />
+          <g className="hl-inset-lbl">{plots.map((h) => <g key={h.id}>{label(h)}</g>)}</g>
+        </g>
+      </svg>
+    </>
   );
 }
 
