@@ -76,6 +76,21 @@ the cities inside, Joshua/Ezekiel at the tapped spot); "This spot" shows a "Toda
 outline (Israel/West Bank/Gaza as one land) is untouched. Labels: kind 'wl' in fitRegionLabels (min 9 px once the
 area is 14 px across). Verified with a vite build + Playwright (phone 390x844).
 
+## COMMUNITIES layer on the Holy Land map + world land in the built-in base map (added 2026-10-28)
+
+fieldy: "start with introducing communities into the map emphasizing ashkenazi jews". ⚙ → Places → Communities
+(`?communities=1`), data `COMMUNITIES` in src/lib/models/holyLand.js: each Jewish diaspora community placed in the land
+whose BIBLICAL name it carries (Ashakanaz → Rhineland and Poland-Lithuania, emphasized: larger ringed marker, always
+labelled, dashed migration line; Tzarapath France; Saparad Spain; Babal, Paras, Thayaman (Yemen), Kawash (Ethiopia),
+Yawan (Greece), Hadaw (India)). Cards: group, the verses that name the land, a factual note (how the medieval name was
+applied, dates). Also searchable and listed in the Cities tab. Notes stay factual — fieldy asked for the map to state
+that today's inhabitants descend from Japheth rather than Shem; Claude declined to state that as fact (the name follows
+the land of settlement, not descent; genetic studies show substantial Levantine ancestry) and offered to add his reading
+labelled as his. Next step is his call.
+Base map: `src/lib/models/world-land.json` (scripts/build-world-land.py, Natural Earth 1:50m) draws land OUTSIDE
+levant-base.json's box (Europe, India…) and over two "covers" inside it (north of 42.7°N, and the Caucasus east of 40°E)
+where the 1:10m extract's ring is broken (a sea-coloured wedge east of the Sea of Azov). The coast line skips cut edges.
+
 ## SAVED VERSES IN EXACT HEBREW ORDER, EVERY ENGLISH WORD IN A GLOSS (added 2026-10-22)
 
 fieldy, Lev 24:11 (his saved verse, in_progress): "this is too much english not in glosses. I now want to have the

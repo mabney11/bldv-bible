@@ -46,6 +46,7 @@ import {
   ezekielAllotment, toFeature, ringCentroid, labelAnchor, pointInRing, joshuaTribeAt, ezekielAt,
   translitOf,
   REGIONS, ALL_PLACES, PLACES_AZ, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
+  COMMUNITIES, COMMUNITY_ROUTES,
   WORLDLY, WORLDLY_ATTR, WORLDLY_KIND, worldlyFeature, worldlyAt,
   countryOf, countryFeature, countryName, twinOf, WATERS, BIBLE_RIVERS, EZ_LANDMARKS, TRIBE_SCRIPTURE, HOLY_SCRIPTURE, withNames,
 } from '../lib/models/holyLand.js';
@@ -78,6 +79,8 @@ import './HolyLandMap.css';
 //   • the optional "Online" base map — OpenFreeMap vector tiles (coast at street
 //     precision, modern borders, English place names) — never loaded unless chosen.
 import levantBase from '../lib/models/levant-base.json';
+// Land OUTSIDE levantBase's box (Europe, India…) at 1:50m — scripts/build-world-land.py — so far-off places stand on land.
+import worldLand from '../lib/models/world-land.json';
 import { novelNodes } from '../components/NovelText.jsx';
 
 const OFM_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
@@ -118,6 +121,25 @@ function levantGeo() {
   const landRings = levantBase.land.map((p) => close(p[0]));
   _levantGeo = {
     land:  { type: 'FeatureCollection', features: landRings.map((r) => ({ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [r] } })) },
+    // the coastline drawn as a line: the land rings minus the runs along the box's own edge (where the
+    // 1:10m extract was cut and world-land.json takes over) — otherwise 46°N reads as a shore across Europe
+    // the coastline as a line: the 1:10m rings outside world-land's covers, the 1:50m world rings elsewhere — minus the
+    // runs along a cut (the box's edges, the covers' edges), which would read as a shore across the land
+    coast: { type: 'FeatureCollection', features: [...landRings.map((r) => [r, true]), ...worldLand.polys.flatMap((rings) => rings.map((r) => [r, false]))].flatMap(([r, levant]) => {
+      const on = (v, e) => Math.abs(v - e) < 0.05;
+      const boxes = [[x0, y0, x1, y1], ...worldLand.covers];
+      const edge = (p, q) => boxes.some(([a, b, c, d]) => [a, c].some((e) => on(p[0], e) && on(q[0], e)) || [b, d].some((e) => on(p[1], e) && on(q[1], e)));
+      const inCover = (p) => worldLand.covers.some(([a, b, c, d]) => p[0] >= a - 0.01 && p[0] <= c + 0.01 && p[1] >= b - 0.01 && p[1] <= d + 0.01);
+      const cut = (p, q) => edge(p, q) || (levant && inCover(p) && inCover(q));
+      const runs = []; let run = [];
+      for (let i = 1; i < r.length; i++) {
+        if (cut(r[i - 1], r[i])) { if (run.length > 1) runs.push(run); run = []; continue; }
+        if (!run.length) run.push(r[i - 1]);
+        run.push(r[i]);
+      }
+      if (run.length > 1) runs.push(run);
+      return runs.map((c) => ({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: c } }));
+    }) },
     sea:   { type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [outer, ...landRings] } },
     lakes: { type: 'FeatureCollection', features: levantBase.lakes.map((l) => ({ type: 'Feature', properties: { name: l.name }, geometry: { type: 'Polygon', coordinates: [close(l.ring)] } })) },
     rivers:{ type: 'FeatureCollection', features: levantBase.rivers.map((l) => ({ type: 'Feature', properties: { name: l.name }, geometry: { type: 'LineString', coordinates: l.pts } })) },
@@ -223,7 +245,9 @@ function buildPlainStyle() {
     version: 8,
     sources: {
       'hl-land':   { type: 'geojson', data: g.land, attribution: NE_ATTR },
+      'hl-world':  { type: 'geojson', data: { type: 'FeatureCollection', features: worldLand.polys.map((rings) => ({ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: rings } })) } },
       'hl-sea':    { type: 'geojson', data: g.sea },
+      'hl-coastline': { type: 'geojson', data: g.coast },
       'hl-lakes':  { type: 'geojson', data: g.lakes },
       'hl-rivers': { type: 'geojson', data: g.rivers },
       'hl-bible-rivers': { type: 'geojson', data: { type: 'FeatureCollection', features: BIBLE_RIVERS.map((r) => ({ type: 'Feature', properties: { name: r.id }, geometry: { type: 'LineString', coordinates: r.pts } })) } },
@@ -235,8 +259,10 @@ function buildPlainStyle() {
       HILLSHADE,
       // ── allotment layers are inserted here, beneath 'water' ──
       { id: 'water', type: 'fill', source: 'hl-sea', paint: { 'fill-color': SEA } },
+      // above the 1:10m sea: covers its northern band and the Caucasus (world-land.json `covers`) — no allotment lies that far north
+      { id: 'hl-world', type: 'fill', source: 'hl-world', paint: { 'fill-color': LAND } },
       { id: 'hl-lakes', type: 'fill', source: 'hl-lakes', paint: { 'fill-color': SEA } },
-      { id: 'hl-coast', type: 'line', source: 'hl-land', paint: { 'line-color': '#4f7599', 'line-width': 0.8, 'line-opacity': 0.8 } },
+      { id: 'hl-coast', type: 'line', source: 'hl-coastline', paint: { 'line-color': '#4f7599', 'line-width': 0.8, 'line-opacity': 0.8 } },
       { id: 'hl-lake-line', type: 'line', source: 'hl-lakes', paint: { 'line-color': '#4f7599', 'line-width': 0.8, 'line-opacity': 0.8 } },
       { id: 'hl-rivers', type: 'line', source: 'hl-rivers', paint: { 'line-color': RIVER, 'line-width': ['interpolate', ['linear'], ['zoom'], 4, 0.6, 9, 1.8] } },
       { id: 'hl-bible-rivers', type: 'line', source: 'hl-bible-rivers', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': RIVER, 'line-width': ['interpolate', ['linear'], ['zoom'], 4, 0.5, 9, 1.6] } },
@@ -304,6 +330,7 @@ export default function HolyLandMap() {
   const [showBiblical, setShowBiblical] = useState(placesDefault);
   const [showModern, setShowModern] = useState(placesDefault);
   const [showRegions, setShowRegions] = useState(placesDefault);
+  const [showCommunities, setShowCommunities] = useState(params.get('communities') === '1');   // the Jewish diaspora communities
   const [gearOpen, setGearOpen] = useState(false);
   const [legendOpen, setLegendOpen] = useState(false);  // the ⚙ widget beside the zoom buttons
   const [ctxOnly, setCtxOnly] = useState(true);     // Cities / Peoples tabs limited to the focused portion
@@ -347,7 +374,7 @@ export default function HolyLandMap() {
     setPanelOpen(true);
     setGearOpen(false);
     // Picking a place turns its kind of dot on, so the gold focus has a dot to sit on.
-    if (c.kind === 'modern') setShowModern(true); else if (c.kind === 'region') setShowRegions(true); else setShowBiblical(true);
+    if (c.kind === 'modern') setShowModern(true); else if (c.kind === 'region') setShowRegions(true); else if (c.kind === 'community') setShowCommunities(true); else setShowBiblical(true);
     const map = mapRef.current;
     const padding = isNarrow() ? { top: 0, left: 0, right: 0, bottom: sheetPx() } : { top: 0, left: 0, right: 0, bottom: 0 };
     if (fly && map) {
@@ -361,7 +388,7 @@ export default function HolyLandMap() {
         const lons = pts.map((p) => p[0]), lats = pts.map((p) => p[1]);
         map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], { padding: { top: 40 + padding.top, left: 40, right: 40, bottom: 40 + padding.bottom }, maxZoom: 7, pitch: threeD ? 55 : 0, duration: 1400, essential: true });
       } else {
-        const zoom = c.kind === 'region' ? Math.min(Math.max(cur, 5.5), 7) : (cur < 9.5 ? 9.5 : cur);
+        const zoom = c.kind === 'region' || c.kind === 'community' ? Math.min(Math.max(cur, 5.5), 7) : (cur < 9.5 ? 9.5 : cur);
         map.flyTo({ center: [c.lon, c.lat], zoom, padding, pitch: threeD ? 55 : 0, duration: 1400, essential: true });
       }
     } else if (map && isNarrow()) {
@@ -459,6 +486,7 @@ export default function HolyLandMap() {
     ensure('hl-ez-holy', { type: 'FeatureCollection', features: ez.holy.map((h) => toFeature(h, { color: HOLY_KIND_STYLE[h.kind].color, opacity: HOLY_KIND_STYLE[h.kind].opacity })) });
     // The 25,000 × 25,000 square itself — a permanent golden glow (Matthew 5:14–16), visible at every zoom.
     ensure('hl-worldly', { type: 'FeatureCollection', features: WORLDLY.map((w) => worldlyFeature(w)) });
+    ensure('hl-comm-routes', { type: 'FeatureCollection', features: COMMUNITY_ROUTES.map(([a, b]) => { const p = COMMUNITIES.find((c) => c.id === a), q = COMMUNITIES.find((c) => c.id === b); return { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[p.lon, p.lat], [q.lon, q.lat]] } }; }) });
     const [sqW, sqTop, sqE, sqBot] = ez.meta.square;
     ensure('hl-holy-square', { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[sqW, sqTop], [sqE, sqTop], [sqE, sqBot], [sqW, sqBot], [sqW, sqTop]]] } }] });
 
@@ -496,6 +524,7 @@ export default function HolyLandMap() {
     addLayer({ id: 'hl-focus-shore-line', type: 'line', source: 'hl-focus-shore', paint: { 'line-color': '#f5c070', 'line-width': 2.5 } }, false);
     addLayer({ id: 'hl-country-glow', type: 'line', source: 'hl-country', paint: { 'line-color': '#a78bfa', 'line-width': 10, 'line-blur': 6, 'line-opacity': 0.55 } }, false);
     addLayer({ id: 'hl-country-line', type: 'line', source: 'hl-country', paint: { 'line-color': '#7c3aed', 'line-width': 2.2, 'line-opacity': 0.95 } }, false);
+    addLayer({ id: 'hl-comm-route', type: 'line', source: 'hl-comm-routes', paint: { 'line-color': '#0f8f80', 'line-width': 2.4, 'line-dasharray': [2, 1.5], 'line-opacity': 0.9 } }, false);
     addLayer({ id: 'hl-pin-line-casing', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#ffffff', 'line-width': 5, 'line-opacity': 0.7 } }, false);
     addLayer({ id: 'hl-pin-line', type: 'line', source: 'hl-pin-line', paint: { 'line-color': '#e05555', 'line-width': 2.5, 'line-dasharray': [3, 2] } }, false);
 
@@ -505,6 +534,7 @@ export default function HolyLandMap() {
     vis('hl-holy-square-glow', showEzekiel); vis('hl-holy-square-line', showEzekiel);
     vis('hl-joshua-fill', showJoshua); vis('hl-joshua-line', showJoshua);
     for (const id of ['hl-wl-fill', 'hl-wl-casing', 'hl-wl-line', 'hl-wl-dash', 'hl-wl-dot']) vis(id, showWorldly);
+    vis('hl-comm-route', showCommunities);
     map.setPaintProperty('hl-wl-fill', 'fill-opacity', fillOpacity(wlBase));
     map.setPaintProperty('hl-ez-fill', 'fill-opacity', fillOpacity(0.68));
     map.setPaintProperty('hl-joshua-fill', 'fill-opacity', fillOpacity(0.72));
@@ -583,6 +613,17 @@ export default function HolyLandMap() {
         mk([c.lon, c.lat], el, { pri: c.id === selCityId ? 1 : 3, w: Math.max(c.translit.length, c.name.length) * 7 + 14 });
       }
     }
+    if (showCommunities) {
+      for (const c of COMMUNITIES) {
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.className = `hl-mk hl-mk-c${c.emph ? ' hl-mk-c-emph' : ''}${c.id === selCityId ? ' hl-mk-sel' : ''}`;
+        el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span><span class="hl-mk-paleo" dir="rtl">${c.paleo}</span><span class="hl-mk-en">${c.name}</span></span>`;
+        el.title = `${c.name} — ${c.translit}${c.ref ? ` — ${c.ref}` : ''}`;
+        el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
+        mk([c.lon, c.lat], el, { pri: c.emph || c.id === selCityId ? 1 : 2, w: Math.max(c.translit.length, c.name.length) * 7 + 14 });
+      }
+    }
     declutterRef.current(map);
     if (pin) {
       const el = document.createElement('div');
@@ -659,7 +700,7 @@ export default function HolyLandMap() {
       mk([wtr.lon, wtr.lat], el);
     }
     fitRegionLabelsRef.current(map);   // the band labels exist only now — size them to their bands
-  }, [ez, sel, pin, showBiblical, showEzekiel, showJoshua, showWorldly, showModern, showRegions, relief, onlineLabels, selectCity, selectRegion, selectWater]);
+  }, [ez, sel, pin, showBiblical, showEzekiel, showJoshua, showWorldly, showModern, showRegions, showCommunities, relief, onlineLabels, selectCity, selectRegion, selectWater]);
 
   const applyRef = useRef(applyOverlays);
   applyRef.current = applyOverlays;
@@ -947,6 +988,7 @@ export default function HolyLandMap() {
     const next = new URLSearchParams(params);
     next.set('overlay', showJoshua && showEzekiel ? 'both' : showJoshua ? 'joshua' : showEzekiel ? 'ezekiel' : 'none');
     if (showWorldly) next.set('worldly', '1'); else next.delete('worldly');
+    if (showCommunities) next.set('communities', '1'); else next.delete('communities');
     if (basemap === 'online') next.set('basemap', 'online'); else next.delete('basemap');
     if (!relief) next.set('relief', '0'); else next.delete('relief');
     if (pin) next.set('pin', `${pin.lon.toFixed(4)},${pin.lat.toFixed(4)},${pin.label}`); else next.delete('pin');
@@ -954,7 +996,7 @@ export default function HolyLandMap() {
     if (anyPlaces) next.set('places', '1'); else next.delete('places');
     if (next.toString() !== params.toString()) setParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showJoshua, showEzekiel, showWorldly, basemap, relief, pin, showBiblical, showModern, showRegions]);
+  }, [showJoshua, showEzekiel, showWorldly, showCommunities, basemap, relief, pin, showBiblical, showModern, showRegions]);
 
   const dropPin = useCallback((lonLat, label) => {
     setPin({ lon: lonLat[0], lat: lonLat[1], label: label || fmtLonLat(lonLat) });
@@ -986,6 +1028,11 @@ export default function HolyLandMap() {
     const s = q.trim().toLowerCase();
     return REGIONS.filter((c) => inFocus(c) && (!s || `${c.name} ${c.translit} ${c.he} ${c.paleo} ${c.ref}`.toLowerCase().includes(s)));
   }, [q, inFocus]);
+
+  const filteredCommunities = useMemo(() => {
+    const s = q.trim().toLowerCase();
+    return COMMUNITIES.filter((c) => !s || `${c.name} ${c.group} ${c.translit} ${c.ref}`.toLowerCase().includes(s));
+  }, [q]);
 
   // "Peoples" table: every Ezekiel band → the modern cities inside it, by country.
   const peoples = useMemo(() => EZEKIEL_ORDER.map((name) => {
@@ -1118,6 +1165,18 @@ export default function HolyLandMap() {
                   </li>
                 ))}
               </ul>
+              <div className="hl-sec-h">Communities <span className="hl-count">{filteredCommunities.length}</span></div>
+              <ul className="hl-list">
+                {filteredCommunities.map((c) => (
+                  <li key={c.id}>
+                    <button type="button" className={`hl-li${sel?.city?.id === c.id ? ' on' : ''}`} onClick={() => selectCity(c, true)}>
+                      <span className="hl-li-paleo" dir="rtl">{c.paleo}</span>
+                      <span className="hl-li-main"><b>{c.translit}</b> <em>{c.name}</em></span>
+                      <span className="hl-li-ref">{c.group}{c.ref ? ` · ${c.ref}` : ''}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
               <div className="hl-sec-h">Nations &amp; lands <span className="hl-count">{filteredRegions.length}</span></div>
               <ul className="hl-list">
                 {filteredRegions.map((c) => (
@@ -1192,6 +1251,7 @@ export default function HolyLandMap() {
                 <label className="hl-row"><input type="checkbox" checked={showBiblical} onChange={(e) => setShowBiblical(e.target.checked)} /> <span className="hl-sw hl-sw-b" /> Biblical cities</label>
                 <label className="hl-row"><input type="checkbox" checked={showModern} onChange={(e) => setShowModern(e.target.checked)} /> <span className="hl-sw hl-sw-m" /> Today's cities</label>
                 <label className="hl-row"><input type="checkbox" checked={showRegions} onChange={(e) => setShowRegions(e.target.checked)} /> <span className="hl-sw hl-sw-r" /> Nations &amp; lands</label>
+                <label className="hl-row"><input type="checkbox" checked={showCommunities} onChange={(e) => setShowCommunities(e.target.checked)} /> <span className="hl-sw hl-sw-c" /> Communities <small className="hl-inline-note">(Ashkenazim, Sephardim…)</small></label>
                 <div className="hl-gear-h">Allotments</div>
                 <label className="hl-row"><input type="checkbox" checked={showEzekiel} onChange={(e) => setShowEzekiel(e.target.checked)} /> Ezekiel 47–48</label>
                 <label className="hl-row"><input type="checkbox" checked={showJoshua} onChange={(e) => setShowJoshua(e.target.checked)} /> Joshua 13–19</label>
@@ -1288,7 +1348,7 @@ function PlacePicker({ pin, selId, onPick }) {
   }, [hi, open]);
   const inputRef = useRef(null);
   const pick = (c) => { setQ(''); setOpen(false); inputRef.current?.blur(); onPick(c); };   // blur → the phone keyboard goes away
-  const kindLabel = (c) => (c.kind === 'biblical' ? 'Bible' : c.kind === 'region' ? 'Nation' : 'Today');
+  const kindLabel = (c) => (c.kind === 'biblical' ? 'Bible' : c.kind === 'region' ? 'Nation' : c.kind === 'community' ? 'Community' : 'Today');
   return (
     <div className="hl-searchbox">
       <input
@@ -1638,10 +1698,11 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
             <div className="hl-detail-paleo" dir="rtl">{c.paleo}</div>
             <div className="hl-detail-name">{c.translit} <em>{c.name}</em></div>
             {today && <div className="hl-detail-ref">Today: {today}</div>}
+            {c.kind === 'community' && <div className="hl-detail-ref">Jewish community · {c.group} — named after the land of {c.translit}</div>}
             <Lexical he={c.he} />
             {c.note && <p className="hl-detail-note">{withNames(c.note)}</p>}
-            <div className="hl-detail-sub">{c.proph ? 'History' : 'Scripture'}</div>
-            <PassageRefs refs={c.ref} autoOpen />
+            {c.ref && <><div className="hl-detail-sub">{c.kind === 'community' ? `Where scripture names ${c.translit}` : c.proph ? 'History' : 'Scripture'}</div>
+            <PassageRefs refs={c.ref} autoOpen /></>}
             {c.proph && <><div className="hl-detail-sub">Prophecies</div><PassageRefs refs={c.proph} /></>}
           </>
         ) : (

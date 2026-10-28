@@ -216,6 +216,16 @@
 .hl-z-labels .hl-mk-anchor .hl-mk-paleo, .hl-z-labels .hl-mk-anchor .hl-mk-en { display: block; }
 
 /* Nations & lands: purple diamonds, always labelled (they're far apart) */
+/* Communities (the Jewish diaspora): teal rounded squares; the Ashkenazim larger, ringed and always labelled */
+.hl-sw-c { background: #0f8f80; border-radius: 3px; width: 11px; height: 11px; }
+.hl-mk-c .hl-mk-dot { background: #12a594; border-radius: 3px; width: 11px; height: 11px; }
+.hl-mk-c .hl-mk-lbl { display: flex; }
+.hl-mk-c .hl-mk-name { color: #0b5c53; }
+.hl-mk-c-emph .hl-mk-dot { width: 16px; height: 16px; left: -8px; top: -8px; background: #0f8f80; box-shadow: 0 0 0 3px #12a59455, 0 0 12px 3px #12a59488; }
+.hl-mk-c-emph .hl-mk-lbl { left: 13px; }
+.hl-mk-c-emph .hl-mk-name { font-size: 14px; color: #064b44; }
+.hl-mk-c-emph .hl-mk-en { font-weight: 600; color: #0b5c53; }
+[data-basemap="satellite"] .hl-mk-c .hl-mk-name { color: #9ff0e4; }
 .hl-mk-r .hl-mk-dot { background: #a78bfa; transform: rotate(45deg); border-radius: 1px; width: 11px; height: 11px; }
 .hl-mk-r .hl-mk-lbl { display: flex; }
 .hl-mk-r .hl-mk-name { color: #3b2a6e; }
