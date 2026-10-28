@@ -108,11 +108,10 @@ Bedouin, Druze, Circassians, Samaritans, Armenians, Arameans — each at a centr
 `note` (today), `origin` (prose, in a <details> "Where they come from") and `from` [[lon,lat,label]] → dashed lines
 (`communityRoutes(c)`) + origin markers while its card is open, and "Show the way here on the map" frames them all.
 
-**Names (fieldy: "what is 'Filastiniyyun' its not even an attempt of using my paleo transliteration standard"):** every
-community's self-name is `he` in PALEO — Arabic/Aramaic/Ge'ez letter for letter (Semitic), Circassian/Armenian spelled in
-Hebrew letters — and `translit` = translitOf per word (Palasatayanayawan, Irab, Badaw, Alamawachadawan, Adayagah, Hay,
-Aramayaa, Bayath Yashar-Al). Names inside selfMeans/note/origin are written ‹Paleo› and `trText` turns them into the
-transliteration. Never put a romanized (Arabic-style) name in this data again.
+**Names — FINAL (fieldy, after a Paleo pass: "nah scrap trying to paleo-ize and just use everyones modern names pronounced
+in english"):** communities show their MODERN ENGLISH names only (`label`: Ashkenazim, Sephardim, Mizrahim, Yemenite Jews,
+Beta Israel, Palestinians, Arab Israelis, Bedouin, Druze, Circassians, Samaritans, Armenians, Arameans), no Paleo, and
+their card text is plain English (no withNames there). This is the one place on the site where the English name leads.
 Holy Portion inset: hidden as soon as any non-prince plot label is on the map (not only past INSET_HIDE_PX).
 
 ## PEOPLES IN THE LAND (replaced the diaspora Communities, 2026-10-28)## PEOPLES IN THE LAND (replaced the diaspora Communities, 2026-10-28)

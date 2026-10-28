@@ -620,7 +620,7 @@ export default function HolyLandMap() {
         const el = document.createElement('button');
         el.type = 'button';
         el.className = `hl-mk hl-mk-c${c.emph ? ' hl-mk-c-emph' : ''}${c.id === selCityId ? ' hl-mk-sel' : ''}`;
-        el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span>${c.paleo ? `<span class="hl-mk-paleo" dir="rtl">${c.paleo}</span>` : ''}<span class="hl-mk-en">${c.name}</span></span>`;
+        el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span>${c.name !== c.translit ? `<span class="hl-mk-en">${c.name}</span>` : ''}</span>`;
         el.title = `${c.translit} (${c.name}) — ${c.selfMeans}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
         mk([c.lon, c.lat], el, { pri: c.emph || c.id === selCityId ? 1 : 2, w: Math.max(c.translit.length, c.name.length) * 7 + 14 });
@@ -1183,7 +1183,7 @@ export default function HolyLandMap() {
                     <button type="button" className={`hl-li${sel?.city?.id === c.id ? ' on' : ''}`} onClick={() => selectCity(c, true)}>
                       <span className="hl-li-paleo" dir="rtl">{c.paleo}</span>
                       <span className="hl-li-main"><b>{c.translit}</b> <em>{c.name}</em></span>
-                      <span className="hl-li-ref">{c.translit} — {c.selfMeans}</span>
+                      <span className="hl-li-ref">{c.selfMeans}</span>
                     </button>
                   </li>
                 ))}
@@ -1267,7 +1267,7 @@ export default function HolyLandMap() {
                   <div className="hl-comm-list" role="list" aria-label="Communities">
                     {COMMUNITIES.map((c) => (
                       <button key={c.id} type="button" role="listitem" className={`hl-comm-li${sel?.city?.id === c.id ? ' on' : ''}`} onClick={() => selectCity(c, true)}>
-                        <b>{c.translit}</b>{c.paleo && <span dir="rtl">{c.paleo}</span>}<small>{c.name}</small>
+                        <b>{c.translit}</b>{c.name !== c.translit && <small>{c.name}</small>}
                       </button>
                     ))}
                   </div>
@@ -1716,15 +1716,15 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion, onFit
         {c.kind !== 'modern' ? (
           <>
             <div className="hl-detail-paleo" dir="rtl">{c.paleo}</div>
-            <div className="hl-detail-name">{c.translit} <em>{c.name}</em></div>
+            <div className="hl-detail-name">{c.translit} {c.name !== c.translit && <em>{c.name}</em>}</div>
             {today && <div className="hl-detail-ref">Today: {today}</div>}
-            {c.kind === 'community' && <div className="hl-detail-ref">A community of the land today · what they call themselves: <b>{c.translit}</b> <span dir="rtl" className="hl-detail-paleo-inline">{c.paleo}</span> — {c.selfMeans}</div>}
+            {c.kind === 'community' && <div className="hl-detail-ref">A community of the land today · what they call themselves: {c.selfMeans}</div>}
             <Lexical he={c.he} />
-            {c.note && <p className="hl-detail-note">{c.kind === 'community' && <b>Where they live today. </b>}{withNames(c.note)}</p>}
+            {c.note && <p className="hl-detail-note">{c.kind === 'community' ? <><b>Where they live today. </b>{c.note}</> : withNames(c.note)}</p>}
             {c.kind === 'community' && c.origin && (
               <details className="hl-origin" open>
                 <summary>Where they come from</summary>
-                <p className="hl-detail-note">{withNames(c.origin)}</p>
+                <p className="hl-detail-note">{c.origin}</p>
                 {c.from.length > 0 && <button type="button" className="hl-link" onClick={() => onFit([[c.lon, c.lat], ...c.from.map(([lo, la]) => [lo, la])])}>Show the way here on the map ↗</button>}
               </details>
             )}
