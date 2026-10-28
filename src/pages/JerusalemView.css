@@ -1,0 +1,57 @@
+/* JerusalemView.css — /models/toward-jerusalem */
+.jv-page { height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); color: var(--text); }
+.jv-top { flex-shrink: 0; display: flex; align-items: center; gap: 10px; padding: calc(8px + var(--safe-top, 0px)) 14px 8px; background: var(--bg2); border-bottom: 1px solid var(--border); min-width: 0; }
+.jv-logo { font-family: var(--paleo-font); color: var(--gold); font-size: 20px; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border2); }
+.jv-back { font-size: 13px; color: var(--text2); white-space: nowrap; }
+.jv-back:hover { color: var(--gold); }
+.jv-h1 { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jv-h1 span { font-weight: 400; color: var(--text3); font-size: 12.5px; margin-left: 6px; }
+.jv-body { flex: 1; min-height: 0; display: flex; position: relative; }
+.jv-view { flex: 1; min-width: 0; position: relative; overflow: hidden; background: #cfd8de; touch-action: none; }
+.jv-view canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+.jv-view canvas:active { cursor: grabbing; }
+.jv-labels { position: absolute; inset: 0; pointer-events: none; }
+.jv-lbl { position: absolute; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; white-space: nowrap; }
+.jv-lbl-text { display: flex; flex-direction: column; align-items: center; line-height: 1.1; padding: 2px 6px; border-radius: 6px; background: #ffffffc8; color: #2a2116; box-shadow: 0 1px 4px #0003; }
+.jv-lbl-text b { font-size: 11.5px; }
+.jv-lbl-text i { font-style: normal; font-family: var(--paleo-font); color: #7a5300; font-size: 12px; }
+.jv-lbl-text small { font-size: 9.5px; color: #5d5446; }
+.jv-lbl-pin { order: 2; width: 1px; height: 14px; background: #2a2116aa; }
+.jv-lbl.hidden { opacity: 0.45; }
+.jv-lbl.hidden .jv-lbl-text { background: #ffffff80; }
+.jv-lbl-t .jv-lbl-text { background: #fff6dc; border: 1.5px solid #c9962b; }
+.jv-lbl-t .jv-lbl-text b { font-size: 13px; }
+.jv-lbl-t .jv-lbl-pin { height: 34px; width: 2px; background: #c9962b; }
+.jv-lbl-t.hidden { opacity: 0.8; }
+.jv-lbl-t.hidden .jv-lbl-text { border-style: dashed; }
+.jv-loading { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); padding: 5px 12px; border-radius: 14px; background: #000a; color: #fff; font-size: 12px; pointer-events: none; }
+.jv-loading.err { background: #6a1d1dcc; max-width: 90%; text-align: center; }
+.jv-tools { position: absolute; right: 12px; top: 12px; display: flex; gap: 6px; }
+.jv-tools button, .jv-row button { padding: 6px 11px; border-radius: 9px; border: 1px solid var(--border2); background: var(--bg2); color: var(--text); font-size: 12.5px; cursor: pointer; }
+.jv-tools button { box-shadow: 0 2px 8px #0004; }
+.jv-tools button.on, .jv-row button.on { border-color: var(--gold); color: var(--gold); background: color-mix(in srgb, var(--gold) 14%, var(--bg2)); }
+.jv-hint { position: absolute; left: 12px; bottom: 10px; font-size: 11px; color: #1e1a14; background: #ffffffa0; padding: 2px 8px; border-radius: 8px; pointer-events: none; }
+.jv-panel { width: 340px; flex-shrink: 0; overflow-y: auto; background: var(--bg2); border-left: 1px solid var(--border); padding: 12px 12px 40px; display: flex; flex-direction: column; gap: 10px; }
+.jv-field { display: flex; flex-direction: column; gap: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); }
+.jv-field select { text-transform: none; letter-spacing: 0; font-size: 14px; padding: 7px 8px; border-radius: 8px; border: 1px solid var(--border2); background: var(--bg); color: var(--text); }
+.jv-facts { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: 10px; border: 1px solid var(--border2); background: var(--bg); }
+.jv-fact { font-size: 13px; }
+.jv-fact span { display: inline-block; width: 80px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); }
+.jv-fact small { color: var(--text3); }
+.jv-verdict { font-size: 13px; line-height: 1.45; padding: 6px 8px; border-radius: 7px; }
+.jv-verdict.up { background: #b8860b22; }
+.jv-verdict.down { background: #4a7bb022; }
+.jv-verdict.seen { background: #2f8f5a26; color: var(--text); }
+.jv-verdict.hid { background: #a3452e26; }
+.jv-row { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.jv-row > span { width: 44px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); }
+.jv-sub { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); margin-top: 4px; }
+.jv-note { font-size: 12px; color: var(--text2); line-height: 1.5; margin: 0; }
+.jv-src { font-size: 10.5px; color: var(--text4); margin: 0; }
+@media (max-width: 720px) {
+  .jv-body { flex-direction: column; }
+  .jv-view { flex: 1 1 56%; }
+  .jv-panel { width: auto; flex: 0 0 44%; border-left: 0; border-top: 1px solid var(--border); padding: 10px 10px 30px; }
+  .jv-h1 span { display: block; margin-left: 0; }
+  .jv-back { display: none; }
+}

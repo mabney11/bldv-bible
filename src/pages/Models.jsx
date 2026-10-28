@@ -143,6 +143,21 @@ export const MODELS = [
     ],
   },
   {
+    slug: 'toward-jerusalem',
+    kind: 'map',
+    title: 'Toward Yarawashalam',
+    kicker: 'Stand in the land · true heights',
+    blurb: 'Stand anywhere in the land and look toward Yarawashalam (Jerusalem) at eye level on the real ground — true heights, the curve of the earth, the haze of distance — and see whether Har Hamarayah (the Temple Mount) is in sight from there. From Yarayachaw (Jericho) it stands 942 m above you; from Har Hazayathayam (the Mount of Olives) you look down on it.',
+    paleo: '𐤉𐤓𐤅𐤔𐤋𐤌',
+    tags: ['Line of sight', 'Real terrain', 'Eye level', '1 Kings 6'],
+    to: '/models/toward-jerusalem',
+    quick: [
+      { label: 'From Har Hazayathayam (the Mount of Olives)', to: '/models/toward-jerusalem?from=olives' },
+      { label: 'From Yarayachaw (Jericho), 942 m below it', to: '/models/toward-jerusalem?from=jericho' },
+      { label: 'From Hapasagah (Pisgah), where Moses was shown the land', to: '/models/toward-jerusalem?from=pisgah' },
+    ],
+  },
+  {
     slug: 'prints',
     kind: 'map',
     title: 'Printable Maps',

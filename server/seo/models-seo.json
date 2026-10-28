@@ -58,6 +58,17 @@
    ],
    "aka": ["table of nations map", "Genesis 10 map", "sons of Noah map", "Japheth Ham Shem nations map", "Ashkenaz Gomer Magog map"]
   },
+  "toward-jerusalem": {
+   "kind": "map",
+   "base": "/models/toward-jerusalem",
+   "name": "Toward Jerusalem",
+   "refs": [
+    { "slug": "2-chronicles", "book": "2 Chronicles", "from": [3, 1], "to": [3, 1] },
+    { "slug": "psalms", "book": "Psalms", "from": [125, 1], "to": [125, 2] },
+    { "slug": "deuteronomy", "book": "Deuteronomy", "from": [34, 1], "to": [34, 4] }
+   ],
+   "aka": ["view of Jerusalem from Mount of Olives", "Jerusalem elevation", "how high is the Temple Mount", "line of sight to Jerusalem", "going up to Jerusalem"]
+  },
   "prints": {
    "kind": "map",
    "base": "/models/prints",
@@ -384,6 +395,13 @@
    "title": "Table of Nations Map on a Globe — Genesis 10, 11, 25 & 36 | BLD Bible",
    "h1": "The Nations of Genesis",
    "description": "The sons of Yapath (Japheth), Cham (Ham) and Sham (Shem) on a globe — every name of Genesis 10 in Paleo with the land it is placed in and how sure that place is — and the genealogies of Genesis 11 (Sham to Abaram), 25 (Qatawarah (Keturah) and Yashamai-Al (Ishmael)) and 36 (Ishaw (Esau), who is Edom)."
+  },
+  "/models/toward-jerusalem": {
+   "kind": "page",
+   "model": "toward-jerusalem",
+   "title": "Looking Toward Jerusalem at Eye Level — True Heights & Line of Sight | BLD Bible",
+   "h1": "Toward Yarawashalam",
+   "description": "Stand anywhere in the land and look toward Yarawashalam (Jerusalem) on the real ground — true heights, the curve of the earth, the haze of distance — and see whether Har Hamarayah (the Temple Mount) is in sight from there."
   },
   "/models/prints": {
    "kind": "page",

@@ -1776,6 +1776,9 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion, onFit
           </>
         )}
         <LandFacts point={c0.id} what={c0.id === 'jerusalem' ? 'the Temple Mount' : null} />
+        {c0.lon != null && c0.id !== 'jerusalem' && c0.id !== 'jerusalem-modern' && haversineKm([c0.lon, c0.lat], [35.2354, 31.778]) < 100 && (
+          <Link className="hl-look" to={`/models/toward-jerusalem?${c0.kind === 'biblical' || c0.kind == null ? `from=${c0.id}` : `at=${c0.lon},${c0.lat}`}`}>👁 Stand here and look toward Yarawashalam ↗</Link>
+        )}
         <AllotmentLines joshua={sel.joshua} ezekiel={sel.ezekiel} />
         {tw && <TwinCard tw={tw} focus={c0.kind} onCity={onCity} />}
         <PinRow pin={pin} at={[c0.lon, c0.lat]} label={c.translit || c.name} onPin={onPin} onUnpin={onUnpin} />

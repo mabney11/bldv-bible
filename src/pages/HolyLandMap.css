@@ -553,3 +553,5 @@
 .hl-land-v small { color: var(--text3); }
 .hl-land-src { font-size: 10.5px; color: var(--text4); }
 .hl-nw { white-space: nowrap; }
+.hl-look { display: inline-block; margin: 2px 0 8px; padding: 6px 12px; border-radius: 9px; border: 1px solid var(--gold); color: var(--gold); font-size: 13px; font-weight: 600; text-decoration: none; }
+.hl-look:hover { background: color-mix(in srgb, var(--gold) 14%, transparent); }
