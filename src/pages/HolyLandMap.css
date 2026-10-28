@@ -530,3 +530,17 @@
 .hl-inset-leaders { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; overflow: visible; }
 .hl-inset-leaders line { stroke: #c02020; stroke-width: 1.4; stroke-dasharray: 4 3; opacity: 0.9; }
 @media (max-width: 720px) { .hl-inset { width: 148px; } }
+
+/* Communities: the pick list under the toggle (fieldy: "checking communities should bring up a list … and snap to their location") */
+.hl-comm-list { display: flex; flex-direction: column; gap: 2px; margin: 2px 0 6px 26px; max-height: 210px; overflow-y: auto; }
+.hl-comm-li { display: flex; align-items: baseline; gap: 6px; padding: 3px 8px; border: 0; border-radius: 6px; background: none; color: var(--text); text-align: left; cursor: pointer; font-size: 12.5px; }
+.hl-comm-li:hover { background: color-mix(in srgb, #12a594 16%, transparent); }
+.hl-comm-li.on { background: color-mix(in srgb, #12a594 28%, transparent); }
+.hl-comm-li span { font-family: var(--paleo-font); color: var(--gold); }
+.hl-comm-li { flex-wrap: wrap; row-gap: 0; }
+.hl-comm-li small { color: var(--text3); font-size: 11px; flex-basis: 100%; }
+.hl-mk-origin .hl-mk-dot { background: #fff; border: 2px solid #0f8f80; border-radius: 50%; width: 9px; height: 9px; }
+.hl-mk-origin .hl-mk-lbl { display: flex; }
+.hl-mk-origin .hl-mk-name { color: #0b5c53; font-size: 12px; }
+.hl-origin { margin: 6px 0 8px; }
+.hl-origin summary { cursor: pointer; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); }

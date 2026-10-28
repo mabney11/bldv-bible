@@ -830,39 +830,88 @@ export function twinOf(place) {
   return { biblical, modern, rel: t.rel, name: t.name, km: haversineKm([biblical.lon, biblical.lat], [modern.lon, modern.lat]) };
 }
 
-// ── Peoples in the land: who lives in it today, under the name each gives itself ──
-// fieldy, 2026-10-28: "I want to know which peoples are in the land and what they proudly claim themselves to be" (the
-// earlier diaspora version — Jews placed in Germany, Spain… — answered a different question and is gone). Each entry is
-// placed where the people lives in the land; `self` is its own name for itself — `he` (Paleo) when that name is Hebrew,
-// shown through the app's transliteration, else `self` romanized from its own language — `selfMeans` what it says, and
-// `note` who they are and where, in plain words. No population figures (they date). `emph` = always labelled, larger.
-const CM = (id, group, name, lon, lat, o) => ({ id, group, name, lon, lat, ref: '', proph: '', iso: null, kind: 'community', emph: false, ...o });
+// ── Communities: who lives in the land today, under the name each gives itself ──
+// fieldy, 2026-10-28: "which peoples are in the land and what they proudly claim themselves to be"; then "the communities I
+// want marked relative to todays populations, where they originate from should be in their info". Each entry is placed
+// where that community lives in the land TODAY (a centre of it — most live across the country); `self` is its own name
+// (`he` Paleo when Hebrew, else romanized), `selfMeans` what it calls / holds itself to be, `note` where it lives now,
+// `origin` where it came from, and `from` = [lon, lat, label] of those places — drawn as dashed lines to it when the card
+// is open. No population figures (they date). `emph` = always labelled, larger marker.
+// Not marked, at fieldy's word: the African Hebrew Israelites of Dimona ("this group is a part of the allotment map of
+// Ezekiel and since its not fulfilled yet and there is no established territory where they are subject to their own laws").
+const CM = (id, group, name, lon, lat, o) => ({ id, group, name, lon, lat, ref: '', proph: '', iso: null, kind: 'community', emph: false, from: [], ...o });
 export const COMMUNITIES = [
-  CM('yehudim', 'Jews', 'Jews of Israel', 34.88, 32.33, { he: '𐤉𐤄𐤅𐤃𐤉𐤌', selfMeans: 'Yehudim — "Jews", the people of Judah; also Am Yisrael, "the people of Israel"', emph: true,
-    note: 'Most of Israel\'s citizens, throughout the country and in the settlements of the West Bank and East Jerusalem. They come from many communities: Ashkenazim (from Central and Eastern Europe), Sephardim (from Spain, by way of North Africa and the Ottoman lands), Mizrahim (from Iraq, Iran, Yemen, Syria and North Africa) and Beta Israel (from Ethiopia).' }),
-  CM('filastiniyyun-wb', 'Palestinians', 'Palestinians — the West Bank', 35.2, 31.95, { self: 'Filastiniyyun', selfMeans: 'Filastiniyyun — "Palestinians"', emph: true,
-    note: 'The Arab people of the West Bank and East Jerusalem — Ramallah, Nablus, Hebron, Bethlehem, Jenin — Muslims mostly, with Christian communities in Bethlehem, Beit Jala and Ramallah.' }),
-  CM('filastiniyyun-gaza', 'Palestinians', 'Palestinians — Gaza', 34.42, 31.45, { self: 'Filastiniyyun', selfMeans: 'Filastiniyyun — "Palestinians"', emph: true,
-    note: 'The people of the Gaza Strip — Gaza City, Khan Yunis, Rafah, Deir al-Balah — a large part of them families who came as refugees in 1948.' }),
-  CM('arab-israelis', 'Arab citizens of Israel', 'Arab citizens of Israel', 35.3, 32.7, { self: '\'Arab / Filastiniyyun', selfMeans: '\'Arab — "Arabs"; many call themselves Palestinian citizens of Israel, or "the Arabs of 48"',
-    note: 'About a fifth of Israel\'s citizens: Nazareth, Umm al-Fahm, the Galilee villages, the "Triangle", Jaffa, Haifa, Acre — Muslims mostly, with Christians in Nazareth, Haifa and the Galilee.' }),
-  CM('bedouin', 'Arab citizens of Israel', 'Bedouin of the Negev', 34.78, 31.32, { self: 'Badw', selfMeans: 'Badw — "people of the desert"; by their tribes',
-    note: 'The Bedouin tribes of the Negev — Rahat and the townships around Beersheba, and villages the state does not recognize; Bedouin also live in the Galilee.' }),
-  CM('druze', 'Druze', 'Druze', 35.05, 32.69, { self: 'al-Muwahhidun', selfMeans: 'al-Muwahhidun — "the people of the oneness" (of God)',
-    note: 'Daliyat al-Karmel and Isfiya on Mount Carmel, and Galilee villages; many Druze men serve in Israel\'s army. In the Golan villages — Majdal Shams, Mas\'ade, Buq\'ata — many keep Syrian citizenship.' }),
-  CM('circassians', 'Circassians', 'Circassians', 35.44, 32.72, { self: 'Adyghe', selfMeans: 'Adyghe — their own name in Circassian',
-    note: 'Muslims from the North Caucasus, settled by the Ottomans in the 1870s; two villages — Kfar Kama in the Lower Galilee and Rehaniya near the Lebanese border.' }),
-  CM('samaritans', 'Samaritans', 'Samaritans', 35.27, 32.2, { he: '𐤔𐤌𐤓𐤉𐤌', selfMeans: 'Shamerim — "the keepers" (of the Torah); they also call themselves Bene Yisrael, "the sons of Israel"',
-    note: 'A small people who keep the five books of Moses in their own script and worship on Mount Gerizim; half live at Kiryat Luza on the mountain above Nablus, half in Holon near Tel Aviv.' }),
-  CM('armenians', 'Armenians', 'Armenians of Jerusalem', 35.229, 31.774, { self: 'Hay', selfMeans: 'Hay — "Armenians", in Armenian',
-    note: 'The Armenian Quarter of the Old City of Jerusalem, around the Monastery of St James, and Armenians in Jaffa and Haifa.' }),
-  CM('arameans', 'Arameans', 'Arameans', 35.45, 33.02, { self: 'Aramaye', selfMeans: 'Aramaye — "Arameans", in Aramaic (Syriac)',
-    note: 'Christians — Maronites mostly — of the Upper Galilee (Jish, Gush Halav) and Haifa, who name themselves Arameans rather than Arabs; Israel has registered "Aramean" as a nationality since 2014.' }),
-  CM('hebrew-israelites', 'Hebrew Israelites', 'African Hebrew Israelites', 35.03, 31.07, { self: 'Hebrew Israelites', selfMeans: 'African Hebrew Israelites of Jerusalem — they hold that they descend from the ancient Israelites',
-    note: 'A community of African Americans who came from Chicago from 1969 and settled in Dimona, in the Negev, with smaller groups in Arad and Mitzpe Ramon.' }),
+  CM('ashkenazim', 'Jews', 'Ashkenazi Jews', 34.78, 32.08, { he: '𐤀𐤔𐤊𐤍𐤆𐤉𐤌', emph: true,
+    selfMeans: 'Ashkenazim — named for Ashakanaz, the name medieval Hebrew gave the Rhineland (from Genesis 10:3); as Jews, Yehudim, the people of Israel',
+    note: 'Throughout Israel — largest in Tel Aviv and its cities, Jerusalem, Haifa, and the Haredi city of Bnei Brak; also in the West Bank settlements.',
+    origin: 'The Jewish communities of the Rhineland (Mainz, Worms, Speyer) from about the 10th century; from the 13th–16th century most moved east into Poland and Lithuania, speaking Yiddish. They came to the land from the 1880s, after the Holocaust, and from the former Soviet Union in the 1990s.',
+    from: [[8.27, 50.0, 'the Rhineland'], [22.5, 52.6, 'Poland and Lithuania'], [37.6, 55.75, 'Russia and the former Soviet Union']] }),
+  CM('sephardim', 'Jews', 'Sephardi Jews', 34.65, 31.8, { he: '𐤎𐤐𐤓𐤃𐤉𐤌',
+    selfMeans: 'Sephardim — named for Saparad, the name medieval Hebrew gave Spain',
+    note: 'Throughout Israel — Jerusalem, Ashdod, Netanya and the coastal cities; in Israel the name often also covers the Jews of North Africa.',
+    origin: 'The Jews of Spain and Portugal until the expulsions of 1492 and 1496–97; then the Ottoman lands (Thessaloniki, Istanbul), North Africa and the Netherlands, speaking Ladino. Most came to the land from Morocco, Turkey and the Balkans after 1948.',
+    from: [[-4.02, 39.86, 'Spain and Portugal'], [22.94, 40.64, 'Thessaloniki'], [-5.0, 34.03, 'Morocco']] }),
+  CM('mizrahim', 'Jews', 'Mizrahi Jews', 34.79, 31.25, { he: '𐤌𐤆𐤓𐤇𐤉𐤌',
+    selfMeans: 'Mizrahim — "the easterners"; Iraqi Jews call themselves Bavlim, "Babylonians"',
+    note: 'Throughout Israel — Beersheba and the Negev towns, Ramat Gan and Holon, Jerusalem.',
+    origin: 'The Jews of Iraq (Babylon — since the exile), Iran (Persia), Syria, Kurdistan and North Africa. Almost all came to the land between 1948 and the early 1950s.',
+    from: [[44.36, 33.31, 'Iraq (Babylon)'], [51.67, 32.65, 'Iran (Persia)'], [36.3, 33.5, 'Syria']] }),
+  CM('teimanim', 'Jews', 'Yemenite Jews', 34.95, 32.09, { he: '𐤕𐤉𐤌𐤍𐤉𐤌',
+    selfMeans: 'Teimanim — "the Yemenites"',
+    note: 'Rosh HaAyin, the Kerem HaTeimanim quarter of Tel Aviv, and towns of the centre.',
+    origin: 'An ancient Jewish community of Yemen; nearly all were flown to Israel in 1949–50.',
+    from: [[44.21, 15.35, 'Yemen (Sanaa)']] }),
+  CM('beta-israel', 'Jews', 'Beta Israel — Ethiopian Jews', 34.86, 32.33, { self: 'Beta Israel',
+    selfMeans: 'Beta Israel — "the house of Israel", in Ge\'ez',
+    note: 'Netanya, Rehovot, Kiryat Malakhi, Ashdod and Beersheba.',
+    origin: 'The Jews of Ethiopia, around Gondar and Lake Tana; most came in Operation Moses (1984) and Operation Solomon (1991).',
+    from: [[37.47, 12.6, 'Ethiopia (Gondar)']] }),
+  CM('filastiniyyun-wb', 'Palestinians', 'Palestinians — the West Bank', 35.2, 31.9, { self: 'Filastiniyyun', emph: true,
+    selfMeans: 'Filastiniyyun — "Palestinians"; Arabs of Palestine',
+    note: 'The West Bank and East Jerusalem — Ramallah, Nablus, Hebron, Bethlehem, Jenin — Muslims mostly, with Christian communities in Bethlehem, Beit Jala and Ramallah. Many families in the refugee camps came from towns of 1948.',
+    origin: 'The Arabic-speaking people long settled in the land; Arabic since the early Islamic centuries.' }),
+  CM('filastiniyyun-gaza', 'Palestinians', 'Palestinians — Gaza', 34.42, 31.45, { self: 'Filastiniyyun', emph: true,
+    selfMeans: 'Filastiniyyun — "Palestinians"',
+    note: 'Gaza City, Khan Yunis, Rafah, Deir al-Balah.',
+    origin: 'Gaza\'s own families and, in large part, refugees of 1948 from the towns and villages to its north and east.',
+    from: [[34.75, 32.05, 'Jaffa'], [34.57, 31.67, 'al-Majdal (Ashkelon)'], [34.79, 31.25, 'the Beersheba district']] }),
+  CM('arab-israelis', 'Arab citizens of Israel', 'Arab citizens of Israel', 35.3, 32.7, { self: '\'Arab',
+    selfMeans: '\'Arab — "Arabs"; many call themselves Palestinian citizens of Israel, or "the Arabs of 48"',
+    note: 'About a fifth of Israel\'s citizens: Nazareth, Umm al-Fahm, the Galilee villages, the "Triangle", Jaffa, Haifa, Acre — Muslims mostly, with Christians in Nazareth, Haifa and the Galilee.',
+    origin: 'The Arab people who stayed in their towns and villages inside Israel after 1948.' }),
+  CM('bedouin', 'Arab citizens of Israel', 'Bedouin of the Negev', 34.75, 31.39, { self: 'Badw',
+    selfMeans: 'Badw — "people of the desert"; by their tribes',
+    note: 'Rahat and the townships around Beersheba, and villages the state does not recognize; Bedouin also live in the Galilee.',
+    origin: 'Tribes of the Negev and Sinai deserts, several tracing themselves to Arabia.' }),
+  CM('druze', 'Druze', 'Druze', 35.05, 32.69, { self: 'al-Muwahhidun',
+    selfMeans: 'al-Muwahhidun — "the people of the oneness" (of God)',
+    note: 'Daliyat al-Karmel and Isfiya on Mount Carmel, and Galilee villages; many Druze men serve in Israel\'s army. In the Golan villages — Majdal Shams, Mas\'ade, Buq\'ata — many keep Syrian citizenship.',
+    origin: 'A faith that began in Fatimid Cairo in the 11th century and took root in the mountains of Lebanon and Syria, from where the villages of the Carmel and Galilee were settled.',
+    from: [[31.24, 30.04, 'Cairo — where the faith began'], [35.6, 33.7, 'Mount Lebanon']] }),
+  CM('circassians', 'Circassians', 'Circassians', 35.44, 32.72, { self: 'Adyghe',
+    selfMeans: 'Adyghe — their own name in Circassian',
+    note: 'Two villages — Kfar Kama in the Lower Galilee and Rehaniya near the Lebanese border.',
+    origin: 'Muslims of the North Caucasus driven out by Russia in 1864 and settled by the Ottomans in the 1870s.',
+    from: [[40.1, 44.6, 'the North Caucasus']] }),
+  CM('samaritans', 'Samaritans', 'Samaritans', 35.27, 32.2, { he: '𐤔𐤌𐤓𐤉𐤌',
+    selfMeans: 'Shamerim — "the keepers" (of the Torah); they also call themselves Bene Yisrael, "the sons of Israel", and hold that they descend from Ephraim and Manasseh, with priests of Levi',
+    note: 'Kiryat Luza on Mount Gerizim above Nablus, and Holon near Tel Aviv.',
+    origin: 'The land itself: they hold that they never left it, and keep the five books of Moses in their own script with Mount Gerizim as the holy place.' }),
+  CM('armenians', 'Armenians', 'Armenians of Jerusalem', 35.229, 31.774, { self: 'Hay',
+    selfMeans: 'Hay — "Armenians", in Armenian',
+    note: 'The Armenian Quarter of the Old City of Jerusalem, around the Monastery of St James, and Armenians in Jaffa and Haifa.',
+    origin: 'Armenia: monks and pilgrims in Jerusalem since the 4th–5th century, and many more families after 1915.',
+    from: [[44.5, 40.18, 'Armenia']] }),
+  CM('arameans', 'Arameans', 'Arameans', 35.45, 33.02, { self: 'Aramaye',
+    selfMeans: 'Aramaye — "Arameans", in Aramaic (Syriac): not Arabs; Israel has registered "Aramean" as a nationality since 2014',
+    note: 'Christians — Maronites mostly — of the Upper Galilee (Jish, Gush Halav) and Haifa.',
+    origin: 'The Maronite Christians of the Syrian and Lebanese mountains, who keep Syriac (Aramaic) in their liturgy.',
+    from: [[35.9, 34.2, 'Mount Lebanon']] }),
 ].map((c) => ({ ...c, paleo: c.he ? compoundPaleo(c.he) : '', translit: c.he ? translitOf(c.he) : c.self }));
-/** Migration lines drawn when the layer is on: none for the peoples of the land. */
-export const COMMUNITY_ROUTES = [];
+/** The dashed lines from a selected community back to where it came from. */
+export function communityRoutes(c) {
+  return (c?.from || []).map(([lon, lat]) => ({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[lon, lat], [c.lon, c.lat]] } }));
+}
 
 export const ALL_PLACES = [...BIBLICAL_CITIES, ...REGIONS, ...MODERN_CITIES, ...COMMUNITIES];
 /** Every place, A→Z by the name it is shown under (the app's transliteration for biblical names). */

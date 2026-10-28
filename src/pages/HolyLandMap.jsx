@@ -46,7 +46,7 @@ import {
   ezekielAllotment, toFeature, ringCentroid, labelAnchor, pointInRing, joshuaTribeAt, ezekielAt,
   translitOf,
   REGIONS, ALL_PLACES, PLACES_AZ, searchPlaces, haversineKm, bearingDeg, compass, fmtDistance, HOLY_WORDS,
-  COMMUNITIES, COMMUNITY_ROUTES,
+  COMMUNITIES, communityRoutes,
   WORLDLY, WORLDLY_ATTR, WORLDLY_KIND, worldlyFeature, worldlyAt,
   countryOf, countryFeature, countryName, twinOf, WATERS, BIBLE_RIVERS, EZ_LANDMARKS, TRIBE_SCRIPTURE, HOLY_SCRIPTURE, withNames,
 } from '../lib/models/holyLand.js';
@@ -330,7 +330,7 @@ export default function HolyLandMap() {
   const [showBiblical, setShowBiblical] = useState(placesDefault);
   const [showModern, setShowModern] = useState(placesDefault);
   const [showRegions, setShowRegions] = useState(placesDefault);
-  const [showCommunities, setShowCommunities] = useState(params.get('communities') === '1');   // the Jewish diaspora communities
+  const [showCommunities, setShowCommunities] = useState(params.get('communities') === '1');   // the communities of the land today
   const [gearOpen, setGearOpen] = useState(false);
   const [legendOpen, setLegendOpen] = useState(false);  // the ⚙ widget beside the zoom buttons
   const [ctxOnly, setCtxOnly] = useState(true);     // Cities / Peoples tabs limited to the focused portion
@@ -388,7 +388,7 @@ export default function HolyLandMap() {
         const lons = pts.map((p) => p[0]), lats = pts.map((p) => p[1]);
         map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], { padding: { top: 40 + padding.top, left: 40, right: 40, bottom: 40 + padding.bottom }, maxZoom: 7, pitch: threeD ? 55 : 0, duration: 1400, essential: true });
       } else {
-        const zoom = c.kind === 'region' || c.kind === 'community' ? Math.min(Math.max(cur, 5.5), 7) : (cur < 9.5 ? 9.5 : cur);
+        const zoom = c.kind === 'region' ? Math.min(Math.max(cur, 5.5), 7) : c.kind === 'community' ? 9 : (cur < 9.5 ? 9.5 : cur);
         map.flyTo({ center: [c.lon, c.lat], zoom, padding, pitch: threeD ? 55 : 0, duration: 1400, essential: true });
       }
     } else if (map && isNarrow()) {
@@ -486,7 +486,9 @@ export default function HolyLandMap() {
     ensure('hl-ez-holy', { type: 'FeatureCollection', features: ez.holy.map((h) => toFeature(h, { color: HOLY_KIND_STYLE[h.kind].color, opacity: HOLY_KIND_STYLE[h.kind].opacity })) });
     // The 25,000 × 25,000 square itself — a permanent golden glow (Matthew 5:14–16), visible at every zoom.
     ensure('hl-worldly', { type: 'FeatureCollection', features: WORLDLY.map((w) => worldlyFeature(w)) });
-    ensure('hl-comm-routes', { type: 'FeatureCollection', features: COMMUNITY_ROUTES.map(([a, b]) => { const p = COMMUNITIES.find((c) => c.id === a), q = COMMUNITIES.find((c) => c.id === b); return { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[p.lon, p.lat], [q.lon, q.lat]] } }; }) });
+    // a selected community: dashed lines back to where it came from
+    const selComm = sel?.kind === 'city' && sel.city.kind === 'community' ? sel.city : null;
+    ensure('hl-comm-routes', { type: 'FeatureCollection', features: communityRoutes(selComm) });
     const [sqW, sqTop, sqE, sqBot] = ez.meta.square;
     ensure('hl-holy-square', { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[sqW, sqTop], [sqE, sqTop], [sqE, sqBot], [sqW, sqBot], [sqW, sqTop]]] } }] });
 
@@ -623,6 +625,12 @@ export default function HolyLandMap() {
         el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
         mk([c.lon, c.lat], el, { pri: c.emph || c.id === selCityId ? 1 : 2, w: Math.max(c.translit.length, c.name.length) * 7 + 14 });
       }
+    }
+    if (selComm) for (const [lon, lat, label] of selComm.from) {
+      const el = document.createElement('div');
+      el.className = 'hl-mk hl-mk-origin';
+      el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${label}</span><span class="hl-mk-en">${selComm.name} came from here</span></span>`;
+      mk([lon, lat], el, { pri: 1, w: label.length * 7 + 14 });
     }
     declutterRef.current(map);
     if (pin) {
@@ -1121,7 +1129,7 @@ export default function HolyLandMap() {
             </div>
           </div>
 
-          {sel && <Detail sel={sel} ez={ez} pin={pin} onPin={dropPin} onUnpin={() => setPin(null)} onClose={closeDetail} onCity={(c) => selectCity(c, true)} onRegion={selectRegion} />}
+          {sel && <Detail sel={sel} ez={ez} pin={pin} onPin={dropPin} onUnpin={() => setPin(null)} onClose={closeDetail} onCity={(c) => selectCity(c, true)} onRegion={selectRegion} onFit={(pts) => { const m = mapRef.current; if (!m) return; const lo = pts.map((q) => q[0]), la = pts.map((q) => q[1]); fitView(m, [[Math.min(...lo), Math.min(...la)], [Math.max(...lo), Math.max(...la)]], { maxZoom: 7, duration: 1400, margin: 70 }); }} />}
           {pin && !sel && (
             <div className="hl-detail hl-detail-pin">
               <div className="hl-detail-name">📍 {pin.label}</div>
@@ -1165,7 +1173,7 @@ export default function HolyLandMap() {
                   </li>
                 ))}
               </ul>
-              <div className="hl-sec-h">Peoples in the land <span className="hl-count">{filteredCommunities.length}</span></div>
+              <div className="hl-sec-h">Communities <span className="hl-count">{filteredCommunities.length}</span></div>
               <ul className="hl-list">
                 {filteredCommunities.map((c) => (
                   <li key={c.id}>
@@ -1251,7 +1259,16 @@ export default function HolyLandMap() {
                 <label className="hl-row"><input type="checkbox" checked={showBiblical} onChange={(e) => setShowBiblical(e.target.checked)} /> <span className="hl-sw hl-sw-b" /> Biblical cities</label>
                 <label className="hl-row"><input type="checkbox" checked={showModern} onChange={(e) => setShowModern(e.target.checked)} /> <span className="hl-sw hl-sw-m" /> Today's cities</label>
                 <label className="hl-row"><input type="checkbox" checked={showRegions} onChange={(e) => setShowRegions(e.target.checked)} /> <span className="hl-sw hl-sw-r" /> Nations &amp; lands</label>
-                <label className="hl-row"><input type="checkbox" checked={showCommunities} onChange={(e) => setShowCommunities(e.target.checked)} /> <span className="hl-sw hl-sw-c" /> Peoples in the land <small className="hl-inline-note">(their own names)</small></label>
+                <label className="hl-row"><input type="checkbox" checked={showCommunities} onChange={(e) => setShowCommunities(e.target.checked)} /> <span className="hl-sw hl-sw-c" /> Communities <small className="hl-inline-note">(where they live today)</small></label>
+                {showCommunities && (
+                  <div className="hl-comm-list" role="list" aria-label="Communities">
+                    {COMMUNITIES.map((c) => (
+                      <button key={c.id} type="button" role="listitem" className={`hl-comm-li${sel?.city?.id === c.id ? ' on' : ''}`} onClick={() => selectCity(c, true)}>
+                        <b>{c.translit}</b>{c.paleo && <span dir="rtl">{c.paleo}</span>}<small>{c.name}</small>
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <div className="hl-gear-h">Allotments</div>
                 <label className="hl-row"><input type="checkbox" checked={showEzekiel} onChange={(e) => setShowEzekiel(e.target.checked)} /> Ezekiel 47–48</label>
                 <label className="hl-row"><input type="checkbox" checked={showJoshua} onChange={(e) => setShowJoshua(e.target.checked)} /> Joshua 13–19</label>
@@ -1681,7 +1698,7 @@ function TwinCard({ tw, focus, onCity }) {
   );
 }
 
-function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
+function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion, onFit }) {
   if (sel.kind === 'city') {
     const c0 = sel.city;
     const tw = twinOf(c0);
@@ -1698,9 +1715,16 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
             <div className="hl-detail-paleo" dir="rtl">{c.paleo}</div>
             <div className="hl-detail-name">{c.translit} <em>{c.name}</em></div>
             {today && <div className="hl-detail-ref">Today: {today}</div>}
-            {c.kind === 'community' && <div className="hl-detail-ref">A people in the land today · what they call themselves: {c.selfMeans}</div>}
+            {c.kind === 'community' && <div className="hl-detail-ref">A community of the land today · what they call themselves: {c.selfMeans}</div>}
             <Lexical he={c.he} />
-            {c.note && <p className="hl-detail-note">{withNames(c.note)}</p>}
+            {c.note && <p className="hl-detail-note">{c.kind === 'community' && <b>Where they live today. </b>}{withNames(c.note)}</p>}
+            {c.kind === 'community' && c.origin && (
+              <details className="hl-origin" open>
+                <summary>Where they come from</summary>
+                <p className="hl-detail-note">{withNames(c.origin)}</p>
+                {c.from.length > 0 && <button type="button" className="hl-link" onClick={() => onFit([[c.lon, c.lat], ...c.from.map(([lo, la]) => [lo, la])])}>Show the way here on the map ↗</button>}
+              </details>
+            )}
             {c.ref && <><div className="hl-detail-sub">{c.kind === 'community' ? `Where scripture names ${c.translit}` : c.proph ? 'History' : 'Scripture'}</div>
             <PassageRefs refs={c.ref} autoOpen /></>}
             {c.proph && <><div className="hl-detail-sub">Prophecies</div><PassageRefs refs={c.proph} /></>}

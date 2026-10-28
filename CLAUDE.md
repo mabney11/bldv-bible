@@ -96,6 +96,18 @@ genealogy as a view ("its the same earth at different times, they can be views")
 - Page: src/pages/NationsGlobe.jsx/.css (MapLibre globe projection, `?view=gen10|gen11|gen25|gen36&n=<id>`), listed in
   Models.jsx (thumb public/model-thumbs/nations.jpg), SEO in server/seo/models-seo.json.
 
+## COMMUNITIES = WHERE THEY LIVE TODAY, ORIGINS IN THE CARD (2026-10-28, later the same day)
+
+fieldy: "the communities I want marked relative to todays populations, where they originate from should be in their info
+that I can get when i expand details"; "checking communities should bring up a list … and snap to their location"; and
+"dont mark" the African Hebrew Israelites ("i hold that this group is a part of the allotment map of ezekiel and since its
+not fulfilled yet and there is no established territory where they are subject to their own laws") — REMOVED, keep it so.
+Toggle "Communities (where they live today)" → a pick list under it (`.hl-comm-list`, selectCity → zoom 9). Entries in
+`COMMUNITIES`: Ashkenazim (emph), Sephardim, Mizrahim, Teimanim, Beta Israel, Palestinians (West Bank, Gaza), Arab citizens,
+Bedouin, Druze, Circassians, Samaritans, Armenians, Arameans — each at a centre of where it lives now, with `selfMeans`,
+`note` (today), `origin` (prose, in a <details> "Where they come from") and `from` [[lon,lat,label]] → dashed lines
+(`communityRoutes(c)`) + origin markers while its card is open, and "Show the way here on the map" frames them all.
+
 ## PEOPLES IN THE LAND (replaced the diaspora Communities, 2026-10-28)
 
 fieldy: "im unsure how these people groups are relevant to the main map I render, I want to know which peoples are in the
