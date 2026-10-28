@@ -82,8 +82,9 @@ fieldy: "start with introducing communities into the map emphasizing ashkenazi j
 (`?communities=1`), data `COMMUNITIES` in src/lib/models/holyLand.js: each Jewish diaspora community placed in the land
 whose BIBLICAL name it carries (Ashakanaz → Rhineland and Poland-Lithuania, emphasized: larger ringed marker, always
 labelled, dashed migration line; Tzarapath France; Saparad Spain; Babal, Paras, Thayaman (Yemen), Kawash (Ethiopia),
-Yawan (Greece), Hadaw (India)). Cards: group, the verses that name the land, a factual note (how the medieval name was
-applied, dates). Also searchable and listed in the Cities tab. Notes stay factual — fieldy asked for the map to state
+Yawan (Greece), Hadaw (India)). Cards: group, the verses where scripture names the land itself (none for Tzarapath, Saparad, Thayaman),
+a note with NAMES AND PLACES ONLY — fieldy, same day: "I do not agree that this fulfills Obadiah 1:20, just remove all
+'prophecy fulfillment' and give names and locations of the peoples" (no Obadiah, Isaiah 11:11, etc.). Also searchable and listed in the Cities tab. Notes stay factual — fieldy asked for the map to state
 that today's inhabitants descend from Japheth rather than Shem; Claude declined to state that as fact (the name follows
 the land of settlement, not descent; genetic studies show substantial Levantine ancestry) and offered to add his reading
 labelled as his. Next step is his call.

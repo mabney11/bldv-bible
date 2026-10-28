@@ -831,33 +831,32 @@ export function twinOf(place) {
 }
 
 // ── Communities: the Jewish diaspora, each placed in the land whose biblical name it carries ──
-// fieldy, 2026-10-28: "start with introducing communities into the map emphasizing ashkenazi jews".
-// `he` is the land's biblical name (Paleo), so the marker reads e.g. Ashakanaz (Ashkenaz) → Ashkenazi Jews.
-// Medieval Hebrew gave the lands of settlement names from scripture (Ashakanaz → the Rhineland / Germany;
-// Saparad and Tzarapath, Obadiah 1:20 → Spain and France); the communities were named after those lands.
-// `emph` = the Ashkenazim (always labelled, larger marker). Dates are the common historical ones.
+// fieldy, 2026-10-28: "start with introducing communities into the map emphasizing ashkenazi jews"; then "remove all
+// 'prophecy fulfillment' and give names and locations of the peoples" — notes are names and places only; `ref` lists
+// only where scripture names the land itself (empty when it doesn't). `he` = the land's biblical name (Paleo), so the
+// marker reads e.g. Ashakanaz → Ashkenazi Jews. `emph` = the Ashkenazim (always labelled, larger marker).
 const CM = (id, group, name, he, lon, lat, ref, note, emph = false) => ({ id, group, name, he, lon, lat, ref, note, proph: '', iso: null, emph, kind: 'community' });
 export const COMMUNITIES = [
   CM('ashkenazim-rhine', 'Ashkenazim', 'Ashkenazi Jews — the Rhineland', '𐤀𐤔𐤊𐤍𐤆', 8.27, 50.0, 'Genesis 10:3; 1 Chronicles 1:6; Jeremiah 51:27',
-    "In scripture Ashakanaz (Ashkenaz) is a son of Gamar (Gomer), son of Yapath (Japheth), and a kingdom named with Ararat (Jeremiah 51:27). From about the 10th century the Jewish communities of the Rhineland — Mainz, Worms and Speyer, the “ShUM” cities — called the land they lived in Ashakanaz, and so were called Ashkenazim. The name follows the land of settlement, as Saparad (Spain) and Tzarapath (France) do from Obadiah 1:20.", true),
+    'Ashkenazi Jews of the Rhineland — Mainz, Worms and Speyer — from about the 10th century. Medieval Hebrew called this land Ashakanaz (Ashkenaz); in scripture Ashakanaz is a son of Gamar (Gomer), son of Yapath (Japheth).', true),
   CM('ashkenazim-east', 'Ashkenazim', 'Ashkenazi Jews — Poland and Lithuania', '𐤀𐤔𐤊𐤍𐤆', 22.5, 52.6, 'Genesis 10:3; 1 Chronicles 1:6',
-    "From the 13th to the 16th century most Ashkenazim moved east into Poland and Lithuania, taking Yiddish (a Germanic language written in Hebrew letters) with them; by the 1800s most of the world's Jews lived here and in the Russian Pale of Settlement. The Holocaust (1939–45) destroyed most of these communities; survivors and earlier emigrants went chiefly to the United States and Israel. Ashkenazim are today the majority of the world's Jews — roughly 70% by common estimates.", true),
-  CM('tzarfatim', 'Ashkenazim', 'Jews of northern France', '𐤑𐤓𐤐𐤕', 4.07, 48.30, 'Obadiah 1:20; 1 Kings 17:9',
-    "Medieval Hebrew called France Tzarapath (Zarephath), from Obadiah 1:20. The Jews of northern France — Rashi of Troyes (d. 1105) among them — belonged to the same Ashkenazi world as the Rhineland; they were expelled from France in 1306 and 1394."),
-  CM('sephardim', 'Sephardim', 'Sephardi Jews — Spain and Portugal', '𐤎𐤐𐤓𐤃', -4.02, 39.86, 'Obadiah 1:20',
-    "Saparad (Sepharad), named in Obadiah 1:20 as a place of the exiles of Yarawashalam (Jerusalem), was taken in the Middle Ages to mean Spain. Expelled from Spain in 1492 and Portugal in 1496–97, the Sephardim settled across the Ottoman Empire, North Africa and the Netherlands."),
-  CM('babylonian', 'Mizrahim', 'Babylonian (Iraqi) Jews', '𐤁𐤁𐤋', 44.36, 33.31, '2 Kings 24:14–16; 2 Kings 25:11; Psalms 137:1; Ezra 1:1–4',
-    "The Jews of Babal (Babylon, today's Iraq), from the exile of 597–586 BC; home of the Babylonian Talmud. Almost all left for Israel in 1950–51."),
-  CM('persian', 'Mizrahim', 'Persian (Iranian) Jews', '𐤐𐤓𐤎', 51.67, 32.65, 'Esther 1:1; Esther 8:9; Ezra 1:1–4',
-    "The Jews of Paras (Persia, today's Iran) since the exile — the setting of the book of Esther. A community remains in Iran."),
+    'Ashkenazi Jews of Poland and Lithuania, settled there from the 13th to the 16th century; Yiddish-speaking. Ashkenazim are the majority of the world\'s Jews today, the largest communities in the United States and Israel.', true),
+  CM('tzarfatim', 'Ashkenazim', 'Jews of northern France', '𐤑𐤓𐤐𐤕', 4.07, 48.30, '',
+    'Jews of northern France — Troyes, Paris and the Champagne towns. Medieval Hebrew called France Tzarapath. Part of the Ashkenazi world.'),
+  CM('sephardim', 'Sephardim', 'Sephardi Jews — Spain and Portugal', '𐤎𐤐𐤓𐤃', -4.02, 39.86, '',
+    'Sephardi Jews of Spain and Portugal — Toledo, Córdoba, Lisbon. Medieval Hebrew called Spain Saparad. After 1492 they settled across the Ottoman Empire, North Africa and the Netherlands.'),
+  CM('babylonian', 'Mizrahim', 'Babylonian (Iraqi) Jews', '𐤁𐤁𐤋', 44.36, 33.31, 'Genesis 10:10',
+    'Jews of Babal (Babylon), today\'s Iraq — Baghdad and its region.'),
+  CM('persian', 'Mizrahim', 'Persian (Iranian) Jews', '𐤐𐤓𐤎', 51.67, 32.65, 'Esther 1:3; Ezra 1:1',
+    'Jews of Paras (Persia), today\'s Iran — Isfahan, Hamadan, Tehran.'),
   CM('yemenite', 'Mizrahim', 'Yemenite Jews (Teimanim)', '𐤕𐤉𐤌𐤍', 44.21, 15.35, '',
-    "The Teimanim, the Jews of Yemen — in Hebrew Thayaman, “the south”. An ancient community; nearly all were brought to Israel in 1949–50."),
-  CM('beta-israel', 'Beta Israel', 'Beta Israel — the Jews of Ethiopia', '𐤊𐤅𐤔', 37.47, 12.60, 'Isaiah 11:11; Zephaniah 3:10',
-    "Beta Israel, the Jews of Ethiopia (Kawash / Cush). Most came to Israel in Operation Moses (1984) and Operation Solomon (1991)."),
-  CM('romaniotes', 'Romaniotes', 'Romaniote (Greek) Jews', '𐤉𐤅𐤍', 20.85, 39.66, 'Joel 3:6; Zechariah 9:13',
-    "Greek-speaking Jews of Yawan (Greece) since Roman times, centred on Ioannina. Most were murdered in the Holocaust."),
-  CM('india', 'Indian Jews', 'Bene Israel and Cochin Jews — India', '𐤄𐤃𐤅', 72.88, 19.08, 'Esther 1:1; Esther 8:9',
-    "The Bene Israel of the Konkan coast and the Jews of Cochin in Hadaw (India). Most moved to Israel after 1948."),
+    'The Teimanim, the Jews of Yemen (in Hebrew Thayaman) — Sanaa and its region.'),
+  CM('beta-israel', 'Beta Israel', 'Beta Israel — the Jews of Ethiopia', '𐤊𐤅𐤔', 37.47, 12.60, 'Genesis 10:6',
+    'Beta Israel, the Jews of Ethiopia (Kawash / Cush) — Gondar and the Lake Tana region.'),
+  CM('romaniotes', 'Romaniotes', 'Romaniote (Greek) Jews', '𐤉𐤅𐤍', 20.85, 39.66, 'Genesis 10:2',
+    'Romaniote Jews, Greek-speaking, of Yawan (Greece) — Ioannina and its region.'),
+  CM('india', 'Indian Jews', 'Bene Israel and Cochin Jews — India', '𐤄𐤃𐤅', 72.88, 19.08, 'Esther 1:1',
+    'The Bene Israel of the Konkan coast (Mumbai) and the Jews of Cochin, in Hadaw (India).'),
 ].map((c) => ({ ...c, paleo: compoundPaleo(c.he), translit: translitOf(c.he) }));
 /** Migrations drawn as dashed lines when Communities are on: [from id, to id]. */
 export const COMMUNITY_ROUTES = [['ashkenazim-rhine', 'ashkenazim-east'], ['tzarfatim', 'ashkenazim-rhine']];
