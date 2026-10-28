@@ -373,10 +373,10 @@
 /* the prince's land: lion + king instead of a letter */
 .hl-rl.hl-rl-h-prince { background: transparent; border: none; padding: 0; box-shadow: none; }
 .hl-rl-h-prince:hover .hl-prince { transform: scale(1.15); }
-/* zoomed far out (data-fit="xs"): one small line beside the strip — lion + king + Nashayaa Chalaqayam */
+/* zoomed far out (data-fit="xs"): just the lion + king on each side of the square (the inset names the portion) */
 .hl-rl.hl-rl-h-prince[data-fit="xs"] { font-size: 9px; }
 .hl-rl-h-prince[data-fit="xs"] .hl-prince { flex-direction: row; gap: 0.3em; }
-.hl-rl-h-prince[data-fit="xs"] .hl-rl-cap { display: block; font-size: 8px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #3a2600; white-space: nowrap; }
+.hl-rl-h-prince[data-fit="xs"] .hl-rl-cap { display: none; font-size: 8px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #3a2600; white-space: nowrap; }
 .hl-rl-h-prince[data-fit="xs"] .hl-rl-en { display: none; }
 .hl-rl-holy-sm { background: #fff8e1dd; border: 1px solid #b8860b; padding: 2px 8px; text-shadow: none; }
 .hl-rl-holy-sm .hl-rl-name { font-size: 11px; letter-spacing: 0.08em; color: #5a3600; }

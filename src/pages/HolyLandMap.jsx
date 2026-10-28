@@ -635,7 +635,7 @@ export default function HolyLandMap() {
         // the sanctuary sits in the middle of the priests' land: put the priests' label to its left
         const lon = h.kind === 'priests' ? a.west + (a.east - a.west) * 0.2 : a.lon;
         const m = mk([lon, a.lat], el);
-        m._rl = { west: a.west, east: h.kind === 'priests' ? a.west + (a.east - a.west) * 0.4 : a.east, latSpan: a.ringLatSpan, len: h.kind === 'prince' ? 2.6 : 1.6, capLen: Math.max(h.short.length, h.en.length * 0.8), capMax: h.kind === 'prince' ? 15 : 20, kind: 'plot', primary: h.id === 'ez-prince-w' };
+        m._rl = { west: a.west, east: h.kind === 'priests' ? a.west + (a.east - a.west) * 0.4 : a.east, latSpan: a.ringLatSpan, len: h.kind === 'prince' ? 2.6 : 1.6, capLen: Math.max(h.short.length, h.en.length * 0.8), capMax: h.kind === 'prince' ? 15 : 20, kind: 'plot', prince: h.kind === 'prince' };
       }
       // A small caption above the glowing square when zoomed in (the plot buttons are always shown;
       // zoomed out, the buttons themselves say where it is). Click → the priests' portion.
@@ -703,9 +703,9 @@ export default function HolyLandMap() {
         // area text (name + what it is, two lines ≈ 2.3 em) only when it fits the plot at ≥ 8 px
         const cap = Math.min(m._rl.capMax, (w * 0.85) / (m._rl.capLen * 0.6), h * 0.3);
         el.style.setProperty('--rl-cap', `${Math.max(cap, 6).toFixed(1)}px`);
-        // too small for its own button: the west prince's portion still names itself in one small line
-        // (lion + king + Nashayaa Chalaqayam) — the other plots sit inside the glowing square at that scale
-        tier = size < 6 ? (m._rl.primary ? 'xs' : 'hide') : cap >= 8 ? 'lg' : 'sm';
+        // too small for its own button: each side of the prince's portion keeps just its 🦁🤴🏾 (fieldy: the
+        // name ran into the sea — the Holy Portion inset names it); the other plots sit inside the square
+        tier = size < 6 ? (m._rl.prince ? 'xs' : 'hide') : cap >= 8 ? 'lg' : 'sm';
       } else {
         // the name alone on a fresh load; paleo + English only when zoomed in AND the band has
         // height for three lines (name 1 em + paleo 1.05 em + English 0.75 em + gaps ≈ 3.6 em)
