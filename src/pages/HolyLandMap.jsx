@@ -621,7 +621,7 @@ export default function HolyLandMap() {
         el.type = 'button';
         el.className = `hl-mk hl-mk-c${c.emph ? ' hl-mk-c-emph' : ''}${c.id === selCityId ? ' hl-mk-sel' : ''}`;
         el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span>${c.paleo ? `<span class="hl-mk-paleo" dir="rtl">${c.paleo}</span>` : ''}<span class="hl-mk-en">${c.name}</span></span>`;
-        el.title = `${c.name} — ${c.selfMeans}`;
+        el.title = `${c.translit} (${c.name}) — ${c.selfMeans}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
         mk([c.lon, c.lat], el, { pri: c.emph || c.id === selCityId ? 1 : 2, w: Math.max(c.translit.length, c.name.length) * 7 + 14 });
       }
@@ -784,7 +784,10 @@ export default function HolyLandMap() {
     const nw = map.project([sqW, sqTop]), ne = map.project([sqE, sqTop]), se = map.project([sqE, sqBot]), sw = map.project([sqW, sqBot]);
     const cont = map.getContainer();
     const cw = cont.clientWidth, ch = cont.clientHeight;
-    if (ne.x - nw.x > INSET_HIDE_PX || ne.x < 0 || nw.x > cw || se.y < 0 || ne.y > ch) return hide();
+    // gone as soon as the map shows the portion itself — its plots' own labels are up (fieldy: "make the holy portion widget
+    // disappear when I can clearly see the same portion in view")
+    const plotsShown = markersRef.current.some((m) => m._rl && m._rl.kind === 'plot' && !m._rl.prince && m.getElement().dataset.fit !== 'hide');
+    if (plotsShown || ne.x - nw.x > INSET_HIDE_PX || ne.x < 0 || nw.x > cw || se.y < 0 || ne.y > ch) return hide();
     box.style.display = 'block'; svg.style.display = 'block';
     const W = box.offsetWidth, H = box.offsetHeight, gap = 34;
     let x = ne.x + gap, east = true;
@@ -1180,7 +1183,7 @@ export default function HolyLandMap() {
                     <button type="button" className={`hl-li${sel?.city?.id === c.id ? ' on' : ''}`} onClick={() => selectCity(c, true)}>
                       <span className="hl-li-paleo" dir="rtl">{c.paleo}</span>
                       <span className="hl-li-main"><b>{c.translit}</b> <em>{c.name}</em></span>
-                      <span className="hl-li-ref">{c.selfMeans}</span>
+                      <span className="hl-li-ref">{c.translit} — {c.selfMeans}</span>
                     </button>
                   </li>
                 ))}
@@ -1715,7 +1718,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion, onFit
             <div className="hl-detail-paleo" dir="rtl">{c.paleo}</div>
             <div className="hl-detail-name">{c.translit} <em>{c.name}</em></div>
             {today && <div className="hl-detail-ref">Today: {today}</div>}
-            {c.kind === 'community' && <div className="hl-detail-ref">A community of the land today · what they call themselves: {c.selfMeans}</div>}
+            {c.kind === 'community' && <div className="hl-detail-ref">A community of the land today · what they call themselves: <b>{c.translit}</b> <span dir="rtl" className="hl-detail-paleo-inline">{c.paleo}</span> — {c.selfMeans}</div>}
             <Lexical he={c.he} />
             {c.note && <p className="hl-detail-note">{c.kind === 'community' && <b>Where they live today. </b>}{withNames(c.note)}</p>}
             {c.kind === 'community' && c.origin && (
