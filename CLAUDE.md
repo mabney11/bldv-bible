@@ -96,6 +96,16 @@ genealogy as a view ("its the same earth at different times, they can be views")
 - Page: src/pages/NationsGlobe.jsx/.css (MapLibre globe projection, `?view=gen10|gen11|gen25|gen36&n=<id>`), listed in
   Models.jsx (thumb public/model-thumbs/nations.jpg), SEO in server/seo/models-seo.json.
 
+## PEOPLES IN THE LAND (replaced the diaspora Communities, 2026-10-28)
+
+fieldy: "im unsure how these people groups are relevant to the main map I render, I want to know which peoples are in the
+land and what they proudly claim themselves to be". The ⚙ toggle is now "Peoples in the land" (`?communities=1`, data
+still `COMMUNITIES` in holyLand.js): Jews (Yehudim, Paleo), Palestinians of the West Bank and of Gaza (Filastiniyyun),
+Arab citizens of Israel, Negev Bedouin (Badw), Druze (al-Muwahhidun), Circassians (Adyghe), Samaritans (Shamerim, Paleo),
+Armenians (Hay), Arameans (Aramaye), African Hebrew Israelites (Dimona) — each placed where it lives, `self` = its own
+name (Paleo + transliteration when Hebrew, else romanized), `selfMeans`, a plain note, no population figures. The
+diaspora markers and the Rhineland → Poland line are gone (COMMUNITY_ROUTES empty). The section below is history.
+
 ## COMMUNITIES layer on the Holy Land map + world land in the built-in base map (added 2026-10-28)
 
 fieldy: "start with introducing communities into the map emphasizing ashkenazi jews". ⚙ → Places → Communities

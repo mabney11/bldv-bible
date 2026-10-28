@@ -618,8 +618,8 @@ export default function HolyLandMap() {
         const el = document.createElement('button');
         el.type = 'button';
         el.className = `hl-mk hl-mk-c${c.emph ? ' hl-mk-c-emph' : ''}${c.id === selCityId ? ' hl-mk-sel' : ''}`;
-        el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span><span class="hl-mk-paleo" dir="rtl">${c.paleo}</span><span class="hl-mk-en">${c.name}</span></span>`;
-        el.title = `${c.name} — ${c.translit}${c.ref ? ` — ${c.ref}` : ''}`;
+        el.innerHTML = `<span class="hl-mk-dot"></span><span class="hl-mk-lbl"><span class="hl-mk-name">${c.translit}</span>${c.paleo ? `<span class="hl-mk-paleo" dir="rtl">${c.paleo}</span>` : ''}<span class="hl-mk-en">${c.name}</span></span>`;
+        el.title = `${c.name} — ${c.selfMeans}`;
         el.addEventListener('click', (e) => { e.stopPropagation(); selectCity(c, false); });
         mk([c.lon, c.lat], el, { pri: c.emph || c.id === selCityId ? 1 : 2, w: Math.max(c.translit.length, c.name.length) * 7 + 14 });
       }
@@ -1031,7 +1031,7 @@ export default function HolyLandMap() {
 
   const filteredCommunities = useMemo(() => {
     const s = q.trim().toLowerCase();
-    return COMMUNITIES.filter((c) => !s || `${c.name} ${c.group} ${c.translit} ${c.ref}`.toLowerCase().includes(s));
+    return COMMUNITIES.filter((c) => !s || `${c.name} ${c.group} ${c.translit} ${c.selfMeans}`.toLowerCase().includes(s));
   }, [q]);
 
   // "Peoples" table: every Ezekiel band → the modern cities inside it, by country.
@@ -1165,14 +1165,14 @@ export default function HolyLandMap() {
                   </li>
                 ))}
               </ul>
-              <div className="hl-sec-h">Communities <span className="hl-count">{filteredCommunities.length}</span></div>
+              <div className="hl-sec-h">Peoples in the land <span className="hl-count">{filteredCommunities.length}</span></div>
               <ul className="hl-list">
                 {filteredCommunities.map((c) => (
                   <li key={c.id}>
                     <button type="button" className={`hl-li${sel?.city?.id === c.id ? ' on' : ''}`} onClick={() => selectCity(c, true)}>
                       <span className="hl-li-paleo" dir="rtl">{c.paleo}</span>
                       <span className="hl-li-main"><b>{c.translit}</b> <em>{c.name}</em></span>
-                      <span className="hl-li-ref">{c.group}{c.ref ? ` · ${c.ref}` : ''}</span>
+                      <span className="hl-li-ref">{c.selfMeans}</span>
                     </button>
                   </li>
                 ))}
@@ -1251,7 +1251,7 @@ export default function HolyLandMap() {
                 <label className="hl-row"><input type="checkbox" checked={showBiblical} onChange={(e) => setShowBiblical(e.target.checked)} /> <span className="hl-sw hl-sw-b" /> Biblical cities</label>
                 <label className="hl-row"><input type="checkbox" checked={showModern} onChange={(e) => setShowModern(e.target.checked)} /> <span className="hl-sw hl-sw-m" /> Today's cities</label>
                 <label className="hl-row"><input type="checkbox" checked={showRegions} onChange={(e) => setShowRegions(e.target.checked)} /> <span className="hl-sw hl-sw-r" /> Nations &amp; lands</label>
-                <label className="hl-row"><input type="checkbox" checked={showCommunities} onChange={(e) => setShowCommunities(e.target.checked)} /> <span className="hl-sw hl-sw-c" /> Communities <small className="hl-inline-note">(Ashkenazim, Sephardim…)</small></label>
+                <label className="hl-row"><input type="checkbox" checked={showCommunities} onChange={(e) => setShowCommunities(e.target.checked)} /> <span className="hl-sw hl-sw-c" /> Peoples in the land <small className="hl-inline-note">(their own names)</small></label>
                 <div className="hl-gear-h">Allotments</div>
                 <label className="hl-row"><input type="checkbox" checked={showEzekiel} onChange={(e) => setShowEzekiel(e.target.checked)} /> Ezekiel 47–48</label>
                 <label className="hl-row"><input type="checkbox" checked={showJoshua} onChange={(e) => setShowJoshua(e.target.checked)} /> Joshua 13–19</label>
@@ -1348,7 +1348,7 @@ function PlacePicker({ pin, selId, onPick }) {
   }, [hi, open]);
   const inputRef = useRef(null);
   const pick = (c) => { setQ(''); setOpen(false); inputRef.current?.blur(); onPick(c); };   // blur → the phone keyboard goes away
-  const kindLabel = (c) => (c.kind === 'biblical' ? 'Bible' : c.kind === 'region' ? 'Nation' : c.kind === 'community' ? 'Community' : 'Today');
+  const kindLabel = (c) => (c.kind === 'biblical' ? 'Bible' : c.kind === 'region' ? 'Nation' : c.kind === 'community' ? 'People' : 'Today');
   return (
     <div className="hl-searchbox">
       <input
@@ -1698,7 +1698,7 @@ function Detail({ sel, ez, pin, onPin, onUnpin, onClose, onCity, onRegion }) {
             <div className="hl-detail-paleo" dir="rtl">{c.paleo}</div>
             <div className="hl-detail-name">{c.translit} <em>{c.name}</em></div>
             {today && <div className="hl-detail-ref">Today: {today}</div>}
-            {c.kind === 'community' && <div className="hl-detail-ref">Jewish community · {c.group} — named after the land of {c.translit}</div>}
+            {c.kind === 'community' && <div className="hl-detail-ref">A people in the land today · what they call themselves: {c.selfMeans}</div>}
             <Lexical he={c.he} />
             {c.note && <p className="hl-detail-note">{withNames(c.note)}</p>}
             {c.ref && <><div className="hl-detail-sub">{c.kind === 'community' ? `Where scripture names ${c.translit}` : c.proph ? 'History' : 'Scripture'}</div>
