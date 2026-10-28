@@ -60,6 +60,7 @@ const SHEET_FRACTION = 0.5;                       // the sheet covers the lower 
 const PORTION_MAX_ZOOM = { worldly: 12, joshua: 9.5, ezekiel: 9.5, prince: 11, levites: 12.5, priests: 12.5, food: 13, suburbs: 13, city: 13.5, sanctuary: 14 };
 const WATER_MAX_ZOOM = 10.5;                       // a short brook still shows its surroundings
 const REGION_DETAIL_ZOOM = 7.8;                   // from here the band labels also show the paleo line + English
+const LABEL_MIN = 8;                            // px — the smallest band / worldly name (never hidden)
 const HOLY_BTN_ZOOM = 10.5;                       // above this the "Tharawamah" caption appears over the square
 // The prince's portion (Ezekiel 48:21–22): a king and a lion — fieldy's pick.
 const sheetPx = () => Math.round(window.innerHeight * SHEET_FRACTION);
@@ -633,7 +634,7 @@ export default function HolyLandMap() {
         // the sanctuary sits in the middle of the priests' land: put the priests' label to its left
         const lon = h.kind === 'priests' ? a.west + (a.east - a.west) * 0.2 : a.lon;
         const m = mk([lon, a.lat], el);
-        m._rl = { west: a.west, east: h.kind === 'priests' ? a.west + (a.east - a.west) * 0.4 : a.east, latSpan: a.ringLatSpan, len: h.kind === 'prince' ? 2.6 : 1.6, capLen: Math.max(h.short.length, h.en.length * 0.8), capMax: h.kind === 'prince' ? 15 : 20, kind: 'plot' };
+        m._rl = { west: a.west, east: h.kind === 'priests' ? a.west + (a.east - a.west) * 0.4 : a.east, latSpan: a.ringLatSpan, len: h.kind === 'prince' ? 2.6 : 1.6, capLen: Math.max(h.short.length, h.en.length * 0.8), capMax: h.kind === 'prince' ? 15 : 20, kind: 'plot', primary: h.id === 'ez-prince-w' };
       }
       // A small caption above the glowing square when zoomed in (the plot buttons are always shown;
       // zoomed out, the buttons themselves say where it is). Click → the priests' portion.
@@ -689,27 +690,60 @@ export default function HolyLandMap() {
       const byW = (w * 0.78) / (m._rl.len * 0.8), byH = h * 0.42;
       // today's lines (kind 'wl'): small, odd-shaped areas (East Jerusalem, Shebaa Farms) keep a readable
       // name once the area itself is ~14 px across — the name may run past their edge.
-      const size = m._rl.kind === 'wl' ? (w < 14 ? 0 : Math.min(16, Math.max(byW, 9), Math.max(byH, 9))) : Math.min(m._rl.kind === 'plot' ? 26 : 16, byW, byH);
+      // Every band and every worldly area keeps its name at every zoom (fieldy, 2026-10-28: "from these
+      // levels of zoom i should be able to see text for all the allotments including the princes portion,
+      // manashah, gaza strip — all details in a single view that I can easily screenshot on mobile"):
+      // a name that doesn't fit its area stays at LABEL_MIN px and runs past the edge rather than vanishing.
+      const fitted = Math.min(m._rl.kind === 'plot' ? 26 : 16, byW, byH);
+      const size = m._rl.kind === 'plot' ? fitted : Math.max(fitted, LABEL_MIN);
       const el = m.getElement();
       let tier;
       if (m._rl.kind === 'plot') {
         // area text (name + what it is, two lines ≈ 2.3 em) only when it fits the plot at ≥ 8 px
         const cap = Math.min(m._rl.capMax, (w * 0.85) / (m._rl.capLen * 0.6), h * 0.3);
         el.style.setProperty('--rl-cap', `${Math.max(cap, 6).toFixed(1)}px`);
-        tier = size < 6 ? 'hide' : cap >= 8 ? 'lg' : 'sm';
+        // too small for its own button: the west prince's portion still names itself in one small line
+        // (lion + king + Nashayaa Chalaqayam) — the other plots sit inside the glowing square at that scale
+        tier = size < 6 ? (m._rl.primary ? 'xs' : 'hide') : cap >= 8 ? 'lg' : 'sm';
       } else {
         // the name alone on a fresh load; paleo + English only when zoomed in AND the band has
         // height for three lines (name 1 em + paleo 1.05 em + English 0.75 em + gaps ≈ 3.6 em)
-        tier = size < 6 ? 'hide' : (map.getZoom() >= REGION_DETAIL_ZOOM && size >= 11 && h > size * 4.2) ? 'lg' : 'sm';
+        tier = (map.getZoom() >= REGION_DETAIL_ZOOM && size >= 11 && h > size * 4.2) ? 'lg' : 'sm';
       }
       el.style.setProperty('--rl-size', `${Math.max(size, 6).toFixed(1)}px`);
       el.dataset.fit = tier;
     }
   };
-  fitRegionLabelsRef.current = fitRegionLabels;
+  // sized AND spread: also run after a rebuild (the labels are created after the last moveend) and while zooming
+  fitRegionLabelsRef.current = (map) => { fitRegionLabels(map); spreadRegionLabels(map); };
+  // Area names kept at LABEL_MIN can run into each other (Latrun / East Jerusalem, Ashar / Dan): the biggest
+  // names stay put, and a smaller one that would touch a name already placed steps up or down a line.
+  const spreadRegionLabels = (map) => {
+    const all = markersRef.current.filter((m) => m._rl).map((m) => ({ m, el: m.getElement() })).filter(({ el }) => el.dataset.fit !== 'hide');
+    for (const { el } of all) el.style.marginTop = '';
+    const boxes = [];
+    for (const { m, el } of all) {
+      if (m._rl.kind !== 'plot') continue;            // the holy plots / prince line: obstacles, never moved
+      const r = el.getBoundingClientRect();
+      if (r.width) boxes.push({ l: r.left, r: r.right, t: r.top, b: r.bottom });
+    }
+    const names = all.filter(({ m }) => m._rl.kind !== 'plot')
+      .map((x) => ({ ...x, s: parseFloat(x.el.style.getPropertyValue('--rl-size')) || 0 }))
+      .sort((a, b) => b.s - a.s);
+    for (const { el } of names) {
+      const r = el.getBoundingClientRect();
+      if (!r.width) continue;
+      const hits = (dy) => boxes.some((q) => r.left < q.r && r.right > q.l && r.top + dy < q.b && r.bottom + dy > q.t);
+      let dy = 0;
+      for (const k of [0, 1, -1, 2, -2, 3, -3]) { const d = k * (r.height + 1); if (!hits(d)) { dy = d; break; } }
+      if (dy) el.style.marginTop = `${dy}px`;
+      boxes.push({ l: r.left, r: r.right, t: r.top + dy, b: r.bottom + dy });
+    }
+  };
   declutterRef.current = (map) => {
     if (!map) return;
     fitRegionLabels(map);
+    spreadRegionLabels(map);
     const z = map.getZoom();
     const showAll = z >= 7.5;
     // The holy plots' lettered buttons (Z, L, C, X, S — shown while the plot is too small for
