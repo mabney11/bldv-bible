@@ -46,6 +46,18 @@
     "biblical cities of Joshua"
    ]
   },
+  "nations": {
+   "kind": "map",
+   "base": "/models/nations",
+   "name": "The Nations of Genesis",
+   "refs": [
+    { "slug": "genesis", "book": "Genesis", "from": [10, 1], "to": [10, 32] },
+    { "slug": "genesis", "book": "Genesis", "from": [11, 10], "to": [11, 32] },
+    { "slug": "genesis", "book": "Genesis", "from": [25, 1], "to": [25, 18] },
+    { "slug": "genesis", "book": "Genesis", "from": [36, 1], "to": [36, 43] }
+   ],
+   "aka": ["table of nations map", "Genesis 10 map", "sons of Noah map", "Japheth Ham Shem nations map", "Ashkenaz Gomer Magog map"]
+  },
   "prints": {
    "kind": "map",
    "base": "/models/prints",
@@ -365,6 +377,13 @@
    "title": "12 Tribes of Israel Map in 3D — Ezekiel 48 & Joshua 13–19 Allotments | BLD Bible",
    "h1": "The Holy Land in 3D",
    "description": "The twelve shabatay (tribes) of Yashar-Al (Israel) on a 3D map of the Holy Land — the allotments of Yahawashawai (Joshua) 13–19 and the millennial allotments of Yachazaqaal (Ezekiel) 47–48 with the qadash (holy) portion and the nashayaa (prince)'s land, every border traced to its verse, and the biblical cities, rivers and seas under the names the text gives them."
+  },
+  "/models/nations": {
+   "kind": "page",
+   "model": "nations",
+   "title": "Table of Nations Map on a Globe — Genesis 10, 11, 25 & 36 | BLD Bible",
+   "h1": "The Nations of Genesis",
+   "description": "The sons of Yapath (Japheth), Cham (Ham) and Sham (Shem) on a globe — every name of Genesis 10 in Paleo with the land it is placed in and how sure that place is — and the genealogies of Genesis 11 (Sham to Abaram), 25 (Qatawarah (Keturah) and Yashamai-Al (Ishmael)) and 36 (Ishaw (Esau), who is Edom)."
   },
   "/models/prints": {
    "kind": "page",

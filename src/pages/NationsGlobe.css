@@ -1,0 +1,73 @@
+/* NationsGlobe.css — /models/nations */
+.ng-page { height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); color: var(--text); }
+.ng-top { flex-shrink: 0; display: flex; align-items: center; gap: 10px; padding: calc(8px + var(--safe-top, 0px)) 14px 8px; background: var(--bg2); border-bottom: 1px solid var(--border); min-width: 0; }
+.ng-logo { font-family: var(--paleo-font); color: var(--gold); font-size: 20px; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border2); }
+.ng-back { font-size: 13px; color: var(--text2); white-space: nowrap; }
+.ng-back:hover { color: var(--gold); }
+.ng-h1 { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
+.ng-h1 span { font-weight: 400; color: var(--text3); font-size: 12px; margin-left: 8px; }
+
+.ng-views { flex-shrink: 0; display: flex; gap: 6px; padding: 6px 10px; background: var(--bg2); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+.ng-view { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; max-width: 260px; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; text-align: left; }
+.ng-view b { font-size: 13px; color: var(--text); }
+.ng-view small { font-size: 10.5px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
+.ng-view.on { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 14%, transparent); }
+.ng-view.on b { color: var(--gold); }
+
+.ng-body { flex: 1; min-height: 0; display: flex; position: relative; }
+.ng-map-wrap { flex: 1; min-width: 0; position: relative; }
+.ng-map { position: absolute; inset: 0; }
+.ng-panel { width: 360px; flex-shrink: 0; overflow-y: auto; background: var(--bg2); border-left: 1px solid var(--border); padding: 10px 10px 40px; }
+.ng-panel-btn { position: absolute; left: 12px; bottom: 16px; z-index: 3; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border2); background: var(--bg2); color: var(--text); font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px #0006; }
+@media (max-width: 720px) {
+  .ng-panel { position: absolute; left: 0; right: 0; bottom: 0; width: auto; height: 46%; border-left: 0; border-top: 1px solid var(--border); border-radius: 14px 14px 0 0; z-index: 4; box-shadow: 0 -4px 16px #0007; }
+  .ng-panel-open .ng-panel-btn { bottom: calc(46% + 10px); }
+  .ng-view small { display: none; }
+}
+
+/* labels on the globe */
+.ng-lbl { display: flex; flex-direction: column; align-items: center; line-height: 1.05; padding: 1px 4px; border: 1px solid transparent; border-radius: 5px; background: none; cursor: pointer; color: #1a1208; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 5px #fff; white-space: nowrap; }
+.ng-lbl:hover, .ng-lbl.on { border-color: #1a120866; background: #fffc; }
+.ng-lbl.on { box-shadow: 0 0 0 2px #f5c07099; }
+.ng-lbl-tr { font-size: 11px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: color-mix(in srgb, var(--c) 45%, #000); }
+.ng-lbl.unc .ng-lbl-tr { font-style: italic; }
+.ng-lbl-paleo { display: none; font-family: var(--paleo-font); font-size: 12px; color: #4a2f00; }
+.ng-lbl-en { display: none; font-size: 9.5px; font-weight: 500; color: #3a3226; }
+.ng-detail .ng-lbl-paleo, .ng-detail .ng-lbl-en, .ng-lbl.on .ng-lbl-paleo, .ng-lbl.on .ng-lbl-en { display: block; }
+.ng-hide { visibility: hidden; }
+.ng-lbl-pt::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--c); border: 2px solid #fff; box-shadow: 0 0 0 1px #0006; margin-bottom: 2px; }
+.ng-stop { display: flex; align-items: flex-start; line-height: 1.2; gap: 4px; pointer-events: none; transform: translate(0, 16px); font-size: 10px; color: #5a3600; text-shadow: 0 0 3px #fff, 0 0 3px #fff; white-space: nowrap; }
+.ng-stop i { font-style: normal; font-weight: 700; color: #3a2600; }
+.ng-stop i span { font-family: var(--paleo-font); color: #6b4a00; font-weight: 400; }
+.ng-stop b { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: #b8860b; color: #fff; font-size: 10px; text-shadow: none; }
+
+/* panel */
+.ng-intro { padding: 4px 4px 10px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+.ng-intro-h { font-weight: 700; margin-bottom: 4px; }
+.ng-intro p { font-size: 12.5px; color: var(--text2); line-height: 1.45; margin: 0 0 8px; }
+.ng-card { position: relative; padding: 10px 12px 12px; border: 1px solid var(--border2); border-radius: 10px; background: var(--bg); margin-bottom: 10px; }
+.ng-card-x { position: absolute; top: 4px; right: 8px; border: 0; background: none; color: var(--text3); font-size: 20px; cursor: pointer; }
+.ng-card-paleo { font-family: var(--paleo-font); font-size: 34px; color: var(--gold); text-align: right; line-height: 1.1; }
+.ng-card-name { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ng-card-name em { font-weight: 400; color: var(--text2); font-size: 14px; }
+.ng-card-sub { font-size: 12px; color: var(--text3); margin: 3px 0 6px; }
+.ng-card-place { font-size: 13px; line-height: 1.45; margin: 6px 0; }
+.ng-card-cert { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 10px; margin-bottom: 8px; background: var(--bg3, #0002); color: var(--text2); }
+.ng-cert-known { background: #2f8f5a33; color: #3fae6e; }
+.ng-cert-probable { background: #b8860b33; color: #d4a53a; }
+.ng-cert-uncertain, .ng-cert-unknown { background: #8883; color: var(--text3); }
+.ng-card-h { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin: 10px 0 4px; }
+.ng-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.ng-chip { display: inline-flex; gap: 5px; align-items: center; padding: 3px 8px; border-radius: 12px; border: 1px solid color-mix(in srgb, var(--c) 60%, transparent); background: color-mix(in srgb, var(--c) 16%, transparent); color: var(--text); font-size: 12px; cursor: pointer; }
+.ng-chip span { font-family: var(--paleo-font); color: var(--gold); }
+.ng-link { border: 0; background: none; padding: 0; color: var(--gold); cursor: pointer; font: inherit; text-decoration: underline dotted; }
+.ng-sw { display: inline-block; width: 11px; height: 11px; border-radius: 3px; background: var(--c); border: 1px solid #0005; flex-shrink: 0; }
+.ng-tree, .ng-tree ul { list-style: none; margin: 0; padding: 0; }
+.ng-row { width: 100%; display: flex; align-items: baseline; gap: 6px; padding: 4px 8px; border: 0; border-radius: 6px; background: none; color: var(--text); text-align: left; cursor: pointer; font-size: 13px; flex-wrap: wrap; }
+.ng-row:hover { background: color-mix(in srgb, var(--text) 7%, transparent); }
+.ng-row.on { background: color-mix(in srgb, var(--gold) 18%, transparent); }
+.ng-row .ng-sw { align-self: center; }
+.ng-row.noplace .ng-sw { background: transparent; border-style: dashed; }
+.ng-row-paleo { font-family: var(--paleo-font); color: var(--gold); font-size: 13px; }
+.ng-row em { color: var(--text3); font-size: 11.5px; }
+.ng-cert { font-size: 10px; padding: 0 6px; border-radius: 8px; }

@@ -76,6 +76,20 @@ the cities inside, Joshua/Ezekiel at the tapped spot); "This spot" shows a "Toda
 outline (Israel/West Bank/Gaza as one land) is untouched. Labels: kind 'wl' in fitRegionLabels (min 9 px once the
 area is 14 px across). Verified with a vite build + Playwright (phone 390x844).
 
+## THE NATIONS OF GENESIS — globe page /models/nations (added 2026-10-28)
+
+fieldy: "a world map/globe with the full allotments from genesis"; chose a new page, a full partition, and every
+genealogy as a view ("its the same earth at different times, they can be views"): Genesis 10, 11, 25, 36.
+- Source: `scripts/nations-source.json` (edit this) — each entry has its Strong's number (the Paleo name comes from
+  server/strongs-hebrew-paleo.json, read off the BHS tokens of Gen 10/11/25/36 — NO name typed by hand; the page shows
+  translitOf(paleo)), parent, English, verses, and where a place has been proposed lon/lat + cert (known | probable |
+  uncertain) + `place` (plain English — no hand-made transliterations). No proposed place = listed, no land.
+- Bake: `python scripts/build-nations.py ne_50m_land.geojson ne_50m_lakes.geojson` → src/lib/models/nations.json
+  (entries + paleo + family colour by line, a Voronoi-around-each-place partition clipped to land inside each view's
+  frame, globe land with the big lakes removed). Gen 11 is a lineage + the road Ur → Haran → Shechem, not a partition.
+- Page: src/pages/NationsGlobe.jsx/.css (MapLibre globe projection, `?view=gen10|gen11|gen25|gen36&n=<id>`), listed in
+  Models.jsx (thumb public/model-thumbs/nations.jpg), SEO in server/seo/models-seo.json.
+
 ## COMMUNITIES layer on the Holy Land map + world land in the built-in base map (added 2026-10-28)
 
 fieldy: "start with introducing communities into the map emphasizing ashkenazi jews". ⚙ → Places → Communities

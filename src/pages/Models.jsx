@@ -128,6 +128,21 @@ export const MODELS = [
     ],
   },
   {
+    slug: 'nations',
+    kind: 'map',
+    title: 'The Nations of Genesis',
+    kicker: 'Interactive globe · Genesis 10, 11, 25, 36',
+    blurb: 'The sons of Yapath (Japheth), Cham (Ham) and Sham (Shem) on a globe, every name in Paleo with the land it is placed in — Gamar (Gomer) and Ashakanaz (Ashkenaz), Yawan (Javan), Kawash (Cush), Matzarayam (Egypt), Kanain (Canaan), Aram, Yaqatan (Joktan) and the rest of Genesis 10. Switch to Genesis 11 (Sham to Abaram, and the road from Ur to Haran), Genesis 25 (Qatawarah (Keturah) and Yashamai-Al (Ishmael)) or Genesis 36 (Ishaw (Esau), who is Edom). Tap a land for its verses and how sure its place is.',
+    paleo: '𐤂𐤅𐤉𐤌',
+    tags: ['Genesis 10', 'Genesis 11 · 25 · 36', 'Globe', 'Every name in Paleo'],
+    to: '/models/nations',
+    quick: [
+      { label: 'Genesis 10 — the table of nations', to: '/models/nations?view=gen10' },
+      { label: 'Ashakanaz (Ashkenaz) — Genesis 10:3', to: '/models/nations?view=gen10&n=ashkenaz' },
+      { label: 'Genesis 25 — Qatawarah and Yashamai-Al', to: '/models/nations?view=gen25' },
+    ],
+  },
+  {
     slug: 'prints',
     kind: 'map',
     title: 'Printable Maps',

@@ -41,6 +41,7 @@ const PreceptStudio    = lazy(() => import('./pages/PreceptStudio.jsx'));
 const Models           = lazy(() => import('./pages/Models.jsx'));
 const Progress         = lazy(() => import('./pages/Progress.jsx'));
 const HolyLandMap      = lazy(() => import('./pages/HolyLandMap.jsx'));
+const NationsGlobe     = lazy(() => import('./pages/NationsGlobe.jsx'));
 const Prints           = lazy(() => import('./pages/Prints.jsx'));
 const Statue           = lazy(() => import('./pages/Statue.jsx'));
 const Temple           = lazy(() => import('./pages/Temple.jsx'));
@@ -363,6 +364,7 @@ export default function App() {
         <Route path="/maps"           element={<Models kind="map" />} />
         <Route path="/progress"       element={<Progress />} />
         <Route path="/models/holy-land" element={<HolyLandMap />} />
+        <Route path="/models/nations" element={<NationsGlobe />} />
         <Route path="/models/prints"  element={<Prints />} />
         <Route path="/models/statue"  element={<Statue />} />
         <Route path="/models/temple"  element={<TempleIndex />} />
