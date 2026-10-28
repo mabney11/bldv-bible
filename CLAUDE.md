@@ -61,6 +61,21 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## WORLDLY ALLOTMENTS on the Holy Land map — today's lines (added 2026-10-28)
+
+fieldy: "as a toggle under 'allotments' I want 'worldly allotments' and have geographical outlines of the different
+modern peoples in the land including well known places like 'gaza strip' / places with conflicts".
+⚙ → Allotments → "Worldly allotments" (`?worldly=1`). Data `src/lib/models/worldly.json` is BAKED by
+`scripts/build-worldly-allotments.py` from Natural Earth 1:10m (map units + disputed areas, public domain, de facto
+lines): Israel (Green Line), West Bank, East Jerusalem (+ the 1949-67 no man's land and Mount Scopus), Latrun salient,
+Gaza Strip, Golan Heights, UNDOF buffer zone, Shebaa Farms, Lebanon, Syria, Jordan, Egypt (Sinai), Saudi Arabia, Iraq
+(clipped to the Levant). Each entry: kind (state/territory solid line, disputed dashed, buffer dotted), colour, a
+neutral `status` (who administers / who claims) and a dated `note` — re-check the notes when events move (written
+2026-10-28: Gaza ceasefire since Oct 2025, Assad fell Dec 2024). Tap an area = `selectRegion('worldly', …)` (its card,
+the cities inside, Joshua/Ezekiel at the tapped spot); "This spot" shows a "Today" row. The older purple nations
+outline (Israel/West Bank/Gaza as one land) is untouched. Labels: kind 'wl' in fitRegionLabels (min 9 px once the
+area is 14 px across). Verified with a vite build + Playwright (phone 390x844).
+
 ## SAVED VERSES IN EXACT HEBREW ORDER, EVERY ENGLISH WORD IN A GLOSS (added 2026-10-22)
 
 fieldy, Lev 24:11 (his saved verse, in_progress): "this is too much english not in glosses. I now want to have the

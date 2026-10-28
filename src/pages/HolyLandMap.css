@@ -270,6 +270,11 @@
 .hl-prince .hl-rl-cap { text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
 .hl-rl-paleo { font-family: var(--paleo-font); font-size: 13px; color: #4a2f00; }
 .hl-rl-j .hl-rl-name { font-style: italic; text-transform: none; }
+/* Worldly allotments (today's lines): plain sans caps in the area's own colour, so they never pass for a tribe */
+.hl-rl-x .hl-rl-name { font-family: system-ui, sans-serif; font-weight: 700; letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 55%, #000); }
+.hl-rl-x-disputed .hl-rl-name, .hl-rl-x-buffer .hl-rl-name { font-style: italic; text-transform: none; letter-spacing: 0.02em; }
+.hl-wl-sw-disputed { border-style: dashed !important; border-color: #1a1208 !important; }
+.hl-wl-sw-buffer { border-style: dotted !important; border-color: #1a1208 !important; }
 /* waters: quiet blue italics, the paleo and English beneath once zoomed in */
 .hl-rl-w { cursor: pointer; color: #2b4f73; text-shadow: 0 0 3px #d9e8f5, 0 0 3px #d9e8f5, 0 0 5px #d9e8f5; display: none; }
 .hl-rl-w .hl-rl-name { font-size: 11px; font-style: italic; font-weight: 700; letter-spacing: 0.12em; }

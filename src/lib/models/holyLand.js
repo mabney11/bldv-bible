@@ -33,6 +33,8 @@ import countriesBase from './countries.json' with { type: 'json' };
 // draws, so a border that the Bible puts ON the Jordan or the Salt Sea follows the water
 // exactly instead of a straight line that wanders across it.
 import levantBase from './levant-base.json' with { type: 'json' };
+// Today's lines (the "Worldly allotments" layer) — baked by scripts/build-worldly-allotments.py from Natural Earth 1:10m.
+import worldlyBase from './worldly.json' with { type: 'json' };
 const HYPHEN_BY_HE = Object.fromEntries(Object.values(hyphenAllow).filter((r) => r && !r.skip && r.he).map((r) => [r.he.replace(/\s+/g, ''), r]));
 
 // Compound names are HYPHENATED so each piece can be enunciated on its own:
@@ -1001,6 +1003,22 @@ export function toFeature(entry, props = {}) {
     properties: { id: entry.id, name: entry.name, tribe: entry.tribe || null, ref: entry.ref || null, kind: entry.kind || null, ...props },
     geometry: { type: 'Polygon', coordinates: [[...entry.ring, entry.ring[0]]] },
   };
+}
+
+// ── Worldly allotments: the lines the peoples of the land live under TODAY ──────
+// fieldy, 2026-10-28: "worldly allotments … geographical outlines of the different modern
+// peoples in the land including well known places like 'gaza strip' / places with conflicts".
+// Each entry: id, name, kind (state | territory | disputed | buffer), color, status, note?,
+// polys (MultiPolygon rings, unclosed). `ring` = the largest outer ring (labels, city lists, focus).
+export const WORLDLY_ATTR = worldlyBase.attr;
+export const WORLDLY = worldlyBase.entries.map((e) => ({ ...e, ring: e.polys[0][0] }));
+export const WORLDLY_KIND = { state: 'State', territory: 'Territory', disputed: 'Disputed area', buffer: 'Buffer zone' };
+export function worldlyFeature(e, props = {}) {
+  return { type: 'Feature', properties: { id: e.id, name: e.name, kind: e.kind, color: e.color, ...props }, geometry: { type: 'MultiPolygon', coordinates: e.polys.map((rs) => rs.map((r) => [...r, r[0]])) } };
+}
+/** The worldly area a point stands in — the most specific (drawn last) first. */
+export function worldlyAt(lonLat) {
+  return [...WORLDLY].reverse().find((e) => e.polys.some(([o, ...holes]) => pointInRing(lonLat, o) && !holes.some((h) => pointInRing(lonLat, h)))) || null;
 }
 
 /** Which Joshua allotment contains a point (first hit). */
