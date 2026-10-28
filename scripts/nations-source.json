@@ -1512,5 +1512,522 @@
    "ref": "Genesis 36:20–30",
    "place": "the Horites, the earlier people of the land of Seir (36:20); Lotan, Shobal, Zibeon, Anah, Dishon, Ezer and Dishan were its chiefs"
   }
- ]
+ ],
+ "stories": {
+  "gen10": [
+   {
+    "ref": "Genesis 10:1",
+    "show": [],
+    "names": [
+     "sham",
+     "cham",
+     "yapath"
+    ],
+    "focus": "frame"
+   },
+   {
+    "ref": "Genesis 10:2",
+    "show": [
+     "gomer",
+     "magog",
+     "madai",
+     "yawan",
+     "tubal",
+     "meshech",
+     "tiras"
+    ]
+   },
+   {
+    "ref": "Genesis 10:3",
+    "show": [
+     "ashkenaz",
+     "riphath",
+     "togarmah"
+    ]
+   },
+   {
+    "ref": "Genesis 10:4",
+    "show": [
+     "elishah",
+     "tarshish",
+     "kittim",
+     "dodanim"
+    ]
+   },
+   {
+    "ref": "Genesis 10:5",
+    "show": [],
+    "names": [
+     "yapath"
+    ],
+    "focus": "family:yapath"
+   },
+   {
+    "ref": "Genesis 10:6",
+    "show": [
+     "kush",
+     "mitzrayim",
+     "put"
+    ],
+    "names": [
+     "kush",
+     "mitzrayim",
+     "put",
+     "kanaan"
+    ]
+   },
+   {
+    "ref": "Genesis 10:7",
+    "show": [
+     "seba",
+     "chawilah-kush",
+     "sabtah",
+     "raamah",
+     "sheba-kush",
+     "dedan-kush"
+    ],
+    "names": [
+     "seba",
+     "chawilah-kush",
+     "sabtah",
+     "raamah",
+     "sabtecha",
+     "sheba-kush",
+     "dedan-kush"
+    ]
+   },
+   {
+    "ref": "Genesis 10:8–12",
+    "show": [
+     "nimrod"
+    ]
+   },
+   {
+    "ref": "Genesis 10:13–14",
+    "show": [
+     "ludim",
+     "anamim",
+     "lehabim",
+     "naphtuhim",
+     "pathrusim",
+     "casluhim",
+     "philistim",
+     "caphtorim"
+    ]
+   },
+   {
+    "ref": "Genesis 10:15–18",
+    "show": [
+     "tzidon",
+     "cheth",
+     "yebusi",
+     "amori",
+     "girgashi",
+     "chiwi",
+     "arqi",
+     "sini",
+     "arwadi",
+     "tzemari",
+     "chamathi"
+    ],
+    "names": [
+     "kanaan",
+     "tzidon",
+     "cheth",
+     "yebusi",
+     "amori",
+     "girgashi",
+     "chiwi",
+     "arqi",
+     "sini",
+     "arwadi",
+     "tzemari",
+     "chamathi"
+    ]
+   },
+   {
+    "ref": "Genesis 10:19–20",
+    "show": [],
+    "names": [
+     "kanaan"
+    ],
+    "focus": "parent:kanaan"
+   },
+   {
+    "ref": "Genesis 10:21–22",
+    "show": [
+     "ailam",
+     "ashur",
+     "arpakshad",
+     "lud",
+     "aram"
+    ],
+    "names": [
+     "sham",
+     "ailam",
+     "ashur",
+     "arpakshad",
+     "lud",
+     "aram"
+    ]
+   },
+   {
+    "ref": "Genesis 10:23",
+    "show": [
+     "auz",
+     "mash"
+    ],
+    "names": [
+     "auz",
+     "chul",
+     "gether",
+     "mash"
+    ]
+   },
+   {
+    "ref": "Genesis 10:24–25",
+    "show": [],
+    "names": [
+     "shelach",
+     "aibar",
+     "paleg",
+     "yaqtan"
+    ],
+    "focus": [
+     "arpakshad"
+    ]
+   },
+   {
+    "ref": "Genesis 10:26–29",
+    "show": [
+     "shaleph",
+     "chatzarmawath",
+     "auzal",
+     "sheba-yaqtan",
+     "aupir",
+     "chawilah-yaqtan"
+    ],
+    "names": [
+     "almodad",
+     "shaleph",
+     "chatzarmawath",
+     "yarach",
+     "hadoram",
+     "auzal",
+     "diqlah",
+     "aubal",
+     "abimael",
+     "sheba-yaqtan",
+     "aupir",
+     "chawilah-yaqtan",
+     "yobab"
+    ]
+   },
+   {
+    "ref": "Genesis 10:30–31",
+    "show": [
+     "yaqtan"
+    ],
+    "names": [
+     "yaqtan"
+    ]
+   },
+   {
+    "ref": "Genesis 10:32",
+    "show": [],
+    "names": [
+     "noach"
+    ],
+    "focus": "frame"
+   }
+  ],
+  "gen11": [
+   {
+    "ref": "Genesis 11:10–17",
+    "show": [],
+    "names": [
+     "g11-sham",
+     "g11-arpakshad",
+     "g11-shelach",
+     "g11-aibar"
+    ],
+    "focus": "frame"
+   },
+   {
+    "ref": "Genesis 11:18–23",
+    "show": [],
+    "names": [
+     "g11-paleg",
+     "g11-reu",
+     "g11-serug"
+    ],
+    "focus": [
+     "g11-serug"
+    ],
+    "points": [
+     "g11-serug"
+    ]
+   },
+   {
+    "ref": "Genesis 11:24–25",
+    "show": [],
+    "names": [
+     "g11-nachor"
+    ],
+    "focus": [
+     "g11-nachor"
+    ],
+    "points": [
+     "g11-nachor"
+    ]
+   },
+   {
+    "ref": "Genesis 11:26–28",
+    "show": [],
+    "names": [
+     "g11-terach",
+     "g11-abram",
+     "g11-nachor2",
+     "g11-haran"
+    ],
+    "focus": [
+     "stop:0"
+    ],
+    "stops": [
+     0
+    ]
+   },
+   {
+    "ref": "Genesis 11:29–30",
+    "show": [],
+    "names": [
+     "g11-abram",
+     "g11-nachor2"
+    ],
+    "focus": [
+     "stop:0"
+    ]
+   },
+   {
+    "ref": "Genesis 11:31",
+    "show": [],
+    "names": [
+     "g11-terach",
+     "g11-abram",
+     "g11-lot"
+    ],
+    "focus": [
+     "stop:0",
+     "stop:1"
+    ],
+    "road": [
+     0,
+     1
+    ],
+    "stops": [
+     0,
+     1
+    ]
+   },
+   {
+    "ref": "Genesis 11:32",
+    "show": [],
+    "names": [
+     "g11-terach"
+    ],
+    "focus": [
+     "stop:1"
+    ],
+    "stops": [
+     1
+    ]
+   },
+   {
+    "ref": "Genesis 12:4–6",
+    "show": [],
+    "names": [
+     "g11-abram",
+     "g11-lot"
+    ],
+    "focus": [
+     "stop:1",
+     "stop:2"
+    ],
+    "road": [
+     1,
+     2
+    ],
+    "stops": [
+     2
+    ]
+   }
+  ],
+  "gen25": [
+   {
+    "ref": "Genesis 25:1–2",
+    "show": [
+     "midyan",
+     "yishbaq",
+     "shuach"
+    ],
+    "names": [
+     "g25-abraham",
+     "qatawarah",
+     "zimran",
+     "yaqshan",
+     "medan",
+     "midyan",
+     "yishbaq",
+     "shuach"
+    ]
+   },
+   {
+    "ref": "Genesis 25:3",
+    "show": [
+     "sheba-yaqshan",
+     "dedan-yaqshan"
+    ],
+    "names": [
+     "yaqshan",
+     "sheba-yaqshan",
+     "dedan-yaqshan",
+     "ashurim",
+     "letushim",
+     "leummim"
+    ]
+   },
+   {
+    "ref": "Genesis 25:4",
+    "show": [
+     "aiphah"
+    ],
+    "names": [
+     "aiphah",
+     "aipher",
+     "chanokh",
+     "abida",
+     "eldaah"
+    ]
+   },
+   {
+    "ref": "Genesis 25:5–6",
+    "show": [],
+    "names": [
+     "g25-abraham"
+    ],
+    "focus": "family:qatawarah"
+   },
+   {
+    "ref": "Genesis 25:12–16",
+    "show": [
+     "nebaioth",
+     "qedar",
+     "adbeel",
+     "dumah",
+     "massa",
+     "tema",
+     "yetur",
+     "naphish"
+    ],
+    "names": [
+     "yashamaial",
+     "nebaioth",
+     "qedar",
+     "adbeel",
+     "mibsam",
+     "mishma",
+     "dumah",
+     "massa",
+     "chadad",
+     "tema",
+     "yetur",
+     "naphish",
+     "qedemah"
+    ]
+   },
+   {
+    "ref": "Genesis 25:17–18",
+    "show": [],
+    "names": [
+     "yashamaial"
+    ],
+    "focus": "family:yashamaial"
+   }
+  ],
+  "gen36": [
+   {
+    "ref": "Genesis 36:1–8",
+    "show": [
+     "aishaw"
+    ],
+    "names": [
+     "aishaw"
+    ]
+   },
+   {
+    "ref": "Genesis 36:9–14",
+    "show": [
+     "teman",
+     "qenaz",
+     "timna",
+     "amaleq"
+    ],
+    "names": [
+     "teman",
+     "aumar",
+     "tzepho",
+     "gaitam",
+     "qenaz",
+     "timna",
+     "amaleq"
+    ]
+   },
+   {
+    "ref": "Genesis 36:15–19",
+    "show": [],
+    "names": [
+     "teman",
+     "aumar",
+     "tzepho",
+     "qenaz",
+     "gaitam",
+     "amaleq"
+    ],
+    "focus": "frame"
+   },
+   {
+    "ref": "Genesis 36:20–30",
+    "show": [],
+    "names": [
+     "shaiyar"
+    ],
+    "focus": "frame"
+   },
+   {
+    "ref": "Genesis 36:31–39",
+    "show": [
+     "bozrah"
+    ],
+    "names": [
+     "bozrah"
+    ]
+   },
+   {
+    "ref": "Genesis 36:40–43",
+    "show": [
+     "pinon",
+     "elah"
+    ],
+    "names": [
+     "timna",
+     "pinon",
+     "elah",
+     "mibzar",
+     "magdiel",
+     "iram"
+    ]
+   }
+  ]
+ },
+ "_about_stories": "stories: one pane per verse or verse group, read from the live translation ({{ref}} — never a copy). show = lands revealed at this pane (they stay); names = the canvas title (each name's transliteration from its Paleo); focus = where the camera goes: ids, 'frame' (the view's frame), 'family:<id>' or 'parent:<id>' (every land of that family / those sons), 'stop:<n>' (Genesis 11's road stops); points / stops / road = Genesis 11's marks."
 }

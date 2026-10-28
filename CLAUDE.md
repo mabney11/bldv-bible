@@ -87,6 +87,12 @@ genealogy as a view ("its the same earth at different times, they can be views")
 - Bake: `python scripts/build-nations.py ne_50m_land.geojson ne_50m_lakes.geojson` → src/lib/models/nations.json
   (entries + paleo + family colour by line, a Voronoi-around-each-place partition clipped to land inside each view's
   frame, globe land with the big lakes removed). Gen 11 is a lineage + the road Ur → Haran → Shechem, not a partition.
+- THE STORY (fieldy: "read the story (my translated scriptures) similar to how the interacted models do … animated … and
+  interactive"): `stories` in nations-source.json — a pane per verse (group): caption `{{ref}}` (LIVE text, never a copy),
+  CanvasTitle = the names it introduces, CanvasSubtitles word by word, ModelKit's usePlayer/Caption/PaceSelect; `show`
+  lands rise at their pane and stay (feature prop `at`, setFilter), gold rim on the pane's own; camera fitBounds to
+  `focus` (ids | frame | family:x | parent:x | stop:n); Genesis 11's road drawn by the clock in 11:31 and 12:4–6;
+  dragging the globe pauses; before the first play or after "Show all lands" every land shows.
 - Page: src/pages/NationsGlobe.jsx/.css (MapLibre globe projection, `?view=gen10|gen11|gen25|gen36&n=<id>`), listed in
   Models.jsx (thumb public/model-thumbs/nations.jpg), SEO in server/seo/models-seo.json.
 

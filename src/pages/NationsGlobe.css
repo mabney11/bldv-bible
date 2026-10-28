@@ -71,3 +71,18 @@
 .ng-row-paleo { font-family: var(--paleo-font); color: var(--gold); font-size: 13px; }
 .ng-row em { color: var(--text3); font-size: 11.5px; }
 .ng-cert { font-size: 10px; padding: 0 6px; border-radius: 8px; }
+
+/* the story: the globe above, the player and the verse under it */
+.ng-left { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ng-left .ng-map-wrap { flex: 1; min-height: 0; }
+.ng-playerbox { flex-shrink: 0; padding: 8px 12px 10px; background: var(--bg2); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
+.ng-playerbox .st-caption { max-height: 24vh; overflow-y: auto; margin: 0; }
+.ng-showall { padding: 3px 10px; border-radius: 8px; border: 1px solid var(--border2); background: transparent; color: var(--gold); font-size: 12px; cursor: pointer; }
+.ng-later { display: none !important; }
+.ng-map-wrap .st-subs { bottom: 18px; }
+.ng-map-wrap .ng-panel-btn { bottom: 12px; }
+@media (max-width: 720px) {
+  .ng-playerbox { padding: 6px 8px 8px; }
+  .ng-playerbox .st-caption { max-height: 18vh; }
+  .ng-panel { bottom: 0; }
+}

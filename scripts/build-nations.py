@@ -6,7 +6,8 @@ fieldy, 2026-10-28: "a world map/globe with the full allotments from genesis" �
 
 Input  scripts/nations-source.json (edit that), server/strongs-hebrew-paleo.json (the Paleo name of every entry is
        its Strong's lemma — no name is typed by hand), Natural Earth 1:50m land (public domain).
-Output src/lib/models/nations.json: views, entries (+ paleo, family, colour), territories per view, globe land.
+Output src/lib/models/nations.json: views, entries (+ paleo, family, colour), territories per view, globe land, and the
+       story panes (passed through: the page reads the verses LIVE from the translation — {{ref}} — never a copy).
 
 A territory is the land nearer to its entry's place than to any other placed entry of the same view, inside the
 view's frame (a Voronoi partition clipped to land). It shows where each name has been identified, not a surveyed
@@ -129,6 +130,7 @@ doc = {
     'source': 'scripts/nations-source.json + server/strongs-hebrew-paleo.json; land: Natural Earth 1:50m (public domain)',
     'views': src['views'], 'families': src['families'], 'entries': out_entries,
     'territories': territories, 'land': globe,
+    'stories': src.get('stories', {}),
 }
 dst = os.path.join(ROOT, 'src', 'lib', 'models', 'nations.json')
 json.dump(doc, open(dst, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
