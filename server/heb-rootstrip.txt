@@ -607,6 +607,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 51:3:24	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
 51:4:17	𐤒𐤁𐤋𐤕𐤄	english	 𐤒𐤁𐤋 𐤕+𐤄	H6901	root
 52:1:2	𐤁𐤕𐤐𐤋𐤅𐤕𐤉𐤍𐤅	english	𐤁 𐤕𐤐𐤋𐤅𐤕 𐤉+𐤍𐤅	H8605	form
+52:1:4	𐤍𐤁𐤇𐤓𐤕𐤌	english	[𐤍] 𐤁𐤇𐤓 𐤕+𐤌	H977	root
 52:1:5	𐤁𐤔𐤅𐤓𐤕𐤍𐤅	spelling	𐤁 𐤔𐤅𐤓 𐤕+𐤍𐤅	H7789	root
 52:2:4	𐤋𐤁𐤅𐤕𐤉𐤍𐤅	spelling	 𐤋𐤁𐤅𐤕 𐤉+𐤍𐤅	H3826	form
 52:2:8	𐤇𐤁𐤉𐤁𐤉𐤌	english	 𐤇𐤁𐤉𐤁 𐤉𐤌	H2245	matres
@@ -3789,6 +3790,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:1:24	𐤋𐤊𐤅𐤅𐤍𐤕	english	𐤋 𐤊𐤅𐤅𐤍 𐤕	H3559	matres
 220:1:28	𐤄𐤇𐤅𐤌𐤓	english	𐤄 𐤇𐤅𐤌𐤓 	H2543	matres
 220:1:29	𐤉𐤊𐤅𐤋𐤕𐤉	spelling	[𐤉] 𐤊𐤅𐤋 𐤕+𐤉	H3557	root
+220:1:29	𐤁𐤌𐤉𐤅𐤇𐤃	english	𐤁+[𐤌] 𐤉𐤅𐤇𐤃 	H3161	matres
 220:1:30	𐤍𐤅𐤇𐤉𐤌	spelling	 𐤍𐤅𐤇 𐤉𐤌	H5117	root
 220:1:34	𐤅𐤄𐤊𐤍𐤉𐤎	english	𐤅+[𐤄] 𐤊𐤍𐤉𐤎 	H3664	matres
 220:1:34	𐤌𐤎𐤌𐤍𐤕	spelling	[𐤌] 𐤎𐤌𐤍 𐤕	H5567	root
@@ -4936,8 +4938,10 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:4:137	𐤌𐤉𐤅𐤇𐤃	spelling	𐤌 𐤉𐤅𐤇𐤃 	H3162	matres
 220:4:137	𐤅𐤕𐤕𐤒𐤉𐤌	english	𐤅+[𐤕] 𐤕𐤒𐤉𐤌 	H6965	form
 220:4:138	𐤉𐤇𐤔𐤅𐤁	spelling	[𐤉] 𐤇𐤔𐤅𐤁 	H2803	matres
+220:4:138	𐤄𐤌𐤉𐤅𐤇𐤃𐤉𐤌	spelling	𐤄+[𐤌] 𐤉𐤅𐤇𐤃 𐤉𐤌	H3161	matres
 220:4:138	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 220:4:138	𐤇𐤅𐤒𐤉𐤄𐤌	spelling	 𐤇𐤅𐤒𐤉𐤄 𐤌	H2708	matres
+220:4:138	𐤄𐤌𐤉𐤅𐤇𐤃𐤉𐤌	spelling	𐤄+[𐤌] 𐤉𐤅𐤇𐤃 𐤉𐤌	H3161	matres
 220:4:140	𐤂𐤌𐤅𐤓𐤄	spelling	 𐤂𐤌𐤅𐤓 𐤄	H1586	matres
 220:4:140	𐤔𐤄𐤍𐤅𐤏𐤓	english	𐤔+𐤄 𐤍𐤅𐤏𐤓 	H5288	matres
 220:4:141	𐤋𐤃𐤓𐤉𐤔𐤕	english	𐤋 𐤃𐤓𐤉𐤔 𐤕	H1875	matres
@@ -4990,6 +4994,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:4:209	𐤉𐤒𐤓𐤉𐤀	english	[𐤉] 𐤒𐤓𐤉𐤀 	H7121	matres
 220:4:209	𐤂𐤁𐤅𐤄𐤄	spelling	 𐤂𐤁𐤅𐤄 𐤄	H1364	matres
 220:4:210	𐤄𐤌𐤑𐤅𐤅𐤄	english	𐤄 𐤌𐤑𐤅𐤅𐤄 	H4687	matres
+220:4:211	𐤅𐤁𐤄𐤓𐤔𐤌𐤍	english	𐤅+𐤁+𐤄 𐤓𐤔𐤌 𐤍	H7560	root
 220:4:211	𐤋𐤔𐤌𐤉𐤏𐤄	english	𐤋 𐤔𐤌𐤉𐤏𐤄 	H8052	matres
 220:4:211	𐤄𐤋𐤌𐤅𐤃	spelling	𐤄 𐤋𐤌𐤅𐤃 	H3928	root
 220:4:213	𐤅𐤍𐤏𐤔𐤉𐤕	spelling	𐤅+[𐤍] 𐤏𐤔𐤉𐤕 	H6213	form
@@ -7887,6 +7892,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:16:145	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	[𐤕] 𐤅𐤔𐤁𐤉𐤄 	H7725	form
 220:16:147	𐤀𐤒𐤈𐤉𐤅𐤍	spelling	[𐤀] 𐤒𐤈𐤉𐤅𐤍 	H6994	matres
 220:16:149	𐤄𐤕𐤇𐤓𐤅𐤕𐤅	spelling	[𐤄𐤕] 𐤇𐤓𐤅 𐤕+𐤅	H2787	form
+220:16:149	𐤍𐤓𐤔𐤌	english	[𐤍] 𐤓𐤔𐤌 	H7559	root
 220:16:150	𐤄𐤕𐤇𐤓𐤅𐤕𐤅	spelling	[𐤄𐤕] 𐤇𐤓𐤅 𐤕+𐤅	H2787	form
 220:16:152	𐤀𐤇𐤔𐤁	spelling	[𐤀] 𐤇𐤔𐤁 	H2803	root
 220:16:155	𐤍𐤔𐤍𐤀	english	[𐤍] 𐤔𐤍𐤀 	H8130	root

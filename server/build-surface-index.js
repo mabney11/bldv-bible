@@ -2039,7 +2039,7 @@ if (WITH_HEB) {
     {
         const hs = hebResult.stats;
         console.log(`  context readings: ${hs.contextSwitches} occurrence(s) switched to the reading the verse's English supports, `
-            + `${hs.contextVetoed} kept (English supports the original); 3fs possessive 𐤄: ${hs.suffix3fs} occurrence(s)`
+            + `${hs.contextVetoed} kept (English supports the original), ${hs.contextFromBhs || 0} taken from the BHS token of the same spelling; 3fs possessive 𐤄: ${hs.suffix3fs} occurrence(s)`
             + (hs.contextMisses.length ? `; no matching reading offered for: ${hs.contextMisses.slice(0, 30).join(' ')}` : ''));
         const _ctxOut = (() => { const i = process.argv.indexOf('--ctx-out'); return i >= 0 ? process.argv[i + 1] : 'heb-context-switches.txt'; })();
         try { fs.writeFileSync(path.resolve(__dirname, _ctxOut), 'ref\tword\tfrom->to\tbefore -> after\n' + hs.contextLog.join('\n') + '\n'); console.log(`  (every switch listed in ${_ctxOut})`); } catch { /* report only */ }

@@ -92,7 +92,9 @@ ENG = {}
 for cid, ch, v, t in cdb.execute(
         "SELECT canon_id, chapter, verse, COALESCE(NULLIF(text_src, ''), text) FROM verses WHERE corpus='ENG' AND canon_id >= ?", (a.canon_min,)):
     try:
-        ENG[(cid, int(ch), int(v))] = t or ''
+        # keep only the English of each "word (gloss)" pair (heb-align englishOnly): the
+        # text_src of Josephus / 2 Esdras / the Works Library is an earlier render
+        ENG[(cid, int(ch), int(v))] = re.sub(r"[A-Za-z\U00010900-\U0001091F'’-]+\s*\(([^()]*)\)", r' \1 ', t or '')
     except (TypeError, ValueError):
         pass
 def vtext(L):

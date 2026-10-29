@@ -12738,6 +12738,51 @@ app.get('/api/translate/verse', (req, res) => {
     }
 });
 
+// ── COMPARISON VERSIONS — OWNER ONLY (2026-10-29) ────────────────────────────
+// fieldy: "a few english versions for verification -- all hidden from users ... every
+// version better say the same things in general because it is translating from a source
+// that they did not create". server/versions.db (scripts/build-compare-versions.py):
+// public-domain KJV(+Apocrypha) ASV YLT Darby DRC JPS BBE BSB, keyed by the app's own
+// (canon_id, chapter, verse). NOTHING public reads it: no page, prerender, sitemap or
+// search. Served only here, under /api/admin (the ADMIN_KEY guard 404s everyone else);
+// with no ADMIN_KEY configured (a local dev server) it is open, like the Studio itself.
+// NKJV / NLV are copyrighted and NOT stored — the Studio links to them instead.
+const VERSIONS_CANDIDATES = [path.join(__dirname, 'versions.db')]
+    .concat(process.env.DATA_DIR ? [path.join(process.env.DATA_DIR, 'versions.db')] : []);
+let _versionsDb = null, _versionsStmts = null, _versionsMtime = 0, _versionsCover = new Map();
+function versionsDb() {
+    try {
+        const p = VERSIONS_CANDIDATES.find(x => fs.existsSync(x));
+        if (!p) { if (_versionsDb) { try { _versionsDb.close(); } catch {} } _versionsDb = null; return null; }
+        const mtime = fs.statSync(p).mtimeMs;
+        if (_versionsDb && mtime === _versionsMtime) return _versionsDb;
+        if (_versionsDb) { try { _versionsDb.close(); } catch {} }
+        _versionsDb = new Database(p, { readonly: true, fileMustExist: true });
+        _versionsMtime = mtime;
+        _versionsStmts = {
+            list:  _versionsDb.prepare(`SELECT id, label, year, note FROM versions ORDER BY ord`),
+            verse: _versionsDb.prepare(`SELECT version, text FROM verses WHERE canon_id=? AND chapter=? AND verse=?`),
+            covers: _versionsDb.prepare(`SELECT DISTINCT version FROM verses WHERE canon_id=?`),
+        };
+        _versionsCover = new Map();
+        return _versionsDb;
+    } catch (e) { console.warn('[versions] unavailable:', e.message); _versionsDb = null; return null; }
+}
+app.get('/api/admin/compare-versions', (req, res) => {
+    if (ADMIN_KEY && !isAdminRequest(req)) return res.status(404).end();
+    res.setHeader('Cache-Control', 'private, no-store');
+    res.setHeader('X-Robots-Tag', 'noindex');
+    const book = +req.query.book, chapter = +req.query.chapter, verse = +req.query.verse;
+    if (!(book > 0 && chapter > 0 && verse > 0)) return res.status(400).json({ error: 'book, chapter, verse required' });
+    if (!versionsDb()) return res.status(503).json({ error: 'versions.db not built (scripts/build-compare-versions.py)' });
+    const texts = new Map(_versionsStmts.verse.all(book, chapter, verse).map(r => [r.version, r.text]));
+    // which versions have this BOOK at all (JPS has no NT, most have no Apocrypha) — the panel
+    // hides those instead of showing an empty row on every verse
+    if (!_versionsCover.has(book)) _versionsCover.set(book, new Set(_versionsStmts.covers.all(book).map(r => r.version)));
+    const covers = _versionsCover.get(book);
+    res.json({ versions: _versionsStmts.list.all().map(v => ({ ...v, covers: covers.has(v.id), text: texts.get(v.id) || '' })) });
+});
+
 // PUT /api/translate/verse
 // ── PRECEPTS — "precept upon precept" (Isaiah 28:10): where else in the corpus
 // does this verse's wording appear? ────────────────────────────────────────────

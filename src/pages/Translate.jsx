@@ -5,6 +5,7 @@ import { paleoToSVG } from '../lib/paleoGlyphs.js';
 import { transliterate } from '../lib/translit.js';
 import { useToast } from '../components/Toast.jsx';
 import WordBlock from '../components/WordBlock.jsx';
+import CompareVersions from '../components/CompareVersions.jsx';
 import {
   apiTransProgress, apiTransChapter, apiTransVerse, apiTransBookText,
   apiTransSaveVerse, apiTransHistory, apiTransRevertToHistory, apiTransDeleteHistory,
@@ -2194,6 +2195,9 @@ export default function Translate() {
                       </div>
                     )}
                   </section>
+
+                  {/* Other English versions — owner only (renders nothing for anyone else) */}
+                  <CompareVersions book={activeBook} chapter={activeChapter} verse={activeVerse} />
 
                   {/* Linker grid */}
                   {(verseData.text || '').trim() && (

@@ -1,0 +1,39 @@
+.cv-section { margin-bottom: 18px; }
+.cv-toggle {
+  all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit;
+}
+.cv-toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 3px; }
+.cv-caret { font-size: 10px; width: 10px; }
+.cv-private {
+  font-size: 10px; font-weight: 600; letter-spacing: 0; text-transform: none;
+  color: var(--text3); border: 1px dashed var(--border2); border-radius: 999px; padding: 1px 8px;
+}
+.cv-body {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 6px 14px;
+}
+.cv-row {
+  display: grid; grid-template-columns: 52px 1fr; gap: 10px;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+}
+.cv-row:last-of-type { border-bottom: none; }
+.cv-id {
+  font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 0.04em;
+  padding-top: 2px; cursor: help;
+}
+.cv-text { font-size: 14px; line-height: 1.55; color: var(--text); overflow-wrap: anywhere; }
+.cv-missing { color: var(--text3); font-style: italic; font-size: 13px; }
+.cv-empty { color: var(--text3); font-size: 13px; padding: 8px 0; }
+.cv-links {
+  display: flex; gap: 8px; flex-wrap: wrap; padding: 8px 0 6px;
+  border-top: 1px solid var(--border);
+}
+.cv-links a {
+  font-size: 12px; font-weight: 600; color: var(--text2); text-decoration: none;
+  border: 1px solid var(--border2); border-radius: 6px; padding: 3px 9px; background: var(--bg3);
+}
+.cv-links a:hover { color: var(--text); background: var(--bg4); }
+@media (max-width: 520px) {
+  .cv-row { grid-template-columns: 1fr; gap: 2px; }
+}

@@ -58,7 +58,14 @@ ssh "$REMOTE_HOST" "sudo sqlite3 $REMOTE_PATH 'PRAGMA wal_checkpoint(TRUNCATE);'
   || echo "(checkpoint skipped — prod copy not writable / absent; fine, it is being replaced)"
 
 echo "== 3/7  Backing up prod's current ${DB_NAME} =="
-ssh "$REMOTE_HOST" "sudo cp $REMOTE_PATH $REMOTE_BACKUP && ls -la $REMOTE_BACKUP"
+# A database's FIRST upload (versions.db, 2026-10-29) has no prod copy to back up — say so
+# and go on; any other failure to back up an existing copy still stops the script.
+if ssh "$REMOTE_HOST" "test -f $REMOTE_PATH"; then
+  ssh "$REMOTE_HOST" "sudo cp $REMOTE_PATH $REMOTE_BACKUP && ls -la $REMOTE_BACKUP"
+else
+  echo "(prod has no ${DB_NAME} yet — first upload, nothing to back up)"
+  REMOTE_BACKUP="(none — first upload)"
+fi
 
 echo "== 4/7  Compressing local copy and uploading =="
 gzip -k -f -1 "$LOCAL_DB"

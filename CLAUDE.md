@@ -61,6 +61,63 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## OTHER ENGLISH VERSIONS IN TRANSLATION STUDIO — OWNER ONLY (2026-10-29)
+
+fieldy: "a few english versions for verification -- all hidden from users ... every version better say the same
+things in general because it is translating from a source that they did not create. I dont want my text to be in the
+category of those that mistranslate" / "in translation studio i can see whats written in the different versions -- eg
+KJV, NKJV, NLV".
+- **Data `server/versions.db`** (gitignored; on the volume like precepts.db; entrypoint.sh DB_FILES includes it), built by
+  `scripts/build-compare-versions.py <scrollmapper bible_databases formats/json dir>`: PUBLIC-DOMAIN only — KJV 1769
+  (+Apocrypha, KJVA), ASV, YLT, Darby, DRC (Douay-Rheims Challoner), JPS 1917 (this edition writes "HaShem"/"G-d"), BBE,
+  BSB (public domain 2023). Keyed (canon_id, chapter, verse) in KJV/WEB numbering. Chapters numbered unlike KJV, and all of
+  DRC/JPS, are ALIGNED verse by verse to the KJV text (content-word Jaccard; same chapter ±4 or the whole neighbouring
+  chapter; runs of 1-3 verses — Ps 51:1 = Heb 51:1-3, Mal 4:1 = Heb 3:19); below 0.18 (DRC Apocrypha 0.30) the verse is
+  left out rather than shown under the wrong number. DRC Tobit/Judith left out (Vulgate form, verses do not pair).
+  Source gaps: 19 blank JPS verses (Mal 3:19-24 = KJV 4:1-6 …).
+- **NKJV / NLV are copyrighted: never stored.** The panel links them on BibleGateway (canon <= 66 only).
+- **Route** `GET /api/admin/compare-versions?book=&chapter=&verse=` (server.js, before PRECEPTS): behind the /api/admin
+  guard and its own isAdminRequest check (404 for anyone else; open on a server with no ADMIN_KEY), `Cache-Control:
+  private, no-store`, `X-Robots-Tag: noindex`; each version carries `covers` (has this book at all). Nothing public reads
+  versions.db — no page, prerender, sitemap, search. Keep it that way.
+- **Panel** `src/components/CompareVersions.jsx/.css`, in Translate.jsx between the translation box and the word links;
+  renders nothing unless /admin/session says owner (or no key configured); collapsible (localStorage `tr-compare-open`).
+- Verified: harness of the real route block on the real versions.db (owner 200 with all 8, visitor 404, bad input 400,
+  Sirach covers KJV+DRC only), esbuild + full vite build. Not seen in a browser.
+- Deploy: `DB=versions.db bash scripts/sync-corpus-to-prod.sh versions`, then the normal deploy (server.js, entrypoint.sh,
+  frontend changed).
+
+## NT/APOCRYPHA TOKEN AUDIT — context readings now judged by the ORIGINAL English (2026-10-29)
+
+fieldy, John 4:23 𐤄𐤀𐤌𐤕𐤉𐤌 "the true (worshipers)" read H520 "cubits": "go through my tokens so I dont confuse genuine
+issues with something I need to work around in my translations -- my tokens must be sound and consistent".
+Three resolver flaws fixed in heb-align.js (context-reading block), measured with buildHebSurfaces on a /tmp copy:
+1. **Witness = text_src for EVERY entry** (was rendered text unless `"witness": "src"`). The rendered text carries the
+   gloss of the reading under question, so it vouched for itself: 𐤃𐤅𐤌𐤄 stayed H1745 "silence" in 26 "is like" verses
+   (Matt 13:24 …) because the render said "Dawamah (silence)". `"witness": "rendered"` opts an entry out. 239 tokens fixed
+   (𐤀𐤁𐤋 aval "but" 124, 𐤋𐤁𐤍 Laban 49, 𐤊𐤁𐤓 kvar "already" 22 …).
+2. **englishOnly()**: text_src of Josephus 217-220, 2 Esdras 139 and the Works Library 200-216 (15,800 verses) is an
+   earlier render ("achar (next) yawam (day)") — corpus.db has no clean English for them (the 2026-09-21 backup has the
+   same pairs). The witness keeps only the English of each "word (gloss)" pair. Same in audit-heb-vs-english.py.
+3. **A target no aligned reading carries comes from the BHS token of the same spelling** (`bhsTokenFor`, tag
+   nt_context_bhs; build log "N taken from the BHS token of the same spelling"). 69 entries had never applied (𐤔𐤃𐤉𐤌
+   demons, 𐤌𐤀𐤌𐤉𐤍 believer, 𐤌𐤅𐤏𐤑𐤕 …) because the HEB edition's OT never aligned the word. Guard: prefix chips must open
+   the word and suffix chips close it (a BHS prs= tag rebuilt 𐤀𐤌𐤔𐤊 as 𐤀𐤌𐤔𐤊𐤌 — retried with prs=absent); the root
+   may restore letters (no-eliding). 1 miss left (𐤄𐤔𐤕𐤇𐤅𐤄).
+Data: heb-context-readings.json +220 high-confidence (audit --write --min-occ 1) +74 review-tier rows checked by hand
+(`"reviewed"`); NOT added: 𐤄𐤍 (Aramaic H2006), 𐤌𐤃𐤉𐤍𐤉𐤌 (Acts 24:5 "strife" is right), 𐤆𐤊𐤓𐤉𐤌, 𐤂𐤃𐤋𐤕𐤉. Hand entries
+𐤄𐤀𐤌𐤕𐤉𐤌/𐤀𐤌𐤕𐤉𐤌 -> H571 (John 4:23, Rev 21:5, 22:6; Josephus Ant 3:139 keeps cubits).
+heb-occurrence-overrides.json: 𐤀𐤋 -> H410 El at 58 occurrences — John 4:23 (𐤏𐤁𐤃𐤉 𐤀𐤋 𐤄𐤀𐤌𐤕𐤉𐤌), every NT/Apocrypha
+𐤀𐤋 𐤏𐤋𐤉𐤅𐤍 El Elyon / 𐤀𐤋 𐤔𐤃𐤉 El Shaddai / 𐤀𐤋 𐤇𐤉 El Chai / 𐤀𐤋 𐤒𐤍𐤀, Baruch 4's "Everlasting" 𐤀𐤋 𐤏𐤅𐤋𐤌, Wis 9:1,
+John 17:3 (BHS tags these H410 in the OT; the HEB edition had H413 "to"). Left: 𐤀𐤋 𐤀𐤋𐤄𐤉𐤌 / 𐤀𐤋 𐤉𐤔𐤓𐤀𐤋 ("to"),
+2 Enoch 65:6 "into the great aeon", ambiguous 𐤓𐤇𐤅𐤌/𐤀𐤌𐤕/𐤄𐤊𐤁𐤅𐤃/𐤄𐤇𐤉 rows.
+Probe total vs the 2026-10-29 index: ~1,760 NT/Apocrypha tokens change Strong's. server/heb-english-audit.txt
+regenerated (B list = readings that never match their English with nothing better on offer — a review list).
+NOT run on the real DBs: `cd server && node build-surface-index.js`, `node render-all.mjs --surface`, restart, Rebake.
+Probe recipe (device sandbox, ~65 s): copy corpus.db to /tmp, better-sqlite3 -> node:sqlite shim via --require,
+`PALEO_PARSE_ONLY=1` parseToken, `buildHebSurfaces({src, parseToken, ntMin:40, contextReadings, englishOf,
+englishSrcOf, occurrenceOverrides})`.
+
 ## MODEL READING PACE + WHEEL SPEED CONTROL (added 2026-10-29)
 
 fieldy: "re-calculate … a good speed (based on the # of words in the gloss + slight overhead for the transliteration) …

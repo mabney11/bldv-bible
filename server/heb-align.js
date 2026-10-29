@@ -435,6 +435,11 @@ function buildHebSurfaces(o) {
     // marked witness:"src". The rendered text carries the glosses of the reading
     // being questioned ("Chamath (Hamath)"), so it would vouch for itself; the
     // original English cannot (same reason root strip reads text_src).
+    // Josephus, 2 Esdras and the Works Library have no clean English in corpus.db: their
+    // text_src is an earlier render ("achar (next) yawam (day)"). A witness keeps only the
+    // English of each "word (gloss)" pair, so a transliteration (amath, laban, hamath)
+    // never counts as English. Plain English barely ever writes "word (aside)".
+    const englishOnly = (t) => t.replace(/[A-Za-z\u{10900}-\u{1091F}'’-]+\s*\(([^()]*)\)/gu, ' $1 ');
     const _srcStemCache = new Map();
     const verseSrcStems = (c, ch, v) => {
         if (!englishSrcOf) return verseStems(c, ch, v);
@@ -442,13 +447,31 @@ function buildHebSurfaces(o) {
         if (!_srcStemCache.has(k)) {
             let t = englishSrcOf(c, ch, v) || '';
             if (!t) t = (englishSrcOf(c, ch, v - 1) || '') + ' ' + (englishSrcOf(c, ch, v + 1) || '');   // versification drift
+            t = englishOnly(t);
             _srcStemCache.set(k, t.trim()
                 ? new Set((t.match(/[A-Za-z]{2,}/g) || []).map(stemWord))
                 : verseStems(c, ch, v));
         }
         return _srcStemCache.get(k);
     };
-    let contextSwitches = 0, contextVetoed = 0, suffix3fs = 0;
+    let contextSwitches = 0, contextVetoed = 0, suffix3fs = 0, contextFromBhs = 0;
+    // The BHS token that writes `word` exactly with Strong's `sn` (most common pos/morph),
+    // for a context reading whose target no aligned reading carries. Cached per word+SN.
+    const _bhsTokCache = new Map();
+    let _bhsTokStmt = null;
+    const bhsTokenFor = (word, sn) => {
+        const k = word + '|' + sn;
+        if (!_bhsTokCache.has(k)) {
+            let r = null;
+            try {
+                _bhsTokStmt = _bhsTokStmt || src.prepare(`SELECT pos, morph, COUNT(*) AS n FROM tokens_bhs
+                    WHERE word_raw = ? AND strongs = ? GROUP BY pos, morph ORDER BY n DESC LIMIT 1`);
+                r = _bhsTokStmt.get(word, sn) || null;
+            } catch { r = null; }
+            _bhsTokCache.set(k, r);
+        }
+        return _bhsTokCache.get(k);
+    };
     const contextMisses = new Map();
     const contextLog = [];
     const occKey = (b, c, v, ord) => `${b}|${c}|${v}|${ord}`;
@@ -1614,9 +1637,13 @@ function buildHebSurfaces(o) {
                 const cr = contextReadings.get(w);
                 if (cr && cr.sn && hit && !forcedReadings.has(w)
                     && !occurrenceOverrides.has(occKey(row.canon_id, row.chapter, row.verse, i + 1))) {
-                    const vs = cr.witness === 'src'
-                        ? verseSrcStems(row.canon_id, row.chapter, row.verse)
-                        : verseStems(row.canon_id, row.chapter, row.verse);
+                    // The ORIGINAL English is the witness for EVERY entry (2026-10-29): the
+                    // rendered text holds the glosses of the reading under question, so it
+                    // vouched for itself — Matt 13:24 "Dawamah (silence)" kept 𐤃𐤅𐤌𐤄 H1745
+                    // in 26 "is like" verses. `"witness": "rendered"` opts an entry back out.
+                    const vs = cr.witness === 'rendered'
+                        ? verseStems(row.canon_id, row.chapter, row.verse)
+                        : verseSrcStems(row.canon_id, row.chapter, row.verse);
                     const fromHit = (cr.from_words || []).some(x => vs.has(x));
                     const toHit = (cr.to_words || []).some(x => vs.has(x));
                     // Switch where the English supports the new reading. Where it
@@ -1637,6 +1664,38 @@ function buildHebSurfaces(o) {
                             if (contextLog.length < 20000) contextLog.push(`${row.canon_id}:${row.chapter}:${row.verse}\t${w}\t${cr.from || ''}->${cr.sn}\t${hit.tier}:${hit.forms.join('+')} -> ${pick.tier}:${pick.forms.join('+')}`);
                             hit = pick; ctxSN = cr.sn; contextSwitches++;
                         } else {
+                            // No aligned reading carries the target (the HEB edition's OT never
+                            // aligned that word: 𐤔𐤃𐤉𐤌 "demons", Deut 32:17, 69 such entries on
+                            // 2026-10-29). The BHS itself writes this exact spelling with that
+                            // Strong's — take that token's morphology. Still OT evidence, never a
+                            // guess: no BHS token of this spelling + Strong's = a miss, as before.
+                            // The reading must spell THIS word's letters, no more: a BHS morph can
+                            // carry a pronoun suffix the parser rebuilds (PRS_TAG is append-only —
+                            // 𐤀𐤌𐤔𐤊 "I will draw" came back 𐤀𐤌𐤔𐤊𐤌). Retry without it, else a miss.
+                            let bt = bhsTokenFor(w, cr.sn);
+                            if (bt) {
+                                // prefix chips must open the word and suffix chips close it; the root
+                                // itself may carry restored letters (the no-eliding rule: 𐤌𐤅𐤃𐤉𐤏 -> 𐤉𐤃𐤏)
+                                const spells = (m) => {
+                                    const cs = composeWord([{ word_raw: w, pos: bt.pos || 'subs', morph: m || '',
+                                        strongs: cr.sn, token_ordinal: 1 }], parseToken).components;
+                                    const ri = cs.findIndex(c => c.css === 'root');
+                                    if (ri < 0) return cs.map(c => c.paleo).join('') === w;
+                                    const pre = cs.slice(0, ri).map(c => c.paleo).join('');
+                                    const suf = cs.slice(ri + 1).map(c => c.paleo).join('');
+                                    return w.startsWith(pre) && w.endsWith(suf) && [...pre + suf].length < [...w].length;
+                                };
+                                if (!spells(bt.morph)) {
+                                    const m2 = (bt.morph || '').replace(/\bprs=[^|]*/, 'prs=absent');
+                                    bt = spells(m2) ? { ...bt, morph: m2 } : null;
+                                }
+                            }
+                            if (bt) {
+                                if (contextLog.length < 20000) contextLog.push(`${row.canon_id}:${row.chapter}:${row.verse}\t${w}\t${cr.from || ''}->${cr.sn}\t${hit.tier}:${hit.forms.join('+')} -> bhs:${w}`);
+                                contextSwitches++; contextFromBhs++;
+                                emitLexicon(cr.sn, bt.pos, bt.morph, 'nt_context_bhs');
+                                continue;
+                            }
                             contextMisses.set(w, cr.sn);
                         }
                     }
@@ -1964,6 +2023,7 @@ function buildHebSurfaces(o) {
     log(`  fallback readings: ${peeledFallback.toLocaleString()} root chips had glued proclitics peeled into their own chips (𐤅𐤄𐤕𐤒𐤉𐤐 -> [And] [The] 𐤕𐤒𐤉𐤐)`);
     stats.contextSwitches = contextSwitches;
     stats.contextVetoed = contextVetoed;
+    stats.contextFromBhs = contextFromBhs;
     stats.contextMisses = [...contextMisses].map(([w, sn]) => `${w}->${sn}`);
     stats.contextLog = contextLog;
     stats.suffix3fs = suffix3fs;
