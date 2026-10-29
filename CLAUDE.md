@@ -61,6 +61,21 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## MODEL READING PACE + WHEEL SPEED CONTROL (added 2026-10-29)
+
+fieldy: "re-calculate … a good speed (based on the # of words in the gloss + slight overhead for the transliteration) …
+flow naturally for non-stop reading … speed controller … hovering it and using my scroll wheel … ± .1".
+All in src/components/ModelKit.jsx (every model: Statue, ModelPage models, NationsGlobe):
+- `holdFor(u)` = a reader's time at 1×: plain word READ_PLAIN 230 ms (+18/letter past 7); a "Word (gloss)" pair
+  READ_TRANSLIT 330 ms (+18/letter past 8, max 520) + READ_WORD 250 ms per gloss word ("after/following" = 2) + a pause
+  (comma 160, ; : — 240, . ! ? 380). Gen 10:1 = 9.7 s (was 14.9 s with the flat 1.24 s per glossed word).
+- CanvasSubtitles: the pane runs at `factor = span / need` BOTH ways (was slower-only, ≤1), capped at FACTOR_MAX 2.5, so a
+  pane lasts exactly its words' reading time — no blank stretch after the last word. usePlayer applies factor whenever ≠ 1.
+- `SpeedControl` replaced the three speed <select>s: 0.1×–4.0× in 0.1 steps; hover + wheel (a notch = 0.1, touchpad deltas
+  add up per 40 px, wheel up = faster, page doesn't scroll), − / + buttons, arrow keys, double-click = 1×. Remembered in
+  localStorage `model-speed`. kit.js SPEEDS is no longer read by the pages.
+Tune the pace by changing the READ_* / PAUSE_* constants only. Verified: esbuild compiles all four files; not run in a browser.
+
 ## WORLDLY ALLOTMENTS on the Holy Land map — today's lines (added 2026-10-28)
 
 fieldy: "as a toggle under 'allotments' I want 'worldly allotments' and have geographical outlines of the different

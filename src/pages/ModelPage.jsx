@@ -26,7 +26,7 @@ import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-r
 import { pageTitle } from '../hooks/usePageTitle.js';
 import { useModelSeo } from '../lib/models/seo.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
-import { usePlayer, Section, WordRow, ModelPassage, Caption, PaceSelect, CanvasSubtitles, CanvasTitle, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
+import { usePlayer, SpeedControl, Section, WordRow, ModelPassage, Caption, PaceSelect, CanvasSubtitles, CanvasTitle, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
 import ModelSheet from '../components/ModelSheet.jsx';
 import { STORY_ICONS } from '../components/ModelStories.jsx';
 import './Temple.css';
@@ -144,7 +144,7 @@ function RunnerIcon({ wind = 0 }) {
 }
 
 export default function ModelPage({ model }) {
-  const { MODES, SPEEDS, CHIP_ORDER, pieceById, marksFor, base, strings = {} } = model;
+  const { MODES, CHIP_ORDER, pieceById, marksFor, base, strings = {} } = model;
   useModelSeo(pageTitle(`${model.title} — Interactive Story Models`), model.description);
   const TIMELINES = useMemo(() => timelinesOf(model), [model]);
   const PIECE_IDS = useMemo(() => model.PIECES.map((p) => p.id), [model]);
@@ -308,12 +308,7 @@ export default function ModelPage({ model }) {
             </div>
             <span ref={timeRef} className="st-time">0.0 s</span>
             <div className="st-opts">
-              <label className="st-speed">
-                <span>speed</span>
-                <select id="tp-speed" value={speed} onChange={(e) => setSpeed(+e.target.value)}>
-                  {SPEEDS.map((s) => <option key={s} value={s}>{s === 0.25 ? '¼×' : s === 0.5 ? '½×' : `${s}×`}</option>)}
-                </select>
-              </label>
+              <SpeedControl player={player} id="tp-speed" />
               <PaceSelect player={player} id="tp-pace" />
               <label className="st-loop"><input id="tp-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
               <SubtitlesToggle subs={subs} id="tp-subs" />

@@ -25,7 +25,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { pageTitle } from '../hooks/usePageTitle.js';
 import { useModelSeo } from '../lib/models/seo.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
-import { usePlayer, Caption, PaceSelect, CanvasSubtitles, CanvasTitle, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
+import { usePlayer, SpeedControl, Caption, PaceSelect, CanvasSubtitles, CanvasTitle, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
 import { translitOf, labelAnchor } from '../lib/models/holyLand.js';
 import NATIONS from '../lib/models/nations.json';
 import './NationsGlobe.css';
@@ -46,7 +46,6 @@ const ENTRIES = NATIONS.entries.map((e) => ({ ...e, tr: translitOf(e.paleo) }));
 const BY_ID = Object.fromEntries(ENTRIES.map((e) => [e.id, e]));
 
 // ── The story: one timeline a view, a pane per verse (group) ──
-const SPEEDS = [0.25, 0.5, 1, 1.5, 2];
 const PANE_SECS = 7;      // a pane's story time; the subtitles slow the player wherever its verse needs longer
 const TIMELINES = Object.fromEntries(VIEW_IDS.map((vid) => {
   let t = 0;
@@ -388,12 +387,7 @@ export default function NationsGlobe() {
               </div>
               <span ref={timeRef} className="st-time">0.0 s</span>
               <div className="st-opts">
-                <label className="st-speed">
-                  <span>speed</span>
-                  <select id="st-speed" value={speed} onChange={(e) => setSpeed(+e.target.value)}>
-                    {SPEEDS.map((x) => <option key={x} value={x}>{x === 0.25 ? '¼×' : x === 0.5 ? '½×' : `${x}×`}</option>)}
-                  </select>
-                </label>
+                <SpeedControl player={player} id="st-speed" />
                 <PaceSelect player={player} />
                 <label className="st-loop"><input id="st-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
                 <SubtitlesToggle subs={subs} />

@@ -25,11 +25,11 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { pageTitle } from '../hooks/usePageTitle.js';
 import { useModelSeo } from '../lib/models/seo.js';
 import { PassageRefs, Glossed } from '../components/PassageRefs.jsx';
-import { usePlayer, Section, Caption, PaceSelect, CanvasSubtitles, CanvasTitle, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
+import { usePlayer, SpeedControl, Section, Caption, PaceSelect, CanvasSubtitles, CanvasTitle, SubtitlesToggle, useSubtitles } from '../components/ModelKit.jsx';
 import { apiTransChapter } from '../lib/api.js';
 import StatueSheet from '../components/StatueSheet.jsx';
 import {
-  PIECES, STONE, WORDS, DURATION, SPEEDS, HIT, MOUNTAIN_FROM,
+  PIECES, STONE, WORDS, DURATION, HIT, MOUNTAIN_FROM,
   phaseAt, selectableAt, pieceById, ALL_REFS, PASSAGE, pieceForWord,
 } from '../lib/models/statue.js';
 import '../components/ModelPage.css';
@@ -304,12 +304,7 @@ export default function Statue() {
             </div>
             <span ref={timeRef} className="st-time">0.0 s</span>
             <div className="st-opts">
-              <label className="st-speed">
-                <span>speed</span>
-                <select id="st-speed" value={speed} onChange={(e) => setSpeed(+e.target.value)}>
-                  {SPEEDS.map((s) => <option key={s} value={s}>{s === 0.25 ? '¼×' : s === 0.5 ? '½×' : `${s}×`}</option>)}
-                </select>
-              </label>
+              <SpeedControl player={player} id="st-speed" />
               <PaceSelect player={player} />
               <label className="st-loop"><input id="st-loop" type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} /> repeat</label>
               <SubtitlesToggle subs={subs} />

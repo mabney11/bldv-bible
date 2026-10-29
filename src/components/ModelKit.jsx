@@ -20,7 +20,8 @@ import './ModelPage.css';
 export function usePlayer(timeline, { pace: paceInit = 'tap', onContinue } = {}) {
   const clock = useRef({ t: 0 }).current;
   const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState(1);
+  const [speed, setSpeedRaw] = useState(() => readSpeed());   // remembered across models (fieldy tunes it once for himself)
+  const setSpeed = useCallback((v) => setSpeedRaw((cur) => { const n = clampSpeed(typeof v === 'function' ? v(cur) : v); try { localStorage.setItem(SPEED_KEY, String(n)); } catch {} return n; }), []);
   const [loop, setLoop] = useState(false);
   const [pace, setPace] = useState(() => { try { const v = localStorage.getItem('model-pace'); return v === 'off' ? 'off' : paceInit; } catch { return paceInit; } });   // 'tap' | 'off' (the old timed 'auto' reads as tap)
   const [hold, setHold] = useState(null);           // { tap: true } while the story waits for the reader to tap
@@ -29,8 +30,8 @@ export function usePlayer(timeline, { pace: paceInit = 'tap', onContinue } = {})
   const [ended, setEnded] = useState(false);
   const scrubRef = useRef(null), timeRef = useRef(null), captionRef = useRef(null);
   const state = useRef({ playing: false, speed: 1, loop: false, pace: paceInit, last: 0, raf: 0, timeline, hold: null, phaseKey: null });
-  // What the canvas subtitles ask of the story (CanvasSubtitles writes it): the pane on show and how much slower it must run
-  // (factor ≤ 1) for every word of its caption to have its time before the pane ends (fieldy: "there needs to be enough time to
+  // What the canvas subtitles ask of the story (CanvasSubtitles writes it): the pane on show and the rate it must run at
+  // (factor: <1 slower, >1 quicker) for its caption to take exactly a natural reading of its words (fieldy: "there needs to be enough time to
   // show the entire verse … by the end of the pane I should have already seen the last word … slow specific panes down").
   const subs = useRef({ key: null, factor: 1 });
   state.current.playing = playing; state.current.speed = speed; state.current.loop = loop; state.current.timeline = timeline; state.current.pace = pace;
@@ -71,7 +72,7 @@ export function usePlayer(timeline, { pace: paceInit = 'tap', onContinue } = {})
       }
       const curKey = st.timeline.phaseAt(clock.t).key, S = subs.current;
       let step = ((now - st.last) / 1000) * st.speed; st.last = now;
-      if (S.key === curKey && S.factor < 1) step *= S.factor;   // a pane whose words need longer than its span runs that much slower, so its last word is seen before it ends
+      if (S.key === curKey && S.factor !== 1) step *= S.factor;   // the pane runs at its words' reading pace: slower when they need longer than its span, quicker when it would otherwise stand empty
       let t = clock.t + step;
       if (t >= D) { if (st.loop) t -= D; else { t = D; setPlaying(false); } }
       const key = st.timeline.phaseAt(t).key;
@@ -209,11 +210,28 @@ export function CanvasTitle({ phase, on, playing = false, scrubbed = null }) {
   );
 }
 
-/** The weight of a unit's time on the canvas (ms): a plain word — a joining word, a filler — reads quickly, 0.2 s; a glossed
- *  word is the emphasis and snaps in for a smooth 1.24 s (fieldy: "the common words read quickly and the hebrew words snap for
- *  about a second"). No word stays longer than a second and a half, whatever the pane. */
-export const HOLD_PLAIN = 200, HOLD_GLOSS = 1240, HOLD_MAX = 1500;
-export function holdFor(u) { return u.gloss == null ? HOLD_PLAIN : HOLD_GLOSS; }
+/** How long a unit stays on the canvas at 1× (ms) — the time a reader takes to read it, so the words flow on without a
+ *  stop (fieldy, 2026-10-29: "a good speed based on the # of words in the gloss + slight overhead for the transliteration
+ *  itself … flow as if a natural reader were reading"). A natural reader takes about a quarter second a word (~240 wpm):
+ *  - a plain word: READ_PLAIN, a little more for a long one;
+ *  - a "Word (gloss)" pair: READ_TRANSLIT for the transliteration (plus a touch for every letter past 8 — an unfamiliar long
+ *    word takes the eye longer), then READ_WORD for each word of its gloss ("after/following" is two);
+ *  - a pause where a reader pauses: a comma, the end of a clause or a sentence.
+ *  Gen 10:1 "WaAlah (And these)" 0.85 s, "Achar (after/following)" 0.85 s, "WaYaYawaladaw (and born)" 0.92 s. */
+export const READ_PLAIN = 230, READ_TRANSLIT = 330, READ_WORD = 250, READ_LETTER = 18, READ_TRANSLIT_MAX = 520;
+export const PAUSE_COMMA = 160, PAUSE_CLAUSE = 240, PAUSE_STOP = 380;
+const glossWords = (g) => String(g || '').split(/[\s/]+/).filter((x) => /[\p{L}\p{N}]/u.test(x)).length;
+const letters = (w) => (String(w || '').match(/[\p{L}]/gu) || []).length;
+export function holdFor(u) {
+  const end = `${u.w}${u.tail || ''}`.replace(/["”’'»)\]]+$/, '');
+  const pause = /[.!?]$/.test(end) ? PAUSE_STOP : /[;:—–]$/.test(end) ? PAUSE_CLAUSE : /,$/.test(end) ? PAUSE_COMMA : 0;
+  if (u.gloss == null) return READ_PLAIN + Math.max(0, letters(u.w) - 7) * READ_LETTER + pause;
+  const tr = Math.min(READ_TRANSLIT_MAX, READ_TRANSLIT + Math.max(0, letters(u.w) - 8) * READ_LETTER);
+  return tr + glossWords(u.gloss) * READ_WORD + pause;
+}
+/** A pane runs at most this much quicker than its own time to keep up with its words (so a long scene with a short caption is
+ *  not rushed through); past it, the words are read at their pace and the scene finishes on its own. */
+export const FACTOR_MAX = 2.5;
 /** A sentence begins with a capital, even where the quote is sliced from the middle of a verse ("in the raashawan" → "In the raashawan"). */
 export function capFirst(text) { return text ? text.replace(/^(\s*["“'‘(]*)([a-z])/, (m, a, b) => a + b.toUpperCase()) : text; }
 /**
@@ -233,16 +251,16 @@ export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, s
   const lay = useMemo(() => {
     if (!phase || !timeline || !units.length) return null;
     const from = phase.from ?? 0, end = phaseEndOf(timeline, from + 1e-3), span = Math.max(0.01, end - from);
-    const w = units.map((u) => holdFor(u)), total = w.reduce((a, b) => a + b, 0), need = total / 1000;
-    // spoken at a sentence's pace (fieldy: "a sentence with multiple words spoken at a good pace"), stretched at most a little
-    // to fill a longer pane — never dragged out one word at a time. A pane too SHORT for its words is the common case: the
-    // words are squeezed into the pane's story time and the player runs that pane slower by the same measure (`factor`), so
-    // on the wall clock they still come at their own pace and every one is seen before the pane ends (Exodus 25:1, 8–9 in
-    // six story seconds runs at about a quarter speed)
-    const scale = Math.min(Math.max(1, HOLD_MAX / Math.max(...w)), Math.min(1.35, span / need));
-    const at = []; let acc = 0; for (const x of w) { at.push(from + (acc / 1000) * scale); acc += x; }
-    const done = from + (acc / 1000) * scale;   // the last word's own time is up: the words are gone until the pane ends
-    return { from, end, span, at, done, need, factor: Math.min(1, span / need) };
+    const w = units.map((u) => holdFor(u)), need = w.reduce((a, b) => a + b, 0) / 1000;
+    // Read straight through, at a reader's pace: the pane runs at whatever rate makes its span last exactly as long as its
+    // words take to read (factor = span / need) — slower when the words need longer, quicker when the pane would otherwise
+    // stand empty after its last word — so one word follows the last and one pane the next with no wait and no gap (fieldy:
+    // "reading now still feels clunky … flow naturally for non-stop reading"). Each word's place in story time is its reading
+    // time × that rate. Only a pane far longer than its words (more than FACTOR_MAX) keeps some of its scene after the words.
+    const factor = Math.min(FACTOR_MAX, span / need);
+    const at = []; let acc = 0; for (const x of w) { at.push(from + (acc / 1000) * factor); acc += x; }
+    const done = from + (acc / 1000) * factor;   // the last word's own time is up
+    return { from, end, span, at, done, need, factor };
   }, [phase, timeline, units]);
   useEffect(() => { report?.({ key: phase?.key ?? null, factor: lay ? lay.factor : 1 }); }, [lay, phase?.key]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => () => { report?.({ key: null, factor: 1 }); }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -254,7 +272,7 @@ export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, s
       if (!alive) return; raf = requestAnimationFrame(tick);
       const t = clock.t; let i = 0;
       while (i + 1 < lay.at.length && lay.at[i + 1] <= t + 1e-6) i++;
-      if (t < lay.from - 1e-6 || t > lay.end + 1e-6 || t > lay.done + 0.6) i = -1;
+      if (t < lay.from - 1e-6 || t > lay.end + 1e-6 || t > lay.done + 0.6 * lay.factor) i = -1;
       if (i !== last) { last = i; setIdx(i); }
     };
     tick();
@@ -280,6 +298,50 @@ export function CanvasSubtitles({ phase, clock, timeline, on, playing = false, s
           : u.w}
       </span>
     </div>
+  );
+}
+
+// ── The speed control: hover it and roll the wheel ──────────────────────────
+// fieldy: "more granular and controllable by hovering it and using my scroll wheel … increment by ± .1 so if i scroll my
+// wheel fast I can easily scale through numbers". One wheel notch = 0.1×; a fast roll runs through the numbers; a touchpad's
+// small deltas add up to a step. − / + buttons and the arrow keys do the same; double-click goes back to 1×. Remembered.
+const SPEED_KEY = 'model-speed';
+export const SPEED_MIN = 0.1, SPEED_MAX = 4, SPEED_STEP = 0.1;
+const clampSpeed = (v) => Math.round(Math.min(SPEED_MAX, Math.max(SPEED_MIN, Number(v) || 1)) * 10) / 10;
+const readSpeed = () => { try { const v = parseFloat(localStorage.getItem(SPEED_KEY)); return Number.isFinite(v) ? clampSpeed(v) : 1; } catch { return 1; } };
+export function SpeedControl({ player, id = 'st-speed' }) {
+  const { speed, setSpeed } = player;
+  const ref = useRef(null), acc = useRef(0);
+  const nudge = useCallback((n) => setSpeed((cur) => cur + n * SPEED_STEP), [setSpeed]);
+  useEffect(() => {
+    const el = ref.current; if (!el) return undefined;
+    const onWheel = (e) => {
+      e.preventDefault();                           // the page does not scroll while the pointer is on the control
+      const dy = e.deltaY || e.deltaX; if (!dy) return;
+      let n = 0;
+      if (e.deltaMode === 1) n = Math.sign(dy) * Math.max(1, Math.round(Math.abs(dy) / 3));          // lines (Firefox): 3 a notch
+      else if (e.deltaMode === 2) n = Math.sign(dy);                                                   // pages
+      else if (Math.abs(dy) >= 50) { n = Math.sign(dy) * Math.max(1, Math.round(Math.abs(dy) / 100)); acc.current = 0; }   // a mouse notch (~100 px)
+      else { acc.current += dy; if (Math.abs(acc.current) >= 40) { n = Math.trunc(acc.current / 40); acc.current -= n * 40; } }   // a touchpad
+      if (n) nudge(-n);                             // wheel up = faster
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, [nudge]);
+  const onKey = (e) => {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === '+' || e.key === '=') { e.preventDefault(); nudge(1); }
+    else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === '-') { e.preventDefault(); nudge(-1); }
+    else if (e.key === 'Home' || e.key === '1') { e.preventDefault(); setSpeed(1); }
+  };
+  return (
+    <span className="st-speed st-speedctl" ref={ref} title="Speed — hover and roll the wheel (0.1× a notch), arrow keys, or − / +; double-click for 1×">
+      <span>speed</span>
+      <button type="button" className="st-speedctl-b" onClick={() => nudge(-1)} disabled={speed <= SPEED_MIN} aria-label="Slower">−</button>
+      <span id={id} className={`st-speedctl-v${speed === 1 ? '' : ' st-speedctl-off1'}`} role="spinbutton" tabIndex={0} aria-label="Speed"
+        aria-valuemin={SPEED_MIN} aria-valuemax={SPEED_MAX} aria-valuenow={speed} aria-valuetext={`${speed.toFixed(1)} times`}
+        onKeyDown={onKey} onDoubleClick={() => setSpeed(1)}>{speed.toFixed(1)}×</span>
+      <button type="button" className="st-speedctl-b" onClick={() => nudge(1)} disabled={speed >= SPEED_MAX} aria-label="Faster">+</button>
+    </span>
   );
 }
 

@@ -6,7 +6,6 @@ ref	word	from->to	before -> after
 40:5:22	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 40:5:28	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 40:5:32	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
-40:5:34	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 40:5:39	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 40:6:20	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 40:6:22	𐤍𐤓	H5369->H5216	exact:𐤍𐤓 -> exact:𐤍𐤓
@@ -34,11 +33,9 @@ ref	word	from->to	before -> after
 40:15:14	𐤄𐤏𐤅𐤓	H5785->H5787	exact:𐤄𐤏𐤅𐤓 -> exact:𐤄𐤏𐤅𐤓
 40:15:17	𐤄𐤐𐤄	H6311->H6310	proclitic:𐤄+𐤐𐤄 -> exact:𐤄𐤐𐤄
 40:15:18	𐤄𐤐𐤄	H6311->H6310	proclitic:𐤄+𐤐𐤄 -> exact:𐤄𐤐𐤄
-40:15:20	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 40:17:4	𐤎𐤊𐤅𐤕	H5523->H5521	exact:𐤎𐤊𐤅𐤕 -> exact:𐤎𐤊𐤅𐤕
 40:17:12	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 40:17:12	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
-40:17:21	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 40:18:7	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 40:19:12	𐤀𐤌𐤌	H538->H517	exact:𐤀𐤌𐤌 -> exact:𐤀𐤌𐤌
 40:19:16	𐤍𐤂𐤔	H5065->H5066	exact:𐤍𐤂𐤔 -> exact:𐤍𐤂𐤔
@@ -51,7 +48,6 @@ ref	word	from->to	before -> after
 40:20:23	𐤄𐤅𐤊𐤍	H3651->H3559	proclitic:𐤄+𐤅+𐤊𐤍 -> exact:𐤄𐤅𐤊𐤍
 40:21:9	𐤋𐤁𐤍	H3837->H1121	exact:𐤋𐤁𐤍 -> exact:𐤋𐤁𐤍
 40:21:15	𐤋𐤁𐤍	H3837->H1121	exact:𐤋𐤁𐤍 -> exact:𐤋𐤁𐤍
-40:21:32	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 40:22:2	𐤋𐤁𐤍𐤅	H3820->H1121	exact:𐤋𐤁𐤍𐤅 -> exact:𐤋𐤁𐤍𐤅
 40:22:7	𐤏𐤉𐤓𐤌	H5903->H5892	exact:𐤏𐤉𐤓𐤌 -> exact:𐤏𐤉𐤓𐤌
 40:22:12	𐤓𐤏𐤉	H7473->H7453	exact:𐤓𐤏𐤉 -> exact:𐤓𐤏𐤉
@@ -64,6 +60,7 @@ ref	word	from->to	before -> after
 40:24:15	𐤌𐤔𐤌𐤌	H8034->H8074	proclitic:𐤌+𐤔𐤌𐤌 -> exact:𐤌𐤔𐤌𐤌
 40:24:15	𐤄𐤒𐤓𐤀	H7124->H7121	exact:𐤄𐤒𐤓𐤀 -> exact:𐤄𐤒𐤓𐤀
 40:24:27	𐤁𐤅𐤀𐤅	H176->H935	proclitic:𐤁+𐤅+𐤀𐤅 -> exact:𐤁𐤅𐤀𐤅
+40:24:39	𐤁𐤅𐤀𐤅	H176->H935	proclitic:𐤁+𐤅+𐤀𐤅 -> exact:𐤁𐤅𐤀𐤅
 40:26:14	𐤄𐤏𐤔𐤓	H6239->H6240	exact:𐤄𐤏𐤔𐤓 -> exact:𐤄𐤏𐤔𐤓
 40:26:18	𐤏𐤕𐤉	H6262->H6256	exact:𐤏𐤕𐤉 -> suffix:𐤏𐤕+𐤉
 40:26:20	𐤄𐤏𐤔𐤓	H6239->H6240	exact:𐤄𐤏𐤔𐤓 -> exact:𐤄𐤏𐤔𐤓
@@ -120,7 +117,6 @@ ref	word	from->to	before -> after
 41:14:43	𐤁𐤇𐤓𐤁𐤅𐤕	H2723->H2719	exact:𐤁𐤇𐤓𐤁𐤅𐤕 -> exact:𐤁𐤇𐤓𐤁𐤅𐤕
 41:14:45	𐤍𐤂𐤔	H5065->H5066	exact:𐤍𐤂𐤔 -> exact:𐤍𐤂𐤔
 41:14:48	𐤁𐤇𐤓𐤁𐤅𐤕	H2723->H2719	exact:𐤁𐤇𐤓𐤁𐤅𐤕 -> exact:𐤁𐤇𐤓𐤁𐤅𐤕
-41:14:49	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 41:15:6	𐤀𐤎𐤉𐤓	H5493->H616	exact:𐤀𐤎𐤉𐤓 -> exact:𐤀𐤎𐤉𐤓
 41:15:36	𐤇𐤌𐤑	H2557->H2558	exact:𐤇𐤌𐤑 -> exact:𐤇𐤌𐤑
 41:15:38	𐤒𐤓𐤏𐤉𐤌	H7168->H7167	exact:𐤒𐤓𐤏𐤉𐤌 -> exact:𐤒𐤓𐤏𐤉𐤌
@@ -194,11 +190,9 @@ ref	word	from->to	before -> after
 42:23:45	𐤒𐤓𐤏𐤉𐤌	H7168->H7167	exact:𐤒𐤓𐤏𐤉𐤌 -> exact:𐤒𐤓𐤏𐤉𐤌
 43:1:33	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 43:2:4	𐤏𐤕𐤉	H6262->H6256	exact:𐤏𐤕𐤉 -> suffix:𐤏𐤕+𐤉
-43:3:18	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 43:3:25	𐤄𐤈𐤄𐤓𐤄	H2889->H2893	exact:𐤄𐤈𐤄𐤓𐤄 -> exact:𐤄𐤈𐤄𐤓𐤄
 43:4:5	𐤋𐤁𐤍𐤅	H3820->H1121	exact:𐤋𐤁𐤍𐤅 -> exact:𐤋𐤁𐤍𐤅
 43:4:23	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
-43:4:35	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 43:5:22	𐤋𐤁𐤍	H3837->H1121	exact:𐤋𐤁𐤍 -> exact:𐤋𐤁𐤍
 43:5:26	𐤋𐤁𐤍	H3837->H1121	exact:𐤋𐤁𐤍 -> exact:𐤋𐤁𐤍
 43:5:40	𐤀𐤁𐤉𐤌	H38->H14	exact:𐤀𐤁𐤉𐤌 -> exact:𐤀𐤁𐤉𐤌
@@ -210,7 +204,6 @@ ref	word	from->to	before -> after
 43:8:44	𐤊𐤆𐤁	H3577->H3576	exact:𐤊𐤆𐤁 -> exact:𐤊𐤆𐤁
 43:8:44	𐤊𐤆𐤁	H3577->H3576	exact:𐤊𐤆𐤁 -> exact:𐤊𐤆𐤁
 43:8:55	𐤊𐤆𐤁	H3577->H3576	exact:𐤊𐤆𐤁 -> exact:𐤊𐤆𐤁
-43:8:55	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 43:9:1	𐤏𐤅𐤓	H5785->H5787	exact:𐤏𐤅𐤓 -> exact:𐤏𐤅𐤓
 43:9:2	𐤏𐤅𐤓	H5785->H5787	exact:𐤏𐤅𐤓 -> exact:𐤏𐤅𐤓
 43:9:6	𐤄𐤏𐤅𐤓	H5785->H5787	exact:𐤄𐤏𐤅𐤓 -> exact:𐤄𐤏𐤅𐤓
@@ -220,27 +213,22 @@ ref	word	from->to	before -> after
 43:9:18	𐤏𐤅𐤓	H5785->H5787	exact:𐤏𐤅𐤓 -> exact:𐤏𐤅𐤓
 43:9:19	𐤏𐤅𐤓	H5785->H5787	exact:𐤏𐤅𐤓 -> exact:𐤏𐤅𐤓
 43:9:20	𐤏𐤅𐤓	H5785->H5787	exact:𐤏𐤅𐤓 -> exact:𐤏𐤅𐤓
-43:9:21	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 43:9:22	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 43:9:24	𐤏𐤅𐤓	H5785->H5787	exact:𐤏𐤅𐤓 -> exact:𐤏𐤅𐤓
 43:9:25	𐤏𐤅𐤓	H5785->H5787	exact:𐤏𐤅𐤓 -> exact:𐤏𐤅𐤓
 43:9:27	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 43:9:32	𐤏𐤅𐤓	H5785->H5787	exact:𐤏𐤅𐤓 -> exact:𐤏𐤅𐤓
 43:10:3	𐤉𐤐𐤕𐤇	H3316->H6605	exact:𐤉𐤐𐤕𐤇 -> exact:𐤉𐤐𐤕𐤇
-43:10:26	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 43:11:2	𐤀𐤇𐤉𐤄	H281->H251	exact:𐤀𐤇𐤉𐤄 -> exact:𐤀𐤇𐤉𐤄
 43:11:10	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 43:11:13	𐤌𐤍𐤅𐤇𐤕	H2845->H4496	particle:𐤌𐤍+𐤅+𐤇𐤕 -> plene:𐤌𐤍𐤇𐤕𐤅
 43:11:37	𐤄𐤏𐤅𐤓	H5785->H5787	exact:𐤄𐤏𐤅𐤓 -> exact:𐤄𐤏𐤅𐤓
 43:11:42	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 43:12:42	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
-43:15:21	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
-43:16:4	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 43:16:7	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 43:17:20	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 43:19:7	𐤋𐤁𐤍	H3837->H1121	exact:𐤋𐤁𐤍 -> exact:𐤋𐤁𐤍
 43:19:29	𐤇𐤌𐤑	H2557->H2558	exact:𐤇𐤌𐤑 -> exact:𐤇𐤌𐤑
-43:19:33	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 43:20:24	𐤄𐤏𐤔𐤓	H6239->H6240	exact:𐤄𐤏𐤔𐤓 -> exact:𐤄𐤏𐤔𐤓
 44:1:10	𐤁𐤃𐤉𐤌	H905->H907	exact:𐤁𐤃𐤉𐤌 -> exact:𐤁𐤃𐤉𐤌
 44:2:34	𐤋𐤉𐤌𐤉𐤍𐤉	H1145->H3225	proclitic:𐤋+𐤉𐤌𐤉𐤍𐤉 -> exact:𐤋𐤉𐤌𐤉𐤍𐤉
@@ -262,7 +250,6 @@ ref	word	from->to	before -> after
 44:16:29	𐤍𐤓𐤅𐤕	H5369->H5216	suffix:𐤍𐤓+𐤅𐤕 -> plene:𐤍𐤓𐤕
 44:16:31	𐤄𐤀𐤌𐤍	H543->H539	proclitic:𐤄+𐤀𐤌𐤍 -> exact:𐤄𐤀𐤌𐤍
 44:17:25	𐤅𐤍𐤔𐤌𐤄	H8074->H5397	exact:𐤅𐤍𐤔𐤌𐤄 -> exact:𐤅𐤍𐤔𐤌𐤄
-44:18:15	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 44:19:4	𐤄𐤀𐤌𐤍	H543->H539	proclitic:𐤄+𐤀𐤌𐤍 -> exact:𐤄𐤀𐤌𐤍
 44:20:18	𐤃𐤓𐤊𐤄	H1869->H1870	exact:𐤃𐤓𐤊𐤄 -> exact:𐤃𐤓𐤊𐤄
 44:20:24	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
@@ -289,12 +276,10 @@ ref	word	from->to	before -> after
 45:3:4	𐤊𐤆𐤁	H3577->H3576	exact:𐤊𐤆𐤁 -> exact:𐤊𐤆𐤁
 45:3:9	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 45:3:13	𐤇𐤌𐤕	H2574->H2534	exact:𐤇𐤌𐤕 -> exact:𐤇𐤌𐤕
-45:4:5	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 45:5:10	𐤁𐤌𐤅𐤕	H1116->H4191	exact:𐤁𐤌𐤅𐤕 -> exact:𐤁𐤌𐤅𐤕
 45:5:14	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 45:5:21	𐤁𐤌𐤅𐤕	H1116->H4191	exact:𐤁𐤌𐤅𐤕 -> exact:𐤁𐤌𐤅𐤕
 45:7:6	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
-45:7:18	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 45:8:25	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 45:9:11	𐤄𐤒𐤓𐤀	H7124->H7121	exact:𐤄𐤒𐤓𐤀 -> exact:𐤄𐤒𐤓𐤀
 45:10:19	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
@@ -315,7 +300,6 @@ ref	word	from->to	before -> after
 46:10:23	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 46:10:23	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 46:11:11	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
-46:11:14	𐤐𐤓𐤏	H6319->H6544	exact:𐤐𐤓𐤏 -> exact:𐤐𐤓𐤏
 46:11:15	𐤔𐤏𐤓𐤄	H8184->H8177	exact:𐤔𐤏𐤓𐤄 -> exact:𐤔𐤏𐤓𐤄
 46:12:4	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 46:12:23	𐤌𐤊𐤋𐤌	H3637->H3605	exact:𐤌𐤊𐤋𐤌 -> exact:𐤌𐤊𐤋𐤌
@@ -326,7 +310,6 @@ ref	word	from->to	before -> after
 46:15:5	𐤄𐤏𐤔𐤓	H6239->H6240	exact:𐤄𐤏𐤔𐤓 -> exact:𐤄𐤏𐤔𐤓
 46:15:10	𐤌𐤊𐤋𐤌	H3637->H3605	exact:𐤌𐤊𐤋𐤌 -> exact:𐤌𐤊𐤋𐤌
 46:15:40	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
-46:15:46	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 46:15:51	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 46:16:8	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 47:1:1	𐤒𐤄𐤋𐤕	H6953->H6952	exact:𐤒𐤄𐤋𐤕 -> exact:𐤒𐤄𐤋𐤕
@@ -365,7 +348,6 @@ ref	word	from->to	before -> after
 50:2:12	𐤁𐤉𐤓𐤀𐤄	H7200->H3374	proclitic:𐤁+𐤉𐤓𐤀𐤄 -> exact:𐤁𐤉𐤓𐤀𐤄
 50:3:12	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 50:3:12	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
-50:3:13	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 50:3:21	𐤃𐤅𐤌𐤄	H1745->H1819	exact:𐤃𐤅𐤌𐤄 -> exact:𐤃𐤅𐤌𐤄
 50:3:21	𐤋𐤊𐤁𐤔	H3532->H3533	exact:𐤋𐤊𐤁𐤔 -> exact:𐤋𐤊𐤁𐤔
 50:4:9	𐤋𐤌𐤃𐤕𐤌	H4060->H3925	suffix:𐤋𐤌𐤃𐤕+𐤌 -> suffix:𐤋𐤌𐤃𐤕+𐤌
@@ -378,7 +360,6 @@ ref	word	from->to	before -> after
 52:1:10	𐤋𐤁𐤍𐤅	H3820->H1121	exact:𐤋𐤁𐤍𐤅 -> exact:𐤋𐤁𐤍𐤅
 52:2:7	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 52:4:6	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
-52:5:4	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 53:1:1	𐤒𐤄𐤋𐤕	H6953->H6952	exact:𐤒𐤄𐤋𐤕 -> exact:𐤒𐤄𐤋𐤕
 53:1:11	𐤁𐤏𐤆	H1162->H5797	exact:𐤁𐤏𐤆 -> exact:𐤁𐤏𐤆
 53:2:7	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
@@ -430,7 +411,6 @@ ref	word	from->to	before -> after
 60:1:5	𐤁𐤏𐤆	H1162->H5797	exact:𐤁𐤏𐤆 -> exact:𐤁𐤏𐤆
 60:1:17	𐤁𐤉𐤓𐤀𐤄	H7200->H3374	proclitic:𐤁+𐤉𐤓𐤀𐤄 -> exact:𐤁𐤉𐤓𐤀𐤄
 60:3:2	𐤁𐤉𐤓𐤀𐤄	H7200->H3374	proclitic:𐤁+𐤉𐤓𐤀𐤄 -> exact:𐤁𐤉𐤓𐤀𐤄
-60:3:14	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 61:1:4	𐤄𐤕𐤀𐤅𐤄	H6914->H183	exact:𐤄𐤕𐤀𐤅𐤄 -> exact:𐤄𐤕𐤀𐤅𐤄
 61:1:9	𐤏𐤅𐤓	H5785->H5787	exact:𐤏𐤅𐤓 -> exact:𐤏𐤅𐤓
 61:1:9	𐤅𐤔𐤊𐤇	H3581->H7911	proclitic:𐤅+𐤔+𐤊𐤇 -> exact:𐤅𐤔𐤊𐤇
@@ -444,7 +424,6 @@ ref	word	from->to	before -> after
 62:2:5	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 62:2:8	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 62:2:11	𐤏𐤅𐤓	H5785->H5787	exact:𐤏𐤅𐤓 -> exact:𐤏𐤅𐤓
-62:2:19	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 62:2:21	𐤊𐤆𐤁	H3577->H3576	exact:𐤊𐤆𐤁 -> exact:𐤊𐤆𐤁
 62:2:27	𐤊𐤆𐤁	H3577->H3576	exact:𐤊𐤆𐤁 -> exact:𐤊𐤆𐤁
 62:2:28	𐤋𐤁𐤍𐤅	H3820->H1121	exact:𐤋𐤁𐤍𐤅 -> exact:𐤋𐤁𐤍𐤅
@@ -458,7 +437,6 @@ ref	word	from->to	before -> after
 66:2:11	𐤁𐤌𐤅𐤕	H1116->H4191	exact:𐤁𐤌𐤅𐤕 -> exact:𐤁𐤌𐤅𐤕
 66:2:14	𐤌𐤆𐤁𐤇𐤉	H4196->H2077	exact:𐤌𐤆𐤁𐤇𐤉 -> exact:𐤌𐤆𐤁𐤇𐤉
 66:2:23	𐤁𐤌𐤅𐤕	H1116->H4191	exact:𐤁𐤌𐤅𐤕 -> exact:𐤁𐤌𐤅𐤕
-66:2:24	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 66:3:4	𐤋𐤁𐤔𐤉	H3847->H3830	exact:𐤋𐤁𐤔𐤉 -> suffix:𐤋𐤁𐤔+𐤉
 66:3:12	𐤄𐤇𐤃𐤔	H2320->H2319	exact:𐤄𐤇𐤃𐤔 -> exact:𐤄𐤇𐤃𐤔
 66:3:14	𐤄𐤀𐤌𐤍	H543->H539	proclitic:𐤄+𐤀𐤌𐤍 -> exact:𐤄𐤀𐤌𐤍
@@ -986,7 +964,6 @@ ref	word	from->to	before -> after
 217:1:146	𐤇𐤌𐤕	H2574->H2534	exact:𐤇𐤌𐤕 -> exact:𐤇𐤌𐤕
 217:1:154	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 217:1:154	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
-217:1:156	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 217:1:161	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 217:1:164	𐤓𐤏𐤉	H7473->H7453	exact:𐤓𐤏𐤉 -> exact:𐤓𐤏𐤉
 217:1:165	𐤏𐤉𐤓𐤌	H5903->H5892	exact:𐤏𐤉𐤓𐤌 -> exact:𐤏𐤉𐤓𐤌
@@ -1032,6 +1009,7 @@ ref	word	from->to	before -> after
 217:1:272	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 217:1:274	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 217:1:276	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
+217:1:277	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 217:1:279	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 217:1:280	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 217:1:287	𐤁𐤇𐤐𐤑	H2654->H2656	proclitic:𐤁+𐤇𐤐𐤑 -> exact:𐤁𐤇𐤐𐤑
@@ -1869,7 +1847,6 @@ ref	word	from->to	before -> after
 219:4:1	𐤌𐤁𐤑𐤓𐤉	H6862->H4013	proclitic:𐤌+𐤁+𐤑𐤓𐤉 -> exact:𐤌𐤁𐤑𐤓𐤉
 219:4:4	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 219:4:4	𐤏𐤉𐤓𐤌	H5903->H5892	exact:𐤏𐤉𐤓𐤌 -> exact:𐤏𐤉𐤓𐤌
-219:4:5	𐤃𐤅𐤌𐤄	H1745->H1819	exact:𐤃𐤅𐤌𐤄 -> exact:𐤃𐤅𐤌𐤄
 219:4:6	𐤀𐤅𐤋𐤌	H197->H199	exact:𐤀𐤅𐤋𐤌 -> exact:𐤀𐤅𐤋𐤌
 219:4:10	𐤏𐤉𐤓𐤌	H5903->H5892	exact:𐤏𐤉𐤓𐤌 -> exact:𐤏𐤉𐤓𐤌
 219:4:10	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
@@ -2522,7 +2499,6 @@ ref	word	from->to	before -> after
 220:2:202	𐤊𐤁𐤓	H3529->H3528	exact:𐤊𐤁𐤓 -> exact:𐤊𐤁𐤓
 220:2:209	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 220:2:219	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
-220:2:220	𐤃𐤅𐤌𐤄	H1745->H1819	exact:𐤃𐤅𐤌𐤄 -> exact:𐤃𐤅𐤌𐤄
 220:2:222	𐤀𐤁𐤋	H60->H61	exact:𐤀𐤁𐤋 -> exact:𐤀𐤁𐤋
 220:2:223	𐤌𐤔𐤉𐤌	H3220->H7760	proclitic:𐤌+𐤔+𐤉𐤌 -> exact:𐤌𐤔𐤉𐤌
 220:2:225	𐤋𐤉𐤋𐤃	H3205->H3206	proclitic:𐤋+𐤉𐤋𐤃 -> exact:𐤋𐤉𐤋𐤃
