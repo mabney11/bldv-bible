@@ -1,5 +1,5 @@
 {
-  "_README": "Occurrence-specific Strong's overrides for the HEB (extra) edition, keyed by 'book_id|chapter|verse|token_ordinal' -> forced Strong's number. Use this ONLY for true homographs where the SAME bare spelling is genuinely attested for more than one word (visible as ambiguous:1 on the token_surfaces row) and frequency alone picks the wrong one for a SPECIFIC occurrence — never as a blanket 'this spelling always means X' rule, which belongs in surface-strongs-overrides.json instead (BHS-only). Read by build-surface-index.js and passed to heb-align.js's buildHebSurfaces as occurrenceOverrides.",
+  "_README": "Occurrence-specific Strong's overrides for the HEB (extra) edition, keyed by 'book_id|chapter|verse|token_ordinal' -> forced Strong's number. Use this ONLY for true homographs where the SAME bare spelling is genuinely attested for more than one word (visible as ambiguous:1 on the token_surfaces row) and frequency alone picks the wrong one for a SPECIFIC occurrence — never as a blanket 'this spelling always means X' rule, which belongs in surface-strongs-overrides.json instead (BHS-only). Read by build-surface-index.js and passed to heb-align.js's buildHebSurfaces as occurrenceOverrides. Since 2026-10-29 the HEB readings are ETCHED (heb-settled.db) and an entry here is how one is CORRECTED: the key may also be 'book_id|chapter|verse|<word as written>' (every occurrence of that word in the verse), and the corrected reading is etched by the next build-surface-index.js --freeze.",
   "58|1|13|8": "H3225",
   "148|1|55|4": "H4599",
   "43|4|23|8": "H410",
@@ -60,5 +60,7 @@
   "76|7|40|5": "H410",
   "81|8|20|2": "H410",
   "84|1|1|3": "H410",
+  "40|27|3|𐤅𐤉𐤍𐤇𐤌": "H5162",
+  "54|5|22|𐤀𐤃𐤌": "H120",
   "_maqaf_remap_applied": "2026-09-30"
 }
