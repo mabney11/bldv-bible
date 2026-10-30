@@ -43,6 +43,31 @@
   ],
   "replace": [
     {
+      "pattern": "\\bChrist's\\b",
+      "to": "Messiah's",
+      "why": "fieldy 2026-10-29: \"lets make all instances of 'christ' into 'messiah' its the more accurate translation of mashayach\" (Christian(s) and antichrist are not touched)"
+    },
+    {
+      "pattern": "\\bChrist’s\\b",
+      "to": "Messiah’s",
+      "why": "fieldy 2026-10-29: \"lets make all instances of 'christ' into 'messiah' its the more accurate translation of mashayach\" (Christian(s) and antichrist are not touched)"
+    },
+    {
+      "pattern": "\\bChrists\\b",
+      "to": "Messiahs",
+      "why": "fieldy 2026-10-29: \"lets make all instances of 'christ' into 'messiah' its the more accurate translation of mashayach\" (Christian(s) and antichrist are not touched)"
+    },
+    {
+      "pattern": "\\bChrist\\b",
+      "to": "Messiah",
+      "why": "fieldy 2026-10-29: \"lets make all instances of 'christ' into 'messiah' its the more accurate translation of mashayach\" (Christian(s) and antichrist are not touched)"
+    },
+    {
+      "pattern": "\\bCHRIST\\b",
+      "to": "MESSIAH",
+      "why": "fieldy 2026-10-29: \"lets make all instances of 'christ' into 'messiah' its the more accurate translation of mashayach\" (Christian(s) and antichrist are not touched)"
+    },
+    {
       "pattern": "\\b(YHWH|yhwh|Yhwh|Jehovah|JEHOVAH|Yahweh)'s\\b",
       "to": "Yahawah's",
       "why": "the Name is Yahawah (possessive stays plain, as the corpus does: 31 × Yahawah's)"
@@ -120,9 +145,9 @@
     ]
   },
   "glossed": {
-    "_note": "fieldy 2026-10-01: \"lets go ahead and gloss Alahayam (God), Yashawai (Jesus) Mashayach (Christ / Anointed One)\". These words are no longer bare / gold \"()\": wherever one stands without a gloss (or with the empty gold marker) it reads 'Word (gloss)'. fix-name-forms writes it on every row (saved ones with a history row), verify-name-forms fails on a survivor, merge-modforms writes it before the modification forms so prefixes join: 'LaAlahayam (to God)'.",
+    "_note": "fieldy 2026-10-01: \"lets go ahead and gloss Alahayam (God), Yashawai (Jesus) Mashayach (Christ / Anointed One)\". These words are no longer bare / gold \"()\": wherever one stands without a gloss (or with the empty gold marker) it reads 'Word (gloss)'. fix-name-forms writes it on every row (saved ones with a history row), verify-name-forms fails on a survivor, merge-modforms writes it before the modification forms so prefixes join: 'LaAlahayam (to God)'. 2026-10-29: Mashayach is glossed 'Messiah / Anointed One' (was 'Christ / Anointed One'), and the replace rules turn every Christ into Messiah.",
     "Alahayam": "God",
     "Yashawai": "Jesus",
-    "Mashayach": "Christ / Anointed One"
+    "Mashayach": "Messiah / Anointed One"
   }
 }
