@@ -1,4 +1,4 @@
-# verify-reading-glosses — glossed words in YOUR SAVED verses that are not in that verse's Hebrew (2026-10-29T19:25:01.384Z)
+# verify-reading-glosses — glossed words in YOUR SAVED verses that are not in that verse's Hebrew (2026-10-30T00:08:09.780Z)
 # Fix each in the Studio, or sign a deliberate one off in lexicon/gloss-gate-accepted.json as "ref|pair": "why".
 translation 1:1:12  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "Yawatzaa (brought forth)"  — "Yawatzaa" is no Hebrew word in 1:1:12
 translation 1:1:14  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]  "badayal (the division)"  — "badayal" is no Hebrew word in 1:1:14

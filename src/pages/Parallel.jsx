@@ -12,7 +12,8 @@ import VerseSwitch from '../components/VerseSwitch.jsx';
 import { truncateTitle, versePreviewTranslit } from '../lib/versePreview.js';
 import { TYPEFACES } from '../lib/typefaces.js';
 import { remapSourceVerseToDisplay, remapDisplayChapterToSource } from '../lib/sourceVerseRemap.js';
-import { tokensOfComps, badgeSNs } from '../lib/snBadges.js';
+import { tokensOfComps, badgeSNs, snEvidence, snTitle } from '../lib/snBadges.js';
+import '../lib/snBadges.css';
 // Same reading typefaces the novel Reader offers (see ../lib/typefaces.js) —
 // pulled in here 2026-08-15 so the English column can look like the Reader
 // instead of the plain system-UI stack it used to render in. Self-hosted,
@@ -600,12 +601,15 @@ function SnBadges({ word, comps, style }) {
                 title="Grammar/virtual code — no root entry"
                 style={{ opacity: 0.6, cursor: 'default' }}
                 onClick={(e) => e.stopPropagation()}>{sn}</span>
-        ) : (
-          <a key={sn} className="sn-link root"
-             href={`/roots?sn=${sn}`}
-             title={`Explore root ${sn}`}
-             onClick={(e) => e.stopPropagation()}>{sn}</a>
-        ))}
+        ) : (() => {
+          const ev = snEvidence(toks, sn);
+          return (
+            <a key={sn} className={`sn-link root${ev ? ' sn-unconfirmed' : ''}`}
+               href={`/roots?sn=${sn}`}
+               title={snTitle(sn, ev)}
+               onClick={(e) => e.stopPropagation()}>{sn}</a>
+          );
+        })())}
       </span>
     </div>
   );

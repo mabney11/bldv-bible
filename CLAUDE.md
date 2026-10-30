@@ -61,6 +61,43 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## EVIDENCE-JUDGED READINGS — NO INFERRED TAG IS SHOWN AS IF THE SOURCE CARRIED IT (2026-10-29)
+
+fieldy, after a day of per-word fixes (cubits/true, El, tzarikh/adversary): "we were supposed to harden so i dont
+advertise tokens that arent there -- lets stop trying to hot fix and get a real solution". His choices: switch
+automatically where the verse's English names another reading (with a report); MARK, don't hide, what the English
+doesn't confirm (every Strong's stays visible and clickable — his 2026-10-14 rule).
+**Why.** ~743k NT/Apocrypha Strong's are inferred from SPELLING (the HEB edition has no tags). Measured against each
+verse's original English: 23.7% confirmed, 31.5% function words the English can't judge, 4.9% names, 2.7% no English,
+**2.1% (15.6k) contradicted** (the English names another reading of the same spelling), **11.9% frequency guesses**
+between homographs, 23.2% a sole reading the English never names.
+- **`server/heb-evidence.cjs` (ONE copy)** — the English PROFILE of a Strong's = the WEB's own tagged OT English
+  (web-strongs.jsonl, stems in >= 12% of its segments, run through his name map so "Lord"/"God" also count as
+  "Adanay"/"Alahayam") + his lexicon/homograph gloss for its root + the app's own transliteration of it (from the readings
+  the OT alignment built); kjv_def only for a number the WEB never uses. No learned table. Judged vs its BASE RATE over
+  3,000 NT/Apocrypha verses. Stems: stemWord, trailing e dropped, 5 letters ("scribes"/"scribe", "faith"/"faithful").
+  `judge(chosen, candidates, verseStems, spellingAgree)`:
+  english | function (base >= 0.25, or the profile predicts its own OT tags < 50% — particles) | name | no-english |
+  guess | unconfirmed, and `switchTo` = a non-name, judgeable candidate the verse names while not naming the chosen one,
+  not a near-twin (profiles share >= 50%: shatah/shetah, qedem/qodam), AND whose spelling-level lift is >= 0.3 and >= 0.3
+  above the chosen reading's (one verse alone is a coincidence).
+- **heb-align.js** (`evidence` option): every word no hand entry / pin covers is judged; a switch goes through the
+  context-reading path (aligned reading -> BHS token of the same spelling -> root-built), so it can never invent a
+  reading. Candidates = aligned readings' SNs + BHS tokens of the spelling (`bhsSpellIndex`, loaded once) + root-strip
+  candidates (`rsCands(w, true)`), computed lazily. Every switch is in heb-context-switches.txt with `hand`/`auto`;
+  `switchedKeys` returned. Then every NT/Apocrypha occurrence gets `evidence` (hand = his entry or pin).
+- **surface-index.db `surface_occurrences.evidence`** (build-surface-index.js; '' for BHS; `--no-evidence` turns it off;
+  build log "evidence: N readings switched …; english …, function …, guess …"). server.js `SURF_HAS_EVIDENCE`, SURF_ROWS
+  selects it, `sourceTokens[].evidence`; a location override marks 'hand'.
+- **Badges**: src/lib/snBadges.js `UNCONFIRMED` / `snEvidence` / `snTitle` + snBadges.css — guess/unconfirmed draw
+  dashed, italic, with "?" and a tooltip saying why (WordBlock.jsx groups, Parallel.jsx SnBadges). Still a link.
+- Hand entries (heb-context-readings.json, heb-occurrence-overrides.json) stay as overrides and always win. Function
+  words are never judged, so El/"to" (𐤀𐤋) still needs his pins.
+- **Measured (Matthew-Acts, probe on a /tmp copy):** 663 auto switches; a random 30 read ~26 right ("the good shepherd",
+  "my sister", "cast a hook", "whoever I kiss", "the strangers", "pay them their wages"), ~2 wrong. Not yet run on the
+  whole corpus, not seen in a browser. Run: `node build-surface-index.js`, `node render-all.mjs --surface`, Rebake,
+  deploy (server.js + frontend changed). Read the build's evidence line and review heb-context-switches.txt `auto` rows.
+
 ## OTHER ENGLISH VERSIONS IN TRANSLATION STUDIO — OWNER ONLY (2026-10-29)
 
 fieldy: "a few english versions for verification -- all hidden from users ... every version better say the same
@@ -111,7 +148,14 @@ heb-occurrence-overrides.json: 𐤀𐤋 -> H410 El at 58 occurrences — John 4:
 𐤀𐤋 𐤏𐤋𐤉𐤅𐤍 El Elyon / 𐤀𐤋 𐤔𐤃𐤉 El Shaddai / 𐤀𐤋 𐤇𐤉 El Chai / 𐤀𐤋 𐤒𐤍𐤀, Baruch 4's "Everlasting" 𐤀𐤋 𐤏𐤅𐤋𐤌, Wis 9:1,
 John 17:3 (BHS tags these H410 in the OT; the HEB edition had H413 "to"). Left: 𐤀𐤋 𐤀𐤋𐤄𐤉𐤌 / 𐤀𐤋 𐤉𐤔𐤓𐤀𐤋 ("to"),
 2 Enoch 65:6 "into the great aeon", ambiguous 𐤓𐤇𐤅𐤌/𐤀𐤌𐤕/𐤄𐤊𐤁𐤅𐤃/𐤄𐤇𐤉 rows.
-Probe total vs the 2026-10-29 index: ~1,760 NT/Apocrypha tokens change Strong's. server/heb-english-audit.txt
+4. **Root-built fallback** (same day, John 4:24 𐤑𐤓𐤉𐤊𐤉𐤌 tzrikhim "must" read "Tzarayakayam (your oppressor)" H6862):
+   when neither an aligned reading nor a BHS token carries the target, the word is built from the Strong's ROOT as root
+   strip builds it (`rsCands(w, true)` — the internal-𐤅/𐤉 candidates included for the named Strong's; or the whole word
+   = root + matres), tag nt_context_root, log "N built from the Strong's root". 21 hand entries (𐤑𐤓𐤉𐤊 𐤑𐤓𐤉𐤊𐤉𐤌 𐤄𐤑𐤓𐤊
+   𐤋𐤑𐤓𐤊 𐤑𐤓𐤊𐤉𐤅 …) -> H6878 tzorekh "need" (2 Chr 2:15), vetoed where the original English speaks of an adversary/
+   distress: probe 182 switch, 3 stay H6862. Known: 𐤑𐤓𐤉𐤊𐤄 (fem. "must") shows its 𐤄 as [Toward]; H6878 has no gloss in
+   his lexicon yet (chip shows the 𐤑𐤓𐤊 placeholder).
+Probe total vs the 2026-10-29 index: ~1,760 NT/Apocrypha tokens change Strong's (+182 for the 𐤑𐤓𐤊 family). server/heb-english-audit.txt
 regenerated (B list = readings that never match their English with nothing better on offer — a review list).
 NOT run on the real DBs: `cd server && node build-surface-index.js`, `node render-all.mjs --surface`, restart, Rebake.
 Probe recipe (device sandbox, ~65 s): copy corpus.db to /tmp, better-sqlite3 -> node:sqlite shim via --require,

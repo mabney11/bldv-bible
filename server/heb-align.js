@@ -401,6 +401,10 @@ function buildHebSurfaces(o) {
         // (canon, chapter, verse) -> the verse's ORIGINAL English (text_src), the
         // witness root-strip checks a Strong's against. Falls back to englishOf.
         englishSrcOf = null,
+        // EVIDENCE (2026-10-29, heb-evidence.cjs buildEvidence): judge every inferred reading
+        // against its verse's original English; switch where the English names another
+        // candidate of the same spelling. null = off (hand entries only, as before).
+        evidence = null,
         log = () => {},
     } = o;
     // Same stemming as audit-heb-vs-english.py's stem() — keep them identical.
@@ -454,23 +458,28 @@ function buildHebSurfaces(o) {
         }
         return _srcStemCache.get(k);
     };
-    let contextSwitches = 0, contextVetoed = 0, suffix3fs = 0, contextFromBhs = 0;
+    let contextSwitches = 0, contextVetoed = 0, suffix3fs = 0, contextFromBhs = 0, contextFromRoot = 0;
     // The BHS token that writes `word` exactly with Strong's `sn` (most common pos/morph),
     // for a context reading whose target no aligned reading carries. Cached per word+SN.
-    const _bhsTokCache = new Map();
-    let _bhsTokStmt = null;
+    // Loaded ONCE (a per-call query scanned all of tokens_bhs: 17 s on five books).
+    let _bhsTok = null;
+    const bhsSpellIndex = () => {
+        if (_bhsTok) return _bhsTok;
+        _bhsTok = new Map();   // word -> Map(sn -> {pos, morph, n}) — the most common pos/morph
+        try {
+            for (const r of src.prepare(`SELECT word_raw, strongs, pos, morph, COUNT(*) AS n FROM tokens_bhs
+                                         WHERE strongs != '' GROUP BY word_raw, strongs, pos, morph`).all()) {
+                const sn = 'H' + String(r.strongs).replace(/^[Hh]+/, '');
+                if (!_bhsTok.has(r.word_raw)) _bhsTok.set(r.word_raw, new Map());
+                const m = _bhsTok.get(r.word_raw), cur = m.get(sn);
+                if (!cur || r.n > cur.n) m.set(sn, { pos: r.pos, morph: r.morph, n: r.n });
+            }
+        } catch { /* no BHS tokens */ }
+        return _bhsTok;
+    };
     const bhsTokenFor = (word, sn) => {
-        const k = word + '|' + sn;
-        if (!_bhsTokCache.has(k)) {
-            let r = null;
-            try {
-                _bhsTokStmt = _bhsTokStmt || src.prepare(`SELECT pos, morph, COUNT(*) AS n FROM tokens_bhs
-                    WHERE word_raw = ? AND strongs = ? GROUP BY pos, morph ORDER BY n DESC LIMIT 1`);
-                r = _bhsTokStmt.get(word, sn) || null;
-            } catch { r = null; }
-            _bhsTokCache.set(k, r);
-        }
-        return _bhsTokCache.get(k);
+        const m = bhsSpellIndex().get(word);
+        return (m && m.get(sn)) || null;
     };
     const contextMisses = new Map();
     const contextLog = [];
@@ -1015,8 +1024,12 @@ function buildHebSurfaces(o) {
         return out;
     };
     const _rsCache = new Map();
-    const rsCands = (w) => {
-        if (_rsCache.has(w)) return _rsCache.get(w);
+    // withLoose: also the internal-𐤅/𐤉 (matres) candidates even when an exact one exists —
+    // only for a context reading, which already names the Strong's it wants.
+    const _rsLooseCache = new Map();
+    const rsCands = (w, withLoose = false) => {
+        if (withLoose && _rsLooseCache.has(w)) return _rsLooseCache.get(w);
+        if (!withLoose && _rsCache.has(w)) return _rsCache.get(w);
         const chars = [...w], n = chars.length;
         const starts = [{ pre: [], k: 0, particle: false }];
         for (const p of FUSED_PARTICLES) {
@@ -1074,7 +1087,8 @@ function buildHebSurfaces(o) {
         // Internal 𐤅/𐤉 only when nothing matches exactly — or when every exact match is a name.
         const out = exact.some(x => !rsName(x.sn)) ? exact : [...exact, ...loose];
         _rsCache.set(w, out);
-        return out;
+        _rsLooseCache.set(w, [...exact, ...loose]);
+        return withLoose ? _rsLooseCache.get(w) : out;
     };
     const RS_HOW = { root: 0, form: 1, matres: 2 };
     // A NAME loses to an ordinary word whenever both fit: the 2026-10-16 sample's misses
@@ -1590,6 +1604,86 @@ function buildHebSurfaces(o) {
         return { components, strongs: x.sn, pos, morph, root_paleo: root || x.stem,
                  rendered_paleo: components.map(c => c.paleo).join(''), all_strongs: [...new Set(all)] };
     };
+    // ── EVIDENCE: per-occurrence reading choice (see the `evidence` option) ─────────
+    // candidates of a spelling = every Strong's its aligned readings, the BHS tokens of the
+    // same spelling, and the root-built readings (root strip) carry; the CURRENT choice is the
+    // head form's best-attested Strong's. Switching goes through the context-reading path
+    // below (aligned reading -> BHS token -> root-built), so it can never invent a reading.
+    const _isVirt = sn => { const n = parseInt(String(sn).replace(/^[Hh]/, ''), 10); return !isNaN(n) && n >= 9000; };
+    // spelling -> the Strong's numbers the BHS writes it with (shared with bhsTokenFor)
+    const bhsSpellSNs = (w) => { const m = bhsSpellIndex().get(w); return m ? [...m.keys()].filter(sn => !_isVirt(sn)) : []; };
+    const _headIdx = (r) => r.forms.map((f, k) => k).filter(k =>
+        !(((r.tier === 'suffix' || r.tier === 'affixed') && k === r.forms.length - 1) || (r.tier === 'proclitic' && k < (r.proclitics || 0))));
+    const headSN = (r) => {
+        for (const k of _headIdx(r)) {
+            const b = bestOf(r.forms[k]);
+            const rec = b && surfaces.get(b.key);
+            const sn = rec && _normH(rec.strongs);
+            if (sn && !_isVirt(sn)) return sn;
+        }
+        return null;
+    };
+    const _candCache = new Map();
+    const candidateSNs = (w) => {
+        if (_candCache.has(w)) return _candCache.get(w);
+        const out = new Set();
+        for (const r of resolveAll(w)) for (const k of _headIdx(r)) {
+            const b = FORMS.get(r.forms[k]);
+            if (b) for (const v of b.values()) { const rec = surfaces.get(v.key); const sn = rec && _normH(rec.strongs); if (sn && !_isVirt(sn)) out.add(sn); }
+        }
+        for (const sn of bhsSpellSNs(w)) out.add(sn);
+        if (rootStrip) for (const x of rsCands(w, true)) if (!_isVirt(x.sn)) out.add(x.sn);
+        const arr = [...out];
+        _candCache.set(w, arr);
+        return arr;
+    };
+    // the spelling's own verses, for "does this reading fit the spelling overall?"
+    const _spellVerses = new Map(), _spellAgree = new Map();
+    if (evidence) {
+        const _savedMaqaf = maqafSplitVerses;
+        for (const row of ntRows) for (const w of new Set(wordsOf(row))) {
+            if (!_spellVerses.has(w)) _spellVerses.set(w, []);
+            _spellVerses.get(w).push([row.canon_id, row.chapter, row.verse]);
+        }
+        maqafSplitVerses = _savedMaqaf;
+    }
+    // the evidence module's own word stems of a verse's ORIGINAL English (its normalisation,
+    // not stemWord's — the two must not mix)
+    const _evVs = new Map();
+    const evVerseStems = (c, ch, v) => {
+        const k = c + '|' + ch + '|' + v;
+        if (!_evVs.has(k)) {
+            const src = englishSrcOf || englishOf || (() => '');
+            let t = src(c, ch, v) || '';
+            if (!t) t = (src(c, ch, v - 1) || '') + ' ' + (src(c, ch, v + 1) || '');   // versification drift
+            _evVs.set(k, evidence.stemsOf(t));
+        }
+        return _evVs.get(k);
+    };
+    const spellAgree = (w, sn) => {
+        const k = w + '|' + sn;
+        if (!_spellAgree.has(k)) {
+            const vv = _spellVerses.get(w) || [];
+            let n = 0;
+            for (const [c, ch, v] of vv) if (evidence.hits(sn, evVerseStems(c, ch, v))) n++;
+            _spellAgree.set(k, vv.length ? n / vv.length : 0);
+        }
+        return _spellAgree.get(k);
+    };
+    // the app's own transliteration of each number, from the readings built so far (the OT
+    // alignment): the English carries names and titles transliterated ("Alahayam")
+    if (evidence) {
+        for (const rec of surfaces.values()) {
+            let cl; try { cl = JSON.parse(rec.components_json); } catch { continue; }
+            for (const c of cl) {
+                const sn = c && (c.sn || (c.css === 'root' ? rec.strongs : null));
+                if (!sn) continue;
+                for (const t of [c.lemmaTranslit, c.true_root_translit]) if (t) evidence.addTranslit(sn, t);
+            }
+        }
+    }
+    let autoSwitches = 0;
+    const switchedKeys = new Map();   // occKey -> 'hand' | 'auto'
     const pNT = progress('NT: resolving whole words', ntRows.length);
     for (const row of ntRows) {
         pNT.tick();
@@ -1633,8 +1727,18 @@ function buildHebSurfaces(o) {
             // wins, so a whole-word homograph (𐤊𐤁𐤓 kvar vs Kebar) beats a split — unless
             // THIS verse's English supports the old reading and not the new one.
             let ctxSN = null;
+            let autoCr = null;
+            if (evidence && hit && !contextReadings.has(w) && !forcedReadings.has(w)
+                && !occurrenceOverrides.has(occKey(row.canon_id, row.chapter, row.verse, i + 1))) {
+                const c0 = headSN(hit);
+                if (c0) {
+                    const j = evidence.judge(c0, () => candidateSNs(w), evVerseStems(row.canon_id, row.chapter, row.verse),
+                                             sn => spellAgree(w, sn));
+                    if (j.switchTo) autoCr = { sn: j.switchTo, from: c0, auto: true };
+                }
+            }
             {
-                const cr = contextReadings.get(w);
+                const cr = contextReadings.get(w) || autoCr;
                 if (cr && cr.sn && hit && !forcedReadings.has(w)
                     && !occurrenceOverrides.has(occKey(row.canon_id, row.chapter, row.verse, i + 1))) {
                     // The ORIGINAL English is the witness for EVERY entry (2026-10-29): the
@@ -1652,7 +1756,7 @@ function buildHebSurfaces(o) {
                     // river Kebar for "already"); a reading that does fit elsewhere
                     // (𐤏𐤅𐤓 skin, 12% — "leather belt", Matt 3:4) stays.
                     const fromAgree = typeof cr.from_agree === 'number' ? cr.from_agree : 0;
-                    if ((fromHit && !toHit) || (!toHit && fromAgree > 0.05)) {
+                    if (!cr.auto && ((fromHit && !toHit) || (!toHit && fromAgree > 0.05))) {
                         contextVetoed++;
                     } else {
                         const isTail = (r, k) => (r.tier === 'suffix' || r.tier === 'affixed') && k === r.forms.length - 1;
@@ -1661,8 +1765,8 @@ function buildHebSurfaces(o) {
                             .filter(r => r.forms.some((f, k) => !isTail(r, k) && !isPre(r, k) && formHasSN(f, cr.sn)))
                             .sort((x, y) => x.forms.length - y.forms.length)[0];
                         if (pick) {
-                            if (contextLog.length < 20000) contextLog.push(`${row.canon_id}:${row.chapter}:${row.verse}\t${w}\t${cr.from || ''}->${cr.sn}\t${hit.tier}:${hit.forms.join('+')} -> ${pick.tier}:${pick.forms.join('+')}`);
-                            hit = pick; ctxSN = cr.sn; contextSwitches++;
+                            if (contextLog.length < 200000) contextLog.push(`${row.canon_id}:${row.chapter}:${row.verse}\t${w}\t${cr.from || ''}->${cr.sn}\t${hit.tier}:${hit.forms.join('+')} -> ${pick.tier}:${pick.forms.join('+')}\t${cr.auto ? 'auto' : 'hand'}`);
+                            hit = pick; ctxSN = cr.sn; contextSwitches++; switchedKeys.set(occKey(row.canon_id, row.chapter, row.verse, i + 1), cr.auto ? 'auto' : 'hand'); if (cr.auto) autoSwitches++;
                         } else {
                             // No aligned reading carries the target (the HEB edition's OT never
                             // aligned that word: 𐤔𐤃𐤉𐤌 "demons", Deut 32:17, 69 such entries on
@@ -1691,10 +1795,31 @@ function buildHebSurfaces(o) {
                                 }
                             }
                             if (bt) {
-                                if (contextLog.length < 20000) contextLog.push(`${row.canon_id}:${row.chapter}:${row.verse}\t${w}\t${cr.from || ''}->${cr.sn}\t${hit.tier}:${hit.forms.join('+')} -> bhs:${w}`);
-                                contextSwitches++; contextFromBhs++;
+                                if (contextLog.length < 200000) contextLog.push(`${row.canon_id}:${row.chapter}:${row.verse}\t${w}\t${cr.from || ''}->${cr.sn}\t${hit.tier}:${hit.forms.join('+')} -> bhs:${w}\t${cr.auto ? 'auto' : 'hand'}`);
+                                contextSwitches++; switchedKeys.set(occKey(row.canon_id, row.chapter, row.verse, i + 1), cr.auto ? 'auto' : 'hand'); if (cr.auto) autoSwitches++; contextFromBhs++;
                                 emitLexicon(cr.sn, bt.pos, bt.morph, 'nt_context_bhs');
                                 continue;
+                            }
+                            // No BHS token either (later-Hebrew forms of a biblical root:
+                            // 𐤑𐤓𐤉𐤊𐤉𐤌 tzrikhim "must" = root 𐤑𐤓𐤊 H6878 + 𐤉𐤌, 2026-10-29). Build it
+                            // from the Strong's ROOT the way root strip does — prefixes, an
+                            // attested tail, internal 𐤅/𐤉 — never a root the word does not spell.
+                            if (rootStrip) {
+                                let rs = rsCands(w, true).filter(x => x.sn === cr.sn).sort(rsCmp)[0] || null;
+                                if (!rs && [...(rsRoots.get(w) || []), ...(rsMatIdx.get(rsMatres(w)) || [])].includes(cr.sn))
+                                    rs = { pre: [], pf: '', stem: w, tail: [], sn: cr.sn, how: 'matres', stripped: 0 };
+                                const comp = rs ? rsCompose(rs) : null;
+                                if (comp) {
+                                    if (contextLog.length < 200000) contextLog.push(`${row.canon_id}:${row.chapter}:${row.verse}\t${w}\t${cr.from || ''}->${cr.sn}\t${hit.tier}:${hit.forms.join('+')} -> root:${[...rs.pre, rs.pf].filter(Boolean).join('+')} ${rs.stem} ${rs.tail.join('+')}\t${cr.auto ? 'auto' : 'hand'}`);
+                                    contextSwitches++; switchedKeys.set(occKey(row.canon_id, row.chapter, row.verse, i + 1), cr.auto ? 'auto' : 'hand'); if (cr.auto) autoSwitches++; contextFromRoot++;
+                                    record(w, comp, 'nt_context_root', true);
+                                    bump('nt_context_root'); stats.nt_hit++;
+                                    occurrences.push({
+                                        source: corpus, word_raw: w, strongs: comp.strongs, pos: comp.pos, morph: comp.morph,
+                                        book_id: row.canon_id, chapter: row.chapter, verse: row.verse, token_ordinal: i + 1,
+                                    });
+                                    continue;
+                                }
                             }
                             contextMisses.set(w, cr.sn);
                         }
@@ -2024,6 +2149,30 @@ function buildHebSurfaces(o) {
     stats.contextSwitches = contextSwitches;
     stats.contextVetoed = contextVetoed;
     stats.contextFromBhs = contextFromBhs;
+    stats.contextFromRoot = contextFromRoot;
+    stats.autoSwitches = autoSwitches;
+    // EVIDENCE of every NT/Apocrypha occurrence (surface_occurrences.evidence; the badges mark the
+    // last two): hand = his context entry / occurrence pin; english = the verse's original English
+    // names it (auto switches included); function = everyday vocabulary the English cannot judge;
+    // name; no-english; guess = other readings of the spelling exist and the English names none;
+    // unconfirmed = the only reading and the English does not name it.
+    if (evidence) {
+        const ec = {};
+        for (const o of occurrences) {
+            if (o.source !== corpus || !(o.book_id >= ntMin)) continue;
+            const k = occKey(o.book_id, o.chapter, o.verse, o.token_ordinal);
+            let e = '';
+            if (!o.strongs) e = '';
+            else if (switchedKeys.get(k) === 'hand' || occurrenceOverrides.has(k)) e = 'hand';
+            else {
+                const j = evidence.judge(o.strongs, () => candidateSNs(o.word_raw), evVerseStems(o.book_id, o.chapter, o.verse));
+                e = j.switchTo ? 'guess' : j.evidence;   // the English names another reading the build could not take
+            }
+            o.evidence = e;
+            ec[e || 'untagged'] = (ec[e || 'untagged'] || 0) + 1;
+        }
+        stats.evidence = ec;
+    }
     stats.contextMisses = [...contextMisses].map(([w, sn]) => `${w}->${sn}`);
     stats.contextLog = contextLog;
     stats.suffix3fs = suffix3fs;
@@ -2033,7 +2182,7 @@ function buildHebSurfaces(o) {
     stats.rootStripLog = rootStripLog;
     stats.rootStripReview = [...rootStripReview].sort((a, b) => b[1].n - a[1].n)
         .map(([w, r]) => `${r.n}\t${w}\t${[...r.best.pre, r.best.pf ? '[' + r.best.pf + ']' : ''].filter(Boolean).join('+')} ${r.best.stem} ${r.best.tail.join('+')}\t${r.best.sn}\t${r.best.how}\t${r.refs.join(' ')}`);
-    return { surfaces, occurrences, audit, stats };
+    return { surfaces, occurrences, audit, stats , switchedKeys };
 }
 
 module.exports = {

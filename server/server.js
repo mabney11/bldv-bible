@@ -401,6 +401,14 @@ if (!surfDb._isNull) {
 // Detected separately from SURF_HAS_SN so an OLD surface-index.db still boots:
 // without these columns the join silently matches nothing and the reader would
 // go blank. If absent we keep the old (word_raw, strongs) join and warn.
+// HEB-edition evidence per occurrence (2026-10-29, heb-evidence.cjs): how an inferred
+// Strong's was established; the badges mark 'guess' / 'unconfirmed'. An older index has no
+// column — every badge then looks as before.
+let SURF_HAS_EVIDENCE = false;
+if (!surfDb._isNull) {
+    try { surfDb.prepare('SELECT evidence FROM surface_occurrences LIMIT 1'); SURF_HAS_EVIDENCE = true; }
+    catch { SURF_HAS_EVIDENCE = false; }
+}
 let SURF_HAS_MORPH = false;
 if (!surfDb._isNull) {
     try { surfDb.prepare('SELECT pos, morph FROM surface_occurrences LIMIT 1'); SURF_HAS_MORPH = true; }
@@ -4752,6 +4760,7 @@ function applyLocOverrideToSurfRow(row, locationOverrides, book_id, chapter) {
     const ov = locationOverrides[locOverrideKey(book_id, chapter, row.verse, row.token_ordinal)];
     if (!ov || !ov.strongs || !locOverrideWordMatches(ov, row)) return row;
     row.strongs = ov.strongs;
+    if (row.source === 'HEB') row.evidence = 'hand';   // his own pin: not a guess
     if (row.components) {
         try {
             const comps = JSON.parse(row.components);
@@ -7402,7 +7411,8 @@ app.get('/api/source/:src/lexicon/verses', production.cache(60), (req, res) => {
 const SURF_ROWS = surfDb.prepare(`
     SELECT o.verse, o.token_ordinal, o.word_raw,
            ${SURF_HAS_SOURCE ? 'o.source' : `'BHS' AS source`},
-           t.components, o.strongs, o.pos, o.morph
+           t.components, o.strongs, o.pos, o.morph,
+           ${SURF_HAS_EVIDENCE ? 'o.evidence' : `'' AS evidence`}
     FROM   surface_occurrences o
     LEFT JOIN token_surfaces   t ON t.word_raw = o.word_raw ${OCC_SN_JOIN} ${SRC_JOIN}
     WHERE  o.book_id = ? AND o.chapter = ?${SURF_HAS_SOURCE ? '\n      AND  o.source = ?' : ''}
@@ -8712,6 +8722,7 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
                 word_raw:      row.word_raw,
                 strongs:       row.strongs,
                 pos:           row.pos,
+                ...(row.evidence ? { evidence: row.evidence } : {}),
             });
         } else {
             pending.push(...comps);
@@ -8724,6 +8735,7 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
                 word_raw:      row.word_raw,
                 strongs:       row.strongs,
                 pos:           row.pos,
+                ...(row.evidence ? { evidence: row.evidence } : {}),
             });
             // Hold the chip open if the very next occurrence is a maqaf, so the
             // punctuation branch above can decide whether this word fuses with

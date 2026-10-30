@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
 import { usePaleoMode } from '../hooks/usePaleoMode.js';
-import { tokensOfComps } from '../lib/snBadges.js';
+import { tokensOfComps, UNCONFIRMED, snTitle } from '../lib/snBadges.js';
+import '../lib/snBadges.css';
 
 // Classes treated as suffix vs prefix for the alternating-color logic.
 // mod-suff-unk: heb-align.js's fallback for a stripped NT suffix tail with no
@@ -421,7 +422,7 @@ export default function WordBlock({
   // Strong's, so a joined chip (BaYawam-Apaw) shows BOTH words standing alone. A normal
   // word yields a single group (its whole written surface + its root).
   const badgeGroups = (wordObj.sourceTokens && wordObj.sourceTokens.length)
-    ? wordObj.sourceTokens.map(t => ({ word_raw: t.word_raw, strongs: _fmtSN(t.strongs) }))
+    ? wordObj.sourceTokens.map(t => ({ word_raw: t.word_raw, strongs: _fmtSN(t.strongs), evidence: t.evidence }))
     : [{ word_raw: surfaceForm, strongs: _fmtSN(wordObj.strongs) }];
   const showBadge = showStrongs && badgeGroups.some(g => g.word_raw || g.strongs);
 
@@ -615,9 +616,9 @@ export default function WordBlock({
                   >{g.strongs}</span>
                 ) : (
                   <a
-                    className="sn-link root"
+                    className={`sn-link root${UNCONFIRMED.has(g.evidence) ? ' sn-unconfirmed' : ''}`}
                     href={`/roots?sn=${g.strongs}`}
-                    title={`Explore root ${g.strongs}`}
+                    title={snTitle(g.strongs, UNCONFIRMED.has(g.evidence) ? g.evidence : null)}
                   >{g.strongs}</a>
                 )
               )}

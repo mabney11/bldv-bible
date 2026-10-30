@@ -1,0 +1,11 @@
+/* A Strong's the verse's English never confirmed (lib/snBadges.js UNCONFIRMED): still a link,
+   still editable, but visibly an inference. body-prefixed + !important so the word-card resets
+   (components/WordBlock.css "NO WORD CARDS") cannot flatten it. */
+body .sn-link.sn-unconfirmed {
+  border: 1px dashed currentColor !important;
+  border-radius: 4px !important;
+  padding: 0 3px !important;
+  opacity: 0.75 !important;
+  font-style: italic;
+}
+body .sn-link.sn-unconfirmed::after { content: '?'; margin-left: 1px; font-style: normal; }

@@ -2023,7 +2023,22 @@ if (WITH_HEB) {
         const a = process.argv.find(x => x.startsWith('--prefer-particle='));
         return a ? parseInt(a.split('=')[1], 10) : 10;
     })();
-    hebResult = buildHebSurfaces({ src, parseToken, pins, preferSplitMax: _preferSplit,
+    // EVIDENCE (2026-10-29, heb-evidence.cjs): every inferred NT/Apocrypha reading is judged
+    // against its verse's ORIGINAL English — switched where the English names another reading of
+    // the same spelling (and the spelling's verses back it), labelled otherwise (surface_occurrences
+    // .evidence; guesses are marked on the badges). --no-evidence turns it off.
+    let evidence = null;
+    if (!args.includes('--no-evidence')) {
+        try {
+            const { buildEvidence } = require('./heb-evidence.cjs');
+            const nm = loadJSON(path.join(__dirname, 'name-map-expanded.json')) || {};
+            const samp = [..._engSrc.values()].filter((_, i) => i % 23 === 0).slice(0, 3000);
+            evidence = buildEvidence({ webStrongsPath: path.join(__dirname, 'web-strongs.jsonl'), strongsDict: STRONGS_DICT,
+                                       strongsRoots: strongsRootsLex, lexicon, homographs, nameMap: nm, sampleTexts: samp });
+            console.log(`  evidence: English profiles from web-strongs.jsonl + his lexicon/homographs (--no-evidence disables)`);
+        } catch (e) { console.warn(`  ⚠ evidence unavailable (${e.message}) — hand context readings only`); evidence = null; }
+    }
+    hebResult = buildHebSurfaces({ src, parseToken, pins, preferSplitMax: _preferSplit, evidence,
                                    preferParticleMax: _preferParticle,
                                    // Widen the fused-particle split (see heb-align.js's
                                    // 2026-07-29 note) to every particle THIS FILE already
@@ -2038,11 +2053,16 @@ if (WITH_HEB) {
                                    log: m => console.log(m) });
     {
         const hs = hebResult.stats;
+        if (hs.evidence) {
+            const e = hs.evidence, tot = Object.values(e).reduce((x, y) => x + y, 0) || 1;
+            console.log(`  evidence: ${(hs.autoSwitches || 0).toLocaleString()} readings switched to the one their verse's English names; `
+                + Object.entries(e).sort((x, y) => y[1] - x[1]).map(([k, n]) => `${k} ${n.toLocaleString()} (${(100 * n / tot).toFixed(1)}%)`).join(', '));
+        }
         console.log(`  context readings: ${hs.contextSwitches} occurrence(s) switched to the reading the verse's English supports, `
-            + `${hs.contextVetoed} kept (English supports the original), ${hs.contextFromBhs || 0} taken from the BHS token of the same spelling; 3fs possessive 𐤄: ${hs.suffix3fs} occurrence(s)`
+            + `${hs.contextVetoed} kept (English supports the original), ${hs.contextFromBhs || 0} taken from the BHS token of the same spelling, ${hs.contextFromRoot || 0} built from the Strong's root; 3fs possessive 𐤄: ${hs.suffix3fs} occurrence(s)`
             + (hs.contextMisses.length ? `; no matching reading offered for: ${hs.contextMisses.slice(0, 30).join(' ')}` : ''));
         const _ctxOut = (() => { const i = process.argv.indexOf('--ctx-out'); return i >= 0 ? process.argv[i + 1] : 'heb-context-switches.txt'; })();
-        try { fs.writeFileSync(path.resolve(__dirname, _ctxOut), 'ref\tword\tfrom->to\tbefore -> after\n' + hs.contextLog.join('\n') + '\n'); console.log(`  (every switch listed in ${_ctxOut})`); } catch { /* report only */ }
+        try { fs.writeFileSync(path.resolve(__dirname, _ctxOut), 'ref\tword\tfrom->to\tbefore -> after\twho (hand = his entry, auto = the verse English)\n' + hs.contextLog.join('\n') + '\n'); console.log(`  (every switch listed in ${_ctxOut})`); } catch { /* report only */ }
     }
     if (rootStrip) {
         // Every word root strip tagged, and every word it could split but NO English
@@ -2249,6 +2269,10 @@ out.exec(`
         chapter         INTEGER NOT NULL,
         verse           INTEGER NOT NULL,
         token_ordinal   INTEGER NOT NULL,
+        -- HEB edition only (2026-10-29, heb-evidence.cjs): how this inferred Strong's was
+        -- established — hand | english | function | name | no-english | guess | unconfirmed.
+        -- '' for the BHS (its tags are the source's own). The badges mark guess/unconfirmed.
+        evidence        TEXT NOT NULL DEFAULT '',
         PRIMARY KEY (source, word_raw, book_id, chapter, verse, token_ordinal)
     );
 
@@ -2434,8 +2458,8 @@ console.log(`  Done in ${((Date.now()-t2)/1000).toFixed(1)}s`);
 // Insert surface_occurrences
 const insertOcc = out.prepare(`
     INSERT OR IGNORE INTO surface_occurrences
-        (source, word_raw, strongs, pos, morph, book_id, chapter, verse, token_ordinal)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (source, word_raw, strongs, pos, morph, book_id, chapter, verse, token_ordinal, evidence)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `);
 
 const insertAllOccs = out.transaction((rows) => {
@@ -2450,13 +2474,13 @@ const insertAllOccs = out.transaction((rows) => {
         // can see maqaf/sof-pasuq/paseq at all. server.js's SURF_ROWS LEFT JOINs
         // token_surfaces, so a punct row simply comes through with t.* NULL.
         if (opos === 'punct') {
-            insertOcc.run('BHS', r.word_raw, osn, opos, omorph, r.book_id, r.chapter, r.verse, r.token_ordinal);
+            insertOcc.run('BHS', r.word_raw, osn, opos, omorph, r.book_id, r.chapter, r.verse, r.token_ordinal, '');
             continue;
         }
         // BUG A FIX: key on the occurrence's FULL reading so it joins to its OWN
         // token_surfaces row, not to the surface's most-frequent reading.
         if (surfaceMap.has(`${r.word_raw}\u0000${osn}\u0000${opos}\u0000${omorph}`)) {
-            insertOcc.run('BHS', r.word_raw, osn, opos, omorph, r.book_id, r.chapter, r.verse, r.token_ordinal);
+            insertOcc.run('BHS', r.word_raw, osn, opos, omorph, r.book_id, r.chapter, r.verse, r.token_ordinal, '');
         } else {
             skipped++;
         }
@@ -2486,7 +2510,7 @@ if (hebResult) {
         for (const r of hebResult.occurrences) {
             pH.tick();
             insertOcc.run(r.source, r.word_raw, r.strongs || '', r.pos || '', r.morph || '',
-                          r.book_id, r.chapter, r.verse, r.token_ordinal);
+                          r.book_id, r.chapter, r.verse, r.token_ordinal, r.evidence || '');
         }
         pH.done();
     })();
