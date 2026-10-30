@@ -94,6 +94,20 @@ console.log('corpus.db English present for all 66 canonical books');
     exit 1
   fi
 
+  # VERSE TOKENS GATE (2026-10-30, fieldy: "guarantee every row has tokens that matches its
+  # corresponding verse"): never push an index whose tokens are not their verse's words.
+  if ! (cd server && node verify-verse-tokens.mjs); then
+    echo "!! VERSE TOKENS gate failed -- refusing to push. See server/verse-tokens-report.txt; rebuild with (cd server && node build-surface-index.js), then Rebake again."
+    exit 1
+  fi
+
+  # SOURCES GATE (2026-10-30, fieldy: tokens consistent with other sources of the same texts): never push an index with
+  # a NEW contradicted reading or a book whose unconfirmed share grew past lexicon/heb-source-baseline.json.
+  if ! (cd server && node verify-heb-sources.mjs); then
+    echo "!! SOURCES gate failed -- refusing to push. See server/heb-sources-report.txt and heb-source-review.txt; fix the readings (or, after review, node verify-heb-sources.mjs --update-baseline), then Rebake again."
+    exit 1
+  fi
+
   step "2/5  corpus.db: comparing local vs prod"
   LOCAL_M=$(stat -c %Y server/corpus.db)
   PROD_M=$($SSH "$HOST" "stat -c %Y $DATA/corpus.db" 2>/dev/null || echo 0)

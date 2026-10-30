@@ -314,6 +314,14 @@ export function mergeModforms(text, words, opts = {}) {
   const norm = s => s.toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
   const hits = [];
   const depthAt = i => { let d = 0; for (let k = 0; k < i; k++) { if (text[k] === '(') d++; else if (text[k] === ')' && d) d--; } return d; };
+  // A NAME pair already written as one of the verse's words ("LaAbaram (Abram)" = word 𐤋𐤀𐤁𐤓𐤌) claims
+  // that word FIRST. Otherwise a later bare "Abaram (Abram)" took the first unclaimed Abram (the
+  // 𐤋-prefixed one) and became "LaAbaram" too — every run added a copy (Gen 14:13 held ten, 2026-10-30).
+  for (const m of text.matchAll(PAIR)) {
+    const n = norm(m[3]); if (!n) continue;
+    const x = words.find(y => y.isName && !used.has(y) && norm(y.form) === n);
+    if (x) used.add(x);
+  }
   for (const m of text.matchAll(PAIR)) {
     if (depthAt(m.index)) continue;                    // a pair inside another gloss: "Ahayah (I hayah (come to pass))"
     const w = norm(m[3]);
@@ -769,6 +777,8 @@ export function conceptWord(word, concept) {
 // first opener and last closer stay first and last. Returns ok:false (caller keeps the
 // English order) when the quotation marks would come out in a different order, or when
 // most of the English found no Hebrew word (a free paraphrase).
+// Adoni / Adonai: a title, not a name (interlinear gapWord)
+const TITLE_SN = new Set(['H113', 'H136']);
 export function interlinear(text, words, glossOf, opts = {}) {
   const out = { text, ok: false, why: '' };
   if (!text || !words.length) { out.why = 'no hebrew'; return out; }
@@ -840,7 +850,10 @@ export function interlinear(text, words, glossOf, opts = {}) {
   const glossed = it => it.gloss !== null && !it.name;
   let prev = null, buf = [], pendingLead = '';
   const CLAUSE = /^[,;:.!?—–…]$/;
-  const flushTo = (target, where) => { if (!buf.length) return; if (target) target[where].push(...buf); buf = []; };
+  // a comma held for the next word (English inside a new quotation) does not travel backwards
+  const flushTo = (target, where) => { if (!buf.length) return;
+    if (where === 'suf') buf[buf.length - 1] = buf[buf.length - 1].replace(/[,;:—–]+$/, '');
+    if (target) target[where].push(...buf.filter(Boolean)); buf = []; };
   const nearestGlossed = (from, dir) => { for (let i = from; i >= 0 && i < items.length; i += dir) if (glossed(items[i])) return items[i]; return null; };
   // English left over between two words whose Hebrew word the English never named: when a
   // Hebrew word with no English stands right after the previous word, the leftover is ITS
@@ -855,14 +868,19 @@ export function interlinear(text, words, glossOf, opts = {}) {
     let bound = Infinity;
     for (let q = j; q < els.length; q++) if (els[q].k === 'item' && els[q].h) { bound = els[q].h.ord; break; }
     const lo = prev && prev.h ? prev.h.ord : -Infinity;
-    const cands = words.filter(x => !used.has(x) && !x.isName && x.sn !== 'H853' && x.ord > lo && x.ord < bound).sort((a, b) => a.ord - b.ord);
+    // a TITLE is a word, not a name: Adoni / Adonai addressed to a person ("Sir", "my lord") takes
+    // the English the verse leaves for it — never the word before (fieldy, 2026-10-29, John 4:15
+    // "Alayaw (Sir him)": "something ive had to fix more than once, i want it fixed everywhere")
+    const cands = words.filter(x => !used.has(x) && (!x.isName || TITLE_SN.has(x.sn)) && x.sn !== 'H853' && x.ord > lo && x.ord < bound).sort((a, b) => a.ord - b.ord);
     // the word whose gloss the English names ("afterwards" -> WaAcharay "after"); forced, only a
     // single candidate or a named one — never a guess between several
     let w = cands.find(x => glossNames(x, buf)) || null;
     if (!w && (!force || cands.length === 1)) w = cands[0] || null;
     if (!w) return null;
     used.add(w);
-    const gi = { k: 'item', h: w, form: w.form, gloss: weave(w, opts.baseline ? baseGloss(w, buf.join(' '), text) : buf.join(' ')), name: false, lead: '', trail: '', pre: [], suf: [], ei: (prev ? prev.ei : -1) + 0.5, gap: true };
+    // a title's English is written as the verse has it ("Sir" already says "my lord": no "my Sir")
+    const gl = w.isName ? buf.join(' ') : weave(w, opts.baseline ? baseGloss(w, buf.join(' '), text) : buf.join(' '));
+    const gi = { k: 'item', h: w, form: w.form, gloss: gl, name: false, lead: '', trail: '', pre: [], suf: [], ei: (prev ? prev.ei : -1) + 0.5, gap: true };
     gapItems.push(gi); buf = [];
     return gi;
   };
@@ -882,7 +900,11 @@ export function interlinear(text, words, glossOf, opts = {}) {
       }
       // closer / clause punctuation: residue so far belongs to the item before it (a saved verse's
       // opening aside, "And indeed,", goes to the unnamed word it names — WaGam)
-      if (buf.length) { const gi = gapWord(j, !opts.baseline && !prev); if (gi) { if (!prev) { gi.lead = pendingLead; pendingLead = ''; } prev = gi; } }
+      if (buf.length) { const gi = gapWord(j, !opts.baseline && !prev); if (gi) { if (!prev || pendingLead) { gi.lead = pendingLead; pendingLead = ''; } prev = gi; } }   // an opener before its English is ITS lead (“Sir,)
+      // English after an opening quotation mark belongs INSIDE the quotation: it waits for the next
+      // word instead of joining the word before the quote ("to him, “Now, go" -> Lak (Now, go), not
+      // Alayaw (to him Now) — the shape of "Alayaw (Sir him)", 2026-10-29)
+      if (buf.length && /[“‘"'(\[]/.test(pendingLead) && /^[,;:—–]$/.test(e.t)) { buf[buf.length - 1] += e.t; continue; }
       if (buf.length) {
         const tgt = (prev && glossed(prev)) ? prev : (nearestGlossed(prev ? prev.ei : -1, -1) || nearestGlossed(prev ? prev.ei + 1 : 0, 1));
         if (tgt) { const wh = prev && tgt.ei <= prev.ei ? 'suf' : 'pre'; flushTo(tgt, wh); }

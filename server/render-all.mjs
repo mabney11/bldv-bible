@@ -105,6 +105,8 @@ const TAIL_STEPS = [
   // 2026-10-16 NO SQUARE SCRIPT (CLAUDE.md rule zero): the site converts nothing — everything it serves is baked Paleo here.
   ['node', ['verify-no-square-script.mjs', '--fix'],          'NO SQUARE SCRIPT gate + BAKE: Hebrew-edition and English text, translation rows baked to Paleo (punctuation kept); fails on a saved verse, a stale strongs-hebrew-paleo.json, a square lexicon file, or square script in server.js/src'],
   ['node', ['fix-divine-names.mjs', '--check'],              'divine-name gate: no Adanay over a Yahawah token (or the reverse); saved verses listed in divine-name-review.txt'],
+  ['node', ['verify-verse-tokens.mjs'],                      'VERSE TOKENS gate: every verse\'s tokens are its words, in order (HEB edition vs the index, heb-settled.db, BHS vs tokens_bhs) — verse-tokens-report.txt'],
+  ['node', ['verify-heb-sources.mjs'],                      'SOURCES gate: no NEW contradicted HEB reading (another source names another reading of its spelling), no book\'s share of unconfirmed readings growing past lexicon/heb-source-baseline.json — heb-sources-report.txt'],
   ['node', ['verify-integration.mjs'],                       'verify: baseline reaches Studio+reader, report missing chapters'],
 ];
 

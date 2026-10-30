@@ -1,0 +1,177 @@
+Lexicon: 568 entries
+Homographs: 389 entries
+Definitions: 119 entries
+Strongs roots: 8676 entries
+Surface SN overrides: 0 entries
+hebrew-extra-lexicon: 56,216 entries (C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\server\lexicon\hebrew-extra-lexicon.json)
+strongs dictionary  : 8,674 entries (C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\server\strongs-hebrew-expanded.json)
+
+Opening C:\Users\fieldy\dev\projects\the-scriptures-app\paleo-studio\server\corpus.db…
+Total tokens in corpus: 422,017
+Distinct (word_raw, pos, morph, strongs) combos: 37,503
+
+Parsing all surface forms…
+    ✓ parsing surface forms — 37,503 in 2s
+
+Parsed 37,503 unique surface forms in 1.9s
+[strongs] real 37451, virtual 45, blank 7
+[strongs↔root] 328 first-letter mismatches
+  ok sn-mismatch             261
+        H1125 lemma=𐤁𐤍𐤀𐤁𐤉𐤍𐤃𐤁 root=𐤀𐤁𐤉𐤍𐤃𐤁 surface=𐤀𐤁𐤉𐤍𐤃𐤁
+        H5654 lemma=𐤏𐤁𐤃𐤀𐤃𐤅𐤌 root=𐤀𐤃𐤅𐤌 surface=𐤀𐤃𐤅𐤌
+        H2899 lemma=𐤈𐤅𐤁𐤀𐤃𐤍𐤉𐤄𐤅 root=𐤀𐤃𐤅𐤍𐤉𐤄 surface=𐤀𐤃𐤅𐤍𐤉𐤄
+        H5654 lemma=𐤏𐤁𐤃𐤀𐤃𐤅𐤌 root=𐤀𐤃𐤌 surface=𐤀𐤃𐤌
+        H5018 lemma=𐤍𐤁𐤅𐤆𐤓𐤀𐤃𐤍 root=𐤀𐤃𐤍 surface=𐤀𐤃𐤍
+        H2692 lemma=𐤇𐤑𐤓𐤀𐤃𐤓 root=𐤀𐤃𐤓 surface=𐤀𐤃𐤓
+  →→root-char-removed        67
+        H8512 lemma=𐤕𐤋𐤀𐤁𐤉𐤁 root=𐤀𐤁𐤉𐤁 surface=𐤀𐤁𐤉𐤁
+        H2975 lemma=𐤉𐤀𐤓 root=𐤀𐤓 surface=𐤀𐤓
+        H870 lemma=𐤀𐤕𐤓 root=𐤁 surface=𐤁𐤀𐤕𐤓
+        H3816 lemma=𐤋𐤀𐤌 root=𐤁 surface=𐤁𐤋
+        H6364 lemma=𐤐𐤉𐤁𐤎𐤕 root=𐤁𐤎𐤕 surface=𐤁𐤎𐤕
+        H5704 lemma=𐤏𐤃 root=𐤁 surface=𐤁𐤏𐤃
+  (root = seed; every modification is ADDED to it, spelled out even where
+   the orthography merges them — 𐤀𐤌𐤓 + 1cs renders 𐤀𐤀𐤌𐤓)
+
+Fetching all occurrence locations… (one query over every token — no progress possible here; ≈ a minute)
+490,052 occurrences fetched in 1.0s
+  64 occurrence override(s) loaded from heb-occurrence-overrides.json
+  2101 unambiguous non-name lemmas indexed for lexicon-over-split
+  8 forced reading(s) loaded from heb-forced-readings.json
+  549 context reading(s) loaded from heb-context-readings.json
+  root strip: 6,249 root spellings, 1,517 verbs (--no-root-strip disables)
+
+Building HEB (extra) whole-word surfaces…
+  evidence: English profiles from web-strongs.jsonl + his lexicon/homographs (--no-evidence disables)
+  settled: 796,523 etched readings in 30,828 verses (heb-settled.db, 2026-10-30T04:13:58.287Z) — not re-decided
+  OT: aligning HEB words against BHS token runs…
+    ⏱ OT: aligning chapters: 867 / 929 93% · 58/s · 15s elapsed · ~1s left
+    ✓ OT: aligning chapters — 929 in 16s
+  proclitic glosses taken from BHS: 𐤅 𐤄 𐤁 𐤋 𐤊 𐤌 𐤔
+  suffix glosses taken from BHS: 10/38 attested tails
+  3fs possessive 𐤄 for NT splits: from BHS
+  root-strip preformatives taken from BHS: 𐤌𐤕 𐤄𐤕 𐤉𐤕 𐤕𐤕 𐤍𐤕 𐤉 𐤕 𐤀 𐤍 𐤄 𐤌
+  NT: resolving whole words against the OT-attested form table…
+  root strip: 8,535 unresolved spellings have a root-strip candidate; 1,027 backed by their own occurrences' English
+    ✓ NT: resolving whole words — 30,828 in 4s
+  fallback readings: 0 root chips had glued proclitics peeled into their own chips (𐤅𐤄𐤕𐤒𐤉𐤐 -> [And] [The] 𐤕𐤒𐤉𐤐)
+  settled: 796,461 words taken as etched, 0 kept without a reading; 0 whose text no longer matches what was etched and 0 new — those were decided this build
+  evidence: 0 readings switched to the one their verse's English names; function 281,690 (35.4%), guess 191,097 (24.0%), english 179,779 (22.6%), untagged 53,045 (6.7%), name 36,167 (4.5%), unconfirmed 28,767 (3.6%), no-english 20,075 (2.5%), hand 5,903 (0.7%)
+  context readings: 0 occurrence(s) switched to the reading the verse's English supports, 0 kept (English supports the original), 0 taken from the BHS token of the same spelling, 0 built from the Strong's root; 3fs possessive 𐤄: 0 occurrence(s)
+  (every switch listed in heb-context-switches.txt)
+  root strip: 0 occurrence(s) tagged by peeling prefixes/tails to a Strong's root (1,027 spellings backed by their own occurrences); 0 spellings had a candidate no English named
+  (tagged: heb-rootstrip.txt; not tagged, for review: heb-rootstrip-review.txt)
+  lexicon-over-split: 0 occurrence(s); forced readings: 0 occurrence(s) applied
+  OT: 305,071/306,796 words aligned (99.4%)
+  NT: 796,523/796,523 words qualified (100.0%)
+  maqaf: 11,673 verses tokenised at their maqaf boundaries (text_paleo had fused them; see wordsOf in heb-align.js)
+  prefer-split: 1 words took a split over a whole-word/adjacent reading (proclitic <=1x, 𐤀𐤕 particle <=10x; --prefer-split=0 disables)
+  ambiguous: 11 readings / 3 distinct words fit more than one analysis (1 were spelling-only, dropped)
+     >> 1 look WRONG: the alternative is >=5x more attested than the reading chosen (both sides measured)
+        𐤄𐤌𐤏𐤉𐤍𐤅𐤕  chose exact(x1)  vs 𐤄 + 𐤌 + 𐤏𐤉𐤍 + 𐤅𐤕 (stem x57)
+     re-run with --amb-out amb.txt for the ranked list
+  by tier: exact=259,700  reconstructed=45,364  unaligned=1,725  nt_exact=61  plene=7  nt_proclitic=1
+  105,810 HEB surfaces, 1,171,354 occurrences in 32.7s
+Deleted old surface-index.db
+
+Writing surface-index.db…
+  stem letters: 411 surfaces had prefix / stem letters moved out of the root chip into 602 chips (𐤕 87, 𐤄 56, 𐤅+𐤉 51, 𐤅+𐤕 45, 𐤅 39, 𐤉 28, 𐤌 21, 𐤅+𐤀 10)
+    e.g. 𐤀𐤕𐤒𐤅𐤈𐤈 → 𐤀 + 𐤕 + 𐤒𐤅𐤈𐤈 · 𐤀𐤕𐤒𐤅𐤈𐤈𐤄 → 𐤀 + 𐤕 + 𐤒𐤅𐤈𐤈 + 𐤄 · 𐤀𐤕𐤓𐤅𐤏𐤏 → 𐤀 + 𐤕 + 𐤓𐤅𐤏𐤏 · 𐤄𐤁𐤅𐤆 → 𐤄 + 𐤁𐤆𐤅𐤆
+  stem letters: 42 left whole as probable wrong Strong's — server/stem-split-mistags.txt
+  reading forms: 6 surfaces respelled by lexicon/reading-form-rules.json (𐤀𐤁𐤉 → 𐤀𐤁𐤍𐤅 Abanaw, 𐤀𐤁𐤉𐤍𐤅 → 𐤀𐤁𐤍𐤅 Abanaw, 𐤌𐤀𐤁𐤉𐤍𐤅 → 𐤌𐤀𐤁𐤍𐤅 MaAbanaw, 𐤋𐤀𐤁𐤉𐤍𐤅 → 𐤋𐤀𐤁𐤍𐤅 LaAbanaw)
+  chip translits: 70,445 bare-consonant chips in 55,945 surfaces re-transliterated in their word
+  letters: 1,070 surfaces whose chips spelled only the start of the word got the rest back (𐤋𐤊𐤍 𐤋→𐤋𐤊𐤍, 𐤋𐤌𐤅 𐤋𐤌→𐤋𐤌𐤅, 𐤌𐤄𐤌 𐤌→𐤌𐤄𐤌, 𐤁𐤄𐤌 𐤁→𐤁𐤄𐤌, 𐤋𐤁𐤃𐤍𐤄 𐤋𐤁𐤃𐤍→𐤋𐤁𐤃𐤍𐤄)
+  letters: 9,405 surfaces whose chips respell a letter (𐤄𐤅 suffix → 𐤅, hitpael 𐤔𐤕 → 𐤕𐤔) — by design, listed for review (𐤀𐤔𐤕𐤇𐤅𐤄 (chips 𐤀𐤕𐤔𐤇𐤅𐤄), 𐤀𐤔𐤕𐤇𐤅𐤄 (chips 𐤀𐤕𐤔𐤇𐤅𐤄), 𐤀𐤔𐤕𐤌𐤓 (chips 𐤀𐤕𐤔𐤌𐤓), 𐤀𐤔𐤕𐤌𐤓𐤄 (chips 𐤀𐤕𐤔𐤌𐤓𐤄), 𐤁𐤏𐤋 (chips 𐤁𐤌𐤅𐤕))
+  Inserting 37,503 surface records…
+  Done in 0.6s
+  Inserting 490,052 occurrence records…
+  Done in 10.3s
+    ⏱ writing HEB occurrences: 533,831 / 1,171,354 46% · 35589/s · 15s elapsed · ~18s left
+    ⏱ writing HEB occurrences: 850,338 / 1,171,354 73% · 28345/s · 30s elapsed · ~11s left
+    ⏱ writing HEB occurrences: 1,124,153 / 1,171,354 96% · 24981/s · 45s elapsed · ~2s left
+    ✓ writing HEB occurrences — 1,171,354 in 48s
+  HEB rows written. Chapters needing a non-zero offset: 62 (e.g. 19:3→-1, 19:4→-1, 19:5→-1, 19:6→-1, 19:7→-1)
+✓ divine titles baked: 102 titles, 17,249 title-verses, 28,273 gold words (20.1s)
+
+✓ surface-index.db written
+  Size: 582.4 MB
+  Surfaces: 37,503
+  Occurrences: 490,052
+  Total time: 125.7s
+
+Next: add surface-index.db endpoints to server.js (see below)
+
+── New server.js endpoints to add ──────────────────────────────────
+
+// Open the freshly-written index DB for the post-build verification pass
+const surfDb = new Database(path.join(__dirname, 'surface-index.db')); // readonly:true removed for the same device-bridge reason as src, above
+surfDb.pragma('locking_mode = EXCLUSIVE'); // device-bridge WAL/mmap workaround, see project memory
+
+// GET /api/surface?word=𐤏𐤋𐤌𐤔𐤌𐤓𐤕𐤉
+// Returns the parsed metadata for one surface: root_paleo, strongs, components, etc.
+app.get('/api/surface', (req, res) => {
+    const word = (req.query.word || '').trim();
+    if (!word) return res.status(400).json({ error: 'word param required' });
+    const row = surfDb.prepare('SELECT * FROM token_surfaces WHERE word_raw = ?').get(word);
+    if (!row) return res.status(404).json({ error: 'surface not found' });
+    res.json({
+        ...row,
+        all_strongs: JSON.parse(row.all_strongs || '[]'),
+        components:  JSON.parse(row.components),
+    });
+});
+
+// GET /api/surface/verses?word=𐤏𐤋𐤌𐤔𐤌𐤓𐤕𐤉&offset=0&limit=25
+// Returns paginated verse hits for one surface — all precomputed, O(1) lookup.
+app.get('/api/surface/verses', (req, res) => {
+    const word   = (req.query.word || '').trim();
+    const offset = parseInt(req.query.offset, 10) || 0;
+    const limit  = Math.min(parseInt(req.query.limit, 10) || 25, 50);
+    if (!word) return res.status(400).json({ error: 'word param required' });
+
+    const total = surfDb.prepare(
+        'SELECT COUNT(*) AS n FROM surface_occurrences WHERE word_raw = ?'
+    ).get(word)?.n || 0;
+
+    const hits = surfDb.prepare(`
+        SELECT book_id, chapter, verse, token_ordinal
+        FROM surface_occurrences
+        WHERE word_raw = ?
+        ORDER BY book_id, chapter, verse, token_ordinal
+        LIMIT ? OFFSET ?
+    `).all(word, limit, offset);
+
+    res.json({ word, total, offset, hasMore: total > offset + limit, hits });
+});
+
+// GET /api/root/by-strongs?sn=H4931
+// Returns the canonical root entry from the index (root_paleo, occurrence count, surfaces).
+app.get('/api/root/by-strongs', (req, res) => {
+    const sn = ('H' + (req.query.sn || '').replace(/^H+/, '')).trim();
+    if (sn === 'H') return res.status(400).json({ error: 'sn param required' });
+
+    const surfaces = surfDb.prepare(`
+        SELECT word_raw, rendered_paleo, root_paleo, pos, morph, components,
+               (SELECT COUNT(*) FROM surface_occurrences WHERE word_raw = ts.word_raw) AS count
+        FROM token_surfaces ts
+        WHERE strongs = ? OR all_strongs LIKE ?
+        ORDER BY count DESC
+    `).all(sn, '%' + sn + '%');
+
+    if (!surfaces.length) return res.status(404).json({ error: 'no surfaces for ' + sn });
+
+    const root_paleo = surfaces[0].root_paleo;
+    const total = surfaces.reduce((a, s) => a + (s.count || 0), 0);
+
+    res.json({
+        sn,
+        root_paleo,
+        total,
+        surfaces: surfaces.map(s => ({
+            ...s,
+            components: JSON.parse(s.components),
+            count: s.count,
+        })),
+    });
+});
+

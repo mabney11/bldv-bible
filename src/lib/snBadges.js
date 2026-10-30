@@ -37,8 +37,9 @@ export function badgeSNs(tokens, fallbackSN) {
 // are drawn marked ("H6862?", dashed) so an inference the verse's English never confirmed is never
 // presented like a tag the source itself carries. fieldy: "harden so i dont advertise tokens that
 // arent there".
-export const UNCONFIRMED = new Set(['guess', 'unconfirmed']);
+export const UNCONFIRMED = new Set(['contradicted', 'guess', 'unconfirmed']);
 const EV_WHY = {
+  contradicted: 'this verse\'s other sources (its English versions, the Greek) name another reading of this spelling',
   guess: 'other readings of this spelling exist and this verse\'s English names none of them',
   unconfirmed: 'the only reading of this spelling, and this verse\'s English does not name it',
 };
@@ -47,8 +48,9 @@ export function snEvidence(tokens, sn) {
   let ev = null;
   for (const t of tokens || []) {
     if (fmtSN(t.strongs) !== fmtSN(sn) || !t.evidence) continue;
-    if (t.evidence === 'guess') return 'guess';
-    if (t.evidence === 'unconfirmed') ev = 'unconfirmed';
+    if (t.evidence === 'contradicted') return 'contradicted';
+    if (t.evidence === 'guess') ev = 'guess';
+    if (t.evidence === 'unconfirmed' && !ev) ev = 'unconfirmed';
   }
   return ev;
 }

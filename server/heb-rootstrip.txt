@@ -1,13 +1,20 @@
 ref	word	witness	prefixes [preformative] stem tails	SN	stem is
+40:3:1	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
 40:3:3	𐤌𐤎𐤋𐤅𐤕𐤉𐤅	spelling	 𐤌𐤎𐤋𐤅𐤕 𐤉+𐤅	H4546	form
 40:3:10	𐤉𐤂𐤃𐤏	spelling	[𐤉] 𐤂𐤃𐤏 	H1438	root
+40:3:13	𐤋𐤄𐤈𐤁𐤋	spelling	𐤋+[𐤄] 𐤈𐤁𐤋 	H2881	root
 40:4:1	𐤉𐤍𐤎𐤄𐤅	english	[𐤉] 𐤍𐤎𐤄 𐤅	H5254	root
 40:4:23	𐤅𐤉𐤁𐤔𐤓	spelling	𐤅+[𐤉] 𐤁𐤔𐤓 	H1319	root
+40:5:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 40:5:13	𐤉𐤌𐤋𐤇	spelling	[𐤉] 𐤌𐤋𐤇 	H4414	root
+40:5:15	𐤌𐤃𐤋𐤉𐤒𐤉𐤌	english	[𐤌] 𐤃𐤋𐤉𐤒 𐤉𐤌	H1814	matres
+40:5:20	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
 40:5:25	𐤉𐤎𐤂𐤉𐤓	spelling	[𐤉] 𐤎𐤂𐤉𐤓 	H5462	matres
 40:5:25	𐤋𐤔𐤅𐤈𐤓	english	𐤋 𐤔𐤅𐤈𐤓 	H7860	matres
+40:5:26	𐤄𐤐𐤓𐤅𐤈𐤄	english	[𐤄] 𐤐𐤓𐤅𐤈 𐤄	H6527	matres
 40:5:29	𐤕𐤊𐤔𐤉𐤋𐤊	spelling	[𐤕] 𐤊𐤔𐤉𐤋 𐤊	H3782	matres
 40:5:30	𐤕𐤊𐤔𐤉𐤋𐤊	spelling	[𐤕] 𐤊𐤔𐤉𐤋 𐤊	H3782	matres
+40:5:39	𐤕𐤕𐤒𐤅𐤌𐤌𐤅	english	[𐤕] 𐤕𐤒𐤅𐤌𐤌 𐤅	H6965	form
 40:6:12	𐤋𐤇𐤉𐤁𐤉𐤍𐤅	english	𐤋 𐤇𐤉𐤁 𐤉+𐤍𐤅	H2326	matres
 40:6:14	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
 40:6:15	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
@@ -19,146 +26,269 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 40:7:8	𐤅𐤄𐤃𐤐𐤒	english	𐤅+[𐤄] 𐤃𐤐𐤒 	H1849	root
 40:7:19	𐤉𐤂𐤃𐤏	spelling	[𐤉] 𐤂𐤃𐤏 	H1438	root
 40:8:12	𐤅𐤇𐤓𐤅𐤒	english	𐤅 𐤇𐤓𐤅𐤒 	H2786	matres
+40:8:23	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 40:9:2	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
 40:9:5	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
+40:9:10	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+40:9:11	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 40:9:16	𐤄𐤒𐤓𐤉𐤏𐤄	spelling	[𐤄] 𐤒𐤓𐤉𐤏 𐤄	H7167	matres
 40:9:35	𐤅𐤉𐤁𐤔𐤓	spelling	𐤅+[𐤉] 𐤁𐤔𐤓 	H1319	root
+40:10:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 40:10:14	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 40:10:21	𐤉𐤌𐤎𐤓	spelling	[𐤉] 𐤌𐤎𐤓 	H4560	root
 40:10:23	𐤍𐤅𐤎𐤅	spelling	 𐤍𐤅𐤎 𐤅	H5127	root
 40:10:30	𐤍𐤌𐤍𐤅𐤕	spelling	[𐤍] 𐤌𐤍𐤅 𐤕	H4487	form
 40:10:33	𐤀𐤊𐤇𐤔	spelling	[𐤀] 𐤊𐤇𐤔 	H3584	root
 40:10:39	𐤅𐤄𐤌𐤀𐤁𐤃	english	𐤅+𐤄+[𐤌] 𐤀𐤁𐤃 	H6	root
+40:11:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+40:11:2	𐤌𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤌 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 40:11:3	𐤍𐤇𐤊𐤄	spelling	[𐤍] 𐤇𐤊𐤄 	H2442	root
+40:11:11	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+40:11:12	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+40:11:14	𐤕𐤓𐤑𐤅	spelling	[𐤕] 𐤓𐤑𐤅 	H7521	form
 40:11:16	𐤋𐤇𐤁𐤓𐤉𐤄𐤌	english	𐤋 𐤇𐤁𐤓𐤉𐤄 𐤌	H2274	matres
 40:11:17	𐤓𐤒𐤃𐤕𐤌	spelling	 𐤓𐤒𐤃 𐤕+𐤌	H7540	root
 40:11:17	𐤎𐤐𐤃𐤕𐤌	english	 𐤎𐤐𐤃 𐤕+𐤌	H5594	root
 40:11:20	𐤂𐤁𐤅𐤓𐤅𐤕𐤉𐤅	english	 𐤂𐤁𐤅𐤓𐤅𐤕 𐤉+𐤅	H1369	form
 40:11:27	𐤍𐤌𐤎𐤓	spelling	[𐤍] 𐤌𐤎𐤓 	H4560	root
+40:11:28	𐤅𐤄𐤈𐤏𐤅𐤍𐤉𐤌	english	𐤅+[𐤄] 𐤈𐤏𐤅𐤍 𐤉𐤌	H2943	matres
 40:11:28	𐤀𐤍𐤉𐤇	english	[𐤀] 𐤍𐤉𐤇 	H5117	matres
 40:12:7	𐤄𐤓𐤔𐤏𐤕𐤌	spelling	𐤄 𐤓𐤔𐤏 𐤕+𐤌	H7563	root
+40:12:25	𐤄𐤍𐤇𐤋𐤒𐤄	spelling	𐤄+[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
+40:12:25	𐤄𐤍𐤇𐤋𐤒𐤉𐤌	english	𐤄+[𐤍] 𐤇𐤋𐤒 𐤉𐤌	H2505	root
 40:12:26	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
+40:12:38	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
+40:12:49	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+40:13:6	𐤅𐤉𐤑𐤓𐤁	spelling	𐤅+[𐤉] 𐤑𐤓𐤁 	H6866	root
 40:13:19	𐤉𐤁𐤉𐤍𐤄𐤅	english	[𐤉] 𐤁𐤉𐤍𐤄 𐤅	H995	form
+40:13:19	𐤅𐤇𐤈𐤐	english	𐤅 𐤇𐤈𐤐 	H2414	root
 40:13:21	𐤍𐤊𐤔𐤋	spelling	[𐤍] 𐤊𐤔𐤋 	H3782	root
 40:13:28	𐤅𐤍𐤋𐤒𐤈	english	𐤅+[𐤍] 𐤋𐤒𐤈 	H3950	root
 40:13:29	𐤄𐤆𐤅𐤍𐤉𐤍	english	𐤄 𐤆𐤅𐤍 𐤉+𐤍	H2109	root
 40:13:32	𐤁𐤏𐤍𐤐𐤉𐤅	spelling	𐤁 𐤏𐤍𐤐 𐤉+𐤅	H6057	root
+40:13:36	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 40:13:43	𐤉𐤆𐤄𐤉𐤓𐤅	spelling	[𐤉] 𐤆𐤄𐤉𐤓 𐤅	H2094	matres
+40:14:2	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
 40:14:8	𐤁𐤒𐤏𐤓𐤄	spelling	𐤁 𐤒𐤏𐤓𐤄 	H7086	root
+40:14:8	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
 40:14:11	𐤁𐤒𐤏𐤓𐤄	spelling	𐤁 𐤒𐤏𐤓𐤄 	H7086	root
+40:14:19	𐤅𐤉𐤐𐤓𐤎	spelling	𐤅+[𐤉] 𐤐𐤓𐤎 	H6536	root
 40:14:30	𐤋𐤈𐤁𐤏	spelling	𐤋 𐤈𐤁𐤏 	H2883	root
+40:15:1	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
 40:15:12	𐤍𐤊𐤔𐤋𐤅	spelling	[𐤍] 𐤊𐤔𐤋 𐤅	H3782	root
+40:15:13	𐤉𐤏𐤒𐤓	english	[𐤉] 𐤏𐤒𐤓 	H6131	root
 40:15:19	𐤓𐤑𐤉𐤇𐤅𐤕	english	 𐤓𐤑𐤉𐤇 𐤅𐤕	H7523	matres
+40:15:23	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+40:15:32	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 40:15:32	𐤉𐤕𐤏𐤋𐤐𐤅	spelling	[𐤉𐤕] 𐤏𐤋𐤐 𐤅	H5968	root
+40:15:36	𐤅𐤉𐤐𐤓𐤎	spelling	𐤅+[𐤉] 𐤐𐤓𐤎 	H6536	root
+40:16:13	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+40:16:14	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+40:16:21	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+40:16:24	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+40:17:2	𐤅𐤉𐤆𐤄𐤉𐤓𐤅	spelling	𐤅+[𐤉] 𐤆𐤄𐤉𐤓 𐤅	H2094	matres
 40:17:4	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+40:17:13	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+40:17:16	𐤕𐤋𐤌𐤉𐤃𐤉𐤊	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤊	H8527	root
+40:17:20	𐤅𐤍𐤏𐤕𐤒	english	𐤅+[𐤍] 𐤏𐤕𐤒 	H6275	root
 40:17:22	𐤋𐤄𐤌𐤎𐤓	spelling	𐤋+[𐤄] 𐤌𐤎𐤓 	H4560	root
 40:18:5	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 40:18:6	𐤄𐤌𐤊𐤔𐤉𐤋	spelling	𐤄 𐤌𐤊𐤔𐤉𐤋 	H4383	matres
+40:18:6	𐤅𐤈𐤁𐤏	english	𐤅 𐤈𐤁𐤏 	H2883	root
 40:18:8	𐤕𐤊𐤔𐤉𐤋𐤊	spelling	[𐤕] 𐤊𐤔𐤉𐤋 𐤊	H3782	matres
 40:18:9	𐤕𐤊𐤔𐤉𐤋𐤊	spelling	[𐤕] 𐤊𐤔𐤉𐤋 𐤊	H3782	matres
 40:18:27	𐤅𐤉𐤔𐤌𐤈	english	𐤅+[𐤉] 𐤔𐤌𐤈 	H8058	root
 40:18:33	𐤓𐤇𐤌𐤕𐤉	spelling	 𐤓𐤇𐤌 𐤕+𐤉	H7355	root
 40:18:35	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
 40:19:12	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+40:19:14	𐤕𐤌𐤍𐤏𐤅𐤌	spelling	[𐤕] 𐤌𐤍𐤏𐤅 𐤌	H4513	form
+40:19:16	𐤀𐤏𐤔𐤍𐤅	spelling	[𐤀] 𐤏𐤔𐤍𐤅 	H6213	form
 40:19:17	𐤕𐤒𐤓𐤀𐤍𐤉	english	[𐤕] 𐤒𐤓𐤀𐤍𐤉 	H7121	form
+40:19:23	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 40:19:29	𐤀𐤇𐤉𐤅𐤕𐤉𐤅	spelling	 𐤀𐤇𐤉𐤅𐤕 𐤉+𐤅	H269	matres
 40:19:29	𐤔𐤃𐤅𐤕𐤉𐤅	spelling	 𐤔𐤃𐤅𐤕 𐤉+𐤅	H7704	form
 40:20:18	𐤉𐤌𐤎𐤓	spelling	[𐤉] 𐤌𐤎𐤓 	H4560	root
+40:20:22	𐤅𐤄𐤈𐤁𐤋	spelling	𐤅+[𐤄] 𐤈𐤁𐤋 	H2881	root
+40:20:22	𐤁𐤈𐤁𐤉𐤋𐤄	spelling	𐤁 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+40:20:23	𐤅𐤁𐤈𐤁𐤉𐤋𐤄	spelling	𐤅+𐤁 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+40:20:23	𐤕𐤈𐤁𐤋𐤅	spelling	[𐤕] 𐤈𐤁𐤋 𐤅	H2881	root
 40:20:31	𐤋𐤄𐤔𐤕𐤉𐤒𐤌	english	𐤋+[𐤄] 𐤔𐤕𐤉𐤒 𐤌	H8367	matres
+40:20:32	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
 40:22:24	𐤉𐤉𐤁𐤌	spelling	[𐤉] 𐤉𐤁𐤌 	H2992	root
+40:23:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+40:23:2	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
+40:23:4	𐤋𐤄𐤍𐤉𐤏𐤌	english	𐤋+[𐤄] 𐤍𐤉𐤏 𐤌	H5128	matres
 40:23:10	𐤌𐤍𐤄𐤉𐤂𐤉𐤌	spelling	[𐤌] 𐤍𐤄𐤉𐤂 𐤉𐤌	H5090	matres
+40:23:12	𐤉𐤔𐤐𐤋	spelling	[𐤉] 𐤔𐤐𐤋 	H8213	root
+40:23:13	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
 40:23:27	𐤄𐤍𐤓𐤀𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
 40:23:28	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+40:23:29	𐤅𐤕𐤉𐤐𐤅	english	𐤅+[𐤕] 𐤉𐤐𐤅 	H3302	form
 40:23:35	𐤓𐤑𐤇𐤕𐤌	english	 𐤓𐤑𐤇 𐤕+𐤌	H7523	root
+40:24:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+40:24:2	𐤕𐤕𐤐𐤓𐤒	spelling	[𐤕𐤕] 𐤐𐤓𐤒 	H6561	root
 40:24:4	𐤉𐤕𐤏𐤄	spelling	[𐤉] 𐤕𐤏𐤄 	H8582	root
+40:24:22	𐤍𐤒𐤑𐤓𐤅	english	[𐤍] 𐤒𐤑𐤓 𐤅	H7114	root
 40:25:8	𐤉𐤊𐤁𐤅	spelling	[𐤉] 𐤊𐤁𐤅 	H3518	form
 40:25:37	𐤅𐤍𐤊𐤋𐤊𐤋𐤊	english	𐤅+[𐤍] 𐤊𐤋𐤊𐤋 𐤊	H3557	form
+40:26:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 40:26:2	𐤉𐤌𐤎𐤓	spelling	[𐤉] 𐤌𐤎𐤓 	H4560	root
+40:26:8	𐤄𐤀𐤁𐤅𐤃	english	𐤄 𐤀𐤁𐤅𐤃 	H8	matres
 40:26:15	𐤅𐤀𐤌𐤎𐤓𐤍𐤅	english	𐤅+[𐤀] 𐤌𐤎𐤓 𐤍𐤅	H4560	root
 40:26:17	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
 40:26:23	𐤁𐤒𐤏𐤓𐤄	spelling	𐤁 𐤒𐤏𐤓𐤄 	H7086	root
 40:26:24	𐤉𐤌𐤎𐤓	spelling	[𐤉] 𐤌𐤎𐤓 	H4560	root
 40:26:28	𐤋𐤎𐤋𐤉𐤇𐤕	spelling	𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
-40:26:33	𐤀𐤊𐤔𐤋	english	[𐤀] 𐤊𐤔𐤋 	H3782	root
+40:26:33	𐤀𐤊𐤔𐤋	spelling	[𐤀] 𐤊𐤔𐤋 	H3782	root
 40:26:35	𐤀𐤊𐤇𐤔	spelling	[𐤀] 𐤊𐤇𐤔 	H3584	root
 40:26:45	𐤍𐤅𐤌𐤅	spelling	 𐤍𐤅𐤌 𐤅	H5123	root
 40:26:45	𐤍𐤌𐤎𐤓	spelling	[𐤍] 𐤌𐤎𐤓 	H4560	root
 40:26:75	𐤕𐤊𐤇𐤔	spelling	[𐤕] 𐤊𐤇𐤔 	H3584	root
 40:27:9	𐤍𐤕𐤌𐤋𐤀	spelling	[𐤍𐤕] 𐤌𐤋𐤀 	H4390	root
+40:27:17	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+40:27:17	𐤀𐤐𐤈𐤓	spelling	[𐤀] 𐤐𐤈𐤓 	H6362	root
+40:27:21	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+40:27:21	𐤀𐤐𐤈𐤓	spelling	[𐤀] 𐤐𐤈𐤓 	H6362	root
 40:27:32	𐤅𐤉𐤀𐤍𐤎𐤅	spelling	𐤅+[𐤉] 𐤀𐤍𐤎 𐤅	H597	root
 40:27:42	𐤅𐤍𐤀𐤌𐤉𐤍	spelling	𐤅 𐤍𐤀𐤌 𐤉+𐤍	H5002	root
+40:27:64	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 40:27:64	𐤅𐤂𐤍𐤁𐤄𐤅	english	𐤅 𐤂𐤍𐤁𐤄 𐤅	H1591	root
+40:28:7	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+40:28:8	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+40:28:13	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 40:28:17	𐤍𐤇𐤋𐤒𐤅	spelling	[𐤍] 𐤇𐤋𐤒 𐤅	H2505	root
 41:1:4	𐤋𐤎𐤋𐤉𐤇𐤕	spelling	𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
 41:2:5	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
 41:2:7	𐤂𐤃𐤅𐤐𐤉𐤌	spelling	 𐤂𐤃𐤅𐤐 𐤉𐤌	H1421	root
 41:2:9	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
+41:2:15	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:2:16	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:2:21	𐤈𐤋𐤀𐤉	english	 𐤈𐤋𐤀 𐤉	H2921	root
 41:2:21	𐤄𐤒𐤓𐤉𐤏𐤄	spelling	[𐤄] 𐤒𐤓𐤉𐤏 𐤄	H7167	matres
 41:3:2	𐤉𐤓𐤐𐤀𐤄𐤅	english	[𐤉] 𐤓𐤐𐤀𐤄 𐤅	H7495	form
+41:3:7	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:3:9	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 41:3:10	𐤄𐤕𐤍𐤐𐤋𐤅	spelling	[𐤄𐤕] 𐤍𐤐𐤋 𐤅	H5307	root
+41:3:11	𐤅𐤕𐤑𐤏𐤒𐤍𐤄	english	𐤅+[𐤕] 𐤑𐤏𐤒𐤍𐤄 	H6817	form
 41:3:22	𐤍𐤊𐤍𐤎	spelling	[𐤍] 𐤊𐤍𐤎 	H3664	root
+41:3:24	𐤍𐤇𐤋𐤒𐤄	spelling	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
 41:3:25	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
 41:3:26	𐤉𐤕𐤒𐤅𐤌𐤌	english	[𐤉𐤕] 𐤒𐤅𐤌 𐤌	H6965	root
+41:3:26	𐤅𐤍𐤇𐤋𐤒	english	𐤅+[𐤍] 𐤇𐤋𐤒 	H2505	root
 41:3:28	𐤄𐤂𐤃𐤅𐤐𐤉𐤌	spelling	𐤄 𐤂𐤃𐤅𐤐 𐤉𐤌	H1421	root
 41:3:28	𐤉𐤂𐤃𐤐𐤅	english	[𐤉] 𐤂𐤃𐤐 𐤅	H1442	root
+41:4:6	𐤅𐤉𐤑𐤓𐤁	spelling	𐤅+[𐤉] 𐤑𐤓𐤁 	H6866	root
 41:4:21	𐤉𐤅𐤔𐤌	spelling	[𐤉] 𐤅𐤔𐤌 	H7760	form
+41:4:34	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 41:4:34	𐤉𐤁𐤀𐤓	spelling	[𐤉] 𐤁𐤀𐤓 	H874	root
 41:5:33	𐤅𐤕𐤇𐤓𐤃	spelling	𐤅+[𐤕] 𐤇𐤓𐤃 	H2729	root
 41:5:38	𐤅𐤄𐤌𐤉𐤋𐤋𐤉𐤌	english	𐤅+𐤄+[𐤌] 𐤉𐤋𐤋 𐤉𐤌	H3213	root
 41:5:42	𐤅𐤕𐤕𐤄𐤋𐤊	spelling	𐤅+[𐤕𐤕] 𐤄𐤋𐤊 	H1980	root
+41:6:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 41:6:3	𐤀𐤇𐤉𐤅𐤕𐤉𐤅	spelling	 𐤀𐤇𐤉𐤅𐤕 𐤉+𐤅	H269	matres
 41:6:5	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
 41:6:11	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
 41:6:13	𐤅𐤉𐤎𐤅𐤊𐤅	english	𐤅+[𐤉] 𐤎𐤅𐤊 𐤅	H5480	root
+41:6:14	𐤄𐤈𐤅𐤁𐤋	english	[𐤄] 𐤈𐤅𐤁𐤋 	H2881	matres
+41:6:22	𐤅𐤕𐤓𐤒𐤃	spelling	𐤅+[𐤕] 𐤓𐤒𐤃 	H7540	root
 41:6:22	𐤕𐤇𐤐𐤑𐤉	english	[𐤕] 𐤇𐤐𐤑 𐤉	H2654	root
+41:6:24	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
 41:6:25	𐤁𐤒𐤏𐤓𐤄	spelling	𐤁 𐤒𐤏𐤓𐤄 	H7086	root
+41:6:25	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
 41:6:28	𐤁𐤒𐤏𐤓𐤄	spelling	𐤁 𐤒𐤏𐤓𐤄 	H7086	root
+41:6:41	𐤅𐤉𐤐𐤓𐤎	spelling	𐤅+[𐤉] 𐤐𐤓𐤎 	H6536	root
+41:6:41	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:6:45	𐤁𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤁 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:7:4	𐤈𐤁𐤉𐤋𐤕	spelling	 𐤈𐤁𐤉𐤋 𐤕	H2881	matres
+41:7:11	𐤐𐤓𐤅𐤔𐤅	spelling	 𐤐𐤓𐤅𐤔 𐤅	H6571	matres
 41:7:13	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+41:7:17	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 41:7:26	𐤉𐤅𐤍𐤉𐤕	spelling	 𐤉𐤅𐤍𐤉 𐤕	H3125	root
 41:7:36	𐤋𐤄𐤊𐤓𐤉𐤆	spelling	𐤋+[𐤄] 𐤊𐤓𐤉𐤆 	H3745	matres
+41:8:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:8:6	𐤅𐤉𐤐𐤓𐤎	spelling	𐤅+[𐤉] 𐤐𐤓𐤎 	H6536	root
+41:8:6	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:8:10	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:8:27	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:8:28	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+41:8:33	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:8:34	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 41:9:3	𐤌𐤆𐤄𐤉𐤓𐤉𐤌	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤉𐤌	H2096	matres
+41:9:9	𐤅𐤉𐤆𐤄𐤉𐤓𐤌	english	𐤅+[𐤉] 𐤆𐤄𐤉𐤓 𐤌	H2094	matres
+41:9:18	𐤉𐤀𐤇𐤆𐤄𐤅	english	[𐤉] 𐤀𐤇𐤆𐤄 𐤅	H270	form
+41:9:18	𐤕𐤋𐤌𐤉𐤃𐤉𐤊	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤊	H8527	root
 41:9:20	𐤅𐤉𐤕𐤂𐤅𐤋𐤋	english	𐤅+[𐤉𐤕] 𐤂𐤅𐤋𐤋 	H1556	matres
+41:9:31	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 41:9:31	𐤋𐤄𐤌𐤎𐤓	spelling	𐤋+[𐤄] 𐤌𐤎𐤓 	H4560	root
 41:9:37	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 41:9:37	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
-41:9:39	𐤕𐤏𐤑𐤓𐤄𐤅	english	[𐤕] 𐤏𐤑𐤓𐤄 𐤅	H6113	form
+41:9:39	𐤕𐤏𐤑𐤓𐤄𐤅	spelling	[𐤕] 𐤏𐤑𐤓𐤄 𐤅	H6113	form
 41:9:42	𐤄𐤌𐤊𐤔𐤉𐤋	spelling	𐤄 𐤌𐤊𐤔𐤉𐤋 	H4383	matres
 41:9:43	𐤕𐤊𐤔𐤉𐤋𐤊	spelling	[𐤕] 𐤊𐤔𐤉𐤋 𐤊	H3782	matres
 41:9:45	𐤕𐤊𐤔𐤉𐤋𐤊	spelling	[𐤕] 𐤊𐤔𐤉𐤋 𐤊	H3782	matres
 41:9:47	𐤕𐤊𐤔𐤉𐤋𐤊	spelling	[𐤕] 𐤊𐤔𐤉𐤋 𐤊	H3782	matres
 41:9:49	𐤉𐤌𐤋𐤇	spelling	[𐤉] 𐤌𐤋𐤇 	H4414	root
 41:9:49	𐤉𐤌𐤋𐤇	spelling	[𐤉] 𐤌𐤋𐤇 	H4414	root
+41:9:50	𐤕𐤕𐤒𐤍𐤅	english	[𐤕] 𐤕𐤒𐤍𐤅 	H7069	form
+41:10:14	𐤕𐤌𐤍𐤏𐤅𐤌	spelling	[𐤕] 𐤌𐤍𐤏𐤅 𐤌	H4513	form
 41:10:15	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 41:10:17	𐤅𐤀𐤉𐤓𐤔	spelling	𐤅+[𐤀] 𐤉𐤓𐤔 	H3423	root
+41:10:23	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 41:10:29	𐤀𐤇𐤉𐤅𐤕𐤉𐤅	spelling	 𐤀𐤇𐤉𐤅𐤕 𐤉+𐤅	H269	matres
 41:10:29	𐤔𐤃𐤅𐤕𐤉𐤅	spelling	 𐤔𐤃𐤅𐤕 𐤉+𐤅	H7704	form
 41:10:30	𐤄𐤓𐤃𐤉𐤐𐤅𐤕	spelling	[𐤄] 𐤓𐤃𐤉𐤐 𐤅𐤕	H7291	matres
 41:10:33	𐤉𐤌𐤎𐤓	spelling	[𐤉] 𐤌𐤎𐤓 	H4560	root
+41:10:38	𐤅𐤋𐤄𐤈𐤁𐤋	english	𐤅+𐤋+[𐤄] 𐤈𐤁𐤋 	H2881	root
+41:10:38	𐤁𐤈𐤁𐤉𐤋𐤄	spelling	𐤁 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+41:10:39	𐤅𐤁𐤈𐤁𐤉𐤋𐤄	spelling	𐤅+𐤁 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+41:10:39	𐤕𐤈𐤁𐤋𐤅	spelling	[𐤕] 𐤈𐤁𐤋 𐤅	H2881	root
 41:10:48	𐤋𐤄𐤔𐤕𐤉𐤒𐤅	english	𐤋+[𐤄] 𐤔𐤕𐤉𐤒 𐤅	H8367	matres
+41:11:1	𐤌𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤌 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 41:11:11	𐤋𐤏𐤓𐤅𐤁	english	𐤋 𐤏𐤓𐤅𐤁 	H6153	matres
+41:11:14	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 41:11:21	𐤀𐤓𐤓𐤕𐤄	english	 𐤀𐤓𐤓 𐤕+𐤄	H779	root
 41:11:25	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
 41:11:26	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
 41:12:15	𐤇𐤍𐤐𐤕𐤌	english	 𐤇𐤍𐤐 𐤕+𐤌	H2611	root
 41:12:19	𐤉𐤉𐤁𐤌	spelling	[𐤉] 𐤉𐤁𐤌 	H2992	root
+41:12:43	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:13:1	𐤌𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤌 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+41:13:2	𐤕𐤕𐤐𐤓𐤒	spelling	[𐤕𐤕] 𐤐𐤓𐤒 	H6561	root
 41:13:5	𐤉𐤕𐤏𐤄	spelling	[𐤉] 𐤕𐤏𐤄 	H8582	root
 41:13:9	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
 41:14:1	𐤉𐤕𐤐𐤔𐤄𐤅	spelling	[𐤉] 𐤕𐤐𐤔𐤄𐤅 	H8610	form
+41:14:12	𐤅𐤍𐤊𐤉𐤍	spelling	 𐤅𐤍𐤊 𐤉+𐤍	H5221	form
+41:14:19	𐤋𐤄𐤕𐤏𐤑𐤁	english	𐤋+[𐤄𐤕] 𐤏𐤑𐤁 	H6087	root
 41:14:21	𐤉𐤌𐤎𐤓	spelling	[𐤉] 𐤌𐤎𐤓 	H4560	root
+41:14:29	𐤀𐤊𐤔𐤋	spelling	[𐤀] 𐤊𐤔𐤋 	H3782	root
 41:14:30	𐤕𐤊𐤇𐤔	spelling	[𐤕] 𐤊𐤇𐤔 	H3584	root
 41:14:31	𐤀𐤊𐤇𐤔	spelling	[𐤀] 𐤊𐤇𐤔 	H3584	root
+41:14:32	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 41:14:41	𐤍𐤌𐤎𐤓	spelling	[𐤍] 𐤌𐤎𐤓 	H4560	root
+41:14:51	𐤅𐤉𐤀𐤇𐤆𐤄𐤅	english	𐤅+[𐤉] 𐤀𐤇𐤆𐤄 𐤅	H270	form
 41:14:72	𐤕𐤊𐤇𐤔	spelling	[𐤕] 𐤊𐤇𐤔 	H3584	root
+41:15:9	𐤀𐤐𐤈𐤓	spelling	[𐤀] 𐤐𐤈𐤓 	H6362	root
 41:15:21	𐤅𐤉𐤀𐤍𐤎𐤅	spelling	𐤅+[𐤉] 𐤀𐤍𐤎 𐤅	H597	root
 41:15:32	𐤅𐤍𐤀𐤌𐤉𐤍	spelling	𐤅 𐤍𐤀𐤌 𐤉+𐤍	H5002	root
 41:16:4	𐤍𐤂𐤋𐤋𐤄	english	[𐤍] 𐤂𐤋𐤋 𐤄	H1556	root
+41:16:7	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 42:1:3	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
 42:1:8	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
 42:1:17	𐤋𐤕𐤁𐤅𐤍𐤕	english	𐤋 𐤕𐤁𐤅𐤍 𐤕	H8394	root
+42:1:22	𐤍𐤀𐤋𐤌	spelling	[𐤍] 𐤀𐤋𐤌 	H481	root
+42:1:24	𐤅𐤕𐤕𐤇𐤁𐤀	english	𐤅+[𐤕𐤕] 𐤇𐤁𐤀 	H2244	root
 42:1:41	𐤅𐤉𐤓𐤒𐤃	english	𐤅+[𐤉] 𐤓𐤒𐤃 	H7540	root
 42:1:48	𐤉𐤀𐤔𐤓𐤅𐤍𐤉	english	[𐤉] 𐤀𐤔𐤓𐤅𐤍𐤉 	H833	form
+42:1:77	𐤁𐤎𐤋𐤉𐤇𐤕	english	𐤁 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+42:2:12	𐤌𐤇𐤕𐤋	english	[𐤌] 𐤇𐤕𐤋 	H2853	root
+42:2:29	𐤕𐤐𐤈𐤓	english	[𐤕] 𐤐𐤈𐤓 	H6362	root
+42:3:1	𐤀𐤁𐤉𐤋𐤉𐤍	english	 𐤀𐤁𐤉𐤋 𐤉+𐤍	H58	matres
+42:3:3	𐤈𐤁𐤉𐤋𐤕	spelling	 𐤈𐤁𐤉𐤋 𐤕	H2881	matres
 42:3:3	𐤋𐤎𐤋𐤉𐤇𐤕	spelling	𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+42:3:7	𐤋𐤄𐤈𐤁𐤋	spelling	𐤋+[𐤄] 𐤈𐤁𐤋 	H2881	root
 42:3:9	𐤉𐤂𐤃𐤏	spelling	[𐤉] 𐤂𐤃𐤏 	H1438	root
+42:3:12	𐤋𐤄𐤈𐤁𐤋	spelling	𐤋+[𐤄] 𐤈𐤁𐤋 	H2881	root
+42:3:16	𐤉𐤈𐤁𐤋	spelling	[𐤉] 𐤈𐤁𐤋 	H2881	root
 42:4:6	𐤍𐤌𐤎𐤓𐤄	spelling	[𐤍] 𐤌𐤎𐤓 𐤄	H4560	root
 42:4:21	𐤍𐤕𐤌𐤋𐤀	spelling	[𐤍𐤕] 𐤌𐤋𐤀 	H4390	root
 42:4:26	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
@@ -168,108 +298,208 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 42:5:19	𐤄𐤓𐤏𐤐𐤉𐤌	english	[𐤄] 𐤓𐤏𐤐 𐤉𐤌	H7491	root
 42:5:20	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
 42:5:23	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
-42:6:17	𐤌𐤇𐤋𐤉𐤉𐤄𐤌	english	 𐤌𐤇𐤋𐤉𐤉𐤄 𐤌	H4245	matres
+42:5:30	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+42:6:7	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
+42:6:11	𐤅𐤉𐤅𐤎𐤃𐤅	english	𐤅 𐤉𐤅𐤎𐤃 𐤅	H3245	matres
+42:6:13	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+42:6:17	𐤌𐤇𐤋𐤉𐤉𐤄𐤌	english	 𐤌𐤇𐤋𐤉𐤉𐤄 𐤌	H4246	matres
 42:6:18	𐤄𐤍𐤋𐤇𐤑𐤉𐤌	spelling	𐤄+[𐤍] 𐤋𐤇𐤑 𐤉𐤌	H3905	root
+42:6:20	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+42:6:34	𐤕𐤒𐤅𐤅	english	[𐤕] 𐤒𐤅𐤅 	H6960	form
+42:6:36	𐤓𐤇𐤌𐤍𐤉𐤌	spelling	 𐤓𐤇𐤌𐤍𐤉 𐤌	H7362	root
+42:6:38	𐤃𐤇𐤅𐤒𐤄	english	 𐤃𐤇𐤅𐤒 𐤄	H1766	matres
 42:6:39	𐤋𐤍𐤄𐤋	spelling	𐤋 𐤍𐤄𐤋 	H5095	root
 42:6:48	𐤅𐤉𐤉𐤎𐤃𐤅	english	𐤅+[𐤉] 𐤉𐤎𐤃 𐤅	H3245	root
 42:6:48	𐤋𐤄𐤍𐤉𐤏𐤅	english	𐤋+[𐤄] 𐤍𐤉𐤏 𐤅	H5128	matres
+42:7:11	𐤌𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤌 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 42:7:19	𐤍𐤇𐤊𐤄	spelling	[𐤍] 𐤇𐤊𐤄 	H2442	root
+42:7:20	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
 42:7:20	𐤍𐤇𐤊𐤄	spelling	[𐤍] 𐤇𐤊𐤄 	H2442	root
 42:7:25	𐤅𐤄𐤌𐤏𐤍𐤂𐤉𐤌	english	𐤅+𐤄+[𐤌] 𐤏𐤍𐤂 𐤉𐤌	H6026	root
+42:7:28	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+42:7:29	𐤁𐤈𐤁𐤉𐤋𐤕	spelling	𐤁 𐤈𐤁𐤉𐤋 𐤕	H2881	matres
 42:7:32	𐤓𐤒𐤃𐤕𐤌	spelling	 𐤓𐤒𐤃 𐤕+𐤌	H7540	root
-42:7:36	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
-42:7:37	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
-42:7:39	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
+42:7:33	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+42:7:36	𐤄𐤐𐤓𐤅𐤔	spelling	𐤄 𐤐𐤓𐤅𐤔 	H6571	matres
+42:7:37	𐤄𐤐𐤓𐤅𐤔	spelling	𐤄 𐤐𐤓𐤅𐤔 	H6571	matres
+42:7:39	𐤄𐤐𐤓𐤅𐤔	spelling	𐤄 𐤐𐤓𐤅𐤔 	H6571	matres
 42:7:41	𐤇𐤉𐤁𐤉𐤌	english	 𐤇𐤉𐤁 𐤉𐤌	H2326	matres
 42:7:47	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
 42:7:47	𐤍𐤎𐤋𐤇	spelling	[𐤍] 𐤎𐤋𐤇 	H5545	root
 42:7:48	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
+42:8:16	𐤉𐤔𐤉𐤌𐤄𐤅	spelling	[𐤉] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
+42:8:22	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+42:8:22	𐤅𐤉𐤔𐤅𐤈𐤅	spelling	𐤅+[𐤉] 𐤔𐤅𐤈 𐤅	H7751	root
 42:8:23	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
 42:8:29	𐤅𐤍𐤀𐤎𐤓	spelling	𐤅+[𐤍] 𐤀𐤎𐤓 	H631	root
 42:8:43	𐤋𐤓𐤐𐤀𐤕𐤄	english	𐤋 𐤓𐤐𐤀 𐤕+𐤄	H7495	root
 42:8:45	𐤃𐤇𐤒𐤉𐤌	english	 𐤃𐤇𐤒 𐤉𐤌	H1766	root
 42:8:47	𐤅𐤕𐤇𐤓𐤃	spelling	𐤅+[𐤕] 𐤇𐤓𐤃 	H2729	root
 42:9:5	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+42:9:14	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+42:9:16	𐤅𐤉𐤐𐤓𐤎	spelling	𐤅+[𐤉] 𐤐𐤓𐤎 	H6536	root
+42:9:16	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+42:9:19	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+42:9:39	𐤌𐤓𐤅𐤑𐤑	english	[𐤌] 𐤓𐤅𐤑𐤑 	H7533	matres
+42:9:43	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 42:9:44	𐤋𐤄𐤌𐤎𐤓	spelling	𐤋+[𐤄] 𐤌𐤎𐤓 	H4560	root
 42:9:48	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 42:9:48	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+42:9:50	𐤕𐤏𐤑𐤓𐤄𐤅	spelling	[𐤕] 𐤏𐤑𐤓𐤄 𐤅	H6113	form
 42:10:10	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
 42:10:11	𐤄𐤍𐤃𐤁𐤒	english	𐤄+[𐤍] 𐤃𐤁𐤒 	H1692	root
 42:10:22	𐤍𐤌𐤎𐤓	spelling	[𐤍] 𐤌𐤎𐤓 	H4560	root
+42:10:23	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 42:10:25	𐤅𐤀𐤉𐤓𐤔	spelling	𐤅+[𐤀] 𐤉𐤓𐤔 	H3423	root
 42:10:40	𐤅𐤕𐤏𐤆𐤓	spelling	𐤅+[𐤕] 𐤏𐤆𐤓 	H5826	root
+42:11:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+42:11:4	𐤄𐤇𐤉𐤁	english	𐤄 𐤇𐤉𐤁 	H2326	matres
 42:11:10	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 42:11:10	𐤅𐤋𐤃𐤐𐤒	spelling	𐤅+𐤋 𐤃𐤐𐤒 	H1849	root
+42:11:17	𐤄𐤍𐤇𐤋𐤒𐤄	spelling	𐤄+[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
 42:11:18	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
+42:11:27	𐤉𐤍𐤒𐤕	english	 𐤉𐤍𐤒 𐤕	H3243	root
+42:11:33	𐤉𐤔𐤉𐤌𐤄𐤅	spelling	[𐤉] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
 42:11:36	𐤊𐤄𐤀𐤉𐤓	english	𐤊+𐤄 𐤀𐤉𐤓 	H216	matres
-42:11:38	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
+42:11:38	𐤄𐤐𐤓𐤅𐤔	spelling	𐤄 𐤐𐤓𐤅𐤔 	H6571	matres
 42:11:46	𐤏𐤌𐤎𐤉𐤌	english	 𐤏𐤌𐤎 𐤉𐤌	H6006	root
+42:11:48	𐤒𐤁𐤓𐤉𐤄𐤌	english	 𐤒𐤁𐤓𐤉𐤄 𐤌	H6900	matres
+42:11:53	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
+42:11:53	𐤋𐤔𐤈𐤌	english	𐤋 𐤔𐤈𐤌 	H7852	root
+42:12:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+42:12:3	𐤋𐤇𐤔𐤕𐤌	english	 𐤋𐤇𐤔 𐤕+𐤌	H3908	root
 42:12:7	𐤍𐤌𐤍𐤅𐤕	spelling	[𐤍] 𐤌𐤍𐤅 𐤕	H4487	form
 42:12:18	𐤀𐤎𐤌𐤉	english	 𐤀𐤎𐤌 𐤉	H618	root
+42:12:18	𐤅𐤀𐤊𐤍𐤎𐤄	english	𐤅+[𐤀] 𐤊𐤍𐤎 𐤄	H3664	root
+42:12:22	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 42:12:36	𐤅𐤃𐤐𐤒	spelling	𐤅 𐤃𐤐𐤒 	H1849	root
 42:12:37	𐤅𐤉𐤅𐤔𐤉𐤁𐤌	spelling	𐤅 𐤉𐤅𐤔𐤉𐤁 𐤌	H3427	matres
-42:12:58	𐤉𐤌𐤎𐤓𐤊	english	[𐤉] 𐤌𐤎𐤓 𐤊	H4560	root
+42:12:58	𐤉𐤎𐤇𐤁	english	[𐤉] 𐤎𐤇𐤁 	H5498	root
+42:12:58	𐤉𐤌𐤎𐤓𐤊	spelling	[𐤉] 𐤌𐤎𐤓 𐤊	H4560	root
+42:13:11	𐤆𐤒𐤅𐤐𐤄	english	 𐤆𐤒𐤅𐤐 𐤄	H2210	matres
+42:13:13	𐤅𐤕𐤔𐤁𐤇	english	𐤅+[𐤕] 𐤔𐤁𐤇 	H7623	root
+42:13:16	𐤌𐤌𐤅𐤎𐤓𐤅𐤕𐤉𐤄	english	𐤌 𐤌𐤅𐤎𐤓𐤅𐤕 𐤉+𐤄	H4147	form
+42:13:19	𐤉𐤒𐤍𐤍	english	[𐤉] 𐤒𐤍𐤍 	H7077	root
 42:13:19	𐤁𐤏𐤍𐤐𐤉𐤅	spelling	𐤁 𐤏𐤍𐤐 𐤉+𐤅	H6057	root
 42:13:25	𐤅𐤋𐤃𐤐𐤒	spelling	𐤅+𐤋 𐤃𐤐𐤒 	H1849	root
 42:13:33	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
 42:13:34	𐤄𐤍𐤔𐤋𐤇𐤉𐤌	spelling	𐤄+[𐤍] 𐤔𐤋𐤇 𐤉𐤌	H7971	root
 42:14:4	𐤅𐤉𐤓𐤐𐤀𐤄𐤅	spelling	𐤅+[𐤉] 𐤓𐤐𐤀𐤄 𐤅	H7495	form
+42:14:11	𐤉𐤔𐤐𐤋	spelling	[𐤉] 𐤔𐤐𐤋 	H8213	root
 42:14:29	𐤋𐤄𐤋𐤏𐤉𐤂	english	𐤋+[𐤄] 𐤋𐤏𐤉𐤂 	H3932	matres
 42:14:31	𐤋𐤄𐤕𐤂𐤓𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤂𐤓𐤅 𐤕	H1481	form
+42:15:8	𐤕𐤃𐤋𐤉𐤒	english	[𐤕] 𐤃𐤋𐤉𐤒 	H1814	matres
 42:15:9	𐤄𐤃𐤓𐤊𐤌𐤅𐤍	english	𐤄 𐤃𐤓𐤊𐤌𐤅𐤍 	H1871	root
 42:15:15	𐤔𐤃𐤅𐤕𐤉𐤅	spelling	 𐤔𐤃𐤅𐤕 𐤉+𐤅	H7704	form
 42:15:27	𐤅𐤉𐤈𐤁𐤇	english	𐤅+[𐤉] 𐤈𐤁𐤇 	H2873	root
+42:16:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 42:16:13	𐤉𐤁𐤆𐤄	spelling	[𐤉] 𐤁𐤆𐤄 	H959	root
+42:16:24	𐤁𐤌𐤅𐤒𐤃	english	𐤁 𐤌𐤅𐤒𐤃 	H4168	root
 42:16:28	𐤉𐤏𐤉𐤃	spelling	[𐤉] 𐤏𐤉𐤃 	H5749	matres
+42:17:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 42:17:2	𐤉𐤊𐤔𐤉𐤋	english	[𐤉] 𐤊𐤔𐤉𐤋 	H3782	matres
-42:18:11	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
-42:18:14	𐤉𐤔𐤐𐤋	english	[𐤉] 𐤔𐤐𐤋 	H8213	root
+42:18:11	𐤄𐤐𐤓𐤅𐤔	spelling	𐤄 𐤐𐤓𐤅𐤔 	H6571	matres
+42:18:14	𐤍𐤑𐤃𐤒	spelling	[𐤍] 𐤑𐤃𐤒 	H6663	root
+42:18:14	𐤉𐤔𐤐𐤋	spelling	[𐤉] 𐤔𐤐𐤋 	H8213	root
+42:18:16	𐤕𐤌𐤍𐤏𐤅𐤌	spelling	[𐤕] 𐤌𐤍𐤏𐤅 𐤌	H4513	form
 42:18:18	𐤅𐤀𐤉𐤓𐤔	spelling	𐤅+[𐤀] 𐤉𐤓𐤔 	H3423	root
 42:19:8	𐤍𐤊𐤎𐤉	spelling	 𐤍𐤊𐤎 𐤉	H5232	root
 42:19:11	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
+42:19:14	𐤍𐤇𐤐𐤑	spelling	[𐤍] 𐤇𐤐𐤑 	H2654	root
+42:19:29	𐤌𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤌 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 42:19:37	𐤋𐤔𐤁𐤇	spelling	𐤋 𐤔𐤁𐤇 	H7623	root
-42:20:23	𐤍𐤊𐤋𐤉𐤄𐤌	spelling	[𐤍] 𐤊𐤋𐤉𐤄 𐤌	H3615	matres
+42:20:45	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+42:21:4	𐤌𐤇𐤎𐤓𐤅𐤍𐤄	english	𐤌 𐤇𐤎𐤓𐤅𐤍 𐤄	H2642	root
+42:21:6	𐤕𐤕𐤐𐤓𐤒	spelling	[𐤕𐤕] 𐤐𐤓𐤒 	H6561	root
+42:21:12	𐤅𐤕𐤅𐤁𐤀𐤅	english	𐤅+[𐤕] 𐤅𐤁𐤀𐤅 	H935	form
+42:21:16	𐤕𐤌𐤎𐤓𐤅	english	[𐤕] 𐤌𐤎𐤓 𐤅	H4560	root
 42:21:26	𐤅𐤉𐤌𐤅𐤂𐤅	english	𐤅+[𐤉] 𐤌𐤅𐤂 𐤅	H4127	root
 42:22:3	𐤍𐤊𐤍𐤎	spelling	[𐤍] 𐤊𐤍𐤎 	H3664	root
 42:22:4	𐤉𐤌𐤎𐤓𐤍𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤍𐤅	H4560	root
 42:22:15	𐤍𐤊𐤎𐤐𐤕𐤉	spelling	[𐤍] 𐤊𐤎𐤐 𐤕+𐤉	H3700	root
 42:22:22	𐤍𐤇𐤓𐤑	spelling	[𐤍] 𐤇𐤓𐤑 	H2782	root
 42:22:22	𐤉𐤌𐤎𐤓	spelling	[𐤉] 𐤌𐤎𐤓 	H4560	root
+42:22:39	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 42:22:61	𐤕𐤊𐤇𐤔	spelling	[𐤕] 𐤊𐤇𐤔 	H3584	root
+42:22:68	𐤕𐤔𐤋𐤇𐤅𐤍𐤉	spelling	[𐤕] 𐤔𐤋𐤇𐤅𐤍𐤉 	H7971	form
 42:24:4	𐤌𐤆𐤄𐤉𐤓𐤉𐤌	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤉𐤌	H2096	matres
 42:24:7	𐤋𐤄𐤌𐤎𐤓	spelling	𐤋+[𐤄] 𐤌𐤎𐤓 	H4560	root
 42:24:27	𐤅𐤉𐤁𐤀𐤓	spelling	𐤅+[𐤉] 𐤁𐤀𐤓 	H874	root
 42:24:33	𐤍𐤒𐤄𐤋𐤉𐤌	spelling	[𐤍] 𐤒𐤄𐤋 𐤉𐤌	H6950	root
 42:24:52	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
-43:3:11	𐤍𐤏𐤉𐤃	english	[𐤍] 𐤏𐤉𐤃 	H5749	matres
+43:1:25	𐤌𐤈𐤁𐤉𐤋	spelling	[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+43:1:26	𐤌𐤈𐤁𐤉𐤋	spelling	[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+43:1:27	𐤌𐤄𐤕𐤉𐤓	english	𐤌+𐤄 𐤕𐤉𐤓 	H8447	matres
+43:1:28	𐤌𐤈𐤁𐤉𐤋	spelling	[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+43:1:31	𐤋𐤈𐤁𐤋	spelling	𐤋 𐤈𐤁𐤋 	H2881	root
+43:1:33	𐤉𐤈𐤁𐤋	spelling	[𐤉] 𐤈𐤁𐤋 	H2881	root
+43:1:38	𐤐𐤓𐤅𐤔𐤅	spelling	 𐤐𐤓𐤅𐤔 𐤅	H6571	matres
+43:1:41	𐤕𐤓𐤂𐤅𐤌𐤅	spelling	[𐤕] 𐤓𐤂𐤅𐤌 𐤅	H7275	form
+43:1:42	𐤕𐤓𐤂𐤅𐤌𐤅	spelling	[𐤕] 𐤓𐤂𐤅𐤌 𐤅	H7275	form
+43:2:10	𐤄𐤂𐤓𐤅𐤏	english	[𐤄] 𐤂𐤓𐤅𐤏 	H1639	matres
+43:2:11	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:2:12	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:2:22	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:3:11	𐤍𐤏𐤉𐤃	spelling	[𐤍] 𐤏𐤉𐤃 	H5749	matres
 43:3:11	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
 43:3:32	𐤉𐤏𐤉𐤃	spelling	[𐤉] 𐤏𐤉𐤃 	H5749	matres
+43:4:1	𐤅𐤄𐤈𐤁𐤉𐤋	english	𐤅+[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
+43:4:2	𐤄𐤈𐤁𐤉𐤋	spelling	[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
+43:4:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 43:4:9	𐤄𐤔𐤌𐤓𐤅𐤍𐤉𐤕	english	𐤄 𐤔𐤌𐤓𐤅𐤍𐤉 𐤕	H8118	matres
 43:4:9	𐤔𐤌𐤓𐤅𐤍𐤉𐤕	english	 𐤔𐤌𐤓𐤅𐤍𐤉 𐤕	H8118	matres
 43:4:14	𐤉𐤑𐤌𐤀	spelling	[𐤉] 𐤑𐤌𐤀 	H6770	root
 43:4:15	𐤀𐤑𐤌𐤀	english	[𐤀] 𐤑𐤌𐤀 	H6770	root
-43:5:6	𐤄𐤕𐤇𐤐𐤑	english	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+43:4:38	𐤍𐤊𐤍𐤎𐤕𐤌	english	[𐤍] 𐤊𐤍𐤎 𐤕+𐤌	H3664	root
+43:5:4	𐤄𐤕𐤂𐤏𐤔𐤅	english	[𐤄𐤕] 𐤂𐤏𐤔 𐤅	H1607	root
+43:5:6	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+43:5:36	𐤋𐤄𐤔𐤋𐤉𐤌𐤌	english	𐤋+𐤄 𐤔𐤋𐤉𐤌 𐤌	H7965	matres
 43:5:43	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
 43:5:43	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
-43:6:27	𐤕𐤏𐤌𐤋𐤅	spelling	[𐤕] 𐤏𐤌𐤋 𐤅	H5998	root
+43:6:3	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:6:11	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:6:12	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:6:13	𐤋𐤀𐤊𐤋𐤉𐤄𐤌	english	𐤋 𐤀𐤊𐤋𐤉𐤄 𐤌	H402	matres
+43:6:21	𐤅𐤉𐤅𐤀𐤉𐤋𐤅	english	𐤅 𐤉𐤅𐤀𐤉𐤋 𐤅	H2974	matres
+43:6:22	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:6:22	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:6:24	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:6:27	𐤕𐤏𐤌𐤋𐤅	english	[𐤕] 𐤏𐤌𐤋 𐤅	H5998	root
 43:6:30	𐤅𐤍𐤀𐤌𐤉𐤍	spelling	𐤅 𐤍𐤀𐤌 𐤉+𐤍	H5002	root
 43:6:35	𐤉𐤑𐤌𐤀	spelling	[𐤉] 𐤑𐤌𐤀 	H6770	root
+43:6:37	𐤀𐤄𐤃𐤐𐤍𐤅	english	[𐤀] 𐤄𐤃𐤐 𐤍𐤅	H1920	root
 43:6:44	𐤉𐤌𐤔𐤊𐤄𐤅	english	[𐤉] 𐤌𐤔𐤊𐤄 𐤅	H4900	form
+43:6:66	𐤌𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤌 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:7:3	𐤕𐤋𐤌𐤉𐤃𐤉𐤊	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤊	H8527	root
 43:7:12	𐤕𐤋𐤅𐤍𐤄	spelling	[𐤕] 𐤋𐤅𐤍 𐤄	H3885	root
 43:7:39	𐤍𐤕𐤐𐤀𐤓	spelling	[𐤍𐤕] 𐤐𐤀𐤓 	H6286	root
+43:7:45	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
 43:8:11	𐤀𐤓𐤔𐤉𐤏𐤊	english	[𐤀] 𐤓𐤔𐤉𐤏 𐤊	H7561	matres
+43:9:6	𐤅𐤉𐤌𐤓𐤇	spelling	𐤅+[𐤉] 𐤌𐤓𐤇 	H4799	root
+43:9:11	𐤅𐤉𐤌𐤓𐤇	spelling	𐤅+[𐤉] 𐤌𐤓𐤇 	H4799	root
 43:9:15	𐤍𐤐𐤒𐤇𐤅	spelling	[𐤍] 𐤐𐤒𐤇 𐤅	H6491	root
+43:9:23	𐤉𐤅𐤋𐤃𐤉𐤅	spelling	 𐤉𐤅𐤋𐤃 𐤉+𐤅	H3205	form
+43:9:27	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 43:10:16	𐤋𐤍𐤄𐤋	spelling	𐤋 𐤍𐤄𐤋 	H5095	root
+43:10:22	𐤅𐤎𐤕𐤉𐤅	english	𐤅 𐤎𐤕𐤉𐤅 	H5638	matres
 43:10:24	𐤕𐤕𐤋𐤄	english	[𐤕] 𐤕𐤋𐤄 	H8518	root
 43:10:25	𐤉𐤏𐤉𐤃𐤅	spelling	[𐤉] 𐤏𐤉𐤃 𐤅	H5749	matres
 43:10:33	𐤍𐤎𐤒𐤋	english	[𐤍] 𐤎𐤒𐤋 	H5619	root
 43:10:33	𐤂𐤃𐤐𐤊	english	 𐤂𐤃𐤐 𐤊	H1442	root
+43:10:40	𐤄𐤈𐤁𐤉𐤋	spelling	[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
+43:11:7	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:11:11	𐤀𐤏𐤉𐤓𐤍𐤅	english	[𐤀] 𐤏𐤉𐤓 𐤍𐤅	H5782	matres
 43:11:18	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
+43:11:33	𐤅𐤕𐤆𐤏𐤌	english	𐤅+[𐤕] 𐤆𐤏𐤌 	H2194	root
 43:11:48	𐤍𐤍𐤉𐤇	spelling	[𐤍] 𐤍𐤉𐤇 	H5117	matres
+43:11:54	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 43:11:57	𐤉𐤕𐤐𐤔𐤄𐤅	spelling	[𐤉] 𐤕𐤐𐤔𐤄𐤅 	H8610	form
+43:12:10	𐤄𐤕𐤉𐤏𐤑𐤅	english	[𐤄𐤕] 𐤉𐤏𐤑 𐤅	H3289	root
+43:12:16	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 43:12:16	𐤍𐤕𐤐𐤀𐤓	spelling	[𐤍𐤕] 𐤐𐤀𐤓 	H6286	root
 43:12:19	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
 43:12:27	𐤍𐤎𐤏𐤓𐤄	english	[𐤍] 𐤎𐤏𐤓 𐤄	H5590	root
+43:13:5	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 43:13:6	𐤕𐤓𐤇𐤑	spelling	[𐤕] 𐤓𐤇𐤑 	H7364	root
 43:13:8	𐤕𐤓𐤇𐤑	spelling	[𐤕] 𐤓𐤇𐤑 	H7364	root
 43:13:20	𐤀𐤔𐤋𐤇𐤄𐤅	spelling	[𐤀] 𐤔𐤋𐤇𐤄𐤅 	H7971	form
@@ -278,6 +508,8 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 43:13:32	𐤍𐤕𐤐𐤀𐤓	spelling	[𐤍𐤕] 𐤐𐤀𐤓 	H6286	root
 43:13:38	𐤕𐤊𐤇𐤔	spelling	[𐤕] 𐤊𐤇𐤔 	H3584	root
 43:14:1	𐤉𐤁𐤄𐤋	spelling	[𐤉] 𐤁𐤄𐤋 	H926	root
+43:14:13	𐤀𐤏𐤔𐤍𐤅	spelling	[𐤀] 𐤏𐤔𐤍𐤅 	H6213	form
+43:14:14	𐤀𐤏𐤔𐤍𐤅	spelling	[𐤀] 𐤏𐤔𐤍𐤅 	H6213	form
 43:14:21	𐤅𐤉𐤍𐤑𐤓𐤍	english	𐤅+[𐤉] 𐤍𐤑𐤓 𐤍	H5341	root
 43:14:22	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
 43:14:27	𐤉𐤁𐤄𐤋	spelling	[𐤉] 𐤁𐤄𐤋 	H926	root
@@ -286,17 +518,30 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 43:15:13	𐤉𐤃𐤉𐤃𐤉𐤅	spelling	 𐤉𐤃𐤉𐤃 𐤉+𐤅	H3039	root
 43:16:7	𐤀𐤔𐤋𐤇𐤄𐤅	spelling	[𐤀] 𐤔𐤋𐤇𐤄𐤅 	H7971	form
 43:16:21	𐤏𐤑𐤁𐤅𐤍𐤄	english	 𐤏𐤑𐤁𐤅𐤍 𐤄	H6093	root
+43:16:22	𐤕𐤕𐤏𐤑𐤁𐤅	spelling	[𐤕𐤕] 𐤏𐤑𐤁 𐤅	H6087	root
 43:17:10	𐤅𐤍𐤕𐤐𐤀𐤓𐤕𐤉	english	𐤅+[𐤍𐤕] 𐤐𐤀𐤓 𐤕+𐤉	H6286	root
 43:17:20	𐤌𐤏𐤕𐤉𐤓	spelling	[𐤌] 𐤏𐤕𐤉𐤓 	H6279	matres
+43:18:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:18:1	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:18:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:18:3	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
+43:18:19	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 43:18:20	𐤍𐤒𐤄𐤋𐤉𐤌	spelling	[𐤍] 𐤒𐤄𐤋 𐤉𐤌	H6950	root
+43:18:25	𐤌𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤌 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 43:18:37	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
 43:19:11	𐤄𐤌𐤎𐤂𐤉𐤓	english	𐤄+[𐤌] 𐤎𐤂𐤉𐤓 	H5462	matres
 43:19:28	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
 43:19:30	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
 43:20:6	𐤍𐤊𐤍𐤎	spelling	[𐤍] 𐤊𐤍𐤎 	H3664	root
 43:20:23	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
+43:20:30	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:21:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+43:21:14	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 43:21:15	𐤈𐤋𐤀𐤉	english	 𐤈𐤋𐤀 𐤉	H2922	root
 43:21:18	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+43:21:20	𐤉𐤌𐤎𐤓𐤊	spelling	[𐤉] 𐤌𐤎𐤓 𐤊	H4560	root
+43:21:25	𐤀𐤇𐤔𐤁𐤄	english	[𐤀] 𐤇𐤔𐤁 𐤄	H2803	root
+44:1:5	𐤄𐤈𐤁𐤉𐤋	spelling	[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
 44:1:8	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
 44:1:12	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
 44:2:1	𐤅𐤉𐤕𐤀𐤎𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤀𐤎𐤐 𐤅	H622	root
@@ -305,146 +550,255 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 44:2:29	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
 44:2:38	𐤋𐤎𐤋𐤉𐤇𐤕	spelling	𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
 44:2:38	𐤅𐤒𐤁𐤋𐤕𐤌	spelling	𐤅 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+44:3:13	𐤅𐤊𐤇𐤔𐤕𐤌	english	𐤅 𐤊𐤇𐤔 𐤕+𐤌	H3584	root
+44:3:14	𐤊𐤇𐤔𐤕𐤌	english	 𐤊𐤇𐤔 𐤕+𐤌	H3584	root
+44:4:17	𐤍𐤆𐤄𐤉𐤓𐤄	spelling	[𐤍] 𐤆𐤄𐤉𐤓 𐤄	H2094	matres
 44:4:33	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
+44:4:36	𐤐𐤓𐤅𐤔𐤅	spelling	 𐤐𐤓𐤅𐤔 𐤅	H6571	matres
+44:4:37	𐤅𐤉𐤌𐤊𐤓𐤄𐤅	english	𐤅+[𐤉] 𐤌𐤊𐤓𐤄 𐤅	H4376	form
 44:5:9	𐤍𐤅𐤏𐤃𐤕𐤌	english	 𐤍𐤅𐤏𐤃 𐤕+𐤌	H3259	form
 44:5:16	𐤄𐤍𐤋𐤇𐤑𐤉𐤌	spelling	𐤄+[𐤍] 𐤋𐤇𐤑 𐤉𐤌	H3905	root
+44:5:28	𐤑𐤅𐤉𐤍𐤅	english	 𐤑𐤅𐤉𐤍 𐤅	H6726	matres
+44:5:28	𐤅𐤕𐤇𐤐𐤑𐤅	english	𐤅+[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
 44:5:30	𐤅𐤕𐤕𐤋𐤅	english	𐤅+[𐤕] 𐤕𐤋𐤅 	H8518	form
 44:5:36	𐤄𐤕𐤐𐤓𐤃𐤅	english	[𐤄𐤕] 𐤐𐤓𐤃 𐤅	H6504	root
 44:6:2	𐤅𐤍𐤔𐤌𐤔	english	𐤅+[𐤍] 𐤔𐤌𐤔 	H8120	root
 44:6:3	𐤅𐤍𐤐𐤒𐤉𐤃𐤌	english	𐤅+[𐤍] 𐤐𐤒𐤉𐤃 𐤌	H6485	matres
+44:6:9	𐤅𐤀𐤎𐤉𐤀	spelling	𐤅 𐤀𐤎𐤉𐤀 	H609	matres
+44:7:16	𐤅𐤉𐤅𐤔𐤌𐤅	english	𐤅+[𐤉] 𐤅𐤔𐤌𐤅 	H7760	form
+44:7:21	𐤅𐤕𐤂𐤃𐤋𐤄𐤅	spelling	𐤅+[𐤕] 𐤂𐤃𐤋𐤄 𐤅	H1431	form
 44:7:52	𐤅𐤌𐤓𐤑𐤇𐤉𐤅	english	𐤅+[𐤌] 𐤓𐤑𐤇 𐤉+𐤅	H7523	root
 44:7:53	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
 44:7:57	𐤅𐤉𐤕𐤍𐤐𐤋𐤅	spelling	𐤅+[𐤉𐤕] 𐤍𐤐𐤋 𐤅	H5307	root
 44:8:1	𐤓𐤃𐤉𐤐𐤄	spelling	 𐤓𐤃𐤉𐤐 𐤄	H7291	matres
+44:8:3	𐤅𐤉𐤎𐤇𐤁	english	𐤅+[𐤉] 𐤎𐤇𐤁 	H5498	root
 44:8:5	𐤅𐤉𐤊𐤓𐤆	english	𐤅+[𐤉] 𐤊𐤓𐤆 	H3745	root
+44:8:10	𐤅𐤉𐤒𐤔𐤉𐤁𐤅	spelling	𐤅+[𐤉] 𐤒𐤔𐤉𐤁 𐤅	H7181	matres
+44:8:11	𐤅𐤉𐤒𐤔𐤉𐤁𐤅	spelling	𐤅+[𐤉] 𐤒𐤔𐤉𐤁 𐤅	H7181	matres
+44:8:16	𐤍𐤈𐤁𐤋𐤉𐤌	english	[𐤍] 𐤈𐤁𐤋 𐤉𐤌	H2881	root
 44:8:19	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 44:8:22	𐤕𐤎𐤋𐤇	spelling	[𐤕] 𐤎𐤋𐤇 	H5545	root
 44:8:35	𐤅𐤉𐤁𐤔𐤓	spelling	𐤅+[𐤉] 𐤁𐤔𐤓 	H1319	root
+44:8:36	𐤌𐤄𐤈𐤁𐤋	english	𐤌+[𐤄] 𐤈𐤁𐤋 	H2881	root
 44:9:6	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+44:9:7	𐤍𐤀𐤋𐤌𐤉𐤌	spelling	[𐤍] 𐤀𐤋𐤌 𐤉𐤌	H481	root
 44:9:13	𐤋𐤒𐤃𐤅𐤔𐤉𐤊	english	𐤋 𐤒𐤃𐤅𐤔 𐤉+𐤊	H6918	root
-44:9:36	𐤕𐤓𐤂𐤅𐤌𐤅	english	[𐤕] 𐤓𐤂𐤅𐤌 𐤅	H7275	form
+44:9:36	𐤕𐤓𐤂𐤅𐤌𐤅	spelling	[𐤕] 𐤓𐤂𐤅𐤌 𐤅	H7275	form
 44:10:21	𐤄𐤍𐤔𐤋𐤇𐤉𐤌	spelling	𐤄+[𐤍] 𐤔𐤋𐤇 𐤉𐤌	H7971	root
 44:10:33	𐤅𐤀𐤌𐤄𐤓	spelling	𐤅+[𐤀] 𐤌𐤄𐤓 	H4116	root
 44:10:36	𐤅𐤉𐤁𐤔𐤓	spelling	𐤅+[𐤉] 𐤁𐤔𐤓 	H1319	root
+44:10:38	𐤄𐤍𐤊𐤁𐤔𐤉𐤌	spelling	𐤄+[𐤍] 𐤊𐤁𐤔 𐤉𐤌	H3533	root
 44:10:43	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+44:10:43	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+44:10:47	𐤌𐤈𐤁𐤋	english	[𐤌] 𐤈𐤁𐤋 	H2881	root
 44:11:5	𐤊𐤍𐤐𐤅𐤕𐤉𐤄	english	𐤊𐤍 𐤐𐤅𐤕𐤉 𐤄	H6336	root
+44:11:16	𐤄𐤈𐤁𐤉𐤋	spelling	[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
+44:11:16	𐤕𐤈𐤁𐤋𐤅	spelling	[𐤕] 𐤈𐤁𐤋 𐤅	H2881	root
+44:11:23	𐤅𐤉𐤆𐤄𐤓	spelling	𐤅+[𐤉] 𐤆𐤄𐤓 	H2094	root
 44:12:5	𐤄𐤏𐤕𐤉𐤓𐤄	english	[𐤄] 𐤏𐤕𐤉𐤓 𐤄	H6279	matres
 44:12:11	𐤅𐤉𐤐𐤋𐤈𐤍𐤉	english	𐤅+[𐤉] 𐤐𐤋𐤈𐤍𐤉 	H6403	form
 44:12:16	𐤋𐤃𐤐𐤒	english	𐤋 𐤃𐤐𐤒 	H1849	root
 44:13:6	𐤌𐤊𐤔𐤐	spelling	[𐤌] 𐤊𐤔𐤐 	H3784	root
 44:13:8	𐤕𐤓𐤂𐤅𐤌	spelling	[𐤕] 𐤓𐤂𐤅𐤌 	H7275	form
 44:13:10	𐤋𐤎𐤋𐤐	english	𐤋 𐤎𐤋𐤐 	H5557	root
+44:13:24	𐤈𐤁𐤉𐤋𐤕	spelling	 𐤈𐤁𐤉𐤋 𐤕	H2881	matres
+44:13:25	𐤍𐤒𐤋𐤕𐤉	english	[𐤍] 𐤒𐤋𐤕𐤉 	H7043	form
+44:13:38	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
 44:13:44	𐤍𐤒𐤄𐤋𐤄	english	[𐤍] 𐤒𐤄𐤋 𐤄	H6950	root
+44:13:45	𐤅𐤉𐤊𐤇𐤉𐤔𐤅	english	𐤅+[𐤉] 𐤊𐤇𐤉𐤔 𐤅	H3584	matres
 44:13:45	𐤅𐤂𐤃𐤐	spelling	𐤅 𐤂𐤃𐤐 	H1442	root
+44:13:50	𐤅𐤉𐤏𐤅𐤓𐤓𐤅	spelling	𐤅+[𐤉] 𐤏𐤅𐤓𐤓 𐤅	H5782	form
 44:13:50	𐤓𐤃𐤉𐤐𐤄	spelling	 𐤓𐤃𐤉𐤐 𐤄	H7291	matres
 44:14:15	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
 44:14:15	𐤅𐤍𐤁𐤔𐤓𐤄	english	𐤅+[𐤍] 𐤁𐤔𐤓 𐤄	H1319	root
 44:14:17	𐤋𐤁𐤅𐤕𐤉𐤍𐤅	spelling	 𐤋𐤁𐤅𐤕 𐤉+𐤍𐤅	H3826	form
-44:14:26	𐤍𐤌𐤎𐤓𐤅	english	[𐤍] 𐤌𐤎𐤓 𐤅	H4560	root
+44:14:22	𐤅𐤉𐤆𐤄𐤉𐤓𐤅	spelling	𐤅+[𐤉] 𐤆𐤄𐤉𐤓 𐤅	H2094	matres
+44:14:26	𐤍𐤌𐤎𐤓𐤅	spelling	[𐤍] 𐤌𐤎𐤓 𐤅	H4560	root
+44:15:16	𐤅𐤄𐤓𐤎𐤅𐤕𐤉𐤄	english	𐤅 𐤄𐤓𐤎𐤅𐤕 𐤉+𐤄	H2035	matres
 44:15:19	𐤋𐤄𐤇𐤌𐤉𐤓	english	𐤋+[𐤄] 𐤇𐤌𐤉𐤓 	H2560	matres
 44:15:20	𐤄𐤍𐤇𐤍𐤒	spelling	𐤄+[𐤍] 𐤇𐤍𐤒 	H2614	root
 44:15:29	𐤄𐤍𐤇𐤍𐤒	spelling	𐤄+[𐤍] 𐤇𐤍𐤒 	H2614	root
 44:16:5	𐤅𐤕𐤕𐤇𐤆𐤒𐤍𐤄	english	𐤅+[𐤕] 𐤕𐤇𐤆𐤒𐤍𐤄 	H2388	form
+44:16:6	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
+44:16:15	𐤅𐤕𐤐𐤑𐤓	english	𐤅+[𐤕] 𐤐𐤑𐤓 	H6484	root
 44:16:16	𐤁𐤒𐤎𐤌𐤉𐤄	english	𐤁 𐤒𐤎𐤌 𐤉+𐤄	H7080	root
+44:16:33	𐤋𐤄𐤈𐤁𐤋	spelling	𐤋+[𐤄] 𐤈𐤁𐤋 	H2881	root
 44:17:2	𐤍𐤊𐤍𐤎	spelling	[𐤍] 𐤊𐤍𐤎 	H3664	root
+44:17:10	𐤋𐤁𐤓𐤅𐤀𐤄	english	𐤋+𐤁 𐤓𐤅𐤀𐤄 	H7200	matres
+44:17:12	𐤄𐤉𐤅𐤍𐤉𐤅𐤕	english	𐤄 𐤉𐤅𐤍𐤉 𐤅𐤕	H3125	root
+44:17:13	𐤁𐤁𐤓𐤅𐤀𐤄	english	𐤁+𐤁 𐤓𐤅𐤀𐤄 	H7211	matres
 44:17:18	𐤄𐤕𐤂𐤓𐤅	spelling	[𐤄𐤕] 𐤂𐤓𐤅 	H1481	form
-44:19:2	𐤄𐤒𐤁𐤋𐤕𐤌	english	[𐤄] 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+44:18:25	𐤈𐤁𐤉𐤋𐤕	spelling	 𐤈𐤁𐤉𐤋 𐤕	H2881	matres
+44:19:2	𐤄𐤒𐤁𐤋𐤕𐤌	english	𐤄 𐤒𐤁𐤋 𐤕+𐤌	H6903	root
+44:19:3	𐤄𐤈𐤁𐤋𐤕𐤌	english	[𐤄] 𐤈𐤁𐤋 𐤕+𐤌	H2881	root
+44:19:3	𐤈𐤁𐤉𐤋𐤕	spelling	 𐤈𐤁𐤉𐤋 𐤕	H2881	matres
+44:19:4	𐤄𐤈𐤁𐤉𐤋	spelling	[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
+44:19:4	𐤁𐤈𐤁𐤉𐤋𐤕	spelling	𐤁 𐤈𐤁𐤉𐤋 𐤕	H2881	matres
 44:19:13	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
+44:19:19	𐤎𐤐𐤓𐤉𐤄𐤌	english	 𐤎𐤐𐤓𐤉𐤄 𐤌	H5615	matres
+44:19:22	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
+44:19:26	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
+44:19:31	𐤅𐤉𐤆𐤄𐤉𐤓𐤅	spelling	𐤅+[𐤉] 𐤆𐤄𐤉𐤓 𐤅	H2094	matres
+44:19:31	𐤉𐤌𐤋𐤀𐤄𐤅	english	[𐤉] 𐤌𐤋𐤀𐤄 𐤅	H4390	form
+44:19:33	𐤃𐤇𐤒𐤅	english	 𐤃𐤇𐤒 𐤅	H1766	root
 44:20:5	𐤅𐤉𐤅𐤇𐤉𐤋𐤅	english	𐤅 𐤉𐤅𐤇𐤉𐤋 𐤅	H3176	matres
 44:20:9	𐤅𐤕𐤂𐤁𐤓	spelling	𐤅+[𐤕] 𐤂𐤁𐤓 	H1396	root
+44:20:16	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
+44:20:18	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
+44:20:19	𐤁𐤍𐤊𐤋𐤉	spelling	𐤁 𐤍𐤊𐤋 𐤉	H5230	root
 44:20:24	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
 44:20:31	𐤇𐤃𐤋𐤕𐤉	spelling	 𐤇𐤃𐤋 𐤕+𐤉	H2308	root
+44:21:3	𐤌𐤏𐤌𐤎𐤕	english	[𐤌] 𐤏𐤌𐤎 𐤕	H6006	root
 44:21:5	𐤅𐤍𐤊𐤓𐤏	english	𐤅+[𐤍] 𐤊𐤓𐤏 	H3766	root
 44:21:18	𐤍𐤊𐤍𐤎	spelling	[𐤍] 𐤊𐤍𐤎 	H3664	root
 44:21:25	𐤄𐤍𐤇𐤍𐤒	spelling	𐤄+[𐤍] 𐤇𐤍𐤒 	H2614	root
+44:21:27	𐤌𐤀𐤎𐤉𐤀	english	𐤌 𐤀𐤎𐤉𐤀 	H609	matres
+44:21:30	𐤅𐤉𐤌𐤔𐤊𐤄𐤅	spelling	𐤅+[𐤉] 𐤌𐤔𐤊𐤄 𐤅	H4900	form
 44:21:37	𐤉𐤅𐤍𐤉𐤕	spelling	 𐤉𐤅𐤍𐤉 𐤕	H3125	root
 44:22:4	𐤅𐤌𐤎𐤂𐤉𐤓	english	𐤅 𐤌𐤎𐤂𐤉𐤓 	H4525	matres
 44:22:5	𐤉𐤏𐤉𐤃	spelling	[𐤉] 𐤏𐤉𐤃 	H5749	matres
 44:22:18	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
 44:22:28	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
 44:22:30	𐤌𐤅𐤎𐤓𐤅𐤕𐤉𐤅	english	 𐤌𐤅𐤎𐤓𐤅𐤕 𐤉+𐤅	H4147	form
+44:23:10	𐤉𐤔𐤎𐤏𐤅	english	[𐤉] 𐤔𐤎𐤏 𐤅	H8156	root
+44:23:10	𐤅𐤋𐤇𐤈𐤐	english	𐤅+𐤋 𐤇𐤈𐤐 	H2414	root
+44:23:15	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+44:23:30	𐤌𐤕𐤍𐤊𐤋𐤉𐤌	spelling	[𐤌𐤕] 𐤍𐤊𐤋 𐤉𐤌	H5230	root
 44:23:30	𐤔𐤈𐤍𐤕𐤌	english	 𐤔𐤈𐤍 𐤕+𐤌	H7853	root
 44:24:8	𐤕𐤇𐤒𐤓	english	[𐤕] 𐤇𐤒𐤓 	H2713	root
 44:24:15	𐤉𐤇𐤊𐤅	spelling	[𐤉] 𐤇𐤊𐤅 	H2442	form
+44:24:27	𐤋𐤄𐤕𐤓𐤑𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤓𐤑𐤅 𐤕	H7323	form
 44:25:1	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
+44:25:3	𐤌𐤕𐤍𐤊𐤋𐤉𐤌	spelling	[𐤌𐤕] 𐤍𐤊𐤋 𐤉𐤌	H5230	root
 44:25:7	𐤅𐤉𐤀𐤔𐤉𐤌𐤅	spelling	𐤅+[𐤉] 𐤀𐤔𐤉𐤌 𐤅	H7760	form
+44:25:9	𐤋𐤄𐤕𐤓𐤑𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤓𐤑𐤅 𐤕	H7323	form
+44:25:9	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
 44:25:16	𐤄𐤍𐤔𐤈𐤍	english	𐤄+[𐤍] 𐤔𐤈𐤍 	H7853	root
 44:25:26	𐤀𐤊𐤕𐤁	spelling	[𐤀] 𐤊𐤕𐤁 	H3789	root
+44:26:5	𐤊𐤐𐤓𐤅𐤔	english	𐤊 𐤐𐤓𐤅𐤔 	H6571	matres
 44:26:10	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
 44:26:11	𐤋𐤂𐤃𐤐	spelling	𐤋 𐤂𐤃𐤐 	H1442	root
 44:26:16	𐤍𐤓𐤀𐤉𐤕𐤉	english	[𐤍] 𐤓𐤀𐤉𐤕𐤉 	H7200	form
+44:26:18	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
 44:26:24	𐤄𐤋𐤌𐤅𐤃	spelling	𐤄 𐤋𐤌𐤅𐤃 	H3928	root
 44:27:1	𐤍𐤂𐤌𐤓	spelling	[𐤍] 𐤂𐤌𐤓 	H1584	root
-44:27:9	𐤅𐤉𐤆𐤄𐤓	english	𐤅+[𐤉] 𐤆𐤄𐤓 	H2094	root
+44:27:9	𐤅𐤉𐤆𐤄𐤓	spelling	𐤅+[𐤉] 𐤆𐤄𐤓 	H2094	root
+44:27:15	𐤅𐤍𐤍𐤃𐤐	english	𐤅+[𐤍] 𐤍𐤃𐤐 	H5086	root
 44:27:29	𐤅𐤉𐤊𐤎𐤐𐤅	english	𐤅+[𐤉] 𐤊𐤎𐤐 𐤅	H3700	root
+44:27:38	𐤅𐤉𐤈𐤉𐤋𐤅	english	𐤅+[𐤉] 𐤈𐤉𐤋 𐤅	H2904	matres
+44:27:41	𐤅𐤀𐤇𐤅𐤓𐤉𐤄	english	𐤅 𐤀𐤇𐤅𐤓 𐤉+𐤄	H268	root
+44:28:1	𐤌𐤋𐤉𐤈𐤉	english	 𐤌𐤋𐤉𐤈 𐤉	H4422	matres
 44:28:3	𐤄𐤌𐤅𐤒𐤃	spelling	𐤄 𐤌𐤅𐤒𐤃 	H4168	root
 44:28:8	𐤅𐤉𐤓𐤐𐤀𐤄𐤅	spelling	𐤅+[𐤉] 𐤓𐤐𐤀𐤄 𐤅	H7495	form
 44:28:10	𐤑𐤓𐤊𐤍𐤅	english	 𐤑𐤓𐤊 𐤍𐤅	H6878	root
+44:28:19	𐤅𐤀𐤀𐤍𐤎	english	𐤅+[𐤀] 𐤀𐤍𐤎 	H597	root
 44:28:23	𐤅𐤉𐤁𐤀𐤓	spelling	𐤅+[𐤉] 𐤁𐤀𐤓 	H874	root
 44:28:30	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+45:1:10	𐤁𐤄𐤏𐤕𐤉𐤓𐤉	english	𐤁+[𐤄] 𐤏𐤕𐤉𐤓 𐤉	H6279	matres
 45:1:10	𐤀𐤑𐤋𐤉𐤇	spelling	[𐤀] 𐤑𐤋𐤉𐤇 	H6743	matres
 45:1:11	𐤍𐤊𐤎𐤐𐤕𐤉	spelling	[𐤍] 𐤊𐤎𐤐 𐤕+𐤉	H3700	root
 45:1:11	𐤕𐤕𐤇𐤆𐤒𐤅	english	[𐤕𐤕] 𐤇𐤆𐤒 𐤅	H2388	root
 45:1:14	𐤌𐤇𐤉𐤁	english	𐤌 𐤇𐤉𐤁 	H2326	matres
+45:1:20	𐤅𐤀𐤋𐤄𐤅𐤕𐤅	english	𐤅 𐤀𐤋𐤄 𐤅𐤕+𐤅	H428	root
 45:1:26	𐤄𐤇𐤋𐤉𐤐𐤅	spelling	[𐤄] 𐤇𐤋𐤉𐤐 𐤅	H2498	matres
+45:1:31	𐤓𐤇𐤌𐤍𐤉𐤌	spelling	 𐤓𐤇𐤌𐤍𐤉 𐤌	H7362	root
 45:2:16	𐤁𐤔𐤅𐤓𐤕𐤉	spelling	𐤁 𐤔𐤅𐤓 𐤕+𐤉	H7789	root
 45:2:25	𐤌𐤉𐤋𐤕𐤊	english	 𐤌𐤉𐤋 𐤕+𐤊	H4135	matres
 45:2:27	𐤅𐤄𐤌𐤉𐤋𐤄	english	𐤅+𐤄 𐤌𐤉𐤋𐤄 	H4139	matres
-45:2:29	𐤅𐤌𐤉𐤋𐤄	english	𐤅 𐤌𐤉𐤋𐤄 	H4139	matres
+45:2:29	𐤅𐤌𐤉𐤋𐤄	english	𐤅 𐤌𐤉𐤋𐤄 	H4405	matres
+45:4:2	𐤍𐤑𐤃𐤒	spelling	[𐤍] 𐤑𐤃𐤒 	H6663	root
+45:4:19	𐤍𐤐𐤅𐤂	english	[𐤍] 𐤐𐤅𐤂 	H6313	root
 45:4:21	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
 45:4:25	𐤍𐤌𐤎𐤓	spelling	[𐤍] 𐤌𐤎𐤓 	H4560	root
+45:5:1	𐤍𐤑𐤃𐤒𐤍𐤅	spelling	[𐤍] 𐤑𐤃𐤒 𐤍𐤅	H6663	root
 45:5:2	𐤅𐤍𐤕𐤄𐤋𐤋	english	𐤅+[𐤍𐤕] 𐤄𐤋𐤋 	H1984	root
+45:5:3	𐤍𐤕𐤄𐤋𐤋	spelling	[𐤍𐤕] 𐤄𐤋𐤋 	H1984	root
+45:5:9	𐤍𐤑𐤃𐤒𐤍𐤅	spelling	[𐤍] 𐤑𐤃𐤒 𐤍𐤅	H6663	root
+45:5:15	𐤏𐤃𐤐𐤅	english	 𐤏𐤃𐤐 𐤅	H5736	root
+45:6:3	𐤄𐤍𐤈𐤁𐤋𐤉𐤌	spelling	𐤄+[𐤍] 𐤈𐤁𐤋 𐤉𐤌	H2881	root
+45:6:3	𐤍𐤈𐤁𐤋𐤍𐤅	spelling	[𐤍] 𐤈𐤁𐤋 𐤍𐤅	H2881	root
+45:6:4	𐤍𐤒𐤁𐤓𐤍𐤅	english	[𐤍] 𐤒𐤁𐤓 𐤍𐤅	H6912	root
+45:6:4	𐤁𐤈𐤁𐤉𐤋𐤄	spelling	𐤁 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
 45:6:4	𐤍𐤕𐤄𐤋𐤊	spelling	[𐤍𐤕] 𐤄𐤋𐤊 	H1980	root
+45:6:5	𐤍𐤃𐤁𐤒𐤍𐤅	english	[𐤍] 𐤃𐤁𐤒 𐤍𐤅	H1692	root
+45:6:5	𐤃𐤁𐤅𐤒𐤉𐤌	english	 𐤃𐤁𐤅𐤒 𐤉𐤌	H1692	matres
+45:6:5	𐤋𐤕𐤇𐤉𐤕𐤅	english	𐤋 𐤕𐤇𐤉 𐤕+𐤅	H2421	form
 45:6:17	𐤍𐤌𐤎𐤓𐤕𐤌	english	[𐤍] 𐤌𐤎𐤓 𐤕+𐤌	H4560	root
+45:7:6	𐤍𐤐𐤈𐤓𐤍𐤅	english	[𐤍] 𐤐𐤈𐤓 𐤍𐤅	H6362	root
 45:7:7	𐤄𐤇𐤌𐤅𐤃	english	[𐤄] 𐤇𐤌𐤅𐤃 	H2530	matres
+45:8:3	𐤄𐤍𐤇𐤋𐤔𐤄	english	𐤄+[𐤍] 𐤇𐤋𐤔 𐤄	H2522	root
 45:8:12	𐤇𐤉𐤁𐤉𐤌	english	 𐤇𐤉𐤁 𐤉𐤌	H2326	matres
 45:8:15	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
 45:8:15	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+45:8:17	𐤍𐤕𐤏𐤍𐤄	english	[𐤍𐤕] 𐤏𐤍𐤄 	H6030	root
 45:8:25	𐤍𐤇𐤊𐤄	spelling	[𐤍] 𐤇𐤊𐤄 	H2442	root
+45:8:30	𐤉𐤏𐤃𐤌	english	 𐤉𐤏𐤃 𐤌	H3259	root
+45:8:34	𐤉𐤀𐤔𐤉𐤌𐤌	english	[𐤉] 𐤀𐤔𐤉𐤌𐤌 	H7760	form
 45:8:35	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
 45:9:2	𐤋𐤃𐤀𐤁𐤅𐤍	english	𐤋 𐤃𐤀𐤁𐤅𐤍 	H1671	root
+45:9:11	𐤁𐤇𐤉𐤓𐤕𐤅	spelling	 𐤁𐤇𐤉𐤓 𐤕+𐤅	H972	root
 45:9:20	𐤕𐤓𐤉𐤁	spelling	[𐤕] 𐤓𐤉𐤁 	H7378	root
 45:11:11	𐤄𐤒𐤍𐤉𐤀𐤌	english	[𐤄] 𐤒𐤍𐤉𐤀 𐤌	H7065	matres
 45:11:14	𐤋𐤄𐤒𐤍𐤉𐤀	spelling	𐤋+[𐤄] 𐤒𐤍𐤉𐤀 	H7065	matres
+45:11:17	𐤅𐤍𐤕𐤇𐤁𐤓𐤕	english	𐤅+[𐤍𐤕] 𐤇𐤁𐤓 𐤕	H2266	root
 45:11:18	𐤕𐤕𐤐𐤀𐤓	spelling	[𐤕𐤕] 𐤐𐤀𐤓 	H6286	root
 45:11:18	𐤕𐤕𐤐𐤀𐤓	spelling	[𐤕𐤕] 𐤐𐤀𐤓 	H6286	root
 45:11:22	𐤕𐤂𐤃𐤏	english	[𐤕] 𐤂𐤃𐤏 	H1438	root
+45:11:23	𐤋𐤄𐤓𐤊𐤉𐤁𐤌	english	𐤋+𐤄 𐤓𐤊𐤉𐤁 𐤌	H7394	matres
 45:11:28	𐤇𐤁𐤉𐤁𐤉𐤌	english	 𐤇𐤁𐤉𐤁 𐤉𐤌	H2246	matres
 45:11:29	𐤌𐤕𐤍𐤅𐤕𐤉𐤅	spelling	 𐤌𐤕𐤍𐤅𐤕 𐤉+𐤅	H4979	form
 45:11:29	𐤒𐤓𐤉𐤀𐤕𐤅	spelling	 𐤒𐤓𐤉𐤀 𐤕+𐤅	H7148	root
+45:12:1	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 45:12:2	𐤄𐤕𐤇𐤋𐤐𐤅	english	[𐤄𐤕] 𐤇𐤋𐤐 𐤅	H2498	root
 45:12:8	𐤁𐤔𐤒𐤉𐤃𐤄	spelling	𐤁 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
 45:12:8	𐤁𐤎𐤁𐤓	spelling	𐤁 𐤎𐤁𐤓 	H5452	root
 45:12:16	𐤄𐤕𐤇𐤁𐤓𐤅	spelling	[𐤄𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
 45:12:19	𐤕𐤍𐤒𐤌𐤅	english	[𐤕] 𐤍𐤒𐤌 𐤅	H5358	root
 45:13:1	𐤕𐤊𐤍𐤏	spelling	[𐤕] 𐤊𐤍𐤏 	H3665	root
+45:13:1	𐤍𐤕𐤌𐤍𐤅	english	[𐤍] 𐤕𐤌𐤍𐤅 	H8552	form
 45:13:5	𐤋𐤄𐤊𐤍𐤏	spelling	𐤋+[𐤄] 𐤊𐤍𐤏 	H3665	root
+45:13:8	𐤇𐤉𐤁𐤉𐤌	english	 𐤇𐤉𐤁 𐤉𐤌	H2326	matres
+45:13:12	𐤍𐤎𐤉𐤓𐤄	english	[𐤍] 𐤎𐤉𐤓 𐤄	H5493	matres
 45:13:13	𐤍𐤕𐤄𐤋𐤊𐤄	spelling	[𐤍𐤕] 𐤄𐤋𐤊 𐤄	H1980	root
+45:13:13	𐤁𐤁𐤏𐤉𐤋𐤅𐤕	english	𐤁+𐤁 𐤏𐤉𐤋𐤅𐤕 	H5952	matres
 45:14:2	𐤅𐤄𐤇𐤋𐤅𐤔	english	𐤅+𐤄 𐤇𐤋𐤅𐤔 	H2523	matres
 45:14:4	𐤉𐤅𐤒𐤌	spelling	[𐤉] 𐤅𐤒𐤌 	H6965	form
 45:14:21	𐤉𐤕𐤍𐤂𐤐	english	[𐤉𐤕] 𐤍𐤂𐤐 	H5062	root
 45:15:1	𐤇𐤋𐤔𐤅𐤕	spelling	 𐤇𐤋𐤔 𐤅𐤕	H2523	root
+45:15:4	𐤅𐤁𐤕𐤍𐤇𐤅𐤌𐤅𐤕	english	𐤅+𐤁 𐤕𐤍𐤇𐤅𐤌 𐤅𐤕	H8575	root
 45:15:7	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
 45:15:23	𐤍𐤊𐤎𐤐𐤕𐤉	spelling	[𐤍] 𐤊𐤎𐤐 𐤕+𐤉	H3700	root
 45:15:27	𐤌𐤇𐤉𐤁𐤉𐤌	english	𐤌 𐤇𐤉𐤁 𐤉𐤌	H2326	matres
 45:15:28	𐤅𐤇𐤕𐤌𐤕𐤉	english	𐤅 𐤇𐤕𐤌𐤕 𐤉	H2858	root
 45:15:30	𐤁𐤄𐤏𐤕𐤉𐤓	english	𐤁+[𐤄] 𐤏𐤕𐤉𐤓 	H6279	matres
 45:15:31	𐤀𐤍𐤑𐤋	english	[𐤀] 𐤍𐤑𐤋 	H5337	root
+45:15:32	𐤅𐤀𐤍𐤐𐤔	english	𐤅+[𐤀] 𐤍𐤐𐤔 	H5314	root
 45:16:2	𐤅𐤕𐤏𐤆𐤓𐤅	english	𐤅+[𐤕] 𐤏𐤆𐤓 𐤅	H5826	root
+45:16:12	𐤄𐤇𐤁𐤉𐤁𐤄	spelling	[𐤄] 𐤇𐤁𐤉𐤁 𐤄	H2245	matres
 45:16:16	𐤁𐤍𐤔𐤉𐤒𐤄	spelling	𐤁 𐤍𐤔𐤉𐤒𐤄 	H5390	root
+45:16:17	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 45:16:26	𐤍𐤕𐤐𐤓𐤎𐤌	spelling	[𐤍𐤕] 𐤐𐤓𐤎 𐤌	H6536	root
 46:1:9	𐤍𐤒𐤓𐤀𐤕𐤌	spelling	[𐤍] 𐤒𐤓𐤀 𐤕+𐤌	H7121	root
+46:1:10	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+46:1:13	𐤍𐤈𐤁𐤋𐤕𐤌	spelling	[𐤍] 𐤈𐤁𐤋 𐤕+𐤌	H2881	root
+46:1:15	𐤈𐤁𐤋𐤕𐤉	spelling	 𐤈𐤁𐤋 𐤕+𐤉	H2881	root
+46:1:16	𐤈𐤁𐤋𐤕𐤉	spelling	 𐤈𐤁𐤋 𐤕+𐤉	H2881	root
 46:1:19	𐤀𐤀𐤁𐤃	spelling	[𐤀] 𐤀𐤁𐤃 	H6	root
+46:1:25	𐤅𐤇𐤋𐤔𐤕	english	𐤅 𐤇𐤋𐤔 𐤕	H2523	root
 46:1:27	𐤅𐤁𐤇𐤋𐤅𐤔	english	𐤅+𐤁 𐤇𐤋𐤅𐤔 	H2523	matres
+46:2:13	𐤅𐤍𐤁𐤀𐤓	english	𐤅+[𐤍] 𐤁𐤀𐤓 	H874	root
 46:3:14	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 46:3:18	𐤉𐤓𐤌𐤄	english	[𐤉] 𐤓𐤌𐤄 	H7411	root
+46:4:1	𐤅𐤎𐤊𐤍𐤉	english	𐤅 𐤎𐤊𐤍 𐤉	H5532	root
 46:4:6	𐤉𐤕𐤇𐤊𐤌	spelling	[𐤉𐤕] 𐤇𐤊𐤌 	H2449	root
-46:4:7	𐤒𐤁𐤋𐤕𐤅	spelling	 𐤒𐤁𐤋 𐤕+𐤅	H6901	root
-46:4:7	𐤒𐤁𐤋𐤕𐤅	spelling	 𐤒𐤁𐤋 𐤕+𐤅	H6901	root
-46:4:13	𐤅𐤍𐤕𐤇𐤍𐤍	english	𐤅+[𐤍𐤕] 𐤇𐤍𐤍 	H2604	root
-46:4:14	𐤌𐤆𐤄𐤉𐤓	english	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+46:4:7	𐤒𐤁𐤋𐤕𐤅	spelling	 𐤒𐤁𐤋 𐤕+𐤅	H6903	root
+46:4:7	𐤒𐤁𐤋𐤕𐤅	spelling	 𐤒𐤁𐤋 𐤕+𐤅	H6903	root
+46:4:12	𐤅𐤍𐤎𐤁𐤋	english	𐤅+[𐤍] 𐤎𐤁𐤋 	H5445	root
+46:4:13	𐤅𐤍𐤕𐤇𐤍𐤍	english	𐤅+[𐤍𐤕] 𐤇𐤍𐤍 	H2603	root
+46:4:14	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 46:4:14	𐤄𐤀𐤄𐤅𐤁𐤉𐤌	spelling	[𐤄] 𐤀𐤄𐤅𐤁 𐤉𐤌	H157	matres
 46:4:17	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+46:4:21	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
 46:6:19	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
 46:7:5	𐤋𐤕𐤏𐤍𐤉𐤕	english	𐤋 𐤕𐤏𐤍𐤉𐤕 	H8589	root
 46:7:5	𐤉𐤍𐤎𐤄	spelling	[𐤉] 𐤍𐤎𐤄 	H5254	root
@@ -452,6 +806,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 46:7:9	𐤋𐤄𐤕𐤇𐤁𐤓	spelling	𐤋+[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
 46:7:9	𐤁𐤍𐤔𐤅𐤀𐤉𐤍	spelling	𐤁 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
 46:7:11	𐤕𐤕𐤓𐤑𐤄	english	[𐤕𐤕] 𐤓𐤑𐤄 	H7521	root
+46:7:27	𐤍𐤒𐤔𐤓𐤕	english	[𐤍] 𐤒𐤔𐤓 𐤕	H7194	root
 46:7:27	𐤍𐤐𐤈𐤓𐤕	english	[𐤍] 𐤐𐤈𐤓 𐤕	H6362	root
 46:7:34	𐤁𐤂𐤅𐤐𐤄	spelling	𐤁 𐤂𐤅𐤐𐤄 	H1480	root
 46:7:40	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
@@ -463,12 +818,17 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 46:9:18	𐤔𐤀𐤁𐤔𐤓	english	𐤔+[𐤀] 𐤁𐤔𐤓 	H1319	root
 46:9:25	𐤉𐤍𐤆𐤓	english	[𐤉] 𐤍𐤆𐤓 	H5144	root
 46:9:27	𐤀𐤃𐤊𐤀	english	[𐤀] 𐤃𐤊𐤀 	H1792	root
+46:9:27	𐤍𐤀𐤋𐤇	english	[𐤍] 𐤀𐤋𐤇 	H444	root
 46:10:14	𐤍𐤅𐤎𐤅	spelling	 𐤍𐤅𐤎 𐤅	H5127	root
 46:10:21	𐤋𐤄𐤕𐤇𐤁𐤓	spelling	𐤋+[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
 46:10:22	𐤋𐤄𐤒𐤍𐤉𐤀	spelling	𐤋+[𐤄] 𐤒𐤍𐤉𐤀 	H7065	matres
+46:10:25	𐤕𐤇𐤒𐤓𐤅	spelling	[𐤕] 𐤇𐤒𐤓 𐤅	H2713	root
+46:10:27	𐤕𐤇𐤒𐤓𐤅	spelling	[𐤕] 𐤇𐤒𐤓 𐤅	H2713	root
 46:10:28	𐤄𐤌𐤅𐤃𐤉𐤏	spelling	𐤄 𐤌𐤅𐤃𐤉𐤏 	H4093	matres
 46:11:5	𐤕𐤕𐤍𐤁𐤀	english	[𐤕𐤕] 𐤍𐤁𐤀 	H5012	root
 46:11:6	𐤕𐤕𐤊𐤎𐤄	spelling	[𐤕𐤕] 𐤊𐤎𐤄 	H3680	root
+46:11:6	𐤕𐤕𐤂𐤋𐤇	english	[𐤕𐤕] 𐤂𐤋𐤇 	H1548	root
+46:11:6	𐤋𐤄𐤕𐤂𐤋𐤇	english	𐤋+[𐤄𐤕] 𐤂𐤋𐤇 	H1548	root
 46:11:6	𐤕𐤕𐤊𐤎𐤄	spelling	[𐤕𐤕] 𐤊𐤎𐤄 	H3680	root
 46:11:17	𐤋𐤔𐤁𐤇	spelling	𐤋 𐤔𐤁𐤇 	H7623	root
 46:11:17	𐤕𐤒𐤄𐤋𐤅	spelling	[𐤕] 𐤒𐤄𐤋 𐤅	H6950	root
@@ -479,14 +839,17 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 46:11:30	𐤅𐤇𐤋𐤔𐤉𐤌	english	𐤅 𐤇𐤋𐤔 𐤉𐤌	H2523	root
 46:11:33	𐤕𐤇𐤊𐤅	english	[𐤕] 𐤇𐤊𐤅 	H2442	form
 46:11:34	𐤕𐤒𐤄𐤋𐤅	spelling	[𐤕] 𐤒𐤄𐤋 𐤅	H6950	root
+46:12:2	𐤍𐤌𐤔𐤊𐤕𐤌	english	[𐤍] 𐤌𐤔𐤊 𐤕+𐤌	H4900	root
+46:12:13	𐤍𐤈𐤁𐤋𐤍𐤅	spelling	[𐤍] 𐤈𐤁𐤋 𐤍𐤅	H2881	root
 46:13:2	𐤀𐤏𐤕𐤉𐤒	english	[𐤀] 𐤏𐤕𐤉𐤒 	H6275	matres
 46:13:4	𐤕𐤕𐤐𐤀𐤓	spelling	[𐤕𐤕] 𐤐𐤀𐤓 	H6286	root
 46:13:4	𐤕𐤕𐤓𐤅𐤌𐤌	spelling	[𐤕𐤕] 𐤓𐤅𐤌 𐤌	H7311	root
-46:13:7	𐤕𐤎𐤁𐤋	spelling	[𐤕] 𐤎𐤁𐤋 	H5446	root
+46:13:7	𐤕𐤎𐤁𐤋	spelling	[𐤕] 𐤎𐤁𐤋 	H5445	root
 46:13:8	𐤕𐤁𐤈𐤋	english	[𐤕] 𐤁𐤈𐤋 	H989	root
 46:14:1	𐤕𐤕𐤍𐤁𐤀𐤅	spelling	[𐤕𐤕] 𐤍𐤁𐤀 𐤅	H5012	root
 46:14:2	𐤉𐤔𐤌𐤏𐤄𐤅	english	[𐤉] 𐤔𐤌𐤏𐤄 𐤅	H8085	form
 46:14:5	𐤕𐤕𐤍𐤁𐤀𐤅	spelling	[𐤕𐤕] 𐤍𐤁𐤀 𐤅	H5012	root
+46:14:7	𐤉𐤍𐤂𐤍	english	[𐤉] 𐤍𐤂𐤍 	H5059	root
 46:14:16	𐤄𐤅𐤃𐤉𐤕𐤊	english	𐤄 𐤅𐤃𐤉 𐤕+𐤊	H1768	form
 46:14:23	𐤕𐤒𐤄𐤋	english	[𐤕] 𐤒𐤄𐤋 	H6950	root
 46:14:34	𐤋𐤄𐤊𐤍𐤏	spelling	𐤋+[𐤄] 𐤊𐤍𐤏 	H3665	root
@@ -495,16 +858,28 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 46:15:3	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
 46:15:4	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
 46:15:23	𐤁𐤎𐤃𐤓𐤅	english	𐤁 𐤎𐤃𐤓 𐤅	H5468	root
+46:15:29	𐤄𐤍𐤈𐤁𐤋𐤉𐤌	spelling	𐤄+[𐤍] 𐤈𐤁𐤋 𐤉𐤌	H2881	root
+46:15:29	𐤉𐤈𐤁𐤋𐤅	english	[𐤉] 𐤈𐤁𐤋 𐤅	H2881	root
+46:15:38	𐤂𐤅𐤐𐤅	english	 𐤂𐤅𐤐 𐤅	H1479	root
+46:15:51	𐤍𐤕𐤇𐤋𐤐	spelling	[𐤍𐤕] 𐤇𐤋𐤐 	H2498	root
+46:15:52	𐤍𐤕𐤇𐤋𐤐	spelling	[𐤍𐤕] 𐤇𐤋𐤐 	H2498	root
+46:16:1	𐤕𐤒𐤍𐤕𐤉	english	 𐤕𐤒𐤍 𐤕+𐤉	H8626	root
 46:16:3	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
+46:16:11	𐤀𐤇𐤊𐤄	english	[𐤀] 𐤇𐤊𐤄 	H2442	root
+46:16:19	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
 46:16:20	𐤁𐤍𐤔𐤉𐤒𐤄	spelling	𐤁 𐤍𐤔𐤉𐤒𐤄 	H5390	root
 47:1:4	𐤄𐤍𐤋𐤇𐤑𐤉𐤌	spelling	𐤄+[𐤍] 𐤋𐤇𐤑 𐤉𐤌	H3905	root
 47:1:6	𐤍𐤋𐤇𐤑	spelling	[𐤍] 𐤋𐤇𐤑 	H3905	root
 47:1:6	𐤍𐤍𐤇𐤌	english	[𐤍] 𐤍𐤇𐤌 	H5162	root
+47:1:8	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
 47:1:15	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+47:1:16	𐤕𐤔𐤋𐤇𐤅𐤍𐤉	spelling	[𐤕] 𐤔𐤋𐤇𐤅𐤍𐤉 	H7971	form
 47:2:7	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
 47:2:10	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
 47:3:1	𐤋𐤔𐤁𐤇	spelling	𐤋 𐤔𐤁𐤇 	H7623	root
+47:3:18	𐤅𐤍𐤇𐤋𐤐	english	𐤅+[𐤍] 𐤇𐤋𐤐 	H2498	root
 47:4:3	𐤁𐤔𐤅𐤓𐤕𐤍𐤅	spelling	𐤁 𐤔𐤅𐤓 𐤕+𐤍𐤅	H7789	root
+47:4:5	𐤌𐤊𐤓𐤉𐤆𐤉𐤌	english	[𐤌] 𐤊𐤓𐤉𐤆 𐤉𐤌	H3745	matres
 47:4:6	𐤅𐤉𐤐𐤏	english	𐤅 𐤉𐤐𐤏 	H3313	root
 47:4:8	𐤍𐤋𐤇𐤑𐤉𐤌	spelling	[𐤍] 𐤋𐤇𐤑 𐤉𐤌	H3905	root
 47:4:11	𐤍𐤌𐤎𐤓𐤉𐤌	english	[𐤍] 𐤌𐤎𐤓 𐤉𐤌	H4560	root
@@ -513,16 +888,27 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 47:4:18	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
 47:4:18	𐤄𐤍𐤓𐤀𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
 47:4:18	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+47:5:2	𐤋𐤄𐤕𐤏𐤈𐤐	spelling	𐤋+[𐤄𐤕] 𐤏𐤈𐤐 	H5848	root
 47:5:4	𐤋𐤄𐤕𐤐𐤔𐤈	english	𐤋+[𐤄𐤕] 𐤐𐤔𐤈 	H6584	root
+47:5:4	𐤋𐤄𐤕𐤏𐤈𐤐	spelling	𐤋+[𐤄𐤕] 𐤏𐤈𐤐 	H5848	root
 47:5:7	𐤍𐤕𐤄𐤋𐤊	spelling	[𐤍𐤕] 𐤄𐤋𐤊 	H1980	root
 47:5:10	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+47:5:10	𐤂𐤅𐤐𐤅	english	 𐤂𐤅𐤐 𐤅	H1479	root
+47:5:14	𐤃𐤇𐤒𐤕	english	 𐤃𐤇𐤒 𐤕	H1766	root
+47:5:20	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 47:5:20	𐤄𐤕𐤓𐤑𐤅	english	[𐤄𐤕] 𐤓𐤑𐤅 	H7521	form
+47:6:1	𐤍𐤆𐤄𐤉𐤓𐤄	spelling	[𐤍] 𐤆𐤄𐤉𐤓 𐤄	H2094	matres
 47:6:1	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
 47:6:5	𐤁𐤔𐤒𐤉𐤃𐤅𐤕	english	𐤁 𐤔𐤒𐤉𐤃 𐤅𐤕	H8245	matres
 47:7:1	𐤍𐤈𐤄𐤓𐤄	spelling	[𐤍] 𐤈𐤄𐤓 𐤄	H2891	root
 47:7:1	𐤒𐤃𐤔𐤕𐤍𐤅	english	 𐤒𐤃𐤔 𐤕+𐤍𐤅	H6944	root
 47:7:5	𐤍𐤋𐤇𐤑𐤍𐤅	english	[𐤍] 𐤋𐤇𐤑 𐤍𐤅	H3905	root
+47:7:9	𐤍𐤏𐤑𐤁𐤕𐤌	spelling	[𐤍] 𐤏𐤑𐤁 𐤕+𐤌	H6087	root
+47:7:9	𐤍𐤏𐤑𐤁𐤕𐤌	spelling	[𐤍] 𐤏𐤑𐤁 𐤕+𐤌	H6087	root
+47:7:9	𐤍𐤏𐤑𐤁𐤕𐤌	spelling	[𐤍] 𐤏𐤑𐤁 𐤕+𐤌	H6087	root
+47:7:11	𐤍𐤏𐤑𐤁𐤕𐤌	spelling	[𐤍] 𐤏𐤑𐤁 𐤕+𐤌	H6087	root
 47:7:11	𐤋𐤏𐤓𐤂𐤄	english	𐤋 𐤏𐤓𐤂 𐤄	H6165	root
+47:7:11	𐤄𐤅𐤊𐤇𐤕𐤌	english	 𐤄𐤅𐤊𐤇 𐤕+𐤌	H3198	form
 47:7:14	𐤔𐤄𐤕𐤄𐤋𐤋𐤕𐤉	english	𐤔+[𐤄𐤕] 𐤄𐤋𐤋 𐤕+𐤉	H1984	root
 47:7:15	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
 47:8:4	𐤁𐤂𐤌𐤉𐤋𐤅𐤕	english	𐤁 𐤂𐤌𐤉𐤋 𐤅𐤕	H1576	matres
@@ -533,12 +919,14 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 47:9:4	𐤅𐤍𐤁𐤅𐤔	spelling	𐤅+[𐤍] 𐤁𐤅𐤔 	H954	root
 47:9:6	𐤉𐤒𐤑𐤓	spelling	[𐤉] 𐤒𐤑𐤓 	H7114	root
 47:9:6	𐤉𐤒𐤑𐤓	spelling	[𐤉] 𐤒𐤑𐤓 	H7114	root
+47:10:1	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 47:10:2	𐤋𐤄𐤕𐤂𐤁𐤓	spelling	𐤋+[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 47:10:13	𐤍𐤕𐤂𐤃𐤋	spelling	[𐤍𐤕] 𐤂𐤃𐤋 	H1431	root
 47:10:15	𐤍𐤕𐤂𐤃𐤋	spelling	[𐤍𐤕] 𐤂𐤃𐤋 	H1431	root
 47:11:4	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
 47:11:6	𐤍𐤂𐤋𐤉𐤍𐤅	spelling	[𐤍] 𐤂𐤋𐤉 𐤍𐤅	H1540	form
 47:11:9	𐤍𐤔𐤌𐤓𐤕𐤉	spelling	[𐤍] 𐤔𐤌𐤓 𐤕+𐤉	H8104	root
+47:11:14	𐤌𐤕𐤇𐤐𐤔	english	[𐤌𐤕] 𐤇𐤐𐤔 	H2664	root
 47:11:17	𐤅𐤀𐤕𐤄𐤋𐤋	english	𐤅+[𐤀] 𐤕𐤄𐤋𐤋 	H1984	form
 47:11:20	𐤉𐤏𐤁𐤉𐤃	english	[𐤉] 𐤏𐤁𐤉𐤃 	H5647	matres
 47:12:9	𐤕𐤔𐤓𐤄	english	[𐤕] 𐤔𐤓𐤄 	H8280	root
@@ -546,6 +934,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 47:12:10	𐤅𐤁𐤓𐤃𐤉𐤐𐤅𐤕	spelling	𐤅+𐤁 𐤓𐤃𐤉𐤐 𐤅𐤕	H7291	matres
 47:12:10	𐤇𐤋𐤔𐤕𐤉	english	 𐤇𐤋𐤔 𐤕+𐤉	H2523	root
 47:12:11	𐤋𐤔𐤁𐤇	spelling	𐤋 𐤔𐤁𐤇 	H7623	root
+47:12:14	𐤇𐤉𐤁𐤉𐤌	english	 𐤇𐤉𐤁 𐤉𐤌	H2325	matres
 47:13:4	𐤁𐤇𐤋𐤔𐤄	english	𐤁 𐤇𐤋𐤔 𐤄	H2523	root
 47:13:4	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
 47:13:9	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
@@ -556,24 +945,35 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 48:1:9	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
 48:1:13	𐤓𐤃𐤐𐤕𐤉	spelling	 𐤓𐤃𐤐 𐤕+𐤉	H7291	root
 48:1:16	𐤔𐤀𐤁𐤔𐤓𐤍𐤅	english	𐤔+[𐤀] 𐤁𐤔𐤓 𐤍𐤅	H1319	root
+48:1:16	𐤍𐤅𐤏𐤑𐤕𐤉	english	 𐤍𐤅𐤏𐤑 𐤕+𐤉	H3289	form
 48:2:1	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
 48:2:2	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 48:2:10	𐤔𐤍𐤆𐤊𐤓	spelling	𐤔+[𐤍] 𐤆𐤊𐤓 	H2142	root
+48:2:16	𐤍𐤑𐤃𐤒	spelling	[𐤍] 𐤑𐤃𐤒 	H6663	root
 48:2:18	𐤔𐤎𐤕𐤓𐤕𐤉	english	𐤔 𐤎𐤕𐤓 𐤕+𐤉	H5642	root
 48:3:2	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
 48:3:19	𐤅𐤕𐤅𐤔𐤌	english	𐤅+[𐤕] 𐤅𐤔𐤌 	H7760	form
+48:3:24	𐤍𐤑𐤃𐤒	spelling	[𐤍] 𐤑𐤃𐤒 	H6663	root
+48:3:27	𐤍𐤈𐤁𐤋𐤕𐤌	spelling	[𐤍] 𐤈𐤁𐤋 𐤕+𐤌	H2881	root
 48:4:9	𐤔𐤍𐤅𐤃𐤏𐤕𐤌	english	𐤔 𐤍𐤅𐤃𐤏 𐤕+𐤌	H3045	form
+48:4:9	𐤕𐤓𐤑𐤅	spelling	[𐤕] 𐤓𐤑𐤅 	H7521	form
 48:4:9	𐤋𐤄𐤊𐤍𐤏	spelling	𐤋+[𐤄] 𐤊𐤍𐤏 	H3665	root
 48:4:14	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+48:5:1	𐤔𐤇𐤓𐤓	english	𐤔 𐤇𐤓𐤓 	H2787	root
 48:5:3	𐤌𐤇𐤉𐤁	english	𐤌 𐤇𐤉𐤁 	H2326	matres
-48:5:5	𐤍𐤉𐤇𐤋	english	[𐤍] 𐤉𐤇𐤋 	H3176	root
+48:5:5	𐤍𐤉𐤇𐤋	spelling	[𐤍] 𐤉𐤇𐤋 	H3176	root
+48:5:11	𐤀𐤊𐤓𐤉𐤆	english	[𐤀] 𐤊𐤓𐤉𐤆 	H3745	matres
 48:5:13	𐤍𐤒𐤓𐤀𐤕𐤌	spelling	[𐤍] 𐤒𐤓𐤀 𐤕+𐤌	H7121	root
 48:5:15	𐤕𐤍𐤔𐤊𐤅	english	[𐤕] 𐤍𐤔𐤊 𐤅	H5391	root
-48:5:17	𐤕𐤇𐤐𐤑𐤅	english	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+48:5:17	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+48:5:18	𐤕𐤍𐤄𐤂𐤅	spelling	[𐤕] 𐤍𐤄𐤂 𐤅	H5090	root
 48:5:25	𐤍𐤕𐤄𐤋𐤊𐤄	spelling	[𐤍𐤕] 𐤄𐤋𐤊 𐤄	H1980	root
 48:6:7	𐤉𐤒𐤑𐤓	spelling	[𐤉] 𐤒𐤑𐤓 	H7114	root
 48:6:9	𐤍𐤒𐤑𐤓	spelling	[𐤍] 𐤒𐤑𐤓 	H7114	root
+48:6:9	𐤍𐤓𐤐𐤄	english	[𐤍] 𐤓𐤐𐤄 	H7503	root
 49:1:13	𐤍𐤇𐤕𐤌𐤕𐤌	spelling	[𐤍] 𐤇𐤕𐤌 𐤕+𐤌	H2856	root
+49:2:5	𐤍𐤅𐤔𐤏𐤕𐤌	spelling	 𐤍𐤅𐤔𐤏 𐤕+𐤌	H3467	form
+49:2:8	𐤍𐤅𐤔𐤏𐤕𐤌	spelling	 𐤍𐤅𐤔𐤏 𐤕+𐤌	H3467	form
 49:2:10	𐤍𐤕𐤄𐤋𐤊	spelling	[𐤍𐤕] 𐤄𐤋𐤊 	H1980	root
 49:3:14	𐤀𐤊𐤓𐤏𐤄	english	[𐤀] 𐤊𐤓𐤏 𐤄	H3766	root
 49:3:19	𐤅𐤍𐤌𐤋𐤀𐤕𐤌	english	𐤅+[𐤍] 𐤌𐤋𐤀 𐤕+𐤌	H4390	root
@@ -582,6 +982,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 49:4:14	𐤄𐤋𐤌𐤅𐤃	spelling	𐤄 𐤋𐤌𐤅𐤃 	H3928	root
 49:4:15	𐤅𐤍𐤂𐤃𐤋𐤄	english	𐤅+[𐤍] 𐤂𐤃𐤋 𐤄	H1431	root
 49:4:30	𐤍𐤇𐤕𐤌𐤕𐤌	spelling	[𐤍] 𐤇𐤕𐤌 𐤕+𐤌	H2856	root
+49:4:32	𐤅𐤓𐤇𐤌𐤍𐤉𐤌	english	𐤅 𐤓𐤇𐤌𐤍𐤉 𐤌	H7362	root
 49:5:19	𐤅𐤕𐤔𐤁𐤇𐤅𐤕	spelling	𐤅+[𐤕] 𐤔𐤁𐤇 𐤅𐤕	H7623	root
 49:5:26	𐤁𐤓𐤇𐤉𐤑𐤕	english	𐤁 𐤓𐤇𐤉𐤑 𐤕	H7364	matres
 49:5:27	𐤅𐤒𐤌𐤈	english	𐤅 𐤒𐤌𐤈 	H7059	root
@@ -589,22 +990,34 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 50:1:8	𐤍𐤊𐤎𐤐𐤕𐤉	spelling	[𐤍] 𐤊𐤎𐤐 𐤕+𐤉	H3700	root
 50:3:8	𐤅𐤀𐤇𐤔𐤁𐤌	english	𐤅+[𐤀] 𐤇𐤔𐤁 𐤌	H2803	root
 50:3:16	𐤍𐤕𐤄𐤋𐤊𐤄	spelling	[𐤍𐤕] 𐤄𐤋𐤊 𐤄	H1980	root
+50:3:20	𐤀𐤆𐤓𐤇𐤅𐤕𐤍𐤅	english	 𐤀𐤆𐤓𐤇 𐤅𐤕+𐤍𐤅	H249	root
 50:3:21	𐤔𐤐𐤋𐤅𐤕𐤍𐤅	english	 𐤔𐤐𐤋 𐤅𐤕+𐤍𐤅	H8213	root
+50:4:1	𐤄𐤇𐤁𐤉𐤁𐤉𐤌	english	[𐤄] 𐤇𐤁𐤉𐤁 𐤉𐤌	H2245	matres
+50:4:2	𐤀𐤁𐤄𐤅𐤃𐤉𐤄	english	 𐤀𐤁𐤄𐤅𐤃 𐤉+𐤄	H31	matres
+50:4:2	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+50:4:2	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 50:4:7	𐤉𐤍𐤑𐤓	english	[𐤉] 𐤍𐤑𐤓 	H5341	root
 50:4:9	𐤅𐤒𐤁𐤋𐤕𐤌	spelling	𐤅 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+50:4:15	𐤄𐤕𐤇𐤁𐤓𐤄	english	[𐤄𐤕] 𐤇𐤁𐤓 𐤄	H2266	root
 50:4:18	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
 50:4:18	𐤍𐤌𐤋𐤀𐤕𐤉	english	[𐤍] 𐤌𐤋𐤀 𐤕+𐤉	H4390	root
-51:1:14	𐤎𐤋𐤉𐤇𐤕	english	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+51:1:14	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+51:1:23	𐤕𐤆𐤅𐤏𐤅	english	[𐤕] 𐤆𐤅𐤏 𐤅	H2111	root
 51:2:2	𐤅𐤍𐤒𐤔𐤓𐤅	english	𐤅+[𐤍] 𐤒𐤔𐤓 𐤅	H7194	root
 51:2:6	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
 51:2:11	𐤌𐤉𐤋𐤄	spelling	 𐤌𐤉𐤋 𐤄	H4135	matres
 51:2:11	𐤌𐤉𐤋𐤕	spelling	 𐤌𐤉𐤋 𐤕	H4135	matres
+51:2:12	𐤍𐤒𐤁𐤓𐤕𐤌	english	[𐤍] 𐤒𐤁𐤓 𐤕+𐤌	H6912	root
+51:2:12	𐤁𐤈𐤁𐤉𐤋𐤄	spelling	𐤁 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
 51:3:11	𐤌𐤉𐤋𐤄	spelling	 𐤌𐤉𐤋 𐤄	H4135	matres
+51:3:12	𐤅𐤄𐤇𐤁𐤉𐤁𐤉𐤌	english	𐤅+[𐤄] 𐤇𐤁𐤉𐤁 𐤉𐤌	H2245	matres
 51:3:13	𐤅𐤕𐤎𐤋𐤇𐤅	english	𐤅+[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
 51:3:13	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
 51:3:15	𐤍𐤒𐤓𐤀𐤕𐤌	spelling	[𐤍] 𐤒𐤓𐤀 𐤕+𐤌	H7121	root
 51:3:16	𐤅𐤕𐤔𐤁𐤇𐤅𐤕	spelling	𐤅+[𐤕] 𐤔𐤁𐤇 𐤅𐤕	H7623	root
 51:3:24	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+51:4:12	𐤄𐤍𐤀𐤁𐤒	english	𐤄+[𐤍] 𐤀𐤁𐤒 	H79	root
+51:4:14	𐤄𐤇𐤁𐤉𐤁	english	[𐤄] 𐤇𐤁𐤉𐤁 	H2245	matres
 51:4:17	𐤒𐤁𐤋𐤕𐤄	english	 𐤒𐤁𐤋 𐤕+𐤄	H6901	root
 52:1:2	𐤁𐤕𐤐𐤋𐤅𐤕𐤉𐤍𐤅	english	𐤁 𐤕𐤐𐤋𐤅𐤕 𐤉+𐤍𐤅	H8605	form
 52:1:4	𐤍𐤁𐤇𐤓𐤕𐤌	english	[𐤍] 𐤁𐤇𐤓 𐤕+𐤌	H977	root
@@ -616,12 +1029,14 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 52:3:3	𐤉𐤏𐤃𐤍𐤅	spelling	 𐤉𐤏𐤃 𐤍𐤅	H3259	root
 52:3:5	𐤉𐤂𐤉𐤏𐤕𐤍𐤅	spelling	 𐤉𐤂𐤉𐤏 𐤕+𐤍𐤅	H3018	root
 52:4:1	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+52:4:3	𐤕𐤕𐤓𐤇𐤒𐤅	english	[𐤕𐤕] 𐤓𐤇𐤒 𐤅	H7368	root
 52:5:8	𐤅𐤊𐤊𐤅𐤁𐤏	english	𐤅+𐤊 𐤊𐤅𐤁𐤏 	H3553	root
 52:5:9	𐤉𐤏𐤃𐤍𐤅	spelling	 𐤉𐤏𐤃 𐤍𐤅	H3259	root
+52:5:13	𐤕𐤍𐤄𐤂𐤅	spelling	[𐤕] 𐤍𐤄𐤂 𐤅	H5090	root
 52:5:14	𐤌𐤆𐤄𐤉𐤓𐤉𐤌	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤉𐤌	H2096	matres
 52:5:19	𐤕𐤊𐤁𐤅	english	[𐤕] 𐤊𐤁𐤅 	H3518	form
 52:5:26	𐤁𐤍𐤔𐤉𐤒𐤄	spelling	𐤁 𐤍𐤔𐤉𐤒𐤄 	H5390	root
-53:1:4	𐤍𐤕𐤄𐤋𐤋	english	[𐤍𐤕] 𐤄𐤋𐤋 	H1984	root
+53:1:4	𐤍𐤕𐤄𐤋𐤋	spelling	[𐤍𐤕] 𐤄𐤋𐤋 	H1984	root
 53:1:4	𐤄𐤓𐤃𐤉𐤐𐤅𐤕	spelling	[𐤄] 𐤓𐤃𐤉𐤐 𐤅𐤕	H7291	matres
 53:1:7	𐤄𐤍𐤋𐤇𐤑𐤉𐤌	spelling	𐤄+[𐤍] 𐤋𐤇𐤑 𐤉𐤌	H3905	root
 53:1:11	𐤍𐤕𐤐𐤋𐤋	spelling	[𐤍𐤕] 𐤐𐤋𐤋 	H6419	root
@@ -630,25 +1045,34 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 53:2:14	𐤁𐤁𐤔𐤅𐤓𐤕𐤍𐤅	english	𐤁+𐤁 𐤔𐤅𐤓 𐤕+𐤍𐤅	H7789	root
 53:3:2	𐤍𐤍𐤑𐤋	english	[𐤍] 𐤍𐤑𐤋 	H5337	root
 53:3:15	𐤕𐤇𐤔𐤁𐤄𐤅	spelling	[𐤕] 𐤇𐤔𐤁𐤄 𐤅	H2803	form
-54:1:3	𐤕𐤆𐤄𐤉𐤓	english	[𐤕] 𐤆𐤄𐤉𐤓 	H2094	matres
+54:1:3	𐤕𐤆𐤄𐤉𐤓	spelling	[𐤕] 𐤆𐤄𐤉𐤓 	H2094	matres
 54:1:8	𐤉𐤕𐤍𐤄𐤂	spelling	[𐤉𐤕] 𐤍𐤄𐤂 	H5090	root
 54:3:4	𐤌𐤍𐤄𐤉𐤂	spelling	[𐤌] 𐤍𐤄𐤉𐤂 	H5090	matres
+54:3:5	𐤋𐤄𐤍𐤄𐤉𐤂	english	𐤋+[𐤄] 𐤍𐤄𐤉𐤂 	H5090	matres
 54:3:10	𐤉𐤔𐤌𐤔𐤅	english	[𐤉] 𐤔𐤌𐤔 𐤅	H8120	root
+54:3:15	𐤋𐤄𐤕𐤍𐤄𐤂	english	𐤋+[𐤄𐤕] 𐤍𐤄𐤂 	H5090	root
 54:3:16	𐤍𐤕𐤒𐤁𐤋	spelling	[𐤍𐤕] 𐤒𐤁𐤋 	H6901	root
+54:5:1	𐤕𐤆𐤄𐤉𐤓𐤍𐤅	english	[𐤕] 𐤆𐤄𐤉𐤓 𐤍𐤅	H2094	matres
 54:5:5	𐤅𐤌𐤕𐤌𐤃𐤕	english	𐤅+𐤌 𐤕𐤌𐤃 𐤕	H8548	matres
 54:5:11	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+54:5:14	𐤅𐤋𐤄𐤍𐤄𐤉𐤂	english	𐤅+𐤋+[𐤄] 𐤍𐤄𐤉𐤂 	H5090	matres
 54:5:16	𐤋𐤄𐤎𐤐𐤉𐤒	spelling	𐤋+[𐤄] 𐤎𐤐𐤉𐤒 	H5606	matres
 54:5:17	𐤋𐤍𐤄𐤋	spelling	𐤋 𐤍𐤄𐤋 	H5095	root
 54:5:19	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
 54:5:21	𐤍𐤌𐤄𐤓	spelling	[𐤍] 𐤌𐤄𐤓 	H4116	root
 54:5:22	𐤍𐤌𐤄𐤓	spelling	[𐤍] 𐤌𐤄𐤓 	H4116	root
 54:6:9	𐤄𐤌𐤔𐤒𐤉𐤏𐤅𐤕	english	𐤄+[𐤌] 𐤔𐤒𐤉𐤏 𐤅𐤕	H8257	matres
+54:6:10	𐤏𐤓𐤂𐤅	english	 𐤏𐤓𐤂 𐤅	H6165	root
+54:6:10	𐤅𐤉𐤏𐤑𐤉𐤁𐤅	english	𐤅+[𐤉] 𐤏𐤑𐤉𐤁 𐤅	H6088	form
 55:1:2	𐤄𐤇𐤁𐤉𐤁	english	𐤄 𐤇𐤁𐤉𐤁 	H2246	matres
 55:1:4	𐤅𐤍𐤊𐤎𐤐𐤕𐤉	english	𐤅+[𐤍] 𐤊𐤎𐤐 𐤕+𐤉	H3700	root
-55:1:8	𐤕𐤎𐤁𐤋	spelling	[𐤕] 𐤎𐤁𐤋 	H5446	root
+55:1:8	𐤕𐤎𐤁𐤋	spelling	[𐤕] 𐤎𐤁𐤋 	H5445	root
+55:1:12	𐤐𐤒𐤃𐤅𐤍𐤉	english	 𐤐𐤒𐤃𐤅𐤍 𐤉	H6487	root
+55:1:15	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
 55:2:2	𐤕𐤐𐤒𐤉𐤃𐤍𐤅	english	[𐤕] 𐤐𐤒𐤉𐤃 𐤍𐤅	H6485	matres
 55:2:5	𐤉𐤊𐤕𐤓	english	[𐤉] 𐤊𐤕𐤓 	H3803	root
 55:2:8	𐤁𐤔𐤅𐤓𐤕𐤉	spelling	𐤁 𐤔𐤅𐤓 𐤕+𐤉	H7789	root
+55:2:12	𐤍𐤍𐤊𐤓	english	[𐤍] 𐤍𐤊𐤓 	H5234	root
 55:3:6	𐤈𐤏𐤅𐤍𐤅𐤕	english	 𐤈𐤏𐤅𐤍 𐤅𐤕	H2943	matres
 55:3:9	𐤔𐤂𐤏𐤅𐤍𐤌	spelling	 𐤔𐤂𐤏𐤅𐤍 𐤌	H7697	root
 55:3:11	𐤅𐤁𐤓𐤃𐤉𐤐𐤅𐤕	spelling	𐤅+𐤁 𐤓𐤃𐤉𐤐 𐤅𐤕	H7291	matres
@@ -657,33 +1081,53 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 55:3:15	𐤋𐤄𐤇𐤊𐤉𐤌𐤊	english	𐤋+𐤄 𐤇𐤊𐤉𐤌 𐤊	H2445	root
 55:4:17	𐤅𐤀𐤍𐤑𐤋	english	𐤅+[𐤀] 𐤍𐤑𐤋 	H5337	root
 56:1:2	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+56:1:7	𐤊𐤎𐤊𐤍	english	𐤊 𐤎𐤊𐤍 	H5532	root
 56:1:7	𐤀𐤂𐤓𐤐	english	[𐤀] 𐤂𐤓𐤐 	H1640	root
 56:1:16	𐤌𐤕𐤏𐤁𐤉𐤌	english	[𐤌] 𐤕𐤏𐤁 𐤉𐤌	H8581	root
 56:2:3	𐤋𐤎𐤁𐤅𐤀	english	𐤋 𐤎𐤁𐤅𐤀 	H5433	matres
+56:2:6	𐤕𐤆𐤄𐤉𐤓	spelling	[𐤕] 𐤆𐤄𐤉𐤓 	H2094	matres
+56:2:15	𐤅𐤕𐤆𐤄𐤉𐤓	english	𐤅+[𐤕] 𐤆𐤄𐤉𐤓 	H2094	matres
+56:3:5	𐤈𐤁𐤉𐤋𐤕	spelling	 𐤈𐤁𐤉𐤋 𐤕	H2881	matres
 56:3:5	𐤅𐤇𐤃𐤅𐤔	english	𐤅 𐤇𐤃𐤅𐤔 	H2318	matres
 57:1:10	𐤄𐤅𐤋𐤃𐤕𐤉𐤅	english	 𐤄𐤅𐤋𐤃𐤕 𐤉+𐤅	H3205	form
 58:2:1	𐤇𐤉𐤁𐤉𐤌	english	 𐤇𐤉𐤁 𐤉𐤌	H2325	matres
+58:2:1	𐤉𐤋𐤅𐤆	english	[𐤉] 𐤋𐤅𐤆 	H3868	root
 58:2:4	𐤅𐤁𐤄𐤀𐤑𐤉𐤋	english	𐤅+𐤁+𐤄 𐤀𐤑𐤉𐤋 	H679	root
 58:2:18	𐤅𐤍𐤕𐤍𐤎𐤄	english	𐤅+[𐤍𐤕] 𐤍𐤎𐤄 	H5254	root
+58:3:1	𐤄𐤅𐤃𐤉𐤕𐤍𐤅	english	𐤄 𐤅𐤃𐤉 𐤕+𐤍𐤅	H1767	form
+58:4:3	𐤍𐤂𐤌𐤓𐤅	english	[𐤍] 𐤂𐤌𐤓 𐤅	H1584	root
 58:4:14	𐤍𐤇𐤆𐤉𐤒𐤄	spelling	[𐤍] 𐤇𐤆𐤉𐤒 𐤄	H2388	matres
 58:7:6	𐤌𐤕𐤉𐤇𐤔	english	[𐤌𐤕] 𐤉𐤇𐤔 	H3187	root
 58:7:15	𐤉𐤅𐤒𐤌	spelling	[𐤉] 𐤅𐤒𐤌 	H6965	form
-58:7:26	𐤅𐤍𐤁𐤃𐤋	english	𐤅+[𐤍] 𐤁𐤃𐤋 	H914	root
+58:7:26	𐤅𐤍𐤁𐤃𐤋	spelling	𐤅+[𐤍] 𐤁𐤃𐤋 	H914	root
 58:7:28	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
 58:8:13	𐤅𐤌𐤆𐤒𐤉𐤍	english	𐤅+𐤌 𐤆𐤒𐤉𐤍 	H2205	matres
 58:9:11	𐤁𐤊𐤋𐤋	english	𐤁 𐤊𐤋𐤋 	H3634	root
 58:10:23	𐤍𐤇𐤆𐤉𐤒𐤄	spelling	[𐤍] 𐤇𐤆𐤉𐤒 𐤄	H2388	matres
-58:10:23	𐤄𐤌𐤁𐤈𐤉𐤇	english	𐤄 𐤌𐤁𐤈𐤉𐤇 	H4009	matres
+58:10:23	𐤄𐤌𐤁𐤈𐤉𐤇	spelling	𐤄 𐤌𐤁𐤈𐤉𐤇 	H4009	matres
+58:10:25	𐤊𐤍𐤎𐤉𐤕𐤍𐤅	english	𐤊 𐤍𐤎𐤉 𐤕+𐤍𐤅	H3071	form
+58:10:26	𐤍𐤇𐤈𐤀	spelling	[𐤍] 𐤇𐤈𐤀 	H2398	root
 58:10:35	𐤕𐤔𐤋𐤉𐤊𐤅	spelling	[𐤕] 𐤔𐤋𐤉𐤊 𐤅	H7993	matres
 58:11:7	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
 58:11:11	𐤋𐤄𐤆𐤓𐤉𐤏	english	𐤋+𐤄 𐤆𐤓𐤉𐤏 	H2233	matres
+58:11:11	𐤄𐤌𐤁𐤈𐤉𐤇	spelling	𐤄 𐤌𐤁𐤈𐤉𐤇 	H4009	matres
+58:11:36	𐤍𐤌𐤎𐤓𐤅	spelling	[𐤍] 𐤌𐤎𐤓 𐤅	H4560	root
+58:11:37	𐤍𐤎𐤒𐤋𐤅	english	[𐤍] 𐤎𐤒𐤋 𐤅	H5619	root
+58:11:37	𐤏𐤈𐤅𐤐𐤉	english	 𐤏𐤈𐤅𐤐 𐤉	H5848	matres
+58:12:1	𐤍𐤔𐤋𐤉𐤊𐤄	english	[𐤍] 𐤔𐤋𐤉𐤊 𐤄	H7993	matres
 58:12:2	𐤅𐤍𐤁𐤉𐤈𐤄	english	𐤅 𐤍𐤁𐤉𐤈 𐤄	H5027	matres
 58:12:7	𐤌𐤕𐤍𐤄𐤂	spelling	[𐤌𐤕] 𐤍𐤄𐤂 	H5090	root
 58:12:10	𐤁𐤒𐤃𐤔𐤕𐤅	english	𐤁 𐤒𐤃𐤔 𐤕+𐤅	H6944	root
+58:12:18	𐤍𐤌𐤔𐤔	english	[𐤍] 𐤌𐤔𐤔 	H4959	root
+58:12:20	𐤕𐤎𐤒𐤋	spelling	[𐤕] 𐤎𐤒𐤋 	H5619	root
 58:12:23	𐤄𐤍𐤔𐤋𐤌𐤉𐤌	english	𐤄+[𐤍] 𐤔𐤋𐤌 𐤉𐤌	H7999	root
 58:12:25	𐤍𐤌𐤀𐤍	spelling	[𐤍] 𐤌𐤀𐤍 	H3985	root
 58:12:26	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+58:12:27	𐤄𐤍𐤓𐤏𐤔𐤉𐤌	english	𐤄+[𐤍] 𐤓𐤏𐤔 𐤉𐤌	H7493	root
+58:12:27	𐤍𐤓𐤏𐤔	english	[𐤍] 𐤓𐤏𐤔 	H7493	root
 58:13:3	𐤄𐤍𐤋𐤇𐤑𐤉𐤌	spelling	𐤄+[𐤍] 𐤋𐤇𐤑 𐤉𐤌	H3905	root
+58:13:18	𐤅𐤍𐤇𐤐𐤑	english	𐤅+[𐤍] 𐤇𐤐𐤑 	H2654	root
+59:1:11	𐤁𐤄𐤋𐤉𐤊𐤅𐤕𐤉𐤅	spelling	𐤁 𐤄𐤋𐤉𐤊𐤅𐤕 𐤉+𐤅	H1979	form
 59:1:12	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
 59:1:13	𐤉𐤍𐤎𐤄	spelling	[𐤉] 𐤍𐤎𐤄 	H5254	root
 59:1:14	𐤉𐤍𐤎𐤄	spelling	[𐤉] 𐤍𐤎𐤄 	H5254	root
@@ -691,14 +1135,27 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 59:1:16	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
 59:1:19	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
 59:2:4	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
+59:2:6	𐤄𐤎𐤇𐤁𐤉𐤌	english	[𐤄] 𐤎𐤇𐤁 𐤉𐤌	H5498	root
 59:2:13	𐤉𐤕𐤂𐤀𐤄	english	[𐤉𐤕] 𐤂𐤀𐤄 	H1342	root
+59:2:20	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+59:2:25	𐤍𐤑𐤃𐤒𐤄	english	[𐤍] 𐤑𐤃𐤒 𐤄	H6663	root
+59:3:7	𐤅𐤍𐤊𐤁𐤔𐤉𐤌	english	𐤅+[𐤍] 𐤊𐤁𐤔 𐤉𐤌	H3533	root
 59:3:9	𐤍𐤒𐤋𐤋	english	[𐤍] 𐤒𐤋𐤋 	H7043	root
+59:5:5	𐤄𐤕𐤏𐤃𐤍𐤕𐤌	english	[𐤄𐤕] 𐤏𐤃𐤍 𐤕+𐤌	H5727	root
+59:5:9	𐤕𐤕𐤀𐤅𐤍𐤍𐤅	english	[𐤕𐤕] 𐤀𐤅𐤍𐤍 𐤅	H596	matres
 60:1:1	𐤕𐤐𐤅𐤑𐤅𐤕	english	[𐤕] 𐤐𐤅𐤑 𐤅𐤕	H6327	root
+60:1:6	𐤄𐤌𐤕𐤏𐤑𐤁𐤉𐤌	english	𐤄+[𐤌𐤕] 𐤏𐤑𐤁 𐤉𐤌	H6087	root
 60:1:18	𐤍𐤐𐤃𐤉𐤕𐤌	english	[𐤍] 𐤐𐤃𐤉𐤕 𐤌	H6299	form
+60:2:3	𐤈𐤏𐤌𐤕𐤌	english	 𐤈𐤏𐤌 𐤕+𐤌	H2942	root
+60:2:11	𐤄𐤌𐤕𐤂𐤓𐤅𐤕	english	𐤄+[𐤌𐤕] 𐤂𐤓𐤅 𐤕	H1481	form
+60:2:20	𐤀𐤂𐤓𐤅𐤐	english	[𐤀] 𐤂𐤓𐤅𐤐 	H1640	matres
 60:2:21	𐤍𐤒𐤓𐤀𐤕𐤌	spelling	[𐤍] 𐤒𐤓𐤀 𐤕+𐤌	H7121	root
 60:2:21	𐤁𐤏𐤒𐤁𐤅𐤕𐤉𐤅	spelling	𐤁 𐤏𐤒𐤁𐤅𐤕 𐤉+𐤅	H6119	form
-60:3:8	𐤓𐤇𐤌𐤍𐤉𐤌	english	 𐤓𐤇𐤌𐤍𐤉 𐤌	H7362	root
+60:3:8	𐤓𐤇𐤌𐤍𐤉𐤌	spelling	 𐤓𐤇𐤌𐤍𐤉 𐤌	H7362	root
 60:3:9	𐤍𐤒𐤓𐤀𐤕𐤌	spelling	[𐤍] 𐤒𐤓𐤀 𐤕+𐤌	H7121	root
+60:3:16	𐤁𐤄𐤋𐤔𐤉𐤍𐤌	english	𐤁+𐤄 𐤋𐤔𐤉𐤍 𐤌	H3956	matres
+60:3:22	𐤅𐤄𐤓𐤔𐤉𐤅𐤕	english	𐤅+𐤄 𐤓𐤔𐤉𐤅𐤕 	H7568	matres
+60:5:1	𐤀𐤆𐤄𐤉𐤓	english	[𐤀] 𐤆𐤄𐤉𐤓 	H2094	matres
 60:5:1	𐤏𐤌𐤉𐤕𐤌	english	 𐤏𐤌𐤉𐤕 𐤌	H5997	root
 60:5:5	𐤁𐤄𐤊𐤍𐤏	english	𐤁+[𐤄] 𐤊𐤍𐤏 	H3665	root
 60:5:10	𐤅𐤉𐤉𐤎𐤃	english	𐤅+[𐤉] 𐤉𐤎𐤃 	H3245	root
@@ -709,9 +1166,10 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 61:2:19	𐤍𐤊𐤁𐤔	spelling	[𐤍] 𐤊𐤁𐤔 	H3533	root
 61:3:1	𐤀𐤏𐤉𐤓	english	[𐤀] 𐤏𐤉𐤓 	H5782	matres
 61:3:9	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
-61:3:12	𐤉𐤌𐤅𐤂𐤅	english	[𐤉] 𐤌𐤅𐤂 𐤅	H4127	root
+61:3:11	𐤉𐤌𐤅𐤂𐤅	spelling	[𐤉] 𐤌𐤅𐤂 𐤅	H4127	root
+61:3:12	𐤉𐤌𐤅𐤂𐤅	spelling	[𐤉] 𐤌𐤅𐤂 𐤅	H4127	root
 61:3:15	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
-62:1:3	𐤕𐤕𐤇𐤁𐤓𐤅	english	[𐤕𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
+62:1:3	𐤕𐤕𐤇𐤁𐤓𐤅	spelling	[𐤕𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
 62:1:6	𐤅𐤍𐤕𐤄𐤋𐤊	english	𐤅+[𐤍𐤕] 𐤄𐤋𐤊 	H1980	root
 62:1:7	𐤍𐤕𐤇𐤁𐤓𐤍𐤅	english	[𐤍𐤕] 𐤇𐤁𐤓 𐤍𐤅	H2266	root
 62:2:5	𐤍𐤔𐤋𐤌𐤄	spelling	[𐤍] 𐤔𐤋𐤌 𐤄	H7999	root
@@ -733,94 +1191,153 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 63:1:6	𐤍𐤕𐤄𐤋𐤊	spelling	[𐤍𐤕] 𐤄𐤋𐤊 	H1980	root
 64:1:1	𐤄𐤇𐤁𐤉𐤁	english	[𐤄] 𐤇𐤁𐤉𐤁 	H2245	matres
 64:1:10	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+65:1:7	𐤍𐤌𐤎𐤓𐤅	spelling	[𐤍] 𐤌𐤎𐤓 𐤅	H4560	root
 65:1:9	𐤂𐤃𐤅𐤐𐤉𐤌	spelling	 𐤂𐤃𐤅𐤐 𐤉𐤌	H1421	root
 65:1:12	𐤅𐤍𐤏𐤒𐤓𐤅	english	𐤅+[𐤍] 𐤏𐤒𐤓 𐤅	H6131	root
 65:1:20	𐤁𐤒𐤃𐤔𐤕𐤄	english	𐤁 𐤒𐤃𐤔 𐤕+𐤄	H6944	root
+65:1:21	𐤅𐤇𐤊𐤉𐤕𐤌	english	𐤅 𐤇𐤊𐤉 𐤕+𐤌	H2441	form
+66:1:4	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
+66:1:11	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
+66:2:10	𐤄𐤌𐤋𐤔𐤉𐤍	spelling	𐤄+[𐤌] 𐤋𐤔𐤉𐤍 	H3960	matres
+66:2:11	𐤉𐤍𐤆𐤒	spelling	[𐤉] 𐤍𐤆𐤒 	H5142	root
+66:2:20	𐤕𐤍𐤉𐤇	english	[𐤕] 𐤍𐤉𐤇 	H5117	matres
 66:2:27	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
 66:3:3	𐤕𐤔𐤒𐤃	english	[𐤕] 𐤔𐤒𐤃 	H8245	root
 66:3:16	𐤀𐤒𐤉𐤀𐤊	english	[𐤀] 𐤒𐤉𐤀 𐤊	H6958	matres
+66:5:2	𐤅𐤋𐤄𐤕𐤉𐤓	spelling	𐤅+𐤋+𐤄 𐤕𐤉𐤓 	H8449	matres
 66:5:2	𐤇𐤅𐤕𐤌𐤉𐤅	spelling	 𐤇𐤅𐤕𐤌 𐤉+𐤅	H2368	root
+66:5:5	𐤅𐤋𐤄𐤕𐤉𐤓	spelling	𐤅+𐤋+𐤄 𐤕𐤉𐤓 	H8449	matres
 66:5:5	𐤇𐤅𐤕𐤌𐤉𐤅	spelling	 𐤇𐤅𐤕𐤌 𐤉+𐤅	H2368	root
 66:5:9	𐤇𐤅𐤕𐤌𐤉𐤅	spelling	 𐤇𐤅𐤕𐤌 𐤉+𐤅	H2368	root
 66:5:9	𐤍𐤔𐤇𐤈𐤕	english	[𐤍] 𐤔𐤇𐤈 𐤕	H7819	root
 66:6:14	𐤍𐤂𐤋𐤋	english	[𐤍] 𐤂𐤋𐤋 	H1556	root
 66:9:3	𐤏𐤒𐤓𐤁𐤉	english	 𐤏𐤒𐤓𐤁 𐤉	H6137	root
+66:9:5	𐤋𐤄𐤊𐤀𐤉𐤁𐤌	english	𐤋+[𐤄] 𐤊𐤀𐤉𐤁 𐤌	H3510	matres
 66:9:5	𐤄𐤏𐤒𐤓𐤁	english	𐤄 𐤏𐤒𐤓𐤁 	H6137	root
+66:12:5	𐤅𐤉𐤋𐤒𐤇	english	𐤅+[𐤉] 𐤋𐤒𐤇 	H3947	root
+66:12:9	𐤄𐤌𐤃𐤉𐤇	english	𐤄+[𐤌] 𐤃𐤉𐤇 	H1740	matres
+66:12:12	𐤄𐤌𐤋𐤔𐤉𐤍	spelling	𐤄+[𐤌] 𐤋𐤔𐤉𐤍 	H3960	matres
 66:12:14	𐤕𐤊𐤋𐤊𐤋	spelling	[𐤕] 𐤊𐤋𐤊𐤋 	H3557	form
 66:12:16	𐤅𐤕𐤏𐤆𐤓	spelling	𐤅+[𐤕] 𐤏𐤆𐤓 	H5826	root
 66:13:1	𐤂𐤃𐤅𐤐𐤉𐤌	spelling	 𐤂𐤃𐤅𐤐 𐤉𐤌	H1421	root
 66:14:16	𐤍𐤒𐤑𐤓𐤄	english	[𐤍] 𐤒𐤑𐤓 𐤄	H7114	root
+66:16:8	𐤋𐤑𐤓𐤁	english	𐤋 𐤑𐤓𐤁 	H6866	root
+66:16:9	𐤅𐤉𐤑𐤓𐤁𐤅	english	𐤅+[𐤉] 𐤑𐤓𐤁 𐤅	H6866	root
 66:16:9	𐤅𐤉𐤂𐤃𐤐𐤅	spelling	𐤅+[𐤉] 𐤂𐤃𐤐 𐤅	H1442	root
+66:16:19	𐤍𐤇𐤋𐤒𐤄	spelling	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
 66:16:21	𐤅𐤉𐤂𐤃𐤐𐤅	spelling	𐤅+[𐤉] 𐤂𐤃𐤐 𐤅	H1442	root
 66:17:3	𐤂𐤃𐤅𐤐𐤉𐤌	spelling	 𐤂𐤃𐤅𐤐 𐤉𐤌	H1421	root
 66:17:12	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+66:18:4	𐤕𐤕𐤇𐤁𐤓𐤅	spelling	[𐤕𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
 66:18:5	𐤏𐤅𐤍𐤅𐤕𐤉𐤄	english	 𐤏𐤅𐤍𐤅𐤕 𐤉+𐤄	H5771	form
 66:18:21	𐤕𐤔𐤋𐤊	english	[𐤕] 𐤔𐤋𐤊 	H7993	root
+66:19:2	𐤁𐤕𐤆𐤍𐤕𐤄	english	𐤁 𐤕𐤆𐤍𐤕 𐤄	H8457	matres
 66:19:19	𐤍𐤒𐤄𐤋𐤉𐤌	spelling	[𐤍] 𐤒𐤄𐤋 𐤉𐤌	H6950	root
+66:19:20	𐤄𐤃𐤉𐤇	english	[𐤄] 𐤃𐤉𐤇 	H1740	matres
+66:20:2	𐤄𐤌𐤋𐤔𐤉𐤍	spelling	𐤄+[𐤌] 𐤋𐤔𐤉𐤍 	H3960	matres
+66:20:9	𐤄𐤇𐤁𐤉𐤁𐤄	spelling	[𐤄] 𐤇𐤁𐤉𐤁 𐤄	H2245	matres
 66:21:21	𐤊𐤆𐤊𐤅𐤊𐤉𐤕	english	𐤊 𐤆𐤊𐤅𐤊𐤉𐤕 	H2137	root
 67:1:5	𐤉𐤓𐤏𐤃𐤅	english	[𐤉] 𐤓𐤏𐤃 𐤅	H7460	root
 67:1:9	𐤒𐤃𐤅𐤔𐤉𐤅	english	 𐤒𐤃𐤅𐤔 𐤉+𐤅	H6918	root
+68:1:14	𐤅𐤉𐤉𐤐𐤋𐤅	english	𐤅+[𐤉] 𐤉𐤐𐤋𐤅 	H5307	form
 68:1:15	𐤅𐤀𐤅𐤄𐤋𐤉	english	𐤅 𐤀𐤅𐤄𐤋 𐤉	H168	matres
-68:3:23	𐤅𐤉𐤏𐤁𐤅𐤃	english	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+68:1:16	𐤕𐤏𐤕𐤅𐤏𐤉	spelling	 𐤕𐤏𐤕𐤅𐤏 𐤉	H8595	matres
+68:2:25	𐤋𐤓𐤅𐤃𐤄	english	𐤋 𐤓𐤅𐤃 𐤄	H7300	root
+68:2:41	𐤁𐤓𐤅𐤀𐤉𐤅	spelling	 𐤁𐤓𐤅𐤀 𐤉+𐤅	H1254	matres
+68:2:42	𐤁𐤓𐤅𐤀𐤉𐤅	spelling	 𐤁𐤓𐤅𐤀 𐤉+𐤅	H1254	matres
+68:3:23	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
 68:3:25	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
+68:4:22	𐤅𐤉𐤊𐤕𐤅𐤁	english	𐤅+[𐤉] 𐤊𐤕𐤅𐤁 	H3789	form
 68:4:22	𐤋𐤎𐤃𐤓	spelling	𐤋 𐤎𐤃𐤓 	H5468	root
+68:4:22	𐤋𐤎𐤃𐤓𐤉	english	𐤋 𐤎𐤃𐤓 𐤉	H5468	root
+68:4:23	𐤅𐤉𐤊𐤕𐤅𐤁	english	𐤅+[𐤉] 𐤊𐤕𐤅𐤁 	H3789	form
 68:4:31	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
+68:4:34	𐤉𐤒𐤅𐤃𐤔	english	[𐤉] 𐤒𐤅𐤃𐤔 	H6942	matres
+68:4:35	𐤕𐤕𐤒𐤃𐤔	english	[𐤕𐤕] 𐤒𐤃𐤔 	H6942	root
 68:4:39	𐤒𐤁𐤓𐤅𐤄𐤅	spelling	 𐤒𐤁𐤓𐤅𐤄 𐤅	H6900	matres
 68:4:39	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
 68:5:6	𐤎𐤃𐤓𐤅	spelling	 𐤎𐤃𐤓 𐤅	H5468	root
+68:5:10	𐤅𐤌𐤐𐤅𐤓𐤃𐤉𐤌	english	𐤅+[𐤌] 𐤐𐤅𐤓𐤃 𐤉𐤌	H6504	matres
+68:5:16	𐤁𐤓𐤅𐤀𐤉𐤅	spelling	 𐤁𐤓𐤅𐤀 𐤉+𐤅	H1254	matres
 68:5:17	𐤍𐤇𐤓𐤑	spelling	[𐤍] 𐤇𐤓𐤑 	H2782	root
 68:5:18	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
-68:5:20	𐤅𐤍𐤇𐤓𐤑	english	𐤅+[𐤍] 𐤇𐤓𐤑 	H2782	root
-68:8:13	𐤋𐤐𐤋𐤅𐤂	english	𐤋 𐤐𐤋𐤅𐤂 	H6388	matres
+68:5:19	𐤄𐤀𐤅𐤐𐤋	english	𐤄 𐤀𐤅𐤐𐤋 	H652	matres
+68:5:39	𐤍𐤊𐤋𐤀𐤅	english	[𐤍] 𐤊𐤋𐤀 𐤅	H3607	root
+68:7:3	𐤅𐤉𐤑𐤅𐤓	spelling	𐤅+[𐤉] 𐤑𐤅𐤓 	H6696	root
+68:7:33	𐤕𐤕𐤄𐤋𐤊𐤅	english	[𐤕𐤕] 𐤄𐤋𐤊 𐤅	H1980	root
+68:8:13	𐤋𐤐𐤋𐤅𐤂	english	𐤋 𐤐𐤋𐤅𐤂 	H6385	matres
+68:9:10	𐤋𐤂𐤅𐤌𐤓	english	𐤋 𐤂𐤅𐤌𐤓 	H1586	matres
+68:10:6	𐤍𐤐𐤓𐤄	english	[𐤍] 𐤐𐤓𐤄 	H6509	root
 68:10:6	𐤅𐤍𐤓𐤁𐤄	spelling	𐤅+[𐤍] 𐤓𐤁𐤄 	H7235	root
 68:10:16	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
-68:11:17	𐤅𐤑𐤉𐤐𐤅𐤓𐤉𐤌	english	𐤅 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6852	matres
-68:11:19	𐤅𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	english	𐤅+[𐤄] 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6852	matres
-68:11:20	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	[𐤄] 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6852	matres
-68:14:14	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	[𐤄] 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6852	matres
-68:14:15	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	[𐤄] 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6852	matres
-68:14:15	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	[𐤄] 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6852	matres
+68:11:10	𐤅𐤉𐤐𐤏𐤅𐤋	english	𐤅+[𐤉] 𐤐𐤏𐤅𐤋 	H6466	matres
+68:11:17	𐤅𐤑𐤉𐤐𐤅𐤓𐤉𐤌	english	𐤅 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6833	matres
+68:11:19	𐤅𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	english	𐤅+𐤄 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6833	matres
+68:11:20	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	𐤄 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6833	matres
+68:14:14	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	𐤄 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6833	matres
+68:14:15	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	𐤄 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6833	matres
+68:14:15	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	𐤄 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6833	matres
 68:14:18	𐤉𐤏𐤁𐤅𐤃𐤅	english	[𐤉] 𐤏𐤁𐤅𐤃 𐤅	H5647	matres
-68:14:25	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	[𐤄] 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6852	matres
+68:14:25	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	𐤄 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6833	matres
+68:15:37	𐤐𐤉𐤒𐤅𐤃𐤉𐤅	english	 𐤐𐤉𐤒𐤅𐤃 𐤉+𐤅	H6485	matres
+68:16:8	𐤅𐤁𐤂𐤅𐤐𐤓𐤉𐤕	english	𐤅+𐤁 𐤂𐤅𐤐𐤓𐤉𐤕 	H1614	matres
 68:16:9	𐤅𐤉𐤕𐤏𐤉𐤁𐤅	english	𐤅+[𐤉] 𐤕𐤏𐤉𐤁 𐤅	H8581	matres
 68:16:13	𐤍𐤇𐤓𐤑	spelling	[𐤍] 𐤇𐤓𐤑 	H2782	root
 68:16:22	𐤀𐤅𐤃𐤅𐤕𐤉𐤅	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤅	H182	root
 68:17:1	𐤍𐤂𐤌𐤋	spelling	[𐤍] 𐤂𐤌𐤋 	H1580	root
+68:17:16	𐤅𐤕𐤐𐤒𐤇	english	𐤅+[𐤕] 𐤐𐤒𐤇 	H6491	root
+68:19:11	𐤅𐤉𐤉𐤊𐤕𐤁	english	𐤅+[𐤉] 𐤉𐤊𐤕𐤁 	H3789	form
 68:20:9	𐤄𐤏𐤉𐤃𐤅𐤕𐤉	spelling	 𐤄𐤏𐤉𐤃𐤅 𐤕+𐤉	H5749	form
 68:20:12	𐤅𐤉𐤅𐤓𐤉𐤃	spelling	𐤅 𐤉𐤅𐤓𐤉𐤃 	H3381	matres
 68:21:22	𐤕𐤓𐤇𐤑	spelling	[𐤕] 𐤓𐤇𐤑 	H7364	root
-68:23:2	𐤅𐤉𐤉𐤀𐤎𐤐	english	𐤅+[𐤉] 𐤉𐤀𐤎𐤐 	H622	form
+68:21:26	𐤅𐤍𐤓𐤑𐤉𐤕𐤌	english	𐤅+[𐤍] 𐤓𐤑𐤉𐤕𐤌 	H7521	form
+68:22:31	𐤕𐤇𐤓𐤃	english	[𐤕] 𐤇𐤓𐤃 	H2729	root
+68:23:2	𐤅𐤉𐤉𐤀𐤎𐤐	spelling	𐤅+[𐤉] 𐤉𐤀𐤎𐤐 	H622	form
 68:27:19	𐤀𐤅𐤃𐤅𐤕𐤉𐤅	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤅	H182	root
+68:28:2	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+68:28:9	𐤁𐤕𐤅𐤀𐤓𐤄	english	𐤁 𐤕𐤅𐤀𐤓 𐤄	H8389	matres
+68:28:16	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
 68:29:24	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 68:30:8	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
+68:30:32	𐤍𐤓𐤔𐤌	spelling	[𐤍] 𐤓𐤔𐤌 	H7559	root
+68:31:47	𐤅𐤍𐤓𐤔𐤌	english	𐤅+[𐤍] 𐤓𐤔𐤌 	H7559	root
 68:34:2	𐤅𐤉𐤉𐤀𐤎𐤐𐤅	english	𐤅+[𐤉] 𐤉𐤀𐤎𐤐𐤅 	H622	form
 68:34:8	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
+68:35:37	𐤀𐤀𐤄𐤅𐤁	english	[𐤀] 𐤀𐤄𐤅𐤁 	H157	matres
+68:36:14	𐤅𐤄𐤏𐤉𐤃𐤅𐤕𐤉	english	 𐤅𐤄𐤏𐤉𐤃𐤅 𐤕+𐤉	H5749	form
+68:36:23	𐤅𐤉𐤒𐤁𐤅𐤓	english	𐤅+[𐤉] 𐤒𐤁𐤅𐤓 	H6912	form
 68:37:6	𐤍𐤕𐤂𐤁𐤓	english	[𐤍𐤕] 𐤂𐤁𐤓 	H1396	root
+68:37:28	𐤉𐤎𐤅𐤂	spelling	[𐤉] 𐤎𐤅𐤂 	H5472	root
 68:41:15	𐤌𐤏𐤃𐤅𐤋𐤌	english	𐤌 𐤏𐤃𐤅𐤋𐤌 	H5725	matres
 68:42:8	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 68:42:31	𐤅𐤉𐤇𐤔𐤅𐤁	spelling	𐤅+[𐤉] 𐤇𐤔𐤅𐤁 	H2803	matres
 68:43:10	𐤅𐤉𐤉𐤌𐤑𐤀	english	𐤅+[𐤉] 𐤉𐤌𐤑𐤀 	H4672	form
-68:43:19	𐤅𐤉𐤅𐤅𐤕𐤓	spelling	𐤅 𐤉𐤅𐤅𐤕𐤓 	H3500	matres
-68:44:31	𐤅𐤉𐤅𐤅𐤕𐤓	spelling	𐤅 𐤉𐤅𐤅𐤕𐤓 	H3500	matres
+68:43:19	𐤅𐤉𐤅𐤅𐤕𐤓	spelling	𐤅 𐤉𐤅𐤅𐤕𐤓 	H3498	matres
+68:44:31	𐤅𐤉𐤅𐤅𐤕𐤓	spelling	𐤅 𐤉𐤅𐤅𐤕𐤓 	H3498	matres
 68:46:19	𐤅𐤉𐤇𐤔𐤅𐤁	spelling	𐤅+[𐤉] 𐤇𐤔𐤅𐤁 	H2803	matres
-68:47:6	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	[𐤄] 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6852	matres
-68:48:13	𐤅𐤉𐤏𐤆𐤅𐤓	english	𐤅 𐤉𐤏𐤆𐤅𐤓 	H3134	matres
+68:47:6	𐤄𐤑𐤉𐤐𐤅𐤓𐤉𐤌	spelling	𐤄 𐤑𐤉𐤐𐤅𐤓 𐤉𐤌	H6833	matres
+68:48:13	𐤅𐤉𐤏𐤆𐤅𐤓	english	𐤅+[𐤉] 𐤏𐤆𐤅𐤓 	H5826	matres
 68:48:24	𐤋𐤍𐤑𐤋	spelling	𐤋 𐤍𐤑𐤋 	H5337	root
+68:50:14	𐤑𐤅𐤅𐤉𐤕	english	 𐤑𐤅𐤅𐤉 𐤕	H6728	matres
 69:1:5	𐤍𐤊𐤁𐤔𐤅	spelling	[𐤍] 𐤊𐤁𐤔 𐤅	H3533	root
 69:1:6	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 69:1:7	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 69:1:32	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 69:1:32	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
 69:1:44	𐤅𐤉𐤀𐤅𐤕𐤅	english	𐤅+[𐤉] 𐤀𐤅𐤕 𐤅	H225	root
+69:1:59	𐤁𐤑𐤅𐤅𐤀𐤓𐤌	english	𐤁 𐤑𐤅𐤅𐤀𐤓 𐤌	H6677	matres
 69:2:6	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
 69:2:8	𐤍𐤇𐤍𐤒𐤅	spelling	[𐤍] 𐤇𐤍𐤒 𐤅	H2614	root
 69:2:18	𐤅𐤉𐤉𐤕𐤍	spelling	𐤅+[𐤉] 𐤉𐤕𐤍 	H5414	form
 69:2:36	𐤍𐤇𐤋𐤋	english	[𐤍] 𐤇𐤋𐤋 	H2490	root
+69:2:37	𐤅𐤉𐤉𐤂𐤔𐤅	english	𐤅+[𐤉] 𐤉𐤂𐤔𐤅 	H5066	form
+69:2:44	𐤅𐤉𐤅𐤅𐤏𐤑𐤅	english	𐤅 𐤉𐤅𐤅𐤏𐤑 𐤅	H3289	matres
+69:2:71	𐤅𐤉𐤉𐤀𐤎𐤐	spelling	𐤅+[𐤉] 𐤉𐤀𐤎𐤐 	H622	form
+69:3:6	𐤅𐤐𐤅𐤏𐤋𐤉	english	𐤅 𐤐𐤅𐤏𐤋 𐤉	H6466	matres
 69:3:12	𐤅𐤉𐤔𐤋𐤅𐤋	spelling	𐤅+[𐤉] 𐤔𐤋𐤅𐤋 	H7997	matres
 69:3:27	𐤅𐤉𐤉𐤕𐤍	spelling	𐤅+[𐤉] 𐤉𐤕𐤍 	H5414	form
-69:3:30	𐤅𐤉𐤅𐤅𐤏𐤑	english	𐤅 𐤉𐤅𐤅𐤏𐤑 	H3289	matres
+69:3:30	𐤅𐤉𐤅𐤅𐤏𐤑	spelling	𐤅 𐤉𐤅𐤅𐤏𐤑 	H3289	matres
 69:3:33	𐤀𐤅𐤃𐤅𐤕𐤉𐤅	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤅	H182	root
-69:3:36	𐤅𐤉𐤉𐤒𐤇	english	𐤅+[𐤉] 𐤉𐤒𐤇 	H3947	form
 69:3:40	𐤅𐤉𐤅𐤅𐤃𐤏	spelling	𐤅 𐤉𐤅𐤅𐤃𐤏 	H3045	matres
 69:3:43	𐤅𐤉𐤉𐤒𐤄𐤋𐤅	spelling	𐤅+[𐤉] 𐤉𐤒𐤄𐤋 𐤅	H6950	form
 69:3:50	𐤍𐤐𐤋𐤈	english	[𐤍] 𐤐𐤋𐤈 	H6403	root
@@ -829,28 +1346,34 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 69:4:37	𐤅𐤉𐤉𐤒𐤄𐤋𐤅	spelling	𐤅+[𐤉] 𐤉𐤒𐤄𐤋 𐤅	H6950	form
 69:4:44	𐤇𐤉𐤋𐤋𐤅𐤄𐤅	english	 𐤇𐤉𐤋𐤋𐤅𐤄 𐤅	H2486	matres
 69:4:44	𐤅𐤉𐤉𐤕𐤑𐤅	english	𐤅+[𐤉] 𐤉𐤕𐤑𐤅 	H5422	form
-69:4:55	𐤅𐤁𐤌𐤂𐤉𐤍𐤉	english	𐤅+𐤁 𐤌𐤂𐤉𐤍 𐤉	H4042	matres
+69:4:55	𐤅𐤁𐤌𐤂𐤉𐤍𐤉	english	𐤅+𐤁 𐤌𐤂𐤉𐤍 𐤉	H4043	matres
+69:5:2	𐤅𐤉𐤅𐤅𐤏𐤑𐤅	english	𐤅 𐤉𐤅𐤅𐤏𐤑 𐤅	H3263	matres
 69:5:3	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 69:5:21	𐤅𐤉𐤔𐤋𐤅𐤋	spelling	𐤅+[𐤉] 𐤔𐤋𐤅𐤋 	H7997	matres
 69:5:27	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 69:5:28	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
-69:5:29	𐤅𐤉𐤉𐤔𐤀𐤅	english	𐤅+[𐤉] 𐤉𐤔𐤀𐤅 	H5375	form
+69:5:29	𐤅𐤉𐤉𐤔𐤀𐤅	spelling	𐤅+[𐤉] 𐤉𐤔𐤀𐤅 	H5375	form
 69:5:29	𐤎𐤅𐤋𐤌𐤅𐤕	english	 𐤎𐤅𐤋𐤌 𐤅𐤕	H5551	matres
 69:5:33	𐤅𐤉𐤉𐤎𐤏	spelling	𐤅+[𐤉] 𐤉𐤎𐤏 	H5265	form
 69:5:33	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
+69:5:33	𐤅𐤉𐤉𐤑𐤕	english	𐤅+[𐤉] 𐤉𐤑𐤕 	H3341	root
 69:5:35	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 69:5:42	𐤄𐤀𐤉𐤑𐤅	spelling	𐤄+[𐤀] 𐤉𐤑𐤅 	H6680	form
 69:6:8	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 69:6:13	𐤁𐤆𐤅𐤊𐤓𐤉	english	𐤁 𐤆𐤅𐤊𐤓 𐤉	H2142	matres
+69:6:14	𐤍𐤉𐤑𐤋𐤕𐤉	english	 𐤍𐤉𐤑𐤋 𐤕+𐤉	H5337	matres
 69:6:22	𐤅𐤉𐤕𐤀𐤎𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤀𐤎𐤐 𐤅	H622	root
-69:6:25	𐤑𐤉𐤅𐤅𐤍𐤅	english	 𐤑𐤉𐤅𐤅𐤍 𐤅	H6726	matres
 69:6:31	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 69:6:48	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
+69:6:56	𐤅𐤉𐤉𐤐𐤓𐤃𐤅	english	𐤅+[𐤉] 𐤉𐤐𐤓𐤃𐤅 	H6504	form
 69:7:25	𐤅𐤉𐤉𐤎𐤏	spelling	𐤅+[𐤉] 𐤉𐤎𐤏 	H5265	form
+69:7:31	𐤄𐤒𐤅𐤓𐤁𐤍𐤅𐤕	spelling	𐤄 𐤒𐤅𐤓𐤁𐤍 𐤅𐤕	H7133	matres
+69:7:41	𐤅𐤉𐤉𐤍𐤂𐤐	english	𐤅+[𐤉] 𐤉𐤍𐤂𐤐 	H5062	form
 69:8:8	𐤕𐤏𐤓𐤅𐤁𐤅𐤕	spelling	[𐤕] 𐤏𐤓𐤅𐤁 𐤅𐤕	H6148	matres
-69:8:9	𐤅𐤉𐤉𐤒𐤇𐤅	spelling	𐤅+[𐤉] 𐤉𐤒𐤇𐤅 	H3947	form
-69:8:10	𐤄𐤕𐤉𐤉𐤏𐤑𐤅	english	[𐤄𐤕] 𐤉𐤉𐤏𐤑 𐤅	H3289	matres
 69:8:10	𐤅𐤉𐤅𐤅𐤃𐤏	spelling	𐤅 𐤉𐤅𐤅𐤃𐤏 	H3045	matres
+69:8:17	𐤌𐤏𐤅𐤈𐤓	english	[𐤌] 𐤏𐤅𐤈𐤓 	H5849	matres
+69:8:21	𐤉𐤃𐤅𐤊𐤀𐤅	english	[𐤉] 𐤃𐤅𐤊𐤀 𐤅	H1792	matres
+69:8:22	𐤅𐤉𐤉𐤔𐤀𐤅	spelling	𐤅+[𐤉] 𐤉𐤔𐤀𐤅 	H5375	form
 69:8:28	𐤕𐤒𐤓𐤄	spelling	[𐤕] 𐤒𐤓𐤄 	H7136	root
 69:8:31	𐤕𐤒𐤓𐤄	spelling	[𐤕] 𐤒𐤓𐤄 	H7136	root
 69:9:12	𐤅𐤉𐤉𐤎𐤏	spelling	𐤅+[𐤉] 𐤉𐤎𐤏 	H5265	form
@@ -859,27 +1382,34 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 69:9:35	𐤅𐤉𐤅𐤅𐤃𐤏	spelling	𐤅 𐤉𐤅𐤅𐤃𐤏 	H3045	matres
 69:9:37	𐤅𐤇𐤕𐤅𐤍𐤄	english	𐤅 𐤇𐤕𐤅𐤍 𐤄	H2859	matres
 69:9:53	𐤅𐤉𐤉𐤕𐤍	spelling	𐤅+[𐤉] 𐤉𐤕𐤍 	H5414	form
-69:9:59	𐤅𐤉𐤅𐤎𐤃𐤅	english	𐤅 𐤉𐤅𐤎𐤃 𐤅	H3245	matres
+69:9:59	𐤅𐤉𐤅𐤎𐤃𐤅	english	𐤅 𐤉𐤅𐤎𐤃 𐤅	H3247	matres
 69:9:63	𐤅𐤉𐤅𐤅𐤃𐤏	spelling	𐤅 𐤉𐤅𐤅𐤃𐤏 	H3045	matres
 69:9:71	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
 69:9:71	𐤅𐤉𐤉𐤕𐤍	spelling	𐤅+[𐤉] 𐤉𐤕𐤍 	H5414	form
 69:10:21	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
+69:10:61	𐤅𐤄𐤕𐤇𐤕𐤍𐤕𐤉	english	𐤅+[𐤄𐤕] 𐤇𐤕𐤍 𐤕+𐤉	H2859	root
 69:10:63	𐤅𐤉𐤉𐤕𐤍	spelling	𐤅+[𐤉] 𐤉𐤕𐤍 	H5414	form
 69:10:65	𐤅𐤉𐤉𐤕𐤍	spelling	𐤅+[𐤉] 𐤉𐤕𐤍 	H5414	form
+69:10:67	𐤅𐤉𐤅𐤔𐤉𐤁𐤄𐤅	english	𐤅 𐤉𐤅𐤔𐤉𐤁𐤄 𐤅	H3143	matres
 69:10:86	𐤅𐤉𐤉𐤎𐤏	spelling	𐤅+[𐤉] 𐤉𐤎𐤏 	H5265	form
+69:10:91	𐤅𐤉𐤔𐤅𐤈𐤅	spelling	𐤅+[𐤉] 𐤔𐤅𐤈 𐤅	H7751	root
 69:10:96	𐤅𐤉𐤉𐤕𐤍	spelling	𐤅+[𐤉] 𐤉𐤕𐤍 	H5414	form
 69:11:1	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 69:11:2	𐤅𐤉𐤉𐤎𐤏	spelling	𐤅+[𐤉] 𐤉𐤎𐤏 	H5265	form
-69:11:22	𐤅𐤕𐤉𐤎𐤅𐤁	english	𐤅+[𐤕] 𐤉𐤎𐤅𐤁 	H5437	form
+69:11:32	𐤅𐤉𐤀𐤅𐤕	spelling	𐤅+[𐤉] 𐤀𐤅𐤕 	H225	root
 69:11:32	𐤅𐤉𐤉𐤕𐤍	spelling	𐤅+[𐤉] 𐤉𐤕𐤍 	H5414	form
-69:11:42	𐤅𐤉𐤅𐤅𐤕𐤓	spelling	𐤅 𐤉𐤅𐤅𐤕𐤓 	H3500	matres
-69:11:55	𐤅𐤉𐤔𐤅𐤈𐤅	english	𐤅+[𐤉] 𐤔𐤅𐤈 𐤅	H7750	root
+69:11:42	𐤅𐤉𐤅𐤅𐤕𐤓	spelling	𐤅 𐤉𐤅𐤅𐤕𐤓 	H3498	matres
+69:11:55	𐤅𐤉𐤔𐤅𐤈𐤅	spelling	𐤅+[𐤉] 𐤔𐤅𐤈 𐤅	H7751	root
+69:11:56	𐤅𐤉𐤔𐤋𐤋𐤅	english	𐤅+[𐤉] 𐤔𐤋𐤋 𐤅	H7997	root
+69:11:74	𐤅𐤉𐤑𐤅𐤓	spelling	𐤅+[𐤉] 𐤑𐤅𐤓 	H6696	root
 69:12:12	𐤋𐤄𐤏𐤕𐤉𐤓	spelling	𐤋+[𐤄] 𐤏𐤕𐤉𐤓 	H6279	matres
 69:12:24	𐤅𐤒𐤍𐤉𐤉𐤍𐤉𐤍𐤅	english	𐤅 𐤒𐤍𐤉𐤉𐤍 𐤉+𐤍𐤅	H7075	matres
-69:12:29	𐤅𐤉𐤁𐤏𐤉𐤓𐤅	english	𐤅+[𐤉] 𐤁𐤏𐤉𐤓𐤅 	H1197	form
+69:12:29	𐤅𐤉𐤁𐤏𐤉𐤓𐤅	spelling	𐤅+[𐤉] 𐤁𐤏𐤉𐤓𐤅 	H1197	form
 69:13:2	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 69:13:22	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 69:13:24	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
+69:13:34	𐤅𐤉𐤊𐤕𐤅𐤁	english	𐤅+[𐤉] 𐤊𐤕𐤅𐤁 	H3789	form
+69:13:43	𐤅𐤉𐤉𐤇𐤍	english	𐤅+[𐤉] 𐤉𐤇𐤍 	H2603	form
 69:13:52	𐤅𐤉𐤉𐤕𐤍	spelling	𐤅+[𐤉] 𐤉𐤕𐤍 	H5414	form
 69:14:1	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 69:14:37	𐤅𐤉𐤉𐤕𐤍	spelling	𐤅+[𐤉] 𐤉𐤕𐤍 	H5414	form
@@ -887,37 +1417,45 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 69:15:42	𐤋𐤄𐤑𐤉𐤒	spelling	𐤋+[𐤄] 𐤑𐤉𐤒 	H6693	matres
 69:15:42	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 69:15:42	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
-69:16:17	𐤅𐤉𐤉𐤒𐤇𐤅	spelling	𐤅+[𐤉] 𐤉𐤒𐤇𐤅 	H3947	form
+69:16:6	𐤅𐤉𐤉𐤔𐤀𐤅	spelling	𐤅+[𐤉] 𐤉𐤔𐤀𐤅 	H5375	form
+69:16:17	𐤅𐤉𐤉𐤒𐤇𐤅	english	𐤅+[𐤉] 𐤉𐤒𐤇𐤅 	H3947	form
 69:16:18	𐤁𐤂𐤅𐤌𐤋𐤅	english	𐤁 𐤂𐤅𐤌𐤋 𐤅	H1580	matres
 70:1:32	𐤕𐤕𐤊𐤁𐤃	spelling	[𐤕𐤕] 𐤊𐤁𐤃 	H3513	root
 70:3:10	𐤕𐤕𐤊𐤁𐤃	spelling	[𐤕𐤕] 𐤊𐤁𐤃 	H3513	root
-70:3:21	𐤕𐤇𐤒𐤅𐤓	spelling	[𐤕] 𐤇𐤒𐤅𐤓 	H2713	form
+70:3:21	𐤕𐤇𐤒𐤅𐤓	english	[𐤕] 𐤇𐤒𐤅𐤓 	H2713	form
 70:4:1	𐤕𐤃𐤀𐤉𐤁	english	[𐤕] 𐤃𐤀𐤉𐤁 	H1669	matres
-70:4:3	𐤕𐤇𐤌𐤉𐤓	english	[𐤕] 𐤇𐤌𐤉𐤓 	H2560	matres
-70:4:17	𐤀𐤀𐤔𐤓𐤍𐤅	english	[𐤀] 𐤀𐤔𐤓 𐤍𐤅	H833	root
+70:5:10	𐤕𐤕𐤏𐤁𐤓	spelling	[𐤕𐤕] 𐤏𐤁𐤓 	H5674	root
 70:6:3	𐤅𐤄𐤍𐤉𐤇𐤕𐤊	english	 𐤅𐤄𐤍𐤉𐤇 𐤕+𐤊	H3240	form
-70:7:15	𐤕𐤇𐤔𐤅𐤁𐤊	english	[𐤕] 𐤇𐤔𐤅𐤁 𐤊	H2803	matres
+70:6:32	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+70:7:9	𐤍𐤇𐤋𐤒𐤄	spelling	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
+70:7:10	𐤕𐤕𐤏𐤁𐤓	spelling	[𐤕𐤕] 𐤏𐤁𐤓 	H5674	root
+70:8:12	𐤁𐤔𐤌𐤉𐤏𐤕	english	𐤁 𐤔𐤌𐤉𐤏 𐤕	H8085	matres
 70:9:19	𐤕𐤕𐤄𐤋𐤊	spelling	[𐤕𐤕] 𐤄𐤋𐤊 	H1980	root
-70:10:1	𐤎𐤃𐤅𐤓𐤄	english	 𐤎𐤃𐤅𐤓 𐤄	H5468	matres
 70:10:26	𐤕𐤕𐤊𐤁𐤃	spelling	[𐤕𐤕] 𐤊𐤁𐤃 	H3513	root
-70:11:8	𐤕𐤇𐤒𐤅𐤓	spelling	[𐤕] 𐤇𐤒𐤅𐤓 	H2713	form
 70:12:2	𐤕𐤔𐤋𐤅𐤌𐤕	spelling	[𐤕] 𐤔𐤋𐤅𐤌 𐤕	H7999	matres
+70:12:21	𐤉𐤕𐤊𐤋𐤊𐤋	spelling	[𐤉𐤕] 𐤊𐤋𐤊𐤋 	H3557	form
 70:13:3	𐤉𐤏𐤅𐤄	spelling	[𐤉] 𐤏𐤅𐤄 	H5753	root
 70:13:3	𐤉𐤏𐤅𐤄	spelling	[𐤉] 𐤏𐤅𐤄 	H5753	root
 70:13:10	𐤕𐤕𐤒𐤓𐤁	spelling	[𐤕𐤕] 𐤒𐤓𐤁 	H7126	root
 70:13:10	𐤕𐤕𐤓𐤇𐤒	spelling	[𐤕𐤕] 𐤓𐤇𐤒 	H7368	root
 70:13:10	𐤕𐤕𐤓𐤇𐤒	spelling	[𐤕𐤕] 𐤓𐤇𐤒 	H7368	root
+70:13:11	𐤔𐤉𐤇𐤅𐤉𐤀	english	𐤔+[𐤉] 𐤇𐤅𐤉𐤀 	H2418	matres
 70:13:13	𐤕𐤕𐤄𐤋𐤊	spelling	[𐤕𐤕] 𐤄𐤋𐤊 	H1980	root
 70:14:6	𐤕𐤔𐤋𐤅𐤌𐤕	spelling	[𐤕] 𐤔𐤋𐤅𐤌 𐤕	H7999	matres
 70:14:24	𐤄𐤇𐤅𐤍𐤄	spelling	[𐤄] 𐤇𐤅𐤍𐤄 	H2583	matres
+70:15:9	𐤍𐤇𐤋𐤒𐤄	spelling	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
 70:31:9	𐤅𐤍𐤀𐤔𐤓𐤍𐤅	english	𐤅+[𐤍] 𐤀𐤔𐤓 𐤍𐤅	H833	root
+70:31:31	𐤕𐤋𐤏𐤉𐤆	english	[𐤕] 𐤋𐤏𐤉𐤆 	H3937	matres
+70:31:33	𐤓𐤅𐤏𐤅	english	 𐤓𐤅𐤏 𐤅	H7321	root
+70:31:34	𐤕𐤕𐤂𐤁𐤓	english	[𐤕𐤕] 𐤂𐤁𐤓 	H1396	root
 70:31:40	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
+70:31:42	𐤅𐤌𐤎𐤐𐤉𐤒	english	𐤅+[𐤌] 𐤎𐤐𐤉𐤒 	H5606	matres
 70:32:1	𐤕𐤔𐤁𐤀	english	[𐤕] 𐤔𐤁𐤀 	H935	form
 70:32:9	𐤕𐤕𐤒𐤅𐤌𐤌	spelling	[𐤕𐤕] 𐤒𐤅𐤌 𐤌	H6965	root
-70:32:11	𐤕𐤕𐤀𐤇𐤓	english	[𐤕𐤕] 𐤀𐤇𐤓 	H309	root
 70:34:11	𐤕𐤔𐤋𐤅𐤌𐤅𐤕	english	[𐤕] 𐤔𐤋𐤅𐤌 𐤅𐤕	H7999	matres
 70:35:19	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
 70:37:26	𐤍𐤁𐤑𐤓	spelling	[𐤍] 𐤁𐤑𐤓 	H1219	root
+70:38:9	𐤕𐤕𐤏𐤁𐤓	spelling	[𐤕𐤕] 𐤏𐤁𐤓 	H5674	root
 70:38:16	𐤄𐤕𐤌𐤓𐤓	english	[𐤄𐤕] 𐤌𐤓𐤓 	H4843	root
 70:40:5	𐤕𐤇𐤓𐤄	english	[𐤕] 𐤇𐤓𐤄 	H2734	root
 70:40:5	𐤍𐤅𐤇𐤅	english	 𐤍𐤅𐤇 𐤅	H5117	root
@@ -930,8 +1468,11 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 70:42:10	𐤕𐤄𐤓𐤄	english	[𐤕] 𐤄𐤓𐤄 	H2029	root
 70:42:17	𐤄𐤎𐤐𐤉𐤒𐤅	spelling	[𐤄] 𐤎𐤐𐤉𐤒 𐤅	H5606	matres
 70:43:3	𐤁𐤄𐤑𐤄𐤉𐤓𐤅	english	𐤁+𐤄 𐤑𐤄𐤉𐤓 𐤅	H6672	matres
-70:43:3	𐤉𐤕𐤊𐤋𐤊𐤋	english	[𐤉𐤕] 𐤊𐤋𐤊𐤋 	H3557	form
+70:43:3	𐤉𐤕𐤊𐤋𐤊𐤋	spelling	[𐤉𐤕] 𐤊𐤋𐤊𐤋 	H3557	form
+70:43:8	𐤌𐤆𐤄𐤉𐤓𐤕𐤅	english	[𐤌] 𐤆𐤄𐤉𐤓 𐤕+𐤅	H2094	matres
+70:43:9	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 70:43:28	𐤍𐤂𐤃𐤋𐤄	english	[𐤍] 𐤂𐤃𐤋 𐤄	H1431	root
+70:44:1	𐤁𐤃𐤅𐤓𐤅𐤕𐤌	english	𐤁 𐤃𐤅𐤓 𐤅𐤕+𐤌	H1755	root
 70:44:6	𐤌𐤊𐤅𐤍𐤕𐤌	english	 𐤌𐤊𐤅𐤍 𐤕+𐤌	H4349	root
 70:45:7	𐤐𐤏𐤌𐤅𐤍𐤉𐤌	spelling	 𐤐𐤏𐤌𐤅𐤍 𐤉𐤌	H6472	matres
 70:45:8	𐤐𐤏𐤌𐤅𐤍𐤉𐤌	spelling	 𐤐𐤏𐤌𐤅𐤍 𐤉𐤌	H6472	matres
@@ -945,22 +1486,25 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 71:3:7	𐤉𐤆𐤄𐤉𐤓𐤅	spelling	[𐤉] 𐤆𐤄𐤉𐤓 𐤅	H2094	matres
 71:4:3	𐤉𐤏𐤌𐤉𐤒𐤅	english	[𐤉] 𐤏𐤌𐤉𐤒 𐤅	H6009	matres
 71:6:16	𐤌𐤃𐤀𐤅𐤂	english	𐤌 𐤃𐤀𐤅𐤂 	H1672	matres
-71:7:10	𐤌𐤉𐤅𐤐𐤉	english	𐤌 𐤉𐤅𐤐𐤉 	H3308	matres
+71:7:10	𐤌𐤉𐤅𐤐𐤉	spelling	𐤌 𐤉𐤅𐤐𐤉 	H3308	matres
 71:7:18	𐤍𐤋𐤉𐤆𐤕	english	[𐤍] 𐤋𐤉𐤆 𐤕	H3868	matres
 71:8:9	𐤕𐤉𐤏𐤑𐤍𐤉	english	[𐤕] 𐤉𐤏𐤑𐤍𐤉 	H3289	form
 71:10:5	𐤋𐤒𐤔𐤅𐤓	spelling	𐤋 𐤒𐤔𐤅𐤓 	H7194	matres
 71:10:19	𐤈𐤁𐤏𐤄	spelling	 𐤈𐤁𐤏 𐤄	H2883	root
 71:11:15	𐤋𐤆𐤅𐤇𐤋𐤉	english	𐤋 𐤆𐤅𐤇𐤋 𐤉	H2119	matres
 71:11:18	𐤉𐤈𐤉𐤋𐤅	spelling	[𐤉] 𐤈𐤉𐤋 𐤅	H2904	matres
-71:12:18	𐤕𐤇𐤐𐤅𐤑	english	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+71:11:25	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+71:12:18	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
 71:12:25	𐤕𐤕𐤏𐤋𐤋	english	[𐤕𐤕] 𐤏𐤋𐤋 	H5953	root
 71:14:15	𐤄𐤕𐤏𐤑𐤁	english	[𐤄𐤕] 𐤏𐤑𐤁 	H6087	root
+71:14:20	𐤌𐤉𐤅𐤐𐤉	spelling	𐤌 𐤉𐤅𐤐𐤉 	H3308	matres
 71:14:21	𐤉𐤑𐤅𐤓	spelling	[𐤉] 𐤑𐤅𐤓 	H6696	root
 71:14:31	𐤄𐤌𐤕𐤍𐤒𐤌𐤕	english	𐤄+[𐤌𐤕] 𐤍𐤒𐤌 𐤕	H5358	root
 71:15:1	𐤉𐤑𐤅𐤓	spelling	[𐤉] 𐤑𐤅𐤓 	H6696	root
 71:16:17	𐤅𐤕𐤕𐤂𐤁𐤓	english	𐤅+[𐤕𐤕] 𐤂𐤁𐤓 	H1396	root
 71:16:17	𐤕𐤕𐤒𐤅𐤌𐤌	spelling	[𐤕𐤕] 𐤒𐤅𐤌 𐤌	H6965	root
 71:16:24	𐤉𐤑𐤅𐤓	spelling	[𐤉] 𐤑𐤅𐤓 	H6696	root
+71:17:7	𐤕𐤏𐤕𐤅𐤏𐤉	spelling	 𐤕𐤏𐤕𐤅𐤏 𐤉	H8595	matres
 71:17:15	𐤅𐤌𐤕𐤏𐤋𐤐𐤉𐤌	english	𐤅+[𐤌𐤕] 𐤏𐤋𐤐 𐤉𐤌	H5968	root
 71:17:19	𐤑𐤅𐤄𐤋𐤅𐤕	english	 𐤑𐤅𐤄𐤋 𐤅𐤕	H6670	matres
 71:18:8	𐤓𐤅𐤌𐤌𐤕𐤍𐤅	english	 𐤓𐤅𐤌𐤌 𐤕+𐤍𐤅	H7318	root
@@ -969,91 +1513,110 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 72:2:5	𐤅𐤍𐤏𐤔𐤉𐤕	spelling	𐤅+[𐤍] 𐤏𐤔𐤉𐤕 	H6213	form
 72:4:6	𐤉𐤋𐤅𐤆𐤅	english	[𐤉] 𐤋𐤅𐤆 𐤅	H3868	root
 72:5:3	𐤄𐤎𐤉𐤌𐤍	spelling	[𐤄] 𐤎𐤉𐤌𐤍 	H5567	matres
+72:5:12	𐤉𐤇𐤉𐤉𐤍𐤅	english	 𐤉𐤇𐤉 𐤉+𐤍𐤅	H2421	form
 72:10:2	𐤇𐤅𐤕𐤍𐤕𐤊	english	 𐤇𐤅𐤕𐤍 𐤕+𐤊	H2859	matres
 73:1:14	𐤋𐤀𐤇𐤌𐤕𐤀	english	𐤋 𐤀𐤇𐤌𐤕𐤀 	H307	root
 73:2:20	𐤅𐤉𐤉𐤎𐤏	spelling	𐤅+[𐤉] 𐤉𐤎𐤏 	H5265	form
+73:2:24	𐤅𐤉𐤊𐤁𐤅𐤔	spelling	𐤅+[𐤉] 𐤊𐤁𐤅𐤔 	H3533	matres
 73:3:4	𐤂𐤃𐤓𐤅𐤕𐤉𐤍𐤅	english	 𐤂𐤃𐤓𐤅𐤕 𐤉+𐤍𐤅	H1448	form
 73:4:3	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
+73:4:15	𐤅𐤈𐤐𐤉𐤍𐤅	spelling	 𐤅𐤈𐤐 𐤉+𐤍𐤅	H2945	form
+73:5:13	𐤅𐤉𐤕𐤇𐤊𐤌	spelling	𐤅+[𐤉𐤕] 𐤇𐤊𐤌 	H2449	root
 73:6:8	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
 73:6:17	𐤋𐤁𐤕𐤅𐤋	spelling	𐤋 𐤁𐤕𐤅𐤋 	H1329	root
-73:7:12	𐤉𐤉𐤐𐤅𐤋	spelling	[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 73:7:13	𐤉𐤉𐤆𐤋𐤅	english	[𐤉] 𐤉𐤆𐤋𐤅 	H5140	form
 73:7:23	𐤑𐤉𐤌𐤀𐤅𐤍𐤌	english	 𐤑𐤉𐤌𐤀𐤅𐤍 𐤌	H6774	matres
+73:7:23	𐤅𐤉𐤌𐤅𐤃𐤅	english	𐤅+[𐤉] 𐤌𐤅𐤃 𐤅	H4128	root
 73:8:3	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 73:8:16	𐤕𐤕𐤉𐤉𐤏𐤑𐤅	english	[𐤕𐤕] 𐤉𐤉𐤏𐤑 𐤅	H3289	matres
 73:8:29	𐤁𐤅𐤓𐤅𐤕𐤉𐤍𐤅	english	 𐤁𐤅𐤓𐤅𐤕 𐤉+𐤍𐤅	H1285	matres
+73:9:11	𐤂𐤀𐤅𐤅𐤕𐤌	english	 𐤂𐤀𐤅 𐤅𐤕+𐤌	H1342	form
+73:9:11	𐤒𐤃𐤒𐤅𐤃𐤌	english	 𐤒𐤃𐤒𐤅𐤃 𐤌	H6936	matres
 73:10:2	𐤅𐤕𐤓𐤇𐤑	spelling	𐤅+[𐤕] 𐤓𐤇𐤑 	H7364	root
 73:10:7	𐤉𐤅𐤐𐤉𐤉𐤄	spelling	 𐤉𐤅𐤐𐤉𐤉 𐤄	H3308	matres
 73:10:8	𐤉𐤉𐤕𐤍	spelling	[𐤉] 𐤉𐤕𐤍 	H5414	form
-73:10:15	𐤉𐤉𐤐𐤅𐤋	spelling	[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 73:10:16	𐤉𐤅𐤐𐤉𐤉𐤄	spelling	 𐤉𐤅𐤐𐤉𐤉 𐤄	H3308	matres
 73:10:20	𐤉𐤅𐤐𐤉𐤉𐤄	spelling	 𐤉𐤅𐤐𐤉𐤉 𐤄	H3308	matres
 73:11:9	𐤅𐤕𐤅𐤔𐤉𐤉𐤄	english	𐤅 𐤕𐤅𐤔𐤉𐤉𐤄 	H8454	matres
+73:11:27	𐤁𐤉𐤅𐤐𐤉	english	𐤁 𐤉𐤅𐤐𐤉 	H3308	matres
 73:12:8	𐤅𐤕𐤓𐤇𐤑	spelling	𐤅+[𐤕] 𐤓𐤇𐤑 	H7364	root
 73:13:3	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 73:14:4	𐤉𐤌𐤅𐤂	english	[𐤉] 𐤌𐤅𐤂 	H4127	root
 73:14:7	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 73:14:8	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
+73:14:14	𐤅𐤉𐤅𐤒𐤉𐤏𐤅	english	𐤅 𐤉𐤅𐤒𐤉𐤏 𐤅	H3363	matres
+73:15:2	𐤁𐤏𐤅𐤓𐤐𐤌	english	𐤁 𐤏𐤅𐤓𐤐 𐤌	H6202	matres
 73:16:4	𐤇𐤉𐤉𐤋𐤉𐤅	spelling	 𐤇𐤉𐤉𐤋 𐤉+𐤅	H2428	matres
 73:16:5	𐤀𐤍𐤐𐤑	english	[𐤀] 𐤍𐤐𐤑 	H5310	root
 73:16:10	𐤁𐤉𐤅𐤐𐤉𐤉𐤄	english	𐤁 𐤉𐤅𐤐𐤉𐤉𐤄 	H3303	matres
 74:2:1	𐤔𐤅𐤐𐤈𐤉𐤍𐤅	english	 𐤔𐤅𐤐𐤈 𐤉+𐤍𐤅	H8199	form
 74:2:13	𐤄𐤐𐤉𐤑𐤕𐤍𐤅	english	[𐤄] 𐤐𐤉𐤑 𐤕+𐤍𐤅	H6327	matres
 74:3:8	𐤄𐤐𐤉𐤑𐤅𐤕𐤍𐤅	english	[𐤄] 𐤐𐤉𐤑 𐤅𐤕+𐤍𐤅	H6327	matres
+74:3:16	𐤅𐤓𐤅𐤃𐤉	english	𐤅 𐤓𐤅𐤃 𐤉	H7300	root
 74:3:31	𐤁𐤕𐤁𐤅𐤍𐤕𐤅	spelling	𐤁 𐤕𐤁𐤅𐤍 𐤕+𐤅	H8394	root
 74:3:32	𐤁𐤕𐤁𐤅𐤍𐤕𐤅	spelling	𐤁 𐤕𐤁𐤅𐤍 𐤕+𐤅	H8394	root
 74:4:16	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
+74:4:22	𐤉𐤁𐤅𐤀𐤊𐤌	spelling	[𐤉] 𐤁𐤅𐤀𐤊 𐤌	H935	form
 74:4:25	𐤄𐤁𐤋𐤉𐤂𐤅	english	[𐤄] 𐤁𐤋𐤉𐤂 𐤅	H1082	matres
 74:4:34	𐤅𐤏𐤋𐤉𐤑𐤅𐤕𐤄	english	𐤅 𐤏𐤋𐤉𐤑𐤅𐤕 𐤄	H5951	root
 74:4:37	𐤍𐤒𐤁𐤑𐤉𐤌	english	[𐤍] 𐤒𐤁𐤑 𐤉𐤌	H6908	root
-76:1:15	𐤍𐤀𐤍𐤉𐤄	spelling	[𐤍] 𐤀𐤍𐤉𐤄 	H579	matres
-76:1:16	𐤍𐤀𐤍𐤉𐤄	spelling	[𐤍] 𐤀𐤍𐤉𐤄 	H579	matres
-76:1:17	𐤍𐤀𐤍𐤉𐤄	spelling	[𐤍] 𐤀𐤍𐤉𐤄 	H579	matres
-76:2:9	𐤄𐤒𐤅𐤓𐤁𐤍𐤅𐤕	english	𐤄 𐤒𐤅𐤓𐤁𐤍 𐤅𐤕	H7133	matres
+76:1:26	𐤒𐤐𐤅𐤀𐤉𐤌	english	 𐤒𐤐𐤅𐤀 𐤉𐤌	H7087	matres
+76:1:32	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+76:1:39	𐤅𐤉𐤁𐤏𐤉𐤓𐤅	spelling	𐤅+[𐤉] 𐤁𐤏𐤉𐤓𐤅 	H1197	form
+76:1:40	𐤅𐤉𐤂𐤃𐤅𐤓	english	𐤅+[𐤉] 𐤂𐤃𐤅𐤓 	H1443	matres
+76:2:9	𐤄𐤒𐤅𐤓𐤁𐤍𐤅𐤕	spelling	𐤄 𐤒𐤅𐤓𐤁𐤍 𐤅𐤕	H7133	matres
+76:2:14	𐤄𐤒𐤅𐤓𐤁𐤍𐤅𐤕	spelling	𐤄 𐤒𐤅𐤓𐤁𐤍 𐤅𐤕	H7133	matres
 76:3:3	𐤒𐤅𐤓𐤁𐤍𐤅𐤕	english	 𐤒𐤅𐤓𐤁𐤍 𐤅𐤕	H7133	matres
-76:3:6	𐤋𐤒𐤅𐤓𐤁𐤍𐤅𐤕	english	𐤋 𐤒𐤅𐤓𐤁𐤍 𐤅𐤕	H7133	matres
+76:3:6	𐤋𐤒𐤅𐤓𐤁𐤍𐤅𐤕	spelling	𐤋 𐤒𐤅𐤓𐤁𐤍 𐤅𐤕	H7133	matres
 76:3:20	𐤔𐤆𐤐𐤕𐤍	english	 𐤔𐤆𐤐 𐤕+𐤍	H7805	root
 76:3:27	𐤅𐤉𐤉𐤔𐤀𐤄𐤅	english	𐤅+[𐤉] 𐤉𐤔𐤀𐤄𐤅 	H5375	form
-76:4:11	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
-76:4:17	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+76:4:11	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
+76:4:16	𐤄𐤒𐤅𐤓𐤁𐤍𐤅𐤕	spelling	𐤄 𐤒𐤅𐤓𐤁𐤍 𐤅𐤕	H7133	matres
+76:4:17	𐤅𐤉𐤉𐤍𐤔𐤀𐤅	english	𐤅+[𐤉] 𐤉𐤍𐤔𐤀𐤅 	H5375	form
+76:4:17	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 76:4:27	𐤄𐤍𐤆𐤊𐤓	spelling	𐤄+[𐤍] 𐤆𐤊𐤓 	H2142	root
 76:4:59	𐤄𐤑𐤅𐤏𐤒𐤉𐤌	spelling	[𐤄] 𐤑𐤅𐤏𐤒 𐤉𐤌	H6817	matres
 76:5:4	𐤐𐤅𐤂𐤏𐤉𐤌	english	 𐤐𐤅𐤂𐤏 𐤉𐤌	H6293	matres
 76:5:7	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
 76:5:10	𐤅𐤉𐤉𐤃𐤇	english	𐤅+[𐤉] 𐤉𐤃𐤇 	H5080	form
 76:5:14	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
+76:5:20	𐤋𐤍𐤇𐤅𐤕𐤅	english	𐤋 𐤍𐤇𐤅 𐤕+𐤅	H5117	form
+76:5:34	𐤌𐤔𐤉𐤒𐤅𐤑	english	[𐤌] 𐤔𐤉𐤒𐤅𐤑 	H8262	matres
 76:6:13	𐤅𐤉𐤅𐤅𐤃𐤏	spelling	𐤅 𐤉𐤅𐤅𐤃𐤏 	H3045	matres
-76:6:18	𐤋𐤏𐤅𐤑𐤓𐤍𐤅	english	𐤋 𐤏𐤅𐤑𐤓 𐤍𐤅	H6115	matres
-76:7:7	𐤅𐤉𐤉𐤒𐤇𐤅	spelling	𐤅+[𐤉] 𐤉𐤒𐤇𐤅 	H3947	form
+76:6:31	𐤀𐤕𐤏𐤄	spelling	[𐤀] 𐤕𐤏𐤄 	H8582	root
+76:7:5	𐤁𐤄𐤕𐤀𐤁𐤊	english	𐤁+[𐤄] 𐤕𐤀𐤁 𐤊	H8373	root
 76:7:10	𐤅𐤉𐤋𐤏𐤉𐤁𐤅	english	𐤅+[𐤉] 𐤋𐤏𐤉𐤁 𐤅	H3931	matres
 76:7:22	𐤋𐤀𐤅𐤌𐤑	spelling	𐤋 𐤀𐤅𐤌𐤑 	H553	matres
 76:7:39	𐤕𐤕𐤐𐤀𐤓	spelling	[𐤕𐤕] 𐤐𐤀𐤓 	H6286	root
 76:8:3	𐤄𐤕𐤏𐤕𐤃𐤄	english	[𐤄𐤕] 𐤏𐤕𐤃 𐤄	H6257	root
 76:8:3	𐤄𐤑𐤅𐤏𐤒𐤉𐤌	spelling	[𐤄] 𐤑𐤅𐤏𐤒 𐤉𐤌	H6817	matres
 76:8:6	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
-76:8:20	𐤁𐤌𐤂𐤉𐤍𐤌	english	𐤁 𐤌𐤂𐤉𐤍 𐤌	H4042	matres
-76:8:31	𐤅𐤉𐤉𐤒𐤇𐤅	spelling	𐤅+[𐤉] 𐤉𐤒𐤇𐤅 	H3947	form
+76:8:41	𐤁𐤇𐤂𐤂𐤌	spelling	𐤁 𐤇𐤂𐤂 𐤌	H2287	root
 76:9:11	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
+76:9:17	𐤉𐤉𐤊𐤅𐤍	english	[𐤉] 𐤉𐤊𐤅𐤍 	H3559	form
+76:9:21	𐤋𐤒𐤅𐤓𐤁𐤍𐤅𐤕	spelling	𐤋 𐤒𐤅𐤓𐤁𐤍 𐤅𐤕	H7133	matres
+76:9:22	𐤋𐤄𐤕𐤉𐤉𐤄𐤃	english	𐤋+[𐤄𐤕] 𐤉𐤉𐤄𐤃 	H3054	matres
+76:10:9	𐤁𐤇𐤂𐤂𐤌	spelling	𐤁 𐤇𐤂𐤂 𐤌	H2287	root
 76:10:18	𐤅𐤉𐤅𐤔𐤌	spelling	𐤅+[𐤉] 𐤅𐤔𐤌 	H7760	form
 76:10:20	𐤅𐤉𐤑𐤅𐤓𐤅	spelling	𐤅+[𐤉] 𐤑𐤅𐤓 𐤅	H6696	root
 76:10:25	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
-76:10:27	𐤅𐤉𐤉𐤇𐤍	english	𐤅+[𐤉] 𐤉𐤇𐤍 	H2603	form
 76:11:2	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
-76:11:15	𐤅𐤉𐤀𐤅𐤕	english	𐤅+[𐤉] 𐤀𐤅𐤕 	H225	root
+76:11:15	𐤅𐤉𐤀𐤅𐤕	spelling	𐤅+[𐤉] 𐤀𐤅𐤕 	H225	root
 76:11:41	𐤍𐤕𐤁𐤅𐤍𐤍	spelling	[𐤍𐤕] 𐤁𐤅𐤍 𐤍	H995	matres
 76:12:5	𐤅𐤉𐤔𐤒𐤉𐤏𐤅	english	𐤅+[𐤉] 𐤔𐤒𐤉𐤏 𐤅	H8257	matres
 76:12:6	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 76:12:8	𐤅𐤉𐤇𐤔𐤅𐤁	spelling	𐤅+[𐤉] 𐤇𐤔𐤅𐤁 	H2803	matres
 76:12:10	𐤅𐤉𐤉𐤐𐤅𐤋	spelling	𐤅+[𐤉] 𐤉𐤐𐤅𐤋 	H5307	form
-76:12:16	𐤅𐤉𐤑𐤅𐤓	english	𐤅+[𐤉] 𐤑𐤅𐤓 	H6696	root
+76:12:16	𐤅𐤉𐤑𐤅𐤓	spelling	𐤅+[𐤉] 𐤑𐤅𐤓 	H6696	root
 76:12:24	𐤅𐤉𐤉𐤎𐤏	spelling	𐤅+[𐤉] 𐤉𐤎𐤏 	H5265	form
+76:12:27	𐤅𐤁𐤇𐤅𐤐𐤆𐤌	english	𐤅+𐤁 𐤇𐤅𐤐𐤆 𐤌	H2648	matres
 76:12:50	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 76:12:50	𐤅𐤉𐤉𐤎𐤏	spelling	𐤅+[𐤉] 𐤉𐤎𐤏 	H5265	form
+76:13:8	𐤅𐤉𐤁𐤅𐤋𐤏	spelling	𐤅+[𐤉] 𐤁𐤅𐤋𐤏 	H1104	matres
 76:13:11	𐤅𐤉𐤉𐤕𐤍	spelling	𐤅+[𐤉] 𐤉𐤕𐤍 	H5414	form
+76:13:16	𐤅𐤉𐤅𐤅𐤏𐤑	spelling	𐤅 𐤉𐤅𐤅𐤏𐤑 	H3289	matres
 76:14:4	𐤅𐤉𐤅𐤅𐤃𐤏	spelling	𐤅 𐤉𐤅𐤅𐤃𐤏 	H3045	matres
 76:14:26	𐤅𐤉𐤉𐤏𐤑𐤄𐤅	spelling	𐤅+[𐤉] 𐤉𐤏𐤑𐤄𐤅 	H3289	form
-76:14:27	𐤅𐤉𐤉𐤒𐤇	english	𐤅+[𐤉] 𐤉𐤒𐤇 	H3947	form
-76:14:46	𐤅𐤉𐤉𐤂𐤔𐤅	english	𐤅+[𐤉] 𐤉𐤂𐤔𐤅 	H5066	form
 76:14:48	𐤅𐤉𐤕𐤍𐤐𐤋	spelling	𐤅+[𐤉𐤕] 𐤍𐤐𐤋 	H5307	root
 76:15:9	𐤄𐤍𐤅𐤎𐤏𐤉𐤌	spelling	[𐤄] 𐤍𐤅𐤎𐤏 𐤉𐤌	H5265	matres
 76:15:27	𐤅𐤇𐤉𐤉𐤋𐤉	english	𐤅 𐤇𐤉𐤉𐤋 𐤉	H2428	matres
@@ -1061,48 +1624,57 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 76:15:32	𐤄𐤍𐤅𐤎𐤏𐤉𐤌	spelling	[𐤄] 𐤍𐤅𐤎𐤏 𐤉𐤌	H5265	matres
 76:15:33	𐤋𐤄𐤕𐤂𐤓𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤂𐤓𐤅 𐤕	H1481	form
 76:15:38	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
+76:15:45	𐤍𐤓𐤑𐤉𐤕𐤉	english	[𐤍] 𐤓𐤑𐤉𐤕 𐤉	H7521	form
 79:1:11	𐤄𐤕𐤔𐤅𐤒𐤄	spelling	𐤄 𐤕𐤔𐤅𐤒𐤄 	H8669	root
+79:1:70	𐤅𐤉𐤉𐤔𐤀𐤅	spelling	𐤅+[𐤉] 𐤉𐤔𐤀𐤅 	H5375	form
 81:1:6	𐤊𐤎𐤃𐤓𐤅	english	𐤊 𐤎𐤃𐤓 𐤅	H5468	root
 81:1:24	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
 81:2:10	𐤂𐤆𐤁𐤓𐤅	spelling	 𐤂𐤆𐤁𐤓 𐤅	H1489	root
 81:2:19	𐤌𐤅𐤃𐤉𐤏𐤉𐤌	spelling	 𐤌𐤅𐤃𐤉𐤏 𐤉𐤌	H4069	matres
-81:3:16	𐤌𐤄𐤂𐤅𐤁𐤓	english	𐤌+[𐤄] 𐤂𐤅𐤁𐤓 	H1396	matres
+81:2:22	𐤅𐤕𐤒𐤉𐤐𐤉𐤌	english	𐤅 𐤕𐤒𐤉𐤐 𐤉𐤌	H8624	root
+81:3:12	𐤅𐤍𐤉𐤂𐤔𐤅	spelling	𐤅+[𐤍] 𐤉𐤂𐤔𐤅 	H5066	form
+81:3:14	𐤅𐤉𐤁𐤀𐤓𐤅	english	𐤅+[𐤉] 𐤁𐤀𐤓 𐤅	H874	root
+81:3:16	𐤌𐤄𐤂𐤅𐤁𐤓	english	𐤌+𐤄 𐤂𐤅𐤁𐤓 	H1368	matres
+81:3:18	𐤅𐤊𐤋𐤇𐤅𐤁	english	𐤅+𐤊+𐤋 𐤇𐤅𐤁 	H2326	root
+81:3:19	𐤅𐤀𐤇𐤔𐤃𐤓𐤐𐤍	english	𐤅 𐤀𐤇𐤔𐤃𐤓𐤐𐤍 	H324	root
 81:4:20	𐤅𐤊𐤋𐤇𐤐𐤑𐤍	english	𐤅+𐤊+𐤋 𐤇𐤐𐤑 𐤍	H2654	root
-81:4:23	𐤕𐤏𐤌𐤋𐤅	spelling	[𐤕] 𐤏𐤌𐤋 𐤅	H5998	root
 81:4:33	𐤕𐤕𐤄𐤋𐤊	spelling	[𐤕𐤕] 𐤄𐤋𐤊 	H1980	root
 81:4:35	𐤅𐤊𐤋𐤄𐤌𐤏𐤔𐤉𐤌	english	𐤅+𐤊+𐤋 𐤄𐤌𐤏𐤔𐤉𐤌 	H4639	form
 81:4:35	𐤓𐤅𐤏𐤃𐤉𐤌	spelling	 𐤓𐤅𐤏𐤃 𐤉𐤌	H7461	matres
 81:4:44	𐤍𐤇𐤓𐤁𐤄	spelling	[𐤍] 𐤇𐤓𐤁 𐤄	H2717	root
 81:4:46	𐤀𐤋𐤊𐤋𐤄𐤎𐤅𐤊𐤍𐤉𐤌	english	𐤀𐤋+𐤊+𐤋+[𐤄] 𐤎𐤅𐤊𐤍 𐤉𐤌	H5532	matres
 81:4:46	𐤉𐤏𐤁𐤉𐤓𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤓 𐤅	H5674	matres
-81:4:48	𐤅𐤀𐤇𐤔𐤃𐤓𐤐𐤍	english	𐤅 𐤀𐤇𐤔𐤃𐤓𐤐𐤍 	H324	root
+81:4:48	𐤅𐤀𐤇𐤔𐤃𐤓𐤐𐤍	english	𐤅 𐤀𐤇𐤔𐤃𐤓𐤐𐤍 	H323	root
 81:4:52	𐤅𐤊𐤋𐤄𐤏𐤅𐤋𐤉𐤌	english	𐤅+𐤊+𐤋 𐤄𐤏𐤅𐤋𐤉𐤌 	H5927	form
-81:5:32	𐤁𐤓𐤒𐤅𐤌	english	𐤁 𐤓𐤒𐤅𐤌 	H7552	matres
+81:5:59	𐤄𐤕𐤓𐤅𐤏𐤅𐤕	english	[𐤄𐤕] 𐤓𐤅𐤏 𐤅𐤕	H7321	root
+81:5:65	𐤅𐤌𐤑𐤉𐤒𐤉𐤌	english	𐤅 𐤌𐤑𐤉𐤒 𐤉𐤌	H4689	matres
 81:6:6	𐤅𐤇𐤁𐤓𐤉𐤄𐤌	english	𐤅 𐤇𐤁𐤓𐤉𐤄 𐤌	H2274	matres
 81:6:13	𐤅𐤕𐤒𐤉𐤐	spelling	𐤅 𐤕𐤒𐤉𐤐 	H8624	root
 81:6:14	𐤅𐤉𐤇𐤓𐤉𐤁𐤅	spelling	𐤅+[𐤉] 𐤇𐤓𐤉𐤁 𐤅	H2717	matres
 81:6:19	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
-81:6:23	𐤍𐤃𐤁𐤊𐤉	english	 𐤍𐤃𐤁𐤊 𐤉	H5073	root
 81:8:11	𐤉𐤕𐤍𐤃𐤁	english	[𐤉𐤕] 𐤍𐤃𐤁 	H5068	root
 81:8:19	𐤋𐤂𐤆𐤁𐤓𐤉	english	𐤋 𐤂𐤆𐤁𐤓 𐤉	H1489	root
 81:8:22	𐤌𐤅𐤃𐤉𐤏𐤉𐤌	spelling	 𐤌𐤅𐤃𐤉𐤏 𐤉𐤌	H4069	matres
 81:8:27	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 81:8:43	𐤂𐤆𐤁𐤓𐤉	spelling	 𐤂𐤆𐤁𐤓 𐤉	H1489	root
-81:8:72	𐤏𐤁𐤃𐤅𐤕𐤍𐤅	english	 𐤏𐤁𐤃 𐤅𐤕+𐤍𐤅	H5651	root
-81:8:72	𐤅𐤁𐤏𐤁𐤃𐤅𐤕𐤍𐤅	english	𐤅+𐤁 𐤏𐤁𐤃 𐤅𐤕+𐤍𐤅	H5651	root
+81:8:72	𐤏𐤁𐤃𐤅𐤕𐤍𐤅	spelling	 𐤏𐤁𐤃𐤅𐤕 𐤍𐤅	H5659	root
+81:8:72	𐤅𐤁𐤏𐤁𐤃𐤅𐤕𐤍𐤅	english	𐤅+𐤁 𐤏𐤁𐤃𐤅𐤕 𐤍𐤅	H5659	root
 81:9:7	𐤅𐤕𐤅𐤔𐤉𐤁𐤅	english	𐤅 𐤕𐤅𐤔𐤉𐤁 𐤅	H8453	matres
 83:3:5	𐤍𐤊𐤔𐤋	spelling	[𐤍] 𐤊𐤔𐤋 	H3782	root
 83:3:9	𐤍𐤊𐤔𐤋	spelling	[𐤍] 𐤊𐤔𐤋 	H3782	root
 83:4:2	𐤅𐤁𐤌𐤆𐤌𐤅𐤕𐤉𐤊	english	𐤅 𐤁𐤌𐤆𐤌𐤅𐤕 𐤉+𐤊	H4209	form
 83:4:10	𐤋𐤄𐤊𐤇𐤉𐤃	spelling	𐤋+[𐤄] 𐤊𐤇𐤉𐤃 	H3582	matres
 83:4:17	𐤉𐤔𐤁𐤉𐤏	spelling	[𐤉] 𐤔𐤁𐤉𐤏 	H7646	matres
-83:4:22	𐤄𐤇𐤍𐤉𐤐𐤅	english	𐤄 𐤇𐤍𐤉𐤐 𐤅	H2611	matres
+83:5:6	𐤍𐤇𐤈𐤀	spelling	[𐤍] 𐤇𐤈𐤀 	H2398	root
 83:5:9	𐤕𐤊𐤋𐤊𐤋	spelling	[𐤕] 𐤊𐤋𐤊𐤋 	H3557	form
 83:5:9	𐤋𐤄𐤑𐤌𐤉𐤇	spelling	𐤋+[𐤄] 𐤑𐤌𐤉𐤇 	H6779	matres
 83:5:11	𐤕𐤊𐤋𐤊𐤋	spelling	[𐤕] 𐤊𐤋𐤊𐤋 	H3557	form
 83:7:2	𐤉𐤕𐤍𐤐𐤋𐤅	spelling	[𐤉𐤕] 𐤍𐤐𐤋 𐤅	H5307	root
 83:8:16	𐤓𐤊𐤎𐤉𐤌	spelling	 𐤓𐤊𐤎 𐤉𐤌	H7406	root
+83:8:17	𐤏𐤈𐤓𐤅	english	 𐤏𐤈𐤓 𐤅	H5849	root
+83:8:22	𐤍𐤑𐤃𐤒	spelling	[𐤍] 𐤑𐤃𐤒 	H6663	root
 83:9:7	𐤕𐤎𐤋𐤇	spelling	[𐤕] 𐤎𐤋𐤇 	H5545	root
+83:9:7	𐤁𐤄𐤕𐤇𐤍𐤍𐤌	spelling	𐤁+[𐤄𐤕] 𐤇𐤍𐤍 𐤌	H2603	root
 83:16:1	𐤍𐤊𐤔𐤋𐤕𐤉	english	[𐤍] 𐤊𐤔𐤋 𐤕+𐤉	H3782	root
 83:16:4	𐤅𐤏𐤉𐤆𐤅𐤓𐤉	english	𐤅 𐤏𐤉𐤆𐤅𐤓 𐤉	H5826	matres
 83:16:6	𐤅𐤀𐤕𐤆𐤊𐤓𐤊	english	𐤅+[𐤀] 𐤕𐤆𐤊𐤓 𐤊	H2142	form
@@ -1110,14 +1682,17 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 83:16:11	𐤕𐤋𐤅𐤍𐤄	spelling	[𐤕] 𐤋𐤅𐤍 𐤄	H3885	root
 83:17:5	𐤅𐤉𐤕𐤍𐤐𐤋𐤅	spelling	𐤅+[𐤉𐤕] 𐤍𐤐𐤋 𐤅	H5307	root
 83:17:6	𐤅𐤉𐤇𐤓𐤉𐤁𐤅	spelling	𐤅+[𐤉] 𐤇𐤓𐤉𐤁 𐤅	H2717	matres
-83:17:26	𐤉𐤍𐤇𐤄𐤅	english	[𐤉] 𐤍𐤇𐤄 𐤅	H5117	form
+83:17:26	𐤉𐤍𐤇𐤄𐤅	english	[𐤉] 𐤍𐤇𐤄 𐤅	H5148	root
+83:17:33	𐤅𐤓𐤅𐤁𐤉𐤌	english	𐤅 𐤓𐤅𐤁 𐤉𐤌	H7378	matres
+83:17:36	𐤉𐤇𐤆𐤒𐤄𐤅	english	[𐤉] 𐤇𐤆𐤒𐤄 𐤅	H2388	form
+83:17:40	𐤉𐤍𐤇𐤄	english	 𐤉𐤍𐤇 𐤄	H3240	root
 84:1:11	𐤀𐤊𐤓𐤉𐤏	english	[𐤀] 𐤊𐤓𐤉𐤏 	H3766	matres
 87:1:2	𐤄𐤕𐤇𐤁𐤓𐤅	spelling	[𐤄𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
 87:1:4	𐤅𐤉𐤕𐤀𐤎𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤀𐤎𐤐 𐤅	H622	root
 87:1:6	𐤅𐤉𐤕𐤀𐤎𐤐	spelling	𐤅+[𐤉𐤕] 𐤀𐤎𐤐 	H622	root
 87:2:8	𐤉𐤏𐤁𐤉𐤓	spelling	[𐤉] 𐤏𐤁𐤉𐤓 	H5674	matres
 87:3:19	𐤇𐤁𐤓𐤉𐤄𐤌	english	 𐤇𐤁𐤓𐤉𐤄 𐤌	H2274	matres
-87:3:24	𐤉𐤊𐤏𐤉𐤎𐤅	english	[𐤉] 𐤊𐤏𐤉𐤎 𐤅	H3707	matres
+87:3:24	𐤉𐤊𐤏𐤉𐤎𐤅	spelling	[𐤉] 𐤊𐤏𐤉𐤎 𐤅	H3707	matres
 87:3:27	𐤉𐤋𐤇𐤑𐤅	spelling	[𐤉] 𐤋𐤇𐤑 𐤅	H3905	root
 87:3:27	𐤅𐤄𐤊𐤀𐤉𐤁𐤅	spelling	𐤅+[𐤄] 𐤊𐤀𐤉𐤁 𐤅	H3510	matres
 87:3:29	𐤅𐤄𐤊𐤀𐤉𐤁𐤅	spelling	𐤅+[𐤄] 𐤊𐤀𐤉𐤁 𐤅	H3510	matres
@@ -1135,10 +1710,12 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 87:11:6	𐤄𐤔𐤒𐤉𐤏	english	[𐤄] 𐤔𐤒𐤉𐤏 	H8257	matres
 87:11:16	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
 87:11:24	𐤅𐤋𐤒𐤃𐤅𐤔𐤉𐤅	english	𐤅+𐤋 𐤒𐤃𐤅𐤔 𐤉+𐤅	H6918	root
+87:14:1	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
 87:14:8	𐤂𐤃𐤅𐤐𐤉𐤌	spelling	 𐤂𐤃𐤅𐤐 𐤉𐤌	H1421	root
 87:14:10	𐤋𐤄𐤑𐤌𐤉𐤇	spelling	𐤋+[𐤄] 𐤑𐤌𐤉𐤇 	H6779	matres
 87:14:11	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
-87:14:12	𐤉𐤔𐤉𐤌𐤄𐤅	english	 𐤉𐤔𐤉𐤌𐤄 𐤅	H3451	root
+87:14:12	𐤉𐤔𐤉𐤌𐤄𐤅	spelling	[𐤉] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
+87:14:13	𐤉𐤔𐤉𐤌𐤄𐤅	spelling	[𐤉] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
 87:14:14	𐤏𐤍𐤐𐤉𐤅	spelling	 𐤏𐤍𐤐 𐤉+𐤅	H6057	root
 87:14:15	𐤉𐤌𐤔𐤊	english	[𐤉] 𐤌𐤔𐤊 	H4900	root
 87:14:33	𐤄𐤂𐤅𐤐𐤅𐤕	english	[𐤄] 𐤂𐤅𐤐 𐤅𐤕	H1479	root
@@ -1166,11 +1743,11 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 87:20:12	𐤉𐤑𐤉𐤀𐤄	english	 𐤉𐤑𐤉𐤀 𐤄	H3329	root
 87:21:3	𐤉𐤆𐤍𐤅	spelling	[𐤉] 𐤆𐤍𐤅 	H2181	form
 87:21:6	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
-87:21:20	𐤇𐤒𐤓𐤕𐤌	english	 𐤇𐤒𐤓 𐤕+𐤌	H2713	root
+87:21:20	𐤇𐤒𐤓𐤕𐤌	spelling	 𐤇𐤒𐤓 𐤕+𐤌	H2713	root
 87:21:27	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
 88:1:4	𐤀𐤇𐤔𐤁	spelling	[𐤀] 𐤇𐤔𐤁 	H2803	root
 88:1:6	𐤀𐤄𐤁𐤅𐤄𐤅	spelling	 𐤀𐤄𐤁𐤅𐤄 𐤅	H160	matres
-88:1:7	𐤀𐤕𐤏𐤄	english	[𐤀] 𐤕𐤏𐤄 	H8582	root
+88:1:7	𐤀𐤕𐤏𐤄	spelling	[𐤀] 𐤕𐤏𐤄 	H8582	root
 88:1:11	𐤀𐤎𐤊𐤉𐤋	english	[𐤀] 𐤎𐤊𐤉𐤋 	H5528	matres
 88:1:23	𐤀𐤁𐤃𐤍𐤌	spelling	 𐤀𐤁𐤃𐤍 𐤌	H12	root
 88:2:1	𐤋𐤄𐤕𐤏𐤅𐤕𐤌	spelling	𐤋+[𐤄𐤕] 𐤏𐤅𐤕 𐤌	H5791	root
@@ -1204,169 +1781,235 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 100:1:1	𐤄𐤇𐤉𐤉𐤋𐤉𐤌	spelling	𐤄 𐤇𐤉𐤉𐤋 𐤉𐤌	H2428	matres
 100:1:5	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
 100:1:7	𐤏𐤍𐤉𐤉𐤍𐤉	spelling	 𐤏𐤍𐤉𐤉𐤍 𐤉	H6045	matres
-100:1:8	𐤁𐤂𐤉𐤓𐤅𐤔𐤍𐤅	english	𐤁 𐤂𐤉𐤓𐤅𐤔 𐤍𐤅	H1644	matres
 100:1:11	𐤁𐤏𐤍𐤉𐤉𐤍𐤉	spelling	𐤁 𐤏𐤍𐤉𐤉𐤍 𐤉	H6045	matres
+100:1:20	𐤓𐤁𐤅𐤕𐤉𐤍𐤅	english	 𐤓𐤁𐤅𐤕 𐤉+𐤍𐤅	H7227	form
+100:2:9	𐤁𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤁 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
 100:2:9	𐤁𐤕𐤅𐤀𐤓𐤌	spelling	𐤁 𐤕𐤅𐤀𐤓 𐤌	H8389	matres
-100:2:10	𐤅𐤉𐤏𐤁𐤅𐤃	english	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+100:2:10	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:2:10	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
 100:2:11	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 100:2:11	𐤅𐤉𐤕𐤀𐤎𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤀𐤎𐤐 𐤅	H622	root
-100:3:3	𐤄𐤓𐤅𐤁𐤑𐤉𐤌	english	𐤄 𐤓𐤅𐤁𐤑 𐤉𐤌	H7258	matres
-100:3:4	𐤅𐤉𐤁𐤓𐤒𐤅	english	𐤅+[𐤉] 𐤁𐤓𐤒 𐤅	H1299	root
+100:2:12	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:2:12	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:2:14	𐤁𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤁 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:3:4	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+100:3:7	𐤁𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤁 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:3:7	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:3:7	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:3:7	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
 100:3:9	𐤀𐤅𐤃𐤅𐤕𐤉𐤅	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤅	H182	root
 100:3:9	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
-100:3:9	𐤁𐤇𐤅𐤊𐤌𐤕𐤍𐤅	english	𐤁 𐤇𐤅𐤊𐤌𐤕 𐤍𐤅	H2454	matres
+100:3:9	𐤁𐤇𐤅𐤊𐤌𐤕𐤍𐤅	english	𐤁 𐤇𐤅𐤊𐤌 𐤕+𐤍𐤅	H2449	matres
+100:3:12	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+100:3:12	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+100:3:12	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+100:3:13	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+100:3:14	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
 100:3:16	𐤀𐤅𐤃𐤅𐤕𐤌	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤌	H182	root
 100:3:18	𐤀𐤅𐤃𐤅𐤕𐤉𐤅	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤅	H182	root
-100:3:23	𐤅𐤄𐤂𐤉𐤁𐤅𐤓𐤉𐤌	spelling	𐤅+𐤄 𐤂𐤉𐤁𐤅𐤓 𐤉𐤌	H1376	matres
-100:3:24	𐤅𐤉𐤅𐤅𐤕𐤓	spelling	𐤅 𐤉𐤅𐤅𐤕𐤓 	H3500	matres
+100:3:20	𐤁𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤁 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:3:24	𐤅𐤉𐤅𐤅𐤕𐤓	spelling	𐤅 𐤉𐤅𐤅𐤕𐤓 	H3498	matres
+100:3:25	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:3:25	𐤂𐤅𐤉𐤉𐤕𐤅	english	 𐤂𐤅𐤉𐤉 𐤕+𐤅	H1471	form
+100:3:25	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
 100:3:26	𐤇𐤉𐤉𐤋𐤉𐤅	spelling	 𐤇𐤉𐤉𐤋 𐤉+𐤅	H2428	matres
-100:4:4	𐤌𐤉𐤅𐤐𐤉𐤄	english	𐤌 𐤉𐤅𐤐𐤉𐤄 	H3303	matres
+100:3:26	𐤁𐤕𐤅𐤀𐤓	spelling	𐤁 𐤕𐤅𐤀𐤓 	H8389	matres
+100:3:26	𐤅𐤇𐤉𐤉𐤋𐤉𐤅	english	𐤅 𐤇𐤉𐤉𐤋 𐤉+𐤅	H2342	matres
+100:4:5	𐤌𐤔𐤐𐤇𐤅𐤕𐤉𐤍𐤅	english	 𐤌𐤔𐤐𐤇𐤅𐤕 𐤉+𐤍𐤅	H4940	form
+100:4:10	𐤁𐤕𐤅𐤀𐤓	spelling	𐤁 𐤕𐤅𐤀𐤓 	H8389	matres
+100:4:10	𐤁𐤕𐤅𐤀𐤓	spelling	𐤁 𐤕𐤅𐤀𐤓 	H8389	matres
 100:5:1	𐤅𐤉𐤅𐤔𐤉𐤁𐤌	spelling	𐤅 𐤉𐤅𐤔𐤉𐤁 𐤌	H3427	matres
+100:5:1	𐤅𐤍𐤉𐤂𐤔𐤅	spelling	𐤅+[𐤍] 𐤉𐤂𐤔𐤅 	H5066	form
+100:5:1	𐤅𐤍𐤉𐤂𐤔𐤅	spelling	𐤅+[𐤍] 𐤉𐤂𐤔𐤅 	H5066	form
+100:5:14	𐤅𐤉𐤐𐤏𐤉	english	𐤅 𐤉𐤐𐤏 𐤉	H3313	root
 100:5:15	𐤕𐤕𐤐𐤀𐤓	spelling	[𐤕𐤕] 𐤐𐤀𐤓 	H6286	root
-100:5:15	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
-100:5:18	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:5:15	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:5:18	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:5:19	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:5:19	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:5:19	𐤉𐤉𐤋𐤊𐤅	english	[𐤉] 𐤉𐤋𐤊 𐤅	H3212	root
+100:6:1	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+100:6:1	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
 100:6:3	𐤀𐤅𐤃𐤅𐤕𐤉𐤅	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤅	H182	root
-100:7:1	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
-100:7:9	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
-100:8:1	𐤅𐤉𐤏𐤁𐤅𐤃	english	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+100:7:1	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:7:3	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+100:7:9	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:8:1	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+100:8:3	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+100:8:3	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+100:8:5	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
 100:8:6	𐤄𐤀𐤅𐤄𐤋𐤉𐤌	english	𐤄 𐤀𐤅𐤄𐤋 𐤉𐤌	H168	matres
 100:9:5	𐤅𐤉𐤅𐤔𐤉𐤁𐤄	spelling	𐤅 𐤉𐤅𐤔𐤉𐤁 𐤄	H3427	matres
 100:9:7	𐤑𐤉𐤅𐤉𐤍𐤅	english	 𐤑𐤉𐤅𐤉 𐤍𐤅	H6728	matres
 100:9:10	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
-100:9:12	𐤅𐤍𐤍𐤒𐤌𐤄	spelling	𐤅+[𐤍] 𐤍𐤒𐤌 𐤄	H5358	root
-100:9:19	𐤅𐤍𐤍𐤒𐤌𐤄	spelling	𐤅+[𐤍] 𐤍𐤒𐤌 𐤄	H5358	root
 100:9:22	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
-100:9:22	𐤅𐤉𐤃𐤁𐤉𐤒𐤌	english	𐤅+[𐤉] 𐤃𐤁𐤉𐤒 𐤌	H1692	matres
-100:9:23	𐤍𐤕𐤒𐤁𐤑𐤅	english	[𐤍𐤕] 𐤒𐤁𐤑 𐤅	H6908	root
+100:9:23	𐤏𐤓𐤀𐤅𐤕𐤌	english	 𐤏𐤓𐤀 𐤅𐤕+𐤌	H5896	matres
 100:9:25	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
-100:9:28	𐤅𐤍𐤍𐤒𐤌𐤄	spelling	𐤅+[𐤍] 𐤍𐤒𐤌 𐤄	H5358	root
 100:9:28	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
 100:10:2	𐤄𐤕𐤇𐤔𐤅𐤁	english	[𐤄𐤕] 𐤇𐤔𐤅𐤁 	H2803	matres
-100:10:7	𐤅𐤉𐤐𐤇𐤉𐤃𐤅	english	𐤅+[𐤉] 𐤐𐤇𐤉𐤃 𐤅	H6342	matres
-100:10:8	𐤄𐤍𐤅𐤆𐤋𐤅𐤕	english	[𐤄] 𐤍𐤅𐤆𐤋 𐤅𐤕	H5140	matres
-100:10:11	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
-100:10:11	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
-100:10:11	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
-100:10:12	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
-100:10:13	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
-100:10:13	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:10:8	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:10:8	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:10:8	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:10:9	𐤅𐤉𐤁𐤓𐤒𐤅	english	𐤅+[𐤉] 𐤁𐤓𐤒 𐤅	H1299	root
+100:10:11	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:10:11	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:10:11	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:10:12	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:10:13	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:10:13	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
 100:10:14	𐤉𐤅𐤐𐤉𐤅	spelling	 𐤉𐤅𐤐𐤉 𐤅	H3308	matres
+100:10:15	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
 100:10:16	𐤄𐤕𐤅𐤀𐤓	spelling	𐤄 𐤕𐤅𐤀𐤓 	H8389	matres
 100:10:16	𐤅𐤉𐤅𐤔𐤉𐤁𐤄	spelling	𐤅 𐤉𐤅𐤔𐤉𐤁 𐤄	H3427	matres
-100:10:19	𐤁𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤁 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:10:19	𐤁𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤁 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
 100:10:23	𐤅𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤅+𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
-100:10:23	𐤅𐤉𐤁𐤔𐤉𐤋𐤅	english	𐤅+[𐤉] 𐤁𐤔𐤉𐤋 𐤅	H1310	matres
-100:10:24	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
-100:11:2	𐤅𐤁𐤂𐤅𐤔𐤍	english	𐤅+𐤁 𐤂𐤅𐤔 𐤍	H1487	root
+100:10:23	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+100:10:24	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:10:25	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+100:10:25	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+100:10:25	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+100:11:2	𐤅𐤁𐤂𐤅𐤔𐤍	spelling	𐤅+𐤁 𐤂𐤅𐤔 𐤍	H1487	root
+100:11:6	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+100:11:8	𐤁𐤕𐤅𐤀𐤓	spelling	𐤁 𐤕𐤅𐤀𐤓 	H8389	matres
+100:11:11	𐤀𐤅𐤑𐤓𐤅𐤕𐤉𐤍𐤅	english	 𐤀𐤅𐤑𐤓𐤅𐤕 𐤉+𐤍𐤅	H214	form
 100:11:14	𐤉𐤅𐤐𐤉𐤅	spelling	 𐤉𐤅𐤐𐤉 𐤅	H3308	matres
-100:11:14	𐤋𐤌𐤇𐤉𐤉𐤕𐤍𐤅	spelling	𐤋+[𐤌] 𐤇𐤉𐤉 𐤕+𐤍𐤅	H2425	root
-100:11:15	𐤌𐤂𐤉𐤁𐤅𐤓𐤉𐤅	english	𐤌 𐤂𐤉𐤁𐤅𐤓 𐤉+𐤅	H1376	matres
-100:11:18	𐤋𐤌𐤇𐤉𐤉𐤕𐤍𐤅	spelling	𐤋+[𐤌] 𐤇𐤉𐤉 𐤕+𐤍𐤅	H2425	root
-100:11:19	𐤋𐤌𐤇𐤉𐤉𐤕𐤍𐤅	spelling	𐤋+[𐤌] 𐤇𐤉𐤉 𐤕+𐤍𐤅	H2425	root
-100:11:21	𐤅𐤁𐤃𐤅𐤋𐤇	english	𐤅 𐤁𐤃𐤅𐤋𐤇 	H916	matres
+100:11:19	𐤕𐤕𐤐𐤓𐤃𐤅	english	[𐤕𐤕] 𐤐𐤓𐤃 𐤅	H6504	root
+100:11:23	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
 100:12:4	𐤕𐤕𐤐𐤀𐤓𐤅	english	[𐤕𐤕] 𐤐𐤀𐤓 𐤅	H6286	root
-100:12:5	𐤕𐤇𐤐𐤅𐤑	english	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
-100:12:5	𐤕𐤇𐤐𐤅𐤑	english	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
-100:12:6	𐤕𐤇𐤐𐤅𐤑	english	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+100:12:5	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+100:12:5	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
+100:12:6	𐤕𐤇𐤐𐤅𐤑	spelling	[𐤕] 𐤇𐤐𐤅𐤑 	H2654	matres
 100:12:7	𐤄𐤇𐤉𐤉𐤋𐤉𐤌	spelling	𐤄 𐤇𐤉𐤉𐤋 𐤉𐤌	H2428	matres
-100:12:7	𐤅𐤄𐤂𐤉𐤁𐤅𐤓𐤉𐤌	spelling	𐤅+𐤄 𐤂𐤉𐤁𐤅𐤓 𐤉𐤌	H1376	matres
+100:12:7	𐤅𐤄𐤂𐤉𐤁𐤅𐤓𐤉𐤌	english	𐤅+𐤄 𐤂𐤉𐤁𐤅𐤓 𐤉𐤌	H1376	matres
 100:12:10	𐤋𐤏𐤁𐤃𐤍𐤉	english	𐤋 𐤏𐤁𐤃𐤍 𐤉	H5658	matres
 100:12:10	𐤌𐤐𐤅𐤆𐤓𐤉𐤌	spelling	[𐤌] 𐤐𐤅𐤆𐤓 𐤉𐤌	H6340	matres
 100:12:11	𐤅𐤉𐤅𐤔𐤉𐤁𐤌	spelling	𐤅 𐤉𐤅𐤔𐤉𐤁 𐤌	H3427	matres
 100:13:2	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 100:13:3	𐤌𐤒𐤅𐤍𐤍𐤉𐤌	spelling	𐤌 𐤒𐤅𐤍𐤍 𐤉𐤌	H7075	matres
 100:13:6	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
-100:13:7	𐤅𐤍𐤍𐤒𐤌𐤄	spelling	𐤅+[𐤍] 𐤍𐤒𐤌 𐤄	H5358	root
 100:14:3	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 100:14:4	𐤅𐤉𐤅𐤔𐤌	spelling	𐤅+[𐤉] 𐤅𐤔𐤌 	H7760	form
-100:14:4	𐤅𐤉𐤅𐤕𐤍	spelling	𐤅+[𐤉] 𐤅𐤕𐤍 	H5414	form
 100:14:4	𐤅𐤉𐤅𐤔𐤌	spelling	𐤅+[𐤉] 𐤅𐤔𐤌 	H7760	form
-100:14:4	𐤅𐤉𐤅𐤕𐤍	spelling	𐤅+[𐤉] 𐤅𐤕𐤍 	H5414	form
 100:14:5	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
+100:14:5	𐤁𐤂𐤔𐤓𐤉𐤌	spelling	𐤁 𐤂𐤔𐤓𐤉 𐤌	H1651	matres
 100:14:5	𐤀𐤅𐤃𐤅𐤕𐤉𐤄	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤄	H182	root
-100:14:6	𐤅𐤉𐤅𐤕𐤍	spelling	𐤅+[𐤉] 𐤅𐤕𐤍 	H5414	form
 100:14:6	𐤅𐤉𐤅𐤔𐤌	spelling	𐤅+[𐤉] 𐤅𐤔𐤌 	H7760	form
-100:14:6	𐤅𐤉𐤅𐤕𐤍	spelling	𐤅+[𐤉] 𐤅𐤕𐤍 	H5414	form
 100:14:6	𐤅𐤉𐤅𐤔𐤌	spelling	𐤅+[𐤉] 𐤅𐤔𐤌 	H7760	form
-100:14:6	𐤅𐤉𐤅𐤕𐤍	spelling	𐤅+[𐤉] 𐤅𐤕𐤍 	H5414	form
 100:14:6	𐤅𐤉𐤅𐤔𐤌	spelling	𐤅+[𐤉] 𐤅𐤔𐤌 	H7760	form
-100:14:6	𐤅𐤉𐤅𐤕𐤍	spelling	𐤅+[𐤉] 𐤅𐤕𐤍 	H5414	form
 100:14:8	𐤅𐤉𐤅𐤔𐤌	spelling	𐤅+[𐤉] 𐤅𐤔𐤌 	H7760	form
-100:14:8	𐤅𐤉𐤅𐤕𐤍	spelling	𐤅+[𐤉] 𐤅𐤕𐤍 	H5414	form
-100:14:8	𐤅𐤉𐤅𐤕𐤍	spelling	𐤅+[𐤉] 𐤅𐤕𐤍 	H5414	form
-100:14:12	𐤍𐤕𐤊𐤍𐤄	english	[𐤍𐤕] 𐤊𐤍𐤄 	H3655	root
-100:14:14	𐤅𐤄𐤕𐤒𐤁𐤑𐤕𐤌	english	𐤅+[𐤄𐤕] 𐤒𐤁𐤑 𐤕+𐤌	H6908	root
-100:14:15	𐤅𐤉𐤅𐤕𐤍	spelling	𐤅+[𐤉] 𐤅𐤕𐤍 	H5414	form
-100:14:16	𐤅𐤍𐤉𐤂𐤔𐤅	english	𐤅+[𐤍] 𐤉𐤂𐤔𐤅 	H5066	form
+100:14:14	𐤅𐤍𐤔𐤌𐤉𐤃𐤌	english	𐤅+[𐤍] 𐤔𐤌𐤉𐤃 𐤌	H8045	matres
+100:14:14	𐤅𐤁𐤂𐤅𐤔𐤍	spelling	𐤅+𐤁 𐤂𐤅𐤔 𐤍	H1487	root
+100:14:15	𐤅𐤁𐤂𐤅𐤔𐤍	spelling	𐤅+𐤁 𐤂𐤅𐤔 𐤍	H1487	root
+100:14:16	𐤅𐤍𐤉𐤂𐤔𐤅	spelling	𐤅+[𐤍] 𐤉𐤂𐤔𐤅 	H5066	form
 100:14:16	𐤅𐤉𐤏𐤁𐤉𐤃𐤅	spelling	𐤅+[𐤉] 𐤏𐤁𐤉𐤃 𐤅	H5647	matres
 100:14:17	𐤉𐤏𐤁𐤉𐤃𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤃 𐤅	H5647	matres
+100:14:17	𐤅𐤉𐤊𐤁𐤉𐤃𐤅	spelling	𐤅+[𐤉] 𐤊𐤁𐤉𐤃 𐤅	H3513	matres
+100:14:18	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
 100:14:19	𐤅𐤄𐤌𐤉𐤉𐤋𐤃𐤅𐤕	english	𐤅+𐤄+[𐤌] 𐤉𐤉𐤋𐤃 𐤅𐤕	H3205	matres
+100:14:19	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:19	𐤌𐤂𐤉𐤁𐤅𐤓𐤉	english	𐤌 𐤂𐤉𐤁𐤅𐤓 𐤉	H1368	matres
+100:14:22	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
 100:14:24	𐤋𐤄𐤍𐤉𐤒𐤄𐤅	english	𐤋+[𐤄] 𐤍𐤉𐤒𐤄 𐤅	H5352	matres
-100:14:26	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:24	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:24	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:24	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:26	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:29	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:29	𐤅𐤁𐤂𐤉𐤋𐤅𐤋𐤉	english	𐤅+𐤁 𐤂𐤉𐤋𐤅𐤋 𐤉	H1556	matres
 100:14:30	𐤄𐤇𐤉𐤉𐤋𐤉𐤌	spelling	𐤄 𐤇𐤉𐤉𐤋 𐤉𐤌	H2428	matres
+100:14:30	𐤅𐤄𐤇𐤉𐤉𐤋𐤉𐤌	english	𐤅+𐤄 𐤇𐤉𐤉𐤋 𐤉𐤌	H2428	matres
 100:14:30	𐤅𐤉𐤑𐤅𐤓𐤅	spelling	𐤅+[𐤉] 𐤑𐤅𐤓 𐤅	H6696	root
+100:14:31	𐤅𐤇𐤉𐤉𐤋𐤉𐤅	english	𐤅 𐤇𐤉𐤉𐤋 𐤉+𐤅	H2428	matres
 100:14:32	𐤄𐤇𐤉𐤉𐤋𐤉𐤌	spelling	𐤄 𐤇𐤉𐤉𐤋 𐤉𐤌	H2428	matres
+100:14:37	𐤅𐤉𐤊𐤁𐤉𐤃	spelling	𐤅+[𐤉] 𐤊𐤁𐤉𐤃 	H3513	matres
+100:14:38	𐤁𐤕𐤅𐤀𐤓	spelling	𐤁 𐤕𐤅𐤀𐤓 	H8389	matres
+100:14:39	𐤁𐤕𐤅𐤀𐤓	spelling	𐤁 𐤕𐤅𐤀𐤓 	H8389	matres
+100:14:39	𐤅𐤉𐤊𐤁𐤉𐤃	spelling	𐤅+[𐤉] 𐤊𐤁𐤉𐤃 	H3513	matres
+100:14:40	𐤌𐤄𐤁𐤍𐤉𐤉𐤍	english	𐤌+𐤄 𐤁𐤍𐤉 𐤉+𐤍	H1121	form
+100:14:41	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+100:14:42	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:43	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:43	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:43	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:43	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:45	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:45	𐤅𐤉𐤅𐤔𐤉𐤁𐤊	spelling	𐤅 𐤉𐤅𐤔𐤉𐤁 𐤊	H3427	matres
+100:14:46	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:14:47	𐤁𐤂𐤅𐤔𐤍	spelling	𐤁 𐤂𐤅𐤔 𐤍	H1487	root
+100:14:49	𐤅𐤌𐤂𐤅𐤔𐤍	english	𐤅+𐤌 𐤂𐤅𐤔 𐤍	H1487	root
+100:14:51	𐤅𐤉𐤕𐤇𐤋𐤒𐤅	english	𐤅+[𐤉𐤕] 𐤇𐤋𐤒 𐤅	H2505	root
+100:14:51	𐤅𐤉𐤕𐤇𐤋𐤒𐤅	english	𐤅+[𐤉𐤕] 𐤇𐤋𐤒 𐤅	H2505	root
+100:15:1	𐤄𐤒𐤅𐤓𐤁𐤍𐤅𐤕	spelling	𐤄 𐤒𐤅𐤓𐤁𐤍 𐤅𐤕	H7133	matres
+100:15:1	𐤄𐤒𐤅𐤓𐤁𐤍𐤅𐤕	spelling	𐤄 𐤒𐤅𐤓𐤁𐤍 𐤅𐤕	H7133	matres
 100:16:3	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
-100:16:3	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:16:3	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
 100:16:3	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
 100:16:4	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
 100:16:8	𐤅𐤉𐤕𐤁𐤇𐤓𐤅	english	𐤅+[𐤉𐤕] 𐤁𐤇𐤓 𐤅	H977	root
-100:17:1	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	english	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
+100:17:1	𐤄𐤀𐤋𐤅𐤒𐤉𐤌	spelling	𐤄 𐤀𐤋𐤅𐤒𐤉𐤌 	H471	matres
 100:18:3	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 100:18:10	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
+100:18:10	𐤅𐤉𐤏𐤁𐤅𐤃	spelling	𐤅+[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
 119:1:2	𐤁𐤍𐤅𐤕𐤉𐤅	spelling	 𐤁𐤍𐤅𐤕 𐤉+𐤅	H1323	form
 119:1:14	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
 119:1:14	𐤉𐤕𐤏𐤄	spelling	[𐤉] 𐤕𐤏𐤄 	H8582	root
 119:1:23	𐤕𐤍𐤔𐤀	spelling	[𐤕] 𐤍𐤔𐤀 	H5375	root
 119:1:28	𐤅𐤍𐤅𐤔𐤀	spelling	𐤅+[𐤍] 𐤅𐤔𐤀 	H5375	form
 119:1:28	𐤅𐤍𐤅𐤔𐤀	spelling	𐤅+[𐤍] 𐤅𐤔𐤀 	H5375	form
-119:2:4	𐤉𐤁𐤒𐤔𐤍𐤉	spelling	[𐤉] 𐤁𐤒𐤔𐤍𐤉 	H1245	form
-119:2:13	𐤄𐤇𐤓𐤓𐤄	english	[𐤄] 𐤇𐤓𐤓 𐤄	H2787	root
-119:2:21	𐤄𐤔𐤉𐤁𐤅𐤕𐤉𐤅	spelling	 𐤄𐤔𐤉𐤁𐤅𐤕 𐤉+𐤅	H7725	form
 119:2:21	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
-119:3:9	𐤋𐤀𐤅𐤓𐤇𐤉𐤌	english	𐤋 𐤀𐤅𐤓𐤇 𐤉𐤌	H733	matres
 119:3:13	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
 119:3:25	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
 119:4:3	𐤌𐤔𐤀𐤉𐤓𐤅𐤕	english	𐤌 𐤔𐤀𐤉𐤓𐤅𐤕 	H7611	matres
 119:4:3	𐤌𐤕𐤍𐤀𐤉𐤌	english	 𐤌𐤕𐤍𐤀 𐤉𐤌	H4978	root
+119:4:27	𐤎𐤇𐤅𐤓𐤄	spelling	 𐤎𐤇𐤅𐤓 𐤄	H5503	matres
 119:5:11	𐤍𐤅𐤔𐤀𐤕	spelling	[𐤍] 𐤅𐤔𐤀 𐤕	H5375	form
 119:5:13	𐤅𐤀𐤁𐤊𐤉𐤍𐤄	english	𐤅+[𐤀] 𐤁𐤊𐤉𐤍𐤄 	H1058	form
 119:6:3	𐤉𐤍𐤏𐤕𐤉	english	 𐤉𐤍𐤏 𐤕+𐤉	H5128	form
 119:6:3	𐤅𐤇𐤁𐤋𐤕𐤉	english	𐤅 𐤇𐤁𐤋 𐤕+𐤉	H2256	root
+119:6:12	𐤎𐤅𐤊𐤊𐤅𐤕	english	 𐤎𐤅𐤊𐤊 𐤅𐤕	H5526	matres
 119:6:19	𐤄𐤔𐤉𐤁𐤅𐤕𐤉𐤄	spelling	 𐤄𐤔𐤉𐤁𐤅𐤕 𐤉+𐤄	H7725	form
-119:6:21	𐤄𐤕𐤇𐤐𐤑𐤉	english	[𐤄𐤕] 𐤇𐤐𐤑 𐤉	H2654	root
 119:6:27	𐤅𐤉𐤌𐤋𐤀𐤄𐤅	spelling	𐤅+[𐤉] 𐤌𐤋𐤀𐤄 𐤅	H4390	form
 119:6:29	𐤍𐤀𐤁𐤒𐤕𐤉	english	[𐤍] 𐤀𐤁𐤒 𐤕+𐤉	H79	root
 119:7:7	𐤏𐤅𐤉𐤍	spelling	 𐤏𐤅𐤉 𐤍	H5757	root
+119:7:13	𐤄𐤍𐤉𐤏𐤅𐤕𐤉	english	𐤄+[𐤍] 𐤉𐤏𐤅𐤕 𐤉	H5791	form
 119:7:18	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+119:7:35	𐤄𐤑𐤅𐤇𐤒	english	[𐤄] 𐤑𐤅𐤇𐤒 	H6711	matres
 119:8:2	𐤅𐤍𐤍𐤇𐤌𐤅	english	𐤅+[𐤍] 𐤍𐤇𐤌 𐤅	H5162	root
-119:8:25	𐤄𐤔𐤉𐤁𐤅𐤕𐤉𐤅	spelling	 𐤄𐤔𐤉𐤁𐤅𐤕 𐤉+𐤅	H7725	form
+119:8:3	𐤀𐤓𐤑𐤅𐤕𐤉𐤍𐤅	english	 𐤀𐤓𐤑𐤅𐤕 𐤉+𐤍𐤅	H776	form
+119:8:20	𐤉𐤍𐤁𐤋	english	[𐤉] 𐤍𐤁𐤋 	H5034	root
 119:8:27	𐤍𐤓𐤁𐤄	spelling	[𐤍] 𐤓𐤁𐤄 	H7235	root
+119:8:32	𐤓𐤅𐤐𐤀𐤉	english	 𐤓𐤅𐤐𐤀 𐤉	H7495	matres
+119:8:32	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
 119:9:4	𐤀𐤅𐤄𐤁𐤉𐤊	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤊	H157	form
 119:9:13	𐤄𐤒𐤉𐤌𐤅𐤍𐤉	english	𐤄 𐤒𐤉𐤌𐤅𐤍 𐤉	H7056	matres
+119:9:18	𐤌𐤏𐤁𐤉𐤃𐤉𐤄	english	𐤌 𐤏𐤁𐤉𐤃 𐤉+𐤄	H5650	matres
 119:10:16	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
+119:10:23	𐤍𐤒𐤑𐤐	english	[𐤍] 𐤒𐤑𐤐 	H7107	root
 119:11:10	𐤀𐤋𐤁𐤍𐤅𐤕𐤉𐤅	english	[𐤀] 𐤋𐤁𐤍𐤅𐤕 𐤉+𐤅	H1129	form
+119:11:20	𐤋𐤓𐤇𐤌𐤍𐤉	english	𐤋 𐤓𐤇𐤌𐤍𐤉 	H7362	root
 119:11:22	𐤅𐤀𐤀𐤆𐤓	english	𐤅+[𐤀] 𐤀𐤆𐤓 	H247	root
 119:12:9	𐤁𐤍𐤅𐤕𐤉𐤅	spelling	 𐤁𐤍𐤅𐤕 𐤉+𐤅	H1323	form
-119:12:11	𐤅𐤉𐤍𐤉𐤇𐤕𐤅	english	𐤅 𐤉𐤍𐤉𐤇 𐤕+𐤅	H5117	form
-119:12:11	𐤏𐤈𐤐𐤄	english	 𐤏𐤈𐤐 𐤄	H5848	root
+119:12:11	𐤅𐤕𐤅𐤁𐤀	english	𐤅+[𐤕] 𐤅𐤁𐤀 	H935	form
 119:12:12	𐤁𐤍𐤅𐤕𐤉𐤅	spelling	 𐤁𐤍𐤅𐤕 𐤉+𐤅	H1323	form
 119:12:15	𐤄𐤀𐤅𐤓𐤇𐤉𐤌	spelling	𐤄 𐤀𐤅𐤓𐤇 𐤉𐤌	H734	matres
 119:12:17	𐤌𐤄𐤅𐤃𐤉𐤃𐤅	english	𐤌 𐤄𐤅𐤃𐤉𐤃 𐤅	H1908	matres
+126:3:10	𐤉𐤆𐤊𐤓𐤍𐤉	english	[𐤉] 𐤆𐤊𐤓𐤍𐤉 	H2142	form
 126:5:3	𐤉𐤆𐤍𐤅	spelling	[𐤉] 𐤆𐤍𐤅 	H2181	form
 126:8:2	𐤌𐤉𐤋𐤄	spelling	 𐤌𐤉𐤋 𐤄	H4135	matres
+126:9:6	𐤍𐤑𐤅𐤌𐤄	english	[𐤍] 𐤑𐤅𐤌 𐤄	H6684	root
+126:10:6	𐤉𐤎𐤅𐤂	spelling	[𐤉] 𐤎𐤅𐤂 	H5472	root
 126:11:2	𐤅𐤉𐤍𐤇𐤌𐤄𐤅	english	𐤅+[𐤉] 𐤍𐤇𐤌𐤄 𐤅	H5162	form
 126:11:2	𐤅𐤀𐤍𐤇𐤅𐤕	english	𐤅+[𐤀] 𐤍𐤇𐤅 𐤕	H5117	form
 126:11:5	𐤒𐤁𐤅𐤓𐤅𐤕𐤌	english	 𐤒𐤁𐤅𐤓 𐤅𐤕+𐤌	H6912	form
 126:11:11	𐤁𐤕𐤐𐤋𐤅𐤕𐤉𐤊	english	𐤁 𐤕𐤐𐤋𐤅𐤕 𐤉+𐤊	H8605	form
-136:1:2	𐤇𐤉𐤉𐤕𐤉	english	 𐤇𐤉𐤉 𐤕+𐤉	H2425	root
+136:1:2	𐤇𐤉𐤉𐤕𐤉	spelling	 𐤇𐤉𐤉 𐤕+𐤉	H2425	root
 136:1:6	𐤌𐤆𐤄𐤉𐤓𐤉𐤌	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤉𐤌	H2096	matres
 136:1:6	𐤌𐤆𐤄𐤉𐤓𐤅𐤕	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤅𐤕	H2096	matres
 136:1:6	𐤌𐤆𐤄𐤉𐤓𐤅𐤕	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤅𐤕	H2096	matres
 136:1:7	𐤅𐤀𐤌𐤄𐤓	spelling	𐤅+[𐤀] 𐤌𐤄𐤓 	H4116	root
 136:1:10	𐤅𐤀𐤌𐤄𐤓	spelling	𐤅+[𐤀] 𐤌𐤄𐤓 	H4116	root
 136:1:12	𐤅𐤀𐤋𐤓𐤏𐤉𐤌	english	𐤅+[𐤀] 𐤋𐤓𐤏𐤉𐤌 	H7462	form
-136:8:2	𐤐𐤅𐤓𐤇𐤉𐤌	english	 𐤐𐤅𐤓𐤇 𐤉𐤌	H6525	matres
+136:7:5	𐤅𐤍𐤉𐤎𐤅𐤓𐤅	english	𐤅+[𐤍] 𐤉𐤎𐤅𐤓𐤅 	H5493	form
 136:8:4	𐤌𐤊𐤋𐤄𐤏𐤑𐤉𐤌	english	𐤌+𐤊+𐤋 𐤄𐤏𐤑𐤉𐤌 	H6086	form
 136:11:2	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
 136:11:5	𐤅𐤋𐤊𐤋𐤌𐤋𐤀𐤊	english	𐤅+𐤋+𐤊 𐤋𐤌𐤋𐤀𐤊 	H4397	form
@@ -1379,41 +2022,52 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 136:14:2	𐤉𐤔𐤒𐤏	spelling	[𐤉] 𐤔𐤒𐤏 	H8257	root
 136:16:2	𐤁𐤕𐤔𐤉𐤏𐤉	spelling	𐤁 𐤕𐤔𐤉𐤏𐤉 	H8671	root
 136:16:5	𐤍𐤔𐤋𐤌𐤕	spelling	[𐤍] 𐤔𐤋𐤌 𐤕	H7999	root
+136:18:12	𐤕𐤑𐤐𐤅	english	[𐤕] 𐤑𐤐𐤅 	H6822	form
+136:18:13	𐤅𐤉𐤏𐤅𐤓𐤓𐤅	spelling	𐤅+[𐤉] 𐤏𐤅𐤓𐤓 𐤅	H5782	form
 136:19:1	𐤌𐤆𐤄𐤉𐤓𐤉𐤌	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤉𐤌	H2096	matres
 136:19:1	𐤌𐤆𐤄𐤉𐤓𐤉𐤌	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤉𐤌	H2096	matres
 136:19:2	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
 136:21:2	𐤅𐤀𐤔𐤀𐤓	spelling	𐤅+[𐤀] 𐤔𐤀𐤓 	H7604	root
+136:22:13	𐤅𐤌𐤔𐤉𐤇𐤕𐤅	english	𐤅 𐤌𐤔𐤉𐤇 𐤕+𐤅	H4899	root
+136:22:13	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 136:23:1	𐤅𐤔𐤍𐤅𐤉𐤉𐤄𐤌	english	𐤅 𐤔𐤍𐤅𐤉𐤉𐤄 𐤌	H8141	matres
 136:23:2	𐤇𐤃𐤋𐤕𐤉	spelling	 𐤇𐤃𐤋 𐤕+𐤉	H2308	root
+136:24:5	𐤕𐤒𐤅𐤌𐤕𐤌	english	[𐤕] 𐤒𐤅𐤌 𐤕+𐤌	H6965	root
 136:24:6	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
 136:25:1	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
 136:26:1	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
 136:27:2	𐤅𐤀𐤓𐤒𐤏	english	𐤅+[𐤀] 𐤓𐤒𐤏 	H7554	root
 136:27:2	𐤓𐤒𐤏𐤕𐤉	english	 𐤓𐤒𐤏 𐤕+𐤉	H7554	root
+136:27:3	𐤅𐤀𐤁𐤓𐤀	spelling	𐤅+[𐤀] 𐤁𐤓𐤀 	H1254	root
 136:30:18	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
-136:33:2	𐤅𐤀𐤁𐤓𐤀	english	𐤅+[𐤀] 𐤁𐤓𐤀 	H1254	root
+136:30:27	𐤅𐤀𐤁𐤓𐤀	spelling	𐤅+[𐤀] 𐤁𐤓𐤀 	H1254	root
+136:33:2	𐤅𐤀𐤁𐤓𐤀	spelling	𐤅+[𐤀] 𐤁𐤓𐤀 	H1254	root
 136:33:4	𐤍𐤏𐤔𐤉𐤕𐤉	spelling	[𐤍] 𐤏𐤔𐤉𐤕𐤉 	H6213	form
 136:34:1	𐤀𐤇𐤃𐤅𐤕𐤉	english	 𐤀𐤇𐤃 𐤅𐤕+𐤉	H259	root
 136:38:4	𐤉𐤕𐤀𐤎𐤐𐤅	spelling	[𐤉𐤕] 𐤀𐤎𐤐 𐤅	H622	root
 136:39:2	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
-136:40:5	𐤄𐤕𐤌𐤏𐤈𐤅𐤕𐤅	english	[𐤄𐤕] 𐤌𐤏𐤈 𐤅𐤕+𐤅	H4591	root
-136:40:5	𐤌𐤕𐤌𐤏𐤈	english	[𐤌𐤕] 𐤌𐤏𐤈 	H4591	root
+136:39:5	𐤍𐤉𐤑𐤅𐤑𐤅𐤕	english	 𐤍𐤉𐤑𐤅𐤑 𐤅𐤕	H5213	root
+136:40:10	𐤅𐤌𐤁𐤅𐤀𐤉𐤄𐤌	english	𐤅+𐤌+𐤁 𐤅𐤀𐤉𐤄 𐤌	H345	form
 136:41:1	𐤅𐤀𐤀𐤍𐤇	english	𐤅+[𐤀] 𐤀𐤍𐤇 	H584	root
 136:41:2	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
 136:42:11	𐤉𐤒𐤑𐤓	spelling	[𐤉] 𐤒𐤑𐤓 	H7114	root
 136:44:5	𐤉𐤕𐤇𐤃𐤔	spelling	[𐤉𐤕] 𐤇𐤃𐤔 	H2318	root
 136:44:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 136:48:1	𐤕𐤇𐤆𐤉𐤒𐤅	spelling	[𐤕] 𐤇𐤆𐤉𐤒 𐤅	H2388	matres
+136:50:3	𐤉𐤁𐤅𐤀𐤊𐤌	spelling	[𐤉] 𐤁𐤅𐤀𐤊 𐤌	H935	form
 136:50:5	𐤍𐤅𐤒𐤌𐤉𐤌	english	[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
 136:50:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+136:51:3	𐤉𐤁𐤅𐤀𐤊𐤌	spelling	[𐤉] 𐤁𐤅𐤀𐤊 𐤌	H935	form
 136:58:1	𐤄𐤒𐤅𐤃𐤌𐤉𐤌	spelling	𐤄 𐤒𐤅𐤃𐤌 𐤉𐤌	H6924	matres
 136:59:3	𐤕𐤀𐤎𐤓𐤄𐤅	english	[𐤕] 𐤀𐤎𐤓𐤄 𐤅	H631	form
 136:62:1	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 136:63:1	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 136:63:2	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 136:64:2	𐤅𐤉𐤕𐤀𐤎𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤀𐤎𐤐 𐤅	H622	root
+136:69:12	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 136:69:14	𐤁𐤏𐤒𐤁𐤅𐤕𐤉𐤅	spelling	𐤁 𐤏𐤒𐤁𐤅𐤕 𐤉+𐤅	H6119	form
 136:70:1	𐤁𐤒𐤅𐤅𐤕𐤅	spelling	𐤁 𐤒𐤅𐤅 𐤕+𐤅	H6960	form
+136:71:31	𐤉𐤊𐤉𐤓𐤄𐤅	spelling	[𐤉] 𐤊𐤉𐤓𐤄 𐤅	H3738	matres
 136:72:28	𐤅𐤍𐤔𐤋𐤇𐤕𐤉	spelling	𐤅+[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
 138:1:3	𐤅𐤌𐤌𐤓𐤉𐤑𐤉𐤌	english	𐤅+𐤌+[𐤌] 𐤓𐤉𐤑 𐤉𐤌	H7323	matres
 138:3:1	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
@@ -1454,6 +2108,10 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 138:41:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 138:42:4	𐤅𐤉𐤕𐤒𐤓𐤁𐤅	english	𐤅+[𐤉𐤕] 𐤒𐤓𐤁 𐤅	H7126	root
 138:46:7	𐤄𐤏𐤉𐤃𐤅𐤕𐤉	spelling	 𐤄𐤏𐤉𐤃𐤅 𐤕+𐤉	H5749	form
+138:48:22	𐤍𐤎𐤁𐤋	english	[𐤍] 𐤎𐤁𐤋 	H5445	root
+138:48:34	𐤕𐤋𐤒𐤇	english	[𐤕] 𐤋𐤒𐤇 	H3947	root
+138:48:40	𐤉𐤔𐤐𐤋	spelling	[𐤉] 𐤔𐤐𐤋 	H8213	root
+138:48:43	𐤅𐤁𐤊𐤋𐤄𐤁𐤄	english	𐤅+𐤁+𐤊 𐤋𐤄𐤁𐤄 	H3852	root
 138:50:2	𐤕𐤔𐤍𐤄	spelling	[𐤕] 𐤔𐤍𐤄 	H8138	root
 138:50:3	𐤕𐤒𐤁𐤋𐤌	spelling	[𐤕] 𐤒𐤁𐤋 𐤌	H6901	root
 138:51:3	𐤋𐤉𐤐𐤏𐤕	english	𐤋 𐤉𐤐𐤏 𐤕	H3313	root
@@ -1474,7 +2132,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 138:55:3	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
 138:56:2	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
 138:56:4	𐤅𐤉𐤕𐤒𐤍	spelling	𐤅+[𐤉] 𐤕𐤒𐤍 	H8626	root
-138:59:2	𐤅𐤋𐤊𐤅𐤐𐤓𐤉𐤌	english	𐤅+𐤋+𐤊 𐤅𐤐𐤓𐤉 𐤌	H6529	form
+138:56:13	𐤋𐤏𐤍𐤅𐤅𐤕𐤌	english	𐤋 𐤏𐤍𐤅 𐤅𐤕+𐤌	H6030	form
 138:59:11	𐤅𐤕𐤀𐤅𐤓	english	𐤅+[𐤕] 𐤀𐤅𐤓 	H215	root
 138:62:4	𐤅𐤌𐤍𐤉𐤏𐤕	english	𐤅 𐤌𐤍𐤉𐤏 𐤕	H4513	matres
 138:63:7	𐤅𐤀𐤀𐤁𐤃	english	𐤅+[𐤀] 𐤀𐤁𐤃 	H6	root
@@ -1487,7 +2145,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 138:67:2	𐤍𐤌𐤎𐤓𐤄	spelling	[𐤍] 𐤌𐤎𐤓 𐤄	H4560	root
 138:67:2	𐤍𐤃𐤅𐤔𐤄	english	[𐤍] 𐤃𐤅𐤔 𐤄	H1758	root
 138:68:2	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
-138:70:2	𐤉𐤁𐤔𐤋	english	[𐤉] 𐤁𐤔𐤋 	H1310	root
+138:70:2	𐤉𐤁𐤔𐤋	spelling	[𐤉] 𐤁𐤔𐤋 	H1310	root
 138:70:9	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
 138:72:6	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
 138:73:3	𐤕𐤕𐤄𐤋𐤊	spelling	[𐤕𐤕] 𐤄𐤋𐤊 	H1980	root
@@ -1497,7 +2155,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 138:77:17	𐤀𐤊𐤕𐤁	spelling	[𐤀] 𐤊𐤕𐤁 	H3789	root
 138:77:18	𐤀𐤊𐤕𐤁	spelling	[𐤀] 𐤊𐤕𐤁 	H3789	root
 138:78:4	𐤓𐤃𐤐𐤕𐤉	spelling	 𐤓𐤃𐤐 𐤕+𐤉	H7291	root
-138:78:6	𐤕𐤏𐤕𐤅𐤏𐤉	english	 𐤕𐤏𐤕𐤅𐤏 𐤉	H8595	matres
+138:78:6	𐤕𐤏𐤕𐤅𐤏𐤉	spelling	 𐤕𐤏𐤕𐤅𐤏 𐤉	H8595	matres
 138:80:1	𐤍𐤔𐤋𐤇𐤅	spelling	[𐤍] 𐤔𐤋𐤇 𐤅	H7971	root
 138:80:1	𐤅𐤉𐤇𐤓𐤉𐤁𐤅	spelling	𐤅+[𐤉] 𐤇𐤓𐤉𐤁 𐤅	H2717	matres
 138:80:3	𐤍𐤌𐤎𐤓	spelling	[𐤍] 𐤌𐤎𐤓 	H4560	root
@@ -1508,7 +2166,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 138:84:6	𐤄𐤍𐤀𐤑𐤓	english	𐤄+[𐤍] 𐤀𐤑𐤓 	H5341	form
 138:85:2	𐤅𐤌𐤏𐤕𐤉𐤓𐤉𐤌	english	𐤅+[𐤌] 𐤏𐤕𐤉𐤓 𐤉𐤌	H6279	matres
 138:85:3	𐤅𐤎𐤅𐤋𐤇	spelling	𐤅 𐤎𐤅𐤋𐤇 	H5545	matres
-138:85:4	𐤅𐤍𐤊𐤉𐤍	english	 𐤅𐤍𐤊 𐤉+𐤍	H5221	form
+138:85:4	𐤅𐤍𐤊𐤉𐤍	spelling	 𐤅𐤍𐤊 𐤉+𐤍	H5221	form
 138:85:4	𐤍𐤓𐤁𐤄	spelling	[𐤍] 𐤓𐤁𐤄 	H7235	root
 138:85:7	𐤏𐤅𐤃𐤉𐤍𐤅	english	 𐤏𐤅𐤃 𐤉+𐤍𐤅	H5750	root
 138:85:9	𐤅𐤍𐤁𐤅𐤔	spelling	𐤅+[𐤍] 𐤁𐤅𐤔 	H954	root
@@ -1540,14 +2198,12 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 139:7:1	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
 139:7:9	𐤅𐤄𐤍𐤅𐤇𐤋	english	𐤅+[𐤄] 𐤍𐤅𐤇𐤋 	H5157	matres
 139:7:9	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
-139:7:34	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
-139:7:35	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
 139:7:58	𐤅𐤄𐤍𐤌𐤏𐤈	english	𐤅+𐤄+[𐤍] 𐤌𐤏𐤈 	H4591	root
 139:7:71	𐤕𐤕𐤁𐤅𐤍𐤍	spelling	[𐤕𐤕] 𐤁𐤅𐤍 𐤍	H995	matres
 139:7:92	𐤋𐤄𐤕𐤂𐤁𐤓	spelling	𐤋+[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 139:7:125	𐤉𐤆𐤄𐤉𐤓𐤅	spelling	[𐤉] 𐤆𐤄𐤉𐤓 𐤅	H2094	matres
 139:8:9	𐤕𐤁𐤓𐤀	english	[𐤕] 𐤁𐤓𐤀 	H1254	root
-139:8:12	𐤅𐤕𐤂𐤃𐤋𐤄𐤅	english	𐤅+[𐤕] 𐤂𐤃𐤋𐤄 𐤅	H1431	form
+139:8:12	𐤅𐤕𐤂𐤃𐤋𐤄𐤅	spelling	𐤅+[𐤕] 𐤂𐤃𐤋𐤄 𐤅	H1431	form
 139:8:39	𐤀𐤇𐤔𐤁	spelling	[𐤀] 𐤇𐤔𐤁 	H2803	root
 139:8:39	𐤂𐤌𐤅𐤋𐤕𐤌	english	 𐤂𐤌𐤅𐤋 𐤕+𐤌	H1576	root
 139:8:40	𐤅𐤔𐤕𐤉𐤋𐤉𐤌	spelling	𐤅 𐤔𐤕𐤉𐤋 𐤉𐤌	H8362	matres
@@ -1566,7 +2222,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 139:10:4	𐤀𐤏𐤌𐤃	english	[𐤀] 𐤏𐤌𐤃 	H5975	root
 139:10:8	𐤍𐤕𐤀𐤁𐤋	spelling	[𐤍𐤕] 𐤀𐤁𐤋 	H56	root
 139:10:16	𐤕𐤒𐤁𐤋𐤉	english	[𐤕] 𐤒𐤁𐤋 𐤉	H6901	root
-139:10:22	𐤍𐤀𐤋𐤌	english	[𐤍] 𐤀𐤋𐤌 	H481	root
+139:10:22	𐤍𐤀𐤋𐤌	spelling	[𐤍] 𐤀𐤋𐤌 	H481	root
 139:10:22	𐤅𐤁𐤕𐤅𐤋𐤅𐤕𐤉𐤍𐤅	english	𐤅 𐤁𐤕𐤅𐤋𐤅𐤕 𐤉+𐤍𐤅	H1330	form
 139:10:22	𐤋𐤇𐤋𐤔𐤉𐤌	spelling	𐤋 𐤇𐤋𐤔 𐤉𐤌	H2523	root
 139:11:45	𐤄𐤌𐤓𐤔𐤉𐤏𐤉𐤌	spelling	𐤄+[𐤌] 𐤓𐤔𐤉𐤏 𐤉𐤌	H7561	matres
@@ -1576,12 +2232,11 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 139:12:4	𐤅𐤕𐤇𐤓𐤃	spelling	𐤅+[𐤕] 𐤇𐤓𐤃 	H2729	root
 139:12:30	𐤄𐤐𐤕𐤓𐤅𐤍	spelling	𐤄 𐤐𐤕𐤓𐤅𐤍 	H6623	root
 139:12:40	𐤅𐤉𐤕𐤀𐤎𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤀𐤎𐤐 𐤅	H622	root
-139:12:44	𐤌𐤎𐤐𐤉𐤒𐤅𐤕	spelling	[𐤌] 𐤎𐤐𐤉𐤒 𐤅𐤕	H5606	matres
 139:13:22	𐤄𐤐𐤕𐤓𐤅𐤍	spelling	𐤄 𐤐𐤕𐤓𐤅𐤍 	H6623	root
 139:14:7	𐤅𐤄𐤐𐤕𐤓𐤅𐤍𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤕𐤓𐤅𐤍 𐤉𐤌	H6623	root
 139:14:8	𐤅𐤄𐤐𐤕𐤓𐤅𐤍𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤕𐤓𐤅𐤍 𐤉𐤌	H6623	root
 139:14:26	𐤕𐤌𐤎𐤓	spelling	[𐤕] 𐤌𐤎𐤓 	H4560	root
-139:14:36	𐤉𐤁𐤒𐤔𐤍𐤉	spelling	[𐤉] 𐤁𐤒𐤔𐤍𐤉 	H1245	form
+139:14:36	𐤉𐤁𐤒𐤔𐤍𐤉	english	[𐤉] 𐤁𐤒𐤔𐤍𐤉 	H1245	form
 139:14:42	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
 143:1:15	𐤉𐤌𐤕𐤉𐤒	spelling	[𐤉] 𐤌𐤕𐤉𐤒 	H4985	matres
 143:1:19	𐤅𐤌𐤏𐤅𐤐𐤓𐤕	english	𐤅+𐤌 𐤏𐤅𐤐𐤓𐤕 	H5777	root
@@ -1611,7 +2266,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 143:5:39	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
 143:6:7	𐤅𐤌𐤏𐤈𐤓	english	𐤅+[𐤌] 𐤏𐤈𐤓 	H5849	root
 143:6:13	𐤉𐤔𐤁𐤉𐤏𐤅	english	[𐤉] 𐤔𐤁𐤉𐤏 𐤅	H7646	matres
-143:6:25	𐤅𐤉𐤅𐤔𐤉𐤁𐤊	english	𐤅 𐤉𐤅𐤔𐤉𐤁 𐤊	H3427	matres
+143:6:25	𐤅𐤉𐤅𐤔𐤉𐤁𐤊	spelling	𐤅 𐤉𐤅𐤔𐤉𐤁 𐤊	H3427	matres
 143:7:5	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
 143:7:7	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
 143:7:16	𐤅𐤕𐤇𐤒𐤓	spelling	𐤅+[𐤕] 𐤇𐤒𐤓 	H2713	root
@@ -1630,13 +2285,14 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 143:13:10	𐤇𐤋𐤔𐤅𐤕	spelling	 𐤇𐤋𐤔 𐤅𐤕	H2523	root
 143:13:18	𐤉𐤕𐤏𐤄	spelling	[𐤉] 𐤕𐤏𐤄 	H8582	root
 143:13:25	𐤅𐤉𐤕𐤓𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤓𐤐𐤅 	H7503	form
-143:14:1	𐤄𐤈𐤁𐤉𐤋	english	[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
+143:14:1	𐤄𐤈𐤁𐤉𐤋	spelling	[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
 143:14:12	𐤋𐤓𐤒𐤃	english	𐤋 𐤓𐤒𐤃 	H7540	root
 143:15:11	𐤉𐤓𐤊𐤉𐤄𐤌	spelling	 𐤉𐤓𐤊𐤉𐤄 𐤌	H3411	matres
 143:15:18	𐤅𐤉𐤕𐤓𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤓𐤐𐤅 	H7503	form
 143:16:2	𐤅𐤁𐤎𐤃𐤓	spelling	𐤅+𐤁 𐤎𐤃𐤓 	H5468	root
 143:21:10	𐤉𐤁𐤆𐤄	spelling	[𐤉] 𐤁𐤆𐤄 	H959	root
 143:21:12	𐤔𐤃𐤅𐤕𐤉𐤅	spelling	 𐤔𐤃𐤅𐤕 𐤉+𐤅	H7704	form
+143:21:15	𐤉𐤔𐤉𐤌𐤄𐤅	spelling	[𐤉] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
 143:21:27	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
 143:21:31	𐤓𐤑𐤅𐤄𐤅	english	 𐤓𐤑𐤅𐤄 𐤅	H7521	matres
 143:23:5	𐤔𐤊𐤌𐤉𐤄𐤌	english	 𐤔𐤊𐤌𐤉𐤄 𐤌	H7929	matres
@@ -1668,6 +2324,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 217:1:10	𐤄𐤀𐤎𐤉𐤉𐤌	spelling	𐤄 𐤀𐤎𐤉𐤉𐤌 	H618	matres
 217:1:11	𐤍𐤏𐤔𐤉𐤕𐤉	spelling	[𐤍] 𐤏𐤔𐤉𐤕𐤉 	H6213	form
 217:1:11	𐤄𐤕𐤂𐤅𐤓𐤓	english	[𐤄𐤕] 𐤂𐤅𐤓𐤓 	H1641	matres
+217:1:11	𐤐𐤓𐤉𐤔𐤅𐤕	english	 𐤐𐤓𐤉𐤔 𐤅𐤕	H6571	matres
 217:1:11	𐤑𐤌𐤀𐤅𐤍𐤉	english	 𐤑𐤌𐤀𐤅𐤍 𐤉	H6774	root
 217:1:13	𐤔𐤍𐤎𐤏𐤕𐤉	english	𐤔 𐤍𐤎𐤏 𐤕+𐤉	H5265	root
 217:1:13	𐤌𐤊𐤅𐤁𐤃𐤉𐤌	spelling	𐤌 𐤊𐤅𐤁𐤃 𐤉𐤌	H3519	matres
@@ -1793,7 +2450,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 217:1:194	𐤉𐤏𐤉𐤃𐤅	spelling	[𐤉] 𐤏𐤉𐤃 𐤅	H5749	matres
 217:1:195	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
 217:1:195	𐤕𐤔𐤅𐤓𐤅𐤕	spelling	[𐤕] 𐤔𐤅𐤓 𐤅𐤕	H7789	root
-217:1:197	𐤐𐤓𐤅𐤔𐤉	english	 𐤐𐤓𐤅𐤔 𐤉	H6567	matres
+217:1:197	𐤐𐤓𐤅𐤔𐤉	english	 𐤐𐤓𐤅𐤔 𐤉	H6571	matres
 217:1:200	𐤅𐤑𐤅𐤅𐤄𐤅	english	𐤅 𐤑𐤅𐤅𐤄 𐤅	H6680	matres
 217:1:202	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
 217:1:204	𐤍𐤏𐤑𐤁𐤕𐤉	english	[𐤍] 𐤏𐤑𐤁 𐤕+𐤉	H6087	root
@@ -1813,10 +2470,10 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 217:1:230	𐤅𐤌𐤓𐤅𐤁𐤄	english	𐤅 𐤌𐤓𐤅𐤁𐤄 	H4766	matres
 217:1:231	𐤐𐤂𐤔𐤅	spelling	 𐤐𐤂𐤔 𐤅	H6298	root
 217:1:233	𐤄𐤑𐤅𐤏𐤒𐤉𐤌	spelling	[𐤄] 𐤑𐤅𐤏𐤒 𐤉𐤌	H6817	matres
-217:1:235	𐤕𐤓𐤑𐤅	english	[𐤕] 𐤓𐤑𐤅 	H7521	form
+217:1:235	𐤕𐤓𐤑𐤅	spelling	[𐤕] 𐤓𐤑𐤅 	H7521	form
 217:1:237	𐤄𐤌𐤕𐤍𐤂𐤃𐤉𐤌	english	𐤄+[𐤌𐤕] 𐤍𐤂𐤃 𐤉𐤌	H5046	root
 217:1:237	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
-217:1:237	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	[𐤕] 𐤅𐤔𐤁𐤉𐤄 	H7725	form
+217:1:237	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	 𐤕𐤅𐤔𐤁 𐤉+𐤄	H8453	root
 217:1:239	𐤄𐤐𐤏𐤅𐤋𐤄	spelling	𐤄 𐤐𐤏𐤅𐤋𐤄 	H6468	matres
 217:1:240	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 217:1:241	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
@@ -1845,8 +2502,8 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 217:1:274	𐤉𐤇𐤊𐤅	spelling	[𐤉] 𐤇𐤊𐤅 	H2442	form
 217:1:274	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
 217:1:278	𐤌𐤊𐤅𐤁𐤃𐤉𐤌	spelling	𐤌 𐤊𐤅𐤁𐤃 𐤉𐤌	H3519	matres
-217:1:282	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	[𐤕] 𐤅𐤔𐤁𐤉𐤄 	H7725	form
-217:1:284	𐤇𐤉𐤉𐤕𐤉	english	 𐤇𐤉𐤉 𐤕+𐤉	H2421	form
+217:1:282	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	 𐤕𐤅𐤔𐤁 𐤉+𐤄	H8453	root
+217:1:284	𐤇𐤉𐤉𐤕𐤉	spelling	 𐤇𐤉𐤉 𐤕+𐤉	H2425	root
 217:1:285	𐤓𐤅𐤊𐤁𐤉𐤌	spelling	 𐤓𐤅𐤊𐤁 𐤉𐤌	H7395	matres
 217:1:293	𐤁𐤄𐤕𐤍𐤐𐤋	spelling	𐤁+[𐤄𐤕] 𐤍𐤐𐤋 	H5307	root
 217:1:295	𐤍𐤑𐤋𐤅	spelling	 𐤍𐤑𐤋 𐤅	H5337	root
@@ -1887,7 +2544,8 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 217:1:346	𐤅𐤋𐤄𐤕𐤒𐤅𐤌𐤌	spelling	𐤅+𐤋+[𐤄𐤕] 𐤒𐤅𐤌 𐤌	H6965	root
 217:1:346	𐤋𐤀𐤆𐤓𐤇𐤉𐤄	english	𐤋 𐤀𐤆𐤓𐤇 𐤉+𐤄	H249	root
 217:1:346	𐤋𐤄𐤕𐤇𐤁𐤓	spelling	𐤋+[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
-217:1:350	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	[𐤕] 𐤅𐤔𐤁𐤉𐤄 	H7725	form
+217:1:348	𐤅𐤎𐤊𐤍𐤄	spelling	𐤅 𐤎𐤊𐤍 𐤄	H5532	root
+217:1:350	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	 𐤕𐤅𐤔𐤁 𐤉+𐤄	H8453	root
 217:1:352	𐤇𐤊𐤉𐤕𐤌	english	 𐤇𐤊𐤉 𐤕+𐤌	H2441	form
 217:1:355	𐤌𐤕𐤍𐤅𐤕𐤉𐤅	spelling	 𐤌𐤕𐤍𐤅𐤕 𐤉+𐤅	H4979	form
 217:1:357	𐤍𐤁𐤑𐤓	spelling	[𐤍] 𐤁𐤑𐤓 	H1219	root
@@ -1896,9 +2554,9 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 217:1:367	𐤋𐤈𐤐𐤋	spelling	𐤋 𐤈𐤐𐤋 	H2950	root
 217:1:368	𐤅𐤍𐤅𐤏𐤑𐤕𐤉	english	𐤅 𐤍𐤅𐤏𐤑 𐤕+𐤉	H3289	form
 217:1:368	𐤄𐤌𐤓𐤉𐤃𐤄	spelling	𐤄+[𐤌] 𐤓𐤉𐤃𐤄 	H7287	matres
-217:1:370	𐤀𐤔𐤓𐤅𐤐	english	[𐤀] 𐤔𐤓𐤅𐤐 	H8313	form
+217:1:370	𐤀𐤔𐤓𐤅𐤐	spelling	[𐤀] 𐤔𐤓𐤅𐤐 	H8313	form
 217:1:374	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
-217:1:375	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	[𐤕] 𐤅𐤔𐤁𐤉𐤄 	H7725	form
+217:1:375	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	 𐤕𐤅𐤔𐤁 𐤉+𐤄	H8453	root
 217:1:377	𐤋𐤇𐤃𐤅𐤋	spelling	𐤋 𐤇𐤃𐤅𐤋 	H2308	matres
 217:1:378	𐤌𐤕𐤍𐤐𐤋𐤉𐤌	english	[𐤌𐤕] 𐤍𐤐𐤋 𐤉𐤌	H5307	root
 217:1:379	𐤄𐤕𐤐𐤓𐤑𐤅𐤕𐤌	english	[𐤄𐤕] 𐤐𐤓𐤑 𐤅𐤕+𐤌	H6555	root
@@ -1970,7 +2628,6 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 218:1:100	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 218:1:112	𐤀𐤏𐤉𐤃𐤄	english	[𐤀] 𐤏𐤉𐤃𐤄 	H5710	matres
 218:1:113	𐤄𐤓𐤉𐤅𐤇	english	𐤄 𐤓𐤉𐤅𐤇 	H7305	matres
-218:1:133	𐤄𐤕𐤂𐤁𐤓	spelling	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 218:1:139	𐤐𐤔𐤅𐤈𐤅𐤕	english	 𐤐𐤔𐤅𐤈 𐤅𐤕	H6584	matres
 218:1:140	𐤍𐤄𐤃𐤓𐤄	spelling	[𐤍] 𐤄𐤃𐤓 𐤄	H1921	root
 218:1:144	𐤅𐤁𐤂𐤅𐤃𐤋	english	𐤅+𐤁 𐤂𐤅𐤃𐤋 	H1433	matres
@@ -1979,6 +2636,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 218:1:149	𐤄𐤒𐤅𐤔𐤓𐤉𐤌	spelling	[𐤄] 𐤒𐤅𐤔𐤓 𐤉𐤌	H7194	matres
 218:1:152	𐤋𐤄𐤓𐤅𐤎	spelling	𐤋 𐤄𐤓𐤅𐤎 	H2040	matres
 218:1:160	𐤉𐤎𐤐𐤉𐤒𐤅	spelling	[𐤉] 𐤎𐤐𐤉𐤒 𐤅	H5606	matres
+218:1:164	𐤌𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤌 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 218:1:189	𐤄𐤍𐤆𐤊𐤓	spelling	𐤄+[𐤍] 𐤆𐤊𐤓 	H2142	root
 218:1:191	𐤅𐤌𐤉𐤕𐤅𐤕	english	𐤅 𐤌𐤉𐤕 𐤅𐤕	H4191	matres
 218:1:200	𐤉𐤅𐤓𐤔𐤉𐤅	spelling	 𐤉𐤅𐤓𐤔 𐤉+𐤅	H3423	form
@@ -2001,6 +2659,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 218:1:246	𐤍𐤔𐤋𐤇𐤅	spelling	[𐤍] 𐤔𐤋𐤇 𐤅	H7971	root
 218:1:255	𐤕𐤇𐤁𐤅𐤋𐤄	spelling	[𐤕] 𐤇𐤁𐤅𐤋 𐤄	H2254	matres
 218:1:260	𐤍𐤏𐤕𐤓	english	[𐤍] 𐤏𐤕𐤓 	H6279	root
+218:1:268	𐤌𐤕𐤍𐤊𐤋𐤉𐤌	spelling	[𐤌𐤕] 𐤍𐤊𐤋 𐤉𐤌	H5230	root
 218:1:272	𐤋𐤄𐤌𐤔𐤉𐤋𐤌	english	𐤋+𐤄+[𐤌] 𐤔𐤉𐤋𐤌 	H7999	matres
 218:1:278	𐤌𐤍𐤉𐤕𐤅𐤍	spelling	[𐤌] 𐤍𐤉𐤕𐤅𐤍 	H5414	matres
 218:1:279	𐤌𐤕𐤌𐤉𐤄𐤉𐤌	english	[𐤌] 𐤕𐤌𐤉𐤄 𐤉𐤌	H8539	matres
@@ -2154,7 +2813,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:15	𐤋𐤔𐤁𐤇	spelling	𐤋 𐤔𐤁𐤇 	H7623	root
 219:1:15	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
 219:1:16	𐤉𐤂𐤉𐤏𐤅𐤕𐤉	english	 𐤉𐤂𐤉𐤏 𐤅𐤕+𐤉	H3018	root
-219:1:16	𐤍𐤀𐤋𐤌𐤉𐤌	english	[𐤍] 𐤀𐤋𐤌 𐤉𐤌	H481	root
+219:1:16	𐤍𐤀𐤋𐤌𐤉𐤌	spelling	[𐤍] 𐤀𐤋𐤌 𐤉𐤌	H481	root
 219:1:16	𐤋𐤇𐤋𐤔𐤉𐤌	spelling	𐤋 𐤇𐤋𐤔 𐤉𐤌	H2523	root
 219:1:17	𐤕𐤓𐤂𐤌𐤅	spelling	 𐤕𐤓𐤂𐤌 𐤅	H8638	root
 219:1:25	𐤎𐤅𐤋𐤋𐤅𐤕	spelling	 𐤎𐤅𐤋𐤋 𐤅𐤕	H5549	matres
@@ -2164,6 +2823,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:31	𐤋𐤄𐤊𐤍𐤏	spelling	𐤋+[𐤄] 𐤊𐤍𐤏 	H3665	root
 219:1:32	𐤋𐤄𐤕𐤍𐤐𐤋	spelling	𐤋+[𐤄𐤕] 𐤍𐤐𐤋 	H5307	root
 219:1:34	𐤎𐤐𐤅𐤒𐤅	english	 𐤎𐤐𐤅𐤒 𐤅	H5606	matres
+219:1:35	𐤍𐤌𐤎𐤓𐤅	spelling	[𐤍] 𐤌𐤎𐤓 𐤅	H4560	root
 219:1:35	𐤔𐤍𐤔𐤋𐤇	spelling	𐤔+[𐤍] 𐤔𐤋𐤇 	H7971	root
 219:1:38	𐤋𐤄𐤕𐤍𐤐𐤋	spelling	𐤋+[𐤄𐤕] 𐤍𐤐𐤋 	H5307	root
 219:1:41	𐤓𐤅𐤊𐤁𐤉𐤌	spelling	 𐤓𐤅𐤊𐤁 𐤉𐤌	H7395	matres
@@ -2204,6 +2864,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:106	𐤋𐤄𐤕𐤂𐤁𐤓	spelling	𐤋+[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 219:1:107	𐤕𐤅𐤏𐤁𐤅𐤕𐤉𐤅	english	 𐤕𐤅𐤏𐤁𐤅𐤕 𐤉+𐤅	H8441	form
 219:1:112	𐤄𐤊𐤐𐤉𐤋𐤄	english	[𐤄] 𐤊𐤐𐤉𐤋 𐤄	H3717	matres
+219:1:112	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
 219:1:117	𐤋𐤄𐤐𐤉𐤒	english	𐤋+𐤄 𐤐𐤉𐤒 	H6375	root
 219:1:117	𐤀𐤄𐤁𐤅𐤄𐤅	spelling	 𐤀𐤄𐤁𐤅𐤄 𐤅	H160	matres
 219:1:118	𐤄𐤕𐤀𐤅𐤍𐤍	english	[𐤄𐤕] 𐤀𐤅𐤍𐤍 	H596	matres
@@ -2216,6 +2877,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:135	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 219:1:136	𐤉𐤌𐤎𐤅𐤓	spelling	[𐤉] 𐤌𐤎𐤅𐤓 	H4560	matres
 219:1:138	𐤄𐤇𐤋𐤉𐤐	english	[𐤄] 𐤇𐤋𐤉𐤐 	H2498	matres
+219:1:138	𐤄𐤂𐤆𐤏	spelling	𐤄 𐤂𐤆𐤏 	H1503	root
 219:1:139	𐤁𐤄𐤁𐤈𐤉𐤇𐤅	english	𐤁+𐤄 𐤁𐤈𐤉𐤇 𐤅	H983	matres
 219:1:143	𐤄𐤊𐤍𐤉𐤎𐤄	english	[𐤄] 𐤊𐤍𐤉𐤎 𐤄	H3664	matres
 219:1:144	𐤍𐤁𐤑𐤓	spelling	[𐤍] 𐤁𐤑𐤓 	H1219	root
@@ -2295,6 +2957,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:255	𐤌𐤕𐤊𐤅𐤍𐤕𐤌	spelling	[𐤌𐤕] 𐤊𐤅𐤍 𐤕+𐤌	H3559	root
 219:1:255	𐤌𐤄𐤓𐤅𐤊𐤁𐤉𐤌	english	𐤌+[𐤄] 𐤓𐤅𐤊𐤁 𐤉𐤌	H7392	matres
 219:1:256	𐤄𐤀𐤇𐤔𐤃𐤓𐤐𐤍	spelling	𐤄 𐤀𐤇𐤔𐤃𐤓𐤐𐤍 	H324	root
+219:1:258	𐤅𐤉𐤆𐤄𐤓	spelling	𐤅+[𐤉] 𐤆𐤄𐤓 	H2094	root
 219:1:259	𐤄𐤀𐤇𐤔𐤃𐤓𐤐𐤍	spelling	𐤄 𐤀𐤇𐤔𐤃𐤓𐤐𐤍 	H324	root
 219:1:259	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
 219:1:261	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
@@ -2360,7 +3023,6 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:335	𐤋𐤕𐤌𐤅𐤓𐤅𐤕	spelling	𐤋 𐤕𐤌𐤅𐤓 𐤅𐤕	H8559	matres
 219:1:336	𐤀𐤂𐤐𐤉	spelling	 𐤀𐤂𐤐 𐤉	H102	root
 219:1:336	𐤄𐤀𐤂𐤐	spelling	𐤄 𐤀𐤂𐤐 	H102	root
-219:1:338	𐤄𐤕𐤂𐤁𐤓	spelling	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 219:1:338	𐤋𐤄𐤓𐤅𐤎	spelling	𐤋 𐤄𐤓𐤅𐤎 	H2040	matres
 219:1:338	𐤔𐤋𐤅𐤐𐤅𐤕	english	 𐤔𐤋𐤅𐤐 𐤅𐤕	H8025	matres
 219:1:339	𐤋𐤄𐤕𐤍𐤏𐤓	english	𐤋+[𐤄𐤕] 𐤍𐤏𐤓 	H5287	root
@@ -2377,7 +3039,6 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:351	𐤍𐤊𐤁𐤔	spelling	[𐤍] 𐤊𐤁𐤔 	H3533	root
 219:1:352	𐤅𐤍𐤔𐤇𐤈𐤅	english	𐤅+[𐤍] 𐤔𐤇𐤈 𐤅	H7819	root
 219:1:352	𐤍𐤈𐤓𐤐𐤄	spelling	[𐤍] 𐤈𐤓𐤐 𐤄	H2963	root
-219:1:354	𐤄𐤕𐤂𐤁𐤓	spelling	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 219:1:355	𐤀𐤆𐤓𐤇𐤉	spelling	 𐤀𐤆𐤓𐤇 𐤉	H249	root
 219:1:360	𐤅𐤄𐤎𐤉𐤕𐤄	spelling	𐤅+[𐤄] 𐤎𐤉𐤕 𐤄	H5496	matres
 219:1:361	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
@@ -2402,9 +3063,8 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:389	𐤉𐤌𐤎𐤅𐤓	spelling	[𐤉] 𐤌𐤎𐤅𐤓 	H4560	matres
 219:1:389	𐤋𐤄𐤔𐤂𐤁	spelling	𐤋+[𐤄] 𐤔𐤂𐤁 	H7682	root
 219:1:389	𐤁𐤌𐤋𐤇𐤌𐤅𐤕𐤉𐤅	spelling	𐤁 𐤌𐤋𐤇𐤌𐤅𐤕 𐤉+𐤅	H4421	form
-219:1:390	𐤕𐤇𐤒𐤅𐤓	spelling	[𐤕] 𐤇𐤒𐤅𐤓 	H2713	form
 219:1:391	𐤋𐤍𐤄𐤋	spelling	𐤋 𐤍𐤄𐤋 	H5095	root
-219:1:395	𐤁𐤍𐤎𐤅𐤏	english	𐤁 𐤍𐤎𐤅𐤏 	H5265	matres
+219:1:395	𐤁𐤍𐤎𐤅𐤏	spelling	𐤁 𐤍𐤎𐤅𐤏 	H5265	matres
 219:1:395	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 219:1:395	𐤋𐤄𐤌𐤑𐤉𐤀	spelling	𐤋+[𐤄] 𐤌𐤑𐤉𐤀 	H4672	matres
 219:1:396	𐤅𐤎𐤐𐤇	spelling	𐤅 𐤎𐤐𐤇 	H5596	root
@@ -2444,6 +3104,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:457	𐤋𐤔𐤁𐤇	spelling	𐤋 𐤔𐤁𐤇 	H7623	root
 219:1:459	𐤉𐤇𐤔𐤅𐤁	spelling	[𐤉] 𐤇𐤔𐤅𐤁 	H2803	matres
 219:1:461	𐤌𐤁𐤓𐤊𐤅𐤕𐤉𐤄	english	𐤌 𐤁𐤓𐤊𐤅𐤕 𐤉+𐤄	H1293	form
+219:1:463	𐤉𐤏𐤁𐤅𐤃	spelling	[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
 219:1:463	𐤁𐤒𐤅𐤅𐤕𐤅	spelling	𐤁 𐤒𐤅𐤅 𐤕+𐤅	H6960	form
 219:1:466	𐤋𐤕𐤌𐤅𐤓𐤅𐤕	spelling	𐤋 𐤕𐤌𐤅𐤓 𐤅𐤕	H8559	matres
 219:1:469	𐤍𐤌𐤎𐤓	spelling	[𐤍] 𐤌𐤎𐤓 	H4560	root
@@ -2489,8 +3150,9 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:555	𐤄𐤍𐤓𐤑𐤇𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤑𐤇 𐤉𐤌	H7523	root
 219:1:556	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 219:1:559	𐤄𐤕𐤏𐤑𐤁	english	[𐤄𐤕] 𐤏𐤑𐤁 	H6088	root
-219:1:559	𐤅𐤎𐤊𐤍𐤄	english	𐤅 𐤎𐤊𐤍 𐤄	H5532	root
+219:1:559	𐤅𐤎𐤊𐤍𐤄	spelling	𐤅 𐤎𐤊𐤍 𐤄	H5532	root
 219:1:560	𐤄𐤍𐤓𐤑𐤇𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤑𐤇 𐤉𐤌	H7523	root
+219:1:561	𐤁𐤍𐤊𐤋𐤉	spelling	𐤁 𐤍𐤊𐤋 𐤉	H5230	root
 219:1:561	𐤅𐤍𐤓𐤂𐤆	spelling	𐤅+[𐤍] 𐤓𐤂𐤆 	H7264	root
 219:1:561	𐤉𐤏𐤁𐤉𐤓	spelling	[𐤉] 𐤏𐤁𐤉𐤓 	H5674	matres
 219:1:561	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
@@ -2523,7 +3185,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:611	𐤉𐤇𐤒𐤅𐤓	spelling	[𐤉] 𐤇𐤒𐤅𐤓 	H2713	form
 219:1:612	𐤄𐤓𐤅𐤏𐤃𐤕	english	[𐤄] 𐤓𐤅𐤏𐤃 𐤕	H7460	matres
 219:1:613	𐤄𐤍𐤌𐤋	spelling	[𐤄] 𐤍𐤌𐤋 	H5243	root
-219:1:615	𐤄𐤕𐤍𐤊𐤓	english	[𐤄𐤕] 𐤍𐤊𐤓 	H5234	root
+219:1:615	𐤄𐤕𐤍𐤊𐤓	spelling	[𐤄𐤕] 𐤍𐤊𐤓 	H5234	root
 219:1:617	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 219:1:623	𐤅𐤀𐤌𐤍𐤕𐤉	english	𐤅 𐤀𐤌𐤍 𐤕+𐤉	H539	root
 219:1:625	𐤍𐤈𐤓𐤐𐤄	spelling	[𐤍] 𐤈𐤓𐤐 𐤄	H2963	root
@@ -2538,10 +3200,10 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:1:646	𐤅𐤋𐤀𐤅𐤄𐤁𐤉𐤅	spelling	𐤅+𐤋 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 219:1:646	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 219:1:650	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
-219:1:654	𐤄𐤕𐤂𐤁𐤓	spelling	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 219:1:656	𐤅𐤁𐤌𐤁𐤅𐤔𐤉𐤅	english	𐤅+𐤁+[𐤌] 𐤁𐤅𐤔 𐤉+𐤅	H954	root
 219:1:657	𐤋𐤈𐤁𐤅𐤋	english	𐤋 𐤈𐤁𐤅𐤋 	H2871	root
 219:1:658	𐤅𐤋𐤀𐤅𐤄𐤁𐤉𐤅	spelling	𐤅+𐤋 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
+219:1:660	𐤕𐤓𐤑𐤅	spelling	[𐤕] 𐤓𐤑𐤅 	H7521	form
 219:1:660	𐤉𐤁𐤊𐤄	english	[𐤉] 𐤁𐤊𐤄 	H1058	root
 219:1:662	𐤄𐤁𐤋𐤉𐤂	english	[𐤄] 𐤁𐤋𐤉𐤂 	H1082	matres
 219:1:662	𐤅𐤄𐤔𐤏𐤅𐤋	english	𐤅+𐤄 𐤔𐤏𐤅𐤋 	H8168	matres
@@ -2591,7 +3253,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:2:81	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 219:2:91	𐤉𐤇𐤁𐤓𐤅	english	[𐤉] 𐤇𐤁𐤓 𐤅	H2266	root
 219:2:91	𐤔𐤅𐤈𐤍𐤉𐤄𐤌	english	 𐤔𐤅𐤈𐤍𐤉𐤄 𐤌	H7855	matres
-219:2:93	𐤉𐤔𐤉𐤌𐤄𐤅	english	[𐤉] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
+219:2:93	𐤉𐤔𐤉𐤌𐤄𐤅	spelling	[𐤉] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
 219:2:97	𐤅𐤎𐤐𐤇	spelling	𐤅 𐤎𐤐𐤇 	H5596	root
 219:2:102	𐤍𐤔𐤋𐤇𐤅	spelling	[𐤍] 𐤔𐤋𐤇 𐤅	H7971	root
 219:2:104	𐤕𐤔𐤅𐤓𐤅𐤕	spelling	[𐤕] 𐤔𐤅𐤓 𐤅𐤕	H7789	root
@@ -2612,6 +3274,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:2:134	𐤄𐤀𐤎𐤉𐤉𐤌	spelling	𐤄 𐤀𐤎𐤉𐤉𐤌 	H618	matres
 219:2:135	𐤊𐤅𐤏𐤎𐤉𐤌	english	 𐤊𐤅𐤏𐤎 𐤉𐤌	H3707	matres
 219:2:138	𐤁𐤍𐤎𐤉𐤅𐤍	english	𐤁 𐤍𐤎𐤉𐤅𐤍 	H5212	matres
+219:2:139	𐤉𐤏𐤁𐤅𐤃	spelling	[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
 219:2:139	𐤉𐤔𐤌𐤅𐤓	spelling	[𐤉] 𐤔𐤌𐤅𐤓 	H8104	form
 219:2:140	𐤅𐤉𐤍𐤑𐤅𐤓	english	𐤅+[𐤉] 𐤍𐤑𐤅𐤓 	H5341	form
 219:2:142	𐤄𐤀𐤎𐤉𐤉𐤌	spelling	𐤄 𐤀𐤎𐤉𐤉𐤌 	H618	matres
@@ -2626,6 +3289,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:2:157	𐤁𐤒𐤅𐤅𐤕𐤌	spelling	𐤁 𐤒𐤅𐤅 𐤕+𐤌	H6960	form
 219:2:158	𐤄𐤀𐤎𐤉𐤉𐤌	spelling	𐤄 𐤀𐤎𐤉𐤉𐤌 	H618	matres
 219:2:161	𐤓𐤅𐤇𐤑𐤅𐤕	english	 𐤓𐤅𐤇𐤑 𐤅𐤕	H7364	matres
+219:2:166	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
 219:2:169	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
 219:2:170	𐤍𐤀𐤎𐤓	spelling	[𐤍] 𐤀𐤎𐤓 	H631	root
 219:2:173	𐤋𐤔𐤋𐤅𐤐	spelling	𐤋 𐤔𐤋𐤅𐤐 	H8025	matres
@@ -2657,6 +3321,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:2:240	𐤄𐤍𐤓𐤑𐤇	spelling	𐤄+[𐤍] 𐤓𐤑𐤇 	H7523	root
 219:2:243	𐤋𐤍𐤎𐤅𐤏	spelling	𐤋 𐤍𐤎𐤅𐤏 	H5265	matres
 219:2:244	𐤋𐤍𐤎𐤅𐤏	spelling	𐤋 𐤍𐤎𐤅𐤏 	H5265	matres
+219:2:249	𐤁𐤍𐤊𐤋𐤉	spelling	𐤁 𐤍𐤊𐤋 𐤉	H5230	root
 219:2:251	𐤍𐤈𐤓𐤐𐤄	spelling	[𐤍] 𐤈𐤓𐤐 𐤄	H2963	root
 219:2:256	𐤍𐤔𐤇𐤈	spelling	[𐤍] 𐤔𐤇𐤈 	H7819	root
 219:2:256	𐤍𐤓𐤑𐤇𐤅	spelling	[𐤍] 𐤓𐤑𐤇 𐤅	H7523	root
@@ -2697,7 +3362,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:2:327	𐤍𐤇𐤍𐤒𐤅	spelling	[𐤍] 𐤇𐤍𐤒 𐤅	H2614	root
 219:2:327	𐤅𐤍𐤓𐤌𐤎𐤅	spelling	𐤅+[𐤍] 𐤓𐤌𐤎 𐤅	H7429	root
 219:2:328	𐤋𐤁𐤒𐤅𐤏	spelling	𐤋 𐤁𐤒𐤅𐤏 	H1234	matres
-219:2:330	𐤅𐤉𐤊𐤁𐤅𐤔	english	𐤅+[𐤉] 𐤊𐤁𐤅𐤔 	H3533	matres
+219:2:330	𐤅𐤉𐤊𐤁𐤅𐤔	spelling	𐤅+[𐤉] 𐤊𐤁𐤅𐤔 	H3533	matres
 219:2:332	𐤄𐤁𐤈𐤉𐤇𐤅	spelling	𐤄 𐤁𐤈𐤉𐤇 𐤅	H983	matres
 219:2:333	𐤅𐤄𐤕𐤂𐤅𐤋𐤋	spelling	𐤅+[𐤄𐤕] 𐤂𐤅𐤋𐤋 	H1556	matres
 219:2:333	𐤄𐤕𐤂𐤓𐤅	spelling	[𐤄𐤕] 𐤂𐤓𐤅 	H1481	form
@@ -2709,17 +3374,18 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:2:351	𐤁𐤂𐤃𐤅𐤐𐤉𐤌	spelling	𐤁 𐤂𐤃𐤅𐤐 𐤉𐤌	H1421	root
 219:2:352	𐤋𐤄𐤕𐤂𐤓𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤂𐤓𐤅 𐤕	H1481	form
 219:2:352	𐤋𐤄𐤑𐤉𐤒	spelling	𐤋+[𐤄] 𐤑𐤉𐤒 	H6693	matres
+219:2:354	𐤅𐤉𐤀𐤅𐤕	spelling	𐤅+[𐤉] 𐤀𐤅𐤕 	H225	root
 219:2:361	𐤉𐤎𐤐𐤒𐤅	english	[𐤉] 𐤎𐤐𐤒 𐤅	H5606	root
 219:2:362	𐤍𐤌𐤅𐤈𐤄	english	[𐤍] 𐤌𐤅𐤈 𐤄	H4131	root
-219:2:367	𐤌𐤎𐤐𐤉𐤒𐤅𐤕	spelling	[𐤌] 𐤎𐤐𐤉𐤒 𐤅𐤕	H5606	matres
+219:2:367	𐤌𐤎𐤐𐤉𐤒𐤅𐤕	english	[𐤌] 𐤎𐤐𐤉𐤒 𐤅𐤕	H5606	matres
 219:2:379	𐤕𐤏𐤓𐤅𐤁𐤅𐤕	spelling	[𐤕] 𐤏𐤓𐤅𐤁 𐤅𐤕	H6148	matres
 219:2:379	𐤀𐤉𐤈𐤋𐤉𐤄	english	[𐤀] 𐤉𐤈𐤋 𐤉+𐤄	H2904	form
 219:2:383	𐤐𐤒𐤃𐤅𐤕𐤉𐤄	english	 𐤐𐤒𐤃𐤅𐤕 𐤉+𐤄	H6486	form
 219:2:387	𐤓𐤅𐤃𐤉𐤌	spelling	 𐤓𐤅𐤃 𐤉𐤌	H7300	root
 219:2:391	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
+219:2:391	𐤅𐤄𐤌𐤑𐤅𐤅𐤕	spelling	𐤅+𐤄 𐤌𐤑𐤅𐤅𐤕 	H4695	matres
 219:2:395	𐤄𐤌𐤅𐤒𐤃	spelling	𐤄 𐤌𐤅𐤒𐤃 	H4168	root
 219:2:400	𐤇𐤅𐤎𐤅	spelling	 𐤇𐤅𐤎 𐤅	H2347	root
-219:2:400	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
 219:2:406	𐤋𐤄𐤊𐤍𐤏	spelling	𐤋+[𐤄] 𐤊𐤍𐤏 	H3665	root
 219:2:409	𐤅𐤄𐤎𐤉𐤕	english	𐤅+[𐤄] 𐤎𐤉𐤕 	H5496	matres
 219:2:409	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
@@ -2741,6 +3407,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:2:454	𐤋𐤄𐤕𐤉𐤄𐤃	english	𐤋+[𐤄𐤕] 𐤉𐤄𐤃 	H3054	root
 219:2:457	𐤍𐤔𐤇𐤈𐤅	spelling	[𐤍] 𐤔𐤇𐤈 𐤅	H7819	root
 219:2:458	𐤄𐤕𐤍𐤐𐤋𐤅	spelling	[𐤄𐤕] 𐤍𐤐𐤋 𐤅	H5307	root
+219:2:462	𐤍𐤇𐤋𐤒𐤄	spelling	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
 219:2:464	𐤄𐤍𐤓𐤑𐤇𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤑𐤇 𐤉𐤌	H7523	root
 219:2:464	𐤐𐤅𐤑𐤄	english	 𐤐𐤅𐤑 𐤄	H6327	root
 219:2:464	𐤊𐤀𐤎𐤅𐤐	english	𐤊 𐤀𐤎𐤅𐤐 	H622	matres
@@ -2749,6 +3416,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:2:471	𐤀𐤆𐤓𐤇𐤉	spelling	 𐤀𐤆𐤓𐤇 𐤉	H249	root
 219:2:478	𐤀𐤆𐤓𐤇𐤉	spelling	 𐤀𐤆𐤓𐤇 𐤉	H249	root
 219:2:479	𐤀𐤆𐤓𐤇𐤉	spelling	 𐤀𐤆𐤓𐤇 𐤉	H249	root
+219:2:481	𐤁𐤍𐤎𐤅𐤏	spelling	𐤁 𐤍𐤎𐤅𐤏 	H5265	matres
 219:2:482	𐤄𐤒𐤅𐤔𐤓𐤉𐤌	spelling	[𐤄] 𐤒𐤅𐤔𐤓 𐤉𐤌	H7194	matres
 219:2:488	𐤉𐤅𐤓𐤔𐤉𐤅	spelling	 𐤉𐤅𐤓𐤔 𐤉+𐤅	H3423	form
 219:2:489	𐤄𐤕𐤋𐤒𐤇𐤄	english	[𐤄𐤕] 𐤋𐤒𐤇 𐤄	H3947	root
@@ -2806,12 +3474,13 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:2:583	𐤓𐤅𐤊𐤁𐤉𐤌	spelling	 𐤓𐤅𐤊𐤁 𐤉𐤌	H7395	matres
 219:2:584	𐤋𐤄𐤌𐤑𐤉𐤀	spelling	𐤋+[𐤄] 𐤌𐤑𐤉𐤀 	H4672	matres
 219:2:584	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
-219:2:586	𐤁𐤄𐤋𐤉𐤊𐤅𐤕𐤉𐤅	english	𐤁 𐤄𐤋𐤉𐤊𐤅𐤕 𐤉+𐤅	H1979	form
+219:2:586	𐤁𐤄𐤋𐤉𐤊𐤅𐤕𐤉𐤅	spelling	𐤁 𐤄𐤋𐤉𐤊𐤅𐤕 𐤉+𐤅	H1979	form
 219:2:586	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 219:2:593	𐤋𐤄𐤕𐤍𐤐𐤋	spelling	𐤋+[𐤄𐤕] 𐤍𐤐𐤋 	H5307	root
 219:2:594	𐤄𐤐𐤉𐤑	spelling	[𐤄] 𐤐𐤉𐤑 	H6327	matres
 219:2:598	𐤄𐤇𐤅𐤌𐤎𐤉𐤌	spelling	𐤄 𐤇𐤅𐤌𐤎 𐤉𐤌	H2555	matres
 219:2:598	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+219:2:598	𐤋𐤄𐤕𐤓𐤑𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤓𐤑𐤅 𐤕	H7323	form
 219:2:598	𐤄𐤇𐤅𐤌𐤎𐤉𐤌	spelling	𐤄 𐤇𐤅𐤌𐤎 𐤉𐤌	H2555	matres
 219:2:601	𐤄𐤒𐤅𐤔𐤓𐤉𐤌	spelling	[𐤄] 𐤒𐤅𐤔𐤓 𐤉𐤌	H7194	matres
 219:2:604	𐤁𐤕𐤇𐤁𐤅𐤋𐤄	english	𐤁 𐤕𐤇𐤁𐤅𐤋𐤄 	H8458	matres
@@ -2955,11 +3624,12 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:3:338	𐤋𐤄𐤓𐤅𐤎	spelling	𐤋 𐤄𐤓𐤅𐤎 	H2040	matres
 219:3:346	𐤍𐤔𐤋𐤇𐤅	spelling	[𐤍] 𐤔𐤋𐤇 𐤅	H7971	root
 219:3:356	𐤕𐤉𐤓𐤀𐤍𐤄	english	[𐤕] 𐤉𐤓𐤀𐤍𐤄 	H7200	form
-219:3:357	𐤕𐤏𐤑𐤅𐤓	english	[𐤕] 𐤏𐤑𐤅𐤓 	H6113	form
+219:3:357	𐤕𐤏𐤑𐤅𐤓	spelling	[𐤕] 𐤏𐤑𐤅𐤓 	H6113	form
 219:3:357	𐤋𐤄𐤕𐤊𐤇𐤔	english	𐤋+[𐤄𐤕] 𐤊𐤇𐤔 	H3584	root
 219:3:360	𐤉𐤎𐤂𐤉𐤓	spelling	[𐤉] 𐤎𐤂𐤉𐤓 	H5462	matres
 219:3:368	𐤀𐤇𐤔𐤅𐤁	english	[𐤀] 𐤇𐤔𐤅𐤁 	H2803	matres
 219:3:368	𐤅𐤄𐤈𐤁𐤉𐤏	spelling	𐤅+[𐤄] 𐤈𐤁𐤉𐤏 	H2883	matres
+219:3:369	𐤍𐤇𐤈𐤀	spelling	[𐤍] 𐤇𐤈𐤀 	H2398	root
 219:3:372	𐤉𐤒𐤋𐤒𐤋𐤍𐤅	english	[𐤉] 𐤒𐤋𐤒𐤋 𐤍𐤅	H7043	form
 219:3:373	𐤍𐤇𐤔𐤅𐤁	spelling	[𐤍] 𐤇𐤔𐤅𐤁 	H2803	matres
 219:3:374	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
@@ -2988,6 +3658,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:3:446	𐤄𐤇𐤅𐤍𐤄	spelling	[𐤄] 𐤇𐤅𐤍𐤄 	H2583	matres
 219:3:448	𐤓𐤅𐤊𐤁𐤉𐤌	spelling	 𐤓𐤅𐤊𐤁 𐤉𐤌	H7395	matres
 219:3:449	𐤋𐤄𐤕𐤂𐤓𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤂𐤓𐤅 𐤕	H1481	form
+219:3:454	𐤕𐤏𐤕𐤅𐤏𐤉	spelling	 𐤕𐤏𐤕𐤅𐤏 𐤉	H8595	matres
 219:3:458	𐤓𐤅𐤊𐤁𐤉𐤅	spelling	 𐤓𐤅𐤊𐤁 𐤉+𐤅	H7393	matres
 219:3:468	𐤄𐤐𐤉𐤑𐤅	spelling	[𐤄] 𐤐𐤉𐤑 𐤅	H6327	matres
 219:3:468	𐤄𐤎𐤐𐤉𐤍𐤅𐤕	spelling	[𐤄] 𐤎𐤐𐤉𐤍 𐤅𐤕	H5603	matres
@@ -3019,6 +3690,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:3:533	𐤉𐤂𐤓𐤅𐤌	spelling	[𐤉] 𐤂𐤓𐤅 𐤌	H1481	form
 219:3:534	𐤉𐤀𐤅𐤕	english	[𐤉] 𐤀𐤅𐤕 	H225	root
 219:3:536	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
+219:3:540	𐤄𐤐𐤓𐤉𐤔	spelling	𐤄 𐤐𐤓𐤉𐤔 	H6571	matres
 219:3:542	𐤅𐤁𐤅𐤓𐤇𐤉𐤌	english	𐤅 𐤁𐤅𐤓𐤇 𐤉𐤌	H1280	matres
 219:4:4	𐤅𐤎𐤉𐤋𐤉𐤒𐤉𐤄	english	𐤅 𐤎𐤉𐤋𐤉𐤒 𐤉+𐤄	H5559	matres
 219:4:6	𐤑𐤋𐤏𐤅𐤕𐤉𐤅	spelling	 𐤑𐤋𐤏𐤅𐤕 𐤉+𐤅	H6763	form
@@ -3087,6 +3759,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:4:171	𐤄𐤍𐤓𐤌𐤎	english	𐤄+[𐤍] 𐤓𐤌𐤎 	H7429	root
 219:4:171	𐤋𐤄𐤕𐤀𐤅𐤍𐤍	spelling	𐤋+[𐤄𐤕] 𐤀𐤅𐤍𐤍 	H596	matres
 219:4:174	𐤅𐤕𐤋𐤐𐤕𐤅	english	𐤅+[𐤕] 𐤋𐤐𐤕 𐤅	H3943	root
+219:4:179	𐤉𐤏𐤁𐤅𐤃	spelling	[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
 219:4:183	𐤍𐤅𐤈𐤐𐤅𐤕	english	 𐤍𐤅𐤈𐤐 𐤅𐤕	H5198	matres
 219:4:184	𐤍𐤅𐤇𐤉𐤌	spelling	 𐤍𐤅𐤇 𐤉𐤌	H5117	root
 219:4:185	𐤍𐤓𐤂𐤆𐤕𐤌	english	[𐤍] 𐤓𐤂𐤆 𐤕+𐤌	H7264	root
@@ -3105,13 +3778,15 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:4:219	𐤋𐤄𐤕𐤍𐤐𐤋	spelling	𐤋+[𐤄𐤕] 𐤍𐤐𐤋 	H5307	root
 219:4:220	𐤋𐤄𐤌𐤑𐤉𐤀	spelling	𐤋+[𐤄] 𐤌𐤑𐤉𐤀 	H4672	matres
 219:4:223	𐤄𐤍𐤓𐤑𐤇𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤑𐤇 𐤉𐤌	H7523	root
+219:4:224	𐤁𐤍𐤊𐤋𐤉	spelling	𐤁 𐤍𐤊𐤋 𐤉	H5230	root
 219:4:225	𐤅𐤕𐤇𐤁𐤅𐤋𐤄	spelling	𐤅 𐤕𐤇𐤁𐤅𐤋𐤄 	H8458	matres
 219:4:227	𐤀𐤆𐤓𐤇𐤉	spelling	 𐤀𐤆𐤓𐤇 𐤉	H249	root
 219:4:229	𐤕𐤊𐤍𐤏	spelling	[𐤕] 𐤊𐤍𐤏 	H3665	root
 219:4:233	𐤅𐤄𐤆𐤏𐤉𐤒𐤅	spelling	𐤅+[𐤄] 𐤆𐤏𐤉𐤒 𐤅	H2199	matres
 219:4:242	𐤄𐤍𐤓𐤑𐤇𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤑𐤇 𐤉𐤌	H7523	root
+219:4:243	𐤕𐤏𐤕𐤅𐤏𐤉	spelling	 𐤕𐤏𐤕𐤅𐤏 𐤉	H8595	matres
 219:4:244	𐤍𐤁𐤑𐤓	spelling	[𐤍] 𐤁𐤑𐤓 	H1219	root
-219:4:244	𐤄𐤁𐤄𐤉𐤋	english	[𐤄] 𐤁𐤄𐤉𐤋 	H926	matres
+219:4:244	𐤄𐤁𐤄𐤉𐤋	spelling	[𐤄] 𐤁𐤄𐤉𐤋 	H926	matres
 219:4:248	𐤋𐤄𐤊𐤍𐤏	spelling	𐤋+[𐤄] 𐤊𐤍𐤏 	H3665	root
 219:4:249	𐤍𐤕𐤌𐤊𐤓	english	[𐤍𐤕] 𐤌𐤊𐤓 	H4376	root
 219:4:253	𐤍𐤁𐤑𐤓	spelling	[𐤍] 𐤁𐤑𐤓 	H1219	root
@@ -3151,6 +3826,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:4:368	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
 219:4:370	𐤉𐤎𐤂𐤉𐤓	spelling	[𐤉] 𐤎𐤂𐤉𐤓 	H5462	matres
 219:4:370	𐤋𐤑𐤁𐤀𐤅𐤕𐤉𐤍𐤅	english	𐤋 𐤑𐤁𐤀𐤅𐤕 𐤉+𐤍𐤅	H6635	form
+219:4:370	𐤅𐤎𐤊𐤍𐤄	spelling	𐤅 𐤎𐤊𐤍 𐤄	H5532	root
 219:4:372	𐤉𐤇𐤔𐤅𐤁	spelling	[𐤉] 𐤇𐤔𐤅𐤁 	H2803	matres
 219:4:372	𐤍𐤉𐤈𐤉𐤁	english	[𐤍] 𐤉𐤈𐤉𐤁 	H3190	matres
 219:4:373	𐤊𐤇𐤁𐤓𐤉𐤄𐤌	english	𐤊 𐤇𐤁𐤓𐤉𐤄 𐤌	H2250	matres
@@ -3205,7 +3881,6 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:4:534	𐤋𐤍𐤄𐤋	spelling	𐤋 𐤍𐤄𐤋 	H5095	root
 219:4:536	𐤄𐤌𐤊𐤓𐤎𐤌	english	𐤄+[𐤌] 𐤊𐤓𐤎𐤌 	H3765	root
 219:4:538	𐤅𐤋𐤄𐤕𐤓𐤀𐤅𐤕	english	𐤅+𐤋+[𐤄𐤕] 𐤓𐤀𐤅𐤕 	H7200	form
-219:4:547	𐤄𐤕𐤂𐤁𐤓	spelling	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 219:4:549	𐤅𐤑𐤁𐤀𐤅𐤕𐤉𐤅	english	𐤅 𐤑𐤁𐤀𐤅𐤕 𐤉+𐤅	H6635	form
 219:4:556	𐤅𐤄𐤓𐤃𐤉𐤐	english	𐤅+[𐤄] 𐤓𐤃𐤉𐤐 	H7291	matres
 219:4:562	𐤄𐤕𐤂𐤅𐤋𐤋𐤅	spelling	[𐤄𐤕] 𐤂𐤅𐤋𐤋 𐤅	H1556	matres
@@ -3236,7 +3911,8 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:4:615	𐤄𐤍𐤌𐤋	spelling	[𐤄] 𐤍𐤌𐤋 	H5243	root
 219:4:615	𐤄𐤍𐤌𐤋	spelling	[𐤄] 𐤍𐤌𐤋 	H5243	root
 219:4:624	𐤅𐤋𐤀𐤅𐤄𐤁𐤉𐤅	spelling	𐤅+𐤋 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
-219:4:628	𐤍𐤑𐤃𐤒	english	[𐤍] 𐤑𐤃𐤒 	H6663	root
+219:4:626	𐤅𐤋𐤄𐤕𐤉𐤓	spelling	𐤅+𐤋+𐤄 𐤕𐤉𐤓 	H8449	matres
+219:4:628	𐤍𐤑𐤃𐤒	spelling	[𐤍] 𐤑𐤃𐤒 	H6663	root
 219:4:628	𐤍𐤀𐤎𐤓	spelling	[𐤍] 𐤀𐤎𐤓 	H631	root
 219:4:628	𐤍𐤀𐤎𐤓	spelling	[𐤍] 𐤀𐤎𐤓 	H631	root
 219:4:631	𐤌𐤋𐤍𐤎𐤅𐤏	english	𐤌+𐤋 𐤍𐤎𐤅𐤏 	H5265	matres
@@ -3284,7 +3960,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:5:80	𐤄𐤌𐤃𐤁𐤉𐤒𐤉𐤌	english	𐤄+[𐤌] 𐤃𐤁𐤉𐤒 𐤉𐤌	H1692	matres
 219:5:82	𐤅𐤄𐤕𐤍𐤐𐤋	spelling	𐤅+[𐤄𐤕] 𐤍𐤐𐤋 	H5307	root
 219:5:87	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
-219:5:88	𐤉𐤎𐤅𐤂	english	[𐤉] 𐤎𐤅𐤂 	H5472	root
+219:5:88	𐤉𐤎𐤅𐤂	spelling	[𐤉] 𐤎𐤅𐤂 	H5472	root
 219:5:89	𐤅𐤄𐤃𐤐	english	𐤅 𐤄𐤃𐤐 	H1920	root
 219:5:90	𐤄𐤕𐤍𐤐𐤋	spelling	[𐤄𐤕] 𐤍𐤐𐤋 	H5307	root
 219:5:94	𐤄𐤕𐤍𐤐𐤋𐤅	spelling	[𐤄𐤕] 𐤍𐤐𐤋 𐤅	H5307	root
@@ -3307,7 +3983,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:5:152	𐤋𐤇𐤅𐤋𐤋	english	𐤋 𐤇𐤅𐤋𐤋 	H2490	matres
 219:5:152	𐤅𐤋𐤒𐤔𐤅𐤓	spelling	𐤅+𐤋 𐤒𐤔𐤅𐤓 	H7194	matres
 219:5:153	𐤍𐤁𐤑𐤓	spelling	[𐤍] 𐤁𐤑𐤓 	H1219	root
-219:5:158	𐤍𐤇𐤋𐤒𐤄	english	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
+219:5:158	𐤍𐤇𐤋𐤒𐤄	spelling	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
 219:5:159	𐤁𐤕𐤊𐤅𐤍𐤕𐤄	english	𐤁 𐤕𐤊𐤅𐤍 𐤕+𐤄	H3559	form
 219:5:165	𐤂𐤁𐤅𐤄𐤉𐤌	spelling	 𐤂𐤁𐤅𐤄 𐤉𐤌	H1364	matres
 219:5:165	𐤂𐤁𐤅𐤄𐤉𐤌	spelling	 𐤂𐤁𐤅𐤄 𐤉𐤌	H1364	matres
@@ -3334,6 +4010,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:5:233	𐤍𐤓𐤒𐤌	english	[𐤍] 𐤓𐤒𐤌 	H7551	root
 219:5:239	𐤉𐤑𐤍𐤇	english	[𐤉] 𐤑𐤍𐤇 	H6795	root
 219:5:239	𐤉𐤍𐤎𐤄	spelling	[𐤉] 𐤍𐤎𐤄 	H5254	root
+219:5:241	𐤍𐤇𐤋𐤒𐤄	spelling	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
 219:5:242	𐤂𐤁𐤅𐤄𐤉𐤌	spelling	 𐤂𐤁𐤅𐤄 𐤉𐤌	H1364	matres
 219:5:244	𐤉𐤐𐤓𐤅𐤑	english	[𐤉] 𐤐𐤓𐤅𐤑 	H6555	matres
 219:5:247	𐤉𐤎𐤐𐤉𐤒𐤅	spelling	[𐤉] 𐤎𐤐𐤉𐤒 𐤅	H5606	matres
@@ -3397,14 +4074,14 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:5:381	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
 219:5:383	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
 219:5:389	𐤍𐤔𐤋𐤇𐤅	spelling	[𐤍] 𐤔𐤋𐤇 𐤅	H7971	root
-219:5:395	𐤏𐤁𐤃𐤅𐤕𐤍𐤅	english	 𐤏𐤁𐤃𐤅𐤕 𐤍𐤅	H5659	root
+219:5:395	𐤏𐤁𐤃𐤅𐤕𐤍𐤅	spelling	 𐤏𐤁𐤃𐤅𐤕 𐤍𐤅	H5659	root
 219:5:396	𐤓𐤀𐤅𐤉𐤉𐤌	spelling	 𐤓𐤀𐤅𐤉𐤉 𐤌	H7210	matres
 219:5:397	𐤅𐤕𐤊𐤅𐤍𐤕𐤌	spelling	𐤅+[𐤕] 𐤊𐤅𐤍 𐤕+𐤌	H3559	root
 219:5:406	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
 219:5:406	𐤉𐤇𐤓𐤉𐤁𐤅	english	[𐤉] 𐤇𐤓𐤉𐤁 𐤅	H2717	matres
 219:5:408	𐤓𐤀𐤅𐤉𐤉𐤌	spelling	 𐤓𐤀𐤅𐤉𐤉 𐤌	H7210	matres
 219:5:413	𐤕𐤏𐤋𐤅𐤌𐤄	english	[𐤕] 𐤏𐤋𐤅𐤌 𐤄	H5956	matres
-219:5:415	𐤕𐤓𐤑𐤅	english	[𐤕] 𐤓𐤑𐤅 	H7521	form
+219:5:415	𐤕𐤓𐤑𐤅	spelling	[𐤕] 𐤓𐤑𐤅 	H7521	form
 219:5:418	𐤕𐤌𐤅𐤍𐤅𐤕	spelling	 𐤕𐤌𐤅𐤍 𐤅𐤕	H8486	matres
 219:5:420	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
 219:5:423	𐤍𐤔𐤇𐤈	spelling	[𐤍] 𐤔𐤇𐤈 	H7819	root
@@ -3447,7 +4124,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:5:512	𐤅𐤋𐤌𐤔𐤐𐤇𐤅𐤕𐤉𐤅	english	 𐤅𐤋𐤌𐤔𐤐𐤇𐤅𐤕 𐤉+𐤅	H4940	form
 219:5:516	𐤌𐤊𐤎𐤉𐤄𐤌	english	 𐤌𐤊𐤎𐤉𐤄 𐤌	H4372	matres
 219:5:516	𐤄𐤌𐤕𐤏𐤋𐤐𐤉𐤌	english	𐤄+[𐤌𐤕] 𐤏𐤋𐤐 𐤉𐤌	H5968	root
-219:5:517	𐤋𐤄𐤕𐤏𐤈𐤐	english	𐤋+[𐤄𐤕] 𐤏𐤈𐤐 	H5848	root
+219:5:517	𐤋𐤄𐤕𐤏𐤈𐤐	spelling	𐤋+[𐤄𐤕] 𐤏𐤈𐤐 	H5848	root
 219:5:519	𐤄𐤌𐤎𐤓𐤉𐤇𐤅𐤕	english	𐤄+[𐤌] 𐤎𐤓𐤉𐤇 𐤅𐤕	H5628	matres
 219:5:522	𐤋𐤄𐤌𐤑𐤉𐤀	spelling	𐤋+[𐤄] 𐤌𐤑𐤉𐤀 	H4672	matres
 219:5:523	𐤎𐤅𐤋𐤋𐤅𐤕	spelling	 𐤎𐤅𐤋𐤋 𐤅𐤕	H5549	matres
@@ -3572,6 +4249,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:6:287	𐤉𐤄𐤐𐤅𐤊	spelling	[𐤉] 𐤄𐤐𐤅𐤊 	H2015	form
 219:6:292	𐤄𐤌𐤋𐤉𐤈𐤄	spelling	[𐤄] 𐤌𐤋𐤉𐤈 𐤄	H4422	matres
 219:6:305	𐤍𐤈𐤓𐤐𐤄	spelling	[𐤍] 𐤈𐤓𐤐 𐤄	H2963	root
+219:6:308	𐤍𐤀𐤋𐤌	spelling	[𐤍] 𐤀𐤋𐤌 	H481	root
 219:6:313	𐤁𐤐𐤕𐤓𐤅𐤍	spelling	𐤁 𐤐𐤕𐤓𐤅𐤍 	H6623	root
 219:6:324	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 219:6:327	𐤄𐤕𐤓𐤂𐤌𐤍	english	[𐤄] 𐤕𐤓𐤂𐤌 𐤍	H8638	root
@@ -3600,6 +4278,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:6:393	𐤄𐤕𐤂𐤁𐤓𐤅	spelling	[𐤄𐤕] 𐤂𐤁𐤓 𐤅	H1396	root
 219:6:395	𐤋𐤕𐤌𐤅𐤓𐤄	spelling	𐤋 𐤕𐤌𐤅𐤓𐤄 	H8545	root
 219:6:396	𐤅𐤋𐤄𐤃𐤅𐤐	spelling	𐤅+𐤋 𐤄𐤃𐤅𐤐 	H1920	matres
+219:6:398	𐤕𐤏𐤕𐤅𐤏𐤉	spelling	 𐤕𐤏𐤕𐤅𐤏 𐤉	H8595	matres
 219:6:400	𐤍𐤁𐤑𐤓	spelling	[𐤍] 𐤁𐤑𐤓 	H1219	root
 219:6:400	𐤕𐤀𐤓𐤕𐤉	spelling	 𐤕𐤀𐤓 𐤕+𐤉	H8389	root
 219:6:405	𐤋𐤄𐤓𐤅𐤎	spelling	𐤋 𐤄𐤓𐤅𐤎 	H2040	matres
@@ -3657,6 +4336,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:7:143	𐤋𐤌𐤓𐤅𐤌𐤉𐤄𐤍	english	𐤋+[𐤌] 𐤓𐤅𐤌𐤉𐤄 𐤍	H7411	matres
 219:7:144	𐤄𐤁𐤅𐤏𐤓	spelling	[𐤄] 𐤁𐤅𐤏𐤓 	H1197	matres
 219:7:147	𐤄𐤑𐤅𐤏𐤍𐤉𐤌	english	[𐤄] 𐤑𐤅𐤏𐤍 𐤉𐤌	H6813	matres
+219:7:149	𐤄𐤂𐤆𐤏	spelling	𐤄 𐤂𐤆𐤏 	H1503	root
 219:7:153	𐤄𐤕𐤄𐤋𐤅𐤊𐤄	spelling	[𐤄𐤕] 𐤄𐤋𐤅𐤊 𐤄	H1980	form
 219:7:154	𐤅𐤎𐤇𐤁𐤅	english	𐤅 𐤎𐤇𐤁 𐤅	H5498	root
 219:7:157	𐤇𐤂𐤂𐤄	english	 𐤇𐤂𐤂 𐤄	H2287	root
@@ -3705,7 +4385,6 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 219:7:302	𐤋𐤌𐤑𐤅𐤅𐤕𐤉𐤄	english	𐤋 𐤌𐤑𐤅𐤅𐤕 𐤉+𐤄	H4695	matres
 219:7:311	𐤕𐤇𐤆𐤉𐤒	spelling	[𐤕] 𐤇𐤆𐤉𐤒 	H2388	matres
 219:7:312	𐤌𐤒𐤁𐤉𐤋𐤉𐤌	english	𐤌 𐤒𐤁𐤉𐤋 𐤉𐤌	H6905	matres
-219:7:321	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
 219:7:324	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
 219:7:328	𐤅𐤋𐤄𐤓𐤉𐤎𐤅𐤕	english	𐤅+𐤋 𐤄𐤓𐤉𐤎𐤅𐤕 	H2035	root
 219:7:334	𐤍𐤂𐤌𐤅𐤋	spelling	[𐤍] 𐤂𐤌𐤅𐤋 	H1580	form
@@ -3796,17 +4475,17 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:1:34	𐤌𐤎𐤌𐤍𐤕	spelling	[𐤌] 𐤎𐤌𐤍 𐤕	H5567	root
 220:1:36	𐤌𐤎𐤌𐤍𐤕	spelling	[𐤌] 𐤎𐤌𐤍 𐤕	H5567	root
 220:1:37	𐤄𐤊𐤍𐤉𐤎	spelling	[𐤄] 𐤊𐤍𐤉𐤎 	H3664	matres
-220:1:38	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:38	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:38	𐤌𐤎𐤌𐤍𐤕	spelling	[𐤌] 𐤎𐤌𐤍 𐤕	H5567	root
-220:1:39	𐤐𐤓𐤅𐤔𐤅	english	 𐤐𐤓𐤅𐤔 𐤅	H6566	matres
+220:1:39	𐤐𐤓𐤅𐤔𐤅	spelling	 𐤐𐤓𐤅𐤔 𐤅	H6571	matres
 220:1:39	𐤄𐤍𐤅𐤁𐤏	english	[𐤄] 𐤍𐤅𐤁𐤏 	H5042	matres
-220:1:39	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:39	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:40	𐤋𐤈𐤏𐤅𐤌	spelling	𐤋 𐤈𐤏𐤅𐤌 	H2942	matres
 220:1:42	𐤋𐤈𐤏𐤅𐤌	spelling	𐤋 𐤈𐤏𐤅𐤌 	H2942	matres
 220:1:43	𐤅𐤁𐤄𐤕𐤁𐤉𐤔𐤌	english	𐤅+𐤁+[𐤄𐤕] 𐤁𐤉𐤔 𐤌	H954	matres
 220:1:44	𐤅𐤁𐤇𐤐𐤅𐤕𐤌	english	𐤅+𐤁 𐤇𐤐𐤅 𐤕+𐤌	H2645	form
 220:1:45	𐤄𐤕𐤍𐤄𐤂𐤅𐤕𐤅	english	[𐤄𐤕] 𐤍𐤄𐤂 𐤅𐤕+𐤅	H5090	root
-220:1:45	𐤄𐤕𐤏𐤍𐤂	english	[𐤄𐤕] 𐤏𐤍𐤂 	H6026	root
+220:1:45	𐤄𐤕𐤏𐤍𐤂	spelling	[𐤄𐤕] 𐤏𐤍𐤂 	H6026	root
 220:1:46	𐤄𐤔𐤂𐤇𐤕𐤉	spelling	[𐤄] 𐤔𐤂𐤇 𐤕+𐤉	H7688	root
 220:1:46	𐤒𐤅𐤐𐤑𐤕	english	 𐤒𐤅𐤐𐤑 𐤕	H7092	matres
 220:1:48	𐤒𐤋𐤒𐤋𐤕𐤅	english	 𐤒𐤋𐤒𐤋 𐤕+𐤅	H7043	form
@@ -3840,7 +4519,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:1:72	𐤄𐤌𐤔𐤉𐤊𐤅	spelling	[𐤄] 𐤌𐤔𐤉𐤊 𐤅	H4900	matres
 220:1:72	𐤔𐤒𐤉𐤃𐤄	spelling	 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
 220:1:74	𐤄𐤏𐤋𐤉𐤋𐤅𐤕	spelling	𐤄 𐤏𐤋𐤉𐤋 𐤅𐤕	H5948	root
-220:1:74	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:74	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:75	𐤅𐤋𐤁𐤓𐤅𐤀	english	𐤅+𐤋 𐤁𐤓𐤅𐤀 	H1254	matres
 220:1:76	𐤕𐤇𐤁𐤅𐤋𐤄	spelling	[𐤕] 𐤇𐤁𐤅𐤋 𐤄	H2254	matres
 220:1:77	𐤍𐤊𐤍𐤎	spelling	[𐤍] 𐤊𐤍𐤎 	H3664	root
@@ -3848,6 +4527,8 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:1:81	𐤊𐤇𐤅𐤃𐤔	english	𐤊 𐤇𐤅𐤃𐤔 	H2320	matres
 220:1:81	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
 220:1:81	𐤄𐤍𐤆𐤊𐤓	spelling	𐤄+[𐤍] 𐤆𐤊𐤓 	H2142	root
+220:1:82	𐤍𐤓𐤔𐤌	spelling	[𐤍] 𐤓𐤔𐤌 	H7559	root
+220:1:85	𐤍𐤓𐤔𐤌	spelling	[𐤍] 𐤓𐤔𐤌 	H7559	root
 220:1:88	𐤕𐤕𐤇𐤔𐤁	english	[𐤕𐤕] 𐤇𐤔𐤁 	H2803	root
 220:1:90	𐤔𐤁𐤇𐤅𐤃𐤔	english	𐤔+𐤁 𐤇𐤅𐤃𐤔 	H2320	matres
 220:1:92	𐤅𐤇𐤂𐤂	spelling	𐤅 𐤇𐤂𐤂 	H2287	root
@@ -3865,13 +4546,14 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:1:101	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
 220:1:101	𐤋𐤄𐤏𐤍𐤉𐤔	spelling	𐤋+[𐤄] 𐤏𐤍𐤉𐤔 	H6064	matres
 220:1:101	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
-220:1:102	𐤕𐤓𐤑𐤅	english	[𐤕] 𐤓𐤑𐤅 	H7323	form
+220:1:102	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+220:1:102	𐤕𐤓𐤑𐤅	spelling	[𐤕] 𐤓𐤑𐤅 	H7521	form
 220:1:105	𐤁𐤄𐤔𐤅𐤅𐤕𐤅	english	𐤁+[𐤄] 𐤔𐤅𐤅𐤕 𐤅	H7896	matres
 220:1:105	𐤒𐤉𐤅𐤌𐤍𐤅	english	 𐤒𐤉𐤅𐤌 𐤍𐤅	H6965	matres
 220:1:105	𐤀𐤅𐤃𐤅𐤕𐤌	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤌	H182	root
 220:1:105	𐤉𐤇𐤔𐤅𐤁	spelling	[𐤉] 𐤇𐤔𐤅𐤁 	H2803	matres
 220:1:106	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
-220:1:107	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:107	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:108	𐤉𐤇𐤔𐤅𐤁	spelling	[𐤉] 𐤇𐤔𐤅𐤁 	H2803	matres
 220:1:110	𐤋𐤄𐤕𐤉𐤔𐤁𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤉𐤔𐤁 𐤅𐤕	H3427	root
 220:1:110	𐤐𐤉𐤓𐤅𐤕𐤉𐤄	spelling	 𐤐𐤉𐤓𐤅𐤕 𐤉+𐤄	H6578	matres
@@ -3889,22 +4571,22 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:1:120	𐤍𐤕𐤉𐤔𐤁𐤄	english	[𐤍𐤕] 𐤉𐤔𐤁 𐤄	H3427	root
 220:1:121	𐤌𐤉𐤎𐤃𐤉𐤄𐤌	english	 𐤌𐤉𐤎𐤃𐤉𐤄 𐤌	H4328	matres
 220:1:121	𐤄𐤇𐤋𐤉𐤐𐤅	spelling	[𐤄] 𐤇𐤋𐤉𐤐 𐤅	H2498	matres
-220:1:121	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:121	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:121	𐤄𐤂𐤅𐤓𐤌𐤉𐤌	spelling	𐤄 𐤂𐤅𐤓𐤌𐤉 𐤌	H1636	matres
 220:1:122	𐤋𐤄𐤕𐤉𐤔𐤁	spelling	𐤋+[𐤄𐤕] 𐤉𐤔𐤁 	H3427	root
 220:1:122	𐤂𐤃𐤉𐤓𐤄	english	 𐤂𐤃𐤉𐤓 𐤄	H1446	matres
-220:1:123	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:123	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:123	𐤂𐤅𐤌𐤓𐤉𐤌	english	 𐤂𐤅𐤌𐤓 𐤉𐤌	H1586	matres
 220:1:123	𐤌𐤂𐤅𐤌𐤓	english	𐤌 𐤂𐤅𐤌𐤓 	H1586	matres
-220:1:124	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
-220:1:124	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:124	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
+220:1:124	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:124	𐤉𐤅𐤍𐤉𐤄	english	 𐤉𐤅𐤍𐤉 𐤄	H3125	root
 220:1:125	𐤅𐤄𐤌𐤎𐤊𐤉𐤍𐤉𐤌	english	𐤅+𐤄+[𐤌] 𐤎𐤊𐤉𐤍 𐤉𐤌	H5532	matres
 220:1:125	𐤅𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤅 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
-220:1:126	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:126	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:126	𐤌𐤓𐤉𐤐𐤕	english	𐤌 𐤓𐤉𐤐𐤕 	H7384	root
 220:1:126	𐤄𐤓𐤉𐤐𐤕𐤉𐤌	english	𐤄 𐤓𐤉𐤐𐤕 𐤉𐤌	H7384	root
-220:1:126	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:126	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:127	𐤄𐤀𐤉𐤀𐤅𐤋𐤉𐤌	english	𐤄+[𐤀] 𐤉𐤀𐤅𐤋 𐤉𐤌	H2974	matres
 220:1:127	𐤁𐤄𐤇𐤋𐤉𐤐𐤌	english	𐤁+[𐤄] 𐤇𐤋𐤉𐤐 𐤌	H2498	matres
 220:1:128	𐤅𐤓𐤅𐤁	spelling	𐤅 𐤓𐤅𐤁 	H7378	matres
@@ -3916,20 +4598,20 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:1:129	𐤍𐤅𐤀𐤉	english	 𐤍𐤅𐤀 𐤉	H5106	root
 220:1:129	𐤍𐤌𐤔𐤊𐤕	spelling	[𐤍] 𐤌𐤔𐤊 𐤕	H4900	root
 220:1:130	𐤍𐤕𐤇𐤋𐤐𐤅	english	[𐤍𐤕] 𐤇𐤋𐤐 𐤅	H2498	root
-220:1:133	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:133	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:133	𐤋𐤉𐤁𐤉𐤅𐤎	english	𐤋 𐤉𐤁𐤉𐤅𐤎 	H2982	matres
 220:1:134	𐤄𐤇𐤅𐤉𐤋𐤉𐤉𐤌	english	𐤄 𐤇𐤅𐤉𐤋𐤉𐤉 𐤌	H2483	matres
-220:1:134	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:134	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:135	𐤅𐤄𐤍𐤇𐤉𐤋	spelling	𐤅+[𐤄] 𐤍𐤇𐤉𐤋 	H5157	matres
-220:1:137	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:137	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:137	𐤀𐤅𐤃𐤅𐤕𐤉𐤄	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤄	H182	root
-220:1:138	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
-220:1:138	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	[𐤕] 𐤅𐤔𐤁𐤉𐤄 	H7725	form
+220:1:138	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
+220:1:138	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	 𐤕𐤅𐤔𐤁 𐤉+𐤄	H8453	root
 220:1:139	𐤀𐤅𐤃𐤅𐤕𐤌	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤌	H182	root
 220:1:140	𐤅𐤁𐤄𐤕𐤁𐤔𐤋	english	𐤅+𐤁+[𐤄𐤕] 𐤁𐤔𐤋 	H1310	root
 220:1:142	𐤑𐤀𐤑𐤀𐤉𐤅	english	 𐤑𐤀𐤑𐤀 𐤉+𐤅	H6631	root
 220:1:142	𐤀𐤅𐤃𐤅𐤕𐤌	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤌	H182	root
-220:1:144	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:144	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:154	𐤅𐤄𐤍𐤇𐤉𐤋	spelling	𐤅+[𐤄] 𐤍𐤇𐤉𐤋 	H5157	matres
 220:1:159	𐤀𐤅𐤃𐤅𐤕𐤉𐤅	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤅	H182	root
 220:1:160	𐤅𐤄𐤕𐤉𐤔𐤁	english	𐤅+[𐤄𐤕] 𐤉𐤔𐤁 	H3427	root
@@ -3939,12 +4621,12 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:1:163	𐤀𐤅𐤃𐤅𐤕𐤉𐤄	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤄	H182	root
 220:1:164	𐤅𐤌𐤄𐤅𐤌𐤅𐤕	english	𐤅+[𐤌] 𐤄𐤅𐤌 𐤅𐤕	H1949	root
 220:1:166	𐤍𐤊𐤍𐤎	spelling	[𐤍] 𐤊𐤍𐤎 	H3664	root
-220:1:168	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:168	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:170	𐤌𐤑𐤅𐤏𐤍	english	𐤌 𐤑𐤅𐤏𐤍 	H6814	matres
 220:1:171	𐤅𐤄𐤍𐤅𐤏𐤓	english	𐤅+𐤄 𐤍𐤅𐤏𐤓 	H5271	matres
 220:1:173	𐤔𐤄𐤕𐤋𐤒𐤇	spelling	𐤔+[𐤄𐤕] 𐤋𐤒𐤇 	H3947	root
 220:1:173	𐤅𐤄𐤌𐤔𐤉𐤊𐤅	spelling	𐤅+[𐤄] 𐤌𐤔𐤉𐤊 𐤅	H4900	matres
-220:1:174	𐤅𐤉𐤊𐤍𐤉𐤏𐤅	english	𐤅+[𐤉] 𐤊𐤍𐤉𐤏 𐤅	H3665	matres
+220:1:174	𐤅𐤉𐤊𐤍𐤉𐤏𐤅	spelling	𐤅+[𐤉] 𐤊𐤍𐤉𐤏 𐤅	H3665	matres
 220:1:175	𐤄𐤎𐤃𐤅𐤌𐤉𐤌	english	𐤄 𐤎𐤃𐤅𐤌 𐤉𐤌	H5467	matres
 220:1:175	𐤄𐤎𐤃𐤅𐤌𐤉𐤌	english	𐤄 𐤎𐤃𐤅𐤌 𐤉𐤌	H5467	matres
 220:1:176	𐤄𐤎𐤃𐤅𐤌𐤉𐤌	english	𐤄 𐤎𐤃𐤅𐤌 𐤉𐤌	H5467	matres
@@ -3977,7 +4659,8 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:1:203	𐤁𐤍𐤎𐤉𐤏𐤅𐤕𐤉	english	𐤁 𐤍𐤎𐤉𐤏 𐤅𐤕+𐤉	H5265	matres
 220:1:204	𐤁𐤍𐤅𐤕𐤉𐤅	spelling	 𐤁𐤍𐤅𐤕 𐤉+𐤅	H1323	form
 220:1:205	𐤁𐤍𐤅𐤕𐤉𐤅	spelling	 𐤁𐤍𐤅𐤕 𐤉+𐤅	H1323	form
-220:1:206	𐤄𐤂𐤆𐤏	english	𐤄 𐤂𐤆𐤏 	H1503	root
+220:1:205	𐤄𐤂𐤆𐤏	spelling	𐤄 𐤂𐤆𐤏 	H1503	root
+220:1:206	𐤄𐤂𐤆𐤏	spelling	𐤄 𐤂𐤆𐤏 	H1503	root
 220:1:206	𐤌𐤎𐤌𐤍	english	[𐤌] 𐤎𐤌𐤍 	H5567	root
 220:1:208	𐤍𐤕𐤉𐤀𐤔𐤅	english	[𐤍𐤕] 𐤉𐤀𐤔 𐤅	H2976	root
 220:1:208	𐤅𐤔𐤄𐤅𐤁𐤈𐤇	english	𐤅+𐤔+𐤄 𐤅𐤁𐤈𐤇 	H982	form
@@ -4054,7 +4737,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:1:283	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
 220:1:284	𐤉𐤓𐤊𐤅𐤔	english	[𐤉] 𐤓𐤊𐤅𐤔 	H7408	matres
 220:1:284	𐤔𐤌𐤎𐤌𐤍	spelling	𐤔+[𐤌] 𐤎𐤌𐤍 	H5567	root
-220:1:284	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:284	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:285	𐤁𐤐𐤓𐤁𐤓𐤉	english	𐤁 𐤐𐤓𐤁𐤓 𐤉	H6503	root
 220:1:285	𐤔𐤍𐤊𐤍𐤎	english	𐤔+[𐤍] 𐤊𐤍𐤎 	H3664	root
 220:1:286	𐤔𐤏𐤃𐤉𐤉𐤍	spelling	𐤔 𐤏𐤃𐤉 𐤉+𐤍	H5704	form
@@ -4070,12 +4753,14 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:1:300	𐤄𐤍𐤔𐤅𐤀𐤉𐤍	spelling	[𐤄] 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
 220:1:301	𐤄𐤊𐤍𐤉𐤎	spelling	[𐤄] 𐤊𐤍𐤉𐤎 	H3664	matres
 220:1:302	𐤄𐤍𐤔𐤅𐤀𐤉𐤍	spelling	[𐤄] 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
-220:1:305	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:1:305	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:1:305	𐤕𐤇𐤁𐤅𐤋𐤄	spelling	[𐤕] 𐤇𐤁𐤅𐤋 𐤄	H2254	matres
 220:1:306	𐤔𐤀𐤐𐤔𐤓	english	𐤔+[𐤀] 𐤐𐤔𐤓 	H6590	root
 220:1:306	𐤔𐤀𐤐𐤔𐤓	english	𐤔+[𐤀] 𐤐𐤔𐤓 	H6590	root
 220:1:307	𐤄𐤔𐤁𐤉𐤇𐤄	english	[𐤄] 𐤔𐤁𐤉𐤇 𐤄	H7623	matres
 220:1:308	𐤔𐤌𐤎𐤌𐤍	spelling	𐤔+[𐤌] 𐤎𐤌𐤍 	H5567	root
+220:1:308	𐤐𐤓𐤅𐤔𐤅	spelling	 𐤐𐤓𐤅𐤔 𐤅	H6571	matres
+220:1:308	𐤐𐤓𐤅𐤔𐤅	spelling	 𐤐𐤓𐤅𐤔 𐤅	H6571	matres
 220:1:310	𐤋𐤉𐤑𐤉𐤀𐤄	spelling	𐤋 𐤉𐤑𐤉𐤀 𐤄	H3329	root
 220:1:311	𐤉𐤅𐤃𐤁𐤒𐤅	english	[𐤉] 𐤅𐤃𐤁𐤒𐤅 	H1692	form
 220:1:312	𐤋𐤃𐤋𐤅𐤒	spelling	𐤋 𐤃𐤋𐤅𐤒 	H1814	matres
@@ -4140,11 +4825,11 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:2:22	𐤌𐤕𐤅𐤏𐤁	english	[𐤌] 𐤕𐤅𐤏𐤁 	H8581	matres
 220:2:22	𐤉𐤂𐤓𐤅𐤌	spelling	[𐤉] 𐤂𐤓𐤅 𐤌	H1481	form
 220:2:26	𐤋𐤍𐤈𐤅𐤓	english	𐤋 𐤍𐤈𐤅𐤓 	H5201	matres
-220:2:30	𐤄𐤕𐤂𐤁𐤓	spelling	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
+220:2:30	𐤄𐤕𐤂𐤁𐤓	english	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 220:2:31	𐤉𐤂𐤅𐤀𐤋𐤅	english	[𐤉] 𐤂𐤅𐤀𐤋 𐤅	H1350	form
 220:2:32	𐤅𐤉𐤉𐤏𐤑	spelling	𐤅+[𐤉] 𐤉𐤏𐤑 	H3289	root
 220:2:35	𐤅𐤋𐤋𐤊𐤋𐤊𐤄	english	𐤅+𐤋+𐤋 𐤊𐤋𐤊 𐤄	H3605	form
-220:2:36	𐤅𐤉𐤁𐤅𐤋𐤏	english	𐤅+[𐤉] 𐤁𐤅𐤋𐤏 	H1104	matres
+220:2:36	𐤅𐤉𐤁𐤅𐤋𐤏	spelling	𐤅+[𐤉] 𐤁𐤅𐤋𐤏 	H1104	matres
 220:2:37	𐤁𐤊𐤕𐤅𐤍𐤕	english	𐤁 𐤊𐤕𐤅𐤍𐤕 	H3801	matres
 220:2:37	𐤔𐤍𐤔𐤋𐤇	spelling	𐤔+[𐤍] 𐤔𐤋𐤇 	H7971	root
 220:2:38	𐤍𐤈𐤓𐤐	english	[𐤍] 𐤈𐤓𐤐 	H2963	root
@@ -4206,6 +4891,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:2:100	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
 220:2:101	𐤂𐤌𐤓𐤕𐤌	english	 𐤂𐤌𐤓 𐤕+𐤌	H1586	root
 220:2:101	𐤋𐤄𐤌𐤑𐤉𐤀	spelling	𐤋+[𐤄] 𐤌𐤑𐤉𐤀 	H4672	matres
+220:2:102	𐤁𐤕𐤅𐤀𐤓	spelling	𐤁 𐤕𐤅𐤀𐤓 	H8389	matres
 220:2:102	𐤍𐤁𐤃𐤋𐤉𐤌	spelling	[𐤍] 𐤁𐤃𐤋 𐤉𐤌	H914	root
 220:2:103	𐤏𐤍𐤉𐤍𐤉𐤍𐤅	english	 𐤏𐤍𐤉𐤍 𐤉+𐤍𐤅	H6045	root
 220:2:105	𐤉𐤇𐤔𐤅𐤁	spelling	[𐤉] 𐤇𐤔𐤅𐤁 	H2803	matres
@@ -4264,9 +4950,9 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:2:149	𐤉𐤒𐤑𐤓	spelling	[𐤉] 𐤒𐤑𐤓 	H7114	root
 220:2:151	𐤕𐤏𐤍𐤉𐤔𐤍𐤅	english	[𐤕] 𐤏𐤍𐤉𐤔 𐤍𐤅	H6064	matres
 220:2:151	𐤄𐤕𐤔𐤅𐤓𐤄	english	𐤄 𐤕𐤔𐤅𐤓𐤄 	H8670	root
-220:2:152	𐤁𐤕𐤅𐤀𐤓	english	𐤁 𐤕𐤅𐤀𐤓 	H8389	matres
+220:2:152	𐤁𐤕𐤅𐤀𐤓	spelling	𐤁 𐤕𐤅𐤀𐤓 	H8389	matres
 220:2:152	𐤉𐤒𐤉𐤉𐤌	english	[𐤉] 𐤒𐤉𐤉𐤌 	H6965	matres
-220:2:152	𐤁𐤕𐤅𐤀𐤓	english	𐤁 𐤕𐤅𐤀𐤓 	H8389	matres
+220:2:152	𐤁𐤕𐤅𐤀𐤓	spelling	𐤁 𐤕𐤅𐤀𐤓 	H8389	matres
 220:2:152	𐤉𐤎𐤁𐤅𐤋	spelling	[𐤉] 𐤎𐤁𐤅𐤋 	H5445	matres
 220:2:154	𐤕𐤎𐤋𐤇	spelling	[𐤕] 𐤎𐤋𐤇 	H5545	root
 220:2:155	𐤋𐤄𐤏𐤍𐤉𐤔	spelling	𐤋+[𐤄] 𐤏𐤍𐤉𐤔 	H6064	matres
@@ -4280,10 +4966,10 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:2:162	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
 220:2:162	𐤋𐤐𐤏𐤅𐤋𐤄	spelling	𐤋 𐤐𐤏𐤅𐤋𐤄 	H6468	matres
 220:2:163	𐤍𐤂𐤌𐤓𐤄	spelling	[𐤍] 𐤂𐤌𐤓 𐤄	H1584	root
-220:2:163	𐤕𐤕𐤏𐤑𐤁𐤅	english	[𐤕𐤕] 𐤏𐤑𐤁 𐤅	H6087	root
+220:2:163	𐤕𐤕𐤏𐤑𐤁𐤅	spelling	[𐤕𐤕] 𐤏𐤑𐤁 𐤅	H6087	root
 220:2:163	𐤆𐤌𐤌𐤕𐤌	english	 𐤆𐤌𐤌 𐤕+𐤌	H2161	root
 220:2:165	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
-220:2:168	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	𐤌 𐤐𐤅𐤀𐤓 𐤄	H6287	matres
+220:2:168	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	[𐤌] 𐤐𐤅𐤀𐤓 𐤄	H6286	matres
 220:2:170	𐤉𐤀𐤄𐤁𐤅𐤄	english	[𐤉] 𐤀𐤄𐤁𐤅 𐤄	H157	form
 220:2:170	𐤔𐤄𐤁𐤈𐤉𐤇	spelling	𐤔+𐤄 𐤁𐤈𐤉𐤇 	H983	matres
 220:2:173	𐤍𐤔𐤋𐤇𐤕	english	[𐤍] 𐤔𐤋𐤇 𐤕	H7971	root
@@ -4308,9 +4994,11 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:2:201	𐤁𐤊𐤋𐤋	english	𐤁 𐤊𐤋𐤋 	H3636	root
 220:2:202	𐤍𐤊𐤎𐤉𐤅	spelling	 𐤍𐤊𐤎 𐤉+𐤅	H5233	root
 220:2:203	𐤉𐤂𐤓𐤅𐤌	spelling	[𐤉] 𐤂𐤓𐤅 𐤌	H1481	form
+220:2:204	𐤄𐤂𐤆𐤏	spelling	𐤄 𐤂𐤆𐤏 	H1503	root
 220:2:204	𐤄𐤌𐤔𐤉𐤊𐤅	spelling	[𐤄] 𐤌𐤔𐤉𐤊 𐤅	H4900	matres
 220:2:204	𐤄𐤃𐤓𐤉𐤔𐤅𐤕	english	[𐤄] 𐤃𐤓𐤉𐤔 𐤅𐤕	H1875	matres
 220:2:205	𐤏𐤍𐤉𐤍𐤉𐤄𐤌	spelling	 𐤏𐤍𐤉𐤍𐤉𐤄 𐤌	H6055	matres
+220:2:205	𐤄𐤂𐤆𐤏	spelling	𐤄 𐤂𐤆𐤏 	H1503	root
 220:2:205	𐤉𐤄𐤐𐤅𐤊	spelling	[𐤉] 𐤄𐤐𐤅𐤊 	H2015	form
 220:2:206	𐤅𐤔𐤄𐤌𐤉𐤋𐤃𐤅𐤕	english	𐤅+𐤔+𐤄+[𐤌] 𐤉𐤋𐤃 𐤅𐤕	H3205	root
 220:2:210	𐤁𐤄𐤕𐤏𐤑𐤁	english	𐤁+[𐤄𐤕] 𐤏𐤑𐤁 	H6087	root
@@ -4325,6 +5013,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:2:220	𐤁𐤆𐤐𐤕	spelling	𐤁 𐤆𐤐𐤕 	H2203	root
 220:2:220	𐤌𐤋𐤄𐤕𐤐𐤓𐤑	english	𐤌+𐤋+[𐤄𐤕] 𐤐𐤓𐤑 	H6555	root
 220:2:221	𐤕𐤍𐤔𐤀	spelling	[𐤕] 𐤍𐤔𐤀 	H5375	root
+220:2:222	𐤌𐤕𐤍𐤊𐤋𐤉𐤌	spelling	[𐤌𐤕] 𐤍𐤊𐤋 𐤉𐤌	H5230	root
 220:2:222	𐤔𐤉𐤕𐤀𐤌𐤑𐤅	english	𐤔+[𐤉𐤕] 𐤀𐤌𐤑 𐤅	H553	root
 220:2:226	𐤔𐤕𐤅𐤁𐤀	english	𐤔+[𐤕] 𐤅𐤁𐤀 	H935	form
 220:2:226	𐤔𐤉𐤒𐤁𐤋	spelling	𐤔+[𐤉] 𐤒𐤁𐤋 	H6901	root
@@ -4346,7 +5035,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:2:245	𐤁𐤔𐤁𐤉𐤋	english	𐤁 𐤔𐤁𐤉𐤋 	H7635	root
 220:2:245	𐤉𐤍𐤔𐤅𐤐𐤉𐤌	english	 𐤉𐤍𐤔𐤅𐤐 𐤉𐤌	H3244	root
 220:2:247	𐤀𐤅𐤃𐤅𐤕𐤌	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤌	H182	root
-220:2:247	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:2:247	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:2:247	𐤄𐤆𐤅𐤇𐤋𐤉𐤌	english	[𐤄] 𐤆𐤅𐤇𐤋 𐤉𐤌	H2119	matres
 220:2:250	𐤎𐤅𐤋𐤋𐤅𐤕	spelling	 𐤎𐤅𐤋𐤋 𐤅𐤕	H5549	matres
 220:2:250	𐤋𐤄𐤕𐤐𐤓𐤑	english	𐤋+[𐤄𐤕] 𐤐𐤓𐤑 	H6555	root
@@ -4355,13 +5044,13 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:2:251	𐤋𐤄𐤕𐤂𐤓𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤂𐤓𐤅 𐤕	H1481	form
 220:2:252	𐤔𐤄𐤕𐤉𐤀𐤔𐤅	english	𐤔+[𐤄𐤕] 𐤉𐤀𐤔 𐤅	H2976	root
 220:2:252	𐤋𐤎𐤊𐤍𐤄	spelling	𐤋 𐤎𐤊𐤍 𐤄	H5532	root
-220:2:252	𐤄𐤕𐤂𐤁𐤓	spelling	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
+220:2:252	𐤄𐤕𐤂𐤁𐤓	english	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 220:2:253	𐤕𐤌𐤎𐤓	spelling	[𐤕] 𐤌𐤎𐤓 	H4560	root
 220:2:253	𐤄𐤍𐤔𐤅𐤀𐤉𐤍	spelling	[𐤄] 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
 220:2:254	𐤍𐤑𐤋𐤅	spelling	 𐤍𐤑𐤋 𐤅	H5337	root
 220:2:254	𐤍𐤕𐤌𐤋𐤀𐤅	english	[𐤍𐤕] 𐤌𐤋𐤀 𐤅	H4390	root
 220:2:255	𐤄𐤀𐤉𐤑𐤅	spelling	𐤄+[𐤀] 𐤉𐤑𐤅 	H6680	form
-220:2:258	𐤉𐤔𐤀𐤁𐤅	english	[𐤉] 𐤔𐤀𐤁 𐤅	H7579	root
+220:2:258	𐤉𐤔𐤀𐤁𐤅	spelling	[𐤉] 𐤔𐤀𐤁 𐤅	H7579	root
 220:2:261	𐤁𐤍𐤅𐤕𐤉𐤅	spelling	 𐤁𐤍𐤅𐤕 𐤉+𐤅	H1323	form
 220:2:261	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 220:2:262	𐤁𐤍𐤅𐤕𐤉𐤅	spelling	 𐤁𐤍𐤅𐤕 𐤉+𐤅	H1323	form
@@ -4411,7 +5100,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:2:321	𐤅𐤄𐤌𐤔𐤉𐤊𐤅	spelling	𐤅+[𐤄] 𐤌𐤔𐤉𐤊 𐤅	H4900	matres
 220:2:321	𐤋𐤃𐤋𐤅𐤒	spelling	𐤋 𐤃𐤋𐤅𐤒 	H1814	matres
 220:2:321	𐤁𐤔𐤁𐤉𐤋	english	𐤁 𐤔𐤁𐤉𐤋 	H7635	root
-220:2:321	𐤇𐤉𐤉𐤋𐤅𐤕	english	 𐤇𐤉𐤉𐤋 𐤅𐤕	H2428	matres
+220:2:321	𐤇𐤉𐤉𐤋𐤅𐤕	spelling	 𐤇𐤉𐤉𐤋 𐤅𐤕	H2428	matres
 220:2:321	𐤁𐤔𐤁𐤉𐤋	english	𐤁 𐤔𐤁𐤉𐤋 	H7635	root
 220:2:322	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
 220:2:323	𐤅𐤋𐤇𐤃𐤅𐤓	english	𐤅+𐤋 𐤇𐤃𐤅𐤓 	H2314	matres
@@ -4449,7 +5138,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:3:2	𐤔𐤍𐤇𐤐𐤓𐤅	english	𐤔+[𐤍] 𐤇𐤐𐤓 𐤅	H2658	root
 220:3:2	𐤓𐤀𐤅𐤉𐤉𐤌	spelling	 𐤓𐤀𐤅𐤉𐤉 𐤌	H7210	matres
 220:3:3	𐤄𐤌𐤌𐤅𐤔𐤊	english	𐤄+[𐤌] 𐤌𐤅𐤔 𐤊	H4185	root
-220:3:3	𐤅𐤌𐤇𐤅𐤎𐤓	english	𐤅 𐤌𐤇𐤅𐤎𐤓 	H4270	matres
+220:3:3	𐤅𐤌𐤇𐤅𐤎𐤓	spelling	𐤅 𐤌𐤇𐤅𐤎𐤓 	H4270	matres
 220:3:4	𐤋𐤄𐤎𐤐𐤉𐤒	spelling	𐤋+[𐤄] 𐤎𐤐𐤉𐤒 	H5606	matres
 220:3:4	𐤓𐤀𐤅𐤉𐤉𐤌	spelling	 𐤓𐤀𐤅𐤉𐤉 𐤌	H7210	matres
 220:3:5	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
@@ -4598,7 +5287,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:3:136	𐤄𐤀𐤓𐤅𐤊𐤅𐤕	english	𐤄 𐤀𐤓𐤅𐤊 𐤅𐤕	H753	matres
 220:3:139	𐤄𐤍𐤌𐤔𐤊	spelling	𐤄+[𐤍] 𐤌𐤔𐤊 	H4900	root
 220:3:142	𐤄𐤌𐤊𐤉𐤋𐤄	english	𐤄 𐤌𐤊𐤉𐤋𐤄 	H4357	matres
-220:3:144	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:3:144	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:3:145	𐤌𐤎𐤅𐤃𐤓𐤉𐤌	spelling	𐤌 𐤎𐤅𐤃𐤓 𐤉𐤌	H5468	matres
 220:3:146	𐤌𐤎𐤅𐤃𐤓𐤉𐤌	spelling	𐤌 𐤎𐤅𐤃𐤓 𐤉𐤌	H5468	matres
 220:3:146	𐤋𐤑𐤃𐤃𐤉𐤌	english	𐤋 𐤑𐤃𐤃 𐤉𐤌	H6657	root
@@ -4616,7 +5305,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:3:162	𐤄𐤉𐤅𐤅𐤍𐤉	english	𐤄 𐤉𐤅𐤅𐤍 𐤉	H3120	matres
 220:3:162	𐤌𐤎𐤅𐤃𐤓	spelling	𐤌 𐤎𐤅𐤃𐤓 	H5468	matres
 220:3:163	𐤌𐤓𐤅𐤒𐤌𐤕	english	𐤌 𐤓𐤅𐤒𐤌 𐤕	H7387	matres
-220:3:164	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:3:164	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:3:164	𐤄𐤌𐤒𐤁𐤉𐤋𐤅𐤕	english	𐤄+[𐤌] 𐤒𐤁𐤉𐤋 𐤅𐤕	H6901	matres
 220:3:165	𐤓𐤅𐤊𐤎𐤉𐤌	english	 𐤓𐤅𐤊𐤎 𐤉𐤌	H7406	matres
 220:3:167	𐤌𐤎𐤅𐤃𐤓𐤅𐤕	english	𐤌 𐤎𐤅𐤃𐤓 𐤅𐤕	H5468	matres
@@ -4640,7 +5329,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:3:179	𐤔𐤅𐤈𐤌𐤉𐤌	english	 𐤔𐤅𐤈𐤌 𐤉𐤌	H7852	matres
 220:3:179	𐤌𐤕𐤉𐤌𐤓𐤉𐤌	english	[𐤌𐤕] 𐤉𐤌𐤓 𐤉𐤌	H3235	root
 220:3:184	𐤋𐤎𐤌𐤍	english	𐤋 𐤎𐤌𐤍 	H5567	root
-220:3:186	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:3:186	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:3:186	𐤌𐤇𐤆𐤅𐤓	english	𐤌 𐤇𐤆𐤅𐤓 	H2387	matres
 220:3:186	𐤁𐤊𐤅𐤍𐤕	spelling	𐤁 𐤊𐤅𐤍 𐤕	H3559	root
 220:3:187	𐤍𐤓𐤀𐤉𐤕	english	[𐤍] 𐤓𐤀𐤉𐤕 	H7200	form
@@ -4670,7 +5359,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:3:208	𐤄𐤀𐤁𐤄𐤅𐤕𐤉	english	[𐤄] 𐤀𐤁𐤄 𐤅𐤕+𐤉	H14	root
 220:3:212	𐤌𐤕𐤍𐤄𐤂	spelling	[𐤌𐤕] 𐤍𐤄𐤂 	H5090	root
 220:3:213	𐤂𐤅𐤓𐤌𐤉𐤌	spelling	 𐤂𐤅𐤓𐤌 𐤉𐤌	H1634	matres
-220:3:213	𐤅𐤄𐤌𐤑𐤅𐤅𐤕	english	𐤅+𐤄 𐤌𐤑𐤅𐤅𐤕 	H4695	matres
+220:3:213	𐤅𐤄𐤌𐤑𐤅𐤅𐤕	spelling	𐤅+𐤄 𐤌𐤑𐤅𐤅𐤕 	H4695	matres
 220:3:214	𐤐𐤎𐤇𐤕𐤉	english	 𐤐𐤎𐤇 𐤕+𐤉	H6453	root
 220:3:215	𐤔𐤒𐤅𐤃𐤌	english	𐤔 𐤒𐤅𐤃𐤌 	H6925	matres
 220:3:216	𐤔𐤌𐤐𐤋𐤉𐤀	english	𐤔+𐤌 𐤐𐤋𐤉𐤀 	H6381	matres
@@ -4709,6 +5398,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:3:259	𐤍𐤐𐤓𐤉𐤔	spelling	[𐤍] 𐤐𐤓𐤉𐤔 	H6566	matres
 220:3:259	𐤍𐤁𐤀𐤓	spelling	[𐤍] 𐤁𐤀𐤓 	H874	root
 220:3:262	𐤁𐤈𐤅𐤌𐤀𐤄	english	𐤁 𐤈𐤅𐤌𐤀 𐤄	H2930	matres
+220:3:263	𐤄𐤐𐤓𐤉𐤔	spelling	𐤄 𐤐𐤓𐤉𐤔 	H6571	matres
 220:3:263	𐤍𐤈𐤄𐤓	english	[𐤍] 𐤈𐤄𐤓 	H2891	root
 220:3:264	𐤍𐤁𐤃𐤋𐤉𐤌	spelling	[𐤍] 𐤁𐤃𐤋 𐤉𐤌	H914	root
 220:3:264	𐤀𐤅𐤃𐤅𐤕𐤌	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤌	H182	root
@@ -4756,7 +5446,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:3:301	𐤉𐤏𐤑𐤅𐤓	spelling	[𐤉] 𐤏𐤑𐤅𐤓 	H6113	form
 220:3:301	𐤍𐤕𐤊𐤅𐤍𐤍	english	[𐤍𐤕] 𐤊𐤅𐤍 𐤍	H3559	root
 220:3:301	𐤋𐤐𐤏𐤅𐤋𐤄	spelling	𐤋 𐤐𐤏𐤅𐤋𐤄 	H6468	matres
-220:3:301	𐤉𐤂𐤅𐤓𐤔𐤅	spelling	[𐤉] 𐤂𐤅𐤓𐤔 𐤅	H1644	matres
+220:3:301	𐤉𐤂𐤅𐤓𐤔𐤅	english	[𐤉] 𐤂𐤅𐤓𐤔 𐤅	H1644	matres
 220:3:302	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
 220:3:307	𐤁𐤌𐤆𐤉𐤌𐤄	english	𐤁 𐤌𐤆𐤉𐤌𐤄 	H4209	matres
 220:3:308	𐤄𐤁𐤄𐤉𐤋𐤅	english	𐤄 𐤁𐤄𐤉𐤋𐤅 	H924	root
@@ -4788,7 +5478,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:4:6	𐤁𐤌𐤑𐤅𐤒𐤕𐤌	english	𐤁 𐤌𐤑𐤅𐤒 𐤕+𐤌	H4689	root
 220:4:10	𐤉𐤌𐤑𐤉𐤀	spelling	[𐤉] 𐤌𐤑𐤉𐤀 	H4672	matres
 220:4:11	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
-220:4:12	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:4:12	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:4:12	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
 220:4:13	𐤅𐤁𐤌𐤑𐤅𐤅𐤕𐤉𐤅	spelling	𐤅+𐤁 𐤌𐤑𐤅𐤅𐤕 𐤉+𐤅	H4695	matres
 220:4:14	𐤁𐤐𐤕𐤅𐤉𐤅	english	𐤁 𐤐𐤕𐤅𐤉 𐤅	H6613	matres
@@ -4796,7 +5486,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:4:19	𐤉𐤀𐤅𐤕	english	[𐤉] 𐤀𐤅𐤕 	H225	root
 220:4:19	𐤍𐤊𐤎𐤉𐤄𐤌	english	[𐤍] 𐤊𐤎𐤉𐤄 𐤌	H3680	matres
 220:4:20	𐤊𐤃𐤅𐤀𐤂	english	𐤊 𐤃𐤅𐤀𐤂 	H1672	matres
-220:4:21	𐤌𐤕𐤍𐤊𐤋𐤉𐤌	english	[𐤌𐤕] 𐤍𐤊𐤋 𐤉𐤌	H5230	root
+220:4:21	𐤌𐤕𐤍𐤊𐤋𐤉𐤌	spelling	[𐤌𐤕] 𐤍𐤊𐤋 𐤉𐤌	H5230	root
 220:4:21	𐤌𐤄𐤊𐤄𐤅𐤍𐤄	english	𐤌+𐤄 𐤊𐤄𐤅𐤍𐤄 	H3550	matres
 220:4:24	𐤋𐤄𐤉𐤐𐤊	english	𐤋 𐤄𐤉𐤐𐤊 	H2015	matres
 220:4:25	𐤓𐤀𐤅𐤉𐤉𐤌	spelling	 𐤓𐤀𐤅𐤉𐤉 𐤌	H7210	matres
@@ -4825,12 +5515,12 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:4:45	𐤔𐤌𐤑𐤅𐤒𐤕𐤍𐤅	english	𐤔 𐤌𐤑𐤅𐤒 𐤕+𐤍𐤅	H4689	root
 220:4:45	𐤋𐤌𐤆𐤅𐤍𐤍𐤅	spelling	𐤋 𐤌𐤆𐤅𐤍 𐤍𐤅	H4202	root
 220:4:45	𐤎𐤃𐤓𐤕	english	 𐤎𐤃𐤓 𐤕	H5468	root
-220:4:45	𐤅𐤇𐤅𐤒𐤄	english	𐤅 𐤇𐤅𐤒𐤄 	H2708	matres
+220:4:45	𐤅𐤇𐤅𐤒𐤄	spelling	𐤅 𐤇𐤅𐤒𐤄 	H2708	matres
 220:4:46	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
 220:4:46	𐤄𐤊𐤋𐤋	english	𐤄 𐤊𐤋𐤋 	H3636	root
 220:4:46	𐤐𐤒𐤅𐤃𐤕𐤊	english	 𐤐𐤒𐤅𐤃 𐤕+𐤊	H6490	root
 220:4:47	𐤌𐤕𐤍𐤄𐤋	spelling	[𐤌𐤕] 𐤍𐤄𐤋 	H5095	root
-220:4:47	𐤁𐤍𐤊𐤋𐤉	english	𐤁 𐤍𐤊𐤋 𐤉	H5230	root
+220:4:47	𐤁𐤍𐤊𐤋𐤉	spelling	𐤁 𐤍𐤊𐤋 𐤉	H5230	root
 220:4:48	𐤄𐤏𐤍𐤉𐤔𐤄	english	[𐤄] 𐤏𐤍𐤉𐤔 𐤄	H6064	matres
 220:4:49	𐤁𐤌𐤕𐤉𐤍𐤅𐤕	spelling	𐤁 𐤌𐤕𐤉𐤍 𐤅𐤕	H4976	matres
 220:4:50	𐤄𐤀𐤔𐤉𐤌𐤅𐤍𐤉	spelling	𐤄+[𐤀] 𐤔𐤉𐤌𐤅𐤍 𐤉	H8080	matres
@@ -4862,7 +5552,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:4:68	𐤌𐤐𐤉𐤓𐤅𐤕	english	𐤌 𐤐𐤉𐤓 𐤅𐤕	H6332	matres
 220:4:69	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
 220:4:69	𐤉𐤐𐤓𐤉𐤔𐤅	english	[𐤉] 𐤐𐤓𐤉𐤔 𐤅	H6566	matres
-220:4:73	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:4:73	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:4:76	𐤉𐤀𐤅𐤍𐤄	spelling	[𐤉] 𐤀𐤅𐤍𐤄 	H579	matres
 220:4:78	𐤄𐤐𐤕𐤉𐤏	english	𐤄 𐤐𐤕𐤉𐤏 	H6621	matres
 220:4:79	𐤋𐤌𐤅𐤃𐤄	english	 𐤋𐤌𐤅𐤃 𐤄	H3928	root
@@ -4961,14 +5651,14 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:4:159	𐤅𐤄𐤏𐤍𐤉𐤔	english	𐤅+[𐤄] 𐤏𐤍𐤉𐤔 	H6064	matres
 220:4:160	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
 220:4:161	𐤔𐤄𐤕𐤋𐤒𐤇	spelling	𐤔+[𐤄𐤕] 𐤋𐤒𐤇 	H3947	root
-220:4:161	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:4:161	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:4:168	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
 220:4:172	𐤄𐤍𐤓𐤑𐤇	spelling	𐤄+[𐤍] 𐤓𐤑𐤇 	H7523	root
 220:4:173	𐤁𐤔𐤁𐤉𐤋	english	𐤁 𐤔𐤁𐤉𐤋 	H7635	root
 220:4:177	𐤄𐤌𐤌𐤅𐤔𐤊𐤅𐤕	spelling	𐤄+[𐤌] 𐤌𐤅𐤔𐤊 𐤅𐤕	H4900	matres
 220:4:178	𐤋𐤇𐤃𐤅𐤋	spelling	𐤋 𐤇𐤃𐤅𐤋 	H2308	matres
 220:4:179	𐤄𐤂𐤌𐤅𐤓𐤄	english	[𐤄] 𐤂𐤌𐤅𐤓 𐤄	H1584	matres
-220:4:180	𐤌𐤆𐤄𐤉𐤓	english	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+220:4:180	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 220:4:183	𐤎𐤃𐤓𐤕𐤉	spelling	 𐤎𐤃𐤓 𐤕+𐤉	H5468	root
 220:4:183	𐤅𐤕𐤔𐤒𐤃𐤅	english	𐤅+[𐤕] 𐤔𐤒𐤃 𐤅	H8245	root
 220:4:184	𐤅𐤋𐤎𐤃𐤓	english	𐤅+𐤋 𐤎𐤃𐤓 	H5468	root
@@ -5039,7 +5729,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:4:245	𐤍𐤔𐤅𐤀𐤉𐤍	spelling	 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
 220:4:245	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 220:4:245	𐤍𐤔𐤅𐤀𐤉𐤄	spelling	 𐤍𐤔𐤅𐤀 𐤉+𐤄	H5375	form
-220:4:248	𐤕𐤎𐤒𐤋	english	[𐤕] 𐤎𐤒𐤋 	H5619	root
+220:4:248	𐤕𐤎𐤒𐤋	spelling	[𐤕] 𐤎𐤒𐤋 	H5619	root
 220:4:248	𐤍𐤔𐤅𐤀𐤉𐤄	spelling	 𐤍𐤔𐤅𐤀 𐤉+𐤄	H5375	form
 220:4:249	𐤅𐤇𐤁𐤉𐤁𐤄	english	𐤅 𐤇𐤁𐤉𐤁 𐤄	H2245	matres
 220:4:249	𐤅𐤉𐤅𐤐𐤉	english	𐤅 𐤉𐤅𐤐𐤉 	H3308	matres
@@ -5157,13 +5847,14 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:5:12	𐤅𐤄𐤑𐤉𐤏𐤄	english	𐤅+[𐤄] 𐤑𐤉𐤏𐤄 	H6808	matres
 220:5:12	𐤄𐤇𐤋𐤈𐤄	english	[𐤄] 𐤇𐤋𐤈 𐤄	H2480	root
 220:5:12	𐤔𐤍𐤕𐤒𐤁𐤋𐤄	english	𐤔+[𐤍𐤕] 𐤒𐤁𐤋 𐤄	H6901	root
+220:5:13	𐤅𐤉𐤆𐤄𐤓	spelling	𐤅+[𐤉] 𐤆𐤄𐤓 	H2094	root
 220:5:15	𐤄𐤁𐤈𐤉𐤇𐤅	spelling	𐤄 𐤁𐤈𐤉𐤇 𐤅	H983	matres
-220:5:16	𐤁𐤂𐤔𐤓𐤉𐤌	english	𐤁 𐤂𐤔𐤓𐤉 𐤌	H1651	matres
+220:5:16	𐤁𐤂𐤔𐤓𐤉𐤌	spelling	𐤁 𐤂𐤔𐤓𐤉 𐤌	H1651	matres
 220:5:18	𐤋𐤂𐤓𐤐𐤅	english	𐤋 𐤂𐤓𐤐 𐤅	H1640	root
 220:5:24	𐤉𐤌𐤎𐤅𐤓	spelling	[𐤉] 𐤌𐤎𐤅𐤓 	H4560	matres
 220:5:27	𐤎𐤃𐤓𐤅	spelling	 𐤎𐤃𐤓 𐤅	H5468	root
 220:5:27	𐤋𐤐𐤏𐤅𐤋𐤄	spelling	𐤋 𐤐𐤏𐤅𐤋𐤄 	H6468	matres
-220:5:28	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	[𐤕] 𐤅𐤔𐤁𐤉𐤄 	H7725	form
+220:5:28	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	 𐤕𐤅𐤔𐤁 𐤉+𐤄	H8453	root
 220:5:31	𐤋𐤄𐤕𐤉𐤔𐤁	spelling	𐤋+[𐤄𐤕] 𐤉𐤔𐤁 	H3427	root
 220:5:31	𐤔𐤍𐤂𐤓𐤌	spelling	𐤔 𐤍𐤂𐤓 𐤌	H5064	root
 220:5:32	𐤍𐤇𐤓𐤁𐤄	spelling	[𐤍] 𐤇𐤓𐤁 𐤄	H2717	root
@@ -5244,9 +5935,10 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:5:118	𐤅𐤍𐤄𐤋	spelling	𐤅 𐤍𐤄𐤋 	H5095	root
 220:5:119	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
 220:5:122	𐤋𐤄𐤕𐤂𐤁𐤓	spelling	𐤋+[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
+220:5:122	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 220:5:123	𐤉𐤊𐤅𐤋𐤕𐤉	spelling	[𐤉] 𐤊𐤅𐤋 𐤕+𐤉	H3557	root
 220:5:124	𐤒𐤁𐤓𐤅𐤄𐤅	spelling	 𐤒𐤁𐤓𐤅𐤄 𐤅	H6900	matres
-220:5:124	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	[𐤕] 𐤅𐤔𐤁𐤉𐤄 	H7725	form
+220:5:124	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	 𐤕𐤅𐤔𐤁 𐤉+𐤄	H8453	root
 220:5:125	𐤀𐤅𐤃𐤅𐤕𐤌	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤌	H182	root
 220:5:127	𐤋𐤄𐤕𐤉𐤔𐤁	spelling	𐤋+[𐤄𐤕] 𐤉𐤔𐤁 	H3427	root
 220:5:128	𐤍𐤑𐤋𐤅	spelling	 𐤍𐤑𐤋 𐤅	H5337	root
@@ -5264,7 +5956,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:5:143	𐤕𐤅𐤀𐤓𐤄	spelling	 𐤕𐤅𐤀𐤓 𐤄	H8389	matres
 220:5:143	𐤅𐤌𐤏𐤅𐤈𐤌	english	𐤅 𐤌𐤏𐤅𐤈 𐤌	H4592	matres
 220:5:143	𐤉𐤌𐤎𐤅𐤓	spelling	[𐤉] 𐤌𐤎𐤅𐤓 	H4560	matres
-220:5:144	𐤒𐤓𐤅𐤁𐤕𐤅	english	 𐤒𐤓𐤅𐤁 𐤕+𐤅	H7138	root
+220:5:144	𐤒𐤓𐤅𐤁𐤕𐤅	spelling	 𐤒𐤓𐤅𐤁 𐤕+𐤅	H7138	root
 220:5:144	𐤉𐤕𐤍𐤂𐤃	spelling	[𐤉𐤕] 𐤍𐤂𐤃 	H5046	root
 220:5:145	𐤔𐤉𐤕𐤏𐤋𐤋𐤅	english	𐤔+[𐤉𐤕] 𐤏𐤋𐤋 𐤅	H5953	root
 220:5:145	𐤁𐤀𐤅𐤓𐤇𐤉𐤅	spelling	𐤁 𐤀𐤅𐤓𐤇 𐤉+𐤅	H734	matres
@@ -5318,7 +6010,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:5:189	𐤅𐤄𐤕𐤓𐤅𐤏𐤏	spelling	𐤅+[𐤄𐤕] 𐤓𐤅𐤏𐤏 	H7489	matres
 220:5:189	𐤁𐤇𐤆𐤓𐤅	english	𐤁 𐤇𐤆𐤓 𐤅	H2387	matres
 220:5:190	𐤋𐤎𐤏𐤅𐤃	english	𐤋 𐤎𐤏𐤅𐤃 	H5582	matres
-220:5:192	𐤉𐤇𐤈𐤉𐤀	spelling	[𐤉] 𐤇𐤈𐤉𐤀 	H2398	matres
+220:5:192	𐤉𐤇𐤈𐤉𐤀	english	[𐤉] 𐤇𐤈𐤉𐤀 	H2398	matres
 220:5:195	𐤅𐤁𐤏𐤓𐤅𐤁	english	𐤅+𐤁 𐤏𐤓𐤅𐤁 	H6153	matres
 220:5:195	𐤄𐤓𐤂𐤉𐤋	spelling	𐤄 𐤓𐤂𐤉𐤋 	H7272	matres
 220:5:195	𐤄𐤕𐤍𐤐𐤋	spelling	[𐤄𐤕] 𐤍𐤐𐤋 	H5307	root
@@ -5377,7 +6069,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:5:272	𐤔𐤍𐤉𐤄𐤋	english	𐤔+[𐤍] 𐤉𐤄𐤋 	H1984	form
 220:5:273	𐤍𐤕𐤌𐤍𐤄	spelling	[𐤍𐤕] 𐤌𐤍𐤄 	H4487	root
 220:5:273	𐤐𐤏𐤅𐤋𐤄	spelling	 𐤐𐤏𐤅𐤋 𐤄	H6466	matres
-220:5:273	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	𐤌 𐤐𐤅𐤀𐤓 𐤄	H6287	matres
+220:5:273	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	[𐤌] 𐤐𐤅𐤀𐤓 𐤄	H6286	matres
 220:5:274	𐤓𐤅𐤊𐤁𐤉𐤌	spelling	 𐤓𐤅𐤊𐤁 𐤉𐤌	H7395	matres
 220:5:274	𐤌𐤐𐤅𐤀𐤓	spelling	[𐤌] 𐤐𐤅𐤀𐤓 	H6286	matres
 220:5:276	𐤕𐤅𐤀𐤓𐤄	spelling	 𐤕𐤅𐤀𐤓 𐤄	H8389	matres
@@ -5404,7 +6096,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:5:298	𐤉𐤌𐤎𐤅𐤓	spelling	[𐤉] 𐤌𐤎𐤅𐤓 	H4560	matres
 220:5:300	𐤅𐤉𐤕𐤐𐤅𐤔	english	𐤅+[𐤉𐤕] 𐤐𐤅𐤔 	H6335	root
 220:5:300	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
-220:5:305	𐤍𐤊𐤋𐤉𐤄𐤌	spelling	[𐤍] 𐤊𐤋𐤉𐤄 𐤌	H3615	matres
+220:5:305	𐤍𐤊𐤋𐤉𐤄𐤌	english	[𐤍] 𐤊𐤋𐤉𐤄 𐤌	H3615	matres
 220:5:308	𐤆𐤌𐤅𐤓𐤅𐤕	english	 𐤆𐤌𐤅𐤓 𐤅𐤕	H2168	matres
 220:5:310	𐤄𐤆𐤌𐤅𐤓𐤅𐤕	english	[𐤄] 𐤆𐤌𐤅𐤓 𐤅𐤕	H2168	matres
 220:5:310	𐤕𐤅𐤒𐤐𐤉𐤌	english	 𐤕𐤅𐤒𐤐 𐤉𐤌	H8624	matres
@@ -5425,7 +6117,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:5:329	𐤋𐤄𐤕𐤍𐤂𐤃	spelling	𐤋+[𐤄𐤕] 𐤍𐤂𐤃 	H5046	root
 220:5:330	𐤉𐤕𐤇𐤉𐤋𐤅	english	[𐤉] 𐤕𐤇𐤉𐤋𐤅 	H2342	form
 220:5:332	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
-220:5:337	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	𐤌 𐤐𐤅𐤀𐤓 𐤄	H6287	matres
+220:5:337	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	[𐤌] 𐤐𐤅𐤀𐤓 𐤄	H6286	matres
 220:5:342	𐤅𐤐𐤍𐤉𐤍𐤄	english	𐤅 𐤐𐤍𐤉𐤍 𐤄	H6443	root
 220:5:343	𐤄𐤇𐤂𐤉𐤂𐤄	spelling	[𐤄] 𐤇𐤂𐤉𐤂 𐤄	H2287	matres
 220:5:343	𐤌𐤎𐤅𐤁𐤉𐤌	spelling	 𐤌𐤎𐤅𐤁 𐤉𐤌	H4524	matres
@@ -5520,7 +6212,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:6:80	𐤅𐤋𐤄𐤇𐤔𐤉𐤁𐤅	english	𐤅+𐤋+[𐤄] 𐤇𐤔𐤉𐤁 𐤅	H2803	matres
 220:6:81	𐤄𐤂𐤅𐤓𐤌𐤉𐤌	spelling	𐤄 𐤂𐤅𐤓𐤌𐤉 𐤌	H1636	matres
 220:6:82	𐤀𐤄𐤃𐤕𐤌	spelling	 𐤀𐤄𐤃 𐤕+𐤌	H164	matres
-220:6:82	𐤄𐤂𐤆𐤏	english	𐤄 𐤂𐤆𐤏 	H1503	root
+220:6:82	𐤄𐤂𐤆𐤏	spelling	𐤄 𐤂𐤆𐤏 	H1503	root
 220:6:83	𐤅𐤉𐤕𐤀𐤎𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤀𐤎𐤐 𐤅	H622	root
 220:6:85	𐤄𐤒𐤅𐤃𐤌𐤕	spelling	𐤄 𐤒𐤅𐤃𐤌 𐤕	H6924	matres
 220:6:86	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
@@ -5562,6 +6254,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:6:135	𐤁𐤄𐤕𐤍𐤐𐤋𐤅𐤕	spelling	𐤁+[𐤄𐤕] 𐤍𐤐𐤋 𐤅𐤕	H5307	root
 220:6:136	𐤍𐤊𐤍𐤎	spelling	[𐤍] 𐤊𐤍𐤎 	H3664	root
 220:6:136	𐤋𐤈𐤁𐤏	spelling	𐤋 𐤈𐤁𐤏 	H2883	root
+220:6:136	𐤅𐤎𐤊𐤍𐤄	spelling	𐤅 𐤎𐤊𐤍 𐤄	H5532	root
 220:6:137	𐤉𐤅𐤐𐤉𐤅	spelling	 𐤉𐤅𐤐𐤉 𐤅	H3308	matres
 220:6:137	𐤋𐤓𐤂𐤔	english	𐤋 𐤓𐤂𐤔 	H7284	root
 220:6:138	𐤋𐤇𐤅𐤎	spelling	𐤋 𐤇𐤅𐤎 	H2347	root
@@ -5670,6 +6363,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:6:239	𐤍𐤂𐤌𐤓	spelling	[𐤍] 𐤂𐤌𐤓 	H1584	root
 220:6:241	𐤌𐤒𐤅𐤍𐤍𐤉𐤌	spelling	𐤌 𐤒𐤅𐤍𐤍 𐤉𐤌	H7075	matres
 220:6:241	𐤅𐤐𐤓𐤉𐤃𐤕𐤌	english	𐤅 𐤐𐤓𐤉𐤃 𐤕+𐤌	H6504	matres
+220:6:241	𐤅𐤉𐤆𐤄𐤉𐤓𐤅	spelling	𐤅+[𐤉] 𐤆𐤄𐤉𐤓 𐤅	H2094	matres
 220:6:243	𐤌𐤕𐤀𐤉𐤌𐤄	spelling	[𐤌] 𐤕𐤀𐤉𐤌 𐤄	H8382	matres
 220:6:243	𐤋𐤄𐤐𐤂𐤔	spelling	𐤋+[𐤄] 𐤐𐤂𐤔 	H6298	root
 220:6:248	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
@@ -5687,7 +6381,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:6:264	𐤅𐤌𐤇𐤋𐤉𐤐𐤉𐤌	english	𐤅+[𐤌] 𐤇𐤋𐤉𐤐 𐤉𐤌	H2498	matres
 220:6:265	𐤆𐤒𐤅𐤒𐤉𐤌	spelling	 𐤆𐤒𐤅𐤒 𐤉𐤌	H2212	matres
 220:6:265	𐤌𐤃𐤁𐤉𐤒𐤄	english	[𐤌] 𐤃𐤁𐤉𐤒 𐤄	H1692	matres
-220:6:267	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	𐤌 𐤐𐤅𐤀𐤓 𐤄	H6287	matres
+220:6:267	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	[𐤌] 𐤐𐤅𐤀𐤓 𐤄	H6286	matres
 220:6:267	𐤌𐤏𐤍𐤉𐤔𐤉𐤌	english	[𐤌] 𐤏𐤍𐤉𐤔 𐤉𐤌	H6064	matres
 220:6:267	𐤓𐤀𐤅𐤉𐤉𐤌	spelling	 𐤓𐤀𐤅𐤉𐤉 𐤌	H7210	matres
 220:6:267	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
@@ -5777,7 +6471,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:6:352	𐤋𐤄𐤕𐤍𐤒𐤌	spelling	𐤋+[𐤄𐤕] 𐤍𐤒𐤌 	H5358	root
 220:6:353	𐤅𐤉𐤉𐤏𐤑𐤅	spelling	𐤅+[𐤉] 𐤉𐤏𐤑 𐤅	H3289	root
 220:6:353	𐤉𐤂𐤓𐤅𐤌	spelling	[𐤉] 𐤂𐤓𐤅 𐤌	H1481	form
-220:6:353	𐤋𐤄𐤕𐤓𐤑𐤅𐤕	english	𐤋+[𐤄𐤕] 𐤓𐤑𐤅 𐤕	H7521	form
+220:6:353	𐤋𐤄𐤕𐤓𐤑𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤓𐤑𐤅 𐤕	H7323	form
 220:6:357	𐤄𐤓𐤅𐤎𐤄	english	 𐤄𐤓𐤅𐤎 𐤄	H2040	matres
 220:6:357	𐤍𐤔𐤃𐤃	english	[𐤍] 𐤔𐤃𐤃 	H7703	root
 220:6:358	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
@@ -5803,7 +6497,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:6:368	𐤅𐤉𐤌𐤔𐤉𐤊𐤅	english	𐤅+[𐤉] 𐤌𐤔𐤉𐤊 𐤅	H4900	matres
 220:6:369	𐤄𐤌𐤕𐤍𐤐𐤋𐤉𐤌	spelling	𐤄+[𐤌𐤕] 𐤍𐤐𐤋 𐤉𐤌	H5307	root
 220:6:370	𐤉𐤅𐤓𐤉𐤌	english	 𐤉𐤅𐤓𐤉 𐤌	H3140	root
-220:6:370	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	𐤌 𐤐𐤅𐤀𐤓 𐤄	H6287	matres
+220:6:370	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	[𐤌] 𐤐𐤅𐤀𐤓 𐤄	H6286	matres
 220:6:370	𐤋𐤔𐤋𐤅𐤐	spelling	𐤋 𐤔𐤋𐤅𐤐 	H8025	matres
 220:6:371	𐤅𐤉𐤔𐤋𐤅𐤐	english	𐤅+[𐤉] 𐤔𐤋𐤅𐤐 	H8025	matres
 220:6:377	𐤋𐤈𐤏𐤅𐤌	spelling	𐤋 𐤈𐤏𐤅𐤌 	H2942	matres
@@ -5817,7 +6511,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:7:8	𐤄𐤍𐤆𐤊𐤓	spelling	𐤄+[𐤍] 𐤆𐤊𐤓 	H2142	root
 220:7:8	𐤅𐤋𐤄𐤁𐤈𐤉𐤇	spelling	𐤅+𐤋+𐤄 𐤁𐤈𐤉𐤇 	H982	matres
 220:7:8	𐤍𐤀𐤌𐤍𐤅𐤕𐤌	spelling	[𐤍] 𐤀𐤌𐤍 𐤅𐤕+𐤌	H539	root
-220:7:10	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:7:10	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:7:11	𐤅𐤁𐤄𐤐𐤂𐤔𐤅	english	𐤅+𐤁+[𐤄] 𐤐𐤂𐤔 𐤅	H6298	root
 220:7:12	𐤍𐤓𐤑𐤇𐤅	spelling	[𐤍] 𐤓𐤑𐤇 𐤅	H7523	root
 220:7:13	𐤌𐤋𐤃𐤋𐤅𐤒	spelling	𐤌+𐤋 𐤃𐤋𐤅𐤒 	H1814	matres
@@ -5899,7 +6593,6 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:7:63	𐤄𐤐𐤏𐤅𐤋𐤄	spelling	𐤄 𐤐𐤏𐤅𐤋𐤄 	H6468	matres
 220:7:65	𐤄𐤌𐤐𐤅𐤀𐤓𐤉𐤌	spelling	𐤄+[𐤌] 𐤐𐤅𐤀𐤓 𐤉𐤌	H6286	matres
 220:7:65	𐤅𐤕𐤕𐤇𐤆𐤒	english	𐤅+[𐤕𐤕] 𐤇𐤆𐤒 	H2388	root
-220:7:68	𐤄𐤕𐤂𐤁𐤓	spelling	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 220:7:69	𐤀𐤅𐤃𐤅𐤕𐤉𐤄	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤄	H182	root
 220:7:73	𐤄𐤕𐤍𐤐𐤋	spelling	[𐤄𐤕] 𐤍𐤐𐤋 	H5307	root
 220:7:74	𐤕𐤇𐤔𐤅𐤁	spelling	[𐤕] 𐤇𐤔𐤅𐤁 	H2803	matres
@@ -5937,10 +6630,10 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:7:107	𐤁𐤄𐤃𐤓𐤏𐤆𐤓	spelling	𐤁 𐤄𐤃𐤓𐤏𐤆𐤓 	H1928	root
 220:7:108	𐤄𐤑𐤃𐤃𐤉𐤌	english	𐤄 𐤑𐤃𐤃 𐤉𐤌	H6657	root
 220:7:108	𐤔𐤍𐤔𐤋𐤇𐤅	spelling	𐤔+[𐤍] 𐤔𐤋𐤇 𐤅	H7971	root
-220:7:108	𐤄𐤍𐤊𐤁𐤔𐤉𐤌	english	𐤄+[𐤍] 𐤊𐤁𐤔 𐤉𐤌	H3533	root
+220:7:108	𐤄𐤍𐤊𐤁𐤔𐤉𐤌	spelling	𐤄+[𐤍] 𐤊𐤁𐤔 𐤉𐤌	H3533	root
 220:7:112	𐤉𐤂𐤌𐤅𐤋	spelling	[𐤉] 𐤂𐤌𐤅𐤋 	H1580	form
 220:7:115	𐤍𐤊𐤎𐤉	spelling	 𐤍𐤊𐤎 𐤉	H5232	root
-220:7:115	𐤉𐤏𐤁𐤅𐤃	english	[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
+220:7:115	𐤉𐤏𐤁𐤅𐤃	spelling	[𐤉] 𐤏𐤁𐤅𐤃 	H5647	matres
 220:7:115	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
 220:7:117	𐤁𐤄𐤊𐤍𐤏𐤄	english	𐤁+[𐤄] 𐤊𐤍𐤏 𐤄	H3665	root
 220:7:119	𐤔𐤍𐤔𐤋𐤇𐤅	spelling	𐤔+[𐤍] 𐤔𐤋𐤇 𐤅	H7971	root
@@ -6036,7 +6729,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:7:206	𐤌𐤌𐤐𐤉𐤁𐤅𐤔𐤕	english	𐤌 𐤌𐤐𐤉𐤁𐤅𐤔𐤕 	H4648	matres
 220:7:208	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 220:7:211	𐤄𐤔𐤕𐤇𐤅𐤅𐤕𐤅	spelling	 𐤄𐤔𐤕𐤇𐤅𐤅 𐤕+𐤅	H7812	form
-220:7:213	𐤋𐤄𐤕𐤓𐤑𐤅𐤕	english	𐤋+[𐤄𐤕] 𐤓𐤑𐤅 𐤕	H7323	form
+220:7:213	𐤋𐤄𐤕𐤓𐤑𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤓𐤑𐤅 𐤕	H7323	form
 220:7:213	𐤕𐤕𐤓𐤑𐤅	english	[𐤕𐤕] 𐤓𐤑𐤅 	H7323	form
 220:7:214	𐤍𐤊𐤍𐤎	spelling	[𐤍] 𐤊𐤍𐤎 	H3664	root
 220:7:216	𐤄𐤏𐤉𐤒𐤓𐤉	english	𐤄 𐤏𐤉𐤒𐤓 𐤉	H6135	matres
@@ -6087,7 +6780,6 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:7:251	𐤄𐤔𐤕𐤇𐤅𐤅𐤕𐤅	spelling	 𐤄𐤔𐤕𐤇𐤅𐤅 𐤕+𐤅	H7812	form
 220:7:252	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 220:7:254	𐤍𐤊𐤍𐤎	spelling	[𐤍] 𐤊𐤍𐤎 	H3664	root
-220:7:255	𐤄𐤕𐤂𐤁𐤓	spelling	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
 220:7:255	𐤅𐤌𐤏𐤍𐤉𐤔𐤉𐤌	english	𐤅+[𐤌] 𐤏𐤍𐤉𐤔 𐤉𐤌	H6064	matres
 220:7:256	𐤌𐤕𐤁𐤉𐤔	spelling	[𐤌𐤕] 𐤁𐤉𐤔 	H954	matres
 220:7:256	𐤀𐤐𐤕𐤄	english	[𐤀] 𐤐𐤕𐤄 	H6601	root
@@ -6112,7 +6804,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:7:272	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
 220:7:274	𐤍𐤀𐤈𐤌𐤅	english	[𐤍] 𐤀𐤈𐤌 𐤅	H331	root
 220:7:274	𐤌𐤕𐤏𐤍𐤂𐤉𐤌	english	[𐤌𐤕] 𐤏𐤍𐤂 𐤉𐤌	H6026	root
-220:7:275	𐤀𐤐𐤈𐤓	english	[𐤀] 𐤐𐤈𐤓 	H6362	root
+220:7:275	𐤀𐤐𐤈𐤓	spelling	[𐤀] 𐤐𐤈𐤓 	H6362	root
 220:7:276	𐤔𐤄𐤐𐤂𐤉𐤔𐤄	english	𐤔+[𐤄] 𐤐𐤂𐤉𐤔 𐤄	H6298	matres
 220:7:276	𐤕𐤔𐤅𐤓𐤅𐤕	spelling	[𐤕] 𐤔𐤅𐤓 𐤅𐤕	H7789	root
 220:7:280	𐤔𐤉𐤎𐤐𐤉𐤒𐤅	english	𐤔+[𐤉] 𐤎𐤐𐤉𐤒 𐤅	H5606	matres
@@ -6148,11 +6840,12 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:7:319	𐤄𐤎𐤐𐤉𐤒	spelling	[𐤄] 𐤎𐤐𐤉𐤒 	H5606	matres
 220:7:321	𐤌𐤁𐤉𐤍𐤉𐤄𐤍	english	𐤌 𐤁𐤉𐤍𐤉𐤄 𐤍	H1141	matres
 220:7:322	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
-220:7:322	𐤁𐤇𐤉𐤓𐤕𐤅	english	 𐤁𐤇𐤉𐤓 𐤕+𐤅	H972	root
+220:7:322	𐤁𐤇𐤉𐤓𐤕𐤅	spelling	 𐤁𐤇𐤉𐤓 𐤕+𐤅	H972	root
 220:7:326	𐤋𐤂𐤌𐤅𐤓	spelling	𐤋 𐤂𐤌𐤅𐤓 	H1584	matres
 220:7:328	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
 220:7:330	𐤌𐤉𐤃𐤉𐤃𐤉𐤅	spelling	𐤌 𐤉𐤃𐤉𐤃 𐤉+𐤅	H3039	root
 220:7:331	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+220:7:332	𐤅𐤓𐤅𐤇𐤁	spelling	𐤅 𐤓𐤅𐤇𐤁 	H7341	matres
 220:7:332	𐤔𐤉𐤒𐤁𐤋	spelling	𐤔+[𐤉] 𐤒𐤁𐤋 	H6901	root
 220:7:333	𐤍𐤏𐤕𐤓𐤄	english	[𐤍] 𐤏𐤕𐤓 𐤄	H6279	root
 220:7:336	𐤄𐤆𐤌𐤉𐤍	spelling	𐤄 𐤆𐤌𐤉𐤍 	H2166	matres
@@ -6163,7 +6856,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:7:338	𐤌𐤑𐤅𐤅𐤕𐤉𐤅	spelling	 𐤌𐤑𐤅𐤅𐤕 𐤉+𐤅	H4695	matres
 220:7:340	𐤍𐤑𐤁𐤓𐤅	spelling	[𐤍] 𐤑𐤁𐤓 𐤅	H6651	root
 220:7:342	𐤉𐤊𐤍𐤉𐤎𐤅	english	[𐤉] 𐤊𐤍𐤉𐤎 𐤅	H3664	matres
-220:7:343	𐤅𐤄𐤆𐤒𐤉𐤍	english	𐤅+𐤄 𐤆𐤒𐤉𐤍 	H2205	matres
+220:7:343	𐤅𐤄𐤆𐤒𐤉𐤍	spelling	𐤅+𐤄 𐤆𐤒𐤉𐤍 	H2205	matres
 220:7:343	𐤅𐤒𐤐𐤅𐤀	english	𐤅 𐤒𐤐𐤅𐤀 	H7087	matres
 220:7:343	𐤅𐤉𐤕𐤀𐤎𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤀𐤎𐤐 𐤅	H622	root
 220:7:344	𐤕𐤅𐤀𐤓𐤄	spelling	 𐤕𐤅𐤀𐤓 𐤄	H8389	matres
@@ -6172,7 +6865,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:7:347	𐤄𐤌𐤕𐤍𐤂𐤃	english	𐤄+[𐤌𐤕] 𐤍𐤂𐤃 	H5046	root
 220:7:350	𐤅𐤕𐤌𐤎𐤅𐤓	spelling	𐤅+[𐤕] 𐤌𐤎𐤅𐤓 	H4560	matres
 220:7:350	𐤉𐤄𐤓𐤅𐤂	english	[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
-220:7:351	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	𐤌 𐤐𐤅𐤀𐤓 𐤄	H6287	matres
+220:7:351	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	[𐤌] 𐤐𐤅𐤀𐤓 𐤄	H6286	matres
 220:7:351	𐤅𐤄𐤆𐤌𐤉𐤍	english	𐤅+[𐤄] 𐤆𐤌𐤉𐤍 	H2164	matres
 220:7:351	𐤅𐤑𐤅𐤄𐤋𐤉𐤌	english	𐤅 𐤑𐤅𐤄𐤋 𐤉𐤌	H6670	matres
 220:7:357	𐤁𐤕𐤓𐤅𐤏𐤅𐤕	english	𐤁 𐤕𐤓𐤅𐤏 𐤅𐤕	H8651	matres
@@ -6199,7 +6892,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:7:378	𐤋𐤎𐤅𐤊𐤊	english	𐤋 𐤎𐤅𐤊 𐤊	H5480	root
 220:7:378	𐤌𐤐𐤅𐤀𐤓𐤅𐤕	english	𐤌 𐤐𐤅𐤀𐤓 𐤅𐤕	H6287	matres
 220:7:383	𐤅𐤁𐤄𐤓𐤂𐤉𐤔𐤅	spelling	𐤅+𐤁+[𐤄] 𐤓𐤂𐤉𐤔 𐤅	H7284	matres
-220:7:384	𐤄𐤍𐤔𐤋𐤈𐤉𐤌	english	𐤄+[𐤍] 𐤔𐤋𐤈 𐤉𐤌	H7980	root
+220:7:384	𐤄𐤍𐤔𐤋𐤈𐤉𐤌	spelling	𐤄+[𐤍] 𐤔𐤋𐤈 𐤉𐤌	H7980	root
 220:7:384	𐤌𐤑𐤅𐤅𐤕𐤉𐤅	spelling	 𐤌𐤑𐤅𐤅𐤕 𐤉+𐤅	H4695	matres
 220:7:386	𐤅𐤕𐤒𐤉𐤐	spelling	𐤅 𐤕𐤒𐤉𐤐 	H8624	root
 220:7:387	𐤕𐤒𐤁𐤋𐤌	spelling	[𐤕] 𐤒𐤁𐤋 𐤌	H6901	root
@@ -6218,6 +6911,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:6	𐤄𐤍𐤔𐤅𐤀𐤉𐤍	spelling	[𐤄] 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
 220:8:6	𐤕𐤐𐤑𐤓	english	[𐤕] 𐤐𐤑𐤓 	H6484	root
 220:8:6	𐤋𐤍𐤔𐤅𐤀𐤉𐤍	spelling	𐤋 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
+220:8:7	𐤁𐤔𐤁𐤉𐤋	english	𐤁 𐤔𐤁𐤉𐤋 	H7635	root
 220:8:10	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
 220:8:10	𐤔𐤃𐤅𐤕𐤉𐤊	english	 𐤔𐤃𐤅𐤕 𐤉+𐤊	H7704	form
 220:8:13	𐤋𐤎𐤊𐤍𐤄	spelling	𐤋 𐤎𐤊𐤍 𐤄	H5532	root
@@ -6303,7 +6997,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:91	𐤁𐤅𐤋𐤋𐤉𐤌	english	 𐤁𐤅𐤋𐤋 𐤉𐤌	H1098	matres
 220:8:92	𐤄𐤒𐤈𐤅𐤓𐤕	spelling	𐤄 𐤒𐤈𐤅𐤓𐤕 	H7004	matres
 220:8:94	𐤅𐤄𐤌𐤉𐤅𐤏𐤃𐤉𐤌	english	𐤅+𐤄 𐤌𐤉𐤅𐤏𐤃 𐤉𐤌	H4150	matres
-220:8:95	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:8:95	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:8:95	𐤅𐤕𐤐𐤒𐤉𐤃𐤄	english	𐤅+[𐤕] 𐤐𐤒𐤉𐤃 𐤄	H6485	matres
 220:8:96	𐤂𐤁𐤅𐤄𐤉𐤌	spelling	 𐤂𐤁𐤅𐤄 𐤉𐤌	H1364	matres
 220:8:96	𐤍𐤊𐤍𐤎	spelling	[𐤍] 𐤊𐤍𐤎 	H3664	root
@@ -6378,17 +7072,16 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:142	𐤍𐤕𐤅𐤎𐤐	english	[𐤍] 𐤕𐤅𐤎𐤐 	H3254	form
 220:8:142	𐤍𐤁𐤀𐤓	spelling	[𐤍] 𐤁𐤀𐤓 	H874	root
 220:8:143	𐤉𐤁𐤀𐤓	spelling	[𐤉] 𐤁𐤀𐤓 	H874	root
-220:8:143	𐤄𐤕𐤂𐤁𐤓	spelling	[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
-220:8:146	𐤌𐤎𐤉𐤄𐤌	english	 𐤌𐤎𐤉𐤄 𐤌	H4529	matres
+220:8:146	𐤌𐤎𐤉𐤄𐤌	english	 𐤌𐤎𐤉𐤄 𐤌	H4530	matres
 220:8:148	𐤄𐤐𐤕𐤓𐤅𐤍	spelling	𐤄 𐤐𐤕𐤓𐤅𐤍 	H6623	root
 220:8:150	𐤅𐤉𐤕𐤒𐤍	spelling	𐤅+[𐤉] 𐤕𐤒𐤍 	H8626	root
 220:8:151	𐤄𐤍𐤌𐤍𐤅𐤕	english	𐤄+[𐤍] 𐤌𐤍𐤅 𐤕	H4487	form
 220:8:151	𐤅𐤉𐤄𐤓𐤅𐤂	spelling	𐤅+[𐤉] 𐤄𐤓𐤅𐤂 	H2026	matres
-220:8:151	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	[𐤕] 𐤅𐤔𐤁𐤉𐤄 	H7725	form
-220:8:154	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:8:151	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	 𐤕𐤅𐤔𐤁 𐤉+𐤄	H8453	root
+220:8:153	𐤅𐤔𐤏𐤔𐤅𐤏𐤉𐤌	english	𐤅 𐤔𐤏𐤔𐤅𐤏 𐤉𐤌	H8191	matres
+220:8:153	𐤅𐤐𐤉𐤓𐤅𐤕	english	𐤅 𐤐𐤉𐤓 𐤅𐤕	H6331	matres
+220:8:154	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:8:155	𐤅𐤋𐤔𐤅𐤀𐤋𐤉𐤌	english	𐤅+𐤋 𐤔𐤅𐤀𐤋 𐤉𐤌	H7592	matres
-220:8:155	𐤌𐤎𐤌𐤍	english	[𐤌] 𐤎𐤌𐤍 	H5567	root
-220:8:156	𐤄𐤌𐤎𐤌𐤍	english	𐤄+[𐤌] 𐤎𐤌𐤍 	H5567	root
 220:8:159	𐤀𐤅𐤃𐤅𐤕𐤉𐤄	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤄	H182	root
 220:8:160	𐤔𐤏𐤃𐤉𐤉𐤍	spelling	𐤔 𐤏𐤃𐤉 𐤉+𐤍	H5704	form
 220:8:162	𐤄𐤏𐤁𐤅𐤃𐤅𐤕	spelling	[𐤄] 𐤏𐤁𐤅𐤃 𐤅𐤕	H5647	matres
@@ -6396,52 +7089,72 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:164	𐤎𐤅𐤊𐤍𐤉𐤅	english	 𐤎𐤅𐤊𐤍 𐤉+𐤅	H5532	matres
 220:8:165	𐤅𐤕𐤁𐤅𐤍𐤕𐤅	spelling	𐤅 𐤕𐤁𐤅𐤍 𐤕+𐤅	H8394	root
 220:8:166	𐤁𐤉𐤇𐤅𐤃	spelling	𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
+220:8:166	𐤅𐤕𐤁𐤒𐤔𐤄𐤅	english	𐤅+[𐤕] 𐤁𐤒𐤔𐤄𐤅 	H1245	form
 220:8:167	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 220:8:168	𐤁𐤉𐤇𐤅𐤃	spelling	𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 220:8:169	𐤅𐤕𐤔𐤅𐤌𐤕	spelling	𐤅+[𐤕] 𐤔𐤅𐤌 𐤕	H7760	root
+220:8:170	𐤄𐤕𐤐𐤏𐤋𐤅𐤕𐤄	english	[𐤄𐤕] 𐤐𐤏𐤋 𐤅𐤕+𐤄	H6466	root
+220:8:170	𐤕𐤌𐤄𐤅𐤍𐤄	english	 𐤕𐤌𐤄𐤅𐤍 𐤄	H8541	root
 220:8:170	𐤀𐤌𐤓𐤅𐤕𐤉𐤄	english	 𐤀𐤌𐤓𐤅𐤕 𐤉+𐤄	H559	form
+220:8:170	𐤍𐤕𐤂𐤋𐤅	english	[𐤍𐤕] 𐤂𐤋𐤅 	H1540	form
+220:8:171	𐤅𐤋𐤕𐤁𐤅𐤍𐤕𐤊	english	𐤅+𐤋 𐤕𐤁𐤅𐤍 𐤕+𐤊	H8394	root
 220:8:172	𐤍𐤏𐤔𐤉𐤕𐤉	spelling	[𐤍] 𐤏𐤔𐤉𐤕𐤉 	H6213	form
 220:8:174	𐤁𐤌𐤕𐤍𐤅𐤕𐤉𐤄	english	𐤁 𐤌𐤕𐤍𐤅𐤕 𐤉+𐤄	H4979	form
 220:8:175	𐤁𐤉𐤇𐤅𐤃	spelling	𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 220:8:180	𐤔𐤉𐤔𐤌𐤔𐤅	english	𐤔+[𐤉] 𐤔𐤌𐤔 𐤅	H8120	root
-220:8:181	𐤁𐤔𐤁𐤉𐤋	english	𐤁 𐤔𐤁𐤉𐤋 	H7635	root
-220:8:181	𐤎𐤇𐤅𐤓𐤄	english	 𐤎𐤇𐤅𐤓 𐤄	H5503	matres
+220:8:180	𐤉𐤌𐤊𐤅𐤓	spelling	[𐤉] 𐤌𐤊𐤅𐤓 	H4376	matres
+220:8:181	𐤎𐤇𐤅𐤓𐤄	spelling	 𐤎𐤇𐤅𐤓 𐤄	H5503	matres
 220:8:181	𐤅𐤌𐤊𐤉𐤓𐤕𐤌	english	𐤅+𐤌 𐤊𐤉𐤓 𐤕+𐤌	H3600	root
 220:8:181	𐤄𐤍𐤎𐤉𐤏𐤄	spelling	[𐤄] 𐤍𐤎𐤉𐤏 𐤄	H5265	matres
 220:8:181	𐤍𐤌𐤔𐤊𐤄	spelling	[𐤍] 𐤌𐤔𐤊 𐤄	H4900	root
+220:8:182	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 220:8:182	𐤀𐤅𐤃𐤅𐤕𐤉𐤅	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤅	H182	root
 220:8:183	𐤄𐤍𐤔𐤋𐤇𐤉𐤌	spelling	𐤄+[𐤍] 𐤔𐤋𐤇 𐤉𐤌	H7971	root
 220:8:184	𐤀𐤅𐤌𐤍𐤅	english	 𐤀𐤅𐤌𐤍 𐤅	H539	matres
-220:8:186	𐤎𐤊𐤅𐤉𐤍𐤉𐤌	english	 𐤎𐤊𐤅𐤉𐤍 𐤉𐤌	H5532	matres
-220:8:186	𐤌𐤏𐤉𐤍𐤅𐤕𐤉𐤅	english	 𐤌𐤏𐤉𐤍𐤅𐤕 𐤉+𐤅	H4599	form
+220:8:185	𐤍𐤅𐤑𐤑𐤅	english	 𐤍𐤅𐤑𐤑 𐤅	H5340	matres
+220:8:186	𐤋𐤈𐤉𐤋	english	𐤋 𐤈𐤉𐤋 	H2904	matres
+220:8:186	𐤎𐤊𐤅𐤉𐤍𐤉𐤌	english	 𐤎𐤊𐤅𐤉𐤍 𐤉𐤌	H5533	matres
+220:8:186	𐤌𐤏𐤉𐤍𐤅𐤕𐤉𐤅	english	𐤌 𐤏𐤉𐤍𐤅𐤕 𐤉+𐤅	H5869	form
+220:8:186	𐤈𐤉𐤅𐤋𐤉𐤅	english	 𐤈𐤉𐤅𐤋 𐤉+𐤅	H2904	matres
+220:8:187	𐤄𐤉𐤅𐤐𐤉	english	𐤄 𐤉𐤅𐤐𐤉 	H3308	matres
 220:8:187	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
-220:8:187	𐤋𐤍𐤅𐤇𐤉𐤅𐤕	english	𐤋 𐤍𐤅𐤇𐤉𐤅𐤕 	H5184	matres
+220:8:187	𐤋𐤍𐤅𐤇𐤉𐤅𐤕	english	𐤋 𐤍𐤅𐤇𐤉𐤅𐤕 	H5181	matres
 220:8:188	𐤅𐤎𐤃𐤓	spelling	𐤅 𐤎𐤃𐤓 	H5468	root
 220:8:190	𐤅𐤁𐤏𐤅𐤔𐤓	spelling	𐤅+𐤁 𐤏𐤅𐤔𐤓 	H6240	matres
 220:8:190	𐤀𐤅𐤃𐤅𐤕𐤉𐤅	spelling	 𐤀𐤅𐤃𐤅𐤕 𐤉+𐤅	H182	root
 220:8:191	𐤅𐤀𐤃𐤅𐤌𐤉𐤅𐤕	english	𐤅 𐤀𐤃𐤅𐤌𐤉 𐤅𐤕	H130	root
 220:8:193	𐤍𐤂𐤓𐤓	spelling	[𐤍] 𐤂𐤓𐤓 	H1641	root
-220:8:193	𐤋𐤀𐤄𐤃𐤕𐤅	english	𐤋 𐤀𐤄𐤃 𐤕+𐤅	H161	root
-220:8:194	𐤅𐤍𐤇𐤋𐤔𐤄	english	𐤅+[𐤍] 𐤇𐤋𐤔 𐤄	H2522	root
+220:8:193	𐤋𐤀𐤄𐤃𐤕𐤅	english	𐤋 𐤀𐤄𐤃 𐤕+𐤅	H164	matres
+220:8:194	𐤅𐤄𐤆𐤒𐤉𐤍	spelling	𐤅+𐤄 𐤆𐤒𐤉𐤍 	H2205	matres
+220:8:194	𐤄𐤕𐤍𐤊𐤓	spelling	[𐤄𐤕] 𐤍𐤊𐤓 	H5234	root
 220:8:198	𐤕𐤌𐤎𐤅𐤓	english	[𐤕] 𐤌𐤎𐤅𐤓 	H4560	matres
+220:8:200	𐤄𐤂𐤆𐤏	spelling	𐤄 𐤂𐤆𐤏 	H1503	root
 220:8:201	𐤁𐤎𐤁𐤓	spelling	𐤁 𐤎𐤁𐤓 	H5452	root
+220:8:203	𐤅𐤎𐤊𐤍𐤄	spelling	𐤅 𐤎𐤊𐤍 𐤄	H5532	root
 220:8:204	𐤅𐤉𐤕𐤇𐤁𐤓	spelling	𐤅+[𐤉𐤕] 𐤇𐤁𐤓 	H2266	root
-220:8:205	𐤅𐤉𐤕𐤍𐤒𐤔	english	𐤅+[𐤉𐤕] 𐤍𐤒𐤔 	H5367	root
+220:8:204	𐤅𐤔𐤎𐤄	english	𐤅 𐤔𐤎𐤄 	H8154	root
+220:8:206	𐤅𐤊𐤕𐤔𐤅𐤓𐤄	english	𐤅+𐤊 𐤕𐤔𐤅𐤓𐤄 	H8670	root
+220:8:206	𐤄𐤅𐤋𐤉𐤊𐤄𐤅	english	 𐤄𐤅𐤋𐤉𐤊𐤄 𐤅	H1979	matres
+220:8:207	𐤅𐤄𐤕𐤌𐤎𐤓𐤅𐤕𐤅	english	𐤅+[𐤄𐤕] 𐤌𐤎𐤓 𐤅𐤕+𐤅	H4560	root
 220:8:208	𐤄𐤕𐤂𐤌𐤅𐤋	spelling	[𐤄𐤕] 𐤂𐤌𐤅𐤋 	H1580	form
-220:8:208	𐤅𐤄𐤏𐤓𐤑𐤕	english	𐤅+[𐤄] 𐤏𐤓𐤑 𐤕	H6206	root
 220:8:209	𐤅𐤋𐤄𐤕𐤒𐤅𐤌𐤌	spelling	𐤅+𐤋+[𐤄𐤕] 𐤒𐤅𐤌 𐤌	H6965	root
+220:8:210	𐤅𐤁𐤄𐤔𐤀𐤓𐤅	english	𐤅+𐤁+[𐤄] 𐤔𐤀𐤓 𐤅	H7604	root
+220:8:212	𐤄𐤇𐤋𐤉𐤈𐤅	english	[𐤄] 𐤇𐤋𐤉𐤈 𐤅	H2480	matres
 220:8:214	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 220:8:215	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
+220:8:215	𐤄𐤎𐤁𐤓𐤕	english	[𐤄] 𐤎𐤁𐤓 𐤕	H5452	root
 220:8:215	𐤅𐤋𐤄𐤇𐤔𐤁	spelling	𐤅+𐤋+[𐤄] 𐤇𐤔𐤁 	H2803	root
 220:8:217	𐤉𐤏𐤑𐤅𐤄𐤅	spelling	[𐤉] 𐤏𐤑𐤅𐤄 𐤅	H6095	matres
 220:8:218	𐤅𐤕𐤀𐤁	english	𐤅 𐤕𐤀𐤁 	H8373	root
 220:8:219	𐤉𐤏𐤆𐤁𐤅𐤄𐤅	spelling	[𐤉] 𐤏𐤆𐤁𐤅𐤄 𐤅	H5800	form
 220:8:220	𐤔𐤉𐤓𐤂𐤉𐤏	english	𐤔+[𐤉] 𐤓𐤂𐤉𐤏 	H7280	matres
 220:8:220	𐤍𐤅𐤇𐤉𐤌	spelling	 𐤍𐤅𐤇 𐤉𐤌	H5117	root
+220:8:220	𐤅𐤓𐤂𐤌𐤅𐤄𐤅	english	𐤅 𐤓𐤂𐤌𐤅𐤄 𐤅	H7277	matres
 220:8:221	𐤉𐤎𐤁𐤅𐤋	spelling	[𐤉] 𐤎𐤁𐤅𐤋 	H5445	matres
 220:8:221	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
 220:8:222	𐤅𐤉𐤀𐤎𐤅𐤐	spelling	𐤅+[𐤉] 𐤀𐤎𐤅𐤐 	H622	matres
 220:8:223	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
+220:8:224	𐤍𐤕𐤀𐤓	english	[𐤍] 𐤕𐤀𐤓 	H779	form
 220:8:224	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
 220:8:225	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
 220:8:225	𐤅𐤉𐤏𐤆𐤁𐤅𐤄𐤅	english	𐤅+[𐤉] 𐤏𐤆𐤁𐤅𐤄 𐤅	H5800	form
@@ -6449,7 +7162,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:225	𐤄𐤌𐤆𐤉𐤌𐤄	spelling	𐤄 𐤌𐤆𐤉𐤌𐤄 	H4209	matres
 220:8:226	𐤄𐤍𐤆𐤊𐤓𐤅𐤕	spelling	𐤄+[𐤍] 𐤆𐤊𐤓 𐤅𐤕	H2142	root
 220:8:227	𐤍𐤅𐤊𐤇𐤅𐤕𐤅	spelling	 𐤍𐤅𐤊𐤇 𐤅𐤕+𐤅	H3198	form
-220:8:228	𐤋𐤄𐤌𐤓𐤉𐤑	english	𐤋+𐤄+[𐤌] 𐤓𐤉𐤑 	H7323	matres
+220:8:228	𐤋𐤄𐤌𐤓𐤉𐤑	english	𐤋+[𐤄] 𐤌𐤓𐤉𐤑 	H4834	matres
 220:8:228	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
 220:8:228	𐤅𐤀𐤉𐤏𐤃	english	𐤅+[𐤀] 𐤉𐤏𐤃 	H3259	root
 220:8:231	𐤏𐤉𐤃𐤅	spelling	 𐤏𐤉𐤃 𐤅	H5750	matres
@@ -6459,17 +7172,25 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:235	𐤅𐤋𐤈𐤏𐤅𐤌	spelling	𐤅+𐤋 𐤈𐤏𐤅𐤌 	H2942	matres
 220:8:235	𐤇𐤆𐤓𐤄	spelling	 𐤇𐤆𐤓 𐤄	H2387	matres
 220:8:235	𐤁𐤏𐤍𐤉𐤍𐤉𐤅	spelling	𐤁 𐤏𐤍𐤉𐤍 𐤉+𐤅	H6045	root
+220:8:238	𐤄𐤕𐤀𐤓𐤇	english	[𐤄𐤕] 𐤀𐤓𐤇 	H732	root
+220:8:239	𐤋𐤈𐤏𐤍𐤕𐤅	english	𐤋 𐤈𐤏𐤍 𐤕+𐤅	H2943	root
 220:8:239	𐤋𐤈𐤏𐤅𐤌	spelling	𐤋 𐤈𐤏𐤅𐤌 	H2942	matres
+220:8:240	𐤅𐤌𐤔𐤅𐤇𐤇𐤉𐤌	english	𐤅+[𐤌] 𐤔𐤅𐤇𐤇 𐤉𐤌	H7817	matres
+220:8:240	𐤅𐤉𐤈𐤓𐤅𐤐	english	𐤅+[𐤉] 𐤈𐤓𐤅𐤐 	H2963	matres
 220:8:241	𐤏𐤉𐤃𐤅	spelling	 𐤏𐤉𐤃 𐤅	H5750	matres
 220:8:241	𐤇𐤆𐤓𐤄	spelling	 𐤇𐤆𐤓 𐤄	H2387	matres
 220:8:241	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
-220:8:242	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	𐤌 𐤐𐤅𐤀𐤓 𐤄	H6287	matres
+220:8:242	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	[𐤌] 𐤐𐤅𐤀𐤓 𐤄	H6286	matres
+220:8:243	𐤄𐤌𐤕𐤒𐤁𐤋𐤅𐤕	english	𐤄+[𐤌𐤕] 𐤒𐤁𐤋 𐤅𐤕	H6901	root
 220:8:244	𐤈𐤁𐤏𐤄	spelling	 𐤈𐤁𐤏 𐤄	H2883	root
 220:8:245	𐤄𐤀𐤉𐤑𐤅	spelling	𐤄+[𐤀] 𐤉𐤑𐤅 	H6680	form
 220:8:245	𐤔𐤄𐤏𐤉𐤆	english	𐤔+[𐤄] 𐤏𐤉𐤆 	H5756	matres
-220:8:252	𐤐𐤓𐤉𐤑𐤅𐤕𐤌	english	 𐤐𐤓𐤉𐤑 𐤅𐤕+𐤌	H6530	root
+220:8:249	𐤒𐤓𐤅𐤁𐤕𐤅	spelling	 𐤒𐤓𐤅𐤁 𐤕+𐤅	H7138	root
+220:8:252	𐤄𐤍𐤔𐤋𐤈𐤉𐤌	spelling	𐤄+[𐤍] 𐤔𐤋𐤈 𐤉𐤌	H7980	root
+220:8:252	𐤌𐤕𐤒𐤋𐤒𐤋𐤉𐤌	english	[𐤌𐤕] 𐤒𐤋𐤒𐤋 𐤉𐤌	H7043	form
 220:8:253	𐤋𐤍𐤕𐤉𐤍𐤉	english	𐤋 𐤍𐤕𐤉𐤍 𐤉	H5411	root
 220:8:253	𐤌𐤑𐤅𐤅𐤕𐤉𐤅	spelling	 𐤌𐤑𐤅𐤅𐤕 𐤉+𐤅	H4695	matres
+220:8:253	𐤅𐤊𐤏𐤅𐤍𐤔	english	𐤅+𐤊 𐤏𐤅𐤍𐤔 	H6064	matres
 220:8:255	𐤔𐤄𐤁𐤈𐤉𐤇	spelling	𐤔+𐤄 𐤁𐤈𐤉𐤇 	H983	matres
 220:8:256	𐤌𐤑𐤅𐤅𐤕𐤉𐤅	spelling	 𐤌𐤑𐤅𐤅𐤕 𐤉+𐤅	H4695	matres
 220:8:258	𐤄𐤕𐤍𐤀𐤉𐤌	spelling	[𐤄𐤕] 𐤍𐤀𐤉𐤌 	H5001	matres
@@ -6499,7 +7220,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:282	𐤌𐤑𐤁𐤀𐤅𐤕𐤉𐤅	english	𐤌 𐤑𐤁𐤀𐤅𐤕 𐤉+𐤅	H6635	form
 220:8:282	𐤔𐤄𐤓𐤂𐤔	english	𐤔+[𐤄] 𐤓𐤂𐤔 	H7284	root
 220:8:283	𐤅𐤉𐤕𐤍𐤐𐤋𐤅	spelling	𐤅+[𐤉𐤕] 𐤍𐤐𐤋 𐤅	H5307	root
-220:8:284	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:8:284	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:8:284	𐤌𐤐𐤋𐤉𐤀	spelling	𐤌 𐤐𐤋𐤉𐤀 	H6381	matres
 220:8:285	𐤅𐤍𐤒𐤁𐤓	english	𐤅+[𐤍] 𐤒𐤁𐤓 	H6912	root
 220:8:288	𐤄𐤕𐤍𐤊𐤋𐤅𐤕	spelling	[𐤄𐤕] 𐤍𐤊𐤋 𐤅𐤕	H5230	root
@@ -6519,7 +7240,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:309	𐤔𐤍𐤔𐤌𐤃	english	𐤔+[𐤍] 𐤔𐤌𐤃 	H8045	root
 220:8:310	𐤄𐤇𐤅𐤍𐤄	spelling	[𐤄] 𐤇𐤅𐤍𐤄 	H2583	matres
 220:8:311	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
-220:8:312	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:8:312	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:8:314	𐤅𐤏𐤅𐤒𐤓𐤕𐤌	english	𐤅 𐤏𐤅𐤒𐤓 𐤕+𐤌	H6135	matres
 220:8:315	𐤌𐤌𐤓𐤉𐤑	english	𐤌+[𐤌] 𐤓𐤉𐤑 	H7323	matres
 220:8:316	𐤔𐤄𐤌𐤑𐤉𐤀	spelling	𐤔+[𐤄] 𐤌𐤑𐤉𐤀 	H4672	matres
@@ -6540,7 +7261,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:335	𐤁𐤄𐤊𐤍𐤉𐤎𐤌	english	𐤁+[𐤄] 𐤊𐤍𐤉𐤎 𐤌	H3664	matres
 220:8:337	𐤋𐤄𐤆𐤌𐤍𐤕𐤅	english	𐤋+𐤄 𐤆𐤌𐤍 𐤕+𐤅	H2166	root
 220:8:337	𐤄𐤍𐤆𐤊𐤓	spelling	𐤄+[𐤍] 𐤆𐤊𐤓 	H2142	root
-220:8:338	𐤉𐤔𐤉𐤌𐤄𐤅	english	[𐤉] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
+220:8:338	𐤉𐤔𐤉𐤌𐤄𐤅	spelling	[𐤉] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
 220:8:338	𐤔𐤉𐤑𐤉𐤕	english	𐤔 𐤉𐤑𐤉𐤕 	H3341	matres
 220:8:339	𐤍𐤕𐤒𐤁𐤋𐤄	english	[𐤍𐤕] 𐤒𐤁𐤋 𐤄	H6901	root
 220:8:340	𐤋𐤂𐤌𐤅𐤓	spelling	𐤋 𐤂𐤌𐤅𐤓 	H1584	matres
@@ -6551,7 +7272,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:348	𐤅𐤄𐤂𐤅𐤁𐤋	english	𐤅+𐤄 𐤂𐤅𐤁𐤋 	H1366	matres
 220:8:350	𐤋𐤄𐤕𐤍𐤒𐤌	spelling	𐤋+[𐤄𐤕] 𐤍𐤒𐤌 	H5358	root
 220:8:352	𐤅𐤋𐤉𐤏𐤃	english	𐤅+𐤋 𐤉𐤏𐤃 	H3259	root
-220:8:355	𐤉𐤌𐤊𐤅𐤓	english	[𐤉] 𐤌𐤊𐤅𐤓 	H4376	matres
+220:8:355	𐤉𐤌𐤊𐤅𐤓	spelling	[𐤉] 𐤌𐤊𐤅𐤓 	H4376	matres
 220:8:355	𐤋𐤔𐤃𐤅𐤕𐤉𐤅	english	𐤋 𐤔𐤃𐤅𐤕 𐤉+𐤅	H7704	form
 220:8:355	𐤉𐤀𐤇𐤃	english	[𐤉] 𐤀𐤇𐤃 	H258	root
 220:8:355	𐤌𐤔𐤃𐤅𐤕𐤉𐤅	english	𐤌 𐤔𐤃𐤅𐤕 𐤉+𐤅	H7704	form
@@ -6560,7 +7281,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:356	𐤌𐤕𐤓𐤇𐤑	english	[𐤌𐤕] 𐤓𐤇𐤑 	H7364	root
 220:8:357	𐤉𐤁𐤋𐤉𐤂	english	[𐤉] 𐤁𐤋𐤉𐤂 	H1082	matres
 220:8:357	𐤋𐤃𐤀𐤅𐤂	spelling	𐤋 𐤃𐤀𐤅𐤂 	H1672	matres
-220:8:358	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	𐤌 𐤐𐤅𐤀𐤓 𐤄	H6287	matres
+220:8:358	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	[𐤌] 𐤐𐤅𐤀𐤓 𐤄	H6286	matres
 220:8:358	𐤉𐤏𐤉𐤃𐤅	spelling	[𐤉] 𐤏𐤉𐤃 𐤅	H5749	matres
 220:8:359	𐤍𐤊𐤍𐤎𐤄	english	[𐤍] 𐤊𐤍𐤎 𐤄	H3664	root
 220:8:360	𐤋𐤄𐤐𐤂𐤔	spelling	𐤋+[𐤄] 𐤐𐤂𐤔 	H6298	root
@@ -6578,7 +7299,6 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:372	𐤎𐤅𐤋𐤋𐤅𐤕	spelling	 𐤎𐤅𐤋𐤋 𐤅𐤕	H5549	matres
 220:8:377	𐤄𐤕𐤍𐤐𐤋	spelling	[𐤄𐤕] 𐤍𐤐𐤋 	H5307	root
 220:8:377	𐤅𐤄𐤕𐤂𐤁𐤓	english	𐤅+[𐤄𐤕] 𐤂𐤁𐤓 	H1396	root
-220:8:379	𐤄𐤕𐤉𐤏𐤑	english	[𐤄𐤕] 𐤉𐤏𐤑 	H3289	root
 220:8:379	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
 220:8:379	𐤋𐤄𐤕𐤂𐤓𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤂𐤓𐤅 𐤕	H1481	form
 220:8:379	𐤍𐤅𐤑𐤇𐤍𐤅	english	 𐤍𐤅𐤑𐤇 𐤍𐤅	H5331	matres
@@ -6586,6 +7306,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:8:380	𐤍𐤊𐤅𐤇𐤉𐤌	english	 𐤍𐤊𐤅𐤇 𐤉𐤌	H5228	matres
 220:8:380	𐤅𐤎𐤃𐤓	spelling	𐤅 𐤎𐤃𐤓 	H5468	root
 220:8:383	𐤁𐤌𐤍𐤅𐤎𐤕𐤌	spelling	𐤁 𐤌𐤍𐤅𐤎 𐤕+𐤌	H4498	root
+220:8:385	𐤓𐤇𐤌𐤍𐤉𐤌	spelling	 𐤓𐤇𐤌𐤍𐤉 𐤌	H7362	root
 220:8:385	𐤌𐤕𐤇𐤍𐤍𐤉𐤌	spelling	[𐤌𐤕] 𐤇𐤍𐤍 𐤉𐤌	H2603	root
 220:8:386	𐤉𐤊𐤁𐤃𐤄𐤅	spelling	[𐤉] 𐤊𐤁𐤃𐤄 𐤅	H3513	form
 220:8:390	𐤌𐤄𐤔𐤁𐤅𐤉𐤉𐤌	spelling	𐤌+𐤄 𐤔𐤁𐤅𐤉𐤉 𐤌	H7628	matres
@@ -6630,11 +7351,12 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:9:50	𐤇𐤉𐤁𐤕	english	 𐤇𐤉𐤁 𐤕	H2326	matres
 220:9:52	𐤅𐤍𐤇𐤔𐤐	english	𐤅+[𐤍] 𐤇𐤔𐤐 	H2834	root
 220:9:53	𐤄𐤅𐤓𐤂𐤉𐤅	english	 𐤄𐤅𐤓𐤂 𐤉+𐤅	H2026	form
-220:9:56	𐤉𐤊𐤉𐤓𐤄𐤅	english	[𐤉] 𐤊𐤉𐤓𐤄 𐤅	H3738	matres
+220:9:56	𐤉𐤊𐤉𐤓𐤄𐤅	spelling	[𐤉] 𐤊𐤉𐤓𐤄 𐤅	H3738	matres
 220:9:57	𐤍𐤐𐤒𐤇𐤅	spelling	[𐤍] 𐤐𐤒𐤇 𐤅	H6491	root
 220:9:59	𐤅𐤉𐤉𐤏𐤑𐤄𐤅	spelling	𐤅+[𐤉] 𐤉𐤏𐤑𐤄𐤅 	H3289	form
 220:9:63	𐤉𐤎𐤂𐤉𐤓	spelling	[𐤉] 𐤎𐤂𐤉𐤓 	H5462	matres
 220:9:65	𐤀𐤈𐤓𐤃𐤍𐤅	english	[𐤀] 𐤈𐤓𐤃 𐤍𐤅	H2956	root
+220:9:68	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 220:9:75	𐤅𐤍𐤀𐤎𐤓	spelling	𐤅+[𐤍] 𐤀𐤎𐤓 	H631	root
 220:9:76	𐤅𐤋𐤄𐤁𐤄𐤉𐤋	english	𐤅+𐤋+[𐤄] 𐤁𐤄𐤉𐤋 	H926	matres
 220:9:77	𐤄𐤔𐤉𐤀𐤕𐤌	english	𐤄 𐤔𐤉𐤀 𐤕+𐤌	H7864	root
@@ -6647,6 +7369,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:9:94	𐤕𐤄𐤋𐤅𐤊𐤄	english	[𐤕] 𐤄𐤋𐤅𐤊 𐤄	H1980	form
 220:9:104	𐤒𐤁𐤓𐤅𐤄𐤅	spelling	 𐤒𐤁𐤓𐤅𐤄 𐤅	H6900	matres
 220:9:104	𐤒𐤁𐤓𐤅𐤄𐤅	spelling	 𐤒𐤁𐤓𐤅𐤄 𐤅	H6900	matres
+220:9:106	𐤌𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤌 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
 220:9:113	𐤍𐤀𐤌𐤍𐤅𐤕𐤌	spelling	[𐤍] 𐤀𐤌𐤍 𐤅𐤕+𐤌	H539	root
 220:9:118	𐤅𐤁𐤎𐤃𐤓	spelling	𐤅+𐤁 𐤎𐤃𐤓 	H5468	root
 220:9:123	𐤁𐤎𐤏𐤅𐤃𐤄	english	𐤁 𐤎𐤏𐤅𐤃 𐤄	H5582	matres
@@ -6668,7 +7391,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:9:170	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
 220:9:176	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
 220:9:181	𐤕𐤍𐤑𐤇	english	[𐤕] 𐤍𐤑𐤇 	H5329	root
-220:9:182	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	𐤌 𐤐𐤅𐤀𐤓 𐤄	H6287	matres
+220:9:182	𐤌𐤐𐤅𐤀𐤓𐤄	spelling	[𐤌] 𐤐𐤅𐤀𐤓 𐤄	H6286	matres
 220:9:186	𐤔𐤒𐤉𐤃𐤄	spelling	 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
 220:9:186	𐤅𐤋𐤄𐤏𐤍𐤉𐤔	english	𐤅+𐤋+[𐤄] 𐤏𐤍𐤉𐤔 	H6064	matres
 220:9:187	𐤋𐤄𐤏𐤍𐤉𐤔	spelling	𐤋+[𐤄] 𐤏𐤍𐤉𐤔 	H6064	matres
@@ -6701,6 +7424,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:9:244	𐤅𐤉𐤑𐤅𐤓𐤅	spelling	𐤅+[𐤉] 𐤑𐤅𐤓 𐤅	H6696	root
 220:9:250	𐤍𐤍𐤉𐤇	spelling	[𐤍] 𐤍𐤉𐤇 	H5117	matres
 220:9:251	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
+220:9:262	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 220:9:266	𐤄𐤍𐤆𐤊𐤓𐤅𐤕	spelling	𐤄+[𐤍] 𐤆𐤊𐤓 𐤅𐤕	H2142	root
 220:9:267	𐤅𐤆𐤁𐤅𐤋𐤅𐤍	english	𐤅 𐤆𐤁𐤅𐤋𐤅𐤍 	H2074	root
 220:9:276	𐤋𐤀𐤉𐤅𐤌𐤉𐤅	english	 𐤋𐤀𐤉𐤅𐤌 𐤉+𐤅	H3816	matres
@@ -6716,7 +7440,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:10:4	𐤌𐤂𐤃𐤅𐤋𐤉𐤅	english	 𐤌𐤂𐤃𐤅𐤋 𐤉+𐤅	H4024	root
 220:10:5	𐤌𐤉𐤃𐤉𐤃𐤉𐤅	spelling	𐤌 𐤉𐤃𐤉𐤃 𐤉+𐤅	H3039	root
 220:10:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
-220:10:10	𐤕𐤓𐤑𐤅	english	[𐤕] 𐤓𐤑𐤅 	H7323	form
+220:10:10	𐤕𐤓𐤑𐤅	spelling	[𐤕] 𐤓𐤑𐤅 	H7521	form
 220:10:10	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
 220:10:12	𐤌𐤉𐤃𐤉𐤃𐤉𐤅	spelling	𐤌 𐤉𐤃𐤉𐤃 𐤉+𐤅	H3039	root
 220:10:13	𐤉𐤃𐤉𐤃𐤉𐤅	spelling	 𐤉𐤃𐤉𐤃 𐤉+𐤅	H3039	root
@@ -6760,6 +7484,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:10:138	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
 220:10:142	𐤅𐤍𐤌𐤎𐤓𐤅	english	𐤅+[𐤍] 𐤌𐤎𐤓 𐤅	H4560	root
 220:10:154	𐤌𐤌𐤅𐤎𐤓𐤅𐤕𐤉𐤅	spelling	𐤌 𐤌𐤅𐤎𐤓𐤅𐤕 𐤉+𐤅	H4147	form
+220:10:157	𐤁𐤇𐤉𐤓𐤕𐤅	spelling	 𐤁𐤇𐤉𐤓 𐤕+𐤅	H972	root
 220:10:164	𐤀𐤄𐤁𐤅𐤄𐤅	spelling	 𐤀𐤄𐤁𐤅𐤄 𐤅	H160	matres
 220:10:165	𐤂𐤌𐤅𐤓𐤄	spelling	 𐤂𐤌𐤅𐤓 𐤄	H1586	matres
 220:10:167	𐤋𐤄𐤇𐤔𐤉𐤁	english	𐤋+[𐤄] 𐤇𐤔𐤉𐤁 	H2803	matres
@@ -6855,7 +7580,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:11:80	𐤄𐤓𐤂𐤉𐤋𐤉𐤌	spelling	𐤄 𐤓𐤂𐤉𐤋 𐤉𐤌	H7272	matres
 220:11:83	𐤄𐤍𐤇𐤓𐤁	english	𐤄+[𐤍] 𐤇𐤓𐤁 	H2718	root
 220:11:93	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
-220:11:94	𐤕𐤇𐤐𐤑𐤅	english	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+220:11:94	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
 220:11:104	𐤇𐤁𐤓𐤉𐤄𐤌	english	 𐤇𐤁𐤓𐤉𐤄 𐤌	H2250	matres
 220:11:106	𐤁𐤔𐤒𐤉𐤃𐤄	spelling	𐤁 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
 220:11:107	𐤄𐤌𐤇𐤅𐤃𐤔	english	𐤄+[𐤌] 𐤇𐤅𐤃𐤔 	H2318	matres
@@ -6896,7 +7621,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:11:217	𐤍𐤕𐤏𐤓𐤁	english	[𐤍𐤕] 𐤏𐤓𐤁 	H6148	root
 220:11:217	𐤁𐤌𐤍𐤄𐤂𐤉𐤅	english	𐤁+[𐤌] 𐤍𐤄𐤂 𐤉+𐤅	H5090	root
 220:11:224	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
-220:11:228	𐤕𐤎𐤁𐤋	spelling	[𐤕] 𐤎𐤁𐤋 	H5446	root
+220:11:228	𐤕𐤎𐤁𐤋	spelling	[𐤕] 𐤎𐤁𐤋 	H5445	root
 220:11:231	𐤄𐤕𐤇𐤍𐤍𐤄	spelling	[𐤄𐤕] 𐤇𐤍𐤍 𐤄	H2603	root
 220:11:233	𐤀𐤁𐤃𐤍𐤌	spelling	 𐤀𐤁𐤃𐤍 𐤌	H12	root
 220:11:234	𐤄𐤕𐤇𐤍𐤍𐤄	spelling	[𐤄𐤕] 𐤇𐤍𐤍 𐤄	H2603	root
@@ -6915,6 +7640,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:11:257	𐤄𐤓𐤁𐤉𐤃	spelling	𐤄 𐤓𐤁𐤉𐤃 	H7242	root
 220:11:262	𐤅𐤕𐤒𐤅𐤍𐤍	english	𐤅+[𐤕] 𐤒𐤅𐤍 𐤍	H6969	root
 220:11:265	𐤕𐤎𐤋𐤇	spelling	[𐤕] 𐤎𐤋𐤇 	H5545	root
+220:11:265	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
 220:11:277	𐤁𐤄𐤕𐤂𐤅𐤓𐤓	english	𐤁+[𐤄𐤕] 𐤂𐤅𐤓𐤓 	H1641	matres
 220:11:279	𐤀𐤐𐤈𐤓𐤌	english	[𐤀] 𐤐𐤈𐤓 𐤌	H6362	root
 220:11:279	𐤌𐤄𐤏𐤅𐤍𐤔	english	𐤌+[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
@@ -6932,7 +7658,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:11:307	𐤋𐤌𐤃𐤓𐤂𐤄	spelling	𐤋 𐤌𐤃𐤓𐤂𐤄 	H4095	root
 220:11:308	𐤄𐤍𐤔𐤅𐤀𐤉𐤍	spelling	[𐤄] 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
 220:11:311	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
-220:11:315	𐤁𐤀𐤎𐤉𐤀	english	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
+220:11:315	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
 220:11:324	𐤇𐤓𐤉𐤑𐤅𐤕𐤅	spelling	 𐤇𐤓𐤉𐤑 𐤅𐤕+𐤅	H2757	root
 220:11:327	𐤅𐤉𐤏𐤈𐤓𐤅	english	𐤅+[𐤉] 𐤏𐤈𐤓 𐤅	H5849	root
 220:11:331	𐤅𐤓𐤒𐤅𐤌	english	𐤅 𐤓𐤒𐤅𐤌 	H7552	matres
@@ -7026,7 +7752,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:12:119	𐤓𐤀𐤅𐤉𐤉𐤌	spelling	 𐤓𐤀𐤅𐤉𐤉 𐤌	H7210	matres
 220:12:123	𐤄𐤍𐤆𐤊𐤓	spelling	𐤄+[𐤍] 𐤆𐤊𐤓 	H2142	root
 220:12:125	𐤄𐤀𐤉𐤅𐤍𐤉𐤌	english	𐤄 𐤀𐤉𐤅𐤍 𐤉𐤌	H369	matres
-220:12:125	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	 𐤄𐤉𐤅𐤅𐤍 𐤉𐤌	H1951	matres
+220:12:125	𐤄𐤉𐤅𐤅𐤍𐤉𐤌	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉𐤌	H3120	matres
 220:12:130	𐤍𐤊𐤔𐤋	spelling	[𐤍] 𐤊𐤔𐤋 	H3782	root
 220:12:131	𐤅𐤉𐤍𐤑𐤇	spelling	𐤅+[𐤉] 𐤍𐤑𐤇 	H5329	root
 220:12:132	𐤅𐤉𐤍𐤑𐤇	spelling	𐤅+[𐤉] 𐤍𐤑𐤇 	H5329	root
@@ -7085,6 +7811,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:12:216	𐤍𐤊𐤎𐤉	spelling	 𐤍𐤊𐤎 𐤉	H5232	root
 220:12:220	𐤅𐤉𐤊𐤁𐤃𐤄𐤅	spelling	𐤅+[𐤉] 𐤊𐤁𐤃𐤄 𐤅	H3513	form
 220:12:220	𐤅𐤐𐤒𐤉𐤃𐤉𐤅	english	𐤅 𐤐𐤒𐤉𐤃 𐤉+𐤅	H6496	root
+220:12:226	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
 220:12:227	𐤍𐤇𐤆𐤉𐤒𐤍𐤅	english	[𐤍] 𐤇𐤆𐤉𐤒 𐤍𐤅	H2388	matres
 220:12:230	𐤅𐤉𐤇𐤒𐤒	english	𐤅+[𐤉] 𐤇𐤒𐤒 	H2710	root
 220:12:231	𐤋𐤔𐤏𐤔𐤅𐤏	spelling	𐤋 𐤔𐤏𐤔𐤅𐤏 	H8191	matres
@@ -7109,6 +7836,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:12:275	𐤍𐤎𐤐𐤇𐤅	spelling	[𐤍] 𐤎𐤐𐤇 𐤅	H5596	root
 220:12:280	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
 220:12:281	𐤅𐤕𐤕𐤏𐤋𐤅	english	𐤅+[𐤕] 𐤕𐤏𐤋𐤅 	H5927	form
+220:12:283	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 220:12:284	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
 220:12:285	𐤁𐤌𐤅𐤃𐤉𐤏𐤉𐤌	english	𐤁 𐤌𐤅𐤃𐤉𐤏 𐤉𐤌	H4069	matres
 220:12:288	𐤍𐤎𐤐𐤇𐤅	spelling	[𐤍] 𐤎𐤐𐤇 𐤅	H5596	root
@@ -7151,6 +7879,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:12:406	𐤂𐤃𐤐𐤌	english	 𐤂𐤃𐤐 𐤌	H1442	root
 220:12:406	𐤉𐤌𐤎𐤓	spelling	[𐤉] 𐤌𐤎𐤓 	H4560	root
 220:12:409	𐤅𐤉𐤐𐤂𐤔	spelling	𐤅+[𐤉] 𐤐𐤂𐤔 	H6298	root
+220:12:413	𐤍𐤀𐤋𐤌	spelling	[𐤍] 𐤀𐤋𐤌 	H481	root
 220:12:416	𐤅𐤕𐤒𐤁𐤋𐤌	english	𐤅+[𐤕] 𐤒𐤁𐤋 𐤌	H6901	root
 220:12:416	𐤅𐤕𐤔𐤉𐤌𐤄𐤅	english	𐤅+[𐤕] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
 220:12:423	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
@@ -7221,9 +7950,10 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:13:168	𐤍𐤕𐤇𐤃𐤔𐤄	english	[𐤍𐤕] 𐤇𐤃𐤔 𐤄	H2318	root
 220:13:169	𐤋𐤄𐤈𐤓𐤉𐤇	english	𐤋+𐤄 𐤈𐤓𐤉𐤇 	H2960	matres
 220:13:169	𐤉𐤇𐤃𐤔𐤅	english	[𐤉] 𐤇𐤃𐤔 𐤅	H2318	root
-220:13:170	𐤕𐤇𐤐𐤑𐤅	english	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+220:13:170	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
 220:13:170	𐤁𐤎𐤁𐤓	spelling	𐤁 𐤎𐤁𐤓 	H5452	root
 220:13:171	𐤄𐤀𐤉𐤎𐤉𐤉𐤌	spelling	𐤄 𐤀𐤉𐤎𐤉𐤉𐤌 	H618	matres
+220:13:172	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤅+𐤄 𐤐𐤓𐤅𐤔 𐤉𐤌	H6571	matres
 220:13:172	𐤄𐤀𐤉𐤎𐤉𐤉𐤌	spelling	𐤄 𐤀𐤉𐤎𐤉𐤉𐤌 	H618	matres
 220:13:172	𐤊𐤂𐤆𐤓𐤕𐤅	english	𐤊 𐤂𐤆𐤓 𐤕+𐤅	H1505	root
 220:13:173	𐤄𐤂𐤅𐤓𐤌𐤉𐤌	spelling	𐤄 𐤂𐤅𐤓𐤌𐤉 𐤌	H1636	matres
@@ -7245,7 +7975,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:13:217	𐤅𐤉𐤕𐤇𐤉𐤋𐤅	spelling	𐤅+[𐤉] 𐤕𐤇𐤉𐤋𐤅 	H2342	form
 220:13:217	𐤋𐤄𐤓𐤅𐤎	spelling	𐤋 𐤄𐤓𐤅𐤎 	H2040	matres
 220:13:219	𐤀𐤅𐤄𐤁𐤉𐤅	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤅	H157	form
-220:13:222	𐤒𐤁𐤋𐤕𐤅	spelling	 𐤒𐤁𐤋 𐤕+𐤅	H6901	root
+220:13:222	𐤒𐤁𐤋𐤕𐤅	spelling	 𐤒𐤁𐤋 𐤕+𐤅	H6903	root
 220:13:222	𐤋𐤇𐤕𐤅𐤍𐤄	english	𐤋 𐤇𐤕𐤅𐤍 𐤄	H2859	matres
 220:13:222	𐤀𐤅𐤄𐤁𐤉𐤄	spelling	 𐤀𐤅𐤄𐤁 𐤉+𐤄	H157	form
 220:13:222	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
@@ -7265,7 +7995,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:13:250	𐤉𐤏𐤉𐤃	spelling	[𐤉] 𐤏𐤉𐤃 	H5749	matres
 220:13:257	𐤅𐤉𐤊𐤍𐤉𐤏	spelling	𐤅+[𐤉] 𐤊𐤍𐤉𐤏 	H3665	matres
 220:13:259	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
-220:13:268	𐤒𐤁𐤋𐤕𐤅	spelling	 𐤒𐤁𐤋 𐤕+𐤅	H6901	root
+220:13:268	𐤒𐤁𐤋𐤕𐤅	spelling	 𐤒𐤁𐤋 𐤕+𐤅	H6903	root
 220:13:275	𐤁𐤔𐤒𐤉𐤃𐤄	spelling	𐤁 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
 220:13:275	𐤁𐤄𐤊𐤍𐤏𐤌	spelling	𐤁+[𐤄] 𐤊𐤍𐤏 𐤌	H3665	root
 220:13:278	𐤌𐤎𐤐𐤉𐤒	spelling	[𐤌] 𐤎𐤐𐤉𐤒 	H5606	matres
@@ -7317,6 +8047,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:13:398	𐤅𐤕𐤀𐤇𐤆𐤄𐤅	english	𐤅+[𐤕] 𐤀𐤇𐤆𐤄 𐤅	H270	form
 220:13:400	𐤕𐤇𐤆𐤉𐤒	spelling	[𐤕] 𐤇𐤆𐤉𐤒 	H2388	matres
 220:13:401	𐤋𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤋 𐤐𐤓𐤅𐤔 𐤉𐤌	H6566	matres
+220:13:406	𐤅𐤉𐤏𐤅𐤓𐤓𐤅	spelling	𐤅+[𐤉] 𐤏𐤅𐤓𐤓 𐤅	H5782	form
 220:13:408	𐤋𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤋 𐤐𐤓𐤅𐤔 𐤉𐤌	H6566	matres
 220:13:409	𐤋𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤋 𐤐𐤓𐤅𐤔 𐤉𐤌	H6566	matres
 220:13:409	𐤏𐤍𐤉𐤉𐤍𐤉	spelling	 𐤏𐤍𐤉𐤉𐤍 𐤉	H6045	matres
@@ -7428,6 +8159,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:14:228	𐤀𐤆𐤓𐤇𐤉	spelling	 𐤀𐤆𐤓𐤇 𐤉	H249	root
 220:14:229	𐤁𐤋𐤁𐤅𐤎	spelling	𐤁+𐤋 𐤁𐤅𐤎 	H947	root
 220:14:230	𐤁𐤋𐤁𐤅𐤎	spelling	𐤁+𐤋 𐤁𐤅𐤎 	H947	root
+220:14:230	𐤁𐤀𐤎𐤉𐤀	spelling	𐤁 𐤀𐤎𐤉𐤀 	H609	matres
 220:14:232	𐤀𐤆𐤓𐤇𐤉	spelling	 𐤀𐤆𐤓𐤇 𐤉	H249	root
 220:14:234	𐤀𐤆𐤓𐤇𐤉	spelling	 𐤀𐤆𐤓𐤇 𐤉	H249	root
 220:14:234	𐤄𐤍𐤓𐤀𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
@@ -7459,6 +8191,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:14:286	𐤌𐤇𐤍𐤐𐤕𐤅	english	𐤌 𐤇𐤍𐤐 𐤕+𐤅	H2611	root
 220:14:286	𐤂𐤅𐤐𐤅	english	 𐤂𐤅𐤐 𐤅	H1479	root
 220:14:288	𐤉𐤍𐤒𐤅𐤌	spelling	[𐤉] 𐤍𐤒𐤅𐤌 	H6965	form
+220:14:292	𐤍𐤀𐤋𐤌	spelling	[𐤍] 𐤀𐤋𐤌 	H481	root
 220:14:301	𐤀𐤉𐤈𐤋𐤉𐤄	english	[𐤀] 𐤉𐤈𐤋 𐤉+𐤄	H2904	form
 220:14:307	𐤁𐤔𐤒𐤉𐤃𐤄	spelling	𐤁 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
 220:14:307	𐤅𐤉𐤅𐤃𐤉𐤏𐤅𐤍𐤉	english	𐤅 𐤉𐤅𐤃𐤉𐤏𐤅𐤍𐤉 	H3049	matres
@@ -7562,7 +8295,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:15:2	𐤍𐤌𐤎𐤓𐤄	spelling	[𐤍] 𐤌𐤎𐤓 𐤄	H4560	root
 220:15:2	𐤌𐤄𐤏𐤍𐤉𐤔𐤌	english	𐤌+[𐤄] 𐤏𐤍𐤉𐤔 𐤌	H6064	matres
 220:15:3	𐤅𐤉𐤊𐤅𐤁𐤃𐤅	english	𐤅+[𐤉] 𐤊𐤅𐤁𐤃 𐤅	H3513	matres
-220:15:3	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
+220:15:3	𐤄𐤐𐤓𐤅𐤔	spelling	𐤄 𐤐𐤓𐤅𐤔 	H6571	matres
 220:15:11	𐤔𐤁𐤉𐤅𐤅𐤆𐤀𐤕	english	𐤔 𐤁𐤉𐤅𐤅𐤆𐤀 𐤕	H958	matres
 220:15:14	𐤄𐤕𐤍𐤄𐤂	spelling	[𐤄𐤕] 𐤍𐤄𐤂 	H5090	root
 220:15:14	𐤌𐤌𐤅𐤎𐤓𐤅𐤕𐤉𐤅	spelling	𐤌 𐤌𐤅𐤎𐤓𐤅𐤕 𐤉+𐤅	H4147	form
@@ -7579,10 +8312,10 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:15:45	𐤅𐤕𐤕𐤀𐤅𐤍𐤍	english	𐤅+[𐤕𐤕] 𐤀𐤅𐤍𐤍 	H596	matres
 220:15:48	𐤋𐤄𐤕𐤒𐤃𐤌	english	𐤋+[𐤄𐤕] 𐤒𐤃𐤌 	H6923	root
 220:15:53	𐤅𐤉𐤕𐤇𐤁𐤁	spelling	𐤅+[𐤉𐤕] 𐤇𐤁𐤁 	H2245	root
-220:15:53	𐤅𐤉𐤌𐤔𐤊𐤄𐤅	english	𐤅+[𐤉] 𐤌𐤔𐤊𐤄 𐤅	H4900	form
+220:15:53	𐤅𐤉𐤌𐤔𐤊𐤄𐤅	spelling	𐤅+[𐤉] 𐤌𐤔𐤊𐤄 𐤅	H4900	form
 220:15:53	𐤅𐤋𐤄𐤕𐤄𐤅𐤋𐤋	english	𐤅+𐤋+[𐤄𐤕] 𐤄𐤅𐤋𐤋 	H1984	matres
 220:15:55	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
-220:15:55	𐤅𐤉𐤊𐤁𐤉𐤃𐤅	english	𐤅+[𐤉] 𐤊𐤁𐤉𐤃 𐤅	H3513	matres
+220:15:55	𐤅𐤉𐤊𐤁𐤉𐤃𐤅	spelling	𐤅+[𐤉] 𐤊𐤁𐤉𐤃 𐤅	H3513	matres
 220:15:57	𐤕𐤌𐤅𐤓𐤄	spelling	[𐤕] 𐤌𐤅𐤓 𐤄	H4171	root
 220:15:58	𐤍𐤊𐤀𐤁𐤕	english	[𐤍] 𐤊𐤀𐤁 𐤕	H3510	root
 220:15:60	𐤄𐤄𐤓𐤂𐤔𐤄	english	𐤄+[𐤄] 𐤓𐤂𐤔 𐤄	H7284	root
@@ -7609,7 +8342,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:15:101	𐤍𐤂𐤆𐤋𐤄	english	[𐤍] 𐤂𐤆𐤋 𐤄	H1497	root
 220:15:108	𐤄𐤕𐤍𐤄𐤂	spelling	[𐤄𐤕] 𐤍𐤄𐤂 	H5090	root
 220:15:109	𐤔𐤒𐤉𐤃𐤄	spelling	 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
-220:15:110	𐤉𐤍𐤆𐤒	english	[𐤉] 𐤍𐤆𐤒 	H5142	root
+220:15:110	𐤉𐤍𐤆𐤒	spelling	[𐤉] 𐤍𐤆𐤒 	H5142	root
 220:15:113	𐤌𐤎𐤃𐤓	english	𐤌 𐤎𐤃𐤓 	H5468	root
 220:15:113	𐤅𐤋𐤄𐤅𐤁𐤉𐤋𐤌	english	𐤅+𐤋 𐤄𐤅𐤁𐤉𐤋 𐤌	H1892	matres
 220:15:116	𐤋𐤄𐤕𐤍𐤐𐤋	spelling	𐤋+[𐤄𐤕] 𐤍𐤐𐤋 	H5307	root
@@ -7689,8 +8422,8 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:15:230	𐤍𐤇𐤓𐤑	spelling	[𐤍] 𐤇𐤓𐤑 	H2782	root
 220:15:231	𐤌𐤌𐤄𐤅𐤌𐤅𐤕	spelling	𐤌+[𐤌] 𐤄𐤅𐤌 𐤅𐤕	H1949	root
 220:15:233	𐤅𐤕𐤂𐤃𐤐	english	𐤅+[𐤕] 𐤂𐤃𐤐 	H1442	root
-220:15:233	𐤕𐤎𐤁𐤋	spelling	[𐤕] 𐤎𐤁𐤋 	H5446	root
-220:15:239	𐤕𐤎𐤁𐤋	spelling	[𐤕] 𐤎𐤁𐤋 	H5446	root
+220:15:233	𐤕𐤎𐤁𐤋	spelling	[𐤕] 𐤎𐤁𐤋 	H5445	root
+220:15:239	𐤕𐤎𐤁𐤋	spelling	[𐤕] 𐤎𐤁𐤋 	H5445	root
 220:15:240	𐤉𐤇𐤃𐤅𐤕𐤌	english	 𐤉𐤇𐤃 𐤅𐤕+𐤌	H3162	root
 220:15:241	𐤕𐤇𐤁𐤅𐤋𐤄	spelling	[𐤕] 𐤇𐤁𐤅𐤋 𐤄	H2254	matres
 220:15:245	𐤉𐤀𐤅𐤔	spelling	[𐤉] 𐤀𐤅𐤔 	H377	matres
@@ -7706,6 +8439,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:15:251	𐤋𐤄𐤏𐤍𐤉𐤔	spelling	𐤋+[𐤄] 𐤏𐤍𐤉𐤔 	H6064	matres
 220:15:256	𐤍𐤀𐤌𐤍𐤅𐤕𐤅	spelling	[𐤍] 𐤀𐤌𐤍 𐤅𐤕+𐤅	H539	root
 220:15:259	𐤄𐤍𐤔𐤅𐤀𐤉𐤍	spelling	[𐤄] 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
+220:15:263	𐤅𐤉𐤏𐤅𐤓𐤓𐤅	spelling	𐤅+[𐤉] 𐤏𐤅𐤓𐤓 𐤅	H5782	form
 220:15:264	𐤁𐤔𐤃𐤅𐤕𐤉𐤅	english	𐤁 𐤔𐤃𐤅𐤕 𐤉+𐤅	H7704	form
 220:15:265	𐤅𐤉𐤇𐤔𐤅𐤁	spelling	𐤅+[𐤉] 𐤇𐤔𐤅𐤁 	H2803	matres
 220:15:265	𐤌𐤏𐤅𐤍𐤔	spelling	[𐤌] 𐤏𐤅𐤍𐤔 	H6064	matres
@@ -7726,13 +8460,14 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:15:279	𐤌𐤋𐤏𐤉𐤂𐤉𐤌	spelling	[𐤌] 𐤋𐤏𐤉𐤂 𐤉𐤌	H3932	matres
 220:15:282	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
 220:15:286	𐤄𐤌𐤄𐤅𐤌𐤅𐤕	spelling	𐤄+[𐤌] 𐤄𐤅𐤌 𐤅𐤕	H1949	root
+220:15:289	𐤄𐤌𐤋𐤔𐤉𐤍	spelling	𐤄+[𐤌] 𐤋𐤔𐤉𐤍 	H3960	matres
 220:15:290	𐤐𐤆𐤉𐤆𐤅𐤕𐤌	spelling	 𐤐𐤆𐤉𐤆 𐤅𐤕+𐤌	H6339	matres
 220:15:291	𐤄𐤕𐤌𐤃𐤕	english	𐤄 𐤕𐤌𐤃 𐤕	H8548	matres
-220:15:294	𐤄𐤐𐤓𐤉𐤔	english	𐤄 𐤐𐤓𐤉𐤔 	H6571	matres
+220:15:294	𐤄𐤐𐤓𐤉𐤔	spelling	𐤄 𐤐𐤓𐤉𐤔 	H6571	matres
 220:15:296	𐤀𐤆𐤓𐤇𐤉𐤌	spelling	 𐤀𐤆𐤓𐤇 𐤉𐤌	H249	root
 220:15:296	𐤁𐤌𐤋𐤇𐤌𐤅𐤕𐤉𐤅	spelling	𐤁 𐤌𐤋𐤇𐤌𐤅𐤕 𐤉+𐤅	H4421	form
 220:15:296	𐤋𐤕𐤅𐤔𐤁𐤉𐤄	english	𐤋 𐤕𐤅𐤔𐤁 𐤉+𐤄	H8453	root
-220:15:298	𐤄𐤐𐤓𐤉𐤔	english	[𐤄] 𐤐𐤓𐤉𐤔 	H6566	matres
+220:15:298	𐤄𐤐𐤓𐤉𐤔	spelling	𐤄 𐤐𐤓𐤉𐤔 	H6571	matres
 220:15:300	𐤌𐤕𐤌𐤃𐤕	english	𐤌 𐤕𐤌𐤃 𐤕	H8548	matres
 220:15:300	𐤄𐤑𐤌𐤉𐤇𐤄	spelling	[𐤄] 𐤑𐤌𐤉𐤇 𐤄	H6779	matres
 220:15:300	𐤕𐤓𐤂𐤉𐤋	english	[𐤕] 𐤓𐤂𐤉𐤋 	H7270	matres
@@ -7783,7 +8518,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:15:365	𐤄𐤍𐤓𐤂𐤆𐤉𐤌	english	𐤄+[𐤍] 𐤓𐤂𐤆 𐤉𐤌	H7264	root
 220:15:365	𐤅𐤄𐤍𐤓𐤏𐤔𐤉𐤌	english	𐤅+𐤄+[𐤍] 𐤓𐤏𐤔 𐤉𐤌	H7493	root
 220:15:370	𐤋𐤄𐤎𐤉𐤕	spelling	𐤋+[𐤄] 𐤎𐤉𐤕 	H5496	matres
-220:15:370	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
+220:15:370	𐤄𐤐𐤓𐤅𐤔	spelling	𐤄 𐤐𐤓𐤅𐤔 	H6571	matres
 220:15:371	𐤄𐤀𐤉𐤎𐤉𐤉𐤌	spelling	𐤄 𐤀𐤉𐤎𐤉𐤉𐤌 	H618	matres
 220:15:372	𐤄𐤀𐤉𐤎𐤉𐤉𐤌	spelling	𐤄 𐤀𐤉𐤎𐤉𐤉𐤌 	H618	matres
 220:15:373	𐤄𐤀𐤉𐤎𐤉𐤉𐤌	spelling	𐤄 𐤀𐤉𐤎𐤉𐤉𐤌 	H618	matres
@@ -7838,11 +8573,11 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:16:41	𐤍𐤑𐤋𐤉𐤇	spelling	[𐤍] 𐤑𐤋𐤉𐤇 	H6743	matres
 220:16:43	𐤍𐤐𐤓𐤉𐤔	spelling	[𐤍] 𐤐𐤓𐤉𐤔 	H6566	matres
 220:16:43	𐤄𐤋𐤌𐤅𐤃	spelling	𐤄 𐤋𐤌𐤅𐤃 	H3928	root
-220:16:43	𐤍𐤇𐤈𐤀	english	[𐤍] 𐤇𐤈𐤀 	H2398	root
+220:16:43	𐤍𐤇𐤈𐤀	spelling	[𐤍] 𐤇𐤈𐤀 	H2398	root
 220:16:53	𐤅𐤀𐤆𐤓𐤇𐤅𐤕	spelling	𐤅 𐤀𐤆𐤓𐤇 𐤅𐤕	H249	root
 220:16:56	𐤄𐤌𐤑𐤉𐤀𐤄	spelling	𐤄 𐤌𐤑𐤉𐤀𐤄 	H4163	matres
 220:16:68	𐤂𐤃𐤅𐤐𐤉𐤌	spelling	 𐤂𐤃𐤅𐤐 𐤉𐤌	H1421	root
-220:16:69	𐤍𐤌𐤄𐤓𐤅	english	[𐤍] 𐤌𐤄𐤓 𐤅	H4116	root
+220:16:69	𐤍𐤌𐤄𐤓𐤅	spelling	[𐤍] 𐤌𐤄𐤓 𐤅	H4116	root
 220:16:69	𐤋𐤂𐤃𐤐	spelling	𐤋 𐤂𐤃𐤐 	H1442	root
 220:16:70	𐤉𐤇𐤔𐤁𐤄𐤅	spelling	[𐤉] 𐤇𐤔𐤁𐤄 𐤅	H2803	form
 220:16:71	𐤅𐤕𐤂𐤁𐤓	spelling	𐤅+[𐤕] 𐤂𐤁𐤓 	H1396	root
@@ -7866,11 +8601,11 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:16:102	𐤀𐤍𐤇𐤕𐤌	english	 𐤀𐤍𐤇 𐤕+𐤌	H584	root
 220:16:104	𐤄𐤏𐤋𐤉𐤋𐤅𐤕	spelling	𐤄 𐤏𐤋𐤉𐤋 𐤅𐤕	H5948	root
 220:16:106	𐤉𐤇𐤐𐤅𐤑	english	[𐤉] 𐤇𐤐𐤅𐤑 	H2654	matres
-220:16:107	𐤍𐤇𐤈𐤀	english	[𐤍] 𐤇𐤈𐤀 	H2398	root
-220:16:108	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+220:16:107	𐤍𐤇𐤈𐤀	spelling	[𐤍] 𐤇𐤈𐤀 	H2398	root
+220:16:108	𐤕𐤂𐤁𐤓	english	[𐤕] 𐤂𐤁𐤓 	H1396	root
 220:16:113	𐤄𐤏𐤋𐤉𐤋𐤅𐤕	spelling	𐤄 𐤏𐤋𐤉𐤋 𐤅𐤕	H5948	root
 220:16:113	𐤉𐤇𐤐𐤅𐤑	english	[𐤉] 𐤇𐤐𐤅𐤑 	H2654	matres
-220:16:114	𐤍𐤇𐤐𐤑	english	[𐤍] 𐤇𐤐𐤑 	H2654	root
+220:16:114	𐤍𐤇𐤐𐤑	spelling	[𐤍] 𐤇𐤐𐤑 	H2654	root
 220:16:117	𐤉𐤎𐤐𐤉𐤒	spelling	[𐤉] 𐤎𐤐𐤉𐤒 	H5606	matres
 220:16:118	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
 220:16:122	𐤅𐤉𐤊𐤐𐤐𐤅	english	𐤅+[𐤉] 𐤊𐤐𐤐 𐤅	H3721	root
@@ -7889,10 +8624,10 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:16:138	𐤄𐤕𐤇𐤓𐤅𐤕	spelling	[𐤄𐤕] 𐤇𐤓𐤅 𐤕	H2787	form
 220:16:140	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
 220:16:141	𐤄𐤕𐤇𐤓𐤄	spelling	[𐤄] 𐤕𐤇𐤓𐤄 	H8474	root
-220:16:145	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	[𐤕] 𐤅𐤔𐤁𐤉𐤄 	H7725	form
+220:16:145	𐤕𐤅𐤔𐤁𐤉𐤄	spelling	 𐤕𐤅𐤔𐤁 𐤉+𐤄	H8453	root
 220:16:147	𐤀𐤒𐤈𐤉𐤅𐤍	spelling	[𐤀] 𐤒𐤈𐤉𐤅𐤍 	H6994	matres
 220:16:149	𐤄𐤕𐤇𐤓𐤅𐤕𐤅	spelling	[𐤄𐤕] 𐤇𐤓𐤅 𐤕+𐤅	H2787	form
-220:16:149	𐤍𐤓𐤔𐤌	english	[𐤍] 𐤓𐤔𐤌 	H7559	root
+220:16:149	𐤍𐤓𐤔𐤌	spelling	[𐤍] 𐤓𐤔𐤌 	H7559	root
 220:16:150	𐤄𐤕𐤇𐤓𐤅𐤕𐤅	spelling	[𐤄𐤕] 𐤇𐤓𐤅 𐤕+𐤅	H2787	form
 220:16:152	𐤀𐤇𐤔𐤁	spelling	[𐤀] 𐤇𐤔𐤁 	H2803	root
 220:16:155	𐤍𐤔𐤍𐤀	english	[𐤍] 𐤔𐤍𐤀 	H8130	root
@@ -8026,14 +8761,14 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:17:29	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
 220:17:33	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 220:17:34	𐤋𐤁𐤍𐤅𐤕𐤉𐤅	english	 𐤋𐤁𐤍𐤅𐤕 𐤉+𐤅	H1323	form
-220:17:35	𐤍𐤇𐤋𐤒𐤄	english	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
+220:17:35	𐤍𐤇𐤋𐤒𐤄	spelling	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
 220:17:37	𐤐𐤂𐤉𐤔𐤕𐤌	english	 𐤐𐤂𐤉𐤔 𐤕+𐤌	H6298	matres
 220:17:37	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 220:17:38	𐤅𐤕𐤇𐤒𐤓	spelling	𐤅+[𐤕] 𐤇𐤒𐤓 	H2713	root
 220:17:39	𐤉𐤇𐤁𐤉𐤀𐤅	english	[𐤉] 𐤇𐤁𐤉𐤀 𐤅	H2244	matres
 220:17:40	𐤍𐤕𐤇𐤆𐤒	spelling	[𐤍𐤕] 𐤇𐤆𐤒 	H2388	root
 220:17:41	𐤍𐤌𐤔𐤊𐤅	spelling	[𐤍] 𐤌𐤔𐤊 𐤅	H4900	root
-220:17:44	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
+220:17:44	𐤄𐤐𐤓𐤅𐤔	spelling	𐤄 𐤐𐤓𐤅𐤔 	H6571	matres
 220:17:48	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
 220:17:49	𐤍𐤋𐤇𐤑	spelling	[𐤍] 𐤋𐤇𐤑 	H3905	root
 220:17:50	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
@@ -8059,7 +8794,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:17:102	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
 220:17:102	𐤅𐤁𐤎𐤊𐤍𐤄	english	𐤅+𐤁 𐤎𐤊𐤍 𐤄	H5532	root
 220:17:102	𐤄𐤍𐤅𐤒𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 	H6965	form
-220:17:103	𐤋𐤄𐤕𐤏𐤅𐤕𐤅	english	𐤋+[𐤄𐤕] 𐤏𐤅𐤕 𐤅	H5791	root
+220:17:103	𐤋𐤄𐤕𐤏𐤅𐤕𐤅	spelling	𐤋+[𐤄𐤕] 𐤏𐤅𐤕 𐤅	H5791	root
 220:17:106	𐤕𐤌𐤅𐤓𐤄	spelling	[𐤕] 𐤌𐤅𐤓 𐤄	H4171	root
 220:17:110	𐤄𐤓𐤄𐤉𐤁𐤅	spelling	[𐤄] 𐤓𐤄𐤉𐤁 𐤅	H7292	matres
 220:17:110	𐤄𐤌𐤏𐤍𐤉𐤔	english	𐤄+[𐤌] 𐤏𐤍𐤉𐤔 	H6064	matres
@@ -8083,6 +8818,8 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:17:134	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
 220:17:138	𐤉𐤏𐤍𐤉𐤔	spelling	[𐤉] 𐤏𐤍𐤉𐤔 	H6064	matres
 220:17:139	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
+220:17:143	𐤍𐤀𐤋𐤌	spelling	[𐤍] 𐤀𐤋𐤌 	H481	root
+220:17:150	𐤅𐤉𐤏𐤅𐤓𐤓𐤅	spelling	𐤅+[𐤉] 𐤏𐤅𐤓𐤓 𐤅	H5782	form
 220:17:151	𐤄𐤀𐤔𐤉𐤌𐤅𐤄𐤅	spelling	𐤄 𐤀𐤔𐤉𐤌𐤅𐤄 𐤅	H819	matres
 220:17:151	𐤕𐤌𐤅𐤍𐤅𐤕	spelling	 𐤕𐤌𐤅𐤍 𐤅𐤕	H8486	matres
 220:17:152	𐤉𐤔𐤁𐤇𐤅𐤄𐤅	english	[𐤉] 𐤔𐤁𐤇𐤅𐤄𐤅 	H7623	form
@@ -8104,6 +8841,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:17:201	𐤂𐤁𐤅𐤄𐤄	spelling	 𐤂𐤁𐤅𐤄 𐤄	H1364	matres
 220:17:206	𐤍𐤇𐤓𐤑𐤅	spelling	[𐤍] 𐤇𐤓𐤑 𐤅	H2782	root
 220:17:211	𐤍𐤂𐤆𐤋𐤅	english	[𐤍] 𐤂𐤆𐤋 𐤅	H1497	root
+220:17:216	𐤅𐤉𐤏𐤅𐤓𐤓𐤅	spelling	𐤅+[𐤉] 𐤏𐤅𐤓𐤓 𐤅	H5782	form
 220:17:216	𐤅𐤉𐤕𐤍𐤐𐤋𐤅	spelling	𐤅+[𐤉𐤕] 𐤍𐤐𐤋 𐤅	H5307	root
 220:17:217	𐤋𐤇𐤅𐤍𐤉𐤌	english	𐤋 𐤇𐤅𐤍𐤉𐤌 	H2600	matres
 220:17:219	𐤌𐤉𐤃𐤉𐤃𐤉𐤅	spelling	𐤌 𐤉𐤃𐤉𐤃 𐤉+𐤅	H3039	root
@@ -8176,7 +8914,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:17:352	𐤍𐤔𐤅𐤀𐤉𐤍	spelling	 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
 220:17:352	𐤍𐤔𐤅𐤀𐤉𐤍	spelling	 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
 220:18:1	𐤍𐤊𐤎𐤉	spelling	 𐤍𐤊𐤎 𐤉	H5232	root
-220:18:4	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
+220:18:4	𐤄𐤐𐤓𐤅𐤔	spelling	𐤄 𐤐𐤓𐤅𐤔 	H6571	matres
 220:18:5	𐤁𐤄𐤕𐤇𐤁𐤓𐤌	spelling	𐤁+[𐤄𐤕] 𐤇𐤁𐤓 𐤌	H2266	root
 220:18:7	𐤅𐤉𐤊𐤇𐤉𐤃𐤅	english	𐤅+[𐤉] 𐤊𐤇𐤉𐤃 𐤅	H3582	matres
 220:18:7	𐤏𐤍𐤉𐤉𐤍𐤉	spelling	 𐤏𐤍𐤉𐤉𐤍 𐤉	H6045	matres
@@ -8186,7 +8924,8 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:18:10	𐤅𐤁𐤐𐤓𐤈	english	𐤅+𐤁 𐤐𐤓𐤈 	H6527	root
 220:18:10	𐤏𐤍𐤉𐤉𐤍𐤉	spelling	 𐤏𐤍𐤉𐤉𐤍 𐤉	H6045	matres
 220:18:11	𐤄𐤀𐤉𐤎𐤉𐤉𐤌	spelling	𐤄 𐤀𐤉𐤎𐤉𐤉𐤌 	H618	matres
-220:18:17	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
+220:18:15	𐤅𐤐𐤓𐤅𐤔𐤌	english	𐤅 𐤐𐤓𐤅𐤔 𐤌	H6571	matres
+220:18:17	𐤄𐤐𐤓𐤅𐤔	spelling	𐤄 𐤐𐤓𐤅𐤔 	H6571	matres
 220:18:18	𐤄𐤀𐤉𐤎𐤉𐤉𐤌	spelling	𐤄 𐤀𐤉𐤎𐤉𐤉𐤌 	H618	matres
 220:18:20	𐤍𐤁𐤑𐤓	spelling	[𐤍] 𐤁𐤑𐤓 	H1219	root
 220:18:20	𐤌𐤍𐤊𐤎𐤉𐤅	english	𐤌 𐤍𐤊𐤎 𐤉+𐤅	H5233	root
@@ -8215,7 +8954,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:18:70	𐤕𐤇𐤁𐤅𐤋𐤄	spelling	[𐤕] 𐤇𐤁𐤅𐤋 𐤄	H2254	matres
 220:18:71	𐤁𐤋𐤒𐤉𐤇𐤕	english	𐤁 𐤋𐤒𐤉𐤇 𐤕	H3947	matres
 220:18:72	𐤁𐤉𐤇𐤅𐤃	spelling	𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
-220:18:72	𐤅𐤉𐤅𐤕𐤍	spelling	𐤅+[𐤉] 𐤅𐤕𐤍 	H5414	form
+220:18:72	𐤅𐤉𐤅𐤕𐤍	english	𐤅+[𐤉] 𐤅𐤕𐤍 	H5414	form
 220:18:72	𐤍𐤊𐤁𐤔	spelling	[𐤍] 𐤊𐤁𐤔 	H3533	root
 220:18:75	𐤅𐤕𐤕𐤐𐤀𐤓	english	𐤅+[𐤕𐤕] 𐤐𐤀𐤓 	H6286	root
 220:18:79	𐤅𐤇𐤒𐤉𐤓𐤄	english	𐤅 𐤇𐤒𐤉𐤓 𐤄	H2713	matres
@@ -8229,15 +8968,17 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:18:110	𐤍𐤔𐤅𐤀𐤉𐤍	spelling	 𐤍𐤔𐤅𐤀 𐤉+𐤍	H5375	form
 220:18:112	𐤄𐤓𐤂𐤉𐤔𐤄	spelling	[𐤄] 𐤓𐤂𐤉𐤔 𐤄	H7284	matres
 220:18:112	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
+220:18:116	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
 220:18:119	𐤌𐤊𐤅𐤅𐤓	english	𐤌 𐤊𐤅𐤅𐤓 	H3595	matres
 220:18:119	𐤄𐤍𐤆𐤊𐤓𐤕	spelling	𐤄+[𐤍] 𐤆𐤊𐤓 𐤕	H2142	root
 220:18:129	𐤌𐤊𐤉𐤓𐤉𐤅	english	 𐤌𐤊𐤉𐤓𐤉 𐤅	H4354	root
 220:18:142	𐤅𐤌𐤑𐤀𐤑𐤀𐤉	english	𐤅+𐤌 𐤑𐤀𐤑𐤀 𐤉	H6631	root
+220:18:147	𐤁𐤎𐤐𐤉𐤍𐤄	spelling	𐤁 𐤎𐤐𐤉𐤍𐤄 	H5600	root
 220:18:149	𐤅𐤉𐤊𐤁𐤃𐤅𐤄𐤅	spelling	𐤅+[𐤉] 𐤊𐤁𐤃𐤅𐤄𐤅 	H3513	form
 220:18:150	𐤌𐤉𐤅𐤇𐤃	spelling	𐤌 𐤉𐤅𐤇𐤃 	H3162	matres
 220:18:155	𐤁𐤄𐤋𐤅𐤅𐤕𐤅	english	 𐤁𐤄𐤋𐤅 𐤅𐤕+𐤅	H1984	form
 220:18:159	𐤄𐤏𐤂𐤅𐤍	english	[𐤄] 𐤏𐤂𐤅𐤍 	H5702	matres
-220:18:159	𐤁𐤎𐤐𐤉𐤍𐤄	english	𐤁 𐤎𐤐𐤉𐤍𐤄 	H5600	root
+220:18:159	𐤁𐤎𐤐𐤉𐤍𐤄	spelling	𐤁 𐤎𐤐𐤉𐤍𐤄 	H5600	root
 220:18:159	𐤌𐤏𐤋𐤅𐤕𐤉𐤄	english	 𐤌𐤏𐤋𐤅𐤕 𐤉+𐤄	H5927	form
 220:18:160	𐤀𐤉𐤈𐤋𐤉𐤄	english	[𐤀] 𐤉𐤈𐤋 𐤉+𐤄	H2904	form
 220:18:161	𐤅𐤉𐤅𐤃𐤉𐤏𐤄𐤅	spelling	𐤅 𐤉𐤅𐤃𐤉𐤏𐤄 𐤅	H3048	matres
@@ -8275,6 +9016,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:18:209	𐤊𐤌𐤇𐤍𐤉𐤐𐤉𐤌	english	𐤊+[𐤌] 𐤇𐤍𐤉𐤐 𐤉𐤌	H2610	matres
 220:18:210	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
 220:18:212	𐤄𐤕𐤇𐤁𐤅𐤋𐤄	spelling	𐤄 𐤕𐤇𐤁𐤅𐤋𐤄 	H8458	matres
+220:18:212	𐤁𐤇𐤉𐤓𐤕𐤅	spelling	 𐤁𐤇𐤉𐤓 𐤕+𐤅	H972	root
 220:18:214	𐤉𐤂𐤆𐤓	spelling	[𐤉] 𐤂𐤆𐤓 	H1504	root
 220:18:215	𐤄𐤕𐤀𐤅𐤍𐤍	english	[𐤄𐤕] 𐤀𐤅𐤍𐤍 	H596	matres
 220:18:215	𐤉𐤕𐤍𐤄𐤂	spelling	[𐤉𐤕] 𐤍𐤄𐤂 	H5090	root
@@ -8481,7 +9223,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:19:237	𐤅𐤉𐤕𐤒𐤍𐤄	english	𐤅+[𐤉𐤕] 𐤒𐤍𐤄 	H7069	root
 220:19:238	𐤅𐤉𐤏𐤅𐤓𐤓𐤄𐤅	english	𐤅+[𐤉] 𐤏𐤅𐤓𐤓𐤄 𐤅	H5782	form
 220:19:245	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
-220:19:245	𐤅𐤋𐤄𐤕𐤍𐤄𐤂	english	𐤅+𐤋+[𐤄𐤕] 𐤍𐤄𐤂 	H5090	root
+220:19:245	𐤅𐤋𐤄𐤕𐤍𐤄𐤂	spelling	𐤅+𐤋+[𐤄𐤕] 𐤍𐤄𐤂 	H5090	root
 220:19:246	𐤀𐤈𐤏𐤉𐤌𐤌	english	[𐤀] 𐤈𐤏𐤉𐤌 𐤌	H2938	matres
 220:19:246	𐤌𐤕𐤉𐤍𐤅𐤕𐤉	english	 𐤌𐤕𐤉𐤍 𐤅𐤕+𐤉	H4975	matres
 220:19:247	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
@@ -8504,6 +9246,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:19:292	𐤅𐤉𐤊𐤁𐤃𐤅𐤄𐤅	spelling	𐤅+[𐤉] 𐤊𐤁𐤃𐤅𐤄𐤅 	H3513	form
 220:19:294	𐤍𐤀𐤎𐤓𐤅	spelling	[𐤍] 𐤀𐤎𐤓 𐤅	H631	root
 220:19:306	𐤀𐤆𐤓𐤇𐤉𐤌	spelling	 𐤀𐤆𐤓𐤇 𐤉𐤌	H249	root
+220:19:308	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
 220:19:312	𐤉𐤕𐤒𐤍	english	[𐤉] 𐤕𐤒𐤍 	H8626	root
 220:19:316	𐤌𐤓𐤎𐤅𐤎	english	𐤌 𐤓𐤎𐤅𐤎 	H7447	matres
 220:19:317	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
@@ -8580,9 +9323,9 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:20:157	𐤍𐤓𐤁𐤄	spelling	[𐤍] 𐤓𐤁𐤄 	H7235	root
 220:20:161	𐤄𐤁𐤈𐤉𐤇𐤅	spelling	𐤄 𐤁𐤈𐤉𐤇 𐤅	H983	matres
 220:20:162	𐤋𐤍𐤄𐤋	spelling	𐤋 𐤍𐤄𐤋 	H5095	root
-220:20:163	𐤅𐤉𐤕𐤇𐤊𐤌	english	𐤅+[𐤉𐤕] 𐤇𐤊𐤌 	H2449	root
+220:20:163	𐤅𐤉𐤕𐤇𐤊𐤌	spelling	𐤅+[𐤉𐤕] 𐤇𐤊𐤌 	H2449	root
 220:20:166	𐤀𐤇𐤔𐤁	spelling	[𐤀] 𐤇𐤔𐤁 	H2803	root
-220:20:166	𐤅𐤈𐤐𐤉𐤍𐤅	english	 𐤅𐤈𐤐 𐤉+𐤍𐤅	H2945	form
+220:20:166	𐤅𐤈𐤐𐤉𐤍𐤅	spelling	 𐤅𐤈𐤐 𐤉+𐤍𐤅	H2945	form
 220:20:171	𐤅𐤉𐤕𐤍𐤐𐤋	spelling	𐤅+[𐤉𐤕] 𐤍𐤐𐤋 	H5307	root
 220:20:172	𐤋𐤄𐤎𐤉𐤕	spelling	𐤋+[𐤄] 𐤎𐤉𐤕 	H5496	matres
 220:20:175	𐤅𐤉𐤇𐤓𐤐𐤅𐤌	english	𐤅+[𐤉] 𐤇𐤓𐤐𐤅 𐤌	H2778	form
@@ -8593,6 +9336,7 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:20:180	𐤅𐤎𐤅𐤒𐤋𐤉𐤌	english	𐤅 𐤎𐤅𐤒𐤋 𐤉𐤌	H5619	matres
 220:20:182	𐤍𐤏𐤍𐤔	spelling	[𐤍] 𐤏𐤍𐤔 	H6064	root
 220:20:185	𐤅𐤍𐤁𐤆𐤆𐤉𐤌	english	𐤅+[𐤍] 𐤁𐤆𐤆 𐤉𐤌	H962	root
+220:20:188	𐤄𐤌𐤁𐤈𐤉𐤇	spelling	𐤄 𐤌𐤁𐤈𐤉𐤇 	H4009	matres
 220:20:191	𐤂𐤁𐤅𐤄𐤄	spelling	 𐤂𐤁𐤅𐤄 𐤄	H1364	matres
 220:20:193	𐤋𐤄𐤓𐤅𐤎	spelling	𐤋 𐤄𐤓𐤅𐤎 	H2040	matres
 220:20:195	𐤄𐤕𐤇𐤍𐤍𐤄	spelling	[𐤄𐤕] 𐤇𐤍𐤍 𐤄	H2603	root

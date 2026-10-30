@@ -381,8 +381,18 @@ if (CORPUS) {
   };
 
   const ORIG = MF.loadOrigEnglish(cdb, __dirname);   // the WEB / text_src: which parentheses are the WEB's own (unnest)
-  const rows = cdb.prepare(`SELECT id, canon_id c, chapter ch, verse v, ord_c, ord_v, text, coalesce(text_src,'') src FROM verses WHERE corpus='ENG' AND canon_id IS NOT NULL AND text IS NOT NULL AND text != ''`).all();
+  // ONE PASS FROM CLEAN TEXT (2026-10-30). The OT's text here is apply-web-strongs' output as loaded —
+  // but this pass rewrote it in place, so every `--surface` run (which does not reload the OT) ran it
+  // AGAIN over its own output: ~90 OT verses drifted each run and a name used twice grew a copy per run
+  // (Gen 14:13 "LaAbaram (Abram)" x10). `text_base` keeps the OT text as loaded; every run starts from
+  // it. A full render-all re-inserts the OT rows (text_base empty) and so takes the fresh text.
+  // (NT/Apocrypha are already re-rendered from text_src by render-corpus before this step.)
+  if (!DRY) { try { cdb.exec(`ALTER TABLE verses ADD COLUMN text_base TEXT`); } catch { /* exists */ } }
+  const hasBase = cdb.prepare(`PRAGMA table_info(verses)`).all().some(c => c.name === 'text_base');
+  const rows = cdb.prepare(`SELECT id, canon_id c, chapter ch, verse v, ord_c, ord_v, text, coalesce(text_src,'') src${hasBase ? ", coalesce(text_base,'') base" : ", '' base"} FROM verses WHERE corpus='ENG' AND canon_id IS NOT NULL AND text IS NOT NULL AND text != ''`).all();
   const upd = DRY ? null : cdb.prepare(`UPDATE verses SET text = ? WHERE id = ?`);
+  const setBase = DRY || !hasBase ? null : cdb.prepare(`UPDATE verses SET text_base = ? WHERE id = ?`);
+  let baseUsed = 0, baseSaved = 0, hebTooBig = 0; const hebTooBigBooks = new Map();
   cdb.transaction(() => {
     // test aids: --only c:ch:v,… limits the run; --text-json file {"c:ch:v": text} replaces the db text
     const ONLY = argv.includes('--only') ? new Set(val('--only', '').split(',')) : null;
@@ -390,11 +400,24 @@ if (CORPUS) {
     for (const r of rows) {
       if (ONLY && !ONLY.has(`${r.c}:${r.ch}:${r.v}`)) continue;
       if (TJ && TJ[`${r.c}:${r.ch}:${r.v}`]) r.text = TJ[`${r.c}:${r.ch}:${r.v}`];
+      const dbText = r.text;                       // what is stored now: unchanged output = no write
+      if (r.c <= 39 && !TJ) {
+        if (r.base) { r.text = r.base; baseUsed++; }
+        else { if (setBase) setBase.run(r.text, r.id); baseSaved++; }
+      }
       // the OT's own forms come from apply-web-strongs; this pass gives its NAMES their
       // prefixes and finishes any pair it left (Genesis 1-2 stay as they are)
       if (!MF.modformApplies(r.c, r.ch)) continue;
       seen++;
       let ws = hebWords(r.c, r.ch, r.v);
+      // HEBREW THAT IS NOT THIS VERSE'S (2026-10-30, Jasher 10:11: the HEB edition's "10:11" is a whole
+      // passage — Joseph's coat — beside one English sentence; the pass wrote every Hebrew word in order
+      // and scattered the sentence through it). Far more Hebrew than English = another versification:
+      // the verse keeps its English.
+      if (r.c > 39 && ws.length) {
+        const eng = ((r.src || r.text).match(/[A-Za-z’']+/g) || []).length;
+        if (ws.length > Math.max(3 * eng, eng + 40)) { hebTooBig++; hebTooBigBooks.set(r.c, (hebTooBigBooks.get(r.c) || 0) + 1); ws = []; }
+      }
       const text0 = r.text;
       r.text = MF.respellRetired(MF.unlabel(r.text, ws).text);   // text an older run left in full form: no [label], no retired spelling
       r.text = divineGlosses(r.text, NR).fixed;   // Alahayam (God), Yashawai (Jesus), Mashayach (Christ / Anointed One) — before the forms, so prefixes join
@@ -413,7 +436,7 @@ if (CORPUS) {
       r2.text = MF.respellRetired(r2.text);
       // no gloss inside a gloss: the WEB's own brackets go, a word inside a gloss shows its English (fieldy, 2026-10-22)
       r2.text = MF.unnest(r2.text, ORIG.get(`${r.c}|${+r.ch}|${+r.v}`) || '');
-      if (r2.text === text0) continue;
+      if (r2.text === dbText) continue;
       changed++; pairs += r2.n;
       if (samples.length < (ONLY ? 99 : 12) && (ONLY || (r.c <= 66 && (r.c > 39 || samples.length < 4)))) samples.push(`${r.c}:${r.ch}:${r.v}  ${r2.text}`);
       if (upd) upd.run(r2.text, r.id);
@@ -421,6 +444,8 @@ if (CORPUS) {
     }
   })();
   if (JSONL) writeFileSync(argv[argv.indexOf('--jsonl') + 1], JSONL.join('\n') + '\n');
+  console.log(`  OT clean base (text_base): ${baseUsed.toLocaleString()} verses started from it, ${baseSaved.toLocaleString()} saved now` + (hasBase ? '' : ' — column missing (dry run on an old db)'));
+  console.log(`  Hebrew of another versification (far longer than the verse's English) left out: ${hebTooBig.toLocaleString()} verses` + (hebTooBig ? ' (' + [...hebTooBigBooks].sort((a, b) => b[1] - a[1]).map(([c, n]) => `${c}: ${n}`).join(', ') + ')' : ''));
   console.log(`modification forms (corpus.db ENG, Gen 3 on: OT names + NT + Apocrypha): ${changed.toLocaleString()} of ${seen.toLocaleString()} verses, ${pairs.toLocaleString()} Hebrew words written ` +
               `(${filled.toLocaleString()} from the Parallel links; learned table retired)${DRY ? ' (dry run)' : ''}`);
   console.log(`  Hebrew word order: ${ilOk.toLocaleString()} verses; English order kept: ${[...ilWhy].map(([k, n]) => `${n.toLocaleString()} ${k}`).join(', ') || 'none'}; concept words (repent/baptize/genealogy…): ${conceptN}`);

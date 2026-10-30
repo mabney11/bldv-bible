@@ -61,6 +61,21 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## "Alayaw (Sir him)": LEFTOVER ENGLISH NEVER CROSSES INTO THE WRONG WORD (2026-10-29)
+
+fieldy, John 4:15: "this 'sir him' is something ive had to fix more than once, i want it fixed everywhere it may occur
+-- should be 'to him'". Cause (modform-lib interlinear): the WEB's "Sir" (Hebrew Adoni) had no pair; the gap rule that
+gives leftover English to the unnamed Hebrew word between two words SKIPPED names, and Adoni carries H136 (BHS: nmpr), so
+"Sir" fell to the nearest pair — Alayaw "(to him)" — and the baseline cleanup dropped "to". Fixed in interlinear():
+- `TITLE_SN` (H113, H136): a title is a word, not a name — gapWord may give it the leftover English, written as the
+  verse has it (no woven "my": "Adanayay (Sir)").
+- English after an OPENING quotation mark waits for the next word (its comma travels with it) instead of joining the
+  word before the quote: "Alayaw (to him Now)" -> "Lak (Now, go)". An opener before gap English is that word's lead.
+  A comma held for a later word is stripped if the words end up attached backwards (flushTo 'suf').
+Tested on reconstructed verses (John 4:15 -> "Alayaw (to him), HaAyashah (woman) “Adanayay (Sir), Nathanah (give) …"),
+five other shapes unchanged or better. Not run on the real corpus (the device shell was down). Applies on the next
+`node render-all.mjs --surface` (machine rows); his saved verses keep their wording.
+
 ## EVIDENCE-JUDGED READINGS — NO INFERRED TAG IS SHOWN AS IF THE SOURCE CARRIED IT (2026-10-29)
 
 fieldy, after a day of per-word fixes (cubits/true, El, tzarikh/adversary): "we were supposed to harden so i dont
@@ -80,7 +95,10 @@ between homographs, 23.2% a sole reading the English never names.
   english | function (base >= 0.25, or the profile predicts its own OT tags < 50% — particles) | name | no-english |
   guess | unconfirmed, and `switchTo` = a non-name, judgeable candidate the verse names while not naming the chosen one,
   not a near-twin (profiles share >= 50%: shatah/shetah, qedem/qodam), AND whose spelling-level lift is >= 0.3 and >= 0.3
-  above the chosen reading's (one verse alone is a coincidence).
+  above the chosen reading's (one verse alone is a coincidence) — OR the spelling is a TRUE HOMOGRAPH (both readings
+  lift >= 0.2 over its verses) and the verse's own English decides. Added the same evening, fieldy, John 4:26 𐤄𐤌𐤃𐤁𐤓
+  ha-medabber "the one who speaks" left as ha-midbar H4057 "wilderness" (badge "?H4057"): the margin test can never pass
+  for a spelling whose two readings both genuinely occur. Not yet re-measured.
 - **heb-align.js** (`evidence` option): every word no hand entry / pin covers is judged; a switch goes through the
   context-reading path (aligned reading -> BHS token of the same spelling -> root-built), so it can never invent a
   reading. Candidates = aligned readings' SNs + BHS tokens of the spelling (`bhsSpellIndex`, loaded once) + root-strip
@@ -3950,3 +3968,137 @@ Baked offline (`LandFacts` in HolyLandMap.jsx reads `src/lib/models/terrain-clim
 ### Toward Jerusalem — eye-level view on the real ground (/models/toward-jerusalem, 2026-10-28)
 fieldy: "the realistic perspective of someone looking toward Jerusalem from a particular location including elevation". `src/pages/JerusalemView.jsx` (three.js): AWS terrarium tiles fetched by the browser in a distance quadtree (z14 at your feet → coarse to ~115 km, skirts against cracks), TRUE heights (no exaggeration), the earth's curve with refraction (R/(1−0.13), in the vertex shader), haze by distance, sun Morning/Noon/Evening. The land is coloured as it lies (wet west hills, dry wilderness east of the watershed, rift marl, the Salt Sea, Jericho's oasis) — NO modern buildings. The house = 1 Kings 6:2–3 at 0.525 m cubit, at the Dome of the Rock (one proposed site; say so). The panel gives your height, the Mount's, the rise/angle, and an honest line of sight (traced over the same ground, curve included), naming the blocking place (e.g. from Pisgah the Mount of Olives hides it) and how high you'd have to rise. Viewpoints: lookouts (Mount of Olives, Gihon, ascent of Adummim, Pisgah, Salt Sea shore) + every biblical city within 100 km (`?from=<id>`), or `?at=lon,lat`; every Holy Land city card links here ("Stand here and look toward Yarawashalam").
 Toward Jerusalem, round 2 (fieldy: "i should be able to select these different places … see … the distance relative to my position … if mountains are in the way they should be represented, realistic geography terrain wise"): every name in the view is tappable (and "Every place around you" lists them all by distance) → a card with its height, distance + compass + miles from you, its distance to the Mount, how far up/down you look, the line of sight (what hides it, how high you'd have to rise), a CROSS-SECTION (ground lowered by the curve, the sight line green/red, the blocking point, places the line passes) with its vertical exaggeration stated, "Turn to it", "Stand at …" and its verses. Terrain detail is fine in a ±38° wedge where you look (128 segments per tile out to ~115 km, split factor 2.2) and coarse behind you; turning more than ~22° re-meshes in the background. Labels in sight climb above each other instead of vanishing; hidden ones give way. Changing lens/sun/haze no longer reloads the ground (the viewpoint memo is keyed on the place only).
+
+## HEB readings are ETCHED — heb-settled.db (2026-10-29)
+fieldy: "this corpus is meant to be etched in stone. When we determine something should be something, lets just make it that."
+- `node.exe build-surface-index.js --freeze` writes `server/heb-settled.db`: for every NT / Apocrypha / extra-book HEB word (canon ≥ 40) the reading heb-align gave it (its token_surfaces record as heb-align built it, plus its evidence label), keyed `book|ch|v|ordinal`. Taken right after buildHebSurfaces, BEFORE the presentation passes (stem letters, chip translits, reading-form rules), which stay live from his lexicon.
+- Every later build loads it and takes each word AS IS — no alignment choice, context reading, evidence judgment or root strip runs for it. A settled verse's word with no row stays without a reading. Words whose text changed or that are new are decided as before and counted in the `settled:` log line (`--freeze` again to etch them). `--unsettled` ignores the table.
+- A CORRECTION is one line in `lexicon/heb-occurrence-overrides.json`: `"book|ch|v|ordinal": "H…"` or `"book|ch|v|<word as written>": "H…"`. An overridden word is worked out again: if its own forms carry the number, as before (forcedSN); if not, through the context-reading path (aligned reading → BHS token → root), never vetoed, labelled `hand`. The next `--freeze` etches it.
+- heb-settled.db is gitignored (*.db) — back it up; it is the decided text.
+- `HEB_TRACE="b:c:v,…"` prints how each word of those verses was judged (when not settled). Use `node.exe` in Git Bash when redirecting output (winpty refuses a pipe).
+
+## EVERY VERSE'S TOKENS ARE ITS WORDS — verify-verse-tokens.mjs gate (2026-10-30)
+fieldy: "i need to guarantee every row has tokens that matches its corresponding verse".
+`server/verify-verse-tokens.mjs [corpus.db] [surface-index.db] [heb-settled.db] [--report f]` (exit 1 = stop, read-only, ~15 s, ~440 MB):
+1. every corpus.db HEB verse with a canon_id (all 99 served books) — its surface-index HEB tokens are its words, in order, ordinals 1..N,
+   split exactly as heb-align's wordsOf (text_paleo; `text`'s maqaf boundaries when the letters agree), keyed through heb_offsets (Psalms
+   superscriptions: text v = index v+offset). Compared by Paleo letters — a punctuation-only token (׃) is not a word. No index verse without a text row.
+2. heb-settled.db (if present): every etched reading sits on the word it was etched for.
+3. BHS index = corpus.db tokens_bhs, row for row.
+Wired: render-all (before verify-integration), rebake.sh step 1 (refuses to push), deploy-blue-green.sh data gates (1g cap; heb-settled.db lives on
+fieldy's machine, so prod checks 1 + 3). Report: server/verse-tokens-report.txt. 37,378 HEB rows with no canon_id (unpromoted) are counted, not judged.
+Measured 2026-10-30 after the first --freeze: 54,041 verses / 1,103,319 words, 796,523 etched readings, 490,052 BHS tokens — 0 failures.
+Tested by breaking a copy (a changed token, an extra verse word, an etched reading moved to another word, a missing BHS token): all four caught.
+
+## NO BLANK WHERE THE CORPUS ALREADY READS THE WORD (2026-10-30)
+fieldy, John 4:1 𐤅𐤄𐤈𐤁𐤉𐤋 left with no Strong's: "why wasnt that the token and root given me instead of a surface with no root --
+im getting frustrated that I must be the one who points out every issue in the tokens". Cause: root strip found [And] [Causing] 𐤈𐤁𐤋
+H2881 but needs the verse's English to name the root; "baptizing" never matched tabal's "dip", so it was listed (review file, later
+overwritten by a settled build) and the freeze etched the blank.
+- A BLANK etched reading is not a decision: heb-align re-decides it every build (`settled: … etched blank worked out again`), so a later
+  `--freeze` etches what it gets. Real readings stay etched.
+- ONE SPELLING, ONE READING (heb-align, after the NT loop): a blank takes the reading its spelling has elsewhere — this build's HEB
+  readings + every BHS token of the spelling — when it is the only one, or >= 90% of >= 20 (𐤋𐤅 H9005). Record = the HEB edition's own
+  record of word+SN, else built from the BHS token (letters checked). Hand overrides untouched. Tier `nt_spelling`; log "one spelling, one reading".
+- His CONCEPTS are English evidence: build-surface-index adds lexicon/reading-concepts.json `en` words to each `hebSn`'s root-strip
+  profile ("baptiz" -> H2881/H7364).
+Measured (full build on a copy, 2026-10-30): 51,818 etched blanks re-decided, 20,077 filled by spelling (676 spellings; 𐤋𐤅 4,926,
+𐤁𐤄 705, 𐤕𐤋𐤌𐤉𐤃𐤉𐤅 68, 𐤄𐤌𐤈𐤁𐤉𐤋 15), 282 more by root strip; NT/Apocrypha blanks 53,045 -> 32,919 (mostly Greek/Roman names with no
+Strong's). 51 spellings still blank with competing readings (𐤋𐤊 "to you" vs "go"). verify-verse-tokens passes.
+NOT fixed (wrong readings the freeze etched, seen in John 4:1): 𐤔𐤌𐤏𐤅 -> H8089 (the name Shema), 𐤄𐤐𐤓𐤅𐤔𐤉𐤌 -> H6571 horsemen,
+𐤕𐤋𐤌𐤉𐤃𐤉𐤌 -> H3925 teach, 𐤄𐤏𐤌𐤉𐤃 carries an extra 𐤄 [Hers] chip.
+
+## merge-modforms RUNS ONCE FROM CLEAN TEXT; FOREIGN HEBREW REFUSED; NAMES IN WEB ASIDES (2026-10-30)
+Found from fieldy's `render-all --surface` log (step 9 failed on Rom 10:7; Gen 14:13 held "LaAbaram (Abram)" ten times):
+1. **OT drift / growth.** `--surface` does not reload the OT, so merge-modforms re-ran over its own output: ~90 OT verses drifted
+   every run (punctuation moving, two same-name words swapping glosses, "Har (Hor) HaHar (the Hor)") and ~20 verses with a name
+   twice grew a copy per run (Gen 14:13, 25:34, 30:1, 31:36, 1 Kgs 1:51, Esth 2:22, Jonah 4:6 …). Fixes: (a) `verses.text_base`
+   (new column, merge-modforms adds it): an OT row's text as loaded is saved the first time and every run starts from it; a full
+   render-all re-inserts the OT rows (empty base) so the fresh text becomes the base. Tested: second run changes 0 OT verses.
+   (b) modform-lib mergeModforms: a name pair already written as one of the verse's words ("LaAbaram") claims that word first —
+   a later bare "Abaram (Abram)" took the 𐤋-word and became a second "LaAbaram" (tested: 3 passes stable).
+   The corrupted verses need ONE full `node render-all.mjs` (rebuilds the OT from english-baseline.jsonl).
+2. **Hebrew of another versification.** Jasher's HEB edition is numbered in passage-sized chunks: "10:11" = Joseph's coat,
+   ~500 words, beside a one-sentence English verse; merge-modforms wrote every Hebrew word in order and scattered the sentence
+   through it. Now (canon > 39) a verse whose Hebrew has > 3x its English words and 40+ more keeps its English: 274 verses
+   (Jasher 254, canon 72: 19, canon 70: 1). The Parallel still pairs those verses with the wrong Hebrew — a versification fix for
+   Jasher's HEB edition is still owed.
+3. **Rom 10:7 "Mashayach ()".** name-form-lib divineGlosses skipped every word inside any parenthesis, so a name inside the WEB's
+   own prose aside "(that is, to bring Mashayach up …)" stayed bare, got a gold "()", and verify-reading-glosses --fix then
+   dropped the aside's brackets. Only a GLOSS bracket (right after its word) counts as inside now.
+
+## ONE HEBREW PER BOOK — "Hebrew (extra)" hidden, links shared (2026-10-30)
+fieldy: "I really want to hide it and treat all hebrew that I show as BHS with possible links" (links made in the Studio for
+John never showed in Parallel: the Studio called John's Hebrew "BHS", Parallel only offered "Hebrew (extra)").
+- server.js `hebLinkLang(book, lang)`: for 'BHS' or 'HEB' the stored/read tag is 'BHS' when the book has tokens_bhs
+  (BOOK_META), else 'HEB'. `linksFor` / `chapterLinksFor` read through it (a non-BHS book also reads links an older Studio
+  stored as 'BHS'); POST /api/translate/link and DELETE /api/translate/links write through it; /api/translate/verse's
+  token_source = hebLinkLang. txVerseQuery: tokens_nt for EVERY book without BHS tokens (was canon 40-66 only, so
+  Jubilees/Maccabees had no Hebrew under "Hebrew").
+- /api/translate/languages no longer lists HEB; BHS is labelled "Hebrew". Parallel.jsx: the dropdown has one "Hebrew"
+  (value BHS); bestLang maps BHS/HEB to BHS for a book with Masoretic tokens, else HEB (the internal HEB path — native
+  ordinal remap for links — is unchanged); a URL ?lang=HEB on an OT book falls back to BHS.
+- Old 'HEB'-tagged hand links on OT books (Genesis in the Hebrew edition, 2026-08) no longer show — the OT shows BHS ordinals.
+- Verified: node --check server.js, esbuild Parallel.jsx. Not seen in a browser. Needs frontend build + restart + deploy.
+
+## SOURCES GATE — verify-heb-sources.mjs (2026-10-30)
+Reads surface-index.db surface_occurrences.evidence (HEB, canon >= 40). FAILS on a 'contradicted' reading not in
+lexicon/heb-source-baseline.json, or a book (>= 200 judgeable) whose weak share (guess+unconfirmed+contradicted of
+english+greek+hand+weak) rises > 0.5 points over its baseline. `--update-baseline` writes the baseline (fieldy, after
+review). Report: heb-sources-report.txt. Wired: render-all (after verify-verse-tokens), rebake.sh step 1 (refuses to push),
+deploy-blue-green.sh data gates. Tested read-only on the 2026-10-30 unsettled build: pass (60 books, 27 contradicted);
+a planted new contradiction and a planted 5-point regression both fail. NO BASELINE EXISTS until fieldy runs
+`node verify-heb-sources.mjs --update-baseline` after the real build — until then the gate fails ("no baseline").
+
+## TOKENS CHECKED AGAINST OTHER SOURCES OF THE SAME TEXT — in progress (2026-10-30)
+fieldy: "before we focus on freezing tokens i want to focus on making everything correct enough to be called consistent with other
+sources of the same texts" / "corpus wide ... everything that I advertise in my reader". OPEN SOURCES ONLY (his choice): the
+LXX-Rahlfs-1935 data (CC BY-NC-SA + a CATSS user declaration) was looked at and NOT used.
+Done:
+- build-surface-index: a verse's witness English (`englishSrcOf`, used by context readings, root strip and evidence) = text_src +
+  every versions.db version + (NT) the glosses of the verse's Greek words (morph-grc.db: RP Byzantine, Dodson). Base rates are measured
+  on the same combined text. `--witness-web-only` = text_src alone. Measured (--unsettled, HEB stage): confirmed 22.6% -> 23.2%,
+  switches 18,209 -> 19,075, root strip +500; contradicted unchanged (~17.6k).
+- evidence label `contradicted` (the witnesses name another reading the build could not take; was folded into 'guess');
+  badges mark it (src/lib/snBadges.js). o.evidenceAlt = the reading they name.
+- server/heb-source-review.txt (every build): per book, readings by label + confirmed% of judgeable; every contradicted reading
+  grouped by spelling. Measured: NT 64-90%; Meqabyan/Baruch/Azariah 60-81%; Susanna 9, Tobit 11, Jasher 11, 2 Macc 13, 1 Macc 19,
+  Judith 22, Jubilees 23, Josephus 33 (Antiquities 60) — the low books are VERSIFICATION (Hebrew lined up with the wrong English
+  verse), not word-by-word errors.
+- FINDING: the English judge alone is too blunt for "contradicted" — the top entries are chance hits (𐤁𐤍𐤉 sons vs "between",
+  𐤄𐤌𐤋𐤊 king vs "go", 𐤕𐤋𐤌𐤉𐤃𐤉𐤅 disciples vs "teach"). Do NOT auto-switch on them.
+- server/sources/abbott-smith.tei.xml (PUBLIC DOMAIN, translatable-exegetical-tools/Abbott-Smith): each Greek entry's G-number and
+  its LXX Hebrew equivalents with H-numbers — 3,200 entries, 4,777 H<->G pairs (βαπτίζω->H2881, αἰών->H5769, λόγος->H1697,
+  υἱός->H1121). Against the current NT tokens (verse ±1): Greek confirms 45,410, silent 36,877 (mostly particles), no equivalent
+  known 24,593 -> 55.2% of judgeable confirmed by the Greek alone.
+**Greek judge — DONE 2026-10-30 (measured on fieldy's DBs, `--unsettled --out surface-index.unsettled.db`; the real index untouched):**
+build-greek-witness.py -> greek-witness.json (3,199 Greek words, 4,777 H<->G pairs; 73,343 of 140,149 NT Greek words carry an
+equivalent). heb-align: Greek confirms 43,556 readings; switches 1,118; contradicted 17.6k (English-only) -> 30.
+Rules (heb-align.js, "ONE test for the Greek may overrule"): the chosen AND the other reading must be `evidence.judgeable` (the
+English judge's own test — base < 0.25 AND selfRate >= 0.5; base alone let 𐤀𐤕 -> "with" 156, 𐤀𐤋 -> "not" 250, 𐤌𐤉 -> "what" 156,
+𐤀𐤌 -> "mother" 16 through), the other not a name, not a near-twin and not a number with the same root letters (H3068/H3069,
+dabar noun/verb, shaliach Aramaic/Hebrew); the Greek word must stand within a quarter of the verse; the English confirming the chosen
+reading blocks the switch unless every English word confirming it also fits the other (one word, both readings). Tried and REMOVED:
+requiring a name's switch target to be written with the exact letters in the OT (lost "the bridegroom", "in works", "to save"); a
+tie-break whenever the English named both readings with different words ("the kingdom … come" -> 𐤌𐤋𐤊𐤅𐤕 "walk").
+Sampled 30 random switches against the KJV: 30 right (drink, crowns, bridegroom, shepherd, works, stinketh, a thousand years …).
+Hand entries added: 𐤄𐤌𐤀𐤄 -> H3967 "the hundred" where the English says hundred/centurion (the Greek hekatontarchos has no
+Abbott-Smith equivalent); 𐤔𐤌𐤏𐤅𐤍 keeps Simon (the Greek turned John 21:7 into "hear").
+Left (~20 occurrences, listed as contradicted in heb-source-review.txt): names whose spelling has a hand entry that did not fire
+(𐤀𐤇𐤉𐤄 "live" Gal 2:19), 𐤄𐤔𐤕𐤇𐤅𐤄 "worship" (no reading can be built), 𐤋𐤁𐤍𐤄 "white" Rev 2:17, 𐤊𐤉𐤋𐤃 "as a child", 𐤊𐤍𐤇𐤔𐤉𐤌
+"as serpents", 𐤌𐤓𐤉𐤁𐤄 "strife", 𐤅𐤁𐤏𐤆 "and strength", 𐤁𐤀𐤌𐤅𐤍𐤕 "by faith", 𐤁𐤔𐤀𐤋 1 Pet 3:21 (Greek pointed at El — wrong).
+**Verse pairing — DONE 2026-10-30 (build-surface-index.js, before the HEB stage; --no-verse-map disables):** the extra books'
+Hebrew (canon >= 67, mostly Sefaria) numbers verses unlike the English, so words were judged by the wrong English verse. Per
+chapter a monotonic DP pairs each HEB verse with the English verse(s) its tokens_nt Strong's numbers name (evidence profiles, names
+x2; only judgeable/name numbers; band of 40 verses), and a chapter is re-paired only when that beats same-number pairing by 15% + 1.
+englishSrcOf then reads the paired verse(s). Report: server/heb-eng-verse-map.txt. Measured on fieldy's DBs: 233 of 449 chapters
+re-paired, 6,037 HEB verses. Confirmed% of judgeable: Jubilees 23 -> 71, 1 Macc 19 -> 50, 2 Macc 13 -> 38, Judith 22 -> 50, Susanna
+9 -> 47, Sirach 37 -> 45, Tobit 11 -> 19 (its Hebrew is a shorter recension: 76 verses vs 244). Josephus was already 1:1 (lengths track,
+0-1% off) — its ~33% is homographs the English cannot judge ('guess'), not contradiction. Sampled 14 random pairings by reading
+names/content: 13 right (Judith 4:4->3, 4:5->4 matches a hand reading), Judith 11:8->7 doubtful. The pairing is used ONLY for
+judging; the Parallel reader still pairs by number.
+Next (agreed plan): (1) bake the Greek witness (Abbott-Smith + morph-grc) and add it to the judge: Greek-confirmed or English-
+confirmed = agrees; CONTRADICTED only when another reading of the same spelling is Greek-confirmed and the chosen is confirmed by
+neither; (2) versification alignment for the low books (Jasher, Tobit, Susanna, 1-2 Macc, Judith, Jubilees, Josephus) — pair each
+HEB verse with the English verse its words fit; (3) gate: no contradicted reading ships, unsupported count per book may not grow;
+(4) then --freeze again.

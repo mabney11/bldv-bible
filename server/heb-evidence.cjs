@@ -28,11 +28,15 @@ function stemWord(w) {
 const STOP = new Set(`a an the and of to in on at by for with from as is be are was were it its this that these those
 he she they we you me my his her their our your him them us one ones thing things idiom phrase especially etc used
 use shall will would should may might can could have has had did does do being been am into onto upon unto out up
-down over under off all any not no nor so then there here when where who whom whose what which also even very said
+down over under off all any not no nor so then when who whom whose what which also even very said
 say says saying thus therefore because if but or yet now let make made let`.split(/\s+/));
+// NOT stop words: here / there / now / where — they ARE the meaning of hennah H2008 "hither", sham H8033
+// "there", attah H6258 "now", ayeh "where" (John 4:15 "come here to draw" read hinneh "behold", 2026-10-29);
+// the base-rate test keeps them from deciding anything on their own
 // EVIDENCE stems: stemWord, a trailing e dropped, first 5 letters — so word forms meet
 // ("scribes"/"scribe" -> scrib, "faith"/"faithful" -> faith, "believe"/"believed" -> belie)
-const evStem = w => stemWord(w).replace(/e$/, '').slice(0, 5);
+// a short word keeps its final e: "here" must not become "her" (the pronoun) — hennah H2008
+const evStem = w => { const s = stemWord(w); return (s.length > 4 ? s.replace(/e$/, '') : s).slice(0, 5); };
 // keep only the English of a "word (gloss)" pair: Josephus / 2 Esdras / the Works Library text_src
 // is an earlier render, and a transliteration must never count as English
 const englishOnly = t => String(t || '').replace(/[A-Za-z\u{10900}-\u{1091F}'’-]+\s*\(([^()]*)\)/gu, ' $1 ');
@@ -90,7 +94,10 @@ function buildEvidence(o) {
         const c = cnt.get(sn), n = segs.get(sn) || 0;
         if (c) for (const [st, k] of c) if (k >= Math.max(2, 0.12 * n)) out.add(st);
         const rp = roots[sn] || roots[sn.slice(1)];
-        for (const g of [rp && lex[rp], rp && homo[`${rp}_${sn}`]])
+        // his Strong's-keyed homograph is THIS number's gloss; the spelling-keyed lexicon gloss only when
+        // there is none (𐤄𐤍𐤄 "Behold" must not enter H2008 hennah "here" once 𐤄𐤍𐤄_H2008 exists)
+        const hg = rp && homo[`${rp}_${sn}`];
+        for (const g of [hg || (rp && lex[rp])])
             if (typeof g === 'string' && !/[\u{10900}-\u{1091F}]/u.test(g)) for (const st of contentStems(g)) out.add(st);
         if (!out.size) {
             const e = dict[sn] || dict[sn.slice(1)] || {};
@@ -115,10 +122,13 @@ function buildEvidence(o) {
     };
     // The app's own transliteration of a number (the English carries names and divine titles
     // transliterated: "Alahayam", "Yashawai"), added by the caller from the readings it built.
+    const _tl = new Map();   // sn -> the transliteration stems added for it
     const addTranslit = (sn0, word) => {
         const sn = H(sn0), w = String(word || '').replace(/[^A-Za-z]/g, '');
         if (!sn || w.length < 3) return;
         prof(sn).add(evStem(w));
+        if (!_tl.has(sn)) _tl.set(sn, new Set());
+        _tl.get(sn).add(evStem(w));
         _base.delete(sn);
     };
     const isName = (sn0) => {
@@ -137,10 +147,16 @@ function buildEvidence(o) {
         return b;
     };
     const hits = (sn, vs) => { for (const st of prof(sn)) if (vs.has(st)) return true; return false; };
+    // the verse names sn with an English the WEB itself uses for it (>= 5% of its tagged segments: yashab
+    // "sat" is 7%, John 4:6) —
+    // not only a word from a gloss: his lexicon's 𐤔𐤌 "place" must not turn shammah "there" into
+    // sum "set" (John 4:20 "the place where people ought to worship", 2026-10-29)
+    const hitsTagged = (sn0, vs) => { const sn = H(sn0), c = cnt.get(sn), n = segs.get(sn) || 0;
+        if (c) for (const [st, k] of c) if (k >= Math.max(2, 0.05 * n) && vs.has(st)) return true; return false; };
     const virtual = sn => { const n = parseInt(String(sn).replace(/^[Hh]/, ''), 10); return !isNaN(n) && n >= 9000; };
 
     /**
-     * judge(chosen, candidates (array or () => array), vs[, spellingAgree]) -> { evidence, switchTo? }
+     * judge(chosen, candidates (array or () => array), vs[, spellingAgree[, exactAlt]]) -> { evidence, switchTo? }
      *   evidence: 'english'     the verse's English names the chosen reading
      *             'function'    everyday vocabulary — the English cannot judge it
      *             'name'        a name (the English carries names transliterated)
@@ -151,30 +167,58 @@ function buildEvidence(o) {
      *             (only a non-name, judgeable reading; and, given spellingAgree(sn) -> share of
      *             the spelling's verses naming sn, never one that fits the spelling worse overall)
      */
-    function judge(chosen0, candidates, vs, spellingAgree) {
+    // exactAlt(sn): sn is an attested reading of this EXACT spelling (the OT writes these letters
+    // with that number — 𐤄𐤌𐤃𐤁𐤓 is both ha-midbar H4057 and ha-medabber H1696). Such a reading is
+    // a proven homograph, not a coincidence, so the verse's own English decides it (John 4:26).
+    // near-twins (Hebrew shatah / Aramaic shetah, qedem / qodam): when two readings share
+    // most of their English, the English cannot tell them apart
+    // Transliterations do not count: homographs of one spelling share it by definition (𐤄𐤍𐤄
+    // "hanah" for both hinneh H2009 and hennah H2008 made them twins — John 4:15, 2026-10-29)
+    const twins = (a, b) => {
+        const ta = _tl.get(H(a)) || new Set(), tb = _tl.get(H(b)) || new Set();
+        const P = [...prof(a)].filter(x => !ta.has(x) && !tb.has(x)), Q = new Set([...prof(b)].filter(x => !ta.has(x) && !tb.has(x)));
+        let k = 0; for (const x of P) if (Q.has(x)) k++;
+        return k / Math.max(1, Math.min(P.length, Q.size)) >= 0.5; };
+    // specific enough for a witness to judge: a profile, rare in ordinary verses, and it predicts its own OT tags
+    const judgeable = sn => !virtual(sn) && prof(sn).size > 0 && base(sn) < 0.25 && selfRate(sn) >= 0.5;
+    function judge(chosen0, candidates, vs, spellingAgree, exactAlt) {
         const chosen = H(chosen0);
         if (!vs || !vs.size) return { evidence: 'no-english' };
         if (!chosen || virtual(chosen)) return { evidence: 'function' };
         if (isName(chosen)) return { evidence: 'name' };
-        const judgeable = sn => prof(sn).size && base(sn) < 0.25 && selfRate(sn) >= 0.5;
         // near-twins (Hebrew shatah / Aramaic shetah, qedem / qodam): when two readings share
         // most of their English, the English cannot tell them apart
-        const twins = (a, b) => { const P = prof(a), Q = prof(b); let k = 0; for (const x of P) if (Q.has(x)) k++;
-                                   return k / Math.max(1, Math.min(P.size, Q.size)) >= 0.5; };
+        // Transliterations do not count: homographs of one spelling share it by definition (𐤄𐤍𐤄
+        // "hanah" for both hinneh H2009 and hennah H2008 made them twins — John 4:15, 2026-10-29)
         if (!judgeable(chosen)) return { evidence: 'function' };
         if (hits(chosen, vs)) return { evidence: 'english' };
         const cl = typeof candidates === 'function' ? candidates() : candidates;   // lazy: only needed here
         const others = [...new Set((cl || []).map(H))].filter(s => s && s !== chosen && !virtual(s));
-        const named = others.filter(s => !isName(s) && judgeable(s) && hits(s, vs) && !twins(chosen, s)
-            // the SPELLING's verses must back it too, clearly (the audit's test: lift >= 0.3 over its
-            // base rate, and >= 0.3 more than the current reading's) — one verse alone is a coincidence
-            && (!spellingAgree || ((spellingAgree(s) - base(s)) >= 0.3
-                                   && (spellingAgree(s) - base(s)) - (spellingAgree(chosen) - base(chosen)) >= 0.3)))
+        // a REPLACEMENT may be everyday vocabulary ("speak", "go") — only the current reading must be
+        // specific enough to judge; chance hits are what the spelling-level test below is for
+        // (2026-10-29: H1696 "speak" had base ~0.3 and could never replace ha-midbar in John 4:26)
+        // A reading the OT writes with these exact letters (exactAlt) is proven, so its English need only
+        // be usual for it, not dominant: hennah H2008 "here" is said "here" in ~42% of its verses (also
+        // "hither", "this side", "until now") — John 4:15 "come here to draw" (2026-10-29)
+        const candidateOk = sn => prof(sn).size && base(sn) < 0.5
+            && selfRate(sn) >= (exactAlt && exactAlt(sn) ? 0.3 : 0.5);
+        // a candidate is named by its profile OR by any English the WEB uses for it in >= 5% of its verses
+        // (yashab H3427 "sat", 7% — below the profile's 12%; John 4:6 "sat down by the well")
+        const named = others.filter(s => !isName(s) && candidateOk(s) && (hits(s, vs) || hitsTagged(s, vs)) && !twins(chosen, s)
+            // the SPELLING's verses must back it too — one verse alone is a coincidence. Either the
+            // new reading clearly beats the current one across the spelling (lift >= 0.3, and >= 0.3
+            // more), or the spelling is a TRUE HOMOGRAPH: both readings fit a real share of its verses
+            // (each lift >= 0.2: ha-midbar "the wilderness" / ha-medabber "the one speaking", John 4:26)
+            // and each verse's own English decides (2026-10-29).
+            && (!spellingAgree || (exactAlt && exactAlt(s) && hitsTagged(s, vs)) || (() => {
+                const l1 = spellingAgree(s) - base(s), l0 = spellingAgree(chosen) - base(chosen);
+                return (l1 >= 0.3 && l1 - l0 >= 0.3) || (l1 >= 0.2 && l0 >= 0.2);
+            })()))
             .sort((a, b) => base(a) - base(b));
         if (named.length) return { evidence: 'english', switchTo: named[0] };
         return { evidence: others.length ? 'guess' : 'unconfirmed' };
     }
-    return { prof, base, selfRate, isName, hits, judge, addTranslit, stemsOf, stemWord, englishOnly };
+    return { prof, base, selfRate, isName, judgeable, twins, hits, hitsTagged, judge, addTranslit, stemsOf, stemWord, englishOnly };
 }
 
 module.exports = { buildEvidence, stemWord, evStem, stemsOf, englishOnly };

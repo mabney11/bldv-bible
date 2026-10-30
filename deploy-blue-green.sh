@@ -164,6 +164,12 @@ STABLE_MEM_SWAP="${STABLE_MEM_SWAP:-3800m}"
 echo "==> Verifying data on $PALEO_DATA_DIR (inside the freshly built image)..."
 docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-versification.mjs /data/corpus.db
 docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-verse-completeness.mjs /data/corpus.db /data/translation.db
+# 2026-10-30 VERSE TOKENS gate: every Hebrew verse's tokens in the index are its words, in order,
+# and the BHS index is tokens_bhs row for row (heb-settled.db is checked where it exists — it lives
+# on fieldy's machine). set -e: a failure stops the deploy before $NEW is started.
+docker run --rm --memory="1g" --memory-swap="1g" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-verse-tokens.mjs /data/corpus.db /data/surface-index.db /data/heb-settled.db --report /tmp/verse-tokens-report.txt
+# 2026-10-30 SOURCES gate: no new contradicted HEB reading, no book's unconfirmed share above lexicon/heb-source-baseline.json
+docker run --rm --memory="768m" --memory-swap="768m" --cpu-period=100000 --cpu-quota=100000 -v "$PALEO_DATA_DIR:/data" paleo-studio node verify-heb-sources.mjs /data/surface-index.db --report /tmp/heb-sources-report.txt
 
 # 2026-09-09: prod rendered "Adam (Edom)" in Ezekiel 25 while the corpus on
 # fieldy's machine said "Adawam (Edom)" everywhere — the volume's corpus.db was

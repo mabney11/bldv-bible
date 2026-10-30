@@ -1223,6 +1223,9 @@ export default function Parallel() {
   // Keep the chosen language if it has the book; otherwise walk the hierarchy
   // (Hebrew first) to the best available source that's offered in the dropdown.
   const bestLang = useCallback((b, desired) => {
+    // ONE HEBREW (fieldy, 2026-10-30: "hide it and treat all hebrew that I show as BHS with possible links"): the
+    // Hebrew of a book is its Masoretic tokens when it has them, else the Hebrew edition's — never a choice
+    if ((desired === 'BHS' || desired === 'HEB') && bhsBooks.current.has(b)) return 'BHS';
     if (langHasBook(desired, b)) return desired;
     for (const l of LANG_PRIORITY) if (langHasBook(l, b) && (l === 'BHS' || sources.some(o => o.id === l))) return l;
     // Metadata couldn't confirm a source (book-order may omit per-book `sources`).
@@ -1255,7 +1258,7 @@ export default function Parallel() {
   // bestLang can't confirm a fallback is offered — so we must re-run when it lands.
   useEffect(() => {
     if (!bookResolved) return;
-    if (books.length && !langHasBook(lang, book)) {
+    if (books.length && (!langHasBook(lang, book) || (lang === 'HEB' && bhsBooks.current.has(book)))) {
       const nl = bestLang(book, lang);
       if (nl !== lang) setLang(nl);
     }
@@ -1785,8 +1788,9 @@ export default function Parallel() {
               <option value="">— verse —</option>
               {verseNums.map(v => <option key={v} value={v}>Verse {v}</option>)}
             </select>
-            <select className="pl-lang" value={lang} onChange={e => setLang(bestLang(book, e.target.value))} title="Source language">
-              {sources.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
+            <select className="pl-lang" value={lang === 'HEB' ? 'BHS' : lang} onChange={e => setLang(bestLang(book, e.target.value))} title="Source language">
+              {/* one Hebrew: the Hebrew edition (HEB) is what 'Hebrew' shows for a book without Masoretic tokens */}
+              {sources.filter(s => s.id !== 'HEB').map(s => <option key={s.id} value={s.id}>{s.id === 'BHS' ? 'Hebrew' : s.label}</option>)}
             </select>
           </div>
           <span className="pl-status">{status}</span>

@@ -1,0 +1,1109 @@
+40:2:6	𐤁𐤀𐤋𐤐𐤉	H505->H441	exact:𐤁𐤀𐤋𐤐𐤉 -> proclitic:𐤁+𐤀𐤋𐤐𐤉	greek
+40:2:23	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+40:3:15	𐤄𐤍𐤉𐤇𐤄	H3240->H5117	exact:𐤄𐤍𐤉𐤇𐤄 -> suffix:𐤄𐤍𐤉𐤇+𐤄	greek
+40:3:15	𐤅𐤉𐤍𐤇	H3240->H5117	exact:𐤅𐤉𐤍𐤇 -> exact:𐤅𐤉𐤍𐤇	greek
+40:4:3	𐤄𐤌𐤍𐤎𐤄	H4519->H5254	affixed:𐤄+𐤌+𐤍𐤎+𐤄 -> proclitic:𐤄+𐤌𐤍𐤎𐤄	greek
+40:4:13	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+40:4:13	𐤁𐤊𐤐𐤓	H6499->H3723	proclitic:𐤁+𐤊+𐤐𐤓 -> root:𐤁 𐤊𐤐𐤓 	greek
+40:4:19	𐤋𐤃𐤉𐤂𐤉	H1673->H1728	plene:𐤋𐤃𐤅𐤉𐤂 -> root:𐤋 𐤃𐤉𐤂 𐤉	greek
+40:4:24	𐤄𐤇𐤅𐤋𐤉𐤌	H2490->H2481	plene:𐤄𐤇𐤋𐤌 -> root:𐤄 𐤇𐤅𐤋𐤉 𐤌	greek
+40:5:1	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+40:5:16	𐤀𐤅𐤓𐤊𐤌	H753->H216	plene:𐤀𐤓𐤊𐤌 -> suffix:𐤀𐤅𐤓𐤊+𐤌	greek
+40:5:19	𐤄𐤌𐤑𐤅𐤕	H4682->H4687	exact:𐤄𐤌𐤑𐤅𐤕 -> exact:𐤄𐤌𐤑𐤅𐤕	greek
+40:5:26	𐤔𐤋𐤌𐤕	H4191->H8003	proclitic:𐤔+𐤋+𐤌𐤕 -> suffix:𐤔𐤋𐤌+𐤕	greek
+40:5:42	𐤕𐤔𐤁	H3427->H7725	exact:𐤕𐤔𐤁 -> exact:𐤕𐤔𐤁	greek
+40:5:43	𐤅𐤔𐤍𐤀𐤕	H8135->H8130	exact:𐤅𐤔𐤍𐤀𐤕 -> proclitic:𐤅+𐤔𐤍𐤀𐤕	greek
+40:5:47	𐤉𐤕𐤓𐤅𐤍	H3504->H3499	exact:𐤉𐤕𐤓𐤅𐤍 -> suffix:𐤉𐤕𐤓𐤅+𐤍	greek
+40:6:8	𐤕𐤃𐤌𐤅	H1826->H1819	exact:𐤕𐤃𐤌𐤅 -> plene:𐤕𐤃𐤌𐤉	greek
+40:6:17	𐤕𐤑𐤅𐤌	H6680->H6684	exact:𐤕𐤑𐤅𐤌 -> root:𐤕 𐤑𐤅𐤌 	greek
+40:6:24	𐤀𐤃𐤍𐤉𐤌	H134->H113	exact:𐤀𐤃𐤍𐤉𐤌 -> exact:𐤀𐤃𐤍𐤉𐤌	greek
+40:7:2	𐤌𐤃𐤃𐤉𐤌	H1730->H4058	proclitic:𐤌+𐤃𐤃𐤉𐤌 -> suffix:𐤌𐤃𐤃+𐤉𐤌	greek
+40:7:4	𐤄𐤍𐤉𐤇𐤄	H3240->H5117	exact:𐤄𐤍𐤉𐤇𐤄 -> suffix:𐤄𐤍𐤉𐤇+𐤄	greek
+40:7:4	𐤌𐤏𐤉𐤍𐤊	H5771->H5869	plene:𐤌𐤏𐤅𐤍𐤊 -> proclitic:𐤌+𐤏𐤉𐤍𐤊	greek
+40:7:5	𐤌𐤏𐤉𐤍𐤊	H5771->H5869	plene:𐤌𐤏𐤅𐤍𐤊 -> proclitic:𐤌+𐤏𐤉𐤍𐤊	greek
+40:7:5	𐤌𐤏𐤉𐤍	H4599->H5869	exact:𐤌𐤏𐤉𐤍 -> plene:𐤌𐤏𐤉𐤍𐤉	greek
+40:7:11	𐤄𐤓𐤏𐤉𐤌	H7462->H7451	exact:𐤄𐤓𐤏𐤉𐤌 -> exact:𐤄𐤓𐤏𐤉𐤌	greek
+40:7:11	𐤋𐤔𐤀𐤋𐤉𐤌	H410->H7592	proclitic:𐤋+𐤔+𐤀𐤋𐤉𐤌 -> suffix:𐤋𐤔𐤀𐤋+𐤉𐤌	greek
+40:7:16	𐤄𐤒𐤑𐤉𐤌	H7093->H6975	affixed:𐤄+𐤒𐤑+𐤉𐤌 -> proclitic:𐤄+𐤒𐤑𐤉𐤌	greek
+40:7:20	𐤁𐤐𐤓𐤉𐤌	H6499->H6529	proclitic:𐤁+𐤐𐤓𐤉𐤌 -> proclitic:𐤁+𐤐𐤓𐤉𐤌	greek
+40:7:22	𐤂𐤓𐤔𐤍𐤅	H1648->H1644	plene:𐤂𐤓𐤔𐤅𐤍 -> suffix:𐤂𐤓𐤔+𐤍𐤅	greek
+40:7:24	𐤀𐤃𐤌𐤄𐤅	H127->H1819	plene:𐤀𐤃𐤌𐤄 -> plene:𐤀𐤃𐤌𐤄	greek
+40:7:25	𐤅𐤉𐤔𐤁𐤅	H3427->H5380	exact:𐤅𐤉𐤔𐤁𐤅 -> suffix:𐤅𐤉𐤔𐤁+𐤅	greek
+40:7:25	𐤅𐤉𐤂𐤏𐤅	H3021->H5060	exact:𐤅𐤉𐤂𐤏𐤅 -> proclitic:𐤅+𐤉𐤂𐤏𐤅	greek
+40:7:27	𐤅𐤉𐤔𐤁𐤅	H3427->H5380	exact:𐤅𐤉𐤔𐤁𐤅 -> suffix:𐤅𐤉𐤔𐤁+𐤅	greek
+40:8:12	𐤄𐤔𐤍𐤉𐤌	H8141->H8127	exact:𐤄𐤔𐤍𐤉𐤌 -> exact:𐤄𐤔𐤍𐤉𐤌	greek
+40:8:14	𐤇𐤌𐤅𐤕𐤅	H2346->H2545	suffix:𐤇𐤌𐤅𐤕+𐤅 -> root: 𐤇𐤌𐤅𐤕 𐤅	greek
+40:8:26	𐤁𐤓𐤅𐤇𐤅𐤕	H1272->H7307	plene:𐤁𐤓𐤇𐤕 -> proclitic:𐤁+𐤓𐤅𐤇𐤅𐤕	greek
+40:9:15	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+40:9:15	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+40:9:15	𐤉𐤑𐤅𐤌𐤅	H6680->H6684	suffix:𐤉𐤑𐤅𐤌+𐤅 -> bhs:𐤉𐤑𐤅𐤌𐤅	greek
+40:9:18	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+40:9:18	𐤁𐤕𐤉	H1004->H1323	exact:𐤁𐤕𐤉 -> exact:𐤁𐤕𐤉	greek
+40:9:24	𐤄𐤉𐤋𐤃𐤄	H3205->H3207	proclitic:𐤄+𐤉𐤋𐤃𐤄 -> exact:𐤄𐤉𐤋𐤃𐤄	greek
+40:9:33	𐤄𐤀𐤋𐤌	H197->H483	proclitic:𐤄+𐤀𐤋𐤌 -> proclitic:𐤄+𐤀𐤋𐤌	greek
+40:9:34	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+40:9:35	𐤁𐤁𐤕𐤉	H1004->H1323	exact:𐤁𐤁𐤕𐤉 -> proclitic:𐤁+𐤁𐤕𐤉	greek
+40:9:36	𐤓𐤏𐤄	H7451->H7462	exact:𐤓𐤏𐤄 -> exact:𐤓𐤏𐤄	greek
+40:10:1	𐤋𐤂𐤓𐤔𐤌	H1647->H1644	plene:𐤋𐤂𐤓𐤔𐤅𐤌 -> suffix:𐤋𐤂𐤓𐤔+𐤌	greek
+40:10:15	𐤄𐤃𐤉𐤍	H1839->H1779	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤉𐤍	greek
+40:10:19	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+40:10:20	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+40:10:35	𐤌𐤀𐤁𐤉𐤅	H4124->H1	plene:𐤌𐤅𐤀𐤁 -> proclitic:𐤌+𐤀𐤁𐤉𐤅	greek
+40:10:35	𐤌𐤀𐤌𐤄	H3972->H517	plene:𐤌𐤀𐤅𐤌𐤄 -> proclitic:𐤌+𐤀𐤌𐤄	greek
+40:11:5	𐤌𐤕𐤁𐤔𐤓𐤉	H4519->H1319	affixed:𐤌+𐤕𐤁𐤔𐤓+𐤉 -> affixed:𐤌+𐤕𐤁𐤔𐤓+𐤉	greek
+40:11:16	𐤀𐤃𐤌𐤄	H127->H1819	exact:𐤀𐤃𐤌𐤄 -> exact:𐤀𐤃𐤌𐤄	greek
+40:11:24	𐤄𐤃𐤉𐤍	H1839->H1779	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤉𐤍	greek
+40:11:29	𐤏𐤍𐤅	H6030->H6035	exact:𐤏𐤍𐤅 -> exact:𐤏𐤍𐤅	greek
+40:11:30	𐤅𐤒𐤋	H6963->H7031	exact:𐤅𐤒𐤋 -> exact:𐤅𐤒𐤋	greek
+40:12:22	𐤅𐤀𐤋𐤌	H197->H483	proclitic:𐤅+𐤀𐤋𐤌 -> proclitic:𐤅+𐤀𐤋𐤌	greek
+40:12:22	𐤄𐤀𐤋𐤌	H197->H483	proclitic:𐤄+𐤀𐤋𐤌 -> proclitic:𐤄+𐤀𐤋𐤌	greek
+40:12:24	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+40:12:27	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+40:12:27	𐤁𐤌𐤉	H4325->H4100	exact:𐤁𐤌𐤉 -> proclitic:𐤁+𐤌𐤉	greek
+40:12:27	𐤌𐤂𐤓𐤔𐤉𐤌	H4054->H1644	suffix:𐤌𐤂𐤓𐤔+𐤉𐤌 -> affixed:𐤌+𐤂𐤓𐤔+𐤉𐤌	greek
+40:12:28	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+40:12:32	𐤁𐤏𐤅𐤋𐤌	H5867->H5769	plene:𐤁𐤏𐤉𐤋𐤌 -> proclitic:𐤁+𐤏𐤅𐤋𐤌	greek
+40:12:32	𐤁𐤏𐤅𐤋𐤌	H5867->H5769	plene:𐤁𐤏𐤉𐤋𐤌 -> proclitic:𐤁+𐤏𐤅𐤋𐤌	greek
+40:12:36	𐤄𐤃𐤉𐤍	H1839->H1779	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤉𐤍	greek
+40:12:43	𐤁𐤌𐤒𐤌𐤅𐤕	H4519->H4725	affixed:𐤁+𐤌+𐤒𐤌+𐤅𐤕 -> proclitic:𐤁+𐤌𐤒𐤌𐤅𐤕	greek
+40:12:46	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+40:13:1	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+40:13:7	𐤄𐤒𐤑𐤉𐤌	H7093->H6975	affixed:𐤄+𐤒𐤑+𐤉𐤌 -> proclitic:𐤄+𐤒𐤑𐤉𐤌	greek
+40:13:7	𐤄𐤒𐤑𐤉𐤌	H7093->H6975	affixed:𐤄+𐤒𐤑+𐤉𐤌 -> proclitic:𐤄+𐤒𐤑𐤉𐤌	greek
+40:13:19	𐤄𐤆𐤓𐤅𐤏	H2220->H2232	proclitic:𐤄+𐤆𐤓𐤅𐤏 -> root:𐤄 𐤆𐤓𐤅𐤏 	greek
+40:13:22	𐤄𐤒𐤑𐤉𐤌	H7093->H6975	affixed:𐤄+𐤒𐤑+𐤉𐤌 -> proclitic:𐤄+𐤒𐤑𐤉𐤌	greek
+40:13:30	𐤄𐤍𐤉𐤇𐤅	H3240->H5117	exact:𐤄𐤍𐤉𐤇𐤅 -> exact:𐤄𐤍𐤉𐤇𐤅	greek
+40:13:42	𐤄𐤔𐤍𐤉𐤌	H8141->H8127	exact:𐤄𐤔𐤍𐤉𐤌 -> exact:𐤄𐤔𐤍𐤉𐤌	greek
+40:13:47	𐤅𐤌𐤉𐤍𐤉𐤌	H4519->H4327	affixed:𐤅+𐤌+𐤉𐤍𐤉+𐤌 -> root:𐤅 𐤌𐤉𐤍 𐤉𐤌	greek
+40:13:50	𐤄𐤔𐤍𐤉𐤌	H8141->H8127	exact:𐤄𐤔𐤍𐤉𐤌 -> exact:𐤄𐤔𐤍𐤉𐤌	greek
+40:14:11	𐤀𐤌𐤄	H520->H517	exact:𐤀𐤌𐤄 -> exact:𐤀𐤌𐤄	greek
+40:15:14	𐤋𐤏𐤅𐤓𐤉𐤌	H5892->H5787	plene:𐤋𐤏𐤓𐤉𐤌 -> proclitic:𐤋+𐤏𐤅𐤓𐤉𐤌	greek
+40:15:17	𐤄𐤊𐤓𐤔	H3566->H3423	proclitic:𐤄+𐤊𐤓𐤔 -> proclitic:𐤄+𐤊+𐤓𐤔	greek
+40:15:19	𐤂𐤍𐤁𐤅𐤕	H1592->H1589	plene:𐤂𐤍𐤁𐤕 -> plene:𐤂𐤍𐤁𐤕	greek
+40:15:22	𐤁𐤕𐤉	H1004->H1323	exact:𐤁𐤕𐤉 -> exact:𐤁𐤕𐤉	greek
+40:15:29	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+40:16:18	𐤒𐤄𐤋𐤕𐤉	H6953->H6951	plene:𐤒𐤄𐤋𐤕 -> root: 𐤒𐤄𐤋 𐤕+𐤉	greek
+40:16:19	𐤌𐤐𐤕𐤇𐤅𐤕	H4519->H4668	affixed:𐤌+𐤐𐤕𐤇+𐤅𐤕 -> suffix:𐤌𐤐𐤕𐤇+𐤅𐤕	greek
+40:17:5	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+40:17:5	𐤓𐤑𐤉𐤕𐤉	H7533->H7521	plene:𐤓𐤑𐤅𐤕𐤉 -> suffix:𐤓𐤑𐤉𐤕+𐤉	greek
+40:17:21	𐤄𐤌𐤉𐤍	H2001->H4327	plene:𐤄𐤌𐤍 -> root:𐤄 𐤌𐤉𐤍 	greek
+40:18:6	𐤔𐤉𐤕𐤋𐤄	H8362->H8518	plene:𐤔𐤕𐤅𐤋𐤄 -> root:𐤔+𐤉 𐤕𐤋𐤄 	greek
+40:18:25	𐤋𐤌𐤊𐤓	H4353->H4376	plene:𐤋𐤌𐤊𐤉𐤓 -> proclitic:𐤋+𐤌𐤊𐤓	greek
+40:19:14	𐤄𐤍𐤉𐤇𐤅	H3240->H5117	exact:𐤄𐤍𐤉𐤇𐤅 -> exact:𐤄𐤍𐤉𐤇𐤅	greek
+40:19:17	𐤄𐤌𐤑𐤅𐤕	H4682->H4687	exact:𐤄𐤌𐤑𐤅𐤕 -> exact:𐤄𐤌𐤑𐤅𐤕	greek
+40:19:20	𐤄𐤁𐤇𐤅𐤓	H977->H970	proclitic:𐤄+𐤁𐤇𐤅𐤓 -> proclitic:𐤄+𐤁𐤇𐤅𐤓	greek
+40:19:21	𐤋𐤏𐤍𐤉𐤉𐤌	H5869->H6041	plene:𐤋𐤏𐤉𐤍𐤉𐤌 -> proclitic:𐤋+𐤏𐤍𐤉𐤉𐤌	greek
+40:19:22	𐤄𐤁𐤇𐤅𐤓	H977->H970	proclitic:𐤄+𐤁𐤇𐤅𐤓 -> proclitic:𐤄+𐤁𐤇𐤅𐤓	greek
+40:19:25	𐤋𐤄𐤅𐤔𐤏	H1954->H3467	exact:𐤋𐤄𐤅𐤔𐤏 -> proclitic:𐤋+𐤄𐤅𐤔𐤏	greek
+40:20:3	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+40:20:23	𐤔𐤁𐤕	H7676->H3427	exact:𐤔𐤁𐤕 -> exact:𐤔𐤁𐤕	greek
+40:21:11	𐤄𐤌𐤍𐤉	H2001->H1995	plene:𐤄𐤌𐤍 -> root: 𐤄𐤌𐤍 𐤉	greek
+40:21:12	𐤄𐤉𐤅𐤍𐤉𐤌	H3125->H3123	exact:𐤄𐤉𐤅𐤍𐤉𐤌 -> proclitic:𐤄+𐤉𐤅𐤍𐤉𐤌	greek
+40:21:41	𐤄𐤐𐤓𐤉	H6499->H6529	plene:𐤄𐤐𐤓 -> proclitic:𐤄+𐤐𐤓𐤉	greek
+40:21:42	𐤐𐤍𐤄	H6437->H6440	exact:𐤐𐤍𐤄 -> plene:𐤐𐤍𐤉𐤄	greek
+40:21:46	𐤉𐤓𐤀𐤅	H7200->H3372	exact:𐤉𐤓𐤀𐤅 -> exact:𐤉𐤓𐤀𐤅	greek
+40:22:13	𐤄𐤔𐤍𐤉𐤌	H8141->H8127	exact:𐤄𐤔𐤍𐤉𐤌 -> exact:𐤄𐤔𐤍𐤉𐤌	greek
+40:22:40	𐤄𐤌𐤑𐤅𐤕	H4682->H4687	exact:𐤄𐤌𐤑𐤅𐤕 -> exact:𐤄𐤌𐤑𐤅𐤕	greek
+40:22:44	𐤄𐤃𐤌	H1818->H1916	exact:𐤄𐤃𐤌 -> exact:𐤄𐤃𐤌	greek
+40:23:4	𐤌𐤔𐤀𐤕	H4864->H4853	exact:𐤌𐤔𐤀𐤕 -> suffix:𐤌𐤔𐤀+𐤕	greek
+40:23:25	𐤅𐤕𐤅𐤊𐤍	H3559->H8432	plene:𐤅𐤕𐤊𐤍 -> suffix:𐤅𐤕𐤅𐤊+𐤍	greek
+40:23:33	𐤌𐤃𐤉𐤍	H4080->H1779	exact:𐤌𐤃𐤉𐤍 -> exact:𐤌𐤃𐤉𐤍	greek
+40:24:6	𐤏𐤕𐤉𐤃𐤉𐤌	H6260->H6264	plene:𐤏𐤕𐤅𐤃𐤉𐤌 -> suffix:𐤏𐤕𐤉𐤃+𐤉𐤌	greek
+40:24:18	𐤉𐤔𐤁	H3427->H7725	exact:𐤉𐤔𐤁 -> exact:𐤉𐤔𐤁	greek
+40:24:19	𐤋𐤄𐤓𐤅𐤕	H3384->H2029	plene:𐤋𐤄𐤅𐤓𐤕 -> affixed:𐤋+𐤄𐤓𐤅+𐤕	greek
+40:24:22	𐤄𐤁𐤇𐤉𐤓𐤉𐤌	H970->H977	plene:𐤄𐤁𐤇𐤅𐤓𐤉𐤌 -> root:𐤄 𐤁𐤇𐤉𐤓 𐤉𐤌	greek
+40:24:24	𐤄𐤁𐤇𐤉𐤓𐤉𐤌	H970->H977	plene:𐤄𐤁𐤇𐤅𐤓𐤉𐤌 -> root:𐤄 𐤁𐤇𐤉𐤓 𐤉𐤌	greek
+40:24:30	𐤏𐤍𐤍𐤉	H6030->H6051	exact:𐤏𐤍𐤍𐤉 -> plene:𐤏𐤍𐤍	greek
+40:24:32	𐤄𐤒𐤉𐤑	H6974->H7019	exact:𐤄𐤒𐤉𐤑 -> exact:𐤄𐤒𐤉𐤑	greek
+40:24:36	𐤅𐤄𐤔𐤏𐤄	H3467->H8159	plene:𐤅𐤄𐤅𐤔𐤉𐤏𐤄 -> proclitic:𐤅+𐤄+𐤔𐤏𐤄	greek
+40:24:38	𐤅𐤔𐤕𐤉𐤌	H8147->H8354	exact:𐤅𐤔𐤕𐤉𐤌 -> exact:𐤅𐤔𐤕𐤉𐤌	greek
+40:24:44	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+40:24:51	𐤄𐤔𐤍𐤉𐤌	H8141->H8127	exact:𐤄𐤔𐤍𐤉𐤌 -> exact:𐤄𐤔𐤍𐤉𐤌	greek
+40:25:1	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+40:25:2	𐤇𐤊𐤌𐤅𐤕	H2454->H2450	exact:𐤇𐤊𐤌𐤅𐤕 -> exact:𐤇𐤊𐤌𐤅𐤕	greek
+40:25:5	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+40:25:6	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+40:25:7	𐤄𐤏𐤋𐤌𐤅𐤕	H5961->H5959	proclitic:𐤄+𐤏𐤋𐤌𐤅𐤕 -> proclitic:𐤄+𐤏𐤋𐤌𐤅𐤕	greek
+40:25:10	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+40:25:10	𐤅𐤄𐤍𐤊𐤍𐤅𐤕	H5221->H3559	affixed:𐤅+𐤄+𐤍𐤊𐤍𐤅+𐤕 -> affixed:𐤅+𐤄+𐤍𐤊𐤍𐤅+𐤕	greek
+40:25:11	𐤄𐤏𐤋𐤌𐤅𐤕	H5961->H5959	proclitic:𐤄+𐤏𐤋𐤌𐤅𐤕 -> proclitic:𐤄+𐤏𐤋𐤌𐤅𐤕	greek
+40:25:24	𐤆𐤓𐤏𐤕	H2220->H2232	exact:𐤆𐤓𐤏𐤕 -> suffix:𐤆𐤓𐤏+𐤕	greek
+40:25:25	𐤊𐤊𐤓𐤊	H7390->H3603	proclitic:𐤊+𐤊+𐤓𐤊 -> suffix:𐤊𐤊𐤓+𐤊	greek
+40:25:30	𐤄𐤔𐤍𐤉𐤌	H8141->H8127	exact:𐤄𐤔𐤍𐤉𐤌 -> exact:𐤄𐤔𐤍𐤉𐤌	greek
+40:25:32	𐤄𐤓𐤏𐤄	H7451->H7462	exact:𐤄𐤓𐤏𐤄 -> exact:𐤄𐤓𐤏𐤄	greek
+40:25:33	𐤅𐤄𐤑𐤉𐤁	H6632->H5324	plene:𐤅𐤄𐤑𐤁 -> plene:𐤅𐤄𐤑𐤁	greek
+40:25:34	𐤄𐤌𐤅𐤊𐤍𐤄	H4350->H3559	plene:𐤄𐤌𐤊𐤅𐤍𐤄 -> affixed:𐤄+𐤌𐤅𐤊𐤍+𐤄	greek
+40:25:41	𐤄𐤌𐤅𐤊𐤍𐤄	H4350->H3559	plene:𐤄𐤌𐤊𐤅𐤍𐤄 -> affixed:𐤄+𐤌𐤅𐤊𐤍+𐤄	greek
+40:26:9	𐤋𐤏𐤍𐤉𐤉𐤌	H5869->H6041	plene:𐤋𐤏𐤉𐤍𐤉𐤌 -> proclitic:𐤋+𐤏𐤍𐤉𐤉𐤌	greek
+40:26:17	𐤍𐤊𐤉𐤍	H5221->H3559	plene:𐤍𐤊𐤍𐤅 -> plene:𐤍𐤊𐤍𐤅	greek
+40:26:19	𐤑𐤅𐤌	H6685->H6680	exact:𐤑𐤅𐤌 -> exact:𐤑𐤅𐤌	greek
+40:26:31	𐤄𐤓𐤏𐤄	H7451->H7462	exact:𐤄𐤓𐤏𐤄 -> exact:𐤄𐤓𐤏𐤄	greek
+40:26:47	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+40:26:58	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+40:26:75	𐤅𐤉𐤌𐤓𐤓	H4847->H4843	plene:𐤅𐤌𐤓𐤓𐤉 -> root:𐤅+𐤉 𐤌𐤓𐤓 	greek
+40:27:28	𐤔𐤍𐤉	H8147->H8144	exact:𐤔𐤍𐤉 -> exact:𐤔𐤍𐤉	greek
+40:27:40	𐤄𐤅𐤔𐤏	H1954->H3467	exact:𐤄𐤅𐤔𐤏 -> exact:𐤄𐤅𐤔𐤏	greek
+40:27:48	𐤅𐤉𐤔𐤒𐤄𐤅	H5401->H8248	exact:𐤅𐤉𐤔𐤒𐤄𐤅 -> exact:𐤅𐤉𐤔𐤒𐤄𐤅	greek
+40:28:2	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+40:28:5	𐤌𐤁𐤒𐤔𐤅𐤕	H7186->H1245	proclitic:𐤌+𐤁+𐤒𐤔𐤅𐤕 -> suffix:𐤌𐤁𐤒𐤔+𐤅𐤕	greek
+40:28:16	𐤑𐤅𐤌	H6685->H6680	exact:𐤑𐤅𐤌 -> exact:𐤑𐤅𐤌	greek
+41:1:4	𐤅𐤒𐤅𐤓𐤀	H6981->H7121	exact:𐤅𐤒𐤅𐤓𐤀 -> plene:𐤅𐤉𐤒𐤓𐤀	greek
+41:1:5	𐤉𐤃𐤅	H3027->H3034	exact:𐤉𐤃𐤅 -> exact:𐤉𐤃𐤅	greek
+41:1:15	𐤁𐤁𐤔𐤅𐤓𐤄	H1320->H1309	plene:𐤁𐤁𐤔𐤓𐤄 -> proclitic:𐤁+𐤁𐤔𐤅𐤓𐤄	greek
+41:1:17	𐤋𐤃𐤉𐤂𐤉	H1673->H1728	plene:𐤋𐤃𐤅𐤉𐤂 -> root:𐤋 𐤃𐤉𐤂 𐤉	greek
+41:1:22	𐤌𐤋𐤌𐤃𐤌	H1818->H3925	proclitic:𐤌+𐤋+𐤌𐤃𐤌 -> suffix:𐤌𐤋𐤌𐤃+𐤌	greek
+41:1:30	𐤅𐤇𐤌𐤅𐤕	H2573->H2545	plene:𐤅𐤇𐤌𐤕 -> root:𐤅 𐤇𐤌𐤅𐤕 	greek
+41:1:34	𐤇𐤅𐤋𐤉𐤌	H2344->H2481	suffix:𐤇𐤅𐤋+𐤉𐤌 -> root: 𐤇𐤅𐤋𐤉 𐤌	greek
+41:1:45	𐤁𐤌𐤒𐤌𐤅𐤕	H4519->H4725	affixed:𐤁+𐤌+𐤒𐤌+𐤅𐤕 -> proclitic:𐤁+𐤌𐤒𐤌𐤅𐤕	greek
+41:2:19	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+41:2:19	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+41:2:19	𐤋𐤑𐤅𐤌	H6680->H6684	affixed:𐤋+𐤑𐤅+𐤌 -> root:𐤋 𐤑𐤅𐤌 	greek
+41:2:20	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+41:2:20	𐤉𐤑𐤅𐤌𐤅	H6680->H6684	suffix:𐤉𐤑𐤅𐤌+𐤅 -> bhs:𐤉𐤑𐤅𐤌𐤅	greek
+41:2:28	𐤋𐤔𐤁𐤕	H3427->H7676	exact:𐤋𐤔𐤁𐤕 -> exact:𐤋𐤔𐤁𐤕	greek
+41:3:22	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+41:3:35	𐤅𐤀𐤇𐤅𐤕𐤉	H262->H269	exact:𐤅𐤀𐤇𐤅𐤕𐤉 -> proclitic:𐤅+𐤀𐤇𐤅𐤕𐤉	greek
+41:4:7	𐤄𐤒𐤑𐤉𐤌	H7093->H6975	affixed:𐤄+𐤒𐤑+𐤉𐤌 -> proclitic:𐤄+𐤒𐤑𐤉𐤌	greek
+41:4:7	𐤄𐤒𐤑𐤉𐤌	H7093->H6975	affixed:𐤄+𐤒𐤑+𐤉𐤌 -> proclitic:𐤄+𐤒𐤑𐤉𐤌	greek
+41:4:15	𐤄𐤆𐤓𐤅𐤏	H2220->H2232	proclitic:𐤄+𐤆𐤓𐤅𐤏 -> root:𐤄 𐤆𐤓𐤅𐤏 	greek
+41:4:18	𐤄𐤒𐤑𐤉𐤌	H7093->H6975	affixed:𐤄+𐤒𐤑+𐤉𐤌 -> proclitic:𐤄+𐤒𐤑𐤉𐤌	greek
+41:4:21	𐤄𐤍𐤓	H5369->H5216	proclitic:𐤄+𐤍𐤓 -> proclitic:𐤄+𐤍𐤓	greek
+41:4:22	𐤋𐤂𐤋𐤅𐤉	H1530->H1540	plene:𐤋𐤂𐤋 -> proclitic:𐤋+𐤂𐤋𐤅𐤉	greek
+41:4:24	𐤌𐤅𐤃𐤃𐤉𐤌	H1730->H4058	proclitic:𐤌+𐤅+𐤃𐤃𐤉𐤌 -> root: 𐤌𐤅𐤃𐤃 𐤉𐤌	greek
+41:4:29	𐤄𐤐𐤓𐤉	H6499->H6529	plene:𐤄𐤐𐤓 -> proclitic:𐤄+𐤐𐤓𐤉	greek
+41:4:38	𐤄𐤊𐤎𐤕	H3680->H3704	plene:𐤄𐤊𐤎𐤅𐤕 -> root:𐤄 𐤊𐤎𐤕 	greek
+41:5:17	𐤌𐤂𐤁𐤅𐤋𐤉𐤄𐤌	H4519->H1366	affixed:𐤌+𐤂𐤁𐤅𐤋𐤉𐤄+𐤌 -> affixed:𐤌+𐤂𐤁𐤅𐤋𐤉𐤄+𐤌	greek
+41:5:34	𐤁𐤕𐤉	H1004->H1323	exact:𐤁𐤕𐤉 -> exact:𐤁𐤕𐤉	greek
+41:5:34	𐤅𐤇𐤉𐤉𐤕	H2421->H2416	exact:𐤅𐤇𐤉𐤉𐤕 -> suffix:𐤅𐤇𐤉𐤉+𐤕	greek
+41:5:35	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+41:5:40	𐤀𐤌𐤄	H520->H517	exact:𐤀𐤌𐤄 -> exact:𐤀𐤌𐤄	greek
+41:5:41	𐤄𐤉𐤋𐤃𐤄	H3205->H3207	proclitic:𐤄+𐤉𐤋𐤃𐤄 -> exact:𐤄𐤉𐤋𐤃𐤄	greek
+41:5:42	𐤄𐤉𐤋𐤃𐤄	H3205->H3207	proclitic:𐤄+𐤉𐤋𐤃𐤄 -> exact:𐤄𐤉𐤋𐤃𐤄	greek
+41:6:11	𐤄𐤃𐤉𐤍	H1839->H1779	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤉𐤍	greek
+41:6:20	𐤁𐤃𐤏𐤕𐤅	H1847->H3045	exact:𐤁𐤃𐤏𐤕𐤅 -> affixed:𐤁+𐤃𐤏𐤕+𐤅	greek
+41:6:24	𐤋𐤀𐤌𐤄	H519->H517	exact:𐤋𐤀𐤌𐤄 -> exact:𐤋𐤀𐤌𐤄	greek
+41:6:28	𐤀𐤌𐤄	H520->H517	exact:𐤀𐤌𐤄 -> exact:𐤀𐤌𐤄	greek
+41:6:34	𐤓𐤏𐤄	H7451->H7462	exact:𐤓𐤏𐤄 -> exact:𐤓𐤏𐤄	greek
+41:6:56	𐤄𐤔𐤃𐤅𐤕	H7701->H7704	affixed:𐤄+𐤔𐤃+𐤅𐤕 -> plene:𐤄𐤔𐤃𐤕	greek
+41:7:4	𐤈𐤁𐤉𐤋𐤄	H2882->H2881	plene:𐤈𐤁𐤋𐤉𐤄𐤅 -> root: 𐤈𐤁𐤉𐤋 𐤄	greek
+41:7:4	𐤊𐤎𐤅𐤕	H3682->H3563	exact:𐤊𐤎𐤅𐤕 -> bhs:𐤊𐤎𐤅𐤕	greek
+41:7:21	𐤄𐤌𐤇𐤔𐤁𐤅𐤕	H4519->H4284	affixed:𐤄+𐤌+𐤇𐤔𐤁+𐤅𐤕 -> plene:𐤄𐤌𐤇𐤔𐤁𐤕	greek
+41:7:26	𐤌𐤁𐤕𐤄	H4519->H1323	affixed:𐤌+𐤁𐤕+𐤄 -> proclitic:𐤌+𐤁𐤕𐤄	greek
+41:7:30	𐤌𐤔𐤊𐤁𐤕	H7902->H1323	proclitic:𐤌+𐤔𐤊𐤁𐤕 -> proclitic:𐤌+𐤔+𐤊𐤁𐤕	greek
+41:7:32	𐤅𐤀𐤋𐤌	H197->H483	proclitic:𐤅+𐤀𐤋𐤌 -> proclitic:𐤅+𐤀𐤋𐤌	greek
+41:8:11	𐤌𐤍𐤎𐤉𐤌	H5127->H5254	proclitic:𐤌+𐤍𐤎𐤉𐤌 -> affixed:𐤌+𐤍𐤎+𐤉𐤌	greek
+41:8:19	𐤌𐤋𐤀𐤉	H335->H4390	proclitic:𐤌+𐤋+𐤀𐤉 -> suffix:𐤌𐤋𐤀+𐤉	greek
+41:8:20	𐤌𐤋𐤀𐤉	H335->H4393	proclitic:𐤌+𐤋+𐤀𐤉 -> suffix:𐤌𐤋𐤀+𐤉	greek
+41:9:3	𐤋𐤁𐤍𐤉𐤌	H3843->H3836	exact:𐤋𐤁𐤍𐤉𐤌 -> exact:𐤋𐤁𐤍𐤉𐤌	greek
+41:9:3	𐤋𐤄𐤋𐤁𐤉𐤍	H3820->H3835	affixed:𐤋+𐤄+𐤋𐤁𐤉+𐤍 -> root:𐤋+𐤄 𐤋𐤁𐤉𐤍 	greek
+41:9:29	𐤄𐤌𐤉𐤍	H2001->H4327	plene:𐤄𐤌𐤍 -> root:𐤄 𐤌𐤉𐤍 	greek
+41:9:35	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+41:9:38	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+41:9:41	𐤄𐤌𐤔𐤒𐤄	H7262->H8248	proclitic:𐤄+𐤌+𐤔𐤒𐤄 -> proclitic:𐤄+𐤌𐤔𐤒𐤄	greek
+41:10:2	𐤌𐤍𐤎𐤉𐤌	H5127->H5254	proclitic:𐤌+𐤍𐤎𐤉𐤌 -> affixed:𐤌+𐤍𐤎+𐤉𐤌	greek
+41:10:14	𐤄𐤍𐤉𐤇𐤅	H3240->H5117	exact:𐤄𐤍𐤉𐤇𐤅 -> exact:𐤄𐤍𐤉𐤇𐤅	greek
+41:10:19	𐤄𐤌𐤑𐤅𐤕	H4682->H4687	exact:𐤄𐤌𐤑𐤅𐤕 -> exact:𐤄𐤌𐤑𐤅𐤕	greek
+41:10:21	𐤋𐤏𐤍𐤉𐤉𐤌	H5869->H6041	plene:𐤋𐤏𐤉𐤍𐤉𐤌 -> proclitic:𐤋+𐤏𐤍𐤉𐤉𐤌	greek
+41:10:26	𐤋𐤄𐤅𐤔𐤏	H1954->H3467	exact:𐤋𐤄𐤅𐤔𐤏 -> proclitic:𐤋+𐤄𐤅𐤔𐤏	greek
+41:10:30	𐤅𐤀𐤌𐤅𐤕	H520->H517	proclitic:𐤅+𐤀𐤌𐤅𐤕 -> suffix:𐤅𐤀𐤌+𐤅𐤕	greek
+41:10:32	𐤉𐤒𐤓𐤄𐤅	H3368->H7136	suffix:𐤉𐤒𐤓𐤄+𐤅 -> suffix:𐤉𐤒𐤓𐤄+𐤅	greek
+41:10:40	𐤔𐤁𐤕	H7676->H3427	exact:𐤔𐤁𐤕 -> exact:𐤔𐤁𐤕	greek
+41:11:6	𐤑𐤅𐤌	H6685->H6680	exact:𐤑𐤅𐤌 -> exact:𐤑𐤅𐤌	greek
+41:11:6	𐤅𐤉𐤍𐤉𐤇𐤅	H3240->H5117	exact:𐤅𐤉𐤍𐤉𐤇𐤅 -> affixed:𐤅+𐤉𐤍𐤉𐤇+𐤅	greek
+41:11:15	𐤄𐤉𐤅𐤍𐤉𐤌	H3125->H3123	exact:𐤄𐤉𐤅𐤍𐤉𐤌 -> proclitic:𐤄+𐤉𐤅𐤍𐤉𐤌	greek
+41:11:18	𐤉𐤓𐤀𐤅	H7200->H3372	exact:𐤉𐤓𐤀𐤅 -> exact:𐤉𐤓𐤀𐤅	greek
+41:12:24	𐤕𐤏𐤉𐤌	H8583->H8582	suffix:𐤕𐤏𐤉+𐤌 -> suffix:𐤕𐤏𐤉+𐤌	greek
+41:12:28	𐤄𐤌𐤑𐤅𐤕	H4682->H4687	exact:𐤄𐤌𐤑𐤅𐤕 -> exact:𐤄𐤌𐤑𐤅𐤕	greek
+41:12:29	𐤄𐤌𐤑𐤅𐤕	H4682->H4687	exact:𐤄𐤌𐤑𐤅𐤕 -> exact:𐤄𐤌𐤑𐤅𐤕	greek
+41:12:36	𐤄𐤃𐤌	H1818->H1916	exact:𐤄𐤃𐤌 -> exact:𐤄𐤃𐤌	greek
+41:12:43	𐤄𐤏𐤍𐤉𐤄	H5869->H6041	plene:𐤄𐤏𐤉𐤍𐤄 -> proclitic:𐤄+𐤏𐤍𐤉𐤄	greek
+41:13:11	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+41:13:16	𐤉𐤔𐤁	H3427->H7725	exact:𐤉𐤔𐤁 -> exact:𐤉𐤔𐤁	greek
+41:13:17	𐤋𐤄𐤓𐤅𐤕	H3384->H2029	plene:𐤋𐤄𐤅𐤓𐤕 -> affixed:𐤋+𐤄𐤓𐤅+𐤕	greek
+41:13:20	𐤄𐤁𐤇𐤉𐤓𐤉𐤌	H970->H977	plene:𐤄𐤁𐤇𐤅𐤓𐤉𐤌 -> root:𐤄 𐤁𐤇𐤉𐤓 𐤉𐤌	greek
+41:13:22	𐤄𐤁𐤇𐤉𐤓𐤉𐤌	H970->H977	plene:𐤄𐤁𐤇𐤅𐤓𐤉𐤌 -> root:𐤄 𐤁𐤇𐤉𐤓 𐤉𐤌	greek
+41:13:28	𐤄𐤒𐤉𐤑	H6974->H7019	exact:𐤄𐤒𐤉𐤑 -> exact:𐤄𐤒𐤉𐤑	greek
+41:13:32	𐤅𐤄𐤔𐤏𐤄	H3467->H8159	plene:𐤅𐤄𐤅𐤔𐤉𐤏𐤄 -> proclitic:𐤅+𐤄+𐤔𐤏𐤄	greek
+41:14:3	𐤅𐤉𐤒𐤓	H7136->H3368	exact:𐤅𐤉𐤒𐤓 -> proclitic:𐤅+𐤉𐤒𐤓	greek
+41:14:5	𐤋𐤏𐤍𐤉𐤉𐤌	H5869->H6041	plene:𐤋𐤏𐤉𐤍𐤉𐤌 -> proclitic:𐤋+𐤏𐤍𐤉𐤉𐤌	greek
+41:14:27	𐤄𐤓𐤏𐤄	H7451->H7462	exact:𐤄𐤓𐤏𐤄 -> exact:𐤄𐤓𐤏𐤄	greek
+41:14:32	𐤔𐤁𐤅	H7725->H3427	exact:𐤔𐤁𐤅 -> exact:𐤔𐤁𐤅	greek
+41:14:43	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+41:14:54	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+41:14:60	𐤏𐤍𐤉𐤌	H6040->H6030	exact:𐤏𐤍𐤉𐤌 -> bhs:𐤏𐤍𐤉𐤌	greek
+41:15:29	𐤅𐤁𐤅𐤍𐤄	H946->H1129	exact:𐤅𐤁𐤅𐤍𐤄 -> proclitic:𐤅+𐤁𐤅𐤍𐤄	greek
+41:15:30	𐤄𐤅𐤔𐤏	H1954->H3467	exact:𐤄𐤅𐤔𐤏 -> exact:𐤄𐤅𐤔𐤏	greek
+41:15:36	𐤅𐤉𐤔𐤒𐤄𐤅	H5401->H8248	exact:𐤅𐤉𐤔𐤒𐤄𐤅 -> exact:𐤅𐤉𐤔𐤒𐤄𐤅	greek
+41:16:1	𐤁𐤔𐤌𐤉𐤌	H8064->H1314	exact:𐤁𐤔𐤌𐤉𐤌 -> exact:𐤁𐤔𐤌𐤉𐤌	greek
+41:16:5	𐤁𐤇𐤅𐤓	H977->H970	exact:𐤁𐤇𐤅𐤓 -> exact:𐤁𐤇𐤅𐤓	greek
+41:16:5	𐤋𐤁𐤍𐤄	H3841->H3836	exact:𐤋𐤁𐤍𐤄 -> exact:𐤋𐤁𐤍𐤄	greek
+41:16:6	𐤌𐤁𐤒𐤔𐤅𐤕	H7186->H1245	proclitic:𐤌+𐤁+𐤒𐤔𐤅𐤕 -> suffix:𐤌𐤁𐤒𐤔+𐤅𐤕	greek
+41:16:19	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+42:1:12	𐤁𐤓𐤀𐤅𐤕𐤅	H1254->H7200	plene:𐤁𐤓𐤀𐤕𐤉 -> plene:𐤁𐤓𐤀𐤕𐤉	greek
+42:1:26	𐤂𐤋𐤉𐤋𐤄	H1544->H1550	plene:𐤂𐤋𐤅𐤋𐤉𐤄 -> root: 𐤂𐤋𐤉𐤋 𐤄	greek
+42:1:45	𐤄𐤌𐤋𐤀	H4407->H4394	plene:𐤄𐤌𐤋𐤅𐤀 -> root:𐤄 𐤌𐤋𐤀 	greek
+42:1:61	𐤁𐤌𐤔𐤐𐤇𐤕𐤊	H8198->H4940	proclitic:𐤁+𐤌+𐤔𐤐𐤇𐤕𐤊 -> affixed:𐤁+𐤌𐤔𐤐𐤇𐤕+𐤊	greek
+42:1:78	𐤁𐤓𐤇𐤌𐤉	H1280->H7356	plene:𐤁𐤓𐤉𐤇𐤌 -> affixed:𐤁+𐤓𐤇𐤌+𐤉	greek
+42:1:80	𐤁𐤌𐤃𐤁𐤓𐤅𐤕	H4519->H4057	affixed:𐤁+𐤌+𐤃𐤁𐤓+𐤅𐤕 -> suffix:𐤁𐤌𐤃𐤁𐤓+𐤅𐤕	greek
+42:2:7	𐤁𐤍𐤄	H1129->H1121	exact:𐤁𐤍𐤄 -> exact:𐤁𐤍𐤄	greek
+42:2:8	𐤅𐤓𐤏𐤉𐤌	H7451->H7462	exact:𐤅𐤓𐤏𐤉𐤌 -> exact:𐤅𐤓𐤏𐤉𐤌	greek
+42:2:36	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+42:2:37	𐤏𐤁𐤃𐤄	H5656->H5647	exact:𐤏𐤁𐤃𐤄 -> suffix:𐤏𐤁𐤃+𐤄	greek
+42:2:38	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+42:2:52	𐤅𐤁𐤇𐤍	H974->H2580	exact:𐤅𐤁𐤇𐤍 -> proclitic:𐤅+𐤁+𐤇𐤍	greek
+42:4:23	𐤁𐤊𐤐𐤓	H6499->H3723	proclitic:𐤁+𐤊+𐤐𐤓 -> root:𐤁 𐤊𐤐𐤓 	greek
+42:4:25	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+42:4:38	𐤅𐤇𐤌𐤅𐤕	H2573->H2545	plene:𐤅𐤇𐤌𐤕 -> root:𐤅 𐤇𐤌𐤅𐤕 	greek
+42:4:43	𐤁𐤔𐤅𐤓𐤕	H7794->H1319	affixed:𐤁+𐤔𐤅𐤓+𐤕 -> root: 𐤁𐤔𐤅𐤓 𐤕	greek
+42:5:3	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+42:5:16	𐤄𐤌𐤃𐤁𐤓𐤅𐤕	H4519->H4057	affixed:𐤄+𐤌+𐤃𐤁𐤓+𐤅𐤕 -> suffix:𐤄𐤌𐤃𐤁𐤓+𐤅𐤕	greek
+42:5:21	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+42:5:30	𐤅𐤔𐤕𐤉𐤌	H8147->H8354	exact:𐤅𐤔𐤕𐤉𐤌 -> exact:𐤅𐤔𐤕𐤉𐤌	greek
+42:5:31	𐤄𐤇𐤋𐤉𐤌	H2490->H2470	suffix:𐤄𐤇𐤋+𐤉𐤌 -> suffix:𐤄𐤇𐤋𐤉+𐤌	greek
+42:5:33	𐤅𐤔𐤕𐤉𐤌	H8147->H8354	exact:𐤅𐤔𐤕𐤉𐤌 -> exact:𐤅𐤔𐤕𐤉𐤌	greek
+42:5:35	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+42:5:35	𐤉𐤑𐤅𐤌𐤅	H6680->H6684	suffix:𐤉𐤑𐤅𐤌+𐤅 -> bhs:𐤉𐤑𐤅𐤌𐤅	greek
+42:5:39	𐤄𐤉𐤔𐤍	H8145->H3462	plene:𐤄𐤔𐤍𐤉 -> root:𐤄 𐤉𐤔𐤍 	greek
+42:6:8	𐤅𐤏𐤌𐤅𐤃	H5982->H5975	exact:𐤅𐤏𐤌𐤅𐤃 -> root:𐤅 𐤏𐤌𐤅𐤃 	greek
+42:6:18	𐤁𐤓𐤅𐤇𐤅𐤕	H1272->H7307	plene:𐤁𐤓𐤇𐤕 -> proclitic:𐤁+𐤓𐤅𐤇𐤅𐤕	greek
+42:6:21	𐤄𐤁𐤊𐤉𐤌	H1066->H1058	exact:𐤄𐤁𐤊𐤉𐤌 -> proclitic:𐤄+𐤁𐤊𐤉𐤌	greek
+42:6:24	𐤄𐤏𐤔𐤉𐤓𐤉𐤌	H6242->H6223	plene:𐤄𐤏𐤔𐤓𐤉𐤌 -> suffix:𐤄𐤏𐤔𐤉𐤓+𐤉𐤌	greek
+42:6:25	𐤄𐤔𐤁𐤏𐤉𐤌	H7657->H7646	proclitic:𐤄+𐤔𐤁𐤏𐤉𐤌 -> affixed:𐤄+𐤔𐤁𐤏+𐤉𐤌	greek
+42:6:38	𐤇𐤉𐤒𐤊𐤌	H2706->H2436	plene:𐤇𐤒𐤊𐤌 -> suffix:𐤇𐤉𐤒𐤊+𐤌	greek
+42:6:38	𐤌𐤅𐤃𐤃𐤉𐤌	H1730->H4058	proclitic:𐤌+𐤅+𐤃𐤃𐤉𐤌 -> root: 𐤌𐤅𐤃𐤃 𐤉𐤌	greek
+42:6:42	𐤄𐤍𐤉𐤇𐤄	H3240->H5117	exact:𐤄𐤍𐤉𐤇𐤄 -> suffix:𐤄𐤍𐤉𐤇+𐤄	greek
+42:6:42	𐤌𐤏𐤉𐤍𐤊	H5771->H5869	plene:𐤌𐤏𐤅𐤍𐤊 -> proclitic:𐤌+𐤏𐤉𐤍𐤊	greek
+42:6:44	𐤄𐤒𐤑𐤉𐤌	H7093->H6975	affixed:𐤄+𐤒𐤑+𐤉𐤌 -> proclitic:𐤄+𐤒𐤑𐤉𐤌	greek
+42:7:21	𐤌𐤇𐤋𐤉𐤉𐤌	H4249->H2481	suffix:𐤌𐤇𐤋𐤉+𐤉𐤌 -> root:𐤌 𐤇𐤋𐤉 𐤉𐤌	greek
+42:7:22	𐤌𐤕𐤁𐤔𐤓𐤉𐤌	H4519->H1319	affixed:𐤌+𐤕𐤁𐤔𐤓+𐤉𐤌 -> affixed:𐤌+𐤕𐤁𐤔𐤓+𐤉𐤌	greek
+42:7:31	𐤀𐤃𐤌𐤄	H127->H1819	exact:𐤀𐤃𐤌𐤄 -> exact:𐤀𐤃𐤌𐤄	greek
+42:7:38	𐤁𐤔𐤏𐤓𐤅𐤕	H6172->H8181	proclitic:𐤁+𐤔+𐤏𐤓𐤅𐤕 -> affixed:𐤁+𐤔𐤏𐤓+𐤅𐤕	greek
+42:8:7	𐤄𐤒𐤑𐤉𐤌	H7093->H6975	affixed:𐤄+𐤒𐤑+𐤉𐤌 -> proclitic:𐤄+𐤒𐤑𐤉𐤌	greek
+42:8:7	𐤄𐤒𐤑𐤉𐤌	H7093->H6975	affixed:𐤄+𐤒𐤑+𐤉𐤌 -> proclitic:𐤄+𐤒𐤑𐤉𐤌	greek
+42:8:14	𐤄𐤒𐤑𐤉𐤌	H7093->H6975	affixed:𐤄+𐤒𐤑+𐤉𐤌 -> proclitic:𐤄+𐤒𐤑𐤉𐤌	greek
+42:8:14	𐤅𐤁𐤏𐤔𐤓	H6218->H6239	proclitic:𐤅+𐤁𐤏𐤔𐤓 -> proclitic:𐤅+𐤁+𐤏𐤔𐤓	greek
+42:8:29	𐤄𐤌𐤃𐤁𐤓𐤅𐤕	H4519->H4057	affixed:𐤄+𐤌+𐤃𐤁𐤓+𐤅𐤕 -> suffix:𐤄𐤌𐤃𐤁𐤓+𐤅𐤕	greek
+42:8:48	𐤁𐤕𐤉	H1004->H1323	exact:𐤁𐤕𐤉 -> exact:𐤁𐤕𐤉	greek
+42:8:49	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+42:8:56	𐤅𐤀𐤌𐤄	H520->H517	exact:𐤅𐤀𐤌𐤄 -> exact:𐤅𐤀𐤌𐤄	greek
+42:9:29	𐤄𐤋𐤁𐤉𐤍	H1121->H3836	plene:𐤄𐤋𐤁𐤍 -> plene:𐤄𐤋𐤁𐤍	greek
+42:9:39	𐤀𐤇𐤆	H271->H2372	exact:𐤀𐤇𐤆 -> exact:𐤀𐤇𐤆	greek
+42:9:45	𐤌𐤃𐤏𐤕𐤌	H1847->H3045	suffix:𐤌𐤃𐤏𐤕+𐤌 -> affixed:𐤌+𐤃𐤏𐤕+𐤌	greek
+42:9:49	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+42:9:51	𐤔𐤌	H8033->H7760	exact:𐤔𐤌 -> exact:𐤔𐤌	greek
+42:10:14	𐤁𐤃𐤉𐤍	H3027->H1779	plene:𐤁𐤉𐤃𐤍𐤅 -> proclitic:𐤁+𐤃𐤉𐤍	greek
+42:10:19	𐤅𐤏𐤒𐤓𐤁𐤉𐤌	H4610->H6137	proclitic:𐤅+𐤏𐤒𐤓𐤁𐤉𐤌 -> proclitic:𐤅+𐤏𐤒𐤓𐤁𐤉𐤌	greek
+42:10:32	𐤋𐤅𐤉	H3878->H3881	exact:𐤋𐤅𐤉 -> exact:𐤋𐤅𐤉	greek
+42:10:42	𐤁𐤇𐤓𐤄	H970->H977	plene:𐤁𐤇𐤅𐤓𐤉𐤄 -> suffix:𐤁𐤇𐤓+𐤄	greek
+42:11:1	𐤋𐤌𐤃𐤍𐤅	H4519->H3925	affixed:𐤋+𐤌+𐤃𐤍+𐤅 -> suffix:𐤋𐤌𐤃+𐤍𐤅	greek
+42:11:13	𐤄𐤓𐤏𐤉𐤌	H7462->H7451	exact:𐤄𐤓𐤏𐤉𐤌 -> exact:𐤄𐤓𐤏𐤉𐤌	greek
+42:11:13	𐤋𐤔𐤀𐤋𐤉𐤌	H410->H7592	proclitic:𐤋+𐤔+𐤀𐤋𐤉𐤌 -> suffix:𐤋𐤔𐤀𐤋+𐤉𐤌	greek
+42:11:14	𐤄𐤀𐤋𐤌	H197->H483	proclitic:𐤄+𐤀𐤋𐤌 -> proclitic:𐤄+𐤀𐤋𐤌	greek
+42:11:15	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+42:11:18	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+42:11:19	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+42:11:19	𐤁𐤌𐤉	H4325->H4100	exact:𐤁𐤌𐤉 -> proclitic:𐤁+𐤌𐤉	greek
+42:11:19	𐤌𐤂𐤓𐤔𐤉𐤌	H4054->H1644	suffix:𐤌𐤂𐤓𐤔+𐤉𐤌 -> affixed:𐤌+𐤂𐤓𐤔+𐤉𐤌	greek
+42:11:20	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+42:11:21	𐤇𐤑𐤓𐤅	H2695->H2691	exact:𐤇𐤑𐤓𐤅 -> plene:𐤇𐤑𐤓	greek
+42:11:24	𐤁𐤌𐤒𐤌𐤅𐤕	H4519->H4725	affixed:𐤁+𐤌+𐤒𐤌+𐤅𐤕 -> proclitic:𐤁+𐤌𐤒𐤌𐤅𐤕	greek
+42:11:27	𐤅𐤄𐤔𐤃𐤉𐤌	H7708->H7699	proclitic:𐤅+𐤄𐤔𐤃𐤉𐤌 -> proclitic:𐤅+𐤄+𐤔𐤃𐤉𐤌	greek
+42:11:36	𐤄𐤍𐤓	H5369->H5216	proclitic:𐤄+𐤍𐤓 -> proclitic:𐤄+𐤍𐤓	greek
+42:11:39	𐤅𐤄𐤐𐤍𐤉𐤌𐤉	H6442->H6440	proclitic:𐤅+𐤄𐤐𐤍𐤉𐤌𐤉 -> affixed:𐤅+𐤄𐤐𐤍𐤉𐤌+𐤉	greek
+42:11:40	𐤄𐤐𐤍𐤉𐤌𐤉	H6442->H6440	exact:𐤄𐤐𐤍𐤉𐤌𐤉 -> plene:𐤄𐤐𐤍𐤉𐤌	greek
+42:11:46	𐤌𐤔𐤀𐤅𐤕	H4859->H4853	exact:𐤌𐤔𐤀𐤅𐤕 -> suffix:𐤌𐤔𐤀+𐤅𐤕	greek
+42:11:46	𐤁𐤌𐤔𐤀𐤅𐤕	H4859->H4853	proclitic:𐤁+𐤌𐤔𐤀𐤅𐤕 -> suffix:𐤁𐤌𐤔𐤀+𐤅𐤕	greek
+42:11:52	𐤌𐤐𐤕𐤇	H6607->H4668	exact:𐤌𐤐𐤕𐤇 -> exact:𐤌𐤐𐤕𐤇	greek
+42:12:1	𐤌𐤔𐤀𐤅𐤓	H216->H7603	proclitic:𐤌+𐤔+𐤀𐤅𐤓 -> root:𐤌 𐤔𐤀𐤅𐤓 	greek
+42:12:5	𐤉𐤓𐤀𐤅	H7200->H3372	exact:𐤉𐤓𐤀𐤅 -> exact:𐤉𐤓𐤀𐤅	greek
+42:12:12	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+42:12:19	𐤋𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤋𐤔𐤍𐤉𐤌 -> exact:𐤋𐤔𐤍𐤉𐤌	greek
+42:12:19	𐤔𐤕𐤉	H8147->H8354	exact:𐤔𐤕𐤉 -> exact:𐤔𐤕𐤉	greek
+42:12:24	𐤅𐤀𐤅𐤑𐤓	H687->H214	plene:𐤅𐤀𐤑𐤓 -> proclitic:𐤅+𐤀𐤅𐤑𐤓	greek
+42:12:33	𐤅𐤀𐤅𐤑𐤓	H687->H214	plene:𐤅𐤀𐤑𐤓 -> proclitic:𐤅+𐤀𐤅𐤑𐤓	greek
+42:12:37	𐤔𐤒𐤃𐤉𐤌	H6921->H8245	proclitic:𐤔+𐤒𐤃𐤉𐤌 -> suffix:𐤔𐤒𐤃+𐤉𐤌	greek
+42:12:40	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+42:12:42	𐤏𐤁𐤃𐤕𐤅	H5656->H5650	exact:𐤏𐤁𐤃𐤕𐤅 -> root: 𐤏𐤁𐤃 𐤕+𐤅	greek
+42:12:50	𐤈𐤁𐤉𐤋𐤄	H2882->H2881	plene:𐤈𐤁𐤋𐤉𐤄𐤅 -> root: 𐤈𐤁𐤉𐤋 𐤄	greek
+42:12:53	𐤄𐤇𐤌𐤅𐤕	H2346->H2545	exact:𐤄𐤇𐤌𐤅𐤕 -> root:𐤄 𐤇𐤌𐤅𐤕 	greek
+42:12:53	𐤄𐤇𐤌𐤅𐤕	H2346->H2545	exact:𐤄𐤇𐤌𐤅𐤕 -> root:𐤄 𐤇𐤌𐤅𐤕 	greek
+42:12:55	𐤍𐤔𐤁𐤄	H7617->H5380	exact:𐤍𐤔𐤁𐤄 -> exact:𐤍𐤔𐤁𐤄	greek
+42:12:56	𐤋𐤁𐤇𐤍	H2580->H974	proclitic:𐤋+𐤁+𐤇𐤍 -> proclitic:𐤋+𐤁𐤇𐤍	greek
+42:13:7	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+42:13:7	𐤌𐤅𐤑𐤀	H4161->H4672	exact:𐤌𐤅𐤑𐤀 -> plene:𐤌𐤑𐤀	greek
+42:13:20	𐤀𐤃𐤌𐤄	H127->H1819	exact:𐤀𐤃𐤌𐤄 -> exact:𐤀𐤃𐤌𐤄	greek
+42:13:26	𐤅𐤔𐤕𐤉𐤍𐤅	H8147->H8354	affixed:𐤅+𐤔𐤕𐤉+𐤍𐤅 -> proclitic:𐤅+𐤔𐤕𐤉𐤍𐤅	greek
+42:13:28	𐤄𐤔𐤍𐤉𐤌	H8141->H8127	exact:𐤄𐤔𐤍𐤉𐤌 -> exact:𐤄𐤔𐤍𐤉𐤌	greek
+42:13:28	𐤌𐤂𐤓𐤔𐤉𐤌	H4054->H1644	suffix:𐤌𐤂𐤓𐤔+𐤉𐤌 -> affixed:𐤌+𐤂𐤓𐤔+𐤉𐤌	greek
+42:13:32	𐤄𐤔𐤅𐤏𐤋	H2705->H7776	proclitic:𐤄+𐤔𐤅𐤏𐤋 -> proclitic:𐤄+𐤔𐤅𐤏𐤋	greek
+42:13:32	𐤌𐤂𐤓𐤔	H4054->H1644	exact:𐤌𐤂𐤓𐤔 -> proclitic:𐤌+𐤂𐤓𐤔	greek
+42:14:12	𐤄𐤏𐤔𐤉𐤓𐤉𐤌	H6242->H6223	plene:𐤄𐤏𐤔𐤓𐤉𐤌 -> suffix:𐤄𐤏𐤔𐤉𐤓+𐤉𐤌	greek
+42:14:13	𐤋𐤏𐤍𐤉𐤉𐤌	H5869->H6041	plene:𐤋𐤏𐤉𐤍𐤉𐤌 -> proclitic:𐤋+𐤏𐤍𐤉𐤉𐤌	greek
+42:14:19	𐤋𐤁𐤇𐤍	H2580->H974	proclitic:𐤋+𐤁+𐤇𐤍 -> proclitic:𐤋+𐤁𐤇𐤍	greek
+42:15:19	𐤔𐤊𐤉𐤓𐤉𐤊	H7939->H7916	plene:𐤔𐤊𐤓𐤊 -> root: 𐤔𐤊𐤉𐤓 𐤉+𐤊	greek
+42:15:22	𐤅𐤍𐤏𐤋𐤉𐤌	H5956->H5274	plene:𐤅𐤍𐤏𐤋𐤌 -> suffix:𐤅𐤍𐤏𐤋+𐤉𐤌	greek
+42:15:25	𐤅𐤌𐤇𐤋𐤅𐤕	H2471->H4234	proclitic:𐤅+𐤌+𐤇𐤋𐤅𐤕 -> root:𐤅 𐤌𐤇𐤋 𐤅𐤕	greek
+42:15:27	𐤔𐤋𐤌	H8003->H7965	exact:𐤔𐤋𐤌 -> exact:𐤔𐤋𐤌	greek
+42:15:29	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+42:15:29	𐤏𐤁𐤓𐤕𐤉	H5678->H5674	exact:𐤏𐤁𐤓𐤕𐤉 -> exact:𐤏𐤁𐤓𐤕𐤉	greek
+42:16:6	𐤁𐤕𐤉	H1004->H1324	exact:𐤁𐤕𐤉 -> suffix:𐤁𐤕+𐤉	greek
+42:16:6	𐤔𐤁	H7725->H3427	exact:𐤔𐤁 -> exact:𐤔𐤁	greek
+42:16:8	𐤅𐤉𐤔𐤁𐤇	H3431->H7623	proclitic:𐤅+𐤉𐤔𐤁𐤇 -> proclitic:𐤅+𐤉𐤔𐤁𐤇	greek
+42:16:8	𐤄𐤏𐤅𐤋𐤄	H5930->H5766	exact:𐤄𐤏𐤅𐤋𐤄 -> proclitic:𐤄+𐤏𐤅𐤋𐤄	greek
+42:16:9	𐤄𐤏𐤅𐤋𐤄	H5930->H5766	exact:𐤄𐤏𐤅𐤋𐤄 -> proclitic:𐤄+𐤏𐤅𐤋𐤄	greek
+42:16:11	𐤄𐤏𐤅𐤋𐤄	H5930->H5766	exact:𐤄𐤏𐤅𐤋𐤄 -> proclitic:𐤄+𐤏𐤅𐤋𐤄	greek
+42:16:13	𐤀𐤃𐤍𐤉𐤌	H134->H113	exact:𐤀𐤃𐤍𐤉𐤌 -> exact:𐤀𐤃𐤍𐤉𐤌	greek
+42:16:16	𐤁𐤔𐤅𐤓𐤕	H7794->H1319	affixed:𐤁+𐤔𐤅𐤓+𐤕 -> root: 𐤁𐤔𐤅𐤓 𐤕	greek
+42:17:7	𐤓𐤏𐤄	H7451->H7462	exact:𐤓𐤏𐤄 -> exact:𐤓𐤏𐤄	greek
+42:17:31	𐤉𐤔𐤁	H3427->H7725	exact:𐤉𐤔𐤁 -> exact:𐤉𐤔𐤁	greek
+42:18:6	𐤄𐤏𐤅𐤋𐤄	H5930->H5766	exact:𐤄𐤏𐤅𐤋𐤄 -> proclitic:𐤄+𐤏𐤅𐤋𐤄	greek
+42:18:16	𐤄𐤍𐤉𐤇𐤅	H3240->H5117	exact:𐤄𐤍𐤉𐤇𐤅 -> exact:𐤄𐤍𐤉𐤇𐤅	greek
+42:18:20	𐤄𐤌𐤑𐤅𐤕	H4682->H4687	exact:𐤄𐤌𐤑𐤅𐤕 -> exact:𐤄𐤌𐤑𐤅𐤕	greek
+42:18:22	𐤋𐤏𐤍𐤉𐤉𐤌	H5869->H6041	plene:𐤋𐤏𐤉𐤍𐤉𐤌 -> proclitic:𐤋+𐤏𐤍𐤉𐤉𐤌	greek
+42:18:26	𐤋𐤄𐤅𐤔𐤏	H1954->H3467	exact:𐤋𐤄𐤅𐤔𐤏 -> proclitic:𐤋+𐤄𐤅𐤔𐤏	greek
+42:18:30	𐤁𐤏𐤅𐤋𐤌	H5867->H5769	plene:𐤁𐤏𐤉𐤋𐤌 -> proclitic:𐤁+𐤏𐤅𐤋𐤌	greek
+42:19:21	𐤆𐤓𐤏𐤕	H2220->H2232	exact:𐤆𐤓𐤏𐤕 -> suffix:𐤆𐤓𐤏+𐤕	greek
+42:19:22	𐤅𐤒𐤅𐤑𐤓	H7105->H7114	plene:𐤅𐤒𐤑𐤉𐤓 -> proclitic:𐤅+𐤒𐤅𐤑𐤓	greek
+42:19:23	𐤋𐤔𐤋𐤇𐤍𐤉	H7971->H7979	proclitic:𐤋+𐤔𐤋𐤇𐤍𐤉 -> proclitic:𐤋+𐤔𐤋𐤇𐤍𐤉	greek
+42:19:24	𐤄𐤌𐤍𐤉𐤌	H1995->H4488	plene:𐤄𐤌𐤅𐤍𐤉𐤌 -> proclitic:𐤄+𐤌𐤍𐤉𐤌	greek
+42:19:45	𐤄𐤌𐤊𐤓𐤉𐤌	H3733->H4376	proclitic:𐤄+𐤌+𐤊𐤓𐤉𐤌 -> affixed:𐤄+𐤌𐤊𐤓+𐤉𐤌	greek
+42:20:42	𐤔𐤁	H7725->H3427	exact:𐤔𐤁 -> exact:𐤔𐤁	greek
+42:20:43	𐤄𐤃𐤌	H1818->H1916	exact:𐤄𐤃𐤌 -> exact:𐤄𐤃𐤌	greek
+42:21:3	𐤄𐤏𐤍𐤉𐤄	H5869->H6041	plene:𐤄𐤏𐤉𐤍𐤄 -> proclitic:𐤄+𐤏𐤍𐤉𐤄	greek
+42:21:23	𐤋𐤄𐤓𐤅𐤕	H3384->H2029	plene:𐤋𐤄𐤅𐤓𐤕 -> affixed:𐤋+𐤄𐤓𐤅+𐤕	greek
+42:21:26	𐤌𐤀𐤉𐤌𐤄	H3972->H367	plene:𐤌𐤀𐤅𐤌𐤄 -> proclitic:𐤌+𐤀𐤉𐤌𐤄	greek
+42:21:30	𐤄𐤒𐤉𐤑	H6974->H7019	exact:𐤄𐤒𐤉𐤑 -> exact:𐤄𐤒𐤉𐤑	greek
+42:22:2	𐤉𐤓𐤀𐤅	H7200->H3372	exact:𐤉𐤓𐤀𐤅 -> exact:𐤉𐤓𐤀𐤅	greek
+42:22:9	𐤍𐤊𐤉𐤍	H5221->H3559	plene:𐤍𐤊𐤍𐤅 -> plene:𐤍𐤊𐤍𐤅	greek
+42:22:30	𐤔𐤋𐤇𐤍𐤉	H7971->H7979	exact:𐤔𐤋𐤇𐤍𐤉 -> exact:𐤔𐤋𐤇𐤍𐤉	greek
+42:22:35	𐤅𐤍𐤏𐤋𐤉𐤌	H5956->H5274	plene:𐤅𐤍𐤏𐤋𐤌 -> suffix:𐤅𐤍𐤏𐤋+𐤉𐤌	greek
+42:22:47	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+42:22:49	𐤄𐤍𐤊𐤄	H2005->H5221	exact:𐤄𐤍𐤊𐤄 -> proclitic:𐤄+𐤍𐤊𐤄	greek
+42:22:55	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+42:22:60	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+42:22:62	𐤅𐤉𐤌𐤓𐤓	H4847->H4843	plene:𐤅𐤌𐤓𐤓𐤉 -> root:𐤅+𐤉 𐤌𐤓𐤓 	greek
+42:23:6	𐤔𐤌	H8033->H8085	exact:𐤔𐤌 -> exact:𐤔𐤌	greek
+42:23:7	𐤌𐤌𐤌𐤔𐤋𐤕	H4519->H4475	affixed:𐤌+𐤌+𐤌𐤔𐤋+𐤕 -> proclitic:𐤌+𐤌𐤌𐤔𐤋𐤕	greek
+42:23:29	𐤅𐤄𐤔𐤃𐤉𐤌	H7708->H7699	proclitic:𐤅+𐤄𐤔𐤃𐤉𐤌 -> proclitic:𐤅+𐤄+𐤔𐤃𐤉𐤌	greek
+42:23:37	𐤄𐤅𐤔𐤏	H1954->H3467	exact:𐤄𐤅𐤔𐤏 -> exact:𐤄𐤅𐤔𐤏	greek
+42:23:39	𐤄𐤕𐤋𐤅𐤉𐤌	H2049->H8518	plene:𐤄𐤕𐤋𐤉𐤌 -> proclitic:𐤄+𐤕𐤋𐤅𐤉𐤌	greek
+42:23:39	𐤄𐤅𐤔𐤏	H1954->H3467	exact:𐤄𐤅𐤔𐤏 -> exact:𐤄𐤅𐤔𐤏	greek
+42:23:49	𐤌𐤉𐤃𐤏𐤉𐤅	H4069->H3045	plene:𐤌𐤃𐤅𐤏 -> proclitic:𐤌+𐤉𐤃𐤏𐤉𐤅	greek
+42:23:54	𐤅𐤄𐤔𐤁𐤕	H7725->H7676	exact:𐤅𐤄𐤔𐤁𐤕 -> exact:𐤅𐤄𐤔𐤁𐤕	greek
+42:23:56	𐤔𐤅𐤁𐤍	H1121->H7725	proclitic:𐤔+𐤅𐤁𐤍 -> suffix:𐤔𐤅𐤁+𐤍	greek
+42:23:56	𐤁𐤔𐤌𐤉𐤌	H8064->H1314	exact:𐤁𐤔𐤌𐤉𐤌 -> exact:𐤁𐤔𐤌𐤉𐤌	greek
+42:24:2	𐤂𐤋𐤅𐤋𐤄	H1544->H1556	plene:𐤂𐤋𐤅𐤋𐤉𐤄 -> root: 𐤂𐤋𐤅𐤋 𐤄	greek
+42:24:33	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+42:24:44	𐤄𐤌𐤋𐤀	H4407->H4390	plene:𐤄𐤌𐤋𐤅𐤀 -> proclitic:𐤄+𐤌𐤋𐤀	greek
+43:1:19	𐤅𐤋𐤅𐤉𐤌	H3220->H3881	proclitic:𐤅+𐤋+𐤅𐤉𐤌 -> affixed:𐤅+𐤋𐤅𐤉+𐤌	greek
+43:1:51	𐤍𐤐𐤕𐤇𐤉𐤌	H5320->H6605	exact:𐤍𐤐𐤕𐤇𐤉𐤌 -> suffix:𐤍𐤐𐤕𐤇+𐤉𐤌	greek
+43:2:6	𐤁𐤕𐤉𐤌	H1004->H1323	exact:𐤁𐤕𐤉𐤌 -> suffix:𐤁𐤕+𐤉𐤌	greek
+43:2:8	𐤔𐤀𐤁𐤅	H1->H7579	affixed:𐤔+𐤀𐤁+𐤅 -> plene:𐤔𐤀𐤁	greek
+43:2:9	𐤔𐤀𐤁𐤅	H1->H7579	affixed:𐤔+𐤀𐤁+𐤅 -> plene:𐤔𐤀𐤁	greek
+43:2:9	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+43:2:16	𐤄𐤉𐤅𐤍𐤉𐤌	H3125->H3123	exact:𐤄𐤉𐤅𐤍𐤉𐤌 -> proclitic:𐤄+𐤉𐤅𐤍𐤉𐤌	greek
+43:3:7	𐤋𐤄𐤅𐤋𐤃	H2056->H3205	adjacent:𐤋𐤄+𐤅𐤋𐤃 -> proclitic:𐤋+𐤄𐤅𐤋𐤃	greek
+43:3:14	𐤄𐤂𐤁𐤉𐤄	H1355->H1361	proclitic:𐤄+𐤂𐤁𐤉𐤄 -> root:𐤄 𐤂𐤁𐤉𐤄 	greek
+43:3:19	𐤄𐤃𐤉𐤍	H1839->H1779	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤉𐤍	greek
+43:3:23	𐤁𐤏𐤉𐤍𐤅𐤍	H6051->H5869	plene:𐤁𐤏𐤍𐤍 -> suffix:𐤁𐤏𐤉𐤍𐤅+𐤍	greek
+43:3:29	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+43:3:29	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+43:3:29	𐤄𐤇𐤕𐤍	H2845->H2860	affixed:𐤄+𐤇𐤕+𐤍 -> proclitic:𐤄+𐤇𐤕𐤍	greek
+43:3:32	𐤏𐤃𐤅𐤕𐤅	H5712->H5715	plene:𐤏𐤃𐤕 -> suffix:𐤏𐤃𐤅𐤕+𐤅	greek
+43:3:33	𐤏𐤃𐤅𐤕𐤅	H5712->H5715	plene:𐤏𐤃𐤕 -> suffix:𐤏𐤃𐤅𐤕+𐤅	greek
+43:4:18	𐤁𐤏𐤋𐤉𐤌	H5867->H1167	plene:𐤁𐤏𐤉𐤋𐤌 -> suffix:𐤁𐤏𐤋+𐤉𐤌	greek
+43:4:26	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+43:4:46	𐤁𐤊𐤐𐤓	H6499->H3723	proclitic:𐤁+𐤊+𐤐𐤓 -> root:𐤁 𐤊𐤐𐤓 	greek
+43:4:52	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+43:5:20	𐤅𐤌𐤓𐤀𐤄	H4758->H7200	exact:𐤅𐤌𐤓𐤀𐤄 -> proclitic:𐤅+𐤌𐤓𐤀𐤄	greek
+43:5:24	𐤅𐤌𐤀𐤌𐤉𐤍	H521->H539	proclitic:𐤅+𐤌+𐤀𐤌𐤉𐤍 -> root:𐤅+𐤌 𐤀𐤌𐤉𐤍 	greek
+43:5:31	𐤏𐤃𐤅𐤕𐤉	H5712->H5715	plene:𐤏𐤃𐤕 -> suffix:𐤏𐤃𐤅𐤕+𐤉	greek
+43:5:32	𐤏𐤃𐤅𐤕𐤅	H5712->H5715	plene:𐤏𐤃𐤕 -> suffix:𐤏𐤃𐤅𐤕+𐤅	greek
+43:5:35	𐤄𐤍𐤓	H5369->H5216	proclitic:𐤄+𐤍𐤓 -> proclitic:𐤄+𐤍𐤓	greek
+43:5:45	𐤕𐤉𐤇𐤋𐤅	H2490->H3176	plene:𐤕𐤇𐤋 -> root:𐤕 𐤉𐤇𐤋 𐤅	greek
+43:6:3	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+43:6:13	𐤄𐤔𐤏𐤅𐤓𐤉𐤌	H8163->H8184	plene:𐤄𐤔𐤏𐤉𐤓𐤌 -> proclitic:𐤄+𐤔𐤏𐤅𐤓𐤉𐤌	greek
+43:6:18	𐤍𐤅𐤔𐤁𐤕	H3427->H5380	exact:𐤍𐤅𐤔𐤁𐤕 -> root: 𐤍𐤅𐤔𐤁 𐤕	greek
+43:6:31	𐤄𐤌𐤍	H2001->H4478	exact:𐤄𐤌𐤍 -> exact:𐤄𐤌𐤍	greek
+43:6:40	𐤅𐤌𐤀𐤌𐤉𐤍	H521->H539	proclitic:𐤅+𐤌+𐤀𐤌𐤉𐤍 -> root:𐤅+𐤌 𐤀𐤌𐤉𐤍 	greek
+43:6:49	𐤄𐤌𐤍	H2001->H4478	exact:𐤄𐤌𐤍 -> exact:𐤄𐤌𐤍	greek
+43:6:54	𐤅𐤄𐤔𐤕𐤄	H8352->H8354	affixed:𐤅+𐤄+𐤔𐤕+𐤄 -> proclitic:𐤅+𐤄+𐤔𐤕𐤄	greek
+43:6:58	𐤄𐤌𐤍	H2001->H4478	exact:𐤄𐤌𐤍 -> exact:𐤄𐤌𐤍	greek
+43:6:59	𐤁𐤊𐤐𐤓	H6499->H3723	proclitic:𐤁+𐤊+𐤐𐤓 -> root:𐤁 𐤊𐤐𐤓 	greek
+43:7:13	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+43:7:18	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+43:7:22	𐤕𐤌𐤅𐤋𐤅	H8543->H4135	plene:𐤕𐤌𐤅𐤋 -> root:𐤕 𐤌𐤅𐤋 𐤅	greek
+43:7:26	𐤓𐤀𐤔𐤉𐤍𐤅	H7223->H7218	plene:𐤓𐤀𐤔𐤅𐤍 -> suffix:𐤓𐤀𐤔𐤉+𐤍𐤅	greek
+43:7:28	𐤀𐤌𐤕𐤉	H573->H571	exact:𐤀𐤌𐤕𐤉 -> suffix:𐤀𐤌𐤕+𐤉	greek
+43:7:51	𐤕𐤅𐤓𐤕𐤍𐤅	H8661->H8451	plene:𐤕𐤓𐤕𐤍 -> suffix:𐤕𐤅𐤓𐤕+𐤍𐤅	greek
+43:8:13	𐤏𐤃𐤅𐤕𐤊	H5712->H5715	plene:𐤏𐤃𐤕𐤊 -> suffix:𐤏𐤃𐤅𐤕+𐤊	greek
+43:8:14	𐤏𐤃𐤅𐤕𐤉	H5712->H5715	plene:𐤏𐤃𐤕 -> suffix:𐤏𐤃𐤅𐤕+𐤉	greek
+43:8:54	𐤌𐤊𐤁𐤃	H3515->H3519	proclitic:𐤌+𐤊𐤁𐤃 -> plene:𐤌𐤊𐤁𐤅𐤃	greek
+43:9:21	𐤃𐤏𐤕	H1847->H3045	exact:𐤃𐤏𐤕 -> exact:𐤃𐤏𐤕	greek
+43:9:37	𐤅𐤄𐤌𐤃𐤁𐤓	H4057->H1696	proclitic:𐤅+𐤄𐤌𐤃𐤁𐤓 -> proclitic:𐤅+𐤄𐤌𐤃𐤁𐤓	greek
+43:10:2	𐤓𐤏𐤄	H7451->H7462	exact:𐤓𐤏𐤄 -> exact:𐤓𐤏𐤄	greek
+43:10:11	𐤄𐤓𐤏𐤄	H7451->H7462	exact:𐤄𐤓𐤏𐤄 -> exact:𐤄𐤓𐤏𐤄	greek
+43:10:11	𐤄𐤓𐤏𐤄	H7451->H7462	exact:𐤄𐤓𐤏𐤄 -> exact:𐤄𐤓𐤏𐤄	greek
+43:10:12	𐤓𐤏𐤄	H7451->H7462	exact:𐤓𐤏𐤄 -> exact:𐤓𐤏𐤄	greek
+43:10:12	𐤁𐤓𐤀𐤅𐤕𐤅	H1254->H7200	plene:𐤁𐤓𐤀𐤕𐤉 -> plene:𐤁𐤓𐤀𐤕𐤉	greek
+43:10:13	𐤄𐤔𐤊𐤉𐤓	H7941->H7916	plene:𐤄𐤔𐤊𐤓 -> proclitic:𐤄+𐤔𐤊𐤉𐤓	greek
+43:10:14	𐤄𐤓𐤏𐤄	H7451->H7462	exact:𐤄𐤓𐤏𐤄 -> exact:𐤄𐤓𐤏𐤄	greek
+43:10:15	𐤉𐤃𐤏𐤍𐤉	H3049->H3045	exact:𐤉𐤃𐤏𐤍𐤉 -> plene:𐤉𐤃𐤏𐤍𐤅	greek
+43:11:19	𐤀𐤇𐤉𐤄𐤍	H281->H251	suffix:𐤀𐤇𐤉𐤄+𐤍 -> suffix:𐤀𐤇𐤉𐤄+𐤍	greek
+43:11:39	𐤁𐤀𐤔	H784->H887	exact:𐤁𐤀𐤔 -> root: 𐤁𐤀𐤔 	greek
+43:12:5	𐤋𐤏𐤍𐤉𐤉𐤌	H5869->H6041	plene:𐤋𐤏𐤉𐤍𐤉𐤌 -> proclitic:𐤋+𐤏𐤍𐤉𐤉𐤌	greek
+43:12:28	𐤐𐤀𐤓𐤕𐤉	H6288->H6286	plene:𐤐𐤀𐤓𐤅𐤕 -> root: 𐤐𐤀𐤓 𐤕+𐤉	greek
+43:12:38	𐤋𐤔𐤌𐤏𐤕𐤍𐤅	H8052->H8085	exact:𐤋𐤔𐤌𐤏𐤕𐤍𐤅 -> affixed:𐤋+𐤔𐤌𐤏𐤕+𐤍𐤅	greek
+43:12:41	𐤁𐤓𐤀𐤅𐤕𐤅	H1254->H7200	plene:𐤁𐤓𐤀𐤕𐤉 -> plene:𐤁𐤓𐤀𐤕𐤉	greek
+43:12:50	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+43:14:16	𐤌𐤀𐤁𐤉	H4124->H1	plene:𐤌𐤅𐤀𐤁 -> proclitic:𐤌+𐤀𐤁𐤉	greek
+43:14:20	𐤉𐤃𐤅𐤏	H3037->H3045	exact:𐤉𐤃𐤅𐤏 -> exact:𐤉𐤃𐤅𐤏	greek
+43:14:23	𐤌𐤏𐤅𐤍𐤕𐤍𐤅	H5771->H5869	plene:𐤌𐤏𐤅𐤍𐤕𐤉𐤍𐤅 -> root:𐤌 𐤏𐤅𐤍 𐤕+𐤍𐤅	greek
+43:15:11	𐤔𐤌𐤇𐤕𐤉	H8055->H8057	exact:𐤔𐤌𐤇𐤕𐤉 -> exact:𐤔𐤌𐤇𐤕𐤉	greek
+43:15:16	𐤌𐤀𐤁𐤉	H4124->H1	plene:𐤌𐤅𐤀𐤁 -> proclitic:𐤌+𐤀𐤁𐤉	greek
+43:16:21	𐤌𐤔𐤌𐤇𐤕𐤄	H4288->H8057	proclitic:𐤌+𐤔+𐤌𐤇𐤕𐤄 -> affixed:𐤌+𐤔𐤌𐤇𐤕+𐤄	greek
+43:16:32	𐤅𐤍𐤐𐤑𐤅𐤕𐤌	H5310->H6327	plene:𐤅𐤍𐤐𐤑𐤕𐤉𐤌 -> proclitic:𐤅+𐤍𐤐𐤑𐤅𐤕𐤌	greek
+43:16:33	𐤁𐤏𐤅𐤋𐤌	H5867->H1167	plene:𐤁𐤏𐤉𐤋𐤌 -> root: 𐤁𐤏𐤅𐤋 𐤌	greek
+43:17:13	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+43:17:13	𐤁𐤏𐤅𐤋𐤌	H5867->H1167	plene:𐤁𐤏𐤉𐤋𐤌 -> root: 𐤁𐤏𐤅𐤋 𐤌	greek
+43:17:13	𐤔𐤌𐤇𐤕𐤉	H8055->H8057	exact:𐤔𐤌𐤇𐤕𐤉 -> exact:𐤔𐤌𐤇𐤕𐤉	greek
+43:17:15	𐤔𐤕𐤑𐤓𐤌	H6696->H5341	proclitic:𐤔+𐤕𐤑𐤓𐤌 -> affixed:𐤔+𐤕𐤑𐤓+𐤌	greek
+43:17:25	𐤉𐤃𐤏𐤊	H1846->H3045	exact:𐤉𐤃𐤏𐤊 -> suffix:𐤉𐤃𐤏+𐤊	greek
+43:18:8	𐤄𐤍𐤉𐤇𐤅	H3240->H5117	exact:𐤄𐤍𐤉𐤇𐤅 -> exact:𐤄𐤍𐤉𐤇𐤅	greek
+43:18:12	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+43:18:12	𐤅𐤌𐤔𐤓𐤕𐤉	H8334->H8269	proclitic:𐤅+𐤌𐤔𐤓𐤕𐤉 -> root:𐤅 𐤌𐤔𐤓 𐤕+𐤉	greek
+43:18:16	𐤄𐤔𐤏𐤓𐤕	H8163->H7778	proclitic:𐤄+𐤔𐤏𐤓𐤕 -> suffix:𐤄𐤔𐤏𐤓+𐤕	greek
+43:18:17	𐤄𐤔𐤏𐤓𐤕	H8163->H7778	proclitic:𐤄+𐤔𐤏𐤓𐤕 -> suffix:𐤄𐤔𐤏𐤓+𐤕	greek
+43:19:7	𐤕𐤅𐤓𐤕𐤍𐤅	H8661->H8451	plene:𐤕𐤓𐤕𐤍 -> suffix:𐤕𐤅𐤓𐤕+𐤍𐤅	greek
+43:19:14	𐤅𐤄𐤔𐤏𐤄	H3467->H8159	plene:𐤅𐤄𐤅𐤔𐤉𐤏𐤄 -> proclitic:𐤅+𐤄+𐤔𐤏𐤄	greek
+43:20:11	𐤁𐤁𐤊𐤅𐤕𐤄	H439->H1058	affixed:𐤁+𐤁𐤊𐤅𐤕+𐤄 -> root:𐤁 𐤁𐤊𐤅 𐤕+𐤄	greek
+43:20:12	𐤋𐤁𐤍𐤉𐤌	H3843->H3836	exact:𐤋𐤁𐤍𐤉𐤌 -> exact:𐤋𐤁𐤍𐤉𐤌	greek
+43:20:19	𐤌𐤉𐤓𐤀𐤕	H4519->H3374	affixed:𐤌+𐤉𐤓𐤀+𐤕 -> proclitic:𐤌+𐤉𐤓𐤀𐤕	greek
+43:20:22	𐤅𐤉𐤐𐤇	H6315->H5301	exact:𐤅𐤉𐤐𐤇 -> exact:𐤅𐤉𐤐𐤇	greek
+43:20:25	𐤄𐤌𐤎𐤌𐤓𐤅𐤕	H4519->H4548	affixed:𐤄+𐤌+𐤎𐤌𐤓+𐤅𐤕 -> root:𐤄 𐤌𐤎𐤌𐤓 𐤅𐤕	greek
+43:20:25	𐤄𐤌𐤎𐤌𐤓𐤅𐤕	H4519->H4548	affixed:𐤄+𐤌+𐤎𐤌𐤓+𐤅𐤕 -> root:𐤄 𐤌𐤎𐤌𐤓 𐤅𐤕	greek
+43:20:26	𐤌𐤎𐤂𐤓𐤅𐤕	H4526->H5462	plene:𐤌𐤎𐤂𐤓𐤕 -> affixed:𐤌+𐤎𐤂𐤓+𐤅𐤕	greek
+43:21:3	𐤋𐤃𐤉𐤂	H1673->H1770	plene:𐤋𐤃𐤅𐤉𐤂 -> root:𐤋 𐤃𐤉𐤂 	greek
+43:21:10	𐤀𐤇𐤆𐤕𐤌	H272->H270	exact:𐤀𐤇𐤆𐤕𐤌 -> exact:𐤀𐤇𐤆𐤕𐤌	greek
+43:21:15	𐤓𐤏𐤄	H7451->H7462	exact:𐤓𐤏𐤄 -> exact:𐤓𐤏𐤄	greek
+43:21:17	𐤓𐤏𐤄	H7451->H7462	exact:𐤓𐤏𐤄 -> exact:𐤓𐤏𐤄	greek
+43:21:24	𐤏𐤃𐤅𐤕𐤅	H5712->H5715	plene:𐤏𐤃𐤕 -> suffix:𐤏𐤃𐤅𐤕+𐤅	greek
+44:2:11	𐤁𐤋𐤔𐤍𐤅𐤕𐤉𐤍𐤅	H8141->H3956	proclitic:𐤁+𐤋+𐤔𐤍𐤅𐤕𐤉𐤍𐤅 -> root:𐤁 𐤋𐤔𐤍𐤅𐤕 𐤉+𐤍𐤅	greek
+44:2:19	𐤅𐤕𐤉𐤌𐤓𐤅𐤕	H8490->H8561	exact:𐤅𐤕𐤉𐤌𐤓𐤅𐤕 -> root:𐤅 𐤕𐤉𐤌𐤓 𐤅𐤕	greek
+44:2:26	𐤅𐤉𐤂𐤋	H1540->H1523	exact:𐤅𐤉𐤂𐤋 -> exact:𐤅𐤉𐤂𐤋	greek
+44:2:30	𐤅𐤌𐤃𐤏𐤕𐤅	H1847->H3045	affixed:𐤅+𐤌𐤃𐤏𐤕+𐤅 -> affixed:𐤅+𐤌+𐤃𐤏𐤕+𐤅	greek
+44:2:32	𐤏𐤃𐤉𐤅	H5716->H5707	exact:𐤏𐤃𐤉𐤅 -> suffix:𐤏𐤃𐤉+𐤅	greek
+44:2:34	𐤔𐤁	H7725->H3427	exact:𐤔𐤁 -> exact:𐤔𐤁	greek
+44:2:35	𐤄𐤃𐤌	H1818->H1916	exact:𐤄𐤃𐤌 -> exact:𐤄𐤃𐤌	greek
+44:3:1	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+44:3:13	𐤃𐤍	H1835->H1777	exact:𐤃𐤍 -> exact:𐤃𐤍	greek
+44:3:15	𐤏𐤃𐤉𐤅	H5716->H5707	exact:𐤏𐤃𐤉𐤅 -> suffix:𐤏𐤃𐤉+𐤅	greek
+44:4:36	𐤋𐤅𐤉	H3878->H3881	exact:𐤋𐤅𐤉 -> exact:𐤋𐤅𐤉	greek
+44:5:5	𐤉𐤓𐤀𐤄	H7200->H3374	exact:𐤉𐤓𐤀𐤄 -> exact:𐤉𐤓𐤀𐤄	greek
+44:5:11	𐤉𐤓𐤀𐤄	H7200->H3374	exact:𐤉𐤓𐤀𐤄 -> exact:𐤉𐤓𐤀𐤄	greek
+44:5:32	𐤏𐤃𐤉𐤅	H5716->H5707	exact:𐤏𐤃𐤉𐤅 -> suffix:𐤏𐤃𐤉+𐤅	greek
+44:5:42	𐤁𐤔𐤅𐤓𐤕	H7794->H1319	affixed:𐤁+𐤔𐤅𐤓+𐤕 -> root: 𐤁𐤔𐤅𐤓 𐤕	greek
+44:6:7	𐤅𐤉𐤓𐤁	H7378->H7235	exact:𐤅𐤉𐤓𐤁 -> exact:𐤅𐤉𐤓𐤁	greek
+44:6:15	𐤊𐤐𐤍𐤉	H6435->H6440	affixed:𐤊+𐤐𐤍+𐤉 -> proclitic:𐤊+𐤐𐤍𐤉	greek
+44:7:4	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+44:7:7	𐤃𐤍	H1835->H1777	exact:𐤃𐤍 -> exact:𐤃𐤍	greek
+44:7:17	𐤅𐤉𐤓𐤁	H7378->H7235	exact:𐤅𐤉𐤓𐤁 -> exact:𐤅𐤉𐤓𐤁	greek
+44:7:49	𐤄𐤃𐤌	H1818->H1916	exact:𐤄𐤃𐤌 -> exact:𐤄𐤃𐤌	greek
+44:7:52	𐤌𐤄𐤍𐤁𐤉𐤀𐤉𐤌	H4519->H5030	affixed:𐤌+𐤄𐤍𐤁𐤉𐤀+𐤉𐤌 -> plene:𐤌𐤄𐤍𐤁𐤀𐤉𐤌	greek
+44:7:53	𐤌𐤋𐤀𐤊𐤅𐤕	H4399->H4398	exact:𐤌𐤋𐤀𐤊𐤅𐤕 -> root: 𐤌𐤋𐤀𐤊 𐤅𐤕	greek
+44:7:54	𐤔𐤍𐤉𐤄𐤌	H8147->H8127	exact:𐤔𐤍𐤉𐤄𐤌 -> exact:𐤔𐤍𐤉𐤄𐤌	greek
+44:7:56	𐤍𐤐𐤕𐤇𐤉𐤌	H5320->H6605	exact:𐤍𐤐𐤕𐤇𐤉𐤌 -> suffix:𐤍𐤐𐤕𐤇+𐤉𐤌	greek
+44:7:58	𐤁𐤇𐤅𐤓	H977->H970	exact:𐤁𐤇𐤅𐤓 -> exact:𐤁𐤇𐤅𐤓	greek
+44:9:37	𐤁𐤏𐤋𐤉𐤄	H1167->H5944	exact:𐤁𐤏𐤋𐤉𐤄 -> root:𐤁 𐤏𐤋𐤉𐤄 	greek
+44:9:39	𐤄𐤏𐤋𐤄𐤅	H5929->H5944	proclitic:𐤄+𐤏𐤋𐤄𐤅 -> root:𐤄 𐤏𐤋𐤄 𐤅	greek
+44:10:11	𐤍𐤐𐤕𐤇𐤉𐤌	H5320->H6605	exact:𐤍𐤐𐤕𐤇𐤉𐤌 -> suffix:𐤍𐤐𐤕𐤇+𐤉𐤌	greek
+44:10:12	𐤅𐤇𐤉𐤄	H2421->H2416	exact:𐤅𐤇𐤉𐤄 -> exact:𐤅𐤇𐤉𐤄	greek
+44:10:46	𐤅𐤌𐤂𐤃𐤋𐤉𐤌	H4026->H1431	exact:𐤅𐤌𐤂𐤃𐤋𐤉𐤌 -> proclitic:𐤅+𐤌𐤂𐤃𐤋𐤉𐤌	greek
+44:12:11	𐤃𐤏𐤕𐤅	H1847->H3045	suffix:𐤃𐤏𐤕+𐤅 -> suffix:𐤃𐤏𐤕+𐤅	greek
+44:12:14	𐤅𐤌𐤔𐤌𐤇𐤕𐤄	H4519->H8057	affixed:𐤅+𐤌+𐤔𐤌𐤇𐤕+𐤄 -> affixed:𐤅+𐤌+𐤔𐤌𐤇𐤕+𐤄	greek
+44:12:19	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+44:13:10	𐤄𐤌𐤋𐤀	H4407->H4390	plene:𐤄𐤌𐤋𐤅𐤀 -> proclitic:𐤄+𐤌𐤋𐤀	greek
+44:13:10	𐤄𐤉𐤔𐤓𐤉𐤌	H8269->H3474	plene:𐤄𐤔𐤓𐤉𐤌 -> affixed:𐤄+𐤉𐤔𐤓+𐤉𐤌	greek
+44:13:31	𐤏𐤃𐤉𐤅	H5716->H5707	exact:𐤏𐤃𐤉𐤅 -> suffix:𐤏𐤃𐤉+𐤅	greek
+44:13:32	𐤁𐤔𐤅𐤓𐤕	H7794->H1319	affixed:𐤁+𐤔𐤅𐤓+𐤕 -> root: 𐤁𐤔𐤅𐤓 𐤕	greek
+44:14:2	𐤏𐤅𐤓𐤓𐤅	H6185->H5782	plene:𐤏𐤓𐤉𐤓𐤉 -> suffix:𐤏𐤅𐤓𐤓+𐤅	greek
+44:14:9	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+44:14:9	𐤋𐤄𐤅𐤔𐤏	H1954->H3467	exact:𐤋𐤄𐤅𐤔𐤏 -> proclitic:𐤋+𐤄𐤅𐤔𐤏	greek
+44:14:18	𐤌𐤆𐤁𐤇	H4196->H2076	exact:𐤌𐤆𐤁𐤇 -> exact:𐤌𐤆𐤁𐤇	greek
+44:14:22	𐤁𐤑𐤓𐤅𐤕	H1219->H6869	exact:𐤁𐤑𐤓𐤅𐤕 -> exact:𐤁𐤑𐤓𐤅𐤕	greek
+44:15:1	𐤕𐤌𐤅𐤋𐤅	H8543->H4135	plene:𐤕𐤌𐤅𐤋 -> root:𐤕 𐤌𐤅𐤋 𐤅	greek
+44:15:3	𐤕𐤔𐤅𐤁𐤕	H8666->H7725	exact:𐤕𐤔𐤅𐤁𐤕 -> suffix:𐤕𐤔𐤅𐤁+𐤕	greek
+44:15:11	𐤋𐤄𐤅𐤔𐤏	H1954->H3467	exact:𐤋𐤄𐤅𐤔𐤏 -> proclitic:𐤋+𐤄𐤅𐤔𐤏	greek
+44:15:19	𐤃𐤍	H1835->H1777	exact:𐤃𐤍 -> exact:𐤃𐤍	greek
+44:16:1	𐤌𐤀𐤌𐤍𐤕	H4519->H539	affixed:𐤌+𐤀𐤌𐤍+𐤕 -> affixed:𐤌+𐤀𐤌𐤍+𐤕	greek
+44:16:16	𐤁𐤏𐤋𐤕	H1172->H1167	exact:𐤁𐤏𐤋𐤕 -> suffix:𐤁𐤏𐤋+𐤕	greek
+44:16:33	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+44:16:38	𐤋𐤔𐤓𐤉𐤌	H7891->H8269	exact:𐤋𐤔𐤓𐤉𐤌 -> exact:𐤋𐤔𐤓𐤉𐤌	greek
+44:17:30	𐤉𐤌𐤅𐤕	H4191->H3117	exact:𐤉𐤌𐤅𐤕 -> exact:𐤉𐤌𐤅𐤕	greek
+44:18:11	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+44:18:25	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+44:19:12	𐤄𐤇𐤅𐤋𐤉𐤌	H2490->H2481	plene:𐤄𐤇𐤋𐤌 -> root:𐤄 𐤇𐤅𐤋𐤉 𐤌	greek
+44:19:14	𐤌𐤂𐤃𐤅𐤋𐤉	H4519->H1419	affixed:𐤌+𐤂𐤃𐤅𐤋+𐤉 -> suffix:𐤌𐤂𐤃𐤅𐤋+𐤉	greek
+44:19:19	𐤏𐤓𐤊𐤌	H5892->H6187	plene:𐤏𐤓𐤉𐤊𐤌 -> suffix:𐤏𐤓𐤊+𐤌	greek
+44:19:34	𐤊𐤔𐤕𐤉	H3571->H8147	plene:𐤊𐤔𐤉𐤕 -> proclitic:𐤊+𐤔𐤕𐤉	greek
+44:20:8	𐤁𐤏𐤋𐤉𐤄	H1167->H5944	exact:𐤁𐤏𐤋𐤉𐤄 -> root:𐤁 𐤏𐤋𐤉𐤄 	greek
+44:20:9	𐤅𐤁𐤇𐤅𐤓	H977->H970	proclitic:𐤅+𐤁𐤇𐤅𐤓 -> proclitic:𐤅+𐤁𐤇𐤅𐤓	greek
+44:20:24	𐤄𐤔𐤓𐤅𐤕	H8269->H8334	affixed:𐤄+𐤔𐤓+𐤅𐤕 -> root:𐤄 𐤔𐤓𐤅𐤕 	greek
+44:21:3	𐤋𐤔𐤌𐤀𐤋	H8050->H8040	plene:𐤋𐤔𐤌𐤅𐤀𐤋 -> proclitic:𐤋+𐤔𐤌𐤀𐤋	greek
+44:21:19	𐤁𐤔𐤓𐤅𐤕𐤅	H8282->H8334	affixed:𐤁+𐤔𐤓𐤅𐤕+𐤅 -> root:𐤁 𐤔𐤓𐤅𐤕 𐤅	greek
+44:21:31	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:21:32	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:21:33	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:21:37	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:22:9	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+44:22:23	𐤄𐤔𐤌𐤉𐤌𐤄	H8064->H7760	exact:𐤄𐤔𐤌𐤉𐤌𐤄 -> affixed:𐤄+𐤔𐤌𐤉𐤌+𐤄	greek
+44:22:24	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:22:26	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:22:27	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:22:28	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:22:29	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:22:29	𐤁𐤃𐤏𐤕𐤅	H1847->H3045	exact:𐤁𐤃𐤏𐤕𐤅 -> affixed:𐤁+𐤃𐤏𐤕+𐤅	greek
+44:23:10	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:23:15	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:23:17	𐤄𐤁𐤇𐤅𐤓	H977->H970	proclitic:𐤄+𐤁𐤇𐤅𐤓 -> proclitic:𐤄+𐤁𐤇𐤅𐤓	greek
+44:23:17	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:23:18	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:23:18	𐤄𐤁𐤇𐤅𐤓	H977->H970	proclitic:𐤄+𐤁𐤇𐤅𐤓 -> proclitic:𐤄+𐤁𐤇𐤅𐤓	greek
+44:23:19	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:23:22	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:23:22	𐤄𐤁𐤇𐤅𐤓	H977->H970	proclitic:𐤄+𐤁𐤇𐤅𐤓 -> proclitic:𐤄+𐤁𐤇𐤅𐤓	greek
+44:24:10	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+44:24:17	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+44:24:22	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:25:9	𐤋𐤄𐤔𐤐𐤈	H3092->H8199	plene:𐤋𐤉𐤄𐤅𐤔𐤐𐤈 -> proclitic:𐤋+𐤄𐤔𐤐𐤈	greek
+44:25:10	𐤋𐤄𐤔𐤐𐤈	H3092->H8199	plene:𐤋𐤉𐤄𐤅𐤔𐤐𐤈 -> proclitic:𐤋+𐤄𐤔𐤐𐤈	greek
+44:25:23	𐤄𐤀𐤋𐤐	H505->H441	exact:𐤄𐤀𐤋𐤐 -> root:𐤄 𐤀𐤋𐤐 	greek
+44:25:24	𐤔𐤉𐤇𐤉𐤄	H7745->H2421	plene:𐤔𐤅𐤇𐤄 -> proclitic:𐤔+𐤉𐤇𐤉𐤄	greek
+44:25:25	𐤋𐤃𐤉𐤍𐤅	H1835->H1777	plene:𐤋𐤃𐤍 -> proclitic:𐤋+𐤃𐤉𐤍𐤅	greek
+44:26:14	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+44:26:26	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+44:27:1	𐤄𐤃𐤉𐤍	H1839->H1777	plene:𐤄𐤃𐤍𐤉 -> root:𐤄 𐤃𐤉𐤍 	greek
+44:27:31	𐤋𐤄𐤅𐤔𐤏	H1954->H3467	exact:𐤋𐤄𐤅𐤔𐤏 -> proclitic:𐤋+𐤄𐤅𐤔𐤏	greek
+45:1:4	𐤄𐤒𐤃𐤔𐤄	H6948->H6944	exact:𐤄𐤒𐤃𐤔𐤄 -> suffix:𐤄𐤒𐤃𐤔+𐤄	greek
+45:1:14	𐤋𐤋𐤏𐤆𐤉𐤌	H5795->H3937	proclitic:𐤋+𐤋+𐤏𐤆𐤉𐤌 -> affixed:𐤋+𐤋𐤏𐤆+𐤉𐤌	greek
+45:1:18	𐤅𐤏𐤅𐤋𐤕𐤌	H5930->H5766	affixed:𐤅+𐤏𐤅𐤋𐤕+𐤌 -> affixed:𐤅+𐤏𐤅𐤋𐤕+𐤌	greek
+45:2:1	𐤄𐤃𐤍	H1839->H1777	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤍	greek
+45:2:1	𐤄𐤃𐤍	H1839->H1777	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤍	greek
+45:2:3	𐤄𐤃𐤍	H1839->H1777	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤍	greek
+45:2:5	𐤅𐤁𐤒𐤔𐤉	H1245->H7190	plene:𐤅𐤉𐤁𐤒𐤔 -> proclitic:𐤅+𐤁+𐤒𐤔𐤉	greek
+45:2:8	𐤋𐤏𐤅𐤋𐤄	H5930->H5766	exact:𐤋𐤏𐤅𐤋𐤄 -> proclitic:𐤋+𐤏𐤅𐤋𐤄	greek
+45:3:5	𐤏𐤅𐤋𐤕𐤍𐤅	H5930->H5766	suffix:𐤏𐤅𐤋𐤕+𐤍𐤅 -> suffix:𐤏𐤅𐤋𐤕+𐤍𐤅	greek
+45:3:22	𐤁𐤀𐤌𐤅𐤍𐤕	H526->H530	affixed:𐤁+𐤀𐤌𐤅𐤍+𐤕 -> plene:𐤁𐤀𐤌𐤅𐤍𐤕𐤉	greek
+45:3:25	𐤔𐤌𐤅	H8034->H7760	exact:𐤔𐤌𐤅 -> exact:𐤔𐤌𐤅	greek
+45:3:25	𐤁𐤃𐤌𐤅	H3027->H1818	plene:𐤁𐤉𐤃𐤌 -> proclitic:𐤁+𐤃𐤌𐤅	greek
+45:4:11	𐤋𐤇𐤅𐤕𐤌	H2421->H2368	plene:𐤋𐤇𐤉𐤅𐤕𐤌 -> proclitic:𐤋+𐤇𐤅𐤕𐤌	greek
+45:4:14	𐤁𐤈𐤋𐤄	H2919->H989	affixed:𐤁+𐤈𐤋+𐤄 -> root: 𐤁𐤈𐤋 𐤄	greek
+45:5:3	𐤁𐤑𐤓𐤅𐤕	H1219->H6869	exact:𐤁𐤑𐤓𐤅𐤕 -> exact:𐤁𐤑𐤓𐤅𐤕	greek
+45:5:9	𐤁𐤃𐤌𐤅	H3027->H1818	plene:𐤁𐤉𐤃𐤌 -> proclitic:𐤁+𐤃𐤌𐤅	greek
+45:6:6	𐤄𐤉𐤔𐤍	H8145->H3462	plene:𐤄𐤔𐤍𐤉 -> root:𐤄 𐤉𐤔𐤍 	greek
+45:6:16	𐤋𐤌𐤔𐤌𐤏𐤕𐤅	H4928->H8085	proclitic:𐤋+𐤌𐤔𐤌𐤏𐤕𐤅 -> affixed:𐤋+𐤌+𐤔𐤌𐤏𐤕+𐤅	greek
+45:6:19	𐤋𐤏𐤁𐤅𐤃𐤕	H5656->H5650	exact:𐤋𐤏𐤁𐤅𐤃𐤕 -> root:𐤋 𐤏𐤁𐤅𐤃 𐤕	greek
+45:6:19	𐤋𐤏𐤁𐤅𐤃𐤕	H5656->H5650	exact:𐤋𐤏𐤁𐤅𐤃𐤕 -> root:𐤋 𐤏𐤁𐤅𐤃 𐤕	greek
+45:6:21	𐤄𐤐𐤓𐤉	H6499->H6529	plene:𐤄𐤐𐤓 -> proclitic:𐤄+𐤐𐤓𐤉	greek
+45:7:1	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+45:7:2	𐤅𐤁𐤌𐤅𐤕	H1120->H4191	exact:𐤅𐤁𐤌𐤅𐤕 -> proclitic:𐤅+𐤁𐤌𐤅𐤕	greek
+45:8:7	𐤔𐤍𐤀𐤕	H8130->H8135	exact:𐤔𐤍𐤀𐤕 -> bhs:𐤔𐤍𐤀𐤕	greek
+45:8:18	𐤋𐤄𐤂𐤋𐤅𐤕	H1546->H1540	proclitic:𐤋+𐤄+𐤂𐤋𐤅𐤕 -> exact:𐤋𐤄𐤂𐤋𐤅𐤕	greek
+45:10:17	𐤄𐤔𐤌𐤅𐤏𐤄	H8052->H8085	exact:𐤄𐤔𐤌𐤅𐤏𐤄 -> affixed:𐤄+𐤔𐤌𐤅𐤏+𐤄	greek
+45:10:17	𐤅𐤄𐤔𐤌𐤅𐤏𐤄	H8052->H8085	proclitic:𐤅+𐤄𐤔𐤌𐤅𐤏𐤄 -> affixed:𐤅+𐤄+𐤔𐤌𐤅𐤏+𐤄	greek
+45:10:21	𐤅𐤌𐤓𐤄	H4751->H4784	exact:𐤅𐤌𐤓𐤄 -> exact:𐤅𐤌𐤓𐤄	greek
+45:11:9	𐤅𐤋𐤓𐤔𐤕	H3423->H7568	proclitic:𐤅+𐤋𐤓𐤔𐤕 -> proclitic:𐤅+𐤋+𐤓𐤔𐤕	greek
+45:11:17	𐤋𐤔𐤓𐤔	H7326->H8327	proclitic:𐤋+𐤔+𐤓𐤔 -> proclitic:𐤋+𐤔𐤓𐤔	greek
+45:11:24	𐤁𐤆𐤉𐤕	H959->H2132	exact:𐤁𐤆𐤉𐤕 -> proclitic:𐤁+𐤆𐤉𐤕	greek
+45:11:25	𐤄𐤎𐤅𐤃	H3245->H5475	plene:𐤄𐤅𐤎𐤃 -> proclitic:𐤄+𐤎𐤅𐤃	greek
+45:11:31	𐤉𐤇𐤍𐤅	H2583->H2603	exact:𐤉𐤇𐤍𐤅 -> suffix:𐤉𐤇𐤍+𐤅	greek
+45:12:1	𐤁𐤓𐤇𐤌𐤉	H1280->H7356	plene:𐤁𐤓𐤉𐤇𐤌 -> affixed:𐤁+𐤓𐤇𐤌+𐤉	greek
+45:12:12	𐤁𐤑𐤓𐤄	H1224->H6869	exact:𐤁𐤑𐤓𐤄 -> exact:𐤁𐤑𐤓𐤄	greek
+45:12:13	𐤁𐤑𐤓𐤊𐤉	H1220->H6878	plene:𐤁𐤑𐤓𐤉𐤊 -> root:𐤁 𐤑𐤓𐤊 𐤉	greek
+45:12:15	𐤄𐤁𐤊𐤉𐤌	H1066->H1058	exact:𐤄𐤁𐤊𐤉𐤌 -> proclitic:𐤄+𐤁𐤊𐤉𐤌	greek
+45:12:20	𐤇𐤕𐤄	H2865->H2846	exact:𐤇𐤕𐤄 -> exact:𐤇𐤕𐤄	greek
+45:13:3	𐤋𐤌𐤏𐤔𐤉𐤌	H4519->H4639	affixed:𐤋+𐤌+𐤏𐤔𐤉+𐤌 -> proclitic:𐤋+𐤌𐤏𐤔𐤉𐤌	greek
+45:14:1	𐤄𐤌𐤇𐤔𐤁𐤅𐤕	H4519->H4284	affixed:𐤄+𐤌+𐤇𐤔𐤁+𐤅𐤕 -> plene:𐤄𐤌𐤇𐤔𐤁𐤕	greek
+45:14:19	𐤄𐤁𐤍𐤅𐤕	H1323->H1129	exact:𐤄𐤁𐤍𐤅𐤕 -> proclitic:𐤄+𐤁𐤍𐤅𐤕	greek
+45:15:11	𐤄𐤀𐤌𐤉𐤌	H368->H3816	exact:𐤄𐤀𐤌𐤉𐤌 -> proclitic:𐤄+𐤀𐤌𐤉𐤌	greek
+45:15:14	𐤌𐤋𐤀𐤉	H335->H4390	proclitic:𐤌+𐤋+𐤀𐤉 -> suffix:𐤌𐤋𐤀+𐤉	greek
+45:15:16	𐤁𐤁𐤔𐤅𐤓𐤕	H7794->H8334	affixed:𐤁+𐤁+𐤔𐤅𐤓+𐤕 -> root:𐤁+𐤁 𐤔𐤅𐤓𐤕 	greek
+45:15:20	𐤁𐤍𐤅𐤕	H1323->H1129	exact:𐤁𐤍𐤅𐤕 -> exact:𐤁𐤍𐤅𐤕	greek
+45:15:23	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+45:15:28	𐤄𐤐𐤓𐤉	H6499->H6529	plene:𐤄𐤐𐤓 -> proclitic:𐤄+𐤐𐤓𐤉	greek
+45:16:4	𐤒𐤄𐤋𐤅𐤕	H6953->H6951	plene:𐤒𐤄𐤋𐤕 -> suffix:𐤒𐤄𐤋+𐤅𐤕	greek
+45:16:16	𐤒𐤄𐤋𐤅𐤕	H6953->H6951	plene:𐤒𐤄𐤋𐤕 -> suffix:𐤒𐤄𐤋+𐤅𐤕	greek
+46:3:2	𐤄𐤔𐤒𐤉𐤕𐤉	H8268->H8248	plene:𐤄𐤔𐤒𐤕 -> bhs:𐤄𐤔𐤒𐤉𐤕𐤉	greek
+46:3:6	𐤄𐤔𐤒𐤄	H7262->H8248	proclitic:𐤄+𐤔𐤒𐤄 -> root:𐤄 𐤔𐤒𐤄 	greek
+46:3:10	𐤉𐤓𐤀	H3372->H7200	exact:𐤉𐤓𐤀 -> exact:𐤉𐤓𐤀	greek
+46:3:18	𐤁𐤏𐤅𐤋𐤌	H5867->H5769	plene:𐤁𐤏𐤉𐤋𐤌 -> proclitic:𐤁+𐤏𐤅𐤋𐤌	greek
+46:4:1	𐤓𐤆𐤉	H7334->H7328	exact:𐤓𐤆𐤉 -> suffix:𐤓𐤆+𐤉	greek
+46:4:12	𐤅𐤉𐤂𐤏𐤉𐤌	H5060->H3021	affixed:𐤅+𐤉𐤂𐤏+𐤉𐤌 -> root:𐤅 𐤉𐤂𐤏 𐤉𐤌	greek
+46:5:1	𐤔𐤌𐤅𐤏𐤄	H8052->H8085	exact:𐤔𐤌𐤅𐤏𐤄 -> suffix:𐤔𐤌𐤅𐤏+𐤄	greek
+46:5:7	𐤄𐤉𐤔𐤍	H8145->H3462	plene:𐤄𐤔𐤍𐤉 -> root:𐤄 𐤉𐤔𐤍 	greek
+46:5:7	𐤌𐤑𐤅𐤕	H4687->H4682	exact:𐤌𐤑𐤅𐤕 -> exact:𐤌𐤑𐤅𐤕	greek
+46:5:8	𐤁𐤌𐤑𐤅𐤕	H4687->H4682	exact:𐤁𐤌𐤑𐤅𐤕 -> proclitic:𐤁+𐤌𐤑𐤅𐤕	greek
+46:6:2	𐤉𐤃𐤉𐤍𐤅	H3027->H1777	exact:𐤉𐤃𐤉𐤍𐤅 -> suffix:𐤉𐤃𐤉𐤍+𐤅	greek
+46:6:6	𐤓𐤁	H7227->H7378	exact:𐤓𐤁 -> exact:𐤓𐤁	greek
+46:7:5	𐤅𐤋𐤕𐤐𐤋𐤄	H5307->H8605	affixed:𐤅+𐤋+𐤕𐤐𐤋+𐤄 -> proclitic:𐤅+𐤋𐤕𐤐𐤋𐤄	greek
+46:7:15	𐤅𐤄𐤀𐤇	H1889->H251	proclitic:𐤅+𐤄𐤀𐤇 -> proclitic:𐤅+𐤄+𐤀𐤇	greek
+46:7:18	𐤄𐤌𐤒𐤓𐤀	H4744->H7121	proclitic:𐤄+𐤌𐤒𐤓𐤀 -> proclitic:𐤄+𐤌+𐤒𐤓𐤀	greek
+46:7:32	𐤃𐤀𐤂𐤄	H1674->H1672	exact:𐤃𐤀𐤂𐤄 -> suffix:𐤃𐤀𐤂+𐤄	greek
+46:7:36	𐤇𐤅𐤁𐤄	H2327->H2326	exact:𐤇𐤅𐤁𐤄 -> suffix:𐤇𐤅𐤁+𐤄	greek
+46:8:5	𐤅𐤀𐤃𐤍𐤉𐤌	H134->H113	proclitic:𐤅+𐤀𐤃𐤍𐤉𐤌 -> proclitic:𐤅+𐤀𐤃𐤍𐤉𐤌	greek
+46:9:7	𐤓𐤏𐤄	H7451->H7462	exact:𐤓𐤏𐤄 -> exact:𐤓𐤏𐤄	greek
+46:9:8	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+46:9:13	𐤏𐤁𐤃𐤕	H5656->H5647	exact:𐤏𐤁𐤃𐤕 -> exact:𐤏𐤁𐤃𐤕	greek
+46:9:18	𐤁𐤔𐤅𐤓𐤕	H7794->H1319	affixed:𐤁+𐤔𐤅𐤓+𐤕 -> root: 𐤁𐤔𐤅𐤓 𐤕	greek
+46:9:18	𐤁𐤁𐤔𐤅𐤓𐤄	H1320->H1309	plene:𐤁𐤁𐤔𐤓𐤄 -> proclitic:𐤁+𐤁𐤔𐤅𐤓𐤄	greek
+46:10:5	𐤁𐤓𐤁𐤌	H7378->H7227	exact:𐤁𐤓𐤁𐤌 -> suffix:𐤁𐤓𐤁+𐤌	greek
+46:10:6	𐤄𐤕𐤀𐤅𐤕	H8372->H183	exact:𐤄𐤕𐤀𐤅𐤕 -> plene:𐤄𐤕𐤀𐤅𐤉𐤕𐤉	greek
+46:10:7	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+46:10:9	𐤍𐤍𐤎𐤄	H5127->H5254	plene:𐤍𐤍𐤅𐤎𐤄 -> root:𐤍 𐤍𐤎𐤄 	greek
+46:10:32	𐤋𐤒𐤄𐤋𐤕	H6953->H6951	proclitic:𐤋+𐤒𐤄𐤋𐤕 -> suffix:𐤋𐤒𐤄𐤋+𐤕	greek
+46:11:25	𐤔𐤕𐤔𐤕𐤅	H8352->H8354	adjacent:𐤔𐤕+𐤔𐤕𐤅 -> adjacent:𐤔𐤕+𐤔𐤕𐤅	greek
+46:11:27	𐤌𐤊𐤅𐤎	H4371->H3563	plene:𐤌𐤊𐤎 -> proclitic:𐤌+𐤊𐤅𐤎	greek
+46:11:29	𐤅𐤄𐤔𐤕𐤄	H8352->H8354	affixed:𐤅+𐤄+𐤔𐤕+𐤄 -> proclitic:𐤅+𐤄+𐤔𐤕𐤄	greek
+46:13:4	𐤌𐤀𐤓𐤊𐤕	H4519->H748	affixed:𐤌+𐤀𐤓𐤊+𐤕 -> root:𐤌 𐤀𐤓𐤊 𐤕	greek
+46:13:12	𐤁𐤌𐤓𐤀𐤄	H4758->H7200	exact:𐤁𐤌𐤓𐤀𐤄 -> proclitic:𐤁+𐤌𐤓𐤀𐤄	greek
+46:14:2	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+46:14:2	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+46:14:2	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+46:14:3	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+46:14:3	𐤋𐤁𐤍𐤉	H1121->H1129	exact:𐤋𐤁𐤍𐤉 -> proclitic:𐤋+𐤁𐤍𐤉	greek
+46:14:4	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+46:14:5	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+46:14:7	𐤇𐤋𐤉𐤋	H2491->H2485	plene:𐤇𐤋𐤋 -> bhs:𐤇𐤋𐤉𐤋	greek
+46:14:11	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+46:14:11	𐤅𐤄𐤌𐤃𐤁𐤓	H4057->H1696	proclitic:𐤅+𐤄𐤌𐤃𐤁𐤓 -> proclitic:𐤅+𐤄𐤌𐤃𐤁𐤓	greek
+46:14:13	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+46:14:18	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+46:14:22	𐤋𐤌𐤀𐤌𐤉𐤍𐤉𐤌	H4519->H539	affixed:𐤋+𐤌+𐤀𐤌𐤉𐤍+𐤉𐤌 -> root:𐤋+𐤌 𐤀𐤌𐤉𐤍 𐤉𐤌	greek
+46:14:22	𐤋𐤌𐤀𐤌𐤉𐤍𐤉𐤌	H4519->H539	affixed:𐤋+𐤌+𐤀𐤌𐤉𐤍+𐤉𐤌 -> root:𐤋+𐤌 𐤀𐤌𐤉𐤍 𐤉𐤌	greek
+46:14:33	𐤒𐤄𐤋𐤅𐤕	H6953->H6951	plene:𐤒𐤄𐤋𐤕 -> suffix:𐤒𐤄𐤋+𐤅𐤕	greek
+46:15:2	𐤕𐤅𐤔𐤏𐤅	H8672->H3467	plene:𐤕𐤔𐤏 -> suffix:𐤕𐤅𐤔𐤏+𐤅	greek
+46:16:12	𐤄𐤀𐤇	H1889->H251	exact:𐤄𐤀𐤇 -> proclitic:𐤄+𐤀𐤇	greek
+46:16:18	𐤅𐤉𐤍𐤉𐤇𐤅	H3240->H5117	exact:𐤅𐤉𐤍𐤉𐤇𐤅 -> affixed:𐤅+𐤉𐤍𐤉𐤇+𐤅	greek
+46:16:19	𐤔𐤀𐤋𐤅𐤕	H423->H7592	proclitic:𐤔+𐤀𐤋𐤅𐤕 -> suffix:𐤔𐤀𐤋+𐤅𐤕	greek
+46:16:20	𐤔𐤀𐤋𐤉𐤌	H410->H7592	proclitic:𐤔+𐤀𐤋𐤉𐤌 -> suffix:𐤔𐤀𐤋+𐤉𐤌	greek
+47:1:4	𐤄𐤌𐤍𐤇𐤌	H4505->H5162	proclitic:𐤄+𐤌𐤍𐤇𐤌 -> proclitic:𐤄+𐤌𐤍𐤇𐤌	greek
+47:1:8	𐤑𐤓𐤕𐤍𐤅	H6891->H6869	plene:𐤑𐤓𐤕𐤍 -> suffix:𐤑𐤓𐤕+𐤍𐤅	greek
+47:3:1	𐤋𐤀𐤂𐤓𐤅𐤕	H95->H107	plene:𐤋𐤀𐤂𐤅𐤓𐤕 -> proclitic:𐤋+𐤀𐤂𐤓𐤅𐤕	greek
+47:3:9	𐤄𐤔𐤓𐤅𐤕	H8269->H8334	affixed:𐤄+𐤔𐤓+𐤅𐤕 -> root:𐤄 𐤔𐤓𐤅𐤕 	greek
+47:3:9	𐤄𐤔𐤓𐤅𐤕	H8269->H8334	affixed:𐤄+𐤔𐤓+𐤅𐤕 -> root:𐤄 𐤔𐤓𐤅𐤕 	greek
+47:3:18	𐤌𐤂𐤋𐤉𐤌	H1554->H1540	exact:𐤌𐤂𐤋𐤉𐤌 -> proclitic:𐤌+𐤂𐤋𐤉𐤌	greek
+47:4:1	𐤄𐤔𐤓𐤅𐤕	H8269->H8334	affixed:𐤄+𐤔𐤓+𐤅𐤕 -> root:𐤄 𐤔𐤓𐤅𐤕 	greek
+47:4:6	𐤁𐤋𐤁𐤍𐤅	H1121->H3820	affixed:𐤁+𐤋+𐤁𐤍+𐤅 -> proclitic:𐤁+𐤋𐤁𐤍𐤅	greek
+47:5:3	𐤏𐤓𐤌𐤉𐤌	H6194->H6174	exact:𐤏𐤓𐤌𐤉𐤌 -> plene:𐤏𐤓𐤅𐤌𐤉𐤌	greek
+47:5:14	𐤃𐤍𐤉𐤌	H1835->H1777	suffix:𐤃𐤍+𐤉𐤌 -> suffix:𐤃𐤍+𐤉𐤌	greek
+47:6:3	𐤔𐤓𐤅𐤕𐤍𐤅	H8282->H8334	suffix:𐤔𐤓𐤅𐤕+𐤍𐤅 -> root: 𐤔𐤓𐤅𐤕 𐤍𐤅	greek
+47:6:8	𐤅𐤁𐤒𐤋𐤅𐤍	H6963->H7036	affixed:𐤅+𐤁+𐤒𐤋𐤅+𐤍 -> proclitic:𐤅+𐤁𐤒𐤋𐤅𐤍	greek
+47:6:9	𐤉𐤃𐤅𐤏𐤉𐤌	H3037->H3045	suffix:𐤉𐤃𐤅𐤏+𐤉𐤌 -> suffix:𐤉𐤃𐤅𐤏+𐤉𐤌	greek
+47:6:9	𐤉𐤃𐤅𐤏𐤉𐤌	H3037->H3045	suffix:𐤉𐤃𐤅𐤏+𐤉𐤌 -> suffix:𐤉𐤃𐤅𐤏+𐤉𐤌	greek
+47:6:9	𐤊𐤌𐤉𐤎𐤓𐤉𐤌	H4519->H3256	affixed:𐤊+𐤌+𐤉𐤎𐤓+𐤉𐤌 -> affixed:𐤊+𐤌+𐤉𐤎𐤓+𐤉𐤌	greek
+47:6:9	𐤌𐤅𐤌𐤕𐤉𐤌	H4519->H4191	affixed:𐤌+𐤅+𐤌𐤕+𐤉𐤌 -> plene:𐤌𐤌𐤉𐤕𐤉𐤌	greek
+47:6:10	𐤅𐤌𐤏𐤔𐤉𐤓𐤉	H6224->H6238	proclitic:𐤅+𐤌+𐤏𐤔𐤉𐤓𐤉 -> suffix:𐤅𐤌𐤏𐤔𐤉𐤓+𐤉	greek
+47:6:18	𐤋𐤁𐤍𐤉𐤌	H3843->H1121	exact:𐤋𐤁𐤍𐤉𐤌 -> exact:𐤋𐤁𐤍𐤉𐤌	greek
+47:7:3	𐤁𐤋𐤁𐤍𐤅	H1121->H3820	affixed:𐤁+𐤋+𐤁𐤍+𐤅 -> proclitic:𐤁+𐤋𐤁𐤍𐤅	greek
+47:7:6	𐤄𐤌𐤍𐤇𐤌	H4505->H5162	proclitic:𐤄+𐤌𐤍𐤇𐤌 -> proclitic:𐤄+𐤌𐤍𐤇𐤌	greek
+47:7:8	𐤁𐤓𐤀𐤅𐤕𐤉	H1254->H7200	plene:𐤁𐤓𐤀𐤕𐤉 -> plene:𐤁𐤓𐤀𐤕𐤉	greek
+47:7:8	𐤋𐤔𐤏𐤄	H3444->H8159	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤋+𐤔𐤏𐤄	greek
+47:7:13	𐤄𐤅𐤍𐤇	H5146->H5117	proclitic:𐤄+𐤅+𐤍𐤇 -> exact:𐤄𐤅𐤍𐤇	greek
+47:8:2	𐤔𐤌𐤇𐤕𐤌	H2368->H8057	proclitic:𐤔+𐤌+𐤇𐤕𐤌 -> suffix:𐤔𐤌𐤇𐤕+𐤌	greek
+47:8:7	𐤄𐤅𐤕𐤓𐤕𐤌	H8446->H3498	proclitic:𐤄+𐤅+𐤕𐤓𐤕𐤌 -> root: 𐤄𐤅𐤕𐤓 𐤕+𐤌	greek
+47:8:18	𐤄𐤀𐤇	H1889->H251	exact:𐤄𐤀𐤇 -> proclitic:𐤄+𐤀𐤇	greek
+47:8:18	𐤁𐤁𐤔𐤅𐤓𐤄	H1320->H1309	plene:𐤁𐤁𐤔𐤓𐤄 -> proclitic:𐤁+𐤁𐤔𐤅𐤓𐤄	greek
+47:8:23	𐤔𐤋𐤅𐤇𐤉	H2425->H7971	proclitic:𐤔+𐤋+𐤅𐤇𐤉 -> suffix:𐤔𐤋𐤅𐤇+𐤉	greek
+47:9:12	𐤌𐤇𐤎𐤓𐤉	H4519->H4270	affixed:𐤌+𐤇𐤎𐤓+𐤉 -> plene:𐤌𐤇𐤎𐤓𐤅	greek
+47:9:13	𐤕𐤌𐤕	H4191->H8537	exact:𐤕𐤌𐤕 -> suffix:𐤕𐤌+𐤕	greek
+47:10:1	𐤁𐤏𐤍𐤅𐤕	H6030->H6039	affixed:𐤁+𐤏𐤍𐤅+𐤕 -> proclitic:𐤁+𐤏𐤍𐤅𐤕	greek
+47:10:5	𐤅𐤔𐤅𐤁𐤉𐤌	H7643->H7617	plene:𐤅𐤔𐤁𐤌 -> plene:𐤅𐤔𐤁𐤌	greek
+47:10:12	𐤄𐤌𐤃𐤃𐤉𐤌	H1730->H4058	proclitic:𐤄+𐤌+𐤃𐤃𐤉𐤌 -> affixed:𐤄+𐤌𐤃𐤃+𐤉𐤌	greek
+47:11:7	𐤁𐤔𐤅𐤓𐤕	H7794->H1319	affixed:𐤁+𐤔𐤅𐤓+𐤕 -> root: 𐤁𐤔𐤅𐤓 𐤕	greek
+47:11:8	𐤒𐤄𐤋𐤅𐤕	H6953->H6951	plene:𐤒𐤄𐤋𐤕 -> suffix:𐤒𐤄𐤋+𐤅𐤕	greek
+47:12:10	𐤅𐤁𐤑𐤓𐤅𐤕	H1219->H6862	proclitic:𐤅+𐤁𐤑𐤓𐤅𐤕 -> affixed:𐤅+𐤁𐤑𐤓+𐤅𐤕	greek
+47:12:13	𐤄𐤏𐤅𐤋𐤄	H5930->H5766	exact:𐤄𐤏𐤅𐤋𐤄 -> proclitic:𐤄+𐤏𐤅𐤋𐤄	greek
+47:12:14	𐤋𐤁𐤍𐤉𐤌	H3843->H1121	exact:𐤋𐤁𐤍𐤉𐤌 -> exact:𐤋𐤁𐤍𐤉𐤌	greek
+47:12:18	𐤄𐤀𐤇	H1889->H251	exact:𐤄𐤀𐤇 -> proclitic:𐤄+𐤀𐤇	greek
+47:13:3	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+47:13:5	𐤍𐤎𐤅	H5127->H5254	exact:𐤍𐤎𐤅 -> suffix:𐤍𐤎+𐤅	greek
+48:1:18	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+48:2:5	𐤀𐤌𐤕𐤄	H519->H571	exact:𐤀𐤌𐤕𐤄 -> suffix:𐤀𐤌𐤕+𐤄	greek
+48:2:14	𐤁𐤓𐤀𐤅𐤕𐤉	H1254->H7200	plene:𐤁𐤓𐤀𐤕𐤉 -> plene:𐤁𐤓𐤀𐤕𐤉	greek
+48:2:16	𐤅𐤌𐤃𐤏𐤕𐤍𐤅	H4519->H3045	affixed:𐤅+𐤌+𐤃𐤏𐤕+𐤍𐤅 -> affixed:𐤅+𐤌+𐤃𐤏𐤕+𐤍𐤅	greek
+48:2:20	𐤁𐤀𐤌𐤅𐤍𐤕	H526->H530	affixed:𐤁+𐤀𐤌𐤅𐤍+𐤕 -> plene:𐤁𐤀𐤌𐤅𐤍𐤕𐤉	greek
+48:3:2	𐤌𐤔𐤌𐤅𐤏𐤕	H4928->H8085	plene:𐤌𐤔𐤌𐤏𐤕𐤅 -> suffix:𐤌𐤔𐤌𐤅𐤏+𐤕	greek
+48:3:5	𐤌𐤔𐤌𐤅𐤏𐤕	H4928->H8085	plene:𐤌𐤔𐤌𐤏𐤕𐤅 -> suffix:𐤌𐤔𐤌𐤅𐤏+𐤕	greek
+48:3:16	𐤅𐤋𐤆𐤓𐤏𐤉𐤊	H2220->H2233	affixed:𐤅+𐤋+𐤆𐤓𐤏𐤉+𐤊 -> affixed:𐤅+𐤋+𐤆𐤓𐤏𐤉+𐤊	greek
+48:3:23	𐤋𐤄𐤂𐤋𐤅𐤕	H1546->H1540	proclitic:𐤋+𐤄+𐤂𐤋𐤅𐤕 -> exact:𐤋𐤄𐤂𐤋𐤅𐤕	greek
+48:4:10	𐤅𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤅𐤔𐤍𐤉𐤌 -> exact:𐤅𐤔𐤍𐤉𐤌	greek
+48:4:12	𐤌𐤕𐤇𐤍𐤍	H4519->H2603	affixed:𐤌+𐤕𐤇𐤍+𐤍 -> affixed:𐤌+𐤕𐤇𐤍+𐤍	greek
+48:4:17	𐤌𐤒𐤍𐤀𐤉𐤌	H4519->H7065	affixed:𐤌+𐤒𐤍𐤀+𐤉𐤌 -> affixed:𐤌+𐤒𐤍𐤀+𐤉𐤌	greek
+48:4:17	𐤌𐤒𐤍𐤀𐤉𐤌	H4519->H7065	affixed:𐤌+𐤒𐤍𐤀+𐤉𐤌 -> affixed:𐤌+𐤒𐤍𐤀+𐤉𐤌	greek
+48:4:26	𐤇𐤐𐤔𐤉𐤄	H2668->H2670	plene:𐤇𐤐𐤔𐤄 -> suffix:𐤇𐤐𐤔𐤉+𐤄	greek
+48:4:30	𐤁𐤍𐤄	H1129->H1121	exact:𐤁𐤍𐤄 -> exact:𐤁𐤍𐤄	greek
+48:5:1	𐤁𐤏𐤋	H1167->H5923	exact:𐤁𐤏𐤋 -> exact:𐤁𐤏𐤋	greek
+48:5:2	𐤕𐤌𐤅𐤋𐤅	H8543->H4135	plene:𐤕𐤌𐤅𐤋 -> root:𐤕 𐤌𐤅𐤋 𐤅	greek
+48:5:11	𐤌𐤁𐤈𐤋	H2919->H989	proclitic:𐤌+𐤁+𐤈𐤋 -> root:𐤌 𐤁𐤈𐤋 	greek
+48:5:21	𐤅𐤔𐤐𐤉𐤊𐤅𐤕	H8210->H6310	plene:𐤅𐤔𐤐𐤊𐤕 -> affixed:𐤅+𐤔+𐤐𐤉𐤊+𐤅𐤕	greek
+48:6:13	𐤄𐤍𐤌𐤅𐤋𐤉𐤌	H5244->H4135	plene:𐤄𐤍𐤌𐤋𐤉𐤌 -> affixed:𐤄+𐤍𐤌𐤅𐤋+𐤉𐤌	greek
+48:6:13	𐤔𐤕𐤌𐤅𐤋𐤅	H8543->H4135	affixed:𐤔+𐤕𐤌𐤅𐤋+𐤅 -> root:𐤔+𐤕 𐤌𐤅𐤋 𐤅	greek
+49:1:1	𐤅𐤌𐤀𐤌𐤉𐤍𐤉𐤌	H4519->H539	affixed:𐤅+𐤌+𐤀𐤌𐤉𐤍+𐤉𐤌 -> root:𐤅+𐤌 𐤀𐤌𐤉𐤍 𐤉𐤌	greek
+49:1:7	𐤁𐤃𐤌𐤅	H3027->H1818	plene:𐤁𐤉𐤃𐤌 -> proclitic:𐤁+𐤃𐤌𐤅	greek
+49:1:15	𐤔𐤌𐤏𐤉	H8096->H8085	exact:𐤔𐤌𐤏𐤉 -> exact:𐤔𐤌𐤏𐤉	greek
+49:1:21	𐤅𐤌𐤌𐤔𐤋𐤄	H7887->H4475	proclitic:𐤅+𐤌+𐤌𐤔𐤋𐤄 -> root:𐤅 𐤌𐤌𐤔𐤋𐤄 	greek
+49:1:21	𐤁𐤏𐤅𐤋𐤌	H5867->H5769	plene:𐤁𐤏𐤉𐤋𐤌 -> proclitic:𐤁+𐤏𐤅𐤋𐤌	greek
+49:1:21	𐤁𐤏𐤅𐤋𐤌	H5867->H5769	plene:𐤁𐤏𐤉𐤋𐤌 -> proclitic:𐤁+𐤏𐤅𐤋𐤌	greek
+49:2:10	𐤋𐤌𐤏𐤔𐤉𐤌	H4519->H4639	affixed:𐤋+𐤌+𐤏𐤔𐤉+𐤌 -> proclitic:𐤋+𐤌𐤏𐤔𐤉𐤌	greek
+49:2:12	𐤌𐤅𐤆𐤓𐤉𐤌	H2230->H2114	plene:𐤌𐤆𐤓𐤌 -> proclitic:𐤌+𐤅𐤆𐤓𐤉𐤌	greek
+49:2:12	𐤁𐤏𐤅𐤋𐤌	H5867->H1167	plene:𐤁𐤏𐤉𐤋𐤌 -> root: 𐤁𐤏𐤅𐤋 𐤌	greek
+49:2:15	𐤄𐤌𐤑𐤅𐤕	H4682->H4687	exact:𐤄𐤌𐤑𐤅𐤕 -> exact:𐤄𐤌𐤑𐤅𐤕	greek
+49:2:15	𐤄𐤔𐤍𐤉𐤌	H8141->H8147	exact:𐤄𐤔𐤍𐤉𐤌 -> exact:𐤄𐤔𐤍𐤉𐤌	greek
+49:2:16	𐤁𐤄𐤌𐤉𐤕𐤅	H929->H4191	plene:𐤁𐤄𐤌𐤕𐤅 -> proclitic:𐤁+𐤄𐤌𐤉𐤕𐤅	greek
+49:3:3	𐤄𐤎𐤅𐤃	H3245->H5475	plene:𐤄𐤅𐤎𐤃 -> proclitic:𐤄+𐤎𐤅𐤃	greek
+49:3:9	𐤄𐤎𐤅𐤃	H3245->H5475	plene:𐤄𐤅𐤎𐤃 -> proclitic:𐤄+𐤎𐤅𐤃	greek
+49:3:13	𐤁𐤑𐤓𐤅𐤕𐤉	H1219->H6869	plene:𐤁𐤑𐤓𐤅𐤕 -> plene:𐤁𐤑𐤓𐤅𐤕	greek
+49:4:8	𐤔𐤁𐤄	H3427->H7617	exact:𐤔𐤁𐤄 -> exact:𐤔𐤁𐤄	greek
+49:4:11	𐤓𐤏𐤉𐤌	H7451->H7462	exact:𐤓𐤏𐤉𐤌 -> exact:𐤓𐤏𐤉𐤌	greek
+49:4:16	𐤁𐤍𐤉𐤍𐤅	H1121->H1129	exact:𐤁𐤍𐤉𐤍𐤅 -> suffix:𐤁𐤍𐤉+𐤍𐤅	greek
+49:4:22	𐤄𐤉𐤔𐤍	H8145->H3462	plene:𐤄𐤔𐤍𐤉 -> root:𐤄 𐤉𐤔𐤍 	greek
+49:5:10	𐤅𐤁𐤇𐤍𐤅	H2580->H974	affixed:𐤅+𐤁+𐤇𐤍+𐤅 -> plene:𐤅𐤉𐤁𐤇𐤍𐤅	greek
+49:5:14	𐤄𐤉𐤔𐤍	H8145->H3462	plene:𐤄𐤔𐤍𐤉 -> root:𐤄 𐤉𐤔𐤍 	greek
+49:5:18	𐤄𐤌𐤋𐤀𐤅	H4407->H4390	plene:𐤄𐤌𐤋𐤅𐤀 -> proclitic:𐤄+𐤌𐤋𐤀𐤅	greek
+49:5:26	𐤒𐤃𐤔𐤄	H6948->H6942	exact:𐤒𐤃𐤔𐤄 -> suffix:𐤒𐤃𐤔+𐤄	greek
+49:5:32	𐤄𐤎𐤅𐤃	H3245->H5475	plene:𐤄𐤅𐤎𐤃 -> proclitic:𐤄+𐤎𐤅𐤃	greek
+49:6:13	𐤅𐤋𐤏𐤌𐤅𐤃	H5982->H5975	exact:𐤅𐤋𐤏𐤌𐤅𐤃 -> proclitic:𐤅+𐤋𐤏𐤌𐤅𐤃	greek
+49:6:14	𐤁𐤔𐤓𐤉𐤅𐤍	H1320->H8302	plene:𐤁𐤔𐤓𐤍𐤅 -> proclitic:𐤁+𐤔𐤓𐤉𐤅𐤍	greek
+49:6:16	𐤇𐤑𐤉	H2677->H2671	exact:𐤇𐤑𐤉 -> exact:𐤇𐤑𐤉	greek
+49:6:21	𐤄𐤀𐤇	H1889->H251	exact:𐤄𐤀𐤇 -> proclitic:𐤄+𐤀𐤇	greek
+49:6:21	𐤅𐤄𐤌𐤔𐤓𐤕	H4958->H8334	proclitic:𐤅+𐤄𐤌𐤔𐤓𐤕 -> proclitic:𐤅+𐤄+𐤌𐤔𐤓𐤕	greek
+50:1:23	𐤄𐤔𐤍𐤉𐤌	H8141->H8147	exact:𐤄𐤔𐤍𐤉𐤌 -> exact:𐤄𐤔𐤍𐤉𐤌	greek
+50:2:2	𐤔𐤌𐤇𐤕𐤉	H8055->H8057	exact:𐤔𐤌𐤇𐤕𐤉 -> exact:𐤔𐤌𐤇𐤕𐤉	greek
+50:2:22	𐤁𐤏𐤁𐤅𐤃𐤕	H5656->H5647	exact:𐤁𐤏𐤁𐤅𐤃𐤕 -> root:𐤁 𐤏𐤁𐤅𐤃 𐤕	greek
+50:2:25	𐤁𐤑𐤓𐤊𐤉	H1220->H6878	plene:𐤁𐤑𐤓𐤉𐤊 -> root:𐤁 𐤑𐤓𐤊 𐤉	greek
+50:3:2	𐤄𐤓𐤏𐤉𐤌	H7462->H7451	exact:𐤄𐤓𐤏𐤉𐤌 -> exact:𐤄𐤓𐤏𐤉𐤌	greek
+50:3:9	𐤁𐤀𐤌𐤅𐤍𐤕	H526->H530	affixed:𐤁+𐤀𐤌𐤅𐤍+𐤕 -> plene:𐤁𐤀𐤌𐤅𐤍𐤕𐤉	greek
+50:3:13	𐤄𐤔𐤂𐤕𐤉	H1661->H5381	affixed:𐤄+𐤔+𐤂𐤕+𐤉 -> root: 𐤄𐤔𐤂 𐤕+𐤉	greek
+50:3:14	𐤁𐤒𐤓𐤉𐤀𐤄	H7149->H7121	affixed:𐤁+𐤒𐤓𐤉𐤀+𐤄 -> root:𐤁 𐤒𐤓𐤉𐤀 𐤄	greek
+50:4:1	𐤔𐤌𐤇𐤕𐤉	H8055->H8057	exact:𐤔𐤌𐤇𐤕𐤉 -> exact:𐤔𐤌𐤇𐤕𐤉	greek
+50:4:12	𐤋𐤄𐤅𐤕𐤉𐤓	H1956->H3498	exact:𐤋𐤄𐤅𐤕𐤉𐤓 -> proclitic:𐤋+𐤄𐤅𐤕𐤉𐤓	greek
+50:4:12	𐤋𐤄𐤅𐤕𐤉𐤓	H1956->H3498	exact:𐤋𐤄𐤅𐤕𐤉𐤓 -> proclitic:𐤋+𐤄𐤅𐤕𐤉𐤓	greek
+50:4:14	𐤁𐤑𐤓𐤕𐤉	H1219->H6869	plene:𐤁𐤑𐤓𐤅𐤕 -> plene:𐤁𐤑𐤓𐤅𐤕	greek
+50:4:17	𐤄𐤐𐤓𐤉	H6499->H6529	plene:𐤄𐤐𐤓 -> proclitic:𐤄+𐤐𐤓𐤉	greek
+50:4:22	𐤔𐤀𐤋𐤉𐤌	H410->H7592	proclitic:𐤔+𐤀𐤋𐤉𐤌 -> suffix:𐤔𐤀𐤋+𐤉𐤌	greek
+51:1:13	𐤌𐤌𐤌𐤔𐤋𐤕	H4519->H4475	affixed:𐤌+𐤌+𐤌𐤔𐤋+𐤕 -> proclitic:𐤌+𐤌𐤌𐤔𐤋𐤕	greek
+51:1:19	𐤄𐤌𐤋𐤅𐤀	H4407->H4393	exact:𐤄𐤌𐤋𐤅𐤀 -> proclitic:𐤄+𐤌𐤋𐤅𐤀	greek
+51:1:21	𐤌𐤅𐤆𐤓𐤉𐤌	H2230->H2114	plene:𐤌𐤆𐤓𐤌 -> proclitic:𐤌+𐤅𐤆𐤓𐤉𐤌	greek
+51:1:21	𐤄𐤓𐤏𐤉𐤌	H7462->H7451	exact:𐤄𐤓𐤏𐤉𐤌 -> exact:𐤄𐤓𐤏𐤉𐤌	greek
+51:1:26	𐤄𐤎𐤅𐤃	H3245->H5475	plene:𐤄𐤅𐤎𐤃 -> proclitic:𐤄+𐤎𐤅𐤃	greek
+51:1:27	𐤄𐤎𐤅𐤃	H3245->H5475	plene:𐤄𐤅𐤎𐤃 -> proclitic:𐤄+𐤎𐤅𐤃	greek
+51:2:2	𐤋𐤁𐤅𐤕𐤌	H1004->H3820	plene:𐤋𐤁𐤕𐤉𐤌 -> root: 𐤋𐤁𐤅 𐤕+𐤌	greek
+51:2:5	𐤁𐤓𐤀𐤕𐤉	H1254->H7200	exact:𐤁𐤓𐤀𐤕𐤉 -> exact:𐤁𐤓𐤀𐤕𐤉	greek
+51:2:7	𐤌𐤔𐤓𐤔𐤉𐤌	H7560->H8327	proclitic:𐤌+𐤔+𐤓𐤔𐤉𐤌 -> affixed:𐤌+𐤔𐤓𐤔+𐤉𐤌	greek
+51:2:16	𐤅𐤔𐤁𐤕𐤅𐤕	H1323->H7676	affixed:𐤅+𐤔+𐤁𐤕+𐤅𐤕 -> proclitic:𐤅+𐤔𐤁𐤕𐤅𐤕	greek
+51:2:20	𐤌𐤕𐤌	H4974->H4191	exact:𐤌𐤕𐤌 -> plene:𐤌𐤕𐤉𐤌	greek
+51:2:21	𐤕𐤈𐤏𐤌	H5193->H2938	suffix:𐤕𐤈𐤏+𐤌 -> root:𐤕 𐤈𐤏𐤌 	greek
+51:3:3	𐤌𐤕𐤌	H4974->H4191	exact:𐤌𐤕𐤌 -> plene:𐤌𐤕𐤉𐤌	greek
+51:3:4	𐤄𐤂𐤋𐤅𐤕	H1546->H1540	proclitic:𐤄+𐤂𐤋𐤅𐤕 -> exact:𐤄𐤂𐤋𐤅𐤕	greek
+51:3:4	𐤕𐤂𐤋𐤅	H1523->H1540	suffix:𐤕𐤂𐤋+𐤅 -> suffix:𐤕𐤂𐤋+𐤅	greek
+51:3:5	𐤅𐤄𐤕𐤀𐤅𐤕	H8372->H8378	proclitic:𐤅+𐤄𐤕𐤀𐤅𐤕 -> proclitic:𐤅+𐤄+𐤕𐤀𐤅𐤕	greek
+51:3:10	𐤅𐤋𐤁𐤔𐤕𐤌	H1322->H3847	proclitic:𐤅+𐤋+𐤁𐤔𐤕𐤌 -> affixed:𐤅+𐤋𐤁𐤔𐤕+𐤌	greek
+51:3:11	𐤋𐤏𐤆	H5797->H3937	proclitic:𐤋+𐤏𐤆 -> exact:𐤋𐤏𐤆	greek
+51:4:7	𐤄𐤀𐤇	H1889->H251	exact:𐤄𐤀𐤇 -> proclitic:𐤄+𐤀𐤇	greek
+51:4:7	𐤅𐤄𐤌𐤔𐤓𐤕	H4958->H8334	proclitic:𐤅+𐤄𐤌𐤔𐤓𐤕 -> proclitic:𐤅+𐤄+𐤌𐤔𐤓𐤕	greek
+52:1:9	𐤐𐤍𐤉𐤕𐤌	H6438->H6440	plene:𐤐𐤍𐤅𐤕𐤌 -> root: 𐤐𐤍𐤉 𐤕+𐤌	greek
+52:1:9	𐤅𐤀𐤌𐤕𐤉	H519->H571	exact:𐤅𐤀𐤌𐤕𐤉 -> plene:𐤅𐤀𐤌𐤕𐤅	greek
+52:1:10	𐤄𐤇𐤓𐤅𐤍	H2772->H2740	plene:𐤄𐤇𐤓𐤍𐤉 -> proclitic:𐤄+𐤇𐤓𐤅𐤍	greek
+52:2:4	𐤋𐤁𐤍𐤉	H1121->H3820	exact:𐤋𐤁𐤍𐤉 -> suffix:𐤋𐤁𐤍+𐤉	greek
+52:2:14	𐤒𐤄𐤋𐤅𐤕	H6953->H6951	plene:𐤒𐤄𐤋𐤕 -> suffix:𐤒𐤄𐤋+𐤅𐤕	greek
+52:2:16	𐤄𐤌𐤍𐤏𐤉𐤌	H5273->H4513	proclitic:𐤄+𐤌+𐤍𐤏𐤉𐤌 -> affixed:𐤄+𐤌𐤍𐤏+𐤉𐤌	greek
+52:2:16	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+52:2:16	𐤄𐤇𐤓𐤅𐤍	H2772->H2740	plene:𐤄𐤇𐤓𐤍𐤉 -> proclitic:𐤄+𐤇𐤓𐤅𐤍	greek
+52:2:17	𐤁𐤉𐤅𐤕𐤓	H3498->H3493	proclitic:𐤁+𐤉𐤅𐤕𐤓 -> root:𐤁 𐤉𐤅𐤕𐤓 	greek
+52:2:19	𐤔𐤌𐤇𐤕𐤍𐤅	H4519->H8057	affixed:𐤔+𐤌+𐤇𐤕𐤍+𐤅 -> suffix:𐤔𐤌𐤇𐤕+𐤍𐤅	greek
+52:2:20	𐤅𐤔𐤌𐤇𐤕𐤍𐤅	H8055->H8057	suffix:𐤅𐤔𐤌𐤇𐤕+𐤍𐤅 -> suffix:𐤅𐤔𐤌𐤇𐤕+𐤍𐤅	greek
+52:3:1	𐤋𐤄𐤅𐤕𐤓	H1956->H3498	plene:𐤋𐤄𐤅𐤕𐤉𐤓 -> proclitic:𐤋+𐤄𐤅𐤕𐤓	greek
+52:3:2	𐤁𐤁𐤔𐤅𐤓𐤕	H7794->H8334	affixed:𐤁+𐤁+𐤔𐤅𐤓+𐤕 -> root:𐤁+𐤁 𐤔𐤅𐤓𐤕 	greek
+52:3:4	𐤏𐤕𐤉𐤃𐤉𐤌	H6260->H6264	plene:𐤏𐤕𐤅𐤃𐤉𐤌 -> suffix:𐤏𐤕𐤉𐤃+𐤉𐤌	greek
+52:3:5	𐤄𐤌𐤍𐤎𐤄	H4519->H5254	affixed:𐤄+𐤌+𐤍𐤎+𐤄 -> proclitic:𐤄+𐤌𐤍𐤎𐤄	greek
+52:3:6	𐤁𐤔𐤅𐤓𐤕	H7794->H1319	affixed:𐤁+𐤔𐤅𐤓+𐤕 -> root: 𐤁𐤔𐤅𐤓 𐤕	greek
+52:3:7	𐤑𐤓𐤕𐤍𐤅	H6891->H6869	plene:𐤑𐤓𐤕𐤍 -> suffix:𐤑𐤓𐤕+𐤍𐤅	greek
+52:3:10	𐤌𐤇𐤎𐤓𐤉	H4519->H4270	affixed:𐤌+𐤇𐤎𐤓+𐤉 -> plene:𐤌𐤇𐤎𐤓𐤅	greek
+52:3:13	𐤁𐤒𐤃𐤔𐤄	H6948->H6944	proclitic:𐤁+𐤒𐤃𐤔𐤄 -> suffix:𐤁𐤒𐤃𐤔+𐤄	greek
+52:4:4	𐤅𐤉𐤒𐤓	H7136->H3366	exact:𐤅𐤉𐤒𐤓 -> exact:𐤅𐤉𐤒𐤓	greek
+52:5:3	𐤄𐤄𐤓𐤄	H2022->H2029	exact:𐤄𐤄𐤓𐤄 -> proclitic:𐤄+𐤄𐤓𐤄	greek
+52:5:10	𐤍𐤉𐤔𐤍	H5382->H3462	plene:𐤍𐤔𐤍𐤉 -> root:𐤍 𐤉𐤔𐤍 	greek
+52:5:23	𐤒𐤃𐤔𐤄	H6948->H6942	exact:𐤒𐤃𐤔𐤄 -> suffix:𐤒𐤃𐤔+𐤄	greek
+53:2:4	𐤅𐤌𐤓𐤀𐤄	H4758->H7200	exact:𐤅𐤌𐤓𐤀𐤄 -> proclitic:𐤅+𐤌𐤓𐤀𐤄	greek
+53:2:10	𐤋𐤄𐤅𐤔𐤏	H1954->H3467	exact:𐤋𐤄𐤅𐤔𐤏 -> proclitic:𐤋+𐤄𐤅𐤔𐤏	greek
+53:2:13	𐤅𐤁𐤀𐤌𐤅𐤍𐤕	H526->H530	affixed:𐤅+𐤁+𐤀𐤌𐤅𐤍+𐤕 -> proclitic:𐤅+𐤁+𐤀𐤌𐤅𐤍𐤕	greek
+54:1:4	𐤋𐤔𐤀𐤋𐤅𐤕	H423->H410	proclitic:𐤋+𐤔+𐤀𐤋𐤅𐤕 -> affixed:𐤋+𐤔𐤀𐤋+𐤅𐤕	greek
+54:1:20	𐤉𐤅𐤎𐤓𐤅	H5493->H3256	suffix:𐤉𐤅𐤎𐤓+𐤅 -> suffix:𐤉𐤅𐤎𐤓+𐤅	greek
+54:2:5	𐤁𐤍𐤉	H1121->H996	exact:𐤁𐤍𐤉 -> suffix:𐤁𐤍+𐤉	greek
+54:2:10	𐤁𐤌𐤏𐤔𐤉𐤌	H4519->H4639	affixed:𐤁+𐤌+𐤏𐤔𐤉+𐤌 -> proclitic:𐤁+𐤌𐤏𐤔𐤉𐤌	greek
+54:2:13	𐤍𐤅𐤑𐤓	H5341->H3335	exact:𐤍𐤅𐤑𐤓 -> exact:𐤍𐤅𐤑𐤓	greek
+54:3:13	𐤁𐤀𐤌𐤅𐤍𐤕	H526->H530	affixed:𐤁+𐤀𐤌𐤅𐤍+𐤕 -> plene:𐤁𐤀𐤌𐤅𐤍𐤕𐤉	greek
+54:4:3	𐤅𐤌𐤍𐤏𐤉𐤌	H5273->H4513	proclitic:𐤅+𐤌+𐤍𐤏𐤉𐤌 -> affixed:𐤅+𐤌𐤍𐤏+𐤉𐤌	greek
+54:4:10	𐤋𐤌𐤀𐤌𐤉𐤍𐤉𐤌	H4519->H539	affixed:𐤋+𐤌+𐤀𐤌𐤉𐤍+𐤉𐤌 -> root:𐤋+𐤌 𐤀𐤌𐤉𐤍 𐤉𐤌	greek
+54:4:12	𐤋𐤌𐤀𐤌𐤉𐤍𐤉𐤌	H4519->H539	affixed:𐤋+𐤌+𐤀𐤌𐤉𐤍+𐤉𐤌 -> root:𐤋+𐤌 𐤀𐤌𐤉𐤍 𐤉𐤌	greek
+54:5:2	𐤊𐤀𐤌𐤅𐤕	H520->H517	proclitic:𐤊+𐤀𐤌𐤅𐤕 -> affixed:𐤊+𐤀𐤌+𐤅𐤕	greek
+54:5:4	𐤅𐤋𐤔𐤋𐤌	H7965->H8003	proclitic:𐤅+𐤋𐤔𐤋𐤌 -> proclitic:𐤅+𐤋+𐤔𐤋𐤌	greek
+54:5:5	𐤁𐤕𐤐𐤋𐤅𐤕	H5307->H8605	affixed:𐤁+𐤕𐤐𐤋+𐤅𐤕 -> plene:𐤁𐤕𐤐𐤋𐤕	greek
+54:5:10	𐤌𐤏𐤔𐤉𐤄	H4641->H4639	exact:𐤌𐤏𐤔𐤉𐤄 -> exact:𐤌𐤏𐤔𐤉𐤄	greek
+54:5:13	𐤅𐤌𐤃𐤁𐤓𐤅𐤕	H4519->H1696	affixed:𐤅+𐤌+𐤃𐤁𐤓+𐤅𐤕 -> proclitic:𐤅+𐤌𐤃𐤁𐤓𐤅𐤕	greek
+54:6:11	𐤅𐤇𐤎𐤉𐤃𐤅𐤕	H2623->H2617	suffix:𐤅𐤇𐤎𐤉𐤃+𐤅𐤕 -> root:𐤅 𐤇𐤎𐤉𐤃 𐤅𐤕	greek
+54:6:17	𐤁𐤏𐤔𐤓	H6218->H6239	exact:𐤁𐤏𐤔𐤓 -> proclitic:𐤁+𐤏𐤔𐤓	greek
+54:6:18	𐤁𐤌𐤏𐤔𐤉𐤌	H4519->H4639	affixed:𐤁+𐤌+𐤏𐤔𐤉+𐤌 -> proclitic:𐤁+𐤌𐤏𐤔𐤉𐤌	greek
+55:1:4	𐤁𐤆𐤊𐤓𐤉	H2147->H2142	proclitic:𐤁+𐤆𐤊𐤓𐤉 -> affixed:𐤁+𐤆𐤊𐤓+𐤉	greek
+55:1:8	𐤀𐤎𐤉𐤓𐤅	H5493->H631	suffix:𐤀𐤎𐤉𐤓+𐤅 -> plene:𐤀𐤎𐤅𐤓𐤉	greek
+55:1:9	𐤁𐤒𐤓𐤉𐤀𐤄	H7149->H7121	affixed:𐤁+𐤒𐤓𐤉𐤀+𐤄 -> root:𐤁 𐤒𐤓𐤉𐤀 𐤄	greek
+55:1:9	𐤉𐤌𐤅𐤕	H4191->H3117	exact:𐤉𐤌𐤅𐤕 -> exact:𐤉𐤌𐤅𐤕	greek
+55:1:17	𐤌𐤑𐤀𐤍𐤉	H6629->H4672	proclitic:𐤌+𐤑𐤀𐤍𐤉 -> exact:𐤌𐤑𐤀𐤍𐤉	greek
+55:2:10	𐤄𐤁𐤇𐤉𐤓𐤉𐤌	H970->H977	plene:𐤄𐤁𐤇𐤅𐤓𐤉𐤌 -> root:𐤄 𐤁𐤇𐤉𐤓 𐤉𐤌	greek
+55:3:6	𐤅𐤔𐤁𐤉𐤌	H7643->H7617	plene:𐤅𐤔𐤁𐤌 -> plene:𐤅𐤔𐤁𐤌	greek
+55:3:7	𐤄𐤋𐤌𐤃𐤅𐤕	H4060->H3925	proclitic:𐤄+𐤋+𐤌𐤃𐤅𐤕 -> affixed:𐤄+𐤋𐤌𐤃+𐤅𐤕	greek
+55:3:14	𐤔𐤋𐤌𐤃𐤕	H4060->H3925	proclitic:𐤔+𐤋𐤌𐤃𐤕 -> proclitic:𐤔+𐤋𐤌𐤃𐤕	greek
+55:4:7	𐤄𐤌𐤓𐤅𐤑𐤄	H4835->H4794	exact:𐤄𐤌𐤓𐤅𐤑𐤄 -> root:𐤄 𐤌𐤓𐤅𐤑𐤄 	greek
+56:1:9	𐤄𐤌𐤓𐤉𐤁𐤉𐤌	H4807->H7378	affixed:𐤄+𐤌𐤓𐤉𐤁+𐤉𐤌 -> affixed:𐤄+𐤌+𐤓𐤉𐤁+𐤉𐤌	greek
+56:2:2	𐤌𐤔𐤋𐤉𐤌	H4910->H7965	exact:𐤌𐤔𐤋𐤉𐤌 -> root:𐤌 𐤔𐤋𐤉𐤌 	greek
+56:2:7	𐤁𐤌𐤏𐤔𐤉𐤌	H4519->H4639	affixed:𐤁+𐤌+𐤏𐤔𐤉+𐤌 -> proclitic:𐤁+𐤌𐤏𐤔𐤉𐤌	greek
+56:2:14	𐤁𐤌𐤏𐤔𐤉𐤌	H4519->H4639	affixed:𐤁+𐤌+𐤏𐤔𐤉+𐤌 -> proclitic:𐤁+𐤌𐤏𐤔𐤉𐤌	greek
+56:3:8	𐤁𐤌𐤏𐤔𐤉𐤌	H4519->H4639	affixed:𐤁+𐤌+𐤏𐤔𐤉+𐤌 -> proclitic:𐤁+𐤌𐤏𐤔𐤉𐤌	greek
+56:3:14	𐤁𐤌𐤏𐤔𐤉𐤌	H4519->H4639	affixed:𐤁+𐤌+𐤏𐤔𐤉+𐤌 -> proclitic:𐤁+𐤌𐤏𐤔𐤉𐤌	greek
+57:1:1	𐤄𐤀𐤇	H1889->H251	exact:𐤄𐤀𐤇 -> proclitic:𐤄+𐤀𐤇	greek
+57:1:5	𐤔𐤌𐤏𐤉	H8096->H8085	exact:𐤔𐤌𐤏𐤉 -> exact:𐤔𐤌𐤏𐤉	greek
+57:1:15	𐤋𐤔𐤏𐤄	H3444->H8159	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤋+𐤔𐤏𐤄	greek
+58:1:13	𐤄𐤃𐤌	H1818->H1916	exact:𐤄𐤃𐤌 -> exact:𐤄𐤃𐤌	greek
+58:2:1	𐤁𐤉𐤅𐤕𐤓	H3498->H3493	proclitic:𐤁+𐤉𐤅𐤕𐤓 -> root:𐤁 𐤉𐤅𐤕𐤓 	greek
+58:2:3	𐤔𐤌𐤏𐤉𐤄	H8098->H8085	exact:𐤔𐤌𐤏𐤉𐤄 -> suffix:𐤔𐤌𐤏𐤉+𐤄	greek
+58:2:16	𐤁𐤆𐤓𐤏	H2220->H2233	exact:𐤁𐤆𐤓𐤏 -> proclitic:𐤁+𐤆𐤓𐤏	greek
+58:2:18	𐤄𐤌𐤍𐤎𐤉𐤌	H5127->H5254	proclitic:𐤄+𐤌+𐤍𐤎𐤉𐤌 -> affixed:𐤄+𐤌+𐤍𐤎+𐤉𐤌	greek
+58:3:1	𐤋𐤒𐤓𐤉𐤀𐤄	H7149->H7121	affixed:𐤋+𐤒𐤓𐤉𐤀+𐤄 -> root:𐤋 𐤒𐤓𐤉𐤀 𐤄	greek
+58:3:10	𐤕𐤏𐤉	H8583->H8582	exact:𐤕𐤏𐤉 -> exact:𐤕𐤏𐤉	greek
+58:3:17	𐤅𐤁𐤌𐤉	H4325->H4100	proclitic:𐤅+𐤁𐤌𐤉 -> proclitic:𐤅+𐤁+𐤌𐤉	greek
+58:3:18	𐤌𐤍𐤅𐤇𐤕𐤅	H4503->H4496	plene:𐤌𐤍𐤇𐤕𐤅 -> plene:𐤌𐤍𐤇𐤕𐤅	greek
+58:4:1	𐤌𐤍𐤅𐤇𐤕𐤅	H4503->H4496	plene:𐤌𐤍𐤇𐤕𐤅 -> plene:𐤌𐤍𐤇𐤕𐤅	greek
+58:4:4	𐤅𐤉𐤔𐤁𐤕	H3427->H7673	exact:𐤅𐤉𐤔𐤁𐤕 -> exact:𐤅𐤉𐤔𐤁𐤕	greek
+58:4:8	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+58:4:15	𐤄𐤌𐤍𐤎𐤄	H4519->H5254	affixed:𐤄+𐤌+𐤍𐤎+𐤄 -> proclitic:𐤄+𐤌𐤍𐤎𐤄	greek
+58:5:2	𐤅𐤄𐤕𐤏𐤉𐤌	H8583->H8582	affixed:𐤅+𐤄+𐤕𐤏𐤉+𐤌 -> affixed:𐤅+𐤄+𐤕𐤏𐤉+𐤌	greek
+58:5:7	𐤋𐤄𐤅𐤔𐤉𐤏𐤅	H1954->H3467	plene:𐤋𐤄𐤅𐤔𐤏 -> proclitic:𐤋+𐤄𐤅𐤔𐤉𐤏𐤅	greek
+58:5:10	𐤃𐤁𐤓𐤕𐤉	H1696->H1700	exact:𐤃𐤁𐤓𐤕𐤉 -> exact:𐤃𐤁𐤓𐤕𐤉	greek
+58:7:4	𐤌𐤓𐤀𐤔𐤉𐤕	H7225->H7218	exact:𐤌𐤓𐤀𐤔𐤉𐤕 -> suffix:𐤌𐤓𐤀𐤔𐤉+𐤕	greek
+58:7:17	𐤃𐤁𐤓𐤕𐤉	H1696->H1700	exact:𐤃𐤁𐤓𐤕𐤉 -> exact:𐤃𐤁𐤓𐤕𐤉	greek
+58:8:3	𐤌𐤍𐤇𐤅𐤕	H4496->H4503	exact:𐤌𐤍𐤇𐤅𐤕 -> plene:𐤌𐤍𐤇𐤕𐤅	greek
+58:8:5	𐤌𐤓𐤀𐤄	H4758->H7200	exact:𐤌𐤓𐤀𐤄 -> exact:𐤌𐤓𐤀𐤄	greek
+58:9:4	𐤄𐤌𐤍	H2001->H4478	exact:𐤄𐤌𐤍 -> exact:𐤄𐤌𐤍	greek
+58:9:10	𐤄𐤌𐤀𐤊𐤋𐤅𐤕	H3979->H400	plene:𐤄𐤌𐤀𐤊𐤋𐤕 -> affixed:𐤄+𐤌+𐤀𐤊𐤋+𐤅𐤕	greek
+58:9:10	𐤄𐤔𐤍𐤅𐤕	H8141->H8133	proclitic:𐤄+𐤔𐤍𐤅𐤕 -> affixed:𐤄+𐤔𐤍𐤅+𐤕	greek
+58:9:11	𐤅𐤔𐤋𐤌𐤅𐤕	H8008->H8003	exact:𐤅𐤔𐤋𐤌𐤅𐤕 -> proclitic:𐤅+𐤔𐤋𐤌𐤅𐤕	greek
+58:9:19	𐤄𐤌𐤑𐤅𐤕	H4682->H4687	exact:𐤄𐤌𐤑𐤅𐤕 -> exact:𐤄𐤌𐤑𐤅𐤕	greek
+58:9:19	𐤔𐤍𐤉	H8147->H8144	exact:𐤔𐤍𐤉 -> exact:𐤔𐤍𐤉	greek
+58:9:27	𐤄𐤃𐤉𐤍	H1839->H1779	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤉𐤍	greek
+58:10:6	𐤏𐤅𐤋𐤄	H5766->H5930	exact:𐤏𐤅𐤋𐤄 -> exact:𐤏𐤅𐤋𐤄	greek
+58:10:8	𐤏𐤅𐤋𐤄	H5766->H5930	exact:𐤏𐤅𐤋𐤄 -> exact:𐤏𐤅𐤋𐤄	greek
+58:10:13	𐤄𐤃𐤌	H1818->H1916	exact:𐤄𐤃𐤌 -> exact:𐤄𐤃𐤌	greek
+58:10:27	𐤄𐤃𐤉𐤍	H1839->H1779	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤉𐤍	greek
+58:10:32	𐤀𐤓𐤅	H779->H215	exact:𐤀𐤓𐤅 -> exact:𐤀𐤓𐤅	greek
+58:11:4	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+58:11:7	𐤏𐤃𐤉𐤍	H5720->H5716	exact:𐤏𐤃𐤉𐤍 -> suffix:𐤏𐤃𐤉+𐤍	greek
+58:11:9	𐤅𐤉𐤔𐤁	H7725->H3427	exact:𐤅𐤉𐤔𐤁 -> exact:𐤅𐤉𐤔𐤁	greek
+58:11:29	𐤍𐤎𐤅	H5127->H5254	exact:𐤍𐤎𐤅 -> suffix:𐤍𐤎+𐤅	greek
+58:11:31	𐤀𐤎𐤐𐤄	H622->H5595	exact:𐤀𐤎𐤐𐤄 -> exact:𐤀𐤎𐤐𐤄	greek
+58:12:1	𐤅𐤍𐤓𐤅𐤑𐤄	H7521->H7323	plene:𐤅𐤍𐤓𐤑𐤄 -> proclitic:𐤅+𐤍𐤓𐤅𐤑𐤄	greek
+58:12:1	𐤄𐤌𐤓𐤅𐤑𐤄	H4835->H7323	exact:𐤄𐤌𐤓𐤅𐤑𐤄 -> affixed:𐤄+𐤌+𐤓𐤅𐤑+𐤄	greek
+58:12:5	𐤄𐤍𐤇𐤅𐤌𐤉𐤌	H2552->H5162	plene:𐤄𐤍𐤇𐤌𐤉𐤌 -> root:𐤄 𐤍𐤇𐤅𐤌 𐤉𐤌	greek
+58:12:5	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+58:12:9	𐤌𐤉𐤎𐤓𐤉𐤌	H4519->H4148	affixed:𐤌+𐤉𐤎𐤓+𐤉𐤌 -> root: 𐤌𐤉𐤎𐤓 𐤉𐤌	greek
+58:12:25	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+58:12:25	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+58:13:11	𐤃𐤌𐤍	H1828->H1818	exact:𐤃𐤌𐤍 -> suffix:𐤃𐤌+𐤍	greek
+58:13:12	𐤁𐤃𐤌𐤅	H3027->H1818	plene:𐤁𐤉𐤃𐤌 -> proclitic:𐤁+𐤃𐤌𐤅	greek
+58:13:17	𐤔𐤒𐤃𐤉𐤌	H6921->H8245	proclitic:𐤔+𐤒𐤃𐤉𐤌 -> suffix:𐤔𐤒𐤃+𐤉𐤌	greek
+58:13:20	𐤓𐤏𐤄	H7451->H7462	exact:𐤓𐤏𐤄 -> exact:𐤓𐤏𐤄	greek
+59:1:4	𐤔𐤋𐤌𐤄	H8010->H8003	exact:𐤔𐤋𐤌𐤄 -> exact:𐤔𐤋𐤌𐤄	greek
+59:1:9	𐤄𐤀𐤇	H1889->H251	exact:𐤄𐤀𐤇 -> proclitic:𐤄+𐤀𐤇	greek
+59:1:13	𐤄𐤌𐤍𐤎𐤄	H4519->H5254	affixed:𐤄+𐤌+𐤍𐤎+𐤄 -> proclitic:𐤄+𐤌𐤍𐤎𐤄	greek
+59:1:17	𐤔𐤋𐤌𐤄	H8010->H8003	exact:𐤔𐤋𐤌𐤄 -> exact:𐤔𐤋𐤌𐤄	greek
+59:1:17	𐤄𐤀𐤅𐤓𐤅𐤕	H738->H216	plene:𐤄𐤀𐤓𐤉𐤅𐤕 -> suffix:𐤄𐤀𐤅𐤓+𐤅𐤕	greek
+59:1:21	𐤁𐤏𐤍𐤅𐤄	H5869->H6037	plene:𐤁𐤏𐤉𐤍𐤉𐤄 -> root:𐤁 𐤏𐤍𐤅𐤄 	greek
+59:1:25	𐤄𐤌𐤔𐤒𐤉𐤐	H4947->H8259	plene:𐤄𐤌𐤔𐤒𐤅𐤐 -> root:𐤄+𐤌 𐤔𐤒𐤉𐤐 	greek
+59:1:25	𐤄𐤔𐤋𐤌𐤄	H8010->H8003	proclitic:𐤄+𐤔𐤋𐤌𐤄 -> proclitic:𐤄+𐤔𐤋𐤌𐤄	greek
+59:1:27	𐤄𐤉𐤕𐤅𐤌𐤉𐤌	H8550->H3490	plene:𐤄𐤕𐤌𐤉𐤌 -> proclitic:𐤄+𐤉𐤕𐤅𐤌𐤉𐤌	greek
+59:2:6	𐤄𐤏𐤔𐤉𐤓𐤉𐤌	H6242->H6223	plene:𐤄𐤏𐤔𐤓𐤉𐤌 -> suffix:𐤄𐤏𐤔𐤉𐤓+𐤉𐤌	greek
+59:2:13	𐤁𐤃𐤉𐤍	H3027->H1779	plene:𐤁𐤉𐤃𐤍𐤅 -> proclitic:𐤁+𐤃𐤉𐤍	greek
+59:2:13	𐤄𐤃𐤉𐤍	H1839->H1779	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤉𐤍	greek
+59:2:14	𐤅𐤌𐤏𐤔𐤉𐤌	H4519->H4639	affixed:𐤅+𐤌+𐤏𐤔𐤉+𐤌 -> proclitic:𐤅+𐤌𐤏𐤔𐤉𐤌	greek
+59:2:14	𐤋𐤄𐤅𐤔𐤉𐤏𐤅	H1954->H3467	plene:𐤋𐤄𐤅𐤔𐤏 -> proclitic:𐤋+𐤄𐤅𐤔𐤉𐤏𐤅	greek
+59:2:15	𐤁𐤏𐤉𐤓𐤌	H1165->H6174	exact:𐤁𐤏𐤉𐤓𐤌 -> root:𐤁 𐤏𐤉𐤓𐤌 	greek
+59:2:22	𐤋𐤌𐤏𐤔𐤉𐤅	H4519->H4639	affixed:𐤋+𐤌+𐤏𐤔𐤉+𐤅 -> plene:𐤋𐤌𐤏𐤔𐤉	greek
+59:2:24	𐤁𐤌𐤏𐤔𐤉𐤌	H4519->H4639	affixed:𐤁+𐤌+𐤏𐤔𐤉+𐤌 -> proclitic:𐤁+𐤌𐤏𐤔𐤉𐤌	greek
+59:2:25	𐤁𐤌𐤏𐤔𐤉𐤌	H4519->H4639	affixed:𐤁+𐤌+𐤏𐤔𐤉+𐤌 -> proclitic:𐤁+𐤌𐤏𐤔𐤉𐤌	greek
+59:3:3	𐤍𐤔𐤉𐤌	H802->H7760	exact:𐤍𐤔𐤉𐤌 -> bhs:𐤍𐤔𐤉𐤌	greek
+59:3:6	𐤅𐤌𐤋𐤄𐤈𐤕	H5186->H3857	proclitic:𐤅+𐤌+𐤋𐤄𐤈𐤕 -> affixed:𐤅+𐤌+𐤋𐤄𐤈+𐤕	greek
+59:3:12	𐤌𐤋𐤅𐤇𐤉𐤌	H3899->H4416	plene:𐤌𐤋𐤇𐤌 -> root: 𐤌𐤋𐤅𐤇 𐤉𐤌	greek
+59:3:13	𐤁𐤏𐤍𐤅𐤕	H6030->H6039	affixed:𐤁+𐤏𐤍𐤅+𐤕 -> proclitic:𐤁+𐤏𐤍𐤅𐤕	greek
+59:4:2	𐤌𐤕𐤀𐤅𐤉𐤌	H4519->H183	affixed:𐤌+𐤕𐤀𐤅+𐤉𐤌 -> bhs:𐤌𐤕𐤀𐤅𐤉𐤌	greek
+59:4:11	𐤅𐤃𐤍	H1835->H1777	exact:𐤅𐤃𐤍 -> proclitic:𐤅+𐤃𐤍	greek
+59:4:11	𐤅𐤃𐤍	H1835->H1777	exact:𐤅𐤃𐤍 -> proclitic:𐤅+𐤃𐤍	greek
+59:5:1	𐤄𐤏𐤔𐤉𐤓𐤉𐤌	H6242->H6223	plene:𐤄𐤏𐤔𐤓𐤉𐤌 -> suffix:𐤄𐤏𐤔𐤉𐤓+𐤉𐤌	greek
+59:5:16	𐤁𐤇𐤆𐤒𐤄	H2394->H2388	exact:𐤁𐤇𐤆𐤒𐤄 -> proclitic:𐤁+𐤇𐤆𐤒𐤄	greek
+59:5:17	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+59:5:20	𐤉𐤃𐤅𐤏	H3037->H3045	exact:𐤉𐤃𐤅𐤏 -> exact:𐤉𐤃𐤅𐤏	greek
+60:1:1	𐤕𐤅𐤔𐤁𐤉	H7725->H8453	plene:𐤕𐤔𐤅𐤁 -> suffix:𐤕𐤅𐤔𐤁+𐤉	greek
+60:1:5	𐤋𐤄𐤂𐤋𐤅𐤕	H1546->H1540	proclitic:𐤋+𐤄+𐤂𐤋𐤅𐤕 -> exact:𐤋𐤄𐤂𐤋𐤅𐤕	greek
+60:1:8	𐤌𐤐𐤀𐤓𐤄	H6288->H6286	proclitic:𐤌+𐤐𐤀𐤓𐤄 -> root:𐤌 𐤐𐤀𐤓 𐤄	greek
+60:1:13	𐤌𐤕𐤍𐤉	H4982->H4975	exact:𐤌𐤕𐤍𐤉 -> exact:𐤌𐤕𐤍𐤉	greek
+60:2:5	𐤇𐤉𐤅𐤕	H2423->H2421	exact:𐤇𐤉𐤅𐤕 -> suffix:𐤇𐤉+𐤅𐤕	greek
+60:2:10	𐤌𐤓𐤇𐤌𐤉𐤌	H4519->H7355	affixed:𐤌+𐤓𐤇𐤌+𐤉𐤌 -> plene:𐤌𐤓𐤇𐤌𐤌	greek
+60:2:18	𐤉𐤓𐤀𐤄	H7200->H3374	exact:𐤉𐤓𐤀𐤄 -> exact:𐤉𐤓𐤀𐤄	greek
+60:2:25	𐤄𐤓𐤏𐤄	H7451->H7462	exact:𐤄𐤓𐤏𐤄 -> exact:𐤄𐤓𐤏𐤄	greek
+60:3:3	𐤅𐤋𐤁𐤉𐤔𐤕	H1322->H3830	plene:𐤅𐤋𐤁𐤔𐤕 -> root:𐤅 𐤋𐤁𐤉𐤔 𐤕	greek
+60:3:4	𐤏𐤍𐤅𐤄	H6038->H6035	exact:𐤏𐤍𐤅𐤄 -> suffix:𐤏𐤍𐤅+𐤄	greek
+60:3:4	𐤅𐤉𐤒𐤓	H7136->H3368	exact:𐤅𐤉𐤒𐤓 -> proclitic:𐤅+𐤉𐤒𐤓	greek
+60:3:6	𐤋𐤁𐤍𐤅𐤕	H1129->H1121	exact:𐤋𐤁𐤍𐤅𐤕 -> suffix:𐤋𐤁𐤍+𐤅𐤕	greek
+60:4:11	𐤅𐤄𐤏𐤆	H5756->H5797	proclitic:𐤅+𐤄𐤏𐤆 -> proclitic:𐤅+𐤄+𐤏𐤆	greek
+60:5:1	𐤋𐤄𐤂𐤋𐤅𐤕	H1546->H1540	proclitic:𐤋+𐤄+𐤂𐤋𐤅𐤕 -> exact:𐤋𐤄𐤂𐤋𐤅𐤕	greek
+60:5:2	𐤓𐤏𐤅	H7466->H7462	exact:𐤓𐤏𐤅 -> exact:𐤓𐤏𐤅	greek
+60:5:11	𐤅𐤄𐤏𐤆	H5756->H5797	proclitic:𐤅+𐤄𐤏𐤆 -> proclitic:𐤅+𐤄+𐤏𐤆	greek
+60:5:12	𐤄𐤀𐤇	H1889->H251	exact:𐤄𐤀𐤇 -> proclitic:𐤄+𐤀𐤇	greek
+61:1:4	𐤌𐤊𐤋𐤉𐤅𐤍	H4519->H3627	affixed:𐤌+𐤊𐤋𐤉𐤅+𐤍 -> plene:𐤌𐤊𐤋𐤉𐤍𐤅	greek
+61:1:8	𐤋𐤃𐤏𐤕	H3045->H1847	exact:𐤋𐤃𐤏𐤕 -> proclitic:𐤋+𐤃𐤏𐤕	greek
+61:2:2	𐤋𐤂𐤃𐤅𐤐𐤉𐤌	H1421->H1442	exact:𐤋𐤂𐤃𐤅𐤐𐤉𐤌 -> root:𐤋 𐤂𐤃𐤅𐤐 𐤉𐤌	greek
+61:2:6	𐤏𐤕𐤉𐤃𐤉𐤌	H6260->H6264	plene:𐤏𐤕𐤅𐤃𐤉𐤌 -> suffix:𐤏𐤕𐤉𐤃+𐤉𐤌	greek
+61:2:15	𐤄𐤏𐤅𐤋𐤄	H5930->H5766	exact:𐤄𐤏𐤅𐤋𐤄 -> proclitic:𐤄+𐤏𐤅𐤋𐤄	greek
+61:2:16	𐤄𐤀𐤋𐤌𐤕	H197->H481	affixed:𐤄+𐤀𐤋𐤌+𐤕 -> root:𐤄 𐤀𐤋𐤌 𐤕	greek
+61:3:7	𐤄𐤃𐤉𐤍	H1839->H1779	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤉𐤍	greek
+61:3:8	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+61:3:8	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+62:1:1	𐤌𐤔𐤔𐤅	H4519->H4959	affixed:𐤌+𐤔𐤔+𐤅 -> root: 𐤌𐤔𐤔 𐤅	greek
+62:1:2	𐤅𐤍𐤂𐤋𐤅	H1556->H1540	exact:𐤅𐤍𐤂𐤋𐤅 -> proclitic:𐤅+𐤍𐤂𐤋𐤅	greek
+62:2:22	𐤁𐤀𐤁	H341->H1	plene:𐤁𐤀𐤉𐤁𐤉 -> proclitic:𐤁+𐤀𐤁	greek
+62:2:27	𐤋𐤌𐤃𐤄	H4060->H3925	proclitic:𐤋+𐤌𐤃𐤄 -> suffix:𐤋𐤌𐤃+𐤄	greek
+62:4:17	𐤄𐤃𐤉𐤍	H1839->H1779	plene:𐤄𐤃𐤍𐤉 -> proclitic:𐤄+𐤃𐤉𐤍	greek
+62:4:18	𐤄𐤔𐤋𐤌𐤄	H8010->H8003	proclitic:𐤄+𐤔𐤋𐤌𐤄 -> proclitic:𐤄+𐤔𐤋𐤌𐤄	greek
+62:4:18	𐤄𐤀𐤉𐤌𐤄	H520->H367	plene:𐤄𐤀𐤌𐤄 -> proclitic:𐤄+𐤀𐤉𐤌𐤄	greek
+62:5:15	𐤅𐤌𐤃𐤏𐤕𐤍𐤅	H4519->H3045	affixed:𐤅+𐤌+𐤃𐤏𐤕+𐤍𐤅 -> affixed:𐤅+𐤌+𐤃𐤏𐤕+𐤍𐤅	greek
+62:5:15	𐤄𐤌𐤔𐤀𐤋𐤅𐤕	H4519->H7592	affixed:𐤄+𐤌+𐤔𐤀𐤋+𐤅𐤕 -> affixed:𐤄+𐤌+𐤔𐤀𐤋+𐤅𐤕	greek
+62:5:20	𐤅𐤁𐤀𐤌𐤕𐤉	H573->H571	proclitic:𐤅+𐤁+𐤀𐤌𐤕𐤉 -> suffix:𐤅𐤁𐤀𐤌𐤕+𐤉	greek
+63:1:1	𐤄𐤁𐤇𐤉𐤓𐤄	H2437->H977	proclitic:𐤄+𐤁+𐤇𐤉𐤓𐤄 -> root:𐤄 𐤁𐤇𐤉𐤓 𐤄	greek
+63:1:8	𐤔𐤊𐤓𐤍𐤅	H7442->H7939	proclitic:𐤔+𐤊+𐤓𐤍𐤅 -> suffix:𐤔𐤊𐤓+𐤍𐤅	greek
+63:1:11	𐤄𐤓𐤏𐤉𐤌	H7462->H7451	exact:𐤄𐤓𐤏𐤉𐤌 -> exact:𐤄𐤓𐤏𐤉𐤌	greek
+63:1:12	𐤔𐤌𐤇𐤕𐤍𐤅	H4519->H8057	affixed:𐤔+𐤌+𐤇𐤕𐤍+𐤅 -> suffix:𐤔𐤌𐤇𐤕+𐤍𐤅	greek
+64:1:3	𐤀𐤌𐤕𐤊	H519->H571	exact:𐤀𐤌𐤕𐤊 -> exact:𐤀𐤌𐤕𐤊	greek
+64:1:14	𐤄𐤓𐤏𐤉𐤌	H7462->H7453	exact:𐤄𐤓𐤏𐤉𐤌 -> proclitic:𐤄+𐤓𐤏𐤉𐤌	greek
+64:1:14	𐤔𐤀𐤋𐤉𐤌	H410->H7592	proclitic:𐤔+𐤀𐤋𐤉𐤌 -> suffix:𐤔𐤀𐤋+𐤉𐤌	greek
+64:1:14	𐤄𐤓𐤏𐤉𐤌	H7462->H7453	exact:𐤄𐤓𐤏𐤉𐤌 -> proclitic:𐤄+𐤓𐤏𐤉𐤌	greek
+65:1:12	𐤅𐤓𐤏𐤉𐤌	H7451->H7462	exact:𐤅𐤓𐤏𐤉𐤌 -> exact:𐤅𐤓𐤏𐤉𐤌	greek
+65:1:25	𐤄𐤇𐤊𐤌𐤄	H2451->H2450	exact:𐤄𐤇𐤊𐤌𐤄 -> proclitic:𐤄+𐤇𐤊𐤌𐤄	greek
+65:1:25	𐤁𐤉𐤔𐤅𐤏	H3442->H3467	proclitic:𐤁+𐤉𐤔𐤅𐤏 -> root:𐤁 𐤉𐤔𐤅𐤏 	greek
+65:1:25	𐤅𐤄𐤏𐤆	H5756->H5797	proclitic:𐤅+𐤄𐤏𐤆 -> proclitic:𐤅+𐤄+𐤏𐤆	greek
+66:1:6	𐤅𐤄𐤏𐤆	H5756->H5797	proclitic:𐤅+𐤄𐤏𐤆 -> proclitic:𐤅+𐤄+𐤏𐤆	greek
+66:1:12	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+66:1:14	𐤋𐤁𐤍𐤉𐤌	H3843->H3836	exact:𐤋𐤁𐤍𐤉𐤌 -> exact:𐤋𐤁𐤍𐤉𐤌	greek
+66:1:15	𐤁𐤊𐤅𐤓	H1060->H3564	exact:𐤁𐤊𐤅𐤓 -> exact:𐤁𐤊𐤅𐤓	greek
+66:1:18	𐤌𐤐𐤕𐤇𐤅𐤕	H4519->H4668	affixed:𐤌+𐤐𐤕𐤇+𐤅𐤕 -> suffix:𐤌𐤐𐤕𐤇+𐤅𐤕	greek
+66:1:20	𐤒𐤄𐤋𐤅𐤕	H6953->H6951	plene:𐤒𐤄𐤋𐤕 -> suffix:𐤒𐤄𐤋+𐤅𐤕	greek
+66:2:2	𐤅𐤕𐤍𐤎𐤄	H5127->H5254	suffix:𐤅𐤕𐤍𐤎+𐤄 -> root:𐤅+𐤕 𐤍𐤎𐤄 	greek
+66:2:10	𐤁𐤑𐤓𐤄	H1224->H6869	exact:𐤁𐤑𐤓𐤄 -> exact:𐤁𐤑𐤓𐤄	greek
+66:2:12	𐤄𐤇𐤃𐤄	H2420->H2299	plene:𐤄𐤇𐤉𐤃𐤄 -> proclitic:𐤄+𐤇𐤃𐤄	greek
+66:2:17	𐤄𐤌𐤍	H2001->H4478	exact:𐤄𐤌𐤍 -> exact:𐤄𐤌𐤍	greek
+66:2:22	𐤁𐤑𐤓𐤄	H1224->H6869	exact:𐤁𐤑𐤓𐤄 -> exact:𐤁𐤑𐤓𐤄	greek
+66:2:27	𐤅𐤓𐤏𐤌	H7482->H7462	exact:𐤅𐤓𐤏𐤌 -> exact:𐤅𐤓𐤏𐤌	greek
+66:3:5	𐤋𐤁𐤍𐤉𐤌	H3843->H3836	exact:𐤋𐤁𐤍𐤉𐤌 -> exact:𐤋𐤁𐤍𐤉𐤌	greek
+66:3:5	𐤌𐤎𐤐𐤓	H4557->H5612	exact:𐤌𐤎𐤐𐤓 -> exact:𐤌𐤎𐤐𐤓	greek
+66:3:12	𐤋𐤏𐤌𐤅𐤃	H5975->H5982	exact:𐤋𐤏𐤌𐤅𐤃 -> exact:𐤋𐤏𐤌𐤅𐤃	greek
+66:3:14	𐤅𐤄𐤀𐤌𐤕𐤉	H573->H571	proclitic:𐤅+𐤄+𐤀𐤌𐤕𐤉 -> suffix:𐤅𐤄𐤀𐤌𐤕+𐤉	greek
+66:3:18	𐤋𐤁𐤍𐤉𐤌	H3843->H3836	exact:𐤋𐤁𐤍𐤉𐤌 -> exact:𐤋𐤁𐤍𐤉𐤌	greek
+66:4:1	𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤌𐤃𐤁𐤓 -> exact:𐤌𐤃𐤁𐤓	greek
+66:4:3	𐤅𐤌𐤓𐤀𐤉𐤄	H7211->H4758	proclitic:𐤅+𐤌+𐤓𐤀𐤉𐤄 -> root:𐤅 𐤌𐤓𐤀𐤉𐤄 	greek
+66:4:4	𐤋𐤁𐤍𐤉𐤌	H3843->H3836	exact:𐤋𐤁𐤍𐤉𐤌 -> exact:𐤋𐤁𐤍𐤉𐤌	greek
+66:4:4	𐤅𐤏𐤈𐤓𐤅𐤕	H5852->H5850	proclitic:𐤅+𐤏𐤈𐤓𐤅𐤕 -> proclitic:𐤅+𐤏𐤈𐤓𐤅𐤕	greek
+66:4:5	𐤁𐤏𐤓𐤉𐤌	H5892->H1197	exact:𐤁𐤏𐤓𐤉𐤌 -> exact:𐤁𐤏𐤓𐤉𐤌	greek
+66:4:7	𐤊𐤐𐤍𐤉	H6435->H6440	affixed:𐤊+𐤐𐤍+𐤉 -> proclitic:𐤊+𐤐𐤍𐤉	greek
+66:4:11	𐤁𐤓𐤀𐤕	H7200->H1254	exact:𐤁𐤓𐤀𐤕 -> exact:𐤁𐤓𐤀𐤕	greek
+66:5:13	𐤅𐤄𐤏𐤆	H5756->H5797	proclitic:𐤅+𐤄𐤏𐤆 -> proclitic:𐤅+𐤄+𐤏𐤆	greek
+66:6:5	𐤄𐤇𐤅𐤕𐤌	H2850->H2368	plene:𐤄𐤇𐤕𐤉𐤌 -> proclitic:𐤄+𐤇𐤅𐤕𐤌	greek
+66:6:7	𐤄𐤇𐤅𐤕𐤌	H2850->H2368	plene:𐤄𐤇𐤕𐤉𐤌 -> proclitic:𐤄+𐤇𐤅𐤕𐤌	greek
+66:6:9	𐤄𐤇𐤅𐤕𐤌	H2850->H2368	plene:𐤄𐤇𐤕𐤉𐤌 -> proclitic:𐤄+𐤇𐤅𐤕𐤌	greek
+66:6:10	𐤅𐤄𐤀𐤌𐤕𐤉	H573->H571	proclitic:𐤅+𐤄+𐤀𐤌𐤕𐤉 -> suffix:𐤅𐤄𐤀𐤌𐤕+𐤉	greek
+66:6:10	𐤃𐤌𐤉𐤍𐤅	H1819->H1818	exact:𐤃𐤌𐤉𐤍𐤅 -> suffix:𐤃𐤌𐤉+𐤍𐤅	greek
+66:6:11	𐤋𐤁𐤍𐤅𐤕	H1129->H3836	exact:𐤋𐤁𐤍𐤅𐤕 -> exact:𐤋𐤁𐤍𐤅𐤕	greek
+66:6:12	𐤄𐤇𐤅𐤕𐤌	H2850->H2368	plene:𐤄𐤇𐤕𐤉𐤌 -> proclitic:𐤄+𐤇𐤅𐤕𐤌	greek
+66:7:17	𐤉𐤓𐤏𐤌	H7481->H7462	exact:𐤉𐤓𐤏𐤌 -> exact:𐤉𐤓𐤏𐤌	greek
+66:8:1	𐤄𐤇𐤅𐤕𐤌	H2850->H2368	plene:𐤄𐤇𐤕𐤉𐤌 -> proclitic:𐤄+𐤇𐤅𐤕𐤌	greek
+66:8:11	𐤌𐤓𐤉𐤌	H4813->H4843	exact:𐤌𐤓𐤉𐤌 -> suffix:𐤌𐤓+𐤉𐤌	greek
+66:9:1	𐤌𐤐𐤕𐤇	H6607->H4668	exact:𐤌𐤐𐤕𐤇 -> exact:𐤌𐤐𐤕𐤇	greek
+66:9:1	𐤁𐤀𐤓	H884->H875	exact:𐤁𐤀𐤓 -> exact:𐤁𐤀𐤓	greek
+66:9:2	𐤁𐤀𐤓	H884->H875	exact:𐤁𐤀𐤓 -> exact:𐤁𐤀𐤓	greek
+66:9:3	𐤀𐤓𐤁𐤄	H7235->H697	exact:𐤀𐤓𐤁𐤄 -> exact:𐤀𐤓𐤁𐤄	greek
+66:9:7	𐤊𐤏𐤈𐤓𐤅𐤕	H5852->H5850	proclitic:𐤊+𐤏𐤈𐤓𐤅𐤕 -> proclitic:𐤊+𐤏𐤈𐤓𐤅𐤕	greek
+66:9:7	𐤊𐤐𐤍𐤉	H6435->H6440	affixed:𐤊+𐤐𐤍+𐤉 -> proclitic:𐤊+𐤐𐤍𐤉	greek
+66:9:8	𐤅𐤔𐤍𐤉𐤄𐤌	H8147->H8127	exact:𐤅𐤔𐤍𐤉𐤄𐤌 -> proclitic:𐤅+𐤔𐤍𐤉𐤄𐤌	greek
+66:9:8	𐤔𐤍𐤉	H8147->H8127	exact:𐤔𐤍𐤉 -> exact:𐤔𐤍𐤉	greek
+66:9:10	𐤏𐤒𐤓𐤁𐤉𐤌	H4610->H6137	exact:𐤏𐤒𐤓𐤁𐤉𐤌 -> exact:𐤏𐤒𐤓𐤁𐤉𐤌	greek
+66:9:14	𐤄𐤀𐤎𐤅𐤓𐤉𐤌	H615->H631	plene:𐤄𐤀𐤎𐤉𐤓𐤌 -> proclitic:𐤄+𐤀𐤎𐤅𐤓𐤉𐤌	greek
+66:9:15	𐤋𐤔𐤏𐤄	H3444->H8159	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤋+𐤔𐤏𐤄	greek
+66:10:9	𐤅𐤉𐤌𐤓	H4171->H4843	proclitic:𐤅+𐤉𐤌𐤓 -> proclitic:𐤅+𐤉𐤌𐤓	greek
+66:11:18	𐤋𐤄𐤔𐤐𐤈	H3092->H8199	plene:𐤋𐤉𐤄𐤅𐤔𐤐𐤈 -> proclitic:𐤋+𐤄𐤔𐤐𐤈	greek
+66:12:3	𐤊𐤕𐤓𐤉𐤌	H8449->H3804	proclitic:𐤊+𐤕𐤓𐤉𐤌 -> suffix:𐤊𐤕𐤓+𐤉𐤌	greek
+66:12:4	𐤁𐤍𐤄	H1129->H1121	exact:𐤁𐤍𐤄 -> exact:𐤁𐤍𐤄	greek
+66:12:5	𐤁𐤍𐤄	H1129->H1121	exact:𐤁𐤍𐤄 -> exact:𐤁𐤍𐤄	greek
+66:12:10	𐤅𐤌𐤌𐤔𐤋𐤕	H4519->H4475	affixed:𐤅+𐤌+𐤌𐤔𐤋+𐤕 -> proclitic:𐤅+𐤌𐤌𐤔𐤋𐤕	greek
+66:12:12	𐤌𐤃𐤏𐤕𐤅	H4519->H3045	affixed:𐤌+𐤃𐤏𐤕+𐤅 -> plene:𐤌𐤉𐤃𐤏𐤕	greek
+66:12:17	𐤐𐤒𐤅𐤃𐤉	H6485->H6490	exact:𐤐𐤒𐤅𐤃𐤉 -> exact:𐤐𐤒𐤅𐤃𐤉	greek
+66:13:1	𐤊𐤕𐤓𐤉𐤌	H8449->H3804	proclitic:𐤊+𐤕𐤓𐤉𐤌 -> suffix:𐤊𐤕𐤓+𐤉𐤌	greek
+66:13:2	𐤌𐤓𐤀𐤄	H4758->H7200	exact:𐤌𐤓𐤀𐤄 -> exact:𐤌𐤓𐤀𐤄	greek
+66:13:2	𐤊𐤐𐤉	H3709->H6310	exact:𐤊𐤐𐤉 -> exact:𐤊𐤐𐤉	greek
+66:13:3	𐤌𐤓𐤀𐤔𐤉𐤄	H4519->H7218	affixed:𐤌+𐤓𐤀𐤔𐤉+𐤄 -> proclitic:𐤌+𐤓𐤀𐤔𐤉𐤄	greek
+66:13:4	𐤌𐤌𐤔𐤋𐤄	H7887->H4475	proclitic:𐤌+𐤌𐤔𐤋𐤄 -> bhs:𐤌𐤌𐤔𐤋𐤄	greek
+66:13:6	𐤌𐤔𐤊𐤍𐤅	H3653->H4908	proclitic:𐤌+𐤔+𐤊𐤍𐤅 -> exact:𐤌𐤔𐤊𐤍𐤅	greek
+66:13:7	𐤌𐤌𐤔𐤋𐤄	H7887->H4475	proclitic:𐤌+𐤌𐤔𐤋𐤄 -> bhs:𐤌𐤌𐤔𐤋𐤄	greek
+66:13:10	𐤅𐤀𐤌𐤅𐤍𐤕	H526->H530	affixed:𐤅+𐤀𐤌𐤅𐤍+𐤕 -> proclitic:𐤅+𐤀𐤌𐤅𐤍𐤕	greek
+66:13:17	𐤋𐤌𐤊𐤓	H4353->H4376	plene:𐤋𐤌𐤊𐤉𐤓 -> proclitic:𐤋+𐤌𐤊𐤓	greek
+66:14:6	𐤁𐤔𐤅𐤓𐤕	H7794->H1319	affixed:𐤁+𐤔𐤅𐤓+𐤕 -> root: 𐤁𐤔𐤅𐤓 𐤕	greek
+66:14:10	𐤄𐤍𐤌𐤎𐤊	H4549->H4537	affixed:𐤄+𐤍𐤌𐤎+𐤊 -> root:𐤄+𐤍 𐤌𐤎𐤊 	greek
+66:14:13	𐤌𐤏𐤌𐤋𐤌	H4519->H5999	affixed:𐤌+𐤏𐤌𐤋+𐤌 -> suffix:𐤌𐤏𐤌𐤋+𐤌	greek
+66:14:18	𐤅𐤁𐤑𐤓	H6862->H1219	proclitic:𐤅+𐤁𐤑𐤓 -> root:𐤅 𐤁𐤑𐤓 	greek
+66:17:1	𐤄𐤉𐤔𐤁𐤕	H7676->H3427	plene:𐤄𐤔𐤁𐤕 -> plene:𐤄𐤔𐤁𐤕	greek
+66:17:4	𐤅𐤔𐤍𐤉	H8147->H8144	exact:𐤅𐤔𐤍𐤉 -> exact:𐤅𐤔𐤍𐤉	greek
+66:17:7	𐤁𐤏𐤋𐤕	H1172->H1167	exact:𐤁𐤏𐤋𐤕 -> suffix:𐤁𐤏𐤋+𐤕	greek
+66:17:12	𐤋𐤔𐤏𐤄	H3444->H8159	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤋+𐤔𐤏𐤄	greek
+66:17:12	𐤌𐤌𐤔𐤋𐤄	H7887->H4475	proclitic:𐤌+𐤌𐤔𐤋𐤄 -> bhs:𐤌𐤌𐤔𐤋𐤄	greek
+66:17:15	𐤅𐤄𐤌𐤍𐤉𐤌	H4488->H1995	proclitic:𐤅+𐤄+𐤌𐤍𐤉𐤌 -> root:𐤅 𐤄𐤌𐤍 𐤉𐤌	greek
+66:17:16	𐤅𐤏𐤓𐤌𐤄	H6195->H6174	proclitic:𐤅+𐤏𐤓𐤌𐤄 -> proclitic:𐤅+𐤏𐤓𐤌𐤄	greek
+66:17:16	𐤁𐤔𐤓𐤄	H1309->H1320	exact:𐤁𐤔𐤓𐤄 -> exact:𐤁𐤔𐤓𐤄	greek
+66:18:3	𐤄𐤏𐤔𐤉𐤓𐤅	H6224->H6238	plene:𐤄𐤏𐤔𐤉𐤓𐤉 -> root:𐤄 𐤏𐤔𐤉𐤓 𐤅	greek
+66:18:6	𐤌𐤎𐤊𐤄	H4541->H4537	exact:𐤌𐤎𐤊𐤄 -> exact:𐤌𐤎𐤊𐤄	greek
+66:18:7	𐤌𐤋𐤊𐤄	H4428->H4436	exact:𐤌𐤋𐤊𐤄 -> bhs:𐤌𐤋𐤊𐤄	greek
+66:18:10	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+66:18:12	𐤅𐤔𐤍𐤉	H8147->H8144	exact:𐤅𐤔𐤍𐤉 -> exact:𐤅𐤔𐤍𐤉	greek
+66:18:14	𐤅𐤌𐤔𐤌𐤍𐤉𐤌	H4519->H8082	affixed:𐤅+𐤌+𐤔𐤌𐤍+𐤉𐤌 -> affixed:𐤅+𐤌+𐤔𐤌𐤍+𐤉𐤌	greek
+66:18:15	𐤄𐤏𐤔𐤉𐤓𐤅	H6224->H6238	plene:𐤄𐤏𐤔𐤉𐤓𐤉 -> root:𐤄 𐤏𐤔𐤉𐤓 𐤅	greek
+66:18:16	𐤅𐤔𐤍𐤉	H8147->H8144	exact:𐤅𐤔𐤍𐤉 -> exact:𐤅𐤔𐤍𐤉	greek
+66:18:19	𐤄𐤏𐤔𐤉𐤓𐤅	H6224->H6238	plene:𐤄𐤏𐤔𐤉𐤓𐤉 -> root:𐤄 𐤏𐤔𐤉𐤓 𐤅	greek
+66:18:19	𐤁𐤔𐤏𐤄	H3444->H8159	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> proclitic:𐤁+𐤔𐤏𐤄	greek
+66:19:1	𐤄𐤋𐤋𐤅𐤉𐤄	H3915->H1984	plene:𐤄𐤋𐤉𐤋𐤄 -> adjacent:𐤄𐤋𐤋𐤅+𐤉𐤄	greek
+66:19:1	𐤅𐤄𐤏𐤆	H5756->H5797	proclitic:𐤅+𐤄𐤏𐤆 -> proclitic:𐤅+𐤄+𐤏𐤆	greek
+66:19:3	𐤄𐤋𐤋𐤅𐤉𐤄	H3915->H1984	plene:𐤄𐤋𐤉𐤋𐤄 -> adjacent:𐤄𐤋𐤋𐤅+𐤉𐤄	greek
+66:19:4	𐤄𐤋𐤋𐤅𐤉𐤄	H3915->H1984	plene:𐤄𐤋𐤉𐤋𐤄 -> adjacent:𐤄𐤋𐤋𐤅+𐤉𐤄	greek
+66:19:6	𐤄𐤋𐤋𐤅𐤉𐤄	H3915->H1984	plene:𐤄𐤋𐤉𐤋𐤄 -> adjacent:𐤄𐤋𐤋𐤅+𐤉𐤄	greek
+66:19:11	𐤍𐤐𐤕𐤇𐤉𐤌	H5320->H6605	exact:𐤍𐤐𐤕𐤇𐤉𐤌 -> suffix:𐤍𐤐𐤕𐤇+𐤉𐤌	greek
+66:19:11	𐤅𐤀𐤌𐤕𐤉	H519->H571	exact:𐤅𐤀𐤌𐤕𐤉 -> plene:𐤅𐤀𐤌𐤕𐤅	greek
+66:19:14	𐤋𐤁𐤍𐤉𐤌	H3843->H3836	exact:𐤋𐤁𐤍𐤉𐤌 -> exact:𐤋𐤁𐤍𐤉𐤌	greek
+66:19:15	𐤉𐤓𐤏𐤌	H7481->H7462	exact:𐤉𐤓𐤏𐤌 -> exact:𐤉𐤓𐤏𐤌	greek
+66:20:1	𐤌𐤐𐤕𐤇	H6607->H4668	exact:𐤌𐤐𐤕𐤇 -> exact:𐤌𐤐𐤕𐤇	greek
+66:20:2	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+66:20:3	𐤁𐤕𐤄𐤅𐤌	H1004->H8415	plene:𐤁𐤕𐤉𐤄𐤌 -> proclitic:𐤁+𐤕𐤄𐤅𐤌	greek
+66:20:4	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+66:20:6	𐤔𐤍𐤉𐤌	H8147->H8141	exact:𐤔𐤍𐤉𐤌 -> exact:𐤔𐤍𐤉𐤌	greek
+66:20:12	𐤍𐤐𐤕𐤇𐤉𐤌	H5320->H6605	exact:𐤍𐤐𐤕𐤇𐤉𐤌 -> suffix:𐤍𐤐𐤕𐤇+𐤉𐤌	greek
+66:21:6	𐤌𐤌𐤏𐤉𐤍	H4583->H5869	plene:𐤌𐤌𐤏𐤅𐤍 -> proclitic:𐤌+𐤌+𐤏𐤉𐤍	greek
+66:21:9	𐤄𐤌𐤋𐤀𐤅𐤕	H4519->H4390	affixed:𐤄+𐤌+𐤋𐤀+𐤅𐤕 -> affixed:𐤄+𐤌𐤋𐤀+𐤅𐤕	greek
+66:21:12	𐤔𐤏𐤓𐤉𐤌	H8184->H8179	exact:𐤔𐤏𐤓𐤉𐤌 -> exact:𐤔𐤏𐤓𐤉𐤌	greek
+66:21:13	𐤔𐤏𐤓𐤉𐤌	H8184->H8179	exact:𐤔𐤏𐤓𐤉𐤌 -> exact:𐤔𐤏𐤓𐤉𐤌	greek
+66:21:13	𐤔𐤏𐤓𐤉𐤌	H8184->H8179	exact:𐤔𐤏𐤓𐤉𐤌 -> exact:𐤔𐤏𐤓𐤉𐤌	greek
+66:21:13	𐤔𐤏𐤓𐤉𐤌	H8184->H8179	exact:𐤔𐤏𐤓𐤉𐤌 -> exact:𐤔𐤏𐤓𐤉𐤌	greek
+66:21:15	𐤄𐤌𐤃𐤁𐤓	H4057->H1696	exact:𐤄𐤌𐤃𐤁𐤓 -> exact:𐤄𐤌𐤃𐤁𐤓	greek
+66:21:15	𐤋𐤌𐤃	H3925->H4058	exact:𐤋𐤌𐤃 -> exact:𐤋𐤌𐤃	greek
+66:21:23	𐤅𐤍𐤓𐤄	H5369->H5216	affixed:𐤅+𐤍𐤓+𐤄 -> proclitic:𐤅+𐤍𐤓𐤄	greek

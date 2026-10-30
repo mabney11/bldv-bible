@@ -1130,6 +1130,31 @@ const BOOKS = BOOKS_RAW.map(b => {
     return { ...b, last_chapter: last };
 });
 
+// ONE HEBREW PER BOOK (fieldy, 2026-10-30: "I really want to hide it and treat all hebrew that I show as BHS with
+// possible links"). The reader and the Studio show ONE Hebrew for a book: the Masoretic tokens (tokens_bhs) where the
+// book has them, the Hebrew edition's tokens (tokens_nt) everywhere else. A Hebrew link is stored and read under THAT
+// edition, whichever name ('BHS' / 'HEB') the page asked with — the Studio said BHS and Parallel said HEB for John, so
+// links saved in one never showed in the other. Other languages pass through unchanged.
+function hebLinkLang(bookId, lang) {
+    const L = String(lang || 'BHS').toUpperCase();
+    if (L !== 'BHS' && L !== 'HEB') return String(lang || 'BHS');
+    return BOOK_META[Number(bookId)] ? 'BHS' : 'HEB';
+}
+// links of one verse / chapter for a page's language; a book without BHS tokens also reads links an older Studio
+// stored under 'BHS' (its tokens were always the Hebrew edition's — same ordinals)
+function linksFor(bookId, chapter, verse, lang) {
+    const L = hebLinkLang(bookId, lang);
+    const rows = translationDb.stmts.getLinks.all(bookId, chapter, verse, L);
+    if (L === 'HEB') rows.push(...translationDb.stmts.getLinks.all(bookId, chapter, verse, 'BHS'));
+    return rows;
+}
+function chapterLinksFor(bookId, chapter, lang) {
+    const L = hebLinkLang(bookId, lang);
+    const rows = translationDb.stmts.chapterLinks.all(bookId, chapter, L);
+    if (L === 'HEB') rows.push(...translationDb.stmts.chapterLinks.all(bookId, chapter, 'BHS'));
+    return rows;
+}
+
 // --- ENGLISH-CHAPTER SEGMENT RESOLUTION (added 2026-08-20) ---------------
 //
 // fieldy, after living with the BHS-authoritative "versification note" for a
@@ -1417,7 +1442,8 @@ const TX_VERSE_NT = NT_TOKENS_READY ? db.prepare(`
     FROM tokens_nt WHERE book_id=? AND chapter=? AND verse=? ORDER BY token_ordinal
 `) : null;
 function txVerseQuery(bookId) {
-    return (TX_VERSE_NT && bookId >= 40 && bookId <= 66) ? TX_VERSE_NT : TX_VERSE_BHS;
+    // one Hebrew per book (hebLinkLang): the Masoretic tokens where the book has them, else the Hebrew edition's
+    return (TX_VERSE_NT && !BOOK_META[Number(bookId)]) ? TX_VERSE_NT : TX_VERSE_BHS;
 }
 
 // ── HOMOGRAPH SURFACE SET ───────────────────────────────────────────────────
@@ -12381,7 +12407,7 @@ function buildEnglishChapter(bookId, chapter, lang = 'BHS') {
     {
         // All links for this chapter/lang in one query, grouped by verse — the
         // reader attaches them per verse and skips the per-verse links round trip.
-        const linkRows = translationDb.stmts.chapterLinks.all(bookId, chapter, lang);
+        const linkRows = chapterLinksFor(bookId, chapter, lang);
         const linksByVerse = {};
         for (const l of linkRows) (linksByVerse[l.verse] ||= []).push(l);
 
@@ -12706,9 +12732,9 @@ app.get('/api/translate/verse', (req, res) => {
         //
         // The client must not re-derive this. Return what was USED, the same way
         // the reader records what it fetched rather than recomputing it.
-        const tokenSource = (bookId >= 40 && bookId <= 66) ? 'HEB' : 'BHS';
+        const tokenSource = hebLinkLang(bookId, 'BHS');
 
-        const rawLinks = translationDb.stmts.getLinks.all(bookId, chapter, verse, lang);
+        const rawLinks = linksFor(bookId, chapter, verse, lang);
         const links = rawLinks.map(l => ({
             ...l,
             token_ordinals:  JSON.parse(l.token_ordinals  || '[]'),
@@ -13140,7 +13166,7 @@ app.post('/api/translate/link', (req, res) => {
         const { book_id, chapter, verse, lang, english_phrase, english_indices, token_ordinals, component_hint, color_index, sort_order } = req.body;
         if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book_id, chapter, verse required' });
         const result = translationDb.stmts.insertLink.run(
-            book_id, chapter, verse, (lang || 'BHS').toString(),
+            book_id, chapter, verse, hebLinkLang(book_id, lang),
             english_phrase || '',
             JSON.stringify(english_indices || []),
             JSON.stringify(token_ordinals  || []),
@@ -13212,7 +13238,7 @@ app.delete('/api/translate/link/:id', (req, res) => {
 app.delete('/api/translate/links', (req, res) => {
     try {
         const { book, chapter, verse, lang } = req.query;
-        translationDb.stmts.deleteAllLinks.run(parseInt(book), parseInt(chapter), parseInt(verse), (lang || 'BHS').toString());
+        translationDb.stmts.deleteAllLinks.run(parseInt(book), parseInt(chapter), parseInt(verse), hebLinkLang(book, lang));
         res.json({ ok: true });
     } catch(err) {
         console.error('DELETE /api/translate/links failed:', err);
@@ -13241,6 +13267,8 @@ app.get('/api/translate/languages', (req, res) => {
             // as list[0] and then rendered as "English Source", with no picker
             // (that needs langs.length > 1) to switch back to Paleo.
             if (src.id === 'ENG') continue;
+            // ONE HEBREW (2026-10-30): the Hebrew edition is what 'Hebrew' shows for a book without Masoretic tokens
+            if (src.id === 'HEB') continue;
             let has = false;
             try {
                 if (src.id === 'BHS') {
@@ -13251,7 +13279,7 @@ app.get('/api/translate/languages', (req, res) => {
                     has = !!src.handle.prepare(`SELECT 1 FROM verses WHERE book_id=? AND chapter=? AND verse=? LIMIT 1`).get(book, ch || 1, v || 1);
                 }
             } catch { has = false; }
-            if (has) out.push({ id: src.id, label: src.label, script: src.script, dir: RTL.has(src.script) ? 'rtl' : 'ltr' });
+            if (has) out.push({ id: src.id, label: src.id === 'BHS' ? 'Hebrew' : src.label, script: src.script, dir: RTL.has(src.script) ? 'rtl' : 'ltr' });
         }
         res.json({ book, chapter: ch, verse: v, languages: out });
     } catch(err) {
@@ -13364,7 +13392,7 @@ app.get('/api/parallel/verse', (req, res) => {
         const isBaseline  = !isUserOverride && !!englishText;
         const enWords = englishText.trim().split(/\s+/).filter(Boolean);
 
-        const rawLinks = translationDb.stmts.getLinks.all(book, ch, v, lang);
+        const rawLinks = linksFor(book, ch, v, lang);
         const links = rawLinks.map(l => ({
             id: l.id,
             english_indices: JSON.parse(l.english_indices || '[]'),

@@ -1978,7 +1978,59 @@ if (WITH_HEB) {
     const englishOf = (c, ch, v) => _engVerse.get(`${c}|${Number(ch)}|${Number(v)}`) || '';
     // Root strip's witness is the ORIGINAL English (text_src): the rendered text's
     // glosses came from earlier readings and would vouch for themselves.
-    const englishSrcOf = (c, ch, v) => _engSrc.get(`${c}|${Number(ch)}|${Number(v)}`) || '';
+    // EVERY OPEN SOURCE OF THE SAME VERSE is a witness (fieldy, 2026-10-30: "correct enough to be called
+    // consistent with other sources of the same texts ... corpus wide ... everything that I advertise in my
+    // reader"; open sources only). The verse's own English (text_src) + every public-domain version in
+    // versions.db (KJV/KJVA, ASV, YLT, Darby, Douay-Rheims, JPS, BBE, BSB) + for the NT the English glosses of the
+    // verse's own Greek words (morph-grc.db: Robinson-Pierpont Byzantine, Dodson/Strong's glosses). A reading
+    // any of them names is confirmed; base rates are measured on the same combined text (samp below), so a
+    // longer witness does not confirm by chance. --witness-web-only turns it back to text_src alone.
+    const _witness = new Map();
+    let witnessNote = 'text_src only';
+    if (!args.includes('--witness-web-only')) {
+        const add = (k, t) => { if (t) _witness.set(k, (_witness.get(k) || '') + ' \n ' + t); };
+        let nv = 0, ng = 0;
+        try {
+            const VDB = path.join(__dirname, 'versions.db');
+            if (fs.existsSync(VDB)) {
+                const vdb = new Database(VDB, { readonly: true });
+                for (const r of vdb.prepare(`SELECT canon_id, chapter, verse, text FROM verses`).iterate()) { add(`${r.canon_id}|${r.chapter}|${r.verse}`, r.text); nv++; }
+                vdb.close();
+            }
+        } catch (e) { console.warn(`  ⚠ versions.db not read (${e.message})`); }
+        try {
+            const GDB = path.join(__dirname, 'morph-grc.db');
+            if (fs.existsSync(GDB)) {
+                const gdb = new Database(GDB, { readonly: true });
+                const per = new Map();
+                for (const r of gdb.prepare(`SELECT canon_id, ch, v, gloss FROM words`).iterate()) {
+                    const k = `${r.canon_id}|${r.ch}|${r.v}`; if (!per.has(k)) per.set(k, []); if (r.gloss) per.get(k).push(r.gloss);
+                }
+                for (const [k, g] of per) { add(k, g.join(' ; ')); ng++; }
+                gdb.close();
+            }
+        } catch (e) { console.warn(`  ⚠ morph-grc.db not read (${e.message})`); }
+        witnessNote = `text_src + ${nv.toLocaleString()} version verses (versions.db) + ${ng.toLocaleString()} Greek NT verses' glosses (morph-grc.db)`;
+    }
+    // HEB verse -> the English verse(s) it translates (alignHebEng below); same number when absent
+    let _verseMap = null;
+    const englishSrcOf = (c, ch, v) => {
+        const k = `${c}|${Number(ch)}|${Number(v)}`;
+        const ks = (_verseMap && _verseMap.get(k)) || [k];
+        return ks.map(x => (_engSrc.get(x) || '') + (_witness.get(x) || '')).join(' \n ');
+    };
+    console.log(`  witnesses: ${witnessNote}`);
+    // GREEK WITNESS (build-greek-witness.py -> greek-witness.json): per NT verse, the Hebrew numbers its Greek words are
+    // LXX equivalents of (Abbott-Smith, public domain). --no-greek turns it off.
+    let greekOf = null;
+    if (!args.includes('--no-greek')) {
+        try {
+            const GW = JSON.parse(fs.readFileSync(path.join(__dirname, 'greek-witness.json'), 'utf8'));
+            const gv = new Map(Object.entries(GW.verses || {}));   // [[relative position, [H…]], …] in Greek word order
+            greekOf = (c, ch, v) => gv.get(`${c}|${Number(ch)}|${Number(v)}`) || null;
+            console.log(`  greek witness: ${gv.size.toLocaleString()} verses (greek-witness.json; --no-greek disables)`);
+        } catch (e) { console.warn(`  ⚠ greek-witness.json not read (${e.message}) — run python build-greek-witness.py`); }
+    }
     // ROOT STRIP data (heb-align.js, 2026-10-16): every Strong's root by spelling, which
     // numbers are verbs / names, the English each number is known by (dictionary + his
     // lexicon + homographs), and how often the BHS uses it (a tie-break only).
@@ -2006,6 +2058,16 @@ if (WITH_HEB) {
             for (const r of src.prepare(`SELECT strongs, COUNT(*) AS n FROM tokens_bhs WHERE strongs != '' GROUP BY strongs`).all())
                 freq.set(normSN(r.strongs), r.n);
         } catch { /* tie-break only */ }
+        // his CONCEPTS are English evidence too (lexicon/reading-concepts.json: "baptize" -> H2881 tabal /
+        // H7364 rachatz): the verse's "baptizing" names the root his concept ties to it (2026-10-30, John 4:1)
+        try {
+            const RC = JSON.parse(fs.readFileSync(path.join(__dirname, 'lexicon', 'reading-concepts.json'), 'utf8'));
+            for (const [name, c] of Object.entries(RC)) {
+                if (name.startsWith('_') || !c || !Array.isArray(c.hebSn)) continue;
+                const words = String(c.en || '').replace(/[\^$()\\]/g, ' ').split(/[|\s]+/).filter(x => /^[A-Za-z]{4,}$/.test(x));
+                for (const sn of c.hebSn) snText.set(sn, (snText.get(sn) || '') + ' ' + words.join(' ') + ' ' + name);
+            }
+        } catch { /* no concepts */ }
         rootStrip = { roots, verbs, names, snText, freq };
         console.log(`  root strip: ${roots.size.toLocaleString()} root spellings, ${verbs.size.toLocaleString()} verbs (--no-root-strip disables)`);
     }
@@ -2032,13 +2094,114 @@ if (WITH_HEB) {
         try {
             const { buildEvidence } = require('./heb-evidence.cjs');
             const nm = loadJSON(path.join(__dirname, 'name-map-expanded.json')) || {};
-            const samp = [..._engSrc.values()].filter((_, i) => i % 23 === 0).slice(0, 3000);
+            // base rates measured on the SAME witness text the verses are judged by
+            const samp = [..._engSrc.keys()].filter((_, i) => i % 23 === 0).slice(0, 3000)
+                .map(k => { const [c, ch, v] = k.split('|'); return englishSrcOf(c, ch, v); });
             evidence = buildEvidence({ webStrongsPath: path.join(__dirname, 'web-strongs.jsonl'), strongsDict: STRONGS_DICT,
                                        strongsRoots: strongsRootsLex, lexicon, homographs, nameMap: nm, sampleTexts: samp });
             console.log(`  evidence: English profiles from web-strongs.jsonl + his lexicon/homographs (--no-evidence disables)`);
         } catch (e) { console.warn(`  ⚠ evidence unavailable (${e.message}) — hand context readings only`); evidence = null; }
     }
-    hebResult = buildHebSurfaces({ src, parseToken, pins, preferSplitMax: _preferSplit, evidence,
+    // VERSE PAIRING (2026-10-30, fieldy: tokens consistent with other sources of the same texts). The HEB edition of the
+    // extra books (canon >= 67: Jubilees, 1-2 Maccabees, Judith, Susanna, Sirach … — Sefaria's Hebrew) does not number its
+    // verses like the English (Judith 4: HEB 4:4 = ENG 4:3, 4:5 = 4:4; Jubilees 1 has 42 HEB verses to 28 ENG), so a word
+    // was judged by the wrong English verse. Per chapter, every HEB verse is paired with the English verse whose words
+    // its Strong's numbers name (tokens_nt; the evidence profiles — names count double), in order (monotonic DP; several
+    // HEB verses may share one English verse, English verses may be skipped). A chapter is re-paired only when that beats
+    // same-number pairing clearly; every re-paired chapter is listed in heb-eng-verse-map.txt. --no-verse-map turns it off.
+    if (evidence && !args.includes('--no-verse-map')) {
+        const t0 = Date.now();
+        const { stemsOf } = require('./heb-evidence.cjs');
+        const hebSN = new Map();   // "c|ch|v" -> [sn…] (content + names)
+        for (const r of src.prepare(`SELECT book_id, chapter, verse, strongs FROM tokens_nt WHERE book_id >= 67 AND strongs <> ''`).iterate()) {
+            const sn = 'H' + String(r.strongs).replace(/^H+/, '');
+            const n = parseInt(sn.slice(1), 10); if (!(n > 0 && n < 9000)) continue;
+            const named = evidence.isName(sn);
+            if (!named && !evidence.judgeable(sn)) continue;
+            const k = `${r.book_id}|${Number(r.chapter)}|${Number(r.verse)}`;
+            if (!hebSN.has(k)) hebSN.set(k, []);
+            hebSN.get(k).push(named ? '!' + sn : sn);
+        }
+        const chapters = new Map();   // "c|ch" -> { heb: [v…], eng: [v…] }
+        const addCh = (k, side) => { const [c, ch, v] = k.split('|'); const ck = c + '|' + ch;
+            if (!chapters.has(ck)) chapters.set(ck, { heb: [], eng: [] }); chapters.get(ck)[side].push(Number(v)); };
+        for (const k of hebSN.keys()) addCh(k, 'heb');
+        for (const k of _engSrc.keys()) if (Number(k.split('|')[0]) >= 67) addCh(k, 'eng');
+        const stemCache = new Map();
+        const stemsE = k => { if (!stemCache.has(k)) stemCache.set(k, stemsOf((_engSrc.get(k) || '') + ' ' + (_witness.get(k) || ''))); return stemCache.get(k); };
+        const score = (hk, ek) => { const L = hebSN.get(hk); if (!L || !L.length) return 0; const st = stemsE(ek); let h = 0, w = 0;
+            for (const x of L) { const nm = x[0] === '!', sn = nm ? x.slice(1) : x; w += nm ? 2 : 1; if (evidence.hits(sn, st)) h += nm ? 2 : 1; }
+            return h / Math.max(4, w); };
+        _verseMap = new Map();
+        const report = [];
+        let nCh = 0, nRe = 0, nV = 0;
+        for (const [ck, { heb, eng }] of chapters) {
+            if (!heb.length || !eng.length) continue;
+            heb.sort((a, b) => a - b); eng.sort((a, b) => a - b); nCh++;
+            const [c, ch] = ck.split('|');
+            const BAND = 40;   // long chapters (Josephus): only English verses near the HEB verse's proportional position
+            const S = heb.map((h, i) => eng.map((e, j) => Math.abs(j - i * eng.length / heb.length) <= BAND ? score(`${ck}|${h}`, `${ck}|${e}`) : 0));
+            const ei = new Map(eng.map((e, j) => [e, j]));
+            // identity: same number
+            let idScore = 0; for (let i = 0; i < heb.length; i++) { const j = ei.get(heb[i]); if (j != null) idScore += S[i][j]; }
+            // monotonic DP: j(i) >= j(i-1); a jump forward of d > 1 costs JUMP*(d-1)
+            const JUMP = 0.02, n = heb.length, m = eng.length;
+            const D = Array.from({ length: n }, () => new Float64Array(m).fill(-1e9)), B = Array.from({ length: n }, () => new Int32Array(m));
+            for (let j = 0; j < m; j++) D[0][j] = S[0][j] - JUMP * j;
+            for (let i = 1; i < n; i++) {
+                let best = -1e9, arg = 0;
+                for (let j = 0; j < m; j++) {
+                    // best over k <= j of D[i-1][k] - JUMP*max(0, j-k-1); keep a running max with the decay
+                    const cand = D[i - 1][j];
+                    best = Math.max(best - JUMP, cand); if (best === cand) arg = j;
+                    D[i][j] = best + S[i][j]; B[i][j] = arg;
+                }
+            }
+            let j = 0; for (let k = 1; k < m; k++) if (D[n - 1][k] > D[n - 1][j]) j = k;
+            const pick = new Array(n); for (let i = n - 1; i >= 0; i--) { pick[i] = j; if (i) j = B[i][j]; }
+            let alScore = 0; for (let i = 0; i < n; i++) alScore += S[i][pick[i]];
+            if (!(alScore > idScore * 1.15 + 1)) continue;
+            nRe++;
+            const moved = [];
+            for (let i = 0; i < n; i++) {
+                const e = eng[pick[i]];
+                // a HEB verse that also names the NEXT English verse well spans both (merged numbering)
+                const ks = [`${ck}|${e}`];
+                if (pick[i] + 1 < m && S[i][pick[i] + 1] >= 0.5 * S[i][pick[i]] && S[i][pick[i] + 1] > 0.15 && (i + 1 >= n || pick[i + 1] > pick[i])) ks.push(`${ck}|${eng[pick[i] + 1]}`);
+                if (e !== heb[i] || ks.length > 1) { _verseMap.set(`${ck}|${heb[i]}`, ks); nV++; moved.push(`${heb[i]}->${ks.map(x => x.split('|')[2]).join('+')}`); }
+            }
+            report.push(`${c}:${ch}\tsame-number ${idScore.toFixed(1)}\tpaired ${alScore.toFixed(1)}\t${moved.join(' ')}`);
+        }
+        try { fs.writeFileSync(path.join(__dirname, 'heb-eng-verse-map.txt'), ['HEB verse -> English verse(s) it was judged by (canon >= 67), ' + new Date().toISOString(),
+            'book:chapter\tsame-number score\tpaired score\tHEB->ENG', '', ...report].join('\n') + '\n'); } catch {}
+        console.log(`  verse pairing: ${nRe.toLocaleString()} of ${nCh.toLocaleString()} chapters re-paired, ${nV.toLocaleString()} HEB verses judged by another English verse (heb-eng-verse-map.txt; --no-verse-map disables) in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+    }
+    // SETTLED READINGS (fieldy, 2026-10-29: "this corpus is meant to be etched in stone ... lets
+    // just make it that"). heb-settled.db holds the reading every NT / Apocrypha / extra-book HEB word
+    // was given; a build takes those as they are and decides nothing for them. A correction is one
+    // line in lexicon/heb-occurrence-overrides.json ("book|ch|v|ordinal" or "book|ch|v|<word>": "H…"),
+    // and `--freeze` etches the result again. `--unsettled` ignores the table (decide everything anew).
+    const SETTLED_DB = path.join(__dirname, 'heb-settled.db');
+    let settled = null;
+    if (!args.includes('--unsettled') && fs.existsSync(SETTLED_DB)) {
+        try {
+            const sdb = new Database(SETTLED_DB, { readonly: true });
+            const surf = new Map(), occ = new Map(), verses = new Set();
+            for (const r of sdb.prepare('SELECT * FROM surf').iterate()) {
+                const { k, ...rec } = r;
+                surf.set(k, rec);
+            }
+            for (const r of sdb.prepare('SELECT k, w, s, e FROM occ').iterate()) {
+                occ.set(r.k, { w: r.w, s: r.s, e: r.e });
+                verses.add(r.k.slice(0, r.k.lastIndexOf('|')));
+            }
+            const meta = sdb.prepare("SELECT v FROM meta WHERE k = 'frozen_at'").get();
+            sdb.close();
+            settled = { surf, occ, verses };
+            console.log(`  settled: ${occ.size.toLocaleString()} etched readings in ${verses.size.toLocaleString()} verses (heb-settled.db, ${meta ? meta.v : '?'}) — not re-decided`);
+        } catch (e) { console.warn(`  ⚠ could not read heb-settled.db (${e.message}) — deciding every word`); settled = null; }
+    }
+    hebResult = buildHebSurfaces({ src, parseToken, pins, preferSplitMax: _preferSplit, evidence, settled,
                                    preferParticleMax: _preferParticle,
                                    // Widen the fused-particle split (see heb-align.js's
                                    // 2026-07-29 note) to every particle THIS FILE already
@@ -2049,12 +2212,80 @@ if (WITH_HEB) {
                                    occurrenceOverrides,
                                    forcedReadings, lemmaIndex,
                                    contextReadings, englishOf,
-                                   rootStrip, englishSrcOf,
+                                   rootStrip, englishSrcOf, greekOf,
                                    log: m => console.log(m) });
+    if (hebResult.stats.settled) {
+        const z = hebResult.stats.settled;
+        console.log(`  settled: ${z.hits.toLocaleString()} words taken as etched, ${z.untagged.toLocaleString()} kept without a reading; `
+            + `${(z.blank || 0).toLocaleString()} etched blank (no Strong's) worked out again; `
+            + `${z.changed.toLocaleString()} whose text no longer matches what was etched and ${z.fresh.toLocaleString()} new — those were decided this build`
+            + (z.changed || z.fresh || z.blank ? ' (run --freeze to etch them)' : ''));
+    }
+    // --freeze: etch this build's NT / Apocrypha / extra-book readings (taken NOW, before the
+    // presentation passes below — chips, reading-form rules — which stay live from his lexicon)
+    if (args.includes('--freeze')) {
+        const sk = (w, sn, pos, morph) => `${w}\u0000${sn}\u0000${pos}\u0000${morph}`;
+        const tmp = SETTLED_DB + '.tmp';
+        try { fs.unlinkSync(tmp); } catch { /* none */ }
+        const fdb = new Database(tmp);
+        fdb.exec(`CREATE TABLE meta (k TEXT PRIMARY KEY, v TEXT);
+                  CREATE TABLE surf (k TEXT PRIMARY KEY, word_raw TEXT, strongs TEXT, pos TEXT, morph TEXT, rendered_paleo TEXT,
+                                     root_paleo TEXT, all_strongs_json TEXT, components_json TEXT, tier TEXT, ambiguous INTEGER);
+                  CREATE TABLE occ (k TEXT PRIMARY KEY, w TEXT, s TEXT, e TEXT);`);
+        const iS = fdb.prepare('INSERT OR IGNORE INTO surf VALUES (?,?,?,?,?,?,?,?,?,?,?)');
+        const iO = fdb.prepare('INSERT OR REPLACE INTO occ VALUES (?,?,?,?)');
+        let nO = 0, nMiss = 0;
+        fdb.transaction(() => {
+            for (const o of hebResult.occurrences) {
+                if (o.source !== 'HEB' || !(o.book_id >= 40)) continue;
+                const k = sk(o.word_raw, o.strongs, o.pos, o.morph), r = hebResult.surfaces.get(k);
+                if (!r) { nMiss++; continue; }
+                iS.run(k, r.word_raw, r.strongs, r.pos, r.morph, r.rendered_paleo, r.root_paleo, r.all_strongs_json, r.components_json, r.tier, r.ambiguous);
+                iO.run(`${o.book_id}|${o.chapter}|${o.verse}|${o.token_ordinal}`, o.word_raw, k, o.evidence || '');
+                nO++;
+            }
+            fdb.prepare('INSERT INTO meta VALUES (?,?)').run('frozen_at', new Date().toISOString());
+        })();
+        fdb.close();
+        fs.renameSync(tmp, SETTLED_DB);
+        console.log(`  settled: ETCHED ${nO.toLocaleString()} readings into heb-settled.db` + (nMiss ? ` (${nMiss} occurrence(s) had no record — not etched)` : ''));
+    }
+    // SOURCE REVIEW (2026-10-30): per book, how every HEB-edition reading stands against the verse's
+    // witnesses (its English versions, the Greek NT's glosses); and every CONTRADICTED reading — the
+    // witnesses name another reading of the same spelling the build could not take — grouped by
+    // spelling, most occurrences first. server/heb-source-review.txt. A fix is one line in
+    // lexicon/heb-occurrence-overrides.json ("book|ch|v|<word>": "H…") or a context reading.
+    try {
+        const per = new Map(), con = new Map();
+        for (const o of hebResult.occurrences) {
+            if (o.source !== 'HEB' || !(o.book_id >= 40)) continue;
+            const e = o.strongs ? (o.evidence || 'untagged') : 'blank';
+            if (!per.has(o.book_id)) per.set(o.book_id, {});
+            per.get(o.book_id)[e] = (per.get(o.book_id)[e] || 0) + 1;
+            if (e === 'contradicted') {
+                const k = `${o.word_raw}\t${o.strongs}\t${o.evidenceAlt || ''}`;
+                if (!con.has(k)) con.set(k, { n: 0, refs: [] });
+                const c = con.get(k); c.n++; if (c.refs.length < 6) c.refs.push(`${o.book_id}:${o.chapter}:${o.verse}`);
+            }
+        }
+        const NAMES = {}; try { for (const b of (JSON.parse(fs.readFileSync(path.join(__dirname, 'book-order.json'), 'utf8')).order || [])) if (b && b.id) NAMES[b.id] = b.name; } catch {}
+        const cols = ['greek', 'english', 'hand', 'name', 'function', 'guess', 'unconfirmed', 'contradicted', 'no-english', 'blank'];
+        const lines = ['HEB-edition readings against their verse\'s sources (text_src + versions.db + Greek NT glosses), ' + new Date().toISOString(), '',
+            'book\t' + cols.join('\t') + '\tconfirmed% of judgeable'];
+        for (const [b, c] of [...per].sort((x, y) => x[0] - y[0])) {
+            const ok = (c.greek || 0) + (c.english || 0), judge = ok + (c.guess || 0) + (c.unconfirmed || 0) + (c.contradicted || 0);
+            lines.push(`${b} ${NAMES[b] || ''}\t` + cols.map(k => c[k] || 0).join('\t') + `\t${judge ? (100 * ok / judge).toFixed(1) : '-'}`);
+        }
+        lines.push('', 'CONTRADICTED (the verse\'s Greek backs another reading of this spelling; nothing confirms the chosen one) — word\tchosen\tGreek backs\toccurrences\trefs');
+        for (const [k, c] of [...con].sort((x, y) => y[1].n - x[1].n)) lines.push(`${k}\t${c.n}\t${c.refs.join(' ')}`);
+        fs.writeFileSync(path.join(__dirname, 'heb-source-review.txt'), lines.join('\n') + '\n');
+        console.log(`  source review: ${[...con.values()].reduce((a, c) => a + c.n, 0).toLocaleString()} contradicted readings in ${con.size.toLocaleString()} spelling/reading pairs — server/heb-source-review.txt`);
+    } catch (e) { console.warn(`  ⚠ source review not written (${e.message})`); }
     {
         const hs = hebResult.stats;
         if (hs.evidence) {
             const e = hs.evidence, tot = Object.values(e).reduce((x, y) => x + y, 0) || 1;
+            if (greekOf) console.log(`  greek: ${(hs.greekConfirmed || 0).toLocaleString()} readings confirmed by their verse's Greek as decided, ${(hs.greekSwitches || 0).toLocaleString()} switched to the reading the Greek backs (heb-context-switches.txt 'greek')`);
             console.log(`  evidence: ${(hs.autoSwitches || 0).toLocaleString()} readings switched to the one their verse's English names; `
                 + Object.entries(e).sort((x, y) => y[1] - x[1]).map(([k, n]) => `${k} ${n.toLocaleString()} (${(100 * n / tot).toFixed(1)}%)`).join(', '));
         }

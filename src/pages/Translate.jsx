@@ -857,7 +857,7 @@ export default function Translate() {
   // render generically with correct direction). Switching language re-fetches the
   // links scoped to it — you re-link per language, as expected.
   const [lang, setLang]       = useState('BHS');
-  const [langs, setLangs]     = useState([{ id: 'BHS', label: 'Hebrew (BHS)', script: 'paleo-hebrew', dir: 'rtl' }]);
+  const [langs, setLangs]     = useState([{ id: 'BHS', label: 'Hebrew', script: 'paleo-hebrew', dir: 'rtl' }]);
   const [srcTokens, setSrcTokens] = useState(null);   // non-BHS source tokens, or null for BHS
   // The edition the LOADED tokens actually came from, as reported by the server.
   // Links are authored against this, never against the `lang` picker.
@@ -1068,7 +1068,7 @@ export default function Translate() {
       .then(r => r.json())
       .then(d => {
         if (cancelled || !Array.isArray(d.languages)) return;
-        const list = d.languages.length ? d.languages : [{ id: 'BHS', label: 'Hebrew (BHS)', script: 'paleo-hebrew', dir: 'rtl' }];
+        const list = d.languages.length ? d.languages : [{ id: 'BHS', label: 'Hebrew', script: 'paleo-hebrew', dir: 'rtl' }];
         setLangs(list);
         // Reload the verse ONCE the language list is known — always, not only when the
         // current language is unavailable.

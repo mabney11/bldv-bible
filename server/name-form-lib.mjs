@@ -239,11 +239,20 @@ export function divineGlosses(text, R) {
   if (!text || !R.glossed || !R.glossed.size) return { fixed: text, hits: [], shifts: [] };
   const toks = [...text.matchAll(TOK)];
   const hits = [], shifts = [];
+  // Only a GLOSS bracket — right after its word, nothing but space between ("Mashayach (Messiah)") —
+  // counts as "inside". The WEB's own prose aside ("abyss?’ (that is, to bring Mashayach up…)")
+  // is English: a name in it is glossed like anywhere else (Rom 10:7, 2026-10-30 — it was left
+  // bare, given a gold "()", then the aside's brackets were dropped: "Mashayach ()").
   let depth = 0, wordIx = -1, out = '', last = 0;
+  const kinds = [];
   for (let i = 0; i < toks.length; i++) {
     const m = toks[i], w = m[0];
-    if (w === '(') { depth++; continue; }
-    if (w === ')') { depth = Math.max(0, depth - 1); continue; }
+    if (w === '(') {
+      const p = toks[i - 1];
+      const gloss = !!(p && p[0] !== '(' && p[0] !== ')' && !text.slice(p.index + p[0].length, m.index).trim());
+      kinds.push(gloss); if (gloss) depth++; continue;
+    }
+    if (w === ')') { if (kinds.pop()) depth = Math.max(0, depth - 1); continue; }
     wordIx++;
     if (depth || !R.glossed.has(w)) continue;
     const gl = R.glossed.get(w), n = (gl.match(/[A-Za-z\u00C0-\u024F'-]+/g) || []).length;
