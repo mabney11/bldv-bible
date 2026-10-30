@@ -18,7 +18,7 @@ import './NovelText.css';
 const GLOSS_RE = /([A-Za-zÀ-ɏ\u{10900}-\u{1091F}][A-Za-zÀ-ɏ\u{10900}-\u{1091F}'’-]*)([‘’“”"']*)\s+\(([^()]*)\)/gu;
 const PALEO_RE = /[\u{10900}-\u{1091F}]/u;
 
-export function novelNodes(text, keyPrefix = 'n') {
+export function novelNodes(text, keyPrefix = 'n', highlight = null) {
   const t = String(text ?? '');
   const out = [];
   let last = 0, k = 0, m;
@@ -26,17 +26,21 @@ export function novelNodes(text, keyPrefix = 'n') {
   while ((m = GLOSS_RE.exec(t))) {
     const [full, heb, quote, gloss] = m;
     if (m.index > last) out.push(t.slice(last, m.index));
-    out.push(PALEO_RE.test(heb)
+    const pair = [];
+    pair.push(PALEO_RE.test(heb)
       ? <span className="novel-root" dir="rtl" key={`${keyPrefix}${k++}`} dangerouslySetInnerHTML={{ __html: paleoToSVG(heb) }} />
       : <span className="novel-root" key={`${keyPrefix}${k++}`}>{heb}</span>);
-    if (quote) out.push(quote);
-    if (gloss.trim()) out.push(` (${gloss.trim()})`);
+    if (quote) pair.push(quote);
+    if (gloss.trim()) pair.push(` (${gloss.trim()})`);
+    // highlight(word) -> the Root page's hit: the word AND its gloss lit gold (fieldy, 2026-10-30)
+    if (highlight && highlight(heb)) out.push(<mark className="novel-hit" key={`${keyPrefix}h${k++}`}>{pair}</mark>);
+    else out.push(...pair);
     last = m.index + full.length;
   }
   if (last < t.length) out.push(t.slice(last));
   return out;
 }
 
-export default function NovelText({ text, as: Tag = 'span', className = '', ...rest }) {
-  return <Tag className={`novel-text ${className}`} {...rest}>{novelNodes(text)}</Tag>;
+export default function NovelText({ text, as: Tag = 'span', className = '', highlight = null, ...rest }) {
+  return <Tag className={`novel-text ${className}`} {...rest}>{novelNodes(text, 'n', highlight)}</Tag>;
 }

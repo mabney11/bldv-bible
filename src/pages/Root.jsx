@@ -51,8 +51,17 @@ const isSuffix = css => SUFFIX_PREFIX.some(p => css && css.startsWith(p));
 // lemma concatenation. (The legacy fallback path that built word_raw from
 // component paleos has been removed; if you're seeing dead links it's
 // because sourceTokens is missing — server is out of date.)
-function wordBlockToToken(wb, isHitOrdinal) {
+const normSn = x => { const m = String(x || '').match(/^H?0*(\d+)([a-z]?)$/i); return m ? `H${m[1]}${m[2].toLowerCase()}` : ''; };
+// A word block is the hit when ANY of its tokens is (a hit folded in front of another word, like 𐤌𐤅𐤋 in
+// MawalaHaAlahayam, used to light nothing: the block's own ordinal and root belong to the word after it),
+// or when one of its components carries this page's number (fieldy, 2026-10-30: gold on the match all the time)
+function wordBlockToToken(wb, isHitOrdinal, pageSn) {
+  const sn = normSn(pageSn);
+  const comps = wb.components || [];
+  const compHit = !!sn && comps.some(c => normSn(c.sn) === sn);
+  const ordHit = !!isHitOrdinal && (isHitOrdinal(wb.token_ordinal) || (wb.sourceTokens || []).some(s => isHitOrdinal(s.token_ordinal)));
   return {
+    hitSn: sn,
     // word_raw is kept for back-compat with WordBlock's SVG rendering path,
     // but the surf-link logic uses sourceTokens instead. This is the lemma-
     // concatenation, not the corpus surface form — that's why we needed
@@ -62,7 +71,30 @@ function wordBlockToToken(wb, isHitOrdinal) {
     token_ordinal: wb.token_ordinal,
     components: wb.components || [],
     sourceTokens: wb.sourceTokens || [],
-    isHit: isHitOrdinal ? isHitOrdinal(wb.token_ordinal) : false,
+    isHit: ordHit || compHit,
+  };
+}
+// the English pair(s) to light: the hit block's whole form, or the hit component's own transliteration inside a word
+function englishHitTest(tokens) {
+  const whole = new Set(), parts = new Set();
+  for (const t of tokens) {
+    if (!t.isHit) continue;
+    const cs = t.components || [];
+    whole.add(cs.map(c => c.translit || '').join('').toLowerCase());
+    const hc = cs.filter(c => t.hitSn && normSn(c.sn) === t.hitSn);
+    for (const c of (hc.length ? hc : cs.filter(c => c.css === 'root'))) {
+      const x = (c.translit || '').toLowerCase();
+      if (x.length >= 3) parts.add(x);
+      // a chip inside a word ends in its joining vowel ("Mawala" in MawalaHaAlahayam); the English writes "Mawal"
+      if (x.length >= 4 && /a$/.test(x)) parts.add(x.slice(0, -1));
+    }
+  }
+  if (!whole.size) return null;
+  return w => {
+    const x = String(w || '').toLowerCase().replace(/-/g, '');
+    if (whole.has(x)) return true;
+    for (const p of parts) if (x.includes(p)) return true;
+    return false;
   };
 }
 
@@ -87,9 +119,12 @@ function RootWordBlock({ token, isHit }) {
     let prefixIdx = 0, suffixIdx = 0, rootSeen = false;
     const rootIdx = comps.findIndex(c => c.css === 'root');
 
-    const glyph = comps.map(c => {
+    const hitSn = token.hitSn || '';
+    const snHit = comps.map(c => !!hitSn && normSn(c.sn) === hitSn);
+    const anySn = snHit.some(Boolean);
+    const glyph = comps.map((c, ci) => {
       const isRoot = c.css === 'root';
-      const hitClass = (isHit && isRoot) ? ' glyph-hit' : '';
+      const hitClass = (isHit && (anySn ? snHit[ci] : isRoot)) ? ' glyph-hit' : '';
       let altIdx = 0;
       if (!isRoot && !isSuffix(c.css) && !rootSeen) altIdx = prefixIdx++;
       else if (isSuffix(c.css) && rootSeen) altIdx = suffixIdx++;
@@ -139,7 +174,7 @@ function RootWordBlock({ token, isHit }) {
       sub += '<span class="brk">)</span>';
     }
     return { glyph, sub };
-  }, [comps, isHit, useSvg, raw]);
+  }, [comps, isHit, useSvg, raw, token.hitSn]);
 
   const snLinks = useMemo(() => {
     const seen = new Set(); const links = [];
@@ -955,7 +990,8 @@ export default function Root({ mode = 'root' }) {
                   const cur = verses[sel] || null;
                   if (!cur) return <div style={{ color: 'var(--text3)', fontSize: 15, paddingTop: 30 }}>{verses.length ? 'Select a hit to read it here.' : 'No occurrences to show.'}</div>;
                   const hitSet = new Set(cur.hit_ordinals || []);
-                  const tokens = (cur.words || []).map(wb => wordBlockToToken(wb, ord => hitSet.has(ord)));
+                  const tokens = (cur.words || []).map(wb => wordBlockToToken(wb, ord => hitSet.has(ord), detail.kind === 'root' ? detail.sn : ''));
+                  const engHit = englishHitTest(tokens);
                   const readerHref = `/?book=${cur.book_id}&chapter=${cur.chapter}&verse=${cur.verse}`;
                   const atEnd = sel >= verses.length - 1;
                   return (
@@ -967,7 +1003,7 @@ export default function Root({ mode = 'root' }) {
                         <Link to={readerHref} className="r2-btn" style={{ marginLeft: 'auto' }}>open in reader ↗</Link>
                       </div>
                       {cur.translation && cur.translation.text && (
-                        <NovelText as="div" className="verse-translation" style={{ marginBottom: 16, color: 'var(--text2)' }} text={cur.translation.text} />
+                        <NovelText as="div" className="verse-translation" style={{ marginBottom: 16, color: 'var(--text2)' }} text={cur.translation.text} highlight={engHit} />
                       )}
                       <div className="r2-verse">
                         {tokens.length

@@ -4064,6 +4064,19 @@ John never showed in Parallel: the Studio called John's Hebrew "BHS", Parallel o
   one block per raw token (the merged word showed AND its folded tokens again: KaAsharaYaNaYawadai + Ashar, KayaShamaiw +
   Kay). The word-link token selectors stay one per token. esbuild only; not seen in a browser.
 
+## Root page: the hit lights wherever the word stands, and in the English (2026-10-30)
+fieldy: "highlights dont hit if the word is used as a prefix -- i should see the gold match all the time -- i actually would like
+to see the word and its gloss highlighted in the english as well" (H4136 𐤌𐤅𐤋 folded into MawalaHaAlahayam lit nothing).
+Root.jsx wordBlockToToken: a block is the hit when its own ordinal, ANY of its sourceTokens' ordinals, or any component's sn is
+the page's number; RootWordBlock puts .glyph-hit on the components carrying that number (else the root, as before).
+englishHitTest -> NovelText `highlight` prop: the matching "word (gloss)" pair is wrapped in <mark class="novel-hit"> (gold)
+— whole block form, or the hit component's transliteration inside a word (joining vowel dropped: "Mawala" -> "mawal").
+esbuild only; not seen in a browser.
+Worship: the --freeze build logged 66:19:10 and 66:22:9 𐤄𐤔𐤕𐤇𐤅𐤄 H8459->H7812 "-> bhs:𐤄𐤔𐤕𐤇𐤅𐤄" (fixed).
+The 5 "no matching reading offered" targets of the unsettled build (𐤔𐤁->H7617 𐤆𐤓->H2219 𐤁𐤍->H1124 𐤀𐤍𐤅->H578
+𐤄𐤐𐤓->H6509a) are automatic English switches, not hand entries — and wrong targets (𐤁𐤍 "son" -> Aramaic "build", 𐤀𐤍𐤅 "we"
+-> "groan"); nothing could be built, so those words keep their readings. No action.
+
 ## Hishtaphel words get a reading: 𐤄𐤔𐤕𐤇𐤅𐤄 "worship" (2026-10-30)
 "no matching reading offered for 𐤄𐤔𐤕𐤇𐤅𐤄->H7812" (Rev 19:10, 22:9). The BHS token of that exact spelling exists (2 Kgs 5:18,
 weqatal 3ms) but its chips (𐤉 synthesized [He/it] + 𐤄𐤕 [Reflexive] + 𐤔𐤇𐤅𐤄) do not open/close the word — a Hishtaphel's 𐤕

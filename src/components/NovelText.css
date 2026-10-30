@@ -3,3 +3,8 @@
 .novel-root { color: #a67f38; font-weight: 600; }
 [data-theme="light"] .novel-root { color: #b48a3c; }
 .novel-root svg { vertical-align: -0.12em; }
+
+/* the Root page's hit: the word AND its gloss, gold like the hit glyphs (2026-10-30) */
+.novel-hit { background: color-mix(in srgb, var(--gold, #d4a24c) 22%, transparent); color: inherit; border-radius: 4px; padding: 0 2px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold, #d4a24c) 55%, transparent); }
+.novel-hit .novel-root { color: var(--gold, #d4a24c); }
