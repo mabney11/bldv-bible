@@ -1,4 +1,4 @@
-HEB-edition readings against their verse's sources (text_src + versions.db + Greek NT glosses), 2026-10-30T18:42:36.693Z
+HEB-edition readings against their verse's sources (text_src + versions.db + Greek NT glosses), 2026-10-30T19:07:28.005Z
 
 book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	blank	confirmed% of judgeable
 40 Matthew	6368	1821	160	430	4275	678	137	2	0	297	90.9
@@ -45,7 +45,7 @@ book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	
 86 Psalm 154	0	0	0	0	0	0	0	0	145	2	-
 87 2 Meqabyan	0	3058	58	394	3266	623	118	0	1	104	80.5
 88 3 Meqabyan	0	1578	23	159	1739	368	65	0	1	41	78.5
-100 Jasher	0	9919	175	9248	35298	27362	4916	0	0	1269	23.5
+100 Jasher	0	9919	175	9248	35298	27364	4916	0	0	1267	23.5
 119 Testament of Job	0	1098	21	190	2007	1210	187	0	0	181	44.0
 126 Assumption of Moses	0	534	7	53	639	355	70	0	0	54	55.7
 136 2 Enoch	0	1982	35	202	2378	1607	213	0	2061	464	52.1
@@ -63,22 +63,22 @@ book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	
 220 Antiquities of the Jews	0	80519	2342	11341	110703	44438	8186	0	0	13343	60.5
 
 CONTRADICTED (the verse's Greek backs another reading of this spelling; nothing confirms the chosen one) — word	chosen	Greek backs	occurrences	refs
-𐤄𐤋𐤋𐤅𐤉𐤄	H3050	H1984	4	66:19:1 66:19:3 66:19:4 66:19:6
-𐤊𐤉𐤋𐤃	H3850	H3206	3	40:18:4 41:10:15 42:18:17
-𐤁𐤀𐤌𐤅𐤍𐤕	H526	H530 H539	2	48:2:16 48:3:22
-𐤀𐤇𐤉𐤄	H281	H2421	2	48:2:19 48:2:20
-𐤄𐤔𐤕𐤇𐤅𐤄	H8459	H7812	2	66:19:10 66:22:9
-𐤊𐤍𐤇𐤔𐤉𐤌	H2366	H5175	1	40:10:16
-𐤔𐤀𐤋𐤄	H7585	H7592	1	41:12:34
-𐤌𐤓𐤉𐤁𐤄	H4809	H7378	1	42:2:34
-𐤄𐤂𐤃𐤓𐤅𐤕	H1450	H1448 H1447	1	42:14:23
-𐤄𐤌𐤁𐤈𐤋𐤉𐤌	H2919	H989	1	45:3:31
-𐤀𐤔𐤓𐤉𐤄	H3050	H837	1	46:7:40
-𐤌𐤀𐤌𐤅𐤍𐤕	H526	H530 H539	1	48:2:16
-𐤅𐤋𐤁𐤈𐤋	H2919	H989	1	48:3:17
-𐤅𐤁𐤏𐤆	H1162	H5797 H5794	1	49:6:10
-𐤔𐤋𐤌𐤄	H8010	H8003 H7965	1	52:5:23
-𐤁𐤔𐤀𐤋	H7585	H410	1	60:3:21
-𐤓𐤔𐤏𐤕𐤌	H3573	H7561 H7562	1	65:1:15
-𐤋𐤁𐤍𐤄	H3841	H3836	1	66:2:17
-𐤋𐤇𐤉	H883	H2416 H2421	1	66:4:10
+𐤄𐤋𐤋𐤅𐤉𐤄	H3050		4	66:19:1 66:19:3 66:19:4 66:19:6
+𐤊𐤉𐤋𐤃	H3850		3	40:18:4 41:10:15 42:18:17
+𐤁𐤀𐤌𐤅𐤍𐤕	H526		2	48:2:16 48:3:22
+𐤀𐤇𐤉𐤄	H281		2	48:2:19 48:2:20
+𐤄𐤔𐤕𐤇𐤅𐤄	H8459		2	66:19:10 66:22:9
+𐤊𐤍𐤇𐤔𐤉𐤌	H2366		1	40:10:16
+𐤔𐤀𐤋𐤄	H7585		1	41:12:34
+𐤌𐤓𐤉𐤁𐤄	H4809		1	42:2:34
+𐤄𐤂𐤃𐤓𐤅𐤕	H1450		1	42:14:23
+𐤄𐤌𐤁𐤈𐤋𐤉𐤌	H2919		1	45:3:31
+𐤀𐤔𐤓𐤉𐤄	H3050		1	46:7:40
+𐤌𐤀𐤌𐤅𐤍𐤕	H526		1	48:2:16
+𐤅𐤋𐤁𐤈𐤋	H2919		1	48:3:17
+𐤅𐤁𐤏𐤆	H1162		1	49:6:10
+𐤔𐤋𐤌𐤄	H8010		1	52:5:23
+𐤁𐤔𐤀𐤋	H7585		1	60:3:21
+𐤓𐤔𐤏𐤕𐤌	H3573		1	65:1:15
+𐤋𐤁𐤍𐤄	H3841		1	66:2:17
+𐤋𐤇𐤉	H883		1	66:4:10
