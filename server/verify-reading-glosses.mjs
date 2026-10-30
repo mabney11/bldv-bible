@@ -237,6 +237,22 @@ if (existsSync(INDEX_DB)) {
         for (let i = 0; i < run.length; i++) { e.surf.add(run.slice(i).map(x => x[0]).join('')); e.surf.add(run.slice(i).map(x => x[1]).join('')); }
       }
     }
+    // the display's JOINED words (a suffix-less particle onto the next word, a shared-Strong's maqaf pair): the reading
+    // text writes them as one pair ("MawalaHaAlahayam", "Il-HaAratz") — modform-lib joinedChains, the same list
+    // merge-modforms writes from (2026-10-30)
+    {
+      const WL = MF.verseWordsLoader(sdb);
+      let nj = 0;
+      for (const r of sdb.prepare(`SELECT DISTINCT source, book_id, chapter, verse FROM surface_occurrences`).iterate()) {
+        if (r.source === 'HEB' && r.book_id <= 39) continue;
+        const ch = MF.joinedChains(WL(r.source, r.book_id, r.chapter, r.verse));
+        if (!ch.size) continue;
+        const k = `${r.book_id}|${Math.trunc(+r.chapter)}|${Math.trunc(+r.verse)}`;
+        const e = heb.get(k) || (heb.set(k, { roots: new Set(), surf: new Set() }), heb.get(k));
+        for (const j of ch.keys()) { e.surf.add(j); nj++; }
+      }
+      console.log(`  joined words (the display's): ${nj.toLocaleString()} accepted as written`);
+    }
     sdb.close(); hebFrom = 'surface-index.db';
   } catch (e) { console.warn(`surface-index.db unreadable (${e.message}) — using tokens_nt`); }
 }

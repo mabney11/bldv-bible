@@ -115,6 +115,7 @@ export function indexMap(oldText, newText) {
 }
 
 let seen = 0, changed = 0, pairs = 0, linkRows = 0;
+let joinedWords = 0, joinedVerses = 0, joinSkippedNames = 0;   // joinFolded: the display's joined words (2026-10-30)
 const samples = [];
 if (CORPUS) {
   // ── THE ALIGNER'S WORDS (NT) ─────────────────────────────────────────────────────────
@@ -436,6 +437,8 @@ if (CORPUS) {
       r2.text = MF.respellRetired(r2.text);
       // no gloss inside a gloss: the WEB's own brackets go, a word inside a gloss shows its English (fieldy, 2026-10-22)
       r2.text = MF.unnest(r2.text, ORIG.get(`${r.c}|${+r.ch}|${+r.v}`) || '');
+      // the display's joined words written as one pair: "Mawal (before) HaAlahayam (the God)" -> "MawalaHaAlahayam (before the God)"
+      { const j = MF.joinFolded(r2.text, ws); if (j.joined) { r2.text = j.text; joinedWords += j.joined; joinedVerses++; } joinSkippedNames += j.skippedNames; }
       if (r2.text === dbText) continue;
       changed++; pairs += r2.n;
       if (samples.length < (ONLY ? 99 : 12) && (ONLY || (r.c <= 66 && (r.c > 39 || samples.length < 4)))) samples.push(`${r.c}:${r.ch}:${r.v}  ${r2.text}`);
@@ -446,6 +449,8 @@ if (CORPUS) {
   if (JSONL) writeFileSync(argv[argv.indexOf('--jsonl') + 1], JSONL.join('\n') + '\n');
   console.log(`  OT clean base (text_base): ${baseUsed.toLocaleString()} verses started from it, ${baseSaved.toLocaleString()} saved now` + (hasBase ? '' : ' — column missing (dry run on an old db)'));
   console.log(`  Hebrew of another versification (far longer than the verse's English) left out: ${hebTooBig.toLocaleString()} verses` + (hebTooBig ? ' (' + [...hebTooBigBooks].sort((a, b) => b[1] - a[1]).map(([c, n]) => `${c}: ${n}`).join(', ') + ')' : ''));
+  console.log(`  joined words (the display's): ${joinedWords.toLocaleString()} pairs written as one in ${joinedVerses.toLocaleString()} verses; ${joinSkippedNames.toLocaleString()} left apart (a name after the particle — the name gates do not know it yet)`);
+  joinedWords = joinedVerses = joinSkippedNames = 0;
   console.log(`modification forms (corpus.db ENG, Gen 3 on: OT names + NT + Apocrypha): ${changed.toLocaleString()} of ${seen.toLocaleString()} verses, ${pairs.toLocaleString()} Hebrew words written ` +
               `(${filled.toLocaleString()} from the Parallel links; learned table retired)${DRY ? ' (dry run)' : ''}`);
   console.log(`  Hebrew word order: ${ilOk.toLocaleString()} verses; English order kept: ${[...ilWhy].map(([k, n]) => `${n.toLocaleString()} ${k}`).join(', ') || 'none'}; concept words (repent/baptize/genealogy…): ${conceptN}`);
@@ -539,7 +544,7 @@ if (CORPUS) {
       const u = MF.unlabel(r.text, ws); woven += u.n;
       const t1 = MF.respellRetired(u.text); if (t1 !== u.text) respelled++;
       const t2 = MF.mergeModforms(t1, ws);
-      const fixRich = x => MF.mergeModforms(MF.respellRetired(MF.unlabel(x, ws).text), ws).text;
+      const fixRich = x => MF.joinFolded(MF.mergeModforms(MF.respellRetired(MF.unlabel(x, ws).text), ws).text, ws).text;
       let moved = false;
       if (!KEEP_ORDER && ws.length) {
         const il = MF.interlinear(paleoPairs(t2.text, ws), ws, savedGloss, { maxResidue: 99, saved: true });
@@ -548,6 +553,8 @@ if (CORPUS) {
       }
       // no gloss inside a gloss, no stray one-word bracket — before fix-name-forms sees the verse
       { const u2 = MF.unnest(t2.text, ORIG_S.get(`${r.c}|${+r.ch}|${+r.v}`) || ''); if (u2 !== t2.text) { t2.text = u2; moved = true; } }
+      // the display's joined words written as one pair (his saved wording is kept inside the joined gloss)
+      { const j = MF.joinFolded(t2.text, ws); if (j.joined) { t2.text = j.text; moved = true; joinedWords += j.joined; joinedVerses++; } joinSkippedNames += j.skippedNames; }
       t2.text = hyphenNames(t2.text);
       const rich = hyphenNames(!r.rt ? r.rt : (r.rt === r.text ? t2.text : (moved && divOnly(r.rt) ? `<div>${esc(t2.text)}</div>` : fixRich(r.rt))));
       if (t2.text === r.text && rich === r.rt) continue;
@@ -570,6 +577,7 @@ if (CORPUS) {
   console.log(`  Hebrew order: ${reordered} saved verse(s) put in Hebrew word order, every English word in a gloss` +
               (notReordered.length ? `; NOT reordered (${notReordered.length}): ${notReordered.join(', ')}` : ''));
   tdb.close();
+  console.log(`  joined words (the display's) in your saved verses: ${joinedWords.toLocaleString()} pairs in ${joinedVerses.toLocaleString()} verses; ${joinSkippedNames.toLocaleString()} left apart before a name`);
   console.log(`modification forms (your saved verses, Gen 3 on): ${changed} of ${seen} verses merged, ${pairs} words upgraded, ` +
               `${linkRows} link rows re-indexed${DRY ? ' (dry run — nothing written)' : ' — the old wording of each is in translation_history'}`);
 }

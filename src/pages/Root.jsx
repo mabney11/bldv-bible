@@ -58,10 +58,19 @@ const normSn = x => { const m = String(x || '').match(/^H?0*(\d+)([a-z]?)$/i); r
 function wordBlockToToken(wb, isHitOrdinal, pageSn) {
   const sn = normSn(pageSn);
   const comps = wb.components || [];
-  const compHit = !!sn && comps.some(c => normSn(c.sn) === sn);
-  const ordHit = !!isHitOrdinal && (isHitOrdinal(wb.token_ordinal) || (wb.sourceTokens || []).some(s => isHitOrdinal(s.token_ordinal)));
+  const src = wb.sourceTokens || [];
+  const isOrd = o => !!isHitOrdinal && o != null && isHitOrdinal(o);
+  // the hit TOKENS of this block: a hit ordinal, or a source token carrying this page's number
+  const hitOrds = new Set(src.filter(s => isOrd(s.token_ordinal) || (sn && normSn(s.strongs) === sn)).map(s => s.token_ordinal));
+  if (isOrd(wb.token_ordinal)) hitOrds.add(wb.token_ordinal);
+  // the hit COMPONENTS: carrying this page's number, or belonging to a hit token. The root is used only for a
+  // block that is one token — in MawalaHaAlahayam the root is Alahayam, and lighting it lit every Alahayam (2026-10-30)
+  let hitComp = comps.map(c => (!!sn && normSn(c.sn) === sn) || (c.token_ordinal != null && hitOrds.has(c.token_ordinal)));
+  const single = src.length <= 1;
+  if (!hitComp.some(Boolean) && hitOrds.size && single) hitComp = comps.map(c => c.css === 'root');
   return {
     hitSn: sn,
+    hitComp,
     // word_raw is kept for back-compat with WordBlock's SVG rendering path,
     // but the surf-link logic uses sourceTokens instead. This is the lemma-
     // concatenation, not the corpus surface form — that's why we needed
@@ -70,8 +79,8 @@ function wordBlockToToken(wb, isHitOrdinal, pageSn) {
     strongs: wb.strongs || '',
     token_ordinal: wb.token_ordinal,
     components: wb.components || [],
-    sourceTokens: wb.sourceTokens || [],
-    isHit: ordHit || compHit,
+    sourceTokens: src,
+    isHit: hitOrds.size > 0 || hitComp.some(Boolean),
   };
 }
 // the English pair(s) to light: the hit block's whole form, or the hit component's own transliteration inside a word
@@ -79,21 +88,24 @@ function englishHitTest(tokens) {
   const whole = new Set(), parts = new Set();
   for (const t of tokens) {
     if (!t.isHit) continue;
-    const cs = t.components || [];
-    whole.add(cs.map(c => c.translit || '').join('').toLowerCase());
-    const hc = cs.filter(c => t.hitSn && normSn(c.sn) === t.hitSn);
-    for (const c of (hc.length ? hc : cs.filter(c => c.css === 'root'))) {
+    const cs = t.components || [], hc = t.hitComp || [];
+    // the whole word only when the whole block is the hit (every lettered part), never because one part of it is
+    if (cs.every((c, i) => hc[i] || c.isMark || !c.paleo)) whole.add(cs.map(c => c.translit || '').join('').toLowerCase());
+    cs.forEach((c, i) => {
+      if (!hc[i]) return;
       const x = (c.translit || '').toLowerCase();
       if (x.length >= 3) parts.add(x);
       // a chip inside a word ends in its joining vowel ("Mawala" in MawalaHaAlahayam); the English writes "Mawal"
       if (x.length >= 4 && /a$/.test(x)) parts.add(x.slice(0, -1));
-    }
+    });
   }
-  if (!whole.size) return null;
+  if (!whole.size && !parts.size) return null;
+  // a pair matches as the whole word, or as the hit part standing at the start or end of it (after its prefixes) —
+  // not anywhere inside an unrelated word
   return w => {
     const x = String(w || '').toLowerCase().replace(/-/g, '');
     if (whole.has(x)) return true;
-    for (const p of parts) if (x.includes(p)) return true;
+    for (const p of parts) if (x === p || x.startsWith(p) || x.endsWith(p)) return true;
     return false;
   };
 }
@@ -119,12 +131,10 @@ function RootWordBlock({ token, isHit }) {
     let prefixIdx = 0, suffixIdx = 0, rootSeen = false;
     const rootIdx = comps.findIndex(c => c.css === 'root');
 
-    const hitSn = token.hitSn || '';
-    const snHit = comps.map(c => !!hitSn && normSn(c.sn) === hitSn);
-    const anySn = snHit.some(Boolean);
+    const hitComp = token.hitComp || [];
     const glyph = comps.map((c, ci) => {
       const isRoot = c.css === 'root';
-      const hitClass = (isHit && (anySn ? snHit[ci] : isRoot)) ? ' glyph-hit' : '';
+      const hitClass = (isHit && hitComp[ci]) ? ' glyph-hit' : '';
       let altIdx = 0;
       if (!isRoot && !isSuffix(c.css) && !rootSeen) altIdx = prefixIdx++;
       else if (isSuffix(c.css) && rootSeen) altIdx = suffixIdx++;
@@ -174,7 +184,7 @@ function RootWordBlock({ token, isHit }) {
       sub += '<span class="brk">)</span>';
     }
     return { glyph, sub };
-  }, [comps, isHit, useSvg, raw, token.hitSn]);
+  }, [comps, isHit, useSvg, raw, token.hitComp]);
 
   const snLinks = useMemo(() => {
     const seen = new Set(); const links = [];

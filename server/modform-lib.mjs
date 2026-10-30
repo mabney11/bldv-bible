@@ -110,6 +110,8 @@ export const retiredForms = () => loadFormRules().filter(R => R.retired && R.for
 export const modformApplies = (canon, chapter) => !(Number(canon) === 1 && Number(chapter) <= 2);
 
 const PROCLITIC_SN = /^H900\d$/;
+// server.js isParticle: an affix makes a preposition a whole word (אֵלַי "to me")
+const HAS_AFFIX = /\b(?:prs|pfm|vbs|nme|vbe|uvf)=(?!absent\b|none\b)/;
 const SUFFIX_CSS = ['nme-', 'prs-', 'vbe-', 'uvf-', 'mod-suff-unk', 'mod-dbl'];
 const isSuffixCss = css => SUFFIX_CSS.some(p => (css || '').startsWith(p));
 const isRootCss = css => css === 'root' || css === 'mod-nmpr';
@@ -134,6 +136,78 @@ export function formOf(comps) {
     const suf = isSuffixCss(comps[i].css) && (rootIdx < 0 || i > rootIdx);
     return suf ? t.toLowerCase() : t.charAt(0).toUpperCase() + t.slice(1);
   }).join('');
+}
+
+/** The same, as the FIRST part of a longer word: no final letter form ("Mawala" in MawalaHaAlahayam). */
+export function medialForm(comps) {
+  const f = formOf([...comps, { paleo: '\u{10900}', css: 'mod-suff-unk' }]);
+  return f.slice(0, -1);
+}
+
+/** The display's joined words of a verse: Map normalized joined spelling -> { host, members } (every chain of words
+ *  flagged joinNext and the word after it; a maqaf join keeps a hyphen, which the normalisation ignores). */
+export function joinedChains(words) {
+  const out = new Map();
+  const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
+  for (let k = 0; k < words.length; k++) {
+    if (!words[k].joinNext || (k && words[k - 1].joinNext)) continue;   // chain starts here
+    let lead = '', m = k;
+    const members = [];
+    while (m < words.length - 1 && words[m].joinNext) {
+      members.push(words[m]);
+      lead += words[m].joinMaqaf ? words[m].form + '-' : medialForm(words[m].comps);
+      m++;
+    }
+    out.set(norm(lead + words[m].form), { host: words[m], members });
+  }
+  return out;
+}
+
+/** JOINED WORDS (2026-10-30): every pair whose Hebrew word the display joins onto the next word is written as ONE pair —
+ *  "Mawal (before) HaAlahayam (the God)" -> "MawalaHaAlahayam (before the God)"; across a maqaf the halves keep their
+ *  own forms with a hyphen ("Al-HaAratz"). Only pairs that stand next to each other (nothing but space between) and are
+ *  those two Hebrew words, in order. A NAME after the particle is not joined yet (the divine-name / name-form gates know
+ *  names only after Wa/Ha/La/Ba/Ka/Ma). Returns { text, joined, skippedNames }. */
+export function joinFolded(text, words0) {
+  let out = String(text || '');
+  const words = (words0 || []).map(w => ({ ...w }));
+  if (!words.some(w => w.joinNext)) return { text: out, joined: 0, skippedNames: 0 };
+  const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
+  const fits = (pw, w) => { const n = norm(pw); return !!n && !w._dead && (n === norm(w.form) || n === w.rootTr || (w.snTr && n === w.snTr) || n === w._alias); };
+  let joined = 0, skippedNames = 0;
+  for (let guard = 0; guard < 40; guard++) {
+    const PAIR = /\b([A-Za-z][A-Za-z'’-]*)\s+\(([^()]*)\)/g;
+    const pairs = []; let m, d = 0, last = 0;
+    while ((m = PAIR.exec(out))) {
+      for (let k = last; k < m.index; k++) { if (out[k] === '(') d++; else if (out[k] === ')' && d) d--; }
+      last = m.index + m[0].length;
+      if (!d) pairs.push({ i: m.index, end: last, w: m[1], g: m[2] });
+    }
+    // map pairs to Hebrew words in order
+    let wi = 0; const at = [];
+    for (const p of pairs) {
+      let k = wi; while (k < words.length && !fits(p.w, words[k])) k++;
+      if (k < words.length) { at.push(k); wi = k + 1; } else at.push(-1);
+    }
+    let did = false;
+    for (let x = 0; x + 1 < pairs.length; x++) {
+      const k = at[x];
+      if (k < 0 || at[x + 1] !== k + 1 || !words[k].joinNext) continue;
+      if (!/^\s+$/.test(out.slice(pairs[x].end, pairs[x + 1].i))) continue;
+      const a = words[k], b = words[k + 1];
+      if (b.isName) { skippedNames++; continue; }
+      const form = a.joinMaqaf ? `${pairs[x].w}-${pairs[x + 1].w}` : (a._lead != null ? a._lead : medialForm(a.comps)) + pairs[x + 1].w;
+      const g = [pairs[x].g.trim(), pairs[x + 1].g.trim()].filter(Boolean).join(' ');
+      out = out.slice(0, pairs[x].i) + `${form} (${g})` + out.slice(pairs[x + 1].end);
+      // the joined pair is now word b's (a chain: 𐤊𐤀𐤔𐤓 + 𐤀𐤕 + host joins on the next turn)
+      a._dead = true; b._alias = norm(form);
+      // if b joins on in turn, its lead is everything before its own spelling + its own medial form (KaAshara+Atha+HaDabar)
+      b._lead = form.slice(0, form.length - pairs[x + 1].w.length) + medialForm(b.comps);
+      joined++; did = true; break;
+    }
+    if (!did) break;
+  }
+  return { text: out, joined, skippedNames };
 }
 
 // ── English that EXPRESSES a modification ──────────────────────────────────────
@@ -192,13 +266,29 @@ function modInfo(c, source) {
 
 /** The Hebrew WORDS of one verse, in order, from surface-index.db. */
 export function verseWordsLoader(sdb) {
-  const st = sdb.prepare(`SELECT o.token_ordinal ord, o.word_raw, o.strongs sn, o.pos, t.components
+  const st = sdb.prepare(`SELECT o.token_ordinal ord, o.word_raw, o.strongs sn, o.pos, o.morph, t.components
       FROM surface_occurrences o LEFT JOIN token_surfaces t ON t.source = o.source AND t.word_raw = o.word_raw
            AND t.strongs = o.strongs AND t.pos = o.pos AND t.morph = o.morph
       WHERE o.source = ? AND o.book_id = ? AND o.chapter = ? AND o.verse = ? ORDER BY o.token_ordinal`);
   return (source, b, c, v) => {
     const words = []; let pending = [];
+    // ONE HEBREW WORD = WHAT THE DISPLAY DRAWS (fieldy, 2026-10-30: "make my texts match the hebrew — all connected words
+    // match on both sides, no differences including spaces"). server.js groupSurfaceTokens joins a preposition /
+    // conjunction / article with no suffix (and the interrogative 𐤄) onto the word after it (𐤌𐤅𐤋 + 𐤄𐤀𐤋𐤄𐤉𐤌 =
+    // MawalaHaAlahayam), and two words across a maqaf when they share one Strong's number. Each word here stays its own
+    // word (its English is found per word), flagged `joinNext` (+ `joinMaqaf` when a maqaf stands between) so
+    // joinFolded() writes the pair the way the display draws it.
+    let maqafSince = false, prevWord = null, prevRowSn = '';
     for (const r of st.all(source, b, c, v)) {
+      if (r.pos === 'punct' || !String(r.word_raw || '').match(/[\u{10900}-\u{1091F}]/u)) {
+        const isMq = String(r.word_raw || '').includes('\u05BE');
+        if (isMq) {
+          maqafSince = true;
+          // two words sharing one Strong's across a maqaf are one display word
+          if (prevWord && !prevWord.joinNext) prevWord._maqafSn = prevRowSn;
+        }
+        continue;
+      }
       let comps; try { comps = JSON.parse(r.components || '[]'); } catch { comps = []; }
       comps = comps.filter(x => x && x.paleo);
       // every letter of the word must be in its components: an index baked before
@@ -240,8 +330,22 @@ export function verseWordsLoader(sdb) {
                      if (mi && mi.pron && source !== 'BHS' && x.paleo === '𐤅' && all.some(y => /^pfm-/.test(y.css || ''))) return { ...mi, label: null };
                      return mi;
                    }).filter(Boolean) });
+      {
+        const w = words[words.length - 1], sn = r.sn ? 'H' + String(r.sn).replace(/^H+/i, '') : '';
+        // the word before this one: does the display join it onto this one?
+        if (prevWord && prevWord !== w) {
+          if (prevWord.joinNext) prevWord.joinMaqaf = maqafSince;
+          else if (prevWord._maqafSn && maqafSince && sn && prevWord._maqafSn === sn) { prevWord.joinNext = true; prevWord.joinMaqaf = true; }
+        }
+        const isPart = (r.pos === 'inrg' && r.word_raw === '𐤄') || (/^(prep|conj|art)$/.test(r.pos || '') && !HAS_AFFIX.test(r.morph || ''));
+        if (isPart) w.joinNext = true;
+        prevWord = w; prevRowSn = sn; maqafSince = false;
+      }
     }
     if (pending.length && words.length) { const last = words[words.length - 1]; last.comps.push(...pending.map(x => ({ ...x, css: 'mod-suff-unk' }))); last.form = formOf(last.comps); }
+    // a particle / shared-Strong's maqaf pair with no word after it joins nothing
+    if (words.length) { const last = words[words.length - 1]; delete last.joinNext; delete last.joinMaqaf; }
+    for (const w of words) delete w._maqafSn;
     return words;
   };
 }
@@ -786,9 +890,14 @@ export function interlinear(text, words, glossOf, opts = {}) {
   const squash = s => s.replace(/a+/g, 'a');   // Yashar-Al / Yasharaal
   const TOK = /((\d+)r?)?([A-Za-zÀ-ɏ][A-Za-zÀ-ɏ'’-]*)(\s*\(((?:[^()]|\([^()]*\))*)\))?|\s+|[^\sA-Za-zÀ-ɏ]/g;
   const used = new Set();
+  // a pair already written as the display's joined word ("MawalaHaAlahayam") is its host word; the words joined into it
+  // are taken with it (no separate pair for them) and the spelling is kept (2026-10-30)
+  const CHAINS = joinedChains(words);
+  const joinedHosts = new Set();
   const find = (w, ord) => {
     if (ord != null) { const x = words.find(h => String(h.ord) === ord); if (x && !used.has(x)) return x; }
     const n = norm(w); if (!n) return null;
+    { const ch = CHAINS.get(n); if (ch && !used.has(ch.host)) { for (const x of ch.members) used.add(x); joinedHosts.add(ch.host); return ch.host; } }
     return words.find(h => !used.has(h) && norm(h.form) === n)
         || words.find(h => !used.has(h) && (h.rootTr === n || h.snTr === n))
         || (n.length >= 4 ? words.find(h => !used.has(h) && norm(h.form).endsWith(n)) : null)
@@ -826,6 +935,7 @@ export function interlinear(text, words, glossOf, opts = {}) {
           || (gl.match(/\b[A-Z][a-z'’-]+/g) || []).some(x => NAME_ENG.has(x.toLowerCase().replace(/[’']s$/, '')));
         // the Hebrew word shown is the TOKEN's: a pair still written as its bare root ("palal")
         // becomes the verse's word ("ThaThaPalalaw"), its modifications woven into the English
+        if (h && joinedHosts.has(h)) { els.push({ k: 'item', h, form: m[3], gloss: gl, name: false }); continue; }
         if (h && !isName && norm(m[3]) !== norm(h.form)) { els.push({ k: 'item', h, form: h.form, gloss: weave(h, opts.baseline ? baseGloss(h, gl, text) : gl), name: false }); continue; }
         // a found word is written as its token's form ("athaw" -> "Athaw", "banath" -> "Banath")
         els.push({ k: 'item', h, form: (h && !isName && h.form) ? h.form : m[3], gloss: (opts.baseline && h && !isName && gl) ? weave(h, baseGloss(h, gl, text)) : gl, name: isName });
