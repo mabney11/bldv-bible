@@ -4041,6 +4041,44 @@ John never showed in Parallel: the Studio called John's Hebrew "BHS", Parallel o
 - Old 'HEB'-tagged hand links on OT books (Genesis in the Hebrew edition, 2026-08) no longer show — the OT shows BHS ordinals.
 - Verified: node --check server.js, esbuild Parallel.jsx. Not seen in a browser. Needs frontend build + restart + deploy.
 
+## NAMES ARE JUDGED TOO; the Studio reads like Parallel (2026-10-30, later)
+- heb-evidence judge: a chosen NAME used to return 'name' before the English was read, so a wrong name could never be
+  caught (𐤌𐤓𐤉𐤁𐤄 Meribah for "strife" 45x, 𐤓𐤔𐤏𐤕𐤌 Cushan-Rishathaim for "their wickedness" 23x, 𐤔𐤀𐤋𐤄 Sheol for
+  "question" 21x, 𐤄𐤔𐤕𐤇𐤅𐤄 Tochu for "worship" 11x, 𐤋𐤇𐤉 Beer-lahai-roi 9x, 𐤋𐤁𐤍𐤄 Libnah 27x). Now: the English names it
+  -> 'name'; an English word starting with the same 4 letters as the name ("Judas"/Judah) -> 'name'; otherwise judged like
+  any word (switch to a non-name reading the English names and the spelling's verses back); nothing better -> 'name'.
+  heb-align: a name is never switched where the HEB verse is > 3x its English (+20) — Jasher's passage-sized verses.
+  isName needs a capital AND a lowercase letter (H589 "I" was a name: 82 𐤀𐤍𐤉 "I" -> "nothingness").
+  First unguarded run: 3,389 name->word switches, many wrong (Judah -> "Judaize" 166 in 1 Macc, Nimrod -> "rebel" in
+  Jasher); the two guards were added after reading them. Re-measure before --freeze.
+  Third guard (same evening): a name is replaced only when < 10% of its spelling's verses name it (namesIt = profile hit
+  or the 4-letter prefix; used in spellAgree for names too) — 𐤉𐤄𐤅𐤃𐤄 stays Judah (1 Macc "Judas"/"the Jews"), 𐤌𐤓𐤉𐤁𐤄 /
+  𐤓𐤔𐤏𐤕𐤌 are mis-tags and switch. Measured on fieldy's DBs: 2,163 name->word switches; the top 70 read ~9 in 10 right
+  (Manasseh mis-tags -> commandment/food/fortresses, Beer -> well, Tartan -> our law, Shiloh -> rule …). Known wrong both
+  ways: 𐤄𐤀𐤔𐤅𐤓𐤉𐤌 (Assyrians; was Asherah, now "be straight"), 𐤁𐤅𐤔𐤕 (shame; was Sheth, now "six").
+  23 NT words the rules could not reach got heb-occurrence-overrides.json lines (Lod -> child x3, Chushim -> serpents,
+  Achijah -> live x2, Beer-lahai-roi -> lives x2, Tochu -> worship x2, Amon -> faith x3, Libnah -> white, Boaz -> strength,
+  Shelomah -> whole, Sheol -> question / asking, Meribah -> contention, Gederoth -> hedges, tal -> batel x2, Yah -> ashrei).
+  Hallelujah 𐤄𐤋𐤋𐤅𐤉𐤄 left as H3050 Yah (one token, two words).
+- Translate.jsx Paleo Source panel draws the reader's word blocks (apiTokens rows of the verse = what Parallel draws), not
+  one block per raw token (the merged word showed AND its folded tokens again: KaAsharaYaNaYawadai + Ashar, KayaShamaiw +
+  Kay). The word-link token selectors stay one per token. esbuild only; not seen in a browser.
+
+## Hishtaphel words get a reading: 𐤄𐤔𐤕𐤇𐤅𐤄 "worship" (2026-10-30)
+"no matching reading offered for 𐤄𐤔𐤕𐤇𐤅𐤄->H7812" (Rev 19:10, 22:9). The BHS token of that exact spelling exists (2 Kgs 5:18,
+weqatal 3ms) but its chips (𐤉 synthesized [He/it] + 𐤄𐤕 [Reflexive] + 𐤔𐤇𐤅𐤄) do not open/close the word — a Hishtaphel's 𐤕
+stands after the root's 𐤔 — so heb-align's bhsTokenFor guard refused it. The guard now also tries the morph as imperative /
+infinitive and accepts chips that hold exactly the word's letters in another order (`sameLetters`); a chip letter the word
+lacks (the synthesized 𐤉) still fails. Checked through the real parser: impv -> 𐤄𐤕 [Reflexive] + 𐤔𐤇𐤅𐤄 root. Still offered
+nothing (hand context readings, not looked at): 𐤔𐤁->H7617 𐤆𐤓->H2219 𐤁𐤍->H1124 𐤀𐤍𐤅->H578 𐤄𐤐𐤓->H6509a.
+
+## merge-modforms --saved keeps compound hyphens (2026-10-30)
+Rebake failed at step 5 on prod (verify-name-forms: translation 26:43:15 "WaHaHaraal"). The --saved pass writes a word's
+token form, which is the JOINED spelling, so fieldy's "WaHaHar-Al" became "WaHaHaraal"; fix-name-forms re-hyphenated it and
+the next run joined it again (translation_history shows the two alternating all day). merge-modforms now applies
+name-form-lib's unhyphenRe/hyphenRe (`hyphenNames`) to every saved verse's text and rich_text before writing. The deploy
+itself (step 4) had already gone live.
+
 ## SOURCES GATE — verify-heb-sources.mjs (2026-10-30)
 Reads surface-index.db surface_occurrences.evidence (HEB, canon >= 40). FAILS on a 'contradicted' reading not in
 lexicon/heb-source-baseline.json, or a book (>= 200 judgeable) whose weak share (guess+unconfirmed+contradicted of

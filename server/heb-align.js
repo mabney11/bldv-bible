@@ -1728,7 +1728,8 @@ function buildHebSurfaces(o) {
         if (!_spellAgree.has(k)) {
             const vv = _spellVerses.get(w) || [];
             let n = 0;
-            for (const [c, ch, v] of vv) if (evidence.hits(sn, evVerseStems(c, ch, v))) n++;
+            const nm = evidence.isName(sn);   // a name counts under another spelling too ("Judas" for Judah)
+            for (const [c, ch, v] of vv) if (nm ? evidence.namesIt(sn, evVerseStems(c, ch, v)) : evidence.hits(sn, evVerseStems(c, ch, v))) n++;
             _spellAgree.set(k, vv.length ? n / vv.length : 0);
         }
         return _spellAgree.get(k);
@@ -1853,7 +1854,10 @@ function buildHebSurfaces(o) {
                 if (c0) {
                     const j = evidence.judge(c0, () => candidateSNs(w), evVerseStems(row.canon_id, row.chapter, row.verse),
                                              sn => spellAgree(w, sn), sn => exactSNs(w).has(sn));
-                    if (j.switchTo) autoCr = { sn: j.switchTo, from: c0, auto: true };
+                    // a NAME is never switched where the HEB verse is far longer than its English (Jasher's passage-sized
+                    // verses: the name's English is not in the verse it is judged by — Nimrod -> "rebel", 2026-10-30)
+                    const _vsN = evVerseStems(row.canon_id, row.chapter, row.verse).size;
+                    if (j.switchTo && !(evidence.isName(c0) && hw.length > 3 * Math.max(1, _vsN) + 20)) autoCr = { sn: j.switchTo, from: c0, auto: true };
                     if (_tr) { const vs = evVerseStems(row.canon_id, row.chapter, row.verse);
                         _tr('judge', JSON.stringify(j), '| candidates', candidateSNs(w).join(' '), '| exact', [...exactSNs(w)].join(' '),
                             '| english', [...vs].join(' '));
@@ -1917,9 +1921,25 @@ function buildHebSurfaces(o) {
                                     const suf = cs.slice(ri + 1).map(c => c.paleo).join('');
                                     return w.startsWith(pre) && w.endsWith(suf) && [...pre + suf].length < [...w].length;
                                 };
+                                // a Hishtaphel / Hitpael writes its 𐤕 AFTER the root's first letter (𐤄𐤔𐤕𐤇𐤅𐤄 hishtachaveh,
+                                // root 𐤔𐤇𐤄): the chips hold exactly the word's letters, only not in the word's order —
+                                // accepted (the same by-design respelling the index lists), never a chip letter the word
+                                // lacks (a synthesized 3ms 𐤉 "he" makes it fail, so the imperative/infinitive wins).
+                                // Rev 19:10 / 22:9 "worship" had no reading at all (2026-10-30)
+                                const sameLetters = (m) => {
+                                    const cs = composeWord([{ word_raw: w, pos: bt.pos || 'subs', morph: m || '',
+                                        strongs: cr.sn, token_ordinal: 1 }], parseToken).components;
+                                    const a = [...cs.map(c => c.paleo).join('')].sort().join(''), b = [...w].sort().join('');
+                                    return a === b && cs.some(c => c.css === 'root');
+                                };
                                 if (!spells(bt.morph)) {
-                                    const m2 = (bt.morph || '').replace(/\bprs=[^|]*/, 'prs=absent');
-                                    bt = spells(m2) ? { ...bt, morph: m2 } : null;
+                                    const base = bt.morph || '';
+                                    const m2 = base.replace(/\bprs=[^|]*/, 'prs=absent');
+                                    const asVt = (vt, ps, gn, nu) => base.replace(/\bvt=[^|]*/, 'vt=' + vt).replace(/\bps=[^|]*/, 'ps=' + ps)
+                                        .replace(/\bgn=[^|]*/, 'gn=' + gn).replace(/\bnu=[^|]*/, 'nu=' + nu);
+                                    const tries = [m2, asVt('impv', 'p2', 'm', 'sg'), asVt('infc', 'unknown', 'unknown', 'unknown')];
+                                    const pick = tries.find(spells) || [base, ...tries].find(sameLetters);
+                                    bt = pick ? { ...bt, morph: pick } : null;
                                 }
                             }
                             if (bt) {

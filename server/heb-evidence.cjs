@@ -133,7 +133,8 @@ function buildEvidence(o) {
     };
     const isName = (sn0) => {
         const e = dict[H(sn0)] || dict[H(sn0).slice(1)] || {};
-        return /^[A-Z]/.test(String(e.strongs_def || '').trim());
+        // a capital AND a lowercase letter: "Nimrod, a son of Cush" — not H589 "I" (82 NT 𐤀𐤍𐤉 'I' -> 'nothingness', 2026-10-30)
+        return /^[A-Z][a-zʼ'\-]/.test(String(e.strongs_def || '').trim());
     };
     const sample = (o.sampleTexts || []).map(stemsOf);
     const _base = new Map();
@@ -181,17 +182,31 @@ function buildEvidence(o) {
         return k / Math.max(1, Math.min(P.length, Q.size)) >= 0.5; };
     // specific enough for a witness to judge: a profile, rare in ordinary verses, and it predicts its own OT tags
     const judgeable = sn => !virtual(sn) && prof(sn).size > 0 && base(sn) < 0.25 && selfRate(sn) >= 0.5;
+    // the verse names this NAME: its profile, or an English word starting with the same 4 letters ("Judas" for Judah
+    // in 1 Maccabees, "Achias" for Achijah in Josephus — 2026-10-30)
+    const namesIt = (sn, vs) => {
+        if (hits(sn, vs)) return true;
+        const pre = new Set([...prof(sn)].filter(p => p.length >= 4).map(p => p.slice(0, 4)));
+        for (const st of vs) if (st.length >= 4 && pre.has(st.slice(0, 4))) return true;
+        return false;
+    };
     function judge(chosen0, candidates, vs, spellingAgree, exactAlt) {
         const chosen = H(chosen0);
         if (!vs || !vs.size) return { evidence: 'no-english' };
         if (!chosen || virtual(chosen)) return { evidence: 'function' };
-        if (isName(chosen)) return { evidence: 'name' };
+        // A NAME is no longer exempt (2026-10-30). When the verse's English names it, it is a name ('name'). When the
+        // English does NOT name it, it is judged like any word: a non-name reading of the spelling that the English names
+        // (and the spelling's verses back) replaces it — 𐤌𐤓𐤉𐤁𐤄 Meribah -> "strife" 45x, 𐤓𐤔𐤏𐤕𐤌 Cushan-Rishathaim ->
+        // "their wickedness" 23x, 𐤔𐤀𐤋𐤄 Sheol -> "question", 𐤋𐤇𐤉 Beer-lahai-roi -> "to him that lives". The 'name'
+        // label used to stop the judge before the English was read, so a wrong name could never be caught.
+        const chosenIsName = isName(chosen);
+        if (chosenIsName && namesIt(chosen, vs)) return { evidence: 'name' };
         // near-twins (Hebrew shatah / Aramaic shetah, qedem / qodam): when two readings share
         // most of their English, the English cannot tell them apart
         // Transliterations do not count: homographs of one spelling share it by definition (𐤄𐤍𐤄
         // "hanah" for both hinneh H2009 and hennah H2008 made them twins — John 4:15, 2026-10-29)
-        if (!judgeable(chosen)) return { evidence: 'function' };
-        if (hits(chosen, vs)) return { evidence: 'english' };
+        if (!chosenIsName && !judgeable(chosen)) return { evidence: 'function' };
+        if (!chosenIsName && hits(chosen, vs)) return { evidence: 'english' };
         const cl = typeof candidates === 'function' ? candidates() : candidates;   // lazy: only needed here
         const others = [...new Set((cl || []).map(H))].filter(s => s && s !== chosen && !virtual(s));
         // a REPLACEMENT may be everyday vocabulary ("speak", "go") — only the current reading must be
@@ -204,6 +219,10 @@ function buildEvidence(o) {
             && selfRate(sn) >= (exactAlt && exactAlt(sn) ? 0.3 : 0.5);
         // a candidate is named by its profile OR by any English the WEB uses for it in >= 5% of its verses
         // (yashab H3427 "sat", 7% — below the profile's 12%; John 4:6 "sat down by the well")
+        // a NAME is replaced only when its spelling is (almost) never read as that name across the spelling's verses
+        // (< 10% name it): 𐤌𐤓𐤉𐤁𐤄 / 𐤓𐤔𐤏𐤕𐤌 are mis-tags; 𐤉𐤄𐤅𐤃𐤄 Judah is a real name the English calls "Judas"/"the Jews"
+        // (1 Macc: 101 'Judaize' switches without this, 2026-10-30)
+        if (chosenIsName && spellingAgree && spellingAgree(chosen) >= 0.1) return { evidence: 'name' };
         const named = others.filter(s => !isName(s) && candidateOk(s) && (hits(s, vs) || hitsTagged(s, vs)) && !twins(chosen, s)
             // the SPELLING's verses must back it too — one verse alone is a coincidence. Either the
             // new reading clearly beats the current one across the spelling (lift >= 0.3, and >= 0.3
@@ -216,9 +235,10 @@ function buildEvidence(o) {
             })()))
             .sort((a, b) => base(a) - base(b));
         if (named.length) return { evidence: 'english', switchTo: named[0] };
+        if (chosenIsName) return { evidence: 'name' };   // nothing better named: the name stands, as before
         return { evidence: others.length ? 'guess' : 'unconfirmed' };
     }
-    return { prof, base, selfRate, isName, judgeable, twins, hits, hitsTagged, judge, addTranslit, stemsOf, stemWord, englishOnly };
+    return { prof, base, selfRate, isName, namesIt, judgeable, twins, hits, hitsTagged, judge, addTranslit, stemsOf, stemWord, englishOnly };
 }
 
 module.exports = { buildEvidence, stemWord, evStem, stemsOf, englishOnly };

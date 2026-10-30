@@ -453,6 +453,14 @@ if (CORPUS) {
   const tdb = new Database(TRANS_DB, { readonly: DRY });
   const rows = tdb.prepare(`SELECT book_id c, chapter ch, verse v, status, text, coalesce(rich_text,'') rt FROM translations
       WHERE (status != 'none' OR coalesce(rich_text,'') != '') AND text IS NOT NULL AND text != ''`).all();
+  // compound names keep their hyphen (name-form-lib's rule): the token form this pass writes is the JOINED spelling, so
+  // fieldy's "WaHaHar-Al" became "WaHaHaraal", fix-name-forms put the hyphen back, the next run removed it again — a
+  // tug-of-war on Ezek 43:15 that failed Rebake's name-form gate on prod (2026-10-30)
+  const NRS = loadNameRules();
+  const hyphenNames = t => { if (!t) return t; let x = t;
+    if (NRS.unhyphenRe) x = x.replace(NRS.unhyphenRe, (m, pre, name) => pre + (NRS.unhyphenTo.get(name) || name));
+    if (NRS.hyphenRe) x = x.replace(NRS.hyphenRe, (m, pre, name) => pre + (NRS.hyphenTo.get(name) || name));
+    return x; };
   const histIns = DRY ? null : tdb.prepare(`INSERT INTO translation_history (book_id, chapter, verse, status, text, rich_text, saved_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`);
   const upd = DRY ? null : tdb.prepare(`UPDATE translations SET text = ?, rich_text = ?, updated_at = datetime('now') WHERE book_id = ? AND chapter = ? AND verse = ?`);
   const linkSel = tdb.prepare(`SELECT id, english_indices FROM translation_links WHERE book_id = ? AND chapter = ? AND verse = ?`);
@@ -540,7 +548,8 @@ if (CORPUS) {
       }
       // no gloss inside a gloss, no stray one-word bracket — before fix-name-forms sees the verse
       { const u2 = MF.unnest(t2.text, ORIG_S.get(`${r.c}|${+r.ch}|${+r.v}`) || ''); if (u2 !== t2.text) { t2.text = u2; moved = true; } }
-      const rich = !r.rt ? r.rt : (r.rt === r.text ? t2.text : (moved && divOnly(r.rt) ? `<div>${esc(t2.text)}</div>` : fixRich(r.rt)));
+      t2.text = hyphenNames(t2.text);
+      const rich = hyphenNames(!r.rt ? r.rt : (r.rt === r.text ? t2.text : (moved && divOnly(r.rt) ? `<div>${esc(t2.text)}</div>` : fixRich(r.rt))));
       if (t2.text === r.text && rich === r.rt) continue;
       changed++; pairs += t2.n;
       samples.push(`${r.c}:${r.ch}:${r.v}\n    was: ${r.text}\n    now: ${t2.text}`);

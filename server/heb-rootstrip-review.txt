@@ -1158,7 +1158,6 @@ occurrences	word	best split (NOT applied)	SN	stem is	refs
 1	𐤀𐤍𐤂𐤓𐤉	[𐤀] 𐤍𐤂𐤓 𐤉	H5064	root	100:3:15
 1	𐤀𐤋𐤌𐤍𐤉𐤉𐤀	𐤀𐤋 𐤌𐤍𐤉𐤉𐤀 	H4483	matres	100:3:16
 1	𐤁𐤀𐤓𐤃𐤍𐤄	𐤁 𐤀𐤓𐤃𐤍 𐤄	H715	matres	100:3:16
-1	𐤋𐤁𐤉𐤑𐤄	𐤋 𐤁𐤉𐤑𐤄 	H1000	root	100:3:26
 1	𐤄𐤐𐤉𐤕𐤓𐤅𐤍	𐤄 𐤐𐤉𐤕𐤓𐤅𐤍 	H6623	matres	100:3:26
 1	𐤅𐤕𐤔𐤊𐤊	𐤅+[𐤕] 𐤔𐤊𐤊 	H7918	root	100:3:27
 1	𐤅𐤀𐤔𐤅𐤉𐤓𐤅𐤔	𐤅+[𐤀] 𐤔𐤅𐤉𐤓𐤅𐤔 	H8327	matres	100:4:3

@@ -13,7 +13,7 @@ Distinct (word_raw, pos, morph, strongs) combos: 37,503
 Parsing all surface forms…
     ✓ parsing surface forms — 37,503 in 2s
 
-Parsed 37,503 unique surface forms in 2.2s
+Parsed 37,503 unique surface forms in 1.9s
 [strongs] real 37451, virtual 45, blank 7
 [strongs↔root] 328 first-letter mismatches
   ok sn-mismatch             261
@@ -34,7 +34,7 @@ Parsed 37,503 unique surface forms in 2.2s
    the orthography merges them — 𐤀𐤌𐤓 + 1cs renders 𐤀𐤀𐤌𐤓)
 
 Fetching all occurrence locations… (one query over every token — no progress possible here; ≈ a minute)
-490,052 occurrences fetched in 1.2s
+490,052 occurrences fetched in 1.1s
   64 occurrence override(s) loaded from heb-occurrence-overrides.json
   2101 unambiguous non-name lemmas indexed for lexicon-over-split
   8 forced reading(s) loaded from heb-forced-readings.json
@@ -45,25 +45,25 @@ Fetching all occurrence locations… (one query over every token — no progress
 
 Building HEB (extra) whole-word surfaces…
   evidence: English profiles from web-strongs.jsonl + his lexicon/homographs (--no-evidence disables)
-  verse pairing: 233 of 449 chapters re-paired, 6,037 HEB verses judged by another English verse (heb-eng-verse-map.txt; --no-verse-map disables) in 12.0s
+  verse pairing: 234 of 449 chapters re-paired, 6,036 HEB verses judged by another English verse (heb-eng-verse-map.txt; --no-verse-map disables) in 10.2s
   OT: aligning HEB words against BHS token runs…
-    ⏱ OT: aligning chapters: 768 / 929 83% · 51/s · 15s elapsed · ~3s left
-    ✓ OT: aligning chapters — 929 in 18s
+    ⏱ OT: aligning chapters: 798 / 929 86% · 53/s · 15s elapsed · ~2s left
+    ✓ OT: aligning chapters — 929 in 17s
   proclitic glosses taken from BHS: 𐤅 𐤄 𐤁 𐤋 𐤊 𐤌 𐤔
   suffix glosses taken from BHS: 10/38 attested tails
   3fs possessive 𐤄 for NT splits: from BHS
   root-strip preformatives taken from BHS: 𐤌𐤕 𐤄𐤕 𐤉𐤕 𐤕𐤕 𐤍𐤕 𐤉 𐤕 𐤀 𐤍 𐤄 𐤌
   NT: resolving whole words against the OT-attested form table…
   root strip: 8,535 unresolved spellings have a root-strip candidate; 1,185 backed by their own occurrences' English
-    ⏱ NT: resolving whole words: 14,864 / 30,828 48% · 991/s · 15s elapsed · ~16s left
-    ⏱ NT: resolving whole words: 24,497 / 30,828 79% · 817/s · 30s elapsed · ~8s left
-    ✓ NT: resolving whole words — 30,828 in 40s
+    ⏱ NT: resolving whole words: 14,951 / 30,828 48% · 996/s · 15s elapsed · ~16s left
+    ⏱ NT: resolving whole words: 25,533 / 30,828 83% · 851/s · 30s elapsed · ~6s left
+    ✓ NT: resolving whole words — 30,828 in 38s
   one spelling, one reading: 21,603 blank occurrence(s) of 1,090 spellings took the reading their spelling has elsewhere; 105 spellings left blank (several readings, none >= 90%)
   fallback readings: 329 root chips had glued proclitics peeled into their own chips (𐤅𐤄𐤕𐤒𐤉𐤐 -> [And] [The] 𐤕𐤒𐤉𐤐)
-  source review: 27 contradicted readings in 19 spelling/reading pairs — server/heb-source-review.txt
+  source review: 10 contradicted readings in 9 spelling/reading pairs — server/heb-source-review.txt
   greek: 43,550 readings confirmed by their verse's Greek as decided, 1,114 switched to the reading the Greek backs (heb-context-switches.txt 'greek')
-  evidence: 21,692 readings switched to the one their verse's English names; function 303,214 (38.1%), english 181,532 (22.8%), guess 163,536 (20.5%), greek 45,772 (5.7%), name 36,242 (4.6%), untagged 30,698 (3.9%), unconfirmed 26,938 (3.4%), hand 6,245 (0.8%), no-english 2,319 (0.3%), contradicted 27 (0.0%)
-  context readings: 27875 occurrence(s) switched to the reading the verse's English supports, 932 kept (English supports the original), 1729 taken from the BHS token of the same spelling, 4736 built from the Strong's root; 3fs possessive 𐤄: 1050 occurrence(s); no matching reading offered for: 𐤔𐤁->H7617 𐤄𐤔𐤕𐤇𐤅𐤄->H7812 𐤆𐤓->H2219 𐤁𐤍->H1124 𐤀𐤍𐤅->H578 𐤄𐤐𐤓->H6509
+  evidence: 23,857 readings switched to the one their verse's English names; function 304,991 (38.3%), english 183,139 (23.0%), guess 166,008 (20.8%), greek 45,797 (5.7%), untagged 30,698 (3.9%), name 30,378 (3.8%), unconfirmed 26,938 (3.4%), hand 6,245 (0.8%), no-english 2,319 (0.3%), contradicted 10 (0.0%)
+  context readings: 30040 occurrence(s) switched to the reading the verse's English supports, 932 kept (English supports the original), 1845 taken from the BHS token of the same spelling, 5351 built from the Strong's root; 3fs possessive 𐤄: 1025 occurrence(s); no matching reading offered for: 𐤔𐤁->H7617 𐤄𐤔𐤕𐤇𐤅𐤄->H7812 𐤆𐤓->H2219 𐤁𐤍->H1124 𐤀𐤍𐤅->H578 𐤄𐤐𐤓->H6509
   (every switch listed in heb-context-switches.txt)
   root strip: 9,363 occurrence(s) tagged by peeling prefixes/tails to a Strong's root (1,185 spellings backed by their own occurrences); 4,082 spellings had a candidate no English named
   (tagged: heb-rootstrip.txt; not tagged, for review: heb-rootstrip-review.txt)
@@ -83,34 +83,36 @@ Building HEB (extra) whole-word surfaces…
         𐤁𐤀𐤔𐤓𐤅  chose exact(x1)  vs 𐤁 + 𐤀𐤔𐤓 + 𐤅 (stem x4836)
         𐤋𐤀𐤔𐤓𐤅  chose exact(x1)  vs 𐤋 + 𐤀𐤔𐤓 + 𐤅 (stem x4836)
      re-run with --amb-out amb.txt for the ranked list
-  by tier: nt_exact=644,044  exact=259,700  reconstructed=45,364  nt_proclitic=40,727  nt_plene=32,056  nt_unresolved=31,304  nt_spelling=21,603  nt_affixed=14,156  nt_suffix=13,395  nt_rootstrip=9,363  nt_context_root=4,736  nt_tokens_nt_fallback=3,510  nt_context_bhs=1,729  unaligned=1,725  nt_particle=750  nt_adjacent=627  nt_lexicon_pref=120  plene=7  nt_lexicon=6
-  105,366 HEB surfaces, 1,171,354 occurrences in 89.7s
+  by tier: nt_exact=643,850  exact=259,700  reconstructed=45,364  nt_proclitic=40,837  nt_plene=31,937  nt_unresolved=31,304  nt_spelling=21,603  nt_suffix=13,512  nt_affixed=13,499  nt_rootstrip=9,363  nt_context_root=5,351  nt_tokens_nt_fallback=3,510  nt_context_bhs=1,845  unaligned=1,725  nt_particle=751  nt_adjacent=638  nt_lexicon_pref=120  plene=7  nt_lexicon=6
+  105,707 HEB surfaces, 1,171,354 occurrences in 84.0s
 Deleted old surface-index.unsettled.db
+Deleted stale surface-index.unsettled.db-wal
+Deleted stale surface-index.unsettled.db-shm
 
 Writing surface-index.unsettled.db…
-  stem letters: 410 surfaces had prefix / stem letters moved out of the root chip into 601 chips (𐤕 87, 𐤄 55, 𐤅+𐤉 51, 𐤅+𐤕 45, 𐤅 39, 𐤉 28, 𐤌 21, 𐤅+𐤀 10)
+  stem letters: 412 surfaces had prefix / stem letters moved out of the root chip into 603 chips (𐤕 87, 𐤄 55, 𐤅+𐤉 51, 𐤅+𐤕 45, 𐤅 39, 𐤉 28, 𐤌 23, 𐤅+𐤀 10)
     e.g. 𐤀𐤕𐤒𐤅𐤈𐤈 → 𐤀 + 𐤕 + 𐤒𐤅𐤈𐤈 · 𐤀𐤕𐤒𐤅𐤈𐤈𐤄 → 𐤀 + 𐤕 + 𐤒𐤅𐤈𐤈 + 𐤄 · 𐤀𐤕𐤓𐤅𐤏𐤏 → 𐤀 + 𐤕 + 𐤓𐤅𐤏𐤏 · 𐤄𐤁𐤅𐤆 → 𐤄 + 𐤁𐤆𐤅𐤆
   stem letters: 42 left whole as probable wrong Strong's — server/stem-split-mistags.txt
   reading forms: 6 surfaces respelled by lexicon/reading-form-rules.json (𐤀𐤁𐤉 → 𐤀𐤁𐤍𐤅 Abanaw, 𐤀𐤁𐤉𐤍𐤅 → 𐤀𐤁𐤍𐤅 Abanaw, 𐤌𐤀𐤁𐤉𐤍𐤅 → 𐤌𐤀𐤁𐤍𐤅 MaAbanaw, 𐤋𐤀𐤁𐤉𐤍𐤅 → 𐤋𐤀𐤁𐤍𐤅 LaAbanaw)
-  chip translits: 71,085 bare-consonant chips in 56,461 surfaces re-transliterated in their word
-  letters: 1,063 surfaces whose chips spelled only the start of the word got the rest back (𐤋𐤊𐤍 𐤋→𐤋𐤊𐤍, 𐤋𐤌𐤅 𐤋𐤌→𐤋𐤌𐤅, 𐤌𐤄𐤌 𐤌→𐤌𐤄𐤌, 𐤁𐤄𐤌 𐤁→𐤁𐤄𐤌, 𐤋𐤁𐤃𐤍𐤄 𐤋𐤁𐤃𐤍→𐤋𐤁𐤃𐤍𐤄)
-  letters: 9,354 surfaces whose chips respell a letter (𐤄𐤅 suffix → 𐤅, hitpael 𐤔𐤕 → 𐤕𐤔) — by design, listed for review (𐤀𐤔𐤕𐤇𐤅𐤄 (chips 𐤀𐤕𐤔𐤇𐤅𐤄), 𐤀𐤔𐤕𐤇𐤅𐤄 (chips 𐤀𐤕𐤔𐤇𐤅𐤄), 𐤀𐤔𐤕𐤌𐤓 (chips 𐤀𐤕𐤔𐤌𐤓), 𐤀𐤔𐤕𐤌𐤓𐤄 (chips 𐤀𐤕𐤔𐤌𐤓𐤄), 𐤁𐤏𐤋 (chips 𐤁𐤌𐤅𐤕))
+  chip translits: 71,247 bare-consonant chips in 56,669 surfaces re-transliterated in their word
+  letters: 1,062 surfaces whose chips spelled only the start of the word got the rest back (𐤋𐤊𐤍 𐤋→𐤋𐤊𐤍, 𐤋𐤌𐤅 𐤋𐤌→𐤋𐤌𐤅, 𐤌𐤄𐤌 𐤌→𐤌𐤄𐤌, 𐤁𐤄𐤌 𐤁→𐤁𐤄𐤌, 𐤋𐤁𐤃𐤍𐤄 𐤋𐤁𐤃𐤍→𐤋𐤁𐤃𐤍𐤄)
+  letters: 9,325 surfaces whose chips respell a letter (𐤄𐤅 suffix → 𐤅, hitpael 𐤔𐤕 → 𐤕𐤔) — by design, listed for review (𐤀𐤔𐤕𐤇𐤅𐤄 (chips 𐤀𐤕𐤔𐤇𐤅𐤄), 𐤀𐤔𐤕𐤇𐤅𐤄 (chips 𐤀𐤕𐤔𐤇𐤅𐤄), 𐤀𐤔𐤕𐤌𐤓 (chips 𐤀𐤕𐤔𐤌𐤓), 𐤀𐤔𐤕𐤌𐤓𐤄 (chips 𐤀𐤕𐤔𐤌𐤓𐤄), 𐤁𐤏𐤋 (chips 𐤁𐤌𐤅𐤕))
   Inserting 37,503 surface records…
   Done in 0.6s
   Inserting 490,052 occurrence records…
-  Done in 10.8s
-    ⏱ writing HEB occurrences: 500,557 / 1,171,354 43% · 33370/s · 15s elapsed · ~20s left
-    ⏱ writing HEB occurrences: 793,823 / 1,171,354 68% · 26461/s · 30s elapsed · ~14s left
-    ⏱ writing HEB occurrences: 1,041,889 / 1,171,354 89% · 23153/s · 45s elapsed · ~6s left
-    ✓ writing HEB occurrences — 1,171,354 in 56s
+  Done in 10.1s
+    ⏱ writing HEB occurrences: 519,245 / 1,171,354 44% · 34616/s · 15s elapsed · ~19s left
+    ⏱ writing HEB occurrences: 823,532 / 1,171,354 70% · 27451/s · 30s elapsed · ~13s left
+    ⏱ writing HEB occurrences: 1,078,504 / 1,171,354 92% · 23967/s · 45s elapsed · ~4s left
+    ✓ writing HEB occurrences — 1,171,354 in 51s
   HEB rows written. Chapters needing a non-zero offset: 62 (e.g. 19:3→-1, 19:4→-1, 19:5→-1, 19:6→-1, 19:7→-1)
-✓ divine titles baked: 102 titles, 17,249 title-verses, 28,273 gold words (22.2s)
+✓ divine titles baked: 102 titles, 17,249 title-verses, 28,273 gold words (20.0s)
 
 ✓ surface-index.db written
-  Size: 583.4 MB
+  Size: 583.5 MB
   Surfaces: 37,503
   Occurrences: 490,052
-  Total time: 195.6s
+  Total time: 180.7s
 
 Next: add surface-index.db endpoints to server.js (see below)
 

@@ -1,2 +1,14 @@
 ref	word	from->to	before -> after	who (hand = his entry, auto = the verse English)
-
+40:10:16	𐤊𐤍𐤇𐤔𐤉𐤌	H3651->H5175	particle:𐤊𐤍+𐤇𐤔𐤉𐤌 -> proclitic:𐤊+𐤍𐤇𐤔𐤉𐤌	hand
+40:18:4	𐤊𐤉𐤋𐤃	H3588->H3206	particle:𐤊𐤉+𐤋𐤃 -> proclitic:𐤊+𐤉𐤋𐤃	hand
+41:10:15	𐤊𐤉𐤋𐤃	H3588->H3206	particle:𐤊𐤉+𐤋𐤃 -> proclitic:𐤊+𐤉𐤋𐤃	hand
+42:14:23	𐤄𐤂𐤃𐤓𐤅𐤕	H1450->H1448	exact:𐤄𐤂𐤃𐤓𐤅𐤕 -> proclitic:𐤄+𐤂𐤃𐤓𐤅𐤕	hand
+42:18:17	𐤊𐤉𐤋𐤃	H3588->H3206	particle:𐤊𐤉+𐤋𐤃 -> proclitic:𐤊+𐤉𐤋𐤃	hand
+46:7:40	𐤀𐤔𐤓𐤉𐤄	H834->H835	particle:𐤀𐤔𐤓+𐤉𐤄 -> suffix:𐤀𐤔𐤓𐤉+𐤄	hand
+48:2:16	𐤁𐤀𐤌𐤅𐤍𐤕	H526->H530	affixed:𐤁+𐤀𐤌𐤅𐤍+𐤕 -> plene:𐤁𐤀𐤌𐤅𐤍𐤕𐤉	hand
+48:2:16	𐤌𐤀𐤌𐤅𐤍𐤕	H4519->H530	affixed:𐤌+𐤀𐤌𐤅𐤍+𐤕 -> proclitic:𐤌+𐤀𐤌𐤅𐤍𐤕	hand
+48:3:22	𐤁𐤀𐤌𐤅𐤍𐤕	H526->H530	affixed:𐤁+𐤀𐤌𐤅𐤍+𐤕 -> plene:𐤁𐤀𐤌𐤅𐤍𐤕𐤉	hand
+49:6:10	𐤅𐤁𐤏𐤆	H1162->H5797	exact:𐤅𐤁𐤏𐤆 -> proclitic:𐤅+𐤁𐤏𐤆	hand
+60:3:21	𐤁𐤔𐤀𐤋	H7585->H7592	plene:𐤁𐤔𐤀𐤅𐤋 -> proclitic:𐤁+𐤔𐤀𐤋	hand
+66:19:10	𐤄𐤔𐤕𐤇𐤅𐤄	H8459->H7812	affixed:𐤄+𐤔+𐤕𐤇𐤅+𐤄 -> bhs:𐤄𐤔𐤕𐤇𐤅𐤄	hand
+66:22:9	𐤄𐤔𐤕𐤇𐤅𐤄	H8459->H7812	affixed:𐤄+𐤔+𐤕𐤇𐤅+𐤄 -> bhs:𐤄𐤔𐤕𐤇𐤅𐤄	hand

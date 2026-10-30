@@ -1006,7 +1006,7 @@ export default function Translate() {
         localLinks = ll; // null = no local override for links; [] = locally cleared
       }
 
-      let tokens;
+      let tokens, displayBlocks = null;
       if (L === 'BHS') {
         // Hebrew keeps its rich parsed-component Paleo path.
         const parsedTokens = await apiTokens(bookId, chapter).catch(() => []);
@@ -1032,6 +1032,10 @@ export default function Translate() {
           }
           return { ...t, verse: verseNum };
         });
+        // what the READER shows: one block per word, exactly as Parallel draws it (a word made of several tokens —
+        // 𐤊𐤉 folded into 𐤔𐤌𐤏𐤅, 𐤀𐤔𐤓 into 𐤊𐤀𐤔𐤓…𐤉𐤃𐤏 — is one block, not the merged word AND its tokens again).
+        // The token selectors below stay one per token, for linking (fieldy, 2026-10-30).
+        displayBlocks = (parsedTokens || []).filter(pt => +pt.verse === verseNum && pt.components?.length);
         setSrcTokens(null);
       } else {
         // Any other language: pull tokens from the reader's source endpoint (one
@@ -1055,7 +1059,7 @@ export default function Translate() {
       const links = dedupeLinks(
         resolvePhraseLinks(hydrateLinks(localLinks != null ? localLinks : (data.links || [])), enWords)
       );
-      setVerseData({ ...data, tokens, links, localLinks: localLinks != null });
+      setVerseData({ ...data, tokens, displayBlocks, links, localLinks: localLinks != null });
       setLoadSeq(s => s + 1);
     } catch (e) { toast('Verse load failed: ' + e.message, 'err'); }
   }, [setUrl, toast, lang]);
@@ -2061,8 +2065,8 @@ export default function Translate() {
                         // translit+gloss underneath, Strong's/surf badges, and
                         // the maqaf-compound split handling (al-ha'aretz-style
                         // two-part construct chains) for free.
-                        ? tokens.map(t => (
-                            <WordBlock key={t.token_ordinal} wordObj={t} showSub showCopyBtn showStrongs />
+                        ? (verseData?.displayBlocks?.length ? verseData.displayBlocks : tokens).map((t, i) => (
+                            <WordBlock key={`${t.token_ordinal}-${i}`} wordObj={t} showSub showCopyBtn showStrongs />
                           ))
                         : tokens.map(t => (
                             <div key={t.token_ordinal} className="tr-src-block" dir={langMeta.dir}>
