@@ -44,6 +44,7 @@ ref	word	from->to	before -> after	who (hand = his entry, auto = the verse Englis
 42:12:46	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
 42:14:23	𐤄𐤂𐤃𐤓𐤅𐤕	H1450->H1448	exact:𐤄𐤂𐤃𐤓𐤅𐤕 -> proclitic:𐤄+𐤂𐤃𐤓𐤅𐤕	hand
 42:18:17	𐤊𐤉𐤋𐤃	H3588->H3206	particle:𐤊𐤉+𐤋𐤃 -> proclitic:𐤊+𐤉𐤋𐤃	hand
+42:19:42	𐤌	H4519->H9006	exact:𐤌 -> bhs:𐤌	hand
 42:22:14	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 42:22:70	𐤄𐤊𐤉	->H3588	exact:𐤄𐤊𐤉 -> proclitic:𐤄+𐤊𐤉	hand
 42:23:44	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
@@ -118,7 +119,9 @@ ref	word	from->to	before -> after	who (hand = his entry, auto = the verse Englis
 60:3:21	𐤁𐤔𐤀𐤋	H7585->H7592	plene:𐤁𐤔𐤀𐤅𐤋 -> proclitic:𐤁+𐤔𐤀𐤋	hand
 62:2:18	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 62:2:18	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+62:5:4	𐤌𐤍𐤑𐤇	H4480->H5329	particle:𐤌𐤍+𐤑𐤇 -> bhs:𐤌𐤍𐤑𐤇	hand
 66:3:3	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+66:6:2	𐤌𐤍𐤑𐤇	H4480->H5329	particle:𐤌𐤍+𐤑𐤇 -> bhs:𐤌𐤍𐤑𐤇	hand
 66:9:15	𐤋𐤔𐤏𐤄	H3444->H8160	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> root:𐤋 𐤔𐤏𐤄 	hand
 66:17:12	𐤋𐤔𐤏𐤄	H3444->H8160	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> root:𐤋 𐤔𐤏𐤄 	hand
 66:18:10	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
@@ -126,7 +129,11 @@ ref	word	from->to	before -> after	who (hand = his entry, auto = the verse Englis
 66:19:10	𐤄𐤔𐤕𐤇𐤅𐤄	H8459->H7812	affixed:𐤄+𐤔+𐤕𐤇𐤅+𐤄 -> bhs:𐤄𐤔𐤕𐤇𐤅𐤄	hand
 66:22:9	𐤄𐤔𐤕𐤇𐤅𐤄	H8459->H7812	affixed:𐤄+𐤔+𐤕𐤇𐤅+𐤄 -> bhs:𐤄𐤔𐤕𐤇𐤅𐤄	hand
 69:15:26	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+79:1:64	𐤊𐤍𐤏𐤍𐤉	H3651->H3669	particle:𐤊𐤍+𐤏𐤍𐤉 -> exact:𐤊𐤍𐤏𐤍𐤉	hand
 100:2:6	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+100:7:6	𐤊𐤍𐤏𐤍𐤉	H3651->H3669	particle:𐤊𐤍+𐤏𐤍𐤉 -> exact:𐤊𐤍𐤏𐤍𐤉	hand
+100:10:20	𐤊𐤍𐤏𐤍𐤉	H3651->H3669	particle:𐤊𐤍+𐤏𐤍𐤉 -> exact:𐤊𐤍𐤏𐤍𐤉	hand
+100:11:12	𐤊𐤍𐤏𐤍𐤉	H3651->H3669	particle:𐤊𐤍+𐤏𐤍𐤉 -> exact:𐤊𐤍𐤏𐤍𐤉	hand
 119:2:21	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
 119:5:5	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
 119:7:16	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
@@ -150,7 +157,9 @@ ref	word	from->to	before -> after	who (hand = his entry, auto = the verse Englis
 143:8:30	𐤄𐤊𐤉	->H3588	exact:𐤄𐤊𐤉 -> proclitic:𐤄+𐤊𐤉	hand
 217:1:120	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
 217:1:243	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+218:2:3	𐤌𐤍𐤑𐤇	H4480->H5329	particle:𐤌𐤍+𐤑𐤇 -> bhs:𐤌𐤍𐤑𐤇	hand
 218:2:155	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+218:2:287	𐤌	H4519->H9006	exact:𐤌 -> bhs:𐤌	hand
 219:1:45	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 219:1:79	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
 219:1:100	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
@@ -185,12 +194,14 @@ ref	word	from->to	before -> after	who (hand = his entry, auto = the verse Englis
 219:6:248	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
 219:6:290	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
 219:6:293	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:316	𐤌𐤍𐤑𐤇	H4480->H5329	particle:𐤌𐤍+𐤑𐤇 -> bhs:𐤌𐤍𐤑𐤇	hand
 219:6:423	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
 219:7:7	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 219:7:194	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 219:7:323	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 219:7:358	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 219:7:394	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+219:7:443	𐤌𐤍𐤑𐤇	H4480->H5329	particle:𐤌𐤍+𐤑𐤇 -> bhs:𐤌𐤍𐤑𐤇	hand
 220:1:76	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
 220:1:223	𐤔𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤔+𐤁+𐤔𐤏𐤄 -> root:𐤔+𐤁 𐤔𐤏𐤄 	hand
 220:2:105	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
@@ -210,6 +221,7 @@ ref	word	from->to	before -> after	who (hand = his entry, auto = the verse Englis
 220:6:265	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
 220:7:133	𐤔𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤔+𐤁+𐤔𐤏𐤄 -> root:𐤔+𐤁 𐤔𐤏𐤄 	hand
 220:7:169	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:7:217	𐤌𐤍𐤑𐤇	H4480->H5329	particle:𐤌𐤍+𐤑𐤇 -> bhs:𐤌𐤍𐤑𐤇	hand
 220:8:27	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
 220:8:202	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
 220:8:348	𐤔𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤔+𐤁+𐤔𐤏𐤄 -> root:𐤔+𐤁 𐤔𐤏𐤄 	hand

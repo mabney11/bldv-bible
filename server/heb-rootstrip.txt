@@ -1,2 +1,4 @@
 ref	word	witness	prefixes [preformative] stem tails	SN	stem is
-
+76:8:20	𐤁𐤌𐤂𐤉𐤍𐤌	english	𐤁 𐤌𐤂𐤉𐤍 𐤌	H4042	matres
+220:11:166	𐤉𐤊𐤁𐤃𐤅𐤄𐤅	english	[𐤉] 𐤊𐤁𐤃𐤅𐤄𐤅 	H3513	form
+220:16:114	𐤍𐤏𐤌𐤋	english	[𐤍] 𐤏𐤌𐤋 	H5998	root
