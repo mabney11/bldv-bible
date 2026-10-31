@@ -1,2 +1,2 @@
 ref	word	witness	prefixes [preformative] stem tails	SN	stem is
-
+220:7:298	𐤅𐤍𐤕𐤏𐤉𐤐	english	𐤅+[𐤍𐤕] 𐤏𐤉𐤐 	H5888	root

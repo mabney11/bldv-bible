@@ -4176,3 +4176,14 @@ confirmed = agrees; CONTRADICTED only when another reading of the same spelling 
 neither; (2) versification alignment for the low books (Jasher, Tobit, Susanna, 1-2 Macc, Judith, Jubilees, Josephus) — pair each
 HEB verse with the English verse its words fit; (3) gate: no contradicted reading ships, unsupported count per book may not grow;
 (4) then --freeze again.
+
+## EVERY MODIFICATION SHOWS IN THE MODIFIER LIST (2026-10-30)
+fieldy, John 4:8 KayaThalamayadayaw: "there is a suffix ... but its not visible -- all modifications must be visible in the modifier
+list". The HEB fallback reading (tier nt_tokens_nt_fallback) baked 𐤉𐤅 as ONE chip "[Yaw]" (mod-suff-unk); WordBlock's redundancy rule
+(gloss === transliteration) hid it. Measured: 109 surfaces / 1,431 occurrences had a hidden modifier; 135 etched heb-settled records hold one.
+- server.js + build-surface-index.js HARDEN block: a tail left after the root goes through splitTrailResidue (whole class, else FLAT_SUFFIX
+  pieces), not one "[translit]" chip. An unsplittable piece reads "[? yaw]".
+- build-surface-index `labelUnknownSuffixes` (before fixBareChipTranslits, BHS + HEB incl. ETCHED readings): a mod-suff-unk chip after the
+  root is split the same way; letters and Strong's unchanged. Log "endings: …". On the etched records: 61 relabelled (122 chips).
+- WordBlock.jsx: the redundancy rule only hides a HEAD word's gloss (root / name / solo); a modifier with letters always shows.
+Tested: parseToken on 𐤕𐤋𐤌𐤉𐤃𐤉𐤅 -> root + 𐤉 [My/Of] + 𐤅 [His]; esbuild + node --check. Not run on the real index / browser.

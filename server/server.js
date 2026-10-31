@@ -2789,7 +2789,7 @@ function splitTrailResidue(trail, pos, attributes, trueRoot) {
     if (!trail) return [];
     const chip = (paleo, g) => ({
         paleo, translit: '',
-        translation: g ? `[${g.trans}]` : `[${getTranslit(paleo)}]`,
+        translation: g ? `[${g.trans}]` : `[? ${getTranslit(paleo)}]`,
         css: g ? (g.css || 'mod-suff-unk') : 'mod-suff-unk',
         bakedSplit: true,
     });
@@ -3772,18 +3772,13 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // can't. NME_EXCLUSIONS words (Alahayam, Shamayam, …) are untouched by
             // this: for those, trueRoot itself already contains the trailing
             // letters, so rootDisplay === trueRoot and nothing here fires.
-            let bakedModObj = null;
+            let bakedModComps = [];
             if (rootDisplay && trueRoot && rootDisplay !== trueRoot && rootDisplay.startsWith(trueRoot)) {
                 const bakedExtra = rootDisplay.slice(trueRoot.length);
                 if (bakedExtra) {
-                    const guess = classifyResidue(bakedExtra, pos, attributes, trueRoot) || guessSuffixGloss(bakedExtra);
-                    bakedModObj = {
-                        paleo: bakedExtra,
-                        translit: '',
-                        translation: guess ? `[${guess.trans}]` : `[${getTranslit(bakedExtra)}]`,
-                        css: guess ? (guess.css || 'mod-suff-unk') : 'mod-suff-unk',
-                        bakedSplit: true,  // see reGlossOne guard — never re-look-up by bare paleo
-                    };
+                    // Kept in sync with build-surface-index.js: split the tail
+                    // (𐤉𐤅 = 𐤉 [My/Of] + 𐤅 [His]) instead of one unlabelled chip.
+                    bakedModComps = splitTrailResidue(bakedExtra, pos, attributes, trueRoot);
                     rootDisplay = trueRoot;
                 }
             }
@@ -4062,7 +4057,7 @@ function parseHebrewData(rawText, lexicon, homographs, surfaceOverrides = {}) {
             // Maqaf halves render their own raw displayRoot (untrimmed) above, so
             // the baked-addition split must not also fire there — it would print
             // the same letters twice (once inside displayRoot, once as this chip).
-            if (bakedModObj && !_inMaqafCompound) pendingComponents.push({...bakedModObj, token_ordinal: tokenOrdinal});
+            if (!_inMaqafCompound) for (const bc of bakedModComps) pendingComponents.push({...bc, token_ordinal: tokenOrdinal});
             if (!_inMaqafCompound) for (const fc of fmTrailComps) pendingComponents.push({...fc, token_ordinal: tokenOrdinal});
 
             if (vbeObj) pendingComponents.push({...vbeObj, token_ordinal: tokenOrdinal});

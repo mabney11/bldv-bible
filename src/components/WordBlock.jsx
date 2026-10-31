@@ -261,7 +261,12 @@ export function computeWordParts(wordObj, opts = {}) {
     // of the reader entirely — including the placeholder that says "this one
     // still needs an entry". Placeholders are exempt; genuinely redundant
     // curated glosses stay hidden as before.
+    // A MODIFIER that carries letters is never hidden as redundant — every
+    // modification shows in the modifier list (fieldy, John 4:8: the 𐤉𐤅 of
+    // KayaThalamayadayaw vanished because its label "[Yaw]" equalled "yaw").
+    const isModWithLetters = !!comp.paleo && comp.css !== 'root' && comp.css !== 'mod-nmpr' && !isSoloComp;
     const suppress =
+      !(isModWithLetters && clean) &&
       (!clean || clean.toLowerCase() === (comp.translit || '').toLowerCase()) &&
       !isPlaceholderGloss(comp, clean);
 

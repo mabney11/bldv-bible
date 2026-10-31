@@ -752,7 +752,7 @@ function splitTrailResidue(trail, pos, attributes, trueRoot) {
     if (!trail) return [];
     const chip = (paleo, g) => ({
         paleo, translit: '',
-        translation: g ? `[${g.trans}]` : `[${getTranslit(paleo)}]`,
+        translation: g ? `[${g.trans}]` : `[? ${getTranslit(paleo)}]`,
         css: g ? (g.css || 'mod-suff-unk') : 'mod-suff-unk',
         bakedSplit: true,
     });
@@ -1408,18 +1408,15 @@ function parseToken(wordRaw, pos, morph, strongs) {
         // Split it into its own chip so nothing renders as an undifferentiated
         // blob. NME_EXCLUSIONS words are untouched: trueRoot already contains
         // those trailing letters there, so rootDisplay === trueRoot.
-        let bakedModObj = null;
+        let bakedModComps = [];
         if (rootDisplay && trueRoot && rootDisplay !== trueRoot && rootDisplay.startsWith(trueRoot)) {
             const bakedExtra = rootDisplay.slice(trueRoot.length);
             if (bakedExtra) {
-                const guess = classifyResidue(bakedExtra, pos, attributes, trueRoot) || guessSuffixGloss(bakedExtra);
-                bakedModObj = {
-                    paleo: bakedExtra,
-                    translit: '',
-                    translation: guess ? `[${guess.trans}]` : `[${getTranslit(bakedExtra)}]`,
-                    css: guess ? (guess.css || 'mod-suff-unk') : 'mod-suff-unk',
-                    bakedSplit: true,  // kept in sync with server.js reGlossOne guard
-                };
+                // splitTrailResidue (whole-residue class first, else the FLAT_SUFFIX
+                // pieces) — an unclassified tail like 𐤉𐤅 reads 𐤉 [My/Of] + 𐤅 [His]
+                // instead of one "[Yaw]" chip the display hid as redundant
+                // (fieldy, John 4:8: "all modifications must be visible").
+                bakedModComps = splitTrailResidue(bakedExtra, pos, attributes, trueRoot);
                 rootDisplay = trueRoot;
             }
         }
@@ -1573,7 +1570,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
             ...(vbsObj ? [vbsObj] : []),
             ...leadModComps,
             rootComp,
-            ...(bakedModObj ? [bakedModObj] : []),
+            ...bakedModComps,
             ...fmTrailComps,
             ...(vbeObj ? [vbeObj] : []),
             // Ending-absorption (kept in sync with server.js): drop the nominal
@@ -1622,7 +1619,7 @@ console.log(`\nOpening ${BIBLE_DB}…`);
 // PARSE-ONLY EXPORT: `PALEO_PARSE_ONLY=1 node -e "require('./build-surface-index.js')"`
 // hands parseToken/GRAMMAR_MAP to a caller (audit-modifications.cjs) without
 // opening corpus.db or building anything. CommonJS allows a top-level return.
-if (process.env.PALEO_PARSE_ONLY) { module.exports = { parseToken, GRAMMAR_MAP, isRootSubsequence, strongsRoots: loadStrongsRoots() }; return; }
+if (process.env.PALEO_PARSE_ONLY) { module.exports = { parseToken, splitTrailResidue, GRAMMAR_MAP, isRootSubsequence, strongsRoots: loadStrongsRoots() }; return; }
 
 const src = new Database(BIBLE_DB); // NOTE: readonly:true blocks locking_mode=EXCLUSIVE from taking effect on this device-bridge mount (see project memory) -- opened writable but this script only ever SELECTs from src
 // EXCLUSIVE is a workaround for Claude's Linux device-bridge mount only. On
@@ -2651,6 +2648,37 @@ function fixBareChipTranslits(v) {
         console.log(`  stem letters: ${sp.stat.mistag.length} left whole as probable wrong Strong's — server/stem-split-mistags.txt`);
     }
 }
+// UNLABELLED ENDINGS GET THEIR LABELS (fieldy 2026-10-30, John 4:8 𐤕𐤋𐤌𐤉𐤃𐤉𐤅: "there is a suffix on
+// KayaThalamayadayaw but its not visible -- all modifications must be visible in the modifier list").
+// A suffix chip baked as one unclassified piece ("[Yaw]" for 𐤉𐤅 — the HEB fallback reading, and every
+// etched heb-settled record that holds one) is split the way splitTrailResidue splits a live one:
+// 𐤉 [My/Of] + 𐤅 [His]. Letters and Strong's never change; fixBareChipTranslits spells the new chips.
+const unkStat = { surfaces: 0, chips: 0, ex: [] };
+function labelUnknownSuffixes(v) {
+    let comps; try { comps = JSON.parse(v.components_json || '[]'); } catch { return; }
+    const r = comps.findIndex(c => c && (c.css === 'root' || c.css === 'mod-nmpr'));
+    if (r < 0) return;
+    const rootP = comps[r].paleo || '';
+    let hit = false; const out = [];
+    comps.forEach((c, i) => {
+        if (i > r && c && c.css === 'mod-suff-unk' && c.paleo && !c.isMark) {
+            const parts = splitTrailResidue(c.paleo, v.pos || '', {}, rootP)
+                .map(p => ({ ...p, translit: '', ...(c.token_ordinal !== undefined ? { token_ordinal: c.token_ordinal } : {}) }));
+            if (parts.length && !(parts.length === 1 && parts[0].css === 'mod-suff-unk')) {
+                out.push(...parts); hit = true; unkStat.chips += parts.length; return;
+            }
+        }
+        out.push(c);
+    });
+    if (!hit) return;
+    v.components_json = JSON.stringify(out);
+    unkStat.surfaces++;
+    if (unkStat.ex.length < 4) unkStat.ex.push(`${v.word_raw} → ${out.slice(r + 1).map(c => c.paleo + ' ' + c.translation).join(' + ')}`);
+}
+for (const v of surfaceMap.values()) labelUnknownSuffixes(v);
+if (hebResult) for (const v of hebResult.surfaces.values()) labelUnknownSuffixes(v);
+console.log(`  endings: ${unkStat.surfaces.toLocaleString()} surfaces had an unlabelled ending split into ${unkStat.chips.toLocaleString()} labelled chips` +
+            (unkStat.ex.length ? ` (${unkStat.ex.join(', ')})` : ''));
 for (const v of surfaceMap.values()) fixBareChipTranslits(v);
 if (hebResult) for (const v of hebResult.surfaces.values()) fixBareChipTranslits(v);
 { const exs = (formRuleStat.last || []).slice(0, 4).map(v => { const cs = JSON.parse(v.components_json); return `${v.word_raw} → ${cs.map(c => c.paleo || '').join('')} ${cs.map(c => c.translit || '').join('')}`; });
