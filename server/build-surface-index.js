@@ -561,7 +561,9 @@ function applyFlatLabels(comps) {
         for (const i of idx) {
             const c = comps[i];
             if (i === r || !c || c.isMark || !c.paleo) continue;
-            if (c.css === 'vbs-hit' || c.css === 'vbs-hif') continue;
+            // the Niphal 𐤍 is the PASSIVE stem letter, not "We" (fieldy 2026-10-31, John 4:44 nikhbad "is honored":
+            // "I want my tokens accurate to what the tokens mean"); only the imperfect 𐤍 (pfm-1cp) reads We
+            if (c.css === 'vbs-hit' || c.css === 'vbs-hif' || c.css === 'vbs-nif') continue;
             // Proclitic particles fused onto a HEB-edition word (𐤋 to, 𐤁 in, 𐤄 the, 𐤅 and)
             // keep their particle gloss — the flat table's 𐤋 "He/it" is the Aramaic
             // imperfect prefix, not the preposition (fieldy, 2026-09-24: LaYahawah's

@@ -17,6 +17,7 @@
  * Run it where the DBs live (prod: inside the container against /data), then
  * re-run verify-name-forms.mjs.
  */
+import PROV from './translation-provenance.cjs';
 import Database from 'better-sqlite3';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
@@ -68,7 +69,7 @@ if (existsSync(TRANS_DB)) {
   const db = new Database(TRANS_DB, { readonly: DRY });
   const rows = db.prepare(`SELECT book_id, chapter, verse, status, text, rich_text FROM translations`).all();
   const upd = DRY ? null : db.prepare(`UPDATE translations SET text = ?, rich_text = ?, updated_at = datetime('now') WHERE book_id = ? AND chapter = ? AND verse = ?`);
-  const hist = DRY ? null : db.prepare(`INSERT INTO translation_history (book_id, chapter, verse, status, text, rich_text, saved_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`);
+  const hist = DRY ? null : PROV.historyWriter(db);   // replaced version keeps its own time + author (translation-provenance.cjs)
   const linkSel = db.prepare(`SELECT id, english_indices FROM translation_links WHERE book_id = ? AND chapter = ? AND verse = ?`);
   const linkUpd = DRY ? null : db.prepare(`UPDATE translation_links SET english_indices = ? WHERE id = ?`);
   let n = 0, links = 0;

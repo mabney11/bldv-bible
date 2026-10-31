@@ -31,6 +31,7 @@
 // USAGE (from server/):
 //   node merge-modforms.mjs [corpus.db] [translation.db] [surface-index.db] --corpus|--saved [--dry]
 //   prod: node merge-modforms.mjs /data/corpus.db /data/translation.db /data/surface-index.db --saved
+import PROV from './translation-provenance.cjs';
 import Database from 'better-sqlite3';
 import { existsSync, writeFileSync, readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -470,7 +471,7 @@ if (CORPUS) {
     if (NRS.unhyphenRe) x = x.replace(NRS.unhyphenRe, (m, pre, name) => pre + (NRS.unhyphenTo.get(name) || name));
     if (NRS.hyphenRe) x = x.replace(NRS.hyphenRe, (m, pre, name) => pre + (NRS.hyphenTo.get(name) || name));
     return x; };
-  const histIns = DRY ? null : tdb.prepare(`INSERT INTO translation_history (book_id, chapter, verse, status, text, rich_text, saved_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`);
+  const histIns = DRY ? null : PROV.historyWriter(tdb);   // replaced version keeps its own time + author (translation-provenance.cjs)
   const upd = DRY ? null : tdb.prepare(`UPDATE translations SET text = ?, rich_text = ?, updated_at = datetime('now') WHERE book_id = ? AND chapter = ? AND verse = ?`);
   const linkSel = tdb.prepare(`SELECT id, english_indices FROM translation_links WHERE book_id = ? AND chapter = ? AND verse = ?`);
   const linkUpd = DRY ? null : tdb.prepare(`UPDATE translation_links SET english_indices = ? WHERE id = ?`);

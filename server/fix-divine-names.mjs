@@ -22,6 +22,7 @@
  * Wired: render-all (after merge-modforms --corpus, and as the gate after the parallel gate),
  * verify in deploy/rebake the same way verify-reading-glosses is.
  */
+import PROV from './translation-provenance.cjs';
 import Database from 'better-sqlite3';
 import { existsSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -98,7 +99,7 @@ if (existsSync(TRANS_DB)) {
   const tdb = new Database(TRANS_DB, { readonly: DRY });
   const rows = tdb.prepare(`SELECT book_id, chapter, verse, status, text, rich_text FROM translations WHERE book_id >= 40`).all();
   const upd = DRY ? null : tdb.prepare(`UPDATE translations SET text = ?, rich_text = ?, updated_at = datetime('now') WHERE book_id = ? AND chapter = ? AND verse = ?`);
-  const hist = DRY ? null : tdb.prepare(`INSERT INTO translation_history (book_id, chapter, verse, status, text, rich_text, saved_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`);
+  const hist = DRY ? null : PROV.historyWriter(tdb);   // replaced version keeps its own time + author (translation-provenance.cjs)
   const linkSel = tdb.prepare(`SELECT id, english_indices FROM translation_links WHERE book_id = ? AND chapter = ? AND verse = ?`);
   const linkUpd = DRY ? null : tdb.prepare(`UPDATE translation_links SET english_indices = ? WHERE id = ?`);
   const tx = tdb.transaction(() => {

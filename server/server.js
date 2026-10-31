@@ -887,12 +887,16 @@ const translationDb = (() => {
     try { tdb.exec(`ALTER TABLE translation_links ADD COLUMN lang TEXT NOT NULL DEFAULT 'BHS'`); } catch(e) { /* already exists */ }
     try { tdb.exec(`ALTER TABLE translations      ADD COLUMN source_origin TEXT`); } catch(e) { /* already exists */ }
     try { tdb.exec(`ALTER TABLE translations      ADD COLUMN original_text TEXT`); } catch(e) { /* already exists */ }
+    // 2026-10-31: who wrote each version — updated_by / saved_by + the 'pipeline' triggers (translation-provenance.cjs)
+    require('./translation-provenance.cjs').ensureProvenance(tdb);
 
     // The lang index is created AFTER the migration above, so it works whether the
     // table was freshly created (lang in CREATE) or upgraded in place (lang ALTERed).
     tdb.exec(`CREATE INDEX IF NOT EXISTS idx_links_verse_lang ON translation_links(book_id, chapter, verse, lang)`);
     }   // end if(!READ_ONLY): schema init/migration only runs on a writable handle
 
+    const HAS_BY = tdb.prepare(`PRAGMA table_info(translations)`).all().some(c => c.name === 'updated_by')
+                && tdb.prepare(`PRAGMA table_info(translation_history)`).all().some(c => c.name === 'saved_by');
     const stmts = {
         getVerse:    tdb.prepare(`SELECT * FROM translations WHERE book_id=? AND chapter=? AND verse=?`),
         upsertVerse: tdb.prepare(`
@@ -960,13 +964,20 @@ const translationDb = (() => {
             SET english_phrase=?, english_indices=?, token_ordinals=?, component_hint=?, color_index=?, sort_order=?
             WHERE id=? AND book_id=? AND chapter=? AND verse=?
         `),
-        insertHistory: tdb.prepare(`
+        insertHistory: HAS_BY ? tdb.prepare(`
+            INSERT INTO translation_history(book_id, chapter, verse, status, text, rich_text, saved_at, saved_by)
+            VALUES(?,?,?,?,?,?,?,?)
+        `) : tdb.prepare(`
             INSERT INTO translation_history(book_id, chapter, verse, status, text, rich_text, saved_at)
             VALUES(?,?,?,?,?,?,?)
         `),
+        // Sets WHO wrote the current version — run AFTER the write (the triggers label any
+        // other write 'pipeline'; see translation-provenance.cjs).
+        setBy: HAS_BY ? tdb.prepare(`UPDATE translations SET updated_by=? WHERE book_id=? AND chapter=? AND verse=?`) : null,
+        currentBy: tdb.prepare(`SELECT updated_at, ${HAS_BY ? 'updated_by' : "'' AS updated_by"}, status FROM translations WHERE book_id=? AND chapter=? AND verse=?`),
         // Newest first — the UI lists past versions most-recent-on-top.
         verseHistory: tdb.prepare(`
-            SELECT id, status, text, rich_text, saved_at FROM translation_history
+            SELECT id, status, text, rich_text, saved_at, ${HAS_BY ? 'saved_by' : "'' AS saved_by"} FROM translation_history
             WHERE book_id=? AND chapter=? AND verse=?
             ORDER BY saved_at DESC, id DESC
         `),
@@ -1015,13 +1026,16 @@ const translationDb = (() => {
     let _writeVersion = 0;
     function bumpWriteVersion() { _writeVersion++; }
 
-    function saveVerseWithHistory(book_id, chapter, verse, status, text, rich_text) {
+    // by: who is saving — 'you' for every Studio save / restore (the only callers).
+    function saveVerseWithHistory(book_id, chapter, verse, status, text, rich_text, by = 'you') {
         const run = tdb.transaction(() => {
             const existing = stmts.getVerse.get(book_id, chapter, verse);
             if (existing && (existing.text !== text || existing.status !== status || existing.rich_text !== rich_text)) {
-                stmts.insertHistory.run(book_id, chapter, verse, existing.status, existing.text, existing.rich_text, existing.updated_at);
+                if (HAS_BY) stmts.insertHistory.run(book_id, chapter, verse, existing.status, existing.text, existing.rich_text, existing.updated_at, existing.updated_by || '');
+                else stmts.insertHistory.run(book_id, chapter, verse, existing.status, existing.text, existing.rich_text, existing.updated_at);
             }
             stmts.upsertVerse.run(book_id, chapter, verse, status, text, rich_text);
+            if (stmts.setBy) stmts.setBy.run(by, book_id, chapter, verse);
         });
         run();
         bumpWriteVersion();
@@ -2528,7 +2542,9 @@ function applyFlatLabels(comps) {
         for (const i of idx) {
             const c = comps[i];
             if (i === r || !c || c.isMark || !c.paleo) continue;
-            if (c.css === 'vbs-hit' || c.css === 'vbs-hif') continue;
+            // the Niphal 𐤍 is the PASSIVE stem letter, not "We" (fieldy 2026-10-31, John 4:44 nikhbad "is honored":
+            // "I want my tokens accurate to what the tokens mean"); only the imperfect 𐤍 (pfm-1cp) reads We
+            if (c.css === 'vbs-hit' || c.css === 'vbs-hif' || c.css === 'vbs-nif') continue;
             // Proclitic particles fused onto a HEB-edition word (𐤋 to, 𐤁 in, 𐤄 the, 𐤅 and)
             // keep their particle gloss — the flat table's 𐤋 "He/it" is the Aramaic
             // imperfect prefix, not the preposition (fieldy, 2026-09-24: LaYahawah's
@@ -8497,6 +8513,8 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
         // and clobbered the label: every HEB-edition 𐤁𐤓𐤊𐤅 read "blessed [and]"
         // while the same word in BHS Judges 5:2 read "[His]" (2026-09-10,
         // Words of Azariah 1:55). Only root/particle chips are re-glossed.
+        // an index baked before 2026-10-31 labelled the Niphal 𐤍 "[We]" (the flat-label pass); it is the passive stem
+        if (comp.css === 'vbs-nif' && comp.paleo && comp.translation === '[We]') comp.translation = '[Passive]';
         if (comp.css && /^(vbe|prs|nme|pfm|vbs|uvf)-/.test(comp.css)) return;
         const paleo = comp.paleo;
         const candidates = [];
@@ -13115,7 +13133,8 @@ app.get('/api/translate/history', (req, res) => {
         const verse   = parseInt(req.query.verse, 10);
         if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book, chapter, verse required' });
         const versions = translationDb.stmts.verseHistory.all(book_id, chapter, verse);
-        res.json({ book_id, chapter, verse, versions });
+        const current = translationDb.stmts.currentBy.get(book_id, chapter, verse) || null;
+        res.json({ book_id, chapter, verse, current, versions });
     } catch (err) {
         console.error('GET /api/translate/history failed:', err);
         res.status(500).json({ error: err.message });
@@ -13323,6 +13342,7 @@ app.post('/api/translate/revert', (req, res) => {
         const { book_id, chapter, verse } = req.body;
         if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book_id, chapter, verse required' });
         const r = translationDb.stmts.revertVerse.run(book_id, chapter, verse);
+        if (r.changes && translationDb.stmts.setBy) translationDb.stmts.setBy.run('you', book_id, chapter, verse);
         if (r.changes) translationDb.bumpWriteVersion();
         if (!r.changes) return res.status(404).json({ error: 'no original snapshot to revert to' });
         const saved = translationDb.stmts.getVerse.get(book_id, chapter, verse);

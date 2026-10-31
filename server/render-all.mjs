@@ -95,7 +95,8 @@ const SURFACE_STEPS = [
 ];
 const TAIL_STEPS = [
   ['node', ['reseed-translations.mjs'],                      'reseed translation.db from corpus.db ENG'],
-  ['node', ['merge-modforms.mjs', '--saved'],                'modification forms merged into your saved verses (Gen 3 on; your wording kept, old text in translation_history)'],
+  // 2026-10-31: REMOVED — merge-modforms --saved rewrote fieldy's saved verses (John 4:14). Saved verses are his alone.
+  // ['node', ['merge-modforms.mjs', '--saved'],                'modification forms merged into your saved verses (Gen 3 on; your wording kept, old text in translation_history)'],
   // 2026-09-09: the deterministic name passes run AFTER every seed — locked spellings
   // (Adawam), bare names → "Yawasap (Joseph)", the gold "()" markers the reader paints —
   // and the same gate the deploy runs closes the pipeline. Seeding no longer skips rows

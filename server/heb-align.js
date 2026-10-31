@@ -472,6 +472,18 @@ function buildHebSurfaces(o) {
     // for a context reading whose target no aligned reading carries. Cached per word+SN.
     // Loaded ONCE (a per-call query scanned all of tokens_bhs: 17 s on five books).
     let _bhsTok = null;
+    const _bhsTot = new Map();   // word -> Map(sn -> every token of that exact spelling)
+    // THE MASORETIC READING OF A SPELLING (fieldy 2026-10-31, John 4:45 𐤀𐤓𐤑 "land" read ratzah "I accept"
+    // because "received" stood elsewhere in the verse): the Strong's the Masoretic text gives this exact
+    // spelling >= 95% of the time over >= 50 tokens. The English alone never moves a word off it.
+    const masoreticSN = (w) => {
+        bhsSpellIndex();
+        const t = _bhsTot.get(w); if (!t) return null;
+        let tot = 0, best = null, bn = 0;
+        for (const [sn, n] of t) { tot += n; if (n > bn) { bn = n; best = sn; } }
+        return tot >= 50 && bn / tot >= 0.95 ? best : null;
+    };
+    let masoreticHeld = 0; const masoreticHeldBy = new Map();
     const bhsSpellIndex = () => {
         if (_bhsTok) return _bhsTok;
         _bhsTok = new Map();   // word -> Map(sn -> {pos, morph, n}) — the most common pos/morph
@@ -482,6 +494,8 @@ function buildHebSurfaces(o) {
                 if (!_bhsTok.has(r.word_raw)) _bhsTok.set(r.word_raw, new Map());
                 const m = _bhsTok.get(r.word_raw), cur = m.get(sn);
                 if (!cur || r.n > cur.n) m.set(sn, { pos: r.pos, morph: r.morph, n: r.n });
+                if (!_bhsTot.has(r.word_raw)) _bhsTot.set(r.word_raw, new Map());
+                const t = _bhsTot.get(r.word_raw); t.set(sn, (t.get(sn) || 0) + r.n);
             }
         } catch { /* no BHS tokens */ }
         return _bhsTok;
@@ -1871,6 +1885,11 @@ function buildHebSurfaces(o) {
                     // verses: the name's English is not in the verse it is judged by — Nimrod -> "rebel", 2026-10-30)
                     const _vsN = evVerseStems(row.canon_id, row.chapter, row.verse).size;
                     if (j.switchTo && !(evidence.isName(c0) && hw.length > 3 * Math.max(1, _vsN) + 20)) autoCr = { sn: j.switchTo, from: c0, auto: true };
+                    // the English never moves a word off the Masoretic reading of its exact spelling (the Greek or a
+                    // hand entry still may) — an English word that belongs to another Hebrew word of the verse decided it
+                    { const ms = autoCr && !autoCr.greek ? masoreticSN(w) : null;
+                      if (ms && autoCr.sn !== ms) { masoreticHeld++; masoreticHeldBy.set(w, (masoreticHeldBy.get(w) || 0) + 1);
+                                                    if (_tr) _tr('masoretic', w, 'stays off', autoCr.sn, '— Masoretic reading', ms); autoCr = null; } }
                     if (_tr) { const vs = evVerseStems(row.canon_id, row.chapter, row.verse);
                         _tr('judge', JSON.stringify(j), '| candidates', candidateSNs(w).join(' '), '| exact', [...exactSNs(w)].join(' '),
                             '| english', [...vs].join(' '));
@@ -2387,6 +2406,9 @@ function buildHebSurfaces(o) {
     stats.contextFromRoot = contextFromRoot;
     stats.autoSwitches = autoSwitches;
     stats.greekSwitches = greekSwitches; stats.greekConfirmed = greekConfirmed;
+    stats.masoreticHeld = masoreticHeld;
+    if (masoreticHeld) log(`  masoretic: ${masoreticHeld.toLocaleString()} English switches refused — the Masoretic text reads that exact spelling one way >= 95% (` +
+        [...masoreticHeldBy].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([w, k]) => `${w} ${k}`).join(', ') + ')');
     stats.settled = settled ? { hits: settledHits, untagged: settledUntagged, changed: settledChanged, fresh: settledFresh, blank: settledBlank } : null;
     // EVIDENCE of every NT/Apocrypha occurrence (surface_occurrences.evidence; the badges mark the
     // last two): hand = his context entry / occurrence pin; english = the verse's original English

@@ -61,6 +61,33 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## WHO WROTE EACH VERSION — translations.updated_by / translation_history.saved_by (2026-10-31)
+fieldy: "i dont like how differing versions have the same timestamp -- I want to know which texts I clearly was the one who saved it".
+Scripts snapshotted the version they replaced with datetime('now'), so one pipeline run stamped his text and the script's
+output with the same second. `server/translation-provenance.cjs` (ONE copy): `ensureProvenance(db)` adds
+translations.updated_by + translation_history.saved_by and two triggers — any write that changes text/rich_text/status
+without setting updated_by itself (and any new row) is labelled 'pipeline'. `historyWriter(db)`: a script's history row
+keeps the replaced version's OWN updated_at and author. 'you' is set by server.js saveVerseWithHistory (Save, Restore) and
+the revert-to-original route, AFTER the write (second statement; the triggers only watch text/rich_text/status).
+studio-sync carries updated_by between machines the same way (excluded from the merge comparison; tolerates an image
+without the module). Translate.jsx History: "Saved by you" (green) / "Written by a script" (amber) / "Author not recorded"
+(rows before 2026-10-31), times in local time to the second, plus the current version's author.
+ANY new script that writes translations needs nothing — the trigger labels it; to snapshot, use PROV.historyWriter.
+Tested on an in-memory DB (node:sqlite): Studio save -> you, second Studio save -> you, script -> pipeline + history keeps
+"you" and his time, no-op write leaves the label, new seeded row -> pipeline. esbuild + node --check. Not run on the real DBs.
+Old rows: in a group sharing one time, the LOWEST (oldest) row is the version that stood before that run.
+
+## A VERSE HE SAVED IS HIS ALONE — no pipeline step rewrites it (2026-10-31)
+fieldy, John 4:14 rewritten after his save ("LaMaqawar (a fountain) Mayam (of Water)" -> "HaMayam (the of Water) Mayam (Waters)"):
+"I do not expect verses I touch to be modified without me being the one doing it". Cause: Rebake step 5 ran
+`merge-modforms --saved` on prod at 21:11:55 UTC (and 20:52:51 before it); it bound his "Mayam" pair to the verse's other
+𐤄𐤌𐤉𐤌 (the one his "KayaHaMayam" already holds) and gave the real 𐤌𐤉𐤌 a gloss of its own. SUPERSEDES "merge-modforms --saved
+runs on every saved verse" (2026-10-22) and the --saved merge in render-all / rebake.sh — both REMOVED.
+verify-reading-glosses --fix no longer writes a saved verse (stale labels, nested glosses, misconceptions): they are listed in
+gloss-gate-review.txt, fatal only with --saved-fatal. A saved verse = status != 'none' OR rich_text != ''.
+Still writing saved rows (asked fieldy): fix-name-forms (divine glosses, compound hyphens, renumbered spellings) and the
+gate verify-name-forms that fails on them.
+
 ## "Alayaw (Sir him)": LEFTOVER ENGLISH NEVER CROSSES INTO THE WRONG WORD (2026-10-29)
 
 fieldy, John 4:15: "this 'sir him' is something ive had to fix more than once, i want it fixed everywhere it may occur
@@ -4187,3 +4214,22 @@ list". The HEB fallback reading (tier nt_tokens_nt_fallback) baked 𐤉𐤅 as O
   root is split the same way; letters and Strong's unchanged. Log "endings: …". On the etched records: 61 relabelled (122 chips).
 - WordBlock.jsx: the redundancy rule only hides a HEAD word's gloss (root / name / solo); a modifier with letters always shows.
 Tested: parseToken on 𐤕𐤋𐤌𐤉𐤃𐤉𐤅 -> root + 𐤉 [My/Of] + 𐤅 [His]; esbuild + node --check. Not run on the real index / browser.
+
+## THE MASORETIC READING OF A SPELLING HOLDS AGAINST THE ENGLISH (2026-10-31)
+fieldy, John 4:45 𐤀𐤓𐤑 eretz "land" read H7521 "I accept" ("received" stood elsewhere in the verse): "I want my tokens
+accurate to what the tokens mean ... good enough for me to translate using my site only". Measured: 2,808 NT/Apocrypha/extra
+occurrences (99 spellings) carried a reading other than the one the Masoretic text gives that EXACT spelling >= 95% of the time
+(>= 50 tokens) — list: server/heb-off-masoretic-review.txt.
+- heb-align.js `masoreticSN(w)` (from every tokens_bhs row of the spelling): an automatic ENGLISH switch away from it is refused
+  (log "masoretic: N English switches refused"). The Greek and his hand entries still may move a word. Not forced the other
+  way: the Masoretic text splits article/suffixes into their own tokens, so a fused word can rightly differ (𐤄𐤋𐤇𐤌 ha-lechem
+  "the bread", 𐤁𐤕𐤉 "my daughter", 𐤁𐤔𐤓 "preached", 𐤌𐤂𐤓𐤔 "casts out", 𐤄𐤌𐤍 manna, 𐤀𐤕𐤌 otam "them").
+- heb-occurrence-overrides.json (judged spelling by spelling from the verses): 855 back to the Masoretic reading (𐤌𐤋𐤇𐤌𐤄 war 102,
+  𐤃𐤓𐤊 way 94, 𐤄𐤓𐤁𐤄 much 81, 𐤁𐤍𐤉/𐤁𐤍 sons 145, 𐤊𐤁𐤅𐤃 glory 57, 𐤀𐤁𐤉 my father 43, 𐤌𐤋𐤀𐤊𐤉𐤌 messengers 22, 𐤌𐤀𐤅𐤕 hundreds 20 …;
+  1 Tim 2:5 𐤁𐤍𐤉 "between" kept); 𐤀𐤓𐤑/𐤀𐤓𐤑𐤄 land 145 (Sirach 35:16 left); 𐤀𐤕𐤌 -> H859 attem "you" 350 (English has you not
+  them 273, Greek ὑμεῖς/2nd-pl verb at the same place 77); 275 𐤀𐤕𐤌 undecided -> server/heb-atem-review.txt. ~25 small spellings
+  left for review (𐤃𐤁𐤓𐤉, 𐤌𐤑𐤀, 𐤉𐤅𐤔𐤁, 𐤔𐤌𐤉𐤌, 𐤔𐤌𐤇𐤄 …).
+Also today: Niphal 𐤍 reads [Passive] (applyFlatLabels skips vbs-nif; server fixes baked "[We]"); fused question 𐤄 before a
+particle (𐤄𐤊𐤉 ha-khi, 38 overrides -> H3588) uses the BHS interrogative chip; 𐤔𐤏𐤄 noun "hour" H8160 (182 overrides).
+Run: `node build-surface-index.js --freeze`, `node render-all.mjs --surface`, restart, Rebake.
+

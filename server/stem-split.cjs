@@ -57,7 +57,7 @@ function makeSplitter({ strongsRoots, strongsDict, flatPrefix, surfaces }) {
     const PREP = { '𐤁': 'in', '𐤋': 'to/towards', '𐤊': 'as', '𐤌': 'from', '𐤔': 'who' };
     // the preposition's own sense (the index's most common 𐤁 chip is "within him", from 𐤁𐤅 words)
     const prep = l => chip(l, 'mod-prep', PREP[l]);
-    const flat = (l, css, extra = {}) => ({ ...chip(l, css, FP[l] ? `[${FP[l]}]` : ''), ...extra });
+    const flat = (l, css, extra = {}) => ({ ...chip(l, css, css === 'vbs-nif' ? '[Passive]' : (FP[l] ? `[${FP[l]}]` : '')), ...extra });   // Niphal 𐤍 = Passive
     const PFM_CSS = { '𐤉': 'pfm-3ms', '𐤕': 'pfm-2or3f', '𐤀': 'pfm-1cs', '𐤍': 'pfm-1cp' };
     const stat = { surfaces: 0, chips: 0, by: new Map(), ex: [], mistag: [] };
 
@@ -126,7 +126,7 @@ function makeSplitter({ strongsRoots, strongsDict, flatPrefix, surfaces }) {
                 out.push(flat('𐤄', 'vbs-hif')); i++;
                 if (lead[i] === '𐤍') { out.push(flat('𐤍', 'vbs-nif')); i++; }
             }
-            else if (!hasPfm && lead[i] === '𐤍' && (!vs || /^nif/.test(vs))) { out.push(flat('𐤍', 'vbs-nif')); i++; }
+            else if (!hasPfm && lead[i] === '𐤍' && (!vs || /^nif/.test(vs))) { out.push(flat('𐤍', /^nif/.test(vs) ? 'vbs-nif' : 'pfm-1cp')); i++; }   // no morphology: not known to be Niphal
             else if (hasPfm && lead[i] === '𐤕' && (reflexiveStem || (!vs && source !== 'BHS'))) { out.push(flat('𐤕', 'vbs-hit', { translation: '[Reflexive]', infixed: true })); i++; }
             else if (hasPfm && lead[i] === '𐤄' && /^(hif|haf)/.test(vs)) { out.push(flat('𐤄', 'vbs-hif')); i++; }
         }

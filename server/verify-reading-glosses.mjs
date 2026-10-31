@@ -40,6 +40,7 @@
  *  prod: docker run --rm -v /mnt/paleo-data:/data paleo-studio node verify-reading-glosses.mjs
  *        /data/corpus.db /data/translation.db /data/surface-index.db --fix
  */
+import PROV from './translation-provenance.cjs';
 import Database from 'better-sqlite3';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
@@ -430,23 +431,25 @@ if (existsSync(TRANS_DB)) {
   const linkSel = tdb.prepare(`SELECT id, english_indices FROM translation_links WHERE book_id = ? AND chapter = ? AND verse = ?`);
   const linkUpd = FIX ? tdb.prepare(`UPDATE translation_links SET english_indices = ? WHERE id = ?`) : null;
   const savedUpd = FIX ? tdb.prepare(`UPDATE translations SET text = ?, rich_text = ?, updated_at = datetime('now') WHERE book_id = ? AND chapter = ? AND verse = ?`) : null;
-  const histIns = FIX ? tdb.prepare(`INSERT INTO translation_history (book_id, chapter, verse, status, text, rich_text, saved_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`) : null;
+  const histIns = FIX ? PROV.historyWriter(tdb) : null;   // replaced version keeps its own time + author (translation-provenance.cjs)
   tdb.transaction(() => {
     for (const r of rows) {
       const key = `${r.c}|${+r.ch}|${+r.v}`;
       const seeded = (r.status || 'none') === 'none' && !r.rt;
       { const st = stale(r.c, r.ch, r.text).concat(r.rt && r.rt !== r.text ? stale(r.c, r.ch, r.rt) : []);
         if (st.length) {
-          if (FIX) {
-            const t = freshen(r.text, key), rich = r.rt ? freshen(r.rt, key) : r.rt;
-            if (seeded) upd.run(t, r.text, t, r.c, r.ch, r.v); else { histIns.run(r.c, r.ch, r.v, r.status, r.text, r.rt); savedUpd.run(t, rich, r.c, r.ch, r.v); }
-            r.text = t; r.rt = rich; fixedStale++;
-          } else for (const w of [...new Set(st)]) violations.push(`translation ${key.replace(/\|/g, ':')}${seeded ? '' : '  [your saved verse — merge-modforms.mjs --saved rewrites it]'}  ${w}`);
+          // 2026-10-31 (fieldy: "I do not expect verses I touch to be modified without me being the
+          // one doing it"): a SAVED verse is never written here — it is listed for him.
+          if (FIX && seeded) {
+            const t = freshen(r.text, key);
+            upd.run(t, r.text, t, r.c, r.ch, r.v);
+            r.text = t; fixedStale++;
+          } else for (const w of [...new Set(st)]) (seeded || SAVED_FATAL ? violations : review).push(`translation ${key.replace(/\|/g, ':')}${seeded ? '' : '  [YOUR SAVED VERSE — not touched; fix in the Studio if you want it]'}  ${w}`);
         } }
       const vs = check(key, r.text).filter(x => !ACCEPT[`${key.replace(/\|/g, ':')}|${x.m}`]); if (!vs.length) continue;
       // A KNOWN misconception is removed even from a saved verse: the wrong Hebrew word
       // goes, fieldy's English stays ("hamah (like)" -> "like"), a history row keeps it reversible.
-      if (FIX && !seeded) {
+      if (false && FIX && !seeded) {   // 2026-10-31: saved verses are never rewritten (listed below instead)
         const mis = vs.filter(x => x.why.startsWith('misconception'));
         if (mis.length) {
           const u = unwrap(r.text, mis);
@@ -488,7 +491,7 @@ if (existsSync(TRANS_DB)) {
       }
       for (const x of vs) {
         const line = `translation ${key.replace(/\|/g, ':')}${seeded ? '' : '  [YOUR SAVED VERSE — fix in the Studio, or sign it off in lexicon/gloss-gate-accepted.json]'}  "${x.m}"  — ${x.why}`;
-        if (!seeded && !SAVED_FATAL && !x.why.startsWith('misconception')) review.push(line); else violations.push(line);
+        if (!seeded && !SAVED_FATAL) review.push(line); else violations.push(line);
       }
     }
   })();

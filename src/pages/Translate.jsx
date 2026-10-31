@@ -694,6 +694,21 @@ const lColorForTokens = (link, tokens) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // TRANSLATE PAGE
 // ─────────────────────────────────────────────────────────────────────────────
+// WHO WROTE a version (server: translation-provenance.cjs). 'you' = saved or restored in the Studio,
+// 'pipeline' = a script (render-all / rebake / a gate), '' = written before authors were recorded (2026-10-31).
+const byKind = (by) => by === 'you' ? 'you' : by === 'pipeline' ? 'pipeline' : 'unknown';
+function HistoryBy({ by }) {
+  const k = byKind(by);
+  const label = k === 'you' ? 'Saved by you' : k === 'pipeline' ? 'Written by a script' : 'Author not recorded';
+  return <span className={`tr-history-by tr-history-by-label-${k}`}>{label}</span>;
+}
+// saved_at / updated_at are SQLite UTC ("2026-10-31 21:11:55") — shown in the reader's own time, to the second.
+function localTime(t) {
+  if (!t) return '';
+  const d = new Date(String(t).replace(' ', 'T') + (/[zZ]|[+-]\d\d:?\d\d$/.test(t) ? '' : 'Z'));
+  return isNaN(d) ? t : d.toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' });
+}
+
 export default function Translate() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { theme, toggle: toggleTheme } = useTheme();
@@ -841,6 +856,7 @@ export default function Translate() {
   // the rest of Studio's on-demand panels).
   const [historyOpen, setHistoryOpen] = useState(false);
   const [historyList, setHistoryList] = useState([]);
+  const [historyCurrent, setHistoryCurrent] = useState(null);   // { updated_at, updated_by } of the version in the editor
   const [historyBusy, setHistoryBusy] = useState(false);
   // Mobile only: collapse the Books + Chapter pickers so the editor gets the
   // screen. State (activeBook/chapter/verse) is untouched, so Save still targets
@@ -1241,7 +1257,7 @@ export default function Translate() {
         if (historyOpen) {
           try {
             const d = await apiTransHistory(activeBook, activeChapter, activeVerse);
-            setHistoryList(d.versions || []);
+            setHistoryList(d.versions || []); setHistoryCurrent(d.current || null);
           } catch { /* non-fatal — history panel just stays stale until reopened */ }
         }
         // A real, hard-to-miss confirmation that the PUT actually landed —
@@ -1298,7 +1314,7 @@ export default function Translate() {
     setHistoryBusy(true);
     try {
       const d = await apiTransHistory(activeBook, activeChapter, activeVerse);
-      setHistoryList(d.versions || []);
+      setHistoryList(d.versions || []); setHistoryCurrent(d.current || null);
     } catch (e) {
       toast('Could not load history: ' + e.message, 'err');
       setHistoryList([]);
@@ -1318,7 +1334,7 @@ export default function Translate() {
       await apiTransRevertToHistory(activeBook, activeChapter, activeVerse, historyId);
       await loadVerse(activeBook, activeChapter, activeVerse, lang);
       const d = await apiTransHistory(activeBook, activeChapter, activeVerse);
-      setHistoryList(d.versions || []);
+      setHistoryList(d.versions || []); setHistoryCurrent(d.current || null);
       toast('Reverted to that version', 'ok');
     } catch (e) {
       toast('Revert failed: ' + e.message, 'err');
@@ -1343,7 +1359,7 @@ export default function Translate() {
   // Close the panel (don't refetch) whenever the open verse changes — a
   // stale history list from the PREVIOUS verse must never be shown attached
   // to a different one.
-  useEffect(() => { setHistoryOpen(false); setHistoryList([]); }, [activeBook, activeChapter, activeVerse]);
+  useEffect(() => { setHistoryOpen(false); setHistoryList([]); setHistoryCurrent(null); }, [activeBook, activeChapter, activeVerse]);
 
   // Discard this browser's local edit for the CURRENT verse (text + status) and
   // reload straight from the server's published version. Local link overrides
@@ -2185,10 +2201,16 @@ export default function Translate() {
                         {!historyBusy && historyList.length === 0 && (
                           <div className="tr-history-empty">No past versions yet — history is recorded starting from your next save.</div>
                         )}
+                        {!historyBusy && historyCurrent && (
+                          <div className="tr-history-current">
+                            Current version: <HistoryBy by={historyCurrent.updated_by} /> <span className="tr-history-time">{localTime(historyCurrent.updated_at)}</span>
+                          </div>
+                        )}
                         {!historyBusy && historyList.map(v => (
-                          <div key={v.id} className="tr-history-item">
+                          <div key={v.id} className={`tr-history-item tr-history-by-${byKind(v.saved_by)}`}>
                             <div className="tr-history-meta">
-                              <span className="tr-history-time">{v.saved_at}</span>
+                              <HistoryBy by={v.saved_by} />
+                              <span className="tr-history-time" title={`${v.saved_at} UTC — when this version was written`}>{localTime(v.saved_at)}</span>
                               <span className={`tr-history-status tr-history-status-${v.status || 'none'}`}>{v.status || 'none'}</span>
                               <button className="tr-history-restore" onClick={() => revertToHistoryVersion(v.id)}>Restore this version</button>
                               <button className="tr-history-delete" onClick={() => deleteHistoryVersion(v.id)} title="Permanently delete this version">🗑</button>

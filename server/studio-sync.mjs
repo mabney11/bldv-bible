@@ -35,6 +35,9 @@
  *                     files have that the database lacks — files win.
  * studio-sync.sh drives this over ssh; sync-from-prod.cjs runs it at server start.
  */
+import { createRequire } from 'node:module';
+// translation-provenance.cjs may not be in an older container image yet (this file is bind-mounted alone) — then authors are simply not carried.
+let PROV = null; try { PROV = createRequire(import.meta.url)('./translation-provenance.cjs'); } catch { /* older image */ }
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -84,8 +87,8 @@ function keyOrder(a, b) {
 }
 function exportDb(db) {
   const snap = emptySnap();
-  for (const r of db.prepare(`SELECT book_id, chapter, verse, status, text, rich_text, updated_at FROM translations WHERE rich_text != '' OR status != 'none' ORDER BY book_id, chapter, verse`).iterate()) {
-    snap.translations.set(`${r.book_id}:${r.chapter}:${r.verse}`, { status: r.status, text: r.text ?? '', rich_text: r.rich_text ?? '', updated_at: r.updated_at ?? '' });
+  for (const r of db.prepare(`SELECT book_id, chapter, verse, status, text, rich_text, updated_at, ${HAS_BY ? 'updated_by' : "'' AS updated_by"} FROM translations WHERE rich_text != '' OR status != 'none' ORDER BY book_id, chapter, verse`).iterate()) {
+    snap.translations.set(`${r.book_id}:${r.chapter}:${r.verse}`, { status: r.status, text: r.text ?? '', rich_text: r.rich_text ?? '', updated_at: r.updated_at ?? '', updated_by: r.updated_by ?? '' });
   }
   for (const r of db.prepare(`SELECT book_id, chapter, verse, lang, english_phrase, english_indices, token_ordinals, component_hint, color_index, sort_order FROM translation_links ORDER BY book_id, chapter, verse, lang, sort_order, id`).iterate()) {
     if (AUTO_LANGS.has(r.lang)) continue;
@@ -100,7 +103,7 @@ function exportDb(db) {
 }
 
 // ── the merge ───────────────────────────────────────────────────────────────
-const bare = (v) => { if (v == null) return null; if (Array.isArray(v)) return JSON.stringify(v); const { updated_at, ...rest } = v; return JSON.stringify(rest); };
+const bare = (v) => { if (v == null) return null; if (Array.isArray(v)) return JSON.stringify(v); const { updated_at, updated_by, ...rest } = v; return JSON.stringify(rest); };
 const same = (a, b) => bare(a) === bare(b);
 const stamp = (v) => (v && !Array.isArray(v) && v.updated_at) || '';
 function merge3(base, ours, theirs) {
@@ -133,8 +136,12 @@ function apply(db, merged, ours, dry) {
   }
   const n = plan.translations.length + plan.links.length + plan.headings.length;
   if (dry || !n) return plan;
-  const getVerse = db.prepare(`SELECT status, text, rich_text, updated_at, original_text FROM translations WHERE book_id=? AND chapter=? AND verse=?`);
-  const history = db.prepare(`INSERT INTO translation_history(book_id, chapter, verse, status, text, rich_text, saved_at) VALUES(?,?,?,?,?,?,?)`);
+  const getVerse = db.prepare(`SELECT status, text, rich_text, updated_at, ${HAS_BY ? 'updated_by' : "'' AS updated_by"}, original_text FROM translations WHERE book_id=? AND chapter=? AND verse=?`);
+  const historyStmt = HAS_BY ? db.prepare(`INSERT INTO translation_history(book_id, chapter, verse, status, text, rich_text, saved_at, saved_by) VALUES(?,?,?,?,?,?,?,?)`)
+                              : db.prepare(`INSERT INTO translation_history(book_id, chapter, verse, status, text, rich_text, saved_at) VALUES(?,?,?,?,?,?,?)`);
+  const history = { run: (...a) => historyStmt.run(...(HAS_BY ? a : a.slice(0, 7))) };
+  // the author travels with the text (translation-provenance.cjs); set AFTER the write, which the trigger would otherwise label 'pipeline'
+  const setBy = HAS_BY ? db.prepare(`UPDATE translations SET updated_by=? WHERE book_id=? AND chapter=? AND verse=?`) : { run() {} };
   const upsert = db.prepare(`INSERT INTO translations(book_id, chapter, verse, status, text, rich_text, updated_at) VALUES(?,?,?,?,?,?,?)
     ON CONFLICT(book_id,chapter,verse) DO UPDATE SET status=excluded.status, text=excluded.text, rich_text=excluded.rich_text, updated_at=excluded.updated_at`);
   const delLinks = db.prepare(`DELETE FROM translation_links WHERE book_id=? AND chapter=? AND verse=? AND lang=?`);
@@ -148,8 +155,8 @@ function apply(db, merged, ours, dry) {
     for (const k of plan.translations) {
       const [b, c, v] = k.split(':').map(Number), m = merged.translations.get(k);
       const cur = getVerse.get(b, c, v);
-      if (cur && (cur.rich_text !== '' || cur.status !== 'none')) history.run(b, c, v, cur.status, cur.text, cur.rich_text, cur.updated_at || now());   // the same snapshot a Studio save takes
-      if (m) upsert.run(b, c, v, m.status, m.text, m.rich_text, m.updated_at || now());
+      if (cur && (cur.rich_text !== '' || cur.status !== 'none')) history.run(b, c, v, cur.status, cur.text, cur.rich_text, cur.updated_at || now(), cur.updated_by || '');   // the same snapshot a Studio save takes
+      if (m) { upsert.run(b, c, v, m.status, m.text, m.rich_text, m.updated_at || now()); setBy.run(m.updated_by || '', b, c, v); }
       else if (cur) upsert.run(b, c, v, 'none', cur.original_text ?? cur.text, '', now());   // un-edited on the other side: back to the corpus text (the history row keeps the old one)
     }
     for (const k of plan.links) {
@@ -175,6 +182,8 @@ const say = (s) => console.log(`[studio-sync] ${s}`);
 const counts = (s) => `${s.translations.size} verses, ${s.links.size} linked verses, ${s.headings.size} headings`;
 if (!fs.existsSync(DB_PATH)) { console.error(`[studio-sync] no database at ${DB_PATH}`); process.exit(2); }
 const db = new Database(DB_PATH);
+if (PROV) PROV.ensureProvenance(db);   // updated_by / saved_by columns + the pipeline-label triggers
+const HAS_BY = db.prepare(`PRAGMA table_info(translations)`).all().some(c => c.name === 'updated_by') && db.prepare(`PRAGMA table_info(translation_history)`).all().some(c => c.name === 'saved_by');
 db.pragma('journal_mode = WAL');
 
 if (cmd === 'export') {
