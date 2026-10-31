@@ -809,6 +809,15 @@ function buildHebSurfaces(o) {
         }
         log(`  proclitic glosses taken from BHS: ${[...PROC_COMPS.keys()].join(' ') || '(none found)'}`);
     }
+    // The QUESTION 𐤄 (BHS: its own token, pos inrg — 𐤄 + 𐤊𐤉 "is it that…?", Gen 27:36). The HEB edition
+    // writes it fused (𐤄𐤊𐤉 ha-khi, John 4:33); in front of a particle it is never the article.
+    let INRG_COMPS = null;
+    try {
+        const row = src.prepare(`SELECT word_raw, pos, morph, strongs, COUNT(*) AS n FROM tokens_bhs
+                                 WHERE word_raw = ? AND pos = 'inrg' GROUP BY morph, strongs ORDER BY n DESC LIMIT 1`).get('\u{10904}');
+        if (row) { const parsed = parseToken(row.word_raw, row.pos, row.morph, row.strongs);
+                   if (parsed && parsed.components && parsed.components.length) INRG_COMPS = { components: parsed.components, pos: 'inrg', strongs: _normH(row.strongs) }; }
+    } catch { INRG_COMPS = null; }
 
     // ── proclitics glued INTO a fallback root chip (fieldy, 2026-10-22) ─────────
     // Revelation 6:15 𐤅𐤄𐤕𐤒𐤉𐤐𐤉𐤌 rendered "Wahathaqayapayam": the tokens_nt fallback took
@@ -1582,9 +1591,13 @@ function buildHebSurfaces(o) {
             for (const c of comps) components.push({ ...c });
             spans.push({ start, end: components.length, pos: p });
         };
-        for (const p of x.pre) {
+        const PARTICLE_STEM = new Set(['conj', 'prep', 'advb', 'nega', 'prps', 'prde', 'intj', 'inrg']);
+        const stemPos = formHasSN(x.stem, x.sn) ? ((surfaces.get(bestOf(x.stem, x.sn).key) || {}).pos || '') : '';
+        for (const [pi, p] of x.pre.entries()) {
             if ([...p].length === 1) {
-                const att = PROC_COMPS.get(p);
+                // 𐤄 right before a particle (𐤊𐤉, 𐤋𐤀 …) is the question 𐤄, not "the" (fieldy 2026-10-31, John 4:33 ha-khi)
+                const att = (p === '\u{10904}' && pi === x.pre.length - 1 && !x.pf && INRG_COMPS && PARTICLE_STEM.has(stemPos))
+                    ? INRG_COMPS : PROC_COMPS.get(p);
                 if (att) { push(att.components, att.pos || 'prep'); if (att.strongs) all.push(att.strongs); }
                 else push([{ paleo: p, translit: '', translation: '', css: 'mod-pref-unk', derived: true }], 'prep');
             } else {

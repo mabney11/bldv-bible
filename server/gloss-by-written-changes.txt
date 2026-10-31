@@ -1,0 +1,294 @@
+# 2026-10-31: Masoretic-text root chips whose gloss changes once the WRITTEN form stops being a lexicon key
+# (Gen 12:1 'Yalak (you)'). count  root  old gloss  ->  new gloss (root letters = no entry yet)  example written form
+47	𐤇𐤉𐤄	life	->	𐤇𐤉𐤄	𐤉𐤇𐤉
+40	𐤉𐤋𐤊	you	->	Go / Move	𐤕𐤋𐤊
+22	𐤐𐤓𐤓	bear fruit/increase	->	𐤐𐤓𐤓	𐤄𐤐𐤓
+17	𐤔𐤌𐤌	name	->	𐤔𐤌𐤌	𐤍𐤔𐤌𐤅
+16	𐤍𐤇𐤄	Nach / Noah	->	𐤍𐤇𐤄	𐤍𐤇
+16	𐤃𐤌𐤌	Blood	->	𐤃𐤌𐤌	𐤉𐤃𐤌𐤅
+13	𐤉𐤅𐤓𐤔	inherit	->	𐤉𐤓𐤔	𐤕𐤅𐤓𐤔
+13	𐤉𐤅𐤋𐤉𐤊	𐤉𐤋𐤊	->	Go / Move	𐤀𐤅𐤋𐤉𐤊
+12	𐤉𐤋𐤊	𐤉𐤋𐤊	->	Go / Move	𐤋𐤊𐤕
+12	𐤇𐤍𐤄	favor	->	𐤇𐤍𐤄	𐤉𐤇𐤍
+11	𐤐𐤓𐤄	bear fruit/increase	->	bear fruit / increase	𐤐𐤓𐤅
+10	𐤋𐤀𐤄	NOT	->	𐤋𐤀𐤄	𐤉𐤋𐤀𐤅
+10	𐤌𐤍𐤄	from	->	𐤌𐤍𐤄	𐤌𐤍𐤉𐤌
+10	𐤆𐤓𐤄	Crown	->	𐤆𐤓𐤄	𐤉𐤆𐤓
+10	𐤀𐤅𐤄	or	->	𐤀𐤅𐤄	𐤄𐤕𐤀𐤅𐤅
+9	𐤐𐤄	the mouth	->	𐤐𐤄	𐤐𐤉
+9	𐤉𐤅𐤋𐤊	𐤉𐤋𐤊	->	Go / Move	𐤉𐤅𐤋𐤊
+9	𐤏𐤃𐤄	until / as far as	->	𐤏𐤃𐤄	𐤏𐤃𐤕
+8	𐤍𐤂𐤓	sojourner / stranger / foreigner	->	𐤍𐤂𐤓	𐤍𐤂𐤓𐤉𐤌
+7	𐤏𐤋𐤄	over	->	𐤏𐤋𐤄	𐤏𐤋𐤕
+7	𐤇𐤂𐤂	feast/festival	->	𐤇𐤂𐤂	𐤉𐤇𐤂𐤅
+6	𐤄𐤓𐤄	mountain	->	𐤄𐤓𐤄	𐤕𐤄𐤓
+6	𐤁𐤓𐤊𐤄	blessed	->	𐤁𐤓𐤊𐤄	𐤁𐤓𐤊𐤕
+6	𐤄𐤌𐤌	they / them	->	𐤄𐤌𐤌	𐤉𐤄𐤌
+6	𐤊𐤋𐤉𐤄	every / bags of	->	𐤊𐤋𐤉𐤄	𐤊𐤋𐤉𐤕
+6	𐤃𐤌𐤄	Blood	->	𐤃𐤌𐤄	𐤃𐤌𐤅
+5	𐤍𐤆𐤄	this / that / these	->	𐤍𐤆𐤄	𐤄𐤆𐤄
+5	𐤔𐤓𐤄	prince / ruler	->	𐤔𐤓𐤄	𐤔𐤓𐤅𐤕𐤉
+4	𐤀𐤅𐤃𐤅𐤕	mist	->	𐤀𐤅𐤃𐤅𐤕	𐤀𐤃𐤅𐤕
+4	𐤐𐤓𐤎𐤄	Break / Uncover / Expose	->	𐤐𐤓𐤎𐤄	𐤐𐤓𐤎𐤕
+4	𐤂𐤓𐤄	sojourner / stranger / foreigner	->	𐤂𐤓𐤄	𐤕𐤕𐤂𐤓𐤅
+4	𐤐𐤒𐤃𐤄	visit	->	𐤐𐤒𐤃𐤄	𐤐𐤒𐤃𐤅𐤕
+4	𐤏𐤋𐤉𐤄	went up	->	𐤏𐤋𐤉𐤄	𐤏𐤋𐤉𐤕𐤉
+4	𐤀𐤕𐤄	to consent/agree	->	you (masc)	𐤀𐤕𐤅
+4	𐤏𐤋𐤋	over	->	𐤏𐤋𐤋	𐤏𐤋
+3	𐤏𐤅𐤐	fly/soar	->	flying	𐤉𐤏𐤅𐤐𐤐
+3	𐤉𐤋𐤉𐤊	𐤉𐤋𐤊	->	Go / Move	𐤄𐤉𐤋𐤉𐤊𐤉
+3	𐤉𐤏𐤃	until / as far as	->	𐤉𐤏𐤃	𐤍𐤏𐤃𐤕𐤉
+3	𐤏𐤓𐤁𐤄	evening	->	𐤏𐤓𐤁𐤄	𐤏𐤓𐤁𐤅𐤕
+3	𐤂𐤍𐤄	garden	->	𐤂𐤍𐤄	𐤂𐤍𐤕
+3	𐤍𐤔𐤄	Lamb	->	𐤍𐤔𐤄	𐤉𐤔𐤄
+3	𐤉𐤊𐤋	every	->	𐤉𐤊𐤋	𐤉𐤊𐤋𐤅
+3	𐤂𐤁𐤅𐤋𐤄	border/boundary	->	𐤂𐤁𐤅𐤋𐤄	𐤂𐤁𐤅𐤋𐤕𐤉
+3	𐤁𐤍𐤄	son	->	𐤁𐤍𐤉𐤌𐤉𐤍𐤉	𐤁𐤍
+3	𐤉𐤀𐤋	toward	->	𐤉𐤀𐤋	𐤉𐤀𐤋
+3	𐤓𐤅𐤀𐤔	head	->	𐤓𐤅𐤔	𐤓𐤀𐤔
+3	𐤓𐤌𐤅𐤌	will lift up	->	𐤓𐤌𐤌	𐤓𐤅𐤌𐤅
+3	𐤋𐤁𐤄	heart	->	𐤋𐤁𐤄	𐤋𐤁𐤅𐤕
+2	𐤀𐤌𐤄	mother	->	𐤀𐤌𐤄	𐤀𐤌𐤕
+2	𐤉𐤔𐤌	name	->	𐤉𐤔𐤌	𐤕𐤔𐤌
+2	𐤀𐤅𐤓𐤉𐤌	light	->	𐤀𐤅𐤓𐤉𐤌	𐤀𐤅𐤓𐤉𐤌
+2	𐤀𐤔𐤓𐤄	He who	->	𐤀𐤔𐤓𐤄	𐤀𐤔𐤓𐤉
+2	𐤂𐤓𐤓	sojourner / stranger / foreigner	->	𐤂𐤓𐤓	𐤉𐤂𐤓
+2	𐤁𐤄𐤌𐤄	beast/livestock	->	animal / beast	𐤁𐤄𐤌𐤅𐤕
+2	𐤏𐤑𐤄	tree	->	𐤏𐤑𐤄	𐤏𐤑𐤅𐤕
+2	𐤃𐤁𐤓𐤄	word / matter	->	𐤃𐤁𐤓𐤄	𐤃𐤁𐤓𐤕𐤉
+2	𐤉𐤒𐤑	End	->	𐤉𐤒𐤑	𐤉𐤒𐤑
+2	𐤍𐤔𐤀	repeat/do again	->	lift	𐤕𐤔𐤍𐤄
+2	𐤊𐤋𐤀	every	->	𐤊𐤋𐤀	𐤊𐤋𐤅
+2	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤋𐤇𐤌𐤉	𐤁𐤉𐤕
+2	𐤀𐤉𐤔	man	->	𐤀𐤉𐤔𐤁𐤔𐤕	𐤀𐤉𐤔
+2	𐤊𐤓𐤕𐤄	cut	->	𐤊𐤓𐤕𐤄	𐤊𐤓𐤕𐤕
+2	𐤊𐤎𐤀	Cover	->	𐤊𐤎𐤀	𐤊𐤎𐤄
+2	𐤔𐤅𐤁𐤄	turn / return	->	𐤔𐤁𐤄	𐤔𐤅𐤁𐤉
+2	𐤀𐤅𐤓𐤄	light	->	𐤀𐤅𐤓𐤄	𐤀𐤅𐤓𐤅𐤕
+2	𐤒𐤉𐤍𐤄	Cain	->	𐤒𐤉𐤍𐤄	𐤒𐤉𐤍𐤅𐤕𐤉
+2	𐤏𐤑𐤁𐤕	grief / pain / hurt	->	𐤏𐤑𐤁𐤕	𐤏𐤑𐤁𐤕
+2	𐤀𐤌𐤓𐤄	said	->	𐤀𐤌𐤓𐤄	𐤀𐤌𐤓𐤅𐤕
+2	𐤔𐤌𐤄	name	->	𐤔𐤌𐤄	𐤔𐤌𐤅𐤕
+2	𐤌𐤏𐤍𐤄	for the sake of	->	𐤌𐤏𐤍𐤄	𐤌𐤏𐤍𐤅𐤕
+2	𐤓𐤉𐤀𐤔	head	->	𐤓𐤉𐤔	𐤓𐤀𐤔
+2	𐤌𐤏𐤅𐤍𐤄	for the sake of	->	𐤌𐤏𐤅𐤍𐤄	𐤌𐤏𐤍𐤅𐤕
+2	𐤔𐤀𐤄	lift	->	𐤔𐤀𐤄	𐤔𐤀𐤅
+2	𐤀𐤇𐤅𐤕	brother/kinsman	->	𐤀𐤇𐤅𐤕	𐤀𐤇𐤅𐤕𐤉
+2	𐤇𐤅𐤀	make known	->	𐤇𐤅𐤀	𐤍𐤄𐤇𐤅𐤄
+2	𐤏𐤃𐤀	until / as far as	->	𐤏𐤃𐤀	𐤏𐤃𐤕
+2	𐤏𐤔	plant	->	made	𐤏𐤔𐤁
+1	𐤇𐤉	living thing	->	life	𐤇𐤉𐤕𐤅
+1	𐤁𐤉𐤕𐤀𐤋	house	->	𐤁𐤉𐤕𐤀𐤋	𐤁𐤉𐤕
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤌𐤔𐤐𐤈	𐤏𐤉𐤍
+1	𐤄𐤉𐤄	come to pass	->	came to pass	𐤄𐤉𐤅
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤏𐤌𐤉	𐤁𐤍
+1	𐤊𐤋𐤀	complete / finish	->	𐤊𐤋𐤀	𐤉𐤊𐤋𐤄
+1	𐤇𐤌𐤃𐤄	pleasant / desirable	->	𐤇𐤌𐤃𐤄	𐤇𐤌𐤃𐤕
+1	𐤌𐤔𐤌𐤍	rich / fertile	->	𐤌𐤔𐤌𐤍	𐤔𐤌𐤍𐤉
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤀𐤅𐤍𐤉	𐤁𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤋𐤇𐤌	𐤁𐤉𐤕
+1	𐤌𐤉	Who	->	𐤌𐤉𐤆𐤄𐤁	𐤌𐤉
+1	𐤇𐤉𐤄	living	->	𐤇𐤉𐤄	𐤇𐤉𐤅𐤕
+1	𐤐𐤉	the mouth	->	𐤐𐤉𐤄𐤇𐤉𐤓𐤕	𐤐𐤉
+1	𐤉𐤄𐤅𐤄	Alahay of Yashar-Al	->	𐤉𐤄𐤅𐤄𐤍𐤎𐤉	𐤉𐤄𐤅𐤄
+1	𐤔𐤓𐤔𐤄	root	->	𐤔𐤓𐤔𐤄	𐤔𐤓𐤔𐤕
+1	𐤒𐤑𐤕	End	->	𐤒𐤑𐤕	𐤒𐤑𐤅𐤕
+1	𐤔𐤁𐤅𐤏	seventy	->	𐤔𐤁𐤅𐤏	𐤔𐤁𐤏𐤉𐤌
+1	𐤓𐤒𐤒	concept: what comes out / spittle	->	𐤓𐤒𐤒	𐤉𐤓𐤒
+1	𐤒𐤍𐤀𐤄	jealous	->	𐤒𐤍𐤀𐤄	𐤒𐤍𐤀𐤕
+1	𐤀𐤄𐤋𐤉𐤌	tent	->	𐤀𐤄𐤋𐤉𐤌	𐤀𐤄𐤋𐤉𐤌
+1	𐤒𐤃𐤔	Holy / Set Apart	->	𐤒𐤃𐤔𐤁𐤓𐤍𐤏	𐤒𐤃𐤔
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤍𐤌𐤓𐤄	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤓𐤍	𐤁𐤉𐤕
+1	𐤁𐤍𐤉	my son	->	𐤁𐤍𐤉𐤉𐤏𐤒𐤍	𐤁𐤍𐤉
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤉𐤔𐤉𐤌𐤅𐤕	𐤁𐤉𐤕
+1	𐤃𐤉	Plenty / more than enough	->	𐤃𐤉𐤆𐤄𐤁	𐤃𐤉
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤐𐤏𐤅𐤓	𐤁𐤉𐤕
+1	𐤁𐤍𐤉	my son	->	𐤁𐤀𐤓𐤕𐤁𐤍𐤉𐤉𐤏𐤒𐤍	𐤁𐤍𐤉
+1	𐤒𐤑𐤑	End	->	𐤒𐤑𐤑	𐤒𐤑𐤕𐤄
+1	𐤒𐤋𐤋𐤄	curse	->	𐤒𐤋𐤋𐤄	𐤒𐤋𐤋𐤅𐤕
+1	𐤍𐤒𐤅𐤌	rise up	->	𐤍𐤒𐤌	𐤉𐤒𐤅𐤌
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤀𐤅𐤍	𐤁𐤉𐤕
+1	𐤀𐤃𐤍𐤉	master	->	𐤀𐤃𐤍𐤉𐤑𐤃𐤒	𐤀𐤃𐤍𐤉
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤇𐤅𐤓𐤅𐤍	𐤁𐤉𐤕
+1	𐤌𐤉𐤌	Waters	->	𐤌𐤔𐤓𐤐𐤅𐤕𐤌𐤉𐤌	𐤌𐤉𐤌
+1	𐤔𐤌𐤓𐤅𐤍	Samaria	->	𐤔𐤌𐤓𐤅𐤍𐤌𐤓𐤀𐤅𐤍	𐤔𐤌𐤓𐤅𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤁𐤏𐤋𐤌𐤏𐤅𐤍	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤓𐤌	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤇𐤂𐤋𐤄	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤏𐤓𐤁𐤄	𐤁𐤉𐤕
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤔𐤌𐤔	𐤏𐤉𐤍
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤓𐤂𐤋	𐤏𐤉𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤔𐤌𐤔	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤐𐤋𐤈	𐤁𐤉𐤕
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤂𐤍𐤉𐤌	𐤏𐤉𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤃𐤂𐤅𐤍	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤕𐤐𐤅𐤇	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤑𐤅𐤓	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤏𐤍𐤅𐤕	𐤁𐤉𐤕
+1	𐤏𐤉𐤓	City	->	𐤏𐤉𐤓𐤄𐤌𐤋𐤇	𐤏𐤉𐤓
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤂𐤃𐤉	𐤏𐤉𐤍
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤕𐤐𐤅𐤇	𐤏𐤉𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤔𐤀𐤍	𐤁𐤉𐤕
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤃𐤀𐤓	𐤏𐤉𐤍
+1	𐤊𐤐𐤓	Atonement	->	𐤊𐤐𐤓𐤄𐤏𐤌𐤅𐤍𐤉	𐤊𐤐𐤓
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤌𐤓𐤊𐤁𐤅𐤕	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤋𐤁𐤀𐤅𐤕	𐤁𐤉𐤕
+1	𐤏𐤕𐤄	now / present moment	->	𐤏𐤕𐤒𐤑𐤉𐤍	𐤏𐤕𐤄
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤇𐤃𐤄	𐤏𐤉𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤐𐤑𐤑	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤏𐤌𐤒	𐤁𐤉𐤕
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤇𐤑𐤅𐤓	𐤏𐤉𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤏𐤍𐤕	𐤁𐤉𐤕
+1	𐤏𐤉𐤓	City	->	𐤏𐤉𐤓𐤔𐤌𐤔	𐤏𐤉𐤓
+1	𐤁𐤍𐤉	my son	->	𐤁𐤍𐤉𐤁𐤓𐤒	𐤁𐤍𐤉
+1	𐤌𐤉	Who	->	𐤌𐤉𐤄𐤉𐤓𐤒𐤅𐤍	𐤌𐤉
+1	𐤀𐤃𐤍𐤉	master	->	𐤀𐤃𐤍𐤉𐤁𐤆𐤒	𐤀𐤃𐤍𐤉
+1	𐤉𐤓𐤃𐤄	descend / lower	->	rule over / have dominion of / subdue	𐤉𐤓𐤃
+1	𐤀𐤓𐤅𐤓	shine	->	Cursed	𐤀𐤅𐤓𐤅
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤇𐤓𐤃	𐤏𐤉𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤔𐤈𐤄	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤁𐤓𐤄	𐤁𐤉𐤕
+1	𐤁𐤓𐤉𐤕	covenant	->	𐤁𐤏𐤋𐤁𐤓𐤉𐤕	𐤁𐤓𐤉𐤕
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤄𐤒𐤅𐤓𐤀	𐤏𐤉𐤍
+1	𐤌𐤇𐤍𐤄𐤃𐤍	camp / company	->	𐤌𐤇𐤍𐤄𐤃𐤍	𐤌𐤇𐤍𐤄
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤓𐤇𐤅𐤁	𐤁𐤉𐤕
+1	𐤌	from	->	𐤌𐤍𐤔𐤄	𐤌
+1	𐤉𐤓𐤏	evil / dysfunction	->	𐤉𐤓𐤏	𐤉𐤓𐤏
+1	𐤊𐤄𐤍𐤄	priest	->	𐤊𐤄𐤍𐤄	𐤊𐤄𐤍𐤅𐤕
+1	𐤀𐤁𐤍	stone	->	𐤀𐤁𐤍𐤄𐤏𐤆𐤓	𐤀𐤁𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤔𐤌𐤔𐤉	𐤁𐤉𐤕
+1	𐤁𐤉𐤕𐤊𐤓	house	->	𐤁𐤉𐤕𐤊𐤓	𐤁𐤉𐤕
+1	𐤎𐤋𐤏	Rock	->	𐤎𐤋𐤏𐤄𐤌𐤇𐤋𐤒𐤅𐤕	𐤎𐤋𐤏
+1	𐤏𐤔𐤄𐤀𐤋	make	->	𐤏𐤔𐤄𐤀𐤋	𐤏𐤔𐤄
+1	𐤏𐤁𐤃	servant	->	𐤏𐤁𐤃𐤀𐤃𐤅𐤌	𐤏𐤁𐤃
+1	𐤁𐤍	bath / liquid measure	->	𐤁𐤕𐤔𐤁𐤏	𐤁𐤕
+1	𐤉𐤓𐤄	saw	->	𐤉𐤓𐤄	𐤉𐤓𐤀𐤅
+1	𐤁𐤓𐤄	created	->	𐤁𐤓𐤄	𐤁𐤓𐤀
+1	𐤉𐤌𐤉𐤍	species	->	𐤉𐤌𐤍	𐤄𐤌𐤉𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤌𐤓𐤇𐤒	𐤁𐤉𐤕
+1	𐤋𐤀	NOT	->	𐤋𐤀𐤃𐤁𐤓	𐤋𐤀
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤌𐤏𐤊𐤄	𐤁𐤉𐤕
+1	𐤄𐤌𐤌	from	->	𐤄𐤌𐤌	𐤉𐤄𐤌
+1	𐤀𐤆𐤓	Crown	->	𐤀𐤆𐤓	𐤕𐤆𐤓
+1	𐤉𐤔𐤁	inhabit/dwell	->	𐤉𐤔𐤁𐤁𐤔𐤁𐤕	𐤉𐤔𐤁
+1	𐤃𐤍𐤉𐤏𐤍	Dan	->	𐤃𐤍𐤉𐤏𐤍	𐤃𐤍𐤄
+1	𐤌𐤕𐤍𐤔𐤀	lift	->	𐤌𐤕𐤍𐤔𐤀	𐤌𐤕𐤍𐤔𐤀
+1	𐤔𐤓𐤕	prince / ruler	->	𐤔𐤓𐤕	𐤌𐤔𐤓𐤕
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤇𐤅𐤓	𐤁𐤍
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤃𐤒𐤓	𐤁𐤍
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤇𐤎𐤃	𐤁𐤍
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤀𐤁𐤉𐤍𐤃𐤁	𐤁𐤍
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤂𐤁𐤓	𐤁𐤍
+1	𐤋𐤐𐤍𐤉	face	->	𐤋𐤐𐤍𐤉	𐤐𐤍
+1	𐤋𐤉𐤄	for me	->	𐤋𐤉𐤄	𐤋𐤉𐤅𐤕
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤄𐤃𐤃	𐤁𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤀𐤋𐤉	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤏𐤒𐤃	𐤁𐤉𐤕
+1	𐤎𐤊𐤅𐤕	Succoth	->	𐤎𐤊𐤅𐤕𐤁𐤍𐤅𐤕	𐤎𐤊𐤅𐤕
+1	𐤀𐤌𐤍𐤄	believe / have faith	->	𐤀𐤌𐤍𐤄	𐤀𐤌𐤍𐤅𐤕
+1	𐤍𐤕𐤍	give	->	𐤍𐤕𐤍𐤌𐤋𐤊	𐤍𐤕𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤂𐤃𐤓	𐤁𐤉𐤕
+1	𐤁𐤍	bath / liquid measure	->	𐤁𐤕𐤔𐤅𐤏	𐤁𐤕
+1	𐤉𐤅𐤔𐤁	dwelling	->	𐤉𐤅𐤔𐤁𐤇𐤎𐤃	𐤉𐤅𐤔𐤁
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤓𐤐𐤀	𐤁𐤉𐤕
+1	𐤏𐤉𐤓	City	->	𐤏𐤉𐤓𐤍𐤇𐤔	𐤏𐤉𐤓
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤇𐤍𐤍	𐤁𐤍
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤆𐤅𐤇𐤕	𐤁𐤍
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤁𐤓𐤀𐤉	𐤁𐤉𐤕
+1	𐤀𐤆𐤍	ear	->	𐤀𐤆𐤍𐤔𐤀𐤓𐤄	𐤀𐤆𐤍
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤉𐤌𐤉𐤍	𐤁𐤍𐤉
+1	𐤉𐤄𐤅𐤇𐤍𐤍	Johanan	->	𐤉𐤄𐤅𐤇𐤍𐤍	𐤉𐤅𐤇𐤍𐤍
+1	𐤔𐤋𐤁𐤁	whole / complete	->	𐤋𐤁𐤁	𐤔𐤋𐤌
+1	𐤁𐤍𐤄	son	->	𐤁𐤍𐤇𐤉𐤋	𐤁𐤍
+1	𐤈𐤅𐤁	good / proper function	->	𐤈𐤅𐤁𐤀𐤃𐤍𐤉𐤄𐤅	𐤈𐤅𐤁
+1	𐤒𐤓𐤉𐤀	city / town	->	𐤒𐤓𐤉𐤀	𐤒𐤓𐤉𐤄
+1	𐤔𐤌𐤉𐤍	name	->	𐤔𐤌𐤉𐤍	𐤔𐤌𐤉
+1	𐤀𐤋	these	->	toward	𐤀𐤋𐤄
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤊𐤓𐤌	𐤁𐤉𐤕
+1	𐤊𐤋𐤄	every	->	𐤊𐤋𐤇𐤆𐤄	𐤊𐤋
+1	𐤍𐤔𐤄	lift	->	𐤍𐤔𐤄	𐤍𐤔𐤀𐤉𐤌
+1	𐤐𐤇𐤄	snare / trap	->	𐤐𐤇𐤄	𐤐𐤇
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤏𐤆𐤌𐤅𐤕	𐤁𐤉𐤕
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤓𐤌𐤅𐤍	𐤏𐤉𐤍
+1	𐤌𐤍𐤕	Numbered / weighed	->	𐤌𐤍𐤕	𐤌𐤍𐤀𐤅𐤕
+1	𐤉𐤀𐤔	fire	->	𐤉𐤀𐤔	𐤍𐤀𐤔
+1	𐤆𐤊𐤊	pure / clean	->	𐤆𐤊𐤊	𐤆𐤊𐤅
+1	𐤍𐤀𐤄	Now	->	𐤍𐤀𐤄	𐤍𐤀𐤅𐤕
+1	𐤋𐤀𐤌	mother	->	𐤋𐤀𐤌	𐤀𐤌𐤉𐤌
+1	𐤀𐤋	toward	->	𐤀𐤋𐤕𐤔𐤇𐤕	𐤀𐤋
+1	𐤎𐤐𐤓𐤄	book	->	𐤎𐤐𐤓𐤄	𐤎𐤐𐤓𐤅𐤕
+1	𐤔𐤌𐤓𐤄	keep/guard	->	𐤔𐤌𐤓𐤄	𐤔𐤌𐤓𐤅𐤕
+1	𐤓𐤅𐤌𐤄	will lift up	->	𐤓𐤌𐤄	𐤓𐤅𐤌𐤉
+1	𐤃𐤁𐤓𐤄	word / matter / cause	->	𐤃𐤁𐤓𐤄	𐤃𐤁𐤓𐤕𐤉
+1	𐤂𐤃𐤅𐤋𐤄	very great/important/mighty	->	𐤂𐤃𐤅𐤋𐤄	𐤂𐤃𐤅𐤋𐤕𐤉
+1	𐤐𐤍𐤉𐤍	face	->	𐤐𐤍𐤉𐤍	𐤐𐤍𐤉𐤉𐤌
+1	𐤔𐤓𐤓	prince / ruler	->	𐤔𐤓𐤓	𐤉𐤔𐤓𐤅
+1	𐤌𐤅𐤏𐤃𐤕	Appointed Time for Meeting/Feast	->	𐤌𐤅𐤏𐤃𐤕	𐤌𐤅𐤏𐤃𐤕
+1	𐤌𐤏𐤍𐤄	answer / respond	->	𐤌𐤏𐤍𐤄	𐤌𐤏𐤍𐤄
+1	𐤌𐤀𐤊𐤋𐤕	food	->	𐤌𐤀𐤊𐤋𐤕	𐤌𐤀𐤊𐤋𐤅𐤕
+1	𐤌𐤔𐤌𐤓𐤄	confined watch	->	𐤌𐤔𐤌𐤓𐤄	𐤌𐤔𐤌𐤓𐤅𐤕
+1	𐤀𐤎𐤐𐤄	Gather	->	𐤀𐤎𐤐𐤄	𐤀𐤎𐤐𐤅𐤕
+1	𐤑𐤁𐤉	troop	->	𐤑𐤁𐤉	𐤑𐤁𐤀𐤅𐤕
+1	𐤌𐤋𐤊𐤄	king	->	𐤌𐤋𐤊𐤄	𐤌𐤋𐤊𐤅𐤕
+1	𐤁𐤍	bath / liquid measure	->	𐤁𐤕𐤓𐤁𐤉𐤌	𐤁𐤕
+1	𐤁𐤕𐤄	bath / liquid measure	->	𐤁𐤕𐤄	𐤁𐤕𐤅𐤕
+1	𐤍𐤉𐤁𐤔𐤕	dry land	->	𐤍𐤔𐤕	𐤉𐤁𐤔
+1	𐤆𐤌𐤉𐤓	song	->	𐤆𐤌𐤉𐤓	𐤆𐤌𐤓𐤕
+1	𐤁𐤌𐤅	from	->	𐤁𐤌𐤅	𐤌𐤉
+1	𐤁𐤉𐤍𐤄	between/interval	->	𐤁𐤉𐤍𐤄	𐤁𐤉𐤍𐤅𐤕
+1	𐤁𐤊𐤅𐤓	Firstborn	->	𐤁𐤊𐤅𐤓	𐤁𐤊𐤅𐤓𐤄
+1	𐤂𐤍𐤍	garden	->	𐤂𐤍𐤍	𐤉𐤂𐤍
+1	𐤃𐤉𐤄	Plenty / more than enough	->	𐤃𐤉𐤄	𐤃𐤉𐤅𐤕
+1	𐤏𐤑𐤅𐤌𐤄	selfsame / essence	->	bulwark / argument	𐤏𐤑𐤌𐤅𐤕𐤉
+1	𐤍𐤔𐤌	name	->	𐤍𐤔𐤌	𐤀𐤔𐤌
+1	𐤐𐤇𐤇	snare / trap	->	𐤐𐤇𐤇	𐤄𐤐𐤇
+1	𐤁𐤓𐤉𐤇	smell	->	𐤁𐤓𐤉𐤇	𐤓𐤉𐤇𐤉𐤌
+1	𐤎𐤔𐤊𐤋	wise / prudent	->	𐤎𐤊𐤋	𐤉𐤔𐤊𐤋
+1	𐤊𐤍𐤄	for sure	->	𐤊𐤍𐤄	𐤀𐤊𐤍
+1	𐤍𐤔𐤅𐤀𐤄	lift	->	𐤍𐤔𐤅𐤀𐤄	𐤍𐤔𐤀𐤕𐤉
+1	𐤔𐤊𐤋𐤉𐤌	wise / prudent	->	𐤔𐤊𐤋𐤉𐤌	𐤔𐤊𐤋𐤉
+1	𐤐𐤒𐤇	open	->	𐤐𐤒𐤇𐤒𐤅𐤇	𐤐𐤒𐤇
+1	𐤐𐤓𐤀	bear fruit / increase	->	𐤐𐤓𐤀	𐤐𐤓𐤄
+1	𐤍𐤀𐤅𐤄	habitation	->	𐤍𐤀𐤅𐤄	𐤍𐤅𐤄
+1	𐤏𐤁𐤃	servant	->	𐤏𐤁𐤃𐤌𐤋𐤊	𐤏𐤁𐤃
+1	𐤔𐤅𐤓	prince / ruler	->	𐤔𐤓𐤎𐤊𐤉𐤌	𐤔𐤓
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤃𐤁𐤋𐤕𐤉𐤌	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤂𐤌𐤅𐤋	𐤁𐤉𐤕
+1	𐤉𐤃𐤄	hand	->	𐤉𐤃𐤄	𐤉𐤃𐤅
+1	𐤕𐤍𐤄	sea creature/dragon	->	𐤕𐤍𐤄	𐤕𐤍𐤉𐤍
+1	𐤏𐤃𐤄	ornament / adornment	->	𐤏𐤃𐤄	𐤏𐤃𐤉𐤕
+1	𐤀𐤉	NO ONE	->	𐤀𐤉	𐤀𐤉𐤍
+1	𐤐𐤉	the mouth	->	𐤐𐤉𐤁𐤎𐤕	𐤐𐤉
+1	𐤔𐤍𐤀𐤄	hate	->	𐤔𐤍𐤀𐤄	𐤔𐤍𐤀𐤕𐤉
+1	𐤓𐤀𐤔𐤄	head	->	𐤓𐤀𐤔𐤄	𐤓𐤀𐤔𐤕𐤉
+1	𐤀𐤉𐤋𐤌	toward	->	𐤀𐤉𐤋𐤌	𐤀𐤋𐤌
+1	𐤌𐤏𐤋𐤄	top/above	->	𐤌𐤏𐤋𐤄	𐤌𐤏𐤋
+1	𐤏𐤌𐤄	nation / people	->	𐤏𐤌𐤄	𐤏𐤌𐤅𐤕
+1	𐤂𐤓𐤔𐤄	Drive out / expel / divorce	->	𐤂𐤓𐤔𐤄	𐤂𐤓𐤔𐤕𐤉
+1	𐤔𐤔𐤄	sixth	->	𐤔𐤔𐤄	𐤔𐤔𐤉𐤕𐤌
+1	𐤏𐤉𐤍	eye	->	𐤏𐤉𐤍𐤏𐤂𐤋𐤉𐤌	𐤏𐤉𐤍
+1	𐤏𐤁𐤃	servant	->	𐤏𐤁𐤃𐤍𐤂𐤅	𐤏𐤁𐤃
+1	𐤇𐤉𐤀	life	->	𐤇𐤉𐤀	𐤇𐤉𐤉
+1	𐤓𐤏𐤏	evil / dysfunction	->	𐤓𐤏𐤏	𐤕𐤓𐤏
+1	𐤏𐤁𐤃	servant	->	𐤏𐤁𐤃𐤍𐤂𐤅𐤀	𐤏𐤁𐤃
+1	𐤔𐤓𐤀	prince / ruler	->	𐤔𐤓𐤀	𐤔𐤓𐤉𐤍
+1	𐤓𐤏𐤉𐤅𐤍	evil / dysfunction	->	𐤓𐤏𐤉𐤅𐤍	𐤓𐤏𐤉𐤍
+1	𐤏𐤃𐤀	ornament / adornment	->	𐤏𐤃𐤀	𐤄𐤏𐤃𐤉𐤅
+1	𐤇𐤉𐤅𐤀	life	->	𐤇𐤉𐤅𐤀	𐤇𐤉𐤅𐤕
+1	𐤋𐤀	NOT	->	𐤋𐤀𐤓𐤇𐤌𐤄	𐤋𐤀
+1	𐤋𐤀	NOT	->	𐤋𐤀𐤏𐤌𐤉	𐤋𐤀
+1	𐤒𐤃𐤔𐤄	Holy / Set Apart	->	𐤒𐤃𐤔𐤄	𐤒𐤃𐤔𐤅𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤀𐤓𐤁𐤀𐤋	𐤁𐤉𐤕
+1	𐤐𐤓𐤃𐤄	divide / separate	->	𐤐𐤓𐤃𐤄	𐤐𐤓𐤃𐤅𐤕
+1	𐤉𐤃𐤃	hand	->	𐤉𐤃𐤃	𐤉𐤃𐤅
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤋𐤏𐤐𐤓𐤄	𐤁𐤉𐤕
+1	𐤁𐤉𐤕	house	->	𐤁𐤉𐤕𐤄𐤀𐤑𐤋	𐤁𐤉𐤕
+1	𐤍𐤄𐤉𐤄	came to pass	->	𐤍𐤄𐤉𐤄	𐤍𐤄𐤉𐤄
+1	𐤄𐤋𐤉𐤊𐤄	move	->	𐤄𐤋𐤉𐤊𐤄	𐤄𐤋𐤊𐤅𐤕
+1	𐤏𐤑𐤌𐤄	selfsame / essence	->	𐤏𐤑𐤌𐤄	𐤏𐤑𐤌
+1	𐤌𐤋𐤊𐤌	king	->	𐤌𐤋𐤊𐤌	𐤌𐤋𐤊
+1	𐤑𐤃𐤄	side	->	𐤑𐤃𐤄	𐤍𐤑𐤃𐤅
+1	𐤔𐤅𐤓	prince / ruler	->	𐤔𐤓𐤀𐤑𐤓	𐤔𐤓
+1	𐤓𐤂𐤌	kill with stones	->	𐤓𐤂𐤌𐤌𐤋𐤊	𐤓𐤂𐤌
+1	𐤉𐤋𐤃𐤄	birth / begot	->	𐤉𐤋𐤃𐤄	𐤉𐤋𐤃𐤅𐤕

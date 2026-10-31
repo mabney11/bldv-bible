@@ -1505,9 +1505,18 @@ function parseToken(wordRaw, pos, morph, strongs) {
         // never a surface. Feeding the raw surface in here was the same mistake
         // as feeding it to the lexicon: the tokenizer strips characters, so a
         // surface matches a root entry only by accident.
+        // The WRITTEN form (displayRoot) is a key only when no Strong's root is known. With one,
+        // the written letters answered for the wrong word: Gen 12:1 לֵךְ (H3212, root 𐤉𐤋𐤊) is
+        // written 𐤋𐤊 and took lexicon "𐤋𐤊": "you" (fieldy 2026-10-31: "it should have been no
+        // gloss at all denoting that i needed to set it").
+        // Same root letters = same word: a 𐤅/𐤉 vowel letter inside it may come and go (𐤋𐤁𐤔 / 𐤋𐤁𐤅𐤔).
+        // A feminine noun's 𐤕 (construct / -ot) is its root's final 𐤄 (𐤌𐤑𐤅𐤕 / 𐤌𐤑𐤅𐤄).
+        const _skel = r => { const L = [...(r || '')]; if (L.length > 1 && L[L.length - 1] === '\u{10915}') L[L.length - 1] = '\u{10904}';
+                             return L.filter((ch, i) => i === 0 || (ch !== '\u{10905}' && ch !== '\u{10909}')).join(''); };
+        const _glossByWritten = !trueRoot || displayRoot === trueRoot || _skel(displayRoot) === _skel(trueRoot) || process.env.PALEO_GLOSS_BY_WRITTEN === '1';
         const lookupKeys = [
             ...buildKeys(trueRoot),
-            ...buildKeys(displayRoot),
+            ...(_glossByWritten ? buildKeys(displayRoot) : []),
         ];
 
         const snNorm = strongs ? 'H' + strongs.replace(/^H+/, '') : '';
@@ -1539,7 +1548,7 @@ function parseToken(wordRaw, pos, morph, strongs) {
             ] : [],
             // + the Strong's own canonical root: a written form that keeps its own
             // letters (𐤍𐤔𐤉𐤌 nashim) is still glossed by the root its Strong's names.
-            roots: [...lookupKeys, trueRoot, displayRoot, ...(_canonicalRoot && pos !== 'nmpr' ? [_canonicalRoot] : [])],
+            roots: [...lookupKeys, trueRoot, ...(_glossByWritten ? [displayRoot] : []), ...(_canonicalRoot && pos !== 'nmpr' ? [_canonicalRoot] : [])],
         });
         // src 'none' => nothing curated covers this word. Show the ROOT'S OWN
         // PALEO in the gloss slot. An empty gloss reads as "this word was

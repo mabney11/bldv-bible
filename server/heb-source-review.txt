@@ -1,15 +1,15 @@
-HEB-edition readings against their verse's sources (text_src + versions.db + Greek NT glosses), 2026-10-31T04:04:33.513Z
+HEB-edition readings against their verse's sources (text_src + versions.db + Greek NT glosses), 2026-10-31T20:57:45.319Z
 
 book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	blank	confirmed% of judgeable
-40 Matthew	6357	1838	179	302	4370	688	137	0	0	297	90.9
-41 Mark	3807	1123	99	183	2851	534	101	0	0	209	88.6
-42 Luke	6411	1948	159	274	4946	789	187	0	0	326	89.5
-43 John	5209	1243	134	333	4307	622	88	0	0	280	90.1
+40 Matthew	6357	1838	182	302	4370	685	137	0	0	297	90.9
+41 Mark	3807	1123	103	183	2851	530	101	0	0	209	88.7
+42 Luke	6411	1948	160	274	4946	788	187	0	0	326	89.6
+43 John	5208	1243	143	333	4307	614	88	0	0	280	90.2
 44 Acts	5785	2087	113	297	4660	1092	208	0	0	627	85.8
-45 Romans	2320	753	49	69	2004	551	85	0	0	115	82.9
-46 1 Corinthians	2359	659	63	67	2120	510	104	0	0	152	83.1
-47 2 Corinthians	1285	494	31	47	1382	361	56	0	0	115	81.0
-48 Galatians	781	221	26	31	717	187	15	0	0	40	83.2
+45 Romans	2320	753	56	69	2004	544	85	0	0	115	83.0
+46 1 Corinthians	2359	659	70	67	2120	503	104	0	0	152	83.3
+47 2 Corinthians	1285	494	33	47	1382	359	56	0	0	115	81.1
+48 Galatians	781	221	28	31	717	185	15	0	0	40	83.4
 49 Ephesians	750	247	16	32	565	160	22	0	0	25	84.6
 50 Philippians	469	168	22	26	491	126	28	0	0	30	80.5
 51 Colossians	446	167	7	16	401	134	20	0	0	47	79.9
@@ -50,8 +50,8 @@ book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	
 126 Assumption of Moses	0	535	9	42	642	360	70	0	0	54	55.4
 136 2 Enoch	0	1997	43	124	2428	1612	213	0	2061	464	52.3
 138 2 Baruch	0	2540	48	235	4489	2451	402	0	21	324	47.1
-139 2 Esdras / 4 Ezra	0	2579	47	192	4381	2523	421	0	0	270	46.7
-143 1 Meqabyan	0	5583	81	779	5976	1086	201	0	3	154	81.3
+139 2 Esdras / 4 Ezra	0	2579	48	192	4381	2522	421	0	0	270	46.7
+143 1 Meqabyan	0	5583	82	779	5976	1085	201	0	3	154	81.3
 148 Words of Azariah	0	287	6	57	312	101	2	0	0	1	73.6
 212 Treatise on Melchizedek	0	14	0	4	10	8	0	0	0	1	63.6
 213 Salam to Melchizedek	0	4	0	0	1	2	0	0	0	0	66.7
@@ -60,6 +60,6 @@ book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	
 217 Life of Flavius Josephus	0	2403	203	499	5590	4092	627	0	0	807	33.7
 218 Against Apion	0	4054	189	608	9566	7370	768	0	0	999	33.3
 219 The Jewish War	0	24704	1612	2855	51212	43778	5880	0	0	7640	33.2
-220 Antiquities of the Jews	0	81299	2382	9364	110919	45380	8186	0	0	13342	60.3
+220 Antiquities of the Jews	0	81299	2383	9364	110919	45379	8186	0	0	13342	60.3
 
 CONTRADICTED (the verse's Greek backs another reading of this spelling; nothing confirms the chosen one) — word	chosen	Greek backs	occurrences	refs
