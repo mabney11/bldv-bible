@@ -1,14 +1,196 @@
 ref	word	from->to	before -> after	who (hand = his entry, auto = the verse English)
+40:9:22	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 40:10:16	𐤊𐤍𐤇𐤔𐤉𐤌	H3651->H5175	particle:𐤊𐤍+𐤇𐤔𐤉𐤌 -> proclitic:𐤊+𐤍𐤇𐤔𐤉𐤌	hand
+40:10:19	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+40:13:21	𐤋𐤔𐤏𐤄	H3444->H8160	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> root:𐤋 𐤔𐤏𐤄 	hand
+40:15:28	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+40:17:18	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 40:18:4	𐤊𐤉𐤋𐤃	H3588->H3206	particle:𐤊𐤉+𐤋𐤃 -> proclitic:𐤊+𐤉𐤋𐤃	hand
+40:20:3	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+40:20:12	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+40:24:36	𐤅𐤄𐤔𐤏𐤄	H3467->H8160	plene:𐤅𐤄𐤅𐤔𐤉𐤏𐤄 -> root:𐤅+𐤄 𐤔𐤏𐤄 	hand
+40:24:42	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+40:24:44	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+40:24:50	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+40:25:13	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+40:26:40	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+40:26:45	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+40:27:45	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+40:27:45	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+40:27:46	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+41:4:17	𐤋𐤔𐤏𐤄	H3444->H8160	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> root:𐤋 𐤔𐤏𐤄 	hand
 41:10:15	𐤊𐤉𐤋𐤃	H3588->H3206	particle:𐤊𐤉+𐤋𐤃 -> proclitic:𐤊+𐤉𐤋𐤃	hand
+41:13:11	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+41:13:32	𐤅𐤄𐤔𐤏𐤄	H3467->H8160	plene:𐤅𐤄𐤅𐤔𐤉𐤏𐤄 -> root:𐤅+𐤄 𐤔𐤏𐤄 	hand
+41:14:35	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+41:14:37	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+41:14:41	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+41:15:25	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+41:15:33	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+41:15:33	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+41:15:34	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+42:2:38	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+42:8:13	𐤋𐤔𐤏𐤄	H3444->H8160	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> root:𐤋 𐤔𐤏𐤄 	hand
+42:12:12	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+42:12:39	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+42:12:40	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+42:12:46	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
 42:14:23	𐤄𐤂𐤃𐤓𐤅𐤕	H1450->H1448	exact:𐤄𐤂𐤃𐤓𐤅𐤕 -> proclitic:𐤄+𐤂𐤃𐤓𐤅𐤕	hand
 42:18:17	𐤊𐤉𐤋𐤃	H3588->H3206	particle:𐤊𐤉+𐤋𐤃 -> proclitic:𐤊+𐤉𐤋𐤃	hand
+42:22:14	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+42:23:44	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+42:24:33	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+43:4:21	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+43:4:23	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+43:4:52	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+43:4:52	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+43:4:53	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+43:5:25	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+43:5:28	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+43:11:9	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+43:12:23	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+43:12:27	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+43:12:27	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+43:16:2	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+43:16:4	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+43:16:25	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+43:16:32	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+43:17:1	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+43:19:14	𐤅𐤄𐤔𐤏𐤄	H3467->H8160	plene:𐤅𐤄𐤅𐤔𐤉𐤏𐤄 -> root:𐤅+𐤄 𐤔𐤏𐤄 	hand
+43:19:27	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+44:2:15	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+44:3:1	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+44:5:7	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+44:10:30	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+44:10:30	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+44:16:33	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+44:19:34	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+44:22:13	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+44:23:23	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+45:13:11	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+46:4:11	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+46:7:29	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 46:7:40	𐤀𐤔𐤓𐤉𐤄	H834->H835	particle:𐤀𐤔𐤓+𐤉𐤄 -> suffix:𐤀𐤔𐤓𐤉+𐤄	hand
+46:15:30	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+47:4:18	𐤋𐤔𐤏𐤄	H3444->H8160	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> root:𐤋 𐤔𐤏𐤄 	hand
+47:7:8	𐤋𐤔𐤏𐤄	H3444->H8160	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> root:𐤋 𐤔𐤏𐤄 	hand
+48:2:5	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
 48:2:16	𐤁𐤀𐤌𐤅𐤍𐤕	H526->H530	affixed:𐤁+𐤀𐤌𐤅𐤍+𐤕 -> plene:𐤁𐤀𐤌𐤅𐤍𐤕𐤉	hand
 48:2:16	𐤌𐤀𐤌𐤅𐤍𐤕	H4519->H530	affixed:𐤌+𐤀𐤌𐤅𐤍+𐤕 -> proclitic:𐤌+𐤀𐤌𐤅𐤍𐤕	hand
 48:3:22	𐤁𐤀𐤌𐤅𐤍𐤕	H526->H530	affixed:𐤁+𐤀𐤌𐤅𐤍+𐤕 -> plene:𐤁𐤀𐤌𐤅𐤍𐤕𐤉	hand
 49:6:10	𐤅𐤁𐤏𐤆	H1162->H5797	exact:𐤅𐤁𐤏𐤆 -> proclitic:𐤅+𐤁𐤏𐤆	hand
+57:1:15	𐤋𐤔𐤏𐤄	H3444->H8160	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> root:𐤋 𐤔𐤏𐤄 	hand
 60:3:21	𐤁𐤔𐤀𐤋	H7585->H7592	plene:𐤁𐤔𐤀𐤅𐤋 -> proclitic:𐤁+𐤔𐤀𐤋	hand
+62:2:18	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+62:2:18	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+66:3:3	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+66:9:15	𐤋𐤔𐤏𐤄	H3444->H8160	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> root:𐤋 𐤔𐤏𐤄 	hand
+66:17:12	𐤋𐤔𐤏𐤄	H3444->H8160	plene:𐤋𐤉𐤔𐤅𐤏𐤄 -> root:𐤋 𐤔𐤏𐤄 	hand
+66:18:10	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
+66:18:19	𐤁𐤔𐤏𐤄	H3444->H8160	plene:𐤁𐤉𐤔𐤅𐤏𐤄 -> root:𐤁 𐤔𐤏𐤄 	hand
 66:19:10	𐤄𐤔𐤕𐤇𐤅𐤄	H8459->H7812	affixed:𐤄+𐤔+𐤕𐤇𐤅+𐤄 -> bhs:𐤄𐤔𐤕𐤇𐤅𐤄	hand
 66:22:9	𐤄𐤔𐤕𐤇𐤅𐤄	H8459->H7812	affixed:𐤄+𐤔+𐤕𐤇𐤅+𐤄 -> bhs:𐤄𐤔𐤕𐤇𐤅𐤄	hand
+69:15:26	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+100:2:6	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+119:2:21	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+119:5:5	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+119:7:16	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+126:7:2	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+126:11:13	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+136:13:1	𐤄𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤄𐤔𐤏+𐤅𐤕 -> (no reading offered)	hand miss
+136:14:3	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+136:15:1	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+136:40:6	𐤄𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤄𐤔𐤏+𐤅𐤕 -> (no reading offered)	hand miss
+136:65:2	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+136:65:2	𐤄𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤄𐤔𐤏+𐤅𐤕 -> (no reading offered)	hand miss
+136:65:2	𐤄𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤄𐤔𐤏+𐤅𐤕 -> (no reading offered)	hand miss
+136:68:4	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+138:48:15	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+138:48:16	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+138:48:17	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+139:6:24	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+139:8:3	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+139:8:4	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+217:1:120	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+217:1:243	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+218:2:155	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+219:1:45	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:1:79	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:1:100	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+219:1:127	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:1:218	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+219:1:220	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:1:313	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+219:2:129	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:2:213	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:2:233	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:2:457	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+219:2:577	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:3:204	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:3:304	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:3:482	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:3:488	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+219:3:494	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:4:374	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:4:622	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:5:78	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:5:511	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:14	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:6:58	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:68	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:79	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:79	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:131	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:147	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:147	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:157	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:244	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:248	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:290	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:293	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:6:423	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+219:7:7	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:7:194	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:7:323	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:7:358	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+219:7:394	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:1:76	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+220:1:223	𐤔𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤔+𐤁+𐤔𐤏𐤄 -> root:𐤔+𐤁 𐤔𐤏𐤄 	hand
+220:2:105	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:2:149	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+220:3:12	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+220:3:25	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:3:155	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:3:257	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:4:45	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+220:4:168	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+220:4:293	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+220:5:25	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+220:5:133	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+220:5:309	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:5:329	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:6:63	𐤔𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤔+𐤁+𐤔𐤏𐤄 -> root:𐤔+𐤁 𐤔𐤏𐤄 	hand
+220:6:265	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
+220:7:133	𐤔𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤔+𐤁+𐤔𐤏𐤄 -> root:𐤔+𐤁 𐤔𐤏𐤄 	hand
+220:7:169	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:8:27	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:8:202	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:8:348	𐤔𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤔+𐤁+𐤔𐤏𐤄 -> root:𐤔+𐤁 𐤔𐤏𐤄 	hand
+220:8:414	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:11:250	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+220:12:104	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+220:12:302	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:14:65	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
+220:15:155	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:15:183	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+220:15:201	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+220:16:200	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:16:205	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:18:338	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:19:73	𐤄𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤄𐤔𐤏+𐤅𐤕 -> (no reading offered)	hand miss
+220:19:99	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+220:19:118	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:19:171	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+220:19:178	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+220:19:236	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
+220:20:220	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
