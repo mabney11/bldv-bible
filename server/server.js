@@ -8504,6 +8504,11 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
         // particle words; standalone particles have their sn on the word-block)
         const ownSn = comp.sn ? 'H' + comp.sn.replace(/^H+/, '') : null;
         if (ownSn) candidates.push(`${paleo}_${ownSn}`);
+        // A particle chip carries no sn of its own — its Strong's is the ROW's (𐤌𐤌𐤅𐤋 = 𐤌 + 𐤌𐤅𐤋, row H4136).
+        // fieldy 2026-10-31: "I have glosses for each number but my studio doesnt show 'before' for 𐤌𐤅𐤋"
+        // — the homograph 𐤌𐤅𐤋_H4136 was never asked for. Only a homograph key; no other step uses it.
+        const rowSn = comp._sourceSn ? 'H' + String(comp._sourceSn).replace(/^H+/, '') : null;
+        if (!ownSn && rowSn) candidates.push(`${paleo}_${rowSn}`);
         // POS-keyed homograph (e.g. `𐤁_preposition` vs `𐤁_noun`). Use the
         // full pos word for parity with the user's lexicon convention.
         const POS_LONG = { prep: 'preposition', conj: 'conjunction', art: 'article', nega: 'negative', inrg: 'interrogative' };
@@ -8604,7 +8609,7 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
             }
         }
         // Strip the internal-only annotation so it doesn't leak to the client.
-        for (const c of pending) delete c._sourcePos;
+        for (const c of pending) { delete c._sourcePos; delete c._sourceSn; }
 
         output.push({
             verse:         currentVerse,
@@ -8720,6 +8725,7 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
         for (const c of comps) {
             c.token_ordinal = row.token_ordinal;
             c._sourcePos    = row.pos;
+            c._sourceSn     = row.strongs || null;   // a particle chip's Strong's lives on its row (reGlossOne)
         }
 
         // Standalone-particle reclass. The check is precise: only when the
