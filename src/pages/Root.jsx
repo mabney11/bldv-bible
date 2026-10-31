@@ -930,21 +930,7 @@ export default function Root({ mode = 'root' }) {
                   )}
                 </div>
 
-                {detail.kind === 'root' && detail.surfaces && detail.surfaces.length > 0 && (
-                  <details className="r2-fold" open>
-                    <summary><span>Surface forms</span><span>{detail.surfaces.length}</span></summary>
-                    <div className="r2-fold-body" style={{ display: 'flex', flexWrap: 'wrap', gap: 6, padding: '8px 14px' }}>
-                      {detail.surfaces.map(s => (
-                        <a key={`${s.word_raw}_${s.strongs}`} className="r2-surf"
-                           href={`/surfaces?word=${encodeURIComponent(s.word_raw)}${s.strongs ? `&sn=${s.strongs}` : ''}`}
-                           title={`${(s.occ || 0).toLocaleString()} occ. — open surface`}>
-                          <span className="si-paleo" style={{ fontSize: 18 }}>{s.word_raw}</span>
-                          <span style={{ fontSize: 10, color: 'var(--text4)' }}>{(s.occ || 0).toLocaleString()}</span>
-                        </a>
-                      ))}
-                    </div>
-                  </details>
-                )}
+                {/* Surface forms list removed (fieldy 2026-10-31: "i never use it, the books and verses are more important") */}
 
                 {detail.by_book && detail.by_book.length > 0 && (
                   <details className="r2-fold" open>
