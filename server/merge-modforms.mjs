@@ -37,7 +37,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as MF from './modform-lib.mjs';
 import * as LOL from './lex-owner-lib.mjs';
-import { loadRules as loadNameRules, divineGlosses } from './name-form-lib.mjs';
+import { loadRules as loadNameRules, divineGlosses, nameGlosses } from './name-form-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const argv = process.argv.slice(2);
@@ -115,7 +115,8 @@ export function indexMap(oldText, newText) {
 }
 
 let seen = 0, changed = 0, pairs = 0, linkRows = 0;
-let joinedWords = 0, joinedVerses = 0, joinSkippedNames = 0;   // joinFolded: the display's joined words (2026-10-30)
+let joinedWords = 0, joinedVerses = 0, joinSkippedNames = 0;
+let namesGlossed = 0;   // nameGlosses: names given their English (2026-10-30)   // joinFolded: the display's joined words (2026-10-30)
 const samples = [];
 if (CORPUS) {
   // ── THE ALIGNER'S WORDS (NT) ─────────────────────────────────────────────────────────
@@ -422,6 +423,8 @@ if (CORPUS) {
       const text0 = r.text;
       r.text = MF.respellRetired(MF.unlabel(r.text, ws).text);   // text an older run left in full form: no [label], no retired spelling
       r.text = divineGlosses(r.text, NR).fixed;   // Alahayam (God), Yashawai (Jesus), Mashayach (Christ / Anointed One) — before the forms, so prefixes join
+      // every other NAME glossed with the English its verse uses: "Yawasap (Joseph)", never a bare "Yawasap ()" (2026-10-30)
+      { const ng = nameGlosses(r.text, NR, ORIG.get(`${r.c}|${+r.ch}|${+r.v}`) || ''); if (ng.hits.length) { r.text = ng.fixed; namesGlossed += ng.hits.length; } }
       const cc = r.c > 39 ? applyConcepts(r.text, ws) : { text: r.text, ws }; ws = cc.ws;   // NT/Apocrypha words the OT already names
       const t1 = fill(cc.text, r.src, links.get(`${r.c}|${r.ord_c}|${r.ord_v}`), ws);
       // every pair whose word is in the verse's Hebrew becomes its full form, as in the OT
@@ -450,7 +453,8 @@ if (CORPUS) {
   console.log(`  OT clean base (text_base): ${baseUsed.toLocaleString()} verses started from it, ${baseSaved.toLocaleString()} saved now` + (hasBase ? '' : ' — column missing (dry run on an old db)'));
   console.log(`  Hebrew of another versification (far longer than the verse's English) left out: ${hebTooBig.toLocaleString()} verses` + (hebTooBig ? ' (' + [...hebTooBigBooks].sort((a, b) => b[1] - a[1]).map(([c, n]) => `${c}: ${n}`).join(', ') + ')' : ''));
   console.log(`  joined words (the display's): ${joinedWords.toLocaleString()} pairs written as one in ${joinedVerses.toLocaleString()} verses; ${joinSkippedNames.toLocaleString()} left apart (a name after the particle — the name gates do not know it yet)`);
-  joinedWords = joinedVerses = joinSkippedNames = 0;
+  console.log(`  names glossed with their verse's English ("Yawasap (Joseph)"): ${namesGlossed.toLocaleString()}`);
+  joinedWords = joinedVerses = joinSkippedNames = 0; namesGlossed = 0;
   console.log(`modification forms (corpus.db ENG, Gen 3 on: OT names + NT + Apocrypha): ${changed.toLocaleString()} of ${seen.toLocaleString()} verses, ${pairs.toLocaleString()} Hebrew words written ` +
               `(${filled.toLocaleString()} from the Parallel links; learned table retired)${DRY ? ' (dry run)' : ''}`);
   console.log(`  Hebrew word order: ${ilOk.toLocaleString()} verses; English order kept: ${[...ilWhy].map(([k, n]) => `${n.toLocaleString()} ${k}`).join(', ') || 'none'}; concept words (repent/baptize/genealogy…): ${conceptN}`);
@@ -542,9 +546,12 @@ if (CORPUS) {
       }
       // (1) + (2), then the forms
       const u = MF.unlabel(r.text, ws); woven += u.n;
-      const t1 = MF.respellRetired(u.text); if (t1 !== u.text) respelled++;
+      const eng0 = ORIG_S.get(`${r.c}|${+r.ch}|${+r.v}`) || '';
+      const t1r = MF.respellRetired(u.text); if (t1r !== u.text) respelled++;
+      // every NAME glossed with the English its verse uses ("Yawasap (Joseph)"); his own gloss of a name is kept
+      const ngS = nameGlosses(t1r, NRS, eng0); const t1 = ngS.fixed; namesGlossed += ngS.hits.length;
       const t2 = MF.mergeModforms(t1, ws);
-      const fixRich = x => MF.joinFolded(MF.mergeModforms(MF.respellRetired(MF.unlabel(x, ws).text), ws).text, ws).text;
+      const fixRich = x => MF.joinFolded(MF.mergeModforms(nameGlosses(MF.respellRetired(MF.unlabel(x, ws).text), NRS, eng0).fixed, ws).text, ws).text;
       let moved = false;
       if (!KEEP_ORDER && ws.length) {
         const il = MF.interlinear(paleoPairs(t2.text, ws), ws, savedGloss, { maxResidue: 99, saved: true });
@@ -577,6 +584,7 @@ if (CORPUS) {
   console.log(`  Hebrew order: ${reordered} saved verse(s) put in Hebrew word order, every English word in a gloss` +
               (notReordered.length ? `; NOT reordered (${notReordered.length}): ${notReordered.join(', ')}` : ''));
   tdb.close();
+  console.log(`  names glossed in your saved verses: ${namesGlossed.toLocaleString()}`);
   console.log(`  joined words (the display's) in your saved verses: ${joinedWords.toLocaleString()} pairs in ${joinedVerses.toLocaleString()} verses; ${joinSkippedNames.toLocaleString()} left apart before a name`);
   console.log(`modification forms (your saved verses, Gen 3 on): ${changed} of ${seen} verses merged, ${pairs} words upgraded, ` +
               `${linkRows} link rows re-indexed${DRY ? ' (dry run — nothing written)' : ' — the old wording of each is in translation_history'}`);

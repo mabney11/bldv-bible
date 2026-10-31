@@ -87,6 +87,7 @@ const SURFACE_STEPS = [
   // 2026-10-01 (fieldy): modification forms — "NaAkal (we will eat) Lachamanaw (our own
   // bread)". The OT gets them in apply-web-strongs; the NT/Apocrypha here, from the HEB
   // edition's words of each verse.
+  ['node', ['build-name-glosses.mjs'],                       'every name\'s English (name-map-expanded.json x the WEB): "Yawasap (Joseph)", never a bare name — name-glosses.json'],
   ['node', ['merge-modforms.mjs', '--corpus'],               'modification forms for the NT + Apocrypha (full Hebrew word, English its modifications carry)'],
   // 2026-10-06 (fieldy, Matthew 1:20 "of the Adanay" over a 𐤉𐤄𐤅𐤄 token): the NT baseline holds every "the Lord"
   // as Adanay, so nothing ever asked the verse's Hebrew. Yahawah / Adanay now follow the HEB word of THAT verse.

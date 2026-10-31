@@ -78,7 +78,12 @@ export function loadRules() {
     }
   } catch { /* none */ }
   const glossed = new Map(Object.entries(rules.glossed || {}).filter(([k, v]) => !k.startsWith('_') && v));
-  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases, gold, hyphenRe, hyphenTo, unhyphenRe, unhyphenTo, selfGloss, selfGlossEn, bareTr, glossed };
+  // every NAME's English names (build-name-glosses.mjs -> name-glosses.json), for nameGlosses — kept apart from
+  // "glossed" (his hand list, which the gate enforces and which wins)
+  let nameCands = new Map();
+  try { nameCands = new Map(Object.entries(JSON.parse(readFileSync(path.join(__dirname, 'name-glosses.json'), 'utf8')))
+          .filter(([k, v]) => !k.startsWith('_') && Array.isArray(v) && v.length && !glossed.has(k))); } catch { /* none */ }
+  return { must, mustRe, heads, divineGl, dahRe, forbidden, replace, single, bare, phrases, gold, hyphenRe, hyphenTo, unhyphenRe, unhyphenTo, selfGloss, selfGlossEn, bareTr, glossed, nameCands };
 }
 
 // ── gold markers: "Yahawah" → "Yahawah ()" ─────────────────────────────────────
@@ -271,4 +276,24 @@ export function divineGlosses(text, R) {
   }
   out += text.slice(last);
   return { fixed: out, hits, shifts };
+}
+
+// ── every NAME glossed like any other Hebrew word (fieldy, 2026-10-30: "Treat the names the same as every other hebrew
+// word -- no need for standalone hebrew names ... My text would have been 'Yawasap ()' if i didnt manually add 'Joseph'").
+// A bare name or "Name ()" becomes "Yawasap (Joseph)": the English is the one the VERSE'S OWN English uses (Marayam is Mary
+// in the Gospels, Miriam in Exodus); a verse whose English names none of them is left as it is (no guess); with no English
+// at all, the name the WEB writes most. Same writing (and link `shifts`) as divineGlosses.
+export function nameGlosses(text, R, verseEng = '') {
+  if (!text || !R.nameCands || !R.nameCands.size) return { fixed: text, hits: [], shifts: [] };
+  const map = new Map();
+  for (const m of text.matchAll(TOK)) {
+    const w = m[0]; if (map.has(w) || !R.nameCands.has(w)) continue;
+    const cands = R.nameCands.get(w);
+    let pick = null;
+    if (verseEng) { for (const c of cands) { if (new RegExp(`(^|[^A-Za-z])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![a-z])`).test(verseEng)) { pick = c; break; } } }
+    else pick = cands[0];
+    if (pick) map.set(w, pick);
+  }
+  if (!map.size) return { fixed: text, hits: [], shifts: [] };
+  return divineGlosses(text, { glossed: map });
 }

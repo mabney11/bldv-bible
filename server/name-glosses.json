@@ -1,0 +1,11375 @@
+{
+ "_note": "build-name-glosses.mjs — generated: translit -> its English names, the one the WEB writes most first (the verse own English chooses). Do not edit; a correction goes in lexicon/name-form-rules.json \"glossed\" (it wins).",
+ "Ab-Nar": [
+  "Abner",
+  "Abanar"
+ ],
+ "Ab-Yadai": [
+  "Abida",
+  "Abidah",
+  "Abiyda",
+  "Abayadai"
+ ],
+ "Ab-Yahayal": [
+  "Abihail",
+  "Abihayil",
+  "Abiyhayil",
+  "Abayahayal"
+ ],
+ "Ab-Yashag": [
+  "Abishag",
+  "Abiyshag",
+  "Abayashag"
+ ],
+ "Ab-Yathar": [
+  "Abiathar",
+  "Ebyathar",
+  "Abayathar"
+ ],
+ "Abagathaa": [
+  "Abagtha"
+ ],
+ "Abal-Bayath-Maikah": [
+  "Abel Beth-Maakah",
+  "Abel Beyth-Maakah",
+  "Abel-Beth-Maachah"
+ ],
+ "Abal-Hashatayam": [
+  "Abel Hash-Shittim",
+  "Abel Hash-Shittiym",
+  "Abelshittim",
+  "Abalahashatayam"
+ ],
+ "Abal-Karamayam": [
+  "Abel Kramim",
+  "Abel Keramim",
+  "Abel Kramiym",
+  "Abel Keramiym"
+ ],
+ "Abal-Machawalah": [
+  "Abel Mcholah",
+  "Abel Mecholah",
+  "Abel Mchowlah",
+  "Abel Mechowlah",
+  "Abel-Meholah"
+ ],
+ "Abal-Matzarayam": [
+  "Abel Mitsrayim",
+  "Abel-Mizraim"
+ ],
+ "Abal-Mayam": [
+  "Abel Mayim",
+  "Abel-Maim"
+ ],
+ "Aban-Haizar": [
+  "Ebenezer",
+  "Abanahaizar",
+  "Eben Ha-Ezer"
+ ],
+ "Abanah": [
+  "Abana"
+ ],
+ "Abaraham": [
+  "Abraham"
+ ],
+ "Abaram": [
+  "Abram"
+ ],
+ "Abath": [
+  "Oboth"
+ ],
+ "Abatz": [
+  "Abez",
+  "Ebets"
+ ],
+ "Abatzan": [
+  "Ibzan",
+  "Ibtsan"
+ ],
+ "Abay": [
+  "Abi",
+  "Abiy"
+ ],
+ "Abay-Al": [
+  "Abiel",
+  "Abiyel",
+  "Abayaal"
+ ],
+ "Abay-Asap": [
+  "Abiasaph",
+  "Abiacaph",
+  "Abiyacaph",
+  "Abayaasap"
+ ],
+ "Abay-Dan": [
+  "Abidan",
+  "Abiydan",
+  "Abayadan"
+ ],
+ "Abay-Gayal": [
+  "Abigal",
+  "Abigayil",
+  "Abiygayil",
+  "Abayagayal"
+ ],
+ "Abay-Haizaray": [
+  "Abiezrite",
+  "Abi Ha-Ezri",
+  "Abayahaizaray",
+  "Abiy Ha-Ezriy"
+ ],
+ "Abay-Hawaa": [
+  "Abihu",
+  "Abiyhuw",
+  "Abayahawaa"
+ ],
+ "Abay-Hawad": [
+  "Abihud",
+  "Abiyhuwd",
+  "Abayahawad"
+ ],
+ "Abay-Ilabawan": [
+  "Abialbon",
+  "Abi-Albon",
+  "Abiy-Albown",
+  "Abayailabawan"
+ ],
+ "Abay-Izar": [
+  "Abiezer",
+  "Abiyezer",
+  "Abayaizar"
+ ],
+ "Abay-Malak": [
+  "Abimelech",
+  "Abimelek",
+  "Abiymelek",
+  "Abayamalak"
+ ],
+ "Abay-Nadab": [
+  "Abinadab",
+  "Abiynadab",
+  "Abayanadab"
+ ],
+ "Abay-Naim": [
+  "Abinoam",
+  "Abiynoam",
+  "Abayanaim"
+ ],
+ "Abay-Ram": [
+  "Abiram",
+  "Abiyram",
+  "Abayaram"
+ ],
+ "Abay-Shalawam": [
+  "Absalom",
+  "Abishalom",
+  "Abiyshalowm",
+  "Abayashalawam"
+ ],
+ "Abay-Shawai": [
+  "Abishua",
+  "Abiyshuwa",
+  "Abayashawai"
+ ],
+ "Abay-Shawar": [
+  "Abishur",
+  "Abiyshuwr",
+  "Abayashawar"
+ ],
+ "Abay-Shay": [
+  "Abishai",
+  "Abishay",
+  "Abiyshay",
+  "Abayashay"
+ ],
+ "Abay-Tal": [
+  "Abital",
+  "Abiytal",
+  "Abayatal"
+ ],
+ "Abay-Tawab": [
+  "Abitub",
+  "Abiytuwb",
+  "Abayatawab"
+ ],
+ "Abayab": [
+  "Abib"
+ ],
+ "Abayah": [
+  "Abijah",
+  "Abiah",
+  "Abiyah"
+ ],
+ "Abayam": [
+  "Abijam",
+  "Abiam",
+  "Abiyam"
+ ],
+ "Abayamaal": [
+  "Abimael",
+  "Abiymael"
+ ],
+ "Abayasap": [
+  "Ebiasaph",
+  "Ebyacaph"
+ ],
+ "Ach-Ab": [
+  "Ahab",
+  "Achab",
+  "Achaab"
+ ],
+ "Ach-Ban": [
+  "Ahban",
+  "Achban",
+  "Achaban"
+ ],
+ "Ach-Yalawad": [
+  "Ahilud",
+  "Achilud",
+  "Achiyluwd",
+  "Achayalawad"
+ ],
+ "Achalab": [
+  "Ahlab",
+  "Achlab"
+ ],
+ "Achalay": [
+  "Ahlai",
+  "Achlay"
+ ],
+ "Achamathaa": [
+  "Achmetha",
+  "Achmtha"
+ ],
+ "Achar": [
+  "Aher",
+  "Acher"
+ ],
+ "Achar-Chal": [
+  "Aharhel",
+  "Acharchel",
+  "Acharachal"
+ ],
+ "Acharach": [
+  "Aharah",
+  "Achrach"
+ ],
+ "Achasabay": [
+  "Ahasbai",
+  "Achacbay"
+ ],
+ "Achashawarawash": [
+  "Ahasuerus",
+  "Achashverosh",
+  "Achashverowsh"
+ ],
+ "Achawach": [
+  "Ahoah",
+  "Achoach",
+  "Achowach"
+ ],
+ "Achawad": [
+  "Echud",
+  "Echuwd"
+ ],
+ "Achawamay": [
+  "Ahumai",
+  "Achumay",
+  "Achuwmay"
+ ],
+ "Achay": [
+  "Ahi",
+  "Ehi",
+  "Achi",
+  "Echi",
+  "Achiy",
+  "Echiy"
+ ],
+ "Achay-Am": [
+  "Ahiam",
+  "Achiam",
+  "Achiyam",
+  "Achayaam"
+ ],
+ "Achay-Chad": [
+  "Achichud",
+  "Achiychud",
+  "Achayachad"
+ ],
+ "Achay-Hawad": [
+  "Ahihud",
+  "Achihud",
+  "Achiyhuwd",
+  "Achayahawad"
+ ],
+ "Achay-Izar": [
+  "Ahiezer",
+  "Achiezer",
+  "Achiyezer",
+  "Achayaizar"
+ ],
+ "Achay-Maitz": [
+  "Ahimaaz",
+  "Achimaats",
+  "Achiymaats",
+  "Achayamaitz"
+ ],
+ "Achay-Malak": [
+  "Ahimelech",
+  "Achimelek",
+  "Achiymelek",
+  "Achayamalak"
+ ],
+ "Achay-Man": [
+  "Ahiman",
+  "Achiman",
+  "Achiyman",
+  "Achayaman"
+ ],
+ "Achay-Mawath": [
+  "Ahimoth",
+  "Achimoth",
+  "Achiymowth",
+  "Achayamawath"
+ ],
+ "Achay-Nadab": [
+  "Ahinadab",
+  "Achinadab",
+  "Achiynadab",
+  "Achayanadab"
+ ],
+ "Achay-Naim": [
+  "Ahinoam",
+  "Achinoam",
+  "Achiynoam",
+  "Achayanaim"
+ ],
+ "Achay-Qam": [
+  "Ahikam",
+  "Achiqam",
+  "Achiyqam",
+  "Achayaqam"
+ ],
+ "Achay-Rai": [
+  "Ahira",
+  "Achira",
+  "Achiyra",
+  "Achayarai"
+ ],
+ "Achay-Ram": [
+  "Ahiram",
+  "Achiram",
+  "Achiyram",
+  "Achayaram"
+ ],
+ "Achay-Samak": [
+  "Ahisamach",
+  "Achicamak",
+  "Achiycamak",
+  "Achayasamak"
+ ],
+ "Achay-Shachar": [
+  "Ahishar",
+  "Achishachar",
+  "Achiyshachar",
+  "Achayashachar"
+ ],
+ "Achay-Shar": [
+  "Achishar",
+  "Achiyshar",
+  "Achayashar"
+ ],
+ "Achay-Tawab": [
+  "Ahitub",
+  "Achitub",
+  "Achiytuwb",
+  "Achayatawab"
+ ],
+ "Achay-Thapal": [
+  "Ahithophel",
+  "Achithophel",
+  "Achiythophel",
+  "Achayathapal"
+ ],
+ "Achayah": [
+  "Ahijah",
+  "Ahiah",
+  "Achiah",
+  "Achiyah"
+ ],
+ "Achayan": [
+  "Ahian",
+  "Achyan"
+ ],
+ "Achayaw": [
+  "Ahio",
+  "Achyo",
+  "Achyow"
+ ],
+ "Achaz": [
+  "Ahaz"
+ ],
+ "Achazah": [
+  "Achuzzah"
+ ],
+ "Achazam": [
+  "Ahuzam",
+  "Achuzzam"
+ ],
+ "Achazath": [
+  "Ahuzzath",
+  "Achuzzath"
+ ],
+ "Achazay": [
+  "Ahasai",
+  "Achzay"
+ ],
+ "Achazayah": [
+  "Ahaziah",
+  "Achazyah"
+ ],
+ "Adab-Al": [
+  "Adbeel",
+  "Adbel",
+  "Adabaal"
+ ],
+ "Adalayaa": [
+  "Adalia",
+  "Adalya"
+ ],
+ "Adamah": [
+  "Admah"
+ ],
+ "Adamathaa": [
+  "Admatha"
+ ],
+ "Adamay": [
+  "Adami",
+  "Adamiy"
+ ],
+ "Adamayam": [
+  "Adummim",
+  "Adummiym"
+ ],
+ "Adan": [
+  "Addan"
+ ],
+ "Adanay-Bazaq": [
+  "Adonibezek",
+  "Adoni-Bezeq",
+  "Adanayabazaq",
+  "Adoniy-Bezeq"
+ ],
+ "Adanay-Qam": [
+  "Adonikam",
+  "Adoniqam",
+  "Adoniyqam",
+  "Adanayaqam"
+ ],
+ "Adanay-Ram": [
+  "Adoniram",
+  "Adoniyram",
+  "Adanayaram"
+ ],
+ "Adanay-Tzadaq": [
+  "Adonizedec",
+  "Adoni-Tsedeq",
+  "Adanayatzadaq",
+  "Adoniy-Tsedeq"
+ ],
+ "Adanayah": [
+  "Adonijah",
+  "Adoniah",
+  "Adoniyah"
+ ],
+ "Adar": [
+  "Addar"
+ ],
+ "Adar-Malak": [
+  "Adrammelech",
+  "Adrammelek",
+  "Adaramalak"
+ ],
+ "Adaraiy": [
+  "Edrei",
+  "Edreiy"
+ ],
+ "Adaram": [
+  "Adoram"
+ ],
+ "Adawam": [
+  "Edom",
+  "Edomites",
+  "Idumea"
+ ],
+ "Adawamay": [
+  "Edomite"
+ ],
+ "Adawan": [
+  "Addon",
+  "Addown"
+ ],
+ "Adawarayam": [
+  "Adoraim",
+  "Adorayim",
+  "Adowrayim"
+ ],
+ "Agaa": [
+  "Agee",
+  "Age"
+ ],
+ "Agalayam": [
+  "Eglaim",
+  "Eglayim"
+ ],
+ "Agawar": [
+  "Agur",
+  "Aguwr"
+ ],
+ "Ahad": [
+  "Ohad"
+ ],
+ "Ahal": [
+  "Ohel"
+ ],
+ "Ahalah": [
+  "Oholah",
+  "Aholah"
+ ],
+ "Ahalay-Ab": [
+  "Oholiab",
+  "Aholiab",
+  "Oholiyab",
+  "Ahalayaab"
+ ],
+ "Ahalay-Bamah": [
+  "Oholibamah",
+  "Aholibamah",
+  "Oholiybamah",
+  "Ahalayabamah"
+ ],
+ "Ahalayabah": [
+  "Oholibah",
+  "Aholibah",
+  "Oholiybah"
+ ],
+ "Aharawan": [
+  "Aaron",
+  "Aharon",
+  "Aharown"
+ ],
+ "Ahawaa": [
+  "Ahava"
+ ],
+ "Ahawad": [
+  "Ehud",
+  "Ehuwd"
+ ],
+ "Akad": [
+  "Accad",
+  "Akkad"
+ ],
+ "Akal": [
+  "Ucal",
+  "Ukal"
+ ],
+ "Akashap": [
+  "Achshaph",
+  "Akshaph"
+ ],
+ "Akayash": [
+  "Achish",
+  "Akish",
+  "Akiysh"
+ ],
+ "Akazayab": [
+  "Achzib",
+  "Akzib",
+  "Akziyb"
+ ],
+ "Al": [
+  "Bethel"
+ ],
+ "Al-Chanan": [
+  "Elkanan",
+  "Elchanan",
+  "Alachanan"
+ ],
+ "Al-Dad": [
+  "Eldad",
+  "Aladad"
+ ],
+ "Al-Daih": [
+  "Eldaah",
+  "Aladaih"
+ ],
+ "Al-Id": [
+  "Elead",
+  "Elad",
+  "Alaid"
+ ],
+ "Al-Idah": [
+  "Eladah",
+  "Alaidah"
+ ],
+ "Al-Ilaa": [
+  "Elealeh",
+  "Elale",
+  "Alailaa"
+ ],
+ "Al-Ishah": [
+  "Eleasah",
+  "Elasah",
+  "Alaishah"
+ ],
+ "Al-Iwazay": [
+  "Eluzai",
+  "Eluzay",
+  "Eluwzay",
+  "Alaiwazay"
+ ],
+ "Al-Izar": [
+  "Eleazar",
+  "Elazar",
+  "Alaizar",
+  "Lazarus"
+ ],
+ "Al-Malak": [
+  "Alamalak",
+  "Alammelech",
+  "Allammelek"
+ ],
+ "Al-Naim": [
+  "Elnaam",
+  "Alanaim"
+ ],
+ "Al-Nathan": [
+  "Elnathan",
+  "Alanathan"
+ ],
+ "Al-Pail": [
+  "Elpaal",
+  "Alapail"
+ ],
+ "Al-Qanah": [
+  "Elkanah",
+  "Elqanah",
+  "Alaqanah"
+ ],
+ "Al-Thaqan": [
+  "Eltekon",
+  "Eltqon",
+  "Elteqon",
+  "Alathaqan"
+ ],
+ "Al-Thawalad": [
+  "Eltolad",
+  "Eltowlad",
+  "Alathawalad"
+ ],
+ "Al-Yaathah": [
+  "Eliathah",
+  "Eliyathah",
+  "Alayaathah"
+ ],
+ "Al-Yadai": [
+  "Eliada",
+  "Elyada",
+  "Alayadai"
+ ],
+ "Al-Yahawaiyanay": [
+  "Elionai",
+  "Elihoenai",
+  "Elyhoenay",
+  "Elyehoenay",
+  "Elyhoweynay",
+  "Elyehoweynay",
+  "Alayahawaiyanay"
+ ],
+ "Al-Yapal": [
+  "Eliphal",
+  "Eliyphal",
+  "Alayapal"
+ ],
+ "Al-Yasap": [
+  "Eliasaph",
+  "Elyacaph",
+  "Alayasap"
+ ],
+ "Al-Zabad": [
+  "Elzabad",
+  "Alazabad"
+ ],
+ "Alaa": [
+  "Ela"
+ ],
+ "Alah": [
+  "Elah"
+ ],
+ "Alamanah": [
+  "Almanah"
+ ],
+ "Alamanay": [
+  "Almoni",
+  "Almoniy"
+ ],
+ "Alamawadad": [
+  "Almodad",
+  "Almowdad"
+ ],
+ "Alap": [
+  "Eleph"
+ ],
+ "Alasar": [
+  "Ellasar",
+  "Ellacar"
+ ],
+ "Alathaqaa": [
+  "Eltekeh",
+  "Eltqe",
+  "Elteqe"
+ ],
+ "Alawal": [
+  "Elul",
+  "Eluwl"
+ ],
+ "Alawan": [
+  "Allon",
+  "Allown"
+ ],
+ "Alawan-Bakawath": [
+  "Allon Bakuth",
+  "Allon-Bachuth",
+  "Allown Bakuwth"
+ ],
+ "Alawash": [
+  "Alush",
+  "Aluwsh"
+ ],
+ "Alay-Ab": [
+  "Eliab",
+  "Eliyab",
+  "Alayaab"
+ ],
+ "Alay-Chabaa": [
+  "Eliahbah",
+  "Elyachba",
+  "Alayachabaa"
+ ],
+ "Alay-Charap": [
+  "Elihoreph",
+  "Elichoreph",
+  "Eliychoreph",
+  "Alayacharap"
+ ],
+ "Alay-Im": [
+  "Eliam",
+  "Eliyam",
+  "Alayaim"
+ ],
+ "Alay-Izar": [
+  "Eliezer",
+  "Eliyezer",
+  "Alayaizar"
+ ],
+ "Alay-Malak": [
+  "Elimelech",
+  "Elimelek",
+  "Eliymelek",
+  "Alayamalak"
+ ],
+ "Alay-Palahaw": [
+  "Eliphelehu",
+  "Elipheleh",
+  "Eliphlehu",
+  "Eliyphlehuw",
+  "Eliyphelehuw",
+  "Alayapalahaw"
+ ],
+ "Alay-Palat": [
+  "Eliphelet",
+  "Elpalet",
+  "Eliphalet",
+  "Eliyphelet",
+  "Alayapalat"
+ ],
+ "Alay-Paz": [
+  "Eliphaz",
+  "Eliyphaz",
+  "Alayapaz"
+ ],
+ "Alay-Qaa": [
+  "Elika",
+  "Eliqa",
+  "Eliyqa",
+  "Alayaqaa"
+ ],
+ "Alay-Qayam": [
+  "Eliakim",
+  "Elyaqim",
+  "Elyaqiym",
+  "Alayaqayam"
+ ],
+ "Alay-Shabai": [
+  "Elisheba",
+  "Eliysheba",
+  "Elizabeth",
+  "Alayashabai"
+ ],
+ "Alay-Shamai": [
+  "Elishama",
+  "Eliyshama",
+  "Alayashamai"
+ ],
+ "Alay-Shapat": [
+  "Elishaphat",
+  "Eliyshaphat",
+  "Alayashapat"
+ ],
+ "Alay-Shawai": [
+  "Elishua",
+  "Eliyshuwa",
+  "Alayashawai"
+ ],
+ "Alay-Shayab": [
+  "Eliashib",
+  "Elyashib",
+  "Elyashiyb",
+  "Alayashayab"
+ ],
+ "Alay-Tzapan": [
+  "Elizaphan",
+  "Elzaphan",
+  "Elitsaphan",
+  "Eliytsaphan",
+  "Alayatzapan"
+ ],
+ "Alay-Tzawar": [
+  "Elizur",
+  "Elitsur",
+  "Eliytsuwr",
+  "Alayatzawar"
+ ],
+ "Alayaal": [
+  "Eliel",
+  "Eliyel"
+ ],
+ "Alayadad": [
+  "Elidad",
+  "Eliydad"
+ ],
+ "Alayah": [
+  "Elijah",
+  "Eliah",
+  "Eliyah"
+ ],
+ "Alayahaw": [
+  "Elihu",
+  "Eliyhuw"
+ ],
+ "Alayaiyanay": [
+  "Elienai",
+  "Elienay",
+  "Eliyeynay"
+ ],
+ "Alayashah": [
+  "Elishah",
+  "Eliyshah"
+ ],
+ "Alayashai": [
+  "Elisha",
+  "Eliysha"
+ ],
+ "Amah": [
+  "Ammah"
+ ],
+ "Aman": [
+  "Amen"
+ ],
+ "Amanah": [
+  "Amana"
+ ],
+ "Amanawan": [
+  "Amnon",
+  "Amnown"
+ ],
+ "Amar": [
+  "Immer"
+ ],
+ "Amarapal": [
+  "Amraphel"
+ ],
+ "Amaray": [
+  "Amorites",
+  "Imri",
+  "Imriy"
+ ],
+ "Amarayah": [
+  "Amariah",
+  "Amaryah"
+ ],
+ "Amathanay": [
+  "Emtani",
+  "Emetani",
+  "Emtaniy",
+  "Emetaniy"
+ ],
+ "Amathay": [
+  "Amittai",
+  "Amittay"
+ ],
+ "Amatzay": [
+  "Amzi",
+  "Amtsi",
+  "Amtsiy"
+ ],
+ "Amatzayah": [
+  "Amaziah",
+  "Amatsyah"
+ ],
+ "Amawan": [
+  "Amon",
+  "Amown"
+ ],
+ "Amawatz": [
+  "Amoz",
+  "Amots",
+  "Amowts"
+ ],
+ "Amay": [
+  "Ami",
+  "Amiy"
+ ],
+ "Amayar": [
+  "Amir",
+  "Amiyr"
+ ],
+ "Anacharath": [
+  "Anaharath"
+ ],
+ "Anadaray": [
+  "Andrew"
+ ],
+ "Anawash": [
+  "Enosh",
+  "Enos",
+  "Enowsh"
+ ],
+ "Anay-Im": [
+  "Aniam",
+  "Aniyam",
+  "Anayaim"
+ ],
+ "Apad": [
+  "Ephod"
+ ],
+ "Apalal": [
+  "Ephlal"
+ ],
+ "Apaq": [
+  "Aphek",
+  "Aphik",
+  "Apheq"
+ ],
+ "Apaqah": [
+  "Aphekah",
+  "Apheqah"
+ ],
+ "Aparasay": [
+  "Apharcay",
+  "Apharsite",
+  "Apharecay"
+ ],
+ "Aparath": [
+  "Ephrath",
+  "Ephratah"
+ ],
+ "Aparathah": [
+  "Ephrathah"
+ ],
+ "Aparayam": [
+  "Ephraim",
+  "Ephraimites",
+  "Ephrayim"
+ ],
+ "Apas-Damayam": [
+  "Ephes-Dammim",
+  "Ephec Dammim",
+  "Ephec Dammiym"
+ ],
+ "Apayach": [
+  "Aphiah",
+  "Aphiach",
+  "Aphiyach"
+ ],
+ "Apayam": [
+  "Appaim",
+  "Appayim"
+ ],
+ "Apayaq": [
+  "Aphiq",
+  "Aphiyq"
+ ],
+ "Araa": [
+  "Ara"
+ ],
+ "Araalay": [
+  "Areli",
+  "Arelites",
+  "Areliy"
+ ],
+ "Arabawath": [
+  "Arubboth",
+  "Aruboth",
+  "Arubbowth"
+ ],
+ "Arach": [
+  "Arah",
+  "Orach"
+ ],
+ "Arad": [
+  "Ard"
+ ],
+ "Aradawan": [
+  "Ardon",
+  "Ardown"
+ ],
+ "Aragab": [
+  "Argob"
+ ],
+ "Arak": [
+  "Erech",
+  "Erek"
+ ],
+ "Aram": [
+  "Syria",
+  "Syrians",
+  "Mesopotamia"
+ ],
+ "Aram-Naharayam": [
+  "Aram Naharayim",
+  "Aham-Naharaim"
+ ],
+ "Aram-Tzawabah": [
+  "Aram Tsobah",
+  "Aram Tsowbah",
+  "Aram-Zobah"
+ ],
+ "Aramanay": [
+  "Armoni",
+  "Armoniy"
+ ],
+ "Aran": [
+  "Oren"
+ ],
+ "Aranan": [
+  "Ornan",
+  "Arnan"
+ ],
+ "Aranawan": [
+  "Arnon",
+  "Arnown"
+ ],
+ "Arapad": [
+  "Arpad",
+  "Arphad"
+ ],
+ "Arapakashad": [
+  "Arphaxad",
+  "Arpakshad"
+ ],
+ "Ararat": [
+  "Armenia"
+ ],
+ "Arathachashashathaa": [
+  "Artaxerxes",
+  "Artachshashta"
+ ],
+ "Aratz": [
+  "Erets"
+ ],
+ "Aratzaa": [
+  "Arza",
+  "Artsa"
+ ],
+ "Arawad": [
+  "Arvad",
+  "Arod",
+  "Arowd"
+ ],
+ "Arawaday": [
+  "Arodi",
+  "Arodites",
+  "Arowdiy"
+ ],
+ "Arawah": [
+  "Urvah"
+ ],
+ "Arawamah": [
+  "Arumah",
+  "Aruwmah"
+ ],
+ "Arawanah": [
+  "Araunah",
+  "Aravnah"
+ ],
+ "Aray-Al": [
+  "Ariel",
+  "Ariyel",
+  "Arayaal"
+ ],
+ "Arayadathaa": [
+  "Aridatha",
+  "Ariydatha"
+ ],
+ "Arayaday": [
+  "Aridai",
+  "Ariday",
+  "Ariyday"
+ ],
+ "Arayah": [
+  "Arieh",
+  "Aryeh"
+ ],
+ "Arayasay": [
+  "Arisai",
+  "Aricay",
+  "Ariycay"
+ ],
+ "Arayawak": [
+  "Arioch",
+  "Aryok",
+  "Aryowk"
+ ],
+ "Asaa": [
+  "Asa",
+  "Aca"
+ ],
+ "Asanah": [
+  "Asnah",
+  "Acnah"
+ ],
+ "Asanapar": [
+  "Asnapper",
+  "Ocnappar"
+ ],
+ "Asanath": [
+  "Asenath",
+  "Acnath",
+  "Acenath"
+ ],
+ "Asap": [
+  "Asaph",
+  "Acaph"
+ ],
+ "Asapathaa": [
+  "Aspatha",
+  "Acpatha"
+ ],
+ "Asar-Chadawan": [
+  "Esar-Haddon",
+  "Ecar-Chaddon",
+  "Ecar-Chaddown"
+ ],
+ "Asathar": [
+  "Esther",
+  "Ecter"
+ ],
+ "Asayar": [
+  "Assir",
+  "Accir",
+  "Acciyr"
+ ],
+ "Ash-Bail": [
+  "Eshbaal",
+  "Ashabail"
+ ],
+ "Ashabai": [
+  "Ashbea"
+ ],
+ "Ashabal": [
+  "Ashbel"
+ ],
+ "Ashaban": [
+  "Eshban"
+ ],
+ "Ashachawar": [
+  "Ashur",
+  "Ashchur",
+  "Ashchuwr"
+ ],
+ "Ashadawad": [
+  "Ashdod",
+  "Ahdod",
+  "Ashdowd"
+ ],
+ "Ashadawath-Hapasagah": [
+  "Ashdoth Hap-Picgah",
+  "Ashdowth Hap-Picgah"
+ ],
+ "Ashain": [
+  "Eshan",
+  "Eshean"
+ ],
+ "Ashakal": [
+  "Eshcol",
+  "Eshkol"
+ ],
+ "Ashakanaz": [
+  "Ashkenaz",
+  "Ashknaz"
+ ],
+ "Ashanah": [
+  "Ashnah"
+ ],
+ "Ashapanaz": [
+  "Ashpenaz",
+  "Ashpnaz"
+ ],
+ "Ashaqalawan": [
+  "Ashkelon",
+  "Askalon",
+  "Ashqlon",
+  "Ashqelon",
+  "Ashqlown",
+  "Ashqelown"
+ ],
+ "Ashar": [
+  "Asher",
+  "Ashurite"
+ ],
+ "Ashar-Al": [
+  "Asarel",
+  "Asareel",
+  "Asharaal"
+ ],
+ "Asharaalah": [
+  "Asarelah"
+ ],
+ "Asharah": [
+  "Asherah"
+ ],
+ "Asharayaal": [
+  "Asriel",
+  "Ashriel",
+  "Asriyel"
+ ],
+ "Ashathaal": [
+  "Eshtaol"
+ ],
+ "Ashathamai": [
+  "Eshtemoa",
+  "Eshtemoh",
+  "Eshtmoa"
+ ],
+ "Ashathawan": [
+  "Eshton",
+  "Eshtown"
+ ],
+ "Ashawar": [
+  "Assyria",
+  "Assyrian",
+  "Assyrians",
+  "Asshur",
+  "Assur",
+  "Ashshur",
+  "Ashshuwr"
+ ],
+ "Ashawaray": [
+  "Asshurim",
+  "Ashurites",
+  "Ashuri",
+  "Ashuwriy"
+ ],
+ "Ashayamaa": [
+  "Ashima",
+  "Ashiyma"
+ ],
+ "Atar": [
+  "Ater"
+ ],
+ "Ath-Bail": [
+  "Ethbaal",
+  "Athabail"
+ ],
+ "Atham": [
+  "Etham"
+ ],
+ "Athanan": [
+  "Ethnan"
+ ],
+ "Athanay": [
+  "Ethni",
+  "Ethniy"
+ ],
+ "Atharayam": [
+  "Atharim",
+  "Athariym"
+ ],
+ "Athawan": [
+  "Attun",
+  "Attuwn"
+ ],
+ "Athay": [
+  "Ittai",
+  "Ithai",
+  "Ittay"
+ ],
+ "Atzabawan": [
+  "Ezbon",
+  "Etsbon",
+  "Etsbown"
+ ],
+ "Atzal": [
+  "Azel",
+  "Azal",
+  "Atsel"
+ ],
+ "Atzalayahaw": [
+  "Azaliah",
+  "Atsalyahu",
+  "Atsalyahuw"
+ ],
+ "Atzam": [
+  "Ozem",
+  "Otsem"
+ ],
+ "Atzar": [
+  "Ezer",
+  "Etser"
+ ],
+ "Awaal": [
+  "Uel",
+  "Uwel"
+ ],
+ "Awabayal": [
+  "Obil",
+  "Owbiyl"
+ ],
+ "Awalam": [
+  "Ulam",
+  "Uwlam"
+ ],
+ "Awalay": [
+  "Ulai",
+  "Ulay",
+  "Uwlay"
+ ],
+ "Awamar": [
+  "Omar",
+  "Owmar"
+ ],
+ "Awan": [
+  "Aven",
+  "Own"
+ ],
+ "Awanam": [
+  "Onam",
+  "Ownam"
+ ],
+ "Awanan": [
+  "Onan",
+  "Ownan"
+ ],
+ "Awanaw": [
+  "Ono",
+  "Ownow"
+ ],
+ "Awapayar": [
+  "Ophir",
+  "Owphiyr"
+ ],
+ "Awapaz": [
+  "Uphaz",
+  "Uwphaz"
+ ],
+ "Awar": [
+  "Uwr"
+ ],
+ "Awaray": [
+  "Uri",
+  "Uwriy"
+ ],
+ "Awaray-Al": [
+  "Uriel",
+  "Uwriyel",
+  "Awarayaal"
+ ],
+ "Awarayah": [
+  "Uriah",
+  "Urijah",
+  "Uwriyah"
+ ],
+ "Awayal-Maradak": [
+  "Evil Mrodak",
+  "Evil Merodak",
+  "Evilmerodach",
+  "Eviyl Mrodak",
+  "Evil-Merodach",
+  "Eviyl Merodak"
+ ],
+ "Awazal": [
+  "Uzal",
+  "Uwzal"
+ ],
+ "Awazay": [
+  "Uzai",
+  "Uzay",
+  "Uwzay"
+ ],
+ "Ay-Izar": [
+  "Iezer",
+  "Jeezer",
+  "Iyezer",
+  "Ayaizar"
+ ],
+ "Ay-Kabawad": [
+  "I-Kabod",
+  "I-Chabod",
+  "Iy-Kabowd"
+ ],
+ "Ay-Thamar": [
+  "Ithamar",
+  "Iythamar",
+  "Ayathamar"
+ ],
+ "Ay-Zabal": [
+  "Jezebel",
+  "Izebel",
+  "Iyzebel",
+  "Ayazabal"
+ ],
+ "Ayah": [
+  "Aiah",
+  "Ajah"
+ ],
+ "Ayal-Paaran": [
+  "El Paran",
+  "El-Paran",
+  "Eyl Paran"
+ ],
+ "Ayalam": [
+  "Elim",
+  "Eylim"
+ ],
+ "Ayalawan": [
+  "Aijalon",
+  "Elon",
+  "Ajalon",
+  "Ayalon",
+  "Eylown",
+  "Ayalown"
+ ],
+ "Ayalawan-Bayath-Chanan": [
+  "Elon Beth Chanan",
+  "Elon-Bethhanan",
+  "Eylown Beyth Chanan"
+ ],
+ "Ayalawath": [
+  "Elath",
+  "Eloth",
+  "Eylowth"
+ ],
+ "Ayamayam": [
+  "Emim",
+  "Emims",
+  "Eymiym"
+ ],
+ "Ayapah": [
+  "Ephoh",
+  "Eyphoh"
+ ],
+ "Ayash-Bashath": [
+  "Ish-Bosheth",
+  "Iysh-Bosheth"
+ ],
+ "Ayash-Hawad": [
+  "Ishhod",
+  "Ishod",
+  "Ishehod",
+  "Iyshhowd",
+  "Iyshehowd",
+  "Ayashahawad"
+ ],
+ "Ayash-Tawab": [
+  "Ishtob",
+  "Ish-Tob",
+  "Iysh-Towb"
+ ],
+ "Ayathan": [
+  "Ethan",
+  "Eythan"
+ ],
+ "Ayathay-Al": [
+  "Ithiel",
+  "Iythiyel",
+  "Ayathayaal"
+ ],
+ "Ayawab": [
+  "Job",
+  "Iob",
+  "Iyowb"
+ ],
+ "Azabay": [
+  "Ezbai",
+  "Ezbay"
+ ],
+ "Azal": [
+  "Ezel"
+ ],
+ "Azan-Shaarah": [
+  "Uzzen Sheerah",
+  "Uzzen-Sherah"
+ ],
+ "Azanawath-Thabawar": [
+  "Aznoth Tabor",
+  "Aznoth-Tabor",
+  "Aznowth Tabowr"
+ ],
+ "Azanay": [
+  "Ozni",
+  "Oznites",
+  "Ozniy"
+ ],
+ "Azanayah": [
+  "Azaniah",
+  "Azanyah"
+ ],
+ "Baar": [
+  "Beer",
+  "Ber"
+ ],
+ "Baar-Alayam": [
+  "Beer Elim",
+  "Beer Eliym",
+  "Ber Elim",
+  "Beer-Elim",
+  "Ber Eliym"
+ ],
+ "Baar-Lachay-Raay": [
+  "Beer La-Chay Roi",
+  "Beer La-Chay Roiy",
+  "Beer-Lahai-Roi",
+  "Ber La-Chay Roi",
+  "Ber La-Chay Roiy"
+ ],
+ "Baar-Shabai": [
+  "Beersheba",
+  "Beer Sheba",
+  "Ber Sheba",
+  "Beer-Shebah"
+ ],
+ "Baaraa": [
+  "Beera"
+ ],
+ "Baarah": [
+  "Beerah",
+  "Berah"
+ ],
+ "Baarath-Banay-Yaiqan": [
+  "Beeroth Bene-Yaaqan",
+  "Beeroth Beney-Yaaqan",
+  "Beroth Bne-Yaaqan",
+  "Beroth Bney-Yaaqan"
+ ],
+ "Baarawath": [
+  "Beeroth",
+  "Beroth",
+  "Berowth",
+  "Beerowth"
+ ],
+ "Baaray": [
+  "Beeri",
+  "Beeriy"
+ ],
+ "Babal": [
+  "Babylon",
+  "Babel"
+ ],
+ "Babay": [
+  "Bebai",
+  "Bebay"
+ ],
+ "Bacharayam": [
+  "Bahurim",
+  "Bachurim",
+  "Bachuriym"
+ ],
+ "Badad": [
+  "Bedad",
+  "Bdad"
+ ],
+ "Badan": [
+  "Bedan",
+  "Bdan"
+ ],
+ "Badaqar": [
+  "Bidkar",
+  "Bidqar"
+ ],
+ "Badayah": [
+  "Bedeiah",
+  "Bedeah",
+  "Bedyah",
+  "Bedeyah"
+ ],
+ "Bagathaa": [
+  "Bigtha"
+ ],
+ "Bagathan": [
+  "Bigthan",
+  "Bigthana"
+ ],
+ "Bagaway": [
+  "Bigvai",
+  "Bigvay"
+ ],
+ "Bahan": [
+  "Bohan"
+ ],
+ "Bail": [
+  "Baal"
+ ],
+ "Bail-Barayath": [
+  "Baal Brith",
+  "Baal Berith",
+  "Baal Briyth",
+  "Baal Beriyth",
+  "Baal-Berith"
+ ],
+ "Bail-Chanan": [
+  "Baal Chanan",
+  "Baal-Hanan"
+ ],
+ "Bail-Charamawan": [
+  "Baal Chermon",
+  "Baal Chermown",
+  "Baal-Hermon"
+ ],
+ "Bail-Chatzawar": [
+  "Baal Chatsor",
+  "Baal Chatsowr",
+  "Baalhazor",
+  "Baal-Hazor"
+ ],
+ "Bail-Gad": [
+  "Baal Gad",
+  "Baal-Gad"
+ ],
+ "Bail-Hamawan": [
+  "Baal Hamon",
+  "Baal Hamown",
+  "Baal-Hamon"
+ ],
+ "Bail-Maiwan": [
+  "Baal Mon",
+  "Baal Meon",
+  "Baal Mown",
+  "Baal Meown",
+  "Baal-Meon"
+ ],
+ "Bail-Paiwar": [
+  "Baal Por",
+  "Baal Peor",
+  "Baal Powr",
+  "Baal Peowr",
+  "Baal-Peor"
+ ],
+ "Bail-Paratzayam": [
+  "Baal Pratsim",
+  "Baal Peratsim",
+  "Baal Pratsiym",
+  "Baal Peratsiym",
+  "Baal-Perazim"
+ ],
+ "Bail-Shalashah": [
+  "Baal Shalishah",
+  "Baal-Shalisha"
+ ],
+ "Bail-Thamar": [
+  "Baal Tamar",
+  "Baal-Tamar"
+ ],
+ "Bail-Tzapawan": [
+  "Baal Tsphon",
+  "Baal Tsephon",
+  "Baal Tsphown",
+  "Baal Tsephown",
+  "Baal-Zephon"
+ ],
+ "Bail-Yadai": [
+  "Beeliada",
+  "Belyada",
+  "Beelyada",
+  "Bailayadai"
+ ],
+ "Bail-Zabawab": [
+  "Baal Zbub",
+  "Baal Zebub",
+  "Baal Zbuwb",
+  "Baal Zebuwb",
+  "Baal-Zebub"
+ ],
+ "Bailah": [
+  "Baalah"
+ ],
+ "Bailath": [
+  "Baalath"
+ ],
+ "Bailath-Baar": [
+  "Baalath Ber",
+  "Baalath Beer",
+  "Baalath-Beer"
+ ],
+ "Bailawath": [
+  "Bealoth",
+  "Baloth",
+  "Balowth",
+  "Bealowth"
+ ],
+ "Bailay": [
+  "Baali",
+  "Baaliy"
+ ],
+ "Bailay-Bamawath": [
+  "Baale Bamoth",
+  "Baaley Bamowth"
+ ],
+ "Bailay-Yahawadah": [
+  "Baale Yhudah",
+  "Baale Yehudah",
+  "Baaley Yhuwdah",
+  "Baaley Yehuwdah"
+ ],
+ "Bailayah": [
+  "Bealiah",
+  "Balyah",
+  "Bealyah"
+ ],
+ "Bailayas": [
+  "Baalis",
+  "Baalic",
+  "Baaliyc"
+ ],
+ "Bain": [
+  "Beon",
+  "Bon"
+ ],
+ "Bainaa": [
+  "Baana"
+ ],
+ "Bainah": [
+  "Baanah"
+ ],
+ "Bairaa": [
+  "Baara"
+ ],
+ "Baishaa": [
+  "Baasha",
+  "Basha"
+ ],
+ "Baishatharah": [
+  "Beshtrah",
+  "Beeshterah"
+ ],
+ "Baishayah": [
+  "Baaseiah",
+  "Baaseah",
+  "Baaseyah"
+ ],
+ "Baiwar": [
+  "Beor",
+  "Bor",
+  "Bowr",
+  "Beowr"
+ ],
+ "Baiz": [
+  "Boaz"
+ ],
+ "Bakaa": [
+  "Baca",
+  "Baka"
+ ],
+ "Bakar": [
+  "Becher",
+  "Beker"
+ ],
+ "Bakaraw": [
+  "Bocheru",
+  "Bokru",
+  "Bokeru",
+  "Bokruw",
+  "Bokeruw"
+ ],
+ "Bakaray": [
+  "Bichri",
+  "Bikri",
+  "Bikriy"
+ ],
+ "Bakawarath": [
+  "Bkorath",
+  "Bekorath",
+  "Bkowrath",
+  "Bechorath",
+  "Bekowrath"
+ ],
+ "Bakayam": [
+  "Bochim",
+  "Bokim",
+  "Bokiym"
+ ],
+ "Bal": [
+  "Bel"
+ ],
+ "Bal-Adan": [
+  "Baladan",
+  "Balaadan"
+ ],
+ "Bal-Im": [
+  "Balaam",
+  "Bileam",
+  "Bilam",
+  "Balaim"
+ ],
+ "Baladad": [
+  "Bildad"
+ ],
+ "Balagah": [
+  "Bilgah"
+ ],
+ "Balagay": [
+  "Bilgai",
+  "Bilgay"
+ ],
+ "Balahah": [
+  "Bilhah"
+ ],
+ "Balahan": [
+  "Bilhan"
+ ],
+ "Balai": [
+  "Bela"
+ ],
+ "Balaq": [
+  "Balak"
+ ],
+ "Balashaatzar": [
+  "Belshazzar",
+  "Belshatstsar"
+ ],
+ "Balashan": [
+  "Bilshan"
+ ],
+ "Balatashaatzar": [
+  "Belteshazzar",
+  "Beltshatstsar",
+  "Belteshatstsar"
+ ],
+ "Bamahal": [
+  "Bimhal"
+ ],
+ "Bamawath": [
+  "Bamoth",
+  "Bamowth",
+  "Bamoth-Baal"
+ ],
+ "Ban": [
+  "Ben"
+ ],
+ "Ban-Awanay": [
+  "Ben-Oni",
+  "Ben-Owniy"
+ ],
+ "Ban-Chanan": [
+  "Ben-Hanan",
+  "Ben-Chanan"
+ ],
+ "Ban-Chayal": [
+  "Ben-Hail",
+  "Ben-Chayil"
+ ],
+ "Ban-Hadad": [
+  "Benhadad",
+  "Banahadad",
+  "Ben-Hadad"
+ ],
+ "Ban-Imay": [
+  "Ben-Ammi",
+  "Ben-Ammiy"
+ ],
+ "Ban-Yamayan": [
+  "Benjamin",
+  "Binyamin",
+  "Binyamiyn",
+  "Banayamayan"
+ ],
+ "Ban-Yamayanay": [
+  "Benjamites"
+ ],
+ "Ban-Zawachath": [
+  "Ben-Zoketh",
+  "Ben-Zocheth",
+  "Ben-Zowcheth"
+ ],
+ "Banaia": [
+  "Binea",
+  "Bina",
+  "Bineah"
+ ],
+ "Banaway": [
+  "Binnui",
+  "Binnuy",
+  "Binnuwy"
+ ],
+ "Banay": [
+  "Bani",
+  "Bunni",
+  "Baniy",
+  "Bunniy"
+ ],
+ "Banay-Baraq": [
+  "Bne-Braq",
+  "Bney-Braq",
+  "Bene-Barak",
+  "Bene-Beraq",
+  "Beney-Beraq"
+ ],
+ "Banay-Yaiqan": [
+  "Bene Yaaqan",
+  "Bne Yaaqan",
+  "Bene-Jaakan",
+  "Bney Yaaqan",
+  "Beney Yaaqan"
+ ],
+ "Banayah": [
+  "Benaiah",
+  "Bnayah",
+  "Benayah"
+ ],
+ "Banayanaw": [
+  "Beninu",
+  "Bninu",
+  "Bniynuw",
+  "Beniynuw"
+ ],
+ "Baqabaqar": [
+  "Bakbakkar",
+  "Baqbaqqar"
+ ],
+ "Baqabaqayah": [
+  "Bakbukiah",
+  "Baqbuqyah"
+ ],
+ "Baqabawaq": [
+  "Bakbuk",
+  "Baqbuq",
+  "Baqbuwq"
+ ],
+ "Baqaia": [
+  "Biqa"
+ ],
+ "Baqaih": [
+  "Biqah"
+ ],
+ "Baqay": [
+  "Bukki",
+  "Buqqi",
+  "Buqqiy"
+ ],
+ "Baqayah": [
+  "Bukkiah",
+  "Buqqiah",
+  "Buqqiyah"
+ ],
+ "Baraadak-Bal-Adan": [
+  "Brodak Baladan",
+  "Berodak Baladan",
+  "Berodach-Baladan"
+ ],
+ "Baraayah": [
+  "Beraiah",
+  "Brayah",
+  "Berayah"
+ ],
+ "Barad": [
+  "Bered"
+ ],
+ "Barai": [
+  "Bera"
+ ],
+ "Barak-Al": [
+  "Barachel",
+  "Barakel",
+  "Barakaal"
+ ],
+ "Barakah": [
+  "Brakah",
+  "Brekah",
+  "Berakah",
+  "Berekah",
+  "Berachah"
+ ],
+ "Barakayah": [
+  "Berechiah",
+  "Berekyah",
+  "Berachiah"
+ ],
+ "Baranab": [
+  "Barnabas"
+ ],
+ "Baranai": [
+  "Barnea"
+ ],
+ "Baraq": [
+  "Barak"
+ ],
+ "Baraqawas": [
+  "Barkos",
+  "Barqoc",
+  "Barqowc"
+ ],
+ "Barashai": [
+  "Birsha"
+ ],
+ "Barathalam": [
+  "Bartholomew"
+ ],
+ "Barawak": [
+  "Baruch",
+  "Baruk",
+  "Baruwk"
+ ],
+ "Barawathah": [
+  "Berothah",
+  "Berothai",
+  "Berowthah"
+ ],
+ "Baray": [
+  "Berites",
+  "Beri",
+  "Beriy"
+ ],
+ "Barayach": [
+  "Bariah",
+  "Bariach",
+  "Bariyach"
+ ],
+ "Barayaih": [
+  "Beriah",
+  "Briah",
+  "Briyah",
+  "Beriyah"
+ ],
+ "Barayath": [
+  "Berith",
+  "Brith",
+  "Briyth",
+  "Beriyth"
+ ],
+ "Barazalay": [
+  "Barzillai",
+  "Barzillay"
+ ],
+ "Basawadayah": [
+  "Besodeiah",
+  "Bcodyah",
+  "Becodeah",
+  "Bcowdyah",
+  "Becowdeyah"
+ ],
+ "Basay": [
+  "Besai",
+  "Bcay",
+  "Becay"
+ ],
+ "Bashalam": [
+  "Bishlam"
+ ],
+ "Bashamath": [
+  "Basmath",
+  "Bosmath",
+  "Bashemath"
+ ],
+ "Bashath": [
+  "Ishbosheth",
+  "Bosheth"
+ ],
+ "Bashawar": [
+  "Besor",
+  "Bsor",
+  "Bsowr",
+  "Besowr"
+ ],
+ "Batach": [
+  "Betah",
+  "Betach"
+ ],
+ "Batan": [
+  "Beten"
+ ],
+ "Batanayam": [
+  "Betonim",
+  "Btonim",
+  "Btoniym",
+  "Betoniym"
+ ],
+ "Bath-Rabayam": [
+  "Bathrabbim",
+  "Bath-Rabbim",
+  "Bath Rabbim",
+  "Bath Rabbiym"
+ ],
+ "Bath-Shabai": [
+  "Bathsheba",
+  "Bath-Sheba"
+ ],
+ "Bath-Shawai": [
+  "Bath-Shua",
+  "Bath-Shuwa"
+ ],
+ "Bathar": [
+  "Bether"
+ ],
+ "Batharawan": [
+  "Bithron",
+  "Bithrown"
+ ],
+ "Bathawaal": [
+  "Bthuel",
+  "Bthuwel",
+  "Bethuwel"
+ ],
+ "Bathawal": [
+  "Bethuel",
+  "Bethul",
+  "Bthul",
+  "Bthuwl",
+  "Bethuwl"
+ ],
+ "Bathawalah": [
+  "Bthulah",
+  "Bethulah",
+  "Bthuwlah",
+  "Bethuwlah"
+ ],
+ "Bathayah": [
+  "Bithiah",
+  "Bithyah"
+ ],
+ "Batzal-Al": [
+  "Btsalel",
+  "Bezaleel",
+  "Betsalel",
+  "Batzalaal"
+ ],
+ "Batzalawath": [
+  "Bazlith",
+  "Bazluth",
+  "Batsluth",
+  "Batsluwth"
+ ],
+ "Batzaqath": [
+  "Bozcath",
+  "Boskath",
+  "Botsqath"
+ ],
+ "Batzar": [
+  "Bezer",
+  "Betser"
+ ],
+ "Batzarah": [
+  "Bozrah",
+  "Botsrah"
+ ],
+ "Batzay": [
+  "Bezai",
+  "Betsay"
+ ],
+ "Bawal": [
+  "Bul",
+  "Buwl"
+ ],
+ "Bawanah": [
+  "Bunah",
+  "Buwnah"
+ ],
+ "Bawatzatz": [
+  "Bozez",
+  "Botsets",
+  "Bowtsets"
+ ],
+ "Baway": [
+  "Bavai",
+  "Bavvay"
+ ],
+ "Bawaz": [
+  "Buz",
+  "Buwz"
+ ],
+ "Bawazay": [
+  "Buzi",
+  "Buwziy"
+ ],
+ "Bayath": [
+  "Beth",
+  "Bayith",
+  "Bajith"
+ ],
+ "Bayath-Al": [
+  "Beth-El",
+  "Beyth-El"
+ ],
+ "Bayath-Arabaal": [
+  "Beth Arbel",
+  "Beth-Arbel",
+  "Beyth Arbel"
+ ],
+ "Bayath-Awan": [
+  "Beth Aven",
+  "Beth-Aven",
+  "Beyth Aven"
+ ],
+ "Bayath-Bail-Maiwan": [
+  "Beth Baal Mon",
+  "Beth Baal Meon",
+  "Beth-Baal-Meon",
+  "Beyth Baal Mown",
+  "Beyth Baal Meown"
+ ],
+ "Bayath-Baraay": [
+  "Beth Biri",
+  "Bethbirei",
+  "Beyth Biriy",
+  "Bayathabaraay"
+ ],
+ "Bayath-Barah": [
+  "Beth Barah",
+  "Beth-Barah",
+  "Beyth Barah"
+ ],
+ "Bayath-Chagalah": [
+  "Beth Choglah",
+  "Beth-Hoglah",
+  "Beyth Choglah"
+ ],
+ "Bayath-Chawarawan": [
+  "Beth Choron",
+  "Bethhoron",
+  "Beth-Horon",
+  "Beyth Chowrown"
+ ],
+ "Bayath-Dabalathayam": [
+  "Beth Diblathayim",
+  "Beth-Diblathaim",
+  "Beyth Diblathayim"
+ ],
+ "Bayath-Dagawan": [
+  "Bethdagon",
+  "Beth-Dagon",
+  "Beyth-Dagown"
+ ],
+ "Bayath-Gadar": [
+  "Beth-Gader",
+  "Beyth-Gader"
+ ],
+ "Bayath-Gamawal": [
+  "Beth Gamul",
+  "Beth-Gamul",
+  "Beyth Gamuwl"
+ ],
+ "Bayath-Haatzal": [
+  "Beth Haetsel",
+  "Beth-Ezel",
+  "Beyth Haetsel"
+ ],
+ "Bayath-Hagalagal": [
+  "Beth Hag-Gilgal",
+  "Beyth Hag-Gilgal"
+ ],
+ "Bayath-Haimaq": [
+  "Beth Ha-Emeq",
+  "Beth-Emek",
+  "Beyth Ha-Emeq"
+ ],
+ "Bayath-Hairabah": [
+  "Beth Ha-Arabah",
+  "Beth-Arabah",
+  "Beyth Ha-Arabah"
+ ],
+ "Bayath-Hakaram": [
+  "Beth Hak-Kerem",
+  "Beth-Haccerem",
+  "Beyth Hak-Kerem"
+ ],
+ "Bayath-Hamarachaq": [
+  "Beth Ham-Merchaq",
+  "Beyth Ham-Merchaq"
+ ],
+ "Bayath-Hamarakabawath": [
+  "Beth Ham-Markaboth",
+  "Bethmarcaboth",
+  "Beyth Ham-Markabowth",
+  "Bayathahamarakabawath"
+ ],
+ "Bayath-Haram": [
+  "Beth Ha-Ram",
+  "Beth-Aram",
+  "Beyth Ha-Ram"
+ ],
+ "Bayath-Haran": [
+  "Beth Ha-Ran",
+  "Beth-Haran",
+  "Beyth Ha-Ran"
+ ],
+ "Bayath-Hashatah": [
+  "Beth Hash-Shittah",
+  "Beth-Shittah",
+  "Beyth Hash-Shittah"
+ ],
+ "Bayath-Hayashayamawath": [
+  "Beth Ha-Yshi-Moth",
+  "Beth-Jeshimoth",
+  "Beyth Ha-Yshiy-Mowth"
+ ],
+ "Bayath-Idan": [
+  "Beth Eden",
+  "Beyth Eden"
+ ],
+ "Bayath-Inath": [
+  "Beth Anath",
+  "Beth-Anath",
+  "Beyth Anath"
+ ],
+ "Bayath-Inawath": [
+  "Beth Anoth",
+  "Beth-Anoth",
+  "Beyth Anowth"
+ ],
+ "Bayath-Iqad": [
+  "Beth Eqed",
+  "Beyth Eqed"
+ ],
+ "Bayath-Ishatharawath": [
+  "Beth Ashtaroth",
+  "Beyth Ashtarowth"
+ ],
+ "Bayath-Iz-Mawath": [
+  "Beth Azmaveth",
+  "Bethaz-Maveth",
+  "Beyth Azmaveth"
+ ],
+ "Bayath-Kar": [
+  "Beth Kar",
+  "Bethcar",
+  "Beth-Car",
+  "Beyth Kar"
+ ],
+ "Bayath-Labaawath": [
+  "Beth Lbaoth",
+  "Beth Lebaoth",
+  "Beth-Lebaoth",
+  "Beyth Lbaowth",
+  "Beyth Lebaowth"
+ ],
+ "Bayath-Lacham": [
+  "Beth Lechem",
+  "Bethlehem",
+  "Beyth Lechem",
+  "Bayathalacham"
+ ],
+ "Bayath-Laiparah": [
+  "Beth L-Aphrah",
+  "Beth Le-Aphrah",
+  "Beyth L-Aphrah",
+  "Beyth Le-Aphrah"
+ ],
+ "Bayath-Maikah": [
+  "Beth Maakah",
+  "Beth-Maachah",
+  "Beyth Maakah"
+ ],
+ "Bayath-Namarah": [
+  "Beth Nimrah",
+  "Beth-Nimrah",
+  "Beyth Nimrah"
+ ],
+ "Bayath-Paiwar": [
+  "Beth Por",
+  "Beth Peor",
+  "Bethpeor",
+  "Beyth Powr",
+  "Beyth Peowr",
+  "Bayathapaiwar"
+ ],
+ "Bayath-Palat": [
+  "Beth Pelet",
+  "Beth-Palet",
+  "Beyth Pelet"
+ ],
+ "Bayath-Patzatz": [
+  "Beth Patstsets",
+  "Beth-Pazzez",
+  "Beyth Patstsets"
+ ],
+ "Bayath-Rachawab": [
+  "Beth Rchob",
+  "Beth Rechob",
+  "Beth-Rehob",
+  "Beyth Rchowb",
+  "Beyth Rechowb"
+ ],
+ "Bayath-Rapaa": [
+  "Beth Rapha",
+  "Beth-Rapha",
+  "Beyth Rapha"
+ ],
+ "Bayath-Shaan": [
+  "Beth Shan",
+  "Beth Shean",
+  "Bethshan",
+  "Beth-Shan",
+  "Beth-Shean",
+  "Beyth Shan",
+  "Beyth Shean"
+ ],
+ "Bayath-Shamash": [
+  "Beth Shemesh",
+  "Bethshemesh",
+  "Beth-Shemesh",
+  "Beyth Shemesh"
+ ],
+ "Bayath-Thapawach": [
+  "Beth Tappuach",
+  "Beth-Tappuah",
+  "Beyth Tappuwach"
+ ],
+ "Bayath-Tzawar": [
+  "Beth Tsur",
+  "Bethzur",
+  "Beth-Zur",
+  "Beyth Tsuwr"
+ ],
+ "Bayathainayah": [
+  "Bethany"
+ ],
+ "Bazaq": [
+  "Bezek",
+  "Bezeq"
+ ],
+ "Bazathaa": [
+  "Biztha"
+ ],
+ "Bazayawathayah": [
+  "Bizjothjah",
+  "Bizyotheah",
+  "Bizyothyah",
+  "Bizyowthyah",
+  "Bizyowtheyah"
+ ],
+ "Chabab": [
+  "Hobab",
+  "Chobab"
+ ],
+ "Chabal": [
+  "Chebel"
+ ],
+ "Chabaqawaq": [
+  "Habakkuk",
+  "Chabaqquq",
+  "Chabaqquwq"
+ ],
+ "Chabar": [
+  "Cheber"
+ ],
+ "Chabarawan": [
+  "Hebron",
+  "Chebron",
+  "Chebrown"
+ ],
+ "Chabatzanayah": [
+  "Habazaniah",
+  "Chabatstsanyah"
+ ],
+ "Chabawar": [
+  "Habor",
+  "Chabor",
+  "Chabowr"
+ ],
+ "Chabayah": [
+  "Habaiah"
+ ],
+ "Chadalay": [
+  "Hadlai",
+  "Chadlay"
+ ],
+ "Chadaqal": [
+  "Hiddekel",
+  "Tigris",
+  "Chiddeqel"
+ ],
+ "Chadarak": [
+  "Hadrach",
+  "Chadrak"
+ ],
+ "Chadash": [
+  "Hodesh",
+  "Chodesh"
+ ],
+ "Chadashah": [
+  "Hadashah"
+ ],
+ "Chadayad": [
+  "Hadid",
+  "Chadid",
+  "Chadiyd"
+ ],
+ "Chagab": [
+  "Hagab"
+ ],
+ "Chagabaa": [
+  "Hagaba",
+  "Hagabah",
+  "Chagaba"
+ ],
+ "Chagalah": [
+  "Hoglah",
+  "Choglah"
+ ],
+ "Chagay": [
+  "Haggai",
+  "Haggi",
+  "Haggites",
+  "Chaggi",
+  "Chaggay",
+  "Chaggiy"
+ ],
+ "Chagayah": [
+  "Haggiah",
+  "Chaggiah",
+  "Chaggiyah"
+ ],
+ "Chagayath": [
+  "Haggith",
+  "Chaggith",
+  "Chaggiyth"
+ ],
+ "Chakalayah": [
+  "Hachaliah",
+  "Chakalyah"
+ ],
+ "Chakamawanay": [
+  "Hachmoni",
+  "Hachmonite",
+  "Chakmoni",
+  "Chakmowniy"
+ ],
+ "Chakayalah": [
+  "Hachilah",
+  "Chakilah",
+  "Chakiylah"
+ ],
+ "Chalaah": [
+  "Helah",
+  "Chelah"
+ ],
+ "Chalab": [
+  "Heleb",
+  "Cheleb"
+ ],
+ "Chalabah": [
+  "Helbah",
+  "Chelbah"
+ ],
+ "Chalabawan": [
+  "Chelbon",
+  "Chelbown"
+ ],
+ "Chalach": [
+  "Halah"
+ ],
+ "Chalachawal": [
+  "Halhul",
+  "Chalchul",
+  "Chalchuwl"
+ ],
+ "Chalad": [
+  "Heled",
+  "Cheled"
+ ],
+ "Chaladah": [
+  "Huldah",
+  "Chuldah"
+ ],
+ "Chaladay": [
+  "Heldai",
+  "Chelday"
+ ],
+ "Chalam": [
+  "Chelem"
+ ],
+ "Chalan": [
+  "Helon",
+  "Chelon"
+ ],
+ "Chalap": [
+  "Heleph",
+  "Cheleph",
+  "Chalaph"
+ ],
+ "Chalaq": [
+  "Helek",
+  "Halak",
+  "Cheleq"
+ ],
+ "Chalaqath": [
+  "Helkath",
+  "Chelqath"
+ ],
+ "Chalaqath-Hatzarayam": [
+  "Helkath-Hazzurim",
+  "Chelqath Hats-Tsurim",
+  "Chelqath Hats-Tsuriym"
+ ],
+ "Chalaqay": [
+  "Helkai",
+  "Chelqay"
+ ],
+ "Chalaqayah": [
+  "Hillkiah",
+  "Chilqiah",
+  "Chilqiyah"
+ ],
+ "Chalatz": [
+  "Helez",
+  "Chelets"
+ ],
+ "Chalawan": [
+  "Holon",
+  "Cholon",
+  "Cholown"
+ ],
+ "Chalay": [
+  "Hali",
+  "Chali",
+  "Chaliy"
+ ],
+ "Chamadan": [
+  "Hemdan",
+  "Chemdan"
+ ],
+ "Chamaran": [
+  "Amran",
+  "Chamran"
+ ],
+ "Chamatah": [
+  "Humtah",
+  "Chumtah"
+ ],
+ "Chamath": [
+  "Hamath",
+  "Hammath",
+  "Hemath",
+  "Chammath"
+ ],
+ "Chamath-Daar": [
+  "Hamath-Dor",
+  "Chammoth Dor"
+ ],
+ "Chamath-Tzawabah": [
+  "Hamath-Zobah",
+  "Chamath Tsobah",
+  "Chamath Tsowbah"
+ ],
+ "Chamawaal": [
+  "Hamuel",
+  "Chammuel",
+  "Chammuwel"
+ ],
+ "Chamawal": [
+  "Hamul",
+  "Chamul",
+  "Chamuwl"
+ ],
+ "Chamawan": [
+  "Hammon",
+  "Chammon",
+  "Chammown"
+ ],
+ "Chamawar": [
+  "Hamor",
+  "Chamor",
+  "Chamowr"
+ ],
+ "Chamawatal": [
+  "Hamutal",
+  "Chamutal",
+  "Chamuwtal"
+ ],
+ "Chan": [
+  "Hen",
+  "Chen"
+ ],
+ "Chanadad": [
+  "Henadad",
+  "Chenadad"
+ ],
+ "Chanah": [
+  "Hannah",
+  "Channah"
+ ],
+ "Chanamaal": [
+  "Hanameel",
+  "Chanamel"
+ ],
+ "Chanan": [
+  "Canan"
+ ],
+ "Chanan-Al": [
+  "Hananeel",
+  "Chananel",
+  "Chananaal"
+ ],
+ "Chananay": [
+  "Hanani",
+  "Chanani",
+  "Chananiy"
+ ],
+ "Chananayah": [
+  "Hananiah",
+  "Chananyah"
+ ],
+ "Chanas": [
+  "Hanes",
+  "Chanec"
+ ],
+ "Chanathan": [
+  "Hannathon",
+  "Channathon"
+ ],
+ "Chanawak": [
+  "Enoch",
+  "Chanok",
+  "Chanowk"
+ ],
+ "Chanawan": [
+  "Hanun",
+  "Chanun",
+  "Chanuwn"
+ ],
+ "Chanay-Al": [
+  "Hanniel",
+  "Channiel",
+  "Channiyel",
+  "Chanayaal"
+ ],
+ "Chapah": [
+  "Huppah",
+  "Chuppah"
+ ],
+ "Chapanay": [
+  "Hophni",
+  "Chophni",
+  "Chophniy"
+ ],
+ "Chapar": [
+  "Hepher",
+  "Chepher"
+ ],
+ "Chaparayam": [
+  "Haphraim",
+  "Chapharayim"
+ ],
+ "Chapatzay-Bah": [
+  "Hephzi-Bah",
+  "Chephtsi Bahh",
+  "Chephtsiy Bahh"
+ ],
+ "Chapayam": [
+  "Huppim",
+  "Chuppim",
+  "Chuppiym"
+ ],
+ "Chaqaq": [
+  "Hukok",
+  "Hukkok",
+  "Chuqqoq"
+ ],
+ "Chaqawapaa": [
+  "Hakupha",
+  "Chaqupha",
+  "Chaquwpha"
+ ],
+ "Char-Hagadagad": [
+  "Hor-Hagidgad",
+  "Chor Hag-Gidgad"
+ ],
+ "Charab": [
+  "Horeb",
+  "Choreb"
+ ],
+ "Charabawanaa": [
+  "Harbona",
+  "Harbonah",
+  "Charbona",
+  "Charbowna"
+ ],
+ "Charachas": [
+  "Harhas",
+  "Charchac"
+ ],
+ "Charachawar": [
+  "Harhur",
+  "Charchur",
+  "Charchuwr"
+ ],
+ "Charadah": [
+  "Haradah"
+ ],
+ "Charahayah": [
+  "Harhaiah",
+  "Charhayah"
+ ],
+ "Charam": [
+  "Harim",
+  "Horem",
+  "Charim",
+  "Chorem"
+ ],
+ "Charamah": [
+  "Hormah",
+  "Chormah"
+ ],
+ "Charamawan": [
+  "Hermon",
+  "Chermon",
+  "Chermown"
+ ],
+ "Charan": [
+  "Haran"
+ ],
+ "Charanapar": [
+  "Harnepher",
+  "Charnepher"
+ ],
+ "Charanayam": [
+  "Horonaim",
+  "Choronayim"
+ ],
+ "Charap": [
+  "Hareph",
+  "Chareph"
+ ],
+ "Charas": [
+  "Heres",
+  "Cherec"
+ ],
+ "Charash": [
+  "Heresh",
+  "Cheresh"
+ ],
+ "Charashaa": [
+  "Harsha",
+  "Charsha"
+ ],
+ "Charashath": [
+  "Harosheth",
+  "Charosheth"
+ ],
+ "Charashayam": [
+  "Charashim",
+  "Charashiym"
+ ],
+ "Charath": [
+  "Hereth",
+  "Chereth"
+ ],
+ "Charawamap": [
+  "Harumaph",
+  "Charumaph",
+  "Charuwmaph"
+ ],
+ "Charawatz": [
+  "Haruz",
+  "Charuts",
+  "Charuwts"
+ ],
+ "Charay": [
+  "Hori",
+  "Chori",
+  "Choriy"
+ ],
+ "Charayap": [
+  "Hariph",
+  "Chariph",
+  "Chariyph"
+ ],
+ "Chasadayah": [
+  "Hasadiah",
+  "Chacadyah"
+ ],
+ "Chasah": [
+  "Hosah",
+  "Chocah"
+ ],
+ "Chasarah": [
+  "Hasrah",
+  "Chacrah"
+ ],
+ "Chashab-Danah": [
+  "Hasbadana",
+  "Chashbaddanah",
+  "Chashabadanah"
+ ],
+ "Chashabah": [
+  "Hashubah",
+  "Chashubah"
+ ],
+ "Chashabanah": [
+  "Hashabnah",
+  "Chashabnah"
+ ],
+ "Chashabanayah": [
+  "Hashabniah",
+  "Chashabneah",
+  "Chashabnyah",
+  "Chashabneyah"
+ ],
+ "Chashabawan": [
+  "Heshbon",
+  "Cheshbon",
+  "Cheshbown"
+ ],
+ "Chashabayah": [
+  "Hashabiah",
+  "Chashabyah"
+ ],
+ "Chasham": [
+  "Hashum",
+  "Chashum"
+ ],
+ "Chashamanah": [
+  "Hashmonah",
+  "Chashmonah"
+ ],
+ "Chashamawan": [
+  "Heshmon",
+  "Cheshmon",
+  "Cheshmown"
+ ],
+ "Chashawab": [
+  "Hasshub",
+  "Hashub",
+  "Chashshub",
+  "Chashshuwb"
+ ],
+ "Chashawapaa": [
+  "Hasupha",
+  "Hashupha",
+  "Chasupha",
+  "Chasuwpha"
+ ],
+ "Chatawash": [
+  "Hattush",
+  "Chattush",
+  "Chattuwsh"
+ ],
+ "Chatayal": [
+  "Hattil",
+  "Chattil",
+  "Chattiyl"
+ ],
+ "Chatayapaa": [
+  "Hatipha",
+  "Chatipha",
+  "Chatiypha"
+ ],
+ "Chatayataa": [
+  "Hatita",
+  "Chatita",
+  "Chatiyta"
+ ],
+ "Chath": [
+  "Heth",
+  "Cheth"
+ ],
+ "Chathalan": [
+  "Hethlon",
+  "Chethlon"
+ ],
+ "Chathay": [
+  "Hittites"
+ ],
+ "Chatzar-Adar": [
+  "Hazar-Addar",
+  "Chatsar Addar"
+ ],
+ "Chatzar-Gadah": [
+  "Hazar-Gaddah",
+  "Chatsar Gaddah"
+ ],
+ "Chatzar-Hathayakawan": [
+  "Hazar-Hatticon",
+  "Chatsar Hat-Tikon",
+  "Chatsar Hat-Tiykown"
+ ],
+ "Chatzar-Iyanan": [
+  "Hazar-Enan",
+  "Chatsar Enan",
+  "Chatsar Eynan"
+ ],
+ "Chatzar-Iyanawan": [
+  "Hazar-Enon",
+  "Chatsar Enon",
+  "Chatsar Eynown"
+ ],
+ "Chatzar-Mawath": [
+  "Hazarmaveth",
+  "Chatsarmaveth",
+  "Chatzaramawath"
+ ],
+ "Chatzar-Sawasah": [
+  "Hazar-Susah",
+  "Chatsar Cucah",
+  "Chatsar Cuwcah"
+ ],
+ "Chatzar-Sawasayam": [
+  "Hazar-Susim",
+  "Chatsar Cucim",
+  "Chatsar Cuwciym"
+ ],
+ "Chatzar-Shawail": [
+  "Hazar-Shual",
+  "Chatsar Shual",
+  "Chatsar Shuwal"
+ ],
+ "Chatzaraw": [
+  "Hezro",
+  "Hezrai",
+  "Chetsro",
+  "Chetsrow"
+ ],
+ "Chatzarawan": [
+  "Hezron",
+  "Chetsron",
+  "Chetsrown"
+ ],
+ "Chatzarawath": [
+  "Hazeroth",
+  "Chatseroth",
+  "Chatserowth"
+ ],
+ "Chatzarayam": [
+  "Hazerim",
+  "Chatserim",
+  "Chatseriym"
+ ],
+ "Chatzatzawan-Thamar": [
+  "Hazezon-Tamar",
+  "Chatstson Tamar",
+  "Chatsetson Tamar",
+  "Chatstsown Tamar",
+  "Chatsetsown Tamar"
+ ],
+ "Chatzawar": [
+  "Chatsor",
+  "Chatsowr"
+ ],
+ "Chatzawar-Chadathah": [
+  "Hazor",
+  "Chatsor Chadattah",
+  "Chatsowr Chadattah",
+  "Chatzawarachadathah"
+ ],
+ "Chawabah": [
+  "Hobah",
+  "Chobah",
+  "Chowbah"
+ ],
+ "Chawah": [
+  "Eve",
+  "Chavvah"
+ ],
+ "Chawal": [
+  "Hul",
+  "Chul",
+  "Chuwl"
+ ],
+ "Chawapam": [
+  "Hupham",
+  "Chupham",
+  "Chuwpham"
+ ],
+ "Chawar": [
+  "Hur",
+  "Chur",
+  "Chuwr"
+ ],
+ "Chawaram": [
+  "Churam",
+  "Chuwram"
+ ],
+ "Chawaran": [
+  "Hauran",
+  "Chavran"
+ ],
+ "Chawaray": [
+  "Huri",
+  "Hurai",
+  "Churi",
+  "Churay",
+  "Chuwriy",
+  "Chuwray"
+ ],
+ "Chawashah": [
+  "Hushah",
+  "Chushah",
+  "Chuwshah"
+ ],
+ "Chawasham": [
+  "Husham",
+  "Chusham",
+  "Chuwsham"
+ ],
+ "Chawashay": [
+  "Hushai",
+  "Chushay",
+  "Chuwshay"
+ ],
+ "Chawashayam": [
+  "Hushim",
+  "Chushim",
+  "Chuwshiym"
+ ],
+ "Chawatham": [
+  "Hotham",
+  "Hothan",
+  "Chotham",
+  "Chowtham"
+ ],
+ "Chawawath-Yaiyar": [
+  "Chavvoth Yair",
+  "Chavvowth Yaiyr"
+ ],
+ "Chawayalah": [
+  "Havilah",
+  "Chavilah",
+  "Chaviylah"
+ ],
+ "Chay-Al": [
+  "Hiel",
+  "Chiel",
+  "Chiyel",
+  "Chayaal"
+ ],
+ "Chayalam": [
+  "Helam",
+  "Chelam",
+  "Cheylam"
+ ],
+ "Chayalan": [
+  "Hilen",
+  "Chilen",
+  "Chiylen"
+ ],
+ "Chayarah": [
+  "Hirah",
+  "Chirah",
+  "Chiyrah"
+ ],
+ "Chayaram": [
+  "Hiram",
+  "Huram",
+  "Chiram",
+  "Chiyram"
+ ],
+ "Chaz-Al": [
+  "Hazael",
+  "Chazael",
+  "Chazaal"
+ ],
+ "Chazaqay": [
+  "Hezeki",
+  "Chizqi",
+  "Chizqiy"
+ ],
+ "Chazaqayah": [
+  "Hezekiah",
+  "Hizkiah",
+  "Hizkijah",
+  "Chizqiah",
+  "Chizqiyah"
+ ],
+ "Chazaw": [
+  "Hazo",
+  "Chazo",
+  "Chazow"
+ ],
+ "Chazay-Al": [
+  "Haziel",
+  "Chaziel",
+  "Chaziyel",
+  "Chazayaal"
+ ],
+ "Chazayah": [
+  "Hazaiah"
+ ],
+ "Chazayar": [
+  "Hezir",
+  "Chezir",
+  "Cheziyr"
+ ],
+ "Chazayawan": [
+  "Hezion",
+  "Chezyon",
+  "Chezyown"
+ ],
+ "Daag": [
+  "Doeg"
+ ],
+ "Dabalah": [
+  "Diblah",
+  "Diblath"
+ ],
+ "Dabalayam": [
+  "Diblaim",
+  "Diblayim"
+ ],
+ "Dabar": [
+  "Debar"
+ ],
+ "Dabarath": [
+  "Daberath",
+  "Dabareh",
+  "Dabrath"
+ ],
+ "Dabaray": [
+  "Dibri",
+  "Dibriy"
+ ],
+ "Dabashath": [
+  "Dabbesheth"
+ ],
+ "Dabawarah": [
+  "Deborah",
+  "Dborah",
+  "Dbowrah",
+  "Debowrah"
+ ],
+ "Dabayar": [
+  "Debir",
+  "Dbir",
+  "Dbiyr",
+  "Debiyr"
+ ],
+ "Dadan": [
+  "Dedan",
+  "Ddan"
+ ],
+ "Dadanayam": [
+  "Dodanim",
+  "Dodaniym"
+ ],
+ "Dagawan": [
+  "Dagon",
+  "Dagown"
+ ],
+ "Daiwaal": [
+  "Deuel",
+  "Duel",
+  "Duwel",
+  "Deuwel"
+ ],
+ "Dalain": [
+  "Dilean",
+  "Dilan"
+ ],
+ "Dalapawan": [
+  "Dalphon",
+  "Dalphown"
+ ],
+ "Dalayah": [
+  "Delaiah",
+  "Dlayah",
+  "Dalaiah",
+  "Delayah"
+ ],
+ "Dalayalah": [
+  "Delilah",
+  "Dlilah",
+  "Dliylah",
+  "Deliylah"
+ ],
+ "Damanah": [
+  "Dimnah"
+ ],
+ "Damashaq": [
+  "Damascus",
+  "Dammeseq"
+ ],
+ "Dan-Yain": [
+  "Dan Yaan",
+  "Dan-Jaan"
+ ],
+ "Danah": [
+  "Dannah"
+ ],
+ "Danahabah": [
+  "Dinhabah",
+  "Dinhaban"
+ ],
+ "Danay": [
+  "Danites",
+  "Dani",
+  "Daniy"
+ ],
+ "Danay-Al": [
+  "Daniel",
+  "Daniyel",
+  "Danayaal"
+ ],
+ "Dapaqah": [
+  "Dophkah",
+  "Dophqah"
+ ],
+ "Daqalah": [
+  "Diklah",
+  "Diqlah"
+ ],
+ "Dar-Dai": [
+  "Darda",
+  "Daradai"
+ ],
+ "Darai": [
+  "Dara"
+ ],
+ "Daraqawan": [
+  "Darkon",
+  "Darqon",
+  "Darqown"
+ ],
+ "Darayawash": [
+  "Darius",
+  "Dareavesh",
+  "Daryavesh",
+  "Dareyavesh"
+ ],
+ "Dathan": [
+  "Dothan"
+ ],
+ "Dawad": [
+  "David"
+ ],
+ "Dawadaw": [
+  "Dodo",
+  "Dowdow"
+ ],
+ "Dawadawahaw": [
+  "Dodavahu",
+  "Dodavah",
+  "Dowdavahuw"
+ ],
+ "Dawaday": [
+  "Dodai",
+  "Doday",
+  "Dowday"
+ ],
+ "Dawamah": [
+  "Dumah",
+  "Duwmah"
+ ],
+ "Dawar": [
+  "Dor",
+  "Dowr"
+ ],
+ "Dawaraa": [
+  "Dura",
+  "Duwra"
+ ],
+ "Day-Zahab": [
+  "Dizahab",
+  "Di Zahab",
+  "Dayazahab",
+  "Diy Zahab"
+ ],
+ "Dayabawan": [
+  "Dibon",
+  "Diybown"
+ ],
+ "Dayamawan": [
+  "Dimon",
+  "Diymown"
+ ],
+ "Dayamawanah": [
+  "Dimonah",
+  "Diymownah"
+ ],
+ "Dayanah": [
+  "Dinah",
+  "Diynah"
+ ],
+ "Dayashan": [
+  "Dishan",
+  "Diyshan"
+ ],
+ "Dayashawan": [
+  "Dishon",
+  "Diyshown"
+ ],
+ "Gaawaal": [
+  "Geuel",
+  "Guel",
+  "Guwel",
+  "Geuwel"
+ ],
+ "Gab": [
+  "Gob",
+  "Geb"
+ ],
+ "Gabai": [
+  "Gibeah",
+  "Geba",
+  "Gaba"
+ ],
+ "Gabaia": [
+  "Giba"
+ ],
+ "Gabaih": [
+  "Gibah"
+ ],
+ "Gabaith": [
+  "Gibeath",
+  "Gibath"
+ ],
+ "Gabaiwan": [
+  "Gibeon",
+  "Gibon",
+  "Gibown"
+ ],
+ "Gabal": [
+  "Gebal",
+  "Gbal"
+ ],
+ "Gabar": [
+  "Geber",
+  "Gibbar"
+ ],
+ "Gabaray-Al": [
+  "Gabriel",
+  "Garbriel",
+  "Gabriyel",
+  "Gabarayaal"
+ ],
+ "Gabathawan": [
+  "Gibbethon",
+  "Gibbthon",
+  "Gibbthown",
+  "Gibbethown"
+ ],
+ "Gabawalah": [
+  "Gbulah",
+  "Gebulah",
+  "Gbuwlah",
+  "Gebuwlah"
+ ],
+ "Gabay": [
+  "Gabbai",
+  "Gabbay"
+ ],
+ "Gabayam": [
+  "Gebim",
+  "Gebiym"
+ ],
+ "Gacham": [
+  "Gaham"
+ ],
+ "Gachar": [
+  "Gahar"
+ ],
+ "Gadagadah": [
+  "Gudgodah"
+ ],
+ "Gadai-Nay": [
+  "Gideoni",
+  "Gidoni",
+  "Gidoniy",
+  "Gadainay"
+ ],
+ "Gadaim": [
+  "Gidom"
+ ],
+ "Gadaiwan": [
+  "Gideon",
+  "Gidon",
+  "Gidown"
+ ],
+ "Gadal": [
+  "Giddel"
+ ],
+ "Gadalathay": [
+  "Giddalti",
+  "Giddaltiy"
+ ],
+ "Gadalayah": [
+  "Gedaliah",
+  "Gdalyah",
+  "Gedalyah"
+ ],
+ "Gadar": [
+  "Gedor",
+  "Geder",
+  "Gdor"
+ ],
+ "Gadarah": [
+  "Gederah",
+  "Gderah"
+ ],
+ "Gadarathayam": [
+  "Gederothaim",
+  "Gderothayim",
+  "Gederothayim"
+ ],
+ "Gadarawath": [
+  "Gederoth",
+  "Gderoth",
+  "Gderowth",
+  "Gederowth"
+ ],
+ "Gaday": [
+  "Gadi",
+  "Gaddi",
+  "Gadiy",
+  "Gaddiy"
+ ],
+ "Gaday-Al": [
+  "Gaddiel",
+  "Gaddiyel",
+  "Gadayaal"
+ ],
+ "Gadayah": [
+  "Gidyah"
+ ],
+ "Gaih": [
+  "Goah",
+  "Goath"
+ ],
+ "Gail": [
+  "Gaal"
+ ],
+ "Gaish": [
+  "Gaash"
+ ],
+ "Gaitham": [
+  "Gatam"
+ ],
+ "Gal-Bai": [
+  "Gilboa",
+  "Galabai"
+ ],
+ "Galagal": [
+  "Gilgal"
+ ],
+ "Galah": [
+  "Giloh"
+ ],
+ "Galaid": [
+  "Gilead",
+  "Gileadite",
+  "Galeed",
+  "Gilad",
+  "Galed"
+ ],
+ "Galaiday": [
+  "Gileadites"
+ ],
+ "Galalay": [
+  "Gilalai",
+  "Gilalay"
+ ],
+ "Galayal": [
+  "Galilee",
+  "Galil",
+  "Galiyl"
+ ],
+ "Galayalah": [
+  "Glilah",
+  "Gelilah",
+  "Gliylah",
+  "Geliylah"
+ ],
+ "Galayalawath": [
+  "Geliloth",
+  "Gliloth",
+  "Gliylowth",
+  "Geliylowth"
+ ],
+ "Galayalay": [
+  "Galileans"
+ ],
+ "Galayam": [
+  "Gallim",
+  "Galliym"
+ ],
+ "Galayath": [
+  "Goliath",
+  "Golyath"
+ ],
+ "Gamad": [
+  "Gammad",
+  "Gammadims"
+ ],
+ "Gamalay": [
+  "Gemalli",
+  "Gmalli",
+  "Gmalliy",
+  "Gemalliy"
+ ],
+ "Gamalay-Al": [
+  "Gamaliel",
+  "Gamliel",
+  "Gamliyel",
+  "Gamalayaal"
+ ],
+ "Gamar": [
+  "Gomer"
+ ],
+ "Gamarayah": [
+  "Gemariah",
+  "Gmaryah",
+  "Gemaryah"
+ ],
+ "Gamawal": [
+  "Gamul",
+  "Gamuwl"
+ ],
+ "Gamazaw": [
+  "Gimzo",
+  "Gimzow"
+ ],
+ "Ganabath": [
+  "Genubath",
+  "Gnubath"
+ ],
+ "Ganathawan": [
+  "Ginnethon",
+  "Ginnetho",
+  "Ginnthon",
+  "Ginnthown",
+  "Ginnethown"
+ ],
+ "Garaa": [
+  "Gera"
+ ],
+ "Garab": [
+  "Gareb"
+ ],
+ "Garar": [
+  "Gerar",
+  "Grar"
+ ],
+ "Garasham": [
+  "Gereshom"
+ ],
+ "Garashawan": [
+  "Gershon",
+  "Gershom",
+  "Gereshon",
+  "Gershown",
+  "Gereshown"
+ ],
+ "Garazayam": [
+  "Gerizim",
+  "Grizim",
+  "Griziym",
+  "Geriziym"
+ ],
+ "Gasham": [
+  "Geshem",
+  "Gashmu"
+ ],
+ "Gashan": [
+  "Goshen"
+ ],
+ "Gashapaa": [
+  "Gishpa",
+  "Gispa"
+ ],
+ "Gashawar": [
+  "Geshur",
+  "Gshur",
+  "Gshuwr",
+  "Geshuwr",
+  "Geshurite"
+ ],
+ "Gath-Hachapar": [
+  "Gath-Kephr",
+  "Gittah-Kephr",
+  "Gath-Ha-Chepher"
+ ],
+ "Gath-Ramawan": [
+  "Gath-Rimmon",
+  "Gath-Rimmown"
+ ],
+ "Gathar": [
+  "Gether"
+ ],
+ "Gathayam": [
+  "Gittaim",
+  "Gittayim"
+ ],
+ "Gawag": [
+  "Gog",
+  "Gowg"
+ ],
+ "Gawalan": [
+  "Golan",
+  "Gowlan"
+ ],
+ "Gawanay": [
+  "Guni",
+  "Guwniy"
+ ],
+ "Gawar": [
+  "Gur",
+  "Guwr"
+ ],
+ "Gawar-Bail": [
+  "Gur-Baal",
+  "Guwr-Baal"
+ ],
+ "Gaway": [
+  "Gentiles",
+  "Goy",
+  "Gowy",
+  "Gentile"
+ ],
+ "Gawazan": [
+  "Gozan",
+  "Gowzan"
+ ],
+ "Gayach": [
+  "Giah",
+  "Giach",
+  "Giyach"
+ ],
+ "Gayachawan": [
+  "Gihon",
+  "Gichon",
+  "Giychown"
+ ],
+ "Gayachazay": [
+  "Gehazi",
+  "Gechazi",
+  "Geychaziy"
+ ],
+ "Gayanath": [
+  "Ginath",
+  "Giynath"
+ ],
+ "Gayashan": [
+  "Geshan",
+  "Geyshan"
+ ],
+ "Gazam": [
+  "Gazzam"
+ ],
+ "Gazar": [
+  "Gezer",
+  "Gazer"
+ ],
+ "Gazarah": [
+  "Gzerah",
+  "Gezerah"
+ ],
+ "Gazaz": [
+  "Gazez"
+ ],
+ "Habal": [
+  "Abel",
+  "Hebel"
+ ],
+ "Hadad-Izar": [
+  "Hadadezer",
+  "Hadadaizar"
+ ],
+ "Hadad-Ramawan": [
+  "Hadadrimmon",
+  "Hadadrimmown",
+  "Hadad-Rimmon",
+  "Hadadaramawan"
+ ],
+ "Hadar": [
+  "Heder"
+ ],
+ "Hadasah": [
+  "Hadassah",
+  "Hadaccah"
+ ],
+ "Hadaw": [
+  "India",
+  "Hodu",
+  "Hoduw"
+ ],
+ "Hadawaram": [
+  "Hadoram",
+  "Hadowram"
+ ],
+ "Haday": [
+  "Hiddai",
+  "Hidday"
+ ],
+ "Hagaa": [
+  "Hegai",
+  "Hege"
+ ],
+ "Hagaray": [
+  "Hagri",
+  "Hagriy",
+  "Haggeri",
+  "Hagarene",
+  "Hagarite"
+ ],
+ "Halal": [
+  "Hillel"
+ ],
+ "Halam": [
+  "Helem"
+ ],
+ "Hamawan": [
+  "Hamon"
+ ],
+ "Hamawan-Gawag": [
+  "Hamon Gog",
+  "Hamogog",
+  "Hamown Gowg",
+  "Hamawanagawag"
+ ],
+ "Hamawanah": [
+  "Hamonah",
+  "Hamownah"
+ ],
+ "Hanah": [
+  "Hennah"
+ ],
+ "Hanai": [
+  "Hena"
+ ],
+ "Hanam": [
+  "Hinnom"
+ ],
+ "Har": [
+  "Hor"
+ ],
+ "Har-Al": [
+  "Harel",
+  "Haraal"
+ ],
+ "Haraa": [
+  "Hara"
+ ],
+ "Haram": [
+  "Horam",
+  "Harum"
+ ],
+ "Hasham": [
+  "Hashem"
+ ],
+ "Hathak": [
+  "Hatach"
+ ],
+ "Hawad": [
+  "Hod",
+  "Howd"
+ ],
+ "Hawadawah": [
+  "Hodevah",
+  "Hodvah",
+  "Howdvah",
+  "Howdevah"
+ ],
+ "Hawadawayah": [
+  "Hodaviah",
+  "Hodavyah",
+  "Howdavyah"
+ ],
+ "Hawadayah": [
+  "Hodiah",
+  "Hodijah",
+  "Howdiyah"
+ ],
+ "Hawadayawahaw": [
+  "Hodaiah",
+  "Hodayvahu",
+  "Howdayvahuw"
+ ],
+ "Hawaham": [
+  "Hoham",
+  "Howham"
+ ],
+ "Hawamam": [
+  "Homam",
+  "Howmam"
+ ],
+ "Hawaradawas": [
+  "Herod"
+ ],
+ "Hawashai": [
+  "Hoshea",
+  "Hosea",
+  "Oshea",
+  "Howshea"
+ ],
+ "Hawashaiyah": [
+  "Hoshaiah",
+  "Hoshayah",
+  "Howshayah"
+ ],
+ "Hawashamai": [
+  "Hoshama",
+  "Howshama"
+ ],
+ "Hawathayar": [
+  "Hothir",
+  "Howthiyr"
+ ],
+ "Hayakal": [
+  "Temple"
+ ],
+ "Hayamam": [
+  "Hemam",
+  "Heymam"
+ ],
+ "Hayaman": [
+  "Heman",
+  "Heyman"
+ ],
+ "Ibad": [
+  "Abednego",
+  "Ebed"
+ ],
+ "Ibad-Adawam": [
+  "Obed-Edom",
+  "Obed Edom",
+  "Obed Edowm",
+  "Obededom"
+ ],
+ "Ibad-Al": [
+  "Abdeel",
+  "Abdel",
+  "Ibadaal"
+ ],
+ "Ibad-Malak": [
+  "Ebed Melek",
+  "Ebed-Melech"
+ ],
+ "Ibad-Nagawaa": [
+  "Abed Ngo",
+  "Abed-Nego",
+  "Abed Nego",
+  "Abed Ngow",
+  "Abed Negow"
+ ],
+ "Ibadaa": [
+  "Abda"
+ ],
+ "Ibadawan": [
+  "Abdon",
+  "Abdown"
+ ],
+ "Ibaday": [
+  "Abdi",
+  "Abdiy"
+ ],
+ "Ibaday-Al": [
+  "Abdiel",
+  "Abdiyel",
+  "Ibadayaal"
+ ],
+ "Ibadayah": [
+  "Obadiah",
+  "Obadyah"
+ ],
+ "Ibar": [
+  "Eber",
+  "Heber",
+  "Abar"
+ ],
+ "Ibarah": [
+  "Abarah"
+ ],
+ "Ibaran": [
+  "Ebron"
+ ],
+ "Ibaranah": [
+  "Ebronah"
+ ],
+ "Ibaray": [
+  "Hebrews",
+  "Hebrew",
+  "Ibri",
+  "Ibriy"
+ ],
+ "Ibarayam": [
+  "Abarim",
+  "Abariym"
+ ],
+ "Idah": [
+  "Adah"
+ ],
+ "Idaidah": [
+  "Adadah"
+ ],
+ "Idalam": [
+  "Adullam"
+ ],
+ "Idalay": [
+  "Adlai",
+  "Adlay"
+ ],
+ "Idan": [
+  "Eden"
+ ],
+ "Idanaa": [
+  "Adna"
+ ],
+ "Idanah": [
+  "Adnah"
+ ],
+ "Idar": [
+  "Eder",
+  "Edar",
+  "Ader"
+ ],
+ "Idaray-Al": [
+  "Adriel",
+  "Adriyel",
+  "Idarayaal"
+ ],
+ "Idaw": [
+  "Iddo",
+  "Iddow"
+ ],
+ "Iday-Al": [
+  "Adiel",
+  "Adiyel",
+  "Idayaal"
+ ],
+ "Idayah": [
+  "Adaiah",
+  "Adayah"
+ ],
+ "Idayan": [
+  "Adin",
+  "Adiyn"
+ ],
+ "Idayanaa": [
+  "Adina",
+  "Adiyna"
+ ],
+ "Idayanaw": [
+  "Adino",
+  "Adiynow"
+ ],
+ "Idayathayam": [
+  "Adithaim",
+  "Adithayim",
+  "Adiythayim"
+ ],
+ "Igalah": [
+  "Eglah"
+ ],
+ "Igalawan": [
+  "Eglon",
+  "Eglown"
+ ],
+ "Ikabawar": [
+  "Achbor",
+  "Akbor",
+  "Akbowr"
+ ],
+ "Ikan": [
+  "Achan",
+  "Akan"
+ ],
+ "Ikar": [
+  "Achar",
+  "Akar"
+ ],
+ "Ikaran": [
+  "Ocran",
+  "Okran"
+ ],
+ "Ikasah": [
+  "Achsah",
+  "Akcah"
+ ],
+ "Ikaw": [
+  "Akko",
+  "Accho",
+  "Akkow"
+ ],
+ "Ikawar": [
+  "Achor",
+  "Akor",
+  "Akowr"
+ ],
+ "Ilaa": [
+  "Ulla"
+ ],
+ "Ilah": [
+  "Alah"
+ ],
+ "Ilaman-Dabalathayamah": [
+  "Almon Diblathaymah",
+  "Almon Diblathayemah",
+  "Almondilathaim",
+  "Ilamanadabalathayamah"
+ ],
+ "Ilamath": [
+  "Alemeth",
+  "Alameth"
+ ],
+ "Ilamawan": [
+  "Almon",
+  "Almown"
+ ],
+ "Ilawah": [
+  "Aliah",
+  "Alvah"
+ ],
+ "Ilawan": [
+  "Alian",
+  "Alvan"
+ ],
+ "Ilay": [
+  "Eli",
+  "Eliy"
+ ],
+ "Im-Id": [
+  "Amad",
+  "Imaid"
+ ],
+ "Im-Ram": [
+  "Amram",
+  "Imaram"
+ ],
+ "Imadah": [
+  "Emdah"
+ ],
+ "Imah": [
+  "Ummah"
+ ],
+ "Imal": [
+  "Amal"
+ ],
+ "Imalaq": [
+  "Amalek",
+  "Amaleq"
+ ],
+ "Imalaqay": [
+  "Amalekites"
+ ],
+ "Imanawaal": [
+  "Immanuel",
+  "Immanuwel"
+ ],
+ "Imarah": [
+  "Gomorrah",
+  "Amorah"
+ ],
+ "Imaray": [
+  "Omri",
+  "Omriy"
+ ],
+ "Imasayah": [
+  "Amasiah",
+  "Amacyah"
+ ],
+ "Imashaa": [
+  "Amasa"
+ ],
+ "Imashasay": [
+  "Amashai",
+  "Amashcay"
+ ],
+ "Imashay": [
+  "Amasai",
+  "Amasay"
+ ],
+ "Imawan": [
+  "Ammon",
+  "Ammonites",
+  "Ammown"
+ ],
+ "Imawaq": [
+  "Amok",
+  "Amoq",
+  "Amowq"
+ ],
+ "Imawas": [
+  "Amos",
+  "Amoc",
+  "Amowc"
+ ],
+ "Imay-Al": [
+  "Ammiel",
+  "Ammiyel",
+  "Imayaal"
+ ],
+ "Imay-Hawad": [
+  "Ammihud",
+  "Ammiyhuwd",
+  "Imayahawad"
+ ],
+ "Imay-Nadab": [
+  "Amminadab",
+  "Ammiynadab",
+  "Imayanadab"
+ ],
+ "Imay-Shaday": [
+  "Ammishaddai",
+  "Ammishadday",
+  "Imayashaday",
+  "Ammiyshadday"
+ ],
+ "Imay-Zabad": [
+  "Ammizabad",
+  "Ammiyzabad",
+  "Imayazabad"
+ ],
+ "Inab": [
+  "Anab"
+ ],
+ "Inah": [
+  "Anah"
+ ],
+ "Inam": [
+  "Anem"
+ ],
+ "Inamalak": [
+  "Anammelech",
+  "Anammelek"
+ ],
+ "Inamayam": [
+  "Anamim",
+  "Anamiym"
+ ],
+ "Inan": [
+  "Anan"
+ ],
+ "Inanay": [
+  "Anani",
+  "Ananiy"
+ ],
+ "Inanayah": [
+  "Ananiah",
+  "Ananyah"
+ ],
+ "Inaq": [
+  "Anak",
+  "Anaq"
+ ],
+ "Inar": [
+  "Aner"
+ ],
+ "Inath": [
+  "Anath"
+ ],
+ "Inathathayah": [
+  "Antothijah",
+  "Anthothiah",
+  "Anthothiyah"
+ ],
+ "Inathawath": [
+  "Anathoth",
+  "Anathowth"
+ ],
+ "Inawab": [
+  "Anub",
+  "Anuwb"
+ ],
+ "Inay": [
+  "Unni",
+  "Unniy"
+ ],
+ "Inayah": [
+  "Anaiah",
+  "Anayah"
+ ],
+ "Inayam": [
+  "Anim",
+  "Aniym"
+ ],
+ "Ipal": [
+  "Ophel"
+ ],
+ "Ipanay": [
+  "Ophni",
+  "Ophniy"
+ ],
+ "Ipar": [
+  "Epher"
+ ],
+ "Iparah": [
+  "Ophrah"
+ ],
+ "Iparawan": [
+  "Ephron",
+  "Ephrown"
+ ],
+ "Iqan": [
+  "Aqan"
+ ],
+ "Iqar": [
+  "Eker",
+  "Eqer"
+ ],
+ "Iqarawan": [
+  "Ekron",
+  "Eqron",
+  "Eqrown"
+ ],
+ "Iqash": [
+  "Ikkesh",
+  "Iqqesh"
+ ],
+ "Iqawab": [
+  "Akkub",
+  "Aqqub",
+  "Aqquwb"
+ ],
+ "Irab": [
+  "Oreb",
+  "Arabia"
+ ],
+ "Irabah": [
+  "Arabah"
+ ],
+ "Irad": [
+  "Arad"
+ ],
+ "Iran": [
+  "Eran"
+ ],
+ "Irapah": [
+  "Orpah"
+ ],
+ "Irawair": [
+  "Aroer",
+  "Arower"
+ ],
+ "Irawatz": [
+  "Aruts",
+  "Aruwts"
+ ],
+ "Iray": [
+  "Eri",
+  "Eriy"
+ ],
+ "Ishah-Al": [
+  "Asahel",
+  "Ishahaal"
+ ],
+ "Ishan": [
+  "Ashan"
+ ],
+ "Ishaq": [
+  "Esek",
+  "Eshek",
+  "Eseq",
+  "Esheq"
+ ],
+ "Ishatharath": [
+  "Ashtoreth"
+ ],
+ "Ishatharath-Qaranayam": [
+  "Ashtoreth Karnaim",
+  "Ashteroth Qarnayim",
+  "Ashtroth Qarnayim"
+ ],
+ "Ishatharawath": [
+  "Ashtaroth",
+  "Asharoth",
+  "Astaroth",
+  "Ashtarowth"
+ ],
+ "Ishaw": [
+  "Esau",
+  "Esav"
+ ],
+ "Ishawath": [
+  "Ashvath"
+ ],
+ "Ishay-Al": [
+  "Asiel",
+  "Asiyel",
+  "Ishayaal"
+ ],
+ "Ishayah": [
+  "Asaiah",
+  "Asayah"
+ ],
+ "Itarah": [
+  "Atarah"
+ ],
+ "Itarawath": [
+  "Ataroth",
+  "Atarowth"
+ ],
+ "Itarawath-Adar": [
+  "Atroth Addar",
+  "Atrowth Addar"
+ ],
+ "Itarawath-Bayath-Yawaab": [
+  "Atroth Beth Yoab",
+  "Atrowth Beyth Yowab"
+ ],
+ "Itarawath-Shawapan": [
+  "Atroth",
+  "Atroth Shophan",
+  "Atrowth Showphan",
+  "Itarawathashawapan"
+ ],
+ "Ith-Qatzayan": [
+  "Eth Qatsin",
+  "Eth Qatsiyn"
+ ],
+ "Ithak": [
+  "Athach",
+  "Athak"
+ ],
+ "Ithalay": [
+  "Athlai",
+  "Athlay"
+ ],
+ "Ithalayah": [
+  "Athaliah",
+  "Athalyah"
+ ],
+ "Ithanay": [
+  "Othni",
+  "Othniy"
+ ],
+ "Ithanay-Al": [
+  "Othniel",
+  "Othniyel",
+  "Ithanayaal"
+ ],
+ "Ithar": [
+  "Ether"
+ ],
+ "Ithay": [
+  "Attai",
+  "Attay"
+ ],
+ "Ithayah": [
+  "Athaiah",
+  "Athayah"
+ ],
+ "Itzam": [
+  "Ezem",
+  "Azem",
+  "Etsem"
+ ],
+ "Itzamawan": [
+  "Azmon",
+  "Atsmon",
+  "Atsmown"
+ ],
+ "Itzayawan-Gabar": [
+  "Ezion-Geber",
+  "Etsyon Geber",
+  "Etsyown Geber"
+ ],
+ "Iwabad": [
+  "Obed",
+  "Owbed"
+ ],
+ "Iwabal": [
+  "Obal",
+  "Owbal"
+ ],
+ "Iwadad": [
+  "Oded",
+  "Owded"
+ ],
+ "Iwag": [
+  "Owg"
+ ],
+ "Iwagab": [
+  "Ugab",
+  "Uwgab"
+ ],
+ "Iwah": [
+  "Ivvah",
+  "Ava",
+  "Ivah"
+ ],
+ "Iwathay": [
+  "Uthai",
+  "Uthay",
+  "Uwthay"
+ ],
+ "Iwatz": [
+  "Uts",
+  "Uwts"
+ ],
+ "Iway": [
+  "Avvi",
+  "Avims",
+  "Avviy",
+  "Avites"
+ ],
+ "Iwayam": [
+  "Avvim",
+  "Avim",
+  "Avviym"
+ ],
+ "Iwayath": [
+  "Avith",
+  "Aviyth"
+ ],
+ "Iy": [
+  "Aija",
+  "Hai",
+  "Aijath"
+ ],
+ "Iyabal": [
+  "Ebal",
+  "Eybal"
+ ],
+ "Iyalam": [
+  "Elam",
+  "Eylam"
+ ],
+ "Iyalay": [
+  "Ilai",
+  "Ilay",
+  "Iylay"
+ ],
+ "Iyan": [
+  "En",
+  "Ain",
+  "Endor",
+  "Ayin"
+ ],
+ "Iyan-Chadah": [
+  "En Chaddah",
+  "En-Haddah",
+  "Eyn Chaddah"
+ ],
+ "Iyan-Charad": [
+  "En Charod",
+  "Eyn Charod"
+ ],
+ "Iyan-Chatzawar": [
+  "En Chatsor",
+  "En-Hazor",
+  "Eyn Chatsowr"
+ ],
+ "Iyan-Daar": [
+  "En-Dor",
+  "Eyn-Dor"
+ ],
+ "Iyan-Gaday": [
+  "En Gedi",
+  "Engedi",
+  "En-Gedi",
+  "Eyn Gediy"
+ ],
+ "Iyan-Ganayam": [
+  "En Gannim",
+  "En-Gannim",
+  "Eyn Ganniym"
+ ],
+ "Iyan-Haqawaraa": [
+  "En Haq-Qore",
+  "En-Hakhore",
+  "Eyn Haq-Qowre"
+ ],
+ "Iyan-Igalayam": [
+  "En Eglayim",
+  "En-Eglaim",
+  "Eyn Eglayim"
+ ],
+ "Iyan-Mashapat": [
+  "En Mishpat",
+  "En-Mishpat",
+  "Eyn Mishpat"
+ ],
+ "Iyan-Ragal": [
+  "En Rogel",
+  "En-Rogel",
+  "Eyn Rogel"
+ ],
+ "Iyan-Ramawan": [
+  "En Rimmon",
+  "En-Rimmon",
+  "Eyn Rimmown"
+ ],
+ "Iyan-Shamash": [
+  "En Shemesh",
+  "Enshemesh",
+  "Eyn Shemesh",
+  "Iyanashamash"
+ ],
+ "Iyan-Thanayam": [
+  "En Tannim",
+  "Eyn Tanniym"
+ ],
+ "Iyan-Thapawach": [
+  "En Tappuach",
+  "En-Tappuah",
+  "Eyn Tappuwach"
+ ],
+ "Iyanan": [
+  "Enan",
+  "Eynan"
+ ],
+ "Iyanayam": [
+  "Enaim",
+  "Enayim",
+  "Eynayim"
+ ],
+ "Iyapah": [
+  "Ephah",
+  "Eyphah"
+ ],
+ "Iyar": [
+  "Iyr"
+ ],
+ "Iyar-HaMalach": [
+  "Ir Ham-Melach",
+  "Iyr Ham-Melach"
+ ],
+ "Iyar-Hathamarayam": [
+  "Ir Hat-Tmarim",
+  "Ir Hat-Temarim",
+  "Iyr Hat-Tmariym",
+  "Iyr Hat-Temariym"
+ ],
+ "Iyar-Nachash": [
+  "Ir Nachash",
+  "Irnahash",
+  "Iyr Nachash",
+  "Iyaranachash"
+ ],
+ "Iyar-Shamash": [
+  "Ir Shemesh",
+  "Irshemesh",
+  "Iyr Shemesh",
+  "Iyarashamash"
+ ],
+ "Iyaraa": [
+  "Ira",
+  "Iyra"
+ ],
+ "Iyarad": [
+  "Irad",
+  "Iyrad"
+ ],
+ "Iyaram": [
+  "Iram",
+  "Iyram"
+ ],
+ "Iyaraw": [
+  "Iru",
+  "Iyruw"
+ ],
+ "Iyaray": [
+  "Iri",
+  "Iyriy"
+ ],
+ "Iyash": [
+  "Ayish",
+  "Arcturus"
+ ],
+ "Iyatam": [
+  "Etam",
+  "Eytam"
+ ],
+ "Iyawan": [
+  "Ijon",
+  "Ion",
+  "Iyown"
+ ],
+ "Iyay-Haibarayam": [
+  "Ije-Abarim",
+  "Ie Ha-Abarim",
+  "Iyey Ha-Abariym"
+ ],
+ "Iyayam": [
+  "Iim",
+  "Iyiym"
+ ],
+ "Iz-Bawaq": [
+  "Azbuk",
+  "Azbuq",
+  "Azbuwq",
+  "Izabawaq"
+ ],
+ "Iz-Gad": [
+  "Azgad",
+  "Izagad"
+ ],
+ "Iz-Mawath": [
+  "Azmaveth",
+  "Izamawath"
+ ],
+ "Izaa": [
+  "Uzza",
+  "Uzzah"
+ ],
+ "Izabawan": [
+  "Izzabon",
+  "Izzabown"
+ ],
+ "Izah": [
+  "Gaza",
+  "Azzah"
+ ],
+ "Izan": [
+  "Azzan"
+ ],
+ "Izaqah": [
+  "Azekah",
+  "Azeqah"
+ ],
+ "Izar-Al": [
+  "Azarel",
+  "Azarael",
+  "Azareel",
+  "Izaraal"
+ ],
+ "Izaraa": [
+  "Ezra"
+ ],
+ "Izarah": [
+  "Ezrah",
+  "Azarah"
+ ],
+ "Izaray": [
+  "Ezri",
+  "Ezriy"
+ ],
+ "Izaray-Al": [
+  "Azriel",
+  "Azriyel",
+  "Izarayaal"
+ ],
+ "Izaray-Qam": [
+  "Azrikam",
+  "Azriqam",
+  "Azriyqam",
+  "Izarayaqam"
+ ],
+ "Izarayah": [
+  "Azariah",
+  "Azaryah"
+ ],
+ "Izathay": [
+  "Gazite",
+  "Azzathi",
+  "Azzathiy",
+  "Gazathite"
+ ],
+ "Izawabah": [
+  "Azubah",
+  "Azuwbah"
+ ],
+ "Izawar": [
+  "Azzur",
+  "Azur",
+  "Azzuwr"
+ ],
+ "Izay": [
+  "Uzzi",
+  "Uzziy"
+ ],
+ "Izay-Al": [
+  "Uzziel",
+  "Aziel",
+  "Aziyel",
+  "Uzziyel",
+  "Izayaal"
+ ],
+ "Izayaa": [
+  "Uzzia",
+  "Uzziya"
+ ],
+ "Izayah": [
+  "Uzziah",
+  "Uzziyah"
+ ],
+ "Izayazaa": [
+  "Aziza",
+  "Aziyza"
+ ],
+ "Izaz": [
+  "Azaz"
+ ],
+ "Izazayahaw": [
+  "Azaziah",
+  "Azazyahu",
+  "Azazyahuw"
+ ],
+ "Kabar": [
+  "Chebar",
+  "Kbar",
+  "Kebar"
+ ],
+ "Kabawal": [
+  "Cabul",
+  "Kabul",
+  "Kabuwl"
+ ],
+ "Kabawan": [
+  "Cabbon",
+  "Kabbon",
+  "Kabbown"
+ ],
+ "Kadaralaimar": [
+  "Chedorlaomer",
+  "Kdorlaomer",
+  "Kedorlaomer"
+ ],
+ "Kah": [
+  "Koh"
+ ],
+ "Kakar": [
+  "Kikkar"
+ ],
+ "Kal-Ab": [
+  "Chileab",
+  "Kilab",
+  "Kalaab"
+ ],
+ "Kal-Chazah": [
+  "Col-Hozeh",
+  "Kol-Chozeh"
+ ],
+ "Kalab": [
+  "Caleb",
+  "Kaleb"
+ ],
+ "Kalab-Aparathah": [
+  "Caleb-Ephrathah",
+  "Kaleb Ephrathah"
+ ],
+ "Kalach": [
+  "Calah",
+  "Kelach"
+ ],
+ "Kalakal": [
+  "Calcol",
+  "Kalkol",
+  "Chalcol"
+ ],
+ "Kalal": [
+  "Chelal",
+  "Klal",
+  "Kelal"
+ ],
+ "Kalamad": [
+  "Chilmad",
+  "Kilmad"
+ ],
+ "Kalanah": [
+  "Calneh",
+  "Calno",
+  "Kalneh"
+ ],
+ "Kalawab": [
+  "Chelub",
+  "Klub",
+  "Kelub",
+  "Kluwb",
+  "Keluwb"
+ ],
+ "Kalawabay": [
+  "Chelubai",
+  "Klubay",
+  "Kelubay",
+  "Kluwbay",
+  "Keluwbay"
+ ],
+ "Kalawahay": [
+  "Kluhay",
+  "Chelluh",
+  "Keluhay",
+  "Kluwhay",
+  "Keluwhay"
+ ],
+ "Kalayawan": [
+  "Chilion",
+  "Kilyon",
+  "Kilyown"
+ ],
+ "Kamaham": [
+  "Chimham",
+  "Kimham"
+ ],
+ "Kamawash": [
+  "Chemosh",
+  "Kmosh",
+  "Kemosh",
+  "Kmowsh",
+  "Kemowsh"
+ ],
+ "Kan": [
+  "Ken"
+ ],
+ "Kanah": [
+  "Canneh",
+  "Kanneh"
+ ],
+ "Kanain": [
+  "Canaan",
+  "Knaan",
+  "Kenaan"
+ ],
+ "Kanainah": [
+  "Chenaanah",
+  "Knaanah",
+  "Kenaanah"
+ ],
+ "Kanainay": [
+  "Canaanites",
+  "Canaanite"
+ ],
+ "Kananay": [
+  "Chenani",
+  "Knani",
+  "Kenani",
+  "Knaniy",
+  "Kenaniy"
+ ],
+ "Kananayah": [
+  "Chenaniah",
+  "Knanyah",
+  "Kenanyah"
+ ],
+ "Kanarawath": [
+  "Chinnereth",
+  "Chinneroth",
+  "Kinnroth",
+  "Cinneroth",
+  "Kinneroth",
+  "Kinnrowth",
+  "Kinnerowth"
+ ],
+ "Kanayahaw": [
+  "Coniah",
+  "Konyahu",
+  "Konyahuw"
+ ],
+ "Kapar-Haimawanay": [
+  "Chefarhaamonai",
+  "Kphar Ha-Ammoni",
+  "Kaparahaimawanay",
+  "Kephar Ha-Ammoni",
+  "Kphar Ha-Ammowniy",
+  "Kephar Ha-Ammowniy"
+ ],
+ "Kaparanachawam": [
+  "Capernaum"
+ ],
+ "Kapathar": [
+  "Caphtor",
+  "Kaphtor"
+ ],
+ "Kapayarah": [
+  "Chephirah",
+  "Kphirah",
+  "Kephirah",
+  "Kphiyrah",
+  "Kephiyrah"
+ ],
+ "Karakamayash": [
+  "Carchemish",
+  "Karkmish",
+  "Karkemish",
+  "Karkmiysh",
+  "Karkemiysh"
+ ],
+ "Karakas": [
+  "Carcas",
+  "Karkac"
+ ],
+ "Karamal": [
+  "Carmel",
+  "Karmel"
+ ],
+ "Karamalay": [
+  "Carmelite",
+  "Karmli",
+  "Karmeli",
+  "Karmliy",
+  "Karmeliy"
+ ],
+ "Karamay": [
+  "Carmi",
+  "Karmi",
+  "Karmiy"
+ ],
+ "Karan": [
+  "Cheran",
+  "Kran",
+  "Keran"
+ ],
+ "Karashanaa": [
+  "Carshena",
+  "Karshna",
+  "Karshena"
+ ],
+ "Karawab": [
+  "Cherub",
+  "Krub",
+  "Kerub",
+  "Kruwb",
+  "Keruwb",
+  "Cherubim"
+ ],
+ "Karayath": [
+  "Cherith",
+  "Krith",
+  "Kerith",
+  "Kriyth",
+  "Keriyth"
+ ],
+ "Kasalachayam": [
+  "Casluhim",
+  "Kacluchim",
+  "Kacluchiym"
+ ],
+ "Kasalath-Thabar": [
+  "Kicloth Tabor",
+  "Chisloth-Tabor"
+ ],
+ "Kasalaw": [
+  "Kiclev",
+  "Chisleu"
+ ],
+ "Kasalawan": [
+  "Chislon",
+  "Chesalon",
+  "Kiclon",
+  "Kcalon",
+  "Kiclown",
+  "Kecalon",
+  "Kcalown",
+  "Kecalown"
+ ],
+ "Kasalawath": [
+  "Chesulloth",
+  "Kculloth",
+  "Keculloth",
+  "Kcullowth",
+  "Kecullowth"
+ ],
+ "Kasapayaa": [
+  "Casiphia",
+  "Kaciphya"
+ ],
+ "Kasayal": [
+  "Orion",
+  "Chesil",
+  "Kcil",
+  "Kecil",
+  "Kciyl",
+  "Keciyl"
+ ],
+ "Kashad": [
+  "Chesed",
+  "Kesed"
+ ],
+ "Kashaday": [
+  "Chaldeans",
+  "Chaldees",
+  "Chaldean",
+  "Kasdi",
+  "Kasdiy"
+ ],
+ "Kathal-Yash": [
+  "Kithlish",
+  "Kithliysh",
+  "Kathalayash"
+ ],
+ "Kathay": [
+  "Kittim",
+  "Kitti",
+  "Kittiy",
+  "Chittim"
+ ],
+ "Kawab": [
+  "Kub",
+  "Chub",
+  "Kuwb"
+ ],
+ "Kawan": [
+  "Kun",
+  "Chun",
+  "Kuwn"
+ ],
+ "Kawananayahaw": [
+  "Conaniah",
+  "Cononiah",
+  "Konanyahu",
+  "Kownanyahuw"
+ ],
+ "Kawar-Ishan": [
+  "Chorashan",
+  "Kor Ashan",
+  "Kowr Ashan",
+  "Kawaraishan"
+ ],
+ "Kawarash": [
+  "Cyrus",
+  "Koresh",
+  "Kowresh"
+ ],
+ "Kawash": [
+  "Ethiopia",
+  "Cush",
+  "Kush",
+  "Chush",
+  "Kuwsh"
+ ],
+ "Kawashan": [
+  "Cushan",
+  "Kushan",
+  "Kuwshan"
+ ],
+ "Kawashan-Rashaithayam": [
+  "Kushan Rishathayim",
+  "Chushan-Rishathayim",
+  "Kuwshan Rishathayim"
+ ],
+ "Kawashay": [
+  "Cushi",
+  "Kushi",
+  "Kuwshiy"
+ ],
+ "Kawath": [
+  "Cuth",
+  "Kuth",
+  "Kuwth"
+ ],
+ "Kayadawan": [
+  "Chidon",
+  "Kidon",
+  "Kiydown"
+ ],
+ "Kayamah": [
+  "Pleiades",
+  "Kimah",
+  "Kiymah"
+ ],
+ "Kayapaa": [
+  "Peter",
+  "Cephas"
+ ],
+ "Kayawan": [
+  "Kiun",
+  "Chiun",
+  "Kiyuwn"
+ ],
+ "Kazabaa": [
+  "Kozba",
+  "Kozeba",
+  "Choseba"
+ ],
+ "Kazabay": [
+  "Cozbi",
+  "Kozbi",
+  "Kozebi",
+  "Kozbiy",
+  "Kozebiy"
+ ],
+ "Kazayab": [
+  "Chezib",
+  "Kzib",
+  "Kezib",
+  "Kziyb",
+  "Keziyb"
+ ],
+ "Laa-Dabar": [
+  "Lo Dbar",
+  "Lo Debar",
+  "Lodebar",
+  "Laadabar"
+ ],
+ "Laa-Imay": [
+  "Lo Ammi",
+  "Lo Ammiy",
+  "Lo-Ammi"
+ ],
+ "Laa-Rachamah": [
+  "Lo-Ruhamah",
+  "Lo Ruchamah"
+ ],
+ "Laah": [
+  "Leah"
+ ],
+ "Laal": [
+  "Lael"
+ ],
+ "Laamayam": [
+  "Leummim",
+  "Lummim",
+  "Lummiym",
+  "Leummiym"
+ ],
+ "Labaawath": [
+  "Lebaoth",
+  "Lbaoth",
+  "Lbaowth",
+  "Lebaowth"
+ ],
+ "Labanaa": [
+  "Lebana",
+  "Lebanah",
+  "Lbana"
+ ],
+ "Labanah": [
+  "Libnah"
+ ],
+ "Labanawan": [
+  "Lebanon",
+  "Lbanon",
+  "Lbanown",
+  "Lebanown"
+ ],
+ "Labanay": [
+  "Libni",
+  "Libniy"
+ ],
+ "Labawanah": [
+  "Lebonah",
+  "Lbonah",
+  "Lbownah",
+  "Lebownah"
+ ],
+ "Lachamas": [
+  "Lahmam",
+  "Lachmac"
+ ],
+ "Lachamay": [
+  "Lahmi",
+  "Lachmi",
+  "Lachmiy"
+ ],
+ "Lachay": [
+  "Lehi",
+  "Lechi",
+  "Lechiy"
+ ],
+ "Lad": [
+  "Lod"
+ ],
+ "Lahabayam": [
+  "Lehabim",
+  "Lhabim",
+  "Lhabiym",
+  "Lehabiym"
+ ],
+ "Laidah": [
+  "Laadah",
+  "Ladah"
+ ],
+ "Laidan": [
+  "Ladan",
+  "Laadan"
+ ],
+ "Lakah": [
+  "Lecah",
+  "Lekah"
+ ],
+ "Lakayash": [
+  "Lachish",
+  "Lakish",
+  "Lakiysh"
+ ],
+ "Lamak": [
+  "Lamech",
+  "Lemek"
+ ],
+ "Lamawaal": [
+  "Lemuel",
+  "Lmuel",
+  "Lmuwel",
+  "Lemuwel"
+ ],
+ "Lapayadawath": [
+  "Lappidoth",
+  "Lappiydowth"
+ ],
+ "Laqachay": [
+  "Likhi",
+  "Liqchi",
+  "Liqchiy"
+ ],
+ "Laqawam": [
+  "Lakum",
+  "Laqqum",
+  "Laqquwm"
+ ],
+ "Lashai": [
+  "Lasha",
+  "Lesha"
+ ],
+ "Lasham": [
+  "Leshem"
+ ],
+ "Latawasham": [
+  "Letushim",
+  "Ltushim",
+  "Ltuwshim",
+  "Letuwshim"
+ ],
+ "Lawachash": [
+  "Hallohesh",
+  "Lochesh",
+  "Lowchesh"
+ ],
+ "Lawachayath": [
+  "Luhith",
+  "Luchith",
+  "Luwchiyth"
+ ],
+ "Lawad": [
+  "Lud",
+  "Luwd",
+  "Lydia"
+ ],
+ "Lawaday": [
+  "Ludim",
+  "Ludi",
+  "Luwdiy"
+ ],
+ "Lawash": [
+  "Lush",
+  "Luwsh"
+ ],
+ "Lawat": [
+  "Lot",
+  "Lowt"
+ ],
+ "Lawatan": [
+  "Lotan",
+  "Lowtan"
+ ],
+ "Laway": [
+  "Levi",
+  "Leviy"
+ ],
+ "Lawayay": [
+  "Levites",
+  "Levite",
+  "Levii",
+  "Leviite",
+  "Leviyiy"
+ ],
+ "Lawaz": [
+  "Luz",
+  "Luwz"
+ ],
+ "Layash": [
+  "Laish",
+  "Layish"
+ ],
+ "Mabachar": [
+  "Mibhar",
+  "Mibchar"
+ ],
+ "Mabachawar": [
+  "Mibchor",
+  "Mibchowr"
+ ],
+ "Mabadalah": [
+  "Mibdalah"
+ ],
+ "Mabanay": [
+  "Mebunnai",
+  "Mbunnay",
+  "Mebunnay"
+ ],
+ "Mabasham": [
+  "Mibsam"
+ ],
+ "Mabatzar": [
+  "Mibzar",
+  "Mibtsar"
+ ],
+ "Mabawaa": [
+  "Mabo",
+  "Mabow"
+ ],
+ "Machalah": [
+  "Mahlah",
+  "Machlah"
+ ],
+ "Machalath": [
+  "Mahalath"
+ ],
+ "Machalawan": [
+  "Mahlon",
+  "Machlon",
+  "Machlown"
+ ],
+ "Machalay": [
+  "Mahli",
+  "Machli",
+  "Machliy"
+ ],
+ "Machanah-Dan": [
+  "Mahaneh-Dan",
+  "Machaneh-Dan"
+ ],
+ "Machanayam": [
+  "Mahanaim",
+  "Machanayim"
+ ],
+ "Machasayah": [
+  "Machceah",
+  "Machceyah"
+ ],
+ "Machashak": [
+  "Machshak"
+ ],
+ "Machath": [
+  "Mahath"
+ ],
+ "Machawal": [
+  "Mahol",
+  "Machol",
+  "Machowl"
+ ],
+ "Machaway-Al": [
+  "Mehujael",
+  "Mchuyael",
+  "Mechuyael",
+  "Mchuwyael",
+  "Mechuwyael",
+  "Machawayaal"
+ ],
+ "Machawayam": [
+  "Mahavite",
+  "Machavim",
+  "Machaviym"
+ ],
+ "Machayadaa": [
+  "Mehida",
+  "Mchida",
+  "Mechida",
+  "Mchiyda",
+  "Mechiyda"
+ ],
+ "Machayar": [
+  "Mehir",
+  "Mchir",
+  "Mechir",
+  "Mchiyr",
+  "Mechiyr"
+ ],
+ "Machazayaawath": [
+  "Mahazioth",
+  "Machazioth",
+  "Machaziyowth"
+ ],
+ "Madabar": [
+  "Midbar"
+ ],
+ "Madaman": [
+  "Madmen"
+ ],
+ "Madamanah": [
+  "Madmannah",
+  "Madmenah"
+ ],
+ "Madan": [
+  "Medan",
+  "Mdan"
+ ],
+ "Madaragah": [
+  "Madregah"
+ ],
+ "Madarak": [
+  "Midrak"
+ ],
+ "Madawan": [
+  "Madon",
+  "Madown"
+ ],
+ "Maday": [
+  "Medes",
+  "Media",
+  "Madai"
+ ],
+ "Madayan": [
+  "Midian",
+  "Midianite",
+  "Middin",
+  "Midyan",
+  "Middiyn"
+ ],
+ "Madayanah": [
+  "Mdinah",
+  "Medinah",
+  "Mdiynah",
+  "Mediynah"
+ ],
+ "Madayanay": [
+  "Midianites"
+ ],
+ "Magabalah": [
+  "Migbalah"
+ ],
+ "Magabayash": [
+  "Magbish",
+  "Magbiysh"
+ ],
+ "Magadal-Al": [
+  "Migdal-El"
+ ],
+ "Magadal-Gad": [
+  "Migdal-Gad"
+ ],
+ "Magadal-Idar": [
+  "Migdal-Eder"
+ ],
+ "Magadawal": [
+  "Migdol",
+  "Migdowl"
+ ],
+ "Magadawan": [
+  "Megiddo",
+  "Megiddon",
+  "Mgiddon",
+  "Mgiddown",
+  "Megiddown"
+ ],
+ "Magaday-Al": [
+  "Magdiel",
+  "Magdiyel",
+  "Magadayaal"
+ ],
+ "Magapay-Ish": [
+  "Magpiash",
+  "Magpiyash",
+  "Magapayaish"
+ ],
+ "Magarash": [
+  "Migrash"
+ ],
+ "Magarawan": [
+  "Migron",
+  "Migrown"
+ ],
+ "Magawag": [
+  "Magog",
+  "Magowg"
+ ],
+ "Mahalal-Al": [
+  "Mahalalel",
+  "Mahalaleel",
+  "Mahalalaal"
+ ],
+ "Mahar": [
+  "Maher"
+ ],
+ "Mahar-Shalal-Chash-Baz": [
+  "Maher Shalal Chash Baz",
+  "Maher-Sha-Lal-Bash-Baz"
+ ],
+ "Maharay": [
+  "Maharai"
+ ],
+ "Mahawaman": [
+  "Mehuman",
+  "Mhuman",
+  "Mhuwman",
+  "Mehuwman"
+ ],
+ "Mahayatab-Al": [
+  "Mehetabel",
+  "Mhetabel",
+  "Mheytabel",
+  "Mehetabeel",
+  "Meheytabel",
+  "Mahayatabaal"
+ ],
+ "Maibar": [
+  "Maabar"
+ ],
+ "Maiday": [
+  "Maadai",
+  "Maaday"
+ ],
+ "Maidayah": [
+  "Maadiah",
+  "Maadyah"
+ ],
+ "Maikah": [
+  "Maakah",
+  "Maachah",
+  "Maachathites"
+ ],
+ "Mailah": [
+  "Maalah"
+ ],
+ "Mailah-Iqarabayam": [
+  "Maaleh-Accrabim",
+  "Maaleh Aqrabbim",
+  "Maaleh Aqrabbiym"
+ ],
+ "Mair": [
+  "Maar"
+ ],
+ "Mairab": [
+  "Maarab"
+ ],
+ "Mairah": [
+  "Mearah",
+  "Maareh"
+ ],
+ "Mairath": [
+  "Maarath"
+ ],
+ "Maishay": [
+  "Maasay",
+  "Maasiai"
+ ],
+ "Maishayah": [
+  "Maaseiah",
+  "Maaseah",
+  "Maaseyah"
+ ],
+ "Maitz": [
+  "Maaz",
+  "Maats"
+ ],
+ "Maiwak": [
+  "Maoch",
+  "Maok",
+  "Maowk"
+ ],
+ "Maiwan": [
+  "Maon",
+  "Maonites",
+  "Maown"
+ ],
+ "Maiwanathay": [
+  "Meonothai",
+  "Monothay",
+  "Meonothay",
+  "Mownothay",
+  "Meownothay"
+ ],
+ "Maiwaz": [
+  "Maoz",
+  "Maowz"
+ ],
+ "Maiy": [
+  "Maai",
+  "Maay"
+ ],
+ "Maizayah": [
+  "Maaziah",
+  "Maazyah"
+ ],
+ "Mak-Nadabay": [
+  "Machnadebai",
+  "Maknadbay",
+  "Makanadabay"
+ ],
+ "Makabanaa": [
+  "Makbena",
+  "Machbenah"
+ ],
+ "Makabanay": [
+  "Machbanai",
+  "Makbannay"
+ ],
+ "Makamas": [
+  "Mikmas",
+  "Mikmac",
+  "Mikmash"
+ ],
+ "Makamathath": [
+  "Michmethath",
+  "Mikmthath",
+  "Mikmethath"
+ ],
+ "Makanah": [
+  "Mkonah",
+  "Mekonah"
+ ],
+ "Makapalah": [
+  "Machpelah",
+  "Makpelah"
+ ],
+ "Makaray": [
+  "Michri",
+  "Mikri",
+  "Mikriy"
+ ],
+ "Makathash": [
+  "Maktesh"
+ ],
+ "Makawan": [
+  "Makon",
+  "Makown"
+ ],
+ "Makay": [
+  "Machi",
+  "Maki",
+  "Makiy"
+ ],
+ "Makayar": [
+  "Machir",
+  "Makir",
+  "Makiyr"
+ ],
+ "Malaakay": [
+  "Malachi",
+  "Malaki",
+  "Malakiy"
+ ],
+ "Malachah": [
+  "Mlechah",
+  "Melechah"
+ ],
+ "Malak": [
+  "Molech",
+  "Ebedmelech",
+  "Melech",
+  "Molek",
+  "Melek"
+ ],
+ "Malakah": [
+  "Milcah",
+  "Milkah"
+ ],
+ "Malakam": [
+  "Milcom",
+  "Malkam",
+  "Malcham"
+ ],
+ "Malakay-Al": [
+  "Malchiel",
+  "Malkiel",
+  "Malkiyel",
+  "Malakayaal"
+ ],
+ "Malakay-Ram": [
+  "Malchiram",
+  "Malkiram",
+  "Malkiyram",
+  "Malakayaram"
+ ],
+ "Malakay-Shawai": [
+  "Malchishua",
+  "Malkishua",
+  "Malkiyshuwa",
+  "Malakayashawai"
+ ],
+ "Malakay-Tzadaq": [
+  "Melchizedek",
+  "Malki-Tsedeq",
+  "Malkiy-Tsedeq",
+  "Malakayatzadaq"
+ ],
+ "Malakayah": [
+  "Malchijah",
+  "Malkiah",
+  "Malchiah",
+  "Malkiyah"
+ ],
+ "Malalay": [
+  "Milalai",
+  "Milalay"
+ ],
+ "Malaqawash": [
+  "Malqosh",
+  "Malqowsh"
+ ],
+ "Malatayah": [
+  "Melatiah",
+  "Mlatyah",
+  "Melatyah"
+ ],
+ "Malawaa": [
+  "Millo",
+  "Millow"
+ ],
+ "Malawak": [
+  "Malluch",
+  "Malluk",
+  "Malluwk"
+ ],
+ "Malawathay": [
+  "Mallothi",
+  "Mallowthiy"
+ ],
+ "Mamalakah": [
+  "Mamlakah"
+ ],
+ "Mamalakawath": [
+  "Mamlakuth",
+  "Mamlakuwth"
+ ],
+ "Mamaraa": [
+  "Mamre"
+ ],
+ "Mamawakan": [
+  "Memucan",
+  "Mmukan",
+  "Memukan",
+  "Mmuwkan",
+  "Memuwkan"
+ ],
+ "Man-Yamayan": [
+  "Miniamin",
+  "Minyamin",
+  "Minyamiyn",
+  "Manayamayan"
+ ],
+ "Manacham": [
+  "Menahem",
+  "Mnachem",
+  "Menachem"
+ ],
+ "Manachath": [
+  "Manahath"
+ ],
+ "Manashah": [
+  "Manasseh",
+  "Mnashsheh",
+  "Menashsheh"
+ ],
+ "Manawach": [
+  "Manoah",
+  "Manoach",
+  "Manowach"
+ ],
+ "Manay": [
+  "Minni",
+  "Minniy"
+ ],
+ "Manayath": [
+  "Minnith",
+  "Minniyth"
+ ],
+ "Map": [
+  "Memphis",
+  "Moph"
+ ],
+ "Mapay-Bashath": [
+  "Mephibosheth",
+  "Mphibosheth",
+  "Mphiybosheth",
+  "Mephiybosheth",
+  "Mapayabashath"
+ ],
+ "Mapayam": [
+  "Muppim",
+  "Muppiym"
+ ],
+ "Maqadah": [
+  "Makkedah",
+  "Maqqedah"
+ ],
+ "Maqadash": [
+  "Miqdash"
+ ],
+ "Maqahalath": [
+  "Makheloth",
+  "Maqheloth"
+ ],
+ "Maqalawath": [
+  "Mikloth",
+  "Miqloth",
+  "Miqlowth"
+ ],
+ "Maqanah": [
+  "Miqnah"
+ ],
+ "Maqanayahaw": [
+  "Mikneiah",
+  "Miqneahu",
+  "Miqneyahuw"
+ ],
+ "Maqaraa": [
+  "Miqra"
+ ],
+ "Maqatar": [
+  "Miqtar"
+ ],
+ "Maqatz": [
+  "Makaz",
+  "Maqats"
+ ],
+ "Maraa": [
+  "Mara"
+ ],
+ "Maraadak-Bal-Adan": [
+  "Mrodak Baladan",
+  "Merodak Baladan",
+  "Merodach-Baladan"
+ ],
+ "Maraashah": [
+  "Mareshah"
+ ],
+ "Marab": [
+  "Merab"
+ ],
+ "Marabatz": [
+  "Marbets"
+ ],
+ "Marachaq": [
+  "Merchaq"
+ ],
+ "Marad": [
+  "Mered"
+ ],
+ "Maradak": [
+  "Merodach",
+  "Mrodak",
+  "Merodak"
+ ],
+ "Maradakay": [
+  "Mordecai",
+  "Mordkay",
+  "Mordekay"
+ ],
+ "Maragawai": [
+  "Margoa",
+  "Margowa"
+ ],
+ "Maraih": [
+  "Mireh"
+ ],
+ "Marailah": [
+  "Maralah"
+ ],
+ "Maramah": [
+  "Mirmah",
+  "Mirma"
+ ],
+ "Maramawath": [
+  "Meremoth",
+  "Mremoth",
+  "Mremowth",
+  "Meremowth"
+ ],
+ "Mararay": [
+  "Merari",
+  "Mrari",
+  "Mrariy",
+  "Merariy"
+ ],
+ "Maras": [
+  "Meres",
+  "Merec"
+ ],
+ "Marasanaa": [
+  "Marsena",
+  "Marcna",
+  "Marcena"
+ ],
+ "Marathaa": [
+  "Martha"
+ ],
+ "Marathayam": [
+  "Merathaim",
+  "Mrathayim",
+  "Merathayim"
+ ],
+ "Marawam": [
+  "Merom",
+  "Marom",
+  "Merowm",
+  "Marowm"
+ ],
+ "Marawath": [
+  "Maroth",
+  "Marowth"
+ ],
+ "Marawaz": [
+  "Meroz",
+  "Merowz"
+ ],
+ "Maray-Bail": [
+  "Mri Baal",
+  "Meri-Baal",
+  "Meri Baal",
+  "Mriy Baal",
+  "Meriy Baal"
+ ],
+ "Marayab-Bail": [
+  "Merib Baal",
+  "Mrib Baal",
+  "Merib-Baal",
+  "Mriyb Baal",
+  "Meriyb Baal"
+ ],
+ "Marayabah": [
+  "Meribah",
+  "Mribah",
+  "Mriybah",
+  "Meriybah"
+ ],
+ "Marayah": [
+  "Meraiah",
+  "Mrayah",
+  "Merayah"
+ ],
+ "Marayam": [
+  "Miriam",
+  "Mary",
+  "Miryam"
+ ],
+ "Marayawath": [
+  "Meraioth",
+  "Mrayoth",
+  "Merayoth",
+  "Mrayowth",
+  "Merayowth"
+ ],
+ "Masagarath": [
+  "Micgereth"
+ ],
+ "Masah": [
+  "Massah",
+  "Maccah"
+ ],
+ "Masai": [
+  "Macca"
+ ],
+ "Masapar": [
+  "Mizpar",
+  "Micpar"
+ ],
+ "Masaparath": [
+  "Mispereth",
+  "Micpereth"
+ ],
+ "Mashaa": [
+  "Massa"
+ ],
+ "Mashaal": [
+  "Mishal",
+  "Misheal"
+ ],
+ "Mashagab": [
+  "Misgab"
+ ],
+ "Mashah": [
+  "Moses",
+  "Mosheh"
+ ],
+ "Mashaim": [
+  "Misham"
+ ],
+ "Mashak": [
+  "Meshech",
+  "Mesech",
+  "Meshek"
+ ],
+ "Mashalam": [
+  "Meshullam",
+  "Mshullam"
+ ],
+ "Mashalamath": [
+  "Meshullemeth",
+  "Mshullemeth"
+ ],
+ "Mashalamawath": [
+  "Meshillemoth",
+  "Mshillemoth",
+  "Mshillemowth",
+  "Meshillemowth"
+ ],
+ "Mashalamayah": [
+  "Meshelemiah",
+  "Mshelemyah",
+  "Meshelemyah"
+ ],
+ "Mashalamayath": [
+  "Meshillemith",
+  "Mshillemith",
+  "Mshillemiyth",
+  "Meshillemiyth"
+ ],
+ "Mashalawach": [
+  "Mishloach",
+  "Mishlowach"
+ ],
+ "Mashamai": [
+  "Mishma"
+ ],
+ "Mashamanah": [
+  "Mishmannah"
+ ],
+ "Mashapat": [
+  "Mishpat"
+ ],
+ "Mashaqah": [
+  "Mashqeh"
+ ],
+ "Mashaqai": [
+  "Mishqa"
+ ],
+ "Masharapawath": [
+  "Misrephoth"
+ ],
+ "Masharapawath-Mayam": [
+  "Misrephoth Mayim",
+  "Misrphoth Mayim",
+  "Misrephoth-Mayim",
+  "Misrphowth Mayim",
+  "Misrephowth Mayim"
+ ],
+ "Masharaqah": [
+  "Masrekah",
+  "Masreqah"
+ ],
+ "Mashatawach": [
+  "Mishtoach",
+  "Mishtowach"
+ ],
+ "Mashawabab": [
+  "Meshobab",
+  "Mshobab",
+  "Mshowbab",
+  "Meshowbab"
+ ],
+ "Mashayach": [
+  "Christ",
+  "Messiah"
+ ],
+ "Mashayazab-Al": [
+  "Meshezabel",
+  "Mshezabel",
+  "Msheyzabel",
+  "Meshezabeel",
+  "Mesheyzabel",
+  "Mashayazabaal"
+ ],
+ "Matai": [
+  "Matta"
+ ],
+ "Matarad": [
+  "Matred"
+ ],
+ "Mathan": [
+  "Mattan"
+ ],
+ "Mathanah": [
+  "Mattanah"
+ ],
+ "Mathanay": [
+  "Mattenai",
+  "Mattnay",
+  "Mattenay"
+ ],
+ "Mathanayah": [
+  "Mattaniah",
+  "Mattanyah"
+ ],
+ "Mathaqah": [
+  "Mithcah",
+  "Mithqah"
+ ],
+ "Matharadath": [
+  "Mithredath",
+  "Mithrdath"
+ ],
+ "Mathathah": [
+  "Mattattah",
+  "Mattathah"
+ ],
+ "Mathathayah": [
+  "Mattithiah",
+  "Mattithyah"
+ ],
+ "Mathathayahaw": [
+  "Matthew"
+ ],
+ "Mathawash-Al": [
+  "Methushael",
+  "Methusael",
+  "Mthushael",
+  "Mthuwshael",
+  "Methuwshael",
+  "Mathawashaal"
+ ],
+ "Mathawashalach": [
+  "Methuselah",
+  "Mthushelach",
+  "Methushelach",
+  "Mthuwshelach",
+  "Methuwshelach"
+ ],
+ "Matzab": [
+  "Mutstsab"
+ ],
+ "Matzabayah": [
+  "Mesobaite",
+  "Mtsobayah",
+  "Metsobayah"
+ ],
+ "Matzah": [
+  "Mozah",
+  "Motsah"
+ ],
+ "Matzapah": [
+  "Mizpah",
+  "Mizpeh",
+  "Mitspah",
+  "Mitspeh"
+ ],
+ "Matzapan": [
+  "Mitspun"
+ ],
+ "Matzaray": [
+  "Egyptian",
+  "Mitsri",
+  "Mitsriy"
+ ],
+ "Matzarayam": [
+  "Egypt",
+  "Egyptians",
+  "Mizraim",
+  "Mitsrayim"
+ ],
+ "Matzawalah": [
+  "Mtsolah",
+  "Metsolah",
+  "Mtsowlah",
+  "Metsowlah"
+ ],
+ "Matzawaq": [
+  "Matsoq",
+  "Matsowq"
+ ],
+ "Matzawar": [
+  "Matsor",
+  "Matsowr"
+ ],
+ "Mawaab": [
+  "Moab",
+  "Mowab"
+ ],
+ "Mawaabay": [
+  "Moabites"
+ ],
+ "Mawaid": [
+  "Moed",
+  "Mowed"
+ ],
+ "Mawaidah": [
+  "Muadah",
+  "Muwadah"
+ ],
+ "Mawaidayah": [
+  "Moadiah",
+  "Moadyah",
+  "Mowadyah"
+ ],
+ "Mawaladah": [
+  "Moladah",
+  "Mowladah"
+ ],
+ "Mawaladath": [
+  "Moledeth",
+  "Mowledeth"
+ ],
+ "Mawalayad": [
+  "Molid",
+  "Mowliyd"
+ ],
+ "Mawapaith": [
+  "Mephaath",
+  "Mophaath",
+  "Mowphaath"
+ ],
+ "Mawarah": [
+  "Moreh",
+  "Mowreh"
+ ],
+ "Mawarashath-Gath": [
+  "Moresheth Gath",
+  "Moresheth-Gath",
+  "Mowresheth Gath"
+ ],
+ "Mawarayah": [
+  "Moriah",
+  "Mowriyah"
+ ],
+ "Mawasarah": [
+  "Moseroth",
+  "Mosera",
+  "Mocerah",
+  "Mowcerah"
+ ],
+ "Mawashab": [
+  "Moshab",
+  "Mowshab"
+ ],
+ "Mawashay": [
+  "Mushi",
+  "Muwshiy"
+ ],
+ "Mawath": [
+  "Muth",
+  "Muwth",
+  "Maveth",
+  "Muthlabben"
+ ],
+ "Mawatzaa": [
+  "Moza",
+  "Motsa",
+  "Mowtsa"
+ ],
+ "May-Dabaa": [
+  "Medeba",
+  "Medba",
+  "Meydba",
+  "Meydeba",
+  "Mayadabaa"
+ ],
+ "May-Hayaraqawan": [
+  "Me Hay-Yarqon",
+  "Me-Jarkon",
+  "Mey Hay-Yarqown"
+ ],
+ "May-Shaal": [
+  "Mishael",
+  "Miyshael",
+  "Mayashaal"
+ ],
+ "May-Zahab": [
+  "Mezahab",
+  "Me Zahab",
+  "Mayazahab",
+  "Mey Zahab"
+ ],
+ "Mayadad": [
+  "Medad",
+  "Meydad"
+ ],
+ "Mayak-Al": [
+  "Michael",
+  "Mikael",
+  "Miykael",
+  "Mayakaal"
+ ],
+ "Mayakaa": [
+  "Mika",
+  "Micha",
+  "Miyka"
+ ],
+ "Mayakah": [
+  "Micah",
+  "Micaiah",
+  "Mikah",
+  "Michah",
+  "Miykah"
+ ],
+ "Mayakal": [
+  "Michal",
+  "Mikal",
+  "Miykal"
+ ],
+ "Mayakayah": [
+  "Mikayah",
+  "Miykayah"
+ ],
+ "Mayakayahaw": [
+  "Mikayhu",
+  "Michaiah",
+  "Mikayehu",
+  "Mikayahu",
+  "Miykayhuw",
+  "Miykayehuw",
+  "Miykayahuw"
+ ],
+ "Mayaman": [
+  "Mijamin",
+  "Miamin",
+  "Miyamin"
+ ],
+ "Mayashaa": [
+  "Mesha",
+  "Meysha"
+ ],
+ "Mayashak": [
+  "Meshak",
+  "Meyshak"
+ ],
+ "Mayashawar": [
+  "Mishor",
+  "Miyshowr"
+ ],
+ "Mazah": [
+  "Mizzah"
+ ],
+ "Mazarah": [
+  "Mazzarah",
+  "Mazzoroth"
+ ],
+ "Nab": [
+  "Nob"
+ ],
+ "Nab-Lat": [
+  "Neballat",
+  "Nballat",
+  "Nabalat"
+ ],
+ "Nabach": [
+  "Nobah",
+  "Nobach"
+ ],
+ "Nabachaz": [
+  "Nibhaz",
+  "Nibchaz"
+ ],
+ "Nabashan": [
+  "Nibshan"
+ ],
+ "Nabat": [
+  "Nebat",
+  "Nbat"
+ ],
+ "Nabaw": [
+  "Nebo",
+  "Nbo",
+  "Nbow",
+  "Nebow"
+ ],
+ "Nabawakadanaatzar": [
+  "Nebuchadnezzar",
+  "Nebuchadrezzar",
+  "Nbukadnetstsar",
+  "Nebukadnetstsar",
+  "Nbuwkadnetstsar",
+  "Nebuwkadnetstsar"
+ ],
+ "Nabawashazaban": [
+  "Nebushazban",
+  "Nbushazban",
+  "Nbuwshazban",
+  "Nebuwshazban"
+ ],
+ "Nabawath": [
+  "Naboth",
+  "Nabowth"
+ ],
+ "Nabawazaraadan": [
+  "Nebuzaradan",
+  "Nbuzaradan",
+  "Nbuwzaradan",
+  "Nebuwzaradan"
+ ],
+ "Nabayawath": [
+  "Nebaioth",
+  "Nbayoth",
+  "Nebajoth",
+  "Nebayoth",
+  "Nbayowth",
+  "Nebayowth"
+ ],
+ "Nach": [
+  "Noah",
+  "Noach"
+ ],
+ "Nachabay": [
+  "Nakbi",
+  "Nachbi",
+  "Nachbiy"
+ ],
+ "Nachalay-Al": [
+  "Nahaliel",
+  "Nachaliel",
+  "Nachaliyel",
+  "Nachalayaal"
+ ],
+ "Nacham": [
+  "Naham"
+ ],
+ "Nachamanay": [
+  "Nahamani",
+  "Nachamani",
+  "Nachamaniy"
+ ],
+ "Nachamayah": [
+  "Nehemiah",
+  "Nchemyah",
+  "Nechemyah"
+ ],
+ "Nacharay": [
+  "Naharai",
+  "Nahari"
+ ],
+ "Nachash": [
+  "Nahash"
+ ],
+ "Nachashathaa": [
+  "Nehushta",
+  "Nchushta",
+  "Nechushta"
+ ],
+ "Nachashathan": [
+  "Nehushtan",
+  "Nchushtan",
+  "Nechushtan"
+ ],
+ "Nachashawan": [
+  "Nahshon",
+  "Naashon",
+  "Nachshon",
+  "Nachshown"
+ ],
+ "Nachath": [
+  "Nahath"
+ ],
+ "Nachawam": [
+  "Nehum",
+  "Nahum",
+  "Nchum",
+  "Nechum",
+  "Nchuwm",
+  "Nachum",
+  "Nechuwm",
+  "Nachuwm"
+ ],
+ "Nachawar": [
+  "Nahor",
+  "Nachor",
+  "Nachowr"
+ ],
+ "Nadabayah": [
+  "Nedabiah",
+  "Ndabyah",
+  "Nedabyah"
+ ],
+ "Nagab": [
+  "Negev",
+  "Negeb"
+ ],
+ "Nagah": [
+  "Nogah",
+  "Nogahh"
+ ],
+ "Nahalal": [
+  "Nahalol",
+  "Nahallal"
+ ],
+ "Nahar": [
+  "Nhar",
+  "Nehar"
+ ],
+ "Naih": [
+  "Neah"
+ ],
+ "Naim": [
+  "Naam"
+ ],
+ "Naimah": [
+  "Naamah"
+ ],
+ "Naiman": [
+  "Naaman"
+ ],
+ "Naimay": [
+  "Naomi",
+  "Noomi",
+  "Noomiy"
+ ],
+ "Nairah": [
+  "Naarah",
+  "Naarath"
+ ],
+ "Nairan": [
+  "Naaran"
+ ],
+ "Nairay": [
+  "Naarai",
+  "Naaray"
+ ],
+ "Nairayah": [
+  "Neariah",
+  "Naryah",
+  "Nearyah"
+ ],
+ "Naiy-Al": [
+  "Neiel",
+  "Niel",
+  "Niyel",
+  "Neiyel",
+  "Naiyaal"
+ ],
+ "Nakaw": [
+  "Nko",
+  "Neko",
+  "Nkow",
+  "Necho",
+  "Nekow"
+ ],
+ "Nakawan": [
+  "Nakon",
+  "Nachon",
+  "Nakown"
+ ],
+ "Namarah": [
+  "Nimrah"
+ ],
+ "Namarawad": [
+  "Nimrod",
+  "Nimrowd"
+ ],
+ "Namarayam": [
+  "Nimrim",
+  "Nimriym"
+ ],
+ "Namashay": [
+  "Nimshi",
+  "Nimshiy"
+ ],
+ "Namawaal": [
+  "Nemuel",
+  "Nmuel",
+  "Nmuwel",
+  "Nemuwel"
+ ],
+ "Nap": [
+  "Noph"
+ ],
+ "Napach": [
+  "Nophah",
+  "Nophach"
+ ],
+ "Napag": [
+  "Nepheg"
+ ],
+ "Napathachayam": [
+  "Naptuhim",
+  "Naphtuchim",
+  "Naphtuchiym"
+ ],
+ "Napathalay": [
+  "Naphtali",
+  "Naphtaliy"
+ ],
+ "Napathawach": [
+  "Neptoah",
+  "Nephtoach",
+  "Nephtowach"
+ ],
+ "Napayash": [
+  "Naphish",
+  "Naphiysh"
+ ],
+ "Naqab": [
+  "Nekeb",
+  "Neqeb"
+ ],
+ "Naqawadaa": [
+  "Nekoda",
+  "Nqoda",
+  "Neqoda",
+  "Nqowda",
+  "Neqowda"
+ ],
+ "Nar": [
+  "Ner"
+ ],
+ "Naragal": [
+  "Nergal",
+  "Neregal"
+ ],
+ "Naragal-Sharaatzar": [
+  "Nergal Sharetser",
+  "Nergal-Sharezer",
+  "Neregal Sharetser"
+ ],
+ "Narayah": [
+  "Neriah",
+  "Neriyah"
+ ],
+ "Nasarak": [
+  "Nisroch",
+  "Nicrok"
+ ],
+ "Nataiyam": [
+  "Netaim",
+  "Ntaim",
+  "Ntaiym",
+  "Netaiym"
+ ],
+ "Natapah": [
+  "Netophah",
+  "Ntophah"
+ ],
+ "Nathan-Al": [
+  "Nethanel",
+  "Nthanel",
+  "Nethaneel",
+  "Nathanaal",
+  "Nathanael"
+ ],
+ "Nathan-Malak": [
+  "Nthan-Melek",
+  "Nathanmelech",
+  "Nathanamalak",
+  "Nethan-Melek"
+ ],
+ "Nathanayah": [
+  "Nethaniah",
+  "Nthanyah",
+  "Nethanyah"
+ ],
+ "Natzab": [
+  "Natsab"
+ ],
+ "Natzarath": [
+  "Nazareth"
+ ],
+ "Natzayab": [
+  "Nezib",
+  "Ntsib",
+  "Netsib",
+  "Ntsiyb",
+  "Netsiyb"
+ ],
+ "Natzayach": [
+  "Neziah",
+  "Ntsiach",
+  "Netsiach",
+  "Ntsiyach",
+  "Netsiyach"
+ ],
+ "Nawach": [
+  "Nuach",
+  "Nuwach"
+ ],
+ "Nawachah": [
+  "Nohah",
+  "Nochah",
+  "Nowchah"
+ ],
+ "Nawad": [
+  "Nod",
+  "Nowd"
+ ],
+ "Nawadab": [
+  "Nodab",
+  "Nowdab"
+ ],
+ "Nawaidayah": [
+  "Noadiah",
+  "Noadyah",
+  "Nowadyah"
+ ],
+ "Nawan": [
+  "Nun",
+  "Non",
+  "Nuwn"
+ ],
+ "Nawayath": [
+  "Navith",
+  "Naviyth"
+ ],
+ "Nayanawah": [
+  "Nineveh",
+  "Ninveh",
+  "Niynveh",
+  "Niyneveh"
+ ],
+ "Nayar": [
+  "Nir",
+  "Niyr"
+ ],
+ "Nayasan": [
+  "Nisan",
+  "Nican",
+  "Niycan"
+ ],
+ "Paah": [
+  "Peah"
+ ],
+ "Paaran": [
+  "Paran"
+ ],
+ "Pachah": [
+  "Pechah"
+ ],
+ "Pachath-Mawaab": [
+  "Pahathmoab",
+  "Pachath Moab",
+  "Pachath Mowab",
+  "Pachathamawaab"
+ ],
+ "Padah-Al": [
+  "Pedahel",
+  "Pdahel",
+  "Padahaal"
+ ],
+ "Padah-Tzawar": [
+  "Pedahzur",
+  "Pdahtsur",
+  "Pedahtsur",
+  "Pdahtsuwr",
+  "Pedahtsuwr",
+  "Padahatzawar"
+ ],
+ "Padan": [
+  "Paddan",
+  "Padan-Aram"
+ ],
+ "Padawan": [
+  "Padon",
+  "Padown"
+ ],
+ "Padayah": [
+  "Pedaiah",
+  "Pdayah",
+  "Pedayah"
+ ],
+ "Pagaiy-Al": [
+  "Pagiel",
+  "Pagiyel",
+  "Pagaiyaal"
+ ],
+ "Pah": [
+  "Poh"
+ ],
+ "Pailathay": [
+  "Peulthai",
+  "Pullthay",
+  "Peullethay"
+ ],
+ "Pairay": [
+  "Paarai",
+  "Paaray"
+ ],
+ "Paiw": [
+  "Pai",
+  "Pau",
+  "Pauw"
+ ],
+ "Paiwar": [
+  "Peor",
+  "Por",
+  "Powr",
+  "Peowr"
+ ],
+ "Palachaa": [
+  "Pilcha"
+ ],
+ "Paladash": [
+  "Pildash"
+ ],
+ "Palag": [
+  "Peleg"
+ ],
+ "Palak": [
+  "Pelek"
+ ],
+ "Palalayah": [
+  "Pelaliah",
+  "Plalyah",
+  "Pelalyah"
+ ],
+ "Palashath": [
+  "Philistines",
+  "Philistia",
+  "Plesheth",
+  "Palestina",
+  "Palestine",
+  "Pelesheth"
+ ],
+ "Palat": [
+  "Pelet"
+ ],
+ "Palatay": [
+  "Palti",
+  "Piltai",
+  "Phalti",
+  "Paltiy",
+  "Piltay"
+ ],
+ "Palatay-Al": [
+  "Paltiel",
+  "Phaltiel",
+  "Paltiyel",
+  "Palatayaal"
+ ],
+ "Palatayah": [
+  "Pelatiah",
+  "Platyah",
+  "Pelatyah"
+ ],
+ "Palath": [
+  "Peleth"
+ ],
+ "Palawaa": [
+  "Pallu",
+  "Phallu",
+  "Palluw"
+ ],
+ "Palayah": [
+  "Pelaiah",
+  "Playah",
+  "Pelayah"
+ ],
+ "Pananah": [
+  "Peninnah",
+  "Pninnah"
+ ],
+ "Panawaal": [
+  "Penuel",
+  "Peniel",
+  "Pnuel",
+  "Pnuwel",
+  "Penuwel"
+ ],
+ "Paqach": [
+  "Pekah",
+  "Peqach"
+ ],
+ "Paqachayah": [
+  "Pekahiah",
+  "Pqachyah",
+  "Peqachyah"
+ ],
+ "Paqawad": [
+  "Pekod",
+  "Pqod",
+  "Peqod",
+  "Pqowd",
+  "Peqowd"
+ ],
+ "Paraam": [
+  "Piram"
+ ],
+ "Parabar": [
+  "Parbar"
+ ],
+ "Paradas": [
+  "Paradise"
+ ],
+ "Parah": [
+  "Purah",
+  "Phurah"
+ ],
+ "Paraih": [
+  "Pharaoh",
+  "Paroh"
+ ],
+ "Paraih-Chaparai": [
+  "Paroh Chophra",
+  "Pharaoh-Hophra"
+ ],
+ "Paraih-Nakah": [
+  "Paroh Nkoh",
+  "Paroh Nekoh",
+  "Paraihanakah",
+  "Pharaohnechoh",
+  "Pharaoh-Necho"
+ ],
+ "Paraish": [
+  "Parosh",
+  "Pharosh"
+ ],
+ "Paraithawan": [
+  "Pirathon",
+  "Pirathown"
+ ],
+ "Paramashathaa": [
+  "Parmashta",
+  "Parmasta"
+ ],
+ "Paranak": [
+  "Parnach",
+  "Parnak"
+ ],
+ "Parapar": [
+  "Pharpar",
+  "Parpar"
+ ],
+ "Paras": [
+  "Persia",
+  "Persians",
+  "Persian",
+  "Parac"
+ ],
+ "Parash": [
+  "Peresh"
+ ],
+ "Parashanadathaa": [
+  "Parshandatha"
+ ],
+ "Parath": [
+  "Euphrates",
+  "Prath",
+  "Perath"
+ ],
+ "Paratz": [
+  "Perez",
+  "Pharez",
+  "Perets"
+ ],
+ "Paratz-Izaa": [
+  "Perezuzza",
+  "Paratzaizaa",
+  "Perets Uzza"
+ ],
+ "Paratzayam": [
+  "Perazim",
+  "Pratsim",
+  "Peratsim",
+  "Pratsiym",
+  "Peratsiym"
+ ],
+ "Parawach": [
+  "Paruah",
+  "Paruach",
+  "Paruwach"
+ ],
+ "Parawadaa": [
+  "Perida",
+  "Peruda",
+  "Pruda",
+  "Pruwda",
+  "Peruwda"
+ ],
+ "Parawayam": [
+  "Parvaim",
+  "Parvayim"
+ ],
+ "Parazah": [
+  "Prazah",
+  "Perazah"
+ ],
+ "Pas-Damayam": [
+  "Pas-Dammim",
+  "Pac Dammim",
+  "Pac Dammiym"
+ ],
+ "Pasach": [
+  "Passover",
+  "Paseah",
+  "Phaseah",
+  "Paceach"
+ ],
+ "Pasagah": [
+  "Pisgah",
+  "Picgah"
+ ],
+ "Pasak": [
+  "Pasach",
+  "Pacak"
+ ],
+ "Pasapah": [
+  "Pispah",
+  "Picpah"
+ ],
+ "Pashachawar": [
+  "Pashur",
+  "Pashchur",
+  "Pashchuwr"
+ ],
+ "Pathachayah": [
+  "Pethakiah",
+  "Pthachyah",
+  "Pethachyah"
+ ],
+ "Patham": [
+  "Pithom"
+ ],
+ "Patharasay": [
+  "Pathrusim",
+  "Pathruci",
+  "Pathruciy"
+ ],
+ "Patharawas": [
+  "Pathros",
+  "Pathroc",
+  "Pathrowc"
+ ],
+ "Pathawaal": [
+  "Pethuel",
+  "Pthuel",
+  "Pthuwel",
+  "Pethuwel"
+ ],
+ "Pathawar": [
+  "Pethor",
+  "Pthor",
+  "Pthowr",
+  "Pethowr"
+ ],
+ "Pawaah": [
+  "Puah",
+  "Pua",
+  "Puwah",
+  "Phuvah"
+ ],
+ "Pawal": [
+  "Pul",
+  "Puwl"
+ ],
+ "Pawanan": [
+  "Punon",
+  "Puwnon"
+ ],
+ "Pawar": [
+  "Purim",
+  "Pur",
+  "Puwr"
+ ],
+ "Pawarathaa": [
+  "Poratha",
+  "Powratha"
+ ],
+ "Pawat": [
+  "Put",
+  "Phut",
+  "Puwt"
+ ],
+ "Pawatay-Parai": [
+  "Potiphera",
+  "Poti Phera",
+  "Poti-Pherah",
+  "Powtiy Phera"
+ ],
+ "Pawatayaal": [
+  "Putiel",
+  "Puwtiyel"
+ ],
+ "Pawatayapar": [
+  "Potiphar",
+  "Powtiyphar"
+ ],
+ "Pay-Basath": [
+  "Pi-Beseth",
+  "Pi-Beceth",
+  "Piy-Beceth"
+ ],
+ "Pay-Hachayarath": [
+  "Pi-Hahiroth",
+  "Pi Ha-Chiroth",
+  "Piy Ha-Chiyroth"
+ ],
+ "Pay-Kal": [
+  "Pikol",
+  "Piykol",
+  "Phichol",
+  "Payakal"
+ ],
+ "Payalatawas": [
+  "Pilate"
+ ],
+ "Payalayapawas": [
+  "Philip"
+ ],
+ "Payanachas": [
+  "Phinehas",
+  "Pinchac",
+  "Pinechac",
+  "Piynchac",
+  "Piynechac"
+ ],
+ "Payanan": [
+  "Pinon",
+  "Piynon"
+ ],
+ "Payashawan": [
+  "Pishon",
+  "Pison",
+  "Piyshown"
+ ],
+ "Payathawan": [
+  "Pithon",
+  "Piythown"
+ ],
+ "Qabarawath-Hathaawah": [
+  "Kibrothhattaavah",
+  "Kibroth-Hattaavah",
+  "Qibroth Hat-Taa-Vah",
+  "Qibrowth Hat-Taa-Vah"
+ ],
+ "Qabatz-Al": [
+  "Kabzeel",
+  "Qabtsel",
+  "Qabtseel",
+  "Qabatzaal"
+ ],
+ "Qabatzayam": [
+  "Kibzaim",
+  "Qibtsayim"
+ ],
+ "Qadam": [
+  "Qedem"
+ ],
+ "Qadamah": [
+  "Kedemah",
+  "Qedmah",
+  "Qedemah"
+ ],
+ "Qadamawanay": [
+  "Qadmoni",
+  "Qadmowniy"
+ ],
+ "Qadamawath": [
+  "Kedemoth",
+  "Qdemoth",
+  "Qedemoth",
+  "Qdemowth",
+  "Qedemowth"
+ ],
+ "Qadamay-Al": [
+  "Kadmiel",
+  "Qadmiel",
+  "Qadmiyel",
+  "Qadamayaal"
+ ],
+ "Qadar": [
+  "Kedar",
+  "Qedar"
+ ],
+ "Qadarawan": [
+  "Kidron",
+  "Qidron",
+  "Qidrown"
+ ],
+ "Qadash": [
+  "Kadesh",
+  "Kedesh",
+  "Qadesh",
+  "Qedesh",
+  "Qodesh"
+ ],
+ "Qadash-Baranai": [
+  "Kadeshbarnea",
+  "Qadesh Barnea",
+  "Qadashabaranai"
+ ],
+ "Qahalathah": [
+  "Kehelathah",
+  "Qhelathah",
+  "Qehelathah"
+ ],
+ "Qahath": [
+  "Kohath",
+  "Qhath",
+  "Qehath"
+ ],
+ "Qaiyalah": [
+  "Keilah",
+  "Qilah",
+  "Qeilah",
+  "Qiylah",
+  "Qeiylah"
+ ],
+ "Qalay": [
+  "Kallai",
+  "Qallay"
+ ],
+ "Qalayah": [
+  "Kelaiah",
+  "Qelayah"
+ ],
+ "Qalayataa": [
+  "Kelita",
+  "Qlita",
+  "Qelita",
+  "Qliyta",
+  "Qeliyta"
+ ],
+ "Qamawaal": [
+  "Kemuel",
+  "Qmuel",
+  "Qemuel",
+  "Qmuwel",
+  "Qemuwel"
+ ],
+ "Qamawan": [
+  "Camon",
+  "Qamon",
+  "Qamown"
+ ],
+ "Qanah": [
+  "Kanah",
+  "Qaneh"
+ ],
+ "Qanath": [
+  "Kenath",
+  "Qnath",
+  "Qenath"
+ ],
+ "Qanaz": [
+  "Kenaz",
+  "Qnaz",
+  "Qenaz"
+ ],
+ "Qapawaz": [
+  "Qippoz",
+  "Qippowz"
+ ],
+ "Qarach": [
+  "Korah",
+  "Kareah",
+  "Qorach",
+  "Careah",
+  "Qareach"
+ ],
+ "Qaran": [
+  "Qeren"
+ ],
+ "Qaran-Hapawak": [
+  "Keren-Happuch",
+  "Qeren Hap-Puk",
+  "Qeren Hap-Puwk"
+ ],
+ "Qaraqai": [
+  "Qarqa",
+  "Karkaa"
+ ],
+ "Qaraqar": [
+  "Karkor",
+  "Qarqor"
+ ],
+ "Qarath": [
+  "Qereth"
+ ],
+ "Qarathah": [
+  "Kartah",
+  "Qartah"
+ ],
+ "Qarathan": [
+  "Kartan",
+  "Qartan"
+ ],
+ "Qarawab": [
+  "Qarob",
+  "Qarowb"
+ ],
+ "Qarayaa": [
+  "Qirya"
+ ],
+ "Qarayah": [
+  "Qiryah"
+ ],
+ "Qarayath-Arabai": [
+  "Kirjath-Arba",
+  "Qiryath Arba"
+ ],
+ "Qarayath-Bail": [
+  "Kirjathbaal",
+  "Qiryath Baal",
+  "Qarayathabail"
+ ],
+ "Qarayath-Chatzawath": [
+  "Kirjath-Huzoth",
+  "Qiryath Chutsoth",
+  "Qiryath Chutsowth"
+ ],
+ "Qarayath-Sanah": [
+  "Kirjath-Sannah",
+  "Kirjath-Sepher",
+  "Qiryath Cannah"
+ ],
+ "Qarayath-Yairayam": [
+  "Kirjath",
+  "Kirjath-Arim",
+  "Kirjathjearim",
+  "Qiryath Yarim",
+  "Kirjath-Jearim",
+  "Qiryath Yearim",
+  "Qiryath Yariym",
+  "Qiryath Yeariym",
+  "Qarayathayairayam"
+ ],
+ "Qarayathayam": [
+  "Kiriathaim",
+  "Kirjathaim",
+  "Qiryathayim"
+ ],
+ "Qarayawath": [
+  "Kerioth",
+  "Qrioth",
+  "Kirioth",
+  "Qerioth",
+  "Qriyowth",
+  "Qeriyowth"
+ ],
+ "Qashayawan": [
+  "Kishion",
+  "Keshon",
+  "Qishyon",
+  "Qishyown"
+ ],
+ "Qatarawan": [
+  "Kitron",
+  "Qitron",
+  "Qitrown"
+ ],
+ "Qatath": [
+  "Kattath",
+  "Qattath"
+ ],
+ "Qatawarah": [
+  "Keturah",
+  "Qturah",
+  "Qeturah",
+  "Qtuwrah",
+  "Qetuwrah"
+ ],
+ "Qatzayaih": [
+  "Kezia",
+  "Qtsiah",
+  "Qetsiah",
+  "Qtsiyah",
+  "Qetsiyah"
+ ],
+ "Qatzayatz": [
+  "Keziz",
+  "Qtsits",
+  "Qetsits",
+  "Qtsiyts",
+  "Qetsiyts"
+ ],
+ "Qawai": [
+  "Koa",
+  "Qoa",
+  "Qowa"
+ ],
+ "Qawalayah": [
+  "Kolaiah",
+  "Qolayah",
+  "Qowlayah"
+ ],
+ "Qawaraa": [
+  "Kore",
+  "Qore",
+  "Qowre"
+ ],
+ "Qawashayahaw": [
+  "Kushaiah",
+  "Qushayahu",
+  "Quwshayahuw"
+ ],
+ "Qawatz": [
+  "Koz",
+  "Qots",
+  "Qowts"
+ ],
+ "Qayan": [
+  "Cain",
+  "Qayin"
+ ],
+ "Qayanah": [
+  "Kinah",
+  "Qinah",
+  "Qiynah"
+ ],
+ "Qayanan": [
+  "Kenan",
+  "Qenan",
+  "Cainan",
+  "Qeynan"
+ ],
+ "Qayanay": [
+  "Kenite",
+  "Qeni",
+  "Qeyniy"
+ ],
+ "Qayar": [
+  "Kir",
+  "Qir",
+  "Qiyr"
+ ],
+ "Qayar-Charash": [
+  "Kirharesh",
+  "Kir-Heres",
+  "Qir Cheres",
+  "Qiyr Cheres",
+  "Kir-Haraseth",
+  "Kir-Hareseth",
+  "Qayaracharash"
+ ],
+ "Qayaras": [
+  "Keros",
+  "Qeroc",
+  "Qeyroc"
+ ],
+ "Qayasar": [
+  "Caesar"
+ ],
+ "Qayash": [
+  "Kish",
+  "Qish",
+  "Qiysh"
+ ],
+ "Qayashawan": [
+  "Kishon",
+  "Kison",
+  "Qishon",
+  "Qiyshown"
+ ],
+ "Qayashay": [
+  "Kishi",
+  "Qishi",
+  "Qiyshiy"
+ ],
+ "Raash": [
+  "Rosh"
+ ],
+ "Raashawan": [
+  "Rishon",
+  "Rishown"
+ ],
+ "Raashayath": [
+  "Reshith",
+  "Reshiyth"
+ ],
+ "Raawaban": [
+  "Reuben",
+  "Ruben",
+  "Ruwben",
+  "Reuwben"
+ ],
+ "Raawamah": [
+  "Reumah",
+  "Reuwmah"
+ ],
+ "Raayah": [
+  "Reaiah",
+  "Reaia",
+  "Rayah",
+  "Reayah"
+ ],
+ "Rab-Shaqah": [
+  "Rabshakeh",
+  "Rabshaqeh",
+  "Rabashaqah"
+ ],
+ "Rabah": [
+  "Rabbah",
+  "Rabbath"
+ ],
+ "Rabai": [
+  "Reba"
+ ],
+ "Rabalah": [
+  "Riblah"
+ ],
+ "Rabaqah": [
+  "Rebekah",
+  "Ribqah",
+  "Rebecca"
+ ],
+ "Rabatz": [
+  "Rebets"
+ ],
+ "Rabayath": [
+  "Rabbith",
+  "Rabbiyth"
+ ],
+ "Rachab": [
+  "Rehob",
+  "Rahab",
+  "Rchob",
+  "Rechob"
+ ],
+ "Rachab-Im": [
+  "Rehoboam",
+  "Rchabam",
+  "Rechabam",
+  "Rachabaim"
+ ],
+ "Rachabawath": [
+  "Rehoboth",
+  "Rchoboth",
+  "Rechoboth",
+  "Rchobowth",
+  "Rechobowth"
+ ],
+ "Rachabayah": [
+  "Rehabiah",
+  "Rchabyah",
+  "Rechabyah"
+ ],
+ "Rachal": [
+  "Rachel"
+ ],
+ "Racham": [
+  "Raham",
+  "Ruhamah"
+ ],
+ "Rachatzah": [
+  "Rachtsah"
+ ],
+ "Rachawam": [
+  "Rehum",
+  "Rchum",
+  "Rechum",
+  "Rchuwm",
+  "Rechuwm"
+ ],
+ "Rachawaq": [
+  "Rachoq",
+  "Rachowq"
+ ],
+ "Rachayaq": [
+  "Rachiq",
+  "Rachiyq"
+ ],
+ "Raday": [
+  "Raddai",
+  "Radday"
+ ],
+ "Ragalayam": [
+  "Rogelim",
+  "Roglim",
+  "Rogliym",
+  "Rogeliym"
+ ],
+ "Ragam": [
+  "Regem"
+ ],
+ "Ragam-Malak": [
+  "Regem Melek",
+  "Regem-Melech"
+ ],
+ "Railayah": [
+  "Reeliah",
+  "Relayah",
+  "Reelayah"
+ ],
+ "Raimah": [
+  "Raamah"
+ ],
+ "Raimasas": [
+  "Rameses",
+  "Raamses",
+  "Ramcec",
+  "Ramecec"
+ ],
+ "Raimayah": [
+  "Raamiah",
+  "Raamyah"
+ ],
+ "Raish": [
+  "Raash"
+ ],
+ "Raiw": [
+  "Reu",
+  "Ruw",
+  "Reuw"
+ ],
+ "Raiwaal": [
+  "Reuel",
+  "Ruel",
+  "Ruwel",
+  "Raguel",
+  "Reuwel"
+ ],
+ "Raiy": [
+  "Rei",
+  "Reiy"
+ ],
+ "Rakab": [
+  "Rechab",
+  "Rekab"
+ ],
+ "Rakah": [
+  "Rekah",
+  "Rechah"
+ ],
+ "Rakal": [
+  "Rachal"
+ ],
+ "Rakas": [
+  "Rekec"
+ ],
+ "Ramalayahaw": [
+  "Remaliah",
+  "Rmalyahu",
+  "Remalyahu",
+  "Rmalyahuw",
+  "Remalyahuw"
+ ],
+ "Raman-Paratz": [
+  "Rimmon Perets",
+  "Rimmon-Parez"
+ ],
+ "Ramath": [
+  "Remeth"
+ ],
+ "Ramath-Galaid": [
+  "Ramoth Gilad",
+  "Ramoth-Gilead"
+ ],
+ "Ramath-Hamatzapah": [
+  "Ramath Ham-Mit-Speh",
+  "Ramath-Mizpeh"
+ ],
+ "Ramath-Lachay": [
+  "Ramath Lechi",
+  "Ramath Lechiy",
+  "Ramath-Lehi"
+ ],
+ "Ramathayam-Tzawapayam": [
+  "Ramathaimzophim",
+  "Ramathayim Tsophim",
+  "Ramathayim Tsowphiym",
+  "Ramathayamatzawapayam"
+ ],
+ "Ramawan": [
+  "Rimmon",
+  "Remmon",
+  "Rimmown"
+ ],
+ "Ramawath": [
+  "Ramoth",
+  "Ramowth"
+ ],
+ "Ramayah": [
+  "Ramiah",
+  "Ramyah"
+ ],
+ "Ranah": [
+  "Rinnah"
+ ],
+ "Rap-Al": [
+  "Rephael",
+  "Rphael",
+  "Rapaal"
+ ],
+ "Rapaa": [
+  "Rapha"
+ ],
+ "Rapach": [
+  "Rephah",
+  "Rephach"
+ ],
+ "Rapawaa": [
+  "Raphu",
+  "Raphuw"
+ ],
+ "Rapayadayam": [
+  "Rephidim",
+  "Rphidim",
+  "Rphiydiym",
+  "Rephiydiym"
+ ],
+ "Rapayah": [
+  "Rephaiah",
+  "Rphayah",
+  "Rephayah"
+ ],
+ "Raqam": [
+  "Rekem",
+  "Reqem"
+ ],
+ "Raqath": [
+  "Rakkath",
+  "Raqqath"
+ ],
+ "Raqawan": [
+  "Rakkon",
+  "Raqqon",
+  "Raqqown"
+ ],
+ "Rasah": [
+  "Rissah",
+  "Riccah"
+ ],
+ "Rasan": [
+  "Resen",
+  "Recen"
+ ],
+ "Rashap": [
+  "Resheph"
+ ],
+ "Rathamah": [
+  "Rithmah"
+ ],
+ "Ratzap": [
+  "Rezeph",
+  "Retseph"
+ ],
+ "Ratzapah": [
+  "Rizpah",
+  "Ritspah"
+ ],
+ "Ratzayaa": [
+  "Rezia",
+  "Ritsya"
+ ],
+ "Ratzayan": [
+  "Rezin",
+  "Rtsin",
+  "Retsin",
+  "Rtsiyn",
+  "Retsiyn"
+ ],
+ "Rawach": [
+  "Ruach",
+  "Ruwach"
+ ],
+ "Rawahagah": [
+  "Rohgah",
+  "Rohagah",
+  "Rowhagah"
+ ],
+ "Rawamah": [
+  "Rumah",
+  "Ruwmah"
+ ],
+ "Rawamamathay-Izar": [
+  "Romamti-Ezer",
+  "Romamti Ezer",
+  "Rowmamtiy Ezer"
+ ],
+ "Rawath": [
+  "Ruth",
+  "Ruwth"
+ ],
+ "Rayabay": [
+  "Ribai",
+  "Ribay",
+  "Riybay"
+ ],
+ "Rayapath": [
+  "Riphath",
+  "Riyphath"
+ ],
+ "Razawan": [
+  "Rezon",
+  "Rzon",
+  "Rzown",
+  "Rezown"
+ ],
+ "Sabaa": [
+  "Seba",
+  "Cba",
+  "Ceba"
+ ],
+ "Sabaay": [
+  "Cbai",
+  "Cebai",
+  "Cbaiy",
+  "Sabean",
+  "Cebaiy"
+ ],
+ "Sabab": [
+  "Cabab"
+ ],
+ "Sabakay": [
+  "Sibbecai",
+  "Cibbkay",
+  "Cibbekay",
+  "Sibbechai"
+ ],
+ "Sabarayam": [
+  "Sibraim",
+  "Cibrayim"
+ ],
+ "Sabathaa": [
+  "Sabta",
+  "Sabtah",
+  "Cabta"
+ ],
+ "Sabathakaa": [
+  "Cabtka",
+  "Cabteka",
+  "Sabtecha",
+  "Sabtechah"
+ ],
+ "Sadam": [
+  "Sodom",
+  "Cdom",
+  "Cedom"
+ ],
+ "Sakakah": [
+  "Secacah",
+  "Ckakah",
+  "Cekakah"
+ ],
+ "Sakawath": [
+  "Succoth",
+  "Cukkoth",
+  "Cukkowth"
+ ],
+ "Sakawathabanawath": [
+  "Succothbenoth",
+  "Cukkoth Bnoth",
+  "Cukkoth Benoth",
+  "Cukkowth Bnowth",
+  "Cukkowth Benowth"
+ ],
+ "Sakay": [
+  "Cukki",
+  "Cukkiy",
+  "Sukkiims"
+ ],
+ "Salaa": [
+  "Silla",
+  "Cilla"
+ ],
+ "Salad": [
+  "Seled",
+  "Celed"
+ ],
+ "Salah": [
+  "Selah"
+ ],
+ "Salai": [
+  "Cela"
+ ],
+ "Salai-Hamachalaqawath": [
+  "Sela-Hammalekoth",
+  "Cela Ham-Machlqoth",
+  "Cela Ham-Machleqoth",
+  "Cela Ham-Machlqowth",
+  "Cela Ham-Machleqowth"
+ ],
+ "Salakah": [
+  "Salcah",
+  "Calkah",
+  "Salchah"
+ ],
+ "Salaw": [
+  "Sallu",
+  "Sallai",
+  "Salu",
+  "Callu",
+  "Calluw"
+ ],
+ "Samagar-Nabaw": [
+  "Camgar Nbo",
+  "Samgar-Nebo",
+  "Camgar Nebo",
+  "Camgar Nbow",
+  "Camgar Nebow"
+ ],
+ "Samakayahaw": [
+  "Semachiah",
+  "Cmakyahu",
+  "Cemakyahu",
+  "Cmakyahuw",
+  "Cemakyahuw"
+ ],
+ "Sanaah": [
+  "Senaah",
+  "Cnaah",
+  "Cenaah"
+ ],
+ "Sanabalat": [
+  "Sanballat",
+  "Canballat"
+ ],
+ "Sanacharayab": [
+  "Sennacherib",
+  "Cancherib",
+  "Cancheriyb"
+ ],
+ "Sanah": [
+  "Seneh",
+  "Ceneh"
+ ],
+ "Sanasanah": [
+  "Sansannah",
+  "Cancannah"
+ ],
+ "Sanawaah": [
+  "Cnuah",
+  "Senuah",
+  "Cenuah",
+  "Cnuwah",
+  "Cenuwah"
+ ],
+ "Sap": [
+  "Saph",
+  "Caph"
+ ],
+ "Sapar": [
+  "Sephar",
+  "Cphar",
+  "Cephar"
+ ],
+ "Saparad": [
+  "Sepharad",
+  "Cpharad",
+  "Cepharad"
+ ],
+ "Saparath": [
+  "Sophereth",
+  "Cophereth"
+ ],
+ "Sapay": [
+  "Sippai",
+  "Cippay"
+ ],
+ "Sarad": [
+  "Sered",
+  "Cered"
+ ],
+ "Saragawan": [
+  "Sargon",
+  "Cargon",
+  "Cargown"
+ ],
+ "Sarah": [
+  "Sirah",
+  "Cirah"
+ ],
+ "Sasamay": [
+  "Cicmay",
+  "Sisamai"
+ ],
+ "Satapan": [
+  "Stephen"
+ ],
+ "Satharay": [
+  "Zithri",
+  "Cithri",
+  "Cithriy"
+ ],
+ "Sathawar": [
+  "Sethur",
+  "Cthur",
+  "Cethur",
+  "Cthuwr",
+  "Cethuwr"
+ ],
+ "Sawaa": [
+  "Cow"
+ ],
+ "Sawach": [
+  "Suah",
+  "Cuach",
+  "Cuwach"
+ ],
+ "Sawaday": [
+  "Sodi",
+  "Codi",
+  "Cowdiy"
+ ],
+ "Sawanah": [
+  "Syene",
+  "Cveneh",
+  "Ceveneh"
+ ],
+ "Sawap": [
+  "Red Sea",
+  "Cuph",
+  "Cuwph"
+ ],
+ "Sawapah": [
+  "Cuphah",
+  "Cuwphah"
+ ],
+ "Sawar": [
+  "Sur",
+  "Cur",
+  "Cuwr"
+ ],
+ "Sawasay": [
+  "Susi",
+  "Cuci",
+  "Cuwciy"
+ ],
+ "Sawatay": [
+  "Sotai",
+  "Cotay",
+  "Cowtay"
+ ],
+ "Sayachawan": [
+  "Sihon",
+  "Cichon",
+  "Ciychown"
+ ],
+ "Sayaia": [
+  "Sia",
+  "Siaha",
+  "Cia",
+  "Ciya"
+ ],
+ "Sayan": [
+  "Sin",
+  "Cin",
+  "Ciyn"
+ ],
+ "Sayanay": [
+  "Sinai",
+  "Cinay",
+  "Ciynay"
+ ],
+ "Sayanayam": [
+  "Sinim",
+  "Cinim",
+  "Ciyniym"
+ ],
+ "Sayasaraa": [
+  "Sisera",
+  "Cicra",
+  "Cicera",
+  "Ciycra",
+  "Ciycera"
+ ],
+ "Sayawan": [
+  "Sivan",
+  "Civan",
+  "Ciyvan"
+ ],
+ "Shaal": [
+  "Sheal",
+  "Shal"
+ ],
+ "Shaalathay-Al": [
+  "Shealtiel",
+  "Shaltiel",
+  "Shalthiel",
+  "Shaltiyel",
+  "Shealtiyel",
+  "Shaalathayaal"
+ ],
+ "Shaar-Yashawab": [
+  "Shar Yashub",
+  "Shear-Jashub",
+  "Shear Yashub",
+  "Shar Yashuwb",
+  "Shear Yashuwb"
+ ],
+ "Shaarah": [
+  "Sheerah",
+  "Sherah"
+ ],
+ "Shaawal": [
+  "Saul",
+  "Sheol",
+  "Shaul",
+  "Paul",
+  "Shauwl"
+ ],
+ "Shabaa": [
+  "Sheba",
+  "Sabeans",
+  "Shba"
+ ],
+ "Shabaih": [
+  "Shibah",
+  "Shebah"
+ ],
+ "Shabam": [
+  "Sibmah",
+  "Sebam",
+  "Sbam",
+  "Shebam",
+  "Shibmah"
+ ],
+ "Shabanaa": [
+  "Shebna",
+  "Shebnah"
+ ],
+ "Shabanayah": [
+  "Shebaniah",
+  "Shbanyah",
+  "Shebanyah"
+ ],
+ "Shabar": [
+  "Sheber"
+ ],
+ "Shabarayam": [
+  "Shebarim",
+  "Shbarim",
+  "Shbariym",
+  "Shebariym"
+ ],
+ "Shabat": [
+  "Shebat",
+  "Sebat",
+  "Shbat"
+ ],
+ "Shabath": [
+  "Sabbath",
+  "Sabbaths"
+ ],
+ "Shabathay": [
+  "Shabbethai",
+  "Shabbthay",
+  "Shabbethay"
+ ],
+ "Shabawaal": [
+  "Shebuel",
+  "Shubael",
+  "Shbuel",
+  "Shbuwel",
+  "Shebuwel"
+ ],
+ "Shabay": [
+  "Shobai",
+  "Shobi",
+  "Shobay",
+  "Shobiy"
+ ],
+ "Shacharayah": [
+  "Shehariah",
+  "Shcharyah",
+  "Shecharyah"
+ ],
+ "Shacharayam": [
+  "Shaharaim",
+  "Shacharayim"
+ ],
+ "Shachatzawam": [
+  "Shachatsom",
+  "Shachatsowm"
+ ],
+ "Shadarak": [
+  "Shadrach",
+  "Shadrak"
+ ],
+ "Shaday-Awar": [
+  "Shedeur",
+  "Shdeur",
+  "Shdeyuwr",
+  "Shedeyuwr",
+  "Shadayaawar"
+ ],
+ "Shadayam": [
+  "Siddim",
+  "Siddiym"
+ ],
+ "Shagaa": [
+  "Shage"
+ ],
+ "Shagawab": [
+  "Segub",
+  "Sgub",
+  "Sguwb",
+  "Seguwb"
+ ],
+ "Shagayawan": [
+  "Shiggaion",
+  "Shiggayon",
+  "Shigionoth",
+  "Shiggayown"
+ ],
+ "Shaham": [
+  "Shoham"
+ ],
+ "Shailabayam": [
+  "Shaalbim",
+  "Shaalabbin",
+  "Shaalbiym"
+ ],
+ "Shailayam": [
+  "Shaalim",
+  "Shalim",
+  "Shaaliym"
+ ],
+ "Shaip": [
+  "Shaaph"
+ ],
+ "Shairayah": [
+  "Sheariah",
+  "Sharyah",
+  "Shearyah"
+ ],
+ "Shairayam": [
+  "Shaaraim",
+  "Seorim",
+  "Sorim",
+  "Soriym",
+  "Seoriym",
+  "Shaarayim"
+ ],
+ "Shaishagaz": [
+  "Shaashgaz"
+ ],
+ "Shaiyar": [
+  "Seir",
+  "Seiyr"
+ ],
+ "Shaiyarah": [
+  "Seirah",
+  "Siyrah",
+  "Seirath",
+  "Seiyrah"
+ ],
+ "Shakam": [
+  "Shechem",
+  "Shkem",
+  "Shekem"
+ ],
+ "Shakanayah": [
+  "Shecaniah",
+  "Shkanyah",
+  "Shekanyah",
+  "Shechaniah"
+ ],
+ "Shakar": [
+  "Sacar",
+  "Sakar"
+ ],
+ "Shakarawan": [
+  "Shikkeron",
+  "Shicron",
+  "Shikkron",
+  "Shikkrown",
+  "Shikkerown"
+ ],
+ "Shakaw": [
+  "Seku",
+  "Sechu",
+  "Sekuw"
+ ],
+ "Shalach": [
+  "Shelah",
+  "Shiloah",
+  "Salah",
+  "Siloah",
+  "Shelach",
+  "Shiloach"
+ ],
+ "Shalachay": [
+  "Shilhi",
+  "Shilchi",
+  "Shilchiy"
+ ],
+ "Shalachayam": [
+  "Shilhim",
+  "Shilchim",
+  "Shilchiym"
+ ],
+ "Shalakath": [
+  "Shalleketh"
+ ],
+ "Shalam": [
+  "Salem",
+  "Shillem",
+  "Shalem"
+ ],
+ "Shalamaa": [
+  "Salma"
+ ],
+ "Shalamah": [
+  "Solomon",
+  "Salmon",
+  "Salmah",
+  "Shlomoh",
+  "Shelomoh"
+ ],
+ "Shalaman": [
+  "Shalman"
+ ],
+ "Shalamanaasar": [
+  "Shalmaneser",
+  "Shalmanecer"
+ ],
+ "Shalamawan": [
+  "Salmown"
+ ],
+ "Shalamawath": [
+  "Shelomoth",
+  "Shlomoth",
+  "Shlomowth",
+  "Shelomowth"
+ ],
+ "Shalamay": [
+  "Shelomi",
+  "Salmay",
+  "Shlomi",
+  "Shalmai",
+  "Shlomiy",
+  "Shelomiy"
+ ],
+ "Shalamay-Al": [
+  "Shelumiel",
+  "Shlumiel",
+  "Shlumiyel",
+  "Shelumiyel",
+  "Shalamayaal"
+ ],
+ "Shalamayah": [
+  "Shelemiah",
+  "Shelemyah"
+ ],
+ "Shalamayath": [
+  "Shelomith",
+  "Shlomith",
+  "Shlomiyth",
+  "Shelomiyth"
+ ],
+ "Shalap": [
+  "Sheleph"
+ ],
+ "Shalash": [
+  "Shelesh"
+ ],
+ "Shalashah": [
+  "Shalishah",
+  "Shilshah",
+  "Shalisha"
+ ],
+ "Shalawam": [
+  "Shallum",
+  "Shalom",
+  "Shalowm",
+  "Shalluwm"
+ ],
+ "Shalawan": [
+  "Shallun",
+  "Shalluwn"
+ ],
+ "Sham": [
+  "Shem",
+  "Sem"
+ ],
+ "Sham-Abar": [
+  "Shemeber",
+  "Shamaabar"
+ ],
+ "Sham-Yadai": [
+  "Shemida",
+  "Shmida",
+  "Shmiyda",
+  "Shemidah",
+  "Shemiyda",
+  "Shamayadai"
+ ],
+ "Shamaa": [
+  "Shamma"
+ ],
+ "Shamaam": [
+  "Shimeam",
+  "Shimam"
+ ],
+ "Shamagar": [
+  "Shamgar"
+ ],
+ "Shamah": [
+  "Shammah"
+ ],
+ "Shamahawath": [
+  "Shamhuth",
+  "Shamhuwth"
+ ],
+ "Shamai": [
+  "Shema",
+  "Shama",
+  "Shma"
+ ],
+ "Shamaia": [
+  "Shimea",
+  "Shima"
+ ],
+ "Shamaih": [
+  "Shimeah",
+  "Shemaah",
+  "Shimah",
+  "Shmaah"
+ ],
+ "Shamaith": [
+  "Shimath"
+ ],
+ "Shamaiwan": [
+  "Simeon",
+  "Shimon",
+  "Simon",
+  "Shimown"
+ ],
+ "Shamaiy": [
+  "Shimei",
+  "Shimi",
+  "Shimhi",
+  "Shimiy"
+ ],
+ "Shamaiyah": [
+  "Shemaiah",
+  "Shmayah",
+  "Shemayah"
+ ],
+ "Shamalah": [
+  "Samlah"
+ ],
+ "Shamar": [
+  "Shemer",
+  "Shamer"
+ ],
+ "Shamaranay": [
+  "Samaritans"
+ ],
+ "Shamarath": [
+  "Shimrath"
+ ],
+ "Shamarawan": [
+  "Samaria",
+  "Shimron",
+  "Shomron",
+  "Shomeron",
+  "Shomrown",
+  "Shimrown",
+  "Shomerown"
+ ],
+ "Shamarawan-Maraawan": [
+  "Shimron Mron",
+  "Shimron Meron",
+  "Shimon-Meron",
+  "Shimrown Mrown",
+  "Shimrown Merown"
+ ],
+ "Shamaray": [
+  "Shimri",
+  "Shimriy"
+ ],
+ "Shamarayah": [
+  "Shemariah",
+  "Shmaryah",
+  "Shamariah",
+  "Shemaryah"
+ ],
+ "Shamarayan": [
+  "Shomrayin"
+ ],
+ "Shamarayath": [
+  "Shimrith",
+  "Shimriyth"
+ ],
+ "Shamasharay": [
+  "Shamsherai",
+  "Shamshray",
+  "Shamsheray"
+ ],
+ "Shamashawan": [
+  "Samson",
+  "Shimshon",
+  "Shimshown"
+ ],
+ "Shamashay": [
+  "Shimshai",
+  "Shimshay"
+ ],
+ "Shamawaal": [
+  "Samuel",
+  "Shemuel",
+  "Shmuel",
+  "Shmuwel",
+  "Shemuwel"
+ ],
+ "Shamawai": [
+  "Shammua",
+  "Shammuah",
+  "Shammuwa"
+ ],
+ "Shamawath": [
+  "Shammoth",
+  "Shamoth",
+  "Shammowth"
+ ],
+ "Shamay": [
+  "Shammai",
+  "Shammay"
+ ],
+ "Shamayam": [
+  "Shamayim"
+ ],
+ "Shamayan": [
+  "Shamayin"
+ ],
+ "Shamayar": [
+  "Shamir",
+  "Shamiyr"
+ ],
+ "Shamayaramawath": [
+  "Shemiramoth",
+  "Shmiramoth",
+  "Shmiyramowth",
+  "Shemiyramowth"
+ ],
+ "Shan": [
+  "Shen"
+ ],
+ "Shan-Ab": [
+  "Shinab",
+  "Shanaab"
+ ],
+ "Shanaatzar": [
+  "Senazar",
+  "Shenatstsar"
+ ],
+ "Shanair": [
+  "Shinar"
+ ],
+ "Shanayar": [
+  "Senir",
+  "Shnir",
+  "Shenir",
+  "Shniyr",
+  "Sheniyr"
+ ],
+ "Shapaiy": [
+  "Shiphi",
+  "Shiphiy"
+ ],
+ "Shapak": [
+  "Shephek"
+ ],
+ "Shapam": [
+  "Shepham",
+  "Shapham",
+  "Shpham"
+ ],
+ "Shapamawath": [
+  "Siphmoth",
+  "Siphmowth"
+ ],
+ "Shapar": [
+  "Shepher",
+  "Shapper"
+ ],
+ "Shaparah": [
+  "Shiphrah"
+ ],
+ "Shapat": [
+  "Shaphat"
+ ],
+ "Shapatan": [
+  "Shiphtan"
+ ],
+ "Shapatayah": [
+  "Shephatiah",
+  "Shphatyah",
+  "Shephatyah"
+ ],
+ "Shapaw": [
+  "Shephi",
+  "Shepho",
+  "Shpho",
+  "Shphow",
+  "Shephow"
+ ],
+ "Shapawapam": [
+  "Shephuphan",
+  "Shephupham",
+  "Shupham",
+  "Shphupham",
+  "Shphuwpham",
+  "Shephuwpham"
+ ],
+ "Shapay": [
+  "Shphi",
+  "Shphiy",
+  "Shephiy"
+ ],
+ "Shapayam": [
+  "Shuppim",
+  "Shuppiym"
+ ],
+ "Shapayar": [
+  "Shaphir",
+  "Saphir",
+  "Shaphiyr"
+ ],
+ "Sharaatzar": [
+  "Sharezer",
+  "Sharetser"
+ ],
+ "Sharabayah": [
+  "Sherebiah",
+  "Sherebeah",
+  "Sherebyah",
+  "Sherebeyah"
+ ],
+ "Sharach": [
+  "Serah",
+  "Serach"
+ ],
+ "Sharah": [
+  "Sarah"
+ ],
+ "Sharap": [
+  "Saraph",
+  "Seraphim"
+ ],
+ "Sharasakayam": [
+  "Sarsechim",
+  "Sarckim",
+  "Sarcekim",
+  "Sarckiym",
+  "Sarcekiym"
+ ],
+ "Sharash": [
+  "Sheresh",
+  "Sharesh"
+ ],
+ "Sharawachan": [
+  "Sharuhen",
+  "Sharuchen",
+  "Sharuwchen"
+ ],
+ "Sharawag": [
+  "Serug",
+  "Srug",
+  "Sruwg",
+  "Seruwg"
+ ],
+ "Sharawan": [
+  "Sharon",
+  "Sharown",
+  "Lasharon"
+ ],
+ "Sharay": [
+  "Sarai",
+  "Sharai",
+  "Saray"
+ ],
+ "Sharayad": [
+  "Sarid",
+  "Sariyd"
+ ],
+ "Sharayah": [
+  "Seraiah",
+  "Srayah",
+  "Serayah"
+ ],
+ "Sharayawan": [
+  "Sirion",
+  "Shiryon",
+  "Shiryown"
+ ],
+ "Shashabatzar": [
+  "Sheshbazzar",
+  "Sheshbatstsar",
+  "Sheshebatstsar"
+ ],
+ "Shashak": [
+  "Sheshach",
+  "Sheshak"
+ ],
+ "Shashan": [
+  "Sheshan"
+ ],
+ "Shashaq": [
+  "Shashak"
+ ],
+ "Shashay": [
+  "Sheshai",
+  "Shashai",
+  "Sheshay"
+ ],
+ "Shatan": [
+  "Satan"
+ ],
+ "Shatanah": [
+  "Sitnah"
+ ],
+ "Shataray": [
+  "Shitrai",
+  "Shitray"
+ ],
+ "Shatayam": [
+  "Shittim",
+  "Shittiym"
+ ],
+ "Shath": [
+  "Seth",
+  "Sheth"
+ ],
+ "Shathar": [
+  "Shethar"
+ ],
+ "Shathar-Bawazanay": [
+  "Shethar Bozenay",
+  "Shethar Bowzenay",
+  "Shetharboznai",
+  "Shthar Boznay",
+  "Shthar Bowznay",
+  "Shatharabawazanay"
+ ],
+ "Shawaa": [
+  "Sheva",
+  "Shva"
+ ],
+ "Shawabab": [
+  "Shobab",
+  "Showbab"
+ ],
+ "Shawabak": [
+  "Shobach",
+  "Shobak",
+  "Showbak"
+ ],
+ "Shawabal": [
+  "Shobal",
+  "Showbal"
+ ],
+ "Shawabaq": [
+  "Shobek",
+  "Shobeq",
+  "Showbeq"
+ ],
+ "Shawach": [
+  "Shuah",
+  "Shuach",
+  "Shuwach"
+ ],
+ "Shawachah": [
+  "Shuchah",
+  "Shuwchah"
+ ],
+ "Shawacham": [
+  "Shuham",
+  "Shucham",
+  "Shuwcham"
+ ],
+ "Shawah": [
+  "Shaveh",
+  "Shavah"
+ ],
+ "Shawah-Qarayathayam": [
+  "Shaveh Qiryathayim"
+ ],
+ "Shawai": [
+  "Shua",
+  "Shoa",
+  "Shuwa",
+  "Showa"
+ ],
+ "Shawail": [
+  "Shual",
+  "Shuwal"
+ ],
+ "Shawakah": [
+  "Socoh",
+  "Soco",
+  "Sokoh",
+  "Shocho",
+  "Sochoh",
+  "Sowkoh",
+  "Shochoh"
+ ],
+ "Shawamar": [
+  "Shomer",
+  "Showmer"
+ ],
+ "Shawanam": [
+  "Shunem",
+  "Shuwnem"
+ ],
+ "Shawanay": [
+  "Shuni",
+  "Shuwniy"
+ ],
+ "Shawapak": [
+  "Shophach",
+  "Shophak",
+  "Showphak"
+ ],
+ "Shawar": [
+  "Shur",
+  "Shuwr"
+ ],
+ "Shawaraq": [
+  "Sorek",
+  "Soreq",
+  "Sowreq"
+ ],
+ "Shawashaa": [
+  "Shavsha"
+ ],
+ "Shawashan": [
+  "Shushan",
+  "Susa",
+  "Shuwshan"
+ ],
+ "Shawashanakay": [
+  "Shushanki",
+  "Susanchites",
+  "Shuwshankiy"
+ ],
+ "Shawathalach": [
+  "Shuthelah",
+  "Shuthelach",
+  "Shuwthelach"
+ ],
+ "Shayaan": [
+  "Sion",
+  "Siyon"
+ ],
+ "Shayaawan": [
+  "Shion",
+  "Shihon",
+  "Shiyown"
+ ],
+ "Shayachawar": [
+  "Shihor",
+  "Sihor",
+  "Shichor",
+  "Shiychowr"
+ ],
+ "Shayachawar-Labanath": [
+  "Shihor-Libnath",
+  "Shichor Libnath",
+  "Shiychowr Libnath"
+ ],
+ "Shayag": [
+  "Sig",
+  "Siyg"
+ ],
+ "Shayalah": [
+  "Shiloh",
+  "Shiyloh"
+ ],
+ "Shayamawan": [
+  "Shiymown"
+ ],
+ "Shayashaa": [
+  "Shisha",
+  "Shiysha"
+ ],
+ "Shayashaq": [
+  "Shishak",
+  "Shishaq",
+  "Shiyshaq"
+ ],
+ "Shayath": [
+  "Shith",
+  "Shiyth"
+ ],
+ "Shayazaa": [
+  "Shiza",
+  "Shiyza"
+ ],
+ "Tab-Al": [
+  "Tabeel",
+  "Tabel",
+  "Tabeal",
+  "Tabaal"
+ ],
+ "Tab-Ramawan": [
+  "Tabrimmon",
+  "Tabrimmown",
+  "Tabaramawan"
+ ],
+ "Tabach": [
+  "Tebah",
+  "Tebach"
+ ],
+ "Tabachah": [
+  "Tibchah"
+ ],
+ "Tabachath": [
+  "Tibhath",
+  "Tibchath"
+ ],
+ "Tabaiwath": [
+  "Tabbaoth",
+  "Tabaoth",
+  "Tabbaowth"
+ ],
+ "Tabalayahaw": [
+  "Tebaliah",
+  "Tbalyahu",
+  "Tebalyahu",
+  "Tbalyahuw",
+  "Tebalyahuw"
+ ],
+ "Tabath": [
+  "Tebeth",
+  "Tabbath"
+ ],
+ "Talaayam": [
+  "Telaim",
+  "Tlaim",
+  "Tlaiym",
+  "Telaiym"
+ ],
+ "Talam": [
+  "Telem"
+ ],
+ "Talamawan": [
+  "Talmon",
+  "Talmown"
+ ],
+ "Tapath": [
+  "Taphath"
+ ],
+ "Tarapalay": [
+  "Tarplay",
+  "Tarpelay"
+ ],
+ "Tawab": [
+  "Tob",
+  "Towb"
+ ],
+ "Tawabaadanayahaw": [
+  "Tob Adoniahu",
+  "Tob-Adonijah",
+  "Towb Adoniyahuw"
+ ],
+ "Tawabayah": [
+  "Tobiah",
+  "Tobijah",
+  "Towbiyah"
+ ],
+ "Tawar": [
+  "Tur",
+  "Tuwr"
+ ],
+ "Tayamawathayawas": [
+  "Timothy"
+ ],
+ "Thaanath-Shalah": [
+  "Taanath Shiloh",
+  "Taanath-Shiloh"
+ ],
+ "Thaarai": [
+  "Tarea",
+  "Taarea"
+ ],
+ "Thaawam": [
+  "Thomas"
+ ],
+ "Thabairah": [
+  "Taberah"
+ ],
+ "Thabal": [
+  "Tebel"
+ ],
+ "Thabanay": [
+  "Tibni",
+  "Tibniy"
+ ],
+ "Thabatz": [
+  "Thebez",
+  "Tebets"
+ ],
+ "Thabawar": [
+  "Tabor",
+  "Tabowr"
+ ],
+ "Thachan": [
+  "Tahan",
+  "Tachan"
+ ],
+ "Thachanah": [
+  "Tehinnah",
+  "Tchinnah",
+  "Techinnah"
+ ],
+ "Thachapanachas": [
+  "Tahpanhes",
+  "Tehaphnehes",
+  "Tahapanes",
+  "Tachpanchec"
+ ],
+ "Thachapanayas": [
+  "Tahpenes",
+  "Tachpnec",
+  "Tachpenec",
+  "Tachpneyc",
+  "Tachpeneyc"
+ ],
+ "Thacharai": [
+  "Tahrea",
+  "Tachrea"
+ ],
+ "Thachash": [
+  "Thahash",
+  "Tachash"
+ ],
+ "Thachath": [
+  "Tahath",
+  "Tachath"
+ ],
+ "Thachathayam-Chadashay": [
+  "Tahtim-Hodshi",
+  "Tachtim Chodshi",
+  "Tachtiym Chodshiy"
+ ],
+ "Thachaw": [
+  "Tochu",
+  "Tochuw"
+ ],
+ "Thadail": [
+  "Tidal"
+ ],
+ "Thadamar": [
+  "Tadmor"
+ ],
+ "Thagalath-Palaasar": [
+  "Tiglath Pilecer",
+  "Tiglath-Pileser",
+  "Tilgath-Pilneser"
+ ],
+ "Thahaw": [
+  "Tohu",
+  "Tohuw"
+ ],
+ "Thainak": [
+  "Taanach",
+  "Tanach",
+  "Taanak"
+ ],
+ "Thaiw": [
+  "Toi",
+  "Tou",
+  "Touw"
+ ],
+ "Thakan": [
+  "Tochen",
+  "Token"
+ ],
+ "Thakawanah": [
+  "Tkunah",
+  "Tekunah",
+  "Tkuwnah",
+  "Tekuwnah"
+ ],
+ "Thal-Abayab": [
+  "Tel Abib",
+  "Tel Abiyb",
+  "Tel-Abib"
+ ],
+ "Thal-Charashaa": [
+  "Tel Charsha",
+  "Tel-Harsa",
+  "Tel-Haresha"
+ ],
+ "Thal-Malach": [
+  "Tel Melach",
+  "Tel-Melah"
+ ],
+ "Thalaashar": [
+  "Telassar",
+  "Tlassar"
+ ],
+ "Thalach": [
+  "Telah",
+  "Telach"
+ ],
+ "Thalamay": [
+  "Talmai",
+  "Talmay"
+ ],
+ "Thamach": [
+  "Tamah",
+  "Thamah",
+  "Temach"
+ ],
+ "Thamanah": [
+  "Timnah",
+  "Timnath",
+  "Thimnathah"
+ ],
+ "Thamanai": [
+  "Timna"
+ ],
+ "Thamanath-Charas": [
+  "Timnath Cherec",
+  "Timnath-Heres",
+  "Timnath-Serah"
+ ],
+ "Thamanay": [
+  "Timnite",
+  "Timni",
+  "Timniy"
+ ],
+ "Thamar": [
+  "Tamar"
+ ],
+ "Thamawaz": [
+  "Tammuz",
+  "Tammuwz"
+ ],
+ "Thanachamath": [
+  "Tanhumeth",
+  "Tanchumeth"
+ ],
+ "Thanayan": [
+  "Tannin",
+  "Tanniyn"
+ ],
+ "Thapal": [
+  "Tophel"
+ ],
+ "Thapasach": [
+  "Tipsah",
+  "Tiphcach"
+ ],
+ "Thapath": [
+  "Topheth",
+  "Tophet"
+ ],
+ "Thapathah": [
+  "Tophteh"
+ ],
+ "Thapawach": [
+  "Tappuah",
+  "Tappuach",
+  "Tappuwach"
+ ],
+ "Thaqawah": [
+  "Tikvah",
+  "Tiqvah"
+ ],
+ "Thaqawai": [
+  "Tekoa",
+  "Tqoa",
+  "Teqoa",
+  "Tqowa",
+  "Tekoah",
+  "Teqowa"
+ ],
+ "Tharaalah": [
+  "Taralah"
+ ],
+ "Tharach": [
+  "Terah",
+  "Tarah",
+  "Terach"
+ ],
+ "Tharachanah": [
+  "Tirhanah",
+  "Tirchanah"
+ ],
+ "Tharahaqah": [
+  "Tirhakah",
+  "Tirhaqah"
+ ],
+ "Tharash": [
+  "Teresh"
+ ],
+ "Tharashayash": [
+  "Tarshish",
+  "Tharshish",
+  "Tarshiysh"
+ ],
+ "Tharathan": [
+  "Tartan"
+ ],
+ "Tharathaq": [
+  "Tartak",
+  "Tartaq"
+ ],
+ "Tharatzah": [
+  "Tirzah",
+  "Tirtsah"
+ ],
+ "Thashawabah": [
+  "Tshubah",
+  "Teshubah",
+  "Tshuwbah",
+  "Teshuwbah"
+ ],
+ "Thathanay": [
+  "Tatnai",
+  "Tattnay",
+  "Tattenay"
+ ],
+ "Thawabal": [
+  "Tubal",
+  "Tuwbal"
+ ],
+ "Thawabal-Qayan": [
+  "Tubal Qayin",
+  "Tubal-Cain",
+  "Tuwbal Qayin"
+ ],
+ "Thawach": [
+  "Toah",
+  "Toach",
+  "Towach"
+ ],
+ "Thawagaramah": [
+  "Togarmah",
+  "Towgarmah"
+ ],
+ "Thawalad": [
+  "Tolad",
+  "Towlad"
+ ],
+ "Thawalai": [
+  "Tola",
+  "Towla"
+ ],
+ "Thayamaa": [
+  "Tema",
+  "Teyma"
+ ],
+ "Thayaman": [
+  "Teman",
+  "Teyman"
+ ],
+ "Thayamanay": [
+  "Temeni",
+  "Temni",
+  "Teymniy",
+  "Teymeniy"
+ ],
+ "Thayaras": [
+  "Tiras",
+  "Tirac",
+  "Tiyrac"
+ ],
+ "Thayarayaa": [
+  "Tiria",
+  "Tirea",
+  "Tirya",
+  "Tiyrya",
+  "Tiyreya"
+ ],
+ "Tzaanan": [
+  "Zaanan",
+  "Tsaanan"
+ ],
+ "Tzabaawath": [
+  "Sabaoth"
+ ],
+ "Tzabaayam": [
+  "Zeboiim",
+  "Zeboim",
+  "Tsboim",
+  "Tseboim",
+  "Tsboiym",
+  "Tseboiym"
+ ],
+ "Tzababah": [
+  "Zobebah",
+  "Tsobebah"
+ ],
+ "Tzabaiwan": [
+  "Zibeon",
+  "Tsibon",
+  "Tsibown"
+ ],
+ "Tzabayaa": [
+  "Zibia",
+  "Tsibya"
+ ],
+ "Tzabayah": [
+  "Zibiah",
+  "Tsibyah"
+ ],
+ "Tzachar": [
+  "Zohar",
+  "Tsochar"
+ ],
+ "Tzachatzachah": [
+  "Tsachtsachah"
+ ],
+ "Tzachayachah": [
+  "Tschichah",
+  "Tsechichah",
+  "Tschiychah",
+  "Tsechiychah"
+ ],
+ "Tzadad": [
+  "Zedad",
+  "Tsdad",
+  "Tsedad"
+ ],
+ "Tzadaqayah": [
+  "Zedekiah",
+  "Zidkijah",
+  "Tsidqiah",
+  "Tsidqiyah"
+ ],
+ "Tzadawaq": [
+  "Zadok",
+  "Tsadoq",
+  "Tsadowq"
+ ],
+ "Tzadayam": [
+  "Ziddim",
+  "Tsiddim",
+  "Tsiddiym"
+ ],
+ "Tzaid": [
+  "Tsaad"
+ ],
+ "Tzain": [
+  "Zoan",
+  "Tsoan"
+ ],
+ "Tzainanayam": [
+  "Zaanaim",
+  "Zaannannim",
+  "Tsaanannim",
+  "Tsaananniym"
+ ],
+ "Tzair": [
+  "Zoar",
+  "Tsoar"
+ ],
+ "Tzaiyar": [
+  "Zair",
+  "Tsair",
+  "Tsaiyr"
+ ],
+ "Tzal-Manai": [
+  "Zalmunna",
+  "Tsalmunna",
+  "Tzalamanai"
+ ],
+ "Tzal-Tzach": [
+  "Zelzah",
+  "Tseltsach",
+  "Tzalatzach"
+ ],
+ "Tzalah": [
+  "Zillah",
+  "Tsillah"
+ ],
+ "Tzalai": [
+  "Zelah",
+  "Tsela"
+ ],
+ "Tzalamanah": [
+  "Zalmonah",
+  "Tsalmonah"
+ ],
+ "Tzalamawan": [
+  "Zalmon",
+  "Tsalmon",
+  "Tsalmown"
+ ],
+ "Tzalap": [
+  "Zalaph",
+  "Tsalaph"
+ ],
+ "Tzalapachad": [
+  "Zelophehad",
+  "Tslophchad",
+  "Tselophchad"
+ ],
+ "Tzalaq": [
+  "Zelek",
+  "Tseleq"
+ ],
+ "Tzalathay": [
+  "Zilthai",
+  "Tsillthay",
+  "Tsillethay"
+ ],
+ "Tzamaawan": [
+  "Tsimmaon",
+  "Tsimmaown"
+ ],
+ "Tzamarayam": [
+  "Zemaraim",
+  "Tsmarayim",
+  "Tsemarayim"
+ ],
+ "Tzan": [
+  "Zin",
+  "Tsin"
+ ],
+ "Tzanan": [
+  "Zenan",
+  "Tsnan",
+  "Tsenan"
+ ],
+ "Tzapanath-Painach": [
+  "Zaphnath-Paaneah",
+  "Tsophnath Paneach"
+ ],
+ "Tzapanayah": [
+  "Zephaniah",
+  "Tsphanyah",
+  "Tsephanyah"
+ ],
+ "Tzaparah": [
+  "Zipporah",
+  "Tsipporah"
+ ],
+ "Tzapath": [
+  "Zephath",
+  "Tsphath",
+  "Tsephath"
+ ],
+ "Tzapathah": [
+  "Zephathah",
+  "Tsphathah",
+  "Tsephathah"
+ ],
+ "Tzapaw": [
+  "Zepho",
+  "Zephi",
+  "Tspho",
+  "Tsepho",
+  "Tsphow",
+  "Tsephow"
+ ],
+ "Tzapawan": [
+  "Zephon",
+  "Zaphon",
+  "Tsphon",
+  "Tsephon",
+  "Tsphown",
+  "Tsaphon",
+  "Tsephown",
+  "Tsaphown"
+ ],
+ "Tzapawar": [
+  "Zippor",
+  "Tsippor",
+  "Tsippowr"
+ ],
+ "Tzapayam": [
+  "Zophim",
+  "Tsophim",
+  "Tsophiym"
+ ],
+ "Tzapayawan": [
+  "Ziphion",
+  "Tsiphyon",
+  "Tsiphyown"
+ ],
+ "Tzaqalag": [
+  "Ziklag",
+  "Tsiqlag"
+ ],
+ "Tzar": [
+  "Tyre",
+  "Zer",
+  "Tsor",
+  "Tser",
+  "Tsar",
+  "Tyrus"
+ ],
+ "Tzaradah": [
+  "Zereda",
+  "Tsredah",
+  "Tseredah",
+  "Zeredathah"
+ ],
+ "Tzaraih": [
+  "Zorah",
+  "Zareah",
+  "Zoreah",
+  "Tsorah"
+ ],
+ "Tzarapath": [
+  "Zarephath",
+  "Tsarphath",
+  "Tsarephath"
+ ],
+ "Tzararah": [
+  "Tsrerah",
+  "Zererath",
+  "Tsererah"
+ ],
+ "Tzarath": [
+  "Zereth",
+  "Tsereth"
+ ],
+ "Tzarath-Hashachar": [
+  "Zareth-Shahar",
+  "Tsereth Hash-Shachar"
+ ],
+ "Tzarathan": [
+  "Zarthan",
+  "Tsarthan",
+  "Tsarethan"
+ ],
+ "Tzarawaih": [
+  "Zeruah",
+  "Tsruah",
+  "Tseruah",
+  "Tsruwah",
+  "Tseruwah"
+ ],
+ "Tzarawayah": [
+  "Zeruiah",
+  "Tsruyah",
+  "Tseruyah",
+  "Tsruwyah",
+  "Tseruwyah"
+ ],
+ "Tzaray": [
+  "Zeri",
+  "Tsri",
+  "Tseri",
+  "Tsriy",
+  "Tseriy"
+ ],
+ "Tzawabaa": [
+  "Zobah",
+  "Zoba",
+  "Tsoba",
+  "Tsowba"
+ ],
+ "Tzawair": [
+  "Zuar",
+  "Tsuar",
+  "Tsuwar"
+ ],
+ "Tzawap": [
+  "Zuph",
+  "Zophai",
+  "Tsuph",
+  "Tsuwph"
+ ],
+ "Tzawapach": [
+  "Zophah",
+  "Tsophach",
+  "Tsowphach"
+ ],
+ "Tzawapar": [
+  "Zophar",
+  "Tsophar",
+  "Tsowphar"
+ ],
+ "Tzawar": [
+  "Zur",
+  "Tsur",
+  "Tsuwr"
+ ],
+ "Tzawaray-Al": [
+  "Zuriel",
+  "Tsuriel",
+  "Tsuwriyel",
+  "Tzawarayaal"
+ ],
+ "Tzawaray-Shaday": [
+  "Zurishaddai",
+  "Tsurishadday",
+  "Tsuwriyshadday",
+  "Tzawarayashaday"
+ ],
+ "Tzayabaa": [
+  "Ziba",
+  "Tsiba",
+  "Tsiyba"
+ ],
+ "Tzayachaa": [
+  "Ziha",
+  "Tsicha",
+  "Tsiycha"
+ ],
+ "Tzayadawan": [
+  "Sidon",
+  "Zidon",
+  "Tsidon",
+  "Tsiydown"
+ ],
+ "Tzayah": [
+  "Tsiah",
+  "Tsiyah"
+ ],
+ "Tzayair": [
+  "Zior",
+  "Tsior",
+  "Tsiyor"
+ ],
+ "Tzayatz": [
+  "Ziz",
+  "Tsits",
+  "Tsiyts"
+ ],
+ "Tzayawan": [
+  "Zion",
+  "Tsion",
+  "Tsiyown"
+ ],
+ "Tzayay": [
+  "Tsii",
+  "Tsiyiy"
+ ],
+ "Wadan": [
+  "Vedan",
+  "Vdan"
+ ],
+ "Wahab": [
+  "Vaheb"
+ ],
+ "Wanayah": [
+  "Vaniah",
+  "Vanyah"
+ ],
+ "Wapasay": [
+  "Vophsi",
+  "Vophci",
+  "Vophciy"
+ ],
+ "Washanay": [
+  "Vashni",
+  "Vashniy"
+ ],
+ "Washathay": [
+  "Vashti",
+  "Vashtiy"
+ ],
+ "Wayazathaa": [
+  "Vayzatha",
+  "Vajezatha"
+ ],
+ "Yaar": [
+  "Nile",
+  "Yor",
+  "Yeor"
+ ],
+ "Yaashayah": [
+  "Josiah",
+  "Yoshiah",
+  "Yoshiyah"
+ ],
+ "Yaatharay": [
+  "Yathray",
+  "Jeaterai",
+  "Yeatheray"
+ ],
+ "Yaayar": [
+  "Jair",
+  "Yair",
+  "Yaiyr"
+ ],
+ "Yaazanayah": [
+  "Jaazaniah",
+  "Yaazanyah"
+ ],
+ "Yabachar": [
+  "Ibhar",
+  "Yibchar"
+ ],
+ "Yabal": [
+  "Jabal"
+ ],
+ "Yabal-Im": [
+  "Ibleam",
+  "Yiblam",
+  "Yibleam",
+  "Yabalaim"
+ ],
+ "Yaban-Al": [
+  "Jabneel",
+  "Yabnel",
+  "Yabneel",
+  "Yabanaal"
+ ],
+ "Yabanah": [
+  "Jabneh",
+  "Yabneh"
+ ],
+ "Yabanayah": [
+  "Ibneiah",
+  "Ibnijah",
+  "Yibneah",
+  "Yibnyah",
+  "Yibniah",
+  "Yibneyah",
+  "Yibniyah"
+ ],
+ "Yabaq": [
+  "Jabbok",
+  "Yabboq"
+ ],
+ "Yabarakayahaw": [
+  "Jeberechiah",
+  "Yberekyahu",
+  "Yeberekyahu",
+  "Yberekyahuw",
+  "Yeberekyahuw"
+ ],
+ "Yabash": [
+  "Yabesh"
+ ],
+ "Yabasham": [
+  "Jibsam",
+  "Yibsam"
+ ],
+ "Yabashath": [
+  "Yabbesheth"
+ ],
+ "Yabawas": [
+  "Jebus",
+  "Ybuc",
+  "Yebuc",
+  "Ybuwc",
+  "Yebuwc"
+ ],
+ "Yabayan": [
+  "Jabin",
+  "Yabin",
+  "Yabiyn"
+ ],
+ "Yachabah": [
+  "Jehubbah",
+  "Ychubbah",
+  "Yechubbah"
+ ],
+ "Yachadaw": [
+  "Jahdo",
+  "Yachdo",
+  "Yachdow"
+ ],
+ "Yachaday-Al": [
+  "Jahdiel",
+  "Yachdiel",
+  "Yachdiyel",
+  "Yachadayaal"
+ ],
+ "Yachadayahaw": [
+  "Jehdeiah",
+  "Yechdiahu",
+  "Yechdiyahuw"
+ ],
+ "Yachal-Al": [
+  "Jahleel",
+  "Yachlel",
+  "Yachleel",
+  "Yachalaal"
+ ],
+ "Yachamay": [
+  "Jahmai",
+  "Yachmay"
+ ],
+ "Yachath": [
+  "Jahath"
+ ],
+ "Yachatz-Al": [
+  "Jahzeel",
+  "Yachtsel",
+  "Yachtseel",
+  "Yachatzaal"
+ ],
+ "Yachatzay-Al": [
+  "Yachtsiel",
+  "Yachtsiyel",
+  "Yachatzayaal"
+ ],
+ "Yachay-Al": [
+  "Jehiel",
+  "Ychiel",
+  "Yechiel",
+  "Ychiyel",
+  "Yechiyel",
+  "Yachayaal"
+ ],
+ "Yachayaalay": [
+  "Jehieli",
+  "Ychieli",
+  "Yechieli",
+  "Ychiyeliy",
+  "Yechiyeliy"
+ ],
+ "Yachayah": [
+  "Jehiah",
+  "Ychiah",
+  "Yechiah",
+  "Ychiyah",
+  "Yechiyah"
+ ],
+ "Yachazaq-Al": [
+  "Ezekiel",
+  "Ychezqel",
+  "Jehezekel",
+  "Yechezqel",
+  "Yachazaqaal"
+ ],
+ "Yachazaqayah": [
+  "Jehizkiah",
+  "Ychizqiah",
+  "Yechizqiah",
+  "Ychizqiyah",
+  "Yechizqiyah"
+ ],
+ "Yachazarah": [
+  "Jahzerah",
+  "Yachzerah"
+ ],
+ "Yachazay-Al": [
+  "Jahaziel",
+  "Jahziel",
+  "Yachaziel",
+  "Yachaziyel",
+  "Yachazayaal"
+ ],
+ "Yachazayah": [
+  "Jahaziah",
+  "Yachzeah",
+  "Yachzyah",
+  "Yachzeyah"
+ ],
+ "Yadaalah": [
+  "Idalah",
+  "Yidalah"
+ ],
+ "Yadabash": [
+  "Idbash",
+  "Yidbash"
+ ],
+ "Yadai": [
+  "Jada",
+  "Yada"
+ ],
+ "Yadaiyah": [
+  "Jedaiah",
+  "Ydayah",
+  "Yedayah"
+ ],
+ "Yadalap": [
+  "Jidlaph",
+  "Yidlaph"
+ ],
+ "Yadaw": [
+  "Yiddo",
+  "Yiddow"
+ ],
+ "Yadawai": [
+  "Jaddua",
+  "Yaddua",
+  "Yadduwa"
+ ],
+ "Yadawan": [
+  "Jadon",
+  "Yadon",
+  "Yadown"
+ ],
+ "Yadawathawan": [
+  "Jeduthun",
+  "Yduthun",
+  "Yeduthun",
+  "Yduwthuwn",
+  "Yeduwthuwn"
+ ],
+ "Yadayadah": [
+  "Jedidah",
+  "Ydidah",
+  "Yedidah",
+  "Ydiydah",
+  "Yediydah"
+ ],
+ "Yadayadayah": [
+  "Jedidiah",
+  "Ydidyah",
+  "Yedideah",
+  "Ydiydyah",
+  "Yediydeyah"
+ ],
+ "Yadayai-Al": [
+  "Jediael",
+  "Ydiael",
+  "Yediael",
+  "Ydiyael",
+  "Yediyael",
+  "Yadayaial"
+ ],
+ "Yagaal": [
+  "Igal",
+  "Igeal",
+  "Yigal"
+ ],
+ "Yagabahah": [
+  "Jogbehah",
+  "Yogbhah",
+  "Yogbehah"
+ ],
+ "Yagadalayahaw": [
+  "Igdaliah",
+  "Yigdalyahu",
+  "Yigdalyahuw"
+ ],
+ "Yagalay": [
+  "Jogli",
+  "Yogli",
+  "Yogliy"
+ ],
+ "Yagar-Shahadawathaa": [
+  "Ygar Sahadutha",
+  "Jegar-Sahadutha",
+  "Yegar Sahadutha",
+  "Ygar Sahaduwtha",
+  "Yegar Sahaduwtha"
+ ],
+ "Yagawar": [
+  "Jagur",
+  "Yagur",
+  "Yaguwr"
+ ],
+ "Yah": [
+  "Jah",
+  "Yahh"
+ ],
+ "Yahad": [
+  "Jehud",
+  "Yhud",
+  "Yehud"
+ ],
+ "Yahaday": [
+  "Jehdai",
+  "Yehday"
+ ],
+ "Yahalal-Al": [
+  "Jehalelel",
+  "Yhallelel",
+  "Jehalellel",
+  "Yehallelel",
+  "Yahalalaal"
+ ],
+ "Yahatz": [
+  "Jahaz",
+  "Jahzah",
+  "Yahats",
+  "Jahazah"
+ ],
+ "Yahawaa": [
+  "Jehu",
+  "Yehu",
+  "Yehuw"
+ ],
+ "Yahawaachaz": [
+  "Jehoahaz",
+  "Yhoachaz",
+  "Yehoachaz",
+  "Yhowachaz",
+  "Yehowachaz"
+ ],
+ "Yahawaash": [
+  "Jehoash",
+  "Yhoash",
+  "Yehoash",
+  "Yhowash",
+  "Yehowash"
+ ],
+ "Yahawachanan": [
+  "Jehohanan",
+  "Yhochanan",
+  "Yehochanan",
+  "Yhowchanan",
+  "Yehowchanan"
+ ],
+ "Yahawad": [
+  "Jewry",
+  "Judea",
+  "Yhuwd",
+  "Yehuwd"
+ ],
+ "Yahawadah": [
+  "Judah",
+  "Judas",
+  "Yhudah",
+  "Yehudah",
+  "Yhuwdah",
+  "Yehuwdah"
+ ],
+ "Yahawaday": [
+  "Jews",
+  "Jew",
+  "Jehudi",
+  "Jewish",
+  "Yhudi",
+  "Yehudi",
+  "Yhuwdiy",
+  "Yehuwdiy"
+ ],
+ "Yahawadayath": [
+  "Judith",
+  "Yhudith",
+  "Yehudith",
+  "Yhuwdiyth",
+  "Yehuwdiyth"
+ ],
+ "Yahawah-Nasay": [
+  "Yhovah Nicci",
+  "Jehovah-Nissi",
+  "Yehovah Nicci",
+  "Yhovah Nicciy",
+  "Yehovah Nicciy"
+ ],
+ "Yahawah-Yaraah": [
+  "Yhovah Yireh",
+  "Yehovah Yireh"
+ ],
+ "Yahawaidah": [
+  "Jehoada",
+  "Yhoaddah",
+  "Yehoaddah",
+  "Yhowaddah",
+  "Yehowaddah"
+ ],
+ "Yahawaidayan": [
+  "Jehoaddan",
+  "Yhoaddin",
+  "Yehoaddin",
+  "Yhowaddiyn",
+  "Yehowaddiyn"
+ ],
+ "Yahawakal": [
+  "Jehucal",
+  "Yhukal",
+  "Yehukal",
+  "Yhuwkal",
+  "Yehuwkal"
+ ],
+ "Yahawanadab": [
+  "Jonadab",
+  "Jehonadab",
+  "Yhonadab",
+  "Yehonadab",
+  "Yhownadab",
+  "Yehownadab"
+ ],
+ "Yahawanathan": [
+  "Jonathan",
+  "Yhonathan",
+  "Yehonathan",
+  "Yhownathan",
+  "Yehownathan"
+ ],
+ "Yahawaram": [
+  "Joram",
+  "Jehoram",
+  "Yhoram",
+  "Yehoram",
+  "Yhowram",
+  "Yehowram"
+ ],
+ "Yahawasap": [
+  "Yhoceph",
+  "Yehoceph",
+  "Yhowceph",
+  "Yehowceph"
+ ],
+ "Yahawashabai": [
+  "Jehosheba",
+  "Yhosheba",
+  "Yehosheba",
+  "Yhowsheba",
+  "Yehowsheba"
+ ],
+ "Yahawashabaith": [
+  "Jehoshabeath",
+  "Yhoshabath",
+  "Yehoshabath",
+  "Yhowshabath",
+  "Yehowshabath"
+ ],
+ "Yahawashapat": [
+  "Jehoshaphat",
+  "Yhoshaphat",
+  "Yehoshaphat",
+  "Yhowshaphat",
+  "Yehowshaphat"
+ ],
+ "Yahawashawai": [
+  "Joshua",
+  "Yhoshua",
+  "Jehoshua",
+  "Yehoshua",
+  "Jehoshuah",
+  "Yhowshuwa",
+  "Yehowshuwa"
+ ],
+ "Yahawatzadaq": [
+  "Josedech",
+  "Jehozadek",
+  "Yhotsadaq",
+  "Yehotsadaq",
+  "Yhowtsadaq",
+  "Yehowtsadaq"
+ ],
+ "Yahaway-Kayan": [
+  "Jehoiachin",
+  "Yhoyakin",
+  "Yehoyakin",
+  "Yhowyakiyn",
+  "Yehowyakiyn",
+  "Yahawayakayan"
+ ],
+ "Yahaway-Qayam": [
+  "Jehoiakim",
+  "Yhoyaqim",
+  "Yehoyaqim",
+  "Yhowyaqiym",
+  "Yehowyaqiym",
+  "Yahawayaqayam"
+ ],
+ "Yahaway-Rayab": [
+  "Jehoiarib",
+  "Yhoyarib",
+  "Yehoyarib",
+  "Yhowyariyb",
+  "Yehowyariyb",
+  "Yahawayarayab"
+ ],
+ "Yahawayadai": [
+  "Jehoiada",
+  "Yhoyada",
+  "Yehoyada",
+  "Yhowyada",
+  "Yehowyada"
+ ],
+ "Yahawazabad": [
+  "Jehozabad",
+  "Yhozabad",
+  "Yehozabad",
+  "Yhowzabad",
+  "Yehowzabad"
+ ],
+ "Yaibatz": [
+  "Jabez",
+  "Yabets"
+ ],
+ "Yaikan": [
+  "Yakan",
+  "Jachan"
+ ],
+ "Yail": [
+  "Jael",
+  "Yael"
+ ],
+ "Yailaa": [
+  "Jaala",
+  "Jaalah",
+  "Yaala"
+ ],
+ "Yailam": [
+  "Jalam",
+  "Yalam"
+ ],
+ "Yainay": [
+  "Jaanai",
+  "Yaanay"
+ ],
+ "Yaiqab": [
+  "Jacob",
+  "James",
+  "Yaaqob"
+ ],
+ "Yaiqabah": [
+  "Jaakobah",
+  "Yaaqobah"
+ ],
+ "Yaiqan": [
+  "Jaakan",
+  "Yaaqan"
+ ],
+ "Yairah": [
+  "Jarah",
+  "Yarah"
+ ],
+ "Yairashayah": [
+  "Jaresiah",
+  "Yaareshyah"
+ ],
+ "Yairay-Aragayam": [
+  "Yaare Orgim",
+  "Jaare-Oregim",
+  "Yaare Oregim",
+  "Yaarey Orgiym",
+  "Yaarey Oregiym"
+ ],
+ "Yairayam": [
+  "Jearim",
+  "Yarim",
+  "Yearim",
+  "Yariym",
+  "Yeariym"
+ ],
+ "Yaishaw": [
+  "Yaasu",
+  "Jaasau",
+  "Yaasuw"
+ ],
+ "Yaishay-Al": [
+  "Jaasiel",
+  "Jasiel",
+  "Yaasiel",
+  "Yaasiyel",
+  "Yaishayaal"
+ ],
+ "Yaiwaal": [
+  "Jeuel",
+  "Yuel",
+  "Yeuel",
+  "Yuwel",
+  "Yeuwel"
+ ],
+ "Yaiwash": [
+  "Jeush",
+  "Yush",
+  "Yeush",
+  "Yuwsh",
+  "Jehush",
+  "Yeuwsh"
+ ],
+ "Yaiwatz": [
+  "Jeuz",
+  "Yuts",
+  "Yeuts",
+  "Yuwts",
+  "Yeuwts"
+ ],
+ "Yaiy-Al": [
+  "Jeiel",
+  "Yiel",
+  "Yeiel",
+  "Yiyel",
+  "Yeiyel",
+  "Yaiyaal"
+ ],
+ "Yaizay-Al": [
+  "Jaaziel",
+  "Yaaziel",
+  "Yaaziyel",
+  "Yaizayaal"
+ ],
+ "Yaizayahaw": [
+  "Jaaziah",
+  "Yaaziahu",
+  "Yaaziyahuw"
+ ],
+ "Yaizayar": [
+  "Jazer",
+  "Jaazer",
+  "Yaazer",
+  "Yaazeyr"
+ ],
+ "Yakalayah": [
+  "Jecoliah",
+  "Ykolyah",
+  "Yekolyah",
+  "Jecholiah"
+ ],
+ "Yakanayah": [
+  "Jeconiah",
+  "Ykonyah",
+  "Yekonyah"
+ ],
+ "Yakayan": [
+  "Jachin",
+  "Yakin",
+  "Yakiyn"
+ ],
+ "Yalawan": [
+  "Jalon",
+  "Yalon",
+  "Yalown"
+ ],
+ "Yam": [
+  "Yem"
+ ],
+ "Yamalaa": [
+  "Imla",
+  "Imlah",
+  "Yimla"
+ ],
+ "Yamalak": [
+  "Jamlech",
+  "Yamlek"
+ ],
+ "Yamanah": [
+  "Imnah",
+  "Imna",
+  "Jimnah",
+  "Yimnah",
+  "Jimnites"
+ ],
+ "Yamanai": [
+  "Yimna"
+ ],
+ "Yamarah": [
+  "Imrah",
+  "Yimrah"
+ ],
+ "Yamawaal": [
+  "Jemuel",
+  "Ymuel",
+  "Yemuel",
+  "Ymuwel",
+  "Yemuwel"
+ ],
+ "Yamayamah": [
+  "Jemimah",
+  "Ymimah",
+  "Yemimah",
+  "Ymiymah",
+  "Yemiymah"
+ ],
+ "Yamayan": [
+  "Jamin",
+  "Yamin",
+  "Yamiyn"
+ ],
+ "Yanawach": [
+  "Janoah",
+  "Janohah",
+  "Yanoach",
+  "Yanowach"
+ ],
+ "Yanayam": [
+  "Yanim",
+  "Yaniym"
+ ],
+ "Yapadayah": [
+  "Yiphdeah",
+  "Yiphdyah",
+  "Iphedeiah",
+  "Yiphdeyah"
+ ],
+ "Yapalat": [
+  "Japhlet",
+  "Yaphlet"
+ ],
+ "Yapanah": [
+  "Jephunneh",
+  "Yphunneh",
+  "Yephunneh"
+ ],
+ "Yapath": [
+  "Japheth",
+  "Yepheth"
+ ],
+ "Yapathach": [
+  "Jephthah",
+  "Jiphtah",
+  "Yiphtach"
+ ],
+ "Yapathach-Al": [
+  "Jiphthah-El",
+  "Yiphtach-El"
+ ],
+ "Yapaw": [
+  "Joppa",
+  "Japha",
+  "Yapho",
+  "Yaphow"
+ ],
+ "Yapayai": [
+  "Japhia",
+  "Yaphia",
+  "Yaphiya"
+ ],
+ "Yaqabatz-Al": [
+  "Jekabzeel",
+  "Yqabtsel",
+  "Yeqabtseel",
+  "Yaqabatzaal"
+ ],
+ "Yaqad-Im": [
+  "Jokdeam",
+  "Yoqdam",
+  "Yoqdeam",
+  "Yaqadaim"
+ ],
+ "Yaqah": [
+  "Jakeh",
+  "Yaqeh"
+ ],
+ "Yaqam-Im": [
+  "Jokmeam",
+  "Jekameam",
+  "Yqamam",
+  "Yoqmam",
+  "Yeqamam",
+  "Yoqmeam",
+  "Yaqamaim"
+ ],
+ "Yaqamayah": [
+  "Jekamiah",
+  "Yqamyah",
+  "Yeqamyah"
+ ],
+ "Yaqan-Im": [
+  "Jokneam",
+  "Yoqnam",
+  "Yoqneam",
+  "Yaqanaim"
+ ],
+ "Yaqashan": [
+  "Jokshan",
+  "Yoqshan"
+ ],
+ "Yaqatan": [
+  "Joktan",
+  "Yoqtan"
+ ],
+ "Yaqathaal": [
+  "Joktheel",
+  "Yoqthel",
+  "Yoqtheel"
+ ],
+ "Yaqawathay-Al": [
+  "Jekuthiel",
+  "Yquthiel",
+  "Yequthiel",
+  "Yquwthiyel",
+  "Yequwthiyel",
+  "Yaqawathayaal"
+ ],
+ "Yaqayam": [
+  "Jakim",
+  "Yaqim",
+  "Yaqiym"
+ ],
+ "Yar-Bail": [
+  "Jerubbaal",
+  "Yrubbaal",
+  "Yarabail",
+  "Yerubbaal"
+ ],
+ "Yar-Bashath": [
+  "Jerubbesheth",
+  "Yrubbesheth",
+  "Yarabashath",
+  "Yerubbesheth"
+ ],
+ "Yaraawan": [
+  "Yiron",
+  "Yirown"
+ ],
+ "Yaraayayah": [
+  "Irijah",
+  "Yiriayh",
+  "Yiriyayh"
+ ],
+ "Yarab": [
+  "Jareb",
+  "Yareb"
+ ],
+ "Yarab-Im": [
+  "Jeroboam",
+  "Yarobam",
+  "Yarabaim"
+ ],
+ "Yarach": [
+  "Jerah",
+  "Yerach"
+ ],
+ "Yarachai": [
+  "Jarha",
+  "Yarcha"
+ ],
+ "Yaracham": [
+  "Jeroham",
+  "Yrocham",
+  "Yerocham"
+ ],
+ "Yaracham-Al": [
+  "Jerahmeel",
+  "Yrachmel",
+  "Yerachmeel",
+  "Yarachamaal"
+ ],
+ "Yarad": [
+  "Jared",
+  "Yered"
+ ],
+ "Yaradan": [
+  "Jordan",
+  "Yarden"
+ ],
+ "Yaramawath": [
+  "Jarmuth",
+  "Yarmuth",
+  "Yarmuwth"
+ ],
+ "Yaramay": [
+  "Jeremai",
+  "Yremay",
+  "Yeremay"
+ ],
+ "Yaramayah": [
+  "Jeremiah",
+  "Yirmeah",
+  "Yirmyah",
+  "Yirmeyah"
+ ],
+ "Yarap-Al": [
+  "Irpeel",
+  "Yirpel",
+  "Yirpeel",
+  "Yarapaal"
+ ],
+ "Yaraq-Im": [
+  "Jorkeam",
+  "Yorqam",
+  "Yorqeam",
+  "Yaraqaim"
+ ],
+ "Yarawaal": [
+  "Jeruel",
+  "Yruel",
+  "Yeruel",
+  "Yruwel",
+  "Yeruwel"
+ ],
+ "Yarawach": [
+  "Jaroah",
+  "Yaroach",
+  "Yarowach"
+ ],
+ "Yarawashaa": [
+  "Jerusha",
+  "Jerushah",
+  "Yrusha",
+  "Yerusha",
+  "Yruwsha",
+  "Yeruwsha"
+ ],
+ "Yarawashalam": [
+  "Jerusalem",
+  "Yrushalaim",
+  "Yerushalaim",
+  "Yruwshalaim",
+  "Yeruwshalaim"
+ ],
+ "Yaray-Al": [
+  "Jeriel",
+  "Yriel",
+  "Yeriel",
+  "Yriyel",
+  "Yeriyel",
+  "Yarayaal"
+ ],
+ "Yarayab": [
+  "Jarib",
+  "Yarib",
+  "Yariyb"
+ ],
+ "Yarayabay": [
+  "Jeribai",
+  "Yribay",
+  "Yeribay",
+  "Yriybay",
+  "Yeriybay"
+ ],
+ "Yarayachaw": [
+  "Jericho",
+  "Yricho",
+  "Yericho",
+  "Yriychow",
+  "Yeriychow"
+ ],
+ "Yarayah": [
+  "Jeriah",
+  "Jerijah",
+  "Yriah",
+  "Yeriah",
+  "Yriyah",
+  "Yeriyah"
+ ],
+ "Yarayaiwath": [
+  "Jerioth",
+  "Yrioth",
+  "Yerioth",
+  "Yriyowth",
+  "Yeriyowth"
+ ],
+ "Yarayamawath": [
+  "Jerimoth",
+  "Jermoth",
+  "Yrimoth",
+  "Yerimoth",
+  "Yriymowth",
+  "Yeriymowth"
+ ],
+ "Yasakah": [
+  "Iscah",
+  "Yickah"
+ ],
+ "Yasamakayahaw": [
+  "Ismachiah",
+  "Yicmakyahu",
+  "Yicmakyahuw"
+ ],
+ "Yash-Shakar": [
+  "Issachar",
+  "Yissakar",
+  "Yashashakar"
+ ],
+ "Yashab-Ab": [
+  "Jeshebeab",
+  "Yeshebab",
+  "Yashabaab"
+ ],
+ "Yashab-Im": [
+  "Jashobeam",
+  "Yashobam",
+  "Yashabaim"
+ ],
+ "Yashab-Qashah": [
+  "Joshbekashah",
+  "Yoshbqashah",
+  "Yoshbeqashah",
+  "Yashabaqashah"
+ ],
+ "Yashabach": [
+  "Ishbah",
+  "Yishbach"
+ ],
+ "Yashabaq": [
+  "Ishbak",
+  "Yishbaq"
+ ],
+ "Yashabay-Lacham": [
+  "Jashubi-Lehem",
+  "Yashubi Lechem",
+  "Yashubiy Lechem"
+ ],
+ "Yashachaq": [
+  "Yischaq"
+ ],
+ "Yashaiy": [
+  "Ishi",
+  "Yishi",
+  "Yishiy"
+ ],
+ "Yashaiyah": [
+  "Isaiah",
+  "Jeshaiah",
+  "Jesaiah",
+  "Yshayah",
+  "Yeshayah"
+ ],
+ "Yasham": [
+  "Yasam"
+ ],
+ "Yashamaa": [
+  "Ishma",
+  "Yishma"
+ ],
+ "Yashamai-Al": [
+  "Ishmael",
+  "Yishmael",
+  "Yashamaial"
+ ],
+ "Yashamaialay": [
+  "Ishmaelites"
+ ],
+ "Yashamaiyah": [
+  "Ishmaiah",
+  "Yishmayah"
+ ],
+ "Yashamaray": [
+  "Ishmerai",
+  "Yishmray",
+  "Yishmeray"
+ ],
+ "Yashan": [
+  "Jashen",
+  "Yashen"
+ ],
+ "Yashanah": [
+  "Jeshanah",
+  "Yshanah",
+  "Yeshanah"
+ ],
+ "Yashapah": [
+  "Ispah",
+  "Yishpah"
+ ],
+ "Yashapan": [
+  "Ishpan",
+  "Yishpan"
+ ],
+ "Yashar": [
+  "Jesher",
+  "Yesher"
+ ],
+ "Yashar-Al": [
+  "Israel",
+  "Yisrael",
+  "Yasharaal"
+ ],
+ "Yashar-Alah": [
+  "Jesharelah",
+  "Ysarelah",
+  "Yesarelah",
+  "Yasharaalah"
+ ],
+ "Yasharaalay": [
+  "Israelites",
+  "Israelite"
+ ],
+ "Yasharawan": [
+  "Jeshurun",
+  "Yshurun",
+  "Yeshurun",
+  "Yshuruwn",
+  "Yeshuruwn"
+ ],
+ "Yashawab": [
+  "Jashub",
+  "Yashub",
+  "Yashuwb"
+ ],
+ "Yashawachayah": [
+  "Jeshoaiah",
+  "Yshochayah",
+  "Yeshochayah",
+  "Yshowchayah",
+  "Yeshowchayah"
+ ],
+ "Yashawah": [
+  "Ishvah",
+  "Isvah",
+  "Yishvah"
+ ],
+ "Yashawai": [
+  "Jeshua",
+  "Jesus",
+  "Yeshua",
+  "Yeshuwa"
+ ],
+ "Yashaway": [
+  "Ishvi",
+  "Isui",
+  "Jesui",
+  "Ishuai",
+  "Yishvi",
+  "Yishviy"
+ ],
+ "Yashay": [
+  "Jesse",
+  "Yishay"
+ ],
+ "Yashayah": [
+  "Isshiah",
+  "Ishiah",
+  "Jesiah",
+  "Ishijah",
+  "Yishshiah",
+  "Yishshiyah"
+ ],
+ "Yashayam-Al": [
+  "Jesimael",
+  "Yshimael",
+  "Yeshimael",
+  "Yshiymael",
+  "Yeshiymael",
+  "Yashayamaal"
+ ],
+ "Yashayashay": [
+  "Jeshishai",
+  "Yshishay",
+  "Yeshishay",
+  "Yshiyshay",
+  "Yeshiyshay"
+ ],
+ "Yatab": [
+  "Ytab",
+  "Yetab"
+ ],
+ "Yatabah": [
+  "Jotbah",
+  "Yotbah"
+ ],
+ "Yatabathah": [
+  "Jotbathah",
+  "Jotbath",
+  "Yotbathah"
+ ],
+ "Yatah": [
+  "Juttah",
+  "Yuttah"
+ ],
+ "Yatawar": [
+  "Jetur",
+  "Ytur",
+  "Yetur",
+  "Ytuwr",
+  "Yetuwr"
+ ],
+ "Yathalah": [
+  "Jethlah",
+  "Yithlah"
+ ],
+ "Yathamah": [
+  "Ithmah",
+  "Yithmah"
+ ],
+ "Yathanan": [
+  "Ithnan",
+  "Yithnan"
+ ],
+ "Yathanayaal": [
+  "Jathniel",
+  "Yathniel",
+  "Yathniyel"
+ ],
+ "Yathar": [
+  "Jether",
+  "Yether"
+ ],
+ "Yathar-Im": [
+  "Ithream",
+  "Yithram",
+  "Yithream",
+  "Yatharaim"
+ ],
+ "Yatharaa": [
+  "Ithra",
+  "Yithra"
+ ],
+ "Yatharan": [
+  "Ithran",
+  "Yithran"
+ ],
+ "Yatharaw": [
+  "Jethro",
+  "Yithro",
+  "Yithrow"
+ ],
+ "Yathath": [
+  "Jetheth",
+  "Ytheth",
+  "Yetheth"
+ ],
+ "Yathayar": [
+  "Jattir",
+  "Yattir",
+  "Yattiyr"
+ ],
+ "Yatzab": [
+  "Yatsab"
+ ],
+ "Yatzachaq": [
+  "Isaac",
+  "Yitschaq"
+ ],
+ "Yatzag": [
+  "Yatsag"
+ ],
+ "Yatzahar": [
+  "Izhar",
+  "Yitshar"
+ ],
+ "Yatzaq": [
+  "Yatsaq"
+ ],
+ "Yatzar": [
+  "Jezer",
+  "Yetser"
+ ],
+ "Yatzaray": [
+  "Isri",
+  "Yitsri",
+  "Yitsriy"
+ ],
+ "Yawaab": [
+  "Joab",
+  "Yoab",
+  "Yowab"
+ ],
+ "Yawaach": [
+  "Joah",
+  "Yoach",
+  "Yowach"
+ ],
+ "Yawaachaz": [
+  "Joahaz",
+  "Yoachaz",
+  "Yowachaz"
+ ],
+ "Yawaal": [
+  "Joel",
+  "Yoel",
+  "Yowel"
+ ],
+ "Yawaash": [
+  "Joash",
+  "Yoash",
+  "Yowash"
+ ],
+ "Yawab": [
+  "Yob",
+  "Yowb"
+ ],
+ "Yawabab": [
+  "Jobab",
+  "Yobab",
+  "Yowbab"
+ ],
+ "Yawabal": [
+  "Jubilee",
+  "Jubal",
+  "Yubal",
+  "Yuwbal"
+ ],
+ "Yawachaa": [
+  "Joha",
+  "Yocha",
+  "Yowcha"
+ ],
+ "Yawachanan": [
+  "Johanan",
+  "John",
+  "Yochanan",
+  "Yowchanan"
+ ],
+ "Yawaialah": [
+  "Joelah",
+  "Yoelah",
+  "Yowelah"
+ ],
+ "Yawaid": [
+  "Joed",
+  "Yoed",
+  "Yowed"
+ ],
+ "Yawaizar": [
+  "Joezer",
+  "Yoezer",
+  "Yowezer"
+ ],
+ "Yawakabad": [
+  "Jochebed",
+  "Yokebed",
+  "Yowkebed"
+ ],
+ "Yawakal": [
+  "Jucal",
+  "Yukal",
+  "Yuwkal"
+ ],
+ "Yawan": [
+  "Javan",
+  "Yavan"
+ ],
+ "Yawanadab": [
+  "Yonadab",
+  "Yownadab"
+ ],
+ "Yawanah": [
+  "Jonah",
+  "Yonah",
+  "Yownah"
+ ],
+ "Yawanathan": [
+  "Yonathan",
+  "Yownathan"
+ ],
+ "Yawanay": [
+  "Greeks",
+  "Greek"
+ ],
+ "Yawaqayam": [
+  "Jokim",
+  "Yoqim",
+  "Yowqiym"
+ ],
+ "Yawarah": [
+  "Jorah",
+  "Yorah",
+  "Yowrah"
+ ],
+ "Yawaram": [
+  "Yoram",
+  "Yowram"
+ ],
+ "Yawaray": [
+  "Jorai",
+  "Yoray",
+  "Yowray"
+ ],
+ "Yawasap": [
+  "Joseph",
+  "Yoceph",
+  "Yowceph"
+ ],
+ "Yawasapayah": [
+  "Josiphiah",
+  "Yociphyah",
+  "Yowciphyah"
+ ],
+ "Yawashab-Chasad": [
+  "Jushab-Hesed",
+  "Yushab Checed",
+  "Yuwshab Checed"
+ ],
+ "Yawashabayah": [
+  "Josibiah",
+  "Yoshibyah",
+  "Yowshibyah"
+ ],
+ "Yawashah": [
+  "Joshah",
+  "Yoshah",
+  "Yowshah"
+ ],
+ "Yawashapat": [
+  "Joshaphat",
+  "Yoshaphat",
+  "Yowshaphat"
+ ],
+ "Yawashawayah": [
+  "Joshaviah",
+  "Yoshavyah",
+  "Yowshavyah"
+ ],
+ "Yawatham": [
+  "Jotham",
+  "Yotham",
+  "Yowtham"
+ ],
+ "Yawatzadaq": [
+  "Jozadak",
+  "Yotsadaq",
+  "Yowtsadaq"
+ ],
+ "Yawayadai": [
+  "Joiada",
+  "Yoyada",
+  "Yowyada"
+ ],
+ "Yawayakayan": [
+  "Yoyakin",
+  "Yowyakiyn"
+ ],
+ "Yawayaqayam": [
+  "Joiakim",
+  "Yoyaqim",
+  "Yowyaqiym"
+ ],
+ "Yawayarayab": [
+  "Joiarib",
+  "Yoyarib",
+  "Yowyariyb"
+ ],
+ "Yawazabad": [
+  "Jozabad",
+  "Josabad",
+  "Yozabad",
+  "Yowzabad"
+ ],
+ "Yawazakar": [
+  "Yozakar",
+  "Jozachar",
+  "Yowzakar"
+ ],
+ "Yazalayaah": [
+  "Jezliah",
+  "Yizliah",
+  "Yizliyah"
+ ],
+ "Yazanayah": [
+  "Jezaniah",
+  "Yzanyah",
+  "Yezanyah"
+ ],
+ "Yazarachayah": [
+  "Izrahiah",
+  "Jezrahiah",
+  "Yizrachyah"
+ ],
+ "Yazaraial": [
+  "Jezreel",
+  "Yizrel",
+  "Yizreel"
+ ],
+ "Yazayah": [
+  "Jeziah",
+  "Yizziah",
+  "Yizziyah"
+ ],
+ "Yazayaz": [
+  "Jaziz",
+  "Yaziz",
+  "Yaziyz"
+ ],
+ "Zaab": [
+  "Zeeb",
+  "Zeb"
+ ],
+ "Zabach": [
+  "Zebah",
+  "Zebach"
+ ],
+ "Zabaday": [
+  "Zabdi",
+  "Zabdiy"
+ ],
+ "Zabaday-Al": [
+  "Zabdiel",
+  "Zabdiyel",
+  "Zabadayaal"
+ ],
+ "Zabadayah": [
+  "Zebadiah",
+  "Zbadyah",
+  "Zebadyah"
+ ],
+ "Zabal": [
+  "Zebul",
+  "Zbul"
+ ],
+ "Zabawad": [
+  "Zabud",
+  "Zabbud",
+  "Zabuwd",
+  "Zabbuwd"
+ ],
+ "Zabawalawan": [
+  "Zebulun",
+  "Zbulun",
+  "Zbuwluwn",
+  "Zebuwluwn"
+ ],
+ "Zabay": [
+  "Zabbai",
+  "Zabbay"
+ ],
+ "Zabayadah": [
+  "Zebidah",
+  "Zbidah",
+  "Zebudah",
+  "Zbiydah",
+  "Zebiydah"
+ ],
+ "Zabayanaa": [
+  "Zebina",
+  "Zbina",
+  "Zbiyna",
+  "Zebiyna"
+ ],
+ "Zachalath": [
+  "Zoheleth",
+  "Zocheleth"
+ ],
+ "Zaiwan": [
+  "Zaavan"
+ ],
+ "Zakar": [
+  "Zeker"
+ ],
+ "Zakaray": [
+  "Zichri",
+  "Zikri",
+  "Zikriy"
+ ],
+ "Zakarayah": [
+  "Zechariah",
+  "Zkaryah",
+  "Zekaryah",
+  "Zachariah"
+ ],
+ "Zakawar": [
+  "Zaccur",
+  "Zakkur",
+  "Zacchur",
+  "Zakkuwr"
+ ],
+ "Zakay": [
+  "Zaccai",
+  "Zakkay"
+ ],
+ "Zalapah": [
+  "Zilpah"
+ ],
+ "Zamah": [
+  "Zimmah"
+ ],
+ "Zaman": [
+  "Zman",
+  "Zeman"
+ ],
+ "Zamaran": [
+  "Zimran"
+ ],
+ "Zamaray": [
+  "Zimri",
+  "Zimriy"
+ ],
+ "Zamayarah": [
+  "Zemirah",
+  "Zemira",
+  "Zmirah",
+  "Zmiyrah",
+  "Zemiyrah"
+ ],
+ "Zamazam": [
+  "Zamzummim",
+  "Zamzom"
+ ],
+ "Zanawach": [
+  "Zanoah",
+  "Zanoach",
+  "Zanowach"
+ ],
+ "Zaparan": [
+  "Ziphron"
+ ],
+ "Zar-Babal": [
+  "Zerubbabel",
+  "Zrubbabel",
+  "Zarababal"
+ ],
+ "Zarach": [
+  "Zerah",
+  "Zarah",
+  "Zerach"
+ ],
+ "Zarachayah": [
+  "Zerahiah",
+  "Zrachyah",
+  "Zerachyah"
+ ],
+ "Zarad": [
+  "Zered",
+  "Zared"
+ ],
+ "Zarash": [
+  "Zeresh"
+ ],
+ "Zatham": [
+  "Zetham"
+ ],
+ "Zathar": [
+  "Zethar"
+ ],
+ "Zathawaa": [
+  "Zattu",
+  "Zattuw"
+ ],
+ "Zaw": [
+  "Ziv",
+  "Zif"
+ ],
+ "Zawachath": [
+  "Zoheth",
+  "Zocheth",
+  "Zowcheth"
+ ],
+ "Zayai": [
+  "Zia",
+  "Ziya"
+ ],
+ "Zayanaa": [
+  "Zina",
+  "Ziyna"
+ ],
+ "Zayap": [
+  "Ziph",
+  "Ziyph"
+ ],
+ "Zayapah": [
+  "Ziphah",
+  "Ziyphah"
+ ],
+ "Zayathan": [
+  "Zethan",
+  "Zeythan"
+ ],
+ "Zayazaa": [
+  "Ziza",
+  "Ziyza"
+ ],
+ "Zayazah": [
+  "Zizah",
+  "Ziyzah"
+ ],
+ "Zazaa": [
+  "Zaza"
+ ]
+}

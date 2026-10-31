@@ -4064,6 +4064,29 @@ John never showed in Parallel: the Studio called John's Hebrew "BHS", Parallel o
   one block per raw token (the merged word showed AND its folded tokens again: KaAsharaYaNaYawadai + Ashar, KayaShamaiw +
   Kay). The word-link token selectors stay one per token. esbuild only; not seen in a browser.
 
+## THE READING TEXT WRITES THE DISPLAY'S JOINED WORDS (2026-10-30)
+fieldy (Exod 18:19 "Mawal (𐤌𐤅𐤋) HaAlahayam (the God)" while the tokens show one word MawalaHaAlahayam): "make my texts
+match the hebrew (ie all connected words match on both sides, no differences including spaces)". His choices: the
+ENGLISH joins (not the display splits); one gloss, in Hebrew order; a maqaf join keeps a hyphen ("Mawal-HaAlahayam" style);
+every verse incl. his saved ones; Genesis 1-2 left as they are.
+The display (server.js groupSurfaceTokens isParticle) joins a preposition / conjunction / article with NO affix (and the
+interrogative 𐤄) onto the next word, and two words across a maqaf only when they share one Strong's. modform-lib:
+- verseWordsLoader reads o.morph and the punct rows: such a word is flagged `joinNext` (+ `joinMaqaf` when a maqaf stood
+  between); `HAS_AFFIX` = server.js's regex. Each word is still its own word for finding its English.
+- `joinFolded(text, words)`: adjacent pairs (only space between) that ARE those words, in order -> one pair:
+  medialForm(particle) + host as written ("MawalaHaAlahayam (before the God)"), or "Il-HaAratz (upon the earth)" across a
+  maqaf; chains carry on ("KaAsharaAthaHaDabar (as the entirety of the word)"). NOT joined yet: a NAME after the particle
+  ("Ath (…) Yahawah ()") — fix-divine-names / name-form-lib know names only after Wa/Ha/La/Ba/Ka/Ma; counted in the log.
+- `joinedChains(words)`: normalized joined spelling -> host + members. interlinear binds a joined pair to its host,
+  marks the members used and keeps the spelling (idempotent: a second run changes nothing — tested).
+merge-modforms: joinFolded after unnest in the corpus pass and the saved pass (rich text too); log "joined words …".
+verify-reading-glosses: accepts every joinedChains spelling of the verse (its own runs stopped at 3 rows, used final letter
+forms, and broke at a maqaf — its --fix would have unwrapped the joined pairs).
+Tested on constructed words only (the device shell was down): join, maqaf join, 3-word chain, name skipped, comma not
+joined, interlinear + re-join idempotent. NOT run on the real DBs. fieldy runs `node.exe render-all.mjs --surface`, reads the
+two "joined words" lines and the gates, then Rebake. (Root.jsx's prefix-hit fix from the same evening stays: a joined
+English pair now matches the hit block's whole form.)
+
 ## Root page: the hit lights wherever the word stands, and in the English (2026-10-30)
 fieldy: "highlights dont hit if the word is used as a prefix -- i should see the gold match all the time -- i actually would like
 to see the word and its gloss highlighted in the english as well" (H4136 𐤌𐤅𐤋 folded into MawalaHaAlahayam lit nothing).

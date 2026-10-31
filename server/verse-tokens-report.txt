@@ -1,4 +1,4 @@
-verify-verse-tokens  2026-10-30T23:32:02.441Z
+verify-verse-tokens  2026-10-31T00:10:28.121Z
 HEB edition: 54,041 verses, 1,103,319 words (37,378 rows with no canon_id not served, not judged)
 heb-settled: 796,523 etched readings
 BHS: 490,052 tokens

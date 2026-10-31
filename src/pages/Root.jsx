@@ -90,7 +90,7 @@ function englishHitTest(tokens) {
     if (!t.isHit) continue;
     const cs = t.components || [], hc = t.hitComp || [];
     // the whole word only when the whole block is the hit (every lettered part), never because one part of it is
-    if (cs.every((c, i) => hc[i] || c.isMark || !c.paleo)) whole.add(cs.map(c => c.translit || '').join('').toLowerCase());
+    if (cs.every((c, i) => hc[i] || c.isMark || !c.paleo)) whole.add(cs.map(c => c.translit || '').join('').toLowerCase().replace(/[^a-z]/g, ''));
     cs.forEach((c, i) => {
       if (!hc[i]) return;
       const x = (c.translit || '').toLowerCase();
@@ -103,9 +103,10 @@ function englishHitTest(tokens) {
   // a pair matches as the whole word, or as the hit part standing at the start or end of it (after its prefixes) —
   // not anywhere inside an unrelated word
   return w => {
-    const x = String(w || '').toLowerCase().replace(/-/g, '');
+    const x = String(w || '').toLowerCase().replace(/[^a-z]/g, '');
     if (whole.has(x)) return true;
-    for (const p of parts) if (x === p || x.startsWith(p) || x.endsWith(p)) return true;
+    // the hit part anywhere in the joined word ("Al-MawalaPanayam", "WaIlaChalaqahath"); a 3-letter part only at an edge
+    for (const p of parts) if (x === p || x.startsWith(p) || x.endsWith(p) || (p.length >= 4 && x.includes(p))) return true;
     return false;
   };
 }
