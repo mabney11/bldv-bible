@@ -131,9 +131,13 @@ export function formOf(comps) {
     return t;
   });
   const rootIdx = comps.findIndex(c => isRootCss(c.css));
+  // server.js caseComponentTranslits (kept in sync): a chip after its word's head is a suffix,
+  // whatever its colour class (Aramaic emphatic 𐤀 = "ApawaA" -> "Apawaa").
+  const isHead = c => isRootCss(c.css) || Object.prototype.hasOwnProperty.call(c, 'lemmaTranslit');
+  const afterHead = i => { for (let j = i - 1; j >= 0; j--) if (isHead(comps[j]) && comps[j].token_ordinal === comps[i].token_ordinal) return true; return false; };
   return parts.map((t, i) => {
     if (!t) return '';
-    const suf = isSuffixCss(comps[i].css) && (rootIdx < 0 || i > rootIdx);
+    const suf = (isSuffixCss(comps[i].css) && (rootIdx < 0 || i > rootIdx)) || (!isHead(comps[i]) && afterHead(i));
     return suf ? t.toLowerCase() : t.charAt(0).toUpperCase() + t.slice(1);
   }).join('');
 }

@@ -1,4 +1,4 @@
-SOURCES gate 2026-10-31T00:20:31.053Z — PASS
+SOURCES gate 2026-10-31T02:22:08.677Z — PASS
 
 book	judgeable	weak% now	weak% baseline
 40	9199	9.0	9.0
@@ -60,6 +60,6 @@ book	judgeable	weak% now	weak% baseline
 217	7325	64.5	64.5
 218	12381	65.7	65.7
 219	75974	65.4	65.4
-220	137246	39.0	39.0
+220	137247	39.0	39.0
 
 contradicted now 0 (baseline 0; 0 resolved since)

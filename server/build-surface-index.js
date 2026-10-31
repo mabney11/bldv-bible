@@ -2623,7 +2623,8 @@ function fixBareChipTranslits(v) {
         let t = '';
         chars.forEach((ch, k) => { const m = CHAR_MAP[ch]; t += m ? (start + k === total - 1 ? m.fin : m.med) : ch; });
         if (!VOWEL_RE.test(t) || t === c.translit) return;
-        const suffix = /^(nme-|prs-|vbe-|uvf-|mod-suff-unk)/.test(c.css || '') && (rootIdx < 0 || i > rootIdx);
+        const suffix = (/^(nme-|prs-|vbe-|uvf-|mod-suff-unk)/.test(c.css || '') && (rootIdx < 0 || i > rootIdx)) ||
+                       (rootIdx >= 0 && i > rootIdx && !Object.prototype.hasOwnProperty.call(c, 'lemmaTranslit'));   // after the head = suffix ("Apawaa")
         c.translit = suffix ? t.toLowerCase() : t.charAt(0).toUpperCase() + t.slice(1);
         hit = true; bareStat.chips++;
     });

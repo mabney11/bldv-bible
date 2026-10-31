@@ -9217,10 +9217,16 @@ function caseComponentTranslits(comps) {
     // (list kept inside: a hoisted function can run before a module-level const is initialised)
     const SUFFIX_CSS_PREFIX_ALL = ['nme-', 'prs-', 'vbe-', 'uvf-', 'mod-suff-unk'];
     const rootIdx = comps.findIndex(c => c && c.css === 'root');
+    // fieldy 2026-10-30 ("ApawaA — suffixes are not to be capitalized"): a chip AFTER its word's
+    // head (root / name / any component carrying lemmaTranslit) in the same token is a suffix,
+    // whatever its colour class — the Aramaic emphatic 𐤀 (mod-art) and the participle 𐤅𐤉 (pfm-ptcp)
+    // were capitalised as if they were prefixes.
+    const isHead = c => c && (c.css === 'root' || c.css === 'mod-nmpr' || Object.prototype.hasOwnProperty.call(c, 'lemmaTranslit'));
+    const afterHead = i => { for (let j = i - 1; j >= 0; j--) if (isHead(comps[j]) && comps[j].token_ordinal === comps[i].token_ordinal) return true; return false; };
     comps.forEach((c, i) => {
         if (!c || !c.translit) return;
         const suffixClass = SUFFIX_CSS_PREFIX_ALL.some(p => c.css && c.css.startsWith(p));
-        const isSuffix = suffixClass && (rootIdx < 0 || i > rootIdx);
+        const isSuffix = (suffixClass && (rootIdx < 0 || i > rootIdx)) || (!isHead(c) && afterHead(i));
         c.translit = isSuffix ? c.translit.toLowerCase() : c.translit.charAt(0).toUpperCase() + c.translit.slice(1);
     });
 }
