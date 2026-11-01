@@ -1,4 +1,4 @@
-HEB-edition readings against their verse's sources (text_src + versions.db + Greek NT glosses), 2026-10-31T23:23:11.508Z
+HEB-edition readings against their verse's sources (text_src + versions.db + Greek NT glosses), 2026-10-31T23:29:52.656Z
 
 book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	blank	confirmed% of judgeable
 40 Matthew	6357	1835	231	302	4324	685	137	0	0	297	90.9

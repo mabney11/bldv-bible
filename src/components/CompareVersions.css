@@ -25,15 +25,6 @@
 .cv-text { font-size: 14px; line-height: 1.55; color: var(--text); overflow-wrap: anywhere; }
 .cv-missing { color: var(--text3); font-style: italic; font-size: 13px; }
 .cv-empty { color: var(--text3); font-size: 13px; padding: 8px 0; }
-.cv-links {
-  display: flex; gap: 8px; flex-wrap: wrap; padding: 8px 0 6px;
-  border-top: 1px solid var(--border);
-}
-.cv-links a {
-  font-size: 12px; font-weight: 600; color: var(--text2); text-decoration: none;
-  border: 1px solid var(--border2); border-radius: 6px; padding: 3px 9px; background: var(--bg3);
-}
-.cv-links a:hover { color: var(--text); background: var(--bg4); }
 @media (max-width: 520px) {
   .cv-row { grid-template-columns: 1fr; gap: 2px; }
 }

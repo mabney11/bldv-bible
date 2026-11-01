@@ -12809,7 +12809,7 @@ app.get('/api/translate/verse', (req, res) => {
 // (canon_id, chapter, verse). NOTHING public reads it: no page, prerender, sitemap or
 // search. Served only here, under /api/admin (the ADMIN_KEY guard 404s everyone else);
 // with no ADMIN_KEY configured (a local dev server) it is open, like the Studio itself.
-// NKJV / NLV are copyrighted and NOT stored — the Studio links to them instead.
+// Copyrighted versions (NKJV, NLV …) are NOT stored, and the Studio does not link to them (fieldy 2026-11-01).
 const VERSIONS_CANDIDATES = [path.join(__dirname, 'versions.db')]
     .concat(process.env.DATA_DIR ? [path.join(process.env.DATA_DIR, 'versions.db')] : []);
 let _versionsDb = null, _versionsStmts = null, _versionsMtime = 0, _versionsCover = new Map();

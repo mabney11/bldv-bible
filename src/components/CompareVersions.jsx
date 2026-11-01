@@ -7,17 +7,11 @@
 //
 // Reads /api/admin/compare-versions (server/versions.db, scripts/build-compare-versions.py):
 // public-domain KJV ASV YLT Darby DRC JPS BBE BSB. Rendered only for the owner session (or a
-// local server with no ADMIN_KEY, where the whole Studio is open). NKJV / NLV are copyrighted,
-// so they are LINKS to BibleGateway, never stored text.
+// local server with no ADMIN_KEY, where the whole Studio is open). No outside links (fieldy 2026-11-01).
 import { useEffect, useState } from 'react';
 import { getAdminStatus } from '../lib/localOverlay.js';
-import { BOOK_NAMES } from '../lib/books.js';
 import './CompareVersions.css';
 
-const LINKED = [
-  ['NKJV', 'New King James Version'],
-  ['NLV', 'New Life Version'],
-];
 const OPEN_KEY = 'tr-compare-open';
 
 export default function CompareVersions({ book, chapter, verse }) {
@@ -49,8 +43,6 @@ export default function CompareVersions({ book, chapter, verse }) {
     setOpen(next);
     try { localStorage.setItem(OPEN_KEY, next ? '1' : '0'); } catch { /* private mode */ }
   };
-  const name = BOOK_NAMES[book];
-  const gatewayRef = name && book <= 66 ? encodeURIComponent(`${name} ${chapter}:${verse}`) : null;
 
   return (
     <section className="cv-section" aria-label="Other English versions (only you can see this)">
@@ -71,16 +63,6 @@ export default function CompareVersions({ book, chapter, verse }) {
               <div className={v.text ? 'cv-text' : 'cv-text cv-missing'}>{v.text || 'not in this edition'}</div>
             </div>
           ))}
-          {gatewayRef && (
-            <div className="cv-links">
-              {LINKED.map(([id, label]) => (
-                <a key={id} href={`https://www.biblegateway.com/passage/?search=${gatewayRef}&version=${id}`}
-                   target="_blank" rel="noopener noreferrer" title={`${label}, on BibleGateway (copyrighted, not stored here)`}>
-                  {id} ↗
-                </a>
-              ))}
-            </div>
-          )}
         </div>
       )}
     </section>
