@@ -7,6 +7,7 @@
  */
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { CARD_SIZES, drawVerseCard, loadCardFonts, cardFileName } from '../lib/verseCard.js';
+import { TRANSLATOR, TRANSLATE_WORD } from './TranslatedMark.jsx';
 import './VerseImageDialog.css';
 
 const PREF_KEY = 'verse-card-prefs';
@@ -17,7 +18,7 @@ const GLOSSES = [
 ];
 const loadPrefs = () => { try { return JSON.parse(localStorage.getItem(PREF_KEY) || '{}') || {}; } catch { return {}; } };
 
-export default function VerseImageDialog({ open, onClose, bookName, chapter, verse, text, family, glossMode: glossDefault, theme: themeDefault, shareUrl }) {
+export default function VerseImageDialog({ open, onClose, bookName, chapter, verse, text, family, glossMode: glossDefault, theme: themeDefault, shareUrl, translated = false }) {
   const canvasRef = useRef(null);
   const saved = useRef(loadPrefs()).current;
   const [size, setSize] = useState(CARD_SIZES.some(s => s.id === saved.size) ? saved.size : 'square');
@@ -41,8 +42,14 @@ export default function VerseImageDialog({ open, onClose, bookName, chapter, ver
 
   useEffect(() => {
     if (!open || !canvasRef.current) return;
-    drawVerseCard(canvasRef.current, { bookName, chapter, verse, text, size, theme, family, glossMode, align });
-  }, [open, fontsReady, bookName, chapter, verse, text, size, theme, family, glossMode, align]);
+    // the 𐤌 translated-by mark: only on a verse fieldy marked "Hebrew (English) verified and proofread"
+    const credit = translated ? {
+      mark: TRANSLATOR.mark,
+      name: `${TRANSLATOR.name} ${TRANSLATOR.surname}`,
+      line: [[TRANSLATE_WORD.translit, true], [` (${TRANSLATE_WORD.gloss}) `, false], ['yad', true], [' (hand)', false]],
+    } : null;
+    drawVerseCard(canvasRef.current, { bookName, chapter, verse, text, size, theme, family, glossMode, align, credit });
+  }, [open, fontsReady, bookName, chapter, verse, text, size, theme, family, glossMode, align, translated]);
 
   useEffect(() => {
     if (!open) return;
@@ -118,6 +125,9 @@ export default function VerseImageDialog({ open, onClose, bookName, chapter, ver
             ))}</div>
           </div>
         </div>
+        <p className="vi-credit-note">{translated
+          ? <>Carries your <b>{TRANSLATOR.mark}</b> mark — this verse is marked verified and proofread.</>
+          : <>No translator mark — this verse isn't marked “Hebrew (English) verified and proofread” in Translation Studio yet.</>}</p>
         <div className="vi-actions">
           <button className="vi-btn vi-primary" onClick={download}>Download PNG</button>
           {canShareFiles && <button className="vi-btn" onClick={share}>Share…</button>}

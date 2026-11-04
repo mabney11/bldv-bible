@@ -2218,6 +2218,7 @@ export default function Reader() {
                         bookName={bookName} chapter={chapter} verse={imageVerse}
                         text={imageVerse != null ? (versesByNum[imageVerse]?.text || '') : ''}
                         family={typefaceStack} glossMode={glossMode}
+                        translated={imageVerse != null && !!(versesByNum[imageVerse]?.verified || versesByNum[imageVerse]?.status === 'done')}
                         theme={theme === 'light' ? 'parchment' : 'night'}
                         shareUrl={imageVerse != null ? `https://www.bldbible.com/${bookToParam(book, idToSlug)}/${chapter}/${imageVerse}` : ''} />
 

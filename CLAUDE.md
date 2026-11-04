@@ -77,6 +77,14 @@ entire verse in it -- presented nicely with a bldbible.com marker".
 - Entry points: ⤓ button in the Reader bar (chapter, book, highlighted verses → PDF; image of a highlighted / ?verse= verse) and in the
   Detailed Verse page bar (image, verse/chapter/book PDF).
 - Verified in Chromium against a mock API (screens, page.pdf in all papers, both cards). Not seen against the real server.
+- **"Hebrew (English) verified and proofread"** (fieldy, same day: "if I mark this, then we show the tag -- no need for 100%
+  across all languages anymore"): `translations.verified_at` (NULL = not marked), a checkbox beside the status select in
+  Translate.jsx → `PUT /api/translate/verified` (owner-only like every write; touches only verified_at, so the provenance
+  triggers never relabel the text). Served as `verified`/`verified_at` by /api/translate/verse and /chapter; /api/translate/marked
+  and the prerender count a verified verse as translated. Gold 𐤌 (verse page, verse image) = verified OR Done; silver = in progress.
+  Done still means Gloss Studio's 100%. studio-sync.mjs carries verified_at (key only when set, so older snapshots still match).
+  The verse image, only for a marked verse: a gold sun (16 long/short rays) with a brown 𐤌 alone in the upper right
+  corner, and under BLDBIBLE.COM a small sun + "Hand translated by MaAratz" (fieldy's wording, 2026-11-04).
 
 ## WHO WROTE EACH VERSION — translations.updated_by / translation_history.saved_by (2026-10-31)
 fieldy: "i dont like how differing versions have the same timestamp -- I want to know which texts I clearly was the one who saved it".

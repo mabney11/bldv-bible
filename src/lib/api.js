@@ -160,6 +160,10 @@ export const apiTransVerse = async (book, ch, v) => {
 };
 
 // Translate — write paths. Each wraps a POST/PUT/DELETE with the right method/body.
+// The Studio's "Hebrew (English) verified and proofread" box — what shows the 𐤌 mark (2026-11-04).
+export const apiTransSetVerified = (book_id, chapter, verse, verified) => jsonFetch('/api/translate/verified', {
+  method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ book_id, chapter, verse, verified: !!verified }),
+});
 export const apiTransSaveVerse = (payload) => jsonFetch('/api/translate/verse', {
   method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
 });

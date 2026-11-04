@@ -376,6 +376,7 @@ export default function VersePage() {
   };
 
   const wordItems = (verseData?.tokens || []).filter(t => t && t.word_raw);
+  const verseTranslated = !!(verseData?.verified || verseData?.status === 'done');
   const chapterHref = addressValid ? `/bible?book=${bookToParam(bookId, idToSlug)}&chapter=${chapter}&verse=${verse}` : '/bible';
   // ── links out to the rest of the app for THIS verse ─────────────────────
   // "individual verses need to have links to the rest of the app" — Reader's
@@ -480,9 +481,11 @@ export default function VersePage() {
             </div>
           ) : (
             <div className="vp-verse">
-              {(verseData.status === 'done' || verseData.status === 'in_progress') && (
+              {/* gold 𐤌 = fieldy marked it "Hebrew (English) verified and proofread" in the Studio
+                  (or Done); silver = touched / in progress */}
+              {(verseTranslated || verseData.status === 'in_progress') && (
                 <TranslatedMark className="vp-tmark" refLabel={verseRef} updatedAt={verseData.updated_at}
-                                variant={verseData.status === 'done' ? 'done' : 'touched'} />
+                                variant={verseTranslated ? 'done' : 'touched'} />
               )}
               <div
                 className="vp-ref-block clickable-comp"
@@ -611,6 +614,7 @@ export default function VersePage() {
       <VerseImageDialog open={imageOpen} onClose={() => setImageOpen(false)}
                         bookName={bookName} chapter={chapter} verse={verse} text={verseData?.text || ''}
                         family={typefaceStack} glossMode={readerPrefs().glossMode}
+                        translated={verseTranslated}
                         theme={readerPrefs().theme === 'light' ? 'parchment' : 'night'}
                         shareUrl={addressValid ? `https://www.bldbible.com/${bookSlugHere}/${chapter}/${verse}` : ''} />
 

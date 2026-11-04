@@ -841,7 +841,7 @@ async function buildVersePathSnapshot(match, port) {
   const modelLinks = models.length
     ? `<h2>See it in 3D</h2>\n      <ul>\n        ${models.map((m) => `<li><a href="${m.base}">${escapeHtml((MODEL_SEO.pages[m.base] || { title: m.name }).title.replace(/ \| BLD Bible$/, ''))}</a></li>`).join('\n        ')}\n      </ul>`
     : '';
-  const translated = data.status === 'done'
+  const translated = (data.verified || data.status === 'done')
     ? `<p>𐤌 MaAratz (Maurice) Yahawaban (Yeban), ibaday (servant of) Yah — tharagam (translated by) yad (hand) — <a href="/progress">translation progress</a>.</p>`
     : '';
   return {

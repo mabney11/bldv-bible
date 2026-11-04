@@ -887,6 +887,10 @@ const translationDb = (() => {
     try { tdb.exec(`ALTER TABLE translation_links ADD COLUMN lang TEXT NOT NULL DEFAULT 'BHS'`); } catch(e) { /* already exists */ }
     try { tdb.exec(`ALTER TABLE translations      ADD COLUMN source_origin TEXT`); } catch(e) { /* already exists */ }
     try { tdb.exec(`ALTER TABLE translations      ADD COLUMN original_text TEXT`); } catch(e) { /* already exists */ }
+    // 2026-11-04: "hebrew (english) verified and proofread" — fieldy's own per-verse flag in the Studio
+    // (NULL = not marked; otherwise when he marked it). Independent of status: 'done' still means the
+    // Gloss Studio 100% (every language glossed); THIS is what earns the 𐤌 mark on the verse page/image.
+    try { tdb.exec(`ALTER TABLE translations      ADD COLUMN verified_at TEXT`); } catch(e) { /* already exists */ }
     // 2026-10-31: who wrote each version — updated_by / saved_by + the 'pipeline' triggers (translation-provenance.cjs)
     require('./translation-provenance.cjs').ensureProvenance(tdb);
 
@@ -895,6 +899,8 @@ const translationDb = (() => {
     tdb.exec(`CREATE INDEX IF NOT EXISTS idx_links_verse_lang ON translation_links(book_id, chapter, verse, lang)`);
     }   // end if(!READ_ONLY): schema init/migration only runs on a writable handle
 
+    const HAS_VERIFIED = tdb.prepare(`PRAGMA table_info(translations)`).all().some(c => c.name === 'verified_at');
+    const VERIFIED_COL = HAS_VERIFIED ? 'verified_at' : 'NULL AS verified_at';
     const HAS_BY = tdb.prepare(`PRAGMA table_info(translations)`).all().some(c => c.name === 'updated_by')
                 && tdb.prepare(`PRAGMA table_info(translation_history)`).all().some(c => c.name === 'saved_by');
     const stmts = {
@@ -930,9 +936,16 @@ const translationDb = (() => {
                 SUM(CASE WHEN status='in_progress' THEN 1 ELSE 0 END) AS in_progress_count
             FROM translations WHERE book_id=?
         `),
-        chapterProgress: tdb.prepare(`SELECT verse, status, text, source_origin, original_text FROM translations WHERE book_id=? AND chapter=?`),
+        chapterProgress: tdb.prepare(`SELECT verse, status, text, source_origin, original_text, ${VERIFIED_COL} FROM translations WHERE book_id=? AND chapter=?`),
         allProgress:     tdb.prepare(`SELECT book_id, chapter, verse, status FROM translations`),
-        markedVerses:    tdb.prepare(`SELECT book_id, chapter, verse, status, updated_at FROM translations WHERE status IN ('done','in_progress') ORDER BY book_id, chapter, verse`),
+        markedVerses:    tdb.prepare(`SELECT book_id, chapter, verse, status, updated_at, ${VERIFIED_COL} FROM translations WHERE status IN ('done','in_progress')${HAS_VERIFIED ? ' OR verified_at IS NOT NULL' : ''} ORDER BY book_id, chapter, verse`),
+        // the Studio's "verified and proofread" box — only verified_at changes (the provenance
+        // triggers watch text/rich_text/status, so this never relabels who wrote the text)
+        setVerified: HAS_VERIFIED ? tdb.prepare(`
+            INSERT INTO translations(book_id, chapter, verse, status, text, rich_text, verified_at, updated_at)
+            VALUES(?,?,?, 'none', '', '', ?, datetime('now'))
+            ON CONFLICT(book_id,chapter,verse) DO UPDATE SET verified_at=excluded.verified_at
+        `) : null,
         // Links are scoped to a language.
         getLinks: tdb.prepare(`
             SELECT * FROM translation_links
@@ -12313,7 +12326,7 @@ app.get('/api/translate/marked', (req, res) => {
     try {
         const rows = translationDb.stmts.markedVerses.all();
         res.set('Cache-Control', 'public, max-age=60');
-        res.json({ verses: rows.map(r => ({ b: r.book_id, c: r.chapter, v: r.verse, s: r.status === 'done' ? 'd' : 'p', t: r.updated_at || null })) });
+        res.json({ verses: rows.map(r => ({ b: r.book_id, c: r.chapter, v: r.verse, s: (r.verified_at || r.status === 'done') ? 'd' : 'p', t: r.verified_at || r.updated_at || null })) });
     } catch (err) {
         console.error('/api/translate/marked failed:', err);
         res.status(500).json({ error: err.message });
@@ -12498,7 +12511,7 @@ function buildEnglishChapter(bookId, chapter, lang = 'BHS') {
             const isUntouchedDraft = isUntouchedBaselineDraft(s);
             const isUserOverride = !!savedText && !isUntouchedDraft;
             const text = isUserOverride ? savedText : applyLiveGloss(savedText || englishBaseline(bookId, chapter, r.verse), bookId, chapter);
-            return { verse: r.verse, status: s?.status || 'none', text, links: linksByVerse[r.verse] || [] };
+            return { verse: r.verse, status: s?.status || 'none', verified: !!s?.verified_at, verified_at: s?.verified_at || null, text, links: linksByVerse[r.verse] || [] };
         });
         const total       = verses.length;
         const done        = verses.filter(v => v.status === 'done').length;
@@ -12786,7 +12799,9 @@ app.get('/api/translate/verse', (req, res) => {
             book_id: bookId, chapter, verse, lang,
             token_source: tokenSource,   // author links against THIS, not `lang`
             status:    saved?.status    || 'none',
-            updated_at: saved?.status === 'done' ? (saved.updated_at || null) : null,   // the 𐤌 badge's date
+            verified:  !!saved?.verified_at,           // "hebrew (english) verified and proofread" (Studio box)
+            verified_at: saved?.verified_at || null,
+            updated_at: saved?.verified_at || (saved?.status === 'done' ? (saved.updated_at || null) : null),   // the 𐤌 badge's date
             text:      savedText || baseline,
             rich_text: saved?.rich_text || '',
             prefilled: !savedText && !!baseline,        // box holds baseline, not your own text
@@ -13119,6 +13134,24 @@ app.put('/api/translate/verse', (req, res) => {
         res.json({ ok: true, book_id, chapter, verse, status: st });
     } catch(err) {
         console.error('PUT /api/translate/verse failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// PUT /api/translate/verified { book_id, chapter, verse, verified }
+// fieldy, 2026-11-04: a Studio flag "hebrew (english) verified and proofread" — marking it is what
+// shows the 𐤌 translated-by mark (verse page, verse images); no 100% across every language needed.
+app.put('/api/translate/verified', (req, res) => {
+    try {
+        const { book_id, chapter, verse, verified } = req.body || {};
+        if (!book_id || !chapter || !Number.isInteger(verse)) return res.status(400).json({ error: 'book_id, chapter, verse required' });
+        if (!translationDb.stmts.setVerified) return res.status(503).json({ error: 'translation.db has no verified_at column (read-only handle?)' });
+        const at = verified ? new Date().toISOString().slice(0, 19).replace('T', ' ') : null;
+        translationDb.stmts.setVerified.run(book_id, chapter, verse, at);
+        translationDb.bumpWriteVersion();
+        res.json({ ok: true, book_id, chapter, verse, verified: !!at, verified_at: at });
+    } catch (err) {
+        console.error('PUT /api/translate/verified failed:', err);
         res.status(500).json({ error: err.message });
     }
 });

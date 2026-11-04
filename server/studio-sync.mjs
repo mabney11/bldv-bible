@@ -87,8 +87,12 @@ function keyOrder(a, b) {
 }
 function exportDb(db) {
   const snap = emptySnap();
-  for (const r of db.prepare(`SELECT book_id, chapter, verse, status, text, rich_text, updated_at, ${HAS_BY ? 'updated_by' : "'' AS updated_by"} FROM translations WHERE rich_text != '' OR status != 'none' ORDER BY book_id, chapter, verse`).iterate()) {
-    snap.translations.set(`${r.book_id}:${r.chapter}:${r.verse}`, { status: r.status, text: r.text ?? '', rich_text: r.rich_text ?? '', updated_at: r.updated_at ?? '', updated_by: r.updated_by ?? '' });
+  for (const r of db.prepare(`SELECT book_id, chapter, verse, status, text, rich_text, updated_at, ${HAS_BY ? 'updated_by' : "'' AS updated_by"}, ${HAS_VERIFIED ? 'verified_at' : 'NULL AS verified_at'} FROM translations WHERE rich_text != '' OR status != 'none'${HAS_VERIFIED ? ' OR verified_at IS NOT NULL' : ''} ORDER BY book_id, chapter, verse`).iterate()) {
+    const row = { status: r.status, text: r.text ?? '', rich_text: r.rich_text ?? '', updated_at: r.updated_at ?? '', updated_by: r.updated_by ?? '' };
+    // the Studio's "verified and proofread" box (2026-11-04) — the key only when set, so snapshots
+    // written before the flag existed still compare equal to an unverified verse
+    if (r.verified_at) row.verified_at = r.verified_at;
+    snap.translations.set(`${r.book_id}:${r.chapter}:${r.verse}`, row);
   }
   for (const r of db.prepare(`SELECT book_id, chapter, verse, lang, english_phrase, english_indices, token_ordinals, component_hint, color_index, sort_order FROM translation_links ORDER BY book_id, chapter, verse, lang, sort_order, id`).iterate()) {
     if (AUTO_LANGS.has(r.lang)) continue;
@@ -144,6 +148,7 @@ function apply(db, merged, ours, dry) {
   const setBy = HAS_BY ? db.prepare(`UPDATE translations SET updated_by=? WHERE book_id=? AND chapter=? AND verse=?`) : { run() {} };
   const upsert = db.prepare(`INSERT INTO translations(book_id, chapter, verse, status, text, rich_text, updated_at) VALUES(?,?,?,?,?,?,?)
     ON CONFLICT(book_id,chapter,verse) DO UPDATE SET status=excluded.status, text=excluded.text, rich_text=excluded.rich_text, updated_at=excluded.updated_at`);
+  const setVerified = HAS_VERIFIED ? db.prepare(`UPDATE translations SET verified_at=? WHERE book_id=? AND chapter=? AND verse=?`) : { run() {} };
   const delLinks = db.prepare(`DELETE FROM translation_links WHERE book_id=? AND chapter=? AND verse=? AND lang=?`);
   const insLink = db.prepare(`INSERT INTO translation_links(book_id, chapter, verse, lang, english_phrase, english_indices, token_ordinals, component_hint, color_index, sort_order) VALUES(?,?,?,?,?,?,?,?,?,?)`);
   const getHeading = db.prepare(`SELECT id FROM headings WHERE book_id=? AND level=? AND chapter=? AND verse=? AND sort_order=? ORDER BY id LIMIT 1`);
@@ -156,8 +161,8 @@ function apply(db, merged, ours, dry) {
       const [b, c, v] = k.split(':').map(Number), m = merged.translations.get(k);
       const cur = getVerse.get(b, c, v);
       if (cur && (cur.rich_text !== '' || cur.status !== 'none')) history.run(b, c, v, cur.status, cur.text, cur.rich_text, cur.updated_at || now(), cur.updated_by || '');   // the same snapshot a Studio save takes
-      if (m) { upsert.run(b, c, v, m.status, m.text, m.rich_text, m.updated_at || now()); setBy.run(m.updated_by || '', b, c, v); }
-      else if (cur) upsert.run(b, c, v, 'none', cur.original_text ?? cur.text, '', now());   // un-edited on the other side: back to the corpus text (the history row keeps the old one)
+      if (m) { upsert.run(b, c, v, m.status, m.text, m.rich_text, m.updated_at || now()); setBy.run(m.updated_by || '', b, c, v); setVerified.run(m.verified_at || null, b, c, v); }
+      else if (cur) { upsert.run(b, c, v, 'none', cur.original_text ?? cur.text, '', now()); setVerified.run(null, b, c, v); }   // un-edited on the other side: back to the corpus text (the history row keeps the old one)
     }
     for (const k of plan.links) {
       const [b, c, v, lang] = k.split(':'); const m = merged.links.get(k) || [];
@@ -184,6 +189,8 @@ if (!fs.existsSync(DB_PATH)) { console.error(`[studio-sync] no database at ${DB_
 const db = new Database(DB_PATH);
 if (PROV) PROV.ensureProvenance(db);   // updated_by / saved_by columns + the pipeline-label triggers
 const HAS_BY = db.prepare(`PRAGMA table_info(translations)`).all().some(c => c.name === 'updated_by') && db.prepare(`PRAGMA table_info(translation_history)`).all().some(c => c.name === 'saved_by');
+try { db.exec(`ALTER TABLE translations ADD COLUMN verified_at TEXT`); } catch { /* already there */ }
+const HAS_VERIFIED = db.prepare(`PRAGMA table_info(translations)`).all().some(c => c.name === 'verified_at');
 db.pragma('journal_mode = WAL');
 
 if (cmd === 'export') {

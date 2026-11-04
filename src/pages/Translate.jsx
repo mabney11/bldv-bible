@@ -8,7 +8,7 @@ import WordBlock from '../components/WordBlock.jsx';
 import CompareVersions from '../components/CompareVersions.jsx';
 import {
   apiTransProgress, apiTransChapter, apiTransVerse, apiTransBookText,
-  apiTransSaveVerse, apiTransHistory, apiTransRevertToHistory, apiTransDeleteHistory,
+  apiTransSaveVerse, apiTransSetVerified, apiTransHistory, apiTransRevertToHistory, apiTransDeleteHistory,
   apiTransLink, apiTransUnlink, apiTransUpdateLink,
   apiTokens, apiBookOrder, apiAutoGlossWords,
   apiHeadings, apiHeadingCreate, apiHeadingUpdate, apiHeadingDelete,
@@ -1469,6 +1469,25 @@ export default function Translate() {
     saveVerse({ status: newStatus });
   }, [saveVerse]);
 
+  // "Hebrew (English) verified and proofread" — fieldy's own sign-off on a verse (2026-11-04).
+  // Marking it shows the 𐤌 translated-by mark on the verse page and on verse images; it does not
+  // touch the text or the status (Done still means Gloss Studio's 100%). Server only — owner flag.
+  const [verifySaving, setVerifySaving] = useState(false);
+  const setVerified = useCallback(async (on) => {
+    if (!verseData) return;
+    let { isAdmin: admin } = await getAdminStatus();
+    if (!admin) ({ isAdmin: admin } = await refreshAdminStatus());
+    if (!admin) { toast('Only the owner can mark a verse verified — log in as admin in this tab.', 'err', 6000); return; }
+    setVerifySaving(true);
+    try {
+      const r = await apiTransSetVerified(activeBook, activeChapter, activeVerse, on);
+      setVerseData(d => d ? { ...d, verified: !!r?.verified, verified_at: r?.verified_at || null } : d);
+      toast(on ? 'Marked verified and proofread — the 𐤌 mark now shows' : 'Verified mark removed', 'ok');
+    } catch (e) {
+      toast(`Could not save the verified mark: ${e?.message || e}`, 'err', 6000);
+    } finally { setVerifySaving(false); }
+  }, [verseData, activeBook, activeChapter, activeVerse, toast]);
+
   // ── LINKER ────────────────────────────────────────────────────────────────
   const enWords = useMemo(
     () => (verseData?.text || '').trim().split(/\s+/).filter(Boolean),
@@ -2029,6 +2048,12 @@ export default function Translate() {
                   <option value="in_progress">In progress</option>
                   <option value="done">Done</option>
                 </select>
+                <label className={`tr-verified ${verseData.verified ? 'on' : ''}`}
+                       title="Marking this shows the 𐤌 translated-by-MaAratz mark on the verse page and on verse images. It does not change the text or the status.">
+                  <input type="checkbox" checked={!!verseData.verified} disabled={verifySaving}
+                         onChange={e => setVerified(e.target.checked)} />
+                  <span>Hebrew (English) verified and proofread</span>
+                </label>
                 <span className="tr-save-status">
                   {saveState === 'saving' && 'Saving…'}
                   {saveState === 'saved'  && (verseData.local ? '✓ Saved locally' : '✓ Saved')}

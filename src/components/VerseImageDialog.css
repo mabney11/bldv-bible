@@ -51,3 +51,6 @@
 button.rd-menu-item { width: 100%; text-align: left; font: inherit; }
 button.rd-menu-item:disabled { opacity: .5; cursor: default; }
 .rd-menu-note { padding: 8px 10px 2px; font-size: 12px; line-height: 1.45; color: var(--pr-faint, #857b67); font-family: system-ui, sans-serif; max-width: 260px; }
+
+.vi-credit-note { font-size: 12px; line-height: 1.45; color: var(--pr-faint, #857b67); margin: -4px 0 12px; }
+.vi-credit-note b { color: var(--pr-accent, #d7a54c); font-family: 'BLD Paleo', serif; font-weight: 400; }

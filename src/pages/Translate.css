@@ -153,6 +153,14 @@
 .tr-status-select.in_progress { border-color: var(--amber, var(--gold)); color: var(--amber, var(--gold)); }
 .tr-status-select.done        { border-color: var(--green); color: var(--green); }
 .tr-save-status { font-size: 12px; color: var(--text3); }
+/* "Hebrew (English) verified and proofread" — the flag that shows the 𐤌 mark */
+.tr-verified {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text3); cursor: pointer;
+  padding: 4px 9px; border: 1px solid var(--border2); border-radius: 6px;
+}
+.tr-verified input { accent-color: var(--gold); cursor: pointer; }
+.tr-verified.on { color: var(--gold); border-color: var(--gold); }
 
 /* MODE TABS */
 .tr-mode-tabs {

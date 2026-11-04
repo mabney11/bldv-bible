@@ -1,7 +1,9 @@
 /**
  * verseCard — draws one verse as a shareable picture (PNG), the Detailed Verse
  * page's look: book name in spaced gold capitals, the big chapter:verse, the
- * verse with each transliterated root in the reader's gold, and a bldbible.com
+ * verse with each transliterated root in the reader's gold, a BLDBIBLE.COM tag, and — on a verse
+ * fieldy marked "Hebrew (English) verified and proofread" in the Studio — his 𐤌 translated-by mark,
+ * and a bldbible.com
  * mark at the foot. fieldy, 2026-11-04: "the ability to download an image with
  * the entire verse in it -- presented nicely with a bldbible.com marker on it".
  *
@@ -24,11 +26,13 @@ export const CARD_SIZES = [
 export const CARD_THEMES = {
   night: {
     bg: '#14110c', glowTop: 'rgba(215,165,76,0.07)', glowBottom: 'rgba(0,0,0,0.30)',
-    ink: '#ece4d4', soft: '#b6ac97', faint: '#857b67', accent: '#d7a54c', root: '#b48a3c', rule: 'rgba(215,165,76,0.45)',
+    ink: '#ece4d4', soft: '#b6ac97', faint: '#857b67', accent: '#d7a54c', root: '#b48a3c', rule: 'rgba(215,165,76,0.45)', seal: 'rgba(215,165,76,0.10)',
+    sunHi: '#f6d987', sunMid: '#dcaa45', sunLo: '#b07d26', sunInk: '#4a2c10',
   },
   parchment: {
     bg: '#efe4cc', glowTop: 'rgba(154,106,30,0.10)', glowBottom: 'rgba(107,78,31,0.14)',
-    ink: '#2b2117', soft: '#5d5240', faint: '#8a7d62', accent: '#9a6a1e', root: '#9a6a1e', rule: 'rgba(154,106,30,0.50)',
+    ink: '#2b2117', soft: '#5d5240', faint: '#8a7d62', accent: '#9a6a1e', root: '#9a6a1e', rule: 'rgba(154,106,30,0.50)', seal: 'rgba(154,106,30,0.10)',
+    sunHi: '#f3cf72', sunMid: '#d29d33', sunLo: '#9a6a1e', sunInk: '#4a2c10',
   },
 };
 
@@ -161,9 +165,13 @@ export function drawVerseCard(canvas, o) {
   ctx.textAlign = 'left';
   const headBottom = y + Math.round(56 * unit);
 
-  // ── foot: rule + bldbible.com ──
+  // ── foot: rule + BLDBIBLE.COM, and — on a verse fieldy marked "Hebrew (English) verified and
+  //    proofread" — a small seal under it: "Hand translated by MaAratz". The big 𐤌 seal (no text)
+  //    sits in the upper right corner. (fieldy, 2026-11-04)
   const markPx = Math.round(26 * unit);
-  const footY = H - padBottom;
+  const notePx = Math.round(21 * unit);
+  const miniD = Math.round(24 * unit);
+  const footY = H - padBottom - (o.credit ? miniD * 1.56 + Math.round(16 * unit) : 0);
   const ruleY = footY - markPx - Math.round(26 * unit);
   ctx.fillStyle = th.rule;
   const ruleW = Math.round(56 * unit);
@@ -171,7 +179,60 @@ export function drawVerseCard(canvas, o) {
   ctx.fillStyle = th.accent;
   ctx.font = `700 ${markPx}px ${family}`;
   spaced(ctx, 'BLDBIBLE.COM', x0, footY, markPx * 0.26, center ? 'center' : 'left');
-  const textBottom = ruleY - Math.round(48 * unit);
+  let textBottom = ruleY - Math.round(48 * unit);
+
+  // The 𐤌 badge is a gold sun: a starburst of long and short rays around a gold disk, with a brown
+  // Mayam (𐤌) in the middle (fieldy, 2026-11-04: "a gold sun with a brown Mayam character as the tag").
+  // d = the disk's diameter; the rays reach out to about 1.5x that.
+  const seal = (cx, cy, d) => {
+    const r = d / 2;
+    const rays = 16;
+    const long = r * 1.55, short = r * 1.22, valley = r * 0.98;
+    ctx.save();
+    // rays
+    ctx.beginPath();
+    for (let i = 0; i < rays * 2; i++) {
+      const a = (i / (rays * 2)) * Math.PI * 2 - Math.PI / 2;
+      const tip = i % 2 === 0;
+      const rr = tip ? ((i / 2) % 2 === 0 ? long : short) : valley;
+      const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    let g = ctx.createRadialGradient(cx, cy, r * 0.6, cx, cy, long);
+    g.addColorStop(0, th.sunHi); g.addColorStop(1, th.sunLo);
+    ctx.fillStyle = g; ctx.fill();
+    // disk (no outline — rays and disk read as one sun)
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    g = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.35, r * 0.1, cx, cy, r);
+    g.addColorStop(0, th.sunHi); g.addColorStop(1, th.sunMid);
+    ctx.fillStyle = g; ctx.fill();
+    // the brown Mayam
+    ctx.fillStyle = th.sunInk;
+    ctx.font = `400 ${Math.round(d * 0.66)}px 'BLD Paleo', 'Noto Sans Phoenician', serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(o.credit.mark, cx, cy + d * 0.09);   // BLD Paleo's 𐤌 sits high on 'middle'
+    ctx.restore();
+  };
+  if (o.credit) {
+    // upper right: the mark alone, level with the book name / reference
+    const bigD = Math.round(82 * unit);           // disk; with its rays the sun is ~127 px across
+    seal(W - padX - bigD * 0.78, padTop + bigD * 0.72, bigD);
+    // under BLDBIBLE.COM: small seal + the plain-English clarification
+    const label = o.credit.note || 'Hand translated by MaAratz';
+    ctx.font = `400 ${notePx}px ${family}`;
+    const lw = ctx.measureText(label).width;
+    const gap = Math.round(12 * unit);
+    const rowW = miniD * 1.56 + gap + lw;
+    const rx = center ? W / 2 - rowW / 2 : padX;
+    const cy = H - padBottom - miniD * 0.78;
+    seal(rx + miniD * 0.78, cy, miniD);
+    ctx.fillStyle = th.soft;
+    ctx.font = `400 ${notePx}px ${family}`;
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, rx + miniD * 1.56 + gap, cy + Math.round(1 * unit));
+    ctx.textBaseline = 'alphabetic';
+  }
 
   // ── the verse: largest size that fits the space between head and foot ──
   const words = toWords(verseRuns(o.text, o.glossMode));
