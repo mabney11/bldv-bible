@@ -1,0 +1,53 @@
+/* Verse image dialog — sits over the reader, uses its tokens (--pr-*). */
+.vi-scrim {
+  position: fixed; inset: 0; z-index: 80;
+  background: rgba(0,0,0,.55);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  animation: rd-pop .16s ease;
+}
+.vi-dialog {
+  width: min(560px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  background: var(--pr-bg-raise, #1c1811);
+  color: var(--pr-ink, #ece4d4);
+  border: 1px solid var(--pr-rule, #2c2519);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.5);
+  padding: 14px 16px 16px;
+  font-family: system-ui, sans-serif;
+}
+.vi-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.vi-title { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--pr-faint, #857b67); }
+.vi-close { font-size: 24px; line-height: 1; padding: 0 6px; color: var(--pr-ink-soft, #b6ac97); }
+.vi-preview {
+  margin: 0 auto 12px;
+  display: flex; justify-content: center;
+}
+.vi-canvas {
+  display: block;
+  width: auto; height: auto;
+  max-width: 100%; max-height: 56vh; max-height: 56dvh;
+  border-radius: 10px;
+  box-shadow: 0 6px 22px rgba(0,0,0,.35);
+}
+.vi-opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.vi-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.vi-label { width: 52px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--pr-faint, #857b67); }
+.vi-group { display: inline-flex; border: 1px solid var(--pr-rule, #2c2519); border-radius: 9px; overflow: hidden; }
+.vi-chip { font-size: 13px; padding: 6px 10px; color: var(--pr-ink-soft, #b6ac97); }
+.vi-chip + .vi-chip { border-left: 1px solid var(--pr-rule, #2c2519); }
+.vi-chip.on { background: var(--pr-accent, #d7a54c); color: #1a140b; font-weight: 600; }
+.vi-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.vi-btn {
+  font-size: 14px; padding: 9px 14px; border-radius: 10px;
+  border: 1px solid var(--pr-rule, #2c2519); color: var(--pr-ink, #ece4d4);
+}
+.vi-primary { background: var(--pr-accent, #d7a54c); border-color: transparent; color: #1a140b; font-weight: 600; }
+.vi-msg { font-size: 12px; color: var(--pr-ink-soft, #b6ac97); }
+
+/* the ⤓ "Save" menu's rows that are buttons (not links) in the reader menus */
+button.rd-menu-item { width: 100%; text-align: left; font: inherit; }
+button.rd-menu-item:disabled { opacity: .5; cursor: default; }
+.rd-menu-note { padding: 8px 10px 2px; font-size: 12px; line-height: 1.45; color: var(--pr-faint, #857b67); font-family: system-ui, sans-serif; max-width: 260px; }

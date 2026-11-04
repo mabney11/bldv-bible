@@ -21,6 +21,9 @@ import { TYPEFACES } from '../lib/typefaces.js';
 // dangerouslySetInnerHTML, same pattern as WordBlock.jsx) makes them match.
 import { paleoToSVG } from '../lib/paleoGlyphs.js';
 import { usePaleoMode } from '../hooks/usePaleoMode.js';
+// ⤓ Save: this chapter / book / highlighted verses as a PDF (/print), a verse as an image.
+import VerseImageDialog from '../components/VerseImageDialog.jsx';
+import { printHref } from '../lib/readerExport.js';
 import { RD_SCROLL_KEY, RD_RETURN_VERSE_KEY, readSession, writeSession, removeSession,
          stampArrival, captureView, encodeView, decodeView, planRestore, applyView } from '../lib/readerScrollMemory.js';
 
@@ -29,7 +32,7 @@ import { RD_SCROLL_KEY, RD_RETURN_VERSE_KEY, readSession, writeSession, removeSe
 // (stray non-paleo content in a .paleo field) stays plain, escaped text.
 const READER_PALEO_RE = /[\u{10900}-\u{1091F}]/u;
 const readerHasPaleo = s => READER_PALEO_RE.test(s || '');
-function ReaderPaleoText({ text, className, dir, block }) {
+export function ReaderPaleoText({ text, className, dir, block }) {
   if (!text) return null;
   const Tag = block ? 'div' : 'span';
   return readerHasPaleo(text)
@@ -162,7 +165,7 @@ const MARK_MODE_KEY = 'reader-mark-mode';
 // the acrostic stanza heading (Psalm 119, 25, 34, 37, 111, 112, 145, Lamentations
 // 1-4, Proverbs 31) so the letter isn't just a label but carries its picture, e.g.
 // "𐤀 – Alap (strength)". Keyed by the paleo glyph headings.json already sends.
-const LETTER_MEANING = {
+export const LETTER_MEANING = {
   '𐤀': 'strength', '𐤁': 'house',   '𐤂': 'camel',   '𐤃': 'door',
   '𐤄': 'behold',   '𐤅': 'nail',    '𐤆': 'weapon',  '𐤇': 'fence',
   '𐤈': 'surround', '𐤉': 'hand',    '𐤊': 'palm',    '𐤋': 'goad',
@@ -792,7 +795,7 @@ export function renderVerseNodesWithQuotes(t, mode) {
 // THIS book's own verse numbers).
 const QUOTE_MARK_RE = /(["'‘’“”]{1,2})(\d{1,3})\.\s+/g;
 const QUOTE_CLOSE_RE = /\.\s*["'‘’“”]{1,2}(?=\s|$)/g;
-function splitScriptureQuote(raw) {
+export function splitScriptureQuote(raw) {
   if (!raw || typeof raw !== 'string') return null;
   QUOTE_MARK_RE.lastIndex = 0;
   const marks = [];
@@ -846,7 +849,7 @@ function preceptCitation(items) {
   return { book: best.book, chapter: best.chapter, verseStart: best.verse, verseEnd: best.verseEnd !== best.verse ? best.verseEnd : null,
            label: refLabel(best.name, best.chapter, best.verse, best.verseEnd) };
 }
-function renderScriptureQuote(q, mode, key, citation, idToSlug) {
+export function renderScriptureQuote(q, mode, key, citation, idToSlug) {
   const body = (
     <>
       {q.lines.map((l, i) => (
@@ -1539,6 +1542,11 @@ export default function Reader() {
   // lit; tapping the already-lit verse still clears it in both modes.
   const [marks, setMarks] = useState(() => new Set());
   const markKey = (vnum) => `${book}:${chapter}:${vnum}`;
+  // highlighted verses of THIS chapter, in order — what the ⤓ Save menu offers to save
+  const markedHere = useMemo(() => {
+    const pre = `${book}:${chapter}:`;
+    return [...marks].filter(k => k.startsWith(pre)).map(k => +k.slice(pre.length)).filter(Number.isFinite).sort((a, b) => a - b);
+  }, [marks, book, chapter]);
   const toggleMark = useCallback((vnum) => {
     const k = `${book}:${chapter}:${vnum}`;
     setMarks(prev => {
@@ -1714,9 +1722,11 @@ export default function Reader() {
   const [bookQuery, setBookQuery] = useState('');
   const [aaOpen, setAaOpen]       = useState(false);
   const [switchOpen, setSwitchOpen] = useState(false);
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [imageVerse, setImageVerse] = useState(null); // verse number whose image dialog is open
 
   const openNav  = () => { setBookQuery(''); setAaOpen(false); setSwitchOpen(false); setNavOpen(true); };
-  const closeAll = () => { setAaOpen(false); setSwitchOpen(false); };
+  const closeAll = () => { setAaOpen(false); setSwitchOpen(false); setSaveOpen(false); };
 
   // Land the picker already scrolled to where you are, in both columns, instead of
   // opening at the top of Genesis chapter 1 every time. Each column keeps a ref to
@@ -1837,13 +1847,13 @@ export default function Reader() {
     const onKey = (e) => {
       const t = e.target;
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
-      if (navOpen || aaOpen || switchOpen) return;
+      if (navOpen || aaOpen || switchOpen || saveOpen || imageVerse != null) return;
       if (e.key === 'ArrowLeft') { if (prevLoc) { e.preventDefault(); go(prevLoc.b, prevLoc.c, null); } }
       else if (e.key === 'ArrowRight') { if (nextLoc) { e.preventDefault(); go(nextLoc.b, nextLoc.c, null); } }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [prevLoc, nextLoc, go, navOpen, aaOpen, switchOpen]);
+  }, [prevLoc, nextLoc, go, navOpen, aaOpen, switchOpen, saveOpen, imageVerse]);
 
   // Swipe left/right → next/prev chapter (mobile).
   const touch = useRef(null);
@@ -2048,9 +2058,11 @@ export default function Reader() {
         </button>
 
         <div className="rd-bar-right">
-          <button className={`rd-bar-btn ${switchOpen ? 'on' : ''}`} onClick={() => { setSwitchOpen(o => !o); setAaOpen(false); }}
+          <button className={`rd-bar-btn rd-save-btn ${saveOpen ? 'on' : ''}`} onClick={() => { setSaveOpen(o => !o); setSwitchOpen(false); setAaOpen(false); }}
+                  title="Save as PDF or image" aria-label="Save as PDF or image" aria-haspopup="menu" aria-expanded={saveOpen}>⤓</button>
+          <button className={`rd-bar-btn ${switchOpen ? 'on' : ''}`} onClick={() => { setSwitchOpen(o => !o); setAaOpen(false); setSaveOpen(false); }}
                   title="Switch reader" aria-label="Switch reader">⇄</button>
-          <button className={`rd-bar-btn rd-aa ${aaOpen ? 'on' : ''}`} onClick={() => { setAaOpen(o => !o); setSwitchOpen(false); }}
+          <button className={`rd-bar-btn rd-aa ${aaOpen ? 'on' : ''}`} onClick={() => { setAaOpen(o => !o); setSwitchOpen(false); setSaveOpen(false); }}
                   title="Text size, typeface & theme" aria-label="Text size, typeface and theme">A<span className="rd-aa-sm">a</span></button>
         </div>
 
@@ -2063,6 +2075,37 @@ export default function Reader() {
                 <span className="rd-menu-item-hint">{r.hint}</span>
               </Link>
             ))}
+          </div>
+        )}
+
+        {saveOpen && (
+          <div className="rd-menu rd-menu-switch" role="menu">
+            <div className="rd-menu-head">Save</div>
+            {markedHere.length > 0 && (
+              <Link className="rd-menu-item" role="menuitem" onClick={closeAll}
+                    to={printHref(bookToParam(book, idToSlug), chapter, markedHere)}>
+                <span className="rd-menu-item-label">Highlighted {markedHere.length === 1 ? 'verse' : 'verses'} — PDF</span>
+                <span className="rd-menu-item-hint">{chapterBookName} {chapter}:{markedHere.length === 1 ? markedHere[0] : `${markedHere[0]}…${markedHere[markedHere.length - 1]}`}</span>
+              </Link>
+            )}
+            {script === 'english' && (markedHere.length > 0 ? markedHere.slice(0, 3) : verse != null ? [verse] : []).filter(v => versesByNum[v]?.text).map(v => (
+              <button type="button" key={`img-${v}`} className="rd-menu-item" role="menuitem"
+                      onClick={() => { closeAll(); setImageVerse(v); }}>
+                <span className="rd-menu-item-label">Image of verse {v}</span>
+                <span className="rd-menu-item-hint">A picture of {chapter}:{v} with the bldbible.com mark</span>
+              </button>
+            ))}
+            <Link className="rd-menu-item" role="menuitem" onClick={closeAll} to={printHref(bookToParam(book, idToSlug), chapter)}>
+              <span className="rd-menu-item-label">This chapter — PDF</span>
+              <span className="rd-menu-item-hint">{chapterBookName} {chapter}</span>
+            </Link>
+            <Link className="rd-menu-item" role="menuitem" onClick={closeAll} to={printHref(bookToParam(book, idToSlug))}>
+              <span className="rd-menu-item-label">The whole book — PDF</span>
+              <span className="rd-menu-item-hint">{bookName}</span>
+            </Link>
+            {markedHere.length === 0 && (
+              <div className="rd-menu-note">Tap verse numbers to highlight verses, then save just those — or make an image of one.</div>
+            )}
           </div>
         )}
 
@@ -2169,7 +2212,14 @@ export default function Reader() {
         )}
       </header>
 
-      {(aaOpen || switchOpen) && <div className="rd-scrim rd-scrim-menu" onClick={closeAll} />}
+      {(aaOpen || switchOpen || saveOpen) && <div className="rd-scrim rd-scrim-menu" onClick={closeAll} />}
+
+      <VerseImageDialog open={imageVerse != null} onClose={() => setImageVerse(null)}
+                        bookName={bookName} chapter={chapter} verse={imageVerse}
+                        text={imageVerse != null ? (versesByNum[imageVerse]?.text || '') : ''}
+                        family={typefaceStack} glossMode={glossMode}
+                        theme={theme === 'light' ? 'parchment' : 'night'}
+                        shareUrl={imageVerse != null ? `https://www.bldbible.com/${bookToParam(book, idToSlug)}/${chapter}/${imageVerse}` : ''} />
 
       {/* ── reading surface ─────────────────────────────────────────────────── */}
       <main className="rd-scroll" ref={scrollRef} onScroll={handleReaderScroll} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>

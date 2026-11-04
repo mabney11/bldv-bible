@@ -20,6 +20,7 @@ import Landing from './pages/Landing.jsx';
 // downloaded — no component's behavior changes.
 const HebrewViewer     = lazy(() => import('./pages/HebrewViewer.jsx'));
 const Parallel         = lazy(() => import('./pages/Parallel.jsx'));
+const PrintView        = lazy(() => import('./pages/PrintView.jsx'));
 const Lexicon          = lazy(() => import('./pages/Lexicon.jsx'));
 const Translate        = lazy(() => import('./pages/Translate.jsx'));
 const Guide            = lazy(() => import('./pages/Guide.jsx'));
@@ -393,6 +394,7 @@ export default function App() {
         <Route path="/parallel/:bookSlug/:chapterVerse" element={<Parallel />} />
         <Route path="/parallel/:bookSlug" element={<Parallel />} />
         <Route path="/bible"          element={<Reader />} />
+        <Route path="/print"          element={<PrintView />} />
         <Route path="/lexicon-page"   element={<Lexicon />} />
         <Route path="/lexicon"        element={<Lexicon />} />
         <Route path="/translate"      element={<Translate />} />

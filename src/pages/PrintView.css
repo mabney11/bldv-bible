@@ -1,0 +1,163 @@
+/* ── PrintView — /print: the reader laid out for paper (PDF) ─────────────────
+   Built on Reader.css (.reader-root tokens, .rd-* text classes). Only adds the
+   page flow, three papers, the toolbar and the printed sheet. */
+
+/* The reader shell is a fixed, scrolling viewport; this page is a document. */
+.reader-root.pp-root {
+  position: static;
+  display: block;
+  min-height: 100vh;
+  overflow: visible;
+}
+.reader-root.pp-root::before { display: none; }
+.pp-root .rd-chapter { animation: none; }
+
+/* Papers — higher specificity than [data-theme] .reader-root so the paper
+   chosen here wins over the app's own light/dark setting. Night and Parchment
+   are the reader's own two themes, value for value. */
+.reader-root.pp-root[data-pp-paper="night"] {
+  --pr-bg: #14110c; --pr-bg-raise: #1c1811; --pr-ink: #ece4d4; --pr-ink-soft: #b6ac97;
+  --pr-faint: #857b67; --pr-accent: #d7a54c; --pr-accent-dim: #a67f38; --pr-rule: #2c2519;
+  --pr-vnum: #6fb3e6;
+}
+.reader-root.pp-root[data-pp-paper="parchment"] {
+  --pr-bg: #efe4cc; --pr-bg-raise: #e7dabd; --pr-ink: #2b2117; --pr-ink-soft: #5d5240;
+  --pr-faint: #8a7d62; --pr-accent: #9a6a1e; --pr-accent-dim: #b48a3c; --pr-rule: #d8c8a4;
+  --pr-vnum: #2f6fa8;
+}
+.reader-root.pp-root[data-pp-paper="white"] {
+  --pr-bg: #ffffff; --pr-bg-raise: #f4f1ea; --pr-ink: #1d1711; --pr-ink-soft: #55493a;
+  --pr-faint: #8a7d62; --pr-accent: #8a5f18; --pr-accent-dim: #9a6e22; --pr-rule: #e2d8c4;
+  --pr-vnum: #2f6fa8;
+}
+html.pp-html[data-pp-paper="night"],     html.pp-html[data-pp-paper="night"] body     { background: #14110c; }
+html.pp-html[data-pp-paper="parchment"], html.pp-html[data-pp-paper="parchment"] body { background: #efe4cc; }
+html.pp-html[data-pp-paper="white"],     html.pp-html[data-pp-paper="white"] body     { background: #ffffff; }
+
+/* ── toolbar (screen only) ─────────────────────────────────────────────── */
+.pp-toolbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;
+  padding: 12px clamp(14px, 4vw, 28px);
+  background: color-mix(in srgb, var(--pr-bg-raise) 94%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--pr-rule);
+  font-family: system-ui, sans-serif;
+  color: var(--pr-ink);
+}
+.pp-back {
+  font-size: 14px; color: var(--pr-ink-soft);
+  padding: 6px 10px; border-radius: 8px; border: 1px solid var(--pr-rule);
+}
+.pp-back:hover { color: var(--pr-ink); }
+.pp-tb-title { display: flex; flex-direction: column; margin-right: auto; min-width: 0; }
+.pp-tb-ref { font-family: var(--pr-reading); font-size: 18px; font-weight: 700; }
+.pp-tb-hint { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--pr-faint); }
+.pp-tb-group { display: inline-flex; border: 1px solid var(--pr-rule); border-radius: 9px; overflow: hidden; }
+.pp-chip { font-size: 13px; padding: 6px 10px; color: var(--pr-ink-soft); }
+.pp-chip + .pp-chip { border-left: 1px solid var(--pr-rule); }
+.pp-chip.on { background: var(--pr-accent); color: #1a140b; font-weight: 600; }
+.pp-save {
+  font-size: 15px; font-weight: 600;
+  padding: 9px 18px; border-radius: 10px;
+  background: var(--pr-accent); color: #1a140b;
+}
+.pp-save:disabled { opacity: .45; cursor: default; }
+.pp-tb-note { flex-basis: 100%; font-size: 12px; color: var(--pr-faint); margin: 0; }
+
+/* ── the sheet ─────────────────────────────────────────────────────────── */
+.pp-sheet { width: 100%; border-collapse: collapse; }
+.pp-sheet td { padding: 0; vertical-align: top; }
+.pp-sheet thead, .pp-sheet tfoot { display: none; }   /* print-only running head/foot */
+.pp-page {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 36px clamp(22px, 6vw, 56px) 80px;
+  line-height: 1.78;
+}
+.pp-page .rd-state { padding: 60px 0; text-align: center; color: var(--pr-ink-soft); }
+
+/* text size: the chosen point size drives the reading column */
+.pp-root .pp-body { font-size: 1em; }
+
+/* chapter head, sized for paper rather than for a phone viewport */
+.pp-root .rd-book-name { font-size: .78em; }
+.pp-root .rd-chapter-num { font-size: 6.2em; }
+.pp-page[data-scope="book"] .rd-chapter-num { font-size: 4.4em; }
+.pp-page[data-scope="book"] .pp-chapter + .pp-chapter { margin-top: 2.8em; }
+.pp-page[data-scope="book"] .rd-chapter-head { margin-bottom: 1.4em; }
+
+/* verse numbers sit in the left gutter beside the line each verse starts on —
+   the reader's gutter, without its runtime measuring (every verse is a block,
+   so its own top IS its first line). */
+.pp-root .pp-verse { position: relative; }
+.pp-root .pp-vnum {
+  position: absolute;
+  left: -2.5em;
+  top: 0;
+  width: 2em;
+  text-align: right;
+  padding: 0;
+  font-size: .7em;
+  line-height: calc(1.78em / .7);
+  cursor: default;
+}
+.pp-root .pp-vnum:hover { background: none; color: var(--pr-vnum); }
+.pp-root .rd-squote-link { color: inherit; text-decoration: none; }
+
+/* one verse: the Detailed Verse page's layout */
+.pp-single { padding-top: 1.2em; }
+.pp-single-ref { font-size: 4.4em; font-weight: 500; line-height: 1; color: var(--pr-ink); margin: .1em 0 .4em; }
+.pp-single-body { padding-left: 0; font-size: 1.35em; line-height: 1.7; }
+
+/* book title page */
+.pp-title-page {
+  min-height: 70vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  margin-bottom: 2em;
+}
+.pp-title-mark {
+  font-size: .85em; letter-spacing: .4em; padding-left: .4em; text-transform: uppercase;
+  color: var(--pr-accent);
+}
+.pp-title-book { font-size: 4em; font-weight: 500; line-height: 1.05; margin: .25em 0 .35em; color: var(--pr-ink); }
+.pp-title-rule { width: 54px; height: 1px; background: color-mix(in srgb, var(--pr-accent) 60%, transparent); }
+.pp-title-site { margin-top: 1em; font-size: .8em; letter-spacing: .24em; color: var(--pr-faint); }
+
+/* ── print ─────────────────────────────────────────────────────────────── */
+@page { margin: 0; }
+@media print {
+  html.pp-html, html.pp-html body, .pp-root, .pp-root * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  html.pp-html, html.pp-html body, html.pp-html #root { min-height: 0; height: auto; overflow: visible; }
+  .pp-toolbar { display: none !important; }
+  .reader-root.pp-root { min-height: 0; background: var(--pr-bg); }
+
+  .pp-sheet thead { display: table-header-group; }
+  .pp-sheet tfoot { display: table-footer-group; }
+  .pp-sheet td { padding: 0 .85in; }
+  .pp-runhead, .pp-runfoot {
+    font-family: var(--pr-reading);
+    font-size: 8pt; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--pr-faint);
+  }
+  .pp-runhead {
+    height: .75in; display: flex; justify-content: space-between; align-items: flex-end;
+    padding-bottom: .22in;
+  }
+  .pp-runfoot {
+    height: .7in; display: flex; justify-content: center; align-items: flex-start;
+    padding-top: .22in; letter-spacing: .26em;
+  }
+
+  .pp-page { max-width: none; margin: 0; padding: 0; }
+  .pp-root .rd-chapter-head { break-inside: avoid; break-after: avoid; }
+  .pp-root .rd-part-heading, .pp-root .rd-section-heading, .pp-root .rd-pericope,
+  .pp-root .rd-acrostic, .pp-root .rd-super { break-inside: avoid; break-after: avoid; }
+  .pp-root .rd-verse { orphans: 2; widows: 2; }
+  .pp-title-page { min-height: 8.2in; margin: 0; break-after: page; }
+  .pp-single { padding-top: 1.6in; }
+}

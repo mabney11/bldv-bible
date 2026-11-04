@@ -61,6 +61,23 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## SAVE AS PDF / VERSE IMAGE (2026-11-04)
+fieldy: "every verse, chapter, and book to download as PDF -- keeping same style of my main reader" + "download an image with the
+entire verse in it -- presented nicely with a bldbible.com marker".
+- **PDF = `/print?book=<slug>[&chapter=N[&verse=V | &verses=1-3,9]]`** (src/pages/PrintView.jsx/.css, links built by
+  src/lib/readerExport.js `printHref`). It is the reader itself laid out for paper: /api/translate/book text, the reader's book-wide
+  quote scan (parseQuoteMarks/sliceQuoteTree/renderQuoteTree, splitScriptureQuote/renderScriptureQuote — exported from Reader.jsx),
+  headings, /headings.json superscriptions + acrostics, the saved typeface and gloss mode. "Save as PDF" = window.print() → real text.
+  Papers Parchment/Night/White (tokens copied from Reader.css — keep in sync), S/M/L size, gloss mode. A <table> whose thead/tfoot
+  repeat per printed page gives the margins + running head ("Genesis · BLD Bible") + foot ("bldbible.com") with `@page { margin: 0 }`
+  so the paper colour runs to the edge. Verse numbers: absolute in the gutter of each block verse (no runtime measuring).
+- **Image = src/lib/verseCard.js (canvas) + src/components/VerseImageDialog.jsx**: book name in spaced gold caps, big ch:v, verse with
+  gold roots, rule + bldbible.com; text auto-sized to fit; Square/Portrait/Story/Wide, Night/Parchment, left/centred, gloss mode;
+  Download PNG / Share (Web Share with file) / Copy. Its GLOSS_RE is a copy of Reader.jsx's — keep identical.
+- Entry points: ⤓ button in the Reader bar (chapter, book, highlighted verses → PDF; image of a highlighted / ?verse= verse) and in the
+  Detailed Verse page bar (image, verse/chapter/book PDF).
+- Verified in Chromium against a mock API (screens, page.pdf in all papers, both cards). Not seen against the real server.
+
 ## WHO WROTE EACH VERSION — translations.updated_by / translation_history.saved_by (2026-10-31)
 fieldy: "i dont like how differing versions have the same timestamp -- I want to know which texts I clearly was the one who saved it".
 Scripts snapshotted the version they replaced with datetime('now'), so one pipeline run stamped his text and the script's
@@ -4233,3 +4250,12 @@ Also today: Niphal 𐤍 reads [Passive] (applyFlatLabels skips vbs-nif; server f
 particle (𐤄𐤊𐤉 ha-khi, 38 overrides -> H3588) uses the BHS interrogative chip; 𐤔𐤏𐤄 noun "hour" H8160 (182 overrides).
 Run: `node build-surface-index.js --freeze`, `node render-all.mjs --surface`, restart, Rebake.
 
+
+## H3603a — kikkar "talent" split from H3603 "plain" (2026-11-03)
+fieldy: "split the word so 'talent' is used in appropriate context by using H3603a ... 'plain' should remain 'plain' and 'talent' when it
+is talent". H3603 (Hebrew kikkar, 𐤊𐤊𐤓) is the Hebrew word (H3604 is the Aramaic one, Ezra 7:22 only). strongs-roots.json "H3603a": 𐤊𐤊𐤓;
+homographs.json "𐤊𐤊𐤓_H3603a": "Talent"; strongs-location-overrides.json: 296 positions -> H3603a (48 BHS OT by the WEB segment of that
+token; 48 HEB-edition OT + 204 NT/Apocrypha/Josephus by the verse's English, with the Hebrew neighbours — a number, silver, gold, weight —
+deciding the unclear ones; kept H3603: Josephus Ant 5:33 "mass of gold", Jasher/T.Job loaves, War 2:189 "circle"). modform-lib
+verseWordsLoader now applies location overrides to a word's Strong's (as server.js does), so merge-modforms reads H3603a and his homograph.
+Loaves still read the spelling's gloss "Plain" (no homograph asked for). Reading text: `node render-all.mjs --surface`, then Rebake.

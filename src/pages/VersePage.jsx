@@ -19,6 +19,8 @@ import { RD_RETURN_VERSE_KEY, writeSession } from '../lib/readerScrollMemory.js'
 import TranslatedMark from '../components/TranslatedMark.jsx';
 import VerseSwitch from '../components/VerseSwitch.jsx';
 import { modelsForVerse } from '../lib/models/seo.js';
+import VerseImageDialog from '../components/VerseImageDialog.jsx';
+import { printHref, readerPrefs } from '../lib/readerExport.js';
 
 // Same key + default Reader.jsx persists its own typeface choice under —
 // "lets persist the font between the reader and the single scripture page":
@@ -213,6 +215,9 @@ export default function VersePage() {
   const [rawTextOpen, setRawTextOpen] = useState(false);
   // the top bar's "Open this verse in" menu (see verseViews)
   const [switchOpen, setSwitchOpen] = useState(false);
+  // the top bar's ⤓ menu — this verse / chapter / book as a PDF, this verse as an image
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [imageOpen, setImageOpen] = useState(false);
 
   // ── "root|lex_word|definition|modifications|strongs #s|link to the first
   // verse the root appears in" — "The 'First surface' can be removed" (the
@@ -328,13 +333,14 @@ export default function VersePage() {
       const t = e.target;
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
       // the "open this verse in" menu is up — Escape closes it, arrows don't page underneath it
-      if (switchOpen) { if (e.key === 'Escape') setSwitchOpen(false); return; }
+      if (switchOpen || saveOpen) { if (e.key === 'Escape') { setSwitchOpen(false); setSaveOpen(false); } return; }
+      if (imageOpen) return;
       if (e.key === 'ArrowLeft') { if (prevLoc) { e.preventDefault(); go(prevLoc.b, prevLoc.c, prevLoc.v); } }
       else if (e.key === 'ArrowRight') { if (nextLoc) { e.preventDefault(); go(nextLoc.b, nextLoc.c, nextLoc.v); } }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [prevLoc, nextLoc, go, switchOpen]);
+  }, [prevLoc, nextLoc, go, switchOpen, saveOpen, imageOpen]);
 
   // ── swipe nav (mobile) — same thresholds as Reader/Parallel ────────────────
   const touch = useRef(null);
@@ -406,7 +412,12 @@ export default function VersePage() {
             VerseSwitch pills at the foot of the page stay as they are. */}
         <div className="rd-bar-right">
           {addressValid && (
-            <button className={`rd-bar-btn ${switchOpen ? 'on' : ''}`} onClick={() => setSwitchOpen(o => !o)}
+            <button className={`rd-bar-btn rd-save-btn ${saveOpen ? 'on' : ''}`} onClick={() => { setSaveOpen(o => !o); setSwitchOpen(false); }}
+                    title="Save as PDF or image" aria-label="Save this verse as a PDF or an image"
+                    aria-haspopup="menu" aria-expanded={saveOpen}>⤓</button>
+          )}
+          {addressValid && (
+            <button className={`rd-bar-btn ${switchOpen ? 'on' : ''}`} onClick={() => { setSwitchOpen(o => !o); setSaveOpen(false); }}
                     title="Open this verse in…" aria-label="Open this verse in another view"
                     aria-haspopup="menu" aria-expanded={switchOpen}>⇄</button>
           )}
@@ -425,9 +436,31 @@ export default function VersePage() {
             ))}
           </div>
         )}
+        {saveOpen && addressValid && (
+          <div className="rd-menu rd-menu-switch" role="menu">
+            <div className="rd-menu-head">Save</div>
+            <button type="button" className="rd-menu-item" role="menuitem" disabled={!verseData?.text}
+                    onClick={() => { setSaveOpen(false); setImageOpen(true); }}>
+              <span className="rd-menu-item-label">Image of {chapter}:{verse}</span>
+              <span className="rd-menu-item-hint">A picture of the verse with the bldbible.com mark</span>
+            </button>
+            <Link className="rd-menu-item" role="menuitem" to={printHref(bookSlugHere, chapter, verse)} onClick={() => setSaveOpen(false)}>
+              <span className="rd-menu-item-label">This verse — PDF</span>
+              <span className="rd-menu-item-hint">{verseRef}</span>
+            </Link>
+            <Link className="rd-menu-item" role="menuitem" to={printHref(bookSlugHere, chapter)} onClick={() => setSaveOpen(false)}>
+              <span className="rd-menu-item-label">This chapter — PDF</span>
+              <span className="rd-menu-item-hint">{formatRef(bookName, chapter)}</span>
+            </Link>
+            <Link className="rd-menu-item" role="menuitem" to={printHref(bookSlugHere)} onClick={() => setSaveOpen(false)}>
+              <span className="rd-menu-item-label">The whole book — PDF</span>
+              <span className="rd-menu-item-hint">{bookName}</span>
+            </Link>
+          </div>
+        )}
       </header>
 
-      {switchOpen && <div className="rd-scrim rd-scrim-menu" onClick={() => setSwitchOpen(false)} />}
+      {(switchOpen || saveOpen) && <div className="rd-scrim rd-scrim-menu" onClick={() => { setSwitchOpen(false); setSaveOpen(false); }} />}
 
       <main className="rd-scroll" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <article className="rd-page vp-page">
@@ -574,6 +607,12 @@ export default function VersePage() {
           )}
         </article>
       </main>
+
+      <VerseImageDialog open={imageOpen} onClose={() => setImageOpen(false)}
+                        bookName={bookName} chapter={chapter} verse={verse} text={verseData?.text || ''}
+                        family={typefaceStack} glossMode={readerPrefs().glossMode}
+                        theme={readerPrefs().theme === 'light' ? 'parchment' : 'night'}
+                        shareUrl={addressValid ? `https://www.bldbible.com/${bookSlugHere}/${chapter}/${verse}` : ''} />
 
       {resolved && (
         <nav className="rd-foot" aria-label="Verse navigation">

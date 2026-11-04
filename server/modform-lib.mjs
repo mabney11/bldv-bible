@@ -274,6 +274,12 @@ export function verseWordsLoader(sdb) {
       FROM surface_occurrences o LEFT JOIN token_surfaces t ON t.source = o.source AND t.word_raw = o.word_raw
            AND t.strongs = o.strongs AND t.pos = o.pos AND t.morph = o.morph
       WHERE o.source = ? AND o.book_id = ? AND o.chapter = ? AND o.verse = ? ORDER BY o.token_ordinal`);
+  // His location overrides (lexicon/strongs-location-overrides.json, book:chapter:verse:ordinal) give ONE occurrence
+  // another Strong's — a homograph split like H3603a kikkar "talent" vs H3603 "plain" (2026-11-03). server.js applies
+  // them to every row it serves; the reading text must read the same number, or his homograph for it never applies.
+  let LOC = {};
+  try { LOC = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'strongs-location-overrides.json'), 'utf8')); } catch { LOC = {}; }
+  const locLetters = x => [...String(x || '')].filter(ch => ch >= '\u{10900}' && ch <= '\u{10915}').join('');
   return (source, b, c, v) => {
     const words = []; let pending = [];
     // ONE HEBREW WORD = WHAT THE DISPLAY DRAWS (fieldy, 2026-10-30: "make my texts match the hebrew — all connected words
@@ -295,6 +301,12 @@ export function verseWordsLoader(sdb) {
       }
       let comps; try { comps = JSON.parse(r.components || '[]'); } catch { comps = []; }
       comps = comps.filter(x => x && x.paleo);
+      { const ov = LOC[`${b}:${c}:${v}:${r.ord}`];
+        if (ov && typeof ov.strongs === 'string' && /^H\d+[a-z]?$/i.test(ov.strongs)
+            && (!ov.word_raw || locLetters(ov.word_raw) === locLetters(r.word_raw))) {
+          r.sn = ov.strongs;
+          const rc = comps.find(x => x.css === 'root'); if (rc) comps = comps.map(x => x === rc ? { ...x, sn: /^H/i.test(String(x.sn || '')) ? ov.strongs : ov.strongs.replace(/^H+/i, '') } : x);
+        } }
       // every letter of the word must be in its components: an index baked before
       // build-surface-index's coverLetters() can hold 𐤋𐤊𐤍 as the lone chip 𐤋 ("L (To)")
       { const raw = [...String(r.word_raw || '')].filter(ch => ch >= '\u{10900}' && ch <= '\u{10915}');
