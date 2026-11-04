@@ -151,7 +151,7 @@ export function drawVerseCard(canvas, o) {
 
   // ── head: BOOK NAME / 28:9 ──
   let y = padTop;
-  const bookPx = Math.round(30 * unit);
+  const bookPx = Math.round(52 * unit);   // 75% larger than the first cut (fieldy, 2026-11-04)
   ctx.fillStyle = th.accent;
   ctx.font = `400 ${bookPx}px ${family}`;
   y += bookPx;
@@ -169,16 +169,17 @@ export function drawVerseCard(canvas, o) {
   //    proofread" — a small seal under it: "Hand translated by MaAratz". The big 𐤌 seal (no text)
   //    sits in the upper right corner. (fieldy, 2026-11-04)
   const markPx = Math.round(26 * unit);
-  const notePx = Math.round(21 * unit);
-  const miniD = Math.round(24 * unit);
+  const notePx = markPx;                  // "Hand translated…" the same size as BLDBIBLE.COM
+  const miniD = Math.round(28 * unit);
   const footY = H - padBottom - (o.credit ? miniD * 1.56 + Math.round(16 * unit) : 0);
   const ruleY = footY - markPx - Math.round(26 * unit);
   ctx.fillStyle = th.rule;
   const ruleW = Math.round(56 * unit);
-  ctx.fillRect(center ? W / 2 - ruleW / 2 : padX, ruleY, ruleW, Math.max(1, Math.round(2 * unit)));
+  // the separator runs the full width of the text column; the foot is always centred
+  ctx.fillRect(padX, ruleY, W - padX * 2, Math.max(1, Math.round(2 * unit)));
   ctx.fillStyle = th.accent;
   ctx.font = `700 ${markPx}px ${family}`;
-  spaced(ctx, 'BLDBIBLE.COM', x0, footY, markPx * 0.26, center ? 'center' : 'left');
+  spaced(ctx, 'BLDBIBLE.COM', W / 2, footY, markPx * 0.26, 'center');
   let textBottom = ruleY - Math.round(48 * unit);
 
   // The 𐤌 badge is a gold sun: a starburst of long and short rays around a gold disk, with a brown
@@ -224,7 +225,7 @@ export function drawVerseCard(canvas, o) {
     const lw = ctx.measureText(label).width;
     const gap = Math.round(12 * unit);
     const rowW = miniD * 1.56 + gap + lw;
-    const rx = center ? W / 2 - rowW / 2 : padX;
+    const rx = W / 2 - rowW / 2;
     const cy = H - padBottom - miniD * 0.78;
     seal(rx + miniD * 0.78, cy, miniD);
     ctx.fillStyle = th.soft;

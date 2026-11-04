@@ -85,6 +85,7 @@ entire verse in it -- presented nicely with a bldbible.com marker".
   Done still means Gloss Studio's 100%. studio-sync.mjs carries verified_at (key only when set, so older snapshots still match).
   The verse image, only for a marked verse: a gold sun (16 long/short rays) with a brown 𐤌 alone in the upper right
   corner, and under BLDBIBLE.COM a small sun + "Hand translated by MaAratz" (fieldy's wording, 2026-11-04).
+  Card foot: a full-width separator, then BLDBIBLE.COM and "Hand translated…" (same size) centred whatever the text alignment.
 
 ## WHO WROTE EACH VERSION — translations.updated_by / translation_history.saved_by (2026-10-31)
 fieldy: "i dont like how differing versions have the same timestamp -- I want to know which texts I clearly was the one who saved it".
