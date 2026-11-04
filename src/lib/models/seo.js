@@ -7,6 +7,7 @@
  * useModelSeo() sets document.title/description to exactly what the prerendered
  * snapshot served, so the hydrated page and the crawler's copy agree.
  */
+import { chapterName } from '../bookName.js';
 import { useLocation } from 'react-router-dom';
 import { usePageTitle } from '../../hooks/usePageTitle.js';
 import SEO from '../../../server/seo/models-seo.json';
@@ -24,7 +25,7 @@ export function useModelSeo(fallbackTitle, fallbackDescription) {
   usePageTitle(pg ? pg.title : fallbackTitle, pg ? pg.description : fallbackDescription);
 }
 
-export const refLabel = (r) => `${r.book} ${r.from[0]}:${r.from[1]}${r.to[0] === r.from[0] ? `–${r.to[1]}` : `–${r.to[0]}:${r.to[1]}`}`;
+export const refLabel = (r) => `${chapterName(r.book)} ${r.from[0]}:${r.from[1]}${r.to[0] === r.from[0] ? `–${r.to[1]}` : `–${r.to[0]}:${r.to[1]}`}`;
 
 /** the story models / maps whose scripture covers this verse (book by slug) */
 export function modelsForVerse(slug, chapter, verse) {

@@ -1,3 +1,4 @@
+import { chapterName } from '../lib/bookName.js';
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
@@ -282,7 +283,7 @@ export default function VersePage() {
     if (!hit) return <span className="wr-first-none">—</span>;
     return (
       <Link to={`/${bookToParam(hit.book_id, idToSlug)}/${hit.chapter}/${hit.verse}`}>
-        {hit.book_name} {hit.chapter}:{hit.verse}
+        {chapterName(hit.book_name)} {hit.chapter}:{hit.verse}
       </Link>
     );
   };
@@ -368,7 +369,7 @@ export default function VersePage() {
   const handleRefCopy = e => {
     if (!addressValid) return;
     try {
-      navigator.clipboard.writeText(`${bookName} ${chapter}:${verse}`);
+      navigator.clipboard.writeText(`${chapterName(bookName)} ${chapter}:${verse}`);
       const el = e.currentTarget; // capture before React nulls it
       el.classList.add('copied');
       setTimeout(() => el.classList.remove('copied'), 1500);
@@ -492,7 +493,7 @@ export default function VersePage() {
                 onClick={handleRefCopy}
                 title="Click to copy"
               >
-                <div className="rd-book-name">{bookName}</div>
+                <div className="rd-book-name">{chapterName(bookName)}</div>
                 <h1 className="vp-heading">{chapter}:{verse}</h1>
               </div>
               {hebrewWords.length > 0 && (
@@ -612,8 +613,8 @@ export default function VersePage() {
       </main>
 
       <VerseImageDialog open={imageOpen} onClose={() => setImageOpen(false)}
-                        bookName={bookName} chapter={chapter} verse={verse} text={verseData?.text || ''}
-                        family={typefaceStack} glossMode={readerPrefs().glossMode}
+                        bookName={chapterName(bookName)} chapter={chapter} verse={verse} text={verseData?.text || ''}
+                        typeface={typeface} glossMode={readerPrefs().glossMode}
                         translated={verseTranslated}
                         theme={readerPrefs().theme === 'light' ? 'parchment' : 'night'}
                         shareUrl={addressValid ? `https://www.bldbible.com/${bookSlugHere}/${chapter}/${verse}` : ''} />
@@ -623,7 +624,7 @@ export default function VersePage() {
           <button className="rd-foot-btn" disabled={!prevLoc}
                   onClick={() => prevLoc && go(prevLoc.b, prevLoc.c, prevLoc.v)}>‹ Previous verse</button>
           <button className="rd-foot-ref" onClick={() => addressValid && navigate(chapterHref)}>
-            {addressValid ? `${bookName} ${chapter}:${verse}` : 'Verse'}
+            {addressValid ? `${chapterName(bookName)} ${chapter}:${verse}` : 'Verse'}
           </button>
           <button className="rd-foot-btn" disabled={!nextLoc}
                   onClick={() => nextLoc && go(nextLoc.b, nextLoc.c, nextLoc.v)}>Next verse ›</button>

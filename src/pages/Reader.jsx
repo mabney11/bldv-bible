@@ -1,3 +1,4 @@
+import { chapterName } from '../lib/bookName.js';
 import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback, Fragment } from 'react';
 import { Link, useSearchParams, useNavigationType } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
@@ -1183,7 +1184,7 @@ export default function Reader() {
   // nav sheet's book row, its "— chapters" heading) keep the plural "Psalms" since
   // that's the book's actual name; this is only for text that pairs the name with
   // a specific chapter.
-  const chapterBookName = bookName === 'Psalms' ? 'Psalm' : bookName;
+  const chapterBookName = chapterName(bookName);
   const firstCh   = meta?.first || 1;
   const lastCh    = meta?.last  || chapter;
 
@@ -2215,9 +2216,9 @@ export default function Reader() {
       {(aaOpen || switchOpen || saveOpen) && <div className="rd-scrim rd-scrim-menu" onClick={closeAll} />}
 
       <VerseImageDialog open={imageVerse != null} onClose={() => setImageVerse(null)}
-                        bookName={bookName} chapter={chapter} verse={imageVerse}
+                        bookName={chapterBookName} chapter={chapter} verse={imageVerse}
                         text={imageVerse != null ? (versesByNum[imageVerse]?.text || '') : ''}
-                        family={typefaceStack} glossMode={glossMode}
+                        typeface={typeface} glossMode={glossMode}
                         translated={imageVerse != null && !!(versesByNum[imageVerse]?.verified || versesByNum[imageVerse]?.status === 'done')}
                         theme={theme === 'light' ? 'parchment' : 'night'}
                         shareUrl={imageVerse != null ? `https://www.bldbible.com/${bookToParam(book, idToSlug)}/${chapter}/${imageVerse}` : ''} />

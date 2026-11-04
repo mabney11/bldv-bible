@@ -28,11 +28,13 @@ export const CARD_THEMES = {
     bg: '#14110c', glowTop: 'rgba(215,165,76,0.07)', glowBottom: 'rgba(0,0,0,0.30)',
     ink: '#ece4d4', soft: '#b6ac97', faint: '#857b67', accent: '#d7a54c', root: '#b48a3c', rule: 'rgba(215,165,76,0.45)', seal: 'rgba(215,165,76,0.10)',
     sunHi: '#f6d987', sunMid: '#dcaa45', sunLo: '#b07d26', sunInk: '#4a2c10',
+    frame: 'rgba(215,165,76,0.70)', frameFine: 'rgba(215,165,76,0.45)',
   },
   parchment: {
     bg: '#efe4cc', glowTop: 'rgba(154,106,30,0.10)', glowBottom: 'rgba(107,78,31,0.14)',
     ink: '#2b2117', soft: '#5d5240', faint: '#8a7d62', accent: '#9a6a1e', root: '#9a6a1e', rule: 'rgba(154,106,30,0.50)', seal: 'rgba(154,106,30,0.10)',
     sunHi: '#f3cf72', sunMid: '#d29d33', sunLo: '#9a6a1e', sunInk: '#4a2c10',
+    frame: 'rgba(176,125,38,0.75)', frameFine: 'rgba(154,106,30,0.50)',
   },
 };
 
@@ -82,11 +84,14 @@ function toWords(runs) {
   return words;
 }
 
+// The verse is set heavier than the reader's body text so it carries the card (fieldy, 2026-11-04:
+// "make the scripture text more bold"): English 600, roots 800 (faces without those cuts use their nearest).
+export const TEXT_WEIGHT = 600, ROOT_WEIGHT = 800;
 const fontFor = (piece, px, family) =>
-  piece.paleo ? `400 ${px}px 'BLD Paleo', ${family}` : `${piece.root ? 700 : 400} ${px}px ${family}`;
+  piece.paleo ? `400 ${px}px 'BLD Paleo', ${family}` : `${piece.root ? ROOT_WEIGHT : TEXT_WEIGHT} ${px}px ${family}`;
 
 function layout(ctx, words, px, family, maxW) {
-  const space = (() => { ctx.font = `400 ${px}px ${family}`; return ctx.measureText(' ').width; })();
+  const space = (() => { ctx.font = `${TEXT_WEIGHT} ${px}px ${family}`; return ctx.measureText(' ').width; })();
   const lines = [];
   let line = [], lineW = 0;
   for (const w of words) {
@@ -116,6 +121,8 @@ export async function loadCardFonts(family) {
   await Promise.all([
     document.fonts.load(`400 40px '${first}'`),
     document.fonts.load(`700 40px '${first}'`),
+    document.fonts.load(`${TEXT_WEIGHT} 40px '${first}'`),
+    document.fonts.load(`${ROOT_WEIGHT} 40px '${first}'`),
     document.fonts.load(`400 40px 'BLD Paleo'`, '𐤀'),
   ]).catch(() => {});
 }
@@ -142,9 +149,26 @@ export function drawVerseCard(canvas, o) {
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
 
   const unit = Math.min(W, H) / 1080;
-  const padX = Math.round(96 * unit * (W > H ? 1.4 : 1));
-  const padTop = Math.round((H > W * 1.5 ? 200 : 96) * unit);
-  const padBottom = Math.round((H > W * 1.5 ? 200 : 92) * unit);
+  const padX = Math.round(112 * unit * (W > H ? 1.35 : 1));
+  const padTop = Math.round((H > W * 1.5 ? 200 : 108) * unit);
+  const padBottom = Math.round((H > W * 1.5 ? 170 : 74) * unit);
+
+  // ── frame, on every shape (fieldy, 2026-11-04: "I like the idea of framing"): a gold band with a
+  //    fine line inside it, round-cornered, inset from the edge ──
+  const roundRect = (x, y, w, h, r) => {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  };
+  const frameIn = Math.round(46 * unit);   // the frame's inner line
+  {
+    const m = Math.round(30 * unit), band = Math.max(3, Math.round(7 * unit));
+    ctx.lineWidth = band; ctx.strokeStyle = th.frame;
+    roundRect(m, m, W - m * 2, H - m * 2, Math.round(26 * unit)); ctx.stroke();
+    const m2 = frameIn;
+    ctx.lineWidth = Math.max(1, Math.round(1.6 * unit)); ctx.strokeStyle = th.frameFine;
+    roundRect(m2, m2, W - m2 * 2, H - m2 * 2, Math.round(16 * unit)); ctx.stroke();
+  }
   const maxW = W - padX * 2;
   const center = o.align === 'center';
   const x0 = center ? W / 2 : padX;
@@ -155,32 +179,43 @@ export function drawVerseCard(canvas, o) {
   ctx.fillStyle = th.accent;
   ctx.font = `400 ${bookPx}px ${family}`;
   y += bookPx;
-  spaced(ctx, String(o.bookName || '').toUpperCase(), x0, y, bookPx * 0.34, center ? 'center' : 'left');
-  const refPx = Math.round(132 * unit);
+  const bookW = spaced(ctx, String(o.bookName || '').toUpperCase(), x0, y, bookPx * 0.34, center ? 'center' : 'left');
+  const refPx = Math.round(118 * unit);
   ctx.fillStyle = th.ink;
   ctx.font = `400 ${refPx}px ${family}`;
   y += Math.round(refPx * 1.0);
   ctx.textAlign = center ? 'center' : 'left';
   ctx.fillText(`${o.chapter}:${o.verse}`, x0, y);
+  const refW = ctx.measureText(`${o.chapter}:${o.verse}`).width;
   ctx.textAlign = 'left';
-  const headBottom = y + Math.round(56 * unit);
+  const headBottom = y + Math.round(44 * unit);
+  const headW = Math.max(bookW, refW);
+  const headRight = center ? W / 2 + headW / 2 : padX + headW;
 
   // ── foot: rule + BLDBIBLE.COM, and — on a verse fieldy marked "Hebrew (English) verified and
   //    proofread" — a small seal under it: "Hand translated by MaAratz". The big 𐤌 seal (no text)
   //    sits in the upper right corner. (fieldy, 2026-11-04)
-  const markPx = Math.round(26 * unit);
+  const markPx = Math.round(36 * unit);   // the foot fills its space (fieldy, 2026-11-04)
   const notePx = markPx;                  // "Hand translated…" the same size as BLDBIBLE.COM
-  const miniD = Math.round(28 * unit);
-  const footY = H - padBottom - (o.credit ? miniD * 1.56 + Math.round(16 * unit) : 0);
-  const ruleY = footY - markPx - Math.round(26 * unit);
+  const miniD = Math.round(36 * unit);
+  // bottom of the stack: 𐤀𐤕, the BLD Bible mark (under "Hand translated…", or under the site name)
+  const atPx = Math.round(40 * unit);
+  const footY = H - padBottom - (o.credit ? miniD * 1.56 + Math.round(10 * unit) : 0);
+  const ruleY = footY - markPx - Math.round(30 * unit);
   ctx.fillStyle = th.rule;
   const ruleW = Math.round(56 * unit);
   // the separator runs the full width of the text column; the foot is always centred
   ctx.fillRect(padX, ruleY, W - padX * 2, Math.max(1, Math.round(2 * unit)));
+  { // a small diamond at the middle of the separator
+    const dd = Math.round(9 * unit), mx = W / 2, my = ruleY + Math.max(1, Math.round(2 * unit)) / 2;
+    ctx.fillStyle = th.bg; ctx.fillRect(mx - dd * 2, my - dd, dd * 4, dd * 2);
+    ctx.beginPath(); ctx.moveTo(mx, my - dd); ctx.lineTo(mx + dd, my); ctx.lineTo(mx, my + dd); ctx.lineTo(mx - dd, my); ctx.closePath();
+    ctx.fillStyle = th.accent; ctx.fill();
+  }
   ctx.fillStyle = th.accent;
   ctx.font = `700 ${markPx}px ${family}`;
   spaced(ctx, 'BLDBIBLE.COM', W / 2, footY, markPx * 0.26, 'center');
-  let textBottom = ruleY - Math.round(48 * unit);
+  let textBottom = ruleY - Math.round(34 * unit);
 
   // The 𐤌 badge is a gold sun: a starburst of long and short rays around a gold disk, with a brown
   // Mayam (𐤌) in the middle (fieldy, 2026-11-04: "a gold sun with a brown Mayam character as the tag").
@@ -217,8 +252,11 @@ export function drawVerseCard(canvas, o) {
   };
   if (o.credit) {
     // upper right: the mark alone, level with the book name / reference
-    const bigD = Math.round(82 * unit);           // disk; with its rays the sun is ~127 px across
-    seal(W - padX - bigD * 0.78, padTop + bigD * 0.72, bigD);
+    const bigD = Math.round(54 * unit);           // disk; with its rays the sun is ~84 px across (fieldy: smaller)
+    // centred in the open space right of the heading, above the verse (fieldy, 2026-11-04)
+    const openL = headRight, openR = W - padX;
+    const sunX = Math.min(openR - bigD * 0.78, Math.max(openL + bigD * 0.9, (openL + openR) / 2));
+    seal(sunX, (padTop + headBottom) / 2 - Math.round(6 * unit), bigD);
     // under BLDBIBLE.COM: small seal + the plain-English clarification
     const label = o.credit.note || 'Hand translated by MaAratz';
     ctx.font = `400 ${notePx}px ${family}`;
@@ -235,11 +273,19 @@ export function drawVerseCard(canvas, o) {
     ctx.textBaseline = 'alphabetic';
   }
 
+  // 𐤀𐤕 — the BLD Bible mark, bottom-right, sitting just above the frame's inner line (every card)
+  ctx.save();
+  ctx.fillStyle = th.accent;
+  ctx.font = `400 ${atPx}px 'BLD Paleo', 'Noto Sans Phoenician', serif`;
+  ctx.direction = 'rtl'; ctx.textAlign = 'right'; ctx.textBaseline = 'alphabetic';
+  ctx.fillText('𐤀𐤕', W - frameIn - Math.round(20 * unit), H - frameIn - Math.round(14 * unit));
+  ctx.restore();
+
   // ── the verse: largest size that fits the space between head and foot ──
   const words = toWords(verseRuns(o.text, o.glossMode));
   const room = textBottom - headBottom;
-  const LH = 1.6;
-  let px = Math.round(66 * unit), fit = null;
+  const LH = 1.5;
+  let px = Math.round(74 * unit), fit = null;   // the verse is what should pop
   const minPx = Math.round(16 * unit);
   for (; px >= minPx; px -= 1) {
     const l = layout(ctx, words, px, family, maxW);

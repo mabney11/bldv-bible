@@ -1,3 +1,4 @@
+import { chapterName } from '../lib/bookName.js';
 import { useState, useEffect, useRef, useCallback, useMemo, Component } from 'react';
 import { Link, useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import BookIcon from '../components/BookIcon.jsx';
@@ -1695,9 +1696,9 @@ export default function Parallel() {
 
   const visibleVerses = verse != null ? verseNums.filter(v => v === verse) : verseNums;
   const curBookName = (books.find(b => b.book_id === book) || {}).name || BOOK_NAMES[book] || `Book ${book}`;
-  const refTitle = `${curBookName} ${chapter}${verse != null ? ':' + verse : ''}`;
+  const refTitle = `${chapterName(curBookName)} ${chapter}${verse != null ? ':' + verse : ''}`;
   const outputRef = useRef(null);
-  const chapterRef = `${curBookName} ${chapter}`;
+  const chapterRef = `${chapterName(curBookName)} ${chapter}`;
   // Native selection → clean text (see surfaceCopyText). Only selections that
   // start inside the verses; everything else on the page copies as usual.
   useEffect(() => {

@@ -1,3 +1,4 @@
+import { chapterName } from '../lib/bookName.js';
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { apiConcordanceLemma, apiConcordanceSurface, apiSourceVerse } from '../lib/api.js';
@@ -134,7 +135,7 @@ export default function Concordance() {
     const loc = o.canon_id != null ? `book=${o.canon_id}` : `doc=${encodeURIComponent(o.doc_id || o.code)}`;
     return `/?source=${srcOf(o)}&${loc}&chapter=${o.ord_c}&verse=${o.ord_v}`;
   };
-  const refLabel = (o) => `${nameOf(o)} ${o.ch}:${o.v}`;
+  const refLabel = (o) => `${chapterName(nameOf(o))} ${o.ch}:${o.v}`;
 
   // Reset everything when the target word changes.
   useEffect(() => {

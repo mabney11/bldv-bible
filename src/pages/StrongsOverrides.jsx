@@ -1,3 +1,4 @@
+import { chapterName } from '../lib/bookName.js';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getAdminStatus } from '../lib/localOverlay.js';
@@ -218,7 +219,7 @@ export default function StrongsOverrides() {
         {verseData && (
           <div className="so-verse">
             <div className="so-verse-ref">
-              {verseData.book_name} {verseData.chapter}:{verseData.verse}
+              {chapterName(verseData.book_name)} {verseData.chapter}:{verseData.verse}
               {verseData.is_heb && <span className="so-badge">HEB edition</span>}
             </div>
             {verseData.blocks.length === 0 && <div className="so-empty">No tokens found for this verse.</div>}
@@ -335,7 +336,7 @@ export default function StrongsOverrides() {
           {overrides.length === 0 && <div className="so-empty">None yet.</div>}
           {overrides.map(o => (
             <div className="so-list-row" key={o.key}>
-              <span className="so-list-ref">{o.book_name} {o.chapter}:{o.verse} #{o.token_ordinal}</span>
+              <span className="so-list-ref">{chapterName(o.book_name)} {o.chapter}:{o.verse} #{o.token_ordinal}</span>
               <span className="so-list-word">{o.word_raw}</span>
               <span className="so-list-sn">
                 {o.parts

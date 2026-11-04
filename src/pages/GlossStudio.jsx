@@ -1,3 +1,4 @@
+import { chapterName } from '../lib/bookName.js';
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getAdminStatus } from '../lib/localOverlay.js';
@@ -115,7 +116,7 @@ function VerseDetailCard({ v, missingSet, genericSource, dir = 'rtl' }) {
         to={`/parallel?book=${v.book_id}&chapter=${v.chapter}&verse=${v.verse}`}
         target="_blank" rel="noreferrer"
         title="Open this verse in Parallel"
-      >{v.book_name} {v.chapter}:{v.verse}</Link>
+      >{chapterName(v.book_name)} {v.chapter}:{v.verse}</Link>
       {/* English FIRST, words below — so cycling through languages in the
           LangColumn keeps the English reference pinned in the same spot
           instead of it jumping around as the word grid's height changes. */}

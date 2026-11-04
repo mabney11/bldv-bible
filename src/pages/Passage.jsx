@@ -14,6 +14,7 @@
  * Reader.css's shell (same night/parchment themes, same persisted typeface),
  * so it reads as part of the same book.
  */
+import { chapterName } from '../lib/bookName.js';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
@@ -141,7 +142,7 @@ export default function Passage() {
                             </div>
                           )}
                           <span className="rd-verse pg-verse">
-                            <Link className="rd-vnum pg-vnum" to={`/bible?book=${s.book_id}&chapter=${s.chapter}&verse=${v.verse}`} title={`${s.book} ${s.chapter}:${v.verse} in the Reader`}>{v.verse}</Link>
+                            <Link className="rd-vnum pg-vnum" to={`/bible?book=${s.book_id}&chapter=${s.chapter}&verse=${v.verse}`} title={`${chapterName(s.book)} ${s.chapter}:${v.verse} in the Reader`}>{v.verse}</Link>
                             <span className="rd-vtext">{renderVerseNodesWithQuotes(sanitizeText(v.text), 'both')}</span>
                           </span>
                         </span>

@@ -1,3 +1,4 @@
+import { chapterName } from '../lib/bookName.js';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
@@ -249,7 +250,7 @@ function VerseCard({ verse, onVerseClick }) {
       <div className="verse-ref">
         <a href={`/?book=${verse.book_id}&chapter=${verse.chapter}&verse=${verse.verse}`}
            onClick={onVerseClick}>
-          {verse.book_name || BOOK_NAMES[verse.book_id] || `Book ${verse.book_id}`} {verse.chapter}:{verse.verse}
+          {chapterName(verse.book_name || BOOK_NAMES[verse.book_id]) || `Book ${verse.book_id}`} {verse.chapter}:{verse.verse}
         </a>
         {verse.translation && verse.translation.text && (
           <span className="verse-translation"> — <NovelText text={verse.translation.text} /></span>
@@ -299,7 +300,7 @@ function RootCard({ detail, idToSlug, context, onPickSn }) {
     [root, useSvg]
   );
   const verseHref = loc => `/${bookToParam(loc.book_id, idToSlug)}/${loc.chapter}/${loc.verse}`;
-  const locLabel  = loc => `${loc.book_name || BOOK_NAMES[loc.book_id] || `Book ${loc.book_id}`} ${loc.chapter}:${loc.verse}`;
+  const locLabel  = loc => `${chapterName(loc.book_name || BOOK_NAMES[loc.book_id]) || `Book ${loc.book_id}`} ${loc.chapter}:${loc.verse}`;
 
   const [savedDef, setSavedDef] = useState(null);
   useEffect(() => { setSavedDef(null); }, [detail.sn]);
@@ -964,7 +965,7 @@ export default function Root({ mode = 'root' }) {
                   {verses.map((v, i) => (
                     <button key={`${v.book_id}-${v.chapter}-${v.verse}-${i}`} type="button"
                             className={`r2-hit ${i === sel ? 'active' : ''}`} onClick={() => setSel(i)}>
-                      <div className="r2-hit-ref">{v.book_name || BOOK_NAMES[v.book_id] || `Book ${v.book_id}`} {v.chapter}:{v.verse}</div>
+                      <div className="r2-hit-ref">{chapterName(v.book_name || BOOK_NAMES[v.book_id]) || `Book ${v.book_id}`} {v.chapter}:{v.verse}</div>
                       {v.translation && v.translation.text && <NovelText as="div" className="r2-hit-tl" text={v.translation.text} />}
                     </button>
                   ))}
@@ -995,7 +996,7 @@ export default function Root({ mode = 'root' }) {
                     <>
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap', marginBottom: 18 }}>
                         <h2 style={{ margin: 0, color: 'var(--gold)', fontSize: 22 }}>
-                          {cur.book_name || BOOK_NAMES[cur.book_id] || `Book ${cur.book_id}`} {cur.chapter}:{cur.verse}
+                          {chapterName(cur.book_name || BOOK_NAMES[cur.book_id]) || `Book ${cur.book_id}`} {cur.chapter}:{cur.verse}
                         </h2>
                         <Link to={readerHref} className="r2-btn" style={{ marginLeft: 'auto' }}>open in reader ↗</Link>
                       </div>

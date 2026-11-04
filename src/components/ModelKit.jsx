@@ -5,6 +5,7 @@
  * Lifted out of pages/Statue.jsx when the temple was built; the page CSS
  * they rely on is ModelPage.css (the `st-` classes).
  */
+import { chapterName } from '../lib/bookName.js';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { loadChapter, verseText, sliceQuote, parseQuotes } from '../lib/passages.js';
@@ -133,7 +134,7 @@ export function CaptionRefs({ refs }) {
       for (const [a, b] of rs) {
         const label = `${r.book === lastBook ? '' : `${r.book} `}${r.chapter}${a ? `:${a}${b !== a ? `–${b}` : ''}` : ''}`;
         const to = a == null ? `/bible?book=${r.bookId}&chapter=${r.chapter}` : a === b ? `/${r.bookId}/${r.chapter}/${a}` : `/bible?book=${r.bookId}&chapter=${r.chapter}&verse=${a}&verseEnd=${b}`;
-        out.push({ label, to, title: a == null ? `${r.book} ${r.chapter} in the reader` : a === b ? `${r.book} ${r.chapter}:${a} on its own page` : `${r.book} ${r.chapter}:${a}–${b} in the reader` });
+        out.push({ label, to, title: a == null ? `${chapterName(r.book)} ${r.chapter} in the reader` : a === b ? `${chapterName(r.book)} ${r.chapter}:${a} on its own page` : `${chapterName(r.book)} ${r.chapter}:${a}–${b} in the reader` });
         lastBook = r.book;
       }
     }

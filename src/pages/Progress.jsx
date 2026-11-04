@@ -7,6 +7,7 @@
  *
  * ?book=<slug> opens that book's verse grid (shareable).
  */
+import { chapterName } from '../lib/bookName.js';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { apiTransProgress, apiTransMarked } from '../lib/api.js';
@@ -87,7 +88,7 @@ export default function Progress() {
                     const v = i + 1;
                     const r = status.get(`${b.book_id}:${ch.chapter}:${v}`);
                     const cls = r?.s === 'd' ? 'd' : r?.s === 'p' ? 'p' : '';
-                    const label = `${b.name} ${ch.chapter}:${v}${cls === 'd' ? ' — translated' : cls === 'p' ? ' — in progress (touched, not yet marked translated)' : ''}`;
+                    const label = `${chapterName(b.name)} ${ch.chapter}:${v}${cls === 'd' ? ' — translated' : cls === 'p' ? ' — in progress (touched, not yet marked translated)' : ''}`;
                     return <Link key={v} to={verseHref(b.book_id, ch.chapter, v)} className={`pg-cell ${cls}`} title={label} aria-label={label} />;
                   })}
                 </span>
@@ -136,7 +137,7 @@ export default function Progress() {
                 {recent.map((r) => (
                   <Link key={`${r.b}:${r.c}:${r.v}`} to={verseHref(r.b, r.c, r.v)} className="pg-recent-item">
                     <span className="pg-recent-mark" aria-hidden="true">{TRANSLATOR.mark}</span>
-                    <span className="pg-recent-ref">{nameOf[r.b] || r.b} {r.c}:{r.v}</span>
+                    <span className="pg-recent-ref">{chapterName(nameOf[r.b]) || r.b} {r.c}:{r.v}</span>
                     <span className="pg-recent-date">{fmtDate(r.t)}</span>
                   </Link>
                 ))}

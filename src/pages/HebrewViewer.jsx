@@ -1,3 +1,4 @@
+import { chapterName } from '../lib/bookName.js';
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
@@ -355,7 +356,7 @@ export default function HebrewViewer() {
   // preview of the verse's transliteration+gloss (see ../lib/versePreview.js)
   // once a single verse is selected, matching BibleHub-style tabs.
   const hvLangLabel = HV_PILL_LABEL[srcParam] || 'Hebrew';
-  const hvTitleParts = [`${bookName} ${chapter}${verse != null ? ':' + verse : ''}`, hvLangLabel];
+  const hvTitleParts = [`${chapterName(bookName)} ${chapter}${verse != null ? ':' + verse : ''}`, hvLangLabel];
   if (verse != null) {
     const versePreview = truncateTitle(versePreviewWithGloss(grouped.find(g => g.verse === verse)?.words), 70);
     if (versePreview) hvTitleParts.push(versePreview);
@@ -496,7 +497,7 @@ export default function HebrewViewer() {
 
       {verse != null && (
         <div className="hv-verse-bar">
-          <span className="hv-verse-ref">{bookName} {chapter}:{verse}</span>
+          <span className="hv-verse-ref">{chapterName(bookName)} {chapter}:{verse}</span>
           <VerseSwitch className="hv-vswitch" current="hebrew" slug={bookToParam(book, idToSlug)} chapter={chapter} verse={verse}
                        hebrewHref={`/?${srcParam && srcParam !== 'BHS' ? `source=${srcParam}&` : ''}book=${bookToParam(book, idToSlug)}&chapter=${chapter}&verse=${verse}`} />
           <button className="hv-back-btn" onClick={exitVerseScroll}>↑ Full chapter</button>
@@ -516,7 +517,7 @@ export default function HebrewViewer() {
       <div className="hv-reader-wrap" ref={outputRef}>
         <div className="hv-output">
           <h2 className="hv-ref-title">
-            {verse != null ? `${bookName} ${chapter}:${verse}` : `${bookName} — Chapter ${chapter}`}
+            {verse != null ? `${chapterName(bookName)} ${chapter}:${verse}` : `${bookName} — Chapter ${chapter}`}
           </h2>
 
           {grouped.map(g => (

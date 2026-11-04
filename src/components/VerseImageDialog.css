@@ -54,3 +54,9 @@ button.rd-menu-item:disabled { opacity: .5; cursor: default; }
 
 .vi-credit-note { font-size: 12px; line-height: 1.45; color: var(--pr-faint, #857b67); margin: -4px 0 12px; }
 .vi-credit-note b { color: var(--pr-accent, #d7a54c); font-family: 'BLD Paleo', serif; font-weight: 400; }
+
+.vi-select {
+  font-size: 13px; padding: 6px 8px; border-radius: 9px;
+  background: var(--pr-bg, #14110c); color: var(--pr-ink, #ece4d4);
+  border: 1px solid var(--pr-rule, #2c2519); max-width: 100%;
+}

@@ -14,6 +14,7 @@
 // renderer) so this component never has to import from Reader.jsx — Reader
 // imports THIS file, and a circular import is exactly the kind of thing that
 // works until one hot reload breaks it.
+import { chapterName } from '../lib/bookName.js';
 import { Fragment, useMemo } from 'react';
 import './Precepts.css';
 
@@ -57,7 +58,7 @@ export function groupPrecepts(items) {
 }
 
 export function refLabel(name, chapter, verse, verseEnd) {
-  const n = name === 'Psalms' ? 'Psalm' : name;
+  const n = chapterName(name);
   return verseEnd && verseEnd !== verse ? `${n} ${chapter}:${verse}–${verseEnd}` : `${n} ${chapter}:${verse}`;
 }
 

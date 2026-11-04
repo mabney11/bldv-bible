@@ -4,6 +4,7 @@
  * into reader links and verse ranges, so every reference on the map is a
  * real, clickable passage rather than a string.
  */
+import { chapterName } from '../bookName.js';
 import { BOOK_NAMES } from '../books.js';
 
 const NAME_TO_ID = Object.fromEntries(Object.entries(BOOK_NAMES).map(([id, name]) => [name.toLowerCase(), +id]));
@@ -32,7 +33,7 @@ export function parseRefs(text) {
     lastBook = book;
     if (m[3] && !m[4]) {
       const last = Math.min(+m[3], chapter + 7);
-      for (let ch = chapter; ch <= last; ch++) out.push({ book, bookId: id, chapter: ch, ranges: [], label: `${book} ${ch}` });
+      for (let ch = chapter; ch <= last; ch++) out.push({ book, bookId: id, chapter: ch, ranges: [], label: `${chapterName(book)} ${ch}` });
       continue;
     }
     const ranges = [];
@@ -42,7 +43,7 @@ export function parseRefs(text) {
         if (rm) ranges.push([+rm[1], rm[2] ? +rm[2] : +rm[1]]);
       }
     }
-    out.push({ book, bookId: id, chapter, ranges, label: m[1] ? part.trim() : `${book} ${part.trim()}` });
+    out.push({ book, bookId: id, chapter, ranges, label: m[1] ? part.trim().replace(/^Psalms(?=\s+\d)/, 'Psalm') : `${chapterName(book)} ${part.trim()}` });
   }
   return out;
 }

@@ -8,6 +8,12 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { CARD_SIZES, drawVerseCard, loadCardFonts, cardFileName } from '../lib/verseCard.js';
 import { TRANSLATOR, TRANSLATE_WORD } from './TranslatedMark.jsx';
+import { TYPEFACES } from '../lib/typefaces.js';
+import { readerPrefs } from '../lib/readerExport.js';
+// the heavier cuts the card's verse text uses (TEXT_WEIGHT / ROOT_WEIGHT in lib/verseCard.js)
+import '@fontsource/alegreya/600.css';
+import '@fontsource/alegreya/800.css';
+import '@fontsource/ysabeau/800.css';
 import './VerseImageDialog.css';
 
 const PREF_KEY = 'verse-card-prefs';
@@ -18,24 +24,31 @@ const GLOSSES = [
 ];
 const loadPrefs = () => { try { return JSON.parse(localStorage.getItem(PREF_KEY) || '{}') || {}; } catch { return {}; } };
 
-export default function VerseImageDialog({ open, onClose, bookName, chapter, verse, text, family, glossMode: glossDefault, theme: themeDefault, shareUrl, translated = false }) {
+export default function VerseImageDialog({ open, onClose, bookName, chapter, verse, text, typeface, glossMode: glossDefault, theme: themeDefault, shareUrl, translated = false }) {
   const canvasRef = useRef(null);
   const saved = useRef(loadPrefs()).current;
   const [size, setSize] = useState(CARD_SIZES.some(s => s.id === saved.size) ? saved.size : 'square');
   const [theme, setTheme] = useState(saved.theme === 'night' || saved.theme === 'parchment' ? saved.theme : (themeDefault || 'night'));
   const [align, setAlign] = useState(saved.align === 'center' ? 'center' : 'left');
   const [glossMode, setGlossMode] = useState(glossDefault || 'both');
+  // any of the reader's typefaces, chosen right here (fieldy, 2026-11-04); remembered for the next image
+  const [fontId, setFontId] = useState(() => {
+    const want = saved.font || typeface || readerPrefs().typeface;
+    return TYPEFACES.some(f => f.id === want) ? want : TYPEFACES[0].id;
+  });
+  const family = (TYPEFACES.find(f => f.id === fontId) || TYPEFACES[0]).stack;
   const [fontsReady, setFontsReady] = useState(false);
   const [msg, setMsg] = useState('');
   const canShareFiles = typeof navigator !== 'undefined' && !!navigator.canShare;
 
   useEffect(() => {
-    try { localStorage.setItem(PREF_KEY, JSON.stringify({ size, theme, align })); } catch { /* non-fatal */ }
-  }, [size, theme, align]);
+    try { localStorage.setItem(PREF_KEY, JSON.stringify({ size, theme, align, font: fontId })); } catch { /* non-fatal */ }
+  }, [size, theme, align, fontId]);
 
   useEffect(() => {
     if (!open) return;
     let live = true;
+    setFontsReady(false);
     loadCardFonts(family || '').then(() => { if (live) setFontsReady(true); });
     return () => { live = false; };
   }, [open, family]);
@@ -118,6 +131,11 @@ export default function VerseImageDialog({ open, onClose, bookName, chapter, ver
               <button className={`vi-chip ${align === 'left' ? 'on' : ''}`} onClick={() => setAlign('left')}>Left</button>
               <button className={`vi-chip ${align === 'center' ? 'on' : ''}`} onClick={() => setAlign('center')}>Centered</button>
             </div>
+          </div>
+          <div className="vi-row"><span className="vi-label">Font</span>
+            <select className="vi-select" value={fontId} onChange={e => setFontId(e.target.value)}>
+              {TYPEFACES.map(f => <option key={f.id} value={f.id}>{f.label} — {f.note}</option>)}
+            </select>
           </div>
           <div className="vi-row"><span className="vi-label">Words</span>
             <div className="vi-group">{GLOSSES.map(g => (

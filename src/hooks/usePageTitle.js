@@ -21,6 +21,7 @@
  * see BRAND/pageTitle()/formatRef() below for the small shared pieces, and
  * each page's own usePageTitle call for which convention it follows.
  */
+import { chapterName } from '../lib/bookName.js';
 import { useEffect } from 'react';
 
 // The short brand form used to suffix every page NOT covered by one of the
@@ -34,8 +35,9 @@ export const BRAND = 'BLD Bible';
 /** Build a reference string: "Genesis 1", "Genesis 1:5", "Genesis" */
 export function formatRef(bookName, chapter, verse) {
   if (!bookName) return '';
-  let s = String(bookName);
-  if (chapter != null && chapter !== '') s += ` ${chapter}`;
+  const hasCh = chapter != null && chapter !== '';
+  let s = String(hasCh ? chapterName(bookName) : bookName);   // "Psalm 23", the book "Psalms"
+  if (hasCh) s += ` ${chapter}`;
   if (verse != null && verse !== '') s += `:${verse}`;
   return s;
 }

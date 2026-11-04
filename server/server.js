@@ -12630,7 +12630,7 @@ function parsePassageRefs(text) {
         const name = canonName(id);
         if (m[3] && !m[4]) {
             const last = Math.min(+m[3], chapter + 7);
-            for (let ch = chapter; ch <= last; ch++) out.push({ bookId: id, book: name, chapter: ch, ranges: [], label: `${name} ${ch}` });
+            for (let ch = chapter; ch <= last; ch++) out.push({ bookId: id, book: name, chapter: ch, ranges: [], label: `${name === 'Psalms' ? 'Psalm' : name} ${ch}` });
             continue;
         }
         const ranges = [];
@@ -12639,7 +12639,7 @@ function parsePassageRefs(text) {
             if (rm) ranges.push([+rm[1], rm[2] ? +rm[2] : +rm[1]]);
         }
         const rangeLabel = ranges.map(([a, b]) => a === b ? `${a}` : `${a}–${b}`).join(', ');
-        out.push({ bookId: id, book: name, chapter, ranges, label: `${name} ${chapter}${rangeLabel ? ':' + rangeLabel : ''}` });
+        out.push({ bookId: id, book: name, chapter, ranges, label: `${name === 'Psalms' ? 'Psalm' : name} ${chapter}${rangeLabel ? ':' + rangeLabel : ''}` });
     }
     return out;
 }

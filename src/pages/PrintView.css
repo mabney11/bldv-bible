@@ -57,6 +57,10 @@ html.pp-html[data-pp-paper="white"],     html.pp-html[data-pp-paper="white"] bod
 .pp-chip { font-size: 13px; padding: 6px 10px; color: var(--pr-ink-soft); }
 .pp-chip + .pp-chip { border-left: 1px solid var(--pr-rule); }
 .pp-chip.on { background: var(--pr-accent); color: #1a140b; font-weight: 600; }
+.pp-select {
+  font-size: 13px; padding: 6px 8px; border-radius: 9px;
+  background: var(--pr-bg); color: var(--pr-ink); border: 1px solid var(--pr-rule);
+}
 .pp-save {
   font-size: 15px; font-weight: 600;
   padding: 9px 18px; border-radius: 10px;

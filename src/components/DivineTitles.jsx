@@ -1,3 +1,4 @@
+import { chapterName } from '../lib/bookName.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiDivineTitles, apiDivineTitleRefs, apiBookOrder, apiTokens, apiDocTokens, apiTransChapter } from '../lib/api.js';
@@ -74,7 +75,7 @@ function VersePanel({ book, c, v, focusForms, titleId, onClose }) {
   return (
     <div className="dt-verse" ref={ref}>
       <div className="dt-verse-h">
-        <span className="dt-verse-ref">{book.name} {c}:{v}</span>
+        <span className="dt-verse-ref">{chapterName(book.name)} {c}:{v}</span>
         <Link className="dt-verse-go" to={verseHref(book, c, v)}>Open verse →</Link>
         <button className="dt-verse-x" onClick={onClose} aria-label="Close verse">✕</button>
       </div>

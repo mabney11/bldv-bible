@@ -543,7 +543,7 @@ export default function JerusalemView() {
             </div>
             {from.ref && <><div className="jv-sub">{from.translit} in the scriptures</div><PassageRefs refs={from.ref} size="sm" /></>}
             <div className="jv-sub">The Mount — {translitOf(MORIAH)} (Mount Moriah)</div>
-            <PassageRefs refs="2 Chronicles 3:1; Genesis 22:2; 1 Kings 6:2–3; Psalms 125:2; Psalms 48:1–2; Isaiah 2:2–3" size="sm" />
+            <PassageRefs refs="2 Chronicles 3:1; Genesis 22:2; 1 Kings 6:2–3; Psalm 125:2; Psalm 48:1–2; Isaiah 2:2–3" size="sm" />
             <p className="jv-note">
               True heights, nothing raised. The land is drawn as it lies, without today's buildings. The house is the size
               1 Kings 6:2–3 gives it (60 × 20 cubits, 30 high, its porch facing east), set where the Dome of the Rock stands — one

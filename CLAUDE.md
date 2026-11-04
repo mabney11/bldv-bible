@@ -86,6 +86,22 @@ entire verse in it -- presented nicely with a bldbible.com marker".
   The verse image, only for a marked verse: a gold sun (16 long/short rays) with a brown 𐤌 alone in the upper right
   corner, and under BLDBIBLE.COM a small sun + "Hand translated by MaAratz" (fieldy's wording, 2026-11-04).
   Card foot: a full-width separator, then BLDBIBLE.COM and "Hand translated…" (same size) centred whatever the text alignment.
+  Every shape is framed (gold band + fine inner line, rounded); the separator carries a small diamond; 𐤀𐤕 (the BLD Bible mark)
+  sits bottom-right just above the frame's inner line on every card; the corner sun is small (rays included ~84 px on 1080);
+  the verse text was made ~10% larger (tighter gaps, line height 1.5, cap 74 px) — the verse is what should pop.
+  Verse text is set heavier (English 600, roots 800 — verseCard TEXT_WEIGHT/ROOT_WEIGHT; the dialog imports Alegreya 600/800 +
+  Ysabeau 800). The corner sun sits centred in the open space right of the book name / ch:v. A Font select in the image dialog
+  and in the /print toolbar picks any TYPEFACES face right there (remembered per tool: verse-card-prefs / print-prefs `font`;
+  starts from the reader's choice).
+
+## "PSALM 23", THE BOOK "PSALMS" — SITEWIDE (2026-11-04)
+fieldy: "lets clean up the Proverb(s) / Psalm(s) sitewide"; his choice: only Psalms turns singular in a reference, Proverbs stays
+"Proverbs 28:9". `src/lib/bookName.js` `chapterName(name)` ('Psalms' → 'Psalm') is used wherever "<book> <chapter>[:verse]" is
+written: formatRef (page titles), Reader/PrintView/VersePage/HebrewViewer/Parallel/Translate/GlossStudio/Root/Search/Concordance/
+Progress/Passage/StrongsOverrides/DivineTitles/Precepts/ModelKit, models refs.js + seo.js, the verse image. Server copies:
+prerender.js `chapterName` (every heading/title/description) and server.js passage labels. Hand-written refs in holyLand.js /
+JerusalemView.jsx now say "Psalm 48" (both ref parsers alias 'psalm'). Book-level labels (pickers, book lists, title pages) keep "Psalms".
+A NEW place that writes a reference must use chapterName.
 
 ## WHO WROTE EACH VERSION — translations.updated_by / translation_history.saved_by (2026-10-31)
 fieldy: "i dont like how differing versions have the same timestamp -- I want to know which texts I clearly was the one who saved it".

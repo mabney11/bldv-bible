@@ -18,6 +18,7 @@
  * foot ("bldbible.com") while @page margin stays 0 — that is what lets the
  * Night and Parchment papers run to the edge of the sheet.
  */
+import { chapterName } from '../lib/bookName.js';
 import { useState, useEffect, useMemo, Fragment } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { apiBookOrder, apiTransBookText, apiHeadings } from '../lib/api.js';
@@ -153,11 +154,16 @@ export default function PrintView() {
   const [paper, setPaper] = useState(() => PAPERS.some(p => p.id === saved.paper) ? saved.paper : (reader.theme === 'light' ? 'parchment' : 'night'));
   const [size, setSize] = useState(() => SIZES.some(s => s.id === saved.size) ? saved.size : 'm');
   const [glossMode, setGlossMode] = useState(reader.glossMode);
+  // the typeface, chosen right here (fieldy, 2026-11-04) — starts from the reader's, then remembered
+  const [typeface, setTypeface] = useState(() => {
+    const want = saved.font || reader.typeface;
+    return TYPEFACES.some(f => f.id === want) ? want : TYPEFACES[0].id;
+  });
   useEffect(() => {
-    try { localStorage.setItem(PREF_KEY, JSON.stringify({ paper, size })); } catch { /* non-fatal */ }
-  }, [paper, size]);
+    try { localStorage.setItem(PREF_KEY, JSON.stringify({ paper, size, font: typeface })); } catch { /* non-fatal */ }
+  }, [paper, size, typeface]);
 
-  const typefaceStack = (TYPEFACES.find(f => f.id === reader.typeface) || TYPEFACES[0]).stack;
+  const typefaceStack = (TYPEFACES.find(f => f.id === typeface) || TYPEFACES[0]).stack;
 
   // ── what to print ───────────────────────────────────────────────────────
   const [books, setBooks] = useState(null);
@@ -209,7 +215,7 @@ export default function PrintView() {
     return data.chapters.filter(c => c.chapter === onlyChapter);
   }, [data, onlyChapter]);
 
-  const chapterBookName = bookName === 'Psalms' ? 'Psalm' : bookName;
+  const chapterBookName = chapterName(bookName);
   const titleRef = !bookName ? 'Print'
     : scope === 'book' ? bookName
     : scope === 'chapter' ? `${chapterBookName} ${onlyChapter}`
@@ -337,7 +343,7 @@ export default function PrintView() {
     if (!v) return <div className="rd-state">{titleRef} has no English text yet.</div>;
     return (
       <div className="pp-single">
-        <div className="rd-book-name">{bookName}</div>
+        <div className="rd-book-name">{chapterBookName}</div>
         <h1 className="vp-heading pp-single-ref">{ch.chapter}:{vnum}</h1>
         <div className="rd-body pp-body pp-single-body">
           <span className="rd-verse"><span className="rd-vtext">{verseNodes(scan, ch.chapter, vnum, glossMode, idToSlug)}</span></span>
@@ -349,7 +355,7 @@ export default function PrintView() {
   const single = scope === 'verses' && verseSet?.size === 1;
 
   return (
-    <div className={`reader-root pp-root`} data-pp-paper={paper} data-typeface={reader.typeface}
+    <div className={`reader-root pp-root`} data-pp-paper={paper} data-typeface={typeface}
          style={{ '--pr-reading': typefaceStack, '--pp-size': `${sizePt}pt` }}>
       <div className="pp-toolbar" role="toolbar" aria-label="PDF options">
         <button className="pp-back" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate(backHref))}>‹ Back</button>
@@ -367,6 +373,9 @@ export default function PrintView() {
             <button key={s.id} className={`pp-chip ${size === s.id ? 'on' : ''}`} onClick={() => setSize(s.id)}>{s.label}</button>
           ))}
         </div>
+        <select className="pp-select" value={typeface} onChange={e => setTypeface(e.target.value)} aria-label="Typeface">
+          {TYPEFACES.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
+        </select>
         <div className="pp-tb-group" aria-label="Glosses">
           {GLOSSES.map(g => (
             <button key={g.id} className={`pp-chip ${glossMode === g.id ? 'on' : ''}`} onClick={() => setGlossMode(g.id)}>{g.label}</button>

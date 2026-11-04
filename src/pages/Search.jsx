@@ -1,3 +1,4 @@
+import { chapterName } from '../lib/bookName.js';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { BOOK_NAMES } from '../lib/books.js';
@@ -454,7 +455,7 @@ export default function Search() {
             </div>
             {legacyData.results.map((r, i) => (
               <a key={i} className="hv-result-item" href={legacyHitHref(r)} onClick={e => { e.preventDefault(); goToLegacyHit(r); }}>
-                <span className="hv-result-ref">{BOOK_NAMES[r.book_id] || `Book ${r.book_id}`} {r.chapter}:{r.verse}</span>
+                <span className="hv-result-ref">{chapterName(BOOK_NAMES[r.book_id]) || `Book ${r.book_id}`} {r.chapter}:{r.verse}</span>
               </a>
             ))}
             {legacyData.hasMore && (
@@ -475,7 +476,7 @@ export default function Search() {
             </div>
             {concOccurrences.map((o, i) => (
               <a key={`${o.corpus}-${o.code || o.canon_id}-${o.ch}-${o.v}-${i}`} className="hv-result-item" href={concHitHref(o)} onClick={e => { e.preventDefault(); goToConcHit(o); }}>
-                <span className="hv-result-ref">{o.title || BOOK_NAMES[o.canon_id] || o.code} {o.ch}:{o.v}</span>
+                <span className="hv-result-ref">{chapterName(o.title || BOOK_NAMES[o.canon_id]) || o.code} {o.ch}:{o.v}</span>
                 {concSources.length > 1 && <span className="hv-result-badge">{o.corpus}</span>}
               </a>
             ))}
@@ -494,7 +495,7 @@ export default function Search() {
             </div>
             {translitResult.rows.map((v, i) => (
               <a key={`${v.book_id}-${v.chapter}-${v.verse}-${i}`} className="hv-result-item" href={translitHitHref(v)} onClick={e => { e.preventDefault(); goToTranslitHit(v); }}>
-                <span className="hv-result-ref">{v.book_name || BOOK_NAMES[v.book_id] || `Book ${v.book_id}`} {v.chapter}:{v.verse}</span>
+                <span className="hv-result-ref">{chapterName(v.book_name || BOOK_NAMES[v.book_id]) || `Book ${v.book_id}`} {v.chapter}:{v.verse}</span>
                 <span className="hv-result-badge">
                   {v.matchedWordCount > 1
                     ? `${v.matchedWordCount} of ${translitResult.queryWords.length} words matched`

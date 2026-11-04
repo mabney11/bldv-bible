@@ -280,10 +280,10 @@ function englishChapterRoute(path, labelSuffix, tabLabel, description) {
       const chapter = validChapter(q.get('chapter'));
       const name = BOOK_NAMES[book];
       const data = await fetchJSON(port, `/api/translate/chapter?book=${book}&chapter=${chapter}&lang=BHS`);
-      const heading = `${name} ${chapter} — ${labelSuffix}`;
+      const heading = `${chapterName(name)} ${chapter} — ${labelSuffix}`;
       const body = versesArticle(heading, data.verses);
       return {
-        title: `${name} ${chapter} | ${tabLabel}`,
+        title: `${chapterName(name)} ${chapter} | ${tabLabel}`,
         description: description(name, chapter),
         body: (body || `<h1>${escapeHtml(heading)}</h1>`) + NAV_LINKS,
         // 2026-08-15: a `site:bldbible.com john 6 15` search was surfacing
@@ -357,7 +357,7 @@ function englishVerseRoute() {
 
       if (!data || !data.text) return chapterFallback.build(q, port);
 
-      const heading = `${name} ${chapter}:${verse}`;
+      const heading = `${chapterName(name)} ${chapter}:${verse}`;
       // data.tokens: { word_raw, strongs, ... }[] straight off tokens_bhs/
       // tokens_nt (see /api/translate/verse's txVerseQuery in server.js) —
       // the same Hebrew word data the reader itself would show for this verse.
@@ -470,7 +470,7 @@ function multiTokensPreview(tokens) {
 function parallelChapterRoute() {
   const inner = englishChapterRoute(
     '/parallel', 'English–Hebrew Parallel', 'Parallel',
-    (name, ch) => `Read ${name} ${ch} in English and Hebrew side by side, verse by verse.`,
+    (name, ch) => `Read ${chapterName(name)} ${ch} in English and Hebrew side by side, verse by verse.`,
   );
   return {
     match: inner.match,
@@ -507,7 +507,7 @@ function parallelVerseRoute() {
       const enText = (txData && txData.text) || '';
       if (!enText && !verseWords.length) return chapterFallback.build(q, port);
 
-      const heading = `${name} ${chapter}:${verse}`;
+      const heading = `${chapterName(name)} ${chapter}:${verse}`;
       const srcPreview = translitPreview(verseWords);
       const wordItems = verseWords
         .filter((w) => w && w.components?.length)
@@ -543,7 +543,7 @@ function parallelVerseRoute() {
 function translateVerseRoute() {
   const chapterFallback = englishChapterRoute(
     '/translate', 'Translation Studio', 'Translation Studio',
-    (name, ch) => `Translate ${name} ${ch} verse by verse, linked back to the original Hebrew.`,
+    (name, ch) => `Translate ${chapterName(name)} ${ch} verse by verse, linked back to the original Hebrew.`,
   );
   return {
     match: (q) => validBook(q.get('book')) && validChapter(q.get('chapter')) && !!validVerseNum(q.get('verse')),
@@ -560,7 +560,7 @@ function translateVerseRoute() {
 
       if (!data || !data.text) return chapterFallback.build(q, port);
 
-      const heading = `${name} ${chapter}:${verse}`;
+      const heading = `${chapterName(name)} ${chapter}:${verse}`;
       const wordItems = (data.tokens || [])
         .filter((t) => t && t.word_raw)
         .map((t) => `<li>${escapeHtml(t.word_raw)}${t.strongs ? ` — <a href="/roots?sn=${encodeURIComponent(t.strongs)}">${escapeHtml(t.strongs)}</a>` : ''}</li>`)
@@ -616,10 +616,10 @@ function sourceChapterRoute(src, label, tabLabel) {
       const name = BOOK_NAMES[book];
       const verse = validVerseNum(q.get('verse'));
       const data = await fetchJSON(port, `/api/source/${src}/chapter?book=${book}&chapter=${chapter}`);
-      const heading = `${name} ${chapter} — ${label}`;
+      const heading = `${chapterName(name)} ${chapter} — ${label}`;
       const body = versesArticle(heading, data.verses);
       return {
-        title: `${name} ${chapter}${verse ? `:${verse}` : ''} | ${tabLabel}`,
+        title: `${chapterName(name)} ${chapter}${verse ? `:${verse}` : ''} | ${tabLabel}`,
         description: `${name} chapter ${chapter} in the ${label}.`,
         body: (body || `<h1>${escapeHtml(heading)}</h1>`) + NAV_LINKS,
         // Deliberately NOT collapsing ?verse= here the way
@@ -645,7 +645,7 @@ function sourceChapterRoute(src, label, tabLabel) {
 
       if (!data || !data.text) return chapterRoute.build(q, port);
 
-      const heading = `${name} ${chapter}:${verse}`;
+      const heading = `${chapterName(name)} ${chapter}:${verse}`;
       const preview = multiTokensPreview(data.tokens);
 
       return {
@@ -687,7 +687,7 @@ function hebrewVerseRoute() {
       const name = BOOK_NAMES[book];
       const verse = validVerseNum(q.get('verse'));
       return {
-        title: `${name} ${chapter}${verse ? `:${verse}` : ''} | Hebrew`,
+        title: `${chapterName(name)} ${chapter}${verse ? `:${verse}` : ''} | Hebrew`,
         description: `${name} chapter ${chapter} in the original Paleo-Hebrew, word by word, with roots, Strong's numbers and glosses.`,
         body: `<h1>${escapeHtml(name)} ${chapter} — Hebrew Reader</h1>
       <p>${escapeHtml(name)} ${chapter}, in the original Paleo-Hebrew script, word by word.</p>${NAV_LINKS}`,
@@ -709,7 +709,7 @@ function hebrewVerseRoute() {
       const verseWords = Array.isArray(tokens) ? tokens.filter((t) => t && t.verse === verse) : [];
       if (!verseWords.length) return chapterFallback.build(q, port);
 
-      const heading = `${name} ${chapter}:${verse}`;
+      const heading = `${chapterName(name)} ${chapter}:${verse}`;
       const preview = translitGlossPreview(verseWords);
       const wordItems = verseWords
         .filter((w) => w && w.components?.length)
@@ -810,7 +810,7 @@ async function buildVersePathSnapshot(match, port) {
   // invalid-input case here (falls through to the plain SPA shell).
   if (!resolved || !chapter || !verse) return null;
   const { id: book, canonicalSlug, name } = resolved;
-  const heading = `${name} ${chapter}:${verse}`;
+  const heading = `${chapterName(name)} ${chapter}:${verse}`;
   const canonicalPath = `/${canonicalSlug}/${chapter}/${verse}`;
 
   let data = null;
@@ -911,11 +911,11 @@ async function buildParallelPathSnapshot(match, port) {
 
   const buildChapterSnapshot = async () => {
     const data = await fetchJSON(port, `/api/translate/chapter?book=${book}&chapter=${chapter}&lang=BHS`);
-    const heading = `${name} ${chapter} — English–Hebrew Parallel`;
+    const heading = `${chapterName(name)} ${chapter} — English–Hebrew Parallel`;
     const body = versesArticle(heading, data.verses);
     return {
-      title: `${name} ${chapter} | Parallel`,
-      description: `Read ${name} ${chapter} in English and Hebrew side by side, verse by verse.`,
+      title: `${chapterName(name)} ${chapter} | Parallel`,
+      description: `Read ${chapterName(name)} ${chapter} in English and Hebrew side by side, verse by verse.`,
       body: (body || `<h1>${escapeHtml(heading)}</h1>`) + NAV_LINKS,
       canonicalPath: `/parallel/${canonicalSlug}/${chapter}`,
     };
@@ -935,7 +935,7 @@ async function buildParallelPathSnapshot(match, port) {
   const enText = (txData && txData.text) || '';
   if (!enText && !verseWords.length) return buildChapterSnapshot();
 
-  const heading = `${name} ${chapter}:${verse}`;
+  const heading = `${chapterName(name)} ${chapter}:${verse}`;
   const srcPreview = translitPreview(verseWords);
   const wordItems = verseWords
     .filter((w) => w && w.components?.length)
@@ -1001,7 +1001,7 @@ const ROUTES = {
 
   '/translate': [translateVerseRoute(), englishChapterRoute(
     '/translate', 'Translation Studio', 'Translation Studio',
-    (name, ch) => `Translate ${name} ${ch} verse by verse, linked back to the original Hebrew.`,
+    (name, ch) => `Translate ${chapterName(name)} ${ch} verse by verse, linked back to the original Hebrew.`,
   )],
 
   // "/" serves several different things depending on ?source=: the default
@@ -1033,7 +1033,7 @@ const ROUTES = {
         // above handles the real-?verse= case with one).
         const verse = validVerseNum(q.get('verse'));
         return {
-          title: `${name} ${chapter}${verse ? `:${verse}` : ''} | Hebrew`,
+          title: `${chapterName(name)} ${chapter}${verse ? `:${verse}` : ''} | Hebrew`,
           description: `${name} chapter ${chapter} in the original Paleo-Hebrew, word by word, with roots, Strong's numbers and glosses.`,
           body: `<h1>${escapeHtml(name)} ${chapter} — Hebrew Reader</h1>
       <p>${escapeHtml(name)} ${chapter}, in the original Paleo-Hebrew script, word by word.</p>${NAV_LINKS}`,
@@ -1452,3 +1452,8 @@ async function renderSnapshot(pathname, query, port, indexHtmlPath) {
 }
 
 module.exports = { renderSnapshot, ROUTES, MAX_CACHE_ENTRIES };
+
+
+// "Psalm 23" / "Psalm 23:1" — the book is "Psalms", a reference to one of them is singular
+// (fieldy, 2026-11-04; Proverbs keeps its plural). Same rule as src/lib/bookName.js.
+function chapterName(name) { return name === 'Psalms' ? 'Psalm' : name; }

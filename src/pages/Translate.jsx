@@ -1,3 +1,4 @@
+import { chapterName } from '../lib/bookName.js';
 import { useState, useEffect, useRef, useCallback, useMemo, Fragment } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme.js';
@@ -2038,7 +2039,7 @@ export default function Translate() {
             <div className="tr-editor-content">
               <div className="tr-verse-ref-bar">
                 <span className="tr-verse-ref-label">
-                  {activeBookData?.name} {activeChapter}:{activeVerse}
+                  {chapterName(activeBookData?.name)} {activeChapter}:{activeVerse}
                 </span>
                 <select
                   className={`tr-status-select ${verseData.status || 'none'}`}
@@ -2611,7 +2612,7 @@ export default function Translate() {
           <div className="tr-heading-editor" onClick={e => e.stopPropagation()}>
             <div className="tr-heading-editor-title">
               {headingEditor.id ? 'Edit' : 'Add'} {HEADING_LEVEL_LABEL[headingEditor.level]}
-              {' — '}{activeBookData?.name || ''} {headingEditor.chapter}:{headingEditor.verse}
+              {' — '}{chapterName(activeBookData?.name || '')} {headingEditor.chapter}:{headingEditor.verse}
             </div>
             <div className="tr-heading-editor-inline">
               <label className="tr-heading-editor-label">
