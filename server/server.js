@@ -8810,6 +8810,7 @@ function groupSurfaceTokens(rows, lexicon, homographs, opts = {}) {
 }
 
 app.get('/api/tokens', production.cache(60), (req, res) => {
+    installCompoundHyphens(res);   // Har-Al: the dash between a compound name's parts (fieldy, 2026-11-05)
     try {
         // ── DOC-BASED (Works Library, canon_id NULL) HEB TOKENS ──────────────
         // fieldy, 2026-07-31: "let's ensure all hebrew sources get transformed into
@@ -9168,6 +9169,41 @@ const divineHitsForDoc = (code, chapter) => {
     const q = divineStmt('doc', `SELECT verse, token_ordinal, title_id, forms_json FROM divine_hits WHERE src='DOC' AND code=? AND chapter=?`);
     return q ? q.all(code, chapter) : [];
 };
+
+// ── COMPOUND NAMES IN THE WORD BLOCKS — "𐤄𐤓-𐤀𐤋" / "Har-Al", never "Haraal" ──────────
+// fieldy, 2026-11-05: "in the display for the reader, Id like the dash between the resh and aleph and
+// 'Har-Al' instead of 'Haraal'". The reading text already hyphenates every allowlisted compound
+// (lexicon/compound-hyphenation.json, the ONE source — name-form-lib, nameTranslit); the word blocks
+// (/api/tokens, root/surface explorer verses) showed the joined letters. A component carrying an
+// allowlisted number whose letters ARE that name gets the entry's dashed Paleo and its "to" spelling
+// (the first letter keeps the component's own case, so prefixes still read WaHaHar-Al). Letters are
+// never changed or dropped — only the dash is added; the undashed letters stay in `paleo_plain`.
+function hyphenateCompoundWords(words) {
+    const allow = hyphenAllowlist();
+    for (const w of words || []) {
+        for (const c of (w && Array.isArray(w.components) ? w.components : [])) {
+            if (!c || c.isMark || !c.sn || !c.paleo || c.paleo.includes('-')) continue;
+            const e = allow[normSn(c.sn)];
+            if (!e || e.skip || !e.to || !e.paleo || !e.paleo.includes('-')) continue;
+            if (c.paleo !== e.paleo.replace(/-/g, '')) continue;
+            const old = c.translit || '';
+            c.paleo_plain = c.paleo;
+            c.paleo = e.paleo;
+            const to = e.to;
+            c.translit = old && old[0] === old[0].toLowerCase() ? to[0].toLowerCase() + to.slice(1) : to;
+            c.compound = true;
+        }
+    }
+    return words;
+}
+function installCompoundHyphens(res) {
+    const orig = res.json.bind(res);
+    res.json = (body) => {
+        try { if (Array.isArray(body)) hyphenateCompoundWords(body); }
+        catch (e) { console.warn('compound hyphens skipped:', e.message); }
+        return orig(body);
+    };
+}
 
 // hits: [{verse, token_ordinal, title_id, key}] where key is "verse\u0000ordinal"
 // in the RESPONSE's verse space. Wraps res.json so every exit of /api/tokens
@@ -12023,6 +12059,7 @@ app.get('/api/root-explorer/verses', production.cache(60), (req, res) => {
         const { lexicon, homographs, surfaceOverrides } = loadLexicons();
         const verses   = wordOccurrencePage(occ, offset, limit, lexicon, homographs, surfaceOverrides);
 
+        try { for (const v of verses) hyphenateCompoundWords(v.words); } catch (e) { console.warn('compound hyphens skipped:', e.message); }
         res.json({ total, offset, limit, verses, hasMore: offset + limit < total });
     } catch (err) {
         console.error('/api/root-explorer/verses failed:', err);
@@ -12229,6 +12266,7 @@ app.get('/api/surface-explorer/verses', production.cache(60), (req, res) => {
         const { lexicon, homographs, surfaceOverrides } = loadLexicons();
         const verses = wordOccurrencePage(occ, offset, limit, lexicon, homographs, surfaceOverrides);
 
+        try { for (const v of verses) hyphenateCompoundWords(v.words); } catch (e) { console.warn('compound hyphens skipped:', e.message); }
         res.json({ total, offset, limit, verses, hasMore: offset + limit < total });
     } catch (err) {
         console.error('/api/surface-explorer/verses failed:', err);

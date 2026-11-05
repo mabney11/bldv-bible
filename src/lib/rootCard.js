@@ -157,6 +157,30 @@ function drawFront(ctx, th, f, d) {
     if (extra) { const vw = ctx.measureText(value).width; chip(ctx, th, extra, L + vw + 22, y + 46, 30); }
     y += 104;
   };
+  // a compound: what builds it — "Har (Mountain [H2022]) + Al (Alahayam [H410])"
+  if (d.parts && d.parts.length && y < stop - 60) {
+    ctx.fillStyle = th.faint; ctx.font = `400 22px ${f}`;
+    spaced(ctx, 'BUILT FROM', L, y, 22 * 0.22);
+    y += 50;
+    const piece = (p) => {
+      ctx.font = `700 36px ${f}`; const a = ctx.measureText(p.translit || '').width;
+      ctx.font = `400 30px ${f}`; const b = ctx.measureText(` (${p.gloss} `).width;
+      ctx.font = `700 26px ${MONO}`; const c = ctx.measureText(p.sn).width + 26 * 0.9;
+      ctx.font = `400 30px ${f}`; const e = ctx.measureText(')').width;
+      return a + b + c + e + 6;
+    };
+    const plus = (() => { ctx.font = `400 34px ${f}`; return ctx.measureText('  +  ').width; })();
+    let x = L;
+    d.parts.forEach((p, i) => {
+      const w = piece(p);
+      if (i) { if (x + plus + w > R) { y += 54; x = L; } else { ctx.fillStyle = th.faint; ctx.font = `400 34px ${f}`; ctx.fillText('  +  ', x, y); x += plus; } }
+      ctx.fillStyle = th.ink; ctx.font = `700 36px ${f}`; ctx.fillText(p.translit || '', x, y); x += ctx.measureText(p.translit || '').width;
+      ctx.fillStyle = th.soft; ctx.font = `400 30px ${f}`; const t1 = ` (${p.gloss} `; ctx.fillText(t1, x, y); x += ctx.measureText(t1).width;
+      x += chip(ctx, th, p.sn, x, y - 2, 26, { strong: false }) + 4;
+      ctx.fillStyle = th.soft; ctx.font = `400 30px ${f}`; ctx.fillText(')', x, y); x += ctx.measureText(')').width;
+    });
+    y += 74;
+  }
   if (d.first) fact('Root first usage', d.first, d.firstSn);
   if (d.snFirst && d.snFirst !== d.first) fact(`${d.sn} first usage`, d.snFirst, d.sn);
   if (d.context && d.context !== d.first) fact('This context', d.context);

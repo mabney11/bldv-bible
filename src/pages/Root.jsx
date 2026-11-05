@@ -296,9 +296,11 @@ function RootCard({ detail, idToSlug, context, onPickSn, backVerses = [] }) {
     return () => { live = false; };
   }, [detail?.sn]);
   const root = detail.root || '';
+  // a hyphenated compound shows its parts with the dash: 𐤄𐤓-𐤀𐤋 (fieldy, 2026-11-05)
+  const shownRoot = anatomy?.isCompound && anatomy.paleo ? anatomy.paleo : root;
   const rootGlyph = useMemo(
-    () => (useSvg ? paleoToSVG(root, '1em') : `<span class="glyph root">${root}</span>`),
-    [root, useSvg]
+    () => (useSvg ? paleoToSVG(shownRoot, '1em') : `<span class="glyph root">${shownRoot}</span>`),
+    [shownRoot, useSvg]
   );
   const verseHref = loc => `/${bookToParam(loc.book_id, idToSlug)}/${loc.chapter}/${loc.verse}`;
   const locLabel  = loc => `${chapterName(loc.book_name || BOOK_NAMES[loc.book_id]) || `Book ${loc.book_id}`} ${loc.chapter}:${loc.verse}`;
@@ -315,7 +317,10 @@ function RootCard({ detail, idToSlug, context, onPickSn, backVerses = [] }) {
   const [imgOpen, setImgOpen] = useState(false);
   const translitText = anatomy?.isCompound ? anatomy.translit : nameTranslit(detail.sn, root);
   const cardSummary = useMemo(() => ({
-    sn: detail.sn, total: detail.total, root, translit: translitText,
+    sn: detail.sn, total: detail.total, translit: translitText,
+    // a compound shows its parts: 𐤄𐤓-𐤀𐤋, built from Har (Mountain [H2022]) + Al (Alahayam [H410])
+    root: anatomy?.isCompound && anatomy.paleo ? anatomy.paleo : root,
+    parts: (anatomy?.isCompound ? (anatomy.parts || []) : []).map(p => ({ sn: p.sn, translit: p.translit, gloss: p.gloss || p.kjv || '' })),
     definition: def.text || '',
     first: first ? locLabel(first) : '', firstSn: first?.sns?.[0] || '',
     snFirst: detail.first_by_sn ? locLabel(detail.first_by_sn) : '',
@@ -323,7 +328,7 @@ function RootCard({ detail, idToSlug, context, onPickSn, backVerses = [] }) {
     homographs: homographs.map(h => ({ sn: h.sn, count: h.count, definition: h.definition?.text || '', first: h.first ? locLabel(h.first) : '' })),
     url: `https://www.bldbible.com/roots?sn=${encodeURIComponent(detail.sn)}`,
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [detail.sn, detail.total, root, translitText, def.text, first, context, homographs.length]);
+  }), [detail.sn, detail.total, root, translitText, def.text, first, context, homographs.length, anatomy]);
   // The back of the card is a FIRST USAGE (fieldy, 2026-11-05: "lets keep first root usage for all roots" /
   // "i should know whats the first usage of h2027 since its available in the card"): the root's first usage,
   // and the first usage of every Strong's number sharing these letters — each one fetched as its verse

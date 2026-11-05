@@ -121,6 +121,16 @@ carrying that number). The front lists each sharing number with its own "first <
 differs from the root's. Same frame/foot as the verse images.
 Verified in Chromium against a mock root API (Gen 4:8 data shaped like /api/root-explorer/verses). Not seen on the live server.
 
+## COMPOUND NAMES IN THE WORD BLOCKS: "𐤄𐤓-𐤀𐤋" / "Har-Al", never "Haraal" (2026-11-05)
+fieldy (Ezekiel 43:15 H2025): "in the display for the reader, Id like the dash between the resh and aleph and 'Har-Al' instead
+of 'Haraal'". server.js `hyphenateCompoundWords(words)`: a component whose Strong's is allowlisted in
+lexicon/compound-hyphenation.json (non-skip, its `paleo` has a dash) AND whose letters are exactly that name gets the entry's
+dashed Paleo and its `to` spelling (first letter keeps the component's case); `paleo_plain` keeps the undashed letters,
+`compound: true`. Applied to every /api/tokens response (installCompoundHyphens wraps res.json, like the divine marks) and to the
+root/surface explorer verse lists. Letters are never changed. The Root page's Root row and the card image show the compound's
+dashed Paleo (anatomy.paleo), and the card front has a BUILT FROM line: Har (Mountain [H2022]) + Al (Alahayam [H410]).
+Needs a server restart; unit-tested against the real allowlist (WaHa + 𐤄𐤓𐤀𐤋 → 𐤄𐤓-𐤀𐤋 / Har-Al; non-compounds untouched).
+
 ## WHO WROTE EACH VERSION — translations.updated_by / translation_history.saved_by (2026-10-31)
 fieldy: "i dont like how differing versions have the same timestamp -- I want to know which texts I clearly was the one who saved it".
 Scripts snapshotted the version they replaced with datetime('now'), so one pipeline run stamped his text and the script's
