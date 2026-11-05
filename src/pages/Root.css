@@ -270,7 +270,7 @@
 }
 .rc-row:last-child { border-bottom: none; }
 .rc-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -280,7 +280,7 @@
 .rc-label-note { font-weight: 400; letter-spacing: .02em; text-transform: none; color: var(--text4); }
 .rc-glyphs {
   font-family: var(--paleo-font);
-  font-size: 44px;
+  font-size: 52px;
   line-height: 1;
   color: var(--text);
   display: inline-flex;
@@ -288,9 +288,12 @@
   direction: rtl;
 }
 .rc-glyphs .glyph.root { color: var(--text); }
-.rc-translit { font-size: 20px; font-style: italic; color: var(--text); }
-.rc-value    { font-size: 15px; color: var(--text); line-height: 1.5; }
+.rc-translit { font-size: 26px; font-style: italic; color: var(--text); }
+.rc-value    { font-size: 18px; color: var(--text); line-height: 1.5; }
 .rc-def-text { color: var(--text); }
+/* The definition reads like the Lexicon list's gloss — big and bold (fieldy, 2026-11-05:
+   "id like to see my lexicon values bigger and bolder like the main navigator shows"). */
+.rc-value > .rc-def-text { font-size: clamp(30px, 1.4vw + 16px, 38px); font-weight: 800; line-height: 1.15; }
 /* Uncurated → the root's own letters, dimmed: "non-glossed words … I should
    see the underlying paleo of the unglossed root." */
 .rc-def-placeholder { font-family: var(--paleo-font); color: var(--text3); }
@@ -304,14 +307,15 @@
   padding: 5px 10px;
   border-left: 3px solid transparent;
   border-radius: 6px;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text2);
 }
 .rc-sn-row.active { border-left-color: var(--gold); background: color-mix(in srgb, var(--gold) 9%, transparent); }
 .rc-sn-chip {
   font-family: monospace;
-  font-size: 13px;
-  padding: 2px 8px;
+  font-size: 17px;
+  font-weight: 600;
+  padding: 3px 11px;
   border-radius: 5px;
   background: var(--bg3);
   border: 1px solid var(--border2);
@@ -320,9 +324,12 @@
 }
 .rc-sn-chip:hover { border-color: var(--gold); color: var(--gold); }
 .rc-sn-row.active .rc-sn-chip { color: var(--gold); border-color: var(--gold); cursor: default; }
-.rc-sn-count { font-size: 12px; color: var(--text3); font-variant-numeric: tabular-nums; }
-.rc-sn-def   { flex: 1 1 200px; min-width: 0; color: var(--text); font-size: 14px; }
-.rc-sn-first { font-size: 12px; color: var(--text3); white-space: nowrap; }
+.rc-sn-count { font-size: 15px; color: var(--text3); font-variant-numeric: tabular-nums; }
+.rc-sn-def   { flex: 1 1 200px; min-width: 0; color: var(--text); font-size: 20px; font-weight: 700; }
+.rc-sn-first { font-size: 15px; color: var(--text3); white-space: nowrap; }
+/* Strong's numbers stand out: the first-usage / this-page chips a step larger than the list's */
+.rc-first-sns .rc-sn-chip { font-size: 18px; }
+.rc-value > .rc-first-link { font-size: 20px; }
 .rc-first-sns { display: inline-flex; gap: 6px; margin-left: 10px; vertical-align: 1px; }
 .rc-sn-chip.active { color: var(--gold); border-color: var(--gold); }
 .rc-first-link { color: var(--gold); text-decoration: none; border-bottom: 1px dotted color-mix(in srgb, var(--gold) 60%, transparent); }
@@ -330,7 +337,7 @@
 
 @media (max-width: 980px) {
   .rc-card { max-width: none; padding: 2px 14px; margin-bottom: 18px; }
-  .rc-glyphs { font-size: 38px; }
+  .rc-glyphs { font-size: 46px; }
   .rc-sn-first { white-space: normal; }
 }
 
