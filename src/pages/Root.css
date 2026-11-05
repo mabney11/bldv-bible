@@ -269,6 +269,18 @@
   border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
 }
 .rc-row:last-child { border-bottom: none; }
+/* Strong's number leads the card (fieldy, 2026-11-05: "the strongs number as a component ... before Root") */
+.rc-sn-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.rc-sn-big {
+  display: inline-block; font-family: monospace; font-size: 28px; font-weight: 700;
+  padding: 4px 14px; border-radius: 8px; color: var(--gold);
+  border: 1.5px solid var(--gold); background: color-mix(in srgb, var(--gold) 9%, transparent);
+}
+.rc-img-btn {
+  font-size: 14px; padding: 8px 12px; border-radius: 9px;
+  border: 1px solid var(--border2); color: var(--text2); background: var(--bg3);
+}
+.rc-img-btn:hover { border-color: var(--gold); color: var(--gold); }
 .rc-label {
   font-size: 12px;
   font-weight: 600;

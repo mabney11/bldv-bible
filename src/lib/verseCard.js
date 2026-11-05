@@ -105,7 +105,7 @@ function layout(ctx, words, px, family, maxW) {
   return { lines, space };
 }
 
-function spaced(ctx, text, x, y, tracking, align = 'left') {
+export function spaced(ctx, text, x, y, tracking, align = 'left') {
   const chars = [...text];
   const widths = chars.map(c => ctx.measureText(c).width);
   const total = widths.reduce((a, b) => a + b, 0) + tracking * (chars.length - 1);

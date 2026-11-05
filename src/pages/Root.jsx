@@ -15,11 +15,12 @@ import {
   apiDefinitions, apiBookOrder,
   apiRootList,    apiRootDetail,    apiRootVerses,
   apiSurfaceList, apiSurfaceDetail, apiSurfaceExplorerVerses,
-  apiStrongs,
+  apiStrongs, apiTokens, apiTransVerse,
 } from '../lib/api.js';
 import './Root.css';
 import NovelText from '../components/NovelText.jsx';
 import RootAdminEdit from '../components/RootAdminEdit.jsx';
+import RootCardDialog from '../components/RootCardDialog.jsx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Root / Surface explorer — BibleHub-style.
@@ -283,7 +284,7 @@ function VerseCard({ verse, onVerseClick }) {
 // by the word-by-word Strong's links) or, failing that, the hit currently
 // open in the centerpiece below — so the card always names the verse whose
 // reading it is summarising.
-function RootCard({ detail, idToSlug, context, onPickSn }) {
+function RootCard({ detail, idToSlug, context, onPickSn, backVerses = [] }) {
   const useSvg = getPaleoMode() === 'mobile';
   // What builds this number up (dictionary derivation, rendered our way):
   // H1035 = Bayath [house] H1004 + Lacham [bread] H3899 — "house of bread".
@@ -310,8 +311,86 @@ function RootCard({ detail, idToSlug, context, onPickSn }) {
     ? detail.homographs
     : [{ sn: detail.sn, count: detail.total, definition: def, first: detail.first_by_sn }];
 
+  // ── the card as a picture (front: this summary; back: a verse with its Paleo) — fieldy, 2026-11-05
+  const [imgOpen, setImgOpen] = useState(false);
+  const translitText = anatomy?.isCompound ? anatomy.translit : nameTranslit(detail.sn, root);
+  const cardSummary = useMemo(() => ({
+    sn: detail.sn, total: detail.total, root, translit: translitText,
+    definition: def.text || '',
+    first: first ? locLabel(first) : '', firstSn: first?.sns?.[0] || '',
+    snFirst: detail.first_by_sn ? locLabel(detail.first_by_sn) : '',
+    context: context ? locLabel(context) : '',
+    homographs: homographs.map(h => ({ sn: h.sn, count: h.count, definition: h.definition?.text || '', first: h.first ? locLabel(h.first) : '' })),
+    url: `https://www.bldbible.com/roots?sn=${encodeURIComponent(detail.sn)}`,
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [detail.sn, detail.total, root, translitText, def.text, first, context, homographs.length]);
+  // The back of the card is a FIRST USAGE (fieldy, 2026-11-05: "lets keep first root usage for all roots" /
+  // "i should know whats the first usage of h2027 since its available in the card"): the root's first usage,
+  // and the first usage of every Strong's number sharing these letters — each one fetched as its verse
+  // (/api/tokens word blocks + the reader's English), whether or not it is in the page's occurrence list.
+  const firstTargets = useMemo(() => {
+    const out = [], seen = new Set();
+    const add = (loc, sns, label, short) => {
+      if (!loc || !loc.book_id) return;
+      const key = `${loc.book_id}:${loc.chapter}:${loc.verse}:${sns.join(',')}`;
+      if (seen.has(key)) return; seen.add(key);
+      out.push({ key, loc, sns, label, short: `${short} · ${locLabel(loc)}` });
+    };
+    if (first) add(first, first.sns?.length ? first.sns : [detail.sn], 'Root first usage', 'Root');
+    for (const h of homographs) if (h.first) add(h.first, [h.sn], `${h.sn} first usage`, h.sn);
+    return out;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detail.sn, first, homographs.length]);
+  const [firstVerses, setFirstVerses] = useState({});   // key -> { words, text } | null (failed)
+  useEffect(() => {
+    if (!imgOpen) return;
+    let live = true;
+    for (const t of firstTargets) {
+      if (t.key in firstVerses) continue;
+      const { book_id: b, chapter: c, verse: v } = t.loc;
+      Promise.all([apiTokens(b, c).catch(() => []), apiTransVerse(b, c, v).catch(() => null)]).then(([toks, tv]) => {
+        if (!live) return;
+        const words = (Array.isArray(toks) ? toks : []).filter(w => w.verse === v);
+        setFirstVerses(m => ({ ...m, [t.key]: { words, text: tv?.text || '' } }));
+      });
+    }
+    return () => { live = false; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imgOpen, firstTargets]);
+  const backChoices = useMemo(() => {
+    const out = [];
+    for (const t of firstTargets) {
+      const fv = firstVerses[t.key];
+      if (!fv) continue;
+      const snSet = new Set(t.sns.map(normSn));
+      // the hit = the tokens carrying this number
+      const hitOrds = new Set();
+      for (const wb of fv.words) for (const st of (wb.sourceTokens || [])) if (snSet.has(normSn(st.strongs))) hitOrds.add(st.token_ordinal);
+      const tokens = fv.words.map(wb => wordBlockToToken(wb, ord => hitOrds.has(ord), t.sns[0]));
+      out.push({ key: t.key, short: t.short, label: t.label, sn: t.sns[0], ref: locLabel(t.loc), text: fv.text, tokens, isHitWord: englishHitTest(tokens) });
+    }
+    // nothing fetched (yet / offline): the first occurrence the page lists
+    if (!out.length) for (const b of backVerses.filter(x => x && x.v).slice(0, 1)) {
+      const v = b.v, hitSet = new Set(v.hit_ordinals || []);
+      const tokens = (v.words || []).map(wb => wordBlockToToken(wb, ord => hitSet.has(ord), detail.sn));
+      out.push({ key: b.key, short: b.short, label: b.label, sn: detail.sn, ref: locLabel(v), text: v.translation?.text || '', tokens, isHitWord: englishHitTest(tokens) });
+    }
+    return out;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstTargets, firstVerses, backVerses, detail.sn]);
+
   return (
     <section className="rc-card" aria-label="Root summary">
+      <div className="rc-row rc-row-sn">
+        <div className="rc-sn-head">
+          <div>
+            <div className="rc-label">Strong's number</div>
+            <span className="rc-sn-big">{detail.sn}</span>
+          </div>
+          <button type="button" className="rc-img-btn" onClick={() => setImgOpen(true)} title="Save this card as a picture (front, back with the verse, or both)">⤓ Card image</button>
+        </div>
+      </div>
+      <RootCardDialog open={imgOpen} onClose={() => setImgOpen(false)} summary={cardSummary} backChoices={backChoices} />
       <div className="rc-row">
         <div className="rc-label">Root</div>
         <div className="rc-glyphs" dangerouslySetInnerHTML={{ __html: rootGlyph }} />
@@ -637,6 +716,16 @@ export default function Root({ mode = 'root' }) {
   const [vLoading, setVLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [sel, setSel] = useState(0);   // selected verse index for the centerpiece
+  // the card image's back: the first occurrence listed and, when another is open, that verse
+  const cardBackVerses = useMemo(() => {
+    const out = [];
+    const v0 = verses[0], vs = verses[sel];
+    const fs = detail?.first_by_sn;
+    const isFirst = v => !!(v && fs && v.book_id === fs.book_id && v.chapter === fs.chapter && v.verse === fs.verse);
+    if (v0) out.push({ key: 'first', v: v0, short: isFirst(v0) || !fs ? 'First usage' : 'First listed', label: isFirst(v0) || !fs ? 'First usage' : 'Usage' });
+    if (vs && vs !== v0) out.push({ key: 'here', v: vs, short: 'The verse open now', label: 'Usage' });
+    return out;
+  }, [verses, sel, detail]);
 
   const verseSeq = useRef(0);       // guards against out-of-order verse pages
   const loadVerses = useCallback(async (reset) => {
@@ -982,6 +1071,7 @@ export default function Root({ mode = 'root' }) {
                 {detail.kind === 'root' && (
                   <RootCard detail={detail} idToSlug={idToSlug}
                             context={refLoc || verses[sel] || null}
+                            backVerses={cardBackVerses}
                             onPickSn={sn => setSearchParams(refLoc ? { sn, ref: urlRef } : { sn })} />
                 )}
                 {(() => {

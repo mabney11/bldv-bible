@@ -60,3 +60,5 @@ button.rd-menu-item:disabled { opacity: .5; cursor: default; }
   background: var(--pr-bg, #14110c); color: var(--pr-ink, #ece4d4);
   border: 1px solid var(--pr-rule, #2c2519); max-width: 100%;
 }
+/* the root card dialog runs outside .reader-root — give it the reader's night tokens */
+.vi-dialog-root { --pr-bg: #14110c; --pr-bg-raise: #1c1811; --pr-ink: #ece4d4; --pr-ink-soft: #b6ac97; --pr-faint: #857b67; --pr-accent: #d7a54c; --pr-rule: #2c2519; }

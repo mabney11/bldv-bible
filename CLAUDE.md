@@ -103,6 +103,24 @@ prerender.js `chapterName` (every heading/title/description) and server.js passa
 JerusalemView.jsx now say "Psalm 48" (both ref parsers alias 'psalm'). Book-level labels (pickers, book lists, title pages) keep "Psalms".
 A NEW place that writes a reference must use chapterName.
 
+## ROOT PAGE CARD — Strong's number first, bigger type, and a trading-card image (2026-11-05)
+fieldy: "lexicon values bigger and bolder like the main navigator shows" / "strongs number as a component ... before Root" /
+"a download feature here ... (imagine pokemon cards) ... two sides one with the card info summarized ... the other side with the
+first verse usage including the paleo". Root.css: definition clamp(30-38px) 800 like the Lexicon list's gloss; chips 17-18px bold;
+verse links 20px; labels 12px; everything a step up. RootCard opens with a "Strong's number" row (.rc-sn-big) + "⤓ Card image".
+`src/lib/rootCard.js` (canvas, 1080x1512 = 5:7): FRONT = SN chip + occurrences, the root in an "art" window, transliteration,
+definition, first usage / this context / numbers sharing the letters, BLDBIBLE.COM, 𐤀𐤕; BACK = the verse (first listed occurrence,
+or the one open on the page): ref, English with roots gold and the hit pair boxed (Root.jsx englishHitTest), the Paleo word blocks
+right-to-left in the page's own morpheme colours (read from morphColors.css: --mc on Night, the darker --mb on Parchment, same
+data-alt rule as RootWordBlock), the hit word framed; BOTH = side by side in one image. `src/components/RootCardDialog.jsx`:
+Side (Card / First usage / Both) / Which / Paper / Font, Download / Share / Copy (prefs: localStorage root-card-prefs).
+The back is ALWAYS a first usage (fieldy, same day: "keep first root usage for all roots" / "i should know whats the first usage
+of h2027"): the root's first usage (first_by_letters) and the first usage of EVERY number sharing the letters (homographs[].first),
+each fetched as its verse when the dialog opens (apiTokens word blocks of that verse + apiTransVerse English; the hit = the tokens
+carrying that number). The front lists each sharing number with its own "first <ref>", and this number's own first usage when it
+differs from the root's. Same frame/foot as the verse images.
+Verified in Chromium against a mock root API (Gen 4:8 data shaped like /api/root-explorer/verses). Not seen on the live server.
+
 ## WHO WROTE EACH VERSION — translations.updated_by / translation_history.saved_by (2026-10-31)
 fieldy: "i dont like how differing versions have the same timestamp -- I want to know which texts I clearly was the one who saved it".
 Scripts snapshotted the version they replaced with datetime('now'), so one pipeline run stamped his text and the script's
