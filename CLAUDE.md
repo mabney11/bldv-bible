@@ -130,6 +130,8 @@ dashed Paleo and its `to` spelling (first letter keeps the component's case); `p
 root/surface explorer verse lists. Letters are never changed. The Root page's Root row and the card image show the compound's
 dashed Paleo (anatomy.paleo), and the card front has a BUILT FROM line: Har (Mountain [H2022]) + Al (Alahayam [H410]).
 Needs a server restart; unit-tested against the real allowlist (WaHa + 𐤄𐤓𐤀𐤋 → 𐤄𐤓-𐤀𐤋 / Har-Al; non-compounds untouched).
+Lexicon page All Roots / All Surfaces (Lexicon.jsx `compoundOf`, from src/lib/nameForms.js hyphenEntry): an allowlisted compound
+whose letters ARE the name shows 𐤄𐤓-𐤀𐤋 (Har-Al) instead of Haraal; links and filtering still use the plain letters.
 
 ## WHO WROTE EACH VERSION — translations.updated_by / translation_history.saved_by (2026-10-31)
 fieldy: "i dont like how differing versions have the same timestamp -- I want to know which texts I clearly was the one who saved it".

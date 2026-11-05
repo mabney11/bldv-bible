@@ -5,6 +5,13 @@ import { usePaleoMode } from '../hooks/usePaleoMode.js';
 import { useLocalStorageNumber } from '../hooks/useLocalStorageNumber.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { PALEO_LETTERS, translit, paleoSortKey, LETTER_NAMES } from '../lib/books.js';
+import { hyphenEntry } from '../lib/nameForms.js';
+// A compound name on the allowlist (lexicon/compound-hyphenation.json) shows its parts: 𐤄𐤓-𐤀𐤋 (Har-Al),
+// never Haraal — only when these letters ARE that name (fieldy, 2026-11-05). Lookups keep the plain letters.
+function compoundOf(sn, paleo) {
+  const e = hyphenEntry(sn);
+  return e && e.paleo && e.to && e.paleo.replace(/-/g, '') === paleo ? e : null;
+}
 import { usePageTitle, pageTitle } from '../hooks/usePageTitle.js';
 import { paleoWordFlex, paleoCharNoMargin } from '../lib/paleoGlyphs.js';
 import {
@@ -119,14 +126,18 @@ async function loadDictionaryEntries() {
 // Adapt to the {paleo, count, sn, strongs, tl} shape WordRow expects.
 async function loadRoots() {
   const d = await apiRootList();
-  return (d.roots || []).map(r => ({
+  return (d.roots || []).map(r => {
+    const c = compoundOf(r.strongs?.[0], r.root);
+    return {
     paleo:   r.root,
-    tl:      translit(r.root),
+    shown:   c ? c.paleo : r.root,
+    tl:      c ? c.to : translit(r.root),
     count:   r.count,
     sn:      r.strongs?.[0] || '',
     strongs: r.strongs || [],
     type:    'root',
-  }));
+  };
+  });
 }
 
 // All Surfaces: server returns paginated, but the lexicon page wants all in
@@ -134,14 +145,18 @@ async function loadRoots() {
 // corpus has ~24k unique surface×SN pairs). One round trip.
 async function loadSurfaces() {
   const d = await apiSurfaceList({ limit: 30000 });
-  return (d.surfaces || []).map(s => ({
+  return (d.surfaces || []).map(s => {
+    const c = compoundOf(s.strongs, s.surface);
+    return {
     paleo:   s.surface,
-    tl:      translit(s.surface),
+    shown:   c ? c.paleo : s.surface,
+    tl:      c ? c.to : translit(s.surface),
     count:   s.count,
     sn:      s.strongs || '',
     root:    s.root,
     type:    'surface',
-  }));
+  };
+  });
 }
 
 // ── Non-Hebrew loaders ────────────────────────────────────────────────────
@@ -252,9 +267,10 @@ function WordRow({ entry, tab, lang, src }) {
   }
 
   // Hebrew glyph rendering — keep exactly as before
+  const shownPaleo = entry.shown || paleo;   // 𐤄𐤓-𐤀𐤋 for an allowlisted compound
   const paleoHtml = useMemo(
-    () => isHebrew ? paleoWordFlex(paleo, 'var(--glyph-word)') : null,
-    [paleo, isHebrew]
+    () => isHebrew ? paleoWordFlex(shownPaleo, 'var(--glyph-word)') : null,
+    [shownPaleo, isHebrew]
   );
 
   // The root itself is the way in: clicking the glyphs (or the transliteration)
