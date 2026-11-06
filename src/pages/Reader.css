@@ -931,6 +931,10 @@
 .rd-quote-d2 { margin-left: 1.5em; }
 .rd-quote-d3 { margin-left: 2.1em; }
 .rd-quote-d4 { margin-left: 2.7em; }
+/* Past four levels a quote adds no more indent (fieldy, 2026-11-06: Leviticus 19 was squeezed into a
+   sliver — each runaway level added another 2.7em). Real nesting stops at 4; anything deeper is an
+   unclosed mark in the source, and the text must stay readable whatever the data does. */
+.rd-quote-block.rd-quote-deep { margin-left: 0; }
 /* .rd-quote-unclosed used to get a red/amber border+background here — removed
    2026-08-18 (direct feedback: "its fine to have it unclosed but there is no
    error so it shouldnt highlight red"). Reader.jsx no longer adds the class

@@ -436,7 +436,15 @@ export function parseQuoteMarks(raw, boundaries, verseBounds) {
       // …and the sentence end may itself sit inside a closed inner quote
       // (Matthew 13:28: `…has done this.’ “The ibad (servants)…` — the outer “
       // re-opens a new paragraph right after the inner ’ closed).
-      if (vStarts.has(at) || /[.?!]["'\u2019\u201D]?\s+$/.test(raw.slice(Math.max(0, at - 6), at))) {
+      // …or ANYWHERE, when a “‘ run arrives while a “ AND a ‘ are both already open (fieldy, 2026-11-06,
+      // Leviticus 19 squeezed into a sliver): the WEB re-opens each command of a speech with “‘, and the
+      // Hebrew word order can move that run mid-sentence (`WaLaa (And not) “‘ThaShaqaraw (you lie)`), where
+      // the sentence-end test misses it — each one then opened two levels that never closed. Opening a
+      // quote-in-a-quote inside a quote-in-a-quote in one run does not happen in real English, so a
+      // genuine new “‘ (Matthew 22:37's `Yashawai (Jesus) “‘Alayaw…` with nothing open) is unaffected.
+      const deepRun = ch === '\u201C' && /^\u201C\s*\u2018/.test(raw.slice(at, at + 3))
+        && openStack.some(e => e.style === 'curly2') && openStack.some(e => e.style === 'curly1');
+      if (deepRun || vStarts.has(at) || /[.?!]["'\u2019\u201D]?\s+$/.test(raw.slice(Math.max(0, at - 6), at))) {
         reopenPos = at; reopenIdx = 0;
         // A re-opener run mirrors the open levels (`“ ‘Six days…` under a
         // [“, ‘] stack). A LONE “ at a verse start with two or more levels
@@ -450,7 +458,7 @@ export function parseQuoteMarks(raw, boundaries, verseBounds) {
         // the paragraph “ implicitly ends it. Measured 2026-09-12 over the
         // whole corpus: 5 fewer literal glyphs, 2 more unclosed spans, both in
         // Words of Gad 7:15 whose source has two ‘ that never close.
-        if (openStack.length >= 2 && ch === '\u201C' && !/^["“‘']\s*["“‘']/.test(raw.slice(at, at + 4))
+        if (!deepRun && openStack.length >= 2 && ch === '\u201C' && !/^["“‘']\s*["“‘']/.test(raw.slice(at, at + 4))
             && /[,:]\s*$/.test(raw.slice(Math.max(0, at - 4), at))) reopenPos = -1;
       }
       const reStyle = ch === '"' ? 'straight' : OPEN_STYLE[ch];
@@ -467,6 +475,14 @@ export function parseQuoteMarks(raw, boundaries, verseBounds) {
           const node = openStack[idx].node;
           node.reopens = (node.reopens || 0) + 1;
           if (openStack[idx].style === 'straight') node.trusted = true;
+          return;
+        }
+        // a doubled run (`“‘“‘` — Jeremiah 27:8): once a run has matched, a further glyph of a style that is
+        // already open repeats it — dropped too, instead of opening fresh levels
+        if (reopenIdx > 0 && openStack.some(e => e.style === reStyle)) {
+          flush(at);
+          last = at + ch.length;
+          reopenPos = at + ch.length;
           return;
         }
       }
@@ -548,6 +564,28 @@ export function parseQuoteMarks(raw, boundaries, verseBounds) {
       containerStack.pop();
       last = at + ch.length;
       return;
+    }
+    // A ” whose “ is open UNDER a still-open ‘ (fieldy, 2026-11-06, Genesis 24:6-8: the Hebrew word order
+    // lost 24:7's closing ’, so Abraham's closing ” in 24:8 found the ‘ on top and closed nothing — every
+    // later quote in the chapter nested two levels deeper). The ” closes the outer quote AND the inner one
+    // that was left open, the way a reader reads it. Only for ”: a lone ’ is too often an apostrophe.
+    if (ch === '\u201D') {
+      let idx = -1;
+      for (let i = openStack.length - 2; i >= 0; i--) { if (openStack[i].style === 'curly2') { idx = i; break; } if (openStack[i].style === 'bracket') break; }
+      if (idx !== -1 && openStack.slice(idx + 1).every(e => e.style === 'curly1')) {
+        flush(at);
+        while (openStack.length > idx + 1) {
+          const inner = openStack.pop();
+          inner.node.end = at; inner.node.implicitClose = true;
+          containerStack.pop();
+        }
+        const entry = openStack.pop();
+        entry.node.markClose = ch;
+        entry.node.end = at + ch.length;
+        containerStack.pop();
+        last = at + ch.length;
+        return;
+      }
     }
     if (CLOSE_STYLE[ch]) {
       // A closer glyph (” or ’) with no matching open of that style — leave
@@ -742,7 +780,7 @@ export function renderQuoteTree(nodes, mode, keyPrefix) {
     // rd-quote-cont-start/-end, which drop the touching margin so
     // consecutive continuation slices abut with zero gap and their left
     // borders line up into one unbroken line (see Reader.css).
-    const cls = ['rd-quote', 'rd-quote-block', `rd-quote-d${Math.min(n.depth, 4)}`,
+    const cls = ['rd-quote', 'rd-quote-block', `rd-quote-d${Math.min(n.depth, 4)}`, n.depth > 4 ? 'rd-quote-deep' : '',
                  n.markOpen ? '' : 'rd-quote-cont-start',
                  n.markClose ? '' : 'rd-quote-cont-end',
                  n.marked ? 'rd-quote-marked' : '']
