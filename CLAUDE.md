@@ -90,7 +90,7 @@ entire verse in it -- presented nicely with a bldbible.com marker".
   sits bottom-right just above the frame's inner line on every card; the corner sun is small (rays included ~84 px on 1080);
   the verse text was made ~10% larger (tighter gaps, line height 1.5, cap 74 px) — the verse is what should pop.
   Verse text is set heavier (English 600, roots 800 — verseCard TEXT_WEIGHT/ROOT_WEIGHT; the dialog imports Alegreya 600/800 +
-  Ysabeau 800). The corner sun sits centred in the open space right of the book name / ch:v. A Font select in the image dialog
+  Ysabeau 800). The corner sun sits in the frame's upper right corner, mirroring 𐤀𐤕 at the bottom right (same insets from the inner line; 2026-11-08). A Font select in the image dialog
   and in the /print toolbar picks any TYPEFACES face right there (remembered per tool: verse-card-prefs / print-prefs `font`;
   starts from the reader's choice).
 

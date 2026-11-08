@@ -251,12 +251,12 @@ export function drawVerseCard(canvas, o) {
     ctx.restore();
   };
   if (o.credit) {
-    // upper right: the mark alone, level with the book name / reference
+    // upper right corner of the frame, the mirror of 𐤀𐤕 at the bottom right: the sun's rays sit the
+    // same distance inside the frame's inner line as 𐤀𐤕 does (fieldy, 2026-11-08: "put my stamp back
+    // at the upper right of the frame, parallel to the alap-thaw")
     const bigD = Math.round(54 * unit);           // disk; with its rays the sun is ~84 px across (fieldy: smaller)
-    // centred in the open space right of the heading, above the verse (fieldy, 2026-11-04)
-    const openL = headRight, openR = W - padX;
-    const sunX = Math.min(openR - bigD * 0.78, Math.max(openL + bigD * 0.9, (openL + openR) / 2));
-    seal(sunX, (padTop + headBottom) / 2 - Math.round(6 * unit), bigD);
+    const rayR = bigD * 0.775;                    // the long rays' reach (seal: r * 1.55)
+    seal(W - frameIn - Math.round(20 * unit) - rayR, frameIn + Math.round(14 * unit) + rayR, bigD);
     // under BLDBIBLE.COM: small seal + the plain-English clarification
     const label = o.credit.note || 'Hand translated by MaAratz';
     ctx.font = `400 ${notePx}px ${family}`;
