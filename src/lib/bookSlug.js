@@ -36,6 +36,17 @@ export function buildBookSlugs(entries) {
     if (idToSlug[e.id] == null) idToSlug[e.id] = slug;
     slugToId[slug] = e.id;
   }
+  // A two-part name ("Ecclesiasticus / Sirach", "2 Esdras / 4 Ezra") also
+  // answers to each half's slug, so links made before the rename (?book=sirach)
+  // keep working. Only an unused slug is taken; the URL the app writes stays the full one.
+  for (const e of sorted) {
+    const parts = String(e.name || '').split('/');
+    if (parts.length < 2) continue;
+    for (const part of parts) {
+      const s = slugify(part);
+      if (s && used[s] == null) { used[s] = e.id; slugToId[s] = e.id; }
+    }
+  }
   return { slugToId, idToSlug };
 }
 

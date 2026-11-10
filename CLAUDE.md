@@ -61,6 +61,12 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## "ECCLESIASTICUS / SIRACH" (canon 70), like "2 Esdras / 4 Ezra" (2026-11-10)
+Renamed in server/book-order.json, server.js BOOK_NAMES, src/lib/books.js. The slug becomes `ecclesiasticus-sirach`;
+each half of an "A / B" name also resolves (`sirach`, `ecclesiasticus`, `2-esdras`, `4-ezra`) — src/lib/bookSlug.js
+buildBookSlugs + prerender.js addPartAliases (both slug maps) — so old ?book=sirach and /sirach/1/1 links keep working.
+Left alone: the LXX/multi table (server.js ~13620) and the doc-hint regex /Sirach/ (matches either way).
+
 ## SAVE AS PDF / VERSE IMAGE (2026-11-04)
 fieldy: "every verse, chapter, and book to download as PDF -- keeping same style of my main reader" + "download an image with the
 entire verse in it -- presented nicely with a bldbible.com marker".

@@ -1377,7 +1377,7 @@ const BOOK_NAMES = {
     64: '3 John',         65: 'Jude',           66: 'Revelation',
     // Ethiopic-canon additional books
     67: '1 Enoch',        68: 'Jubilees',       69: '1 Maccabees',
-    70: 'Sirach',         71: 'Wisdom',
+    70: 'Ecclesiasticus / Sirach', 71: 'Wisdom',
     // Deuterocanon / pseudepigrapha (served from corpus.db)
     72: 'Tobit',          73: 'Judith',         74: 'Baruch',
     75: 'Letter of Jeremiah', 76: '2 Maccabees', 77: '3 Maccabees',

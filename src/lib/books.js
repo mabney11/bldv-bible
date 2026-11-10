@@ -18,7 +18,7 @@ export const BOOK_NAMES = {
   59:'James',          60:'1 Peter',     61:'2 Peter',     62:'1 John',    63:'2 John',
   64:'3 John',         65:'Jude',        66:'Revelation',
   // Ethiopic-canon additional books (BETMAS_GEZ_ETH)
-  67:'1 Enoch',        68:'Jubilees',    69:'1 Maccabees',  70:'Sirach',    71:'Wisdom',
+  67:'1 Enoch',        68:'Jubilees',    69:'1 Maccabees',  70:'Ecclesiasticus / Sirach',    71:'Wisdom',
   // Deuterocanon / pseudepigrapha (served comprehensively from corpus.db)
   72:'Tobit',            73:'Judith',          74:'Baruch',
   75:'Letter of Jeremiah',76:'2 Maccabees',    77:'3 Maccabees',

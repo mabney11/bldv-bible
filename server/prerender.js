@@ -187,6 +187,17 @@ function slugify(s) {
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
 }
+// Mirrors bookSlug.js: each half of an "A / B" name also resolves (old ?book=sirach / /sirach/1/1 links).
+function addPartAliases(entries, slugToId, used) {
+  for (const e of [...entries].filter((x) => x && x.id != null).sort((a, b) => a.id - b.id)) {
+    const parts = String(e.name || '').split('/');
+    if (parts.length < 2) continue;
+    for (const p of parts) {
+      const s = slugify(p);
+      if (s && used[s] == null) { used[s] = e.id; slugToId[s] = e.id; }
+    }
+  }
+}
 let _slugToId = null;   // cached for the life of the process — book order rarely changes; see loadShell's identical once-per-process reasoning
 let _idToSlug = null;   // reverse of _slugToId, built alongside it — see resolveParallelPathBook below
 async function ensureSlugMap(port) {
@@ -204,6 +215,7 @@ async function ensureSlugMap(port) {
       map[slug] = e.id;
       if (rev[e.id] == null) rev[e.id] = slug;
     }
+    addPartAliases(list.map((x) => x && { id: x.id, name: x.name }), map, used);   // ?book=sirach after "Ecclesiasticus / Sirach"
     _slugToId = map;
     _idToSlug = rev;
   } catch {
@@ -773,6 +785,7 @@ async function ensureProgressSlugMaps(port) {
       slugToId[slug] = id;
       idToName[id] = e.name;
     }
+    addPartAliases(list.map((x) => x && { id: x.book_id, name: x.name }), slugToId, used);
     _progressSlugMaps = { slugToId, idToSlug, idToName };
   } catch {
     _progressSlugMaps = { slugToId: {}, idToSlug: {}, idToName: {} };
