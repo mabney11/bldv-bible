@@ -545,6 +545,15 @@ const R2_CSS = `
 `;
 
 // ─────────────────────────────────────────────────────────────────────────────
+// The query of a surface page: Strong's number + plain-letter form when the
+// server named one (list rows, prev/next, a loaded surface), else the Paleo word.
+function surfParams(s) {
+  const sn = s.strongs || '';
+  return s.form
+    ? { ...(sn && { sn }), form: s.form }
+    : { word: s.surface, ...(sn && { sn }) };
+}
+
 export default function Root({ mode = 'root' }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const { theme, toggle: toggleTheme } = useTheme();
@@ -557,6 +566,9 @@ export default function Root({ mode = 'root' }) {
   const urlRoot = searchParams.get('root') || '';
   const urlWord = searchParams.get('word') || searchParams.get('surface') || '';
   const urlSN   = searchParams.get('sn') || '';
+  // /surfaces?sn=H1&form=abay — the surface's transliteration in plain letters
+  // (the server names it; see server.js surfForms). ?word=<paleo> still opens.
+  const urlForm = searchParams.get('form') || '';
   // ?ref=bookId:chapter:verse — the verse the reader clicked a Strong's number
   // in (VersePage's word-by-word links set it). Names the card's "This context".
   const urlRef  = searchParams.get('ref') || '';
@@ -564,8 +576,8 @@ export default function Root({ mode = 'root' }) {
     const m = /^(\d+):(\d+):(\d+)$/.exec(urlRef);
     return m ? { book_id: +m[1], chapter: +m[2], verse: +m[3] } : null;
   }, [urlRef]);
-  // Legacy: ?sn=H1 on the root page → look up the root's paleo and switch URL
-  // to use ?root=<paleo>. The new endpoints are paleo-keyed.
+  // The root page's address is ?sn=H### (2026-11-10). ?root=<paleo> still
+  // opens the page (old links) and is replaced by the number once it loads.
 
   const [definitions, setDefinitions] = useState({});
   // Book slugs for the card's verse-page links (/genesis/1/2) — built from
@@ -664,16 +676,22 @@ export default function Root({ mode = 'root' }) {
       try {
         if (viewerMode === 'surface') {
           let word = urlWord;
-          // If user landed without ?word=, redirect to the first surface
-          if (!word && allList.length) {
-            const first = allList[0];
-            setSearchParams({ word: first.surface, ...(first.strongs && { sn: first.strongs }) }, { replace: true });
+          // If user landed without a surface, redirect to the first one
+          if (!word && !urlForm && allList.length) {
+            setSearchParams(surfParams(allList[0]), { replace: true });
             return;
           }
-          if (!word) return;  // wait for list to load
+          if (!word && !urlForm) return;  // wait for list to load
           try {
-            const d = await apiSurfaceDetail(word, urlSN);
-            if (!cancelled) setDetail({ kind: 'surface', ...d });
+            const d = await apiSurfaceDetail(word, urlSN, urlForm);
+            if (cancelled) return;
+            // Opened by Paleo letters (an old link, a word clicked in a verse):
+            // the address becomes the number + plain-letter form.
+            if (word && d.form) {
+              setSearchParams(surfParams(d), { replace: true });
+              return;
+            }
+            setDetail({ kind: 'surface', ...d });
           } catch (err) {
             // Server may have hinted that this string is actually a root —
             // gracefully redirect instead of showing a hard error. The
@@ -697,7 +715,15 @@ export default function Root({ mode = 'root' }) {
           }
           if (urlRoot) {
             const d = await apiRootDetail({ root: urlRoot });
-            if (!cancelled) setDetail({ kind: 'root', ...d });
+            if (cancelled) return;
+            // The address a visitor sees is the Strong's number, never Paleo
+            // letters nobody can type: swap ?root=<letters> for ?sn=H###.
+            // The effect re-runs on the new URL and loads by number.
+            if (d && d.sn) {
+              setSearchParams(urlRef ? { sn: d.sn, ref: urlRef } : { sn: d.sn }, { replace: true });
+              return;
+            }
+            setDetail({ kind: 'root', ...d });
             return;
           }
           // No params → redirect to the first root alphabetically.
@@ -712,7 +738,7 @@ export default function Root({ mode = 'root' }) {
       }
     })();
     return () => { cancelled = true; };
-  }, [viewerMode, urlRoot, urlWord, urlSN, allList, setSearchParams]);
+  }, [viewerMode, urlRoot, urlWord, urlForm, urlSN, urlRef, allList, setSearchParams]);
 
   // ── Verses pagination ──────────────────────────────────────────────────────
   const [verses, setVerses]   = useState([]);
@@ -808,7 +834,7 @@ export default function Root({ mode = 'root' }) {
   const goPrev = () => {
     if (!detail) return;
     if (detail.kind === 'surface' && detail.prev) {
-      setSearchParams({ word: detail.prev.surface, ...(detail.prev.strongs && { sn: detail.prev.strongs }) });
+      setSearchParams(surfParams(detail.prev));
     } else if (detail.kind === 'root' && detail.prev) {
       setSearchParams({ sn: detail.prev.sn });
     }
@@ -816,7 +842,7 @@ export default function Root({ mode = 'root' }) {
   const goNext = () => {
     if (!detail) return;
     if (detail.kind === 'surface' && detail.next) {
-      setSearchParams({ word: detail.next.surface, ...(detail.next.strongs && { sn: detail.next.strongs }) });
+      setSearchParams(surfParams(detail.next));
     } else if (detail.kind === 'root' && detail.next) {
       setSearchParams({ sn: detail.next.sn });
     }
@@ -831,9 +857,7 @@ export default function Root({ mode = 'root' }) {
   // Build href for a list item — separate Surface mode (preserves SN) from Root mode
   const itemHref = (item) => {
     if (viewerMode === 'surface') {
-      const p = new URLSearchParams({ word: item.surface });
-      if (item.strongs) p.set('sn', item.strongs);
-      return `/surfaces?${p}`;
+      return `/surfaces?${new URLSearchParams(surfParams(item))}`;
     }
     return `/roots?sn=${encodeURIComponent(item.sn)}`;
   };
@@ -972,7 +996,7 @@ export default function Root({ mode = 'root' }) {
                   key={`${s.surface}_${s.strongs}`}
                   href={itemHref(s)}
                   className={`sidebar-item ${detail?.kind === 'surface' && detail.surface === s.surface && (detail.strongs || '') === (s.strongs || '') ? 'active' : ''}`}
-                  onClick={(e) => { e.preventDefault(); setSearchParams({ word: s.surface, ...(s.strongs && { sn: s.strongs }) }); if (isMobile) setSidebarOpen(false); }}
+                  onClick={(e) => { e.preventDefault(); setSearchParams(surfParams(s)); if (isMobile) setSidebarOpen(false); }}
                 >
                   <span className="si-paleo">{s.surface}</span>
                   <span className="si-tl">{translit(s.surface)}</span>

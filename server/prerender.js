@@ -1113,7 +1113,8 @@ const ROUTES = {
       ${surfaceItems ? `<h2>Surface forms</h2>\n      <ul>\n        ${surfaceItems}\n      </ul>` : ''}
       ${bookItems ? `<h2>By book</h2>\n      <ul>\n        ${bookItems}\n      </ul>` : ''}${NAV_LINKS}`;
 
-      return { title, description, body };
+      // One address per root: the Strong's number (what Root.jsx puts in the address bar).
+      return { title, description, body, ...(d.sn ? { canonicalPath: `/roots?sn=${encodeURIComponent(d.sn)}` } : {}) };
     },
   }],
 };

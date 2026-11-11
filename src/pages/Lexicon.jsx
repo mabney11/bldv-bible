@@ -153,6 +153,7 @@ async function loadSurfaces() {
     tl:      c ? c.to : translit(s.surface),
     count:   s.count,
     sn:      s.strongs || '',
+    form:    s.form || '',
     root:    s.root,
     type:    'surface',
   };
@@ -237,6 +238,13 @@ function useLexImage(lang, key) {
   return key && e && e.keys.has(key) ? `/lexicon-img/${lang}/${encodeURIComponent(key)}.png` : null;
 }
 
+// A root's address is its Strong's number (/roots?sn=H1) — something a visitor
+// can read, type and share. The Paleo letters are only the fallback for a row
+// that has no number; the Root page then swaps the address to the number.
+const rootHref = (sn, paleo) => sn
+  ? `/roots?sn=${encodeURIComponent(sn)}`
+  : `/roots?root=${encodeURIComponent(paleo)}`;
+
 function WordRow({ entry, tab, lang, src }) {
   const isHebrew  = lang === 'hebrew';
   const isRoot    = tab === 'roots';
@@ -254,13 +262,17 @@ function WordRow({ entry, tab, lang, src }) {
   let href;
   if (isHebrew) {
     if (isRoot) {
-      href = `/roots?root=${encodeURIComponent(paleo)}`;
+      href = rootHref(sn, paleo);
     } else if (isSurface) {
-      const qs = new URLSearchParams({ word: paleo });
-      if (sn) qs.set('sn', sn);
+      // number + plain-letter form (typeable); Paleo letters only without a form
+      const qs = entry.form
+        ? new URLSearchParams({ ...(sn && { sn }), form: entry.form })
+        : new URLSearchParams({ word: paleo, ...(sn && { sn }) });
       href = `/surfaces?${qs.toString()}`;
     } else {
-      href = `/roots?root=${encodeURIComponent(paleo)}`;
+      // a homograph row keyed "<letters>_H518" names its own number
+      const hm = /^H\d+[a-z]?$/i.exec((entry.pos || '').trim());
+      href = rootHref(sn || (hm ? hm[0].toUpperCase() : ''), paleo);
     }
   } else {
     href = null;

@@ -61,6 +61,20 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## A ROOT'S ADDRESS IS ITS STRONG'S NUMBER — /roots?sn=H1, never ?root=<paleo> (2026-11-10)
+fieldy: "make the default be the strongs number and not paleo hebrew that people wont be able to change on their keyboard".
+Lexicon.jsx `rootHref(sn, paleo)`: All Roots rows and homograph rows keyed `_H###` link by number; a lexicon row with no number still
+links `?root=<letters>`. Root.jsx: a `?root=` visit is replaced by `?sn=<its number>` (ref kept) as soon as the root resolves.
+prerender.js '/roots': canonical = `/roots?sn=…` for either form. A NEW link to a root must use the number.
+**Surfaces (same day, fieldy: "yes"): /surfaces?sn=H1&form=abay.** `form` = the surface's transliteration, lowercase a-z (server.js
+`surfForms()` / `surfFormSlug`: getTranslit, non-letters -> "-"; two spellings of one number that read alike get -2, -3 in index order;
+built once per nav index). `surfWordFromQuery` resolves form+sn (then form with no number, then any number) or the old ?word=<paleo>;
+/api/surface-explorer/list, /surface (incl. prev/next) return `form`; /surface and /verses accept either. Root.jsx `surfParams(s)` writes
+sn+form for the sidebar, prev/next and the first-surface redirect; a ?word= visit (old links, the "surf" badges in WordBlock / Parallel /
+Root verse blocks, which only know the letters) is replaced by sn+form once it loads. Lexicon.jsx All Surfaces rows link sn+form.
+Form logic unit-tested on a mock index; not run on the real server. Needs restart + frontend build.
+NOT changed: /concordance?corpus=…&word=|lemma= (Greek / Ge'ez / Latin words — no Strong's number to key on), /search?q= (whatever was typed).
+
 ## "ECCLESIASTICUS / SIRACH" (canon 70), like "2 Esdras / 4 Ezra" (2026-11-10)
 Renamed in server/book-order.json, server.js BOOK_NAMES, src/lib/books.js. The slug becomes `ecclesiasticus-sirach`;
 each half of an "A / B" name also resolves (`sirach`, `ecclesiasticus`, `2-esdras`, `4-ezra`) — src/lib/bookSlug.js

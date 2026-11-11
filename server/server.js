@@ -9737,6 +9737,46 @@ function getRootIndexBySN(sn) {
 }
 function getRootIndexByValue(root) { return _rootByValue?.get(root) ?? -1; }
 function getSurfIndexByValue(surf) { return _surfByValue?.get(surf)  ?? -1; }
+// ── TYPEABLE SURFACE ADDRESS: /surfaces?sn=H1&form=abay (2026-11-10) ──────────
+// A surface form's address is its Strong's number + its transliteration in plain
+// letters — something a visitor can read and type — instead of ?word=<paleo>.
+// form = the surface's own transliteration, lowercased, a-z only; two spellings
+// of one number that read alike get -2, -3 in index order. Built once per nav
+// index (a new index array = rebuilt), a plain pass over the list.
+let _surfFormCache = null;
+function surfFormSlug(surface) {
+    return String(getTranslit(surface) || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'form';
+}
+function surfForms() {
+    const index = getSurfNavIndex();
+    if (_surfFormCache && _surfFormCache.index === index) return _surfFormCache;
+    const forms = new Array(index.length), byKey = new Map(), anySn = new Map();
+    for (let i = 0; i < index.length; i++) {
+        const sn = index[i].sn || '';
+        const base = surfFormSlug(index[i].surface);
+        let form = base, n = 1;
+        while (byKey.has(`${sn}|${form}`)) { n += 1; form = `${base}-${n}`; }
+        byKey.set(`${sn}|${form}`, i);
+        if (!anySn.has(form)) anySn.set(form, i);
+        forms[i] = form;
+    }
+    _surfFormCache = { index, forms, byKey, anySn };
+    return _surfFormCache;
+}
+function surfFormOf(idx) { return idx >= 0 ? (surfForms().forms[idx] || '') : ''; }
+// ?word=<paleo> (old links) or ?form=<letters>[&sn=H###] → the surface's paleo word ('' = not found).
+function surfWordFromQuery(q) {
+    const word = String(q.word || '').trim();
+    if (word) return word;
+    const form = String(q.form || '').trim().toLowerCase();
+    if (!form) return '';
+    const sn = q.sn ? navNormSN(q.sn) : '';
+    const f = surfForms();
+    let idx = f.byKey.get(`${sn}|${form}`);
+    if (idx == null) idx = f.byKey.get(`|${form}`);
+    if (idx == null) idx = f.anySn.get(form);
+    return idx == null ? '' : getSurfNavIndex()[idx].surface;
+}
 // O(1) — see the "FIRST APPEARANCE INDEX" build step in buildNavIndexes().
 function getFirstAppearanceByRoot(root) { return _firstAppearanceByRoot?.get(root) || null; }
 function getFirstAppearanceBySn(sn)     { return _firstAppearanceBySn?.get(navNormSN(sn)) || null; }
@@ -12162,9 +12202,11 @@ app.get('/api/surface-explorer/list', production.cache(60), (req, res) => {
         const q  = (req.query.q || '').trim();
         const qU = q.toUpperCase();
         // Paleo-sorted distinct surfaces, straight from the text.
-        const all = getSurfNavIndex().map(e => ({
+        const _forms = surfForms().forms;
+        const all = getSurfNavIndex().map((e, i) => ({
             surface: e.surface,
             strongs: e.sn,
+            form:    _forms[i],
             root:    e.root,
             count:   e.count,
         }));
@@ -12183,11 +12225,14 @@ app.get('/api/surface-explorer/list', production.cache(60), (req, res) => {
     }
 });
 
-// GET /api/surface-explorer/surface?word=X[&sn=H1]
+// GET /api/surface-explorer/surface?form=abay&sn=H1   (or the older ?word=<paleo>)
 app.get('/api/surface-explorer/surface', production.cache(60), (req, res) => {
     try {
-        const word = (req.query.word || '').trim();
-        if (!word) return res.status(400).json({ error: 'word param required' });
+        const word = surfWordFromQuery(req.query);
+        if (!word) {
+            if (req.query.form) return res.status(404).json({ error: `Surface form "${String(req.query.form).slice(0, 80)}" not found` });
+            return res.status(400).json({ error: 'form (or word) param required' });
+        }
 
         // Surfaces are word-level now (orthographic words), so a merged form like
         // 𐤄𐤀𐤓𐤑 resolves directly instead of "not in text".
@@ -12232,6 +12277,7 @@ app.get('/api/surface-explorer/surface', production.cache(60), (req, res) => {
 
         res.json({
             surface: word,
+            form: surfFormOf(idx),
             root,
             strongs: sn,
             all_strongs: sn ? [sn] : [],
@@ -12240,8 +12286,8 @@ app.get('/api/surface-explorer/surface', production.cache(60), (req, res) => {
             components,
             total,
             by_book,
-            prev: prev ? { surface: prev.surface, strongs: prev.sn } : null,
-            next: next ? { surface: next.surface, strongs: next.sn } : null,
+            prev: prev ? { surface: prev.surface, strongs: prev.sn, form: surfFormOf(idx - 1) } : null,
+            next: next ? { surface: next.surface, strongs: next.sn, form: surfFormOf(idx + 1) } : null,
         });
     } catch (err) {
         console.error('/api/surface-explorer/surface failed:', err);
@@ -12251,8 +12297,8 @@ app.get('/api/surface-explorer/surface', production.cache(60), (req, res) => {
 
 app.get('/api/surface-explorer/verses', production.cache(60), (req, res) => {
     try {
-        const word = (req.query.word || '').trim();
-        if (!word) return res.status(400).json({ error: 'word param required' });
+        const word = surfWordFromQuery(req.query);
+        if (!word) return res.status(400).json({ error: 'form (or word) param required' });
         const book  = req.query.book ? parseInt(req.query.book, 10) : null;
         const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
         const limit  = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 25));

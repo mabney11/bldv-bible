@@ -314,8 +314,10 @@ export const apiSurfaceList  = ({ q = '', offset = 0, limit = 200 } = {}) => {
   if (q) p.set('q', q);
   return jsonFetch(`/api/surface-explorer/list?${p}`);
 };
-export const apiSurfaceDetail = (word, sn) => {
-  const p = new URLSearchParams({ word });
+// A surface is asked for by its paleo `word` (old links) or by its typeable
+// `form` (its transliteration in plain letters) + Strong's number.
+export const apiSurfaceDetail = (word, sn, form) => {
+  const p = new URLSearchParams(word ? { word } : { form: form || '' });
   if (sn) p.set('sn', sn);
   return jsonFetch(`/api/surface-explorer/surface?${p}`);
 };
