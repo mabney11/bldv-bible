@@ -20,6 +20,8 @@ import {
 import './Root.css';
 import NovelText from '../components/NovelText.jsx';
 import RootAdminEdit from '../components/RootAdminEdit.jsx';
+import AnatomyAdminEdit from '../components/AnatomyAdminEdit.jsx';
+import { getAdminStatus } from '../lib/localOverlay.js';
 import RootCardDialog from '../components/RootCardDialog.jsx';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -289,12 +291,16 @@ function RootCard({ detail, idToSlug, context, onPickSn, backVerses = [] }) {
   // What builds this number up (dictionary derivation, rendered our way):
   // H1035 = Bayath [house] H1004 + Lacham [bread] H3899 — "house of bread".
   const [anatomy, setAnatomy] = useState(null);
+  const [anatTick, setAnatTick] = useState(0);   // bumped after an admin edit -> refetch past the browser cache
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => { getAdminStatus().then(s => setIsAdmin(!!s.isAdmin)).catch(() => {}); }, []);
   useEffect(() => {
     let live = true;
-    setAnatomy(null);
-    if (detail?.sn) apiStrongs(detail.sn).then(a => { if (live) setAnatomy(a); }).catch(() => {});
+    if (!anatTick) setAnatomy(null);
+    if (detail?.sn) apiStrongs(detail.sn, anatTick > 0).then(a => { if (live) setAnatomy(a); }).catch(() => {});
     return () => { live = false; };
-  }, [detail?.sn]);
+  }, [detail?.sn, anatTick]);
+  useEffect(() => { setAnatTick(0); }, [detail?.sn]);
   const root = detail.root || '';
   // a hyphenated compound shows its parts with the dash: 𐤄𐤓-𐤀𐤋 (fieldy, 2026-11-05)
   const shownRoot = anatomy?.isCompound && anatomy.paleo ? anatomy.paleo : root;
@@ -407,7 +413,7 @@ function RootCard({ detail, idToSlug, context, onPickSn, backVerses = [] }) {
           {anatomy?.isCompound && <span className="rc-compound-paleo" dir="rtl">{anatomy.paleo}</span>}
         </div>
       </div>
-      {anatomy && (anatomy.parts.length > 0 || anatomy.meaning) && (
+      {anatomy && (anatomy.parts.length > 0 || anatomy.meaning || isAdmin) && (
         <div className="rc-row">
           <div className="rc-label">Built from</div>
           <div className="rc-value rc-parts">
@@ -421,6 +427,7 @@ function RootCard({ detail, idToSlug, context, onPickSn, backVerses = [] }) {
             ))}
             {anatomy.meaning && <span className="rc-part-meaning">— "{anatomy.meaning}"</span>}
             {anatomy.strongs_def && <span className="rc-part-def">{anatomy.strongs_def}</span>}
+            <AnatomyAdminEdit sn={detail.sn} anatomy={anatomy} onSaved={() => setAnatTick(t => t + 1)} />
           </div>
         </div>
       )}

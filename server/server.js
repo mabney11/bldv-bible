@@ -10569,11 +10569,14 @@ function strongsAnatomy(snRaw) {
     const partSns = ov && Array.isArray(ov.parts)
         ? ov.parts.map(p => normSn(typeof p === 'string' ? p : p.sn))
         : [...deriv.matchAll(/H0*(\d+[a-z]?)/g)].map(m => 'H' + m[1]).filter(p => p !== sn);
-    const ovGloss = {};
-    if (ov && Array.isArray(ov.parts)) for (const p of ov.parts) if (p && p.sn && p.gloss) ovGloss[normSn(p.sn)] = p.gloss;
+    const ovGloss = {}, ovTranslit = {};
+    if (ov && Array.isArray(ov.parts)) for (const p of ov.parts) {
+        if (p && p.sn && p.gloss) ovGloss[normSn(p.sn)] = p.gloss;
+        if (p && p.sn && p.translit) ovTranslit[normSn(p.sn)] = p.translit;   // e.g. "Abay" for H1 in Abay-Dan
+    }
     // Drop a component that is just a spelling variant of the name itself (H3389's derivation cites H3390).
     const parts = partSns.map(strongsPart).filter(p => p.he && p.he.replace(/ /g, '') !== self.he.replace(/ /g, ''))
-        .map(p => ({ ...p, gloss: ovGloss[p.sn] || appSpelling(p.gloss), kjv: appSpelling(kjvShort(p.kjv)) }));
+        .map(p => ({ ...p, translit: ovTranslit[p.sn] || p.translit, gloss: ovGloss[p.sn] || appSpelling(p.gloss), kjv: appSpelling(kjvShort(p.kjv)) }));
     const fused = splitFusedCompound(self.he, parts.map(p => p.he));
     if (fused) {
         self.he = fused.join(' ');

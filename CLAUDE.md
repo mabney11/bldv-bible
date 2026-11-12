@@ -4334,3 +4334,13 @@ token; 48 HEB-edition OT + 204 NT/Apocrypha/Josephus by the verse's English, wit
 deciding the unclear ones; kept H3603: Josephus Ant 5:33 "mass of gold", Jasher/T.Job loaves, War 2:189 "circle"). modform-lib
 verseWordsLoader now applies location overrides to a word's Strong's (as server.js does), so merge-modforms reads H3603a and his homograph.
 Loaves still read the spelling's gloss "Plain" (no homograph asked for). Reading text: `node render-all.mjs --surface`, then Rebake.
+
+## "BUILT FROM" IS EDITABLE ON THE ROOT PAGE (2026-11-12)
+fieldy (H28 Ab-Yadai showed only the dictionary line): "make it possible for me to edit the 'built from' numbers and explanations
+-- I'd expect this to say 'My Father Knows'". Owner-only "✎ edit built from" under the Built from row (src/components/AnatomyAdminEdit.jsx):
+parts (Strong's number, optional spelling, gloss; reorder/remove/add), meaning, definition line; Save writes
+server/lexicon/strongs-anatomy.json through the existing backed-up POST /api/admin/lexicon-file (hot-reloaded by mtime, lexicon-watch
+commits it); "Use the dictionary" removes the entry. New per-part `translit` in that file (server.js strongsAnatomy ovTranslit) — e.g.
+"Abay" for H1. The row now shows for the owner even when a number has no parts, so any number can be given an anatomy. After a save the
+page refetches /api/strongs/:sn with ?_= (the route is cache(3600) — other visitors' browsers may hold the old one up to an hour).
+H28 seeded: Ab (My Father) H1 + Yadai (Knows) H3045 — "My Father Knows". esbuild + node --check; not seen in a browser.

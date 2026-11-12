@@ -339,7 +339,7 @@ export const apiSurface       = (word)           => jsonFetch(`/api/surface?word
 // Strong's anatomy: what words build up a number (from the dictionary's
 // derivation field), each part rendered paleo + transliteration + curated
 // gloss, compounds hyphenated (Bayath-Lacham). lookup takes square Hebrew.
-export const apiStrongs       = (sn)             => jsonFetch(`/api/strongs/${encodeURIComponent(sn)}`);
+export const apiStrongs       = (sn, fresh)      => jsonFetch(`/api/strongs/${encodeURIComponent(sn)}${fresh ? `?_=${Date.now()}` : ''}`);
 export const apiStrongsLookup = (he)             => jsonFetch(`/api/strongs/lookup?he=${encodeURIComponent(he)}`);
 export const apiSurfaceVerses = (qs)             => jsonFetch(`/api/surface/verses?${qs}`);
 export const apiSurfaceVersesRendered = (qs)     => jsonFetch(`/api/surface/verses/rendered?${qs}`);
