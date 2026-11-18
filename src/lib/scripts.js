@@ -37,21 +37,21 @@ const RTL = new Set(['hebrew', 'arabic', 'syriac', 'samaritan', 'mandaic', 'thaa
 // Web-safe font stacks. Noto faces are pulled in by scripts.css so a verse
 // renders even when the OS lacks the font; local faces are listed first.
 const FONT = {
-  hebrew:     "'SBL Hebrew','Ezra SIL','Taamey Frank CLM','Noto Serif Hebrew',serif",
-  arabic:     "'Scheherazade New','Amiri','Noto Naskh Arabic',serif",
-  syriac:     "'Estrangelo Edessa','East Syriac Adiabene','Serto Jerusalem','Noto Sans Syriac',serif",
-  samaritan:  "'Noto Sans Samaritan',serif",
-  mandaic:    "'Noto Sans Mandaic',serif",
-  thaana:     "'Noto Sans Thaana',sans-serif",
-  greek:      "'New Athena Unicode','Cardo','Noto Serif',serif",
-  coptic:     "'Antinoou','New Athena Unicode','Noto Sans Coptic',serif",
-  cyrillic:   "'Ponomar Unicode','Monomakh Unicode','PT Serif','Noto Serif',serif",
-  glagolitic: "'Ponomar Unicode','Noto Sans Glagolitic',serif",
-  armenian:   "'Mshtakan','Noto Serif Armenian',serif",
-  georgian:   "'BPG Nino Mtavruli','Noto Serif Georgian',serif",
-  ethiopic:   "'Abyssinica SIL','Noto Sans Ethiopic',serif",
-  gothic:     "'Noto Sans Gothic',serif",
-  latin:      "'Cardo','Gentium Plus',Georgia,serif",
+  hebrew:     "'BLD Paleo','SBL Hebrew','Ezra SIL','Taamey Frank CLM','Noto Serif Hebrew',serif",
+  arabic:     "'BLD Paleo','Scheherazade New','Amiri','Noto Naskh Arabic',serif",
+  syriac:     "'BLD Paleo','Estrangelo Edessa','East Syriac Adiabene','Serto Jerusalem','Noto Sans Syriac',serif",
+  samaritan:  "'BLD Paleo','Noto Sans Samaritan',serif",
+  mandaic:    "'BLD Paleo','Noto Sans Mandaic',serif",
+  thaana:     "'BLD Paleo','Noto Sans Thaana',sans-serif",
+  greek:      "'BLD Paleo','New Athena Unicode','Cardo','Noto Serif',serif",
+  coptic:     "'BLD Paleo','Antinoou','New Athena Unicode','Noto Sans Coptic',serif",
+  cyrillic:   "'BLD Paleo','Ponomar Unicode','Monomakh Unicode','PT Serif','Noto Serif',serif",
+  glagolitic: "'BLD Paleo','Ponomar Unicode','Noto Sans Glagolitic',serif",
+  armenian:   "'BLD Paleo','Mshtakan','Noto Serif Armenian',serif",
+  georgian:   "'BLD Paleo','BPG Nino Mtavruli','Noto Serif Georgian',serif",
+  ethiopic:   "'BLD Paleo','Abyssinica SIL','Noto Sans Ethiopic',serif",
+  gothic:     "'BLD Paleo','Noto Sans Gothic',serif",
+  latin:      "'BLD Paleo','Cardo','Gentium Plus',Georgia,serif",
 };
 
 const LANG = {  // BCP-47 for the lang attribute (helps shaping + a11y)

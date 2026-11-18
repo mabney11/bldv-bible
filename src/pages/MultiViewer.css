@@ -81,11 +81,11 @@
   user-select: text;
 }
 .mwb-greek .paleo {
-  font-family: 'Cardo', 'GFS Didot', 'Times New Roman', serif;
+  font-family: 'BLD Paleo', 'Cardo', 'GFS Didot', 'Times New Roman', serif;
   font-size: var(--paleo-size, 32px);
 }
 .mwb-ethiopic .paleo {
-  font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif;
+  font-family: 'BLD Paleo', 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif;
   font-size: calc(var(--paleo-size, 32px) * 0.95);
 }
 /* Square Hebrew (Hebrew-extra) is converted to Paleo glyphs in MultiWordBlock,
@@ -152,7 +152,7 @@
 }
 .rd-doc-toolbar .rd-doc-id {
   margin-left: 0;
-  font-family: monospace;
+  font-family: 'BLD Paleo', monospace;
   font-size: 12px;
   color: var(--text2);
   background: var(--bg3);
@@ -324,7 +324,7 @@
 }
 .rd-doc-row:hover { background: var(--bg2); }
 .rd-doc-row.active { background: color-mix(in srgb, var(--blue) 18%, transparent); color: var(--text); }
-.rd-doc-row .rd-doc-id { font-family: monospace; font-size: 12px; color: var(--text); }
+.rd-doc-row .rd-doc-id { font-family: 'BLD Paleo', monospace; font-size: 12px; color: var(--text); }
 .rd-doc-row .rd-doc-meta { font-size: 11px; color: var(--text4); }
 
 /* Doc picker — group section counts + canonical badge */

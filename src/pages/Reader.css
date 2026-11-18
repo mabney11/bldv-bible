@@ -279,7 +279,7 @@
   text-transform: uppercase;
   letter-spacing: .14em;
   color: var(--pr-faint);
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
 }
 .rd-menu-head { padding: 4px 8px 8px; }
 
@@ -295,7 +295,7 @@
 }
 .rd-menu-item:hover { background: color-mix(in srgb, var(--pr-accent) 12%, transparent); }
 .rd-menu-item-label { font-size: 15px; }
-.rd-menu-item-hint  { font-size: 12px; color: var(--pr-faint); font-family: system-ui, sans-serif; }
+.rd-menu-item-hint  { font-size: 12px; color: var(--pr-faint); font-family: 'BLD Paleo', system-ui, sans-serif; }
 
 .rd-menu-aa { min-width: 300px; max-width: min(360px, calc(100vw - 24px)); }
 .rd-aa-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px; }
@@ -309,7 +309,7 @@
 }
 .rd-aa-step:disabled { opacity: .4; cursor: default; }
 .rd-aa-step:not(:disabled):hover { border-color: var(--pr-accent); color: var(--pr-accent); }
-.rd-aa-val { min-width: 26px; text-align: center; font-size: 14px; color: var(--pr-ink-soft); font-family: system-ui, sans-serif; }
+.rd-aa-val { min-width: 26px; text-align: center; font-size: 14px; color: var(--pr-ink-soft); font-family: 'BLD Paleo', system-ui, sans-serif; }
 
 /* The typeface row stacks: label above a 2-up grid of previews. */
 .rd-aa-row-col { flex-direction: column; align-items: stretch; gap: 8px; }
@@ -346,7 +346,7 @@
 /* The note stays in the UI face so it never becomes unreadable in the face
    being previewed (OpenDyslexic at 11px is illegible). */
 .rd-font-note {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 11px;
   line-height: 1.3;
   color: var(--pr-faint);
@@ -380,7 +380,7 @@
 }
 .rd-gloss-name { font-size: 14px; line-height: 1.25; }
 .rd-gloss-note {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 11px;
   line-height: 1.3;
   color: var(--pr-faint);
@@ -466,7 +466,7 @@
   display: block;
   min-height: 1.3em;   /* reserves the line even when a cell has no gloss text (see Reader.jsx) */
   margin-top: .22em;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: 'BLD Paleo', 'Segoe UI', system-ui, -apple-system, sans-serif;
   font-weight: 400;
   font-size: .78em;
   line-height: 1.3;
@@ -498,7 +498,7 @@
   font-size: 1.1em;
 }
 .rd-heb .hwc-gloss .hw-geez-fallback {
-  font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif;
+  font-family: 'BLD Paleo', 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif;
   font-size: 1.05em;
 }
 
@@ -567,7 +567,7 @@
 .rd-aa-themes { display: inline-flex; gap: 6px; }
 .rd-theme-chip {
   padding: 7px 12px; border-radius: 8px; cursor: pointer;
-  font-size: 13px; font-family: system-ui, sans-serif;
+  font-size: 13px; font-family: 'BLD Paleo', system-ui, sans-serif;
   border: 1px solid var(--pr-rule);
 }
 .rd-theme-chip.parchment { background: #efe4cc; color: #2b2117; }
@@ -622,7 +622,7 @@
   margin-top: 2px;
 }
 .rd-section-heading {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: .06em;
@@ -654,7 +654,7 @@
   margin: 2.2em 0 1.4em;
 }
 .rd-part-title {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: .1em;
@@ -699,7 +699,7 @@
 }
 .rd-pericope:first-child { margin-top: 0; }
 .rd-pericope-title {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: .02em;
@@ -792,7 +792,7 @@
   line-height: 0;
 }
 .rd-vnum {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: .82em;
   font-weight: 700;
   color: var(--pr-vnum);
@@ -834,7 +834,7 @@
   border-radius: 6px;
   padding: 4px 9px;
   font-size: 11px;
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-weight: 600;
   text-decoration: none;
   opacity: 0;
@@ -1087,7 +1087,7 @@
   display: block;
   margin-top: .5em;
   font-style: normal;
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: .7em;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -1098,7 +1098,7 @@
   color: var(--pr-accent);
 }
 .rd-squote-num {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-style: normal;
   font-size: .72em;
   font-weight: 600;
@@ -1138,7 +1138,7 @@
   color: var(--pr-ink-soft);
   border: 1px solid var(--pr-rule);
   border-radius: 9px;
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 14px;
   cursor: pointer;
   transition: color .15s, border-color .15s;
@@ -1189,7 +1189,7 @@
   border: 1px solid var(--pr-rule);
   border-radius: 10px;
   color: var(--pr-ink);
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 15px;
 }
 .rd-sheet-search::placeholder { color: var(--pr-faint); }
@@ -1223,20 +1223,20 @@
 .rd-book-row.cur .rd-book-label { color: var(--pr-accent); }
 .rd-book-idx {
   flex: 0 0 auto; min-width: 22px;
-  font-family: system-ui, sans-serif; font-size: 11px;
+  font-family: 'BLD Paleo', system-ui, sans-serif; font-size: 11px;
   color: var(--pr-faint); text-align: right;
 }
 .rd-book-label { flex: 1 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .rd-sheet-sub {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 10.5px; text-transform: uppercase; letter-spacing: .12em;
   color: var(--pr-faint);
   padding: 8px 4px 6px;
 }
 .rd-section-group + .rd-section-group { margin-top: 14px; }
 .rd-section-title {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 11px; font-weight: 600; letter-spacing: .02em;
   color: var(--pr-ink-soft);
   padding: 2px 4px 6px;
@@ -1254,13 +1254,13 @@
   border: 1px solid var(--pr-rule);
   border-radius: 8px;
   color: var(--pr-ink-soft);
-  font-family: system-ui, sans-serif; font-size: 14px;
+  font-family: 'BLD Paleo', system-ui, sans-serif; font-size: 14px;
   cursor: pointer;
   transition: color .12s, border-color .12s, background .12s;
 }
 .rd-grid-cell:hover { color: var(--pr-accent); border-color: var(--pr-accent); }
 .rd-grid-cell.cur { background: var(--pr-accent); border-color: var(--pr-accent); color: #14110c; font-weight: 600; }
-.rd-sheet-empty { padding: 20px 8px; color: var(--pr-faint); font-family: system-ui, sans-serif; font-size: 14px; }
+.rd-sheet-empty { padding: 20px 8px; color: var(--pr-faint); font-family: 'BLD Paleo', system-ui, sans-serif; font-size: 14px; }
 
 /* ── desktop: picker becomes a centered panel, wider measure ──────────────── */
 @media (min-width: 720px) {
@@ -1453,10 +1453,10 @@
 }
 .rd-precept-dot:hover, .rd-precept-dot:focus-visible { opacity: 1; color: var(--pr-accent); background: var(--pr-bg-raise); }
 .rd-precept-dot.confirmed { opacity: 1; color: var(--pr-accent); }
-.rd-precept-glyph { font-family: system-ui, sans-serif; font-weight: 700; }
+.rd-precept-glyph { font-family: 'BLD Paleo', system-ui, sans-serif; font-weight: 700; }
 
 .rd-precept-sheet { max-height: 86vh; }
-.rd-precept-title { flex: 1 1 auto; display: flex; align-items: baseline; gap: 8px; font-family: system-ui, sans-serif; color: var(--pr-ink); font-size: 15px; font-weight: 600; }
+.rd-precept-title { flex: 1 1 auto; display: flex; align-items: baseline; gap: 8px; font-family: 'BLD Paleo', system-ui, sans-serif; color: var(--pr-ink); font-size: 15px; font-weight: 600; }
 .rd-precept-title .rd-precept-glyph { color: var(--pr-accent); }
 .rd-precept-ref { color: var(--pr-ink-soft); font-weight: 400; }
 .rd-precept-count { margin-left: auto; color: var(--pr-faint); font-weight: 400; font-size: 13px; }

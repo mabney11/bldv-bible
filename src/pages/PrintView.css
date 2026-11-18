@@ -42,7 +42,7 @@ html.pp-html[data-pp-paper="white"],     html.pp-html[data-pp-paper="white"] bod
   background: color-mix(in srgb, var(--pr-bg-raise) 94%, transparent);
   backdrop-filter: blur(6px);
   border-bottom: 1px solid var(--pr-rule);
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   color: var(--pr-ink);
 }
 .pp-back {

@@ -102,8 +102,8 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
-.src-card-text.script-Ethiopic { font-family: 'Noto Sans Ethiopic', 'Abyssinica SIL', serif; font-size: 20px; }
-.src-card-text.script-Greek    { font-family: 'GFS Didot', 'New Athena Unicode', serif; font-size: 19px; }
+.src-card-text.script-Ethiopic { font-family: 'BLD Paleo', 'Noto Sans Ethiopic', 'Abyssinica SIL', serif; font-size: 20px; }
+.src-card-text.script-Greek    { font-family: 'BLD Paleo', 'GFS Didot', 'New Athena Unicode', serif; font-size: 19px; }
 
 /* Chapter view — verses listed */
 .src-chapter-list {

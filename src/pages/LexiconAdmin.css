@@ -79,7 +79,7 @@
   color: var(--text);
   border: none;
   padding: 16px 20px;
-  font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
+  font-family: 'BLD Paleo', 'SFMono-Regular', Consolas, Menlo, monospace;
   font-size: 13px;
   line-height: 1.6;
   tab-size: 2;
@@ -148,7 +148,7 @@
 .lax-otherfile-label {
   align-self: center;
   padding: 0 16px;
-  font-family: ui-monospace, Consolas, monospace;
+  font-family: 'BLD Paleo', ui-monospace, Consolas, monospace;
   font-size: 13px;
   font-weight: 700;
   color: var(--gold);
@@ -258,10 +258,10 @@
 
 /* text scripts in the letters column (the paleo ones are SVG glyphs) */
 .lax-text { flex-direction: row; flex-wrap: wrap; color: var(--text); line-height: 1.2; font-size: calc(var(--glyph-word, 28px) * 0.85); }
-.lax-text-greek  { font-family: 'Cardo', 'GFS Didot', 'Times New Roman', serif; }
-.lax-text-geez   { font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif; }
-.lax-text-latin  { font-family: 'Cardo', Georgia, serif; font-size: calc(var(--glyph-word, 28px) * 0.7); }
-.lax-text-syriac { font-family: 'Estrangelo Edessa', 'Noto Sans Syriac', 'Serto Jerusalem', serif; direction: rtl; }
+.lax-text-greek  { font-family: 'BLD Paleo', 'Cardo', 'GFS Didot', 'Times New Roman', serif; }
+.lax-text-geez   { font-family: 'BLD Paleo', 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif; }
+.lax-text-latin  { font-family: 'BLD Paleo', 'Cardo', Georgia, serif; font-size: calc(var(--glyph-word, 28px) * 0.7); }
+.lax-text-syriac { font-family: 'BLD Paleo', 'Estrangelo Edessa', 'Noto Sans Syriac', 'Serto Jerusalem', serif; direction: rtl; }
 .lax-anchor { gap: 8px; }
 .lax-anchor-text { font-size: 22px; font-weight: 700; color: var(--gold); }
 .lax-anchor-text.lax-text-greek, .lax-anchor-text.lax-text-geez, .lax-anchor-text.lax-text-syriac { font-weight: 400; font-size: 26px; }

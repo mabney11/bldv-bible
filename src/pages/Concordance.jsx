@@ -25,10 +25,10 @@ const PAGE = 200;            // how many more "Show more" pulls in
 
 const READER_SRC = { GNT:'LXX', LXX:'LXX', GRC:'GRC', GEZ:'GEZ', LAT:'LAT', SYR:'SYR', ENG:'ENG', HEB:'HEB' };
 const FONT = (corpus) =>
-  corpus === 'GEZ' ? "'Abyssinica SIL','Noto Sans Ethiopic',serif"
-  : corpus === 'SYR' ? "'Noto Sans Syriac','Estrangelo Edessa',serif"
-  : corpus === 'LAT' ? "'Cardo','Times New Roman',serif"
-  : "'Cardo','GFS Didot',serif";
+  corpus === 'GEZ' ? "'BLD Paleo','Abyssinica SIL','Noto Sans Ethiopic',serif"
+  : corpus === 'SYR' ? "'BLD Paleo','Noto Sans Syriac','Estrangelo Edessa',serif"
+  : corpus === 'LAT' ? "'BLD Paleo','Cardo','Times New Roman',serif"
+  : "'BLD Paleo','Cardo','GFS Didot',serif";
 
 // Self-contained layout so the two-pane behaviour doesn't depend on Root.css.
 

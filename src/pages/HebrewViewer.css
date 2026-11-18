@@ -149,7 +149,7 @@ html[data-theme="light"] .hv-verse-marker { color: #fff; background: #1a1612; }
   padding: 6px 12px;
   cursor: pointer;
   align-self: flex-start;
-  font-family: monospace;
+  font-family: 'BLD Paleo', monospace;
   transition: all 0.15s;
 }
 .hv-token-viewer-toggle:hover     { color: var(--text); border-color: var(--border3); }

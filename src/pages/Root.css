@@ -24,7 +24,7 @@
 .root-topbar-row1 { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
 .root-topbar-row2 { display: flex; align-items: center; gap: 6px; }
 .root-top-sn {
-  font-family: monospace; font-size: 13px; color: var(--gold);
+  font-family: 'BLD Paleo', monospace; font-size: 13px; color: var(--gold);
   padding: 4px 10px; background: rgba(232,170,85,0.1);
   border: 1px solid rgba(232,170,85,0.25); border-radius: 5px; flex-shrink: 0;
 }
@@ -67,7 +67,7 @@
 .root-entry-header { padding: 16px; border-bottom: 1px solid var(--border); }
 .root-entry-paleo { font-family: var(--paleo-font); font-size: 42px; color: var(--gold); line-height: 1; margin-bottom: 4px; }
 .root-entry-tl    { font-size: 14px; font-weight: 700; color: var(--text2); }
-.root-entry-sn    { font-family: monospace; font-size: 11px; color: var(--text4); margin-bottom: 8px; }
+.root-entry-sn    { font-family: 'BLD Paleo', monospace; font-size: 11px; color: var(--text4); margin-bottom: 8px; }
 .root-entry-def   { font-size: 12px; color: var(--text3); line-height: 1.55; padding: 8px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; }
 .root-view-toggle { display: flex; gap: 6px; margin-top: 10px; }
 .rv-btn { flex: 1; text-align: center; font-size: 12px; padding: 6px; border-radius: 6px; border: 1px solid var(--border2); background: var(--bg3); color: var(--text3); }
@@ -125,8 +125,8 @@
 .sub-line .sub-tl { font-weight: 700; display: block; }
 .sub-line .brk { color: var(--text4) !important; }
 .sn-bdg { display: flex; gap: 3px; flex-wrap: wrap; justify-content: center; }
-.sn-bdg .sn-link { font-family: monospace; font-size: 9px; padding: 1px 5px; border-radius: 3px; background: color-mix(in srgb, var(--mc, var(--blue)) 12%, transparent); border: 1px solid color-mix(in srgb, var(--mc, var(--blue)) 30%, transparent); color: var(--mc, var(--blue)); }
-.surf-link-bdg { font-family: monospace; font-size: 9px; padding: 1px 5px; border-radius: 3px; background: rgba(62,207,176,0.08); border: 1px solid rgba(62,207,176,0.25); color: var(--teal); }
+.sn-bdg .sn-link { font-family: 'BLD Paleo', monospace; font-size: 9px; padding: 1px 5px; border-radius: 3px; background: color-mix(in srgb, var(--mc, var(--blue)) 12%, transparent); border: 1px solid color-mix(in srgb, var(--mc, var(--blue)) 30%, transparent); color: var(--mc, var(--blue)); }
+.surf-link-bdg { font-family: 'BLD Paleo', monospace; font-size: 9px; padding: 1px 5px; border-radius: 3px; background: rgba(62,207,176,0.08); border: 1px solid rgba(62,207,176,0.25); color: var(--teal); }
 
 .root-load-more { display: block; margin: 24px auto 0; padding: 9px 24px; background: var(--bg3); border: 1px solid var(--border2); color: var(--text2); border-radius: 7px; cursor: pointer; font-size: 13px; }
 .root-load-more:hover { background: var(--bg4); color: var(--text); }
@@ -183,7 +183,7 @@
 .sidebar-item.active { background: color-mix(in srgb, var(--gold) 8%, var(--bg3)); border-color: rgba(232,170,85,0.35); color: var(--text); }
 .si-paleo { font-family: var(--paleo-font); font-size: 17px; color: var(--gold); min-width: 30px; }
 .si-tl    { font-size: 11px; color: var(--text3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.si-sn    { font-family: monospace; font-size: 9.5px; color: var(--blue); padding: 0 4px; }
+.si-sn    { font-family: 'BLD Paleo', monospace; font-size: 9.5px; color: var(--blue); padding: 0 4px; }
 .si-count { font-size: 10px; color: var(--text4); font-variant-numeric: tabular-nums; }
 .sidebar-truncated { padding: 12px 10px; font-size: 11px; color: var(--text4); text-align: center; font-style: italic; }
 
@@ -205,7 +205,7 @@
 }
 .rd-info { flex: 1; min-width: 0; }
 .rd-tl   { font-size: 18px; font-weight: 700; color: var(--text); }
-.rd-sns  { font-family: monospace; font-size: 12px; color: var(--text4); margin-top: 2px; }
+.rd-sns  { font-family: 'BLD Paleo', monospace; font-size: 12px; color: var(--text4); margin-top: 2px; }
 .rd-def  { font-size: 13px; color: var(--text2); margin-top: 8px; line-height: 1.5; }
 .rd-root-link { font-size: 12px; color: var(--text3); margin-top: 6px; }
 .rd-root-link a { color: var(--teal); text-decoration: none; }
@@ -272,7 +272,7 @@
 /* Strong's number leads the card (fieldy, 2026-11-05: "the strongs number as a component ... before Root") */
 .rc-sn-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .rc-sn-big {
-  display: inline-block; font-family: monospace; font-size: 28px; font-weight: 700;
+  display: inline-block; font-family: 'BLD Paleo', monospace; font-size: 28px; font-weight: 700;
   padding: 4px 14px; border-radius: 8px; color: var(--gold);
   border: 1.5px solid var(--gold); background: color-mix(in srgb, var(--gold) 9%, transparent);
 }
@@ -324,7 +324,7 @@
 }
 .rc-sn-row.active { border-left-color: var(--gold); background: color-mix(in srgb, var(--gold) 9%, transparent); }
 .rc-sn-chip {
-  font-family: monospace;
+  font-family: 'BLD Paleo', monospace;
   font-size: 17px;
   font-weight: 600;
   padding: 3px 11px;

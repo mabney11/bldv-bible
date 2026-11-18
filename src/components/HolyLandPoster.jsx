@@ -18,7 +18,7 @@ import {
 import levantBase from '../lib/models/levant-base.json';
 
 const SEA = '#8db3d3', LAND = '#e6dcc4', RIVER = '#5f8db3', INK = '#1a1208', GOLD = '#b8860b';
-const SERIF = "'Cochineal', Georgia, 'Times New Roman', serif";
+const SERIF = "'BLD Paleo', 'Cochineal', Georgia, 'Times New Roman', serif";
 const PALEO = "'BLD Paleo', 'Segoe UI Historic', 'Noto Sans Phoenician', sans-serif";
 
 const HOLY_KINDS = ['prince', 'levites', 'priests', 'food', 'city', 'sanctuary'];

@@ -74,7 +74,7 @@
 .gs-lang-col-item:hover { background: var(--bg3); }
 .gs-lang-col-item.active { background: color-mix(in srgb, var(--blue2) 16%, var(--bg2)); border-left-color: var(--blue2); }
 .gs-lang-col-name { flex: 1; }
-.gs-lang-col-pct { font-size: 11px; color: var(--text3); font-family: monospace; }
+.gs-lang-col-pct { font-size: 11px; color: var(--text3); font-family: 'BLD Paleo', monospace; }
 .gs-lang-col-item.done    { border-left-color: var(--green, #3aa96a); }
 .gs-lang-col-item.done .gs-lang-col-pct    { color: var(--green, #3aa96a); }
 .gs-lang-col-item.partial { border-left-color: var(--amber, var(--gold)); }
@@ -174,7 +174,7 @@
 .gs-body { flex: 1; overflow-y: auto; max-width: 900px; margin: 0 auto; width: 100%; padding: 20px 20px 60px; }
 .gs-intro { font-size: 13px; color: var(--text3); line-height: 1.6; margin: 0 0 18px; }
 .gs-intro code {
-  font-family: monospace; font-size: 12px;
+  font-family: 'BLD Paleo', monospace; font-size: 12px;
   background: var(--bg2); border: 1px solid var(--border); padding: 1px 6px; border-radius: 4px; color: var(--gold);
 }
 

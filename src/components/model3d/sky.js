@@ -51,7 +51,7 @@ export function makeSky({ scene, lights, sky, reach = 1 }) {
 /** A name drawn on a canvas for a sprite, in a colour with a dark edge (read against sky and ground alike). */
 export function labelTexture(text, color = '#fff') {
   const c = document.createElement('canvas'); c.width = 512; c.height = 128;
-  const g = c.getContext('2d'); g.font = '600 64px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  const g = c.getContext('2d'); g.font = '600 64px "BLD Paleo", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
   g.lineJoin = 'round'; g.lineWidth = 10; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(text, 256, 64);
   g.fillStyle = color; g.fillText(text, 256, 64);
   const t = new THREE.CanvasTexture(c); t.anisotropy = 4; return t;

@@ -152,7 +152,7 @@
   margin-top: -2px;
 }
 .sn-link {
-  font-family: monospace;
+  font-family: 'BLD Paleo', monospace;
   padding: 1px 5px;
   border-radius: 3px;
   background: color-mix(in srgb, var(--mc, var(--blue)) 12%, transparent);
@@ -162,7 +162,7 @@
 }
 .sn-link:hover { background: color-mix(in srgb, var(--mc, var(--blue)) 22%, transparent); }
 .surf-badge-link {
-  font-family: monospace;
+  font-family: 'BLD Paleo', monospace;
   padding: 1px 5px;
   border-radius: 3px;
   background: rgba(62,207,176,0.08);

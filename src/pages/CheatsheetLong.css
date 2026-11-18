@@ -28,7 +28,7 @@
   .cs-long h3 { font-size: 14px; font-weight: 600; color: var(--gold); margin: 28px 0 12px; text-transform: uppercase; letter-spacing: .06em; }
 
   .cs-long /* ── TOKEN ANATOMY ─── */
-  .token-line { font-family: 'IBM Plex Mono', monospace; font-size: 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; line-height: 2; overflow-x: auto; white-space: nowrap; }
+  .token-line { font-family: 'BLD Paleo', 'IBM Plex Mono', monospace; font-size: 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; line-height: 2; overflow-x: auto; white-space: nowrap; }
   .cs-long .tok-field { display: inline-block; padding: 2px 6px; border-radius: 4px; margin: 0 1px; font-size: 12px; font-weight: 600; cursor: default; }
   .cs-long .f-verse { background: rgba(90,156,246,.2); color: #5b9cf6; border: 1px solid rgba(90,156,246,.3); }
   .cs-long .f-ord { background: rgba(62,207,176,.2); color: #3ecfb0; border: 1px solid rgba(62,207,176,.3); }
@@ -41,10 +41,10 @@
   .cs-long /* ── FIELD LEGEND ─── */
   .field-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
   .cs-long .field-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
-  .cs-long .field-name { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .cs-long .field-name { font-family: 'BLD Paleo', 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
   .cs-long .field-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
   .cs-long .field-values { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px; }
-  .cs-long .val-tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 2px 8px; border-radius: 3px; background: var(--bg4); border: 1px solid var(--border2); color: var(--text2); }
+  .cs-long .val-tag { font-family: 'BLD Paleo', 'IBM Plex Mono', monospace; font-size: 11px; padding: 2px 8px; border-radius: 3px; background: var(--bg4); border: 1px solid var(--border2); color: var(--text2); }
   .cs-long .val-tag b { color: var(--text); }
 
   .cs-long /* ── BIG TABLES ─── */
@@ -53,8 +53,8 @@
   .cs-long td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
   .cs-long tr:last-child td { border-bottom: none; }
   .cs-long tr:hover td { background: rgba(255,255,255,.02); }
-  .cs-long .mono { font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
-  .cs-long .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 1px 7px; border-radius: 3px; font-weight: 600; }
+  .cs-long .mono { font-family: 'BLD Paleo', 'IBM Plex Mono', monospace; font-size: 12px; }
+  .cs-long .tag { display: inline-block; font-family: 'BLD Paleo', 'IBM Plex Mono', monospace; font-size: 11px; padding: 1px 7px; border-radius: 3px; font-weight: 600; }
   .cs-long .t-sp { background: rgba(167,139,250,.15); color: #a78bfa; border:1px solid rgba(167,139,250,.3); }
   .cs-long .t-v { background: rgba(90,156,246,.15); color: #5b9cf6; border:1px solid rgba(90,156,246,.3); }
   .cs-long .t-n { background: rgba(62,207,176,.15); color: #3ecfb0; border:1px solid rgba(62,207,176,.3); }
@@ -67,15 +67,15 @@
   .cs-long .assembly-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
   .cs-long .assembly-card h4 { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
   .cs-long .assembly-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; font-size: 13px; }
-  .cs-long .assembly-row .lbl { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); min-width: 56px; }
+  .cs-long .assembly-row .lbl { font-family: 'BLD Paleo', 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); min-width: 56px; }
   .cs-long .assembly-row .val { color: var(--text2); }
   .cs-long .rule-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
   .cs-long .rule-box p { font-size: 13px; color: var(--text2); line-height: 1.7; }
-  .cs-long .rule-box code { font-family: 'IBM Plex Mono', monospace; font-size: 12px; background: var(--bg4); padding: 1px 6px; border-radius: 3px; color: var(--gold); }
+  .cs-long .rule-box code { font-family: 'BLD Paleo', 'IBM Plex Mono', monospace; font-size: 12px; background: var(--bg4); padding: 1px 6px; border-radius: 3px; color: var(--gold); }
 
   .cs-long /* ── STRIP ORDER ─── */
   .strip-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-  .cs-long .strip-step { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 8px 14px; font-size: 12px; font-family: 'IBM Plex Mono', monospace; text-align: center; }
+  .cs-long .strip-step { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 8px 14px; font-size: 12px; font-family: 'BLD Paleo', 'IBM Plex Mono', monospace; text-align: center; }
   .cs-long .strip-step .label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; }
   .cs-long .strip-step .code { font-size: 13px; color: var(--gold); font-weight: 600; margin-top: 2px; }
   .cs-long .strip-arrow { color: var(--text3); font-size: 18px; }
@@ -83,10 +83,10 @@
   .cs-long /* ── EXAMPLE BLOCKS ─── */
   .example { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin: 16px 0; }
   .cs-long .example-title { font-size: 11px; color: var(--teal); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin-bottom: 12px; }
-  .cs-long .ex-raw { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text3); margin-bottom: 8px; }
+  .cs-long .ex-raw { font-family: 'BLD Paleo', 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text3); margin-bottom: 8px; }
   .cs-long .ex-paleo { font-family: var(--paleo-font); font-size: 28px; color: var(--gold2); margin: 8px 0; direction: rtl; }
   .cs-long .ex-parse { font-size: 13px; color: var(--text2); line-height: 1.8; }
-  .cs-long .ex-parse span { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 1px 5px; border-radius: 3px; }
+  .cs-long .ex-parse span { font-family: 'BLD Paleo', 'IBM Plex Mono', monospace; font-size: 11px; padding: 1px 5px; border-radius: 3px; }
   .cs-long .hi-pfm { background: rgba(251,146,60,.15); color: #fb923c; }
   .cs-long .hi-vbs { background: rgba(248,113,113,.15); color: #f87171; }
   .cs-long .hi-root { background: rgba(240,184,74,.15); color: #f0b84a; }
@@ -108,15 +108,15 @@
     .cs-long .ex-card-header { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--bg3); }
     .cs-long .ex-card-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
     .cs-long .ex-card-title { font-size: 13px; font-weight: 600; color: var(--text); }
-    .cs-long .ex-card-tag { font-family: "IBM Plex Mono", monospace; font-size: 11px; padding: 2px 8px; border-radius: 3px; margin-left: auto; }
+    .cs-long .ex-card-tag { font-family: 'BLD Paleo', "IBM Plex Mono", monospace; font-size: 11px; padding: 2px 8px; border-radius: 3px; margin-left: auto; }
     .cs-long .ex-card-body { padding: 16px 20px; }
-    .cs-long .ex-card-body .ex-raw { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--text3); margin-bottom: 10px; word-break: break-all; }
+    .cs-long .ex-card-body .ex-raw { font-family: 'BLD Paleo', "IBM Plex Mono", monospace; font-size: 12px; color: var(--text3); margin-bottom: 10px; word-break: break-all; }
     .cs-long .ex-card-body .ex-paleo { font-size: 26px; color: var(--gold2); direction: rtl; margin: 8px 0; }
     .cs-long .step-list { margin: 10px 0; display: flex; flex-direction: column; gap: 5px; }
     .cs-long .step-row { display: flex; gap: 10px; align-items: baseline; font-size: 13px; }
-    .cs-long .step-label { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--text3); min-width: 80px; }
+    .cs-long .step-label { font-family: 'BLD Paleo', "IBM Plex Mono", monospace; font-size: 11px; color: var(--text3); min-width: 80px; }
     .cs-long .step-val { color: var(--text2); line-height: 1.5; }
-    .cs-long .step-val code { font-family: "IBM Plex Mono", monospace; font-size: 11px; background: var(--bg4); padding: 1px 5px; border-radius: 3px; color: var(--gold); }
+    .cs-long .step-val code { font-family: 'BLD Paleo', "IBM Plex Mono", monospace; font-size: 11px; background: var(--bg4); padding: 1px 5px; border-radius: 3px; color: var(--gold); }
     .cs-long .step-val b { color: var(--text); }
     .cs-long .ex-result { margin-top: 12px; padding: 10px 14px; background: var(--bg4); border-radius: 6px; font-size: 13px; color: var(--teal); }
     .cs-long .ex-result b { color: var(--gold2); }
@@ -145,13 +145,13 @@
     .cs-long .pex-word { font-size: 22px; color: var(--gold2); direction: rtl; min-width: 60px; }
     .cs-long .pex-name { font-size: 13px; font-weight: 600; color: var(--text); }
     .cs-long .pex-body { padding: 18px 20px; background: var(--bg2); }
-    .cs-long .pex-raw { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; word-break: break-all; line-height: 1.6; }
+    .cs-long .pex-raw { font-family: 'BLD Paleo', "IBM Plex Mono", monospace; font-size: 12px; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; word-break: break-all; line-height: 1.6; }
     .cs-long .pex-steps { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
     .cs-long .pex-step { display: grid; grid-template-columns: 120px 1fr; gap: 8px; font-size: 13px; }
-    .cs-long .pex-step-label { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--text3); padding-top: 2px; }
+    .cs-long .pex-step-label { font-family: 'BLD Paleo', "IBM Plex Mono", monospace; font-size: 11px; color: var(--text3); padding-top: 2px; }
     .cs-long .pex-step-val { color: var(--text2); line-height: 1.6; }
-    .cs-long .pex-step-val code { font-family: "IBM Plex Mono", monospace; font-size: 11px; background: var(--bg4); padding: 1px 5px; border-radius: 3px; color: var(--gold); }
-    .cs-long .pex-json { background: var(--bg4); border: 1px solid rgba(240,184,74,.25); border-radius: 6px; padding: 12px 16px; font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--text2); margin-top: 12px; }
+    .cs-long .pex-step-val code { font-family: 'BLD Paleo', "IBM Plex Mono", monospace; font-size: 11px; background: var(--bg4); padding: 1px 5px; border-radius: 3px; color: var(--gold); }
+    .cs-long .pex-json { background: var(--bg4); border: 1px solid rgba(240,184,74,.25); border-radius: 6px; padding: 12px 16px; font-family: 'BLD Paleo', "IBM Plex Mono", monospace; font-size: 13px; color: var(--text2); margin-top: 12px; }
     .cs-long .pex-json .key { color: var(--gold); }
     .cs-long .pex-json .val { color: var(--teal); }
     .cs-long .pex-json .comment { color: var(--text3); }

@@ -13,7 +13,7 @@ html, body, #root {
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'BLD Paleo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
@@ -99,7 +99,7 @@ input, textarea, select {
 }
 .page-stub p { margin-bottom: 14px; }
 .page-stub code {
-  font-family: monospace;
+  font-family: 'BLD Paleo', monospace;
   font-size: 12px;
   background: var(--bg2);
   border: 1px solid var(--border);

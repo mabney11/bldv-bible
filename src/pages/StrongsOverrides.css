@@ -28,7 +28,7 @@
   margin: 0 0 18px;
 }
 .so-intro code {
-  font-family: monospace;
+  font-family: 'BLD Paleo', monospace;
   font-size: 12px;
   background: var(--bg2);
   border: 1px solid var(--border);
@@ -209,7 +209,7 @@
   line-height: 1.6;
 }
 .so-edit-hint code {
-  font-family: monospace;
+  font-family: 'BLD Paleo', monospace;
   background: var(--bg3);
   border-radius: 3px;
   padding: 0 4px;

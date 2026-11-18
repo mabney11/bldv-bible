@@ -707,11 +707,11 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
           if (hov) { g.fillStyle = 'rgba(255, 208, 98, 0.14)'; g.fillRect(x0, y0, x1 - x0, y1 - y0); }
           g.strokeRect(x0, y0, x1 - x0, y1 - y0); g.setLineDash([]);
           if (mapView || hov) {   // its name, shortened to what fits its box (the whole name under the pointer)
-            g.font = `${Math.round((hov ? 12 : 11) * dpr)}px system-ui, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+            g.font = `${Math.round((hov ? 12 : 11) * dpr)}px 'BLD Paleo', system-ui, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
             let t = n.short || n.label; { const room = Math.abs(x1 - x0) - 6 * dpr; while (t.length > 2 && g.measureText(t).width > room) { const cut = t.lastIndexOf(' ', t.length - 2); t = (cut > 2 ? t.slice(0, cut) : t.slice(0, -2)) + '…'; } }   // what fits its box; the whole name goes in the footer
             g.lineWidth = 3 * dpr; g.strokeStyle = 'rgba(14, 11, 8, 0.85)'; g.strokeText(t, (x0 + x1) / 2, (y0 + y1) / 2); g.fillStyle = hov ? '#ffd062' : '#f3e3b8'; g.fillText(t, (x0 + x1) / 2, (y0 + y1) / 2);
           }
-          if (n.children?.length) { g.font = `${Math.round(9 * dpr)}px system-ui, sans-serif`; g.fillStyle = 'rgba(255, 208, 98, 0.8)'; g.textAlign = 'right'; g.fillText('▸', x1 - 3 * dpr, y0 + 8 * dpr); g.textAlign = 'center'; }
+          if (n.children?.length) { g.font = `${Math.round(9 * dpr)}px 'BLD Paleo', system-ui, sans-serif`; g.fillStyle = 'rgba(255, 208, 98, 0.8)'; g.textAlign = 'right'; g.fillText('▸', x1 - 3 * dpr, y0 + 8 * dpr); g.textAlign = 'center'; }
         }
       }
       // a model too big for its walls to show at the map's scale (the city of the Revelation) gives them as lines and marks drawn at the
@@ -739,7 +739,7 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
         const [ex, ey] = pts[pts.length - 1]; g.beginPath(); g.arc(ex, ey, 4 * dpr, 0, Math.PI * 2); g.fillStyle = '#fff3c4'; g.fill(); g.strokeStyle = '#8a6716'; g.lineWidth = 1.5 * dpr; g.stroke();
       }
       // labels stay upright (the big map: all of them, larger)
-      g.font = `${big && SC.plan.outline ? '600 ' : ''}${Math.round((big ? (SC.plan.outline ? 13 : 11) : 9) * dpr)}px system-ui, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.font = `${big && SC.plan.outline ? '600 ' : ''}${Math.round((big ? (SC.plan.outline ? 13 : 11) : 9) * dpr)}px 'BLD Paleo', system-ui, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
       for (const [lx, lz, t] of PLAN_LABELS) {
         if (!big && Math.hypot(lx - px, lz - pz) > MM_R * 1.25) continue;
         if (big && mapView) continue;   // drilled in: the place's own names
@@ -755,8 +755,8 @@ export default function ModelScene({ model, clock, mode, selected, onSelect: onS
       g.textAlign = 'center';
       if (big && gotoAsk && !gotoAsk.label) { const [sx, sy] = P(gotoAsk.x, gotoAsk.z); g.beginPath(); g.arc(sx, sy, 5 * dpr, 0, Math.PI * 2); g.strokeStyle = '#ffd062'; g.lineWidth = 2 * dpr; g.stroke(); }
       // north, at the rim
-      { const nx = big ? 0 : -sa * -1, ny = big ? -1 : ca * -1; const rx = W / 2 + nx * (W / 2 - 9 * dpr), ry = W / 2 + ny * (W / 2 - 9 * dpr); g.font = `bold ${Math.round(10 * dpr)}px system-ui, sans-serif`; g.fillStyle = '#ffd062'; g.fillText('N', rx, ry); }
-      if (big) { g.font = `${Math.round(10 * dpr)}px system-ui, sans-serif`; g.fillStyle = mapHover ? '#ffd062' : '#c9b98a'; g.textAlign = 'left'; g.fillText(mapHover ? mapHover.label : mapView ? 'tap a room to be walked into it · Esc goes up' : 'tap a building to look inside it, a place or the ground to be walked there · M closes', 10 * dpr, W - 10 * dpr); g.textAlign = 'center'; }
+      { const nx = big ? 0 : -sa * -1, ny = big ? -1 : ca * -1; const rx = W / 2 + nx * (W / 2 - 9 * dpr), ry = W / 2 + ny * (W / 2 - 9 * dpr); g.font = `bold ${Math.round(10 * dpr)}px 'BLD Paleo', system-ui, sans-serif`; g.fillStyle = '#ffd062'; g.fillText('N', rx, ry); }
+      if (big) { g.font = `${Math.round(10 * dpr)}px 'BLD Paleo', system-ui, sans-serif`; g.fillStyle = mapHover ? '#ffd062' : '#c9b98a'; g.textAlign = 'left'; g.fillText(mapHover ? mapHover.label : mapView ? 'tap a room to be walked into it · Esc goes up' : 'tap a building to look inside it, a place or the ground to be walked there · M closes', 10 * dpr, W - 10 * dpr); g.textAlign = 'center'; }
       // the walker: at the centre, his way up (the small map); where he stands, turned his way (the big one)
       const [wx, wy] = big ? P(px, pz) : [W / 2, W / 2], wa = big ? roam.yaw + Math.PI / 2 : 0;
       g.save(); g.translate(wx, wy); g.rotate(wa);

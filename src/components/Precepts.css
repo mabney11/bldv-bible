@@ -1,15 +1,15 @@
 /* Precepts list — shared by the Reader's bottom-sheet panel and the verse
    page. Colours come from the Reader tokens (--pr-*), which both hosts load. */
-.pc-empty { margin: 8px 0; color: var(--pr-faint); font-family: system-ui, sans-serif; font-size: 13px; }
+.pc-empty { margin: 8px 0; color: var(--pr-faint); font-family: 'BLD Paleo', system-ui, sans-serif; font-size: 13px; }
 .pc-group + .pc-group { margin-top: 10px; }
 .pc-book {
   margin: 12px 0 4px;
-  font-family: system-ui, sans-serif; font-size: 11px; font-weight: 600;
+  font-family: 'BLD Paleo', system-ui, sans-serif; font-size: 11px; font-weight: 600;
   letter-spacing: .12em; text-transform: uppercase; color: var(--pr-faint);
 }
 .pc-item { padding: 8px 0 10px; border-top: 1px solid var(--pr-rule); }
 .pc-item.rejected { opacity: .5; }
-.pc-item-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-family: system-ui, sans-serif; font-size: 13px; }
+.pc-item-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-family: 'BLD Paleo', system-ui, sans-serif; font-size: 13px; }
 .pc-link {
   padding: 0; border: 0; background: none; cursor: pointer;
   color: var(--pr-vnum); font-weight: 600; font-size: 14px; font-family: inherit;
@@ -26,4 +26,4 @@
 }
 .pc-review button:hover { color: var(--pr-ink); border-color: var(--pr-accent-dim); }
 .pc-text { margin: 6px 0 0; color: var(--pr-ink-soft); font-size: 0.92em; line-height: 1.55; }
-.pc-vnum { color: var(--pr-vnum); font-size: 0.7em; margin-right: 0.3em; font-family: system-ui, sans-serif; }
+.pc-vnum { color: var(--pr-vnum); font-size: 0.7em; margin-right: 0.3em; font-family: 'BLD Paleo', system-ui, sans-serif; }

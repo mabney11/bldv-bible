@@ -92,7 +92,7 @@
   border-top: 1px solid var(--pr-rule);
 }
 .vp-view-link {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 13px;
   color: var(--pr-ink-soft);
   text-decoration: none;
@@ -107,7 +107,7 @@
 }
 
 .vp-subhead {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: .1em;
@@ -168,7 +168,7 @@
 .vp-wordtable {
   width: 100%;
   border-collapse: collapse;
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 13px;
 }
 .vp-wordtable thead th {
@@ -320,7 +320,7 @@
   color: var(--pr-ink);
 }
 .vp-word-strongs {
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 11px;
   color: var(--pr-accent-dim);
   text-decoration: none;
@@ -364,7 +364,7 @@
   padding: 6px 16px;
   cursor: pointer;
   font-size: 12px;
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   transition: all 0.15s;
 }
 .vp-text-mode-btn:first-child        { border-right: 1px solid var(--pr-rule); }
@@ -405,7 +405,7 @@
   padding: 6px 12px;
   cursor: pointer;
   align-self: flex-start;
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   transition: all 0.15s;
 }
 .vp-paleo-toggle:hover { color: var(--pr-ink); border-color: var(--pr-accent-dim); }
@@ -419,7 +419,7 @@
   border: 1px solid var(--pr-rule);
   border-radius: 6px;
   padding: 12px;
-  font-family: system-ui, sans-serif;
+  font-family: 'BLD Paleo', system-ui, sans-serif;
   font-size: 14px;
   line-height: 1.6;
   resize: vertical;
@@ -493,7 +493,7 @@
    Parallel/Hebrew/Studio links sat */
 .vp-switch-foot { margin-top: 28px; }
 /* "See it in 3D" — the story models / maps built from this verse */
-.vp-3d { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: -18px 0 32px; font-family: system-ui, sans-serif; }
+.vp-3d { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: -18px 0 32px; font-family: 'BLD Paleo', system-ui, sans-serif; }
 .vp-3d-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--pr-ink-soft); margin-right: 2px; }
 .vp-3d-link { font-size: 13px; color: var(--gold, #d4a24c); text-decoration: none; padding: 6px 12px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--gold, #d4a24c) 45%, transparent); transition: background .15s, box-shadow .15s; }
 .vp-3d-link:hover { background: color-mix(in srgb, var(--gold, #d4a24c) 12%, transparent); box-shadow: 0 0 12px color-mix(in srgb, var(--gold, #d4a24c) 25%, transparent); }

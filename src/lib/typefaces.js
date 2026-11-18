@@ -28,15 +28,15 @@
  * Reader.jsx / Parallel.jsx) — this module is pure data, no side effects.
  */
 export const TYPEFACES = [
-  { id: 'alegreya',    label: 'Alegreya',    note: 'Warm literary serif',        stack: "'Alegreya', Georgia, serif" },
-  { id: 'cochineal',   label: 'Cochineal',   note: 'Book serif, Crimson lineage',stack: "'Cochineal', 'Alegreya', Georgia, serif" },
-  { id: 'antykwa',     label: 'Antykwa Toruńska', note: 'Polish book face',      stack: "'Antykwa Torunska', 'Alegreya', Georgia, serif" },
-  { id: 'coelacanth-standard', label: 'Coelacanth', note: 'Standard optical size', stack: "'Coelacanth', 'Alegreya', Georgia, serif" },
-  { id: 'coelacanth',  label: 'Coelacanth Pearl', note: 'Old-style, text size',  stack: "'Coelacanth Pearl', 'Coelacanth', 'Alegreya', Georgia, serif" },
-  { id: 'coelacanth-display', label: 'Coelacanth Display', note: 'Larger optical size', stack: "'Coelacanth Display', 'Coelacanth', 'Alegreya', Georgia, serif" },
-  { id: 'kierkegaard', label: 'Kierkegaard', note: 'Calligraphic',               stack: "'Kierkegaard', 'Alegreya', Georgia, serif" },
-  { id: 'ysabeau',     label: 'Ysabeau',     note: 'Humanist, even rhythm',      stack: "'Ysabeau', system-ui, sans-serif" },
-  { id: 'opendyslexic',label: 'OpenDyslexic',note: 'Weighted letterforms',       stack: "'OpenDyslexic', system-ui, sans-serif" },
+  { id: 'alegreya',    label: 'Alegreya',    note: 'Warm literary serif',        stack: "'BLD Paleo', 'Alegreya', Georgia, serif" },
+  { id: 'cochineal',   label: 'Cochineal',   note: 'Book serif, Crimson lineage',stack: "'BLD Paleo', 'Cochineal', 'Alegreya', Georgia, serif" },
+  { id: 'antykwa',     label: 'Antykwa Toruńska', note: 'Polish book face',      stack: "'BLD Paleo', 'Antykwa Torunska', 'Alegreya', Georgia, serif" },
+  { id: 'coelacanth-standard', label: 'Coelacanth', note: 'Standard optical size', stack: "'BLD Paleo', 'Coelacanth', 'Alegreya', Georgia, serif" },
+  { id: 'coelacanth',  label: 'Coelacanth Pearl', note: 'Old-style, text size',  stack: "'BLD Paleo', 'Coelacanth Pearl', 'Coelacanth', 'Alegreya', Georgia, serif" },
+  { id: 'coelacanth-display', label: 'Coelacanth Display', note: 'Larger optical size', stack: "'BLD Paleo', 'Coelacanth Display', 'Coelacanth', 'Alegreya', Georgia, serif" },
+  { id: 'kierkegaard', label: 'Kierkegaard', note: 'Calligraphic',               stack: "'BLD Paleo', 'Kierkegaard', 'Alegreya', Georgia, serif" },
+  { id: 'ysabeau',     label: 'Ysabeau',     note: 'Humanist, even rhythm',      stack: "'BLD Paleo', 'Ysabeau', system-ui, sans-serif" },
+  { id: 'opendyslexic',label: 'OpenDyslexic',note: 'Weighted letterforms',       stack: "'BLD Paleo', 'OpenDyslexic', system-ui, sans-serif" },
 ];
 
 export default TYPEFACES;

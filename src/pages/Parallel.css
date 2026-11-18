@@ -10,7 +10,7 @@
   --par-en-size: 18px; --par-en-font: inherit;
   --word-margin: 0 8px 16px 8px; --word-gap: 4px; --sub-maxw: 200px;
   min-height: 100vh; background: var(--bg); color: var(--text);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'BLD Paleo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* ── Toolbar ───────────────────────────────────────────────────────────────*/

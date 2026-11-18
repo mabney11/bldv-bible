@@ -375,7 +375,7 @@
 }
 .tr-ov-done { position: absolute; left: 0; top: 0; bottom: 0; background: var(--green); }
 .tr-ov-ip   { position: absolute; top: 0; bottom: 0; background: var(--amber, var(--gold)); opacity: 0.65; }
-.tr-ov-pct { color: var(--text3); font-family: monospace; width: 40px; text-align: right; }
+.tr-ov-pct { color: var(--text3); font-family: 'BLD Paleo', monospace; width: 40px; text-align: right; }
 
 .tr-section-label {
   font-size: 11px; font-weight: 700; color: var(--text3);

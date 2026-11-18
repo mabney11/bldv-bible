@@ -354,7 +354,7 @@ a.lex-row-paleo.lex-root-link:hover { filter: brightness(1.3); }
 }
 .lex-sn {
   font-size: 10px;
-  font-family: monospace;
+  font-family: 'BLD Paleo', monospace;
   padding: 2px 6px;
   border-radius: 4px;
   background: rgba(74,158,255,0.1);
@@ -405,14 +405,14 @@ a.lex-row-paleo.lex-root-link:hover { filter: brightness(1.3); }
    rather than the SVG paleo glyphs. We use serif fonts that render the
    scripts properly. */
 .lex-row-greek {
-  font-family: 'Cardo', 'GFS Didot', 'Times New Roman', serif;
+  font-family: 'BLD Paleo', 'Cardo', 'GFS Didot', 'Times New Roman', serif;
   font-size: calc(var(--glyph-word) * 0.85);
   line-height: 1.1;
   color: var(--text);
   text-align: left;
 }
 .lex-row-geez {
-  font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif;
+  font-family: 'BLD Paleo', 'Abyssinica SIL', 'Noto Sans Ethiopic', 'Nyala', serif;
   font-size: calc(var(--glyph-word) * 0.85);
   line-height: 1.1;
   color: var(--text);
@@ -425,8 +425,8 @@ a.lex-row-paleo.lex-root-link:hover { filter: brightness(1.3); }
   text-align: center;
   padding: 4px 0;
 }
-.lex-letter-btn-greek { font-family: 'Cardo', 'GFS Didot', serif; }
-.lex-letter-btn-geez  { font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', serif; }
+.lex-letter-btn-greek { font-family: 'BLD Paleo', 'Cardo', 'GFS Didot', serif; }
+.lex-letter-btn-geez  { font-family: 'BLD Paleo', 'Abyssinica SIL', 'Noto Sans Ethiopic', serif; }
 
 /* Anchor letters between sections */
 .lex-anchor-greek, .lex-anchor-geez {
@@ -435,13 +435,13 @@ a.lex-row-paleo.lex-root-link:hover { filter: brightness(1.3); }
   padding: 12px 14px 6px;
   text-align: left;
 }
-.lex-anchor-greek { font-family: 'Cardo', 'GFS Didot', serif; }
-.lex-anchor-geez  { font-family: 'Abyssinica SIL', 'Noto Sans Ethiopic', serif; }
+.lex-anchor-greek { font-family: 'BLD Paleo', 'Cardo', 'GFS Didot', serif; }
+.lex-anchor-geez  { font-family: 'BLD Paleo', 'Abyssinica SIL', 'Noto Sans Ethiopic', serif; }
 
 /* Heuristic root tag — used on Greek/Ge'ez Surfaces tab to show the root
    that surface belongs to, since "view surface ↗" isn't wired up yet. */
 .lex-row-meta .lex-root-tag {
-  font-family: monospace;
+  font-family: 'BLD Paleo', monospace;
   font-size: 10px;
   color: var(--text4);
   background: var(--bg3);

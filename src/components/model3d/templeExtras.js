@@ -49,7 +49,7 @@ function landColour(x, z, h) {
 }
 function textSprite(text, scale = 1) {
   const c = document.createElement('canvas'); c.width = 512; c.height = 96; const g = c.getContext('2d');
-  g.font = '600 34px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.font = '600 34px "BLD Paleo", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
   g.lineWidth = 8; g.strokeStyle = 'rgba(30,22,10,0.85)'; g.strokeText(text, 256, 48); g.fillStyle = '#ffe9b0'; g.fillText(text, 256, 48);
   const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));

@@ -129,7 +129,7 @@
 .st-vnum-goto {
   position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(3px); white-space: nowrap;
   background: var(--bg2); color: var(--gold); border: 1px solid var(--border2); border-radius: 6px; padding: 4px 9px;
-  font-size: 11px; font-family: system-ui, sans-serif; font-weight: 600; text-decoration: none;
+  font-size: 11px; font-family: 'BLD Paleo', system-ui, sans-serif; font-weight: 600; text-decoration: none;
   opacity: 0; pointer-events: none; transition: opacity .12s ease, transform .12s ease; z-index: 6; box-shadow: 0 4px 14px rgba(0,0,0,.25);
 }
 .st-vnum-goto:hover, .st-vnum-goto:focus-visible { color: var(--text); border-color: var(--gold); }
@@ -232,7 +232,7 @@
 }
 .st-sub-u {
   position: absolute; left: 50%; top: 84%; width: max-content; max-width: 78%; overflow-wrap: anywhere; transform: translate(-50%, -50%); transform-origin: 50% 50%;   /* one spot, low and centred, clear of the parts' popups; sized to its own words (a box at left:50% would otherwise shrink to HALF the stage and wrap early) */
-  font-family: 'Montserrat', 'Arial Black', system-ui, sans-serif; font-style: italic; font-weight: 800; font-size: clamp(26px, 3.9vw, 46px); line-height: 1.12; color: #fff; text-align: center;
+  font-family: 'BLD Paleo', 'Montserrat', 'Arial Black', system-ui, sans-serif; font-style: italic; font-weight: 800; font-size: clamp(26px, 3.9vw, 46px); line-height: 1.12; color: #fff; text-align: center;
   text-shadow: var(--sub-ring), 0 0 12px rgba(0, 0, 0, 0.9), 0 0 34px rgba(0, 0, 0, 0.7);
   paint-order: stroke fill; -webkit-text-stroke: 0.11em #000;   /* a black outline, so the words read on any ground (fieldy) */
   animation: st-sub-pop 0.22s cubic-bezier(0.2, 1.4, 0.4, 1) both;   /* each word POPS toward the reader (fieldy), the last gone before it */
