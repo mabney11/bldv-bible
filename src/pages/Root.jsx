@@ -23,6 +23,7 @@ import RootAdminEdit from '../components/RootAdminEdit.jsx';
 import AnatomyAdminEdit from '../components/AnatomyAdminEdit.jsx';
 import { getAdminStatus } from '../lib/localOverlay.js';
 import RootCardDialog from '../components/RootCardDialog.jsx';
+import CompareVersions from '../components/CompareVersions.jsx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Root / Surface explorer — BibleHub-style.
@@ -1133,6 +1134,11 @@ export default function Root({ mode = 'root' }) {
                         {tokens.length
                           ? tokens.map((t, i) => <RootWordBlock key={i} token={t} isHit={t.isHit} />)
                           : <div style={{ color: 'var(--text3)' }}>No token breakdown for this verse. <Link to={readerHref} style={{ color: 'var(--teal)' }}>Open in reader ↗</Link></div>}
+                      </div>
+                      {/* Owner only (renders nothing for readers): the public-domain English versions of this verse,
+                          same panel as Translation Studio's (fieldy 2026-11-18). */}
+                      <div style={{ marginTop: 22 }}>
+                        <CompareVersions book={cur.book_id} chapter={cur.chapter} verse={cur.verse} />
                       </div>
                       <div style={{ display: 'flex', gap: 10, marginTop: 28 }}>
                         <button type="button" className="r2-btn" disabled={sel <= 0} onClick={() => setSel(s => Math.max(0, s - 1))}>← previous hit</button>

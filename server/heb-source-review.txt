@@ -1,4 +1,4 @@
-HEB-edition readings against their verse's sources (text_src + versions.db + Greek NT glosses), 2026-10-31T23:29:52.656Z
+HEB-edition readings against their verse's sources (text_src + versions.db + Greek NT glosses), 2026-11-18T23:16:40.446Z
 
 book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	blank	confirmed% of judgeable
 40 Matthew	6357	1835	231	302	4324	685	137	0	0	297	90.9
@@ -31,7 +31,7 @@ book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	
 67 1 Enoch	0	68	3	3	72	20	4	0	0	1	73.9
 68 Jubilees	0	10729	106	1772	10358	3655	627	0	0	294	71.5
 69 1 Maccabees	0	3759	100	754	4935	3180	633	0	0	385	49.6
-70 Sirach	0	2675	62	286	2764	2627	606	0	22	344	45.3
+70 Ecclesiasticus / Sirach	0	2675	62	286	2764	2627	606	0	22	344	45.3
 71 Wisdom	0	1620	45	40	2249	1623	307	0	0	99	45.6
 72 Tobit	0	407	18	290	1601	1546	225	0	0	187	18.7
 73 Judith	0	1525	32	254	2159	1302	223	0	0	179	50.0
@@ -59,7 +59,7 @@ book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	
 215 Story of Melchizedek	0	43	0	4	43	11	1	0	0	4	78.2
 217 Life of Flavius Josephus	0	2389	220	499	5589	4090	627	0	0	807	33.6
 218 Against Apion	0	4031	224	607	9562	7363	768	0	0	999	33.1
-219 The Jewish War	0	24544	1855	2855	51176	43731	5880	0	0	7640	33.1
-220 Antiquities of the Jews	0	80996	2783	9361	110901	45305	8186	0	0	13340	60.2
+219 The Jewish War	0	24545	1855	2855	51176	43731	5880	0	0	7639	33.1
+220 Antiquities of the Jews	0	80998	2783	9361	110902	45305	8186	0	0	13337	60.2
 
 CONTRADICTED (the verse's Greek backs another reading of this spelling; nothing confirms the chosen one) — word	chosen	Greek backs	occurrences	refs

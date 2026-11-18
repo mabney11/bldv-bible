@@ -313,6 +313,7 @@ KJV, NKJV, NLV".
   renders nothing unless /admin/session says owner (or no key configured); collapsible (localStorage `tr-compare-open`).
 - Verified: harness of the real route block on the real versions.db (owner 200 with all 8, visitor 404, bad input 400,
   Sirach covers KJV+DRC only), esbuild + full vite build. Not seen in a browser.
+- **Also on the Root page** (2026-11-18, fieldy: "as admin, I want to also see the other translations ... for the same verse under the hebrew"): Root.jsx renders the same `<CompareVersions>` under the selected hit's word blocks (owner only; its label style is now repeated in CompareVersions.css so it does not depend on Translate.css). Open/closed state shared with the Studio (`tr-compare-open`).
 - Deploy: `DB=versions.db bash scripts/sync-corpus-to-prod.sh versions`, then the normal deploy (server.js, entrypoint.sh,
   frontend changed).
 
