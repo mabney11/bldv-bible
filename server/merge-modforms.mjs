@@ -32,6 +32,7 @@
 //   node merge-modforms.mjs [corpus.db] [translation.db] [surface-index.db] --corpus|--saved [--dry]
 //   prod: node merge-modforms.mjs /data/corpus.db /data/translation.db /data/surface-index.db --saved
 import PROV from './translation-provenance.cjs';
+import VS from './eng-versification.cjs';   // translation.db = the site's (English) verse numbers; corpus.db ENG + tokens = Masoretic
 import Database from 'better-sqlite3';
 import { existsSync, writeFileSync, readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -384,6 +385,31 @@ if (CORPUS) {
   };
 
   const ORIG = MF.loadOrigEnglish(cdb, __dirname);   // the WEB / text_src: which parentheses are the WEB's own (unnest)
+  // the head of a word in the mechanical baseline: a name's English (Yawasap -> Joseph; empty = the gold "()"),
+  // else his homograph / the chip's lexicon gloss with the transliteration part dropped ("Shabath / Rest" -> "Rest"),
+  // else the root's paleo — his placeholder to fill
+  const MECH = !argv.includes('--no-mechanical');
+  let mechN = 0, mechNone = 0;
+  const lettersOf = x => String(x || '').toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
+  const dropTranslit = (g, w, head) => {
+    const own = new Set([w.rootTr, w.snTr, MF.formOf([{ ...head, css: 'root' }]).toLowerCase(), lettersOf(w.form)].map(lettersOf).filter(Boolean));
+    return String(g || '').split('/').map(x => x.trim()).filter(x => x && !own.has(lettersOf(x))).join(' / ');
+  };
+  const isPaleo = g => /^[\u{10900}-\u{1091F}\s\/]*$/u.test(g || '');
+  let mechEng = '';   // the verse's original English: which English a name with several takes (Yawasap -> Joseph)
+  const mechHead = (w, head) => {
+    const hf = MF.formOf([{ ...head, css: 'root' }]);
+    // his name-form rules first: Alahayam (God), Yashawai (Jesus) …, then a name's English as its verse says it
+    if (NR.glossed && NR.glossed.has(hf)) return NR.glossed.get(hf);
+    if (w.isName || head.css === 'mod-nmpr') {
+      const cands = (NR.nameCands && NR.nameCands.get(hf)) || [];
+      const pick = cands.find(c => new RegExp(`(^|[^A-Za-z])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![a-z])`).test(mechEng)) || cands[0];
+      return pick || MF.nameEnglish(w.rootTr) || '';   // '' = the gold "()" a divine name carries
+    }
+    const src = homoOf(w) || tidy(head.translation) || tidy(LEX[head.true_root || head.paleo]);
+    if (!src || isPaleo(src) || /^\[.*\]$/.test(src)) return head.true_root || head.paleo || '';   // his placeholder
+    return dropTranslit(src, w, head);   // a gloss that was only the transliteration leaves an empty slot
+  };
   // ONE PASS FROM CLEAN TEXT (2026-10-30). The OT's text here is apply-web-strongs' output as loaded —
   // but this pass rewrote it in place, so every `--surface` run (which does not reload the OT) ran it
   // AGAIN over its own output: ~90 OT verses drifted each run and a name used twice grew a copy per run
@@ -392,7 +418,7 @@ if (CORPUS) {
   // (NT/Apocrypha are already re-rendered from text_src by render-corpus before this step.)
   if (!DRY) { try { cdb.exec(`ALTER TABLE verses ADD COLUMN text_base TEXT`); } catch { /* exists */ } }
   const hasBase = cdb.prepare(`PRAGMA table_info(verses)`).all().some(c => c.name === 'text_base');
-  const rows = cdb.prepare(`SELECT id, canon_id c, chapter ch, verse v, ord_c, ord_v, text, coalesce(text_src,'') src${hasBase ? ", coalesce(text_base,'') base" : ", '' base"} FROM verses WHERE corpus='ENG' AND canon_id IS NOT NULL AND text IS NOT NULL AND text != ''`).all();
+  const rows = cdb.prepare(`SELECT id, canon_id c, chapter ch, verse v, ord_c, ord_v, text, coalesce(text_src,'') src${hasBase ? ", coalesce(text_base,'') base" : ", '' base"} FROM verses WHERE corpus='ENG' AND canon_id IS NOT NULL AND text IS NOT NULL${MECH ? '' : " AND text != ''"}`).all();   // a verse the WEB leaves out (Luke 17:36) still has its Hebrew
   const upd = DRY ? null : cdb.prepare(`UPDATE verses SET text = ? WHERE id = ?`);
   const setBase = DRY || !hasBase ? null : cdb.prepare(`UPDATE verses SET text_base = ? WHERE id = ?`);
   let baseUsed = 0, baseSaved = 0, hebTooBig = 0; const hebTooBigBooks = new Map();
@@ -421,6 +447,27 @@ if (CORPUS) {
         const eng = ((r.src || r.text).match(/[A-Za-z’']+/g) || []).length;
         if (ws.length > Math.max(3 * eng, eng + 40)) { hebTooBig++; hebTooBigBooks.set(r.c, (hebTooBigBooks.get(r.c) || 0) + 1); ws = []; }
       }
+      // THE MECHANICAL BASELINE (fieldy 2026-11-18): an untouched verse is its Hebrew words, in order, grouped as the
+      // display draws them, each glossed only from its own chips — no WEB English (MF.mechanicalPairs).
+      if (!r.text && !ws.length) continue;   // no English and no Hebrew: nothing to write
+      if (MECH && ws.length) {
+        mechEng = ORIG.get(`${r.c}|${+r.ch}|${+r.v}`) || r.src || '';
+        let t = MF.mechanicalText(MF.mechanicalPairs(ws, mechHead));
+        t = divineGlosses(t, NR).fixed;
+        { const ng = nameGlosses(t, NR, ORIG.get(`${r.c}|${+r.ch}|${+r.v}`) || ''); if (ng.hits.length) { t = ng.fixed; namesGlossed += ng.hits.length; } }
+        t = MF.respellRetired(t);
+        if (NR.unhyphenRe) t = t.replace(NR.unhyphenRe, (m, pre, name) => pre + (NR.unhyphenTo.get(name) || name));
+        if (NR.hyphenRe) t = t.replace(NR.hyphenRe, (m, pre, name) => pre + (NR.hyphenTo.get(name) || name));
+        mechN++;
+        if (t === dbText) continue;
+        changed++; pairs += ws.length;
+        if (samples.length < (ONLY ? 99 : 12) && (ONLY || (r.c <= 66 && (r.c > 39 || samples.length < 4)))) samples.push(`${r.c}:${r.ch}:${r.v}  ${t}`);
+        if (upd) upd.run(t, r.id);
+        if (JSONL) JSONL.push(JSON.stringify({ c: r.c, ch: r.ch, v: r.v, text: t }));
+        continue;
+      }
+      if (MECH) mechNone++;
+      if (!r.text) continue;
       const text0 = r.text;
       r.text = MF.respellRetired(MF.unlabel(r.text, ws).text);   // text an older run left in full form: no [label], no retired spelling
       r.text = divineGlosses(r.text, NR).fixed;   // Alahayam (God), Yashawai (Jesus), Mashayach (Christ / Anointed One) — before the forms, so prefixes join
@@ -451,6 +498,7 @@ if (CORPUS) {
     }
   })();
   if (JSONL) writeFileSync(argv[argv.indexOf('--jsonl') + 1], JSONL.join('\n') + '\n');
+  if (MECH) console.log(`  MECHANICAL BASELINE: ${mechN.toLocaleString()} verses written as their Hebrew words with chip glosses; ${mechNone.toLocaleString()} with no Hebrew words kept their English`);
   console.log(`  OT clean base (text_base): ${baseUsed.toLocaleString()} verses started from it, ${baseSaved.toLocaleString()} saved now` + (hasBase ? '' : ' — column missing (dry run on an old db)'));
   console.log(`  Hebrew of another versification (far longer than the verse's English) left out: ${hebTooBig.toLocaleString()} verses` + (hebTooBig ? ' (' + [...hebTooBigBooks].sort((a, b) => b[1] - a[1]).map(([c, n]) => `${c}: ${n}`).join(', ') + ')' : ''));
   console.log(`  joined words (the display's): ${joinedWords.toLocaleString()} pairs written as one in ${joinedVerses.toLocaleString()} verses; ${joinSkippedNames.toLocaleString()} left apart (a name after the particle — the name gates do not know it yet)`);
@@ -532,10 +580,12 @@ if (CORPUS) {
     for (const r of rows) {
       if (!MF.modformApplies(r.c, r.ch)) continue;
       seen++;
-      const ws = hebWords(r.c, r.ch, r.v);
+      // Hosea 2:11 on the site is Hebrew 2:13: its words and machine text live under the Masoretic number.
+      const [mc, mch, mv] = r.c <= 39 ? VS.siteToMt(r.c, r.ch, r.v) : [r.c, r.ch, r.v];
+      const ws = hebWords(mc, mch, mv);
       // (3) his wording, or the machine's?
       if (!KEEP_ORDER && (r.status || 'none') === 'none' && !/<[a-z!/]/i.test(r.rt) && !ownLinks.get(r.c, r.ch, r.v).n) {
-        const ct = corpusText.get(r.c, r.ch, r.v), ot = origSel.get(r.c, r.ch, r.v);
+        const ct = corpusText.get(mc, mch, mv), ot = origSel.get(r.c, r.ch, r.v);
         const like = ct && ot && ot.ot ? sameness(plainWords(r.text), plainWords(ot.ot)) : 0;
         if (ct && like >= SAME && ct.text !== r.text) {
           released++; releasedRefs.push(`${r.c}:${r.ch}:${r.v}`);

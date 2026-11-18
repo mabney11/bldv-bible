@@ -154,15 +154,20 @@ export function joinedChains(words) {
   const out = new Map();
   const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
   for (let k = 0; k < words.length; k++) {
-    if (!words[k].joinNext || (k && words[k - 1].joinNext)) continue;   // chain starts here
+    const joins = w => !!(w && (w.joinNext || w.maqafAfter));   // a maqaf joins too (the mechanical baseline, 2026-11-18)
+    if (!joins(words[k]) || (k && joins(words[k - 1]))) continue;   // chain starts here
     let lead = '', m = k;
     const members = [];
-    while (m < words.length - 1 && words[m].joinNext) {
+    while (m < words.length - 1 && joins(words[m])) {
       members.push(words[m]);
-      lead += words[m].joinMaqaf ? words[m].form + '-' : medialForm(words[m].comps);
+      lead += (words[m].joinMaqaf || words[m].maqafAfter) ? words[m].form + '-' : medialForm(words[m].comps);
       m++;
     }
     out.set(norm(lead + words[m].form), { host: words[m], members });
+  }
+  // and every group the mechanical baseline writes (a name after a particle stands apart; a maqaf always joins)
+  for (const g of mechanicalPairs(words, () => '', {})) if (g.words.length > 1) {
+    const key = norm(g.form); if (!out.has(key)) out.set(key, { host: g.words[g.words.length - 1], members: g.words.slice(0, -1) });
   }
   return out;
 }
@@ -294,6 +299,7 @@ export function verseWordsLoader(sdb) {
         const isMq = String(r.word_raw || '').includes('\u05BE');
         if (isMq) {
           maqafSince = true;
+          if (prevWord) prevWord.maqafAfter = true;   // display "Kal⁻ Mashawashah" = baseline "Kal-Mashawashah"
           // two words sharing one Strong's across a maqaf are one display word
           if (prevWord && !prevWord.joinNext) prevWord._maqafSn = prevRowSn;
         }
@@ -360,7 +366,7 @@ export function verseWordsLoader(sdb) {
     }
     if (pending.length && words.length) { const last = words[words.length - 1]; last.comps.push(...pending.map(x => ({ ...x, css: 'mod-suff-unk' }))); last.form = formOf(last.comps); }
     // a particle / shared-Strong's maqaf pair with no word after it joins nothing
-    if (words.length) { const last = words[words.length - 1]; delete last.joinNext; delete last.joinMaqaf; }
+    if (words.length) { const last = words[words.length - 1]; delete last.joinNext; delete last.joinMaqaf; delete last.maqafAfter; }
     for (const w of words) delete w._maqafSn;
     return words;
   };
@@ -1178,4 +1184,79 @@ export function curatePairs(text, words, curatedOf) {
     const c = curatedOf(h);
     return c ? `${mk || ''}${w}${sp}(${c})` : m;
   });
+}
+
+// ── THE MECHANICAL BASELINE (fieldy, 2026-11-18) ───────────────────────────────────────────
+// "for untouched verses there should be verification that the english is exactly of the form of the hebrew
+// 'WaHaShabathathay () Kal-Mashawashah () Chagah ()' -- lets keep only simple mathematical glosses
+// WaHaShabathathay (And [causing] rest of) that I should be able to easily pivot around" / "BaIthaw (grain in its
+// time) -- grain has nothing to do with Ba Ith or the w suffix".
+// A verse = its Hebrew words in order, grouped as the display draws them (a particle joined onto the next word; two
+// words across a maqaf as one, with a hyphen). A word's gloss = its chips in order: each modification's label
+// (lexicon/baseline-gloss-labels.json, his to pivot), the head's own gloss (headGloss: his lexicon/homograph, else
+// the root's paleo as the placeholder he fills). No English from any other source.
+let _LABELS = null;
+export function loadBaselineLabels() {
+  if (_LABELS) return _LABELS;
+  try { _LABELS = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'baseline-gloss-labels.json'), 'utf8')); } catch { _LABELS = {}; }
+  delete _LABELS._comment;
+  return _LABELS;
+}
+const PARTICLE_CSS = /^mod-(conj|art|prep|nega|inrg|intj|advb|prde|prps)$/;
+/** One modification chip as a gloss word: his table first ("css|label", then "css"), else a particle as its chip
+ *  reads ("And", "in"), a grammar mark in brackets, lower case ("[causing]", "[hers · feminine]"). */
+export function chipLabel(c, labels = loadBaselineLabels()) {
+  const raw = String(c.translation || '').trim();
+  const k1 = `${c.css}|${raw}`;
+  if (Object.prototype.hasOwnProperty.call(labels, k1)) return labels[k1];
+  if (Object.prototype.hasOwnProperty.call(labels, c.css)) return labels[c.css];
+  if (!raw) return '';
+  // no round bracket inside a gloss: the reader and the gates read "(f)" as a gloss of its own ("[plural (f)]" -> "[plural f]")
+  const flat = x => x.replace(/[()]/g, ' ').replace(/\s+/g, ' ').trim();
+  // a particle reads as its word, never bracketed ("[and]" -> "and")
+  if (PARTICLE_CSS.test(c.css || '')) return flat(raw.replace(/\([^()]*\)/g, ' ').replace(/^\[|\]$/g, '')) || flat(raw.replace(/^\[|\]$/g, ''));
+  const inner = flat(raw.replace(/^\[|\]$/g, ''));
+  return inner ? `[${inner.toLowerCase().replace(/\bi\b/g, 'I')}]` : '';
+}
+export const headOf = w => w.comps.find(x => isRootCss(x.css)) || w.comps.find(x => x.true_root) || (/prep/.test(w.pos || '') && w.comps.find(x => x.css === 'mod-prep')) || w.comps[w.comps.length - 1];
+/** [{form, words, gloss}] — the verse's words grouped as drawn. headGloss(word, headChip) -> string. */
+export function mechanicalPairs(words, headGloss, labels = loadBaselineLabels()) {
+  const glossOfWord = w => {
+    const head = headOf(w);
+    return w.comps.map(c => c === head ? headGloss(w, head) : chipLabel(c, labels)).filter(Boolean).join(' ');
+  };
+  const groups = [];
+  for (let k = 0; k < words.length; k++) {
+    const g = [words[k]];
+    // a particle or a maqaf joins the next word ("Kal-Mashawashah") — never onto a NAME: the display draws a name as
+    // its own block, and the name passes know a name only on its own or after Wa/Ha/La/Ba/Ka/Ma (Haggai 2:18
+    // "Hayakal-Yahawah" came out "Hayakal-Hayakal")
+    while (k < words.length - 1) {
+      const a = words[k], b = words[k + 1];
+      if ((a.maqafAfter || a.joinMaqaf || a.joinNext) && !b.isName) { g.push(b); k++; continue; }
+      break;
+    }
+    let form = '';
+    for (let i = 0; i < g.length; i++) {
+      const w = g[i];
+      if (i === g.length - 1) form += w.form;
+      else form += (w.maqafAfter || w.joinMaqaf) ? w.form + '-' : medialForm(w.comps);
+    }
+    groups.push({ form, words: g, gloss: g.map(glossOfWord).filter(Boolean).join(' ') });
+  }
+  return groups;
+}
+export const mechanicalText = groups => groups.map(p => `${p.form} (${p.gloss})`).join(' ') + (groups.length ? '.' : '');
+/** The gate's view of a verse text: the heads of its pairs in order, and the letters standing outside every pair. */
+export function pairHeads(text) {
+  const t = String(text || ''); const heads = []; let rest = ''; let i = 0;
+  const RE = /([A-Za-z][A-Za-z'’-]*)\s+\(/g; let m;
+  while ((m = RE.exec(t))) {
+    if (m.index < i) continue;
+    rest += t.slice(i, m.index);
+    let d = 1, j = RE.lastIndex; for (; j < t.length && d; j++) { if (t[j] === '(') d++; else if (t[j] === ')') d--; }
+    heads.push(m[1]); i = j; RE.lastIndex = j;
+  }
+  rest += t.slice(i);
+  return { heads, outside: rest.replace(/[\s.,;:!?“”"‘’'—–\-]/g, '') };
 }

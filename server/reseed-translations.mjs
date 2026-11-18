@@ -25,6 +25,7 @@
 //   node reseed-translations.mjs
 
 import { existsSync } from 'node:fs';
+import VS from './eng-versification.cjs';   // translation.db = the site's (English) verse numbers
 const die = m => { console.error('\u2717 '+m); process.exit(1); };
 let Database; try{({default:Database}=await import('better-sqlite3'));}catch{die('run from server/');}
 // Paths: default ./corpus.db ./translation.db; or pass both (prod: run in the image
@@ -128,7 +129,14 @@ tdb.transaction(()=>{
   }
   // OT: refresh existing untouched rows only (load-english-baseline.js owns seeding them,
   // with its own source_origin and its blank-title rules)
-  for(const r of otRows) nOt += resetUntouched.run(r.text, r.text, r.book_id, r.chapter, r.verse).changes;
+  // corpus.db ENG is on the Masoretic numbering; the site (URL, /api/tokens, the Studio, links)
+  // and translation.db on the English one. Write each verse under every site number it is
+  // shown at — Hebrew Hosea 2:13 is the site's Hosea 2:11 (fieldy 2026-11-18). A verse moved
+  // to a number that has no row yet gets one (same seed as the non-OT rows).
+  for(const r of otRows) for (const [b, ch, v] of VS.mtToSite(r.book_id, r.chapter, r.verse)) {
+    if (VS.moves(b, ch, v)) importOriginal.run(b, ch, v, r.text, r.text);
+    nOt += resetUntouched.run(r.text, r.text, b, ch, v).changes;
+  }
 })();
 console.log(`\u2713 refreshed ${nOt.toLocaleString()} untouched OT rows from corpus.db ENG (saved edits left untouched)`);
 tdb.close();

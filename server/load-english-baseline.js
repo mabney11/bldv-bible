@@ -91,6 +91,7 @@
 'use strict';
 const fs = require('fs'), path = require('path');
 const Database = require('better-sqlite3');
+const VS = require('./eng-versification.cjs');   // translation.db = the site's (English) verse numbers
 
 const args = process.argv.slice(2);
 const positional = args.filter(a => !a.startsWith('--'));
@@ -221,7 +222,7 @@ const CHAPTER_BOUNDARY_SHIFTS = {
   18: [[40,41,8]],                                      // Job
   21: [[4,5,1]],                                        // Ecclesiastes 4:17=5:1
   22: [[6,7,-1]],                                       // Song of Songs
-  23: [[8,9,1]],                                        // Isaiah 8:23=9:1
+  23: [[8,9,1], [63,64,1]],                            // Isaiah 8:23=9:1; 63:19b=64:1, 64:1-11=64:2-12 (63:19 joined below)
   24: [[8,9,1]],                                        // Jeremiah 8:23=9:1
   26: [[20,21,-5]],                                     // Ezekiel
   27: [[3,4,3], [5,6,-1]],                              // Daniel
@@ -260,6 +261,15 @@ function remapChapters(canon, chapters) {
   if (shifts) {
     let out = chapters;
     for (const [lo, hi, off] of shifts) out = shiftChapterBoundary(out, lo, hi, off);
+    // Isaiah: Hebrew 63:19 is ONE verse holding English 63:19 + 64:1 (a split verse, not a moved
+    // one). The shift above parks English 64:1 at 63:20, which Hebrew does not have: join it to 63:19.
+    // Before 2026-11-18 Hebrew 64:1-11 carried English 64:1-11 — one verse behind its own words.
+    if (canon === 23 && out[63] && out[63][20] != null) {
+      const c63 = { ...out[63] };
+      c63[19] = [c63[19], c63[20]].filter(Boolean).join(' ');
+      delete c63[20];
+      out = { ...out, 63: c63 };
+    }
     return out;
   }
   return chapters;
@@ -388,9 +398,11 @@ const resetUntouched = tdb.prepare(`UPDATE translations SET text=?, original_tex
   // own source_origin, so refreshing it is safe unconditionally — it can never
   // clobber a human edit or a different baseline's rows. Run it every time.
   const tx = tdb.transaction(()=>{
-    for (const a of aligned) {
-      importOriginal.run(a.canon, a.ch, a.v, a.text, a.text);
-      resetUntouched.run(a.text, a.text, a.canon, a.ch, a.v);
+    // `aligned` is on the Masoretic grid (corpus.db); translation.db is keyed by the site's
+    // English numbers — Hebrew Hosea 2:13 is the site's 2:11 (fieldy 2026-11-18).
+    for (const a of aligned) for (const [b, ch, v] of VS.mtToSite(a.canon, a.ch, a.v)) {
+      importOriginal.run(b, ch, v, a.text, a.text);
+      resetUntouched.run(a.text, a.text, b, ch, v);
     }
   });
   tx();
@@ -414,7 +426,7 @@ const resetUntouched = tdb.prepare(`UPDATE translations SET text=?, original_tex
         AND text != ''`);
   const tx = tdb.transaction(()=>{
     let n = 0;
-    for (const b of blanked) n += clearStale.run(b.canon, b.ch, b.v).changes;
+    for (const b of blanked) for (const [bk, ch, v] of VS.mtToSite(b.canon, b.ch, b.v)) n += clearStale.run(bk, ch, v).changes;
     return n;
   });
   const cleared = tx();

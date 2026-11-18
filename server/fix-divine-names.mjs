@@ -28,6 +28,10 @@ import { existsSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { hebDivine, checkDivine, dropIndices } from './divine-name-lib.mjs';
+import { pairHeads } from './modform-lib.mjs';
+// A machine verse written straight from its tokens (the mechanical baseline, 2026-11-18: every word a pair, nothing
+// outside) already carries the divine name its Hebrew token carries — the spelling count here cannot overrule it.
+const fromTokens = t => { const p = pairHeads(t); return p.heads.length >= 2 && !p.outside; };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const flags = new Set(process.argv.slice(2).filter(a => a.startsWith('--')));
@@ -81,6 +85,7 @@ const refOf = (c, ch, v) => `${c}:${ch}:${v}`;
     for (const r of verses) {
       const h = hebFor(r.canon_id, r.chapter, r.verse);
       if (!h) continue;
+      if (fromTokens(r.text)) { stat.ok++; continue; }
       const c = checkDivine(r.text, h);
       if (c.status === 'ok') stat.ok++;
       else if (c.status === 'ambiguous') { stat.ambiguous++; review.push(`AMBIGUOUS corpus ${refOf(r.canon_id, r.chapter, r.verse)}  Hebrew [${h.join(' ')}]  ${r.text.slice(0, 160)}`); }
@@ -107,6 +112,7 @@ if (existsSync(TRANS_DB)) {
       const h = hebFor(r.book_id, r.chapter, r.verse);
       if (!h) continue;
       const seeded = (r.status || 'none') === 'none' && !(r.rich_text || '');
+      if (seeded && fromTokens(r.text || '')) continue;
       const a = checkDivine(r.text || '', h);
       const b = r.rich_text ? checkDivine(r.rich_text, h) : { status: 'none', fixed: r.rich_text || '', hits: [], drops: [] };
       if (a.status === 'ambiguous') { stat.ambiguous++; review.push(`AMBIGUOUS translation ${refOf(r.book_id, r.chapter, r.verse)}${seeded ? '' : ' (saved)'}  Hebrew [${h.join(' ')}]  ${(r.text || '').slice(0, 160)}`); }

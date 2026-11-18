@@ -597,7 +597,11 @@ const englishBaselineStmt = (() => {
 })();
 function englishBaseline(canonId, chapter, verse) {
     if (!englishBaselineStmt) return '';
-    try { const r = englishBaselineStmt.get(canonId, chapter, verse); return applyLiveGloss((r && r.text) || '', canonId, chapter); }
+    // corpus.db ENG is stored on the Masoretic numbering; canonId/chapter/verse here are the
+    // site's (English) numbers — Hosea 2:11 reads Hebrew 2:13's row (fieldy 2026-11-18).
+    let [c, v] = [chapter, verse];
+    if (BOOK_META[canonId]) { const m = resolveEnglishVerse(canonId, +chapter, +verse); c = m.hebChapter; v = m.hebVerse; }
+    try { const r = englishBaselineStmt.get(canonId, String(c), String(v)); return applyLiveGloss((r && r.text) || '', canonId, chapter); }
     catch { return ''; }
 }
 

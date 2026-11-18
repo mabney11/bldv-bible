@@ -61,6 +61,61 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## AN UNTOUCHED VERSE IS ITS HEBREW WORDS, GLOSSED FROM ITS OWN CHIPS — the mechanical baseline (2026-11-18)
+fieldy, same day: "for untouched verses there should be verification that the english is exactly of the form of the hebrew
+'WaHaShabathathay () Kal-Mashawashah () Chagah ()' -- lets keep only simple mathematical glosses WaHaShabathathay (And [causing]
+rest of) that I should be able to easily pivot around" / "BaIthaw (grain in its time) -- grain has nothing to do with Ba Ith or the
+w suffix -- my baseline should be improved so I only need minimal changes". SUPERSEDES the WEB-woven baseline (baseGloss / interlinear
+"baseline" mode, 2026-10-22) for every machine verse from Genesis 3 that has Hebrew words; `merge-modforms --corpus --no-mechanical`
+brings the old one back.
+- **modform-lib `mechanicalPairs(words, headGloss)` / `mechanicalText`**: the verse's words (verseWordsLoader = what the display draws)
+  in order; a particle (joinNext) or a maqaf (`maqafAfter`, new in the loader) joins the next word — "Kal-Mashawashah",
+  "MawalaHaAlahayam" — never onto a NAME (Haggai 2:18 "Hayakal-Yahawah" became "Hayakal-Hayakal" in the name passes). A word's
+  gloss = its chips in order: each modification via `chipLabel` (lexicon/**baseline-gloss-labels.json** "css|label" or "css" —
+  HIS table to pivot; default: a particle as its chip reads ("And", "in", never bracketed), a grammar mark "[causing]",
+  "[hers · feminine]", lower case, "[I]" kept, no round bracket inside: "[plural f]"), the head via merge-modforms `mechHead`:
+  name-form rules' gloss (Alahayam -> God), a name's English as its verse says it (nameCands), else '' (gold "()");
+  else his homograph / chip gloss / lexicon with the transliteration part dropped ("Shabath / Rest" -> "Rest"); else the root
+  paleo = his placeholder. Then divineGlosses, nameGlosses, respellRetired, compound hyphens. Verse ends with ".".
+- A verse the WEB leaves out (Luke 17:36, Acts 8:37) is written from its Hebrew too (rows with empty text are read).
+  The 274 Hebrew-passage verses (Jasher …) keep their English (another versification); verses with no Hebrew keep theirs.
+- joinedChains also lists every mechanical group (verify-reading-glosses accepts them); verify-reading-glosses accepts each word's
+  form and its respellRetired form (a section numeral glued on, an Aramaic emphatic, MaAbanaw).
+- fix-divine-names leaves a verse written from its tokens alone (`fromTokens`: every word a pair, nothing outside).
+- **Gate verify-site-verses FORM**: every untouched translation row from Gen 3 whose verse has Hebrew words (shown on the site;
+  not a Hebrew-passage verse) has exactly the mechanical heads — after respellRetired, renumber respelling + locked names
+  (fix-name-forms' checkRenumbered + checkText) and compound hyphens — in order, and nothing outside a pair.
+Measured on copies of fieldy's DBs (full chain: merge-modforms --corpus, reseed, fix-divine-names, fix-name-forms,
+verify-reading-glosses --fix, verify-name-forms, fix-divine-names --check, verify-site-verses): 52,446 verses written, every gate
+passes, FORM 0 of 52,234. Hosea 2:11 -> "WaHaShabathathay (And [causing] Rest of) Kal-Mashawashah (every 𐤌𐤔𐤅𐤔 [hers · feminine])
+Chagah (feast / festival [hers · feminine]) …". Known token mis-tags now visible as written: Luke 1:71 𐤌𐤀𐤉𐤁𐤉𐤍𐤅 "from our enemies"
+tagged H1 (reads MaAbanaw "father"); Antiquities 11:65 𐤁𐤄𐤅𐤄 tagged H3068 (BaYahawah).
+
+## THE SITE'S VERSE NUMBER IS THE ENGLISH ONE — translation.db follows it (2026-11-18)
+fieldy, Hosea 2:11 (English showed 2:9's words "LaKan … Daganay … Tzamaray" over 2:13's Hebrew "WaHaShabathathay … Mashawashah"):
+"I expect strictly the hebrew words with appropriate glosses in english for me to fill in ... I dont want to encounter it in other places".
+Cause: the 2026-08-20 flip made the SITE (URL, /api/tokens, the Studio, links, translation.db) number OT verses the English way
+(resolveEnglishChapter), and migrate-versification-translations.mjs moved translation.db once — but load-english-baseline +
+reseed-translations kept writing corpus.db ENG's Masoretic numbers into translation.db on every render, so 777 machine rows in
+22 books (843 moved verses: Gen 32, Exod 8, Lev 6, Num 17, Deut 13/23, 1-2 Sam, Kgs, Chr, Neh, Job 41, Eccl, Song, Isa, Jer, Ezek,
+Dan, Hosea, Jonah, Micah, Nahum, Zech, Malachi 4) showed another verse's text. The ±2 drift tolerance in verify-reading-glosses hid it.
+- **server/eng-versification.cjs (ONE copy)**: `mtToSite(b,c,v)` (site keys a Masoretic verse shows under; [] for a merge segment;
+  Malachi 3:19-24 -> both 3:v and 4:v-18) / `siteToMt` / `moves`. Same rules as server.js ENG_CHAPTER_SEGMENTS + VERSIFICATION_MAP
+  (KEEP IN SYNC). Round-trip checked on all 1,691 verses of the affected chapters, 0 collisions.
+- corpus.db ENG + tokens stay Masoretic. Writers into translation.db map MT -> site: load-english-baseline (step 2/3),
+  reseed-translations (OT refresh; seeds a moved key with no row). Readers that judge a translation.db row against Hebrew map
+  site -> MT: merge-modforms --saved (Hebrew words, corpus text), verify-reading-glosses (check/freshen; web-strongs English is
+  on the ENGLISH numbering — `engKey`), server.js englishBaseline (resolveEnglishVerse).
+- Isaiah: Hebrew 63:19 = English 63:19 + 64:1, Hebrew 64:1-11 = English 64:2-12. load-english-baseline loaded 64 one verse behind its
+  Hebrew; now shift [63,64,1] + join English 64:1 onto Hebrew 63:19. (The site's Isaiah 63 ends at 18; its 64:1 shows Hebrew 63:19.)
+- **Gate verify-site-verses.mjs** (render-all after verify-name-forms; rebake.sh step 5 after the reseed chain): every OT machine
+  row's Hebrew words (capitalised transliterations) are the Hebrew of the verse its site number shows (>= 50% both ways); FAILS
+  on a machine row, lists a saved verse only when its words clearly belong to another verse. Report site-verses-report.txt.
+  Measured: current translation.db 777 FAIL -> 0 after reseed on a copy; verify-reading-glosses passes on the copy.
+- NOT touched: fieldy's saved Deut 12:32 holds English 13:1's words (the prophet / dreamer; Hebrew 12:32 = "whatever I command
+  you") — move it in the Studio. Joel stays on the Masoretic chapters (site shows 4 chapters).
+Run: `node render-all.mjs` (full — rebuilds corpus ENG with the Isaiah fix), restart, Rebake (step 5 re-keys prod's translation.db).
+
 ## A ROOT'S ADDRESS IS ITS STRONG'S NUMBER — /roots?sn=H1, never ?root=<paleo> (2026-11-10)
 fieldy: "make the default be the strongs number and not paleo hebrew that people wont be able to change on their keyboard".
 Lexicon.jsx `rootHref(sn, paleo)`: All Roots rows and homograph rows keyed `_H###` link by number; a lexicon row with no number still

@@ -41,6 +41,7 @@
  *        /data/corpus.db /data/translation.db /data/surface-index.db --fix
  */
 import PROV from './translation-provenance.cjs';
+import VS from './eng-versification.cjs';   // translation.db is keyed by the site's (English) verse numbers
 import Database from 'better-sqlite3';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
@@ -246,11 +247,14 @@ if (existsSync(INDEX_DB)) {
       let nj = 0;
       for (const r of sdb.prepare(`SELECT DISTINCT source, book_id, chapter, verse FROM surface_occurrences`).iterate()) {
         if (r.source === 'HEB' && r.book_id <= 39) continue;
-        const ch = MF.joinedChains(WL(r.source, r.book_id, r.chapter, r.verse));
-        if (!ch.size) continue;
+        const ws = WL(r.source, r.book_id, r.chapter, r.verse);
+        const ch = MF.joinedChains(ws);
         const k = `${r.book_id}|${Math.trunc(+r.chapter)}|${Math.trunc(+r.verse)}`;
         const e = heb.get(k) || (heb.set(k, { roots: new Set(), surf: new Set() }), heb.get(k));
         for (const j of ch.keys()) { e.surf.add(j); nj++; }
+        // every word the mechanical baseline writes, as it writes it (a section numeral glued on, an Aramaic emphatic 𐤀)
+        for (const w of ws) { e.surf.add(norm(w.form)); e.surf.add(norm(MF.respellRetired(w.form))); }
+        for (const g of MF.mechanicalPairs(ws, () => '', {})) { e.surf.add(norm(g.form)); e.surf.add(norm(MF.respellRetired(g.form))); }
       }
       console.log(`  joined words (the display's): ${nj.toLocaleString()} accepted as written`);
     }
@@ -305,7 +309,7 @@ function check(key, text) {
   const hk = ordOf.get(key) || key;   // corpus.db's ord_c/ord_v already carry the Hebrew numbering
   const [c, ch, v] = hk.split('|').map(Number);
   const h = heb.get(hk);
-  const src = engSrc.get(key);
+  const src = engSrc.get(engKey(hk));
   // ±2 only where numbering is known to diverge — and for canon 67+, whose Hebrew editions
   // render-corpus itself aligns to the best-agreeing neighbouring verse (pickAlignedTokens).
   const near = (drift.has(`${c}|${ch}`) || c > 66) ? [1, -1, 2, -2].map(d => heb.get(`${c}|${ch}|${v + d}`)) : [];
@@ -392,7 +396,9 @@ const stale = (c, ch, text) => {
   for (const R of RETIRED) { const m = R.re.exec(text); if (m) why.push(`"${m[0]}" — retired spelling, write ${R.form} (lexicon/reading-form-rules.json)`); }
   return why;
 };
-const freshen = (text, key) => MF.respellRetired(MF.unnest(MF.unlabel(text, []).text, ((key && engSrc.get(key)) || {}).raw || ''));
+// web-strongs / english-web-raw are on the English numbering; a Masoretic key of the OT reads its English there.
+const engKey = key => { const [c, ch, v] = String(key).split('|').map(Number); return c <= 39 ? (VS.mtToSite(c, ch, v)[0] || [c, ch, v]).join('|') : key; };
+const freshen = (text, key) => MF.respellRetired(MF.unnest(MF.unlabel(text, []).text, ((key && engSrc.get(engKey(key))) || {}).raw || ''));
 let fixedStale = 0;
 
 const violations = [];   // printable, fatal
@@ -435,18 +441,20 @@ if (existsSync(TRANS_DB)) {
   tdb.transaction(() => {
     for (const r of rows) {
       const key = `${r.c}|${+r.ch}|${+r.v}`;
+      // its Hebrew lives under the Masoretic number (Hosea 2:11 = Hebrew 2:13)
+      const hkey = r.c <= 39 ? VS.siteToMt(r.c, r.ch, r.v).join('|') : key;
       const seeded = (r.status || 'none') === 'none' && !r.rt;
       { const st = stale(r.c, r.ch, r.text).concat(r.rt && r.rt !== r.text ? stale(r.c, r.ch, r.rt) : []);
         if (st.length) {
           // 2026-10-31 (fieldy: "I do not expect verses I touch to be modified without me being the
           // one doing it"): a SAVED verse is never written here — it is listed for him.
           if (FIX && seeded) {
-            const t = freshen(r.text, key);
+            const t = freshen(r.text, hkey);
             upd.run(t, r.text, t, r.c, r.ch, r.v);
             r.text = t; fixedStale++;
           } else for (const w of [...new Set(st)]) (seeded || SAVED_FATAL ? violations : review).push(`translation ${key.replace(/\|/g, ':')}${seeded ? '' : '  [YOUR SAVED VERSE — not touched; fix in the Studio if you want it]'}  ${w}`);
         } }
-      const vs = check(key, r.text).filter(x => !ACCEPT[`${key.replace(/\|/g, ':')}|${x.m}`]); if (!vs.length) continue;
+      const vs = check(hkey, r.text).filter(x => !ACCEPT[`${key.replace(/\|/g, ':')}|${x.m}`]); if (!vs.length) continue;
       // A KNOWN misconception is removed even from a saved verse: the wrong Hebrew word
       // goes, fieldy's English stays ("hamah (like)" -> "like"), a history row keeps it reversible.
       if (false && FIX && !seeded) {   // 2026-10-31: saved verses are never rewritten (listed below instead)
@@ -475,7 +483,7 @@ if (existsSync(TRANS_DB)) {
           if (JSON.stringify(nix) !== JSON.stringify(ix)) { linkRows++; linkUpd.run(JSON.stringify(nix), l.id); }
         }
         r.text = g.text;
-        vs.splice(0, vs.length, ...check(key, r.text).filter(x => !ACCEPT[`${key.replace(/\|/g, ':')}|${x.m}`]));
+        vs.splice(0, vs.length, ...check(hkey, r.text).filter(x => !ACCEPT[`${key.replace(/\|/g, ':')}|${x.m}`]));
         if (!vs.length) continue;
       }
       if (FIX && seeded && vs.some(x => !x.owner || !x.newGloss)) {
