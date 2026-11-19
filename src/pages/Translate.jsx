@@ -522,12 +522,30 @@ function planAutoLinks(hits, links) {
 // trip for the same answer. No React state read here at all, so this is
 // equally safe to call for the CURRENTLY displayed language (reusing its
 // already-loaded tokens/links/enWords) or for every OTHER language in turn.
-async function runAutoLinkForVerse(bookId, chapter, verse, langId, tokens, links, enWords, admin) {
-  if (!tokens?.length || !enWords?.length) return { created: 0, matched: 0, errors: [] };
+// The matching half of Auto-Link alone — writes nothing. Link Chapter (2026-11-18)
+// runs it over every verse first so fieldy can read the result before anything is saved.
+function planAutoLinksForVerse(langId, tokens, links, enWords) {
+  if (!tokens?.length || !enWords?.length) return [];
   const usedEn = new Set(links.flatMap(l => l.english_indices || []));
   const groups = buildAutoLinkCandidates(langId === 'BHS', tokens, links, enWords);
-  const plans = planAutoLinks(matchAutoLinkCandidates(groups, enWords, usedEn), links);
+  return planAutoLinks(matchAutoLinkCandidates(groups, enWords, usedEn), links);
+}
+// One planned link as the preview shows it: the English word(s) and the source word(s).
+function describeAutoLinkPlan(p, langId, tokens, enWords) {
+  const english = [...p.en].sort((a, b) => a - b).map(i => cleanEnWord(enWords[i]) || enWords[i]).join(' ');
+  const toks = [...p.ords].sort((a, b) => a - b).map(o => tokens.find(t => t.token_ordinal === o)).filter(Boolean);
+  const source = toks.map(t => t.word_raw || '').join(' ');
+  const reading = langId === 'BHS'
+    ? toks.map(t => (t.components?.length ? t.components.map(c => c.translit || '').join('') : rawTranslit(t))).join(' ')
+    : toks.map(t => String(t.gloss || '').split(/\s+[\/\-]\s+/)[0]).join(' ');
+  return { english, source, reading, extends: !!p.link };
+}
+async function runAutoLinkForVerse(bookId, chapter, verse, langId, tokens, links, enWords, admin) {
+  const plans = planAutoLinksForVerse(langId, tokens, links, enWords);
   if (!plans.length) return { created: 0, matched: 0, errors: [] };
+  return writeAutoLinkPlans(bookId, chapter, verse, langId, tokens, links, enWords, admin, plans);
+}
+async function writeAutoLinkPlans(bookId, chapter, verse, langId, tokens, links, enWords, admin, plans) {
 
   const errors = [];
   let created = 0;
@@ -577,7 +595,7 @@ async function runAutoLinkForVerse(bookId, chapter, verse, langId, tokens, links
 // runAutoLinkForVerse). Includes the same local-overlay handling as
 // loadVerse so a non-admin's own earlier local edits are respected/extended,
 // not silently overwritten.
-async function fetchLangTokensAndLinks(bookId, chapter, verse, langId) {
+async function fetchLangTokensAndLinks(bookId, chapter, verse, langId, chapterTokenCache) {
   let data = await fetch(`/api/translate/verse?book=${bookId}&chapter=${chapter}&verse=${verse}&lang=${encodeURIComponent(langId)}`)
     .then(r => r.json());
   const effective = data.token_source || langId;
@@ -593,7 +611,10 @@ async function fetchLangTokensAndLinks(bookId, chapter, verse, langId) {
   }
   let tokens;
   if (langId === 'BHS') {
-    const parsedTokens = await apiTokens(bookId, chapter).catch(() => []);
+    // Link Chapter passes one cache for the whole run, so the chapter's tokens are fetched once.
+    const ck = `${bookId}:${chapter}`;
+    if (chapterTokenCache && !chapterTokenCache.has(ck)) chapterTokenCache.set(ck, apiTokens(bookId, chapter).catch(() => []));
+    const parsedTokens = chapterTokenCache ? await chapterTokenCache.get(ck) : await apiTokens(bookId, chapter).catch(() => []);
     const parsedByKey = {};
     for (const pt of parsedTokens || []) {
       if (pt.verse != null && pt.token_ordinal != null) parsedByKey[`${pt.verse}:${pt.token_ordinal}`] = pt;
@@ -1701,6 +1722,62 @@ export default function Translate() {
     else toast(`Synced ${totalCreated} link${totalCreated === 1 ? '' : 's'} across ${langs.length} languages — spot-check before trusting`, 'ok');
   }, [langs, activeBook, activeChapter, activeVerse, loadVerse, toast]);
 
+  // ── LINK CHAPTER (2026-11-18) ────────────────────────────────────────────
+  // fieldy: "the ability to link for all verses in a chapter in one click ... I'd like to see how
+  // things would turn out ... (all languages or default (hebrew), or a single one)". Two steps:
+  // every verse of the chapter is MATCHED first (planAutoLinksForVerse — nothing written) and the
+  // result shown verse by verse; "Save these links" then writes exactly what was shown, skipping any
+  // verse he unticked. Same matcher and writes as Link This Language / Link All Languages.
+  const [chLinkMenu, setChLinkMenu] = useState(false);
+  const [chLink, setChLink] = useState(null);   // { title, rows, progress, total, done, applying, skip:Set }
+  const hebrewLangId = (langs.find(l => l.id === 'BHS') || langs.find(l => l.id === 'HEB') || { id: 'BHS' }).id;
+  const startChapterLink = useCallback(async (scope) => {
+    setChLinkMenu(false);
+    if (!activeBook || !activeChapter) return;
+    const key = `${activeBook}:${activeChapter}`;
+    const verses = (openChapterMap[key] || await openChapter(activeBook, activeChapter) || []).map(v => v.verse).filter(v => v != null);
+    const pick = scope === 'all' ? langs : scope === 'heb' ? langs.filter(l => l.id === hebrewLangId) : langs.filter(l => l.id === lang);
+    const useLangs = pick.length ? pick : [{ id: scope === 'this' ? lang : hebrewLangId, label: 'Hebrew' }];
+    const title = scope === 'all' ? `all ${useLangs.length} languages` : (useLangs[0].label || useLangs[0].id);
+    const total = verses.length * useLangs.length;
+    const st = { title, rows: [], progress: 0, total, done: false, applying: false, skip: new Set() };
+    setChLink({ ...st });
+    const cache = new Map();
+    for (const v of verses) {
+      for (const l of useLangs) {
+        try {
+          const f = await fetchLangTokensAndLinks(activeBook, activeChapter, v, l.id, cache);
+          const plans = planAutoLinksForVerse(l.id, f.tokens, f.links, f.enWords);
+          if (plans.length) st.rows.push({ verse: v, langId: l.id, label: l.label || l.id, plans, ...f,
+            items: plans.map(pl => describeAutoLinkPlan(pl, l.id, f.tokens, f.enWords)) });
+        } catch (e) { st.rows.push({ verse: v, langId: l.id, label: l.label || l.id, plans: [], items: [], error: e.message }); }
+        st.progress++;
+        setChLink({ ...st, rows: [...st.rows] });
+      }
+    }
+    st.done = true;
+    setChLink({ ...st, rows: [...st.rows] });
+  }, [activeBook, activeChapter, openChapterMap, openChapter, langs, lang, hebrewLangId]);
+  const applyChapterLink = useCallback(async () => {
+    if (!chLink) return;
+    setChLink(c => ({ ...c, applying: true }));
+    let created = 0; const issues = []; let anyLocal = false;
+    for (const r of chLink.rows) {
+      if (!r.plans.length || chLink.skip.has(r.verse)) continue;
+      try {
+        const res = await writeAutoLinkPlans(activeBook, activeChapter, r.verse, r.langId, r.tokens, r.links, r.enWords, r.admin, r.plans);
+        created += res.created;
+        if (!r.admin && res.created) anyLocal = true;
+        if (res.errors.length) issues.push(`${r.verse} ${r.label}: ${res.errors[0]}`);
+      } catch (e) { issues.push(`${r.verse} ${r.label}: ${e.message}`); }
+    }
+    if (anyLocal) setHasLocalEdits(true);
+    setChLink(null);
+    if (activeVerse != null) await loadVerse(activeBook, activeChapter, activeVerse);
+    if (issues.length) toast(`Linked ${created} across the chapter, ${issues.length} issue(s) (${issues[0]})`, 'err');
+    else toast(`Linked ${created} word${created === 1 ? '' : 's'} across ${chapterName(BOOK_NAMES[activeBook] || '')} ${activeChapter}`, 'ok');
+  }, [chLink, activeBook, activeChapter, activeVerse, loadVerse, toast]);
+
   // Switch the source language we're linking against and reload that language's
   // tokens + its own link set. The English translation is untouched.
   const changeLang = useCallback((nextLang) => {
@@ -2300,6 +2377,28 @@ export default function Translate() {
                           >
                             ⇄ Link All Languages
                           </button>
+                          <span className="tr-chlink-wrap">
+                            <button
+                              type="button"
+                              className="tr-autolink-btn tr-chlink-btn"
+                              onClick={() => setChLinkMenu(m => !m)}
+                              aria-expanded={chLinkMenu}
+                              title="Match every verse of this chapter and show the result before anything is saved."
+                            >
+                              ¶ Link Chapter ▾
+                            </button>
+                            {chLinkMenu && (
+                              <span className="tr-chlink-menu" role="menu">
+                                <button type="button" role="menuitem" onClick={() => startChapterLink('heb')}>Hebrew</button>
+                                <button type="button" role="menuitem" onClick={() => startChapterLink('all')}>All languages</button>
+                                {lang !== hebrewLangId && (
+                                  <button type="button" role="menuitem" onClick={() => startChapterLink('this')}>
+                                    {(langs.find(l => l.id === lang) || {}).label || lang} only
+                                  </button>
+                                )}
+                              </span>
+                            )}
+                          </span>
                           <button
                             type="button"
                             className="tr-clearall-btn"
@@ -2546,6 +2645,60 @@ export default function Translate() {
       </div>
 
       {/* CHAPTER VIEW OVERLAY ── full-chapter read-only proofread view ─── */}
+      {chLink && (
+        <div className="tr-chlink-overlay" onClick={e => { if (e.target === e.currentTarget && !chLink.applying) setChLink(null); }}>
+          <div className="tr-chlink-modal" role="dialog" aria-label="Link chapter preview">
+            <div className="tr-chlink-head">
+              <div>
+                <div className="tr-chlink-title">Link {chapterName(BOOK_NAMES[activeBook] || '')} {activeChapter} — {chLink.title}</div>
+                <div className="tr-chlink-sub">
+                  {chLink.done
+                    ? `${chLink.rows.reduce((n, r) => n + (chLink.skip.has(r.verse) ? 0 : r.plans.length), 0)} new links in ${new Set(chLink.rows.filter(r => r.plans.length && !chLink.skip.has(r.verse)).map(r => r.verse)).size} verses. Nothing is saved yet.`
+                    : `Matching… ${chLink.progress} / ${chLink.total}`}
+                </div>
+              </div>
+              <button type="button" className="tr-chlink-x" disabled={chLink.applying} onClick={() => setChLink(null)} aria-label="Close">✕</button>
+            </div>
+            <div className="tr-chlink-body">
+              {chLink.done && !chLink.rows.length && <div className="tr-chlink-empty">Nothing new to link — everything matchable in this chapter is already linked.</div>}
+              {[...new Set(chLink.rows.map(r => r.verse))].map(v => {
+                const rows = chLink.rows.filter(r => r.verse === v);
+                const off = chLink.skip.has(v);
+                return (
+                  <div key={v} className={'tr-chlink-verse' + (off ? ' off' : '')}>
+                    <label className="tr-chlink-vhead">
+                      <input type="checkbox" checked={!off} disabled={chLink.applying}
+                             onChange={() => setChLink(c => { const sk = new Set(c.skip); sk.has(v) ? sk.delete(v) : sk.add(v); return { ...c, skip: sk }; })} />
+                      <span>Verse {v}</span>
+                      <button type="button" className="tr-chlink-open" onClick={() => { setChLink(null); loadVerse(activeBook, activeChapter, v); }}>open</button>
+                    </label>
+                    {rows.map(r => (
+                      <div key={r.langId} className="tr-chlink-lang">
+                        {rows.length > 1 || chLink.title.startsWith('all') ? <div className="tr-chlink-lname">{r.label}</div> : null}
+                        {r.error && <div className="tr-chlink-err">{r.error}</div>}
+                        <div className="tr-chlink-items">
+                          {r.items.map((it, i) => (
+                            <span key={i} className={'tr-chlink-item' + (it.extends ? ' ext' : '')} title={it.extends ? 'adds this English word to a link that already exists' : 'new link'}>
+                              <b>{it.english}</b> ⇄ <span className="tr-chlink-src" dir="auto">{it.source}</span>
+                              {it.reading && it.reading.toLowerCase() !== it.english.toLowerCase() ? <span className="tr-chlink-read"> {it.reading}</span> : null}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="tr-chlink-foot">
+              <button type="button" className="tr-clearall-btn" disabled={chLink.applying} onClick={() => setChLink(null)}>Cancel</button>
+              <button type="button" className="tr-autolink-btn" disabled={!chLink.done || chLink.applying || !chLink.rows.some(r => r.plans.length && !chLink.skip.has(r.verse))} onClick={applyChapterLink}>
+                {chLink.applying ? 'Saving…' : 'Save these links'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {chvOpen && (
         <div className="tr-chv-overlay" onClick={() => setChvOpen(false)}>
           <div className="tr-chv-inner" onClick={e => e.stopPropagation()}>
