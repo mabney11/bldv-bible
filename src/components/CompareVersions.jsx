@@ -14,13 +14,16 @@ import './CompareVersions.css';
 
 const OPEN_KEY = 'tr-compare-open';
 
-export default function CompareVersions({ book, chapter, verse }) {
-  const [allowed, setAllowed] = useState(false);
-  const [open, setOpen] = useState(() => { try { return localStorage.getItem(OPEN_KEY) !== '0'; } catch { return true; } });
+// `everyone` (Detailed Verse page, 2026-11-18): shown to every reader through the public /api/versions,
+// under its own heading; without it, the owner-only Studio/Root panel as before.
+export default function CompareVersions({ book, chapter, verse, everyone = false, title = 'Other versions', openKey = OPEN_KEY }) {
+  const [allowed, setAllowed] = useState(everyone);
+  const [open, setOpen] = useState(() => { try { return localStorage.getItem(openKey) !== '0'; } catch { return true; } });
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (everyone) return;
     getAdminStatus().then(s => setAllowed(!!s.isAdmin || !s.configured)).catch(() => setAllowed(false));
   }, []);
 
@@ -28,7 +31,7 @@ export default function CompareVersions({ book, chapter, verse }) {
     if (!allowed || !open || !book || !chapter || !verse) return;
     let live = true;
     setData(null); setError(null);
-    fetch(`/api/admin/compare-versions?book=${book}&chapter=${chapter}&verse=${verse}`, { credentials: 'same-origin' })
+    fetch(`${everyone ? '/api/versions' : '/api/admin/compare-versions'}?book=${book}&chapter=${chapter}&verse=${verse}`, { credentials: 'same-origin' })
       .then(r => r.ok ? r.json()
         : Promise.reject(new Error(r.status === 503 ? 'versions.db is not on this server yet' : `HTTP ${r.status}`)))
       .then(d => { if (live) setData(d); })
@@ -41,17 +44,17 @@ export default function CompareVersions({ book, chapter, verse }) {
   const toggle = () => {
     const next = !open;
     setOpen(next);
-    try { localStorage.setItem(OPEN_KEY, next ? '1' : '0'); } catch { /* private mode */ }
+    try { localStorage.setItem(openKey, next ? '1' : '0'); } catch { /* private mode */ }
   };
 
   return (
-    <section className="cv-section" aria-label="Other English versions (only you can see this)">
+    <section className="cv-section" aria-label={everyone ? title : 'Other English versions (only you can see this)'}>
       <div className="tr-section-label">
         <button type="button" className="cv-toggle" onClick={toggle} aria-expanded={open}>
           <span className="cv-caret" aria-hidden="true">{open ? '▾' : '▸'}</span>
-          Other versions
+          {title}
         </button>
-        <span className="cv-private" title="Hidden from readers: served only to your admin session">only you</span>
+        {!everyone && <span className="cv-private" title="Hidden from readers: served only to your admin session">only you</span>}
       </div>
       {open && (
         <div className="cv-body">

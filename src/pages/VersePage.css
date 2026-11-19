@@ -497,3 +497,8 @@
 .vp-3d-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--pr-ink-soft); margin-right: 2px; }
 .vp-3d-link { font-size: 13px; color: var(--gold, #d4a24c); text-decoration: none; padding: 6px 12px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--gold, #d4a24c) 45%, transparent); transition: background .15s, box-shadow .15s; }
 .vp-3d-link:hover { background: color-mix(in srgb, var(--gold, #d4a24c) 12%, transparent); box-shadow: 0 0 12px color-mix(in srgb, var(--gold, #d4a24c) 25%, transparent); }
+
+/* Other translations (2026-11-18) — the shared CompareVersions panel, in the page's own type. */
+.vp-versions { margin: 28px 0 8px; }
+.vp-versions .tr-section-label { font-size: 12px; }
+.vp-versions .cv-text { font-size: 15px; line-height: 1.6; }

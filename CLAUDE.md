@@ -290,6 +290,13 @@ between homographs, 23.2% a sole reading the English never names.
   whole corpus, not seen in a browser. Run: `node build-surface-index.js`, `node render-all.mjs --surface`, Rebake,
   deploy (server.js + frontend changed). Read the build's evidence line and review heb-context-switches.txt `auto` rows.
 
+## ROOT/SURFACE VERSE CARDS READ THE ENGLISH OF THE VERSE THEY SHOW (2026-11-18)
+fieldy, /roots?sn=H781 Exodus 22:16: the English was 22:15's ("Am-Bailayaw … Imaw") over 22:16's Hebrew ("the hebrew texts dont
+line up"). server.js bhsVersePage looked translation.db up with the tokens' MASORETIC numbers (MT 22:15) — but translation.db is keyed
+by the SITE number (English 22:16). It now maps through bhsToDisplayRef first (not for forceSource 'HEB'). Every chapter that numbers
+differently (the 22 books in eng-versification.cjs) was off by the same shift on the Roots, Surfaces and Gloss Studio root-verse cards.
+node --check only; needs a restart.
+
 ## LINK CHAPTER — Auto-Link every verse of a chapter in one click (2026-11-18)
 fieldy: "link for all verses in a chapter in one click ... all languages or default (hebrew), or a single one" / "no need for
 previews, just write through is fine, I will address issues as they arise". Translate.jsx Word Links bar: "¶ Link Chapter ▾" ->
@@ -315,7 +322,7 @@ KJV, NKJV, NLV".
 - **Route** `GET /api/admin/compare-versions?book=&chapter=&verse=` (server.js, before PRECEPTS): behind the /api/admin
   guard and its own isAdminRequest check (404 for anyone else; open on a server with no ADMIN_KEY), `Cache-Control:
   private, no-store`, `X-Robots-Tag: noindex`; each version carries `covers` (has this book at all). Nothing public reads
-  versions.db — no page, prerender, sitemap, search. Keep it that way.
+  versions.db — no page, prerender, sitemap, search. Keep it that way. **SUPERSEDED 2026-11-18** (fieldy: "include the other translations of the verse (for all users) -- make them available before the precepts"): the Detailed Verse page (VersePage.jsx) shows them to everyone via the public, cacheable `GET /api/versions` (same handler, sendCompareVersions; noindex; still no prerender/sitemap/search) — `<CompareVersions everyone title="Other translations">` right before Precepts.
 - **Panel** `src/components/CompareVersions.jsx/.css`, in Translate.jsx between the translation box and the word links;
   renders nothing unless /admin/session says owner (or no key configured); collapsible (localStorage `tr-compare-open`).
 - Verified: harness of the real route block on the real versions.db (owner 200 with all 8, visitor 404, bad input 400,

@@ -11342,9 +11342,13 @@ function bhsVersePage(hitRows, lexicon, homographs, surfaceOverrides, forceSourc
             // undefined, so this threw on EVERY verse and the catch below
             // swallowed it as "translation.db may be empty". The roots and
             // surfaces verse cards have therefore never shown a translation.
+            // translation.db is keyed by the SITE (English) verse number; these rows carry the
+            // tokens' Masoretic numbers. Exodus 22:15 MT = English 22:16 — looked up unmapped, the
+            // card showed 22:15's English over 22:16's Hebrew (fieldy, /roots?sn=H781, 2026-11-18).
+            const [tc, tv] = forceSource === 'HEB' ? [v.chapter, v.verse] : bhsToDisplayRef(v.book_id, v.chapter, v.verse);
             const t = translationDb.tdb.prepare(
                 `SELECT text, rich_text FROM translations WHERE book_id=? AND chapter=? AND verse=?`
-            ).get(v.book_id, v.chapter, v.verse);
+            ).get(v.book_id, tc, tv);
             if (t) translation = { text: t.text, rich_text: t.rich_text };
         } catch { /* translation.db may be empty */ }
         out.push({
@@ -12912,8 +12916,8 @@ app.get('/api/translate/verse', (req, res) => {
 // version better say the same things in general because it is translating from a source
 // that they did not create". server/versions.db (scripts/build-compare-versions.py):
 // public-domain KJV(+Apocrypha) ASV YLT Darby DRC JPS BBE BSB, keyed by the app's own
-// (canon_id, chapter, verse). NOTHING public reads it: no page, prerender, sitemap or
-// search. Served only here, under /api/admin (the ADMIN_KEY guard 404s everyone else);
+// (canon_id, chapter, verse). Since 2026-11-18 the Detailed Verse page shows them to everyone
+// through /api/versions (below); no prerender, sitemap or search. The owner route is under /api/admin (the ADMIN_KEY guard 404s everyone else);
 // with no ADMIN_KEY configured (a local dev server) it is open, like the Studio itself.
 // Copyrighted versions (NKJV, NLV …) are NOT stored, and the Studio does not link to them (fieldy 2026-11-01).
 const VERSIONS_CANDIDATES = [path.join(__dirname, 'versions.db')]
@@ -12937,10 +12941,7 @@ function versionsDb() {
         return _versionsDb;
     } catch (e) { console.warn('[versions] unavailable:', e.message); _versionsDb = null; return null; }
 }
-app.get('/api/admin/compare-versions', (req, res) => {
-    if (ADMIN_KEY && !isAdminRequest(req)) return res.status(404).end();
-    res.setHeader('Cache-Control', 'private, no-store');
-    res.setHeader('X-Robots-Tag', 'noindex');
+function sendCompareVersions(req, res) {
     const book = +req.query.book, chapter = +req.query.chapter, verse = +req.query.verse;
     if (!(book > 0 && chapter > 0 && verse > 0)) return res.status(400).json({ error: 'book, chapter, verse required' });
     if (!versionsDb()) return res.status(503).json({ error: 'versions.db not built (scripts/build-compare-versions.py)' });
@@ -12950,6 +12951,19 @@ app.get('/api/admin/compare-versions', (req, res) => {
     if (!_versionsCover.has(book)) _versionsCover.set(book, new Set(_versionsStmts.covers.all(book).map(r => r.version)));
     const covers = _versionsCover.get(book);
     res.json({ versions: _versionsStmts.list.all().map(v => ({ ...v, covers: covers.has(v.id), text: texts.get(v.id) || '' })) });
+}
+app.get('/api/admin/compare-versions', (req, res) => {
+    if (ADMIN_KEY && !isAdminRequest(req)) return res.status(404).end();
+    res.setHeader('Cache-Control', 'private, no-store');
+    res.setHeader('X-Robots-Tag', 'noindex');
+    sendCompareVersions(req, res);
+});
+// PUBLIC (2026-11-18, fieldy, on the Detailed Verse page: "lets also include the other translations
+// of the verse (for all users) -- make them available before the precepts"). Same public-domain data
+// as the owner route; read by VersePage only. Still not in the prerender, sitemap or search.
+app.get('/api/versions', production.cache(3600), (req, res) => {
+    res.setHeader('X-Robots-Tag', 'noindex');
+    sendCompareVersions(req, res);
 });
 
 // PUT /api/translate/verse

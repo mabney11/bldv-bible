@@ -5,6 +5,7 @@ import { useTheme } from '../hooks/useTheme.js';
 import { apiTransProgress, apiTransVerse, apiTokens, apiRootFirstByLetters, apiPrecepts, apiPreceptReview } from '../lib/api.js';
 import { getAdminStatus } from '../lib/localOverlay.js';
 import PreceptList from '../components/Precepts.jsx';
+import CompareVersions from '../components/CompareVersions.jsx';
 import { buildBookSlugs, resolveBookParam, bookToParam, parallelHref } from '../lib/bookSlug.js';
 import { usePageTitle, formatRef } from '../hooks/usePageTitle.js';
 import { WordRow, computeWordParts, transliterationsToHtml } from '../components/WordBlock.jsx';
@@ -596,6 +597,14 @@ export default function VersePage() {
                   right under vp-text; moved below the breakdown table so the
                   verse + its word-by-word data reads as one block before any
                   "go elsewhere" affordance. */}
+              {/* Other translations of this verse, for every reader, before the precepts (fieldy 2026-11-18).
+                  Public-domain versions from server/versions.db via /api/versions. */}
+              {addressValid && (
+                <div className="vp-versions">
+                  <CompareVersions everyone title="Other translations" openKey="vp-versions-open"
+                                   book={bookId} chapter={chapter} verse={verse} />
+                </div>
+              )}
               {precepts.length > 0 && (
                 <section className="vp-precepts" aria-label="Precepts">
                   <h2 className="vp-subhead"><span className="vp-precept-glyph" aria-hidden="true">⁂</span> Precepts <span className="vp-precept-count">{precepts.length}</span></h2>
