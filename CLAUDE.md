@@ -290,13 +290,12 @@ between homographs, 23.2% a sole reading the English never names.
   whole corpus, not seen in a browser. Run: `node build-surface-index.js`, `node render-all.mjs --surface`, Rebake,
   deploy (server.js + frontend changed). Read the build's evidence line and review heb-context-switches.txt `auto` rows.
 
-## LINK CHAPTER — Auto-Link every verse of a chapter, previewed first (2026-11-18)
-fieldy: "the ability to link for all verses in a chapter in one click ... see how things would turn out ... all languages or
-default (hebrew), or a single one". Translate.jsx Word Links bar: "¶ Link Chapter ▾" -> Hebrew / All languages / <current> only.
-Step 1 MATCHES every verse (planAutoLinksForVerse = Auto-Link's matcher with no writes; fetchLangTokensAndLinks takes a per-run
-chapter-token cache) and shows each verse's planned pairs (English ⇄ source word, dashed = extends an existing link); a verse can be
-unticked. Step 2 "Save these links" writes exactly those plans (writeAutoLinkPlans — the same writes Link This Language makes).
-runAutoLinkForVerse = plan + write, unchanged behaviour. esbuild only; not seen in a browser.
+## LINK CHAPTER — Auto-Link every verse of a chapter in one click (2026-11-18)
+fieldy: "link for all verses in a chapter in one click ... all languages or default (hebrew), or a single one" / "no need for
+previews, just write through is fine, I will address issues as they arise". Translate.jsx Word Links bar: "¶ Link Chapter ▾" ->
+Hebrew / All languages / <current> only. Runs runAutoLinkForVerse (same matcher + writes as Link This Language) on every verse,
+saving as it goes; the button shows "Linking… n/N"; one toast at the end (links made, verses touched, first error).
+fetchLangTokensAndLinks takes a per-run chapter-token cache. esbuild only; not seen in a browser.
 
 ## OTHER ENGLISH VERSIONS IN TRANSLATION STUDIO — OWNER ONLY (2026-10-29)
 
