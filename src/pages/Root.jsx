@@ -390,6 +390,17 @@ function RootCard({ detail, idToSlug, context, onPickSn, backVerses = [] }) {
     return out;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstTargets, firstVerses, backVerses, detail.sn]);
+  // "This verse" (fieldy 2026-11-19: "generate a card for Gen 2:23 for Ayashah ... another tab with
+  // 'this verse'"): the hit open on the page, whether or not it is a first usage.
+  const thisVerse = useMemo(() => {
+    const b = backVerses.find(x => x && x.key === 'here' && x.v) || backVerses.find(x => x && x.v);
+    if (!b) return null;
+    const v = b.v, hitSet = new Set(v.hit_ordinals || []);
+    const tokens = (v.words || []).map(wb => wordBlockToToken(wb, ord => hitSet.has(ord), detail.sn));
+    return { key: `this:${v.book_id}:${v.chapter}:${v.verse}`, short: 'This verse', label: 'Usage', sn: detail.sn,
+             ref: locLabel(v), text: v.translation?.text || '', tokens, isHitWord: englishHitTest(tokens) };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [backVerses, detail.sn]);
 
   return (
     <section className="rc-card" aria-label="Root summary">
@@ -402,7 +413,7 @@ function RootCard({ detail, idToSlug, context, onPickSn, backVerses = [] }) {
           <button type="button" className="rc-img-btn" onClick={() => setImgOpen(true)} title="Save this card as a picture (front, back with the verse, or both)">⤓ Card image</button>
         </div>
       </div>
-      <RootCardDialog open={imgOpen} onClose={() => setImgOpen(false)} summary={cardSummary} backChoices={backChoices} />
+      <RootCardDialog open={imgOpen} onClose={() => setImgOpen(false)} summary={cardSummary} backChoices={backChoices} thisVerse={thisVerse} />
       <div className="rc-row">
         <div className="rc-label">Root</div>
         <div className="rc-glyphs" dangerouslySetInnerHTML={{ __html: rootGlyph }} />

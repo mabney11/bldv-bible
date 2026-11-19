@@ -65,10 +65,12 @@ function wordsFor(tokens, dark) {
   return out;
 }
 
-export default function RootCardDialog({ open, onClose, summary, backChoices = [] }) {
+export default function RootCardDialog({ open, onClose, summary, backChoices = [], thisVerse = null }) {
   const canvasRef = useRef(null);
   const saved = useRef(loadPrefs()).current;
-  const [side, setSide] = useState(['front', 'back', 'both'].includes(saved.side) ? saved.side : 'front');
+  const [side, setSide] = useState(['front', 'back', 'this', 'both'].includes(saved.side) ? saved.side : 'front');
+  // which verse "Both" pairs with the card: the last verse side picked (first usage / this verse)
+  const [bothVerse, setBothVerse] = useState(saved.bothVerse === 'this' ? 'this' : 'first');
   const [theme, setTheme] = useState(saved.theme === 'parchment' ? 'parchment' : 'night');
   const [fontId, setFontId] = useState(() => {
     const want = saved.font || readerPrefs().typeface;
@@ -79,14 +81,17 @@ export default function RootCardDialog({ open, onClose, summary, backChoices = [
   const family = (TYPEFACES.find(f => f.id === fontId) || TYPEFACES[0]).stack;
   const [fontsReady, setFontsReady] = useState(false);
   const [msg, setMsg] = useState('');
-  useEffect(() => { try { localStorage.setItem(PREF_KEY, JSON.stringify({ side, theme, font: fontId })); } catch { /* non-fatal */ } }, [side, theme, fontId]);
+  useEffect(() => { try { localStorage.setItem(PREF_KEY, JSON.stringify({ side, theme, font: fontId, bothVerse })); } catch { /* non-fatal */ } }, [side, theme, fontId, bothVerse]);
   useEffect(() => {
     if (!open) return; let live = true; setFontsReady(false);
     loadCardFonts(family).then(() => { if (live) setFontsReady(true); });
     return () => { live = false; };
   }, [open, family]);
 
-  const back = backChoices.find(c => c.key === backKey) || backChoices[0] || null;
+  const first = backChoices.find(c => c.key === backKey) || backChoices[0] || null;
+  const useThis = !!thisVerse && (side === 'this' || (side === 'both' && bothVerse === 'this'));
+  const back = useThis ? thisVerse : first;
+  const drawSide = side === 'this' ? 'back' : side;
   const data = useMemo(() => {
     if (!summary) return null;
     const verse = back ? { label: back.label, sn: back.sn, ref: back.ref, text: back.text, isHitWord: back.isHitWord, words: wordsFor(back.tokens, theme === 'night') } : null;
@@ -95,8 +100,8 @@ export default function RootCardDialog({ open, onClose, summary, backChoices = [
 
   useEffect(() => {
     if (!open || !canvasRef.current || !data) return;
-    drawRootCard(canvasRef.current, { side, theme, family, data });
-  }, [open, fontsReady, side, theme, family, data]);
+    drawRootCard(canvasRef.current, { side: drawSide, theme, family, data });
+  }, [open, fontsReady, drawSide, theme, family, data]);
   useEffect(() => {
     if (!open) return;
     const onKey = e => { if (e.key === 'Escape') onClose(); };
@@ -106,7 +111,7 @@ export default function RootCardDialog({ open, onClose, summary, backChoices = [
 
   const blob = useCallback(() => new Promise(res => canvasRef.current.toBlob(res, 'image/png')), []);
   const flash = t => { setMsg(t); setTimeout(() => setMsg(''), 2200); };
-  const fileName = rootCardFileName(side === 'front' ? summary?.sn : (back?.sn || summary?.sn), side === 'back' ? 'first-usage' : side === 'both' ? 'card' : 'front');
+  const fileName = rootCardFileName(side === 'front' ? summary?.sn : (back?.sn || summary?.sn), side === 'back' ? 'first-usage' : side === 'this' ? (thisVerse?.ref || 'verse').replace(/[^A-Za-z0-9]+/g, '-') : side === 'both' ? 'card' : 'front');
   const download = async () => {
     const b = await blob(); if (!b) return;
     const url = URL.createObjectURL(b);
@@ -139,12 +144,13 @@ export default function RootCardDialog({ open, onClose, summary, backChoices = [
         <div className="vi-opts">
           <div className="vi-row"><span className="vi-label">Side</span>
             <div className="vi-group">
-              {[['front', 'Card'], ['back', 'First usage'], ['both', 'Both']].map(([id, l]) => (
-                <button key={id} className={`vi-chip ${side === id ? 'on' : ''}`} onClick={() => setSide(id)}>{l}</button>
+              {[['front', 'Card'], ['back', 'First usage'], ...(thisVerse ? [['this', 'This verse']] : []), ['both', 'Both']].map(([id, l]) => (
+                <button key={id} className={`vi-chip ${side === id ? 'on' : ''}`}
+                        onClick={() => { setSide(id); if (id === 'back') setBothVerse('first'); if (id === 'this') setBothVerse('this'); }}>{l}</button>
               ))}
             </div>
           </div>
-          {backChoices.length > 1 && side !== 'front' && (
+          {backChoices.length > 1 && side !== 'front' && !useThis && (
             <div className="vi-row"><span className="vi-label">Which</span>
               <select className="vi-select" value={back?.key || ''} onChange={e => setBackKey(e.target.value)}>
                 {backChoices.map(c => <option key={c.key} value={c.key}>{c.short}</option>)}

@@ -195,6 +195,7 @@ each fetched as its verse when the dialog opens (apiTokens word blocks of that v
 carrying that number). The front lists each sharing number with its own "first <ref>", and this number's own first usage when it
 differs from the root's. Same frame/foot as the verse images.
 Verified in Chromium against a mock root API (Gen 4:8 data shaped like /api/root-explorer/verses). Not seen on the live server.
+**"This verse" side (2026-11-19, fieldy: "generate a card for Gen 2:23 for Ayashah ... another tab with 'this verse'"):** the dialog's Side row is Card / First usage / This verse / Both. This verse = the hit open on the page (Root.jsx `thisVerse`, built from cardBackVerses' 'here' entry, else the first listed), drawn as the back with the label "Usage"; Both pairs the card with whichever verse side was picked last (prefs `bothVerse`). esbuild only.
 
 ## COMPOUND NAMES IN THE WORD BLOCKS: "𐤄𐤓-𐤀𐤋" / "Har-Al", never "Haraal" (2026-11-05)
 fieldy (Ezekiel 43:15 H2025): "in the display for the reader, Id like the dash between the resh and aleph and 'Har-Al' instead
