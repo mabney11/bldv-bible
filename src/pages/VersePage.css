@@ -502,3 +502,12 @@
 .vp-versions { margin: 28px 0 8px; }
 .vp-versions .tr-section-label { font-size: 12px; }
 .vp-versions .cv-text { font-size: 15px; line-height: 1.6; }
+
+/* Collapsible "Word by word" heading (2026-11-18) — the button keeps .vp-subhead's look. */
+.vp-fold-btn {
+  all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit;
+}
+.vp-fold-btn:hover { color: var(--pr-accent, var(--gold)); }
+.vp-fold-btn:focus-visible { outline: 2px solid var(--pr-accent, var(--gold)); outline-offset: 2px; border-radius: 3px; }
+.vp-fold-caret { font-size: 10px; width: 10px; }

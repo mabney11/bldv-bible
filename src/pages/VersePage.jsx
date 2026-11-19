@@ -220,6 +220,16 @@ export default function VersePage() {
   // the top bar's ⤓ menu — this verse / chapter / book as a PDF, this verse as an image
   const [saveOpen, setSaveOpen] = useState(false);
   const [imageOpen, setImageOpen] = useState(false);
+  // "Word by word" folds (fieldy 2026-11-18); remembered in this browser, open by default.
+  const [wbwOpen, setWbwOpen] = useState(() => { try { return localStorage.getItem('vp-wbw-open') !== '0'; } catch { return true; } });
+  const toggleWbw = () => setWbwOpen(o => { const n = !o; try { localStorage.setItem('vp-wbw-open', n ? '1' : '0'); } catch { /* private mode */ } return n; });
+  const wbwHead = (
+    <h2 className="vp-subhead vp-subhead-fold">
+      <button type="button" className="vp-fold-btn" onClick={toggleWbw} aria-expanded={wbwOpen}>
+        <span className="vp-fold-caret" aria-hidden="true">{wbwOpen ? '▾' : '▸'}</span> Word by word
+      </button>
+    </h2>
+  );
 
   // ── "root|lex_word|definition|modifications|strongs #s|link to the first
   // verse the root appears in" — "The 'First surface' can be removed" (the
@@ -528,7 +538,8 @@ export default function VersePage() {
               )}
               {hebrewWords.length > 0 ? (
                 <>
-                  <h2 className="vp-subhead">Word by word</h2>
+                  {wbwHead}
+                  {wbwOpen && (<>
                   <div className="vp-wordtable-wrap">
                     <table className="vp-wordtable">
                       <thead>
@@ -574,11 +585,12 @@ export default function VersePage() {
                       />
                     )}
                   </div>
+                  </>)}
                 </>
               ) : wordItems.length > 0 && (
                 <>
-                  <h2 className="vp-subhead">Word by word</h2>
-                  <ul className="vp-words">
+                  {wbwHead}
+                  {wbwOpen && <ul className="vp-words">
                     {wordItems.map((t, i) => (
                       <li key={i} className="vp-word">
                         <span className="vp-word-raw">{t.word_raw}</span>
@@ -589,7 +601,7 @@ export default function VersePage() {
                         )}
                       </li>
                     ))}
-                  </ul>
+                  </ul>}
                 </>
               )}
               {/* "lets get the links out of view of the vers info though, lets
