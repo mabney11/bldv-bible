@@ -1,0 +1,5 @@
+{
+  "_doc": "fix-heading-names.mjs: English words in chapter/section headings that STAY English even though name-map-expanded.json gives them an app spelling (terms and peoples, not names). Remove a word to have headings write it the reading text's way.",
+  "keepEnglish": ["Temple", "Sabbath", "Passover", "Paradise", "Jubilee", "Cherubim", "Gentiles", "Greek", "Greeks", "Jewish", "Jews", "Satan", "Sheol", "Bethel",
+                  "Ammonites", "Assyrian", "Assyrians", "Egyptian", "Egyptians", "Canaanite", "Canaanites", "Levite", "Levites"]
+}
