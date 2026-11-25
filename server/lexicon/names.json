@@ -6,7 +6,6 @@
       "slug": "yashawai",
       "name": "Yashawai",
       "sn": "H3442",
-      "meaning": "he will save",
       "letters": [
         [
           "𐤉",
@@ -97,7 +96,6 @@
       "slug": "yahawashawai",
       "name": "Yahawashawai",
       "sn": "H3091",
-      "meaning": "Yahawah is Shawai (salvation)",
       "letters": [
         [
           "𐤉",
@@ -293,7 +291,23 @@
           ]
         }
       ],
-      "meaning": "princess"
+      "echoes": [
+        {
+          "from": {
+            "name": "Sharay",
+            "paleo": "𐤔𐤓𐤉",
+            "gloss": "princess",
+            "sn": "H8297"
+          },
+          "to": {
+            "name": "Zarai",
+            "paleo": "𐤆𐤓𐤏",
+            "gloss": "seed",
+            "sn": "H2233"
+          },
+          "note": "Sharay (princess) and Zarai (seed) sound alike: 𐤔 sh beside 𐤆 z, the same 𐤓 r, and 𐤉 y beside 𐤏 i."
+        }
+      ]
     },
     {
       "sn": "H3327",
@@ -491,8 +505,7 @@
             }
           ]
         }
-      ],
-      "meaning": "fortune"
+      ]
     },
     {
       "sn": "H836",
@@ -515,8 +528,7 @@
             }
           ]
         }
-      ],
-      "meaning": "happy"
+      ]
     },
     {
       "sn": "H3485",
@@ -691,8 +703,7 @@
             }
           ]
         }
-      ],
-      "meaning": "acquired"
+      ]
     },
     {
       "sn": "H8352",
@@ -749,8 +760,7 @@
             }
           ]
         }
-      ],
-      "meaning": "breach"
+      ]
     },
     {
       "sn": "H4519",

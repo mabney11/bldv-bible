@@ -63,15 +63,15 @@
   "H3063": {
     "parts": [
       {
-        "sn": "H3050",
-        "gloss": "Yah"
+        "sn": "H3034",
+        "gloss": "Confess"
       },
       {
-        "sn": "H3034",
-        "gloss": "praise"
+        "sn": "H3050",
+        "gloss": "Yah"
       }
     ],
-    "meaning": "Yah gets the praise",
+    "meaning": "Confess Yah",
     "def": "Yahawadah, the name of five Israelites; also of the tribe descended from the first, and of its territory"
   },
   "H3083": {
@@ -154,14 +154,14 @@
     "parts": [
       {
         "sn": "H3477",
-        "gloss": "upright"
+        "gloss": "Upright"
       },
       {
         "sn": "H410",
-        "gloss": "Alahay of Yashar-Al"
+        "gloss": "Alahayam"
       }
     ],
-    "meaning": "Yashar (upright) with Al (Alahay of Yashar-Al)",
+    "meaning": "Upright with Alahayam",
     "def": "Yashar-Al, the name given to Yaiqab; also of his descendants and their land"
   },
   "H8050": {
@@ -205,5 +205,12 @@
     ],
     "meaning": "Ash (fire) of Dawad (David)",
     "def": "Ashadawad, a place in Palashath"
+  },
+  "H3442": {
+    "parts": [
+      {
+        "sn": "H3467"
+      }
+    ]
   }
 }
