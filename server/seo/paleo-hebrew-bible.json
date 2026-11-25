@@ -5,13 +5,275 @@
  "description": "Read the entire scriptures in Paleo-Hebrew letters alongside the English, with a transliteration that keeps every letter of the Hebrew: one letter, one sound, nothing dropped. Free to read online.",
  "h1": "Paleo Hebrew Bible",
  "kicker": "The entire scriptures in Paleo-Hebrew letters, alongside the English",
- "intro": "BLD Bible lets you read the entire scriptures in Paleo-Hebrew, the 22 letters Israel wrote with before the exile, with the English beside every verse. Every Hebrew word is also written out in Latin letters by one fixed rule: each Hebrew letter always gets the same sound, and every letter of the Hebrew is kept. Nothing is smoothed over, dropped or doubled.",
+ "intro": "BLD Bible lets you read the entire scriptures in Paleo-Hebrew, the 22 letters Israel wrote with before the exile, with the English beside every verse. Every Hebrew word is also written out in Latin letters by one fixed rule: each Hebrew letter always gets the same sound, and every letter of the Hebrew is kept. The transliteration preserves the Paleo-Hebrew letters themselves, not a modern pronunciation: read it back and you have the Hebrew letters again, in order. Nothing is smoothed over, dropped or doubled.",
  "sample": {
   "ref": "BaRaashayath (Genesis) 1:1",
   "paleo": "𐤁𐤓𐤀𐤔𐤉𐤕 𐤁𐤓𐤀 𐤀𐤋𐤄𐤉𐤌 𐤀𐤕 𐤄𐤔𐤌𐤉𐤌 𐤅𐤀𐤕 𐤄𐤀𐤓𐤑",
   "to": "/genesis/1/1",
-  "label": "Open BaRaashayath (Genesis) 1:1 word by word"
+  "label": "Open BaRaashayath (Genesis) 1:1 word by word",
+  "words": [
+   {
+    "paleo": "𐤁𐤓𐤀𐤔𐤉𐤕",
+    "translit": "BaRaashayath",
+    "pieces": [
+     [
+      "𐤁",
+      "Ba",
+      "mod-prep",
+      "in"
+     ],
+     [
+      "𐤓",
+      "Ra",
+      "root",
+      "beginning"
+     ],
+     [
+      "𐤀",
+      "a",
+      "root",
+      "beginning"
+     ],
+     [
+      "𐤔",
+      "sha",
+      "root",
+      "beginning"
+     ],
+     [
+      "𐤉",
+      "ya",
+      "root",
+      "beginning"
+     ],
+     [
+      "𐤕",
+      "th",
+      "root",
+      "beginning"
+     ]
+    ],
+    "en": "",
+    "role": ""
+   },
+   {
+    "paleo": "𐤁𐤓𐤀",
+    "translit": "Baraa",
+    "pieces": [
+     [
+      "𐤁",
+      "Ba",
+      "root",
+      "created"
+     ],
+     [
+      "𐤓",
+      "ra",
+      "root",
+      "created"
+     ],
+     [
+      "𐤀",
+      "a",
+      "root",
+      "created"
+     ]
+    ],
+    "en": "",
+    "role": ""
+   },
+   {
+    "paleo": "𐤀𐤋𐤄𐤉𐤌",
+    "translit": "Alahayam",
+    "pieces": [
+     [
+      "𐤀",
+      "A",
+      "root",
+      "Alahayam"
+     ],
+     [
+      "𐤋",
+      "la",
+      "root",
+      "Alahayam"
+     ],
+     [
+      "𐤄",
+      "ha",
+      "root",
+      "Alahayam"
+     ],
+     [
+      "𐤉",
+      "ya",
+      "root",
+      "Alahayam"
+     ],
+     [
+      "𐤌",
+      "m",
+      "root",
+      "Alahayam"
+     ]
+    ],
+    "en": "",
+    "role": ""
+   },
+   {
+    "paleo": "𐤀𐤕",
+    "translit": "Ath",
+    "pieces": [
+     [
+      "𐤀",
+      "A",
+      "root",
+      "entirety"
+     ],
+     [
+      "𐤕",
+      "th",
+      "root",
+      "entirety"
+     ]
+    ],
+    "en": "",
+    "role": ""
+   },
+   {
+    "paleo": "𐤄𐤔𐤌𐤉𐤌",
+    "translit": "HaShamayam",
+    "pieces": [
+     [
+      "𐤄",
+      "Ha",
+      "mod-art",
+      "The"
+     ],
+     [
+      "𐤔",
+      "Sha",
+      "root",
+      "Heavens"
+     ],
+     [
+      "𐤌",
+      "ma",
+      "root",
+      "Heavens"
+     ],
+     [
+      "𐤉",
+      "ya",
+      "root",
+      "Heavens"
+     ],
+     [
+      "𐤌",
+      "m",
+      "root",
+      "Heavens"
+     ]
+    ],
+    "en": "",
+    "role": ""
+   },
+   {
+    "paleo": "𐤅𐤀𐤕",
+    "translit": "WaAth",
+    "pieces": [
+     [
+      "𐤅",
+      "Wa",
+      "mod-conj",
+      "And"
+     ],
+     [
+      "𐤀",
+      "A",
+      "root",
+      "entirety"
+     ],
+     [
+      "𐤕",
+      "th",
+      "root",
+      "entirety"
+     ]
+    ],
+    "en": "",
+    "role": ""
+   },
+   {
+    "paleo": "𐤄𐤀𐤓𐤑",
+    "translit": "HaAratz",
+    "pieces": [
+     [
+      "𐤄",
+      "Ha",
+      "mod-art",
+      "The"
+     ],
+     [
+      "𐤀",
+      "A",
+      "root",
+      "Earth/land"
+     ],
+     [
+      "𐤓",
+      "ra",
+      "root",
+      "Earth/land"
+     ],
+     [
+      "𐤑",
+      "tz",
+      "root",
+      "Earth/land"
+     ]
+    ],
+    "en": "",
+    "role": ""
+   }
+  ],
+  "note": "Every Paleo-Hebrew letter above has its one sound below, in the same order: 28 letters, 28 sounds. Nothing in the transliteration stands for a letter that is not there.",
+  "legend": [
+   {
+    "css": "root",
+    "label": "Root"
+   },
+   {
+    "css": "mod-prep",
+    "label": "in"
+   },
+   {
+    "css": "mod-art",
+    "label": "The"
+   },
+   {
+    "css": "mod-conj",
+    "label": "And"
+   }
+  ]
  },
+ "readButtons": [
+  {
+   "to": "/bible?book=1&chapter=1",
+   "label": "Novel English Bible",
+   "sub": "Plain English, the names kept in their Hebrew form"
+  },
+  {
+   "to": "/parallel/genesis/1",
+   "label": "Read side by side",
+   "sub": "The English beside the Paleo-Hebrew, word-linked"
+  },
+  {
+   "to": "/?book=1&chapter=1",
+   "label": "Paleo Hebrew reader",
+   "sub": "The Hebrew alone, every word opened into its parts"
+  }
+ ],
  "sections": [
   {
    "id": "whole",
@@ -45,8 +307,9 @@
   },
   {
    "id": "every-letter",
-   "h2": "Every letter kept",
+   "h2": "A transliteration that preserves the Paleo-Hebrew letters",
    "p": [
+    "The transliteration on BLD Bible is not a guide to modern pronunciation. It is the Paleo-Hebrew letters themselves, written in Latin letters: one Hebrew letter, one sound, every letter kept, so the Hebrew can always be read back from it.",
     "Most transliterations write Hebrew the way it is pronounced today, so the same letter turns into different sounds from word to word, silent letters disappear, and letters that are not written are added. BLD Bible does it mechanically instead: every Hebrew letter has one sound, written the same way in every word of every book.",
     "You can count it. A word of four Hebrew letters has four letter-sounds in its transliteration, in the same order. Where a word has a prefix or a suffix, a capital letter marks where the next part begins: WaThaAmar is Wa (and) + Tha (she) + Amar (said). And where the written word has lost a letter of its root, the root's letter is shown too: letters are added back, never taken away."
    ]
@@ -64,23 +327,33 @@
     "pieces": [
      [
       "𐤅",
-      "Wa"
+      "Wa",
+      "mod-conj",
+      "And"
      ],
      [
       "𐤕",
-      "Tha"
+      "Tha",
+      "pfm-2or3f",
+      "[She/it]"
      ],
      [
       "𐤀",
-      "A"
+      "A",
+      "root",
+      "said"
      ],
      [
       "𐤌",
-      "ma"
+      "ma",
+      "root",
+      "said"
      ],
      [
       "𐤓",
-      "r"
+      "r",
+      "root",
+      "said"
      ]
     ],
     "en": "and she said",
@@ -92,15 +365,21 @@
     "pieces": [
      [
       "𐤏",
-      "I"
+      "I",
+      "root",
+      "more/again"
      ],
      [
       "𐤅",
-      "wa"
+      "wa",
+      "root",
+      "more/again"
      ],
      [
       "𐤃",
-      "d"
+      "d",
+      "root",
+      "more/again"
      ]
     ],
     "en": "again",
@@ -112,19 +391,27 @@
     "pieces": [
      [
       "𐤉",
-      "Ya"
+      "Ya",
+      "root",
+      "Yahawah (The Eternal)"
      ],
      [
       "𐤄",
-      "ha"
+      "ha",
+      "root",
+      "Yahawah (The Eternal)"
      ],
      [
       "𐤅",
-      "wa"
+      "wa",
+      "root",
+      "Yahawah (The Eternal)"
      ],
      [
       "𐤄",
-      "h"
+      "h",
+      "root",
+      "Yahawah (The Eternal)"
      ]
     ],
     "en": "Yahawah",
@@ -136,15 +423,21 @@
     "pieces": [
      [
       "𐤔",
-      "Sha"
+      "Sha",
+      "root",
+      "name"
      ],
      [
       "𐤌",
-      "ma"
+      "ma",
+      "root",
+      "name"
      ],
      [
       "𐤅",
-      "w"
+      "w",
+      "prs-3ms",
+      "[His]"
      ]
     ],
     "en": "his name",
@@ -156,30 +449,58 @@
     "pieces": [
      [
       "𐤉",
-      "Ya"
+      "Ya",
+      "root",
+      "Yahawadah / Judah"
      ],
      [
       "𐤄",
-      "ha"
+      "ha",
+      "root",
+      "Yahawadah / Judah"
      ],
      [
       "𐤅",
-      "wa"
+      "wa",
+      "root",
+      "Yahawadah / Judah"
      ],
      [
       "𐤃",
-      "da"
+      "da",
+      "root",
+      "Yahawadah / Judah"
      ],
      [
       "𐤄",
-      "h"
+      "h",
+      "root",
+      "Yahawadah / Judah"
      ]
     ],
     "en": "Judah",
     "role": "Waw in a name"
    }
   ],
-  "after": "Same letter, same sound, every time: Wa in WaThaAmar, wa in Iwad, Yahawah and Yahawadah, w at the end of Shamaw."
+  "after": "Same letter, same sound, every time: Wa in WaThaAmar, wa in Iwad, Yahawah and Yahawadah, w at the end of Shamaw.",
+  "legend": [
+   {
+    "css": "root",
+    "label": "Root"
+   },
+   {
+    "css": "mod-conj",
+    "label": "And"
+   },
+   {
+    "css": "pfm-2or3f",
+    "label": "She/it"
+   },
+   {
+    "css": "prs-3ms",
+    "label": "His"
+   }
+  ]
  },
  "guideH2": "Transliteration guide: medial and final",
  "guideP": "Each letter has two written forms. Inside a word (medial) it is the letter's sound followed by a, so the word can be spoken. At the end of a word (final) it is the letter's sound alone. Aleph and Ayin are vowel-like letters, written a and i in both places. That is the whole rule; it never changes.",
@@ -434,6 +755,38 @@
    "paleo": "𐤉𐤄𐤅𐤃𐤄",
    "common": "Yehudah",
    "bld": "Yahawadah",
+   "pieces": [
+    [
+     "𐤉",
+     "Ya",
+     "root",
+     "Yahawadah / Judah"
+    ],
+    [
+     "𐤄",
+     "ha",
+     "root",
+     "Yahawadah / Judah"
+    ],
+    [
+     "𐤅",
+     "wa",
+     "root",
+     "Yahawadah / Judah"
+    ],
+    [
+     "𐤃",
+     "da",
+     "root",
+     "Yahawadah / Judah"
+    ],
+    [
+     "𐤄",
+     "h",
+     "root",
+     "Yahawadah / Judah"
+    ]
+   ],
    "letters": 5,
    "note": "Waw read as u"
   },
@@ -441,6 +794,38 @@
    "paleo": "𐤅𐤉𐤀𐤌𐤓",
    "common": "vayomer",
    "bld": "WaYaAmar",
+   "pieces": [
+    [
+     "𐤅",
+     "Wa",
+     "mod-conj",
+     "And"
+    ],
+    [
+     "𐤉",
+     "Ya",
+     "pfm-3ms",
+     "[He/it]"
+    ],
+    [
+     "𐤀",
+     "A",
+     "root",
+     "said"
+    ],
+    [
+     "𐤌",
+     "ma",
+     "root",
+     "said"
+    ],
+    [
+     "𐤓",
+     "r",
+     "root",
+     "said"
+    ]
+   ],
    "letters": 5,
    "note": "Waw read as v; Aleph silent"
   },
@@ -448,6 +833,26 @@
    "paleo": "𐤃𐤅𐤃",
    "common": "David",
    "bld": "Dawad",
+   "pieces": [
+    [
+     "𐤃",
+     "Da",
+     "root",
+     "Dawad/(David) - Patriarch"
+    ],
+    [
+     "𐤅",
+     "wa",
+     "root",
+     "Dawad/(David) - Patriarch"
+    ],
+    [
+     "𐤃",
+     "d",
+     "root",
+     "Dawad/(David) - Patriarch"
+    ]
+   ],
    "letters": 3,
    "note": "Waw read as v"
   },
@@ -455,6 +860,32 @@
    "paleo": "𐤔𐤋𐤅𐤌",
    "common": "shalom",
    "bld": "Shalawam",
+   "pieces": [
+    [
+     "𐤔",
+     "Sha",
+     "root",
+     "peace / safety"
+    ],
+    [
+     "𐤋",
+     "la",
+     "root",
+     "peace / safety"
+    ],
+    [
+     "𐤅",
+     "wa",
+     "root",
+     "peace / safety"
+    ],
+    [
+     "𐤌",
+     "m",
+     "root",
+     "peace / safety"
+    ]
+   ],
    "letters": 4,
    "note": "Waw read as o"
   },
@@ -462,6 +893,44 @@
    "paleo": "𐤉𐤓𐤅𐤔𐤋𐤌",
    "common": "Yerushalayim",
    "bld": "Yarawashalam",
+   "pieces": [
+    [
+     "𐤉",
+     "Ya",
+     "root",
+     "Yarawashalam / Jerusalem"
+    ],
+    [
+     "𐤓",
+     "ra",
+     "root",
+     "Yarawashalam / Jerusalem"
+    ],
+    [
+     "𐤅",
+     "wa",
+     "root",
+     "Yarawashalam / Jerusalem"
+    ],
+    [
+     "𐤔",
+     "sha",
+     "root",
+     "Yarawashalam / Jerusalem"
+    ],
+    [
+     "𐤋",
+     "la",
+     "root",
+     "Yarawashalam / Jerusalem"
+    ],
+    [
+     "𐤌",
+     "m",
+     "root",
+     "Yarawashalam / Jerusalem"
+    ]
+   ],
    "letters": 6,
    "note": "Waw read as u; adds a y the letters do not have"
   },
@@ -469,6 +938,26 @@
    "paleo": "𐤌𐤔𐤄",
    "common": "Moshe",
    "bld": "Mashah",
+   "pieces": [
+    [
+     "𐤌",
+     "Ma",
+     "root",
+     "Moses"
+    ],
+    [
+     "𐤔",
+     "sha",
+     "root",
+     "Moses"
+    ],
+    [
+     "𐤄",
+     "h",
+     "root",
+     "Moses"
+    ]
+   ],
    "letters": 3,
    "note": "final Hay dropped"
   },
@@ -476,6 +965,32 @@
    "paleo": "𐤉𐤏𐤒𐤁",
    "common": "Yaakov",
    "bld": "Yaiqab",
+   "pieces": [
+    [
+     "𐤉",
+     "Ya",
+     "root",
+     "Jacob - Patriarch"
+    ],
+    [
+     "𐤏",
+     "i",
+     "root",
+     "Jacob - Patriarch"
+    ],
+    [
+     "𐤒",
+     "qa",
+     "root",
+     "Jacob - Patriarch"
+    ],
+    [
+     "𐤁",
+     "b",
+     "root",
+     "Jacob - Patriarch"
+    ]
+   ],
    "letters": 4,
    "note": "Ayin silent; Bayath read as v"
   },
@@ -483,6 +998,26 @@
    "paleo": "𐤔𐤁𐤕",
    "common": "Shabbat",
    "bld": "Shabath",
+   "pieces": [
+    [
+     "𐤔",
+     "Sha",
+     "root",
+     "Shabath / Rest"
+    ],
+    [
+     "𐤁",
+     "ba",
+     "root",
+     "Shabath / Rest"
+    ],
+    [
+     "𐤕",
+     "th",
+     "root",
+     "Shabath / Rest"
+    ]
+   ],
    "letters": 3,
    "note": "Bayath doubled; Thaw read as t"
   },
@@ -490,6 +1025,38 @@
    "paleo": "𐤀𐤋𐤄𐤉𐤌",
    "common": "Elohim",
    "bld": "Alahayam",
+   "pieces": [
+    [
+     "𐤀",
+     "A",
+     "root",
+     "Alahayam"
+    ],
+    [
+     "𐤋",
+     "la",
+     "root",
+     "Alahayam"
+    ],
+    [
+     "𐤄",
+     "ha",
+     "root",
+     "Alahayam"
+    ],
+    [
+     "𐤉",
+     "ya",
+     "root",
+     "Alahayam"
+    ],
+    [
+     "𐤌",
+     "m",
+     "root",
+     "Alahayam"
+    ]
+   ],
    "letters": 5,
    "note": "Yad read as the vowel i"
   }
@@ -543,5 +1110,6 @@
    "q": "Where do I start?",
    "a": "Open BaRaashayath (Genesis) 1 in the Paleo Hebrew reader, or the Parallel Bible if you want the English beside it."
   }
- ]
+ ],
+ "colorsNote": "Colours: each part of a word keeps one colour in the Paleo letters and in the transliteration, the same colours the Paleo Hebrew reader uses. The root is gold; every modification (and, the, in, she, his …) has its own colour."
 }

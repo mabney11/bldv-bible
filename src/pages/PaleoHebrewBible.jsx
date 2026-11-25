@@ -11,6 +11,36 @@ import './PaleoHebrewBible.css';
  */
 const WAW = '𐤅';
 
+/** Consecutive letters of one part -> one span with the reader's morpheme class. */
+function groups(pieces) {
+  const out = [];
+  for (const [l, s, css, label] of pieces) {
+    const last = out[out.length - 1];
+    if (last && last.css === (css || '')) { last.paleo += l; last.tr += s; }
+    else out.push({ css: css || '', label: label || '', paleo: l, tr: s });
+  }
+  return out;
+}
+const partClass = (g) => `phb-m ${g.css === 'root' ? 'phb-root' : g.css}`;
+
+function Morph({ pieces, field }) {
+  return groups(pieces).map((g, i) => (
+    <span key={i} className={partClass(g)} title={g.label}>{g[field]}</span>
+  ));
+}
+
+function Legend({ items }) {
+  return (
+    <div className="phb-legend">
+      {items.map((it) => (
+        <span key={it.css} className={`phb-legend-item ${it.css === 'root' ? 'phb-root' : it.css} phb-m`}>
+          <span className="phb-legend-dot" />{it.label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function Section({ s }) {
   return (
     <section id={s.id} className="phb-section">
@@ -41,7 +71,17 @@ export default function PaleoHebrewBible() {
       <p className="phb-intro">{PAGE.intro}</p>
 
       <figure className="phb-sample">
-        <div className="phb-sample-paleo" lang="hbo" dir="rtl">{PAGE.sample.paleo}</div>
+        <div className="phb-sample-words" dir="rtl">
+          {PAGE.sample.words.map((word, i) => (
+            <div key={i} className="phb-sample-word">
+              <span className="phb-sample-paleo" lang="hbo"><Morph pieces={word.pieces} field="paleo" /></span>
+              <span className="phb-sample-tr"><Morph pieces={word.pieces} field="tr" /></span>
+            </div>
+          ))}
+        </div>
+        <Legend items={PAGE.sample.legend} />
+        <p className="phb-sample-note">{PAGE.sample.note}</p>
+        <p className="phb-sample-note">{PAGE.colorsNote}</p>
         <figcaption>
           <span className="phb-sample-ref">{PAGE.sample.ref}</span>
           <Link to={PAGE.sample.to} className="phb-link">{PAGE.sample.label}</Link>
@@ -49,8 +89,12 @@ export default function PaleoHebrewBible() {
       </figure>
 
       <div className="phb-cta">
-        <Link to="/parallel/genesis/1" className="phb-cta-main">Read Paleo Hebrew and English side by side</Link>
-        <Link to="/?book=1&chapter=1" className="phb-cta-alt">Paleo Hebrew reader</Link>
+        {PAGE.readButtons.map((b) => (
+          <Link key={b.to} to={b.to} className="phb-cta-btn">
+            <span className="phb-cta-label">{b.label}</span>
+            <span className="phb-cta-sub">{b.sub}</span>
+          </Link>
+        ))}
       </div>
 
       {PAGE.sections.map((s) => <Section key={s.id} s={s} />)}
@@ -62,18 +106,19 @@ export default function PaleoHebrewBible() {
           {w.words.map((word) => (
             <div key={word.paleo} className="phb-waw-word">
               <div className="phb-pieces" dir="rtl">
-                {word.pieces.map(([l, s], i) => (
-                  <span key={i} className={`phb-piece${l === WAW ? ' is-waw' : ''}`}>
+                {word.pieces.map(([l, s, css, label], i) => (
+                  <span key={i} className={`phb-piece phb-m ${css === 'root' ? 'phb-root' : css || ''}${l === WAW ? ' is-waw' : ''}`} title={label}>
                     <span className="phb-piece-l" lang="hbo">{l}</span>
                     <span className="phb-piece-s">{s}</span>
                   </span>
                 ))}
               </div>
-              <div className="phb-waw-tr">{word.translit} <span>({word.en})</span></div>
+              <div className="phb-waw-tr"><Morph pieces={word.pieces} field="tr" /> <span>({word.en})</span></div>
               <div className="phb-waw-role">{word.role}</div>
             </div>
           ))}
         </div>
+        <Legend items={w.legend} />
         <p className="phb-after">{w.after} <Link to={w.to} className="phb-inline">{w.ref}</Link></p>
       </section>
 
@@ -107,10 +152,10 @@ export default function PaleoHebrewBible() {
             <tbody>
               {PAGE.compare.map((c) => (
                 <tr key={c.paleo}>
-                  <td className="phb-ex-paleo" lang="hbo">{c.paleo}</td>
+                  <td className="phb-ex-paleo" lang="hbo"><Morph pieces={c.pieces} field="paleo" /></td>
                   <td className="phb-td-num">{c.letters}</td>
                   <td className="phb-td-common">{c.common}</td>
-                  <td className="phb-td-bld">{c.bld}</td>
+                  <td className="phb-td-bld"><Morph pieces={c.pieces} field="tr" /></td>
                   <td className="phb-td-note">{c.note}</td>
                 </tr>
               ))}

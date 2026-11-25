@@ -1,12 +1,26 @@
 // Writes server/seo/paleo-hebrew-bible.json (the /paleo-hebrew-bible page). Every transliteration and the medial/final guide come from src/lib/books.js, so they always match the app.
 import { CHAR_MAP, translit } from '../src/lib/books.js';
 import fs from 'fs';
+// css + label per written letter, from the reader's own parse (scripts/build-paleo-hebrew-bible-morph.py).
+const MORPH = JSON.parse(fs.readFileSync(new URL('./paleo-hebrew-bible-morph.json', import.meta.url), 'utf8'));
+const ROLE_LABEL = { root: 'Root', 'mod-nmpr': 'Name' };
+const legendOf = (words) => {
+  const seen = new Map();
+  for (const w of words) for (const [, , css, label] of w.pieces) {
+    if (!css || seen.has(css)) continue;
+    seen.set(css, ROLE_LABEL[css] || label.replace(/^\[|\]$/g, ''));
+  }
+  const order = (css) => (css === 'root' ? 0 : css === 'mod-nmpr' ? 1 : 2);
+  return [...seen].sort((a, b) => order(a[0]) - order(b[0])).map(([css, label]) => ({ css, label }));
+};
 const P = (w, caps = [0], en = '', role = '') => {
   const ch = [...w];
   const pieces = ch.map((c, i) => {
     let s = i === ch.length - 1 ? CHAR_MAP[c].fin : CHAR_MAP[c].med;
     if (caps.includes(i)) s = s[0].toUpperCase() + s.slice(1);
-    return [c, s];
+    const m = MORPH[w] && MORPH[w][i];
+    // A name is the root of its word: same colour as any root on this page.
+    return m ? [c, s, m[0] === 'mod-nmpr' ? 'root' : m[0], m[1]] : [c, s];
   });
   return { paleo: w, translit: pieces.map((p) => p[1]).join(''), pieces, en, role };
 };
@@ -20,7 +34,7 @@ const ex = {
 };
 const guide = Object.keys(CHAR_MAP).map((l) => ({ letter: l, name: NAMES[l], medial: CHAR_MAP[l].med, final: CHAR_MAP[l].fin,
   example: { paleo: ex[l][0], translit: translit(ex[l][0]), en: ex[l][1] } }));
-const cmp = (w, common, note, caps) => { const p = P(w, caps); return { paleo: w, common, bld: p.translit, letters: [...w].length, note }; };
+const cmp = (w, common, note, caps) => { const p = P(w, caps); return { paleo: w, common, bld: p.translit, pieces: p.pieces, letters: [...w].length, note }; };
 const d = {
  _comment: "ONE copy of the /paleo-hebrew-bible page's words, read by src/pages/PaleoHebrewBible.jsx and server/prerender.js. Paleo letters only — no square script (RULE ZERO). The guide's medial/final values and every transliteration here were generated from src/lib/books.js CHAR_MAP/translit — edit the words in scripts/build-paleo-hebrew-bible-page.mjs and run it (node scripts/build-paleo-hebrew-bible-page.mjs).",
  path: '/paleo-hebrew-bible',
@@ -28,16 +42,24 @@ const d = {
  description: "Read the entire scriptures in Paleo-Hebrew letters alongside the English, with a transliteration that keeps every letter of the Hebrew: one letter, one sound, nothing dropped. Free to read online.",
  h1: 'Paleo Hebrew Bible',
  kicker: 'The entire scriptures in Paleo-Hebrew letters, alongside the English',
- intro: "BLD Bible lets you read the entire scriptures in Paleo-Hebrew, the 22 letters Israel wrote with before the exile, with the English beside every verse. Every Hebrew word is also written out in Latin letters by one fixed rule: each Hebrew letter always gets the same sound, and every letter of the Hebrew is kept. Nothing is smoothed over, dropped or doubled.",
- sample: { ref: 'BaRaashayath (Genesis) 1:1', paleo: '𐤁𐤓𐤀𐤔𐤉𐤕 𐤁𐤓𐤀 𐤀𐤋𐤄𐤉𐤌 𐤀𐤕 𐤄𐤔𐤌𐤉𐤌 𐤅𐤀𐤕 𐤄𐤀𐤓𐤑', to: '/genesis/1/1', label: 'Open BaRaashayath (Genesis) 1:1 word by word' },
+ intro: "BLD Bible lets you read the entire scriptures in Paleo-Hebrew, the 22 letters Israel wrote with before the exile, with the English beside every verse. Every Hebrew word is also written out in Latin letters by one fixed rule: each Hebrew letter always gets the same sound, and every letter of the Hebrew is kept. The transliteration preserves the Paleo-Hebrew letters themselves, not a modern pronunciation: read it back and you have the Hebrew letters again, in order. Nothing is smoothed over, dropped or doubled.",
+ sample: { ref: 'BaRaashayath (Genesis) 1:1', paleo: '𐤁𐤓𐤀𐤔𐤉𐤕 𐤁𐤓𐤀 𐤀𐤋𐤄𐤉𐤌 𐤀𐤕 𐤄𐤔𐤌𐤉𐤌 𐤅𐤀𐤕 𐤄𐤀𐤓𐤑', to: '/genesis/1/1', label: 'Open BaRaashayath (Genesis) 1:1 word by word',
+   words: [P('𐤁𐤓𐤀𐤔𐤉𐤕',[0,1]), P('𐤁𐤓𐤀'), P('𐤀𐤋𐤄𐤉𐤌'), P('𐤀𐤕'), P('𐤄𐤔𐤌𐤉𐤌',[0,1]), P('𐤅𐤀𐤕',[0,1]), P('𐤄𐤀𐤓𐤑',[0,1])],
+   note: 'Every Paleo-Hebrew letter above has its one sound below, in the same order: {N} letters, {N} sounds. Nothing in the transliteration stands for a letter that is not there.' },
+ readButtons: [
+   { to: '/bible?book=1&chapter=1', label: 'Novel English Bible', sub: 'Plain English, the names kept in their Hebrew form' },
+   { to: '/parallel/genesis/1', label: 'Read side by side', sub: 'The English beside the Paleo-Hebrew, word-linked' },
+   { to: '/?book=1&chapter=1', label: 'Paleo Hebrew reader', sub: 'The Hebrew alone, every word opened into its parts' },
+ ],
  sections: [
   { id: 'whole', h2: 'The entire scriptures in Paleo-Hebrew, alongside the English',
     p: ["Every book can be read in Paleo-Hebrew letters. The Old Testament is the Masoretic Hebrew text, letter for letter. The New Testament and the Apocrypha are read from Hebrew editions in the same letters, and so are many works beyond the canon in the Works Library.",
         "The Parallel Bible sets the English beside the Paleo-Hebrew verse by verse: point at an English word and its Hebrew word lights up, and the other way round. The Novel English Bible reads as plain English, with the names of people and places in their Hebrew form and their meaning beside them."],
     links: [{ to: '/parallel/genesis/1', label: 'English–Paleo Hebrew Parallel Bible' }, { to: '/?book=1&chapter=1', label: 'Paleo Hebrew reader: BaRaashayath (Genesis) 1' },
             { to: '/?book=40&chapter=1', label: 'The New Testament in Paleo-Hebrew: Matthew 1' }, { to: '/bible?book=1&chapter=1', label: 'Novel English Bible' }, { to: '/works', label: 'Works Library' }] },
-  { id: 'every-letter', h2: 'Every letter kept',
-    p: ["Most transliterations write Hebrew the way it is pronounced today, so the same letter turns into different sounds from word to word, silent letters disappear, and letters that are not written are added. BLD Bible does it mechanically instead: every Hebrew letter has one sound, written the same way in every word of every book.",
+  { id: 'every-letter', h2: 'A transliteration that preserves the Paleo-Hebrew letters',
+    p: ["The transliteration on BLD Bible is not a guide to modern pronunciation. It is the Paleo-Hebrew letters themselves, written in Latin letters: one Hebrew letter, one sound, every letter kept, so the Hebrew can always be read back from it.",
+        "Most transliterations write Hebrew the way it is pronounced today, so the same letter turns into different sounds from word to word, silent letters disappear, and letters that are not written are added. BLD Bible does it mechanically instead: every Hebrew letter has one sound, written the same way in every word of every book.",
         "You can count it. A word of four Hebrew letters has four letter-sounds in its transliteration, in the same order. Where a word has a prefix or a suffix, a capital letter marks where the next part begins: WaThaAmar is Wa (and) + Tha (she) + Amar (said). And where the written word has lost a letter of its root, the root's letter is shown too: letters are added back, never taken away."] },
  ],
  waw: {
@@ -84,6 +106,10 @@ const d = {
   { q: 'Where do I start?', a: 'Open BaRaashayath (Genesis) 1 in the Paleo Hebrew reader, or the Parallel Bible if you want the English beside it.' },
  ],
 };
+d.sample.legend = legendOf(d.sample.words);
+d.waw.legend = legendOf(d.waw.words);
+d.colorsNote = 'Colours: each part of a word keeps one colour in the Paleo letters and in the transliteration, the same colours the Paleo Hebrew reader uses. The root is gold; every modification (and, the, in, she, his …) has its own colour.';
+{ const n = d.sample.words.reduce((k, w) => k + w.pieces.length, 0); d.sample.note = d.sample.note.replaceAll('{N}', String(n)); }
 fs.writeFileSync(new URL('../server/seo/paleo-hebrew-bible.json', import.meta.url), JSON.stringify(d, null, 1) + '\n');
 console.log(d.waw.words.map(w=>w.translit).join(' '));
 console.log(d.compare.map(c=>c.common+' -> '+c.bld+' ('+c.letters+')').join('\n'));
