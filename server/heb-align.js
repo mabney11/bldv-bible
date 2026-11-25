@@ -1021,6 +1021,60 @@ function buildHebSurfaces(o) {
         log(`  root-strip preformatives taken from BHS: ${[...PFM_COMPS.keys()].join(' ') || '(none)'}`);
     }
     const RS_TAILS = SUFFIX_TAILS.filter(t => SUF_COMPS.has(t));
+    // PERFECT-VERB SUBJECT ENDINGS for root strip (2026-11-24, Rom 6:18 𐤔𐤇𐤓𐤓𐤕𐤌 "you were set free",
+    // Rom 8:2 𐤔𐤇𐤓𐤓𐤄 "it set free"): the BHS never writes a vbe= tag on a perfect verb — the parser draws
+    // the ending from vt/ps/gn/nu — so SUF_COMPS' gate never found 𐤕𐤌 / 𐤕𐤉 / 𐤕𐤄 … and no perfect verb
+    // with a person ending could be built. Same evidence rule as SUF_COMPS (parseToken of a real BHS
+    // perfect verb, its LAST chip a vbe- chip spelling exactly the tail), kept OUT of SUF_COMPS so the
+    // other tiers do not change; used only on a VERB root, only with no preformative.
+    const RS_VBE = new Map();
+    if (rootStrip) {
+        const q = src.prepare(`SELECT word_raw, pos, morph, strongs, COUNT(*) AS n FROM tokens_bhs
+                               WHERE pos = 'verb' AND word_raw LIKE '%' || ? AND (morph LIKE '%vt=perf%' OR morph LIKE '%vt=weqt%')
+                                 AND morph LIKE '%prs=absent%'
+                               GROUP BY morph ORDER BY n DESC LIMIT 40`);
+        for (const tail of [...new Set(Object.values(VBE_PALEO).flat())]) {
+            if (SUF_COMPS.has(tail)) continue;
+            let rows = [];
+            try { rows = q.all(tail); } catch { rows = []; }
+            for (const row of rows) {
+                let parsed = null;
+                try { parsed = parseToken(row.word_raw, row.pos, row.morph, row.strongs); } catch { continue; }
+                const last = parsed && parsed.components && parsed.components[parsed.components.length - 1];
+                if (!last || last.paleo !== tail || !/^vbe-/.test(last.css || '')) continue;
+                RS_VBE.set(tail, { component: { ...last }, pos: 'verb' });
+                break;
+            }
+        }
+        log(`  root-strip perfect endings taken from BHS: ${[...RS_VBE.keys()].join(' ') || '(none)'}`);
+    }
+    // NOUN / PRONOUN endings SUF_COMPS missed (same day: 𐤌𐤔𐤇𐤓𐤓𐤕 feminine participle, 𐤁𐤔𐤇𐤓𐤓𐤅 "in his
+    // freeing", 𐤔𐤇𐤓𐤓𐤌 "freed them"): SUF_COMPS searches by SPELLING and root-final words crowd the real
+    // suffixes out. Found here by TAG (a prs= suffix, or a feminine word), same gate: the parsed LAST chip is
+    // an nme-/prs- chip spelling exactly the tail. Root strip only.
+    const RS_NOUN = new Map();
+    if (rootStrip) {
+        const q = src.prepare(`SELECT word_raw, pos, morph, strongs, COUNT(*) AS n FROM tokens_bhs
+                               WHERE word_raw LIKE '%' || ? AND pos != 'punct'
+                                 AND (morph NOT LIKE '%prs=absent%' OR morph LIKE '%gn=f%')
+                               GROUP BY pos, morph ORDER BY n DESC LIMIT 200`);
+        for (const tail of SUFFIX_TAILS) {
+            if (SUF_COMPS.has(tail)) continue;
+            let rows = [];
+            try { rows = q.all(tail); } catch { rows = []; }
+            for (const row of rows) {
+                let parsed = null;
+                try { parsed = parseToken(row.word_raw, row.pos, row.morph, row.strongs); } catch { continue; }
+                const last = parsed && parsed.components && parsed.components[parsed.components.length - 1];
+                if (!last || last.paleo !== tail || !/^(nme|prs)-/.test(last.css || '')) continue;
+                RS_NOUN.set(tail, { component: { ...last }, pos: row.pos || '' });
+                break;
+            }
+        }
+        log(`  root-strip noun/pronoun endings found by tag: ${[...RS_NOUN.keys()].join(' ') || '(none)'}`);
+    }
+    const RS_ALL_TAILS = [...new Set([...RS_TAILS, ...RS_NOUN.keys(), ...RS_VBE.keys()])].sort((a, b) => [...b].length - [...a].length);
+    const RS_PREP = new Set(['\u{10901}', '\u{1090B}', '\u{1090A}', '\u{1090C}']);   // 𐤁 𐤋 𐤊 𐤌
     const RS_ENDINGS = new Set(['𐤉', '𐤕', '𐤅𐤕', '𐤅𐤕𐤉']);
     // Proclitics stack in one order only: 𐤅, then 𐤔, then 𐤌, then 𐤁/𐤋/𐤊, then 𐤄.
     // 𐤋+𐤄+𐤔 (𐤋𐤄𐤔𐤕𐤌𐤔 "to make use", a hithpael) is not Hebrew and read as "remove".
@@ -1038,11 +1092,16 @@ function buildHebSurfaces(o) {
         for (const sn of sns) rsMatIdx.get(k).add(sn);
     }
     const rsVerb = sn => !!(rootStrip && rootStrip.verbs.has(sn));
+    // causative 𐤔 stems (lexicon/shaphel-stems.json via build-surface-index, 2026-11-24): a 𐤔 between the
+    // preformative and one of THESE roots is the stem letter [Causing] — 𐤌|𐤔|𐤇𐤓𐤓|𐤉𐤌 "ones set free" —
+    // and never the "who" particle before them.
+    const RS_SHAPHEL = (rootStrip && rootStrip.shaphel) || new Set();
+    const SHIN = '\u{10914}';
     const rsName = sn => !!(rootStrip && rootStrip.names.has(sn));
     const rsFreq = sn => (rootStrip && rootStrip.freq.get(sn)) || 0;
     const rsTailSplits = (chars) => {
         const out = [{ pieces: [], len: 0 }];
-        for (const t1 of RS_TAILS) {
+        for (const t1 of RS_ALL_TAILS) {
             const l1 = [...t1].length;
             if (chars.length < l1 + 3 || chars.slice(chars.length - l1).join('') !== t1) continue;
             out.push({ pieces: [t1], len: l1 });
@@ -1096,16 +1155,31 @@ function buildHebSurfaces(o) {
                     if (chars.slice(P.k, P.k + pl).join('') !== pf) continue;
                     if (RS_IMPF.has(pf) && (P.particle || procs.some(c => !RS_IMPF_AFTER.has(c)))) continue;
                 }
+                for (const sh of (RS_SHAPHEL.size && chars[P.k + pl] === SHIN) ? [false, true] : [false]) {
+                const shl = sh ? 1 : 0;
                 for (const T of tails) {
-                    const st = chars.slice(P.k + pl, n - T.len);
+                    const st = chars.slice(P.k + pl + shl, n - T.len);
                     if (st.length < 3) continue;
-                    if (!P.pre.length && !pf && !T.pieces.length) continue;
+                    if (!P.pre.length && !pf && !sh && !T.pieces.length) continue;
                     const stem = st.join('');
                     const lastProc = procs[procs.length - 1];
+                    const hasPrep = procs.some(c => RS_PREP.has(c));
                     const add = (sn, how, arr) => {
                         if (!_isReal(sn)) return;
                         if (pf && !rsVerb(sn)) return;
-                        arr.push({ pre: P.pre, pf, stem, tail: T.pieces, sn, how, stripped: n - st.length,
+                        // each tail piece: his attested ending (SUF_COMPS) / a noun-pronoun ending found by tag /
+                        // a PERFECT subject ending — the last only on a verb with no preformative, no preposition
+                        // before it (a preposition never stands before a finite verb), and as the only piece
+                        const tk = [];
+                        for (const t of T.pieces) {
+                            const vbeOk = RS_VBE.has(t) && rsVerb(sn) && !pf && !hasPrep && T.pieces.length === 1;
+                            if (SUF_COMPS.has(t)) tk.push('suf');
+                            else if (vbeOk) tk.push('vbe');
+                            else if (RS_NOUN.has(t)) tk.push('noun');
+                            else return;
+                        }
+                        if (sh ? !RS_SHAPHEL.has(sn) : (RS_SHAPHEL.has(sn) && !pf && P.pre[P.pre.length - 1] === SHIN)) return;
+                        arr.push({ pre: P.pre, pf, sh, stem, tail: T.pieces, tk, sn, how, stripped: n - st.length,
                                    // 𐤌 read as "from" before a VERB loses to 𐤌 read as the participle
                                    mProc: !pf && lastProc === '𐤌' && rsVerb(sn) });
                     };
@@ -1118,6 +1192,7 @@ function buildHebSurfaces(o) {
                         if (sn && !rootSNs.includes(sn)) add(sn, 'form', exact);
                     }
                     for (const sn of rsMatIdx.get(rsMatres(stem)) || []) add(sn, 'matres', loose);
+                }
                 }
             }
         }
@@ -1623,6 +1698,7 @@ function buildHebSurfaces(o) {
             }
         }
         if (x.pf) push(PFM_COMPS.get(x.pf), 'verb');
+        if (x.sh) push([{ paleo: SHIN, translit: '', translation: '[Causing]', css: 'vbs-hif' }], 'verb');
         let pos = '', morph = '', root = '';
         const headSpan = spans.length;
         if (formHasSN(x.stem, x.sn)) {
@@ -1636,8 +1712,9 @@ function buildHebSurfaces(o) {
             pos = cw.pos; morph = cw.morph; root = cw.root_paleo;
         }
         all.push(x.sn);
-        for (const t of x.tail) {
-            const att = SUF_COMPS.get(t);
+        for (const [ti, t] of x.tail.entries()) {
+            const kind = (x.tk || [])[ti];
+            const att = kind === 'vbe' ? RS_VBE.get(t) : kind === 'noun' ? RS_NOUN.get(t) : SUF_COMPS.get(t);
             if (!att) return null;
             push([att.component], att.pos || '');
         }

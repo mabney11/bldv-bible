@@ -100,10 +100,13 @@ for (const f of backups) {
     const canons = [...new Set(left.filter(r => r.c != null).map(r => r.c))], codes = [...new Set(left.filter(r => r.c == null).map(r => r.code))];
     for (const c of canons) for (const b of bak.prepare(`SELECT chapter ch, verse v, ${src} t FROM verses WHERE corpus='ENG' AND canon_id = ?`).iterate(c)) want.set(`${c}|${b.ch}|${b.v}`, b.t);
     for (const c of codes) for (const b of bak.prepare(`SELECT chapter ch, verse v, ${src} t FROM verses WHERE corpus='ENG' AND canon_id IS NULL AND code = ?`).iterate(c)) want.set(`${c}|${b.ch}|${b.v}`, b.t);
-    sel = { get: r => { const t = want.get(`${r.c ?? r.code}|${r.ch}|${r.v}`); return t ? { t } : null; } };
+    // a verse the backup holds with NO English (Josephus Life 1:365, 2026-11-24 — its text was later written from its
+    // Hebrew by the mechanical baseline and snapshotted) has none: its source is '' ("no English" is an answer)
+    sel = { get: r => { const k = `${r.c ?? r.code}|${r.ch}|${r.v}`; if (!want.has(k)) return null; const t = want.get(k); return { t: t || '', none: !t }; } };
     const next = []; let n = 0;
     const run = () => { for (const r of left) {
       const b = sel.get(r);
+      if (b && b.none) { if (r.text_src !== '') { if (upd) upd.run('', r.id); n++; } continue; }
       if (!b || !b.t || isRendered(b.t)) { if (isRendered(r.text_src)) next.push(r); continue; }   // a row that only shares the book stays as it is
       if (b.t === r.text_src) continue;
       if (upd) upd.run(b.t, r.id); n++;

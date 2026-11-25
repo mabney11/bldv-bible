@@ -1,0 +1,1763 @@
+fix-heading-names 2026-11-22T12:54:14.976Z (dry run)
+546 of 3605 headings, 0 seed-file strings
+
+By name:
+    73  compound name: Yasharaal → Yashar-Al
+    33  English name: Israel → Yashar-Al
+    25  English name: Herod → Hawaradawas
+    25  English name: Asenath → Asanath
+    24  English name: Jerusalem → Yarawashalam
+    21  compound name: Mayakaal → Mayak-Al
+    20  English name: Egypt → Matzarayam
+    19  English name: Joseph → Yawasap
+    19  English name: Joshua → Yahawashawai
+    17  English name: Jesus → Yashawai
+    17  English name: Pharaoh → Paraih
+    16  English name: David → Dawad
+    13  English name: Messiah → Mashayach
+    13  English name: Judas → Yahawadah
+    11  compound name: Banayamayan → Ban-Yamayan
+    11  English name: Simon → Shamaiwan
+    11  English name: Christ → Mashayach
+    11  English name: Abraham → Abaraham
+    10  compound name: Malakayatzadaq → Malakay-Tzadaq
+    10  English name: Isaac → Yatzachaq
+    10  English name: John → Yawachanan
+     8  compound name: Achaab → Ach-Ab
+     8  English name: Jonathan → Yahawanathan
+     8  English name: Pilate → Payalatawas
+     7  compound name: Abayamalak → Abay-Malak
+     7  compound name: Abayashalawam → Abay-Shalawam
+     7  compound name: Yarabaim → Yarab-Im
+     6  compound name: Balaim → Bal-Im
+     6  compound name: Alayapaz → Alay-Paz
+     6  compound name: Yachazaqaal → Yachazaq-Al
+     6  compound name: Alaizar → Al-Izar
+     6  compound name: Gabarayaal → Gabaray-Al
+     5  compound name: Yashamaial → Yashamai-Al
+     5  English name: Moses → Mashah
+     5  English name: Jordan → Yaradan
+     5  English name: Melchizedek → Malakay-Tzadaq
+     4  compound name: Rachabaim → Rachab-Im
+     4  English name: Zion → Tzayawan
+     4  English name: Simeon → Shamaiwan
+     4  English name: Cain → Qayan
+     3  English name: Judah → Yahawadah
+     3  compound name: Ayazabal → Ay-Zabal
+     3  compound name: Yashashakar → Yash-Shakar
+     3  compound name: Zarababal → Zar-Babal
+     3  English name: Caesar → Qayasar
+     3  English name: Daniel → Danay-Al
+     3  English name: Chittim → Kathay
+     2  English name: Eden → Idan
+     2  English name: Canaan → Kanain
+     2  English name: Saul → Shaawal
+     2  English name: Samaria → Shamarawan
+     2  compound name: Abayahawaa → Abay-Hawaa
+     2  compound name: Bailapaiwar → Bail-Paiwar
+     2  compound name: Ithanayaal → Ithanay-Al
+     2  English name: Gilead → Galaid
+     2  compound name: Bathashabai → Bath-Shabai
+     2  compound name: Achayathapal → Achay-Thapal
+     2  compound name: Yahawayaqayam → Yahaway-Qayam
+     2  English name: Hezekiah → Chazaqayah
+     2  compound name: Bayathalacham → Bayath-Lacham
+     2  compound name: Alayashabai → Alay-Shabai
+     2  compound name: Awarayaal → Awaray-Al
+     2  English name: Elijah → Alayah
+     2  English name: Nineveh → Nayanawah
+     2  English name: Eleazar → Al-Izar
+     2  English name: Benjamin → Ban-Yamayan
+     2  English name: Nebuchadnezzar → Nabawakadanaatzar
+     2  English name: Tamar → Thamar
+     2  compound name: Imaram → Im-Ram
+     2  compound name: Bayathaal → Bayath-Al
+     2  English name: Mahalaleel → Mahalal-Al
+     2  English name: Michael → Mayak-Al
+     1  English name: Solomon → Shalamah
+     1  compound name: Ahalayaab → Ahalay-Ab
+     1  compound name: Abayaram → Abay-Ram
+     1  compound name: Banayamayanay → Ban-Yamayanay
+     1  compound name: Abanahaizar → Aban-Haizar
+     1  compound name: Iyanagaday → Iyan-Gaday
+     1  compound name: Abayagayal → Abay-Gayal
+     1  compound name: Iyanadaar → Iyan-Daar
+     1  compound name: Galabai → Gal-Bai
+     1  compound name: Abanar → Ab-Nar
+     1  compound name: Ayashabashath → Ayash-Bashath
+     1  compound name: Mapayabashath → Mapay-Bashath
+     1  compound name: Yahawayakayan → Yahaway-Kayan
+     1  English name: Hermon → Charamawan
+     1  English name: Idumea → Adawam
+     1  English name: Ammon → Imawan
+     1  English name: Phinehas → Payanachas
+     1  English name: Caleb → Kalab
+     1  English name: Samuel → Shamawaal
+     1  English name: Elisha → Alayashai
+     1  English name: Raguel → Raiwaal
+     1  English name: Arphaxad → Arapakashad
+     1  English name: Judith → Yahawadayath
+     1  English name: Syria → Aram
+     1  English name: Joppa → Yapaw
+     1  English name: Jericho → Yarayachaw
+     1  English name: Jacob → Yaiqab
+     1  English name: Levi → Laway
+     1  English name: Bilhah → Balahah
+     1  English name: Zilpah → Zalapah
+     1  English name: Mary → Marayam
+     1  English name: Siloah → Shalach
+     1  English name: Micah → Mayakah
+     1  English name: Joash → Yawaash
+     1  English name: Tubal → Thawabal
+     1  compound name: Baarashabai → Baar-Shabai
+     1  English name: Rebecca → Rabaqah
+     1  English name: Baal → Bail
+     1  English name: Amorites → Amaray
+     1  English name: Enos → Anawash
+     1  English name: Cainan → Qayanan
+     1  compound name: Danayaal → Danay-Al
+     1  English name: Seth → Shath
+     1  English name: Hebrews → Ibaray
+     1  English name: Andrew → Anadaray
+     1  compound name: Gamalayaal → Gamalay-Al
+     1  English name: Salem → Shalam
+
+Every change:
+headings #5 (book 1 2:1, level 3) title
+    The Garden of Eden and the First Woman
+  → The Garden of Idan and the First Woman
+headings #17 (book 1 14:1, level 3) title
+    The War of the Kings; Malakayatzadaq Blesses Abaram
+  → The War of the Kings; Malakay-Tzadaq Blesses Abaram
+headings #19 (book 1 16:1, level 3) title
+    Hagar and the Birth of Yashamaial
+  → Hagar and the Birth of Yashamai-Al
+headings #23 (book 1 20:1, level 3) title
+    Abaraham and Abayamalak
+  → Abaraham and Abay-Malak
+headings #47 (book 1 44:1, level 3) title
+    The Silver Cup in Banayamayan's Sack
+  → The Silver Cup in Ban-Yamayan's Sack
+headings #78 (book 23 9:1, level 3) title
+    A Child Is Born; Yahawah's Anger Against Yasharaal
+  → A Child Is Born; Yahawah's Anger Against Yashar-Al
+headings #96 (book 23 27:1, level 3) title
+    The Deliverance of Yasharaal
+  → The Deliverance of Yashar-Al
+headings #112 (book 23 43:1, level 3) title
+    Yasharaal's Redeemer
+  → Yashar-Al's Redeemer
+headings #117 (book 23 48:1, level 3) title
+    Yahawah's Discipline of Yasharaal
+  → Yahawah's Discipline of Yashar-Al
+headings #136 (book 23 1:2, level 4) title
+    Yahawah's Complaint Against Yasharaal
+  → Yahawah's Complaint Against Yashar-Al
+headings #179 (book 220 14:1, level 1) title
+    Part III — Herod and Roman Judea
+  → Part III — Hawaradawas and Roman Judea
+headings #180 (book 220 1:1, level 3) title
+    From the Creation to the Death of Isaac
+  → From the Creation to the Death of Yatzachaq
+headings #181 (book 220 2:1, level 3) title
+    Joseph in Egypt and the Beginning of the Bondage
+  → Yawasap in Matzarayam and the Beginning of the Bondage
+headings #183 (book 220 4:1, level 3) title
+    The Forty Years in the Wilderness and the Death of Moses
+  → The Forty Years in the Wilderness and the Death of Mashah
+headings #184 (book 220 5:1, level 3) title
+    The Conquest of Canaan and the Judges
+  → The Conquest of Kanain and the Judges
+headings #185 (book 220 6:1, level 3) title
+    The Reign of Saul
+  → The Reign of Shaawal
+headings #186 (book 220 7:1, level 3) title
+    The Reign of David
+  → The Reign of Dawad
+headings #187 (book 220 8:1, level 3) title
+    Solomon and the Division of the Kingdom
+  → Shalamah and the Division of the Kingdom
+headings #188 (book 220 9:1, level 3) title
+    The Kings of Israel and Judah to the Fall of Samaria
+  → The Kings of Yashar-Al and Yahawadah to the Fall of Shamarawan
+headings #189 (book 220 10:1, level 3) title
+    The Fall of Judah and the Babylonian Captivity
+  → The Fall of Yahawadah and the Babylonian Captivity
+headings #193 (book 220 14:1, level 3) title
+    The Rise of Herod and Roman Intervention
+  → The Rise of Hawaradawas and Roman Intervention
+headings #194 (book 220 15:1, level 3) title
+    The Early Reign of Herod
+  → The Early Reign of Hawaradawas
+headings #195 (book 220 16:1, level 3) title
+    Herod's Family and Troubles
+  → Hawaradawas's Family and Troubles
+headings #196 (book 220 17:1, level 3) title
+    The Death of Herod and the Rise of Archelaus
+  → The Death of Hawaradawas and the Rise of Archelaus
+headings #197 (book 220 18:1, level 3) title
+    Roman Governors, John the Baptist, and Jesus
+  → Roman Governors, Yawachanan the Baptist, and Yashawai
+headings #210 (book 2 1:1, level 3) title
+    Yasharaal Multiplies in Matzarayam; Paraih's Oppression
+  → Yashar-Al Multiplies in Matzarayam; Paraih's Oppression
+headings #228 (book 2 19:1, level 3) title
+    Yasharaal Arrives at Sayanay
+  → Yashar-Al Arrives at Sayanay
+headings #240 (book 2 31:1, level 3) title
+    Bezalel and Ahalayaab Appointed; the Sabbath Renewed
+  → Bezalel and Ahalay-Ab Appointed; the Sabbath Renewed
+headings #254 (book 2 32:1, level 4) title
+    Yasharaal Worships the Golden Calf
+  → Yashar-Al Worships the Golden Calf
+headings #269 (book 3 10:1, level 3) title
+    The Death of Nadab and Abayahawaa
+  → The Death of Nadab and Abay-Hawaa
+headings #287 (book 3 10:1, level 4) title
+    Nadab and Abayahawaa Offer Strange Fire
+  → Nadab and Abay-Hawaa Offer Strange Fire
+headings #290 (book 4 1:1, level 2) title
+    The Wilderness Census and Camp of Yasharaal
+  → The Wilderness Census and Camp of Yashar-Al
+headings #305 (book 4 10:1, level 3) title
+    The Silver Trumpets; Yasharaal Departs from Sayanay
+  → The Silver Trumpets; Yashar-Al Departs from Sayanay
+headings #309 (book 4 14:1, level 3) title
+    Yasharaal Rebels at Qadash; Forty Years in the Wilderness
+  → Yashar-Al Rebels at Qadash; Forty Years in the Wilderness
+headings #311 (book 4 16:1, level 3) title
+    The Rebellion of Qarach, Dathan, and Abayaram
+  → The Rebellion of Qarach, Dathan, and Abay-Ram
+headings #317 (book 4 22:1, level 3) title
+    Balaq Summons Balaim
+  → Balaq Summons Bal-Im
+headings #318 (book 4 23:1, level 3) title
+    Balaim's First and Second Oracles
+  → Bal-Im's First and Second Oracles
+headings #319 (book 4 24:1, level 3) title
+    Balaim's Final Oracles
+  → Bal-Im's Final Oracles
+headings #320 (book 4 25:1, level 3) title
+    Yasharaal Seduced at Bailapaiwar
+  → Yashar-Al Seduced at Bail-Paiwar
+headings #321 (book 4 26:1, level 3) title
+    The Second Census of Yasharaal
+  → The Second Census of Yashar-Al
+headings #328 (book 4 33:1, level 3) title
+    The Stations of Yasharaal's Journey
+  → The Stations of Yashar-Al's Journey
+headings #334 (book 4 22:21, level 4) title
+    Balaim's Donkey Speaks
+  → Bal-Im's Donkey Speaks
+headings #335 (book 4 25:6, level 4) title
+    Payanachas's Zeal at Bailapaiwar
+  → Payanachas's Zeal at Bail-Paiwar
+headings #346 (book 5 6:1, level 3) title
+    Hear, O Yasharaal: The Great Commandment
+  → Hear, O Yashar-Al: The Great Commandment
+headings #347 (book 5 7:1, level 3) title
+    Yasharaal Warned Against the Nations of Kanain
+  → Yashar-Al Warned Against the Nations of Kanain
+headings #349 (book 5 9:1, level 3) title
+    Yasharaal's Rebellions Recalled; the Golden Calf
+  → Yashar-Al's Rebellions Recalled; the Golden Calf
+headings #351 (book 5 11:1, level 3) title
+    Blessings for Obedience; the Choice Set Before Yasharaal
+  → Blessings for Obedience; the Choice Set Before Yashar-Al
+headings #375 (book 5 6:4, level 4) title
+    Hear, O Yasharaal (the Great Commandment)
+  → Hear, O Yashar-Al (the Great Commandment)
+headings #381 (book 6 1:1, level 3) title
+    Yahawah Commissions Yahawashawai to Lead Yasharaal
+  → Yahawah Commissions Yahawashawai to Lead Yashar-Al
+headings #383 (book 6 3:1, level 3) title
+    Yasharaal Crosses the Yaradan on Dry Ground
+  → Yashar-Al Crosses the Yaradan on Dry Ground
+headings #389 (book 6 9:1, level 3) title
+    The Gabaiwanay Deceive Yasharaal
+  → The Gabaiwanay Deceive Yashar-Al
+headings #398 (book 6 18:1, level 3) title
+    The Land Surveyed at Shayalah; Banayamayan's Inheritance
+  → The Land Surveyed at Shayalah; Ban-Yamayan's Inheritance
+headings #403 (book 6 23:1, level 3) title
+    Yahawashawai's Farewell Charge to Yasharaal
+  → Yahawashawai's Farewell Charge to Yashar-Al
+headings #409 (book 7 3:1, level 2) title
+    Ithanayaal, Ahawad, and Shamagar
+  → Ithanay-Al, Ahawad, and Shamagar
+headings #415 (book 7 19:1, level 2) title
+    Appendix: The Levite's Concubine and War with Banayamayan
+  → Appendix: The Levite's Concubine and War with Ban-Yamayan
+headings #417 (book 7 2:1, level 3) title
+    The Angel at Bakayam; Yasharaal's Repeated Apostasy
+  → The Angel at Bakayam; Yashar-Al's Repeated Apostasy
+headings #418 (book 7 3:1, level 3) title
+    Ithanayaal, Ahawad, and Shamagar Raised Up as Deliverers
+  → Ithanay-Al, Ahawad, and Shamagar Raised Up as Deliverers
+headings #424 (book 7 9:1, level 3) title
+    Abayamalak's Kingship and Ruin
+  → Abay-Malak's Kingship and Ruin
+headings #425 (book 7 10:1, level 3) title
+    Thawalai and Yaayar; Yasharaal Oppressed by the Ammonites
+  → Thawalai and Yaayar; Yashar-Al Oppressed by the Ammonites
+headings #435 (book 7 20:1, level 3) title
+    War Against the Tribe of Banayamayan
+  → War Against the Tribe of Ban-Yamayan
+headings #436 (book 7 21:1, level 3) title
+    Wives Provided for the Surviving Banayamayanay
+  → Wives Provided for the Surviving Ban-Yamayanay
+headings #453 (book 9 6:1, level 3) title
+    The Ark Returned to Yasharaal
+  → The Ark Returned to Yashar-Al
+headings #454 (book 9 7:1, level 3) title
+    Shamawaal's Leadership; Victory at Abanahaizar
+  → Shamawaal's Leadership; Victory at Aban-Haizar
+headings #455 (book 9 8:1, level 3) title
+    Yasharaal Demands a Malak
+  → Yashar-Al Demands a Malak
+headings #458 (book 9 11:1, level 3) title
+    Shaawal Delivers Jabesh Gilead
+  → Shaawal Delivers Jabesh Galaid
+headings #471 (book 9 24:1, level 3) title
+    Dawad Spares Shaawal's Life at Iyanagaday
+  → Dawad Spares Shaawal's Life at Iyan-Gaday
+headings #472 (book 9 25:1, level 3) title
+    Nabal, Abayagayal, and Dawad
+  → Nabal, Abay-Gayal, and Dawad
+headings #475 (book 9 28:1, level 3) title
+    Shaawal and the Medium at Iyanadaar
+  → Shaawal and the Medium at Iyan-Daar
+headings #478 (book 9 31:1, level 3) title
+    The Death of Shaawal and His Sons at Galabai
+  → The Death of Shaawal and His Sons at Gal-Bai
+headings #484 (book 10 15:1, level 2) title
+    Abayashalawam's Rebellion
+  → Abay-Shalawam's Rebellion
+headings #487 (book 10 3:1, level 3) title
+    Abanar Defects to Dawad and Is Slain by Yawaab
+  → Ab-Nar Defects to Dawad and Is Slain by Yawaab
+headings #488 (book 10 4:1, level 3) title
+    The Murder of Ayashabashath
+  → The Murder of Ayash-Bashath
+headings #489 (book 10 5:1, level 3) title
+    Dawad Anointed Over All Yasharaal; Yarawashalam Taken
+  → Dawad Anointed Over All Yashar-Al; Yarawashalam Taken
+headings #493 (book 10 9:1, level 3) title
+    Dawad Shows Kindness to Mapayabashath
+  → Dawad Shows Kindness to Mapay-Bashath
+headings #495 (book 10 11:1, level 3) title
+    Dawad, Bathashabai, and the Death of Awarayah
+  → Dawad, Bath-Shabai, and the Death of Awarayah
+headings #497 (book 10 13:1, level 3) title
+    Amanawan and Thamar; Abayashalawam's Revenge
+  → Amanawan and Thamar; Abay-Shalawam's Revenge
+headings #498 (book 10 14:1, level 3) title
+    Abayashalawam Restored to Yarawashalam
+  → Abay-Shalawam Restored to Yarawashalam
+headings #499 (book 10 15:1, level 3) title
+    Abayashalawam's Conspiracy; Dawad Flees Yarawashalam
+  → Abay-Shalawam's Conspiracy; Dawad Flees Yarawashalam
+headings #500 (book 10 16:1, level 3) title
+    Shamaiy Curses Dawad; Achayathapal's Counsel
+  → Shamaiy Curses Dawad; Achay-Thapal's Counsel
+headings #501 (book 10 17:1, level 3) title
+    Chawashay Outwits Achayathapal
+  → Chawashay Outwits Achay-Thapal
+headings #502 (book 10 18:1, level 3) title
+    The Death of Abayashalawam
+  → The Death of Abay-Shalawam
+headings #509 (book 10 11:2, level 4) title
+    Dawad Sees Bathashabai from the Rooftop
+  → Dawad Sees Bath-Shabai from the Rooftop
+headings #511 (book 10 18:33, level 4) title
+    O My Son Abayashalawam
+  → O My Son Abay-Shalawam
+headings #527 (book 11 12:1, level 3) title
+    Rachabaim's Folly; the Kingdom Splits
+  → Rachab-Im's Folly; the Kingdom Splits
+headings #528 (book 11 13:1, level 3) title
+    The Man of Alahayam from Yahawadah Warns Yarabaim
+  → The Man of Alahayam from Yahawadah Warns Yarab-Im
+headings #529 (book 11 14:1, level 3) title
+    Yarabaim's Judgment; the Reigns of Rachabaim and Abayam
+  → Yarab-Im's Judgment; the Reigns of Rachab-Im and Abayam
+headings #530 (book 11 15:1, level 3) title
+    Asaa of Yahawadah; Nadab and Baishaa of Yasharaal
+  → Asaa of Yahawadah; Nadab and Baishaa of Yashar-Al
+headings #531 (book 11 16:1, level 3) title
+    Alah, Zamaray, Imaray, and Achaab; the Rise of the House of Achaab
+  → Alah, Zamaray, Imaray, and Ach-Ab; the Rise of the House of Ach-Ab
+headings #535 (book 11 20:1, level 3) title
+    Achaab's Wars with Aram
+  → Ach-Ab's Wars with Aram
+headings #536 (book 11 21:1, level 3) title
+    Nabawath's Vineyard; Ayazabal's Plot
+  → Nabawath's Vineyard; Ay-Zabal's Plot
+headings #537 (book 11 22:1, level 3) title
+    The Death of Achaab; Yahawashapat and Achazayah
+  → The Death of Ach-Ab; Yahawashapat and Achazayah
+headings #542 (book 12 9:1, level 2) title
+    Yahawaa's Revolt Against the House of Achaab
+  → Yahawaa's Revolt Against the House of Ach-Ab
+headings #543 (book 12 17:1, level 2) title
+    The Fall of Shamarawan and the End of Yasharaal
+  → The Fall of Shamarawan and the End of Yashar-Al
+headings #553 (book 12 9:1, level 3) title
+    Yahawaa Anointed; the Deaths of Yawaram and Ayazabal
+  → Yahawaa Anointed; the Deaths of Yawaram and Ay-Zabal
+headings #554 (book 12 10:1, level 3) title
+    Yahawaa Destroys the House of Achaab and the Worshipers of Bail
+  → Yahawaa Destroys the House of Ach-Ab and the Worshipers of Bail
+headings #557 (book 12 13:1, level 3) title
+    The Reigns of Yahawaachaz and Yawaash of Yasharaal; the Death of Alayashai
+  → The Reigns of Yahawaachaz and Yawaash of Yashar-Al; the Death of Alayashai
+headings #558 (book 12 14:1, level 3) title
+    Amatzayah of Yahawadah; Yarabaim II of Yasharaal
+  → Amatzayah of Yahawadah; Yarab-Im II of Yashar-Al
+headings #559 (book 12 15:1, level 3) title
+    Izayah, Yawatham, and Yasharaal's Kings in Decline
+  → Izayah, Yawatham, and Yashar-Al's Kings in Decline
+headings #561 (book 12 17:1, level 3) title
+    The Fall of Shamarawan; Yasharaal Exiled
+  → The Fall of Shamarawan; Yashar-Al Exiled
+headings #568 (book 12 24:1, level 3) title
+    Yahawayaqayam and Yahawayakayan; Babal's First Deportations
+  → Yahaway-Qayam and Yahaway-Kayan; Babal's First Deportations
+headings #573 (book 13 1:1, level 2) title
+    The Genealogies: From Adam to the Sons of Yasharaal
+  → The Genealogies: From Adam to the Sons of Yashar-Al
+headings #576 (book 13 2:1, level 3) title
+    The Sons of Yasharaal; the Line of Yahawadah to Dawad
+  → The Sons of Yashar-Al; the Line of Yahawadah to Dawad
+headings #581 (book 13 7:1, level 3) title
+    The Tribes of Yashashakar, Banayamayan, Napathalay, Manashah, Aparayam, and Ashar
+  → The Tribes of Yash-Shakar, Ban-Yamayan, Napathalay, Manashah, Aparayam, and Ashar
+headings #582 (book 13 8:1, level 3) title
+    The Genealogy of Shaawal's Tribe, Banayamayan
+  → The Genealogy of Shaawal's Tribe, Ban-Yamayan
+headings #618 (book 14 10:1, level 3) title
+    Rachabaim's Folly; the Kingdom Splits
+  → Rachab-Im's Folly; the Kingdom Splits
+headings #619 (book 14 11:1, level 3) title
+    Rachabaim Fortifies Yahawadah
+  → Rachab-Im Fortifies Yahawadah
+headings #621 (book 14 13:1, level 3) title
+    Abayah's War with Yarabaim
+  → Abayah's War with Yarab-Im
+headings #626 (book 14 18:1, level 3) title
+    Yahawashapat Allies with Achaab; Mayakayahaw's Warning
+  → Yahawashapat Allies with Ach-Ab; Mayakayahaw's Warning
+headings #648 (book 15 1:1, level 2) title
+    The Return Under Zarababal
+  → The Return Under Zar-Babal
+headings #697 (book 18 4:1, level 3) title
+    Alayapaz's First Speech: No Innocent Person Perishes
+  → Alay-Paz's First Speech: No Innocent Person Perishes
+headings #698 (book 18 5:1, level 3) title
+    Alayapaz Urges Ayawab to Seek Alahayam
+  → Alay-Paz Urges Ayawab to Seek Alahayam
+headings #709 (book 18 15:1, level 3) title
+    Alayapaz's Second Speech: The Fate of the Wicked
+  → Alay-Paz's Second Speech: The Fate of the Wicked
+headings #717 (book 18 22:1, level 3) title
+    Alayapaz's Third Speech: An Accusation Against Ayawab
+  → Alay-Paz's Third Speech: An Accusation Against Ayawab
+headings #744 (book 19 3:1, level 3) title
+    A Morning Prayer of Trust When Fleeing Abayashalawam
+  → A Morning Prayer of Trust When Fleeing Abay-Shalawam
+headings #775 (book 19 34:1, level 3) title
+    Thanksgiving for Deliverance Before Abayamalak
+  → Thanksgiving for Deliverance Before Abay-Malak
+headings #821 (book 19 78:1, level 3) title
+    A Recounting of Yasharaal's History and Alahayam's Faithfulness
+  → A Recounting of Yashar-Al's History and Alahayam's Faithfulness
+headings #823 (book 19 80:1, level 3) title
+    A Prayer for Yasharaal's Restoration
+  → A Prayer for Yashar-Al's Restoration
+headings #849 (book 19 105:1, level 3) title
+    A Recounting of Alahayam's Faithfulness to Yasharaal's Ancestors
+  → A Recounting of Alahayam's Faithfulness to Yashar-Al's Ancestors
+headings #850 (book 19 106:1, level 3) title
+    A Confession of Yasharaal's Rebellion Through Its History
+  → A Confession of Yashar-Al's Rebellion Through Its History
+headings #869 (book 19 124:1, level 3) title
+    Thanksgiving for Yasharaal's Narrow Escape
+  → Thanksgiving for Yashar-Al's Narrow Escape
+headings #874 (book 19 129:1, level 3) title
+    A Prayer Against the Oppressors of Yasharaal
+  → A Prayer Against the Oppressors of Yashar-Al
+headings #923 (book 20 25:1, level 2) title
+    More Proverbs of Shalamah (Hezekiah's Collection)
+  → More Proverbs of Shalamah (Chazaqayah's Collection)
+headings #963 (book 24 3:1, level 3) title
+    A Call to Return; Yasharaal and Yahawadah Compared
+  → A Call to Return; Yashar-Al and Yahawadah Compared
+headings #996 (book 24 36:1, level 3) title
+    Barawak's Scroll Burned by Yahawayaqayam
+  → Barawak's Scroll Burned by Yahaway-Qayam
+headings #1024 (book 26 1:1, level 3) title
+    Yachazaqaal's Vision of Yahawah's Glory
+  → Yachazaq-Al's Vision of Yahawah's Glory
+headings #1025 (book 26 2:1, level 3) title
+    Yachazaqaal's Call and Commission
+  → Yachazaq-Al's Call and Commission
+headings #1026 (book 26 3:1, level 3) title
+    Yachazaqaal Eats the Scroll; Set as a Watchman
+  → Yachazaq-Al Eats the Scroll; Set as a Watchman
+headings #1029 (book 26 6:1, level 3) title
+    Judgment Against the Mountains of Yasharaal
+  → Judgment Against the Mountains of Yashar-Al
+headings #1042 (book 26 19:1, level 3) title
+    A Lament for the Princes of Yasharaal
+  → A Lament for the Princes of Yashar-Al
+headings #1043 (book 26 20:1, level 3) title
+    Yasharaal's History of Rebellion Recounted
+  → Yashar-Al's History of Rebellion Recounted
+headings #1047 (book 26 24:1, level 3) title
+    The Boiling Pot; the Death of Yachazaqaal's Wife
+  → The Boiling Pot; the Death of Yachazaq-Al's Wife
+headings #1056 (book 26 33:1, level 3) title
+    Yachazaqaal Reappointed Watchman After Yarawashalam's Fall
+  → Yachazaq-Al Reappointed Watchman After Yarawashalam's Fall
+headings #1059 (book 26 36:1, level 3) title
+    The Mountains of Yasharaal Restored; a New Heart Promised
+  → The Mountains of Yashar-Al Restored; a New Heart Promised
+headings #1090 (book 28 1:1, level 2) title
+    Hawashai's Marriage as a Sign to Yasharaal
+  → Hawashai's Marriage as a Sign to Yashar-Al
+headings #1091 (book 28 4:1, level 2) title
+    Yahawah's Case Against Yasharaal
+  → Yahawah's Case Against Yashar-Al
+headings #1093 (book 28 2:1, level 3) title
+    Yasharaal's Unfaithfulness and Yahawah's Pursuing Love
+  → Yashar-Al's Unfaithfulness and Yahawah's Pursuing Love
+headings #1095 (book 28 4:1, level 3) title
+    Yahawah's Case Against Yasharaal
+  → Yahawah's Case Against Yashar-Al
+headings #1096 (book 28 5:1, level 3) title
+    Judgment on Yasharaal and Yahawadah's Leaders
+  → Judgment on Yashar-Al and Yahawadah's Leaders
+headings #1099 (book 28 8:1, level 3) title
+    Yasharaal Sows the Wind
+  → Yashar-Al Sows the Wind
+headings #1100 (book 28 9:1, level 3) title
+    The Coming Punishment of Yasharaal
+  → The Coming Punishment of Yashar-Al
+headings #1101 (book 28 10:1, level 3) title
+    Yasharaal's Idolatry and Coming Judgment
+  → Yashar-Al's Idolatry and Coming Judgment
+headings #1102 (book 28 11:1, level 3) title
+    Yahawah's Fatherly Love for Yasharaal
+  → Yahawah's Fatherly Love for Yashar-Al
+headings #1110 (book 30 1:1, level 2) title
+    Oracles Against the Nations, Yahawadah, and Yasharaal
+  → Oracles Against the Nations, Yahawadah, and Yashar-Al
+headings #1111 (book 30 3:1, level 2) title
+    Judgments and Visions Against Yasharaal
+  → Judgments and Visions Against Yashar-Al
+headings #1113 (book 30 2:1, level 3) title
+    Oracles Against Mawaab, Yahawadah, and Yasharaal
+  → Oracles Against Mawaab, Yahawadah, and Yashar-Al
+headings #1114 (book 30 3:1, level 3) title
+    Yahawah's Judgment on Yasharaal for Its Sins
+  → Yahawah's Judgment on Yashar-Al for Its Sins
+headings #1115 (book 30 4:1, level 3) title
+    Yasharaal's Refusal to Return to Yahawah
+  → Yashar-Al's Refusal to Return to Yahawah
+headings #1116 (book 30 5:1, level 3) title
+    A Lament for Yasharaal; a Call to Seek Yahawah and Justice
+  → A Lament for Yashar-Al; a Call to Seek Yahawah and Justice
+headings #1120 (book 30 9:1, level 3) title
+    The Destruction and Restoration of Yasharaal
+  → The Destruction and Restoration of Yashar-Al
+headings #1134 (book 33 5:1, level 3) title
+    A Ruler to Come from Bayathalacham
+  → A Ruler to Come from Bayath-Lacham
+headings #1135 (book 33 6:1, level 3) title
+    Yahawah's Case Against Yasharaal; What Yahawah Requires
+  → Yahawah's Case Against Yashar-Al; What Yahawah Requires
+headings #1147 (book 37 2:1, level 3) title
+    The Coming Glory of the Temple; a Promise to Zarababal
+  → The Coming Glory of the Temple; a Promise to Zar-Babal
+headings #1242 (book 42 16:1, level 3) title
+    The Shrewd Manager; the Rich Man and Alaizar
+  → The Shrewd Manager; the Rich Man and Al-Izar
+headings #1252 (book 42 1:39, level 4) title
+    Marayam Visits Alayashabai
+  → Marayam Visits Alay-Shabai
+headings #1254 (book 42 2:1, level 4) title
+    The Birth of Yashawai at Bayathalacham
+  → The Birth of Yashawai at Bayath-Lacham
+headings #1280 (book 42 16:19, level 4) title
+    The Rich Man and Alaizar
+  → The Rich Man and Al-Izar
+headings #1308 (book 43 11:1, level 3) title
+    Alaizar Raised from the Dead
+  → Al-Izar Raised from the Dead
+headings #1334 (book 43 11:1, level 4) title
+    The Death and Raising of Alaizar
+  → The Death and Raising of Al-Izar
+headings #1416 (book 45 9:1, level 2) title
+    Yasharaal's Place in Alahayam's Plan
+  → Yashar-Al's Place in Alahayam's Plan
+headings #1426 (book 45 9:1, level 3) title
+    Alahayam's Sovereign Choice of Yasharaal
+  → Alahayam's Sovereign Choice of Yashar-Al
+headings #1427 (book 45 10:1, level 3) title
+    Yasharaal's Unbelief and the Word of Faith
+  → Yashar-Al's Unbelief and the Word of Faith
+headings #1428 (book 45 11:1, level 3) title
+    The Remnant and the Future Restoration of Yasharaal
+  → The Remnant and the Future Restoration of Yashar-Al
+headings #1449 (book 46 10:1, level 3) title
+    Warnings from Yasharaal's History; Idolatry and the Table of Adanay
+  → Warnings from Yashar-Al's History; Idolatry and the Table of Adanay
+headings #1530 (book 58 5:1, level 3) title
+    Yashawai, a High Priest After the Order of Malakayatzadaq
+  → Yashawai, a High Priest After the Order of Malakay-Tzadaq
+headings #1532 (book 58 7:1, level 3) title
+    The Priesthood of Malakayatzadaq Surpasses the Levitical Priesthood
+  → The Priesthood of Malakay-Tzadaq Surpasses the Levitical Priesthood
+headings #1605 (book 67 6:1, level 3) title
+    The Watchers Descend and Take Wives on Mount Hermon
+  → The Watchers Descend and Take Wives on Mount Charamawan
+headings #1608 (book 67 9:1, level 3) title
+    Mayakaal, Awarayaal, Raphael, and Gabarayaal Intercede
+  → Mayak-Al, Awaray-Al, Raphael, and Gabaray-Al Intercede
+headings #1667 (book 67 68:1, level 3) title
+    Mayakaal and Raphael Marvel at the Severity of Judgment
+  → Mayak-Al and Raphael Marvel at the Severity of Judgment
+headings #1689 (book 67 90:1, level 3) title
+    The Vision Concludes: Oppression, the Great Horn, the New Jerusalem
+  → The Vision Concludes: Oppression, the Great Horn, the New Yarawashalam
+headings #1718 (book 67 90:37, level 4) title
+    The New Jerusalem and the White Bull (Messiah)
+  → The New Yarawashalam and the White Bull (Mashayach)
+headings #1723 (book 68 1:1, level 3) title
+    Yahawah's Covenant Renewed on Mount Sayanay; Yasharaal's Future
+  → Yahawah's Covenant Renewed on Mount Sayanay; Yashar-Al's Future
+headings #1735 (book 68 13:1, level 3) title
+    Abaram in Kanain; the Famine in Egypt and Sharay Restored
+  → Abaram in Kanain; the Famine in Matzarayam and Sharay Restored
+headings #1736 (book 68 14:1, level 3) title
+    The Covenant of the Pieces; the Birth of Yashamaial
+  → The Covenant of the Pieces; the Birth of Yashamai-Al
+headings #1739 (book 68 17:1, level 3) title
+    Yatzachaq Weaned; Yashamaial and Hagar Sent Away
+  → Yatzachaq Weaned; Yashamai-Al and Hagar Sent Away
+headings #1754 (book 68 32:1, level 3) title
+    Laway Ordained Priest; the Birth of Banayamayan; the Tithe
+  → Laway Ordained Priest; the Birth of Ban-Yamayan; the Tithe
+headings #1762 (book 68 40:1, level 3) title
+    Yawasap Interprets Pharaoh's Dreams and Rules Egypt
+  → Yawasap Interprets Paraih's Dreams and Rules Matzarayam
+headings #1764 (book 68 42:1, level 3) title
+    The Famine; Yaiqab's Sons Sent Down to Egypt
+  → The Famine; Yaiqab's Sons Sent Down to Matzarayam
+headings #1766 (book 68 44:1, level 3) title
+    Yaiqab and His Household Go Down to Egypt
+  → Yaiqab and His Household Go Down to Matzarayam
+headings #1768 (book 68 46:1, level 3) title
+    The Death of Yawasap; Yasharaal's Affliction Begins
+  → The Death of Yawasap; Yashar-Al's Affliction Begins
+headings #1769 (book 68 47:1, level 3) title
+    The Birth of Mashah and His Youth in Pharaoh's House
+  → The Birth of Mashah and His Youth in Paraih's House
+headings #1770 (book 68 48:1, level 3) title
+    Mastema Opposes Mashah in Egypt and at the Sea
+  → Mastema Opposes Mashah in Matzarayam and at the Sea
+headings #1780 (book 69 3:1, level 2) title
+    The Campaigns of Judas Maccabeus
+  → The Campaigns of Yahawadah Maccabeus
+headings #1781 (book 69 10:1, level 2) title
+    Jonathan's Leadership
+  → Yahawanathan's Leadership
+headings #1782 (book 69 13:1, level 2) title
+    Simon's Leadership and the Establishment of Hasmonean Rule
+  → Shamaiwan's Leadership and the Establishment of Hasmonean Rule
+headings #1785 (book 69 3:1, level 3) title
+    Judas Maccabeus Takes Command; Early Victories
+  → Yahawadah Maccabeus Takes Command; Early Victories
+headings #1787 (book 69 5:1, level 3) title
+    Campaigns in Idumea, Ammon, Gilead, and Galilee
+  → Campaigns in Adawam, Imawan, Galaid, and Galilee
+headings #1788 (book 69 6:1, level 3) title
+    The Death of Antiochus Epiphanes; Lysias Besieges Mount Zion
+  → The Death of Antiochus Epiphanes; Lysias Besieges Mount Tzayawan
+headings #1790 (book 69 8:1, level 3) title
+    Judas Makes an Alliance with Rome
+  → Yahawadah Makes an Alliance with Rome
+headings #1791 (book 69 9:1, level 3) title
+    The Death of Judas Maccabeus; Jonathan Succeeds Him
+  → The Death of Yahawadah Maccabeus; Yahawanathan Succeeds Him
+headings #1792 (book 69 10:1, level 3) title
+    Jonathan Made High Priest Amid Rival Kings
+  → Yahawanathan Made High Priest Amid Rival Kings
+headings #1793 (book 69 11:1, level 3) title
+    Jonathan's Dealings with Egypt and the Seleucid Rivals
+  → Yahawanathan's Dealings with Matzarayam and the Seleucid Rivals
+headings #1794 (book 69 12:1, level 3) title
+    Jonathan Renews Friendship with Rome and Sparta; Betrayed by Tryphon
+  → Yahawanathan Renews Friendship with Rome and Sparta; Betrayed by Tryphon
+headings #1795 (book 69 13:1, level 3) title
+    Simon Succeeds Jonathan; Judea Gains Its Independence
+  → Shamaiwan Succeeds Yahawanathan; Judea Gains Its Independence
+headings #1796 (book 69 14:1, level 3) title
+    The Praise and Honors Decreed to Simon
+  → The Praise and Honors Decreed to Shamaiwan
+headings #1797 (book 69 15:1, level 3) title
+    Antiochus Sidetes Turns Against Simon
+  → Antiochus Sidetes Turns Against Shamaiwan
+headings #1798 (book 69 16:1, level 3) title
+    The Death of Simon; John Hyrcanus Succeeds
+  → The Death of Shamaiwan; Yawachanan Hyrcanus Succeeds
+headings #1800 (book 69 9:18, level 4) title
+    The Death of Judas Maccabeus
+  → The Death of Yahawadah Maccabeus
+headings #1801 (book 69 13:41, level 4) title
+    Israel Freed from the Yoke of the Gentiles
+  → Yashar-Al Freed from the Yoke of the Gentiles
+headings #1845 (book 70 36:1, level 3) title
+    A Prayer for the Deliverance of Israel
+  → A Prayer for the Deliverance of Yashar-Al
+headings #1854 (book 70 45:1, level 3) title
+    Mashah, Aharawan, and Phinehas
+  → Mashah, Aharawan, and Payanachas
+headings #1855 (book 70 46:1, level 3) title
+    Joshua, Caleb, the Judges, and Samuel
+  → Yahawashawai, Kalab, the Judges, and Shamawaal
+headings #1856 (book 70 47:1, level 3) title
+    David, Shalamah, and the Divided Kingdom
+  → Dawad, Shalamah, and the Divided Kingdom
+headings #1857 (book 70 48:1, level 3) title
+    Elijah, Elisha, and Hezekiah's Deliverance
+  → Alayah, Alayashai, and Chazaqayah's Deliverance
+headings #1859 (book 70 50:1, level 3) title
+    Simon the High Priest in His Glory
+  → Shamaiwan the High Priest in His Glory
+headings #1863 (book 70 50:1, level 4) title
+    Simon Son of Onias Ministers in the Temple
+  → Shamaiwan Son of Onias Ministers in the Temple
+headings #1866 (book 71 10:1, level 2) title
+    Wisdom in Israel's History
+  → Wisdom in Yashar-Al's History
+headings #1876 (book 71 10:1, level 3) title
+    Wisdom’s Guidance from Adam to the Exodus
+  → Wisdom's Guidance from Adam to the Exodus
+headings #1877 (book 71 11:1, level 3) title
+    Wisdom Guides Israel in the Wilderness
+  → Wisdom Guides Yashar-Al in the Wilderness
+headings #1878 (book 71 12:1, level 3) title
+    Alahayam's Mercy and Patient Judgment on the Nations of Canaan
+  → Alahayam's Mercy and Patient Judgment on the Nations of Kanain
+headings #1881 (book 71 15:1, level 3) title
+    Israel's True Knowledge of God Versus the Idol-Makers
+  → Yashar-Al's True Knowledge of God Versus the Idol-Makers
+headings #1882 (book 71 16:1, level 3) title
+    The Plagues of Egypt Contrasted with Israel's Blessings
+  → The Plagues of Matzarayam Contrasted with Yashar-Al's Blessings
+headings #1883 (book 71 17:1, level 3) title
+    The Plague of Darkness Upon Egypt
+  → The Plague of Darkness Upon Matzarayam
+headings #1884 (book 71 18:1, level 3) title
+    The Death of the Firstborn; Israel's Deliverance
+  → The Death of the Firstborn; Yashar-Al's Deliverance
+headings #1889 (book 72 1:1, level 3) title
+    Tobit's Piety and Charity in the Exile of Nineveh
+  → Tobit's Piety and Charity in the Exile of Nayanawah
+headings #1897 (book 72 7:1, level 3) title
+    Tobias Arrives at Raguel's House in Ecbatane
+  → Tobias Arrives at Raiwaal's House in Ecbatane
+headings #1905 (book 72 13:1, level 3) title
+    Tobit's Hymn of Praise and Prophecy of Jerusalem
+  → Tobit's Hymn of Praise and Prophecy of Yarawashalam
+headings #1907 (book 72 14:1, level 3) title
+    Tobit's Final Testament, Death, and the Fall of Nineveh
+  → Tobit's Final Testament, Death, and the Fall of Nayanawah
+headings #1909 (book 73 1:1, level 3) title
+    War Between Nabuchodonosor and Arphaxad
+  → War Between Nabuchodonosor and Arapakashad
+headings #1912 (book 73 4:1, level 3) title
+    Israel Prepares to Resist
+  → Yashar-Al Prepares to Resist
+headings #1913 (book 73 5:1, level 3) title
+    Achior Tells Holofernes the History of Israel
+  → Achior Tells Holofernes the History of Yashar-Al
+headings #1916 (book 73 8:1, level 2) title
+    Judith's Plan and Approach to the Camp
+  → Yahawadayath's Plan and Approach to the Camp
+headings #1922 (book 73 13:1, level 2) title
+    The Beheading of Holofernes and Israel's Deliverance
+  → The Beheading of Holofernes and Yashar-Al's Deliverance
+headings #1926 (book 73 15:1, level 3) title
+    The Assyrians Flee; Israel Takes the Spoil
+  → The Assyrians Flee; Yashar-Al Takes the Spoil
+headings #1933 (book 76 1:1, level 2) title
+    The Prefatory Letters and the Author’s Preface
+  → The Prefatory Letters and the Author's Preface
+headings #1935 (book 76 8:1, level 2) title
+    Judas Maccabeus's Campaigns and the Book's Conclusion
+  → Yahawadah Maccabeus's Campaigns and the Book's Conclusion
+headings #1936 (book 76 1:1, level 3) title
+    Letters to the Yahawadayam of Egypt Concerning the Feast of Dedication
+  → Letters to the Yahawadayam of Matzarayam Concerning the Feast of Dedication
+headings #1940 (book 76 5:1, level 3) title
+    Antiochus’s Massacre at Yarawashalam; Judas Flees to the Wilderness
+  → Antiochus's Massacre at Yarawashalam; Yahawadah Flees to the Wilderness
+headings #1941 (book 76 6:1, level 3) title
+    The Persecution Decree; the Martyrdom of Alaizar
+  → The Persecution Decree; the Martyrdom of Al-Izar
+headings #1943 (book 76 8:1, level 3) title
+    Judas Maccabeus Rises Up and Defeats Nicanor
+  → Yahawadah Maccabeus Rises Up and Defeats Nicanor
+headings #1947 (book 76 12:1, level 3) title
+    Judas's Campaigns; His Prayer and Sacrifice for the Dead
+  → Yahawadah's Campaigns; His Prayer and Sacrifice for the Dead
+headings #1952 (book 76 6:18, level 4) title
+    The Martyrdom of Alaizar
+  → The Martyrdom of Al-Izar
+headings #1954 (book 76 12:43, level 4) title
+    Judas Prays and Offers Sacrifice for the Dead
+  → Yahawadah Prays and Offers Sacrifice for the Dead
+headings #1979 (book 217 1:70, level 4) title
+    John of Gischala's Corn and Oil Monopoly Schemes
+  → Yawachanan of Gischala's Corn and Oil Monopoly Schemes
+headings #1980 (book 217 1:91, level 4) title
+    John's Plot to Assassinate Josephus at Tiberias
+  → Yawachanan's Plot to Assassinate Josephus at Tiberias
+headings #1982 (book 217 1:368, level 2) title
+    The Collapse of John's Faction and the Approach of Vespasian
+  → The Collapse of Yawachanan's Faction and the Approach of Vespasian
+headings #1999 (book 218 2:145, level 2) title
+    The Excellence and Antiquity of Moses as Lawgiver
+  → The Excellence and Antiquity of Mashah as Lawgiver
+headings #2004 (book 219 1:1, level 3) title
+    The Hasmonean Dynasty and the Rise and Reign of Herod the Great
+  → The Hasmonean Dynasty and the Rise and Reign of Hawaradawas the Great
+headings #2007 (book 219 1:48, level 4) title
+    The Successors of Judas Maccabeus: Jonathan, Simon, and John Hyrcanus
+  → The Successors of Yahawadah Maccabeus: Yahawanathan, Shamaiwan, and Yawachanan Hyrcanus
+headings #2012 (book 219 1:141, level 4) title
+    Pompey Takes Jerusalem and Enters the Holy of Holies
+  → Pompey Takes Yarawashalam and Enters the Holy of Holies
+headings #2015 (book 219 1:195, level 2) title
+    Antipater and His Sons Herod and Phasaelus Rise to Power
+  → Antipater and His Sons Hawaradawas and Phasaelus Rise to Power
+headings #2017 (book 219 1:236, level 4) title
+    Herod and Phasaelus Made Tetrarchs by Mark Antony
+  → Hawaradawas and Phasaelus Made Tetrarchs by Mark Antony
+headings #2019 (book 219 1:274, level 2) title
+    Herod's Path to the Throne
+  → Hawaradawas's Path to the Throne
+headings #2020 (book 219 1:274, level 4) title
+    Herod Flees to Rome and Is Declared King by the Senate
+  → Hawaradawas Flees to Rome and Is Declared King by the Senate
+headings #2021 (book 219 1:286, level 4) title
+    Herod Relieves the Besieged Garrison at Masada
+  → Hawaradawas Relieves the Besieged Garrison at Masada
+headings #2022 (book 219 1:303, level 4) title
+    Herod Takes Sepphoris and Subdues the Cave Rebels
+  → Hawaradawas Takes Sepphoris and Subdues the Cave Rebels
+headings #2023 (book 219 1:323, level 4) title
+    The Death of Herod's Brother Joseph
+  → The Death of Hawaradawas's Brother Yawasap
+headings #2024 (book 219 1:347, level 4) title
+    Herod and Sosius Capture Jerusalem; the Death of Antigonus
+  → Hawaradawas and Sosius Capture Yarawashalam; the Death of Antigonus
+headings #2025 (book 219 1:364, level 4) title
+    Herod's War Against the Nabateans and the Great Earthquake
+  → Hawaradawas's War Against the Nabateans and the Great Earthquake
+headings #2026 (book 219 1:386, level 2) title
+    Herod's Kingdom Confirmed and His Building Projects
+  → Hawaradawas's Kingdom Confirmed and His Building Projects
+headings #2027 (book 219 1:401, level 4) title
+    Herod's Building Projects: Caesarea, the Temple, and New Cities
+  → Hawaradawas's Building Projects: Caesarea, the Temple, and New Cities
+headings #2028 (book 219 1:431, level 2) title
+    The Destruction of Herod's Own Family
+  → The Destruction of Hawaradawas's Own Family
+headings #2032 (book 219 1:498, level 4) title
+    A Brief Reconciliation Among Herod's Sons
+  → A Brief Reconciliation Among Hawaradawas's Sons
+headings #2034 (book 219 1:534, level 4) title
+    Herod Condemns His Sons Alexander and Aristobulus to Death
+  → Hawaradawas Condemns His Sons Alexander and Aristobulus to Death
+headings #2035 (book 219 1:552, level 4) title
+    Antipater's Rising Influence Over Herod
+  → Antipater's Rising Influence Over Hawaradawas
+headings #2040 (book 219 1:647, level 2) title
+    Herod's Final Illness and Death
+  → Hawaradawas's Final Illness and Death
+headings #2041 (book 219 1:647, level 4) title
+    The Golden Eagle Incident and Herod's Last Days
+  → The Golden Eagle Incident and Hawaradawas's Last Days
+headings #2042 (book 219 2:1, level 3) title
+    Herod's Successors, Roman Rule, and the Outbreak of the Jewish Revolt
+  → Hawaradawas's Successors, Roman Rule, and the Outbreak of the Jewish Revolt
+headings #2044 (book 219 2:14, level 4) title
+    Archelaus Is Accused Before Caesar in Rome
+  → Archelaus Is Accused Before Qayasar in Rome
+headings #2045 (book 219 2:39, level 4) title
+    The Jews Battle Sabinus's Soldiers at Jerusalem
+  → The Jews Battle Sabinus's Soldiers at Yarawashalam
+headings #2046 (book 219 2:55, level 4) title
+    The Revolts of Judas, Simon, and Athronges
+  → The Revolts of Yahawadah, Shamaiwan, and Athronges
+headings #2048 (book 219 2:80, level 4) title
+    The Jews Petition Caesar; Herod's Kingdom Is Divided
+  → The Jews Petition Qayasar; Hawaradawas's Kingdom Is Divided
+headings #2051 (book 219 2:117, level 4) title
+    Judas of Galilee and the Three Jewish Sects
+  → Yahawadah of Galilee and the Three Jewish Sects
+headings #2052 (book 219 2:167, level 4) title
+    Pilate's Disturbances and Agrippa's Rise Under Caligula
+  → Payalatawas's Disturbances and Agrippa's Rise Under Caligula
+headings #2063 (book 219 2:457, level 4) title
+    Massacres of Jews Across the Cities of Syria
+  → Massacres of Jews Across the Cities of Aram
+headings #2064 (book 219 2:513, level 4) title
+    Cestius Gallus's Failed Siege and Retreat from Jerusalem
+  → Cestius Gallus's Failed Siege and Retreat from Yarawashalam
+headings #2066 (book 219 2:585, level 4) title
+    John of Gischala's Plots Against Josephus in Galilee
+  → Yawachanan of Gischala's Plots Against Josephus in Galilee
+headings #2067 (book 219 2:647, level 4) title
+    Preparations for War and the Rise of Simon bar Giora
+  → Preparations for War and the Rise of Shamaiwan bar Giora
+headings #2071 (book 219 3:35, level 4) title
+    A Description of Galilee, Samaria, and Judea
+  → A Description of Galilee, Shamarawan, and Judea
+headings #2079 (book 219 3:409, level 4) title
+    The Capture of Joppa and the Surrender of Tiberias
+  → The Capture of Yapaw and the Surrender of Tiberias
+headings #2080 (book 219 3:462, level 4) title
+    The Fall of Taricheae; the Jordan and Gennesareth Described
+  → The Fall of Taricheae; the Yaradan and Gennesareth Described
+headings #2081 (book 219 4:1, level 3) title
+    The Conquest of Galilee, Civil War in Jerusalem, and Vespasian's Rise to Emperor
+  → The Conquest of Galilee, Civil War in Yarawashalam, and Vespasian's Rise to Emperor
+headings #2084 (book 219 4:84, level 4) title
+    The Surrender of Gischala; John Flees to Jerusalem
+  → The Surrender of Gischala; Yawachanan Flees to Yarawashalam
+headings #2085 (book 219 4:121, level 2) title
+    Civil War Breaks Out in Jerusalem
+  → Civil War Breaks Out in Yarawashalam
+headings #2086 (book 219 4:121, level 4) title
+    John of Gischala and the Zealots Clash with the High Priest Ananus
+  → Yawachanan of Gischala and the Zealots Clash with the High Priest Ananus
+headings #2087 (book 219 4:224, level 4) title
+    The Idumeans Are Summoned Into Jerusalem
+  → The Idumeans Are Summoned Into Yarawashalam
+headings #2091 (book 219 4:389, level 4) title
+    John of Gischala's Tyranny; the Zealots' Raid on Masada
+  → Yawachanan of Gischala's Tyranny; the Zealots' Raid on Masada
+headings #2092 (book 219 4:440, level 4) title
+    Vespasian Marches on Jericho; the Dead Sea Described
+  → Vespasian Marches on Yarayachaw; the Dead Sea Described
+headings #2095 (book 219 4:585, level 4) title
+    The Legions in Judea and Egypt Proclaim Vespasian Emperor
+  → The Legions in Judea and Matzarayam Proclaim Vespasian Emperor
+headings #2096 (book 219 4:630, level 4) title
+    Vespasian Sets Out for Rome; Titus Returns to Jerusalem
+  → Vespasian Sets Out for Rome; Titus Returns to Yarawashalam
+headings #2097 (book 219 5:1, level 3) title
+    Titus's Siege of Jerusalem Begins
+  → Titus's Siege of Yarawashalam Begins
+headings #2098 (book 219 5:1, level 2) title
+    Sedition and Suffering Within Jerusalem
+  → Sedition and Suffering Within Yarawashalam
+headings #2099 (book 219 5:1, level 4) title
+    The Three Rival Factions Tear Jerusalem Apart
+  → The Three Rival Factions Tear Yarawashalam Apart
+headings #2100 (book 219 5:47, level 2) title
+    Titus Advances on Jerusalem
+  → Titus Advances on Yarawashalam
+headings #2101 (book 219 5:47, level 4) title
+    Titus Marches to Jerusalem and Narrowly Escapes Ambush
+  → Titus Marches to Yarawashalam and Narrowly Escapes Ambush
+headings #2103 (book 219 5:136, level 2) title
+    Jerusalem and Its Temple Described
+  → Yarawashalam and Its Temple Described
+headings #2104 (book 219 5:136, level 4) title
+    A Description of the City of Jerusalem
+  → A Description of the City of Yarawashalam
+headings #2116 (book 219 6:1, level 3) title
+    The Destruction of the Temple and the Fall of Jerusalem
+  → The Destruction of the Temple and the Fall of Yarawashalam
+headings #2126 (book 219 6:358, level 4) title
+    Caesar Becomes Master of the Upper City
+  → Qayasar Becomes Master of the Upper City
+headings #2127 (book 219 6:374, level 4) title
+    The Final Assault on Mount Zion
+  → The Final Assault on Mount Tzayawan
+headings #2129 (book 219 6:435, level 4) title
+    Jerusalem's Fifth and Final Fall: A Brief History
+  → Yarawashalam's Fifth and Final Fall: A Brief History
+headings #2131 (book 219 7:1, level 2) title
+    The Demolition of Jerusalem and Titus's Rewards to His Army
+  → The Demolition of Yarawashalam and Titus's Rewards to His Army
+headings #2132 (book 219 7:1, level 4) title
+    The City of Jerusalem Is Demolished, Save Three Towers
+  → The City of Yarawashalam Is Demolished, Save Three Towers
+headings #2133 (book 219 7:21, level 4) title
+    Titus's Games at Caesarea Philippi; Simon bar Giora Captured
+  → Titus's Games at Caesarea Philippi; Shamaiwan bar Giora Captured
+headings #2142 (book 219 7:252, level 4) title
+    Eleazar's Sicarii Hold Masada; the Roman Siege Begins
+  → Al-Izar's Sicarii Hold Masada; the Roman Siege Begins
+headings #2146 (book 219 7:437, level 4) title
+    Jonathan the Sicarius Stirs Sedition in Cyrene
+  → Yahawanathan the Sicarius Stirs Sedition in Cyrene
+headings #2148 (book 83 2:1, level 3) title
+    Concerning Yarawashalam: The Profaner Slain in Egypt
+  → Concerning Yarawashalam: The Profaner Slain in Matzarayam
+headings #2149 (book 83 2:26, level 4) title
+    The Profaner's Body Left Unburied in Egypt
+  → The Profaner's Body Left Unburied in Matzarayam
+headings #2154 (book 83 7:1, level 3) title
+    Prayer That Yahawah's Dwelling Remain Among Israel
+  → Prayer That Yahawah's Dwelling Remain Among Yashar-Al
+headings #2156 (book 83 9:1, level 3) title
+    Israel's Captivity as the Just Reward of Sin
+  → Yashar-Al's Captivity as the Just Reward of Sin
+headings #2158 (book 83 11:1, level 3) title
+    Yarawashalam Summoned: Israel's Children Gathered Home
+  → Yarawashalam Summoned: Yashar-Al's Children Gathered Home
+headings #2165 (book 83 17:1, level 3) title
+    The Coming King, Son of David, Who Will Purge Yarawashalam
+  → The Coming King, Son of Dawad, Who Will Purge Yarawashalam
+headings #2166 (book 83 17:21, level 4) title
+    A Son of David Raised Up to Reign in Righteousness
+  → A Son of Dawad Raised Up to Reign in Righteousness
+headings #2174 (book 89 5:1, level 2) title
+    Abayamalak's Sleep and Yaramayah's Return from Exile
+  → Abay-Malak's Sleep and Yaramayah's Return from Exile
+headings #2175 (book 89 5:1, level 3) title
+    Abayamalak's Basket of Figs and His Sixty-Six Years of Sleep
+  → Abay-Malak's Basket of Figs and His Sixty-Six Years of Sleep
+headings #2176 (book 89 6:1, level 3) title
+    Abayamalak Wakes and Returns to Barawak with the Figs Unspoiled
+  → Abay-Malak Wakes and Returns to Barawak with the Figs Unspoiled
+headings #2178 (book 89 8:1, level 3) title
+    The Return from Babal and the Crossing of the Jordan
+  → The Return from Babal and the Crossing of the Yaradan
+headings #2190 (book 105 1:8, level 4) title
+    Laway’s Ascent Through the Seven Heavens
+  → Laway's Ascent Through the Seven Heavens
+headings #2201 (book 107 1:1, level 2) title
+    Testament of Yashashakar: a Life of Singleness of Heart and Simple Labor
+  → Testament of Yash-Shakar: a Life of Singleness of Heart and Simple Labor
+headings #2202 (book 107 1:1, level 3) title
+    The Mandrakes and the Birth of Yashashakar
+  → The Mandrakes and the Birth of Yash-Shakar
+headings #2209 (book 109 2:1, level 3) title
+    A Warning Against Anger and Lying; Prophecy of Israel's Deliverance
+  → A Warning Against Anger and Lying; Prophecy of Yashar-Al's Deliverance
+headings #2210 (book 110 1:1, level 2) title
+    Testament of Napathalay: the Order of Body and Spirit, and Visions of Israel's Future
+  → Testament of Napathalay: the Order of Body and Spirit, and Visions of Yashar-Al's Future
+headings #2211 (book 110 1:1, level 3) title
+    Napathalay’s Birth; the Order of Body and Spirit
+  → Napathalay's Birth; the Order of Body and Spirit
+headings #2222 (book 114 1:1, level 2) title
+    Testament of Banayamayan: an Exhortation to the Good Mind, Following Yawasap's Example
+  → Testament of Ban-Yamayan: an Exhortation to the Good Mind, Following Yawasap's Example
+headings #2223 (book 114 1:1, level 3) title
+    Banayamayan’s Reunion with Yawasap and the Way of the Good Mind
+  → Ban-Yamayan's Reunion with Yawasap and the Way of the Good Mind
+headings #2225 (book 115 1:1, level 2) title
+    Asenath's Conversion and Marriage to Joseph
+  → Asanath's Conversion and Marriage to Yawasap
+headings #2226 (book 115 1:1, level 3) title
+    Joseph Comes to Heliopolis; Pentephres' Daughter Asenath
+  → Yawasap Comes to Heliopolis; Pentephres' Daughter Asanath
+headings #2227 (book 115 2:1, level 3) title
+    Asenath's Tower and the Gods She Worships
+  → Asanath's Tower and the Gods She Worships
+headings #2228 (book 115 3:1, level 3) title
+    Joseph Draws Near; Asenath Prepares to Greet Her Parents
+  → Yawasap Draws Near; Asanath Prepares to Greet Her Parents
+headings #2229 (book 115 4:1, level 3) title
+    Asenath Scorns the Thought of Marrying Joseph
+  → Asanath Scorns the Thought of Marrying Yawasap
+headings #2230 (book 115 5:1, level 3) title
+    Joseph Arrives in Pharaoh's Chariot
+  → Yawasap Arrives in Paraih's Chariot
+headings #2231 (book 115 6:1, level 3) title
+    Asenath Repents at the Sight of Joseph's Beauty
+  → Asanath Repents at the Sight of Yawasap's Beauty
+headings #2232 (book 115 7:1, level 3) title
+    Joseph Asks That Asenath Be Sent Away
+  → Yawasap Asks That Asanath Be Sent Away
+headings #2233 (book 115 8:1, level 3) title
+    Joseph Blesses Asenath but Will Not Kiss an Idol-Worshiper
+  → Yawasap Blesses Asanath but Will Not Kiss an Idol-Worshiper
+headings #2234 (book 115 9:1, level 3) title
+    Asenath Grieves and Fasts Alone in Her Chamber
+  → Asanath Grieves and Fasts Alone in Her Chamber
+headings #2235 (book 115 10:1, level 3) title
+    Asenath Destroys Her Idols and Mourns Seven Days
+  → Asanath Destroys Her Idols and Mourns Seven Days
+headings #2236 (book 115 10:7, level 4) title
+    Asenath Casts Her Gold, Idols, and Feast Out the Window
+  → Asanath Casts Her Gold, Idols, and Feast Out the Window
+headings #2237 (book 115 11:1, level 3) title
+    On the Eighth Day, Asenath Resolves to Pray
+  → On the Eighth Day, Asanath Resolves to Pray
+headings #2238 (book 115 12:1, level 3) title
+    The Prayer and Confession of Asenath
+  → The Prayer and Confession of Asanath
+headings #2239 (book 115 13:1, level 3) title
+    Asenath Continues Her Confession and Commits Herself to Joseph
+  → Asanath Continues Her Confession and Commits Herself to Yawasap
+headings #2240 (book 115 14:1, level 3) title
+    A Man from Heaven Appears to Asenath
+  → A Man from Heaven Appears to Asanath
+headings #2241 (book 115 15:1, level 3) title
+    The Angel Renames Asenath 'City of Refuge'
+  → The Angel Renames Asanath 'City of Refuge'
+headings #2243 (book 115 16:10, level 4) title
+    Bees Like Snow Encircle Asenath from Head to Foot
+  → Bees Like Snow Encircle Asanath from Head to Foot
+headings #2245 (book 115 18:1, level 3) title
+    Asenath's Beauty Is Transformed
+  → Asanath's Beauty Is Transformed
+headings #2246 (book 115 19:1, level 3) title
+    Joseph and Asenath Are Reunited
+  → Yawasap and Asanath Are Reunited
+headings #2247 (book 115 20:1, level 3) title
+    Asenath Welcomes Joseph Into Her House
+  → Asanath Welcomes Yawasap Into Her House
+headings #2248 (book 115 21:1, level 3) title
+    Pharaoh Gives Asenath to Joseph in Marriage
+  → Paraih Gives Asanath to Yawasap in Marriage
+headings #2249 (book 115 22:1, level 2) title
+    Pharaoh's Son's Plot Against Joseph and Asenath
+  → Paraih's Son's Plot Against Yawasap and Asanath
+headings #2250 (book 115 22:1, level 3) title
+    Jacob Comes to Egypt and Blesses Asenath
+  → Yaiqab Comes to Matzarayam and Blesses Asanath
+headings #2251 (book 115 23:1, level 3) title
+    Pharaoh's Son Threatens Simeon and Levi
+  → Paraih's Son Threatens Shamaiwan and Laway
+headings #2252 (book 115 24:1, level 3) title
+    Pharaoh's Son Deceives Dan and Gad with Lies About Joseph
+  → Paraih's Son Deceives Dan and Gad with Lies About Yawasap
+headings #2253 (book 115 25:1, level 3) title
+    Pharaoh's Son Fails to Kill His Father and Sets an Ambush
+  → Paraih's Son Fails to Kill His Father and Sets an Ambush
+headings #2254 (book 115 26:1, level 3) title
+    Asenath Is Ambushed on the Road
+  → Asanath Is Ambushed on the Road
+headings #2255 (book 115 27:1, level 3) title
+    Benjamin Fells Pharaoh's Son with a Stone
+  → Ban-Yamayan Fells Paraih's Son with a Stone
+headings #2256 (book 115 27:2, level 4) title
+    Benjamin Slays Fifty Horsemen with Stones from the Ravine
+  → Ban-Yamayan Slays Fifty Horsemen with Stones from the Ravine
+headings #2257 (book 115 28:1, level 3) title
+    The Sons of Bilhah and Zilpah Beg Asenath for Mercy
+  → The Sons of Balahah and Zalapah Beg Asanath for Mercy
+headings #2258 (book 115 29:1, level 3) title
+    The Death of Pharaoh and His Son; Joseph's Reign in Egypt
+  → The Death of Paraih and His Son; Yawasap's Reign in Matzarayam
+headings #2259 (book 116 1:1, level 2) title
+    Mayakaal Comes to Warn Abaraham of His Death
+  → Mayak-Al Comes to Warn Abaraham of His Death
+headings #2262 (book 116 1:1, level 3) title
+    Yahawah Sends Mayakaal to Announce Abaraham's Death
+  → Yahawah Sends Mayak-Al to Announce Abaraham's Death
+headings #2263 (book 116 2:1, level 3) title
+    Mayakaal Comes to Abaraham's Tent as a Stranger
+  → Mayak-Al Comes to Abaraham's Tent as a Stranger
+headings #2265 (book 116 4:1, level 3) title
+    Preparing the Feast; Mayakaal's Dilemma in Shamayam
+  → Preparing the Feast; Mayak-Al's Dilemma in Shamayam
+headings #2269 (book 116 8:1, level 3) title
+    Mayakaal Reports to Yahawah; Abaraham Refuses to Go
+  → Mayak-Al Reports to Yahawah; Abaraham Refuses to Go
+headings #2274 (book 116 13:1, level 3) title
+    Mayakaal Explains the Three Judgments of Mankind
+  → Mayak-Al Explains the Three Judgments of Mankind
+headings #2303 (book 118 1:1, level 2) title
+    Yahawah Sends Mayakaal to Yaiqab in Matzarayam
+  → Yahawah Sends Mayak-Al to Yaiqab in Matzarayam
+headings #2307 (book 118 1:1, level 3) title
+    Mayakaal Comes to Yaiqab to Announce His Departure
+  → Mayak-Al Comes to Yaiqab to Announce His Departure
+headings #2315 (book 118 9:1, level 3) title
+    The Death of Yaiqab; Mayakaal and Gabarayaal Carry His Soul
+  → The Death of Yaiqab; Mayak-Al and Gabaray-Al Carry His Soul
+headings #2331 (book 119 7:1, level 3) title
+    Alayapaz, Baladad, Tzawapar, and Alayahaw Come to Comfort Ayawab
+  → Alay-Paz, Baladad, Tzawapar, and Alayahaw Come to Comfort Ayawab
+headings #2341 (book 120 1:5, level 4) title
+    Mayakaal Gives Shalamah the Ring That Binds the Demons
+  → Mayak-Al Gives Shalamah the Ring That Binds the Demons
+headings #2394 (book 122 11:2, level 4) title
+    Mary and the Hidden Birth of the Beloved
+  → Marayam and the Hidden Birth of the Beloved
+headings #2411 (book 125 6:1, level 3) title
+    Christ's Coming in Glory; the Nations Brought to Judgment
+  → Mashayach's Coming in Glory; the Nations Brought to Judgment
+headings #2425 (book 126 1:1, level 2) title
+    Mashah's Commission and Prophecy to Joshua
+  → Mashah's Commission and Prophecy to Yahawashawai
+headings #2426 (book 126 11:1, level 2) title
+    Joshua's Grief and Mashah's Final Comfort
+  → Yahawashawai's Grief and Mashah's Final Comfort
+headings #2427 (book 126 1:1, level 3) title
+    Mashah's Testament to Joshua Before His Death
+  → Mashah's Testament to Yahawashawai Before His Death
+headings #2428 (book 126 2:1, level 3) title
+    Joshua Shall Lead Israel Into the Land; the Kingdom Divided
+  → Yahawashawai Shall Lead Yashar-Al Into the Land; the Kingdom Divided
+headings #2429 (book 126 3:1, level 3) title
+    An Eastern King Burns the Temple and Carries Israel Away Captive
+  → An Eastern King Burns the Temple and Carries Yashar-Al Away Captive
+headings #2437 (book 126 11:1, level 3) title
+    Joshua Mourns Mashah's Departure
+  → Yahawashawai Mourns Mashah's Departure
+headings #2438 (book 126 12:1, level 3) title
+    Mashah Comforts Joshua and Speaks of God's Foreknowledge
+  → Mashah Comforts Yahawashawai and Speaks of God's Foreknowledge
+headings #2446 (book 127 3:1, level 3) title
+    The Angel Sarekl Comes; Yaiqab Named Israel
+  → The Angel Sarekl Comes; Yaiqab Named Yashar-Al
+headings #2452 (book 127 3:3, level 4) title
+    Yaiqab's Name Changed to Israel
+  → Yaiqab's Name Changed to Yashar-Al
+headings #2458 (book 128 1:1, level 3) title
+    Yashaiyah: Sawn in Two by Manashah; Buried by the Spring of Siloah
+  → Yashaiyah: Sawn in Two by Manashah; Buried by the Spring of Shalach
+headings #2459 (book 128 2:1, level 3) title
+    Yaramayah: His Death in Egypt; He Hides the Ark of the Covenant
+  → Yaramayah: His Death in Matzarayam; He Hides the Ark of the Covenant
+headings #2460 (book 128 3:1, level 3) title
+    Yachazaqaal: His Wonders Among the Exiles by the River Kabar
+  → Yachazaq-Al: His Wonders Among the Exiles by the River Kabar
+headings #2461 (book 128 4:1, level 3) title
+    Daniel: He Restores Nebuchadnezzar from His Madness
+  → Danay-Al: He Restores Nabawakadanaatzar from His Madness
+headings #2463 (book 128 6:1, level 3) title
+    Micah: Rebuked Achaab; Thrown from a Cliff by Joram
+  → Mayakah: Rebuked Ach-Ab; Thrown from a Cliff by Joram
+headings #2469 (book 128 12:1, level 3) title
+    Chabaqawaq: Carries Food to Daniel in Babal
+  → Chabaqawaq: Carries Food to Danay-Al in Babal
+headings #2472 (book 128 15:1, level 3) title
+    Zakarayah Ban Iddo: His Signs for Yawatzadaq and Zarababal
+  → Zakarayah Ban Iddo: His Signs for Yawatzadaq and Zar-Babal
+headings #2475 (book 128 18:1, level 3) title
+    Achayah: His Rebuke of Shalamah and Yarabaim
+  → Achayah: His Rebuke of Shalamah and Yarab-Im
+headings #2476 (book 128 19:1, level 3) title
+    Yawaid: Slain by a Lion After Rebuking Yarabaim
+  → Yawaid: Slain by a Lion After Rebuking Yarab-Im
+headings #2477 (book 128 20:1, level 3) title
+    Izarayah: He Turns Back the Captivity of Judah
+  → Izarayah: He Turns Back the Captivity of Yahawadah
+headings #2478 (book 128 21:1, level 3) title
+    Zakarayah Ban Yahawayadai: Slain at the Altar by Joash
+  → Zakarayah Ban Yahawayadai: Slain at the Altar by Yawaash
+headings #2482 (book 128 4:4, level 4) title
+    Daniel and the Madness of Nebuchadnezzar
+  → Danay-Al and the Madness of Nabawakadanaatzar
+headings #2521 (book 133 4:1, level 3) title
+    Egypt's Riddle: A Castle Built Between Heaven and Earth
+  → Matzarayam's Riddle: A Castle Built Between Heaven and Earth
+headings #2522 (book 133 5:1, level 3) title
+    Haiqar, Revealed Alive, Answers Pharaoh's Riddles
+  → Haiqar, Revealed Alive, Answers Paraih's Riddles
+headings #2523 (book 133 6:1, level 3) title
+    Haiqar's Letter Wins Tribute from Egypt, and He Returns Home
+  → Haiqar's Letter Wins Tribute from Matzarayam, and He Returns Home
+headings #2529 (book 134 3:1, level 2) title
+    Court Narratives from the Reigns of David and Shalamah
+  → Court Narratives from the Reigns of Dawad and Shalamah
+headings #2531 (book 134 4:1, level 3) title
+    David Judges the Case of the Lost Silver
+  → Dawad Judges the Case of the Lost Silver
+headings #2534 (book 134 7:1, level 3) title
+    David's Census, the Plague, and the Altar on Aranan's Threshing Floor
+  → Dawad's Census, the Plague, and the Altar on Aranan's Threshing Floor
+headings #2535 (book 134 8:1, level 3) title
+    David's Charge to Israel to Keep the Law of Mashah
+  → Dawad's Charge to Yashar-Al to Keep the Law of Mashah
+headings #2537 (book 134 9:17, level 4) title
+    Chayaram's Oracle of a Star Out of David
+  → Chayaram's Oracle of a Star Out of Dawad
+headings #2538 (book 134 10:1, level 3) title
+    David's Psalm of Praise
+  → Dawad's Psalm of Praise
+headings #2539 (book 134 11:1, level 3) title
+    David's Psalm After the Slaying of Galayath's Kin
+  → Dawad's Psalm After the Slaying of Galayath's Kin
+headings #2540 (book 134 12:1, level 3) title
+    David's Final Prayer to Israel Before His Death
+  → Dawad's Final Prayer to Yashar-Al Before His Death
+headings #2541 (book 134 13:1, level 3) title
+    Tamar's Flight to Gashawar and the Slaying of Pirshaz
+  → Thamar's Flight to Gashawar and the Slaying of Pirshaz
+headings #2542 (book 134 13:26, level 4) title
+    Tamar Slays Pirshaz with His Own Sword
+  → Thamar Slays Pirshaz with His Own Sword
+headings #2570 (book 135 24:1, level 3) title
+    The Dove Fluttering Over the Messiah's Head
+  → The Dove Fluttering Over the Mashayach's Head
+headings #2571 (book 135 24:1, level 4) title
+    The Dove Flutters Over the Head of the Messiah
+  → The Dove Flutters Over the Head of the Mashayach
+headings #2586 (book 135 39:1, level 3) title
+    Walking the Waters by the Messiah's Footprints
+  → Walking the Waters by the Mashayach's Footprints
+headings #2620 (book 141 1:1, level 3) title
+    David's Song of His Youth and His Victory over the Philistine
+  → Dawad's Song of His Youth and His Victory over the Philistine
+headings #2622 (book 141 3:1, level 3) title
+    A Prayer for Cleansing and Israel's Deliverance, at Kawarash's Decree
+  → A Prayer for Cleansing and Yashar-Al's Deliverance, at Kawarash's Decree
+headings #2623 (book 141 4:1, level 3) title
+    David's Plea for Deliverance from the Lion and the Wolf
+  → Dawad's Plea for Deliverance from the Lion and the Wolf
+headings #2624 (book 141 5:1, level 3) title
+    David's Thanksgiving for Deliverance from the Lion and the Wolf
+  → Dawad's Thanksgiving for Deliverance from the Lion and the Wolf
+headings #2625 (book 142 1:1, level 3) title
+    Imaram's Testament, His Marriage of Marayam to Aharawan, and a Fragmentary Angelic Message
+  → Im-Ram's Testament, His Marriage of Marayam to Aharawan, and a Fragmentary Angelic Message
+headings #2627 (book 144 2:1, level 3) title
+    Qahath Charges Imaram to Keep the Sacred Writings
+  → Qahath Charges Im-Ram to Keep the Sacred Writings
+headings #2628 (book 145 1:1, level 3) title
+    Nathan's Vision of the Virgin and the Messiah
+  → Nathan's Vision of the Virgin and the Mashayach
+headings #2629 (book 145 2:1, level 3) title
+    David's Final Charge to Shalamah
+  → Dawad's Final Charge to Shalamah
+headings #2631 (book 146 1:1, level 2) title
+    Mashah's Final Exhortation and the Commissioning of Joshua
+  → Mashah's Final Exhortation and the Commissioning of Yahawashawai
+headings #2633 (book 146 3:1, level 3) title
+    Mashah Commissions Joshua: 'Be Strong and Resolute'
+  → Mashah Commissions Yahawashawai: 'Be Strong and Resolute'
+headings #2639 (book 146 9:1, level 3) title
+    Leadership Passes from Mashah to Joshua
+  → Leadership Passes from Mashah to Yahawashawai
+headings #2641 (book 146 11:1, level 3) title
+    A Blessing of the Twelve Tribes of Israel
+  → A Blessing of the Twelve Tribes of Yashar-Al
+headings #2644 (book 146 14:1, level 2) title
+    The Conquest of the Land: From the Jordan Onward
+  → The Conquest of the Land: From the Yaradan Onward
+headings #2645 (book 146 14:1, level 3) title
+    The Jordan Waters Stand Piled Up; Israel Crosses on Dry Ground
+  → The Yaradan Waters Stand Piled Up; Yashar-Al Crosses on Dry Ground
+headings #2646 (book 146 15:1, level 3) title
+    Recalling Abaraham, Isaac, Yaiqab, Mashah, Eleazar, and Itamar
+  → Recalling Abaraham, Yatzachaq, Yaiqab, Mashah, Al-Izar, and Itamar
+headings #2649 (book 146 18:1, level 3) title
+    Joshua's Curse on the Rebuilder of Yarayachaw
+  → Yahawashawai's Curse on the Rebuilder of Yarayachaw
+headings #2655 (book 146 23:1, level 3) title
+    A Fragment Naming Joshua and Qidah
+  → A Fragment Naming Yahawashawai and Qidah
+headings #2657 (book 147 1:1, level 3) title
+    Balaim's Vision of the Divine Council's Decree to Darken the Heavens
+  → Bal-Im's Vision of the Divine Council's Decree to Darken the Heavens
+headings #3615 (book 100 8:1, level 2) title
+    Abaraham, Isaac, and Yaiqab
+  → Abaraham, Yatzachaq, and Yaiqab
+headings #3632 (book 100 17:1, level 3) title
+    The War Between Chittim and Tubal; the Sign of Abaraham's Name
+  → The War Between Kathay and Thawabal; the Sign of Abaraham's Name
+headings #3638 (book 100 20:1, level 3) title
+    Abaraham Dwells in Garar under Abayamalak
+  → Abaraham Dwells in Garar under Abay-Malak
+headings #3639 (book 100 21:1, level 3) title
+    The Birth of Isaac; Hagar and Yashamaial Sent Away
+  → The Birth of Yatzachaq; Hagar and Yashamai-Al Sent Away
+headings #3641 (book 100 22:1, level 3) title
+    Yashamaial Journeys to His Father; the Covenant at Baarashabai
+  → Yashamai-Al Journeys to His Father; the Covenant at Baar-Shabai
+headings #3642 (book 100 23:1, level 3) title
+    The Test of Abaraham: the Binding of Isaac
+  → The Test of Abaraham: the Binding of Yatzachaq
+headings #3647 (book 100 26:1, level 3) title
+    Isaac and Rebecca; the Birth of Ishaw and Yaiqab
+  → Yatzachaq and Rabaqah; the Birth of Ishaw and Yaiqab
+headings #3650 (book 100 28:1, level 3) title
+    Isaac in Garar during the Famine; Yaiqab Obtains the Birthright
+  → Yatzachaq in Garar during the Famine; Yaiqab Obtains the Birthright
+headings #3651 (book 100 29:1, level 3) title
+    Isaac's Blindness; Yaiqab Receives the Blessing
+  → Yatzachaq's Blindness; Yaiqab Receives the Blessing
+headings #3652 (book 100 29:31, level 4) title
+    Alayapaz Spares Yaiqab's Life
+  → Alay-Paz Spares Yaiqab's Life
+headings #3653 (book 100 30:1, level 3) title
+    Yaiqab's Vision at Bayathaal; His Journey to Laban in Charan
+  → Yaiqab's Vision at Bayath-Al; His Journey to Laban in Charan
+headings #3660 (book 100 36:1, level 3) title
+    Yaiqab Returns to Bayathaal; the Death of Rachal
+  → Yaiqab Returns to Bayath-Al; the Death of Rachal
+headings #3678 (book 100 47:1, level 3) title
+    Isaac's Old Age in Kanain; Ishaw in Adawam
+  → Yatzachaq's Old Age in Kanain; Ishaw in Adawam
+headings #3679 (book 100 48:1, level 3) title
+    The Famine and Pharaoh's Dream; Yawasap Interprets
+  → The Famine and Paraih's Dream; Yawasap Interprets
+headings #3684 (book 100 52:1, level 3) title
+    The Brothers Return with Their Money and Banayamayan
+  → The Brothers Return with Their Money and Ban-Yamayan
+headings #3685 (book 100 53:1, level 3) title
+    The Sons of Yaiqab Return to Matzarayam with Banayamayan
+  → The Sons of Yaiqab Return to Matzarayam with Ban-Yamayan
+headings #3694 (book 100 58:1, level 3) title
+    The Death of Pharaoh; Magron Reigns in Matzarayam
+  → The Death of Paraih; Magron Reigns in Matzarayam
+headings #3695 (book 100 59:1, level 3) title
+    The Names of the Sons of Israel Who Came into Matzarayam
+  → The Names of the Sons of Yashar-Al Who Came into Matzarayam
+headings #3698 (book 100 61:1, level 3) title
+    Pharaoh Builds a Palace; Tzapaw's War Continues
+  → Paraih Builds a Palace; Tzapaw's War Continues
+headings #3700 (book 100 63:1, level 3) title
+    The Death of Laway; the War of Kawash against Chittim
+  → The Death of Laway; the War of Kawash against Kathay
+headings #3701 (book 100 64:1, level 3) title
+    Balaim Flees to Chittim; Tzapaw's Victory over Angeas
+  → Bal-Im Flees to Kathay; Tzapaw's Victory over Angeas
+headings #3702 (book 100 65:1, level 3) title
+    Pharaoh's Counsellors Devise the Bondage of Israel
+  → Paraih's Counsellors Devise the Bondage of Yashar-Al
+headings #3703 (book 100 65:1, level 4) title
+    The Scheme to Enslave Israel with Building Labor
+  → The Scheme to Enslave Yashar-Al with Building Labor
+headings #3706 (book 100 68:1, level 3) title
+    Marayam's Prophecy and Mashah Hidden from Pharaoh
+  → Marayam's Prophecy and Mashah Hidden from Paraih
+headings #3715 (book 100 74:1, level 3) title
+    The Death of Saul, King of Adawam
+  → The Death of Shaawal, King of Adawam
+headings #3720 (book 100 78:1, level 3) title
+    The Death of Baal Channan, King of Adawam
+  → The Death of Bail Channan, King of Adawam
+headings #3728 (book 100 81:56, level 4) title
+    Pharaoh Alone Survives the Yam Sup
+  → Paraih Alone Survives the Yam Sup
+headings #3730 (book 100 82:1, level 3) title
+    Israel Comes to the Wilderness of Sayanay
+  → Yashar-Al Comes to the Wilderness of Sayanay
+headings #3736 (book 100 87:1, level 3) title
+    Mashah Commissions Joshua before His Death
+  → Mashah Commissions Yahawashawai before His Death
+headings #3737 (book 100 88:1, level 2) title
+    The Conquest of Kanain under Joshua
+  → The Conquest of Kanain under Yahawashawai
+headings #3738 (book 100 88:1, level 3) title
+    The Death of Mashah; Joshua Leads Israel into Kanain
+  → The Death of Mashah; Yahawashawai Leads Yashar-Al into Kanain
+headings #3739 (book 100 88:1, level 4) title
+    Joshua Is Commissioned to Conquer Kanain
+  → Yahawashawai Is Commissioned to Conquer Kanain
+headings #3740 (book 100 89:1, level 3) title
+    Joshua's Song of Victory over the Amorites
+  → Yahawashawai's Song of Victory over the Amaray
+headings #3741 (book 100 89:1, level 4) title
+    Joshua Sings the Song of Victory
+  → Yahawashawai Sings the Song of Victory
+headings #3743 (book 100 91:1, level 3) title
+    The Death of Joshua; Adonibezek and the Last Canaanite Kings
+  → The Death of Yahawashawai; Adonibezek and the Last Canaanite Kings
+headings #3779 (book 101 29:1, level 3) title
+    Alahayam Curses Satan; Mayakaal Sent for Golden Rods
+  → Alahayam Curses Satan; Mayak-Al Sent for Golden Rods
+headings #3780 (book 101 30:1, level 3) title
+    Gabarayaal and Raphael Bring Incense and Myrrh from the Garden
+  → Gabaray-Al and Raphael Bring Incense and Myrrh from the Garden
+headings #3822 (book 101 72:1, level 3) title
+    Satan’s Hosts Appear as River Maidens to Tempt Adam and Chawah
+  → Satan's Hosts Appear as River Maidens to Tempt Adam and Chawah
+headings #3849 (book 102 7:1, level 3) title
+    Shath's Marriage to Aklia; the Line to Mahalaleel
+  → Shath's Marriage to Aklia; the Line to Mahalal-Al
+headings #3856 (book 102 14:1, level 3) title
+    The Death of Enos
+  → The Death of Anawash
+headings #3857 (book 102 15:1, level 3) title
+    The Death of Cainan
+  → The Death of Qayanan
+headings #3858 (book 102 16:1, level 3) title
+    The Death of Mahalaleel; His Charge to Yarad
+  → The Death of Mahalal-Al; His Charge to Yarad
+headings #3894 (book 136 21:1, level 3) title
+    Gabarayaal and the Eighth and Ninth Heavens
+  → Gabaray-Al and the Eighth and Ninth Heavens
+headings #3948 (book 136 69:1, level 1) title
+    Part II — The Exaltation of Malakayatzadaq
+  → Part II — The Exaltation of Malakay-Tzadaq
+headings #3952 (book 136 71:1, level 2) title
+    The Miraculous Birth of Malakayatzadaq
+  → The Miraculous Birth of Malakay-Tzadaq
+headings #3953 (book 136 71:24, level 4) title
+    Malakayatzadaq Born from the Body of the Dead Sopanim
+  → Malakay-Tzadaq Born from the Body of the Dead Sopanim
+headings #3955 (book 136 72:1, level 3) title
+    Mayakaal Carries the Child Away to Idan Before the Flood
+  → Mayak-Al Carries the Child Away to Idan Before the Flood
+headings #3977 (book 137 11:1, level 2) title
+    The Fifth Heaven: Mayakaal and the Prayers of the Righteous
+  → The Fifth Heaven: Mayak-Al and the Prayers of the Righteous
+headings #3978 (book 137 11:1, level 3) title
+    The Closed Gate and the Coming of Mayakaal
+  → The Closed Gate and the Coming of Mayak-Al
+headings #3980 (book 137 12:1, level 4) title
+    The Baskets of Flowers Brought to Mayakaal
+  → The Baskets of Flowers Brought to Mayak-Al
+headings #3982 (book 137 14:1, level 3) title
+    Mayakaal Presents the Merits to Alahayam
+  → Mayak-Al Presents the Merits to Alahayam
+headings #3983 (book 137 15:1, level 3) title
+    Mayakaal Rewards the Righteous with Oil
+  → Mayak-Al Rewards the Righteous with Oil
+headings #4011 (book 138 19:1, level 3) title
+    The Covenant of Life and Death Set Before Israel
+  → The Covenant of Life and Death Set Before Yashar-Al
+headings #4013 (book 138 21:1, level 2) title
+    The Revelation of the Messiah and the Resurrection
+  → The Revelation of the Mashayach and the Resurrection
+headings #4024 (book 138 29:1, level 3) title
+    The Messiah Revealed; Behemoth and Leviathan Become Food
+  → The Mashayach Revealed; Behemoth and Leviathan Become Food
+headings #4026 (book 138 30:1, level 3) title
+    The Messiah's Return and the Resurrection of the Righteous
+  → The Mashayach's Return and the Resurrection of the Righteous
+headings #4039 (book 138 40:1, level 3) title
+    The Last Ruler Condemned; the Messiah's Reign Begins
+  → The Last Ruler Condemned; the Mashayach's Reign Begins
+headings #4061 (book 138 58:1, level 3) title
+    The Black Waters of Egypt and the Nations' Sins
+  → The Black Waters of Matzarayam and the Nations' Sins
+headings #4065 (book 138 62:1, level 3) title
+    The Black Waters of Yarabaim's Calves and Ayazabal's Curse
+  → The Black Waters of Yarab-Im's Calves and Ay-Zabal's Curse
+headings #4076 (book 138 72:1, level 3) title
+    The Bright Lightning: The Messiah Judges the Nations
+  → The Bright Lightning: The Mashayach Judges the Nations
+headings #4077 (book 138 72:2, level 4) title
+    The Messiah Summons and Judges the Nations
+  → The Mashayach Summons and Judges the Nations
+headings #4078 (book 138 73:1, level 3) title
+    The Messiah's Reign of Peace and Healing
+  → The Mashayach's Reign of Peace and Healing
+headings #4098 (book 139 1:1, level 1) title
+    Esdras' Oracle to Yasharaal and the Nations
+  → Esdras' Oracle to Yashar-Al and the Nations
+headings #4099 (book 139 1:1, level 3) title
+    Esdras Indicts Yasharaal for Forsaking Yahawah
+  → Esdras Indicts Yashar-Al for Forsaking Yahawah
+headings #4101 (book 139 2:1, level 3) title
+    Israel the Forsaken Mother, and the Vision of the Crowned Youths
+  → Yashar-Al the Forsaken Mother, and the Vision of the Crowned Youths
+headings #4106 (book 139 4:1, level 3) title
+    Awarayaal's Reply: The Forest, the Sea, and the Evil Seed
+  → Awaray-Al's Reply: The Forest, the Sea, and the Evil Seed
+headings #4128 (book 139 12:1, level 3) title
+    Interpretation of the Eagle: the Fourth Kingdom of Danayaal's Vision
+  → Interpretation of the Eagle: the Fourth Kingdom of Danay-Al's Vision
+headings #4136 (book 139 15:1, level 1) title
+    Esdras' Oracle Against Babal, Asia, and Egypt
+  → Esdras' Oracle Against Babal, Asia, and Matzarayam
+headings #4139 (book 149 1:1, level 2) title
+    The Acts of Pilate: The Trial and Crucifixion of Jesus
+  → The Acts of Payalatawas: The Trial and Crucifixion of Yashawai
+headings #4140 (book 149 1:1, level 3) title
+    The Jewish Leaders Accuse Jesus Before Pilate
+  → The Jewish Leaders Accuse Yashawai Before Payalatawas
+headings #4141 (book 149 1:1, level 4) title
+    The Standards of Pilate's Hall Bow Down Before Jesus
+  → The Standards of Payalatawas's Hall Bow Down Before Yashawai
+headings #4142 (book 149 2:1, level 3) title
+    Pilate Questions Jesus, and His Wife's Dream Is Reported
+  → Payalatawas Questions Yashawai, and His Wife's Dream Is Reported
+headings #4143 (book 149 3:1, level 3) title
+    Pilate, Angered, Bids the Jews Judge Jesus by Their Own Law
+  → Payalatawas, Angered, Bids the Jews Judge Yashawai by Their Own Law
+headings #4144 (book 149 4:1, level 3) title
+    The Charge That Jesus Threatened to Destroy the Temple
+  → The Charge That Yashawai Threatened to Destroy the Temple
+headings #4145 (book 149 5:1, level 3) title
+    Nicodemus and the Healed Woman Testify for Jesus
+  → Nicodemus and the Healed Woman Testify for Yashawai
+headings #4146 (book 149 6:1, level 3) title
+    Barabbas Is Released and Jesus Is Condemned to the Cross
+  → Barabbas Is Released and Yashawai Is Condemned to the Cross
+headings #4147 (book 149 7:1, level 3) title
+    Jesus Is Crucified Between Dimas and Gestas
+  → Yashawai Is Crucified Between Dimas and Gestas
+headings #4148 (book 149 7:2, level 4) title
+    Golgotha: Jesus Is Stripped and Nailed to the Cross
+  → Golgotha: Yashawai Is Stripped and Nailed to the Cross
+headings #4149 (book 149 8:1, level 3) title
+    The Darkness, the Death of Jesus, and the Rent Veil of the Temple
+  → The Darkness, the Death of Yashawai, and the Rent Veil of the Temple
+headings #4150 (book 149 9:1, level 3) title
+    Joseph of Arimathea Buries Jesus and Is Cast Into Prison
+  → Yawasap of Arimathea Buries Yashawai and Is Cast Into Prison
+headings #4151 (book 149 10:1, level 3) title
+    Joseph's Deliverance From Prison and the Soldiers' Report of the Resurrection
+  → Yawasap's Deliverance From Prison and the Soldiers' Report of the Resurrection
+headings #4152 (book 149 11:1, level 3) title
+    The Council Debates Whether Jesus, Like Elijah, Was Taken Up Alive
+  → The Council Debates Whether Yashawai, Like Alayah, Was Taken Up Alive
+headings #4153 (book 149 12:1, level 3) title
+    The Levite's Testimony Concerning Simeon and His Risen Sons
+  → The Levite's Testimony Concerning Shamaiwan and His Risen Sons
+headings #4154 (book 149 13:1, level 2) title
+    The Descent of Christ Into Hell
+  → The Descent of Mashayach Into Hell
+headings #4155 (book 149 13:1, level 3) title
+    Simeon's Sons Charinus and Lenthius Begin Their Written Account
+  → Shamaiwan's Sons Charinus and Lenthius Begin Their Written Account
+headings #4157 (book 149 14:1, level 3) title
+    Adam Recalls to Seth Michael's Promise at the Gate of Eden
+  → Adam Recalls to Shath Mayak-Al's Promise at the Gate of Idan
+headings #4158 (book 149 15:1, level 3) title
+    Satan Urges the Prince of Hell to Receive and Bind Jesus
+  → Satan Urges the Prince of Hell to Receive and Bind Yashawai
+headings #4159 (book 149 16:1, level 3) title
+    Christ's Voice Commands the Everlasting Gates to Be Lifted Up
+  → Mashayach's Voice Commands the Everlasting Gates to Be Lifted Up
+headings #4161 (book 149 17:1, level 3) title
+    Christ Tramples Death and Seizes the Prince of Hell
+  → Mashayach Tramples Death and Seizes the Prince of Hell
+headings #4163 (book 149 19:1, level 3) title
+    Christ Raises the Saints Made in His Image and Leads Them Forth
+  → Mashayach Raises the Saints Made in His Image and Leads Them Forth
+headings #4164 (book 149 20:1, level 3) title
+    Christ Delivers Adam to Michael, and the Saints Enter Paradise
+  → Mashayach Delivers Adam to Mayak-Al, and the Saints Enter Paradise
+headings #4166 (book 149 21:1, level 3) title
+    Simeon's Sons Are Charged to Keep Silence and Close Their Account
+  → Shamaiwan's Sons Are Charged to Keep Silence and Close Their Account
+headings #4168 (book 149 22:1, level 3) title
+    Pilate Compels Annas and Caiaphas to Confess Jesus as the Christ
+  → Payalatawas Compels Annas and Caiaphas to Confess Yashawai as the Mashayach
+headings #4169 (book 149 22:16, level 4) title
+    The Sacred Book's Chronology Proves Jesus Is the Promised Messiah
+  → The Sacred Book's Chronology Proves Yashawai Is the Promised Mashayach
+headings #4170 (book 149 23:1, level 3) title
+    The Colophon: The Acts of Pilate Found by Theodosius at Jerusalem
+  → The Colophon: The Acts of Payalatawas Found by Theodosius at Yarawashalam
+headings #4176 (book 150 5:1, level 3) title
+    Why Christ Came in the Flesh to Suffer for Us
+  → Why Mashayach Came in the Flesh to Suffer for Us
+headings #4179 (book 150 7:1, level 4) title
+    The Goat of the Day of Atonement, a Type of Christ's Passion
+  → The Goat of the Day of Atonement, a Type of Mashayach's Passion
+headings #4180 (book 150 8:1, level 3) title
+    The Red Heifer as a Type of Christ's Sacrifice
+  → The Red Heifer as a Type of Mashayach's Sacrifice
+headings #4182 (book 150 10:1, level 3) title
+    The Dietary Laws of Moses Interpreted as Spiritual Commands
+  → The Dietary Laws of Mashah Interpreted as Spiritual Commands
+headings #4184 (book 150 12:1, level 3) title
+    Moses' Outstretched Hands and the Brazen Serpent Prefigure the Cross
+  → Mashah' Outstretched Hands and the Brazen Serpent Prefigure the Cross
+headings #4185 (book 150 12:1, level 4) title
+    Moses Stretches Forth His Hands in the Form of the Cross
+  → Mashah Stretches Forth His Hands in the Form of the Cross
+headings #4187 (book 150 14:1, level 3) title
+    The Covenant Is Confirmed to Us Through the Suffering Christ
+  → The Covenant Is Confirmed to Us Through the Suffering Mashayach
+headings #4254 (book 201 1:1, level 2) title
+    Gentiles, Hebrews, and Christians: On Inheritance and Becoming
+  → Gentiles, Ibaray, and Christians: On Inheritance and Becoming
+headings #4356 (book 202 62:1, level 3) title
+    The Other Marayam Also Interprets Psalm 84, from the Meeting with Alayashabai, Mother of Yawachanan
+  → The Other Marayam Also Interprets Psalm 84, from the Meeting with Alay-Shabai, Mother of Yawachanan
+headings #4359 (book 203 2:1, level 3) title
+    Gabarayaal and Mayakaal Are Sent with the Light-Stream to Restore Sophia's Powers
+  → Gabaray-Al and Mayak-Al Are Sent with the Light-Stream to Restore Sophia's Powers
+headings #4361 (book 203 4:1, level 3) title
+    The Emanations of Self-Willed Take Serpent, Basilisk, and Dragon Form; Gabarayaal and Mayakaal Return to Sophia's Aid
+  → The Emanations of Self-Willed Take Serpent, Basilisk, and Dragon Form; Gabaray-Al and Mayak-Al Return to Sophia's Aid
+headings #4398 (book 203 38:1, level 2) title
+    Andrew's Doubt and the Limbs of the Ineffable
+  → Anadaray's Doubt and the Limbs of the Ineffable
+headings #4489 (book 211 1:1, level 3) title
+    Malakayatzadaq: A Fragmentary Revelation Discourse to the Priest of Alahayam Ilayawan
+  → Malakay-Tzadaq: A Fragmentary Revelation Discourse to the Priest of Alahayam Ilayawan
+headings #4492 (book 211 1:22, level 2) title
+    Gamalayaal's Revelation to Malakayatzadaq, Priest of the Children of Shath
+  → Gamalay-Al's Revelation to Malakay-Tzadaq, Priest of the Children of Shath
+headings #4494 (book 211 1:45, level 2) title
+    Malakayatzadaq's Thanksgiving and Self-Offering
+  → Malakay-Tzadaq's Thanksgiving and Self-Offering
+headings #4497 (book 211 1:101, level 2) title
+    Malakayatzadaq Struck Down, Crucified, and Raised; the Archons Overcome
+  → Malakay-Tzadaq Struck Down, Crucified, and Raised; the Archons Overcome
+headings #4498 (book 216 1:1, level 1) title
+    Part One: Abraham, the Rescue of Lot, and the City of Shalam
+  → Part One: Abaraham, the Rescue of Lot, and the City of Shalam
+headings #4500 (book 216 1:1, level 3) title
+    Abraham Hears That Lot Has Been Taken Captive
+  → Abaraham Hears That Lot Has Been Taken Captive
+headings #4501 (book 216 2:1, level 3) title
+    Abraham Carries the Sacred Vase Toward the Cities of the Plain
+  → Abaraham Carries the Sacred Vase Toward the Cities of the Plain
+headings #4502 (book 216 3:1, level 3) title
+    Guided by the Flame, Abraham Presses Toward the Uncertain Battle
+  → Guided by the Flame, Abaraham Presses Toward the Uncertain Battle
+headings #4503 (book 216 4:1, level 3) title
+    The Captives Are Freed and Abraham's Shepherds Rejoice
+  → The Captives Are Freed and Abaraham's Shepherds Rejoice
+headings #4506 (book 216 6:1, level 3) title
+    Abraham Is Received in the City of Shalam on Mount Zion
+  → Abaraham Is Received in the City of Shalam on Mount Tzayawan
+headings #4507 (book 216 7:1, level 3) title
+    Melchizedek Interprets the Signs of the Victory
+  → Malakay-Tzadaq Interprets the Signs of the Victory
+headings #4508 (book 216 8:1, level 3) title
+    Melchizedek Reveals That All Is a Figure of Things to Come
+  → Malakay-Tzadaq Reveals That All Is a Figure of Things to Come
+headings #4509 (book 216 9:1, level 3) title
+    Three Pilgrims Appear to Abraham Beside the Oak
+  → Three Pilgrims Appear to Abaraham Beside the Oak
+headings #4510 (book 216 10:1, level 3) title
+    The Lord Shows Abraham the Valley of the Jordan
+  → The Lord Shows Abaraham the Valley of the Yaradan
+headings #4511 (book 216 11:1, level 3) title
+    Abraham Is Commanded to Record the History of the Vase and of Shalam
+  → Abaraham Is Commanded to Record the History of the Vase and of Shalam
+headings #4522 (book 216 18:1, level 3) title
+    The Coronation Procession Ascends Mount Zion
+  → The Coronation Procession Ascends Mount Tzayawan
+headings #4532 (book 216 24:1, level 3) title
+    Melchizedek Is Shown the Throne of Heaven and the Great Controversy
+  → Malakay-Tzadaq Is Shown the Throne of Heaven and the Great Controversy
+headings #4533 (book 216 24:13, level 4) title
+    The Angel Commands Melchizedek to Record the Vision in Six Scrolls
+  → The Angel Commands Malakay-Tzadaq to Record the Vision in Six Scrolls
+headings #4534 (book 216 25:1, level 3) title
+    Isaac Is Circumcised and Blessed, and the Scroll Is Sealed Among the Faithful
+  → Yatzachaq Is Circumcised and Blessed, and the Scroll Is Sealed Among the Faithful
+headings #4541 (book 216 31:1, level 3) title
+    Cain and Abel, the First Murder, and the Curse and Mark of Cain
+  → Qayan and Abel, the First Murder, and the Curse and Mark of Qayan
+headings #4542 (book 216 31:1, level 4) title
+    Cain's Skepticism and the Birth of the First Sons
+  → Qayan's Skepticism and the Birth of the First Sons
+headings #4543 (book 216 31:90, level 4) title
+    Cain Slays Abel and Is Cursed and Marked by the Lord
+  → Qayan Slays Abel and Is Cursed and Marked by the Lord
+headings #4544 (book 216 1:1, level 2) title
+    The History of the Vase (written by Abraham)
+  → The History of the Vase (written by Abaraham)
+headings #4545 (book 216 12:1, level 2) title
+    Salem's Story (written by Abraham)
+  → Shalam's Story (written by Abaraham)
+headings #4546 (book 216 26:1, level 2) title
+    The History of the Universe (written by Melchizedek)
+  → The History of the Universe (written by Malakay-Tzadaq)

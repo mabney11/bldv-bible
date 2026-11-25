@@ -1,0 +1,80 @@
+/* Names.css — /names and /name/:slug (names -> meaning). Shares Passages.css's shell. */
+
+.nm-letters { display: inline-flex; gap: .08em; font-family: "BLD Paleo", serif; line-height: 1; color: var(--text); }
+.nm-letters-lg { font-size: clamp(72px, 16vw, 150px); }
+.nm-letters-sm { font-size: 40px; align-self: flex-start; }
+.nm-l-root { color: var(--gold, #d4a24c); }
+.nm-l-added { color: var(--text); text-decoration: underline; text-decoration-color: var(--gold, #d4a24c);
+  text-decoration-thickness: .06em; text-underline-offset: .12em; }
+
+.nm-card-name { font-size: 18px; }
+.nm-card-meaning { color: var(--gold); font-style: italic; font-size: 14px; }
+.nm-card-common { font-size: 12.5px; color: var(--text3, var(--text2)); }
+
+.nm-main { max-width: 820px; margin: 0 auto; padding: 0 20px 30px; }
+.nm-copy { background: transparent; cursor: pointer; }
+.nm-copy.on { color: var(--gold); border-color: var(--gold); }
+
+.nm-hero { margin-top: 22px; padding: 22px 22px 20px; border: 1px solid var(--border2); border-radius: 18px;
+  background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--gold) 9%, var(--bg2)) 0%, var(--bg2) 70%);
+  text-align: center; }
+.nm-hero-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.nm-sn { font-weight: 700; font-size: 20px; color: var(--gold); border: 2px solid var(--gold); border-radius: 9px; padding: 2px 12px;
+  background: color-mix(in srgb, var(--gold) 10%, transparent); text-decoration: none; }
+.nm-rootlink { font-size: 14px; color: var(--text); text-decoration: none; border: 1px solid var(--border2); border-radius: 30px; padding: 5px 14px; }
+.nm-rootlink:hover, .nm-sn:hover { border-color: var(--gold); }
+.nm-rootlink-k { font-size: 10.5px; letter-spacing: .18em; color: var(--text4); }
+.nm-rootlink-p { font-family: "BLD Paleo"; color: var(--gold); font-size: 17px; }
+.nm-rootlink-g { color: var(--text2); }
+.nm-hero-box { margin: 18px 0 10px; padding: 18px 10px; border: 1px solid var(--border); border-radius: 14px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--gold) 6%, var(--bg)) 0%, var(--bg) 100%); }
+.nm-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; font-size: 13px; color: var(--text2); }
+.nm-legend-i { display: inline-flex; align-items: center; gap: 7px; }
+.nm-swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; background: var(--gold); }
+.nm-swatch.nm-l-added { background: transparent; border-bottom: 3px solid var(--gold); border-radius: 0; height: 10px; }
+.nm-name { margin-top: 16px; font-size: 30px; font-style: italic; color: var(--gold); }
+.nm-meaning { font-size: clamp(30px, 7vw, 44px); font-weight: 800; line-height: 1.1; }
+.nm-from { margin-top: 14px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px 12px; font-size: 15px; }
+.nm-from-k { font-size: 10.5px; letter-spacing: .18em; color: var(--text4); width: 100%; }
+.nm-from-n { color: var(--text); text-decoration: none; }
+.nm-from-p { font-family: "BLD Paleo"; font-size: 22px; color: var(--gold); }
+.nm-from-arrow { color: var(--gold); }
+.nm-summary { margin: 16px auto 0; max-width: 640px; font-size: 16px; line-height: 1.65; text-align: left; color: var(--text); }
+
+.nm-sec { margin-top: 30px; }
+.nm-origin { padding: 16px 18px; border: 1px solid var(--border2); border-radius: 12px; background: var(--bg2); margin-bottom: 12px; }
+.nm-origin-h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.nm-origin-h b { color: var(--gold); font-size: 15px; }
+.nm-origin-open { font-size: 13px; color: var(--text2); }
+.nm-verse { font-size: 17px; line-height: 1.75; margin: 0; }
+.nm-hitword .novel-root { color: #a67f38; }
+.nm-part { background: color-mix(in srgb, var(--gold, #d4a24c) 22%, transparent); color: var(--gold, #d4a24c); border-radius: 4px; padding: 0 2px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold, #d4a24c) 55%, transparent); text-decoration: underline; text-underline-offset: 4px; }
+.nm-origin-note { margin: 10px 0 0; font-size: 14px; color: var(--text2); border-left: 3px solid var(--gold); padding-left: 10px; }
+.nm-empty { color: var(--text4); font-size: 14px; }
+.nm-also { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.nm-also-k { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--text4); }
+
+.nm-common { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.nm-cn { padding: 14px 16px; border: 1px solid var(--border2); border-radius: 12px; background: var(--bg2); display: flex; flex-direction: column; gap: 7px; }
+.nm-cn-no { border-color: color-mix(in srgb, #c0584a 55%, var(--border2)); }
+.nm-cn-top { display: flex; flex-direction: column; gap: 6px; }
+.nm-cn-name { font-size: 24px; font-weight: 800; }
+.nm-cn-likes { display: flex; flex-wrap: wrap; gap: 6px; }
+.nm-like { font-size: 11.5px; border-radius: 20px; padding: 2px 9px; border: 1px solid var(--border2); color: var(--text2); }
+.nm-like-k { color: var(--text4); }
+.nm-like-yes, .nm-like-close { border-color: color-mix(in srgb, #5fa868 60%, transparent); color: #7cc286; }
+.nm-like-partly { border-color: color-mix(in srgb, var(--gold) 60%, transparent); color: var(--gold); }
+.nm-like-no { border-color: color-mix(in srgb, #c0584a 70%, transparent); color: #e0786a; }
+.nm-cn-where { font-size: 13px; color: var(--text2); }
+.nm-chain { margin: 2px 0 0; padding-left: 20px; font-size: 13.5px; line-height: 1.6; }
+.nm-chain li::marker { color: var(--gold); }
+.nm-cn-note { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--text); }
+.nm-cn-see { font-size: 13px; color: var(--gold); }
+
+.nm-diff { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 15.5px; line-height: 1.6; }
+.nm-diff li::marker { color: var(--gold); }
+
+.nm-foot { margin-top: 34px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.nm-foot-btn { font-size: 13px; color: var(--text2); border: 1px solid var(--border2); border-radius: 8px; padding: 7px 12px; text-decoration: none; }
+.nm-foot-btn:hover { color: var(--gold); border-color: var(--gold); }

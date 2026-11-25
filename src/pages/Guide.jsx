@@ -69,6 +69,17 @@ const SECTIONS = [
     ],
   },
   {
+    id: 'names',
+    ico: '𐤔𐤌',
+    title: 'Names',
+    body: 'What a name means, from scripture itself: each name in its own Paleo letters, the verse where it was given and why — Yashawai, because he will YaYawashayai (save) — beside the names translators wrote instead, whether they still sound or look like the Hebrew, and what is lost when they don’t.',
+    links: [
+      { to: '/names', label: 'All names' },
+      { to: '/name/yashawai', label: 'Yashawai (he will save)' },
+      { to: '/name/yahawashawai', label: 'Yahawashawai — Hawashai renamed' },
+    ],
+  },
+  {
     id: 'precepts',
     ico: '⁂',
     title: 'Precepts',

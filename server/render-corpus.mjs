@@ -119,12 +119,18 @@ if (INIT_SRC || RESET_SRC) {
   for (const r of all) { const b = perBook.get(r.code) || { n: 0, rendered: 0 }; perBook.set(r.code, b); b.n++; if (RENDERED.test(r.text)) b.rendered++; }
   const notReloaded = new Set([...perBook].filter(([, b]) => b.rendered >= 3 && b.rendered / b.n > 0.02).map(([code]) => code));
   const upd = db.prepare(`UPDATE verses SET text_src = text WHERE id = ?`);
+  // a verse written entirely from its Hebrew (the mechanical baseline, 2026-11-18: every word a pair, nothing outside) had
+  // no English — its source is '' (Josephus Life 1:365 was snapshotted as its own English, 2026-11-24)
+  const updNone = db.prepare(`UPDATE verses SET text_src = '' WHERE id = ?`);
+  const fromHebrew = t => { const x = String(t || ''); const n = (x.match(/[A-Za-z][A-Za-z'’-]*\s+\(/g) || []).length;
+    return n >= 2 && !/[A-Za-z]/.test(x.replace(/[A-Za-z][A-Za-z'’-]*\s+\((?:[^()]|\([^()]*\))*\)/g, '')); };
   let changes = 0, kept = 0;
   db.transaction(() => {
     for (const r of all) {
       const has = r.text_src != null && r.text_src !== '';
       if (!RESET_SRC && has) continue;                                         // --init-src: only rows without one
       if (RESET_SRC && has && notReloaded.has(r.code)) { kept++; continue; }   // rendered text is never a source
+      if (fromHebrew(r.text)) { if (r.text_src !== '') updNone.run(r.id); continue; }
       upd.run(r.id); changes++;
     }
   })();

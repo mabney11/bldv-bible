@@ -264,6 +264,7 @@ const NAV_LINKS = `
         <a href="/?book=1&amp;chapter=1">Hebrew Reader</a> ·
         <a href="/progress">Translation Progress</a> ·
         <a href="/passages">Passages</a> ·
+        <a href="/names">Names</a> ·
         <a href="/works">Works Library</a> ·
         <a href="/guide">Guide</a>
       </nav>`;
@@ -1170,6 +1171,58 @@ async function buildPassagePathSnapshot(match, port) {
   };
 }
 
+// ── NAMES (/names index, /name/:slug pages) ──────────────────────────────
+// Names -> meaning from scripture — see server.js "NAMES" and src/pages/NamePage.jsx.
+// Each name page carries its meaning, the origin verse(s) (the reader's live
+// text, as the API serves it), and the names translators wrote instead.
+ROUTES['/names'] = [{
+  match: () => true,
+  build: async (query, port) => {
+    let data = { intro: '', names: [] };
+    try { data = await fetchJSON(port, '/api/names'); } catch { /* empty */ }
+    const items = (data.names || []).map((n) => `<li><a href="/name/${encodeURIComponent(n.slug)}">${escapeHtml(n.name)} ${escapeHtml(n.paleo)}</a> — ${escapeHtml(n.meaning)}${n.common?.length ? ` (translators: ${escapeHtml(n.common.join(', '))})` : ''}</li>`).join('\n        ');
+    return {
+      title: `Names | ${BRAND}`,
+      description: 'What the names of scripture mean, from the verses that give them — Yashawai (he will save), Yahawashawai — and what is lost when translators replace them.',
+      body: `<h1>Names</h1>
+      <p>${escapeHtml(data.intro || '')}</p>
+      <ul>
+        ${items}
+      </ul>${NAV_LINKS}`,
+    };
+  },
+}];
+const NAME_PATH_RE = /^\/name\/([a-z0-9-]{1,80})$/;
+async function buildNamePathSnapshot(match, port) {
+  const [, slug] = match;
+  let n = null;
+  try { n = await fetchJSON(port, `/api/name/${encodeURIComponent(slug)}`); } catch { return null; }
+  if (!n || !n.name) return null;
+  const origin = (n.origin || []).map((o) => `<h2>${escapeHtml(o.label)}</h2>
+      ${(o.verses || []).map((v) => `<p>${escapeHtml(v.text)}</p>`).join('\n      ')}
+      ${o.note ? `<p><em>${escapeHtml(o.note)}</em></p>` : ''}`).join('\n      ');
+  const common = (n.common || []).map((c) => `<li><strong>${escapeHtml(c.name)}</strong> — ${escapeHtml(c.where || '')}. ${escapeHtml(c.note || '')}</li>`).join('\n        ');
+  const diffs = (n.differences || []).map((d) => `<li>${escapeHtml(d)}</li>`).join('\n        ');
+  return {
+    title: `${n.name} (${n.meaning}) | Names`,
+    description: truncate(`${n.name} ${n.paleo} means “${n.meaning}”. ${n.summary || ''}`, 160),
+    body: `<h1>${escapeHtml(n.name)} ${escapeHtml(n.paleo)} — ${escapeHtml(n.meaning)}</h1>
+      <p>${escapeHtml(n.summary || '')}</p>
+      ${origin}
+      <h2>What translators wrote</h2>
+      <ul>
+        ${common}
+      </ul>
+      <h2>What changes with the name</h2>
+      <ul>
+        ${diffs}
+      </ul>
+      ${n.root ? `<p><a href="/roots?sn=${escapeHtml(n.root.sn)}">The root ${escapeHtml(n.root.paleo)} ${escapeHtml(n.root.name)} (${escapeHtml(n.root.gloss)})</a></p>` : ''}
+      <p><a href="/names">All names</a></p>${NAV_LINKS}`,
+    canonicalPath: `/name/${slug}`,
+  };
+}
+
 
 // ── STORY MODELS + MAPS (server/seo/models-seo.json) ─────────────────────────
 // 2026-09-29, fieldy: "my seo should highlight the interactive 3d story telling
@@ -1434,6 +1487,20 @@ async function renderSnapshot(pathname, query, port, indexHtmlPath) {
     if (cached !== undefined) return cached;
     loadShell(indexHtmlPath);
     const built = await buildPassagePathSnapshot(passageMatch, port);
+    if (!built) return null;
+    const html = render(built);
+    cacheSet(cacheKey, html);
+    return html;
+  }
+
+  // /name/:slug — one name (see buildNamePathSnapshot above); same shape as /passage/:slug.
+  const nameMatch = NAME_PATH_RE.exec(pathname);
+  if (nameMatch) {
+    const cacheKey = pathname;
+    const cached = cacheGet(cacheKey);
+    if (cached !== undefined) return cached;
+    loadShell(indexHtmlPath);
+    const built = await buildNamePathSnapshot(nameMatch, port);
     if (!built) return null;
     const html = render(built);
     cacheSet(cacheKey, html);

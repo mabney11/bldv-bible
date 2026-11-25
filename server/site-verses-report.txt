@@ -1,4 +1,4 @@
-verify-site-verses: 23190 OT verses judged; 0 machine rows on the wrong verse; 0 saved verses to look at; FORM: 52234 untouched verses, 0 not exactly their Hebrew words (274 Hebrew-passage verses not judged)
+verify-site-verses: 23190 OT verses judged; 0 machine rows on the wrong verse; 0 saved verses to look at; FORM: 52212 untouched verses, 0 not exactly their Hebrew words (274 Hebrew-passage verses not judged)
 
 == machine rows (FAIL) ==
 

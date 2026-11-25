@@ -36,8 +36,19 @@ dirty_hash() {
   { git status --porcelain -- server/lexicon; git diff -- server/lexicon; } | sha1sum | cut -d' ' -f1
 }
 
+# 2026-11-22: the reading text follows the lexicon (fieldy: "i should only have to modify the details and the reader
+# correct itself over time"). lexicon-refresh-watch.sh runs beside this loop; started here so no new task is needed,
+# and started again if it ever dies.
+ensure_refresh_watch() {
+  local pf=server/.lexicon-watch/.refresh-watch.pid
+  if ! { [ -f "$pf" ] && kill -0 "$(cat "$pf")" 2>/dev/null; }; then
+    if command -v nohup >/dev/null 2>&1; then nohup ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & else ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & fi
+    LOG "started lexicon-refresh-watch.sh (pid $!)"
+  fi
+}
 LOG "lexicon-watch starting — polling every ${POLL_INTERVAL}s"
 while true; do
+  ensure_refresh_watch
   # 2026-09-16: a commit that lands WITHOUT going through this script's own
   # dirty-then-settled path below (fieldy or an agent running `git commit`
   # directly, rather than editing server/lexicon and letting this script

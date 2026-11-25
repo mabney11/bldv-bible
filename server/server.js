@@ -11908,6 +11908,20 @@ app.get('/sitemap-parallel-pages.xml', production.cache(3600), (req, res) => {
     }
 });
 
+// /sitemap-names.xml — /names + every /name/:slug in server/lexicon/names.json.
+app.get('/sitemap-names.xml', production.cache(3600), (req, res) => {
+    try {
+        const urls = ['  <url><loc>https://www.bldbible.com/names</loc></url>'];
+        for (const n of loadNames().names) urls.push(`  <url><loc>https://www.bldbible.com/name/${encodeURIComponent(n.slug)}</loc></url>`);
+        res.type('application/xml').send(
+            `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`
+        );
+    } catch (err) {
+        console.error('/sitemap-names.xml failed:', err);
+        res.status(500).send('');
+    }
+});
+
 // /sitemap-passages.xml — the curated passage pages (/passages + every
 // /passage/:slug in server/lexicon/passages.json). Small and evergreen; listed
 // in public/robots.txt like the other sitemaps.
@@ -12824,6 +12838,72 @@ app.get('/api/passage/:slug', (req, res) => {
         });
     } catch (err) {
         console.error('/api/passage/:slug failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ── NAMES ────────────────────────────────────────────────────────────────────
+// Name -> meaning, from scripture (fieldy, 2026-11-24): "names and their
+// scriptures that imply where the name came from … show the common name that
+// translators chose and point out differences". server/lexicon/names.json is the
+// hand-picked source of truth (hot-reloaded by mtime, like passages.json); each
+// name's ORIGIN verses are cut here from the reader's live text by buildPassage,
+// so a name page never carries a copy of a verse — a Studio edit shows up at once.
+const NAMES_PATH = path.join(__dirname, 'lexicon', 'names.json');
+let _namesCache = null;
+function loadNames() {
+    try {
+        const st = fs.statSync(NAMES_PATH);
+        if (_namesCache && _namesCache.mtime === st.mtimeMs) return _namesCache.data;
+        const raw = JSON.parse(fs.readFileSync(NAMES_PATH, 'utf8'));
+        const names = (raw.names || []).filter(n => n && n.slug && n.name);
+        const data = { intro: raw.intro || '', names, bySlug: Object.fromEntries(names.map(n => [n.slug, n])) };
+        _namesCache = { mtime: st.mtimeMs, data };
+        return data;
+    } catch (e) {
+        console.error('[names] failed to load names.json:', e.message);
+        return _namesCache?.data || { intro: '', names: [], bySlug: {} };
+    }
+}
+const nameCard = (n) => ({
+    slug: n.slug, name: n.name, sn: n.sn || '', meaning: n.meaning || '',
+    paleo: (n.letters || []).map(l => l[0]).join(''), letters: n.letters || [],
+    root: n.root || null, common: (n.common || []).map(c => c.name),
+    origin: (n.origin || []).map(o => o.ref),
+});
+
+// GET /api/names — the collection (no verse text).
+app.get('/api/names', production.cache(300), (req, res) => {
+    try {
+        const { intro, names } = loadNames();
+        res.json({ intro, names: names.map(nameCard) });
+    } catch (err) {
+        console.error('/api/names failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /api/name/:slug — one name, with its origin verses from the live text.
+app.get('/api/name/:slug', (req, res) => {
+    try {
+        const slug = String(req.params.slug || '').toLowerCase();
+        const { names, bySlug } = loadNames();
+        const n = bySlug[slug];
+        if (!n) return res.status(404).json({ error: 'no such name', slug });
+        const i = names.indexOf(n);
+        const neighbour = (q) => q ? { slug: q.slug, name: q.name } : null;
+        const origin = (n.origin || []).map(o => {
+            const built = buildPassage(o.ref);
+            const sec = built.sections[0] || null;
+            return { ...o, label: sec?.label || o.ref, reader: sec?.reader || null, verses: sec?.verses || [] };
+        });
+        const related = (n.related || []).map(s => bySlug[s]).filter(Boolean).map(nameCard);
+        res.json({
+            ...n, paleo: (n.letters || []).map(l => l[0]).join(''), origin, related,
+            prev: neighbour(names[i - 1]), next: neighbour(names[i + 1]),
+        });
+    } catch (err) {
+        console.error('/api/name/:slug failed:', err);
         res.status(500).json({ error: err.message });
     }
 });

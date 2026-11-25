@@ -348,6 +348,9 @@ if (CORPUS) {
   // "Am (mother)"). Same order as server.js reGlossOne: <paleo>_H###, then <paleo>_<pos>.
   let HOMO = {};
   try { HOMO = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'homographs.json'), 'utf8')); } catch { HOMO = {}; }
+  // hebrew-extra-lexicon.json: blank keys are his worklist (register-lexicon-placeholders.mjs); a value he typed there
+  // glosses the root exactly as lexicon.json does (server.js gsIsGlossed / the bake read it too)
+  let XLEX = {}; try { XLEX = JSON.parse(readFileSync(path.join(__dirname, 'lexicon', 'hebrew-extra-lexicon.json'), 'utf8')); } catch { XLEX = {}; }
   const POS_LONG = { prep: 'preposition', conj: 'conjunction', art: 'article', nega: 'negative', inrg: 'interrogative' };
   const homoOf = h => {
     const root = h.comps.find(c => c.css === 'root') || h.comps.find(c => c.true_root) || h.comps.find(c => !/^(mod-|vbe|prs|nme|pfm|vbs|uvf)/.test(c.css || '')) || null;
@@ -404,10 +407,22 @@ if (CORPUS) {
     if (w.isName || head.css === 'mod-nmpr') {
       const cands = (NR.nameCands && NR.nameCands.get(hf)) || [];
       const pick = cands.find(c => new RegExp(`(^|[^A-Za-z])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![a-z])`).test(mechEng)) || cands[0];
-      return pick || MF.nameEnglish(w.rootTr) || '';   // '' = the gold "()" a divine name carries
+      const en = pick || MF.nameEnglish(w.rootTr) || '';
+      // a name carrying a modification shows the name in its gloss: "BaYahawah (in Yahawah)", "MaGath (from Gath)"
+      // (fieldy 2026-11-24: "BaYahawah () and any other modification to a name, id like to see it"); alone, a name with
+      // no English keeps its gold "()" (Yahawah ())
+      if (!en && w.comps.length > 1) return hf;
+      return en;
     }
-    const src = homoOf(w) || tidy(head.translation) || tidy(LEX[head.true_root || head.paleo]);
-    if (!src || isPaleo(src) || /^\[.*\]$/.test(src)) return head.true_root || head.paleo || '';   // his placeholder
+    // HIS LEXICON AS IT STANDS NOW, before the chip baked into surface-index.db (fieldy 2026-11-22, Gen 29:35
+    // "AYawadah ([I] 𐤉𐤃𐤄)" after he set 𐤉𐤃𐤄 "Confess"): the chip holds whatever the lexicon said at the last
+    // build-surface-index — a placeholder or an older gloss — and used to win, so a lexicon edit never reached the
+    // reading text until a full rebuild. Order: his homograph (root_SN / root_pos, then the bare SN key), his lexicon,
+    // his hebrew-extra entry, then the chip (only when it is a real gloss), else the root's paleo = his placeholder.
+    const rk = head.true_root || head.paleo;
+    const real = g => { const t = tidy(g); return t && !isPaleo(t) && !/^\[.*\]$/.test(t) ? t : ''; };
+    const src = homoOf(w) || (w.sn && real(HOMO[w.sn])) || real(LEX[rk]) || real(XLEX[rk]) || real(head.translation);
+    if (!src) return rk || '';   // his placeholder
     return dropTranslit(src, w, head);   // a gloss that was only the transliteration leaves an empty slot
   };
   // ONE PASS FROM CLEAN TEXT (2026-10-30). The OT's text here is apply-web-strongs' output as loaded —
@@ -425,9 +440,16 @@ if (CORPUS) {
   cdb.transaction(() => {
     // test aids: --only c:ch:v,… limits the run; --text-json file {"c:ch:v": text} replaces the db text
     const ONLY = argv.includes('--only') ? new Set(val('--only', '').split(',')) : null;
+    // refresh-lexicon-glosses.mjs: --only-heb FILE = a JSON array of Hebrew verse keys "canon|chapter|verse" (the tokens'
+    // own numbering, = ord_c/ord_v) whose words a lexicon change touched; --mechanical-only = write ONLY verses the
+    // mechanical baseline writes from their Hebrew words (deterministic from the words + lexicon, so it can run alone,
+    // any time, without the rest of render-all — the other paths start from text render-corpus left)
+    const ONLY_HEB = argv.includes('--only-heb') ? new Set(JSON.parse(readFileSync(val('--only-heb'), 'utf8'))) : null;
+    const MECH_ONLY = argv.includes('--mechanical-only');
     const TJ = argv.includes('--text-json') ? JSON.parse(readFileSync(val('--text-json'), 'utf8')) : null;
     for (const r of rows) {
       if (ONLY && !ONLY.has(`${r.c}:${r.ch}:${r.v}`)) continue;
+      if (ONLY_HEB) { const o = ordOf.get(`${r.c}|${+r.ch}|${+r.v}`) || [+r.ch, +r.v]; if (!ONLY_HEB.has(`${r.c}|${o[0]}|${o[1]}`)) continue; }
       if (TJ && TJ[`${r.c}:${r.ch}:${r.v}`]) r.text = TJ[`${r.c}:${r.ch}:${r.v}`];
       const dbText = r.text;                       // what is stored now: unchanged output = no write
       if (r.c <= 39 && !TJ) {
@@ -467,6 +489,7 @@ if (CORPUS) {
         continue;
       }
       if (MECH) mechNone++;
+      if (MECH_ONLY) continue;   // not a mechanical verse: left to the full render
       if (!r.text) continue;
       const text0 = r.text;
       r.text = MF.respellRetired(MF.unlabel(r.text, ws).text);   // text an older run left in full form: no [label], no retired spelling

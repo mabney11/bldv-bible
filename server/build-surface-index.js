@@ -2076,7 +2076,22 @@ if (WITH_HEB) {
                 for (const sn of c.hebSn) snText.set(sn, (snText.get(sn) || '') + ' ' + words.join(' ') + ' ' + name);
             }
         } catch { /* no concepts */ }
-        rootStrip = { roots, verbs, names, snText, freq };
+        // Causative 𐤔 stems (lexicon/shaphel-stems.json, 2026-11-24): numbers the Strong's dictionary
+        // may not have (H2715a "set free") are verbs, known by their listed English + his gloss.
+        const shaphel = new Set();
+        try {
+            const SH = JSON.parse(fs.readFileSync(path.join(__dirname, 'lexicon', 'shaphel-stems.json'), 'utf8'));
+            for (const [sn0, e] of Object.entries(SH)) {
+                if (sn0.startsWith('_') || !e) continue;
+                const sn = normSN(sn0), rp = (strongsRootsLex || {})[sn0] || (strongsRootsLex || {})[sn];
+                if (!rp) { console.warn(`  ⚠ shaphel-stems: ${sn0} has no root in strongs-roots.json`); continue; }
+                shaphel.add(sn); verbs.add(sn); names.delete(sn);
+                let t = (snText.get(sn) || '') + ' ' + String(e.en || '');
+                if (homographs && typeof homographs[`${rp}_${sn}`] === 'string') t += ' ' + homographs[`${rp}_${sn}`];
+                snText.set(sn, t);
+            }
+        } catch (e) { if (e.code !== 'ENOENT') console.warn(`  ⚠ shaphel-stems.json not read (${e.message})`); }
+        rootStrip = { roots, verbs, names, snText, freq, shaphel };
         console.log(`  root strip: ${roots.size.toLocaleString()} root spellings, ${verbs.size.toLocaleString()} verbs (--no-root-strip disables)`);
     }
     console.log('\nBuilding HEB (extra) whole-word surfaces…');

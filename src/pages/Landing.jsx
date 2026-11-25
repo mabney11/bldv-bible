@@ -199,6 +199,9 @@ export default function Landing() {
         <Link to="/passages" className="landing-sec-link">
           <span aria-hidden="true">📜</span> Passages
         </Link>
+        <Link to="/names" className="landing-sec-link">
+          <span aria-hidden="true" className="landing-mem">𐤔𐤌</span> Names
+        </Link>
         <Link to="/precepts" className="landing-sec-link">
           <span aria-hidden="true">⁂</span> Precepts
         </Link>

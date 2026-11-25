@@ -58,6 +58,8 @@ const RevelationCity   = lazy(() => import('./pages/RevelationCity.jsx'));
 const RevelationCityIndex = lazy(() => import('./pages/RevelationCityIndex.jsx'));
 const Passages         = lazy(() => import('./pages/Passages.jsx'));
 const Passage          = lazy(() => import('./pages/Passage.jsx'));
+const Names            = lazy(() => import('./pages/Names.jsx'));
+const NamePage         = lazy(() => import('./pages/NamePage.jsx'));
 
 // Shown for the brief moment a lazy page chunk is downloading (near-instant
 // on repeat visits/navigations once a chunk is cached). Deliberately quiet —
@@ -384,6 +386,8 @@ export default function App() {
         <Route path="/passages"       element={<Passages />} />
         <Route path="/passage"        element={<Passage />} />
         <Route path="/passage/:slug"  element={<Passage />} />
+        <Route path="/names"          element={<Names />} />
+        <Route path="/name/:slug"     element={<NamePage />} />
         <Route path="/parallel"       element={<ParallelDispatcher />} />
         {/* Clean path form — /parallel/deuteronomy/13-3 (or /parallel/deuteronomy/13
             for a bare chapter, no verse). Ranks above the generic

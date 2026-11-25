@@ -445,3 +445,5 @@ export async function apiDelete(path) {
 export const apiPassages = () => jsonFetch('/api/passages');
 export const apiPassage = (slug) => jsonFetch(`/api/passage/${encodeURIComponent(slug)}`);
 export const apiPassageByRef = (ref) => jsonFetch(`/api/passage?ref=${encodeURIComponent(ref)}`);
+export const apiNames = () => jsonFetch('/api/names');
+export const apiName = (slug) => jsonFetch(`/api/name/${encodeURIComponent(slug)}`);

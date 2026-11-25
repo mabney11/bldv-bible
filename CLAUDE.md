@@ -61,6 +61,39 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## THE READER FOLLOWS THE LEXICON BY ITSELF — refresh-lexicon-glosses.mjs + lexicon-refresh-watch.sh (2026-11-22)
+fieldy: "automate my lexicon updates to populate raw paleo placeholders without my intervention -- i should only have to modify
+the details and the reader correct itself over time" (Gen 29:35 still read "AYawadah ([I] 𐤉𐤃𐤄)" after he set 𐤉𐤃𐤄 "Confess").
+- **Cause:** merge-modforms' mechHead took the chip gloss BAKED into surface-index.db before his live lexicon, so a placeholder
+  (or an older gloss) baked at the last build-surface-index beat every later edit; hebrew-extra-lexicon.json values were never
+  read at all. Now: his homograph (root_SN / root_pos, then bare "H###") → lexicon.json → hebrew-extra → chip (only a real
+  gloss) → the root's paleo (placeholder). A full --all dry run (2026-11-22) found 30,062 machine verses behind his lexicon.
+- **server/refresh-lexicon-glosses.mjs**: diff of the gloss files' VALUES against server/.lexicon-watch/refresh-state.json
+  (a rule-file change / first run / --all = every verse) → the Hebrew verses carrying a changed root/SN (surface-index) →
+  `merge-modforms --corpus --mechanical-only --only-heb FILE --jsonl` (new flags: only mechanical verses, only those keys) →
+  corpus.db rows get fix-name-forms' corpus passes → translation.db UNTOUCHED rows (status none, no rich_text; site numbers via
+  eng-versification) take the text with fix-name-forms' seeded-row passes. Saved verses never written. Then the headings'
+  names (below). `--register` (fieldy's machine only): blank hebrew-extra keys for every Strong's root with no key anywhere
+  (1,850 on 2026-11-22) — his worklist, never a value. Lock dir beside the state file. Measured (dry, node:sqlite shim): one
+  root changed = 432 verses, 16 s; --all = 146 s.
+- **lexicon-refresh-watch.sh** (repo root): hashes the gloss + rule files every 20 s; changed AND settled → runs the refresh in the
+  background (nice). Started (and restarted if dead) by lexicon-watch.sh on fieldy's machine (`--register`) and by
+  lexicon-pull-watch.sh on the box (PALEO_REFRESH_CMD = `docker run … paleo-studio node refresh-lexicon-glosses.mjs /data/… --state
+  /data/.lexicon-refresh-state.json` with the checkout's server/lexicon + name-map-expanded.json mounted). Log ~/lexicon-refresh-watch.log.
+- Needs: deploy (the image must carry the new scripts), restart lexicon-pull-watch.sh on the box and the "bldbible lexicon watch"
+  task locally. The first run on each machine is the full catch-up.
+
+## HEADINGS SPELL NAMES THE WAY THE READING TEXT DOES — fix-heading-names.mjs (2026-11-22)
+fieldy (Ezekiel 36 "The Mountains of Yasharaal Restored"): "Yashar-Al should always be that in my app ... fix the subtitles across
+the board". server/heading-names-lib.mjs (ONE rule): compound names (compound-hyphenation.json via name-form-lib, possessive "'s"
+too), retired spellings, and an English name the reading text writes in Hebrew (name-map-expanded bare/phrases) when that spelling
+stands >= 20 times in the reading text and lexicon/heading-names.json does not keep the word English (Temple, Sabbath, Satan,
+gentilics …). `node fix-heading-names.mjs [translation.db] [--check|--dry] [--seed-files]`; each changed heading -> headings_history
+first. Wired: rebake.sh step 5 (prod), refresh-lexicon-glosses step 5. Seed files fixed 2026-11-22 (544 strings). Measured on the
+synced translation.db: 546 of 3,605 headings (Yasharaal→Yashar-Al 73, Israel→Yashar-Al 33, Herod→Hawaradawas 25, Jerusalem→
+Yarawashalam 24, Mayakaal→Mayak-Al 21 …). Left for fieldy (heading spelling the text never uses): Satapan (text: Asatapanawas),
+Mathusal (Mathawashalach), Bayathainayah (Bethany — the text mis-parses it as Bayath + HaYaNawaay), Sitis, Gabaiwanay.
+
 ## AN UNTOUCHED VERSE IS ITS HEBREW WORDS, GLOSSED FROM ITS OWN CHIPS — the mechanical baseline (2026-11-18)
 fieldy, same day: "for untouched verses there should be verification that the english is exactly of the form of the hebrew
 'WaHaShabathathay () Kal-Mashawashah () Chagah ()' -- lets keep only simple mathematical glosses WaHaShabathathay (And [causing]
@@ -88,7 +121,15 @@ brings the old one back.
 Measured on copies of fieldy's DBs (full chain: merge-modforms --corpus, reseed, fix-divine-names, fix-name-forms,
 verify-reading-glosses --fix, verify-name-forms, fix-divine-names --check, verify-site-verses): 52,446 verses written, every gate
 passes, FORM 0 of 52,234. Hosea 2:11 -> "WaHaShabathathay (And [causing] Rest of) Kal-Mashawashah (every 𐤌𐤔𐤅𐤔 [hers · feminine])
-Chagah (feast / festival [hers · feminine]) …". Known token mis-tags now visible as written: Luke 1:71 𐤌𐤀𐤉𐤁𐤉𐤍𐤅 "from our enemies"
+Chagah (feast / festival [hers · feminine]) …". **2026-11-24 (fieldy: "BaYahawah () and any other modification to a name, id like to see it ... BaYahawah (in Yahawah)"):**
+a name that carries a modification and has no English of its own shows the name in its gloss — "BaYahawah (in Yahawah)",
+"LaYahawah (to/towards Yahawah)" (586), "MaGath (from Gath)"; a name with English shows that ("LaDawad (to/towards David)");
+a bare name with none keeps its gold "()" ("Yahawah ()"). All gates pass with it (copies of his DBs, full chain).
+**Also 2026-11-24 (render-all stopped at step 10, "JOSEPHUS_LIFE 1:365 — no backup has this verse in English"):** a verse with
+no English is now written from its Hebrew, and `render-corpus --reset-src` then snapshotted that as its English. --reset-src
+gives a verse whose text is all pairs (written from its Hebrew) text_src '' ; restore-text-src treats a backup row with EMPTY
+English as an answer ('' restored), not a missing verse. Only 217:1:365 was affected.
+Known token mis-tags now visible as written: Luke 1:71 𐤌𐤀𐤉𐤁𐤉𐤍𐤅 "from our enemies"
 tagged H1 (reads MaAbanaw "father"); Antiquities 11:65 𐤁𐤄𐤅𐤄 tagged H3068 (BaYahawah).
 
 ## THE SITE'S VERSE NUMBER IS THE ENGLISH ONE — translation.db follows it (2026-11-18)

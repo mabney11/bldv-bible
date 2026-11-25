@@ -48,8 +48,25 @@ fi
 echo $$ > "$PID_FILE"
 trap 'rm -f "$PID_FILE"' EXIT
 
+# 2026-11-22: the reading text follows the lexicon (fieldy: "i should only have to modify the details and the reader
+# correct itself over time"). lexicon-refresh-watch.sh runs beside this loop — here (the box) against the
+# data volume, through the image, with this checkout's lexicon mounted (the same mount the live container has); started here so no new task is needed,
+# and started again if it ever dies.
+if [ -z "${PALEO_REFRESH_CMD:-}" ] && command -v docker >/dev/null 2>&1; then
+  export PALEO_REFRESH_CMD="nice -n 10 docker run --rm --cpus=1 --memory=4g -v ${PALEO_PROD_DATA_DIR:-/mnt/paleo-data}:/data \
+-v $(pwd)/server/lexicon:/app/server/lexicon -v $(pwd)/server/name-map-expanded.json:/app/server/name-map-expanded.json \
+paleo-studio node refresh-lexicon-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --state /data/.lexicon-refresh-state.json"
+fi
+ensure_refresh_watch() {
+  local pf=server/.lexicon-watch/.refresh-watch.pid
+  if ! { [ -f "$pf" ] && kill -0 "$(cat "$pf")" 2>/dev/null; }; then
+    if command -v nohup >/dev/null 2>&1; then nohup ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & else ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & fi
+    LOG "started lexicon-refresh-watch.sh (pid $!)"
+  fi
+}
 LOG "lexicon-pull-watch starting — polling origin/$BRANCH every ${POLL_INTERVAL}s"
 while true; do
+  ensure_refresh_watch
   REMOTE_SHA="$(git ls-remote origin "refs/heads/$BRANCH" 2>/dev/null | cut -f1)"
   if [ -n "$REMOTE_SHA" ]; then
     PREV="$(cat "$STAMP_FILE" 2>/dev/null || echo '')"
