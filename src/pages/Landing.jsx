@@ -141,7 +141,7 @@ export default function Landing() {
   // Own convention, not the generic pageTitle() "<Page> | BLD Bible" suffix —
   // matches server/prerender.js's /landing snapshot exactly (see LANDING_TITLE
   // there) so there's no title flash on hydration.
-  usePageTitle('BLD Bible: Hebrew–English Bible & Interactive 3D Bible Stories');
+  usePageTitle('BLD Bible: Paleo Hebrew Bible with English & 3D Bible Stories');
   const toFeatures = (e) => {
     e.preventDefault();
     document.getElementById('landing-explore')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -153,10 +153,10 @@ export default function Landing() {
           <div className="landing-logo-glyph">𐤀𐤁</div>
         </div>
         <h1 className="landing-title">
-          BLD Bible<br /><span>Online Bible Study Tool</span>
+          BLD Bible<br /><span>Paleo Hebrew Bible &amp; Study Tool</span>
         </h1>
         <p className="landing-subtitle">
-          Read the Bible in English with the original Hebrew text that any translator should package with their translation.
+          Read the Bible in English with the original Paleo Hebrew text that any translator should package with their translation.
           Immerse yourself in the 3D storytelling epics of the Bible. See the prophetic Holy Land which is sure to come,
           the Temple that Solomon built, and so much more!
         </p>

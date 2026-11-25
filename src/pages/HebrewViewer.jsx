@@ -355,7 +355,8 @@ export default function HebrewViewer() {
   // MultiViewer.jsx (the other half of this reader family), with a live
   // preview of the verse's transliteration+gloss (see ../lib/versePreview.js)
   // once a single verse is selected, matching BibleHub-style tabs.
-  const hvLangLabel = HV_PILL_LABEL[srcParam] || 'Hebrew';
+  // Title says "Paleo Hebrew" (what people search for); the pill keeps its short label. Keep in step with prerender.js hebrewVerseRoute.
+  const hvLangLabel = (srcParam === 'BHS' || srcParam === 'HEB' || !srcParam) ? 'Paleo Hebrew' : (HV_PILL_LABEL[srcParam] || 'Paleo Hebrew');
   const hvTitleParts = [`${chapterName(bookName)} ${chapter}${verse != null ? ':' + verse : ''}`, hvLangLabel];
   if (verse != null) {
     const versePreview = truncateTitle(versePreviewWithGloss(grouped.find(g => g.verse === verse)?.words), 70);

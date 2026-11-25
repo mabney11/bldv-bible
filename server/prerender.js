@@ -82,10 +82,10 @@ const SITE = 'https://www.bldbible.com';
 // survives only as index.html's JSON-LD alternateName, for search
 // disambiguation — it is no longer used in any title or heading.
 const BRAND = 'BLD Bible';
-const LANDING_TITLE = `${BRAND}: Hebrew–English Bible & Interactive 3D Bible Stories`;
-const APP_DESC = "Read the Bible in English with the original Hebrew beside it, and step into its stories in interactive 3D — Solomon's Temple, Ezekiel's temple and city, the tabernacle and the camp of the 12 tribes, the 12 tribes' land on a 3D map, and New Jerusalem.";
+const LANDING_TITLE = `${BRAND}: Paleo Hebrew Bible with English & 3D Bible Stories`;
+const APP_DESC = "A Paleo Hebrew Bible online: read scripture in English with the original Hebrew in its ancient Paleo-Hebrew letters beside it, word by word with roots and Strong's numbers, and step into its stories in interactive 3D.";
 // Landing hero copy — mirrors Landing.jsx's .landing-subtitle word for word.
-const LANDING_PITCH = 'Read the Bible in English with the original Hebrew text that any translator should package with their translation. Immerse yourself in the 3D storytelling epics of the Bible. See the prophetic Holy Land which is sure to come, the Temple that Solomon built, and so much more!';
+const LANDING_PITCH = 'Read the Bible in English with the original Paleo Hebrew text that any translator should package with their translation. Immerse yourself in the 3D storytelling epics of the Bible. See the prophetic Holy Land which is sure to come, the Temple that Solomon built, and so much more!';
 
 // Canonical 66-book table — mirrors server.js's TX_BOOK_NAMES exactly (kept
 // as a separate copy on purpose: this module has no access to that
@@ -261,7 +261,7 @@ const NAV_LINKS = `
         <a href="/maps">Bible Maps</a> ·
         <a href="/parallel/genesis/1">English–Paleo Hebrew Parallel Bible</a> ·
         <a href="/lexicon-page">Lexicon</a> ·
-        <a href="/?book=1&amp;chapter=1">Hebrew Reader</a> ·
+        <a href="/?book=1&amp;chapter=1">Paleo Hebrew Bible</a> ·
         <a href="/progress">Translation Progress</a> ·
         <a href="/passages">Passages</a> ·
         <a href="/names">Names</a> ·
@@ -482,8 +482,8 @@ function multiTokensPreview(tokens) {
 // parallelVerseRoute below now applies at the verse level.
 function parallelChapterRoute() {
   const inner = englishChapterRoute(
-    '/parallel', 'English–Hebrew Parallel', 'Parallel',
-    (name, ch) => `Read ${chapterName(name)} ${ch} in English and Hebrew side by side, verse by verse.`,
+    '/parallel', 'English–Paleo Hebrew Parallel', 'Parallel',
+    (name, ch) => `Read ${chapterName(name)} ${ch} in English and Paleo Hebrew side by side, verse by verse.`,
   );
   return {
     match: inner.match,
@@ -534,7 +534,7 @@ function parallelVerseRoute() {
       const slug = _idToSlug[book] || String(book);
       return {
         title: [heading, 'Parallel', truncate(enText, 60), truncate(srcPreview, 60)].filter(Boolean).join(' | '),
-        description: `Read ${heading} in English and Hebrew side by side.${enText ? ` ${truncate(enText, 140)}` : ''}`,
+        description: `Read ${heading} in English and Paleo Hebrew side by side.${enText ? ` ${truncate(enText, 140)}` : ''}`,
         body: `<h1>${escapeHtml(heading)}</h1>
       ${enText ? `<p>${escapeHtml(enText)}</p>` : ''}
       ${wordItems ? `<h2>Hebrew, word by word</h2>\n      <ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
@@ -700,9 +700,9 @@ function hebrewVerseRoute() {
       const name = BOOK_NAMES[book];
       const verse = validVerseNum(q.get('verse'));
       return {
-        title: `${chapterName(name)} ${chapter}${verse ? `:${verse}` : ''} | Hebrew`,
+        title: `${chapterName(name)} ${chapter}${verse ? `:${verse}` : ''} | Paleo Hebrew`,
         description: `${name} chapter ${chapter} in the original Paleo-Hebrew, word by word, with roots, Strong's numbers and glosses.`,
-        body: `<h1>${escapeHtml(name)} ${chapter} — Hebrew Reader</h1>
+        body: `<h1>${escapeHtml(name)} ${chapter} — Paleo Hebrew Bible</h1>
       <p>${escapeHtml(name)} ${chapter}, in the original Paleo-Hebrew script, word by word.</p>${NAV_LINKS}`,
       };
     },
@@ -733,9 +733,9 @@ function hebrewVerseRoute() {
         .join('\n        ');
 
       return {
-        title: [heading, 'Hebrew', truncate(preview, 70)].filter(Boolean).join(' | '),
+        title: [heading, 'Paleo Hebrew', truncate(preview, 70)].filter(Boolean).join(' | '),
         description: `${heading} in the original Paleo-Hebrew, word by word, with roots, Strong's numbers and glosses.${preview ? ` ${truncate(preview, 140)}` : ''}`,
-        body: `<h1>${escapeHtml(heading)} — Hebrew Reader</h1>
+        body: `<h1>${escapeHtml(heading)} — Paleo Hebrew Bible</h1>
       ${wordItems ? `<ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
         canonicalPath: `/?book=${book}&chapter=${chapter}&verse=${verse}`,
       };
@@ -925,11 +925,11 @@ async function buildParallelPathSnapshot(match, port) {
 
   const buildChapterSnapshot = async () => {
     const data = await fetchJSON(port, `/api/translate/chapter?book=${book}&chapter=${chapter}&lang=BHS`);
-    const heading = `${chapterName(name)} ${chapter} — English–Hebrew Parallel`;
+    const heading = `${chapterName(name)} ${chapter} — English–Paleo Hebrew Parallel`;
     const body = versesArticle(heading, data.verses);
     return {
       title: `${chapterName(name)} ${chapter} | Parallel`,
-      description: `Read ${chapterName(name)} ${chapter} in English and Hebrew side by side, verse by verse.`,
+      description: `Read ${chapterName(name)} ${chapter} in English and Paleo Hebrew side by side, verse by verse.`,
       body: (body || `<h1>${escapeHtml(heading)}</h1>`) + NAV_LINKS,
       canonicalPath: `/parallel/${canonicalSlug}/${chapter}`,
     };
@@ -961,7 +961,7 @@ async function buildParallelPathSnapshot(match, port) {
 
   return {
     title: [heading, 'Parallel', truncate(enText, 60), truncate(srcPreview, 60)].filter(Boolean).join(' | '),
-    description: `Read ${heading} in English and Hebrew side by side.${enText ? ` ${truncate(enText, 140)}` : ''}`,
+    description: `Read ${heading} in English and Paleo Hebrew side by side.${enText ? ` ${truncate(enText, 140)}` : ''}`,
     body: `<h1>${escapeHtml(heading)}</h1>
       ${enText ? `<p>${escapeHtml(enText)}</p>` : ''}
       ${wordItems ? `<h2>Hebrew, word by word</h2>\n      <ul>\n        ${wordItems}\n      </ul>` : ''}${NAV_LINKS}`,
@@ -986,7 +986,7 @@ const ROUTES = {
       // Bible Study Tool" (the subheading span) — a real <h2>, not a <span>,
       // since this snapshot has no CSS to style a span as a subheading.
       body: `<h1>${escapeHtml(BRAND)}</h1>
-      <h2>Online Bible Study Tool</h2>
+      <h2>Paleo Hebrew Bible &amp; Study Tool</h2>
       <p>${escapeHtml(LANDING_PITCH)}</p>
       <h2>Interactive Story Models</h2>
       <ul>
@@ -997,7 +997,7 @@ const ROUTES = {
         ${MODEL_SEO_LIST('map')}
       </ul>
       <h2>English–Paleo Hebrew Parallel Bible</h2>
-      <p><a href="/parallel/genesis/1">Genesis 1, English and Hebrew side by side</a> — every word linked to its Hebrew.</p>
+      <p><a href="/parallel/genesis/1">Genesis 1, English and Paleo Hebrew side by side</a> — every word linked to its Hebrew.</p>
       <h2>Lexicon</h2>
       <p><a href="/lexicon-page">Every word, root and name</a> — its paleo letters, its parts, its Strong's number and every verse it stands in.</p>
       <p><a href="/progress">Translation progress</a> — every verse translated so far.</p>${NAV_LINKS}`,
@@ -1047,9 +1047,9 @@ const ROUTES = {
         // above handles the real-?verse= case with one).
         const verse = validVerseNum(q.get('verse'));
         return {
-          title: `${chapterName(name)} ${chapter}${verse ? `:${verse}` : ''} | Hebrew`,
+          title: `${chapterName(name)} ${chapter}${verse ? `:${verse}` : ''} | Paleo Hebrew`,
           description: `${name} chapter ${chapter} in the original Paleo-Hebrew, word by word, with roots, Strong's numbers and glosses.`,
-          body: `<h1>${escapeHtml(name)} ${chapter} — Hebrew Reader</h1>
+          body: `<h1>${escapeHtml(name)} ${chapter} — Paleo Hebrew Bible</h1>
       <p>${escapeHtml(name)} ${chapter}, in the original Paleo-Hebrew script, word by word.</p>${NAV_LINKS}`,
         };
       },
