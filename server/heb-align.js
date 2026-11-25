@@ -1034,7 +1034,6 @@ function buildHebSurfaces(o) {
                                  AND morph LIKE '%prs=absent%'
                                GROUP BY morph ORDER BY n DESC LIMIT 40`);
         for (const tail of [...new Set(Object.values(VBE_PALEO).flat())]) {
-            if (SUF_COMPS.has(tail)) continue;
             let rows = [];
             try { rows = q.all(tail); } catch { rows = []; }
             for (const row of rows) {
@@ -1059,7 +1058,6 @@ function buildHebSurfaces(o) {
                                  AND (morph NOT LIKE '%prs=absent%' OR morph LIKE '%gn=f%')
                                GROUP BY pos, morph ORDER BY n DESC LIMIT 200`);
         for (const tail of SUFFIX_TAILS) {
-            if (SUF_COMPS.has(tail)) continue;
             let rows = [];
             try { rows = q.all(tail); } catch { rows = []; }
             for (const row of rows) {
@@ -1067,6 +1065,8 @@ function buildHebSurfaces(o) {
                 try { parsed = parseToken(row.word_raw, row.pos, row.morph, row.strongs); } catch { continue; }
                 const last = parsed && parsed.components && parsed.components[parsed.components.length - 1];
                 if (!last || last.paleo !== tail || !/^(nme|prs)-/.test(last.css || '')) continue;
+                // the attested chip SUF_COMPS already has is kept unless it is the directional 𐤄
+                if (SUF_COMPS.has(tail) && !/^uvf-dir/.test(SUF_COMPS.get(tail).component.css || '')) break;
                 RS_NOUN.set(tail, { component: { ...last }, pos: row.pos || '' });
                 break;
             }
@@ -1172,9 +1172,14 @@ function buildHebSurfaces(o) {
                         // before it (a preposition never stands before a finite verb), and as the only piece
                         const tk = [];
                         for (const t of T.pieces) {
-                            const vbeOk = RS_VBE.has(t) && rsVerb(sn) && !pf && !hasPrep && T.pieces.length === 1;
-                            if (SUF_COMPS.has(t)) tk.push('suf');
-                            else if (vbeOk) tk.push('vbe');
+                            // the new ending tables are used ONLY for a causative-𐤔 word for now: on every other
+                            // root-strip word they changed 85 NT readings, some badly (a doubled 𐤉 from composeWord,
+                            // a root drawn as a conjunction) — that wider change waits for its own review
+                            if (!sh) { if (!SUF_COMPS.has(t)) return; tk.push('suf'); continue; }
+                            const vbeOk = RS_VBE.has(t) && rsVerb(sn) && !pf && !hasPrep && T.pieces.length === 1 && how !== 'matres';   // a plene stem (𐤔𐤇𐤓𐤅𐤓 shichrur) is the noun
+                            const dirOnVerb = SUF_COMPS.has(t) && rsVerb(sn) && /^uvf-dir/.test(SUF_COMPS.get(t).component.css || '');
+                            if (vbeOk) tk.push('vbe');
+                            else if (SUF_COMPS.has(t) && !(dirOnVerb && RS_NOUN.has(t))) tk.push('suf');
                             else if (RS_NOUN.has(t)) tk.push('noun');
                             else return;
                         }
@@ -2190,7 +2195,14 @@ function buildHebSurfaces(o) {
                     // for a word with many candidate roots (𐤄𐤇𐤉𐤉𐤋𐤉𐤌 "the soldiers" read
                     // army in one verse and "dream" in the next).
                     let pick = null, why = '';
-                    if (rsSpellPick.has(w)) {
+                    // his occurrence override names the Strong's: that IS the witness (2026-11-24, Josephus
+                    // Ant 4:22 𐤅𐤋𐤔𐤇𐤓𐤓 "relieve the multitude from their slavery" — no "free" in the English)
+                    const _ovSN = ovr(row.canon_id, row.chapter, row.verse, i + 1, w);
+                    if (_ovSN) {
+                        pick = rsCands(w, true).filter(x => x.sn === _ovSN).sort(rsCmp)[0] || null;
+                        if (pick) why = 'hand';
+                    }
+                    if (!pick && rsSpellPick.has(w)) {
                         pick = rsCands(w).filter(x => x.sn === rsSpellPick.get(w)).sort(rsCmp)[0] || null;
                         why = 'spelling';
                     }

@@ -40,17 +40,18 @@ for (const o of occ) {
   console.log(`${o.book_id}:${o.chapter}:${o.verse}`, o.word_raw, o.strongs || '-', rec && rec.tier, comps.map(c => `${c.paleo}${c.translation ? ' ' + c.translation : ''}(${c.css})`).join(' + '));
 }
 console.log('family occurrences', occ.length, 'H2715a', occ.filter(o => o.strongs === 'H2715a').length);
-// side effects: root-strip readings outside the family that end in a perfect-verb chip
+// side effects: root-strip readings outside the family, with the endings they carry
+const idx = new Map(); for (const r of surf.values()) idx.set(r.word_raw + '|' + r.strongs, r);
 const side = new Map();
 for (const o of res.occurrences || []) {
   if (o.word_raw.includes('𐤔𐤇𐤓𐤓') || !o.strongs) continue;
-  let rec = null; for (const r of surf.values()) if (r.word_raw === o.word_raw && r.strongs === o.strongs) { rec = r; break; }
-  if (!rec || !/rootstrip|context_root/.test(rec.tier || '')) continue;
+  const rec = idx.get(o.word_raw + '|' + o.strongs);
+  if (!rec || !/rootstrip/.test(rec.tier || '')) continue;
   const comps = rec.components || JSON.parse(rec.components_json || '[]');
   const last = comps[comps.length - 1];
-  if (!last || !/^vbe-/.test(last.css || '')) continue;
-  const k = o.word_raw + ' ' + o.strongs + ' ' + comps.map(c => c.paleo + (c.css === 'root' ? '' : c.translation)).join('+');
+  if (!last || last.css === 'root' || !/^(vbe|nme|prs)-/.test(last.css || '')) continue;
+  const k = o.word_raw + ' ' + o.strongs + ' ' + comps.map(c => c.css === 'root' ? c.paleo : c.paleo + c.translation + '{' + c.css + '}').join('+');
   side.set(k, (side.get(k) || []).concat(`${o.book_id}:${o.chapter}:${o.verse}`));
 }
-console.log('other readings with a perfect ending:', side.size);
-for (const [k, refs] of side) console.log('  ', k, refs.slice(0, 3).join(' '));
+console.log('other root-strip readings with an ending:', side.size);
+require('fs').writeFileSync('/tmp/side_' + ntMin + '.txt', [...side].map(([k, r]) => r.length + '\t' + k + '\t' + r.slice(0, 3).join(' ')).join('\n'));

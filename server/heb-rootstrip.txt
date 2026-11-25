@@ -1,5 +1,63 @@
 ref	word	witness	prefixes [preformative] stem tails	SN	stem is
+45:6:18	𐤔𐤇𐤓𐤓𐤕𐤌	hand	 𐤇𐤓𐤓 𐤕𐤌	H2715a	root
+45:8:2	𐤔𐤇𐤓𐤓𐤄	hand	 𐤇𐤓𐤓 𐤄	H2715a	root
+45:8:21	𐤕𐤔𐤇𐤓𐤓	hand	[𐤕] 𐤇𐤓𐤓 	H2715a	root
+46:7:22	𐤌𐤔𐤇𐤓𐤓	hand	[𐤌] 𐤇𐤓𐤓 	H2715a	root
+48:5:1	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+62:2:13	𐤄𐤕𐤂𐤁𐤓𐤕𐤌	english	[𐤄𐤕] 𐤂𐤁𐤓 𐤕+𐤌	H1396	root
+66:15:2	𐤄𐤌𐤕𐤂𐤁𐤓𐤉𐤌	english	𐤄+[𐤌𐤕] 𐤂𐤁𐤓 𐤉𐤌	H1396	root
+81:3:5	𐤌𐤄𐤄𐤂𐤅𐤁𐤓	english	𐤌+𐤄+[𐤄] 𐤂𐤅𐤁𐤓 	H1396	matres
+217:1:14	𐤋𐤔𐤇𐤓𐤅𐤓𐤌	english	𐤋 𐤇𐤓𐤅𐤓 𐤌	H2715a	matres
+217:1:16	𐤔𐤇𐤓𐤅𐤓	english	 𐤇𐤓𐤅𐤓 	H2715a	matres
+217:1:332	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
+217:1:419	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
+217:1:429	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+219:1:155	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+219:1:156	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
 219:1:535	𐤄𐤈𐤅𐤁𐤏𐤉𐤌	english	[𐤄] 𐤈𐤅𐤁𐤏 𐤉𐤌	H2883	matres
+219:1:582	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+219:1:601	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+219:1:646	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+219:1:673	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+219:2:101	𐤌𐤔𐤇𐤓𐤓	hand	[𐤌] 𐤇𐤓𐤓 	H2715a	root
+219:4:493	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+219:4:493	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+219:6:416	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+220:1:178	𐤌𐤕𐤂𐤁𐤓𐤉𐤌	english	[𐤌𐤕] 𐤂𐤁𐤓 𐤉𐤌	H1396	root
+220:2:74	𐤔𐤇𐤓𐤅𐤓𐤅	spelling	 𐤇𐤓𐤅𐤓 𐤅	H2715a	matres
+220:2:76	𐤔𐤇𐤓𐤅𐤓𐤅	spelling	 𐤇𐤓𐤅𐤓 𐤅	H2715a	matres
+220:2:138	𐤉𐤔𐤇𐤓𐤓	hand	[𐤉] 𐤇𐤓𐤓 	H2715a	root
+220:2:138	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
+220:2:235	𐤕𐤔𐤇𐤓𐤓	hand	[𐤕] 𐤇𐤓𐤓 	H2715a	root
 220:2:261	𐤄𐤕𐤏𐤍𐤉𐤍𐤅𐤕𐤍	english	[𐤄𐤕] 𐤏𐤍𐤉𐤍𐤅 𐤕+𐤍	H6031	form
+220:2:268	𐤅𐤉𐤔𐤇𐤓𐤓	hand	𐤅+[𐤉] 𐤇𐤓𐤓 	H2715a	root
+220:2:311	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
+220:2:313	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
 220:2:343	𐤄𐤍𐤎𐤏𐤓𐤉𐤌	english	𐤄+[𐤍] 𐤎𐤏𐤓 𐤉𐤌	H5590	root
+220:4:22	𐤅𐤋𐤔𐤇𐤓𐤓	hand	𐤅+𐤋 𐤇𐤓𐤓 	H2715a	root
+220:4:28	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+220:4:287	𐤅𐤁𐤐𐤔𐤉𐤏𐤕𐤅	english	𐤅+𐤁 𐤐𐤔𐤉𐤏 𐤕+𐤅	H6585	matres
+220:5:187	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+220:5:263	𐤅𐤉𐤔𐤇𐤓𐤓	hand	𐤅+[𐤉] 𐤇𐤓𐤓 	H2715a	root
+220:6:42	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
+220:7:273	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
+220:7:297	𐤁𐤔𐤇𐤓𐤓𐤅	hand	𐤁 𐤇𐤓𐤓 𐤅	H2715a	root
+220:8:46	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+220:9:50	𐤅𐤉𐤔𐤇𐤓𐤓𐤄	hand	𐤅+[𐤉] 𐤇𐤓𐤓 𐤄	H2715a	root
+220:12:21	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+220:12:434	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+220:13:213	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+220:14:76	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+220:14:97	𐤔𐤇𐤓𐤓𐤄	hand	 𐤇𐤓𐤓 𐤄	H2715a	root
+220:15:11	𐤔𐤇𐤓𐤅𐤓𐤅	spelling	 𐤇𐤓𐤅𐤓 𐤅	H2715a	matres
+220:16:26	𐤅𐤉𐤔𐤇𐤓𐤓𐤌	hand	𐤅+[𐤉] 𐤇𐤓𐤓 𐤌	H2715a	root
 220:17:129	𐤅𐤁𐤄𐤕𐤐𐤔	english	𐤅+𐤁+[𐤄] 𐤕𐤐𐤔 	H8610	root
+220:17:146	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+220:17:324	𐤌𐤔𐤇𐤓𐤓𐤉	hand	[𐤌] 𐤇𐤓𐤓 𐤉	H2715a	root
+220:17:332	𐤌𐤌𐤔𐤇𐤓𐤓𐤉𐤅	hand	𐤌+[𐤌] 𐤇𐤓𐤓 𐤉+𐤅	H2715a	root
+220:18:38	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+220:18:69	𐤌𐤔𐤇𐤓𐤓𐤕	hand	[𐤌] 𐤇𐤓𐤓 𐤕	H2715a	root
+220:19:242	𐤁𐤔𐤇𐤓𐤓𐤌	hand	𐤁 𐤇𐤓𐤓 𐤌	H2715a	root
+220:19:362	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+220:20:135	𐤅𐤌𐤔𐤇𐤓𐤓𐤉	hand	𐤅+[𐤌] 𐤇𐤓𐤓 𐤉	H2715a	root
+220:20:215	𐤔𐤇𐤓𐤓𐤌	hand	 𐤇𐤓𐤓 𐤌	H2715a	root

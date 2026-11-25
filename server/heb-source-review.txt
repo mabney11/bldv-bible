@@ -1,4 +1,4 @@
-HEB-edition readings against their verse's sources (text_src + versions.db + Greek NT glosses), 2026-11-18T23:16:40.446Z
+HEB-edition readings against their verse's sources (text_src + versions.db + Greek NT glosses), 2026-11-25T04:26:45.018Z
 
 book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	blank	confirmed% of judgeable
 40 Matthew	6357	1835	231	302	4324	685	137	0	0	297	90.9
@@ -6,10 +6,10 @@ book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	
 42 Luke	6410	1945	203	273	4908	788	187	0	0	326	89.5
 43 John	5208	1240	194	333	4259	614	88	0	0	280	90.2
 44 Acts	5784	2079	155	297	4628	1091	208	0	0	627	85.8
-45 Romans	2320	749	68	69	1996	544	85	0	0	115	83.0
-46 1 Corinthians	2359	659	90	67	2100	503	104	0	0	152	83.3
+45 Romans	2320	749	72	69	1996	544	84	0	0	112	83.0
+46 1 Corinthians	2359	659	91	67	2100	503	104	0	0	151	83.3
 47 2 Corinthians	1285	493	50	47	1367	358	56	0	0	115	81.1
-48 Galatians	781	217	42	31	707	185	15	0	0	40	83.3
+48 Galatians	781	217	43	31	707	184	15	0	0	40	83.4
 49 Ephesians	750	247	24	32	557	160	22	0	0	25	84.6
 50 Philippians	469	167	28	26	486	126	28	0	0	30	80.5
 51 Colossians	446	167	17	16	391	134	20	0	0	47	79.9
@@ -23,11 +23,11 @@ book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	
 59 James	602	229	24	21	381	113	29	0	0	24	85.4
 60 1 Peter	579	222	13	27	464	158	24	0	0	26	81.5
 61 2 Peter	323	150	17	15	296	96	20	0	0	25	80.3
-62 1 John	764	108	18	14	604	78	12	0	0	8	90.6
+62 1 John	764	108	18	14	605	78	12	0	0	7	90.6
 63 2 John	102	15	0	2	55	13	1	0	0	1	89.3
 64 3 John	85	19	1	0	65	10	2	0	0	7	89.7
 65 Jude	152	75	4	13	112	33	7	0	0	5	85.0
-66 Revelation	3544	979	83	54	1509	266	56	0	0	79	93.4
+66 Revelation	3544	979	83	54	1510	266	56	0	0	78	93.4
 67 1 Enoch	0	68	3	3	72	20	4	0	0	1	73.9
 68 Jubilees	0	10729	106	1772	10358	3655	627	0	0	294	71.5
 69 1 Maccabees	0	3759	100	754	4935	3180	633	0	0	385	49.6
@@ -38,7 +38,7 @@ book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	
 74 Baruch	0	755	17	94	618	367	54	0	0	86	64.2
 76 2 Maccabees	0	2161	53	300	3874	2922	541	0	0	345	38.4
 79 Susanna	0	227	2	27	374	229	34	0	0	16	46.3
-81 1 Esdras	0	2083	29	715	1578	1109	135	0	0	235	62.6
+81 1 Esdras	0	2083	29	715	1579	1109	135	0	0	234	62.6
 83 Psalms of Solomon	0	1011	18	78	743	744	131	0	0	191	53.6
 84 Prayer of Manasseh	0	102	3	15	80	34	2	0	0	2	73.9
 85 Psalm 151	0	0	1	0	0	0	0	0	65	1	-
@@ -57,9 +57,9 @@ book	greek	english	hand	name	function	guess	unconfirmed	contradicted	no-english	
 213 Salam to Melchizedek	0	4	0	0	1	2	0	0	0	0	66.7
 214 Homilies of Cyril on Melchizedek	0	104	0	9	119	27	7	0	0	5	75.4
 215 Story of Melchizedek	0	43	0	4	43	11	1	0	0	4	78.2
-217 Life of Flavius Josephus	0	2389	220	499	5589	4090	627	0	0	807	33.6
+217 Life of Flavius Josephus	0	2389	223	499	5591	4089	627	0	0	803	33.6
 218 Against Apion	0	4031	224	607	9562	7363	768	0	0	999	33.1
-219 The Jewish War	0	24545	1855	2855	51176	43731	5880	0	0	7639	33.1
-220 Antiquities of the Jews	0	80998	2783	9361	110902	45305	8186	0	0	13337	60.2
+219 The Jewish War	0	24545	1865	2855	51176	43730	5880	0	0	7630	33.1
+220 Antiquities of the Jews	0	80996	2814	9361	110908	45297	8186	0	0	13310	60.2
 
 CONTRADICTED (the verse's Greek backs another reading of this spelling; nothing confirms the chosen one) — word	chosen	Greek backs	occurrences	refs

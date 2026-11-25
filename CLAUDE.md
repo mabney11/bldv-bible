@@ -61,6 +61,26 @@ Rebake gate failed again.
 rendered square `strongs_def`; ENG 147:2:12 held a stray dagesh; holyLand.js held 878 square characters and
 CheatsheetLong.js 26. All baked (corpus rows by the pipeline's first `--fix` run).
 
+## 𐤔𐤇𐤓𐤓 "SET FREE" = H2715a, AND THE CAUSATIVE 𐤔 STEM (Shaphel) IN ROOT STRIP (2026-11-24)
+fieldy, Romans 6:22 𐤌𐤔𐤇𐤓𐤓𐤉𐤌 read as 𐤔 "who" + Charar H2788 "parched". It is Mishnaic meshuchrarim "ones set free": participle
+𐤌 + causative stem 𐤔 + root 𐤇𐤓𐤓. His choices: a new number H2715a (like H3603a/H378a), the 𐤔 chip reads [Causing].
+- Data: strongs-roots.json "H2715a": 𐤇𐤓𐤓; homographs.json "𐤇𐤓𐤓_H2715a": "Set free"; NEW lexicon/shaphel-stems.json (roots whose
+  words carry a causative 𐤔 + the English a verse uses for them, so root strip knows a number the Strong's dictionary lacks);
+  heb-occurrence-overrides.json: all 50 occurrences (Rom 6:18, 6:22, 8:2, 8:21; 1 Cor 7:22; Gal 5:1; 44 in Josephus — every verse
+  read: free / freed / liberty / delivered; Ant 4:22 "relieve from slavery", 7:273 "release me", 20:215 "dismissed them").
+- heb-align.js root strip: a 𐤔 between the preformative and a shaphel-stems root is a stem slot (chip 𐤔 [Causing], css vbs-hif —
+  applyFlatLabels leaves vbs-hif alone); the proclitic-𐤔 reading of such a root is dropped. RS_VBE (perfect subject endings, from
+  real BHS perfect verbs — the BHS never writes vbe=, the parser draws it from vt/ps/gn/nu) and RS_NOUN (noun/pronoun endings found by
+  TAG) — USED ONLY FOR A CAUSATIVE-𐤔 WORD: perfect ending only on a verb with no preformative, no preposition, an exact (not plene)
+  stem; never the directional 𐤄 on a verb. A hand occurrence override is the witness in root strip (word with no other reading).
+- Probe (node:sqlite, SQLITE_TMPDIR=/tmp, vs the 2026-10-31 heb-align): family 50/50 H2715a (was 15, most "burn" or blank);
+  other root-strip readings changed: NT 0, Apocrypha 0, Josephus 3 (the plene noun 𐤔𐤇𐤓𐤅𐤓 shichrur, now [Causing]).
+- NOT done (found on the way): the same ending tables on EVERY root-strip word would fill ~100 NT blanks ("you received", "your
+  prayers"), but composeWord then draws a doubled 𐤉 (𐤉𐤀𐤁𐤃𐤍𐤄 -> 𐤉+𐤉+𐤀𐤁𐤃) and a root as a conjunction (𐤒𐤁𐤋𐤕𐤊𐤌) — needs its own pass.
+- fieldy's "big push" (6246462, 22:52) committed an intermediate heb-align.js that used the endings on every word; the working copy
+  is the narrow version — commit it again.
+Run: `node build-surface-index.js` (etched "burn" readings are re-decided by the overrides), `node render-all.mjs --surface`, restart, Rebake.
+
 ## THE READER FOLLOWS THE LEXICON BY ITSELF — refresh-lexicon-glosses.mjs + lexicon-refresh-watch.sh (2026-11-22)
 fieldy: "automate my lexicon updates to populate raw paleo placeholders without my intervention -- i should only have to modify
 the details and the reader correct itself over time" (Gen 29:35 still read "AYawadah ([I] 𐤉𐤃𐤄)" after he set 𐤉𐤃𐤄 "Confess").

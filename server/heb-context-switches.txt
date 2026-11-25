@@ -86,6 +86,7 @@ ref	word	from->to	before -> after	who (hand = his entry, auto = the verse Englis
 44:22:13	𐤅𐤁𐤔𐤏𐤄	H8159->H8160	proclitic:𐤅+𐤁+𐤔𐤏𐤄 -> root:𐤅+𐤁 𐤔𐤏𐤄 	hand
 44:23:23	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 45:3:5	𐤄𐤊𐤉	->H3588	exact:𐤄𐤊𐤉 -> proclitic:𐤄+𐤊𐤉	hand
+45:6:22	𐤌𐤔𐤇𐤓𐤓𐤉𐤌	H2788->H2715a	proclitic:𐤌+𐤔+𐤇𐤓𐤓𐤉𐤌 -> root:𐤌 𐤇𐤓𐤓 𐤉𐤌	hand
 45:7:7	𐤄𐤊𐤉	->H3588	exact:𐤄𐤊𐤉 -> proclitic:𐤄+𐤊𐤉	hand
 45:7:13	𐤄𐤊𐤉	->H3588	exact:𐤄𐤊𐤉 -> proclitic:𐤄+𐤊𐤉	hand
 45:9:14	𐤄𐤊𐤉	->H3588	exact:𐤄𐤊𐤉 -> proclitic:𐤄+𐤊𐤉	hand
@@ -228,6 +229,7 @@ ref	word	from->to	before -> after	who (hand = his entry, auto = the verse Englis
 220:8:414	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
 220:11:250	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
 220:12:104	𐤄𐤔𐤏𐤄	H8159->H8160	proclitic:𐤄+𐤔𐤏𐤄 -> root:𐤄 𐤔𐤏𐤄 	hand
+220:12:144	𐤌𐤔𐤇𐤓𐤓𐤉𐤌	H2788->H2715a	proclitic:𐤌+𐤔+𐤇𐤓𐤓𐤉𐤌 -> root:𐤌 𐤇𐤓𐤓 𐤉𐤌	hand
 220:12:302	𐤔𐤏𐤄	H8159->H8160	exact:𐤔𐤏𐤄 -> bhs:𐤔𐤏𐤄	hand
 220:14:65	𐤔𐤏𐤅𐤕	H8159->H8160	suffix:𐤔𐤏𐤅+𐤕 -> (no reading offered)	hand miss
 220:15:130	𐤄𐤊𐤉	->H3588	exact:𐤄𐤊𐤉 -> proclitic:𐤄+𐤊𐤉	hand
