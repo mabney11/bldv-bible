@@ -1,0 +1,4 @@
+{
+  "_README": "Roots whose words carry a CAUSATIVE 𐤔 stem letter (Shaphel) between the verb preformative and the root: 𐤌|𐤔|𐤇𐤓𐤓|𐤉𐤌 meshuchrarim 'ones set free' = [One who] [Causing] Charar [Plural]. The 𐤔 is read [Causing] (css vbs-hif, like the Hiphil 𐤄), never the 'who' particle, and only before a root listed here. Each entry: the Strong's number (its root is in strongs-roots.json, its gloss in homographs.json) and the English words a verse uses for it, so root strip can find it when the Strong's dictionary has no entry (fieldy, 2026-11-24: H2715a 'set free', split from H2787 'burn' / H2788 'parched'). Read by build-surface-index.js -> heb-align.js rsCands/rsCompose.",
+  "H2715a": { "en": "free freed freedom liberty liberate deliver deliverance release dismiss" }
+}
