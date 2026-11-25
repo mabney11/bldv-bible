@@ -1,0 +1,105 @@
+{
+  "_comment": "Names -> meaning, from scripture. One entry = a name, its Paleo letters (marked: root = letters of the root it is built on, added = a letter scripture records being added), the verse(s) where scripture itself says why the name was given (origin), other places it is named (also), and the names translators put in its place (common). Verse text is NEVER copied here: /api/name/:slug cuts each origin verse from the reader's live text (buildPassage), so a Studio edit shows up at once. 'marks' name the words of the origin verse to light up and the part of each word that carries the root (prefixes stay unlit). Prose follows the reading text: transliteration first, English gloss in parentheses. Served by server.js NAMES; pages src/pages/Names.jsx + NamePage.jsx.",
+  "intro": "A Hebrew name is a sentence. Scripture often says why a name was given, and the reason is spoken in the same root as the name. When a translator replaces the name with one that neither looks nor sounds like it, the reason in the verse goes silent. Each name here is shown in its own letters, with the verse that explains it, beside the names translators chose.",
+  "names": [
+    {
+      "slug": "yashawai",
+      "name": "Yashawai",
+      "sn": "H3442",
+      "meaning": "he will save",
+      "letters": [["𐤉", "root"], ["𐤔", "root"], ["𐤅", ""], ["𐤏", "root"]],
+      "legend": { "root": "the root 𐤉𐤔𐤏 Yashai (save)" },
+      "root": { "sn": "H3467", "name": "Yashai", "paleo": "𐤉𐤔𐤏", "gloss": "save" },
+      "summary": "The malaak (messenger) gives the name and the reason for it in one breath: you will call his shamaw (name) Yashawai, because he will YaYawashayai (save) his people. The name and the promise are the same root, 𐤉𐤔𐤏 Yashai (save) — hear the name and you hear what he will do.",
+      "origin": [
+        {
+          "ref": "Matthew 1:21",
+          "marks": [{ "word": "Yashawai", "part": "Yashawai" }, { "word": "YaYawashayai", "part": "Yawashayai" }],
+          "note": "Yashawai … YaYawashayai (save): the reason for the name is the name."
+        }
+      ],
+      "also": "Matthew 1:25; Luke 1:31; Luke 2:21",
+      "common": [
+        {
+          "name": "Jesus",
+          "where": "The New Testament of nearly every English Bible",
+          "chain": ["Yashawai", "Iēsous — Greek", "Iesus — Latin, and the 1611 King James", "Jesus — English, once the J was printed"],
+          "sounds": "no", "looks": "no",
+          "note": "Greek has no sh sound and no letter for 𐤏, and its men's names end in -s, so Yashawai became Iēsous; Latin wrote Iesus, and English later printed the I as a J. Nothing of Yashai (save) can be heard or seen in Jesus, so Matthew 1:21 reads as a name followed by an unrelated promise."
+        },
+        {
+          "name": "Jeshua",
+          "where": "Ezra and Nehemiah in the King James — the same 𐤉𐤔𐤅𐤏",
+          "sounds": "close", "looks": "close",
+          "note": "Keeps the sh and the ending. The J was once read as a Y, which is why it looks like the Hebrew."
+        },
+        {
+          "name": "Joshua",
+          "where": "Most English Bibles, for the longer 𐤉𐤄𐤅𐤔𐤅𐤏 Yahawashawai",
+          "sounds": "partly", "looks": "partly",
+          "note": "Keeps the sh, but the reader is never told it is the same name as Jesus.",
+          "see": "yahawashawai"
+        }
+      ],
+      "differences": [
+        "One Hebrew name, three English ones. The son of Nawan (Nun) is Yahawashawai at Exodus 17:9 and Yashawai at Nehemiah 8:17 — Joshua and Jeshua in the King James — and the King James calls the same man Jesus at Acts 7:45 and Hebrews 4:8, because in Greek both forms are one name, Iēsous.",
+        "In the King James, Matthew 1:21 puts Jesus beside save; the reader has to be told they are the same word. In the Hebrew they cannot be missed: Yashawai … YaYawashayai.",
+        "Changing the name kept the person but dropped the meaning. Reading Yashawai keeps both."
+      ],
+      "compare": "Exodus 17:9; Nehemiah 8:17; Acts 7:45; Hebrews 4:8",
+      "related": ["yahawashawai"]
+    },
+    {
+      "slug": "yahawashawai",
+      "name": "Yahawashawai",
+      "sn": "H3091",
+      "meaning": "Yahawah is Shawai (salvation)",
+      "letters": [["𐤉", "added"], ["𐤄", ""], ["𐤅", ""], ["𐤔", "root"], ["𐤏", "root"]],
+      "legend": { "added": "the 𐤉 Mashah (Moses) set in front of Hawashai", "root": "from the root 𐤉𐤔𐤏 Yashai (save)" },
+      "root": { "sn": "H3467", "name": "Yashai", "paleo": "𐤉𐤔𐤏", "gloss": "save" },
+      "from": { "name": "Hawashai", "paleo": "𐤄𐤅𐤔𐤏", "sn": "H1954", "gloss": "Hoshea" },
+      "summary": "The son of Nawan (Nun) was born Hawashai (Hoshea), a name from the root Yashai (save). When the spies were sent out, Mashah (Moses) set a 𐤉 in front of it, and the name became Yahawashawai — beginning with the letters that begin Yahawah's own name.",
+      "origin": [
+        {
+          "ref": "Numbers 13:16",
+          "marks": [{ "word": "LaHawashai", "part": "Hawashai" }, { "word": "Yahawashawai", "part": "Yahawashawai" }],
+          "note": "Hawashai (Hoshea) … Yahawashawai: one 𐤉 added, and the name now begins with Yah."
+        }
+      ],
+      "also": "Exodus 17:9; Joshua 1:1; Hebrews 4:8",
+      "common": [
+        {
+          "name": "Joshua",
+          "where": "Nearly every English Bible",
+          "sounds": "partly", "looks": "partly",
+          "note": "The Yah at the front is shortened to Jo; the Yahawah in the name is no longer visible."
+        },
+        {
+          "name": "Jehoshua",
+          "where": "Numbers 13:16 in the King James",
+          "sounds": "close", "looks": "close",
+          "note": "The one place the King James keeps the full name — right where scripture explains it."
+        },
+        {
+          "name": "Oshea / Hoshea",
+          "where": "His first name, Hawashai, in Numbers 13:8 and 13:16",
+          "sounds": "close", "looks": "close",
+          "note": "Without the 𐤉: Hawashai (deliverer)."
+        },
+        {
+          "name": "Jesus",
+          "where": "Acts 7:45 and Hebrews 4:8 in the King James",
+          "sounds": "no", "looks": "no",
+          "note": "The Greek Iēsous carried into English — so the King James names Joshua 'Jesus' in two verses.",
+          "see": "yashawai"
+        }
+      ],
+      "differences": [
+        "Scripture records the change of one letter, and English Bibles show it as Oshea becoming Jehoshua (King James) or Hoshea becoming Joshua — the 𐤉 Mashah added, the Yah of Yahawah, is hidden in a J.",
+        "Yahawashawai and Yashawai share the root Yashai (save); English gives them as Joshua and Jesus, which do not look related."
+      ],
+      "compare": "Numbers 13:8; Acts 7:45; Hebrews 4:8",
+      "related": ["yashawai"]
+    }
+  ]
+}
