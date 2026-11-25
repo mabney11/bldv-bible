@@ -174,6 +174,10 @@ export default function Landing() {
         <Link to="/?book=1&chapter=1" className="landing-cta">
           Enter Hebrew — BaRaashayath (Genesis) 1:1
         </Link>
+
+        <Link to="/paleo-hebrew-bible" className="landing-paleo-about">
+          What is the Paleo Hebrew Bible?
+        </Link>
       </div>
 
       <nav className="landing-features" id="landing-explore" aria-label="Explore">

@@ -262,6 +262,7 @@ const NAV_LINKS = `
         <a href="/parallel/genesis/1">English–Paleo Hebrew Parallel Bible</a> ·
         <a href="/lexicon-page">Lexicon</a> ·
         <a href="/?book=1&amp;chapter=1">Paleo Hebrew Bible</a> ·
+        <a href="/paleo-hebrew-bible">What is Paleo-Hebrew?</a> ·
         <a href="/progress">Translation Progress</a> ·
         <a href="/passages">Passages</a> ·
         <a href="/names">Names</a> ·
@@ -996,6 +997,7 @@ const ROUTES = {
       <ul>
         ${MODEL_SEO_LIST('map')}
       </ul>
+      <p><a href="/paleo-hebrew-bible">What is the Paleo Hebrew Bible?</a> — the ancient Hebrew letters, and how to read them here.</p>
       <h2>English–Paleo Hebrew Parallel Bible</h2>
       <p><a href="/parallel/genesis/1">Genesis 1, English and Paleo Hebrew side by side</a> — every word linked to its Hebrew.</p>
       <h2>Lexicon</h2>
@@ -1346,6 +1348,62 @@ for (const [path, page] of Object.entries(STATIC_PAGES)) {
     }),
   }];
 }
+
+// /paleo-hebrew-bible — the page for a "paleo hebrew bible" search (2026-11-25).
+// Same words as src/pages/PaleoHebrewBible.jsx: both read server/seo/paleo-hebrew-bible.json.
+const PHB = require('./seo/paleo-hebrew-bible.json');
+ROUTES[PHB.path] = [{
+  match: () => true,
+  build: async () => {
+    const a = (to, label) => `<a href="${escapeHtml(to)}">${escapeHtml(label)}</a>`;
+    const sections = PHB.sections.map((s) => `<h2>${escapeHtml(s.h2)}</h2>
+      ${s.p.map((t) => `<p>${escapeHtml(t)}</p>`).join('\n      ')}
+      ${s.links ? `<p>${s.links.map((l) => a(l.to, l.label)).join(' · ')}</p>` : ''}`).join('\n      ');
+    const tr = (cells, tag = 'td') => `<tr>${cells.map((c) => `<${tag}>${c}</${tag}>`).join('')}</tr>`;
+    const guide = `<table>${tr(['Letter', 'Name', 'Medial', 'Final', 'Example'], 'th')}${PHB.guide.map((g) =>
+      tr([g.letter, escapeHtml(g.name), g.medial, g.final, `${g.example.paleo} ${escapeHtml(g.example.translit)} (${escapeHtml(g.example.en)})`])).join('')}</table>`;
+    const compare = `<table>${tr(['Hebrew', 'Letters', 'Common', 'BLD Bible', 'What the common spelling does'], 'th')}${PHB.compare.map((c) =>
+      tr([c.paleo, String(c.letters), escapeHtml(c.common), escapeHtml(c.bld), escapeHtml(c.note)])).join('')}</table>`;
+    const w = PHB.waw;
+    const waw = `<h2>${escapeHtml(w.h2)}</h2>
+      <p>${escapeHtml(w.p)}</p>
+      <ul>${w.words.map((x) => `<li>${x.paleo} = ${x.pieces.map(([l, s2]) => `${l} ${escapeHtml(s2)}`).join(' · ')} = <strong>${escapeHtml(x.translit)}</strong> (${escapeHtml(x.en)}) — ${escapeHtml(x.role)}</li>`).join('')}</ul>
+      <p>${escapeHtml(w.after)} ${a(w.to, w.ref)}</p>`;
+    const more = PHB.more.map((s) => `<h2>${escapeHtml(s.h2)}</h2>
+      ${s.p.map((t) => `<p>${escapeHtml(t)}</p>`).join('\n      ')}
+      ${s.links ? `<p>${s.links.map((l) => a(l.to, l.label)).join(' · ')}</p>` : ''}`).join('\n      ');
+    const faq = PHB.faq.map((f) => `<h3>${escapeHtml(f.q)}</h3>\n      <p>${escapeHtml(f.a)}</p>`).join('\n      ');
+    const ld = [
+      { '@context': 'https://schema.org', '@type': 'WebPage', name: PHB.h1, url: `${SITE}${PHB.path}`,
+        description: PHB.description, inLanguage: 'en', isPartOf: { '@type': 'WebSite', name: BRAND, url: `${SITE}/` } },
+      { '@context': 'https://schema.org', '@type': 'FAQPage',
+        mainEntity: PHB.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+    ];
+    return {
+      title: PHB.title,
+      description: PHB.description,
+      canonicalPath: PHB.path,
+      body: `<h1>${escapeHtml(PHB.h1)}</h1>
+      <p>${escapeHtml(PHB.kicker)}</p>
+      <p>${escapeHtml(PHB.intro)}</p>
+      <p lang="hbo" dir="rtl">${PHB.sample.paleo}</p>
+      <p>${escapeHtml(PHB.sample.ref)} — ${a(PHB.sample.to, PHB.sample.label)}</p>
+      <p>${a('/parallel/genesis/1', 'Read Paleo Hebrew and English side by side')} · ${a('/?book=1&chapter=1', 'Paleo Hebrew reader')}</p>
+      ${sections}
+      ${waw}
+      <h2>${escapeHtml(PHB.guideH2)}</h2>
+      <p>${escapeHtml(PHB.guideP)}</p>
+      ${guide}
+      <h2>${escapeHtml(PHB.compareH2)}</h2>
+      <p>${escapeHtml(PHB.compareP)}</p>
+      ${compare}
+      ${more}
+      <h2>${escapeHtml(PHB.faqH2)}</h2>
+      ${faq}${NAV_LINKS}`,
+      head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`,
+    };
+  },
+}];
 
 for (const [path, pg] of Object.entries(MODEL_SEO.pages)) {
   ROUTES[path] = [{ match: () => true, build: async () => modelPageSnapshot(path, pg) }];

@@ -59,6 +59,7 @@ const RevelationCityIndex = lazy(() => import('./pages/RevelationCityIndex.jsx')
 const Passages         = lazy(() => import('./pages/Passages.jsx'));
 const Passage          = lazy(() => import('./pages/Passage.jsx'));
 const Names            = lazy(() => import('./pages/Names.jsx'));
+const PaleoHebrewBible = lazy(() => import('./pages/PaleoHebrewBible.jsx'));
 const NamePage         = lazy(() => import('./pages/NamePage.jsx'));
 
 // Shown for the brief moment a lazy page chunk is downloading (near-instant
@@ -403,6 +404,7 @@ export default function App() {
         <Route path="/lexicon"        element={<Lexicon />} />
         <Route path="/translate"      element={<Translate />} />
         <Route path="/guide"          element={<Guide />} />
+        <Route path="/paleo-hebrew-bible" element={<PaleoHebrewBible />} />
         <Route path="/search"         element={<Search />} />
         <Route path="/roots"          element={<Root />} />
         <Route path="/root"           element={<Root />} />

@@ -1,0 +1,547 @@
+{
+ "_comment": "ONE copy of the /paleo-hebrew-bible page's words, read by src/pages/PaleoHebrewBible.jsx and server/prerender.js. Paleo letters only — no square script (RULE ZERO). The guide's medial/final values and every transliteration here were generated from src/lib/books.js CHAR_MAP/translit — edit the words in scripts/build-paleo-hebrew-bible-page.mjs and run it (node scripts/build-paleo-hebrew-bible-page.mjs).",
+ "path": "/paleo-hebrew-bible",
+ "title": "Paleo Hebrew Bible — The Whole Scriptures in Paleo-Hebrew with English | BLD Bible",
+ "description": "Read the entire scriptures in Paleo-Hebrew letters alongside the English, with a transliteration that keeps every letter of the Hebrew: one letter, one sound, nothing dropped. Free to read online.",
+ "h1": "Paleo Hebrew Bible",
+ "kicker": "The entire scriptures in Paleo-Hebrew letters, alongside the English",
+ "intro": "BLD Bible lets you read the entire scriptures in Paleo-Hebrew, the 22 letters Israel wrote with before the exile, with the English beside every verse. Every Hebrew word is also written out in Latin letters by one fixed rule: each Hebrew letter always gets the same sound, and every letter of the Hebrew is kept. Nothing is smoothed over, dropped or doubled.",
+ "sample": {
+  "ref": "BaRaashayath (Genesis) 1:1",
+  "paleo": "𐤁𐤓𐤀𐤔𐤉𐤕 𐤁𐤓𐤀 𐤀𐤋𐤄𐤉𐤌 𐤀𐤕 𐤄𐤔𐤌𐤉𐤌 𐤅𐤀𐤕 𐤄𐤀𐤓𐤑",
+  "to": "/genesis/1/1",
+  "label": "Open BaRaashayath (Genesis) 1:1 word by word"
+ },
+ "sections": [
+  {
+   "id": "whole",
+   "h2": "The entire scriptures in Paleo-Hebrew, alongside the English",
+   "p": [
+    "Every book can be read in Paleo-Hebrew letters. The Old Testament is the Masoretic Hebrew text, letter for letter. The New Testament and the Apocrypha are read from Hebrew editions in the same letters, and so are many works beyond the canon in the Works Library.",
+    "The Parallel Bible sets the English beside the Paleo-Hebrew verse by verse: point at an English word and its Hebrew word lights up, and the other way round. The Novel English Bible reads as plain English, with the names of people and places in their Hebrew form and their meaning beside them."
+   ],
+   "links": [
+    {
+     "to": "/parallel/genesis/1",
+     "label": "English–Paleo Hebrew Parallel Bible"
+    },
+    {
+     "to": "/?book=1&chapter=1",
+     "label": "Paleo Hebrew reader: BaRaashayath (Genesis) 1"
+    },
+    {
+     "to": "/?book=40&chapter=1",
+     "label": "The New Testament in Paleo-Hebrew: Matthew 1"
+    },
+    {
+     "to": "/bible?book=1&chapter=1",
+     "label": "Novel English Bible"
+    },
+    {
+     "to": "/works",
+     "label": "Works Library"
+    }
+   ]
+  },
+  {
+   "id": "every-letter",
+   "h2": "Every letter kept",
+   "p": [
+    "Most transliterations write Hebrew the way it is pronounced today, so the same letter turns into different sounds from word to word, silent letters disappear, and letters that are not written are added. BLD Bible does it mechanically instead: every Hebrew letter has one sound, written the same way in every word of every book.",
+    "You can count it. A word of four Hebrew letters has four letter-sounds in its transliteration, in the same order. Where a word has a prefix or a suffix, a capital letter marks where the next part begins: WaThaAmar is Wa (and) + Tha (she) + Amar (said). And where the written word has lost a letter of its root, the root's letter is shown too: letters are added back, never taken away."
+   ]
+  }
+ ],
+ "waw": {
+  "h2": "One letter, one sound: the Waw",
+  "p": "The letter 𐤅 Waw is a good test. In common transliterations it becomes v in vayomer (and he said), u in Yehudah (Judah), o in shalom (peace), and w or nothing elsewhere. In BLD Bible it is always wa, or w at the end of a word, whatever the word is doing: the prefix and, a letter inside an ordinary word, the suffix his, or a letter in a name. These five words all stand in one verse:",
+  "ref": "BaRaashayath (Genesis) 29:35",
+  "to": "/genesis/29/35",
+  "words": [
+   {
+    "paleo": "𐤅𐤕𐤀𐤌𐤓",
+    "translit": "WaThaAmar",
+    "pieces": [
+     [
+      "𐤅",
+      "Wa"
+     ],
+     [
+      "𐤕",
+      "Tha"
+     ],
+     [
+      "𐤀",
+      "A"
+     ],
+     [
+      "𐤌",
+      "ma"
+     ],
+     [
+      "𐤓",
+      "r"
+     ]
+    ],
+    "en": "and she said",
+    "role": "Waw as the prefix \"and\""
+   },
+   {
+    "paleo": "𐤏𐤅𐤃",
+    "translit": "Iwad",
+    "pieces": [
+     [
+      "𐤏",
+      "I"
+     ],
+     [
+      "𐤅",
+      "wa"
+     ],
+     [
+      "𐤃",
+      "d"
+     ]
+    ],
+    "en": "again",
+    "role": "Waw inside an ordinary word"
+   },
+   {
+    "paleo": "𐤉𐤄𐤅𐤄",
+    "translit": "Yahawah",
+    "pieces": [
+     [
+      "𐤉",
+      "Ya"
+     ],
+     [
+      "𐤄",
+      "ha"
+     ],
+     [
+      "𐤅",
+      "wa"
+     ],
+     [
+      "𐤄",
+      "h"
+     ]
+    ],
+    "en": "Yahawah",
+    "role": "Waw in the Name"
+   },
+   {
+    "paleo": "𐤔𐤌𐤅",
+    "translit": "Shamaw",
+    "pieces": [
+     [
+      "𐤔",
+      "Sha"
+     ],
+     [
+      "𐤌",
+      "ma"
+     ],
+     [
+      "𐤅",
+      "w"
+     ]
+    ],
+    "en": "his name",
+    "role": "Waw as the suffix \"his\""
+   },
+   {
+    "paleo": "𐤉𐤄𐤅𐤃𐤄",
+    "translit": "Yahawadah",
+    "pieces": [
+     [
+      "𐤉",
+      "Ya"
+     ],
+     [
+      "𐤄",
+      "ha"
+     ],
+     [
+      "𐤅",
+      "wa"
+     ],
+     [
+      "𐤃",
+      "da"
+     ],
+     [
+      "𐤄",
+      "h"
+     ]
+    ],
+    "en": "Judah",
+    "role": "Waw in a name"
+   }
+  ],
+  "after": "Same letter, same sound, every time: Wa in WaThaAmar, wa in Iwad, Yahawah and Yahawadah, w at the end of Shamaw."
+ },
+ "guideH2": "Transliteration guide: medial and final",
+ "guideP": "Each letter has two written forms. Inside a word (medial) it is the letter's sound followed by a, so the word can be spoken. At the end of a word (final) it is the letter's sound alone. Aleph and Ayin are vowel-like letters, written a and i in both places. That is the whole rule; it never changes.",
+ "guide": [
+  {
+   "letter": "𐤀",
+   "name": "Alap",
+   "medial": "a",
+   "final": "a",
+   "example": {
+    "paleo": "𐤀𐤁",
+    "translit": "Ab",
+    "en": "father"
+   }
+  },
+  {
+   "letter": "𐤁",
+   "name": "Bayath",
+   "medial": "ba",
+   "final": "b",
+   "example": {
+    "paleo": "𐤁𐤉𐤕",
+    "translit": "Bayath",
+    "en": "house"
+   }
+  },
+  {
+   "letter": "𐤂",
+   "name": "Gamal",
+   "medial": "ga",
+   "final": "g",
+   "example": {
+    "paleo": "𐤂𐤃𐤅𐤋",
+    "translit": "Gadawal",
+    "en": "great"
+   }
+  },
+  {
+   "letter": "𐤃",
+   "name": "Dalath",
+   "medial": "da",
+   "final": "d",
+   "example": {
+    "paleo": "𐤃𐤅𐤃",
+    "translit": "Dawad",
+    "en": "David"
+   }
+  },
+  {
+   "letter": "𐤄",
+   "name": "Hay",
+   "medial": "ha",
+   "final": "h",
+   "example": {
+    "paleo": "𐤄𐤓",
+    "translit": "Har",
+    "en": "mountain"
+   }
+  },
+  {
+   "letter": "𐤅",
+   "name": "Waw",
+   "medial": "wa",
+   "final": "w",
+   "example": {
+    "paleo": "𐤉𐤄𐤅𐤃𐤄",
+    "translit": "Yahawadah",
+    "en": "Judah"
+   }
+  },
+  {
+   "letter": "𐤆",
+   "name": "Zayan",
+   "medial": "za",
+   "final": "z",
+   "example": {
+    "paleo": "𐤆𐤊𐤓",
+    "translit": "Zakar",
+    "en": "remember"
+   }
+  },
+  {
+   "letter": "𐤇",
+   "name": "Chayath",
+   "medial": "cha",
+   "final": "ch",
+   "example": {
+    "paleo": "𐤌𐤔𐤉𐤇",
+    "translit": "Mashayach",
+    "en": "Anointed One"
+   }
+  },
+  {
+   "letter": "𐤈",
+   "name": "Tayath",
+   "medial": "ta",
+   "final": "t",
+   "example": {
+    "paleo": "𐤈𐤅𐤁",
+    "translit": "Tawab",
+    "en": "good"
+   }
+  },
+  {
+   "letter": "𐤉",
+   "name": "Yad",
+   "medial": "ya",
+   "final": "y",
+   "example": {
+    "paleo": "𐤉𐤑𐤇𐤒",
+    "translit": "Yatzachaq",
+    "en": "Isaac"
+   }
+  },
+  {
+   "letter": "𐤊",
+   "name": "Kap",
+   "medial": "ka",
+   "final": "k",
+   "example": {
+    "paleo": "𐤌𐤋𐤊",
+    "translit": "Malak",
+    "en": "king"
+   }
+  },
+  {
+   "letter": "𐤋",
+   "name": "Lamad",
+   "medial": "la",
+   "final": "l",
+   "example": {
+    "paleo": "𐤋𐤁",
+    "translit": "Lab",
+    "en": "heart"
+   }
+  },
+  {
+   "letter": "𐤌",
+   "name": "Mayam",
+   "medial": "ma",
+   "final": "m",
+   "example": {
+    "paleo": "𐤔𐤌𐤉𐤌",
+    "translit": "Shamayam",
+    "en": "heavens"
+   }
+  },
+  {
+   "letter": "𐤍",
+   "name": "Nawan",
+   "medial": "na",
+   "final": "n",
+   "example": {
+    "paleo": "𐤁𐤍",
+    "translit": "Ban",
+    "en": "son"
+   }
+  },
+  {
+   "letter": "𐤎",
+   "name": "Samak",
+   "medial": "sa",
+   "final": "s",
+   "example": {
+    "paleo": "𐤎𐤅𐤎",
+    "translit": "Sawas",
+    "en": "horse"
+   }
+  },
+  {
+   "letter": "𐤏",
+   "name": "Iyan",
+   "medial": "i",
+   "final": "i",
+   "example": {
+    "paleo": "𐤉𐤏𐤒𐤁",
+    "translit": "Yaiqab",
+    "en": "Jacob"
+   }
+  },
+  {
+   "letter": "𐤐",
+   "name": "Pah",
+   "medial": "pa",
+   "final": "p",
+   "example": {
+    "paleo": "𐤐𐤓𐤏𐤄",
+    "translit": "Paraih",
+    "en": "Pharaoh"
+   }
+  },
+  {
+   "letter": "𐤑",
+   "name": "Tzaday",
+   "medial": "tza",
+   "final": "tz",
+   "example": {
+    "paleo": "𐤀𐤓𐤑",
+    "translit": "Aratz",
+    "en": "earth"
+   }
+  },
+  {
+   "letter": "𐤒",
+   "name": "Qap",
+   "medial": "qa",
+   "final": "q",
+   "example": {
+    "paleo": "𐤒𐤃𐤔",
+    "translit": "Qadash",
+    "en": "holy"
+   }
+  },
+  {
+   "letter": "𐤓",
+   "name": "Rash",
+   "medial": "ra",
+   "final": "r",
+   "example": {
+    "paleo": "𐤃𐤁𐤓",
+    "translit": "Dabar",
+    "en": "word"
+   }
+  },
+  {
+   "letter": "𐤔",
+   "name": "Shayan",
+   "medial": "sha",
+   "final": "sh",
+   "example": {
+    "paleo": "𐤔𐤋𐤅𐤌",
+    "translit": "Shalawam",
+    "en": "peace"
+   }
+  },
+  {
+   "letter": "𐤕",
+   "name": "Thaw",
+   "medial": "tha",
+   "final": "th",
+   "example": {
+    "paleo": "𐤔𐤁𐤕",
+    "translit": "Shabath",
+    "en": "Sabbath"
+   }
+  }
+ ],
+ "compareH2": "Compared with common transliterations",
+ "compareP": "The same words, spelled the common way and spelled letter for letter. The Hebrew letters column counts the letters actually written.",
+ "compare": [
+  {
+   "paleo": "𐤉𐤄𐤅𐤃𐤄",
+   "common": "Yehudah",
+   "bld": "Yahawadah",
+   "letters": 5,
+   "note": "Waw read as u"
+  },
+  {
+   "paleo": "𐤅𐤉𐤀𐤌𐤓",
+   "common": "vayomer",
+   "bld": "WaYaAmar",
+   "letters": 5,
+   "note": "Waw read as v; Aleph silent"
+  },
+  {
+   "paleo": "𐤃𐤅𐤃",
+   "common": "David",
+   "bld": "Dawad",
+   "letters": 3,
+   "note": "Waw read as v"
+  },
+  {
+   "paleo": "𐤔𐤋𐤅𐤌",
+   "common": "shalom",
+   "bld": "Shalawam",
+   "letters": 4,
+   "note": "Waw read as o"
+  },
+  {
+   "paleo": "𐤉𐤓𐤅𐤔𐤋𐤌",
+   "common": "Yerushalayim",
+   "bld": "Yarawashalam",
+   "letters": 6,
+   "note": "Waw read as u; adds a y the letters do not have"
+  },
+  {
+   "paleo": "𐤌𐤔𐤄",
+   "common": "Moshe",
+   "bld": "Mashah",
+   "letters": 3,
+   "note": "final Hay dropped"
+  },
+  {
+   "paleo": "𐤉𐤏𐤒𐤁",
+   "common": "Yaakov",
+   "bld": "Yaiqab",
+   "letters": 4,
+   "note": "Ayin silent; Bayath read as v"
+  },
+  {
+   "paleo": "𐤔𐤁𐤕",
+   "common": "Shabbat",
+   "bld": "Shabath",
+   "letters": 3,
+   "note": "Bayath doubled; Thaw read as t"
+  },
+  {
+   "paleo": "𐤀𐤋𐤄𐤉𐤌",
+   "common": "Elohim",
+   "bld": "Alahayam",
+   "letters": 5,
+   "note": "Yad read as the vowel i"
+  }
+ ],
+ "more": [
+  {
+   "id": "what",
+   "h2": "What is Paleo-Hebrew?",
+   "p": [
+    "Paleo-Hebrew is the old Hebrew alphabet: the letters of Israel's inscriptions from the time of the kings, such as the tunnel inscription cut under Yarawashalam (Jerusalem) in the days of Chazaqayah (Hezekiah). After the exile to Babal (Babylon), scribes came to write Hebrew in the square letters of the Aramaic script, and that square script is what most printed Hebrew Bibles use today.",
+    "The words are the same in both scripts; only the shapes of the letters differ. Among the Dead Sea Scrolls, some books are copied entirely in Paleo-Hebrew, and in several scrolls written in square letters the Name of Yahawah stands out in Paleo-Hebrew letters. BLD Bible shows the text in the older letters throughout."
+   ]
+  },
+  {
+   "id": "words",
+   "h2": "Every word, part by part",
+   "p": [
+    "Tap any word and it opens into its parts: the prefixes, the root, the suffixes, and what each one adds (and, the, in, his, plural). Every root carries its Strong's number and links to every other verse where it stands, so you can follow a word through the whole Bible."
+   ],
+   "links": [
+    {
+     "to": "/lexicon-page",
+     "label": "Lexicon"
+    },
+    {
+     "to": "/roots?sn=H1254",
+     "label": "Root Explorer: Baraa (create), H1254"
+    }
+   ]
+  }
+ ],
+ "faqH2": "Questions",
+ "faq": [
+  {
+   "q": "Can I read the whole Bible in Paleo-Hebrew?",
+   "a": "Yes. BLD Bible shows every book of the Hebrew Bible, and Hebrew editions of the New Testament and the Apocrypha, in Paleo-Hebrew letters, free to read online."
+  },
+  {
+   "q": "Can I read a Paleo Hebrew Bible with English?",
+   "a": "Yes. The Parallel Bible puts the English beside the Paleo-Hebrew verse by verse, with each English word linked to its Hebrew word, and every verse has a page of its own with the Hebrew word by word."
+  },
+  {
+   "q": "Why Yahawadah and not Yehudah?",
+   "a": "Because the name is written with five letters, Yad, Hay, Waw, Dalath, Hay, and each letter keeps its one sound: Ya-ha-wa-da-h. The common spelling reads the Waw as u, so the same letter sounds different in Judah than it does in the word \"and\"."
+  },
+  {
+   "q": "Is Paleo-Hebrew a different language from Hebrew?",
+   "a": "No. It is the same Hebrew language written in an older alphabet. The letters correspond one to one with the later square letters, so the words and their spelling do not change."
+  },
+  {
+   "q": "Where do I start?",
+   "a": "Open BaRaashayath (Genesis) 1 in the Paleo Hebrew reader, or the Parallel Bible if you want the English beside it."
+  }
+ ]
+}

@@ -274,3 +274,8 @@
   .landing-feature { padding: 16px; gap: 12px; }
   .landing-feature-name { font-size: 18px; }
 }
+
+/* Link to /paleo-hebrew-bible under the two ways in (2026-11-25). */
+.landing-paleo-about { display: block; text-align: center; margin-top: 10px; font-size: 13.5px; color: var(--text3);
+  text-decoration: underline; text-underline-offset: 3px; }
+.landing-paleo-about:hover { color: var(--gold); }
