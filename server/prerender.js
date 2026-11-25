@@ -1180,10 +1180,10 @@ ROUTES['/names'] = [{
   build: async (query, port) => {
     let data = { intro: '', names: [] };
     try { data = await fetchJSON(port, '/api/names'); } catch { /* empty */ }
-    const items = (data.names || []).map((n) => `<li><a href="/name/${encodeURIComponent(n.slug)}">${escapeHtml(n.name)} ${escapeHtml(n.paleo)}</a> — ${escapeHtml(n.meaning)}${n.common?.length ? ` (translators: ${escapeHtml(n.common.join(', '))})` : ''}</li>`).join('\n        ');
+    const items = (data.names || []).map((n) => `<li><a href="/name/${encodeURIComponent(n.slug)}">${escapeHtml(n.english)} — ${escapeHtml(n.name)} ${escapeHtml(n.paleo)}</a>${n.meaning ? ` — ${escapeHtml(n.meaning)}` : ''}${n.origin ? ` (${escapeHtml(n.origin.label)})` : ''}</li>`).join('\n        ');
     return {
       title: `Names | ${BRAND}`,
-      description: 'What the names of scripture mean, from the verses that give them — Yashawai (he will save), Yahawashawai — and what is lost when translators replace them.',
+      description: 'The names of scripture and what they mean — Jesus (Yashawai, he will save), Israel, Jacob, David, Solomon and the kings — each in its own Hebrew letters beside the verse it comes from.',
       body: `<h1>Names</h1>
       <p>${escapeHtml(data.intro || '')}</p>
       <ul>
@@ -1192,7 +1192,7 @@ ROUTES['/names'] = [{
     };
   },
 }];
-const NAME_PATH_RE = /^\/name\/([a-z0-9-]{1,80})$/;
+const NAME_PATH_RE = /^\/name\/([A-Za-z0-9-]{1,80})$/;
 async function buildNamePathSnapshot(match, port) {
   const [, slug] = match;
   let n = null;
@@ -1204,9 +1204,9 @@ async function buildNamePathSnapshot(match, port) {
   const common = (n.common || []).map((c) => `<li><strong>${escapeHtml(c.name)}</strong> — ${escapeHtml(c.where || '')}. ${escapeHtml(c.note || '')}</li>`).join('\n        ');
   const diffs = (n.differences || []).map((d) => `<li>${escapeHtml(d)}</li>`).join('\n        ');
   return {
-    title: `${n.name} (${n.meaning}) | Names`,
-    description: truncate(`${n.name} ${n.paleo} means “${n.meaning}”. ${n.summary || ''}`, 160),
-    body: `<h1>${escapeHtml(n.name)} ${escapeHtml(n.paleo)} — ${escapeHtml(n.meaning)}</h1>
+    title: `${n.english} — ${n.name}${n.meaning ? ` (${n.meaning})` : ''} | Names`,
+    description: truncate(`${n.english}: in Hebrew ${n.name} ${n.paleo}${n.meaning ? `, “${n.meaning}”` : ''}. ${n.summary || ''}`, 160),
+    body: `<h1>${escapeHtml(n.english)} — ${escapeHtml(n.name)} ${escapeHtml(n.paleo)}${n.meaning ? ` — ${escapeHtml(n.meaning)}` : ''}</h1>
       <p>${escapeHtml(n.summary || '')}</p>
       ${origin}
       <h2>What translators wrote</h2>

@@ -12843,63 +12843,151 @@ app.get('/api/passage/:slug', (req, res) => {
 });
 
 // ── NAMES ────────────────────────────────────────────────────────────────────
-// Name -> meaning, from scripture (fieldy, 2026-11-24): "names and their
-// scriptures that imply where the name came from … show the common name that
-// translators chose and point out differences". server/lexicon/names.json is the
-// hand-picked source of truth (hot-reloaded by mtime, like passages.json); each
-// name's ORIGIN verses are cut here from the reader's live text by buildPassage,
-// so a name page never carries a copy of a verse — a Studio edit shows up at once.
+// Name -> meaning, from scripture (fieldy, 2026-11-24/25): "the core names of the bible including Yaiqab,
+// Yashar-Al, David, Solomon, Jeroboam, other kings … I dont want to have to manually select the names".
+// THE LIST is baked offline by build-names.mjs into names-index.json (every person the corpus names often
+// enough, every king — counts, first occurrence). server/lexicon/names.json WRITES ABOUT a name (by Strong's
+// number): the English translators wrote, the verse that says why the name was given, the words to light up.
+// Everything else is read here from the dictionary (strongsAnatomy: letters, transliteration, meaning — his
+// "built from" edits included) and his name map; no corpus scan at request time. Verse text is never copied:
+// each origin verse is cut from the reader's live text by buildPassage. Both files hot-reload by mtime.
 const NAMES_PATH = path.join(__dirname, 'lexicon', 'names.json');
+const NAMES_INDEX_PATH = path.join(__dirname, 'names-index.json');
 let _namesCache = null;
+function readJsonMtime(file) {
+    try { const st = fs.statSync(file); return { mtime: st.mtimeMs, data: JSON.parse(fs.readFileSync(file, 'utf8')) }; }
+    catch { return { mtime: 0, data: null }; }
+}
+// The English a name is given in the reading text: name-map key(s) whose value is this transliteration,
+// a King James spelling of the number first.
+function namesEnglishFor(translit, kjv) {
+    appSpelling('x');                                   // loads _nameMap
+    const map = _nameMap.map || {};
+    const keys = Object.keys(map).filter(k => map[k] === translit && /^[A-Z]/.test(k));
+    return keys.find(k => kjv.includes(k)) || kjv.find(k => k in map) || (keys.length ? keys.sort((x, y) => x.length - y.length)[0] : null) || kjv[0] || translit;
+}
+// What a name means = the words it is taken from, in HIS words (fieldy, 2026-11-25: "im not looking for the
+// common descriptions of names ... What is the word/words that the name was taken from -- based on MY lexicons"):
+// his "built from" sentence (strongs-anatomy.json meaning) when he wrote one; else its parts, each read through
+// his homographs/lexicon (strongsPart gloss, or the gloss he gave the part) — a part he has not glossed shows its
+// letters, his placeholder. Never the dictionary's description.
+function namesMeaning(a, english, translit) {
+    if (a.curated && a.meaning) return { text: a.meaning, parts: a.parts || [] };
+    const bad = new Set([String(english || '').toLowerCase(), String(translit || '').toLowerCase()]);
+    const parts = (a.parts || []).map(p => ({ ...p, gloss: p.gloss && !bad.has(String(p.gloss).toLowerCase()) ? p.gloss : null }));
+    if (parts.length) return { text: parts.map(p => p.gloss || p.paleo).join(' + '), parts };
+    return { text: '', parts: [] };
+}
+const nameSlug = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 function loadNames() {
+    const ov = readJsonMtime(NAMES_PATH), ix = readJsonMtime(NAMES_INDEX_PATH);
+    const mt = (f) => { try { return fs.statSync(path.join(__dirname, 'lexicon', f)).mtimeMs; } catch { return 0; } };
+    const stamp = `${ov.mtime}|${ix.mtime}|${mt('strongs-anatomy.json')}|${mt('lexicon.json')}|${mt('homographs.json')}`;
+    if (_namesCache && _namesCache.stamp === stamp) return _namesCache.data;
     try {
-        const st = fs.statSync(NAMES_PATH);
-        if (_namesCache && _namesCache.mtime === st.mtimeMs) return _namesCache.data;
-        const raw = JSON.parse(fs.readFileSync(NAMES_PATH, 'utf8'));
-        const names = (raw.names || []).filter(n => n && n.slug && n.name);
-        const data = { intro: raw.intro || '', names, bySlug: Object.fromEntries(names.map(n => [n.slug, n])) };
-        _namesCache = { mtime: st.mtimeMs, data };
+        const overlay = new Map();
+        for (const n of (ov.data?.names || [])) { const sn = normSn(n.sn); if (sn) overlay.set(sn, n); }
+        const baked = new Map();
+        for (const n of (ix.data?.names || [])) { const sn = normSn(n.sn); if (sn) baked.set(sn, n); }
+        const sns = [...new Set([...baked.keys(), ...overlay.keys()])];
+        const names = [];
+        for (const sn of sns) {
+            const a = strongsAnatomy(sn);
+            if (!a) continue;
+            const o = overlay.get(sn) || {}, b = baked.get(sn) || { ot: 0, more: 0, kjv: [], first: null };
+            const kjv = (b.kjv && b.kjv.length ? b.kjv : String(STRONGS_DICT[sn]?.kjv_def || '').split(/[,.;]/).map(x => x.trim()).filter(x => /^[A-Z]/.test(x)));
+            const translit = o.name || a.translit;
+            const letters = o.letters || [...String(a.paleo || '')].map(ch => [ch, '']);
+            const first = b.first ? `${canonName(b.first.book_id)} ${b.first.chapter}:${b.first.verse}` : null;
+            const explained = Array.isArray(o.origin) && o.origin.length > 0;
+            const origin = explained ? o.origin : (first ? [{ ref: first, first: true }] : []);
+            const english = o.english || namesEnglishFor(translit, kjv);
+            const mean = namesMeaning(a, english, translit);
+            names.push({
+                ...o, sn, name: translit, english, kjv,
+                paleo: letters.map(l => l[0]).join(''), letters,
+                meaning: mean.text, def: a.strongs_def || null, parts: mean.parts,
+                king: !!b.king, ot: b.ot || 0, more: b.more || 0, explained,
+                // Impact: how much scripture says the name (Masoretic count, the other books at half weight),
+                // raised when scripture itself says why the name was given.
+                score: Math.round((Math.log1p((b.ot || 0) + 0.5 * (b.more || 0)) + (explained ? 1.5 : 0)) * 1000) / 1000,
+                origin: origin.map(x => ({ ...x, marks: [...(x.marks || []), { suffix: translit }] })),
+            });
+        }
+        names.sort((x, y) => y.score - x.score || x.english.localeCompare(y.english));
+        const used = new Map();
+        for (const n of [...names].sort((x, y) => parseInt(x.sn.slice(1)) - parseInt(y.sn.slice(1)))) {
+            const base = n.slug || nameSlug(n.name) || n.sn.toLowerCase();
+            const k = (used.get(base) || 0) + 1; used.set(base, k);
+            n.slug = k === 1 ? base : `${base}-${k}`;
+        }
+        const data = { intro: ov.data?.intro || '', names, bySlug: Object.fromEntries(names.map(n => [n.slug, n])), bySn: Object.fromEntries(names.map(n => [n.sn, n])), built: ix.data?.built || null };
+        _namesCache = { stamp, data, verses: null };
         return data;
     } catch (e) {
-        console.error('[names] failed to load names.json:', e.message);
-        return _namesCache?.data || { intro: '', names: [], bySlug: {} };
+        console.error('[names] failed to load:', e.message);
+        return _namesCache?.data || { intro: '', names: [], bySlug: {}, bySn: {} };
     }
 }
-const nameCard = (n) => ({
-    slug: n.slug, name: n.name, sn: n.sn || '', meaning: n.meaning || '',
-    paleo: (n.letters || []).map(l => l[0]).join(''), letters: n.letters || [],
-    root: n.root || null, common: (n.common || []).map(c => c.name),
-    origin: (n.origin || []).map(o => o.ref),
-});
+// Each origin verse cut from the reader's live text; a chapter is assembled once per pass, the pass is
+// kept a minute (a Studio edit shows within a minute).
+function namesVerses(names) {
+    const now = Date.now();
+    if (_namesCache?.verses && now - _namesCache.verses.at < 60000) return _namesCache.verses.map;
+    const map = new Map(), chapters = new Map();
+    for (const n of names) for (const o of n.origin) {
+        if (map.has(o.ref)) continue;
+        const [r] = parsePassageRefs(o.ref);
+        if (!r) { map.set(o.ref, { label: o.ref, reader: null, verses: [] }); continue; }
+        const ck = `${r.bookId}:${r.chapter}`;
+        if (!chapters.has(ck)) { let c = null; try { c = buildEnglishChapter(r.bookId, r.chapter, 'BHS'); } catch { /* none */ } chapters.set(ck, c?.verses || []); }
+        const verses = chapters.get(ck).filter(v => inPassageRanges(+v.verse, r.ranges)).map(v => ({ verse: v.verse, text: v.text || '' }));
+        const [v0, v1] = r.ranges[0] || [];
+        map.set(o.ref, { label: r.label, verses, reader: `/bible?book=${r.bookId}&chapter=${r.chapter}${v0 ? `&verse=${v0}${v1 && v1 !== v0 ? `&verseEnd=${v1}` : ''}` : ''}` });
+    }
+    if (_namesCache) _namesCache.verses = { at: now, map };
+    return map;
+}
+const nameCard = (n, vmap) => {
+    const o = n.origin[0] || null, v = o && vmap ? vmap.get(o.ref) : null;
+    return {
+        slug: n.slug, sn: n.sn, name: n.name, english: n.english, paleo: n.paleo, letters: n.letters, meaning: n.meaning || '',
+        explained: n.explained, king: n.king, ot: n.ot, more: n.more, score: n.score,
+        common: (n.common || []).map(c => c.name).length ? n.common.map(c => c.name) : n.kjv,
+        origin: o ? { ref: o.ref, label: v?.label || o.ref, first: !!o.first, marks: o.marks, reader: v?.reader || null, text: (v?.verses || []).map(x => x.text).join(' ') } : null,
+    };
+};
 
-// GET /api/names — the collection (no verse text).
-app.get('/api/names', production.cache(300), (req, res) => {
+// GET /api/names — every name, each with its origin verse (live text) for the card.
+app.get('/api/names', production.cache(60), (req, res) => {
     try {
         const { intro, names } = loadNames();
-        res.json({ intro, names: names.map(nameCard) });
+        const vmap = namesVerses(names);
+        res.json({ intro, names: names.map(n => nameCard(n, vmap)) });
     } catch (err) {
         console.error('/api/names failed:', err);
         res.status(500).json({ error: err.message });
     }
 });
 
-// GET /api/name/:slug — one name, with its origin verses from the live text.
+// GET /api/name/:slug — one name (also /api/name/H3290), with its origin verses from the live text.
 app.get('/api/name/:slug', (req, res) => {
     try {
-        const slug = String(req.params.slug || '').toLowerCase();
-        const { names, bySlug } = loadNames();
-        const n = bySlug[slug];
-        if (!n) return res.status(404).json({ error: 'no such name', slug });
+        const key = String(req.params.slug || '');
+        const { names, bySlug, bySn } = loadNames();
+        const n = bySlug[key.toLowerCase()] || bySn[normSn(key) || ''];
+        if (!n) return res.status(404).json({ error: 'no such name', slug: key });
         const i = names.indexOf(n);
-        const neighbour = (q) => q ? { slug: q.slug, name: q.name } : null;
-        const origin = (n.origin || []).map(o => {
+        const neighbour = (q) => q ? { slug: q.slug, name: q.name, english: q.english } : null;
+        const origin = n.origin.map(o => {
             const built = buildPassage(o.ref);
             const sec = built.sections[0] || null;
             return { ...o, label: sec?.label || o.ref, reader: sec?.reader || null, verses: sec?.verses || [] };
         });
-        const related = (n.related || []).map(s => bySlug[s]).filter(Boolean).map(nameCard);
+        const related = (n.related || []).map(s => bySlug[s]).filter(Boolean).map(r => nameCard(r, null));
         res.json({
-            ...n, paleo: (n.letters || []).map(l => l[0]).join(''), origin, related,
+            ...n, origin, related,
+            common: n.common || n.kjv.map(k => ({ name: k, where: 'King James Version' })),
             prev: neighbour(names[i - 1]), next: neighbour(names[i + 1]),
         });
     } catch (err) {
