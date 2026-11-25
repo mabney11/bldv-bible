@@ -25,7 +25,8 @@ COPY public ./public
 COPY server/lexicon/compound-hyphenation.json ./server/lexicon/
 # Story Models / Maps SEO (titles, descriptions, verse ranges) — ONE copy read by
 # server/prerender.js and imported by the frontend (src/lib/models/seo.js).
-COPY server/seo/models-seo.json ./server/seo/
+# + the /paleo-hebrew-bible page text (src/pages/PaleoHebrewBible.jsx imports it; 2026-11-25 build failed without it).
+COPY server/seo/models-seo.json server/seo/paleo-hebrew-bible.json ./server/seo/
 COPY scripts/build-headings-if-present.mjs ./scripts/
 # Reader Back-button gate — runs as `prebuild` (fails the image build if Back
 # stops returning to the exact view in the Reader).
