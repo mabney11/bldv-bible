@@ -1,5 +1,5 @@
 {
-  "_comment": "Names -> meaning, from scripture. One entry = a name, its Paleo letters (marked: root = letters of the root it is built on, added = a letter scripture records being added), the verse(s) where scripture itself says why the name was given (origin), other places it is named (also), and the names translators put in its place (common). Verse text is NEVER copied here: /api/name/:slug cuts each origin verse from the reader's live text (buildPassage), so a Studio edit shows up at once. 'marks' name the words of the origin verse to light up and the part of each word that carries the root (prefixes stay unlit). Prose follows the reading text: transliteration first, English gloss in parentheses. Served by server.js NAMES; pages src/pages/Names.jsx + NamePage.jsx.",
+  "_comment": "Names -> meaning, from scripture. The LIST of names is baked by build-names.mjs into names-index.json (every person of scripture the corpus names often enough, every king); this file only WRITES ABOUT a name: keyed by its Strong's number (sn), `english` = the name translators wrote (shown large on the card; default: the English the reading text gives the name), `origin` = the verse(s) where scripture says why the name was given, `marks` = the words of that verse to light up and the part of each that carries the meaning (prefixes stay unlit), and optionally letters/summary/common/differences/compare/related for the full page. A name not written about here shows the verse it is first named in. Verse text is never copied: /api/names and /api/name/:slug cut each verse from the reader's live text. A new sn here needs `node build-names.mjs` once (to count it).",
   "intro": "A Hebrew name is a sentence. Scripture often says why a name was given, and the reason is spoken in the same root as the name. When a translator replaces the name with one that neither looks nor sounds like it, the reason in the verse goes silent. Each name here is shown in its own letters, with the verse that explains it, beside the names translators chose.",
   "names": [
     {
@@ -7,14 +7,47 @@
       "name": "Yashawai",
       "sn": "H3442",
       "meaning": "he will save",
-      "letters": [["𐤉", "root"], ["𐤔", "root"], ["𐤅", ""], ["𐤏", "root"]],
-      "legend": { "root": "the root 𐤉𐤔𐤏 Yashai (save)" },
-      "root": { "sn": "H3467", "name": "Yashai", "paleo": "𐤉𐤔𐤏", "gloss": "save" },
+      "letters": [
+        [
+          "𐤉",
+          "root"
+        ],
+        [
+          "𐤔",
+          "root"
+        ],
+        [
+          "𐤅",
+          ""
+        ],
+        [
+          "𐤏",
+          "root"
+        ]
+      ],
+      "legend": {
+        "root": "the root 𐤉𐤔𐤏 Yashai (save)"
+      },
+      "root": {
+        "sn": "H3467",
+        "name": "Yashai",
+        "paleo": "𐤉𐤔𐤏",
+        "gloss": "save"
+      },
       "summary": "The malaak (messenger) gives the name and the reason for it in one breath: you will call his shamaw (name) Yashawai, because he will YaYawashayai (save) his people. The name and the promise are the same root, 𐤉𐤔𐤏 Yashai (save) — hear the name and you hear what he will do.",
       "origin": [
         {
           "ref": "Matthew 1:21",
-          "marks": [{ "word": "Yashawai", "part": "Yashawai" }, { "word": "YaYawashayai", "part": "Yawashayai" }],
+          "marks": [
+            {
+              "word": "Yashawai",
+              "part": "Yashawai"
+            },
+            {
+              "word": "YaYawashayai",
+              "part": "Yawashayai"
+            }
+          ],
           "note": "Yashawai … YaYawashayai (save): the reason for the name is the name."
         }
       ],
@@ -23,20 +56,28 @@
         {
           "name": "Jesus",
           "where": "The New Testament of nearly every English Bible",
-          "chain": ["Yashawai", "Iēsous — Greek", "Iesus — Latin, and the 1611 King James", "Jesus — English, once the J was printed"],
-          "sounds": "no", "looks": "no",
+          "chain": [
+            "Yashawai",
+            "Iēsous — Greek",
+            "Iesus — Latin, and the 1611 King James",
+            "Jesus — English, once the J was printed"
+          ],
+          "sounds": "no",
+          "looks": "no",
           "note": "Greek has no sh sound and no letter for 𐤏, and its men's names end in -s, so Yashawai became Iēsous; Latin wrote Iesus, and English later printed the I as a J. Nothing of Yashai (save) can be heard or seen in Jesus, so Matthew 1:21 reads as a name followed by an unrelated promise."
         },
         {
           "name": "Jeshua",
           "where": "Ezra and Nehemiah in the King James — the same 𐤉𐤔𐤅𐤏",
-          "sounds": "close", "looks": "close",
+          "sounds": "close",
+          "looks": "close",
           "note": "Keeps the sh and the ending. The J was once read as a Y, which is why it looks like the Hebrew."
         },
         {
           "name": "Joshua",
           "where": "Most English Bibles, for the longer 𐤉𐤄𐤅𐤔𐤅𐤏 Yahawashawai",
-          "sounds": "partly", "looks": "partly",
+          "sounds": "partly",
+          "looks": "partly",
           "note": "Keeps the sh, but the reader is never told it is the same name as Jesus.",
           "see": "yahawashawai"
         }
@@ -47,22 +88,68 @@
         "Changing the name kept the person but dropped the meaning. Reading Yashawai keeps both."
       ],
       "compare": "Exodus 17:9; Nehemiah 8:17; Acts 7:45; Hebrews 4:8",
-      "related": ["yahawashawai"]
+      "related": [
+        "yahawashawai"
+      ],
+      "english": "Jesus"
     },
     {
       "slug": "yahawashawai",
       "name": "Yahawashawai",
       "sn": "H3091",
       "meaning": "Yahawah is Shawai (salvation)",
-      "letters": [["𐤉", "added"], ["𐤄", ""], ["𐤅", ""], ["𐤔", "root"], ["𐤏", "root"]],
-      "legend": { "added": "the 𐤉 Mashah (Moses) set in front of Hawashai", "root": "from the root 𐤉𐤔𐤏 Yashai (save)" },
-      "root": { "sn": "H3467", "name": "Yashai", "paleo": "𐤉𐤔𐤏", "gloss": "save" },
-      "from": { "name": "Hawashai", "paleo": "𐤄𐤅𐤔𐤏", "sn": "H1954", "gloss": "Hoshea" },
+      "letters": [
+        [
+          "𐤉",
+          "added"
+        ],
+        [
+          "𐤄",
+          ""
+        ],
+        [
+          "𐤅",
+          ""
+        ],
+        [
+          "𐤔",
+          "root"
+        ],
+        [
+          "𐤏",
+          "root"
+        ]
+      ],
+      "legend": {
+        "added": "the 𐤉 Mashah (Moses) set in front of Hawashai",
+        "root": "from the root 𐤉𐤔𐤏 Yashai (save)"
+      },
+      "root": {
+        "sn": "H3467",
+        "name": "Yashai",
+        "paleo": "𐤉𐤔𐤏",
+        "gloss": "save"
+      },
+      "from": {
+        "name": "Hawashai",
+        "paleo": "𐤄𐤅𐤔𐤏",
+        "sn": "H1954",
+        "gloss": "Hoshea"
+      },
       "summary": "The son of Nawan (Nun) was born Hawashai (Hoshea), a name from the root Yashai (save). When the spies were sent out, Mashah (Moses) set a 𐤉 in front of it, and the name became Yahawashawai — beginning with the letters that begin Yahawah's own name.",
       "origin": [
         {
           "ref": "Numbers 13:16",
-          "marks": [{ "word": "LaHawashai", "part": "Hawashai" }, { "word": "Yahawashawai", "part": "Yahawashawai" }],
+          "marks": [
+            {
+              "word": "LaHawashai",
+              "part": "Hawashai"
+            },
+            {
+              "word": "Yahawashawai",
+              "part": "Yahawashawai"
+            }
+          ],
           "note": "Hawashai (Hoshea) … Yahawashawai: one 𐤉 added, and the name now begins with Yah."
         }
       ],
@@ -71,25 +158,29 @@
         {
           "name": "Joshua",
           "where": "Nearly every English Bible",
-          "sounds": "partly", "looks": "partly",
+          "sounds": "partly",
+          "looks": "partly",
           "note": "The Yah at the front is shortened to Jo; the Yahawah in the name is no longer visible."
         },
         {
           "name": "Jehoshua",
           "where": "Numbers 13:16 in the King James",
-          "sounds": "close", "looks": "close",
+          "sounds": "close",
+          "looks": "close",
           "note": "The one place the King James keeps the full name — right where scripture explains it."
         },
         {
           "name": "Oshea / Hoshea",
           "where": "His first name, Hawashai, in Numbers 13:8 and 13:16",
-          "sounds": "close", "looks": "close",
+          "sounds": "close",
+          "looks": "close",
           "note": "Without the 𐤉: Hawashai (deliverer)."
         },
         {
           "name": "Jesus",
           "where": "Acts 7:45 and Hebrews 4:8 in the King James",
-          "sounds": "no", "looks": "no",
+          "sounds": "no",
+          "looks": "no",
           "note": "The Greek Iēsous carried into English — so the King James names Joshua 'Jesus' in two verses.",
           "see": "yashawai"
         }
@@ -99,7 +190,767 @@
         "Yahawashawai and Yashawai share the root Yashai (save); English gives them as Joshua and Jesus, which do not look related."
       ],
       "compare": "Numbers 13:8; Acts 7:45; Hebrews 4:8",
-      "related": ["yashawai"]
+      "related": [
+        "yashawai"
+      ],
+      "english": "Joshua"
+    },
+    {
+      "sn": "H3478",
+      "english": "Israel",
+      "origin": [
+        {
+          "ref": "Genesis 32:28",
+          "marks": [
+            {
+              "word": "Yashar-Al",
+              "part": "Yashar-Al"
+            },
+            {
+              "word": "Kay-Sharahayath",
+              "part": "Sharahayath"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H3290",
+      "english": "Jacob",
+      "origin": [
+        {
+          "ref": "Genesis 25:26",
+          "marks": [
+            {
+              "word": "Yaiqab",
+              "part": "Yaiqab"
+            },
+            {
+              "word": "BaIqab",
+              "part": "Iqab"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H3063",
+      "english": "Judah",
+      "origin": [
+        {
+          "ref": "Genesis 29:35",
+          "marks": [
+            {
+              "word": "Yahawadah",
+              "part": "Yahawadah"
+            },
+            {
+              "word": "AYawadah",
+              "part": "Yawadah"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H85",
+      "english": "Abraham",
+      "origin": [
+        {
+          "ref": "Genesis 17:5",
+          "marks": [
+            {
+              "word": "Abaraham",
+              "part": "Abaraham"
+            },
+            {
+              "word": "Abaram",
+              "part": "Abaram"
+            },
+            {
+              "word": "KayaAb-Hamawan",
+              "part": "Ab-Hamawan"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H8283",
+      "english": "Sarah",
+      "origin": [
+        {
+          "ref": "Genesis 17:15",
+          "marks": [
+            {
+              "word": "Sharah",
+              "part": "Sharah"
+            },
+            {
+              "word": "Sharay",
+              "part": "Sharay"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H3327",
+      "english": "Isaac",
+      "origin": [
+        {
+          "ref": "Genesis 21:6",
+          "marks": [
+            {
+              "word": "Tzachaq",
+              "part": "Tzachaq"
+            },
+            {
+              "word": "YaTzachaq-Lay",
+              "part": "Tzachaq"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H3458",
+      "english": "Ishmael",
+      "origin": [
+        {
+          "ref": "Genesis 16:11",
+          "marks": [
+            {
+              "word": "Yashamai-Al",
+              "part": "Yashamai-Al"
+            },
+            {
+              "word": "Kay-YaShamai",
+              "part": "Shamai"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H6215",
+      "english": "Esau",
+      "origin": [
+        {
+          "ref": "Genesis 25:25",
+          "marks": [
+            {
+              "word": "Ishaw",
+              "part": "Ishaw"
+            },
+            {
+              "word": "Shair",
+              "part": "Shair"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H123",
+      "english": "Edom",
+      "origin": [
+        {
+          "ref": "Genesis 25:30",
+          "marks": [
+            {
+              "word": "Adawam",
+              "part": "Adawam"
+            },
+            {
+              "word": "Man-HaAdam",
+              "part": "Adam"
+            },
+            {
+              "word": "HaAdam",
+              "part": "Adam"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H7205",
+      "english": "Reuben",
+      "origin": [
+        {
+          "ref": "Genesis 29:32",
+          "marks": [
+            {
+              "word": "Raawaban",
+              "part": "Raawaban"
+            },
+            {
+              "word": "Kay-YaRaah",
+              "part": "Raah"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H8095",
+      "english": "Simeon",
+      "origin": [
+        {
+          "ref": "Genesis 29:33",
+          "marks": [
+            {
+              "word": "Shamaiwan",
+              "part": "Shamaiwan"
+            },
+            {
+              "word": "Kay-YaShamai",
+              "part": "Shamai"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H3878",
+      "english": "Levi",
+      "origin": [
+        {
+          "ref": "Genesis 29:34",
+          "marks": [
+            {
+              "word": "Laway",
+              "part": "Laway"
+            },
+            {
+              "word": "YaLawah",
+              "part": "Lawah"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H1835",
+      "english": "Dan",
+      "origin": [
+        {
+          "ref": "Genesis 30:6",
+          "marks": [
+            {
+              "word": "Dan",
+              "part": "Dan"
+            },
+            {
+              "word": "Dayanay",
+              "part": "Dayan"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H5321",
+      "english": "Naphtali",
+      "origin": [
+        {
+          "ref": "Genesis 30:8",
+          "marks": [
+            {
+              "word": "Napathalay",
+              "part": "Napathalay"
+            },
+            {
+              "word": "Napathawalay",
+              "part": "Napathawalay"
+            },
+            {
+              "word": "NaPathalathay",
+              "part": "Pathalathay"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H1410",
+      "english": "Gad",
+      "origin": [
+        {
+          "ref": "Genesis 30:11",
+          "marks": [
+            {
+              "word": "Gad",
+              "part": "Gad"
+            },
+            {
+              "word": "BaGad",
+              "part": "Gad"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H836",
+      "english": "Asher",
+      "origin": [
+        {
+          "ref": "Genesis 30:13",
+          "marks": [
+            {
+              "word": "Ashar",
+              "part": "Ashar"
+            },
+            {
+              "word": "BaAsharay",
+              "part": "Asharay"
+            },
+            {
+              "word": "KayaAsharaway",
+              "part": "Asharaway"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H3485",
+      "english": "Issachar",
+      "origin": [
+        {
+          "ref": "Genesis 30:18",
+          "marks": [
+            {
+              "word": "Yash-Shakar",
+              "part": "Yash-Shakar"
+            },
+            {
+              "word": "Shakaray",
+              "part": "Shakaray"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H2074",
+      "english": "Zebulun",
+      "origin": [
+        {
+          "ref": "Genesis 30:20",
+          "marks": [
+            {
+              "word": "Zabawalawan",
+              "part": "Zabawalawan"
+            },
+            {
+              "word": "YaZabalay",
+              "part": "Zabalay"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H3130",
+      "english": "Joseph",
+      "origin": [
+        {
+          "ref": "Genesis 30:24",
+          "marks": [
+            {
+              "word": "Yawasap",
+              "part": "Yawasap"
+            },
+            {
+              "word": "YaYasap",
+              "part": "Yasap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H1144",
+      "english": "Benjamin",
+      "origin": [
+        {
+          "ref": "Genesis 35:18",
+          "marks": [
+            {
+              "word": "Ban-Yamayan",
+              "part": "Ban-Yamayan"
+            },
+            {
+              "word": "Banah",
+              "part": "Banah"
+            },
+            {
+              "word": "Awanay",
+              "part": "Awanay"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H4872",
+      "english": "Moses",
+      "origin": [
+        {
+          "ref": "Exodus 2:10",
+          "marks": [
+            {
+              "word": "Mashah",
+              "part": "Mashah"
+            },
+            {
+              "word": "Mashahayathaw",
+              "part": "Mashahayathaw"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H5146",
+      "english": "Noah",
+      "origin": [
+        {
+          "ref": "Genesis 5:29",
+          "marks": [
+            {
+              "word": "Nach",
+              "part": "Nach"
+            },
+            {
+              "word": "YaNachamanaw",
+              "part": "Nachamanaw"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H121",
+      "english": "Adam",
+      "origin": [
+        {
+          "ref": "Genesis 2:7",
+          "marks": [
+            {
+              "word": "HaAdam",
+              "part": "Adam"
+            },
+            {
+              "word": "HaAdamah",
+              "part": "Adamah"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H2332",
+      "english": "Eve",
+      "origin": [
+        {
+          "ref": "Genesis 3:20",
+          "marks": [
+            {
+              "word": "Chawah",
+              "part": "Chawah"
+            },
+            {
+              "word": "Chay",
+              "part": "Chay"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H7014",
+      "english": "Cain",
+      "origin": [
+        {
+          "ref": "Genesis 4:1",
+          "marks": [
+            {
+              "word": "Qayan",
+              "part": "Qayan"
+            },
+            {
+              "word": "Qanahayathay",
+              "part": "Qanahayathay"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H8352",
+      "english": "Seth",
+      "origin": [
+        {
+          "ref": "Genesis 4:25",
+          "marks": [
+            {
+              "word": "Shath",
+              "part": "Shath"
+            },
+            {
+              "word": "KayaYaShayath",
+              "part": "Shayath"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H6389",
+      "english": "Peleg",
+      "origin": [
+        {
+          "ref": "Genesis 10:25",
+          "marks": [
+            {
+              "word": "Palag",
+              "part": "Palag"
+            },
+            {
+              "word": "NaPalagah",
+              "part": "Palagah"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H6557",
+      "english": "Perez",
+      "origin": [
+        {
+          "ref": "Genesis 38:29",
+          "marks": [
+            {
+              "word": "Paratz",
+              "part": "Paratz"
+            },
+            {
+              "word": "Mah-Paratzath",
+              "part": "Paratzath"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H4519",
+      "english": "Manasseh",
+      "origin": [
+        {
+          "ref": "Genesis 41:51",
+          "marks": [
+            {
+              "word": "Manashah",
+              "part": "Manashah"
+            },
+            {
+              "word": "Kay-Nashahay",
+              "part": "Nashahay"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H669",
+      "english": "Ephraim",
+      "origin": [
+        {
+          "ref": "Genesis 41:52",
+          "marks": [
+            {
+              "word": "Aparayam",
+              "part": "Aparayam"
+            },
+            {
+              "word": "Kay-HaParahay",
+              "part": "Parahay"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H1648",
+      "english": "Gershom",
+      "origin": [
+        {
+          "ref": "Exodus 2:22",
+          "marks": [
+            {
+              "word": "Garasham",
+              "part": "Garasham"
+            },
+            {
+              "word": "Gar",
+              "part": "Gar"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H461",
+      "english": "Eliezer",
+      "origin": [
+        {
+          "ref": "Exodus 18:4",
+          "marks": [
+            {
+              "word": "Alay-Izar",
+              "part": "Alay-Izar"
+            },
+            {
+              "word": "BaIzaray",
+              "part": "Izaray"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H3378",
+      "english": "Jerubbaal",
+      "origin": [
+        {
+          "ref": "Judges 6:32",
+          "marks": [
+            {
+              "word": "Yar-Bail",
+              "part": "Yar-Bail"
+            },
+            {
+              "word": "YaRayab",
+              "part": "Rayab"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H5281",
+      "english": "Naomi",
+      "origin": [
+        {
+          "ref": "Ruth 1:20",
+          "marks": [
+            {
+              "word": "Naimay",
+              "part": "Naimay"
+            },
+            {
+              "word": "Maraa",
+              "part": "Maraa"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H8050",
+      "english": "Samuel",
+      "origin": [
+        {
+          "ref": "1 Samuel 1:20",
+          "marks": [
+            {
+              "word": "Shamawaal",
+              "part": "Shamawaal"
+            },
+            {
+              "word": "Shaalathayaw",
+              "part": "Shaalathayaw"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H5037",
+      "english": "Nabal",
+      "origin": [
+        {
+          "ref": "1 Samuel 25:25",
+          "marks": [
+            {
+              "word": "Nabal",
+              "part": "Nabal"
+            },
+            {
+              "word": "WaNabalah",
+              "part": "Nabalah"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H8010",
+      "english": "Solomon",
+      "origin": [
+        {
+          "ref": "1 Chronicles 22:9",
+          "marks": [
+            {
+              "word": "Shalamah",
+              "part": "Shalamah"
+            },
+            {
+              "word": "WaShalawam",
+              "part": "Shalawam"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H3258",
+      "english": "Jabez",
+      "origin": [
+        {
+          "ref": "1 Chronicles 4:9",
+          "marks": [
+            {
+              "word": "Yaibatz",
+              "part": "Yaibatz"
+            },
+            {
+              "word": "BaItzab",
+              "part": "Itzab"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sn": "H6005",
+      "english": "Immanuel",
+      "origin": [
+        {
+          "ref": "Isaiah 7:14",
+          "marks": [
+            {
+              "word": "Imanawaal",
+              "part": "Imanawaal"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
