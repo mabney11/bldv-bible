@@ -1387,7 +1387,7 @@ ROUTES[PHB.path] = [{
       <p>${escapeHtml(PHB.kicker)}</p>
       <p>${escapeHtml(PHB.intro)}</p>
       <p lang="hbo" dir="rtl">${PHB.sample.paleo}</p>
-      <p>${PHB.sample.words.map((x) => `${x.paleo} ${escapeHtml(x.translit)}`).join(' · ')}</p>
+      <p>${PHB.sample.words.map((x) => `${x.paleo} ${escapeHtml(x.translit)}${x.gloss != null ? ` (${escapeHtml(x.gloss)})` : ''}`).join(' · ')}</p>
       <p>${escapeHtml(PHB.sample.note)}</p>
       <p>${escapeHtml(PHB.sample.ref)} — ${a(PHB.sample.to, PHB.sample.label)}</p>
       <ul>${PHB.readButtons.map((b) => `<li>${a(b.to, b.label)} — ${escapeHtml(b.sub)}</li>`).join('')}</ul>

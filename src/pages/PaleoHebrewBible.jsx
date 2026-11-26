@@ -14,10 +14,11 @@ const WAW = '𐤅';
 /** Consecutive letters of one part -> one span with the reader's morpheme class. */
 function groups(pieces) {
   const out = [];
-  for (const [l, s, css, label] of pieces) {
+  for (const [l, s, css, label, written] of pieces) {
+    const added = written === false;           // a root letter the scribe left out, added back
     const last = out[out.length - 1];
-    if (last && last.css === (css || '')) { last.paleo += l; last.tr += s; }
-    else out.push({ css: css || '', label: label || '', paleo: l, tr: s });
+    if (last && last.css === (css || '') && last.added === added) { last.paleo += l; last.tr += s; }
+    else out.push({ css: css || '', label: label || '', paleo: l, tr: s, added });
   }
   return out;
 }
@@ -76,6 +77,7 @@ export default function PaleoHebrewBible() {
             <div key={i} className="phb-sample-word">
               <span className="phb-sample-paleo" lang="hbo"><Morph pieces={word.pieces} field="paleo" /></span>
               <span className="phb-sample-tr"><Morph pieces={word.pieces} field="tr" /></span>
+              {word.gloss != null && <span className="phb-sample-gloss">({word.gloss})</span>}
             </div>
           ))}
         </div>

@@ -7,138 +7,94 @@
  "kicker": "The entire scriptures in Paleo-Hebrew letters, alongside the English",
  "intro": "BLD Bible lets you read the entire scriptures in Paleo-Hebrew, the 22 letters Israel wrote with before the exile, with the English beside every verse. Every Hebrew word is also written out in Latin letters by one fixed rule: each Hebrew letter always gets the same sound, and every letter of the Hebrew is kept. The transliteration preserves the Paleo-Hebrew letters themselves, not a modern pronunciation: read it back and you have the Hebrew letters again, in order. Nothing is smoothed over, dropped or doubled.",
  "sample": {
-  "ref": "BaRaashayath (Genesis) 1:1",
-  "paleo": "𐤁𐤓𐤀𐤔𐤉𐤕 𐤁𐤓𐤀 𐤀𐤋𐤄𐤉𐤌 𐤀𐤕 𐤄𐤔𐤌𐤉𐤌 𐤅𐤀𐤕 𐤄𐤀𐤓𐤑",
-  "to": "/genesis/1/1",
-  "label": "Open BaRaashayath (Genesis) 1:1 word by word",
+  "ref": "BaRaashayath (Genesis) 2:4",
+  "paleo": "𐤀𐤋𐤄 𐤕𐤅𐤋𐤃𐤅𐤕 𐤄𐤔𐤌𐤉𐤌 𐤅𐤄𐤀𐤓𐤑 𐤁𐤄𐤁𐤓𐤀𐤌 𐤁𐤉𐤅𐤌 𐤏𐤔𐤅𐤕 𐤉𐤄𐤅𐤄 𐤀𐤋𐤄𐤉𐤌 𐤀𐤓𐤑 𐤅𐤔𐤌𐤉𐤌",
+  "to": "/genesis/2/4",
+  "label": "Open BaRaashayath (Genesis) 2:4 word by word",
   "words": [
    {
-    "paleo": "𐤁𐤓𐤀𐤔𐤉𐤕",
-    "translit": "BaRaashayath",
-    "pieces": [
-     [
-      "𐤁",
-      "Ba",
-      "mod-prep",
-      "in"
-     ],
-     [
-      "𐤓",
-      "Ra",
-      "root",
-      "beginning"
-     ],
-     [
-      "𐤀",
-      "a",
-      "root",
-      "beginning"
-     ],
-     [
-      "𐤔",
-      "sha",
-      "root",
-      "beginning"
-     ],
-     [
-      "𐤉",
-      "ya",
-      "root",
-      "beginning"
-     ],
-     [
-      "𐤕",
-      "th",
-      "root",
-      "beginning"
-     ]
-    ],
-    "en": "",
-    "role": ""
-   },
-   {
-    "paleo": "𐤁𐤓𐤀",
-    "translit": "Baraa",
-    "pieces": [
-     [
-      "𐤁",
-      "Ba",
-      "root",
-      "created"
-     ],
-     [
-      "𐤓",
-      "ra",
-      "root",
-      "created"
-     ],
-     [
-      "𐤀",
-      "a",
-      "root",
-      "created"
-     ]
-    ],
-    "en": "",
-    "role": ""
-   },
-   {
-    "paleo": "𐤀𐤋𐤄𐤉𐤌",
-    "translit": "Alahayam",
+    "paleo": "𐤀𐤋𐤄",
+    "translit": "Alah",
     "pieces": [
      [
       "𐤀",
       "A",
       "root",
-      "Alahayam"
+      "these",
+      true
      ],
      [
       "𐤋",
       "la",
       "root",
-      "Alahayam"
+      "these",
+      true
+     ],
+     [
+      "𐤄",
+      "h",
+      "root",
+      "these",
+      true
+     ]
+    ],
+    "gloss": "These"
+   },
+   {
+    "paleo": "𐤕𐤅𐤋𐤃𐤅𐤕",
+    "translit": "Thawaladahawath",
+    "pieces": [
+     [
+      "𐤕",
+      "Tha",
+      "root",
+      "generation",
+      true
+     ],
+     [
+      "𐤅",
+      "wa",
+      "root",
+      "generation",
+      true
+     ],
+     [
+      "𐤋",
+      "la",
+      "root",
+      "generation",
+      true
+     ],
+     [
+      "𐤃",
+      "da",
+      "root",
+      "generation",
+      true
      ],
      [
       "𐤄",
       "ha",
       "root",
-      "Alahayam"
+      "generation",
+      false
      ],
      [
-      "𐤉",
-      "ya",
-      "root",
-      "Alahayam"
-     ],
-     [
-      "𐤌",
-      "m",
-      "root",
-      "Alahayam"
-     ]
-    ],
-    "en": "",
-    "role": ""
-   },
-   {
-    "paleo": "𐤀𐤕",
-    "translit": "Ath",
-    "pieces": [
-     [
-      "𐤀",
-      "A",
-      "root",
-      "entirety"
+      "𐤅",
+      "wa",
+      "nme-wt",
+      "[Plural (f)]",
+      true
      ],
      [
       "𐤕",
       "th",
-      "root",
-      "entirety"
+      "nme-wt",
+      "[Plural (f)]",
+      true
      ]
     ],
-    "en": "",
-    "role": ""
+    "gloss": "generations"
    },
    {
     "paleo": "𐤄𐤔𐤌𐤉𐤌",
@@ -148,104 +104,365 @@
       "𐤄",
       "Ha",
       "mod-art",
-      "The"
+      "The",
+      true
      ],
      [
       "𐤔",
       "Sha",
       "root",
-      "Heavens"
+      "Heavens",
+      true
      ],
      [
       "𐤌",
       "ma",
       "root",
-      "Heavens"
+      "Heavens",
+      true
      ],
      [
       "𐤉",
       "ya",
       "root",
-      "Heavens"
+      "Heavens",
+      true
      ],
      [
       "𐤌",
       "m",
       "root",
-      "Heavens"
+      "Heavens",
+      true
      ]
     ],
-    "en": "",
-    "role": ""
+    "gloss": "the Heavens"
    },
    {
-    "paleo": "𐤅𐤀𐤕",
-    "translit": "WaAth",
+    "paleo": "𐤅𐤄𐤀𐤓𐤑",
+    "translit": "WaHaAratz",
     "pieces": [
      [
       "𐤅",
       "Wa",
       "mod-conj",
-      "And"
+      "And",
+      true
      ],
-     [
-      "𐤀",
-      "A",
-      "root",
-      "entirety"
-     ],
-     [
-      "𐤕",
-      "th",
-      "root",
-      "entirety"
-     ]
-    ],
-    "en": "",
-    "role": ""
-   },
-   {
-    "paleo": "𐤄𐤀𐤓𐤑",
-    "translit": "HaAratz",
-    "pieces": [
      [
       "𐤄",
       "Ha",
       "mod-art",
-      "The"
+      "The",
+      true
      ],
      [
       "𐤀",
       "A",
       "root",
-      "Earth/land"
+      "Earth/land",
+      true
      ],
      [
       "𐤓",
       "ra",
       "root",
-      "Earth/land"
+      "Earth/land",
+      true
      ],
      [
       "𐤑",
       "tz",
       "root",
-      "Earth/land"
+      "Earth/land",
+      true
      ]
     ],
-    "en": "",
-    "role": ""
+    "gloss": "and the Earth"
+   },
+   {
+    "paleo": "𐤁𐤄𐤁𐤓𐤀𐤌",
+    "translit": "BaHaBaraam",
+    "pieces": [
+     [
+      "𐤁",
+      "Ba",
+      "mod-prep",
+      "in",
+      true
+     ],
+     [
+      "𐤄",
+      "Ha",
+      "vbs-hif",
+      "[Causing]",
+      true
+     ],
+     [
+      "𐤁",
+      "Ba",
+      "root",
+      "create/created",
+      true
+     ],
+     [
+      "𐤓",
+      "ra",
+      "root",
+      "create/created",
+      true
+     ],
+     [
+      "𐤀",
+      "a",
+      "root",
+      "create/created",
+      true
+     ],
+     [
+      "𐤌",
+      "m",
+      "prs-3mp",
+      "[Their]",
+      true
+     ]
+    ],
+    "gloss": "in their creation"
+   },
+   {
+    "paleo": "𐤁𐤉𐤅𐤌",
+    "translit": "BaYawam",
+    "pieces": [
+     [
+      "𐤁",
+      "Ba",
+      "mod-prep",
+      "in",
+      true
+     ],
+     [
+      "𐤉",
+      "Ya",
+      "root",
+      "day",
+      true
+     ],
+     [
+      "𐤅",
+      "wa",
+      "root",
+      "day",
+      true
+     ],
+     [
+      "𐤌",
+      "m",
+      "root",
+      "day",
+      true
+     ]
+    ],
+    "gloss": "in the day"
+   },
+   {
+    "paleo": "𐤏𐤔𐤅𐤕",
+    "translit": "Ishahawath",
+    "pieces": [
+     [
+      "𐤏",
+      "I",
+      "root",
+      "make",
+      true
+     ],
+     [
+      "𐤔",
+      "sha",
+      "root",
+      "make",
+      true
+     ],
+     [
+      "𐤄",
+      "ha",
+      "root",
+      "make",
+      false
+     ],
+     [
+      "𐤅",
+      "wa",
+      "nme-wt",
+      "[Plural (f)]",
+      true
+     ],
+     [
+      "𐤕",
+      "th",
+      "nme-wt",
+      "[Plural (f)]",
+      true
+     ]
+    ],
+    "gloss": "made them"
+   },
+   {
+    "paleo": "𐤉𐤄𐤅𐤄",
+    "translit": "Yahawah",
+    "pieces": [
+     [
+      "𐤉",
+      "Ya",
+      "root",
+      "Yahawah (The Eternal)",
+      true
+     ],
+     [
+      "𐤄",
+      "ha",
+      "root",
+      "Yahawah (The Eternal)",
+      true
+     ],
+     [
+      "𐤅",
+      "wa",
+      "root",
+      "Yahawah (The Eternal)",
+      true
+     ],
+     [
+      "𐤄",
+      "h",
+      "root",
+      "Yahawah (The Eternal)",
+      true
+     ]
+    ],
+    "gloss": ""
+   },
+   {
+    "paleo": "𐤀𐤋𐤄𐤉𐤌",
+    "translit": "Alahayam",
+    "pieces": [
+     [
+      "𐤀",
+      "A",
+      "root",
+      "Alahayam",
+      true
+     ],
+     [
+      "𐤋",
+      "la",
+      "root",
+      "Alahayam",
+      true
+     ],
+     [
+      "𐤄",
+      "ha",
+      "root",
+      "Alahayam",
+      true
+     ],
+     [
+      "𐤉",
+      "ya",
+      "root",
+      "Alahayam",
+      true
+     ],
+     [
+      "𐤌",
+      "m",
+      "root",
+      "Alahayam",
+      true
+     ]
+    ],
+    "gloss": "God"
+   },
+   {
+    "paleo": "𐤀𐤓𐤑",
+    "translit": "Aratz",
+    "pieces": [
+     [
+      "𐤀",
+      "A",
+      "root",
+      "Earth/land",
+      true
+     ],
+     [
+      "𐤓",
+      "ra",
+      "root",
+      "Earth/land",
+      true
+     ],
+     [
+      "𐤑",
+      "tz",
+      "root",
+      "Earth/land",
+      true
+     ]
+    ],
+    "gloss": "Earth"
+   },
+   {
+    "paleo": "𐤅𐤔𐤌𐤉𐤌",
+    "translit": "WaShamayam",
+    "pieces": [
+     [
+      "𐤅",
+      "Wa",
+      "mod-conj",
+      "And",
+      true
+     ],
+     [
+      "𐤔",
+      "Sha",
+      "root",
+      "Heavens",
+      true
+     ],
+     [
+      "𐤌",
+      "ma",
+      "root",
+      "Heavens",
+      true
+     ],
+     [
+      "𐤉",
+      "ya",
+      "root",
+      "Heavens",
+      true
+     ],
+     [
+      "𐤌",
+      "m",
+      "root",
+      "Heavens",
+      true
+     ]
+    ],
+    "gloss": "and Heavens"
    }
   ],
-  "note": "Every Paleo-Hebrew letter above has its one sound below, in the same order: 28 letters, 28 sounds. Nothing in the transliteration stands for a letter that is not there.",
+  "note": "Every Paleo-Hebrew letter above has its one sound below, in the same order. The root of every word is shown for context: each word is its root, with its modifications around it.",
   "legend": [
    {
     "css": "root",
     "label": "Root"
    },
    {
-    "css": "mod-prep",
-    "label": "in"
+    "css": "nme-wt",
+    "label": "Plural (f)"
    },
    {
     "css": "mod-art",
@@ -254,6 +471,18 @@
    {
     "css": "mod-conj",
     "label": "And"
+   },
+   {
+    "css": "mod-prep",
+    "label": "in"
+   },
+   {
+    "css": "vbs-hif",
+    "label": "Causing"
+   },
+   {
+    "css": "prs-3mp",
+    "label": "Their"
    }
   ]
  },
@@ -311,7 +540,7 @@
    "p": [
     "The transliteration on BLD Bible is not a guide to modern pronunciation. It is the Paleo-Hebrew letters themselves, written in Latin letters: one Hebrew letter, one sound, every letter kept, so the Hebrew can always be read back from it.",
     "Most transliterations write Hebrew the way it is pronounced today, so the same letter turns into different sounds from word to word, silent letters disappear, and letters that are not written are added. BLD Bible does it mechanically instead: every Hebrew letter has one sound, written the same way in every word of every book.",
-    "You can count it. A word of four Hebrew letters has four letter-sounds in its transliteration, in the same order. Where a word has a prefix or a suffix, a capital letter marks where the next part begins: WaThaAmar is Wa (and) + Tha (she) + Amar (said). And where the written word has lost a letter of its root, the root's letter is shown too: letters are added back, never taken away."
+    "You can count it. A word of four Hebrew letters has four letter-sounds in its transliteration, in the same order. Where a word has a prefix or a suffix, a capital letter marks where the next part begins: WaThaAmar is Wa (and) + Tha (she) + Amar (said). And the root of every word is shown for context, so every word reads as its root with its modifications around it."
    ]
   }
  ],

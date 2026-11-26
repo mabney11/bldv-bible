@@ -340,5 +340,426 @@
    "root",
    "Shabath / Rest"
   ]
+ ],
+ "_sample": [
+  {
+   "paleo": "𐤀𐤋𐤄",
+   "parts": [
+    {
+     "l": "𐤀",
+     "css": "root",
+     "label": "these",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤋",
+     "css": "root",
+     "label": "these",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤄",
+     "css": "root",
+     "label": "these",
+     "written": true,
+     "start": false
+    }
+   ]
+  },
+  {
+   "paleo": "𐤕𐤅𐤋𐤃𐤅𐤕",
+   "parts": [
+    {
+     "l": "𐤕",
+     "css": "root",
+     "label": "generation",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤅",
+     "css": "root",
+     "label": "generation",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤋",
+     "css": "root",
+     "label": "generation",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤃",
+     "css": "root",
+     "label": "generation",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤄",
+     "css": "root",
+     "label": "generation",
+     "written": false,
+     "start": false
+    },
+    {
+     "l": "𐤅",
+     "css": "nme-wt",
+     "label": "[Plural (f)]",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤕",
+     "css": "nme-wt",
+     "label": "[Plural (f)]",
+     "written": true,
+     "start": false
+    }
+   ]
+  },
+  {
+   "paleo": "𐤄𐤔𐤌𐤉𐤌",
+   "parts": [
+    {
+     "l": "𐤄",
+     "css": "mod-art",
+     "label": "The",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤔",
+     "css": "root",
+     "label": "Heavens",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤌",
+     "css": "root",
+     "label": "Heavens",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤉",
+     "css": "root",
+     "label": "Heavens",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤌",
+     "css": "root",
+     "label": "Heavens",
+     "written": true,
+     "start": false
+    }
+   ]
+  },
+  {
+   "paleo": "𐤅𐤄𐤀𐤓𐤑",
+   "parts": [
+    {
+     "l": "𐤅",
+     "css": "mod-conj",
+     "label": "And",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤄",
+     "css": "mod-art",
+     "label": "The",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤀",
+     "css": "root",
+     "label": "Earth/land",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤓",
+     "css": "root",
+     "label": "Earth/land",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤑",
+     "css": "root",
+     "label": "Earth/land",
+     "written": true,
+     "start": false
+    }
+   ]
+  },
+  {
+   "paleo": "𐤁𐤄𐤁𐤓𐤀𐤌",
+   "parts": [
+    {
+     "l": "𐤁",
+     "css": "mod-prep",
+     "label": "in",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤄",
+     "css": "vbs-hif",
+     "label": "[Causing]",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤁",
+     "css": "root",
+     "label": "create/created",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤓",
+     "css": "root",
+     "label": "create/created",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤀",
+     "css": "root",
+     "label": "create/created",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤌",
+     "css": "prs-3mp",
+     "label": "[Their]",
+     "written": true,
+     "start": true
+    }
+   ]
+  },
+  {
+   "paleo": "𐤁𐤉𐤅𐤌",
+   "parts": [
+    {
+     "l": "𐤁",
+     "css": "mod-prep",
+     "label": "in",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤉",
+     "css": "root",
+     "label": "day",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤅",
+     "css": "root",
+     "label": "day",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤌",
+     "css": "root",
+     "label": "day",
+     "written": true,
+     "start": false
+    }
+   ]
+  },
+  {
+   "paleo": "𐤏𐤔𐤅𐤕",
+   "parts": [
+    {
+     "l": "𐤏",
+     "css": "root",
+     "label": "make",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤔",
+     "css": "root",
+     "label": "make",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤄",
+     "css": "root",
+     "label": "make",
+     "written": false,
+     "start": false
+    },
+    {
+     "l": "𐤅",
+     "css": "nme-wt",
+     "label": "[Plural (f)]",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤕",
+     "css": "nme-wt",
+     "label": "[Plural (f)]",
+     "written": true,
+     "start": false
+    }
+   ]
+  },
+  {
+   "paleo": "𐤉𐤄𐤅𐤄",
+   "parts": [
+    {
+     "l": "𐤉",
+     "css": "mod-nmpr",
+     "label": "Yahawah (The Eternal)",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤄",
+     "css": "mod-nmpr",
+     "label": "Yahawah (The Eternal)",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤅",
+     "css": "mod-nmpr",
+     "label": "Yahawah (The Eternal)",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤄",
+     "css": "mod-nmpr",
+     "label": "Yahawah (The Eternal)",
+     "written": true,
+     "start": false
+    }
+   ]
+  },
+  {
+   "paleo": "𐤀𐤋𐤄𐤉𐤌",
+   "parts": [
+    {
+     "l": "𐤀",
+     "css": "root",
+     "label": "Alahayam",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤋",
+     "css": "root",
+     "label": "Alahayam",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤄",
+     "css": "root",
+     "label": "Alahayam",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤉",
+     "css": "root",
+     "label": "Alahayam",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤌",
+     "css": "root",
+     "label": "Alahayam",
+     "written": true,
+     "start": false
+    }
+   ]
+  },
+  {
+   "paleo": "𐤀𐤓𐤑",
+   "parts": [
+    {
+     "l": "𐤀",
+     "css": "root",
+     "label": "Earth/land",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤓",
+     "css": "root",
+     "label": "Earth/land",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤑",
+     "css": "root",
+     "label": "Earth/land",
+     "written": true,
+     "start": false
+    }
+   ]
+  },
+  {
+   "paleo": "𐤅𐤔𐤌𐤉𐤌",
+   "parts": [
+    {
+     "l": "𐤅",
+     "css": "mod-conj",
+     "label": "And",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤔",
+     "css": "root",
+     "label": "Heavens",
+     "written": true,
+     "start": true
+    },
+    {
+     "l": "𐤌",
+     "css": "root",
+     "label": "Heavens",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤉",
+     "css": "root",
+     "label": "Heavens",
+     "written": true,
+     "start": false
+    },
+    {
+     "l": "𐤌",
+     "css": "root",
+     "label": "Heavens",
+     "written": true,
+     "start": false
+    }
+   ]
+  }
  ]
 }

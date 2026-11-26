@@ -3,10 +3,24 @@ import { CHAR_MAP, translit } from '../src/lib/books.js';
 import fs from 'fs';
 // css + label per written letter, from the reader's own parse (scripts/build-paleo-hebrew-bible-morph.py).
 const MORPH = JSON.parse(fs.readFileSync(new URL('./paleo-hebrew-bible-morph.json', import.meta.url), 'utf8'));
+// The sample verse as the reader draws it (written + restored root letters), sounded by CHAR_MAP:
+// medial inside the word, final on its last letter; a capital opens each prefix and the root, suffixes stay lower case.
+const SUFFIX = /^(prs|vbe|nme|uvf)-/;
+const sampleWord = ({ paleo, parts }, gloss) => {
+  const pieces = parts.map((p, i) => {
+    let s = i === parts.length - 1 ? CHAR_MAP[p.l].fin : CHAR_MAP[p.l].med;
+    if (p.start && !SUFFIX.test(p.css)) s = s[0].toUpperCase() + s.slice(1);
+    return [p.l, s, p.css === 'mod-nmpr' ? 'root' : p.css, p.label, p.written];
+  });
+  return { paleo, translit: pieces.map((p) => p[1]).join(''), pieces, gloss };
+};
+// fieldy's own English for BaRaashayath 2:4 (translation.db, status done), word by word.
+const GEN_2_4_GLOSS = ['These', 'generations', 'the Heavens', 'and the Earth', 'in their creation', 'in the day', 'made them', '', 'God', 'Earth', 'and Heavens'];   // in Hebrew word order
 const ROLE_LABEL = { root: 'Root', 'mod-nmpr': 'Name' };
 const legendOf = (words) => {
   const seen = new Map();
   for (const w of words) for (const [, , css, label] of w.pieces) {
+    if (label == null) continue;
     if (!css || seen.has(css)) continue;
     seen.set(css, ROLE_LABEL[css] || label.replace(/^\[|\]$/g, ''));
   }
@@ -43,9 +57,9 @@ const d = {
  h1: 'Paleo Hebrew Bible',
  kicker: 'The entire scriptures in Paleo-Hebrew letters, alongside the English',
  intro: "BLD Bible lets you read the entire scriptures in Paleo-Hebrew, the 22 letters Israel wrote with before the exile, with the English beside every verse. Every Hebrew word is also written out in Latin letters by one fixed rule: each Hebrew letter always gets the same sound, and every letter of the Hebrew is kept. The transliteration preserves the Paleo-Hebrew letters themselves, not a modern pronunciation: read it back and you have the Hebrew letters again, in order. Nothing is smoothed over, dropped or doubled.",
- sample: { ref: 'BaRaashayath (Genesis) 1:1', paleo: '𐤁𐤓𐤀𐤔𐤉𐤕 𐤁𐤓𐤀 𐤀𐤋𐤄𐤉𐤌 𐤀𐤕 𐤄𐤔𐤌𐤉𐤌 𐤅𐤀𐤕 𐤄𐤀𐤓𐤑', to: '/genesis/1/1', label: 'Open BaRaashayath (Genesis) 1:1 word by word',
-   words: [P('𐤁𐤓𐤀𐤔𐤉𐤕',[0,1]), P('𐤁𐤓𐤀'), P('𐤀𐤋𐤄𐤉𐤌'), P('𐤀𐤕'), P('𐤄𐤔𐤌𐤉𐤌',[0,1]), P('𐤅𐤀𐤕',[0,1]), P('𐤄𐤀𐤓𐤑',[0,1])],
-   note: 'Every Paleo-Hebrew letter above has its one sound below, in the same order: {N} letters, {N} sounds. Nothing in the transliteration stands for a letter that is not there.' },
+ sample: { ref: 'BaRaashayath (Genesis) 2:4', paleo: MORPH._sample.map((w) => w.paleo).join(' '), to: '/genesis/2/4', label: 'Open BaRaashayath (Genesis) 2:4 word by word',
+   words: MORPH._sample.map((w, i) => sampleWord(w, GEN_2_4_GLOSS[i])),
+   note: 'Every Paleo-Hebrew letter above has its one sound below, in the same order. The root of every word is shown for context: each word is its root, with its modifications around it.' },
  readButtons: [
    { to: '/bible?book=1&chapter=1', label: 'Novel English Bible', sub: 'Plain English, the names kept in their Hebrew form' },
    { to: '/parallel/genesis/1', label: 'Read side by side', sub: 'The English beside the Paleo-Hebrew, word-linked' },
@@ -60,7 +74,7 @@ const d = {
   { id: 'every-letter', h2: 'A transliteration that preserves the Paleo-Hebrew letters',
     p: ["The transliteration on BLD Bible is not a guide to modern pronunciation. It is the Paleo-Hebrew letters themselves, written in Latin letters: one Hebrew letter, one sound, every letter kept, so the Hebrew can always be read back from it.",
         "Most transliterations write Hebrew the way it is pronounced today, so the same letter turns into different sounds from word to word, silent letters disappear, and letters that are not written are added. BLD Bible does it mechanically instead: every Hebrew letter has one sound, written the same way in every word of every book.",
-        "You can count it. A word of four Hebrew letters has four letter-sounds in its transliteration, in the same order. Where a word has a prefix or a suffix, a capital letter marks where the next part begins: WaThaAmar is Wa (and) + Tha (she) + Amar (said). And where the written word has lost a letter of its root, the root's letter is shown too: letters are added back, never taken away."] },
+        "You can count it. A word of four Hebrew letters has four letter-sounds in its transliteration, in the same order. Where a word has a prefix or a suffix, a capital letter marks where the next part begins: WaThaAmar is Wa (and) + Tha (she) + Amar (said). And the root of every word is shown for context, so every word reads as its root with its modifications around it."] },
  ],
  waw: {
   h2: 'One letter, one sound: the Waw',
@@ -109,7 +123,7 @@ const d = {
 d.sample.legend = legendOf(d.sample.words);
 d.waw.legend = legendOf(d.waw.words);
 d.colorsNote = 'Colours: each part of a word keeps one colour in the Paleo letters and in the transliteration, the same colours the Paleo Hebrew reader uses. The root is gold; every modification (and, the, in, she, his …) has its own colour.';
-{ const n = d.sample.words.reduce((k, w) => k + w.pieces.length, 0); d.sample.note = d.sample.note.replaceAll('{N}', String(n)); }
+{ const n = d.sample.words.reduce((k, w) => k + w.pieces.filter((p) => p[4] !== false).length, 0); d.sample.note = d.sample.note.replaceAll('{N}', String(n)); }
 fs.writeFileSync(new URL('../server/seo/paleo-hebrew-bible.json', import.meta.url), JSON.stringify(d, null, 1) + '\n');
 console.log(d.waw.words.map(w=>w.translit).join(' '));
 console.log(d.compare.map(c=>c.common+' -> '+c.bld+' ('+c.letters+')').join('\n'));
