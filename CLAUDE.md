@@ -4476,3 +4476,20 @@ commits it); "Use the dictionary" removes the entry. New per-part `translit` in 
 "Abay" for H1. The row now shows for the owner even when a number has no parts, so any number can be given an anatomy. After a save the
 page refetches /api/strongs/:sn with ?_= (the route is cache(3600) — other visitors' browsers may hold the old one up to an hour).
 H28 seeded: Ab (My Father) H1 + Yadai (Knows) H3045 — "My Father Knows". esbuild + node --check; not seen in a browser.
+
+## THE BOX KEEPS ITS LEXICON WATCHERS ALIVE AND CURRENT BY ITSELF (2026-11-26)
+fieldy, H8282 "Princess" added: Judges 5:29 on bldbible.com (reader + Studio) kept "Sharahawathayah (𐤔𐤓𐤄 …)" while his machine's
+translation.db had "Princess" (updated_by 'pipeline', 55 s after the edit). Cause: the refresh on the box was started only by
+lexicon-pull-watch.sh's NEW code (2026-11-22), but that loop is a long-running process started by hand — a git pull never
+reaches it, so the box never ran a refresh. Fix (no login to the box needed):
+- lexicon-refresh-watch.sh chooses the box command itself (data volume `${PALEO_PROD_DATA_DIR:-/mnt/paleo-data}` + docker present);
+  lexicon-pull-watch.sh no longer exports it. PALEO_REFRESH_CMD still overrides.
+- Both watchers write their code's hash (`server/.lexicon-watch/.pull-watch.hash`, `.refresh-watch.hash`) and `exec` themselves
+  when the file changes (refresh watcher only between runs; same pid, the pid guard allows it).
+- scripts/ensure-lexicon-watchers.sh (box only; no-op on fieldy's machine) starts a dead watcher and replaces a running one that
+  never wrote a hash. lexicon-sync.sh calls it first thing — cron runs lexicon-sync.sh fresh every 5 minutes, so within ~10 minutes
+  of the push the box is on the new code.
+Tested in /tmp with a stand-in docker: old watcher replaced, refresh started with the box command, self-restart on edit, a second
+ensure starts nothing. Not run on the box (no ssh from the device shell). After it lands: `tail ~/lexicon-refresh-watch.log` on the
+box should show "lexicon changed and settled — refreshing" and "refresh finished"; if it says "refresh FAILED", the image may predate
+refresh-lexicon-glosses.mjs (deploy). A gloss edit then reaches the reader in about a minute (pull ≤15 s, settle ~40 s, one root ~16 s).

@@ -41,22 +41,20 @@ LOG() { echo "$(date -u '+%F %T') $*"; }
 # Single-instance guard: a stray second copy (re-running this script by hand
 # on top of the @reboot one, say) would just double up cheap ls-remote
 # calls, which is harmless, but there's no reason to let it happen.
-if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+if [ -f "$PID_FILE" ] && [ "$(cat "$PID_FILE")" != "$$" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
   LOG "already running as pid $(cat "$PID_FILE") — exiting"
   exit 0
 fi
 echo $$ > "$PID_FILE"
 trap 'rm -f "$PID_FILE"' EXIT
+SELF="$(pwd)/$(basename "$0")"; SELF_HASH="$(sha1sum < "$SELF" | cut -d' ' -f1)"
+echo "$SELF_HASH" > "$STATE/.pull-watch.hash"   # scripts/ensure-lexicon-watchers.sh restarts a watcher whose code is older
 
 # 2026-11-22: the reading text follows the lexicon (fieldy: "i should only have to modify the details and the reader
 # correct itself over time"). lexicon-refresh-watch.sh runs beside this loop — here (the box) against the
 # data volume, through the image, with this checkout's lexicon mounted (the same mount the live container has); started here so no new task is needed,
 # and started again if it ever dies.
-if [ -z "${PALEO_REFRESH_CMD:-}" ] && command -v docker >/dev/null 2>&1; then
-  export PALEO_REFRESH_CMD="nice -n 10 docker run --rm --cpus=1 --memory=4g -v ${PALEO_PROD_DATA_DIR:-/mnt/paleo-data}:/data \
--v $(pwd)/server/lexicon:/app/server/lexicon -v $(pwd)/server/name-map-expanded.json:/app/server/name-map-expanded.json \
-paleo-studio node refresh-lexicon-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --state /data/.lexicon-refresh-state.json"
-fi
+# (the box's refresh command is chosen inside lexicon-refresh-watch.sh itself — 2026-11-26)
 ensure_refresh_watch() {
   local pf=server/.lexicon-watch/.refresh-watch.pid
   if ! { [ -f "$pf" ] && kill -0 "$(cat "$pf")" 2>/dev/null; }; then
@@ -88,6 +86,10 @@ while true; do
     fi
   else
     LOG "ls-remote failed (network blip?) — will retry next poll"
+  fi
+  # New code arrived with the pull above: start over as it (same pid, so the pid guard lets it through).
+  if [ "$(sha1sum < "$SELF" 2>/dev/null | cut -d' ' -f1)" != "$SELF_HASH" ]; then
+    LOG "lexicon-pull-watch.sh changed — restarting as the new version"; trap - EXIT; exec bash "$SELF"
   fi
   sleep "$POLL_INTERVAL"
 done

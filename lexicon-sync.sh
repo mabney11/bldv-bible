@@ -16,6 +16,8 @@
 # either way.
 set -e
 cd "$(dirname "$0")"
+# On the box: keep the pull + refresh watchers alive and on current code (no-op elsewhere). 2026-11-26.
+[ -x scripts/ensure-lexicon-watchers.sh ] && { scripts/ensure-lexicon-watchers.sh || true; }
 BRANCH="$(git branch --show-current)"
 
 # Single-instance lock: this script is triggered from TWO independent places

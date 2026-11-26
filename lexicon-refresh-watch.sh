@@ -13,7 +13,7 @@
 #   fieldy's machine (default):  node server/refresh-lexicon-glosses.mjs --register
 #       (--register: blank keys for every Strong's root with no lexicon entry yet — his worklist;
 #        lexicon-watch.sh commits them. Only here: two machines adding keys would collide in git.)
-#   the box: PALEO_REFRESH_CMD set by scripts/setup-lexicon-refresh-watch-box.sh to a
+#   the box (data volume + docker present, chosen below; PALEO_REFRESH_CMD still overrides): a
 #       `docker run … paleo-studio node refresh-lexicon-glosses.mjs /data/…` against the data volume,
 #       with this checkout's server/lexicon mounted (the same mount the live container has).
 # Log: ~/lexicon-refresh-watch.log (set by the starter). State: server/.lexicon-watch/ (gitignored).
@@ -25,10 +25,22 @@ mkdir -p "$STATE"
 SEEN="$STATE/.refresh-seen-hash" DONE="$STATE/.refresh-done-hash" PID_FILE="$STATE/.refresh-watch.pid"
 LOG() { echo "$(date -u '+%F %T') $*"; }
 
-if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then LOG "already running as pid $(cat "$PID_FILE") — exiting"; exit 0; fi
+# A re-exec (below) keeps the same pid, so the pid file holding $$ is this same watcher, not another copy.
+if [ -f "$PID_FILE" ] && [ "$(cat "$PID_FILE")" != "$$" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then LOG "already running as pid $(cat "$PID_FILE") — exiting"; exit 0; fi
 echo $$ > "$PID_FILE"; trap 'rm -f "$PID_FILE"' EXIT
+SELF="$(pwd)/$(basename "$0")"; SELF_HASH="$(sha1sum < "$SELF" | cut -d' ' -f1)"
+echo "$SELF_HASH" > "$STATE/.refresh-watch.hash"   # scripts/ensure-lexicon-watchers.sh restarts a watcher whose code is older
 
 NICE=""; command -v nice >/dev/null 2>&1 && NICE="nice -n 10"
+# 2026-11-26: the box command lives HERE (was exported by lexicon-pull-watch.sh, so it only reached the box if that loop
+# had been restarted by hand after 2026-11-22 — Judges 5:29 kept its 𐤔𐤓𐤄 placeholder on bldbible.com while fieldy's
+# machine had "Princess" within a minute). The box = the data volume exists and docker is here.
+DATA="${PALEO_PROD_DATA_DIR:-/mnt/paleo-data}"
+if [ -z "${PALEO_REFRESH_CMD:-}" ] && [ -d "$DATA" ] && command -v docker >/dev/null 2>&1; then
+  PALEO_REFRESH_CMD="$NICE docker run --rm --cpus=1 --memory=4g -v $DATA:/data \
+-v $(pwd)/server/lexicon:/app/server/lexicon -v $(pwd)/server/name-map-expanded.json:/app/server/name-map-expanded.json \
+paleo-studio node refresh-lexicon-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --state /data/.lexicon-refresh-state.json"
+fi
 CMD="${PALEO_REFRESH_CMD:-$NICE node server/refresh-lexicon-glosses.mjs --register}"
 FILES="server/lexicon/lexicon.json server/lexicon/homographs.json server/lexicon/hebrew-extra-lexicon.json
        server/lexicon/baseline-gloss-labels.json server/lexicon/name-form-rules.json server/lexicon/compound-hyphenation.json
@@ -56,5 +68,9 @@ while true; do
     fi
   fi
   echo "$H" > "$SEEN"
+  # New code arrived with a git pull: start over as it, but never in the middle of a refresh.
+  if [ -z "$RUN_PID" ] && [ "$(sha1sum < "$SELF" 2>/dev/null | cut -d' ' -f1)" != "$SELF_HASH" ]; then
+    LOG "lexicon-refresh-watch.sh changed — restarting as the new version"; trap - EXIT; exec bash "$SELF"
+  fi
   sleep "$POLL_INTERVAL"
 done
