@@ -64,6 +64,7 @@ import { getAdminStatus, getLocalVersesForChapter, mergeChapterVersesWithLocal }
 // quotation is; only the drawing differs here (per-word spans, for the links).
 import { sanitizeText, parseQuoteMarks, dissolveOverlongQuotes, sliceQuoteTree, bracketGlyph } from './Reader.jsx';
 import { apiTransBookText } from '../lib/api.js';
+import VersificationFooter from '../components/VersificationFooter.jsx';
 
 // ── English column: text size + typeface (persisted) ───────────────────────
 // Own keys, deliberately NOT shared with Reader.jsx's 'reader-font'/
@@ -1904,6 +1905,7 @@ export default function Parallel() {
                         hovered={hovered} setHovered={setHovered} glossMode={glossMode} lang={lang} />
             ))}
           </VerseErrorBoundary>
+          {visibleVerses.length > 0 && (lang === 'BHS' || lang === 'HEB') && <VersificationFooter book={book} chapter={chapter} />}
         </div>
 
         <button className="pl-side-nav prev" onClick={() => stepVerse(-1)} title="Previous">◀</button>

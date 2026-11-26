@@ -314,7 +314,14 @@ for (const [canonStr, chaptersRaw] of Object.entries(web)) {
       const mtVs = [...grid[ch]].sort((a,b)=>a-b), webCh = chapters[ch] || {};
       if (Object.keys(webCh).length && mtVs.length !== Object.keys(webCh).length) offsetChapters++;
       for (const [v, text] of alignChapter(mtVs, webCh)) {
-        if (text == null) { titlesBlank++; blanked.push({ canon, ch, v }); continue; }
+        if (text == null) {
+          titlesBlank++; blanked.push({ canon, ch, v });
+          // 2026-11-26: a Hebrew verse the WEB folds into its neighbour (Numbers 25:19, 1 Kings 22:54, 1 Chronicles 12:41)
+          // still gets its row — empty — so merge-modforms writes it from its Hebrew and the site's folded English verse
+          // (eng-versification.cjs) holds both. Psalm titles (verse 0) stay out, as before.
+          if (v > 0) aligned.push({ canon, ch, v, text: '' });
+          continue;
+        }
         aligned.push({ canon, ch, v, text });
       }
     }
@@ -400,9 +407,15 @@ const resetUntouched = tdb.prepare(`UPDATE translations SET text=?, original_tex
   const tx = tdb.transaction(()=>{
     // `aligned` is on the Masoretic grid (corpus.db); translation.db is keyed by the site's
     // English numbers — Hebrew Hosea 2:13 is the site's 2:11 (fieldy 2026-11-18).
+    // a site verse built from two Hebrew verses / part of one / another book's verse is composed (fieldy 2026-11-26)
+    const alText = new Map(aligned.map(a => [`${a.canon}|${+a.ch}|${+a.v}`, a.text]));
+    const textOf = (b, c, v) => alText.get(`${b}|${+c}|${+v}`) || '';
+    const seen = new Set();
     for (const a of aligned) for (const [b, ch, v] of VS.mtToSite(a.canon, a.ch, a.v)) {
-      importOriginal.run(b, ch, v, a.text, a.text);
-      resetUntouched.run(a.text, a.text, b, ch, v);
+      const key = `${b}|${ch}|${v}`; if (seen.has(key)) continue; seen.add(key);
+      const text = VS.composeText(b, ch, v, textOf);
+      importOriginal.run(b, ch, v, text, text);
+      resetUntouched.run(text, text, b, ch, v);
     }
   });
   tx();
@@ -426,7 +439,9 @@ const resetUntouched = tdb.prepare(`UPDATE translations SET text=?, original_tex
         AND text != ''`);
   const tx = tdb.transaction(()=>{
     let n = 0;
-    for (const b of blanked) for (const [bk, ch, v] of VS.mtToSite(b.canon, b.ch, b.v)) n += clearStale.run(bk, ch, v).changes;
+    // a site verse built from more than one Hebrew verse is never cleared for one of them (step 2 composed it)
+    for (const b of blanked) for (const [bk, ch, v] of VS.mtToSite(b.canon, b.ch, b.v))
+      if (VS.siteSources(bk, ch, v).length < 2) n += clearStale.run(bk, ch, v).changes;
     return n;
   });
   const cleared = tx();

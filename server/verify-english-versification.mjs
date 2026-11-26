@@ -41,9 +41,7 @@
  *     live browser spot-check against biblehub.com the original Deuteronomy
  *     13/Numbers 17/Jonah 2 finding used — this gate only checks the data is
  *     INTERNALLY consistent, not that it's the right data).
- *   - Malachi (39) / Joel (29), which stay on the older, narrower
- *     VERSIFICATION_MAP/resolveChapter() path — verify-versification.mjs
- *     already covers those.
+ *   (Malachi and Joel are ordinary entries since 2026-11-26.)
  *   - Psalms (19) — still out of scope everywhere in this feature.
  *
  * USAGE:
@@ -64,6 +62,7 @@
  * `docker run --rm` container — anything written next to the script vanishes
  * the instant that container exits.
  */
+import { createRequire } from 'node:module';
 import Database from 'better-sqlite3';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -98,7 +97,7 @@ function fingerprint() {
     try { return crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex'); }
     catch { return null; }
   };
-  return { dbPath, db: statFP(dbPath), vdHash: hashFP(VD_PATH) };
+  return { dbPath, db: statFP(dbPath), vdHash: hashFP(VD_PATH), vsHash: hashFP(path.join(__dirname, 'eng-versification.cjs')) };
 }
 const fpEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -121,117 +120,48 @@ let booksChecked = 0;
 let versesChecked = 0;
 
 try {
-  const affectedBooks = new Set(
-    Object.keys(VERSIFICATION_DIFFERENCES).map(k => parseInt(k.split(':')[0], 10))
-  );
-
+  // 2026-11-26: built from eng-versification.cjs — the ONE reader server.js and the pipeline share (fieldy: modern numbers
+  // everywhere unless something is completely dropped; folds, a split verse and an added verse are listed in the file).
+  const VS = createRequire(import.meta.url)('./eng-versification.cjs');
+  const affectedBooks = new Set([
+    ...Object.keys(VERSIFICATION_DIFFERENCES).map(k => parseInt(k.split(':')[0], 10)),
+    ...Object.keys(VS.DATA.added || {}).map(k => parseInt(k.split(':')[0], 10)),
+  ]);
   for (const bookId of affectedBooks) {
-    const range = db.prepare(
-      `SELECT MIN(chapter) AS first, MAX(chapter) AS last FROM tokens_bhs WHERE book_id=?`
-    ).get(bookId);
-    if (!range || range.first == null) continue; // book not present in this build's tokens_bhs
+    const rows = db.prepare(`SELECT chapter, verse, MAX(token_ordinal) AS m FROM tokens_bhs WHERE book_id=? AND verse > 0 GROUP BY chapter, verse`).all(bookId);
+    if (!rows.length) continue;
     booksChecked++;
-
-    const counts = {};
-    for (const row of db.prepare(
-      `SELECT chapter, MAX(verse) AS maxV FROM tokens_bhs WHERE book_id=? GROUP BY chapter`
-    ).all(bookId)) {
-      counts[row.chapter] = row.maxV;
-    }
-
-    // ── Rebuild the segment table — KEEP IN SYNC WITH server.js's
-    // buildEnglishVersificationSegments ────────────────────────────────────
-    const segMap = {}; // engChapter -> [{hebChapter, hebStart, hebEnd, engStart}]
-    // Verses that are the SOURCE of a "merge": true segment (currently only 1
-    // Samuel 21's heb 20:42/21:1 — see versification-differences.json and
-    // server.js's buildEnglishVersificationSegments) are deliberately left
-    // unclaimed here, matching server.js's real behavior — CHECK 2 below treats
-    // membership in this set as an expected 0, not a DROPPED error.
-    const mergeSources = new Set();
-    for (let heb = range.first; heb <= range.last; heb++) {
-      const entries = VERSIFICATION_DIFFERENCES[`${bookId}:${heb}`];
-      const maxV = counts[heb] || 0;
-      if (entries && entries.length) {
-        // `covered` = every explicit heb range for this chapter, merge included —
-        // used only to find verses this chapter's entry never mentioned at all, so
-        // they get an implicit identity segment (KEEP IN SYNC WITH server.js).
-        const covered = [];
-        for (const seg of entries) {
-          covered.push([seg.heb[0], seg.heb[1]]);
-          if (seg.merge) {
-            for (let v = seg.heb[0]; v <= seg.heb[1]; v++) mergeSources.add(`${heb}:${v}`);
-            continue;
-          }
-          (segMap[seg.engChapter] ||= []).push({
-            hebChapter: heb, hebStart: seg.heb[0], hebEnd: seg.heb[1], engStart: seg.eng[0],
-          });
-        }
-        if (maxV) {
-          covered.sort((a, b) => a[0] - b[0]);
-          let cursor = 1;
-          for (const [s, e] of covered) {
-            if (s > cursor) {
-              (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: cursor, hebEnd: s - 1, engStart: cursor });
-            }
-            cursor = Math.max(cursor, e + 1);
-          }
-          if (cursor <= maxV) {
-            (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: cursor, hebEnd: maxV, engStart: cursor });
-          }
-        }
-      } else {
-        if (!maxV) continue;
-        (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: 1, hebEnd: maxV, engStart: 1 });
-      }
-    }
-    for (const eng of Object.keys(segMap)) segMap[eng].sort((a, b) => a.engStart - b.engStart);
-
-    // ── CHECK 1: every English chapter tiles 1..N, no gaps, no duplicates ──
-    for (const engChapter of Object.keys(segMap)) {
-      const segs = segMap[engChapter];
-      let expectedNext = 1;
-      for (const seg of segs) {
-        if (seg.hebEnd < seg.hebStart) {
-          failures.push(`book=${bookId} eng${engChapter}: malformed segment from BHS ${seg.hebChapter} ` +
-            `(hebStart=${seg.hebStart} > hebEnd=${seg.hebEnd})`);
-          continue;
-        }
-        if (seg.engStart !== expectedNext) {
-          failures.push(`book=${bookId} eng${engChapter}: segment from BHS ${seg.hebChapter}:${seg.hebStart}-` +
-            `${seg.hebEnd} starts at English verse ${seg.engStart}, expected ${expectedNext} — gap or overlap`);
-        }
-        expectedNext = seg.engStart + (seg.hebEnd - seg.hebStart) + 1;
-      }
-    }
-
-    // ── CHECK 2: every real BHS verse claimed by exactly one segment ───────
-    const claimCount = new Map(); // "hebChapter:hebVerse" -> times claimed
-    for (const engChapter of Object.keys(segMap)) {
-      for (const seg of segMap[engChapter]) {
-        for (let v = seg.hebStart; v <= seg.hebEnd; v++) {
-          const k = `${seg.hebChapter}:${v}`;
-          claimCount.set(k, (claimCount.get(k) || 0) + 1);
+    const maxOrd = new Map(rows.map(r => [`${r.chapter}:${r.verse}`, r.m]));
+    // every English verse of the book
+    const site = new Map();   // engChapter -> Set(verse)
+    const addSite = (c, v) => { if (!site.has(c)) site.set(c, new Set()); site.get(c).add(v); };
+    for (const r of rows) for (const [, c, v] of VS.mtToSite(bookId, r.chapter, r.verse)) addSite(c, v);
+    for (const k of Object.keys(VS.DATA.added || {})) { const [b, c, v] = k.split(':').map(Number); if (b === bookId) addSite(c, v); }
+    // ── CHECK 1: every English chapter is verses 1..N, each with a Hebrew verse (or a listed addition) of its own
+    const used = new Map();   // "c:v" -> [ [from, to] … ] word ranges of the Hebrew verse that are shown
+    for (const [c, set] of site) {
+      const vs = [...set].sort((a, b) => a - b);
+      vs.forEach((v, i) => { if (v !== i + 1) failures.push(`book=${bookId} English ${c}: verse ${i + 1} missing (have ${v}) — gap`); });
+      for (const v of vs) {
+        const src = VS.siteSources(bookId, c, v);
+        if (!src.some(x => x.role !== 'fold')) failures.push(`book=${bookId} English ${c}:${v}: no Hebrew verse of its own`);
+        for (const x of src) {
+          if (x.role === 'added') continue;
+          if (x.b !== bookId) { failures.push(`book=${bookId} English ${c}:${v}: source in another book`); continue; }
+          const key = `${x.c}:${x.v}`, top = maxOrd.get(key) || 0;
+          if (!top) { failures.push(`book=${bookId} English ${c}:${v}: Hebrew ${key} does not exist`); continue; }
+          (used.get(key) || used.set(key, []).get(key)).push(x.words ? [x.words[0], Math.min(x.words[1], top)] : [1, top]);
         }
       }
     }
-    for (let heb = range.first; heb <= range.last; heb++) {
-      const maxV = counts[heb] || 0;
-      for (let v = 1; v <= maxV; v++) {
-        versesChecked++;
-        const k = `${heb}:${v}`;
-        const claimed = claimCount.get(k) || 0;
-        if (mergeSources.has(k)) {
-          if (claimed !== 0) {
-            failures.push(`book=${bookId} BHS ${heb}:${v}: merge-source verse unexpectedly claimed by ` +
-              `${claimed} segment(s) (expected 0 — see "merge" handling)`);
-          }
-          continue;
-        }
-        if (claimed !== 1) {
-          failures.push(`book=${bookId} BHS ${heb}:${v}: claimed by ${claimed} English segment(s), expected ` +
-            `exactly 1 (${claimed === 0 ? 'DROPPED — this verse would vanish from the site' : 'DUPLICATED'})`);
-        }
-      }
+    // ── CHECK 2: every Hebrew verse is shown exactly once, all its words, none twice
+    for (const r of rows) {
+      versesChecked++;
+      const key = `${r.chapter}:${r.verse}`, ranges = (used.get(key) || []).sort((a, b) => a[0] - b[0]);
+      if (!ranges.length) { failures.push(`book=${bookId} BHS ${key}: DROPPED — shown under no English verse`); continue; }
+      let next = 1;
+      for (const [f, t] of ranges) { if (f !== next) failures.push(`book=${bookId} BHS ${key}: words ${next}..${f - 1} ${f > next ? 'dropped' : 'shown twice'}`); next = t + 1; }
+      if (next !== r.m + 1) failures.push(`book=${bookId} BHS ${key}: words ${next}..${r.m} dropped`);
     }
   }
 } finally {

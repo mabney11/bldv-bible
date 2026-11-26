@@ -172,8 +172,7 @@ try {
     }
   }
 } catch {}
-// Malachi 4 = MT 3:19-24 (server.js VERSIFICATION_MAP)
-for (let e = 1; e <= 6; e++) engToHeb.set(`39|4|${e}`, `39|3|${18 + e}`);
+// (Malachi 4 = MT 3:19-24 and Joel are ordinary versification-differences.json entries since 2026-11-26)
 
 // ── Hebrew per verse ───────────────────────────────────────────────────────────
 const cdb = new Database(CORPUS_DB, { readonly: !FIX });
@@ -316,6 +315,9 @@ function check(key, text) {
   // a verse that crosses a chapter boundary (Malachi 4 = MT 3:19-24, 1 Samuel 20:42/21:1 …)
   for (const x of [engToHeb.get(key), engToHeb.get(hk)]) if (x && x !== hk) { const [xc, xch, xv] = x.split('|').map(Number);
     for (const d of [0, 1, -1]) near.push(heb.get(`${xc}|${xch}|${xv + d}`)); }
+  // a site verse built from two Hebrew verses (1 Samuel 20:42 + 21:1 …): the other one's words are its words too
+  if (c <= 39) for (const site of VS.mtToSite(c, ch, v)) for (const s of VS.siteSources(...site))
+    if (`${s.b}|${s.c}|${s.v}` !== hk) near.push(heb.get(`${s.b}|${s.c}|${s.v}`));
   for (const m of String(text).matchAll(PAIR)) {
     // "fig-nathan (leaves)": the English half before the last hyphen is not the claim
     const hy = m[1].lastIndexOf('-'); const claim = hy > 0 ? m[1].slice(hy + 1) : m[1];

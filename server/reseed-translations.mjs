@@ -133,9 +133,17 @@ tdb.transaction(()=>{
   // and translation.db on the English one. Write each verse under every site number it is
   // shown at — Hebrew Hosea 2:13 is the site's Hosea 2:11 (fieldy 2026-11-18). A verse moved
   // to a number that has no row yet gets one (same seed as the non-OT rows).
+  // A site verse built from two Hebrew verses (a fold), part of one (Isaiah 63:19 / 64:1) or another book's verse
+  // (Nehemiah 7:68 = Ezra 2:66) gets the composed text (fieldy 2026-11-26) — eng-versification.cjs, one rule.
+  const otText = new Map(otRows.map(r => [`${r.book_id}|${+r.chapter}|${+r.verse}`, r.text]));
+  const textOf = (b, c, v) => otText.get(`${b}|${+c}|${+v}`) || '';
+  const done = new Set();
   for(const r of otRows) for (const [b, ch, v] of VS.mtToSite(r.book_id, r.chapter, r.verse)) {
-    if (VS.moves(b, ch, v)) importOriginal.run(b, ch, v, r.text, r.text);
-    nOt += resetUntouched.run(r.text, r.text, b, ch, v).changes;
+    const key = `${b}|${ch}|${v}`;
+    if (done.has(key)) continue; done.add(key);
+    const text = VS.composeText(b, ch, v, textOf);
+    if (VS.moves(b, ch, v)) importOriginal.run(b, ch, v, text, text);
+    nOt += resetUntouched.run(text, text, b, ch, v).changes;
   }
 })();
 console.log(`\u2713 refreshed ${nOt.toLocaleString()} untouched OT rows from corpus.db ENG (saved edits left untouched)`);

@@ -599,10 +599,13 @@ function englishBaseline(canonId, chapter, verse) {
     if (!englishBaselineStmt) return '';
     // corpus.db ENG is stored on the Masoretic numbering; canonId/chapter/verse here are the
     // site's (English) numbers — Hosea 2:11 reads Hebrew 2:13's row (fieldy 2026-11-18).
-    let [c, v] = [chapter, verse];
-    if (BOOK_META[canonId]) { const m = resolveEnglishVerse(canonId, +chapter, +verse); c = m.hebChapter; v = m.hebVerse; }
-    try { const r = englishBaselineStmt.get(canonId, String(c), String(v)); return applyLiveGloss((r && r.text) || '', canonId, chapter); }
-    catch { return ''; }
+    // A verse folded from two Hebrew verses, half of a split one, or an added one (Nehemiah 7:68 = Ezra 2:66) is composed
+    // by eng-versification.cjs, the same rule the pipeline writes translation.db with (fieldy 2026-11-26).
+    try {
+        const textOf = (b, c, v) => { const r = englishBaselineStmt.get(b, String(c), String(v)); return (r && r.text) || ''; };
+        const text = BOOK_META[canonId] ? VS.composeText(canonId, +chapter, +verse, textOf) : textOf(canonId, chapter, verse);
+        return applyLiveGloss(text, canonId, chapter);
+    } catch { return ''; }
 }
 
 // ── LIVE GLOSS OVERLAY FOR THE ENGLISH BASELINE ─────────────────────────────
@@ -1066,25 +1069,15 @@ const translationDb = (() => {
 // verse_offset: display verse N maps to actual verse (N + verse_offset)
 // Covers all known places where English/standard versification diverges from MT
 const VERSIFICATION_MAP = {
-    // Malachi: English ch4 = MT ch3 verses 19-24
-    '39:4': { actual_chapter: 3, verse_offset: 18 },
-
-    // Joel: English 2:28-32 = MT 3:1-5, English ch3 = MT ch4
-    '29:3': { actual_chapter: 3, verse_offset: 0 },  // English 3 = MT 3 (no change needed, just ch4 below)
-    '29:4': { actual_chapter: 4, verse_offset: 0 },  // English 4 = MT 4
-
-    // 1 Samuel ch24 split: no token offset needed, data is correct in MT
-
-    // Hosea: some traditions split differently — MT matches standard here
-
-    // Extra display chapters needed per book (chapters not in DB but shown to user)
-    // These are handled by DISPLAY_LAST_CHAPTER overrides below
+    // RETIRED 2026-11-26 (fieldy: modern numbers everywhere unless something is completely dropped). Malachi
+    // (English 4 = Hebrew 3:19-24) and Joel (English 2:28-32 = Hebrew 3:1-5, English 3 = Hebrew 4) are ordinary
+    // entries of versification-differences.json now, read through eng-versification.cjs like every other book.
 };
 
-// Override the last displayed chapter for books where English adds a chapter
+// The last chapter the site shows where English counts chapters differently from the Hebrew tokens.
 const DISPLAY_LAST_CHAPTER = {
-    39: 4,   // Malachi: show 4 chapters (MT has 3)
-    29: 4,   // Joel: MT has 4, English splits ch2 — both end at 4 so no override needed
+    39: 4,   // Malachi: English 4 chapters (Hebrew 3)
+    29: 3,   // Joel: English 3 chapters (Hebrew 4)
 };
 
 // Resolve a display (book, chapter) to actual DB (book, chapter, verse_offset)
@@ -1143,6 +1136,82 @@ app.get('/api/versification-note', production.cache(3600), (req, res) => {
     const chapter = parseInt(req.query.chapter, 10);
     if (!bookId || !chapter) return res.status(400).json({ error: 'book and chapter required' });
     res.json(ENG_TO_HEB_NOTE[bookId]?.[chapter] || []);
+});
+
+// GET /api/versification-points?book=&chapter=  (fieldy 2026-11-26: "id rather know the points of chapter starts, so
+// Hebrew chapter 5 starts at English 4:21 [subsequent verses match one-to-one? ✓]"). For one ENGLISH chapter: every
+// point where a Hebrew run starts somewhere other than the same chapter:verse, and whether the run really matches
+// one to one — checked, not assumed: the run's Hebrew verse count (tokens_bhs) must fill exactly the English verses
+// up to the next run. Empty for a chapter numbered the same in both.
+let _hebMaxVerseStmt = null;   // prepared on first use (corpus.db may be absent at boot)
+const _hebMaxVerse = new Map();
+function hebMaxVerse(b, c) {
+    const k = `${b}:${c}`;
+    if (!_hebMaxVerse.has(k)) {
+        _hebMaxVerseStmt ||= db.prepare(`SELECT MAX(verse) AS m FROM tokens_bhs WHERE book_id=? AND chapter=?`);
+        _hebMaxVerse.set(k, (_hebMaxVerseStmt.get(b, c) || {}).m || 0);
+    }
+    return _hebMaxVerse.get(k);
+}
+function versificationPoints(bookId, engChapter) {
+    if (!ENG_CHAPTER_SEGMENTS[bookId]) return [];      // the book is numbered the same in both
+    const segs = resolveEnglishChapter(bookId, engChapter).slice().sort((a, b) => a.engStart - b.engStart);
+    const added = ENG_ADDED[bookId]?.[engChapter] || [];
+    // how many main (non-folded) Hebrew sources each English verse has: exactly one everywhere = one to one
+    const cover = new Map();
+    for (const s of segs) if (!s.fold) for (let v = s.engStart; v <= s.engStart + (s.hebEnd - s.hebStart); v++) cover.set(v, (cover.get(v) || 0) + 1);
+    for (const a of added) cover.set(a.verse, (cover.get(a.verse) || 0) + 1);
+    const okSpan = (a, z) => { for (let v = a; v <= z; v++) if (cover.get(v) !== 1) return false; return true; };
+    const ref = (c, v) => `${c}:${v}`;
+    const out = [];
+    for (const s of segs) {
+        const engEnd = s.engStart + (s.hebEnd - s.hebStart);
+        if (s.fold) {
+            out.push({ kind: 'merge', oneToOne: cover.get(s.engStart) === 1, eng: [engChapter, s.engStart], heb: [s.hebChapter, s.hebStart],
+                text: `Hebrew ${ref(s.hebChapter, s.hebStart)} is joined to the ${s.fold === 'start' ? 'start' : 'end'} of English ${ref(engChapter, s.engStart)}`,
+                detail: `English ${ref(engChapter, s.engStart)} holds two Hebrew verses; every word of both is there` });
+            continue;
+        }
+        if (s.part) {
+            const first = s.ordFrom === 1;
+            out.push({ kind: 'split', oneToOne: okSpan(s.engStart, s.engStart), eng: [engChapter, s.engStart], heb: [s.hebChapter, s.hebStart],
+                text: first ? `Hebrew ${ref(s.hebChapter, s.hebStart)} is split: its first part is English ${ref(engChapter, s.engStart)}`
+                            : `The rest of Hebrew ${ref(s.hebChapter, s.hebStart)} is English ${ref(engChapter, s.engStart)}`,
+                detail: `Hebrew words ${s.ordFrom}–${s.ordTo} of ${ref(s.hebChapter, s.hebStart)}; nothing is dropped` });
+            continue;
+        }
+        if (s.hebChapter === engChapter && s.hebStart === s.engStart) continue;   // same numbers — nothing to say
+        const n = s.hebEnd - s.hebStart + 1;
+        const oneToOne = okSpan(s.engStart, engEnd);
+        out.push({
+            kind: 'start', oneToOne,
+            eng: [engChapter, s.engStart], engEnd: [engChapter, engEnd], heb: [s.hebChapter, s.hebStart], hebEnd: [s.hebChapter, s.hebEnd],
+            text: `${s.hebStart === 1 ? `Hebrew chapter ${s.hebChapter}` : `Hebrew ${ref(s.hebChapter, s.hebStart)}`} starts at English ${ref(engChapter, s.engStart)}`,
+            detail: oneToOne
+                ? (n === 1 ? `English ${ref(engChapter, s.engStart)} = Hebrew ${ref(s.hebChapter, s.hebStart)}`
+                           : `English ${ref(engChapter, s.engStart)}–${engEnd} = Hebrew ${ref(s.hebChapter, s.hebStart)}–${s.hebEnd}, verse for verse`)
+                : `does not line up verse for verse (Hebrew ${ref(s.hebChapter, s.hebStart)}–${s.hebEnd}, ${n} verses)`,
+        });
+    }
+    for (const a of added) {
+        const [pb, pc, pv] = a.parallel;
+        out.push({ kind: 'added', oneToOne: cover.get(a.verse) === 1, eng: [engChapter, a.verse],
+            text: `English ${ref(engChapter, a.verse)} is not in the Hebrew`,
+            detail: a.note || '', link: { book: pb, chapter: pc, verse: pv, label: `${BOOK_NAMES[pb] || canonName(pb)} ${pc}:${pv}` } });
+    }
+    // any English verse with no Hebrew source or two (a hole in the table) is shown, never hidden
+    const last = Math.max(0, ...cover.keys());
+    for (let v = 1; v <= last; v++) if (cover.get(v) !== 1)
+        out.push({ kind: 'gap', oneToOne: false, eng: [engChapter, v], text: `English ${ref(engChapter, v)}`, detail: cover.get(v) ? 'shown from two Hebrew verses' : 'has no Hebrew verse' });
+    return out.sort((a, b) => a.eng[1] - b.eng[1]);
+}
+app.get('/api/versification-points', production.cache(3600), (req, res) => {
+    const bookId  = parseInt(req.query.book, 10);
+    const chapter = parseInt(req.query.chapter, 10);
+    if (!bookId || !chapter) return res.status(400).json({ error: 'book and chapter required' });
+    if (!BOOK_META[bookId]) return res.json([]);
+    try { res.json(versificationPoints(bookId, chapter)); }
+    catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // Preload the book list once at startup (stable data, never changes)
@@ -1212,102 +1281,101 @@ function chapterLinksFor(bookId, chapter, lang) {
 // an entry at the chapters that actually shift.
 let ENG_CHAPTER_SEGMENTS = {};   // bookId -> { engChapter: [ {hebChapter, hebStart, hebEnd, engStart} ... ] }
 let ENG_TO_HEB_NOTE = {};        // bookId -> { engChapter: [ {engStart, engEnd, hebChapter, hebStart} ... ] } — chapters with >1 segment only
+// The segments are built from eng-versification.cjs — the ONE reader of versification-differences.json that the pipeline
+// uses too (fieldy 2026-11-26: modern numbers everywhere unless something is completely dropped). A segment is
+// {hebChapter, hebStart, hebEnd, engStart} plus, where a verse is folded into another or split, word ranges:
+//   ordFrom/ordTo — only these token ordinals of the Hebrew verse (a split verse, Isaiah 63:19 = English 63:19 + 64:1);
+//   ordShift      — added to every kept ordinal so one English verse's words run 1, 2, 3 … across its Hebrew verses
+//                   (1 Samuel 20:42 + 21:1, Numbers 25:19 + 26:1, 1 Kings 22:43 + 44, 1 Chronicles 12:4 + 5);
+//   fold          — this Hebrew verse is folded into the English verse (no English verse of its own).
+// An English verse with no Hebrew at all (Nehemiah 7:68) has no segment; ENG_ADDED lists it.
+const VS = require('./eng-versification.cjs');
+let ENG_ADDED = {};   // bookId -> { engChapter: [ {verse, parallel:[b,c,v], note} ] }
+function segMapRow(seg, verse, ord) {
+    if (verse < seg.hebStart || verse > seg.hebEnd) return null;
+    if (seg.ordFrom != null && (ord < seg.ordFrom || ord > seg.ordTo)) return null;
+    return { verse: seg.engStart + (verse - seg.hebStart), ord: ord + (seg.ordShift || 0) };
+}
+// The verses an ENGLISH chapter lists ([{verse}]), from the same segments /api/tokens uses — a folded verse once, an
+// added verse (Nehemiah 7:68) too. [] for a book with no Masoretic tokens (callers fall back to the English baseline).
+let _verseListStmt = null;
+function displayVerseList(bookId, chapter) {
+    if (!BOOK_META[bookId]) return [];
+    if (!ENG_CHAPTER_SEGMENTS[bookId]) {   // numbered the same in both (Psalm titles stay verse 0, as before)
+        _verseListStmt ||= db.prepare(`SELECT DISTINCT verse FROM tokens_bhs WHERE book_id=? AND chapter=? ORDER BY verse`);
+        return _verseListStmt.all(bookId, chapter);
+    }
+    const set = new Set();
+    for (const seg of resolveEnglishChapter(bookId, chapter)) {
+        const top = Math.min(seg.hebEnd, hebMaxVerse(bookId, seg.hebChapter));
+        for (let hv = seg.hebStart; hv <= top; hv++) set.add(seg.engStart + (hv - seg.hebStart));
+    }
+    for (const a of (ENG_ADDED[bookId]?.[chapter] || [])) set.add(a.verse);
+    return [...set].sort((x, y) => x - y).map(verse => ({ verse }));
+}
 (function buildEnglishVersificationSegments() {
-    const affectedBooks = new Set(
-        Object.keys(VERSIFICATION_DIFFERENCES).map(k => parseInt(k.split(':')[0], 10))
-    );
+    const affectedBooks = new Set([
+        ...Object.keys(VS.DATA.differences || {}).map(k => parseInt(k.split(':')[0], 10)),
+        ...Object.keys(VS.DATA.added || {}).map(k => parseInt(k.split(':')[0], 10)),
+    ]);
     for (const bookId of affectedBooks) {
-        const meta = BOOK_META[bookId];
-        if (!meta) continue;   // book not present in this build's tokens_bhs
-        const counts = {};
-        for (const row of db.prepare(
-            `SELECT chapter, MAX(verse) AS maxV FROM tokens_bhs WHERE book_id=? GROUP BY chapter`
-        ).all(bookId)) {
-            counts[row.chapter] = row.maxV;
-        }
-        const segMap = {};
-        for (let heb = meta.first; heb <= meta.last; heb++) {
-            const entries = VERSIFICATION_DIFFERENCES[`${bookId}:${heb}`];
-            const maxV = counts[heb] || 0;
-            if (entries && entries.length) {
-                // `covered` tracks EVERY explicit heb-verse range named for this
-                // chapter, merge segments included — used below to find verses in
-                // this chapter that were never mentioned at all, so they can get an
-                // implicit identity segment. Before this fix, a chapter with a
-                // PARTIAL entry (e.g. Exodus 7 only lists its tail, verses 26-29,
-                // spilling into chapter 8) silently dropped every verse the JSON
-                // didn't explicitly name (Exodus 7:1-25 here) — those verses never
-                // got ANY segment and vanished from the English-chapter view
-                // entirely. versification-differences.json is deliberately written
-                // to only list WHERE divergence happens, not full chapter spans
-                // (see its header comment), so this gap-fill is required, not
-                // optional. Caught by verify-english-versification.mjs's "claimed by
-                // 0 English segment(s)" errors before this ever reached production.
-                const covered = [];
-                for (const seg of entries) {
-                    covered.push([seg.heb[0], seg.heb[1]]);
-                    // "merge": true (currently only 1 Samuel 21's heb 20:42/21:1 —
-                    // see versification-differences.json's header comment) means
-                    // this segment's destination verse is EXPECTED to already be
-                    // produced by another segment (here, chapter 20's own identity
-                    // segment already covers engStart 42). This builder's row-merge
-                    // logic (below, in /api/tokens etc.) sorts merged rows by
-                    // (verse, token_ordinal) — since token_ordinal restarts at 0 per
-                    // BHS verse, two segments sharing one destination verse would
-                    // have their words interleaved by matching ordinal position
-                    // instead of one verse's words following the other's. Fixing
-                    // that needs a segment-aware tiebreaker verified against real
-                    // data, not done yet — so for now, skip merge segments here
-                    // entirely. translation.db's prose/gloss data is still migrated
-                    // correctly for this verse (migrate-versification-translations.mjs
-                    // has its own merge handling); only the live raw-token interlinear
-                    // view is affected, and skipping just preserves ITS existing
-                    // behavior (Hebrew 21:1 stays unaddressed via English routing,
-                    // same as before this file gained this entry — not a regression).
-                    // Still pushed to `covered` above so the identity gap-fill below
-                    // does NOT also claim heb21:1 for eng21:1 — it already has an
-                    // (unimplemented-here) destination via the merge.
-                    if (seg.merge) continue;
-                    (segMap[seg.engChapter] ||= []).push({
-                        hebChapter: heb, hebStart: seg.heb[0], hebEnd: seg.heb[1], engStart: seg.eng[0],
-                    });
-                }
-                if (maxV) {
-                    covered.sort((a, b) => a[0] - b[0]);
-                    let cursor = 1;
-                    for (const [s, e] of covered) {
-                        if (s > cursor) {
-                            (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: cursor, hebEnd: s - 1, engStart: cursor });
-                        }
-                        cursor = Math.max(cursor, e + 1);
-                    }
-                    if (cursor <= maxV) {
-                        (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: cursor, hebEnd: maxV, engStart: cursor });
-                    }
-                }
-            } else {
-                if (!maxV) continue;   // chapter absent from this build's tokens_bhs — nothing to map
-                (segMap[heb] ||= []).push({ hebChapter: heb, hebStart: 1, hebEnd: maxV, engStart: 1 });
+        if (!BOOK_META[bookId]) continue;   // book not present in this build's tokens_bhs
+        const maxOrd = new Map();           // "c:v" -> highest token ordinal of that Hebrew verse
+        for (const r of db.prepare(
+            `SELECT chapter, verse, MAX(token_ordinal) AS m FROM tokens_bhs WHERE book_id=? GROUP BY chapter, verse`
+        ).all(bookId)) maxOrd.set(`${r.chapter}:${r.verse}`, r.m);
+        // every English verse of the book, from where each Hebrew verse is shown
+        const engVerses = new Map();        // engChapter -> Set(verse)
+        for (const key of maxOrd.keys()) {
+            const [c, v] = key.split(':').map(Number);
+            if (v < 1) continue;            // Psalm titles (verse 0) stay where they are
+            for (const [, ec, ev] of VS.mtToSite(bookId, c, v)) {
+                if (!engVerses.has(ec)) engVerses.set(ec, new Set());
+                engVerses.get(ec).add(ev);
             }
         }
-        for (const eng of Object.keys(segMap)) segMap[eng].sort((a, b) => a.engStart - b.engStart);
+        for (const k of Object.keys(VS.DATA.added || {})) {
+            const [b, c, v] = k.split(':').map(Number);
+            if (b !== bookId) continue;
+            if (!engVerses.has(c)) engVerses.set(c, new Set());
+            engVerses.get(c).add(v);
+            ((ENG_ADDED[b] ||= {})[c] ||= []).push({ verse: v, parallel: VS.DATA.added[k].parallel, note: VS.DATA.added[k].note });
+        }
+        const segMap = {};
+        for (const [ec, set] of engVerses) {
+            const segs = [];
+            for (const ev of [...set].sort((a, b) => a - b)) {
+                let cum = 0;                // ordinals already used by earlier parts of this English verse
+                for (const s of VS.siteSources(bookId, ec, ev)) {
+                    if (s.role === 'added') continue;
+                    const top = maxOrd.get(`${s.c}:${s.v}`) || 0;
+                    const from = s.words ? s.words[0] : 1;
+                    const to = s.words ? Math.min(s.words[1], top) : top;
+                    const seg = { hebChapter: s.c, hebStart: s.v, hebEnd: s.v, engStart: ev };
+                    if (s.words) { seg.ordFrom = from; seg.ordTo = to; }
+                    const shift = cum - (from - 1);
+                    if (shift) seg.ordShift = shift;
+                    if (s.role === 'fold') seg.fold = s.at;
+                    if (s.words) seg.part = true;
+                    cum += Math.max(0, to - from + 1);
+                    // a plain whole verse continuing the previous plain range joins it
+                    const prev = segs[segs.length - 1];
+                    if (prev && !prev.ordFrom && !prev.ordShift && !prev.fold && !seg.ordFrom && !seg.ordShift && !seg.fold
+                        && prev.hebChapter === seg.hebChapter && prev.hebEnd + 1 === seg.hebStart
+                        && prev.engStart + (prev.hebEnd - prev.hebStart) + 1 === seg.engStart) prev.hebEnd = seg.hebStart;
+                    else segs.push(seg);
+                }
+            }
+            segMap[ec] = segs;
+        }
         ENG_CHAPTER_SEGMENTS[bookId] = segMap;
 
-        // Note table: only chapters genuinely assembled from >1 segment need a
-        // Hebrew-equivalent courtesy note; a single-segment chapter has nothing
-        // to say (its English and BHS chapter numbers already agree).
+        // Parallel's per-verse line ("Hebrew (BHS) numbers this verse …"): every range not numbered the same.
         const notes = {};
-        for (const eng of Object.keys(segMap)) {
-            const segs = segMap[eng];
-            if (segs.length < 2) continue;
-            let cursor = 1;
-            notes[eng] = segs.map(s => {
-                const span = s.hebEnd - s.hebStart;   // inclusive-range length minus 1
-                const engEnd = cursor + span;
-                const note = { engStart: cursor, engEnd, hebChapter: s.hebChapter, hebStart: s.hebStart };
-                cursor = engEnd + 1;
-                return note;
-            });
+        for (const [eng, segs] of Object.entries(segMap)) {
+            const out = segs.filter(s => !s.fold && !(s.hebChapter === +eng && s.hebStart === s.engStart))
+                .map(s => ({ engStart: s.engStart, engEnd: s.engStart + (s.hebEnd - s.hebStart), hebChapter: s.hebChapter, hebStart: s.hebStart }));
+            if (out.length) notes[eng] = out;
         }
         ENG_TO_HEB_NOTE[bookId] = notes;
     }
@@ -1318,39 +1386,33 @@ let ENG_TO_HEB_NOTE = {};        // bookId -> { engChapter: [ {engStart, engEnd,
 // entry — the overwhelming majority — falls back to the single identity
 // segment, matching today's default resolveChapter() behavior exactly.
 function resolveEnglishChapter(bookId, engChapter) {
-    // Malachi (39) / Joel (29) stay on the older, narrower VERSIFICATION_MAP path —
-    // checked FIRST so every caller of resolveEnglishChapter (not just the two
-    // translate/* routes that used to hand-check this) gets their existing
-    // behavior for granted. Convert its single actual_chapter/verse_offset pair
-    // into the equivalent one-segment list: verse_offset+1 is the first BHS verse
-    // that belongs to this display chapter (resolveChapter's old rule was "filter
-    // to verses > verse_offset, then renumber verse -= verse_offset").
-    const mapEntry = VERSIFICATION_MAP[`${bookId}:${engChapter}`];
-    if (mapEntry) {
-        return [{ hebChapter: mapEntry.actual_chapter, hebStart: mapEntry.verse_offset + 1, hebEnd: Infinity, engStart: 1 }];
-    }
     const segs = ENG_CHAPTER_SEGMENTS[bookId]?.[engChapter];
     if (segs && segs.length) return segs;
+    // an affected book's chapter with no Hebrew of its own (Joel 4, Malachi 3:19-24 are shown elsewhere now)
+    if (ENG_CHAPTER_SEGMENTS[bookId] && !segs) return [];
     return [{ hebChapter: engChapter, hebStart: 1, hebEnd: Infinity, engStart: 1 }];
 }
 
-// Single-verse counterpart of resolveEnglishChapter — which segment does this
-// DISPLAY (English-authoritative) verse fall in, and what BHS (chapter, verse)
-// does it actually live at. Used by /api/translate/verse, which needs one verse
-// at a time rather than a whole chapter's rows.
-function resolveEnglishVerse(bookId, engChapter, engVerse) {
-    const segments = resolveEnglishChapter(bookId, engChapter);
-    for (const seg of segments) {
+// Every segment one DISPLAY verse is built from, each narrowed to that verse (a folded verse has two, a split one a word
+// range). [] for a verse with no Hebrew (Nehemiah 7:68).
+function resolveEnglishVerseParts(bookId, engChapter, engVerse) {
+    const out = [];
+    for (const seg of resolveEnglishChapter(bookId, engChapter)) {
         const segEnd = seg.engStart + (seg.hebEnd - seg.hebStart);   // Infinity for identity segments
-        if (engVerse >= seg.engStart && engVerse <= segEnd) {
-            return { hebChapter: seg.hebChapter, hebVerse: seg.hebStart + (engVerse - seg.engStart) };
-        }
+        if (engVerse < seg.engStart || engVerse > segEnd) continue;
+        const hv = seg.hebStart + (engVerse - seg.engStart);
+        out.push({ ...seg, hebStart: hv, hebEnd: hv, engStart: engVerse });
     }
-    // Past every known segment (e.g. an overshoot request) — fall back to the last
-    // segment's chapter with the same offset, matching /api/tokens' documented
-    // "accepted overshoot" behavior for donor chapters rather than 404ing.
-    const last = segments[segments.length - 1];
-    return { hebChapter: last.hebChapter, hebVerse: last.hebStart + (engVerse - last.engStart) };
+    return out;
+}
+// Single-verse counterpart of resolveEnglishChapter — the MAIN Masoretic (chapter, verse) a DISPLAY verse shows (a folded
+// verse: its own; Nehemiah 7:68: its parallel Ezra 2:66 — see resolveEnglishVerseParts for every part).
+function resolveEnglishVerse(bookId, engChapter, engVerse) {
+    const parts = resolveEnglishVerseParts(bookId, engChapter, engVerse);
+    const main = parts.find(p => !p.fold) || parts[0];
+    if (main) return { hebChapter: main.hebChapter, hebVerse: main.hebStart };
+    // no Hebrew of its own: verse -1 matches no token row (its English comes from VS.composeText)
+    return { hebChapter: engChapter, hebVerse: -1, none: true };
 }
 
 // Hebrew Bible (Old Testament) book names by 1-indexed book_id. Used wherever
@@ -6012,6 +6074,8 @@ function buildCanonMeta() {
                FROM verses WHERE canon_id IS NOT NULL GROUP BY canon_id`).all())
             chap[r.id] = { first: r.f || 1, last: r.l || 1 };
     } catch (e) { /* chapters fall back to 1 */ }
+    // an OT book shows the ENGLISH chapters (Joel 3, Malachi 4 — fieldy 2026-11-26), whatever other texts number
+    for (const [id, m] of Object.entries(BOOK_META)) chap[id] = { first: m.first, last: m.last };
     try {
         const byId = {};
         for (const r of db.prepare(
@@ -8899,8 +8963,9 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
             const divHits = [];
             for (const seg of segments) {
                 for (const h of divineHitsForChapter(divSrc, bookId, seg.hebChapter)) {
-                    if (h.verse < seg.hebStart || h.verse > seg.hebEnd) continue;
-                    divHits.push({ ...h, key: `${seg.engStart + (h.verse - seg.hebStart)}\u0000${h.token_ordinal}` });
+                    const m = segMapRow(seg, h.verse, h.token_ordinal);
+                    if (!m) continue;
+                    divHits.push({ ...h, key: `${m.verse}\u0000${m.ord}` });
                 }
             }
             installDivineMarks(res, divHits);
@@ -8929,11 +8994,12 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
         let rows = [];
         for (const seg of segments) {
             let segRows = surfRowsFor(bookId, seg.hebChapter, surfSource)
-                .filter(r => r.verse >= seg.hebStart && r.verse <= seg.hebEnd);
+                .filter(r => segMapRow(seg, r.verse, r.token_ordinal));
             if (hasLocOverrides || hasSnRenumber) {
                 segRows = segRows.map(r => applyLocOverrideToSurfRow({ ...r }, locationOverrides, bookId, seg.hebChapter));
             }
-            for (const r of segRows) rows.push({ ...r, verse: seg.engStart + (r.verse - seg.hebStart) });
+            // a folded / split verse renumbers its words so one English verse runs 1, 2, 3 … (segMapRow)
+            for (const r of segRows) { const m = segMapRow(seg, r.verse, r.token_ordinal); rows.push({ ...r, verse: m.verse, token_ordinal: m.ord }); }
         }
         rows.sort((a, b) => a.verse - b.verse || a.token_ordinal - b.token_ordinal);
 
@@ -8963,8 +9029,9 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
             const authSN = new Map();   // "engVerse\u0000ordinal" -> normalized H#
             for (const seg of segments) {
                 for (const t of tokenQueryFor(bookId, req.query.source).all(bookId, seg.hebChapter)) {
-                    if (t.verse < seg.hebStart || t.verse > seg.hebEnd || !t.strongs) continue;
-                    const engVerse = seg.engStart + (t.verse - seg.hebStart);
+                    const mapped = t.strongs ? segMapRow(seg, t.verse, t.token_ordinal) : null;
+                    if (!mapped) continue;
+                    const engVerse = mapped.verse;
                     // Apply the SAME blanket whole-SN renumber (snRenumber, e.g. H802 ->
                     // H378a) that applyLocOverrideToSurfRow already applied to the BAKED
                     // side (`rows`, above) before this guard ever runs. Found 2026-09-21
@@ -8983,7 +9050,7 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
                     // applySnRenumber call the baked side already went through means
                     // both sides are compared on the same (post-renumber) basis, so a
                     // renumber never looks like drift again.
-                    authSN.set(`${engVerse}\u0000${t.token_ordinal}`, normH(applySnRenumber(t.strongs, snRenumber)));
+                    authSN.set(`${engVerse}\u0000${mapped.ord}`, normH(applySnRenumber(t.strongs, snRenumber)));
                 }
             }
             homographDrift = rows.some(r => {
@@ -9001,8 +9068,8 @@ app.get('/api/tokens', production.cache(60), (req, res) => {
             const merged = [];
             for (const seg of segments) {
                 const segRows = tokenQueryFor(bookId, req.query.source).all(bookId, seg.hebChapter)
-                    .filter(r => r.verse >= seg.hebStart && r.verse <= seg.hebEnd)
-                    .map(r => ({ ...r, verse: seg.engStart + (r.verse - seg.hebStart) }));
+                    .filter(r => segMapRow(seg, r.verse, r.token_ordinal))
+                    .map(r => { const m = segMapRow(seg, r.verse, r.token_ordinal); return { ...r, verse: m.verse, token_ordinal: m.ord }; });
                 merged.push(...segRows);
             }
             merged.sort((a, b) => a.verse - b.verse || a.token_ordinal - b.token_ordinal);
@@ -9256,29 +9323,10 @@ function markDivineWords(words, hitMap) {
 // BHS (Masoretic) chapter:verse → the app's English-authoritative display ref —
 // the inverse of resolveEnglishChapter, so a listed reference opens the verse the
 // Parallel/Reader pages actually show under that number (Malachi 3:19 → 4:1 …).
-let _hebToEngSegs = null;
 function bhsToDisplayRef(bookId, hebChapter, hebVerse) {
-    if (!_hebToEngSegs) {
-        _hebToEngSegs = {};
-        const add = (b, engCh, seg) => (_hebToEngSegs[b] ||= []).push({ engCh, ...seg });
-        for (const [b, map] of Object.entries(ENG_CHAPTER_SEGMENTS || {})) {
-            for (const [engCh, segs] of Object.entries(map || {})) for (const seg of segs) add(+b, +engCh, seg);
-        }
-        for (const [k, m] of Object.entries(VERSIFICATION_MAP)) {
-            const [b, engCh] = k.split(':').map(Number);
-            add(b, engCh, { hebChapter: m.actual_chapter, hebStart: m.verse_offset + 1, hebEnd: Infinity, engStart: 1 });
-        }
-    }
-    let best = null;
-    for (const s of _hebToEngSegs[bookId] || []) {
-        if (s.hebChapter !== hebChapter || hebVerse < s.hebStart || hebVerse > s.hebEnd) continue;
-        // Prefer a real remap over an identity segment, and the tightest start.
-        const identity = s.engCh === s.hebChapter && s.hebStart === 1 && s.engStart === 1;
-        const score = (identity ? 0 : 1000) + s.hebStart;
-        if (!best || score > best.score) best = { score, s };
-    }
-    if (!best) return [hebChapter, hebVerse];
-    return [best.s.engCh, best.s.engStart + (hebVerse - best.s.hebStart)];
+    // eng-versification.cjs: a folded Hebrew verse shows under its host, a split one under its first part
+    const site = VS.mtToSite(bookId, hebChapter, hebVerse)[0];
+    return site ? [site[1], site[2]] : [hebChapter, hebVerse];
 }
 
 // The tab. Labels are spelled at read time from strongs-roots.json (nameTranslit)
@@ -9411,8 +9459,8 @@ app.get('/api/raw', production.cache(60), (req, res) => {
         const mapped = [];
         for (const seg of segments) {
             const segRows = tokenQueryFor(bookId, req.query.source).all(bookId, seg.hebChapter)
-                .filter(r => r.verse >= seg.hebStart && r.verse <= seg.hebEnd)
-                .map(r => ({ ...r, verse: seg.engStart + (r.verse - seg.hebStart) }));
+                .filter(r => segMapRow(seg, r.verse, r.token_ordinal))
+                .map(r => { const m = segMapRow(seg, r.verse, r.token_ordinal); return { ...r, verse: m.verse, token_ordinal: m.ord }; });
             mapped.push(...segRows);
         }
         mapped.sort((a, b) => a.verse - b.verse || a.token_ordinal - b.token_ordinal);
@@ -11763,7 +11811,7 @@ app.get('/sitemap-verses.xml', production.cache(3600), (req, res) => {
         const urls = [];
         for (const b of BOOKS) {
             for (let ch = b.first_chapter; ch <= b.last_chapter; ch++) {
-                let verseRows = VERSE_LIST_BHS.all(b.book_id, ch);
+                let verseRows = displayVerseList(b.book_id, ch);   // English numbers (fieldy 2026-11-26)
                 if (!verseRows.length) {
                     // Non-Hebrew-backed book/chapter (e.g. an NT book with no
                     // tokens_bhs rows) — same English-baseline fallback
@@ -11836,7 +11884,7 @@ app.get('/sitemap-verse-pages.xml', production.cache(3600), (req, res) => {
         for (const b of BOOKS) {
             const slug = sitemapSlugify(canonName(b.book_id)) || `book-${b.book_id}`;
             for (let ch = b.first_chapter; ch <= b.last_chapter; ch++) {
-                let verseRows = VERSE_LIST_BHS.all(b.book_id, ch);
+                let verseRows = displayVerseList(b.book_id, ch);   // English numbers (fieldy 2026-11-26)
                 if (!verseRows.length) {
                     // Non-Hebrew-backed book/chapter — same English-baseline
                     // fallback sitemap-verses.xml uses above, so this lists
@@ -11885,7 +11933,7 @@ app.get('/sitemap-parallel-pages.xml', production.cache(3600), (req, res) => {
         for (const b of BOOKS) {
             const slug = sitemapSlugify(canonName(b.book_id)) || `book-${b.book_id}`;
             for (let ch = b.first_chapter; ch <= b.last_chapter; ch++) {
-                let verseRows = VERSE_LIST_BHS.all(b.book_id, ch);
+                let verseRows = displayVerseList(b.book_id, ch);   // English numbers (fieldy 2026-11-26)
                 if (!verseRows.length) {
                     try {
                         verseRows = db.prepare(`
@@ -12569,21 +12617,11 @@ function buildEnglishChapter(bookId, chapter, lang = 'BHS') {
         // entry either way and resolve to themselves unchanged. Found 2026-08-17
         // (Malachi 4 blank in Translation Studio) and generalized 2026-08-20 for
         // the English-versification-authority flip.
-        let verseRows = [];
-        if (BOOK_META[bookId]) {
-            for (const seg of resolveEnglishChapter(bookId, chapter)) {
-                const segRows = db.prepare(
-                    `SELECT DISTINCT verse FROM tokens_bhs WHERE book_id=? AND chapter=? ORDER BY verse`
-                ).all(bookId, seg.hebChapter)
-                    .filter(r => r.verse >= seg.hebStart && r.verse <= seg.hebEnd)
-                    .map(r => ({ verse: seg.engStart + (r.verse - seg.hebStart) }));
-                verseRows.push(...segRows);
-            }
-            verseRows.sort((a, b) => a.verse - b.verse);
-        }
+        let verseRows = displayVerseList(bookId, chapter);   // English numbers; folded verse once; Nehemiah 7:68 listed
         // Non-Hebrew books (no tokens_bhs): take the verse list from the English
-        // baseline so the chapter still opens and every verse is listed.
-        if (!verseRows.length) {
+        // baseline so the chapter still opens and every verse is listed. (Never for an OT book: its ENG rows are on
+        // the Hebrew numbers — Joel 4 is no English chapter.)
+        if (!verseRows.length && !BOOK_META[bookId]) {
             try {
                 const eng = db.prepare(`
                     SELECT DISTINCT ord_v AS verse FROM verses
@@ -12658,7 +12696,10 @@ app.get('/api/translate/book', (req, res) => {
     try {
         const bookId = parseInt(req.query.book, 10);
         if (!bookId) return res.status(400).json({ error: 'book required' });
-        const chapterRows = db.prepare(`
+        // an OT book's chapters are the English ones (Joel 3, Malachi 4); corpus.db ENG rows are on the Hebrew numbers
+        const chapterRows = BOOK_META[bookId]
+            ? Array.from({ length: BOOK_META[bookId].last - BOOK_META[bookId].first + 1 }, (_, i) => ({ chapter: BOOK_META[bookId].first + i }))
+            : db.prepare(`
             SELECT DISTINCT ord_c AS chapter FROM verses
             WHERE corpus='ENG' AND canon_id=? AND ord_c IS NOT NULL ORDER BY ord_c
         `).all(bookId);
@@ -13022,7 +13063,14 @@ app.get('/api/translate/verse', (req, res) => {
         const { hebChapter: _vChap, hebVerse: _vTokenVerse } = BOOK_META[bookId]
             ? resolveEnglishVerse(bookId, chapter, verse)
             : { hebChapter: chapter, hebVerse: verse };
-        const tokens = txVerseQuery(bookId).all(bookId, _vChap, _vTokenVerse);
+        // a folded verse is two Hebrew verses, a split one a word range of one (resolveEnglishVerseParts): the words are
+        // renumbered 1, 2, 3 … across the parts exactly as /api/tokens does, so a link made here lands on the same word
+        const _vParts = BOOK_META[bookId] ? resolveEnglishVerseParts(bookId, chapter, verse) : [];
+        const tokens = _vParts.length > 1 || (_vParts[0] && (_vParts[0].ordFrom != null || _vParts[0].ordShift))
+            ? _vParts.flatMap(seg => txVerseQuery(bookId).all(bookId, seg.hebChapter, seg.hebStart)
+                .map(t => ({ t, m: segMapRow(seg, seg.hebStart, t.token_ordinal) })).filter(x => x.m)
+                .map(({ t, m }) => ({ ...t, token_ordinal: m.ord })))
+            : txVerseQuery(bookId).all(bookId, _vChap, _vTokenVerse);
         // WHICH EDITION THOSE TOKENS ACTUALLY CAME FROM. txVerseQuery picks by
         // BOOK ID, not by `lang` — an NT book always reads tokens_nt however the
         // Studio's language picker is set. So the picker said 'BHS' (its default)

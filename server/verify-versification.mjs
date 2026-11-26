@@ -87,6 +87,7 @@
  *     node verify-versification.mjs --write-allowlist
  */
 import Database from 'better-sqlite3';
+import { createRequire } from 'node:module';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -98,22 +99,15 @@ const positional = args.filter(a => !a.startsWith('--'));
 const dbPath = positional[0] || path.join(__dirname, 'corpus.db');
 const ALLOWLIST_PATH = path.join(__dirname, 'versification-known-gaps.json');
 const db = new Database(dbPath, { readonly: true });
+const VS = createRequire(import.meta.url)('./eng-versification.cjs');
 
-// ── DUPLICATED FROM server.js — keep in sync, see header note above ────────
-const VERSIFICATION_MAP = {
-  '39:4': { actual_chapter: 3, verse_offset: 18 },   // Malachi 4 = MT 3:19-24
-  '29:3': { actual_chapter: 3, verse_offset: 0 },
-  '29:4': { actual_chapter: 4, verse_offset: 0 },    // Joel 4 = MT 4
-};
+// ── 2026-11-26: the old VERSIFICATION_MAP (Joel / Malachi) is retired — every remap is in
+// versification-differences.json, read through eng-versification.cjs (fieldy: modern numbers everywhere).
+// DISPLAY_LAST_CHAPTER is still duplicated from server.js — keep in sync.
 const DISPLAY_LAST_CHAPTER = {
-  39: 4,   // Malachi: show 4 chapters (MT has 3)
-  29: 4,   // Joel: MT has 4
+  39: 4,   // Malachi: English 4 chapters (Hebrew 3)
+  29: 3,   // Joel: English 3 chapters (Hebrew 4)
 };
-function resolveChapter(bookId, displayChapter) {
-  const key = `${bookId}:${displayChapter}`;
-  if (VERSIFICATION_MAP[key]) return VERSIFICATION_MAP[key];
-  return { actual_chapter: displayChapter, verse_offset: 0 };
-}
 // ─────────────────────────────────────────────────────────────────────────
 
 const failures = [];   // {key, msg} — key is stable for allowlisting, msg is for display
@@ -142,27 +136,21 @@ for (const [bookId, chapters] of bhsChaptersByBook) {
   }
 }
 
-// Check 2: every VERSIFICATION_MAP / DISPLAY_LAST_CHAPTER entry actually
-// resolves to real rows — this is the exact Malachi-4-class check.
-const bookIdsToVerify = new Set([
-  ...Object.keys(VERSIFICATION_MAP).map(k => parseInt(k.split(':')[0], 10)),
-  ...Object.keys(DISPLAY_LAST_CHAPTER).map(k => parseInt(k, 10)),
-]);
-const countStmt = db.prepare(
-  `SELECT COUNT(*) AS n FROM tokens_bhs WHERE book_id=? AND chapter=? AND verse>?`
-);
-for (const bookId of bookIdsToVerify) {
-  const lastDisplayChapter = DISPLAY_LAST_CHAPTER[bookId]
-    ?? Math.max(...(bhsChaptersByBook.get(bookId) || [0]));
-  for (let displayChapter = 1; displayChapter <= lastDisplayChapter; displayChapter++) {
-    const { actual_chapter, verse_offset } = resolveChapter(bookId, displayChapter);
-    const { n } = countStmt.get(bookId, actual_chapter, verse_offset);
-    if (n === 0) {
-      note(`BHSRESOLVE:${bookId}:${displayChapter}`,
-           `BHS book_id=${bookId} display chapter ${displayChapter}: resolves to ` +
-           `tokens_bhs chapter=${actual_chapter} verse>${verse_offset}, which is EMPTY ` +
-           `(0 rows) — this is exactly the Malachi-4-goes-dark bug class`);
-    }
+// Check 2: every English chapter the site shows (1..DISPLAY_LAST_CHAPTER, else the Hebrew's last) holds at least one
+// Hebrew verse through eng-versification.cjs — the Malachi-4-goes-dark bug class — and every Hebrew verse is shown
+// under some English verse that names it as a source (nothing dropped).
+{
+  const siteCh = new Map();   // "b:c" -> count of Hebrew verses shown there
+  for (const r of db.prepare(`SELECT DISTINCT book_id, chapter, verse FROM tokens_bhs WHERE verse > 0`).iterate()) {
+    const sites = VS.mtToSite(r.book_id, r.chapter, r.verse);
+    if (!sites.some(([b, c, v]) => VS.siteSources(b, c, v).some(x => x.b === r.book_id && x.c === r.chapter && x.v === r.verse)))
+      note(`BHSDROP:${r.book_id}:${r.chapter}:${r.verse}`, `BHS ${r.book_id} ${r.chapter}:${r.verse} is shown under no English verse`);
+    for (const [b, c] of sites) siteCh.set(`${b}:${c}`, (siteCh.get(`${b}:${c}`) || 0) + 1);
+  }
+  for (const [bookId, chapters] of bhsChaptersByBook) {
+    const last = DISPLAY_LAST_CHAPTER[bookId] ?? Math.max(...chapters);
+    for (let c = 1; c <= last; c++) if (!siteCh.get(`${bookId}:${c}`))
+      note(`BHSRESOLVE:${bookId}:${c}`, `BHS book_id=${bookId} English chapter ${c} holds no Hebrew verse — the Malachi-4-goes-dark bug class`);
   }
 }
 

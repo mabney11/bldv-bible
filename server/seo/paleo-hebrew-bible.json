@@ -1544,6 +1544,10 @@
    "a": "No. It is the same Hebrew language written in its ancient alphabet. The letters correspond one to one with the later square letters, so the words and their spelling do not change."
   },
   {
+   "q": "Why do some verse numbers differ from a Hebrew Bible?",
+   "a": "Hebrew Bibles number some chapters and verses differently from English Bibles. In Hebrew, Malachi has three chapters (English Malachi 4 is Hebrew 3:19-24), Joel has four, a psalm's title is often counted as verse 1, and the line between two chapters sometimes falls a few verses earlier or later. No words are added or lost; only the numbers move. BLD Bible uses the modern numbering found in English Bibles, so it can be read as a companion alongside any other Bible and a reference finds the same verse in both. The Hebrew numbering is kept too: wherever it differs, a note under the chapter shows which Hebrew verses each English verse holds."
+  },
+  {
    "q": "Where do I start?",
    "a": "Open BaRaashayath (Genesis) 1 in the Paleo Hebrew reader, or the Parallel Bible if you want the English beside it."
   }

@@ -81,6 +81,45 @@ fieldy, Romans 6:22 𐤌𐤔𐤇𐤓𐤓𐤉𐤌 read as 𐤔 "who" + Charar H27
   is the narrow version — commit it again.
 Run: `node build-surface-index.js` (etched "burn" readings are re-decided by the overrides), `node render-all.mjs --surface`, restart, Rebake.
 
+## 1 KINGS 4/5 AND ECCLESIASTES 4/5 NOW NUMBER THE ENGLISH WAY (2026-11-26)
+fieldy, /roots?sn=H2449 "1 Kings 5:11": the card showed Hebrew 5:11 (Solomon wiser than Ethan) while Other versions showed KJV 5:11
+(wheat for Hiram). versification-differences.json never listed these two shifts, so the whole site kept the Masoretic numbers there:
+"11:5" Hebrew 5:1-14 = English 4:21-34, 5:15-32 = English 5:1-18; "21:4"/"21:5" Hebrew 4:17 = English 5:1, 5:1-19 = English 5:2-20.
+No saved verse in either chapter.
+**fieldy's rule, same day: "I dont want differences unless something is completely dropped -- if all the words are there, lets
+use the modern numbers"** + a footer wherever the Hebrew numbering differs + the /paleo-hebrew-bible FAQ says why ("Why do some verse
+numbers differ from a Hebrew Bible?"). Joel, Malachi and the merges were NEVER his choice (Claude had left them). DONE (all of it):
+- **versification-differences.json** = the ONE table: Joel (Heb 3:1-5 = Eng 2:28-32, Heb 4 = Eng 3), Malachi (Heb 3:19-24 = Eng 4:1-6;
+  Malachi 3 ends at 18), FOLDS `"merge": "end"|"start"` (1 Sam 21:1 -> 20:42, Num 25:19 -> start of 26:1, 1 Kgs 22:44 -> 22:43 and
+  45-54 -> 44-53, 1 Chr 12:5 -> 12:4 and 6-41 -> 5-40), the SPLIT `"words"`+`"pairs"` (Isaiah 63:19 words 1-12 / reading-text pairs 0-7 =
+  Eng 63:19, words 13-22 = Eng 64:1; 64:1-11 = 64:2-12), Nehemiah 7 (Heb 68-72 = Eng 69-73) and `"added"` 16:7:68 (not in the Hebrew —
+  the same words as Ezra 2:66, linked; fieldy: not a red flag, "point out that it was added and link to the parallel").
+- **eng-versification.cjs** (rewritten, the one reader): siteSources(site) = the Hebrew verses / word ranges a site verse shows, in order;
+  mtToSite / siteToMt / moves / siteShows; composeText(site, textOf) = the site verse's text (fold = both texts, split = its pairs,
+  added = the parallel's). Checked on the real corpus: every Hebrew verse shown exactly once (Ezra 2:66 also lends), site verse list = KJV's.
+- **server.js** builds ENG_CHAPTER_SEGMENTS from it (segments carry ordFrom/ordTo/ordShift/fold/part; `segMapRow`); VERSIFICATION_MAP
+  retired; DISPLAY_LAST_CHAPTER {39:4, 29:3}; canonChapters uses BOOK_META for OT books (book menu: Joel 3); resolveEnglishVerseParts
+  (Studio verse tokens: a folded verse's words numbered 1..N straight through); englishBaseline composes; bhsToDisplayRef = mtToSite;
+  displayVerseList (Studio chapter, /api/translate/book, the three verse sitemaps — they listed Hebrew numbers before); ENG_ADDED;
+  /api/versification-points kinds start/merge/split/added/gap. Harness on the real corpus.db: 81 footer points all ✓; every folded/split
+  verse's word ordinals 1..N with no gap or duplicate; every OT chapter's verse list = KJV's.
+- Footer (VersificationFooter.jsx): "Hebrew chapter 5 starts at English 4:21 ✓", "Hebrew 21:1 is joined to the end of English 20:42 ✓",
+  "Hebrew 63:19 is split: its first part is English 63:19 ✓", "English 7:68 is not in the Hebrew [added] … Compare Ezra 2:66 →".
+- Writers compose: reseed-translations, load-english-baseline (also: a Hebrew verse the WEB folds gets an EMPTY corpus row so the
+  mechanical baseline writes it — Num 25:19, 1 Kgs 22:54, 1 Chr 12:41 had no ENG row at all; clearStale never blanks a composed verse),
+  refresh-lexicon-glosses. Gates: verify-site-verses (sources; split pairs checked against its word range; a row under a number the site
+  no longer shows FAILS), verify-reading-glosses (a folded verse's other Hebrew counts), verify-versification + verify-english-versification
+  (rewritten on eng-versification.cjs: chapters 1..N, every Hebrew verse once, split ranges cover every word once) — both pass on the corpus.
+- **migrate-site-keys.mjs** [translation.db] [--apply] (one-time, marker table site_key_migrations; moves from site-key-moves-2026-11-26.json):
+  saved verses re-keyed by UPDATE (author kept) with their history + hand links — today one: Joel 4:1 -> 3:1; headings listed in the file
+  (Joel's two; 1 Kgs 5:1 "Preparations with Chayaram" and Eccl 5:1 "Vows" were already written for the English chapter and stay);
+  135 machine rows under numbers the site no longer shows deleted. Tested on a copy: then reseed + verify-site-verses = 0 fail,
+  FORM 0 of 52,204; verify-reading-glosses on the copies: only 4 pre-existing NT/Josephus label flags (render-all --fix repairs those).
+- RUN ORDER (studio-sync would carry a saved verse between machines mid-move — stop it first): stop "bldbible studio sync watch";
+  commit + push; deploy; on the box `docker run --rm -v /mnt/paleo-data:/data paleo-studio node migrate-site-keys.mjs /data/translation.db`
+  (dry) then `--apply`; locally `node migrate-site-keys.mjs` then `--apply`; `node render-all.mjs` (FULL — load-english-baseline writes
+  the 3 new rows); restart; Rebake; restart the sync task.
+
 ## THE READER FOLLOWS THE LEXICON BY ITSELF — refresh-lexicon-glosses.mjs + lexicon-refresh-watch.sh (2026-11-22)
 fieldy: "automate my lexicon updates to populate raw paleo placeholders without my intervention -- i should only have to modify
 the details and the reader correct itself over time" (Gen 29:35 still read "AYawadah ([I] 𐤉𐤃𐤄)" after he set 𐤉𐤃𐤄 "Confess").

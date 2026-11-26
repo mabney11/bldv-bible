@@ -30,8 +30,14 @@ for (const r of cdb.prepare(`SELECT canon_id c, chapter ch, verse v, text FROM v
 const fail = [], review = []; let checked = 0;
 for (const r of tdb.prepare(`SELECT book_id c, chapter ch, verse v, status, coalesce(rich_text,'') rt, text FROM translations WHERE book_id BETWEEN 1 AND 39 AND text IS NOT NULL AND text != ''`).iterate()) {
   const mt = VS.siteToMt(r.c, r.ch, r.v);
-  const ct = corpus.get(mt.join('|'));
-  if (ct == null) continue;                       // a number the site does not show (e.g. Hebrew-only 2:24 of Hosea)
+  if (!VS.siteShows(r.c, r.ch, r.v)) {            // a row under a number the site no longer shows (Joel 4, Malachi 3:19-24 …)
+    const line = `${r.c}:${r.ch}:${r.v} — the site has no such verse now (run migrate-site-keys.mjs)\n    ${String(r.text).slice(0, 140)}`;
+    if ((r.status || 'none') === 'none' && !r.rt) fail.push(line); else review.push(line);
+    continue;
+  }
+  // a folded verse is two Hebrew verses, a split one part of one, Nehemiah 7:68 Ezra 2:66 (eng-versification.cjs)
+  const ct = VS.composeText(r.c, r.ch, r.v, (b, c, v) => corpus.get(`${b}|${c}|${v}`) || '');
+  if (!ct) continue;
   const ft = forms(r.text), fc = forms(ct);
   if (fc.size < 2 || ft.size < 2) continue;      // too few Hebrew words to judge
   checked++;
@@ -70,10 +76,27 @@ if (existsSync(SIDX)) {
     ord.set(`${r.c}|${+r.ch}|${+r.v}`, r);
   for (const r of tdb.prepare(`SELECT book_id c, chapter ch, verse v, text FROM translations WHERE status = 'none' AND coalesce(rich_text,'') = '' AND text IS NOT NULL AND text != ''`).iterate()) {
     if (!MF.modformApplies(r.c, r.ch)) continue;
-    if (r.c <= 39 && !VS.siteShows(r.c, r.ch, r.v)) continue;   // a leftover row under a number the site does not show
+    if (r.c <= 39 && !VS.siteShows(r.c, r.ch, r.v)) continue;   // a leftover row: failed above (migrate-site-keys.mjs)
     let ws;
     let ref;
-    if (r.c <= 39) { const [b, ch, v] = VS.siteToMt(r.c, r.ch, r.v); ws = wordsOf('BHS', b, ch, v); ref = `${b}:${ch}:${v}`; }
+    let want = null;
+    if (r.c <= 39) {
+      // every Hebrew verse (or part) the site verse is built from, in order (fieldy 2026-11-26: modern numbers)
+      want = []; ws = [];
+      for (const s of VS.siteSources(r.c, r.ch, r.v)) {
+        const w = wordsOf('BHS', s.b, s.c, s.v); ref = `${s.b}:${s.c}:${s.v}`;
+        let groups = MF.mechanicalPairs(w, () => '', {});
+        if (s.pairs) {
+          // the split's pairs must be the words of its word range — checked here, every run
+          const [pf, pt] = s.pairs, [wf, wt] = s.words;
+          groups = groups.slice(pf, pt);
+          const off = groups.flatMap(g => g.words).filter(x => x.ord < wf || x.ord > wt);
+          if (off.length) formFail.push(`${r.c}:${r.ch}:${r.v} — versification-differences.json "pairs" [${pf}, ${pt}) of ${ref} hold words outside words [${wf}, ${wt}] (ords ${off.map(x => x.ord).join(',')})`);
+        }
+        ws.push(...w);
+        want.push(...MF.pairHeads(finalText(groups.map(g => `${g.form} ()`).join(' '), ref)).heads);
+      }
+    }
     else {
       const o = ord.get(`${r.c}|${+r.ch}|${+r.v}`);
       ref = `${r.c}:${o ? o.ord_c : +r.ch}:${o ? o.ord_v : +r.v}`;
@@ -84,7 +107,7 @@ if (existsSync(SIDX)) {
     }
     if (!ws.length) continue;
     formChecked++;
-    const want = MF.pairHeads(finalText(MF.mechanicalPairs(ws, () => '', {}).map(g => `${g.form} ()`).join(' '), ref)).heads;
+    if (!want) want = MF.pairHeads(finalText(MF.mechanicalPairs(ws, () => '', {}).map(g => `${g.form} ()`).join(' '), ref)).heads;
     const got = MF.pairHeads(r.text);
     let why = '';
     if (got.outside) why = `English outside a pair: "${got.outside.slice(0, 40)}"`;

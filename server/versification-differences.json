@@ -1,5 +1,8 @@
 {
-  "_comment": "Known Hebrew (BHS/Masoretic) vs. English (KJV-tradition) chapter/verse numbering divergences, for the OT (canon_id 1-39). Keyed by \"canon_id:hebChapter\" — canon_id here means Scheme A per CLAUDE.md's 'book_id means two different things' note (stable 1-39 for OT, Genesis=1..Malachi=39), the SAME numbering tokens_bhs.book_id, resolveChapter()'s bookId, and VERSIFICATION_MAP already use — NOT the site's interspersed book-menu position numbers. Each entry is a list of verse-range correspondences for that Hebrew chapter; a single Hebrew chapter can span parts of two different English chapters (e.g. Numbers 17). Malachi (39) and Joel (29) are intentionally excluded — they're already special-cased in server.js's VERSIFICATION_MAP/DISPLAY_LAST_CHAPTER to DISPLAY English chapter numbers directly, so there's no divergence left to note about for those two. Psalms (19) are intentionally excluded — the offset there is systematic (most psalm titles count as verse 1 in Hebrew) and needs verification against which superscriptions this corpus's own tokens_bhs actually stores as verse 1 before any mapping can be trusted; flagged as follow-up work, not guessed at here. Source: standard, well-established Hebrew/English versification-difference table (matthewbarron.org's versification comparison, following the standard scholarly/SWORD-project convention). Spot-checked live against bldbible.com vs. biblehub.com for Deuteronomy 13 (2026-08-18) before this file was written; a few more entries should be spot-checked the same way before this is fully trusted (see verify step in the implementation). SPECIAL CASE — 1 Samuel 21 (\"9:21\"): unlike every other entry, this is NOT a clean 1-for-1 renumber. Per matthewbarron.org, Hebrew 20:42 and Hebrew 21:1 are two distinct Hebrew verses that English tradition folds into ONE English verse, 20:42 (\"1Sa 20:42 (last clause)\" = Hebrew 21:1). The heb[1,1]->eng20:[42,42] segment is flagged \"merge\": true so consuming code knows this destination is EXPECTED to already be occupied by Hebrew 20:42's own (unmoved) data — migrate-versification-translations.mjs has explicit merge-resolution logic for this flag (keep whichever side has real, non-baseline content; abort for manual review if both sides do). Confirmed 2026-08-20 against matthewbarron.org directly (not just spot-checked) after the migration script's collision guard caught this and \"9:24\" as genuine gaps in an earlier version of this file — 9:24 was a simple missing boundary segment (Hebrew 24:1 = English 23:29, no merge), fixed the same way as every other multi-segment entry.",
+  "_comment": "fieldy 2026-11-26: the site uses MODERN (English) verse numbers everywhere unless something is completely dropped; a footer gives the Hebrew numbering. Joel (29) and Malachi (39) are now listed here like every other book (the old VERSIFICATION_MAP special case is retired). Entry kinds: a range {heb, engChapter, eng}; \"merge\": \"end\"|\"start\" = this Hebrew verse is FOLDED into English verse eng (after / before that verse's own Hebrew; its words follow on in one numbering); \"words\": [from, to] = only these word ordinals of the Hebrew verse (a split verse — Isaiah 63:19 = English 63:19 + 64:1), \"pairs\": [from, to) = which reading-text pairs of the Hebrew verse's text go to that English verse (checked by verify-site-verses). \"added\": English verses with no Hebrew at all, keyed book:chapter:verse, with the parallel they come from (Nehemiah 7:68 = Ezra 2:66). ONE reader for the pipeline: eng-versification.cjs; server.js builds its segments from the same file. History below. Known Hebrew (BHS/Masoretic) vs. English (KJV-tradition) chapter/verse numbering divergences, for the OT (canon_id 1-39). Keyed by \"canon_id:hebChapter\" — canon_id here means Scheme A per CLAUDE.md's 'book_id means two different things' note (stable 1-39 for OT, Genesis=1..Malachi=39), the SAME numbering tokens_bhs.book_id, resolveChapter()'s bookId, and VERSIFICATION_MAP already use — NOT the site's interspersed book-menu position numbers. Each entry is a list of verse-range correspondences for that Hebrew chapter; a single Hebrew chapter can span parts of two different English chapters (e.g. Numbers 17). Malachi (39) and Joel (29) are intentionally excluded — they're already special-cased in server.js's VERSIFICATION_MAP/DISPLAY_LAST_CHAPTER to DISPLAY English chapter numbers directly, so there's no divergence left to note about for those two. Psalms (19) are intentionally excluded — the offset there is systematic (most psalm titles count as verse 1 in Hebrew) and needs verification against which superscriptions this corpus's own tokens_bhs actually stores as verse 1 before any mapping can be trusted; flagged as follow-up work, not guessed at here. Source: standard, well-established Hebrew/English versification-difference table (matthewbarron.org's versification comparison, following the standard scholarly/SWORD-project convention). Spot-checked live against bldbible.com vs. biblehub.com for Deuteronomy 13 (2026-08-18) before this file was written; a few more entries should be spot-checked the same way before this is fully trusted (see verify step in the implementation). SPECIAL CASE — 1 Samuel 21 (\"9:21\"): unlike every other entry, this is NOT a clean 1-for-1 renumber. Per matthewbarron.org, Hebrew 20:42 and Hebrew 21:1 are two distinct Hebrew verses that English tradition folds into ONE English verse, 20:42 (\"1Sa 20:42 (last clause)\" = Hebrew 21:1). The heb[1,1]->eng20:[42,42] segment is flagged \"merge\": true so consuming code knows this destination is EXPECTED to already be occupied by Hebrew 20:42's own (unmoved) data — migrate-versification-translations.mjs has explicit merge-resolution logic for this flag (keep whichever side has real, non-baseline content; abort for manual review if both sides do). Confirmed 2026-08-20 against matthewbarron.org directly (not just spot-checked) after the migration script's collision guard caught this and \"9:24\" as genuine gaps in an earlier version of this file — 9:24 was a simple missing boundary segment (Hebrew 24:1 = English 23:29, no merge), fixed the same way as every other multi-segment entry.",
+  "added": {
+    "16:7:68": { "parallel": [15, 2, 66], "note": "Not in the Hebrew of Nehemiah 7: English Bibles add it from Ezra 2:66, the same list (horses 736, mules 245)." }
+  },
   "differences": {
     "1:32": [
       { "heb": [1, 1], "engChapter": 31, "eng": [55, 55] },
@@ -27,6 +30,9 @@
       { "heb": [1, 15], "engChapter": 16, "eng": [36, 50] },
       { "heb": [16, 28], "engChapter": 17, "eng": [1, 13] }
     ],
+    "4:25": [
+      { "heb": [19, 19], "engChapter": 26, "eng": [1, 1], "merge": "start" }
+    ],
     "4:30": [
       { "heb": [1, 1], "engChapter": 29, "eng": [40, 40] },
       { "heb": [2, 17], "engChapter": 30, "eng": [1, 16] }
@@ -46,7 +52,7 @@
       { "heb": [1, 28], "engChapter": 29, "eng": [2, 29] }
     ],
     "9:21": [
-      { "heb": [1, 1], "engChapter": 20, "eng": [42, 42], "merge": true },
+      { "heb": [1, 1], "engChapter": 20, "eng": [42, 42], "merge": "end" },
       { "heb": [2, 16], "engChapter": 21, "eng": [1, 15] }
     ],
     "9:24": [
@@ -57,6 +63,14 @@
       { "heb": [1, 1], "engChapter": 18, "eng": [33, 33] },
       { "heb": [2, 44], "engChapter": 19, "eng": [1, 43] }
     ],
+    "11:5": [
+      { "heb": [1, 14], "engChapter": 4, "eng": [21, 34] },
+      { "heb": [15, 32], "engChapter": 5, "eng": [1, 18] }
+    ],
+    "11:22": [
+      { "heb": [44, 44], "engChapter": 22, "eng": [43, 43], "merge": "end" },
+      { "heb": [45, 54], "engChapter": 22, "eng": [44, 53] }
+    ],
     "12:12": [
       { "heb": [1, 1], "engChapter": 11, "eng": [21, 21] },
       { "heb": [2, 22], "engChapter": 12, "eng": [1, 21] }
@@ -66,6 +80,10 @@
     ],
     "13:6": [
       { "heb": [1, 66], "engChapter": 6, "eng": [16, 81] }
+    ],
+    "13:12": [
+      { "heb": [5, 5], "engChapter": 12, "eng": [4, 4], "merge": "end" },
+      { "heb": [6, 41], "engChapter": 12, "eng": [5, 40] }
     ],
     "14:1": [
       { "heb": [18, 18], "engChapter": 2, "eng": [1, 1] }
@@ -85,6 +103,9 @@
     "16:4": [
       { "heb": [1, 17], "engChapter": 4, "eng": [7, 23] }
     ],
+    "16:7": [
+      { "heb": [68, 72], "engChapter": 7, "eng": [69, 73] }
+    ],
     "16:10": [
       { "heb": [1, 1], "engChapter": 9, "eng": [38, 38] },
       { "heb": [2, 40], "engChapter": 10, "eng": [1, 39] }
@@ -94,6 +115,12 @@
     ],
     "18:41": [
       { "heb": [1, 26], "engChapter": 41, "eng": [9, 34] }
+    ],
+    "21:4": [
+      { "heb": [17, 17], "engChapter": 5, "eng": [1, 1] }
+    ],
+    "21:5": [
+      { "heb": [1, 19], "engChapter": 5, "eng": [2, 20] }
     ],
     "22:7": [
       { "heb": [1, 1], "engChapter": 6, "eng": [13, 13] },
@@ -106,7 +133,8 @@
       { "heb": [1, 20], "engChapter": 9, "eng": [2, 21] }
     ],
     "23:63": [
-      { "heb": [19, 19], "engChapter": 64, "eng": [1, 1] }
+      { "heb": [19, 19], "engChapter": 63, "eng": [19, 19], "words": [1, 12], "pairs": [0, 7] },
+      { "heb": [19, 19], "engChapter": 64, "eng": [1, 1], "words": [13, 999], "pairs": [7, 999] }
     ],
     "23:64": [
       { "heb": [1, 11], "engChapter": 64, "eng": [2, 12] }
@@ -143,6 +171,12 @@
       { "heb": [1, 1], "engChapter": 13, "eng": [16, 16] },
       { "heb": [2, 10], "engChapter": 14, "eng": [1, 9] }
     ],
+    "29:3": [
+      { "heb": [1, 5], "engChapter": 2, "eng": [28, 32] }
+    ],
+    "29:4": [
+      { "heb": [1, 21], "engChapter": 3, "eng": [1, 21] }
+    ],
     "32:2": [
       { "heb": [1, 1], "engChapter": 1, "eng": [17, 17] },
       { "heb": [2, 11], "engChapter": 2, "eng": [1, 10] }
@@ -160,6 +194,9 @@
     "38:2": [
       { "heb": [1, 4], "engChapter": 1, "eng": [18, 21] },
       { "heb": [5, 17], "engChapter": 2, "eng": [1, 13] }
+    ],
+    "39:3": [
+      { "heb": [19, 24], "engChapter": 4, "eng": [1, 6] }
     ]
   }
 }

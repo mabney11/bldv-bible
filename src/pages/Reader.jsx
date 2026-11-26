@@ -61,6 +61,7 @@ import '@fontsource/ysabeau/600.css';
 import '@fontsource/opendyslexic/400.css';
 import '@fontsource/opendyslexic/700.css';
 import './Reader.css';
+import VersificationFooter from '../components/VersificationFooter.jsx';
 
 /**
  * Reader — the "pretty" reading surface for the average reader.
@@ -2575,6 +2576,9 @@ export default function Reader() {
               </div>
             </div>
           )}
+
+          {/* where the Hebrew numbers this chapter differently (fieldy 2026-11-26) */}
+          {!loading && <VersificationFooter book={book} chapter={chapter} />}
 
           {/* chapter foot — prev / next roll across books */}
           {!loading && (

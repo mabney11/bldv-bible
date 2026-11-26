@@ -173,17 +173,26 @@ const upd = DRY ? null : tdb.prepare(`UPDATE translations SET text = ?, original
                                         WHERE book_id = ? AND chapter = ? AND verse = ? AND status = 'none' AND coalesce(rich_text, '') = ''`);
 let wrote = 0, saved = 0; const samples = [];
 tdb.transaction(() => {
+  // a site verse built from two Hebrew verses / part of one / another book's verse is composed (fieldy 2026-11-26):
+  // the changed verse's new text + the other part's text as corpus.db holds it now
+  const newText = new Map(engRows.map(r => [`${r.c}|${+r.ch}|${+r.v}`, r.text]));
+  const cr = new Database(CORPUS_DB, { readonly: true });
+  const engAt = cr.prepare(`SELECT text FROM verses WHERE corpus='ENG' AND canon_id=? AND chapter=? AND verse=?`);
+  const textOf = (b, c, v) => newText.get(`${b}|${+c}|${+v}`) ?? (engAt.get(b, String(c), String(v)) || {}).text ?? '';
+  const done = new Set();
   for (const r of engRows) {
     const keys = r.c <= 39 ? VS.mtToSite(r.c, +r.ch, +r.v) : [[r.c, +r.ch, +r.v]];
     for (const [b, ch, v] of keys) {
+      if (done.has(`${b}|${ch}|${v}`)) continue; done.add(`${b}|${ch}|${v}`);
       const cur = sel.get(b, ch, v); if (!cur) continue;
       if ((cur.status || 'none') !== 'none' || cur.rt) { saved++; continue; }   // his: never written
-      const t = seededText(r.text, `${b}:${ch}:${v}`);
+      const t = seededText(r.c <= 39 ? VS.composeText(b, ch, v, textOf) : r.text, `${b}:${ch}:${v}`);
       if (t === cur.text) continue;
       wrote++; if (samples.length < 6) samples.push(`  ${b}:${ch}:${v}  ${t.slice(0, 160)}`);
       if (upd) upd.run(t, t, b, ch, v);
     }
   }
+  cr.close();
 })();
 
 // ── 5. headings ─────────────────────────────────────────────────────────────────────────────────────────────
