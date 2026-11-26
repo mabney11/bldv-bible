@@ -98,8 +98,6 @@
   font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
 .phb-sample-word:first-child .phb-sample-paleo { text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold) 50%, transparent); text-underline-offset: 8px; }
 
-/* e/E in the common spellings */
-.phb-e { background: color-mix(in srgb, #e84040 30%, transparent); color: var(--text); border-radius: 3px; padding: 0 1px; }
 
 /* How the Paleo-Hebrew letters became the English Alphabet */
 .phb-origins { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-bottom: 14px; }

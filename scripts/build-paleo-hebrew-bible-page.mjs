@@ -97,7 +97,7 @@ const d = {
  guideP: "Each letter has two written forms. Inside a word (medial) it is the letter's sound followed by a, so the word can be spoken. At the end of a word (final) it is the letter's sound alone. Aleph and Ayin are vowel-like letters, written a and i in both places. That is the whole rule; it never changes.",
  guide,
  compareH2: 'Compared with common transliterations',
- compareP: 'The same words, spelled the common way and spelled letter for letter. The Letters column counts the letters actually written. Notice the e: the common spellings are full of it, and BLD Bible never writes one.',
+ compareP: 'The same words, spelled the common way and spelled letter for letter. The Letters column counts the letters actually written.',
  origins: {
   h2: 'How the Paleo-Hebrew letters became the English Alphabet',
   p: ['The English Alphabet grew out of these letters, and not the other way round. The Greeks took the Paleo-Hebrew letters, the Romans took them from the Greeks, and English is written in the Romans\' letters, so most of the letters you are reading now began as Paleo-Hebrew letters. The English A comes from 𐤀 Alap, by way of the Greek alpha: turn 𐤀 a quarter turn and it is an A. The English E comes from 𐤄 Hay, by way of the Greek epsilon: turn 𐤄 to face the other way and it is an E.',

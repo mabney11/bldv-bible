@@ -978,7 +978,7 @@
   }
  ],
  "compareH2": "Compared with common transliterations",
- "compareP": "The same words, spelled the common way and spelled letter for letter. The Letters column counts the letters actually written. Notice the e: the common spellings are full of it, and BLD Bible never writes one.",
+ "compareP": "The same words, spelled the common way and spelled letter for letter. The Letters column counts the letters actually written.",
  "origins": {
   "h2": "How the Paleo-Hebrew letters became the English Alphabet",
   "p": [

@@ -41,11 +41,6 @@ function ReadsRtl() {
   );
 }
 
-/** A common spelling with its e/E letters marked. */
-function MarkE({ text }) {
-  return [...text].map((ch, i) => (/e/i.test(ch) ? <mark key={i} className="phb-e">{ch}</mark> : ch));
-}
-
 function Legend({ items }) {
   return (
     <div className="phb-legend">
@@ -174,7 +169,7 @@ export default function PaleoHebrewBible() {
                 <tr key={c.paleo}>
                   <td className="phb-ex-paleo" lang="hbo"><Morph pieces={c.pieces} field="paleo" /></td>
                   <td className="phb-td-num">{c.letters}</td>
-                  <td className="phb-td-common"><MarkE text={c.common} /></td>
+                  <td className="phb-td-common">{c.common}</td>
                   <td className="phb-td-bld"><Morph pieces={c.pieces} field="tr" /></td>
                   <td className="phb-td-note">{c.note}</td>
                 </tr>
