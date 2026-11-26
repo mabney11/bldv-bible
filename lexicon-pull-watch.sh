@@ -23,7 +23,7 @@
 # still reaches the box within 5 minutes instead of never.
 #
 # Meant to run forever in the background. Start it once by hand:
-#   cd ~/paleo-studio && nohup ./lexicon-pull-watch.sh >> ~/lexicon-pull-watch.log 2>&1 &
+#   cd ~/paleo-studio && nohup bash ./lexicon-pull-watch.sh >> ~/lexicon-pull-watch.log 2>&1 &
 # and add the @reboot cron line from DEPLOY-LIGHTSAIL.md §10a so it survives
 # a real box reboot too (a container restart alone doesn't need this —
 # server/lexicon is bind-mounted from this checkout either way).
@@ -58,7 +58,7 @@ echo "$SELF_HASH" > "$STATE/.pull-watch.hash"   # scripts/ensure-lexicon-watcher
 ensure_refresh_watch() {
   local pf=server/.lexicon-watch/.refresh-watch.pid
   if ! { [ -f "$pf" ] && kill -0 "$(cat "$pf")" 2>/dev/null; }; then
-    if command -v nohup >/dev/null 2>&1; then nohup ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & else ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & fi
+    if command -v nohup >/dev/null 2>&1; then nohup bash ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & else bash ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & fi
     LOG "started lexicon-refresh-watch.sh (pid $!)"
   fi
 }
@@ -70,17 +70,17 @@ while true; do
     PREV="$(cat "$STAMP_FILE" 2>/dev/null || echo '')"
     if [ "$REMOTE_SHA" != "$PREV" ]; then
       LOG "origin/$BRANCH moved ($PREV -> $REMOTE_SHA) — syncing"
-      if ./lexicon-sync.sh; then
+      if bash ./lexicon-sync.sh; then
         if [ -f "$STATE/.failing" ]; then
           rm -f "$STATE/.failing"
-          ./notify.sh "lexicon sync: recovered" "$(hostname) is pulling server/lexicon again." default
+          bash ./notify.sh "lexicon sync: recovered" "$(hostname) is pulling server/lexicon again." default
         fi
         echo "$REMOTE_SHA" > "$STAMP_FILE"
       else
         LOG "lexicon-sync.sh failed — will retry next poll (not recording the new sha)"
         if [ ! -f "$STATE/.failing" ]; then
           touch "$STATE/.failing"
-          ./notify.sh "lexicon sync: failing" "lexicon-sync.sh is failing on $(hostname) — see lexicon-sync.log." high warning
+          bash ./notify.sh "lexicon sync: failing" "lexicon-sync.sh is failing on $(hostname) — see lexicon-sync.log." high warning
         fi
       fi
     fi

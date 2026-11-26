@@ -42,7 +42,7 @@ dirty_hash() {
 ensure_refresh_watch() {
   local pf=server/.lexicon-watch/.refresh-watch.pid
   if ! { [ -f "$pf" ] && kill -0 "$(cat "$pf")" 2>/dev/null; }; then
-    if command -v nohup >/dev/null 2>&1; then nohup ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & else ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & fi
+    if command -v nohup >/dev/null 2>&1; then nohup bash ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & else bash ./lexicon-refresh-watch.sh >> "$HOME/lexicon-refresh-watch.log" 2>&1 & fi
     LOG "started lexicon-refresh-watch.sh (pid $!)"
   fi
 }
@@ -65,16 +65,16 @@ while true; do
   AHEAD="$(git log "origin/$BRANCH..HEAD" --oneline 2>/dev/null)"
   if [ -z "$(git status --porcelain -- server/lexicon)" ] && [ -n "$AHEAD" ]; then
     LOG "commits already made but not yet pushed — syncing"
-    if ./lexicon-sync.sh; then
+    if bash ./lexicon-sync.sh; then
       if [ -f "$STATE/.failing" ]; then
         rm -f "$STATE/.failing"
-        ./notify.sh "lexicon sync: recovered" "$(hostname) is syncing server/lexicon again." default
+        bash ./notify.sh "lexicon sync: recovered" "$(hostname) is syncing server/lexicon again." default
       fi
     else
       LOG "lexicon-sync.sh failed — will retry next poll"
       if [ ! -f "$STATE/.failing" ]; then
         touch "$STATE/.failing"
-        ./notify.sh "lexicon sync: failing" "lexicon-sync.sh is failing on $(hostname) — see lexicon-sync.log." high warning
+        bash ./notify.sh "lexicon sync: failing" "lexicon-sync.sh is failing on $(hostname) — see lexicon-sync.log." high warning
       fi
     fi
   elif git status --porcelain -- server/lexicon | grep -q .; then
@@ -82,17 +82,17 @@ while true; do
     PREV="$(cat "$STAMP_FILE" 2>/dev/null || echo '')"
     if [ -n "$PREV" ] && [ "$HASH" = "$PREV" ]; then
       LOG "server/lexicon changed and settled — syncing"
-      if ./lexicon-sync.sh; then
+      if bash ./lexicon-sync.sh; then
         if [ -f "$STATE/.failing" ]; then
           rm -f "$STATE/.failing"
-          ./notify.sh "lexicon sync: recovered" "$(hostname) is syncing server/lexicon again." default
+          bash ./notify.sh "lexicon sync: recovered" "$(hostname) is syncing server/lexicon again." default
         fi
         rm -f "$STAMP_FILE"
       else
         LOG "lexicon-sync.sh failed — will retry next poll"
         if [ ! -f "$STATE/.failing" ]; then
           touch "$STATE/.failing"
-          ./notify.sh "lexicon sync: failing" "lexicon-sync.sh is failing on $(hostname) — see lexicon-sync.log." high warning
+          bash ./notify.sh "lexicon sync: failing" "lexicon-sync.sh is failing on $(hostname) — see lexicon-sync.log." high warning
         fi
       fi
     else
@@ -123,7 +123,7 @@ while true; do
     if [ -f "$STATE/.failing" ]; then
       rm -f "$STATE/.failing"
       LOG "nothing left to sync (clean, 0 ahead) — clearing stale .failing"
-      ./notify.sh "lexicon sync: recovered" "$(hostname): nothing left to sync; cleared the failing flag." default
+      bash ./notify.sh "lexicon sync: recovered" "$(hostname): nothing left to sync; cleared the failing flag." default
     fi
   fi
   sleep "$POLL_INTERVAL"

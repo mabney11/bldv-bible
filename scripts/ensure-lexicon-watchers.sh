@@ -16,14 +16,16 @@ hash_of() { sha1sum < "$1" | cut -d' ' -f1; }
 ensure() {
   local script=$1 pf=$2 hf=$3 log=$4 pid=""
   [ -f "$pf" ] && pid="$(cat "$pf")"
-  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+  # a pid file can outlive its process and the number be reused: only a process running THIS script counts
+  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null && tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null | grep -q "$script"; then
     # A watcher that records its code's hash restarts itself when the code changes; one that never wrote a hash is older
     # than that and is replaced here. (The refresh watcher's docker run, if one is going, finishes on its own.)
     [ -f "$hf" ] && return 0
     LOG "$script (pid $pid) predates self-restart — replacing it"
     kill "$pid" 2>/dev/null; sleep 1; rm -f "$pf"
   fi
-  nohup "./$script" >> "$HOME/$log" 2>&1 &
+  rm -f "$pf"   # stale (dead, or a reused number): the watcher's own guard must not mistake it for a running copy
+  nohup bash "./$script" >> "$HOME/$log" 2>&1 &
   LOG "started $script (pid $!)"
 }
 ensure lexicon-refresh-watch.sh "$STATE/.refresh-watch.pid" "$STATE/.refresh-watch.hash" lexicon-refresh-watch.log

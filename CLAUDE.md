@@ -4493,3 +4493,10 @@ Tested in /tmp with a stand-in docker: old watcher replaced, refresh started wit
 ensure starts nothing. Not run on the box (no ssh from the device shell). After it lands: `tail ~/lexicon-refresh-watch.log` on the
 box should show "lexicon changed and settled — refreshing" and "refresh finished"; if it says "refresh FAILED", the image may predate
 refresh-lexicon-glosses.mjs (deploy). A gloss edit then reaches the reader in about a minute (pull ≤15 s, settle ~40 s, one root ~16 s).
+**Same day, second cause (fieldy's box output):** no refresh watcher had EVER run on the box, and ensure never ran either. Git on
+fieldy's Windows machine stores no executable bit (core.fileMode false): lexicon-refresh-watch.sh, lexicon-pull-watch.sh,
+notify.sh and ensure-lexicon-watchers.sh are 100644 in git, so `[ -x … ]` skipped ensure and every `./x.sh` start failed with
+"Permission denied" (also notify.sh in lexicon-sync.log). Every watcher / notify / sync call now goes through `bash ./x.sh`
+(lexicon-sync.sh, lexicon-pull-watch.sh, lexicon-refresh-watch.sh, lexicon-watch.sh, ensure). ensure also checks
+/proc/<pid>/cmdline before trusting or killing a pid (the box's .pull-watch.pid dated from 2026-09-18) and removes a stale pid
+file before starting. Re-tested in /tmp with every script non-executable. NEVER rely on +x for a script in this repo.

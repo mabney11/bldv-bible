@@ -55,7 +55,7 @@ while true; do
   if [ -n "$RUN_PID" ] && ! kill -0 "$RUN_PID" 2>/dev/null; then
     if wait "$RUN_PID"; then echo "$RUN_H" > "$DONE"; LOG "refresh finished"; rm -f "$STATE/.refresh-failing"
     else LOG "refresh FAILED — will try again in 10 minutes"
-         [ -f "$STATE/.refresh-failing" ] || { touch "$STATE/.refresh-failing"; ./notify.sh "lexicon refresh: failing" "refresh-lexicon-glosses.mjs failed on $(hostname) — see lexicon-refresh-watch.log." high warning 2>/dev/null; }
+         [ -f "$STATE/.refresh-failing" ] || { touch "$STATE/.refresh-failing"; bash ./notify.sh "lexicon refresh: failing" "refresh-lexicon-glosses.mjs failed on $(hostname) — see lexicon-refresh-watch.log." high warning 2>/dev/null; }
     fi
     RUN_PID=""
   fi

@@ -17,7 +17,7 @@
 set -e
 cd "$(dirname "$0")"
 # On the box: keep the pull + refresh watchers alive and on current code (no-op elsewhere). 2026-11-26.
-[ -x scripts/ensure-lexicon-watchers.sh ] && { scripts/ensure-lexicon-watchers.sh || true; }
+[ -f scripts/ensure-lexicon-watchers.sh ] && { bash scripts/ensure-lexicon-watchers.sh || true; }   # via bash: git on Windows stores no +x
 BRANCH="$(git branch --show-current)"
 
 # Single-instance lock: this script is triggered from TWO independent places
@@ -78,14 +78,14 @@ if ! git pull --rebase --autostash -q origin "$BRANCH"; then
   git rebase --abort 2>/dev/null || true
   MSG="a lexicon file was changed here and elsewhere — resolve in $(pwd) (git status) on $(hostname), then rerun"
   echo "$(date -u '+%F %T') CONFLICT: $MSG" >&2
-  ./notify.sh "lexicon-sync: stuck" "$MSG" high warning
+  bash ./notify.sh "lexicon-sync: stuck" "$MSG" high warning
   exit 1
 fi
 
 if [ -n "$(git log "origin/$BRANCH..$BRANCH" --oneline)" ]; then
   if ! git push -q origin "$BRANCH"; then
     echo "$(date -u '+%F %T') PUSH FAILED" >&2
-    ./notify.sh "lexicon-sync: push failed" "git push to origin/$BRANCH failed on $(hostname) — local lexicon commits aren't reaching the other side." high warning
+    bash ./notify.sh "lexicon-sync: push failed" "git push to origin/$BRANCH failed on $(hostname) — local lexicon commits aren't reaching the other side." high warning
     exit 1
   fi
   echo "$(date -u '+%F %T') pushed"
