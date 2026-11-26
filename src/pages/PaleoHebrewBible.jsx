@@ -206,7 +206,7 @@ export default function PaleoHebrewBible() {
               <span className="phb-lin-paleo" lang="hbo">{o.letter}</span>
               <span className="phb-lin-name">{o.name}</span>
               <span className="phb-lin-greek">{o.greek}</span>
-              <span className="phb-lin-latin">{o.latin === '—' ? 'no Latin letter' : o.latin}</span>
+              <span className="phb-lin-latin">{o.latin === '—' ? 'no English letter' : o.latin}</span>
               {o.looks && <span className="phb-lin-looks">looks like {o.looks}</span>}
               <span className="phb-lin-bld">BLD Bible: {o.bld}</span>
             </div>

@@ -16,7 +16,7 @@ const sampleWord = ({ paleo, parts }, gloss) => {
 };
 // fieldy's own English for BaRaashayath 2:4 (translation.db, status done), word by word.
 const GEN_2_4_GLOSS = ['These', 'generations', 'the Heavens', 'and the Earth', 'in their creation', 'in the day', 'made them', '', 'God', 'Earth', 'and Heavens'];   // in Hebrew word order
-// fieldy's eye (2026-11-25): Latin letters visible in the shapes of the three letters Latin never took.
+// fieldy's eye (2026-11-25): English letters visible in the shapes of the three letters the English Alphabet never took.
 const LOOKS = {
   '𐤎': { latin: 'S', note: 'Trace its three bars as one stroke, right to left and back, and the line zigzags into an S. The earliest S in Italy was written as just such a zigzag.' },
   '𐤑': { latin: 'T, Z', note: 'Its hooked stroke holds a T at the top and the turn of a Z, and its sound is tz.' },
@@ -62,7 +62,7 @@ const d = {
  description: "Read the entire scriptures in Paleo-Hebrew letters alongside the English, with a transliteration that keeps every letter of the Hebrew: one letter, one sound, nothing dropped. Free to read online.",
  h1: 'Paleo Hebrew Bible',
  kicker: 'The entire scriptures in Paleo-Hebrew letters, alongside the English',
- intro: "BLD Bible lets you read the entire scriptures in Paleo-Hebrew, the 22 letters Israel wrote with before the exile, with the English beside every verse. Every Hebrew word is also written out in Latin letters by one fixed rule: each Hebrew letter always gets the same sound, and every letter of the Hebrew is kept. The transliteration preserves the Paleo-Hebrew letters themselves, not a modern pronunciation: read it back and you have the Hebrew letters again, in order. Nothing is smoothed over, dropped or doubled.",
+ intro: "BLD Bible lets you read the entire scriptures in Paleo-Hebrew, the 22 letters Israel wrote with before the exile, with the English beside every verse. Every Hebrew word is also written out in the letters of the English Alphabet by one fixed rule: each Hebrew letter always gets the same sound, and every letter of the Hebrew is kept. The transliteration preserves the Paleo-Hebrew letters themselves, not a modern pronunciation: read it back and you have the Hebrew letters again, in order. Nothing is smoothed over, dropped or doubled.",
  sample: { ref: 'BaRaashayath (Genesis) 2:4', paleo: MORPH._sample.map((w) => w.paleo).join(' '), to: '/genesis/2/4', label: 'Open BaRaashayath (Genesis) 2:4 word by word',
    words: MORPH._sample.map((w, i) => sampleWord(w, GEN_2_4_GLOSS[i])),
    note: 'Every Paleo-Hebrew letter above has its one sound below, in the same order. The root of every word is shown for context: each word is its root, with its modifications around it.' },
@@ -78,7 +78,7 @@ const d = {
     links: [{ to: '/parallel/genesis/1', label: 'English–Paleo Hebrew Parallel Bible' }, { to: '/?book=1&chapter=1', label: 'Paleo Hebrew reader: BaRaashayath (Genesis) 1' },
             { to: '/?book=40&chapter=1', label: 'The New Testament in Paleo-Hebrew: Matthew 1' }, { to: '/bible?book=1&chapter=1', label: 'Novel English Bible' }, { to: '/works', label: 'Works Library' }] },
   { id: 'every-letter', h2: 'A transliteration that preserves the Paleo-Hebrew letters',
-    p: ["The transliteration on BLD Bible is not a guide to modern pronunciation. It is the Paleo-Hebrew letters themselves, written in Latin letters: one Hebrew letter, one sound, every letter kept, so the Hebrew can always be read back from it.",
+    p: ["The transliteration on BLD Bible is not a guide to modern pronunciation. It is the Paleo-Hebrew letters themselves, written in the letters of the English Alphabet: one Hebrew letter, one sound, every letter kept, so the Hebrew can always be read back from it.",
         "Most transliterations write Hebrew the way it is pronounced today, so the same letter turns into different sounds from word to word, silent letters disappear, and letters that are not written are added. BLD Bible does it mechanically instead: every Hebrew letter has one sound, written the same way in every word of every book.",
         "You can count it. A word of four Hebrew letters has four letter-sounds in its transliteration, in the same order. Where a word has a prefix or a suffix, a capital letter marks where the next part begins: WaThaAmar is Wa (and) + Tha (she) + Amar (said). And the root of every word is shown for context, so every word reads as its root with its modifications around it."] },
  ],
@@ -99,16 +99,16 @@ const d = {
  compareH2: 'Compared with common transliterations',
  compareP: 'The same words, spelled the common way and spelled letter for letter. The Letters column counts the letters actually written. Notice the e: the common spellings are full of it, and BLD Bible never writes one.',
  origins: {
-  h2: 'Where A and E come from',
-  p: ['Our own alphabet grew out of these letters. The Greeks took them over, and the Romans took them from the Greeks, so most of the letters you are reading now began as Paleo-Hebrew letters. The Latin A comes from 𐤀 Alap, by way of the Greek alpha: turn 𐤀 a quarter turn and it is an A. The Latin E comes from 𐤄 Hay, by way of the Greek epsilon: turn 𐤄 to face the other way and it is an E.',
+  h2: 'How the Paleo-Hebrew letters became the English Alphabet',
+  p: ['The English Alphabet grew out of these letters, and not the other way round. The Greeks took the Paleo-Hebrew letters, the Romans took them from the Greeks, and English is written in the Romans\' letters, so most of the letters you are reading now began as Paleo-Hebrew letters. The English A comes from 𐤀 Alap, by way of the Greek alpha: turn 𐤀 a quarter turn and it is an A. The English E comes from 𐤄 Hay, by way of the Greek epsilon: turn 𐤄 to face the other way and it is an E.',
       'So when Elohim begins with E, it writes an Alap with the letter that came from Hay. BLD Bible writes 𐤀 as A, the letter that grew out of it, and 𐤄 as ha or h, the sound of the letter itself: Alahayam. There is no e in BLD Bible, because no Hebrew letter is an E.'],
   pairs: [ { paleo: '𐤀', name: 'Alap', turn: 'rotate', via: 'Greek alpha', latin: 'A', bld: 'a' },
            { paleo: '𐤄', name: 'Hay', turn: 'mirror', via: 'Greek epsilon', latin: 'E', bld: 'ha / h' } ],
   looksH3: 'Letters you can see in the shapes',
-  looksP: 'Three of the letters passed no letter on to Latin, but look at them and you can still see ours in them. These are likenesses in the shapes, not letters Latin took from them.',
+  looksP: 'Three of the letters passed no letter on to the English Alphabet, but look at them and you can still see its letters in them. These are likenesses in the shapes, not letters the English Alphabet took from them.',
   looks: Object.entries(LOOKS).map(([l, v]) => ({ letter: l, name: NAMES[l], ...v })),
-  allH3: 'All 22 letters, from Paleo-Hebrew through Greek to Latin',
-  allP: 'Waw alone gave Latin five letters: F, U, V, W and Y. Gamal gave C, and G was later made from C; Yad gave I, and J was later made from I. Three letters passed into Greek but not into Latin: Tayath (theta), Samak (xi) and Tzaday (an early Greek letter later dropped). Latin S comes from Shayan, not Samak, and Latin X came from a different Greek letter.',
+  allH3: 'All 22 letters, from Paleo-Hebrew through Greek to the English Alphabet',
+  allP: 'Waw alone gave the English Alphabet five letters: F, U, V, W and Y. Gamal gave C, and G was later made from C; Yad gave I, and J was later made from I. Three letters passed into Greek but not into the English Alphabet: Tayath (theta), Samak (xi) and Tzaday (an early Greek letter later dropped). The English S comes from Shayan, not Samak, and the English X came from a different Greek letter.',
   // Phoenician/Paleo-Hebrew -> Greek -> Latin (standard history of the alphabet; checked 2026-11-25).
   all: [
    ['𐤀','Α alpha','A'], ['𐤁','Β beta','B'], ['𐤂','Γ gamma','C, G'], ['𐤃','Δ delta','D'], ['𐤄','Ε epsilon','E'],
@@ -131,8 +131,8 @@ const d = {
  ],
  more: [
   { id: 'what', h2: 'What is Paleo-Hebrew?',
-    p: ["Paleo-Hebrew is the old Hebrew alphabet: the letters of Israel's inscriptions from the time of the kings, such as the tunnel inscription cut under Yarawashalam (Jerusalem) in the days of Chazaqayah (Hezekiah). After the exile to Babal (Babylon), scribes came to write Hebrew in the square letters of the Aramaic script, and that square script is what most printed Hebrew Bibles use today.",
-        "The words are the same in both scripts; only the shapes of the letters differ. Among the Dead Sea Scrolls, some books are copied entirely in Paleo-Hebrew, and in several scrolls written in square letters the Name of Yahawah stands out in Paleo-Hebrew letters. BLD Bible shows the text in the older letters throughout."] },
+    p: ["Paleo-Hebrew is the ancient Hebrew alphabet: the letters of Israel's inscriptions from the time of the kings, such as the tunnel inscription cut under Yarawashalam (Jerusalem) in the days of Chazaqayah (Hezekiah). After the exile to Babal (Babylon), scribes came to write Hebrew in the square letters of the Aramaic script, and that square script is what most printed Hebrew Bibles use today.",
+        "The words are the same in both scripts; only the shapes of the letters differ. Among the Dead Sea Scrolls, some books are copied entirely in Paleo-Hebrew, and in several scrolls written in square letters the Name of Yahawah stands out in Paleo-Hebrew letters. BLD Bible shows the text in the ancient letters throughout."] },
   { id: 'words', h2: 'Every word, part by part',
     p: ["Tap any word and it opens into its parts: the prefixes, the root, the suffixes, and what each one adds (and, the, in, his, plural). Every root carries its Strong's number and links to every other verse where it stands, so you can follow a word through the whole Bible."],
     links: [{ to: '/lexicon-page', label: 'Lexicon' }, { to: '/roots?sn=H1254', label: 'Root Explorer: Baraa (create), H1254' }] },
@@ -142,7 +142,7 @@ const d = {
   { q: 'Can I read the whole Bible in Paleo-Hebrew?', a: 'Yes. BLD Bible shows every book of the Hebrew Bible, and Hebrew editions of the New Testament and the Apocrypha, in Paleo-Hebrew letters, free to read online.' },
   { q: 'Can I read a Paleo Hebrew Bible with English?', a: 'Yes. The Parallel Bible puts the English beside the Paleo-Hebrew verse by verse, with each English word linked to its Hebrew word, and every verse has a page of its own with the Hebrew word by word.' },
   { q: 'Why Yahawadah and not Yehudah?', a: 'Because the name is written with five letters, Yad, Hay, Waw, Dalath, Hay, and each letter keeps its one sound: Ya-ha-wa-da-h. The common spelling reads the Waw as u, so the same letter sounds different in Judah than it does in the word "and".' },
-  { q: 'Is Paleo-Hebrew a different language from Hebrew?', a: 'No. It is the same Hebrew language written in an older alphabet. The letters correspond one to one with the later square letters, so the words and their spelling do not change.' },
+  { q: 'Is Paleo-Hebrew a different language from Hebrew?', a: 'No. It is the same Hebrew language written in its ancient alphabet. The letters correspond one to one with the later square letters, so the words and their spelling do not change.' },
   { q: 'Where do I start?', a: 'Open BaRaashayath (Genesis) 1 in the Paleo Hebrew reader, or the Parallel Bible if you want the English beside it.' },
  ],
 };

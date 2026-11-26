@@ -5,7 +5,7 @@
  "description": "Read the entire scriptures in Paleo-Hebrew letters alongside the English, with a transliteration that keeps every letter of the Hebrew: one letter, one sound, nothing dropped. Free to read online.",
  "h1": "Paleo Hebrew Bible",
  "kicker": "The entire scriptures in Paleo-Hebrew letters, alongside the English",
- "intro": "BLD Bible lets you read the entire scriptures in Paleo-Hebrew, the 22 letters Israel wrote with before the exile, with the English beside every verse. Every Hebrew word is also written out in Latin letters by one fixed rule: each Hebrew letter always gets the same sound, and every letter of the Hebrew is kept. The transliteration preserves the Paleo-Hebrew letters themselves, not a modern pronunciation: read it back and you have the Hebrew letters again, in order. Nothing is smoothed over, dropped or doubled.",
+ "intro": "BLD Bible lets you read the entire scriptures in Paleo-Hebrew, the 22 letters Israel wrote with before the exile, with the English beside every verse. Every Hebrew word is also written out in the letters of the English Alphabet by one fixed rule: each Hebrew letter always gets the same sound, and every letter of the Hebrew is kept. The transliteration preserves the Paleo-Hebrew letters themselves, not a modern pronunciation: read it back and you have the Hebrew letters again, in order. Nothing is smoothed over, dropped or doubled.",
  "sample": {
   "ref": "BaRaashayath (Genesis) 2:4",
   "paleo": "𐤀𐤋𐤄 𐤕𐤅𐤋𐤃𐤅𐤕 𐤄𐤔𐤌𐤉𐤌 𐤅𐤄𐤀𐤓𐤑 𐤁𐤄𐤁𐤓𐤀𐤌 𐤁𐤉𐤅𐤌 𐤏𐤔𐤅𐤕 𐤉𐤄𐤅𐤄 𐤀𐤋𐤄𐤉𐤌 𐤀𐤓𐤑 𐤅𐤔𐤌𐤉𐤌",
@@ -538,7 +538,7 @@
    "id": "every-letter",
    "h2": "A transliteration that preserves the Paleo-Hebrew letters",
    "p": [
-    "The transliteration on BLD Bible is not a guide to modern pronunciation. It is the Paleo-Hebrew letters themselves, written in Latin letters: one Hebrew letter, one sound, every letter kept, so the Hebrew can always be read back from it.",
+    "The transliteration on BLD Bible is not a guide to modern pronunciation. It is the Paleo-Hebrew letters themselves, written in the letters of the English Alphabet: one Hebrew letter, one sound, every letter kept, so the Hebrew can always be read back from it.",
     "Most transliterations write Hebrew the way it is pronounced today, so the same letter turns into different sounds from word to word, silent letters disappear, and letters that are not written are added. BLD Bible does it mechanically instead: every Hebrew letter has one sound, written the same way in every word of every book.",
     "You can count it. A word of four Hebrew letters has four letter-sounds in its transliteration, in the same order. Where a word has a prefix or a suffix, a capital letter marks where the next part begins: WaThaAmar is Wa (and) + Tha (she) + Amar (said). And the root of every word is shown for context, so every word reads as its root with its modifications around it."
    ]
@@ -980,9 +980,9 @@
  "compareH2": "Compared with common transliterations",
  "compareP": "The same words, spelled the common way and spelled letter for letter. The Letters column counts the letters actually written. Notice the e: the common spellings are full of it, and BLD Bible never writes one.",
  "origins": {
-  "h2": "Where A and E come from",
+  "h2": "How the Paleo-Hebrew letters became the English Alphabet",
   "p": [
-   "Our own alphabet grew out of these letters. The Greeks took them over, and the Romans took them from the Greeks, so most of the letters you are reading now began as Paleo-Hebrew letters. The Latin A comes from 𐤀 Alap, by way of the Greek alpha: turn 𐤀 a quarter turn and it is an A. The Latin E comes from 𐤄 Hay, by way of the Greek epsilon: turn 𐤄 to face the other way and it is an E.",
+   "The English Alphabet grew out of these letters, and not the other way round. The Greeks took the Paleo-Hebrew letters, the Romans took them from the Greeks, and English is written in the Romans' letters, so most of the letters you are reading now began as Paleo-Hebrew letters. The English A comes from 𐤀 Alap, by way of the Greek alpha: turn 𐤀 a quarter turn and it is an A. The English E comes from 𐤄 Hay, by way of the Greek epsilon: turn 𐤄 to face the other way and it is an E.",
    "So when Elohim begins with E, it writes an Alap with the letter that came from Hay. BLD Bible writes 𐤀 as A, the letter that grew out of it, and 𐤄 as ha or h, the sound of the letter itself: Alahayam. There is no e in BLD Bible, because no Hebrew letter is an E."
   ],
   "pairs": [
@@ -1004,7 +1004,7 @@
    }
   ],
   "looksH3": "Letters you can see in the shapes",
-  "looksP": "Three of the letters passed no letter on to Latin, but look at them and you can still see ours in them. These are likenesses in the shapes, not letters Latin took from them.",
+  "looksP": "Three of the letters passed no letter on to the English Alphabet, but look at them and you can still see its letters in them. These are likenesses in the shapes, not letters the English Alphabet took from them.",
   "looks": [
    {
     "letter": "𐤎",
@@ -1025,8 +1025,8 @@
     "note": "The cross in its circle is the mark of a T, and its sound is t."
    }
   ],
-  "allH3": "All 22 letters, from Paleo-Hebrew through Greek to Latin",
-  "allP": "Waw alone gave Latin five letters: F, U, V, W and Y. Gamal gave C, and G was later made from C; Yad gave I, and J was later made from I. Three letters passed into Greek but not into Latin: Tayath (theta), Samak (xi) and Tzaday (an early Greek letter later dropped). Latin S comes from Shayan, not Samak, and Latin X came from a different Greek letter.",
+  "allH3": "All 22 letters, from Paleo-Hebrew through Greek to the English Alphabet",
+  "allP": "Waw alone gave the English Alphabet five letters: F, U, V, W and Y. Gamal gave C, and G was later made from C; Yad gave I, and J was later made from I. Three letters passed into Greek but not into the English Alphabet: Tayath (theta), Samak (xi) and Tzaday (an early Greek letter later dropped). The English S comes from Shayan, not Samak, and the English X came from a different Greek letter.",
   "all": [
    {
     "letter": "𐤀",
@@ -1503,8 +1503,8 @@
    "id": "what",
    "h2": "What is Paleo-Hebrew?",
    "p": [
-    "Paleo-Hebrew is the old Hebrew alphabet: the letters of Israel's inscriptions from the time of the kings, such as the tunnel inscription cut under Yarawashalam (Jerusalem) in the days of Chazaqayah (Hezekiah). After the exile to Babal (Babylon), scribes came to write Hebrew in the square letters of the Aramaic script, and that square script is what most printed Hebrew Bibles use today.",
-    "The words are the same in both scripts; only the shapes of the letters differ. Among the Dead Sea Scrolls, some books are copied entirely in Paleo-Hebrew, and in several scrolls written in square letters the Name of Yahawah stands out in Paleo-Hebrew letters. BLD Bible shows the text in the older letters throughout."
+    "Paleo-Hebrew is the ancient Hebrew alphabet: the letters of Israel's inscriptions from the time of the kings, such as the tunnel inscription cut under Yarawashalam (Jerusalem) in the days of Chazaqayah (Hezekiah). After the exile to Babal (Babylon), scribes came to write Hebrew in the square letters of the Aramaic script, and that square script is what most printed Hebrew Bibles use today.",
+    "The words are the same in both scripts; only the shapes of the letters differ. Among the Dead Sea Scrolls, some books are copied entirely in Paleo-Hebrew, and in several scrolls written in square letters the Name of Yahawah stands out in Paleo-Hebrew letters. BLD Bible shows the text in the ancient letters throughout."
    ]
   },
   {
@@ -1541,7 +1541,7 @@
   },
   {
    "q": "Is Paleo-Hebrew a different language from Hebrew?",
-   "a": "No. It is the same Hebrew language written in an older alphabet. The letters correspond one to one with the later square letters, so the words and their spelling do not change."
+   "a": "No. It is the same Hebrew language written in its ancient alphabet. The letters correspond one to one with the later square letters, so the words and their spelling do not change."
   },
   {
    "q": "Where do I start?",

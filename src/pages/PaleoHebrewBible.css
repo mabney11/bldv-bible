@@ -101,7 +101,7 @@
 /* e/E in the common spellings */
 .phb-e { background: color-mix(in srgb, #e84040 30%, transparent); color: var(--text); border-radius: 3px; padding: 0 1px; }
 
-/* Where A and E come from */
+/* How the Paleo-Hebrew letters became the English Alphabet */
 .phb-origins { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-bottom: 14px; }
 .phb-origin { display: grid; grid-template-columns: auto auto auto auto auto; align-items: center; justify-content: center; gap: 4px 12px;
   border: 1px solid var(--border); border-radius: 12px; padding: 14px 10px; }
