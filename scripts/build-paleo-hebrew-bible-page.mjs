@@ -16,6 +16,12 @@ const sampleWord = ({ paleo, parts }, gloss) => {
 };
 // fieldy's own English for BaRaashayath 2:4 (translation.db, status done), word by word.
 const GEN_2_4_GLOSS = ['These', 'generations', 'the Heavens', 'and the Earth', 'in their creation', 'in the day', 'made them', '', 'God', 'Earth', 'and Heavens'];   // in Hebrew word order
+// fieldy's eye (2026-11-25): Latin letters visible in the shapes of the three letters Latin never took.
+const LOOKS = {
+  '𐤎': { latin: 'S', note: 'Trace its three bars as one stroke, right to left and back, and the line zigzags into an S. The earliest S in Italy was written as just such a zigzag.' },
+  '𐤑': { latin: 'T, Z', note: 'Its hooked stroke holds a T at the top and the turn of a Z, and its sound is tz.' },
+  '𐤈': { latin: 'T', note: 'The cross in its circle is the mark of a T, and its sound is t.' },
+};
 const ROLE_LABEL = { root: 'Root', 'mod-nmpr': 'Name' };
 const legendOf = (words) => {
   const seen = new Map();
@@ -91,17 +97,37 @@ const d = {
  guideP: "Each letter has two written forms. Inside a word (medial) it is the letter's sound followed by a, so the word can be spoken. At the end of a word (final) it is the letter's sound alone. Aleph and Ayin are vowel-like letters, written a and i in both places. That is the whole rule; it never changes.",
  guide,
  compareH2: 'Compared with common transliterations',
- compareP: 'The same words, spelled the common way and spelled letter for letter. The Hebrew letters column counts the letters actually written.',
+ compareP: 'The same words, spelled the common way and spelled letter for letter. The Letters column counts the letters actually written. Notice the e: the common spellings are full of it, and BLD Bible never writes one.',
+ origins: {
+  h2: 'Where A and E come from',
+  p: ['Our own alphabet grew out of these letters. The Greeks took them over, and the Romans took them from the Greeks, so most of the letters you are reading now began as Paleo-Hebrew letters. The Latin A comes from 𐤀 Alap, by way of the Greek alpha: turn 𐤀 a quarter turn and it is an A. The Latin E comes from 𐤄 Hay, by way of the Greek epsilon: turn 𐤄 to face the other way and it is an E.',
+      'So when Elohim begins with E, it writes an Alap with the letter that came from Hay. BLD Bible writes 𐤀 as A, the letter that grew out of it, and 𐤄 as ha or h, the sound of the letter itself: Alahayam. There is no e in BLD Bible, because no Hebrew letter is an E.'],
+  pairs: [ { paleo: '𐤀', name: 'Alap', turn: 'rotate', via: 'Greek alpha', latin: 'A', bld: 'a' },
+           { paleo: '𐤄', name: 'Hay', turn: 'mirror', via: 'Greek epsilon', latin: 'E', bld: 'ha / h' } ],
+  looksH3: 'Letters you can see in the shapes',
+  looksP: 'Three of the letters passed no letter on to Latin, but look at them and you can still see ours in them. These are likenesses in the shapes, not letters Latin took from them.',
+  looks: Object.entries(LOOKS).map(([l, v]) => ({ letter: l, name: NAMES[l], ...v })),
+  allH3: 'All 22 letters, from Paleo-Hebrew through Greek to Latin',
+  allP: 'Waw alone gave Latin five letters: F, U, V, W and Y. Gamal gave C, and G was later made from C; Yad gave I, and J was later made from I. Three letters passed into Greek but not into Latin: Tayath (theta), Samak (xi) and Tzaday (an early Greek letter later dropped). Latin S comes from Shayan, not Samak, and Latin X came from a different Greek letter.',
+  // Phoenician/Paleo-Hebrew -> Greek -> Latin (standard history of the alphabet; checked 2026-11-25).
+  all: [
+   ['𐤀','Α alpha','A'], ['𐤁','Β beta','B'], ['𐤂','Γ gamma','C, G'], ['𐤃','Δ delta','D'], ['𐤄','Ε epsilon','E'],
+   ['𐤅','Ϝ digamma, Υ upsilon','F, U, V, W, Y'], ['𐤆','Ζ zeta','Z'], ['𐤇','Η eta','H'], ['𐤈','Θ theta','—'], ['𐤉','Ι iota','I, J'],
+   ['𐤊','Κ kappa','K'], ['𐤋','Λ lambda','L'], ['𐤌','Μ mu','M'], ['𐤍','Ν nu','N'], ['𐤎','Ξ xi','—'],
+   ['𐤏','Ο omicron','O'], ['𐤐','Π pi','P'], ['𐤑','Ϻ san','—'], ['𐤒','Ϙ koppa','Q'], ['𐤓','Ρ rho','R'],
+   ['𐤔','Σ sigma','S'], ['𐤕','Τ tau','T'],
+  ].map(([l, greek, latin]) => ({ letter: l, name: NAMES[l], greek, latin, looks: LOOKS[l] ? LOOKS[l].latin : undefined, bld: `${CHAR_MAP[l].med} / ${CHAR_MAP[l].fin}`.replace(/^(\w+) \/ \1$/, '$1') })),
+ },
  compare: [
-  cmp('𐤉𐤄𐤅𐤃𐤄','Yehudah','Waw read as u'),
-  cmp('𐤅𐤉𐤀𐤌𐤓','vayomer','Waw read as v; Aleph silent', [0,1,2]),
+  cmp('𐤉𐤄𐤅𐤃𐤄','Yehudah','e written after the Yad; Waw read as u'),
+  cmp('𐤅𐤉𐤀𐤌𐤓','vayomer','Waw read as v; Alap silent; e written before the Rash', [0,1,2]),
   cmp('𐤃𐤅𐤃','David','Waw read as v'),
   cmp('𐤔𐤋𐤅𐤌','shalom','Waw read as o'),
-  cmp('𐤉𐤓𐤅𐤔𐤋𐤌','Yerushalayim','Waw read as u; adds a y the letters do not have'),
-  cmp('𐤌𐤔𐤄','Moshe','final Hay dropped'),
+  cmp('𐤉𐤓𐤅𐤔𐤋𐤌','Yerushalayim','e written after the Yad; Waw read as u; adds a y the letters do not have'),
+  cmp('𐤌𐤔𐤄','Moshe','final Hay dropped, an e written in its place'),
   cmp('𐤉𐤏𐤒𐤁','Yaakov','Ayin silent; Bayath read as v'),
   cmp('𐤔𐤁𐤕','Shabbat','Bayath doubled; Thaw read as t'),
-  cmp('𐤀𐤋𐤄𐤉𐤌','Elohim','Yad read as the vowel i'),
+  cmp('𐤀𐤋𐤄𐤉𐤌','Elohim','Alap written E; Yad read as the vowel i'),
  ],
  more: [
   { id: 'what', h2: 'What is Paleo-Hebrew?',

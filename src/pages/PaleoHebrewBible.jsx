@@ -30,6 +30,22 @@ function Morph({ pieces, field }) {
   ));
 }
 
+/** "Reads right to left" with an arrow pointing the way the words go. */
+function ReadsRtl() {
+  return (
+    <div className="phb-rtl" aria-label="Hebrew reads from right to left">
+      <span className="phb-rtl-arrow" aria-hidden="true">←</span>
+      <span>Hebrew reads right to left: start at the right</span>
+      <span className="phb-rtl-start" aria-hidden="true">1</span>
+    </div>
+  );
+}
+
+/** A common spelling with its e/E letters marked. */
+function MarkE({ text }) {
+  return [...text].map((ch, i) => (/e/i.test(ch) ? <mark key={i} className="phb-e">{ch}</mark> : ch));
+}
+
 function Legend({ items }) {
   return (
     <div className="phb-legend">
@@ -72,6 +88,7 @@ export default function PaleoHebrewBible() {
       <p className="phb-intro">{PAGE.intro}</p>
 
       <figure className="phb-sample">
+        <ReadsRtl />
         <div className="phb-sample-words" dir="rtl">
           {PAGE.sample.words.map((word, i) => (
             <div key={i} className="phb-sample-word">
@@ -104,6 +121,7 @@ export default function PaleoHebrewBible() {
       <section id="waw" className="phb-section">
         <h2>{w.h2}</h2>
         <p>{w.p}</p>
+        <ReadsRtl />
         <div className="phb-waw">
           {w.words.map((word) => (
             <div key={word.paleo} className="phb-waw-word">
@@ -156,13 +174,59 @@ export default function PaleoHebrewBible() {
                 <tr key={c.paleo}>
                   <td className="phb-ex-paleo" lang="hbo"><Morph pieces={c.pieces} field="paleo" /></td>
                   <td className="phb-td-num">{c.letters}</td>
-                  <td className="phb-td-common">{c.common}</td>
+                  <td className="phb-td-common"><MarkE text={c.common} /></td>
                   <td className="phb-td-bld"><Morph pieces={c.pieces} field="tr" /></td>
                   <td className="phb-td-note">{c.note}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <section id="origins" className="phb-section">
+        <h2>{PAGE.origins.h2}</h2>
+        <div className="phb-origins">
+          {PAGE.origins.pairs.map((o) => (
+            <div key={o.latin} className="phb-origin">
+              <span className="phb-origin-paleo" lang="hbo">{o.paleo}</span>
+              <span className="phb-origin-arrow" aria-hidden="true">→</span>
+              <span className={`phb-origin-paleo phb-turn-${o.turn}`} lang="hbo" aria-hidden="true">{o.paleo}</span>
+              <span className="phb-origin-arrow" aria-hidden="true">→</span>
+              <span className="phb-origin-latin">{o.latin}</span>
+              <span className="phb-origin-cap">{o.name}, {o.turn === 'rotate' ? 'turned on its side' : 'turned to face the other way'}, through the {o.via}. BLD Bible: <b>{o.bld}</b></span>
+            </div>
+          ))}
+        </div>
+        {PAGE.origins.p.map((t, i) => <p key={i}>{t}</p>)}
+        <h3 className="phb-h3">{PAGE.origins.allH3}</h3>
+        <div className="phb-lineage">
+          {PAGE.origins.all.map((o) => (
+            <div key={o.letter} className={`phb-lin${o.latin === '—' ? ' is-none' : ''}`}>
+              <span className="phb-lin-paleo" lang="hbo">{o.letter}</span>
+              <span className="phb-lin-name">{o.name}</span>
+              <span className="phb-lin-greek">{o.greek}</span>
+              <span className="phb-lin-latin">{o.latin === '—' ? 'no Latin letter' : o.latin}</span>
+              {o.looks && <span className="phb-lin-looks">looks like {o.looks}</span>}
+              <span className="phb-lin-bld">BLD Bible: {o.bld}</span>
+            </div>
+          ))}
+        </div>
+        <p className="phb-after">{PAGE.origins.allP}</p>
+        <h3 className="phb-h3">{PAGE.origins.looksH3}</h3>
+        <p>{PAGE.origins.looksP}</p>
+        <div className="phb-looks">
+          {PAGE.origins.looks.map((o) => (
+            <div key={o.letter} className="phb-look">
+              <div className="phb-look-pair">
+                <span className="phb-origin-paleo" lang="hbo">{o.letter}</span>
+                <span className="phb-origin-arrow" aria-hidden="true">≈</span>
+                <span className="phb-origin-latin">{o.latin}</span>
+              </div>
+              <div className="phb-look-name">{o.name}</div>
+              <p>{o.note}</p>
+            </div>
+          ))}
         </div>
       </section>
 

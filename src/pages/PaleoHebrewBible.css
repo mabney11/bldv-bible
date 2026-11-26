@@ -35,12 +35,13 @@
 .phb-inline { color: var(--gold); }
 
 /* One letter, one sound — each word as letter -> sound pairs, the Waw lit. */
-.phb-waw { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 4px 0 14px; }
-.phb-waw-word { border: 1px solid var(--border); border-radius: 10px; padding: 12px 8px; text-align: center; }
-.phb-pieces { display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; }
-.phb-piece { display: flex; flex-direction: column; align-items: center; min-width: 26px; padding: 3px 2px; border-radius: 6px; }
-.phb-piece-l { font-family: var(--paleo-font), sans-serif; font-size: 24px; line-height: 1.2; }
-.phb-piece-s { font-size: 12px; }
+.phb-waw { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin: 4px 0 14px; }
+.phb-waw-word { border: 1px solid var(--border); border-radius: 10px; padding: 12px 6px; text-align: center; container-type: inline-size; min-width: 0; }
+/* One line, always: the letters shrink with the tile instead of wrapping (5 letters + gaps fit 100cqw). */
+.phb-pieces { display: flex; justify-content: center; gap: 2px; flex-wrap: nowrap; }
+.phb-piece { display: flex; flex-direction: column; align-items: center; flex: 0 1 auto; min-width: 0; padding: 3px 1px; border-radius: 6px; }
+.phb-piece-l { font-family: var(--paleo-font), sans-serif; font-size: min(24px, 14cqw); line-height: 1.2; }
+.phb-piece-s { font-size: min(12px, 7cqw); white-space: nowrap; }
 .phb-piece.is-waw { outline: 2px solid var(--gold); outline-offset: -1px; }
 .phb-piece.is-waw .phb-piece-s { font-weight: 800; }
 .phb-waw-tr { margin-top: 8px; font-weight: 700; color: var(--text); font-size: 15px; }
@@ -88,3 +89,43 @@
 #waw .phb-legend { justify-content: flex-start; margin: 0 0 12px; }
 
 .phb-sample-gloss { font-size: 12.5px; color: var(--text3); direction: ltr; }
+
+/* Right to left */
+.phb-rtl { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12.5px; color: var(--text3); margin: 0 0 10px; }
+#waw .phb-rtl { justify-content: flex-start; }
+.phb-rtl-arrow { font-size: 18px; color: var(--gold); line-height: 1; }
+.phb-rtl-start { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--gold); color: var(--gold);
+  font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.phb-sample-word:first-child .phb-sample-paleo { text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold) 50%, transparent); text-underline-offset: 8px; }
+
+/* e/E in the common spellings */
+.phb-e { background: color-mix(in srgb, #e84040 30%, transparent); color: var(--text); border-radius: 3px; padding: 0 1px; }
+
+/* Where A and E come from */
+.phb-origins { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.phb-origin { display: grid; grid-template-columns: auto auto auto auto auto; align-items: center; justify-content: center; gap: 4px 12px;
+  border: 1px solid var(--border); border-radius: 12px; padding: 14px 10px; }
+.phb-origin-paleo { font-family: var(--paleo-font), sans-serif; font-size: 44px; color: var(--gold); line-height: 1; display: inline-block; }
+.phb-turn-rotate { transform: rotate(90deg); }
+.phb-turn-mirror { transform: scaleX(-1); }
+.phb-origin-arrow { color: var(--text4, var(--text3)); font-size: 18px; }
+.phb-origin-latin { font-size: 44px; font-weight: 800; color: var(--text); line-height: 1; font-family: Georgia, 'Times New Roman', serif; }
+.phb-origin-cap { grid-column: 1 / -1; text-align: center; font-size: 12.5px; color: var(--text3); }
+.phb-origin-cap b { color: var(--gold); }
+
+.phb-h3 { font-size: 16px; color: var(--text); margin: 18px 0 10px; }
+.phb-lineage { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; margin-bottom: 12px; }
+.phb-lin { display: flex; flex-direction: column; align-items: center; gap: 2px; border: 1px solid var(--border); border-radius: 10px; padding: 10px 6px; text-align: center; }
+.phb-lin-paleo { font-family: var(--paleo-font), sans-serif; font-size: 30px; color: var(--gold); line-height: 1.15; }
+.phb-lin-name { font-size: 12px; color: var(--text3); }
+.phb-lin-greek { font-size: 12.5px; color: var(--text2, var(--text3)); }
+.phb-lin-latin { font-family: Georgia, 'Times New Roman', serif; font-size: 22px; font-weight: 800; color: var(--text); line-height: 1.2; }
+.phb-lin.is-none .phb-lin-latin { font-family: inherit; font-size: 12px; font-weight: 600; color: var(--text4, var(--text3)); }
+.phb-lin-bld { font-size: 11.5px; color: var(--gold); }
+
+.phb-lin-looks { font-size: 11.5px; font-weight: 700; color: var(--text2, var(--text3)); font-style: italic; }
+.phb-looks { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.phb-look { border: 1px solid var(--border); border-radius: 12px; padding: 14px 14px 4px; text-align: center; }
+.phb-look-pair { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.phb-look-name { font-size: 12.5px; color: var(--text3); margin: 6px 0 6px; }
+.phb-look p { font-size: 13px !important; }

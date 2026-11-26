@@ -978,7 +978,215 @@
   }
  ],
  "compareH2": "Compared with common transliterations",
- "compareP": "The same words, spelled the common way and spelled letter for letter. The Hebrew letters column counts the letters actually written.",
+ "compareP": "The same words, spelled the common way and spelled letter for letter. The Letters column counts the letters actually written. Notice the e: the common spellings are full of it, and BLD Bible never writes one.",
+ "origins": {
+  "h2": "Where A and E come from",
+  "p": [
+   "Our own alphabet grew out of these letters. The Greeks took them over, and the Romans took them from the Greeks, so most of the letters you are reading now began as Paleo-Hebrew letters. The Latin A comes from 𐤀 Alap, by way of the Greek alpha: turn 𐤀 a quarter turn and it is an A. The Latin E comes from 𐤄 Hay, by way of the Greek epsilon: turn 𐤄 to face the other way and it is an E.",
+   "So when Elohim begins with E, it writes an Alap with the letter that came from Hay. BLD Bible writes 𐤀 as A, the letter that grew out of it, and 𐤄 as ha or h, the sound of the letter itself: Alahayam. There is no e in BLD Bible, because no Hebrew letter is an E."
+  ],
+  "pairs": [
+   {
+    "paleo": "𐤀",
+    "name": "Alap",
+    "turn": "rotate",
+    "via": "Greek alpha",
+    "latin": "A",
+    "bld": "a"
+   },
+   {
+    "paleo": "𐤄",
+    "name": "Hay",
+    "turn": "mirror",
+    "via": "Greek epsilon",
+    "latin": "E",
+    "bld": "ha / h"
+   }
+  ],
+  "looksH3": "Letters you can see in the shapes",
+  "looksP": "Three of the letters passed no letter on to Latin, but look at them and you can still see ours in them. These are likenesses in the shapes, not letters Latin took from them.",
+  "looks": [
+   {
+    "letter": "𐤎",
+    "name": "Samak",
+    "latin": "S",
+    "note": "Trace its three bars as one stroke, right to left and back, and the line zigzags into an S. The earliest S in Italy was written as just such a zigzag."
+   },
+   {
+    "letter": "𐤑",
+    "name": "Tzaday",
+    "latin": "T, Z",
+    "note": "Its hooked stroke holds a T at the top and the turn of a Z, and its sound is tz."
+   },
+   {
+    "letter": "𐤈",
+    "name": "Tayath",
+    "latin": "T",
+    "note": "The cross in its circle is the mark of a T, and its sound is t."
+   }
+  ],
+  "allH3": "All 22 letters, from Paleo-Hebrew through Greek to Latin",
+  "allP": "Waw alone gave Latin five letters: F, U, V, W and Y. Gamal gave C, and G was later made from C; Yad gave I, and J was later made from I. Three letters passed into Greek but not into Latin: Tayath (theta), Samak (xi) and Tzaday (an early Greek letter later dropped). Latin S comes from Shayan, not Samak, and Latin X came from a different Greek letter.",
+  "all": [
+   {
+    "letter": "𐤀",
+    "name": "Alap",
+    "greek": "Α alpha",
+    "latin": "A",
+    "bld": "a"
+   },
+   {
+    "letter": "𐤁",
+    "name": "Bayath",
+    "greek": "Β beta",
+    "latin": "B",
+    "bld": "ba / b"
+   },
+   {
+    "letter": "𐤂",
+    "name": "Gamal",
+    "greek": "Γ gamma",
+    "latin": "C, G",
+    "bld": "ga / g"
+   },
+   {
+    "letter": "𐤃",
+    "name": "Dalath",
+    "greek": "Δ delta",
+    "latin": "D",
+    "bld": "da / d"
+   },
+   {
+    "letter": "𐤄",
+    "name": "Hay",
+    "greek": "Ε epsilon",
+    "latin": "E",
+    "bld": "ha / h"
+   },
+   {
+    "letter": "𐤅",
+    "name": "Waw",
+    "greek": "Ϝ digamma, Υ upsilon",
+    "latin": "F, U, V, W, Y",
+    "bld": "wa / w"
+   },
+   {
+    "letter": "𐤆",
+    "name": "Zayan",
+    "greek": "Ζ zeta",
+    "latin": "Z",
+    "bld": "za / z"
+   },
+   {
+    "letter": "𐤇",
+    "name": "Chayath",
+    "greek": "Η eta",
+    "latin": "H",
+    "bld": "cha / ch"
+   },
+   {
+    "letter": "𐤈",
+    "name": "Tayath",
+    "greek": "Θ theta",
+    "latin": "—",
+    "looks": "T",
+    "bld": "ta / t"
+   },
+   {
+    "letter": "𐤉",
+    "name": "Yad",
+    "greek": "Ι iota",
+    "latin": "I, J",
+    "bld": "ya / y"
+   },
+   {
+    "letter": "𐤊",
+    "name": "Kap",
+    "greek": "Κ kappa",
+    "latin": "K",
+    "bld": "ka / k"
+   },
+   {
+    "letter": "𐤋",
+    "name": "Lamad",
+    "greek": "Λ lambda",
+    "latin": "L",
+    "bld": "la / l"
+   },
+   {
+    "letter": "𐤌",
+    "name": "Mayam",
+    "greek": "Μ mu",
+    "latin": "M",
+    "bld": "ma / m"
+   },
+   {
+    "letter": "𐤍",
+    "name": "Nawan",
+    "greek": "Ν nu",
+    "latin": "N",
+    "bld": "na / n"
+   },
+   {
+    "letter": "𐤎",
+    "name": "Samak",
+    "greek": "Ξ xi",
+    "latin": "—",
+    "looks": "S",
+    "bld": "sa / s"
+   },
+   {
+    "letter": "𐤏",
+    "name": "Iyan",
+    "greek": "Ο omicron",
+    "latin": "O",
+    "bld": "i"
+   },
+   {
+    "letter": "𐤐",
+    "name": "Pah",
+    "greek": "Π pi",
+    "latin": "P",
+    "bld": "pa / p"
+   },
+   {
+    "letter": "𐤑",
+    "name": "Tzaday",
+    "greek": "Ϻ san",
+    "latin": "—",
+    "looks": "T, Z",
+    "bld": "tza / tz"
+   },
+   {
+    "letter": "𐤒",
+    "name": "Qap",
+    "greek": "Ϙ koppa",
+    "latin": "Q",
+    "bld": "qa / q"
+   },
+   {
+    "letter": "𐤓",
+    "name": "Rash",
+    "greek": "Ρ rho",
+    "latin": "R",
+    "bld": "ra / r"
+   },
+   {
+    "letter": "𐤔",
+    "name": "Shayan",
+    "greek": "Σ sigma",
+    "latin": "S",
+    "bld": "sha / sh"
+   },
+   {
+    "letter": "𐤕",
+    "name": "Thaw",
+    "greek": "Τ tau",
+    "latin": "T",
+    "bld": "tha / th"
+   }
+  ]
+ },
  "compare": [
   {
    "paleo": "𐤉𐤄𐤅𐤃𐤄",
@@ -1017,7 +1225,7 @@
     ]
    ],
    "letters": 5,
-   "note": "Waw read as u"
+   "note": "e written after the Yad; Waw read as u"
   },
   {
    "paleo": "𐤅𐤉𐤀𐤌𐤓",
@@ -1056,7 +1264,7 @@
     ]
    ],
    "letters": 5,
-   "note": "Waw read as v; Aleph silent"
+   "note": "Waw read as v; Alap silent; e written before the Rash"
   },
   {
    "paleo": "𐤃𐤅𐤃",
@@ -1161,7 +1369,7 @@
     ]
    ],
    "letters": 6,
-   "note": "Waw read as u; adds a y the letters do not have"
+   "note": "e written after the Yad; Waw read as u; adds a y the letters do not have"
   },
   {
    "paleo": "𐤌𐤔𐤄",
@@ -1188,7 +1396,7 @@
     ]
    ],
    "letters": 3,
-   "note": "final Hay dropped"
+   "note": "final Hay dropped, an e written in its place"
   },
   {
    "paleo": "𐤉𐤏𐤒𐤁",
@@ -1287,7 +1495,7 @@
     ]
    ],
    "letters": 5,
-   "note": "Yad read as the vowel i"
+   "note": "Alap written E; Yad read as the vowel i"
   }
  ],
  "more": [

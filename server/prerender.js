@@ -1386,6 +1386,7 @@ ROUTES[PHB.path] = [{
       body: `<h1>${escapeHtml(PHB.h1)}</h1>
       <p>${escapeHtml(PHB.kicker)}</p>
       <p>${escapeHtml(PHB.intro)}</p>
+      <p>Hebrew reads right to left.</p>
       <p lang="hbo" dir="rtl">${PHB.sample.paleo}</p>
       <p>${PHB.sample.words.map((x) => `${x.paleo} ${escapeHtml(x.translit)}${x.gloss != null ? ` (${escapeHtml(x.gloss)})` : ''}`).join(' · ')}</p>
       <p>${escapeHtml(PHB.sample.note)}</p>
@@ -1399,6 +1400,16 @@ ROUTES[PHB.path] = [{
       <h2>${escapeHtml(PHB.compareH2)}</h2>
       <p>${escapeHtml(PHB.compareP)}</p>
       ${compare}
+      <h2>${escapeHtml(PHB.origins.h2)}</h2>
+      <ul>${PHB.origins.pairs.map((o) => `<li>${o.paleo} ${escapeHtml(o.name)} → ${escapeHtml(o.via)} → ${escapeHtml(o.latin)} (BLD Bible: ${escapeHtml(o.bld)})</li>`).join('')}</ul>
+      ${PHB.origins.p.map((t) => `<p>${escapeHtml(t)}</p>`).join('\n      ')}
+      <h3>${escapeHtml(PHB.origins.allH3)}</h3>
+      <table>${tr(['Paleo-Hebrew', 'Greek', 'Latin', 'BLD Bible'], 'th')}${PHB.origins.all.map((o) =>
+        tr([`${o.letter} ${escapeHtml(o.name)}`, escapeHtml(o.greek), escapeHtml(o.latin), escapeHtml(o.bld)])).join('')}</table>
+      <p>${escapeHtml(PHB.origins.allP)}</p>
+      <h3>${escapeHtml(PHB.origins.looksH3)}</h3>
+      <p>${escapeHtml(PHB.origins.looksP)}</p>
+      <ul>${PHB.origins.looks.map((o) => `<li>${o.letter} ${escapeHtml(o.name)} ≈ ${escapeHtml(o.latin)}: ${escapeHtml(o.note)}</li>`).join('')}</ul>
       ${more}
       <h2>${escapeHtml(PHB.faqH2)}</h2>
       ${faq}${NAV_LINKS}`,
