@@ -61,6 +61,9 @@ process.on('exit', unlock);
 
 const readJson = p => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return {}; } };
 const sha = p => { try { return createHash('sha1').update(readFileSync(p)).digest('hex'); } catch { return ''; } };
+// A gloss file that does not parse (caught mid-save, or a typo) must STOP the run: read as {} it would look like every gloss
+// was deleted and the whole corpus would go back to placeholders. Exit 75 = "try again" (lexicon-refresh-watch.sh).
+for (const f of GLOSS_FILES) { try { JSON.parse(readFileSync(LEX(f), 'utf8')); } catch (e) { say(`${f} is not valid JSON (${e.message}) — not refreshing`); process.exit(75); } }
 const filled = o => Object.fromEntries(Object.entries(o).filter(([k, v]) => !k.startsWith('_') && typeof v === 'string' && v.trim()));
 
 // ── 6 first: register blank keys (so step 1 sees the file as it will stay) ───────────────────────────────────────

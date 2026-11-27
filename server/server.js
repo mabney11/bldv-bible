@@ -12955,7 +12955,9 @@ function loadNames() {
                 origin: origin.map(x => ({ ...x, marks: [...(x.marks || []), { suffix: translit }] })),
             });
         }
-        names.sort((x, y) => y.score - x.score || x.english.localeCompare(y.english));
+        // `rank` in names.json pins a name ahead of the impact order (fieldy 2026-11-27: Jesus first).
+        const rk = (n) => (Number.isFinite(n.rank) ? n.rank : Infinity);
+        names.sort((x, y) => (rk(x) - rk(y)) || y.score - x.score || x.english.localeCompare(y.english));
         const used = new Map();
         for (const n of [...names].sort((x, y) => parseInt(x.sn.slice(1)) - parseInt(y.sn.slice(1)))) {
             const base = n.slug || nameSlug(n.name) || n.sn.toLowerCase();

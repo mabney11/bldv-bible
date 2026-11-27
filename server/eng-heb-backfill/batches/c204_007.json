@@ -1,0 +1,29 @@
+{
+ "canon_id": 204,
+ "code": "PISTIS_SOPHIA_3",
+ "verses": [
+  {
+   "ref": "24:13",
+   "chapter": "24",
+   "verse": "13",
+   "eng": "[A CONSIDERABLE LACUNA HERE OCCURS IN THE TEXT.]",
+   "hints": {
+    "lacuna": [
+     "H6616 פתיל/פתילים/פתילם"
+    ],
+    "here": [
+     "H2008 הנה",
+     "H6311 פה/פו/פא",
+     "H1988 הלם"
+    ]
+   }
+  },
+  {
+   "ref": "24:14",
+   "chapter": "24",
+   "verse": "14",
+   "eng": ". . . . . .",
+   "hints": {}
+  }
+ ]
+}

@@ -82,6 +82,12 @@ SRC_TAG = 'book-of-melchizedek-2026-08'
 TITLE_VASE_RX = re.compile(r'^\s*The History of the Vase\s*$', re.M)
 TITLE_SALEM_RX = re.compile(r'^\s*Salem.s Story\s*$', re.M)  # . matches straight or curly apostrophe
 TITLE_UNIV_RX = re.compile(r'^\s*The HISTORY OF THE UNIVERSE\s*$', re.M)
+# After Universe CHAPTER 6 the source carries a SECOND, rougher English rendering
+# ("THE HISTORY OF THE UNIVERSE - Chapter VI" .. "Chapter IX", no verse numbers). The
+# CHAPTER regex never matched those headings, so all of it (~15,800 words) was glued onto
+# Universe 6:48 = book 31:48 (found 2026-11-27 by the Hebrew backfill). The Universe body
+# now ends at the first such heading; VI duplicates CHAPTER 6, VII-IX are fieldy's call.
+ALT_RENDERING_RX = re.compile(r'^\s*(?:THE\s+)?HISTORY OF THE UNIVERSE\s*-\s*Chapter\s+[IVXL]+\s*$', re.M)
 
 CHRONO_RX = re.compile(r'\(\s*See\s+Chrono\.?[^)]*\)', re.I)
 # Leading \s* tolerates a leftover \x0c (form feed / page break, from the source
@@ -169,7 +175,8 @@ def ingest(src_path):
 
     body_vase  = raw[i_vase:i_salem]
     body_salem = raw[i_salem:i_univ]
-    body_univ  = raw[i_univ:]
+    m_alt = ALT_RENDERING_RX.search(raw, i_univ)
+    body_univ  = raw[i_univ:m_alt.start() if m_alt else len(raw)]
 
     all_rows = []   # (book_chapter, verse, text)
     offset = 0

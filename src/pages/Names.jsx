@@ -52,7 +52,10 @@ export default function Names() {
     const out = data.names.filter(n => hit(n) && (!explainedOnly || n.explained));
     if (sort === 'az') out.sort((a, b) => a.english.localeCompare(b.english));
     else if (sort === 'heb') out.sort((a, b) => a.name.localeCompare(b.name));
-    else out.sort((a, b) => b.score - a.score || a.english.localeCompare(b.english));
+    else {
+      const rk = (n) => (Number.isFinite(n.rank) ? n.rank : Infinity); // names.json `rank` pins a name first
+      out.sort((a, b) => (rk(a) - rk(b)) || b.score - a.score || a.english.localeCompare(b.english));
+    }
     return out;
   }, [data, q, sort, explainedOnly]);
 

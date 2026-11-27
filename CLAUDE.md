@@ -4539,3 +4539,11 @@ notify.sh and ensure-lexicon-watchers.sh are 100644 in git, so `[ -x … ]` skip
 (lexicon-sync.sh, lexicon-pull-watch.sh, lexicon-refresh-watch.sh, lexicon-watch.sh, ensure). ensure also checks
 /proc/<pid>/cmdline before trusting or killing a pid (the box's .pull-watch.pid dated from 2026-09-18) and removes a stale pid
 file before starting. Re-tested in /tmp with every script non-executable. NEVER rely on +x for a script in this repo.
+**Speed (same day, fieldy: the Root page chips showed his new H2308 "Cease / Stop" minutes before Genesis 11:8's text lost its
+𐤇𐤃𐤋 placeholder):** chips are reglossed per request (the server knows each word's Strong's); the reading text only holds the
+letters (𐤇𐤃𐤋 = H2308/H2309/H2310), so it must be baked — but the wait before the bake was overhead. lexicon-refresh-watch.sh
+now polls every 2 s (a stat per file; content hashed only when a stat moved; settled = same for one poll), and the box runs
+`docker run --entrypoint node --cpus=2 … paleo-studio refresh-lexicon-glosses.mjs …` (skips entrypoint.sh, which rebuilt
+headings.json and copied assets to the archive on every refresh). Measured with a stand-in command: edit -> refresh start 3 s
+(was >= 40 s + entrypoint). refresh-lexicon-glosses.mjs exits 75 when a gloss file is not valid JSON (read as {} it would have
+put the whole corpus back to placeholders); the watcher retries on the next poll instead of marking a failure.

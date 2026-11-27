@@ -1,0 +1,50 @@
+{
+ "canon_id": 146,
+ "code": "APOCRYPHON_OF_JOSHUA",
+ "verses": [
+  {
+   "ref": "23:3",
+   "chapter": "23",
+   "verse": "3",
+   "eng": "[...] ... [...]",
+   "hints": {}
+  },
+  {
+   "ref": "24:0",
+   "chapter": "24",
+   "verse": "0",
+   "eng": "Frag. 5",
+   "hints": {}
+  },
+  {
+   "ref": "24:1",
+   "chapter": "24",
+   "verse": "1",
+   "eng": "[... and] Kochabah and [...]",
+   "hints": {}
+  },
+  {
+   "ref": "24:2",
+   "chapter": "24",
+   "verse": "2",
+   "eng": "[...] and ? and [...]",
+   "hints": {}
+  },
+  {
+   "ref": "24:3",
+   "chapter": "24",
+   "verse": "3",
+   "eng": "[...] at the waters of Dan, and [...]",
+   "hints": {
+    "waters": [
+     "H4325 מים/מי/מימי/מימה",
+     "H7301 רותה/ירוין/רוה/ירו",
+     "H5067 נד"
+    ],
+    "dan": [
+     "H1835 דן"
+    ]
+   }
+  }
+ ]
+}

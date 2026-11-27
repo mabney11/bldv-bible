@@ -14,12 +14,12 @@
 #       (--register: blank keys for every Strong's root with no lexicon entry yet — his worklist;
 #        lexicon-watch.sh commits them. Only here: two machines adding keys would collide in git.)
 #   the box (data volume + docker present, chosen below; PALEO_REFRESH_CMD still overrides): a
-#       `docker run … paleo-studio node refresh-lexicon-glosses.mjs /data/…` against the data volume,
+#       `docker run … paleo-studio refresh-lexicon-glosses.mjs /data/…` against the data volume,
 #       with this checkout's server/lexicon mounted (the same mount the live container has).
 # Log: ~/lexicon-refresh-watch.log (set by the starter). State: server/.lexicon-watch/ (gitignored).
 set -o pipefail
 cd "$(dirname "$0")"
-POLL_INTERVAL="${PALEO_REFRESH_INTERVAL:-20}"
+POLL_INTERVAL="${PALEO_REFRESH_INTERVAL:-2}"   # cheap: a stat per file; content is hashed only when a stat moved
 STATE=server/.lexicon-watch
 mkdir -p "$STATE"
 SEEN="$STATE/.refresh-seen-hash" DONE="$STATE/.refresh-done-hash" PID_FILE="$STATE/.refresh-watch.pid"
@@ -37,9 +37,11 @@ NICE=""; command -v nice >/dev/null 2>&1 && NICE="nice -n 10"
 # machine had "Princess" within a minute). The box = the data volume exists and docker is here.
 DATA="${PALEO_PROD_DATA_DIR:-/mnt/paleo-data}"
 if [ -z "${PALEO_REFRESH_CMD:-}" ] && [ -d "$DATA" ] && command -v docker >/dev/null 2>&1; then
-  PALEO_REFRESH_CMD="$NICE docker run --rm --cpus=1 --memory=4g -v $DATA:/data \
+  # --entrypoint node: skip entrypoint.sh (it rebuilds headings.json from corpus.db and copies the site's assets into the
+  # archive on EVERY start — seconds a refresh never needed). WORKDIR is /app/server; the DBs are passed as /data paths.
+  PALEO_REFRESH_CMD="$NICE docker run --rm --entrypoint node --cpus=2 --memory=4g -v $DATA:/data \
 -v $(pwd)/server/lexicon:/app/server/lexicon -v $(pwd)/server/name-map-expanded.json:/app/server/name-map-expanded.json \
-paleo-studio node refresh-lexicon-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --state /data/.lexicon-refresh-state.json"
+paleo-studio refresh-lexicon-glosses.mjs /data/corpus.db /data/translation.db /data/surface-index.db --state /data/.lexicon-refresh-state.json"
 fi
 CMD="${PALEO_REFRESH_CMD:-$NICE node server/refresh-lexicon-glosses.mjs --register}"
 FILES="server/lexicon/lexicon.json server/lexicon/homographs.json server/lexicon/hebrew-extra-lexicon.json
@@ -47,13 +49,17 @@ FILES="server/lexicon/lexicon.json server/lexicon/homographs.json server/lexicon
        server/lexicon/reading-form-rules.json server/lexicon/strongs-location-overrides.json server/lexicon/strongs-renumber.json
        server/name-map-expanded.json"
 content_hash() { cat $FILES 2>/dev/null | sha1sum | cut -d' ' -f1; }
+stat_sig() { stat -c '%n %s %Y' $FILES 2>/dev/null | sha1sum | cut -d' ' -f1; }   # changes when any file is rewritten
 
 LOG "lexicon-refresh-watch starting — every ${POLL_INTERVAL}s; command: $CMD"
 RUN_PID=""
+SIG=""; H=""
 while true; do
-  H="$(content_hash)"
+  S="$(stat_sig)"; if [ "$S" != "$SIG" ] || [ -z "$H" ]; then SIG="$S"; H="$(content_hash)"; fi
   if [ -n "$RUN_PID" ] && ! kill -0 "$RUN_PID" 2>/dev/null; then
-    if wait "$RUN_PID"; then echo "$RUN_H" > "$DONE"; LOG "refresh finished"; rm -f "$STATE/.refresh-failing"
+    wait "$RUN_PID"; RC=$?
+    if [ "$RC" = 0 ]; then echo "$RUN_H" > "$DONE"; LOG "refresh finished"; rm -f "$STATE/.refresh-failing"
+    elif [ "$RC" = 75 ]; then LOG "a lexicon file is not valid JSON yet — trying again"; rm -f "$SEEN"
     else LOG "refresh FAILED — will try again in 10 minutes"
          [ -f "$STATE/.refresh-failing" ] || { touch "$STATE/.refresh-failing"; bash ./notify.sh "lexicon refresh: failing" "refresh-lexicon-glosses.mjs failed on $(hostname) — see lexicon-refresh-watch.log." high warning 2>/dev/null; }
     fi

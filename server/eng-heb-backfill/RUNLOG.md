@@ -1,0 +1,4 @@
+# Run log
+- 2026-11-27 01:17 ET (manual session): 301 of 309 book batches + 6 2 Esdras done (~11,000 verses); stopped at usage limit.
+- 2026-11-27 11:12 UTC (scheduled): 8 batches finished (c216_003/004/009/010/012/013/014/015), 319 verses, all gate 0; 0 remaining. Note: c216_015 ref 31:48 eng field contains ~15,800 words of stray text (source data needs fixing).
+- 2026-11-27 (chat): ready to ingest. 31:48's stray text fixed at the source (ingest-book-of-melchizedek.py stops at the alternate 'Chapter VI-IX' rendering; fix-melchizedek-31-48.py repairs corpus.db/translation.db). ingest_eng_heb_backfill.py: 'all' tag (every c*_ batch; esd2 already in), one new book_id per new HEB book (all used to get the same id). Tested on copies: 11,074 HEB rows, 62 new HEB books, gate 0, second run refused.

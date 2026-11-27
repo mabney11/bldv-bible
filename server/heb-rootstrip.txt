@@ -1,34 +1,2482 @@
 ref	word	witness	prefixes [preformative] stem tails	SN	stem is
+41:16:5	𐤏𐤅𐤈𐤄	spelling	 𐤏𐤅𐤈 𐤄	H5860	matres
+42:13:8	𐤀𐤏𐤃𐤓	spelling	[𐤀] 𐤏𐤃𐤓 	H5737	root
 45:6:18	𐤔𐤇𐤓𐤓𐤕𐤌	hand	 𐤇𐤓𐤓 𐤕𐤌	H2715a	root
 45:8:2	𐤔𐤇𐤓𐤓𐤄	hand	 𐤇𐤓𐤓 𐤄	H2715a	root
 45:8:21	𐤕𐤔𐤇𐤓𐤓	hand	[𐤕] 𐤇𐤓𐤓 	H2715a	root
+46:7:18	𐤉𐤌𐤔𐤊	spelling	[𐤉] 𐤌𐤔𐤊 	H4900	root
 46:7:22	𐤌𐤔𐤇𐤓𐤓	hand	[𐤌] 𐤇𐤓𐤓 	H2715a	root
 48:5:1	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+54:1:15	𐤋𐤄𐤕𐤒𐤁𐤋	spelling	𐤋+[𐤄𐤕] 𐤒𐤁𐤋 	H6901	root
+54:2:15	𐤄𐤑𐤍𐤉𐤏𐤅𐤕	spelling	[𐤄] 𐤑𐤍𐤉𐤏 𐤅𐤕	H6800	matres
+54:4:9	𐤋𐤄𐤕𐤒𐤁𐤋	spelling	𐤋+[𐤄𐤕] 𐤒𐤁𐤋 	H6901	root
 62:2:13	𐤄𐤕𐤂𐤁𐤓𐤕𐤌	english	[𐤄𐤕] 𐤂𐤁𐤓 𐤕+𐤌	H1396	root
 66:15:2	𐤄𐤌𐤕𐤂𐤁𐤓𐤉𐤌	english	𐤄+[𐤌𐤕] 𐤂𐤁𐤓 𐤉𐤌	H1396	root
+80:1:1	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+80:1:33	𐤅𐤉𐤐𐤓𐤎	spelling	𐤅+[𐤉] 𐤐𐤓𐤎 	H6536	root
+80:1:33	𐤁𐤒𐤏𐤓𐤄	spelling	𐤁 𐤒𐤏𐤓𐤄 	H7086	root
 81:3:5	𐤌𐤄𐤄𐤂𐤅𐤁𐤓	english	𐤌+𐤄+[𐤄] 𐤂𐤅𐤁𐤓 	H1396	matres
+87:6:14	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+88:2:2	𐤀𐤍𐤉𐤇	spelling	[𐤀] 𐤍𐤉𐤇 	H5117	matres
+89:2:3	𐤍𐤎𐤋𐤇	spelling	[𐤍] 𐤎𐤋𐤇 	H5545	root
+89:3:8	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+89:6:14	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+89:6:17	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+89:7:4	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+89:7:24	𐤁𐤕𐤐𐤋𐤅𐤕𐤉𐤊	spelling	𐤁 𐤕𐤐𐤋𐤅𐤕 𐤉+𐤊	H8605	form
+89:7:26	𐤍𐤏𐤍𐤔	spelling	[𐤍] 𐤏𐤍𐤔 	H6064	root
+89:7:30	𐤍𐤏𐤑𐤁𐤕𐤉	spelling	[𐤍] 𐤏𐤑𐤁 𐤕+𐤉	H6087	root
+89:9:30	𐤕𐤓𐤂𐤌𐤅	spelling	 𐤕𐤓𐤂𐤌 𐤅	H8638	root
+100:9:22	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+100:9:28	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+100:9:29	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+100:11:8	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+100:11:16	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+101:1:7	𐤁𐤄𐤕𐤏𐤍𐤂𐤅	english	𐤁+[𐤄𐤕] 𐤏𐤍𐤂 𐤅	H6026	root
+101:5:6	𐤉𐤁𐤊𐤄	spelling	[𐤉] 𐤁𐤊𐤄 	H1058	root
+101:9:5	𐤅𐤏𐤅𐤍𐤔𐤉𐤌	english	𐤅 𐤏𐤅𐤍𐤔 𐤉𐤌	H6064	matres
+101:10:2	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+101:13:11	𐤅𐤍𐤌𐤔𐤊	english	𐤅+[𐤍] 𐤌𐤔𐤊 	H4900	root
+101:13:13	𐤂𐤆𐤓𐤕𐤉	spelling	 𐤂𐤆𐤓 𐤕+𐤉	H1505	root
+101:13:16	𐤉𐤓𐤌𐤄	spelling	[𐤉] 𐤓𐤌𐤄 	H7411	root
+101:14:2	𐤂𐤆𐤓𐤕𐤉	spelling	 𐤂𐤆𐤓 𐤕+𐤉	H1505	root
+101:14:5	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
+101:17:5	𐤍𐤀𐤋𐤌𐤉𐤌	spelling	[𐤍] 𐤀𐤋𐤌 𐤉𐤌	H481	root
+101:19:6	𐤂𐤆𐤓𐤕𐤉	spelling	 𐤂𐤆𐤓 𐤕+𐤉	H1505	root
+101:21:2	𐤅𐤉𐤆𐤉𐤏𐤅	english	𐤅 𐤉𐤆𐤉𐤏 𐤅	H3154	matres
+101:21:8	𐤁𐤓𐤅𐤀𐤉𐤅	spelling	 𐤁𐤓𐤅𐤀 𐤉+𐤅	H1254	matres
+101:21:9	𐤕𐤔𐤍𐤄	spelling	[𐤕] 𐤔𐤍𐤄 	H8138	root
+101:23:3	𐤅𐤕𐤕𐤇𐤆𐤒	spelling	𐤅+[𐤕𐤕] 𐤇𐤆𐤒 	H2388	root
+101:24:1	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+101:24:4	𐤀𐤒𐤓𐤉𐤁	spelling	[𐤀] 𐤒𐤓𐤉𐤁 	H7126	matres
+101:24:5	𐤋𐤎𐤋𐤉𐤇𐤕	spelling	𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+101:24:6	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+101:25:7	𐤅𐤉𐤍𐤇𐤌𐤄𐤅	spelling	𐤅+[𐤉] 𐤍𐤇𐤌𐤄 𐤅	H5162	form
+101:27:12	𐤉𐤏𐤁𐤉𐤃	spelling	[𐤉] 𐤏𐤁𐤉𐤃 	H5647	matres
+101:28:1	𐤋𐤄𐤕𐤏𐤅𐤕𐤌	spelling	𐤋 𐤄𐤕𐤏𐤅 𐤕+𐤌	H8582	form
+101:30:8	𐤈𐤁𐤋𐤅	spelling	 𐤈𐤁𐤋 𐤅	H2881	root
+101:33:1	𐤁𐤔𐤒𐤉𐤃𐤄	spelling	𐤁 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
+101:33:3	𐤀𐤕𐤏𐤄	spelling	[𐤀] 𐤕𐤏𐤄 	H8582	root
+101:33:6	𐤋𐤏𐤈𐤓	spelling	𐤋 𐤏𐤈𐤓 	H5849	root
+101:33:10	𐤁𐤎𐤋𐤉𐤇𐤕	spelling	𐤁 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+101:33:11	𐤅𐤌𐤌𐤓𐤉𐤓𐤅𐤕	spelling	𐤅+𐤌 𐤌𐤓𐤉𐤓𐤅𐤕 	H4814	root
+101:34:3	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+101:34:5	𐤅𐤕𐤁𐤓𐤀	spelling	𐤅+[𐤕] 𐤁𐤓𐤀 	H1254	root
+101:34:6	𐤇𐤉𐤉𐤕𐤉	spelling	 𐤇𐤉𐤉 𐤕+𐤉	H2425	root
+101:34:18	𐤌𐤕𐤇𐤍𐤍𐤉𐤌	spelling	[𐤌𐤕] 𐤇𐤍𐤍 𐤉𐤌	H2603	root
+101:34:23	𐤌𐤕𐤇𐤍𐤍𐤉𐤌	spelling	[𐤌𐤕] 𐤇𐤍𐤍 𐤉𐤌	H2603	root
+101:34:24	𐤍𐤇𐤎𐤓	english	[𐤍] 𐤇𐤎𐤓 	H2637	root
+101:35:2	𐤇𐤋𐤉𐤐𐤄	spelling	 𐤇𐤋𐤉𐤐 𐤄	H2498	matres
+101:37:7	𐤕𐤍𐤒𐤌	english	[𐤕] 𐤍𐤒𐤌 	H5358	root
+101:37:10	𐤕𐤌𐤅𐤓𐤕	spelling	[𐤕] 𐤌𐤅𐤓 𐤕	H4171	root
+101:41:5	𐤍𐤕𐤐𐤋𐤋	spelling	[𐤍𐤕] 𐤐𐤋𐤋 	H6419	root
+101:42:5	𐤅𐤀𐤍𐤐𐤑	english	𐤅+[𐤀] 𐤍𐤐𐤑 	H5310	root
+101:45:11	𐤅𐤕𐤐𐤓𐤃	spelling	𐤅+[𐤕] 𐤐𐤓𐤃 	H6504	root
+101:46:6	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:47:1	𐤓𐤅𐤏𐤃𐤉𐤌	spelling	 𐤓𐤅𐤏𐤃 𐤉𐤌	H7461	matres
+101:47:7	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:47:7	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:47:7	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:48:1	𐤋𐤑𐤁𐤀𐤅𐤕𐤉𐤅	spelling	𐤋 𐤑𐤁𐤀𐤅𐤕 𐤉+𐤅	H6635	form
+101:48:3	𐤅𐤍𐤃𐤊𐤀	english	𐤅+[𐤍] 𐤃𐤊𐤀 	H1792	root
+101:48:13	𐤍𐤍𐤇𐤌	spelling	[𐤍] 𐤍𐤇𐤌 	H5162	root
+101:48:13	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
+101:49:6	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:51:6	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:51:11	𐤌𐤌𐤅𐤎𐤓𐤅𐤕𐤉𐤅	spelling	𐤌 𐤌𐤅𐤎𐤓𐤅𐤕 𐤉+𐤅	H4147	form
+101:52:2	𐤅𐤍𐤏𐤁𐤅𐤓	english	𐤅+[𐤍] 𐤏𐤁𐤅𐤓 	H5674	form
+101:52:11	𐤅𐤎𐤋𐤉𐤇𐤄	spelling	𐤅 𐤎𐤋𐤉𐤇𐤄 	H5547	root
+101:53:6	𐤉𐤌𐤋𐤀𐤄𐤅	spelling	[𐤉] 𐤌𐤋𐤀𐤄 𐤅	H4390	form
+101:53:8	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
+101:54:10	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
+101:55:7	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:55:9	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:55:10	𐤅𐤑𐤁𐤀𐤅𐤕𐤉𐤅	spelling	𐤅 𐤑𐤁𐤀𐤅𐤕 𐤉+𐤅	H6635	form
+101:56:5	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:57:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+101:57:7	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:57:8	𐤍𐤓𐤁𐤄	spelling	[𐤍] 𐤓𐤁𐤄 	H7235	root
+101:59:1	𐤋𐤑𐤁𐤀𐤅𐤕𐤉𐤅	spelling	𐤋 𐤑𐤁𐤀𐤅𐤕 𐤉+𐤅	H6635	form
+101:59:6	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:60:16	𐤕𐤕𐤏𐤑𐤁	english	[𐤕𐤕] 𐤏𐤑𐤁 	H6087	root
+101:60:17	𐤍𐤏𐤑𐤁𐤕𐤉	spelling	[𐤍] 𐤏𐤑𐤁 𐤕+𐤉	H6087	root
+101:60:19	𐤉𐤐𐤂𐤏	spelling	[𐤉] 𐤐𐤂𐤏 	H6293	root
+101:61:6	𐤅𐤍𐤀𐤌𐤉𐤍	spelling	𐤅 𐤍𐤀𐤌 𐤉+𐤍	H5002	root
+101:61:7	𐤍𐤅𐤏𐤃𐤕𐤌	spelling	 𐤍𐤅𐤏𐤃 𐤕+𐤌	H3259	form
+101:63:9	𐤓𐤇𐤌𐤕𐤉	spelling	 𐤓𐤇𐤌 𐤕+𐤉	H7355	root
+101:65:4	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:65:9	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:66:4	𐤔𐤁𐤇𐤅	spelling	 𐤔𐤁𐤇 𐤅	H7623	root
+101:67:3	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+101:68:5	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+101:68:12	𐤋𐤎𐤋𐤉𐤇𐤄	spelling	𐤋 𐤎𐤋𐤉𐤇𐤄 	H5547	root
+101:68:13	𐤅𐤉𐤌𐤋𐤀𐤄𐤅	spelling	𐤅+[𐤉] 𐤌𐤋𐤀𐤄 𐤅	H4390	form
+101:69:2	𐤐𐤓𐤅𐤔𐤅𐤕	spelling	 𐤐𐤓𐤅𐤔 𐤅𐤕	H6566	matres
+101:70:11	𐤅𐤀𐤒𐤁𐤋	english	𐤅+[𐤀] 𐤒𐤁𐤋 	H6901	root
+101:72:6	𐤍𐤓𐤁𐤄	spelling	[𐤍] 𐤓𐤁𐤄 	H7235	root
+101:72:11	𐤀𐤐𐤕𐤄	spelling	[𐤀] 𐤐𐤕𐤄 	H6601	root
+101:73:2	𐤄𐤆𐤄𐤉𐤓𐤅𐤕	english	[𐤄] 𐤆𐤄𐤉𐤓 𐤅𐤕	H2094	matres
+101:74:9	𐤅𐤉𐤇𐤊𐤅	spelling	𐤅+[𐤉] 𐤇𐤊𐤅 	H2442	form
+101:75:4	𐤅𐤉𐤇𐤊𐤅	spelling	𐤅+[𐤉] 𐤇𐤊𐤅 	H2442	form
+101:76:6	𐤅𐤉𐤅𐤅𐤕𐤓	spelling	𐤅 𐤉𐤅𐤅𐤕𐤓 	H3498	matres
+101:76:11	𐤕𐤔𐤋𐤊	spelling	[𐤕] 𐤔𐤋𐤊 	H7993	root
+101:77:5	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+101:78:4	𐤍𐤒𐤓𐤉𐤁	spelling	[𐤍] 𐤒𐤓𐤉𐤁 	H7126	matres
+101:78:10	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+101:78:25	𐤅𐤉𐤂𐤃𐤐	spelling	𐤅+[𐤉] 𐤂𐤃𐤐 	H1442	root
+101:79:5	𐤅𐤉𐤍𐤇𐤌𐤄𐤅	spelling	𐤅+[𐤉] 𐤍𐤇𐤌𐤄 𐤅	H5162	form
+101:79:6	𐤉𐤍𐤒𐤍𐤅	english	 𐤉𐤍𐤒 𐤍𐤅	H3243	root
+101:79:7	𐤅𐤉𐤕𐤂𐤅𐤋𐤋	spelling	𐤅+[𐤉𐤕] 𐤂𐤅𐤋𐤋 	H1556	matres
+101:79:11	𐤋𐤄𐤔𐤊𐤉𐤁	spelling	𐤋+[𐤄] 𐤔𐤊𐤉𐤁 	H7901	matres
+101:79:25	𐤅𐤉𐤓𐤏𐤃	spelling	𐤅+[𐤉] 𐤓𐤏𐤃 	H7460	root
+102:1:11	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+102:2:7	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+102:2:8	𐤀𐤒𐤋𐤉𐤄	english	[𐤀] 𐤒𐤋𐤉𐤄 	H7034	matres
+102:3:5	𐤅𐤕𐤐𐤋𐤅𐤕𐤉𐤊	spelling	𐤅 𐤕𐤐𐤋𐤅𐤕 𐤉+𐤊	H8605	form
+102:3:8	𐤄𐤕𐤏𐤑𐤁𐤕𐤉	spelling	[𐤄𐤕] 𐤏𐤑𐤁 𐤕+𐤉	H6087	root
+102:3:9	𐤄𐤕𐤏𐤑𐤁𐤕𐤉	spelling	[𐤄𐤕] 𐤏𐤑𐤁 𐤕+𐤉	H6087	root
+102:3:15	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+102:4:6	𐤕𐤐𐤓𐤃	spelling	[𐤕] 𐤐𐤓𐤃 	H6504	root
+102:5:4	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+102:5:9	𐤅𐤋𐤄𐤕𐤏𐤋𐤐	english	𐤅+𐤋+[𐤄𐤕] 𐤏𐤋𐤐 	H5968	root
+102:6:5	𐤀𐤀𐤁𐤃	spelling	[𐤀] 𐤀𐤁𐤃 	H6	root
+102:6:7	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+102:8:5	𐤕𐤐𐤓𐤃	spelling	[𐤕] 𐤐𐤓𐤃 	H6504	root
+102:8:5	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+102:8:13	𐤉𐤅𐤔𐤌	spelling	[𐤉] 𐤅𐤔𐤌 	H7760	form
+102:8:13	𐤌𐤔𐤐𐤇𐤅𐤕𐤉𐤍𐤅	spelling	 𐤌𐤔𐤐𐤇𐤅𐤕 𐤉+𐤍𐤅	H4940	form
+102:9:1	𐤅𐤉𐤕𐤓𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤓𐤐𐤅 	H7503	form
+102:9:1	𐤍𐤀𐤋𐤌	spelling	[𐤍] 𐤀𐤋𐤌 	H481	root
+102:9:6	𐤅𐤎𐤅𐤐𐤃𐤉𐤌	english	𐤅 𐤎𐤅𐤐𐤃 𐤉𐤌	H5594	matres
+102:10:7	𐤍𐤓𐤑𐤇	spelling	[𐤍] 𐤓𐤑𐤇 	H7523	root
+102:11:4	𐤅𐤁𐤆𐤌𐤓	english	𐤅+𐤁 𐤆𐤌𐤓 	H2167	root
+102:11:6	𐤅𐤕𐤔𐤁𐤇𐤅𐤕	spelling	𐤅+[𐤕] 𐤔𐤁𐤇 𐤅𐤕	H7623	root
+102:12:6	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+102:12:11	𐤕𐤕𐤇𐤁𐤓𐤅	spelling	[𐤕𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
+102:12:13	𐤅𐤉𐤕𐤓𐤐𐤅	spelling	𐤅+[𐤉𐤕] 𐤓𐤐𐤅 	H7503	form
+102:12:13	𐤍𐤀𐤋𐤌	spelling	[𐤍] 𐤀𐤋𐤌 	H481	root
+102:12:14	𐤅𐤉𐤔𐤉𐤌𐤅𐤄𐤅	english	𐤅 𐤉𐤔𐤉𐤌𐤅𐤄 𐤅	H3451	matres
+102:13:6	𐤅𐤁𐤍𐤃𐤅𐤃𐤉𐤅	english	𐤅+𐤁 𐤍𐤃𐤅𐤃 𐤉+𐤅	H5074	matres
+102:13:18	𐤅𐤌𐤌𐤓𐤉𐤓𐤅𐤕	spelling	𐤅+𐤌 𐤌𐤓𐤉𐤓𐤅𐤕 	H4814	root
+102:15:2	𐤕𐤕𐤇𐤁𐤓𐤅	spelling	[𐤕𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
+102:17:3	𐤅𐤌𐤆𐤄𐤉𐤓	english	𐤅+[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+102:17:6	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+102:17:7	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+102:17:8	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+102:17:14	𐤅𐤀𐤔𐤀𐤓	spelling	𐤅+[𐤀] 𐤔𐤀𐤓 	H7604	root
+102:17:14	𐤕𐤌𐤎𐤓	spelling	[𐤕] 𐤌𐤎𐤓 	H4560	root
+102:17:28	𐤍𐤇𐤊𐤄	spelling	[𐤍] 𐤇𐤊𐤄 	H2442	root
+102:17:32	𐤅𐤉𐤇𐤊𐤅	spelling	𐤅+[𐤉] 𐤇𐤊𐤅 	H2442	form
+102:17:34	𐤅𐤋𐤇𐤁𐤓𐤉𐤍𐤅	english	𐤅+𐤋 𐤇𐤁𐤓 𐤉+𐤍𐤅	H2270	root
+102:17:40	𐤕𐤏𐤑𐤁	spelling	[𐤕] 𐤏𐤑𐤁 	H6087	root
+102:17:46	𐤄𐤍𐤓𐤀𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+102:18:13	𐤅𐤋𐤎𐤋𐤉𐤇𐤕	english	𐤅+𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+102:18:14	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+102:19:1	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+102:19:1	𐤅𐤉𐤁𐤀𐤓	spelling	𐤅+[𐤉] 𐤁𐤀𐤓 	H874	root
+102:19:3	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+102:19:4	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
+102:20:13	𐤍𐤌𐤔𐤊𐤉𐤌	spelling	[𐤍] 𐤌𐤔𐤊 𐤉𐤌	H4900	root
+102:20:16	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+102:20:27	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
+102:20:36	𐤅𐤎𐤋𐤉𐤇𐤄	spelling	𐤅 𐤎𐤋𐤉𐤇𐤄 	H5547	root
+102:20:37	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
+102:22:10	𐤍𐤀𐤎𐤓	spelling	[𐤍] 𐤀𐤎𐤓 	H631	root
+103:1:9	𐤁𐤊𐤅𐤍𐤕	spelling	𐤁 𐤊𐤅𐤍 𐤕	H3559	root
+103:1:21	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
+103:1:21	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
+103:1:35	𐤕𐤕𐤇𐤁𐤓𐤅	spelling	[𐤕𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
+103:2:5	𐤍𐤔𐤌𐤓𐤕𐤉	spelling	[𐤍] 𐤔𐤌𐤓 𐤕+𐤉	H8104	root
+103:2:12	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+103:2:15	𐤅𐤁𐤏𐤃𐤉𐤉𐤍	english	𐤅+𐤁 𐤏𐤃𐤉 𐤉+𐤍	H5716	root
+103:2:20	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+103:2:21	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
+103:2:22	𐤄𐤐𐤂𐤉𐤔𐤄	spelling	[𐤄] 𐤐𐤂𐤉𐤔 𐤄	H6298	matres
+103:2:27	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
+104:1:4	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
+104:1:10	𐤑𐤓𐤊𐤍𐤅	spelling	 𐤑𐤓𐤊 𐤍𐤅	H6878	root
+104:2:3	𐤄𐤕𐤏𐤑𐤁𐤕𐤉	spelling	[𐤄𐤕] 𐤏𐤑𐤁 𐤕+𐤉	H6087	root
+104:2:14	𐤅𐤉𐤍𐤑𐤇	spelling	𐤅+[𐤉] 𐤍𐤑𐤇 	H5329	root
+104:2:15	𐤁𐤁𐤓𐤊𐤅𐤕𐤉𐤅	english	𐤁 𐤁𐤓𐤊𐤅𐤕 𐤉+𐤅	H1293	form
+105:1:4	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
+105:1:11	𐤅𐤌𐤆𐤄𐤉𐤓𐤉𐤌	english	𐤅+𐤌 𐤆𐤄𐤉𐤓 𐤉𐤌	H2096	matres
+105:1:12	𐤌𐤆𐤄𐤉𐤓𐤉𐤌	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤉𐤌	H2096	matres
+105:3:1	𐤋𐤀𐤁𐤉𐤋𐤄	english	𐤋 𐤀𐤁𐤉𐤋 𐤄	H58	matres
+105:3:4	𐤅𐤁𐤁𐤓𐤊𐤅𐤕𐤉𐤅	english	𐤅+𐤁 𐤁𐤓𐤊𐤅𐤕 𐤉+𐤅	H1293	form
+105:3:11	𐤉𐤄𐤕𐤋	spelling	[𐤉] 𐤄𐤕𐤋 	H2048	root
+105:3:46	𐤅𐤕𐤐𐤅𐤑𐤅	spelling	𐤅+[𐤕] 𐤐𐤅𐤑 𐤅	H6327	root
+105:4:8	𐤁𐤔𐤒𐤉𐤃𐤄	spelling	𐤁 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
+105:4:17	𐤕𐤕𐤇𐤁𐤓𐤅	spelling	[𐤕𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
+105:4:27	𐤉𐤇𐤃𐤔	spelling	[𐤉] 𐤇𐤃𐤔 	H2318	root
+105:4:29	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+105:5:4	𐤅𐤕𐤕𐤐𐤀𐤓	spelling	𐤅+[𐤕𐤕] 𐤐𐤀𐤓 	H6286	root
+105:5:28	𐤁𐤉𐤃𐤉𐤃𐤉𐤅	english	𐤁 𐤉𐤃𐤉𐤃 𐤉+𐤅	H3039	root
+106:1:15	𐤅𐤀𐤂𐤋𐤋	english	𐤅+[𐤀] 𐤂𐤋𐤋 	H1556	root
+106:1:21	𐤅𐤒𐤋𐤏𐤕𐤉	english	𐤅 𐤒𐤋𐤏 𐤕+𐤉	H7050	root
+106:1:31	𐤍𐤌𐤔𐤊𐤅	spelling	[𐤍] 𐤌𐤔𐤊 𐤅	H4900	root
+106:2:5	𐤅𐤃𐤋𐤕𐤅𐤕𐤉𐤄	spelling	 𐤅𐤃𐤋𐤕𐤅𐤕 𐤉+𐤄	H1817	form
+106:2:18	𐤍𐤐𐤕𐤉𐤕𐤉	english	[𐤍] 𐤐𐤕𐤉𐤕𐤉 	H6601	form
+106:2:33	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
+106:2:35	𐤇𐤉𐤉𐤕𐤉	spelling	 𐤇𐤉𐤉 𐤕+𐤉	H2425	root
+106:3:3	𐤅𐤄𐤅𐤊𐤇𐤕𐤉	english	 𐤅𐤄𐤅𐤊𐤇 𐤕+𐤉	H3198	form
+106:3:12	𐤉𐤁𐤄𐤋	spelling	[𐤉] 𐤁𐤄𐤋 	H926	root
+106:3:16	𐤄𐤑𐤍𐤉𐤏𐤅𐤕	spelling	[𐤄] 𐤑𐤍𐤉𐤏 𐤅𐤕	H6800	matres
+106:3:27	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+106:3:42	𐤁𐤄𐤕𐤏𐤅𐤕𐤌	english	𐤁 𐤄𐤕𐤏𐤅 𐤕+𐤌	H8582	form
+106:3:43	𐤍𐤓𐤑𐤅	english	[𐤍] 𐤓𐤑𐤅 	H7521	form
+106:3:47	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+106:4:1	𐤉𐤕𐤓𐤅𐤌𐤌𐤅	spelling	[𐤉𐤕] 𐤓𐤅𐤌𐤌𐤅 	H7311	form
+106:4:9	𐤉𐤏𐤁𐤉𐤃𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤃 𐤅	H5647	matres
+106:4:28	𐤊𐤎𐤃𐤓𐤌	spelling	𐤊 𐤎𐤃𐤓 𐤌	H5468	root
+107:1:3	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
+107:1:12	𐤕𐤕𐤂𐤀𐤄	english	[𐤕𐤕] 𐤂𐤀𐤄 	H1342	root
+107:1:30	𐤈𐤅𐤁𐤅𐤕𐤉𐤅	spelling	 𐤈𐤅𐤁𐤅𐤕 𐤉+𐤅	H2896	form
+107:1:31	𐤅𐤄𐤍𐤋𐤇𐤑𐤉𐤌	english	𐤅+𐤄+[𐤍] 𐤋𐤇𐤑 𐤉𐤌	H3905	root
+107:2:16	𐤕𐤊𐤁𐤔𐤅	english	[𐤕] 𐤊𐤁𐤔 𐤅	H3533	root
+108:1:3	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
+108:1:4	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
+108:1:9	𐤇𐤅𐤎𐤅	spelling	 𐤇𐤅𐤎 𐤅	H2347	root
+108:1:14	𐤍𐤔𐤋𐤉𐤊𐤄	spelling	[𐤍] 𐤔𐤋𐤉𐤊 𐤄	H7993	matres
+108:1:19	𐤍𐤓𐤌𐤎	spelling	[𐤍] 𐤓𐤌𐤎 	H7429	root
+108:1:32	𐤕𐤏𐤑𐤁	spelling	[𐤕] 𐤏𐤑𐤁 	H6087	root
+108:1:33	𐤍𐤔𐤇𐤈	spelling	[𐤍] 𐤔𐤇𐤈 	H7819	root
+108:2:11	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+108:2:24	𐤅𐤕𐤐𐤓𐤃	spelling	𐤅+[𐤕] 𐤐𐤓𐤃 	H6504	root
+108:2:36	𐤕𐤕𐤏𐤑𐤁𐤅	spelling	[𐤕𐤕] 𐤏𐤑𐤁 𐤅	H6087	root
+109:1:12	𐤉𐤊𐤉𐤓𐤄𐤅	spelling	[𐤉] 𐤊𐤉𐤓𐤄 𐤅	H3738	matres
+109:1:25	𐤕𐤕𐤏𐤑𐤁𐤅	spelling	[𐤕𐤕] 𐤏𐤑𐤁 𐤅	H6087	root
+109:2:2	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+109:2:4	𐤉𐤍𐤇𐤄	spelling	[𐤉] 𐤍𐤇𐤄 	H5148	root
+109:2:6	𐤍𐤒𐤔𐤓𐤅	spelling	[𐤍] 𐤒𐤔𐤓 𐤅	H7194	root
+109:2:8	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+109:2:14	𐤅𐤓𐤅𐤇𐤅𐤕𐤉𐤅	spelling	𐤅 𐤓𐤅𐤇𐤅𐤕 𐤉+𐤅	H7307	form
+109:2:22	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+110:1:4	𐤅𐤁𐤔𐤁𐤇𐤅	english	𐤅+𐤁 𐤔𐤁𐤇 𐤅	H7623	root
+110:1:6	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
+110:1:7	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
+110:1:20	𐤁𐤎𐤃𐤓𐤅	spelling	𐤁 𐤎𐤃𐤓 𐤅	H5468	root
+110:1:20	𐤋𐤔𐤀𐤅𐤐	spelling	𐤋 𐤔𐤀𐤅𐤐 	H7602	matres
+110:1:21	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
+110:2:11	𐤁𐤀𐤍𐤉𐤕𐤍𐤅	english	𐤁 𐤀𐤍𐤉 𐤕+𐤍𐤅	H590	root
+110:2:28	𐤉𐤔𐤉𐤌𐤄𐤅	spelling	[𐤉] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
+110:2:31	𐤊𐤎𐤃𐤓𐤍	english	𐤊 𐤎𐤃𐤓 𐤍	H5468	root
+111:1:3	𐤓𐤃𐤐𐤕𐤉	spelling	 𐤓𐤃𐤐 𐤕+𐤉	H7291	root
+111:1:17	𐤉𐤁𐤆𐤄	spelling	[𐤉] 𐤁𐤆𐤄 	H959	root
+111:1:23	𐤕𐤍𐤉𐤇	spelling	[𐤕] 𐤍𐤉𐤇 	H5117	matres
+111:1:25	𐤕𐤕𐤇𐤁𐤓	english	[𐤕𐤕] 𐤇𐤁𐤓 	H2266	root
+111:1:29	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+111:2:1	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+111:2:3	𐤕𐤇𐤆𐤉𐤒𐤅	spelling	[𐤕] 𐤇𐤆𐤉𐤒 𐤅	H2388	matres
+111:2:4	𐤉𐤋𐤒𐤇	spelling	[𐤉] 𐤋𐤒𐤇 	H3947	root
+111:2:14	𐤍𐤒𐤍𐤄	english	[𐤍] 𐤒𐤍𐤄 	H7069	root
+112:1:6	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+112:1:15	𐤉𐤁𐤆𐤄	spelling	[𐤉] 𐤁𐤆𐤄 	H959	root
+112:1:15	𐤅𐤉𐤊𐤏𐤉𐤎	spelling	𐤅+[𐤉] 𐤊𐤏𐤉𐤎 	H3707	matres
+112:1:24	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+112:1:26	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+112:1:34	𐤁𐤐𐤂𐤔𐤌	english	𐤁 𐤐𐤂𐤔 𐤌	H6298	root
+112:1:36	𐤕𐤐𐤂𐤔	spelling	[𐤕] 𐤐𐤂𐤔 	H6298	root
+112:1:36	𐤉𐤍𐤇𐤄	spelling	[𐤉] 𐤍𐤇𐤄 	H5148	root
+112:1:38	𐤅𐤕𐤌𐤎𐤓𐤅	english	𐤅+[𐤕] 𐤌𐤎𐤓 𐤅	H4560	root
+112:1:38	𐤅𐤕𐤐𐤅𐤑𐤅	spelling	𐤅+[𐤕] 𐤐𐤅𐤑 𐤅	H6327	root
+113:1:29	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+113:1:34	𐤍𐤏𐤑𐤁𐤕𐤉	spelling	[𐤍] 𐤏𐤑𐤁 𐤕+𐤉	H6087	root
+113:1:40	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+113:1:40	𐤀𐤐𐤕𐤄	spelling	[𐤀] 𐤐𐤕𐤄 	H6601	root
+113:1:57	𐤅𐤀𐤆𐤄𐤉𐤓	english	𐤅+[𐤀] 𐤆𐤄𐤉𐤓 	H2094	matres
+113:1:61	𐤅𐤀𐤍𐤇𐤅𐤕	spelling	𐤅 𐤀𐤍𐤇 𐤅𐤕	H584	root
+113:1:62	𐤁𐤇𐤍𐤒	spelling	𐤁 𐤇𐤍𐤒 	H2614	root
+113:1:63	𐤌𐤁𐤄𐤋𐤕	english	[𐤌] 𐤁𐤄𐤋 𐤕	H926	root
+113:1:64	𐤅𐤎𐤅𐤏𐤓𐤕	english	𐤅 𐤎𐤅𐤏𐤓 𐤕	H5590	matres
+113:1:69	𐤀𐤍𐤑𐤋	spelling	[𐤀] 𐤍𐤑𐤋 	H5337	root
+113:1:73	𐤍𐤋𐤇𐤑𐤄	spelling	[𐤍] 𐤋𐤇𐤑 𐤄	H3905	root
+113:1:73	𐤍𐤑𐤋𐤕𐤉	spelling	 𐤍𐤑𐤋 𐤕+𐤉	H5337	root
+113:1:76	𐤉𐤇𐤁𐤓	spelling	[𐤉] 𐤇𐤁𐤓 	H2266	root
+113:1:76	𐤉𐤇𐤁𐤓	spelling	[𐤉] 𐤇𐤁𐤓 	H2266	root
+113:2:2	𐤄𐤑𐤍𐤉𐤏𐤅𐤕	spelling	[𐤄] 𐤑𐤍𐤉𐤏 𐤅𐤕	H6800	matres
+113:2:2	𐤄𐤑𐤍𐤉𐤏𐤅𐤕	spelling	[𐤄] 𐤑𐤍𐤉𐤏 𐤅𐤕	H6800	matres
+113:2:3	𐤕𐤒𐤓𐤄	spelling	[𐤕] 𐤒𐤓𐤄 	H7136	root
+113:2:3	𐤄𐤑𐤍𐤉𐤏𐤅𐤕	spelling	[𐤄] 𐤑𐤍𐤉𐤏 𐤅𐤕	H6800	matres
+113:2:6	𐤇𐤃𐤋𐤕𐤉	spelling	 𐤇𐤃𐤋 𐤕+𐤉	H2308	root
+113:2:14	𐤎𐤇𐤅𐤓𐤄	spelling	 𐤎𐤇𐤅𐤓 𐤄	H5503	matres
+113:2:37	𐤌𐤏𐤍𐤉𐤔	spelling	[𐤌] 𐤏𐤍𐤉𐤔 	H6064	matres
+113:2:68	𐤅𐤍𐤐𐤃𐤉𐤕𐤌	english	𐤅+[𐤍] 𐤐𐤃𐤉𐤕 𐤌	H6299	form
+113:2:70	𐤋𐤏𐤁𐤃𐤍𐤉	spelling	𐤋 𐤏𐤁𐤃𐤍 𐤉	H5658	matres
+114:1:8	𐤈𐤁𐤋𐤅	spelling	 𐤈𐤁𐤋 𐤅	H2881	root
+114:1:32	𐤉𐤎𐤂𐤉𐤓	spelling	[𐤉] 𐤎𐤂𐤉𐤓 	H5462	matres
+114:1:32	𐤉𐤔𐤐𐤋	spelling	[𐤉] 𐤔𐤐𐤋 	H8213	root
+114:1:33	𐤉𐤍𐤇𐤄	spelling	[𐤉] 𐤍𐤇𐤄 	H5148	root
+114:1:35	𐤉𐤕𐤏𐤄	spelling	[𐤉] 𐤕𐤏𐤄 	H8582	root
+114:1:41	𐤍𐤅𐤎𐤅	spelling	 𐤍𐤅𐤎 𐤅	H5127	root
+114:1:43	𐤍𐤌𐤎𐤓	spelling	[𐤍] 𐤌𐤎𐤓 	H4560	root
+114:2:1	𐤍𐤅𐤎𐤅	spelling	 𐤍𐤅𐤎 𐤅	H5127	root
+115:1:2	𐤅𐤀𐤇𐤔𐤃𐤓𐤐𐤍	spelling	𐤅 𐤀𐤇𐤔𐤃𐤓𐤐𐤍 	H324	root
+115:1:7	𐤉𐤅𐤀𐤒𐤉𐤌	english	[𐤉] 𐤅𐤀𐤒𐤉𐤌 	H6965	form
+115:4:6	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+115:4:6	𐤅𐤋𐤁𐤅𐤓𐤇	english	𐤅+𐤋 𐤁𐤅𐤓𐤇 	H1280	matres
+115:4:6	𐤉𐤐𐤕𐤓𐤅	spelling	[𐤉] 𐤐𐤕𐤓 𐤅	H6622	root
+115:5:5	𐤅𐤃𐤋𐤕𐤅𐤕𐤉𐤄	spelling	 𐤅𐤃𐤋𐤕𐤅𐤕 𐤉+𐤄	H1817	form
+115:6:1	𐤅𐤕𐤊𐤀𐤁	spelling	𐤅+[𐤕] 𐤊𐤀𐤁 	H3510	root
+115:7:2	𐤕𐤑𐤉𐤒𐤍𐤅	english	[𐤕] 𐤑𐤉𐤒 𐤍𐤅	H6693	matres
+115:7:4	𐤅𐤉𐤆𐤄𐤉𐤓	english	𐤅+[𐤉] 𐤆𐤄𐤉𐤓 	H2094	matres
+115:7:4	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
+115:7:5	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+115:10:3	𐤀𐤍𐤇𐤄	spelling	 𐤀𐤍𐤇 𐤄	H584	root
+115:10:5	𐤅𐤕𐤕𐤀𐤁𐤋	spelling	𐤅+[𐤕𐤕] 𐤀𐤁𐤋 	H56	root
+115:10:10	𐤄𐤃𐤌𐤏𐤅𐤕	spelling	𐤄 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+115:12:1	𐤉𐤈𐤁𐤏𐤅	spelling	[𐤉] 𐤈𐤁𐤏 𐤅	H2883	root
+115:12:2	𐤁𐤓𐤉𐤅𐤕𐤉𐤊	spelling	 𐤁𐤓𐤉𐤅𐤕 𐤉+𐤊	H1285	matres
+115:12:3	𐤓𐤀𐤅𐤉𐤄	spelling	 𐤓𐤀𐤅 𐤉+𐤄	H7200	form
+115:12:4	𐤀𐤒𐤓𐤉𐤁	spelling	[𐤀] 𐤒𐤓𐤉𐤁 	H7126	matres
+115:12:4	𐤅𐤕𐤅𐤐𐤔	english	𐤅 𐤕𐤅𐤐𐤔 	H8610	matres
+115:12:5	𐤅𐤄𐤈𐤅𐤓𐤐	english	𐤅+[𐤄] 𐤈𐤅𐤓𐤐 	H2963	matres
+115:12:6	𐤅𐤀𐤍𐤑𐤋	spelling	𐤅+[𐤀] 𐤍𐤑𐤋 	H5337	root
+115:12:6	𐤕𐤕𐤂𐤁𐤓	spelling	[𐤕𐤕] 𐤂𐤁𐤓 	H1396	root
+115:13:7	𐤂𐤃𐤅𐤐𐤉𐤌	spelling	 𐤂𐤃𐤅𐤐 𐤉𐤌	H1421	root
+115:14:7	𐤍𐤔𐤋𐤇𐤅	spelling	[𐤍] 𐤔𐤋𐤇 𐤅	H7971	root
+115:14:8	𐤌𐤆𐤄𐤉𐤓𐤄	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤄	H2096	matres
+115:14:8	𐤅𐤕𐤍𐤏𐤓	english	𐤅+[𐤕] 𐤍𐤏𐤓 	H5287	root
+115:14:8	𐤅𐤕𐤓𐤇𐤑	spelling	𐤅+[𐤕] 𐤓𐤇𐤑 	H7364	root
+115:16:12	𐤅𐤕𐤒𐤌𐤍𐤄	spelling	𐤅+[𐤕] 𐤒𐤌𐤍𐤄 	H6965	form
+115:16:13	𐤅𐤕𐤒𐤌𐤍𐤄	spelling	𐤅+[𐤕] 𐤒𐤌𐤍𐤄 	H6965	form
+115:17:2	𐤄𐤆𐤉𐤒𐤄	spelling	𐤄 𐤆𐤉𐤒𐤄 	H2131	root
+115:17:4	𐤅𐤕𐤏𐤌𐤉𐤃𐤌	spelling	𐤅+[𐤕] 𐤏𐤌𐤉𐤃 𐤌	H5975	matres
+115:18:2	𐤎𐤏𐤅𐤃𐤄	spelling	 𐤎𐤏𐤅𐤃 𐤄	H5582	matres
+115:18:4	𐤄𐤎𐤏𐤅𐤃𐤄	english	[𐤄] 𐤎𐤏𐤅𐤃 𐤄	H5582	matres
+115:18:4	𐤌𐤆𐤄𐤉𐤓𐤄	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤄	H2096	matres
+115:18:5	𐤅𐤕𐤕𐤏𐤑𐤁	spelling	𐤅+[𐤕𐤕] 𐤏𐤑𐤁 	H6087	root
+115:20:3	𐤅𐤕𐤓𐤇𐤑	spelling	𐤅+[𐤕] 𐤓𐤇𐤑 	H7364	root
+115:20:3	𐤕𐤓𐤇𐤑	spelling	[𐤕] 𐤓𐤇𐤑 	H7364	root
+115:20:3	𐤕𐤓𐤇𐤑	spelling	[𐤕] 𐤓𐤇𐤑 	H7364	root
+115:20:3	𐤅𐤕𐤓𐤇𐤑	spelling	𐤅+[𐤕] 𐤓𐤇𐤑 	H7364	root
+115:23:3	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+115:23:6	𐤕𐤇𐤓𐤄	spelling	[𐤕] 𐤇𐤓𐤄 	H2734	root
+115:23:7	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+115:23:8	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+115:23:8	𐤅𐤉𐤓𐤏𐤃	spelling	𐤅+[𐤉] 𐤓𐤏𐤃 	H7460	root
+115:24:7	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+115:25:4	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+115:27:6	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+115:28:2	𐤌𐤕𐤇𐤍𐤍𐤉𐤌	spelling	[𐤌𐤕] 𐤇𐤍𐤍 𐤉𐤌	H2603	root
+115:28:3	𐤅𐤀𐤔𐤁𐤉𐤕	english	𐤅+[𐤀] 𐤔𐤁𐤉 𐤕	H3427	form
+115:28:6	𐤇𐤅𐤎𐤅	spelling	 𐤇𐤅𐤎 𐤅	H2347	root
+115:28:6	𐤇𐤅𐤎𐤅	spelling	 𐤇𐤅𐤎 𐤅	H2347	root
+116:1:2	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+116:1:2	𐤄𐤊𐤍𐤉𐤎	spelling	[𐤄] 𐤊𐤍𐤉𐤎 	H3664	matres
+116:1:2	𐤄𐤀𐤅𐤓𐤇𐤉𐤌	spelling	𐤄 𐤀𐤅𐤓𐤇 𐤉𐤌	H734	matres
+116:2:2	𐤅𐤋𐤄𐤊𐤍𐤉𐤎𐤌	english	𐤅+𐤋+[𐤄] 𐤊𐤍𐤉𐤎 𐤌	H3664	matres
+116:2:8	𐤎𐤇𐤅𐤓𐤄	spelling	 𐤎𐤇𐤅𐤓 𐤄	H5503	matres
+116:3:3	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+116:3:5	𐤅𐤉𐤔𐤀𐤁	english	𐤅+[𐤉] 𐤔𐤀𐤁 	H7579	root
+116:3:5	𐤅𐤉𐤊𐤌𐤓𐤅	spelling	𐤅+[𐤉] 𐤊𐤌𐤓 𐤅	H3648	root
+116:4:1	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
+116:7:1	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
+116:7:3	𐤄𐤕𐤏𐤑𐤁𐤕𐤉	spelling	[𐤄𐤕] 𐤏𐤑𐤁 𐤕+𐤉	H6087	root
+116:7:8	𐤅𐤍𐤔𐤋𐤇𐤕𐤉	spelling	𐤅+[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+116:7:9	𐤅𐤍𐤔𐤋𐤇𐤕	english	𐤅+[𐤍] 𐤔𐤋𐤇 𐤕	H7971	root
+116:8:3	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
+116:9:3	𐤀𐤏𐤌𐤃	spelling	[𐤀] 𐤏𐤌𐤃 	H5975	root
+116:9:3	𐤅𐤓𐤅𐤏𐤃𐤉𐤌	english	𐤅 𐤓𐤅𐤏𐤃 𐤉𐤌	H7461	matres
+116:10:10	𐤀𐤇𐤊𐤄	spelling	[𐤀] 𐤇𐤊𐤄 	H2442	root
+116:11:6	𐤉𐤁𐤊𐤄	spelling	[𐤉] 𐤁𐤊𐤄 	H1058	root
+116:12:4	𐤀𐤅𐤇𐤆𐤉𐤌	spelling	 𐤀𐤅𐤇𐤆 𐤉𐤌	H270	matres
+116:13:9	𐤍𐤑𐤃𐤒	spelling	[𐤍] 𐤑𐤃𐤒 	H6663	root
+116:14:4	𐤍𐤕𐤐𐤋𐤋	spelling	[𐤍𐤕] 𐤐𐤋𐤋 	H6419	root
+116:14:7	𐤅𐤍𐤕𐤇𐤍𐤍	spelling	𐤅+[𐤍𐤕] 𐤇𐤍𐤍 	H2603	root
+116:15:4	𐤅𐤔𐤐𐤇𐤅𐤕𐤉𐤅	spelling	 𐤅𐤔𐤐𐤇𐤅𐤕 𐤉+𐤅	H8198	form
+116:15:5	𐤅𐤔𐤐𐤇𐤅𐤕𐤉𐤊	english	 𐤅𐤔𐤐𐤇𐤅𐤕 𐤉+𐤊	H8198	form
+116:16:5	𐤋𐤄𐤁𐤄𐤉𐤋	english	𐤋+[𐤄] 𐤁𐤄𐤉𐤋 	H927	matres
+116:17:4	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
+116:17:6	𐤄𐤀𐤅𐤓𐤇𐤉𐤌	spelling	𐤄 𐤀𐤅𐤓𐤇 𐤉𐤌	H734	matres
+116:18:4	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+116:18:8	𐤍𐤕𐤐𐤋𐤋	spelling	[𐤍𐤕] 𐤐𐤋𐤋 	H6419	root
+116:19:3	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+116:19:11	𐤅𐤓𐤅𐤀𐤉𐤌	english	𐤅 𐤓𐤅𐤀𐤉𐤌 	H7214	matres
+116:20:6	𐤅𐤔𐤐𐤇𐤅𐤕𐤉𐤅	spelling	 𐤅𐤔𐤐𐤇𐤅𐤕 𐤉+𐤅	H8198	form
+116:20:11	𐤀𐤍𐤇𐤄	spelling	 𐤀𐤍𐤇 𐤄	H584	root
+116:20:12	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
+116:20:12	𐤄𐤀𐤅𐤓𐤇𐤉𐤌	spelling	𐤄 𐤀𐤅𐤓𐤇 𐤉𐤌	H734	matres
+116:20:12	𐤅𐤍𐤔𐤉𐤂	spelling	𐤅 𐤍𐤔𐤉𐤂 	H5381	matres
+117:2:4	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+117:2:6	𐤕𐤕𐤄𐤋𐤊	spelling	[𐤕𐤕] 𐤄𐤋𐤊 	H1980	root
+117:3:1	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+117:4:3	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+117:6:4	𐤕𐤓𐤉𐤁	spelling	[𐤕] 𐤓𐤉𐤁 	H7378	root
+117:6:7	𐤕𐤋𐤅𐤍𐤄	spelling	[𐤕] 𐤋𐤅𐤍 𐤄	H3885	root
+117:9:4	𐤔𐤒𐤅𐤏𐤉𐤌	spelling	 𐤔𐤒𐤅𐤏 𐤉𐤌	H8257	matres
+117:10:3	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+117:10:3	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+117:10:4	𐤅𐤄𐤀𐤊𐤉𐤋	spelling	𐤅+[𐤄] 𐤀𐤊𐤉𐤋 	H398	matres
+117:10:6	𐤅𐤄𐤀𐤊𐤉𐤋	spelling	𐤅+[𐤄] 𐤀𐤊𐤉𐤋 	H398	matres
+117:10:8	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+117:10:12	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+117:12:4	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+117:12:4	𐤕𐤐𐤂𐤔	spelling	[𐤕] 𐤐𐤂𐤔 	H6298	root
+118:1:1	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+118:3:4	𐤄𐤀𐤅𐤓𐤇𐤉𐤌	spelling	𐤄 𐤀𐤅𐤓𐤇 𐤉𐤌	H734	matres
+118:4:3	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+118:8:1	𐤅𐤄𐤌𐤊𐤔𐤐𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤊𐤔𐤐 𐤉𐤌	H3784	root
+118:8:1	𐤅𐤄𐤌𐤋𐤔𐤉𐤍𐤉𐤌	english	𐤅+𐤄+[𐤌] 𐤋𐤔𐤉𐤍 𐤉𐤌	H3960	matres
+118:11:2	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+118:12:2	𐤄𐤀𐤅𐤓𐤇𐤉𐤌	spelling	𐤄 𐤀𐤅𐤓𐤇 𐤉𐤌	H734	matres
+119:6:16	𐤏𐤅𐤈𐤄	spelling	 𐤏𐤅𐤈 𐤄	H5860	matres
+120:1:4	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+120:1:5	𐤄𐤍𐤔𐤋𐤇𐤕	english	𐤄+[𐤍] 𐤔𐤋𐤇 𐤕	H7971	root
+120:1:11	𐤋𐤄𐤊𐤍𐤏	spelling	𐤋+[𐤄] 𐤊𐤍𐤏 	H3665	root
+120:1:18	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
+120:1:19	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
+120:1:20	𐤅𐤇𐤕𐤌𐤕𐤉	spelling	𐤅 𐤇𐤕𐤌𐤕 𐤉	H2858	root
+120:1:21	𐤍𐤏𐤍𐤔	spelling	[𐤍] 𐤏𐤍𐤔 	H6064	root
+120:1:21	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
+120:1:21	𐤅𐤍𐤕𐤄𐤋𐤊	spelling	𐤅+[𐤍𐤕] 𐤄𐤋𐤊 	H1980	root
+120:1:22	𐤅𐤀𐤐𐤓𐤉𐤃	english	𐤅+[𐤀] 𐤐𐤓𐤉𐤃 	H6504	matres
+120:1:24	𐤁𐤓𐤐𐤀𐤋	english	𐤁 𐤓𐤐𐤀𐤋 	H7501	root
+120:1:29	𐤉𐤔𐤁𐤉𐤏	spelling	[𐤉] 𐤔𐤁𐤉𐤏 	H7646	matres
+120:1:31	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+120:1:31	𐤅𐤕𐤃𐤋𐤉𐤒	english	𐤅+[𐤕] 𐤃𐤋𐤉𐤒 	H1814	matres
+120:1:31	𐤕𐤃𐤋𐤉𐤒	spelling	[𐤕] 𐤃𐤋𐤉𐤒 	H1814	matres
+120:1:32	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+120:1:33	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+120:1:34	𐤅𐤀𐤓𐤅𐤂𐤅𐤕	english	𐤅 𐤀𐤓𐤅𐤂 𐤅𐤕	H707	matres
+120:1:35	𐤅𐤀𐤅𐤓𐤂𐤕	english	𐤅 𐤀𐤅𐤓𐤂 𐤕	H707	matres
+120:1:38	𐤌𐤔𐤊𐤉𐤇𐤄	english	[𐤌] 𐤔𐤊𐤉𐤇 𐤄	H7911	matres
+120:1:41	𐤉𐤔𐤋𐤇𐤍𐤉	spelling	[𐤉] 𐤔𐤋𐤇𐤍𐤉 	H7971	form
+120:1:42	𐤅𐤇𐤕𐤌𐤕𐤉	spelling	𐤅 𐤇𐤕𐤌𐤕 𐤉	H2858	root
+120:1:42	𐤕𐤋𐤅𐤍𐤄	spelling	[𐤕] 𐤋𐤅𐤍 𐤄	H3885	root
+120:1:44	𐤅𐤇𐤕𐤌𐤕𐤉	spelling	𐤅 𐤇𐤕𐤌𐤕 𐤉	H2858	root
+120:1:44	𐤅𐤉𐤒𐤐𐤑	spelling	𐤅+[𐤉] 𐤒𐤐𐤑 	H7092	root
+120:1:45	𐤅𐤉𐤃𐤋𐤉𐤒𐤅	english	𐤅+[𐤉] 𐤃𐤋𐤉𐤒 𐤅	H1814	matres
+120:1:47	𐤀𐤀𐤁𐤃	spelling	[𐤀] 𐤀𐤁𐤃 	H6	root
+120:1:49	𐤂𐤆𐤓𐤕𐤉	spelling	 𐤂𐤆𐤓 𐤕+𐤉	H1505	root
+120:1:51	𐤋𐤄𐤕𐤒𐤁𐤋	spelling	𐤋+[𐤄𐤕] 𐤒𐤁𐤋 	H6901	root
+120:1:52	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
+120:1:54	𐤄𐤂𐤅𐤐	english	[𐤄] 𐤂𐤅𐤐 	H1479	root
+120:1:55	𐤁𐤍𐤀𐤃	english	𐤁 𐤍𐤀𐤃 	H4997	root
+120:1:57	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+120:1:58	𐤅𐤄𐤊𐤀𐤉𐤁	english	𐤅+[𐤄] 𐤊𐤀𐤉𐤁 	H3510	matres
+120:1:59	𐤀𐤉𐤁𐤓𐤉𐤄	spelling	 𐤀𐤉𐤁𐤓 𐤉+𐤄	H47	matres
+120:1:61	𐤍𐤏𐤔𐤉𐤕𐤉	spelling	[𐤍] 𐤏𐤔𐤉𐤕𐤉 	H6213	form
+120:1:61	𐤒𐤐𐤑𐤕𐤉	spelling	 𐤒𐤐𐤑 𐤕+𐤉	H7092	root
+120:1:63	𐤂𐤆𐤓𐤕𐤉	spelling	 𐤂𐤆𐤓 𐤕+𐤉	H1505	root
+120:1:64	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+120:1:65	𐤉𐤕𐤋𐤄	spelling	[𐤉] 𐤕𐤋𐤄 	H8518	root
+120:1:66	𐤌𐤋𐤀𐤊𐤉𐤄𐤌	spelling	 𐤌𐤋𐤀𐤊𐤉𐤄 𐤌	H4399	matres
+120:1:69	𐤅𐤇𐤕𐤌𐤕𐤉	spelling	𐤅 𐤇𐤕𐤌𐤕 𐤉	H2858	root
+120:1:69	𐤅𐤇𐤕𐤌𐤕𐤉	spelling	𐤅 𐤇𐤕𐤌𐤕 𐤉	H2858	root
+120:1:71	𐤀𐤀𐤁𐤃	spelling	[𐤀] 𐤀𐤁𐤃 	H6	root
+120:1:71	𐤉𐤍𐤑𐤇	english	[𐤉] 𐤍𐤑𐤇 	H5330	root
+120:1:72	𐤁𐤂𐤅𐤐𐤌	spelling	𐤁 𐤂𐤅𐤐 𐤌	H1479	root
+120:1:87	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+120:1:87	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
+120:1:95	𐤅𐤒𐤃𐤇𐤕	spelling	𐤅 𐤒𐤃𐤇𐤕 	H6920	root
+120:1:95	𐤇𐤓𐤓𐤄	english	 𐤇𐤓𐤓 𐤄	H2787	root
+120:1:97	𐤉𐤔𐤁𐤉𐤏	spelling	[𐤉] 𐤔𐤁𐤉𐤏 	H7646	matres
+120:1:97	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
+120:1:99	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
+120:1:101	𐤕𐤔𐤋𐤉𐤊	spelling	[𐤕] 𐤔𐤋𐤉𐤊 	H7993	matres
+120:1:107	𐤅𐤋𐤄𐤂𐤉𐤔	english	𐤅+𐤋+𐤄 𐤂𐤉𐤔 	H1487	matres
+120:1:107	𐤂𐤆𐤓𐤕𐤉	spelling	 𐤂𐤆𐤓 𐤕+𐤉	H1505	root
+120:1:107	𐤉𐤊𐤋𐤀𐤅	spelling	[𐤉] 𐤊𐤋𐤀 𐤅	H3607	root
+120:1:110	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+120:1:113	𐤅𐤏𐤐𐤉𐤌	english	𐤅 𐤏𐤐𐤉 𐤌	H6074	root
+120:1:114	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
+120:1:114	𐤅𐤔𐤅𐤓𐤐𐤉𐤌	english	𐤅 𐤔𐤅𐤓𐤐 𐤉𐤌	H8313	matres
+120:1:116	𐤄𐤌𐤁𐤓𐤉𐤒𐤅𐤕	english	𐤄+[𐤌] 𐤁𐤓𐤉𐤒 𐤅𐤕	H1299	matres
+120:1:116	𐤂𐤆𐤓𐤕𐤉	spelling	 𐤂𐤆𐤓 𐤕+𐤉	H1505	root
+120:1:117	𐤅𐤍𐤔𐤉𐤁𐤕𐤄	english	 𐤅𐤍𐤔𐤉𐤁 𐤕+𐤄	H7725	form
+120:1:117	𐤌𐤕𐤇𐤍𐤍𐤉𐤌	spelling	[𐤌𐤕] 𐤇𐤍𐤍 𐤉𐤌	H2603	root
+120:1:118	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
+120:1:118	𐤋𐤄𐤍𐤉𐤏	spelling	𐤋+[𐤄] 𐤍𐤉𐤏 	H5128	matres
+120:1:119	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:119	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:119	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:119	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:120	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:120	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:120	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:120	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:120	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:120	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:121	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:121	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:121	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:121	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:122	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+120:1:123	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:123	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:123	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+120:1:123	𐤍𐤕𐤌𐤋𐤀	spelling	[𐤍𐤕] 𐤌𐤋𐤀 	H4390	root
+120:1:124	𐤋𐤄𐤓𐤏𐤉𐤔	english	𐤋+[𐤄] 𐤓𐤏𐤉𐤔 	H7493	matres
+120:1:126	𐤄𐤍𐤀𐤃	spelling	𐤄 𐤍𐤀𐤃 	H4997	root
+121:1:1	𐤇𐤒𐤓𐤕𐤉	spelling	 𐤇𐤒𐤓 𐤕+𐤉	H2713	root
+121:1:4	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
+121:2:4	𐤀𐤍𐤇𐤄	spelling	 𐤀𐤍𐤇 𐤄	H584	root
+121:2:4	𐤅𐤉𐤒𐤐𐤑	spelling	𐤅+[𐤉] 𐤒𐤐𐤑 	H7092	root
+121:3:1	𐤍𐤈𐤓𐤐𐤄	spelling	[𐤍] 𐤈𐤓𐤐 𐤄	H2963	root
+121:3:5	𐤋𐤄𐤍𐤉𐤏	spelling	𐤋+[𐤄] 𐤍𐤉𐤏 	H5128	matres
+121:3:6	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
+121:6:9	𐤉𐤕𐤇𐤃𐤔	spelling	[𐤉𐤕] 𐤇𐤃𐤔 	H2318	root
+121:6:13	𐤏𐤍𐤐𐤉𐤅	spelling	 𐤏𐤍𐤐 𐤉+𐤅	H6057	root
+121:6:13	𐤅𐤐𐤓𐤇𐤉𐤅	english	𐤅 𐤐𐤓𐤇 𐤉+𐤅	H6524	root
+121:7:5	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+121:8:4	𐤁𐤕𐤁𐤅𐤍𐤕	spelling	𐤁 𐤕𐤁𐤅𐤍 𐤕	H8394	root
+121:9:7	𐤅𐤌𐤎𐤅𐤊	english	𐤅+[𐤌] 𐤎𐤅𐤊 	H5480	root
+121:9:9	𐤅𐤉𐤕𐤇𐤃𐤔𐤅	spelling	𐤅+[𐤉𐤕] 𐤇𐤃𐤔 𐤅	H2318	root
+121:10:8	𐤄𐤌𐤍𐤉𐤏	english	[𐤄] 𐤌𐤍𐤉𐤏 	H4513	matres
+121:10:16	𐤍𐤅𐤏𐤃𐤕𐤉	english	 𐤍𐤅𐤏𐤃 𐤕+𐤉	H3259	form
+121:13:2	𐤅𐤀𐤇𐤊𐤄	spelling	𐤅+[𐤀] 𐤇𐤊𐤄 	H2442	root
+121:13:13	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+121:17:6	𐤍𐤓𐤀𐤉𐤕𐤉	spelling	[𐤍] 𐤓𐤀𐤉𐤕𐤉 	H7200	form
+121:18:6	𐤌𐤔𐤊𐤌𐤉𐤄𐤌	spelling	𐤌 𐤔𐤊𐤌𐤉𐤄 𐤌	H7929	matres
+121:18:7	𐤌𐤔𐤊𐤌𐤉𐤄𐤌	spelling	𐤌 𐤔𐤊𐤌𐤉𐤄 𐤌	H7929	matres
+121:21:6	𐤌𐤀𐤊𐤋𐤉𐤄𐤌	spelling	𐤌 𐤀𐤊𐤋𐤉𐤄 𐤌	H402	matres
+121:22:3	𐤂𐤆𐤓𐤕𐤉	spelling	 𐤂𐤆𐤓 𐤕+𐤉	H1505	root
+121:22:7	𐤂𐤆𐤓𐤕𐤉	spelling	 𐤂𐤆𐤓 𐤕+𐤉	H1505	root
+121:24:4	𐤄𐤄𐤓𐤅𐤂	spelling	[𐤄] 𐤄𐤓𐤅𐤂 	H2026	matres
+121:25:6	𐤅𐤌𐤊𐤏𐤉𐤎	english	𐤅+[𐤌] 𐤊𐤏𐤉𐤎 	H3707	matres
+121:29:2	𐤂𐤆𐤓𐤕𐤉	spelling	 𐤂𐤆𐤓 𐤕+𐤉	H1505	root
+121:30:7	𐤀𐤁𐤃𐤍𐤌	spelling	 𐤀𐤁𐤃𐤍 𐤌	H12	root
+121:32:1	𐤅𐤉𐤏𐤁𐤉𐤃𐤅	spelling	𐤅+[𐤉] 𐤏𐤁𐤉𐤃 𐤅	H5647	matres
+122:1:3	𐤂𐤁𐤅𐤓𐤅𐤕𐤉𐤅	spelling	 𐤂𐤁𐤅𐤓𐤅𐤕 𐤉+𐤅	H1369	form
+122:1:5	𐤓𐤃𐤉𐤐𐤕	english	 𐤓𐤃𐤉𐤐 𐤕	H7291	matres
+122:1:8	𐤌𐤋𐤊𐤉𐤓𐤏	english	𐤌+𐤋+𐤊 𐤉𐤓𐤏 	H3415	root
+122:1:13	𐤅𐤀𐤉𐤓𐤔	spelling	𐤅+[𐤀] 𐤉𐤓𐤔 	H3423	root
+122:2:2	𐤂𐤁𐤅𐤓𐤅𐤕𐤉𐤅	spelling	 𐤂𐤁𐤅𐤓𐤅𐤕 𐤉+𐤅	H1369	form
+122:2:12	𐤁𐤋𐤊𐤉𐤓𐤀	spelling	𐤁+𐤋+𐤊 𐤉𐤓𐤀 	H7200	form
+122:3:1	𐤄𐤕𐤇𐤁𐤓𐤅	spelling	[𐤄𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
+122:3:3	𐤁𐤋𐤊𐤉𐤓𐤀	spelling	𐤁+𐤋+𐤊 𐤉𐤓𐤀 	H7200	form
+122:3:12	𐤁𐤋𐤊𐤉𐤓𐤀	spelling	𐤁+𐤋+𐤊 𐤉𐤓𐤀 	H7200	form
+122:3:13	𐤅𐤄𐤓𐤃𐤉𐤐𐤄	english	𐤅+[𐤄] 𐤓𐤃𐤉𐤐 𐤄	H7291	matres
+122:3:13	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+122:3:17	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+122:3:21	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+122:3:28	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+122:5:2	𐤁𐤋𐤊𐤉𐤓𐤀	spelling	𐤁+𐤋+𐤊 𐤉𐤓𐤀 	H7200	form
+122:5:4	𐤁𐤋𐤊𐤉𐤓𐤀	spelling	𐤁+𐤋+𐤊 𐤉𐤓𐤀 	H7200	form
+122:5:5	𐤁𐤋𐤊𐤉𐤓𐤀	spelling	𐤁+𐤋+𐤊 𐤉𐤓𐤀 	H7200	form
+122:5:8	𐤁𐤋𐤊𐤉𐤓𐤀	spelling	𐤁+𐤋+𐤊 𐤉𐤓𐤀 	H7200	form
+122:5:15	𐤁𐤋𐤊𐤉𐤓𐤀	spelling	𐤁+𐤋+𐤊 𐤉𐤓𐤀 	H7200	form
+122:6:13	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+122:7:4	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+122:7:5	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+122:7:8	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+122:7:17	𐤍𐤔𐤋𐤇𐤕	spelling	[𐤍] 𐤔𐤋𐤇 𐤕	H7971	root
+122:7:17	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+122:7:17	𐤍𐤔𐤋𐤇𐤕	spelling	[𐤍] 𐤔𐤋𐤇 𐤕	H7971	root
+122:7:21	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+122:7:21	𐤋𐤄𐤍𐤄𐤉𐤂	spelling	𐤋+[𐤄] 𐤍𐤄𐤉𐤂 	H5090	matres
+122:7:27	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+122:8:8	𐤅𐤍𐤔𐤋𐤇𐤕𐤉	spelling	𐤅+[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+122:8:12	𐤅𐤄𐤀𐤅𐤉𐤓	spelling	𐤅+𐤄 𐤀𐤅𐤉𐤓 	H216	matres
+122:8:14	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+122:8:25	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+122:9:2	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+122:9:12	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+122:9:17	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+122:9:18	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+122:9:26	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+122:10:12	𐤌𐤋𐤀𐤊𐤉𐤄𐤌	spelling	 𐤌𐤋𐤀𐤊𐤉𐤄 𐤌	H4399	matres
+122:10:18	𐤄𐤌𐤍𐤄𐤉𐤂	english	𐤄+[𐤌] 𐤍𐤄𐤉𐤂 	H5090	matres
+122:10:18	𐤕𐤌𐤅𐤓𐤕	spelling	[𐤕] 𐤌𐤅𐤓 𐤕	H4171	root
+122:10:22	𐤔𐤁𐤇𐤅	spelling	 𐤔𐤁𐤇 𐤅	H7623	root
+122:10:24	𐤉𐤊𐤉𐤓𐤄𐤅	spelling	[𐤉] 𐤊𐤉𐤓𐤄 𐤅	H3738	matres
+122:10:24	𐤔𐤁𐤇𐤅	spelling	 𐤔𐤁𐤇 𐤅	H7623	root
+122:10:27	𐤔𐤁𐤇𐤅	spelling	 𐤔𐤁𐤇 𐤅	H7623	root
+122:11:1	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+122:11:17	𐤉𐤊𐤉𐤓𐤄𐤅	spelling	[𐤉] 𐤊𐤉𐤓𐤄 𐤅	H3738	matres
+123:1:9	𐤀𐤊𐤕𐤁	spelling	[𐤀] 𐤊𐤕𐤁 	H3789	root
+123:1:12	𐤌𐤌𐤔𐤊𐤍𐤅𐤕𐤉𐤅	english	𐤌 𐤌𐤔𐤊𐤍𐤅𐤕 𐤉+𐤅	H4908	form
+123:4:23	𐤑𐤐𐤓𐤍𐤉𐤅	spelling	 𐤑𐤐𐤓𐤍 𐤉+𐤅	H6856	root
+123:5:23	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+124:1:2	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+124:1:3	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
+124:1:4	𐤅𐤕𐤁𐤓𐤀	spelling	𐤅+[𐤕] 𐤁𐤓𐤀 	H1254	root
+124:1:7	𐤌𐤆𐤄𐤉𐤓𐤄	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤄	H2096	matres
+124:1:7	𐤍𐤇𐤐𐤑	spelling	[𐤍] 𐤇𐤐𐤑 	H2654	root
+124:1:8	𐤁𐤓𐤉𐤅𐤕𐤉𐤊	spelling	 𐤁𐤓𐤉𐤅𐤕 𐤉+𐤊	H1285	matres
+124:1:9	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
+124:1:9	𐤕𐤓𐤉𐤁	spelling	[𐤕] 𐤓𐤉𐤁 	H7378	root
+124:1:10	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+124:1:10	𐤄𐤀𐤉𐤁𐤓𐤉𐤌	spelling	𐤄 𐤀𐤉𐤁𐤓 𐤉𐤌	H47	matres
+124:1:10	𐤑𐤐𐤓𐤍𐤉𐤅	spelling	 𐤑𐤐𐤓𐤍 𐤉+𐤅	H6856	root
+124:1:10	𐤕𐤐𐤓𐤃	spelling	[𐤕] 𐤐𐤓𐤃 	H6504	root
+124:1:10	𐤅𐤕𐤐𐤓𐤃	spelling	𐤅+[𐤕] 𐤐𐤓𐤃 	H6504	root
+124:1:10	𐤄𐤃𐤌𐤏𐤅𐤕	spelling	𐤄 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+124:1:11	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+124:1:11	𐤅𐤑𐤅𐤁𐤓𐤉𐤌	english	𐤅 𐤑𐤅𐤁𐤓 𐤉𐤌	H6651	matres
+124:1:11	𐤉𐤍𐤑𐤇𐤅	english	[𐤉] 𐤍𐤑𐤇 𐤅	H5330	root
+124:1:12	𐤕𐤎𐤋𐤇	spelling	[𐤕] 𐤎𐤋𐤇 	H5545	root
+124:1:13	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
+124:1:15	𐤈𐤁𐤋𐤅	spelling	 𐤈𐤁𐤋 𐤅	H2881	root
+124:1:15	𐤄𐤈𐤁𐤉𐤋𐤄	english	[𐤄] 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+124:1:15	𐤈𐤁𐤋𐤅	spelling	 𐤈𐤁𐤋 𐤅	H2881	root
+124:1:15	𐤁𐤈𐤁𐤉𐤋𐤄	spelling	𐤁 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+124:1:15	𐤍𐤑𐤃𐤒	spelling	[𐤍] 𐤑𐤃𐤒 	H6663	root
+124:1:15	𐤉𐤒𐤔𐤉𐤁𐤅	english	[𐤉] 𐤒𐤔𐤉𐤁 𐤅	H7181	matres
+124:1:17	𐤀𐤄𐤅𐤁𐤉	spelling	 𐤀𐤄𐤅𐤁 𐤉	H157	matres
+125:1:1	𐤁𐤉𐤀𐤕	spelling	 𐤁𐤉𐤀 𐤕	H935	matres
+125:1:1	𐤇𐤈𐤀𐤉𐤄𐤌	spelling	 𐤇𐤈𐤀𐤉𐤄 𐤌	H2403	matres
+125:1:3	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+125:1:4	𐤅𐤍𐤕𐤇𐤍𐤍	spelling	𐤅+[𐤍𐤕] 𐤇𐤍𐤍 	H2603	root
+125:1:4	𐤅𐤍𐤋𐤌𐤃	english	𐤅+[𐤍] 𐤋𐤌𐤃 	H3925	root
+125:1:5	𐤉𐤕𐤏𐤄	spelling	[𐤉] 𐤕𐤏𐤄 	H8582	root
+125:1:5	𐤁𐤉𐤀𐤕	spelling	 𐤁𐤉𐤀 𐤕	H935	matres
+125:2:1	𐤄𐤆𐤌𐤅𐤓𐤅𐤕	english	𐤄 𐤆𐤌𐤅𐤓 𐤅𐤕	H2167	matres
+125:2:3	𐤍𐤏𐤒𐤓	spelling	[𐤍] 𐤏𐤒𐤓 	H6131	root
+125:2:3	𐤄𐤆𐤌𐤅𐤓𐤅𐤕	english	𐤄 𐤆𐤌𐤅𐤓𐤅𐤕 	H2176	matres
+125:2:3	𐤆𐤌𐤅𐤓𐤅𐤕	english	 𐤆𐤌𐤅𐤓 𐤅𐤕	H2167	matres
+125:5:2	𐤄𐤍𐤅𐤆𐤋	spelling	[𐤄] 𐤍𐤅𐤆𐤋 	H5140	matres
+125:6:2	𐤇𐤈𐤀𐤉𐤄𐤌	spelling	 𐤇𐤈𐤀𐤉𐤄 𐤌	H2403	matres
+125:7:2	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
+125:7:2	𐤉𐤁𐤏𐤉𐤓𐤅	spelling	[𐤉] 𐤁𐤏𐤉𐤓𐤅 	H1197	form
+125:7:4	𐤄𐤕𐤇𐤁𐤓𐤅	spelling	[𐤄𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
+125:7:4	𐤌𐤊𐤀𐤅𐤁𐤉𐤄𐤌	english	𐤌+𐤊 𐤀𐤅𐤁𐤉𐤄 𐤌	H14	matres
+125:8:1	𐤀𐤁𐤃𐤍𐤌	spelling	 𐤀𐤁𐤃𐤍 𐤌	H12	root
+125:8:2	𐤄𐤍𐤅𐤆𐤋	spelling	[𐤄] 𐤍𐤅𐤆𐤋 	H5140	matres
+125:8:2	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
+125:9:2	𐤒𐤓𐤁𐤉𐤄𐤌	english	 𐤒𐤓𐤁𐤉𐤄 𐤌	H7132	matres
+125:11:2	𐤁𐤇𐤈𐤀𐤉𐤄𐤌	english	𐤁 𐤇𐤈𐤀𐤉𐤄 𐤌	H2403	matres
+125:13:1	𐤉𐤏𐤍𐤉𐤔	spelling	[𐤉] 𐤏𐤍𐤉𐤔 	H6064	matres
+125:13:2	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
+125:14:1	𐤏𐤈𐤓𐤅	spelling	 𐤏𐤈𐤓 𐤅	H5849	root
+125:14:2	𐤁𐤔𐤅𐤓𐤕𐤉	spelling	𐤁 𐤔𐤅𐤓 𐤕+𐤉	H7789	root
+125:15:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+125:16:1	𐤅𐤍𐤔𐤕𐤅𐤌𐤌	english	𐤅+[𐤍] 𐤔𐤕𐤅𐤌 𐤌	H8365	matres
+125:16:2	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+125:17:1	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+126:6:7	𐤉𐤕𐤋𐤄	spelling	[𐤉] 𐤕𐤋𐤄 	H8518	root
+126:8:2	𐤉𐤕𐤋𐤄	spelling	[𐤉] 𐤕𐤋𐤄 	H8518	root
+127:2:9	𐤉𐤀𐤅𐤁𐤄	english	 𐤉𐤀𐤅𐤁 𐤄	H2968	matres
+127:4:2	𐤅𐤉𐤇𐤓𐤉𐤁𐤅	spelling	𐤅+[𐤉] 𐤇𐤓𐤉𐤁 𐤅	H2717	matres
+127:5:1	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+127:5:2	𐤄𐤍𐤓𐤀𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+127:6:4	𐤌𐤊𐤀𐤅𐤁𐤉𐤄𐤌	english	𐤌+𐤊 𐤀𐤅𐤁𐤉𐤄 𐤌	H29	matres
+127:7:5	𐤉𐤕𐤒𐤍	spelling	[𐤉] 𐤕𐤒𐤍 	H8626	root
+127:7:5	𐤉𐤇𐤁𐤓	spelling	[𐤉] 𐤇𐤁𐤓 	H2266	root
+127:8:2	𐤅𐤎𐤁𐤅𐤁	english	𐤅 𐤎𐤁𐤅𐤁 	H5437	matres
+127:8:3	𐤌𐤏𐤈𐤓	spelling	[𐤌] 𐤏𐤈𐤓 	H5849	root
+127:8:5	𐤄𐤁𐤈𐤉𐤇𐤅	spelling	𐤄 𐤁𐤈𐤉𐤇 𐤅	H983	matres
+127:8:9	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+128:2:5	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
+128:2:8	𐤍𐤌𐤎𐤓	spelling	[𐤍] 𐤌𐤎𐤓 	H4560	root
+128:2:12	𐤅𐤉𐤅𐤔𐤌	spelling	𐤅+[𐤉] 𐤅𐤔𐤌 	H7760	form
+128:2:12	𐤅𐤁𐤅𐤓𐤇𐤉𐤌	english	𐤅 𐤁𐤅𐤓𐤇 𐤉𐤌	H1272	matres
+128:2:15	𐤋𐤂𐤌𐤅𐤓	spelling	𐤋 𐤂𐤌𐤅𐤓 	H1584	matres
+128:4:15	𐤍𐤎𐤋𐤇	spelling	[𐤍] 𐤎𐤋𐤇 	H5545	root
+128:4:18	𐤅𐤋𐤄𐤕𐤇𐤁𐤓	spelling	𐤅+𐤋+[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
+128:9:4	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
+128:13:3	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
+128:14:2	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
+128:15:6	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
+128:17:5	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
+128:18:5	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
+128:19:2	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
+128:23:4	𐤍𐤒𐤁𐤓	spelling	[𐤍] 𐤒𐤁𐤓 	H6912	root
+129:1:2	𐤌𐤇𐤓𐤈𐤅𐤌𐤉𐤅	english	𐤌 𐤇𐤓𐤈𐤅𐤌 𐤉+𐤅	H2748	matres
+129:1:12	𐤕𐤋𐤒𐤇	spelling	[𐤕] 𐤋𐤒𐤇 	H3947	root
+129:1:12	𐤀𐤀𐤁𐤃	spelling	[𐤀] 𐤀𐤁𐤃 	H6	root
+129:1:29	𐤀𐤀𐤁𐤃	spelling	[𐤀] 𐤀𐤁𐤃 	H6	root
+130:1:2	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+130:2:1	𐤏𐤈𐤐𐤄	english	 𐤏𐤈𐤐 𐤄	H5848	root
+130:3:3	𐤁𐤏𐤍𐤐𐤉𐤅	spelling	𐤁 𐤏𐤍𐤐 𐤉+𐤅	H6057	root
+130:3:4	𐤌𐤏𐤈𐤓	spelling	[𐤌] 𐤏𐤈𐤓 	H5849	root
+130:5:7	𐤅𐤍𐤕𐤇𐤍𐤍	spelling	𐤅+[𐤍𐤕] 𐤇𐤍𐤍 	H2603	root
+130:6:6	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
+130:6:10	𐤅𐤀𐤎𐤐𐤃	english	𐤅+[𐤀] 𐤎𐤐𐤃 	H5594	root
+130:6:12	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+130:7:3	𐤅𐤍𐤁𐤊𐤄	spelling	𐤅+[𐤍] 𐤁𐤊𐤄 	H1058	root
+130:7:3	𐤅𐤍𐤕𐤇𐤍𐤍	spelling	𐤅+[𐤍𐤕] 𐤇𐤍𐤍 	H2603	root
+130:9:4	𐤄𐤐𐤉𐤑	spelling	[𐤄] 𐤐𐤉𐤑 	H6327	matres
+130:11:3	𐤍𐤁𐤅𐤔	spelling	[𐤍] 𐤁𐤅𐤔 	H954	root
+130:11:7	𐤍𐤕𐤀𐤁𐤋	spelling	[𐤍𐤕] 𐤀𐤁𐤋 	H56	root
+130:11:7	𐤅𐤍𐤁𐤊𐤄	spelling	𐤅+[𐤍] 𐤁𐤊𐤄 	H1058	root
+130:13:2	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+130:13:2	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+130:13:4	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
+130:15:2	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+130:20:3	𐤅𐤀𐤏𐤑𐤓𐤄𐤅	english	𐤅+[𐤀] 𐤏𐤑𐤓𐤄 𐤅	H6113	form
+130:21:1	𐤇𐤉𐤉𐤕𐤉	spelling	 𐤇𐤉𐤉 𐤕+𐤉	H2425	root
+131:1:23	𐤍𐤓𐤉𐤌𐤍	english	[𐤍] 𐤓𐤉𐤌 𐤍	H7311	matres
+131:1:25	𐤁𐤆𐤐𐤕	spelling	𐤁 𐤆𐤐𐤕 	H2203	root
+131:1:38	𐤍𐤅𐤇𐤅	spelling	 𐤍𐤅𐤇 𐤅	H5117	root
+131:1:57	𐤉𐤌𐤔𐤊	spelling	[𐤉] 𐤌𐤔𐤊 	H4900	root
+132:1:25	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
+132:1:25	𐤅𐤀𐤇𐤊𐤄	spelling	𐤅+[𐤀] 𐤇𐤊𐤄 	H2442	root
+132:1:27	𐤋𐤄𐤎𐤉𐤓𐤍𐤉	english	𐤋+𐤄 𐤎𐤉𐤓𐤍 𐤉	H5633	matres
+132:1:51	𐤏𐤍𐤐𐤉𐤅	spelling	 𐤏𐤍𐤐 𐤉+𐤅	H6057	root
+132:1:55	𐤁𐤂𐤆𐤏	spelling	𐤁 𐤂𐤆𐤏 	H1503	root
+132:1:56	𐤁𐤂𐤆𐤏	spelling	𐤁 𐤂𐤆𐤏 	H1503	root
+132:1:57	𐤏𐤍𐤐𐤉𐤅	spelling	 𐤏𐤍𐤐 𐤉+𐤅	H6057	root
+132:1:57	𐤏𐤍𐤐𐤉𐤅	spelling	 𐤏𐤍𐤐 𐤉+𐤅	H6057	root
+132:1:59	𐤅𐤉𐤁𐤅𐤊𐤅	spelling	𐤅+[𐤉] 𐤁𐤅𐤊 𐤅	H943	root
+132:1:64	𐤅𐤋𐤕𐤉𐤓𐤎	spelling	𐤅+𐤋 𐤕𐤉𐤓𐤎 	H8494	root
+132:1:79	𐤍𐤑𐤋𐤕𐤉	spelling	 𐤍𐤑𐤋 𐤕+𐤉	H5337	root
+132:1:93	𐤄𐤂𐤁𐤅𐤄	spelling	𐤄 𐤂𐤁𐤅𐤄 	H1364	matres
+133:1:23	𐤅𐤕𐤎𐤋𐤇	english	𐤅+[𐤕] 𐤎𐤋𐤇 	H5545	root
+133:2:24	𐤅𐤕𐤏𐤍𐤔	english	𐤅+[𐤕] 𐤏𐤍𐤔 	H6064	root
+133:2:25	𐤕𐤕𐤇𐤁𐤓	english	[𐤕𐤕] 𐤇𐤁𐤓 	H2266	root
+133:2:27	𐤉𐤐𐤂𐤏	spelling	[𐤉] 𐤐𐤂𐤏 	H6293	root
+133:2:28	𐤅𐤁𐤏𐤍𐤐𐤉𐤅	english	𐤅+𐤁 𐤏𐤍𐤐 𐤉+𐤅	H6057	root
+133:2:30	𐤉𐤕𐤏𐤄	spelling	[𐤉] 𐤕𐤏𐤄 	H8582	root
+133:2:37	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+133:2:37	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+133:2:44	𐤉𐤍𐤇𐤄	spelling	[𐤉] 𐤍𐤇𐤄 	H5148	root
+133:2:44	𐤉𐤍𐤇𐤄	spelling	[𐤉] 𐤍𐤇𐤄 	H5148	root
+133:2:60	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+133:2:66	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
+133:3:11	𐤅𐤉𐤀𐤇𐤆𐤄𐤅	spelling	𐤅+[𐤉] 𐤀𐤇𐤆𐤄 𐤅	H270	form
+133:3:11	𐤋𐤄𐤕𐤀𐤅𐤍𐤍	spelling	𐤋+[𐤄𐤕] 𐤀𐤅𐤍𐤍 	H596	matres
+133:3:23	𐤅𐤉𐤁𐤅𐤊𐤅	spelling	𐤅+[𐤉] 𐤁𐤅𐤊 𐤅	H943	root
+133:3:24	𐤕𐤏𐤑𐤁	spelling	[𐤕] 𐤏𐤑𐤁 	H6087	root
+133:3:26	𐤅𐤉𐤍𐤉𐤐	english	𐤅+[𐤉] 𐤍𐤉𐤐 	H5130	matres
+133:3:28	𐤕𐤏𐤑𐤁	spelling	[𐤕] 𐤏𐤑𐤁 	H6087	root
+133:3:38	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+133:3:53	𐤄𐤌𐤇𐤁𐤀	spelling	𐤄 𐤌𐤇𐤁𐤀 	H4224	root
+133:3:61	𐤄𐤌𐤇𐤁𐤀	spelling	𐤄 𐤌𐤇𐤁𐤀 	H4224	root
+133:3:62	𐤄𐤌𐤇𐤁𐤀	spelling	𐤄 𐤌𐤇𐤁𐤀 	H4224	root
+133:4:1	𐤁𐤉𐤇𐤅𐤃	spelling	𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
+133:4:1	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+133:4:4	𐤅𐤉𐤁𐤅𐤊𐤅	spelling	𐤅+[𐤉] 𐤁𐤅𐤊 𐤅	H943	root
+133:4:24	𐤄𐤏𐤅𐤍𐤂	english	[𐤄] 𐤏𐤅𐤍𐤂 	H6026	matres
+133:4:26	𐤅𐤑𐤐𐤓𐤍𐤉𐤅	english	𐤅 𐤑𐤐𐤓𐤍 𐤉+𐤅	H6856	root
+133:4:28	𐤅𐤉𐤍𐤇𐤌𐤄𐤅	spelling	𐤅+[𐤉] 𐤍𐤇𐤌𐤄 𐤅	H5162	form
+133:4:30	𐤍𐤓𐤀𐤉𐤕𐤉	spelling	[𐤍] 𐤓𐤀𐤉𐤕𐤉 	H7200	form
+133:4:31	𐤅𐤑𐤐𐤓𐤍𐤉𐤊	spelling	𐤅 𐤑𐤐𐤓𐤍 𐤉+𐤊	H6856	root
+133:5:3	𐤅𐤕𐤀𐤇𐤆𐤄𐤅	english	𐤅+[𐤕] 𐤀𐤇𐤆𐤄 𐤅	H270	form
+133:5:10	𐤄𐤀𐤅𐤓𐤂𐤉𐤌	spelling	[𐤄] 𐤀𐤅𐤓𐤂 𐤉𐤌	H707	matres
+133:5:14	𐤅𐤋𐤄𐤓𐤂𐤉𐤋	english	𐤅+𐤋+𐤄 𐤓𐤂𐤉𐤋 	H7272	matres
+133:5:16	𐤅𐤉𐤒𐤐𐤑	spelling	𐤅+[𐤉] 𐤒𐤐𐤑 	H7092	root
+133:5:24	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+133:5:43	𐤋𐤐𐤓𐤇𐤉𐤅	spelling	𐤋 𐤐𐤓𐤇 𐤉+𐤅	H6525	root
+133:5:47	𐤋𐤐𐤓𐤇𐤉𐤅	spelling	𐤋 𐤐𐤓𐤇 𐤉+𐤅	H6525	root
+133:5:47	𐤅𐤂𐤃𐤅𐤋𐤉𐤅	spelling	𐤅 𐤂𐤃𐤅𐤋 𐤉+𐤅	H1419	root
+133:5:49	𐤅𐤂𐤃𐤅𐤋𐤉𐤅	spelling	𐤅 𐤂𐤃𐤅𐤋 𐤉+𐤅	H1419	root
+133:5:50	𐤅𐤂𐤃𐤅𐤋𐤉𐤅	spelling	𐤅 𐤂𐤃𐤅𐤋 𐤉+𐤅	H1419	root
+133:5:51	𐤅𐤉𐤁𐤓𐤒	english	𐤅+[𐤉] 𐤁𐤓𐤒 	H1299	root
+133:6:3	𐤌𐤅𐤃𐤉𐤏𐤉𐤌	spelling	 𐤌𐤅𐤃𐤉𐤏 𐤉𐤌	H4069	matres
+133:6:7	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+133:6:12	𐤄𐤕𐤁𐤅𐤕	spelling	[𐤄𐤕] 𐤁𐤅𐤕 	H956	root
+133:6:14	𐤅𐤂𐤃𐤅𐤋𐤉𐤅	spelling	𐤅 𐤂𐤃𐤅𐤋 𐤉+𐤅	H1419	root
+133:6:30	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+133:6:43	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+133:6:47	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+133:7:7	𐤊𐤏𐤒𐤓𐤁	english	𐤊 𐤏𐤒𐤓𐤁 	H6137	root
+133:7:15	𐤀𐤔𐤏𐤍	spelling	[𐤀] 𐤔𐤏𐤍 	H8172	root
+133:7:18	𐤅𐤉𐤒𐤐𐤑	spelling	𐤅+[𐤉] 𐤒𐤐𐤑 	H7092	root
+133:7:19	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+133:7:20	𐤅𐤕𐤐𐤋𐤅𐤕𐤉𐤊	spelling	𐤅 𐤕𐤐𐤋𐤅𐤕 𐤉+𐤊	H8605	form
+133:7:20	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+133:7:21	𐤅𐤉𐤒𐤐𐤑	spelling	𐤅+[𐤉] 𐤒𐤐𐤑 	H7092	root
+133:7:27	𐤅𐤉𐤕𐤂𐤅𐤋𐤋	spelling	𐤅+[𐤉𐤕] 𐤂𐤅𐤋𐤋 	H1556	matres
+133:7:32	𐤏𐤍𐤐𐤉𐤅	spelling	 𐤏𐤍𐤐 𐤉+𐤅	H6057	root
+133:7:53	𐤉𐤐𐤂𐤏	spelling	[𐤉] 𐤐𐤂𐤏 	H6293	root
+133:7:53	𐤉𐤐𐤂𐤏	spelling	[𐤉] 𐤐𐤂𐤏 	H6293	root
+133:7:60	𐤉𐤕𐤓𐤅𐤌𐤌	english	[𐤉𐤕] 𐤓𐤅𐤌 𐤌	H7311	root
+134:1:10	𐤋𐤏𐤈𐤓	spelling	𐤋 𐤏𐤈𐤓 	H5849	root
+134:1:14	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+134:1:48	𐤔𐤏𐤔𐤅𐤏𐤉	english	 𐤔𐤏𐤔𐤅𐤏 𐤉	H8191	matres
+134:1:50	𐤅𐤁𐤌𐤊𐤅𐤕𐤉𐤊	english	𐤅+𐤁 𐤌𐤊𐤅𐤕 𐤉+𐤊	H4347	form
+134:7:19	𐤋𐤉𐤓𐤅𐤔𐤋𐤉𐤌	spelling	𐤋 𐤉𐤓𐤅𐤔𐤋𐤉𐤌 	H3390	matres
+134:7:23	𐤅𐤍𐤃𐤊𐤄	english	𐤅+[𐤍] 𐤃𐤊𐤄 	H1794	root
+134:7:23	𐤀𐤁𐤆𐤄	spelling	[𐤀] 𐤁𐤆𐤄 	H959	root
+134:8:6	𐤅𐤌𐤉𐤅𐤇𐤃	english	𐤅+𐤌 𐤉𐤅𐤇𐤃 	H3162	matres
+134:9:8	𐤍𐤁𐤃𐤋𐤉𐤌	spelling	[𐤍] 𐤁𐤃𐤋 𐤉𐤌	H914	root
+134:12:3	𐤅𐤄𐤌𐤈𐤉𐤁	english	𐤅+𐤄+[𐤌] 𐤈𐤉𐤁 	H2895	matres
+134:13:8	𐤇𐤉𐤉𐤁𐤉𐤌	spelling	 𐤇𐤉𐤉𐤁 𐤉𐤌	H2325	matres
+134:13:25	𐤅𐤕𐤍𐤂𐤍	english	𐤅+[𐤕] 𐤍𐤂𐤍 	H5059	root
+134:13:46	𐤋𐤀𐤇𐤉𐤔𐤓	english	𐤋 𐤀𐤇𐤉𐤔𐤓 	H301	root
+135:4:8	𐤅𐤑𐤁𐤀𐤅𐤕𐤉𐤊	english	𐤅 𐤑𐤁𐤀𐤅𐤕 𐤉+𐤊	H6635	form
+135:4:8	𐤀𐤅𐤇𐤆𐤉𐤌	spelling	 𐤀𐤅𐤇𐤆 𐤉𐤌	H270	matres
+135:5:13	𐤀𐤏𐤌𐤃	spelling	[𐤀] 𐤏𐤌𐤃 	H5975	root
+135:6:9	𐤄𐤏𐤅𐤑𐤓𐤉𐤌	spelling	[𐤄] 𐤏𐤅𐤑𐤓 𐤉𐤌	H6113	matres
+135:7:20	𐤕𐤈𐤁𐤏	spelling	[𐤕] 𐤈𐤁𐤏 	H2883	root
+135:8:2	𐤁𐤔𐤒𐤉𐤃𐤄	spelling	𐤁 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
+135:8:3	𐤆𐤒𐤅𐤐𐤉𐤌	english	 𐤆𐤒𐤅𐤐 𐤉𐤌	H2210	matres
+135:8:13	𐤅𐤇𐤕𐤌𐤕𐤉	spelling	𐤅 𐤇𐤕𐤌𐤕 𐤉	H2858	root
+135:8:21	𐤄𐤀𐤄𐤅𐤁𐤉𐤌	spelling	[𐤄] 𐤀𐤄𐤅𐤁 𐤉𐤌	H157	matres
+135:11:3	𐤅𐤄𐤌𐤉𐤋𐤄	spelling	𐤅+𐤄 𐤌𐤉𐤋𐤄 	H4139	matres
+135:11:4	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+135:11:5	𐤅𐤀𐤊𐤅𐤍	english	𐤅+[𐤀] 𐤊𐤅𐤍 	H3559	root
+135:14:4	𐤋𐤌𐤍𐤄𐤉𐤂	spelling	𐤋+[𐤌] 𐤍𐤄𐤉𐤂 	H5090	matres
+135:14:10	𐤑𐤓𐤊𐤍𐤅	spelling	 𐤑𐤓𐤊 𐤍𐤅	H6878	root
+135:16:13	𐤅𐤄𐤁𐤓𐤅𐤀𐤉𐤌	english	𐤅+[𐤄] 𐤁𐤓𐤅𐤀 𐤉𐤌	H1254	matres
+135:17:4	𐤅𐤒𐤁𐤋𐤕𐤉	spelling	𐤅 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+135:19:1	𐤁𐤌𐤕𐤒	english	𐤁 𐤌𐤕𐤒 	H4986	root
+135:19:5	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+135:19:6	𐤅𐤕𐤒𐤁𐤋	spelling	𐤅+[𐤕] 𐤒𐤁𐤋 	H6901	root
+135:20:2	𐤀𐤒𐤓𐤉𐤁	spelling	[𐤀] 𐤒𐤓𐤉𐤁 	H7126	matres
+135:20:9	𐤅𐤕𐤒𐤁𐤋	spelling	𐤅+[𐤕] 𐤒𐤁𐤋 	H6901	root
+135:22:11	𐤅𐤉𐤕𐤇𐤃𐤔	english	𐤅+[𐤉𐤕] 𐤇𐤃𐤔 	H2318	root
+135:23:2	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+135:25:12	𐤅𐤌𐤍𐤅𐤇𐤕𐤅	english	𐤅 𐤌𐤍𐤅𐤇 𐤕+𐤅	H4494	root
+135:26:11	𐤍𐤐𐤕𐤓	english	[𐤍] 𐤐𐤕𐤓 	H6622	root
+135:29:6	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
+135:33:1	𐤋𐤄𐤊𐤇𐤉𐤔	spelling	𐤋+[𐤄] 𐤊𐤇𐤉𐤔 	H3584	matres
+135:34:3	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
+135:35:7	𐤅𐤀𐤊𐤅𐤍𐤍	spelling	𐤅+[𐤀] 𐤊𐤅𐤍 𐤍	H3559	root
+135:35:7	𐤅𐤍𐤂𐤀𐤋𐤕𐤉	spelling	𐤅+[𐤍] 𐤂𐤀𐤋 𐤕+𐤉	H1350	root
+135:36:2	𐤔𐤉𐤓𐤉𐤅	spelling	 𐤔𐤉𐤓 𐤉+𐤅	H7892	root
+135:38:5	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
+135:38:17	𐤅𐤍𐤂𐤀𐤋𐤕𐤉	spelling	𐤅+[𐤍] 𐤂𐤀𐤋 𐤕+𐤉	H1350	root
+135:39:5	𐤉𐤁𐤄𐤋𐤅	spelling	[𐤉] 𐤁𐤄𐤋 𐤅	H926	root
+135:39:8	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
+135:39:10	𐤊𐤒𐤅𐤓𐤕	english	𐤊 𐤒𐤅𐤓 𐤕	H6979	root
+135:40:6	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+136:16:4	𐤄𐤕𐤒𐤅𐤐𐤄	spelling	𐤄 𐤕𐤒𐤅𐤐𐤄 	H8622	root
+136:69:4	𐤅𐤉𐤇𐤊𐤅	spelling	𐤅+[𐤉] 𐤇𐤊𐤅 	H2442	form
+136:69:20	𐤅𐤉𐤓𐤏𐤃	spelling	𐤅+[𐤉] 𐤓𐤏𐤃 	H7460	root
+137:3:7	𐤋𐤍𐤒𐤁	english	𐤋 𐤍𐤒𐤁 	H5344	root
+137:4:15	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+137:4:17	𐤓𐤑𐤉𐤇𐤅𐤕	spelling	 𐤓𐤑𐤉𐤇 𐤅𐤕	H7523	matres
+137:5:3	𐤕𐤔𐤋𐤉𐤊	spelling	[𐤕] 𐤔𐤋𐤉𐤊 	H7993	matres
+137:6:6	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+137:8:6	𐤓𐤑𐤉𐤇𐤅𐤕	spelling	 𐤓𐤑𐤉𐤇 𐤅𐤕	H7523	matres
+137:10:6	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+139:2:16	𐤌𐤌𐤒𐤅𐤌𐤅𐤕𐤌	english	𐤌+[𐤌] 𐤒𐤅𐤌 𐤅𐤕+𐤌	H6965	root
+139:2:18	𐤒𐤃𐤔𐤕𐤉	spelling	 𐤒𐤃𐤔 𐤕+𐤉	H6944	root
+139:2:36	𐤍𐤅𐤎𐤅	spelling	 𐤍𐤅𐤎 𐤅	H5127	root
+139:2:46	𐤄𐤌𐤏𐤈𐤓	spelling	𐤄+[𐤌] 𐤏𐤈𐤓 	H5849	root
+139:2:47	𐤋𐤔𐤁𐤇	spelling	𐤋 𐤔𐤁𐤇 	H7623	root
+139:11:7	𐤑𐤐𐤓𐤍𐤉𐤅	spelling	 𐤑𐤐𐤓𐤍 𐤉+𐤅	H6856	root
+139:11:8	𐤑𐤐𐤓𐤍𐤉𐤅	spelling	 𐤑𐤐𐤓𐤍 𐤉+𐤅	H6856	root
+139:15:8	𐤅𐤄𐤕𐤀𐤅𐤍𐤍𐤅	spelling	𐤅+[𐤄𐤕] 𐤀𐤅𐤍𐤍 𐤅	H596	matres
+139:15:10	𐤀𐤍𐤉𐤇	spelling	[𐤀] 𐤍𐤉𐤇 	H5117	matres
+139:15:12	𐤅𐤁𐤏𐤅𐤍𐤔	english	𐤅+𐤁 𐤏𐤅𐤍𐤔 	H6064	matres
+139:15:32	𐤉𐤁𐤄𐤋𐤅	spelling	[𐤉] 𐤁𐤄𐤋 𐤅	H926	root
+139:15:33	𐤉𐤑𐤅𐤓𐤅	spelling	[𐤉] 𐤑𐤅𐤓 𐤅	H6696	root
+139:15:40	𐤉𐤇𐤓𐤉𐤃𐤅	english	[𐤉] 𐤇𐤓𐤉𐤃 𐤅	H2729	matres
+139:15:44	𐤅𐤉𐤑𐤅𐤓𐤅	spelling	𐤅+[𐤉] 𐤑𐤅𐤓 𐤅	H6696	root
+139:15:48	𐤅𐤌𐤆𐤌𐤅𐤕𐤉𐤄	english	 𐤅𐤌𐤆𐤌𐤅𐤕 𐤉+𐤄	H4209	form
+139:15:51	𐤅𐤊𐤌𐤉𐤎𐤓𐤕	english	𐤅+𐤊+[𐤌] 𐤉𐤎𐤓 𐤕	H3256	root
+139:15:55	𐤕𐤒𐤁𐤋𐤉	spelling	[𐤕] 𐤒𐤁𐤋 𐤉	H6901	root
+139:15:59	𐤅𐤕𐤒𐤁𐤋𐤉	english	𐤅+[𐤕] 𐤒𐤁𐤋 𐤉	H6901	root
+139:16:43	𐤉𐤒𐤑𐤓	spelling	[𐤉] 𐤒𐤑𐤓 	H7114	root
+139:16:52	𐤕𐤅𐤎𐤓	spelling	[𐤕] 𐤅𐤎𐤓 	H5493	form
+139:16:75	𐤕𐤎𐤐𐤒𐤅	spelling	[𐤕] 𐤎𐤐𐤒 𐤅	H5606	root
+140:1:18	𐤋𐤎𐤋𐤉𐤇𐤕	spelling	𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+140:3:6	𐤒𐤃𐤔𐤕𐤍𐤅	spelling	 𐤒𐤃𐤔 𐤕+𐤍𐤅	H6944	root
+140:7:5	𐤕𐤔𐤁𐤇𐤅𐤕	spelling	[𐤕] 𐤔𐤁𐤇 𐤅𐤕	H7623	root
+140:8:1	𐤕𐤔𐤁𐤇𐤅𐤕	spelling	[𐤕] 𐤔𐤁𐤇 𐤅𐤕	H7623	root
+140:8:1	𐤕𐤔𐤁𐤇𐤅𐤕	spelling	[𐤕] 𐤔𐤁𐤇 𐤅𐤕	H7623	root
+140:8:1	𐤕𐤔𐤁𐤇𐤅𐤕	spelling	[𐤕] 𐤔𐤁𐤇 𐤅𐤕	H7623	root
+140:8:8	𐤕𐤔𐤁𐤇𐤅𐤕	spelling	[𐤕] 𐤔𐤁𐤇 𐤅𐤕	H7623	root
+140:11:27	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+140:11:27	𐤁𐤄𐤕𐤇𐤁𐤓𐤄	spelling	𐤁+[𐤄𐤕] 𐤇𐤁𐤓 𐤄	H2266	root
+140:11:27	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+140:11:28	𐤁𐤄𐤕𐤇𐤁𐤓𐤄	spelling	𐤁+[𐤄𐤕] 𐤇𐤁𐤓 𐤄	H2266	root
+140:11:28	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+140:11:28	𐤁𐤄𐤕𐤇𐤁𐤓𐤄	spelling	𐤁+[𐤄𐤕] 𐤇𐤁𐤓 𐤄	H2266	root
+140:11:28	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+140:11:28	𐤁𐤄𐤕𐤇𐤁𐤓𐤄	spelling	𐤁+[𐤄𐤕] 𐤇𐤁𐤓 𐤄	H2266	root
+140:11:28	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+140:11:28	𐤁𐤄𐤕𐤇𐤁𐤓𐤄	spelling	𐤁+[𐤄𐤕] 𐤇𐤁𐤓 𐤄	H2266	root
+140:11:29	𐤕𐤂𐤁𐤓	spelling	[𐤕] 𐤂𐤁𐤓 	H1396	root
+140:11:29	𐤁𐤄𐤕𐤇𐤁𐤓𐤄	spelling	𐤁+[𐤄𐤕] 𐤇𐤁𐤓 𐤄	H2266	root
+140:17:13	𐤊𐤎𐤃𐤓	spelling	𐤊 𐤎𐤃𐤓 	H5468	root
+140:19:9	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+141:4:5	𐤅𐤌𐤄𐤆𐤀𐤁	english	𐤅+𐤌+𐤄 𐤆𐤀𐤁 	H2061	root
+143:4:26	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+144:2:12	𐤅𐤇𐤒𐤉𐤄𐤌	spelling	𐤅 𐤇𐤒𐤉𐤄 𐤌	H2708	matres
+145:1:1	𐤁𐤆𐤓𐤅𐤏𐤅𐤕𐤉𐤄	spelling	𐤁 𐤆𐤓𐤅𐤏𐤅𐤕 𐤉+𐤄	H2220	form
+145:1:2	𐤁𐤆𐤓𐤅𐤏𐤅𐤕𐤉𐤄	spelling	𐤁 𐤆𐤓𐤅𐤏𐤅𐤕 𐤉+𐤄	H2220	form
+145:2:2	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+145:3:5	𐤔𐤉𐤓𐤉𐤅	spelling	 𐤔𐤉𐤓 𐤉+𐤅	H7892	root
+146:10:3	𐤅𐤉𐤒𐤔𐤉𐤁𐤅	spelling	𐤅+[𐤉] 𐤒𐤔𐤉𐤁 𐤅	H7181	matres
+146:16:7	𐤀𐤔𐤏𐤍	spelling	[𐤀] 𐤔𐤏𐤍 	H8172	root
+146:21:17	𐤍𐤎𐤉𐤓𐤄	spelling	[𐤍] 𐤎𐤉𐤓 𐤄	H5493	matres
+147:1:8	𐤕𐤐𐤅𐤓	spelling	[𐤕] 𐤐𐤅𐤓 	H6565	form
+147:1:11	𐤉𐤐𐤔𐤉𐤈𐤅	english	[𐤉] 𐤐𐤔𐤉𐤈 𐤅	H6584	matres
+149:1:1	𐤅𐤉𐤀𐤔𐤉𐤌𐤅	spelling	𐤅+[𐤉] 𐤀𐤔𐤉𐤌 𐤅	H7760	form
+149:1:14	𐤄𐤉𐤅𐤅𐤍𐤉	spelling	𐤄 𐤉𐤅𐤅𐤍 𐤉	H3120	matres
+149:1:16	𐤅𐤉𐤁𐤀𐤓	spelling	𐤅+[𐤉] 𐤁𐤀𐤓 	H874	root
+149:2:10	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:2:13	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
+149:3:10	𐤍𐤅𐤋𐤃𐤕𐤉	spelling	 𐤍𐤅𐤋𐤃 𐤕+𐤉	H3205	form
+149:4:13	𐤂𐤃𐤅𐤐𐤉𐤌	spelling	 𐤂𐤃𐤅𐤐 𐤉𐤌	H1421	root
+149:4:14	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+149:5:10	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+149:5:15	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+149:5:21	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+149:5:27	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+149:5:28	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:6:4	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+149:6:11	𐤅𐤄𐤀𐤊𐤉𐤋	spelling	𐤅+[𐤄] 𐤀𐤊𐤉𐤋 	H398	matres
+149:10:6	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:10:19	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:10:21	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:10:23	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:10:25	𐤅𐤉𐤔𐤁𐤉𐤏𐤅	english	𐤅+[𐤉] 𐤔𐤁𐤉𐤏 𐤅	H7650	matres
+149:10:29	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:11:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:11:18	𐤍𐤓𐤀𐤉𐤕	spelling	[𐤍] 𐤓𐤀𐤉𐤕 	H7200	form
+149:11:21	𐤍𐤆𐤓𐤒	english	[𐤍] 𐤆𐤓𐤒 	H2236	root
+149:12:6	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:12:7	𐤍𐤏𐤉𐤃	spelling	[𐤍] 𐤏𐤉𐤃 	H5749	matres
+149:12:7	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:12:11	𐤍𐤌𐤎𐤓	spelling	[𐤍] 𐤌𐤎𐤓 	H4560	root
+149:12:11	𐤅𐤍𐤒𐤁𐤓	spelling	𐤅+[𐤍] 𐤒𐤁𐤓 	H6912	root
+149:12:12	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:12:19	𐤅𐤍𐤕𐤄𐤋𐤊	spelling	𐤅+[𐤍𐤕] 𐤄𐤋𐤊 	H1980	root
+149:12:19	𐤅𐤁𐤆𐤄𐤉𐤓𐤅𐤕	english	𐤅+𐤁 𐤆𐤄𐤉𐤓 𐤅𐤕	H2094	matres
+149:12:19	𐤕𐤒𐤅𐤌𐤕𐤌	spelling	[𐤕] 𐤒𐤅𐤌 𐤕+𐤌	H6965	root
+149:13:4	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+149:13:11	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+149:13:11	𐤁𐤎𐤋𐤉𐤇𐤕	spelling	𐤁 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+149:14:1	𐤄𐤈𐤁𐤋	english	[𐤄] 𐤈𐤁𐤋 	H2881	root
+149:14:6	𐤉𐤈𐤁𐤋	spelling	[𐤉] 𐤈𐤁𐤋 	H2881	root
+149:15:16	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
+149:16:17	𐤅𐤄𐤌𐤁𐤀𐤉𐤔	english	𐤅+𐤄+[𐤌] 𐤁𐤀𐤉𐤔 	H887	matres
+149:17:10	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+149:19:2	𐤍𐤊𐤁𐤔	spelling	[𐤍] 𐤊𐤁𐤔 	H3533	root
+149:21:5	𐤅𐤍𐤈𐤁𐤋𐤍𐤅	english	𐤅+[𐤍] 𐤈𐤁𐤋 𐤍𐤅	H2881	root
+149:22:3	𐤌𐤔𐤁𐤉𐤏	spelling	[𐤌] 𐤔𐤁𐤉𐤏 	H7650	matres
+149:22:8	𐤌𐤕𐤉𐤏𐤑𐤉𐤌	english	[𐤌𐤕] 𐤉𐤏𐤑 𐤉𐤌	H3289	root
+149:22:8	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+149:22:11	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+150:1:2	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+150:1:3	𐤍𐤊𐤎𐤐𐤕𐤉	spelling	[𐤍] 𐤊𐤎𐤐 𐤕+𐤉	H3700	root
+150:1:5	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+150:1:6	𐤕𐤅𐤓𐤅𐤕	english	 𐤕𐤅𐤓 𐤅𐤕	H8447	root
+150:4:1	𐤍𐤀𐤄𐤁	spelling	[𐤍] 𐤀𐤄𐤁 	H157	root
+150:4:5	𐤅𐤌𐤁𐤉𐤍𐤉𐤄𐤍	english	𐤅+𐤌 𐤁𐤉𐤍𐤉𐤄 𐤍	H998	matres
+150:4:6	𐤁𐤉𐤇𐤅𐤃	spelling	𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
+150:4:7	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+150:4:8	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+150:4:12	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+150:4:13	𐤍𐤍𐤅𐤇	spelling	[𐤍] 𐤍𐤅𐤇 	H5117	root
+150:4:13	𐤅𐤍𐤉𐤔𐤍	english	𐤅+[𐤍] 𐤉𐤔𐤍 	H3462	root
+150:5:1	𐤁𐤎𐤋𐤉𐤇𐤕	spelling	𐤁 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+150:6:7	𐤍𐤀𐤎𐤓𐤄	spelling	[𐤍] 𐤀𐤎𐤓 𐤄	H631	root
+150:6:11	𐤁𐤎𐤋𐤉𐤇𐤕	spelling	𐤁 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+150:6:19	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
+150:7:9	𐤅𐤍𐤃𐤒𐤓	english	𐤅+[𐤍] 𐤃𐤒𐤓 	H1856	root
+150:8:1	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
+150:8:3	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+150:9:6	𐤁𐤌𐤉𐤋𐤄	english	𐤁 𐤌𐤉𐤋𐤄 	H4406	matres
+150:9:9	𐤄𐤋𐤌𐤅𐤃	spelling	𐤄 𐤋𐤌𐤅𐤃 	H3928	root
+150:10:12	𐤋𐤁𐤅𐤕𐤉𐤍𐤅	spelling	 𐤋𐤁𐤅𐤕 𐤉+𐤍𐤅	H3826	form
+150:11:1	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+150:11:9	𐤄𐤌𐤊𐤉𐤋	english	𐤄 𐤌𐤊𐤉𐤋 	H4323	matres
+150:15:4	𐤉𐤏𐤉𐤃	spelling	[𐤉] 𐤏𐤉𐤃 	H5749	matres
+150:16:8	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+150:17:2	𐤀𐤊𐤕𐤁	spelling	[𐤀] 𐤊𐤕𐤁 	H3789	root
+150:19:4	𐤕𐤇𐤓𐤃	spelling	[𐤕] 𐤇𐤓𐤃 	H2729	root
+150:19:5	𐤕𐤎𐤐𐤒	english	[𐤕] 𐤎𐤐𐤒 	H5606	root
+150:19:6	𐤕𐤕𐤄𐤋𐤊	spelling	[𐤕𐤕] 𐤄𐤋𐤊 	H1980	root
+150:19:7	𐤕𐤊𐤍𐤏	spelling	[𐤕] 𐤊𐤍𐤏 	H3665	root
+150:21:7	𐤅𐤄𐤔𐤒𐤉𐤃𐤄	english	𐤅+[𐤄] 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
+151:1:14	𐤅𐤀𐤔𐤀𐤓	spelling	𐤅+[𐤀] 𐤔𐤀𐤓 	H7604	root
+151:1:29	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+151:2:1	𐤄𐤒𐤅𐤃𐤌𐤕	spelling	𐤄 𐤒𐤅𐤃𐤌 𐤕	H6924	matres
+151:2:1	𐤄𐤒𐤅𐤃𐤌𐤕	spelling	𐤄 𐤒𐤅𐤃𐤌 𐤕	H6924	matres
+151:2:3	𐤄𐤒𐤅𐤃𐤌𐤕	spelling	𐤄 𐤒𐤅𐤃𐤌 𐤕	H6924	matres
+151:2:18	𐤕𐤎𐤁𐤋𐤅	spelling	[𐤕] 𐤎𐤁𐤋 𐤅	H5445	root
+151:3:2	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+151:3:3	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+151:3:4	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+151:3:4	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+151:3:10	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+151:3:20	𐤉𐤎𐤐𐤒𐤅	spelling	[𐤉] 𐤎𐤐𐤒 𐤅	H5606	root
+151:3:23	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+151:3:24	𐤌𐤆𐤄𐤉𐤓𐤅𐤕	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤅𐤕	H2096	matres
+151:3:38	𐤍𐤓𐤀𐤉𐤕𐤉	spelling	[𐤍] 𐤓𐤀𐤉𐤕𐤉 	H7200	form
+151:3:38	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+151:3:44	𐤁𐤓𐤅𐤀𐤉𐤅	spelling	 𐤁𐤓𐤅𐤀 𐤉+𐤅	H1254	matres
+151:3:53	𐤍𐤐𐤂𐤔𐤉𐤌	spelling	[𐤍] 𐤐𐤂𐤔 𐤉𐤌	H6298	root
+151:3:61	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+151:3:65	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+151:3:74	𐤕𐤀𐤅𐤕𐤉𐤄𐤌	spelling	[𐤕] 𐤀𐤅𐤕𐤉𐤄 𐤌	H183	form
+151:3:76	𐤋𐤈𐤁𐤋	spelling	𐤋 𐤈𐤁𐤋 	H2881	root
+151:3:82	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+151:3:86	𐤉𐤍𐤆𐤓	spelling	[𐤉] 𐤍𐤆𐤓 	H5144	root
+151:3:100	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+151:3:101	𐤀𐤍𐤇𐤄	spelling	 𐤀𐤍𐤇 𐤄	H584	root
+151:3:102	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+151:3:106	𐤄𐤃𐤌𐤅𐤉𐤅𐤕	spelling	𐤄 𐤃𐤌𐤅𐤉𐤅𐤕 	H1823	matres
+151:3:113	𐤁𐤕𐤐𐤋𐤅𐤕𐤉𐤊	spelling	𐤁 𐤕𐤐𐤋𐤅𐤕 𐤉+𐤊	H8605	form
+151:3:117	𐤍𐤋𐤌𐤃	spelling	[𐤍] 𐤋𐤌𐤃 	H3925	root
+151:3:118	𐤄𐤃𐤌𐤅𐤉𐤅𐤕	spelling	𐤄 𐤃𐤌𐤅𐤉𐤅𐤕 	H1823	matres
+151:3:120	𐤍𐤇𐤋𐤔	spelling	[𐤍] 𐤇𐤋𐤔 	H2522	root
+151:4:4	𐤍𐤊𐤔𐤋𐤅	spelling	[𐤍] 𐤊𐤔𐤋 𐤅	H3782	root
+151:4:14	𐤅𐤑𐤏𐤉𐤐	english	𐤅 𐤑𐤏𐤉𐤐 	H6809	root
+151:4:14	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+151:4:20	𐤕𐤋𐤅𐤍𐤄	spelling	[𐤕] 𐤋𐤅𐤍 𐤄	H3885	root
+151:4:21	𐤄𐤍𐤁𐤅𐤊𐤉𐤌	english	𐤄+[𐤍] 𐤁𐤅𐤊𐤉𐤌 	H1058	form
+151:4:26	𐤕𐤔𐤋𐤉𐤊𐤅	spelling	[𐤕] 𐤔𐤋𐤉𐤊 𐤅	H7993	matres
+151:4:28	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+152:0:8	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+152:0:8	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+152:0:9	𐤕𐤏𐤍𐤔𐤅	spelling	[𐤕] 𐤏𐤍𐤔 𐤅	H6064	root
+152:2:7	𐤌𐤕𐤍𐤅𐤕𐤉𐤅	spelling	 𐤌𐤕𐤍𐤅𐤕 𐤉+𐤅	H4979	form
+152:2:8	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+152:3:6	𐤇𐤉𐤉𐤕𐤉	spelling	 𐤇𐤉𐤉 𐤕+𐤉	H2425	root
+152:3:8	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+152:4:5	𐤁𐤍𐤀𐤅𐤐𐤉𐤄	spelling	𐤁 𐤍𐤀𐤅𐤐 𐤉+𐤄	H5003	form
+152:4:7	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+152:4:7	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+152:4:15	𐤅𐤉𐤊𐤍𐤉𐤏	spelling	𐤅+[𐤉] 𐤊𐤍𐤉𐤏 	H3665	matres
+152:4:18	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+152:4:18	𐤍𐤇𐤈𐤀	spelling	[𐤍] 𐤇𐤈𐤀 	H2398	root
+152:4:22	𐤁𐤓𐤅𐤀𐤉𐤅	spelling	 𐤁𐤓𐤅𐤀 𐤉+𐤅	H1254	matres
+152:4:22	𐤉𐤍𐤎𐤄	spelling	[𐤉] 𐤍𐤎𐤄 	H5254	root
+152:5:4	𐤍𐤇𐤍𐤒	spelling	[𐤍] 𐤇𐤍𐤒 	H2614	root
+152:5:4	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+152:5:4	𐤕𐤏𐤑𐤁	spelling	[𐤕] 𐤏𐤑𐤁 	H6087	root
+152:6:11	𐤅𐤊𐤅𐤏𐤎	english	𐤅 𐤊𐤅𐤏𐤎 	H3707	matres
+152:8:1	𐤐𐤓𐤉𐤔𐤅𐤕	english	 𐤐𐤓𐤉𐤔 𐤅𐤕	H6567	matres
+152:8:2	𐤕𐤍𐤆𐤓	spelling	[𐤕] 𐤍𐤆𐤓 	H5144	root
+152:8:2	𐤕𐤍𐤆𐤓	spelling	[𐤕] 𐤍𐤆𐤓 	H5144	root
+152:8:6	𐤄𐤍𐤓𐤀𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+152:8:8	𐤕𐤍𐤆𐤓	spelling	[𐤕] 𐤍𐤆𐤓 	H5144	root
+152:8:11	𐤄𐤇𐤉𐤁𐤉𐤌	english	𐤄 𐤇𐤉𐤁 𐤉𐤌	H2326	matres
+152:8:12	𐤄𐤍𐤓𐤀𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+152:9:4	𐤅𐤕𐤒𐤁𐤋	spelling	𐤅+[𐤕] 𐤒𐤁𐤋 	H6901	root
+152:9:6	𐤅𐤕𐤒𐤁𐤋	spelling	𐤅+[𐤕] 𐤒𐤁𐤋 	H6901	root
+152:9:7	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+152:9:7	𐤋𐤄𐤕𐤀𐤅𐤍𐤍	spelling	𐤋+[𐤄𐤕] 𐤀𐤅𐤍𐤍 	H596	matres
+152:9:8	𐤉𐤏𐤒𐤓	spelling	[𐤉] 𐤏𐤒𐤓 	H6131	root
+152:10:1	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+152:10:5	𐤊𐤌𐤔𐤀𐤋𐤅𐤕𐤌	english	𐤊+[𐤌] 𐤔𐤀𐤋 𐤅𐤕+𐤌	H7592	root
+152:10:18	𐤕𐤏𐤑𐤁	spelling	[𐤕] 𐤏𐤑𐤁 	H6087	root
+152:10:18	𐤉𐤕𐤇𐤍𐤍	spelling	[𐤉𐤕] 𐤇𐤍𐤍 	H2603	root
+152:11:11	𐤄𐤉𐤒𐤁𐤋	english	𐤄+[𐤉] 𐤒𐤁𐤋 	H6901	root
+152:12:1	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+152:12:2	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
+152:12:8	𐤅𐤕𐤒𐤁𐤋	spelling	𐤅+[𐤕] 𐤒𐤁𐤋 	H6901	root
+152:12:8	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+152:12:9	𐤕𐤊𐤍𐤏	spelling	[𐤕] 𐤊𐤍𐤏 	H3665	root
+152:12:9	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+152:12:13	𐤅𐤕𐤒𐤁𐤋	spelling	𐤅+[𐤕] 𐤒𐤁𐤋 	H6901	root
+152:12:18	𐤁𐤌𐤕𐤉𐤍𐤅𐤕	spelling	𐤁 𐤌𐤕𐤉𐤍 𐤅𐤕	H4976	matres
+152:12:28	𐤉𐤍𐤎𐤄	spelling	[𐤉] 𐤍𐤎𐤄 	H5254	root
+153:1:4	𐤕𐤊𐤇𐤔	spelling	[𐤕] 𐤊𐤇𐤔 	H3584	root
+153:1:4	𐤕𐤊𐤇𐤔	spelling	[𐤕] 𐤊𐤇𐤔 	H3584	root
+153:1:4	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+153:1:6	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+153:2:4	𐤅𐤁𐤄𐤎𐤌𐤊𐤄	english	𐤅+𐤁+[𐤄] 𐤎𐤌𐤊 𐤄	H5564	root
+153:3:1	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+153:5:10	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+153:5:12	𐤀𐤏𐤃𐤓	spelling	[𐤀] 𐤏𐤃𐤓 	H5737	root
+153:5:13	𐤍𐤇𐤍𐤒	spelling	[𐤍] 𐤇𐤍𐤒 	H2614	root
+153:5:14	𐤍𐤏𐤒𐤓	spelling	[𐤍] 𐤏𐤒𐤓 	H6131	root
+153:5:14	𐤐𐤅𐤓𐤇𐤉𐤌	spelling	 𐤐𐤅𐤓𐤇 𐤉𐤌	H6524	matres
+153:5:16	𐤄𐤐𐤉𐤒	english	𐤄 𐤐𐤉𐤒 	H6375	root
+153:5:26	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
+153:5:31	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+153:5:31	𐤉𐤔𐤁𐤉𐤏	spelling	[𐤉] 𐤔𐤁𐤉𐤏 	H7646	matres
+153:5:34	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+153:5:35	𐤍𐤏𐤒𐤓	spelling	[𐤍] 𐤏𐤒𐤓 	H6131	root
+153:5:38	𐤃𐤓𐤉𐤔𐤄	spelling	 𐤃𐤓𐤉𐤔 𐤄	H1875	matres
+153:5:40	𐤅𐤕𐤒𐤁𐤋	spelling	𐤅+[𐤕] 𐤒𐤁𐤋 	H6901	root
+153:5:49	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+153:5:53	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+153:5:58	𐤉𐤏𐤉𐤃	spelling	[𐤉] 𐤏𐤉𐤃 	H5749	matres
+153:6:1	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
+153:6:13	𐤇𐤈𐤀𐤉𐤄𐤌	spelling	 𐤇𐤈𐤀𐤉𐤄 𐤌	H2403	matres
+153:6:19	𐤍𐤏𐤑𐤁𐤕𐤉	spelling	[𐤍] 𐤏𐤑𐤁 𐤕+𐤉	H6087	root
+153:6:21	𐤍𐤌𐤎𐤓𐤉𐤌	spelling	[𐤍] 𐤌𐤎𐤓 𐤉𐤌	H4560	root
+153:6:24	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
+153:6:27	𐤍𐤌𐤎𐤓𐤅	spelling	[𐤍] 𐤌𐤎𐤓 𐤅	H4560	root
+153:6:28	𐤄𐤕𐤏𐤍𐤂𐤅	english	[𐤄𐤕] 𐤏𐤍𐤂 𐤅	H6026	root
+153:6:37	𐤍𐤏𐤍𐤔	spelling	[𐤍] 𐤏𐤍𐤔 	H6064	root
+153:6:40	𐤅𐤄𐤌𐤊𐤆𐤁	english	𐤅+𐤄+[𐤌] 𐤊𐤆𐤁 	H3576	root
+153:6:40	𐤄𐤇𐤅𐤌𐤃	spelling	[𐤄] 𐤇𐤅𐤌𐤃 	H2530	matres
+153:7:4	𐤕𐤌𐤎𐤓	spelling	[𐤕] 𐤌𐤎𐤓 	H4560	root
+153:7:11	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
+153:7:12	𐤕𐤎𐤁𐤋	english	[𐤕] 𐤎𐤁𐤋 	H5445	root
+153:7:14	𐤏𐤍𐤅𐤉𐤉𐤅	english	 𐤏𐤍𐤅𐤉 𐤉+𐤅	H6035	form
+153:8:3	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
+153:8:5	𐤅𐤊𐤎𐤃𐤓	english	𐤅+𐤊 𐤎𐤃𐤓 	H5468	root
+153:8:15	𐤉𐤓𐤌𐤄	spelling	[𐤉] 𐤓𐤌𐤄 	H7411	root
+153:8:19	𐤁𐤎𐤃𐤓𐤍	english	𐤁 𐤎𐤃𐤓 𐤍	H5468	root
+153:8:24	𐤒𐤓𐤉𐤀𐤕𐤅	spelling	 𐤒𐤓𐤉𐤀 𐤕+𐤅	H7148	root
+153:8:26	𐤍𐤇𐤋𐤔𐤅	english	[𐤍] 𐤇𐤋𐤔 𐤅	H2522	root
+153:8:32	𐤁𐤎𐤃𐤓𐤌	english	𐤁 𐤎𐤃𐤓 𐤌	H5468	root
+153:8:33	𐤁𐤎𐤃𐤓𐤅	spelling	𐤁 𐤎𐤃𐤓 𐤅	H5468	root
+153:8:34	𐤉𐤏𐤒𐤓	spelling	[𐤉] 𐤏𐤒𐤓 	H6131	root
+153:8:48	𐤋𐤂𐤃𐤐	spelling	𐤋 𐤂𐤃𐤐 	H1442	root
+153:8:53	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
+153:8:53	𐤄𐤊𐤅𐤆𐤁𐤅𐤕	english	𐤄 𐤊𐤅𐤆𐤁 𐤅𐤕	H3577	matres
+153:8:73	𐤅𐤉𐤕𐤉𐤀𐤔𐤅	english	𐤅+[𐤉𐤕] 𐤉𐤀𐤔 𐤅	H2976	root
+153:8:82	𐤇𐤈𐤀𐤉𐤄𐤌	spelling	 𐤇𐤈𐤀𐤉𐤄 𐤌	H2403	matres
+153:9:14	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+153:9:39	𐤋𐤄𐤇𐤋𐤉𐤐	english	𐤋+[𐤄] 𐤇𐤋𐤉𐤐 	H2498	matres
+153:9:39	𐤕𐤏𐤌𐤋𐤅	spelling	[𐤕] 𐤏𐤌𐤋 𐤅	H5998	root
+153:9:55	𐤌𐤆𐤄𐤉𐤓𐤅𐤕	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤅𐤕	H2096	matres
+153:9:62	𐤀𐤇𐤔𐤁	spelling	[𐤀] 𐤇𐤔𐤁 	H2803	root
+153:9:65	𐤅𐤉𐤅𐤔𐤌𐤅	spelling	𐤅+[𐤉] 𐤅𐤔𐤌𐤅 	H7760	form
+153:9:69	𐤇𐤋𐤔𐤅𐤕	spelling	 𐤇𐤋𐤔 𐤅𐤕	H2523	root
+153:9:72	𐤇𐤋𐤔𐤅𐤕	spelling	 𐤇𐤋𐤔 𐤅𐤕	H2523	root
+153:9:73	𐤇𐤁𐤓𐤉𐤄𐤌	english	 𐤇𐤁𐤓𐤉𐤄 𐤌	H2250	matres
+153:9:85	𐤍𐤇𐤑𐤁	english	[𐤍] 𐤇𐤑𐤁 	H2672	root
+153:9:86	𐤁𐤔𐤒𐤉𐤃𐤄	spelling	𐤁 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
+153:9:90	𐤋𐤄𐤕𐤋𐤅𐤍𐤍	spelling	𐤋+[𐤄𐤕] 𐤋𐤅𐤍 𐤍	H3885	root
+153:9:91	𐤉𐤁𐤀𐤓	spelling	[𐤉] 𐤁𐤀𐤓 	H874	root
+153:9:92	𐤀𐤁𐤀𐤓	spelling	[𐤀] 𐤁𐤀𐤓 	H874	root
+153:9:95	𐤁𐤉𐤇𐤅𐤃	spelling	𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
+153:9:97	𐤀𐤇𐤊𐤄	spelling	[𐤀] 𐤇𐤊𐤄 	H2442	root
+153:9:107	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+153:9:107	𐤊𐤎𐤃𐤓	spelling	𐤊 𐤎𐤃𐤓 	H5468	root
+153:9:108	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+153:9:114	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+153:9:122	𐤂𐤁𐤅𐤓𐤅𐤕𐤉𐤅	spelling	 𐤂𐤁𐤅𐤓𐤅𐤕 𐤉+𐤅	H1369	form
+153:9:128	𐤁𐤔𐤒𐤉𐤃𐤄	spelling	𐤁 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
+153:9:129	𐤍𐤔𐤋𐤌𐤅	spelling	[𐤍] 𐤔𐤋𐤌 𐤅	H7999	root
+153:9:168	𐤅𐤉𐤆𐤄𐤓	spelling	𐤅+[𐤉] 𐤆𐤄𐤓 	H2094	root
+153:9:196	𐤓𐤃𐤉𐤐𐤄	spelling	 𐤓𐤃𐤉𐤐 𐤄	H7291	matres
+153:9:209	𐤀𐤆𐤄𐤉𐤓	spelling	[𐤀] 𐤆𐤄𐤉𐤓 	H2094	matres
+153:9:213	𐤀𐤆𐤄𐤉𐤓	spelling	[𐤀] 𐤆𐤄𐤉𐤓 	H2094	matres
+153:9:231	𐤅𐤎𐤊𐤊𐤅	english	𐤅 𐤎𐤊𐤊 𐤅	H5526	root
+153:9:238	𐤋𐤄𐤕𐤉𐤏𐤑	spelling	𐤋+[𐤄𐤕] 𐤉𐤏𐤑 	H3289	root
+153:9:239	𐤕𐤎𐤁𐤋𐤅	spelling	[𐤕] 𐤎𐤁𐤋 𐤅	H5445	root
+153:9:258	𐤉𐤋𐤒𐤇	spelling	[𐤉] 𐤋𐤒𐤇 	H3947	root
+153:9:262	𐤉𐤍𐤎𐤄𐤅	spelling	[𐤉] 𐤍𐤎𐤄 𐤅	H5254	root
+153:9:264	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+153:9:268	𐤅𐤁𐤉𐤇𐤅𐤃	spelling	𐤅+𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
+153:9:270	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+153:9:270	𐤕𐤒𐤅𐤅	spelling	[𐤕] 𐤒𐤅𐤅 	H6960	form
+153:9:272	𐤅𐤄𐤕𐤋𐤅𐤍𐤍𐤅	english	𐤅+[𐤄𐤕] 𐤋𐤅𐤍 𐤍𐤅	H3885	root
+153:9:272	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+153:9:278	𐤅𐤀𐤁𐤀𐤓	english	𐤅+[𐤀] 𐤁𐤀𐤓 	H874	root
+154:12:3	𐤍𐤇𐤍𐤒𐤅	spelling	[𐤍] 𐤇𐤍𐤒 𐤅	H2614	root
+154:14:9	𐤅𐤋𐤎𐤊𐤓	english	𐤅+𐤋 𐤎𐤊𐤓 	H5534	root
+154:15:1	𐤕𐤐𐤋𐤅𐤕𐤉𐤄	spelling	 𐤕𐤐𐤋𐤅𐤕 𐤉+𐤄	H8605	form
+154:15:8	𐤅𐤉𐤒𐤐𐤑	spelling	𐤅+[𐤉] 𐤒𐤐𐤑 	H7092	root
+154:16:7	𐤕𐤇𐤒𐤓𐤅	spelling	[𐤕] 𐤇𐤒𐤓 𐤅	H2713	root
+154:16:9	𐤄𐤍𐤓𐤀𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+200:1:2	𐤉𐤁𐤄𐤋	spelling	[𐤉] 𐤁𐤄𐤋 	H926	root
+200:1:2	𐤉𐤁𐤄𐤋𐤅	spelling	[𐤉] 𐤁𐤄𐤋 𐤅	H926	root
+200:1:6	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+200:1:6	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+200:1:6	𐤍𐤕𐤐𐤋𐤋	spelling	[𐤍𐤕] 𐤐𐤋𐤋 	H6419	root
+200:1:13	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+200:1:14	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+200:1:21	𐤕𐤋𐤌𐤉𐤃𐤉𐤊	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤊	H8527	root
+200:1:21	𐤉𐤕𐤐𐤔𐤈𐤅	english	[𐤉𐤕] 𐤐𐤔𐤈 𐤅	H6584	root
+200:1:22	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+200:1:24	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+200:1:28	𐤅𐤕𐤊𐤀𐤁	spelling	𐤅+[𐤕] 𐤊𐤀𐤁 	H3510	root
+200:1:37	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+200:1:43	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+200:1:46	𐤄𐤈𐤅𐤁𐤋	spelling	[𐤄] 𐤈𐤅𐤁𐤋 	H2881	matres
+200:1:46	𐤄𐤈𐤅𐤁𐤋	spelling	[𐤄] 𐤈𐤅𐤁𐤋 	H2881	matres
+200:1:47	𐤉𐤁𐤆𐤄	spelling	[𐤉] 𐤁𐤆𐤄 	H959	root
+200:1:51	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+200:1:52	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+200:1:53	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+200:1:55	𐤀𐤇𐤉𐤅𐤕𐤉𐤅	spelling	 𐤀𐤇𐤉𐤅𐤕 𐤉+𐤅	H269	matres
+200:1:60	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+200:1:61	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
+200:1:63	𐤀𐤎𐤌𐤉	spelling	 𐤀𐤎𐤌 𐤉	H618	root
+200:1:72	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+200:1:76	𐤎𐤇𐤅𐤓𐤄	spelling	 𐤎𐤇𐤅𐤓 𐤄	H5503	matres
+200:1:76	𐤎𐤇𐤅𐤓𐤕𐤅	english	 𐤎𐤇𐤅𐤓 𐤕+𐤅	H5503	matres
+200:1:79	𐤉𐤍𐤒𐤕	spelling	 𐤉𐤍𐤒 𐤕	H3243	root
+200:1:93	𐤕𐤔𐤋𐤉𐤊𐤅	spelling	[𐤕] 𐤔𐤋𐤉𐤊 𐤅	H7993	matres
+200:1:94	𐤅𐤄𐤃𐤐𐤒	spelling	𐤅+[𐤄] 𐤃𐤐𐤒 	H1849	root
+200:1:102	𐤋𐤐𐤓𐤅𐤔𐤉𐤌	spelling	𐤋 𐤐𐤓𐤅𐤔 𐤉𐤌	H6566	matres
+200:1:104	𐤄𐤍𐤊𐤔𐤋𐤕𐤉	english	𐤄+[𐤍] 𐤊𐤔𐤋 𐤕+𐤉	H3782	root
+200:1:113	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+201:1:2	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
+201:1:5	𐤍𐤒𐤑𐤓	spelling	[𐤍] 𐤒𐤑𐤓 	H7114	root
+201:1:5	𐤉𐤒𐤑𐤓	spelling	[𐤉] 𐤒𐤑𐤓 	H7114	root
+201:1:5	𐤉𐤒𐤑𐤓	spelling	[𐤉] 𐤒𐤑𐤓 	H7114	root
+201:1:5	𐤉𐤏𐤒𐤓	spelling	[𐤉] 𐤏𐤒𐤓 	H6131	root
+201:1:24	𐤀𐤇𐤔𐤁	spelling	[𐤀] 𐤇𐤔𐤁 	H2803	root
+201:1:25	𐤍𐤓𐤀𐤉𐤌	spelling	[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+201:1:27	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+201:1:32	𐤁𐤍𐤔𐤉𐤒𐤄	spelling	𐤁 𐤍𐤔𐤉𐤒𐤄 	H5390	root
+201:1:41	𐤕𐤊𐤍𐤏	spelling	[𐤕] 𐤊𐤍𐤏 	H3665	root
+201:1:44	𐤌𐤈𐤁𐤉𐤋	spelling	[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+201:1:46	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+201:1:46	𐤍𐤀𐤄𐤁	spelling	[𐤍] 𐤀𐤄𐤁 	H157	root
+201:1:46	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+201:1:48	𐤕𐤔𐤋𐤊	spelling	[𐤕] 𐤔𐤋𐤊 	H7993	root
+201:1:49	𐤉𐤁𐤄𐤋	spelling	[𐤉] 𐤁𐤄𐤋 	H926	root
+201:1:51	𐤄𐤆𐤊𐤅𐤊𐤉𐤕	spelling	𐤄 𐤆𐤊𐤅𐤊𐤉𐤕 	H2137	root
+201:1:53	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
+201:1:58	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+201:1:58	𐤕𐤋𐤒𐤇	spelling	[𐤕] 𐤋𐤒𐤇 	H3947	root
+201:1:68	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+201:1:68	𐤉𐤋𐤒𐤇	spelling	[𐤉] 𐤋𐤒𐤇 	H3947	root
+201:1:68	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+201:1:74	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
+201:1:76	𐤋𐤄𐤈𐤁𐤉𐤋	english	𐤋+[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
+201:1:77	𐤄𐤈𐤁𐤉𐤋𐤄	english	[𐤄] 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+201:1:77	𐤄𐤈𐤁𐤉𐤋𐤄	english	[𐤄] 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+201:1:79	𐤄𐤕𐤇𐤁𐤓𐤅	spelling	[𐤄𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
+201:1:80	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
+201:1:81	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
+201:1:87	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+201:1:87	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+201:1:91	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+201:1:95	𐤄𐤂𐤆𐤏	spelling	𐤄 𐤂𐤆𐤏 	H1503	root
+201:1:95	𐤄𐤂𐤆𐤏	spelling	𐤄 𐤂𐤆𐤏 	H1503	root
+201:1:98	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+201:1:99	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+201:1:106	𐤍𐤂𐤃𐤋𐤄	spelling	[𐤍] 𐤂𐤃𐤋 𐤄	H1431	root
+201:1:106	𐤉𐤕𐤏𐤑𐤁𐤅	spelling	[𐤉𐤕] 𐤏𐤑𐤁 𐤅	H6087	root
+201:1:109	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+201:1:112	𐤅𐤍𐤏𐤒𐤓	english	𐤅+[𐤍] 𐤏𐤒𐤓 	H6131	root
+201:1:112	𐤉𐤏𐤒𐤓	spelling	[𐤉] 𐤏𐤒𐤓 	H6131	root
+201:1:112	𐤍𐤇𐤐𐤑	spelling	[𐤍] 𐤇𐤐𐤑 	H2654	root
+201:1:112	𐤍𐤇𐤐𐤑	spelling	[𐤍] 𐤇𐤐𐤑 	H2654	root
+201:1:112	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+201:1:113	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
+201:1:113	𐤇𐤋𐤔𐤉𐤌	spelling	 𐤇𐤋𐤔 𐤉𐤌	H2523	root
+201:1:114	𐤋𐤄𐤕𐤇𐤁𐤓	spelling	𐤋+[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
+201:1:114	𐤅𐤁𐤇𐤋𐤔𐤅𐤕	english	𐤅+𐤁 𐤇𐤋𐤔 𐤅𐤕	H2523	root
+201:1:115	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+201:1:115	𐤅𐤄𐤔𐤁𐤅𐤉𐤉𐤌	spelling	𐤅+𐤄 𐤔𐤁𐤅𐤉𐤉 𐤌	H7628	matres
+201:1:115	𐤉𐤏𐤒𐤓	spelling	[𐤉] 𐤏𐤒𐤓 	H6131	root
+201:1:118	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+201:1:118	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+202:1:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:1:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:1:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:1:2	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:1:3	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:1:4	𐤄𐤌𐤔𐤅𐤋𐤔𐤉𐤌	spelling	𐤄+[𐤌] 𐤔𐤅𐤋𐤔 𐤉𐤌	H8027	matres
+202:1:4	𐤌𐤋𐤀𐤊𐤉𐤄𐤌	spelling	 𐤌𐤋𐤀𐤊𐤉𐤄 𐤌	H4399	matres
+202:1:4	𐤌𐤋𐤀𐤊𐤉𐤄𐤌	spelling	 𐤌𐤋𐤀𐤊𐤉𐤄 𐤌	H4399	matres
+202:1:4	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+202:1:5	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:1:6	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:1:8	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:1:8	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:2:1	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:2:3	𐤁𐤎𐤃𐤓𐤉	spelling	𐤁 𐤎𐤃𐤓 𐤉	H5468	root
+202:2:3	𐤌𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤌 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:3:4	𐤌𐤁𐤄𐤋𐤕𐤌	english	[𐤌] 𐤁𐤄𐤋 𐤕+𐤌	H926	root
+202:3:4	𐤌𐤋𐤀𐤊𐤉𐤄𐤌	spelling	 𐤌𐤋𐤀𐤊𐤉𐤄 𐤌	H4399	matres
+202:5:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:6:2	𐤄𐤌𐤄𐤅𐤌𐤅𐤕	spelling	𐤄+[𐤌] 𐤄𐤅𐤌 𐤅𐤕	H1949	root
+202:6:4	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+202:6:4	𐤁𐤎𐤃𐤓𐤉	spelling	𐤁 𐤎𐤃𐤓 𐤉	H5468	root
+202:7:2	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+202:7:2	𐤁𐤎𐤃𐤓𐤉	spelling	𐤁 𐤎𐤃𐤓 𐤉	H5468	root
+202:7:4	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+202:7:5	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+202:7:5	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+202:7:5	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+202:7:5	𐤅𐤋𐤄𐤈𐤁𐤉𐤋	english	𐤅+𐤋+[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
+202:7:5	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+202:7:6	𐤄𐤒𐤅𐤃𐤌𐤕	spelling	𐤄 𐤒𐤅𐤃𐤌 𐤕	H6924	matres
+202:7:7	𐤍𐤀𐤎𐤓𐤅	spelling	[𐤍] 𐤀𐤎𐤓 𐤅	H631	root
+202:7:7	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+202:7:7	𐤍𐤀𐤎𐤓𐤄	spelling	[𐤍] 𐤀𐤎𐤓 𐤄	H631	root
+202:7:7	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+202:7:7	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+202:7:7	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+202:8:1	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+202:8:1	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+202:8:3	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+202:8:3	𐤅𐤒𐤁𐤋𐤕𐤌	spelling	𐤅 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+202:8:4	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:8:4	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:9:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:10:5	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+202:10:6	𐤁𐤎𐤃𐤓𐤉	spelling	𐤁 𐤎𐤃𐤓 𐤉	H5468	root
+202:10:8	𐤄𐤌𐤍𐤄𐤉𐤂𐤉𐤌	spelling	𐤄+[𐤌] 𐤍𐤄𐤉𐤂 𐤉𐤌	H5090	matres
+202:10:8	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+202:10:8	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+202:10:8	𐤄𐤌𐤔𐤅𐤋𐤔𐤉𐤌	spelling	𐤄+[𐤌] 𐤔𐤅𐤋𐤔 𐤉𐤌	H8027	matres
+202:10:10	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+202:11:1	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+202:11:4	𐤍𐤀𐤎𐤓𐤅	spelling	[𐤍] 𐤀𐤎𐤓 𐤅	H631	root
+202:11:4	𐤎𐤃𐤓𐤅	spelling	 𐤎𐤃𐤓 𐤅	H5468	root
+202:12:2	𐤎𐤃𐤓𐤅	spelling	 𐤎𐤃𐤓 𐤅	H5468	root
+202:14:3	𐤅𐤍𐤉𐤑𐤅𐤑𐤅𐤕	spelling	𐤅 𐤍𐤉𐤑𐤅𐤑 𐤅𐤕	H5213	root
+202:14:3	𐤄𐤌𐤔𐤅𐤋𐤔𐤉𐤌	spelling	𐤄+[𐤌] 𐤔𐤅𐤋𐤔 𐤉𐤌	H8027	matres
+202:14:3	𐤄𐤌𐤔𐤅𐤋𐤔𐤉𐤌	spelling	𐤄+[𐤌] 𐤔𐤅𐤋𐤔 𐤉𐤌	H8027	matres
+202:14:3	𐤄𐤌𐤔𐤅𐤋𐤔𐤉𐤌	spelling	𐤄+[𐤌] 𐤔𐤅𐤋𐤔 𐤉𐤌	H8027	matres
+202:15:2	𐤅𐤍𐤇𐤋𐤔𐤅	english	𐤅+[𐤍] 𐤇𐤋𐤔 𐤅	H2522	root
+202:15:4	𐤉𐤏𐤁𐤉𐤓𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤓 𐤅	H5674	matres
+202:17:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:17:3	𐤅𐤕𐤒𐤁𐤋	spelling	𐤅+[𐤕] 𐤒𐤁𐤋 	H6901	root
+202:18:2	𐤉𐤏𐤁𐤉𐤓𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤓 𐤅	H5674	matres
+202:18:2	𐤉𐤅𐤏𐤑𐤉𐤊	english	 𐤉𐤅𐤏𐤑 𐤉+𐤊	H3289	form
+202:21:2	𐤉𐤏𐤁𐤉𐤓𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤓 𐤅	H5674	matres
+202:21:3	𐤄𐤕𐤌𐤅𐤍𐤅𐤕	spelling	𐤄 𐤕𐤌𐤅𐤍 𐤅𐤕	H8486	matres
+202:21:3	𐤉𐤏𐤁𐤉𐤓𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤓 𐤅	H5674	matres
+202:21:3	𐤄𐤕𐤌𐤅𐤍𐤅𐤕	spelling	𐤄 𐤕𐤌𐤅𐤍 𐤅𐤕	H8486	matres
+202:21:4	𐤉𐤏𐤁𐤉𐤓𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤓 𐤅	H5674	matres
+202:21:4	𐤄𐤕𐤌𐤅𐤍𐤅𐤕	spelling	𐤄 𐤕𐤌𐤅𐤍 𐤅𐤕	H8486	matres
+202:22:2	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+202:24:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:24:2	𐤕𐤇𐤐𐤑𐤉	spelling	[𐤕] 𐤇𐤐𐤑 𐤉	H2654	root
+202:25:2	𐤁𐤎𐤃𐤓𐤅	spelling	𐤁 𐤎𐤃𐤓 𐤅	H5468	root
+202:25:2	𐤁𐤉𐤀𐤕	spelling	 𐤁𐤉𐤀 𐤕	H935	matres
+202:25:4	𐤕𐤌𐤅𐤍𐤅𐤕	spelling	 𐤕𐤌𐤅𐤍 𐤅𐤕	H8486	matres
+202:25:4	𐤕𐤌𐤅𐤍𐤅𐤕	spelling	 𐤕𐤌𐤅𐤍 𐤅𐤕	H8486	matres
+202:25:4	𐤕𐤌𐤅𐤍𐤅𐤕	spelling	 𐤕𐤌𐤅𐤍 𐤅𐤕	H8486	matres
+202:25:4	𐤄𐤕𐤒𐤅𐤐𐤄	spelling	𐤄 𐤕𐤒𐤅𐤐𐤄 	H8622	root
+202:26:3	𐤅𐤌𐤃𐤌𐤏𐤅𐤕	spelling	𐤅+𐤌 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+202:27:1	𐤉𐤏𐤁𐤉𐤓𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤓 𐤅	H5674	matres
+202:27:5	𐤋𐤎𐤃𐤓	spelling	𐤋 𐤎𐤃𐤓 	H5468	root
+202:27:5	𐤉𐤏𐤁𐤉𐤓𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤓 𐤅	H5674	matres
+202:27:6	𐤉𐤏𐤁𐤉𐤓𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤓 𐤅	H5674	matres
+202:27:7	𐤄𐤕𐤒𐤅𐤐𐤅𐤕	english	𐤄 𐤕𐤒𐤅𐤐 𐤅𐤕	H8633	matres
+202:27:7	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+202:27:7	𐤄𐤕𐤒𐤅𐤐𐤅𐤕	english	𐤄 𐤕𐤒𐤅𐤐 𐤅𐤕	H8633	matres
+202:27:7	𐤄𐤕𐤒𐤅𐤐𐤅𐤕	english	𐤄 𐤕𐤒𐤅𐤐 𐤅𐤕	H8633	matres
+202:27:7	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+202:27:7	𐤄𐤕𐤒𐤅𐤐𐤅𐤕	english	𐤄 𐤕𐤒𐤅𐤐 𐤅𐤕	H8633	matres
+202:27:8	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:28:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:28:1	𐤄𐤌𐤔𐤅𐤋𐤔𐤉𐤌	spelling	𐤄+[𐤌] 𐤔𐤅𐤋𐤔 𐤉𐤌	H8027	matres
+202:28:1	𐤅𐤍𐤉𐤑𐤅𐤑𐤅𐤕	spelling	𐤅 𐤍𐤉𐤑𐤅𐤑 𐤅𐤕	H5213	root
+202:28:4	𐤍𐤀𐤎𐤓	spelling	[𐤍] 𐤀𐤎𐤓 	H631	root
+202:28:4	𐤎𐤃𐤓𐤅	spelling	 𐤎𐤃𐤓 𐤅	H5468	root
+202:28:4	𐤉𐤏𐤁𐤉𐤓𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤓 𐤅	H5674	matres
+202:28:4	𐤉𐤏𐤁𐤉𐤓𐤅	spelling	[𐤉] 𐤏𐤁𐤉𐤓 𐤅	H5674	matres
+202:29:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+202:29:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+202:29:1	𐤄𐤌𐤔𐤅𐤋𐤔𐤉𐤌	spelling	𐤄+[𐤌] 𐤔𐤅𐤋𐤔 𐤉𐤌	H8027	matres
+202:29:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+202:29:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+202:29:4	𐤄𐤌𐤔𐤅𐤋𐤔𐤉𐤌	spelling	𐤄+[𐤌] 𐤔𐤅𐤋𐤔 𐤉𐤌	H8027	matres
+202:29:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+202:29:4	𐤄𐤌𐤔𐤅𐤋𐤔𐤉𐤌	spelling	𐤄+[𐤌] 𐤔𐤅𐤋𐤔 𐤉𐤌	H8027	matres
+202:30:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+202:30:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:30:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+202:30:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+202:30:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:30:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+202:30:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+202:30:5	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+202:30:5	𐤅𐤕𐤕𐤀𐤁𐤋	spelling	𐤅+[𐤕𐤕] 𐤀𐤁𐤋 	H56	root
+202:32:2	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
+202:32:5	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+202:32:5	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+202:33:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:36:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:36:4	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:37:1	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+202:37:1	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+202:39:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:39:2	𐤍𐤋𐤇𐤑𐤄	spelling	[𐤍] 𐤋𐤇𐤑 𐤄	H3905	root
+202:39:4	𐤄𐤃𐤌𐤏𐤅𐤕	spelling	𐤄 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+202:39:4	𐤅𐤁𐤐𐤒𐤅𐤃𐤕𐤊	english	𐤅+𐤁 𐤐𐤒𐤅𐤃 𐤕+𐤊	H6490	root
+202:39:4	𐤄𐤍𐤋𐤇𐤑𐤉𐤌	spelling	𐤄+[𐤍] 𐤋𐤇𐤑 𐤉𐤌	H3905	root
+202:39:4	𐤍𐤔𐤋𐤌𐤄	spelling	[𐤍] 𐤔𐤋𐤌 𐤄	H7999	root
+202:39:4	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
+202:40:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:41:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:41:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:41:2	𐤍𐤔𐤋𐤌𐤄	spelling	[𐤍] 𐤔𐤋𐤌 𐤄	H7999	root
+202:41:4	𐤅𐤉𐤔𐤍𐤀𐤅𐤍𐤉	spelling	𐤅+[𐤉] 𐤔𐤍𐤀𐤅𐤍𐤉 	H8130	form
+202:42:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:42:2	𐤌𐤕𐤀𐤅𐤍𐤍	english	[𐤌𐤕] 𐤀𐤅𐤍𐤍 	H596	matres
+202:42:4	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
+202:43:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:43:6	𐤍𐤋𐤇𐤑𐤄	spelling	[𐤍] 𐤋𐤇𐤑 𐤄	H3905	root
+202:44:1	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+202:44:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:45:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:45:2	𐤀𐤍𐤃𐤓𐤉	english	[𐤀] 𐤍𐤃𐤓 𐤉	H5087	root
+202:45:2	𐤀𐤍𐤃𐤓𐤉	english	[𐤀] 𐤍𐤃𐤓 𐤉	H5087	root
+202:45:2	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
+202:45:3	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:45:4	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤊	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤊	H8527	root
+202:46:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:46:1	𐤋𐤎𐤋𐤉𐤇𐤕	spelling	𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+202:46:1	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
+202:46:1	𐤅𐤕𐤕𐤏𐤑𐤁	spelling	𐤅+[𐤕𐤕] 𐤏𐤑𐤁 	H6087	root
+202:46:3	𐤉𐤋𐤒𐤇	spelling	[𐤉] 𐤋𐤒𐤇 	H3947	root
+202:46:3	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+202:46:3	𐤅𐤋𐤄𐤊𐤇𐤅𐤕	english	𐤅+𐤋+𐤄 𐤊𐤇𐤅 𐤕	H3581	form
+202:46:6	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:47:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:47:2	𐤍𐤔𐤋𐤌𐤄	spelling	[𐤍] 𐤔𐤋𐤌 𐤄	H7999	root
+202:47:5	𐤍𐤋𐤇𐤑	spelling	[𐤍] 𐤋𐤇𐤑 	H3905	root
+202:48:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:50:1	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:50:1	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+202:50:4	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:50:5	𐤅𐤉𐤌𐤏𐤃𐤅	english	𐤅+[𐤉] 𐤌𐤏𐤃 𐤅	H4571	root
+202:50:5	𐤉𐤋𐤒𐤇	spelling	[𐤉] 𐤋𐤒𐤇 	H3947	root
+202:50:7	𐤕𐤍𐤉𐤇	spelling	[𐤕] 𐤍𐤉𐤇 	H5117	matres
+202:50:7	𐤉𐤋𐤇𐤑𐤅	spelling	[𐤉] 𐤋𐤇𐤑 𐤅	H3905	root
+202:50:7	𐤕𐤍𐤉𐤇	spelling	[𐤕] 𐤍𐤉𐤇 	H5117	matres
+202:51:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:51:3	𐤉𐤋𐤇𐤑𐤅	spelling	[𐤉] 𐤋𐤇𐤑 𐤅	H3905	root
+202:52:3	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+202:52:4	𐤌𐤕𐤒𐤁𐤋𐤕	spelling	[𐤌𐤕] 𐤒𐤁𐤋 𐤕	H6901	root
+202:52:4	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+202:52:4	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:52:5	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+202:52:5	𐤍𐤔𐤋𐤇𐤕𐤉	spelling	[𐤍] 𐤔𐤋𐤇 𐤕+𐤉	H7971	root
+202:53:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:55:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:55:2	𐤅𐤉𐤔𐤍𐤀𐤅𐤍𐤉	spelling	𐤅+[𐤉] 𐤔𐤍𐤀𐤅𐤍𐤉 	H8130	form
+202:55:2	𐤅𐤉𐤔𐤍𐤀𐤅𐤍𐤉	spelling	𐤅+[𐤉] 𐤔𐤍𐤀𐤅𐤍𐤉 	H8130	form
+202:55:2	𐤊𐤇𐤅𐤕𐤉𐤅	english	𐤊 𐤇𐤅𐤕 𐤉+𐤅	H2334	form
+202:55:2	𐤕𐤒𐤓𐤄	spelling	[𐤕] 𐤒𐤓𐤄 	H7136	root
+202:57:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:57:5	𐤁𐤎𐤋𐤉𐤇𐤄	spelling	𐤁 𐤎𐤋𐤉𐤇𐤄 	H5547	root
+202:58:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:58:3	𐤉𐤈𐤁𐤏𐤅	spelling	[𐤉] 𐤈𐤁𐤏 𐤅	H2883	root
+202:58:5	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:59:1	𐤋𐤆𐤌𐤓	english	𐤋 𐤆𐤌𐤓 	H2167	root
+202:59:7	𐤄𐤑𐤌𐤉𐤇𐤄	spelling	[𐤄] 𐤑𐤌𐤉𐤇 𐤄	H6779	matres
+202:60:1	𐤍𐤔𐤋𐤌𐤄	spelling	[𐤍] 𐤔𐤋𐤌 𐤄	H7999	root
+202:60:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:60:1	𐤍𐤔𐤋𐤌𐤄	spelling	[𐤍] 𐤔𐤋𐤌 𐤄	H7999	root
+202:60:3	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+202:61:6	𐤅𐤀𐤐𐤂𐤔	english	𐤅+[𐤀] 𐤐𐤂𐤔 	H6298	root
+202:61:6	𐤅𐤀𐤇𐤔𐤁	spelling	𐤅+[𐤀] 𐤇𐤔𐤁 	H2803	root
+202:61:6	𐤅𐤀𐤕𐤐𐤔𐤄𐤅	english	𐤅+[𐤀] 𐤕𐤐𐤔𐤄𐤅 	H8610	form
+202:61:6	𐤀𐤇𐤊𐤄	spelling	[𐤀] 𐤇𐤊𐤄 	H2442	root
+202:61:6	𐤅𐤍𐤁𐤉𐤈	english	𐤅 𐤍𐤁𐤉𐤈 	H5027	matres
+202:61:7	𐤅𐤐𐤕𐤓𐤅𐤍𐤅	spelling	𐤅 𐤐𐤕𐤓𐤅𐤍 𐤅	H6623	root
+202:61:8	𐤄𐤈𐤁𐤉𐤋	spelling	[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
+202:61:8	𐤉𐤔𐤉𐤌𐤄𐤅	spelling	[𐤉] 𐤔𐤉𐤌𐤄 𐤅	H7760	form
+202:62:5	𐤌𐤈𐤁𐤉𐤋𐤕	english	[𐤌] 𐤈𐤁𐤉𐤋 𐤕	H2881	matres
+202:62:5	𐤄𐤈𐤁𐤉𐤋𐤄	english	[𐤄] 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+202:62:5	𐤅𐤉𐤐𐤂𐤔	spelling	𐤅+[𐤉] 𐤐𐤂𐤔 	H6298	root
+202:62:5	𐤄𐤈𐤁𐤉𐤋	spelling	[𐤄] 𐤈𐤁𐤉𐤋 	H2881	matres
+202:62:8	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+202:62:8	𐤄𐤈𐤁𐤉𐤋𐤄	english	[𐤄] 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+203:1:3	𐤍𐤔𐤋𐤇𐤕	spelling	[𐤍] 𐤔𐤋𐤇 𐤕	H7971	root
+203:1:4	𐤍𐤒𐤔𐤓	spelling	[𐤍] 𐤒𐤔𐤓 	H7194	root
+203:1:5	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+203:1:10	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+203:2:1	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+203:3:2	𐤎𐤅𐤋𐤋𐤅𐤕	spelling	 𐤎𐤅𐤋𐤋 𐤅𐤕	H5549	matres
+203:3:4	𐤄𐤕𐤐𐤔𐤈	english	[𐤄𐤕] 𐤐𐤔𐤈 	H6584	root
+203:4:6	𐤅𐤀𐤀𐤁𐤃	spelling	𐤅+[𐤀] 𐤀𐤁𐤃 	H6	root
+203:5:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:5:6	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:7	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:8	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:9	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:10	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:11	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:13	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:14	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:14	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:15	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:15	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:17	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:18	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:18	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:19	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:19	𐤅𐤍𐤋𐤇𐤑𐤄	english	𐤅+[𐤍] 𐤋𐤇𐤑 𐤄	H3905	root
+203:5:20	𐤋𐤍𐤄𐤋	spelling	𐤋 𐤍𐤄𐤋 	H5095	root
+203:5:20	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:5:21	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:6:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:6:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:6:3	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:6:5	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:7:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:3	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:3	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:3	𐤁𐤔𐤉𐤓𐤉𐤅	english	𐤁 𐤔𐤉𐤓 𐤉+𐤅	H7892	root
+203:7:3	𐤅𐤍𐤇𐤋𐤑𐤕𐤉	english	𐤅+[𐤍] 𐤇𐤋𐤑 𐤕+𐤉	H2502	root
+203:7:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:5	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:6	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:8	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:9	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:10	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:13	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:14	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:16	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:19	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:20	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:21	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:21	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:22	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:24	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:7:25	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:8:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:8:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:8:3	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:8:4	𐤅𐤉𐤕𐤇𐤃𐤔𐤅	spelling	𐤅+[𐤉𐤕] 𐤇𐤃𐤔 𐤅	H2318	root
+203:8:5	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:3	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:5	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:5	𐤄𐤌𐤋𐤔𐤉𐤍	spelling	𐤄+[𐤌] 𐤋𐤔𐤉𐤍 	H3960	matres
+203:9:5	𐤅𐤉𐤕𐤇𐤃𐤔𐤅	spelling	𐤅+[𐤉𐤕] 𐤇𐤃𐤔 𐤅	H2318	root
+203:9:6	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:7	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:8	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:9	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:10	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:12	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:13	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:14	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:15	𐤄𐤌𐤋𐤔𐤉𐤍𐤉𐤌	spelling	𐤄+[𐤌] 𐤋𐤔𐤉𐤍 𐤉𐤌	H3960	matres
+203:9:15	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:17	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:18	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:18	𐤄𐤇𐤔𐤅𐤊𐤅𐤕	spelling	𐤄 𐤇𐤔𐤅𐤊 𐤅𐤕	H2816	root
+203:9:19	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:21	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:22	𐤅𐤉𐤕𐤇𐤃𐤔𐤅	spelling	𐤅+[𐤉𐤕] 𐤇𐤃𐤔 𐤅	H2318	root
+203:9:22	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:22	𐤅𐤉𐤕𐤇𐤃𐤔𐤅	spelling	𐤅+[𐤉𐤕] 𐤇𐤃𐤔 𐤅	H2318	root
+203:9:23	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:23	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:9:24	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:10:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:10:3	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:10:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:10:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:10:6	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:10:7	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:10:8	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:11:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:11:3	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:11:7	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:11:8	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:11:8	𐤄𐤌𐤏𐤈𐤓	spelling	𐤄+[𐤌] 𐤏𐤈𐤓 	H5849	root
+203:11:9	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:12:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:12:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:12:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:12:6	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:12:6	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:12:10	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:12:10	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:13:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:13:3	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:13:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:14:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:14:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:14:5	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:14:6	𐤉𐤋𐤇𐤑𐤅	spelling	[𐤉] 𐤋𐤇𐤑 𐤅	H3905	root
+203:14:7	𐤉𐤍𐤎𐤄	spelling	[𐤉] 𐤍𐤎𐤄 	H5254	root
+203:14:7	𐤉𐤋𐤇𐤑𐤅	spelling	[𐤉] 𐤋𐤇𐤑 𐤅	H3905	root
+203:14:8	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:14:9	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:14:9	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:14:9	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+203:14:10	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:14:10	𐤉𐤋𐤇𐤑𐤅	spelling	[𐤉] 𐤋𐤇𐤑 𐤅	H3905	root
+203:15:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:15:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:15:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:15:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:15:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:15:1	𐤄𐤇𐤔𐤅𐤊𐤅𐤕	spelling	𐤄 𐤇𐤔𐤅𐤊 𐤅𐤕	H2816	root
+203:15:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:15:1	𐤄𐤇𐤔𐤅𐤊𐤅𐤕	spelling	𐤄 𐤇𐤔𐤅𐤊 𐤅𐤕	H2816	root
+203:15:3	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:16:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:17:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:17:3	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:17:3	𐤊𐤇𐤅𐤕𐤉𐤅	english	𐤊 𐤇𐤅𐤕 𐤉+𐤅	H2334	form
+203:17:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:17:4	𐤄𐤇𐤔𐤅𐤊𐤅𐤕	spelling	𐤄 𐤇𐤔𐤅𐤊 𐤅𐤕	H2816	root
+203:17:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:17:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:17:4	𐤄𐤇𐤔𐤅𐤊𐤅𐤕	spelling	𐤄 𐤇𐤔𐤅𐤊 𐤅𐤕	H2816	root
+203:17:5	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:17:6	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:17:6	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:18:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:18:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:19:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:19:1	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:19:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:19:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:19:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:19:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:19:2	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:19:3	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:19:4	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:19:5	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:20:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:20:5	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:20:5	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:20:6	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:20:7	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:20:8	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+203:21:3	𐤕𐤇𐤐𐤑𐤉	spelling	[𐤕] 𐤇𐤐𐤑 𐤉	H2654	root
+203:21:4	𐤕𐤇𐤐𐤑𐤉	spelling	[𐤕] 𐤇𐤐𐤑 𐤉	H2654	root
+203:22:9	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
+203:23:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:23:2	𐤕𐤇𐤐𐤑𐤉	spelling	[𐤕] 𐤇𐤐𐤑 𐤉	H2654	root
+203:24:1	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:24:17	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+203:24:19	𐤄𐤌𐤍𐤄𐤉𐤂𐤉𐤌	spelling	𐤄+[𐤌] 𐤍𐤄𐤉𐤂 𐤉𐤌	H5090	matres
+203:24:19	𐤄𐤌𐤍𐤄𐤉𐤂𐤉𐤌	spelling	𐤄+[𐤌] 𐤍𐤄𐤉𐤂 𐤉𐤌	H5090	matres
+203:24:20	𐤄𐤌𐤍𐤄𐤉𐤂𐤉𐤌	spelling	𐤄+[𐤌] 𐤍𐤄𐤉𐤂 𐤉𐤌	H5090	matres
+203:24:22	𐤋𐤎𐤃𐤓	spelling	𐤋 𐤎𐤃𐤓 	H5468	root
+203:24:23	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+203:24:23	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+203:24:23	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:24:30	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+203:24:30	𐤉𐤈𐤁𐤋𐤅	spelling	[𐤉] 𐤈𐤁𐤋 𐤅	H2881	root
+203:24:32	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:24:32	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
+203:24:32	𐤎𐤃𐤓𐤅	spelling	 𐤎𐤃𐤓 𐤅	H5468	root
+203:24:33	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
+203:24:33	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:25:2	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:26:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:26:5	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:26:6	𐤕𐤇𐤐𐤑𐤉	spelling	[𐤕] 𐤇𐤐𐤑 𐤉	H2654	root
+203:28:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:28:3	𐤁𐤎𐤃𐤓𐤅	spelling	𐤁 𐤎𐤃𐤓 𐤅	H5468	root
+203:28:3	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
+203:28:3	𐤁𐤎𐤃𐤓𐤅	spelling	𐤁 𐤎𐤃𐤓 𐤅	H5468	root
+203:28:4	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:29:2	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+203:29:3	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:29:4	𐤁𐤎𐤃𐤓𐤉	spelling	𐤁 𐤎𐤃𐤓 𐤉	H5468	root
+203:29:6	𐤁𐤎𐤃𐤓𐤉	spelling	𐤁 𐤎𐤃𐤓 𐤉	H5468	root
+203:29:7	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:29:7	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+203:29:8	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+203:29:10	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+203:29:11	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:29:11	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+203:29:11	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+203:29:12	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+203:29:12	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:29:32	𐤄𐤃𐤌𐤏𐤅𐤕	spelling	𐤄 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+203:29:35	𐤄𐤕𐤋𐤅𐤍𐤄	english	𐤄 𐤕𐤋𐤅𐤍𐤄 	H8519	root
+203:30:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:30:13	𐤄𐤆𐤊𐤅𐤊𐤉𐤕	spelling	𐤄 𐤆𐤊𐤅𐤊𐤉𐤕 	H2137	root
+203:31:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:31:32	𐤄𐤍𐤉𐤑𐤅𐤑𐤅𐤕	english	𐤄 𐤍𐤉𐤑𐤅𐤑 𐤅𐤕	H5213	root
+203:32:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:33:1	𐤕𐤕𐤏𐤑𐤁𐤅	spelling	[𐤕𐤕] 𐤏𐤑𐤁 𐤅	H6087	root
+203:33:4	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:33:4	𐤕𐤕𐤏𐤑𐤁𐤅	spelling	[𐤕𐤕] 𐤏𐤑𐤁 𐤅	H6087	root
+203:33:8	𐤄𐤒𐤓𐤉𐤏𐤄	spelling	[𐤄] 𐤒𐤓𐤉𐤏 𐤄	H7167	matres
+203:33:10	𐤍𐤇𐤋𐤒𐤄	spelling	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
+203:33:15	𐤋𐤎𐤃𐤓𐤉	spelling	𐤋 𐤎𐤃𐤓 𐤉	H5468	root
+203:33:17	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+203:33:18	𐤊𐤎𐤃𐤓	spelling	𐤊 𐤎𐤃𐤓 	H5468	root
+203:33:20	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+203:33:22	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
+203:33:23	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+203:33:23	𐤊𐤎𐤃𐤓	spelling	𐤊 𐤎𐤃𐤓 	H5468	root
+203:33:24	𐤋𐤎𐤃𐤓𐤉	spelling	𐤋 𐤎𐤃𐤓 𐤉	H5468	root
+203:33:37	𐤋𐤎𐤃𐤓𐤉	spelling	𐤋 𐤎𐤃𐤓 𐤉	H5468	root
+203:34:1	𐤁𐤐𐤓𐤅𐤔	english	𐤁 𐤐𐤓𐤅𐤔 	H6566	matres
+203:34:5	𐤄𐤃𐤌𐤅𐤉𐤅𐤕	spelling	𐤄 𐤃𐤌𐤅𐤉𐤅𐤕 	H1823	matres
+203:34:5	𐤄𐤃𐤌𐤅𐤉𐤅𐤕	spelling	𐤄 𐤃𐤌𐤅𐤉𐤅𐤕 	H1823	matres
+203:34:5	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
+203:34:6	𐤄𐤐𐤕𐤓𐤅𐤍	spelling	𐤄 𐤐𐤕𐤓𐤅𐤍 	H6623	root
+203:34:7	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:34:7	𐤄𐤃𐤌𐤅𐤉𐤅𐤕	spelling	𐤄 𐤃𐤌𐤅𐤉𐤅𐤕 	H1823	matres
+203:34:7	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
+203:34:8	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:34:8	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:34:9	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+203:34:9	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+203:34:10	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+203:34:10	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+203:34:11	𐤁𐤌𐤒𐤅𐤌𐤅𐤕𐤌	english	𐤁+[𐤌] 𐤒𐤅𐤌 𐤅𐤕+𐤌	H6965	root
+203:34:11	𐤏𐤅𐤈𐤄	spelling	 𐤏𐤅𐤈 𐤄	H5860	matres
+203:34:12	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:34:12	𐤄𐤃𐤌𐤅𐤉𐤅𐤕	spelling	𐤄 𐤃𐤌𐤅𐤉𐤅𐤕 	H1823	matres
+203:34:31	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:34:31	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:34:35	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:34:35	𐤉𐤇𐤁𐤓𐤅	spelling	[𐤉] 𐤇𐤁𐤓 𐤅	H2266	root
+203:34:36	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:34:39	𐤅𐤎𐤃𐤓	spelling	𐤅 𐤎𐤃𐤓 	H5468	root
+203:35:4	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:5	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:5	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:35:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:7	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:35:8	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:9	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+203:35:10	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:10	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:10	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+203:35:13	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:13	𐤊𐤎𐤃𐤓	spelling	𐤊 𐤎𐤃𐤓 	H5468	root
+203:35:13	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:13	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:35:13	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:35:13	𐤁𐤎𐤃𐤓𐤉	spelling	𐤁 𐤎𐤃𐤓 𐤉	H5468	root
+203:36:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:36:9	𐤅𐤌𐤎𐤃𐤓	english	𐤅+𐤌 𐤎𐤃𐤓 	H5468	root
+203:36:9	𐤋𐤎𐤃𐤓	spelling	𐤋 𐤎𐤃𐤓 	H5468	root
+203:36:10	𐤕𐤍𐤉𐤇	spelling	[𐤕] 𐤍𐤉𐤇 	H5117	matres
+203:36:13	𐤕𐤍𐤉𐤇	spelling	[𐤕] 𐤍𐤉𐤇 	H5117	matres
+203:36:15	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:36:15	𐤂𐤁𐤅𐤄𐤄	spelling	 𐤂𐤁𐤅𐤄 𐤄	H1364	matres
+203:36:15	𐤂𐤁𐤅𐤄𐤄	spelling	 𐤂𐤁𐤅𐤄 𐤄	H1364	matres
+203:36:16	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:36:16	𐤂𐤁𐤅𐤄𐤉𐤌	spelling	 𐤂𐤁𐤅𐤄 𐤉𐤌	H1364	matres
+203:36:17	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:36:17	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:36:18	𐤋𐤎𐤃𐤓	spelling	𐤋 𐤎𐤃𐤓 	H5468	root
+203:36:18	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:36:19	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:37:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:37:4	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+203:37:5	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:37:5	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:37:6	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:37:7	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:37:8	𐤊𐤎𐤃𐤓	spelling	𐤊 𐤎𐤃𐤓 	H5468	root
+203:37:9	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:37:9	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:37:9	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+203:37:10	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:37:10	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+203:37:10	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+203:37:11	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:37:12	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+203:37:13	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+203:37:15	𐤂𐤁𐤅𐤄𐤉𐤌	spelling	 𐤂𐤁𐤅𐤄 𐤉𐤌	H1364	matres
+203:37:17	𐤀𐤁𐤀𐤓	spelling	[𐤀] 𐤁𐤀𐤓 	H874	root
+203:37:17	𐤄𐤃𐤌𐤅𐤉𐤅𐤕	spelling	𐤄 𐤃𐤌𐤅𐤉𐤅𐤕 	H1823	matres
+203:38:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+203:38:3	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+203:38:8	𐤁𐤉𐤇𐤅𐤃	spelling	𐤁 𐤉𐤇𐤅𐤃 	H3162	matres
+203:38:8	𐤇𐤃𐤋𐤕𐤌	english	 𐤇𐤃𐤋 𐤕+𐤌	H2309	root
+203:38:15	𐤒𐤁𐤋𐤕𐤌	spelling	 𐤒𐤁𐤋 𐤕+𐤌	H6901	root
+203:39:4	𐤕𐤀𐤓𐤕𐤉	spelling	 𐤕𐤀𐤓 𐤕+𐤉	H8389	root
+204:1:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:1:14	𐤁𐤆𐤐𐤕	spelling	𐤁 𐤆𐤐𐤕 	H2203	root
+204:1:27	𐤁𐤆𐤐𐤕	spelling	𐤁 𐤆𐤐𐤕 	H2203	root
+204:1:37	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:1:39	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:1:40	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:1:41	𐤓𐤇𐤌𐤍𐤉𐤌	spelling	 𐤓𐤇𐤌𐤍𐤉 𐤌	H7362	root
+204:1:41	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:1:42	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:1:43	𐤄𐤍𐤋𐤇𐤑𐤉𐤌	spelling	𐤄+[𐤍] 𐤋𐤇𐤑 𐤉𐤌	H3905	root
+204:1:43	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:1:44	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:1:45	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:1:46	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:1:47	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:1:49	𐤁𐤄𐤊𐤍𐤏𐤄	spelling	𐤁+[𐤄] 𐤊𐤍𐤏 𐤄	H3665	root
+204:1:49	𐤋𐤎𐤋𐤉𐤇𐤕	spelling	𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+204:1:49	𐤇𐤈𐤀𐤉𐤄𐤌	spelling	 𐤇𐤈𐤀𐤉𐤄 𐤌	H2403	matres
+204:2:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:2:2	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:3:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:3:1	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:3:1	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+204:3:1	𐤍𐤎𐤋𐤇	spelling	[𐤍] 𐤎𐤋𐤇 	H5545	root
+204:3:2	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
+204:3:4	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+204:3:4	𐤍𐤎𐤋𐤇	spelling	[𐤍] 𐤎𐤋𐤇 	H5545	root
+204:3:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:3:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:4:3	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+204:4:3	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+204:4:8	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
+204:4:8	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:4:8	𐤅𐤊𐤐𐤅𐤔𐤏	spelling	𐤅+𐤊 𐤐𐤅𐤔𐤏 	H6588	matres
+204:4:9	𐤕𐤔𐤋𐤊	spelling	[𐤕] 𐤔𐤋𐤊 	H7993	root
+204:4:10	𐤅𐤊𐤐𐤅𐤔𐤏	spelling	𐤅+𐤊 𐤐𐤅𐤔𐤏 	H6588	matres
+204:4:11	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+204:4:11	𐤉𐤏𐤉𐤃𐤅	spelling	[𐤉] 𐤏𐤉𐤃 𐤅	H5749	matres
+204:4:11	𐤋𐤄𐤕𐤒𐤁𐤋	spelling	𐤋+[𐤄𐤕] 𐤒𐤁𐤋 	H6901	root
+204:4:11	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:5:1	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+204:5:1	𐤄𐤕𐤇𐤐𐤑	spelling	[𐤄𐤕] 𐤇𐤐𐤑 	H2654	root
+204:5:2	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+204:5:3	𐤌𐤕𐤇𐤐𐤔	english	[𐤌𐤕] 𐤇𐤐𐤔 	H2664	root
+204:5:7	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:6:3	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:6:3	𐤁𐤄𐤊𐤍𐤏𐤄	spelling	𐤁+[𐤄] 𐤊𐤍𐤏 𐤄	H3665	root
+204:6:5	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:6:5	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:6:6	𐤅𐤕𐤒𐤁𐤋𐤅	spelling	𐤅+[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:6:8	𐤁𐤄𐤊𐤍𐤏𐤄	spelling	𐤁+[𐤄] 𐤊𐤍𐤏 𐤄	H3665	root
+204:6:8	𐤇𐤈𐤀𐤉𐤄𐤌	spelling	 𐤇𐤈𐤀𐤉𐤄 𐤌	H2403	matres
+204:7:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:7:2	𐤕𐤇𐤐𐤑𐤉	spelling	[𐤕] 𐤇𐤐𐤑 𐤉	H2654	root
+204:7:6	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+204:7:6	𐤕𐤔𐤋𐤉𐤊	spelling	[𐤕] 𐤔𐤋𐤉𐤊 	H7993	matres
+204:7:6	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+204:7:7	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+204:8:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:9:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:10:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:10:4	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:10:7	𐤉𐤌𐤔𐤊	spelling	[𐤉] 𐤌𐤔𐤊 	H4900	root
+204:10:7	𐤉𐤌𐤔𐤊	spelling	[𐤉] 𐤌𐤔𐤊 	H4900	root
+204:10:9	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+204:10:9	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:10:11	𐤉𐤏𐤅𐤓𐤓	english	[𐤉] 𐤏𐤅𐤓𐤓 	H5782	form
+204:10:12	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:10:15	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:10:15	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:10:16	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:10:16	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
+204:10:16	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+204:10:16	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:10:17	𐤄𐤏𐤅𐤍𐤔	spelling	[𐤄] 𐤏𐤅𐤍𐤔 	H6064	matres
+204:10:19	𐤅𐤕𐤌𐤎𐤓	english	𐤅+[𐤕] 𐤌𐤎𐤓 	H4560	root
+204:10:20	𐤕𐤔𐤋𐤊	spelling	[𐤕] 𐤔𐤋𐤊 	H7993	root
+204:11:4	𐤍𐤀𐤎𐤓𐤄	spelling	[𐤍] 𐤀𐤎𐤓 𐤄	H631	root
+204:11:5	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+204:11:5	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:11:5	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+204:11:7	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:11:10	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:11:10	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+204:11:12	𐤕𐤌𐤎𐤓	spelling	[𐤕] 𐤌𐤎𐤓 	H4560	root
+204:11:16	𐤄𐤈𐤁𐤉𐤋𐤅𐤕	english	[𐤄] 𐤈𐤁𐤉𐤋 𐤅𐤕	H2881	matres
+204:11:16	𐤉𐤈𐤁𐤋𐤅	spelling	[𐤉] 𐤈𐤁𐤋 𐤅	H2881	root
+204:11:17	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
+204:12:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:12:4	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+204:12:9	𐤕𐤌𐤎𐤓	spelling	[𐤕] 𐤌𐤎𐤓 	H4560	root
+204:12:9	𐤅𐤄𐤌𐤒𐤁𐤋	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 	H6901	root
+204:12:9	𐤉𐤌𐤎𐤓	spelling	[𐤉] 𐤌𐤎𐤓 	H4560	root
+204:12:9	𐤉𐤌𐤎𐤓	spelling	[𐤉] 𐤌𐤎𐤓 	H4560	root
+204:12:10	𐤄𐤐𐤓𐤅𐤈𐤄	spelling	[𐤄] 𐤐𐤓𐤅𐤈 𐤄	H6527	matres
+204:12:11	𐤕𐤌𐤎𐤓	spelling	[𐤕] 𐤌𐤎𐤓 	H4560	root
+204:12:11	𐤅𐤄𐤌𐤒𐤁𐤋	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 	H6901	root
+204:14:1	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:14:1	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:14:2	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:14:2	𐤅𐤄𐤌𐤒𐤁𐤋𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤒𐤁𐤋 𐤉𐤌	H6901	root
+204:14:2	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:14:3	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:14:3	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:14:4	𐤄𐤍𐤅𐤒𐤌𐤉𐤌	spelling	𐤄+[𐤍] 𐤅𐤒𐤌 𐤉𐤌	H6965	form
+204:14:4	𐤕𐤏𐤍𐤔	spelling	[𐤕] 𐤏𐤍𐤔 	H6064	root
+204:14:5	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:15:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:15:2	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+204:15:3	𐤋𐤈𐤁𐤋	spelling	𐤋 𐤈𐤁𐤋 	H2881	root
+204:15:4	𐤄𐤈𐤁𐤉𐤋𐤅𐤕	english	[𐤄] 𐤈𐤁𐤉𐤋 𐤅𐤕	H2881	matres
+204:15:4	𐤋𐤈𐤁𐤋	spelling	𐤋 𐤈𐤁𐤋 	H2881	root
+204:15:4	𐤄𐤈𐤁𐤉𐤋𐤅𐤕	english	[𐤄] 𐤈𐤁𐤉𐤋 𐤅𐤕	H2881	matres
+204:15:5	𐤄𐤈𐤁𐤉𐤋𐤅𐤕	english	[𐤄] 𐤈𐤁𐤉𐤋 𐤅𐤕	H2881	matres
+204:16:2	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+204:17:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:17:3	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
+204:17:3	𐤇𐤈𐤀𐤉𐤄𐤌	spelling	 𐤇𐤈𐤀𐤉𐤄 𐤌	H2403	matres
+204:17:4	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:17:6	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:17:6	𐤄𐤍𐤎𐤋𐤇	english	𐤄+[𐤍] 𐤎𐤋𐤇 	H5545	root
+204:17:7	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:17:9	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:18:3	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:18:5	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:18:6	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:18:7	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:18:7	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:19:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:19:2	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:19:3	𐤉𐤌𐤋𐤇	spelling	[𐤉] 𐤌𐤋𐤇 	H4414	root
+204:19:3	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:19:7	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:19:7	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:19:7	𐤇𐤈𐤀𐤉𐤄𐤌	spelling	 𐤇𐤈𐤀𐤉𐤄 𐤌	H2403	matres
+204:19:7	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:19:8	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:19:8	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:20:1	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:20:4	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:20:4	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:20:6	𐤓𐤇𐤌𐤍𐤉𐤌	spelling	 𐤓𐤇𐤌𐤍𐤉 𐤌	H7362	root
+204:20:6	𐤓𐤀𐤅𐤉𐤉𐤌	spelling	 𐤓𐤀𐤅𐤉𐤉 𐤌	H7210	matres
+204:20:7	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:20:8	𐤓𐤑𐤉𐤇𐤅𐤕	spelling	 𐤓𐤑𐤉𐤇 𐤅𐤕	H7523	matres
+204:20:8	𐤓𐤀𐤅𐤉𐤉𐤌	spelling	 𐤓𐤀𐤅𐤉𐤉 𐤌	H7210	matres
+204:21:1	𐤄𐤈𐤁𐤉𐤋𐤄	english	[𐤄] 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+204:21:1	𐤋𐤈𐤁𐤉𐤋𐤅𐤕	english	𐤋 𐤈𐤁𐤉𐤋 𐤅𐤕	H2881	matres
+204:21:1	𐤅𐤎𐤅𐤋𐤇	spelling	𐤅 𐤎𐤅𐤋𐤇 	H5545	matres
+204:21:1	𐤄𐤈𐤁𐤋𐤕𐤉	spelling	[𐤄] 𐤈𐤁𐤋 𐤕+𐤉	H2881	root
+204:21:2	𐤅𐤎𐤅𐤋𐤇	spelling	𐤅 𐤎𐤅𐤋𐤇 	H5545	matres
+204:21:4	𐤓𐤀𐤅𐤉𐤄	spelling	 𐤓𐤀𐤅 𐤉+𐤄	H7200	form
+204:21:4	𐤓𐤀𐤅𐤉𐤄	spelling	 𐤓𐤀𐤅 𐤉+𐤄	H7200	form
+204:21:5	𐤅𐤎𐤅𐤋𐤇	spelling	𐤅 𐤎𐤅𐤋𐤇 	H5545	matres
+204:21:6	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:21:7	𐤀𐤏𐤃𐤓	spelling	[𐤀] 𐤏𐤃𐤓 	H5737	root
+204:22:6	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+204:23:1	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:23:2	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:23:2	𐤅𐤄𐤐𐤅𐤓𐤑	english	𐤅+[𐤄] 𐤐𐤅𐤓𐤑 	H6555	matres
+204:23:4	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+204:24:1	𐤁𐤕𐤒𐤅𐤐𐤄	spelling	𐤁 𐤕𐤒𐤅𐤐𐤄 	H8622	root
+204:24:1	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
+204:24:2	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+204:24:2	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+204:24:2	𐤁𐤕𐤒𐤅𐤐𐤄	spelling	𐤁 𐤕𐤒𐤅𐤐𐤄 	H8622	root
+204:24:3	𐤅𐤀𐤎𐤂𐤓	english	𐤅+[𐤀] 𐤎𐤂𐤓 	H5462	root
+204:24:6	𐤄𐤂𐤅𐤐	english	[𐤄] 𐤂𐤅𐤐 	H1479	root
+204:24:9	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+205:1:8	𐤋𐤌𐤊𐤌𐤅𐤓	english	𐤋+[𐤌] 𐤊𐤌𐤅𐤓 	H3648	matres
+205:2:1	𐤓𐤀𐤅𐤉𐤄	spelling	 𐤓𐤀𐤅 𐤉+𐤄	H7200	form
+205:2:2	𐤕𐤅𐤓𐤅𐤕	english	 𐤕𐤅𐤓 𐤅𐤕	H8447	root
+205:2:2	𐤅𐤄𐤌𐤊𐤔𐤐𐤉𐤌	spelling	𐤅+𐤄+[𐤌] 𐤊𐤔𐤐 𐤉𐤌	H3784	root
+205:2:2	𐤁𐤕𐤒𐤅𐤐𐤄	spelling	𐤁 𐤕𐤒𐤅𐤐𐤄 	H8622	root
+205:3:3	𐤕𐤇𐤐𐤑𐤉	spelling	[𐤕] 𐤇𐤐𐤑 𐤉	H2654	root
+205:3:6	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+205:3:7	𐤀𐤇𐤔𐤁	spelling	[𐤀] 𐤇𐤔𐤁 	H2803	root
+205:3:8	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+205:3:10	𐤉𐤌𐤔𐤊	spelling	[𐤉] 𐤌𐤔𐤊 	H4900	root
+205:3:12	𐤕𐤅𐤎𐤓	spelling	[𐤕] 𐤅𐤎𐤓 	H5493	form
+205:3:12	𐤕𐤌𐤎𐤓	spelling	[𐤕] 𐤌𐤎𐤓 	H4560	root
+205:3:12	𐤁𐤈𐤁𐤉𐤋𐤅𐤕	spelling	𐤁 𐤈𐤁𐤉𐤋 𐤅𐤕	H2881	matres
+205:3:12	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
+205:3:12	𐤁𐤎𐤃𐤓𐤉	spelling	𐤁 𐤎𐤃𐤓 𐤉	H5468	root
+205:4:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:4:1	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+205:4:1	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+205:4:2	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+205:4:4	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
+205:5:1	𐤍𐤀𐤎𐤓	spelling	[𐤍] 𐤀𐤎𐤓 	H631	root
+205:5:1	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+205:5:9	𐤁𐤈𐤁𐤉𐤋𐤅𐤕	spelling	𐤁 𐤈𐤁𐤉𐤋 𐤅𐤕	H2881	matres
+205:5:9	𐤁𐤎𐤃𐤓𐤉	spelling	𐤁 𐤎𐤃𐤓 𐤉	H5468	root
+205:5:9	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
+205:5:10	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:5:11	𐤌𐤌𐤌𐤅𐤍	english	𐤌 𐤌𐤌𐤅𐤍 	H4326	matres
+205:5:11	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+205:5:11	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+205:6:2	𐤉𐤌𐤅𐤂	spelling	[𐤉] 𐤌𐤅𐤂 	H4127	root
+205:6:8	𐤅𐤌𐤃𐤌𐤏𐤅𐤕	spelling	𐤅+𐤌 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+205:6:10	𐤌𐤃𐤌𐤏𐤅𐤕	english	𐤌 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+205:6:15	𐤁𐤐𐤓𐤈	english	𐤁 𐤐𐤓𐤈 	H6527	root
+205:6:17	𐤏𐤅𐤍𐤅𐤕𐤉𐤄	spelling	 𐤏𐤅𐤍𐤅𐤕 𐤉+𐤄	H5771	form
+205:6:18	𐤍𐤀𐤎𐤓	spelling	[𐤍] 𐤀𐤎𐤓 	H631	root
+205:7:7	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:7:8	𐤕𐤅𐤎𐤓	spelling	[𐤕] 𐤅𐤎𐤓 	H5493	form
+205:7:9	𐤕𐤍𐤉𐤇	spelling	[𐤕] 𐤍𐤉𐤇 	H5117	matres
+205:7:9	𐤄𐤕𐤒𐤅𐤐𐤄	spelling	𐤄 𐤕𐤒𐤅𐤐𐤄 	H8622	root
+205:7:10	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
+205:7:15	𐤉𐤕𐤉𐤏𐤑𐤅	spelling	[𐤉𐤕] 𐤉𐤏𐤑 𐤅	H3289	root
+205:7:22	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
+205:7:22	𐤉𐤌𐤎𐤓𐤅	spelling	[𐤉] 𐤌𐤎𐤓 𐤅	H4560	root
+205:7:22	𐤕𐤅𐤎𐤓	spelling	[𐤕] 𐤅𐤎𐤓 	H5493	form
+205:7:25	𐤉𐤕𐤋𐤄	spelling	[𐤉] 𐤕𐤋𐤄 	H8518	root
+205:8:4	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+205:8:5	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+205:8:5	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+205:8:8	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+205:8:8	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+205:8:8	𐤄𐤈𐤁𐤋𐤕𐤉	spelling	[𐤄] 𐤈𐤁𐤋 𐤕+𐤉	H2881	root
+205:8:8	𐤋𐤎𐤋𐤉𐤇𐤕	spelling	𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+205:9:3	𐤕𐤅𐤓𐤅𐤕	english	 𐤕𐤅𐤓 𐤅𐤕	H8446	root
+205:9:5	𐤀𐤁𐤀𐤓	spelling	[𐤀] 𐤁𐤀𐤓 	H874	root
+205:10:2	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+205:10:4	𐤄𐤌𐤈𐤁𐤉𐤋	spelling	𐤄+[𐤌] 𐤈𐤁𐤉𐤋 	H2881	matres
+205:10:5	𐤇𐤈𐤀𐤉𐤄𐤌	spelling	 𐤇𐤈𐤀𐤉𐤄 𐤌	H2403	matres
+205:10:7	𐤎𐤃𐤓𐤉	spelling	 𐤎𐤃𐤓 𐤉	H5468	root
+205:11:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:11:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:11:2	𐤐𐤂𐤅𐤓𐤄	english	 𐤐𐤂𐤅𐤓 𐤄	H6297	matres
+205:11:4	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:11:7	𐤄𐤏𐤋𐤅𐤒𐤄	english	𐤄 𐤏𐤋𐤅𐤒𐤄 	H5936	root
+205:11:12	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:11:12	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
+205:11:12	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:12:1	𐤎𐤅𐤐𐤉𐤄	spelling	 𐤎𐤅𐤐 𐤉+𐤄	H5486	root
+205:12:2	𐤋𐤄𐤍𐤄𐤉𐤂	spelling	𐤋+[𐤄] 𐤍𐤄𐤉𐤂 	H5090	matres
+205:12:2	𐤉𐤍𐤄𐤉𐤂	spelling	[𐤉] 𐤍𐤄𐤉𐤂 	H5090	matres
+205:12:2	𐤎𐤃𐤓𐤅	spelling	 𐤎𐤃𐤓 𐤅	H5468	root
+205:13:5	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:14:9	𐤉𐤕𐤒𐤅𐤌𐤌𐤅	spelling	[𐤉] 𐤕𐤒𐤅𐤌𐤌 𐤅	H6965	form
+205:14:12	𐤉𐤁𐤄𐤋𐤅	spelling	[𐤉] 𐤁𐤄𐤋 𐤅	H926	root
+205:15:1	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
+205:15:1	𐤓𐤑𐤉𐤇𐤅𐤕	spelling	 𐤓𐤑𐤉𐤇 𐤅𐤕	H7523	matres
+205:15:1	𐤓𐤑𐤉𐤇𐤅𐤕	spelling	 𐤓𐤑𐤉𐤇 𐤅𐤕	H7523	matres
+205:15:4	𐤉𐤁𐤄𐤋	spelling	[𐤉] 𐤁𐤄𐤋 	H926	root
+205:15:5	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
+205:15:8	𐤄𐤏𐤒𐤓𐤁	spelling	𐤄 𐤏𐤒𐤓𐤁 	H6137	root
+205:15:8	𐤉𐤁𐤄𐤋𐤅	spelling	[𐤉] 𐤁𐤄𐤋 𐤅	H926	root
+205:15:9	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
+205:15:12	𐤋𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤋 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:15:12	𐤄𐤎𐤃𐤓	spelling	𐤄 𐤎𐤃𐤓 	H5468	root
+205:16:1	𐤌𐤕𐤇𐤍𐤍𐤉𐤌	spelling	[𐤌𐤕] 𐤇𐤍𐤍 𐤉𐤌	H2603	root
+205:16:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:16:2	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:16:3	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:16:3	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:16:4	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:16:6	𐤍𐤐𐤒𐤇𐤅	spelling	[𐤍] 𐤐𐤒𐤇 𐤅	H6491	root
+205:16:9	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:16:13	𐤄𐤔𐤌𐤓𐤅𐤍𐤉𐤕	spelling	𐤄 𐤔𐤌𐤓𐤅𐤍𐤉 𐤕	H8117	matres
+205:16:14	𐤋𐤎𐤋𐤉𐤇𐤕	spelling	𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+205:16:17	𐤅𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	𐤅 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:16:17	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:16:18	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+205:16:18	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+205:16:18	𐤕𐤎𐤋𐤇𐤅	spelling	[𐤕] 𐤎𐤋𐤇 𐤅	H5545	root
+205:17:6	𐤌𐤍𐤉𐤅𐤓	english	𐤌 𐤍𐤉𐤅𐤓 	H5216	matres
+205:17:11	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
+205:17:11	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:17:11	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
+205:17:14	𐤍𐤎𐤋𐤇𐤅	spelling	[𐤍] 𐤎𐤋𐤇 𐤅	H5545	root
+205:18:1	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:18:4	𐤉𐤈𐤁𐤏𐤅	spelling	[𐤉] 𐤈𐤁𐤏 𐤅	H2883	root
+205:18:7	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:19:7	𐤁𐤎𐤁𐤅𐤁	spelling	𐤁 𐤎𐤁𐤅𐤁 	H5439	matres
+205:20:2	𐤁𐤎𐤁𐤅𐤁	spelling	𐤁 𐤎𐤁𐤅𐤁 	H5439	matres
+205:20:8	𐤕𐤔𐤋𐤊	spelling	[𐤕] 𐤔𐤋𐤊 	H7993	root
+205:21:4	𐤁𐤎𐤁𐤅𐤁	spelling	𐤁 𐤎𐤁𐤅𐤁 	H5439	matres
+205:21:11	𐤁𐤎𐤁𐤅𐤁	spelling	𐤁 𐤎𐤁𐤅𐤁 	H5439	matres
+205:21:20	𐤁𐤎𐤁𐤅𐤁	spelling	𐤁 𐤎𐤁𐤅𐤁 	H5439	matres
+205:22:4	𐤄𐤆𐤐𐤕	english	𐤄 𐤆𐤐𐤕 	H2203	root
+205:22:8	𐤉𐤅𐤒𐤇𐤅	spelling	[𐤉] 𐤅𐤒𐤇𐤅 	H3947	form
+205:22:10	𐤁𐤎𐤁𐤅𐤁	spelling	𐤁 𐤎𐤁𐤅𐤁 	H5439	matres
+205:22:13	𐤅𐤕𐤐𐤒𐤉𐤃	english	𐤅+[𐤕] 𐤐𐤒𐤉𐤃 	H6485	matres
+205:23:5	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+205:23:5	𐤕𐤔𐤋𐤉𐤊	spelling	[𐤕] 𐤔𐤋𐤉𐤊 	H7993	matres
+205:23:6	𐤕𐤔𐤋𐤉𐤊	spelling	[𐤕] 𐤔𐤋𐤉𐤊 	H7993	matres
+205:23:7	𐤌𐤕𐤇𐤍𐤍𐤉𐤌	spelling	[𐤌𐤕] 𐤇𐤍𐤍 𐤉𐤌	H2603	root
+205:23:7	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+206:1:2	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+206:1:5	𐤓𐤀𐤅𐤉𐤄	spelling	 𐤓𐤀𐤅 𐤉+𐤄	H7200	form
+206:1:7	𐤕𐤇𐤆𐤉𐤒	spelling	[𐤕] 𐤇𐤆𐤉𐤒 	H2388	matres
+206:1:13	𐤌𐤊𐤔𐤐	english	𐤌 𐤊𐤔𐤐 	H3786	root
+206:1:13	𐤕𐤍𐤔𐤀	spelling	[𐤕] 𐤍𐤔𐤀 	H5375	root
+206:1:14	𐤅𐤉𐤁𐤏𐤉𐤓𐤅	spelling	𐤅+[𐤉] 𐤁𐤏𐤉𐤓𐤅 	H1197	form
+206:1:19	𐤅𐤕𐤕𐤀𐤁𐤋	spelling	𐤅+[𐤕𐤕] 𐤀𐤁𐤋 	H56	root
+206:1:22	𐤅𐤕𐤈𐤓𐤐	english	𐤅+[𐤕] 𐤈𐤓𐤐 	H2963	root
+206:1:24	𐤍𐤀𐤎𐤓	spelling	[𐤍] 𐤀𐤎𐤓 	H631	root
+206:1:24	𐤍𐤀𐤎𐤓𐤄	spelling	[𐤍] 𐤀𐤎𐤓 𐤄	H631	root
+206:1:24	𐤄𐤕𐤏𐤋𐤐𐤄	english	[𐤄𐤕] 𐤏𐤋𐤐 𐤄	H5968	root
+206:1:24	𐤒𐤓𐤅𐤁𐤕𐤅	spelling	 𐤒𐤓𐤅𐤁 𐤕+𐤅	H7138	root
+206:1:27	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+206:1:28	𐤕𐤇𐤐𐤑𐤉	spelling	[𐤕] 𐤇𐤐𐤑 𐤉	H2654	root
+206:1:32	𐤍𐤎𐤉𐤅𐤍𐤅𐤕	english	 𐤍𐤎𐤉𐤅𐤍 𐤅𐤕	H5212	matres
+206:1:32	𐤐𐤓𐤉𐤔𐤅𐤕	english	 𐤐𐤓𐤉𐤔 𐤅𐤕	H6566	matres
+206:1:32	𐤅𐤉𐤕𐤍𐤐𐤋𐤅	spelling	𐤅+[𐤉𐤕] 𐤍𐤐𐤋 𐤅	H5307	root
+206:1:32	𐤅𐤃𐤐𐤒𐤅	english	𐤅 𐤃𐤐𐤒 𐤅	H1849	root
+206:1:32	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+206:1:32	𐤍𐤇𐤐𐤑	spelling	[𐤍] 𐤇𐤐𐤑 	H2654	root
+206:1:33	𐤅𐤄𐤎𐤁𐤅𐤁	english	𐤅+𐤄 𐤎𐤁𐤅𐤁 	H5439	matres
+206:1:33	𐤅𐤄𐤐𐤓𐤉𐤔𐤅𐤕	english	𐤅+[𐤄] 𐤐𐤓𐤉𐤔 𐤅𐤕	H6566	matres
+207:1:16	𐤌𐤕𐤇𐤍𐤍𐤉𐤌	spelling	[𐤌𐤕] 𐤇𐤍𐤍 𐤉𐤌	H2603	root
+207:1:16	𐤅𐤔𐤂𐤏𐤅𐤍	english	𐤅 𐤔𐤂𐤏𐤅𐤍 	H7697	root
+207:3:4	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+207:3:5	𐤍𐤔𐤋𐤇	spelling	[𐤍] 𐤔𐤋𐤇 	H7971	root
+207:3:14	𐤅𐤕𐤒𐤁𐤋	spelling	𐤅+[𐤕] 𐤒𐤁𐤋 	H6901	root
+207:3:34	𐤕𐤒𐤁𐤋𐤅	spelling	[𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+207:3:86	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+208:1:4	𐤄𐤐𐤓𐤅𐤔	spelling	[𐤄] 𐤐𐤓𐤅𐤔 	H6566	matres
+208:1:91	𐤅𐤂𐤁𐤅𐤓𐤅𐤕𐤉𐤅	spelling	𐤅 𐤂𐤁𐤅𐤓𐤅𐤕 𐤉+𐤅	H1369	form
+208:1:109	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
+208:1:117	𐤄𐤒𐤅𐤐𐤉𐤌	english	𐤄 𐤒𐤅𐤐 𐤉𐤌	H6971	root
+208:1:150	𐤑𐤐𐤓𐤍𐤉𐤅	spelling	 𐤑𐤐𐤓𐤍 𐤉+𐤅	H6856	root
+208:1:150	𐤀𐤉𐤉𐤋𐤅	english	 𐤀𐤉𐤉𐤋 𐤅	H193	matres
+208:1:150	𐤑𐤐𐤓𐤍𐤉𐤅	spelling	 𐤑𐤐𐤓𐤍 𐤉+𐤅	H6856	root
+208:1:152	𐤍𐤇𐤋𐤒𐤅	spelling	[𐤍] 𐤇𐤋𐤒 𐤅	H2505	root
+208:1:166	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+208:1:192	𐤏𐤍𐤐𐤉𐤅	spelling	 𐤏𐤍𐤐 𐤉+𐤅	H6057	root
+208:1:207	𐤍𐤓𐤀𐤉𐤕𐤉	spelling	[𐤍] 𐤓𐤀𐤉𐤕𐤉 	H7200	form
+208:1:228	𐤋𐤄𐤕𐤏𐤅𐤕𐤌	spelling	𐤋 𐤄𐤕𐤏𐤅 𐤕+𐤌	H8582	form
+208:1:232	𐤍𐤌𐤔𐤊𐤉𐤌	spelling	[𐤍] 𐤌𐤔𐤊 𐤉𐤌	H4900	root
+208:1:241	𐤁𐤕𐤁𐤅𐤍𐤕	spelling	𐤁 𐤕𐤁𐤅𐤍 𐤕	H8394	root
+208:1:243	𐤂𐤁𐤅𐤓𐤅𐤕𐤉𐤅	spelling	 𐤂𐤁𐤅𐤓𐤅𐤕 𐤉+𐤅	H1369	form
+208:1:251	𐤅𐤂𐤁𐤅𐤓𐤅𐤕𐤉𐤅	spelling	𐤅 𐤂𐤁𐤅𐤓𐤅𐤕 𐤉+𐤅	H1369	form
+208:1:254	𐤍𐤌𐤔𐤊𐤅	spelling	[𐤍] 𐤌𐤔𐤊 𐤅	H4900	root
+209:1:3	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
+209:1:7	𐤍𐤇𐤐𐤑	spelling	[𐤍] 𐤇𐤐𐤑 	H2654	root
+209:1:8	𐤅𐤄𐤐𐤓𐤅𐤔𐤉𐤌	english	𐤅+[𐤄] 𐤐𐤓𐤅𐤔 𐤉𐤌	H6566	matres
+209:1:8	𐤕𐤋𐤌𐤉𐤃𐤉𐤅	spelling	 𐤕𐤋𐤌𐤉𐤃 𐤉+𐤅	H8527	root
+209:1:8	𐤅𐤂𐤍𐤁𐤄𐤅	spelling	𐤅 𐤂𐤍𐤁𐤄 𐤅	H1591	root
+209:1:11	𐤅𐤋𐤄𐤎𐤒𐤋	english	𐤅+𐤋+[𐤄] 𐤎𐤒𐤋 	H5619	root
+209:1:12	𐤅𐤍𐤕𐤀𐤁𐤋	spelling	𐤅+[𐤍𐤕] 𐤀𐤁𐤋 	H56	root
+210:1:2	𐤒𐤁𐤋𐤕𐤉	spelling	 𐤒𐤁𐤋 𐤕+𐤉	H6903	root
+210:1:2	𐤈𐤁𐤋𐤅	spelling	 𐤈𐤁𐤋 𐤅	H2881	root
+210:1:2	𐤈𐤁𐤋𐤕𐤉	spelling	 𐤈𐤁𐤋 𐤕+𐤉	H2881	root
+210:1:6	𐤒𐤅𐤓𐤉𐤍𐤉	english	 𐤒𐤅𐤓𐤉𐤍 𐤉	H7161	matres
+210:1:7	𐤅𐤀𐤌𐤄𐤓	spelling	𐤅+[𐤀] 𐤌𐤄𐤓 	H4116	root
+210:1:8	𐤅𐤍𐤍𐤅𐤇	spelling	𐤅+[𐤍] 𐤍𐤅𐤇 	H5117	root
+210:1:8	𐤀𐤉𐤎𐤅𐤓𐤉𐤄	english	[𐤀] 𐤉𐤎𐤅𐤓 𐤉+𐤄	H5493	form
+210:1:11	𐤁𐤒𐤃𐤇𐤕	spelling	𐤁 𐤒𐤃𐤇𐤕 	H6920	root
+210:1:11	𐤅𐤎𐤐𐤅𐤓	spelling	𐤅 𐤎𐤐𐤅𐤓 	H5608	matres
+210:1:12	𐤅𐤍𐤍𐤅𐤇	spelling	𐤅+[𐤍] 𐤍𐤅𐤇 	H5117	root
+210:1:12	𐤕𐤌𐤎𐤅𐤎	english	[𐤕] 𐤌𐤎𐤅𐤎 	H4549	matres
+210:1:12	𐤁𐤈𐤁𐤉𐤋𐤄	spelling	𐤁 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+210:1:14	𐤍𐤐𐤑𐤏𐤅	spelling	[𐤍] 𐤐𐤑𐤏 𐤅	H6481	root
+210:1:14	𐤅𐤍𐤍𐤅𐤇	spelling	𐤅+[𐤍] 𐤍𐤅𐤇 	H5117	root
+210:1:20	𐤈𐤁𐤋𐤅	spelling	 𐤈𐤁𐤋 𐤅	H2881	root
+210:1:20	𐤄𐤈𐤁𐤉𐤋𐤄	english	[𐤄] 𐤈𐤁𐤉𐤋 𐤄	H2881	matres
+210:1:21	𐤍𐤔𐤋𐤌𐤅	spelling	[𐤍] 𐤔𐤋𐤌 𐤅	H7999	root
+211:1:22	𐤄𐤌𐤈𐤉𐤁𐤉𐤌	english	𐤄+[𐤌] 𐤈𐤉𐤁 𐤉𐤌	H2895	matres
+211:1:30	𐤍𐤀𐤎𐤓𐤅	spelling	[𐤍] 𐤀𐤎𐤓 𐤅	H631	root
+211:1:71	𐤉𐤁𐤄𐤋	spelling	[𐤉] 𐤁𐤄𐤋 	H926	root
+211:1:89	𐤉𐤕𐤏𐤄	spelling	[𐤉] 𐤕𐤏𐤄 	H8582	root
+216:2:3	𐤍𐤊𐤎𐤐𐤕𐤉	spelling	[𐤍] 𐤊𐤎𐤐 𐤕+𐤉	H3700	root
+216:3:2	𐤍𐤓𐤀𐤉𐤕	spelling	[𐤍] 𐤓𐤀𐤉𐤕 	H7200	form
+216:3:2	𐤅𐤀𐤇𐤊𐤄	spelling	𐤅+[𐤀] 𐤇𐤊𐤄 	H2442	root
+216:3:5	𐤅𐤕𐤀𐤅𐤓	spelling	𐤅+[𐤕] 𐤀𐤅𐤓 	H215	root
+216:4:2	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+216:4:6	𐤅𐤉𐤇𐤊𐤅	spelling	𐤅+[𐤉] 𐤇𐤊𐤅 	H2442	form
+216:4:9	𐤅𐤉𐤇𐤊𐤅	spelling	𐤅+[𐤉] 𐤇𐤊𐤅 	H2442	form
+216:4:12	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
+216:4:12	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:4:15	𐤅𐤉𐤇𐤊𐤅	spelling	𐤅+[𐤉] 𐤇𐤊𐤅 	H2442	form
+216:4:20	𐤅𐤄𐤔𐤁𐤅𐤉𐤉𐤌	spelling	𐤅+𐤄 𐤔𐤁𐤅𐤉𐤉 𐤌	H7628	matres
+216:4:21	𐤍𐤑𐤋𐤅	spelling	 𐤍𐤑𐤋 𐤅	H5337	root
+216:5:4	𐤅𐤄𐤔𐤁𐤅𐤉𐤉𐤌	spelling	𐤅+𐤄 𐤔𐤁𐤅𐤉𐤉 𐤌	H7628	matres
+216:5:4	𐤍𐤑𐤋𐤅	spelling	 𐤍𐤑𐤋 𐤅	H5337	root
+216:5:5	𐤁𐤂𐤅𐤐𐤌	spelling	𐤁 𐤂𐤅𐤐 𐤌	H1479	root
+216:5:5	𐤇𐤈𐤀𐤉𐤄𐤌	spelling	 𐤇𐤈𐤀𐤉𐤄 𐤌	H2403	matres
+216:5:5	𐤁𐤍𐤅𐤕𐤉𐤅	spelling	 𐤁𐤍𐤅𐤕 𐤉+𐤅	H1323	form
+216:5:9	𐤁𐤍𐤅𐤕𐤉𐤅	spelling	 𐤁𐤍𐤅𐤕 𐤉+𐤅	H1323	form
+216:6:3	𐤌𐤏𐤈𐤓	spelling	[𐤌] 𐤏𐤈𐤓 	H5849	root
+216:6:4	𐤍𐤓𐤂𐤆	spelling	[𐤍] 𐤓𐤂𐤆 	H7264	root
+216:6:9	𐤅𐤁𐤑𐤉𐤅𐤓𐤉𐤌	english	𐤅 𐤁𐤑𐤉𐤅𐤓 𐤉𐤌	H1220	matres
+216:6:11	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+216:7:1	𐤁𐤄𐤊𐤐𐤉𐤋	english	𐤁+[𐤄] 𐤊𐤐𐤉𐤋 	H3717	matres
+216:7:3	𐤉𐤍𐤂𐤍	spelling	[𐤉] 𐤍𐤂𐤍 	H5059	root
+216:7:17	𐤄𐤕𐤇𐤁𐤓𐤅	spelling	[𐤄𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
+216:7:17	𐤄𐤍𐤎𐤉𐤅𐤍	english	𐤄 𐤍𐤎𐤉𐤅𐤍 	H5212	matres
+216:8:1	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+216:8:2	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+216:9:19	𐤅𐤕𐤔𐤀𐤋𐤄𐤅	spelling	𐤅+[𐤕] 𐤔𐤀𐤋𐤄 𐤅	H7592	form
+216:9:24	𐤍𐤎𐤋𐤇	spelling	[𐤍] 𐤎𐤋𐤇 	H5545	root
+216:10:1	𐤌𐤉𐤅𐤇𐤃𐤕	spelling	𐤌 𐤉𐤅𐤇𐤃 𐤕	H3162	matres
+216:10:6	𐤁𐤓𐤇𐤉𐤑𐤕	english	𐤁 𐤓𐤇𐤉𐤑 𐤕	H7366	matres
+216:10:12	𐤍𐤇𐤍𐤒	spelling	[𐤍] 𐤇𐤍𐤒 	H2614	root
+216:10:13	𐤐𐤓𐤅𐤔𐤅𐤕	spelling	 𐤐𐤓𐤅𐤔 𐤅𐤕	H6566	matres
+216:11:2	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+216:11:5	𐤁𐤎𐤋𐤉𐤇𐤕	spelling	𐤁 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+216:12:8	𐤄𐤀𐤅𐤓𐤇𐤉𐤌	spelling	𐤄 𐤀𐤅𐤓𐤇 𐤉𐤌	H734	matres
+216:13:4	𐤍𐤀𐤎𐤓𐤅	spelling	[𐤍] 𐤀𐤎𐤓 𐤅	H631	root
+216:13:6	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:13:7	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:13:7	𐤄𐤃𐤓𐤅𐤔𐤅𐤕	english	𐤄 𐤃𐤓𐤅𐤔 𐤅𐤕	H1868	matres
+216:13:9	𐤌𐤉𐤅𐤇𐤃	spelling	𐤌 𐤉𐤅𐤇𐤃 	H3162	matres
+216:13:9	𐤕𐤅𐤓𐤅𐤕	english	 𐤕𐤅𐤓 𐤅𐤕	H8446	root
+216:13:14	𐤏𐤈𐤓𐤅	spelling	 𐤏𐤈𐤓 𐤅	H5849	root
+216:13:14	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:14:3	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:14:4	𐤄𐤍𐤎𐤉𐤅𐤍	english	𐤄 𐤍𐤎𐤉𐤅𐤍 	H5212	matres
+216:14:6	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:14:10	𐤄𐤍𐤎𐤉𐤅𐤍	english	𐤄 𐤍𐤎𐤉𐤅𐤍 	H5212	matres
+216:14:13	𐤉𐤒𐤁𐤋𐤅	spelling	[𐤉] 𐤒𐤁𐤋 𐤅	H6901	root
+216:14:15	𐤌𐤉𐤅𐤇𐤃	spelling	𐤌 𐤉𐤅𐤇𐤃 	H3162	matres
+216:15:1	𐤋𐤄𐤕𐤂𐤀𐤅𐤕	english	𐤋+[𐤄𐤕] 𐤂𐤀𐤅 𐤕	H1342	form
+216:15:4	𐤏𐤈𐤅𐤐𐤉𐤌	spelling	 𐤏𐤈𐤅𐤐 𐤉𐤌	H5848	matres
+216:15:6	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
+216:15:11	𐤄𐤍𐤎𐤉𐤅𐤍	english	𐤄 𐤍𐤎𐤉𐤅𐤍 	H5212	matres
+216:15:11	𐤋𐤏𐤈𐤓	spelling	𐤋 𐤏𐤈𐤓 	H5849	root
+216:15:17	𐤅𐤄𐤓𐤂𐤔	english	𐤅+𐤄 𐤓𐤂𐤔 	H7285	root
+216:16:12	𐤄𐤍𐤎𐤉𐤅𐤍	english	𐤄 𐤍𐤎𐤉𐤅𐤍 	H5212	matres
+216:16:12	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+216:17:8	𐤉𐤇𐤊𐤅	spelling	[𐤉] 𐤇𐤊𐤅 	H2442	form
+216:17:10	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
+216:17:13	𐤓𐤅𐤏𐤃𐤕	spelling	 𐤓𐤅𐤏𐤃 𐤕	H7461	matres
+216:17:20	𐤁𐤐𐤂𐤔𐤅	english	𐤁 𐤐𐤂𐤔 𐤅	H6298	root
+216:17:20	𐤄𐤀𐤄𐤅𐤁𐤉𐤌	spelling	[𐤄] 𐤀𐤄𐤅𐤁 𐤉𐤌	H157	matres
+216:17:22	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
+216:18:2	𐤄𐤍𐤄𐤃𐤓	spelling	𐤄+[𐤍] 𐤄𐤃𐤓 	H1922	root
+216:18:3	𐤓𐤀𐤅𐤉𐤉𐤌	spelling	 𐤓𐤀𐤅𐤉𐤉 𐤌	H7210	matres
+216:18:3	𐤅𐤉𐤇𐤊𐤅	spelling	𐤅+[𐤉] 𐤇𐤊𐤅 	H2442	form
+216:18:4	𐤁𐤇𐤊𐤅𐤕𐤌	spelling	𐤁 𐤇𐤊𐤅 𐤕+𐤌	H2442	form
+216:18:4	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:18:7	𐤌𐤏𐤈𐤓	spelling	[𐤌] 𐤏𐤈𐤓 	H5849	root
+216:18:8	𐤍𐤇𐤋𐤒𐤄	spelling	[𐤍] 𐤇𐤋𐤒 𐤄	H2505	root
+216:18:10	𐤍𐤅𐤆𐤋𐤅𐤕	english	 𐤍𐤅𐤆𐤋 𐤅𐤕	H5140	matres
+216:18:13	𐤄𐤔𐤊𐤉𐤇𐤄	english	[𐤄] 𐤔𐤊𐤉𐤇 𐤄	H7911	matres
+216:18:15	𐤅𐤎𐤊𐤍𐤄	spelling	𐤅 𐤎𐤊𐤍 𐤄	H5532	root
+216:18:16	𐤍𐤓𐤌𐤎𐤄	spelling	[𐤍] 𐤓𐤌𐤎 𐤄	H7429	root
+216:18:16	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:19:4	𐤊𐤇𐤅𐤕𐤉𐤅	english	𐤊 𐤇𐤅𐤕 𐤉+𐤅	H2333	form
+216:19:13	𐤕𐤇𐤐𐤑	spelling	[𐤕] 𐤇𐤐𐤑 	H2654	root
+216:19:14	𐤅𐤉𐤒𐤐𐤑	spelling	𐤅+[𐤉] 𐤒𐤐𐤑 	H7092	root
+216:19:20	𐤅𐤋𐤄𐤊𐤀𐤉𐤁	english	𐤅+𐤋+[𐤄] 𐤊𐤀𐤉𐤁 	H3510	matres
+216:19:25	𐤋𐤄𐤊𐤍𐤏	spelling	𐤋+[𐤄] 𐤊𐤍𐤏 	H3665	root
+216:19:26	𐤅𐤉𐤓𐤏𐤃	spelling	𐤅+[𐤉] 𐤓𐤏𐤃 	H7460	root
+216:19:33	𐤍𐤋𐤇𐤑𐤄	spelling	[𐤍] 𐤋𐤇𐤑 𐤄	H3905	root
+216:20:1	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
+216:20:1	𐤔𐤉𐤓𐤉𐤅	spelling	 𐤔𐤉𐤓 𐤉+𐤅	H7892	root
+216:20:2	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
+216:20:3	𐤅𐤉𐤕𐤉𐤀𐤔	english	𐤅+[𐤉𐤕] 𐤉𐤀𐤔 	H2976	root
+216:20:5	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
+216:20:7	𐤄𐤃𐤌𐤏𐤅𐤕	spelling	𐤄 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+216:20:8	𐤅𐤁𐤌𐤍𐤅𐤎𐤕𐤅	english	𐤅+𐤁 𐤌𐤍𐤅𐤎 𐤕+𐤅	H4498	root
+216:20:8	𐤍𐤐𐤑𐤏𐤅	spelling	[𐤍] 𐤐𐤑𐤏 𐤅	H6481	root
+216:20:10	𐤄𐤔𐤍𐤅𐤀	spelling	𐤄 𐤔𐤍𐤅𐤀 	H8146	matres
+216:20:12	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:20:13	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:20:18	𐤍𐤐𐤑𐤏𐤅	spelling	[𐤍] 𐤐𐤑𐤏 𐤅	H6481	root
+216:20:18	𐤍𐤐𐤃𐤄	spelling	[𐤍] 𐤐𐤃𐤄 	H6299	root
+216:21:1	𐤄𐤔𐤍𐤅𐤀	spelling	𐤄 𐤔𐤍𐤅𐤀 	H8146	matres
+216:21:3	𐤍𐤕𐤒𐤁𐤋𐤅	spelling	[𐤍𐤕] 𐤒𐤁𐤋 𐤅	H6901	root
+216:21:4	𐤕𐤅𐤓𐤅𐤕	english	 𐤕𐤅𐤓 𐤅𐤕	H8447	root
+216:21:5	𐤉𐤌𐤔𐤊	spelling	[𐤉] 𐤌𐤔𐤊 	H4900	root
+216:22:4	𐤍𐤊𐤁𐤔	spelling	[𐤍] 𐤊𐤁𐤔 	H3533	root
+216:22:4	𐤍𐤂𐤓𐤓	spelling	[𐤍] 𐤂𐤓𐤓 	H1641	root
+216:22:10	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:22:11	𐤄𐤔𐤕𐤇𐤅𐤅𐤕𐤅	spelling	 𐤄𐤔𐤕𐤇𐤅𐤅 𐤕+𐤅	H7812	form
+216:22:11	𐤔𐤉𐤓𐤉𐤅	spelling	 𐤔𐤉𐤓 𐤉+𐤅	H7892	root
+216:22:15	𐤍𐤔𐤋𐤇𐤅	spelling	[𐤍] 𐤔𐤋𐤇 𐤅	H7971	root
+216:23:3	𐤍𐤐𐤃𐤄	spelling	[𐤍] 𐤐𐤃𐤄 	H6299	root
+216:23:3	𐤌𐤉𐤅𐤇𐤃	spelling	𐤌 𐤉𐤅𐤇𐤃 	H3162	matres
+216:23:5	𐤍𐤊𐤁𐤔	spelling	[𐤍] 𐤊𐤁𐤔 	H3533	root
+216:23:11	𐤍𐤀𐤎𐤓	spelling	[𐤍] 𐤀𐤎𐤓 	H631	root
+216:24:4	𐤍𐤁𐤃𐤋𐤉𐤌	spelling	[𐤍] 𐤁𐤃𐤋 𐤉𐤌	H914	root
+216:24:6	𐤄𐤍𐤄𐤃𐤓	spelling	𐤄+[𐤍] 𐤄𐤃𐤓 	H1922	root
+216:24:6	𐤊𐤆𐤊𐤅𐤊𐤉𐤕	spelling	𐤊 𐤆𐤊𐤅𐤊𐤉𐤕 	H2137	root
+216:24:13	𐤕𐤒𐤁𐤋	spelling	[𐤕] 𐤒𐤁𐤋 	H6901	root
+216:24:13	𐤌𐤉𐤅𐤇𐤃𐤕	spelling	𐤌 𐤉𐤅𐤇𐤃 𐤕	H3162	matres
+216:24:16	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:24:22	𐤄𐤍𐤐𐤃𐤄	spelling	𐤄+[𐤍] 𐤐𐤃𐤄 	H6299	root
+216:25:5	𐤀𐤊𐤕𐤁	spelling	[𐤀] 𐤊𐤕𐤁 	H3789	root
+216:25:10	𐤍𐤇𐤋𐤒	spelling	[𐤍] 𐤇𐤋𐤒 	H2505	root
+216:25:10	𐤁𐤎𐤃𐤓	spelling	𐤁 𐤎𐤃𐤓 	H5468	root
+216:25:15	𐤌𐤉𐤅𐤇𐤃	spelling	𐤌 𐤉𐤅𐤇𐤃 	H3162	matres
+216:26:1	𐤉𐤍𐤂𐤍	spelling	[𐤉] 𐤍𐤂𐤍 	H5059	root
+216:26:4	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
+216:26:6	𐤌𐤏𐤈𐤓	spelling	[𐤌] 𐤏𐤈𐤓 	H5849	root
+216:26:16	𐤋𐤏𐤁𐤃𐤍𐤉	spelling	𐤋 𐤏𐤁𐤃𐤍 𐤉	H5658	matres
+216:27:4	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
+216:27:7	𐤋𐤁𐤓𐤅𐤀𐤉𐤌	spelling	𐤋 𐤁𐤓𐤅𐤀 𐤉𐤌	H1254	matres
+216:27:8	𐤅𐤉𐤕𐤀𐤌𐤑	spelling	𐤅+[𐤉𐤕] 𐤀𐤌𐤑 	H553	root
+216:27:9	𐤋𐤄𐤕𐤍𐤊𐤓	spelling	𐤋+[𐤄𐤕] 𐤍𐤊𐤓 	H5234	root
+216:27:11	𐤋𐤏𐤁𐤃𐤍𐤉	spelling	𐤋 𐤏𐤁𐤃𐤍 𐤉	H5658	matres
+216:27:12	𐤌𐤉𐤅𐤇𐤃𐤕	spelling	𐤌 𐤉𐤅𐤇𐤃 𐤕	H3162	matres
+216:27:12	𐤄𐤍𐤄𐤃𐤓	spelling	𐤄+[𐤍] 𐤄𐤃𐤓 	H1922	root
+216:27:15	𐤍𐤌𐤔𐤊𐤄	spelling	[𐤍] 𐤌𐤔𐤊 𐤄	H4900	root
+216:27:16	𐤋𐤁𐤓𐤅𐤀𐤉𐤅	english	𐤋 𐤁𐤓𐤅𐤀 𐤉+𐤅	H1254	matres
+216:27:17	𐤅𐤑𐤁𐤀𐤅𐤕𐤉𐤅	spelling	𐤅 𐤑𐤁𐤀𐤅𐤕 𐤉+𐤅	H6635	form
+216:27:18	𐤍𐤀𐤋𐤌𐤅	english	[𐤍] 𐤀𐤋𐤌 𐤅	H481	root
+216:27:18	𐤅𐤉𐤁𐤀𐤓	spelling	𐤅+[𐤉] 𐤁𐤀𐤓 	H874	root
+216:27:18	𐤅𐤄𐤊𐤅𐤐𐤓𐤉𐤌	english	𐤅+𐤄 𐤊𐤅𐤐𐤓 𐤉𐤌	H3713	matres
+216:27:18	𐤍𐤑𐤇𐤅𐤍	english	[𐤍] 𐤑𐤇𐤅 𐤍	H6705	form
+216:27:19	𐤁𐤇𐤉𐤓𐤕𐤅	spelling	 𐤁𐤇𐤉𐤓 𐤕+𐤅	H972	root
+216:27:21	𐤕𐤌𐤎𐤓	spelling	[𐤕] 𐤌𐤎𐤓 	H4560	root
+216:27:21	𐤅𐤑𐤁𐤀𐤅𐤕𐤉𐤅	spelling	𐤅 𐤑𐤁𐤀𐤅𐤕 𐤉+𐤅	H6635	form
+216:27:22	𐤇𐤉𐤉𐤕𐤉	spelling	 𐤇𐤉𐤉 𐤕+𐤉	H2425	root
+216:27:25	𐤍𐤔𐤋𐤌	spelling	[𐤍] 𐤔𐤋𐤌 	H7999	root
+216:27:25	𐤊𐤆𐤊𐤅𐤊𐤉𐤕	spelling	𐤊 𐤆𐤊𐤅𐤊𐤉𐤕 	H2137	root
+216:27:27	𐤅𐤄𐤀𐤅𐤉𐤓	spelling	𐤅+𐤄 𐤀𐤅𐤉𐤓 	H216	matres
+216:28:1	𐤊𐤆𐤊𐤅𐤊𐤉𐤕	spelling	𐤊 𐤆𐤊𐤅𐤊𐤉𐤕 	H2137	root
+216:28:1	𐤅𐤕𐤂𐤁𐤓	spelling	𐤅+[𐤕] 𐤂𐤁𐤓 	H1396	root
+216:28:1	𐤋𐤁𐤓𐤅𐤀𐤉𐤌	spelling	𐤋 𐤁𐤓𐤅𐤀 𐤉𐤌	H1254	matres
+216:28:2	𐤊𐤆𐤊𐤅𐤊𐤉𐤕	spelling	𐤊 𐤆𐤊𐤅𐤊𐤉𐤕 	H2137	root
+216:28:2	𐤕𐤌𐤅𐤍𐤅𐤕	spelling	 𐤕𐤌𐤅𐤍 𐤅𐤕	H8486	matres
+216:28:3	𐤄𐤐𐤅𐤓𐤇𐤉𐤌	spelling	[𐤄] 𐤐𐤅𐤓𐤇 𐤉𐤌	H6524	matres
+216:28:3	𐤁𐤎𐤁𐤅𐤁	spelling	𐤁 𐤎𐤁𐤅𐤁 	H5439	matres
+216:28:4	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+216:28:5	𐤌𐤆𐤄𐤉𐤓𐤄	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤄	H2096	matres
+216:28:5	𐤅𐤏𐤈𐤅𐤐𐤉𐤌	english	𐤅 𐤏𐤈𐤅𐤐 𐤉𐤌	H5848	matres
+216:28:6	𐤊𐤆𐤊𐤅𐤊𐤉𐤕	spelling	𐤊 𐤆𐤊𐤅𐤊𐤉𐤕 	H2137	root
+216:28:6	𐤄𐤐𐤅𐤓𐤇𐤉𐤌	spelling	[𐤄] 𐤐𐤅𐤓𐤇 𐤉𐤌	H6524	matres
+216:28:7	𐤁𐤓𐤅𐤀𐤉𐤅	spelling	 𐤁𐤓𐤅𐤀 𐤉+𐤅	H1254	matres
+216:28:8	𐤄𐤁𐤓𐤅𐤀	spelling	[𐤄] 𐤁𐤓𐤅𐤀 	H1254	matres
+216:28:9	𐤁𐤏𐤈𐤓𐤅	english	𐤁 𐤏𐤈𐤓 𐤅	H5849	root
+216:28:9	𐤍𐤒𐤔𐤓𐤅	spelling	[𐤍] 𐤒𐤔𐤓 𐤅	H7194	root
+216:28:10	𐤅𐤉𐤊𐤌𐤓𐤅	spelling	𐤅+[𐤉] 𐤊𐤌𐤓 𐤅	H3648	root
+216:28:10	𐤁𐤇𐤁𐤅𐤒	english	𐤁 𐤇𐤁𐤅𐤒 	H2263	matres
+216:28:11	𐤄𐤁𐤓𐤅𐤀	spelling	[𐤄] 𐤁𐤓𐤅𐤀 	H1254	matres
+216:28:11	𐤄𐤕𐤇𐤁𐤓	spelling	[𐤄𐤕] 𐤇𐤁𐤓 	H2266	root
+216:28:11	𐤌𐤏𐤈𐤓	spelling	[𐤌] 𐤏𐤈𐤓 	H5849	root
+216:28:11	𐤊𐤆𐤊𐤅𐤊𐤉𐤕	spelling	𐤊 𐤆𐤊𐤅𐤊𐤉𐤕 	H2137	root
+216:28:12	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
+216:28:12	𐤏𐤈𐤓𐤅	spelling	 𐤏𐤈𐤓 𐤅	H5849	root
+216:28:12	𐤌𐤉𐤅𐤇𐤃𐤕	spelling	𐤌 𐤉𐤅𐤇𐤃 𐤕	H3162	matres
+216:28:13	𐤁𐤌𐤁𐤈	spelling	𐤁 𐤌𐤁𐤈 	H4007	root
+216:28:13	𐤌𐤉𐤅𐤇𐤃𐤕	spelling	𐤌 𐤉𐤅𐤇𐤃 𐤕	H3162	matres
+216:28:15	𐤄𐤐𐤅𐤓𐤇𐤉𐤌	spelling	[𐤄] 𐤐𐤅𐤓𐤇 𐤉𐤌	H6524	matres
+216:28:15	𐤅𐤄𐤌𐤇𐤆𐤅𐤕	english	𐤅+𐤄+[𐤌] 𐤇𐤆𐤅 𐤕	H2372	form
+216:28:16	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
+216:28:16	𐤐𐤅𐤓𐤇𐤉𐤌	spelling	 𐤐𐤅𐤓𐤇 𐤉𐤌	H6524	matres
+216:28:16	𐤄𐤐𐤅𐤓𐤇𐤉𐤌	spelling	[𐤄] 𐤐𐤅𐤓𐤇 𐤉𐤌	H6524	matres
+216:28:16	𐤄𐤐𐤅𐤓𐤇𐤉𐤌	spelling	[𐤄] 𐤐𐤅𐤓𐤇 𐤉𐤌	H6524	matres
+216:28:18	𐤍𐤌𐤔𐤊𐤕	spelling	[𐤍] 𐤌𐤔𐤊 𐤕	H4900	root
+216:28:18	𐤁𐤄𐤊𐤍𐤏	spelling	𐤁+[𐤄] 𐤊𐤍𐤏 	H3665	root
+216:28:18	𐤊𐤆𐤊𐤅𐤊𐤉𐤕	spelling	𐤊 𐤆𐤊𐤅𐤊𐤉𐤕 	H2137	root
+216:28:19	𐤌𐤉𐤅𐤇𐤃	spelling	𐤌 𐤉𐤅𐤇𐤃 	H3162	matres
+216:28:20	𐤉𐤏𐤉𐤃𐤅	spelling	[𐤉] 𐤏𐤉𐤃 𐤅	H5749	matres
+216:28:21	𐤄𐤐𐤂𐤉𐤔𐤄	spelling	[𐤄] 𐤐𐤂𐤉𐤔 𐤄	H6298	matres
+216:28:22	𐤁𐤌𐤕𐤒	english	𐤁 𐤌𐤕𐤒 	H4985	root
+216:28:22	𐤉𐤎𐤅𐤂	spelling	[𐤉] 𐤎𐤅𐤂 	H5472	root
+216:28:22	𐤅𐤌𐤑𐤐𐤓𐤍𐤉𐤅	english	𐤅+𐤌 𐤑𐤐𐤓𐤍 𐤉+𐤅	H6856	root
+216:28:23	𐤁𐤌𐤍𐤅𐤎𐤕𐤅	spelling	𐤁 𐤌𐤍𐤅𐤎 𐤕+𐤅	H4498	root
+216:28:24	𐤌𐤉𐤅𐤇𐤃	spelling	𐤌 𐤉𐤅𐤇𐤃 	H3162	matres
+216:28:31	𐤄𐤕𐤇𐤁𐤓𐤅	spelling	[𐤄𐤕] 𐤇𐤁𐤓 𐤅	H2266	root
+216:29:7	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
+216:29:8	𐤄𐤍𐤎𐤉𐤅𐤍	english	𐤄 𐤍𐤎𐤉𐤅𐤍 	H5212	matres
+216:29:10	𐤍𐤎𐤉𐤅𐤍𐤅𐤕	english	 𐤍𐤎𐤉𐤅𐤍 𐤅𐤕	H5212	matres
+216:29:10	𐤉𐤍𐤎𐤄	spelling	[𐤉] 𐤍𐤎𐤄 	H5254	root
+216:29:12	𐤉𐤇𐤊𐤅	spelling	[𐤉] 𐤇𐤊𐤅 	H2442	form
+216:29:12	𐤄𐤌𐤁𐤈𐤉𐤇	spelling	𐤄 𐤌𐤁𐤈𐤉𐤇 	H4009	matres
+216:29:13	𐤄𐤆𐤄𐤉𐤓𐤌	english	[𐤄] 𐤆𐤄𐤉𐤓 𐤌	H2094	matres
+216:29:13	𐤉𐤇𐤊𐤅	spelling	[𐤉] 𐤇𐤊𐤅 	H2442	form
+216:29:16	𐤂𐤅𐤐𐤅	english	 𐤂𐤅𐤐 𐤅	H1479	root
+216:29:16	𐤁𐤆𐤓𐤅𐤏𐤅𐤕𐤉𐤄	spelling	𐤁 𐤆𐤓𐤅𐤏𐤅𐤕 𐤉+𐤄	H2220	form
+216:29:17	𐤁𐤆𐤓𐤅𐤏𐤅𐤕𐤉𐤄	spelling	𐤁 𐤆𐤓𐤅𐤏𐤅𐤕 𐤉+𐤄	H2220	form
+216:29:18	𐤁𐤆𐤓𐤅𐤏𐤅𐤕𐤉𐤄	spelling	𐤁 𐤆𐤓𐤅𐤏𐤅𐤕 𐤉+𐤄	H2220	form
+216:29:19	𐤕𐤕𐤐𐤓𐤃𐤅	spelling	[𐤕𐤕] 𐤐𐤓𐤃 𐤅	H6504	root
+216:29:19	𐤕𐤕𐤐𐤓𐤃𐤅	spelling	[𐤕𐤕] 𐤐𐤓𐤃 𐤅	H6504	root
+216:29:19	𐤎𐤊𐤍𐤄	spelling	 𐤎𐤊𐤍 𐤄	H5532	root
+216:29:20	𐤉𐤀𐤅𐤔	spelling	[𐤉] 𐤀𐤅𐤔 	H377	matres
+216:29:21	𐤁𐤆𐤓𐤅𐤏𐤅𐤕𐤉𐤄	spelling	𐤁 𐤆𐤓𐤅𐤏𐤅𐤕 𐤉+𐤄	H2220	form
+216:29:22	𐤅𐤉𐤒𐤁𐤋	spelling	𐤅+[𐤉] 𐤒𐤁𐤋 	H6901	root
+216:29:22	𐤌𐤁𐤓𐤉𐤅𐤕𐤉𐤅	english	𐤌 𐤁𐤓𐤉𐤅𐤕 𐤉+𐤅	H1285	matres
+216:29:24	𐤁𐤎𐤊𐤍𐤄	spelling	𐤁 𐤎𐤊𐤍 𐤄	H5532	root
+216:29:25	𐤁𐤇𐤉𐤓𐤕𐤅	spelling	 𐤁𐤇𐤉𐤓 𐤕+𐤅	H972	root
+216:29:26	𐤕𐤊𐤁𐤔	spelling	[𐤕] 𐤊𐤁𐤔 	H3533	root
+216:29:27	𐤅𐤍𐤕𐤉𐤍𐤉	english	𐤅+[𐤍𐤕] 𐤉𐤍𐤉 	H5106	form
+216:29:27	𐤓𐤅𐤏𐤃𐤉𐤌	spelling	 𐤓𐤅𐤏𐤃 𐤉𐤌	H7461	matres
+216:29:28	𐤁𐤎𐤋𐤉𐤇𐤕	spelling	𐤁 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+216:29:29	𐤉𐤀𐤅𐤔	spelling	[𐤉] 𐤀𐤅𐤔 	H377	matres
+216:29:35	𐤄𐤂𐤁𐤅𐤄	spelling	𐤄 𐤂𐤁𐤅𐤄 	H1364	matres
+216:29:36	𐤍𐤊𐤁𐤔	spelling	[𐤍] 𐤊𐤁𐤔 	H3533	root
+216:29:40	𐤉𐤒𐤑𐤓	spelling	[𐤉] 𐤒𐤑𐤓 	H7114	root
+216:29:40	𐤅𐤉𐤍𐤑𐤇	spelling	𐤅+[𐤉] 𐤍𐤑𐤇 	H5329	root
+216:29:40	𐤁𐤄𐤊𐤍𐤏𐤄	spelling	𐤁+[𐤄] 𐤊𐤍𐤏 𐤄	H3665	root
+216:29:42	𐤐𐤓𐤅𐤔𐤅	english	 𐤐𐤓𐤅𐤔 𐤅	H6566	matres
+216:29:42	𐤄𐤂𐤁𐤅𐤄	spelling	𐤄 𐤂𐤁𐤅𐤄 	H1364	matres
+216:29:43	𐤄𐤂𐤁𐤅𐤄	spelling	𐤄 𐤂𐤁𐤅𐤄 	H1364	matres
+216:29:44	𐤄𐤐𐤂𐤉𐤔𐤄	spelling	[𐤄] 𐤐𐤂𐤉𐤔 𐤄	H6298	matres
+216:29:44	𐤉𐤀𐤅𐤔	spelling	[𐤉] 𐤀𐤅𐤔 	H377	matres
+216:29:44	𐤁𐤇𐤊𐤅𐤕𐤌	spelling	𐤁 𐤇𐤊𐤅 𐤕+𐤌	H2442	form
+216:29:46	𐤄𐤐𐤅𐤓𐤇𐤉𐤌	spelling	[𐤄] 𐤐𐤅𐤓𐤇 𐤉𐤌	H6524	matres
+216:29:46	𐤍𐤔𐤋𐤌𐤄	spelling	[𐤍] 𐤔𐤋𐤌 𐤄	H7999	root
+216:29:47	𐤁𐤇𐤊𐤅𐤕𐤌	spelling	𐤁 𐤇𐤊𐤅 𐤕+𐤌	H2442	form
+216:29:47	𐤅𐤍𐤊𐤁𐤔𐤅	english	𐤅+[𐤍] 𐤊𐤁𐤔 𐤅	H3533	root
+216:29:47	𐤍𐤌𐤔𐤊𐤉𐤌	spelling	[𐤍] 𐤌𐤔𐤊 𐤉𐤌	H4900	root
+216:29:48	𐤋𐤄𐤏𐤍𐤉𐤔𐤌	spelling	𐤋+[𐤄] 𐤏𐤍𐤉𐤔 𐤌	H6064	matres
+216:29:49	𐤍𐤊𐤁𐤔	spelling	[𐤍] 𐤊𐤁𐤔 	H3533	root
+216:29:49	𐤍𐤌𐤔𐤊𐤄	spelling	[𐤍] 𐤌𐤔𐤊 𐤄	H4900	root
+216:29:49	𐤅𐤇𐤋𐤔𐤅𐤕	english	𐤅 𐤇𐤋𐤔 𐤅𐤕	H2522	root
+216:29:49	𐤄𐤏𐤍𐤉𐤔𐤌	spelling	[𐤄] 𐤏𐤍𐤉𐤔 𐤌	H6064	matres
+216:29:53	𐤕𐤇𐤐𐤑𐤅	spelling	[𐤕] 𐤇𐤐𐤑 𐤅	H2654	root
+216:29:54	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+216:30:3	𐤍𐤊𐤁𐤔𐤅	spelling	[𐤍] 𐤊𐤁𐤔 𐤅	H3533	root
+216:30:4	𐤉𐤊𐤁𐤅	spelling	[𐤉] 𐤊𐤁𐤅 	H3518	form
+216:30:5	𐤅𐤉𐤇𐤊𐤅	spelling	𐤅+[𐤉] 𐤇𐤊𐤅 	H2442	form
+216:30:5	𐤍𐤀𐤋𐤌𐤉𐤌	spelling	[𐤍] 𐤀𐤋𐤌 𐤉𐤌	H481	root
+216:30:7	𐤉𐤁𐤆𐤄	spelling	[𐤉] 𐤁𐤆𐤄 	H959	root
+216:30:9	𐤁𐤌𐤋𐤇𐤌𐤅𐤕𐤉𐤅	spelling	𐤁 𐤌𐤋𐤇𐤌𐤅𐤕 𐤉+𐤅	H4421	form
+216:30:11	𐤄𐤃𐤌𐤏𐤅𐤕	spelling	𐤄 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+216:30:12	𐤍𐤍𐤑𐤇	english	[𐤍] 𐤍𐤑𐤇 	H5330	root
+216:30:13	𐤅𐤉𐤍𐤑𐤇𐤅	english	𐤅+[𐤉] 𐤍𐤑𐤇 𐤅	H5330	root
+216:30:13	𐤉𐤇𐤁𐤓	spelling	[𐤉] 𐤇𐤁𐤓 	H2266	root
+216:30:13	𐤄𐤍𐤂𐤀𐤋	spelling	𐤄+[𐤍] 𐤂𐤀𐤋 	H1350	root
+216:30:14	𐤄𐤍𐤅𐤇𐤅𐤕	english	[𐤄] 𐤍𐤅𐤇 𐤅𐤕	H5117	root
+216:30:15	𐤍𐤌𐤎𐤓𐤄	spelling	[𐤍] 𐤌𐤎𐤓 𐤄	H4560	root
+216:30:16	𐤄𐤔𐤕𐤉𐤒	spelling	[𐤄] 𐤔𐤕𐤉𐤒 	H8367	matres
+216:30:17	𐤍𐤊𐤁𐤔𐤅	spelling	[𐤍] 𐤊𐤁𐤔 𐤅	H3533	root
+216:30:18	𐤄𐤃𐤌𐤏𐤅𐤕	spelling	𐤄 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+216:30:18	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+216:30:21	𐤄𐤌𐤉𐤅𐤇𐤃𐤅𐤕	english	𐤄+[𐤌] 𐤉𐤅𐤇𐤃 𐤅𐤕	H3161	matres
+216:30:22	𐤀𐤏𐤌𐤃	spelling	[𐤀] 𐤏𐤌𐤃 	H5975	root
+216:30:22	𐤉𐤍𐤎𐤄	spelling	[𐤉] 𐤍𐤎𐤄 	H5254	root
+216:30:22	𐤋𐤄𐤊𐤍𐤏	spelling	𐤋+[𐤄] 𐤊𐤍𐤏 	H3665	root
+216:30:22	𐤕𐤕𐤉𐤀𐤔𐤅	spelling	[𐤕𐤕] 𐤉𐤀𐤔 𐤅	H2976	root
+216:30:22	𐤁𐤎𐤋𐤉𐤇𐤄	spelling	𐤁 𐤎𐤋𐤉𐤇𐤄 	H5547	root
+216:30:23	𐤍𐤅𐤇𐤅	spelling	 𐤍𐤅𐤇 𐤅	H5117	root
+216:30:23	𐤔𐤒𐤅𐤏𐤉𐤌	spelling	 𐤔𐤒𐤅𐤏 𐤉𐤌	H8257	matres
+216:30:23	𐤄𐤐𐤅𐤓𐤇𐤉𐤌	spelling	[𐤄] 𐤐𐤅𐤓𐤇 𐤉𐤌	H6524	matres
+216:30:25	𐤄𐤌𐤕𐤁𐤅𐤍𐤍	spelling	𐤄+[𐤌𐤕] 𐤁𐤅𐤍 𐤍	H995	matres
+216:30:26	𐤌𐤑𐤐𐤓𐤍𐤉𐤅	english	𐤌 𐤑𐤐𐤓𐤍 𐤉+𐤅	H6856	root
+216:30:28	𐤄𐤍𐤂𐤀𐤋	spelling	𐤄+[𐤍] 𐤂𐤀𐤋 	H1350	root
+216:30:29	𐤄𐤏𐤁𐤅𐤃𐤅𐤕	spelling	[𐤄] 𐤏𐤁𐤅𐤃 𐤅𐤕	H5647	matres
+216:30:29	𐤅𐤏𐤁𐤅𐤃𐤅𐤕	english	𐤅 𐤏𐤁𐤅𐤃 𐤅𐤕	H5647	matres
+216:30:31	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
+216:30:32	𐤅𐤉𐤀𐤅𐤔	spelling	𐤅 𐤉𐤀𐤅𐤔 	H2976	matres
+216:30:36	𐤅𐤎𐤊𐤍𐤅𐤕	spelling	𐤅 𐤎𐤊𐤍 𐤅𐤕	H5532	root
+216:30:36	𐤅𐤁𐤄𐤍𐤄𐤂𐤕𐤅	english	𐤅+𐤁+[𐤄] 𐤍𐤄𐤂 𐤕+𐤅	H5090	root
+216:30:36	𐤋𐤏𐤈𐤐	english	𐤋 𐤏𐤈𐤐 	H5848	root
+216:30:38	𐤌𐤉𐤅𐤇𐤃𐤕	spelling	𐤌 𐤉𐤅𐤇𐤃 𐤕	H3162	matres
+216:30:38	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+216:30:39	𐤀𐤍𐤇𐤄	spelling	 𐤀𐤍𐤇 𐤄	H584	root
+216:30:40	𐤕𐤌𐤅𐤓𐤕	spelling	[𐤕] 𐤌𐤅𐤓 𐤕	H4171	root
+216:30:40	𐤄𐤌𐤆𐤄𐤉𐤓𐤄	spelling	𐤄+[𐤌] 𐤆𐤄𐤉𐤓 𐤄	H2094	matres
+216:30:42	𐤋𐤎𐤋𐤉𐤇𐤕	spelling	𐤋 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+216:30:43	𐤎𐤋𐤉𐤇𐤕	spelling	 𐤎𐤋𐤉𐤇 𐤕	H5545	matres
+216:30:43	𐤏𐤈𐤅𐤐𐤉𐤌	spelling	 𐤏𐤈𐤅𐤐 𐤉𐤌	H5848	matres
+216:30:43	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+216:30:44	𐤄𐤌𐤆𐤄𐤉𐤓𐤄	spelling	𐤄+[𐤌] 𐤆𐤄𐤉𐤓 𐤄	H2094	matres
+216:30:44	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:30:49	𐤍𐤐𐤑𐤏𐤅	spelling	[𐤍] 𐤐𐤑𐤏 𐤅	H6481	root
+216:30:49	𐤄𐤌𐤉𐤅𐤇𐤃𐤉𐤌	spelling	𐤄+[𐤌] 𐤉𐤅𐤇𐤃 𐤉𐤌	H3161	matres
+216:31:2	𐤄𐤌𐤊𐤓𐤉𐤏	english	𐤄+[𐤌] 𐤊𐤓𐤉𐤏 	H3766	matres
+216:31:5	𐤍𐤐𐤒𐤇𐤅	spelling	[𐤍] 𐤐𐤒𐤇 𐤅	H6491	root
+216:31:5	𐤅𐤑𐤁𐤀𐤅𐤕𐤉𐤅	spelling	𐤅 𐤑𐤁𐤀𐤅𐤕 𐤉+𐤅	H6635	form
+216:31:6	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+216:31:7	𐤄𐤃𐤌𐤏𐤅𐤕	spelling	𐤄 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+216:31:7	𐤏𐤈𐤅𐤐𐤉𐤌	spelling	 𐤏𐤈𐤅𐤐 𐤉𐤌	H5848	matres
+216:31:7	𐤅𐤍𐤕𐤄𐤋𐤊	spelling	𐤅+[𐤍𐤕] 𐤄𐤋𐤊 	H1980	root
+216:31:8	𐤄𐤔𐤍𐤅𐤀	spelling	𐤄 𐤔𐤍𐤅𐤀 	H8146	matres
+216:31:9	𐤋𐤃𐤌𐤏𐤅𐤕	spelling	𐤋 𐤃𐤌𐤏 𐤅𐤕	H1831	root
+216:31:11	𐤌𐤆𐤄𐤉𐤓	spelling	[𐤌] 𐤆𐤄𐤉𐤓 	H2094	matres
+216:31:12	𐤁𐤏𐤅𐤍𐤂	english	𐤁 𐤏𐤅𐤍𐤂 	H6026	matres
+216:31:13	𐤁𐤉𐤋𐤃𐤅𐤕𐤅	english	𐤁 𐤉𐤋𐤃𐤅𐤕 𐤅	H3208	root
+216:31:13	𐤁𐤔𐤒𐤉𐤃𐤄	spelling	𐤁 𐤔𐤒𐤉𐤃 𐤄	H8245	matres
+216:31:13	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+216:31:15	𐤉𐤒𐤁𐤋	spelling	[𐤉] 𐤒𐤁𐤋 	H6901	root
+216:31:15	𐤍𐤌𐤔𐤊	spelling	[𐤍] 𐤌𐤔𐤊 	H4900	root
+216:31:16	𐤅𐤁𐤋𐤈𐤐𐤌	english	𐤅+𐤁+𐤋 𐤈𐤐𐤌 	H2945	form
+216:31:23	𐤌𐤆𐤄𐤉𐤓𐤄	spelling	𐤌 𐤆𐤄𐤉𐤓 𐤄	H2096	matres
+216:31:23	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+216:31:23	𐤁𐤆𐤓𐤅𐤏𐤅𐤕𐤉𐤄	spelling	𐤁 𐤆𐤓𐤅𐤏𐤅𐤕 𐤉+𐤄	H2220	form
+216:31:26	𐤋𐤐𐤂𐤔	spelling	𐤋 𐤐𐤂𐤔 	H6298	root
+216:31:27	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+216:31:27	𐤍𐤓𐤀𐤉𐤕	spelling	[𐤍] 𐤓𐤀𐤉𐤕 	H7200	form
+216:31:27	𐤎𐤏𐤅𐤃𐤄	spelling	 𐤎𐤏𐤅𐤃 𐤄	H5582	matres
+216:31:28	𐤅𐤑𐤁𐤀𐤅𐤕𐤉𐤅	spelling	𐤅 𐤑𐤁𐤀𐤅𐤕 𐤉+𐤅	H6635	form
+216:31:28	𐤍𐤌𐤔𐤊𐤕	spelling	[𐤍] 𐤌𐤔𐤊 𐤕	H4900	root
+216:31:29	𐤋𐤄𐤕𐤂𐤓𐤅𐤕	spelling	𐤋+[𐤄𐤕] 𐤂𐤓𐤅 𐤕	H1481	form
+216:31:31	𐤍𐤊𐤁𐤔	spelling	[𐤍] 𐤊𐤁𐤔 	H3533	root
+216:31:31	𐤄𐤍𐤊𐤁𐤔	english	𐤄+[𐤍] 𐤊𐤁𐤔 	H3533	root
+216:31:32	𐤁𐤏𐤑𐤅𐤕𐤉𐤅	spelling	𐤁 𐤏𐤑𐤅𐤕 𐤉+𐤅	H6098	form
+216:31:32	𐤄𐤁𐤈𐤉𐤇	spelling	𐤄 𐤁𐤈𐤉𐤇 	H982	matres
+216:31:33	𐤄𐤍𐤓𐤀𐤉𐤌	spelling	𐤄+[𐤍] 𐤓𐤀𐤉𐤌 	H7200	form
+216:31:33	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:31:35	𐤅𐤁𐤄𐤕𐤏𐤅𐤓𐤓𐤅	english	𐤅+𐤁+[𐤄] 𐤕𐤏𐤅𐤓𐤓𐤅 	H5782	form
+216:31:35	𐤄𐤀𐤄𐤅𐤁	spelling	[𐤄] 𐤀𐤄𐤅𐤁 	H157	matres
+216:31:38	𐤋𐤐𐤂𐤔	spelling	𐤋 𐤐𐤂𐤔 	H6298	root
+216:31:38	𐤄𐤀𐤄𐤅𐤁𐤉𐤌	spelling	[𐤄] 𐤀𐤄𐤅𐤁 𐤉𐤌	H157	matres
+216:31:47	𐤄𐤍𐤑𐤇𐤅𐤍	english	𐤄+[𐤍] 𐤑𐤇𐤅 𐤍	H6705	form
+216:31:47	𐤍𐤌𐤔𐤊𐤅	spelling	[𐤍] 𐤌𐤔𐤊 𐤅	H4900	root
+216:31:47	𐤉𐤍𐤎𐤄	spelling	[𐤉] 𐤍𐤎𐤄 	H5254	root
 217:1:14	𐤋𐤔𐤇𐤓𐤅𐤓𐤌	english	𐤋 𐤇𐤓𐤅𐤓 𐤌	H2715a	matres
 217:1:16	𐤔𐤇𐤓𐤅𐤓	english	 𐤇𐤓𐤅𐤓 	H2715a	matres
 217:1:332	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
 217:1:419	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
 217:1:429	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+219:1:150	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
 219:1:155	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
 219:1:156	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+219:1:437	𐤈𐤁𐤋𐤅	spelling	 𐤈𐤁𐤋 𐤅	H2881	root
 219:1:535	𐤄𐤈𐤅𐤁𐤏𐤉𐤌	english	[𐤄] 𐤈𐤅𐤁𐤏 𐤉𐤌	H2883	matres
 219:1:582	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
 219:1:601	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
 219:1:646	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
 219:1:673	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
 219:2:101	𐤌𐤔𐤇𐤓𐤓	hand	[𐤌] 𐤇𐤓𐤓 	H2715a	root
+219:2:486	𐤉𐤋𐤒𐤇	spelling	[𐤉] 𐤋𐤒𐤇 	H3947	root
+219:3:262	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
 219:4:493	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
 219:4:493	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+219:4:603	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+219:5:126	𐤁𐤇𐤊𐤅𐤕𐤌	spelling	𐤁 𐤇𐤊𐤅 𐤕+𐤌	H2442	form
+219:5:350	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+219:5:371	𐤔𐤋𐤅𐤐𐤅𐤕	spelling	𐤔 𐤋𐤅𐤐𐤅𐤕 	H3943	matres
+219:5:404	𐤉𐤇𐤃𐤔	spelling	[𐤉] 𐤇𐤃𐤔 	H2318	root
+219:6:241	𐤄𐤍𐤄𐤃𐤓	spelling	𐤄+[𐤍] 𐤄𐤃𐤓 	H1922	root
 219:6:416	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
+219:7:198	𐤉𐤇𐤃𐤔	spelling	[𐤉] 𐤇𐤃𐤔 	H2318	root
+220:1:16	𐤁𐤕𐤒𐤅𐤐𐤄	spelling	𐤁 𐤕𐤒𐤅𐤐𐤄 	H8622	root
 220:1:178	𐤌𐤕𐤂𐤁𐤓𐤉𐤌	english	[𐤌𐤕] 𐤂𐤁𐤓 𐤉𐤌	H1396	root
+220:2:48	𐤄𐤑𐤍𐤉𐤏𐤅𐤕	spelling	[𐤄] 𐤑𐤍𐤉𐤏 𐤅𐤕	H6800	matres
 220:2:74	𐤔𐤇𐤓𐤅𐤓𐤅	spelling	 𐤇𐤓𐤅𐤓 𐤅	H2715a	matres
 220:2:76	𐤔𐤇𐤓𐤅𐤓𐤅	spelling	 𐤇𐤓𐤅𐤓 𐤅	H2715a	matres
+220:2:86	𐤄𐤕𐤒𐤅𐤐𐤄	spelling	𐤄 𐤕𐤒𐤅𐤐𐤄 	H8622	root
 220:2:138	𐤉𐤔𐤇𐤓𐤓	hand	[𐤉] 𐤇𐤓𐤓 	H2715a	root
 220:2:138	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
 220:2:235	𐤕𐤔𐤇𐤓𐤓	hand	[𐤕] 𐤇𐤓𐤓 	H2715a	root
+220:2:254	𐤉𐤇𐤃𐤔	spelling	[𐤉] 𐤇𐤃𐤔 	H2318	root
 220:2:261	𐤄𐤕𐤏𐤍𐤉𐤍𐤅𐤕𐤍	english	[𐤄𐤕] 𐤏𐤍𐤉𐤍𐤅 𐤕+𐤍	H6031	form
 220:2:268	𐤅𐤉𐤔𐤇𐤓𐤓	hand	𐤅+[𐤉] 𐤇𐤓𐤓 	H2715a	root
 220:2:311	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
@@ -39,17 +2487,30 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:4:287	𐤅𐤁𐤐𐤔𐤉𐤏𐤕𐤅	english	𐤅+𐤁 𐤐𐤔𐤉𐤏 𐤕+𐤅	H6585	matres
 220:5:187	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
 220:5:263	𐤅𐤉𐤔𐤇𐤓𐤓	hand	𐤅+[𐤉] 𐤇𐤓𐤓 	H2715a	root
+220:6:3	𐤕𐤐𐤓𐤃	spelling	[𐤕] 𐤐𐤓𐤃 	H6504	root
 220:6:42	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
+220:6:85	𐤄𐤕𐤒𐤅𐤐𐤄	spelling	𐤄 𐤕𐤒𐤅𐤐𐤄 	H8622	root
+220:6:85	𐤄𐤕𐤒𐤅𐤐𐤄	spelling	𐤄 𐤕𐤒𐤅𐤐𐤄 	H8622	root
+220:7:234	𐤉𐤇𐤃𐤔	spelling	[𐤉] 𐤇𐤃𐤔 	H2318	root
 220:7:273	𐤋𐤔𐤇𐤓𐤓	hand	𐤋 𐤇𐤓𐤓 	H2715a	root
 220:7:297	𐤁𐤔𐤇𐤓𐤓𐤅	hand	𐤁 𐤇𐤓𐤓 𐤅	H2715a	root
 220:8:46	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+220:8:309	𐤍𐤏𐤒𐤓	spelling	[𐤍] 𐤏𐤒𐤓 	H6131	root
 220:9:50	𐤅𐤉𐤔𐤇𐤓𐤓𐤄	hand	𐤅+[𐤉] 𐤇𐤓𐤓 𐤄	H2715a	root
+220:10:102	𐤉𐤇𐤃𐤔	spelling	[𐤉] 𐤇𐤃𐤔 	H2318	root
+220:11:17	𐤉𐤕𐤋𐤄	spelling	[𐤉] 𐤕𐤋𐤄 	H8518	root
+220:11:231	𐤅𐤉𐤇𐤊𐤅	spelling	𐤅+[𐤉] 𐤇𐤊𐤅 	H2442	form
 220:12:21	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+220:12:72	𐤊𐤎𐤃𐤓	spelling	𐤊 𐤎𐤃𐤓 	H5468	root
+220:12:261	𐤁𐤂𐤆𐤏	spelling	𐤁 𐤂𐤆𐤏 	H1503	root
 220:12:434	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
+220:13:135	𐤅𐤉𐤇𐤊𐤅	spelling	𐤅+[𐤉] 𐤇𐤊𐤅 	H2442	form
 220:13:213	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
 220:14:76	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
 220:14:97	𐤔𐤇𐤓𐤓𐤄	hand	 𐤇𐤓𐤓 𐤄	H2715a	root
 220:15:11	𐤔𐤇𐤓𐤅𐤓𐤅	spelling	 𐤇𐤓𐤅𐤓 𐤅	H2715a	matres
+220:15:128	𐤉𐤕𐤒𐤍	spelling	[𐤉] 𐤕𐤒𐤍 	H8626	root
+220:15:215	𐤉𐤕𐤒𐤍	spelling	[𐤉] 𐤕𐤒𐤍 	H8626	root
 220:16:26	𐤅𐤉𐤔𐤇𐤓𐤓𐤌	hand	𐤅+[𐤉] 𐤇𐤓𐤓 𐤌	H2715a	root
 220:17:129	𐤅𐤁𐤄𐤕𐤐𐤔	english	𐤅+𐤁+[𐤄] 𐤕𐤐𐤔 	H8610	root
 220:17:146	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
@@ -57,6 +2518,8 @@ ref	word	witness	prefixes [preformative] stem tails	SN	stem is
 220:17:332	𐤌𐤌𐤔𐤇𐤓𐤓𐤉𐤅	hand	𐤌+[𐤌] 𐤇𐤓𐤓 𐤉+𐤅	H2715a	root
 220:18:38	𐤔𐤇𐤓𐤓	hand	 𐤇𐤓𐤓 	H2715a	root
 220:18:69	𐤌𐤔𐤇𐤓𐤓𐤕	hand	[𐤌] 𐤇𐤓𐤓 𐤕	H2715a	root
+220:18:97	𐤄𐤀𐤉𐤁𐤓𐤉𐤌	spelling	𐤄 𐤀𐤉𐤁𐤓 𐤉𐤌	H47	matres
+220:18:136	𐤅𐤕𐤐𐤓𐤃	spelling	𐤅+[𐤕] 𐤐𐤓𐤃 	H6504	root
 220:19:242	𐤁𐤔𐤇𐤓𐤓𐤌	hand	𐤁 𐤇𐤓𐤓 𐤌	H2715a	root
 220:19:362	𐤄𐤌𐤔𐤇𐤓𐤓𐤉𐤌	hand	𐤄+[𐤌] 𐤇𐤓𐤓 𐤉𐤌	H2715a	root
 220:20:135	𐤅𐤌𐤔𐤇𐤓𐤓𐤉	hand	𐤅+[𐤌] 𐤇𐤓𐤓 𐤉	H2715a	root
