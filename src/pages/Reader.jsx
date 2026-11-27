@@ -1838,10 +1838,17 @@ export default function Reader() {
   const continuedSection = startSections.length ? null : activeHeadingFor(HEADING_LEVEL.SECTION, chapter);
   // Section headings (level 2) as {from, title} pairs, chapter-ascending —
   // the shape the book-jump navigator sheet (below) groups chapters by.
-  const navSections = headingsList
-    .filter(h => h.level === HEADING_LEVEL.SECTION)
-    .map(h => ({ from: h.chapter, title: h.title }))
-    .sort((a, b) => a.from - b.from);
+  // Chapters before the first section (e.g. Ecclesiastes 1–11, whose only
+  // section is the chapter-12 Epilogue) get a leading untitled group so no
+  // chapter is ever left out of the grid.
+  const navSections = (() => {
+    const s = headingsList
+      .filter(h => h.level === HEADING_LEVEL.SECTION)
+      .map(h => ({ from: h.chapter, title: h.title }))
+      .sort((a, b) => a.from - b.from);
+    if (s.length && s[0].from > firstCh) s.unshift({ from: firstCh, title: '' });
+    return s;
+  })();
   // Chapter title: at most one per chapter, shown next to the chapter number.
   const chapterTitleHeadings = startHeadingsAt(HEADING_LEVEL.CHAPTER);
   // Part / Section / Chapter-title headings anchored at a verse > 1 of the
@@ -2677,7 +2684,7 @@ export default function Reader() {
                     if (!chaptersInSection.length) return null;
                     return (
                       <div key={s.from} className="rd-section-group">
-                        <div className="rd-section-title">{s.title}</div>
+                        {s.title ? <div className="rd-section-title">{s.title}</div> : null}
                         <div className="rd-grid">
                           {chaptersInSection.map(c => (
                             <button key={c}
